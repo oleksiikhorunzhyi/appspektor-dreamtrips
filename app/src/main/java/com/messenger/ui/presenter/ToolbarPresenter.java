@@ -19,78 +19,76 @@ import flow.Flow;
 
 public class ToolbarPresenter {
 
-    private Toolbar toolbar;
-    private Context context;
+   private Toolbar toolbar;
+   private Context context;
 
-    @Inject
-    NavigationDrawerPresenter navigationDrawerPresenter;
+   @Inject NavigationDrawerPresenter navigationDrawerPresenter;
 
-    public ToolbarPresenter(Toolbar toolbar, Context context) {
-        this.context = context;
-        this.toolbar = toolbar;
-    }
+   public ToolbarPresenter(Toolbar toolbar, Context context) {
+      this.context = context;
+      this.toolbar = toolbar;
+   }
 
-    private void initToolbar() {
-        toolbar.setBackgroundColor(ContextCompat.getColor(context, R.color.theme_main));
-        toolbar.setTitleTextAppearance(context, R.style.ActionBarTitle);
-        toolbar.setSubtitleTextAppearance(context, R.style.ActionBarSubtitle);
-    }
+   private void initToolbar() {
+      toolbar.setBackgroundColor(ContextCompat.getColor(context, R.color.theme_main));
+      toolbar.setTitleTextAppearance(context, R.style.ActionBarTitle);
+      toolbar.setSubtitleTextAppearance(context, R.style.ActionBarSubtitle);
+   }
 
-    public void inject(Injector injector) {
-        injector.inject(this);
-    }
+   public void inject(Injector injector) {
+      injector.inject(this);
+   }
 
-    public void setTitle(@StringRes int name) {
-        toolbar.setTitle(name);
-    }
+   public void setTitle(@StringRes int name) {
+      toolbar.setTitle(name);
+   }
 
-    public void setTitle(String name) {
-        toolbar.setTitle(name);
-    }
+   public void setTitle(String name) {
+      toolbar.setTitle(name);
+   }
 
-    public void disableTitle() {
-        toolbar.setTitle("");
-    }
+   public void disableTitle() {
+      toolbar.setTitle("");
+   }
 
-    public void setSubtitle(@StringRes int name) {
-        toolbar.setSubtitle(name);
-    }
+   public void setSubtitle(@StringRes int name) {
+      toolbar.setSubtitle(name);
+   }
 
-    public void setSubtitle(String name) {
-        toolbar.setSubtitle(name);
-    }
+   public void setSubtitle(String name) {
+      toolbar.setSubtitle(name);
+   }
 
-    public void attachPathAttrs(PathAttrs pathAttrs) {
-        initToolbar();
-        //
-        if (pathAttrs.isDrawerEnabled()) enableDrawerNavigationButton();
-        else enableUpNavigationButton();
-    }
+   public void attachPathAttrs(PathAttrs pathAttrs) {
+      initToolbar();
+      //
+      if (pathAttrs.isDrawerEnabled()) enableDrawerNavigationButton();
+      else enableUpNavigationButton();
+   }
 
-    public void hideBackButtonInLandscape() {
-        if (ViewUtils.isLandscapeOrientation(context) && ViewUtils.isTablet(context)) {
-            toolbar.setNavigationIcon(null);
-            toolbar.setNavigationOnClickListener(null);
-        }
-    }
+   public void hideBackButtonInLandscape() {
+      if (ViewUtils.isLandscapeOrientation(context) && ViewUtils.isTablet(context)) {
+         toolbar.setNavigationIcon(null);
+         toolbar.setNavigationOnClickListener(null);
+      }
+   }
 
-    private void enableUpNavigationButton() {
-        TypedValue typedValue = new TypedValue();
-        context.getTheme().resolveAttribute(android.support.v7.appcompat.R.attr.homeAsUpIndicator,
-                typedValue, true);
-        toolbar.setNavigationIcon(typedValue.resourceId);
-        toolbar.setNavigationOnClickListener(view -> Flow.get(context).goBack());
-    }
+   private void enableUpNavigationButton() {
+      TypedValue typedValue = new TypedValue();
+      context.getTheme().resolveAttribute(android.support.v7.appcompat.R.attr.homeAsUpIndicator, typedValue, true);
+      toolbar.setNavigationIcon(typedValue.resourceId);
+      toolbar.setNavigationOnClickListener(view -> Flow.get(context).goBack());
+   }
 
-    private void enableDrawerNavigationButton() {
-        if (context.getResources().getConfiguration().orientation != Configuration.ORIENTATION_LANDSCAPE)
-            toolbar.setNavigationIcon(R.drawable.ic_menu_hamburger);
+   private void enableDrawerNavigationButton() {
+      if (context.getResources().getConfiguration().orientation != Configuration.ORIENTATION_LANDSCAPE)
+         toolbar.setNavigationIcon(R.drawable.ic_menu_hamburger);
 
-         toolbar.setNavigationOnClickListener(view -> openDrawer());
-    }
+      toolbar.setNavigationOnClickListener(view -> openDrawer());
+   }
 
-    private void openDrawer() {
-        if (navigationDrawerPresenter != null) navigationDrawerPresenter.openDrawer();
-    }
+   private void openDrawer() {
+      if (navigationDrawerPresenter != null) navigationDrawerPresenter.openDrawer();
+   }
 
 }

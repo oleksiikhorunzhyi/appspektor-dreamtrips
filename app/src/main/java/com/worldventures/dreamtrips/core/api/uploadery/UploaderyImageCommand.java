@@ -2,11 +2,9 @@ package com.worldventures.dreamtrips.core.api.uploadery;
 
 import android.content.Context;
 
-import com.messenger.util.SessionHolderHelper;
 import com.techery.spares.module.qualifier.ForApplication;
-import com.techery.spares.session.SessionHolder;
 import com.worldventures.dreamtrips.core.janet.dagger.InjectableAction;
-import com.worldventures.dreamtrips.core.session.UserSession;
+import com.worldventures.dreamtrips.modules.infopages.StaticPageProvider;
 
 import java.io.File;
 import java.io.IOException;
@@ -21,57 +19,44 @@ import rx.schedulers.Schedulers;
 
 @CommandAction
 public abstract class UploaderyImageCommand<T> extends BaseUploadImageCommand<T> implements InjectableAction {
-    private final int commandId;
+   private final int commandId;
 
-    @ForApplication
-    @Inject
-    Context context;
+   @ForApplication @Inject Context context;
+   @Inject Janet janet;
+   @Inject StaticPageProvider staticPageProvider;
 
-    @Inject
-    SessionHolder<UserSession> userSessionHolder;
+   private final String filePath;
 
-    @Inject
-    Janet janet;
+   public UploaderyImageCommand(String filePath, int commandId) {
+      this.commandId = commandId;
+      this.filePath = filePath;
+   }
 
-    private final String filePath;
+   @Override
+   protected void run(CommandCallback<T> callback) {
+      getFileObservable(context, filePath).flatMap(this::upload)
+            .compose(nextAction())
+            .subscribe(callback::onSuccess, callback::onFail);
 
-    public UploaderyImageCommand(String filePath, int commandId) {
-        this.commandId = commandId;
-        this.filePath = filePath;
-    }
+   }
 
-    @Override
-    protected void run(CommandCallback<T> callback) {
-        getFileObservable(context, filePath)
-                .flatMap(this::upload)
-                .compose(nextAction())
-                .subscribe(callback::onSuccess, callback::onFail);
+   public int getCommandId() {
+      return commandId;
+   }
 
-    }
+   public String getFilePath() {
+      return filePath;
+   }
 
-    public int getCommandId() {
-        return commandId;
-    }
+   protected Observable<ActionState<UploadImageAction>> upload(File file) {
+      String uploaderyUrl = staticPageProvider.getUploaderyUrl();
+      try {
+         return janet.createPipe(UploadImageAction.class, Schedulers.io())
+               .createObservable(new UploadImageAction(uploaderyUrl, file));
+      } catch (IOException e) {
+         return Observable.error(e);
+      }
+   }
 
-    public String getFilePath() {
-        return filePath;
-    }
-
-    protected Observable<ActionState<UploadImageAction>> upload(File file) {
-        if (!SessionHolderHelper.hasEntity(userSessionHolder)) {
-            throw new IllegalStateException("User session is not present");
-        }
-
-        String uploaderyUrl = userSessionHolder.get().get().getGlobalConfig().getUrls().getProduction().getUploaderyBaseURL();
-        try {
-            return janet
-                    .createPipe(UploadImageAction.class, Schedulers.io())
-                    .createObservable(new UploadImageAction(uploaderyUrl, file));
-        } catch (IOException e) {
-            return Observable.error(e);
-        }
-    }
-
-    protected abstract Observable.Transformer<ActionState<UploadImageAction>, T> nextAction();
-
+   protected abstract Observable.Transformer<ActionState<UploadImageAction>, T> nextAction();
 }

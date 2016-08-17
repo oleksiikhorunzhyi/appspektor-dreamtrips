@@ -21,35 +21,33 @@ import butterknife.InjectView;
 @MenuResource(R.menu.menu_mock)
 public class TermsTabFragment extends BaseFragment<Presenter> implements Presenter.View {
 
-    protected static final int TERMS_OFFSCREEN_PAGES = 2;
+   protected static final int TERMS_OFFSCREEN_PAGES = 2;
 
-    @InjectView(R.id.tabs)
-    protected BadgedTabLayout tabs;
-    @InjectView(R.id.pager)
-    protected CustomViewPager pager;
+   @InjectView(R.id.tabs) protected BadgedTabLayout tabs;
+   @InjectView(R.id.pager) protected CustomViewPager pager;
 
-    protected BasePagerAdapter adapter;
+   protected BasePagerAdapter adapter;
 
-    @Override
-    protected Presenter createPresenter(Bundle savedInstanceState) {
-        return new Presenter();
-    }
+   @Override
+   protected Presenter createPresenter(Bundle savedInstanceState) {
+      return new Presenter();
+   }
 
-    @Override
-    public void afterCreateView(View rootView) {
-        super.afterCreateView(rootView);
+   @Override
+   public void afterCreateView(View rootView) {
+      super.afterCreateView(rootView);
 
-        if (adapter == null) {
-            this.adapter = new BasePagerAdapter(getChildFragmentManager());
-            this.adapter.add(new FragmentItem(Route.PRIVACY_POLICY, getString(R.string.privacy)));
-            this.adapter.add(new FragmentItem(Route.TERMS_OF_SERVICE, getString(R.string.terms_of_service)));
-            this.adapter.add(new FragmentItem(Route.COOKIE_POLICY, getString(R.string.cookie)));
-        }
+      if (adapter == null) {
+         this.adapter = new BasePagerAdapter(getChildFragmentManager());
+         this.adapter.add(new FragmentItem(Route.PRIVACY_POLICY, getString(R.string.privacy)));
+         this.adapter.add(new FragmentItem(Route.TERMS_OF_SERVICE, getString(R.string.terms_of_service)));
+         this.adapter.add(new FragmentItem(Route.COOKIE_POLICY, getString(R.string.cookie)));
+      }
 
-        pager.setAdapter(adapter);
-        // Is used for block screen rotates
-        pager.setOffscreenPageLimit(TERMS_OFFSCREEN_PAGES);
+      pager.setAdapter(adapter);
+      // Is used for block screen rotates
+      pager.setOffscreenPageLimit(TERMS_OFFSCREEN_PAGES);
 
-        tabs.setupWithPagerBadged(pager);
-    }
+      tabs.setupWithPagerBadged(pager);
+   }
 }

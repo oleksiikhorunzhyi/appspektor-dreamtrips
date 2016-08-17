@@ -1,71 +1,77 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:fresco="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:keepScreenOn="true"
-    android:orientation="vertical">
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+      xmlns:fresco="http://schemas.android.com/apk/res-auto"
+      xmlns:tools="http://schemas.android.com/tools"
+      android:layout_width="match_parent"
+      android:layout_height="match_parent"
+      android:keepScreenOn="true"
+      android:orientation="vertical"
+      >
 
-    <me.dm7.barcodescanner.zxing.ZXingScannerView
-        android:id="@+id/scanner_view"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
+   <me.dm7.barcodescanner.zxing.ZXingScannerView
+         android:id="@+id/scanner_view"
+         android:layout_width="match_parent"
+         android:layout_height="match_parent"
+         />
 
-    <LinearLayout
-        android:id="@+id/header"
-        android:layout_width="300dp"
-        android:layout_height="wrap_content"
-        android:background="@color/light_grey_background"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="@dimen/spacing_normal"
-        android:orientation="horizontal">
+   <LinearLayout
+         android:id="@+id/header"
+         android:layout_width="300dp"
+         android:layout_height="wrap_content"
+         android:background="@color/light_grey_background"
+         android:layout_centerHorizontal="true"
+         android:layout_marginTop="@dimen/spacing_normal"
+         android:orientation="horizontal"
+         >
 
-        <com.worldventures.dreamtrips.modules.bucketlist.view.custom.SquareLayout
+      <com.worldventures.dreamtrips.modules.bucketlist.view.custom.SquareLayout
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            >
 
-            <com.worldventures.dreamtrips.modules.common.view.custom.ImageryDraweeView
-                android:id="@+id/merchant_image"
-                android:layout_width="72dp"
-                android:layout_height="72dp"
-                fresco:actualImageScaleType="focusCrop"
-                fresco:placeholderImage="@drawable/ic_trip_image_placeholder"
-                fresco:placeholderImageScaleType="centerCrop"
-                />
+         <com.worldventures.dreamtrips.modules.common.view.custom.ImageryDraweeView
+               android:id="@+id/merchant_image"
+               android:layout_width="72dp"
+               android:layout_height="72dp"
+               fresco:actualImageScaleType="focusCrop"
+               fresco:placeholderImage="@drawable/ic_trip_image_placeholder"
+               fresco:placeholderImageScaleType="centerCrop"
+               />
 
-        </com.worldventures.dreamtrips.modules.bucketlist.view.custom.SquareLayout>
+      </com.worldventures.dreamtrips.modules.bucketlist.view.custom.SquareLayout>
 
-        <LinearLayout
+      <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_marginLeft="@dimen/spacing_normal"
             android:layout_marginStart="@dimen/spacing_normal"
             android:gravity="center"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            >
 
-            <TextView
-                android:id="@+id/name"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:padding="@dimen/spacing_tiniest"
-                android:textColor="@color/black"
-                android:textSize="@dimen/font_normal"
-                tools:text="fasdfasdf"/>
+         <TextView
+               android:id="@+id/name"
+               android:layout_width="match_parent"
+               android:layout_height="wrap_content"
+               android:padding="@dimen/spacing_tiniest"
+               android:textColor="@color/black"
+               android:textSize="@dimen/font_normal"
+               tools:text="fasdfasdf"
+               />
 
 
-            <TextView
-                android:id="@+id/address"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:padding="@dimen/spacing_tiniest"
-                android:textSize="@dimen/font_small"
-                tools:text="fasdfasdf\nfsda"/>
+         <TextView
+               android:id="@+id/address"
+               android:layout_width="match_parent"
+               android:layout_height="wrap_content"
+               android:padding="@dimen/spacing_tiniest"
+               android:textSize="@dimen/font_small"
+               tools:text="fasdfasdf\nfsda"
+               />
 
-        </LinearLayout>
+      </LinearLayout>
 
-    </LinearLayout>
+   </LinearLayout>
 
 
 </RelativeLayout>

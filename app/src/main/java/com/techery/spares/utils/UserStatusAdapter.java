@@ -4,5 +4,5 @@ import rx.Observable;
 
 public interface UserStatusAdapter {
 
-    Observable<Boolean> getUserHolder(String username);
+   Observable<Boolean> getUserHolder(String username);
 }

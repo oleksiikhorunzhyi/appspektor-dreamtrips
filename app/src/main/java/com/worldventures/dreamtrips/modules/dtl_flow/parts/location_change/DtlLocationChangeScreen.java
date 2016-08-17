@@ -13,27 +13,27 @@ import rx.Observable;
 
 public interface DtlLocationChangeScreen extends DtlScreen {
 
-    void updateToolbarTitle(@Nullable DtlLocation dtlLocation, @Nullable String appliedSearchQuery);
+   void updateToolbarTitle(@Nullable DtlLocation dtlLocation, @Nullable String appliedSearchQuery);
 
-    void locationResolutionRequired(Status status);
+   void locationResolutionRequired(Status status);
 
-    void setItems(List<DtlExternalLocation> locations, boolean showLocationHeader);
+   void setItems(List<DtlExternalLocation> locations, boolean showLocationHeader);
 
-    void hideNearMeButton();
+   void hideNearMeButton();
 
-    void showProgress();
+   void showProgress();
 
-    void hideProgress();
+   void hideProgress();
 
-    void switchVisibilityNoMerchants(boolean visible);
+   void switchVisibilityNoMerchants(boolean visible);
 
-    void switchVisibilityOrCaption(boolean visible);
+   void switchVisibilityOrCaption(boolean visible);
 
-    Observable<Void> provideMapClickObservable();
+   Observable<Void> provideMapClickObservable();
 
-    Observable<Boolean> provideMerchantInputFocusLossObservable();
+   Observable<Boolean> provideMerchantInputFocusLossObservable();
 
-    Observable<Void> provideDtlToolbarCollapsesObservable();
+   Observable<Void> provideDtlToolbarCollapsesObservable();
 
-    Observable<String> provideLocationSearchObservable();
+   Observable<String> provideLocationSearchObservable();
 }

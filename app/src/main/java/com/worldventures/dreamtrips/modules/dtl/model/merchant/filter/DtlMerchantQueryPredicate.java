@@ -12,22 +12,22 @@ import java.util.List;
  */
 public class DtlMerchantQueryPredicate implements Predicate<DtlMerchant> {
 
-    private final String searchQuery;
+   private final String searchQuery;
 
-    public DtlMerchantQueryPredicate(DtlFilterData filterData) {
-        if (filterData.getSearchQuery() == null) searchQuery = null;
-        else searchQuery = filterData.getSearchQuery().toLowerCase();
-    }
+   public DtlMerchantQueryPredicate(DtlFilterData filterData) {
+      if (filterData.getSearchQuery() == null) searchQuery = null;
+      else searchQuery = filterData.getSearchQuery().toLowerCase();
+   }
 
-    @Override
-    public boolean apply(DtlMerchant dtlMerchant) {
-        if (searchQuery == null) return false;
-        //
-        List<DtlMerchantAttribute> categories = dtlMerchant.getCategories();
-        //
-        return dtlMerchant.getDisplayName().toLowerCase()
-                .contains(searchQuery) || (categories != null &&
-                Queryable.from(categories).firstOrDefault(element ->
-                        element.getName().toLowerCase().contains(searchQuery)) != null);
-    }
+   @Override
+   public boolean apply(DtlMerchant dtlMerchant) {
+      if (searchQuery == null) return false;
+      //
+      List<DtlMerchantAttribute> categories = dtlMerchant.getCategories();
+      //
+      return dtlMerchant.getDisplayName()
+            .toLowerCase()
+            .contains(searchQuery) || (categories != null && Queryable.from(categories)
+            .firstOrDefault(element -> element.getName().toLowerCase().contains(searchQuery)) != null);
+   }
 }

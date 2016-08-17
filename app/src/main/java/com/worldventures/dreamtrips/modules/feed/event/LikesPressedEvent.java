@@ -4,13 +4,13 @@ import com.worldventures.dreamtrips.modules.feed.model.FeedEntity;
 
 public class LikesPressedEvent {
 
-    FeedEntity model;
+   FeedEntity model;
 
-    public LikesPressedEvent(FeedEntity model) {
-        this.model = model;
-    }
+   public LikesPressedEvent(FeedEntity model) {
+      this.model = model;
+   }
 
-    public FeedEntity getModel() {
-        return model;
-    }
+   public FeedEntity getModel() {
+      return model;
+   }
 }

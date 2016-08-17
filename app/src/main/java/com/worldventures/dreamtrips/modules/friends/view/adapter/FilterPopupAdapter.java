@@ -16,52 +16,51 @@ import butterknife.InjectView;
 
 public class FilterPopupAdapter<T> extends BaseAdapter {
 
-    private List<T> items;
-    private LayoutInflater inflater;
+   private List<T> items;
+   private LayoutInflater inflater;
 
-    public FilterPopupAdapter(Context context, List<T> contentItems) {
-        this.inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        this.items = contentItems;
-    }
+   public FilterPopupAdapter(Context context, List<T> contentItems) {
+      this.inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+      this.items = contentItems;
+   }
 
-    @Override
-    public int getCount() {
-        return items.size();
-    }
+   @Override
+   public int getCount() {
+      return items.size();
+   }
 
-    @Override
-    public T getItem(int i) {
-        return items.get(i);
-    }
+   @Override
+   public T getItem(int i) {
+      return items.get(i);
+   }
 
-    @Override
-    public long getItemId(int i) {
-        return 0;
-    }
+   @Override
+   public long getItemId(int i) {
+      return 0;
+   }
 
-    @Override
-    public View getView(int position, View contentView, ViewGroup viewGroup) {
-        ViewHolder holder;
-        View view = contentView;
+   @Override
+   public View getView(int position, View contentView, ViewGroup viewGroup) {
+      ViewHolder holder;
+      View view = contentView;
 
-        if (view != null) {
-            holder = (ViewHolder) view.getTag();
-        } else {
-            view = inflater.inflate(R.layout.adapter_item_selectable, viewGroup, false);
-            holder = new ViewHolder(view);
-            view.setTag(holder);
-        }
+      if (view != null) {
+         holder = (ViewHolder) view.getTag();
+      } else {
+         view = inflater.inflate(R.layout.adapter_item_selectable, viewGroup, false);
+         holder = new ViewHolder(view);
+         view.setTag(holder);
+      }
 
-        holder.name.setText(getItem(position).toString());
-        return view;
-    }
+      holder.name.setText(getItem(position).toString());
+      return view;
+   }
 
-    static class ViewHolder {
-        @InjectView(R.id.name)
-        protected TextView name;
+   static class ViewHolder {
+      @InjectView(R.id.name) protected TextView name;
 
-        public ViewHolder(View view) {
-            ButterKnife.inject(this, view);
-        }
-    }
+      public ViewHolder(View view) {
+         ButterKnife.inject(this, view);
+      }
+   }
 }

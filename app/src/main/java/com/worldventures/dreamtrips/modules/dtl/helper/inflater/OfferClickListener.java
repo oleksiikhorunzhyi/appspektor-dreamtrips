@@ -4,5 +4,5 @@ import com.worldventures.dreamtrips.modules.dtl.model.merchant.offer.DtlOffer;
 
 public interface OfferClickListener {
 
-    void onOfferClick(DtlOffer offer);
+   void onOfferClick(DtlOffer offer);
 }

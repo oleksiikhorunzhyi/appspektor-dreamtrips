@@ -5,9 +5,9 @@ import android.view.View;
 
 public abstract class CursorViewHolder extends BaseViewHolder {
 
-    public CursorViewHolder(View itemView) {
-        super(itemView);
-    }
+   public CursorViewHolder(View itemView) {
+      super(itemView);
+   }
 
-    public abstract void bindCursor(Cursor cursor);
+   public abstract void bindCursor(Cursor cursor);
 }

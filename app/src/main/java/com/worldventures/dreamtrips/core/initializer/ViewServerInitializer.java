@@ -12,14 +12,13 @@ import javax.inject.Inject;
 
 public class ViewServerInitializer implements AppInitializer {
 
-    @Inject
-    protected Application app;
+   @Inject protected Application app;
 
-    @Override
-    public void initialize(Injector injector) {
-        if (!BuildConfig.DEBUG) return;
-        //
-        injector.inject(this);
-        app.registerActivityLifecycleCallbacks(new ViewServer.ViewServerLifecycleDelegate());
-    }
+   @Override
+   public void initialize(Injector injector) {
+      if (!BuildConfig.DEBUG) return;
+      //
+      injector.inject(this);
+      app.registerActivityLifecycleCallbacks(new ViewServer.ViewServerLifecycleDelegate());
+   }
 }

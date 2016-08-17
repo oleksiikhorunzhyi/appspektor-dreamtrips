@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<TextView
-    android:id="@+id/profile_feed_reload"
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:gravity="center"
-    android:padding="@dimen/spacing_normal"
-    android:text="@string/reload_feed"
-    android:textColor="@color/tripPlaceColor"
-    android:textSize="22sp"/>
+<TextView android:id="@+id/profile_feed_reload"
+      xmlns:android="http://schemas.android.com/apk/res/android"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:gravity="center"
+      android:padding="@dimen/spacing_normal"
+      android:text="@string/reload_feed"
+      android:textColor="@color/tripPlaceColor"
+      android:textSize="22sp"
+      />

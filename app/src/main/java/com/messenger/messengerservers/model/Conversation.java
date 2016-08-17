@@ -12,27 +12,34 @@ import java.util.List;
 @Value.Immutable
 public interface Conversation {
 
-    String getId();
+   String getId();
 
-    @Nullable String getSubject();
+   @Nullable
+   String getSubject();
 
-    @Nullable String getAvatar();
+   @Nullable
+   String getAvatar();
 
-    @ConversationType.Type String getType();
+   @ConversationType.Type
+   String getType();
 
-    int getUnreadMessageCount();
+   int getUnreadMessageCount();
 
-    long getLeftTime();
+   long getLeftTime();
 
-    @ConversationStatus.Status String getStatus();
+   @ConversationStatus.Status
+   String getStatus();
 
-    @Nullable List<Participant> getParticipants();
+   @Nullable
+   List<Participant> getParticipants();
 
-    @Nullable Message getLastMessage();
+   @Nullable
+   Message getLastMessage();
 
-    long getLastActiveDate();
+   long getLastActiveDate();
 
-    @Nullable String getOwnerId();
+   @Nullable
+   String getOwnerId();
 
-    long getClearDate();
+   long getClearDate();
 }

@@ -5,27 +5,27 @@ import android.os.Parcelable;
 
 public class FeedBundle implements Parcelable {
 
-    protected FeedBundle(Parcel in) {
-    }
+   protected FeedBundle(Parcel in) {
+   }
 
-    public static final Creator<FeedBundle> CREATOR = new Creator<FeedBundle>() {
-        @Override
-        public FeedBundle createFromParcel(Parcel in) {
-            return new FeedBundle(in);
-        }
+   public static final Creator<FeedBundle> CREATOR = new Creator<FeedBundle>() {
+      @Override
+      public FeedBundle createFromParcel(Parcel in) {
+         return new FeedBundle(in);
+      }
 
-        @Override
-        public FeedBundle[] newArray(int size) {
-            return new FeedBundle[size];
-        }
-    };
+      @Override
+      public FeedBundle[] newArray(int size) {
+         return new FeedBundle[size];
+      }
+   };
 
-    @Override
-    public int describeContents() {
-        return 0;
-    }
+   @Override
+   public int describeContents() {
+      return 0;
+   }
 
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-    }
+   @Override
+   public void writeToParcel(Parcel dest, int flags) {
+   }
 }

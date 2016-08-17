@@ -9,18 +9,15 @@ import com.worldventures.dreamtrips.core.navigation.router.Router;
 
 public class DialogNavigationWrapper extends NavigationWrapper {
 
-    private final FragmentManager fragmentManager;
+   private final FragmentManager fragmentManager;
 
-    public DialogNavigationWrapper(Router router, FragmentManager fragmentManager) {
-        super(router);
-        this.fragmentManager = fragmentManager;
-    }
+   public DialogNavigationWrapper(Router router, FragmentManager fragmentManager) {
+      super(router);
+      this.fragmentManager = fragmentManager;
+   }
 
-    @Override
-    public void navigate(Route route, Parcelable bundle) {
-        router.moveTo(route, NavigationConfigBuilder.forDialog()
-                .fragmentManager(fragmentManager)
-                .data(bundle)
-                .build());
-    }
+   @Override
+   public void navigate(Route route, Parcelable bundle) {
+      router.moveTo(route, NavigationConfigBuilder.forDialog().fragmentManager(fragmentManager).data(bundle).build());
+   }
 }

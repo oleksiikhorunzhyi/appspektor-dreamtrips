@@ -4,7 +4,7 @@ import android.support.annotation.Nullable;
 
 public interface HeaderItem {
 
-    @Nullable
-    String getHeaderTitle();
+   @Nullable
+   String getHeaderTitle();
 
 }

@@ -1,39 +1,44 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent">
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+      android:layout_width="match_parent"
+      android:layout_height="match_parent"
+      >
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_above="@+id/linearLayout"
-        android:orientation="vertical">
+   <LinearLayout
+         android:layout_width="match_parent"
+         android:layout_height="match_parent"
+         android:layout_above="@+id/linearLayout"
+         android:orientation="vertical"
+         >
 
-        <TextView
+      <TextView
             android:id="@+id/title"
             style="@style/ToolBarStyle.Header"
             android:background="@color/theme_main"
             android:text="@string/comments_title"
-            android:visibility="gone"/>
+            android:visibility="gone"
+            />
 
-        <include
+      <include
             layout="@layout/include_user_liked"
-            android:visibility="gone"/>
+            android:visibility="gone"
+            />
 
-        <com.worldventures.dreamtrips.modules.common.view.custom.EmptyRecyclerView
+      <com.worldventures.dreamtrips.modules.common.view.custom.EmptyRecyclerView
             android:id="@+id/list"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"/>
-    </LinearLayout>
+            android:layout_height="match_parent"
+            />
+   </LinearLayout>
 
-    <LinearLayout
-        android:id="@+id/linearLayout"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true">
+   <LinearLayout
+         android:id="@+id/linearLayout"
+         android:layout_width="match_parent"
+         android:layout_height="wrap_content"
+         android:layout_alignParentBottom="true"
+         >
 
-        <include layout="@layout/adapter_item_add_comment"/>
-    </LinearLayout>
+      <include layout="@layout/adapter_item_add_comment" />
+   </LinearLayout>
 </RelativeLayout>
 

@@ -17,51 +17,46 @@ import javax.inject.Inject;
 import butterknife.InjectView;
 import butterknife.OnClick;
 
-
 @Layout(R.layout.adapter_item_filter_checkbox)
 public class RegionCell extends AbstractDelegateCell<RegionModel, RegionCell.Delegate> {
 
-    @InjectView(R.id.textViewAttributeCaption)
-    protected TextView textViewName;
-    @InjectView(R.id.checkBox)
-    protected CheckBox checkBox;
-    @Inject
-    protected Context context;
-    @InjectView(R.id.cell)
-    protected LinearLayout cell;
+   @InjectView(R.id.textViewAttributeCaption) TextView textViewName;
+   @InjectView(R.id.checkBox) CheckBox checkBox;
+   @InjectView(R.id.cell) LinearLayout cell;
 
-    public RegionCell(View view) {
-        super(view);
-    }
+   @Inject Context context;
 
-    @Override
-    protected void syncUIStateWithModel() {
-        textViewName.setText(getModelObject().getName());
-        textViewName.setTextColor(getModelObject().isChecked() ?
-                context.getResources().getColor(R.color.black) :
-                context.getResources().getColor(R.color.grey));
-        checkBox.setChecked(getModelObject().isChecked());
-    }
+   public RegionCell(View view) {
+      super(view);
+   }
 
-    @OnClick(R.id.checkBox)
-    void checkBoxClick() {
-        getModelObject().setChecked(checkBox.isChecked());
-        cellDelegate.onRegionSetChangedEvent();
-    }
+   @Override
+   protected void syncUIStateWithModel() {
+      textViewName.setText(getModelObject().getName());
+      textViewName.setTextColor(getModelObject().isChecked() ? context.getResources()
+            .getColor(R.color.black) : context.getResources().getColor(R.color.grey));
+      checkBox.setChecked(getModelObject().isChecked());
+   }
 
-    @OnClick(R.id.textViewAttributeCaption)
-    void textViewRegionClick() {
-        checkBox.setChecked(!checkBox.isChecked());
-        getModelObject().setChecked(checkBox.isChecked());
-        cellDelegate.onRegionSetChangedEvent();
-    }
+   @OnClick(R.id.checkBox)
+   void checkBoxClick() {
+      getModelObject().setChecked(checkBox.isChecked());
+      cellDelegate.onRegionSetChangedEvent();
+   }
 
-    @Override
-    public void prepareForReuse() {
-        textViewName.setText("");
-    }
+   @OnClick(R.id.textViewAttributeCaption)
+   void textViewRegionClick() {
+      checkBox.setChecked(!checkBox.isChecked());
+      getModelObject().setChecked(checkBox.isChecked());
+      cellDelegate.onRegionSetChangedEvent();
+   }
 
-    public interface Delegate extends CellDelegate<RegionModel> {
-        void onRegionSetChangedEvent();
-    }
+   @Override
+   public void prepareForReuse() {
+      textViewName.setText("");
+   }
+
+   public interface Delegate extends CellDelegate<RegionModel> {
+      void onRegionSetChangedEvent();
+   }
 }

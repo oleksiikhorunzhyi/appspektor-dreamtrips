@@ -1,63 +1,71 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              android:layout_width="match_parent"
-              android:layout_height="match_parent"
-              android:orientation="vertical">
+      android:layout_width="match_parent"
+      android:layout_height="match_parent"
+      android:orientation="vertical"
+      >
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="#F8F8F8"
-        android:orientation="horizontal">
+   <LinearLayout
+         android:layout_width="match_parent"
+         android:layout_height="wrap_content"
+         android:background="#F8F8F8"
+         android:orientation="horizontal"
+         >
 
-        <FrameLayout
+      <FrameLayout
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight="1">
+            android:layout_weight="1"
+            >
 
-            <TextView
-                android:id="@+id/dt_points"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="end"
-                android:drawableLeft="@drawable/ic_profile_dt_points"
-                android:drawablePadding="@dimen/spacing_tiny"
-                android:padding="@dimen/spacing_normal"
-                android:singleLine="true"/>
+         <TextView
+               android:id="@+id/dt_points"
+               android:layout_width="wrap_content"
+               android:layout_height="wrap_content"
+               android:layout_gravity="end"
+               android:drawableLeft="@drawable/ic_profile_dt_points"
+               android:drawablePadding="@dimen/spacing_tiny"
+               android:padding="@dimen/spacing_normal"
+               android:singleLine="true"
+               />
 
-        </FrameLayout>
+      </FrameLayout>
 
-        <View
+      <View
             android:layout_width="0.5dp"
             android:layout_height="match_parent"
             android:layout_marginBottom="@dimen/spacing_small"
             android:layout_marginTop="@dimen/spacing_small"
-            android:background="@color/grey"/>
+            android:background="@color/grey"
+            />
 
-        <FrameLayout
+      <FrameLayout
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight="1">
+            android:layout_weight="1"
+            >
 
-            <TextView
-                android:id="@+id/rovia_bucks"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:drawablePadding="@dimen/spacing_tiny"
-                android:drawableLeft="@drawable/ic_profile_bucks"
-                android:padding="@dimen/spacing_normal"
-                android:singleLine="true"/>
+         <TextView
+               android:id="@+id/rovia_bucks"
+               android:layout_width="wrap_content"
+               android:layout_height="wrap_content"
+               android:drawablePadding="@dimen/spacing_tiny"
+               android:drawableLeft="@drawable/ic_profile_bucks"
+               android:padding="@dimen/spacing_normal"
+               android:singleLine="true"
+               />
 
-        </FrameLayout>
+      </FrameLayout>
 
 
-    </LinearLayout>
+   </LinearLayout>
 
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:background="@drawable/ic_profile_divider"
-        android:contentDescription="@string/empty"/>
+   <View
+         android:layout_width="match_parent"
+         android:layout_height="1dp"
+         android:background="@drawable/ic_profile_divider"
+         android:contentDescription="@string/empty"
+         />
 
 </LinearLayout>

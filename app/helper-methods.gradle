@@ -1,4 +1,3 @@
-
 ///////////////////////////////////////////////////////////////////////////
 // Common useful methods
 ///////////////////////////////////////////////////////////////////////////
@@ -9,13 +8,13 @@
  */
 @SuppressWarnings("GroovyUnusedDeclaration")
 def boolean containsAnyOf(String superstring, String... substrings) {
-    if (substrings.length == 0 || (superstring == null || superstring.isEmpty())) return false
-    //
-    for (int i = 0; i < substrings.length; i++) {
-        if (superstring.contains(substrings[i])) return true
-    }
-    //
-    return false
+   if (substrings.length == 0 || (superstring == null || superstring.isEmpty())) return false
+   //
+   for (int i = 0; i < substrings.length; i++) {
+      if (superstring.contains(substrings[i])) return true
+   }
+   //
+   return false
 }
 
 /**
@@ -24,13 +23,13 @@ def boolean containsAnyOf(String superstring, String... substrings) {
  */
 @SuppressWarnings("GroovyUnusedDeclaration")
 def boolean equalsAnyOf(String superstring, String... substrings) {
-    if (substrings.length == 0 || (superstring == null || superstring.isEmpty())) return false
-    //
-    for (int i = 0; i < substrings.length; i++) {
-        if (superstring.equals(substrings[i])) return true
-    }
-    //
-    return false
+   if (substrings.length == 0 || (superstring == null || superstring.isEmpty())) return false
+   //
+   for (int i = 0; i < substrings.length; i++) {
+      if (superstring.equals(substrings[i])) return true
+   }
+   //
+   return false
 }
 
 /**
@@ -40,13 +39,13 @@ def boolean equalsAnyOf(String superstring, String... substrings) {
  */
 @SuppressWarnings("GroovyUnusedDeclaration")
 def String oneOfSubstrings(String superstring, String... substrings) {
-    if (substrings.length == 0 || (superstring == null || superstring.isEmpty())) return ""
-    //
-    for (int i = 0; i < substrings.length; i++) {
-        if (superstring.contains(substrings[i])) return substrings[i]
-    }
-    //
-    return ""
+   if (substrings.length == 0 || (superstring == null || superstring.isEmpty())) return ""
+   //
+   for (int i = 0; i < substrings.length; i++) {
+      if (superstring.contains(substrings[i])) return substrings[i]
+   }
+   //
+   return ""
 }
 
 /**
@@ -57,15 +56,15 @@ def String oneOfSubstrings(String superstring, String... substrings) {
  */
 @SuppressWarnings("GroovyUnusedDeclaration")
 def writeBuildLog(boolean allowLog, String logTag, String logMessage) {
-    if (allowLog)
-        logger.lifecycle("${logTag} :: ${logMessage}")
-    //
-    return
+   if (allowLog)
+      logger.lifecycle("${logTag} :: ${logMessage}")
+   //
+   return
 }
 
 ext {
-    containsAnyOf = this.&containsAnyOf
-    equalsAnyOf = this.&equalsAnyOf
-    oneOfSubstrings = this.&oneOfSubstrings
-    writeBuildLog = this.&writeBuildLog
+   containsAnyOf = this.&containsAnyOf
+   equalsAnyOf = this.&equalsAnyOf
+   oneOfSubstrings = this.&oneOfSubstrings
+   writeBuildLog = this.&writeBuildLog
 }

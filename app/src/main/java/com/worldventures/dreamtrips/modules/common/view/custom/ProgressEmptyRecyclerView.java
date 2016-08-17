@@ -6,38 +6,38 @@ import android.view.View;
 
 public class ProgressEmptyRecyclerView extends EmptyRecyclerView {
 
-    View progressView;
+   View progressView;
 
-    public ProgressEmptyRecyclerView(Context context) {
-        super(context);
-    }
+   public ProgressEmptyRecyclerView(Context context) {
+      super(context);
+   }
 
-    public ProgressEmptyRecyclerView(Context context, AttributeSet attrs) {
-        super(context, attrs);
-    }
+   public ProgressEmptyRecyclerView(Context context, AttributeSet attrs) {
+      super(context, attrs);
+   }
 
-    public ProgressEmptyRecyclerView(Context context, AttributeSet attrs, int defStyle) {
-        super(context, attrs, defStyle);
-    }
+   public ProgressEmptyRecyclerView(Context context, AttributeSet attrs, int defStyle) {
+      super(context, attrs, defStyle);
+   }
 
-    public void showProgress() {
-        if (progressView != null) {
-            progressView.setVisibility(VISIBLE);
-            setVisibility(GONE);
-        }
-    }
+   public void showProgress() {
+      if (progressView != null) {
+         progressView.setVisibility(VISIBLE);
+         setVisibility(GONE);
+      }
+   }
 
-    public void hideProgress() {
-        if (progressView != null) {
-            progressView.setVisibility(GONE);
-            setVisibility(VISIBLE);
-        }
-    }
+   public void hideProgress() {
+      if (progressView != null) {
+         progressView.setVisibility(GONE);
+         setVisibility(VISIBLE);
+      }
+   }
 
-    public void setProgressView(View progressView) {
-        this.progressView = progressView;
-        if (progressView != null) {
-            progressView.setVisibility(GONE);
-        }
-    }
+   public void setProgressView(View progressView) {
+      this.progressView = progressView;
+      if (progressView != null) {
+         progressView.setVisibility(GONE);
+      }
+   }
 }

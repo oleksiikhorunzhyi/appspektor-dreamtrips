@@ -13,12 +13,12 @@ import com.raizlabs.android.dbflow.annotation.Migration;
 @Migration(version = 3, databaseName = MessengerDatabase.NAME)
 public class MigrationToVersion3 extends BaseTableMigration {
 
-    @Override
-    public void migrate(SQLiteDatabase database) {
-        database.execSQL("DELETE FROM " + DataAttachment$Table.TABLE_NAME);
-        database.execSQL("DELETE FROM " + DataMessage$Table.TABLE_NAME);
+   @Override
+   public void migrate(SQLiteDatabase database) {
+      database.execSQL("DELETE FROM " + DataAttachment$Table.TABLE_NAME);
+      database.execSQL("DELETE FROM " + DataMessage$Table.TABLE_NAME);
 
-        rebuildTable(database, DataConversation$Table.TABLE_NAME, new DataConversation$Adapter());
-        rebuildTable(database, DataUser$Table.TABLE_NAME, new DataUser$Adapter());
-    }
+      rebuildTable(database, DataConversation$Table.TABLE_NAME, new DataConversation$Adapter());
+      rebuildTable(database, DataUser$Table.TABLE_NAME, new DataUser$Adapter());
+   }
 }

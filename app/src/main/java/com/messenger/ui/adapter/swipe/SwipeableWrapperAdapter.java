@@ -14,78 +14,76 @@ import java.util.List;
 /*
  * Wrapper for providing swipe functionality.
  */
-public class SwipeableWrapperAdapter<A extends RecyclerView.Adapter & SwipeLayoutContainer, VH extends RecyclerView.ViewHolder>
-        extends BaseWrapperAdapter<VH>
-        implements SwipeItemMangerInterface, SwipeAdapterInterface {
+public class SwipeableWrapperAdapter<A extends RecyclerView.Adapter & SwipeLayoutContainer, VH extends RecyclerView.ViewHolder> extends BaseWrapperAdapter<VH> implements SwipeItemMangerInterface, SwipeAdapterInterface {
 
-    private SwipeItemRecyclerMangerImpl swipeButtonsManger = new SwipeItemRecyclerMangerImpl(this);
-    private SwipeLayoutContainer swipeLayoutContainer;
+   private SwipeItemRecyclerMangerImpl swipeButtonsManger = new SwipeItemRecyclerMangerImpl(this);
+   private SwipeLayoutContainer swipeLayoutContainer;
 
-    public SwipeableWrapperAdapter(A adapter) {
-        super(adapter);
-        swipeLayoutContainer = adapter;
-    }
+   public SwipeableWrapperAdapter(A adapter) {
+      super(adapter);
+      swipeLayoutContainer = adapter;
+   }
 
-    @Override
-    public void onBindViewHolder(VH holder, int position) {
-        super.onBindViewHolder(holder, position);
-        if (getSwipeLayoutResourceId(position) > 0) {
-            swipeButtonsManger.bindView(holder.itemView, position);
-        }
-    }
+   @Override
+   public void onBindViewHolder(VH holder, int position) {
+      super.onBindViewHolder(holder, position);
+      if (getSwipeLayoutResourceId(position) > 0) {
+         swipeButtonsManger.bindView(holder.itemView, position);
+      }
+   }
 
-    @Override
-    public int getSwipeLayoutResourceId(int position) {
-        return swipeLayoutContainer.getSwipeLayoutResourceId(position);
-    }
+   @Override
+   public int getSwipeLayoutResourceId(int position) {
+      return swipeLayoutContainer.getSwipeLayoutResourceId(position);
+   }
 
-    @Override
-    public void openItem(int position) {
-        swipeButtonsManger.openItem(position);
-    }
+   @Override
+   public void openItem(int position) {
+      swipeButtonsManger.openItem(position);
+   }
 
-    @Override
-    public void closeItem(int position) {
-        swipeButtonsManger.closeItem(position);
-    }
+   @Override
+   public void closeItem(int position) {
+      swipeButtonsManger.closeItem(position);
+   }
 
-    @Override
-    public void closeAllExcept(SwipeLayout layout) {
-        swipeButtonsManger.closeAllExcept(layout);
-    }
+   @Override
+   public void closeAllExcept(SwipeLayout layout) {
+      swipeButtonsManger.closeAllExcept(layout);
+   }
 
-    @Override
-    public void closeAllItems() {
-        swipeButtonsManger.closeAllItems();
-    }
+   @Override
+   public void closeAllItems() {
+      swipeButtonsManger.closeAllItems();
+   }
 
-    @Override
-    public List<Integer> getOpenItems() {
-        return swipeButtonsManger.getOpenItems();
-    }
+   @Override
+   public List<Integer> getOpenItems() {
+      return swipeButtonsManger.getOpenItems();
+   }
 
-    @Override
-    public List<SwipeLayout> getOpenLayouts() {
-        return swipeButtonsManger.getOpenLayouts();
-    }
+   @Override
+   public List<SwipeLayout> getOpenLayouts() {
+      return swipeButtonsManger.getOpenLayouts();
+   }
 
-    @Override
-    public void removeShownLayouts(SwipeLayout layout) {
-        swipeButtonsManger.removeShownLayouts(layout);
-    }
+   @Override
+   public void removeShownLayouts(SwipeLayout layout) {
+      swipeButtonsManger.removeShownLayouts(layout);
+   }
 
-    @Override
-    public boolean isOpen(int position) {
-        return swipeButtonsManger.isOpen(position);
-    }
+   @Override
+   public boolean isOpen(int position) {
+      return swipeButtonsManger.isOpen(position);
+   }
 
-    @Override
-    public Attributes.Mode getMode() {
-        return swipeButtonsManger.getMode();
-    }
+   @Override
+   public Attributes.Mode getMode() {
+      return swipeButtonsManger.getMode();
+   }
 
-    @Override
-    public void setMode(Attributes.Mode mode) {
-        swipeButtonsManger.setMode(mode);
-    }
+   @Override
+   public void setMode(Attributes.Mode mode) {
+      swipeButtonsManger.setMode(mode);
+   }
 }

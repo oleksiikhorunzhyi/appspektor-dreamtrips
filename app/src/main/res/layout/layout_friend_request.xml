@@ -1,72 +1,78 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              xmlns:app="http://schemas.android.com/apk/res-auto"
-              android:layout_width="match_parent"
-              android:layout_height="wrap_content"
-              android:orientation="vertical"
-              android:visibility="gone">
+      xmlns:app="http://schemas.android.com/apk/res-auto"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:orientation="vertical"
+      android:visibility="gone"
+      >
 
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:background="@drawable/ic_profile_divider"
-        android:contentDescription="@string/empty"/>
+   <View
+         android:layout_width="match_parent"
+         android:layout_height="1dp"
+         android:background="@drawable/ic_profile_divider"
+         android:contentDescription="@string/empty"
+         />
 
-    <TextView
-        android:id="@+id/friend_request_caption"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center"
-        android:padding="@dimen/spacing_small"
-        android:text="Karina has sent a request to you"
-        />
+   <TextView
+         android:id="@+id/friend_request_caption"
+         android:layout_width="match_parent"
+         android:layout_height="wrap_content"
+         android:gravity="center"
+         android:padding="@dimen/spacing_small"
+         android:text="Karina has sent a request to you"
+         />
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center"
-        android:orientation="horizontal">
+   <LinearLayout
+         android:layout_width="match_parent"
+         android:layout_height="wrap_content"
+         android:gravity="center"
+         android:orientation="horizontal"
+         >
 
-        <com.dd.ShadowLayout
+      <com.dd.ShadowLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="@dimen/spacing_tiny"
             app:sl_cornerRadius="2dp"
-            app:sl_shadowColor="#AA000000">
+            app:sl_shadowColor="#AA000000"
+            >
 
-            <TextView
-                android:id="@+id/accept"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:background="@drawable/bg_button_blue"
-                android:padding="@dimen/spacing_small"
-                android:text="@string/friend_accept"
-                android:textAllCaps="true"
-                android:textColor="@android:color/white"/>
-        </com.dd.ShadowLayout>
+         <TextView
+               android:id="@+id/accept"
+               android:layout_width="wrap_content"
+               android:layout_height="wrap_content"
+               android:background="@drawable/bg_button_blue"
+               android:padding="@dimen/spacing_small"
+               android:text="@string/friend_accept"
+               android:textAllCaps="true"
+               android:textColor="@android:color/white"
+               />
+      </com.dd.ShadowLayout>
 
-        <com.dd.ShadowLayout
+      <com.dd.ShadowLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="@dimen/spacing_tiny"
             app:sl_cornerRadius="2dp"
-            app:sl_shadowColor="@color/black_semi_transparent">
+            app:sl_shadowColor="@color/black_semi_transparent"
+            >
 
-            <TextView
-                android:id="@+id/reject"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:background="@drawable/bg_button_white"
-                android:padding="@dimen/spacing_small"
-                android:text="@string/friend_reject"
-                android:textAllCaps="true"
-                android:textColor="@android:color/black"
-                />
+         <TextView
+               android:id="@+id/reject"
+               android:layout_width="wrap_content"
+               android:layout_height="wrap_content"
+               android:background="@drawable/bg_button_white"
+               android:padding="@dimen/spacing_small"
+               android:text="@string/friend_reject"
+               android:textAllCaps="true"
+               android:textColor="@android:color/black"
+               />
 
-        </com.dd.ShadowLayout>
+      </com.dd.ShadowLayout>
 
 
-    </LinearLayout>
+   </LinearLayout>
 
 
 </LinearLayout>

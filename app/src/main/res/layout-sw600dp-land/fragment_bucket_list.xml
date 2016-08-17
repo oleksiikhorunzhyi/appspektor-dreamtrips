@@ -1,91 +1,101 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:gravity="center"
-                android:orientation="vertical">
+      android:layout_width="match_parent"
+      android:layout_height="match_parent"
+      android:gravity="center"
+      android:orientation="vertical"
+      >
 
-    <ScrollView
-        android:id="@+id/ll_empty_view"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:visibility="gone">
+   <ScrollView
+         android:id="@+id/ll_empty_view"
+         android:layout_width="match_parent"
+         android:layout_height="match_parent"
+         android:visibility="gone"
+         >
 
-        <RelativeLayout
+      <RelativeLayout
             android:id="@+id/ll_empty_view_container"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:gravity="center">
+            android:gravity="center"
+            >
 
-            <TextView
-                android:id="@+id/textViewEmpty"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerHorizontal="true"
-                android:layout_marginTop="60dp"
-                android:alpha="0.5"
-                android:gravity="center"
-                android:padding="22dp"
-                android:text="@string/bucket_list_create_message"
-                android:textColor="@android:color/black"
-                android:textSize="18dp"/>
+         <TextView
+               android:id="@+id/textViewEmpty"
+               android:layout_width="wrap_content"
+               android:layout_height="wrap_content"
+               android:layout_centerHorizontal="true"
+               android:layout_marginTop="60dp"
+               android:alpha="0.5"
+               android:gravity="center"
+               android:padding="22dp"
+               android:text="@string/bucket_list_create_message"
+               android:textColor="@android:color/black"
+               android:textSize="18dp"
+               />
 
-            <TextView
-                android:id="@+id/textViewEmptyAdd"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_below="@id/textViewEmpty"
-                android:layout_centerHorizontal="true"
-                android:alpha="0.8"
-                android:gravity="center"
-                android:padding="22dp"
-                android:text="@string/bucket_list_add"
-                android:textColor="@android:color/black"
-                android:textSize="18dp"/>
+         <TextView
+               android:id="@+id/textViewEmptyAdd"
+               android:layout_width="wrap_content"
+               android:layout_height="wrap_content"
+               android:layout_below="@id/textViewEmpty"
+               android:layout_centerHorizontal="true"
+               android:alpha="0.8"
+               android:gravity="center"
+               android:padding="22dp"
+               android:text="@string/bucket_list_add"
+               android:textColor="@android:color/black"
+               android:textSize="18dp"
+               />
 
-            <ImageView
-                android:id="@+id/imageViewArrow"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_below="@id/textViewEmptyAdd"
-                android:layout_centerHorizontal="true"
-                android:layout_margin="10dp"
-                android:padding="10dp"
-                android:src="@drawable/ic_bucket_arrow_big"/>
+         <ImageView
+               android:id="@+id/imageViewArrow"
+               android:layout_width="wrap_content"
+               android:layout_height="wrap_content"
+               android:layout_below="@id/textViewEmptyAdd"
+               android:layout_centerHorizontal="true"
+               android:layout_margin="10dp"
+               android:padding="10dp"
+               android:src="@drawable/ic_bucket_arrow_big"
+               />
 
-            <Button
-                android:id="@+id/buttonNew"
-                android:layout_width="@dimen/bucket_button_width"
-                android:layout_height="wrap_content"
-                android:layout_below="@+id/imageViewArrow"
-                android:layout_centerHorizontal="true"
-                android:text="@string/bucket_list_create_new"
-                android:textColor="@android:color/white"/>
+         <Button
+               android:id="@+id/buttonNew"
+               android:layout_width="@dimen/bucket_button_width"
+               android:layout_height="wrap_content"
+               android:layout_below="@+id/imageViewArrow"
+               android:layout_centerHorizontal="true"
+               android:text="@string/bucket_list_create_new"
+               android:textColor="@android:color/white"
+               />
 
-            <Button
-                android:id="@+id/buttonPopular"
-                android:layout_width="@dimen/bucket_button_width"
-                android:layout_height="wrap_content"
-                android:layout_below="@+id/buttonNew"
-                android:layout_centerHorizontal="true"
-                android:text="@string/bucket_list_choose"
-                android:textColor="@android:color/white"/>
-        </RelativeLayout>
-    </ScrollView>
+         <Button
+               android:id="@+id/buttonPopular"
+               android:layout_width="@dimen/bucket_button_width"
+               android:layout_height="wrap_content"
+               android:layout_below="@+id/buttonNew"
+               android:layout_centerHorizontal="true"
+               android:text="@string/bucket_list_choose"
+               android:textColor="@android:color/white"
+               />
+      </RelativeLayout>
+   </ScrollView>
 
-    <ProgressBar
-        android:id="@+id/progressBar"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerInParent="true"
-        android:visibility="gone"/>
+   <ProgressBar
+         android:id="@+id/progressBar"
+         android:layout_width="wrap_content"
+         android:layout_height="wrap_content"
+         android:layout_centerInParent="true"
+         android:visibility="gone"
+         />
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="horizontal">
+   <LinearLayout
+         android:layout_width="match_parent"
+         android:layout_height="match_parent"
+         android:orientation="horizontal"
+         >
 
-        <com.worldventures.dreamtrips.modules.common.view.custom.EmptyRecyclerView
+      <com.worldventures.dreamtrips.modules.common.view.custom.EmptyRecyclerView
             android:id="@+id/lv_items"
             style="@style/myRecyclerViewStyle"
             android:layout_width="350dp"
@@ -93,12 +103,14 @@
             android:fadingEdgeLength="0dp"
             android:overScrollMode="never"
             android:padding="@dimen/spacing_tiniest"
-            android:visibility="visible"/>
+            android:visibility="visible"
+            />
 
-        <FrameLayout
+      <FrameLayout
             android:id="@+id/detail_container"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:visibility="gone"/>
-    </LinearLayout>
+            android:visibility="gone"
+            />
+   </LinearLayout>
 </RelativeLayout>

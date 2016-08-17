@@ -32,109 +32,103 @@ import timber.log.Timber;
 @Singleton
 public class ChatMessagesEventDelegate {
 
-    private ConversationsDAO conversationsDAO;
-    private MessageDAO messageDAO;
-    private LoadConversationDelegate loadConversationDelegate;
-    private DecomposeMessagesHelper decomposeMessagesHelper;
-    private UsersDelegate usersDelegate;
+   private ConversationsDAO conversationsDAO;
+   private MessageDAO messageDAO;
+   private LoadConversationDelegate loadConversationDelegate;
+   private DecomposeMessagesHelper decomposeMessagesHelper;
+   private UsersDelegate usersDelegate;
 
-    private PublishSubject<Notification<DataMessage>> receivedSavedMessageStream = PublishSubject.create();
+   private PublishSubject<Notification<DataMessage>> receivedSavedMessageStream = PublishSubject.create();
 
-    @Inject
-    public ChatMessagesEventDelegate(ConversationsDAO conversationsDAO, MessageDAO messageDAO,
-                                     LoadConversationDelegate loadConversationDelegate,
-                                     DecomposeMessagesHelper decomposeMessagesHelper,
-                                     UsersDelegate usersDelegate) {
-        this.conversationsDAO = conversationsDAO;
-        this.messageDAO = messageDAO;
-        this.loadConversationDelegate = loadConversationDelegate;
-        this.decomposeMessagesHelper = decomposeMessagesHelper;
-        this.usersDelegate = usersDelegate;
-    }
+   @Inject
+   public ChatMessagesEventDelegate(ConversationsDAO conversationsDAO, MessageDAO messageDAO, LoadConversationDelegate loadConversationDelegate, DecomposeMessagesHelper decomposeMessagesHelper, UsersDelegate usersDelegate) {
+      this.conversationsDAO = conversationsDAO;
+      this.messageDAO = messageDAO;
+      this.loadConversationDelegate = loadConversationDelegate;
+      this.decomposeMessagesHelper = decomposeMessagesHelper;
+      this.usersDelegate = usersDelegate;
+   }
 
-    public void onReceivedMessage(Message message) {
-        conversationsDAO
-                .getConversation(message.getConversationId())
-                .take(1)
-                .subscribe(conversation -> trySaveReceivedMessage(message, conversation));
-    }
+   public void onReceivedMessage(Message message) {
+      conversationsDAO.getConversation(message.getConversationId())
+            .take(1)
+            .subscribe(conversation -> trySaveReceivedMessage(message, conversation));
+   }
 
-    public void onPreSendMessage(Message message) {
-        conversationsDAO.getConversation(message.getConversationId()).take(1)
-                // to be on par with iOS app do not set status
-                // SENDING to messages being resent to from abandoned conversations
-                // so that "Not Delivered" would not disappear
-                .map(conversation -> ConversationHelper.isAbandoned(conversation)
-                        ? MessageStatus.ERROR : MessageStatus.SENDING)
-                .subscribe(status -> saveMessage(message, status));
-    }
+   public void onPreSendMessage(Message message) {
+      conversationsDAO.getConversation(message.getConversationId())
+            .take(1)
+            // to be on par with iOS app do not set status
+            // SENDING to messages being resent to from abandoned conversations
+            // so that "Not Delivered" would not disappear
+            .map(conversation -> ConversationHelper.isAbandoned(conversation) ? MessageStatus.ERROR : MessageStatus.SENDING)
+            .subscribe(status -> saveMessage(message, status));
+   }
 
-    public void onSendMessage(Message message) {
-        updateMessage(message, System.currentTimeMillis());
-    }
+   public void onSendMessage(Message message) {
+      updateMessage(message, System.currentTimeMillis());
+   }
 
-    public void onErrorMessage(Message message) {
-        updateMessage(message, ChatDateUtils.getErrorMessageDate());
-    }
+   public void onErrorMessage(Message message) {
+      updateMessage(message, ChatDateUtils.getErrorMessageDate());
+   }
 
-    public Observable<List<String>> onMessagesDeleted(List<DeletedMessage> deletedMessages) {
-        ConnectableObservable<List<String>> observable = Observable.from(deletedMessages)
-                .map(DeletedMessage::messageId)
-                .toList()
-                .doOnNext(messageDAO::deleteMessageByIds)
-                .subscribeOn(Schedulers.io())
-                .publish();
-        observable.subscribe(deletedMessageIds -> {},
-                e -> Timber.e(e, "Something went wrong while messages were deleting"));
-        observable.connect();
-        return observable;
-    }
+   public Observable<List<String>> onMessagesDeleted(List<DeletedMessage> deletedMessages) {
+      ConnectableObservable<List<String>> observable = Observable.from(deletedMessages)
+            .map(DeletedMessage::messageId)
+            .toList()
+            .doOnNext(messageDAO::deleteMessageByIds)
+            .subscribeOn(Schedulers.io())
+            .publish();
+      observable.subscribe(deletedMessageIds -> {}, e -> Timber.e(e, "Something went wrong while messages were deleting"));
+      observable.connect();
+      return observable;
+   }
 
-    private void updateMessage(Message message, long time) {
-        messageDAO.updateStatus(message.getId(), message.getStatus(), time);
-        conversationsDAO.updateDate(message.getConversationId(), time);
-    }
+   private void updateMessage(Message message, long time) {
+      messageDAO.updateStatus(message.getId(), message.getStatus(), time);
+      conversationsDAO.updateDate(message.getConversationId(), time);
+   }
 
-    private void trySaveReceivedMessage(Message message, DataConversation conversationFromBD) {
-        Observable.just(conversationFromBD)
-                .compose(new NonNullFilter<>())
-                .switchIfEmpty(loadConversationDelegate
-                        .loadConversationFromNetworkAndRefreshFromDb(message.getConversationId()))
-                .flatMap(conversation -> usersDelegate.loadMissingUsers(Queryable.from(message.getToId(),
-                        message.getFromId()).notNulls().toList()))
-                .map(loadedMissingUsers -> message)
-                .subscribe(this::saveReceivedMessage);
-    }
+   private void trySaveReceivedMessage(Message message, DataConversation conversationFromBD) {
+      Observable.just(conversationFromBD)
+            .compose(new NonNullFilter<>())
+            .switchIfEmpty(loadConversationDelegate.loadConversationFromNetworkAndRefreshFromDb(message.getConversationId()))
+            .flatMap(conversation -> usersDelegate.loadMissingUsers(Queryable.from(message.getToId(), message.getFromId())
+                  .notNulls()
+                  .toList()))
+            .map(loadedMissingUsers -> message)
+            .subscribe(this::saveReceivedMessage);
+   }
 
-    private void saveReceivedMessage(Message message) {
-        saveMessage(message, MessageStatus.SENT);
-        if (MessageHelper.isUserMessage(message)) {
-            conversationsDAO.incrementUnreadField(message.getConversationId());
-        }
-        messageDAO.getMessage(message.getId()).take(1).subscribe(dataMessage -> {
-            receivedSavedMessageStream.onNext(Notification.createOnNext(dataMessage));
-        }, e -> {
-            Timber.e("Could not get previously processed and saved message");
-            receivedSavedMessageStream.onNext(Notification.createOnError(e));
-        });
-    }
+   private void saveReceivedMessage(Message message) {
+      saveMessage(message, MessageStatus.SENT);
+      if (MessageHelper.isUserMessage(message)) {
+         conversationsDAO.incrementUnreadField(message.getConversationId());
+      }
+      messageDAO.getMessage(message.getId()).take(1).subscribe(dataMessage -> {
+         receivedSavedMessageStream.onNext(Notification.createOnNext(dataMessage));
+      }, e -> {
+         Timber.e("Could not get previously processed and saved message");
+         receivedSavedMessageStream.onNext(Notification.createOnError(e));
+      });
+   }
 
-    private void saveMessage(Message message, @MessageStatus.Status int status) {
-        long time = System.currentTimeMillis();
-        message.setDate(time);
-        message.setStatus(status);
+   private void saveMessage(Message message, @MessageStatus.Status int status) {
+      long time = System.currentTimeMillis();
+      message.setDate(time);
+      message.setStatus(status);
 
-        DecomposeMessagesHelper.Result result =
-                decomposeMessagesHelper.decomposeMessages(Collections.singletonList((message)));
+      DecomposeMessagesHelper.Result result = decomposeMessagesHelper.decomposeMessages(Collections.singletonList((message)));
 
-        result.messages.get(0).setSyncTime(time);
+      result.messages.get(0).setSyncTime(time);
 
-        decomposeMessagesHelper.saveDecomposeMessage(result);
-        conversationsDAO.updateDate(message.getConversationId(), time);
-    }
+      decomposeMessagesHelper.saveDecomposeMessage(result);
+      conversationsDAO.updateDate(message.getConversationId(), time);
+   }
 
-    public PublishSubject<Notification<DataMessage>> getReceivedSavedMessageStream() {
-        return receivedSavedMessageStream;
-    }
+   public PublishSubject<Notification<DataMessage>> getReceivedSavedMessageStream() {
+      return receivedSavedMessageStream;
+   }
 
 }

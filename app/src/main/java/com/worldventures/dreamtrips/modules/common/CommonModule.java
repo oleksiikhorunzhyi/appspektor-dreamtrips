@@ -45,6 +45,7 @@ import com.worldventures.dreamtrips.modules.dtl_flow.di.DtlActivityModule;
 import com.worldventures.dreamtrips.modules.feed.FeedModule;
 import com.worldventures.dreamtrips.modules.infopages.InfoModule;
 import com.worldventures.dreamtrips.modules.navdrawer.NavigationDrawerPresenter;
+import com.worldventures.dreamtrips.modules.player.PodcastPlayerActivity;
 import com.worldventures.dreamtrips.modules.profile.ProfileModule;
 import com.worldventures.dreamtrips.modules.reptools.ReptoolsModule;
 import com.worldventures.dreamtrips.modules.settings.SettingsModule;
@@ -64,104 +65,74 @@ import dagger.Module;
 import dagger.Provides;
 
 @Module(
-        injects = {
-                ActivityPresenter.class,
-                LaunchActivityPresenter.class,
-                MainActivityPresenter.class,
-                Presenter.class,
-                SharePresenter.class,
-                TermsConditionsDialogPresenter.class,
-                TermsConditionsDialog.class,
+      injects = {ActivityPresenter.class, LaunchActivityPresenter.class, MainActivityPresenter.class, Presenter.class, SharePresenter.class, TermsConditionsDialogPresenter.class, TermsConditionsDialog.class,
 
-                LaunchActivity.class,
-                MainActivity.class,
-                PlayerActivity.class,
-                ShareFragment.class,
-                Player360Activity.class,
-                FilterableArrayListAdapter.class,
-                DraggableArrayListAdapter.class,
-                DownloadFileListener.class,
-                PresentationVideosPresenter.class,
-                MessengerActivity.class,
-                DtlActivity.class,
-                ComponentActivity.class,
-                ComponentPresenter.class,
-                CopyFileCommand.class,
-                ProgressDialogFragment.class,
-                MessageDialogFragment.class,
-                PhotoPickerLayout.class,
+            LaunchActivity.class, MainActivity.class, PlayerActivity.class, ShareFragment.class, Player360Activity.class, FilterableArrayListAdapter.class, DraggableArrayListAdapter.class, DownloadFileListener.class, PresentationVideosPresenter.class, MessengerActivity.class, PodcastPlayerActivity.class, DtlActivity.class, ComponentActivity.class, ComponentPresenter.class, CopyFileCommand.class, ProgressDialogFragment.class, MessageDialogFragment.class, PhotoPickerLayout.class,
 
-                DialogFragmentNavigator.NavigationDialogFragment.class,
-                BaseImageFragment.class,
-                BaseImagePresenter.class,
-                BaseDialogFragmentWithPresenter.class,
-                //
-                ToolbarPresenter.class,
-                //
-                MediaPickerFragment.class,
-                MediaPickerPresenter.class,
-        },
-        complete = false,
-        library = true
-)
+            DialogFragmentNavigator.NavigationDialogFragment.class, BaseImageFragment.class, BaseImagePresenter.class, BaseDialogFragmentWithPresenter.class,
+            //
+            ToolbarPresenter.class,
+            //
+            MediaPickerFragment.class, MediaPickerPresenter.class,},
+      complete = false,
+      library = true)
 public class CommonModule {
 
-    public static final String LOGOUT = "Logout";
+   public static final String LOGOUT = "Logout";
 
-    @Provides
-    RootComponentsProvider provideRootComponentsProvider(Set<ComponentDescription> descriptions, ComponentsConfig config) {
-        return new RootComponentsProvider(descriptions, config);
-    }
+   @Provides
+   RootComponentsProvider provideRootComponentsProvider(Set<ComponentDescription> descriptions, ComponentsConfig config) {
+      return new RootComponentsProvider(descriptions, config);
+   }
 
-    @Provides(type = Provides.Type.SET)
-    ComponentDescription provideLogoutComponent() {
-        return new ComponentDescription(LOGOUT, 0,
-                R.string.logout_component, R.drawable.ic_logout, null);
-    }
+   @Provides(type = Provides.Type.SET)
+   ComponentDescription provideLogoutComponent() {
+      return new ComponentDescription(LOGOUT, 0, R.string.logout_component, R.drawable.ic_logout, null);
+   }
 
-    @Provides
-    ComponentsConfig provideComponentsConfig(FeatureManager featureManager) {
-        List<String> activeComponents = new ArrayList<>();
+   @Provides
+   ComponentsConfig provideComponentsConfig(FeatureManager featureManager) {
+      List<String> activeComponents = new ArrayList<>();
 
-        featureManager.with(Feature.SOCIAL, () -> activeComponents.add(FeedModule.FEED));
+      featureManager.with(Feature.SOCIAL, () -> activeComponents.add(FeedModule.FEED));
 
-        featureManager.with(Feature.TRIPS, () -> activeComponents.add(TripsModule.TRIPS));
+      featureManager.with(Feature.TRIPS, () -> activeComponents.add(TripsModule.TRIPS));
 
-        featureManager.with(Feature.SOCIAL, () -> activeComponents.add(FeedModule.NOTIFICATIONS));
-        featureManager.with(Feature.SOCIAL, () -> activeComponents.add(MessengerActivityModule.MESSENGER));
-        featureManager.with(Feature.DTL, ()-> activeComponents.add(DtlActivityModule.DTL));
-        featureManager.with(Feature.BOOK_TRAVEL, () -> activeComponents.add(TripsModule.OTA));
-        activeComponents.add(TripsImagesModule.TRIP_IMAGES);
-        featureManager.with(Feature.MEMBERSHIP, () -> activeComponents.add(VideoModule.MEMBERSHIP));
-        activeComponents.add(BucketListModule.BUCKETLIST);
-        activeComponents.add(ProfileModule.MY_PROFILE);
+      featureManager.with(Feature.SOCIAL, () -> activeComponents.add(FeedModule.NOTIFICATIONS));
+      featureManager.with(Feature.SOCIAL, () -> activeComponents.add(MessengerActivityModule.MESSENGER));
+      featureManager.with(Feature.DTL, () -> activeComponents.add(DtlActivityModule.DTL));
+      featureManager.with(Feature.BOOK_TRAVEL, () -> activeComponents.add(TripsModule.OTA));
+      activeComponents.add(TripsImagesModule.TRIP_IMAGES);
+      featureManager.with(Feature.MEMBERSHIP, () -> activeComponents.add(VideoModule.MEMBERSHIP));
+      activeComponents.add(BucketListModule.BUCKETLIST);
+      activeComponents.add(ProfileModule.MY_PROFILE);
 
-        featureManager.with(Feature.REP_TOOLS, () -> activeComponents.add(ReptoolsModule.REP_TOOLS));
+      featureManager.with(Feature.REP_TOOLS, () -> activeComponents.add(ReptoolsModule.REP_TOOLS));
 
-        activeComponents.add(InfoModule.SEND_FEEDBACK);
+      activeComponents.add(InfoModule.SEND_FEEDBACK);
 
-        activeComponents.add(SettingsModule.SETTINGS);
+      activeComponents.add(SettingsModule.SETTINGS);
 
-        activeComponents.add(InfoModule.HELP);
-        activeComponents.add(InfoModule.TERMS);
+      activeComponents.add(InfoModule.HELP);
+      activeComponents.add(InfoModule.TERMS);
 
-        activeComponents.add(TripsModule.MAP_TRIPS);
+      activeComponents.add(TripsModule.MAP_TRIPS);
 
-        activeComponents.add(LOGOUT);
+      activeComponents.add(LOGOUT);
 
-        return new ComponentsConfig(activeComponents);
-    }
+      return new ComponentsConfig(activeComponents);
+   }
 
-    @Provides
-    @Singleton
-    NavigationDrawerPresenter provideNavDrawerPresenter(@ForApplication Injector injector) {
-        return new NavigationDrawerPresenter(injector);
-    }
+   @Provides
+   @Singleton
+   NavigationDrawerPresenter provideNavDrawerPresenter(@ForApplication Injector injector) {
+      return new NavigationDrawerPresenter(injector);
+   }
 
-    @Provides
-    @Singleton
-    PhotoPickerLayoutDelegate providePhotoPickerLayoutDelegate(BackStackDelegate backStackDelegate) {
-        return new PhotoPickerLayoutDelegate(backStackDelegate);
-    }
+   @Provides
+   @Singleton
+   PhotoPickerLayoutDelegate providePhotoPickerLayoutDelegate(BackStackDelegate backStackDelegate) {
+      return new PhotoPickerLayoutDelegate(backStackDelegate);
+   }
 
 }

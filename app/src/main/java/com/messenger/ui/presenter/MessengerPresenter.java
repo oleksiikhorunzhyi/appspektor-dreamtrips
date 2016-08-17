@@ -6,11 +6,10 @@ import android.view.MenuItem;
 
 import com.hannesdorfmann.mosby.mvp.MvpView;
 
-public interface MessengerPresenter<V extends MvpView, S extends Parcelable>
-        extends ViewStateMvpPresenter<V, S> {
-    void onDisconnectedOverlayClicked();
+public interface MessengerPresenter<V extends MvpView, S extends Parcelable> extends ViewStateMvpPresenter<V, S> {
+   void onDisconnectedOverlayClicked();
 
-    int getToolbarMenuRes();
-    void onToolbarMenuPrepared(Menu menu);
-    boolean onToolbarMenuItemClick(MenuItem item);
+   int getToolbarMenuRes();
+   void onToolbarMenuPrepared(Menu menu);
+   boolean onToolbarMenuItemClick(MenuItem item);
 }

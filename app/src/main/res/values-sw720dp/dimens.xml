@@ -1,26 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <dimen name="photo_thumb_size">300dp</dimen>
+   <dimen name="photo_thumb_size">300dp</dimen>
 
-    <dimen name="feed_item_height">300dp</dimen>
-    <dimen name="feed_spacing">100dp</dimen>
-    <dimen name="tablet_details_spacing">100dp</dimen>
+   <dimen name="feed_item_height">300dp</dimen>
+   <dimen name="tablet_details_spacing">100dp</dimen>
 
-    <dimen name="map_trip_info_size">550dp</dimen>
-    <dimen name="map_trip_image_size">300dp</dimen>
+   <dimen name="map_trip_info_size">550dp</dimen>
+   <dimen name="map_trip_image_size">300dp</dimen>
 
-    ///////Post sizes
-    <dimen name="post_spacing_horizontal">64dp</dimen>
-    <dimen name="post_spacing_vertical_top">128dp</dimen>
-    <dimen name="post_spacing_vertical_bottom">12dp</dimen>
+   ///////Post sizes
+   <dimen name="post_spacing_horizontal">64dp</dimen>
+   <dimen name="post_spacing_vertical_top">128dp</dimen>
+   <dimen name="post_spacing_vertical_bottom">12dp</dimen>
 
-    <dimen name="template_height">380dp</dimen>
+   <dimen name="template_height">380dp</dimen>
 
-    <dimen name="photo_picker_size">166dp</dimen>
-    <dimen name="picker_panel_height">256dp</dimen>
-    <dimen name="picker_photo_spacing">2dp</dimen>
+   <dimen name="photo_picker_size">166dp</dimen>
+   <dimen name="picker_panel_height">256dp</dimen>
+   <dimen name="picker_photo_spacing">2dp</dimen>
 
-    <dimen name="suggested_size">120dp</dimen>
-    <dimen name="messenger_master_width">400dp</dimen>
+   <dimen name="suggested_size">120dp</dimen>
+   <dimen name="messenger_master_width">400dp</dimen>
 </resources>

@@ -15,20 +15,19 @@ import javax.inject.Inject;
 
 public class FrescoInitializer implements AppInitializer {
 
-    @Inject
-    protected Context context;
+   @Inject protected Context context;
 
-    @Override
-    public void initialize(Injector injector) {
-        injector.inject(this);
+   @Override
+   public void initialize(Injector injector) {
+      injector.inject(this);
 
-        SimpleProgressiveJpegConfig jpegConfig = new SimpleProgressiveJpegConfig();
-        ImagePipelineConfig config = OkHttpImagePipelineConfigFactory.newBuilder(context, new OkHttpClient())
-                .setProgressiveJpegConfig(jpegConfig)
-                .setBitmapsConfig(Bitmap.Config.RGB_565)
-                .setResizeAndRotateEnabledForNetwork(true)
-                .build();
+      SimpleProgressiveJpegConfig jpegConfig = new SimpleProgressiveJpegConfig();
+      ImagePipelineConfig config = OkHttpImagePipelineConfigFactory.newBuilder(context, new OkHttpClient())
+            .setProgressiveJpegConfig(jpegConfig)
+            .setBitmapsConfig(Bitmap.Config.RGB_565)
+            .setResizeAndRotateEnabledForNetwork(true)
+            .build();
 
-        Fresco.initialize(context, config);
-    }
+      Fresco.initialize(context, config);
+   }
 }

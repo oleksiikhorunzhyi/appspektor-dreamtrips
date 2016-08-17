@@ -5,40 +5,40 @@ import android.os.Parcelable;
 
 public class PreviewBundle implements Parcelable {
 
-    private String url;
+   private String url;
 
-    public PreviewBundle(String url) {
-        this.url = url;
-    }
+   public PreviewBundle(String url) {
+      this.url = url;
+   }
 
-    protected PreviewBundle(Parcel in) {
-        url = in.readString();
-    }
+   protected PreviewBundle(Parcel in) {
+      url = in.readString();
+   }
 
-    public static final Creator<PreviewBundle> CREATOR = new Creator<PreviewBundle>() {
-        @Override
-        public PreviewBundle createFromParcel(Parcel in) {
-            return new PreviewBundle(in);
-        }
+   public static final Creator<PreviewBundle> CREATOR = new Creator<PreviewBundle>() {
+      @Override
+      public PreviewBundle createFromParcel(Parcel in) {
+         return new PreviewBundle(in);
+      }
 
-        @Override
-        public PreviewBundle[] newArray(int size) {
-            return new PreviewBundle[size];
-        }
-    };
+      @Override
+      public PreviewBundle[] newArray(int size) {
+         return new PreviewBundle[size];
+      }
+   };
 
-    public String getUrl() {
-        return url;
-    }
+   public String getUrl() {
+      return url;
+   }
 
-    @Override
-    public void writeToParcel(Parcel parcel, int i) {
+   @Override
+   public void writeToParcel(Parcel parcel, int i) {
 
-        parcel.writeString(url);
-    }
+      parcel.writeString(url);
+   }
 
-    @Override
-    public int describeContents() {
-        return 0;
-    }
+   @Override
+   public int describeContents() {
+      return 0;
+   }
 }

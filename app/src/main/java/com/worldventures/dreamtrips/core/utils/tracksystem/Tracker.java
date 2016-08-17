@@ -13,48 +13,48 @@ import timber.log.Timber;
 
 public abstract class Tracker {
 
-    @State
-    protected HashMap headerData;
+   @State protected HashMap headerData;
 
-    public abstract String getKey();
+   public abstract String getKey();
 
-    public abstract void onCreate(@Nullable Activity activity);
+   public abstract void onCreate(@Nullable Activity activity);
 
-    public void onStart(@Nullable Activity activity) {
-    }
+   public void onStart(@Nullable Activity activity) {
+   }
 
-    public void onStop(@Nullable Activity activity) {
-    }
+   public void onStop(@Nullable Activity activity) {
+   }
 
-    public void onResume(@Nullable Activity activity) {
-    }
+   public void onResume(@Nullable Activity activity) {
+   }
 
-    public void onPause(@Nullable Activity activity) {
-    }
+   public void onPause(@Nullable Activity activity) {
+   }
 
-    public void setHeaderData(HashMap data) {
-        headerData = data;
-    }
+   public void setHeaderData(HashMap data) {
+      headerData = data;
+   }
 
-    public void onSaveInstanceState(Bundle outState) {
-        Icepick.saveInstanceState(this, outState);
-    }
+   public void onSaveInstanceState(Bundle outState) {
+      Icepick.saveInstanceState(this, outState);
+   }
 
-    public void onRestoreInstanceState(Bundle savedInstanceState) {
-        Icepick.restoreInstanceState(this, savedInstanceState);
-    }
+   public void onRestoreInstanceState(Bundle savedInstanceState) {
+      Icepick.restoreInstanceState(this, savedInstanceState);
+   }
 
-    public abstract void trackEvent(String category, String action, Map<String, Object> data);
+   public abstract void trackEvent(String category, String action, Map<String, Object> data);
 
-    /**
-     * Performs null check and warns log if activity is null.
-     * @param activity instance to check
-     * @return true if activity is null
-     */
-    protected boolean checkNullAndWarn(@Nullable Activity activity) {
-        if (activity == null) {
-            Timber.e(this.getClass().getName() + " lifecycle method: activity got weak");
-        }
-        return activity == null;
-    }
+   /**
+    * Performs null check and warns log if activity is null.
+    *
+    * @param activity instance to check
+    * @return true if activity is null
+    */
+   protected boolean checkNullAndWarn(@Nullable Activity activity) {
+      if (activity == null) {
+         Timber.e(this.getClass().getName() + " lifecycle method: activity got weak");
+      }
+      return activity == null;
+   }
 }

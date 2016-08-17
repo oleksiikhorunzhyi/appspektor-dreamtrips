@@ -12,17 +12,17 @@ import flow.path.Path;
 
 public abstract class DtlPath extends MasterDetailPath implements AttributedPath, MasterToolbarPath {
 
-    @Override
-    public PathAttrs getAttrs() {
-        return PathAttrs.WITHOUT_DRAWER;
-    }
+   @Override
+   public PathAttrs getAttrs() {
+      return PathAttrs.WITHOUT_DRAWER;
+   }
 
-    @Override
-    public void onPreDispatch(AppCompatActivity activity) {
-    }
+   @Override
+   public void onPreDispatch(AppCompatActivity activity) {
+   }
 
-    @Override
-    public Path getMasterToolbarPath() {
-        return DtlScreenStubPath.INSTANCE;
-    }
+   @Override
+   public Path getMasterToolbarPath() {
+      return DtlScreenStubPath.INSTANCE;
+   }
 }

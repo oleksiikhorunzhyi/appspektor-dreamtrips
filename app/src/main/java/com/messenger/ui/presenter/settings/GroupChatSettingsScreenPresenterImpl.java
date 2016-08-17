@@ -12,7 +12,6 @@ import com.messenger.delegate.command.avatar.RemoveChatAvatarCommand;
 import com.messenger.delegate.command.avatar.SendChatAvatarCommand;
 import com.messenger.delegate.command.avatar.SetChatAvatarCommand;
 import com.messenger.messengerservers.chat.GroupChat;
-import com.messenger.synchmechanism.MessengerConnector;
 import com.messenger.synchmechanism.SyncStatus;
 import com.messenger.ui.helper.ConversationHelper;
 import com.messenger.ui.view.settings.GroupChatSettingsScreen;
@@ -36,169 +35,157 @@ import timber.log.Timber;
 
 public class GroupChatSettingsScreenPresenterImpl extends BaseGroupChatSettingsScreenPresenterImpl {
 
-    @Inject CropImageDelegate cropImageDelegate;
-    @Inject PermissionDispatcher permissionDispatcher;
-    @Inject ConversationAvatarInteractor conversationAvatarInteractor;
+   @Inject CropImageDelegate cropImageDelegate;
+   @Inject PermissionDispatcher permissionDispatcher;
+   @Inject ConversationAvatarInteractor conversationAvatarInteractor;
 
-    public GroupChatSettingsScreenPresenterImpl(Context context, Injector injector, String conversationId) {
-        super(context, injector, conversationId);
-    }
+   public GroupChatSettingsScreenPresenterImpl(Context context, Injector injector, String conversationId) {
+      super(context, injector, conversationId);
+   }
 
-    @Override
-    public void onAttachedToWindow() {
-        super.onAttachedToWindow();
-        getView().getAvatarImagePathsStream().subscribe(this::tryCropImage);
+   @Override
+   public void onAttachedToWindow() {
+      super.onAttachedToWindow();
+      getView().getAvatarImagePathsStream().subscribe(this::tryCropImage);
 
-        cropImageDelegate.getCroppedImagesStream()
-                .compose(bindView())
-                .subscribe(notification -> {
-                    if (notification.isOnNext()) {
-                        onAvatarCropped(conversationId, notification.getValue());
-                    } else if (notification.isOnError()) {
-                        Timber.w(notification.getThrowable(), "Could not crop image");
-                        getView().showErrorDialog(R.string.chat_settings_error_changing_avatar_subject);
-                    }
-                });
+      cropImageDelegate.getCroppedImagesStream().compose(bindView()).subscribe(notification -> {
+         if (notification.isOnNext()) {
+            onAvatarCropped(conversationId, notification.getValue());
+         } else if (notification.isOnError()) {
+            Timber.w(notification.getThrowable(), "Could not crop image");
+            getView().showErrorDialog(R.string.chat_settings_error_changing_avatar_subject);
+         }
+      });
 
-        conversationAvatarInteractor.getSendChatAvatarCommandPipe()
-                .observe()
-                .compose(bindView())
-                .filter(this::filterActionState)
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new ActionStateSubscriber<SendChatAvatarCommand>()
-                        .onFail((command, throwable) -> onChangeAvatarFailed(throwable))
-                        .onSuccess(command -> onChangeAvatarSuccess())
-                );
-    }
+      conversationAvatarInteractor.getSendChatAvatarCommandPipe()
+            .observe()
+            .compose(bindView())
+            .filter(this::filterActionState)
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe(new ActionStateSubscriber<SendChatAvatarCommand>().onFail((command, throwable) -> onChangeAvatarFailed(throwable))
+                  .onSuccess(command -> onChangeAvatarSuccess()));
+   }
 
-    private void tryCropImage(String filePath) {
-        connectionStatusStream
-                .subscribe(syncStatus -> {
-                    if (syncStatus == SyncStatus.DISCONNECTED || syncStatus == SyncStatus.ERROR) {
-                        getView().showErrorDialog(R.string.chat_settings_error_changing_avatar_subject);
-                    } else cropImageDelegate.cropImage(filePath);
-                });
-    }
+   private void tryCropImage(String filePath) {
+      connectionStatusStream.subscribe(syncStatus -> {
+         if (syncStatus == SyncStatus.DISCONNECTED || syncStatus == SyncStatus.ERROR) {
+            getView().showErrorDialog(R.string.chat_settings_error_changing_avatar_subject);
+         } else cropImageDelegate.cropImage(filePath);
+      });
+   }
 
-    @Override
-    public void onToolbarMenuPrepared(Menu menu) {
-        conversationsDAO.getConversation(conversationId)
-                .compose(bindViewIoToMainComposer())
-                .take(1)
-                .subscribe(conversation -> {
-                    if (!ConversationHelper.isOwner(conversation, currentUser)) {
-                        menu.findItem(R.id.action_overflow).setVisible(false);
-                        return;
-                    }
+   @Override
+   public void onToolbarMenuPrepared(Menu menu) {
+      conversationsDAO.getConversation(conversationId)
+            .compose(bindViewIoToMainComposer())
+            .take(1)
+            .subscribe(conversation -> {
+               if (!ConversationHelper.isOwner(conversation, currentUser)) {
+                  menu.findItem(R.id.action_overflow).setVisible(false);
+                  return;
+               }
 
-                    if (TextUtils.isEmpty(conversation.getAvatar())) {
-                        menu.findItem(R.id.action_remove_chat_avatar).setVisible(false);
-                    }
-                });
-    }
+               if (TextUtils.isEmpty(conversation.getAvatar())) {
+                  menu.findItem(R.id.action_remove_chat_avatar).setVisible(false);
+               }
+            });
+   }
 
-    @Override
-    public boolean onToolbarMenuItemClick(MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.action_change_chat_avatar:
-                openPicker();
-                return true;
-            case R.id.action_remove_chat_avatar:
-                getView().hideAvatarPhotoPicker();
-                onRemoveAvatar();
-                return true;
-            case R.id.action_edit_chat_name:
-                onEditChatName();
-                return true;
+   @Override
+   public boolean onToolbarMenuItemClick(MenuItem item) {
+      switch (item.getItemId()) {
+         case R.id.action_change_chat_avatar:
+            openPicker();
+            return true;
+         case R.id.action_remove_chat_avatar:
+            getView().hideAvatarPhotoPicker();
+            onRemoveAvatar();
+            return true;
+         case R.id.action_edit_chat_name:
+            onEditChatName();
+            return true;
 
-        }
-        return super.onToolbarMenuItemClick(item);
-    }
+      }
+      return super.onToolbarMenuItemClick(item);
+   }
 
-    @Override
-    public void applyViewState() {
-        super.applyViewState();
-        ChatSettingsViewState viewState = getViewState();
-        ChatSettingsViewState.UploadingState uploadingState = getViewState().getUploadAvatar();
-        if (uploadingState == null) return;
-        if (uploadingState == ChatSettingsViewState.UploadingState.UPLOADING) {
-            getView().showChangingAvatarProgressBar();
-        } else {
-            getView().hideChangingAvatarProgressBar();
-            viewState.setUploadAvatar(null);
-        }
-    }
+   @Override
+   public void applyViewState() {
+      super.applyViewState();
+      ChatSettingsViewState viewState = getViewState();
+      ChatSettingsViewState.UploadingState uploadingState = getViewState().getUploadAvatar();
+      if (uploadingState == null) return;
+      if (uploadingState == ChatSettingsViewState.UploadingState.UPLOADING) {
+         getView().showChangingAvatarProgressBar();
+      } else {
+         getView().hideChangingAvatarProgressBar();
+         viewState.setUploadAvatar(null);
+      }
+   }
 
-    protected void onRemoveAvatar() {
-        //noinspection ConstantConditions
-        getView().showChangingAvatarProgressBar();
-        conversationAvatarInteractor
-                .getRemoveChatAvatarCommandPipe()
-                .send(new RemoveChatAvatarCommand(conversationId));
-    }
+   protected void onRemoveAvatar() {
+      //noinspection ConstantConditions
+      getView().showChangingAvatarProgressBar();
+      conversationAvatarInteractor.getRemoveChatAvatarCommandPipe().send(new RemoveChatAvatarCommand(conversationId));
+   }
 
-    private void onEditChatName() {
-        conversationObservable
-                .map(conversation -> conversation.getSubject())
-                .subscribe(subject -> getView().showSubjectDialog(subject));
-    }
+   private void onEditChatName() {
+      conversationObservable.map(conversation -> conversation.getSubject())
+            .subscribe(subject -> getView().showSubjectDialog(subject));
+   }
 
-    public void openPicker() {
-        permissionDispatcher.requestPermission(PermissionConstants.STORE_PERMISSIONS, false)
-                .compose(bindView())
-                .subscribe(new PermissionSubscriber()
-                        .onPermissionGrantedAction(() -> getView().showAvatarPhotoPicker())
-                );
-    }
+   public void openPicker() {
+      permissionDispatcher.requestPermission(PermissionConstants.STORE_PERMISSIONS, false)
+            .compose(bindView())
+            .subscribe(new PermissionSubscriber().onPermissionGrantedAction(() -> getView().showAvatarPhotoPicker()));
+   }
 
-    @Override
-    public void applyNewChatSubject(String subject) {
-        final String newSubject = subject == null ? null : subject.trim();
+   @Override
+   public void applyNewChatSubject(String subject) {
+      final String newSubject = subject == null ? null : subject.trim();
 
-        Observable<GroupChat> multiUserChatObservable = facade.getChatManager()
-                .createGroupChatObservable(conversationId, facade.getUsername())
-                .flatMap(multiUserChat -> multiUserChat.setSubject(newSubject));
+      Observable<GroupChat> multiUserChatObservable = facade.getChatManager()
+            .createGroupChatObservable(conversationId, facade.getUsername())
+            .flatMap(multiUserChat -> multiUserChat.setSubject(newSubject));
 
-        Observable.zip(multiUserChatObservable, conversationObservable.first(),
-                (multiUserChat, conversation) -> conversation)
-                .compose(new IoToMainComposer<>())
-                .subscribe(conversation -> {
-                    conversation.setSubject(newSubject);
-                    conversationsDAO.save(conversation);
-                }, throwable -> {
-                    getView().showErrorDialog(R.string.chat_settings_error_change_subject);
-                });
-    }
+      Observable.zip(multiUserChatObservable, conversationObservable.first(), (multiUserChat, conversation) -> conversation)
+            .compose(new IoToMainComposer<>())
+            .subscribe(conversation -> {
+               conversation.setSubject(newSubject);
+               conversationsDAO.save(conversation);
+            }, throwable -> {
+               getView().showErrorDialog(R.string.chat_settings_error_change_subject);
+            });
+   }
 
-    private boolean filterActionState(ActionState<SendChatAvatarCommand> commandActionState) {
-        return TextUtils.equals(commandActionState.action.getConversationId(), conversationId);
-    }
+   private boolean filterActionState(ActionState<SendChatAvatarCommand> commandActionState) {
+      return TextUtils.equals(commandActionState.action.getConversationId(), conversationId);
+   }
 
-    protected void onAvatarCropped(String conversationId, File croppedAvatarFile) {
-        String path = Uri.fromFile(croppedAvatarFile).toString();
-        //noinspection ConstantConditions
-        getView().showChangingAvatarProgressBar();
-        getViewState().setUploadAvatar(ChatSettingsViewState.UploadingState.UPLOADING);
-        conversationAvatarInteractor.getSetChatAvatarCommandPipe()
-                .send(new SetChatAvatarCommand(conversationId, path));
-    }
+   protected void onAvatarCropped(String conversationId, File croppedAvatarFile) {
+      String path = Uri.fromFile(croppedAvatarFile).toString();
+      //noinspection ConstantConditions
+      getView().showChangingAvatarProgressBar();
+      getViewState().setUploadAvatar(ChatSettingsViewState.UploadingState.UPLOADING);
+      conversationAvatarInteractor.getSetChatAvatarCommandPipe().send(new SetChatAvatarCommand(conversationId, path));
+   }
 
-    protected void onChangeAvatarSuccess() {
-        getViewState().setUploadAvatar(ChatSettingsViewState.UploadingState.UPLOADED);
-        GroupChatSettingsScreen screen = getView();
-        if (screen != null) {
-            screen.invalidateToolbarMenu();
-            screen.hideChangingAvatarProgressBar();
-        }
-    }
+   protected void onChangeAvatarSuccess() {
+      getViewState().setUploadAvatar(ChatSettingsViewState.UploadingState.UPLOADED);
+      GroupChatSettingsScreen screen = getView();
+      if (screen != null) {
+         screen.invalidateToolbarMenu();
+         screen.hideChangingAvatarProgressBar();
+      }
+   }
 
-    protected void onChangeAvatarFailed(Throwable throwable) {
-        getViewState().setUploadAvatar(ChatSettingsViewState.UploadingState.ERROR);
-        Timber.e(throwable, "");
-        GroupChatSettingsScreen screen = getView();
-        if (screen != null) {
-            screen.hideChangingAvatarProgressBar();
-            screen.showErrorDialog(R.string.chat_settings_error_changing_avatar_subject);
-        }
-    }
+   protected void onChangeAvatarFailed(Throwable throwable) {
+      getViewState().setUploadAvatar(ChatSettingsViewState.UploadingState.ERROR);
+      Timber.e(throwable, "");
+      GroupChatSettingsScreen screen = getView();
+      if (screen != null) {
+         screen.hideChangingAvatarProgressBar();
+         screen.showErrorDialog(R.string.chat_settings_error_changing_avatar_subject);
+      }
+   }
 }

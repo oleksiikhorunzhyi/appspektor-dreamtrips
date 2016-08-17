@@ -1,13 +1,10 @@
 package com.worldventures.dreamtrips.core.api;
 
 import com.google.gson.JsonObject;
-import com.worldventures.dreamtrips.modules.bucketlist.model.BucketPhoto;
 import com.worldventures.dreamtrips.modules.bucketlist.model.CategoryItem;
 import com.worldventures.dreamtrips.modules.bucketlist.model.PopularBucketItem;
 import com.worldventures.dreamtrips.modules.bucketlist.model.Suggestion;
-import com.worldventures.dreamtrips.modules.common.model.AvailableLocale;
 import com.worldventures.dreamtrips.modules.common.model.DELETE_WITH_BODY;
-import com.worldventures.dreamtrips.modules.common.model.Session;
 import com.worldventures.dreamtrips.modules.common.model.UploadTask;
 import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.common.view.custom.tagview.viewgroup.newio.model.PhotoTag;
@@ -17,19 +14,12 @@ import com.worldventures.dreamtrips.modules.feed.model.FeedEntityHolder;
 import com.worldventures.dreamtrips.modules.feed.model.TextualPost;
 import com.worldventures.dreamtrips.modules.feed.model.comment.Comment;
 import com.worldventures.dreamtrips.modules.feed.model.feed.base.ParentFeedItem;
-import com.worldventures.dreamtrips.modules.feed.model.notification.PushSubscription;
-import com.worldventures.dreamtrips.modules.friends.model.Circle;
 import com.worldventures.dreamtrips.modules.infopages.model.FeedbackType;
 import com.worldventures.dreamtrips.modules.membership.api.InviteBody;
 import com.worldventures.dreamtrips.modules.membership.model.History;
 import com.worldventures.dreamtrips.modules.membership.model.InviteTemplate;
 import com.worldventures.dreamtrips.modules.reptools.model.SuccessStory;
 import com.worldventures.dreamtrips.modules.reptools.model.VideoLocale;
-import com.worldventures.dreamtrips.modules.settings.model.SettingsHolder;
-import com.worldventures.dreamtrips.modules.trips.model.ActivityModel;
-import com.worldventures.dreamtrips.modules.trips.model.RegionModel;
-import com.worldventures.dreamtrips.modules.trips.model.TripDetails;
-import com.worldventures.dreamtrips.modules.trips.model.TripModel;
 import com.worldventures.dreamtrips.modules.tripsimages.model.AddPhotoTag;
 import com.worldventures.dreamtrips.modules.tripsimages.model.DeletePhotoTag;
 import com.worldventures.dreamtrips.modules.tripsimages.model.Flag;
@@ -62,317 +52,228 @@ import static com.worldventures.dreamtrips.modules.infopages.api.SendFeedbackCom
 
 public interface DreamTripsApi {
 
-    String TYPE_MEMBER = "DTAPP";
-    String TYPE_MEMBER_360 = "DTAPP360";
-    String TYPE_REP = "dtapprep";
-    String TYPE_HELP = "DTAPPHELP";
+   String TYPE_MEMBER = "DTAPP";
+   String TYPE_MEMBER_360 = "DTAPP360";
+   String TYPE_REP = "dtapprep";
+   String TYPE_HELP = "DTAPPHELP";
 
-    @FormUrlEncoded
-    @POST("/api/sessions")
-    Session login(@Field("username") String username, @Field("password") String password);
+   @POST("/api/profile/avatar")
+   @Multipart
+   User uploadAvatar(@Part("avatar") TypedFile image);
 
-    @POST("/api/profile/avatar")
-    @Multipart
-    User uploadAvatar(@Part("avatar") TypedFile image);
+   @POST("/api/profile/background_photo")
+   @Multipart
+   User uploadBackgroundPhoto(@Part("background_photo") TypedFile image);
 
-    @POST("/api/profile/background_photo")
-    @Multipart
-    User uploadBackgroundPhoto(@Part("background_photo") TypedFile image);
+   @GET("/api/profile")
+   User getProfile();
 
-    @GET("/api/profile")
-    User getProfile();
-
-    @GET("/api/profiles/{id}")
-    User getPublicProfile(@Path("id") int id);
-
-    @GET("/api/trips")
-    ArrayList<TripModel> getTrips();
-
-    @GET("/api/trips")
-    ArrayList<TripModel> getTripsPaginated(
-            @Query("page") int page,
-            @Query("per_page") int perPage,
-            @Query("query") String query,
-            @Query("duration_min") Integer durationMin,
-            @Query("duration_max") Integer durationMax,
-            @Query("price_min") Double priceMin,
-            @Query("price_max") Double priceMax,
-            @Query("start_date") String startDate,
-            @Query("end_date") String endDate,
-            @Query("regions") String regions,
-            @Query("activities") String activities,
-            @Query("sold_out") int soldOut,
-            @Query("recent") int recent,
-            @Query("liked") int liked);
-
-    @GET("/api/regions")
-    List<RegionModel> getRegions();
-
-    @GET("/api/activities")
-    List<ActivityModel> getActivities();
+   @GET("/api/profiles/{id}")
+   User getPublicProfile(@Path("id") int id);
 
     /* *** PHOTOS *****************************/
 
-    /**
-     * Photo of all members
-     */
-    @GET("/api/photos")
-    ArrayList<Photo> getMembersPhotos(@Query("per_page") int perPage, @Query("page") int page);
+   /**
+    * Photo of all members
+    */
+   @GET("/api/photos")
+   ArrayList<Photo> getMembersPhotos(@Query("per_page") int perPage, @Query("page") int page);
 
-    @GET("/api/users/{user_id}/photos")
-    ArrayList<Photo> getUserPhotos(@Path("user_id") int userId, @Query("per_page") int query, @Query("page") int page);
+   @GET("/api/users/{user_id}/photos")
+   ArrayList<Photo> getUserPhotos(@Path("user_id") int userId, @Query("per_page") int query, @Query("page") int page);
 
-    @GET("/api/inspirations?random_seed=1")
-    ArrayList<Inspiration> getInspirationsPhotos(@Query("per_page") int perPage, @Query("page") int page, @Query("random_seed") double randomSeed);
+   @GET("/api/inspirations?random_seed=1")
+   ArrayList<Inspiration> getInspirationsPhotos(@Query("per_page") int perPage, @Query("page") int page, @Query("random_seed") double randomSeed);
 
-    @GET("/api/ysbh_photos")
-    ArrayList<YSBHPhoto> getYouShouldBeHerePhotos(@Query("per_page") int perPage, @Query("page") int page);
+   @GET("/api/ysbh_photos")
+   ArrayList<YSBHPhoto> getYouShouldBeHerePhotos(@Query("per_page") int perPage, @Query("page") int page);
 
 
-    @FormUrlEncoded
-    @POST("/api/photos/{id}/flags")
-    JsonObject flagPhoto(@Path("id") String photoId, @Field("reason") String nameOfReason);
+   @FormUrlEncoded
+   @POST("/api/photos/{id}/flags")
+   JsonObject flagPhoto(@Path("id") String photoId, @Field("reason") String nameOfReason);
 
-    @DELETE("/api/photos/{id}")
-    JsonObject deletePhoto(@Path("id") String photoId);
+   @DELETE("/api/photos/{id}")
+   JsonObject deletePhoto(@Path("id") String photoId);
 
-    @POST("/api/photos")
-    Photo uploadTripPhoto(@Body UploadTask uploadTask);
+   @POST("/api/photos")
+   Photo uploadTripPhoto(@Body UploadTask uploadTask);
 
-    @PUT("/api/photos/{uid}")
-    Photo editTripPhoto(@Path("uid") String uid, @Body UploadTask uploadTask);
+   @PUT("/api/photos/{uid}")
+   Photo editTripPhoto(@Path("uid") String uid, @Body UploadTask uploadTask);
 
-    @POST("/api/photos")
-    ArrayList<Photo> uploadPhotos(@Body CreatePhotoEntity entity);
+   @POST("/api/photos")
+   ArrayList<Photo> uploadPhotos(@Body CreatePhotoEntity entity);
 
-    @POST("/api/social/posts")
-    TextualPost createPhotoPost(@Body CreatePhotoPostEntity createPhotoPostEntity);
+   @POST("/api/social/posts")
+   TextualPost createPhotoPost(@Body CreatePhotoPostEntity createPhotoPostEntity);
     /* *** END PHOTOS *****************************/
 
-    @GET("/api/success_stories")
-    ArrayList<SuccessStory> getSuccessStores();
+   @GET("/api/success_stories")
+   ArrayList<SuccessStory> getSuccessStores();
 
-    @POST("/api/success_stories/{id}/like")
-    JsonObject likeSS(@Path("id") int photoId);
+   @POST("/api/success_stories/{id}/like")
+   JsonObject likeSS(@Path("id") int photoId);
 
-    @DELETE("/api/success_stories/{id}/like")
-    JsonObject unlikeSS(@Path("id") int photoId);
+   @DELETE("/api/success_stories/{id}/like")
+   JsonObject unlikeSS(@Path("id") int photoId);
 
-    @GET("/api/trips/{id}")
-    TripDetails getDetails(@Path("id") String tripId);
+   @GET("/api/bucket_list/locations")
+   ArrayList<PopularBucketItem> getPopularLocations();
 
-    @GET("/api/bucket_list/locations")
-    ArrayList<PopularBucketItem> getPopularLocations();
+   @GET("/api/bucket_list/activities")
+   ArrayList<PopularBucketItem> getPopularActivities();
 
-    @GET("/api/bucket_list/activities")
-    ArrayList<PopularBucketItem> getPopularActivities();
+   @GET("/api/bucket_list/dinings")
+   ArrayList<PopularBucketItem> getPopularDining();
 
-    @GET("/api/bucket_list/dinings")
-    ArrayList<PopularBucketItem> getPopularDining();
+   @GET("/api/categories")
+   ArrayList<CategoryItem> getCategories();
 
-    @GET("/api/categories")
-    ArrayList<CategoryItem> getCategories();
+   @GET("/api/location_suggestions")
+   ArrayList<Suggestion> getLocationSuggestions(@Query("name") String name);
 
-    @GET("/api/location_suggestions")
-    ArrayList<Suggestion> getLocationSuggestions(@Query("name") String name);
+   @GET("/api/activity_suggestions")
+   ArrayList<Suggestion> getActivitySuggestions(@Query("name") String name);
 
-    @GET("/api/activity_suggestions")
-    ArrayList<Suggestion> getActivitySuggestions(@Query("name") String name);
+   @GET("/api/dining_suggestions")
+   ArrayList<Suggestion> getDiningSuggestions(@Query("name") String name);
 
-    @GET("/api/dining_suggestions")
-    ArrayList<Suggestion> getDiningSuggestions(@Query("name") String name);
+   @GET("/api/location_suggestions/popular")
+   ArrayList<PopularBucketItem> getLocationPopularSuggestions(@Query("name") String name);
 
-    @GET("/api/location_suggestions/popular")
-    ArrayList<PopularBucketItem> getLocationPopularSuggestions(@Query("name") String name);
+   @GET("/api/activity_suggestions/popular")
+   ArrayList<PopularBucketItem> getActivityPopularSuggestions(@Query("name") String name);
 
-    @GET("/api/activity_suggestions/popular")
-    ArrayList<PopularBucketItem> getActivityPopularSuggestions(@Query("name") String name);
+   @GET("/api/dining_suggestions/popular")
+   ArrayList<PopularBucketItem> getDiningPopularSuggestions(@Query("name") String name);
 
-    @GET("/api/dining_suggestions/popular")
-    ArrayList<PopularBucketItem> getDiningPopularSuggestions(@Query("name") String name);
+   @GET("/api/invitations/templates")
+   ArrayList<InviteTemplate> getInviteTemplates();
 
-    @GET("/api/invitations/templates")
-    ArrayList<InviteTemplate> getInviteTemplates();
+   @GET("/api/invitations")
+   ArrayList<History> getInvitations();
 
-    @GET("/api/invitations")
-    ArrayList<History> getInvitations();
+   @POST("/api/invitations")
+   JSONObject sendInvitations(@Body InviteBody body);
 
-    @POST("/api/invitations")
-    JSONObject sendInvitations(@Body InviteBody body);
+   @FormUrlEncoded
+   @POST("/api/invitations/filled_templates")
+   InviteTemplate createInviteTemplate(@Field("template_id") int id, @Field("message") String message, @Field("cover_photo_url") String photoUrl);
 
-    @FormUrlEncoded
-    @POST("/api/invitations/templates/{id}")
-    InviteTemplate getFilledInviteTemplate(@Path("id") int id, @Field("message") String message);
+   @GET("/api/invitations/filled_templates/{id} ")
+   InviteTemplate getFilledInviteTemplate(@Path("id") int id);
 
-    @FormUrlEncoded
-    @POST("/api/invitations/filled_templates")
-    InviteTemplate createInviteTemplate(@Field("template_id") int id,
-                                        @Field("message") String message,
-                                        @Field("cover_photo_url") String photoUrl);
+   @GET("/api/member_videos/")
+   ArrayList<Category> getVideos(@Query("type") String type);
 
-    @GET("/api/invitations/filled_templates/{id} ")
-    InviteTemplate getFilledInviteTemplate(@Path("id") int id);
+   @GET("/api/member_videos/")
+   ArrayList<Category> getVideos(@Query("type") String type, @Query("locale") String locale);
 
-    @GET("/api/locales")
-    ArrayList<AvailableLocale> getLocales();
 
-    @GET("/api/member_videos/")
-    ArrayList<Category> getVideos(@Query("type") String type);
+   @GET("/api/member_videos/locales")
+   ArrayList<VideoLocale> getTrainingVideosLocales();
 
-    @GET("/api/member_videos/")
-    ArrayList<Category> getVideos(@Query("type") String type, @Query("locale") String locale);
+   @GET("/api/flag_reasons")
+   ArrayList<Flag> getFlags();
 
+   @GET("/api/social/friends")
+   ArrayList<User> getFriends(@Query("circle_id") String circle_id, @Query("query") String query, @Query("page") int page, @Query("per_page") int perPage);
 
-    @GET("/api/member_videos/locales")
-    ArrayList<VideoLocale> getTrainingVideosLocales();
+   @GET("/api/social/friends")
+   ArrayList<User> getAllFriends(@Query("query") String query, @Query("page") int page, @Query("per_page") int perPage);
 
-    @GET("/api/flag_reasons")
-    ArrayList<Flag> getFlags();
+   @GET("/api/social/users")
+   ArrayList<User> searchUsers(@Query("query") String query, @Query("page") int page, @Query("per_page") int perPage);
 
-    @GET("/api/social/circles")
-    ArrayList<Circle> getCircles();
+   @GET("/api/social/friends/requests")
+   ArrayList<User> getRequests();
 
-    @GET("/api/social/friends")
-    ArrayList<User> getFriends(@Query("circle_id") String circle_id,
-                               @Query("query") String query,
-                               @Query("page") int page,
-                               @Query("per_page") int perPage);
+   @POST("/api/social/friends/requests")
+   JSONObject addFriend(@Query("user_id") int userId, @Query("circle_id") String circleId);
 
-    @GET("/api/social/friends")
-    ArrayList<User> getAllFriends(@Query("query") String query,
-                                  @Query("page") int page,
-                                  @Query("per_page") int perPage);
+   @FormUrlEncoded
+   @PUT("/api/social/friends/request_responses")
+   JSONObject actOnRequest(@Query("user_id") int userId, @Field("action") String action, @Field("circle_id") String circleId);
 
-    @GET("/api/social/users")
-    ArrayList<User> searchUsers(@Query("query") String query, @Query("page") int page, @Query("per_page") int perPage);
+   @PATCH("/api/social/friends/request_responses")
+   ArrayList<JSONObject> actOnBatchRequests(@Body RequestBody userIds);
 
-    @GET("/api/social/friends/requests")
-    ArrayList<User> getRequests();
+   @DELETE("/api/social/friends/request_responses")
+   JSONObject deleteRequest(@Query("user_id") int userId);
 
-    @POST("/api/social/friends/requests")
-    JSONObject addFriend(@Query("user_id") int userId,
-                         @Query("circle_id") String circleId);
+   @DELETE("/api/social/friends/{user_id}")
+   JSONObject unfriend(@Path("user_id") int userId);
 
-    @FormUrlEncoded
-    @PUT("/api/social/friends/request_responses")
-    JSONObject actOnRequest(@Query("user_id") int userId,
-                            @Field("action") String action,
-                            @Field("circle_id") String circleId);
+   @FormUrlEncoded
+   @POST("/api/social/comments")
+   Comment createComment(@Field("origin_id") String objectId, @Field("text") String text);
 
-    @PATCH("/api/social/friends/request_responses")
-    ArrayList<JSONObject> actOnBatchRequests(@Body RequestBody userIds);
+   @FormUrlEncoded
+   @POST("/api/social/posts")
+   TextualPost post(@Field("description") String description);
 
-    @DELETE("/api/social/friends/request_responses")
-    JSONObject deleteRequest(@Query("user_id") int userId);
+   @PUT("/api/social/posts/{uid}")
+   TextualPost editPost(@Path("uid") String uid, @Body CreatePhotoPostEntity createPhotoPostEntity);
 
-    @DELETE("/api/social/friends/{user_id}")
-    JSONObject unfriend(@Path("user_id") int userId);
+   @DELETE("/api/social/posts/{uid}")
+   Void deletePost(@Path("uid") String uid);
 
-    @GET("/api/social/users/{user_id}/timeline")
-    ArrayList<ParentFeedItem> getUserTimeline(@Path("user_id") int userId, @Query("per_page") int perPage, @Query("before") String before);
+   @DELETE("/api/social/comments/{id}")
+   JSONObject deleteComment(@Path("id") String commentId);
 
-    @GET("/api/social/timeline")
-    ArrayList<ParentFeedItem> getAccountTimeline(@Query("per_page") int perPage, @Query("before") String before);
+   @FormUrlEncoded
+   @PUT("/api/social/comments/{id}")
+   Comment editComment(@Path("id") String commentId, @Field("text") String text);
 
-    @GET("/api/social/feed")
-    ArrayList<ParentFeedItem> getAccountFeed(@Query("per_page") int perPage, @Query("before") String before, @Query("circle_id") String circleId);
+   @FormUrlEncoded
+   @POST("/api/social/circles/{circle_id}/users")
+   Void addToGroup(@Path("circle_id") String groupId, @Field("user_ids[]") List<String> userIds);
 
-    @GET("/api/{object_id}/comments")
-    ArrayList<Comment> getComments(@Path("object_id") String objectId, @Query("per_page") int perPage, @Query("page") int page);
+   @FormUrlEncoded
+   @DELETE_WITH_BODY("/api/social/circles/{circle_id}/users")
+   Void deleteFromGroup(@Path("circle_id") String groupId, @Field("user_ids[]") List<String> userIds);
 
-    @FormUrlEncoded
-    @POST("/api/social/comments")
-    Comment createComment(@Field("origin_id") String objectId, @Field("text") String text);
+   @POST("/api/{uid}/likes")
+   Void likeEntity(@Path("uid") String uid);
 
-    @FormUrlEncoded
-    @POST("/api/social/comments")
-    Comment replyComment(@Field("reply_comment_id") String commentId, @Field("text") String text);
+   @DELETE("/api/{uid}/likes")
+   Void dislikeEntity(@Path("uid") String uid);
 
-    @FormUrlEncoded
-    @POST("/api/social/posts")
-    TextualPost post(@Field("description") String description);
+   @GET("/api/{uid}/likes")
+   ArrayList<User> getUsersWhoLikedEntity(@Path("uid") String uid, @Query("page") int page, @Query("per_page") int perPage);
 
-    @PUT("/api/social/posts/{uid}")
-    TextualPost editPost(@Path("uid") String uid, @Body CreatePhotoPostEntity createPhotoPostEntity);
+   @GET("/api/social/notifications")
+   ArrayList<ParentFeedItem> getNotifications(@Query("per_page") int perPage, @Query("before") String page);
 
-    @DELETE("/api/social/posts/{uid}")
-    Void deletePost(@Path("uid") String uid);
+   @GET("/api/{uid}")
+   FeedEntityHolder getFeedEntity(@Path("uid") String uid);
 
-    @DELETE("/api/social/comments/{id}")
-    JSONObject deleteComment(@Path("id") String commentId);
+   @PUT("/api/social/notifications")
+   Void markAsRead(@Query("since") String since, @Query("before") String before);
 
-    @FormUrlEncoded
-    @PUT("/api/social/comments/{id}")
-    Comment editComment(@Path("id") String commentId, @Field("text") String text);
+   @PUT("/api/social/notifications/{id}")
+   Void markAsRead(@Path("id") int id);
 
-    @FormUrlEncoded
-    @POST("/api/social/circles/{circle_id}/users")
-    Void addToGroup(@Path("circle_id") String groupId, @Field("user_ids[]") List<String> userIds);
+   @FormUrlEncoded
+   @POST("/api/{uid}/flags")
+   Void flagItem(@Path("uid") String uid, @Field("flag_reason_id") int flagReasonId, @Field("reason") String nameOfReason);
 
-    @FormUrlEncoded
-    @DELETE_WITH_BODY("/api/social/circles/{circle_id}/users")
-    Void deleteFromGroup(@Path("circle_id") String groupId, @Field("user_ids[]") List<String> userIds);
+   @GET("/api/social/friends/{userId}/mutual/")
+   ArrayList<User> getMutualFriends(@Path("userId") int userId);
 
-    @POST("/api/{uid}/likes")
-    Void likeEntity(@Path("uid") String uid);
+   @POST("/api/photos/{uid}/tags")
+   ArrayList<PhotoTag> addPhotoTags(@Path("uid") String photoId, @Body AddPhotoTag addTag);
 
-    @DELETE("/api/{uid}/likes")
-    Void dislikeEntity(@Path("uid") String uid);
+   @DELETE_WITH_BODY("/api/photos/{uid}/tags")
+   Void deletePhotoTags(@Path("uid") String photoId, @Body DeletePhotoTag deleteTag);
 
-    @GET("/api/{uid}/likes")
-    ArrayList<User> getUsersWhoLikedEntity(@Path("uid") String uid, @Query("page") int page, @Query("per_page") int perPage);
+   @GET("/api/photos/{uid}")
+   Photo getPhotoInfo(@Path("uid") String uid);
 
-    @GET("/api/social/notifications")
-    ArrayList<ParentFeedItem> getNotifications(@Query("per_page") int perPage, @Query("before") String page);
+   @GET("/api/feedbacks/reasons")
+   ArrayList<FeedbackType> getFeedbackReasons();
 
-    @GET("/api/{uid}")
-    FeedEntityHolder getFeedEntity(@Path("uid") String uid);
-
-    @PUT("/api/social/notifications")
-    Void markAsRead(@Query("since") String since, @Query("before") String before);
-
-    @PUT("/api/social/notifications/{id}")
-    Void markAsRead(@Path("id") int id);
-
-    @POST("/api/social/push_subscriptions")
-    Void subscribeDevice(@Body PushSubscription pushSubscription);
-
-    @DELETE("/api/social/push_subscriptions/{token}")
-    Void unsubscribeDevice(@Path("token") String token);
-
-    @FormUrlEncoded
-    @POST("/api/{uid}/flags")
-    Void flagItem(@Path("uid") String uid, @Field("flag_reason_id") int flagReasonId, @Field("reason") String nameOfReason);
-
-    @FormUrlEncoded
-    @POST("/api/terms_and_conditions/accept")
-    Void acceptTermsConditions(@Field("text") String text);
-
-    @DELETE("/api/sessions")
-    Void logout();
-
-    @GET("/api/social/friends/{userId}/mutual/")
-    ArrayList<User> getMutualFriends(@Path("userId") int userId);
-
-    @POST("/api/photos/{uid}/tags")
-    ArrayList<PhotoTag> addPhotoTags(@Path("uid") String photoId, @Body AddPhotoTag addTag);
-
-    @DELETE_WITH_BODY("/api/photos/{uid}/tags")
-    Void deletePhotoTags(@Path("uid") String photoId, @Body DeletePhotoTag deleteTag);
-
-    @GET("/api/photos/{uid}")
-    Photo getPhotoInfo(@Path("uid") String uid);
-
-    @GET("/api/user/settings")
-    SettingsHolder getSettings();
-
-    @PATCH("/api/user/settings")
-    Void updateSettings(@Body SettingsHolder settingsHolder);
-
-    @GET("/api/feedbacks/reasons")
-    ArrayList<FeedbackType> getFeedbackReasons();
-
-    @POST("/api/feedbacks")
-    Void sendFeedback(@Body FeedbackBody feedbackBody);
-
+   @POST("/api/feedbacks")
+   Void sendFeedback(@Body FeedbackBody feedbackBody);
 }

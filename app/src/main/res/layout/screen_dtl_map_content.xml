@@ -1,25 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    >
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+      xmlns:tools="http://schemas.android.com/tools"
+      android:layout_width="match_parent"
+      android:layout_height="match_parent"
+      >
 
-    <include layout="@layout/map_fragment_with_info" />
+   <include layout="@layout/map_fragment_with_info" />
 
-    <FrameLayout
-        android:id="@+id/redo_merchants"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal|bottom"
-        android:layout_margin="16dp"
-        android:minHeight="48dp"
-        android:visibility="gone"
-        tools:visibility="visible"
-        >
+   <FrameLayout
+         android:id="@+id/redo_merchants"
+         android:layout_width="wrap_content"
+         android:layout_height="wrap_content"
+         android:layout_gravity="center_horizontal|bottom"
+         android:layout_margin="16dp"
+         android:minHeight="48dp"
+         android:visibility="gone"
+         tools:visibility="visible"
+         >
 
-        <Button
+      <Button
             android:id="@+id/redo_merchants_button"
             style="@style/DtlButtonTheme"
             android:layout_width="230dp"
@@ -29,7 +28,7 @@
             android:textColor="@color/white"
             />
 
-        <ProgressBar
+      <ProgressBar
             android:id="@+id/redo_merchants_progress"
             style="@style/Widget.AppCompat.ProgressBar"
             android:layout_width="30dp"
@@ -40,5 +39,5 @@
             android:visibility="gone"
             tools:visibility="visible"
             />
-    </FrameLayout>
+   </FrameLayout>
 </FrameLayout>

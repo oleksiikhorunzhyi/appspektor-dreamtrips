@@ -12,18 +12,17 @@ import io.techery.janet.command.annotations.CommandAction;
 @CommandAction
 public class ClearChatServerCommand extends Command<ClearChatEvent> implements InjectableAction {
 
-    @Inject ChatExtensions chatExtensions;
+   @Inject ChatExtensions chatExtensions;
 
-    private final String conversationId;
+   private final String conversationId;
 
-    public ClearChatServerCommand(String conversationId) {
-        this.conversationId = conversationId;
-    }
+   public ClearChatServerCommand(String conversationId) {
+      this.conversationId = conversationId;
+   }
 
-    @Override
-    protected void run(CommandCallback<ClearChatEvent> callback) throws Throwable {
-        chatExtensions
-                .clearChat(conversationId, System.currentTimeMillis())
-                .subscribe(callback::onSuccess, callback::onFail);
-    }
+   @Override
+   protected void run(CommandCallback<ClearChatEvent> callback) throws Throwable {
+      chatExtensions.clearChat(conversationId, System.currentTimeMillis())
+            .subscribe(callback::onSuccess, callback::onFail);
+   }
 }

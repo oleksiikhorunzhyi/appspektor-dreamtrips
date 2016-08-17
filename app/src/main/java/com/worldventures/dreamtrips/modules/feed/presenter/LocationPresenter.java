@@ -26,93 +26,89 @@ import timber.log.Timber;
 
 public class LocationPresenter<V extends LocationPresenter.View> extends Presenter<LocationPresenter.View> {
 
-    @Inject
-    LocationDelegate gpsLocationDelegate;
-    @Inject
-    PostLocationPickerCallback postLocationPickerCallback;
-    private boolean isCanceled;
+   @Inject LocationDelegate gpsLocationDelegate;
+   @Inject PostLocationPickerCallback postLocationPickerCallback;
+   private boolean isCanceled;
 
-    @Override
-    public void takeView(View view) {
-        super.takeView(view);
-        gpsLocationDelegate.setPermissionView(view);
-        view.checkPermissions();
-    }
+   @Override
+   public void takeView(View view) {
+      super.takeView(view);
+      gpsLocationDelegate.setPermissionView(view);
+      view.checkPermissions();
+   }
 
-    public Observable<Location> getLocation() {
-        return view.bind(gpsLocationDelegate
-                .getLastKnownLocation())
-                .compose(new IoToMainComposer<>())
-                .map(this::getLocationFromAndroidLocation);
-    }
+   public Observable<Location> getLocation() {
+      return view.bind(gpsLocationDelegate.getLastKnownLocation())
+            .compose(new IoToMainComposer<>())
+            .map(this::getLocationFromAndroidLocation);
+   }
 
-    public boolean isGpsOn() {
-        return LocationUtils.isGpsOn(context);
-    }
+   public boolean isGpsOn() {
+      return LocationUtils.isGpsOn(context);
+   }
 
-    public void stopDetectLocation() {
-        isCanceled = true;
-        view.hideProgress();
-    }
+   public void stopDetectLocation() {
+      isCanceled = true;
+      view.hideProgress();
+   }
 
-    @NonNull
-    private Location getLocationFromAndroidLocation(android.location.Location location) {
-        view.hideProgress();
-        if (isCanceled) return null;
-        Geocoder coder = new Geocoder(view.getContext(), Locale.ENGLISH);
-        Location newLocation = new Location();
-        try {
-            List<Address> results = coder.getFromLocation(location.getLatitude(), location.getLongitude(), 1);
-            if (!results.isEmpty()) {
-                Address address = results.get(0);
-                newLocation.setLat(address.getLatitude());
-                newLocation.setLng(address.getLongitude());
-                newLocation.setName(address.getCountryName() + " " + address.getLocality());
-            }
-        } catch (IOException e) {
-            Timber.e(e, "");
-        }
-        return newLocation;
-    }
+   @NonNull
+   private Location getLocationFromAndroidLocation(android.location.Location location) {
+      view.hideProgress();
+      if (isCanceled) return null;
+      Geocoder coder = new Geocoder(view.getContext(), Locale.ENGLISH);
+      Location newLocation = new Location();
+      try {
+         List<Address> results = coder.getFromLocation(location.getLatitude(), location.getLongitude(), 1);
+         if (!results.isEmpty()) {
+            Address address = results.get(0);
+            newLocation.setLat(address.getLatitude());
+            newLocation.setLng(address.getLongitude());
+            newLocation.setName(address.getCountryName() + " " + address.getLocality());
+         }
+      } catch (IOException e) {
+         Timber.e(e, "");
+      }
+      return newLocation;
+   }
 
-    public void onPermissionGranted() {
-        view.bind(gpsLocationDelegate.requestLocationUpdate()
-                .compose(new IoToMainComposer<>()))
-                .subscribe(this::onLocationObtained, this::onLocationError);
-    }
+   public void onPermissionGranted() {
+      view.bind(gpsLocationDelegate.requestLocationUpdate().compose(new IoToMainComposer<>()))
+            .subscribe(this::onLocationObtained, this::onLocationError);
+   }
 
-    private void onStatusError(Status status) {
-        view.resolutionRequired(status);
-    }
+   private void onStatusError(Status status) {
+      view.resolutionRequired(status);
+   }
 
-    private void onLocationError(Throwable e) {
-        if (e instanceof LocationDelegate.LocationException)
-            onStatusError(((LocationDelegate.LocationException) e).getStatus());
-        else locationNotGranted();
-    }
+   private void onLocationError(Throwable e) {
+      if (e instanceof LocationDelegate.LocationException)
+         onStatusError(((LocationDelegate.LocationException) e).getStatus());
+      else locationNotGranted();
+   }
 
-    private void onLocationObtained(android.location.Location location) {
-        gpsLocationDelegate.onLocationObtained(location);
-    }
+   private void onLocationObtained(android.location.Location location) {
+      gpsLocationDelegate.onLocationObtained(location);
+   }
 
-    public void locationNotGranted() {
-        gpsLocationDelegate.onLocationObtained(null);
-    }
+   public void locationNotGranted() {
+      gpsLocationDelegate.onLocationObtained(null);
+   }
 
-    public void onDone(Location location) {
-        if (postLocationPickerCallback != null) {
-            postLocationPickerCallback.onLocationPicked(location);
-        }
-    }
+   public void onDone(Location location) {
+      if (postLocationPickerCallback != null) {
+         postLocationPickerCallback.onLocationPicked(location);
+      }
+   }
 
-    public interface View extends RxView, PermissionView {
+   public interface View extends RxView, PermissionView {
 
-        void resolutionRequired(Status status);
+      void resolutionRequired(Status status);
 
-        Context getContext();
+      Context getContext();
 
-        void showProgress();
+      void showProgress();
 
-        void hideProgress();
-    }
+      void hideProgress();
+   }
 }

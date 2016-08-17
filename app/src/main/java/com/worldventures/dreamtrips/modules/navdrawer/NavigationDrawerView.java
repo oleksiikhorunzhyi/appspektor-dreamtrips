@@ -5,17 +5,21 @@ import com.worldventures.dreamtrips.modules.common.model.User;
 
 import java.util.List;
 
+import rx.Observable;
+
 public interface NavigationDrawerView {
 
-    void setData(List<ComponentDescription> activeComponents);
+   <T> Observable<T> bind(Observable<T> observable);
 
-    void setUser(User user);
+   void setData(List<ComponentDescription> activeComponents);
 
-    void setCurrentComponent(ComponentDescription newComponent);
+   void setUser(User user);
 
-    void setNotificationCount(int count);
+   void setCurrentComponent(ComponentDescription newComponent);
 
-    void setUnreadMessagesCount(int count);
+   void setNotificationCount(int count);
 
-    void setNavigationDrawerPresenter(NavigationDrawerPresenter navigationDrawerPresenter);
+   void setUnreadMessagesCount(int count);
+
+   void setNavigationDrawerPresenter(NavigationDrawerPresenter navigationDrawerPresenter);
 }

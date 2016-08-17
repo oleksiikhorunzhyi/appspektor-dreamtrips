@@ -10,21 +10,21 @@ import io.techery.janet.Command;
 import io.techery.janet.command.annotations.CommandAction;
 
 @CommandAction
-public class LoadConversationCommand  extends Command<Conversation> implements InjectableAction {
+public class LoadConversationCommand extends Command<Conversation> implements InjectableAction {
 
-    @Inject MessengerServerFacade messengerServerFacade;
+   @Inject MessengerServerFacade messengerServerFacade;
 
-    private final String conversationId;
+   private final String conversationId;
 
-    public LoadConversationCommand(String conversationId) {
-        this.conversationId = conversationId;
-    }
+   public LoadConversationCommand(String conversationId) {
+      this.conversationId = conversationId;
+   }
 
-    @Override
-    protected void run(CommandCallback<Conversation> callback) throws Throwable {
-        messengerServerFacade.getLoaderManager()
-                .createConversationLoader(conversationId)
-                .load()
-                .subscribe(callback::onSuccess, callback::onFail);
-    }
+   @Override
+   protected void run(CommandCallback<Conversation> callback) throws Throwable {
+      messengerServerFacade.getLoaderManager()
+            .createConversationLoader(conversationId)
+            .load()
+            .subscribe(callback::onSuccess, callback::onFail);
+   }
 }

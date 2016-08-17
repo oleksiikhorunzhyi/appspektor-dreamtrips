@@ -1,39 +1,41 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                xmlns:tools="http://schemas.android.com/tools"
-                android:id="@+id/conversation_common_layout"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                tools:showIn="@layout/list_item_conversation_one_to_one">
+      xmlns:tools="http://schemas.android.com/tools"
+      android:id="@+id/conversation_common_layout"
+      android:layout_width="match_parent"
+      android:layout_height="match_parent"
+      tools:showIn="@layout/list_item_conversation_one_to_one"
+      >
 
-    <TextView
-        android:id="@+id/conversation_name_textview"
-        style="@style/ConversationListNameTextView"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
-        android:layout_toLeftOf="@+id/conversation_last_messages_date_and_count_layout"
-        />
+   <TextView
+         android:id="@+id/conversation_name_textview"
+         style="@style/ConversationListNameTextView"
+         android:layout_width="match_parent"
+         android:layout_height="wrap_content"
+         android:layout_alignParentTop="true"
+         android:layout_toLeftOf="@+id/conversation_last_messages_date_and_count_layout"
+         />
 
-    <TextView
-        android:id="@+id/conversation_last_message_textview"
-        style="@style/ConversationListLastMessageTextView"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignLeft="@+id/conversation_name_textview"
-        android:layout_below="@+id/conversation_name_textview"
-        android:layout_toLeftOf="@+id/conversation_last_messages_date_and_count_layout"
-        />
+   <TextView
+         android:id="@+id/conversation_last_message_textview"
+         style="@style/ConversationListLastMessageTextView"
+         android:layout_width="match_parent"
+         android:layout_height="wrap_content"
+         android:layout_alignLeft="@+id/conversation_name_textview"
+         android:layout_below="@+id/conversation_name_textview"
+         android:layout_toLeftOf="@+id/conversation_last_messages_date_and_count_layout"
+         />
 
-    <RelativeLayout
-        android:id="@+id/conversation_last_messages_date_and_count_layout"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentRight="true"
-        android:layout_alignTop="@+id/conversation_name_textview"
-        style="@style/ConversationListItemLastMessageDateAndCountLayout">
+   <RelativeLayout
+         android:id="@+id/conversation_last_messages_date_and_count_layout"
+         android:layout_width="wrap_content"
+         android:layout_height="wrap_content"
+         android:layout_alignParentRight="true"
+         android:layout_alignTop="@+id/conversation_name_textview"
+         style="@style/ConversationListItemLastMessageDateAndCountLayout"
+         >
 
-        <TextView
+      <TextView
             android:id="@+id/conversation_last_message_date_textview"
             style="@style/ConversationListLastMessageDateTextView"
             android:layout_width="wrap_content"
@@ -41,7 +43,7 @@
             android:layout_centerHorizontal="true"
             />
 
-        <TextView
+      <TextView
             android:id="@+id/conversation_unread_messages_count_textview"
             style="@style/ConversationListUnreadMessagesCountTextView"
             android:layout_width="wrap_content"
@@ -50,5 +52,5 @@
             android:layout_centerHorizontal="true"
             android:gravity="center_horizontal"
             />
-    </RelativeLayout>
+   </RelativeLayout>
 </RelativeLayout>

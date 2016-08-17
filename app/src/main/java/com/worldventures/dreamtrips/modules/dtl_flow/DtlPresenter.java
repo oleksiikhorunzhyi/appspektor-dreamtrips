@@ -9,10 +9,10 @@ import com.messenger.ui.presenter.ViewStateMvpPresenter;
 
 public interface DtlPresenter<V extends DtlScreen, S extends Parcelable> extends ViewStateMvpPresenter<V, S> {
 
-    @MenuRes
-    int getToolbarMenuRes();
+   @MenuRes
+   int getToolbarMenuRes();
 
-    void onToolbarMenuPrepared(Menu menu);
+   void onToolbarMenuPrepared(Menu menu);
 
-    boolean onToolbarMenuItemClick(MenuItem item);
+   boolean onToolbarMenuItemClick(MenuItem item);
 }

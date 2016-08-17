@@ -13,45 +13,45 @@ import java.util.List;
 @DefaultSerializer(CompatibleFieldSerializer.class)
 public class TextualPost extends BaseFeedEntity {
 
-    private String description;
+   private String description;
 
-    private List<FeedEntityHolder> attachments = new ArrayList<>();
+   private List<FeedEntityHolder> attachments = new ArrayList<>();
 
-    private Location location;
+   private Location location;
 
-    private List<Hashtag> hashtags = new ArrayList<>();
+   private List<Hashtag> hashtags = new ArrayList<>();
 
-    public String getDescription() {
-        return description;
-    }
+   public String getDescription() {
+      return description;
+   }
 
-    public void setDescription(String description) {
-        this.description = description;
-    }
+   public void setDescription(String description) {
+      this.description = description;
+   }
 
-    public List<FeedEntityHolder> getAttachments() {
-        return attachments;
-    }
+   public List<FeedEntityHolder> getAttachments() {
+      return attachments;
+   }
 
-    public void setAttachments(List<FeedEntityHolder> attachments) {
-        this.attachments = attachments;
-    }
+   public void setAttachments(List<FeedEntityHolder> attachments) {
+      this.attachments = attachments;
+   }
 
-    public List<Hashtag> getHashtags() {
-        return hashtags;
-    }
+   public List<Hashtag> getHashtags() {
+      return hashtags;
+   }
 
-    @NotNull
-    public Location getLocation() {
-        return location != null ? location : new Location();
-    }
+   @NotNull
+   public Location getLocation() {
+      return location != null ? location : new Location();
+   }
 
-    public void setLocation(Location location) {
-        this.location = location;
-    }
+   public void setLocation(Location location) {
+      this.location = location;
+   }
 
-    @Override
-    public String place() {
-        return location != null ? location.getName() : "";
-    }
+   @Override
+   public String place() {
+      return location != null ? location.getName() : "";
+   }
 }

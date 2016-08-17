@@ -5,7 +5,7 @@ import io.techery.janet.command.annotations.CommandAction;
 @CommandAction
 public class RemoveChatAvatarCommand extends SendChatAvatarCommand {
 
-    public RemoveChatAvatarCommand(String conversationId) {
-        super(conversationId, null);
-    }
+   public RemoveChatAvatarCommand(String conversationId) {
+      super(conversationId, null);
+   }
 }

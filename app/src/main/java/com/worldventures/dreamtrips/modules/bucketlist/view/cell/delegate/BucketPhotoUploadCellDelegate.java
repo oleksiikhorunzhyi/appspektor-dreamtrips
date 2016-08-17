@@ -5,7 +5,7 @@ import com.worldventures.dreamtrips.modules.bucketlist.model.BucketPhoto;
 import com.worldventures.dreamtrips.modules.bucketlist.service.model.EntityStateHolder;
 
 public interface BucketPhotoUploadCellDelegate extends CellDelegate<EntityStateHolder<BucketPhoto>> {
-    void deletePhotoRequest(BucketPhoto photoModel);
+   void deletePhotoRequest(BucketPhoto photoModel);
 
-    void selectPhotoAsCover(BucketPhoto model);
+   void selectPhotoAsCover(BucketPhoto model);
 }

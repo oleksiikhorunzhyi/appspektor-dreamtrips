@@ -1,21 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:orientation="vertical">
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:orientation="vertical"
+      >
 
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="1px"
-        android:background="#CCCCCC" />
+   <View
+         android:layout_width="match_parent"
+         android:layout_height="1px"
+         android:background="#CCCCCC"
+         />
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:padding="5dp">
+   <LinearLayout
+         android:layout_width="match_parent"
+         android:layout_height="wrap_content"
+         android:orientation="horizontal"
+         android:padding="5dp"
+         >
 
-        <TextView
+      <TextView
             android:id="@+id/listHeader"
             android:layout_width="0dp"
             android:layout_height="match_parent"
@@ -23,9 +26,10 @@
             android:gravity="center_vertical"
             android:paddingLeft="20dp"
             android:text="@string/filter_region_header"
-            android:textColor="@color/black"/>
+            android:textColor="@color/black"
+            />
 
-        <TextView
+      <TextView
             android:id="@+id/textViewSelectAllRegion"
             android:layout_width="0dp"
             android:layout_height="match_parent"
@@ -33,13 +37,15 @@
             android:gravity="center_vertical|end"
             android:textColor="@color/grey"
             android:paddingLeft="20dp"
-            android:text="@string/filter_select_all"/>
+            android:text="@string/filter_select_all"
+            />
 
-        <CheckBox
+      <CheckBox
             android:id="@+id/checkBoxSelectAllRegion"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:checked="true"
-            android:paddingRight="15dp" />
-    </LinearLayout>
+            android:paddingRight="15dp"
+            />
+   </LinearLayout>
 </LinearLayout>

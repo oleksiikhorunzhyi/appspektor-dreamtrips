@@ -9,13 +9,13 @@ import rx.subjects.Subject;
 
 public class PostLocationPickerCallback {
 
-    private final Subject<Location, Location> bus = new SerializedSubject<>(PublishSubject.create());
+   private final Subject<Location, Location> bus = new SerializedSubject<>(PublishSubject.create());
 
-    public Observable<Location> toObservable() {
-        return bus;
-    }
+   public Observable<Location> toObservable() {
+      return bus;
+   }
 
-    public void onLocationPicked(Location location) {
-        bus.onNext(location);
-    }
+   public void onLocationPicked(Location location) {
+      bus.onNext(location);
+   }
 }

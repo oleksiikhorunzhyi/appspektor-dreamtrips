@@ -1,54 +1,62 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              android:layout_width="match_parent"
-              android:layout_height="match_parent"
-              android:background="#0F2639"
-              android:orientation="vertical">
+      android:layout_width="match_parent"
+      android:layout_height="match_parent"
+      android:background="#0F2639"
+      android:orientation="vertical"
+      >
 
-    <android.support.v4.widget.SwipeRefreshLayout
-        android:id="@+id/swipe_container"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
+   <android.support.v4.widget.SwipeRefreshLayout
+         android:id="@+id/swipe_container"
+         android:layout_width="match_parent"
+         android:layout_height="match_parent"
+         >
 
-        <ScrollView
+      <ScrollView
             android:id="@+id/containerLandscape"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
+            >
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical">
+         <LinearLayout
+               android:layout_width="match_parent"
+               android:layout_height="wrap_content"
+               android:orientation="vertical"
+               >
 
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:padding="10dp"
-                    android:text="@string/featured_header"
-                    android:textColor="@android:color/white"
-                    android:textStyle="bold"/>
+            <TextView
+                  android:layout_width="match_parent"
+                  android:layout_height="wrap_content"
+                  android:padding="10dp"
+                  android:text="@string/featured_header"
+                  android:textColor="@android:color/white"
+                  android:textStyle="bold"
+                  />
 
-                <com.worldventures.dreamtrips.modules.tripsimages.view.custom.HotFixRecyclerView
-                    android:id="@+id/recyclerViewFeatured"
-                    android:layout_width="match_parent"
-                    android:layout_height="@dimen/video_three_sixty_height"/>
+            <com.worldventures.dreamtrips.modules.tripsimages.view.custom.HotFixRecyclerView
+                  android:id="@+id/recyclerViewFeatured"
+                  android:layout_width="match_parent"
+                  android:layout_height="@dimen/video_three_sixty_height"
+                  />
 
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:padding="10dp"
-                    android:text="@string/recent_header"
-                    android:textColor="@android:color/white"
-                    android:textStyle="bold"/>
+            <TextView
+                  android:layout_width="match_parent"
+                  android:layout_height="wrap_content"
+                  android:padding="10dp"
+                  android:text="@string/recent_header"
+                  android:textColor="@android:color/white"
+                  android:textStyle="bold"
+                  />
 
-                <com.worldventures.dreamtrips.modules.tripsimages.view.custom.HotFixRecyclerView
-                    android:id="@+id/recyclerViewRecent"
-                    android:layout_width="match_parent"
-                    android:layout_height="@dimen/video_three_sixty_height_small"/>
-            </LinearLayout>
+            <com.worldventures.dreamtrips.modules.tripsimages.view.custom.HotFixRecyclerView
+                  android:id="@+id/recyclerViewRecent"
+                  android:layout_width="match_parent"
+                  android:layout_height="@dimen/video_three_sixty_height_small"
+                  />
+         </LinearLayout>
 
-        </ScrollView>
+      </ScrollView>
 
-    </android.support.v4.widget.SwipeRefreshLayout>
+   </android.support.v4.widget.SwipeRefreshLayout>
 
 </LinearLayout>

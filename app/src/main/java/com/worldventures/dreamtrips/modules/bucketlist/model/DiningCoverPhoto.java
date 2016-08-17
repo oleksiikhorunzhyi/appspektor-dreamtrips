@@ -7,5 +7,5 @@ import java.io.Serializable;
 
 @DefaultSerializer(CompatibleFieldSerializer.class)
 public class DiningCoverPhoto implements Serializable {
-    String url;
+   String url;
 }

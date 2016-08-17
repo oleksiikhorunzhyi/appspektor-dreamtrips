@@ -4,6 +4,6 @@ import org.immutables.value.Value;
 
 @Value.Immutable(builder = false)
 public interface BucketOrderBody {
-    @Value.Parameter
-    int position();
+   @Value.Parameter
+   int position();
 }

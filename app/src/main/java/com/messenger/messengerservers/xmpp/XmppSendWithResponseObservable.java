@@ -13,28 +13,27 @@ import rx.Subscriber;
 
 public class XmppSendWithResponseObservable implements Observable.OnSubscribe<Stanza> {
 
-    private final XMPPConnection connection;
-    private final IQ iq;
+   private final XMPPConnection connection;
+   private final IQ iq;
 
-    public static Observable<Stanza> send(XMPPConnection connection, IQ iq) {
-        return Observable.create(new XmppSendWithResponseObservable(connection, iq));
-    }
+   public static Observable<Stanza> send(XMPPConnection connection, IQ iq) {
+      return Observable.create(new XmppSendWithResponseObservable(connection, iq));
+   }
 
-    private XmppSendWithResponseObservable(XMPPConnection connection, IQ iq) {
-        this.connection = connection;
-        this.iq = iq;
-    }
+   private XmppSendWithResponseObservable(XMPPConnection connection, IQ iq) {
+      this.connection = connection;
+      this.iq = iq;
+   }
 
-    @Override
-    public void call(Subscriber<? super Stanza> subscriber) {
-        try {
-            connection
-                    .sendIqWithResponseCallback(iq, packet -> {
-                        subscriber.onNext(packet);
-                        subscriber.onCompleted();
-                    }, exception -> subscriber.onError(new ProtocolException(exception)));
-        } catch (SmackException.NotConnectedException e) {
-            subscriber.onError(new ConnectionException(e));
-        }
-    }
+   @Override
+   public void call(Subscriber<? super Stanza> subscriber) {
+      try {
+         connection.sendIqWithResponseCallback(iq, packet -> {
+            subscriber.onNext(packet);
+            subscriber.onCompleted();
+         }, exception -> subscriber.onError(new ProtocolException(exception)));
+      } catch (SmackException.NotConnectedException e) {
+         subscriber.onError(new ConnectionException(e));
+      }
+   }
 }

@@ -1,133 +1,46 @@
 package com.worldventures.dreamtrips.modules.trips.model;
 
-import android.text.TextUtils;
+import android.support.annotation.Nullable;
 
-public class TripQueryData {
+import org.immutables.value.Value;
 
-    int page;
-    int perPage;
-    String query;
-    Integer durationMin;
-    Integer durationMax;
-    Double priceMin;
-    Double priceMax;
-    String startDate;
-    String endDate;
-    String regions;
-    String activities;
-    int soldOut;
-    int recent;
-    int liked;
+@Value.Immutable
+public interface TripQueryData {
 
-    public int page() {
-        return page;
-    }
+   int getPage();
 
-    public int perPage() {
-        return perPage;
-    }
+   int getPerPage();
 
-    public String query() {
-        return TextUtils.isEmpty(query) ? null : query;
-    }
+   @Nullable
+   String getQuery();
 
-    public Integer durationMin() {
-        return durationMin;
-    }
+   @Nullable
+   Integer getDurationMin();
 
-    public Integer durationMax() {
-        return durationMax;
-    }
+   @Nullable
+   Integer getDurationMax();
 
-    public Double priceMin() {
-        return priceMin;
-    }
+   @Nullable
+   Double getPriceMin();
 
-    public Double priceMax() {
-        return priceMax;
-    }
+   @Nullable
+   Double getPriceMax();
 
-    public String startDate() {
-        return startDate;
-    }
+   @Nullable
+   String getStartDate();
 
-    public String endDate() {
-        return endDate;
-    }
+   @Nullable
+   String getEndDate();
 
-    public String regions() {
-        return regions;
-    }
+   @Nullable
+   String getRegions();
 
-    public String activities() {
-        return activities;
-    }
+   @Nullable
+   String getActivities();
 
-    public int soldOut() {
-        return soldOut;
-    }
+   int isSoldOut();
 
-    public int recent() {
-        return recent;
-    }
+   int isRecent();
 
-    public int liked() {
-        return liked;
-    }
-
-    public void setPage(int page) {
-        this.page = page;
-    }
-
-    public void setPerPage(int per_page) {
-        this.perPage = per_page;
-    }
-
-    public void setQuery(String query) {
-        this.query = query;
-    }
-
-    public void setDurationMin(Integer durationMin) {
-        this.durationMin = durationMin;
-    }
-
-    public void setDurationMax(Integer durationMax) {
-        this.durationMax = durationMax;
-    }
-
-    public void setPriceMin(Double priceMin) {
-        this.priceMin = priceMin;
-    }
-
-    public void setPriceMax(Double priceMax) {
-        this.priceMax = priceMax;
-    }
-
-    public void setStartDate(String startDate) {
-        this.startDate = startDate;
-    }
-
-    public void setEndDate(String endDate) {
-        this.endDate = endDate;
-    }
-
-    public void setRegions(String regions) {
-        this.regions = regions;
-    }
-
-    public void setActivities(String activities) {
-        this.activities = activities;
-    }
-
-    public void setSoldOut(int soldOut) {
-        this.soldOut = soldOut;
-    }
-
-    public void setRecent(int recent) {
-        this.recent = recent;
-    }
-
-    public void setLiked(int liked) {
-        this.liked = liked;
-    }
+   int isLiked();
 }

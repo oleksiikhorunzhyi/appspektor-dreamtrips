@@ -5,7 +5,7 @@ import com.worldventures.dreamtrips.modules.bucketlist.model.BucketPhoto;
 
 public interface BucketPhotoCellDelegate extends CellDelegate<BucketPhoto> {
 
-    void deletePhotoRequest(BucketPhoto photo);
+   void deletePhotoRequest(BucketPhoto photo);
 
-    void choosePhoto(BucketPhoto photo);
+   void choosePhoto(BucketPhoto photo);
 }

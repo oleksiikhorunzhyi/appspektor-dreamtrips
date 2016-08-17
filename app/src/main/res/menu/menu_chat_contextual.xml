@@ -1,25 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
-    <item
-        android:id="@+id/action_copy_message"
-        android:title="@string/chat_contextual_copy_message"
-        app:showAsAction="never"/>
-    <item
-        android:id="@+id/action_translate"
-        android:title="@string/chat_contextual_translate_message"
-        app:showAsAction="never"/>
-    <item
-        android:id="@+id/action_revert_translate"
-        android:title="@string/chat_contextual_revert_translate_message"
-        app:showAsAction="never"/>
-    <!-- title created dynamically in this item -->
-    <item
-        android:id="@+id/action_start_chat"
-        android:title=""
-        app:showAsAction="never"/>
-    <item
-        android:id="@+id/action_flag"
-        android:title="@string/chat_contextual_flag"
-        app:showAsAction="never"/>
+      xmlns:app="http://schemas.android.com/apk/res-auto">
+   <item
+         android:id="@+id/action_copy_message"
+         android:title="@string/chat_contextual_copy_message"
+         app:showAsAction="never" />
+   <item
+         android:id="@+id/action_translate"
+         android:title="@string/chat_contextual_translate_message"
+         app:showAsAction="never" />
+   <item
+         android:id="@+id/action_revert_translate"
+         android:title="@string/chat_contextual_revert_translate_message"
+         app:showAsAction="never" />
+   <!-- title created dynamically in this item -->
+   <item
+         android:id="@+id/action_start_chat"
+         android:title=""
+         app:showAsAction="never" />
+   <item
+         android:id="@+id/action_flag"
+         android:title="@string/chat_contextual_flag"
+         app:showAsAction="never" />
 </menu>

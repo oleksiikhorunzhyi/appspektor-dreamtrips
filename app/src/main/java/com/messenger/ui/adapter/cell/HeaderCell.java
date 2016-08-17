@@ -13,25 +13,19 @@ import butterknife.InjectView;
 @Layout(R.layout.list_item_contact_section_header)
 public class HeaderCell extends AbstractCell<Header> {
 
-    @InjectView(R.id.section_name_textview)
-    TextView sectionNameTextView;
+   @InjectView(R.id.section_name_textview) TextView sectionNameTextView;
 
-    public HeaderCell(View view) {
-        super(view);
-    }
+   public HeaderCell(View view) {
+      super(view);
+   }
 
-    @Override
-    protected void syncUIStateWithModel() {
-        sectionNameTextView.setText(getModelObject().getName());
-    }
+   @Override
+   protected void syncUIStateWithModel() {
+      sectionNameTextView.setText(getModelObject().getName());
+   }
 
-    @Override
-    public void prepareForReuse() {
-
-    }
-
-    @Override
-    public boolean shouldInject() {
-        return false;
-    }
+   @Override
+   public boolean shouldInject() {
+      return false;
+   }
 }

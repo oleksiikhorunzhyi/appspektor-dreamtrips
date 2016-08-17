@@ -21,39 +21,38 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
 @Module(library = true)
 public class InjectingServiceModule {
-    private final android.app.Service service;
-    private final Injector injector;
+   private final android.app.Service service;
+   private final Injector injector;
 
-    public InjectingServiceModule(android.app.Service service, Injector injector) {
-        this.service = service;
-        this.injector = injector;
-    }
+   public InjectingServiceModule(android.app.Service service, Injector injector) {
+      this.service = service;
+      this.injector = injector;
+   }
 
-    @Qualifier
-    @Target({FIELD, PARAMETER, METHOD})
-    @Documented
-    @Retention(RUNTIME)
-    public @interface Service {
-    }
+   @Qualifier
+   @Target({FIELD, PARAMETER, METHOD})
+   @Documented
+   @Retention(RUNTIME)
+   public @interface Service {}
 
-    @Provides
-    @Singleton
-    @ForApplication
-    public Context provideApplicationContext() {
-        return this.service.getApplicationContext();
-    }
+   @Provides
+   @Singleton
+   @ForApplication
+   public Context provideApplicationContext() {
+      return this.service.getApplicationContext();
+   }
 
-    @Provides
-    @Singleton
-    public android.app.Service provideService() {
-        return this.service;
-    }
+   @Provides
+   @Singleton
+   public android.app.Service provideService() {
+      return this.service;
+   }
 
-    @Provides
-    @Singleton
-    @Service
-    public Injector provideServiceInjector() {
-        return this.injector;
-    }
+   @Provides
+   @Singleton
+   @Service
+   public Injector provideServiceInjector() {
+      return this.injector;
+   }
 
 }

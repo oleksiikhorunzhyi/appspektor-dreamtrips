@@ -7,8 +7,8 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.eowise.recyclerview.stickyheaders.StickyHeadersAdapter;
-import com.worldventures.dreamtrips.R;
 import com.techery.spares.adapter.HeaderItem;
+import com.worldventures.dreamtrips.R;
 
 import java.util.List;
 
@@ -17,45 +17,44 @@ import butterknife.InjectView;
 
 public class SuccessStoryHeaderAdapter implements StickyHeadersAdapter<SuccessStoryHeaderAdapter.SuccessHeaderViewHolder> {
 
-    private List<? extends HeaderItem> items;
-    private int layout;
+   private List<? extends HeaderItem> items;
+   private int layout;
 
-    public SuccessStoryHeaderAdapter(List<? extends HeaderItem> items, int layout) {
-        this.items = items;
-        this.layout = layout;
-    }
+   public SuccessStoryHeaderAdapter(List<? extends HeaderItem> items, int layout) {
+      this.items = items;
+      this.layout = layout;
+   }
 
-    @Override
-    public SuccessHeaderViewHolder onCreateViewHolder(ViewGroup viewGroup) {
-        View itemView = LayoutInflater.from(viewGroup.getContext()).inflate(layout, viewGroup, false);
+   @Override
+   public SuccessHeaderViewHolder onCreateViewHolder(ViewGroup viewGroup) {
+      View itemView = LayoutInflater.from(viewGroup.getContext()).inflate(layout, viewGroup, false);
 
-        return new SuccessHeaderViewHolder(itemView);
-    }
+      return new SuccessHeaderViewHolder(itemView);
+   }
 
-    @Override
-    public void onBindViewHolder(SuccessHeaderViewHolder headerViewHolder, int i) {
-        headerViewHolder.letter.setText(items.get(i).getHeaderTitle().toUpperCase());
-    }
+   @Override
+   public void onBindViewHolder(SuccessHeaderViewHolder headerViewHolder, int i) {
+      headerViewHolder.letter.setText(items.get(i).getHeaderTitle().toUpperCase());
+   }
 
-    @Override
-    public long getHeaderId(int i) {
-        String category = items.get(i).getHeaderTitle();
-        int index = 0;
-        for (int i1 = 0; i1 < category.length(); i1++) {
-            index += category.charAt(i1);
-        }
-        return index;
-    }
+   @Override
+   public long getHeaderId(int i) {
+      String category = items.get(i).getHeaderTitle();
+      int index = 0;
+      for (int i1 = 0; i1 < category.length(); i1++) {
+         index += category.charAt(i1);
+      }
+      return index;
+   }
 
 
-    public static class SuccessHeaderViewHolder extends RecyclerView.ViewHolder {
-        @InjectView(R.id.tv_title)
-        protected TextView letter;
+   public static class SuccessHeaderViewHolder extends RecyclerView.ViewHolder {
+      @InjectView(R.id.tv_title) protected TextView letter;
 
-        public SuccessHeaderViewHolder(View itemView) {
-            super(itemView);
-            ButterKnife.inject(this, itemView);
-        }
-    }
+      public SuccessHeaderViewHolder(View itemView) {
+         super(itemView);
+         ButterKnife.inject(this, itemView);
+      }
+   }
 
 }

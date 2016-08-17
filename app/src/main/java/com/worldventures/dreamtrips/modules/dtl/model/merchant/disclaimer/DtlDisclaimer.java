@@ -5,71 +5,66 @@ import android.os.Parcelable;
 
 import com.esotericsoftware.kryo.DefaultSerializer;
 import com.esotericsoftware.kryo.serializers.CompatibleFieldSerializer;
+import com.worldventures.dreamtrips.api.dtl.merchants.model.Disclaimer;
+import com.worldventures.dreamtrips.api.dtl.merchants.model.DisclaimerType;
 
 @SuppressWarnings("unused")
 @DefaultSerializer(CompatibleFieldSerializer.class)
 public class DtlDisclaimer implements Parcelable {
 
-    private Type type;
-    private String text;
+   private DisclaimerType type;
+   private String text;
 
-    public DtlDisclaimer() {
-    }
+   public DtlDisclaimer() {
+   }
 
-    public Type getType() {
-        return type;
-    }
+   public DtlDisclaimer(Disclaimer disclaimer) {
+      type = disclaimer.type();
+      text = disclaimer.text();
+   }
 
-    public void setType(Type type) {
-        this.type = type;
-    }
+   public DisclaimerType getType() {
+      return type;
+   }
 
-    public String getText() {
-        return text;
-    }
+   public String getText() {
+      return text;
+   }
 
-    public void setText(String text) {
-        this.text = text;
-    }
+   ///////////////////////////////////////////////////////////////////////////
+   // Parcelable
+   ///////////////////////////////////////////////////////////////////////////
 
-    public enum Type {
-        POINTS, PERKS, ADDITIONAL
-    }
+   protected DtlDisclaimer(Parcel in) {
+      type = (DisclaimerType) in.readSerializable();
+      text = in.readString();
+   }
 
-    ///////////////////////////////////////////////////////////////////////////
-    // Parcelable
-    ///////////////////////////////////////////////////////////////////////////
+   @Override
+   public void writeToParcel(Parcel dest, int flags) {
+      dest.writeSerializable(type);
+      dest.writeString(text);
+   }
 
-    protected DtlDisclaimer(Parcel in) {
-        type = (Type) in.readSerializable();
-        text = in.readString();
-    }
+   @Override
+   public int describeContents() {
+      return 0;
+   }
 
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeSerializable(type);
-        dest.writeString(text);
-    }
+   public static final Creator<DtlDisclaimer> CREATOR = new Creator<DtlDisclaimer>() {
+      @Override
+      public DtlDisclaimer createFromParcel(Parcel in) {
+         return new DtlDisclaimer(in);
+      }
 
-    @Override
-    public int describeContents() {
-        return 0;
-    }
+      @Override
+      public DtlDisclaimer[] newArray(int size) {
+         return new DtlDisclaimer[size];
+      }
+   };
 
-    public static final Creator<DtlDisclaimer> CREATOR = new Creator<DtlDisclaimer>() {
-        @Override
-        public DtlDisclaimer createFromParcel(Parcel in) {
-            return new DtlDisclaimer(in);
-        }
-
-        @Override
-        public DtlDisclaimer[] newArray(int size) {
-            return new DtlDisclaimer[size];
-        }
-    };
-
-    @Override
-    public String toString() {
-        return text;
-    }
+   @Override
+   public String toString() {
+      return text;
+   }
 }

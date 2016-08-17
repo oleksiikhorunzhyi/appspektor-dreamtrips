@@ -6,5 +6,5 @@ import java.util.List;
 
 public interface Flaggable {
 
-    void showFlagDialog(List<Flag> flags);
+   void showFlagDialog(List<Flag> flags);
 }

@@ -4,7 +4,7 @@ import android.support.v7.app.AppCompatActivity;
 
 public interface AttributedPath {
 
-    PathAttrs getAttrs();
+   PathAttrs getAttrs();
 
-    public void onPreDispatch(AppCompatActivity activity);
+   public void onPreDispatch(AppCompatActivity activity);
 }

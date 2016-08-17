@@ -8,5 +8,5 @@ import rx.Observable;
 
 public interface ConversationsLoader {
 
-    Observable<List<Conversation>> load();
+   Observable<List<Conversation>> load();
 }

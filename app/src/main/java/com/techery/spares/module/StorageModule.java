@@ -13,15 +13,15 @@ import dagger.Provides;
 @Module(library = true, complete = false)
 public class StorageModule {
 
-    @Provides
-    @Singleton
-    SimpleKeyValueStorage provideSimpleKeyValueStorage(SharedPreferences preferences) {
-        return new SimpleKeyValueStorage(preferences);
-    }
+   @Provides
+   @Singleton
+   SimpleKeyValueStorage provideSimpleKeyValueStorage(SharedPreferences preferences) {
+      return new SimpleKeyValueStorage(preferences);
+   }
 
-    @Provides
-    ComplexStorageBuilder provideComplexStorageBuilder(SimpleKeyValueStorage simpleKeyValueStorage) {
-        return new ComplexStorageBuilder(simpleKeyValueStorage);
-    }
+   @Provides
+   ComplexStorageBuilder provideComplexStorageBuilder(SimpleKeyValueStorage simpleKeyValueStorage) {
+      return new ComplexStorageBuilder(simpleKeyValueStorage);
+   }
 
 }

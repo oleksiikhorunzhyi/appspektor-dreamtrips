@@ -13,31 +13,29 @@ import io.techery.janet.command.annotations.CommandAction;
 
 @CommandAction
 public class DeleteItemPhotoCommand extends Command<BucketItem> implements InjectableAction {
-    @Inject
-    Janet janet;
+   @Inject Janet janet;
 
-    private BucketItem bucketItem;
-    private BucketPhoto photo;
+   private BucketItem bucketItem;
+   private BucketPhoto photo;
 
-    public DeleteItemPhotoCommand(BucketItem bucketItem, BucketPhoto photo) {
-        this.bucketItem = bucketItem;
-        this.photo = photo;
-    }
+   public DeleteItemPhotoCommand(BucketItem bucketItem, BucketPhoto photo) {
+      this.bucketItem = bucketItem;
+      this.photo = photo;
+   }
 
-    @Override
-    protected void run(CommandCallback<BucketItem> callback) throws Throwable {
-        janet.createPipe(DeleteBucketPhotoHttpAction.class)
-                .createObservableResult(new DeleteBucketPhotoHttpAction(bucketItem.getUid(), photo.getFSId()))
-                .map(deleteBucketPhotoAction -> {
-                    bucketItem.getPhotos().remove(photo);
+   @Override
+   protected void run(CommandCallback<BucketItem> callback) throws Throwable {
+      janet.createPipe(DeleteBucketPhotoHttpAction.class)
+            .createObservableResult(new DeleteBucketPhotoHttpAction(bucketItem.getUid(), photo.getFSId()))
+            .map(deleteBucketPhotoAction -> {
+               bucketItem.getPhotos().remove(photo);
 
-                    if (bucketItem.getCoverPhoto() != null &&
-                            bucketItem.getCoverPhoto().equals(photo)) {
-                        bucketItem.setCoverPhoto(bucketItem.getFirstPhoto());
-                    }
+               if (bucketItem.getCoverPhoto() != null && bucketItem.getCoverPhoto().equals(photo)) {
+                  bucketItem.setCoverPhoto(bucketItem.getFirstPhoto());
+               }
 
-                    return bucketItem;
-                })
-                .subscribe(callback::onSuccess, callback::onFail);
-    }
+               return bucketItem;
+            })
+            .subscribe(callback::onSuccess, callback::onFail);
+   }
 }

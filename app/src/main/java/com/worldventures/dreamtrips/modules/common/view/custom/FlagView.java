@@ -20,41 +20,38 @@ import butterknife.InjectView;
 
 public class FlagView extends FrameLayout {
 
-    @InjectView(R.id.iv_flag)
-    ImageView ivFlag;
-    @InjectView(R.id.progress_flag)
-    ProgressBar progressBar;
+   @InjectView(R.id.iv_flag) ImageView ivFlag;
+   @InjectView(R.id.progress_flag) ProgressBar progressBar;
 
-    public FlagView(Context context) {
-        this(context, null);
-    }
+   public FlagView(Context context) {
+      this(context, null);
+   }
 
-    public FlagView(Context context, AttributeSet attrs) {
-        this(context, attrs, 0);
-    }
+   public FlagView(Context context, AttributeSet attrs) {
+      this(context, attrs, 0);
+   }
 
-    public FlagView(Context context, AttributeSet attrs, int defStyleAttr) {
-        super(context, attrs, defStyleAttr);
-        LayoutInflater.from(getContext()).inflate(R.layout.layout_flag_item, this, true);
-        ButterKnife.inject(this);
+   public FlagView(Context context, AttributeSet attrs, int defStyleAttr) {
+      super(context, attrs, defStyleAttr);
+      LayoutInflater.from(getContext()).inflate(R.layout.layout_flag_item, this, true);
+      ButterKnife.inject(this);
 
-        TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.FlagView);
-        Drawable drawable = a.getDrawable(R.styleable.FlagView_icon);
-        if (drawable != null) ivFlag.setImageDrawable(drawable);
-        a.recycle();
-    }
+      TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.FlagView);
+      Drawable drawable = a.getDrawable(R.styleable.FlagView_icon);
+      if (drawable != null) ivFlag.setImageDrawable(drawable);
+      a.recycle();
+   }
 
-    public void showProgress() {
-        progressBar.setVisibility(View.VISIBLE);
-    }
+   public void showProgress() {
+      progressBar.setVisibility(View.VISIBLE);
+   }
 
-    public void hideProgress() {
-        progressBar.setVisibility(View.GONE);
-    }
+   public void hideProgress() {
+      progressBar.setVisibility(View.GONE);
+   }
 
-    public void showFlagsPopup(List<Flag> flags,
-                               FlagPopupMenu.DialogConfirmationCallback dialogConfirmationCallback) {
-        FlagPopupMenu popupMenu = new FlagPopupMenu(getContext(), this);
-        popupMenu.show(flags, dialogConfirmationCallback);
-    }
+   public void showFlagsPopup(List<Flag> flags, FlagPopupMenu.DialogConfirmationCallback dialogConfirmationCallback) {
+      FlagPopupMenu popupMenu = new FlagPopupMenu(getContext(), this);
+      popupMenu.show(flags, dialogConfirmationCallback);
+   }
 }

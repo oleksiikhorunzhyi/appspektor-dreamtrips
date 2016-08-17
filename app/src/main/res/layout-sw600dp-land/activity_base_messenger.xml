@@ -1,54 +1,57 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.v4.widget.DrawerLayout
-    android:id="@+id/drawer"
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent">
+<android.support.v4.widget.DrawerLayout android:id="@+id/drawer"
+      xmlns:android="http://schemas.android.com/apk/res/android"
+      xmlns:tools="http://schemas.android.com/tools"
+      android:layout_width="match_parent"
+      android:layout_height="match_parent"
+      >
 
-    <com.messenger.ui.widget.MessengerPhotoPickerLayout
-        android:id="@+id/chat_photo_picker"
-        xmlns:sothree="http://schemas.android.com/apk/res-auto"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:gravity="bottom"
-        sothree:umanoOverlay="true"
-        sothree:umanoPanelHeight="0dp"
-        sothree:umanoParallaxOffset="0dp"
-        sothree:umanoShadowHeight="4dp">
+   <com.messenger.ui.widget.MessengerPhotoPickerLayout android:id="@+id/chat_photo_picker"
+         xmlns:sothree="http://schemas.android.com/apk/res-auto"
+         android:layout_width="match_parent"
+         android:layout_height="match_parent"
+         android:gravity="bottom"
+         sothree:umanoOverlay="true"
+         sothree:umanoPanelHeight="0dp"
+         sothree:umanoParallaxOffset="0dp"
+         sothree:umanoShadowHeight="4dp"
+         >
 
-        <com.worldventures.dreamtrips.core.flow.container.TabletMasterDetailRoot
+      <com.worldventures.dreamtrips.core.flow.container.TabletMasterDetailRoot
             android:id="@+id/root_container"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:orientation="horizontal">
+            android:orientation="horizontal"
+            >
 
-            <com.worldventures.dreamtrips.modules.navdrawer.NavigationDrawerViewImpl
-                android:id="@+id/drawer_layout"
-                android:layout_width="@dimen/navigation_drawer_static_width"
-                android:layout_height="match_parent"
-                tools:layout="@layout/fragment_navigation_drawer"/>
+         <com.worldventures.dreamtrips.modules.navdrawer.NavigationDrawerViewImpl
+               android:id="@+id/drawer_layout"
+               android:layout_width="@dimen/navigation_drawer_static_width"
+               android:layout_height="match_parent"
+               tools:layout="@layout/fragment_navigation_drawer"
+               />
 
-            <com.worldventures.dreamtrips.core.flow.container.MasterPathContainerView
-                android:id="@id/master_container"
-                android:layout_width="@dimen/messenger_master_width"
-                android:layout_height="match_parent"
-                />
+         <com.worldventures.dreamtrips.core.flow.container.MasterPathContainerView
+               android:id="@id/master_container"
+               android:layout_width="@dimen/messenger_master_width"
+               android:layout_height="match_parent"
+               />
 
-            <View
-                android:layout_width="0.5dp"
-                android:layout_height="match_parent"
-                android:background="@color/list_item_divider_color"
-                />
+         <View
+               android:layout_width="0.5dp"
+               android:layout_height="match_parent"
+               android:background="@color/list_item_divider_color"
+               />
 
-            <com.worldventures.dreamtrips.core.flow.container.DetailContainerView
-                android:id="@id/details_container"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"/>
+         <com.worldventures.dreamtrips.core.flow.container.DetailContainerView
+               android:id="@id/details_container"
+               android:layout_width="match_parent"
+               android:layout_height="match_parent"
+               />
 
-        </com.worldventures.dreamtrips.core.flow.container.TabletMasterDetailRoot>
+      </com.worldventures.dreamtrips.core.flow.container.TabletMasterDetailRoot>
 
-    </com.messenger.ui.widget.MessengerPhotoPickerLayout>
+   </com.messenger.ui.widget.MessengerPhotoPickerLayout>
 
 
 </android.support.v4.widget.DrawerLayout>

@@ -7,5 +7,5 @@ import flow.path.Path;
 
 @Layout(R.layout.screen_dtl_empty)
 public class DtlEmptyScreenPath extends Path {
-    public static final DtlEmptyScreenPath INSTANCE = new DtlEmptyScreenPath();
+   public static final DtlEmptyScreenPath INSTANCE = new DtlEmptyScreenPath();
 }

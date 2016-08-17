@@ -6,30 +6,30 @@ import rx.android.MainThreadSubscription;
 
 public class DtlToolbarExpandsOnSubscribe implements Observable.OnSubscribe<Void> {
 
-    private final ExpandableDtlToolbar dtlToolbar;
+   private final ExpandableDtlToolbar dtlToolbar;
 
-    public DtlToolbarExpandsOnSubscribe(ExpandableDtlToolbar dtlToolbar) {
-        this.dtlToolbar = dtlToolbar;
-    }
+   public DtlToolbarExpandsOnSubscribe(ExpandableDtlToolbar dtlToolbar) {
+      this.dtlToolbar = dtlToolbar;
+   }
 
-    @Override
-    public void call(Subscriber<? super Void> subscriber) {
-        ExpandableDtlToolbar.ExpandListener expandListener = new ExpandableDtlToolbar.ExpandListener() {
-            @Override
-            public void onExpanded() {
-                if (!subscriber.isUnsubscribed()) {
-                    subscriber.onNext(null);
-                }
+   @Override
+   public void call(Subscriber<? super Void> subscriber) {
+      ExpandableDtlToolbar.ExpandListener expandListener = new ExpandableDtlToolbar.ExpandListener() {
+         @Override
+         public void onExpanded() {
+            if (!subscriber.isUnsubscribed()) {
+               subscriber.onNext(null);
             }
-        };
+         }
+      };
 
-        dtlToolbar.addExpandListener(expandListener);
+      dtlToolbar.addExpandListener(expandListener);
 
-        subscriber.add(new MainThreadSubscription() {
-            @Override
-            protected void onUnsubscribe() {
-                dtlToolbar.removeExpandListener(expandListener);
-            }
-        });
-    }
+      subscriber.add(new MainThreadSubscription() {
+         @Override
+         protected void onUnsubscribe() {
+            dtlToolbar.removeExpandListener(expandListener);
+         }
+      });
+   }
 }

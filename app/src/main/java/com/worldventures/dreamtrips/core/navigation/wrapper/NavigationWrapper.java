@@ -7,11 +7,11 @@ import com.worldventures.dreamtrips.core.navigation.router.Router;
 
 public abstract class NavigationWrapper {
 
-    protected Router router;
+   protected Router router;
 
-    public NavigationWrapper(Router router) {
-        this.router = router;
-    }
+   public NavigationWrapper(Router router) {
+      this.router = router;
+   }
 
-    public abstract void navigate(Route route, Parcelable bundle);
+   public abstract void navigate(Route route, Parcelable bundle);
 }

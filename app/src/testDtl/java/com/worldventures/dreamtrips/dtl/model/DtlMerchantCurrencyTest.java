@@ -15,18 +15,18 @@ import static org.assertj.core.api.Assertions.assertThat;
 @RunWith(MockitoJUnitRunner.class)
 public class DtlMerchantCurrencyTest {
 
-    @Test
-    public void test_getDefaultCurrency() {
-        DtlMerchant dtlMerchant = new DtlMerchant();
-        DtlOfferPoints dtlPointsOffer = new DtlOfferPoints();
-        DtlCurrency dtlCurrency = new DtlCurrency();
-        dtlCurrency.setDefault(true);
-        dtlCurrency.setCode("USD");
-        dtlPointsOffer.setCurrencies(Collections.singletonList(dtlCurrency));
-        dtlMerchant.setOffers(Collections.singletonList(dtlPointsOffer));
+   @Test
+   public void test_getDefaultCurrency() {
+      DtlMerchant dtlMerchant = new DtlMerchant();
+      DtlOfferPoints dtlPointsOffer = new DtlOfferPoints();
+      DtlCurrency dtlCurrency = new DtlCurrency();
+      dtlCurrency.setDefault(true);
+      dtlCurrency.setCode("USD");
+      dtlPointsOffer.setCurrencies(Collections.singletonList(dtlCurrency));
+      dtlMerchant.setOffers(Collections.singletonList(dtlPointsOffer));
 
-        DtlCurrency dtlCurrencyDefault = dtlMerchant.getDefaultCurrency();
+      DtlCurrency dtlCurrencyDefault = dtlMerchant.getDefaultCurrency();
 
-        assertThat(dtlCurrencyDefault).isEqualToComparingFieldByField(dtlCurrency);
-    }
+      assertThat(dtlCurrencyDefault).isEqualToComparingFieldByField(dtlCurrency);
+   }
 }

@@ -1,75 +1,66 @@
 package com.worldventures.dreamtrips.modules.common.presenter;
 
-import com.octo.android.robospice.persistence.exception.SpiceException;
-import com.worldventures.dreamtrips.core.repository.SnappyRepository;
-import com.worldventures.dreamtrips.core.session.UserSession;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
-import com.worldventures.dreamtrips.modules.common.api.AcceptTermsConditionsCommand;
+import com.worldventures.dreamtrips.modules.common.api.janet.command.AcceptTermsCommand;
+import com.worldventures.dreamtrips.modules.common.delegate.LegalInteractor;
 import com.worldventures.dreamtrips.modules.common.view.util.LogoutDelegate;
 import com.worldventures.dreamtrips.modules.infopages.StaticPageProvider;
 
 import javax.inject.Inject;
 
+import io.techery.janet.helper.ActionStateSubscriber;
+import rx.android.schedulers.AndroidSchedulers;
+
 public class TermsConditionsDialogPresenter extends Presenter<TermsConditionsDialogPresenter.View> {
 
-    @Inject
-    StaticPageProvider provider;
-    @Inject
-    SnappyRepository snappyRepository;
-    @Inject
-    LogoutDelegate logoutDelegate;
+   @Inject StaticPageProvider provider;
+   @Inject LogoutDelegate logoutDelegate;
+   @Inject LegalInteractor legalInteractor;
 
-    @Override
-    public void takeView(View view) {
-        super.takeView(view);
-        logoutDelegate.setOnLogoutSuccessListener(view::dismissDialog);
-        view.loadContent(provider.getTermsOfServiceUrl());
-    }
+   @Override
+   public void takeView(View view) {
+      super.takeView(view);
+      loadContent();
+   }
 
-    @Override
-    public void dropView() {
-        logoutDelegate.setOnLogoutSuccessListener(null);
-        super.dropView();
-    }
+   public void loadContent() {
+      view.loadContent(provider.getTermsOfServiceUrl());
+   }
 
-    public void acceptTerms(String text) {
-        TrackingHelper.termsConditionsAction(true);
+   public void acceptTerms(String text) {
+      TrackingHelper.termsConditionsAction(true);
+      view.disableButtons();
+      legalInteractor.termsPipe()
+            .createObservable(new AcceptTermsCommand(text))
+            .observeOn(AndroidSchedulers.mainThread())
+            .compose(bindView())
+            .subscribe(new ActionStateSubscriber<AcceptTermsCommand>().onSuccess(action -> view.dismissDialog())
+                  .onFail((action, e) -> {
+                     view.enableButtons();
+                     view.informUser(action.getErrorMessage());
+                  }));
+   }
 
-        view.disableButtons();
-        doRequest(new AcceptTermsConditionsCommand(text), aVoid -> {
-            UserSession userSession = appSessionHolder.get().get();
-            userSession.getUser().setTermsAccepted(true);
-            appSessionHolder.put(userSession);
-            view.dismissDialog();
-        });
-    }
+   public void denyTerms() {
+      TrackingHelper.termsConditionsAction(false);
+      logout();
+   }
 
-    public void denyTerms() {
-        TrackingHelper.termsConditionsAction(false);
+   public void logout() {
+      logoutDelegate.logout();
+      view.dismissDialog();
+   }
 
-        logout();
-    }
+   public interface View extends Presenter.View {
 
-    public void logout() {
-        view.disableButtons();
-        logoutDelegate.logout();
-    }
+      void loadContent(String url);
 
-    @Override
-    public void handleError(SpiceException error) {
-        super.handleError(error);
-        view.enableButtons();
-    }
+      void dismissDialog();
 
-    public interface View extends Presenter.View {
-        void loadContent(String url);
+      void inject(Object object);
 
-        void dismissDialog();
+      void enableButtons();
 
-        void inject(Object object);
-
-        void enableButtons();
-
-        void disableButtons();
-    }
+      void disableButtons();
+   }
 }

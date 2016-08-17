@@ -5,11 +5,11 @@ import android.view.ViewGroup;
 
 public interface ItemWrapper<T> {
 
-    RecyclerView.ViewHolder getBaseRecycleItem(ViewGroup parent);
+   RecyclerView.ViewHolder getBaseRecycleItem(ViewGroup parent);
 
-    void bindViewHolder(RecyclerView.ViewHolder holder, int position);
+   void bindViewHolder(RecyclerView.ViewHolder holder, int position);
 
-    int getItemViewType();
+   int getItemViewType();
 
-    T getItem();
+   T getItem();
 }

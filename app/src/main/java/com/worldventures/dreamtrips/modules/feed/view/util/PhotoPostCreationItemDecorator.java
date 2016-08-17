@@ -8,8 +8,8 @@ import com.worldventures.dreamtrips.R;
 
 public class PhotoPostCreationItemDecorator extends RecyclerView.ItemDecoration {
 
-    @Override
-    public void getItemOffsets(Rect outRect, View view, RecyclerView parent, RecyclerView.State state) {
-        outRect.bottom = (int) parent.getContext().getResources().getDimension(R.dimen.spacing_small);
-    }
+   @Override
+   public void getItemOffsets(Rect outRect, View view, RecyclerView parent, RecyclerView.State state) {
+      outRect.bottom = (int) parent.getContext().getResources().getDimension(R.dimen.spacing_small);
+   }
 }

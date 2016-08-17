@@ -12,26 +12,26 @@ import java.util.List;
 
 public class ConversationParticipantsIQ extends IQ {
 
-    public static final String NAMESPACE = "http://jabber.org/protocol/muc#admin";
-    public static final String ELEMENT_QUERY = "query";
+   public static final String NAMESPACE = "http://jabber.org/protocol/muc#admin";
+   public static final String ELEMENT_QUERY = "query";
 
-    private final List<ParticipantItem> participantItems = new ArrayList<>();
+   private final List<ParticipantItem> participantItems = new ArrayList<>();
 
-    public ConversationParticipantsIQ() {
-        super(ELEMENT_QUERY, NAMESPACE);
-    }
+   public ConversationParticipantsIQ() {
+      super(ELEMENT_QUERY, NAMESPACE);
+   }
 
-    public void addParticipantItem(ParticipantItem participantItem) {
-        participantItems.add(participantItem);
-    }
+   public void addParticipantItem(ParticipantItem participantItem) {
+      participantItems.add(participantItem);
+   }
 
-    @NonNull
-    public List<ParticipantItem> getParticipantItems() {
-        return participantItems;
-    }
+   @NonNull
+   public List<ParticipantItem> getParticipantItems() {
+      return participantItems;
+   }
 
-    @Override
-    protected IQChildElementXmlStringBuilder getIQChildElementBuilder(IQChildElementXmlStringBuilder xml) {
-        return null;
-    }
+   @Override
+   protected IQChildElementXmlStringBuilder getIQChildElementBuilder(IQChildElementXmlStringBuilder xml) {
+      return null;
+   }
 }

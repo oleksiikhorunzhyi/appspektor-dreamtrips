@@ -8,11 +8,11 @@ import com.messenger.messengerservers.loaders.FlagMessageLoader;
 
 public interface LoaderManager {
 
-    ContactsLoader createContactLoader();
+   ContactsLoader createContactLoader();
 
-    ConversationLoader createConversationLoader(String conversationId);
+   ConversationLoader createConversationLoader(String conversationId);
 
-    ConversationsLoader createConversationsLoader();
+   ConversationsLoader createConversationsLoader();
 
-    FlagMessageLoader createFlaggingLoader();
+   FlagMessageLoader createFlaggingLoader();
 }

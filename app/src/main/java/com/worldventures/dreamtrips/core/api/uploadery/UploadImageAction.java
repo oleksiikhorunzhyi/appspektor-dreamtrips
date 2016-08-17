@@ -14,21 +14,18 @@ import io.techery.janet.http.annotations.Url;
 
 @HttpAction(type = HttpAction.Type.MULTIPART, method = HttpAction.Method.POST)
 public class UploadImageAction extends AuthorizedHttpAction {
-    @Url
-    String uploaderyURL;
+   @Url String uploaderyURL;
 
-    @Part(value = "photo")
-    FileBody fileBody;
+   @Part(value = "photo") FileBody fileBody;
 
-    @Response
-    PhotoUploadResponse photoUploadResponse;
+   @Response PhotoUploadResponse photoUploadResponse;
 
-    public UploadImageAction(String uploaderyURL, File imageFile) throws IOException {
-        this.uploaderyURL = uploaderyURL + "/upload";
-        fileBody = new FileBody("image/*", imageFile);
-    }
+   public UploadImageAction(String uploaderyURL, File imageFile) throws IOException {
+      this.uploaderyURL = uploaderyURL + "/upload";
+      fileBody = new FileBody("image/*", imageFile);
+   }
 
-    public PhotoUploadResponse getPhotoUploadResponse() {
-        return photoUploadResponse;
-    }
+   public PhotoUploadResponse getPhotoUploadResponse() {
+      return photoUploadResponse;
+   }
 }

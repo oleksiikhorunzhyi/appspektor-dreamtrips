@@ -1,76 +1,81 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                xmlns:fresco="http://schemas.android.com/apk/res-auto"
-                xmlns:tools="http://schemas.android.com/tools"
-                xmlns:custom="http://schemas.android.com/apk/res-auto"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="@color/white"
-                android:layout_margin="@dimen/spacing_tiny"
-                android:orientation="vertical">
+      xmlns:fresco="http://schemas.android.com/apk/res-auto"
+      xmlns:tools="http://schemas.android.com/tools"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:layout_margin="@dimen/spacing_tiny"
+      android:background="@color/white"
+      android:orientation="vertical"
+      >
 
-    <com.worldventures.dreamtrips.modules.common.view.custom.SmartAvatarView
-        android:id="@+id/user_photo"
-        android:layout_width="48dp"
-        android:layout_height="48dp"
-        android:layout_gravity="center_vertical"
-        android:layout_margin="16dp"
-        fresco:placeholderImage="@drawable/ic_avatar_placeholder"
-        fresco:roundAsCircle="true"/>
+   <com.worldventures.dreamtrips.modules.common.view.custom.SmartAvatarView
+         android:id="@+id/user_photo"
+         android:layout_width="48dp"
+         android:layout_height="48dp"
+         android:layout_gravity="center_vertical"
+         android:layout_margin="16dp"
+         fresco:placeholderImage="@drawable/ic_avatar_placeholder"
+         fresco:roundAsCircle="true"
+         />
 
-    <ImageView
-        android:id="@+id/divider"
-        android:layout_width="match_parent"
-        android:layout_height="0.5dp"
-        android:layout_below="@+id/content_wrapper"
-        android:layout_marginTop="@dimen/spacing_tiny"
-        android:background="@color/grey"/>
+   <ImageView
+         android:id="@+id/divider"
+         android:layout_width="match_parent"
+         android:layout_height="0.5dp"
+         android:layout_below="@+id/content_wrapper"
+         android:layout_marginTop="@dimen/spacing_tiny"
+         android:background="@color/grey"
+         />
 
-    <LinearLayout
-        android:id="@+id/content_wrapper"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginRight="@dimen/spacing_normal"
-        android:layout_marginTop="@dimen/spacing_normal"
-        android:layout_toEndOf="@+id/user_photo"
-        android:layout_toRightOf="@+id/user_photo"
-        android:orientation="vertical">
+   <LinearLayout
+         android:id="@+id/content_wrapper"
+         android:layout_width="match_parent"
+         android:layout_height="wrap_content"
+         android:layout_marginRight="@dimen/spacing_normal"
+         android:layout_marginTop="@dimen/spacing_normal"
+         android:layout_toEndOf="@+id/user_photo"
+         android:layout_toRightOf="@+id/user_photo"
+         android:orientation="vertical"
+         >
 
-        <LinearLayout
+      <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="@dimen/spacing_tiny"
             android:layout_marginEnd="@dimen/spacing_small"
             android:layout_marginRight="@dimen/spacing_small"
-            android:orientation="horizontal">
+            android:orientation="horizontal"
+            >
 
-            <TextView
-                android:id="@+id/user_name"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:maxLines="2"
-                android:textColor="@android:color/black"
-                android:textSize="@dimen/font_normal"
-                tools:text="Eldar Mensutov, asdfasdfasdfa sdfs daf"/>
+         <TextView
+               android:id="@+id/user_name"
+               android:layout_width="0dp"
+               android:layout_height="wrap_content"
+               android:layout_weight="1"
+               android:maxLines="2"
+               android:textColor="@android:color/black"
+               android:textSize="@dimen/font_normal"
+               tools:text="Eldar Mensutov, asdfasdfasdfa sdfs daf"
+               />
 
-            <ImageView
-                android:id="@+id/edited"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:padding="@dimen/spacing_tiny"
-                android:src="@drawable/ic_edited"/>
+         <ImageView
+               android:id="@+id/edited"
+               android:layout_width="wrap_content"
+               android:layout_height="wrap_content"
+               android:padding="@dimen/spacing_tiny"
+               android:src="@drawable/ic_edited"
+               />
 
-            <TextView
-                android:id="@+id/date"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                tools:text="1 min ago"
+         <TextView
+               android:id="@+id/date"
+               android:layout_width="wrap_content"
+               android:layout_height="wrap_content"
+               tools:text="1 min ago"
+               />
+      </LinearLayout>
 
-                />
-        </LinearLayout>
-
-        <TextView
+      <TextView
             android:id="@+id/text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -79,37 +84,87 @@
             tools:text="Lorem ipsulm bla blabla. Lorem ipsulm bla blablaL  oremf ipsulm bla blabla Lorem ipsulm bla blabla Lorem ipsulm bla blabla"
             />
 
-        <LinearLayout
-            android:id="@+id/button_wrapper"
+      <com.worldventures.dreamtrips.modules.feed.view.custom.TranslateView
+            android:id="@+id/comment_translate_view"
             android:layout_width="match_parent"
-
             android:layout_height="wrap_content"
-            android:gravity="right"
-            android:orientation="horizontal">
+            />
 
-            <com.worldventures.dreamtrips.modules.common.view.custom.FlagView
-                android:id="@+id/flag"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                custom:icon="@drawable/ic_flag"/>
+      <LinearLayout
+            android:id="@+id/actions_wrapper"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/spacing_small"
+            android:layout_marginTop="@dimen/spacing_small"
+            android:orientation="horizontal"
+            android:visibility="gone"
+            >
 
-            <ImageView
-                android:id="@+id/reply"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:focusableInTouchMode="false"
-                android:padding="@dimen/spacing_small"
-                android:src="@drawable/ic_comment_reply"
-                android:visibility="gone"/>
+         <TextView
+               android:id="@+id/comment_flag"
+               android:layout_width="wrap_content"
+               android:layout_height="wrap_content"
+               android:text="@string/flag_description_title"
+               android:textColor="@color/comments_action_color"
+               android:textSize="@dimen/font_small"
+               />
 
-            <ImageView
-                android:id="@+id/edit"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:padding="@dimen/spacing_small"
-                android:src="@drawable/ic_comment_edit"/>
-        </LinearLayout>
+         <TextView
+               android:id="@+id/translation_dot_separator"
+               android:layout_width="wrap_content"
+               android:layout_height="wrap_content"
+               android:layout_marginLeft="@dimen/spacing_small"
+               android:layout_marginRight="@dimen/spacing_small"
+               android:text="·"
+               android:textColor="@color/comments_action_color"
+               />
 
-    </LinearLayout>
+         <TextView
+               android:id="@+id/comment_translate"
+               android:layout_width="wrap_content"
+               android:layout_height="wrap_content"
+               android:text="@string/translate"
+               android:textColor="@color/comments_action_color"
+               android:textSize="@dimen/font_small"
+               />
+      </LinearLayout>
 
+      <LinearLayout
+            android:id="@+id/self_actions_wrapper"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/spacing_small"
+            android:layout_marginTop="@dimen/spacing_small"
+            android:orientation="horizontal"
+            android:visibility="gone"
+            >
+
+         <TextView
+               android:id="@+id/comment_edit"
+               android:layout_width="wrap_content"
+               android:layout_height="wrap_content"
+               android:text="@string/feed_edit_item"
+               android:textColor="@color/comments_action_color"
+               android:textSize="@dimen/font_small"
+               />
+
+         <TextView
+               android:layout_width="wrap_content"
+               android:layout_height="wrap_content"
+               android:layout_marginLeft="@dimen/spacing_small"
+               android:layout_marginRight="@dimen/spacing_small"
+               android:text="·"
+               android:textColor="@color/comments_action_color"
+               />
+
+         <TextView
+               android:id="@+id/comment_delete"
+               android:layout_width="wrap_content"
+               android:layout_height="wrap_content"
+               android:text="@string/feed_delete_item"
+               android:textColor="@color/comments_action_color"
+               android:textSize="@dimen/font_small"
+               />
+      </LinearLayout>
+   </LinearLayout>
 </RelativeLayout>

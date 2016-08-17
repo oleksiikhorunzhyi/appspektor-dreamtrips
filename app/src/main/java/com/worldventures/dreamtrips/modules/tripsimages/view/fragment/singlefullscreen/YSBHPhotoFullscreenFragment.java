@@ -18,41 +18,37 @@ import butterknife.OnClick;
 @Layout(R.layout.fragment_fullscreen_ysbh_photo)
 public class YSBHPhotoFullscreenFragment extends FullScreenPhotoFragment<YouShouldBeHerePhotoFullscreenPresenter, YSBHPhoto> implements YouShouldBeHerePhotoFullscreenPresenter.View {
 
-    @InjectView(R.id.tv_description)
-    TextView tvDescription;
-    @InjectView(R.id.tv_see_more)
-    TextView tvSeeMore;
-    @InjectView(R.id.iv_share)
-    ImageView ivShare;
-    @InjectView(R.id.ll_more_info)
-    LinearLayout llMoreInfo;
+   @InjectView(R.id.tv_description) TextView tvDescription;
+   @InjectView(R.id.tv_see_more) TextView tvSeeMore;
+   @InjectView(R.id.iv_share) ImageView ivShare;
+   @InjectView(R.id.ll_more_info) LinearLayout llMoreInfo;
 
-    @Override
-    protected YouShouldBeHerePhotoFullscreenPresenter createPresenter(Bundle savedInstanceState) {
-        return new YouShouldBeHerePhotoFullscreenPresenter((YSBHPhoto) getArgs().getPhoto(), getArgs().getType());
-    }
+   @Override
+   protected YouShouldBeHerePhotoFullscreenPresenter createPresenter(Bundle savedInstanceState) {
+      return new YouShouldBeHerePhotoFullscreenPresenter((YSBHPhoto) getArgs().getPhoto(), getArgs().getType());
+   }
 
-    @Override
-    public void setContent(IFullScreenObject photo) {
-        super.setContent(photo);
-        tvDescription.setText(photo.getFSDescription());
-    }
+   @Override
+   public void setContent(IFullScreenObject photo) {
+      super.setContent(photo);
+      tvDescription.setText(photo.getFSDescription());
+   }
 
-    @OnClick(R.id.tv_see_more)
-    protected void actionSeeMore() {
-        llMoreInfo.setVisibility(View.VISIBLE);
-        tvDescription.setSingleLine(false);
+   @OnClick(R.id.tv_see_more)
+   protected void actionSeeMore() {
+      llMoreInfo.setVisibility(View.VISIBLE);
+      tvDescription.setSingleLine(false);
 
-        tvSeeMore.setVisibility(View.GONE);
-        if (tvDescription.getText().length() == 0) {
-            tvDescription.setVisibility(View.GONE);
-        }
-    }
+      tvSeeMore.setVisibility(View.GONE);
+      if (tvDescription.getText().length() == 0) {
+         tvDescription.setVisibility(View.GONE);
+      }
+   }
 
-    @OnClick(R.id.ll_more_info)
-    public void actionSeeLess() {
-        tvDescription.setSingleLine(true);
-        tvDescription.setVisibility(View.VISIBLE);
-        tvSeeMore.setVisibility(View.VISIBLE);
-    }
+   @OnClick(R.id.ll_more_info)
+   public void actionSeeLess() {
+      tvDescription.setSingleLine(true);
+      tvDescription.setVisibility(View.VISIBLE);
+      tvSeeMore.setVisibility(View.VISIBLE);
+   }
 }

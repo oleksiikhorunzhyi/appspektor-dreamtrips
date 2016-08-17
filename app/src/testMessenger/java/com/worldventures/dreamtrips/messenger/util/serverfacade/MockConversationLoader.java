@@ -7,14 +7,14 @@ import rx.Observable;
 
 public class MockConversationLoader implements ConversationLoader {
 
-    private Conversation conversation;
+   private Conversation conversation;
 
-    public MockConversationLoader(Conversation conversation) {
-        this.conversation = conversation;
-    }
+   public MockConversationLoader(Conversation conversation) {
+      this.conversation = conversation;
+   }
 
-    @Override
-    public Observable<Conversation> load() {
-        return Observable.just(conversation);
-    }
+   @Override
+   public Observable<Conversation> load() {
+      return Observable.just(conversation);
+   }
 }

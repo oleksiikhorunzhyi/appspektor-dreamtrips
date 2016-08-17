@@ -8,17 +8,17 @@ import java.util.ArrayList;
 
 public class GetInvitationsTemplateQuery extends Query<ArrayList<InviteTemplate>> {
 
-    public GetInvitationsTemplateQuery() {
-        super((Class<ArrayList<InviteTemplate>>) new ArrayList<InviteTemplate>().getClass());
-    }
+   public GetInvitationsTemplateQuery() {
+      super((Class<ArrayList<InviteTemplate>>) new ArrayList<InviteTemplate>().getClass());
+   }
 
-    @Override
-    public ArrayList<InviteTemplate> loadDataFromNetwork() throws Exception {
-        return getService().getInviteTemplates();
-    }
+   @Override
+   public ArrayList<InviteTemplate> loadDataFromNetwork() throws Exception {
+      return getService().getInviteTemplates();
+   }
 
-    @Override
-    public int getErrorMessage() {
-        return R.string.error_fail_to_invitation_templates;
-    }
+   @Override
+   public int getErrorMessage() {
+      return R.string.error_fail_to_invitation_templates;
+   }
 }

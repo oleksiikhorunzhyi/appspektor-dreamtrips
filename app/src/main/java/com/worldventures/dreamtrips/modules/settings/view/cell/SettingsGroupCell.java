@@ -15,25 +15,19 @@ import butterknife.OnClick;
 @Layout(R.layout.adapter_item_settings)
 public class SettingsGroupCell extends AbstractDelegateCell<SettingsGroup, CellDelegate<SettingsGroup>> {
 
-    @InjectView(R.id.setting_title)
-    TextView title;
+   @InjectView(R.id.setting_title) TextView title;
 
-    public SettingsGroupCell(View view) {
-        super(view);
-    }
+   public SettingsGroupCell(View view) {
+      super(view);
+   }
 
-    @Override
-    protected void syncUIStateWithModel() {
-        title.setText(getModelObject().getTitle());
-    }
+   @Override
+   protected void syncUIStateWithModel() {
+      title.setText(getModelObject().getTitle());
+   }
 
-    @OnClick(R.id.settings_holder)
-    void onSettingsClicked() {
-        cellDelegate.onCellClicked(getModelObject());
-    }
-
-    @Override
-    public void prepareForReuse() {
-
-    }
+   @OnClick(R.id.settings_holder)
+   void onSettingsClicked() {
+      cellDelegate.onCellClicked(getModelObject());
+   }
 }

@@ -28,113 +28,113 @@ import com.worldventures.dreamtrips.modules.common.view.util.TextWatcherAdapter;
  */
 public class DelayAutoCompleteEditText extends AutoCompleteTextView {
 
-    private static final long SEARCH_TRIGGER_DELAY_IN_MS = 1000;
-    private long delayInMillis = SEARCH_TRIGGER_DELAY_IN_MS;
+   private static final long SEARCH_TRIGGER_DELAY_IN_MS = 1000;
+   private long delayInMillis = SEARCH_TRIGGER_DELAY_IN_MS;
 
-    private static final int TRIGGER_ON_QUERY_TEXT_CHANGE = 1;
-    private static final int TRIGGER_ON_QUERY_TEXT_SUBMIT = 2;
+   private static final int TRIGGER_ON_QUERY_TEXT_CHANGE = 1;
+   private static final int TRIGGER_ON_QUERY_TEXT_SUBMIT = 2;
 
-    InnerHandler handler = new InnerHandler();
-    private SearchView.OnQueryTextListener listener;
+   InnerHandler handler = new InnerHandler();
+   private SearchView.OnQueryTextListener listener;
 
-    private static class InnerHandler extends Handler {
-        SearchView.OnQueryTextListener listener;
+   private static class InnerHandler extends Handler {
+      SearchView.OnQueryTextListener listener;
 
-        @Override
-        public void handleMessage(Message msg) {
-            if (msg.what == TRIGGER_ON_QUERY_TEXT_CHANGE) {
-                if (listener != null) {
-                    listener.onQueryTextChange((String) msg.obj);
-                }
+      @Override
+      public void handleMessage(Message msg) {
+         if (msg.what == TRIGGER_ON_QUERY_TEXT_CHANGE) {
+            if (listener != null) {
+               listener.onQueryTextChange((String) msg.obj);
             }
-            if (msg.what == TRIGGER_ON_QUERY_TEXT_SUBMIT) {
-                if (listener != null) {
-                    listener.onQueryTextSubmit((String) msg.obj);
-                }
+         }
+         if (msg.what == TRIGGER_ON_QUERY_TEXT_SUBMIT) {
+            if (listener != null) {
+               listener.onQueryTextSubmit((String) msg.obj);
             }
-        }
-    }
+         }
+      }
+   }
 
-    //region EditText listening
-    private TextWatcher textWatcher = new TextWatcherAdapter() {
-        @Override
-        public void onTextChanged(CharSequence s, int start, int before, int count) {
-            handler.removeMessages(TRIGGER_ON_QUERY_TEXT_CHANGE);
+   //region EditText listening
+   private TextWatcher textWatcher = new TextWatcherAdapter() {
+      @Override
+      public void onTextChanged(CharSequence s, int start, int before, int count) {
+         handler.removeMessages(TRIGGER_ON_QUERY_TEXT_CHANGE);
+         Message msg = new Message();
+         msg.what = TRIGGER_ON_QUERY_TEXT_CHANGE;
+         msg.obj = s;
+         handler.sendMessageDelayed(msg, delayInMillis);
+
+         if (listener != null) {
+            listener.onQueryTextChange(s.toString());
+         }
+      }
+   };
+
+   private OnEditorActionListener onEditorActionListener = new OnEditorActionListener() {
+      @Override
+      public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+         if (actionId == EditorInfo.IME_ACTION_DONE) {
+            String text = v.getText().toString();
+
+            handler.removeMessages(TRIGGER_ON_QUERY_TEXT_SUBMIT);
             Message msg = new Message();
-            msg.what = TRIGGER_ON_QUERY_TEXT_CHANGE;
-            msg.obj = s;
+            msg.what = TRIGGER_ON_QUERY_TEXT_SUBMIT;
+            msg.obj = text;
             handler.sendMessageDelayed(msg, delayInMillis);
 
             if (listener != null) {
-                listener.onQueryTextChange(s.toString());
+               listener.onQueryTextSubmit(text);
             }
-        }
-    };
 
-    private OnEditorActionListener onEditorActionListener = new OnEditorActionListener() {
-        @Override
-        public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-            if (actionId == EditorInfo.IME_ACTION_DONE) {
-                String text = v.getText().toString();
+            InputMethodManager imm = (InputMethodManager) v.getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
+            imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
+            return true;
+         }
+         return false;
+      }
+   };
+   //endregion
 
-                handler.removeMessages(TRIGGER_ON_QUERY_TEXT_SUBMIT);
-                Message msg = new Message();
-                msg.what = TRIGGER_ON_QUERY_TEXT_SUBMIT;
-                msg.obj = text;
-                handler.sendMessageDelayed(msg, delayInMillis);
+   //region Setters
+   public void setDelayInMillis(long delayInMillis) {
+      this.delayInMillis = delayInMillis;
+   }
 
-                if (listener != null) {
-                    listener.onQueryTextSubmit(text);
-                }
+   public void setOnQueryTextListener(SearchView.OnQueryTextListener listener) {
+      this.listener = listener;
+   }
+   //endregion
 
-                InputMethodManager imm = (InputMethodManager) v.getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
-                imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
-                return true;
-            }
-            return false;
-        }
-    };
-    //endregion
+   //region Constructors
+   public DelayAutoCompleteEditText(Context context) {
+      super(context);
+   }
 
-    //region Setters
-    public void setDelayInMillis(long delayInMillis) {
-        this.delayInMillis = delayInMillis;
-    }
+   public DelayAutoCompleteEditText(Context context, AttributeSet attrs) {
+      super(context, attrs);
+   }
 
-    public void setOnQueryTextListener(SearchView.OnQueryTextListener listener) {
-        this.listener = listener;
-    }
-    //endregion
+   public DelayAutoCompleteEditText(Context context, AttributeSet attrs, int defStyleAttr) {
+      super(context, attrs, defStyleAttr);
+   }
 
-    //region Constructors
-    public DelayAutoCompleteEditText(Context context) {
-        super(context);
-    }
+   @TargetApi(Build.VERSION_CODES.LOLLIPOP)
+   public DelayAutoCompleteEditText(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
+      super(context, attrs, defStyleAttr, defStyleRes);
+   }
+   //endregion
 
-    public DelayAutoCompleteEditText(Context context, AttributeSet attrs) {
-        super(context, attrs);
-    }
+   @Override
+   protected void onFinishInflate() {
+      super.onFinishInflate();
+      addTextChangedListener(textWatcher);
+      setOnEditorActionListener(onEditorActionListener);
+   }
 
-    public DelayAutoCompleteEditText(Context context, AttributeSet attrs, int defStyleAttr) {
-        super(context, attrs, defStyleAttr);
-    }
-
-    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
-    public DelayAutoCompleteEditText(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
-        super(context, attrs, defStyleAttr, defStyleRes);
-    }
-    //endregion
-
-    @Override
-    protected void onFinishInflate() {
-        super.onFinishInflate();
-        addTextChangedListener(textWatcher);
-        setOnEditorActionListener(onEditorActionListener);
-    }
-
-    @Override
-    protected void onDetachedFromWindow() {
-        super.onDetachedFromWindow();
-        removeTextChangedListener(textWatcher);
-    }
+   @Override
+   protected void onDetachedFromWindow() {
+      super.onDetachedFromWindow();
+      removeTextChangedListener(textWatcher);
+   }
 }

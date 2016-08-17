@@ -13,77 +13,76 @@ import com.worldventures.dreamtrips.modules.feed.model.FeedItem;
 
 public class StateRecyclerView extends EmptyRecyclerView {
 
-    private BaseArrayListAdapter adapter;
+   private BaseArrayListAdapter adapter;
 
-    private RecyclerViewStateDelegate stateDelegate;
-    private OffsetYListener offsetYListener;
-    private LinearLayoutManager layoutManager;
+   private RecyclerViewStateDelegate stateDelegate;
+   private OffsetYListener offsetYListener;
+   private LinearLayoutManager layoutManager;
 
-    public StateRecyclerView(Context context) {
-        this(context, null);
-    }
+   public StateRecyclerView(Context context) {
+      this(context, null);
+   }
 
-    public StateRecyclerView(Context context, AttributeSet attrs) {
-        this(context, attrs, 0);
-    }
+   public StateRecyclerView(Context context, AttributeSet attrs) {
+      this(context, attrs, 0);
+   }
 
-    public StateRecyclerView(Context context, AttributeSet attrs, int defStyle) {
-        super(context, attrs, defStyle);
-    }
+   public StateRecyclerView(Context context, AttributeSet attrs, int defStyle) {
+      super(context, attrs, defStyle);
+   }
 
-    public void onSaveInstanceState(Bundle outState) {
-        stateDelegate.saveStateIfNeeded(outState);
-    }
+   public void onSaveInstanceState(Bundle outState) {
+      stateDelegate.saveStateIfNeeded(outState);
+   }
 
-    public void setup(Bundle savedInstanceState, BaseArrayListAdapter adapter) {
-        this.adapter = adapter;
-        setAdapter(this.adapter);
-        //
-        stateDelegate = new RecyclerViewStateDelegate();
-        stateDelegate.onCreate(savedInstanceState);
-        stateDelegate.setRecyclerView(this);
-        //
-        layoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
-        layoutManager.setAutoMeasureEnabled(true);
-        setLayoutManager(layoutManager);
-        //
-        addOnScrollListener(new RecyclerView.OnScrollListener() {
-            @Override
-            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
-                if (offsetYListener != null)
-                    offsetYListener.onScroll(StateRecyclerView.this.computeVerticalScrollOffset());
-            }
-        });
-    }
+   public void setup(Bundle savedInstanceState, BaseArrayListAdapter adapter) {
+      this.adapter = adapter;
+      setAdapter(this.adapter);
+      //
+      stateDelegate = new RecyclerViewStateDelegate();
+      stateDelegate.onCreate(savedInstanceState);
+      stateDelegate.setRecyclerView(this);
+      //
+      layoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
+      layoutManager.setAutoMeasureEnabled(true);
+      setLayoutManager(layoutManager);
+      //
+      addOnScrollListener(new RecyclerView.OnScrollListener() {
+         @Override
+         public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+            if (offsetYListener != null) offsetYListener.onScroll(StateRecyclerView.this.computeVerticalScrollOffset());
+         }
+      });
+   }
 
-    public void restoreStateIfNeeded() {
-        stateDelegate.restoreStateIfNeeded();
-    }
+   public void restoreStateIfNeeded() {
+      stateDelegate.restoreStateIfNeeded();
+   }
 
-    @Override
-    protected void onDetachedFromWindow() {
-        super.onDetachedFromWindow();
-        stateDelegate.onDestroyView();
-    }
+   @Override
+   protected void onDetachedFromWindow() {
+      super.onDetachedFromWindow();
+      stateDelegate.onDestroyView();
+   }
 
-    public BaseArrayListAdapter<FeedItem> getAdapter() {
-        return adapter;
-    }
+   public BaseArrayListAdapter<FeedItem> getAdapter() {
+      return adapter;
+   }
 
-    public void setOffsetYListener(OffsetYListener offsetYListener) {
-        this.offsetYListener = offsetYListener;
-    }
+   public void setOffsetYListener(OffsetYListener offsetYListener) {
+      this.offsetYListener = offsetYListener;
+   }
 
-    public float getScrollOffset() {
-        return StateRecyclerView.this.computeVerticalScrollOffset();
-    }
+   public float getScrollOffset() {
+      return StateRecyclerView.this.computeVerticalScrollOffset();
+   }
 
-    public interface OffsetYListener {
-        void onScroll(int yOffset);
-    }
+   public interface OffsetYListener {
+      void onScroll(int yOffset);
+   }
 
-    @Override
-    public LinearLayoutManager getLayoutManager() {
-        return layoutManager;
-    }
+   @Override
+   public LinearLayoutManager getLayoutManager() {
+      return layoutManager;
+   }
 }

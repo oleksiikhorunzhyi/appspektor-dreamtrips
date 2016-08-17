@@ -5,5 +5,5 @@ import com.messenger.messengerservers.paginations.PagePagination;
 
 public interface PaginationManager {
 
-    PagePagination<Message> getConversationHistoryPagination();
+   PagePagination<Message> getConversationHistoryPagination();
 }

@@ -9,17 +9,17 @@ import java.util.ArrayList;
 
 public class AccountImagesPresenter extends MembersImagesPresenter {
 
-    public AccountImagesPresenter(TripImagesType type, int userId) {
-        super(type, userId);
-    }
+   public AccountImagesPresenter(TripImagesType type, int userId) {
+      super(type, userId);
+   }
 
-    @Override
-    public SpiceRequest<ArrayList<IFullScreenObject>> getReloadRequest() {
-        return new GetUserPhotosQuery(userId, PER_PAGE, 1);
-    }
+   @Override
+   public SpiceRequest<ArrayList<IFullScreenObject>> getReloadRequest() {
+      return new GetUserPhotosQuery(userId, PER_PAGE, 1);
+   }
 
-    @Override
-    public SpiceRequest<ArrayList<IFullScreenObject>> getNextPageRequest(int currentCount) {
-        return new GetUserPhotosQuery(userId, PER_PAGE, currentCount / PER_PAGE + 1);
-    }
+   @Override
+   public SpiceRequest<ArrayList<IFullScreenObject>> getNextPageRequest(int currentCount) {
+      return new GetUserPhotosQuery(userId, PER_PAGE, currentCount / PER_PAGE + 1);
+   }
 }

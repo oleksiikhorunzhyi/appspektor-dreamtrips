@@ -12,18 +12,17 @@ import javax.inject.Inject;
 
 public class SoftInputInitializer implements AppInitializer {
 
-    @Inject
-    protected Application app;
+   @Inject protected Application app;
 
-    @Override
-    public void initialize(Injector injector) {
-        injector.inject(this);
-        //
-        app.registerActivityLifecycleCallbacks(new SimpleActivityLifecycleCallbacks() {
-            @Override
-            public void onActivityStopped(Activity activity) {
-                SoftInputUtil.hideSoftInputMethod(activity);
-            }
-        });
-    }
+   @Override
+   public void initialize(Injector injector) {
+      injector.inject(this);
+      //
+      app.registerActivityLifecycleCallbacks(new SimpleActivityLifecycleCallbacks() {
+         @Override
+         public void onActivityStopped(Activity activity) {
+            SoftInputUtil.hideSoftInputMethod(activity);
+         }
+      });
+   }
 }

@@ -1,27 +1,28 @@
 <?xml version="1.0" encoding="utf-8"?>
 <merge xmlns:android="http://schemas.android.com/apk/res/android"
-       xmlns:tools="http://schemas.android.com/tools"
-    >
+      xmlns:tools="http://schemas.android.com/tools"
+      >
 
-    <!-- Dummy bottom for swipe layout as it requires it in hierarchy -->
-    <FrameLayout
-        android:id="@+id/in_app_notif_dummy_bottom"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
+   <!-- Dummy bottom for swipe layout as it requires it in hierarchy -->
+   <FrameLayout
+         android:id="@+id/in_app_notif_dummy_bottom"
+         android:layout_width="match_parent"
+         android:layout_height="wrap_content"
+         />
 
-    <!-- Since margins do not work for some reasons for CardView in SwipeLayout put additional
-    FrameLayout -->
-    <FrameLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:layout_marginBottom="@dimen/in_app_notification_horizontal_margin"
-        android:layout_marginLeft="@dimen/in_app_notification_vertical_margin"
-        android:layout_marginRight="@dimen/in_app_notification_horizontal_margin"
-        android:layout_marginTop="@dimen/in_app_notification_vertical_margin">
+   <!-- Since margins do not work for some reasons for CardView in SwipeLayout put additional
+   FrameLayout -->
+   <FrameLayout
+         android:layout_width="match_parent"
+         android:layout_height="wrap_content"
+         android:layout_gravity="center"
+         android:layout_marginBottom="@dimen/in_app_notification_horizontal_margin"
+         android:layout_marginLeft="@dimen/in_app_notification_vertical_margin"
+         android:layout_marginRight="@dimen/in_app_notification_horizontal_margin"
+         android:layout_marginTop="@dimen/in_app_notification_vertical_margin"
+         >
 
-        <android.support.v7.widget.CardView
-            android:id="@+id/in_app_notif_content"
+      <android.support.v7.widget.CardView android:id="@+id/in_app_notif_content"
             xmlns:android="http://schemas.android.com/apk/res/android"
             xmlns:app="http://schemas.android.com/apk/res-auto"
             xmlns:tools="http://schemas.android.com/tools"
@@ -30,44 +31,49 @@
             android:layout_gravity="center"
             >
 
-            <RelativeLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:paddingBottom="@dimen/in_app_notification_vertical_padding"
-                android:paddingLeft="@dimen/in_app_notification_horizontal_padding"
-                android:paddingTop="@dimen/in_app_notification_vertical_padding">
+         <RelativeLayout
+               android:layout_width="match_parent"
+               android:layout_height="wrap_content"
+               android:paddingBottom="@dimen/in_app_notification_vertical_padding"
+               android:paddingLeft="@dimen/in_app_notification_horizontal_padding"
+               android:paddingTop="@dimen/in_app_notification_vertical_padding"
+               >
 
-                <RelativeLayout
-                    style="@style/InAppNotificationUiElementsContainer">
-                    <com.messenger.ui.widget.AvatarView
-                        android:id="@+id/in_app_notif_avatar"
-                        style="@style/InAppNotificationSingleChatAvatarView"
-                        android:layout_centerVertical="true"
-                        app:placeholderImage="@drawable/noavatar_big"
-                        app:roundAsCircle="true"/>
+            <RelativeLayout style="@style/InAppNotificationUiElementsContainer">
 
-                    <TextView
-                        android:id="@+id/in_app_notif_title"
-                        style="@style/InAppNotificationTitle"
-                        android:layout_alignTop="@+id/in_app_notif_avatar"
+               <com.messenger.ui.widget.AvatarView
+                     android:id="@+id/in_app_notif_avatar"
+                     style="@style/InAppNotificationSingleChatAvatarView"
+                     android:layout_centerVertical="true"
+                     app:placeholderImage="@drawable/noavatar_big"
+                     app:roundAsCircle="true"
+                     />
 
-                        android:layout_toRightOf="@id/in_app_notif_avatar"
-                        tools:text="Title"/>
+               <TextView
+                     android:id="@+id/in_app_notif_title"
+                     style="@style/InAppNotificationTitle"
+                     android:layout_alignTop="@+id/in_app_notif_avatar"
 
-                    <TextView
-                        android:id="@+id/in_app_notif_text"
-                        style="@style/InAppNotificationText"
-                        android:layout_below="@id/in_app_notif_title"
-                        android:layout_toRightOf="@+id/in_app_notif_avatar"
-                        tools:text="Description"/>
-                </RelativeLayout>
+                     android:layout_toRightOf="@id/in_app_notif_avatar"
+                     tools:text="Title"
+                     />
 
-                <ImageView
-                    android:id="@+id/in_app_notif_close_btn"
-                    style="@style/InAppNotificationCloseButton"/>
-
+               <TextView
+                     android:id="@+id/in_app_notif_text"
+                     style="@style/InAppNotificationText"
+                     android:layout_below="@id/in_app_notif_title"
+                     android:layout_toRightOf="@+id/in_app_notif_avatar"
+                     tools:text="Description"
+                     />
             </RelativeLayout>
 
-        </android.support.v7.widget.CardView>
-    </FrameLayout>
+            <ImageView
+                  android:id="@+id/in_app_notif_close_btn"
+                  style="@style/InAppNotificationCloseButton"
+                  />
+
+         </RelativeLayout>
+
+      </android.support.v7.widget.CardView>
+   </FrameLayout>
 </merge>

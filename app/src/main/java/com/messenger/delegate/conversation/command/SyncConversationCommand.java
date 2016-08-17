@@ -16,29 +16,27 @@ import io.techery.janet.command.annotations.CommandAction;
 @CommandAction
 public class SyncConversationCommand extends Command<Conversation> implements InjectableAction {
 
-    @Inject Janet janet;
-    @Inject UsersDelegate usersDelegate;
-    @Inject ConversationSyncHelper conversationSyncHelper;
+   @Inject Janet janet;
+   @Inject UsersDelegate usersDelegate;
+   @Inject ConversationSyncHelper conversationSyncHelper;
 
-    private final String conversationId;
+   private final String conversationId;
 
-    public SyncConversationCommand(String conversationId) {
-        this.conversationId = conversationId;
-    }
+   public SyncConversationCommand(String conversationId) {
+      this.conversationId = conversationId;
+   }
 
-    @Override
-    protected void run(CommandCallback<Conversation> callback) throws Throwable {
-        janet.createPipe(LoadConversationCommand.class)
-                .createObservableResult(new LoadConversationCommand(conversationId))
-                .map(Command::getResult)
-                .flatMap(conversation ->
-                        usersDelegate.loadAndSaveUsers(ConversationHelper.getUsersFromConversation(conversation))
-                                .map(fetchUsersDataCommand -> conversation)
-                )
-                .subscribe(conversation -> {
-                    conversationSyncHelper.process(conversation);
-                    callback.onSuccess(conversation);
-                }, callback::onFail);
-    }
+   @Override
+   protected void run(CommandCallback<Conversation> callback) throws Throwable {
+      janet.createPipe(LoadConversationCommand.class)
+            .createObservableResult(new LoadConversationCommand(conversationId))
+            .map(Command::getResult)
+            .flatMap(conversation -> usersDelegate.loadAndSaveUsers(ConversationHelper.getUsersFromConversation(conversation))
+                  .map(fetchUsersDataCommand -> conversation))
+            .subscribe(conversation -> {
+               conversationSyncHelper.process(conversation);
+               callback.onSuccess(conversation);
+            }, callback::onFail);
+   }
 
 }

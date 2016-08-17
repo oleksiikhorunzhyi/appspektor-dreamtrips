@@ -4,14 +4,13 @@ import com.worldventures.dreamtrips.modules.dtl.model.location.DtlExternalLocati
 import com.worldventures.dreamtrips.modules.dtl_flow.DtlPresenter;
 import com.worldventures.dreamtrips.modules.dtl_flow.ViewState;
 
-public interface DtlLocationChangePresenter
-        extends DtlPresenter<DtlLocationChangeScreen, ViewState.EMPTY> {
+public interface DtlLocationChangePresenter extends DtlPresenter<DtlLocationChangeScreen, ViewState.EMPTY> {
 
-    void loadNearMeRequested();
+   void loadNearMeRequested();
 
-    void locationSelected(DtlExternalLocation location);
+   void locationSelected(DtlExternalLocation location);
 
-    void onLocationResolutionGranted();
+   void onLocationResolutionGranted();
 
-    void onLocationResolutionDenied();
+   void onLocationResolutionDenied();
 }

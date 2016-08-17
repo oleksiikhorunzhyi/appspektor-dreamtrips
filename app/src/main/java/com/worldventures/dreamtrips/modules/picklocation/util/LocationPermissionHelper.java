@@ -8,17 +8,17 @@ import timber.log.Timber;
 
 public class LocationPermissionHelper {
 
-    private WeakReference<PickLocationActivity> weakActivity;
+   private WeakReference<PickLocationActivity> weakActivity;
 
-    public LocationPermissionHelper(PickLocationActivity pickLocationActivity) {
-        this.weakActivity = new WeakReference<PickLocationActivity>(pickLocationActivity);
-    }
+   public LocationPermissionHelper(PickLocationActivity pickLocationActivity) {
+      this.weakActivity = new WeakReference<PickLocationActivity>(pickLocationActivity);
+   }
 
-    public void askForLocationPermission() {
-        if (weakActivity.get() == null) {
-            Timber.e("Cannot ask for location permissions, activity was deallocated");
-            return;
-        }
-        weakActivity.get().askForLocationPermission();
-    }
+   public void askForLocationPermission() {
+      if (weakActivity.get() == null) {
+         Timber.e("Cannot ask for location permissions, activity was deallocated");
+         return;
+      }
+      weakActivity.get().askForLocationPermission();
+   }
 }

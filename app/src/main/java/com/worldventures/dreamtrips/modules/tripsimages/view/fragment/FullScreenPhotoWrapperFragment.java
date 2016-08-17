@@ -36,186 +36,182 @@ import javax.inject.Inject;
 import butterknife.InjectView;
 
 @Layout(R.layout.fragment_full_screen_photo_wrapper)
-public class FullScreenPhotoWrapperFragment
-        extends RxBaseFragmentWithArgs<TripImagesListPresenter, FullScreenImagesBundle>
-        implements MembersImagesPresenter.View {
+public class FullScreenPhotoWrapperFragment extends RxBaseFragmentWithArgs<TripImagesListPresenter, FullScreenImagesBundle> implements MembersImagesPresenter.View {
 
-    @InjectView(R.id.pager)
-    protected ViewPager pager;
-    @InjectView(R.id.toolbar_actionbar)
-    protected Toolbar toolbar;
-    @Inject
-    SnappyRepository db;
+   @InjectView(R.id.pager) protected ViewPager pager;
+   @InjectView(R.id.toolbar_actionbar) protected Toolbar toolbar;
+   @Inject SnappyRepository db;
 
-    protected BaseStatePagerAdapter<FragmentItemWithObject<IFullScreenObject>> adapter;
-    protected Route route;
+   protected BaseStatePagerAdapter<FragmentItemWithObject<IFullScreenObject>> adapter;
+   protected Route route;
 
-    @Override
-    protected TripImagesListPresenter createPresenter(Bundle savedInstanceState) {
-        TripImagesType type = getArgs().getType();
-        int userId = getArgs().getUserId();
-        int position = getArgs().getPosition();
-        int notificationId = getArgs().getNotificationId();
-        this.route = getArgs().getRoute();
-        ArrayList<IFullScreenObject> fixedList = getArgs().getFixedList();
-        return TripImagesListPresenter.create(type, userId, fixedList, true, position, notificationId);
-    }
+   @Override
+   protected TripImagesListPresenter createPresenter(Bundle savedInstanceState) {
+      TripImagesType type = getArgs().getType();
+      int userId = getArgs().getUserId();
+      int position = getArgs().getPosition();
+      int notificationId = getArgs().getNotificationId();
+      this.route = getArgs().getRoute();
+      ArrayList<IFullScreenObject> fixedList = getArgs().getFixedList();
+      return TripImagesListPresenter.create(type, userId, fixedList, true, position, notificationId);
+   }
 
-    @Override
-    public void afterCreateView(View rootView) {
-        super.afterCreateView(rootView);
-        AppCompatActivity activity = (AppCompatActivity) getActivity();
-        activity.setSupportActionBar(toolbar);
-        activity.getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        activity.getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_photo_back_rounded);
-        activity.getSupportActionBar().setTitle("");
+   @Override
+   public void afterCreateView(View rootView) {
+      super.afterCreateView(rootView);
+      AppCompatActivity activity = (AppCompatActivity) getActivity();
+      activity.setSupportActionBar(toolbar);
+      activity.getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+      activity.getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_photo_back_rounded);
+      activity.getSupportActionBar().setTitle("");
 
-        setupAdapter();
+      setupAdapter();
 
-        pager.setAdapter(adapter);
-        pager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
-            public void onPageScrollStateChanged(int state) {
-            }
+      pager.setAdapter(adapter);
+      pager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+         public void onPageScrollStateChanged(int state) {
+         }
 
-            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-            }
+         public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+         }
 
-            public void onPageSelected(int position) {
-                getPresenter().setCurrentPhotoPosition(position);
-                getPresenter().scrolled(1, adapter.getCount(), position);
-            }
-        });
-    }
+         public void onPageSelected(int position) {
+            getPresenter().setCurrentPhotoPosition(position);
+            getPresenter().scrolled(1, adapter.getCount(), position);
+         }
+      });
+   }
 
-    @Override
-    public void onResume() {
-        super.onResume();
-        toolbar.getBackground().mutate().setAlpha(0);
-    }
+   @Override
+   public void onResume() {
+      super.onResume();
+      toolbar.getBackground().mutate().setAlpha(0);
+   }
 
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        boolean isFirstLaunch = savedInstanceState == null;
-        setDefaultSocialPagerState(isFirstLaunch);
-    }
+   @Override
+   public void onCreate(Bundle savedInstanceState) {
+      super.onCreate(savedInstanceState);
+      boolean isFirstLaunch = savedInstanceState == null;
+      setDefaultSocialPagerState(isFirstLaunch);
+   }
 
-    protected void setDefaultSocialPagerState(boolean firstLaunch) {
-        SocialViewPagerState state = db.getSocialViewPagerState();
-        state = state == null ? new SocialViewPagerState() : state;
+   protected void setDefaultSocialPagerState(boolean firstLaunch) {
+      SocialViewPagerState state = db.getSocialViewPagerState();
+      state = state == null ? new SocialViewPagerState() : state;
 
-        boolean isFromNotification = getArgs().getNotificationId() != FullScreenImagesBundle.NO_NOTIFICATION;
+      boolean isFromNotification = getArgs().getNotificationId() != FullScreenImagesBundle.NO_NOTIFICATION;
 
-        if (isFromNotification) {
-            state.setContentWrapperVisible(false);
-            state.setTagHolderVisible(true);
-        } else if (firstLaunch) {
-            state.setContentWrapperVisible(true);
-            state.setTagHolderVisible(getArgs().isShowTags());
-        }
+      if (isFromNotification) {
+         state.setContentWrapperVisible(false);
+         state.setTagHolderVisible(true);
+      } else if (firstLaunch) {
+         state.setContentWrapperVisible(true);
+         state.setTagHolderVisible(getArgs().isShowTags());
+      }
 
-        db.saveSocialViewPagerState(state);
-    }
+      db.saveSocialViewPagerState(state);
+   }
 
-    private void setupAdapter() {
-        adapter = new BaseStatePagerAdapter<FragmentItemWithObject<IFullScreenObject>>(getActivity().getSupportFragmentManager()) {
-            @Override
-            public void setArgs(int position, Fragment fragment) {
-                FullScreenPhotoBundle data = new FullScreenPhotoBundle(fragmentItems.get(position).getObject(), getArgs().getType(), getArgs().isForeign());
-                ((BaseFragmentWithArgs) fragment).setArgs(data);
-            }
+   private void setupAdapter() {
+      adapter = new BaseStatePagerAdapter<FragmentItemWithObject<IFullScreenObject>>(getActivity().getSupportFragmentManager()) {
+         @Override
+         public void setArgs(int position, Fragment fragment) {
+            FullScreenPhotoBundle data = new FullScreenPhotoBundle(fragmentItems.get(position)
+                  .getObject(), getArgs().getType(), getArgs().isForeign());
+            ((BaseFragmentWithArgs) fragment).setArgs(data);
+         }
 
-            @Override
-            public void addItems(List baseItemClasses) {
-                addToAdapter(baseItemClasses);
-            }
-        };
-    }
+         @Override
+         public void addItems(List baseItemClasses) {
+            addToAdapter(baseItemClasses);
+         }
+      };
+   }
 
-    @Override
-    public void startLoading() {
-    }
+   @Override
+   public void startLoading() {
+   }
 
-    @Override
-    public void finishLoading() {
-    }
+   @Override
+   public void finishLoading() {
+   }
 
-    @Override
-    public void setSelection(int photoPosition) {
-        pager.setCurrentItem(photoPosition, false);
-    }
+   @Override
+   public void setSelection(int photoPosition) {
+      pager.setCurrentItem(photoPosition, false);
+   }
 
-    @Override
-    public IRoboSpiceAdapter getAdapter() {
-        return adapter;
-    }
+   @Override
+   public IRoboSpiceAdapter getAdapter() {
+      return adapter;
+   }
 
-    @Override
-    public void openFullscreen(FullScreenImagesBundle data) {
-        router.moveTo(Route.FULLSCREEN_PHOTO_LIST, NavigationConfigBuilder.forActivity()
-                .toolbarConfig(ToolbarConfig.Builder.create().visible(false).build())
-                .data(data)
-                .build());
-    }
+   @Override
+   public void openFullscreen(FullScreenImagesBundle data) {
+      router.moveTo(Route.FULLSCREEN_PHOTO_LIST, NavigationConfigBuilder.forActivity()
+            .toolbarConfig(ToolbarConfig.Builder.create().visible(false).build())
+            .data(data)
+            .build());
+   }
 
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-    }
+   @Override
+   public void onDestroy() {
+      super.onDestroy();
+   }
 
-    @Override
-    public void fillWithItems(List<IFullScreenObject> items) {
-        addToAdapter(items);
-        adapter.notifyDataSetChanged();
-    }
+   @Override
+   public void fillWithItems(List<IFullScreenObject> items) {
+      addToAdapter(items);
+      adapter.notifyDataSetChanged();
+   }
 
-    private void addToAdapter(List<IFullScreenObject> items) {
-        Queryable.from(items).forEachR(item -> {
-            if (route == null) {
-                throw new IllegalStateException("You must specify route for this type");
-            } else {
-                adapter.add(new FragmentItemWithObject<>(route, "", item));
-            }
-        });
-    }
+   private void addToAdapter(List<IFullScreenObject> items) {
+      Queryable.from(items).forEachR(item -> {
+         if (route == null) {
+            throw new IllegalStateException("You must specify route for this type");
+         } else {
+            adapter.add(new FragmentItemWithObject<>(route, "", item));
+         }
+      });
+   }
 
-    @Override
-    public void add(IFullScreenObject item) {
-    }
+   @Override
+   public void add(IFullScreenObject item) {
+   }
 
-    @Override
-    public void add(int position, IFullScreenObject item) {
-    }
+   @Override
+   public void add(int position, IFullScreenObject item) {
+   }
 
-    @Override
-    public void addAll(int position, List<? extends IFullScreenObject> items) {
-    }
+   @Override
+   public void addAll(int position, List<? extends IFullScreenObject> items) {
+   }
 
-    @Override
-    public void clear() {
-    }
+   @Override
+   public void clear() {
+   }
 
-    @Override
-    public void replace(int position, IFullScreenObject item) {
-    }
+   @Override
+   public void replace(int position, IFullScreenObject item) {
+   }
 
-    @Override
-    public void remove(int index) {
-        if (adapter.getCount() == 1) {
-            getActivity().onBackPressed();
-        } else {
-            int currentItem = pager.getCurrentItem();
-            adapter.remove(index);
-            adapter.notifyDataSetChanged();
-            pager.setAdapter(adapter);
-            pager.setCurrentItem(Math.min(currentItem, adapter.getCount() - 1));
-        }
-    }
+   @Override
+   public void remove(int index) {
+      if (adapter.getCount() == 1) {
+         getActivity().onBackPressed();
+      } else {
+         int currentItem = pager.getCurrentItem();
+         adapter.remove(index);
+         adapter.notifyDataSetChanged();
+         pager.setAdapter(adapter);
+         pager.setCurrentItem(Math.min(currentItem, adapter.getCount() - 1));
+      }
+   }
 
-    @Override
-    public void openCreatePhoto(MediaAttachment mediaAttachment) {
-        /**
-         * Temporary. Need to refactor. Need to create own presenter for {@link FullScreenPhotoWrapperFragment}
-         */
-    }
+   @Override
+   public void openCreatePhoto(MediaAttachment mediaAttachment) {
+      /**
+       * Temporary. Need to refactor. Need to create own presenter for {@link FullScreenPhotoWrapperFragment}
+       */
+   }
 }

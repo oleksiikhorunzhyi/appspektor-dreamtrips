@@ -9,11 +9,11 @@ import butterknife.InjectView;
 
 public class MerchantMapInfoInflater extends MerchantInfoInflater {
 
-    @InjectView(R.id.merchant_title) TextView merchantTitle;
+   @InjectView(R.id.merchant_title) TextView merchantTitle;
 
-    @Override
-    protected void onMerchantApply() {
-        super.onMerchantApply();
-        ViewUtils.setTextOrHideView(merchantTitle, merchant.getDisplayName());
-    }
+   @Override
+   protected void onMerchantApply() {
+      super.onMerchantApply();
+      ViewUtils.setTextOrHideView(merchantTitle, merchant.getDisplayName());
+   }
 }

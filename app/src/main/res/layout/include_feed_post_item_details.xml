@@ -1,22 +1,47 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              android:layout_width="match_parent"
-              android:layout_height="wrap_content"
-              android:orientation="vertical">
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:orientation="vertical"
+      >
 
-    <com.worldventures.dreamtrips.modules.common.view.custom.HashtagTextView
-        android:id="@+id/post"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:paddingBottom="@dimen/spacing_small"
-        android:paddingLeft="@dimen/spacing_normal"
-        android:paddingRight="@dimen/spacing_normal"
-        android:paddingTop="@dimen/spacing_small"
-        android:textColor="@color/black"/>
+   <com.worldventures.dreamtrips.modules.common.view.custom.HashtagTextView
+         android:id="@+id/post"
+         android:layout_width="wrap_content"
+         android:layout_height="wrap_content"
+         android:paddingBottom="@dimen/spacing_small"
+         android:paddingLeft="@dimen/spacing_normal"
+         android:paddingRight="@dimen/spacing_normal"
+         android:paddingTop="@dimen/spacing_small"
+         android:textColor="@color/black"
+         />
 
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/imagesList"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
+   <com.worldventures.dreamtrips.modules.feed.view.custom.TranslateView
+         android:id="@+id/translate_view"
+         android:layout_width="match_parent"
+         android:layout_height="wrap_content"
+         android:layout_marginLeft="@dimen/spacing_normal"
+         android:layout_marginRight="@dimen/spacing_normal"
+         android:layout_marginBottom="@dimen/spacing_small"
+         />
+
+   <TextView
+         android:id="@+id/translate"
+         android:layout_width="wrap_content"
+         android:layout_height="wrap_content"
+         android:layout_marginBottom="@dimen/spacing_small"
+         android:layout_marginLeft="@dimen/spacing_normal"
+         android:background="@drawable/background_translate_button"
+         android:padding="@dimen/spacing_tiny"
+         android:text="@string/translate"
+         android:textColor="@android:color/black"
+         android:visibility="visible"
+         />
+
+   <android.support.v7.widget.RecyclerView
+         android:id="@+id/imagesList"
+         android:layout_width="match_parent"
+         android:layout_height="wrap_content"
+         />
 
 </LinearLayout>

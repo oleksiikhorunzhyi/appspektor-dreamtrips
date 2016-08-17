@@ -1,49 +1,55 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              android:layout_width="match_parent"
-              android:layout_height="match_parent"
-              android:background="#ffffff"
-              android:orientation="vertical">
+      android:layout_width="match_parent"
+      android:layout_height="match_parent"
+      android:background="#ffffff"
+      android:orientation="vertical"
+      >
 
-    <FrameLayout
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/picker_panel_header_height"
-        android:background="@color/share_photo_bg_color"
-        android:paddingLeft="@dimen/spacing_medium"
-        android:paddingRight="@dimen/spacing_medium">
+   <FrameLayout
+         android:layout_width="match_parent"
+         android:layout_height="@dimen/picker_panel_header_height"
+         android:background="@color/share_photo_bg_color"
+         android:paddingLeft="@dimen/spacing_medium"
+         android:paddingRight="@dimen/spacing_medium"
+         >
 
-        <TextView
+      <TextView
             android:id="@+id/button_cancel"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
             android:text="@string/action_cancel"
             android:textColor="@color/grey"
-            android:textSize="@dimen/font_normal"/>
+            android:textSize="@dimen/font_normal"
+            />
 
-        <TextView
+      <TextView
             android:id="@+id/selected_count"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:textColor="@color/picker_panel_blue"
-            android:textSize="@dimen/font_normal"/>
+            android:textSize="@dimen/font_normal"
+            />
 
-        <TextView
+      <TextView
             android:id="@+id/button_done"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="right|center_vertical"
             android:text="@string/action_done"
             android:textColor="@color/picker_panel_blue"
-            android:textSize="@dimen/font_normal"/>
+            android:textSize="@dimen/font_normal"
+            />
 
-    </FrameLayout>
+   </FrameLayout>
 
-    <FrameLayout
-        android:id="@+id/photo_container"
-        android:layout_width="match_parent"
-        android:layout_weight="1"
-        android:layout_height="0dp"/>
+   <FrameLayout
+         android:id="@+id/photo_container"
+         android:layout_width="match_parent"
+         android:layout_weight="1"
+         android:layout_height="0dp"
+         />
 
 </LinearLayout>

@@ -1,63 +1,71 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                xmlns:fresco="http://schemas.android.com/apk/res-auto"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+      xmlns:fresco="http://schemas.android.com/apk/res-auto"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      >
 
-    <com.facebook.drawee.view.SimpleDraweeView
-        android:id="@+id/user_cover"
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/profile_cover_height"
-        android:layout_alignParentTop="true"
-        fresco:placeholderImage="@drawable/ic_cover_place_holder"
-        fresco:placeholderImageScaleType="centerCrop"/>
+   <com.facebook.drawee.view.SimpleDraweeView
+         android:id="@+id/user_cover"
+         android:layout_width="match_parent"
+         android:layout_height="@dimen/profile_cover_height"
+         android:layout_alignParentTop="true"
+         fresco:placeholderImage="@drawable/ic_cover_place_holder"
+         fresco:placeholderImageScaleType="centerCrop"
+         />
 
-    <ProgressBar
-        android:id="@+id/pb_cover"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_gravity="center"
-        android:visibility="gone"/>
+   <ProgressBar
+         android:id="@+id/pb_cover"
+         android:layout_width="match_parent"
+         android:layout_height="match_parent"
+         android:layout_gravity="center"
+         android:visibility="gone"
+         />
 
-    <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignBottom="@+id/bottomContainer"
-        android:layout_centerHorizontal="true"
-        android:layout_marginBottom="@dimen/spacing_large"
-        android:orientation="vertical">
+   <LinearLayout
+         android:layout_width="wrap_content"
+         android:layout_height="wrap_content"
+         android:layout_alignBottom="@+id/bottomContainer"
+         android:layout_centerHorizontal="true"
+         android:layout_marginBottom="@dimen/spacing_large"
+         android:orientation="vertical"
+         >
 
-        <FrameLayout
+      <FrameLayout
             android:id="@+id/profile_photo"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center">
+            android:layout_gravity="center"
+            >
 
-            <com.worldventures.dreamtrips.modules.common.view.custom.SmartAvatarView
-                android:id="@+id/user_photo"
-                android:layout_width="84dp"
-                android:layout_height="84dp"
-                fresco:placeholderImage="@drawable/ic_avatar_placeholder"
-                fresco:roundAsCircle="true"/>
+         <com.worldventures.dreamtrips.modules.common.view.custom.SmartAvatarView
+               android:id="@+id/user_photo"
+               android:layout_width="84dp"
+               android:layout_height="84dp"
+               fresco:placeholderImage="@drawable/ic_avatar_placeholder"
+               fresco:roundAsCircle="true"
+               />
 
-            <ImageView
-                android:id="@+id/avatar_camera"
-                android:layout_width="18dp"
-                android:layout_height="18dp"
-                android:layout_gravity="bottom|end"
-                android:src="@drawable/ic_profile_change_userpic"
-                android:visibility="visible"/>
+         <ImageView
+               android:id="@+id/avatar_camera"
+               android:layout_width="18dp"
+               android:layout_height="18dp"
+               android:layout_gravity="bottom|end"
+               android:src="@drawable/ic_profile_change_userpic"
+               android:visibility="visible"
+               />
 
-            <ProgressBar
-                android:id="@+id/pb"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_gravity="center"
-                android:visibility="gone"/>
+         <ProgressBar
+               android:id="@+id/pb"
+               android:layout_width="match_parent"
+               android:layout_height="match_parent"
+               android:layout_gravity="center"
+               android:visibility="gone"
+               />
 
-        </FrameLayout>
+      </FrameLayout>
 
-        <TextView
+      <TextView
             android:id="@+id/user_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -68,9 +76,10 @@
             android:singleLine="true"
             android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
             android:textColor="@android:color/white"
-            android:textSize="22sp"/>
+            android:textSize="22sp"
+            />
 
-        <TextView
+      <TextView
             android:id="@+id/company_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -79,35 +88,39 @@
             android:layout_marginRight="@dimen/spacing_normal"
             android:singleLine="true"
             android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
-            android:textColor="@android:color/white"/>
+            android:textColor="@android:color/white"
+            />
 
-        <TextView
+      <TextView
             android:id="@+id/user_status"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:drawablePadding="@dimen/spacing_small"
-            android:textAppearance="@style/UserStatusTextAppearance"/>
+            android:textAppearance="@style/UserStatusTextAppearance"
+            />
 
-    </LinearLayout>
+   </LinearLayout>
 
 
-    <FrameLayout
-        android:id="@+id/bottomContainer"
-        android:layout_width="match_parent"
-        android:layout_height="80dp"
-        android:layout_alignBottom="@+id/user_cover"
-        android:gravity="center_vertical"
-        android:orientation="vertical">
+   <FrameLayout
+         android:id="@+id/bottomContainer"
+         android:layout_width="match_parent"
+         android:layout_height="80dp"
+         android:layout_alignBottom="@+id/user_cover"
+         android:gravity="center_vertical"
+         android:orientation="vertical"
+         >
 
-        <ImageView
+      <ImageView
             android:id="@+id/cover_camera"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="end|bottom"
             android:layout_margin="@dimen/spacing_small"
             android:src="@drawable/ic_profile_change_cover"
-            android:visibility="visible"/>
-    </FrameLayout>
+            android:visibility="visible"
+            />
+   </FrameLayout>
 
 </RelativeLayout>

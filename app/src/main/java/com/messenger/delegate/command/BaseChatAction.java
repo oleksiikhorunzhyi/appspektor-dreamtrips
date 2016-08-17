@@ -13,28 +13,28 @@ import io.techery.janet.Command;
 import rx.Observable;
 
 public abstract class BaseChatAction<Result> extends Command<Result> implements InjectableAction {
-    protected final DataConversation conversation;
+   protected final DataConversation conversation;
 
-    @Inject MessengerServerFacade messengerServerFacade;
+   @Inject MessengerServerFacade messengerServerFacade;
 
-    protected BaseChatAction(DataConversation conversation) {
-        this.conversation = conversation;
-    }
+   protected BaseChatAction(DataConversation conversation) {
+      this.conversation = conversation;
+   }
 
-    public DataConversation getConversation() {
-        return conversation;
-    }
+   public DataConversation getConversation() {
+      return conversation;
+   }
 
-    protected Observable<GroupChat> createMultiChat() {
+   protected Observable<GroupChat> createMultiChat() {
       return messengerServerFacade.getChatManager()
-              .createGroupChatObservable(conversation.getId(), messengerServerFacade.getUsername());
-    }
+            .createGroupChatObservable(conversation.getId(), messengerServerFacade.getUsername());
+   }
 
-    protected Chat getChat() {
-        if (ConversationHelper.isSingleChat(conversation)) {
-            return messengerServerFacade.getChatManager().createSingleUserChat(null, conversation.getId());
-        } else {
-            return messengerServerFacade.getChatManager().createGroupChat(conversation.getId(), conversation.getOwnerId());
-        }
-    }
+   protected Chat getChat() {
+      if (ConversationHelper.isSingleChat(conversation)) {
+         return messengerServerFacade.getChatManager().createSingleUserChat(null, conversation.getId());
+      } else {
+         return messengerServerFacade.getChatManager().createGroupChat(conversation.getId(), conversation.getOwnerId());
+      }
+   }
 }

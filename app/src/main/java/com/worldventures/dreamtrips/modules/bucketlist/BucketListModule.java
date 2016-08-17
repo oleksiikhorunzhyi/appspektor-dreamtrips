@@ -39,47 +39,15 @@ import dagger.Module;
 import dagger.Provides;
 
 @Module(
-        injects = {
-                BucketItemEditPresenter.class,
-                BucketPopularTabsPresenter.class,
-                BucketItemEditFragment.class,
-                BucketTabsPresenter.class,
-                BucketListPresenter.class,
-                BucketPopularPresenter.class,
-                BucketListPopularFragment.class,
-                BucketTabsFragment.class,
-                BucketPopularTabsFragment.class,
-                BucketListFragment.class,
-                BucketItemCell.class,
-                BucketPopularCell.class,
-                BucketDetailsFragment.class,
-                BucketItemDetailsPresenter.class,
-                AutoCompleteAdapter.class,
-                BucketItemAdapter.class,
-                IgnoreFirstItemAdapter.class,
-                IgnoreFirstExpandedItemAdapter.class,
-                BucketAddPhotoCell.class,
-                BucketPhotoUploadCell.class,
-                BucketPhotoCell.class,
-                FixedListPhotosFullScreenPresenter.class,
-                BucketPhotosView.class,
-                ForeignBucketItemDetailsPresenter.class,
-                ForeignBucketDetailsFragment.class,
-                ForeignBucketTabsFragment.class,
-                ForeignBucketTabPresenter.class,
-                ForeignBucketListFragment.class,
-                BucketItemStaticCell.class,
-                ForeignBucketListPresenter.class
-        },
-        complete = false,
-        library = true
-)
+      injects = {BucketItemEditPresenter.class, BucketPopularTabsPresenter.class, BucketItemEditFragment.class, BucketTabsPresenter.class, BucketListPresenter.class, BucketPopularPresenter.class, BucketListPopularFragment.class, BucketTabsFragment.class, BucketPopularTabsFragment.class, BucketListFragment.class, BucketItemCell.class, BucketPopularCell.class, BucketDetailsFragment.class, BucketItemDetailsPresenter.class, AutoCompleteAdapter.class, BucketItemAdapter.class, IgnoreFirstItemAdapter.class, IgnoreFirstExpandedItemAdapter.class, BucketAddPhotoCell.class, BucketPhotoUploadCell.class, BucketPhotoCell.class, FixedListPhotosFullScreenPresenter.class, BucketPhotosView.class, ForeignBucketItemDetailsPresenter.class, ForeignBucketDetailsFragment.class, ForeignBucketTabsFragment.class, ForeignBucketTabPresenter.class, ForeignBucketListFragment.class, BucketItemStaticCell.class, ForeignBucketListPresenter.class},
+      complete = false,
+      library = true)
 public class BucketListModule {
 
-    public static final String BUCKETLIST = Route.BUCKET_TABS.name();
+   public static final String BUCKETLIST = Route.BUCKET_TABS.name();
 
-    @Provides(type = Provides.Type.SET)
-    ComponentDescription provideBucketListComponent() {
-        return new ComponentDescription(BUCKETLIST, R.string.bucket_list, R.string.bucket_list, R.drawable.ic_bucket_lists, BucketTabsFragment.class);
-    }
+   @Provides(type = Provides.Type.SET)
+   ComponentDescription provideBucketListComponent() {
+      return new ComponentDescription(BUCKETLIST, R.string.bucket_list, R.string.bucket_list, R.drawable.ic_bucket_lists, BucketTabsFragment.class);
+   }
 }

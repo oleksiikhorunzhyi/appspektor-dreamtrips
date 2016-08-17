@@ -2,11 +2,11 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
       xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <item
-        android:id="@+id/action_search"
-        android:title="@string/action_filter"
-        android:icon="@drawable/ic_menu_search"
-        app:showAsAction="always|collapseActionView"
-        app:actionViewClass="com.worldventures.dreamtrips.modules.common.view.custom.DelaySearchView"/>
+   <item
+         android:id="@+id/action_search"
+         android:title="@string/action_filter"
+         android:icon="@drawable/ic_menu_search"
+         app:showAsAction="always|collapseActionView"
+         app:actionViewClass="com.worldventures.dreamtrips.modules.common.view.custom.DelaySearchView" />
 
 </menu>

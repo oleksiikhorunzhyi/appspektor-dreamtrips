@@ -7,47 +7,47 @@ import com.worldventures.dreamtrips.modules.tripsimages.model.TripImagesType;
 
 public class TripsImagesBundle implements Parcelable {
 
-    private TripImagesType type;
-    private int userId;
+   private TripImagesType type;
+   private int userId;
 
-    public TripsImagesBundle(TripImagesType type, int userId) {
-        this.type = type;
-        this.userId = userId;
-    }
+   public TripsImagesBundle(TripImagesType type, int userId) {
+      this.type = type;
+      this.userId = userId;
+   }
 
-    protected TripsImagesBundle(Parcel in) {
-        userId = in.readInt();
-        type = (TripImagesType) in.readSerializable();
-    }
+   protected TripsImagesBundle(Parcel in) {
+      userId = in.readInt();
+      type = (TripImagesType) in.readSerializable();
+   }
 
-    public static final Creator<TripsImagesBundle> CREATOR = new Creator<TripsImagesBundle>() {
-        @Override
-        public TripsImagesBundle createFromParcel(Parcel in) {
-            return new TripsImagesBundle(in);
-        }
+   public static final Creator<TripsImagesBundle> CREATOR = new Creator<TripsImagesBundle>() {
+      @Override
+      public TripsImagesBundle createFromParcel(Parcel in) {
+         return new TripsImagesBundle(in);
+      }
 
-        @Override
-        public TripsImagesBundle[] newArray(int size) {
-            return new TripsImagesBundle[size];
-        }
-    };
+      @Override
+      public TripsImagesBundle[] newArray(int size) {
+         return new TripsImagesBundle[size];
+      }
+   };
 
-    public TripImagesType getType() {
-        return type;
-    }
+   public TripImagesType getType() {
+      return type;
+   }
 
-    public int getUserId() {
-        return userId;
-    }
+   public int getUserId() {
+      return userId;
+   }
 
-    @Override
-    public int describeContents() {
-        return 0;
-    }
+   @Override
+   public int describeContents() {
+      return 0;
+   }
 
-    @Override
-    public void writeToParcel(Parcel parcel, int i) {
-        parcel.writeInt(userId);
-        parcel.writeSerializable(type);
-    }
+   @Override
+   public void writeToParcel(Parcel parcel, int i) {
+      parcel.writeInt(userId);
+      parcel.writeSerializable(type);
+   }
 }

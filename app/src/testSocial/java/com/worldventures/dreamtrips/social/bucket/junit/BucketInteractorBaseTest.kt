@@ -13,6 +13,7 @@ import com.worldventures.dreamtrips.modules.bucketlist.service.BucketInteractor
 import com.worldventures.dreamtrips.modules.bucketlist.service.storage.BucketListDiskStorage
 import com.worldventures.dreamtrips.modules.bucketlist.service.storage.BucketMemoryStorage
 import com.worldventures.dreamtrips.modules.common.model.User
+import com.worldventures.dreamtrips.modules.infopages.StaticPageProvider
 import io.techery.janet.CommandActionService
 import io.techery.janet.Janet
 import io.techery.janet.http.test.MockHttpActionService
@@ -25,73 +26,72 @@ import org.mockito.Spy
 import java.util.*
 
 abstract class BucketInteractorBaseTest : BaseTest() {
-    init {
-        MockitoAnnotations.initMocks(this)
-    }
+   init {
+      MockitoAnnotations.initMocks(this)
+   }
 
-    @Mock
-    var mockSessionHolder: SessionHolder<UserSession>? = null
+   @Mock var mockSessionHolder: SessionHolder<UserSession>? = null
+   @Mock var mockDb: SnappyRepository? = null
+   @Mock var staticPageProvider: StaticPageProvider? = null
 
-    @Spy
-    var mockMemoryStorage: BucketMemoryStorage? = null
+   @Spy var mockMemoryStorage: BucketMemoryStorage? = null
 
-    @Mock
-    var mockDb: SnappyRepository? = null
+   var janet: Janet? = null
 
-    var janet: Janet? = null
+   val httpStubWrapper: StubServiceWrapper by lazy {
+      StubServiceWrapper(mockHttpService())
+   }
 
-    val httpStubWrapper: StubServiceWrapper by lazy {
-        StubServiceWrapper(mockHttpService())
-    }
+   var bucketInteractor: BucketInteractor? = null
 
-    var bucketInteractor: BucketInteractor? = null
+   var userSession: UserSession? = null
 
-    var userSession: UserSession? = null
+   lateinit var daggerActionService: MockDaggerActionService
 
-    lateinit var daggerActionService: MockDaggerActionService
+   @CallSuper
+   @Before
+   open fun setup() {
+      val cacheResultWrapper = cachedService(CommandActionService())
+      for (storage in storageSet()) {
+         cacheResultWrapper.bindStorage(storage.actionClass, storage)
+      }
+      daggerActionService = MockDaggerActionService(cacheResultWrapper)
+      daggerActionService.registerProvider(Janet::class.java) { janet }
+      daggerActionService.registerProvider(SnappyRepository::class.java) { mockDb }
+      daggerActionService.registerProvider(SessionHolder::class.java) { mockSessionHolder }
+      daggerActionService.registerProvider(BucketInteractor::class.java) { bucketInteractor }
+      daggerActionService.registerProvider(StaticPageProvider::class.java, { staticPageProvider })
 
-    @CallSuper
-    @Before
-    open fun setup() {
-        val cacheResultWrapper = cachedService(CommandActionService())
-        for (storage in storageSet()) {
-            cacheResultWrapper.bindStorage(storage.actionClass, storage)
-        }
-        daggerActionService = MockDaggerActionService(cacheResultWrapper)
-        daggerActionService.registerProvider(Janet::class.java) { janet }
-        daggerActionService.registerProvider(SnappyRepository::class.java) { mockDb }
-        daggerActionService.registerProvider(SessionHolder::class.java) { mockSessionHolder }
-        daggerActionService.registerProvider(BucketInteractor::class.java) { bucketInteractor }
+      janet = Janet.Builder()
+            .addService(daggerActionService)
+            .addService(cachedService(httpStubWrapper))
+            .build()
 
-        janet = Janet.Builder()
-                .addService(daggerActionService)
-                .addService(cachedService(httpStubWrapper))
-                .build()
+      bucketInteractor = BucketInteractor(janet)
 
-        bucketInteractor = BucketInteractor(janet)
+      userSession = mock(UserSession::class.java)
+      val mockUser = mock(User::class.java)
 
-        userSession = mock(UserSession::class.java)
-        val mockUser = mock(User::class.java)
+      `when`(mockUser.id).thenReturn(MOCK_USER_ID)
+      `when`(userSession!!.user).thenReturn(mockUser)
+      `when`(mockSessionHolder!!.get()).thenReturn(Optional.of(userSession))
+      `when`(staticPageProvider!!.uploaderyUrl).thenReturn("http://test-uploadery")
+   }
 
-        `when`(mockUser.id).thenReturn(MOCK_USER_ID)
-        `when`(userSession!!.user).thenReturn(mockUser)
-        `when`(mockSessionHolder!!.get()).thenReturn(Optional.of(userSession))
-    }
+   protected abstract fun mockHttpService(): MockHttpActionService
 
-    protected abstract fun mockHttpService(): MockHttpActionService
+   internal fun daggerActionService(): MockDaggerActionService {
+      return daggerActionService
+   }
 
-    internal fun daggerActionService(): MockDaggerActionService {
-        return daggerActionService
-    }
+   protected open fun storageSet(): Set<ActionStorage<*>> {
+      val storageSet = HashSet<ActionStorage<*>>()
+      storageSet.add(BucketListDiskStorage(mockMemoryStorage, mockDb))
 
-    protected open fun storageSet(): Set<ActionStorage<*>> {
-        val storageSet = HashSet<ActionStorage<*>>()
-        storageSet.add(BucketListDiskStorage(mockMemoryStorage, mockDb))
+      return storageSet
+   }
 
-        return storageSet
-    }
-
-    companion object {
-        val MOCK_USER_ID = 1
-    }
+   companion object {
+      val MOCK_USER_ID = 1
+   }
 }

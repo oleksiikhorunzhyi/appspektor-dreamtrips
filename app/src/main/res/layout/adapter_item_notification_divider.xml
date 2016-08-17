@@ -1,29 +1,33 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              xmlns:tools="http://schemas.android.com/tools"
-              android:layout_width="match_parent"
-              android:layout_height="wrap_content"
-              android:background="@color/grey_lighter"
-              android:orientation="vertical">
+      xmlns:tools="http://schemas.android.com/tools"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:background="@color/grey_lighter"
+      android:orientation="vertical"
+      >
 
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="0.5dp"
-        android:background="@color/grey"/>
+   <View
+         android:layout_width="match_parent"
+         android:layout_height="0.5dp"
+         android:background="@color/grey"
+         />
 
-    <TextView
-        android:id="@+id/divider_title"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
-        android:padding="@dimen/spacing_small"
-        android:textColor="@color/grey"
-        android:textSize="@dimen/font_normal"
+   <TextView
+         android:id="@+id/divider_title"
+         android:layout_width="wrap_content"
+         android:layout_height="wrap_content"
+         android:layout_gravity="center_horizontal"
+         android:padding="@dimen/spacing_small"
+         android:textColor="@color/grey"
+         android:textSize="@dimen/font_normal"
 
-        tools:text="New"/>
+         tools:text="New"
+         />
 
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="0.5dp"
-        android:background="@color/grey"/>
+   <View
+         android:layout_width="match_parent"
+         android:layout_height="0.5dp"
+         android:background="@color/grey"
+         />
 </LinearLayout>

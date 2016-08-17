@@ -28,93 +28,90 @@ import com.techery.spares.module.Injector;
 import com.techery.spares.ui.view.cell.AbstractCell;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem;
 
-public abstract class DraggableArrayListAdapter<V> extends BaseArrayListAdapter<V>
-        implements DraggableItemAdapter<DraggableArrayListAdapter.DraggableCell> {
+public abstract class DraggableArrayListAdapter<V> extends BaseArrayListAdapter<V> implements DraggableItemAdapter<DraggableArrayListAdapter.DraggableCell> {
 
-    private MoveListener moveListener;
-    private SparseBooleanArray dragMarkers;
+   private MoveListener moveListener;
+   private SparseBooleanArray dragMarkers;
 
-    public DraggableArrayListAdapter(Context context, Injector injector) {
-        super(context, injector);
-        setHasStableIds(true);
-        dragMarkers = new SparseBooleanArray();
-    }
+   public DraggableArrayListAdapter(Context context, Injector injector) {
+      super(context, injector);
+      setHasStableIds(true);
+      dragMarkers = new SparseBooleanArray();
+   }
 
-    @Override
-    public abstract long getItemId(int position);
+   @Override
+   public abstract long getItemId(int position);
 
-    @Override
-    public boolean onCheckCanStartDrag(DraggableCell bucketItemCell, int position, int x, int y) {
-        return bucketItemCell.onCheckCanStartDrag(position, x, y);
-    }
+   @Override
+   public boolean onCheckCanStartDrag(DraggableCell bucketItemCell, int position, int x, int y) {
+      return bucketItemCell.onCheckCanStartDrag(position, x, y);
+   }
 
-    @Override
-    public ItemDraggableRange onGetItemDraggableRange(DraggableCell bucketItemCell, int position) {
-        int startPosition = getStartDragPosition(position);
-        int endPosition = getEndDragPosition(position);
+   @Override
+   public ItemDraggableRange onGetItemDraggableRange(DraggableCell bucketItemCell, int position) {
+      int startPosition = getStartDragPosition(position);
+      int endPosition = getEndDragPosition(position);
 
-        return new ItemDraggableRange(startPosition, endPosition);
-    }
+      return new ItemDraggableRange(startPosition, endPosition);
+   }
 
-    private int getStartDragPosition(int currentPosition) {
-        int position = 0;
-        for (int i = currentPosition; i >= 0; i--) {
-            if (dragMarkers.get(i - 1)) {
-                position = i;
-                break;
-            }
-        }
-        return position;
-    }
+   private int getStartDragPosition(int currentPosition) {
+      int position = 0;
+      for (int i = currentPosition; i >= 0; i--) {
+         if (dragMarkers.get(i - 1)) {
+            position = i;
+            break;
+         }
+      }
+      return position;
+   }
 
-    private int getEndDragPosition(int currentPosition) {
-        int position = getCount() - 1;
-        for (int i = currentPosition; i < getCount(); i++) {
-            if (dragMarkers.get(i + 1)) {
-                position = i;
-                break;
-            }
-        }
-        return position;
-    }
+   private int getEndDragPosition(int currentPosition) {
+      int position = getCount() - 1;
+      for (int i = currentPosition; i < getCount(); i++) {
+         if (dragMarkers.get(i + 1)) {
+            position = i;
+            break;
+         }
+      }
+      return position;
+   }
 
-    public void setDragMarker(int position, boolean enabled) {
-        dragMarkers.clear();
-        dragMarkers.put(position, enabled);
-    }
+   public void setDragMarker(int position, boolean enabled) {
+      dragMarkers.clear();
+      dragMarkers.put(position, enabled);
+   }
 
-    @Override
-    public void onMoveItem(int fromPosition, int toPosition) {
-        if (fromPosition == toPosition) {
-            return;
-        }
+   @Override
+   public void onMoveItem(int fromPosition, int toPosition) {
+      if (fromPosition == toPosition) {
+         return;
+      }
 
-        V item = getItem(fromPosition);
+      V item = getItem(fromPosition);
 
-        if (item instanceof BucketItem
-                && !((BucketItem) item).isDone()
-                && moveListener != null) {
-            moveListener.onItemMoved(fromPosition, toPosition);
-        }
+      if (item instanceof BucketItem && !((BucketItem) item).isDone() && moveListener != null) {
+         moveListener.onItemMoved(fromPosition, toPosition);
+      }
 
-        moveItem(fromPosition, toPosition);
-        notifyItemMoved(fromPosition, toPosition);
-    }
+      moveItem(fromPosition, toPosition);
+      notifyItemMoved(fromPosition, toPosition);
+   }
 
-    public void setMoveListener(MoveListener moveListener) {
-        this.moveListener = moveListener;
-    }
+   public void setMoveListener(MoveListener moveListener) {
+      this.moveListener = moveListener;
+   }
 
-    public interface MoveListener {
-        void onItemMoved(int from, int to);
-    }
+   public interface MoveListener {
+      void onItemMoved(int from, int to);
+   }
 
-    public static abstract class DraggableCell<V> extends AbstractCell<V> implements DraggableItemViewHolder {
-        public DraggableCell(View view) {
-            super(view);
-        }
+   public static abstract class DraggableCell<V> extends AbstractCell<V> implements DraggableItemViewHolder {
+      public DraggableCell(View view) {
+         super(view);
+      }
 
-        public abstract boolean onCheckCanStartDrag(int position, int x, int y);
-    }
+      public abstract boolean onCheckCanStartDrag(int position, int x, int y);
+   }
 
 }

@@ -8,32 +8,20 @@ import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchant;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.offer.DtlOffer;
 
 @AnalyticsEvent(action = "local:Restaurant-Listings:Offer View", trackers = AdobeTracker.TRACKER_KEY)
-public class MerchantsListingExpandEvent extends DtlAnalyticsAction {
+public class MerchantsListingExpandEvent extends MerchantAnalyticsAction {
 
-    @Attribute("merchantname")
-    final String merchantName;
+   @Attribute("offerview") final String attribute = "1";
 
-    @Attribute("merchantID")
-    final String merchantId;
+   @Attribute("numperks") final String perksNumber;
 
-    @Attribute("offerview")
-    final String attribute = "1";
+   @Attribute("areperksavail") final String perksAvailable;
 
-    @Attribute("numperks")
-    final String perksNumber;
+   @Attribute("arepointsavail") final String pointsAvailable;
 
-    @Attribute("areperksavail")
-    final String perksAvailable;
-
-    @Attribute("arepointsavail")
-    final String pointsAvailable;
-
-    public MerchantsListingExpandEvent(DtlMerchant dtlMerchant) {
-        merchantId = dtlMerchant.getId();
-        merchantName = dtlMerchant.getDisplayName();
-        perksAvailable = dtlMerchant.hasPerks() ? "Yes" : "No";
-        pointsAvailable = dtlMerchant.hasPoints() ? "Yes" : "No";
-        perksNumber = String.valueOf(Queryable.from(dtlMerchant.getOffers())
-                .count(DtlOffer::isPerk));
-    }
+   public MerchantsListingExpandEvent(DtlMerchant dtlMerchant) {
+      super(dtlMerchant);
+      perksAvailable = dtlMerchant.hasPerks() ? "Yes" : "No";
+      pointsAvailable = dtlMerchant.hasPoints() ? "Yes" : "No";
+      perksNumber = String.valueOf(Queryable.from(dtlMerchant.getOffers()).count(DtlOffer::isPerk));
+   }
 }

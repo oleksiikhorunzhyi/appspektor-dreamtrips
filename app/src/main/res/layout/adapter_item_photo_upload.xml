@@ -1,39 +1,42 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.worldventures.dreamtrips.modules.common.view.custom.SquareRelativeLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/res"
-    xmlns:fresco="http://schemas.android.com/apk/res-auto"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+<com.worldventures.dreamtrips.modules.common.view.custom.SquareRelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+      xmlns:app="http://schemas.android.com/res"
+      xmlns:fresco="http://schemas.android.com/apk/res-auto"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      >
 
-    <com.facebook.drawee.view.SimpleDraweeView
-        android:id="@+id/imageViewPhoto"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_gravity="center_horizontal"
-        android:layout_margin="@dimen/spacing_tiniest"
-        fresco:actualImageScaleType="focusCrop"/>
+   <com.facebook.drawee.view.SimpleDraweeView
+         android:id="@+id/imageViewPhoto"
+         android:layout_width="match_parent"
+         android:layout_height="match_parent"
+         android:layout_gravity="center_horizontal"
+         android:layout_margin="@dimen/spacing_tiniest"
+         fresco:actualImageScaleType="focusCrop"
+         />
 
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="@color/black_semi_transparent"/>
+   <View
+         android:layout_width="match_parent"
+         android:layout_height="match_parent"
+         android:background="@color/black_semi_transparent"
+         />
 
-    <view
-        android:id="@+id/fab_progress"
-        class="mbanje.kurt.fabbutton.FabButton"
-        android:layout_width="48dp"
-        android:layout_height="48dp"
-        android:layout_centerInParent="true"
-        android:color="@color/bucket_blue"
-        android:enabled="false"
-        android:indeterminate="false"
-        android:max="100"
-        android:src="@drawable/ic_upload_cloud"
-        app:fbb_autoStart="true"
-        app:fbb_endBitmap="@drawable/ic_upload_cloud"
-        app:fbb_progressColor="#ffffff"
-        app:fbb_progressWidthRatio="0.1"
-        app:fbb_showEndBitmap="true"/>
+   <view
+         android:id="@+id/fab_progress"
+         class="mbanje.kurt.fabbutton.FabButton"
+         android:layout_width="48dp"
+         android:layout_height="48dp"
+         android:layout_centerInParent="true"
+         android:color="@color/bucket_blue"
+         android:enabled="false"
+         android:indeterminate="false"
+         android:max="100"
+         android:src="@drawable/ic_upload_cloud"
+         app:fbb_autoStart="true"
+         app:fbb_endBitmap="@drawable/ic_upload_cloud"
+         app:fbb_progressColor="#ffffff"
+         app:fbb_progressWidthRatio="0.1"
+         app:fbb_showEndBitmap="true"
+         />
 
 </com.worldventures.dreamtrips.modules.common.view.custom.SquareRelativeLayout>

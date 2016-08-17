@@ -1,12 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <TextView android:id="@+id/info"
-          xmlns:android="http://schemas.android.com/apk/res/android"
-          xmlns:tools="http://schemas.android.com/tools"
-          android:layout_width="wrap_content"
-          android:layout_height="wrap_content"
-          android:background="@color/white"
-          android:padding="@dimen/spacing_tiny"
-          android:textColor="@color/black"
-          android:textSize="@dimen/font_extra_large"
-          android:visibility="gone"
-          tools:text="I'm refresher"/>
+      xmlns:android="http://schemas.android.com/apk/res/android"
+      xmlns:tools="http://schemas.android.com/tools"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:background="@color/white"
+      android:padding="@dimen/spacing_tiny"
+      android:textColor="@color/black"
+      android:textSize="@dimen/font_extra_large"
+      android:visibility="gone"
+      tools:text="I'm refresher"
+      />

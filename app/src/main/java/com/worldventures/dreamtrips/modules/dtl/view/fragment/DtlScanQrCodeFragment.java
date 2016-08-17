@@ -37,184 +37,172 @@ import me.dm7.barcodescanner.zxing.ZXingScannerView;
 import timber.log.Timber;
 
 @Layout(R.layout.fragment_scan_qr)
-public class DtlScanQrCodeFragment extends RxBaseFragmentWithArgs<DtlScanQrCodePresenter, MerchantIdBundle>
-        implements DtlScanQrCodePresenter.View, ZXingScannerView.ResultHandler {
+public class DtlScanQrCodeFragment extends RxBaseFragmentWithArgs<DtlScanQrCodePresenter, MerchantIdBundle> implements DtlScanQrCodePresenter.View, ZXingScannerView.ResultHandler {
 
-    @Inject
-    @Named(RouteCreatorModule.DTL_TRANSACTION)
-    RouteCreator<DtlTransaction> routeCreator;
-    @Inject
-    PermissionDispatcher permissionDispatcher;
+   @Inject @Named(RouteCreatorModule.DTL_TRANSACTION) RouteCreator<DtlTransaction> routeCreator;
+   @Inject PermissionDispatcher permissionDispatcher;
 
-    //
-    @InjectView(R.id.name)
-    TextView name;
-    @InjectView(R.id.address)
-    TextView address;
-    @InjectView(R.id.merchant_image)
-    ImageryDraweeView merchantImage;
-    @InjectView(R.id.scanner_view)
-    ZXingScannerView scanner;
-    //
-    private DtlEnrollWizard dtlEnrollWizard;
-    //
-    private SweetAlertDialog progressDialog;
-    private SweetAlertDialog alertDialog;
+   //
+   @InjectView(R.id.name) TextView name;
+   @InjectView(R.id.address) TextView address;
+   @InjectView(R.id.merchant_image) ImageryDraweeView merchantImage;
+   @InjectView(R.id.scanner_view) ZXingScannerView scanner;
+   //
+   private DtlEnrollWizard dtlEnrollWizard;
+   //
+   private SweetAlertDialog progressDialog;
+   private SweetAlertDialog alertDialog;
 
-    @Override
-    protected DtlScanQrCodePresenter createPresenter(Bundle savedInstanceState) {
-        return new DtlScanQrCodePresenter(getArgs().getMerchantId());
-    }
+   @Override
+   protected DtlScanQrCodePresenter createPresenter(Bundle savedInstanceState) {
+      return new DtlScanQrCodePresenter(getArgs().getMerchantId());
+   }
 
-    @Override
-    public void afterCreateView(View rootView) {
-        super.afterCreateView(rootView);
-        dtlEnrollWizard = new DtlEnrollWizard(router, routeCreator);
-    }
+   @Override
+   public void afterCreateView(View rootView) {
+      super.afterCreateView(rootView);
+      dtlEnrollWizard = new DtlEnrollWizard(router, routeCreator);
+   }
 
-    @Override
-    public void onResume() {
-        super.onResume();
-        ButterKnife.<Toolbar>findById(getActivity(), R.id.toolbar_actionbar).setTitle(R.string.dtl_barcode_title);
-        permissionDispatcher.requestPermission(PermissionConstants.CAMERA_PERMISSIONS)
-                .compose(this::bind)
-                .subscribe(new PermissionSubscriber()
-                        .onPermissionGrantedAction(this::startCamera)
-                        .onPermissionRationaleAction(this::showRationaleForCamera)
-                        .onPermissionDeniedAction(this::showDeniedForCamera));
-        scanner.setResultHandler(this);
-    }
+   @Override
+   public void onResume() {
+      super.onResume();
+      ButterKnife.<Toolbar>findById(getActivity(), R.id.toolbar_actionbar).setTitle(R.string.dtl_barcode_title);
+      permissionDispatcher.requestPermission(PermissionConstants.CAMERA_PERMISSIONS)
+            .compose(this::bind)
+            .subscribe(new PermissionSubscriber().onPermissionGrantedAction(this::startCamera)
+                  .onPermissionRationaleAction(this::showRationaleForCamera)
+                  .onPermissionDeniedAction(this::showDeniedForCamera));
+      scanner.setResultHandler(this);
+   }
 
-    void startCamera() {
-        scanner.startCamera();
-    }
+   void startCamera() {
+      scanner.startCamera();
+   }
 
-    void showRationaleForCamera() {
-        Snackbar.make(getView(), R.string.permission_camera_rationale, Snackbar.LENGTH_SHORT).show();
-    }
+   void showRationaleForCamera() {
+      Snackbar.make(getView(), R.string.permission_camera_rationale, Snackbar.LENGTH_SHORT).show();
+   }
 
-    void showDeniedForCamera() {
-        Snackbar.make(getView(), R.string.no_camera_permission, Snackbar.LENGTH_SHORT).show();
-    }
+   void showDeniedForCamera() {
+      Snackbar.make(getView(), R.string.no_camera_permission, Snackbar.LENGTH_SHORT).show();
+   }
 
-    @Override
-    public void setMerchant(DtlMerchant dtlMerchant) {
-        name.setText(dtlMerchant.getDisplayName());
-        if (!TextUtils.isEmpty(dtlMerchant.getAddress1())) {
-            address.setText(String.format("%s, %s, %s, %s", dtlMerchant.getAddress1(), dtlMerchant.getCity(),
-                    dtlMerchant.getState(), dtlMerchant.getZip()));
-        }
-        if (!dtlMerchant.getImages().isEmpty()) {
-            merchantImage.setImageUrl(dtlMerchant.getImages().get(0).getImagePath());
-        }
-    }
+   @Override
+   public void setMerchant(DtlMerchant dtlMerchant) {
+      name.setText(dtlMerchant.getDisplayName());
+      if (!TextUtils.isEmpty(dtlMerchant.getAddress1())) {
+         address.setText(String.format("%s, %s, %s, %s", dtlMerchant.getAddress1(), dtlMerchant.getCity(), dtlMerchant.getState(), dtlMerchant
+               .getZip()));
+      }
+      if (!dtlMerchant.getImages().isEmpty()) {
+         merchantImage.setImageUrl(dtlMerchant.getImages().get(0).getImagePath());
+      }
+   }
 
-    @Override
-    public void onPause() {
-        super.onPause();
-        scanner.stopCamera();
-    }
+   @Override
+   public void onPause() {
+      super.onPause();
+      scanner.stopCamera();
+   }
 
-    @Override
-    public void handleResult(final Result rawResult) {
-        String contents = rawResult.getText();
-        getPresenter().codeScanned(contents);
-        Timber.d(contents);
-    }
+   @Override
+   public void handleResult(final Result rawResult) {
+      String contents = rawResult.getText();
+      getPresenter().codeScanned(contents);
+      Timber.d(contents);
+   }
 
-    @Override
-    public void openScanReceipt(DtlTransaction dtlTransaction) {
-        dtlEnrollWizard.clearAndProceed(getFragmentManager(), dtlTransaction, getArgs());
-    }
+   @Override
+   public void openScanReceipt(DtlTransaction dtlTransaction) {
+      dtlEnrollWizard.clearAndProceed(getFragmentManager(), dtlTransaction, getArgs());
+   }
 
-    @Override
-    public void finish() {
-        getActivity().finish();
-    }
+   @Override
+   public void finish() {
+      getActivity().finish();
+   }
 
-    @Override
-    public void hideProgress() {
-        if (progressDialog != null) progressDialog.dismissWithAnimation();
-    }
+   @Override
+   public void hideProgress() {
+      if (progressDialog != null) progressDialog.dismissWithAnimation();
+   }
 
-    @Override
-    public void showProgress(@StringRes int titleText) {
-        if (progressDialog == null || !progressDialog.isShowing()) {
-            scanner.stopCamera();
-            //
-            progressDialog = new SweetAlertDialog(getActivity(), SweetAlertDialog.PROGRESS_TYPE);
-            progressDialog.getProgressHelper().setBarColor(getResources().getColor(R.color.theme_main));
-            progressDialog.setTitleText(getString(titleText));
-            progressDialog.setCancelable(false);
-            progressDialog.show();
-        } else
-            progressDialog.setTitle(getString(titleText));
-    }
+   @Override
+   public void showProgress(@StringRes int titleText) {
+      if (progressDialog == null || !progressDialog.isShowing()) {
+         scanner.stopCamera();
+         //
+         progressDialog = new SweetAlertDialog(getActivity(), SweetAlertDialog.PROGRESS_TYPE);
+         progressDialog.getProgressHelper().setBarColor(getResources().getColor(R.color.theme_main));
+         progressDialog.setTitleText(getString(titleText));
+         progressDialog.setCancelable(false);
+         progressDialog.show();
+      } else progressDialog.setTitle(getString(titleText));
+   }
 
-    @Override
-    public void photoUploadError() {
-        showImageUploadError(sweetAlertDialog -> {
-            sweetAlertDialog.dismiss();
-            getPresenter().photoUploadFailed();
-        });
-    }
+   @Override
+   public void photoUploadError() {
+      showImageUploadError(sweetAlertDialog -> {
+         sweetAlertDialog.dismiss();
+         getPresenter().photoUploadFailed();
+      });
+   }
 
-    @Override
-    public void noConnection() {
-        showImageUploadError(sweetAlertDialog -> {
-            sweetAlertDialog.dismissWithAnimation();
-            scanner.startCamera();
-        });
-    }
+   @Override
+   public void noConnection() {
+      showImageUploadError(sweetAlertDialog -> {
+         sweetAlertDialog.dismissWithAnimation();
+         scanner.startCamera();
+      });
+   }
 
-    private void showImageUploadError(SweetAlertDialog.OnSweetClickListener onSweetClickListener) {
-        if (alertDialog != null && alertDialog.isShowing()) return;
-        //
-        alertDialog = new SweetAlertDialog(getActivity(), SweetAlertDialog.ERROR_TYPE)
-                .setTitleText(getString(R.string.alert))
-                .setContentText(getString(R.string.dtl_photo_upload_error))
-                .setConfirmText(getString(R.string.ok))
-                .setConfirmClickListener(onSweetClickListener);
-        alertDialog.setCancelable(false);
-        alertDialog.show();
-    }
+   private void showImageUploadError(SweetAlertDialog.OnSweetClickListener onSweetClickListener) {
+      if (alertDialog != null && alertDialog.isShowing()) return;
+      //
+      alertDialog = new SweetAlertDialog(getActivity(), SweetAlertDialog.ERROR_TYPE).setTitleText(getString(R.string.alert))
+            .setContentText(getString(R.string.dtl_photo_upload_error))
+            .setConfirmText(getString(R.string.ok))
+            .setConfirmClickListener(onSweetClickListener);
+      alertDialog.setCancelable(false);
+      alertDialog.show();
+   }
 
-    @Override
-    public void onApiCallFailed() {
-        hideProgress();
-    }
+   @Override
+   public void onApiCallFailed() {
+      hideProgress();
+   }
 
-    @Override
-    public boolean onApiError(ErrorResponse errorResponse) {
-        FieldError fieldError = Queryable.from(errorResponse.getErrors()).firstOrDefault();
-        //
-        if (fieldError != null) {
-            SweetAlertDialog alertDialog = new SweetAlertDialog(getActivity(), SweetAlertDialog.ERROR_TYPE)
-                    .setTitleText(getString(R.string.alert))
-                    .setContentText(fieldError.getFirstMessage())
-                    .setConfirmText(getString(R.string.ok))
-                    .setConfirmClickListener(sweetAlertDialog -> {
-                        switch (fieldError.field) {
-                            case DtlTransaction.BILL_TOTAL:
-                            case DtlTransaction.RECEIPT_PHOTO_URL:
-                                getPresenter().photoUploadFailed();
-                                break;
-                            case DtlTransaction.LOCATION:
-                            case DtlTransaction.CHECKIN:
-                                getActivity().finish();
-                                break;
-                            case DtlTransaction.MERCHANT_TOKEN:
-                            default:
-                                sweetAlertDialog.dismissWithAnimation();
-                                scanner.startCamera();
-                                break;
-                        }
-                    });
-            alertDialog.setCancelable(false);
-            alertDialog.show();
-            return true;
-        }
-        //
-        return false;
-    }
+   @Override
+   public boolean onApiError(ErrorResponse errorResponse) {
+      FieldError fieldError = Queryable.from(errorResponse.getErrors()).firstOrDefault();
+      //
+      if (fieldError != null) {
+         SweetAlertDialog alertDialog = new SweetAlertDialog(getActivity(), SweetAlertDialog.ERROR_TYPE).setTitleText(getString(R.string.alert))
+               .setContentText(fieldError.getFirstMessage())
+               .setConfirmText(getString(R.string.ok))
+               .setConfirmClickListener(sweetAlertDialog -> {
+                  switch (fieldError.field) {
+                     case DtlTransaction.BILL_TOTAL:
+                     case DtlTransaction.RECEIPT_PHOTO_URL:
+                        getPresenter().photoUploadFailed();
+                        break;
+                     case DtlTransaction.LOCATION:
+                     case DtlTransaction.CHECKIN:
+                        getActivity().finish();
+                        break;
+                     case DtlTransaction.MERCHANT_TOKEN:
+                     default:
+                        sweetAlertDialog.dismissWithAnimation();
+                        scanner.startCamera();
+                        break;
+                  }
+               });
+         alertDialog.setCancelable(false);
+         alertDialog.show();
+         return true;
+      }
+      //
+      return false;
+   }
 }

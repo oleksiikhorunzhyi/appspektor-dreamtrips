@@ -12,9 +12,9 @@ import dagger.Provides;
 
 public class AppVersionNameModule {
 
-    @Provides
-    @Singleton
-    AppVersionNameBuilder provideAppVersionNameBuilder() {
-        return new AppVersionNameBuilder();
-    }
+   @Provides
+   @Singleton
+   AppVersionNameBuilder provideAppVersionNameBuilder() {
+      return new AppVersionNameBuilder();
+   }
 }

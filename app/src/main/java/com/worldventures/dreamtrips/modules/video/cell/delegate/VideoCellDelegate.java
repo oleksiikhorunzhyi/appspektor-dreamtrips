@@ -6,11 +6,11 @@ import com.worldventures.dreamtrips.modules.video.model.Video;
 
 public interface VideoCellDelegate extends CellDelegate<Video> {
 
-    void sendAnalytic(String action, String name);
+   void sendAnalytic(String action, String name);
 
-    void onDownloadVideo(CachedEntity entity);
+   void onDownloadVideo(CachedEntity entity);
 
-    void onDeleteVideo(CachedEntity entity);
+   void onDeleteVideo(CachedEntity entity);
 
-    void onCancelCachingVideo(CachedEntity entity);
+   void onCancelCachingVideo(CachedEntity entity);
 }

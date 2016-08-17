@@ -33,71 +33,60 @@ import static org.mockito.Mockito.when;
 
 abstract class DtlBaseMerchantServiceTest extends BaseTest {
 
-    protected static final String MERCHANT_ID = "test";
+   protected static final String MERCHANT_ID = "test";
 
-    private static final DtlMerchant testMerchant;
-    private static final List<DtlMerchant> testMerchantList;
+   private static final DtlMerchant testMerchant;
+   private static final List<DtlMerchant> testMerchantList;
 
-    static {
-        testMerchantList = Collections.singletonList(
-                testMerchant = mock(DtlMerchant.class)
-        );
-        when(testMerchant.getId()).thenReturn(MERCHANT_ID);
-        when(testMerchant.getCoordinates()).thenReturn(new Location(1, 1));
-        when(testMerchant.getAnalyticsName()).thenReturn("test");
-        when(testMerchant.getAmenities()).thenReturn(Collections.emptyList());
-        when(testMerchant.getBudget()).thenReturn(3);
-        when(testMerchant.getDisplayName()).thenReturn("test");
-        when(testMerchant.getMerchantType()).thenReturn(DtlMerchantType.DINING);
-    }
+   static {
+      testMerchantList = Collections.singletonList(testMerchant = mock(DtlMerchant.class));
+      when(testMerchant.getId()).thenReturn(MERCHANT_ID);
+      when(testMerchant.getCoordinates()).thenReturn(new Location(1, 1));
+      when(testMerchant.getAnalyticsName()).thenReturn("test");
+      when(testMerchant.getAmenities()).thenReturn(Collections.emptyList());
+      when(testMerchant.getBudget()).thenReturn(3);
+      when(testMerchant.getDisplayName()).thenReturn("test");
+      when(testMerchant.getMerchantType()).thenReturn(DtlMerchantType.DINING);
+   }
 
-    protected DtlMerchantInteractor merchantInteractor;
-    protected StubServiceWrapper httpStubWrapper;
-    protected DtlLocationInteractor locationInteractor;
-    protected Janet janet;
-    protected SnappyRepository db;
+   protected DtlMerchantInteractor merchantInteractor;
+   protected StubServiceWrapper httpStubWrapper;
+   protected DtlLocationInteractor locationInteractor;
+   protected Janet janet;
+   protected SnappyRepository db;
 
-    protected void init() {
-        MockDaggerActionService daggerActionService;
-        janet = new Janet.Builder()
-                .addService(cachedService(
-                        daggerActionService = new MockDaggerActionService(new CommandActionService())))
-                .addService(cachedService(
-                        httpStubWrapper = new StubServiceWrapper(
-                                new MockHttpActionService.Builder()
-                                        .bind(new MockHttpActionService.Response(200).body(testMerchantList),
-                                                request -> request.getUrl().contains("/merchants"))
-                                        .build()))
-                )
-                .build();
+   protected void init() {
+      MockDaggerActionService daggerActionService;
+      janet = new Janet.Builder().addService(cachedService(daggerActionService = new MockDaggerActionService(new CommandActionService())))
+            .addService(cachedService(httpStubWrapper = new StubServiceWrapper(new MockHttpActionService.Builder().bind(new MockHttpActionService.Response(200)
+                  .body(testMerchantList), request -> request.getUrl().contains("/merchants")).build())))
+            .build();
 
-        locationInteractor = new DtlLocationInteractor(janet);
-        merchantInteractor = new DtlMerchantInteractor(janet, locationInteractor);
-        db = spy(SnappyRepository.class);
+      locationInteractor = new DtlLocationInteractor(janet);
+      merchantInteractor = new DtlMerchantInteractor(janet, locationInteractor);
+      db = spy(SnappyRepository.class);
 
-        daggerActionService.registerProvider(Janet.class, () -> janet);
-        daggerActionService.registerProvider(DtlMerchantInteractor.class, () -> merchantInteractor);
-        daggerActionService.registerProvider(SnappyRepository.class, () -> db);
-        daggerActionService.registerProvider(AnalyticsInteractor.class, () -> new AnalyticsInteractor(janet));
-    }
+      daggerActionService.registerProvider(Janet.class, () -> janet);
+      daggerActionService.registerProvider(DtlMerchantInteractor.class, () -> merchantInteractor);
+      daggerActionService.registerProvider(SnappyRepository.class, () -> db);
+      daggerActionService.registerProvider(AnalyticsInteractor.class, () -> new AnalyticsInteractor(janet));
+   }
 
-    protected void checkDtlMerchantsAction() {
-        TestSubscriber<ActionState<DtlMerchantsAction>> subscriber = new TestSubscriber<>();
-        StubServiceWrapper.Callback spyHttpCallback = spy(StubServiceWrapper.Callback.class);
-        httpStubWrapper.setCallback(spyHttpCallback);
-        merchantInteractor.merchantsActionPipe()
-                .createObservable(DtlMerchantsAction.load(mock(android.location.Location.class)))
-                .subscribe(subscriber);
-        assertActionSuccess(subscriber, action -> !action.getResult().isEmpty() && action.isFromApi());
-        verify(spyHttpCallback, times(1)).onSend(any(ActionHolder.class));
+   protected void checkDtlMerchantsAction() {
+      TestSubscriber<ActionState<DtlMerchantsAction>> subscriber = new TestSubscriber<>();
+      StubServiceWrapper.Callback spyHttpCallback = spy(StubServiceWrapper.Callback.class);
+      httpStubWrapper.setCallback(spyHttpCallback);
+      merchantInteractor.merchantsActionPipe()
+            .createObservable(DtlMerchantsAction.load(mock(android.location.Location.class)))
+            .subscribe(subscriber);
+      assertActionSuccess(subscriber, action -> !action.getResult().isEmpty() && action.isFromApi());
+      verify(spyHttpCallback, times(1)).onSend(any(ActionHolder.class));
 
-        subscriber = new TestSubscriber<>();
-        spyHttpCallback = spy(StubServiceWrapper.Callback.class);
-        httpStubWrapper.setCallback(spyHttpCallback);
-        merchantInteractor.merchantsActionPipe()
-                .createObservable(DtlMerchantsAction.restore())
-                .subscribe(subscriber);
-        assertActionSuccess(subscriber, action -> !action.getResult().isEmpty() && !action.isFromApi());
-        verify(spyHttpCallback, never()).onSend(any(ActionHolder.class));
-    }
+      subscriber = new TestSubscriber<>();
+      spyHttpCallback = spy(StubServiceWrapper.Callback.class);
+      httpStubWrapper.setCallback(spyHttpCallback);
+      merchantInteractor.merchantsActionPipe().createObservable(DtlMerchantsAction.restore()).subscribe(subscriber);
+      assertActionSuccess(subscriber, action -> !action.getResult().isEmpty() && !action.isFromApi());
+      verify(spyHttpCallback, never()).onSend(any(ActionHolder.class));
+   }
 }

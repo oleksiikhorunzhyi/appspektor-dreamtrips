@@ -1,33 +1,44 @@
 package com.worldventures.dreamtrips.modules.feed.presenter;
 
-import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.feed.event.DownloadPhotoEvent;
-import com.worldventures.dreamtrips.modules.feed.model.FeedEntityHolder;
+import com.worldventures.dreamtrips.modules.feed.event.TranslatePostEvent;
 import com.worldventures.dreamtrips.modules.feed.model.FeedItem;
+import com.worldventures.dreamtrips.modules.feed.view.util.TextualPostTranslationDelegate;
 import com.worldventures.dreamtrips.modules.tripsimages.api.DownloadImageCommand;
+
+import javax.inject.Inject;
 
 public class FeedItemDetailsPresenter extends FeedDetailsPresenter<FeedItemDetailsPresenter.View> {
 
+   @Inject TextualPostTranslationDelegate textualPostTranslationDelegate;
 
-    public FeedItemDetailsPresenter(FeedItem feedItem) {
-        super(feedItem);
-    }
+   public FeedItemDetailsPresenter(FeedItem feedItem) {
+      super(feedItem);
+   }
 
-    @Override
-    protected void updateFullEventInfo(FeedEntityHolder feedEntityHolder) {
-        super.updateFullEventInfo(feedEntityHolder);
-        //
-        if (view.isTabletLandscape())
-            view.showAdditionalInfo(feedEntityHolder.getItem().getOwner());
-    }
+   @Override
+   public void takeView(View view) {
+      super.takeView(view);
+      textualPostTranslationDelegate.onTakeView(view, feedItem);
+   }
 
-    public void onEvent(DownloadPhotoEvent event) {
-        if (view.isVisibleOnScreen())
-            doRequest(new DownloadImageCommand(context, event.url));
-    }
+   @Override
+   public void dropView() {
+      textualPostTranslationDelegate.onDropView();
+      super.dropView();
+   }
 
-    public interface View extends FeedDetailsPresenter.View {
+   public void onEvent(DownloadPhotoEvent event) {
+      if (view.isVisibleOnScreen()) doRequest(new DownloadImageCommand(context, event.url));
+   }
 
-        void showAdditionalInfo(User user);
-    }
+   public void onEvent(TranslatePostEvent event) {
+      if (view.isVisibleOnScreen()) {
+         textualPostTranslationDelegate.translate(event.getPostFeedItem(), localeHelper.getDefaultLocaleFormatted());
+      }
+   }
+
+   public interface View extends FeedDetailsPresenter.View, TextualPostTranslationDelegate.View {
+
+   }
 }

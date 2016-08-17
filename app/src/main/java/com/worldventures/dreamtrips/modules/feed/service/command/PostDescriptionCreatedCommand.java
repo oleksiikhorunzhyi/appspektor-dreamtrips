@@ -6,14 +6,14 @@ import io.techery.janet.command.annotations.CommandAction;
 @CommandAction
 public class PostDescriptionCreatedCommand extends Command<String> {
 
-    private String description;
+   private String description;
 
-    public PostDescriptionCreatedCommand(String description) {
-        this.description = description;
-    }
+   public PostDescriptionCreatedCommand(String description) {
+      this.description = description;
+   }
 
-    @Override
-    protected void run(CommandCallback<String> callback) throws Throwable {
-        callback.onSuccess(description);
-    }
+   @Override
+   protected void run(CommandCallback<String> callback) throws Throwable {
+      callback.onSuccess(description);
+   }
 }

@@ -4,6 +4,7 @@ import android.location.Location
 import com.nhaarman.mockito_kotlin.spy
 import com.worldventures.dreamtrips.common.RxJavaSchedulerInitializer
 import com.worldventures.dreamtrips.core.janet.cache.CacheResultWrapper
+import com.worldventures.dreamtrips.core.janet.cache.storage.ActionStorage
 import com.worldventures.dreamtrips.janet.MockDaggerActionService
 import com.worldventures.dreamtrips.janet.StubServiceWrapper
 import io.techery.janet.ActionService
@@ -20,25 +21,33 @@ import org.powermock.modules.junit4.PowerMockRunnerDelegate
 @PowerMockRunnerDelegate(JUnitSpekRunner::class)
 @PrepareForTest(Location::class)
 abstract class BaseSpec(spekBody: DescribeBody.() -> Unit) : Spek(spekBody) {
-    companion object {
-        init {
-            RxJavaSchedulerInitializer.init()
-        }
+   companion object {
+      init {
+         RxJavaSchedulerInitializer.init()
+      }
 
-        fun ActionService.wrapCache() = CacheResultWrapper(this)
+      fun ActionService.wrapCache() = CacheResultWrapper(this)
 
-        fun ActionService.wrapDagger() = MockDaggerActionService(this)
+      fun ActionService.wrapDagger() = MockDaggerActionService(this)
 
-        fun ActionService.wrapStub() = StubServiceWrapper(this)
+      fun ActionService.wrapStub() = StubServiceWrapper(this)
 
-        fun StubServiceWrapper.spyCallback(): StubServiceWrapper.Callback {
-            callback = spy()
-            return callback
-        }
+      fun CacheResultWrapper.bindStorageSet(storageSet: Set<ActionStorage<*>>): CacheResultWrapper {
+         storageSet.forEach {
+            bindStorage(it.actionClass, it)
+         }
 
-        //hard code because mockito_kotlin doesn't work with String correctly
-        fun anyString() = Mockito.any(String::class.java)
+         return this
+      }
 
-        inline fun <reified T : Any> any() = Mockito.any(T::class.java)
-    }
+      fun StubServiceWrapper.spyCallback(): StubServiceWrapper.Callback {
+         callback = spy()
+         return callback
+      }
+
+      //hard code because mockito_kotlin doesn't work with String correctly
+      fun anyString() = Mockito.any(String::class.java)
+
+      inline fun <reified T : Any> any() = Mockito.any(T::class.java)
+   }
 }

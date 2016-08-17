@@ -8,17 +8,17 @@ import java.util.ArrayList;
 
 public class GetCategoryQuery extends Query<ArrayList<CategoryItem>> {
 
-    public GetCategoryQuery() {
-        super((Class<ArrayList<CategoryItem>>) new ArrayList<CategoryItem>().getClass());
-    }
+   public GetCategoryQuery() {
+      super((Class<ArrayList<CategoryItem>>) new ArrayList<CategoryItem>().getClass());
+   }
 
-    @Override
-    public ArrayList<CategoryItem> loadDataFromNetwork() throws Exception {
-        return getService().getCategories();
-    }
+   @Override
+   public ArrayList<CategoryItem> loadDataFromNetwork() throws Exception {
+      return getService().getCategories();
+   }
 
-    @Override
-    public int getErrorMessage() {
-        return R.string.error_fail_to_load_categories;
-    }
+   @Override
+   public int getErrorMessage() {
+      return R.string.error_fail_to_load_categories;
+   }
 }

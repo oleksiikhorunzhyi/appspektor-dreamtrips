@@ -4,8 +4,8 @@ import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
+import android.widget.ProgressBar;
 
-import com.techery.spares.adapter.BaseArrayListAdapter;
 import com.techery.spares.adapter.BaseDelegateAdapter;
 import com.techery.spares.annotations.Layout;
 import com.worldventures.dreamtrips.R;
@@ -32,70 +32,102 @@ import com.worldventures.dreamtrips.modules.trips.view.cell.filter.RegionCell;
 import com.worldventures.dreamtrips.modules.trips.view.cell.filter.SoldOutCell;
 import com.worldventures.dreamtrips.modules.trips.view.cell.filter.ThemeCell;
 
+import java.util.List;
+
 import butterknife.InjectView;
 import butterknife.OnClick;
 
 @Layout(R.layout.layout_filters)
 public class FiltersFragment extends BaseFragment<FiltersPresenter> implements FiltersPresenter.View {
 
-    @InjectView(R.id.recyclerViewFilters)
-    protected EmptyRecyclerView recyclerView;
-    protected BaseDelegateAdapter<Object> arrayListAdapter;
+   @InjectView(R.id.recyclerViewFilters) protected EmptyRecyclerView recyclerView;
+   @InjectView(R.id.progress) ProgressBar progressBar;
+   @InjectView(R.id.error_container) View errorContainer;
 
-    @Override
-    public void afterCreateView(View rootView) {
-        super.afterCreateView(rootView);
+   protected BaseDelegateAdapter<Object> arrayListAdapter;
 
-        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getActivity());
-        recyclerView.setLayoutManager(layoutManager);
+   @Override
+   public void afterCreateView(View rootView) {
+      super.afterCreateView(rootView);
 
-        arrayListAdapter = new BaseDelegateAdapter<>(getActivity(), this);
-        arrayListAdapter.registerCell(RegionModel.class, RegionCell.class);
-        arrayListAdapter.registerCell(FilterModel.class, FilterRangeBarsCell.class);
-        arrayListAdapter.registerCell(ActivityModel.class, ThemeCell.class);
-        arrayListAdapter.registerCell(RegionHeaderModel.class, HeaderRegionCell.class);
-        arrayListAdapter.registerCell(ThemeHeaderModel.class, HeaderThemeCell.class);
-        arrayListAdapter.registerCell(DateFilterItem.class, DateCell.class);
-        arrayListAdapter.registerCell(FilterSoldOutModel.class, SoldOutCell.class);
-        arrayListAdapter.registerCell(FilterFavoriteModel.class, FavoritesCell.class);
-        arrayListAdapter.registerCell(FilterRecentlyAddedModel.class, FilterRecentlyAddedCell.class);
+      RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getActivity());
+      recyclerView.setLayoutManager(layoutManager);
 
-        new FiltersCallbackHandler().init(arrayListAdapter, getPresenter());
+      arrayListAdapter = new BaseDelegateAdapter<>(getActivity(), this);
+      arrayListAdapter.registerCell(RegionModel.class, RegionCell.class);
+      arrayListAdapter.registerCell(FilterModel.class, FilterRangeBarsCell.class);
+      arrayListAdapter.registerCell(ActivityModel.class, ThemeCell.class);
+      arrayListAdapter.registerCell(RegionHeaderModel.class, HeaderRegionCell.class);
+      arrayListAdapter.registerCell(ThemeHeaderModel.class, HeaderThemeCell.class);
+      arrayListAdapter.registerCell(DateFilterItem.class, DateCell.class);
+      arrayListAdapter.registerCell(FilterSoldOutModel.class, SoldOutCell.class);
+      arrayListAdapter.registerCell(FilterFavoriteModel.class, FavoritesCell.class);
+      arrayListAdapter.registerCell(FilterRecentlyAddedModel.class, FilterRecentlyAddedCell.class);
 
-        recyclerView.setHasFixedSize(false);
-        recyclerView.setAdapter(arrayListAdapter);
-    }
+      new FiltersCallbackHandler().init(arrayListAdapter, getPresenter());
 
-    @Override
-    public void onDestroyView() {
-        this.recyclerView.setAdapter(null);
-        super.onDestroyView();
-    }
+      recyclerView.setHasFixedSize(false);
+      recyclerView.setAdapter(arrayListAdapter);
+   }
 
-    @OnClick(R.id.textViewApplyFilter)
-    void applyFilter() {
-        ((MainActivity) getActivity()).closeRightDrawer();
-        getPresenter().acceptFilters();
-    }
+   @Override
+   public void onDestroyView() {
+      this.recyclerView.setAdapter(null);
+      super.onDestroyView();
+   }
 
-    @OnClick(R.id.textViewResetFilter)
-    void resetFilter() {
-        ((MainActivity) getActivity()).closeRightDrawer();
-        getPresenter().resetFilters();
-    }
+   @OnClick(R.id.textViewApplyFilter)
+   void applyFilter() {
+      ((MainActivity) getActivity()).closeRightDrawer();
+      getPresenter().acceptFilters();
+   }
 
-    @Override
-    public void dataSetChanged() {
-        arrayListAdapter.notifyDataSetChanged();
-    }
+   @OnClick(R.id.textViewResetFilter)
+   void resetFilter() {
+      ((MainActivity) getActivity()).closeRightDrawer();
+      getPresenter().resetFilters();
+   }
 
-    @Override
-    public BaseArrayListAdapter getAdapter() {
-        return arrayListAdapter;
-    }
+   @OnClick(R.id.btn_retry)
+   void retry() {
+      hideErrorContainer();
+      getPresenter().loadFilters();
+   }
 
-    @Override
-    protected FiltersPresenter createPresenter(Bundle savedInstanceState) {
-        return new FiltersPresenter();
-    }
+   @Override
+   public void showProgress() {
+      progressBar.setVisibility(View.VISIBLE);
+   }
+
+   @Override
+   public void hideProgress() {
+      progressBar.setVisibility(View.GONE);
+   }
+
+   @Override
+   public void showErrorContainer() {
+      errorContainer.setVisibility(View.VISIBLE);
+   }
+
+   @Override
+   public void hideErrorContainer() {
+      errorContainer.setVisibility(View.GONE);
+   }
+
+   @Override
+   public void fillData(List data) {
+      if (recyclerView != null) recyclerView.setVisibility(View.VISIBLE);
+      arrayListAdapter.clear();
+      arrayListAdapter.addItems(data);
+   }
+
+   @Override
+   public void dataSetChanged() {
+      arrayListAdapter.notifyDataSetChanged();
+   }
+
+   @Override
+   protected FiltersPresenter createPresenter(Bundle savedInstanceState) {
+      return new FiltersPresenter();
+   }
 }

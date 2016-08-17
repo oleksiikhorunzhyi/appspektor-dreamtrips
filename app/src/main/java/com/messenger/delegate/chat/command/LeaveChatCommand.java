@@ -9,15 +9,14 @@ import io.techery.janet.command.annotations.CommandAction;
 @CommandAction
 public class LeaveChatCommand extends BaseChatCommand<Chat> {
 
-    public LeaveChatCommand(String conversationId) {
-        super(conversationId);
-    }
+   public LeaveChatCommand(String conversationId) {
+      super(conversationId);
+   }
 
-    @Override
-    protected void run(CommandCallback<Chat> callback) throws Throwable {
-        getChat()
-                .map(chat -> (GroupChat) chat)
-                .flatMap(GroupChat::leave)
-                .subscribe(callback::onSuccess, callback::onFail);
-    }
+   @Override
+   protected void run(CommandCallback<Chat> callback) throws Throwable {
+      getChat().map(chat -> (GroupChat) chat)
+            .flatMap(GroupChat::leave)
+            .subscribe(callback::onSuccess, callback::onFail);
+   }
 }

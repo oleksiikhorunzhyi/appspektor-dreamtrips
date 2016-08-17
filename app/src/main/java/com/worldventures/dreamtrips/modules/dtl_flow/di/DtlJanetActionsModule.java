@@ -12,16 +12,6 @@ import com.worldventures.dreamtrips.modules.dtl.service.action.DtlUpdateAmenitie
 import dagger.Module;
 
 @Module(
-        injects = {
-                DtlUpdateAmenitiesAction.class,
-                DtlFilterDataAction.class,
-                DtlTransactionAction.class,
-                DtlMerchantByIdAction.class,
-                DtlMerchantsAction.class,
-                DtlSearchLocationAction.class,
-                DtlAnalyticsCommand.class,
-                MerchantDetailsViewCommand.class,
-        },
-        complete = false, library = true)
-public class DtlJanetActionsModule {
-}
+      injects = {DtlUpdateAmenitiesAction.class, DtlFilterDataAction.class, DtlTransactionAction.class, DtlMerchantByIdAction.class, DtlMerchantsAction.class, DtlSearchLocationAction.class, DtlAnalyticsCommand.class, MerchantDetailsViewCommand.class,},
+      complete = false, library = true)
+public class DtlJanetActionsModule {}

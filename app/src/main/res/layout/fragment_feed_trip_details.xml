@@ -1,148 +1,167 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-             android:layout_width="match_parent"
-             android:layout_height="match_parent"
-             android:background="@color/white"
-             android:clipToPadding="false"
-             android:fitsSystemWindows="true"
-             android:orientation="vertical">
+      android:layout_width="match_parent"
+      android:layout_height="match_parent"
+      android:background="@color/white"
+      android:clipToPadding="false"
+      android:fitsSystemWindows="true"
+      android:orientation="vertical"
+      >
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical">
+   <LinearLayout
+         android:layout_width="match_parent"
+         android:layout_height="wrap_content"
+         android:orientation="vertical"
+         >
 
 
-        <FrameLayout
+      <FrameLayout
             android:layout_width="match_parent"
-            android:layout_height="@dimen/tripImageHeightDetailed">
+            android:layout_height="@dimen/tripImageHeightDetailed"
+            >
+
+         <ImageView
+               android:layout_width="match_parent"
+               android:layout_height="match_parent"
+               android:scaleType="centerCrop"
+               android:src="@drawable/ic_trip_image_placeholder"
+               />
+
+         <android.support.v4.view.ViewPager
+               android:id="@+id/viewPagerGallery"
+               android:layout_width="match_parent"
+               android:layout_height="match_parent"
+               />
+
+         <View
+               android:layout_width="match_parent"
+               android:layout_height="100dp"
+               android:background="@drawable/trip_item_shadow"
+               />
+
+         <android.support.v7.widget.Toolbar
+               android:id="@+id/feed_trip_inner_toolbar"
+               android:layout_width="match_parent"
+               android:layout_height="wrap_content"
+               />
+
+         <me.relex.circleindicator.CircleIndicator
+               android:id="@+id/circleIndicator"
+               android:layout_width="match_parent"
+               android:layout_height="40dp"
+               android:layout_gravity="bottom"
+               />
+
+
+         <FrameLayout
+               android:id="@+id/pointsCountLayout"
+               android:layout_width="64dp"
+               android:layout_height="64dp"
+               android:layout_gravity="bottom"
+               android:padding="5dp"
+               >
 
             <ImageView
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:scaleType="centerCrop"
-                android:src="@drawable/ic_trip_image_placeholder"/>
+                  android:layout_width="wrap_content"
+                  android:layout_height="wrap_content"
+                  android:src="@drawable/ic_points_badge"
+                  />
 
-            <android.support.v4.view.ViewPager
-                android:id="@+id/viewPagerGallery"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"/>
+            <TextView
+                  android:id="@+id/textViewPoints"
+                  android:layout_width="wrap_content"
+                  android:layout_height="wrap_content"
+                  android:layout_gravity="center"
+                  android:textColor="@color/white"
+                  android:textSize="12dp"
+                  />
 
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="100dp"
-                android:background="@drawable/trip_item_shadow"/>
+         </FrameLayout>
 
-            <android.support.v7.widget.Toolbar
-                android:id="@+id/feed_trip_inner_toolbar"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                />
+         <RelativeLayout
+               android:layout_width="wrap_content"
+               android:layout_height="wrap_content"
+               android:layout_gravity="bottom|end"
+               >
 
-            <me.relex.circleindicator.CircleIndicator
-                android:id="@+id/circleIndicator"
-                android:layout_width="match_parent"
-                android:layout_height="40dp"
-                android:layout_gravity="bottom"/>
+            <TextView
+                  android:id="@+id/textViewFeatured"
+                  android:layout_width="wrap_content"
+                  android:layout_height="wrap_content"
+                  android:layout_centerVertical="true"
+                  android:background="@drawable/ic_stripe_left"
+                  android:gravity="center"
+                  android:padding="@dimen/spacing_medium"
+                  android:text="@string/trip_featured"
+                  android:textColor="@color/white"
+                  android:textSize="12sp"
+                  android:textStyle="bold"
+                  android:visibility="invisible"
+                  />
 
+         </RelativeLayout>
 
-            <FrameLayout
-                android:id="@+id/pointsCountLayout"
-                android:layout_width="64dp"
-                android:layout_height="64dp"
-                android:layout_gravity="bottom"
-                android:padding="5dp">
+         <ImageView
+               android:id="@+id/sold_out"
+               android:layout_width="wrap_content"
+               android:layout_height="wrap_content"
+               android:layout_gravity="bottom|end"
+               android:src="@drawable/soldout"
+               android:visibility="gone"
+               />
+      </FrameLayout>
 
-                <ImageView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:src="@drawable/ic_points_badge"/>
-
-                <TextView
-                    android:id="@+id/textViewPoints"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:textColor="@color/white"
-                    android:textSize="12dp"/>
-
-            </FrameLayout>
-
-            <RelativeLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="bottom|end">
-
-                <TextView
-                    android:id="@+id/textViewFeatured"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_centerVertical="true"
-                    android:background="@drawable/ic_stripe_left"
-                    android:gravity="center"
-                    android:padding="@dimen/spacing_medium"
-                    android:text="@string/trip_featured"
-                    android:textColor="@color/white"
-                    android:textSize="12sp"
-                    android:textStyle="bold"
-                    android:visibility="invisible"/>
-
-            </RelativeLayout>
-
-            <ImageView
-                android:id="@+id/sold_out"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="bottom|end"
-                android:src="@drawable/soldout"
-                android:visibility="gone"/>
-        </FrameLayout>
-
-        <LinearLayout
+      <LinearLayout
             android:id="@+id/trip_info"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            android:padding="@dimen/spacing_medium">
+            android:padding="@dimen/spacing_medium"
+            >
 
-            <LinearLayout
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:orientation="vertical">
-
-                <TextView
-                    android:id="@+id/textViewName"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:fontFamily="sans-serif-light"
-                    android:textColor="@color/black"
-                    android:textSize="16sp"/>
-
-                <TextView
-                    android:id="@+id/textViewPlace"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:drawableLeft="@drawable/ic_location"
-                    android:drawablePadding="5dp"
-                    android:drawableStart="@drawable/ic_location"
-                    android:textColor="@color/tripPlaceColor"/>
-            </LinearLayout>
+         <LinearLayout
+               android:layout_width="0dp"
+               android:layout_height="wrap_content"
+               android:layout_weight="1"
+               android:orientation="vertical"
+               >
 
             <TextView
-                android:id="@+id/textViewPrice"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:fontFamily="sans-serif-light"
-                android:gravity="center_vertical"
-                android:textColor="@color/tripPlaceColor"
-                android:textSize="22sp"
-                android:textStyle="bold"/>
-        </LinearLayout>
+                  android:id="@+id/textViewName"
+                  android:layout_width="match_parent"
+                  android:layout_height="wrap_content"
+                  android:fontFamily="sans-serif-light"
+                  android:textColor="@color/black"
+                  android:textSize="16sp"
+                  />
 
-        <View
+            <TextView
+                  android:id="@+id/textViewPlace"
+                  android:layout_width="match_parent"
+                  android:layout_height="wrap_content"
+                  android:drawableLeft="@drawable/ic_location"
+                  android:drawablePadding="5dp"
+                  android:drawableStart="@drawable/ic_location"
+                  android:textColor="@color/tripPlaceColor"
+                  />
+         </LinearLayout>
+
+         <TextView
+               android:id="@+id/textViewPrice"
+               android:layout_width="wrap_content"
+               android:layout_height="match_parent"
+               android:fontFamily="sans-serif-light"
+               android:gravity="center_vertical"
+               android:textColor="@color/tripPlaceColor"
+               android:textSize="22sp"
+               android:textStyle="bold"
+               />
+      </LinearLayout>
+
+      <View
             android:layout_width="match_parent"
             android:layout_height="4dp"
-            android:background="@drawable/trip_details_shadow"/>
-    </LinearLayout>
+            android:background="@drawable/trip_details_shadow"
+            />
+   </LinearLayout>
 </FrameLayout>

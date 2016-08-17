@@ -13,56 +13,56 @@ import java.util.List;
 @Value.Immutable
 public abstract class DtlFilterData {
 
-    @Value.Default
-    public String getSearchQuery() {
-        return "";
-    }
+   @Value.Default
+   public String getSearchQuery() {
+      return "";
+   }
 
-    @Value.Default
-    public int getMinPrice() {
-        return DtlFilterParameters.MIN_PRICE;
-    }
+   @Value.Default
+   public int getMinPrice() {
+      return DtlFilterParameters.MIN_PRICE;
+   }
 
-    @Value.Default
-    public int getMaxPrice() {
-        return DtlFilterParameters.MAX_PRICE;
-    }
+   @Value.Default
+   public int getMaxPrice() {
+      return DtlFilterParameters.MAX_PRICE;
+   }
 
-    @Value.Default
-    public double getMaxDistance() {
-        return DtlFilterParameters.MAX_DISTANCE;
-    }
+   @Value.Default
+   public double getMaxDistance() {
+      return DtlFilterParameters.MAX_DISTANCE;
+   }
 
-    @Nullable
-    public abstract DistanceType getDistanceType();
+   @Nullable
+   public abstract DistanceType getDistanceType();
 
-    public abstract List<DtlMerchantAttribute> getAmenities();
+   public abstract List<DtlMerchantAttribute> getAmenities();
 
-    public abstract List<DtlMerchantAttribute> getSelectedAmenities();
+   public abstract List<DtlMerchantAttribute> getSelectedAmenities();
 
-    @Value.Default
-    public boolean isOffersOnly() {
-        return false;
-    }
+   @Value.Default
+   public boolean isOffersOnly() {
+      return false;
+   }
 
-    public static DtlFilterData merge(DtlFilterParameters filterParameters, DtlFilterData filterData) {
-        return ImmutableDtlFilterData.copyOf(filterData)
-                .withMinPrice(filterParameters.getMinPrice())
-                .withMaxPrice(filterParameters.getMaxPrice())
-                .withMaxDistance(filterParameters.getMaxDistance())
-                .withSelectedAmenities(filterParameters.getSelectedAmenities());
-    }
+   public static DtlFilterData merge(DtlFilterParameters filterParameters, DtlFilterData filterData) {
+      return ImmutableDtlFilterData.copyOf(filterData)
+            .withMinPrice(filterParameters.getMinPrice())
+            .withMaxPrice(filterParameters.getMaxPrice())
+            .withMaxDistance(filterParameters.getMaxDistance())
+            .withSelectedAmenities(filterParameters.getSelectedAmenities());
+   }
 
-    @Value.Derived
-    public boolean hasAmenities() {
-        return !getAmenities().isEmpty();
-    }
+   @Value.Derived
+   public boolean hasAmenities() {
+      return !getAmenities().isEmpty();
+   }
 
-    @Value.Derived
-    public boolean isDefault() {
-        return getMinPrice() == DtlFilterParameters.MIN_PRICE &&
-                getMaxPrice() == DtlFilterParameters.MAX_PRICE &&
-                getMaxDistance() == DtlFilterParameters.MAX_DISTANCE &&
-                getAmenities().size() == getSelectedAmenities().size();
-    }
+   @Value.Derived
+   public boolean isDefault() {
+      return getMinPrice() == DtlFilterParameters.MIN_PRICE &&
+            getMaxPrice() == DtlFilterParameters.MAX_PRICE &&
+            getMaxDistance() == DtlFilterParameters.MAX_DISTANCE &&
+            getAmenities().size() == getSelectedAmenities().size();
+   }
 }

@@ -23,90 +23,87 @@ import javax.inject.Inject;
 
 import flow.Flow;
 import flow.History;
+import io.techery.janet.Command;
 import io.techery.janet.helper.ActionStateSubscriber;
 
-public class DtlLocationsSearchPresenterImpl extends DtlPresenterImpl<DtlLocationsSearchScreen, DtlLocationsSearchViewState>
-        implements DtlLocationsSearchPresenter {
+public class DtlLocationsSearchPresenterImpl extends DtlPresenterImpl<DtlLocationsSearchScreen, DtlLocationsSearchViewState> implements DtlLocationsSearchPresenter {
 
-    @Inject
-    DtlFilterMerchantInteractor filterInteractor;
-    @Inject
-    DtlLocationInteractor locationInteractor;
+   @Inject DtlFilterMerchantInteractor filterInteractor;
+   @Inject DtlLocationInteractor locationInteractor;
 
-    public DtlLocationsSearchPresenterImpl(Context context, Injector injector) {
-        super(context);
-        injector.inject(this);
-    }
+   public DtlLocationsSearchPresenterImpl(Context context, Injector injector) {
+      super(context);
+      injector.inject(this);
+   }
 
-    @Override
-    public void onAttachedToWindow() {
-        super.onAttachedToWindow();
-        getView().toggleDefaultCaptionVisibility(true);
-        //
-        connectLocationsSearch();
-        apiErrorPresenter.setView(getView());
-    }
+   @Override
+   public void onAttachedToWindow() {
+      super.onAttachedToWindow();
+      getView().toggleDefaultCaptionVisibility(true);
+      //
+      connectLocationsSearch();
+      apiErrorPresenter.setView(getView());
+   }
 
-    private void connectLocationsSearch() {
-        locationInteractor.searchLocationPipe().observeWithReplay()
-                .compose(bindViewIoToMainComposer())
-                .subscribe(new ActionStateSubscriber<DtlSearchLocationAction>()
-                        .onStart(command -> getView().showProgress())
-                        .onFail(apiErrorPresenter::handleActionError)
-                        .onSuccess(this::onSearchFinished));
-    }
+   private void connectLocationsSearch() {
+      locationInteractor.searchLocationPipe()
+            .observeWithReplay()
+            .compose(bindViewIoToMainComposer())
+            .subscribe(new ActionStateSubscriber<DtlSearchLocationAction>().onStart(command -> getView().showProgress())
+                  .onFail(apiErrorPresenter::handleActionError)
+                  .onSuccess(this::onSearchFinished));
+   }
 
-    private void onSearchFinished(DtlSearchLocationAction action) {
-        List<DtlExternalLocation> locations = action.getResult();
-        getView().hideProgress();
-        getView().setItems(locations);
-        if (TextUtils.isEmpty(action.getQuery()) && !locations.isEmpty())
-            getView().toggleDefaultCaptionVisibility(false);
-    }
+   private void onSearchFinished(DtlSearchLocationAction action) {
+      List<DtlExternalLocation> locations = action.getResult();
+      getView().hideProgress();
+      getView().setItems(locations);
+      if (TextUtils.isEmpty(action.getQuery()) && !locations.isEmpty()) getView().toggleDefaultCaptionVisibility(false);
+   }
 
-    @Override
-    public void searchClosed() {
-        sendSearchAction("");
-        Flow.get(getContext()).goBack();
-    }
+   @Override
+   public void searchClosed() {
+      sendSearchAction("");
+      Flow.get(getContext()).goBack();
+   }
 
-    @Override
-    public void search(String query) {
-        getView().toggleDefaultCaptionVisibility(query.isEmpty());
-        sendSearchAction(query);
-    }
+   @Override
+   public void search(String query) {
+      getView().toggleDefaultCaptionVisibility(query.isEmpty());
+      sendSearchAction(query);
+   }
 
-    private void sendSearchAction(String query) {
-        locationInteractor.searchLocationPipe().cancelLatest();
-        locationInteractor.searchLocationPipe().send(new DtlSearchLocationAction(query.trim()));
-    }
+   private void sendSearchAction(String query) {
+      locationInteractor.searchLocationPipe().cancelLatest();
+      locationInteractor.searchLocationPipe().send(new DtlSearchLocationAction(query.trim()));
+   }
 
-    @Override
-    public void onLocationSelected(DtlExternalLocation location) {
-        locationInteractor.searchLocationPipe().clearReplays();
-        locationInteractor.locationPipe()
-                .createObservableResult(DtlLocationCommand.change(location))
-                .map(dtlLocationCommand -> dtlLocationCommand.getResult())
-                .cast(DtlExternalLocation.class)
-                .subscribe(dtlLocation -> analyticsInteractor.dtlAnalyticsCommandPipe()
-                        .send(DtlAnalyticsCommand.create(
-                                new LocationSearchEvent(dtlLocation))));
-        filterInteractor.filterMerchantsActionPipe().clearReplays();
-        History history = History.single(DtlMerchantsPath.getDefault());
-        Flow.get(getContext()).setHistory(history, Flow.Direction.REPLACE);
-    }
+   @Override
+   public void onLocationSelected(DtlExternalLocation location) {
+      locationInteractor.searchLocationPipe().clearReplays();
+      locationInteractor.locationPipe()
+            .createObservableResult(DtlLocationCommand.change(location))
+            .map(Command::getResult)
+            .cast(DtlExternalLocation.class)
+            .map(LocationSearchEvent::new)
+            .map(DtlAnalyticsCommand::create)
+            .subscribe(analyticsInteractor.dtlAnalyticsCommandPipe()::send);
+      filterInteractor.filterMerchantsActionPipe().clearReplays();
+      History history = History.single(DtlMerchantsPath.getDefault());
+      Flow.get(getContext()).setHistory(history, Flow.Direction.REPLACE);
+   }
 
-    @Override
-    public int getToolbarMenuRes() {
-        return R.menu.menu_locations_search;
-    }
+   @Override
+   public int getToolbarMenuRes() {
+      return R.menu.menu_locations_search;
+   }
 
-    @Override
-    public void onToolbarMenuPrepared(Menu menu) {
-    }
+   @Override
+   public void onToolbarMenuPrepared(Menu menu) {
+   }
 
-    @Override
-    public boolean onToolbarMenuItemClick(MenuItem item) {
-        return false;
-    }
+   @Override
+   public boolean onToolbarMenuItemClick(MenuItem item) {
+      return false;
+   }
 }

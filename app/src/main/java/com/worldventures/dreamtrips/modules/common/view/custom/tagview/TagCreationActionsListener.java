@@ -4,8 +4,8 @@ import com.worldventures.dreamtrips.modules.common.view.custom.tagview.viewgroup
 
 public interface TagCreationActionsListener extends TagActionListener {
 
-    void requestFriendList(String query, int page);
+   void requestFriendList(String query, int page);
 
-    void onTagCreated(CreationTagView newTagView, PhotoTag suggestion, PhotoTag tag);
+   void onTagCreated(CreationTagView newTagView, PhotoTag suggestion, PhotoTag tag);
 
 }

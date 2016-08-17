@@ -1,7 +1,7 @@
 package com.worldventures.dreamtrips.modules.membership.command;
 
-import com.messenger.api.UiErrorAction;
 import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.core.api.action.CommandWithError;
 import com.worldventures.dreamtrips.core.janet.dagger.InjectableAction;
 import com.worldventures.dreamtrips.modules.membership.api.GetPodcastsHttpAction;
 import com.worldventures.dreamtrips.modules.membership.model.Podcast;
@@ -17,27 +17,28 @@ import rx.schedulers.Schedulers;
 
 
 @CommandAction
-public class PodcastCommand extends Command<List<Podcast>> implements InjectableAction, UiErrorAction {
-    @Inject
-    Janet janet;
-    private int page;
-    private int perPage;
+public class PodcastCommand extends CommandWithError<List<Podcast>> implements InjectableAction {
 
-    public PodcastCommand(int page, int perPage) {
-        this.page = page;
-        this.perPage = perPage;
-    }
+   @Inject Janet janet;
 
-    @Override
-    protected void run(Command.CommandCallback<List<Podcast>> callback) throws Throwable {
-        janet.createPipe(GetPodcastsHttpAction.class, Schedulers.io())
-                .createObservableResult(new GetPodcastsHttpAction(page, perPage))
-                .map(GetPodcastsHttpAction::getResponseItems)
-                .subscribe(callback::onSuccess, callback::onFail);
-    }
+   private int page;
+   private int perPage;
 
-    @Override
-    public int getErrorMessage() {
-        return R.string.error_fail_to_load_podcast;
-    }
+   public PodcastCommand(int page, int perPage) {
+      this.page = page;
+      this.perPage = perPage;
+   }
+
+   @Override
+   protected void run(Command.CommandCallback<List<Podcast>> callback) throws Throwable {
+      janet.createPipe(GetPodcastsHttpAction.class, Schedulers.io())
+            .createObservableResult(new GetPodcastsHttpAction(page, perPage))
+            .map(GetPodcastsHttpAction::getResponseItems)
+            .subscribe(callback::onSuccess, callback::onFail);
+   }
+
+   @Override
+   public int getFallbackErrorMessage() {
+      return R.string.error_fail_to_load_podcast;
+   }
 }

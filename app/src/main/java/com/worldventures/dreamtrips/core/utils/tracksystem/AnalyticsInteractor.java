@@ -9,19 +9,19 @@ import rx.schedulers.Schedulers;
 
 public class AnalyticsInteractor {
 
-    private final ActionPipe<BaseAnalyticsAction> analyticEventPipe;
-    private final ActionPipe<DtlAnalyticsCommand> dtlAnalyticCommandPipe;
+   private final ActionPipe<BaseAnalyticsAction> analyticEventPipe;
+   private final ActionPipe<DtlAnalyticsCommand> dtlAnalyticCommandPipe;
 
-    public AnalyticsInteractor(Janet janet) {
-        analyticEventPipe = janet.createPipe(BaseAnalyticsAction.class, Schedulers.io());
-        dtlAnalyticCommandPipe = janet.createPipe(DtlAnalyticsCommand.class, Schedulers.io());
-    }
+   public AnalyticsInteractor(Janet janet) {
+      analyticEventPipe = janet.createPipe(BaseAnalyticsAction.class, Schedulers.io());
+      dtlAnalyticCommandPipe = janet.createPipe(DtlAnalyticsCommand.class, Schedulers.io());
+   }
 
-    public WriteActionPipe<BaseAnalyticsAction> analyticsActionPipe() {
-        return analyticEventPipe;
-    }
+   public WriteActionPipe<BaseAnalyticsAction> analyticsActionPipe() {
+      return analyticEventPipe;
+   }
 
-    public WriteActionPipe<DtlAnalyticsCommand> dtlAnalyticsCommandPipe() {
-        return dtlAnalyticCommandPipe;
-    }
+   public WriteActionPipe<DtlAnalyticsCommand> dtlAnalyticsCommandPipe() {
+      return dtlAnalyticCommandPipe;
+   }
 }

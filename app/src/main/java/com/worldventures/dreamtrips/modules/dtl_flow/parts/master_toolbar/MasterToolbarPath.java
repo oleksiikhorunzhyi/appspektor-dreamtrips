@@ -7,5 +7,5 @@ import com.worldventures.dreamtrips.modules.dtl_flow.DtlMasterPath;
 @Layout(R.layout.screen_dtl_master_toolbar)
 public class MasterToolbarPath extends DtlMasterPath {
 
-    public static final MasterToolbarPath INSTANCE = new MasterToolbarPath();
+   public static final MasterToolbarPath INSTANCE = new MasterToolbarPath();
 }

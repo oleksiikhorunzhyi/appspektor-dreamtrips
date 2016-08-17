@@ -13,73 +13,77 @@ import de.greenrobot.event.EventBus;
 
 public abstract class AbstractCell<T> extends RecyclerView.ViewHolder implements BaseCell<T> {
 
-    private T modelObject;
+   private T modelObject;
 
-    @Inject
-    protected Router router;
+   @Inject protected Router router;
 
-    private EventBus eventBus;
+   private EventBus eventBus;
 
-    public AbstractCell(View view) {
-        super(view);
-        ButterKnife.inject(this, view);
-        view.addOnAttachStateChangeListener(new View.OnAttachStateChangeListener() {
-            @Override
-            public void onViewAttachedToWindow(View v) {
-            }
+   public AbstractCell(View view) {
+      super(view);
+      ButterKnife.inject(this, view);
+      view.addOnAttachStateChangeListener(new View.OnAttachStateChangeListener() {
+         @Override
+         public void onViewAttachedToWindow(View v) {
+         }
 
-            @Override
-            public void onViewDetachedFromWindow(View v) {
-                clearResources();
-            }
-        });
-    }
+         @Override
+         public void onViewDetachedFromWindow(View v) {
+            clearResources();
+         }
+      });
+   }
 
-    @Override
-    public void setEventBus(EventBus bus) {
-        this.eventBus = bus;
-    }
+   @Override
+   public void setEventBus(EventBus bus) {
+      this.eventBus = bus;
+   }
 
-    public EventBus getEventBus() {
-        return eventBus;
-    }
+   public EventBus getEventBus() {
+      return eventBus;
+   }
 
-    public T getModelObject() {
-        return modelObject;
-    }
+   public T getModelObject() {
+      return modelObject;
+   }
 
-    public void setModelObject(T modelObject) {
-        this.modelObject = modelObject;
-    }
+   public void setModelObject(T modelObject) {
+      this.modelObject = modelObject;
+   }
 
-    @Override
-    public void fillWithItem(T item) {
-        setModelObject(item);
-        syncUIStateWithModel();
-    }
+   @Override
+   public void fillWithItem(T item) {
+      setModelObject(item);
+      syncUIStateWithModel();
+   }
 
-    public void saveState(Bundle b) {
+   public void saveState(Bundle b) {
 
-    }
+   }
 
-    public void restoreState(Bundle bundle) {
+   public void restoreState(Bundle bundle) {
 
-    }
+   }
 
-    protected abstract void syncUIStateWithModel();
+   @Override
+   public void prepareForReuse() {
 
-    public void afterInject() {
+   }
 
-    }
+   protected abstract void syncUIStateWithModel();
 
-    public boolean shouldInject() {
-        return true;
-    }
+   public void afterInject() {
 
-    @Override
-    public void clearResources() {
-        if (eventBus != null && eventBus.isRegistered(this)) {
-            eventBus.unregister(this);
-        }
-    }
+   }
+
+   public boolean shouldInject() {
+      return true;
+   }
+
+   @Override
+   public void clearResources() {
+      if (eventBus != null && eventBus.isRegistered(this)) {
+         eventBus.unregister(this);
+      }
+   }
 }

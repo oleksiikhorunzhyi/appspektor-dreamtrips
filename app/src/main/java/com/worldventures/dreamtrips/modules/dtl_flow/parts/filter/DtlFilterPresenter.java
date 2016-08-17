@@ -4,7 +4,7 @@ import com.hannesdorfmann.mosby.mvp.MvpPresenter;
 
 public interface DtlFilterPresenter extends MvpPresenter<FilterView> {
 
-    void apply();
+   void apply();
 
-    void resetAll();
+   void resetAll();
 }

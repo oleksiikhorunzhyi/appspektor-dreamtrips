@@ -8,10 +8,9 @@ import com.worldventures.dreamtrips.modules.dtl.model.location.DtlExternalLocati
 @AnalyticsEvent(action = "local:City Search", trackers = AdobeTracker.TRACKER_KEY)
 public class LocationSearchEvent extends DtlAnalyticsAction {
 
-    @Attribute("dtlcitysearch")
-    final String locationName;
+   @Attribute("dtlcitysearch") final String locationName;
 
-    public LocationSearchEvent(DtlExternalLocation location) {
-        this.locationName = location.getAnalyticsName();
-    }
+   public LocationSearchEvent(DtlExternalLocation location) {
+      this.locationName = location.getAnalyticsName();
+   }
 }

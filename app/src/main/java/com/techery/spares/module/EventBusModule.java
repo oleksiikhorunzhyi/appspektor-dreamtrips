@@ -12,21 +12,21 @@ import de.greenrobot.event.EventBus;
 
 @Module(library = true)
 public class EventBusModule {
-    @Provides
-    @Global
-    @Singleton
-    EventBus provideGlobalEventBus() {
-        return EventBus.getDefault();
-    }
+   @Provides
+   @Global
+   @Singleton
+   EventBus provideGlobalEventBus() {
+      return EventBus.getDefault();
+   }
 
-    @Provides
-    @Private
-    EventBus provideEventBus() {
-        return new EventBus();
-    }
+   @Provides
+   @Private
+   EventBus provideEventBus() {
+      return new EventBus();
+   }
 
-    @Provides
-    EventBusWrapper provideEventBusWrapper (@Global EventBus bus){
-        return new EventBusWrapper(bus);
-    }
+   @Provides
+   EventBusWrapper provideEventBusWrapper(@Global EventBus bus) {
+      return new EventBusWrapper(bus);
+   }
 }

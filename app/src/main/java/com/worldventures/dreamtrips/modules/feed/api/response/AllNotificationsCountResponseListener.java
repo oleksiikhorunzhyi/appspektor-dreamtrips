@@ -6,11 +6,8 @@ import java.util.Arrays;
 
 public class AllNotificationsCountResponseListener extends RequestCountResponseListener {
 
-    public AllNotificationsCountResponseListener(SnappyRepository db) {
-        super(db, Arrays.asList(
-                SnappyRepository.EXCLUSIVE_NOTIFICATIONS_COUNT,
-                SnappyRepository.FRIEND_REQUEST_COUNT
-        ));
-    }
+   public AllNotificationsCountResponseListener(SnappyRepository db) {
+      super(db, Arrays.asList(SnappyRepository.EXCLUSIVE_NOTIFICATIONS_COUNT, SnappyRepository.FRIEND_REQUEST_COUNT));
+   }
 
 }

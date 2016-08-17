@@ -1,63 +1,69 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:orientation="vertical">
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:orientation="vertical"
+      >
 
-    <LinearLayout
-        android:id="@+id/layoutContentHeader"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:paddingBottom="5dp"
-        android:paddingLeft="10dp"
-        android:background="@color/grey_lighter"
-        android:paddingRight="10dp"
-        android:orientation="horizontal"
-        android:paddingTop="5dp">
+   <LinearLayout
+         android:id="@+id/layoutContentHeader"
+         android:layout_width="match_parent"
+         android:layout_height="wrap_content"
+         android:paddingBottom="5dp"
+         android:paddingLeft="10dp"
+         android:background="@color/grey_lighter"
+         android:paddingRight="10dp"
+         android:orientation="horizontal"
+         android:paddingTop="5dp"
+         >
 
-        <TextView
+      <TextView
             android:id="@+id/textViewContentHeader"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:textColor="@color/grey"
-            android:textSize="20sp" />
+            android:textSize="20sp"
+            />
 
-        <ImageView
+      <ImageView
             android:id="@+id/imageViewArrow"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
-            android:src="@drawable/ic_trip_arrow_down"/>
+            android:src="@drawable/ic_trip_arrow_down"
+            />
 
-    </LinearLayout>
+   </LinearLayout>
 
 
-    <com.worldventures.dreamtrips.modules.common.view.custom.ExpandableTextViewCallable
-        xmlns:expandableTextView="http://schemas.android.com/apk/res-auto"
-        android:id="@+id/textViewContent"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@color/white"
-        android:gravity="start"
-        android:paddingLeft="10dp"
-        android:paddingRight="10dp"
-        expandableTextView:maxCollapsedLines="4">
+   <com.worldventures.dreamtrips.modules.common.view.custom.ExpandableTextViewCallable xmlns:expandableTextView="http://schemas.android.com/apk/res-auto"
+         android:id="@+id/textViewContent"
+         android:layout_width="match_parent"
+         android:layout_height="wrap_content"
+         android:background="@color/white"
+         android:gravity="start"
+         android:paddingLeft="10dp"
+         android:paddingRight="10dp"
+         expandableTextView:maxCollapsedLines="4"
+         >
 
-        <TextView
+      <TextView
             android:id="@id/expandable_text"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textColor="#666666"
             android:paddingTop="10dp"
             android:paddingBottom="10dp"
-            android:textSize="16sp" />
+            android:textSize="16sp"
+            />
 
-        <ImageButton
+      <ImageButton
             android:id="@id/expand_collapse"
             android:layout_width="0dp"
             android:layout_height="0dp"
-            android:background="@android:color/transparent"/>
-    </com.worldventures.dreamtrips.modules.common.view.custom.ExpandableTextViewCallable>
+            android:background="@android:color/transparent"
+            />
+   </com.worldventures.dreamtrips.modules.common.view.custom.ExpandableTextViewCallable>
 
 </LinearLayout>

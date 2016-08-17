@@ -6,31 +6,30 @@ import rx.android.MainThreadSubscription;
 
 public class DtlToolbarNavigationControlClicksOnSubscribe implements Observable.OnSubscribe<Void> {
 
-    private final ExpandableDtlToolbar dtlToolbar;
+   private final ExpandableDtlToolbar dtlToolbar;
 
-    public DtlToolbarNavigationControlClicksOnSubscribe(ExpandableDtlToolbar dtlToolbar) {
-        this.dtlToolbar = dtlToolbar;
-    }
+   public DtlToolbarNavigationControlClicksOnSubscribe(ExpandableDtlToolbar dtlToolbar) {
+      this.dtlToolbar = dtlToolbar;
+   }
 
-    @Override
-    public void call(Subscriber<? super Void> subscriber) {
-        ExpandableDtlToolbar.NavigationControlListener navigationControlListener =
-                new ExpandableDtlToolbar.NavigationControlListener() {
-            @Override
-            public void onNavigationControlClicked() {
-                if (!subscriber.isUnsubscribed()) {
-                    subscriber.onNext(null);
-                }
+   @Override
+   public void call(Subscriber<? super Void> subscriber) {
+      ExpandableDtlToolbar.NavigationControlListener navigationControlListener = new ExpandableDtlToolbar.NavigationControlListener() {
+         @Override
+         public void onNavigationControlClicked() {
+            if (!subscriber.isUnsubscribed()) {
+               subscriber.onNext(null);
             }
-        };
+         }
+      };
 
-        dtlToolbar.addNavigationControlClickListener(navigationControlListener);
+      dtlToolbar.addNavigationControlClickListener(navigationControlListener);
 
-        subscriber.add(new MainThreadSubscription() {
-            @Override
-            protected void onUnsubscribe() {
-                dtlToolbar.removeNavigationControlClickListener(navigationControlListener);
-            }
-        });
-    }
+      subscriber.add(new MainThreadSubscription() {
+         @Override
+         protected void onUnsubscribe() {
+            dtlToolbar.removeNavigationControlClickListener(navigationControlListener);
+         }
+      });
+   }
 }

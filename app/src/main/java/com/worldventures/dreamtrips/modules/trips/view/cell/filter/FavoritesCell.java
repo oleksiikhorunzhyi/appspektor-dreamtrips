@@ -10,21 +10,21 @@ import com.worldventures.dreamtrips.modules.trips.model.FilterFavoriteModel;
 @Layout(R.layout.adapter_item_filter_one_checkbox)
 public class FavoritesCell extends BoolCell<FilterFavoriteModel, FavoritesCell.Delegate> {
 
-    public FavoritesCell(View view) {
-        super(view);
-    }
+   public FavoritesCell(View view) {
+      super(view);
+   }
 
-    @Override
-    public int getTitle() {
-        return R.string.filters_show_favorite;
-    }
+   @Override
+   public int getTitle() {
+      return R.string.filters_show_favorite;
+   }
 
-    @Override
-    public void sendEvent(boolean b) {
-        cellDelegate.onFilterShowFavoritesEvent(b);
-    }
+   @Override
+   public void sendEvent(boolean b) {
+      cellDelegate.onFilterShowFavoritesEvent(b);
+   }
 
-    public interface Delegate extends CellDelegate<FilterFavoriteModel> {
-        void onFilterShowFavoritesEvent(boolean enabled);
-    }
+   public interface Delegate extends CellDelegate<FilterFavoriteModel> {
+      void onFilterShowFavoritesEvent(boolean enabled);
+   }
 }

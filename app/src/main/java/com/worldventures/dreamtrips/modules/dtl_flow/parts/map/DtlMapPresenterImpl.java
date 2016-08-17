@@ -49,267 +49,247 @@ import rx.Observable;
 import static rx.Observable.just;
 
 @SuppressWarnings("ConstantConditions")
-public class DtlMapPresenterImpl extends DtlPresenterImpl<DtlMapScreen, ViewState.EMPTY>
-        implements DtlMapPresenter {
+public class DtlMapPresenterImpl extends DtlPresenterImpl<DtlMapScreen, ViewState.EMPTY> implements DtlMapPresenter {
 
-    public static final int MAX_DISTANCE = 50;
+   public static final int MAX_DISTANCE = 50;
 
-    @Inject
-    LocationDelegate gpsLocationDelegate;
-    @Inject
-    SnappyRepository db;
-    @Inject
-    protected Presenter.TabletAnalytic tabletAnalytic;
-    @Inject
-    Janet janet;
-    @Inject
-    DtlMerchantInteractor merchantInteractor;
-    @Inject
-    DtlFilterMerchantInteractor filterInteractor;
-    @Inject
-    DtlLocationInteractor locationInteractor;
-    @Inject
-    DtlTransactionInteractor pipesInteractor;
-    //
-    private boolean mapReady;
-    private DtlMapInfoReadyEvent pendingMapInfoEvent;
+   @Inject LocationDelegate gpsLocationDelegate;
+   @Inject SnappyRepository db;
+   @Inject protected Presenter.TabletAnalytic tabletAnalytic;
+   @Inject Janet janet;
+   @Inject DtlMerchantInteractor merchantInteractor;
+   @Inject DtlFilterMerchantInteractor filterInteractor;
+   @Inject DtlLocationInteractor locationInteractor;
+   @Inject DtlTransactionInteractor pipesInteractor;
+   //
+   private boolean mapReady;
+   private DtlMapInfoReadyEvent pendingMapInfoEvent;
 
-    public DtlMapPresenterImpl(Context context, Injector injector) {
-        super(context);
-        injector.inject(this);
-    }
+   public DtlMapPresenterImpl(Context context, Injector injector) {
+      super(context);
+      injector.inject(this);
+   }
 
-    @Override
-    public void onAttachedToWindow() {
-        super.onAttachedToWindow();
-        //
-        filterInteractor.filterDataPipe().observeSuccessWithReplay()
-                .first()
-                .map(DtlFilterDataAction::getResult)
-                .map(DtlFilterData::isOffersOnly)
-                .subscribe(getView()::toggleDiningFilterSwitch);
-        getView().getToggleObservable()
-                .subscribe(offersOnly -> filterInteractor.filterDataPipe()
-                        .send(DtlFilterDataAction.applyOffersOnly(offersOnly)));
-        //
-        updateToolbarTitles();
-        bindToolbarTitleUpdates();
-        updateFilterButtonState();
-    }
+   @Override
+   public void onAttachedToWindow() {
+      super.onAttachedToWindow();
+      //
+      filterInteractor.filterDataPipe()
+            .observeSuccessWithReplay()
+            .first()
+            .map(DtlFilterDataAction::getResult)
+            .map(DtlFilterData::isOffersOnly)
+            .subscribe(getView()::toggleDiningFilterSwitch);
+      getView().getToggleObservable().subscribe(offersOnly -> filterInteractor.filterDataPipe()
+            .send(DtlFilterDataAction.applyOffersOnly(offersOnly)));
+      //
+      updateToolbarTitles();
+      bindToolbarTitleUpdates();
+      updateFilterButtonState();
+   }
 
-    @Override
-    public void onVisibilityChanged(int visibility) {
-        super.onVisibilityChanged(visibility);
-        if (visibility == View.VISIBLE) getView().prepareMap();
-    }
+   @Override
+   public void onVisibilityChanged(int visibility) {
+      super.onVisibilityChanged(visibility);
+      if (visibility == View.VISIBLE) getView().prepareMap();
+   }
 
-    protected void connectInteractors() {
-        // TODO :: temporary solutions
-        locationInteractor.locationPipe().observeSuccess()
-                .map(DtlLocationCommand::getResult)
-                .filter(command -> tabletAnalytic.isTabletLandscape())
-                .distinctUntilChanged(loc -> loc.getCoordinates().asLatLng())
-                .map(DtlLocation::getCoordinates)
-                .compose(bindViewIoToMainComposer())
-                .subscribe(loc -> getView().animateTo(loc.asLatLng(), 0));
-        merchantInteractor.merchantsActionPipe()
-                .observe()
-                .compose(bindViewIoToMainComposer())
-                .compose(new ActionStateToActionTransformer<>())
-                .filter(dtlMerchantsAction -> dtlMerchantsAction.getResult().isEmpty())
-                .subscribe(s -> getView().informUser(R.string.dtl_no_merchants_caption),
-                        throwable -> {});
-        merchantInteractor.merchantsActionPipe()
-                .observeWithReplay()
-                .compose(bindViewIoToMainComposer())
-                .subscribe(new ActionStateSubscriber<DtlMerchantsAction>()
-                        .onStart(action -> getView().showProgress(true)));
-        filterInteractor.filterMerchantsActionPipe()
-                .observeWithReplay()
-                .compose(bindViewIoToMainComposer())
-                .subscribe(new ActionStateSubscriber<DtlFilterMerchantsAction>()
-                        .onFail((action, throwable) -> {
-                            getView().showProgress(false);
-                            apiErrorPresenter.handleActionError(action, throwable);
-                        })
-                        .onSuccess(action -> onMerchantsLoaded(action.getResult())));
-        filterInteractor.filterDataPipe().observeSuccess()
-                .map(DtlFilterDataAction::getResult)
-                .compose(bindViewIoToMainComposer())
-                .subscribe(dtlFilterData ->
-                        getView().setFilterButtonState(!dtlFilterData.isDefault()));
-    }
+   protected void connectInteractors() {
+      // TODO :: temporary solutions
+      locationInteractor.locationPipe()
+            .observeSuccess()
+            .map(DtlLocationCommand::getResult)
+            .filter(command -> tabletAnalytic.isTabletLandscape())
+            .distinctUntilChanged(loc -> loc.getCoordinates().asLatLng())
+            .map(DtlLocation::getCoordinates)
+            .compose(bindViewIoToMainComposer())
+            .subscribe(loc -> getView().animateTo(loc.asLatLng(), 0));
+      merchantInteractor.merchantsActionPipe()
+            .observe()
+            .compose(bindViewIoToMainComposer())
+            .compose(new ActionStateToActionTransformer<>())
+            .filter(dtlMerchantsAction -> dtlMerchantsAction.getResult().isEmpty())
+            .subscribe(s -> getView().informUser(R.string.dtl_no_merchants_caption), throwable -> {});
+      merchantInteractor.merchantsActionPipe()
+            .observeWithReplay()
+            .compose(bindViewIoToMainComposer())
+            .subscribe(new ActionStateSubscriber<DtlMerchantsAction>().onStart(action -> getView().showProgress(true)));
+      filterInteractor.filterMerchantsActionPipe()
+            .observeWithReplay()
+            .compose(bindViewIoToMainComposer())
+            .subscribe(new ActionStateSubscriber<DtlFilterMerchantsAction>().onFail((action, throwable) -> {
+               getView().showProgress(false);
+               apiErrorPresenter.handleActionError(action, throwable);
+            }).onSuccess(action -> onMerchantsLoaded(action.getResult())));
+      filterInteractor.filterDataPipe()
+            .observeSuccess()
+            .map(DtlFilterDataAction::getResult)
+            .compose(bindViewIoToMainComposer())
+            .subscribe(dtlFilterData -> getView().setFilterButtonState(!dtlFilterData.isDefault()));
+   }
 
-    private void updateToolbarTitles() {
-        locationInteractor.locationPipe().observeSuccessWithReplay()
-                .first()
-                .map(DtlLocationCommand::getResult)
-                .compose(bindViewIoToMainComposer())
-                .subscribe(getView()::updateToolbarLocationTitle);
-        filterInteractor.filterDataPipe().observeSuccessWithReplay()
-                .first()
-                .compose(bindViewIoToMainComposer())
-                .map(DtlFilterDataAction::getResult)
-                .map(DtlFilterData::getSearchQuery)
-                .subscribe(getView()::updateToolbarSearchCaption);
-    }
+   private void updateToolbarTitles() {
+      locationInteractor.locationPipe()
+            .observeSuccessWithReplay()
+            .first()
+            .map(DtlLocationCommand::getResult)
+            .compose(bindViewIoToMainComposer())
+            .subscribe(getView()::updateToolbarLocationTitle);
+      filterInteractor.filterDataPipe()
+            .observeSuccessWithReplay()
+            .first()
+            .compose(bindViewIoToMainComposer())
+            .map(DtlFilterDataAction::getResult)
+            .map(DtlFilterData::getSearchQuery)
+            .subscribe(getView()::updateToolbarSearchCaption);
+   }
 
-    private void bindToolbarTitleUpdates() {
-        locationInteractor.locationPipe().observeSuccess()
-                .map(DtlLocationCommand::getResult)
-                .compose(bindViewIoToMainComposer())
-                .subscribe(getView()::updateToolbarLocationTitle);
-    }
+   private void bindToolbarTitleUpdates() {
+      locationInteractor.locationPipe()
+            .observeSuccess()
+            .map(DtlLocationCommand::getResult)
+            .compose(bindViewIoToMainComposer())
+            .subscribe(getView()::updateToolbarLocationTitle);
+   }
 
-    private void updateFilterButtonState() {
-        filterInteractor.filterDataPipe().observeSuccessWithReplay()
-                .first()
-                .map(DtlFilterDataAction::getResult)
-                .compose(bindViewIoToMainComposer())
-                .subscribe(dtlFilterData ->
-                        getView().setFilterButtonState(!dtlFilterData.isDefault()));
-    }
+   private void updateFilterButtonState() {
+      filterInteractor.filterDataPipe()
+            .observeSuccessWithReplay()
+            .first()
+            .map(DtlFilterDataAction::getResult)
+            .compose(bindViewIoToMainComposer())
+            .subscribe(dtlFilterData -> getView().setFilterButtonState(!dtlFilterData.isDefault()));
+   }
 
-    protected void tryHideMyLocationButton(boolean hide) {
-        getView().tryHideMyLocationButton(hide);
-    }
+   protected void tryHideMyLocationButton(boolean hide) {
+      getView().tryHideMyLocationButton(hide);
+   }
 
-    protected Observable<Location> getFirstCenterLocation() {
-        return locationInteractor.locationPipe().createObservableResult(DtlLocationCommand.last())
-                .map(command -> {
-                    Location lastPosition = db.getLastMapCameraPosition();
-                    boolean validLastPosition = lastPosition != null
-                            && lastPosition.getLat() != 0
-                            && lastPosition.getLng() != 0;
-                    DtlLocation lastSelectedLocation = command.getResult();
-                    return validLastPosition ? lastPosition : (command.isResultDefined() ?
-                            lastSelectedLocation.getCoordinates() : new Location(0d, 0d));
-                });
-    }
+   protected Observable<Location> getFirstCenterLocation() {
+      return locationInteractor.locationPipe().createObservableResult(DtlLocationCommand.last()).map(command -> {
+         Location lastPosition = db.getLastMapCameraPosition();
+         boolean validLastPosition = lastPosition != null && lastPosition.getLat() != 0 && lastPosition.getLng() != 0;
+         DtlLocation lastSelectedLocation = command.getResult();
+         return validLastPosition ? lastPosition : (command.isResultDefined() ? lastSelectedLocation.getCoordinates() : new Location(0d, 0d));
+      });
+   }
 
-    protected Observable<Boolean> showingLoadMerchantsButton() {
-        return MapObservableFactory.createCameraChangeObservable(getView().getMap())
-                .doOnNext(position -> getView().cameraPositionChange(position))
-                .doOnNext(position ->
-                        db.saveLastMapCameraPosition(new Location(position.target.latitude,
-                                position.target.longitude)))
-                .flatMap(position -> {
-                    if (position.zoom < MapViewUtils.DEFAULT_ZOOM) {
-                        return just(true);
-                    }
-                    return locationInteractor.locationPipe().createObservableResult(DtlLocationCommand.last())
-                            .compose(bindViewIoToMainComposer())
-                            .map(command -> !DtlLocationHelper.checkLocation(MAX_DISTANCE,
-                                    command.getResult().getCoordinates().asLatLng(),
-                                    position.target, DistanceType.MILES));
-                });
-    }
+   protected Observable<Boolean> showingLoadMerchantsButton() {
+      return MapObservableFactory.createCameraChangeObservable(getView().getMap())
+            .doOnNext(position -> getView().cameraPositionChange(position))
+            .doOnNext(position -> db.saveLastMapCameraPosition(new Location(position.target.latitude, position.target.longitude)))
+            .flatMap(position -> {
+               if (position.zoom < MapViewUtils.DEFAULT_ZOOM) {
+                  return just(true);
+               }
+               return locationInteractor.locationPipe()
+                     .createObservableResult(DtlLocationCommand.last())
+                     .compose(bindViewIoToMainComposer())
+                     .map(command -> !DtlLocationHelper.checkLocation(MAX_DISTANCE, command.getResult()
+                           .getCoordinates()
+                           .asLatLng(), position.target, DistanceType.MILES));
+            });
+   }
 
-    protected void onMerchantsLoaded(List<DtlMerchant> dtlMerchants) {
-        getView().showProgress(false);
-        getView().showButtonLoadMerchants(false);
-        showPins(dtlMerchants);
-        //
-        locationInteractor.locationPipe().createObservableResult(DtlLocationCommand.last())
-                .map(DtlLocationCommand::getResult)
-                .compose(bindViewIoToMainComposer())
-                .subscribe(location -> {
-                    if (location.getLocationSourceType() == LocationSourceType.FROM_MAP &&
-                            getView().getMap().getCameraPosition().zoom < MapViewUtils.DEFAULT_ZOOM)
-                        getView().zoom(MapViewUtils.DEFAULT_ZOOM);
-                    //
-                    if (location.getLocationSourceType() != LocationSourceType.NEAR_ME)
-                        getView().addLocationMarker(location.getCoordinates().asLatLng());
-                });
-    }
+   protected void onMerchantsLoaded(List<DtlMerchant> dtlMerchants) {
+      getView().showProgress(false);
+      getView().showButtonLoadMerchants(false);
+      showPins(dtlMerchants);
+      //
+      locationInteractor.locationPipe()
+            .createObservableResult(DtlLocationCommand.last())
+            .map(DtlLocationCommand::getResult)
+            .compose(bindViewIoToMainComposer())
+            .subscribe(location -> {
+               if (location.getLocationSourceType() == LocationSourceType.FROM_MAP && getView().getMap()
+                     .getCameraPosition().zoom < MapViewUtils.DEFAULT_ZOOM) getView().zoom(MapViewUtils.DEFAULT_ZOOM);
+               //
+               if (location.getLocationSourceType() != LocationSourceType.NEAR_ME)
+                  getView().addLocationMarker(location.getCoordinates().asLatLng());
+            });
+   }
 
-    @Override
-    public void onListClicked() {
-        History history = History.single(DtlMerchantsPath.getDefault());
-        Flow.get(getContext()).setHistory(history, Flow.Direction.REPLACE);
-    }
+   @Override
+   public void onListClicked() {
+      History history = History.single(DtlMerchantsPath.getDefault());
+      Flow.get(getContext()).setHistory(history, Flow.Direction.REPLACE);
+   }
 
-    private void checkPendingMapInfo() {
-        if (pendingMapInfoEvent != null) {
-            getView().prepareInfoWindow(pendingMapInfoEvent.height);
-            pendingMapInfoEvent = null;
-        }
-    }
+   private void checkPendingMapInfo() {
+      if (pendingMapInfoEvent != null) {
+         getView().prepareInfoWindow(pendingMapInfoEvent.height);
+         pendingMapInfoEvent = null;
+      }
+   }
 
-    public void onEvent(DtlMapInfoReadyEvent event) {
-        if (!mapReady) pendingMapInfoEvent = event;
-        else {
-            pendingMapInfoEvent = null;
-            getView().prepareInfoWindow(event.height);
-        }
-    }
+   public void onEvent(DtlMapInfoReadyEvent event) {
+      if (!mapReady) pendingMapInfoEvent = event;
+      else {
+         pendingMapInfoEvent = null;
+         getView().prepareInfoWindow(event.height);
+      }
+   }
 
-    private void showPins(List<DtlMerchant> filtered) {
-        getView().clearMap();
-        Queryable.from(filtered).forEachR(dtlMerchant ->
-                getView().addPin(dtlMerchant.getId(), new LatLng(dtlMerchant.getCoordinates().getLat(),
-                        dtlMerchant.getCoordinates().getLng()), dtlMerchant.getMerchantType()));
-        getView().renderPins();
-    }
+   private void showPins(List<DtlMerchant> filtered) {
+      getView().clearMap();
+      Queryable.from(filtered)
+            .forEachR(dtlMerchant -> getView().addPin(dtlMerchant.getId(), new LatLng(dtlMerchant.getCoordinates()
+                  .getLat(), dtlMerchant.getCoordinates().getLng()), dtlMerchant.getMerchantType()));
+      getView().renderPins();
+   }
 
-    @Override
-    public void onMapLoaded() {
-        mapReady = true;
-        //
-        connectInteractors();
-        //
-        getFirstCenterLocation()
-                .compose(bindViewIoToMainComposer())
-                .subscribe(getView()::centerIn);
-        //
-        showingLoadMerchantsButton()
-                .compose(bindView())
-                .subscribe(show -> getView().showButtonLoadMerchants(show));
-        //
-        MapObservableFactory.createMarkerClickObservable(getView().getMap())
-                .compose(bindView())
-                .subscribe(marker -> getView().markerClick(marker));
-        //
-        checkPendingMapInfo();
-        gpsLocationDelegate.getLastKnownLocation()
-                .compose(bindViewIoToMainComposer())
-                .subscribe(location -> tryHideMyLocationButton(false),
-                        throwable -> tryHideMyLocationButton(true));
+   @Override
+   public void onMapLoaded() {
+      mapReady = true;
+      //
+      connectInteractors();
+      //
+      getFirstCenterLocation().compose(bindViewIoToMainComposer()).subscribe(getView()::centerIn);
+      //
+      showingLoadMerchantsButton().compose(bindView()).subscribe(show -> getView().showButtonLoadMerchants(show));
+      //
+      MapObservableFactory.createMarkerClickObservable(getView().getMap())
+            .compose(bindView())
+            .subscribe(marker -> getView().markerClick(marker));
+      //
+      checkPendingMapInfo();
+      gpsLocationDelegate.getLastKnownLocation()
+            .compose(bindViewIoToMainComposer())
+            .subscribe(location -> tryHideMyLocationButton(false), throwable -> tryHideMyLocationButton(true));
 
-    }
+   }
 
-    @Override
-    public void applySearch(String query) {
-        filterInteractor.filterDataPipe().send(DtlFilterDataAction.applySearch(query));
-    }
+   @Override
+   public void applySearch(String query) {
+      filterInteractor.filterDataPipe().send(DtlFilterDataAction.applySearch(query));
+   }
 
-    @Override
-    public void locationChangeRequested() {
-        History history = History.single(new DtlLocationChangePath());
-        Flow.get(getContext()).setHistory(history, Flow.Direction.REPLACE);
-    }
+   @Override
+   public void locationChangeRequested() {
+      History history = History.single(new DtlLocationChangePath());
+      Flow.get(getContext()).setHistory(history, Flow.Direction.REPLACE);
+   }
 
-    @Override
-    public void onMarkerClick(String merchantId) {
-        merchantInteractor.merchantByIdPipe()
-                .createObservable(new DtlMerchantByIdAction(merchantId))
-                .compose(bindViewIoToMainComposer())
-                .subscribe(new ActionStateSubscriber<DtlMerchantByIdAction>()
-                        .onSuccess(action -> getView().showPinInfo(action.getResult()))
-                        .onFail(apiErrorPresenter::handleActionError));
-    }
+   @Override
+   public void onMarkerClick(String merchantId) {
+      merchantInteractor.merchantByIdPipe()
+            .createObservable(new DtlMerchantByIdAction(merchantId))
+            .compose(bindViewIoToMainComposer())
+            .subscribe(new ActionStateSubscriber<DtlMerchantByIdAction>().onSuccess(action -> getView().showPinInfo(action
+                  .getResult())).onFail(apiErrorPresenter::handleActionError));
+   }
 
-    @Override
-    public void onLoadMerchantsClick(LatLng latLng) {
-        DtlLocation mapSelectedLocation = ImmutableDtlManualLocation.builder()
-                .locationSourceType(LocationSourceType.FROM_MAP)
-                .coordinates(new com.worldventures.dreamtrips.modules.trips.model.Location(latLng.latitude, latLng.longitude))
-                .build();
-        locationInteractor.locationPipe().send(DtlLocationCommand.change(mapSelectedLocation));
-        //
-        android.location.Location location = new android.location.Location("");
-        location.setLatitude(latLng.latitude);
-        location.setLongitude(latLng.longitude);
-        merchantInteractor.merchantsActionPipe().send(DtlMerchantsAction.load(location));
-    }
+   @Override
+   public void onLoadMerchantsClick(LatLng latLng) {
+      DtlLocation mapSelectedLocation = ImmutableDtlManualLocation.builder()
+            .locationSourceType(LocationSourceType.FROM_MAP)
+            .coordinates(new com.worldventures.dreamtrips.modules.trips.model.Location(latLng.latitude, latLng.longitude))
+            .build();
+      locationInteractor.locationPipe().send(DtlLocationCommand.change(mapSelectedLocation));
+      //
+      android.location.Location location = new android.location.Location("");
+      location.setLatitude(latLng.latitude);
+      location.setLongitude(latLng.longitude);
+      merchantInteractor.merchantsActionPipe().send(DtlMerchantsAction.load(location));
+   }
 }

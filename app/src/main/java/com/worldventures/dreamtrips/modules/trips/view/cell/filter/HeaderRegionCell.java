@@ -16,45 +16,39 @@ import butterknife.OnClick;
 @Layout(R.layout.adapter_item_region_header)
 public class HeaderRegionCell extends AbstractDelegateCell<RegionHeaderModel, HeaderRegionCell.Delegate> {
 
-    @InjectView(R.id.checkBoxSelectAllRegion)
-    protected CheckBox checkBoxSelectAll;
+   @InjectView(R.id.checkBoxSelectAllRegion) CheckBox checkBoxSelectAll;
 
-    public HeaderRegionCell(View view) {
-        super(view);
-    }
+   public HeaderRegionCell(View view) {
+      super(view);
+   }
 
-    @Override
-    protected void syncUIStateWithModel() {
-        checkBoxSelectAll.setChecked(getModelObject().isChecked());
-    }
+   @Override
+   protected void syncUIStateWithModel() {
+      checkBoxSelectAll.setChecked(getModelObject().isChecked());
+   }
 
-    @OnClick(R.id.checkBoxSelectAllRegion)
-    void checkBoxClicked() {
-        getModelObject().setChecked(checkBoxSelectAll.isChecked());
-        cellDelegate.onCheckBoxAllRegionsPressedEvent(checkBoxSelectAll.isChecked());
+   @OnClick(R.id.checkBoxSelectAllRegion)
+   void checkBoxClicked() {
+      getModelObject().setChecked(checkBoxSelectAll.isChecked());
+      cellDelegate.onCheckBoxAllRegionsPressedEvent(checkBoxSelectAll.isChecked());
 
-    }
+   }
 
-    @OnClick(R.id.textViewSelectAllRegion)
-    void checkBoxTextViewClicked() {
-        checkBoxSelectAll.setChecked(!checkBoxSelectAll.isChecked());
-        getModelObject().setChecked(checkBoxSelectAll.isChecked());
-        cellDelegate.onCheckBoxAllRegionsPressedEvent(checkBoxSelectAll.isChecked());
-    }
+   @OnClick(R.id.textViewSelectAllRegion)
+   void checkBoxTextViewClicked() {
+      checkBoxSelectAll.setChecked(!checkBoxSelectAll.isChecked());
+      getModelObject().setChecked(checkBoxSelectAll.isChecked());
+      cellDelegate.onCheckBoxAllRegionsPressedEvent(checkBoxSelectAll.isChecked());
+   }
 
-    @OnClick(R.id.listHeader)
-    void toggleVisibility() {
-        getEventBus().post(new ToggleRegionVisibilityEvent());
-    }
+   @OnClick(R.id.listHeader)
+   void toggleVisibility() {
+      getEventBus().post(new ToggleRegionVisibilityEvent());
+   }
 
-    @Override
-    public void prepareForReuse() {
-        //nothing to do here
-    }
+   public interface Delegate extends CellDelegate<RegionHeaderModel> {
 
-
-    public interface Delegate extends CellDelegate<RegionHeaderModel> {
-        void onCheckBoxAllRegionsPressedEvent(boolean isChecked);
-    }
+      void onCheckBoxAllRegionsPressedEvent(boolean isChecked);
+   }
 }
 

@@ -26,84 +26,78 @@ import dagger.Module;
 import dagger.Provides;
 
 @Module(
-        complete = false,
-        library = true
-)
+      complete = false,
+      library = true)
 public class MessengerStorageModule {
 
-    public static final String DB_FLOW_RX_RESOLVER = "db_flow_rx_resolver";
+   public static final String DB_FLOW_RX_RESOLVER = "db_flow_rx_resolver";
 
-    @Provides
-    @Singleton
-    @Named(DB_FLOW_RX_RESOLVER)
-    RxContentResolver providedRxContentResolver(@ForApplication Context context) {
-        return new RxContentResolver(context.getContentResolver(),
-                query -> {
-                    StringBuilder builder = new StringBuilder(query.selection);
-                    if (!TextUtils.isEmpty(query.sortOrder)) {
-                        builder.append(" ").append(query.sortOrder);
-                    }
-                    return FlowManager.getDatabaseForTable(DataUser.class).getWritableDatabase()
-                            .rawQuery(builder.toString(), query.selectionArgs);
-                });
-    }
+   @Provides
+   @Singleton
+   @Named(DB_FLOW_RX_RESOLVER)
+   RxContentResolver providedRxContentResolver(@ForApplication Context context) {
+      return new RxContentResolver(context.getContentResolver(), query -> {
+         StringBuilder builder = new StringBuilder(query.selection);
+         if (!TextUtils.isEmpty(query.sortOrder)) {
+            builder.append(" ").append(query.sortOrder);
+         }
+         return FlowManager.getDatabaseForTable(DataUser.class)
+               .getWritableDatabase()
+               .rawQuery(builder.toString(), query.selectionArgs);
+      });
+   }
 
-    @Provides
-    @Singleton
-    ConversationsDAO provideConversationsDAO(@Named(DB_FLOW_RX_RESOLVER) RxContentResolver rxContentResolver, @ForApplication Context context,
-                                             SessionHolder<UserSession> appSessionHolder) {
-        return new ConversationsDAO(context, rxContentResolver, appSessionHolder);
-    }
+   @Provides
+   @Singleton
+   ConversationsDAO provideConversationsDAO(@Named(DB_FLOW_RX_RESOLVER) RxContentResolver rxContentResolver, @ForApplication Context context, SessionHolder<UserSession> appSessionHolder) {
+      return new ConversationsDAO(context, rxContentResolver, appSessionHolder);
+   }
 
-    @Provides
-    @Singleton
-    ParticipantsDAO provideParticipantsDAO(@Named(DB_FLOW_RX_RESOLVER) RxContentResolver rxContentResolver, @ForApplication Context context) {
-        return new ParticipantsDAO(rxContentResolver, context);
-    }
+   @Provides
+   @Singleton
+   ParticipantsDAO provideParticipantsDAO(@Named(DB_FLOW_RX_RESOLVER) RxContentResolver rxContentResolver, @ForApplication Context context) {
+      return new ParticipantsDAO(rxContentResolver, context);
+   }
 
-    @Provides
-    @Singleton
-    UsersDAO provideUsersDAO(@Named(DB_FLOW_RX_RESOLVER) RxContentResolver rxContentResolver, @ForApplication Context context) {
-        return new UsersDAO(rxContentResolver, context);
-    }
+   @Provides
+   @Singleton
+   UsersDAO provideUsersDAO(@Named(DB_FLOW_RX_RESOLVER) RxContentResolver rxContentResolver, @ForApplication Context context) {
+      return new UsersDAO(rxContentResolver, context);
+   }
 
-    @Provides
-    @Singleton
-    MessageDAO provideMessageDAO(@Named(DB_FLOW_RX_RESOLVER) RxContentResolver rxContentResolver,
-                                 @ForApplication Context context) {
-        return new MessageDAO(rxContentResolver, context);
-    }
+   @Provides
+   @Singleton
+   MessageDAO provideMessageDAO(@Named(DB_FLOW_RX_RESOLVER) RxContentResolver rxContentResolver, @ForApplication Context context) {
+      return new MessageDAO(rxContentResolver, context);
+   }
 
-    @Provides
-    @Singleton
-    AttachmentDAO provideAttachmentDAO(@Named(DB_FLOW_RX_RESOLVER) RxContentResolver rxContentResolver,
-                                       @ForApplication Context context) {
-        return new AttachmentDAO(context, rxContentResolver);
-    }
+   @Provides
+   @Singleton
+   AttachmentDAO provideAttachmentDAO(@Named(DB_FLOW_RX_RESOLVER) RxContentResolver rxContentResolver, @ForApplication Context context) {
+      return new AttachmentDAO(context, rxContentResolver);
+   }
 
-    @Provides
-    @Singleton
-    PhotoDAO providePhotoDAO(@Named(DB_FLOW_RX_RESOLVER) RxContentResolver rxContentResolver,
-                                       @ForApplication Context context) {
-        return new PhotoDAO(context, rxContentResolver);
-    }
+   @Provides
+   @Singleton
+   PhotoDAO providePhotoDAO(@Named(DB_FLOW_RX_RESOLVER) RxContentResolver rxContentResolver, @ForApplication Context context) {
+      return new PhotoDAO(context, rxContentResolver);
+   }
 
-    @Provides
-    @Singleton
-    LocationDAO provideLocationDAO(@Named(DB_FLOW_RX_RESOLVER) RxContentResolver rxContentResolver,
-                             @ForApplication Context context) {
-        return new LocationDAO(context, rxContentResolver);
-    }
+   @Provides
+   @Singleton
+   LocationDAO provideLocationDAO(@Named(DB_FLOW_RX_RESOLVER) RxContentResolver rxContentResolver, @ForApplication Context context) {
+      return new LocationDAO(context, rxContentResolver);
+   }
 
-    @Provides
-    @Singleton
-    TranslationsDAO provideTranslationsDAO(@Named(DB_FLOW_RX_RESOLVER) RxContentResolver rxContentResolver, @ForApplication Context context) {
-        return new TranslationsDAO(rxContentResolver, context);
-    }
+   @Provides
+   @Singleton
+   TranslationsDAO provideTranslationsDAO(@Named(DB_FLOW_RX_RESOLVER) RxContentResolver rxContentResolver, @ForApplication Context context) {
+      return new TranslationsDAO(rxContentResolver, context);
+   }
 
-    @Provides
-    @Singleton
-    MediaDAO provideMediaAttachmentDAO(@Named(DB_FLOW_RX_RESOLVER) RxContentResolver rxContentResolver, @ForApplication Context context) {
-        return new MediaDAO(rxContentResolver, context);
-    }
+   @Provides
+   @Singleton
+   MediaDAO provideMediaAttachmentDAO(@Named(DB_FLOW_RX_RESOLVER) RxContentResolver rxContentResolver, @ForApplication Context context) {
+      return new MediaDAO(rxContentResolver, context);
+   }
 }

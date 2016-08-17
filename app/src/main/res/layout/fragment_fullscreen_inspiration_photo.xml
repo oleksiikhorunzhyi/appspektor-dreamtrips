@@ -1,93 +1,104 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-             xmlns:fresco="http://schemas.android.com/apk/res-auto"
-             xmlns:tools="http://schemas.android.com/tools"
-             android:background="@android:color/black"
-             android:layout_width="match_parent"
-             android:layout_height="match_parent">
+      xmlns:fresco="http://schemas.android.com/apk/res-auto"
+      xmlns:tools="http://schemas.android.com/tools"
+      android:background="@android:color/black"
+      android:layout_width="match_parent"
+      android:layout_height="match_parent"
+      >
 
-    <com.worldventures.dreamtrips.modules.tripsimages.view.custom.ScaleImageView
-        android:id="@+id/iv_image"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        fresco:actualImageScaleType="fitCenter"
-        fresco:placeholderImage="@drawable/fullscreen_placeholder"
-        fresco:placeholderImageScaleType="fitCenter"/>
+   <com.worldventures.dreamtrips.modules.tripsimages.view.custom.ScaleImageView
+         android:id="@+id/iv_image"
+         android:layout_width="match_parent"
+         android:layout_height="match_parent"
+         fresco:actualImageScaleType="fitCenter"
+         fresco:placeholderImage="@drawable/fullscreen_placeholder"
+         fresco:placeholderImageScaleType="fitCenter"
+         />
 
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="100dp"
-        android:background="@drawable/trip_item_shadow"/>
+   <View
+         android:layout_width="match_parent"
+         android:layout_height="100dp"
+         android:background="@drawable/trip_item_shadow"
+         />
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_gravity="bottom"
-        android:background="@drawable/black_gradient_inspire_me"
-        android:orientation="vertical"
-        android:paddingTop="24dp">
+   <LinearLayout
+         android:layout_width="match_parent"
+         android:layout_height="wrap_content"
+         android:layout_gravity="bottom"
+         android:background="@drawable/black_gradient_inspire_me"
+         android:orientation="vertical"
+         android:paddingTop="24dp"
+         >
 
-        <LinearLayout
+      <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="right"
             android:orientation="horizontal"
-            android:id="@+id/description_container">
+            android:id="@+id/description_container"
+            >
 
-            <TextView
-                android:id="@+id/tv_description"
-                android:layout_width="0dp"
-                tools:text="Hello"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="16dp"
-                android:layout_marginRight="16dp"
-                android:layout_weight="1"
-                android:paddingBottom="8dp"
-                android:paddingTop="8dp"
-                android:singleLine="true"
-                android:textColor="@android:color/white"
-                android:textSize="16dp"/>
+         <TextView
+               android:id="@+id/tv_description"
+               android:layout_width="0dp"
+               tools:text="Hello"
+               android:layout_height="wrap_content"
+               android:layout_marginLeft="16dp"
+               android:layout_marginRight="16dp"
+               android:layout_weight="1"
+               android:paddingBottom="8dp"
+               android:paddingTop="8dp"
+               android:singleLine="true"
+               android:textColor="@android:color/white"
+               android:textSize="16dp"
+               />
 
-            <TextView
-                android:id="@+id/tv_see_more"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:padding="8dp"
-                android:singleLine="true"
-                android:text="@string/see_more"
-                android:textColor="#ff9e9e9e"
-                android:textSize="14dp"/>
-        </LinearLayout>
+         <TextView
+               android:id="@+id/tv_see_more"
+               android:layout_width="wrap_content"
+               android:layout_height="wrap_content"
+               android:padding="8dp"
+               android:singleLine="true"
+               android:text="@string/see_more"
+               android:textColor="#ff9e9e9e"
+               android:textSize="14dp"
+               />
+      </LinearLayout>
 
-        <LinearLayout
+      <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
             android:padding="20dp"
-            android:id="@+id/actionPanel">
+            android:id="@+id/actionPanel"
+            >
 
-            <TextView
-                android:id="@+id/textViewInspireMeTitle"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:gravity="center"
-                tools:text="Hello"
-                android:textColor="@android:color/white"
-                android:textSize="20sp"
-                android:textStyle="bold"/>
+         <TextView
+               android:id="@+id/textViewInspireMeTitle"
+               android:layout_width="wrap_content"
+               android:layout_height="match_parent"
+               android:gravity="center"
+               tools:text="Hello"
+               android:textColor="@android:color/white"
+               android:textSize="20sp"
+               android:textStyle="bold"
+               />
 
-            <Space
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"/>
+         <Space
+               android:layout_width="0dp"
+               android:layout_height="wrap_content"
+               android:layout_weight="1"
+               />
 
-            <ImageView
-                android:id="@+id/iv_share"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerInParent="true"
-                android:padding="5dp"
-                android:src="@drawable/ic_fs_share"/>
-        </LinearLayout>
-    </LinearLayout>
+         <ImageView
+               android:id="@+id/iv_share"
+               android:layout_width="wrap_content"
+               android:layout_height="wrap_content"
+               android:layout_centerInParent="true"
+               android:padding="5dp"
+               android:src="@drawable/ic_fs_share"
+               />
+      </LinearLayout>
+   </LinearLayout>
 </FrameLayout>

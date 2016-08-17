@@ -19,49 +19,46 @@ import static org.mockito.Mockito.doReturn;
 
 public abstract class BaseChatActionDelegateTest extends MessengerBaseTest {
 
-    @Mock
-    CreateChatHelper createChatHelper;
+   @Mock CreateChatHelper createChatHelper;
 
-    protected Chat chat;
+   protected Chat chat;
 
-    @Before
-    public void setup() {
-        chat = new Chat() {
-            @Override
-            public Observable<Message> send(Message message) {
-                return Observable.just(message);
-            }
+   @Before
+   public void setup() {
+      chat = new Chat() {
+         @Override
+         public Observable<Message> send(Message message) {
+            return Observable.just(message);
+         }
 
-            @Override
-            public Observable<String> sendReadStatus(String messageId) {
-                return Observable.just(messageId);
-            }
+         @Override
+         public Observable<String> sendReadStatus(String messageId) {
+            return Observable.just(messageId);
+         }
 
-            @Override
-            public Observable<String> setCurrentState(@ChatState.State String state) {
-                return Observable.just(state);
-            }
-        };
+         @Override
+         public Observable<String> setCurrentState(@ChatState.State String state) {
+            return Observable.just(state);
+         }
+      };
 
-        doReturn(Observable.just(chat)).when(createChatHelper).createChat(any());
-    }
+      doReturn(Observable.just(chat)).when(createChatHelper).createChat(any());
+   }
 
 
-    ///////////////////////////////////////////////////////////////////////////////////////////////
-    //////// Mock Objects
-    //////////////////////////////////////////////////////////////////////////////////////////////
+   ///////////////////////////////////////////////////////////////////////////////////////////////
+   //////// Mock Objects
+   //////////////////////////////////////////////////////////////////////////////////////////////
 
-    protected Janet mockJanet() {
-        return new Janet.Builder()
-                .addService(provideMockActionService())
-                .build();
-    }
+   protected Janet mockJanet() {
+      return new Janet.Builder().addService(provideMockActionService()).build();
+   }
 
-    protected MockDaggerActionService provideMockActionService() {
-        MockDaggerActionService daggerActionService;
-        daggerActionService = new MockDaggerActionService(new CommandActionService());
-        daggerActionService.registerProvider(CreateChatHelper.class, () -> createChatHelper);
-        return daggerActionService;
-    }
+   protected MockDaggerActionService provideMockActionService() {
+      MockDaggerActionService daggerActionService;
+      daggerActionService = new MockDaggerActionService(new CommandActionService());
+      daggerActionService.registerProvider(CreateChatHelper.class, () -> createChatHelper);
+      return daggerActionService;
+   }
 
 }

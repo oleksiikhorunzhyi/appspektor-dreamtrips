@@ -5,10 +5,5 @@ import com.worldventures.dreamtrips.core.janet.api_lib.NewDreamTripsHttpService;
 
 import dagger.Module;
 
-@Module(injects = {
-        DreamTripsHttpService.class,
-        NewDreamTripsHttpService.class,
-        UploadImageAction.class
-}, library = true, complete = false)
-public class JanetServiceModule {
-}
+@Module(injects = {DreamTripsHttpService.class, NewDreamTripsHttpService.class, UploadImageAction.class}, library = true, complete = false)
+public class JanetServiceModule {}

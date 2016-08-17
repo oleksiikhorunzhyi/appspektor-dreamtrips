@@ -28,242 +28,241 @@ import rx.Observable;
 import rx.functions.Action1;
 
 public abstract class GlobalEventEmitter {
-    protected static final int EVENT_PRE_OUTGOING = 0x777;
-    protected static final int EVENT_OUTGOING = 0x778;
-    protected static final int EVENT_INCOMING = 0x779;
-    protected static final int EVENT_OUTGOING_ERROR = 0x780;
-    protected List<GlobalMessageListener> globalMessageListeners = new CopyOnWriteArrayList<>();
-    protected List<PresenceListener> presenceListeners = new CopyOnWriteArrayList<>();
-    protected List<FriendsAddedListener> friendsAddedListeners = new CopyOnWriteArrayList<>();
-    protected List<FriendsRemovedListener> friendsRemovedListeners = new CopyOnWriteArrayList<>();
-    protected List<InvitationListener> invitationListeners = new CopyOnWriteArrayList<>();
-    protected List<OnSubjectChangedListener> onSubjectChangedListeners = new CopyOnWriteArrayList<>();
-    protected List<OnAvatarChangedListener> onAvatarChangedListeners = new CopyOnWriteArrayList<>();
-    protected List<OnChatLeftListener> onChatLeftListeners = new CopyOnWriteArrayList<>();
-    protected List<OnKickListener> onKickListeners = new CopyOnWriteArrayList<>();
-    protected List<OnChatJoinedListener> onChatJoinedListeners = new CopyOnWriteArrayList<>();
-    protected List<OnChatStateChangedListener> onChatStateChangedListeners = new CopyOnWriteArrayList<>();
-    protected List<MessagesDeletedListener> onMessagesDeletedListener = new CopyOnWriteArrayList<>();
+   protected static final int EVENT_PRE_OUTGOING = 0x777;
+   protected static final int EVENT_OUTGOING = 0x778;
+   protected static final int EVENT_INCOMING = 0x779;
+   protected static final int EVENT_OUTGOING_ERROR = 0x780;
+   protected List<GlobalMessageListener> globalMessageListeners = new CopyOnWriteArrayList<>();
+   protected List<PresenceListener> presenceListeners = new CopyOnWriteArrayList<>();
+   protected List<FriendsAddedListener> friendsAddedListeners = new CopyOnWriteArrayList<>();
+   protected List<FriendsRemovedListener> friendsRemovedListeners = new CopyOnWriteArrayList<>();
+   protected List<InvitationListener> invitationListeners = new CopyOnWriteArrayList<>();
+   protected List<OnSubjectChangedListener> onSubjectChangedListeners = new CopyOnWriteArrayList<>();
+   protected List<OnAvatarChangedListener> onAvatarChangedListeners = new CopyOnWriteArrayList<>();
+   protected List<OnChatLeftListener> onChatLeftListeners = new CopyOnWriteArrayList<>();
+   protected List<OnKickListener> onKickListeners = new CopyOnWriteArrayList<>();
+   protected List<OnChatJoinedListener> onChatJoinedListeners = new CopyOnWriteArrayList<>();
+   protected List<OnChatStateChangedListener> onChatStateChangedListeners = new CopyOnWriteArrayList<>();
+   protected List<MessagesDeletedListener> onMessagesDeletedListener = new CopyOnWriteArrayList<>();
 
-    protected List<Action1<ClearChatEvent>> onClearChatEventListeners = new CopyOnWriteArrayList<>();
-    protected List<Action1<RevertClearingEvent>> onRevertClearingEventListeners = new CopyOnWriteArrayList<>();
+   protected List<Action1<ClearChatEvent>> onClearChatEventListeners = new CopyOnWriteArrayList<>();
+   protected List<Action1<RevertClearingEvent>> onRevertClearingEventListeners = new CopyOnWriteArrayList<>();
 
-    public void addGlobalMessageListener(GlobalMessageListener listener) {
-        globalMessageListeners.add(listener);
-    }
+   public void addGlobalMessageListener(GlobalMessageListener listener) {
+      globalMessageListeners.add(listener);
+   }
 
-    public void removeGlobalMessageListener(GlobalMessageListener listener) {
-        globalMessageListeners.remove(listener);
-    }
+   public void removeGlobalMessageListener(GlobalMessageListener listener) {
+      globalMessageListeners.remove(listener);
+   }
 
-    protected void notifyGlobalMessage(Message message, int eventType) {
-        switch (eventType) {
-            case EVENT_PRE_OUTGOING:
-                for (GlobalMessageListener listener : globalMessageListeners)
-                    listener.onPreSendMessage(message);
-                break;
-            case EVENT_OUTGOING:
-                for (GlobalMessageListener listener : globalMessageListeners)
-                    listener.onSendMessage(message);
-                break;
-            case EVENT_INCOMING:
-                for (GlobalMessageListener listener : globalMessageListeners)
-                    listener.onReceiveMessage(message);
-                break;
-            case EVENT_OUTGOING_ERROR:
-                for (GlobalMessageListener listener : globalMessageListeners)
-                    listener.onErrorMessage(message);
-                break;
-            default:
-                break;
-        }
-    }
-
-
-    public void addFriendAddedListener(FriendsAddedListener listener) {
-        friendsAddedListeners.add(listener);
-    }
-
-    protected void notifyFriendsAdded(Collection<String> userIds) {
-        for (FriendsAddedListener listener : friendsAddedListeners) {
-            listener.onFriendsAdded(userIds);
-        }
-    }
-
-    public void addFriendRemovedListener(FriendsRemovedListener listener) {
-        friendsRemovedListeners.add(listener);
-    }
-
-    protected void notifyFriendsRemoved(Collection<String> userIds) {
-        for (FriendsRemovedListener listener : friendsRemovedListeners) {
-            listener.onFriendsRemoved(userIds);
-        }
-    }
-
-    public void addPresenceListener(PresenceListener listener) {
-        presenceListeners.add(listener);
-    }
-
-    public void removePresenceListener(PresenceListener listener) {
-        presenceListeners.remove(listener);
-    }
-
-    protected void notifyUserPresenceChanged(String userId, boolean isOnline) {
-        for (PresenceListener listener : presenceListeners) {
-            listener.onUserPresenceChanged(userId, isOnline);
-        }
-    }
-
-    public void addInvitationListener(InvitationListener listener) {
-        invitationListeners.add(listener);
-    }
-
-    public void removeInvitationListener(InvitationListener listener) {
-        invitationListeners.remove(listener);
-    }
-
-    protected void notifyReceiveInvite(String roomId) {
-        for (InvitationListener listener : invitationListeners) {
-            listener.receiveInvite(roomId);
-        }
-    }
-
-    public void addOnSubjectChangesListener(OnSubjectChangedListener listener) {
-        onSubjectChangedListeners.add(listener);
-    }
-
-    public void removeOnSubjectChangesListener(OnSubjectChangedListener listener) {
-        onSubjectChangedListeners.remove(listener);
-    }
-
-    protected void notifyOnSubjectChanges(String conversationId, String subject) {
-        for (OnSubjectChangedListener listener : onSubjectChangedListeners) {
-            listener.onSubjectChanged(conversationId, subject);
-        }
-    }
-
-    public void addOnAvatarChangeListener(OnAvatarChangedListener listener) {
-        onAvatarChangedListeners.add(listener);
-    }
-
-    public void removeOnAvatarChangeListener(OnAvatarChangedListener listener) {
-        onAvatarChangedListeners.remove(listener);
-    }
-
-    protected void notifyOnAvatarStateChangedListener(String conversationId, String avatar) {
-        for (OnAvatarChangedListener listener : onAvatarChangedListeners) {
-            listener.onAvatarChangedListener(conversationId, avatar);
-        }
-    }
-
-    public void addOnChatLeftListener(OnChatLeftListener listener) {
-        onChatLeftListeners.add(listener);
-    }
-
-    public void removeOnChatLeftListener(OnChatLeftListener listener) {
-        onChatLeftListeners.remove(listener);
-    }
-
-    protected void notifyOnChatLeftListener(String conversationId, String userId) {
-        for (OnChatLeftListener listener : onChatLeftListeners) {
-            listener.onChatLeft(conversationId, userId);
-        }
-    }
-
-    public void addOnKickListener(OnKickListener listener) {
-        onKickListeners.add(listener);
-    }
-
-    public void removeOnKickListener(OnKickListener listener) {
-        onKickListeners.remove(listener);
-    }
-
-    protected void notifyOnKickListener(String conversationId, String userId) {
-        for (OnKickListener l : onKickListeners) {
-            l.onKicked(conversationId, userId);
-        }
-    }
-
-    public void addOnChatJoinedListener(OnChatJoinedListener listener) {
-        onChatJoinedListeners.add(listener);
-    }
-
-    public void removeOnChatJoinedListener(OnChatJoinedListener listener) {
-        onChatJoinedListeners.remove(listener);
-    }
-
-    protected void notifyOnChatJoinedListener(Participant participant, boolean isOnline) {
-        for (OnChatJoinedListener listener : onChatJoinedListeners) {
-            listener.onChatJoined(participant, isOnline);
-        }
-    }
-
-    public void addOnChatStateChangedListener(OnChatStateChangedListener listener) {
-        onChatStateChangedListeners.add(listener);
-    }
-
-    public void removeOnChatStateChangedListener(OnChatStateChangedListener listener) {
-        onChatStateChangedListeners.remove(listener);
-    }
-
-    protected void notifyOnChatStateChangedListener(String conversationId, String userId, @ChatState.State String state) {
-        for (OnChatStateChangedListener listener : onChatStateChangedListeners) {
-            listener.onChatStateChanged(conversationId, userId, state);
-        }
-    }
-
-    public void addOnMessagesDeletedListener(MessagesDeletedListener listener) {
-        onMessagesDeletedListener.add(listener);
-    }
-
-    protected void notifyMessagesDeleted(List<DeletedMessage> deletedMessages) {
-        for (MessagesDeletedListener listener : onMessagesDeletedListener)
-            listener.onMessagesDeleted(deletedMessages);
-    }
+   protected void notifyGlobalMessage(Message message, int eventType) {
+      switch (eventType) {
+         case EVENT_PRE_OUTGOING:
+            for (GlobalMessageListener listener : globalMessageListeners)
+               listener.onPreSendMessage(message);
+            break;
+         case EVENT_OUTGOING:
+            for (GlobalMessageListener listener : globalMessageListeners)
+               listener.onSendMessage(message);
+            break;
+         case EVENT_INCOMING:
+            for (GlobalMessageListener listener : globalMessageListeners)
+               listener.onReceiveMessage(message);
+            break;
+         case EVENT_OUTGOING_ERROR:
+            for (GlobalMessageListener listener : globalMessageListeners)
+               listener.onErrorMessage(message);
+            break;
+         default:
+            break;
+      }
+   }
 
 
+   public void addFriendAddedListener(FriendsAddedListener listener) {
+      friendsAddedListeners.add(listener);
+   }
 
-    public void addOnRevertClearingEventListener(Action1<RevertClearingEvent> listener) {
-        onRevertClearingEventListeners.add(listener);
-    }
+   protected void notifyFriendsAdded(Collection<String> userIds) {
+      for (FriendsAddedListener listener : friendsAddedListeners) {
+         listener.onFriendsAdded(userIds);
+      }
+   }
 
-    public void removeOnRevertClearingEventListener(Action1<RevertClearingEvent> listener) {
-        onRevertClearingEventListeners.remove(listener);
-    }
+   public void addFriendRemovedListener(FriendsRemovedListener listener) {
+      friendsRemovedListeners.add(listener);
+   }
 
-    protected void notifyOnRevertClearingEventListener(RevertClearingEvent event) {
-        for (Action1<RevertClearingEvent> listener : onRevertClearingEventListeners) {
-            listener.call(event);
-        }
-    }
+   protected void notifyFriendsRemoved(Collection<String> userIds) {
+      for (FriendsRemovedListener listener : friendsRemovedListeners) {
+         listener.onFriendsRemoved(userIds);
+      }
+   }
+
+   public void addPresenceListener(PresenceListener listener) {
+      presenceListeners.add(listener);
+   }
+
+   public void removePresenceListener(PresenceListener listener) {
+      presenceListeners.remove(listener);
+   }
+
+   protected void notifyUserPresenceChanged(String userId, boolean isOnline) {
+      for (PresenceListener listener : presenceListeners) {
+         listener.onUserPresenceChanged(userId, isOnline);
+      }
+   }
+
+   public void addInvitationListener(InvitationListener listener) {
+      invitationListeners.add(listener);
+   }
+
+   public void removeInvitationListener(InvitationListener listener) {
+      invitationListeners.remove(listener);
+   }
+
+   protected void notifyReceiveInvite(String roomId) {
+      for (InvitationListener listener : invitationListeners) {
+         listener.receiveInvite(roomId);
+      }
+   }
+
+   public void addOnSubjectChangesListener(OnSubjectChangedListener listener) {
+      onSubjectChangedListeners.add(listener);
+   }
+
+   public void removeOnSubjectChangesListener(OnSubjectChangedListener listener) {
+      onSubjectChangedListeners.remove(listener);
+   }
+
+   protected void notifyOnSubjectChanges(String conversationId, String subject) {
+      for (OnSubjectChangedListener listener : onSubjectChangedListeners) {
+         listener.onSubjectChanged(conversationId, subject);
+      }
+   }
+
+   public void addOnAvatarChangeListener(OnAvatarChangedListener listener) {
+      onAvatarChangedListeners.add(listener);
+   }
+
+   public void removeOnAvatarChangeListener(OnAvatarChangedListener listener) {
+      onAvatarChangedListeners.remove(listener);
+   }
+
+   protected void notifyOnAvatarStateChangedListener(String conversationId, String avatar) {
+      for (OnAvatarChangedListener listener : onAvatarChangedListeners) {
+         listener.onAvatarChangedListener(conversationId, avatar);
+      }
+   }
+
+   public void addOnChatLeftListener(OnChatLeftListener listener) {
+      onChatLeftListeners.add(listener);
+   }
+
+   public void removeOnChatLeftListener(OnChatLeftListener listener) {
+      onChatLeftListeners.remove(listener);
+   }
+
+   protected void notifyOnChatLeftListener(String conversationId, String userId) {
+      for (OnChatLeftListener listener : onChatLeftListeners) {
+         listener.onChatLeft(conversationId, userId);
+      }
+   }
+
+   public void addOnKickListener(OnKickListener listener) {
+      onKickListeners.add(listener);
+   }
+
+   public void removeOnKickListener(OnKickListener listener) {
+      onKickListeners.remove(listener);
+   }
+
+   protected void notifyOnKickListener(String conversationId, String userId) {
+      for (OnKickListener l : onKickListeners) {
+         l.onKicked(conversationId, userId);
+      }
+   }
+
+   public void addOnChatJoinedListener(OnChatJoinedListener listener) {
+      onChatJoinedListeners.add(listener);
+   }
+
+   public void removeOnChatJoinedListener(OnChatJoinedListener listener) {
+      onChatJoinedListeners.remove(listener);
+   }
+
+   protected void notifyOnChatJoinedListener(Participant participant, boolean isOnline) {
+      for (OnChatJoinedListener listener : onChatJoinedListeners) {
+         listener.onChatJoined(participant, isOnline);
+      }
+   }
+
+   public void addOnChatStateChangedListener(OnChatStateChangedListener listener) {
+      onChatStateChangedListeners.add(listener);
+   }
+
+   public void removeOnChatStateChangedListener(OnChatStateChangedListener listener) {
+      onChatStateChangedListeners.remove(listener);
+   }
+
+   protected void notifyOnChatStateChangedListener(String conversationId, String userId, @ChatState.State String state) {
+      for (OnChatStateChangedListener listener : onChatStateChangedListeners) {
+         listener.onChatStateChanged(conversationId, userId, state);
+      }
+   }
+
+   public void addOnMessagesDeletedListener(MessagesDeletedListener listener) {
+      onMessagesDeletedListener.add(listener);
+   }
+
+   protected void notifyMessagesDeleted(List<DeletedMessage> deletedMessages) {
+      for (MessagesDeletedListener listener : onMessagesDeletedListener)
+         listener.onMessagesDeleted(deletedMessages);
+   }
 
 
-    public void addOnClearChatEventListener(Action1<ClearChatEvent> listener) {
-        onClearChatEventListeners.add(listener);
-    }
+   public void addOnRevertClearingEventListener(Action1<RevertClearingEvent> listener) {
+      onRevertClearingEventListeners.add(listener);
+   }
 
-    public void removeOnClearChatEventListener(Action1<ClearChatEvent> listener) {
-        onClearChatEventListeners.remove(listener);
-    }
+   public void removeOnRevertClearingEventListener(Action1<RevertClearingEvent> listener) {
+      onRevertClearingEventListeners.remove(listener);
+   }
 
-    protected void notifyOnClearChatEventListener(ClearChatEvent event) {
-        for (Action1<ClearChatEvent> listener : onClearChatEventListeners) {
-            listener.call(event);
-        }
-    }
+   protected void notifyOnRevertClearingEventListener(RevertClearingEvent event) {
+      for (Action1<RevertClearingEvent> listener : onRevertClearingEventListeners) {
+         listener.call(event);
+      }
+   }
 
-    ///////////////////////////////////////////////////////////////////////////
-    // Observables
-    ///////////////////////////////////////////////////////////////////////////
 
-    public Observable<JoinedEvent> createChatJoinedObservable() {
-        OnChatJoinedListener[] onChatJoinedListeners = new OnChatJoinedListener[]{null};
-        return Observable.<JoinedEvent>create(subscriber -> {
-            OnChatJoinedListener listener = (participant, isOnline) -> {
-                subscriber.onNext(new JoinedEvent(participant, isOnline));
-            };
-            addOnChatJoinedListener(listener);
-            onChatJoinedListeners[0] = listener;
-        }).doOnUnsubscribe(() -> removeOnChatJoinedListener(onChatJoinedListeners[0]));
-    }
+   public void addOnClearChatEventListener(Action1<ClearChatEvent> listener) {
+      onClearChatEventListeners.add(listener);
+   }
+
+   public void removeOnClearChatEventListener(Action1<ClearChatEvent> listener) {
+      onClearChatEventListeners.remove(listener);
+   }
+
+   protected void notifyOnClearChatEventListener(ClearChatEvent event) {
+      for (Action1<ClearChatEvent> listener : onClearChatEventListeners) {
+         listener.call(event);
+      }
+   }
+
+   ///////////////////////////////////////////////////////////////////////////
+   // Observables
+   ///////////////////////////////////////////////////////////////////////////
+
+   public Observable<JoinedEvent> createChatJoinedObservable() {
+      OnChatJoinedListener[] onChatJoinedListeners = new OnChatJoinedListener[]{null};
+      return Observable.<JoinedEvent>create(subscriber -> {
+         OnChatJoinedListener listener = (participant, isOnline) -> {
+            subscriber.onNext(new JoinedEvent(participant, isOnline));
+         };
+         addOnChatJoinedListener(listener);
+         onChatJoinedListeners[0] = listener;
+      }).doOnUnsubscribe(() -> removeOnChatJoinedListener(onChatJoinedListeners[0]));
+   }
 }

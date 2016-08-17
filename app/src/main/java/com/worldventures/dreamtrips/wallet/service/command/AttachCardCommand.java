@@ -52,4 +52,7 @@ public class AttachCardCommand extends Command<Record> implements InjectableActi
                 .map(setDefaultCardOnDeviceAction -> record);
     }
 
+    public BankCard bankCard() {
+        return card;
+    }
 }

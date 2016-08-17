@@ -8,20 +8,22 @@ import com.worldventures.dreamtrips.wallet.domain.entity.card.BankCard;
 import java.util.List;
 
 public class CardStackViewModel implements HeaderItem {
+    private String title;
 
-    private String name;
-    private List<BankCard> bankCards;
+    private List<BankCard> cardList;
 
-    public CardStackViewModel(String name, List<BankCard> bankCard) {
-        this.name = name;
-        this.bankCards = bankCard;
+    public CardStackViewModel(String title, List<BankCard> cardList) {
+        this.title = title;
+        this.cardList = cardList;
     }
 
-    public List<BankCard> getBankCards() {
-        return bankCards;
+    public List<BankCard> getCardList() {
+        return cardList;
     }
 
-    @Nullable @Override public String getHeaderTitle() {
-        return name;
+    @Nullable
+    @Override
+    public String getHeaderTitle() {
+        return title;
     }
 }

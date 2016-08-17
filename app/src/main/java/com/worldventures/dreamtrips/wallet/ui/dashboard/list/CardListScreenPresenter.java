@@ -5,6 +5,7 @@ import android.os.Parcelable;
 
 import com.techery.spares.module.Injector;
 import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.core.utils.QuantityHelper;
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCard;
 import com.worldventures.dreamtrips.wallet.domain.entity.card.BankCard;
 import com.worldventures.dreamtrips.wallet.domain.entity.card.BankCard.CardType;
@@ -20,6 +21,7 @@ import com.worldventures.dreamtrips.wallet.ui.dashboard.list.util.CardStackViewM
 import com.worldventures.dreamtrips.wallet.ui.settings.WalletCardSettingsPath;
 import com.worldventures.dreamtrips.wallet.ui.wizard.magstripe.WizardMagstripePath;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
@@ -28,6 +30,8 @@ import javax.inject.Inject;
 import flow.Flow;
 import io.techery.janet.helper.ActionStateSubscriber;
 import rx.Observable;
+
+import static com.worldventures.dreamtrips.wallet.service.command.CardStacksCommand.CardStackModel;
 
 public class CardListScreenPresenter extends WalletPresenter<CardListScreenPresenter.Screen, Parcelable> {
 
@@ -43,26 +47,17 @@ public class CardListScreenPresenter extends WalletPresenter<CardListScreenPrese
     @Override
     public void onAttachedToWindow() {
         super.onAttachedToWindow();
-        smartCardInteractor
-                .cardStacksPipe()
-                .createObservable(new CardStacksCommand())
-                .debounce(100, TimeUnit.MILLISECONDS)
-                .compose(bindViewIoToMainComposer())
-                .subscribe(new ActionStateSubscriber<CardStacksCommand>()
-                        .onProgress((command, integer) -> getView().showRecordsInfo(command.getCachedList()))
-                        .onSuccess(command -> getView().showRecordsInfo(command.getResult()))
-                        .onFail((command, throwable) -> {}));
+        observeChanges();
 
+        Observable.concat(smartCardInteractor.cardStacksPipe().createObservable(CardStacksCommand.get(false)),
+                smartCardInteractor.cardStacksPipe().createObservable(CardStacksCommand.get(true)))
+                .debounce(100, TimeUnit.MILLISECONDS)
+                .subscribe();
         smartCardInteractor.getActiveSmartCardPipe()
                 .createObservableResult(new GetActiveSmartCardCommand())
                 .compose(bindViewIoToMainComposer())
-                .subscribe(it -> setSmartCard(it.getResult()), e -> {/*todo add UI error*/});
+                .subscribe(it -> setSmartCard(it.getResult()));
 
-        observeSmartCardChanges();
-        observeLockController();
-    }
-
-    private void observeLockController() {
         getView().lockStatus()
                 .compose(bindView())
                 .skip(1)
@@ -72,7 +67,8 @@ public class CardListScreenPresenter extends WalletPresenter<CardListScreenPrese
         getView().unSupportedUnlockOperation()
                 .compose(bindView())
                 .subscribe(it -> {
-                    getView().provideOperationDelegate().showError(getContext().getString(R.string.wallet_dashboard_unlock_error), e -> {});
+                    getView().provideOperationDelegate().showError(getContext().getString(R.string.wallet_dashboard_unlock_error), e -> {
+                    });
                 });
     }
 
@@ -82,16 +78,11 @@ public class CardListScreenPresenter extends WalletPresenter<CardListScreenPrese
                 .compose(bindViewIoToMainComposer())
                 .subscribe(OperationSubscriberWrapper.<SetLockStateCommand>forView(getView().provideOperationDelegate())
                         .onFail(getContext().getString(R.string.error_something_went_wrong))
-                        .onSuccess(action -> { if (isLocked) getView().disableLockBtn();})
+                        .onSuccess(action -> {
+                            if (isLocked) getView().disableLockBtn();
+                        })
                         .wrap()
                 );
-    }
-
-    private void observeSmartCardChanges() {
-        smartCardInteractor.smartCardModifierPipe()
-                .observeSuccess()
-                .compose(bindViewIoToMainComposer())
-                .subscribe(command -> setSmartCard(command.smartCard()));
     }
 
     private void setSmartCard(SmartCard smartCard) {
@@ -130,5 +121,50 @@ public class CardListScreenPresenter extends WalletPresenter<CardListScreenPrese
         Observable<Void> unSupportedUnlockOperation();
 
         void disableLockBtn();
+    }
+
+    private void observeChanges() {
+        smartCardInteractor.cardStacksPipe().observe()
+                .compose(bindViewIoToMainComposer())
+                .subscribe(new ActionStateSubscriber<CardStacksCommand>() //TODO check for progress, f.e. swipe refresh
+                        .onSuccess(command -> getView().showRecordsInfo(adapt(command.getResult())))
+                        .onFail((command, throwable) -> {
+                        }));
+        smartCardInteractor.smartCardModifierPipe()
+                .observeSuccess()
+                .compose(bindViewIoToMainComposer())
+                .subscribe(command -> setSmartCard(command.smartCard()));
+    }
+
+    private List<CardStackViewModel> adapt(List<CardStackModel> stackList) {
+        int sourceLength = stackList.size();
+        List<CardStackViewModel> list = new ArrayList<>(sourceLength);
+
+        for (int i = 0; i < sourceLength; i++) {
+            CardStackModel vm = stackList.get(i);
+            String title;
+            switch (vm.type()) {
+                case DEBIT:
+                    int debitCardListSize = vm.bankCards().size();
+                    int debitTitleId = QuantityHelper
+                            .chooseResource(debitCardListSize, R.string.wallet_credit_card_title, R.string.wallet_credit_cards_title);
+
+                    title = getContext().getString(debitTitleId, debitCardListSize);
+                    break;
+                case CREDIT:
+                    int creditCardListSize = vm.bankCards().size();
+                    int creditTitleId = QuantityHelper
+                            .chooseResource(creditCardListSize, R.string.wallet_debit_card_title, R.string.wallet_debit_cards_title);
+
+                    title = getContext().getString(creditTitleId, creditCardListSize);
+                    break;
+                default:
+                    title = getContext().getString(R.string.dashboard_default_card_stack_title);
+            }
+
+            list.add(new CardStackViewModel(title, vm.bankCards()));
+        }
+
+        return list;
     }
 }

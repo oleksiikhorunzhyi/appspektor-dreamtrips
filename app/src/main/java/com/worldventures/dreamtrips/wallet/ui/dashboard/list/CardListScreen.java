@@ -124,7 +124,10 @@ public class CardListScreen extends WalletFrameLayout<CardListScreenPresenter.Sc
                 getPresenter().showBankCardDetails(bankCard);
             }
         });
-        adapter.registerIdDelegate(CardStackViewModel.class, model -> ((CardStackViewModel) model).getHeaderTitle().hashCode());
+        adapter.registerIdDelegate(CardStackViewModel.class, model -> {
+            CardStackViewModel vm = ((CardStackViewModel) model);
+            return vm.getHeaderTitle() != null ? vm.getHeaderTitle().hashCode() : 0;
+        });
 
         bankCardList.setAdapter(adapter);
         bankCardList.setItemAnimator(new DefaultItemAnimator());

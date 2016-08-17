@@ -34,7 +34,7 @@
                         android:id="@+id/toolbar"
                         android:layout_width="match_parent"
                         android:layout_height="?attr/actionBarSize"
-                        app:navigationIcon="@null"
+                        app:navigationIcon="@drawable/ic_menu_hamburger"
                         app:titleTextColor="@android:color/white"/>
 
                     <com.worldventures.dreamtrips.wallet.ui.widget.SmartCardWidget

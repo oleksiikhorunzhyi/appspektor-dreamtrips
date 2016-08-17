@@ -9,24 +9,24 @@ import com.worldventures.dreamtrips.wallet.domain.entity.SmartCard;
 @Layout(R.layout.screen_wallet_wizard_pin_setup)
 public class WizardPinSetupPath extends StyledPath {
 
-    public final SmartCard smartCard;
-    public final Action action;
+   public final SmartCard smartCard;
+   public final Action action;
 
-    public WizardPinSetupPath(SmartCard smartCard) {
-        this(smartCard, Action.SETUP);
-    }
+   public WizardPinSetupPath(SmartCard smartCard) {
+      this(smartCard, Action.SETUP);
+   }
 
-    public WizardPinSetupPath(SmartCard smartCard, Action action) {
-        this.smartCard = smartCard;
-        this.action = action;
-    }
+   public WizardPinSetupPath(SmartCard smartCard, Action action) {
+      this.smartCard = smartCard;
+      this.action = action;
+   }
 
-    @Override
-    public MasterDetailPath getMaster() {
-        return this;
-    }
+   @Override
+   public MasterDetailPath getMaster() {
+      return this;
+   }
 
-    public enum Action {
-        RESET, SETUP
-    }
+   public enum Action {
+      RESET, SETUP
+   }
 }

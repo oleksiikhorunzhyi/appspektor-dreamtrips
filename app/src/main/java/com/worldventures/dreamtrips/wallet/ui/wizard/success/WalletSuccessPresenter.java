@@ -12,18 +12,18 @@ import flow.Flow;
 
 public class WalletSuccessPresenter extends WalletPresenter<WalletScreen, Parcelable> {
 
-    private final StyledPath styledPath;
+   private final StyledPath styledPath;
 
-    public WalletSuccessPresenter(Context context, Injector injector, StyledPath styledPath) {
-        super(context, injector);
-        this.styledPath = styledPath;
-    }
+   public WalletSuccessPresenter(Context context, Injector injector, StyledPath styledPath) {
+      super(context, injector);
+      this.styledPath = styledPath;
+   }
 
-    public void goToBack() {
-        Flow.get(getContext()).goBack();
-    }
+   public void goToBack() {
+      Flow.get(getContext()).goBack();
+   }
 
-    public void goToNext() {
-        Flow.get(getContext()).set(styledPath);
-    }
+   public void goToNext() {
+      Flow.get(getContext()).set(styledPath);
+   }
 }

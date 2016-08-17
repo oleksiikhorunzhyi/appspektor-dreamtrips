@@ -5,11 +5,8 @@ import android.os.Parcelable;
 import android.support.annotation.StringRes;
 
 import com.techery.spares.module.Injector;
-import com.techery.spares.session.SessionHolder;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.core.session.UserSession;
 import com.worldventures.dreamtrips.core.utils.LocaleHelper;
-import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.wallet.domain.entity.AddressInfo;
 import com.worldventures.dreamtrips.wallet.domain.entity.AddressInfoWithLocale;
 import com.worldventures.dreamtrips.wallet.domain.entity.ImmutableAddressInfo;
@@ -44,9 +41,8 @@ public class CardDetailsPresenter extends WalletPresenter<CardDetailsPresenter.S
    public void onAttachedToWindow() {
       super.onAttachedToWindow();
 
-      String toolBarTitle = String.format("%s •••• %d",
-            getContext().getResources()
-                  .getString(obtainFinancialServiceType(bankCard.type())), bankCard.number() % 10000);
+      String toolBarTitle = String.format("%s •••• %d", getContext().getResources()
+            .getString(obtainFinancialServiceType(bankCard.type())), bankCard.number() % 10000);
       Screen view = getView();
 
       view.setTitle(toolBarTitle);
@@ -91,8 +87,8 @@ public class CardDetailsPresenter extends WalletPresenter<CardDetailsPresenter.S
       smartCardInteractor.deleteCardPipe()
             .createObservable(new DeleteRecordAction(valueOf(bankCard.id())))
             .compose(bindViewIoToMainComposer())
-            .subscribe(OperationSubscriberWrapper.<DeleteRecordAction>forView(getView().provideOperationDelegate())
-                  .onStart(getContext().getString(R.string.wallet_card_details_progress_delete, bankCard.title()))
+            .subscribe(OperationSubscriberWrapper.<DeleteRecordAction>forView(getView().provideOperationDelegate()).onStart(getContext()
+                  .getString(R.string.wallet_card_details_progress_delete, bankCard.title()))
                   .onSuccess(deleteRecordAction -> Flow.get(getContext()).goBack())
                   .onFail(getContext().getString(R.string.error_something_went_wrong))
                   .wrap());

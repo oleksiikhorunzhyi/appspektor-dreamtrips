@@ -7,14 +7,13 @@ import java.util.List;
 
 public class CardListUtils {
 
-    private CardListUtils() {
-    }
+   private CardListUtils() {
+   }
 
-    public static int stacksToItemsCount(List<CardStackViewModel> items) {
-        if (items == null) return 0;
-        Integer sum = Queryable.from(items)
-                .sum(stack -> stack.getCardList() != null ? stack.getCardList().size() : 0);
-        return sum != null ? sum : 0;
-    }
+   public static int stacksToItemsCount(List<CardStackViewModel> items) {
+      if (items == null) return 0;
+      Integer sum = Queryable.from(items).sum(stack -> stack.getCardList() != null ? stack.getCardList().size() : 0);
+      return sum != null ? sum : 0;
+   }
 
 }

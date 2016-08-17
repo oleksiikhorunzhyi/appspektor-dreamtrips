@@ -14,47 +14,21 @@ import com.worldventures.dreamtrips.wallet.service.command.FetchSmartCardLockSta
 import com.worldventures.dreamtrips.wallet.service.command.GetActiveSmartCardCommand;
 import com.worldventures.dreamtrips.wallet.service.command.GetDefaultAddressCommand;
 import com.worldventures.dreamtrips.wallet.service.command.LoadImageForSmartCardCommand;
+import com.worldventures.dreamtrips.wallet.service.command.SaveCardDetailsDataCommand;
 import com.worldventures.dreamtrips.wallet.service.command.SetDefaultCardOnDeviceCommand;
 import com.worldventures.dreamtrips.wallet.service.command.SetLockStateCommand;
 import com.worldventures.dreamtrips.wallet.service.command.SetStealthModeCommand;
-import com.worldventures.dreamtrips.wallet.service.command.SaveCardDetailsDataCommand;
+import com.worldventures.dreamtrips.wallet.service.command.SetupDefaultAddressCommand;
 import com.worldventures.dreamtrips.wallet.service.command.SetupSmartCardNameCommand;
 import com.worldventures.dreamtrips.wallet.service.command.SetupUserDataCommand;
-
-import com.worldventures.dreamtrips.wallet.service.command.SetupDefaultAddressCommand;
 
 import dagger.Module;
 
 @Module(
-        includes = {
-        },
-        injects = {
-                CompressImageForSmartCardCommand.class,
-                CardListCommand.class,
-                AttachCardCommand.class,
-                CardStacksCommand.class,
-                LoadImageForSmartCardCommand.class,
-                SetupSmartCardNameCommand.class,
-                SetupUserDataCommand.class,
-                FetchDefaultCardCommand.class,
-                ActivateSmartCardCommand.class,
-                CreateAndConnectToCardCommand.class,
-                GetActiveSmartCardCommand.class,
+      includes = {},
+      injects = {CompressImageForSmartCardCommand.class, CardListCommand.class, AttachCardCommand.class, CardStacksCommand.class, LoadImageForSmartCardCommand.class, SetupSmartCardNameCommand.class, SetupUserDataCommand.class, FetchDefaultCardCommand.class, ActivateSmartCardCommand.class, CreateAndConnectToCardCommand.class, GetActiveSmartCardCommand.class,
 
-                CardCountCommand.class,
-                GetDefaultAddressCommand.class,
-                SaveCardDetailsDataCommand.class,
-                SetupDefaultAddressCommand.class,
-                SetDefaultCardOnDeviceCommand.class,
-                FetchSmartCardLockState.class,
-                SetStealthModeCommand.class,
-                GetActiveSmartCardCommand.class,
-                ConnectSmartCardCommand.class,
-                FetchCardPropertiesCommand.class,
-                SetLockStateCommand.class
-        },
-        complete = false, library = true
-)
-public class WalletCommandModule {
-}
+            CardCountCommand.class, GetDefaultAddressCommand.class, SaveCardDetailsDataCommand.class, SetupDefaultAddressCommand.class, SetDefaultCardOnDeviceCommand.class, FetchSmartCardLockState.class, SetStealthModeCommand.class, GetActiveSmartCardCommand.class, ConnectSmartCardCommand.class, FetchCardPropertiesCommand.class, SetLockStateCommand.class},
+      complete = false, library = true)
+public class WalletCommandModule {}
 

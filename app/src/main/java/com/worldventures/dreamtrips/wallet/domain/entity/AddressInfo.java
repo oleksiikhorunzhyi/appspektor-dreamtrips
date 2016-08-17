@@ -5,14 +5,14 @@ import org.immutables.value.Value;
 @Value.Immutable
 public interface AddressInfo {
 
-    String address1();
+   String address1();
 
-    String address2();
+   String address2();
 
-    String city();
+   String city();
 
-    String state();
+   String state();
 
-    String zip();
+   String zip();
 
 }

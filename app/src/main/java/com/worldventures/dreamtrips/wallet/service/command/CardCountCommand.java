@@ -13,15 +13,14 @@ import io.techery.janet.command.annotations.CommandAction;
 @CommandAction
 public class CardCountCommand extends Command<Integer> implements InjectableAction {
 
-    @Inject
-    SnappyRepository snappyRepository;
+   @Inject SnappyRepository snappyRepository;
 
-    public CardCountCommand() {
-    }
+   public CardCountCommand() {
+   }
 
-    @Override
-    protected void run(CommandCallback<Integer> callback) throws Throwable {
-        List cardList = snappyRepository.readWalletCardsList();
-        callback.onSuccess(cardList == null? 0 : cardList.size());
-    }
+   @Override
+   protected void run(CommandCallback<Integer> callback) throws Throwable {
+      List cardList = snappyRepository.readWalletCardsList();
+      callback.onSuccess(cardList == null ? 0 : cardList.size());
+   }
 }

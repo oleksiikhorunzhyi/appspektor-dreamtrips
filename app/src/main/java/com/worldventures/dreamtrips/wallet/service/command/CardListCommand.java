@@ -27,102 +27,96 @@ import static com.worldventures.dreamtrips.core.janet.JanetModule.JANET_WALLET;
 @CommandAction
 public class CardListCommand extends Command<List<Card>> implements InjectableAction, CachedAction<List<Card>> {
 
-    @Inject
-    @Named(JANET_WALLET)
-    Janet janet;
+   @Inject @Named(JANET_WALLET) Janet janet;
 
-    private final BankCardConverter converter = new BankCardConverter();
+   private final BankCardConverter converter = new BankCardConverter();
 
-    private Func1<List<Card>, Observable<List<Card>>> operationFunc;
-    private boolean forceUpdate;
+   private Func1<List<Card>, Observable<List<Card>>> operationFunc;
+   private boolean forceUpdate;
 
-    private volatile List<Card> cachedItems;
+   private volatile List<Card> cachedItems;
 
-    public static CardListCommand get(boolean forceUpdate) {
-        return new CardListCommand(forceUpdate);
-    }
+   public static CardListCommand get(boolean forceUpdate) {
+      return new CardListCommand(forceUpdate);
+   }
 
-    public static CardListCommand remove(String cardId) {
-        return new CardListCommand(new RemoveOperationFunc(cardId));
-    }
+   public static CardListCommand remove(String cardId) {
+      return new CardListCommand(new RemoveOperationFunc(cardId));
+   }
 
-    public static CardListCommand add(Card card) {
-        return new CardListCommand(new AddOperationFunc(card));
-    }
+   public static CardListCommand add(Card card) {
+      return new CardListCommand(new AddOperationFunc(card));
+   }
 
-    private CardListCommand(Func1<List<Card>, Observable<List<Card>>> operationFunc) {
-        this.operationFunc = operationFunc;
-    }
+   private CardListCommand(Func1<List<Card>, Observable<List<Card>>> operationFunc) {
+      this.operationFunc = operationFunc;
+   }
 
-    private CardListCommand(boolean forceUpdate) {
-        this.forceUpdate = forceUpdate;
-    }
+   private CardListCommand(boolean forceUpdate) {
+      this.forceUpdate = forceUpdate;
+   }
 
-    @Override
-    protected void run(CommandCallback<List<Card>> callback) throws Throwable {
-        Observable<List<Card>> listObservable =
-                !isCachePresent() || forceUpdate ? fetchFromDevice() : Observable.just(cachedItems);
+   @Override
+   protected void run(CommandCallback<List<Card>> callback) throws Throwable {
+      Observable<List<Card>> listObservable = !isCachePresent() || forceUpdate ? fetchFromDevice() : Observable.just(cachedItems);
 
-        if (operationFunc != null) {
-            listObservable = listObservable.flatMap(operationFunc);
-        }
-        listObservable.subscribe(callback::onSuccess, callback::onFail);
-    }
+      if (operationFunc != null) {
+         listObservable = listObservable.flatMap(operationFunc);
+      }
+      listObservable.subscribe(callback::onSuccess, callback::onFail);
+   }
 
-    private Observable<List<Card>> fetchFromDevice() {
-        return janet.createPipe(GetMemberRecordsAction.class)
-                .createObservableResult(new GetMemberRecordsAction())
-                .flatMap(action -> Observable.from(action.records)
-                        .map(record -> (Card) converter.from(record))
-                        .toList());
-    }
+   private Observable<List<Card>> fetchFromDevice() {
+      return janet.createPipe(GetMemberRecordsAction.class)
+            .createObservableResult(new GetMemberRecordsAction())
+            .flatMap(action -> Observable.from(action.records).map(record -> (Card) converter.from(record)).toList());
+   }
 
-    @Override
-    public List<Card> getCacheData() {
-        return getResult();
-    }
+   @Override
+   public List<Card> getCacheData() {
+      return getResult();
+   }
 
-    @Override
-    public void onRestore(ActionHolder holder, List<Card> cache) {
-        if (cache == null) cachedItems = Collections.emptyList();
-        else cachedItems = cache;
-    }
+   @Override
+   public void onRestore(ActionHolder holder, List<Card> cache) {
+      if (cache == null) cachedItems = Collections.emptyList();
+      else cachedItems = cache;
+   }
 
-    @Override
-    public CacheOptions getCacheOptions() {
-        return ImmutableCacheOptions.builder().build();
-    }
+   @Override
+   public CacheOptions getCacheOptions() {
+      return ImmutableCacheOptions.builder().build();
+   }
 
-    private static final class RemoveOperationFunc implements Func1<List<Card>, Observable<List<Card>>> {
-        private String cardId;
+   private static final class RemoveOperationFunc implements Func1<List<Card>, Observable<List<Card>>> {
+      private String cardId;
 
-        public RemoveOperationFunc(String cardId) {
-            this.cardId = cardId;
-        }
+      public RemoveOperationFunc(String cardId) {
+         this.cardId = cardId;
+      }
 
-        @Override
-        public Observable<List<Card>> call(List<Card> cards) {
-            cards.remove(Queryable.from(cards)
-                    .first(element -> element.id().equals(cardId)));
-            return Observable.just(cards);
-        }
-    }
+      @Override
+      public Observable<List<Card>> call(List<Card> cards) {
+         cards.remove(Queryable.from(cards).first(element -> element.id().equals(cardId)));
+         return Observable.just(cards);
+      }
+   }
 
-    private static final class AddOperationFunc implements Func1<List<Card>, Observable<List<Card>>> {
-        private Card card;
+   private static final class AddOperationFunc implements Func1<List<Card>, Observable<List<Card>>> {
+      private Card card;
 
-        public AddOperationFunc(Card card) {
-            this.card = card;
-        }
+      public AddOperationFunc(Card card) {
+         this.card = card;
+      }
 
-        @Override
-        public Observable<List<Card>> call(List<Card> cards) {
-            cards.add(card);
-            return Observable.just(cards);
-        }
-    }
+      @Override
+      public Observable<List<Card>> call(List<Card> cards) {
+         cards.add(card);
+         return Observable.just(cards);
+      }
+   }
 
-    private boolean isCachePresent() {
-        return cachedItems != null && !cachedItems.isEmpty();
-    }
+   private boolean isCachePresent() {
+      return cachedItems != null && !cachedItems.isEmpty();
+   }
 }

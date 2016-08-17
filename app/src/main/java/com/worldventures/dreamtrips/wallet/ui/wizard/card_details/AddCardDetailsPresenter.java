@@ -58,8 +58,7 @@ public class AddCardDetailsPresenter extends WalletPresenter<AddCardDetailsPrese
             .takeFirst(state -> state.status == ActionState.Status.SUCCESS || state.status == ActionState.Status.FAIL)
             .compose(bindViewIoToMainComposer())
             .subscribe(actionState -> getView().setAsDefaultPaymentCard(actionState.action.getResult() == 0));
-      smartCardInteractor.cardCountCommandPipe()
-            .send(new CardCountCommand());
+      smartCardInteractor.cardCountCommandPipe().send(new CardCountCommand());
 
       smartCardInteractor.getDefaultAddressCommandPipe()
             .observeWithReplay()
@@ -72,7 +71,8 @@ public class AddCardDetailsPresenter extends WalletPresenter<AddCardDetailsPrese
                      .addressInfo(addressInfo)
                      .locale(localeHelper.getDefaultLocale())
                      .build();
-            }).compose(bindViewIoToMainComposer())
+            })
+            .compose(bindViewIoToMainComposer())
             .subscribe(addressInfoWithLocale -> {
                if (addressInfoWithLocale == null) {
                   getView().hideDefaultAddressCheckbox();
@@ -94,12 +94,12 @@ public class AddCardDetailsPresenter extends WalletPresenter<AddCardDetailsPrese
             .compose(bindViewIoToMainComposer())
             .subscribe(OperationSubscriberWrapper.<SaveCardDetailsDataCommand>forView(getView().provideOperationDelegate())
                   .onStart("")
-                  .onSuccess(saveCardDetailsDataCommand ->
-                        Flow.get(getContext()).setHistory(History.single(new CardListPath()), Flow.Direction.REPLACE))
+                  .onSuccess(saveCardDetailsDataCommand -> Flow.get(getContext())
+                        .setHistory(History.single(new CardListPath()), Flow.Direction.REPLACE))
                   .onFail(throwable -> {
                      Context context = getContext();
-                     String msg = throwable.getCause() instanceof FormatException ? context.getString(R.string.wallet_add_card_details_error_message)
-                           : context.getString(R.string.error_something_went_wrong);
+                     String msg = throwable.getCause() instanceof FormatException ? context.getString(R.string.wallet_add_card_details_error_message) : context
+                           .getString(R.string.error_something_went_wrong);
 
                      return new OperationSubscriberWrapper.MessageActionHolder<>(msg, null);
                   })

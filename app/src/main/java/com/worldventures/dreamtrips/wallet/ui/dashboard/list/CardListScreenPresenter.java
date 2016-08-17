@@ -35,136 +35,130 @@ import static com.worldventures.dreamtrips.wallet.service.command.CardStacksComm
 
 public class CardListScreenPresenter extends WalletPresenter<CardListScreenPresenter.Screen, Parcelable> {
 
-    @Inject
-    SmartCardInteractor smartCardInteractor;
+   @Inject SmartCardInteractor smartCardInteractor;
 
-    private SmartCard activeSmartCard;
+   private SmartCard activeSmartCard;
 
-    public CardListScreenPresenter(Context context, Injector injector) {
-        super(context, injector);
-    }
+   public CardListScreenPresenter(Context context, Injector injector) {
+      super(context, injector);
+   }
 
-    @Override
-    public void onAttachedToWindow() {
-        super.onAttachedToWindow();
-        observeChanges();
+   @Override
+   public void onAttachedToWindow() {
+      super.onAttachedToWindow();
+      observeChanges();
 
-        Observable.concat(smartCardInteractor.cardStacksPipe().createObservable(CardStacksCommand.get(false)),
-                smartCardInteractor.cardStacksPipe().createObservable(CardStacksCommand.get(true)))
-                .debounce(100, TimeUnit.MILLISECONDS)
-                .subscribe();
-        smartCardInteractor.getActiveSmartCardPipe()
-                .createObservableResult(new GetActiveSmartCardCommand())
-                .compose(bindViewIoToMainComposer())
-                .subscribe(it -> setSmartCard(it.getResult()));
+      Observable.concat(smartCardInteractor.cardStacksPipe()
+            .createObservable(CardStacksCommand.get(false)), smartCardInteractor.cardStacksPipe()
+            .createObservable(CardStacksCommand.get(true))).debounce(100, TimeUnit.MILLISECONDS).subscribe();
+      smartCardInteractor.getActiveSmartCardPipe()
+            .createObservableResult(new GetActiveSmartCardCommand())
+            .compose(bindViewIoToMainComposer())
+            .subscribe(it -> setSmartCard(it.getResult()));
 
-        getView().lockStatus()
-                .compose(bindView())
-                .skip(1)
-                .filter(checkedFlag -> activeSmartCard.lock() != checkedFlag)
-                .subscribe(this::lockChanged);
+      getView().lockStatus()
+            .compose(bindView())
+            .skip(1)
+            .filter(checkedFlag -> activeSmartCard.lock() != checkedFlag)
+            .subscribe(this::lockChanged);
 
-        getView().unSupportedUnlockOperation()
-                .compose(bindView())
-                .subscribe(it -> {
-                    getView().provideOperationDelegate().showError(getContext().getString(R.string.wallet_dashboard_unlock_error), e -> {
-                    });
-                });
-    }
+      getView().unSupportedUnlockOperation().compose(bindView()).subscribe(it -> {
+         getView().provideOperationDelegate()
+               .showError(getContext().getString(R.string.wallet_dashboard_unlock_error), e -> {
+               });
+      });
+   }
 
-    private void lockChanged(boolean isLocked) {
-        smartCardInteractor.lockPipe().
-                createObservable(new SetLockStateCommand(isLocked))
-                .compose(bindViewIoToMainComposer())
-                .subscribe(OperationSubscriberWrapper.<SetLockStateCommand>forView(getView().provideOperationDelegate())
-                        .onFail(getContext().getString(R.string.error_something_went_wrong))
-                        .onSuccess(action -> {
-                            if (isLocked) getView().disableLockBtn();
-                        })
-                        .wrap()
-                );
-    }
+   private void lockChanged(boolean isLocked) {
+      smartCardInteractor.lockPipe()
+            .
+                  createObservable(new SetLockStateCommand(isLocked))
+            .compose(bindViewIoToMainComposer())
+            .subscribe(OperationSubscriberWrapper.<SetLockStateCommand>forView(getView().provideOperationDelegate()).onFail(getContext()
+                  .getString(R.string.error_something_went_wrong)).onSuccess(action -> {
+               if (isLocked) getView().disableLockBtn();
+            }).wrap());
+   }
 
-    private void setSmartCard(SmartCard smartCard) {
-        activeSmartCard = smartCard;
-        getView().showSmartCardInfo(smartCard);
-    }
+   private void setSmartCard(SmartCard smartCard) {
+      activeSmartCard = smartCard;
+      getView().showSmartCardInfo(smartCard);
+   }
 
-    public void showBankCardDetails(BankCard bankCard) {
-        Flow.get(getContext()).set(new CardDetailsPath(bankCard));
-    }
+   public void showBankCardDetails(BankCard bankCard) {
+      Flow.get(getContext()).set(new CardDetailsPath(bankCard));
+   }
 
-    public void goBack() {
-        Flow.get(getContext()).goBack();
-    }
+   public void goBack() {
+      Flow.get(getContext()).goBack();
+   }
 
-    public void onSettingsChosen() {
-        if (activeSmartCard == null) return;
-        Flow.get(getContext()).set(new WalletCardSettingsPath(activeSmartCard));
-    }
+   public void onSettingsChosen() {
+      if (activeSmartCard == null) return;
+      Flow.get(getContext()).set(new WalletCardSettingsPath(activeSmartCard));
+   }
 
-    public void addCreditCard() {
-        Flow.get(getContext()).set(new WizardMagstripePath(CardType.CREDIT));
-    }
+   public void addCreditCard() {
+      Flow.get(getContext()).set(new WizardMagstripePath(CardType.CREDIT));
+   }
 
-    public void addDebitCard() {
-        Flow.get(getContext()).set(new WizardMagstripePath(CardType.DEBIT));
-    }
+   public void addDebitCard() {
+      Flow.get(getContext()).set(new WizardMagstripePath(CardType.DEBIT));
+   }
 
-    public interface Screen extends WalletScreen {
-        void showRecordsInfo(List<CardStackViewModel> result);
+   public interface Screen extends WalletScreen {
+      void showRecordsInfo(List<CardStackViewModel> result);
 
-        void showSmartCardInfo(SmartCard smartCard);
+      void showSmartCardInfo(SmartCard smartCard);
 
-        Observable<Boolean> lockStatus();
+      Observable<Boolean> lockStatus();
 
-        Observable<Void> unSupportedUnlockOperation();
+      Observable<Void> unSupportedUnlockOperation();
 
-        void disableLockBtn();
-    }
+      void disableLockBtn();
+   }
 
-    private void observeChanges() {
-        smartCardInteractor.cardStacksPipe().observe()
-                .compose(bindViewIoToMainComposer())
-                .subscribe(new ActionStateSubscriber<CardStacksCommand>() //TODO check for progress, f.e. swipe refresh
-                        .onSuccess(command -> getView().showRecordsInfo(adapt(command.getResult())))
-                        .onFail((command, throwable) -> {
-                        }));
-        smartCardInteractor.smartCardModifierPipe()
-                .observeSuccess()
-                .compose(bindViewIoToMainComposer())
-                .subscribe(command -> setSmartCard(command.smartCard()));
-    }
+   private void observeChanges() {
+      smartCardInteractor.cardStacksPipe()
+            .observe()
+            .compose(bindViewIoToMainComposer())
+            .subscribe(new ActionStateSubscriber<CardStacksCommand>() //TODO check for progress, f.e. swipe refresh
+                  .onSuccess(command -> getView().showRecordsInfo(adapt(command.getResult())))
+                  .onFail((command, throwable) -> {
+                  }));
+      smartCardInteractor.smartCardModifierPipe()
+            .observeSuccess()
+            .compose(bindViewIoToMainComposer())
+            .subscribe(command -> setSmartCard(command.smartCard()));
+   }
 
-    private List<CardStackViewModel> adapt(List<CardStackModel> stackList) {
-        int sourceLength = stackList.size();
-        List<CardStackViewModel> list = new ArrayList<>(sourceLength);
+   private List<CardStackViewModel> adapt(List<CardStackModel> stackList) {
+      int sourceLength = stackList.size();
+      List<CardStackViewModel> list = new ArrayList<>(sourceLength);
 
-        for (int i = 0; i < sourceLength; i++) {
-            CardStackModel vm = stackList.get(i);
-            String title;
-            switch (vm.type()) {
-                case DEBIT:
-                    int debitCardListSize = vm.bankCards().size();
-                    int debitTitleId = QuantityHelper
-                            .chooseResource(debitCardListSize, R.string.wallet_credit_card_title, R.string.wallet_credit_cards_title);
+      for (int i = 0; i < sourceLength; i++) {
+         CardStackModel vm = stackList.get(i);
+         String title;
+         switch (vm.type()) {
+            case DEBIT:
+               int debitCardListSize = vm.bankCards().size();
+               int debitTitleId = QuantityHelper.chooseResource(debitCardListSize, R.string.wallet_credit_card_title, R.string.wallet_credit_cards_title);
 
-                    title = getContext().getString(debitTitleId, debitCardListSize);
-                    break;
-                case CREDIT:
-                    int creditCardListSize = vm.bankCards().size();
-                    int creditTitleId = QuantityHelper
-                            .chooseResource(creditCardListSize, R.string.wallet_debit_card_title, R.string.wallet_debit_cards_title);
+               title = getContext().getString(debitTitleId, debitCardListSize);
+               break;
+            case CREDIT:
+               int creditCardListSize = vm.bankCards().size();
+               int creditTitleId = QuantityHelper.chooseResource(creditCardListSize, R.string.wallet_debit_card_title, R.string.wallet_debit_cards_title);
 
-                    title = getContext().getString(creditTitleId, creditCardListSize);
-                    break;
-                default:
-                    title = getContext().getString(R.string.dashboard_default_card_stack_title);
-            }
+               title = getContext().getString(creditTitleId, creditCardListSize);
+               break;
+            default:
+               title = getContext().getString(R.string.dashboard_default_card_stack_title);
+         }
 
-            list.add(new CardStackViewModel(title, vm.bankCards()));
-        }
+         list.add(new CardStackViewModel(title, vm.bankCards()));
+      }
 
-        return list;
-    }
+      return list;
+   }
 }

@@ -29,74 +29,69 @@ import static com.worldventures.dreamtrips.wallet.di.WalletActivityModule.WALLET
 
 @Layout(R.layout.activity_wallet)
 public class WalletActivity extends FlowActivity<WalletActivityPresenter> {
-    private MediaPickerAdapter mediaPickerAdapter;
+   private MediaPickerAdapter mediaPickerAdapter;
 
-    @InjectView(R.id.wallet_photo_picker)
-    PhotoPickerLayout photoPickerLayout;
+   @InjectView(R.id.wallet_photo_picker) PhotoPickerLayout photoPickerLayout;
 
-    @Inject
-    PhotoPickerLayoutDelegate photoPickerLayoutDelegate;
+   @Inject PhotoPickerLayoutDelegate photoPickerLayoutDelegate;
 
-    @Inject
-    MessengerMediaPickerDelegate messengerMediaPickerDelegate;
+   @Inject MessengerMediaPickerDelegate messengerMediaPickerDelegate;
 
-    @Inject
-    CropImageDelegate cropImageDelegate;
+   @Inject CropImageDelegate cropImageDelegate;
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        initPickerLayout();
-        mediaPickerAdapter = new MediaPickerAdapter(messengerMediaPickerDelegate, cropImageDelegate);
-        navigationDrawerPresenter.setCurrentComponent(rootComponentsProvider
-                .getComponentByKey(WalletActivityModule.WALLET));
-        messengerMediaPickerDelegate.resetPhotoPicker();
-        messengerMediaPickerDelegate.register();
-    }
+   @Override
+   protected void onCreate(Bundle savedInstanceState) {
+      super.onCreate(savedInstanceState);
+      initPickerLayout();
+      mediaPickerAdapter = new MediaPickerAdapter(messengerMediaPickerDelegate, cropImageDelegate);
+      navigationDrawerPresenter.setCurrentComponent(rootComponentsProvider.getComponentByKey(WalletActivityModule.WALLET));
+      messengerMediaPickerDelegate.resetPhotoPicker();
+      messengerMediaPickerDelegate.register();
+   }
 
-    @Override
-    public void onDestroy() {
-        messengerMediaPickerDelegate.unregister();
-        super.onDestroy();
-    }
+   @Override
+   public void onDestroy() {
+      messengerMediaPickerDelegate.unregister();
+      super.onDestroy();
+   }
 
-    @Override
-    protected ComponentDescription getCurrentComponent() {
-        return rootComponentsProvider.getComponentByKey(WALLET);
-    }
+   @Override
+   protected ComponentDescription getCurrentComponent() {
+      return rootComponentsProvider.getComponentByKey(WALLET);
+   }
 
-    @Override
-    protected History provideDefaultHistory() {
-        return History.single(getPresentationModel().hasSmartCard() ? new CardListPath() : new WizardSplashPath());
-    }
+   @Override
+   protected History provideDefaultHistory() {
+      return History.single(getPresentationModel().hasSmartCard() ? new CardListPath() : new WizardSplashPath());
+   }
 
-    @Override
-    protected WalletActivityPresenter createPresentationModel(Bundle savedInstanceState) {
-        return new WalletActivityPresenter();
-    }
+   @Override
+   protected WalletActivityPresenter createPresentationModel(Bundle savedInstanceState) {
+      return new WalletActivityPresenter();
+   }
 
-    public static void startWallet(Context context) {
-        context.startActivity(new Intent(context, WalletActivity.class));
-    }
+   public static void startWallet(Context context) {
+      context.startActivity(new Intent(context, WalletActivity.class));
+   }
 
-    //TODO photo picker should be fully reworked to fit UI needs
-    private void initPickerLayout() {
-        inject(photoPickerLayout);
-        photoPickerLayoutDelegate.setPhotoPickerLayout(photoPickerLayout);
-        photoPickerLayoutDelegate.initPicker(getSupportFragmentManager());
-    }
+   //TODO photo picker should be fully reworked to fit UI needs
+   private void initPickerLayout() {
+      inject(photoPickerLayout);
+      photoPickerLayoutDelegate.setPhotoPickerLayout(photoPickerLayout);
+      photoPickerLayoutDelegate.initPicker(getSupportFragmentManager());
+   }
 
-    @Override
-    public Object getSystemService(@NonNull String name) {
-        if (MediaPickerService.SERVICE_NAME.equals(name)) {
-            return mediaPickerAdapter;
-        }
-        return super.getSystemService(name);
-    }
+   @Override
+   public Object getSystemService(@NonNull String name) {
+      if (MediaPickerService.SERVICE_NAME.equals(name)) {
+         return mediaPickerAdapter;
+      }
+      return super.getSystemService(name);
+   }
 
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (cropImageDelegate.onActivityResult(requestCode, resultCode, data)) return;
-        super.onActivityResult(requestCode, resultCode, data);
-    }
+   @Override
+   protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+      if (cropImageDelegate.onActivityResult(requestCode, resultCode, data)) return;
+      super.onActivityResult(requestCode, resultCode, data);
+   }
 }

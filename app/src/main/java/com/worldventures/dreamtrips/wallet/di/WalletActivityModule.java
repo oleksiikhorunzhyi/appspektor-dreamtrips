@@ -23,33 +23,14 @@ import dagger.Module;
 import dagger.Provides;
 
 @Module(
-        includes = {
-        },
-        injects = {
-                WalletActivityPresenter.class,
-                BankCardCell.class,
-                CardStackCell.class,
-                WizardSplashScreenPresenter.class,
-                WizardScanBarcodePresenter.class,
-                WizardManualInputPresenter.class,
-                WizardCardNamePresenter.class,
-                WizardEditProfilePresenter.class,
-                WalletPinIsSetPresenter.class,
-                WizardMagstripePresenter.class,
-                CardDetailsPresenter.class,
-                CardListScreenPresenter.class,
-                WalletCardSettingsPresenter.class,
-                WalletSuccessPresenter.class,
-                AddCardDetailsPresenter.class,
-                WizardPinSetupPresenter.class
-        },
-        complete = false, library = true
-)
+      includes = {},
+      injects = {WalletActivityPresenter.class, BankCardCell.class, CardStackCell.class, WizardSplashScreenPresenter.class, WizardScanBarcodePresenter.class, WizardManualInputPresenter.class, WizardCardNamePresenter.class, WizardEditProfilePresenter.class, WalletPinIsSetPresenter.class, WizardMagstripePresenter.class, CardDetailsPresenter.class, CardListScreenPresenter.class, WalletCardSettingsPresenter.class, WalletSuccessPresenter.class, AddCardDetailsPresenter.class, WizardPinSetupPresenter.class},
+      complete = false, library = true)
 public class WalletActivityModule {
-    public static final String WALLET = "Wallet";
+   public static final String WALLET = "Wallet";
 
-    @Provides(type = Provides.Type.SET) ComponentDescription provideMessengerComponent() {
-        return new ComponentDescription(WALLET, R.string.wallet, R.string.wallet, R.drawable.ic_messenger,
-                true, null);
-    }
+   @Provides(type = Provides.Type.SET)
+   ComponentDescription provideMessengerComponent() {
+      return new ComponentDescription(WALLET, R.string.wallet, R.string.wallet, R.drawable.ic_messenger, true, null);
+   }
 }

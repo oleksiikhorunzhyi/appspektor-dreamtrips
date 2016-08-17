@@ -7,16 +7,15 @@ import io.techery.janet.http.annotations.Response;
 
 @HttpAction(method = HttpAction.Method.PUT, value = "/create_card")
 public class CreateCardHttpAction {
-    @Response
-    Provision response;
+   @Response Provision response;
 
-    String code;
+   String code;
 
-    public CreateCardHttpAction(String code) {
-        this.code = code;
-    }
+   public CreateCardHttpAction(String code) {
+      this.code = code;
+   }
 
-    public Provision getResponse() {
-        return response;
-    }
+   public Provision getResponse() {
+      return response;
+   }
 }

@@ -14,23 +14,25 @@ import java.util.List;
 
 public class DefaultBankCardStorage implements MultipleActionStorage<String> {
 
-    private final SnappyRepository snappyRepository;
+   private final SnappyRepository snappyRepository;
 
-    public DefaultBankCardStorage(SnappyRepository snappyRepository) {
-        this.snappyRepository = snappyRepository;
-    }
+   public DefaultBankCardStorage(SnappyRepository snappyRepository) {
+      this.snappyRepository = snappyRepository;
+   }
 
-    @Override public void save(@Nullable CacheBundle bundle, String defaultCardId) {
-        snappyRepository.saveWalletDefaultCardId(defaultCardId);
-    }
+   @Override
+   public void save(@Nullable CacheBundle bundle, String defaultCardId) {
+      snappyRepository.saveWalletDefaultCardId(defaultCardId);
+   }
 
-    @Override public synchronized String get(@Nullable CacheBundle bundle) {
-        return snappyRepository.readWalletDefaultCardId();
-    }
+   @Override
+   public synchronized String get(@Nullable CacheBundle bundle) {
+      return snappyRepository.readWalletDefaultCardId();
+   }
 
-    @Override
-    public List<Class<? extends CachedAction>> getActionClasses() {
-        return Arrays.asList(FetchDefaultCardCommand.class, SetDefaultCardOnDeviceCommand.class);
-    }
+   @Override
+   public List<Class<? extends CachedAction>> getActionClasses() {
+      return Arrays.asList(FetchDefaultCardCommand.class, SetDefaultCardOnDeviceCommand.class);
+   }
 
 }

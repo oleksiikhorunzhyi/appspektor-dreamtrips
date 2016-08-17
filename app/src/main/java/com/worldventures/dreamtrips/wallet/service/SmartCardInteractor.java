@@ -33,103 +33,101 @@ import static java.lang.String.valueOf;
 
 @Singleton
 public final class SmartCardInteractor {
-    private final ActionPipe<ConnectSmartCardCommand> connectionPipe;
-    private final ActionPipe<CardListCommand> cardsListPipe;
-    private final ActionPipe<AttachCardCommand> addRecordPipe;
-    private final ActionPipe<CardStacksCommand> cardStacksPipe;
-    private final ActionPipe<GetActiveSmartCardCommand> getActiveSmartCardPipe;
-    private final ActionPipe<CardCountCommand> cardCountCommandPipe;
-    private final ActionPipe<GetDefaultAddressCommand> getDefaultAddressCommandPipe;
-    private final WriteActionPipe<SaveCardDetailsDataCommand> saveCardDetailsDataCommandPipe;
-    private final ActionPipe<SetStealthModeCommand> setStealthModePipe;
-    private final ActionPipe<SetLockStateCommand> setLockPipe;
-    private final ReadActionPipe<SmartCardModifier> smartCardModifierPipe;
-    private final ActionPipe<FetchDefaultCardCommand> fetchDefaultCardCommandActionPipe;
-    private final ActionPipe<DeleteRecordAction> deleteCardPipe;
+   private final ActionPipe<ConnectSmartCardCommand> connectionPipe;
+   private final ActionPipe<CardListCommand> cardsListPipe;
+   private final ActionPipe<AttachCardCommand> addRecordPipe;
+   private final ActionPipe<CardStacksCommand> cardStacksPipe;
+   private final ActionPipe<GetActiveSmartCardCommand> getActiveSmartCardPipe;
+   private final ActionPipe<CardCountCommand> cardCountCommandPipe;
+   private final ActionPipe<GetDefaultAddressCommand> getDefaultAddressCommandPipe;
+   private final WriteActionPipe<SaveCardDetailsDataCommand> saveCardDetailsDataCommandPipe;
+   private final ActionPipe<SetStealthModeCommand> setStealthModePipe;
+   private final ActionPipe<SetLockStateCommand> setLockPipe;
+   private final ReadActionPipe<SmartCardModifier> smartCardModifierPipe;
+   private final ActionPipe<FetchDefaultCardCommand> fetchDefaultCardCommandActionPipe;
+   private final ActionPipe<DeleteRecordAction> deleteCardPipe;
 
-    @Inject
-    public SmartCardInteractor(@Named(JANET_WALLET) Janet janet) {
-        connectionPipe = janet.createPipe(ConnectSmartCardCommand.class, Schedulers.io());
-        cardsListPipe = janet.createPipe(CardListCommand.class, Schedulers.io());
-        addRecordPipe = janet.createPipe(AttachCardCommand.class, Schedulers.io());
-        cardStacksPipe = janet.createPipe(CardStacksCommand.class, Schedulers.io());
-        getActiveSmartCardPipe = janet.createPipe(GetActiveSmartCardCommand.class, Schedulers.io());
-        setStealthModePipe = janet.createPipe(SetStealthModeCommand.class, Schedulers.io());
+   @Inject
+   public SmartCardInteractor(@Named(JANET_WALLET) Janet janet) {
+      connectionPipe = janet.createPipe(ConnectSmartCardCommand.class, Schedulers.io());
+      cardsListPipe = janet.createPipe(CardListCommand.class, Schedulers.io());
+      addRecordPipe = janet.createPipe(AttachCardCommand.class, Schedulers.io());
+      cardStacksPipe = janet.createPipe(CardStacksCommand.class, Schedulers.io());
+      getActiveSmartCardPipe = janet.createPipe(GetActiveSmartCardCommand.class, Schedulers.io());
+      setStealthModePipe = janet.createPipe(SetStealthModeCommand.class, Schedulers.io());
 
-        smartCardModifierPipe = janet.createPipe(SmartCardModifier.class, Schedulers.io());
-        setLockPipe = janet.createPipe(SetLockStateCommand.class, Schedulers.io());
+      smartCardModifierPipe = janet.createPipe(SmartCardModifier.class, Schedulers.io());
+      setLockPipe = janet.createPipe(SetLockStateCommand.class, Schedulers.io());
 
-        cardCountCommandPipe = janet.createPipe(CardCountCommand.class, Schedulers.io());
-        getDefaultAddressCommandPipe = janet.createPipe(GetDefaultAddressCommand.class, Schedulers.io());
-        saveCardDetailsDataCommandPipe = janet.createPipe(SaveCardDetailsDataCommand.class, Schedulers.io());
-        fetchDefaultCardCommandActionPipe = janet.createPipe(FetchDefaultCardCommand.class, Schedulers.io());
-        deleteCardPipe = janet.createPipe(DeleteRecordAction.class, Schedulers.io());
+      cardCountCommandPipe = janet.createPipe(CardCountCommand.class, Schedulers.io());
+      getDefaultAddressCommandPipe = janet.createPipe(GetDefaultAddressCommand.class, Schedulers.io());
+      saveCardDetailsDataCommandPipe = janet.createPipe(SaveCardDetailsDataCommand.class, Schedulers.io());
+      fetchDefaultCardCommandActionPipe = janet.createPipe(FetchDefaultCardCommand.class, Schedulers.io());
+      deleteCardPipe = janet.createPipe(DeleteRecordAction.class, Schedulers.io());
 
-        connect();
-    }
+      connect();
+   }
 
-    public ActionPipe<ConnectSmartCardCommand> connectActionPipe() {
-        return connectionPipe;
-    }
+   public ActionPipe<ConnectSmartCardCommand> connectActionPipe() {
+      return connectionPipe;
+   }
 
-    public WriteActionPipe<AttachCardCommand> addRecordPipe() {
-        return addRecordPipe;
-    }
+   public WriteActionPipe<AttachCardCommand> addRecordPipe() {
+      return addRecordPipe;
+   }
 
-    public ActionPipe<CardStacksCommand> cardStacksPipe() {
-        return cardStacksPipe;
-    }
+   public ActionPipe<CardStacksCommand> cardStacksPipe() {
+      return cardStacksPipe;
+   }
 
-    public ActionPipe<FetchDefaultCardCommand> fetchDefaultCardCommandActionPipe() {
-        return fetchDefaultCardCommandActionPipe;
-    }
+   public ActionPipe<FetchDefaultCardCommand> fetchDefaultCardCommandActionPipe() {
+      return fetchDefaultCardCommandActionPipe;
+   }
 
-    public ActionPipe<DeleteRecordAction> deleteCardPipe() {
-        return deleteCardPipe;
-    }
+   public ActionPipe<DeleteRecordAction> deleteCardPipe() {
+      return deleteCardPipe;
+   }
 
-    public ActionPipe<GetActiveSmartCardCommand> getActiveSmartCardPipe() {
-        return getActiveSmartCardPipe;
-    }
+   public ActionPipe<GetActiveSmartCardCommand> getActiveSmartCardPipe() {
+      return getActiveSmartCardPipe;
+   }
 
-    public ActionPipe<CardCountCommand> cardCountCommandPipe() {
-        return cardCountCommandPipe;
-    }
+   public ActionPipe<CardCountCommand> cardCountCommandPipe() {
+      return cardCountCommandPipe;
+   }
 
-    public ActionPipe<GetDefaultAddressCommand> getDefaultAddressCommandPipe() {
-        return getDefaultAddressCommandPipe;
-    }
+   public ActionPipe<GetDefaultAddressCommand> getDefaultAddressCommandPipe() {
+      return getDefaultAddressCommandPipe;
+   }
 
-    public WriteActionPipe<SaveCardDetailsDataCommand> saveCardDetailsDataCommandPipe() {
-        return saveCardDetailsDataCommandPipe;
-    }
+   public WriteActionPipe<SaveCardDetailsDataCommand> saveCardDetailsDataCommandPipe() {
+      return saveCardDetailsDataCommandPipe;
+   }
 
-    public ActionPipe<SetStealthModeCommand> setStealthModePipe() {
-        return setStealthModePipe;
-    }
+   public ActionPipe<SetStealthModeCommand> setStealthModePipe() {
+      return setStealthModePipe;
+   }
 
-    public ReadActionPipe<SmartCardModifier> smartCardModifierPipe() {
-        return smartCardModifierPipe;
-    }
+   public ReadActionPipe<SmartCardModifier> smartCardModifierPipe() {
+      return smartCardModifierPipe;
+   }
 
-    public ActionPipe<SetLockStateCommand> lockPipe() {
-        return setLockPipe;
-    }
+   public ActionPipe<SetLockStateCommand> lockPipe() {
+      return setLockPipe;
+   }
 
-    public WriteActionPipe<SaveCardDetailsDataCommand> saveCardDetailsDataPipe() {
-        return saveCardDetailsDataCommandPipe;
-    }
+   public WriteActionPipe<SaveCardDetailsDataCommand> saveCardDetailsDataPipe() {
+      return saveCardDetailsDataCommandPipe;
+   }
 
-    private void connect() {
-        Observable.merge(
-                deleteCardPipe.observeSuccess()
-                        .flatMap(deleteCommand -> cardsListPipe.createObservable(remove(valueOf(deleteCommand.recordId)))),
-                addRecordPipe.observeSuccess()
-                        .flatMap(attachCardCommand -> cardsListPipe.createObservable(add(attachCardCommand.bankCard()))))
-                .subscribe(new ActionStateSubscriber<CardListCommand>()
-                        .onSuccess(cardListCommand -> cardStacksPipe.send(CardStacksCommand.get(false)))
-                        .onFail((cardListCommand, throwable) -> {
-                            throw new IllegalStateException("Cannot perform operation onto card list cache", throwable);
-                        }));
-    }
+   private void connect() {
+      Observable.merge(deleteCardPipe.observeSuccess()
+            .flatMap(deleteCommand -> cardsListPipe.createObservable(remove(valueOf(deleteCommand.recordId)))), addRecordPipe
+            .observeSuccess()
+            .flatMap(attachCardCommand -> cardsListPipe.createObservable(add(attachCardCommand.bankCard()))))
+            .subscribe(new ActionStateSubscriber<CardListCommand>().onSuccess(cardListCommand -> cardStacksPipe.send(CardStacksCommand
+                  .get(false))).onFail((cardListCommand, throwable) -> {
+               throw new IllegalStateException("Cannot perform operation onto card list cache", throwable);
+            }));
+   }
 }

@@ -19,46 +19,46 @@ import rx.schedulers.Schedulers;
 import static com.worldventures.dreamtrips.core.janet.JanetModule.JANET_WALLET;
 
 public final class WizardInteractor {
-    private final WriteActionPipe<CreateAndConnectToCardCommand> createAndConnectPipe;
-    private final ActionPipe<SetupSmartCardNameCommand> setupSmartCardNamePipe;
-    private final ActionPipe<SetupUserDataCommand> setupUserDataPipe;
+   private final WriteActionPipe<CreateAndConnectToCardCommand> createAndConnectPipe;
+   private final ActionPipe<SetupSmartCardNameCommand> setupSmartCardNamePipe;
+   private final ActionPipe<SetupUserDataCommand> setupUserDataPipe;
 
-    private final ReadActionPipe<PinSetupFinishedEvent> pinSetupFinishedPipe;
-    private final WriteActionPipe<StartPinSetupAction> startPinSetupPipe;
-    private final ActionPipe<ActivateSmartCardCommand> activateSmartCardPipe;
+   private final ReadActionPipe<PinSetupFinishedEvent> pinSetupFinishedPipe;
+   private final WriteActionPipe<StartPinSetupAction> startPinSetupPipe;
+   private final ActionPipe<ActivateSmartCardCommand> activateSmartCardPipe;
 
-    @Inject
-    public WizardInteractor(@Named(JANET_WALLET) Janet janet) {
-        createAndConnectPipe = janet.createPipe(CreateAndConnectToCardCommand.class, Schedulers.io());
-        setupSmartCardNamePipe = janet.createPipe(SetupSmartCardNameCommand.class, Schedulers.io());
-        setupUserDataPipe = janet.createPipe(SetupUserDataCommand.class, Schedulers.io());
-        activateSmartCardPipe = janet.createPipe(ActivateSmartCardCommand.class, Schedulers.io());
+   @Inject
+   public WizardInteractor(@Named(JANET_WALLET) Janet janet) {
+      createAndConnectPipe = janet.createPipe(CreateAndConnectToCardCommand.class, Schedulers.io());
+      setupSmartCardNamePipe = janet.createPipe(SetupSmartCardNameCommand.class, Schedulers.io());
+      setupUserDataPipe = janet.createPipe(SetupUserDataCommand.class, Schedulers.io());
+      activateSmartCardPipe = janet.createPipe(ActivateSmartCardCommand.class, Schedulers.io());
 
-        pinSetupFinishedPipe = janet.createPipe(PinSetupFinishedEvent.class, Schedulers.io());
-        startPinSetupPipe = janet.createPipe(StartPinSetupAction.class, Schedulers.io());
-    }
+      pinSetupFinishedPipe = janet.createPipe(PinSetupFinishedEvent.class, Schedulers.io());
+      startPinSetupPipe = janet.createPipe(StartPinSetupAction.class, Schedulers.io());
+   }
 
-    public WriteActionPipe<CreateAndConnectToCardCommand> createAndConnectActionPipe() {
-        return createAndConnectPipe;
-    }
+   public WriteActionPipe<CreateAndConnectToCardCommand> createAndConnectActionPipe() {
+      return createAndConnectPipe;
+   }
 
-    public ActionPipe<SetupSmartCardNameCommand> setupSmartCardNamePipe() {
-        return setupSmartCardNamePipe;
-    }
+   public ActionPipe<SetupSmartCardNameCommand> setupSmartCardNamePipe() {
+      return setupSmartCardNamePipe;
+   }
 
-    public ActionPipe<SetupUserDataCommand> setupUserDataPipe() {
-        return setupUserDataPipe;
-    }
+   public ActionPipe<SetupUserDataCommand> setupUserDataPipe() {
+      return setupUserDataPipe;
+   }
 
-    public WriteActionPipe<StartPinSetupAction> startPinSetupPipe() {
-        return startPinSetupPipe;
-    }
+   public WriteActionPipe<StartPinSetupAction> startPinSetupPipe() {
+      return startPinSetupPipe;
+   }
 
-    public ReadActionPipe<PinSetupFinishedEvent> pinSetupFinishedPipe() {
-        return pinSetupFinishedPipe;
-    }
+   public ReadActionPipe<PinSetupFinishedEvent> pinSetupFinishedPipe() {
+      return pinSetupFinishedPipe;
+   }
 
-    public ActionPipe<ActivateSmartCardCommand> activateSmartCardPipe() {
-        return activateSmartCardPipe;
-    }
+   public ActionPipe<ActivateSmartCardCommand> activateSmartCardPipe() {
+      return activateSmartCardPipe;
+   }
 }

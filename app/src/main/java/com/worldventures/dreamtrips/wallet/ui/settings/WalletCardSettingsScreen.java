@@ -16,54 +16,53 @@ import butterknife.InjectView;
 import butterknife.OnClick;
 import rx.Observable;
 
-public class WalletCardSettingsScreen extends WalletFrameLayout<WalletCardSettingsPresenter.Screen, WalletCardSettingsPresenter, WalletCardSettingsPath>
-        implements WalletCardSettingsPresenter.Screen {
+public class WalletCardSettingsScreen extends WalletFrameLayout<WalletCardSettingsPresenter.Screen, WalletCardSettingsPresenter, WalletCardSettingsPath> implements WalletCardSettingsPresenter.Screen {
 
-    @InjectView(R.id.toolbar) Toolbar toolbar;
-    @InjectView(R.id.stealth_mode_switcher) SwitchCompat stealthModeSwitcher;
+   @InjectView(R.id.toolbar) Toolbar toolbar;
+   @InjectView(R.id.stealth_mode_switcher) SwitchCompat stealthModeSwitcher;
 
-    public WalletCardSettingsScreen(Context context) {
-        super(context);
-    }
+   public WalletCardSettingsScreen(Context context) {
+      super(context);
+   }
 
-    public WalletCardSettingsScreen(Context context, AttributeSet attrs) {
-        super(context, attrs);
-    }
+   public WalletCardSettingsScreen(Context context, AttributeSet attrs) {
+      super(context, attrs);
+   }
 
-    @Override
-    protected void onFinishInflate() {
-        super.onFinishInflate();
-        toolbar.setNavigationOnClickListener(v -> onNavigationClick());
-    }
+   @Override
+   protected void onFinishInflate() {
+      super.onFinishInflate();
+      toolbar.setNavigationOnClickListener(v -> onNavigationClick());
+   }
 
-    @NonNull
-    @Override
-    public WalletCardSettingsPresenter createPresenter() {
-        return new WalletCardSettingsPresenter(getContext(), getInjector(), getPath().getSmartCard());
-    }
+   @NonNull
+   @Override
+   public WalletCardSettingsPresenter createPresenter() {
+      return new WalletCardSettingsPresenter(getContext(), getInjector(), getPath().getSmartCard());
+   }
 
-    protected void onNavigationClick() {
-        presenter.goBack();
-    }
+   protected void onNavigationClick() {
+      presenter.goBack();
+   }
 
-    @OnClick(R.id.item_reset_pin)
-    protected void onResetPinClick() {
-        presenter.resetPin();
-    }
+   @OnClick(R.id.item_reset_pin)
+   protected void onResetPinClick() {
+      presenter.resetPin();
+   }
 
-    @Override
-    public void stealthModeStatus(boolean isEnabled) {
-        stealthModeSwitcher.setChecked(isEnabled);
-    }
+   @Override
+   public void stealthModeStatus(boolean isEnabled) {
+      stealthModeSwitcher.setChecked(isEnabled);
+   }
 
-    @Override
-    public Observable<Boolean> stealthModeStatus() {
-        return RxCompoundButton.checkedChanges(stealthModeSwitcher);
-    }
+   @Override
+   public Observable<Boolean> stealthModeStatus() {
+      return RxCompoundButton.checkedChanges(stealthModeSwitcher);
+   }
 
 
-    @Override
-    public OperationScreen provideOperationDelegate() {
-        return new DialogOperationScreen(this);
-    }
+   @Override
+   public OperationScreen provideOperationDelegate() {
+      return new DialogOperationScreen(this);
+   }
 }

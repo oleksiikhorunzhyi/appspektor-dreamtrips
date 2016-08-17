@@ -4,23 +4,23 @@ import android.support.annotation.Nullable;
 
 public interface Card {
 
-    String NO_ID = "-1";
+   String NO_ID = "-1";
 
-    String id();
+   String id();
 
-    @Nullable
-    String scid(); //smart card id
+   @Nullable
+   String scid(); //smart card id
 
-    long number();
+   long number();
 
-    int expiryMonth();
+   int expiryMonth();
 
-    int expiryYear();
+   int expiryYear();
 
-    @Nullable
-    Category category();
+   @Nullable
+   Category category();
 
-    enum Category {
-        BANK, DISCOUNT
-    }
+   enum Category {
+      BANK, DISCOUNT
+   }
 }

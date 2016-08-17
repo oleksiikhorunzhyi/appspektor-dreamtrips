@@ -9,14 +9,14 @@ import com.worldventures.dreamtrips.wallet.domain.entity.SmartCard;
 @Layout(R.layout.screen_wallet_wizard_pin_is_set)
 public class WalletPinIsSetPath extends StyledPath {
 
-    public final SmartCard smartCard;
+   public final SmartCard smartCard;
 
-    public WalletPinIsSetPath(SmartCard smartCard) {
-        this.smartCard = smartCard;
-    }
+   public WalletPinIsSetPath(SmartCard smartCard) {
+      this.smartCard = smartCard;
+   }
 
-    @Override
-    public MasterDetailPath getMaster() {
-        return this;
-    }
+   @Override
+   public MasterDetailPath getMaster() {
+      return this;
+   }
 }

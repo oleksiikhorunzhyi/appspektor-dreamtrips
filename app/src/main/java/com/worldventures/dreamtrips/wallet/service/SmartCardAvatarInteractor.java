@@ -12,15 +12,15 @@ import rx.schedulers.Schedulers;
 @Singleton
 public class SmartCardAvatarInteractor {
 
-    private final ActionPipe<SmartCardAvatarCommand> smartCardAvatarCommandPipe;
+   private final ActionPipe<SmartCardAvatarCommand> smartCardAvatarCommandPipe;
 
 
-    @Inject
-    public SmartCardAvatarInteractor(Janet janet) {
-        smartCardAvatarCommandPipe = janet.createPipe(SmartCardAvatarCommand.class, Schedulers.io());
-    }
+   @Inject
+   public SmartCardAvatarInteractor(Janet janet) {
+      smartCardAvatarCommandPipe = janet.createPipe(SmartCardAvatarCommand.class, Schedulers.io());
+   }
 
-    public ActionPipe<SmartCardAvatarCommand> getSmartCardAvatarCommandPipe() {
-        return smartCardAvatarCommandPipe;
-    }
+   public ActionPipe<SmartCardAvatarCommand> getSmartCardAvatarCommandPipe() {
+      return smartCardAvatarCommandPipe;
+   }
 }

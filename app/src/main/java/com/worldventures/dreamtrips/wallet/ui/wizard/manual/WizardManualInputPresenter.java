@@ -13,21 +13,19 @@ import javax.inject.Inject;
 import flow.Flow;
 
 public class WizardManualInputPresenter extends WalletPresenter<WizardManualInputPresenter.Screen, Parcelable> {
-    @Inject
-    WizardCodeHelper wizardCodeHelper;
+   @Inject WizardCodeHelper wizardCodeHelper;
 
-    public WizardManualInputPresenter(Context context, Injector injector) {
-        super(context, injector);
-    }
+   public WizardManualInputPresenter(Context context, Injector injector) {
+      super(context, injector);
+   }
 
-    public void checkBarcode(String barcode) {
-        wizardCodeHelper.createAndConnect(getView().provideOperationDelegate(), barcode, bindViewIoToMainComposer());
-    }
+   public void checkBarcode(String barcode) {
+      wizardCodeHelper.createAndConnect(getView().provideOperationDelegate(), barcode, bindViewIoToMainComposer());
+   }
 
-    public void goBack() {
-        Flow.get(getContext()).goBack();
-    }
+   public void goBack() {
+      Flow.get(getContext()).goBack();
+   }
 
-    public interface Screen extends WalletScreen {
-    }
+   public interface Screen extends WalletScreen {}
 }

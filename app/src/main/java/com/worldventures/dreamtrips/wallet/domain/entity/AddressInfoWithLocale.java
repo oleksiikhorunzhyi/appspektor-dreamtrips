@@ -7,7 +7,7 @@ import java.util.Locale;
 @Value.Immutable
 public interface AddressInfoWithLocale {
 
-    AddressInfo addressInfo();
+   AddressInfo addressInfo();
 
-    Locale locale();
+   Locale locale();
 }

@@ -9,14 +9,14 @@ import com.worldventures.dreamtrips.wallet.domain.entity.card.BankCard.CardType;
 @Layout(R.layout.wallet_wizard_magstripe_screen)
 public class WizardMagstripePath extends StyledPath {
 
-    public final CardType cardType;
+   public final CardType cardType;
 
-    public WizardMagstripePath(CardType cardType) {
-        this.cardType = cardType;
-    }
+   public WizardMagstripePath(CardType cardType) {
+      this.cardType = cardType;
+   }
 
-    @Override
-    public MasterDetailPath getMaster() {
-        return this;
-    }
+   @Override
+   public MasterDetailPath getMaster() {
+      return this;
+   }
 }

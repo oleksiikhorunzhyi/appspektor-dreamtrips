@@ -16,59 +16,56 @@ import butterknife.InjectView;
 import butterknife.OnClick;
 import butterknife.OnEditorAction;
 
-public class WizardCardNameScreen extends WalletFrameLayout<WizardCardNamePresenter.Screen, WizardCardNamePresenter, WizardCardNamePath>
-        implements WizardCardNamePresenter.Screen {
+public class WizardCardNameScreen extends WalletFrameLayout<WizardCardNamePresenter.Screen, WizardCardNamePresenter, WizardCardNamePath> implements WizardCardNamePresenter.Screen {
 
-    @InjectView(R.id.toolbar)
-    Toolbar toolbar;
+   @InjectView(R.id.toolbar) Toolbar toolbar;
 
-    @InjectView(R.id.card_name_field)
-    TextView cardName;
+   @InjectView(R.id.card_name_field) TextView cardName;
 
-    public WizardCardNameScreen(Context context) {
-        super(context);
-    }
+   public WizardCardNameScreen(Context context) {
+      super(context);
+   }
 
-    public WizardCardNameScreen(Context context, AttributeSet attrs) {
-        super(context, attrs);
-    }
+   public WizardCardNameScreen(Context context, AttributeSet attrs) {
+      super(context, attrs);
+   }
 
-    @NonNull
-    @Override
-    public WizardCardNamePresenter createPresenter() {
-        return new WizardCardNamePresenter(getContext(), getInjector(), getPath().getSmartCardId());
-    }
+   @NonNull
+   @Override
+   public WizardCardNamePresenter createPresenter() {
+      return new WizardCardNamePresenter(getContext(), getInjector(), getPath().getSmartCardId());
+   }
 
-    @Override
-    protected void onFinishInflate() {
-        super.onFinishInflate();
-        toolbar.setNavigationOnClickListener(v -> navigateButtonClick());
-    }
+   @Override
+   protected void onFinishInflate() {
+      super.onFinishInflate();
+      toolbar.setNavigationOnClickListener(v -> navigateButtonClick());
+   }
 
-    protected void navigateButtonClick() {
-        presenter.goToBack();
-    }
+   protected void navigateButtonClick() {
+      presenter.goToBack();
+   }
 
-    @OnClick(R.id.next_button)
-    public void nextClick() {
-        presenter.setupCardName();
-    }
+   @OnClick(R.id.next_button)
+   public void nextClick() {
+      presenter.setupCardName();
+   }
 
-    @OnEditorAction(R.id.card_name_field)
-    public boolean actionNext(int action) {
-        if (action != EditorInfo.IME_ACTION_NEXT) return false;
-        presenter.setupCardName();
-        return true;
-    }
+   @OnEditorAction(R.id.card_name_field)
+   public boolean actionNext(int action) {
+      if (action != EditorInfo.IME_ACTION_NEXT) return false;
+      presenter.setupCardName();
+      return true;
+   }
 
-    @Override
-    public OperationScreen provideOperationDelegate() {
-        return new DialogOperationScreen(this);
-    }
+   @Override
+   public OperationScreen provideOperationDelegate() {
+      return new DialogOperationScreen(this);
+   }
 
-    @NonNull
-    @Override
-    public String getCardName() {
-        return cardName.getText().toString();
-    }
+   @NonNull
+   @Override
+   public String getCardName() {
+      return cardName.getText().toString();
+   }
 }

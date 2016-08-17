@@ -18,37 +18,36 @@ import static android.view.LayoutInflater.from;
 
 public class CardListHeaderAdapter implements StickyHeadersAdapter<CardListHeaderAdapter.CardListHeaderViewHolder> {
 
-    private List<? extends HeaderItem> items;
+   private List<? extends HeaderItem> items;
 
-    public CardListHeaderAdapter(List<? extends HeaderItem> items) {
-        this.items = items;
-    }
+   public CardListHeaderAdapter(List<? extends HeaderItem> items) {
+      this.items = items;
+   }
 
-    @Override
-    public CardListHeaderViewHolder onCreateViewHolder(ViewGroup viewGroup) {
-        View itemView = from(viewGroup.getContext()).inflate(R.layout.adapter_item_wallet_cardlist_header, viewGroup, false);
-        return new CardListHeaderViewHolder(itemView);
-    }
+   @Override
+   public CardListHeaderViewHolder onCreateViewHolder(ViewGroup viewGroup) {
+      View itemView = from(viewGroup.getContext()).inflate(R.layout.adapter_item_wallet_cardlist_header, viewGroup, false);
+      return new CardListHeaderViewHolder(itemView);
+   }
 
-    @Override
-    public void onBindViewHolder(CardListHeaderViewHolder headerViewHolder, int i) {
-        headerViewHolder.letter.setText(items.get(i).getHeaderTitle());
-    }
+   @Override
+   public void onBindViewHolder(CardListHeaderViewHolder headerViewHolder, int i) {
+      headerViewHolder.letter.setText(items.get(i).getHeaderTitle());
+   }
 
-    @Override
-    public long getHeaderId(int i) {
-        String category = items.get(i).getHeaderTitle();
-        return category.hashCode();
-    }
+   @Override
+   public long getHeaderId(int i) {
+      String category = items.get(i).getHeaderTitle();
+      return category.hashCode();
+   }
 
-    public static class CardListHeaderViewHolder extends RecyclerView.ViewHolder {
-        @InjectView(R.id.tv_title)
-        protected TextView letter;
+   public static class CardListHeaderViewHolder extends RecyclerView.ViewHolder {
+      @InjectView(R.id.tv_title) protected TextView letter;
 
-        public CardListHeaderViewHolder(View itemView) {
-            super(itemView);
-            ButterKnife.inject(this, itemView);
-        }
-    }
+      public CardListHeaderViewHolder(View itemView) {
+         super(itemView);
+         ButterKnife.inject(this, itemView);
+      }
+   }
 
 }

@@ -5,15 +5,15 @@ import java.io.File;
 import rx.Observable;
 
 public interface MediaPickerService {
-    String SERVICE_NAME = "MediaPickerService";
+   String SERVICE_NAME = "MediaPickerService";
 
-    void pickPhoto();
+   void pickPhoto();
 
-    void crop(String filePath);
+   void crop(String filePath);
 
-    void hidePicker();
+   void hidePicker();
 
-    Observable<String> observePicker();
+   Observable<String> observePicker();
 
-    Observable<File> observeCropper();
+   Observable<File> observeCropper();
 }

@@ -17,63 +17,59 @@ import com.worldventures.dreamtrips.wallet.util.AddressUtil;
 import butterknife.InjectView;
 import butterknife.OnClick;
 
-public class CardDetailsScreen extends WalletFrameLayout<CardDetailsPresenter.Screen, CardDetailsPresenter, CardDetailsPath>
-        implements CardDetailsPresenter.Screen {
+public class CardDetailsScreen extends WalletFrameLayout<CardDetailsPresenter.Screen, CardDetailsPresenter, CardDetailsPath> implements CardDetailsPresenter.Screen {
 
-    @InjectView(R.id.toolbar)
-    Toolbar toolbar;
+   @InjectView(R.id.toolbar) Toolbar toolbar;
 
-    @InjectView(R.id.address_textview)
-    TextView addressText;
+   @InjectView(R.id.address_textview) TextView addressText;
 
-    @InjectView(R.id.card)
-    BankCardWidget bankCardWidget;
+   @InjectView(R.id.card) BankCardWidget bankCardWidget;
 
-    public CardDetailsScreen(Context context) {
-        super(context);
-    }
+   public CardDetailsScreen(Context context) {
+      super(context);
+   }
 
-    public CardDetailsScreen(Context context, AttributeSet attrs) {
-        super(context, attrs);
-    }
+   public CardDetailsScreen(Context context, AttributeSet attrs) {
+      super(context, attrs);
+   }
 
-    @Override
-    public CardDetailsPresenter createPresenter() {
-        return new CardDetailsPresenter(getContext(), getInjector(), getPath().getBankCard());
-    }
+   @Override
+   public CardDetailsPresenter createPresenter() {
+      return new CardDetailsPresenter(getContext(), getInjector(), getPath().getBankCard());
+   }
 
-    @Override
-    protected void onFinishInflate() {
-        super.onFinishInflate();
-        toolbar.setNavigationOnClickListener(v -> navigateButtonClick());
-    }
+   @Override
+   protected void onFinishInflate() {
+      super.onFinishInflate();
+      toolbar.setNavigationOnClickListener(v -> navigateButtonClick());
+   }
 
-    @OnClick(R.id.delete_button)
-    public void onDeleteCardClicked() {
-        getPresenter().onDeleteCardRequired();
-    }
+   @OnClick(R.id.delete_button)
+   public void onDeleteCardClicked() {
+      getPresenter().onDeleteCardRequired();
+   }
 
-    @Override
-    public OperationScreen provideOperationDelegate() {
-        return new DialogOperationScreen(this);
-    }
+   @Override
+   public OperationScreen provideOperationDelegate() {
+      return new DialogOperationScreen(this);
+   }
 
-    @Override
-    public void setTitle(String title) {
-        toolbar.setTitle(title);
-    }
+   @Override
+   public void setTitle(String title) {
+      toolbar.setTitle(title);
+   }
 
-    @Override
-    public void showCardBankInfo(BankCard bankCard) {
-        bankCardWidget.setBankCardInfo(bankCard);
-    }
+   @Override
+   public void showCardBankInfo(BankCard bankCard) {
+      bankCardWidget.setBankCardInfo(bankCard);
+   }
 
-    @Override
-    public void showDefaultAddress(AddressInfoWithLocale addressInfoWithLocale) {
-        addressText.setText(AddressUtil.obtainAddressLabel(addressInfoWithLocale));
-    }
+   @Override
+   public void showDefaultAddress(AddressInfoWithLocale addressInfoWithLocale) {
+      addressText.setText(AddressUtil.obtainAddressLabel(addressInfoWithLocale));
+   }
 
-    protected void navigateButtonClick() {
-        presenter.goBack();
-    }
+   protected void navigateButtonClick() {
+      presenter.goBack();
+   }
 }

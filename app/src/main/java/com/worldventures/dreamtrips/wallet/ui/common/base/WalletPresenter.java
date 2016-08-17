@@ -8,31 +8,30 @@ import com.messenger.ui.presenter.ViewStateMvpPresenter;
 import com.techery.spares.module.Injector;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.WalletScreen;
 
-public abstract class WalletPresenter<V extends WalletScreen, S extends Parcelable>
-        extends BaseViewStateMvpPresenter<V, S> implements ViewStateMvpPresenter<V, S> {
-    private Context context;
+public abstract class WalletPresenter<V extends WalletScreen, S extends Parcelable> extends BaseViewStateMvpPresenter<V, S> implements ViewStateMvpPresenter<V, S> {
+   private Context context;
 
-    private Injector injector;
+   private Injector injector;
 
-    public WalletPresenter(Context context, Injector injector) {
-        this.context = context;
-        this.injector = injector;
-        injector.inject(this);
-    }
+   public WalletPresenter(Context context, Injector injector) {
+      this.context = context;
+      this.injector = injector;
+      injector.inject(this);
+   }
 
-    public Context getContext() {
-        return context;
-    }
+   public Context getContext() {
+      return context;
+   }
 
-    public Injector getInjector() {
-        return injector;
-    }
+   public Injector getInjector() {
+      return injector;
+   }
 
-    @Override
-    public void onNewViewState() {
-    }
+   @Override
+   public void onNewViewState() {
+   }
 
-    @Override
-    public void applyViewState() {
-    }
+   @Override
+   public void applyViewState() {
+   }
 }

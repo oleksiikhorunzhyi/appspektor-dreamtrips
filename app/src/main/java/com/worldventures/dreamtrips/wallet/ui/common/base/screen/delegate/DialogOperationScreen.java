@@ -15,135 +15,132 @@ import rx.functions.Action1;
 import static cn.pedant.SweetAlert.SweetAlertDialog.SUCCESS_TYPE;
 
 public class DialogOperationScreen implements OperationScreen<SweetAlertDialog> {
-    private static final long SUCCESS_TIMEOUT = 1500L;
+   private static final long SUCCESS_TIMEOUT = 1500L;
 
-    private WeakReference<View> viewRef;
+   private WeakReference<View> viewRef;
 
-    private WeakHandler timeoutHandler = new WeakHandler();
+   private WeakHandler timeoutHandler = new WeakHandler();
 
-    private SweetAlertDialog successDialog;
-    private SweetAlertDialog errorDialog;
-    private SweetAlertDialog progressDialog;
+   private SweetAlertDialog successDialog;
+   private SweetAlertDialog errorDialog;
+   private SweetAlertDialog progressDialog;
 
-    private boolean isSuccessWithDelay;
+   private boolean isSuccessWithDelay;
 
-    public DialogOperationScreen(@NonNull View view) {
-        this(view, true);
-    }
+   public DialogOperationScreen(@NonNull View view) {
+      this(view, true);
+   }
 
-    public DialogOperationScreen(@NonNull View view, boolean isSuccessWithDelay) {
-        this.viewRef = new WeakReference<>(view);
-        this.isSuccessWithDelay = isSuccessWithDelay;
+   public DialogOperationScreen(@NonNull View view, boolean isSuccessWithDelay) {
+      this.viewRef = new WeakReference<>(view);
+      this.isSuccessWithDelay = isSuccessWithDelay;
 
-        view.addOnAttachStateChangeListener(new View.OnAttachStateChangeListener() {
-            @Override
-            public void onViewAttachedToWindow(View v) {
+      view.addOnAttachStateChangeListener(new View.OnAttachStateChangeListener() {
+         @Override
+         public void onViewAttachedToWindow(View v) {
+         }
+
+         @Override
+         public void onViewDetachedFromWindow(View v) {
+            hideDialogs();
+            v.removeOnAttachStateChangeListener(this);
+         }
+      });
+   }
+
+   @Override
+   public void showProgress(String msg, Action1<SweetAlertDialog> cancelAction) {
+      View view = checkAndGetView();
+      progressDialog = buildProgressDialog(view);
+      progressDialog.setContentText(msg);
+
+      progressDialog.show();
+   }
+
+   @Override
+   public void hideProgress() {
+      progressDialog.dismiss();
+   }
+
+   @Override
+   public void showError(String msg, Action1<SweetAlertDialog> action) {
+      errorDialog = buildErrorDialog(checkAndGetView());
+      errorDialog.setContentText(msg);
+      errorDialog.setOnCancelListener(dialog -> {
+         if (action != null) {
+            action.call(errorDialog);
+         }
+      });
+      errorDialog.setConfirmClickListener(sweetAlertDialog -> {
+         sweetAlertDialog.dismissWithAnimation();
+
+         if (action != null) {
+            action.call(sweetAlertDialog);
+         }
+         sweetAlertDialog.dismiss();
+      });
+      errorDialog.show();
+   }
+
+   @Override
+   public void showSuccess(String msg, Action1<SweetAlertDialog> action) {
+      successDialog = buildSuccessDialog(checkAndGetView());
+      successDialog.setContentText(msg);
+      successDialog.setConfirmClickListener(sweetAlertDialog -> {
+         timeoutHandler.removeCallbacksAndMessages(null);
+         sweetAlertDialog.dismissWithAnimation();
+
+         if (action != null) {
+            action.call(sweetAlertDialog);
+         }
+      });
+      successDialog.show();
+
+      if (isSuccessWithDelay) {
+         timeoutHandler.postDelayed(() -> {
+            if (successDialog.isShowing()) {
+               successDialog.dismissWithAnimation();
+               if (action != null) action.call(successDialog);
             }
+         }, SUCCESS_TIMEOUT);
+      }
+   }
 
-            @Override
-            public void onViewDetachedFromWindow(View v) {
-                hideDialogs();
-                v.removeOnAttachStateChangeListener(this);
-            }
-        });
-    }
+   @Override
+   public Context context() {
+      return checkAndGetView().getContext();
+   }
 
-    @Override
-    public void showProgress(String msg, Action1<SweetAlertDialog> cancelAction) {
-        View view = checkAndGetView();
-        progressDialog = buildProgressDialog(view);
-        progressDialog.setContentText(msg);
+   private SweetAlertDialog buildProgressDialog(@NonNull View view) {
+      SweetAlertDialog progressDialog = new SweetAlertDialog(view.getContext(), SweetAlertDialog.PROGRESS_TYPE).setTitleText("");
+      progressDialog.setCancelable(false);
 
-        progressDialog.show();
-    }
+      return progressDialog;
+   }
 
-    @Override
-    public void hideProgress() {
-        progressDialog.dismiss();
-    }
+   private SweetAlertDialog buildSuccessDialog(@NonNull View view) {
+      SweetAlertDialog successDialog = new SweetAlertDialog(view.getContext(), SUCCESS_TYPE).setTitleText("");
+      successDialog.setCancelable(false);
 
-    @Override
-    public void showError(String msg, Action1<SweetAlertDialog> action) {
-        errorDialog = buildErrorDialog(checkAndGetView());
-        errorDialog.setContentText(msg);
-        errorDialog.setOnCancelListener(dialog -> {
-            if (action != null) {
-                action.call(errorDialog);
-            }
-        });
-        errorDialog.setConfirmClickListener(sweetAlertDialog -> {
-            sweetAlertDialog.dismissWithAnimation();
-            
-            if (action != null) {
-                action.call(sweetAlertDialog);
-            }
-            sweetAlertDialog.dismiss();
-        });
-        errorDialog.show();
-    }
+      return successDialog;
+   }
 
-    @Override
-    public void showSuccess(String msg, Action1<SweetAlertDialog> action) {
-        successDialog = buildSuccessDialog(checkAndGetView());
-        successDialog.setContentText(msg);
-        successDialog.setConfirmClickListener(sweetAlertDialog -> {
-            timeoutHandler.removeCallbacksAndMessages(null);
-            sweetAlertDialog.dismissWithAnimation();
+   private SweetAlertDialog buildErrorDialog(@NonNull View view) {
+      return new SweetAlertDialog(view.getContext(), SweetAlertDialog.ERROR_TYPE).setTitleText("");
+   }
 
-            if (action != null) {
-                action.call(sweetAlertDialog);
-            }
-        });
-        successDialog.show();
+   private void hideDialogs() {
+      if (progressDialog != null) progressDialog.dismiss();
+      if (successDialog != null) successDialog.dismiss();
+      if (errorDialog != null) errorDialog.dismiss();
+   }
 
-        if (isSuccessWithDelay) {
-            timeoutHandler.postDelayed(() -> {
-                if (successDialog.isShowing()) {
-                    successDialog.dismissWithAnimation();
-                    if (action != null) action.call(successDialog);
-                }
-            }, SUCCESS_TIMEOUT);
-        }
-    }
+   private View checkAndGetView() {
+      View v = viewRef.get();
+      if (v == null) {
+         throw new IllegalStateException("View == null");
+      }
 
-    @Override
-    public Context context() {
-        return checkAndGetView().getContext();
-    }
-
-    private SweetAlertDialog buildProgressDialog(@NonNull View view) {
-        SweetAlertDialog progressDialog = new SweetAlertDialog(view.getContext(), SweetAlertDialog.PROGRESS_TYPE)
-                .setTitleText("");
-        progressDialog.setCancelable(false);
-
-        return progressDialog;
-    }
-
-    private SweetAlertDialog buildSuccessDialog(@NonNull View view) {
-        SweetAlertDialog successDialog = new SweetAlertDialog(view.getContext(), SUCCESS_TYPE)
-                .setTitleText("");
-        successDialog.setCancelable(false);
-
-        return successDialog;
-    }
-
-    private SweetAlertDialog buildErrorDialog(@NonNull View view) {
-        return new SweetAlertDialog(view.getContext(), SweetAlertDialog.ERROR_TYPE)
-                .setTitleText("");
-    }
-
-    private void hideDialogs() {
-        if (progressDialog != null) progressDialog.dismiss();
-        if (successDialog != null) successDialog.dismiss();
-        if (errorDialog != null) errorDialog.dismiss();
-    }
-
-    private View checkAndGetView() {
-        View v = viewRef.get();
-        if (v == null) {
-            throw new IllegalStateException("View == null");
-        }
-
-        return v;
-    }
+      return v;
+   }
 }

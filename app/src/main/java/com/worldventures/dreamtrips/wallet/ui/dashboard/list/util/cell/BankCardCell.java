@@ -14,23 +14,24 @@ import butterknife.InjectView;
 @Layout(R.layout.adapter_item_wallet_bankcard)
 public class BankCardCell extends AbstractDelegateCell<BankCard, BankCardCell.Delegate> {
 
-    @InjectView(R.id.bank_card)
-    BankCardWidget bankCardWidget;
+   @InjectView(R.id.bank_card) BankCardWidget bankCardWidget;
 
-    public BankCardCell(View view) {
-        super(view);
-    }
+   public BankCardCell(View view) {
+      super(view);
+   }
 
-    @Override protected void syncUIStateWithModel() {
-        bankCardWidget.setBankCardInfo(getModelObject());
-        itemView.setOnClickListener(v -> cellDelegate.onCellClicked(getModelObject()));
-    }
+   @Override
+   protected void syncUIStateWithModel() {
+      bankCardWidget.setBankCardInfo(getModelObject());
+      itemView.setOnClickListener(v -> cellDelegate.onCellClicked(getModelObject()));
+   }
 
-    @Override public void prepareForReuse() {
+   @Override
+   public void prepareForReuse() {
 
-    }
+   }
 
-    public interface Delegate extends CellDelegate<BankCard> {
+   public interface Delegate extends CellDelegate<BankCard> {
 
-    }
+   }
 }

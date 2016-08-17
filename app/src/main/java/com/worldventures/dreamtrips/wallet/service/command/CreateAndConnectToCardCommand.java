@@ -20,39 +20,39 @@ import io.techery.janet.helper.ActionStateToActionTransformer;
 @CommandAction
 public class CreateAndConnectToCardCommand extends Command<Void> implements InjectableAction {
 
-    @Inject @Named(JanetModule.JANET_WALLET) Janet janet;
-    @Inject SnappyRepository snappyRepository;
-    @Inject SmartCardInteractor smartCardInteractor;
+   @Inject @Named(JanetModule.JANET_WALLET) Janet janet;
+   @Inject SnappyRepository snappyRepository;
+   @Inject SmartCardInteractor smartCardInteractor;
 
-    private String code;
+   private String code;
 
-    public CreateAndConnectToCardCommand(String code) {
-        this.code = code;
-    }
+   public CreateAndConnectToCardCommand(String code) {
+      this.code = code;
+   }
 
-    @Override
-    protected void run(CommandCallback<Void> callback) throws Throwable {
-        WalletValidateHelper.validateSCIdOrThrow(code);
-        janet.createPipe(CreateCardHttpAction.class)
-                .createObservable(new CreateCardHttpAction(code))
-                .compose(new ActionStateToActionTransformer<>())
-                .map(httpAction -> createSmartCard(httpAction.getResponse()))
-                .doOnNext(snappyRepository::saveSmartCard)
-                .flatMap(smartCard -> smartCardInteractor.connectActionPipe()
-                        .createObservableResult(new ConnectSmartCardCommand(smartCard)))
-                .subscribe(connectCommand -> callback.onSuccess(null), callback::onFail);
-    }
+   @Override
+   protected void run(CommandCallback<Void> callback) throws Throwable {
+      WalletValidateHelper.validateSCIdOrThrow(code);
+      janet.createPipe(CreateCardHttpAction.class)
+            .createObservable(new CreateCardHttpAction(code))
+            .compose(new ActionStateToActionTransformer<>())
+            .map(httpAction -> createSmartCard(httpAction.getResponse()))
+            .doOnNext(snappyRepository::saveSmartCard)
+            .flatMap(smartCard -> smartCardInteractor.connectActionPipe()
+                  .createObservableResult(new ConnectSmartCardCommand(smartCard)))
+            .subscribe(connectCommand -> callback.onSuccess(null), callback::onFail);
+   }
 
-    public SmartCard createSmartCard(Provision provision) {
-        return ImmutableSmartCard.builder()
-                .deviceName(provision.memberId())
-                .deviceAddress(provision.userSecret())
-                .smartCardId(code)
-                .cardStatus(SmartCard.CardStatus.DRAFT)
-                .build();
-    }
+   public SmartCard createSmartCard(Provision provision) {
+      return ImmutableSmartCard.builder()
+            .deviceName(provision.memberId())
+            .deviceAddress(provision.userSecret())
+            .smartCardId(code)
+            .cardStatus(SmartCard.CardStatus.DRAFT)
+            .build();
+   }
 
-    public String getCode() {
-        return code;
-    }
+   public String getCode() {
+      return code;
+   }
 }

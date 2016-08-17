@@ -8,16 +8,16 @@ import me.dm7.barcodescanner.zxing.ZXingScannerView;
 
 public class WalletBarCodeScaner extends ZXingScannerView {
 
-    public WalletBarCodeScaner(Context context) {
-        super(context);
-    }
+   public WalletBarCodeScaner(Context context) {
+      super(context);
+   }
 
-    public WalletBarCodeScaner(Context context, AttributeSet attributeSet) {
-        super(context, attributeSet);
-    }
+   public WalletBarCodeScaner(Context context, AttributeSet attributeSet) {
+      super(context, attributeSet);
+   }
 
-    @Override
-    protected IViewFinder createViewFinderView(Context context) {
-        return new WalletBarCodeFinder(context);
-    }
+   @Override
+   protected IViewFinder createViewFinderView(Context context) {
+      return new WalletBarCodeFinder(context);
+   }
 }

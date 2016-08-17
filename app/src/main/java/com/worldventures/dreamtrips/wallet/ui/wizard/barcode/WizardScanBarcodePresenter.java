@@ -17,43 +17,40 @@ import javax.inject.Inject;
 import flow.Flow;
 
 public class WizardScanBarcodePresenter extends WalletPresenter<WizardScanBarcodePresenter.Screen, Parcelable> {
-    @Inject
-    WizardCodeHelper wizardCodeHelper;
+   @Inject WizardCodeHelper wizardCodeHelper;
 
-    @Inject
-    PermissionDispatcher permissionDispatcher;
+   @Inject PermissionDispatcher permissionDispatcher;
 
-    public WizardScanBarcodePresenter(Context context, Injector injector) {
-        super(context, injector);
-    }
+   public WizardScanBarcodePresenter(Context context, Injector injector) {
+      super(context, injector);
+   }
 
-    public void requestCamera() {
-        permissionDispatcher.requestPermission(PermissionConstants.CAMERA_PERMISSIONS)
-                .compose(bindView())
-                .subscribe(new PermissionSubscriber()
-                        .onPermissionGrantedAction(() -> getView().startCamera())
-                        .onPermissionRationaleAction(() -> getView().showRationaleForCamera())
-                        .onPermissionDeniedAction(() -> getView().showDeniedForCamera()));
-    }
+   public void requestCamera() {
+      permissionDispatcher.requestPermission(PermissionConstants.CAMERA_PERMISSIONS)
+            .compose(bindView())
+            .subscribe(new PermissionSubscriber().onPermissionGrantedAction(() -> getView().startCamera())
+                  .onPermissionRationaleAction(() -> getView().showRationaleForCamera())
+                  .onPermissionDeniedAction(() -> getView().showDeniedForCamera()));
+   }
 
-    public void barcodeScanned(String barcode) {
-        wizardCodeHelper.createAndConnect(getView().provideOperationDelegate(), barcode, bindViewIoToMainComposer());
-    }
+   public void barcodeScanned(String barcode) {
+      wizardCodeHelper.createAndConnect(getView().provideOperationDelegate(), barcode, bindViewIoToMainComposer());
+   }
 
-    public void startManualInput() {
-        Flow.get(getContext()).set(new WizardManualInputPath());
-    }
+   public void startManualInput() {
+      Flow.get(getContext()).set(new WizardManualInputPath());
+   }
 
 
-    public void goBack() {
-        Flow.get(getContext()).goBack();
-    }
+   public void goBack() {
+      Flow.get(getContext()).goBack();
+   }
 
-    public interface Screen extends WalletScreen {
-        void startCamera();
+   public interface Screen extends WalletScreen {
+      void startCamera();
 
-        void showRationaleForCamera();
+      void showRationaleForCamera();
 
-        void showDeniedForCamera();
-    }
+      void showDeniedForCamera();
+   }
 }

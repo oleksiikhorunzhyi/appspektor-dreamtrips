@@ -17,32 +17,32 @@ import rx.Observable;
 @CommandAction
 public class ConnectSmartCardCommand extends Command<SmartCard> implements InjectableAction, SmartCardModifier {
 
-    @Inject @Named(JanetModule.JANET_WALLET) Janet janet;
-    @Inject SnappyRepository snappyRepository;
+   @Inject @Named(JanetModule.JANET_WALLET) Janet janet;
+   @Inject SnappyRepository snappyRepository;
 
-    private final SmartCard activeSmartCard;
+   private final SmartCard activeSmartCard;
 
-    public ConnectSmartCardCommand(SmartCard activeSmartCard) {
-        this.activeSmartCard = activeSmartCard;
-    }
+   public ConnectSmartCardCommand(SmartCard activeSmartCard) {
+      this.activeSmartCard = activeSmartCard;
+   }
 
-    @Override
-    protected void run(CommandCallback<SmartCard> callback) throws Throwable {
-        janet.createPipe(ConnectAction.class)
-                .createObservableResult(new ConnectAction(activeSmartCard.deviceName(), activeSmartCard.deviceAddress()))
-                .flatMap(action -> fetchTechnicalProperties())
-                .doOnNext(snappyRepository::saveSmartCard)
-                .subscribe(callback::onSuccess, callback::onFail);
-    }
+   @Override
+   protected void run(CommandCallback<SmartCard> callback) throws Throwable {
+      janet.createPipe(ConnectAction.class)
+            .createObservableResult(new ConnectAction(activeSmartCard.deviceName(), activeSmartCard.deviceAddress()))
+            .flatMap(action -> fetchTechnicalProperties())
+            .doOnNext(snappyRepository::saveSmartCard)
+            .subscribe(callback::onSuccess, callback::onFail);
+   }
 
-    public Observable<SmartCard> fetchTechnicalProperties() {
-        return janet.createPipe(FetchCardPropertiesCommand.class)
-                .createObservableResult(new FetchCardPropertiesCommand(activeSmartCard))
-                .map(Command::getResult);
-    }
+   public Observable<SmartCard> fetchTechnicalProperties() {
+      return janet.createPipe(FetchCardPropertiesCommand.class)
+            .createObservableResult(new FetchCardPropertiesCommand(activeSmartCard))
+            .map(Command::getResult);
+   }
 
-    @Override
-    public SmartCard smartCard() {
-        return getResult();
-    }
+   @Override
+   public SmartCard smartCard() {
+      return getResult();
+   }
 }

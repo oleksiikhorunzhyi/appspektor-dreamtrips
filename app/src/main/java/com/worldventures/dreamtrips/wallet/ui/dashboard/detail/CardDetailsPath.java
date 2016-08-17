@@ -10,18 +10,18 @@ import com.worldventures.dreamtrips.wallet.domain.entity.card.BankCard;
 @Layout(R.layout.screen_wallet_wizard_view_card_details)
 public class CardDetailsPath extends StyledPath {
 
-    private final BankCard bankCard;
+   private final BankCard bankCard;
 
-    public CardDetailsPath(BankCard bankCard) {
-        this.bankCard = bankCard;
-    }
+   public CardDetailsPath(BankCard bankCard) {
+      this.bankCard = bankCard;
+   }
 
-    public BankCard getBankCard() {
-        return bankCard;
-    }
+   public BankCard getBankCard() {
+      return bankCard;
+   }
 
-    @Override
-    public MasterDetailPath getMaster() {
-        return this;
-    }
+   @Override
+   public MasterDetailPath getMaster() {
+      return this;
+   }
 }

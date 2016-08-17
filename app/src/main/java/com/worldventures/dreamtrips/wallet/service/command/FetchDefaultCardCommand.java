@@ -19,44 +19,44 @@ import static com.worldventures.dreamtrips.core.janet.JanetModule.JANET_WALLET;
 
 @CommandAction
 public class FetchDefaultCardCommand extends Command<String> implements InjectableAction, CachedAction<String> {
-    @Inject @Named(JANET_WALLET) Janet janet;
+   @Inject @Named(JANET_WALLET) Janet janet;
 
-    private String defaultCardId = null;
+   private String defaultCardId = null;
 
-    private boolean force;
+   private boolean force;
 
-    public static FetchDefaultCardCommand fetch(boolean force) {
-        return new FetchDefaultCardCommand(force);
-    }
+   public static FetchDefaultCardCommand fetch(boolean force) {
+      return new FetchDefaultCardCommand(force);
+   }
 
-    private FetchDefaultCardCommand(boolean force) {
-        this.force = force;
-    }
+   private FetchDefaultCardCommand(boolean force) {
+      this.force = force;
+   }
 
-    @Override
-    protected void run(CommandCallback<String> callback) throws Throwable {
-        Observable<String> defaultCard = defaultCardId == null || force ? deviceDefaultCard() : Observable.just(defaultCardId);
-        defaultCard.subscribe(callback::onSuccess, callback::onFail);
-    }
+   @Override
+   protected void run(CommandCallback<String> callback) throws Throwable {
+      Observable<String> defaultCard = defaultCardId == null || force ? deviceDefaultCard() : Observable.just(defaultCardId);
+      defaultCard.subscribe(callback::onSuccess, callback::onFail);
+   }
 
-    @Override
-    public String getCacheData() {
-        return getResult();
-    }
+   @Override
+   public String getCacheData() {
+      return getResult();
+   }
 
-    @Override
-    public void onRestore(ActionHolder holder, String cachedCardId) {
-        defaultCardId = cachedCardId;
-    }
+   @Override
+   public void onRestore(ActionHolder holder, String cachedCardId) {
+      defaultCardId = cachedCardId;
+   }
 
-    @Override
-    public CacheOptions getCacheOptions() {
-        return ImmutableCacheOptions.builder().build();
-    }
+   @Override
+   public CacheOptions getCacheOptions() {
+      return ImmutableCacheOptions.builder().build();
+   }
 
-    private Observable<String> deviceDefaultCard() {
-        return janet.createPipe(GetDefaultRecordAction.class)
-                .createObservableResult(new GetDefaultRecordAction())
-                .map(it -> String.valueOf(it.recordId));
-    }
+   private Observable<String> deviceDefaultCard() {
+      return janet.createPipe(GetDefaultRecordAction.class)
+            .createObservableResult(new GetDefaultRecordAction())
+            .map(it -> String.valueOf(it.recordId));
+   }
 }

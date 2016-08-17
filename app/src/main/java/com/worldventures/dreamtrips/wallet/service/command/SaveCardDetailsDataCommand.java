@@ -25,63 +25,59 @@ import static com.worldventures.dreamtrips.core.janet.JanetModule.JANET_WALLET;
 @CommandAction
 public class SaveCardDetailsDataCommand extends Command<Void> implements InjectableAction {
 
-    @Inject
-    @Named(JANET_WALLET)
-    Janet janet;
-    @Inject
-    SnappyRepository snappyRepository;
-    @Inject
-    SmartCardInteractor smartCardInteractor;
+   @Inject @Named(JANET_WALLET) Janet janet;
+   @Inject SnappyRepository snappyRepository;
+   @Inject SmartCardInteractor smartCardInteractor;
 
-    private final BankCard bankCard;
-    private final AddressInfo manualAddressInfo;
-    private final String cvv;
-    private final String nickName;
-    private final boolean setAsDefaultAddress;
-    private final boolean useDefaultAddress;
+   private final BankCard bankCard;
+   private final AddressInfo manualAddressInfo;
+   private final String cvv;
+   private final String nickName;
+   private final boolean setAsDefaultAddress;
+   private final boolean useDefaultAddress;
 
-    public SaveCardDetailsDataCommand(BankCard bankCard, AddressInfo manualAddressInfo, String nickName, String cvv, boolean useDefaultAddress, boolean setAsDefaultAddress) {
-        this.setAsDefaultAddress = setAsDefaultAddress;
-        this.useDefaultAddress = useDefaultAddress;
-        this.nickName = nickName;
-        this.cvv = cvv;
-        this.bankCard = bankCard;
-        this.manualAddressInfo =  manualAddressInfo;
-    }
+   public SaveCardDetailsDataCommand(BankCard bankCard, AddressInfo manualAddressInfo, String nickName, String cvv, boolean useDefaultAddress, boolean setAsDefaultAddress) {
+      this.setAsDefaultAddress = setAsDefaultAddress;
+      this.useDefaultAddress = useDefaultAddress;
+      this.nickName = nickName;
+      this.cvv = cvv;
+      this.bankCard = bankCard;
+      this.manualAddressInfo = manualAddressInfo;
+   }
 
-    @Override
-    protected void run(CommandCallback<Void> callback) throws Throwable {
-        checkCardAddress();
+   @Override
+   protected void run(CommandCallback<Void> callback) throws Throwable {
+      checkCardAddress();
 
-        if (setAsDefaultAddress) {
-            snappyRepository.saveDefaultAddress(manualAddressInfo);
-        }
+      if (setAsDefaultAddress) {
+         snappyRepository.saveDefaultAddress(manualAddressInfo);
+      }
 
-        Observable<ActionState<GetDefaultAddressCommand>> defaultAddressInfoStateObservable = smartCardInteractor.getDefaultAddressCommandPipe()
-                .observeWithReplay()
-                .takeFirst(state -> state.status == ActionState.Status.SUCCESS || state.status == ActionState.Status.FAIL);
-        Observable<ActionState<CardCountCommand>> cardCountStateObservable =  smartCardInteractor.cardCountCommandPipe()
-                .observeWithReplay()
-                .takeFirst(state -> state.status == ActionState.Status.SUCCESS || state.status == ActionState.Status.FAIL);
+      Observable<ActionState<GetDefaultAddressCommand>> defaultAddressInfoStateObservable = smartCardInteractor.getDefaultAddressCommandPipe()
+            .observeWithReplay()
+            .takeFirst(state -> state.status == ActionState.Status.SUCCESS || state.status == ActionState.Status.FAIL);
+      Observable<ActionState<CardCountCommand>> cardCountStateObservable = smartCardInteractor.cardCountCommandPipe()
+            .observeWithReplay()
+            .takeFirst(state -> state.status == ActionState.Status.SUCCESS || state.status == ActionState.Status.FAIL);
 
-        Observable.combineLatest(cardCountStateObservable, defaultAddressInfoStateObservable,
-                (defaultCardState, addressInfoState) -> {
-                    AddressInfo address = useDefaultAddress? addressInfoState.action.getResult() : manualAddressInfo;
-                    BankCard extandedBankCard = ImmutableBankCard.copyOf(bankCard)
-                            .withCvv(Integer.parseInt(cvv))
-                            .withTitle(nickName)
-                            .withAddressInfo(address);
-                    return new Pair<>(extandedBankCard, defaultCardState.action.getResult() == 0);
-                }).flatMap(bankCardPair -> smartCardInteractor.addRecordPipe()
-                    .createObservableResult(new AttachCardCommand(bankCardPair.first, bankCardPair.second)))
-                .subscribe(attachCardCommand -> callback.onSuccess(null));
-    }
+      Observable.combineLatest(cardCountStateObservable, defaultAddressInfoStateObservable, (defaultCardState, addressInfoState) -> {
+         AddressInfo address = useDefaultAddress ? addressInfoState.action.getResult() : manualAddressInfo;
+         BankCard extandedBankCard = ImmutableBankCard.copyOf(bankCard)
+               .withCvv(Integer.parseInt(cvv))
+               .withTitle(nickName)
+               .withAddressInfo(address);
+         return new Pair<>(extandedBankCard, defaultCardState.action.getResult() == 0);
+      })
+            .flatMap(bankCardPair -> smartCardInteractor.addRecordPipe()
+                  .createObservableResult(new AttachCardCommand(bankCardPair.first, bankCardPair.second)))
+            .subscribe(attachCardCommand -> callback.onSuccess(null));
+   }
 
-    private void checkCardAddress() throws FormatException{
-        boolean validInfo = (useDefaultAddress || WalletValidateHelper.validateAddressInfo(manualAddressInfo))
-                && WalletValidateHelper.validateCardCvv(cvv);
+   private void checkCardAddress() throws FormatException {
+      boolean validInfo = (useDefaultAddress || WalletValidateHelper.validateAddressInfo(manualAddressInfo)) && WalletValidateHelper
+            .validateCardCvv(cvv);
 
-        if (!validInfo) throw new FormatException();
-    }
+      if (!validInfo) throw new FormatException();
+   }
 
 }

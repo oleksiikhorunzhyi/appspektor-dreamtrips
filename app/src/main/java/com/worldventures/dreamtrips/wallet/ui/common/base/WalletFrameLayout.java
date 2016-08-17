@@ -10,50 +10,48 @@ import com.techery.spares.module.Injector;
 import com.worldventures.dreamtrips.core.flow.layout.InjectorHolder;
 import com.worldventures.dreamtrips.core.flow.path.PathView;
 import com.worldventures.dreamtrips.core.flow.path.StyledPath;
-import com.worldventures.dreamtrips.wallet.ui.common.base.screen.OperationScreen;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.WalletScreen;
 
 import butterknife.ButterKnife;
 import flow.path.Path;
 
-public abstract class WalletFrameLayout<V extends WalletScreen, P extends ViewStateMvpPresenter<V, ?>, T extends StyledPath>
-        extends BaseViewStateFrameLayout<V, P> implements InjectorHolder, PathView<T> {
-    private Injector injector;
+public abstract class WalletFrameLayout<V extends WalletScreen, P extends ViewStateMvpPresenter<V, ?>, T extends StyledPath> extends BaseViewStateFrameLayout<V, P> implements InjectorHolder, PathView<T> {
+   private Injector injector;
 
-    public WalletFrameLayout(Context context) {
-        super(context);
-    }
+   public WalletFrameLayout(Context context) {
+      super(context);
+   }
 
-    public WalletFrameLayout(Context context, AttributeSet attrs) {
-        super(context, attrs);
-    }
+   public WalletFrameLayout(Context context, AttributeSet attrs) {
+      super(context, attrs);
+   }
 
-    @Override
-    protected void onFinishInflate() {
-        super.onFinishInflate();
-        ButterKnife.inject(this);
-    }
+   @Override
+   protected void onFinishInflate() {
+      super.onFinishInflate();
+      ButterKnife.inject(this);
+   }
 
-    @Deprecated
-    @Override
-    public void setPath(T path) {
-    }
+   @Deprecated
+   @Override
+   public void setPath(T path) {
+   }
 
-    @Override
-    public T getPath() {
-        return Path.get(getContext());
-    }
+   @Override
+   public T getPath() {
+      return Path.get(getContext());
+   }
 
-    @Override
-    public void setInjector(Injector injector) {
-        this.injector = injector;
-    }
+   @Override
+   public void setInjector(Injector injector) {
+      this.injector = injector;
+   }
 
-    public Injector getInjector() {
-        return injector;
-    }
+   public Injector getInjector() {
+      return injector;
+   }
 
-    protected String getString(@StringRes int stringId) {
-        return getResources().getString(stringId);
-    }
+   protected String getString(@StringRes int stringId) {
+      return getResources().getString(stringId);
+   }
 }

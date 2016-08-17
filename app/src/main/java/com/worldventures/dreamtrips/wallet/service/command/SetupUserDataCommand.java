@@ -30,74 +30,74 @@ import static com.worldventures.dreamtrips.core.janet.JanetModule.JANET_WALLET;
 @CommandAction
 public class SetupUserDataCommand extends Command<SmartCard> implements InjectableAction {
 
-    @Inject @Named(JANET_WALLET) Janet janet;
-    @Inject SessionHolder<UserSession> userSessionHolder;
-    @Inject SnappyRepository snappyRepository;
+   @Inject @Named(JANET_WALLET) Janet janet;
+   @Inject SessionHolder<UserSession> userSessionHolder;
+   @Inject SnappyRepository snappyRepository;
 
-    private final String fullName;
-    private final File avatarFile;
-    private final String getSmartCardId;
+   private final String fullName;
+   private final File avatarFile;
+   private final String getSmartCardId;
 
-    public SetupUserDataCommand(String fullName, File avatarFile, String getSmartCardId) {
-        // TODO: 8/2/16 change on first name and second name
-        this.fullName = fullName;
-        this.avatarFile = avatarFile;
-        this.getSmartCardId = getSmartCardId;
-    }
+   public SetupUserDataCommand(String fullName, File avatarFile, String getSmartCardId) {
+      // TODO: 8/2/16 change on first name and second name
+      this.fullName = fullName;
+      this.avatarFile = avatarFile;
+      this.getSmartCardId = getSmartCardId;
+   }
 
-    @Override
-    protected void run(CommandCallback<SmartCard> callback) throws Throwable {
-        User user = validateUserNameAndCreateUser();
-        janet.createPipe(AssignUserAction.class)
-                .createObservableResult(new AssignUserAction(user))
-                .flatMap(action -> Observable.fromCallable(this::getAvatarAsByteArray))
-                .flatMap(bytesArray -> janet.createPipe(UpdateUserPhotoAction.class)
-                        .createObservableResult(new UpdateUserPhotoAction(bytesArray)))
-                .map(action -> attachAvatarToLocalSmartCard())
-                .subscribe(callback::onSuccess, callback::onFail);
-    }
+   @Override
+   protected void run(CommandCallback<SmartCard> callback) throws Throwable {
+      User user = validateUserNameAndCreateUser();
+      janet.createPipe(AssignUserAction.class)
+            .createObservableResult(new AssignUserAction(user))
+            .flatMap(action -> Observable.fromCallable(this::getAvatarAsByteArray))
+            .flatMap(bytesArray -> janet.createPipe(UpdateUserPhotoAction.class)
+                  .createObservableResult(new UpdateUserPhotoAction(bytesArray)))
+            .map(action -> attachAvatarToLocalSmartCard())
+            .subscribe(callback::onSuccess, callback::onFail);
+   }
 
-    private SmartCard attachAvatarToLocalSmartCard() {
-        SmartCard smartCard = snappyRepository.getSmartCard(getSmartCardId);
-        smartCard = ImmutableSmartCard.builder()
-                .from(smartCard)
-                .userPhoto("file://" + avatarFile.getAbsolutePath())
-                .build();
-        snappyRepository.saveSmartCard(smartCard);
-        return smartCard;
-    }
+   private SmartCard attachAvatarToLocalSmartCard() {
+      SmartCard smartCard = snappyRepository.getSmartCard(getSmartCardId);
+      smartCard = ImmutableSmartCard.builder()
+            .from(smartCard)
+            .userPhoto("file://" + avatarFile.getAbsolutePath())
+            .build();
+      snappyRepository.saveSmartCard(smartCard);
+      return smartCard;
+   }
 
-    private User validateUserNameAndCreateUser() throws FormatException {
-        String[] nameParts = fullName.split(" ");
-        String firstName, lastName, middleName = null;
-        if (nameParts.length < 2) throw new FormatException();
-        if (nameParts.length == 2) {
-            firstName = nameParts[0];
-            lastName = nameParts[1];
-        } else {
-            firstName = nameParts[0];
-            middleName = nameParts[1];
-            lastName = nameParts[2];
-        }
-        WalletValidateHelper.validateUserFullNameOrThrow(firstName, middleName, lastName);
+   private User validateUserNameAndCreateUser() throws FormatException {
+      String[] nameParts = fullName.split(" ");
+      String firstName, lastName, middleName = null;
+      if (nameParts.length < 2) throw new FormatException();
+      if (nameParts.length == 2) {
+         firstName = nameParts[0];
+         lastName = nameParts[1];
+      } else {
+         firstName = nameParts[0];
+         middleName = nameParts[1];
+         lastName = nameParts[2];
+      }
+      WalletValidateHelper.validateUserFullNameOrThrow(firstName, middleName, lastName);
 
-        return ImmutableUser.builder()
-                .firstName(firstName)
-                .lastName(lastName)
-                .middleName(middleName)
-                .memberStatus(getMemberStatus())
-                .memberId(userSessionHolder.get().get().getUser().getId())
-                .build();
-    }
+      return ImmutableUser.builder()
+            .firstName(firstName)
+            .lastName(lastName)
+            .middleName(middleName)
+            .memberStatus(getMemberStatus())
+            .memberId(userSessionHolder.get().get().getUser().getId())
+            .build();
+   }
 
-    private User.MemberStatus getMemberStatus() {
-        com.worldventures.dreamtrips.modules.common.model.User user = userSessionHolder.get().get().getUser();
-        if (user.isGold()) return User.MemberStatus.GOLD;
-        if (user.isGeneral() || user.isPlatinum()) return User.MemberStatus.ACTIVE;
-        return User.MemberStatus.INACTIVE;
-    }
+   private User.MemberStatus getMemberStatus() {
+      com.worldventures.dreamtrips.modules.common.model.User user = userSessionHolder.get().get().getUser();
+      if (user.isGold()) return User.MemberStatus.GOLD;
+      if (user.isGeneral() || user.isPlatinum()) return User.MemberStatus.ACTIVE;
+      return User.MemberStatus.INACTIVE;
+   }
 
-    private byte[] getAvatarAsByteArray() throws IOException {
-        return FileUtils.readByteArray(avatarFile);
-    }
+   private byte[] getAvatarAsByteArray() throws IOException {
+      return FileUtils.readByteArray(avatarFile);
+   }
 }

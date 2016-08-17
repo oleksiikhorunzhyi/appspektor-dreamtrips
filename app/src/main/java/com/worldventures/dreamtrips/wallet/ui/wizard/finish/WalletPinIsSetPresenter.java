@@ -20,42 +20,39 @@ import flow.History;
 
 public class WalletPinIsSetPresenter extends WalletPresenter<WalletPinIsSetPresenter.Screen, Parcelable> {
 
-    @Inject WizardInteractor wizardInteractor;
+   @Inject WizardInteractor wizardInteractor;
 
-    private final SmartCard smartCard;
+   private final SmartCard smartCard;
 
-    public WalletPinIsSetPresenter(Context context, Injector injector, SmartCard smartCard) {
-        super(context, injector);
-        this.smartCard = smartCard;
-    }
+   public WalletPinIsSetPresenter(Context context, Injector injector, SmartCard smartCard) {
+      super(context, injector);
+      this.smartCard = smartCard;
+   }
 
-    @Override
-    public void attachView(Screen view) {
-        super.attachView(view);
-        wizardInteractor.activateSmartCardPipe()
-                .observe()
-                .compose(bindViewIoToMainComposer())
-                .subscribe(OperationSubscriberWrapper.<ActivateSmartCardCommand>forView(view.provideOperationDelegate())
-                        .onSuccess(command -> navigateToDashboardScreen())
-                        .onFail(getContext().getString(R.string.error_something_went_wrong))
-                        .wrap()
-                );
-    }
+   @Override
+   public void attachView(Screen view) {
+      super.attachView(view);
+      wizardInteractor.activateSmartCardPipe()
+            .observe()
+            .compose(bindViewIoToMainComposer())
+            .subscribe(OperationSubscriberWrapper.<ActivateSmartCardCommand>forView(view.provideOperationDelegate()).onSuccess(command -> navigateToDashboardScreen())
+                  .onFail(getContext().getString(R.string.error_something_went_wrong))
+                  .wrap());
+   }
 
-    public void goBack() {
-        Flow.get(getContext()).goBack();
-    }
+   public void goBack() {
+      Flow.get(getContext()).goBack();
+   }
 
-    public void activateSmartCard() {
-        wizardInteractor.activateSmartCardPipe().send(new ActivateSmartCardCommand(smartCard));
-    }
+   public void activateSmartCard() {
+      wizardInteractor.activateSmartCardPipe().send(new ActivateSmartCardCommand(smartCard));
+   }
 
-    private void navigateToDashboardScreen() {
-        Flow.get(getContext())
-                .setHistory(History.single(new CardListPath()), Flow.Direction.REPLACE);
-    }
+   private void navigateToDashboardScreen() {
+      Flow.get(getContext()).setHistory(History.single(new CardListPath()), Flow.Direction.REPLACE);
+   }
 
-    public interface Screen extends WalletScreen {
+   public interface Screen extends WalletScreen {
 
-    }
+   }
 }

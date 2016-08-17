@@ -12,11 +12,10 @@ import io.techery.janet.command.annotations.CommandAction;
 @CommandAction
 public class GetDefaultAddressCommand extends Command<AddressInfo> implements InjectableAction {
 
-    @Inject
-    SnappyRepository snappyRepository;
+   @Inject SnappyRepository snappyRepository;
 
-    @Override
-    protected void run(CommandCallback<AddressInfo> callback) throws Throwable {
-        callback.onSuccess(snappyRepository.readDefaultAddress());
-    }
+   @Override
+   protected void run(CommandCallback<AddressInfo> callback) throws Throwable {
+      callback.onSuccess(snappyRepository.readDefaultAddress());
+   }
 }

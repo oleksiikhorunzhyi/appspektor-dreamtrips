@@ -22,51 +22,50 @@ import flow.Flow;
 import flow.History;
 
 public class WizardCardNamePresenter extends WalletPresenter<WizardCardNamePresenter.Screen, Parcelable> {
-    @Inject
-    WizardInteractor wizardInteractor;
+   @Inject WizardInteractor wizardInteractor;
 
-    private final String smartCardId;
+   private final String smartCardId;
 
-    public WizardCardNamePresenter(Context context, Injector injector, String smartCardId) {
-        super(context, injector);
-        this.smartCardId = smartCardId;
-    }
+   public WizardCardNamePresenter(Context context, Injector injector, String smartCardId) {
+      super(context, injector);
+      this.smartCardId = smartCardId;
+   }
 
-    public void goToBack() {
-        Flow.get(getContext())
-                .setHistory(History.single(new WizardSplashPath()), Flow.Direction.BACKWARD);
-    }
+   public void goToBack() {
+      Flow.get(getContext()).setHistory(History.single(new WizardSplashPath()), Flow.Direction.BACKWARD);
+   }
 
-    @Override
-    public void attachView(Screen view) {
-        super.attachView(view);
-        observeSmartCardNamePipe();
-    }
+   @Override
+   public void attachView(Screen view) {
+      super.attachView(view);
+      observeSmartCardNamePipe();
+   }
 
-    private void observeSmartCardNamePipe() {
-        wizardInteractor.setupSmartCardNamePipe()
-                .observe()
-                .compose(bindViewIoToMainComposer())
-                .subscribe(OperationSubscriberWrapper.<SetupSmartCardNameCommand>forView(getView().provideOperationDelegate())
-                        .onStart(getContext().getString(R.string.wallet_wizard_card_alias_setup))
-                        .onSuccess(getContext().getString(R.string.wallet_wizard_card_alias_was_setup),
-                                command -> Flow.get(getContext()).set(new WizardEditProfilePath(command.getCardId())))
-                        .onFail(throwable -> {
-                            Context context = getContext();
-                            String msg = throwable.getCause() instanceof FormatException ? context.getString(R.string.wallet_wizard_card_alias_format_error)
-                                    : context.getString(R.string.error_something_went_wrong);
-                            
-                            return new MessageActionHolder<>(msg, null);
-                        })
-                        .wrap());
-    }
+   private void observeSmartCardNamePipe() {
+      wizardInteractor.setupSmartCardNamePipe()
+            .observe()
+            .compose(bindViewIoToMainComposer())
+            .subscribe(OperationSubscriberWrapper.<SetupSmartCardNameCommand>forView(getView().provideOperationDelegate())
+                  .onStart(getContext().getString(R.string.wallet_wizard_card_alias_setup))
+                  .onSuccess(getContext().getString(R.string.wallet_wizard_card_alias_was_setup), command -> Flow.get(getContext())
+                        .set(new WizardEditProfilePath(command.getCardId())))
+                  .onFail(throwable -> {
+                     Context context = getContext();
+                     String msg = throwable.getCause() instanceof FormatException ? context.getString(R.string.wallet_wizard_card_alias_format_error) : context
+                           .getString(R.string.error_something_went_wrong);
 
-    public void setupCardName() {
-        wizardInteractor.setupSmartCardNamePipe().send(new SetupSmartCardNameCommand(getView().getCardName().trim(), smartCardId));
-    }
+                     return new MessageActionHolder<>(msg, null);
+                  })
+                  .wrap());
+   }
 
-    public interface Screen extends WalletScreen {
-        @NonNull
-        String getCardName();
-    }
+   public void setupCardName() {
+      wizardInteractor.setupSmartCardNamePipe().send(new SetupSmartCardNameCommand(getView().getCardName()
+            .trim(), smartCardId));
+   }
+
+   public interface Screen extends WalletScreen {
+      @NonNull
+      String getCardName();
+   }
 }

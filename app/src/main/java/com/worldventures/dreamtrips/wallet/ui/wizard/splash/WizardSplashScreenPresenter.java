@@ -11,14 +11,13 @@ import com.worldventures.dreamtrips.wallet.ui.wizard.barcode.WizardScanBarcodePa
 import flow.Flow;
 
 public class WizardSplashScreenPresenter extends WalletPresenter<WizardSplashScreenPresenter.Screen, Parcelable> {
-    public WizardSplashScreenPresenter(Context context, Injector injector) {
-        super(context, injector);
-    }
+   public WizardSplashScreenPresenter(Context context, Injector injector) {
+      super(context, injector);
+   }
 
-    public void startScanCard() {
-        Flow.get(getContext()).set(new WizardScanBarcodePath());
-    }
+   public void startScanCard() {
+      Flow.get(getContext()).set(new WizardScanBarcodePath());
+   }
 
-    public interface Screen extends WalletScreen {
-    }
+   public interface Screen extends WalletScreen {}
 }

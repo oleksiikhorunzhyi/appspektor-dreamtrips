@@ -20,37 +20,33 @@ import static com.worldventures.dreamtrips.core.janet.JanetModule.JANET_WALLET;
 @CommandAction
 public class SetDefaultCardOnDeviceCommand extends Command<String> implements InjectableAction, CachedAction<String> {
 
-    @Inject
-    @Named(JANET_WALLET)
-    Janet janet;
+   @Inject @Named(JANET_WALLET) Janet janet;
 
-    final String cardId;
+   final String cardId;
 
-    public SetDefaultCardOnDeviceCommand(String cardId) {
-        this.cardId = cardId;
-    }
+   public SetDefaultCardOnDeviceCommand(String cardId) {
+      this.cardId = cardId;
+   }
 
-    @Override
-    protected void run(CommandCallback<String> callback) throws Throwable {
-        janet.createPipe(SetRecordAsDefaultAction.class, Schedulers.io())
-                .createObservableResult(new SetRecordAsDefaultAction(Integer.parseInt(cardId)))
-                .subscribe(action -> callback.onSuccess(String.valueOf(action.recordId)), callback::onFail);
-    }
+   @Override
+   protected void run(CommandCallback<String> callback) throws Throwable {
+      janet.createPipe(SetRecordAsDefaultAction.class, Schedulers.io())
+            .createObservableResult(new SetRecordAsDefaultAction(Integer.parseInt(cardId)))
+            .subscribe(action -> callback.onSuccess(String.valueOf(action.recordId)), callback::onFail);
+   }
 
-    @Override
-    public String getCacheData() {
-        return cardId;
-    }
+   @Override
+   public String getCacheData() {
+      return cardId;
+   }
 
-    @Override
-    public void onRestore(ActionHolder holder, String cache) {
-    }
+   @Override
+   public void onRestore(ActionHolder holder, String cache) {
+   }
 
-    @Override
-    public CacheOptions getCacheOptions() {
-        return ImmutableCacheOptions.builder()
-                .restoreFromCache(false)
-                .build();
-    }
+   @Override
+   public CacheOptions getCacheOptions() {
+      return ImmutableCacheOptions.builder().restoreFromCache(false).build();
+   }
 
 }

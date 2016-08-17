@@ -24,94 +24,89 @@ import static com.worldventures.dreamtrips.wallet.service.command.CardStacksComm
 
 @CommandAction
 public class CardStacksCommand extends Command<List<CardStacksCommand.CardStackModel>> implements InjectableAction {
-    @Inject
-    @Named(JANET_WALLET)
-    Janet janet;
+   @Inject @Named(JANET_WALLET) Janet janet;
 
-    private boolean forceUpdate;
+   private boolean forceUpdate;
 
-    public static CardStacksCommand get(boolean forceUpdate) {
-        return new CardStacksCommand(forceUpdate);
-    }
+   public static CardStacksCommand get(boolean forceUpdate) {
+      return new CardStacksCommand(forceUpdate);
+   }
 
-    private CardStacksCommand(boolean forceUpdate) {
-        this.forceUpdate = forceUpdate;
-    }
+   private CardStacksCommand(boolean forceUpdate) {
+      this.forceUpdate = forceUpdate;
+   }
 
-    @Override
-    protected void run(CommandCallback<List<CardStackModel>> callback) throws Throwable {
-        Observable.combineLatest(
-                janet.createPipe(CardListCommand.class).createObservable(CardListCommand.get(forceUpdate))
-                        .compose(new ActionStateToActionTransformer<>()),
-                janet.createPipe(FetchDefaultCardCommand.class).createObservable(FetchDefaultCardCommand.fetch(forceUpdate))
-                        .compose(new ActionStateToActionTransformer<>()),
-                (cardListCommand, fetchDefaultCardCommand) -> convert(cardListCommand.getResult(), fetchDefaultCardCommand.getResult()))
-                .subscribe(callback::onSuccess, callback::onFail);
-    }
+   @Override
+   protected void run(CommandCallback<List<CardStackModel>> callback) throws Throwable {
+      Observable.combineLatest(janet.createPipe(CardListCommand.class)
+            .createObservable(CardListCommand.get(forceUpdate))
+            .compose(new ActionStateToActionTransformer<>()), janet.createPipe(FetchDefaultCardCommand.class)
+            .createObservable(FetchDefaultCardCommand.fetch(forceUpdate))
+            .compose(new ActionStateToActionTransformer<>()), (cardListCommand, fetchDefaultCardCommand) -> convert(cardListCommand
+            .getResult(), fetchDefaultCardCommand.getResult())).subscribe(callback::onSuccess, callback::onFail);
+   }
 
-    private List<CardStackModel> convert(List<Card> cardList, String defaultCardId) {
-        if (cardList == null) return new ArrayList<>();
-        ArrayList<CardStackModel> result = new ArrayList<>();
+   private List<CardStackModel> convert(List<Card> cardList, String defaultCardId) {
+      if (cardList == null) return new ArrayList<>();
+      ArrayList<CardStackModel> result = new ArrayList<>();
 
-        CardStackModel stack = defaultCardStack((BankCard) findDefaultCard(cardList, defaultCardId));
-        if (stack != null) result.add(stack);
+      CardStackModel stack = defaultCardStack((BankCard) findDefaultCard(cardList, defaultCardId));
+      if (stack != null) result.add(stack);
 
-        List<BankCard> creditsBankCards = getBankCardsByType(cardList, CardType.CREDIT);
-        List<BankCard> debitBankCards = getBankCardsByType(cardList, CardType.DEBIT);
+      List<BankCard> creditsBankCards = getBankCardsByType(cardList, CardType.CREDIT);
+      List<BankCard> debitBankCards = getBankCardsByType(cardList, CardType.DEBIT);
 
-        if (!creditsBankCards.isEmpty())
-            result.add(new CardStackModel(CardStackModel.StackType.CREDIT, creditsBankCards));
-        if (!debitBankCards.isEmpty())
-            result.add(new CardStackModel(StackType.DEBIT, debitBankCards));
+      if (!creditsBankCards.isEmpty())
+         result.add(new CardStackModel(CardStackModel.StackType.CREDIT, creditsBankCards));
+      if (!debitBankCards.isEmpty()) result.add(new CardStackModel(StackType.DEBIT, debitBankCards));
 
-        return result;
-    }
+      return result;
+   }
 
-    private Card findDefaultCard(List<Card> cardList, String defaultCardId) {
-        if (defaultCardId == null) {
-            return null;
-        }
-        return Queryable.from(cardList).firstOrDefault(
-                card -> card != null && card.id() != null && defaultCardId.equals(card.id())
-        );
-    }
+   private Card findDefaultCard(List<Card> cardList, String defaultCardId) {
+      if (defaultCardId == null) {
+         return null;
+      }
+      return Queryable.from(cardList)
+            .firstOrDefault(card -> card != null && card.id() != null && defaultCardId.equals(card.id()));
+   }
 
-    private CardStackModel defaultCardStack(BankCard defaultCard) {
-        if (defaultCard == null) return null;
-        ArrayList<BankCard> bankCards = new ArrayList<>();
-        bankCards.add(defaultCard);
+   private CardStackModel defaultCardStack(BankCard defaultCard) {
+      if (defaultCard == null) return null;
+      ArrayList<BankCard> bankCards = new ArrayList<>();
+      bankCards.add(defaultCard);
 
-        return new CardStackModel(StackType.DEFAULT, bankCards);
-    }
+      return new CardStackModel(StackType.DEFAULT, bankCards);
+   }
 
-    protected List<BankCard> getBankCardsByType(List<Card> cardList, CardType cardType) {
-        if (cardList == null) return Collections.emptyList();
-        return Queryable.from(cardList)
-                .filter(it -> it instanceof BankCard)
-                .map(it -> (BankCard) it)
-                .filter(it -> it.cardType() == cardType)
-                .toList();
-    }
+   protected List<BankCard> getBankCardsByType(List<Card> cardList, CardType cardType) {
+      if (cardList == null) return Collections.emptyList();
+      return Queryable.from(cardList)
+            .filter(it -> it instanceof BankCard)
+            .map(it -> (BankCard) it)
+            .filter(it -> it.cardType() == cardType)
+            .toList();
+   }
 
-    public static class CardStackModel {
-        private StackType stackStackType;
-        private List<BankCard> bankCards;
+   public static class CardStackModel {
+      private StackType stackStackType;
+      private List<BankCard> bankCards;
 
-        public CardStackModel(StackType stackStackType, List<BankCard> bankCard) {
-            this.stackStackType = stackStackType;
-            this.bankCards = bankCard;
-        }
+      public CardStackModel(StackType stackStackType, List<BankCard> bankCard) {
+         this.stackStackType = stackStackType;
+         this.bankCards = bankCard;
+      }
 
-        public List<BankCard> bankCards() {
-            return bankCards;
-        }
+      public List<BankCard> bankCards() {
+         return bankCards;
+      }
 
-        public StackType type() {
-            return stackStackType;
-        }
+      public StackType type() {
+         return stackStackType;
+      }
 
-        public enum StackType {
-            DEBIT, CREDIT, DEFAULT
-        }
-    }
+      public enum StackType {
+         DEBIT, CREDIT, DEFAULT
+      }
+   }
 }

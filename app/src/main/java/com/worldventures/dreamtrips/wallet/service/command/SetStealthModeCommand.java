@@ -21,38 +21,35 @@ import static com.worldventures.dreamtrips.core.janet.JanetModule.JANET_WALLET;
 @CommandAction
 public class SetStealthModeCommand extends Command<SmartCard> implements InjectableAction, SmartCardModifier {
 
-    @Inject @Named(JANET_WALLET) Janet janet;
-    @Inject SnappyRepository snappyRepository;
-    @Inject SmartCardInteractor smartCardInteractor;
+   @Inject @Named(JANET_WALLET) Janet janet;
+   @Inject SnappyRepository snappyRepository;
+   @Inject SmartCardInteractor smartCardInteractor;
 
-    public final boolean stealthModeEnabled;
+   public final boolean stealthModeEnabled;
 
-    public SetStealthModeCommand(boolean stealthModeEnabled) {
-        this.stealthModeEnabled = stealthModeEnabled;
-    }
+   public SetStealthModeCommand(boolean stealthModeEnabled) {
+      this.stealthModeEnabled = stealthModeEnabled;
+   }
 
-    @Override
-    protected void run(CommandCallback<SmartCard> callback) throws Throwable {
-        janet.createPipe(SetStealthModeAction.class)
-                .createObservableResult(new SetStealthModeAction(stealthModeEnabled))
-                .flatMap(action -> fetchActiveSmartCard())
-                .map(smartCard -> ImmutableSmartCard.builder()
-                        .from(smartCard)
-                        .stealthMode(stealthModeEnabled)
-                        .build())
-                .doOnNext(snappyRepository::saveSmartCard)
-                .subscribe(callback::onSuccess, callback::onFail);
-    }
+   @Override
+   protected void run(CommandCallback<SmartCard> callback) throws Throwable {
+      janet.createPipe(SetStealthModeAction.class)
+            .createObservableResult(new SetStealthModeAction(stealthModeEnabled))
+            .flatMap(action -> fetchActiveSmartCard())
+            .map(smartCard -> ImmutableSmartCard.builder().from(smartCard).stealthMode(stealthModeEnabled).build())
+            .doOnNext(snappyRepository::saveSmartCard)
+            .subscribe(callback::onSuccess, callback::onFail);
+   }
 
-    private Observable<SmartCard> fetchActiveSmartCard() {
-        return smartCardInteractor.getActiveSmartCardPipe()
-                .createObservable(new GetActiveSmartCardCommand())
-                .compose(new ActionStateToActionTransformer<>())
-                .map(Command::getResult);
-    }
+   private Observable<SmartCard> fetchActiveSmartCard() {
+      return smartCardInteractor.getActiveSmartCardPipe()
+            .createObservable(new GetActiveSmartCardCommand())
+            .compose(new ActionStateToActionTransformer<>())
+            .map(Command::getResult);
+   }
 
-    @Override
-    public SmartCard smartCard() {
-        return getResult();
-    }
+   @Override
+   public SmartCard smartCard() {
+      return getResult();
+   }
 }

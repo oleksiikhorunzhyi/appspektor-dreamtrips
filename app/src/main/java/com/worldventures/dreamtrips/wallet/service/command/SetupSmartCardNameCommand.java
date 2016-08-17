@@ -17,39 +17,36 @@ import io.techery.janet.smartcard.action.meta.SetMetaDataPairAction;
 
 @CommandAction
 public class SetupSmartCardNameCommand extends Command<Void> implements InjectableAction {
-    private static final String CARD_NAME_KEY = "card_name";
+   private static final String CARD_NAME_KEY = "card_name";
 
-    @Inject @Named(JanetModule.JANET_WALLET) Janet janet;
-    @Inject SnappyRepository snappyRepository;
+   @Inject @Named(JanetModule.JANET_WALLET) Janet janet;
+   @Inject SnappyRepository snappyRepository;
 
-    private final String cardName;
-    private final String cardId;
+   private final String cardName;
+   private final String cardId;
 
-    public SetupSmartCardNameCommand(String cardName, String cardId) {
-        this.cardName = cardName;
-        this.cardId = cardId;
-    }
+   public SetupSmartCardNameCommand(String cardName, String cardId) {
+      this.cardName = cardName;
+      this.cardId = cardId;
+   }
 
-    @Override
-    protected void run(CommandCallback<Void> callback) throws Throwable {
-        WalletValidateHelper.validateCardNameOrThrow(cardName);
+   @Override
+   protected void run(CommandCallback<Void> callback) throws Throwable {
+      WalletValidateHelper.validateCardNameOrThrow(cardName);
 
-        janet.createPipe(SetMetaDataPairAction.class)
-                .createObservableResult(new SetMetaDataPairAction(CARD_NAME_KEY, cardName))
-                .doOnNext(action -> updateCashedSmartCard())
-                .subscribe(action -> callback.onSuccess(null), callback::onFail);
-    }
+      janet.createPipe(SetMetaDataPairAction.class)
+            .createObservableResult(new SetMetaDataPairAction(CARD_NAME_KEY, cardName))
+            .doOnNext(action -> updateCashedSmartCard())
+            .subscribe(action -> callback.onSuccess(null), callback::onFail);
+   }
 
-    private void updateCashedSmartCard() {
-        SmartCard smartCard = snappyRepository.getSmartCard(cardId);
-        smartCard = ImmutableSmartCard.builder()
-                .from(smartCard)
-                .cardName(cardName)
-                .build();
-        snappyRepository.saveSmartCard(smartCard);
-    }
+   private void updateCashedSmartCard() {
+      SmartCard smartCard = snappyRepository.getSmartCard(cardId);
+      smartCard = ImmutableSmartCard.builder().from(smartCard).cardName(cardName).build();
+      snappyRepository.saveSmartCard(smartCard);
+   }
 
-    public String getCardId() {
-        return cardId;
-    }
+   public String getCardId() {
+      return cardId;
+   }
 }

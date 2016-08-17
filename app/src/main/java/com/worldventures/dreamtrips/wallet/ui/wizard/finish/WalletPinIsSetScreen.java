@@ -13,39 +13,37 @@ import com.worldventures.dreamtrips.wallet.ui.common.base.screen.delegate.Dialog
 import butterknife.InjectView;
 import butterknife.OnClick;
 
-public class WalletPinIsSetScreen extends WalletFrameLayout<WalletPinIsSetPresenter.Screen, WalletPinIsSetPresenter, WalletPinIsSetPath>
-        implements WalletPinIsSetPresenter.Screen {
+public class WalletPinIsSetScreen extends WalletFrameLayout<WalletPinIsSetPresenter.Screen, WalletPinIsSetPresenter, WalletPinIsSetPath> implements WalletPinIsSetPresenter.Screen {
 
-    @InjectView(R.id.toolbar)
-    Toolbar toolbar;
+   @InjectView(R.id.toolbar) Toolbar toolbar;
 
-    public WalletPinIsSetScreen(Context context) {
-        super(context);
-    }
+   public WalletPinIsSetScreen(Context context) {
+      super(context);
+   }
 
-    public WalletPinIsSetScreen(Context context, AttributeSet attrs) {
-        super(context, attrs);
-    }
+   public WalletPinIsSetScreen(Context context, AttributeSet attrs) {
+      super(context, attrs);
+   }
 
-    @NonNull
-    @Override
-    public WalletPinIsSetPresenter createPresenter() {
-        return new WalletPinIsSetPresenter(getContext(), getInjector(), getPath().smartCard);
-    }
+   @NonNull
+   @Override
+   public WalletPinIsSetPresenter createPresenter() {
+      return new WalletPinIsSetPresenter(getContext(), getInjector(), getPath().smartCard);
+   }
 
-    @Override
-    protected void onFinishInflate() {
-        super.onFinishInflate();
-        toolbar.setNavigationOnClickListener(v -> presenter.goBack());
-    }
+   @Override
+   protected void onFinishInflate() {
+      super.onFinishInflate();
+      toolbar.setNavigationOnClickListener(v -> presenter.goBack());
+   }
 
-    @OnClick(R.id.next_button)
-    public void nextClick() {
-        presenter.activateSmartCard();
-    }
+   @OnClick(R.id.next_button)
+   public void nextClick() {
+      presenter.activateSmartCard();
+   }
 
-    @Override
-    public OperationScreen provideOperationDelegate() {
-        return new DialogOperationScreen(this);
-    }
+   @Override
+   public OperationScreen provideOperationDelegate() {
+      return new DialogOperationScreen(this);
+   }
 }

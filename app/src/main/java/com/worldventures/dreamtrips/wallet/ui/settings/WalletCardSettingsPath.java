@@ -11,24 +11,24 @@ import com.worldventures.dreamtrips.wallet.domain.entity.SmartCard;
 @Layout(R.layout.screen_wallet_settings)
 public class WalletCardSettingsPath extends StyledPath {
 
-    private final SmartCard smartCard;
+   private final SmartCard smartCard;
 
-    public WalletCardSettingsPath(@NonNull SmartCard smartCard) {
-        this.smartCard = smartCard;
-    }
+   public WalletCardSettingsPath(@NonNull SmartCard smartCard) {
+      this.smartCard = smartCard;
+   }
 
-    @Override
-    public MasterDetailPath getMaster() {
-        return this;
-    }
+   @Override
+   public MasterDetailPath getMaster() {
+      return this;
+   }
 
-    public SmartCard getSmartCard() {
-        return smartCard;
-    }
+   public SmartCard getSmartCard() {
+      return smartCard;
+   }
 
-    @Override
-    public boolean equals(Object o) {
-        // for back navigation
-        return o != null && getClass().equals(o.getClass());
-    }
+   @Override
+   public boolean equals(Object o) {
+      // for back navigation
+      return o != null && getClass().equals(o.getClass());
+   }
 }

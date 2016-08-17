@@ -12,28 +12,27 @@ import io.techery.janet.command.annotations.CommandAction;
 @CommandAction
 public class CompressImageForSmartCardCommand extends SmartCardAvatarCommand implements InjectableAction {
 
-    @Inject
-    SmartCardAvatarHelper smartCardAvatarHelper;
+   @Inject SmartCardAvatarHelper smartCardAvatarHelper;
 
-    private final String filePath;
-    private final int imageSize;
+   private final String filePath;
+   private final int imageSize;
 
-    public CompressImageForSmartCardCommand(String filePath) {
-        this(filePath, DEFAULT_IMAGE_SIZE);
-    }
+   public CompressImageForSmartCardCommand(String filePath) {
+      this(filePath, DEFAULT_IMAGE_SIZE);
+   }
 
-    public CompressImageForSmartCardCommand(String filePath, int imageSize) {
-        this.filePath = filePath;
-        this.imageSize = imageSize;
-    }
+   public CompressImageForSmartCardCommand(String filePath, int imageSize) {
+      this.filePath = filePath;
+      this.imageSize = imageSize;
+   }
 
 
-    @Override
-    protected void run(CommandCallback<File> callback) throws Throwable {
-        try {
-            callback.onSuccess(smartCardAvatarHelper.compressPhotoFromFile(filePath, imageSize));
-        } catch (Throwable throwable) {
-            callback.onFail(throwable);
-        }
-    }
+   @Override
+   protected void run(CommandCallback<File> callback) throws Throwable {
+      try {
+         callback.onSuccess(smartCardAvatarHelper.compressPhotoFromFile(filePath, imageSize));
+      } catch (Throwable throwable) {
+         callback.onFail(throwable);
+      }
+   }
 }

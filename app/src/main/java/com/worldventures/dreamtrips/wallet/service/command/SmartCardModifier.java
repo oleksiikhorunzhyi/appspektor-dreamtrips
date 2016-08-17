@@ -4,5 +4,5 @@ import com.worldventures.dreamtrips.wallet.domain.entity.SmartCard;
 
 public interface SmartCardModifier {
 
-    SmartCard smartCard();
+   SmartCard smartCard();
 }

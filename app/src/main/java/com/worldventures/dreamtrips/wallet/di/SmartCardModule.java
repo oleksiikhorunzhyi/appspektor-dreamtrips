@@ -20,26 +20,26 @@ import io.techery.janet.smartcard.sender.ActionSenderRoster;
 
 @Module(complete = false, library = true)
 public class SmartCardModule {
-    @Singleton
-    @Provides
-    SmartCardClient provideSmartCardClient(Context context) {
-        return new NxtSmartCardClient(context);
-    }
+   @Singleton
+   @Provides
+   SmartCardClient provideSmartCardClient(Context context) {
+      return new NxtSmartCardClient(context);
+   }
 
-    @Singleton
-    @Provides
-    @Named("MockSmartCardClient")
-    SmartCardClient provideMockSmartCardClient(SnappyRepository db) {
-        return new MockSmartCardClient(() -> PersistentDeviceStorage.load(db));
-    }
+   @Singleton
+   @Provides
+   @Named("MockSmartCardClient")
+   SmartCardClient provideMockSmartCardClient(SnappyRepository db) {
+      return new MockSmartCardClient(() -> PersistentDeviceStorage.load(db));
+   }
 
-    @Singleton
-    ActionSenderRoster provideActionSenderRoster() {
-        return new DefaultActionSenderRoster();
-    }
+   @Singleton
+   ActionSenderRoster provideActionSenderRoster() {
+      return new DefaultActionSenderRoster();
+   }
 
-    @Singleton
-    ActionReceiverRoster provideActionReceiverRoster() {
-        return new DefaultActionReceiverRoster();
-    }
+   @Singleton
+   ActionReceiverRoster provideActionReceiverRoster() {
+      return new DefaultActionReceiverRoster();
+   }
 }

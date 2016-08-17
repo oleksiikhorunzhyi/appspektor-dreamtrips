@@ -21,43 +21,40 @@ import rx.Observable;
 
 public class WizardMagstripePresenter extends WalletPresenter<WizardMagstripePresenter.Screen, Parcelable> {
 
-    private final CardType cardType;
+   private final CardType cardType;
 
-    public WizardMagstripePresenter(Context context, Injector injector, CardType cardType) {
-        super(context, injector);
-        this.cardType = cardType;
-    }
+   public WizardMagstripePresenter(Context context, Injector injector, CardType cardType) {
+      super(context, injector);
+      this.cardType = cardType;
+   }
 
-    @Override
-    public void onAttachedToWindow() {
-        super.onAttachedToWindow();
+   @Override
+   public void onAttachedToWindow() {
+      super.onAttachedToWindow();
 
-        //// TODO: remove it in future
-        Observable.just(null)
-                .delay(5, TimeUnit.SECONDS)
-                .compose(bindViewIoToMainComposer())
-                .subscribe(o -> cardSwiped());
-    }
+      //// TODO: remove it in future
+      Observable.just(null).delay(5, TimeUnit.SECONDS).compose(bindViewIoToMainComposer()).subscribe(o -> cardSwiped());
+   }
 
-    public void goBack() {
-        Flow.get(getContext()).goBack();
-    }
+   public void goBack() {
+      Flow.get(getContext()).goBack();
+   }
 
-    public void cardSwiped() {
-        //todo
-        Random random = new Random();
-        BankCard bankCard = ImmutableBankCard.builder()
-                .id(Card.NO_ID)
-                .number(Math.abs(random.nextLong()) % 1000000000000000L)
-                .type(Record.FinancialService.MASTERCARD)
-                .cardType(cardType)
-                .expiryMonth(random.nextInt(13))
-                .expiryYear(random.nextInt(100))
-                .build();
-        Flow.get(getContext()).set(new AddCardDetailsPath(bankCard));
-    }
+   public void cardSwiped() {
+      //todo
+      Random random = new Random();
+      BankCard bankCard = ImmutableBankCard.builder()
+            .id(Card.NO_ID)
+            .number(Math.abs(random.nextLong()) % 1000000000000000L)
+            .type(Record.FinancialService.MASTERCARD)
+            .cardType(cardType)
+            .expiryMonth(random.nextInt(13))
+            .expiryYear(random.nextInt(100))
+            .build();
+      Flow.get(getContext()).set(new AddCardDetailsPath(bankCard));
+   }
 
-    public interface Screen extends WalletScreen {
+   public interface Screen extends WalletScreen {
 
-    }
+   }
 }

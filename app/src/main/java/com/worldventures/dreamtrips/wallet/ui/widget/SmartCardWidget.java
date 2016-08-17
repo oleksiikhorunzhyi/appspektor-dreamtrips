@@ -22,60 +22,60 @@ import rx.Observable;
 
 public class SmartCardWidget extends FrameLayout {
 
-    @InjectView(R.id.cardListSCAvatar) SimpleDraweeView scAvatar;
-    @InjectView(R.id.bankLabel) TextView bankLabel;
-    @InjectView(R.id.connectedCardsCount) TextView connectedCardsCount;
-    @InjectView(R.id.cbLock) CheckBox lockView;
-    @InjectView(R.id.batteryView) BatteryView batteryView;
+   @InjectView(R.id.cardListSCAvatar) SimpleDraweeView scAvatar;
+   @InjectView(R.id.bankLabel) TextView bankLabel;
+   @InjectView(R.id.connectedCardsCount) TextView connectedCardsCount;
+   @InjectView(R.id.cbLock) CheckBox lockView;
+   @InjectView(R.id.batteryView) BatteryView batteryView;
 
-    private boolean lockEnabled;
+   private boolean lockEnabled;
 
-    public SmartCardWidget(Context context) {
-        this(context, null);
-    }
+   public SmartCardWidget(Context context) {
+      this(context, null);
+   }
 
-    public SmartCardWidget(Context context, AttributeSet attrs) {
-        super(context, attrs);
-        setup();
-    }
+   public SmartCardWidget(Context context, AttributeSet attrs) {
+      super(context, attrs);
+      setup();
+   }
 
-    private void setup() {
-        LayoutInflater.from(getContext()).inflate(R.layout.adapter_item_wallet_smartcard, this);
-        ButterKnife.inject(this);
-        setVisibility(INVISIBLE);
-    }
+   private void setup() {
+      LayoutInflater.from(getContext()).inflate(R.layout.adapter_item_wallet_smartcard, this);
+      ButterKnife.inject(this);
+      setVisibility(INVISIBLE);
+   }
 
-    public void bindCard(SmartCard smartCard) {
-        String url = smartCard.userPhoto();
-        bankLabel.setText(smartCard.cardName());
-        if (url != null) scAvatar.setImageURI(Uri.parse(url));
-        batteryView.setLevel(smartCard.batteryLevel());
-        lockView.setChecked(smartCard.lock());
-        setLockBtnEnabled(!smartCard.lock());
-        setVisibility(VISIBLE);
-    }
+   public void bindCard(SmartCard smartCard) {
+      String url = smartCard.userPhoto();
+      bankLabel.setText(smartCard.cardName());
+      if (url != null) scAvatar.setImageURI(Uri.parse(url));
+      batteryView.setLevel(smartCard.batteryLevel());
+      lockView.setChecked(smartCard.lock());
+      setLockBtnEnabled(!smartCard.lock());
+      setVisibility(VISIBLE);
+   }
 
-    public void bindCount(int cardCount) {
-        if (cardCount > 0) {
-            int resId = QuantityHelper.chooseResource(cardCount, R.string.wallet_card_list_record_connected, R.string.wallet_card_list_records_connected);
-            connectedCardsCount.setText(getResources().getString(resId, cardCount));
-            connectedCardsCount.setVisibility(VISIBLE);
-        } else {
-            connectedCardsCount.setVisibility(INVISIBLE);
-        }
-    }
+   public void bindCount(int cardCount) {
+      if (cardCount > 0) {
+         int resId = QuantityHelper.chooseResource(cardCount, R.string.wallet_card_list_record_connected, R.string.wallet_card_list_records_connected);
+         connectedCardsCount.setText(getResources().getString(resId, cardCount));
+         connectedCardsCount.setVisibility(VISIBLE);
+      } else {
+         connectedCardsCount.setVisibility(INVISIBLE);
+      }
+   }
 
-    public void setLockBtnEnabled(boolean isEnabled) {
-        this.lockEnabled = isEnabled;
-    }
+   public void setLockBtnEnabled(boolean isEnabled) {
+      this.lockEnabled = isEnabled;
+   }
 
-    public Observable<Boolean> lockStatus() {
-        return RxCompoundButton.checkedChanges(lockView);
-    }
+   public Observable<Boolean> lockStatus() {
+      return RxCompoundButton.checkedChanges(lockView);
+   }
 
-    public Observable<Void> unSupportedUnlockOperation() {
-        return RxView.touches(lockView, motionEvent -> !lockEnabled)
-                .filter(motionEvent -> motionEvent.getAction() == MotionEvent.ACTION_UP && !lockEnabled)
-                .map(motionEvent -> null);
-    }
+   public Observable<Void> unSupportedUnlockOperation() {
+      return RxView.touches(lockView, motionEvent -> !lockEnabled)
+            .filter(motionEvent -> motionEvent.getAction() == MotionEvent.ACTION_UP && !lockEnabled)
+            .map(motionEvent -> null);
+   }
 }

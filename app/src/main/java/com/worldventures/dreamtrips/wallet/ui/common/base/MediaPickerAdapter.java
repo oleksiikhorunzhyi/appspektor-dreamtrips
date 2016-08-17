@@ -10,39 +10,39 @@ import rx.Observable;
 
 public class MediaPickerAdapter implements MediaPickerService {
 
-    private final MessengerMediaPickerDelegate messengerMediaPickerDelegate;
-    private final CropImageDelegate cropImageDelegate;
+   private final MessengerMediaPickerDelegate messengerMediaPickerDelegate;
+   private final CropImageDelegate cropImageDelegate;
 
-    public MediaPickerAdapter(MessengerMediaPickerDelegate messengerMediaPickerDelegate, CropImageDelegate cropImageDelegate) {
-        this.messengerMediaPickerDelegate = messengerMediaPickerDelegate;
-        this.cropImageDelegate = cropImageDelegate;
-    }
+   public MediaPickerAdapter(MessengerMediaPickerDelegate messengerMediaPickerDelegate, CropImageDelegate cropImageDelegate) {
+      this.messengerMediaPickerDelegate = messengerMediaPickerDelegate;
+      this.cropImageDelegate = cropImageDelegate;
+   }
 
-    @Override
-    public void pickPhoto() {
-        messengerMediaPickerDelegate.showPhotoPicker();
-    }
+   @Override
+   public void pickPhoto() {
+      messengerMediaPickerDelegate.showPhotoPicker();
+   }
 
-    @Override
-    public void crop(String filePath) {
-        cropImageDelegate.cropImage(filePath);
-    }
+   @Override
+   public void crop(String filePath) {
+      cropImageDelegate.cropImage(filePath);
+   }
 
-    @Override
-    public void hidePicker() {
-        messengerMediaPickerDelegate.hidePhotoPicker();
-    }
+   @Override
+   public void hidePicker() {
+      messengerMediaPickerDelegate.hidePhotoPicker();
+   }
 
-    @Override
-    public Observable<String> observePicker() {
-        return messengerMediaPickerDelegate.getImagePathsStream();
-    }
+   @Override
+   public Observable<String> observePicker() {
+      return messengerMediaPickerDelegate.getImagePathsStream();
+   }
 
-    @Override
-    public Observable<File> observeCropper() {
-        return cropImageDelegate.getCroppedImagesStream()
-                .filter(cropNotification -> cropNotification.getKind() == Notification.Kind.OnNext)
-                .map(Notification::getValue);
-    }
+   @Override
+   public Observable<File> observeCropper() {
+      return cropImageDelegate.getCroppedImagesStream()
+            .filter(cropNotification -> cropNotification.getKind() == Notification.Kind.OnNext)
+            .map(Notification::getValue);
+   }
 
 }

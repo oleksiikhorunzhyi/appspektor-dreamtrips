@@ -10,16 +10,16 @@ import io.techery.janet.Command;
 import io.techery.janet.command.annotations.CommandAction;
 
 @CommandAction
-public class GetActiveSmartCardCommand  extends Command<SmartCard> implements InjectableAction {
+public class GetActiveSmartCardCommand extends Command<SmartCard> implements InjectableAction {
 
-    @Inject SnappyRepository snappyRepository;
+   @Inject SnappyRepository snappyRepository;
 
-    public GetActiveSmartCardCommand() {
-    }
+   public GetActiveSmartCardCommand() {
+   }
 
-    @Override
-    protected void run(CommandCallback<SmartCard> callback) throws Throwable {
-        // TODO update info from SC device with set of actions
-        callback.onSuccess(snappyRepository.getSmartCard(snappyRepository.getActiveSmartCardId()));
-    }
+   @Override
+   protected void run(CommandCallback<SmartCard> callback) throws Throwable {
+      // TODO update info from SC device with set of actions
+      callback.onSuccess(snappyRepository.getSmartCard(snappyRepository.getActiveSmartCardId()));
+   }
 }

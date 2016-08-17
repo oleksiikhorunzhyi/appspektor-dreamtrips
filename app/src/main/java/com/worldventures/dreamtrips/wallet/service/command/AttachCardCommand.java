@@ -1,8 +1,8 @@
 package com.worldventures.dreamtrips.wallet.service.command;
 
 import com.worldventures.dreamtrips.core.janet.dagger.InjectableAction;
-import com.worldventures.dreamtrips.wallet.domain.entity.card.BankCard;
 import com.worldventures.dreamtrips.wallet.domain.converter.BankCardConverter;
+import com.worldventures.dreamtrips.wallet.domain.entity.card.BankCard;
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -21,38 +21,37 @@ import static com.worldventures.dreamtrips.core.janet.JanetModule.JANET_WALLET;
 @CommandAction
 public class AttachCardCommand extends Command<Record> implements InjectableAction {
 
-    @Inject
-    @Named(JANET_WALLET)
-    Janet janet;
+   @Inject @Named(JANET_WALLET) Janet janet;
 
-    private final BankCardConverter converter = new BankCardConverter();
+   private final BankCardConverter converter = new BankCardConverter();
 
-    private final BankCard card;
-    private final boolean setAsDefaultCard;
+   private final BankCard card;
+   private final boolean setAsDefaultCard;
 
-    public AttachCardCommand(BankCard card, boolean setAsDefaultCard) {
-        this.card = card;
-        this.setAsDefaultCard = setAsDefaultCard;
-    }
+   public AttachCardCommand(BankCard card, boolean setAsDefaultCard) {
+      this.card = card;
+      this.setAsDefaultCard = setAsDefaultCard;
+   }
 
-    @Override
-    protected void run(CommandCallback<Record> callback) throws Throwable {
-        Record record = converter.to(card);
-        janet.createPipe(AddRecordAction.class)
-                .createObservable(new AddRecordAction(record))
-                .compose(new ActionStateToActionTransformer<>())
-                .map(it -> it.record)
-                .flatMap(addedRecord -> saveDefaultCard(addedRecord))
-                .subscribe(callback::onSuccess, callback::onFail);
-    }
+   @Override
+   protected void run(CommandCallback<Record> callback) throws Throwable {
+      Record record = converter.to(card);
+      janet.createPipe(AddRecordAction.class)
+            .createObservable(new AddRecordAction(record))
+            .compose(new ActionStateToActionTransformer<>())
+            .map(it -> it.record)
+            .flatMap(addedRecord -> saveDefaultCard(addedRecord))
+            .subscribe(callback::onSuccess, callback::onFail);
+   }
 
-    private Observable<Record> saveDefaultCard(Record record) {
-        return !setAsDefaultCard ? Observable.just(record) : janet.createPipe(SetDefaultCardOnDeviceCommand.class, Schedulers.io())
-                .createObservableResult(new SetDefaultCardOnDeviceCommand(String.valueOf(record.id())))
-                .map(setDefaultCardOnDeviceAction -> record);
-    }
+   private Observable<Record> saveDefaultCard(Record record) {
+      return !setAsDefaultCard ? Observable.just(record) : janet.createPipe(SetDefaultCardOnDeviceCommand.class, Schedulers
+            .io())
+            .createObservableResult(new SetDefaultCardOnDeviceCommand(String.valueOf(record.id())))
+            .map(setDefaultCardOnDeviceAction -> record);
+   }
 
-    public BankCard bankCard() {
-        return card;
-    }
+   public BankCard bankCard() {
+      return card;
+   }
 }

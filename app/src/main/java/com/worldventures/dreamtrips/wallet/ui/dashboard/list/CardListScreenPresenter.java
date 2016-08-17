@@ -158,7 +158,7 @@ public class CardListScreenPresenter extends WalletPresenter<CardListScreenPrese
                title = getContext().getString(R.string.dashboard_default_card_stack_title);
          }
 
-         list.add(new CardStackViewModel(title, vm.bankCards()));
+         list.add(new CardStackViewModel(vm.type(), vm.bankCards(), title));
       }
 
       return list;

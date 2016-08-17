@@ -22,44 +22,44 @@ import io.techery.janet.http.test.MockHttpActionService
 import org.jetbrains.spek.api.DescribeBody
 
 abstract class BucketInteractorBaseSpec(speckBody: DescribeBody.() -> Unit) : BaseSpec(speckBody) {
-    companion object BaseCompanion {
-        val MOCK_USER_ID = 1
+   companion object BaseCompanion {
+      val MOCK_USER_ID = 1
 
-        val mockMemoryStorage: BucketMemoryStorage = spy()
-        val mockDb: SnappyRepository = spy()
+      val mockMemoryStorage: BucketMemoryStorage = spy()
+      val mockDb: SnappyRepository = spy()
 
-        val mockSessionHolder: SessionHolder<UserSession> = mock()
-        val userSession: UserSession = mock()
-        val staticPageProvider: StaticPageProvider = mock()
+      val mockSessionHolder: SessionHolder<UserSession> = mock()
+      val userSession: UserSession = mock()
+      val staticPageProvider: StaticPageProvider = mock()
 
-        lateinit var bucketInteractor: BucketInteractor
+      lateinit var bucketInteractor: BucketInteractor
 
-        fun setup(storageSet: () -> Set<ActionStorage<*>>, httpService: () -> MockHttpActionService) {
-            val daggerCommandActionService = CommandActionService()
-                    .wrapCache()
-                    .bindStorageSet(storageSet())
-                    .wrapDagger()
-            val janet = Janet.Builder()
-                    .addService(daggerCommandActionService)
-                    .addService(httpService().wrapStub().wrapCache())
-                    .build()
+      fun setup(storageSet: () -> Set<ActionStorage<*>>, httpService: () -> MockHttpActionService) {
+         val daggerCommandActionService = CommandActionService()
+               .wrapCache()
+               .bindStorageSet(storageSet())
+               .wrapDagger()
+         val janet = Janet.Builder()
+               .addService(daggerCommandActionService)
+               .addService(httpService().wrapStub().wrapCache())
+               .build()
 
-            daggerCommandActionService.registerProvider(Janet::class.java) { janet }
-            daggerCommandActionService.registerProvider(SnappyRepository::class.java) { mockDb }
-            daggerCommandActionService.registerProvider(SessionHolder::class.java) { mockSessionHolder }
-            daggerCommandActionService.registerProvider(BucketInteractor::class.java) { bucketInteractor }
-            daggerCommandActionService.registerProvider(UploaderyManager::class.java) { UploaderyManager(janet) }
-            daggerCommandActionService.registerProvider(Context::class.java, { MockContext() })
-            daggerCommandActionService.registerProvider(StaticPageProvider::class.java, { staticPageProvider})
+         daggerCommandActionService.registerProvider(Janet::class.java) { janet }
+         daggerCommandActionService.registerProvider(SnappyRepository::class.java) { mockDb }
+         daggerCommandActionService.registerProvider(SessionHolder::class.java) { mockSessionHolder }
+         daggerCommandActionService.registerProvider(BucketInteractor::class.java) { bucketInteractor }
+         daggerCommandActionService.registerProvider(UploaderyManager::class.java) { UploaderyManager(janet) }
+         daggerCommandActionService.registerProvider(Context::class.java, { MockContext() })
+         daggerCommandActionService.registerProvider(StaticPageProvider::class.java, { staticPageProvider })
 
-            bucketInteractor = BucketInteractor(janet)
+         bucketInteractor = BucketInteractor(janet)
 
-            val mockUser = mock<User>()
+         val mockUser = mock<User>()
 
-            whenever(mockUser.id).thenReturn(MOCK_USER_ID)
-            whenever(userSession.user).thenReturn(mockUser)
-            whenever(mockSessionHolder.get()).thenReturn(Optional.of(userSession))
-            whenever(staticPageProvider.uploaderyUrl).thenReturn("http://test-uploadery")
-        }
-    }
+         whenever(mockUser.id).thenReturn(MOCK_USER_ID)
+         whenever(userSession.user).thenReturn(mockUser)
+         whenever(mockSessionHolder.get()).thenReturn(Optional.of(userSession))
+         whenever(staticPageProvider.uploaderyUrl).thenReturn("http://test-uploadery")
+      }
+   }
 }

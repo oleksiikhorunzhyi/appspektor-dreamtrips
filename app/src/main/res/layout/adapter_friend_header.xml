@@ -1,51 +1,55 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:orientation="vertical">
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+      xmlns:tools="http://schemas.android.com/tools"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:orientation="vertical"
+      >
 
-    <TextView
-        android:id="@+id/header"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@color/grey_lighter"
-        android:padding="@dimen/spacing_small"
-        tools:text="Incoming"/>
+   <TextView
+         android:id="@+id/header"
+         android:layout_width="match_parent"
+         android:layout_height="wrap_content"
+         android:background="@color/grey_lighter"
+         android:padding="@dimen/spacing_small"
+         tools:text="Incoming"
+         />
 
-    <android.support.v7.widget.CardView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="@dimen/spacing_tiny"
-        android:layout_marginTop="@dimen/spacing_tiniest">
+   <android.support.v7.widget.CardView
+         android:layout_width="match_parent"
+         android:layout_height="wrap_content"
+         android:layout_marginBottom="@dimen/spacing_tiny"
+         android:layout_marginTop="@dimen/spacing_tiniest"
+         >
 
-        <LinearLayout
+      <LinearLayout
             android:id="@+id/advanced_container"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
             android:gravity="center"
             android:orientation="horizontal"
-            android:padding="@dimen/spacing_small">
+            android:padding="@dimen/spacing_small"
+            >
 
-            <TextView
-                android:id="@+id/requestCountDesc"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:padding="@dimen/spacing_small"
-                android:textColor="@android:color/black"
-                android:textSize="18sp"
-                tools:text="You have 125 incoming Friend requests"/>
+         <TextView
+               android:id="@+id/requestCountDesc"
+               android:layout_width="0dp"
+               android:layout_height="wrap_content"
+               android:layout_weight="1"
+               android:padding="@dimen/spacing_small"
+               android:textColor="@android:color/black"
+               android:textSize="18sp"
+               tools:text="You have 125 incoming Friend requests"
+               />
 
-            <Button
-                android:id="@+id/accept_all_btn"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/accept_all"
-                android:textColor="@android:color/white"
-                />
-        </LinearLayout>
-    </android.support.v7.widget.CardView>
+         <Button
+               android:id="@+id/accept_all_btn"
+               android:layout_width="wrap_content"
+               android:layout_height="wrap_content"
+               android:text="@string/accept_all"
+               android:textColor="@android:color/white"
+               />
+      </LinearLayout>
+   </android.support.v7.widget.CardView>
 </LinearLayout>

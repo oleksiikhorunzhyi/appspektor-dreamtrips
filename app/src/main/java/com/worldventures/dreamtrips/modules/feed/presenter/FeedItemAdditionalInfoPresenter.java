@@ -16,44 +16,43 @@ import io.techery.janet.helper.ActionStateSubscriber;
 
 public class FeedItemAdditionalInfoPresenter<V extends FeedItemAdditionalInfoPresenter.View> extends Presenter<V> {
 
-    @Inject AuthInteractor authInteractor;
+   @Inject AuthInteractor authInteractor;
 
-    private User user;
+   private User user;
 
-    public FeedItemAdditionalInfoPresenter(User user) {
-        this.user = user;
-    }
+   public FeedItemAdditionalInfoPresenter(User user) {
+      this.user = user;
+   }
 
-    @Override
-    public void takeView(V view) {
-        super.takeView(view);
-        subscribeToUserUpdate();
-    }
+   @Override
+   public void takeView(V view) {
+      super.takeView(view);
+      subscribeToUserUpdate();
+   }
 
-    public void loadUser() {
-        if (user == null) return;
-        //
-        if (!TextUtils.isEmpty(user.getBackgroundPhotoUrl())) {
-            view.setupView(user);
-        } else {
-            doRequest(new GetPublicProfileQuery(user), view::setupView, spiceException -> view.setupView(user));
-        }
-    }
+   public void loadUser() {
+      if (user == null) return;
+      //
+      if (!TextUtils.isEmpty(user.getBackgroundPhotoUrl())) {
+         view.setupView(user);
+      } else {
+         doRequest(new GetPublicProfileQuery(user), view::setupView, spiceException -> view.setupView(user));
+      }
+   }
 
-    private void subscribeToUserUpdate() {
-        view.bindUntilDropView(authInteractor.updateUserPipe().observe()
-                .compose(new IoToMainComposer<>()))
-                .subscribe(new ActionStateSubscriber<UpdateUserCommand>().onSuccess(userUpdateCommand -> {
-                    User updatedUser = userUpdateCommand.getResult();
-                    if (user != null && updatedUser.getId() == user.getId()) {
-                        this.user = updatedUser;
-                        view.setupView(updatedUser);
-                    }
-                }));
-    }
+   private void subscribeToUserUpdate() {
+      view.bindUntilDropView(authInteractor.updateUserPipe().observe().compose(new IoToMainComposer<>()))
+            .subscribe(new ActionStateSubscriber<UpdateUserCommand>().onSuccess(userUpdateCommand -> {
+               User updatedUser = userUpdateCommand.getResult();
+               if (user != null && updatedUser.getId() == user.getId()) {
+                  this.user = updatedUser;
+                  view.setupView(updatedUser);
+               }
+            }));
+   }
 
-    public interface View extends RxView {
+   public interface View extends RxView {
 
-        void setupView(User user);
-    }
+      void setupView(User user);
+   }
 }

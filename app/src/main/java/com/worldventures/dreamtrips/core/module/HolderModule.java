@@ -15,15 +15,15 @@ import de.greenrobot.event.EventBus;
 @Module(library = true, complete = false)
 public class HolderModule {
 
-    @Provides
-    @Singleton
-    public SessionHolder<UserSession> session(SimpleKeyValueStorage simpleKeyValueStorage, @Global EventBus eventBus) {
-        return new SessionHolder<>(simpleKeyValueStorage, UserSession.class, eventBus);
-    }
+   @Provides
+   @Singleton
+   public SessionHolder<UserSession> session(SimpleKeyValueStorage simpleKeyValueStorage, @Global EventBus eventBus) {
+      return new SessionHolder<>(simpleKeyValueStorage, UserSession.class, eventBus);
+   }
 
-    @Provides
-    @Singleton
-    public FeatureManager featureManager(SessionHolder<UserSession> session) {
-        return new FeatureManager(session);
-    }
+   @Provides
+   @Singleton
+   public FeatureManager featureManager(SessionHolder<UserSession> session) {
+      return new FeatureManager(session);
+   }
 }

@@ -9,14 +9,14 @@ import rx.schedulers.Schedulers;
 
 @Singleton
 public class UploaderyManager {
-    private final ActionPipe<UploaderyImageCommand> uploadImagePipe;
+   private final ActionPipe<UploaderyImageCommand> uploadImagePipe;
 
-    @Inject
-    public UploaderyManager(Janet janet) {
-        this.uploadImagePipe = janet.createPipe(UploaderyImageCommand.class, Schedulers.io());
-    }
+   @Inject
+   public UploaderyManager(Janet janet) {
+      this.uploadImagePipe = janet.createPipe(UploaderyImageCommand.class, Schedulers.io());
+   }
 
-    public ActionPipe<UploaderyImageCommand> getUploadImagePipe() {
-        return uploadImagePipe;
-    }
+   public ActionPipe<UploaderyImageCommand> getUploadImagePipe() {
+      return uploadImagePipe;
+   }
 }

@@ -1,62 +1,67 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              xmlns:fresco="http://schemas.android.com/apk/res-auto"
-              xmlns:tools="http://schemas.android.com/tools"
-              android:layout_width="match_parent"
-              android:layout_height="wrap_content"
-              android:orientation="vertical">
+      xmlns:fresco="http://schemas.android.com/apk/res-auto"
+      xmlns:tools="http://schemas.android.com/tools"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:orientation="vertical"
+      >
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:padding="@dimen/spacing_normal">
+   <LinearLayout
+         android:layout_width="match_parent"
+         android:layout_height="wrap_content"
+         android:orientation="horizontal"
+         android:padding="@dimen/spacing_normal"
+         >
 
-        <com.worldventures.dreamtrips.modules.common.view.custom.SmartAvatarView
+      <com.worldventures.dreamtrips.modules.common.view.custom.SmartAvatarView
             android:id="@+id/notification_avatar"
             android:layout_width="60dp"
             android:layout_height="60dp"
             android:layout_marginRight="@dimen/spacing_normal"
             fresco:placeholderImage="@drawable/ic_avatar_placeholder"
             fresco:placeholderImageScaleType="centerInside"
-            fresco:roundAsCircle="true"/>
+            fresco:roundAsCircle="true"
+            />
 
 
-        <LinearLayout
+      <LinearLayout
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            >
 
-            <TextView
-                android:id="@+id/notification_owner"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:singleLine="true"
-                android:textColor="@android:color/black"
-                android:textSize="@dimen/font_normal"
-                android:visibility="gone"
-                tools:text="Kely Snyder"/>
+         <TextView
+               android:id="@+id/notification_owner"
+               android:layout_width="wrap_content"
+               android:layout_height="wrap_content"
+               android:singleLine="true"
+               android:textColor="@android:color/black"
+               android:textSize="@dimen/font_normal"
+               android:visibility="gone"
+               tools:text="Kely Snyder"
+               />
 
-            <TextView
-                android:id="@+id/notification_text"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textColor="@android:color/black"
-                android:textSize="@dimen/font_medium"
-                tools:text="commend your picture"
-                />
+         <TextView
+               android:id="@+id/notification_text"
+               android:layout_width="wrap_content"
+               android:layout_height="wrap_content"
+               android:textColor="@android:color/black"
+               android:textSize="@dimen/font_medium"
+               tools:text="commend your picture"
+               />
 
-            <TextView
-                android:id="@+id/notification_time"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textSize="@dimen/font_small"
-                tools:text="Just now"
-                />
-        </LinearLayout>
+         <TextView
+               android:id="@+id/notification_time"
+               android:layout_width="wrap_content"
+               android:layout_height="wrap_content"
+               android:textSize="@dimen/font_small"
+               tools:text="Just now"
+               />
+      </LinearLayout>
 
-        <com.facebook.drawee.view.SimpleDraweeView
+      <com.facebook.drawee.view.SimpleDraweeView
             android:id="@+id/notification_header_image"
             android:layout_width="60dp"
             android:layout_height="60dp"
@@ -65,10 +70,11 @@
             fresco:placeholderImageScaleType="centerCrop"
             />
 
-    </LinearLayout>
+   </LinearLayout>
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="0.5dp"
-        android:background="@color/grey"/>
+   <LinearLayout
+         android:layout_width="match_parent"
+         android:layout_height="0.5dp"
+         android:background="@color/grey"
+         />
 </LinearLayout>

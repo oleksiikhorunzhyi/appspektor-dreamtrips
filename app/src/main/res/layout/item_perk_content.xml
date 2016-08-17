@@ -1,52 +1,52 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/description"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:background="@color/white"
-    android:orientation="vertical"
-    android:padding="@dimen/spacing_small">
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+      xmlns:tools="http://schemas.android.com/tools"
+      android:id="@+id/description"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:background="@color/white"
+      android:orientation="vertical"
+      android:padding="@dimen/spacing_small"
+      >
 
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:fontFamily="sans-serif-medium"
-        android:text="@string/dtl_description"
-        android:textColor="@color/black"
-        android:textSize="@dimen/font_medium"
-        />
+   <TextView
+         android:layout_width="match_parent"
+         android:layout_height="wrap_content"
+         android:fontFamily="sans-serif-medium"
+         android:text="@string/dtl_description"
+         android:textColor="@color/black"
+         android:textSize="@dimen/font_medium"
+         />
 
-    <TextView
-        android:id="@+id/perk_description"
-        style="@style/TextAppearance.AppCompat.Body1"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:fontFamily="sans-serif"
-        android:textSize="13sp"
-        tools:text="Sed ut perspiciatis unde omnis iste natus error sit voluptatem, totam rem aperiam, eaque ipsa quae ab illo et quasi architecto beatae vitae sunt explicabo. "
-        />
+   <TextView
+         android:id="@+id/perk_description"
+         style="@style/TextAppearance.AppCompat.Body1"
+         android:layout_width="wrap_content"
+         android:layout_height="wrap_content"
+         android:fontFamily="sans-serif"
+         android:textSize="13sp"
+         tools:text="Sed ut perspiciatis unde omnis iste natus error sit voluptatem, totam rem aperiam, eaque ipsa quae ab illo et quasi architecto beatae vitae sunt explicabo. "
+         />
 
-    <TextView
-        android:id="@+id/perk_disclaimer_header"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:fontFamily="sans-serif-medium"
-        android:text="@string/perks_terms"
-        android:textSize="@dimen/font_medium"
-        android:layout_marginTop="@dimen/spacing_medium"
-        />
+   <TextView
+         android:id="@+id/perk_disclaimer_header"
+         android:layout_width="match_parent"
+         android:layout_height="wrap_content"
+         android:fontFamily="sans-serif-medium"
+         android:text="@string/perks_terms"
+         android:textSize="@dimen/font_medium"
+         android:layout_marginTop="@dimen/spacing_medium"
+         />
 
-    <TextView
-        android:id="@+id/perk_disclaimer"
-        style="@style/DreamMerchantSubHeaderTextAppearance"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:fontFamily="sans-serif"
-        android:paddingTop="@dimen/spacing_tiny"
-        android:textSize="13sp"
-        tools:text="Sed ut perspiciatis unde omnis iste natus error sit voluptatem, totam rem aperiam, eaque ipsa quae ab illo et quasi architecto beatae vitae sunt explicabo. "
-        />
+   <TextView
+         android:id="@+id/perk_disclaimer"
+         style="@style/DreamMerchantSubHeaderTextAppearance"
+         android:layout_width="wrap_content"
+         android:layout_height="wrap_content"
+         android:fontFamily="sans-serif"
+         android:paddingTop="@dimen/spacing_tiny"
+         android:textSize="13sp"
+         tools:text="Sed ut perspiciatis unde omnis iste natus error sit voluptatem, totam rem aperiam, eaque ipsa quae ab illo et quasi architecto beatae vitae sunt explicabo. "
+         />
 
 </LinearLayout>

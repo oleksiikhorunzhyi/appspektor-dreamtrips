@@ -4,5 +4,5 @@ import com.worldventures.dreamtrips.modules.dtl_flow.DtlScreen;
 
 public interface DtlFullscreenImageScreen extends DtlScreen {
 
-    void showImage(String url);
+   void showImage(String url);
 }

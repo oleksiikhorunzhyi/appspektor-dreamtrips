@@ -6,14 +6,14 @@ import rx.plugins.RxJavaSchedulersHook;
 import rx.schedulers.Schedulers;
 
 public final class RxJavaSchedulerInitializer {
-    static {
-        RxJavaPlugins.getInstance().registerSchedulersHook(new RxJavaSchedulersHook() {
-            @Override
-            public Scheduler getIOScheduler() {
-                return Schedulers.immediate();
-            }
-        });
-    }
+   static {
+      RxJavaPlugins.getInstance().registerSchedulersHook(new RxJavaSchedulersHook() {
+         @Override
+         public Scheduler getIOScheduler() {
+            return Schedulers.immediate();
+         }
+      });
+   }
 
-    public static void init() {}
+   public static void init() {}
 }

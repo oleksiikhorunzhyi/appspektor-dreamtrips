@@ -1,22 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-             android:layout_width="match_parent"
-             android:layout_height="match_parent"
-             android:background="#0F2639"
-             android:orientation="vertical">
+      android:layout_width="match_parent"
+      android:layout_height="match_parent"
+      android:background="#0F2639"
+      android:orientation="vertical"
+      >
 
 
-    <android.support.v4.widget.SwipeRefreshLayout
-        android:id="@+id/swipe_container"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
+   <android.support.v4.widget.SwipeRefreshLayout
+         android:id="@+id/swipe_container"
+         android:layout_width="match_parent"
+         android:layout_height="match_parent"
+         >
 
-        <com.worldventures.dreamtrips.modules.tripsimages.view.custom.HotFixRecyclerView
+      <com.worldventures.dreamtrips.modules.tripsimages.view.custom.HotFixRecyclerView
             android:id="@+id/recyclerViewAll"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_marginTop="@dimen/spacing_small"/>
+            android:layout_marginTop="@dimen/spacing_small"
+            />
 
-    </android.support.v4.widget.SwipeRefreshLayout>
+   </android.support.v4.widget.SwipeRefreshLayout>
 
 </FrameLayout>

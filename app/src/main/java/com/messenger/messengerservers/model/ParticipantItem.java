@@ -4,6 +4,6 @@ import org.immutables.value.Value;
 
 @Value.Immutable
 public interface ParticipantItem {
-    String getAffiliation();
-    String getUserId();
+   String getAffiliation();
+   String getUserId();
 }

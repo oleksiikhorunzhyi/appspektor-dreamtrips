@@ -5,18 +5,18 @@ import com.worldventures.dreamtrips.core.flow.path.MasterDetailPath;
 
 public abstract class DtlMasterPath extends DtlPath implements FullScreenPath {
 
-    @Override
-    public MasterDetailPath getMaster() {
-        return this;
-    }
+   @Override
+   public MasterDetailPath getMaster() {
+      return this;
+   }
 
-    @Override
-    public boolean isFullScreen() {
-        return false;
-    }
+   @Override
+   public boolean isFullScreen() {
+      return false;
+   }
 
-    @Override
-    public boolean shouldHideDrawer() {
-        return false;
-    }
+   @Override
+   public boolean shouldHideDrawer() {
+      return false;
+   }
 }

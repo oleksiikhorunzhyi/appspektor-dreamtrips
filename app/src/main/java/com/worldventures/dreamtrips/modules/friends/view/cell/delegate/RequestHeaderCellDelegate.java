@@ -5,5 +5,5 @@ import com.worldventures.dreamtrips.modules.friends.model.RequestHeaderModel;
 
 public interface RequestHeaderCellDelegate extends CellDelegate<RequestHeaderModel> {
 
-    void acceptAllRequests();
+   void acceptAllRequests();
 }

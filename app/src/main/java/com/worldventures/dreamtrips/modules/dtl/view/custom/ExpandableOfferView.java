@@ -14,57 +14,57 @@ import butterknife.ButterKnife;
 
 public class ExpandableOfferView extends ExpandableLayout {
 
-    private View rotateView;
+   private View rotateView;
 
-    public ExpandableOfferView(Context context) {
-        super(context);
-        setup();
-    }
+   public ExpandableOfferView(Context context) {
+      super(context);
+      setup();
+   }
 
-    public ExpandableOfferView(Context context, AttributeSet attrs) {
-        super(context, attrs);
-        setup();
-    }
+   public ExpandableOfferView(Context context, AttributeSet attrs) {
+      super(context, attrs);
+      setup();
+   }
 
-    public ExpandableOfferView(Context context, AttributeSet attrs, int defStyle) {
-        super(context, attrs, defStyle);
-        setup();
-    }
+   public ExpandableOfferView(Context context, AttributeSet attrs, int defStyle) {
+      super(context, attrs, defStyle);
+      setup();
+   }
 
-    private void setup() {
-        rotateView = ButterKnife.findById(this, getRotateViewResourceId());
-        Preconditions.checkNotNull(rotateView, "rotate view not found in layout");
-    }
+   private void setup() {
+      rotateView = ButterKnife.findById(this, getRotateViewResourceId());
+      Preconditions.checkNotNull(rotateView, "rotate view not found in layout");
+   }
 
-    @Override
-    protected void expand(View v) {
-        super.expand(v);
+   @Override
+   protected void expand(View v) {
+      super.expand(v);
 
-        if (isAnimationRunning()) return;
-        AnimationUtils.rotateByDegrees(rotateView, 180, getDuration());
-    }
+      if (isAnimationRunning()) return;
+      AnimationUtils.rotateByDegrees(rotateView, 180, getDuration());
+   }
 
-    @Override
-    protected void collapse(View v) {
-        super.collapse(v);
+   @Override
+   protected void collapse(View v) {
+      super.collapse(v);
 
-        if (isAnimationRunning()) return;
-        AnimationUtils.rotateByDegrees(rotateView, 0, getDuration());
-    }
+      if (isAnimationRunning()) return;
+      AnimationUtils.rotateByDegrees(rotateView, 0, getDuration());
+   }
 
-    protected int getRotateViewResourceId() {
-        return R.id.view_arrow;
-    }
+   protected int getRotateViewResourceId() {
+      return R.id.view_arrow;
+   }
 
-    @Override
-    public void showWithoutAnimation() {
-        super.showWithoutAnimation();
-        ViewCompat.setRotation(rotateView, 180);
-    }
+   @Override
+   public void showWithoutAnimation() {
+      super.showWithoutAnimation();
+      ViewCompat.setRotation(rotateView, 180);
+   }
 
-    @Override
-    public void hideWithoutAnimation() {
-        super.hideWithoutAnimation();
-        ViewCompat.setRotation(rotateView, 0);
-    }
+   @Override
+   public void hideWithoutAnimation() {
+      super.hideWithoutAnimation();
+      ViewCompat.setRotation(rotateView, 0);
+   }
 }

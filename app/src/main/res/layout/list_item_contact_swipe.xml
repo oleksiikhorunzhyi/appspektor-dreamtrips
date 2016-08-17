@@ -1,19 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.daimajia.swipe.SwipeLayout
-    android:id="@+id/swipe"
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+<com.daimajia.swipe.SwipeLayout android:id="@+id/swipe"
+      xmlns:android="http://schemas.android.com/apk/res/android"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      >
 
-    <Button
-        android:id="@+id/swipe_layout_button_delete"
-        style="@style/MessengerSwappableActionButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:background="@color/chat_edit_members_delete_button_bg"
-        android:drawableLeft="@drawable/ic_delete_member"
-        android:text="@string/edit_chat_members_row_button_delete"/>
+   <Button
+         android:id="@+id/swipe_layout_button_delete"
+         style="@style/MessengerSwappableActionButton"
+         android:layout_width="wrap_content"
+         android:layout_height="wrap_content"
+         android:background="@color/chat_edit_members_delete_button_bg"
+         android:drawableLeft="@drawable/ic_delete_member"
+         android:text="@string/edit_chat_members_row_button_delete"
+         />
 
-    <include layout="@layout/list_item_contact"/>
+   <include layout="@layout/list_item_contact" />
 
 </com.daimajia.swipe.SwipeLayout>

@@ -48,276 +48,275 @@ import butterknife.InjectView;
 @Layout(R.layout.fragment_hashtag_feed)
 public class FeedHashtagFragment extends RxBaseFragmentWithArgs<FeedHashtagPresenter, FeedHashtagBundle> implements FeedHashtagPresenter.View, SwipeRefreshLayout.OnRefreshListener {
 
-    @InjectView(R.id.empty_view) ViewGroup emptyView;
-    @InjectView(R.id.suggestionProgress) View suggestionProgressBar;
-    @InjectView(R.id.suggestions) ProgressEmptyRecyclerView suggestions;
+   @InjectView(R.id.empty_view) ViewGroup emptyView;
+   @InjectView(R.id.suggestionProgress) View suggestionProgressBar;
+   @InjectView(R.id.suggestions) ProgressEmptyRecyclerView suggestions;
 
-    @Inject FragmentWithFeedDelegate fragmentWithFeedDelegate;
+   @Inject FragmentWithFeedDelegate fragmentWithFeedDelegate;
 
-    BaseDelegateAdapter<HashtagSuggestion> suggestionAdapter;
-    RecyclerViewStateDelegate stateDelegate;
+   BaseDelegateAdapter<HashtagSuggestion> suggestionAdapter;
+   RecyclerViewStateDelegate stateDelegate;
 
-    private StatePaginatedRecyclerViewManager statePaginatedRecyclerViewManager;
-    private Bundle savedInstanceState;
-    private SearchView searchView;
-    private EditText searchText;
-    private MenuItem searchItem;
+   private StatePaginatedRecyclerViewManager statePaginatedRecyclerViewManager;
+   private Bundle savedInstanceState;
+   private SearchView searchView;
+   private EditText searchText;
+   private MenuItem searchItem;
 
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        this.savedInstanceState = savedInstanceState;
-        stateDelegate = new RecyclerViewStateDelegate();
-        stateDelegate.onCreate(savedInstanceState);
-    }
+   @Override
+   public void onCreate(Bundle savedInstanceState) {
+      super.onCreate(savedInstanceState);
+      this.savedInstanceState = savedInstanceState;
+      stateDelegate = new RecyclerViewStateDelegate();
+      stateDelegate.onCreate(savedInstanceState);
+   }
 
-    @Override
-    public void afterCreateView(View rootView) {
-        super.afterCreateView(rootView);
-        BaseDelegateAdapter feedAdapter = new BaseDelegateAdapter<>(getContext(), this);
-        statePaginatedRecyclerViewManager = new StatePaginatedRecyclerViewManager(rootView);
-        statePaginatedRecyclerViewManager.stateRecyclerView.setEmptyView(emptyView);
-        statePaginatedRecyclerViewManager.init(feedAdapter, savedInstanceState);
-        statePaginatedRecyclerViewManager.setOnRefreshListener(this);
-        statePaginatedRecyclerViewManager.setPaginationListener(() -> {
-            if (!statePaginatedRecyclerViewManager.isNoMoreElements()) {
-                fragmentWithFeedDelegate.addItem(new LoadMoreModel());
-                fragmentWithFeedDelegate.notifyDataSetChanged();
-            }
-            getPresenter().loadNext();
-        });
-        if (isTabletLandscape()) {
-            statePaginatedRecyclerViewManager.addItemDecoration(new SideMarginsItemDecorator(16));
-        }
-        fragmentWithFeedDelegate.init(feedAdapter);
+   @Override
+   public void afterCreateView(View rootView) {
+      super.afterCreateView(rootView);
+      BaseDelegateAdapter feedAdapter = new BaseDelegateAdapter<>(getContext(), this);
+      statePaginatedRecyclerViewManager = new StatePaginatedRecyclerViewManager(rootView);
+      statePaginatedRecyclerViewManager.stateRecyclerView.setEmptyView(emptyView);
+      statePaginatedRecyclerViewManager.init(feedAdapter, savedInstanceState);
+      statePaginatedRecyclerViewManager.setOnRefreshListener(this);
+      statePaginatedRecyclerViewManager.setPaginationListener(() -> {
+         if (!statePaginatedRecyclerViewManager.isNoMoreElements()) {
+            fragmentWithFeedDelegate.addItem(new LoadMoreModel());
+            fragmentWithFeedDelegate.notifyDataSetChanged();
+         }
+         getPresenter().loadNext();
+      });
+      if (isTabletLandscape()) {
+         statePaginatedRecyclerViewManager.addItemDecoration(new SideMarginsItemDecorator(16));
+      }
+      fragmentWithFeedDelegate.init(feedAdapter);
 
-        suggestionAdapter = new BaseDelegateAdapter<>(getActivity(), this);
-        suggestionAdapter.registerCell(HashtagSuggestion.class, HashtagSuggestionCell.class);
-        suggestionAdapter.registerDelegate(HashtagSuggestion.class, new HashtagSuggestionCell.Delegate() {
-            public void onCellClicked(HashtagSuggestion model) {
-                onSuggestionClicked(model.getName());
-            }
-        });
+      suggestionAdapter = new BaseDelegateAdapter<>(getActivity(), this);
+      suggestionAdapter.registerCell(HashtagSuggestion.class, HashtagSuggestionCell.class);
+      suggestionAdapter.registerDelegate(HashtagSuggestion.class, new HashtagSuggestionCell.Delegate() {
+         public void onCellClicked(HashtagSuggestion model) {
+            onSuggestionClicked(model.getName());
+         }
+      });
 
-        stateDelegate.setRecyclerView(suggestions);
+      stateDelegate.setRecyclerView(suggestions);
 
-        suggestions.setAdapter(suggestionAdapter);
-        suggestions.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false));
-        suggestions.addItemDecoration(dividerItemDecoration());
-        suggestions.setProgressView(suggestionProgressBar);
-        //make root focusable for shifting focus ToolBar.SearchView -> rootView
-        rootView.setFocusable(true);
-        rootView.setFocusableInTouchMode(true);
-    }
+      suggestions.setAdapter(suggestionAdapter);
+      suggestions.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false));
+      suggestions.addItemDecoration(dividerItemDecoration());
+      suggestions.setProgressView(suggestionProgressBar);
+      //make root focusable for shifting focus ToolBar.SearchView -> rootView
+      rootView.setFocusable(true);
+      rootView.setFocusableInTouchMode(true);
+   }
 
-    private void onSuggestionClicked(String suggestion) {
-        if (searchText != null) {
-            String descriptionText = searchText.getText().toString();
-            int endReplace = searchText.getSelectionStart();
+   private void onSuggestionClicked(String suggestion) {
+      if (searchText != null) {
+         String descriptionText = searchText.getText().toString();
+         int endReplace = searchText.getSelectionStart();
 
-            int startReplace = HashtagSuggestionUtil.calcStartPosBeforeReplace(descriptionText, endReplace);
-            String newText = HashtagSuggestionUtil.generateText(descriptionText, suggestion, endReplace);
+         int startReplace = HashtagSuggestionUtil.calcStartPosBeforeReplace(descriptionText, endReplace);
+         String newText = HashtagSuggestionUtil.generateText(descriptionText, suggestion, endReplace);
 
-            searchText.setText(newText);
-            searchText.setSelection(startReplace + HashtagSuggestionUtil.replaceableText(suggestion).length());
-            searchPosts(searchText.getText().toString());
-        }
-    }
+         searchText.setText(newText);
+         searchText.setSelection(startReplace + HashtagSuggestionUtil.replaceableText(suggestion).length());
+         searchPosts(searchText.getText().toString());
+      }
+   }
 
-    @Override
-    public void onStop() {
-        super.onStop();
-        fragmentWithFeedDelegate.resetTranslatedStatus();
-    }
+   @Override
+   public void onStop() {
+      super.onStop();
+      fragmentWithFeedDelegate.resetTranslatedStatus();
+   }
 
-    public void onDestroyView() {
-        SoftInputUtil.hideSoftInputMethod(searchView);
-        super.onDestroyView();
-        stateDelegate.onDestroyView();
-    }
+   public void onDestroyView() {
+      SoftInputUtil.hideSoftInputMethod(searchView);
+      super.onDestroyView();
+      stateDelegate.onDestroyView();
+   }
 
-    @Override
-    public void onSaveInstanceState(Bundle outState) {
-        stateDelegate.saveStateIfNeeded(outState);
-        super.onSaveInstanceState(outState);
-    }
+   @Override
+   public void onSaveInstanceState(Bundle outState) {
+      stateDelegate.saveStateIfNeeded(outState);
+      super.onSaveInstanceState(outState);
+   }
 
-    @Override
-    public void onResume() {
-        super.onResume();
-        releaseSearchFocus(searchView);
+   @Override
+   public void onResume() {
+      super.onResume();
+      releaseSearchFocus(searchView);
 
-        FeedHashtagBundle args = getArgs();
-        if (args != null && args.getHashtag() != null) {
-            getPresenter().onRefresh();
-        }
-    }
+      FeedHashtagBundle args = getArgs();
+      if (args != null && args.getHashtag() != null) {
+         getPresenter().onRefresh();
+      }
+   }
 
-    @Override
-    protected FeedHashtagPresenter createPresenter(Bundle savedInstanceState) {
-        FeedHashtagBundle args = getArgs();
-        String query = args != null && !TextUtils.isEmpty(args.getHashtag()) ? args.getHashtag() : null;
-        FeedHashtagPresenter presenter = new FeedHashtagPresenter();
-        presenter.setQuery(query);
-        return presenter;
-    }
+   @Override
+   protected FeedHashtagPresenter createPresenter(Bundle savedInstanceState) {
+      FeedHashtagBundle args = getArgs();
+      String query = args != null && !TextUtils.isEmpty(args.getHashtag()) ? args.getHashtag() : null;
+      FeedHashtagPresenter presenter = new FeedHashtagPresenter();
+      presenter.setQuery(query);
+      return presenter;
+   }
 
-    @Override
-    protected void onMenuInflated(Menu menu) {
-        super.onMenuInflated(menu);
+   @Override
+   protected void onMenuInflated(Menu menu) {
+      super.onMenuInflated(menu);
 
-        searchItem = menu.findItem(R.id.action_search);
-        searchItem.expandActionView();
+      searchItem = menu.findItem(R.id.action_search);
+      searchItem.expandActionView();
 
-        searchView = (SearchView) MenuItemCompat.getActionView(searchItem);
-        searchText = (EditText) searchView.findViewById(android.support.v7.appcompat.R.id.search_src_text);
-        searchView.setQuery(getPresenter().getQuery(), false);
-        searchView.setOnCloseListener(() -> false);
-        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
-            @Override
-            public boolean onQueryTextSubmit(String query) {
-                searchPosts(query);
-                return true;
-            }
+      searchView = (SearchView) MenuItemCompat.getActionView(searchItem);
+      searchText = (EditText) searchView.findViewById(android.support.v7.appcompat.R.id.search_src_text);
+      searchView.setQuery(getPresenter().getQuery(), false);
+      searchView.setOnCloseListener(() -> false);
+      searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+         @Override
+         public boolean onQueryTextSubmit(String query) {
+            searchPosts(query);
+            return true;
+         }
 
-            @Override
-            public boolean onQueryTextChange(String fullQueryText) {
-                getPresenter().setQuery(fullQueryText);
-                clearSuggestions();
-                getPresenter().searchSuggestions(fullQueryText, getTextFromCursor());
-                return true;
-            }
-        });
+         @Override
+         public boolean onQueryTextChange(String fullQueryText) {
+            getPresenter().setQuery(fullQueryText);
+            clearSuggestions();
+            getPresenter().searchSuggestions(fullQueryText, getTextFromCursor());
+            return true;
+         }
+      });
 
-        MenuItemCompat.setOnActionExpandListener(searchItem, new MenuItemCompat.OnActionExpandListener() {
-            @Override
-            public boolean onMenuItemActionExpand(MenuItem item) {
-                searchView.setQuery(getPresenter().getQuery(), false);
-                return true;
-            }
+      MenuItemCompat.setOnActionExpandListener(searchItem, new MenuItemCompat.OnActionExpandListener() {
+         @Override
+         public boolean onMenuItemActionExpand(MenuItem item) {
+            searchView.setQuery(getPresenter().getQuery(), false);
+            return true;
+         }
 
-            @Override
-            public boolean onMenuItemActionCollapse(MenuItem item) {
-                getPresenter().setQuery(null);
-                searchView.setQuery("", false);
-                getActivity().onBackPressed();
-                return true;
-            }
-        });
+         @Override
+         public boolean onMenuItemActionCollapse(MenuItem item) {
+            getPresenter().setQuery(null);
+            searchView.setQuery("", false);
+            getActivity().onBackPressed();
+            return true;
+         }
+      });
 
-        releaseSearchFocus(MenuItemCompat.getActionView(searchItem));
-    }
+      releaseSearchFocus(MenuItemCompat.getActionView(searchItem));
+   }
 
-    private void searchPosts(String query) {
-        getPresenter().setQuery(query);
-        if (searchItem != null) releaseSearchFocus(MenuItemCompat.getActionView(searchItem));
-        getPresenter().onRefresh();
-        clearSuggestions();
-        getPresenter().cancelLastSuggestionRequest();
-    }
+   private void searchPosts(String query) {
+      getPresenter().setQuery(query);
+      if (searchItem != null) releaseSearchFocus(MenuItemCompat.getActionView(searchItem));
+      getPresenter().onRefresh();
+      clearSuggestions();
+      getPresenter().cancelLastSuggestionRequest();
+   }
 
-    @Override
-    public void onRefresh() {
-        getPresenter().onRefresh();
-    }
+   @Override
+   public void onRefresh() {
+      getPresenter().onRefresh();
+   }
 
-    @Override
-    public void refreshFeedItems(List feedItems) {
-        fragmentWithFeedDelegate.clearItems();
-        fragmentWithFeedDelegate.addItems(feedItems);
-        fragmentWithFeedDelegate.notifyDataSetChanged();
-    }
+   @Override
+   public void refreshFeedItems(List feedItems) {
+      fragmentWithFeedDelegate.clearItems();
+      fragmentWithFeedDelegate.addItems(feedItems);
+      fragmentWithFeedDelegate.notifyDataSetChanged();
+   }
 
-    @Override
-    public void updateLoadingStatus(boolean loading, boolean noMoreElements) {
-        statePaginatedRecyclerViewManager.updateLoadingStatus(loading, noMoreElements);
-    }
+   @Override
+   public void updateLoadingStatus(boolean loading, boolean noMoreElements) {
+      statePaginatedRecyclerViewManager.updateLoadingStatus(loading, noMoreElements);
+   }
 
-    @Override
-    public void updateItem(FeedItem feedItem) {
-        fragmentWithFeedDelegate.notifyItemChanged(feedItem);
-    }
+   @Override
+   public void updateItem(FeedItem feedItem) {
+      fragmentWithFeedDelegate.notifyItemChanged(feedItem);
+   }
 
-    @Override
-    public void startLoading() {
-        statePaginatedRecyclerViewManager.startLoading();
-        if (emptyView != null) emptyView.setVisibility(View.GONE);
-    }
+   @Override
+   public void startLoading() {
+      statePaginatedRecyclerViewManager.startLoading();
+      if (emptyView != null) emptyView.setVisibility(View.GONE);
+   }
 
-    @Override
-    public void finishLoading() {
-        statePaginatedRecyclerViewManager.finishLoading();
-        if (emptyView != null) emptyView.setVisibility(View.VISIBLE);
-    }
+   @Override
+   public void finishLoading() {
+      statePaginatedRecyclerViewManager.finishLoading();
+      if (emptyView != null) emptyView.setVisibility(View.VISIBLE);
+   }
 
-    @Override
-    public void onSuggestionsReceived(String fullQueryText, @NonNull List<HashtagSuggestion> suggestionList) {
-        suggestionAdapter.clear();
-        if ((searchText == null || fullQueryText.equals(searchText.getText().toString())) && !suggestionList.isEmpty()) {
-            suggestions.setVisibility(View.VISIBLE);
-            suggestionAdapter.addItems(suggestionList);
-        } else {
-            suggestions.setVisibility(View.GONE);
-        }
-    }
+   @Override
+   public void onSuggestionsReceived(String fullQueryText, @NonNull List<HashtagSuggestion> suggestionList) {
+      suggestionAdapter.clear();
+      if ((searchText == null || fullQueryText.equals(searchText.getText().toString())) && !suggestionList.isEmpty()) {
+         suggestions.setVisibility(View.VISIBLE);
+         suggestionAdapter.addItems(suggestionList);
+      } else {
+         suggestions.setVisibility(View.GONE);
+      }
+   }
 
-    @Override
-    public void clearSuggestions() {
-        suggestionAdapter.clear();
-        suggestions.setVisibility(View.GONE);
-    }
+   @Override
+   public void clearSuggestions() {
+      suggestionAdapter.clear();
+      suggestions.setVisibility(View.GONE);
+   }
 
-    @Override
-    public void showEdit(BucketBundle bucketBundle) {
-        fragmentWithFeedDelegate.openBucketEdit(getActivity().getSupportFragmentManager(), isTabletLandscape(), bucketBundle);
-    }
+   @Override
+   public void showEdit(BucketBundle bucketBundle) {
+      fragmentWithFeedDelegate.openBucketEdit(getActivity().getSupportFragmentManager(), isTabletLandscape(), bucketBundle);
+   }
 
-    @Override
-    public void showSuggestionProgress() {
-        if (suggestions != null) suggestions.showProgress();
-    }
+   @Override
+   public void showSuggestionProgress() {
+      if (suggestions != null) suggestions.showProgress();
+   }
 
-    @Override
-    public void hideSuggestionProgress() {
-        if (suggestions != null) suggestions.hideProgress();
-    }
+   @Override
+   public void hideSuggestionProgress() {
+      if (suggestions != null) suggestions.hideProgress();
+   }
 
-    private void releaseSearchFocus(@Nullable View search) {
-        new WeakHandler().postDelayed(() -> {
-            if (search != null) search.clearFocus();
-            if (getView() != null)
-                getView().requestFocus(); //check for multiple fast device rotation
-        }, 50);
-    }
+   private void releaseSearchFocus(@Nullable View search) {
+      new WeakHandler().postDelayed(() -> {
+         if (search != null) search.clearFocus();
+         if (getView() != null) getView().requestFocus(); //check for multiple fast device rotation
+      }, 50);
+   }
 
-    private DividerItemDecoration dividerItemDecoration() {
-        DividerItemDecoration decor = new DividerItemDecoration(getContext(), DividerItemDecoration.VERTICAL_LIST);
-        decor.setShowDividerAfterLastCell(true);
-        return decor;
-    }
+   private DividerItemDecoration dividerItemDecoration() {
+      DividerItemDecoration decor = new DividerItemDecoration(getContext(), DividerItemDecoration.VERTICAL_LIST);
+      decor.setShowDividerAfterLastCell(true);
+      return decor;
+   }
 
-    private String getTextFromCursor() {
-        String text = searchText.getText().toString();
-        int cursorPosition = searchText.getSelectionStart();
-        int startPosition = HashtagSuggestionUtil.calcStartPosBeforeReplace(text, cursorPosition);
-        return text.substring(startPosition, cursorPosition);
-    }
+   private String getTextFromCursor() {
+      String text = searchText.getText().toString();
+      int cursorPosition = searchText.getSelectionStart();
+      int startPosition = HashtagSuggestionUtil.calcStartPosBeforeReplace(text, cursorPosition);
+      return text.substring(startPosition, cursorPosition);
+   }
 
-    @Override
-    public void flagSentSuccess() {
-        informUser(R.string.flag_sent_success_msg);
-    }
+   @Override
+   public void flagSentSuccess() {
+      informUser(R.string.flag_sent_success_msg);
+   }
 
-    public void onEvent(CommentIconClickedEvent event) {
-        fragmentWithFeedDelegate.openComments(event.getFeedItem(), isVisibleOnScreen(), isTabletLandscape());
-    }
+   public void onEvent(CommentIconClickedEvent event) {
+      fragmentWithFeedDelegate.openComments(event.getFeedItem(), isVisibleOnScreen(), isTabletLandscape());
+   }
 
-    @Override
-    public boolean onApiError(ErrorResponse errorResponse) {
-        return false;
-    }
+   @Override
+   public boolean onApiError(ErrorResponse errorResponse) {
+      return false;
+   }
 
-    @Override
-    public void onApiCallFailed() {
-    }
+   @Override
+   public void onApiCallFailed() {
+   }
 }

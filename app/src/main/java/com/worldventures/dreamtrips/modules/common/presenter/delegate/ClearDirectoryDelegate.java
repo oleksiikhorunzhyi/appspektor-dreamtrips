@@ -17,29 +17,26 @@ import timber.log.Timber;
 
 public class ClearDirectoryDelegate {
 
-    private final Context context;
-    private final PhotoDAO photoDAO;
+   private final Context context;
+   private final PhotoDAO photoDAO;
 
-    public ClearDirectoryDelegate(Context context, PhotoDAO photoDAO) {
-        this.context = context;
-        this.photoDAO = photoDAO;
-    }
+   public ClearDirectoryDelegate(Context context, PhotoDAO photoDAO) {
+      this.context = context;
+      this.photoDAO = photoDAO;
+   }
 
-    public void clearTemporaryDirectory() {
-        photoDAO.getErrorAttachments()
-                .take(1)
-                .subscribeOn(Schedulers.io())
-                .subscribe(dataAttachments -> {
-                    List<String> exceptFilePaths = Queryable.from(dataAttachments).map(DataPhotoAttachment::getUrl).toList();
+   public void clearTemporaryDirectory() {
+      photoDAO.getErrorAttachments().take(1).subscribeOn(Schedulers.io()).subscribe(dataAttachments -> {
+         List<String> exceptFilePaths = Queryable.from(dataAttachments).map(DataPhotoAttachment::getUrl).toList();
 
-                    File directory = new File(com.kbeanie.imagechooser.api.FileUtils.getDirectory(PickImageDelegate.FOLDERNAME));
-                    if (!directory.exists()) return;
-                    try {
-                        FileUtils.cleanDirectory(context, directory, exceptFilePaths);
-                    } catch (IOException e) {
-                        Timber.e(e, "Problem with remove temp image directory");
-                    }
-                }, throwable -> Timber.e(throwable, "clearTemporaryDirectory() failed"));
-    }
+         File directory = new File(com.kbeanie.imagechooser.api.FileUtils.getDirectory(PickImageDelegate.FOLDERNAME));
+         if (!directory.exists()) return;
+         try {
+            FileUtils.cleanDirectory(context, directory, exceptFilePaths);
+         } catch (IOException e) {
+            Timber.e(e, "Problem with remove temp image directory");
+         }
+      }, throwable -> Timber.e(throwable, "clearTemporaryDirectory() failed"));
+   }
 
 }

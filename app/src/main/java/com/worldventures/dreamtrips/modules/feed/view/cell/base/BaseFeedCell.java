@@ -29,85 +29,84 @@ import butterknife.InjectView;
 
 public abstract class BaseFeedCell<ITEM extends FeedItem, DELEGATE extends CellDelegate<ITEM>> extends AbstractDelegateCell<ITEM, DELEGATE> {
 
-    @Inject FeedActionPanelViewActionHandler feedActionHandler;
-    @Inject Presenter.TabletAnalytic tabletAnalytic;
-    @Inject SessionHolder<UserSession> sessionHolder;
-    @Inject protected FragmentManager fragmentManager;
+   @Inject FeedActionPanelViewActionHandler feedActionHandler;
+   @Inject Presenter.TabletAnalytic tabletAnalytic;
+   @Inject SessionHolder<UserSession> sessionHolder;
+   @Inject protected FragmentManager fragmentManager;
 
-    @InjectView(R.id.actionView) FeedActionPanelView actionView;
-    @InjectView(R.id.likers_panel) TextView likersPanel;
+   @InjectView(R.id.actionView) FeedActionPanelView actionView;
+   @InjectView(R.id.likers_panel) TextView likersPanel;
 
-    private LikersPanelHelper likersPanelHelper;
-    private NavigationWrapper navigationWrapper;
-    private boolean syncUIStateWithModelWasCalled;
+   private LikersPanelHelper likersPanelHelper;
+   private NavigationWrapper navigationWrapper;
+   private boolean syncUIStateWithModelWasCalled;
 
-    public BaseFeedCell(View view) {
-        super(view);
-        likersPanelHelper = new LikersPanelHelper();
-    }
+   public BaseFeedCell(View view) {
+      super(view);
+      likersPanelHelper = new LikersPanelHelper();
+   }
 
-    @Override
-    public void afterInject() {
-        super.afterInject();
-        navigationWrapper = new NavigationWrapperFactory()
-                .componentOrDialogNavigationWrapper(router, fragmentManager, tabletAnalytic);
-    }
+   @Override
+   public void afterInject() {
+      super.afterInject();
+      navigationWrapper = new NavigationWrapperFactory().componentOrDialogNavigationWrapper(router, fragmentManager, tabletAnalytic);
+   }
 
-    @Override
-    protected void syncUIStateWithModel() {
-        syncUIStateWithModelWasCalled = true;
-        //
-        actionView.setState(getModelObject(), isForeignItem(getModelObject()));
-        actionView.setOnMoreClickListener(feedItem -> onMore());
-        actionView.setOnDeleteClickListener(feedItem -> onDelete());
-        actionView.setOnEditClickListener(feedItem -> onEdit());
-        feedActionHandler.init(actionView, navigationWrapper);
-        //
-        if (likersPanel != null) {
-            likersPanelHelper.setup(likersPanel, getModelObject().getItem());
-            likersPanel.setOnClickListener(v -> navigationWrapper.navigate(Route.USERS_LIKED_CONTENT,
-                    new UsersLikedEntityBundle(getModelObject().getItem().getUid(), getModelObject().getItem().getLikesCount())));
-        }
-    }
+   @Override
+   protected void syncUIStateWithModel() {
+      syncUIStateWithModelWasCalled = true;
+      //
+      actionView.setState(getModelObject(), isForeignItem(getModelObject()));
+      actionView.setOnMoreClickListener(feedItem -> onMore());
+      actionView.setOnDeleteClickListener(feedItem -> onDelete());
+      actionView.setOnEditClickListener(feedItem -> onEdit());
+      feedActionHandler.init(actionView, navigationWrapper);
+      //
+      if (likersPanel != null) {
+         likersPanelHelper.setup(likersPanel, getModelObject().getItem());
+         likersPanel.setOnClickListener(v -> navigationWrapper.navigate(Route.USERS_LIKED_CONTENT, new UsersLikedEntityBundle(getModelObject()
+               .getItem()
+               .getUid(), getModelObject().getItem().getLikesCount())));
+      }
+   }
 
-    private boolean isForeignItem(FeedItem feedItem) {
-        Optional<UserSession> userSessionOptional = sessionHolder.get();
-        return feedItem.getItem().getOwner() == null
-                || !userSessionOptional.isPresent()
-                || userSessionOptional.get().getUser().getId() == (feedItem.getItem().getOwner().getId());
-    }
+   private boolean isForeignItem(FeedItem feedItem) {
+      Optional<UserSession> userSessionOptional = sessionHolder.get();
+      return feedItem.getItem().getOwner() == null || !userSessionOptional.isPresent() || userSessionOptional.get()
+            .getUser()
+            .getId() == (feedItem.getItem().getOwner().getId());
+   }
 
-    @Override
-    public void fillWithItem(ITEM item) {
-        syncUIStateWithModelWasCalled = false;
-        super.fillWithItem(item);
-        if (!syncUIStateWithModelWasCalled) {
-            throw new IllegalStateException("super.syncUIStateWithModel was not called");
-        }
-    }
+   @Override
+   public void fillWithItem(ITEM item) {
+      syncUIStateWithModelWasCalled = false;
+      super.fillWithItem(item);
+      if (!syncUIStateWithModelWasCalled) {
+         throw new IllegalStateException("super.syncUIStateWithModel was not called");
+      }
+   }
 
-    public void setLikersPanelListener(LikersPanelHelper.LikersPanelListener likersPanelListener) {
-        likersPanelHelper.setLikersPanelListener(likersPanelListener);
-    }
+   public void setLikersPanelListener(LikersPanelHelper.LikersPanelListener likersPanelListener) {
+      likersPanelHelper.setLikersPanelListener(likersPanelListener);
+   }
 
-    protected void showMoreDialog(@MenuRes int menuRes, @StringRes int headerDelete, @StringRes int textDelete) {
-        actionView.showMoreDialog(menuRes, headerDelete, textDelete);
-    }
+   protected void showMoreDialog(@MenuRes int menuRes, @StringRes int headerDelete, @StringRes int textDelete) {
+      actionView.showMoreDialog(menuRes, headerDelete, textDelete);
+   }
 
-    protected void onDelete() {
-        sendAnalyticEvent(TrackingHelper.ATTRIBUTE_DELETE);
-    }
+   protected void onDelete() {
+      sendAnalyticEvent(TrackingHelper.ATTRIBUTE_DELETE);
+   }
 
-    protected void onEdit() {
-        sendAnalyticEvent(TrackingHelper.ATTRIBUTE_EDIT);
-    }
+   protected void onEdit() {
+      sendAnalyticEvent(TrackingHelper.ATTRIBUTE_EDIT);
+   }
 
-    protected void sendAnalyticEvent(String eventType) {
-        TrackingHelper.sendActionItemFeed(eventType, getModelObject().getItem().getUid(),
-                getModelObject().getType());
-    }
+   protected void sendAnalyticEvent(String eventType) {
+      TrackingHelper.sendActionItemFeed(eventType, getModelObject().getItem().getUid(), getModelObject().getType());
+   }
 
-    protected void onMore() {
+   protected void onMore() {
 
-    }
+   }
 }

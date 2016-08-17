@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <item name="screen_switcher_tag" type="id"/>
-    //
-    <item name="details_container" type="id"/>
-    <item name="master_container" type="id"/>
-    <item name="master_toolbar_container" type="id"/>
-    //
-    <item name="dtlfb_rootView" type="id" />
+   <item name="screen_switcher_tag" type="id" />
+   //
+   <item name="details_container" type="id" />
+   <item name="master_container" type="id" />
+   <item name="master_toolbar_container" type="id" />
+   //
+   <item name="dtlfb_rootView" type="id" />
 </resources>

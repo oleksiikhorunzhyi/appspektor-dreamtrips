@@ -32,225 +32,220 @@ import timber.log.Timber;
 
 public final class SuggestedPhotoCellPresenterHelper {
 
-    public static final int MAX_SELECTION_SIZE = 15;
-    private static final int SUGGESTION_ITEM_CHUNK = 20;
-    private static final long DEFAULT_START_SYNC_TIMESTAMP = Long.MAX_VALUE;
+   public static final int MAX_SELECTION_SIZE = 15;
+   private static final int SUGGESTION_ITEM_CHUNK = 20;
+   private static final long DEFAULT_START_SYNC_TIMESTAMP = Long.MAX_VALUE;
 
-    @Inject SnappyRepository db;
-    @Inject Router router;
-    @Inject SessionHolder<UserSession> appSessionHolder;
-    @Inject @ForApplication Context context;
+   @Inject SnappyRepository db;
+   @Inject Router router;
+   @Inject SessionHolder<UserSession> appSessionHolder;
+   @Inject @ForApplication Context context;
 
-    @State ArrayList<PhotoGalleryModel> suggestionItems;
-    @State ArrayList<PhotoGalleryModel> selectedPhotos;
-    @State long syncTimestampLast = DEFAULT_START_SYNC_TIMESTAMP;
+   @State ArrayList<PhotoGalleryModel> suggestionItems;
+   @State ArrayList<PhotoGalleryModel> selectedPhotos;
+   @State long syncTimestampLast = DEFAULT_START_SYNC_TIMESTAMP;
 
-    private View view;
-    private OutViewBinder binder;
+   private View view;
+   private OutViewBinder binder;
 
-    public void takeView(View view, OutViewBinder binder, Bundle bundle) {
-        checkView(view);
-        this.view = view;
-        this.binder = binder;
+   public void takeView(View view, OutViewBinder binder, Bundle bundle) {
+      checkView(view);
+      this.view = view;
+      this.binder = binder;
 
-        restoreInstanceState(bundle);
+      restoreInstanceState(bundle);
 
-        if (suggestionItems == null) {
-            suggestionItems = new ArrayList<>(SUGGESTION_ITEM_CHUNK);
-        }
-        if (selectedPhotos == null) {
-            selectedPhotos = new ArrayList<>(MAX_SELECTION_SIZE);
-        }
+      if (suggestionItems == null) {
+         suggestionItems = new ArrayList<>(SUGGESTION_ITEM_CHUNK);
+      }
+      if (selectedPhotos == null) {
+         selectedPhotos = new ArrayList<>(MAX_SELECTION_SIZE);
+      }
 
-        if (suggestionItems.isEmpty()) {
-            preloadSuggestionPhotos(null);
-        } else {
-            view.appendPhotoSuggestions(suggestionItems);
-        }
-    }
+      if (suggestionItems.isEmpty()) {
+         preloadSuggestionPhotos(null);
+      } else {
+         view.appendPhotoSuggestions(suggestionItems);
+      }
+   }
 
-    public void preloadSuggestionPhotos(@Nullable PhotoGalleryModel model) {
-        syncTimestampLast = getLastSyncOrDefault(model);
+   public void preloadSuggestionPhotos(@Nullable PhotoGalleryModel model) {
+      syncTimestampLast = getLastSyncOrDefault(model);
 
-        binder.bindOutLifecycle(getSuggestionObservable(syncTimestampLast))
-                .subscribe(photoGalleryModels -> {
-                    suggestionItems.addAll(photoGalleryModels);
-                    view.appendPhotoSuggestions(photoGalleryModels);
-                }, throwable -> {
-                    Timber.e(throwable, "Cannot prefetch suggestions");
-                });
-    }
+      binder.bindOutLifecycle(getSuggestionObservable(syncTimestampLast)).subscribe(photoGalleryModels -> {
+         suggestionItems.addAll(photoGalleryModels);
+         view.appendPhotoSuggestions(photoGalleryModels);
+      }, throwable -> {
+         Timber.e(throwable, "Cannot prefetch suggestions");
+      });
+   }
 
-    public void subscribeNewPhotoNotifications(Observable<Void> notificationObservable) {
-        binder.bindOutLifecycle(notificationObservable
-                .concatMap(aVoid -> getSuggestionObservable(DEFAULT_START_SYNC_TIMESTAMP)))
-                .subscribe(photoGalleryModels -> {
-                    clearCache();
-                    resetSyncTimestamp();
-                    sync();
+   public void subscribeNewPhotoNotifications(Observable<Void> notificationObservable) {
+      binder.bindOutLifecycle(notificationObservable.concatMap(aVoid -> getSuggestionObservable(DEFAULT_START_SYNC_TIMESTAMP)))
+            .subscribe(photoGalleryModels -> {
+               clearCache();
+               resetSyncTimestamp();
+               sync();
 
-                    suggestionItems.addAll(photoGalleryModels);
-                    view.replacePhotoSuggestions(photoGalleryModels);
-                }, throwable -> {
-                    Timber.e(throwable, "Cannot fetch new suggestion items");
-                });
-    }
+               suggestionItems.addAll(photoGalleryModels);
+               view.replacePhotoSuggestions(photoGalleryModels);
+            }, throwable -> {
+               Timber.e(throwable, "Cannot fetch new suggestion items");
+            });
+   }
 
-    public void sync() {
-        Optional<UserSession> userSessionOptional = appSessionHolder.get();
-        if (userSessionOptional.isPresent()) {
-            view.setUser(userSessionOptional.get().getUser());
-        }
-        setSuggestionTitle();
-    }
+   public void sync() {
+      Optional<UserSession> userSessionOptional = appSessionHolder.get();
+      if (userSessionOptional.isPresent()) {
+         view.setUser(userSessionOptional.get().getUser());
+      }
+      setSuggestionTitle();
+   }
 
-    public long lastSyncTime() {
-        return syncTimestampLast;
-    }
+   public long lastSyncTime() {
+      return syncTimestampLast;
+   }
 
-    public void reset() {
-        clearCacheAndUpdate();
+   public void reset() {
+      clearCacheAndUpdate();
 
-        db.saveLastSuggestedPhotosSyncTime(System.currentTimeMillis());
-        resetSyncTimestamp();
-    }
+      db.saveLastSuggestedPhotosSyncTime(System.currentTimeMillis());
+      resetSyncTimestamp();
+   }
 
-    public void selectPhoto(PhotoGalleryModel model) {
-        int selectedSize = selectedPhotos.size();
-        boolean isChecked = !model.isChecked();
+   public void selectPhoto(PhotoGalleryModel model) {
+      int selectedSize = selectedPhotos.size();
+      boolean isChecked = !model.isChecked();
 
-        if (isChecked) {
-            if (selectedSize == MAX_SELECTION_SIZE) {
-                view.showMaxSelectionMessage();
-                return;
+      if (isChecked) {
+         if (selectedSize == MAX_SELECTION_SIZE) {
+            view.showMaxSelectionMessage();
+            return;
+         }
+         selectedPhotos.add(model);
+      } else {
+         selectedPhotos.remove(model);
+      }
+      model.setChecked(isChecked);
+
+      setSuggestionTitle();
+   }
+
+   @NonNull
+   public List<PhotoGalleryModel> selectedPhotos() {
+      return new ArrayList<>(selectedPhotos);
+   }
+
+   void saveInstanceState(Bundle bundle) {
+      Icepick.saveInstanceState(this, bundle);
+      view.saveInstanceState(bundle);
+   }
+
+   private void restoreInstanceState(Bundle bundle) {
+      Icepick.restoreInstanceState(this, bundle);
+      view.restoreInstanceState(bundle);
+   }
+
+   @NonNull
+   private Observable<List<PhotoGalleryModel>> getSuggestionObservable(long toTimestamp) {
+      return Observable.create(new Observable.OnSubscribe<PhotoGalleryModel>() {
+         @Override
+         public void call(Subscriber<? super PhotoGalleryModel> subscriber) {
+            Cursor cursor = null;
+            String[] projectionPhotos = {MediaStore.Images.Media.DATA, MediaStore.Images.Media.DATE_TAKEN};
+            //
+            try {
+               cursor = MediaStore.Images.Media.query(context.getContentResolver(), MediaStore.Images.Media.EXTERNAL_CONTENT_URI, projectionPhotos, selection(), new String[]{String.valueOf(toTimestamp), ImageUtils.MIME_TYPE_GIF}, MediaStore.Images.Media.DATE_TAKEN + " DESC LIMIT " + SUGGESTION_ITEM_CHUNK);
+
+               int dataColumn = cursor.getColumnIndex(MediaStore.Images.Media.DATA);
+               int dateColumn = cursor.getColumnIndex(MediaStore.Images.Media.DATE_TAKEN);
+               while (cursor.moveToNext()) {
+                  String path = cursor.getString(dataColumn);
+                  long dateTaken = cursor.getLong(dateColumn);
+
+                  if (!subscriber.isUnsubscribed() && !ImageUtils.getImageExtensionFromPath(path)
+                        .toLowerCase()
+                        .contains("gif")) {
+                     subscriber.onNext(new PhotoGalleryModel(path, dateTaken));
+                  }
+               }
+
+               if (!subscriber.isUnsubscribed()) {
+                  subscriber.onCompleted();
+               }
+            } catch (Exception e) {
+               Timber.e(e, "Cannot fetch suggestions");
+
+               if (!subscriber.isUnsubscribed()) {
+                  subscriber.onError(e);
+               }
+            } finally {
+               if (cursor != null) {
+                  cursor.close();
+               }
             }
-            selectedPhotos.add(model);
-        } else {
-            selectedPhotos.remove(model);
-        }
-        model.setChecked(isChecked);
+         }
+      }).toList().compose(new IoToMainComposer<>());
+   }
 
-        setSuggestionTitle();
-    }
+   @NonNull
+   private String selection() {
+      return MediaStore.Images.Media.DATE_TAKEN + " < " +
+            " ? AND " + MediaStore.Images.Media.MIME_TYPE + " != ?";
+   }
 
-    @NonNull
-    public List<PhotoGalleryModel> selectedPhotos() {
-        return new ArrayList<>(selectedPhotos);
-    }
+   private void checkView(View view) {
+      if (this.view != null) {
+         if (this.view != view) {
+            throw new AssertionError("Cannot take another view");
+         }
+      }
+   }
 
-    void saveInstanceState(Bundle bundle) {
-        Icepick.saveInstanceState(this, bundle);
-        view.saveInstanceState(bundle);
-    }
+   private void setSuggestionTitle() {
+      view.setSuggestionTitle(selectedPhotos.size());
+   }
 
-    private void restoreInstanceState(Bundle bundle) {
-        Icepick.restoreInstanceState(this, bundle);
-        view.restoreInstanceState(bundle);
-    }
+   private long getLastSyncOrDefault(@Nullable PhotoGalleryModel model) {
+      return model == null ? DEFAULT_START_SYNC_TIMESTAMP : model.getDateTaken();
+   }
 
-    @NonNull
-    private Observable<List<PhotoGalleryModel>> getSuggestionObservable(long toTimestamp) {
-        return Observable.create(new Observable.OnSubscribe<PhotoGalleryModel>() {
-            @Override
-            public void call(Subscriber<? super PhotoGalleryModel> subscriber) {
-                Cursor cursor = null;
-                String[] projectionPhotos = {MediaStore.Images.Media.DATA, MediaStore.Images.Media.DATE_TAKEN};
-                //
-                try {
-                    cursor = MediaStore.Images.Media.query(context.getContentResolver(),
-                            MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
-                            projectionPhotos,
-                            selection(),
-                            new String[]{String.valueOf(toTimestamp), ImageUtils.MIME_TYPE_GIF},
-                            MediaStore.Images.Media.DATE_TAKEN + " DESC LIMIT " + SUGGESTION_ITEM_CHUNK);
+   private void clearCacheAndUpdate() {
+      clearCache();
+      view.notifyListChange();
+   }
 
-                    int dataColumn = cursor.getColumnIndex(MediaStore.Images.Media.DATA);
-                    int dateColumn = cursor.getColumnIndex(MediaStore.Images.Media.DATE_TAKEN);
-                    while (cursor.moveToNext()) {
-                        String path = cursor.getString(dataColumn);
-                        long dateTaken = cursor.getLong(dateColumn);
+   private void clearCache() {
+      Queryable.from(selectedPhotos).forEachR(model -> model.setChecked(false));
 
-                        if (!subscriber.isUnsubscribed() && !ImageUtils.getImageExtensionFromPath(path).toLowerCase().contains("gif")) {
-                            subscriber.onNext(new PhotoGalleryModel(path, dateTaken));
-                        }
-                    }
+      selectedPhotos.clear();
+      suggestionItems.clear();
+   }
 
-                    if (!subscriber.isUnsubscribed()) {
-                        subscriber.onCompleted();
-                    }
-                } catch (Exception e) {
-                    Timber.e(e, "Cannot fetch suggestions");
+   private void resetSyncTimestamp() {
+      syncTimestampLast = Long.MAX_VALUE;
+   }
 
-                    if (!subscriber.isUnsubscribed()) {
-                        subscriber.onError(e);
-                    }
-                } finally {
-                    if (cursor != null) {
-                        cursor.close();
-                    }
-                }
-            }
-        }).toList().compose(new IoToMainComposer<>());
-    }
+   public interface OutViewBinder {
+      <T> Observable<T> bindOutLifecycle(Observable<T> observable);
+   }
 
-    @NonNull
-    private String selection() {
-        return MediaStore.Images.Media.DATE_TAKEN + " < " +
-                " ? AND " + MediaStore.Images.Media.MIME_TYPE + " != ?";
-    }
+   public interface View {
 
-    private void checkView(View view) {
-        if (this.view != null) {
-            if (this.view != view) {
-                throw new AssertionError("Cannot take another view");
-            }
-        }
-    }
+      void appendPhotoSuggestions(List<PhotoGalleryModel> items);
 
-    private void setSuggestionTitle() {
-        view.setSuggestionTitle(selectedPhotos.size());
-    }
+      void replacePhotoSuggestions(List<PhotoGalleryModel> items);
 
-    private long getLastSyncOrDefault(@Nullable PhotoGalleryModel model) {
-        return model == null ? DEFAULT_START_SYNC_TIMESTAMP : model.getDateTaken();
-    }
+      void notifyListChange();
 
-    private void clearCacheAndUpdate() {
-        clearCache();
-        view.notifyListChange();
-    }
+      void setUser(User user);
 
-    private void clearCache() {
-        Queryable.from(selectedPhotos).forEachR(model -> model.setChecked(false));
+      void setSuggestionTitle(int sizeOfSelectedPhotos);
 
-        selectedPhotos.clear();
-        suggestionItems.clear();
-    }
+      void showMaxSelectionMessage();
 
-    private void resetSyncTimestamp() {
-        syncTimestampLast = Long.MAX_VALUE;
-    }
+      void saveInstanceState(@Nullable Bundle bundle);
 
-    public interface OutViewBinder {
-        <T> Observable<T> bindOutLifecycle(Observable<T> observable);
-    }
-
-    public interface View {
-
-        void appendPhotoSuggestions(List<PhotoGalleryModel> items);
-
-        void replacePhotoSuggestions(List<PhotoGalleryModel> items);
-
-        void notifyListChange();
-
-        void setUser(User user);
-
-        void setSuggestionTitle(int sizeOfSelectedPhotos);
-
-        void showMaxSelectionMessage();
-
-        void saveInstanceState(@Nullable Bundle bundle);
-
-        void restoreInstanceState(@Nullable Bundle bundle);
-    }
+      void restoreInstanceState(@Nullable Bundle bundle);
+   }
 }

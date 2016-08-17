@@ -13,9 +13,9 @@ import dagger.Provides;
 @Module(library = true, complete = false)
 public class PersistenceModule {
 
-    @Provides
-    @Singleton
-    public SnappyRepository provideDB(Context context) {
-        return new SnappyRepositoryImpl(context);
-    }
+   @Provides
+   @Singleton
+   public SnappyRepository provideDB(Context context) {
+      return new SnappyRepositoryImpl(context);
+   }
 }

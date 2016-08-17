@@ -10,14 +10,14 @@ import rx.schedulers.Schedulers;
 
 public class PodcastsInteractor {
 
-    private final ActionPipe<PodcastCommand> podcastsActionPipe;
+   private final ActionPipe<PodcastCommand> podcastsActionPipe;
 
-    @Inject
-    public PodcastsInteractor(Janet janet) {
-        this.podcastsActionPipe = janet.createPipe(PodcastCommand.class, Schedulers.io());
-    }
+   @Inject
+   public PodcastsInteractor(Janet janet) {
+      this.podcastsActionPipe = janet.createPipe(PodcastCommand.class, Schedulers.io());
+   }
 
-    public ActionPipe<PodcastCommand> podcastsActionPipe() {
-        return podcastsActionPipe;
-    }
+   public ActionPipe<PodcastCommand> podcastsActionPipe() {
+      return podcastsActionPipe;
+   }
 }

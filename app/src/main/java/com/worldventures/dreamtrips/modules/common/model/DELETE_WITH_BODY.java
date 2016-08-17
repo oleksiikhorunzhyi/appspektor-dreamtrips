@@ -4,6 +4,7 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
 import retrofit.http.RestMethod;
+
 import static java.lang.annotation.ElementType.METHOD;
 import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
@@ -11,5 +12,5 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
 @Retention(RUNTIME)
 @RestMethod(value = "DELETE", hasBody = true)
 public @interface DELETE_WITH_BODY {
-    String value();
+   String value();
 }

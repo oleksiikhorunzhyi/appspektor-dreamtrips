@@ -11,32 +11,31 @@ import rx.schedulers.Schedulers;
 
 public class DtlTransactionInteractor {
 
-    private final ActionPipe<EstimationHttpAction> estimatePointsActionPipe;
-    private final ActionPipe<RatingHttpAction> rateActionPipe;
-    private final ActionPipe<DtlEarnPointsAction> earnPointsActionPipe;
-    private final ActionPipe<DtlTransactionAction> transactionActionPipe;
+   private final ActionPipe<EstimationHttpAction> estimatePointsActionPipe;
+   private final ActionPipe<RatingHttpAction> rateActionPipe;
+   private final ActionPipe<DtlEarnPointsAction> earnPointsActionPipe;
+   private final ActionPipe<DtlTransactionAction> transactionActionPipe;
 
-    public DtlTransactionInteractor(Janet janet, Janet apiLibJanet) {
-        estimatePointsActionPipe =
-                apiLibJanet.createPipe(EstimationHttpAction.class, Schedulers.io());
-        rateActionPipe = apiLibJanet.createPipe(RatingHttpAction.class, Schedulers.io());
-        earnPointsActionPipe = janet.createPipe(DtlEarnPointsAction.class, Schedulers.io());
-        transactionActionPipe = janet.createPipe(DtlTransactionAction.class, Schedulers.io());
-    }
+   public DtlTransactionInteractor(Janet janet, Janet apiLibJanet) {
+      estimatePointsActionPipe = apiLibJanet.createPipe(EstimationHttpAction.class, Schedulers.io());
+      rateActionPipe = apiLibJanet.createPipe(RatingHttpAction.class, Schedulers.io());
+      earnPointsActionPipe = janet.createPipe(DtlEarnPointsAction.class, Schedulers.io());
+      transactionActionPipe = janet.createPipe(DtlTransactionAction.class, Schedulers.io());
+   }
 
-    public ActionPipe<EstimationHttpAction> estimatePointsActionPipe() {
-        return estimatePointsActionPipe;
-    }
+   public ActionPipe<EstimationHttpAction> estimatePointsActionPipe() {
+      return estimatePointsActionPipe;
+   }
 
-    public ActionPipe<RatingHttpAction> rateActionPipe() {
-        return rateActionPipe;
-    }
+   public ActionPipe<RatingHttpAction> rateActionPipe() {
+      return rateActionPipe;
+   }
 
-    public ActionPipe<DtlEarnPointsAction> earnPointsActionPipe() {
-        return earnPointsActionPipe;
-    }
+   public ActionPipe<DtlEarnPointsAction> earnPointsActionPipe() {
+      return earnPointsActionPipe;
+   }
 
-    public ActionPipe<DtlTransactionAction> transactionActionPipe() {
-        return transactionActionPipe;
-    }
+   public ActionPipe<DtlTransactionAction> transactionActionPipe() {
+      return transactionActionPipe;
+   }
 }

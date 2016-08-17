@@ -12,49 +12,49 @@ import static com.worldventures.dreamtrips.BuildConfig.versionPatch;
  */
 public class AppVersionNameBuilder {
 
-    /**
-     * According to http://semver.org/
-     * example: 1.5.0-beta-16
-     */
-    public String getSemanticVersionName() {
-        String name = "";
-        if (isCurrentFlavor("dev")) {
-            name = "dev";
-        } else {
-            boolean release = isCurrentBuildType("release");
-            boolean debug = isCurrentBuildType("debug");
-            if (isCurrentFlavor("stage")) {
-                if (debug) name = "alpha";
-                else if (release) name = "beta";
+   /**
+    * According to http://semver.org/
+    * example: 1.5.0-beta-16
+    */
+   public String getSemanticVersionName() {
+      String name = "";
+      if (isCurrentFlavor("dev")) {
+         name = "dev";
+      } else {
+         boolean release = isCurrentBuildType("release");
+         boolean debug = isCurrentBuildType("debug");
+         if (isCurrentFlavor("stage")) {
+            if (debug) name = "alpha";
+            else if (release) name = "beta";
 
-            } else if (isCurrentFlavor("prod")) {
-                if (release) name = "prod";
-            }
-        }
-        return generateName(name);
-    }
+         } else if (isCurrentFlavor("prod")) {
+            if (release) name = "prod";
+         }
+      }
+      return generateName(name);
+   }
 
-    /**
-     * According to http://semver.org/
-     * example: 1.5.0
-     */
-    public String getReleaseSemanticVersionName() {
-        return String.format("%s.%s.%s", versionMajor, versionMinor, versionPatch);
-    }
+   /**
+    * According to http://semver.org/
+    * example: 1.5.0
+    */
+   public String getReleaseSemanticVersionName() {
+      return String.format("%s.%s.%s", versionMajor, versionMinor, versionPatch);
+   }
 
-    private boolean isCurrentFlavor(String flavor) {
-        return FLAVOR.contains(flavor);
-    }
+   private boolean isCurrentFlavor(String flavor) {
+      return FLAVOR.contains(flavor);
+   }
 
-    private boolean isCurrentBuildType(String flavor) {
-        return BUILD_TYPE.equals(flavor);
-    }
+   private boolean isCurrentBuildType(String flavor) {
+      return BUILD_TYPE.equals(flavor);
+   }
 
-    private String generateName(String name) {
-        String result = String.format("%s.%s.%s-%s", versionMajor, versionMinor, versionPatch, versionBuild);
-        if (!android.text.TextUtils.isEmpty(name)) {
-            result = String.format("%s-%s", result, name);
-        }
-        return result;
-    }
+   private String generateName(String name) {
+      String result = String.format("%s.%s.%s-%s", versionMajor, versionMinor, versionPatch, versionBuild);
+      if (!android.text.TextUtils.isEmpty(name)) {
+         result = String.format("%s-%s", result, name);
+      }
+      return result;
+   }
 }

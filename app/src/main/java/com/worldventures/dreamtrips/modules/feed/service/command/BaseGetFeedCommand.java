@@ -18,31 +18,30 @@ import javax.inject.Inject;
 import io.techery.janet.Janet;
 import rx.schedulers.Schedulers;
 
-public abstract class BaseGetFeedCommand<T extends GetFeedHttpAction> extends CommandWithError<List<FeedItem<FeedEntity>>>
-        implements InjectableAction {
+public abstract class BaseGetFeedCommand<T extends GetFeedHttpAction> extends CommandWithError<List<FeedItem<FeedEntity>>> implements InjectableAction {
 
-    protected static final int FEED_LIMIT = 20;
-    protected static final int TIMELINE_LIMIT = 10;
+   protected static final int FEED_LIMIT = 20;
+   protected static final int TIMELINE_LIMIT = 10;
 
-    @Inject Janet janet;
+   @Inject Janet janet;
 
-    protected String before;
+   protected String before;
 
-    public BaseGetFeedCommand(Date before) {
-        this.before = before == null ? null : DateTimeUtils.convertDateToUTCString(before);
-    }
+   public BaseGetFeedCommand(Date before) {
+      this.before = before == null ? null : DateTimeUtils.convertDateToUTCString(before);
+   }
 
-    @Override
-    protected void run(CommandCallback<List<FeedItem<FeedEntity>>> callback) throws Throwable {
-        janet.createPipe(provideHttpActionClass(), Schedulers.io())
-                .createObservableResult(provideRequest())
-                .map(GetFeedHttpAction::getResponseItems)
-                .compose(new ListFilter<>(ParentFeedItem::isSingle))
-                .compose(new ListMapper<>(parentFeedItem -> parentFeedItem.getItems().get(0)))
-                .subscribe(callback::onSuccess, callback::onFail);
-    }
+   @Override
+   protected void run(CommandCallback<List<FeedItem<FeedEntity>>> callback) throws Throwable {
+      janet.createPipe(provideHttpActionClass(), Schedulers.io())
+            .createObservableResult(provideRequest())
+            .map(GetFeedHttpAction::getResponseItems)
+            .compose(new ListFilter<>(ParentFeedItem::isSingle))
+            .compose(new ListMapper<>(parentFeedItem -> parentFeedItem.getItems().get(0)))
+            .subscribe(callback::onSuccess, callback::onFail);
+   }
 
-    protected abstract Class<T> provideHttpActionClass();
+   protected abstract Class<T> provideHttpActionClass();
 
-    protected abstract T provideRequest();
+   protected abstract T provideRequest();
 }

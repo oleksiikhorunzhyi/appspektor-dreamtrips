@@ -20,32 +20,32 @@ import com.worldventures.dreamtrips.modules.feed.view.cell.TripFeedItemDetailsCe
 @Layout(R.layout.fragment_comments_with_details)
 public class FeedItemDetailsFragment extends FeedDetailsFragment<FeedItemDetailsPresenter, FeedItemDetailsBundle> implements FeedItemDetailsPresenter.View {
 
-    @Override
-    protected FeedItemDetailsPresenter createPresenter(Bundle savedInstanceState) {
-        return new FeedItemDetailsPresenter(getArgs().getFeedItem());
-    }
+   @Override
+   protected FeedItemDetailsPresenter createPresenter(Bundle savedInstanceState) {
+      return new FeedItemDetailsPresenter(getArgs().getFeedItem());
+   }
 
-    @Override
-    protected void registerCells() {
-        adapter.registerCell(PostFeedItem.class, PostFeedItemDetailsCell.class);
-        adapter.registerCell(BucketFeedItem.class, BucketFeedItemDetailsCell.class);
-        adapter.registerCell(PhotoFeedItem.class, PhotoFeedItemDetailsCell.class);
-        adapter.registerCell(TripFeedItem.class, TripFeedItemDetailsCell.class);
-    }
+   @Override
+   protected void registerCells() {
+      adapter.registerCell(PostFeedItem.class, PostFeedItemDetailsCell.class);
+      adapter.registerCell(BucketFeedItem.class, BucketFeedItemDetailsCell.class);
+      adapter.registerCell(PhotoFeedItem.class, PhotoFeedItemDetailsCell.class);
+      adapter.registerCell(TripFeedItem.class, TripFeedItemDetailsCell.class);
+   }
 
-    @Override
-    public void updateItem(FeedItem feedItem) {
-        updateFeedItem(feedItem);
-    }
+   @Override
+   public void updateItem(FeedItem feedItem) {
+      updateFeedItem(feedItem);
+   }
 
-    @Override
-    public void onPause() {
-        super.onPause();
+   @Override
+   public void onPause() {
+      super.onPause();
         /* Hiding keyboard saves app from crash on Samsung Tablets. Here is crash log from samsung tab
         Fatal Exception: java.lang.NullPointerException
             at android.widget.LinearLayout.layoutHorizontal(LinearLayout.java:1629)
             at android.widget.LinearLayout.onLayout(LinearLayout.java:1442)
             at android.view.View.layout(View.java:15746)*/
-        SoftInputUtil.hideSoftInputMethod(getActivity());
-    }
+      SoftInputUtil.hideSoftInputMethod(getActivity());
+   }
 }

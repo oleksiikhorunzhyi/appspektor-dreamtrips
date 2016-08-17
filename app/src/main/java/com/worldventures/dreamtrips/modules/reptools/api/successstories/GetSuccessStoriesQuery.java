@@ -8,17 +8,17 @@ import java.util.ArrayList;
 
 public class GetSuccessStoriesQuery extends Query<ArrayList<SuccessStory>> {
 
-    public GetSuccessStoriesQuery() {
-        super((Class<ArrayList<SuccessStory>>) new ArrayList<SuccessStory>().getClass());
-    }
+   public GetSuccessStoriesQuery() {
+      super((Class<ArrayList<SuccessStory>>) new ArrayList<SuccessStory>().getClass());
+   }
 
-    @Override
-    public ArrayList<SuccessStory> loadDataFromNetwork() throws Exception {
-        return getService().getSuccessStores();
-    }
+   @Override
+   public ArrayList<SuccessStory> loadDataFromNetwork() throws Exception {
+      return getService().getSuccessStores();
+   }
 
-    @Override
-    public int getErrorMessage() {
-        return R.string.error_fail_to_load_success_stories;
-    }
+   @Override
+   public int getErrorMessage() {
+      return R.string.error_fail_to_load_success_stories;
+   }
 }

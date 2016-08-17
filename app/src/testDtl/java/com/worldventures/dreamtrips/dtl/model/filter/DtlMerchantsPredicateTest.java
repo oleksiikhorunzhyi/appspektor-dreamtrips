@@ -26,185 +26,191 @@ import static org.assertj.core.api.Assertions.assertThat;
 @RunWith(MockitoJUnitRunner.class)
 public class DtlMerchantsPredicateTest {
 
-    @Test
-    public void checkType_Success() {
-        DtlMerchantTypePredicate predicate = new DtlMerchantTypePredicate(DtlMerchantType.OFFER);
-        //
-        DtlMerchant dtlMerchant = createDefaultMerchant();
-        dtlMerchant.setOffers(Collections.singletonList(new DtlOfferPerk()));
-        //
-        boolean result = predicate.apply(dtlMerchant);
-        assertThat(result).isTrue();
-    }
+   @Test
+   public void checkType_Success() {
+      DtlMerchantTypePredicate predicate = new DtlMerchantTypePredicate(DtlMerchantType.OFFER);
+      //
+      DtlMerchant dtlMerchant = createDefaultMerchant();
+      dtlMerchant.setOffers(Collections.singletonList(new DtlOfferPerk()));
+      //
+      boolean result = predicate.apply(dtlMerchant);
+      assertThat(result).isTrue();
+   }
 
-    @Test
-    public void checkType_Fail() {
-        DtlMerchantTypePredicate predicate = new DtlMerchantTypePredicate(DtlMerchantType.OFFER);
-        //
-        DtlMerchant dtlMerchant = createDefaultMerchant();
-        dtlMerchant.setOffers(Collections.emptyList());
-        //
-        boolean result = predicate.apply(dtlMerchant);
-        assertThat(result).isFalse();
-    }
+   @Test
+   public void checkType_Fail() {
+      DtlMerchantTypePredicate predicate = new DtlMerchantTypePredicate(DtlMerchantType.OFFER);
+      //
+      DtlMerchant dtlMerchant = createDefaultMerchant();
+      dtlMerchant.setOffers(Collections.emptyList());
+      //
+      boolean result = predicate.apply(dtlMerchant);
+      assertThat(result).isFalse();
+   }
 
-    @Test
-    public void checkQuery_Success_inDisplayName() {
-        DtlFilterData filterData = ImmutableDtlFilterData.builder().searchQuery("Plano").build();
-        DtlMerchantQueryPredicate predicate = new DtlMerchantQueryPredicate(filterData);
-        //
-        DtlMerchant dtlMerchant = createDefaultMerchant();
-        dtlMerchant.setDisplayName("Plano");
-        //
-        boolean result = predicate.apply(dtlMerchant);
-        assertThat(result).isTrue();
-    }
+   @Test
+   public void checkQuery_Success_inDisplayName() {
+      DtlFilterData filterData = ImmutableDtlFilterData.builder().searchQuery("Plano").build();
+      DtlMerchantQueryPredicate predicate = new DtlMerchantQueryPredicate(filterData);
+      //
+      DtlMerchant dtlMerchant = createDefaultMerchant();
+      dtlMerchant.setDisplayName("Plano");
+      //
+      boolean result = predicate.apply(dtlMerchant);
+      assertThat(result).isTrue();
+   }
 
-    @Test
-    public void checkQuery_Fail_inDisplayName() {
-        DtlFilterData filterData = ImmutableDtlFilterData.builder().searchQuery("London").build();
-        DtlMerchantQueryPredicate predicate = new DtlMerchantQueryPredicate(filterData);
+   @Test
+   public void checkQuery_Fail_inDisplayName() {
+      DtlFilterData filterData = ImmutableDtlFilterData.builder().searchQuery("London").build();
+      DtlMerchantQueryPredicate predicate = new DtlMerchantQueryPredicate(filterData);
 
-        DtlMerchant dtlMerchant = createDefaultMerchant();
-        dtlMerchant.setDisplayName("Texas");
+      DtlMerchant dtlMerchant = createDefaultMerchant();
+      dtlMerchant.setDisplayName("Texas");
 
-        boolean result = predicate.apply(dtlMerchant);
-        assertThat(result).isFalse();
-    }
+      boolean result = predicate.apply(dtlMerchant);
+      assertThat(result).isFalse();
+   }
 
-    @Test
-    public void checkQuery_Success_inCategory() {
-        DtlFilterData filterData = ImmutableDtlFilterData.builder().searchQuery("pizza").build();
-        DtlMerchantQueryPredicate predicate = new DtlMerchantQueryPredicate(filterData);
+   @Test
+   public void checkQuery_Success_inCategory() {
+      DtlFilterData filterData = ImmutableDtlFilterData.builder().searchQuery("pizza").build();
+      DtlMerchantQueryPredicate predicate = new DtlMerchantQueryPredicate(filterData);
 
-        DtlMerchant dtlMerchant = createDefaultMerchant();
-        dtlMerchant.setDisplayName("Texas");
-        dtlMerchant.setCategories(Collections.singletonList(new DtlMerchantAttribute("pizza")));
+      DtlMerchant dtlMerchant = createDefaultMerchant();
+      dtlMerchant.setDisplayName("Texas");
+      dtlMerchant.setCategories(Collections.singletonList(new DtlMerchantAttribute("pizza")));
 
-        boolean result = predicate.apply(dtlMerchant);
-        assertThat(result).isTrue();
-    }
+      boolean result = predicate.apply(dtlMerchant);
+      assertThat(result).isTrue();
+   }
 
-    @Test
-    public void checkQuery_Fail_inCategory() {
-        DtlFilterData filterData = ImmutableDtlFilterData.builder().searchQuery("whatever").build();
-        DtlMerchantQueryPredicate predicate = new DtlMerchantQueryPredicate(filterData);
+   @Test
+   public void checkQuery_Fail_inCategory() {
+      DtlFilterData filterData = ImmutableDtlFilterData.builder().searchQuery("whatever").build();
+      DtlMerchantQueryPredicate predicate = new DtlMerchantQueryPredicate(filterData);
 
-        DtlMerchant dtlMerchant = createDefaultMerchant();
-        dtlMerchant.setDisplayName("Texas");
-        dtlMerchant.setCategories(Collections.singletonList(new DtlMerchantAttribute("pizza")));
+      DtlMerchant dtlMerchant = createDefaultMerchant();
+      dtlMerchant.setDisplayName("Texas");
+      dtlMerchant.setCategories(Collections.singletonList(new DtlMerchantAttribute("pizza")));
 
-        boolean result = predicate.apply(dtlMerchant);
-        assertThat(result).isFalse();
-    }
+      boolean result = predicate.apply(dtlMerchant);
+      assertThat(result).isFalse();
+   }
 
-    @Test
-    public void checkBudget_Success() {
-        DtlFilterData filterData = ImmutableDtlFilterData.builder().maxPrice(1).maxPrice(3).build();
-        DtlMerchantPricePredicate predicate = new DtlMerchantPricePredicate(filterData);
+   @Test
+   public void checkBudget_Success() {
+      DtlFilterData filterData = ImmutableDtlFilterData.builder().maxPrice(1).maxPrice(3).build();
+      DtlMerchantPricePredicate predicate = new DtlMerchantPricePredicate(filterData);
 
-        DtlMerchant dtlMerchant = createDefaultMerchant();
-        dtlMerchant.setBudget(3);
+      DtlMerchant dtlMerchant = createDefaultMerchant();
+      dtlMerchant.setBudget(3);
 
-        boolean result = predicate.apply(dtlMerchant);
-        assertThat(result).isTrue();
-    }
+      boolean result = predicate.apply(dtlMerchant);
+      assertThat(result).isTrue();
+   }
 
-    @Test
-    public void checkBudget_Fail() {
-        DtlFilterData filterData = ImmutableDtlFilterData.builder().maxPrice(1).maxPrice(3).build();
-        DtlMerchantPricePredicate predicate = new DtlMerchantPricePredicate(filterData);
+   @Test
+   public void checkBudget_Fail() {
+      DtlFilterData filterData = ImmutableDtlFilterData.builder().maxPrice(1).maxPrice(3).build();
+      DtlMerchantPricePredicate predicate = new DtlMerchantPricePredicate(filterData);
 
-        DtlMerchant dtlMerchant = createDefaultMerchant();
-        dtlMerchant.setBudget(6);
+      DtlMerchant dtlMerchant = createDefaultMerchant();
+      dtlMerchant.setBudget(6);
 
-        boolean result = predicate.apply(dtlMerchant);
-        assertThat(result).isFalse();
-    }
+      boolean result = predicate.apply(dtlMerchant);
+      assertThat(result).isFalse();
+   }
 
-    @Test
-    public void checkAmenities_Empty() {
-        DtlFilterData filterData = ImmutableDtlFilterData.builder().amenities(Collections.emptyList()).build();
-        DtlMerchantAmenitiesPredicate predicate = new DtlMerchantAmenitiesPredicate(filterData);
+   @Test
+   public void checkAmenities_Empty() {
+      DtlFilterData filterData = ImmutableDtlFilterData.builder().amenities(Collections.emptyList()).build();
+      DtlMerchantAmenitiesPredicate predicate = new DtlMerchantAmenitiesPredicate(filterData);
 
-        DtlMerchant dtlMerchant = createDefaultMerchant();
+      DtlMerchant dtlMerchant = createDefaultMerchant();
 
-        boolean result = predicate.apply(dtlMerchant);
-        assertThat(result).isTrue();
-    }
+      boolean result = predicate.apply(dtlMerchant);
+      assertThat(result).isTrue();
+   }
 
-    @Test
-    public void checkAmenities_Success() {
-        List<DtlMerchantAttribute> amenities = Collections.singletonList(new DtlMerchantAttribute("Free beer"));
-        DtlFilterData filterData = ImmutableDtlFilterData.builder().amenities(amenities).selectedAmenities(amenities).build();
-        DtlMerchantAmenitiesPredicate predicate = new DtlMerchantAmenitiesPredicate(filterData);
-        //
-        DtlMerchant dtlMerchant = createDefaultMerchant();
-        dtlMerchant.setAmenities(Collections.singletonList(new DtlMerchantAttribute("Free beer")));
-        //
-        boolean result = predicate.apply(dtlMerchant);
-        assertThat(result).isTrue();
-    }
+   @Test
+   public void checkAmenities_Success() {
+      List<DtlMerchantAttribute> amenities = Collections.singletonList(new DtlMerchantAttribute("Free beer"));
+      DtlFilterData filterData = ImmutableDtlFilterData.builder()
+            .amenities(amenities)
+            .selectedAmenities(amenities)
+            .build();
+      DtlMerchantAmenitiesPredicate predicate = new DtlMerchantAmenitiesPredicate(filterData);
+      //
+      DtlMerchant dtlMerchant = createDefaultMerchant();
+      dtlMerchant.setAmenities(Collections.singletonList(new DtlMerchantAttribute("Free beer")));
+      //
+      boolean result = predicate.apply(dtlMerchant);
+      assertThat(result).isTrue();
+   }
 
-    @Test
-    public void checkAmenities_Fail() {
-        List<DtlMerchantAttribute> amenities = Collections.singletonList(new DtlMerchantAttribute("Free beer"));
-        DtlFilterData filterData = ImmutableDtlFilterData.builder().amenities(amenities).selectedAmenities(amenities).build();
-        DtlMerchantAmenitiesPredicate predicate = new DtlMerchantAmenitiesPredicate(filterData);
-        //
-        DtlMerchant dtlMerchant = createDefaultMerchant();
-        dtlMerchant.setAmenities(Collections.singletonList(new DtlMerchantAttribute("Free beverages")));
-        //
-        boolean result = predicate.apply(dtlMerchant);
-        assertThat(result).isFalse();
-    }
+   @Test
+   public void checkAmenities_Fail() {
+      List<DtlMerchantAttribute> amenities = Collections.singletonList(new DtlMerchantAttribute("Free beer"));
+      DtlFilterData filterData = ImmutableDtlFilterData.builder()
+            .amenities(amenities)
+            .selectedAmenities(amenities)
+            .build();
+      DtlMerchantAmenitiesPredicate predicate = new DtlMerchantAmenitiesPredicate(filterData);
+      //
+      DtlMerchant dtlMerchant = createDefaultMerchant();
+      dtlMerchant.setAmenities(Collections.singletonList(new DtlMerchantAttribute("Free beverages")));
+      //
+      boolean result = predicate.apply(dtlMerchant);
+      assertThat(result).isFalse();
+   }
 
-    @Test
-    public void checkDistance_Success_MaxDistance() {
-        DtlFilterData filterData = ImmutableDtlFilterData.builder().distanceType(DistanceType.KMS).build();
-        DtlMerchantDistancePredicate predicate = new DtlMerchantDistancePredicate(filterData);
-        //
-        DtlMerchant dtlMerchant = createDefaultMerchant();
-        dtlMerchant.setDistanceType(DistanceType.KMS);
-        dtlMerchant.setDistance(25d);
-        //
-        boolean result = predicate.apply(dtlMerchant);
-        assertThat(result).isTrue();
-    }
+   @Test
+   public void checkDistance_Success_MaxDistance() {
+      DtlFilterData filterData = ImmutableDtlFilterData.builder().distanceType(DistanceType.KMS).build();
+      DtlMerchantDistancePredicate predicate = new DtlMerchantDistancePredicate(filterData);
+      //
+      DtlMerchant dtlMerchant = createDefaultMerchant();
+      dtlMerchant.setDistanceType(DistanceType.KMS);
+      dtlMerchant.setDistance(25d);
+      //
+      boolean result = predicate.apply(dtlMerchant);
+      assertThat(result).isTrue();
+   }
 
-    @Test
-    public void checkDistance_Success() {
-        DtlFilterData filterData = ImmutableDtlFilterData.builder().distanceType(DistanceType.KMS).build();
-        DtlMerchantDistancePredicate predicate = new DtlMerchantDistancePredicate(filterData);
-        //
-        DtlMerchant dtlMerchant = createDefaultMerchant();
-        dtlMerchant.setDistanceType(DistanceType.KMS);
-        dtlMerchant.setDistance(2500d);
-        //
-        boolean result = predicate.apply(dtlMerchant);
-        assertThat(result).isTrue();
-    }
+   @Test
+   public void checkDistance_Success() {
+      DtlFilterData filterData = ImmutableDtlFilterData.builder().distanceType(DistanceType.KMS).build();
+      DtlMerchantDistancePredicate predicate = new DtlMerchantDistancePredicate(filterData);
+      //
+      DtlMerchant dtlMerchant = createDefaultMerchant();
+      dtlMerchant.setDistanceType(DistanceType.KMS);
+      dtlMerchant.setDistance(2500d);
+      //
+      boolean result = predicate.apply(dtlMerchant);
+      assertThat(result).isTrue();
+   }
 
-    @Test
-    public void checkDistance_Fail() {
-        DtlFilterData filterData = ImmutableDtlFilterData.builder()
-                .distanceType(DistanceType.KMS)
-                .maxDistance(20)
-                .build();
-        DtlMerchantDistancePredicate predicate = new DtlMerchantDistancePredicate(filterData);
-        //
-        DtlMerchant dtlMerchant = createDefaultMerchant();
-        dtlMerchant.setDistanceType(DistanceType.KMS);
-        dtlMerchant.setDistance(35000d);
-        //
-        boolean result = predicate.apply(dtlMerchant);
-        assertThat(result).isFalse();
-    }
+   @Test
+   public void checkDistance_Fail() {
+      DtlFilterData filterData = ImmutableDtlFilterData.builder()
+            .distanceType(DistanceType.KMS)
+            .maxDistance(20)
+            .build();
+      DtlMerchantDistancePredicate predicate = new DtlMerchantDistancePredicate(filterData);
+      //
+      DtlMerchant dtlMerchant = createDefaultMerchant();
+      dtlMerchant.setDistanceType(DistanceType.KMS);
+      dtlMerchant.setDistance(35000d);
+      //
+      boolean result = predicate.apply(dtlMerchant);
+      assertThat(result).isFalse();
+   }
 
-    private static DtlMerchant createDefaultMerchant() {
-        DtlMerchant merchant = new DtlMerchant();
-        merchant.setBudget(2); // default from 1 to 5;
-        merchant.setDisplayName(TestConstants.DEFAULT_SEARCH_QUERY);
-        return merchant;
-    }
+   private static DtlMerchant createDefaultMerchant() {
+      DtlMerchant merchant = new DtlMerchant();
+      merchant.setBudget(2); // default from 1 to 5;
+      merchant.setDisplayName(TestConstants.DEFAULT_SEARCH_QUERY);
+      return merchant;
+   }
 }

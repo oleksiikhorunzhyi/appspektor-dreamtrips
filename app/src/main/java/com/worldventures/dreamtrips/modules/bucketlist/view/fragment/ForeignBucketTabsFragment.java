@@ -13,14 +13,14 @@ import com.worldventures.dreamtrips.modules.bucketlist.presenter.ForeignBucketTa
 @MenuResource(R.menu.menu_mock)
 public class ForeignBucketTabsFragment extends BucketTabsFragment<ForeignBucketTabPresenter> {
 
-    @Override
-    protected ForeignBucketTabPresenter createPresenter(Bundle savedInstanceState) {
-        return new ForeignBucketTabPresenter(getArgs().getUser());
-    }
+   @Override
+   protected ForeignBucketTabPresenter createPresenter(Bundle savedInstanceState) {
+      return new ForeignBucketTabPresenter(getArgs().getUser());
+   }
 
-    @NonNull
-    @Override
-    protected Route getBucketRoute() {
-        return Route.FOREIGN_BUCKET_LIST;
-    }
+   @NonNull
+   @Override
+   protected Route getBucketRoute() {
+      return Route.FOREIGN_BUCKET_LIST;
+   }
 }

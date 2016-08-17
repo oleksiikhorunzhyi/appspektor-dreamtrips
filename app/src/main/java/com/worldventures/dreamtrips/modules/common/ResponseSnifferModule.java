@@ -11,21 +11,18 @@ import dagger.Module;
 import dagger.Provides;
 
 @Module(
-        injects = {
-                ApiModule.class
-        },
-        complete = false,
-        library = true
-)
+      injects = {ApiModule.class},
+      complete = false,
+      library = true)
 public class ResponseSnifferModule {
 
-    @Provides(type = Provides.Type.SET)
-    InterceptingOkClient.ResponseHeaderListener provideNotificationCountListener(SnappyRepository db) {
-        return new AllNotificationsCountResponseListener(db);
-    }
+   @Provides(type = Provides.Type.SET)
+   InterceptingOkClient.ResponseHeaderListener provideNotificationCountListener(SnappyRepository db) {
+      return new AllNotificationsCountResponseListener(db);
+   }
 
-    @Provides(type = Provides.Type.SET)
-    InterceptingOkClient.ResponseHeaderListener provideHeaderChangedInformerResponseListener(NotificationCountEventDelegate notificationCountEventDelegate) {
-        return new HeaderChangedInformerListener(notificationCountEventDelegate);
-    }
+   @Provides(type = Provides.Type.SET)
+   InterceptingOkClient.ResponseHeaderListener provideHeaderChangedInformerResponseListener(NotificationCountEventDelegate notificationCountEventDelegate) {
+      return new HeaderChangedInformerListener(notificationCountEventDelegate);
+   }
 }

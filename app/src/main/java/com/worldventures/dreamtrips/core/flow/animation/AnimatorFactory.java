@@ -8,5 +8,5 @@ import flow.Flow;
 
 public interface AnimatorFactory {
 
-    Animator createAnimator(View from, View to, Flow.Direction direction, ViewGroup container);
+   Animator createAnimator(View from, View to, Flow.Direction direction, ViewGroup container);
 }

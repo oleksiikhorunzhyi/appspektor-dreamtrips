@@ -6,34 +6,34 @@ import rx.Observable;
 
 public interface ReadOnlyPlayer {
 
-    enum State {
-        UNKNOWN,
-        PREPARING,
-        READY,
-        PLAYING,
-        PAUSED,
-        STOPPED,
-        RELEASED,
-        ERROR
-    }
+   enum State {
+      UNKNOWN,
+      PREPARING,
+      READY,
+      PLAYING,
+      PAUSED,
+      STOPPED,
+      RELEASED,
+      ERROR
+   }
 
-    DtPlayer.State getState();
+   DtPlayer.State getState();
 
-    Observable<DtPlayer.State> getStateObservable();
+   Observable<DtPlayer.State> getStateObservable();
 
-    Uri getSourceUri();
+   Uri getSourceUri();
 
-    /**
-     * @return duration in millis
-     */
-    int getDuration();
+   /**
+    * @return duration in millis
+    */
+   int getDuration();
 
-    /**
-     * @return current possition in millis
-     */
-    int getCurrentPosition();
+   /**
+    * @return current possition in millis
+    */
+   int getCurrentPosition();
 
-    boolean isPlaying();
+   boolean isPlaying();
 
-    int getBufferPercentage();
+   int getBufferPercentage();
 }

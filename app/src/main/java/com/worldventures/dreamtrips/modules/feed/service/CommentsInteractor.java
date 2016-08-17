@@ -10,14 +10,14 @@ import rx.schedulers.Schedulers;
 
 public class CommentsInteractor {
 
-    private final ActionPipe<GetCommentsCommand> commentsPipe;
+   private final ActionPipe<GetCommentsCommand> commentsPipe;
 
-    @Inject
-    public CommentsInteractor(Janet janet) {
-        this.commentsPipe = janet.createPipe(GetCommentsCommand.class, Schedulers.io());
-    }
+   @Inject
+   public CommentsInteractor(Janet janet) {
+      this.commentsPipe = janet.createPipe(GetCommentsCommand.class, Schedulers.io());
+   }
 
-    public ActionPipe<GetCommentsCommand> commentsPipe() {
-        return commentsPipe;
-    }
+   public ActionPipe<GetCommentsCommand> commentsPipe() {
+      return commentsPipe;
+   }
 }

@@ -13,24 +13,24 @@ import java.util.List;
 
 public class CirclesStorage implements ActionStorage<List<Circle>> {
 
-    private final SnappyRepository db;
+   private final SnappyRepository db;
 
-    public CirclesStorage(SnappyRepository db) {
-        this.db = db;
-    }
+   public CirclesStorage(SnappyRepository db) {
+      this.db = db;
+   }
 
-    @Override
-    public Class<? extends CachedAction> getActionClass() {
-        return CirclesCommand.class;
-    }
+   @Override
+   public Class<? extends CachedAction> getActionClass() {
+      return CirclesCommand.class;
+   }
 
-    @Override
-    public void save(@Nullable CacheBundle params, List<Circle> data) {
-        db.saveCircles(data);
-    }
+   @Override
+   public void save(@Nullable CacheBundle params, List<Circle> data) {
+      db.saveCircles(data);
+   }
 
-    @Override
-    public List<Circle> get(@Nullable CacheBundle action) {
-        return db.getCircles();
-    }
+   @Override
+   public List<Circle> get(@Nullable CacheBundle action) {
+      return db.getCircles();
+   }
 }

@@ -8,14 +8,14 @@ import com.worldventures.dreamtrips.R;
 @Layout(R.layout.adapter_media_header)
 public class MediaHeaderLightCell extends MediaHeaderCell {
 
-    public MediaHeaderLightCell(View view) {
-        super(view);
-    }
+   public MediaHeaderLightCell(View view) {
+      super(view);
+   }
 
-    @Override
-    protected void syncUIStateWithModel() {
-        super.syncUIStateWithModel();
-        header.setTextColor(itemView.getResources().getColor(R.color.theme_main_darker));
-    }
+   @Override
+   protected void syncUIStateWithModel() {
+      super.syncUIStateWithModel();
+      header.setTextColor(itemView.getResources().getColor(R.color.theme_main_darker));
+   }
 
 }

@@ -12,35 +12,35 @@ import java.util.List;
 
 public interface FeedEntity extends Serializable, UidItem {
 
-    User getOwner();
+   User getOwner();
 
-    String place();
+   String place();
 
-    void setOwner(User user);
+   void setOwner(User user);
 
-    int getCommentsCount();
+   int getCommentsCount();
 
-    void setCommentsCount(int count);
+   void setCommentsCount(int count);
 
-    @NotNull
-    List<Comment> getComments();
+   @NotNull
+   List<Comment> getComments();
 
-    void setComments(List<Comment> comments);
+   void setComments(List<Comment> comments);
 
-    void setLikesCount(int count);
+   void setLikesCount(int count);
 
-    int getLikesCount();
+   int getLikesCount();
 
-    boolean isLiked();
+   boolean isLiked();
 
-    void setLiked(boolean isLiked);
+   void setLiked(boolean isLiked);
 
-    String getFirstLikerName();
+   String getFirstLikerName();
 
-    void setFirstLikerName(String fullName);
+   void setFirstLikerName(String fullName);
 
-    void syncLikeState(FeedEntity feedEntity);
+   void syncLikeState(FeedEntity feedEntity);
 
-    @Nullable
-    String getLanguageFrom();
+   @Nullable
+   String getLanguageFrom();
 }

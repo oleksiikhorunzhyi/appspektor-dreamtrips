@@ -9,19 +9,19 @@ import com.worldventures.dreamtrips.modules.feed.presenter.SuggestedPhotoCellPre
 
 public interface SuggestedPhotosDelegate extends CellDelegate<MediaAttachment> {
 
-    void onCancelClicked();
+   void onCancelClicked();
 
-    void onAttachClicked();
+   void onAttachClicked();
 
-    void onOpenProfileClicked();
+   void onOpenProfileClicked();
 
-    void onSuggestionViewCreated(@NonNull SuggestedPhotoCellPresenterHelper.View view);
+   void onSuggestionViewCreated(@NonNull SuggestedPhotoCellPresenterHelper.View view);
 
-    void onSyncViewState();
+   void onSyncViewState();
 
-    void onPreloadSuggestionPhotos(@NonNull PhotoGalleryModel model);
+   void onPreloadSuggestionPhotos(@NonNull PhotoGalleryModel model);
 
-    void onSelectPhoto(@NonNull PhotoGalleryModel model);
+   void onSelectPhoto(@NonNull PhotoGalleryModel model);
 
-    long lastSyncTimestamp();
+   long lastSyncTimestamp();
 }

@@ -6,5 +6,5 @@ import rx.Observable;
 
 public interface IncomingMessageFilter {
 
-    Observable<Boolean> skipPacket(Stanza stanza);
+   Observable<Boolean> skipPacket(Stanza stanza);
 }

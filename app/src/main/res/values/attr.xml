@@ -1,91 +1,91 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <declare-styleable name="DTEditText">
-        <attr name="hintColor" format="color"/>
-        <attr name="requestFocusOnValidationFail" format="boolean" />
-    </declare-styleable>
-    <declare-styleable name="PinProgressButton">
-        <attr name="pinned" format="boolean"/>
-        <attr name="progress" format="integer"/>
-        <attr name="max" format="integer"/>
-        <attr name="circleColor" format="color"/>
-        <attr name="progressColor" format="color"/>
-    </declare-styleable>
-    <declare-styleable name="FlagView">
-        <attr name="icon"/>
-    </declare-styleable>
-    <declare-styleable name="SquareLayout">
-        <attr name="side_priority" format="enum">
-            <enum name="height" value="0"/>
-            <enum name="width" value="1"/>
-        </attr>
-    </declare-styleable>
-    <declare-styleable name="OverlappingViewsLayout">
-        <attr name="ovl_overlap_part" format="float|reference" />
-    </declare-styleable>
-    <declare-styleable name="GroupAvatarsView">
-        <attr name="gav_avatar_size" format="dimension|reference" />
-        <attr name="gav_avatar_spacing" format="dimension|reference" />
-    </declare-styleable>
-    <declare-styleable name="HoldableButton">
-        <attr name="holdInitialDelay" format="integer"/>
-        <attr name="holdRepeatDelay" format="integer"/>
-    </declare-styleable>
+   <declare-styleable name="DTEditText">
+      <attr name="hintColor" format="color" />
+      <attr name="requestFocusOnValidationFail" format="boolean" />
+   </declare-styleable>
+   <declare-styleable name="PinProgressButton">
+      <attr name="pinned" format="boolean" />
+      <attr name="progress" format="integer" />
+      <attr name="max" format="integer" />
+      <attr name="circleColor" format="color" />
+      <attr name="progressColor" format="color" />
+   </declare-styleable>
+   <declare-styleable name="FlagView">
+      <attr name="icon" />
+   </declare-styleable>
+   <declare-styleable name="SquareLayout">
+      <attr name="side_priority" format="enum">
+         <enum name="height" value="0" />
+         <enum name="width" value="1" />
+      </attr>
+   </declare-styleable>
+   <declare-styleable name="OverlappingViewsLayout">
+      <attr name="ovl_overlap_part" format="float|reference" />
+   </declare-styleable>
+   <declare-styleable name="GroupAvatarsView">
+      <attr name="gav_avatar_size" format="dimension|reference" />
+      <attr name="gav_avatar_spacing" format="dimension|reference" />
+   </declare-styleable>
+   <declare-styleable name="HoldableButton">
+      <attr name="holdInitialDelay" format="integer" />
+      <attr name="holdRepeatDelay" format="integer" />
+   </declare-styleable>
 
-    <declare-styleable name="ShowMoreTextView">
-        <!-- 'smtv_' prefix to prevent any possible duplication -->
-        <attr name="smtv_symbolsLimit" format="integer" />
-        <attr name="smtv_captionCollapsed" format="string" />
-        <attr name="smtv_captionExpanded" format="string" />
-        <attr name="smtv_captionColor" format="color" />
-        <attr name="smtv_separatorCollapsed" format="string" />
-        <attr name="smtv_separatorExpanded" format="string" />
-        <!-- Provides bigger (by height) clickable area. Default is false. Turn off if you have problems clicking links with your TextVIew -->
-        <attr name="smtv_extendClickableArea" format="boolean" />
-    </declare-styleable>
+   <declare-styleable name="ShowMoreTextView">
+      <!-- 'smtv_' prefix to prevent any possible duplication -->
+      <attr name="smtv_symbolsLimit" format="integer" />
+      <attr name="smtv_captionCollapsed" format="string" />
+      <attr name="smtv_captionExpanded" format="string" />
+      <attr name="smtv_captionColor" format="color" />
+      <attr name="smtv_separatorCollapsed" format="string" />
+      <attr name="smtv_separatorExpanded" format="string" />
+      <!-- Provides bigger (by height) clickable area. Default is false. Turn off if you have problems clicking links with your TextVIew -->
+      <attr name="smtv_extendClickableArea" format="boolean" />
+   </declare-styleable>
 
-    <declare-styleable name="AvatarView">
-        <attr name="av_online_indicator_size" format="dimension|reference" />
-    </declare-styleable>
+   <declare-styleable name="AvatarView">
+      <attr name="av_online_indicator_size" format="dimension|reference" />
+   </declare-styleable>
 
-    <declare-styleable name="ExpandableDtlToolbar">
-        <!-- 'dtlt_' prefix to prevent any possible duplication -->
-        <attr name="dtlt_collapsed" format="boolean" />
-        <attr name="dtlt_navigation_icon_visible" format="boolean" />
-        <attr name="dtlt_navigation_icon_src" format="integer" />
-        <attr name="dtlt_show_filter_bar_portrait" format="boolean" />
-        <attr name="dtlt_focused_mode" format="enum">
-            <enum name="undefined" value="0" />
-            <enum name="search" value="1" />
-            <enum name="location" value="2" />
-        </attr>
-    </declare-styleable>
+   <declare-styleable name="ExpandableDtlToolbar">
+      <!-- 'dtlt_' prefix to prevent any possible duplication -->
+      <attr name="dtlt_collapsed" format="boolean" />
+      <attr name="dtlt_navigation_icon_visible" format="boolean" />
+      <attr name="dtlt_navigation_icon_src" format="integer" />
+      <attr name="dtlt_show_filter_bar_portrait" format="boolean" />
+      <attr name="dtlt_focused_mode" format="enum">
+         <enum name="undefined" value="0" />
+         <enum name="search" value="1" />
+         <enum name="location" value="2" />
+      </attr>
+   </declare-styleable>
 
-    <declare-styleable name="DtlFilterButton">
-        <!-- 'dtlfb_' prefix to prevent any possible duplication -->
-        <attr name="dtlfb_enabled_background_color" format="integer" />
-        <attr name="dtlfb_disabled_background_color" format="integer" />
-        <attr name="dtlfb_enabled_caption_color" format="integer" />
-        <attr name="dtlfb_disabled_caption_color" format="integer" />
-        <attr name="dtlfb_enabled_icon" format="integer" />
-        <attr name="dtlfb_disabled_icon" format="integer" />
-        <attr name="dtlfb_show_separator" format="boolean" />
-    </declare-styleable>
+   <declare-styleable name="DtlFilterButton">
+      <!-- 'dtlfb_' prefix to prevent any possible duplication -->
+      <attr name="dtlfb_enabled_background_color" format="integer" />
+      <attr name="dtlfb_disabled_background_color" format="integer" />
+      <attr name="dtlfb_enabled_caption_color" format="integer" />
+      <attr name="dtlfb_disabled_caption_color" format="integer" />
+      <attr name="dtlfb_enabled_icon" format="integer" />
+      <attr name="dtlfb_disabled_icon" format="integer" />
+      <attr name="dtlfb_show_separator" format="boolean" />
+   </declare-styleable>
 
-    <declare-styleable name="CollageView">
-        <attr name="padding" format="dimension"/>
-        <attr name="moreTextSize" format="dimension"/>
-        <attr name="moreIcon" format="reference"/>
-    </declare-styleable>
+   <declare-styleable name="CollageView">
+      <attr name="padding" format="dimension" />
+      <attr name="moreTextSize" format="dimension" />
+      <attr name="moreIcon" format="reference" />
+   </declare-styleable>
 
-    <declare-styleable name="RoundedCornersLayout">
-        <attr name="rcl_radius" format="dimension|reference" />
-    </declare-styleable>
+   <declare-styleable name="RoundedCornersLayout">
+      <attr name="rcl_radius" format="dimension|reference" />
+   </declare-styleable>
 
-    <declare-styleable name="ChatItemFrameLayout">
-        <attr name="background_following" format="reference"/>
-        <attr name="background_initial" format="reference"/>
-        <attr name="own" format="boolean"/>
-    </declare-styleable>
+   <declare-styleable name="ChatItemFrameLayout">
+      <attr name="background_following" format="reference" />
+      <attr name="background_initial" format="reference" />
+      <attr name="own" format="boolean" />
+   </declare-styleable>
 
 </resources>

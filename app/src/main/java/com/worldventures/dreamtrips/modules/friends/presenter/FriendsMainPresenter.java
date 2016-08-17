@@ -5,12 +5,12 @@ import com.worldventures.dreamtrips.modules.friends.events.RequestsLoadedEvent;
 
 public class FriendsMainPresenter extends Presenter<FriendsMainPresenter.View> {
 
-    public void onEvent(RequestsLoadedEvent event) {
-        view.setRecentItems(event.getCount());
-    }
+   public void onEvent(RequestsLoadedEvent event) {
+      view.setRecentItems(event.getCount());
+   }
 
-    public interface View extends Presenter.View {
-        void setRecentItems(int count);
-    }
+   public interface View extends Presenter.View {
+      void setRecentItems(int count);
+   }
 
 }

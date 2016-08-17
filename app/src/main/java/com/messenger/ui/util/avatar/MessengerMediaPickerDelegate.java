@@ -3,15 +3,15 @@ package com.messenger.ui.util.avatar;
 import rx.Observable;
 
 public interface MessengerMediaPickerDelegate {
-    void register();
+   void register();
 
-    void unregister();
+   void unregister();
 
-    void showPhotoPicker();
+   void showPhotoPicker();
 
-    void showMultiPhotoPicker();
+   void showMultiPhotoPicker();
 
-    void hidePhotoPicker();
+   void hidePhotoPicker();
 
-    Observable<String> getImagePathsStream();
+   Observable<String> getImagePathsStream();
 }

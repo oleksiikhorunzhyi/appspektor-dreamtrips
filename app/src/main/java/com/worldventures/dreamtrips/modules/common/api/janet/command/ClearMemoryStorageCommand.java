@@ -14,11 +14,11 @@ import rx.schedulers.Schedulers;
 @CommandAction
 public class ClearMemoryStorageCommand extends Command<Void> implements InjectableAction {
 
-    @Inject Janet janet;
+   @Inject Janet janet;
 
-    @Override
-    protected void run(CommandCallback<Void> callback) throws Throwable {
-        janet.createPipe(GetActivitiesCommand.class, Schedulers.io()).send(GetActivitiesCommand.clearMemory());
-        janet.createPipe(GetRegionsCommand.class, Schedulers.io()).send(GetRegionsCommand.clearMemory());
-    }
+   @Override
+   protected void run(CommandCallback<Void> callback) throws Throwable {
+      janet.createPipe(GetActivitiesCommand.class, Schedulers.io()).send(GetActivitiesCommand.clearMemory());
+      janet.createPipe(GetRegionsCommand.class, Schedulers.io()).send(GetRegionsCommand.clearMemory());
+   }
 }

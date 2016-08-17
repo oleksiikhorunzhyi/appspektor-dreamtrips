@@ -7,23 +7,23 @@ import com.worldventures.dreamtrips.modules.tripsimages.model.Photo;
 
 public class EditTripPhotoCommand extends DreamTripsRequest<Photo> {
 
-    private String uid;
-    private UploadTask uploadTask;
+   private String uid;
+   private UploadTask uploadTask;
 
-    public EditTripPhotoCommand(String uid, UploadTask uploadTask) {
-        super(Photo.class);
-        this.uid = uid;
-        this.uploadTask = uploadTask;
-    }
+   public EditTripPhotoCommand(String uid, UploadTask uploadTask) {
+      super(Photo.class);
+      this.uid = uid;
+      this.uploadTask = uploadTask;
+   }
 
-    @Override
-    public Photo loadDataFromNetwork() throws Exception {
-        return getService().editTripPhoto(uid, uploadTask);
-    }
+   @Override
+   public Photo loadDataFromNetwork() throws Exception {
+      return getService().editTripPhoto(uid, uploadTask);
+   }
 
 
-    @Override
-    public int getErrorMessage() {
-        return R.string.error_failed_to_edit_image;
-    }
+   @Override
+   public int getErrorMessage() {
+      return R.string.error_failed_to_edit_image;
+   }
 }

@@ -5,36 +5,37 @@ import android.os.Parcelable;
 
 public class EditChatMembersViewState extends LceViewState<Parcelable> {
 
-    public EditChatMembersViewState() {
-    }
+   public EditChatMembersViewState() {
+   }
 
-    private String searchFilter;
+   private String searchFilter;
 
-    public String getSearchFilter() {
-        return searchFilter;
-    }
+   public String getSearchFilter() {
+      return searchFilter;
+   }
 
-    public void setSearchFilter(String searchFilter) {
-        this.searchFilter = searchFilter;
-    }
+   public void setSearchFilter(String searchFilter) {
+      this.searchFilter = searchFilter;
+   }
 
-    ///////////////////////////////////////////////////////////////////////////
-    // Parcelable
-    ///////////////////////////////////////////////////////////////////////////
+   ///////////////////////////////////////////////////////////////////////////
+   // Parcelable
+   ///////////////////////////////////////////////////////////////////////////
 
-    @Override public void writeToParcel(Parcel parcel, int flags) {
-        super.writeToParcel(parcel, flags);
-        parcel.writeString(searchFilter);
-    }
+   @Override
+   public void writeToParcel(Parcel parcel, int flags) {
+      super.writeToParcel(parcel, flags);
+      parcel.writeString(searchFilter);
+   }
 
-    public static final Creator<EditChatMembersViewState> CREATOR = new Creator<EditChatMembersViewState>() {
-        public EditChatMembersViewState createFromParcel(Parcel source) {return new EditChatMembersViewState(source);}
+   public static final Creator<EditChatMembersViewState> CREATOR = new Creator<EditChatMembersViewState>() {
+      public EditChatMembersViewState createFromParcel(Parcel source) {return new EditChatMembersViewState(source);}
 
-        public EditChatMembersViewState[] newArray(int size) {return new EditChatMembersViewState[size];}
-    };
+      public EditChatMembersViewState[] newArray(int size) {return new EditChatMembersViewState[size];}
+   };
 
-    public EditChatMembersViewState(Parcel in) {
-        super(in);
-        searchFilter = in.readString();
-    }
+   public EditChatMembersViewState(Parcel in) {
+      super(in);
+      searchFilter = in.readString();
+   }
 }

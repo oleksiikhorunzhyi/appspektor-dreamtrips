@@ -9,25 +9,25 @@ import java.io.Serializable;
 
 public interface IFullScreenObject extends ImagePathHolder, Serializable, Parcelable {
 
-    Image getFSImage();
+   Image getFSImage();
 
-    String getFSTitle();
+   String getFSTitle();
 
-    String getFSDescription();
+   String getFSDescription();
 
-    String getFSShareText();
+   String getFSShareText();
 
-    String getFSId();
+   String getFSId();
 
-    int getFSCommentCount();
+   int getFSCommentCount();
 
-    int getFSLikeCount();
+   int getFSLikeCount();
 
-    String getFSLocation();
+   String getFSLocation();
 
-    String getFSDate();
+   String getFSDate();
 
-    String getFSUserPhoto();
+   String getFSUserPhoto();
 
-    User getUser();
+   User getUser();
 }

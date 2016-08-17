@@ -19,55 +19,54 @@ import io.techery.janet.command.annotations.CommandAction;
 import rx.schedulers.Schedulers;
 
 @CommandAction
-public class GetActivitiesCommand extends Command<List<ActivityModel>> implements InjectableAction,
-        CachedAction<List<ActivityModel>> {
+public class GetActivitiesCommand extends Command<List<ActivityModel>> implements InjectableAction, CachedAction<List<ActivityModel>> {
 
-    @Inject Janet janet;
+   @Inject Janet janet;
 
-    List<ActivityModel> cachedResult;
+   List<ActivityModel> cachedResult;
 
-    private boolean isClearCommand;
+   private boolean isClearCommand;
 
-    public GetActivitiesCommand() {
+   public GetActivitiesCommand() {
 
-    }
+   }
 
-    private GetActivitiesCommand(boolean isClearCommand) {
-        this.isClearCommand = isClearCommand;
-    }
+   private GetActivitiesCommand(boolean isClearCommand) {
+      this.isClearCommand = isClearCommand;
+   }
 
-    @Override
-    public List<ActivityModel> getCacheData() {
-        return isClearCommand ? new ArrayList<>() : getResult();
-    }
+   @Override
+   public List<ActivityModel> getCacheData() {
+      return isClearCommand ? new ArrayList<>() : getResult();
+   }
 
-    @Override
-    public void onRestore(ActionHolder holder, List<ActivityModel> cache) {
-        if (isClearCommand) {
-            cachedResult = new ArrayList<>();
-        } else {
-            cachedResult = cache;
-        }
-    }
+   @Override
+   public void onRestore(ActionHolder holder, List<ActivityModel> cache) {
+      if (isClearCommand) {
+         cachedResult = new ArrayList<>();
+      } else {
+         cachedResult = cache;
+      }
+   }
 
-    @Override
-    public CacheOptions getCacheOptions() {
-        return ImmutableCacheOptions.builder().build();
-    }
+   @Override
+   public CacheOptions getCacheOptions() {
+      return ImmutableCacheOptions.builder().build();
+   }
 
-    @Override
-    protected void run(CommandCallback<List<ActivityModel>> callback) throws Throwable {
-        if ((cachedResult == null || cachedResult.size() == 0) && !isClearCommand) {
-            janet.createPipe(GetActivitiesHttpAction.class, Schedulers.io())
-                    .createObservableResult(new GetActivitiesHttpAction())
-                    .map(GetActivitiesHttpAction::getActivityModels)
-                    .subscribe(callback::onSuccess, callback::onFail);
-        } else {
-            callback.onSuccess(cachedResult);
-        }
-    }
+   @Override
+   protected void run(CommandCallback<List<ActivityModel>> callback) throws Throwable {
+      if ((cachedResult == null || cachedResult.size() == 0) && !isClearCommand) {
+         janet.createPipe(GetActivitiesHttpAction.class, Schedulers.io())
+               .createObservableResult(new GetActivitiesHttpAction())
+               .map(GetActivitiesHttpAction::getActivityModels)
+               .subscribe(callback::onSuccess, callback::onFail);
+      } else {
+         callback.onSuccess(cachedResult);
+      }
+   }
 
-    public static GetActivitiesCommand clearMemory() {
-        return new GetActivitiesCommand(true);
-    }
+   public static GetActivitiesCommand clearMemory() {
+      return new GetActivitiesCommand(true);
+   }
 }

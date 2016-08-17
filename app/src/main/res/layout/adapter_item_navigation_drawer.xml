@@ -1,54 +1,59 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                android:layout_width="match_parent"
-                android:layout_height="?attr/listPreferredItemHeightSmall"
-                xmlns:tools="http://schemas.android.com/tools">
+      android:layout_width="match_parent"
+      android:layout_height="?attr/listPreferredItemHeightSmall"
+      xmlns:tools="http://schemas.android.com/tools"
+      >
 
-    <ImageView
-        android:id="@+id/section_icon"
-        android:layout_width="24dp"
-        android:layout_height="24dp"
-        android:layout_centerVertical="true"
-        android:layout_marginLeft="16dp"
-        android:duplicateParentState="true" />
+   <ImageView
+         android:id="@+id/section_icon"
+         android:layout_width="24dp"
+         android:layout_height="24dp"
+         android:layout_centerVertical="true"
+         android:layout_marginLeft="16dp"
+         android:duplicateParentState="true"
+         />
 
-    <com.worldventures.dreamtrips.modules.common.view.custom.BadgeView
-        android:id="@+id/badge"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="-4dp"
-        android:textColor="@android:color/white"
-        tools:text="35"
-        android:textSize="@dimen/font_small"
-        android:layout_toRightOf="@+id/section_icon"
-        android:layout_alignTop="@+id/section_icon"
-        android:layout_marginTop="-8dp"/>
+   <com.worldventures.dreamtrips.modules.common.view.custom.BadgeView
+         android:id="@+id/badge"
+         android:layout_width="wrap_content"
+         android:layout_height="wrap_content"
+         android:layout_marginLeft="-4dp"
+         android:textColor="@android:color/white"
+         tools:text="35"
+         android:textSize="@dimen/font_small"
+         android:layout_toRightOf="@+id/section_icon"
+         android:layout_alignTop="@+id/section_icon"
+         android:layout_marginTop="-8dp"
+         />
 
-    <TextView
-        android:id="@+id/item_name"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_centerVertical="true"
-        android:layout_marginLeft="72dp"
-        android:layout_marginRight="8dp"
-        android:layout_toLeftOf="@+id/section_notification"
-        android:layout_toStartOf="@+id/section_notification"
-        android:textAppearance="@style/TextAppearance.AppCompat.Body2"
-        android:textColor="@color/selector_navigation_drawer_text"
-        android:textSize="14sp" />
+   <TextView
+         android:id="@+id/item_name"
+         android:layout_width="match_parent"
+         android:layout_height="wrap_content"
+         android:layout_centerVertical="true"
+         android:layout_marginLeft="72dp"
+         android:layout_marginRight="8dp"
+         android:layout_toLeftOf="@+id/section_notification"
+         android:layout_toStartOf="@+id/section_notification"
+         android:textAppearance="@style/TextAppearance.AppCompat.Body2"
+         android:textColor="@color/selector_navigation_drawer_text"
+         android:textSize="14sp"
+         />
 
-    <TextView
-        android:id="@+id/section_notification"
-        android:layout_width="40dp"
-        android:layout_height="wrap_content"
-        android:layout_alignParentRight="true"
-        android:layout_centerVertical="true"
-        android:layout_marginRight="8dp"
-        android:duplicateParentState="true"
-        android:gravity="center_horizontal"
-        android:lines="1"
-        android:maxLength="3"
-        android:textSize="14sp"
-        android:textStyle="bold" />
+   <TextView
+         android:id="@+id/section_notification"
+         android:layout_width="40dp"
+         android:layout_height="wrap_content"
+         android:layout_alignParentRight="true"
+         android:layout_centerVertical="true"
+         android:layout_marginRight="8dp"
+         android:duplicateParentState="true"
+         android:gravity="center_horizontal"
+         android:lines="1"
+         android:maxLength="3"
+         android:textSize="14sp"
+         android:textStyle="bold"
+         />
 
 </RelativeLayout>

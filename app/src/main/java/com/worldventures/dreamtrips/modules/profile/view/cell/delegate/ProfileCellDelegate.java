@@ -5,21 +5,21 @@ import com.worldventures.dreamtrips.modules.common.model.User;
 
 public interface ProfileCellDelegate extends CellDelegate<User> {
 
-    void onBucketListClicked();
+   void onBucketListClicked();
 
-    void onTripImagesClicked();
+   void onTripImagesClicked();
 
-    void onFriendsClicked();
+   void onFriendsClicked();
 
-    void onCreatePostClicked();
+   void onCreatePostClicked();
 
-    void onUserPhotoClicked();
+   void onUserPhotoClicked();
 
-    void onUserCoverClicked();
+   void onUserCoverClicked();
 
-    void onAcceptRequest();
+   void onAcceptRequest();
 
-    void onRejectRequest();
+   void onRejectRequest();
 
-    void onAddFriend();
+   void onAddFriend();
 }

@@ -1,21 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              android:layout_width="match_parent"
-              android:layout_height="wrap_content"
-              android:background="@color/white"
-              android:clipToPadding="false"
-              android:fitsSystemWindows="true"
-              android:orientation="vertical">
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:background="@color/white"
+      android:clipToPadding="false"
+      android:fitsSystemWindows="true"
+      android:orientation="vertical"
+      >
 
-    <FrameLayout
-        android:id="@+id/fragment_details"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
+   <FrameLayout
+         android:id="@+id/fragment_details"
+         android:layout_width="match_parent"
+         android:layout_height="wrap_content"
+         />
 
-    <com.worldventures.dreamtrips.modules.feed.view.custom.FeedActionPanelView
-        android:id="@+id/actionView"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
+   <com.worldventures.dreamtrips.modules.feed.view.custom.FeedActionPanelView
+         android:id="@+id/actionView"
+         android:layout_width="match_parent"
+         android:layout_height="wrap_content"
+         />
 
-    <include layout="@layout/include_user_liked"/>
+   <include layout="@layout/include_user_liked" />
 </LinearLayout>

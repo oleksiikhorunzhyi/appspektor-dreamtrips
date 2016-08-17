@@ -8,11 +8,12 @@ public interface RxView extends Presenter.View {
 
    /**
     * Use bindUntilDropView()
-    * @see RxView#bindUntilDropView(rx.Observable)
+    *
     * @param observable
     * @param <T>
     * @return
-     */
+    * @see RxView#bindUntilDropView(rx.Observable)
+    */
    @Deprecated
    <T> Observable<T> bind(Observable<T> observable);
 

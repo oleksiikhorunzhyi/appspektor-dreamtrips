@@ -17,61 +17,59 @@ import retrofit.converter.GsonConverter;
 
 public class DreamSpiceService extends RetrofitGsonSpiceService {
 
-    @Inject
-    protected GsonConverter gsonConverter;
+   @Inject protected GsonConverter gsonConverter;
 
-    @Inject
-    protected DreamTripsApi dreamTripsApi;
+   @Inject protected DreamTripsApi dreamTripsApi;
 
 
-    @Override
-    protected NetworkStateChecker getNetworkStateChecker() {
-        return new NetworkStateChecker() {
-            @Override
-            public boolean isNetworkAvailable(Context context) {
-                return true;
-            }
+   @Override
+   protected NetworkStateChecker getNetworkStateChecker() {
+      return new NetworkStateChecker() {
+         @Override
+         public boolean isNetworkAvailable(Context context) {
+            return true;
+         }
 
-            @Override
-            public void checkPermissions(Context context) {
-                //nothing to do here
-            }
-        };
-    }
+         @Override
+         public void checkPermissions(Context context) {
+            //nothing to do here
+         }
+      };
+   }
 
-    @Override
-    public void onCreate() {
-        ((Injector) getApplicationContext()).inject(this);
-        super.onCreate();
-        addRetrofitInterface(DreamTripsApi.class);
-    }
+   @Override
+   public void onCreate() {
+      ((Injector) getApplicationContext()).inject(this);
+      super.onCreate();
+      addRetrofitInterface(DreamTripsApi.class);
+   }
 
-    @Override
-    public CacheManager createCacheManager(Application application) throws CacheCreationException {
-        return super.createCacheManager(application);
-    }
+   @Override
+   public CacheManager createCacheManager(Application application) throws CacheCreationException {
+      return super.createCacheManager(application);
+   }
 
-    @Override
-    protected String getServerUrl() {
-        return BuildConfig.AuthApiUrl;
-    }
+   @Override
+   protected String getServerUrl() {
+      return BuildConfig.AuthApiUrl;
+   }
 
-    @SuppressWarnings("unchecked")
-    protected <T> T getRetrofitService(Class<T> serviceClass) {
-        T t = null;
-        if (serviceClass == DreamTripsApi.class) {
-            t = (T) dreamTripsApi;
-        }
-        return t;
-    }
+   @SuppressWarnings("unchecked")
+   protected <T> T getRetrofitService(Class<T> serviceClass) {
+      T t = null;
+      if (serviceClass == DreamTripsApi.class) {
+         t = (T) dreamTripsApi;
+      }
+      return t;
+   }
 
-    @Override
-    public int getThreadCount() {
-        return 4;
-    }
+   @Override
+   public int getThreadCount() {
+      return 4;
+   }
 
-    @Override
-    protected Converter createConverter() {
-        return gsonConverter;
-    }
+   @Override
+   protected Converter createConverter() {
+      return gsonConverter;
+   }
 }

@@ -15,25 +15,25 @@ import rx.Observable;
 
 public class ChatToolbarMenuProvider {
 
-    private final ConversationsDAO conversationDAO;
-    private final DataUser currentUser;
+   private final ConversationsDAO conversationDAO;
+   private final DataUser currentUser;
 
-    @Inject
-    public ChatToolbarMenuProvider(ConversationsDAO conversationDAO, DataUser currentUser) {
-        this.conversationDAO = conversationDAO;
-        this.currentUser = currentUser;
-    }
+   @Inject
+   public ChatToolbarMenuProvider(ConversationsDAO conversationDAO, DataUser currentUser) {
+      this.conversationDAO = conversationDAO;
+      this.currentUser = currentUser;
+   }
 
-    public Observable<Menu> provideChatMenu(String conversationId, Menu menu) {
-       return conversationDAO
-                .getConversation(conversationId).take(1)
-                .compose(new IoToMainComposer<>())
-                .map(conversation -> {
-                    boolean addVisible = ConversationHelper.isSingleChat(conversation) || (ConversationHelper.isGroup(conversation)
-                            && TextUtils.equals(currentUser.getId(), conversation.getOwnerId()));
-                    menu.findItem(R.id.action_add).setVisible(addVisible);
-                    menu.findItem(R.id.action_settings).setVisible(true);
-                    return menu;
-                });
-    }
+   public Observable<Menu> provideChatMenu(String conversationId, Menu menu) {
+      return conversationDAO.getConversation(conversationId)
+            .take(1)
+            .compose(new IoToMainComposer<>())
+            .map(conversation -> {
+               boolean addVisible = ConversationHelper.isSingleChat(conversation) || (ConversationHelper.isGroup(conversation) && TextUtils
+                     .equals(currentUser.getId(), conversation.getOwnerId()));
+               menu.findItem(R.id.action_add).setVisible(addVisible);
+               menu.findItem(R.id.action_settings).setVisible(true);
+               return menu;
+            });
+   }
 }

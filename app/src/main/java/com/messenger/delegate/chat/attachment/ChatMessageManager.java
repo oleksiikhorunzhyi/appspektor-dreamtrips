@@ -29,85 +29,79 @@ import rx.Observable;
 
 public class ChatMessageManager {
 
-    private final PhotoAttachmentDelegate photoAttachmentDelegate;
-    private final LocationAttachmentDelegate locationAttachmentDelegate;
-    private final ChatMessageInteractor chatMessageInteractor;
+   private final PhotoAttachmentDelegate photoAttachmentDelegate;
+   private final LocationAttachmentDelegate locationAttachmentDelegate;
+   private final ChatMessageInteractor chatMessageInteractor;
 
-    private final MessengerConnector messengerConnector;
-    private final AttachmentDAO attachmentDAO;
-    private final MessageDAO messageDAO;
-    private final ConversationsDAO conversationsDAO;
+   private final MessengerConnector messengerConnector;
+   private final AttachmentDAO attachmentDAO;
+   private final MessageDAO messageDAO;
+   private final ConversationsDAO conversationsDAO;
 
-    @Inject
-    public ChatMessageManager(MessengerConnector messengerConnector, ChatMessageInteractor chatMessageInteractor,
-                              PhotoAttachmentDelegate photoAttachmentDelegate,
-                              LocationAttachmentDelegate locationAttachmentDelegate,
-                              ConversationsDAO conversationsDAO, MessageDAO messageDAO, AttachmentDAO attachmentDAO) {
-        this.messengerConnector = messengerConnector;
-        this.chatMessageInteractor = chatMessageInteractor;
-        this.photoAttachmentDelegate = photoAttachmentDelegate;
-        this.locationAttachmentDelegate = locationAttachmentDelegate;
-        this.conversationsDAO = conversationsDAO;
-        this.attachmentDAO = attachmentDAO;
-        this.messageDAO = messageDAO;
-    }
+   @Inject
+   public ChatMessageManager(MessengerConnector messengerConnector, ChatMessageInteractor chatMessageInteractor, PhotoAttachmentDelegate photoAttachmentDelegate, LocationAttachmentDelegate locationAttachmentDelegate, ConversationsDAO conversationsDAO, MessageDAO messageDAO, AttachmentDAO attachmentDAO) {
+      this.messengerConnector = messengerConnector;
+      this.chatMessageInteractor = chatMessageInteractor;
+      this.photoAttachmentDelegate = photoAttachmentDelegate;
+      this.locationAttachmentDelegate = locationAttachmentDelegate;
+      this.conversationsDAO = conversationsDAO;
+      this.attachmentDAO = attachmentDAO;
+      this.messageDAO = messageDAO;
+   }
 
-    public void sendMessage(String conversationId, String messageText) {
-        chatMessageInteractor.getMessageActionPipe()
-                .send(new ChatSendMessageCommand(conversationId, messageText));
-    }
+   public void sendMessage(String conversationId, String messageText) {
+      chatMessageInteractor.getMessageActionPipe().send(new ChatSendMessageCommand(conversationId, messageText));
+   }
 
-    public void markMessagesAsRead(DataMessage lastSeenMessage, String conversationId) {
-        chatMessageInteractor.getMarkMessageAsReadPipe()
-                .send(new MarkMessageAsReadCommand(lastSeenMessage, conversationId));
-    }
+   public void markMessagesAsRead(DataMessage lastSeenMessage, String conversationId) {
+      chatMessageInteractor.getMarkMessageAsReadPipe()
+            .send(new MarkMessageAsReadCommand(lastSeenMessage, conversationId));
+   }
 
-    public void sendImages(String conversationId, List<String> filePaths) {
-        photoAttachmentDelegate.sendImages(conversationId, filePaths);
-    }
+   public void sendImages(String conversationId, List<String> filePaths) {
+      photoAttachmentDelegate.sendImages(conversationId, filePaths);
+   }
 
-    public void sendLocation(String conversationId, Location location) {
-        locationAttachmentDelegate.send(conversationId, location);
-    }
+   public void sendLocation(String conversationId, Location location) {
+      locationAttachmentDelegate.send(conversationId, location);
+   }
 
-    public void retrySendMessage(String conversationId, DataMessage failedMessage) {
-        Observable.combineLatest(
-                attachmentDAO.getAttachmentByMessageId(failedMessage.getId()).take(1),
-                conversationsDAO.getConversation(conversationId).take(1),
-                messengerConnector.getAuthToServerStatus().take(1), ImmutableTriple::new)
-                .subscribe(dataTriple -> retrySendMessage(dataTriple.middle, failedMessage, dataTriple.left, dataTriple.right));
-    }
+   public void retrySendMessage(String conversationId, DataMessage failedMessage) {
+      Observable.combineLatest(attachmentDAO.getAttachmentByMessageId(failedMessage.getId())
+            .take(1), conversationsDAO.getConversation(conversationId)
+            .take(1), messengerConnector.getAuthToServerStatus().take(1), ImmutableTriple::new)
+            .subscribe(dataTriple -> retrySendMessage(dataTriple.middle, failedMessage, dataTriple.left, dataTriple.right));
+   }
 
-    public void retrySendMessage(DataConversation dataConversation, DataMessage failedMessage, DataAttachment dataAttachment, ConnectionStatus authStatus) {
-        // todo move this logic to janet command
-        if (authStatus != ConnectionStatus.CONNECTED || ConversationHelper.isAbandoned(dataConversation)) {
-            messageDAO.updateStatus(failedMessage.getId(), MessageStatus.ERROR, ChatDateUtils.getErrorMessageDate());
-            return;
-        }
+   public void retrySendMessage(DataConversation dataConversation, DataMessage failedMessage, DataAttachment dataAttachment, ConnectionStatus authStatus) {
+      // todo move this logic to janet command
+      if (authStatus != ConnectionStatus.CONNECTED || ConversationHelper.isAbandoned(dataConversation)) {
+         messageDAO.updateStatus(failedMessage.getId(), MessageStatus.ERROR, ChatDateUtils.getErrorMessageDate());
+         return;
+      }
 
-        if (dataAttachment != null) {
-            retrySendAttachment(dataConversation.getId(), failedMessage, dataAttachment);
-        } else chatMessageInteractor.getResendMessagePipe()
-                .send(new RetrySendMessageCommand(failedMessage));
-    }
+      if (dataAttachment != null) {
+         retrySendAttachment(dataConversation.getId(), failedMessage, dataAttachment);
+      } else chatMessageInteractor.getResendMessagePipe().send(new RetrySendMessageCommand(failedMessage));
+   }
 
-    public void retrySendAttachment(String conversationId, DataMessage dataMessage, DataAttachment attachment) {
-        switch (attachment.getType()) {
-            case AttachmentType.IMAGE:
-                retrySendPhotoAttachment(conversationId, dataMessage, attachment);
-                break;
-            case AttachmentType.LOCATION:
-                retrySendLocationAttachment(conversationId, dataMessage, attachment);
-                break;
-        }
-    }
+   public void retrySendAttachment(String conversationId, DataMessage dataMessage, DataAttachment attachment) {
+      switch (attachment.getType()) {
+         case AttachmentType.IMAGE:
+            retrySendPhotoAttachment(conversationId, dataMessage, attachment);
+            break;
+         case AttachmentType.LOCATION:
+            retrySendLocationAttachment(conversationId, dataMessage, attachment);
+            break;
+      }
+   }
 
-    private void retrySendPhotoAttachment(String conversationId, DataMessage dataMessage, DataAttachment dataAttachment) {
-        photoAttachmentDelegate.retry(conversationId, dataMessage, dataAttachment);
-    }
+   private void retrySendPhotoAttachment(String conversationId, DataMessage dataMessage, DataAttachment dataAttachment) {
+      photoAttachmentDelegate.retry(conversationId, dataMessage, dataAttachment);
+   }
 
-    private void retrySendLocationAttachment(String conversationId, DataMessage dataMessage, DataAttachment dataAttachment) {
-        locationAttachmentDelegate.retry(conversationId, dataMessage, dataAttachment);
-    }
+   private void retrySendLocationAttachment(String conversationId, DataMessage dataMessage, DataAttachment dataAttachment) {
+      locationAttachmentDelegate.retry(conversationId, dataMessage, dataAttachment);
+   }
 
 }

@@ -11,43 +11,42 @@ import com.worldventures.dreamtrips.R;
 
 public class LocationPickerToolbarPresenter {
 
-    private Toolbar toolbar;
-    private Context context;
+   private Toolbar toolbar;
+   private Context context;
 
-    public LocationPickerToolbarPresenter(Toolbar toolbar, Context context) {
-        this.context = context;
-        this.toolbar = toolbar;
-        initToolbar();
-    }
+   public LocationPickerToolbarPresenter(Toolbar toolbar, Context context) {
+      this.context = context;
+      this.toolbar = toolbar;
+      initToolbar();
+   }
 
-    private void initToolbar() {
-        toolbar.setBackgroundColor(ContextCompat.getColor(context, R.color.theme_main));
-        toolbar.setTitleTextAppearance(context, R.style.ActionBarTitle);
-        toolbar.setSubtitleTextAppearance(context, R.style.ActionBarSubtitle);
-    }
+   private void initToolbar() {
+      toolbar.setBackgroundColor(ContextCompat.getColor(context, R.color.theme_main));
+      toolbar.setTitleTextAppearance(context, R.style.ActionBarTitle);
+      toolbar.setSubtitleTextAppearance(context, R.style.ActionBarSubtitle);
+   }
 
-    public void setTitle(@StringRes int name) {
-        toolbar.setTitle(name);
-    }
+   public void setTitle(@StringRes int name) {
+      toolbar.setTitle(name);
+   }
 
-    public void setTitle(String name) {
-        toolbar.setTitle(name);
-    }
+   public void setTitle(String name) {
+      toolbar.setTitle(name);
+   }
 
-    public void setSubtitle(@StringRes int name) {
-        toolbar.setSubtitle(name);
-    }
+   public void setSubtitle(@StringRes int name) {
+      toolbar.setSubtitle(name);
+   }
 
-    public void setSubtitle(String name) {
-        toolbar.setSubtitle(name);
-    }
+   public void setSubtitle(String name) {
+      toolbar.setSubtitle(name);
+   }
 
-    public void enableUpNavigationButton() {
-        TypedValue typedValue = new TypedValue();
-        context.getTheme().resolveAttribute(android.support.v7.appcompat.R.attr.homeAsUpIndicator,
-                typedValue, true);
-        toolbar.setNavigationIcon(typedValue.resourceId);
-        toolbar.setNavigationOnClickListener(v -> ((Activity) context).onBackPressed());
-    }
+   public void enableUpNavigationButton() {
+      TypedValue typedValue = new TypedValue();
+      context.getTheme().resolveAttribute(android.support.v7.appcompat.R.attr.homeAsUpIndicator, typedValue, true);
+      toolbar.setNavigationIcon(typedValue.resourceId);
+      toolbar.setNavigationOnClickListener(v -> ((Activity) context).onBackPressed());
+   }
 }
 

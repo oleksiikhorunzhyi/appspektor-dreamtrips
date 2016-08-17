@@ -11,32 +11,32 @@ import com.worldventures.dreamtrips.modules.feed.view.cell.base.FeedItemDetailsC
 @Layout(R.layout.adapter_item_feed_undefined_event)
 public class UndefinedFeedItemDetailsCell extends FeedItemDetailsCell<TripFeedItem, CellDelegate<TripFeedItem>> {
 
-    public UndefinedFeedItemDetailsCell(View view) {
-        super(view);
-    }
+   public UndefinedFeedItemDetailsCell(View view) {
+      super(view);
+   }
 
-    @Override
-    public void prepareForReuse() {
+   @Override
+   public void prepareForReuse() {
 
-    }
+   }
 
-    @Override
-    protected void syncUIStateWithModel() {
-        super.syncUIStateWithModel();
-    }
+   @Override
+   protected void syncUIStateWithModel() {
+      super.syncUIStateWithModel();
+   }
 
-    @Override
-    protected void onDelete() {
+   @Override
+   protected void onDelete() {
 
-    }
+   }
 
-    @Override
-    protected void onEdit() {
+   @Override
+   protected void onEdit() {
 
-    }
+   }
 
-    @Override
-    protected void onMore() {
+   @Override
+   protected void onMore() {
 
-    }
+   }
 }

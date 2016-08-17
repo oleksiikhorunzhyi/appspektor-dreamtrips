@@ -10,9 +10,9 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
 @Retention(RUNTIME)
 public @interface AnalyticsEvent {
 
-    String category() default "";
+   String category() default "";
 
-    String action() default "";
+   String action() default "";
 
-    String[] trackers();
+   String[] trackers();
 }

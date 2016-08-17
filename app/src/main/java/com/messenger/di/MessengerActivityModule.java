@@ -42,63 +42,40 @@ import dagger.Module;
 import dagger.Provides;
 
 @Module(
-        includes = {
-                ChatHolderModule.class,
-        },
-        injects = {
-                ConversationListScreenImpl.class,
-                EditChatMembersScreenImpl.class,
-                ChatScreenImpl.class,
-                MessengerPhotoPickerLayout.class,
-                GroupChatSettingsScreenImpl.class,
-                TripChatSettingsScreenImpl.class,
+      includes = {ChatHolderModule.class,},
+      injects = {ConversationListScreenImpl.class, EditChatMembersScreenImpl.class, ChatScreenImpl.class, MessengerPhotoPickerLayout.class, GroupChatSettingsScreenImpl.class, TripChatSettingsScreenImpl.class,
 
-                ChatGroupCommandsInteractor.class,
-                ChatAdapter.class,
-                ChatTimestampInflater.class,
+            ChatGroupCommandsInteractor.class, ChatAdapter.class, ChatTimestampInflater.class,
 
-                //presenters
-                MessengerActivityPresenter.class,
-                ChatScreenPresenterImpl.class,
-                ChatMembersScreenPresenterImpl.class,
-                NewChatScreenPresenterImpl.class,
-                AddChatMembersScreenPresenterImpl.class,
+            //presenters
+            MessengerActivityPresenter.class, ChatScreenPresenterImpl.class, ChatMembersScreenPresenterImpl.class, NewChatScreenPresenterImpl.class, AddChatMembersScreenPresenterImpl.class,
 
-                SingleChatSettingsScreenPresenterImpl.class,
-                GroupChatSettingsScreenPresenterImpl.class,
-                TripChatScreenPresenterImpl.class,
+            SingleChatSettingsScreenPresenterImpl.class, GroupChatSettingsScreenPresenterImpl.class, TripChatScreenPresenterImpl.class,
 
-                ConversationListScreenPresenterImpl.class,
-                EditChatMembersScreenPresenterImpl.class,
-                FlaggingPresenterImpl.class,
-        },
-        complete = false, library = true
-)
+            ConversationListScreenPresenterImpl.class, EditChatMembersScreenPresenterImpl.class, FlaggingPresenterImpl.class,},
+      complete = false, library = true)
 public class MessengerActivityModule {
-    public static final String MESSENGER = "Messenger";
+   public static final String MESSENGER = "Messenger";
 
-    @Provides(type = Provides.Type.SET)
-    ComponentDescription provideMessengerComponent() {
-        return new ComponentDescription(MESSENGER, R.string.messenger, R.string.messenger, R.drawable.ic_messenger,
-                true, null);
-    }
+   @Provides(type = Provides.Type.SET)
+   ComponentDescription provideMessengerComponent() {
+      return new ComponentDescription(MESSENGER, R.string.messenger, R.string.messenger, R.drawable.ic_messenger, true, null);
+   }
 
-    @Provides
-    DataUser provideUser(SessionHolder<UserSession> appSessionHolder) {
-        return new DataUser(appSessionHolder.get().get().getUser().getUsername());
-    }
+   @Provides
+   DataUser provideUser(SessionHolder<UserSession> appSessionHolder) {
+      return new DataUser(appSessionHolder.get().get().getUser().getUsername());
+   }
 
-    @Provides
-    MessengerMediaPickerDelegate provideChangeAvatarDelegate(LegacyPhotoPickerDelegate legacyPhotoPickerDelegate,
-                                                             PhotoPickerLayoutDelegate photoPickerLayoutDelegate,
-                                                             PermissionDispatcher permissionDispatcher) {
-        return new MessengerMediaPickerDelegateImpl(legacyPhotoPickerDelegate, photoPickerLayoutDelegate, permissionDispatcher);
-    }
+   @Provides
+   MessengerMediaPickerDelegate provideChangeAvatarDelegate(LegacyPhotoPickerDelegate legacyPhotoPickerDelegate, PhotoPickerLayoutDelegate photoPickerLayoutDelegate, PermissionDispatcher permissionDispatcher) {
+      return new MessengerMediaPickerDelegateImpl(legacyPhotoPickerDelegate, photoPickerLayoutDelegate, permissionDispatcher);
+   }
 
-    @Provides
-    @Singleton
-    CropImageDelegate provideCropImageDelegate(Activity activity, DreamSpiceManager dreamSpiceManager) {
-        return new CropImageDelegate(activity, dreamSpiceManager);
-    }
+   @Provides
+   @Singleton
+   CropImageDelegate provideCropImageDelegate(Activity activity, DreamSpiceManager dreamSpiceManager) {
+      return new CropImageDelegate(activity, dreamSpiceManager);
+   }
 
 }

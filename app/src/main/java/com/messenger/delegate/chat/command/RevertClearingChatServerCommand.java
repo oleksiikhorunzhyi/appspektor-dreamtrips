@@ -12,18 +12,16 @@ import io.techery.janet.command.annotations.CommandAction;
 @CommandAction
 public class RevertClearingChatServerCommand extends Command<RevertClearingEvent> implements InjectableAction {
 
-    private final String conversationId;
+   private final String conversationId;
 
-    @Inject ChatExtensions chatExtensions;
+   @Inject ChatExtensions chatExtensions;
 
-    public RevertClearingChatServerCommand(String conversationId) {
-        this.conversationId = conversationId;
-    }
+   public RevertClearingChatServerCommand(String conversationId) {
+      this.conversationId = conversationId;
+   }
 
-    @Override
-    protected void run(CommandCallback<RevertClearingEvent> callback) throws Throwable {
-        chatExtensions
-                .revertChatClearing(conversationId)
-                .subscribe(callback::onSuccess, callback::onFail);
-    }
+   @Override
+   protected void run(CommandCallback<RevertClearingEvent> callback) throws Throwable {
+      chatExtensions.revertChatClearing(conversationId).subscribe(callback::onSuccess, callback::onFail);
+   }
 }

@@ -7,12 +7,12 @@ import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 
 public class BucketPopularTabsPresenter extends Presenter<Presenter.View> {
 
-    public static final String EXTRA_TYPE = "EXTRA_TYPE";
+   public static final String EXTRA_TYPE = "EXTRA_TYPE";
 
-    public Bundle getBundleForPosition(int position) {
-        Bundle args = new Bundle();
-        BucketItem.BucketType type = BucketItem.BucketType.values()[position];
-        args.putSerializable(BucketPopularTabsPresenter.EXTRA_TYPE, type);
-        return args;
-    }
+   public Bundle getBundleForPosition(int position) {
+      Bundle args = new Bundle();
+      BucketItem.BucketType type = BucketItem.BucketType.values()[position];
+      args.putSerializable(BucketPopularTabsPresenter.EXTRA_TYPE, type);
+      return args;
+   }
 }

@@ -2,7 +2,7 @@ package com.worldventures.dreamtrips.modules.common.view.util;
 
 public interface DrawerListener {
 
-    void onDrawerOpened();
+   void onDrawerOpened();
 
-    void onDrawerClosed();
+   void onDrawerClosed();
 }

@@ -22,47 +22,48 @@ import butterknife.OnCheckedChanged;
 @Layout(R.layout.adapter_item_invite_member)
 public class MemberCell extends AbstractDelegateCell<Member, CellDelegate<Member>> {
 
-    @InjectView(R.id.cb_checked) CheckBox cbChecked;
-    @InjectView(R.id.tv_name) TextView tvName;
-    @InjectView(R.id.tv_subtitle) TextView tvSubtitle;
-    @InjectView(R.id.iv_phone) ImageView ivPhone;
-    @InjectView(R.id.tv_date) TextView tvDate;
-    @InjectView(R.id.tv_resend) TextView tvResend;
-    @InjectView(R.id.ll_resend) LinearLayout llResend;
+   @InjectView(R.id.cb_checked) CheckBox cbChecked;
+   @InjectView(R.id.tv_name) TextView tvName;
+   @InjectView(R.id.tv_subtitle) TextView tvSubtitle;
+   @InjectView(R.id.iv_phone) ImageView ivPhone;
+   @InjectView(R.id.tv_date) TextView tvDate;
+   @InjectView(R.id.tv_resend) TextView tvResend;
+   @InjectView(R.id.ll_resend) LinearLayout llResend;
 
-    private String country;
+   private String country;
 
-    public MemberCell(View view) {
-        super(view);
-        country = Locale.getDefault().getCountry();
-    }
+   public MemberCell(View view) {
+      super(view);
+      country = Locale.getDefault().getCountry();
+   }
 
-    @Override
-    protected void syncUIStateWithModel() {
-        cbChecked.setChecked(getModelObject().isChecked());
-        tvName.setText(getModelObject().getName());
-        String subtitle;
-        if (getModelObject().isEmailMain()) {
-            subtitle = getModelObject().getSubtitle();
-        } else {
-            subtitle = PhoneNumberUtils.formatNumber(getModelObject().getSubtitle(), country);
-        }
-        tvSubtitle.setText(subtitle);
-        ivPhone.setVisibility(View.GONE);
-        if (getModelObject().getHistory() != null) {
-            llResend.setVisibility(View.VISIBLE);
-            tvDate.setText(DateTimeUtils.convertDateToString(getModelObject().getHistory().getDate(), DateTimeUtils.MEMBER_FORMAT));
-        } else {
-            tvDate.setText("");
-            llResend.setVisibility(View.GONE);
-        }
-    }
+   @Override
+   protected void syncUIStateWithModel() {
+      cbChecked.setChecked(getModelObject().isChecked());
+      tvName.setText(getModelObject().getName());
+      String subtitle;
+      if (getModelObject().isEmailMain()) {
+         subtitle = getModelObject().getSubtitle();
+      } else {
+         subtitle = PhoneNumberUtils.formatNumber(getModelObject().getSubtitle(), country);
+      }
+      tvSubtitle.setText(subtitle);
+      ivPhone.setVisibility(View.GONE);
+      if (getModelObject().getHistory() != null) {
+         llResend.setVisibility(View.VISIBLE);
+         tvDate.setText(DateTimeUtils.convertDateToString(getModelObject().getHistory()
+               .getDate(), DateTimeUtils.MEMBER_FORMAT));
+      } else {
+         tvDate.setText("");
+         llResend.setVisibility(View.GONE);
+      }
+   }
 
-    @OnCheckedChanged(R.id.cb_checked)
-    public void onChecked(boolean checked) {
-        if (getModelObject().isChecked() != checked) {
-            getModelObject().setIsChecked(checked);
-            cellDelegate.onCellClicked(getModelObject());
-        }
-    }
+   @OnCheckedChanged(R.id.cb_checked)
+   public void onChecked(boolean checked) {
+      if (getModelObject().isChecked() != checked) {
+         getModelObject().setIsChecked(checked);
+         cellDelegate.onCellClicked(getModelObject());
+      }
+   }
 }

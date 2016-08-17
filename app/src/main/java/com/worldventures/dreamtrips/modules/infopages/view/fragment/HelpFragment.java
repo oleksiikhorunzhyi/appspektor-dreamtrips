@@ -13,27 +13,27 @@ import javax.inject.Inject;
 
 public class HelpFragment extends TermsTabFragment {
 
-    @Inject ScreenChangedEventDelegate screenChangedEventDelegate;
+   @Inject ScreenChangedEventDelegate screenChangedEventDelegate;
 
-    @Override
-    public void afterCreateView(View rootView) {
-        if (adapter == null) {
-            this.adapter = new BasePagerAdapter(getChildFragmentManager());
-            this.adapter.add(new FragmentItem(Route.HELP_VIDEOS, getString(R.string.presentations)));
-            this.adapter.add(new FragmentItem(Route.FAQ, getString(R.string.faq)));
-        }
+   @Override
+   public void afterCreateView(View rootView) {
+      if (adapter == null) {
+         this.adapter = new BasePagerAdapter(getChildFragmentManager());
+         this.adapter.add(new FragmentItem(Route.HELP_VIDEOS, getString(R.string.presentations)));
+         this.adapter.add(new FragmentItem(Route.FAQ, getString(R.string.faq)));
+      }
 
-        pager.setAdapter(adapter);
-        // Is used for block screen rotates
-        pager.setOffscreenPageLimit(TERMS_OFFSCREEN_PAGES);
-        pager.addOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener() {
-            @Override
-            public void onPageSelected(int position) {
-                super.onPageSelected(position);
-                screenChangedEventDelegate.post(null);
-            }
-        });
+      pager.setAdapter(adapter);
+      // Is used for block screen rotates
+      pager.setOffscreenPageLimit(TERMS_OFFSCREEN_PAGES);
+      pager.addOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener() {
+         @Override
+         public void onPageSelected(int position) {
+            super.onPageSelected(position);
+            screenChangedEventDelegate.post(null);
+         }
+      });
 
-        tabs.setupWithPagerBadged(pager);
-    }
+      tabs.setupWithPagerBadged(pager);
+   }
 }

@@ -22,52 +22,53 @@ import mbanje.kurt.fabbutton.ProgressRingView;
 @Layout(R.layout.adapter_item_photo_upload)
 public class PhotoUploadCell extends AbstractCell<UploadTask> {
 
-    @InjectView(R.id.imageViewPhoto) SimpleDraweeView imageView;
-    @InjectView(R.id.fab_progress) FabButton fabProgress;
-    @InjectView(R.id.fabbutton_circle) CircleImageView circleView;
-    @InjectView(R.id.fabbutton_ring) ProgressRingView ring;
+   @InjectView(R.id.imageViewPhoto) SimpleDraweeView imageView;
+   @InjectView(R.id.fab_progress) FabButton fabProgress;
+   @InjectView(R.id.fabbutton_circle) CircleImageView circleView;
+   @InjectView(R.id.fabbutton_ring) ProgressRingView ring;
 
-    @Inject SnappyRepository db;
+   @Inject SnappyRepository db;
 
-    public PhotoUploadCell(View view) {
-        super(view);
-    }
+   public PhotoUploadCell(View view) {
+      super(view);
+   }
 
-    @Override
-    protected void syncUIStateWithModel() {
-        imageView.getHierarchy().setActualImageFocusPoint(new PointF(0.5F, 0F));
-        imageView.setController(GraphicUtils.provideFrescoResizingController(Uri.parse(getModelObject().getFilePath()), imageView.getController()));
-        ring.setProgressColor(itemView.getResources().getColor(R.color.white));
+   @Override
+   protected void syncUIStateWithModel() {
+      imageView.getHierarchy().setActualImageFocusPoint(new PointF(0.5F, 0F));
+      imageView.setController(GraphicUtils.provideFrescoResizingController(Uri.parse(getModelObject().getFilePath()), imageView
+            .getController()));
+      ring.setProgressColor(itemView.getResources().getColor(R.color.white));
 
-        if (getModelObject().getStatus().equals(UploadTask.Status.FAILED)) {
-            setupViewAsFailed();
-        } else if (getModelObject().getStatus().equals(UploadTask.Status.COMPLETED)) {
-            setupViewAsFinished();
-        } else {
-            setupViewAsLoading();
-        }
-    }
+      if (getModelObject().getStatus().equals(UploadTask.Status.FAILED)) {
+         setupViewAsFailed();
+      } else if (getModelObject().getStatus().equals(UploadTask.Status.COMPLETED)) {
+         setupViewAsFinished();
+      } else {
+         setupViewAsLoading();
+      }
+   }
 
-    private void setupViewAsLoading() {
-        fabProgress.setVisibility(View.VISIBLE);
-        fabProgress.setIndeterminate(true);
-        fabProgress.setIcon(R.drawable.ic_upload_cloud, R.drawable.ic_upload_cloud);
-        int color = fabProgress.getContext().getResources().getColor(R.color.bucket_blue);
-        circleView.setColor(color);
-        fabProgress.showProgress(true);
-    }
+   private void setupViewAsLoading() {
+      fabProgress.setVisibility(View.VISIBLE);
+      fabProgress.setIndeterminate(true);
+      fabProgress.setIcon(R.drawable.ic_upload_cloud, R.drawable.ic_upload_cloud);
+      int color = fabProgress.getContext().getResources().getColor(R.color.bucket_blue);
+      circleView.setColor(color);
+      fabProgress.showProgress(true);
+   }
 
-    private void setupViewAsFailed() {
-        fabProgress.showProgress(false);
-        fabProgress.setIcon(R.drawable.ic_upload_retry, R.drawable.ic_upload_retry);
-        int color = fabProgress.getContext().getResources().getColor(R.color.bucket_red);
-        circleView.setColor(color);
-    }
+   private void setupViewAsFailed() {
+      fabProgress.showProgress(false);
+      fabProgress.setIcon(R.drawable.ic_upload_retry, R.drawable.ic_upload_retry);
+      int color = fabProgress.getContext().getResources().getColor(R.color.bucket_red);
+      circleView.setColor(color);
+   }
 
-    private void setupViewAsFinished() {
-        fabProgress.showProgress(false);
-        fabProgress.setIcon(R.drawable.ic_upload_done, R.drawable.ic_upload_done);
-        int color = fabProgress.getContext().getResources().getColor(R.color.bucket_green);
-        circleView.setColor(color);
-    }
+   private void setupViewAsFinished() {
+      fabProgress.showProgress(false);
+      fabProgress.setIcon(R.drawable.ic_upload_done, R.drawable.ic_upload_done);
+      int color = fabProgress.getContext().getResources().getColor(R.color.bucket_green);
+      circleView.setColor(color);
+   }
 }

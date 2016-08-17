@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.worldventures.dreamtrips.modules.profile.view.widgets.ExpandableLayout
-    android:id="@+id/expandable_info"
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:expandable="http://schemas.android.com/apk/res-auto"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    expandable:el_contentLayout="@layout/layout_profile_expandable"
-    expandable:el_headerLayout="@layout/layout_profile_visible"/>
+<com.worldventures.dreamtrips.modules.profile.view.widgets.ExpandableLayout android:id="@+id/expandable_info"
+      xmlns:android="http://schemas.android.com/apk/res/android"
+      xmlns:expandable="http://schemas.android.com/apk/res-auto"
+      android:layout_width="match_parent"
+      android:layout_height="match_parent"
+      expandable:el_contentLayout="@layout/layout_profile_expandable"
+      expandable:el_headerLayout="@layout/layout_profile_visible"
+      />

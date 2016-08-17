@@ -18,38 +18,38 @@ import butterknife.OnClick;
 @Layout(R.layout.adapter_media_header)
 public class MediaHeaderCell extends AbstractDelegateCell<MediaHeader, VideoHeaderDelegate> {
 
-    @InjectView(R.id.header) TextView header;
-    @InjectView(R.id.wrapper_spinner_language) View language;
-    @InjectView(R.id.language) TextView languageCaption;
-    @InjectView(R.id.spinner_language) SimpleDraweeView flag;
+   @InjectView(R.id.header) TextView header;
+   @InjectView(R.id.wrapper_spinner_language) View language;
+   @InjectView(R.id.language) TextView languageCaption;
+   @InjectView(R.id.spinner_language) SimpleDraweeView flag;
 
-    public MediaHeaderCell(View view) {
-        super(view);
-    }
+   public MediaHeaderCell(View view) {
+      super(view);
+   }
 
-    @Override
-    protected void syncUIStateWithModel() {
-        if (TextUtils.isEmpty(getModelObject().getTitle())) {
-            header.setText(itemView.getContext().getString(R.string.recently_added));
-        } else {
-            header.setText(getModelObject().getTitle());
-        }
+   @Override
+   protected void syncUIStateWithModel() {
+      if (TextUtils.isEmpty(getModelObject().getTitle())) {
+         header.setText(itemView.getContext().getString(R.string.recently_added));
+      } else {
+         header.setText(getModelObject().getTitle());
+      }
 
-        header.setTextColor(itemView.getResources().getColor(R.color.white));
-        language.setVisibility(getModelObject().isShowLanguage() ? View.VISIBLE : View.INVISIBLE);
+      header.setTextColor(itemView.getResources().getColor(R.color.white));
+      language.setVisibility(getModelObject().isShowLanguage() ? View.VISIBLE : View.INVISIBLE);
 
-        if (getModelObject().getVideoLocale() != null) {
-            flag.setImageURI(Uri.parse(getModelObject().getVideoLocale().getImage()));
-            flag.setContentDescription(getModelObject().getVideoLocale().getCountry());
-            languageCaption.setText(getModelObject().getVideoLanguage().getTitle());
-        } else {
-            flag.setImageURI(null);
-        }
-    }
+      if (getModelObject().getVideoLocale() != null) {
+         flag.setImageURI(Uri.parse(getModelObject().getVideoLocale().getImage()));
+         flag.setContentDescription(getModelObject().getVideoLocale().getCountry());
+         languageCaption.setText(getModelObject().getVideoLanguage().getTitle());
+      } else {
+         flag.setImageURI(null);
+      }
+   }
 
-    @OnClick(R.id.wrapper_spinner_language)
-    void onLanguageClicked() {
-        if (cellDelegate != null) cellDelegate.onLanguageClicked();
-    }
+   @OnClick(R.id.wrapper_spinner_language)
+   void onLanguageClicked() {
+      if (cellDelegate != null) cellDelegate.onLanguageClicked();
+   }
 
 }

@@ -42,247 +42,237 @@ import rx.schedulers.Schedulers;
 
 public class BucketItemEditPresenter extends BucketDetailsBasePresenter<BucketItemEditPresenter.View> {
 
-    public static final int BUCKET_MEDIA_REQUEST_ID = BucketItemEditPresenter.class.getSimpleName().hashCode();
+   public static final int BUCKET_MEDIA_REQUEST_ID = BucketItemEditPresenter.class.getSimpleName().hashCode();
 
-    @Inject
-    MediaPickerManager mediaPickerManager;
+   @Inject MediaPickerManager mediaPickerManager;
 
-    private Date selectedDate;
+   private Date selectedDate;
 
-    private boolean savingItem = false;
+   private boolean savingItem = false;
 
-    private Set<AddBucketItemPhotoCommand> operationList = new HashSet<>();
+   private Set<AddBucketItemPhotoCommand> operationList = new HashSet<>();
 
-    public BucketItemEditPresenter(BucketBundle bundle) {
-        super(bundle);
-    }
+   public BucketItemEditPresenter(BucketBundle bundle) {
+      super(bundle);
+   }
 
-    @Override
-    public void takeView(View view) {
-        priorityEventBus = 1;
-        super.takeView(view);
-        bindObservables(view);
-    }
+   @Override
+   public void takeView(View view) {
+      priorityEventBus = 1;
+      super.takeView(view);
+      bindObservables(view);
+   }
 
-    @Override
-    public void onResume() {
-        super.onResume();
-        selectedDate = bucketItem.getTargetDate();
-        List<CategoryItem> list = db.readList(SnappyRepository.CATEGORIES, CategoryItem.class);
-        if (!list.isEmpty()) {
-            view.setCategoryItems(list);
-            view.setCategory(list.indexOf(bucketItem.getCategory()));
-        }
-    }
+   @Override
+   public void onResume() {
+      super.onResume();
+      selectedDate = bucketItem.getTargetDate();
+      List<CategoryItem> list = db.readList(SnappyRepository.CATEGORIES, CategoryItem.class);
+      if (!list.isEmpty()) {
+         view.setCategoryItems(list);
+         view.setCategory(list.indexOf(bucketItem.getCategory()));
+      }
+   }
 
-    @Override
-    protected void syncUI() {
-        super.syncUI();
-        view.bind(bucketInteractor.mergeBucketItemPhotosWithStorageCommandPipe()
-                .createObservableResult(new MergeBucketItemPhotosWithStorageCommand(bucketItem.getUid(), bucketItem.getPhotos()))
-                .map(Command::getResult)
-                .observeOn(Schedulers.immediate()))
-                .subscribe(entityStateHolders -> {
-                    view.setImages(entityStateHolders);
-                });
-    }
+   @Override
+   protected void syncUI() {
+      super.syncUI();
+      view.bind(bucketInteractor.mergeBucketItemPhotosWithStorageCommandPipe()
+            .createObservableResult(new MergeBucketItemPhotosWithStorageCommand(bucketItem.getUid(), bucketItem.getPhotos()))
+            .map(Command::getResult)
+            .observeOn(Schedulers.immediate())).subscribe(entityStateHolders -> {
+         view.setImages(entityStateHolders);
+      });
+   }
 
-    @Override
-    public void handleError(SpiceException error) {
-        super.handleError(error);
-        view.hideLoading();
-    }
+   @Override
+   public void handleError(SpiceException error) {
+      super.handleError(error);
+      view.hideLoading();
+   }
 
-    public void saveItem() {
-        view.showLoading();
-        savingItem = true;
+   public void saveItem() {
+      view.showLoading();
+      savingItem = true;
 
-        view.bind(bucketInteractor.updatePipe()
-                .createObservableResult(new UpdateItemHttpAction(createBucketPostBody()))
-                .observeOn(AndroidSchedulers.mainThread())
-                .map(UpdateItemHttpAction::getResponse))
-                .subscribe(item -> {
-                    if (savingItem) {
-                        savingItem = false;
-                        view.done();
-                    }
-                }, this::handleError);
-    }
+      view.bind(bucketInteractor.updatePipe()
+            .createObservableResult(new UpdateItemHttpAction(createBucketPostBody()))
+            .observeOn(AndroidSchedulers.mainThread())
+            .map(UpdateItemHttpAction::getResponse)).subscribe(item -> {
+         if (savingItem) {
+            savingItem = false;
+            view.done();
+         }
+      }, this::handleError);
+   }
 
-    public Date getDate() {
-        if (bucketItem.getTargetDate() != null) {
-            return bucketItem.getTargetDate();
-        } else {
-            return Calendar.getInstance().getTime();
-        }
-    }
+   public Date getDate() {
+      if (bucketItem.getTargetDate() != null) {
+         return bucketItem.getTargetDate();
+      } else {
+         return Calendar.getInstance().getTime();
+      }
+   }
 
-    public void deletePhotoRequest(BucketPhoto bucketPhoto) {
-        if (!bucketItem.getPhotos().isEmpty() && bucketItem.getPhotos().contains(bucketPhoto)) {
-            view.bind(bucketInteractor.deleteItemPhotoPipe()
-                    .createObservable(new DeleteItemPhotoCommand(bucketItem, bucketPhoto))
-                    .observeOn(AndroidSchedulers.mainThread()))
-                    .subscribe(new ActionStateSubscriber<DeleteItemPhotoCommand>()
-                            .onSuccess(deleteItemPhotoAction -> view.deleteImage(EntityStateHolder.create(bucketPhoto, EntityStateHolder.State.DONE)))
-                            .onFail((deleteItemPhotoAction, throwable) -> handleError(throwable)));
-        }
-    }
+   public void deletePhotoRequest(BucketPhoto bucketPhoto) {
+      if (!bucketItem.getPhotos().isEmpty() && bucketItem.getPhotos().contains(bucketPhoto)) {
+         view.bind(bucketInteractor.deleteItemPhotoPipe()
+               .createObservable(new DeleteItemPhotoCommand(bucketItem, bucketPhoto))
+               .observeOn(AndroidSchedulers.mainThread())).subscribe(new ActionStateSubscriber<DeleteItemPhotoCommand>()
+               .onSuccess(deleteItemPhotoAction -> view.deleteImage(EntityStateHolder.create(bucketPhoto, EntityStateHolder.State.DONE)))
+               .onFail((deleteItemPhotoAction, throwable) -> handleError(throwable)));
+      }
+   }
 
-    public void onDateSet(int year, int month, int day) {
-        String date = DateTimeUtils.convertDateToString(year, month, day);
-        view.setTime(date);
-        setDate(DateTimeUtils.dateFromString(date));
-    }
+   public void onDateSet(int year, int month, int day) {
+      String date = DateTimeUtils.convertDateToString(year, month, day);
+      view.setTime(date);
+      setDate(DateTimeUtils.dateFromString(date));
+   }
 
-    public void setDate(Date date) {
-        this.selectedDate = date;
-    }
+   public void setDate(Date date) {
+      this.selectedDate = date;
+   }
 
-    public void onDateClear() {
-        view.setTime(context.getString(R.string.someday));
-        setDate(null);
-    }
+   public void onDateClear() {
+      view.setTime(context.getString(R.string.someday));
+      setDate(null);
+   }
 
-    ////////////////////////////////////////
-    /////// Photo picking
-    ////////////////////////////////////////
-    public void onUploadTaskClicked(EntityStateHolder<BucketPhoto> photoStateHolder) {
-        view.deleteImage(photoStateHolder);
+   ////////////////////////////////////////
+   /////// Photo picking
+   ////////////////////////////////////////
+   public void onUploadTaskClicked(EntityStateHolder<BucketPhoto> photoStateHolder) {
+      view.deleteImage(photoStateHolder);
 
-        EntityStateHolder.State state = photoStateHolder.state();
-        switch (state) {
-            case FAIL:
-                startUpload(photoStateHolder);
-                break;
-            case PROGRESS:
-                cancelUpload(photoStateHolder);
-                break;
-        }
-    }
+      EntityStateHolder.State state = photoStateHolder.state();
+      switch (state) {
+         case FAIL:
+            startUpload(photoStateHolder);
+            break;
+         case PROGRESS:
+            cancelUpload(photoStateHolder);
+            break;
+      }
+   }
 
-    private void startUpload(EntityStateHolder<BucketPhoto> photoStateHolder) {
-        TrackingHelper.bucketPhotoAction(TrackingHelper.ACTION_BUCKET_PHOTO_UPLOAD_START, "", bucketItem.getType());
-        eventBus.post(new BucketItemPhotoAnalyticEvent(TrackingHelper.ATTRIBUTE_UPLOAD_PHOTO, bucketItem.getUid()));
+   private void startUpload(EntityStateHolder<BucketPhoto> photoStateHolder) {
+      TrackingHelper.bucketPhotoAction(TrackingHelper.ACTION_BUCKET_PHOTO_UPLOAD_START, "", bucketItem.getType());
+      eventBus.post(new BucketItemPhotoAnalyticEvent(TrackingHelper.ATTRIBUTE_UPLOAD_PHOTO, bucketItem.getUid()));
 
-        imageSelected(Uri.parse(photoStateHolder.entity().getImagePath()));
-    }
+      imageSelected(Uri.parse(photoStateHolder.entity().getImagePath()));
+   }
 
-    private void cancelUpload(EntityStateHolder<BucketPhoto> photoStateHolder) {
-        bucketInteractor.addBucketItemPhotoPipe().cancel(findCommandByStateHolder(photoStateHolder));
-    }
+   private void cancelUpload(EntityStateHolder<BucketPhoto> photoStateHolder) {
+      bucketInteractor.addBucketItemPhotoPipe().cancel(findCommandByStateHolder(photoStateHolder));
+   }
 
-    private void attachImages(List<PhotoGalleryModel> chosenImages) {
-        if (chosenImages.size() == 0) {
-            return;
-        }
-        Queryable.from(chosenImages).forEachR(choseImage ->
-                imageSelected(Uri.parse(choseImage.getThumbnailPath())));
-    }
+   private void attachImages(List<PhotoGalleryModel> chosenImages) {
+      if (chosenImages.size() == 0) {
+         return;
+      }
+      Queryable.from(chosenImages).forEachR(choseImage -> imageSelected(Uri.parse(choseImage.getThumbnailPath())));
+   }
 
-    private void imageSelected(Uri uri) {
-        bucketInteractor.addBucketItemPhotoPipe().send(new AddBucketItemPhotoCommand(bucketItem, uri.toString()));
-    }
+   private void imageSelected(Uri uri) {
+      bucketInteractor.addBucketItemPhotoPipe().send(new AddBucketItemPhotoCommand(bucketItem, uri.toString()));
+   }
 
-    private void bindObservables(View view) {
-        view.bind(bucketInteractor.addBucketItemPhotoPipe()
-                .observe()
-                .observeOn(AndroidSchedulers.mainThread()))
-                .subscribe(new ActionStateSubscriber<AddBucketItemPhotoCommand>()
-                        .onStart(command -> {
-                            operationList.add(command);
-                            view.addItemInProgressState(command.photoEntityStateHolder());
-                        })
-                        .onSuccess(command -> {
-                            operationList.remove(command);
-                            view.changeItemState(command.photoEntityStateHolder());
-                        })
-                        .onFail((command, throwable) -> {
-                            operationList.remove(command);
-                            if (throwable instanceof CancelException) {
-                                return;
-                            }
+   private void bindObservables(View view) {
+      view.bind(bucketInteractor.addBucketItemPhotoPipe().observe().observeOn(AndroidSchedulers.mainThread()))
+            .subscribe(new ActionStateSubscriber<AddBucketItemPhotoCommand>().onStart(command -> {
+               operationList.add(command);
+               view.addItemInProgressState(command.photoEntityStateHolder());
+            }).onSuccess(command -> {
+               operationList.remove(command);
+               view.changeItemState(command.photoEntityStateHolder());
+            }).onFail((command, throwable) -> {
+               operationList.remove(command);
+               if (throwable instanceof CancelException) {
+                  return;
+               }
 
-                            view.changeItemState(command.photoEntityStateHolder());
-                        }));
+               view.changeItemState(command.photoEntityStateHolder());
+            }));
 
-        view.bind(Observable.merge(bucketInteractor.updatePipe().observeSuccess()
-                        .map(UpdateItemHttpAction::getResponse),
-                bucketInteractor.addBucketItemPhotoPipe().observeSuccess()
-                        .map(addBucketItemPhotoCommand -> addBucketItemPhotoCommand.getResult().first),
-                bucketInteractor.deleteItemPhotoPipe().observeSuccess()
-                        .map(DeleteItemPhotoCommand::getResult)))
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(bucketItem -> {
-                    eventBus.post(new FeedEntityChangedEvent(bucketItem)); //TODO fix it when feed would be rewrote
-                });
-        //
-        view.bind(mediaPickerManager.toObservable()
-                .filter(attachment -> attachment.requestId == BUCKET_MEDIA_REQUEST_ID))
-                .subscribe(mediaAttachment -> attachImages(mediaAttachment.chosenImages));
-    }
+      view.bind(Observable.merge(bucketInteractor.updatePipe()
+            .observeSuccess()
+            .map(UpdateItemHttpAction::getResponse), bucketInteractor.addBucketItemPhotoPipe()
+            .observeSuccess()
+            .map(addBucketItemPhotoCommand -> addBucketItemPhotoCommand.getResult().first), bucketInteractor.deleteItemPhotoPipe()
+            .observeSuccess()
+            .map(DeleteItemPhotoCommand::getResult)))
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe(bucketItem -> {
+               eventBus.post(new FeedEntityChangedEvent(bucketItem)); //TODO fix it when feed would be rewrote
+            });
+      //
+      view.bind(mediaPickerManager.toObservable().filter(attachment -> attachment.requestId == BUCKET_MEDIA_REQUEST_ID))
+            .subscribe(mediaAttachment -> attachImages(mediaAttachment.chosenImages));
+   }
 
-    //////////////////////
-    // Common
-    //////////////////////
-    private int getCategoryId() {
-        CategoryItem categoryItem = view.getSelectedItem();
-        return categoryItem != null ? categoryItem.getId() : 0;
-    }
+   //////////////////////
+   // Common
+   //////////////////////
+   private int getCategoryId() {
+      CategoryItem categoryItem = view.getSelectedItem();
+      return categoryItem != null ? categoryItem.getId() : 0;
+   }
 
-    private String getDateAsString(Date date) {
-        return DateTimeUtils.convertDateToString(date, DateTimeUtils.DEFAULT_ISO_FORMAT);
-    }
+   private String getDateAsString(Date date) {
+      return DateTimeUtils.convertDateToString(date, DateTimeUtils.DEFAULT_ISO_FORMAT);
+   }
 
-    @NonNull
-    private ImmutableBucketPostBody createBucketPostBody() {
-        return ImmutableBucketPostBody.builder()
-                .id(bucketItem.getUid())
-                .name(view.getTitle())
-                .description(view.getDescription())
-                .status(view.getStatus() ? BucketItem.COMPLETED : BucketItem.NEW)
-                .tags(ProjectTextUtils.getListFromString(view.getTags()))
-                .friends(ProjectTextUtils.getListFromString(view.getPeople()))
-                .categoryId(getCategoryId())
-                .date(getDateAsString(selectedDate))
-                .build();
-    }
+   @NonNull
+   private ImmutableBucketPostBody createBucketPostBody() {
+      return ImmutableBucketPostBody.builder()
+            .id(bucketItem.getUid())
+            .name(view.getTitle())
+            .description(view.getDescription())
+            .status(view.getStatus() ? BucketItem.COMPLETED : BucketItem.NEW)
+            .tags(ProjectTextUtils.getListFromString(view.getTags()))
+            .friends(ProjectTextUtils.getListFromString(view.getPeople()))
+            .categoryId(getCategoryId())
+            .date(getDateAsString(selectedDate))
+            .build();
+   }
 
-    private AddBucketItemPhotoCommand findCommandByStateHolder(EntityStateHolder<BucketPhoto> photoEntityStateHolder) {
-        return Queryable.from(operationList)
-                .firstOrDefault(element -> element.photoEntityStateHolder().equals(photoEntityStateHolder));
-    }
+   private AddBucketItemPhotoCommand findCommandByStateHolder(EntityStateHolder<BucketPhoto> photoEntityStateHolder) {
+      return Queryable.from(operationList).firstOrDefault(element -> element.photoEntityStateHolder()
+            .equals(photoEntityStateHolder));
+   }
 
-    public interface View extends BucketDetailsBasePresenter.View {
-        void showError();
+   public interface View extends BucketDetailsBasePresenter.View {
+      void showError();
 
-        void setCategory(int selection);
+      void setCategory(int selection);
 
-        void setCategoryItems(List<CategoryItem> items);
+      void setCategoryItems(List<CategoryItem> items);
 
-        CategoryItem getSelectedItem();
+      CategoryItem getSelectedItem();
 
-        boolean getStatus();
+      boolean getStatus();
 
-        String getTags();
+      String getTags();
 
-        String getPeople();
+      String getPeople();
 
-        String getTitle();
+      String getTitle();
 
-        String getDescription();
+      String getDescription();
 
-        void hideMediaPicker();
+      void hideMediaPicker();
 
-        void showMediaPicker();
+      void showMediaPicker();
 
-        void showLoading();
+      void showLoading();
 
-        void hideLoading();
+      void hideLoading();
 
-        void addItemInProgressState(EntityStateHolder<BucketPhoto> photoEntityStateHolder);
+      void addItemInProgressState(EntityStateHolder<BucketPhoto> photoEntityStateHolder);
 
-        void changeItemState(EntityStateHolder<BucketPhoto> photoEntityStateHolder);
+      void changeItemState(EntityStateHolder<BucketPhoto> photoEntityStateHolder);
 
-        void deleteImage(EntityStateHolder<BucketPhoto> photoStateHolder);
-    }
+      void deleteImage(EntityStateHolder<BucketPhoto> photoStateHolder);
+   }
 }

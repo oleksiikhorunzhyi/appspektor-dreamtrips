@@ -1,26 +1,28 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@color/white"
-    android:clickable="true">
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+      xmlns:tools="http://schemas.android.com/tools"
+      android:layout_width="match_parent"
+      android:layout_height="match_parent"
+      android:background="@color/white"
+      android:clickable="true"
+      >
 
-    <android.support.v7.widget.Toolbar
-        android:id="@+id/toolbar"
-        style="@style/ToolBarStyle"/>
+   <android.support.v7.widget.Toolbar
+         android:id="@+id/toolbar"
+         style="@style/ToolBarStyle"
+         />
 
-    <FrameLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/toolbar"
-        android:layout_marginLeft="@dimen/spacing_small"
-        android:layout_marginRight="@dimen/spacing_small"
-        android:layout_marginTop="@dimen/spacing_small"
-        android:layout_marginBottom="@dimen/spacing_small">
+   <FrameLayout
+         android:layout_width="match_parent"
+         android:layout_height="wrap_content"
+         android:layout_below="@id/toolbar"
+         android:layout_marginLeft="@dimen/spacing_small"
+         android:layout_marginRight="@dimen/spacing_small"
+         android:layout_marginTop="@dimen/spacing_small"
+         android:layout_marginBottom="@dimen/spacing_small"
+         >
 
-        <EditText
+      <EditText
             android:id="@+id/input_location"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -31,23 +33,26 @@
             android:singleLine="true"
             android:maxLength="@integer/social_location_name_max_length"
             tools:text="Lorem ipsum dolor sit amet, iriure salutandi aei, ne nec tota meis malis."
-            android:inputType="textCapWords"/>
+            android:inputType="textCapWords"
+            />
 
-        <ImageView
+      <ImageView
             android:id="@+id/clear_location"
             android:layout_width="14dp"
             android:layout_height="14dp"
             android:layout_gravity="center_vertical|right"
             android:layout_marginLeft="6dp"
             android:layout_marginRight="6dp"
-            android:src="@drawable/close"/>
+            android:src="@drawable/close"
+            />
 
-    </FrameLayout>
+   </FrameLayout>
 
-    <ProgressBar
-        android:id="@+id/progress"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerInParent="true"
-        android:visibility="gone"/>
+   <ProgressBar
+         android:id="@+id/progress"
+         android:layout_width="wrap_content"
+         android:layout_height="wrap_content"
+         android:layout_centerInParent="true"
+         android:visibility="gone"
+         />
 </RelativeLayout>

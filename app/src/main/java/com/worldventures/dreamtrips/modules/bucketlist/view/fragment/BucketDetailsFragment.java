@@ -48,246 +48,234 @@ import butterknife.OnCheckedChanged;
 import me.relex.circleindicator.CircleIndicator;
 
 @Layout(R.layout.layout_bucket_item_details)
-public class BucketDetailsFragment<T extends BucketItemDetailsPresenter> extends RxBaseFragmentWithArgs<T, BucketBundle>
-        implements BucketItemDetailsPresenter.View {
+public class BucketDetailsFragment<T extends BucketItemDetailsPresenter> extends RxBaseFragmentWithArgs<T, BucketBundle> implements BucketItemDetailsPresenter.View {
 
-    @InjectView(R.id.textViewName) TextView textViewName;
-    @InjectView(R.id.textViewFriends) TextView textViewFriends;
-    @InjectView(R.id.textViewTags) TextView textViewTags;
-    @InjectView(R.id.textViewDescription) TextView textViewDescription;
-    @InjectView(R.id.textViewCategory) TextView textViewCategory;
-    @InjectView(R.id.textViewDate) TextView textViewDate;
-    @InjectView(R.id.textViewPlace) TextView textViewPlace;
-    @InjectView(R.id.checkBoxDone) CheckBox markAsDone;
-    @InjectView(R.id.galleryPlaceHolder) ImageView galleryPlaceHolder;
-    @InjectView(R.id.viewPagerBucketGallery) ViewPager viewPagerBucketGallery;
-    @InjectView(R.id.circleIndicator) CircleIndicator circleIndicator;
-    @InjectView(R.id.bucket_tags_container) View bucketTags;
-    @InjectView(R.id.bucket_who_container) View bucketWho;
-    @InjectView(R.id.diningName) TextView diningName;
-    @InjectView(R.id.diningPriceRange) TextView diningPriceRange;
-    @InjectView(R.id.diningAddress) TextView diningAddress;
-    @InjectView(R.id.diningSite) TextView diningSite;
-    @InjectView(R.id.diningPhone) TextView diningPhone;
-    @InjectView(R.id.diningContainer) View diningContainer;
-    @InjectView(R.id.diningDivider) View diningDivider;
-    @InjectView(R.id.contentView) ViewGroup contentView;
-    @InjectView(R.id.toolbar_actionbar) Toolbar toolbar;
+   @InjectView(R.id.textViewName) TextView textViewName;
+   @InjectView(R.id.textViewFriends) TextView textViewFriends;
+   @InjectView(R.id.textViewTags) TextView textViewTags;
+   @InjectView(R.id.textViewDescription) TextView textViewDescription;
+   @InjectView(R.id.textViewCategory) TextView textViewCategory;
+   @InjectView(R.id.textViewDate) TextView textViewDate;
+   @InjectView(R.id.textViewPlace) TextView textViewPlace;
+   @InjectView(R.id.checkBoxDone) CheckBox markAsDone;
+   @InjectView(R.id.galleryPlaceHolder) ImageView galleryPlaceHolder;
+   @InjectView(R.id.viewPagerBucketGallery) ViewPager viewPagerBucketGallery;
+   @InjectView(R.id.circleIndicator) CircleIndicator circleIndicator;
+   @InjectView(R.id.bucket_tags_container) View bucketTags;
+   @InjectView(R.id.bucket_who_container) View bucketWho;
+   @InjectView(R.id.diningName) TextView diningName;
+   @InjectView(R.id.diningPriceRange) TextView diningPriceRange;
+   @InjectView(R.id.diningAddress) TextView diningAddress;
+   @InjectView(R.id.diningSite) TextView diningSite;
+   @InjectView(R.id.diningPhone) TextView diningPhone;
+   @InjectView(R.id.diningContainer) View diningContainer;
+   @InjectView(R.id.diningDivider) View diningDivider;
+   @InjectView(R.id.contentView) ViewGroup contentView;
+   @InjectView(R.id.toolbar_actionbar) Toolbar toolbar;
 
-    @Inject @ForActivity Provider<Injector> injector;
+   @Inject @ForActivity Provider<Injector> injector;
 
-    private int checkedPosition;
-    private ViewPager.SimpleOnPageChangeListener onPageSelectedListener = new ViewPager.SimpleOnPageChangeListener() {
-        @Override
-        public void onPageSelected(int position) {
-            checkedPosition = position;
-        }
-    };
+   private int checkedPosition;
+   private ViewPager.SimpleOnPageChangeListener onPageSelectedListener = new ViewPager.SimpleOnPageChangeListener() {
+      @Override
+      public void onPageSelected(int position) {
+         checkedPosition = position;
+      }
+   };
 
-    @Override
-    public void afterCreateView(View view) {
-        super.afterCreateView(view);
-        setForeignIntentAction();
-        viewPagerBucketGallery.addOnPageChangeListener(onPageSelectedListener);
-    }
+   @Override
+   public void afterCreateView(View view) {
+      super.afterCreateView(view);
+      setForeignIntentAction();
+      viewPagerBucketGallery.addOnPageChangeListener(onPageSelectedListener);
+   }
 
-    @Override
-    protected T createPresenter(Bundle savedInstanceState) {
-        return (T) new BucketItemDetailsPresenter(getArgs());
-    }
+   @Override
+   protected T createPresenter(Bundle savedInstanceState) {
+      return (T) new BucketItemDetailsPresenter(getArgs());
+   }
 
-    @Override
-    public void onResume() {
-        super.onResume();
-        if (isVisible() && ViewUtils.isTablet(getActivity()) && !ViewUtils.isLandscapeOrientation(getActivity())) {
-            OrientationUtil.lockOrientation(getActivity());
-        }
-        if (!getArgs().isSlave()) {
-            ((AppCompatActivity) getActivity()).setSupportActionBar(toolbar);
-            ((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-            ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle("");
-            toolbar.getBackground().mutate().setAlpha(0);
-        } else {
-            toolbar.setVisibility(View.GONE);
-        }
-    }
+   @Override
+   public void onResume() {
+      super.onResume();
+      if (isVisible() && ViewUtils.isTablet(getActivity()) && !ViewUtils.isLandscapeOrientation(getActivity())) {
+         OrientationUtil.lockOrientation(getActivity());
+      }
+      if (!getArgs().isSlave()) {
+         ((AppCompatActivity) getActivity()).setSupportActionBar(toolbar);
+         ((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+         ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle("");
+         toolbar.getBackground().mutate().setAlpha(0);
+      } else {
+         toolbar.setVisibility(View.GONE);
+      }
+   }
 
-    @Override
-    public void onDestroyView() {
-        viewPagerBucketGallery.removeOnPageChangeListener(onPageSelectedListener);
-        super.onDestroyView();
-        OrientationUtil.unlockOrientation(getActivity());
-    }
+   @Override
+   public void onDestroyView() {
+      viewPagerBucketGallery.removeOnPageChangeListener(onPageSelectedListener);
+      super.onDestroyView();
+      OrientationUtil.unlockOrientation(getActivity());
+   }
 
-    @Override
-    public boolean isVisibleOnScreen() {
-        return ViewUtils.isPartVisibleOnScreen(this);
-    }
+   @Override
+   public boolean isVisibleOnScreen() {
+      return ViewUtils.isPartVisibleOnScreen(this);
+   }
 
-    @Override
-    public void setTitle(String title) {
-        textViewName.setText(title);
-    }
+   @Override
+   public void setTitle(String title) {
+      textViewName.setText(title);
+   }
 
-    @Override
-    public void setDescription(String description) {
-        setText(textViewDescription, description);
-    }
+   @Override
+   public void setDescription(String description) {
+      setText(textViewDescription, description);
+   }
 
-    @Override
-    public void setTime(String time) {
-        textViewDate.setText(time);
-    }
+   @Override
+   public void setTime(String time) {
+      textViewDate.setText(time);
+   }
 
-    @Override
-    public void setPeople(String people) {
-        if (!TextUtils.isEmpty(people)) {
-            bucketWho.setVisibility(View.VISIBLE);
-            textViewFriends.setText(people);
-        } else {
-            bucketWho.setVisibility(View.GONE);
-        }
-    }
+   @Override
+   public void setPeople(String people) {
+      if (!TextUtils.isEmpty(people)) {
+         bucketWho.setVisibility(View.VISIBLE);
+         textViewFriends.setText(people);
+      } else {
+         bucketWho.setVisibility(View.GONE);
+      }
+   }
 
-    @Override
-    public void setTags(String tags) {
-        if (!TextUtils.isEmpty(tags)) {
-            bucketTags.setVisibility(View.VISIBLE);
-            textViewTags.setText(tags);
-        } else {
-            bucketTags.setVisibility(View.GONE);
-        }
-    }
+   @Override
+   public void setTags(String tags) {
+      if (!TextUtils.isEmpty(tags)) {
+         bucketTags.setVisibility(View.VISIBLE);
+         textViewTags.setText(tags);
+      } else {
+         bucketTags.setVisibility(View.GONE);
+      }
+   }
 
-    @Override
-    public void setStatus(boolean completed) {
-        markAsDone.setChecked(completed);
-    }
+   @Override
+   public void setStatus(boolean completed) {
+      markAsDone.setChecked(completed);
+   }
 
-    @OnCheckedChanged(R.id.checkBoxDone)
-    protected void onCheckedChanged(boolean isChecked) {
-        getPresenter().onStatusUpdated(isChecked);
-    }
+   @OnCheckedChanged(R.id.checkBoxDone)
+   protected void onCheckedChanged(boolean isChecked) {
+      getPresenter().onStatusUpdated(isChecked);
+   }
 
-    private void setForeignIntentAction() {
-        diningSite.setOnClickListener(v -> {
-            Intent intent = IntentUtils.browserIntent(diningSite.getText().toString());
-            FragmentUtil.startSafely(this, intent);
-        });
-        diningPhone.setOnClickListener(v -> {
-            Intent intent = IntentUtils.callIntnet(diningPhone.getText().toString());
-            FragmentUtil.startSafely(this, intent);
-        });
-    }
+   private void setForeignIntentAction() {
+      diningSite.setOnClickListener(v -> {
+         Intent intent = IntentUtils.browserIntent(diningSite.getText().toString());
+         FragmentUtil.startSafely(this, intent);
+      });
+      diningPhone.setOnClickListener(v -> {
+         Intent intent = IntentUtils.callIntnet(diningPhone.getText().toString());
+         FragmentUtil.startSafely(this, intent);
+      });
+   }
 
-    @Override
-    public void enableMarkAsDone() {
-        markAsDone.setEnabled(true);
-    }
+   @Override
+   public void enableMarkAsDone() {
+      markAsDone.setEnabled(true);
+   }
 
-    @Override
-    public void disableMarkAsDone() {
-        markAsDone.setEnabled(false);
-    }
+   @Override
+   public void disableMarkAsDone() {
+      markAsDone.setEnabled(false);
+   }
 
-    @Override
-    public void setupDiningView(DiningItem diningItem) {
-        if (diningItem == null) {
-            diningContainer.setVisibility(View.GONE);
-            return;
-        }
-        //
-        diningContainer.setVisibility(View.VISIBLE);
-        setText(diningName, diningItem.getName());
-        setText(diningPriceRange, diningItem.getPriceRange());
-        setText(diningAddress, diningItem.getAddress());
-        setText(diningPhone, diningItem.getPhoneNumber());
-        setText(diningSite, diningItem.getUrl());
-        if (TextUtils.isEmpty(diningItem.getUrl()) && TextUtils.isEmpty(diningItem.getPhoneNumber())) {
-            diningDivider.setVisibility(View.GONE);
-        } else {
-            diningDivider.setVisibility(View.VISIBLE);
-        }
-    }
+   @Override
+   public void setupDiningView(DiningItem diningItem) {
+      if (diningItem == null) {
+         diningContainer.setVisibility(View.GONE);
+         return;
+      }
+      //
+      diningContainer.setVisibility(View.VISIBLE);
+      setText(diningName, diningItem.getName());
+      setText(diningPriceRange, diningItem.getPriceRange());
+      setText(diningAddress, diningItem.getAddress());
+      setText(diningPhone, diningItem.getPhoneNumber());
+      setText(diningSite, diningItem.getUrl());
+      if (TextUtils.isEmpty(diningItem.getUrl()) && TextUtils.isEmpty(diningItem.getPhoneNumber())) {
+         diningDivider.setVisibility(View.GONE);
+      } else {
+         diningDivider.setVisibility(View.VISIBLE);
+      }
+   }
 
-    @Override
-    public void setCategory(String category) {
-        setText(textViewCategory, category);
-    }
+   @Override
+   public void setCategory(String category) {
+      setText(textViewCategory, category);
+   }
 
-    @Override
-    public void setPlace(String place) {
-        setText(textViewPlace, place);
-    }
+   @Override
+   public void setPlace(String place) {
+      setText(textViewPlace, place);
+   }
 
-    private void setText(TextView view, String text) {
-        if (TextUtils.isEmpty(text)) {
-            view.setVisibility(View.GONE);
-        } else {
-            view.setVisibility(View.VISIBLE);
-            view.setText(text);
-        }
-    }
+   private void setText(TextView view, String text) {
+      if (TextUtils.isEmpty(text)) {
+         view.setVisibility(View.GONE);
+      } else {
+         view.setVisibility(View.VISIBLE);
+         view.setText(text);
+      }
+   }
 
-    @Override
-    public void done() {
-        if (getActivity() instanceof ComponentActivity
-                && !ViewUtils.isLandscapeOrientation(getActivity()))
-            getActivity().onBackPressed();
-    }
+   @Override
+   public void done() {
+      if (getActivity() instanceof ComponentActivity && !ViewUtils.isLandscapeOrientation(getActivity()))
+         getActivity().onBackPressed();
+   }
 
-    @Override
-    public void openFullscreen(FullScreenImagesBundle data) {
-        router.moveTo(
-                Route.FULLSCREEN_PHOTO_LIST,
-                NavigationConfigBuilder
-                        .forActivity()
-                        .toolbarConfig(
-                                ToolbarConfig.Builder
-                                        .create()
-                                        .visible(false)
-                                        .build())
-                        .data(data)
-                        .build());
-    }
+   @Override
+   public void openFullscreen(FullScreenImagesBundle data) {
+      router.moveTo(Route.FULLSCREEN_PHOTO_LIST, NavigationConfigBuilder.forActivity()
+            .toolbarConfig(ToolbarConfig.Builder.create().visible(false).build())
+            .data(data)
+            .build());
+   }
 
-    @Override
-    public void setGalleryEnabled(boolean enabled) {
-        if (enabled) {
-            viewPagerBucketGallery.setVisibility(View.VISIBLE);
-            circleIndicator.setVisibility(View.VISIBLE);
-            galleryPlaceHolder.setVisibility(View.INVISIBLE);
-        } else {
-            viewPagerBucketGallery.setVisibility(View.INVISIBLE);
-            circleIndicator.setVisibility(View.INVISIBLE);
-            galleryPlaceHolder.setVisibility(View.VISIBLE);
-        }
-    }
+   @Override
+   public void setGalleryEnabled(boolean enabled) {
+      if (enabled) {
+         viewPagerBucketGallery.setVisibility(View.VISIBLE);
+         circleIndicator.setVisibility(View.VISIBLE);
+         galleryPlaceHolder.setVisibility(View.INVISIBLE);
+      } else {
+         viewPagerBucketGallery.setVisibility(View.INVISIBLE);
+         circleIndicator.setVisibility(View.INVISIBLE);
+         galleryPlaceHolder.setVisibility(View.VISIBLE);
+      }
+   }
 
-    @Override
-    public void setImages(List photos) {
-        BaseStatePagerAdapter adapter = new BaseStatePagerAdapter(getChildFragmentManager()) {
-            @Override
-            public void setArgs(int position, Fragment fragment) {
-                if (photos.get(position) instanceof BucketPhoto) {
-                    BucketPhoto photo = (BucketPhoto) photos.get(position);
-                    ((TripImagePagerFragment) fragment).setArgs(new ImageBundle<>(photo));
-                }
+   @Override
+   public void setImages(List photos) {
+      BaseStatePagerAdapter adapter = new BaseStatePagerAdapter(getChildFragmentManager()) {
+         @Override
+         public void setArgs(int position, Fragment fragment) {
+            if (photos.get(position) instanceof BucketPhoto) {
+               BucketPhoto photo = (BucketPhoto) photos.get(position);
+               ((TripImagePagerFragment) fragment).setArgs(new ImageBundle<>(photo));
             }
-        };
-        viewPagerBucketGallery.setAdapter(adapter);
-        Queryable.from(photos).forEachR(photo ->
-                adapter.add(new FragmentItem(Route.TRIP_IMAGES_PAGER, ""))
-        );
-        adapter.notifyDataSetChanged();
-        circleIndicator.setViewPager(viewPagerBucketGallery);
-        circleIndicator.onPageSelected(checkedPosition);  //disable ui point position jumping
-        viewPagerBucketGallery.setCurrentItem(checkedPosition);
-    }
+         }
+      };
+      viewPagerBucketGallery.setAdapter(adapter);
+      Queryable.from(photos).forEachR(photo -> adapter.add(new FragmentItem(Route.TRIP_IMAGES_PAGER, "")));
+      adapter.notifyDataSetChanged();
+      circleIndicator.setViewPager(viewPagerBucketGallery);
+      circleIndicator.onPageSelected(checkedPosition);  //disable ui point position jumping
+      viewPagerBucketGallery.setCurrentItem(checkedPosition);
+   }
 
 
-    public void onEvent(ImageClickedEvent event) {
-        if (ViewUtils.isPartVisibleOnScreen(this))
-            getPresenter().openFullScreen(viewPagerBucketGallery.getCurrentItem());
-    }
+   public void onEvent(ImageClickedEvent event) {
+      if (ViewUtils.isPartVisibleOnScreen(this)) getPresenter().openFullScreen(viewPagerBucketGallery.getCurrentItem());
+   }
 }

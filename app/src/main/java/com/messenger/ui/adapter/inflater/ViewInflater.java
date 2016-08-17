@@ -7,13 +7,13 @@ import butterknife.ButterKnife;
 
 public abstract class ViewInflater {
 
-    protected Context context;
+   protected Context context;
 
-    protected View rootView;
+   protected View rootView;
 
-    public void setView(View rootView) {
-        this.rootView = rootView;
-        ButterKnife.inject(this, rootView);
-        context = rootView.getContext();
-    }
+   public void setView(View rootView) {
+      this.rootView = rootView;
+      ButterKnife.inject(this, rootView);
+      context = rootView.getContext();
+   }
 }

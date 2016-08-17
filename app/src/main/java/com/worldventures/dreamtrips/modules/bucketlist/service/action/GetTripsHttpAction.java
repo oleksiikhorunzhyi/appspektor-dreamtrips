@@ -10,10 +10,9 @@ import io.techery.janet.http.annotations.Response;
 
 @HttpAction("/api/trips")
 public class GetTripsHttpAction extends AuthorizedHttpAction {
-    @Response
-    List<TripModel> response;
+   @Response List<TripModel> response;
 
-    public List<TripModel> getResponse() {
-        return this.response;
-    }
+   public List<TripModel> getResponse() {
+      return this.response;
+   }
 }

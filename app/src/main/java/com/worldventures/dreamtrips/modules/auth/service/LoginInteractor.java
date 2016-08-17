@@ -10,14 +10,14 @@ import rx.schedulers.Schedulers;
 
 public class LoginInteractor {
 
-    private final ActionPipe<LoginCommand> loginActionPipe;
+   private final ActionPipe<LoginCommand> loginActionPipe;
 
-    @Inject
-    public LoginInteractor(Janet janet) {
-        this.loginActionPipe = janet.createPipe(LoginCommand.class, Schedulers.io());
-    }
+   @Inject
+   public LoginInteractor(Janet janet) {
+      this.loginActionPipe = janet.createPipe(LoginCommand.class, Schedulers.io());
+   }
 
-    public ActionPipe<LoginCommand> loginActionPipe() {
-        return loginActionPipe;
-    }
+   public ActionPipe<LoginCommand> loginActionPipe() {
+      return loginActionPipe;
+   }
 }

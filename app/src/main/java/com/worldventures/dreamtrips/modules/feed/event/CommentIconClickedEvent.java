@@ -4,13 +4,13 @@ import com.worldventures.dreamtrips.modules.feed.model.FeedItem;
 
 public class CommentIconClickedEvent {
 
-    FeedItem feedItem;
+   FeedItem feedItem;
 
-    public CommentIconClickedEvent(FeedItem feedItem) {
-        this.feedItem = feedItem;
-    }
+   public CommentIconClickedEvent(FeedItem feedItem) {
+      this.feedItem = feedItem;
+   }
 
-    public FeedItem getFeedItem() {
-        return feedItem;
-    }
+   public FeedItem getFeedItem() {
+      return feedItem;
+   }
 }

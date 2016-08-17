@@ -12,32 +12,29 @@ import techery.io.library.JobSubscriber;
 
 public class JobPresenter<VT extends RxView> extends Presenter<VT> {
 
-    ///////////////////////////////////////////////////////////////////////////
-    // Helpers - will go somewhere else
-    ///////////////////////////////////////////////////////////////////////////
+   ///////////////////////////////////////////////////////////////////////////
+   // Helpers - will go somewhere else
+   ///////////////////////////////////////////////////////////////////////////
 
-    public <T> JobSubscriber<T> bindJob(JobExecutor<T> executor) {
-        return bindJobObservable(executor.connect());
-    }
+   public <T> JobSubscriber<T> bindJob(JobExecutor<T> executor) {
+      return bindJobObservable(executor.connect());
+   }
 
-    public <T> JobSubscriber<T> bindJobCached(JobExecutor<T> executor) {
-        return bindJobObservable(executor.connectWithCache().compose(new JobCacheWiper<>(executor)));
-    }
+   public <T> JobSubscriber<T> bindJobCached(JobExecutor<T> executor) {
+      return bindJobObservable(executor.connectWithCache().compose(new JobCacheWiper<>(executor)));
+   }
 
-    public <T> JobSubscriber<T> bindJobPersistantCached(JobExecutor<T> executor) {
-        return bindJobObservable(executor.connectWithCache());
-    }
+   public <T> JobSubscriber<T> bindJobPersistantCached(JobExecutor<T> executor) {
+      return bindJobObservable(executor.connectWithCache());
+   }
 
-    public <T> JobSubscriber<T> bindJobObservable(Observable<Job<T>> observable) {
-        JobSubscriber<T> subscriber = new JobSubscriber<>();
-        view.bind(observable
-                .compose(new IoToMainComposer<>())
-        ).subscribe(subscriber);
-        return subscriber;
-    }
+   public <T> JobSubscriber<T> bindJobObservable(Observable<Job<T>> observable) {
+      JobSubscriber<T> subscriber = new JobSubscriber<>();
+      view.bind(observable.compose(new IoToMainComposer<>())).subscribe(subscriber);
+      return subscriber;
+   }
 
-    protected <T> Observable.Transformer<T, T> bindViewIoToMainComposer() {
-        return input -> view.bind(input
-                .compose(new IoToMainComposer<>()));
-    }
+   protected <T> Observable.Transformer<T, T> bindViewIoToMainComposer() {
+      return input -> view.bind(input.compose(new IoToMainComposer<>()));
+   }
 }

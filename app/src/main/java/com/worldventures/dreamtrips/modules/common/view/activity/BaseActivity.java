@@ -44,138 +44,129 @@ import rx.schedulers.Schedulers;
 
 public abstract class BaseActivity extends InjectingActivity {
 
-    @Inject protected ActivityResultDelegate activityResultDelegate;
-    @Inject BackStackDelegate backStackDelegate;
-    @Inject AnalyticsInteractor analyticsInteractor;
-    @Inject protected PermissionDispatcher permissionDispatcher;
-    @Inject protected Router router;
-    @Inject ActivityRouter activityRouter;
+   @Inject protected ActivityResultDelegate activityResultDelegate;
+   @Inject BackStackDelegate backStackDelegate;
+   @Inject AnalyticsInteractor analyticsInteractor;
+   @Inject protected PermissionDispatcher permissionDispatcher;
+   @Inject protected Router router;
+   @Inject ActivityRouter activityRouter;
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        MonitoringHelper.setInteractionName(this);
-        super.onCreate(savedInstanceState);
-        analyticsInteractor.analyticsActionPipe()
-                .send(new LifecycleEvent(this, LifecycleEvent.ACTION_ONCREATE),
-                        Schedulers.immediate());
-    }
+   @Override
+   protected void onCreate(Bundle savedInstanceState) {
+      MonitoringHelper.setInteractionName(this);
+      super.onCreate(savedInstanceState);
+      analyticsInteractor.analyticsActionPipe()
+            .send(new LifecycleEvent(this, LifecycleEvent.ACTION_ONCREATE), Schedulers.immediate());
+   }
 
-    @Override
-    protected void onStart() {
-        analyticsInteractor.analyticsActionPipe()
-                .send(new LifecycleEvent(this, LifecycleEvent.ACTION_ONSTART),
-                        Schedulers.immediate());
-        super.onStart();
-    }
+   @Override
+   protected void onStart() {
+      analyticsInteractor.analyticsActionPipe().send(new LifecycleEvent(this, LifecycleEvent.ACTION_ONSTART), Schedulers
+            .immediate());
+      super.onStart();
+   }
 
-    @Override
-    protected void onStop() {
-        super.onStop();
-        analyticsInteractor.analyticsActionPipe()
-                .send(new LifecycleEvent(this, LifecycleEvent.ACTION_ONSTOP),
-                        Schedulers.immediate());
-    }
+   @Override
+   protected void onStop() {
+      super.onStop();
+      analyticsInteractor.analyticsActionPipe()
+            .send(new LifecycleEvent(this, LifecycleEvent.ACTION_ONSTOP), Schedulers.immediate());
+   }
 
-    @Override
-    protected void onResume() {
-        super.onResume();
-        analyticsInteractor.analyticsActionPipe()
-                .send(new LifecycleEvent(this, LifecycleEvent.ACTION_ONRESUME),
-                        Schedulers.immediate());
-    }
+   @Override
+   protected void onResume() {
+      super.onResume();
+      analyticsInteractor.analyticsActionPipe()
+            .send(new LifecycleEvent(this, LifecycleEvent.ACTION_ONRESUME), Schedulers.immediate());
+   }
 
-    @Override
-    protected void onPause() {
-        super.onPause();
-        analyticsInteractor.analyticsActionPipe()
-                .send(new LifecycleEvent(this, LifecycleEvent.ACTION_ONPAUSE),
-                        Schedulers.immediate());
-    }
+   @Override
+   protected void onPause() {
+      super.onPause();
+      analyticsInteractor.analyticsActionPipe().send(new LifecycleEvent(this, LifecycleEvent.ACTION_ONPAUSE), Schedulers
+            .immediate());
+   }
 
-    @Override
-    public void onBackPressed() {
-        if (backStackDelegate.handleBackPressed() ||
-                checkChildFragments(getSupportFragmentManager())) return;
+   @Override
+   public void onBackPressed() {
+      if (backStackDelegate.handleBackPressed() || checkChildFragments(getSupportFragmentManager())) return;
 
-        FragmentManager fm = getSupportFragmentManager();
+      FragmentManager fm = getSupportFragmentManager();
 
-        if (fm.getBackStackEntryCount() > 1) {
-            fm.popBackStack();
-            onTopLevelBackStackPopped();
-        } else {
-            finish();
-        }
-    }
+      if (fm.getBackStackEntryCount() > 1) {
+         fm.popBackStack();
+         onTopLevelBackStackPopped();
+      } else {
+         finish();
+      }
+   }
 
-    private boolean checkChildFragments(FragmentManager fragmentManager) {
-        if (fragmentManager.getFragments() != null)
-            for (Fragment fragment : fragmentManager.getFragments()) {
-                if (fragment != null && fragment.isVisible()) {
-                    FragmentManager childFm = fragment.getChildFragmentManager();
-                    if (!checkChildFragments(childFm) &&
-                            childFm.getBackStackEntryCount() > 0) {
-                        childFm.popBackStack();
-                        return true;
-                    }
-                }
+   private boolean checkChildFragments(FragmentManager fragmentManager) {
+      if (fragmentManager.getFragments() != null) for (Fragment fragment : fragmentManager.getFragments()) {
+         if (fragment != null && fragment.isVisible()) {
+            FragmentManager childFm = fragment.getChildFragmentManager();
+            if (!checkChildFragments(childFm) && childFm.getBackStackEntryCount() > 0) {
+               childFm.popBackStack();
+               return true;
             }
+         }
+      }
 
-        return false;
-    }
+      return false;
+   }
 
-    protected void onTopLevelBackStackPopped() {
-        if (getSupportFragmentManager().getBackStackEntryCount() == 0) finish();
-    }
+   protected void onTopLevelBackStackPopped() {
+      if (getSupportFragmentManager().getBackStackEntryCount() == 0) finish();
+   }
 
-    @Override
-    protected List<Object> getModules() {
-        List<Object> modules = super.getModules();
-        modules.add(new ActivityModule(this));
-        modules.add(new BucketListModule());
-        modules.add(new CommonModule());
-        modules.add(new FacebookModule());
-        modules.add(new InfoModule());
-        modules.add(new ProfileModule());
-        modules.add(new ReptoolsModule());
-        modules.add(new TripsModule());
-        modules.add(new TripsImagesModule());
-        modules.add(new VideoModule());
-        modules.add(new MembershipModule());
-        modules.add(new FriendsModule());
-        modules.add(new FeedModule());
-        modules.add(new SettingsModule());
-        modules.add(new MessengerActivityModule());
-        modules.add(new DtlActivityModule());
-        modules.add(new LocationPickerModule());
-        modules.add(new PodcastModule());
-        return modules;
-    }
+   @Override
+   protected List<Object> getModules() {
+      List<Object> modules = super.getModules();
+      modules.add(new ActivityModule(this));
+      modules.add(new BucketListModule());
+      modules.add(new CommonModule());
+      modules.add(new FacebookModule());
+      modules.add(new InfoModule());
+      modules.add(new ProfileModule());
+      modules.add(new ReptoolsModule());
+      modules.add(new TripsModule());
+      modules.add(new TripsImagesModule());
+      modules.add(new VideoModule());
+      modules.add(new MembershipModule());
+      modules.add(new FriendsModule());
+      modules.add(new FeedModule());
+      modules.add(new SettingsModule());
+      modules.add(new MessengerActivityModule());
+      modules.add(new DtlActivityModule());
+      modules.add(new LocationPickerModule());
+      modules.add(new PodcastModule());
+      return modules;
+   }
 
-    public void onEvent(SessionHolder.Events.SessionDestroyed sessionDestroyed) {
-        activityRouter.openLaunch(ActivityRouter.LAUNCH_LOGIN);
-    }
+   public void onEvent(SessionHolder.Events.SessionDestroyed sessionDestroyed) {
+      activityRouter.openLaunch(ActivityRouter.LAUNCH_LOGIN);
+   }
 
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        activityResultDelegate.onActivityResult(requestCode, resultCode, data);
-    }
+   @Override
+   protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+      super.onActivityResult(requestCode, resultCode, data);
+      activityResultDelegate.onActivityResult(requestCode, resultCode, data);
+   }
 
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
-                                           @NonNull int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        permissionDispatcher.onRequestPermissionsResult(requestCode, permissions, grantResults);
-    }
+   @Override
+   public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+      super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+      permissionDispatcher.onRequestPermissionsResult(requestCode, permissions, grantResults);
+   }
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case android.R.id.home:
-                finish();
-                return true;
-            default:
-                return super.onOptionsItemSelected(item);
-        }
-    }
+   @Override
+   public boolean onOptionsItemSelected(MenuItem item) {
+      switch (item.getItemId()) {
+         case android.R.id.home:
+            finish();
+            return true;
+         default:
+            return super.onOptionsItemSelected(item);
+      }
+   }
 }

@@ -24,86 +24,81 @@ import io.techery.janet.helper.ActionStateSubscriber;
 
 public class DtlPointsEstimationPresenter extends JobPresenter<DtlPointsEstimationPresenter.View> {
 
-    public static final String BILL_TOTAL = "billTotal";
-    private static final String NUMBER_REGEX = "[+-]?\\d*(\\.\\d+)?";
+   public static final String BILL_TOTAL = "billTotal";
+   private static final String NUMBER_REGEX = "[+-]?\\d*(\\.\\d+)?";
 
-    protected final String merchantId;
+   protected final String merchantId;
 
-    @Inject
-    DtlTransactionInteractor transactionInteractor;
-    @Inject
-    DtlMerchantInteractor merchantInteractor;
-    //
-    private DtlMerchant dtlMerchant;
+   @Inject DtlTransactionInteractor transactionInteractor;
+   @Inject DtlMerchantInteractor merchantInteractor;
+   //
+   private DtlMerchant dtlMerchant;
 
-    public DtlPointsEstimationPresenter(String merchantId) {
-        this.merchantId = merchantId;
-    }
+   public DtlPointsEstimationPresenter(String merchantId) {
+      this.merchantId = merchantId;
+   }
 
-    @Override
-    public void onInjected() {
-        super.onInjected();
-        merchantInteractor.merchantByIdPipe()
-                .createObservable(new DtlMerchantByIdAction(merchantId))
-                .compose(ImmediateComposer.instance())
-                .subscribe(new ActionStateSubscriber<DtlMerchantByIdAction>()
-                        .onFail(apiErrorPresenter::handleActionError)
-                        .onSuccess(action -> dtlMerchant = action.getResult()));
-    }
+   @Override
+   public void onInjected() {
+      super.onInjected();
+      merchantInteractor.merchantByIdPipe()
+            .createObservable(new DtlMerchantByIdAction(merchantId))
+            .compose(ImmediateComposer.instance())
+            .subscribe(new ActionStateSubscriber<DtlMerchantByIdAction>().onFail(apiErrorPresenter::handleActionError)
+                  .onSuccess(action -> dtlMerchant = action.getResult()));
+   }
 
-    @Override
-    public void takeView(View view) {
-        super.takeView(view);
-        apiErrorPresenter.setView(view);
-        view.showCurrency(dtlMerchant.getDefaultCurrency());
-        bindApiJob();
-    }
+   @Override
+   public void takeView(View view) {
+      super.takeView(view);
+      apiErrorPresenter.setView(view);
+      view.showCurrency(dtlMerchant.getDefaultCurrency());
+      bindApiJob();
+   }
 
-    private void bindApiJob() {
-        transactionInteractor.estimatePointsActionPipe().observe()
-                .compose(bindViewIoToMainComposer())
-                .subscribe(new ActionStateSubscriber<EstimationHttpAction>()
-                        .onStart(action -> view.showProgress())
-                        .onFail(apiErrorPresenter::handleActionError)
-                        .onSuccess(action -> view.showEstimatedPoints(action.estimatedPoints()
-                                .points().intValue())));
-    }
+   private void bindApiJob() {
+      transactionInteractor.estimatePointsActionPipe()
+            .observe()
+            .compose(bindViewIoToMainComposer())
+            .subscribe(new ActionStateSubscriber<EstimationHttpAction>().onStart(action -> view.showProgress())
+                  .onFail(apiErrorPresenter::handleActionError)
+                  .onSuccess(action -> view.showEstimatedPoints(action.estimatedPoints().points().intValue())));
+   }
 
-    public void onCalculateClicked(String userInput) {
-        if (!validateInput(userInput)) return;
-        //
-        analyticsInteractor.dtlAnalyticsCommandPipe()
-                .send(DtlAnalyticsCommand.create(new PointsEstimatorCalculateEvent(dtlMerchant)));
-        //
-        transactionInteractor.estimatePointsActionPipe()
-                .send(new EstimationHttpAction(dtlMerchant.getId(),
-                        ImmutableEstimationParams.builder()
-                                .billTotal(Double.valueOf(userInput))
-                                .checkinTime(DateTimeUtils.currentUtcString())
-                                .currencyCode(dtlMerchant.getDefaultCurrency().getCode())
-                                .build()));
-    }
+   public void onCalculateClicked(String userInput) {
+      if (!validateInput(userInput)) return;
+      //
+      analyticsInteractor.dtlAnalyticsCommandPipe()
+            .send(DtlAnalyticsCommand.create(new PointsEstimatorCalculateEvent(dtlMerchant)));
+      //
+      transactionInteractor.estimatePointsActionPipe()
+            .send(new EstimationHttpAction(dtlMerchant.getId(), ImmutableEstimationParams.builder()
+                  .billTotal(Double.valueOf(userInput))
+                  .checkinTime(DateTimeUtils.currentUtcString())
+                  .currencyCode(dtlMerchant.getDefaultCurrency().getCode())
+                  .build()));
+   }
 
-    protected boolean validateInput(String pointsInput) {
-        if (pointsInput.isEmpty() || !pointsInput.matches(NUMBER_REGEX)) {
-            view.showError(R.string.dtl_field_validation_empty_input_error);
-            return false;
-        }
-        if (Double.valueOf(pointsInput) < 0D) {
-            view.showError(R.string.dtl_points_estimation_negative_input_error);
-            return false;
-        }
-        return true;
-    }
+   protected boolean validateInput(String pointsInput) {
+      if (pointsInput.isEmpty() || !pointsInput.matches(NUMBER_REGEX)) {
+         view.showError(R.string.dtl_field_validation_empty_input_error);
+         return false;
+      }
+      if (Double.valueOf(pointsInput) < 0D) {
+         view.showError(R.string.dtl_points_estimation_negative_input_error);
+         return false;
+      }
+      return true;
+   }
 
-    public interface View extends RxView, ApiErrorView {
+   public interface View extends RxView, ApiErrorView {
 
-        void showProgress();
+      void showProgress();
 
-        void showError(@StringRes int errorRes);
+      void showError(@StringRes int errorRes);
 
-        void showEstimatedPoints(int value);
+      void showEstimatedPoints(int value);
 
-        void showCurrency(DtlCurrency dtlCurrency);
-    }
+      void showCurrency(DtlCurrency dtlCurrency);
+   }
 }

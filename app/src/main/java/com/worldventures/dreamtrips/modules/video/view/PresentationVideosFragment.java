@@ -26,153 +26,143 @@ import java.util.List;
 import butterknife.InjectView;
 
 @Layout(R.layout.fragment_presentation_videos)
-public class PresentationVideosFragment<T extends PresentationVideosPresenter> extends BaseMediaFragment<T>
-        implements PresentationVideosPresenter.View, SwipeRefreshLayout.OnRefreshListener, VideoCellDelegate {
+public class PresentationVideosFragment<T extends PresentationVideosPresenter> extends BaseMediaFragment<T> implements PresentationVideosPresenter.View, SwipeRefreshLayout.OnRefreshListener, VideoCellDelegate {
 
-    @InjectView(R.id.lv_items)
-    protected EmptyRecyclerView recyclerView;
-    @InjectView(R.id.swipe_container)
-    protected SwipeRefreshLayout refreshLayout;
-    @InjectView(R.id.ll_empty_view)
-    protected ViewGroup emptyView;
-    protected BaseDelegateAdapter<Object> adapter;
+   @InjectView(R.id.lv_items) protected EmptyRecyclerView recyclerView;
+   @InjectView(R.id.swipe_container) protected SwipeRefreshLayout refreshLayout;
+   @InjectView(R.id.ll_empty_view) protected ViewGroup emptyView;
+   protected BaseDelegateAdapter<Object> adapter;
 
-    private RecyclerViewStateDelegate stateDelegate;
-    private WeakHandler weakHandler;
+   private RecyclerViewStateDelegate stateDelegate;
+   private WeakHandler weakHandler;
 
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        stateDelegate = new RecyclerViewStateDelegate();
-        stateDelegate.onCreate(savedInstanceState);
-        weakHandler = new WeakHandler();
-    }
+   @Override
+   public void onCreate(Bundle savedInstanceState) {
+      super.onCreate(savedInstanceState);
+      stateDelegate = new RecyclerViewStateDelegate();
+      stateDelegate.onCreate(savedInstanceState);
+      weakHandler = new WeakHandler();
+   }
 
-    @Override
-    public void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
-        stateDelegate.saveStateIfNeeded(outState);
-    }
+   @Override
+   public void onSaveInstanceState(Bundle outState) {
+      super.onSaveInstanceState(outState);
+      stateDelegate.saveStateIfNeeded(outState);
+   }
 
-    @Override
-    public void afterCreateView(View rootView) {
-        super.afterCreateView(rootView);
-        stateDelegate.setRecyclerView(recyclerView);
-        setupLayoutManager();
-        recyclerView.setEmptyView(emptyView);
+   @Override
+   public void afterCreateView(View rootView) {
+      super.afterCreateView(rootView);
+      stateDelegate.setRecyclerView(recyclerView);
+      setupLayoutManager();
+      recyclerView.setEmptyView(emptyView);
 
-        adapter = new BaseDelegateAdapter<>(getActivity(), this);
-        adapter.registerCell(Video.class, VideoCell.class);
-        adapter.registerDelegate(Video.class, this);
-        adapter.registerCell(MediaHeader.class, MediaHeaderLightCell.class);
+      adapter = new BaseDelegateAdapter<>(getActivity(), this);
+      adapter.registerCell(Video.class, VideoCell.class);
+      adapter.registerDelegate(Video.class, this);
+      adapter.registerCell(MediaHeader.class, MediaHeaderLightCell.class);
 
-        recyclerView.setAdapter(adapter);
+      recyclerView.setAdapter(adapter);
 
-        refreshLayout.setOnRefreshListener(this);
-        refreshLayout.setColorSchemeResources(R.color.theme_main_darker);
-    }
+      refreshLayout.setOnRefreshListener(this);
+      refreshLayout.setColorSchemeResources(R.color.theme_main_darker);
+   }
 
-    @Override
-    public void onDestroyView() {
-        this.recyclerView.setAdapter(null);
-        stateDelegate.onDestroyView();
-        super.onDestroyView();
-    }
+   @Override
+   public void onDestroyView() {
+      this.recyclerView.setAdapter(null);
+      stateDelegate.onDestroyView();
+      super.onDestroyView();
+   }
 
-    @Override
-    protected void track() {
-        getPresenter().track();
-    }
+   @Override
+   protected void track() {
+      getPresenter().track();
+   }
 
-    @Override
-    public void onRefresh() {
-        getPresenter().reload();
-    }
+   @Override
+   public void onRefresh() {
+      getPresenter().reload();
+   }
 
-    @Override
-    protected T createPresenter(Bundle savedInstanceState) {
-        return (T) new PresentationVideosPresenter();
-    }
+   @Override
+   protected T createPresenter(Bundle savedInstanceState) {
+      return (T) new PresentationVideosPresenter();
+   }
 
-    private void setupLayoutManager() {
-        boolean landscape = ViewUtils.isLandscapeOrientation(getActivity());
-        boolean tablet = ViewUtils.isTablet(getActivity());
-        int spanCount = landscape && tablet ? 3 : landscape || tablet ? 2 : 1;
-        GridLayoutManager layoutManager = new GridLayoutManager(getActivity(), spanCount);
-        layoutManager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
-            @Override
-            public int getSpanSize(int position) {
-                return adapter.getItem(position) instanceof MediaHeader ? spanCount : 1;
-            }
-        });
-        this.recyclerView.setLayoutManager(layoutManager);
-    }
+   private void setupLayoutManager() {
+      boolean landscape = ViewUtils.isLandscapeOrientation(getActivity());
+      boolean tablet = ViewUtils.isTablet(getActivity());
+      int spanCount = landscape && tablet ? 3 : landscape || tablet ? 2 : 1;
+      GridLayoutManager layoutManager = new GridLayoutManager(getActivity(), spanCount);
+      layoutManager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
+         @Override
+         public int getSpanSize(int position) {
+            return adapter.getItem(position) instanceof MediaHeader ? spanCount : 1;
+         }
+      });
+      this.recyclerView.setLayoutManager(layoutManager);
+   }
 
-    @Override
-    public void onDeleteAction(CachedEntity cacheEntity) {
-        showDialog(R.string.delete_cached_video_title,
-                R.string.delete_cached_video_text,
-                R.string.delete_photo_positiove,
-                R.string.delete_photo_negative,
-                () -> getPresenter().onDeleteAction(cacheEntity));
-    }
+   @Override
+   public void onDeleteAction(CachedEntity cacheEntity) {
+      showDialog(R.string.delete_cached_video_title, R.string.delete_cached_video_text, R.string.delete_photo_positiove, R.string.delete_photo_negative, () -> getPresenter()
+            .onDeleteAction(cacheEntity));
+   }
 
-    @Override
-    public void onCancelCaching(CachedEntity cacheEntity) {
-        showDialog(R.string.cancel_cached_video_title,
-                R.string.cancel_cached_video_text,
-                R.string.cancel_photo_positiove,
-                R.string.cancel_photo_negative,
-                () -> getPresenter().onCancelAction(cacheEntity));
-    }
+   @Override
+   public void onCancelCaching(CachedEntity cacheEntity) {
+      showDialog(R.string.cancel_cached_video_title, R.string.cancel_cached_video_text, R.string.cancel_photo_positiove, R.string.cancel_photo_negative, () -> getPresenter()
+            .onCancelAction(cacheEntity));
+   }
 
-    @Override
-    public void notifyItemChanged(CachedEntity videoEntity) {
-        adapter.notifyDataSetChanged();
-    }
+   @Override
+   public void notifyItemChanged(CachedEntity videoEntity) {
+      adapter.notifyDataSetChanged();
+   }
 
-    @Override
-    public void startLoading() {
-        weakHandler.post(() -> {
-            if (refreshLayout != null) refreshLayout.setRefreshing(true);
-        });
-    }
+   @Override
+   public void startLoading() {
+      weakHandler.post(() -> {
+         if (refreshLayout != null) refreshLayout.setRefreshing(true);
+      });
+   }
 
-    @Override
-    public void finishLoading() {
-        weakHandler.post(() -> {
-            if (refreshLayout != null) refreshLayout.setRefreshing(false);
-        });
-        stateDelegate.restoreStateIfNeeded();
-    }
+   @Override
+   public void finishLoading() {
+      weakHandler.post(() -> {
+         if (refreshLayout != null) refreshLayout.setRefreshing(false);
+      });
+      stateDelegate.restoreStateIfNeeded();
+   }
 
-    @Override
-    public void setItems(List<Object> videos) {
-        adapter.setItems(videos);
-    }
+   @Override
+   public void setItems(List<Object> videos) {
+      adapter.setItems(videos);
+   }
 
-    @Override
-    public void sendAnalytic(String action, String name) {
-        getPresenter().sendAnalytic(action, name);
-    }
+   @Override
+   public void sendAnalytic(String action, String name) {
+      getPresenter().sendAnalytic(action, name);
+   }
 
-    @Override
-    public void onDownloadVideo(CachedEntity entity) {
-        getPresenter().downloadVideo(entity);
-    }
+   @Override
+   public void onDownloadVideo(CachedEntity entity) {
+      getPresenter().downloadVideo(entity);
+   }
 
-    @Override
-    public void onDeleteVideo(CachedEntity entity) {
-        getPresenter().deleteCachedVideo(entity);
-    }
+   @Override
+   public void onDeleteVideo(CachedEntity entity) {
+      getPresenter().deleteCachedVideo(entity);
+   }
 
-    @Override
-    public void onCancelCachingVideo(CachedEntity entity) {
-        getPresenter().cancelCachingVideo(entity);
-    }
+   @Override
+   public void onCancelCachingVideo(CachedEntity entity) {
+      getPresenter().cancelCachingVideo(entity);
+   }
 
-    @Override
-    public void onCellClicked(Video model) {
-        // nothing to do
-    }
+   @Override
+   public void onCellClicked(Video model) {
+      // nothing to do
+   }
 }

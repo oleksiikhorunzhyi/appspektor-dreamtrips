@@ -22,90 +22,86 @@ import rx.android.schedulers.AndroidSchedulers;
 
 public class TripDetailsPresenter extends BaseTripPresenter<TripDetailsPresenter.View> {
 
-    @Inject TripsInteractor tripsInteractor;
-    @Inject StaticPageProvider staticPageProvider;
+   @Inject TripsInteractor tripsInteractor;
+   @Inject StaticPageProvider staticPageProvider;
 
-    private List<TripImage> filteredImages;
+   private List<TripImage> filteredImages;
 
-    public TripDetailsPresenter(TripModel trip) {
-        super(trip);
-        filteredImages = new ArrayList<>();
-        filteredImages.addAll(trip.getFilteredImages());
-    }
+   public TripDetailsPresenter(TripModel trip) {
+      super(trip);
+      filteredImages = new ArrayList<>();
+      filteredImages.addAll(trip.getFilteredImages());
+   }
 
-    @Override
-    public void takeView(View view) {
-        super.takeView(view);
-        TrackingHelper.trip(String.valueOf(trip.getTripId()), getAccountUserId());
-        loadTripDetails();
-    }
+   @Override
+   public void takeView(View view) {
+      super.takeView(view);
+      TrackingHelper.trip(String.valueOf(trip.getTripId()), getAccountUserId());
+      loadTripDetails();
+   }
 
-    @Override
-    public void onResume() {
-        super.onResume();
-        if (!featureManager.available(Feature.BOOK_TRAVEL)) {
-            view.hideBookIt();
-            view.showSignUp();
-        } else if (trip.isSoldOut()
-                || (!getAccount().isPlatinum() && trip.isPlatinum())) {
-            view.hideBookIt();
-        }
-    }
+   @Override
+   public void onResume() {
+      super.onResume();
+      if (!featureManager.available(Feature.BOOK_TRAVEL)) {
+         view.hideBookIt();
+         view.showSignUp();
+      } else if (trip.isSoldOut() || (!getAccount().isPlatinum() && trip.isPlatinum())) {
+         view.hideBookIt();
+      }
+   }
 
-    public List<TripImage> getFilteredImages() {
-        return filteredImages;
-    }
+   public List<TripImage> getFilteredImages() {
+      return filteredImages;
+   }
 
-    public void actionBookIt() {
-        TrackingHelper.actionBookIt(TrackingHelper.ATTRIBUTE_BOOK_IT, trip.getTripId(), getAccountUserId());
+   public void actionBookIt() {
+      TrackingHelper.actionBookIt(TrackingHelper.ATTRIBUTE_BOOK_IT, trip.getTripId(), getAccountUserId());
 
-        String url = staticPageProvider.getBookingPageUrl(trip.getTripId());
-        view.openBookIt(url);
-    }
+      String url = staticPageProvider.getBookingPageUrl(trip.getTripId());
+      view.openBookIt(url);
+   }
 
-    @Override
-    public void onMenuPrepared() {
-        if (view != null && trip != null) {
-            view.setup(trip);
-        }
-    }
+   @Override
+   public void onMenuPrepared() {
+      if (view != null && trip != null) {
+         view.setup(trip);
+      }
+   }
 
-    public void loadTripDetails() {
-        view.bindUntilDropView(tripsInteractor.detailsPipe()
-                .createObservable(new GetTripDetailsCommand(trip.getTripId()))
-                .observeOn(AndroidSchedulers.mainThread())
-        ).subscribe(new ActionStateSubscriber<GetTripDetailsCommand>()
-                .onSuccess(command -> {
-                    TrackingHelper.tripInfo(String.valueOf(trip.getTripId()), getAccountUserId());
-                    view.setContent(command.getResult().getContent());
-                })
-                .onFail((command, e) -> {
-                    view.setContent(null);
-                    view.informUser(command.getErrorMessage());
-                }));
-    }
+   public void loadTripDetails() {
+      view.bindUntilDropView(tripsInteractor.detailsPipe()
+            .createObservable(new GetTripDetailsCommand(trip.getTripId()))
+            .observeOn(AndroidSchedulers.mainThread()))
+            .subscribe(new ActionStateSubscriber<GetTripDetailsCommand>().onSuccess(command -> {
+               TrackingHelper.tripInfo(String.valueOf(trip.getTripId()), getAccountUserId());
+               view.setContent(command.getResult().getContent());
+            }).onFail((command, e) -> {
+               view.setContent(null);
+               view.informUser(command.getErrorMessage());
+            }));
+   }
 
-    public void onItemClick(int position) {
-        FullScreenImagesBundle data = new FullScreenImagesBundle.Builder()
-                .position(position)
-                .route(Route.TRIP_PHOTO_FULLSCREEN)
-                .type(TripImagesType.FIXED)
-                .fixedList(new ArrayList<>(filteredImages))
-                .build();
+   public void onItemClick(int position) {
+      FullScreenImagesBundle data = new FullScreenImagesBundle.Builder().position(position)
+            .route(Route.TRIP_PHOTO_FULLSCREEN)
+            .type(TripImagesType.FIXED)
+            .fixedList(new ArrayList<>(filteredImages))
+            .build();
 
-        view.openFullscreen(data);
-    }
+      view.openFullscreen(data);
+   }
 
-    public interface View extends BaseTripPresenter.View {
+   public interface View extends BaseTripPresenter.View {
 
-        void setContent(List<ContentItem> contentItems);
+      void setContent(List<ContentItem> contentItems);
 
-        void hideBookIt();
+      void hideBookIt();
 
-        void showSignUp();
+      void showSignUp();
 
-        void openFullscreen(FullScreenImagesBundle data);
+      void openFullscreen(FullScreenImagesBundle data);
 
-        void openBookIt(String url);
-    }
+      void openBookIt(String url);
+   }
 }

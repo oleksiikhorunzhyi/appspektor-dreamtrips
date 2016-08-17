@@ -9,38 +9,38 @@ import rx.Observable;
 
 public interface LocationDelegate {
 
-    void setPermissionView(PermissionView permissionView);
+   void setPermissionView(PermissionView permissionView);
 
-    void dropPermissionView();
+   void dropPermissionView();
 
-    void tryRequestLocation();
+   void tryRequestLocation();
 
-    void attachListener(LocationDelegate.LocationListener locationListener);
+   void attachListener(LocationDelegate.LocationListener locationListener);
 
-    void detachListener(LocationDelegate.LocationListener locationListener);
+   void detachListener(LocationDelegate.LocationListener locationListener);
 
-    void onLocationObtained(@Nullable Location location);
+   void onLocationObtained(@Nullable Location location);
 
-    Observable<Location> getLastKnownLocation();
+   Observable<Location> getLastKnownLocation();
 
-    Observable<Location> getLastKnownLocationOrEmpty();
+   Observable<Location> getLastKnownLocationOrEmpty();
 
-    Observable<Location> requestLocationUpdate();
+   Observable<Location> requestLocationUpdate();
 
-    class LocationException extends Exception {
+   class LocationException extends Exception {
 
-        Status status;
+      Status status;
 
-        public LocationException(Status status) {
-            this.status = status;
-        }
+      public LocationException(Status status) {
+         this.status = status;
+      }
 
-        public Status getStatus() {
-            return status;
-        }
-    }
+      public Status getStatus() {
+         return status;
+      }
+   }
 
-    interface LocationListener {
-        void onLocationObtained(Location location);
-    }
+   interface LocationListener {
+      void onLocationObtained(Location location);
+   }
 }

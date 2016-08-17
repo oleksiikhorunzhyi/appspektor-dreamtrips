@@ -10,12 +10,12 @@ import com.worldventures.dreamtrips.modules.dtl_flow.parts.details.DtlMerchantDe
 @Layout(R.layout.screen_dtl_map_info)
 public class DtlMapInfoPath extends DtlMerchantDetailsPath {
 
-    public DtlMapInfoPath(MasterDetailPath path, DtlMerchant merchant) {
-        super(path, merchant , null);
-    }
+   public DtlMapInfoPath(MasterDetailPath path, DtlMerchant merchant) {
+      super(path, merchant, null);
+   }
 
-    @Override
-    public PathAttrs getAttrs() {
-        return PathAttrs.WITHOUT_DRAWER;
-    }
+   @Override
+   public PathAttrs getAttrs() {
+      return PathAttrs.WITHOUT_DRAWER;
+   }
 }

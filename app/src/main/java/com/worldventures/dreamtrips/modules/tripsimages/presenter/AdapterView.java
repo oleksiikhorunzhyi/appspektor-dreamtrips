@@ -4,15 +4,15 @@ import java.util.List;
 
 public interface AdapterView<T> {
 
-    void add(T item);
+   void add(T item);
 
-    void add(int position, T item);
+   void add(int position, T item);
 
-    void addAll(int position, List<? extends T> items);
+   void addAll(int position, List<? extends T> items);
 
-    void clear();
+   void clear();
 
-    void replace(int position, T item);
+   void replace(int position, T item);
 
-    void remove(int index);
+   void remove(int index);
 }

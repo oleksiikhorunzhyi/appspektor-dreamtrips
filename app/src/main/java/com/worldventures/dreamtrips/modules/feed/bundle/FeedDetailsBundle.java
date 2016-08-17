@@ -4,9 +4,9 @@ import com.worldventures.dreamtrips.modules.feed.model.FeedItem;
 
 public interface FeedDetailsBundle extends CommentableBundle {
 
-    FeedItem getFeedItem();
+   FeedItem getFeedItem();
 
-    boolean isSlave();
+   boolean isSlave();
 
-    boolean shouldShowAdditionalInfo();
+   boolean shouldShowAdditionalInfo();
 }

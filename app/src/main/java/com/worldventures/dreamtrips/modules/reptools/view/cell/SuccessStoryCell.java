@@ -17,36 +17,36 @@ import butterknife.OnClick;
 @Layout(R.layout.adapter_item_success_story)
 public class SuccessStoryCell extends AbstractDelegateCell<SuccessStory, SuccessStoryCell.Delegate> {
 
-    @InjectView(R.id.tv_title) TextView tvTitle;
-    @InjectView(R.id.vg_parent) ViewGroup vgParent;
+   @InjectView(R.id.tv_title) TextView tvTitle;
+   @InjectView(R.id.vg_parent) ViewGroup vgParent;
 
-    public SuccessStoryCell(View view) {
-        super(view);
-    }
+   public SuccessStoryCell(View view) {
+      super(view);
+   }
 
-    @Override
-    protected void syncUIStateWithModel() {
-        updateSelection();
-        tvTitle.setText(getModelObject().getAuthor());
-    }
+   @Override
+   protected void syncUIStateWithModel() {
+      updateSelection();
+      tvTitle.setText(getModelObject().getAuthor());
+   }
 
-    private void updateSelection() {
-        if (getModelObject().isSelected()) {
-            vgParent.setBackgroundColor(vgParent.getResources().getColor(R.color.grey_lighter));
-        } else {
-            vgParent.setBackgroundColor(Color.WHITE);
-        }
-    }
+   private void updateSelection() {
+      if (getModelObject().isSelected()) {
+         vgParent.setBackgroundColor(vgParent.getResources().getColor(R.color.grey_lighter));
+      } else {
+         vgParent.setBackgroundColor(Color.WHITE);
+      }
+   }
 
-    @OnClick(R.id.vg_parent)
-    public void onItemClick() {
-        cellDelegate.onCellClicked(getModelObject(), getPosition());
-    }
+   @OnClick(R.id.vg_parent)
+   public void onItemClick() {
+      cellDelegate.onCellClicked(getModelObject(), getPosition());
+   }
 
-    public static abstract class Delegate implements CellDelegate<SuccessStory> {
-        @Override
-        public void onCellClicked(SuccessStory model) {}
+   public static abstract class Delegate implements CellDelegate<SuccessStory> {
+      @Override
+      public void onCellClicked(SuccessStory model) {}
 
-        public abstract void onCellClicked(SuccessStory model, int position);
-    }
+      public abstract void onCellClicked(SuccessStory model, int position);
+   }
 }

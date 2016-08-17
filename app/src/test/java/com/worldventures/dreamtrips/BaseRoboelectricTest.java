@@ -14,11 +14,11 @@ import org.robolectric.shadows.multidex.ShadowMultiDex;
         constants = BuildConfig.class, shadows = ShadowMultiDex.class)
 public class BaseRoboelectricTest {
 
-    protected Context getContext() {
-        return RuntimeEnvironment.application;
-    }
+   protected Context getContext() {
+      return RuntimeEnvironment.application;
+   }
 
-    protected Resources getResources() {
-        return getContext().getResources();
-    }
+   protected Resources getResources() {
+      return getContext().getResources();
+   }
 }

@@ -9,36 +9,36 @@ import io.techery.janet.command.annotations.CommandAction;
 
 public class GetAccountTimelineCommand extends BaseGetFeedCommand<GetAccountTimelineHttpAction> {
 
-    public GetAccountTimelineCommand(Date before) {
-        super(before);
-    }
+   public GetAccountTimelineCommand(Date before) {
+      super(before);
+   }
 
-    @Override
-    protected Class<GetAccountTimelineHttpAction> provideHttpActionClass() {
-        return GetAccountTimelineHttpAction.class;
-    }
+   @Override
+   protected Class<GetAccountTimelineHttpAction> provideHttpActionClass() {
+      return GetAccountTimelineHttpAction.class;
+   }
 
-    @Override
-    protected GetAccountTimelineHttpAction provideRequest() {
-        return new GetAccountTimelineHttpAction(TIMELINE_LIMIT, before);
-    }
+   @Override
+   protected GetAccountTimelineHttpAction provideRequest() {
+      return new GetAccountTimelineHttpAction(TIMELINE_LIMIT, before);
+   }
 
-    @Override
-    public int getFallbackErrorMessage() {
-        return R.string.error_fail_to_load_timeline;
-    }
+   @Override
+   public int getFallbackErrorMessage() {
+      return R.string.error_fail_to_load_timeline;
+   }
 
-    @CommandAction
-    public static class LoadNext extends GetAccountTimelineCommand {
-        public LoadNext(Date before) {
-            super(before);
-        }
-    }
+   @CommandAction
+   public static class LoadNext extends GetAccountTimelineCommand {
+      public LoadNext(Date before) {
+         super(before);
+      }
+   }
 
-    @CommandAction
-    public static class Refresh extends GetAccountTimelineCommand {
-        public Refresh() {
-            super(null);
-        }
-    }
+   @CommandAction
+   public static class Refresh extends GetAccountTimelineCommand {
+      public Refresh() {
+         super(null);
+      }
+   }
 }

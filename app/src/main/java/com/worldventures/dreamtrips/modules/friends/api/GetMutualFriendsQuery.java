@@ -8,20 +8,20 @@ import java.util.ArrayList;
 
 public class GetMutualFriendsQuery extends Query<ArrayList<User>> {
 
-    private int userId;
+   private int userId;
 
-    public GetMutualFriendsQuery(int userId) {
-        super((Class<ArrayList<User>>) new ArrayList<User>().getClass());
-        this.userId = userId;
-    }
+   public GetMutualFriendsQuery(int userId) {
+      super((Class<ArrayList<User>>) new ArrayList<User>().getClass());
+      this.userId = userId;
+   }
 
-    @Override
-    public ArrayList<User> loadDataFromNetwork() throws Exception {
-        return getService().getMutualFriends(userId);
-    }
+   @Override
+   public ArrayList<User> loadDataFromNetwork() throws Exception {
+      return getService().getMutualFriends(userId);
+   }
 
-    @Override
-    public int getErrorMessage() {
-        return R.string.error_failed_to_load_mutual_friends;
-    }
+   @Override
+   public int getErrorMessage() {
+      return R.string.error_failed_to_load_mutual_friends;
+   }
 }

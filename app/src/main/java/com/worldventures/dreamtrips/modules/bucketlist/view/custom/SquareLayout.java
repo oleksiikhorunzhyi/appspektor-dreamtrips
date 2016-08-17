@@ -9,40 +9,37 @@ import com.worldventures.dreamtrips.R;
 
 public class SquareLayout extends FrameLayout {
 
-    private boolean squareWithWidth;
+   private boolean squareWithWidth;
 
-    public SquareLayout(Context context) {
-        this(context, null);
-    }
+   public SquareLayout(Context context) {
+      this(context, null);
+   }
 
-    public SquareLayout(Context context, AttributeSet attrs) {
-        this(context, attrs, 0);
-    }
+   public SquareLayout(Context context, AttributeSet attrs) {
+      this(context, attrs, 0);
+   }
 
-    public SquareLayout(Context context, AttributeSet attrs, int defStyleAttr) {
-        super(context, attrs, defStyleAttr);
+   public SquareLayout(Context context, AttributeSet attrs, int defStyleAttr) {
+      super(context, attrs, defStyleAttr);
 
-        TypedArray a = context.getTheme().obtainStyledAttributes(
-                attrs,
-                R.styleable.SquareLayout,
-                0, 0);
+      TypedArray a = context.getTheme().obtainStyledAttributes(attrs, R.styleable.SquareLayout, 0, 0);
 
-        try {
-            int value = a.getInt(R.styleable.SquareLayout_side_priority, 0);
-            squareWithWidth = value != 0;
-        } finally {
-            a.recycle();
-        }
-    }
+      try {
+         int value = a.getInt(R.styleable.SquareLayout_side_priority, 0);
+         squareWithWidth = value != 0;
+      } finally {
+         a.recycle();
+      }
+   }
 
-    @Override
-    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-        int measureValue = heightMeasureSpec;
+   @Override
+   protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+      int measureValue = heightMeasureSpec;
 
-        if (squareWithWidth) {
-            measureValue = widthMeasureSpec;
-        }
+      if (squareWithWidth) {
+         measureValue = widthMeasureSpec;
+      }
 
-        super.onMeasure(measureValue, measureValue);
-    }
+      super.onMeasure(measureValue, measureValue);
+   }
 }

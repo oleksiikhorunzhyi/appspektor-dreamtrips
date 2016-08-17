@@ -1,26 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.worldventures.dreamtrips.modules.dtl_flow.parts.fullscreen_image.DtlFullscreenImageScreenImpl
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    xmlns:fresco="http://schemas.android.com/apk/res-auto"
-    android:orientation="vertical"
-    android:background="@android:color/black"
-    >
+<com.worldventures.dreamtrips.modules.dtl_flow.parts.fullscreen_image.DtlFullscreenImageScreenImpl xmlns:android="http://schemas.android.com/apk/res/android"
+      android:layout_width="match_parent"
+      android:layout_height="match_parent"
+      xmlns:fresco="http://schemas.android.com/apk/res-auto"
+      android:orientation="vertical"
+      android:background="@android:color/black"
+      >
 
-    <FrameLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        >
+   <FrameLayout
+         android:layout_width="match_parent"
+         android:layout_height="match_parent"
+         >
 
-        <com.facebook.drawee.view.SimpleDraweeView
+      <com.facebook.drawee.view.SimpleDraweeView
             android:id="@+id/imageView"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             fresco:actualImageScaleType="fitCenter"
             />
 
-        <ImageView
+      <ImageView
             android:id="@+id/back"
             android:layout_width="48dp"
             android:layout_height="48dp"
@@ -29,11 +28,11 @@
             android:src="@drawable/back_icon"
             />
 
-        <ProgressBar
+      <ProgressBar
             android:id="@+id/progressBar"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             />
-    </FrameLayout>
+   </FrameLayout>
 </com.worldventures.dreamtrips.modules.dtl_flow.parts.fullscreen_image.DtlFullscreenImageScreenImpl>

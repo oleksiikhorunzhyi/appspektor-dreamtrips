@@ -6,15 +6,15 @@ import com.worldventures.dreamtrips.modules.dtl_flow.ViewState;
 
 public interface DtlMapPresenter extends DtlPresenter<DtlMapScreen, ViewState.EMPTY> {
 
-    void onMapLoaded();
+   void onMapLoaded();
 
-    void applySearch(String query);
+   void applySearch(String query);
 
-    void locationChangeRequested();
+   void locationChangeRequested();
 
-    void onMarkerClick(String merchantId);
+   void onMarkerClick(String merchantId);
 
-    void onLoadMerchantsClick(LatLng cameraPosition);
+   void onLoadMerchantsClick(LatLng cameraPosition);
 
-    void onListClicked();
+   void onListClicked();
 }

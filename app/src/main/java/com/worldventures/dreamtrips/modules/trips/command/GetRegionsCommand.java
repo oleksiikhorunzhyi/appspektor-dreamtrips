@@ -21,51 +21,51 @@ import rx.schedulers.Schedulers;
 @CommandAction
 public class GetRegionsCommand extends Command<List<RegionModel>> implements InjectableAction, CachedAction<List<RegionModel>> {
 
-    @Inject Janet janet;
+   @Inject Janet janet;
 
-    private List<RegionModel> cachedData;
+   private List<RegionModel> cachedData;
 
-    private boolean isClearCommand;
+   private boolean isClearCommand;
 
-    public GetRegionsCommand() {
-    }
+   public GetRegionsCommand() {
+   }
 
-    private GetRegionsCommand(boolean isClearCommand) {
-        this.isClearCommand = isClearCommand;
-    }
+   private GetRegionsCommand(boolean isClearCommand) {
+      this.isClearCommand = isClearCommand;
+   }
 
-    @Override
-    public List<RegionModel> getCacheData() {
-        return isClearCommand ? new ArrayList<>() : getResult();
-    }
+   @Override
+   public List<RegionModel> getCacheData() {
+      return isClearCommand ? new ArrayList<>() : getResult();
+   }
 
-    @Override
-    public void onRestore(ActionHolder holder, List<RegionModel> cache) {
-        if (isClearCommand) {
-            cachedData = new ArrayList<>();
-        } else {
-            cachedData = cache;
-        }
-    }
+   @Override
+   public void onRestore(ActionHolder holder, List<RegionModel> cache) {
+      if (isClearCommand) {
+         cachedData = new ArrayList<>();
+      } else {
+         cachedData = cache;
+      }
+   }
 
-    @Override
-    public CacheOptions getCacheOptions() {
-        return ImmutableCacheOptions.builder().build();
-    }
+   @Override
+   public CacheOptions getCacheOptions() {
+      return ImmutableCacheOptions.builder().build();
+   }
 
-    @Override
-    protected void run(CommandCallback<List<RegionModel>> callback) throws Throwable {
-        if ((cachedData == null || cachedData.size() == 0) && !isClearCommand) {
-            janet.createPipe(GetRegionsHttpAction.class, Schedulers.io())
-                    .createObservableResult(new GetRegionsHttpAction())
-                    .map(GetRegionsHttpAction::getRegionModels)
-                    .subscribe(callback::onSuccess, callback::onFail);
-        } else {
-            callback.onSuccess(cachedData);
-        }
-    }
+   @Override
+   protected void run(CommandCallback<List<RegionModel>> callback) throws Throwable {
+      if ((cachedData == null || cachedData.size() == 0) && !isClearCommand) {
+         janet.createPipe(GetRegionsHttpAction.class, Schedulers.io())
+               .createObservableResult(new GetRegionsHttpAction())
+               .map(GetRegionsHttpAction::getRegionModels)
+               .subscribe(callback::onSuccess, callback::onFail);
+      } else {
+         callback.onSuccess(cachedData);
+      }
+   }
 
-    public static GetRegionsCommand clearMemory() {
-        return new GetRegionsCommand(true);
-    }
+   public static GetRegionsCommand clearMemory() {
+      return new GetRegionsCommand(true);
+   }
 }

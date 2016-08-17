@@ -9,38 +9,38 @@ import java.util.ArrayList;
 
 public class GetPopularLocationQuery extends DreamTripsRequest<ArrayList<PopularBucketItem>> {
 
-    private BucketItem.BucketType type;
-    private String query;
+   private BucketItem.BucketType type;
+   private String query;
 
-    public GetPopularLocationQuery(BucketItem.BucketType type, String query) {
-        super((Class<ArrayList<PopularBucketItem>>) new ArrayList<PopularBucketItem>().getClass());
-        this.type = type;
-        this.query = query;
-    }
+   public GetPopularLocationQuery(BucketItem.BucketType type, String query) {
+      super((Class<ArrayList<PopularBucketItem>>) new ArrayList<PopularBucketItem>().getClass());
+      this.type = type;
+      this.query = query;
+   }
 
-    @Override
-    public ArrayList<PopularBucketItem> loadDataFromNetwork() throws Exception {
-        ArrayList<PopularBucketItem> items = new ArrayList<>();
+   @Override
+   public ArrayList<PopularBucketItem> loadDataFromNetwork() throws Exception {
+      ArrayList<PopularBucketItem> items = new ArrayList<>();
 
-        if (type == BucketItem.BucketType.LOCATION) {
-            items.addAll(getService().getLocationPopularSuggestions(query));
-        } else if (type == BucketItem.BucketType.DINING) {
-            items.addAll(getService().getDiningPopularSuggestions(query));
-        } else {
-            items.addAll(getService().getActivityPopularSuggestions(query));
-        }
+      if (type == BucketItem.BucketType.LOCATION) {
+         items.addAll(getService().getLocationPopularSuggestions(query));
+      } else if (type == BucketItem.BucketType.DINING) {
+         items.addAll(getService().getDiningPopularSuggestions(query));
+      } else {
+         items.addAll(getService().getActivityPopularSuggestions(query));
+      }
 
-        if (!items.isEmpty()) {
-            for (PopularBucketItem popularBucketItem : items) {
-                popularBucketItem.setType(type.getName());
-            }
-        }
+      if (!items.isEmpty()) {
+         for (PopularBucketItem popularBucketItem : items) {
+            popularBucketItem.setType(type.getName());
+         }
+      }
 
-        return items;
-    }
+      return items;
+   }
 
-    @Override
-    public int getErrorMessage() {
-        return R.string.error_fail_to_load_suggestions;
-    }
+   @Override
+   public int getErrorMessage() {
+      return R.string.error_fail_to_load_suggestions;
+   }
 }

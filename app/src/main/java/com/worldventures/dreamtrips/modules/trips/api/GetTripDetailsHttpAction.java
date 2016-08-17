@@ -10,15 +10,15 @@ import io.techery.janet.http.annotations.Response;
 @HttpAction(value = "/api/trips/{id}", type = HttpAction.Type.SIMPLE, method = HttpAction.Method.GET)
 public class GetTripDetailsHttpAction extends AuthorizedHttpAction {
 
-    @Path("id") String tripId;
+   @Path("id") String tripId;
 
-    @Response TripDetails tripDetails;
+   @Response TripDetails tripDetails;
 
-    public GetTripDetailsHttpAction(String tripId) {
-        this.tripId = tripId;
-    }
+   public GetTripDetailsHttpAction(String tripId) {
+      this.tripId = tripId;
+   }
 
-    public TripDetails getTripDetails() {
-        return tripDetails;
-    }
+   public TripDetails getTripDetails() {
+      return tripDetails;
+   }
 }

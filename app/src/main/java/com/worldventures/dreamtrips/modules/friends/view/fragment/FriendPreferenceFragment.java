@@ -21,51 +21,48 @@ import butterknife.InjectView;
 import butterknife.OnClick;
 
 @Layout(R.layout.fragment_friend_preference)
-public class FriendPreferenceFragment extends BaseFragmentWithArgs<FriendPreferencesPresenter, UserBundle>
-        implements FriendPreferencesPresenter.View {
+public class FriendPreferenceFragment extends BaseFragmentWithArgs<FriendPreferencesPresenter, UserBundle> implements FriendPreferencesPresenter.View {
 
-    @InjectView(R.id.recyclerViewGroups)
-    EmptyRecyclerView recyclerViewGroups;
-    BaseArrayListAdapter<FriendGroupRelation> adapter;
+   @InjectView(R.id.recyclerViewGroups) EmptyRecyclerView recyclerViewGroups;
+   BaseArrayListAdapter<FriendGroupRelation> adapter;
 
-    private MaterialDialog blockingProgressDialog;
+   private MaterialDialog blockingProgressDialog;
 
-    @Override
-    protected FriendPreferencesPresenter createPresenter(Bundle savedInstanceState) {
-        return new FriendPreferencesPresenter(getArgs());
-    }
+   @Override
+   protected FriendPreferencesPresenter createPresenter(Bundle savedInstanceState) {
+      return new FriendPreferencesPresenter(getArgs());
+   }
 
-    @Override
-    public void afterCreateView(View rootView) {
-        recyclerViewGroups.setLayoutManager(new LinearLayoutManager(getActivity()));
-        adapter = new BaseArrayListAdapter<>(getActivity(), this);
-        adapter.registerCell(FriendGroupRelation.class, FriendPrefGroupCell.class);
-        recyclerViewGroups.setAdapter(adapter);
-    }
+   @Override
+   public void afterCreateView(View rootView) {
+      recyclerViewGroups.setLayoutManager(new LinearLayoutManager(getActivity()));
+      adapter = new BaseArrayListAdapter<>(getActivity(), this);
+      adapter.registerCell(FriendGroupRelation.class, FriendPrefGroupCell.class);
+      recyclerViewGroups.setAdapter(adapter);
+   }
 
-    @Override
-    public void addItems(List<FriendGroupRelation> circles) {
-        adapter.addItems(circles);
-    }
+   @Override
+   public void addItems(List<FriendGroupRelation> circles) {
+      adapter.addItems(circles);
+   }
 
-    @OnClick(R.id.createNewListBtn)
-    void onCreateClick() {
-        informUser("TODO");
-    }
+   @OnClick(R.id.createNewListBtn)
+   void onCreateClick() {
+      informUser("TODO");
+   }
 
-    @Override
-    public void showBlockingProgress() {
-        blockingProgressDialog = new MaterialDialog.Builder(getActivity())
-                .progress(true, 0)
-                .content(R.string.loading)
-                .cancelable(false)
-                .canceledOnTouchOutside(false)
-                .show();
-    }
+   @Override
+   public void showBlockingProgress() {
+      blockingProgressDialog = new MaterialDialog.Builder(getActivity()).progress(true, 0)
+            .content(R.string.loading)
+            .cancelable(false)
+            .canceledOnTouchOutside(false)
+            .show();
+   }
 
-    @Override
-    public void hideBlockingProgress() {
-        if (blockingProgressDialog != null) blockingProgressDialog.dismiss();
-    }
+   @Override
+   public void hideBlockingProgress() {
+      if (blockingProgressDialog != null) blockingProgressDialog.dismiss();
+   }
 
 }

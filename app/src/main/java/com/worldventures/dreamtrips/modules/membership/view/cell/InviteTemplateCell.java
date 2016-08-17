@@ -16,19 +16,19 @@ import butterknife.OnClick;
 @Layout(R.layout.adapter_item_inventation_template)
 public class InviteTemplateCell extends AbstractDelegateCell<InviteTemplate, CellDelegate<InviteTemplate>> {
 
-    @InjectView(R.id.imageViewPhoto) SimpleDraweeView imageViewPhoto;
+   @InjectView(R.id.imageViewPhoto) SimpleDraweeView imageViewPhoto;
 
-    public InviteTemplateCell(View view) {
-        super(view);
-    }
+   public InviteTemplateCell(View view) {
+      super(view);
+   }
 
-    @Override
-    protected void syncUIStateWithModel() {
-        imageViewPhoto.setImageURI(Uri.parse(getModelObject().getCoverImage().getUrl()));
-    }
+   @Override
+   protected void syncUIStateWithModel() {
+      imageViewPhoto.setImageURI(Uri.parse(getModelObject().getCoverImage().getUrl()));
+   }
 
-    @OnClick(R.id.btn_select)
-    public void onSelectAction() {
-        cellDelegate.onCellClicked(getModelObject());
-    }
+   @OnClick(R.id.btn_select)
+   public void onSelectAction() {
+      cellDelegate.onCellClicked(getModelObject());
+   }
 }

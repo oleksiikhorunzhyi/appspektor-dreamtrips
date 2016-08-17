@@ -14,20 +14,17 @@ import rx.Observable;
 @CommandAction
 public class UpdateAuthInfoCommand extends Command<Void> implements InjectableAction {
 
-    @Inject SessionHolder<UserSession> appSessionHolder;
+   @Inject SessionHolder<UserSession> appSessionHolder;
 
-    @Override
-    protected void run(CommandCallback<Void> callback) throws Throwable {
-        Observable.just(isUserSessionTokenExist())
-                .doOnNext(sessionExists -> {
-                    if (!sessionExists) throw new SessionAbsentException();
-                })
-                .subscribe(booleanObservable -> callback.onSuccess(null),
-                        callback::onFail);
-    }
+   @Override
+   protected void run(CommandCallback<Void> callback) throws Throwable {
+      Observable.just(isUserSessionTokenExist()).doOnNext(sessionExists -> {
+         if (!sessionExists) throw new SessionAbsentException();
+      }).subscribe(booleanObservable -> callback.onSuccess(null), callback::onFail);
+   }
 
-    private boolean isUserSessionTokenExist() {
-        UserSession userSession = appSessionHolder.get().isPresent() ? appSessionHolder.get().get() : null;
-        return userSession != null && userSession.getApiToken() != null;
-    }
+   private boolean isUserSessionTokenExist() {
+      UserSession userSession = appSessionHolder.get().isPresent() ? appSessionHolder.get().get() : null;
+      return userSession != null && userSession.getApiToken() != null;
+   }
 }

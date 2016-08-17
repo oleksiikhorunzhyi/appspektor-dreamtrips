@@ -21,60 +21,50 @@ import io.techery.janet.command.annotations.CommandAction;
 @CommandAction
 public class DtlAnalyticsCommand extends Command<Void> implements InjectableAction {
 
-    @Inject
-    protected AnalyticsInteractor analyticsInteractor;
-    @Inject
-    protected DtlLocationInteractor dtlLocationInteractor;
-    @Inject
-    protected DtlMerchantInteractor merchantInteractor;
+   @Inject protected AnalyticsInteractor analyticsInteractor;
+   @Inject protected DtlLocationInteractor dtlLocationInteractor;
+   @Inject protected DtlMerchantInteractor merchantInteractor;
 
-    private final DtlAnalyticsAction action;
+   private final DtlAnalyticsAction action;
 
-    public static DtlAnalyticsCommand create(DtlAnalyticsAction action) {
-        return new DtlAnalyticsCommand(action);
-    }
+   public static DtlAnalyticsCommand create(DtlAnalyticsAction action) {
+      return new DtlAnalyticsCommand(action);
+   }
 
-    public DtlAnalyticsCommand(DtlAnalyticsAction action) {
-        this.action = action;
-    }
+   public DtlAnalyticsCommand(DtlAnalyticsAction action) {
+      this.action = action;
+   }
 
-    @Override
-    protected void run(CommandCallback<Void> callback) throws Throwable {
-        dtlLocationInteractor.locationPipe()
-                .createObservableResult(DtlLocationCommand.last())
-                .map(DtlLocationCommand::getResult)
-                .map(dtlLocation -> {
-                    if (dtlLocation.getLocationSourceType() == LocationSourceType.EXTERNAL) {
-                        action.setAnalyticsLocation(dtlLocation);
-                    } else {
-                        merchantInteractor.merchantsActionPipe().observeSuccessWithReplay()
-                                .map(DtlMerchantsAction::getResult)
-                                .map(merchants -> {
-                                    return Queryable.from(merchants)
-                                            .map(merchant -> {
-                                                merchant.setDistance(DtlLocationHelper.calculateDistance(
-                                                        dtlLocation.getCoordinates().asLatLng(),
-                                                        merchant.getCoordinates().asLatLng()));
-                                                return merchant;
-                                            })
-                                            .sort(DtlMerchant.DISTANCE_COMPARATOR::compare)
-                                            .first();
-                                })
-                                .map(dtlMerchant -> {
-                                    return ImmutableDtlManualLocation
-                                            .copyOf((DtlManualLocation) dtlLocation)
-                                            .withAnalyticsName(dtlMerchant.getAnalyticsName());
-                                })
-                                .subscribe(dtlLocation1 ->
-                                                action.setAnalyticsLocation(dtlLocation1),
-                                        throwable -> {
-                                        });
-                    }
-                    return action;
-                })
-                .flatMap(action -> analyticsInteractor.analyticsActionPipe()
-                        .createObservableResult(action))
-                .map(baseAnalyticsAction -> (Void) null)
-                .subscribe(callback::onSuccess, callback::onFail);
-    }
+   @Override
+   protected void run(CommandCallback<Void> callback) throws Throwable {
+      dtlLocationInteractor.locationPipe()
+            .createObservableResult(DtlLocationCommand.last())
+            .map(DtlLocationCommand::getResult)
+            .map(dtlLocation -> {
+               if (dtlLocation.getLocationSourceType() == LocationSourceType.EXTERNAL) {
+                  action.setAnalyticsLocation(dtlLocation);
+               } else {
+                  merchantInteractor.merchantsActionPipe()
+                        .observeSuccessWithReplay()
+                        .map(DtlMerchantsAction::getResult)
+                        .map(merchants -> {
+                           return Queryable.from(merchants).map(merchant -> {
+                              merchant.setDistance(DtlLocationHelper.calculateDistance(dtlLocation.getCoordinates()
+                                    .asLatLng(), merchant.getCoordinates().asLatLng()));
+                              return merchant;
+                           }).sort(DtlMerchant.DISTANCE_COMPARATOR::compare).first();
+                        })
+                        .map(dtlMerchant -> {
+                           return ImmutableDtlManualLocation.copyOf((DtlManualLocation) dtlLocation)
+                                 .withAnalyticsName(dtlMerchant.getAnalyticsName());
+                        })
+                        .subscribe(dtlLocation1 -> action.setAnalyticsLocation(dtlLocation1), throwable -> {
+                        });
+               }
+               return action;
+            })
+            .flatMap(action -> analyticsInteractor.analyticsActionPipe().createObservableResult(action))
+            .map(baseAnalyticsAction -> (Void) null)
+            .subscribe(callback::onSuccess, callback::onFail);
+   }
 }

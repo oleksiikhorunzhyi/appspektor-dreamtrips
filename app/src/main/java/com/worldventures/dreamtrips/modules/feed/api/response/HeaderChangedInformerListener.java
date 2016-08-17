@@ -1,4 +1,3 @@
-
 package com.worldventures.dreamtrips.modules.feed.api.response;
 
 import android.os.Handler;
@@ -13,21 +12,21 @@ import static com.worldventures.dreamtrips.core.utils.InterceptingOkClient.Respo
 
 public class HeaderChangedInformerListener implements ResponseHeaderListener {
 
-    private static final long DELAY = 1000L;
-    private NotificationCountEventDelegate notificationCountEventDelegate;
-    //
-    private Handler handler = new Handler();
-    private Runnable runnable = () -> notificationCountEventDelegate.post(null);
+   private static final long DELAY = 1000L;
+   private NotificationCountEventDelegate notificationCountEventDelegate;
+   //
+   private Handler handler = new Handler();
+   private Runnable runnable = () -> notificationCountEventDelegate.post(null);
 
-    public HeaderChangedInformerListener(NotificationCountEventDelegate notificationCountEventDelegate) {
-        this.notificationCountEventDelegate = notificationCountEventDelegate;
-    }
+   public HeaderChangedInformerListener(NotificationCountEventDelegate notificationCountEventDelegate) {
+      this.notificationCountEventDelegate = notificationCountEventDelegate;
+   }
 
-    @Override
-    public void onResponse(List<Header> headers) {
-        handler.removeCallbacks(runnable);
-        handler.postDelayed(runnable, DELAY);
-    }
+   @Override
+   public void onResponse(List<Header> headers) {
+      handler.removeCallbacks(runnable);
+      handler.postDelayed(runnable, DELAY);
+   }
 
 
 }

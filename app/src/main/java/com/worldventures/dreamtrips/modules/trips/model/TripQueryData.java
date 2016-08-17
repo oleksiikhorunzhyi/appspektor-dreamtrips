@@ -7,31 +7,40 @@ import org.immutables.value.Value;
 @Value.Immutable
 public interface TripQueryData {
 
-    int getPage();
+   int getPage();
 
-    int getPerPage();
+   int getPerPage();
 
-    @Nullable String getQuery();
+   @Nullable
+   String getQuery();
 
-    @Nullable Integer getDurationMin();
+   @Nullable
+   Integer getDurationMin();
 
-    @Nullable Integer getDurationMax();
+   @Nullable
+   Integer getDurationMax();
 
-    @Nullable Double getPriceMin();
+   @Nullable
+   Double getPriceMin();
 
-    @Nullable Double getPriceMax();
+   @Nullable
+   Double getPriceMax();
 
-    @Nullable String getStartDate();
+   @Nullable
+   String getStartDate();
 
-    @Nullable String getEndDate();
+   @Nullable
+   String getEndDate();
 
-    @Nullable String getRegions();
+   @Nullable
+   String getRegions();
 
-    @Nullable String getActivities();
+   @Nullable
+   String getActivities();
 
-    int isSoldOut();
+   int isSoldOut();
 
-    int isRecent();
+   int isRecent();
 
-    int isLiked();
+   int isLiked();
 }

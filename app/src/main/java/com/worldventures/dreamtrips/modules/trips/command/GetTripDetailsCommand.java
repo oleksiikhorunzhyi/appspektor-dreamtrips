@@ -14,24 +14,24 @@ import io.techery.janet.command.annotations.CommandAction;
 @CommandAction
 public class GetTripDetailsCommand extends CommandWithError<TripDetails> implements InjectableAction {
 
-    @Inject Janet janet;
+   @Inject Janet janet;
 
-    private String tripId;
+   private String tripId;
 
-    public GetTripDetailsCommand(String tripId) {
-        this.tripId = tripId;
-    }
+   public GetTripDetailsCommand(String tripId) {
+      this.tripId = tripId;
+   }
 
-    @Override
-    protected void run(CommandCallback<TripDetails> callback) throws Throwable {
-        janet.createPipe(GetTripDetailsHttpAction.class)
-                .createObservableResult(new GetTripDetailsHttpAction(tripId))
-                .map(GetTripDetailsHttpAction::getTripDetails)
-                .subscribe(callback::onSuccess, callback::onFail);
-    }
+   @Override
+   protected void run(CommandCallback<TripDetails> callback) throws Throwable {
+      janet.createPipe(GetTripDetailsHttpAction.class)
+            .createObservableResult(new GetTripDetailsHttpAction(tripId))
+            .map(GetTripDetailsHttpAction::getTripDetails)
+            .subscribe(callback::onSuccess, callback::onFail);
+   }
 
-    @Override
-    public int getFallbackErrorMessage() {
-        return R.string.error_fail_to_load_item_details;
-    }
+   @Override
+   public int getFallbackErrorMessage() {
+      return R.string.error_fail_to_load_item_details;
+   }
 }

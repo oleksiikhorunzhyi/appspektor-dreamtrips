@@ -17,29 +17,29 @@ import io.techery.janet.command.annotations.CommandAction;
 @CommandAction
 public class AcceptTermsCommand extends CommandWithError implements InjectableAction {
 
-    @Inject @Named(JanetModule.JANET_API_LIB) Janet janet;
-    @Inject SessionHolder<UserSession> appSessionHolder;
+   @Inject @Named(JanetModule.JANET_API_LIB) Janet janet;
+   @Inject SessionHolder<UserSession> appSessionHolder;
 
-    private String text;
+   private String text;
 
-    public AcceptTermsCommand(String text) {
-        this.text = text;
-    }
+   public AcceptTermsCommand(String text) {
+      this.text = text;
+   }
 
-    @Override
-    protected void run(CommandCallback callback) throws Throwable {
-        janet.createPipe(AcceptTermsAndConditionsHttpAction.class)
-                .createObservableResult(new AcceptTermsAndConditionsHttpAction(text))
-                .doOnNext(action -> {
-                    UserSession userSession = appSessionHolder.get().get();
-                    userSession.getUser().setTermsAccepted(true);
-                    appSessionHolder.put(userSession);
-                })
-                .subscribe(callback::onSuccess, callback::onFail);
-    }
+   @Override
+   protected void run(CommandCallback callback) throws Throwable {
+      janet.createPipe(AcceptTermsAndConditionsHttpAction.class)
+            .createObservableResult(new AcceptTermsAndConditionsHttpAction(text))
+            .doOnNext(action -> {
+               UserSession userSession = appSessionHolder.get().get();
+               userSession.getUser().setTermsAccepted(true);
+               appSessionHolder.put(userSession);
+            })
+            .subscribe(callback::onSuccess, callback::onFail);
+   }
 
-    @Override
-    public int getFallbackErrorMessage() {
-        return R.string.error_failed_to_accept_terms_and_conditions;
-    }
+   @Override
+   public int getFallbackErrorMessage() {
+      return R.string.error_failed_to_accept_terms_and_conditions;
+   }
 }

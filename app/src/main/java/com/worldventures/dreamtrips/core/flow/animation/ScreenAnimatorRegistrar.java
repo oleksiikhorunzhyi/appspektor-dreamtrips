@@ -4,5 +4,5 @@ import flow.path.Path;
 
 public interface ScreenAnimatorRegistrar {
 
-    AnimatorFactory getAnimatorFactory(Path from, Path to);
+   AnimatorFactory getAnimatorFactory(Path from, Path to);
 }

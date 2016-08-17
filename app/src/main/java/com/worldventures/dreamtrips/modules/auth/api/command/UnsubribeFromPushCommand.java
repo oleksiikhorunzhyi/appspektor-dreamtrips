@@ -23,24 +23,24 @@ import timber.log.Timber;
 @CommandAction
 public class UnsubribeFromPushCommand extends Command<Void> implements InjectableAction {
 
-    @Inject @Named(JanetModule.JANET_API_LIB)Janet janet;
-    @Inject SnappyRepository snappyRepository;
-    @Inject Context context;
+   @Inject @Named(JanetModule.JANET_API_LIB) Janet janet;
+   @Inject SnappyRepository snappyRepository;
+   @Inject Context context;
 
-    @Override
-    protected void run(CommandCallback<Void> callback) throws Throwable {
-        String token = snappyRepository.getGcmRegToken();
+   @Override
+   protected void run(CommandCallback<Void> callback) throws Throwable {
+      String token = snappyRepository.getGcmRegToken();
 
-        if (TextUtils.isEmpty(token)) callback.onSuccess(null);
-        else janet.createPipe(UnsubscribeFromPushNotificationsHttpAction.class, Schedulers.io())
-                .createObservableResult(new UnsubscribeFromPushNotificationsHttpAction(token))
-                .doOnNext(action -> {
-                    try {
-                        InstanceID.getInstance(context).deleteInstanceID();
-                    } catch (IOException e) {
-                        Timber.e(e, "Failed to delete instance ID");
-                    }
-                })
-                .subscribe(action -> callback.onSuccess(null), callback::onFail);
-    }
+      if (TextUtils.isEmpty(token)) callback.onSuccess(null);
+      else janet.createPipe(UnsubscribeFromPushNotificationsHttpAction.class, Schedulers.io())
+            .createObservableResult(new UnsubscribeFromPushNotificationsHttpAction(token))
+            .doOnNext(action -> {
+               try {
+                  InstanceID.getInstance(context).deleteInstanceID();
+               } catch (IOException e) {
+                  Timber.e(e, "Failed to delete instance ID");
+               }
+            })
+            .subscribe(action -> callback.onSuccess(null), callback::onFail);
+   }
 }

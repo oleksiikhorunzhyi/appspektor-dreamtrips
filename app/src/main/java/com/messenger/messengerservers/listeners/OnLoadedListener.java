@@ -4,7 +4,7 @@ import java.util.List;
 
 public interface OnLoadedListener<T> {
 
-    void onLoaded(List<T> entities);
+   void onLoaded(List<T> entities);
 
-    void onError(Exception e);
+   void onError(Exception e);
 }

@@ -11,33 +11,31 @@ import rx.schedulers.Schedulers;
 
 public class DtlLocationInteractor {
 
-    private final ActionPipe<DtlLocationCommand> locationPipe;
-    private final ActionPipe<DtlNearbyLocationAction> nearbyLocationPipe;
-    private final ActionPipe<DtlSearchLocationAction> searchLocationPipe;
+   private final ActionPipe<DtlLocationCommand> locationPipe;
+   private final ActionPipe<DtlNearbyLocationAction> nearbyLocationPipe;
+   private final ActionPipe<DtlSearchLocationAction> searchLocationPipe;
 
-    public DtlLocationInteractor(Janet janet) {
+   public DtlLocationInteractor(Janet janet) {
 
-        locationPipe = janet.createPipe(DtlLocationCommand.class, Schedulers.io());
-        nearbyLocationPipe = janet.createPipe(DtlNearbyLocationAction.class, Schedulers.io());
-        searchLocationPipe = janet.createPipe(DtlSearchLocationAction.class, Schedulers.io());
-        //
-        searchLocationPipe.observe()
-                .subscribe(new ActionStateSubscriber<DtlSearchLocationAction>()
-                        .onStart(action -> {
-                            nearbyLocationPipe.cancelLatest();
-                        }));
-        locationPipe.send(DtlLocationCommand.last());
-    }
+      locationPipe = janet.createPipe(DtlLocationCommand.class, Schedulers.io());
+      nearbyLocationPipe = janet.createPipe(DtlNearbyLocationAction.class, Schedulers.io());
+      searchLocationPipe = janet.createPipe(DtlSearchLocationAction.class, Schedulers.io());
+      //
+      searchLocationPipe.observe().subscribe(new ActionStateSubscriber<DtlSearchLocationAction>().onStart(action -> {
+         nearbyLocationPipe.cancelLatest();
+      }));
+      locationPipe.send(DtlLocationCommand.last());
+   }
 
-    public ActionPipe<DtlLocationCommand> locationPipe() {
-        return locationPipe;
-    }
+   public ActionPipe<DtlLocationCommand> locationPipe() {
+      return locationPipe;
+   }
 
-    public ActionPipe<DtlNearbyLocationAction> nearbyLocationPipe() {
-        return nearbyLocationPipe;
-    }
+   public ActionPipe<DtlNearbyLocationAction> nearbyLocationPipe() {
+      return nearbyLocationPipe;
+   }
 
-    public ActionPipe<DtlSearchLocationAction> searchLocationPipe() {
-        return searchLocationPipe;
-    }
+   public ActionPipe<DtlSearchLocationAction> searchLocationPipe() {
+      return searchLocationPipe;
+   }
 }

@@ -6,15 +6,15 @@ import com.messenger.entities.DataUser;
 
 public interface ChatCellDelegate {
 
-    void onAvatarClicked(DataUser dataUser);
+   void onAvatarClicked(DataUser dataUser);
 
-    void onImageClicked(String attachmentId);
+   void onImageClicked(String attachmentId);
 
-    void onMessageLongClicked(DataMessage dataMessage);
+   void onMessageLongClicked(DataMessage dataMessage);
 
-    void onRetryClicked(DataMessage dataMessage);
+   void onRetryClicked(DataMessage dataMessage);
 
-    void onMapClicked(LatLng latLng);
+   void onMapClicked(LatLng latLng);
 
-    void onTimestampViewClicked(int position);
+   void onTimestampViewClicked(int position);
 }

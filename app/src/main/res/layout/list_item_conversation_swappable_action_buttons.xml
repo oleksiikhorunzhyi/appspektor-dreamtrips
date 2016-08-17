@@ -1,28 +1,30 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="wrap_content"
-    android:layout_height="match_parent"
-    android:orientation="horizontal"
-    tools:showIn="@layout/list_item_conversation_one_to_one">
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+      xmlns:tools="http://schemas.android.com/tools"
+      android:layout_width="wrap_content"
+      android:layout_height="match_parent"
+      android:orientation="horizontal"
+      tools:showIn="@layout/list_item_conversation_one_to_one"
+      >
 
-    <Button
-        android:id="@+id/swipe_layout_button_more"
-        android:layout_width="wrap_content"
-        android:layout_height="match_parent"
-        style="@style/MessengerSwappableActionButton"
-        android:background="@color/conversation_list_more_button_background"
-        android:text="@string/conversation_list_swipe_button_more"
-        android:drawableTop="@drawable/swipe_action_more_button"/>
+   <Button
+         android:id="@+id/swipe_layout_button_more"
+         android:layout_width="wrap_content"
+         android:layout_height="match_parent"
+         style="@style/MessengerSwappableActionButton"
+         android:background="@color/conversation_list_more_button_background"
+         android:text="@string/conversation_list_swipe_button_more"
+         android:drawableTop="@drawable/swipe_action_more_button"
+         />
 
-    <Button
-        android:id="@+id/swipe_layout_button_delete"
-        android:layout_width="wrap_content"
-        android:layout_height="match_parent"
-        style="@style/MessengerSwappableActionButton"
-        android:background="@color/conversation_list_delete_button_background"
-        android:text="@string/conversation_list_swipe_button_delete"
-        android:drawableTop="@drawable/swipe_action_delete_button"/>
+   <Button
+         android:id="@+id/swipe_layout_button_delete"
+         android:layout_width="wrap_content"
+         android:layout_height="match_parent"
+         style="@style/MessengerSwappableActionButton"
+         android:background="@color/conversation_list_delete_button_background"
+         android:text="@string/conversation_list_swipe_button_delete"
+         android:drawableTop="@drawable/swipe_action_delete_button"
+         />
 
 </LinearLayout>

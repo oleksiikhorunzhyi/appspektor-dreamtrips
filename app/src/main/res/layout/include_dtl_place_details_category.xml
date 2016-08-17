@@ -1,25 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:background="@drawable/background_merchant_cell"
-    android:orientation="horizontal"
-    android:padding="@dimen/spacing_normal"
-    android:baselineAligned="false"
-    tools:showIn="@layout/screen_dtl_details"
-    >
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+      xmlns:app="http://schemas.android.com/apk/res-auto"
+      xmlns:tools="http://schemas.android.com/tools"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:background="@drawable/background_merchant_cell"
+      android:orientation="horizontal"
+      android:padding="@dimen/spacing_normal"
+      android:baselineAligned="false"
+      tools:showIn="@layout/screen_dtl_details"
+      >
 
-    <LinearLayout
-        android:id="@+id/info_holder"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_weight="7"
-        android:orientation="vertical">
+   <LinearLayout
+         android:id="@+id/info_holder"
+         android:layout_width="0dp"
+         android:layout_height="wrap_content"
+         android:layout_weight="7"
+         android:orientation="vertical"
+         >
 
-        <TextView
+      <TextView
             android:id="@+id/merchant_title"
             style="@style/TextAppearance.AppCompat.Subhead"
             android:layout_width="wrap_content"
@@ -29,7 +29,7 @@
             tools:text="Coffee Sweets"
             />
 
-        <TextView
+      <TextView
             android:id="@+id/category_title"
             style="@style/TextAppearance.AppCompat.Subhead"
             android:layout_width="wrap_content"
@@ -40,7 +40,7 @@
             tools:text="Pizza, Pasts etc."
             />
 
-        <TextView
+      <TextView
             android:id="@+id/categories"
             style="@style/TextAppearance.AppCompat.Subhead"
             android:maxLines="1"
@@ -52,7 +52,7 @@
             tools:text="French boulangerie"
             />
 
-        <TextView
+      <TextView
             android:id="@+id/operational_time"
             style="@style/TextAppearance.AppCompat.Subhead"
             android:layout_width="wrap_content"
@@ -63,17 +63,17 @@
             />
 
 
-    </LinearLayout>
+   </LinearLayout>
 
-    <LinearLayout
-        android:id="@+id/distance_holder"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_weight="2"
-        android:orientation="vertical"
-        >
+   <LinearLayout
+         android:id="@+id/distance_holder"
+         android:layout_width="0dp"
+         android:layout_height="wrap_content"
+         android:layout_weight="2"
+         android:orientation="vertical"
+         >
 
-        <io.techery.properratingbar.ProperRatingBar
+      <io.techery.properratingbar.ProperRatingBar
             android:id="@+id/merchant_details_pricing"
             style="?android:attr/ratingBarStyleSmall"
             android:layout_gravity="end"
@@ -85,16 +85,17 @@
             app:prb_totalTicks="4"
             />
 
-        <TextView
+      <TextView
             android:id="@+id/distance"
             android:layout_width="wrap_content"
             android:layout_gravity="end"
             android:layout_height="wrap_content"
             android:textColor="@color/black"
             android:drawablePadding="@dimen/spacing_tiny"
-            tools:text="20.97 mi"/>
+            tools:text="20.97 mi"
+            />
 
-    </LinearLayout>
+   </LinearLayout>
 
 
 </LinearLayout>

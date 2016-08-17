@@ -18,31 +18,31 @@ import butterknife.InjectView;
 @Layout(R.layout.adapter_item_attach_photo)
 public class PickerIrregularPhotoCell extends AbstractCell<PickerIrregularPhotoModel> {
 
-    @InjectView(R.id.icon) ImageView icon;
-    @InjectView(R.id.title) TextView title;
+   @InjectView(R.id.icon) ImageView icon;
+   @InjectView(R.id.title) TextView title;
 
-    public PickerIrregularPhotoCell(View view) {
-        super(view);
-    }
+   public PickerIrregularPhotoCell(View view) {
+      super(view);
+   }
 
-    @Override
-    protected void syncUIStateWithModel() {
-        icon.setImageResource(getModelObject().getIconRes());
-        title.setText(getModelObject().getTitleRes());
-        title.setTextColor(ContextCompat.getColor(itemView.getContext(), getModelObject().getColorRes()));
-        itemView.setOnClickListener(v -> {
-            int requestType = -1;
+   @Override
+   protected void syncUIStateWithModel() {
+      icon.setImageResource(getModelObject().getIconRes());
+      title.setText(getModelObject().getTitleRes());
+      title.setTextColor(ContextCompat.getColor(itemView.getContext(), getModelObject().getColorRes()));
+      itemView.setOnClickListener(v -> {
+         int requestType = -1;
 
-            switch (getModelObject().getType()) {
-                case PickerIrregularPhotoModel.CAMERA:
-                    requestType = PickImageDelegate.CAPTURE_PICTURE;
-                    getEventBus().post(new AttachPhotoEvent(requestType));
-                    break;
+         switch (getModelObject().getType()) {
+            case PickerIrregularPhotoModel.CAMERA:
+               requestType = PickImageDelegate.CAPTURE_PICTURE;
+               getEventBus().post(new AttachPhotoEvent(requestType));
+               break;
 
-                case PickerIrregularPhotoModel.FACEBOOK:
-                    getEventBus().post(new OpenFacebookEvent());
-                    break;
-            }
-        });
-    }
+            case PickerIrregularPhotoModel.FACEBOOK:
+               getEventBus().post(new OpenFacebookEvent());
+               break;
+         }
+      });
+   }
 }

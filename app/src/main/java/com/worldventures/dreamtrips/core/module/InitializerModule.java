@@ -20,83 +20,70 @@ import dagger.Module;
 import dagger.Provides;
 
 @Module(
-        injects = {
-                LeakCanaryInitializer.class,
-                FabricInitializer.class,
-                NewrelicInitializer.class,
-                FrescoInitializer.class,
-                SoftInputInitializer.class,
-                ViewServerInitializer.class,
-                BadgeCountObserverInitializer.class,
-                JodaTimeInitializer.class,
-                AnalyticsInitializer.class,
-        },
-        includes = {
-                MessengerInitializerModule.class
-        },
-        library = true, complete = false
-)
+      injects = {LeakCanaryInitializer.class, FabricInitializer.class, NewrelicInitializer.class, FrescoInitializer.class, SoftInputInitializer.class, ViewServerInitializer.class, BadgeCountObserverInitializer.class, JodaTimeInitializer.class, AnalyticsInitializer.class,},
+      includes = {MessengerInitializerModule.class},
+      library = true, complete = false)
 public class InitializerModule {
 
-    @Provides(type = Provides.Type.SET)
-    AppInitializer provideEmptyInitializer() {
-        return injector -> {
-            //nothing to do here
-        };
-    }
+   @Provides(type = Provides.Type.SET)
+   AppInitializer provideEmptyInitializer() {
+      return injector -> {
+         //nothing to do here
+      };
+   }
 
-    @Provides(type = Provides.Type.SET)
-    AppInitializer provideAnalyticsInitializer() {
-        return new AnalyticsInitializer();
-    }
+   @Provides(type = Provides.Type.SET)
+   AppInitializer provideAnalyticsInitializer() {
+      return new AnalyticsInitializer();
+   }
 
-    @Provides(type = Provides.Type.SET)
-    AppInitializer provideJodaInitializer(Context context) {
-        return new JodaTimeInitializer(context);
-    }
+   @Provides(type = Provides.Type.SET)
+   AppInitializer provideJodaInitializer(Context context) {
+      return new JodaTimeInitializer(context);
+   }
 
-    @Provides(type = Provides.Type.SET)
-    AppInitializer provideSoftInputInitializer() {
-        return new SoftInputInitializer();
-    }
+   @Provides(type = Provides.Type.SET)
+   AppInitializer provideSoftInputInitializer() {
+      return new SoftInputInitializer();
+   }
 
-    @Provides(type = Provides.Type.SET)
-    public AppInitializer provideLeakCanaryInitializer() {
-        return new LeakCanaryInitializer();
-    }
+   @Provides(type = Provides.Type.SET)
+   public AppInitializer provideLeakCanaryInitializer() {
+      return new LeakCanaryInitializer();
+   }
 
-    @Provides(type = Provides.Type.SET)
-    public AppInitializer provideLoggingInitializer() {
-        return new LoggingInitializer();
-    }
+   @Provides(type = Provides.Type.SET)
+   public AppInitializer provideLoggingInitializer() {
+      return new LoggingInitializer();
+   }
 
-    @Provides(type = Provides.Type.SET)
-    public AppInitializer provideViewServerInitializer() {
-        return new ViewServerInitializer();
-    }
+   @Provides(type = Provides.Type.SET)
+   public AppInitializer provideViewServerInitializer() {
+      return new ViewServerInitializer();
+   }
 
-    @Provides(type = Provides.Type.SET)
-    public AppInitializer provideRxLogInitializer() {
-        return new RxJavaLoggingInitializer();
-    }
+   @Provides(type = Provides.Type.SET)
+   public AppInitializer provideRxLogInitializer() {
+      return new RxJavaLoggingInitializer();
+   }
 
-    @Provides(type = Provides.Type.SET)
-    public AppInitializer provideFabricInitializer() {
-        return new FabricInitializer();
-    }
+   @Provides(type = Provides.Type.SET)
+   public AppInitializer provideFabricInitializer() {
+      return new FabricInitializer();
+   }
 
-    @Provides(type = Provides.Type.SET)
-    public AppInitializer provideNewrelicInitializer() {
-        return new NewrelicInitializer();
-    }
+   @Provides(type = Provides.Type.SET)
+   public AppInitializer provideNewrelicInitializer() {
+      return new NewrelicInitializer();
+   }
 
-    @Provides(type = Provides.Type.SET)
-    public AppInitializer provideFrescoInitializer() {
-        return new FrescoInitializer();
-    }
+   @Provides(type = Provides.Type.SET)
+   public AppInitializer provideFrescoInitializer() {
+      return new FrescoInitializer();
+   }
 
-    @Provides(type = Provides.Type.SET)
-    public AppInitializer provideBadgeCountObserverInitializer() {
-        return new BadgeCountObserverInitializer();
-    }
+   @Provides(type = Provides.Type.SET)
+   public AppInitializer provideBadgeCountObserverInitializer() {
+      return new BadgeCountObserverInitializer();
+   }
 }

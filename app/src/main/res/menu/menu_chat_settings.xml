@@ -1,24 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
       xmlns:app="http://schemas.android.com/apk/res-auto">
-    <item
-        android:id="@+id/action_overflow"
-        android:title="@string/chat_settings_menu_settings"
-        android:icon="@drawable/ic_overflow"
-        app:showAsAction="always">
-        <menu>
-            <item
-                android:id="@+id/action_edit_chat_name"
-                android:title="@string/chat_settings_menu_edit_chat_name"
-                app:showAsAction="always"/>
-            <item
-                android:id="@+id/action_change_chat_avatar"
-                android:title="@string/chat_settings_menu_edit_change_chat_image"
-                app:showAsAction="always"/>
-            <item
-                android:id="@+id/action_remove_chat_avatar"
-                android:title="@string/chat_settings_menu_edit_remove_chat_image"
-                app:showAsAction="always"/>
-        </menu>
-    </item>
+   <item
+         android:id="@+id/action_overflow"
+         android:title="@string/chat_settings_menu_settings"
+         android:icon="@drawable/ic_overflow"
+         app:showAsAction="always">
+      <menu>
+         <item
+               android:id="@+id/action_edit_chat_name"
+               android:title="@string/chat_settings_menu_edit_chat_name"
+               app:showAsAction="always" />
+         <item
+               android:id="@+id/action_change_chat_avatar"
+               android:title="@string/chat_settings_menu_edit_change_chat_image"
+               app:showAsAction="always" />
+         <item
+               android:id="@+id/action_remove_chat_avatar"
+               android:title="@string/chat_settings_menu_edit_remove_chat_image"
+               app:showAsAction="always" />
+      </menu>
+   </item>
 </menu>

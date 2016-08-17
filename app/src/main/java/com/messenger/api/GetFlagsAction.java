@@ -11,10 +11,9 @@ import io.techery.janet.http.annotations.Response;
 @HttpAction(value = "/api/flag_reasons", method = HttpAction.Method.GET)
 public class GetFlagsAction extends AuthorizedHttpAction {
 
-    @Response
-    List<Flag> flags;
+   @Response List<Flag> flags;
 
-    public List<Flag> getFlags() {
-        return flags;
-    }
+   public List<Flag> getFlags() {
+      return flags;
+   }
 }

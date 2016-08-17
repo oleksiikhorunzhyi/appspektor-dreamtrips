@@ -10,16 +10,14 @@ import com.worldventures.dreamtrips.modules.dtl.model.merchant.offer.DtlOfferPoi
 
 public class OfferMapper implements Mapper<Offer, DtlOffer> {
 
-    @Override
-    public DtlOffer map(Offer source) {
-        if (source.type() == OfferType.PERK) {
-            return new DtlOfferPerk(source);
-        } else {
-            DtlOfferPoints offer = new DtlOfferPoints(source);
-            offer.setCurrencies(Queryable.from(source.offerData().currencies())
-                    .map(DtlCurrency::new)
-                    .toList());
-            return offer;
-        }
-    }
+   @Override
+   public DtlOffer map(Offer source) {
+      if (source.type() == OfferType.PERK) {
+         return new DtlOfferPerk(source);
+      } else {
+         DtlOfferPoints offer = new DtlOfferPoints(source);
+         offer.setCurrencies(Queryable.from(source.offerData().currencies()).map(DtlCurrency::new).toList());
+         return offer;
+      }
+   }
 }

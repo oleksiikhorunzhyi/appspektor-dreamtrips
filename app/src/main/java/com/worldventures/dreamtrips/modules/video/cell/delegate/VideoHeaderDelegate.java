@@ -5,5 +5,5 @@ import com.worldventures.dreamtrips.modules.membership.model.MediaHeader;
 
 public interface VideoHeaderDelegate extends CellDelegate<MediaHeader> {
 
-    void onLanguageClicked();
+   void onLanguageClicked();
 }

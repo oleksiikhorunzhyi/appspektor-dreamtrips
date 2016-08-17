@@ -8,29 +8,29 @@ import com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem;
 
 public class BucketFeedItem extends FeedItem<BucketItem> {
 
-    @Override
-    public String previewImage(Resources res) {
-        int width = res.getDimensionPixelSize(R.dimen.bucket_cover_thumb_w);
-        int height = res.getDimensionPixelSize(R.dimen.bucket_cover_thumb_h);
-        return getItem().getCoverUrl(width, height);
-    }
+   @Override
+   public String previewImage(Resources res) {
+      int width = res.getDimensionPixelSize(R.dimen.bucket_cover_thumb_w);
+      int height = res.getDimensionPixelSize(R.dimen.bucket_cover_thumb_h);
+      return getItem().getCoverUrl(width, height);
+   }
 
-    public BucketFeedItem() {
-    }
+   public BucketFeedItem() {
+   }
 
-    public BucketFeedItem(Parcel in) {
-        super(in);
-    }
+   public BucketFeedItem(Parcel in) {
+      super(in);
+   }
 
-    public static final Creator<BucketFeedItem> CREATOR = new Creator<BucketFeedItem>() {
-        @Override
-        public BucketFeedItem createFromParcel(Parcel in) {
-            return new BucketFeedItem(in);
-        }
+   public static final Creator<BucketFeedItem> CREATOR = new Creator<BucketFeedItem>() {
+      @Override
+      public BucketFeedItem createFromParcel(Parcel in) {
+         return new BucketFeedItem(in);
+      }
 
-        @Override
-        public BucketFeedItem[] newArray(int size) {
-            return new BucketFeedItem[size];
-        }
-    };
+      @Override
+      public BucketFeedItem[] newArray(int size) {
+         return new BucketFeedItem[size];
+      }
+   };
 }

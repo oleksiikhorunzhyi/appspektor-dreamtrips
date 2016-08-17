@@ -1,45 +1,49 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:custom="http://schemas.android.com/apk/res-auto"
-    xmlns:fresco="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:layout_margin="@dimen/spacing_small">
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+      xmlns:custom="http://schemas.android.com/apk/res-auto"
+      xmlns:fresco="http://schemas.android.com/apk/res-auto"
+      xmlns:tools="http://schemas.android.com/tools"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:layout_margin="@dimen/spacing_small"
+      >
 
-    <FrameLayout
-        android:id="@+id/image_holder"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content">
+   <FrameLayout
+         android:id="@+id/image_holder"
+         android:layout_width="wrap_content"
+         android:layout_height="wrap_content"
+         >
 
-        <com.facebook.drawee.view.SimpleDraweeView
+      <com.facebook.drawee.view.SimpleDraweeView
             android:id="@+id/image"
             android:layout_width="@dimen/size_huge"
             android:layout_height="@dimen/size_huge"
             fresco:actualImageScaleType="centerCrop"
             fresco:placeholderImage="@drawable/podcast_placeholder"
-            fresco:placeholderImageScaleType="fitXY"/>
+            fresco:placeholderImageScaleType="fitXY"
+            />
 
-        <ImageView
+      <ImageView
             android:id="@+id/play"
             android:layout_width="@dimen/podcast_play_icon_size"
             android:layout_height="@dimen/podcast_play_icon_size"
             android:scaleType="centerInside"
             android:layout_gravity="bottom"
-            android:src="@drawable/ic_podcast_play_small"/>
+            android:src="@drawable/ic_podcast_play_small"
+            />
 
-    </FrameLayout>
+   </FrameLayout>
 
-    <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="@dimen/spacing_small"
-        android:layout_toLeftOf="@+id/download_progress"
-        android:layout_toRightOf="@id/image_holder"
-        android:orientation="vertical">
+   <LinearLayout
+         android:layout_width="wrap_content"
+         android:layout_height="wrap_content"
+         android:layout_marginLeft="@dimen/spacing_small"
+         android:layout_toLeftOf="@+id/download_progress"
+         android:layout_toRightOf="@id/image_holder"
+         android:orientation="vertical"
+         >
 
-        <TextView
+      <TextView
             android:id="@+id/title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -48,50 +52,56 @@
             android:textColor="@android:color/black"
             android:textSize="@dimen/font_normal"
             android:textStyle="bold"
-            tools:text="Podcast"/>
+            tools:text="Podcast"
+            />
 
-        <TextView
+      <TextView
             android:id="@+id/category"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textColor="@android:color/black"
             android:textSize="@dimen/font_medium"
-            tools:text="Category"/>
+            tools:text="Category"
+            />
 
-        <TextView
+      <TextView
             android:id="@+id/duration"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textSize="@dimen/font_medium"
-            tools:text="12:45 min"/>
+            tools:text="12:45 min"
+            />
 
-        <TextView
+      <TextView
             android:id="@+id/date"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textSize="@dimen/font_medium"
-            tools:text="Feb 31, 2066"/>
+            tools:text="Feb 31, 2066"
+            />
 
-    </LinearLayout>
+   </LinearLayout>
 
-    <com.worldventures.dreamtrips.modules.common.view.custom.PinProgressButton
-        android:id="@id/download_progress"
-        android:layout_width="@dimen/pin_progress_button_size"
-        android:layout_height="@dimen/pin_progress_button_size"
-        android:layout_alignParentRight="true"
-        android:padding="@dimen/spacing_small"
-        custom:circleColor="@color/pin_progress_bg_for_white_holder"/>
+   <com.worldventures.dreamtrips.modules.common.view.custom.PinProgressButton
+         android:id="@id/download_progress"
+         android:layout_width="@dimen/pin_progress_button_size"
+         android:layout_height="@dimen/pin_progress_button_size"
+         android:layout_alignParentRight="true"
+         android:padding="@dimen/spacing_small"
+         custom:circleColor="@color/pin_progress_bg_for_white_holder"
+         />
 
-    <TextView
-        android:id="@+id/description"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/image_holder"
-        android:layout_marginTop="@dimen/spacing_small"
-        android:ellipsize="end"
-        android:maxLines="2"
-        android:textColor="@android:color/black"
-        android:textSize="@dimen/font_medium"
-        tools:text="Buck is a build system developed and used by Facebook. It encourages the creation of small, reusable modules consisting of code and resources, and supports a variety of languages on many platforms."/>
+   <TextView
+         android:id="@+id/description"
+         android:layout_width="wrap_content"
+         android:layout_height="wrap_content"
+         android:layout_below="@+id/image_holder"
+         android:layout_marginTop="@dimen/spacing_small"
+         android:ellipsize="end"
+         android:maxLines="2"
+         android:textColor="@android:color/black"
+         android:textSize="@dimen/font_medium"
+         tools:text="Buck is a build system developed and used by Facebook. It encourages the creation of small, reusable modules consisting of code and resources, and supports a variety of languages on many platforms."
+         />
 
 </RelativeLayout>

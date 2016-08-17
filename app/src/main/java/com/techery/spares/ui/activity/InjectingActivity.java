@@ -20,111 +20,109 @@ import de.greenrobot.event.EventBus;
 
 public abstract class InjectingActivity extends AppCompatActivity implements Injector {
 
-    private ObjectGraph objectGraph;
+   private ObjectGraph objectGraph;
 
-    @Inject
-    @Global
-    protected EventBus eventBus;
+   @Inject @Global protected EventBus eventBus;
 
-    @Override
-    public ObjectGraph getObjectGraph() {
-        if (objectGraph == null) {
-            setupObjectGraph();
-        }
+   @Override
+   public ObjectGraph getObjectGraph() {
+      if (objectGraph == null) {
+         setupObjectGraph();
+      }
 
-        return objectGraph;
-    }
+      return objectGraph;
+   }
 
-    @Override
-    public void inject(Object target) {
-        getObjectGraph().inject(target);
-    }
+   @Override
+   public void inject(Object target) {
+      getObjectGraph().inject(target);
+   }
 
-    protected void afterInject() {
-    }
+   protected void afterInject() {
+   }
 
-    protected void setupObjectGraph() {
-        objectGraph = getApplicationInjector().getObjectGraph().plus(getModules().toArray());
-    }
+   protected void setupObjectGraph() {
+      objectGraph = getApplicationInjector().getObjectGraph().plus(getModules().toArray());
+   }
 
-    private Injector getApplicationInjector() {
-        return (Injector) getApplication();
-    }
+   private Injector getApplicationInjector() {
+      return (Injector) getApplication();
+   }
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
+   @Override
+   protected void onCreate(Bundle savedInstanceState) {
+      super.onCreate(savedInstanceState);
 
-        setupObjectGraph();
-        inject(this);
-        afterInject();
+      setupObjectGraph();
+      inject(this);
+      afterInject();
 
-        beforeCreateView(savedInstanceState);
+      beforeCreateView(savedInstanceState);
 
-        setupLayout();
-        ButterKnife.inject(this);
-    }
+      setupLayout();
+      ButterKnife.inject(this);
+   }
 
-    @Override
-    protected void onPostCreate(Bundle savedInstanceState) {
-        super.onPostCreate(savedInstanceState);
-        afterCreateView(savedInstanceState);
-    }
+   @Override
+   protected void onPostCreate(Bundle savedInstanceState) {
+      super.onPostCreate(savedInstanceState);
+      afterCreateView(savedInstanceState);
+   }
 
-    public void setupLayout() {
-        Layout layout = this.getClass().getAnnotation(Layout.class);
-        if (layout != null) {
-            setContentView(layout.value());
-        }
-    }
+   public void setupLayout() {
+      Layout layout = this.getClass().getAnnotation(Layout.class);
+      if (layout != null) {
+         setContentView(layout.value());
+      }
+   }
 
 
-    protected void beforeCreateView(Bundle savedInstanceState) {
-        //nothing to here
-    }
+   protected void beforeCreateView(Bundle savedInstanceState) {
+      //nothing to here
+   }
 
-    protected void afterCreateView(Bundle savedInstanceState) {
-        //nothing to here
-    }
+   protected void afterCreateView(Bundle savedInstanceState) {
+      //nothing to here
+   }
 
-    @Override
-    protected void onResume() {
-        super.onResume();
-        try {
-            this.eventBus.registerSticky(this);
-        } catch (Exception e) {
-            //Ignored
-        }
-    }
+   @Override
+   protected void onResume() {
+      super.onResume();
+      try {
+         this.eventBus.registerSticky(this);
+      } catch (Exception e) {
+         //Ignored
+      }
+   }
 
-    @Override
-    protected void onPause() {
-        super.onPause();
-        if (eventBus.isRegistered(this)) {
-            this.eventBus.unregister(this);
-        }
-    }
+   @Override
+   protected void onPause() {
+      super.onPause();
+      if (eventBus.isRegistered(this)) {
+         this.eventBus.unregister(this);
+      }
+   }
 
-    @Override
-    protected void onDestroy() {
-        this.objectGraph = null;
-        super.onDestroy();
-    }
+   @Override
+   protected void onDestroy() {
+      this.objectGraph = null;
+      super.onDestroy();
+   }
 
-    @Override
-    public boolean onCreateOptionsMenu(android.view.Menu menu) {
-        MenuResource menuResource = this.getClass().getAnnotation(MenuResource.class);
-        if (menuResource != null) {
-            getMenuInflater().inflate(menuResource.value(), menu);
-            return true;
-        } else {
-            return super.onCreateOptionsMenu(menu);
-        }
-    }
+   @Override
+   public boolean onCreateOptionsMenu(android.view.Menu menu) {
+      MenuResource menuResource = this.getClass().getAnnotation(MenuResource.class);
+      if (menuResource != null) {
+         getMenuInflater().inflate(menuResource.value(), menu);
+         return true;
+      } else {
+         return super.onCreateOptionsMenu(menu);
+      }
+   }
 
-    protected List<Object> getModules() {
-        List<Object> result = new ArrayList<Object>();
-        result.add(new InjectingActivityModule(this, this));
-        return result;
-    }
+   protected List<Object> getModules() {
+      List<Object> result = new ArrayList<Object>();
+      result.add(new InjectingActivityModule(this, this));
+      return result;
+   }
 }

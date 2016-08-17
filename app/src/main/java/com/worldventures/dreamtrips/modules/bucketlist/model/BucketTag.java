@@ -8,9 +8,9 @@ import java.io.Serializable;
 @DefaultSerializer(CompatibleFieldSerializer.class)
 public class BucketTag implements Serializable {
 
-    private String name;
+   private String name;
 
-    public String getName() {
-        return name;
-    }
+   public String getName() {
+      return name;
+   }
 }

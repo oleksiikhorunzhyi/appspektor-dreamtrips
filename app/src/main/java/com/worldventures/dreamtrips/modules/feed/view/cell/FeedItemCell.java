@@ -34,84 +34,84 @@ import butterknife.Optional;
 @Layout(R.layout.adapter_feed_item_cell)
 public class FeedItemCell<ITEM extends FeedItem> extends AbstractCell<ITEM> {
 
-    @InjectView(R.id.cell_container) ViewGroup cellContainer;
-    @Inject @ForActivity Provider<Injector> injectorProvider;
-    @Inject @Named(RouteCreatorModule.PROFILE) RouteCreator<Integer> routeCreator;
+   @InjectView(R.id.cell_container) ViewGroup cellContainer;
+   @Inject @ForActivity Provider<Injector> injectorProvider;
+   @Inject @Named(RouteCreatorModule.PROFILE) RouteCreator<Integer> routeCreator;
 
-    private CommentCellHelper commentCellHelper;
-    private FeedItemDetailsCell feedItemDetailsCell;
+   private CommentCellHelper commentCellHelper;
+   private FeedItemDetailsCell feedItemDetailsCell;
 
-    public FeedItemCell(View view) {
-        super(view);
-    }
+   public FeedItemCell(View view) {
+      super(view);
+   }
 
-    @Override
-    public void fillWithItem(ITEM item) {
-        if (feedItemDetailsCell == null) {
-            feedItemDetailsCell = createCell(item);
-            cellContainer.addView(feedItemDetailsCell.itemView);
-            feedItemDetailsCell.setEventBus(getEventBus());
-            injectorProvider.get().inject(feedItemDetailsCell);
-            feedItemDetailsCell.afterInject();
-            //
-            commentCellHelper = new CommentCellHelper(itemView.getContext());
-            commentCellHelper.attachView(itemView);
-            feedItemDetailsCell.itemView.setOnClickListener(view -> feedItemDetailsCell.openItemDetails());
-            feedItemDetailsCell.setLikersPanelListener(this::hideLikersPanel);
-        }
-        //
-        feedItemDetailsCell.fillWithItem(item);
-        super.fillWithItem(item);
-    }
+   @Override
+   public void fillWithItem(ITEM item) {
+      if (feedItemDetailsCell == null) {
+         feedItemDetailsCell = createCell(item);
+         cellContainer.addView(feedItemDetailsCell.itemView);
+         feedItemDetailsCell.setEventBus(getEventBus());
+         injectorProvider.get().inject(feedItemDetailsCell);
+         feedItemDetailsCell.afterInject();
+         //
+         commentCellHelper = new CommentCellHelper(itemView.getContext());
+         commentCellHelper.attachView(itemView);
+         feedItemDetailsCell.itemView.setOnClickListener(view -> feedItemDetailsCell.openItemDetails());
+         feedItemDetailsCell.setLikersPanelListener(this::hideLikersPanel);
+      }
+      //
+      feedItemDetailsCell.fillWithItem(item);
+      super.fillWithItem(item);
+   }
 
-    private FeedItemDetailsCell createCell(ITEM item) {
-        LayoutInflater inflater = LayoutInflater.from(itemView.getContext());
-        switch (item.getType()) {
-            case POST:
-                return new PostFeedItemCell(inflater.inflate(R.layout.adapter_item_feed_post_event, null));
-            case PHOTO:
-                return new PhotoFeedItemDetailsCell(inflater.inflate(R.layout.adapter_item_feed_photo_event, null));
-            case TRIP:
-                return new TripFeedItemDetailsCell(inflater.inflate(R.layout.adapter_item_feed_trip_event, null));
-            case BUCKET_LIST_ITEM:
-                return new BucketFeedItemDetailsCell(inflater.inflate(R.layout.adapter_item_feed_bucket_event, null));
-            default:
-                return new UndefinedFeedItemDetailsCell(inflater.inflate(R.layout.adapter_item_feed_undefined_event, null));
-        }
-    }
+   private FeedItemDetailsCell createCell(ITEM item) {
+      LayoutInflater inflater = LayoutInflater.from(itemView.getContext());
+      switch (item.getType()) {
+         case POST:
+            return new PostFeedItemCell(inflater.inflate(R.layout.adapter_item_feed_post_event, null));
+         case PHOTO:
+            return new PhotoFeedItemDetailsCell(inflater.inflate(R.layout.adapter_item_feed_photo_event, null));
+         case TRIP:
+            return new TripFeedItemDetailsCell(inflater.inflate(R.layout.adapter_item_feed_trip_event, null));
+         case BUCKET_LIST_ITEM:
+            return new BucketFeedItemDetailsCell(inflater.inflate(R.layout.adapter_item_feed_bucket_event, null));
+         default:
+            return new UndefinedFeedItemDetailsCell(inflater.inflate(R.layout.adapter_item_feed_undefined_event, null));
+      }
+   }
 
-    @Override
-    protected void syncUIStateWithModel() {
-        if (commentCellHelper != null) {
-            List<Comment> commentList = getModelObject().getItem().getComments();
-            Comment comment = commentList.isEmpty() ? null : Queryable.from(commentList).lastOrDefault();
-            if (comment != null) {
-                commentCellHelper.showContainer();
-                commentCellHelper.set(comment, injectorProvider.get());
-            } else {
-                commentCellHelper.hideContainer();
-            }
-        }
-    }
+   @Override
+   protected void syncUIStateWithModel() {
+      if (commentCellHelper != null) {
+         List<Comment> commentList = getModelObject().getItem().getComments();
+         Comment comment = commentList.isEmpty() ? null : Queryable.from(commentList).lastOrDefault();
+         if (comment != null) {
+            commentCellHelper.showContainer();
+            commentCellHelper.set(comment, injectorProvider.get());
+         } else {
+            commentCellHelper.hideContainer();
+         }
+      }
+   }
 
-    private void hideLikersPanel() {
-        View likersPanel = itemView.findViewById(R.id.likers_panel);
-        if (likersPanel != null) likersPanel.setVisibility(View.GONE);
-    }
+   private void hideLikersPanel() {
+      View likersPanel = itemView.findViewById(R.id.likers_panel);
+      if (likersPanel != null) likersPanel.setVisibility(View.GONE);
+   }
 
-    @Optional
-    @OnClick(R.id.comment_preview)
-    void commentsPreviewClicked() {
-        feedItemDetailsCell.openItemDetails();
-    }
+   @Optional
+   @OnClick(R.id.comment_preview)
+   void commentsPreviewClicked() {
+      feedItemDetailsCell.openItemDetails();
+   }
 
-    @Optional
-    @OnClick(R.id.user_photo)
-    void commentOwnerClicked() {
-        User user = commentCellHelper.getComment().getOwner();
-        router.moveTo(routeCreator.createRoute(user.getId()), NavigationConfigBuilder.forActivity()
-                .toolbarConfig(ToolbarConfig.Builder.create().visible(false).build())
-                .data(new UserBundle(user))
-                .build());
-    }
+   @Optional
+   @OnClick(R.id.user_photo)
+   void commentOwnerClicked() {
+      User user = commentCellHelper.getComment().getOwner();
+      router.moveTo(routeCreator.createRoute(user.getId()), NavigationConfigBuilder.forActivity()
+            .toolbarConfig(ToolbarConfig.Builder.create().visible(false).build())
+            .data(new UserBundle(user))
+            .build());
+   }
 }

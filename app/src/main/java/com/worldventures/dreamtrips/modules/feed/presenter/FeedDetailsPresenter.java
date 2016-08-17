@@ -20,114 +20,114 @@ import timber.log.Timber;
 
 public class FeedDetailsPresenter<V extends FeedDetailsPresenter.View> extends BaseCommentPresenter<V> {
 
-    private static final String TAG = FeedItemDetailsPresenter.class.getSimpleName();
+   private static final String TAG = FeedItemDetailsPresenter.class.getSimpleName();
 
-    protected FeedItem feedItem;
+   protected FeedItem feedItem;
 
-    private WeakHandler handler = new WeakHandler();
+   private WeakHandler handler = new WeakHandler();
 
-    @Inject FeedEntityManager entityManager;
+   @Inject FeedEntityManager entityManager;
 
-    public FeedDetailsPresenter(FeedItem feedItem) {
-        super(feedItem.getItem());
-        this.feedItem = feedItem;
-    }
+   public FeedDetailsPresenter(FeedItem feedItem) {
+      super(feedItem.getItem());
+      this.feedItem = feedItem;
+   }
 
-    @Override
-    public void takeView(V view) {
-        super.takeView(view);
-        view.setFeedItem(feedItem);
-        loadFullEventInfo();
-    }
+   @Override
+   public void takeView(V view) {
+      super.takeView(view);
+      view.setFeedItem(feedItem);
+      loadFullEventInfo();
+   }
 
-    @Override
-    public void onInjected() {
-        super.onInjected();
-        entityManager.setRequestingPresenter(this);
-    }
+   @Override
+   public void onInjected() {
+      super.onInjected();
+      entityManager.setRequestingPresenter(this);
+   }
 
-    @Override
-    public void dropView() {
-        super.dropView();
-        handler.removeCallbacksAndMessages(null);
-    }
+   @Override
+   public void dropView() {
+      super.dropView();
+      handler.removeCallbacksAndMessages(null);
+   }
 
-    //todo until Trip becomes as all normal entities
-    public boolean isTrip() {
-        return feedItem instanceof TripFeedItem;
-    }
+   //todo until Trip becomes as all normal entities
+   public boolean isTrip() {
+      return feedItem instanceof TripFeedItem;
+   }
 
-    @Override
-    protected boolean isNeedCheckCommentsWhenStart() {
-        return false;
-    }
+   @Override
+   protected boolean isNeedCheckCommentsWhenStart() {
+      return false;
+   }
 
-    private void loadFullEventInfo() {
-        doRequest(new GetFeedEntityQuery(feedEntity.getUid()), feedEntityHolder -> {
-            updateFullEventInfo(feedEntityHolder);
-        }, spiceException -> Timber.e(spiceException, TAG));
-    }
+   private void loadFullEventInfo() {
+      doRequest(new GetFeedEntityQuery(feedEntity.getUid()), feedEntityHolder -> {
+         updateFullEventInfo(feedEntityHolder);
+      }, spiceException -> Timber.e(spiceException, TAG));
+   }
 
-    protected void updateFullEventInfo(FeedEntityHolder feedEntityHolder) {
-        surviveNeedfulFields(feedEntity, feedEntityHolder);
-        feedEntity = feedEntityHolder.getItem();
-        feedEntity.setComments(null);
-        feedItem.setItem(feedEntity);
-        eventBus.post(new FeedEntityChangedEvent(feedEntity));
-        checkCommentsAndLikesToLoad();
-        view.updateFeedItem(feedItem);
-        view.showAdditionalInfo(feedEntityHolder.getItem().getOwner());
-    }
+   protected void updateFullEventInfo(FeedEntityHolder feedEntityHolder) {
+      surviveNeedfulFields(feedEntity, feedEntityHolder);
+      feedEntity = feedEntityHolder.getItem();
+      feedEntity.setComments(null);
+      feedItem.setItem(feedEntity);
+      eventBus.post(new FeedEntityChangedEvent(feedEntity));
+      checkCommentsAndLikesToLoad();
+      view.updateFeedItem(feedItem);
+      view.showAdditionalInfo(feedEntityHolder.getItem().getOwner());
+   }
 
-    private void surviveNeedfulFields(FeedEntity feedEntity, FeedEntityHolder feedEntityHolder) {
-        feedEntity.setFirstLikerName(feedEntity.getFirstLikerName());
-        if (feedEntityHolder.getType() == FeedEntityHolder.Type.TRIP) {
-            TripModel freshItem = (TripModel) feedEntityHolder.getItem();
-            TripModel oldItem = (TripModel) feedEntity;
-            freshItem.setPrice(oldItem.getPrice());
-            freshItem.setPriceAvailable(oldItem.isPriceAvailable());
-            freshItem.setInBucketList(oldItem.isInBucketList());
-        }
-    }
+   private void surviveNeedfulFields(FeedEntity feedEntity, FeedEntityHolder feedEntityHolder) {
+      feedEntity.setFirstLikerName(feedEntity.getFirstLikerName());
+      if (feedEntityHolder.getType() == FeedEntityHolder.Type.TRIP) {
+         TripModel freshItem = (TripModel) feedEntityHolder.getItem();
+         TripModel oldItem = (TripModel) feedEntity;
+         freshItem.setPrice(oldItem.getPrice());
+         freshItem.setPriceAvailable(oldItem.isPriceAvailable());
+         freshItem.setInBucketList(oldItem.isInBucketList());
+      }
+   }
 
-    public void onEvent(FeedEntityChangedEvent event) {
-        if (event.getFeedEntity().equals(feedItem.getItem())) {
-            feedItem.setItem(event.getFeedEntity());
-            feedEntity = event.getFeedEntity();
-            view.updateFeedItem(feedItem);
-        }
-    }
+   public void onEvent(FeedEntityChangedEvent event) {
+      if (event.getFeedEntity().equals(feedItem.getItem())) {
+         feedItem.setItem(event.getFeedEntity());
+         feedEntity = event.getFeedEntity();
+         view.updateFeedItem(feedItem);
+      }
+   }
 
-    public void onEvent(LikesPressedEvent event) {
-        if (view.isVisibleOnScreen()) {
-            FeedEntity model = event.getModel();
-            if (!model.isLiked()) {
-                entityManager.like(model);
-            } else {
-                entityManager.unlike(model);
-            }
-        }
-    }
+   public void onEvent(LikesPressedEvent event) {
+      if (view.isVisibleOnScreen()) {
+         FeedEntity model = event.getModel();
+         if (!model.isLiked()) {
+            entityManager.like(model);
+         } else {
+            entityManager.unlike(model);
+         }
+      }
+   }
 
-    public void onEvent(EntityLikedEvent event) {
-        feedEntity.syncLikeState(event.getFeedEntity());
-        eventBus.post(new FeedEntityChangedEvent(feedEntity));
-    }
+   public void onEvent(EntityLikedEvent event) {
+      feedEntity.syncLikeState(event.getFeedEntity());
+      eventBus.post(new FeedEntityChangedEvent(feedEntity));
+   }
 
-    public void onEvent(FeedEntityCommentedEvent event) {
-        if (event.getFeedEntity().equals(feedItem.getItem())) {
-            feedItem.setItem(event.getFeedEntity());
-            feedEntity = event.getFeedEntity();
-            view.updateFeedItem(feedItem);
-        }
-    }
+   public void onEvent(FeedEntityCommentedEvent event) {
+      if (event.getFeedEntity().equals(feedItem.getItem())) {
+         feedItem.setItem(event.getFeedEntity());
+         feedEntity = event.getFeedEntity();
+         view.updateFeedItem(feedItem);
+      }
+   }
 
-    public interface View extends BaseCommentPresenter.View {
+   public interface View extends BaseCommentPresenter.View {
 
-        void setFeedItem(FeedItem feedItem);
+      void setFeedItem(FeedItem feedItem);
 
-        void updateFeedItem(FeedItem feedItem);
+      void updateFeedItem(FeedItem feedItem);
 
-        void showAdditionalInfo(User user);
-    }
+      void showAdditionalInfo(User user);
+   }
 }

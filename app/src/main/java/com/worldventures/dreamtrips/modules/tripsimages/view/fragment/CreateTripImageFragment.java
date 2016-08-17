@@ -11,18 +11,18 @@ import com.worldventures.dreamtrips.modules.tripsimages.presenter.CreateTripImag
 @Layout(R.layout.layout_post)
 public class CreateTripImageFragment extends CreateEntityFragment<CreateTripImagePresenter> {
 
-    @Override
-    protected CreateTripImagePresenter createPresenter(Bundle savedInstanceState) {
-        return new CreateTripImagePresenter();
-    }
+   @Override
+   protected CreateTripImagePresenter createPresenter(Bundle savedInstanceState) {
+      return new CreateTripImagePresenter();
+   }
 
-    @Override
-    public void setText(String text) {
-        // don't need to attach post description field
-    }
+   @Override
+   public void setText(String text) {
+      // don't need to attach post description field
+   }
 
-    @Override
-    protected Route getRoute() {
-        return Route.PHOTO_CREATE;
-    }
+   @Override
+   protected Route getRoute() {
+      return Route.PHOTO_CREATE;
+   }
 }

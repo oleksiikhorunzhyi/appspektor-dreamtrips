@@ -6,9 +6,9 @@ import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchant;
 
 public interface MerchantInflater {
 
-    void setView(View rootView);
+   void setView(View rootView);
 
-    void applyMerchant(DtlMerchant merchant);
+   void applyMerchant(DtlMerchant merchant);
 
-    void release();
+   void release();
 }

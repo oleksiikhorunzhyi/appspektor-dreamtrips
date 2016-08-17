@@ -5,11 +5,11 @@ import com.worldventures.dreamtrips.modules.membership.model.Podcast;
 import com.worldventures.dreamtrips.modules.video.model.CachedEntity;
 
 public interface PodcastCellDelegate extends CellDelegate<Podcast> {
-    void onDownloadPodcast(CachedEntity entity);
+   void onDownloadPodcast(CachedEntity entity);
 
-    void onDeletePodcast(CachedEntity entity);
+   void onDeletePodcast(CachedEntity entity);
 
-    void onCancelCachingPodcast(CachedEntity entity);
+   void onCancelCachingPodcast(CachedEntity entity);
 
-    void play(Podcast podcast);
+   void play(Podcast podcast);
 }

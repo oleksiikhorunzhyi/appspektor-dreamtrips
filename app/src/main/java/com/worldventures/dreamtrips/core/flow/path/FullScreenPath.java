@@ -2,7 +2,7 @@ package com.worldventures.dreamtrips.core.flow.path;
 
 public interface FullScreenPath {
 
-    boolean isFullScreen();
+   boolean isFullScreen();
 
-    boolean shouldHideDrawer();
+   boolean shouldHideDrawer();
 }

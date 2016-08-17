@@ -9,19 +9,19 @@ import rx.schedulers.Schedulers;
 
 public class TripMapInteractor {
 
-    private ActionPipe<GetMapObjectsHttpAction> mapObjectsActionPipe;
-    private ActionPipe<GetDetailedTripsHttpAction> detailedTripsActionPipe;
+   private ActionPipe<GetMapObjectsHttpAction> mapObjectsActionPipe;
+   private ActionPipe<GetDetailedTripsHttpAction> detailedTripsActionPipe;
 
-    public TripMapInteractor(Janet janet) {
-        mapObjectsActionPipe = janet.createPipe(GetMapObjectsHttpAction.class, Schedulers.io());
-        detailedTripsActionPipe = janet.createPipe(GetDetailedTripsHttpAction.class, Schedulers.io());
-    }
+   public TripMapInteractor(Janet janet) {
+      mapObjectsActionPipe = janet.createPipe(GetMapObjectsHttpAction.class, Schedulers.io());
+      detailedTripsActionPipe = janet.createPipe(GetDetailedTripsHttpAction.class, Schedulers.io());
+   }
 
-    public ActionPipe<GetMapObjectsHttpAction> mapObjectsPipe() {
-        return mapObjectsActionPipe;
-    }
+   public ActionPipe<GetMapObjectsHttpAction> mapObjectsPipe() {
+      return mapObjectsActionPipe;
+   }
 
-    public ActionPipe<GetDetailedTripsHttpAction> detailedTripsPipe() {
-        return detailedTripsActionPipe;
-    }
+   public ActionPipe<GetDetailedTripsHttpAction> detailedTripsPipe() {
+      return detailedTripsActionPipe;
+   }
 }

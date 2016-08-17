@@ -18,41 +18,39 @@ import com.worldventures.dreamtrips.modules.feed.view.cell.BucketFeedEntityDetai
 import com.worldventures.dreamtrips.modules.feed.view.cell.FeedEntityDetailsCell;
 
 @Layout(R.layout.fragment_comments_with_entity_details)
-public class FeedEntityDetailsFragment extends FeedDetailsFragment<FeedEntityDetailsPresenter, FeedEntityDetailsBundle>
-        implements FeedEntityDetailsPresenter.View {
+public class FeedEntityDetailsFragment extends FeedDetailsFragment<FeedEntityDetailsPresenter, FeedEntityDetailsBundle> implements FeedEntityDetailsPresenter.View {
 
-    @Override
-    protected FeedEntityDetailsPresenter createPresenter(Bundle savedInstanceState) {
-        return new FeedEntityDetailsPresenter(getArgs().getFeedItem(), getArgs().isSlave());
-    }
+   @Override
+   protected FeedEntityDetailsPresenter createPresenter(Bundle savedInstanceState) {
+      return new FeedEntityDetailsPresenter(getArgs().getFeedItem(), getArgs().isSlave());
+   }
 
-    @Override
-    protected void registerCells() {
-        adapter.registerCell(BucketFeedItem.class, BucketFeedEntityDetailsCell.class);
-        adapter.registerCell(TripFeedItem.class, FeedEntityDetailsCell.class);
-    }
+   @Override
+   protected void registerCells() {
+      adapter.registerCell(BucketFeedItem.class, BucketFeedEntityDetailsCell.class);
+      adapter.registerCell(TripFeedItem.class, FeedEntityDetailsCell.class);
+   }
 
-    @Override
-    public void onDestroyView() {
-        FragmentHelper.resetChildFragmentManagerField(this);
-        //
-        super.onDestroyView();
-    }
+   @Override
+   public void onDestroyView() {
+      FragmentHelper.resetChildFragmentManagerField(this);
+      //
+      super.onDestroyView();
+   }
 
-    @Override
-    public void showDetails(Route route, Parcelable extra) {
-        Fragment entityFragment = getChildFragmentManager().findFragmentById(R.id.fragment_details);
-        boolean notAdded = entityFragment == null
-                || entityFragment.getView() == null || entityFragment.getView().getParent() == null
-                || !entityFragment.getClass().getName().equals(route.getClazzName());
-        if (notAdded) {
-            NavigationConfig config = NavigationConfigBuilder.forFragment()
-                    .backStackEnabled(false)
-                    .fragmentManager(getChildFragmentManager())
-                    .data(extra)
-                    .containerId(R.id.fragment_details)
-                    .build();
-            router.moveTo(route, config);
-        }
-    }
+   @Override
+   public void showDetails(Route route, Parcelable extra) {
+      Fragment entityFragment = getChildFragmentManager().findFragmentById(R.id.fragment_details);
+      boolean notAdded = entityFragment == null || entityFragment.getView() == null || entityFragment.getView()
+            .getParent() == null || !entityFragment.getClass().getName().equals(route.getClazzName());
+      if (notAdded) {
+         NavigationConfig config = NavigationConfigBuilder.forFragment()
+               .backStackEnabled(false)
+               .fragmentManager(getChildFragmentManager())
+               .data(extra)
+               .containerId(R.id.fragment_details)
+               .build();
+         router.moveTo(route, config);
+      }
+   }
 }

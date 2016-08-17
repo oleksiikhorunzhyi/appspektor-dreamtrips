@@ -13,19 +13,19 @@ import io.techery.janet.http.annotations.Response;
 @HttpAction("/api/{uid}/comments")
 public class GetCommentsHttpAction extends AuthorizedHttpAction {
 
-    @Path("uid") public final String postUid;
-    @Query("page") public final int page;
-    @Query("per_page") public final int perPage;
+   @Path("uid") public final String postUid;
+   @Query("page") public final int page;
+   @Query("per_page") public final int perPage;
 
-    @Response List<Comment> comments;
+   @Response List<Comment> comments;
 
-    public GetCommentsHttpAction(String postUid, int page, int perPage) {
-        this.postUid = postUid;
-        this.page = page;
-        this.perPage = perPage;
-    }
+   public GetCommentsHttpAction(String postUid, int page, int perPage) {
+      this.postUid = postUid;
+      this.page = page;
+      this.perPage = perPage;
+   }
 
-    public List<Comment> response() {
-        return comments;
-    }
+   public List<Comment> response() {
+      return comments;
+   }
 }

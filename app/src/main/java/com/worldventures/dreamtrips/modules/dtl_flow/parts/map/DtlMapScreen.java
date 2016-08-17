@@ -16,49 +16,49 @@ import rx.Observable;
 
 public interface DtlMapScreen extends DtlScreen {
 
-    void updateToolbarLocationTitle(@Nullable DtlLocation dtlLocation);
+   void updateToolbarLocationTitle(@Nullable DtlLocation dtlLocation);
 
-    void updateToolbarSearchCaption(@Nullable String searchCaption);
+   void updateToolbarSearchCaption(@Nullable String searchCaption);
 
-    GoogleMap getMap();
+   GoogleMap getMap();
 
-    void prepareMap();
+   void prepareMap();
 
-    void showProgress(boolean show);
+   void showProgress(boolean show);
 
-    void addLocationMarker(LatLng location);
+   void addLocationMarker(LatLng location);
 
-    void addPin(String id, LatLng latLng, DtlMerchantType type);
+   void addPin(String id, LatLng latLng, DtlMerchantType type);
 
-    void clearMap();
+   void clearMap();
 
-    void prepareInfoWindow(int height);
+   void prepareInfoWindow(int height);
 
-    void centerIn(Location location);
+   void centerIn(Location location);
 
-    void renderPins();
+   void renderPins();
 
-    void toggleDiningFilterSwitch(boolean enabled);
+   void toggleDiningFilterSwitch(boolean enabled);
 
-    void cameraPositionChange(CameraPosition cameraPosition);
+   void cameraPositionChange(CameraPosition cameraPosition);
 
-    void markerClick(Marker marker);
+   void markerClick(Marker marker);
 
-    void showButtonLoadMerchants(boolean show);
+   void showButtonLoadMerchants(boolean show);
 
-    void zoom(float zoom);
+   void zoom(float zoom);
 
-    void tryHideMyLocationButton(boolean hide);
+   void tryHideMyLocationButton(boolean hide);
 
-    void animateTo(LatLng coordinates, int offset);
+   void animateTo(LatLng coordinates, int offset);
 
-    Observable<Boolean> getToggleObservable();
+   Observable<Boolean> getToggleObservable();
 
-    void showPinInfo(DtlMerchant merchant);
+   void showPinInfo(DtlMerchant merchant);
 
-    void openFilter();
+   void openFilter();
 
-    boolean isToolbarCollapsed();
+   boolean isToolbarCollapsed();
 
-    void setFilterButtonState(boolean enabled);
+   void setFilterButtonState(boolean enabled);
 }

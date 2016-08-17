@@ -1,55 +1,62 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@color/grey"
-    android:orientation="vertical">
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+      android:layout_width="match_parent"
+      android:layout_height="match_parent"
+      android:background="@color/grey"
+      android:orientation="vertical"
+      >
 
-    <com.worldventures.dreamtrips.modules.common.view.custom.KeyCallbackEditText
-        android:id="@+id/description"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@color/white"
-        android:gravity="top"
-        android:hint="@string/post_hint_with_hashtag"
-        android:maxLines="4"
-        android:minLines="4"
-        android:padding="@dimen/spacing_normal"
-        android:textSize="@dimen/font_normal"/>
+   <com.worldventures.dreamtrips.modules.common.view.custom.KeyCallbackEditText
+         android:id="@+id/description"
+         android:layout_width="match_parent"
+         android:layout_height="wrap_content"
+         android:background="@color/white"
+         android:gravity="top"
+         android:hint="@string/post_hint_with_hashtag"
+         android:maxLines="4"
+         android:minLines="4"
+         android:padding="@dimen/spacing_normal"
+         android:textSize="@dimen/font_normal"
+         />
 
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/divider_height"
-        android:background="@color/black"/>
+   <View
+         android:layout_width="match_parent"
+         android:layout_height="@dimen/divider_height"
+         android:background="@color/black"
+         />
 
-    <FrameLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+   <FrameLayout
+         android:layout_width="match_parent"
+         android:layout_height="wrap_content"
+         >
 
-        <com.worldventures.dreamtrips.modules.common.view.custom.ProgressEmptyRecyclerView
+      <com.worldventures.dreamtrips.modules.common.view.custom.ProgressEmptyRecyclerView
             android:id="@+id/suggestions"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@android:color/white"/>
+            android:background="@android:color/white"
+            />
 
-        <LinearLayout
+      <LinearLayout
             android:id="@+id/suggestionProgress"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@android:color/white"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            >
 
-            <ProgressBar
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"/>
+         <ProgressBar
+               android:layout_width="wrap_content"
+               android:layout_height="wrap_content"
+               android:layout_gravity="center_horizontal"
+               />
 
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="0.5dp"
-                android:background="@color/grey"/>
-        </LinearLayout>
-    </FrameLayout>
+         <View
+               android:layout_width="match_parent"
+               android:layout_height="0.5dp"
+               android:background="@color/grey"
+               />
+      </LinearLayout>
+   </FrameLayout>
 
 </LinearLayout>

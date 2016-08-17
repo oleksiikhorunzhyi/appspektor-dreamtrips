@@ -13,36 +13,35 @@ import java.util.List;
 
 public class ThreeSixtyVideosPresenter extends PresentationVideosPresenter<ThreeSixtyVideosPresenter.View> {
 
-    @Override
-    protected MemberVideosRequest getMemberVideosRequest() {
-        return new MemberVideosRequest(DreamTripsApi.TYPE_MEMBER_360);
-    }
+   @Override
+   protected MemberVideosRequest getMemberVideosRequest() {
+      return new MemberVideosRequest(DreamTripsApi.TYPE_MEMBER_360);
+   }
 
-    @Override
-    protected boolean isNeedToSendAnalytics() {
-        return false;
-    }
+   @Override
+   protected boolean isNeedToSendAnalytics() {
+      return false;
+   }
 
-    @Override
-    protected void addCategories(List<Category> categories) {
-        currentItems = new ArrayList<>();
+   @Override
+   protected void addCategories(List<Category> categories) {
+      currentItems = new ArrayList<>();
 
-        List<Video> recentVideos = new ArrayList<>();
-        List<Video> featuredVideos = new ArrayList<>();
+      List<Video> recentVideos = new ArrayList<>();
+      List<Video> featuredVideos = new ArrayList<>();
 
-        Queryable.from(categories).forEachR(cat -> {
-            recentVideos.addAll(Queryable.from(cat.getVideos()).filter(Video::isRecent).toList());
-            featuredVideos.addAll(Queryable.from(cat.getVideos()).filter(Video::isFeatured).toList());
-        });
+      Queryable.from(categories).forEachR(cat -> {
+         recentVideos.addAll(Queryable.from(cat.getVideos()).filter(Video::isRecent).toList());
+         featuredVideos.addAll(Queryable.from(cat.getVideos()).filter(Video::isFeatured).toList());
+      });
 
-        currentItems.add(new MediaHeader(context.getString(R.string.featured_header)));
-        currentItems.addAll(featuredVideos);
-        currentItems.add(new MediaHeader(context.getString(R.string.recent_header)));
-        currentItems.addAll(recentVideos);
+      currentItems.add(new MediaHeader(context.getString(R.string.featured_header)));
+      currentItems.addAll(featuredVideos);
+      currentItems.add(new MediaHeader(context.getString(R.string.recent_header)));
+      currentItems.addAll(recentVideos);
 
-        view.setItems(currentItems);
-    }
+      view.setItems(currentItems);
+   }
 
-    public interface View extends PresentationVideosPresenter.View {
-    }
+   public interface View extends PresentationVideosPresenter.View {}
 }

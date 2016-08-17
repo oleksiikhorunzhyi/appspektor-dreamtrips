@@ -9,14 +9,14 @@ import rx.Observable;
 
 public class MockContactLoader implements ContactsLoader {
 
-    List<MessengerUser> messengerUsers;
+   List<MessengerUser> messengerUsers;
 
-    public MockContactLoader(List<MessengerUser> messengerUsers) {
-        this.messengerUsers = messengerUsers;
-    }
+   public MockContactLoader(List<MessengerUser> messengerUsers) {
+      this.messengerUsers = messengerUsers;
+   }
 
-    @Override
-    public Observable<List<MessengerUser>> load() {
-        return Observable.just(messengerUsers);
-    }
+   @Override
+   public Observable<List<MessengerUser>> load() {
+      return Observable.just(messengerUsers);
+   }
 }

@@ -39,167 +39,152 @@ import javax.inject.Named;
 
 import butterknife.InjectView;
 
-public abstract class BaseUsersFragment<T extends BaseUserListPresenter, B extends BaseUsersBundle> extends BaseFragmentWithArgs<T, B>
-        implements BaseUserListPresenter.View, SwipeRefreshLayout.OnRefreshListener {
+public abstract class BaseUsersFragment<T extends BaseUserListPresenter, B extends BaseUsersBundle> extends BaseFragmentWithArgs<T, B> implements BaseUserListPresenter.View, SwipeRefreshLayout.OnRefreshListener {
 
-    @InjectView(R.id.empty)
-    protected RelativeLayout emptyView;
-    @InjectView(R.id.recyclerViewFriends)
-    protected EmptyRecyclerView recyclerView;
-    @InjectView(R.id.swipe_container)
-    protected SwipeRefreshLayout refreshLayout;
-    @InjectView(R.id.caption)
-    protected TextView caption;
+   @InjectView(R.id.empty) protected RelativeLayout emptyView;
+   @InjectView(R.id.recyclerViewFriends) protected EmptyRecyclerView recyclerView;
+   @InjectView(R.id.swipe_container) protected SwipeRefreshLayout refreshLayout;
+   @InjectView(R.id.caption) protected TextView caption;
 
-    @Inject
-    @Named(RouteCreatorModule.PROFILE)
-    RouteCreator<Integer> routeCreator;
+   @Inject @Named(RouteCreatorModule.PROFILE) RouteCreator<Integer> routeCreator;
 
-    private RecyclerViewStateDelegate stateDelegate;
+   private RecyclerViewStateDelegate stateDelegate;
 
-    protected LoaderRecycleAdapter<User> adapter;
+   protected LoaderRecycleAdapter<User> adapter;
 
-    protected WeakHandler weakHandler;
-    private LinearLayoutManager layoutManager;
+   protected WeakHandler weakHandler;
+   private LinearLayoutManager layoutManager;
 
-    private MaterialDialog blockingProgressDialog;
+   private MaterialDialog blockingProgressDialog;
 
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        weakHandler = new WeakHandler();
-        stateDelegate = new RecyclerViewStateDelegate();
-        stateDelegate.onCreate(savedInstanceState);
-    }
+   @Override
+   public void onCreate(Bundle savedInstanceState) {
+      super.onCreate(savedInstanceState);
+      weakHandler = new WeakHandler();
+      stateDelegate = new RecyclerViewStateDelegate();
+      stateDelegate.onCreate(savedInstanceState);
+   }
 
-    @Override
-    public void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
-        stateDelegate.saveStateIfNeeded(outState);
-    }
+   @Override
+   public void onSaveInstanceState(Bundle outState) {
+      super.onSaveInstanceState(outState);
+      stateDelegate.saveStateIfNeeded(outState);
+   }
 
-    @Override
-    public void afterCreateView(View rootView) {
-        super.afterCreateView(rootView);
-        stateDelegate.setRecyclerView(recyclerView);
-        adapter = new LoaderRecycleAdapter<>(getActivity(), this);
-        adapter.registerCell(User.class, FriendCell.class);
+   @Override
+   public void afterCreateView(View rootView) {
+      super.afterCreateView(rootView);
+      stateDelegate.setRecyclerView(recyclerView);
+      adapter = new LoaderRecycleAdapter<>(getActivity(), this);
+      adapter.registerCell(User.class, FriendCell.class);
 
-        recyclerView.setEmptyView(emptyView);
-        recyclerView.setAdapter(adapter);
+      recyclerView.setEmptyView(emptyView);
+      recyclerView.setAdapter(adapter);
 
-        layoutManager = createLayoutManager();
-        recyclerView.setLayoutManager(layoutManager);
-        if (!ViewUtils.isLandscapeOrientation(getActivity())) {
-            recyclerView.addItemDecoration(new SimpleListDividerDecorator(getResources()
-                    .getDrawable(R.drawable.list_divider), true));
-        }
-        recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
-            @Override
-            public void onScrolled(RecyclerView recyclerView1, int dx, int dy) {
-                checkScrolledItems();
-            }
-        });
-        refreshLayout.setOnRefreshListener(this);
-        refreshLayout.setColorSchemeResources(R.color.theme_main_darker);
-    }
+      layoutManager = createLayoutManager();
+      recyclerView.setLayoutManager(layoutManager);
+      if (!ViewUtils.isLandscapeOrientation(getActivity())) {
+         recyclerView.addItemDecoration(new SimpleListDividerDecorator(getResources().getDrawable(R.drawable.list_divider), true));
+      }
+      recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+         @Override
+         public void onScrolled(RecyclerView recyclerView1, int dx, int dy) {
+            checkScrolledItems();
+         }
+      });
+      refreshLayout.setOnRefreshListener(this);
+      refreshLayout.setColorSchemeResources(R.color.theme_main_darker);
+   }
 
-    protected LinearLayoutManager createLayoutManager() {
-        return ViewUtils.isLandscapeOrientation(getActivity()) ?
-                new GridLayoutManager(getActivity(), ViewUtils.isTablet(getActivity()) ? 3 : 1) :
-                new LinearLayoutManager(getActivity());
-    }
+   protected LinearLayoutManager createLayoutManager() {
+      return ViewUtils.isLandscapeOrientation(getActivity()) ? new GridLayoutManager(getActivity(), ViewUtils.isTablet(getActivity()) ? 3 : 1) : new LinearLayoutManager(getActivity());
+   }
 
-    @Override
-    public void onDestroyView() {
-        super.onDestroyView();
-        stateDelegate.onDestroyView();
-    }
+   @Override
+   public void onDestroyView() {
+      super.onDestroyView();
+      stateDelegate.onDestroyView();
+   }
 
-    @Override
-    public void onRefresh() {
-        getPresenter().reload();
-    }
+   @Override
+   public void onRefresh() {
+      getPresenter().reload();
+   }
 
-    @Override
-    public void startLoading() {
-        // timeout was set according to the issue:
-        // https://code.google.com/p/android/issues/detail?id=77712
-        weakHandler.postDelayed(() -> {
-            if (refreshLayout != null)
-                refreshLayout.setRefreshing(true);
-        }, 100);
-    }
+   @Override
+   public void startLoading() {
+      // timeout was set according to the issue:
+      // https://code.google.com/p/android/issues/detail?id=77712
+      weakHandler.postDelayed(() -> {
+         if (refreshLayout != null) refreshLayout.setRefreshing(true);
+      }, 100);
+   }
 
-    @Override
-    public void finishLoading() {
-        weakHandler.postDelayed(() -> {
-            if (refreshLayout != null) refreshLayout.setRefreshing(false);
-        }, 100);
-        stateDelegate.restoreStateIfNeeded();
-    }
+   @Override
+   public void finishLoading() {
+      weakHandler.postDelayed(() -> {
+         if (refreshLayout != null) refreshLayout.setRefreshing(false);
+      }, 100);
+      stateDelegate.restoreStateIfNeeded();
+   }
 
-    @Override
-    public void showBlockingProgress() {
-        blockingProgressDialog = new MaterialDialog.Builder(getActivity())
-                .progress(true, 0)
-                .content(R.string.loading)
-                .cancelable(false)
-                .canceledOnTouchOutside(false)
-                .show();
-    }
+   @Override
+   public void showBlockingProgress() {
+      blockingProgressDialog = new MaterialDialog.Builder(getActivity()).progress(true, 0)
+            .content(R.string.loading)
+            .cancelable(false)
+            .canceledOnTouchOutside(false)
+            .show();
+   }
 
-    @Override
-    public void hideBlockingProgress() {
-        if (blockingProgressDialog != null) blockingProgressDialog.dismiss();
-    }
+   @Override
+   public void hideBlockingProgress() {
+      if (blockingProgressDialog != null) blockingProgressDialog.dismiss();
+   }
 
-    @Override
-    public void refreshUsers(List<User> users) {
-        adapter.setItems(users);
-        checkScrolledItems();
-    }
+   @Override
+   public void refreshUsers(List<User> users) {
+      adapter.setItems(users);
+      checkScrolledItems();
+   }
 
-    private void checkScrolledItems() {
-        int itemCount = layoutManager.getItemCount();
-        int lastVisibleItemPosition = layoutManager.findLastVisibleItemPosition();
-        getPresenter().scrolled(itemCount, lastVisibleItemPosition);
-    }
+   private void checkScrolledItems() {
+      int itemCount = layoutManager.getItemCount();
+      int lastVisibleItemPosition = layoutManager.findLastVisibleItemPosition();
+      getPresenter().scrolled(itemCount, lastVisibleItemPosition);
+   }
 
-    @Override
-    public void openFriendPrefs(UserBundle userBundle) {
-        if (isVisibleOnScreen())
-            router.moveTo(Route.FRIEND_PREFERENCES, NavigationConfigBuilder.forActivity()
-                    .data(userBundle)
-                    .build());
-    }
+   @Override
+   public void openFriendPrefs(UserBundle userBundle) {
+      if (isVisibleOnScreen()) router.moveTo(Route.FRIEND_PREFERENCES, NavigationConfigBuilder.forActivity()
+            .data(userBundle)
+            .build());
+   }
 
-    @Override
-    public void showAddFriendDialog(List<Circle> circles, Action1<Integer> selectedAction) {
-        if (isVisibleOnScreen()) {
-            MaterialDialog.Builder builder = new MaterialDialog.Builder(getActivity());
-            builder.title(getString(R.string.profile_add_friend))
-                    .adapter(new ArrayAdapter<>(getActivity(), android.R.layout.simple_list_item_1, circles),
-                            (materialDialog, view, i, charSequence) -> {
-                                selectedAction.apply(i);
-                                materialDialog.dismiss();
-                            })
-                    .negativeText(R.string.action_cancel)
-                    .show();
-        }
-    }
+   @Override
+   public void showAddFriendDialog(List<Circle> circles, Action1<Integer> selectedAction) {
+      if (isVisibleOnScreen()) {
+         MaterialDialog.Builder builder = new MaterialDialog.Builder(getActivity());
+         builder.title(getString(R.string.profile_add_friend))
+               .adapter(new ArrayAdapter<>(getActivity(), android.R.layout.simple_list_item_1, circles), (materialDialog, view, i, charSequence) -> {
+                  selectedAction.apply(i);
+                  materialDialog.dismiss();
+               })
+               .negativeText(R.string.action_cancel)
+               .show();
+      }
+   }
 
-    @Override
-    public void openUser(UserBundle userBundle) {
-        if (isVisibleOnScreen())
-            router.moveTo(routeCreator.createRoute(userBundle.getUser().getId()), NavigationConfigBuilder.forActivity()
-                    .toolbarConfig(ToolbarConfig.Builder.create().visible(false).build())
-                    .data(userBundle)
-                    .build());
+   @Override
+   public void openUser(UserBundle userBundle) {
+      if (isVisibleOnScreen()) router.moveTo(routeCreator.createRoute(userBundle.getUser()
+            .getId()), NavigationConfigBuilder.forActivity().toolbarConfig(ToolbarConfig.Builder.create()
+            .visible(false)
+            .build()).data(userBundle).build());
 
-    }
+   }
 
-    @Override
-    protected abstract T createPresenter(Bundle savedInstanceState);
+   @Override
+   protected abstract T createPresenter(Bundle savedInstanceState);
 }
 

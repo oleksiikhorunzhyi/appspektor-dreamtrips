@@ -6,6 +6,6 @@ import org.immutables.value.Value;
 @Value.Immutable
 @Gson.TypeAdapters
 public interface BucketStatusBody {
-    @Value.Parameter
-    String status();
+   @Value.Parameter
+   String status();
 }

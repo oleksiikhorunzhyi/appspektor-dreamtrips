@@ -4,7 +4,7 @@ import android.graphics.Canvas;
 
 interface RoundedCornersDelegate {
 
-    void initialize(RoundedCornersLayout view, int radius);
+   void initialize(RoundedCornersLayout view, int radius);
 
-    void dispatchDraw(Canvas canvas, Runnable dispatchSuper);
+   void dispatchDraw(Canvas canvas, Runnable dispatchSuper);
 }

@@ -15,29 +15,29 @@ import dagger.Provides;
 
 @Module(library = true, complete = false)
 public class SupportModule {
-    @Provides
-    @Singleton
-    AnnotationsHelper provideAnnotationsHelper() {
-        return new AnnotationsHelper();
-    }
+   @Provides
+   @Singleton
+   AnnotationsHelper provideAnnotationsHelper() {
+      return new AnnotationsHelper();
+   }
 
-    @Provides
-    ServiceLauncher provideServiceLauncher(Context context, IntentBuilder intentBuilder) {
-        return new ServiceLauncher(context, intentBuilder);
-    }
+   @Provides
+   ServiceLauncher provideServiceLauncher(Context context, IntentBuilder intentBuilder) {
+      return new ServiceLauncher(context, intentBuilder);
+   }
 
-    @Provides
-    ServiceActionRunner provideServiceActionRunner(Context context) {
-        return new ServiceActionRunner(context);
-    }
+   @Provides
+   ServiceActionRunner provideServiceActionRunner(Context context) {
+      return new ServiceActionRunner(context);
+   }
 
-    @Provides
-    IntentBuilder provideIntentBuilder(Context context) {
-        return new IntentBuilder(context);
-    }
+   @Provides
+   IntentBuilder provideIntentBuilder(Context context) {
+      return new IntentBuilder(context);
+   }
 
-    @Provides
-    BinderRetriever provideBinderRetriever(Context context) {
-        return new BinderRetriever(context);
-    }
+   @Provides
+   BinderRetriever provideBinderRetriever(Context context) {
+      return new BinderRetriever(context);
+   }
 }

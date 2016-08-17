@@ -14,25 +14,23 @@ import io.techery.janet.command.annotations.CommandAction;
 @CommandAction
 public class ChatSendMessageCommand extends BaseChatCommand<Message> {
 
-    @Inject SessionHolder<UserSession> appSessionHolder;
-    @Inject MessageBodyCreator messageBodyCreator;
+   @Inject SessionHolder<UserSession> appSessionHolder;
+   @Inject MessageBodyCreator messageBodyCreator;
 
-    private String messageText;
+   private String messageText;
 
-    public ChatSendMessageCommand(String conversationId, String messageText) {
-        super(conversationId);
-        this.messageText = messageText;
-    }
+   public ChatSendMessageCommand(String conversationId, String messageText) {
+      super(conversationId);
+      this.messageText = messageText;
+   }
 
-    @Override
-    protected void run(CommandCallback<Message> callback) throws Throwable {
-        Message message = new Message.Builder()
-                .messageBody(messageBodyCreator.provideForText(messageText))
-                .fromId(appSessionHolder.get().get().getUsername())
-                .conversationId(conversationId)
-                .type(MessageType.MESSAGE)
-                .build();
-        getChat().flatMap(chat -> chat.send(message))
-                .subscribe(callback::onSuccess, callback::onFail);
-    }
+   @Override
+   protected void run(CommandCallback<Message> callback) throws Throwable {
+      Message message = new Message.Builder().messageBody(messageBodyCreator.provideForText(messageText))
+            .fromId(appSessionHolder.get().get().getUsername())
+            .conversationId(conversationId)
+            .type(MessageType.MESSAGE)
+            .build();
+      getChat().flatMap(chat -> chat.send(message)).subscribe(callback::onSuccess, callback::onFail);
+   }
 }

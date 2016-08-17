@@ -1,37 +1,41 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                xmlns:fresco="http://schemas.android.com/apk/res-auto"
-                android:layout_margin="@dimen/spacing_medium"
-                android:layout_width="@dimen/video_three_sixty_width_small"
-                android:layout_height="wrap_content">
+      xmlns:fresco="http://schemas.android.com/apk/res-auto"
+      android:layout_margin="@dimen/spacing_medium"
+      android:layout_width="@dimen/video_three_sixty_width_small"
+      android:layout_height="wrap_content"
+      >
 
-    <com.facebook.drawee.view.SimpleDraweeView
-        android:id="@+id/iv_bg"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        fresco:actualImageScaleType="centerCrop"
-        fresco:placeholderImageScaleType="fitXY"
-        fresco:placeholderImage="@drawable/ic_trip_image_placeholder" />
+   <com.facebook.drawee.view.SimpleDraweeView
+         android:id="@+id/iv_bg"
+         android:layout_width="match_parent"
+         android:layout_height="match_parent"
+         fresco:actualImageScaleType="centerCrop"
+         fresco:placeholderImageScaleType="fitXY"
+         fresco:placeholderImage="@drawable/ic_trip_image_placeholder"
+         />
 
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:background="#6e000000"
-        android:orientation="horizontal"
-        android:padding="6dp"
-        android:gravity="center_vertical">
+   <LinearLayout
+         android:layout_width="match_parent"
+         android:layout_height="wrap_content"
+         android:layout_alignParentBottom="true"
+         android:background="#6e000000"
+         android:orientation="horizontal"
+         android:padding="6dp"
+         android:gravity="center_vertical"
+         >
 
-        <ImageView
+      <ImageView
             android:id="@+id/iv_play"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
             android:scaleType="centerInside"
-            android:src="@drawable/ic_video_play_arrow" />
+            android:src="@drawable/ic_video_play_arrow"
+            />
 
-        <TextView
+      <TextView
             android:id="@+id/textViewDuration"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -39,27 +43,30 @@
             android:textSize="16sp"
             android:text="3:22 MIN"
             android:textColor="@android:color/white"
-            android:layout_weight="1" />
+            android:layout_weight="1"
+            />
 
 
-        <com.worldventures.dreamtrips.modules.common.view.custom.PinProgressButton
+      <com.worldventures.dreamtrips.modules.common.view.custom.PinProgressButton
             android:id="@+id/download_progress"
             android:layout_width="@dimen/pin_progress_button_size"
             android:layout_height="@dimen/pin_progress_button_size"
-            android:padding="@dimen/spacing_small"/>
+            android:padding="@dimen/spacing_small"
+            />
 
-    </LinearLayout>
+   </LinearLayout>
 
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
-        android:background="#6e000000"
-        android:orientation="horizontal"
-        android:padding="12dp">
+   <LinearLayout
+         android:layout_width="match_parent"
+         android:layout_height="wrap_content"
+         android:layout_alignParentTop="true"
+         android:background="#6e000000"
+         android:orientation="horizontal"
+         android:padding="12dp"
+         >
 
-        <TextView
+      <TextView
             android:id="@+id/tv_title"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -68,8 +75,9 @@
             android:singleLine="true"
             android:text="Experience the Great Wall Of China"
             android:textColor="@android:color/white"
-            android:textSize="16sp" />
+            android:textSize="16sp"
+            />
 
 
-    </LinearLayout>
+   </LinearLayout>
 </RelativeLayout>

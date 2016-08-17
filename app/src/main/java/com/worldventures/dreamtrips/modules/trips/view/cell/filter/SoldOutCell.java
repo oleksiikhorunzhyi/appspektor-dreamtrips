@@ -10,21 +10,21 @@ import com.worldventures.dreamtrips.modules.trips.model.FilterSoldOutModel;
 @Layout(R.layout.adapter_item_filter_one_checkbox)
 public class SoldOutCell extends BoolCell<FilterSoldOutModel, SoldOutCell.Delegate> {
 
-    public SoldOutCell(View view) {
-        super(view);
-    }
+   public SoldOutCell(View view) {
+      super(view);
+   }
 
-    @Override
-    public int getTitle() {
-        return R.string.filter_show_sold_out;
-    }
+   @Override
+   public int getTitle() {
+      return R.string.filter_show_sold_out;
+   }
 
-    @Override
-    public void sendEvent(boolean b) {
-        cellDelegate.onFilterShowSoldOutEvent(b);
-    }
+   @Override
+   public void sendEvent(boolean b) {
+      cellDelegate.onFilterShowSoldOutEvent(b);
+   }
 
-    public interface Delegate extends CellDelegate<FilterSoldOutModel> {
-        void onFilterShowSoldOutEvent(boolean enabled);
-    }
+   public interface Delegate extends CellDelegate<FilterSoldOutModel> {
+      void onFilterShowSoldOutEvent(boolean enabled);
+   }
 }

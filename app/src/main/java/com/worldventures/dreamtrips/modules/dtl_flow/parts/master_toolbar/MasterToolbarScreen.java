@@ -13,25 +13,25 @@ import rx.Observable;
 
 public interface MasterToolbarScreen extends DtlScreen {
 
-    void updateToolbarLocationTitle(@Nullable DtlLocation dtlLocation);
+   void updateToolbarLocationTitle(@Nullable DtlLocation dtlLocation);
 
-    void updateToolbarSearchCaption(@Nullable String searchCaption);
+   void updateToolbarSearchCaption(@Nullable String searchCaption);
 
-    void toggleDiningFilterSwitch(boolean enabled);
+   void toggleDiningFilterSwitch(boolean enabled);
 
-    void setFilterButtonState(boolean enabled);
+   void setFilterButtonState(boolean enabled);
 
-    void locationResolutionRequired(Status status);
+   void locationResolutionRequired(Status status);
 
-    void setItems(List<DtlExternalLocation> locations, boolean addLocationHeader);
+   void setItems(List<DtlExternalLocation> locations, boolean addLocationHeader);
 
-    void showProgress();
+   void showProgress();
 
-    void hideProgress();
+   void hideProgress();
 
-    void toggleSearchPopupVisibility(boolean show);
+   void toggleSearchPopupVisibility(boolean show);
 
-    boolean isSearchPopupShowing();
+   boolean isSearchPopupShowing();
 
-    Observable<String> provideLocationSearchObservable();
+   Observable<String> provideLocationSearchObservable();
 }

@@ -6,12 +6,7 @@ import com.worldventures.dreamtrips.modules.player.view.PodcastPlayerScreenImpl;
 import dagger.Module;
 
 @Module(
-        injects = {
-                PodcastPresenterImpl.class,
-                PodcastPlayerScreenImpl.class
-        },
-        complete = false,
-        library = true
-)
-public class PodcastModule {
-}
+      injects = {PodcastPresenterImpl.class, PodcastPlayerScreenImpl.class},
+      complete = false,
+      library = true)
+public class PodcastModule {}

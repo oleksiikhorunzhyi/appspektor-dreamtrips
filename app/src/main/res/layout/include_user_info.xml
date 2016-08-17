@@ -1,57 +1,63 @@
 <?xml version="1.0" encoding="utf-8"?>
 <merge xmlns:android="http://schemas.android.com/apk/res/android"
-       xmlns:fresco="http://schemas.android.com/apk/res-auto"
-       xmlns:tools="http://schemas.android.com/tools">
+      xmlns:fresco="http://schemas.android.com/apk/res-auto"
+      xmlns:tools="http://schemas.android.com/tools"
+      >
 
-    <com.worldventures.dreamtrips.modules.common.view.custom.SmartAvatarView
-        android:id="@+id/sdv_avatar"
-        android:layout_width="48dp"
-        android:layout_height="48dp"
-        android:layout_margin="24dp"
-        fresco:placeholderImage="@drawable/ic_avatar_placeholder"
-        fresco:placeholderImageScaleType="centerInside"
-        fresco:roundAsCircle="true"/>
+   <com.worldventures.dreamtrips.modules.common.view.custom.SmartAvatarView
+         android:id="@+id/sdv_avatar"
+         android:layout_width="48dp"
+         android:layout_height="48dp"
+         android:layout_margin="24dp"
+         fresco:placeholderImage="@drawable/ic_avatar_placeholder"
+         fresco:placeholderImageScaleType="centerInside"
+         fresco:roundAsCircle="true"
+         />
 
-    <LinearLayout
-        xmlns:android="http://schemas.android.com/apk/res/android"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:orientation="vertical">
+   <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+         android:layout_width="0dp"
+         android:layout_height="wrap_content"
+         android:layout_weight="1"
+         android:orientation="vertical"
+         >
 
-        <TextView
+      <TextView
             android:id="@+id/tv_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:singleLine="true"
             android:textColor="@android:color/black"
             android:textSize="18sp"
-            tools:text="Jon Snow"/>
+            tools:text="Jon Snow"
+            />
 
-        <TextView
+      <TextView
             android:id="@+id/tv_company"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:singleLine="true"
             android:textColor="@color/black"
             android:textSize="16sp"
-            tools:text="Adobe"/>
+            tools:text="Adobe"
+            />
 
-        <TextView
+      <TextView
             android:id="@+id/tv_group"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:singleLine="true"
             android:textSize="15sp"
             tools:text="Close friends"
-            android:visibility="gone"/>
+            android:visibility="gone"
+            />
 
-        <TextView
+      <TextView
             android:id="@+id/tv_mutual"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:singleLine="true"
             android:textSize="15sp"
-            tools:text="10 mutual friends"/>
-    </LinearLayout>
+            tools:text="10 mutual friends"
+            />
+   </LinearLayout>
 </merge>

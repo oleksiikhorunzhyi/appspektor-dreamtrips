@@ -4,14 +4,14 @@ import android.support.annotation.Nullable;
 
 public interface TranslatableItem {
 
-    String getOriginalText();
+   String getOriginalText();
 
-    @Nullable
-    String getTranslation();
+   @Nullable
+   String getTranslation();
 
-    void setTranslation(String text);
+   void setTranslation(String text);
 
-    boolean isTranslated();
+   boolean isTranslated();
 
-    void setTranslated(boolean translated);
+   void setTranslated(boolean translated);
 }

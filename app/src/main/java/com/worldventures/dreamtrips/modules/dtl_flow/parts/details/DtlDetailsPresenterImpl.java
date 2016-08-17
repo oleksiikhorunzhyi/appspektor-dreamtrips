@@ -48,242 +48,227 @@ import flow.Flow;
 import io.techery.janet.helper.ActionStateSubscriber;
 import timber.log.Timber;
 
-public class DtlDetailsPresenterImpl extends DtlPresenterImpl<DtlDetailsScreen, DtlMerchantDetailsState>
-        implements DtlDetailsPresenter {
+public class DtlDetailsPresenterImpl extends DtlPresenterImpl<DtlDetailsScreen, DtlMerchantDetailsState> implements DtlDetailsPresenter {
 
-    @Inject
-    FeatureManager featureManager;
-    @Inject
-    LocationDelegate locationDelegate;
-    @Inject
-    DtlMerchantInteractor merchantInteractor;
-    @Inject
-    DtlTransactionInteractor transactionInteractor;
-    @Inject
-    protected PhotoUploadingManagerS3 photoUploadingManagerS3;
-    //
-    protected DtlMerchant merchant;
-    protected List<Integer> preExpandOffers;
+   @Inject FeatureManager featureManager;
+   @Inject LocationDelegate locationDelegate;
+   @Inject DtlMerchantInteractor merchantInteractor;
+   @Inject DtlTransactionInteractor transactionInteractor;
+   @Inject protected PhotoUploadingManagerS3 photoUploadingManagerS3;
+   //
+   protected DtlMerchant merchant;
+   protected List<Integer> preExpandOffers;
 
-    public DtlDetailsPresenterImpl(Context context, Injector injector, DtlMerchant merchant, List<Integer> preExpandOffers) {
-        super(context);
-        injector.inject(this);
-        this.merchant = merchant;
-        this.preExpandOffers = preExpandOffers;
-    }
+   public DtlDetailsPresenterImpl(Context context, Injector injector, DtlMerchant merchant, List<Integer> preExpandOffers) {
+      super(context);
+      injector.inject(this);
+      this.merchant = merchant;
+      this.preExpandOffers = preExpandOffers;
+   }
 
-    @Override
-    public void onAttachedToWindow() {
-        super.onAttachedToWindow();
-        //
-        analyticsInteractor.dtlAnalyticsCommandPipe()
-                .send(new MerchantDetailsViewCommand(new MerchantDetailsViewEvent(merchant)));
-        //
-        getView().setMerchant(merchant);
-        preExpandOffers();
-        tryHideSuggestMerchantButton();
-    }
+   @Override
+   public void onAttachedToWindow() {
+      super.onAttachedToWindow();
+      //
+      analyticsInteractor.dtlAnalyticsCommandPipe()
+            .send(new MerchantDetailsViewCommand(new MerchantDetailsViewEvent(merchant)));
+      //
+      getView().setMerchant(merchant);
+      preExpandOffers();
+      tryHideSuggestMerchantButton();
+   }
 
-    @Override
-    public void onNewViewState() {
-        state = new DtlMerchantDetailsState();
-    }
+   @Override
+   public void onNewViewState() {
+      state = new DtlMerchantDetailsState();
+   }
 
-    @Override
-    public void onSaveInstanceState(Bundle bundle) {
-        state.setOffers(getView().getExpandedOffers());
-        state.setHoursViewExpanded(getView().isHoursViewExpanded());
-        super.onSaveInstanceState(bundle);
-    }
+   @Override
+   public void onSaveInstanceState(Bundle bundle) {
+      state.setOffers(getView().getExpandedOffers());
+      state.setHoursViewExpanded(getView().isHoursViewExpanded());
+      super.onSaveInstanceState(bundle);
+   }
 
-    @Override
-    public void onRestoreInstanceState(Bundle instanceState) {
-        super.onRestoreInstanceState(instanceState);
-        preExpandHours();
-    }
+   @Override
+   public void onRestoreInstanceState(Bundle instanceState) {
+      super.onRestoreInstanceState(instanceState);
+      preExpandHours();
+   }
 
-    @Override
-    public void onVisibilityChanged(int visibility) {
-        super.onVisibilityChanged(visibility);
-        if (visibility == View.VISIBLE) {
-            getView().setMap(merchant);
-        }
-        if (visibility == View.VISIBLE && !merchant.hasNoOffers()) {
-            processTransaction();
-        }
-    }
+   @Override
+   public void onVisibilityChanged(int visibility) {
+      super.onVisibilityChanged(visibility);
+      if (visibility == View.VISIBLE) {
+         getView().setMap(merchant);
+      }
+      if (visibility == View.VISIBLE && !merchant.hasNoOffers()) {
+         processTransaction();
+      }
+   }
 
-    @Override
-    public int getToolbarMenuRes() {
-        return R.menu.menu_detailed_merchant;
-    }
+   @Override
+   public int getToolbarMenuRes() {
+      return R.menu.menu_detailed_merchant;
+   }
 
-    @Override
-    public boolean onToolbarMenuItemClick(MenuItem item) {
-        if (item.getItemId() == R.id.action_share) onShareClick();
-        return super.onToolbarMenuItemClick(item);
-    }
+   @Override
+   public boolean onToolbarMenuItemClick(MenuItem item) {
+      if (item.getItemId() == R.id.action_share) onShareClick();
+      return super.onToolbarMenuItemClick(item);
+   }
 
-    protected void preExpandOffers() {
-        boolean isRestore = getViewState().getOffers() != null;
-        final List<Integer> offers = isRestore ? getViewState().getOffers() : this.preExpandOffers;
-        //
-        getView().expandOffers(offers);
-    }
+   protected void preExpandOffers() {
+      boolean isRestore = getViewState().getOffers() != null;
+      final List<Integer> offers = isRestore ? getViewState().getOffers() : this.preExpandOffers;
+      //
+      getView().expandOffers(offers);
+   }
 
-    protected void preExpandHours() {
-        if (getViewState().isHoursViewExpanded()) {
-            getView().expandHoursView();
-        }
-    }
+   protected void preExpandHours() {
+      if (getViewState().isHoursViewExpanded()) {
+         getView().expandHoursView();
+      }
+   }
 
-    private void tryHideSuggestMerchantButton() {
-        boolean repToolsAvailable = featureManager.available(Feature.REP_SUGGEST_MERCHANT);
-        if (merchant.hasNoOffers()) {
-            getView().setSuggestMerchantButtonAvailable(repToolsAvailable);
-        } else processTransaction();
-    }
+   private void tryHideSuggestMerchantButton() {
+      boolean repToolsAvailable = featureManager.available(Feature.REP_SUGGEST_MERCHANT);
+      if (merchant.hasNoOffers()) {
+         getView().setSuggestMerchantButtonAvailable(repToolsAvailable);
+      } else processTransaction();
+   }
 
-    private void processTransaction() {
-        transactionInteractor.transactionActionPipe()
-                .createObservable(DtlTransactionAction.get(merchant))
-                .compose(bindViewIoToMainComposer())
-                .subscribe(new ActionStateSubscriber<DtlTransactionAction>()
-                        .onFail(apiErrorPresenter::handleActionError)
-                        .onSuccess(action -> {
-                            DtlTransaction transaction = action.getResult();
-                            if (transaction != null) {
-                                checkSucceedEvent(transaction);
-                                checkTransactionOutOfDate(transaction);
-                            }
-                            getView().setTransaction(transaction);
-                        }));
-    }
+   private void processTransaction() {
+      transactionInteractor.transactionActionPipe()
+            .createObservable(DtlTransactionAction.get(merchant))
+            .compose(bindViewIoToMainComposer())
+            .subscribe(new ActionStateSubscriber<DtlTransactionAction>().onFail(apiErrorPresenter::handleActionError)
+                  .onSuccess(action -> {
+                     DtlTransaction transaction = action.getResult();
+                     if (transaction != null) {
+                        checkSucceedEvent(transaction);
+                        checkTransactionOutOfDate(transaction);
+                     }
+                     getView().setTransaction(transaction);
+                  }));
+   }
 
-    private void checkSucceedEvent(DtlTransaction transaction) {
-        DtlTransactionSucceedEvent event = EventBus.getDefault().getStickyEvent(DtlTransactionSucceedEvent.class);
-        if (event != null) {
-            EventBus.getDefault().removeStickyEvent(event);
-            getView().showSucceed(merchant, transaction);
-        }
-    }
+   private void checkSucceedEvent(DtlTransaction transaction) {
+      DtlTransactionSucceedEvent event = EventBus.getDefault().getStickyEvent(DtlTransactionSucceedEvent.class);
+      if (event != null) {
+         EventBus.getDefault().removeStickyEvent(event);
+         getView().showSucceed(merchant, transaction);
+      }
+   }
 
-    private void checkTransactionOutOfDate(DtlTransaction transaction) {
-        if (transaction.isOutOfDate(Calendar.getInstance().getTimeInMillis())) {
-            transactionInteractor.transactionActionPipe()
-                    .createObservable(DtlTransactionAction.delete(merchant))
-                    .compose(bindViewIoToMainComposer())
-                    .subscribe(new ActionStateSubscriber<DtlTransactionAction>()
-                            .onFail(apiErrorPresenter::handleActionError)
-                            .onSuccess(action -> getView().setTransaction(action.getResult())));
-        }
-    }
+   private void checkTransactionOutOfDate(DtlTransaction transaction) {
+      if (transaction.isOutOfDate(Calendar.getInstance().getTimeInMillis())) {
+         transactionInteractor.transactionActionPipe()
+               .createObservable(DtlTransactionAction.delete(merchant))
+               .compose(bindViewIoToMainComposer())
+               .subscribe(new ActionStateSubscriber<DtlTransactionAction>().onFail(apiErrorPresenter::handleActionError)
+                     .onSuccess(action -> getView().setTransaction(action.getResult())));
+      }
+   }
 
-    @Override
-    public void onCheckInClicked() {
-        transactionInteractor.transactionActionPipe()
-                .createObservable(DtlTransactionAction.get(merchant))
-                .compose(bindViewIoToMainComposer())
-                .subscribe(new ActionStateSubscriber<DtlTransactionAction>()
-                        .onFail(apiErrorPresenter::handleActionError)
-                        .onSuccess(action -> {
-                            if (action.getResult() != null) {
-                                DtlTransaction dtlTransaction = action.getResult();
-                                if (dtlTransaction.getUploadTask() != null) {
-                                    photoUploadingManagerS3.cancelUploading(dtlTransaction.getUploadTask());
-                                }
-                                transactionInteractor.transactionActionPipe().send(DtlTransactionAction.clean(merchant));
-                                getView().openTransaction(merchant, dtlTransaction);
-                            } else {
-                                getView().disableCheckinButton();
-                                locationDelegate.requestLocationUpdate()
-                                        .compose(bindViewIoToMainComposer())
-                                        .subscribe(this::onLocationObtained, this::onLocationError);
-                            }
-                        }));
-    }
+   @Override
+   public void onCheckInClicked() {
+      transactionInteractor.transactionActionPipe()
+            .createObservable(DtlTransactionAction.get(merchant))
+            .compose(bindViewIoToMainComposer())
+            .subscribe(new ActionStateSubscriber<DtlTransactionAction>().onFail(apiErrorPresenter::handleActionError)
+                  .onSuccess(action -> {
+                     if (action.getResult() != null) {
+                        DtlTransaction dtlTransaction = action.getResult();
+                        if (dtlTransaction.getUploadTask() != null) {
+                           photoUploadingManagerS3.cancelUploading(dtlTransaction.getUploadTask());
+                        }
+                        transactionInteractor.transactionActionPipe().send(DtlTransactionAction.clean(merchant));
+                        getView().openTransaction(merchant, dtlTransaction);
+                     } else {
+                        getView().disableCheckinButton();
+                        locationDelegate.requestLocationUpdate()
+                              .compose(bindViewIoToMainComposer())
+                              .subscribe(this::onLocationObtained, this::onLocationError);
+                     }
+                  }));
+   }
 
-    @Override
-    public void locationNotGranted() {
-        getView().enableCheckinButton();
-        getView().informUser(R.string.dtl_checkin_location_error);
-    }
+   @Override
+   public void locationNotGranted() {
+      getView().enableCheckinButton();
+      getView().informUser(R.string.dtl_checkin_location_error);
+   }
 
-    private void onLocationError(Throwable e) {
-        if (e instanceof LocationDelegate.LocationException)
-            getView().locationResolutionRequired(((LocationDelegate.LocationException) e).getStatus());
-        else {
-            locationNotGranted();
-            Timber.e(e, "Something went wrong while location update");
-        }
-    }
+   private void onLocationError(Throwable e) {
+      if (e instanceof LocationDelegate.LocationException)
+         getView().locationResolutionRequired(((LocationDelegate.LocationException) e).getStatus());
+      else {
+         locationNotGranted();
+         Timber.e(e, "Something went wrong while location update");
+      }
+   }
 
-    private void onLocationObtained(Location location) {
-        getView().enableCheckinButton();
-        //
-        DtlTransaction dtlTransaction = ImmutableDtlTransaction.builder()
-                .lat(location.getLatitude())
-                .lng(location.getLongitude())
-                .build();
-        transactionInteractor.transactionActionPipe()
-                .send(DtlTransactionAction.save(merchant, dtlTransaction));
-        //
-        getView().setTransaction(dtlTransaction);
-        //
-        analyticsInteractor.dtlAnalyticsCommandPipe()
-                .send(DtlAnalyticsCommand.create(new CheckinEvent(merchant, location)));
-    }
+   private void onLocationObtained(Location location) {
+      getView().enableCheckinButton();
+      //
+      DtlTransaction dtlTransaction = ImmutableDtlTransaction.builder()
+            .lat(location.getLatitude())
+            .lng(location.getLongitude())
+            .build();
+      transactionInteractor.transactionActionPipe().send(DtlTransactionAction.save(merchant, dtlTransaction));
+      //
+      getView().setTransaction(dtlTransaction);
+      //
+      analyticsInteractor.dtlAnalyticsCommandPipe()
+            .send(DtlAnalyticsCommand.create(new CheckinEvent(merchant, location)));
+   }
 
-    @Override
-    public void onEstimationClick() {
-        getView().showEstimationDialog(new PointsEstimationDialogBundle(merchant.getId()));
-    }
+   @Override
+   public void onEstimationClick() {
+      getView().showEstimationDialog(new PointsEstimationDialogBundle(merchant.getId()));
+   }
 
-    @Override
-    public void onMerchantClick() {
-        analyticsInteractor.dtlAnalyticsCommandPipe()
-                .send(DtlAnalyticsCommand.create(new SuggestMerchantEvent(merchant)));
-        getView().openSuggestMerchant(new MerchantIdBundle(merchant.getId()));
-    }
+   @Override
+   public void onMerchantClick() {
+      analyticsInteractor.dtlAnalyticsCommandPipe()
+            .send(DtlAnalyticsCommand.create(new SuggestMerchantEvent(merchant)));
+      getView().openSuggestMerchant(new MerchantIdBundle(merchant.getId()));
+   }
 
-    @Override
-    public void onOfferClick(DtlOffer offer) {
-        DtlMerchantMedia imageUrl = Queryable.from(offer.getImages()).firstOrDefault();
-        if (imageUrl == null) return;
-        Flow.get(getContext()).set(new DtlFullscreenImagePath(imageUrl.getImagePath()));
-    }
+   @Override
+   public void onOfferClick(DtlOffer offer) {
+      DtlMerchantMedia imageUrl = Queryable.from(offer.getImages()).firstOrDefault();
+      if (imageUrl == null) return;
+      Flow.get(getContext()).set(new DtlFullscreenImagePath(imageUrl.getImagePath()));
+   }
 
-    public void onShareClick() {
-        getView().share(merchant);
-    }
+   public void onShareClick() {
+      getView().share(merchant);
+   }
 
-    @Override
-    public void trackSharing(@ShareType String type) {
-        analyticsInteractor.dtlAnalyticsCommandPipe()
-                .send(DtlAnalyticsCommand.create(
-                        ShareEventProvider.provideMerchantShareEvent(merchant, type)));
-    }
+   @Override
+   public void trackSharing(@ShareType String type) {
+      analyticsInteractor.dtlAnalyticsCommandPipe()
+            .send(DtlAnalyticsCommand.create(ShareEventProvider.provideMerchantShareEvent(merchant, type)));
+   }
 
-    @Override
-    public void trackPointEstimator() {
-        analyticsInteractor.dtlAnalyticsCommandPipe()
-                .send(DtlAnalyticsCommand.create(new PointsEstimatorViewEvent(merchant)));
-    }
+   @Override
+   public void trackPointEstimator() {
+      analyticsInteractor.dtlAnalyticsCommandPipe()
+            .send(DtlAnalyticsCommand.create(new PointsEstimatorViewEvent(merchant)));
+   }
 
-    @Override
-    public void routeToMerchantRequested(@Nullable final Intent intent) {
-        locationDelegate.getLastKnownLocation()
-                .compose(bindViewIoToMainComposer())
-                .subscribe(location -> {
-                    analyticsInteractor.dtlAnalyticsCommandPipe()
-                            .send(DtlAnalyticsCommand.create(
-                                    new MerchantMapDestinationEvent(location, merchant)));
-                    getView().showMerchantMap(intent);
-                }, e -> {
-                    analyticsInteractor.dtlAnalyticsCommandPipe()
-                            .send(DtlAnalyticsCommand.create(
-                                    new MerchantMapDestinationEvent(null, merchant)));
-                    getView().showMerchantMap(intent);
-                });
-    }
+   @Override
+   public void routeToMerchantRequested(@Nullable final Intent intent) {
+      locationDelegate.getLastKnownLocation().compose(bindViewIoToMainComposer()).subscribe(location -> {
+         analyticsInteractor.dtlAnalyticsCommandPipe()
+               .send(DtlAnalyticsCommand.create(new MerchantMapDestinationEvent(location, merchant)));
+         getView().showMerchantMap(intent);
+      }, e -> {
+         analyticsInteractor.dtlAnalyticsCommandPipe()
+               .send(DtlAnalyticsCommand.create(new MerchantMapDestinationEvent(null, merchant)));
+         getView().showMerchantMap(intent);
+      });
+   }
 }

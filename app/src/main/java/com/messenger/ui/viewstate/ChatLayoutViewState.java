@@ -7,24 +7,25 @@ import com.messenger.entities.DataConversation;
 
 public class ChatLayoutViewState extends LceViewState<DataConversation> {
 
-    public ChatLayoutViewState() {
-    }
+   public ChatLayoutViewState() {
+   }
 
-    ///////////////////////////////////////////////////////////////////////////
-    // Parcelable
-    ///////////////////////////////////////////////////////////////////////////
+   ///////////////////////////////////////////////////////////////////////////
+   // Parcelable
+   ///////////////////////////////////////////////////////////////////////////
 
-    @Override public void writeToParcel(Parcel parcel, int flags) {
-        super.writeToParcel(parcel, flags);
-    }
+   @Override
+   public void writeToParcel(Parcel parcel, int flags) {
+      super.writeToParcel(parcel, flags);
+   }
 
-    public static final Parcelable.Creator<ChatLayoutViewState> CREATOR = new Parcelable.Creator<ChatLayoutViewState>() {
-        public ChatLayoutViewState createFromParcel(Parcel source) {return new ChatLayoutViewState(source);}
+   public static final Parcelable.Creator<ChatLayoutViewState> CREATOR = new Parcelable.Creator<ChatLayoutViewState>() {
+      public ChatLayoutViewState createFromParcel(Parcel source) {return new ChatLayoutViewState(source);}
 
-        public ChatLayoutViewState[] newArray(int size) {return new ChatLayoutViewState[size];}
-    };
+      public ChatLayoutViewState[] newArray(int size) {return new ChatLayoutViewState[size];}
+   };
 
-    public ChatLayoutViewState(Parcel in) {
-        super(in);
-    }
+   public ChatLayoutViewState(Parcel in) {
+      super(in);
+   }
 }

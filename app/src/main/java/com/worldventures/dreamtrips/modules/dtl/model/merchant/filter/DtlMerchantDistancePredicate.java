@@ -8,15 +8,14 @@ import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchant;
  */
 public class DtlMerchantDistancePredicate implements Predicate<DtlMerchant> {
 
-    private final DtlFilterData filterData;
+   private final DtlFilterData filterData;
 
-    public DtlMerchantDistancePredicate(DtlFilterData filterData) {
-        this.filterData = filterData;
-    }
+   public DtlMerchantDistancePredicate(DtlFilterData filterData) {
+      this.filterData = filterData;
+   }
 
-    @Override
-    public boolean apply(DtlMerchant dtlMerchant) {
-        return filterData.getMaxDistance() == DtlFilterParameters.MAX_DISTANCE
-                || dtlMerchant.getDistance() < filterData.getMaxDistance();
-    }
+   @Override
+   public boolean apply(DtlMerchant dtlMerchant) {
+      return filterData.getMaxDistance() == DtlFilterParameters.MAX_DISTANCE || dtlMerchant.getDistance() < filterData.getMaxDistance();
+   }
 }

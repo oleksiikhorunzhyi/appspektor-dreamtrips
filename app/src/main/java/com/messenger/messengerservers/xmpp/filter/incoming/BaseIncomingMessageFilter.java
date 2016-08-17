@@ -9,12 +9,12 @@ import rx.Observable;
 
 public abstract class BaseIncomingMessageFilter implements IncomingMessageFilter {
 
-    @Override
-    public Observable<Boolean> skipPacket(Stanza stanza) {
-        int type = XmppPacketDetector.stanzaType(stanza);
-        Message message = (Message) stanza;
-        return skipMessage(type, message);
-    }
+   @Override
+   public Observable<Boolean> skipPacket(Stanza stanza) {
+      int type = XmppPacketDetector.stanzaType(stanza);
+      Message message = (Message) stanza;
+      return skipMessage(type, message);
+   }
 
-    abstract Observable<Boolean> skipMessage(int type, Message message);
+   abstract Observable<Boolean> skipMessage(int type, Message message);
 }

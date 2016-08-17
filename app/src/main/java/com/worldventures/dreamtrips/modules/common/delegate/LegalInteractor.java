@@ -10,14 +10,14 @@ import rx.schedulers.Schedulers;
 
 public class LegalInteractor {
 
-    private final ActionPipe<AcceptTermsCommand> termsPipe;
+   private final ActionPipe<AcceptTermsCommand> termsPipe;
 
-    @Inject
-    public LegalInteractor(Janet janet) {
-        termsPipe = janet.createPipe(AcceptTermsCommand.class, Schedulers.io());
-    }
+   @Inject
+   public LegalInteractor(Janet janet) {
+      termsPipe = janet.createPipe(AcceptTermsCommand.class, Schedulers.io());
+   }
 
-    public ActionPipe<AcceptTermsCommand> termsPipe() {
-        return termsPipe;
-    }
+   public ActionPipe<AcceptTermsCommand> termsPipe() {
+      return termsPipe;
+   }
 }

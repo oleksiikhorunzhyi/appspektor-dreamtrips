@@ -21,33 +21,33 @@ import org.powermock.modules.junit4.PowerMockRunnerDelegate
 @PowerMockRunnerDelegate(JUnitSpekRunner::class)
 @PrepareForTest(Location::class)
 abstract class BaseSpec(spekBody: DescribeBody.() -> Unit) : Spek(spekBody) {
-    companion object {
-        init {
-            RxJavaSchedulerInitializer.init()
-        }
+   companion object {
+      init {
+         RxJavaSchedulerInitializer.init()
+      }
 
-        fun ActionService.wrapCache() = CacheResultWrapper(this)
+      fun ActionService.wrapCache() = CacheResultWrapper(this)
 
-        fun ActionService.wrapDagger() = MockDaggerActionService(this)
+      fun ActionService.wrapDagger() = MockDaggerActionService(this)
 
-        fun ActionService.wrapStub() = StubServiceWrapper(this)
+      fun ActionService.wrapStub() = StubServiceWrapper(this)
 
-        fun CacheResultWrapper.bindStorageSet(storageSet: Set<ActionStorage<*>>): CacheResultWrapper {
-            storageSet.forEach {
-                bindStorage(it.actionClass, it)
-            }
+      fun CacheResultWrapper.bindStorageSet(storageSet: Set<ActionStorage<*>>): CacheResultWrapper {
+         storageSet.forEach {
+            bindStorage(it.actionClass, it)
+         }
 
-            return this
-        }
+         return this
+      }
 
-        fun StubServiceWrapper.spyCallback(): StubServiceWrapper.Callback {
-            callback = spy()
-            return callback
-        }
+      fun StubServiceWrapper.spyCallback(): StubServiceWrapper.Callback {
+         callback = spy()
+         return callback
+      }
 
-        //hard code because mockito_kotlin doesn't work with String correctly
-        fun anyString() = Mockito.any(String::class.java)
+      //hard code because mockito_kotlin doesn't work with String correctly
+      fun anyString() = Mockito.any(String::class.java)
 
-        inline fun <reified T : Any> any() = Mockito.any(T::class.java)
-    }
+      inline fun <reified T : Any> any() = Mockito.any(T::class.java)
+   }
 }

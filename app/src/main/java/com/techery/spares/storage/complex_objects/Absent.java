@@ -28,79 +28,78 @@ import java.util.Set;
  * Implementation of an {@link Optional} not containing a reference.
  */
 final class Absent<T> extends Optional<T> {
-    private static final long serialVersionUID = 0;
+   private static final long serialVersionUID = 0;
 
-    private static final Absent<Object> INSTANCE = new Absent<Object>();
+   private static final Absent<Object> INSTANCE = new Absent<Object>();
 
-    private Absent() {
-    }
+   private Absent() {
+   }
 
-    @SuppressWarnings("unchecked") // implementation is "fully variant"
-    static <T> Optional<T> withType() {
-        return (Optional<T>) INSTANCE;
-    }
+   @SuppressWarnings("unchecked") // implementation is "fully variant"
+   static <T> Optional<T> withType() {
+      return (Optional<T>) INSTANCE;
+   }
 
-    @Override
-    public boolean isPresent() {
-        return false;
-    }
+   @Override
+   public boolean isPresent() {
+      return false;
+   }
 
-    @Override
-    public T get() {
-        throw new IllegalStateException("Optional.get() cannot be called on an absent value");
-    }
+   @Override
+   public T get() {
+      throw new IllegalStateException("Optional.get() cannot be called on an absent value");
+   }
 
-    @Override
-    public T or(T defaultValue) {
-        return ValidationUtils.checkNotNull(defaultValue, "use Optional.orNull() instead of Optional.or(null)");
-    }
+   @Override
+   public T or(T defaultValue) {
+      return ValidationUtils.checkNotNull(defaultValue, "use Optional.orNull() instead of Optional.or(null)");
+   }
 
-    @SuppressWarnings("unchecked") // safe covariant cast
-    @Override
-    public Optional<T> or(Optional<? extends T> secondChoice) {
-        return (Optional<T>) ValidationUtils.checkNotNull(secondChoice);
-    }
+   @SuppressWarnings("unchecked") // safe covariant cast
+   @Override
+   public Optional<T> or(Optional<? extends T> secondChoice) {
+      return (Optional<T>) ValidationUtils.checkNotNull(secondChoice);
+   }
 
-    @Override
-    public T or(Supplier<? extends T> supplier) {
-        return ValidationUtils.checkNotNull(supplier.get(),
-                "use Optional.orNull() instead of a Supplier that returns null");
-    }
+   @Override
+   public T or(Supplier<? extends T> supplier) {
+      return ValidationUtils.checkNotNull(supplier.get(), "use Optional.orNull() instead of a Supplier that returns null");
+   }
 
-    @Override
-    @Nullable
-    public T orNull() {
-        return null;
-    }
+   @Override
+   @Nullable
+   public T orNull() {
+      return null;
+   }
 
-    @Override
-    public Set<T> asSet() {
-        return Collections.emptySet();
-    }
+   @Override
+   public Set<T> asSet() {
+      return Collections.emptySet();
+   }
 
-    @Override
-    public <V> Optional<V> transform(Function<? super T, V> function) {
-        ValidationUtils.checkNotNull(function);
-        return Optional.absent();
-    }
+   @Override
+   public <V> Optional<V> transform(Function<? super T, V> function) {
+      ValidationUtils.checkNotNull(function);
+      return Optional.absent();
+   }
 
-    @Override
-    public boolean equals(@Nullable Object object) {
-        return object == this;
-    }
+   @Override
+   public boolean equals(@Nullable Object object) {
+      return object == this;
+   }
 
-    @Override
-    public int hashCode() {
-        return 0x598df91c;
-    }
+   @Override
+   public int hashCode() {
+      return 0x598df91c;
+   }
 
-    @Override
-    public String toString() {
-        return "Optional.absent()";
-    }
+   @Override
+   public String toString() {
+      return "Optional.absent()";
+   }
 
-    private Object readResolve() {
-        return INSTANCE;
-    }
+   private Object readResolve() {
+      return INSTANCE;
+   }
 
 }

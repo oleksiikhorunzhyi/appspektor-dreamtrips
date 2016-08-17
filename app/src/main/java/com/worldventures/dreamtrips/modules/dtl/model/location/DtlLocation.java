@@ -5,33 +5,33 @@ import com.worldventures.dreamtrips.modules.trips.model.Location;
 
 public interface DtlLocation {
 
-    LocationSourceType getLocationSourceType();
+   LocationSourceType getLocationSourceType();
 
-    String getLongName();
+   String getLongName();
 
-    Location getCoordinates();
+   Location getCoordinates();
 
-    String getAnalyticsName();
+   String getAnalyticsName();
 
-    DtlLocation UNDEFINED = new DtlLocation() {
-        @Override
-        public LocationSourceType getLocationSourceType() {
-            return LocationSourceType.UNDEFINED;
-        }
+   DtlLocation UNDEFINED = new DtlLocation() {
+      @Override
+      public LocationSourceType getLocationSourceType() {
+         return LocationSourceType.UNDEFINED;
+      }
 
-        @Override
-        public String getLongName() {
-            return null;
-        }
+      @Override
+      public String getLongName() {
+         return null;
+      }
 
-        @Override
-        public com.worldventures.dreamtrips.modules.trips.model.Location getCoordinates() {
-            return new Location(0, 0);
-        }
+      @Override
+      public com.worldventures.dreamtrips.modules.trips.model.Location getCoordinates() {
+         return new Location(0, 0);
+      }
 
-        @Override
-        public String getAnalyticsName() {
-            return "";
-        }
-    };
+      @Override
+      public String getAnalyticsName() {
+         return "";
+      }
+   };
 }

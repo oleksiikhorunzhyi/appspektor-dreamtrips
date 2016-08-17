@@ -8,17 +8,17 @@ import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.modules.feed.model.comment.LoadMore;
 
 @Layout(R.layout.adapter_item_load_more_feed)
-public class LoaderCell extends AbstractCell<LoadMore>{
+public class LoaderCell extends AbstractCell<LoadMore> {
 
-    public LoaderCell(View view) {
-        super(view);
-    }
+   public LoaderCell(View view) {
+      super(view);
+   }
 
-    @Override
-    protected void syncUIStateWithModel() {}
+   @Override
+   protected void syncUIStateWithModel() {}
 
-    @Override
-    public boolean shouldInject() {
-        return false;
-    }
+   @Override
+   public boolean shouldInject() {
+      return false;
+   }
 }

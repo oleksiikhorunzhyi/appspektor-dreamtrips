@@ -26,157 +26,157 @@ import java.util.List;
 
 public interface SnappyRepository {
 
-    String CIRCLES = "circles";
-    String REGIONS = "regions_new";
-    String CATEGORIES = "categories";
-    String ACTIVITIES = "activities_new";
-    String BUCKET_LIST = "bucket_items";
-    String SETTINGS_KEY = "settings";
-    String TRANSLATION = "translation";
-    String POST = "post";
-    String MEDIA_UPLOAD_ENTITY = "VIDEO_UPLOAD_ENTITY"; // "VIDEO_" left as is for existing user stores
-    String LAST_SELECTED_VIDEO_LOCALE = "LAST_SELECTED_VIDEO_LOCALE";
-    String LAST_SELECTED_VIDEO_LANGUAGE = "LAST_SELECTED_VIDEO_LANGUAGE ";
-    String IMAGE = "IMAGE";
-    String OPEN_BUCKET_TAB_TYPE = "open_bucket_tab_type";
-    String BADGE_NOTIFICATIONS_COUNT = "badge_notifications_count";
-    String EXCLUSIVE_NOTIFICATIONS_COUNT = "Unread-Notifications-Count"; // WARNING must be equal to server header
-    String FRIEND_REQUEST_COUNT = "Friend-Requests-Count"; // WARNING must be equal to server header
-    String GCM_REG_TOKEN = "GCM_REG_TOKEN ";
-    String LAST_SYNC_APP_VERSION = "LAST_SYNC_APP_VERSION";
-    String FILTER_CIRCLE = "FILTER_CIRCLE";
-    String FILTER_FEED_FRIEND_FILTER_CIRCLE = "FILTER_FEED_FRIEND_FILTER_CIRCLE";
-    String SOCIAL_VIEW_PAGER_STATE = "SOCIAL_VIEW_PAGER_STATE";
+   String CIRCLES = "circles";
+   String REGIONS = "regions_new";
+   String CATEGORIES = "categories";
+   String ACTIVITIES = "activities_new";
+   String BUCKET_LIST = "bucket_items";
+   String SETTINGS_KEY = "settings";
+   String TRANSLATION = "translation";
+   String POST = "post";
+   String MEDIA_UPLOAD_ENTITY = "VIDEO_UPLOAD_ENTITY"; // "VIDEO_" left as is for existing user stores
+   String LAST_SELECTED_VIDEO_LOCALE = "LAST_SELECTED_VIDEO_LOCALE";
+   String LAST_SELECTED_VIDEO_LANGUAGE = "LAST_SELECTED_VIDEO_LANGUAGE ";
+   String IMAGE = "IMAGE";
+   String OPEN_BUCKET_TAB_TYPE = "open_bucket_tab_type";
+   String BADGE_NOTIFICATIONS_COUNT = "badge_notifications_count";
+   String EXCLUSIVE_NOTIFICATIONS_COUNT = "Unread-Notifications-Count"; // WARNING must be equal to server header
+   String FRIEND_REQUEST_COUNT = "Friend-Requests-Count"; // WARNING must be equal to server header
+   String GCM_REG_TOKEN = "GCM_REG_TOKEN ";
+   String LAST_SYNC_APP_VERSION = "LAST_SYNC_APP_VERSION";
+   String FILTER_CIRCLE = "FILTER_CIRCLE";
+   String FILTER_FEED_FRIEND_FILTER_CIRCLE = "FILTER_FEED_FRIEND_FILTER_CIRCLE";
+   String SOCIAL_VIEW_PAGER_STATE = "SOCIAL_VIEW_PAGER_STATE";
 
-    String DTL_MERCHANTS = "DTL_MERCHANTS";
-    String DTL_SELECTED_LOCATION = "DTL_SELECTED_LOCATION";
-    String DTL_TRANSACTION_PREFIX = "DTL_TRANSACTION_";
-    String DTL_LAST_MAP_POSITION = "DTL_LAST_MAP_POSITION";
-    String DTL_SHOW_OFFERS_ONLY_TOGGLE = "DTL_SHOW_OFFERS_ONLY_TOGGLE";
-    String DTL_AMENITIES = "DTL_AMENITIES";
-    String FEEDBACK_TYPES = "FEEDBACK_TYPES";
-    String SUGGESTED_PHOTOS_SYNC_TIME = "SUGGESTED_PHOTOS_SYNC_TIME";
+   String DTL_MERCHANTS = "DTL_MERCHANTS";
+   String DTL_SELECTED_LOCATION = "DTL_SELECTED_LOCATION";
+   String DTL_TRANSACTION_PREFIX = "DTL_TRANSACTION_";
+   String DTL_LAST_MAP_POSITION = "DTL_LAST_MAP_POSITION";
+   String DTL_SHOW_OFFERS_ONLY_TOGGLE = "DTL_SHOW_OFFERS_ONLY_TOGGLE";
+   String DTL_AMENITIES = "DTL_AMENITIES";
+   String FEEDBACK_TYPES = "FEEDBACK_TYPES";
+   String SUGGESTED_PHOTOS_SYNC_TIME = "SUGGESTED_PHOTOS_SYNC_TIME";
 
-    void clearAll();
+   void clearAll();
 
-    Boolean isEmpty(String key);
+   Boolean isEmpty(String key);
 
-    <T> void putList(String key, Collection<T> list);
+   <T> void putList(String key, Collection<T> list);
 
-    <T> List<T> readList(String key, Class<T> clazz);
+   <T> List<T> readList(String key, Class<T> clazz);
 
-    void clearAllForKey(String key);
+   void clearAllForKey(String key);
 
-    void clearAllForKeys(String... keys);
+   void clearAllForKeys(String... keys);
 
-    void saveBucketList(List<BucketItem> items, int userId);
+   void saveBucketList(List<BucketItem> items, int userId);
 
-    List<BucketItem> readBucketList(int userId);
+   List<BucketItem> readBucketList(int userId);
 
-    void saveOpenBucketTabType(String type);
+   void saveOpenBucketTabType(String type);
 
-    String getOpenBucketTabType();
+   String getOpenBucketTabType();
 
-    void saveSettings(List<Setting> settingsList, boolean withClear);
+   void saveSettings(List<Setting> settingsList, boolean withClear);
 
-    List<Setting> getSettings();
+   List<Setting> getSettings();
 
-    void clearSettings(DB snappyDb) throws SnappydbException;
+   void clearSettings(DB snappyDb) throws SnappydbException;
 
-    void saveLastSuggestedPhotosSyncTime(long time);
+   void saveLastSuggestedPhotosSyncTime(long time);
 
-    long getLastSuggestedPhotosSyncTime();
+   long getLastSuggestedPhotosSyncTime();
 
-    void savePhotoEntityList(TripImagesType type, int userId, List<IFullScreenObject> items);
+   void savePhotoEntityList(TripImagesType type, int userId, List<IFullScreenObject> items);
 
-    List<IFullScreenObject> readPhotoEntityList(TripImagesType type, int userId);
+   List<IFullScreenObject> readPhotoEntityList(TripImagesType type, int userId);
 
-    void saveLastSelectedVideoLocale(VideoLocale videoLocale);
+   void saveLastSelectedVideoLocale(VideoLocale videoLocale);
 
-    VideoLocale getLastSelectedVideoLocale();
+   VideoLocale getLastSelectedVideoLocale();
 
-    void saveLastSelectedVideoLanguage(VideoLanguage videoLocale);
+   void saveLastSelectedVideoLanguage(VideoLanguage videoLocale);
 
-    VideoLanguage getLastSelectedVideoLanguage();
+   VideoLanguage getLastSelectedVideoLanguage();
 
-    void saveBadgeNotificationsCount(int notificationsCount);
+   void saveBadgeNotificationsCount(int notificationsCount);
 
-    int getBadgeNotificationsCount();
+   int getBadgeNotificationsCount();
 
-    void saveCountFromHeader(String headerKey, int count);
+   void saveCountFromHeader(String headerKey, int count);
 
-    int getExclusiveNotificationsCount();
+   int getExclusiveNotificationsCount();
 
-    int getFriendsRequestsCount();
+   int getFriendsRequestsCount();
 
-    void saveTranslation(String originalText, String translation, String toLanguage);
+   void saveTranslation(String originalText, String translation, String toLanguage);
 
-    String getTranslation(String originalText, String toLanguage);
+   String getTranslation(String originalText, String toLanguage);
 
-    void saveCircles(List<Circle> circles);
+   void saveCircles(List<Circle> circles);
 
-    List<Circle> getCircles();
+   List<Circle> getCircles();
 
-    void saveFilterCircle(Circle circle);
+   void saveFilterCircle(Circle circle);
 
-    Circle getFilterCircle();
+   Circle getFilterCircle();
 
-    Circle getFeedFriendPickedCircle();
+   Circle getFeedFriendPickedCircle();
 
-    void saveFeedFriendPickedCircle(Circle circle);
+   void saveFeedFriendPickedCircle(Circle circle);
 
-    String getGcmRegToken();
+   String getGcmRegToken();
 
-    void setGcmRegToken(String token);
+   void setGcmRegToken(String token);
 
-    void saveSocialViewPagerState(SocialViewPagerState state);
+   void saveSocialViewPagerState(SocialViewPagerState state);
 
-    SocialViewPagerState getSocialViewPagerState();
+   SocialViewPagerState getSocialViewPagerState();
 
-    List<FeedbackType> getFeedbackTypes();
+   List<FeedbackType> getFeedbackTypes();
 
-    void setFeedbackTypes(ArrayList<FeedbackType> types);
+   void setFeedbackTypes(ArrayList<FeedbackType> types);
 
-    void saveDtlLocation(DtlLocation dtlLocation);
+   void saveDtlLocation(DtlLocation dtlLocation);
 
-    void cleanDtlLocation();
+   void cleanDtlLocation();
 
-    @Nullable
-    DtlLocation getDtlLocation();
+   @Nullable
+   DtlLocation getDtlLocation();
 
-    void saveDtlMerhants(List<DtlMerchant> merchants);
+   void saveDtlMerhants(List<DtlMerchant> merchants);
 
-    List<DtlMerchant> getDtlMerchants();
+   List<DtlMerchant> getDtlMerchants();
 
-    void saveAmenities(Collection<DtlMerchantAttribute> amenities);
+   void saveAmenities(Collection<DtlMerchantAttribute> amenities);
 
-    List<DtlMerchantAttribute> getAmenities();
+   List<DtlMerchantAttribute> getAmenities();
 
-    void clearMerchantData();
+   void clearMerchantData();
 
-    void saveLastMapCameraPosition(Location location);
+   void saveLastMapCameraPosition(Location location);
 
-    Location getLastMapCameraPosition();
+   Location getLastMapCameraPosition();
 
-    void cleanLastMapCameraPosition();
+   void cleanLastMapCameraPosition();
 
-    void saveLastSelectedOffersOnlyToogle(boolean state);
+   void saveLastSelectedOffersOnlyToogle(boolean state);
 
-    Boolean getLastSelectedOffersOnlyToggle();
+   Boolean getLastSelectedOffersOnlyToggle();
 
-    void cleanLastSelectedOffersOnlyToggle();
+   void cleanLastSelectedOffersOnlyToggle();
 
-    DtlTransaction getDtlTransaction(String id);
+   DtlTransaction getDtlTransaction(String id);
 
-    void saveDtlTransaction(String id, DtlTransaction dtlTransaction);
+   void saveDtlTransaction(String id, DtlTransaction dtlTransaction);
 
-    void deleteDtlTransaction(String id);
+   void deleteDtlTransaction(String id);
 
-    void saveDownloadMediaEntity(CachedEntity e);
+   void saveDownloadMediaEntity(CachedEntity e);
 
-    CachedEntity getDownloadMediaEntity(String id);
+   CachedEntity getDownloadMediaEntity(String id);
 
-    void setLastSyncAppVersion(String appVersion);
+   void setLastSyncAppVersion(String appVersion);
 
-    String getLastSyncAppVersion();
+   String getLastSyncAppVersion();
 }

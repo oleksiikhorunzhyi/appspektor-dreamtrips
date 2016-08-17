@@ -7,8 +7,8 @@ import rx.Observable;
 
 public class MerchantTransformer implements Observable.Transformer<Merchant, DtlMerchant> {
 
-    @Override
-    public Observable<DtlMerchant> call(Observable<Merchant> merchantObservable) {
-        return merchantObservable.map(DtlMerchant::new);
-    }
+   @Override
+   public Observable<DtlMerchant> call(Observable<Merchant> merchantObservable) {
+      return merchantObservable.map(DtlMerchant::new);
+   }
 }

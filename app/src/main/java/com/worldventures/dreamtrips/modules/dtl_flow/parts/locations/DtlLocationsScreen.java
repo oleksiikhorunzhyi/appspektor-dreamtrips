@@ -8,13 +8,13 @@ import java.util.List;
 
 public interface DtlLocationsScreen extends DtlScreen {
 
-    void locationResolutionRequired(Status status);
+   void locationResolutionRequired(Status status);
 
-    void setItems(List<DtlExternalLocation> dtlExternalLocations);
+   void setItems(List<DtlExternalLocation> dtlExternalLocations);
 
-    void hideNearMeButton();
+   void hideNearMeButton();
 
-    void showProgress();
+   void showProgress();
 
-    void hideProgress();
+   void hideProgress();
 }

@@ -23,63 +23,62 @@ import java.util.List;
 
 import butterknife.InjectView;
 
-public abstract class SettingsFragment extends RxBaseFragmentWithArgs<SettingsPresenter, SettingsBundle>
-        implements SettingsPresenter.View {
+public abstract class SettingsFragment extends RxBaseFragmentWithArgs<SettingsPresenter, SettingsBundle> implements SettingsPresenter.View {
 
-    @InjectView(R.id.settings_list) RecyclerView recyclerView;
-    @InjectView(R.id.settings_toolbar) Toolbar toolbar;
-    @InjectView(R.id.loading_view) ViewGroup loadingView;
+   @InjectView(R.id.settings_list) RecyclerView recyclerView;
+   @InjectView(R.id.settings_toolbar) Toolbar toolbar;
+   @InjectView(R.id.loading_view) ViewGroup loadingView;
 
-    protected BaseDelegateAdapter adapter;
+   protected BaseDelegateAdapter adapter;
 
-    @Override
-    public void afterCreateView(View rootView) {
-        super.afterCreateView(rootView);
-        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-        adapter = new BaseDelegateAdapter(getActivity(), this);
-        registerCells();
-        recyclerView.setAdapter(adapter);
-    }
+   @Override
+   public void afterCreateView(View rootView) {
+      super.afterCreateView(rootView);
+      recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+      adapter = new BaseDelegateAdapter(getActivity(), this);
+      registerCells();
+      recyclerView.setAdapter(adapter);
+   }
 
-    @Override
-    public void onResume() {
-        super.onResume();
-        setupToolbar();
-    }
+   @Override
+   public void onResume() {
+      super.onResume();
+      setupToolbar();
+   }
 
-    protected void registerCells() {
-        adapter.registerCell(FlagSetting.class, SettingsFlagCell.class);
-        adapter.registerCell(SelectSetting.class, SettingsSelectCell.class);
-    }
+   protected void registerCells() {
+      adapter.registerCell(FlagSetting.class, SettingsFlagCell.class);
+      adapter.registerCell(SelectSetting.class, SettingsSelectCell.class);
+   }
 
-    protected void setupToolbar() {
-        ((AppCompatActivity) getActivity()).setSupportActionBar(toolbar);
-        ((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        toolbar.setTitle(getArgs().settingsGroup.getTitle());
-    }
+   protected void setupToolbar() {
+      ((AppCompatActivity) getActivity()).setSupportActionBar(toolbar);
+      ((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+      toolbar.setTitle(getArgs().settingsGroup.getTitle());
+   }
 
-    protected void close() {
-        getActivity().onBackPressed();
-    }
+   protected void close() {
+      getActivity().onBackPressed();
+   }
 
-    @Override
-    protected SettingsPresenter createPresenter(Bundle savedInstanceState) {
-        return new SettingsPresenter(getArgs().settingsGroup);
-    }
+   @Override
+   protected SettingsPresenter createPresenter(Bundle savedInstanceState) {
+      return new SettingsPresenter(getArgs().settingsGroup);
+   }
 
-    @Override
-    public void setSettings(List<Setting> settingsList) {
-        adapter.setItems(settingsList);
-        adapter.notifyDataSetChanged();
-    }
+   @Override
+   public void setSettings(List<Setting> settingsList) {
+      adapter.setItems(settingsList);
+      adapter.notifyDataSetChanged();
+   }
 
-    @Override
-    public void showLoading() {
-        loadingView.setVisibility(View.VISIBLE);
-    }
+   @Override
+   public void showLoading() {
+      loadingView.setVisibility(View.VISIBLE);
+   }
 
-    @Override
-    public void hideLoading() {
-        loadingView.setVisibility(View.GONE);
-    }
+   @Override
+   public void hideLoading() {
+      loadingView.setVisibility(View.GONE);
+   }
 }

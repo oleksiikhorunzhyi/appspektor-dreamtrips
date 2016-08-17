@@ -9,15 +9,15 @@ import com.techery.spares.module.Injector;
 
 public class StorageInitializer implements AppInitializer {
 
-    Context context;
+   Context context;
 
-    public StorageInitializer(Context context) {
-        this.context = context;
-    }
+   public StorageInitializer(Context context) {
+      this.context = context;
+   }
 
-    @Override
-    public void initialize(Injector injector) {
-        FlowManager.init(context);
-        FlowLog.setMinimumLoggingLevel(FlowLog.Level.V);
-    }
+   @Override
+   public void initialize(Injector injector) {
+      FlowManager.init(context);
+      FlowLog.setMinimumLoggingLevel(FlowLog.Level.V);
+   }
 }

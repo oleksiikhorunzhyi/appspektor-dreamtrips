@@ -29,93 +29,88 @@ import flow.History;
 @Layout(R.layout.activity_base_messenger)
 public class MessengerActivity extends FlowActivity<MessengerActivityPresenter> {
 
-    public static final String EXTRA_CHAT_CONVERSATION_ID = "MessengerActivity#EXTRA_CHAT_CONVERSATION_ID";
+   public static final String EXTRA_CHAT_CONVERSATION_ID = "MessengerActivity#EXTRA_CHAT_CONVERSATION_ID";
 
-    @InjectView(R.id.chat_photo_picker) PhotoPickerLayout photoPickerLayout;
-    @Inject PodcastPlayerDelegate podcastPlayerDelegate;
-    @Inject PhotoPickerLayoutDelegate photoPickerLayoutDelegate;
-    @Inject PickLocationDelegate pickLocationDelegate;
-    @Inject CropImageDelegate cropImageDelegate;
+   @InjectView(R.id.chat_photo_picker) PhotoPickerLayout photoPickerLayout;
+   @Inject PodcastPlayerDelegate podcastPlayerDelegate;
+   @Inject PhotoPickerLayoutDelegate photoPickerLayoutDelegate;
+   @Inject PickLocationDelegate pickLocationDelegate;
+   @Inject CropImageDelegate cropImageDelegate;
 
-    String conversationId;
+   String conversationId;
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        conversationId = getIntent().getStringExtra(EXTRA_CHAT_CONVERSATION_ID);
-        super.onCreate(savedInstanceState);
-        podcastPlayerDelegate.stop();
-        //
-        MonitoringHelper.setInteractionName(this);
-        //
-        initPickerLayout();
-        //
-        navigationDrawerPresenter.setCurrentComponent(rootComponentsProvider
-                .getComponentByKey(MessengerActivityModule.MESSENGER));
-    }
+   @Override
+   protected void onCreate(Bundle savedInstanceState) {
+      conversationId = getIntent().getStringExtra(EXTRA_CHAT_CONVERSATION_ID);
+      super.onCreate(savedInstanceState);
+      podcastPlayerDelegate.stop();
+      //
+      MonitoringHelper.setInteractionName(this);
+      //
+      initPickerLayout();
+      //
+      navigationDrawerPresenter.setCurrentComponent(rootComponentsProvider.getComponentByKey(MessengerActivityModule.MESSENGER));
+   }
 
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (pickLocationDelegate.onActivityResult(requestCode, resultCode, data)) return;
-        if (cropImageDelegate.onActivityResult(requestCode, resultCode, data)) return;
-        super.onActivityResult(requestCode, resultCode, data);
-    }
+   @Override
+   public void onActivityResult(int requestCode, int resultCode, Intent data) {
+      if (pickLocationDelegate.onActivityResult(requestCode, resultCode, data)) return;
+      if (cropImageDelegate.onActivityResult(requestCode, resultCode, data)) return;
+      super.onActivityResult(requestCode, resultCode, data);
+   }
 
-    @Override
-    protected ComponentDescription getCurrentComponent() {
-        return rootComponentsProvider
-                .getComponentByKey(MessengerActivityModule.MESSENGER);
-    }
+   @Override
+   protected ComponentDescription getCurrentComponent() {
+      return rootComponentsProvider.getComponentByKey(MessengerActivityModule.MESSENGER);
+   }
 
-    //TODO photo picker should be fully reworked to fit UI needs
-    private void initPickerLayout() {
-        inject(photoPickerLayout);
-        photoPickerLayoutDelegate.setPhotoPickerLayout(photoPickerLayout);
-        photoPickerLayoutDelegate.initPicker(getSupportFragmentManager());
-    }
+   //TODO photo picker should be fully reworked to fit UI needs
+   private void initPickerLayout() {
+      inject(photoPickerLayout);
+      photoPickerLayoutDelegate.setPhotoPickerLayout(photoPickerLayout);
+      photoPickerLayoutDelegate.initPicker(getSupportFragmentManager());
+   }
 
-    @Override
-    protected void onNewIntent(Intent intent) {
-        conversationId = intent.getStringExtra(EXTRA_CHAT_CONVERSATION_ID);
-        super.onNewIntent(intent);
-    }
+   @Override
+   protected void onNewIntent(Intent intent) {
+      conversationId = intent.getStringExtra(EXTRA_CHAT_CONVERSATION_ID);
+      super.onNewIntent(intent);
+   }
 
-    @Override
-    protected History provideDefaultHistory() {
-        History history = History.single(ConversationsPath.MASTER_PATH);
+   @Override
+   protected History provideDefaultHistory() {
+      History history = History.single(ConversationsPath.MASTER_PATH);
 
-        if (!TextUtils.isEmpty(conversationId)) {
-            history = history
-                    .buildUpon()
-                    .push(new ChatPath(conversationId))
-                    .build();
-        }
+      if (!TextUtils.isEmpty(conversationId)) {
+         history = history.buildUpon().push(new ChatPath(conversationId)).build();
+      }
 
-        return history;
-    }
+      return history;
+   }
 
-    //TODO refactor after merge with social and update social router
-    public static void startMessenger(Context context) {
-        context.startActivity(new Intent(context, MessengerActivity.class));
-    }
+   //TODO refactor after merge with social and update social router
+   public static void startMessenger(Context context) {
+      context.startActivity(new Intent(context, MessengerActivity.class));
+   }
 
-    //TODO refactor after merge with social and update social router
-    public static void startMessengerWithConversation(Context context, String conversationId) {
-        Intent resultIntent = new Intent(context, MessengerActivity.class);
-        //set args to pending intent
-        resultIntent.putExtra(MessengerActivity.EXTRA_CHAT_CONVERSATION_ID, conversationId);
-        //
-        context.startActivity(resultIntent);
-    }
+   //TODO refactor after merge with social and update social router
+   public static void startMessengerWithConversation(Context context, String conversationId) {
+      Intent resultIntent = new Intent(context, MessengerActivity.class);
+      //set args to pending intent
+      resultIntent.putExtra(MessengerActivity.EXTRA_CHAT_CONVERSATION_ID, conversationId);
+      //
+      context.startActivity(resultIntent);
+   }
 
-    @Override
-    protected MessengerActivityPresenter createPresentationModel(Bundle savedInstanceState) {
-        return new MessengerActivityPresenter();
-    }
+   @Override
+   protected MessengerActivityPresenter createPresentationModel(Bundle savedInstanceState) {
+      return new MessengerActivityPresenter();
+   }
 
-    @Override
-    protected void doOnDispatch(Flow.Traversal traversal) {
-        if (!traversal.destination.top().equals(traversal.origin.top())) {
-            photoPickerLayoutDelegate.hidePicker();
-        }
-    }
+   @Override
+   protected void doOnDispatch(Flow.Traversal traversal) {
+      if (!traversal.destination.top().equals(traversal.origin.top())) {
+         photoPickerLayoutDelegate.hidePicker();
+      }
+   }
 }

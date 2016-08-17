@@ -47,162 +47,144 @@ import de.greenrobot.event.EventBus;
 import io.techery.janet.Janet;
 
 @Module(
-        injects = {
-                DreamSpiceManager.class,
-                DreamSpiceService.class,
-                CirclesInteractor.class,
-                FileCachingDelegate.class,
-                VideoDownloadSpiceService.class,
-                PhotoUploadingManagerS3.class,
-                SocialUploaderyManager.class,
-                //
-                DownloadFileListener.class,
-                PhoneContactRequest.class,
+      injects = {DreamSpiceManager.class, DreamSpiceService.class, CirclesInteractor.class, FileCachingDelegate.class, VideoDownloadSpiceService.class, PhotoUploadingManagerS3.class, SocialUploaderyManager.class,
+            //
+            DownloadFileListener.class, PhoneContactRequest.class,
 
-                LogoutDelegate.class,
-                //
-                DtlFilterMerchantInteractor.class,
-                DtlMerchantInteractor.class,
-                DtlTransactionInteractor.class,
+            LogoutDelegate.class,
+            //
+            DtlFilterMerchantInteractor.class, DtlMerchantInteractor.class, DtlTransactionInteractor.class,
 
-                QueryTripsFilterDataInteractor.class,
-        },
-        library = true, complete = false
-)
+            QueryTripsFilterDataInteractor.class,},
+      library = true, complete = false)
 public class ManagerModule {
 
-    @Provides
-    public DreamSpiceManager provideSpiceManager(@ForApplication Injector injector) {
-        return new DreamSpiceManager(DreamSpiceService.class, injector);
-    }
+   @Provides
+   public DreamSpiceManager provideSpiceManager(@ForApplication Injector injector) {
+      return new DreamSpiceManager(DreamSpiceService.class, injector);
+   }
 
-    @Singleton
-    @Provides
-    public CirclesInteractor provideQueryCirclesInteractor(Janet janet) {
-        return new CirclesInteractor(janet);
-    }
+   @Singleton
+   @Provides
+   public CirclesInteractor provideQueryCirclesInteractor(Janet janet) {
+      return new CirclesInteractor(janet);
+   }
 
-    @Provides
-    @Singleton
-    public SocialUploaderyManager provideSocialUploaderyManager(@ForApplication Injector injector) {
-        return new SocialUploaderyManager(injector);
-    }
+   @Provides
+   @Singleton
+   public SocialUploaderyManager provideSocialUploaderyManager(@ForApplication Injector injector) {
+      return new SocialUploaderyManager(injector);
+   }
 
-    @Provides
-    public PhotoUploadingManagerS3 providePhotoUploadingManagerS3(@ForApplication Injector injector) {
-        return new PhotoUploadingManagerS3(injector);
-    }
+   @Provides
+   public PhotoUploadingManagerS3 providePhotoUploadingManagerS3(@ForApplication Injector injector) {
+      return new PhotoUploadingManagerS3(injector);
+   }
 
-    @Provides
-    public FileDownloadSpiceManager provideVideoDownloadSpiceManager(@ForApplication Injector injector) {
-        return new FileDownloadSpiceManager(VideoDownloadSpiceService.class);
-    }
+   @Provides
+   public FileDownloadSpiceManager provideVideoDownloadSpiceManager(@ForApplication Injector injector) {
+      return new FileDownloadSpiceManager(VideoDownloadSpiceService.class);
+   }
 
-    @Singleton
-    @Provides
-    DtlMerchantInteractor dtlMerchantInteractor(Janet janet,
-                                                DtlLocationInteractor locationInteractor) {
-        return new DtlMerchantInteractor(janet, locationInteractor);
-    }
+   @Singleton
+   @Provides
+   DtlMerchantInteractor dtlMerchantInteractor(Janet janet, DtlLocationInteractor locationInteractor) {
+      return new DtlMerchantInteractor(janet, locationInteractor);
+   }
 
-    @Singleton
-    @Provides
-    DtlFilterMerchantInteractor dtlFilteredMerchantInteractor(DtlMerchantInteractor dtlMerchantInteractor,
-                                                              DtlLocationInteractor locationInteractor,
-                                                              LocationDelegate locationDelegate,
-                                                              Janet janet) {
-        return new DtlFilterMerchantInteractor(dtlMerchantInteractor, locationInteractor, locationDelegate, janet);
-    }
+   @Singleton
+   @Provides
+   DtlFilterMerchantInteractor dtlFilteredMerchantInteractor(DtlMerchantInteractor dtlMerchantInteractor, DtlLocationInteractor locationInteractor, LocationDelegate locationDelegate, Janet janet) {
+      return new DtlFilterMerchantInteractor(dtlMerchantInteractor, locationInteractor, locationDelegate, janet);
+   }
 
-    @Singleton
-    @Provides
-    DtlTransactionInteractor provideDtlTransactionInteractor(Janet janet,
-                                                             @Named(JanetModule.JANET_API_LIB) Janet apiLibJanet) {
-        return new DtlTransactionInteractor(janet, apiLibJanet);
-    }
+   @Singleton
+   @Provides
+   DtlTransactionInteractor provideDtlTransactionInteractor(Janet janet, @Named(JanetModule.JANET_API_LIB) Janet apiLibJanet) {
+      return new DtlTransactionInteractor(janet, apiLibJanet);
+   }
 
-    @Singleton
-    @Provides
-    DtlLocationInteractor provideDtlLocationService(Janet janet) {
-        return new DtlLocationInteractor(janet);
-    }
+   @Singleton
+   @Provides
+   DtlLocationInteractor provideDtlLocationService(Janet janet) {
+      return new DtlLocationInteractor(janet);
+   }
 
 
-    @Singleton
-    @Provides
-    LocationDelegate provideLocationDelegate(@ForApplication Context context) {
-        return new LocationDelegateImpl(context);
-    }
+   @Singleton
+   @Provides
+   LocationDelegate provideLocationDelegate(@ForApplication Context context) {
+      return new LocationDelegateImpl(context);
+   }
 
-    @Provides
-    FeedEntityManager provideBaseFeedEntityManager(@Global EventBus eventBus) {
-        return new FeedEntityManager(eventBus);
-    }
+   @Provides
+   FeedEntityManager provideBaseFeedEntityManager(@Global EventBus eventBus) {
+      return new FeedEntityManager(eventBus);
+   }
 
-    @Singleton
-    @Provides
-    LogoutDelegate logoutDelegate(@ForApplication Injector injector) {
-        return new LogoutDelegate(injector);
-    }
+   @Singleton
+   @Provides
+   LogoutDelegate logoutDelegate(@ForApplication Injector injector) {
+      return new LogoutDelegate(injector);
+   }
 
-    @Provides
-    @Singleton
-    PhotoPickerDelegate providePhotoPickerDelegate() {
-        return new PhotoPickerDelegate();
-    }
+   @Provides
+   @Singleton
+   PhotoPickerDelegate providePhotoPickerDelegate() {
+      return new PhotoPickerDelegate();
+   }
 
-    @Provides
-    @Singleton
-    DTCookieManager provideCookieManager(@ForApplication Context context) {
-        return new DTCookieManager(context);
-    }
+   @Provides
+   @Singleton
+   DTCookieManager provideCookieManager(@ForApplication Context context) {
+      return new DTCookieManager(context);
+   }
 
-    @Provides
-    @Singleton
-    ClearDirectoryDelegate provideClearDirectoryDelegate(@ForApplication Context context, PhotoDAO photoDAO) {
-        return new ClearDirectoryDelegate(context, photoDAO);
-    }
+   @Provides
+   @Singleton
+   ClearDirectoryDelegate provideClearDirectoryDelegate(@ForApplication Context context, PhotoDAO photoDAO) {
+      return new ClearDirectoryDelegate(context, photoDAO);
+   }
 
-    @Provides
-    @Singleton
-    MediaPickerManager provideMediaPickerManager() {
-        return new MediaPickerManager();
-    }
+   @Provides
+   @Singleton
+   MediaPickerManager provideMediaPickerManager() {
+      return new MediaPickerManager();
+   }
 
-    @Provides
-    @Singleton
-    SocialCropImageManager provideGlobalConfigManager(@ForApplication Context context,
-                                                      DreamSpiceManager dreamSpiceManager) {
-        return new SocialCropImageManager(context, dreamSpiceManager);
-    }
+   @Provides
+   @Singleton
+   SocialCropImageManager provideGlobalConfigManager(@ForApplication Context context, DreamSpiceManager dreamSpiceManager) {
+      return new SocialCropImageManager(context, dreamSpiceManager);
+   }
 
-    @Provides
-    @Singleton
-    EditPhotoTagsCallback provideEditPhotoTagsCallback() {
-        return new EditPhotoTagsCallback();
-    }
+   @Provides
+   @Singleton
+   EditPhotoTagsCallback provideEditPhotoTagsCallback() {
+      return new EditPhotoTagsCallback();
+   }
 
-    @Provides
-    @Singleton
-    PostLocationPickerCallback providePostLocationPickerCallback() {
-        return new PostLocationPickerCallback();
-    }
+   @Provides
+   @Singleton
+   PostLocationPickerCallback providePostLocationPickerCallback() {
+      return new PostLocationPickerCallback();
+   }
 
-    @Provides
-    @Singleton
-    TripMapInteractor provideTripMapManager(Janet janet) {
-        return new TripMapInteractor(janet);
-    }
+   @Provides
+   @Singleton
+   TripMapInteractor provideTripMapManager(Janet janet) {
+      return new TripMapInteractor(janet);
+   }
 
-    @Provides
-    @Singleton
-    BucketInteractor provideBucketService(Janet janet) {
-        return new BucketInteractor(janet);
-    }
+   @Provides
+   @Singleton
+   BucketInteractor provideBucketService(Janet janet) {
+      return new BucketInteractor(janet);
+   }
 
-    @Provides
-    @Singleton
-    TripFilterDataProvider provideTripFilterDataProvider(@Global EventBus eventBus, SnappyRepository repository) {
-        return new TripFilterDataProvider(eventBus, repository);
-    }
+   @Provides
+   @Singleton
+   TripFilterDataProvider provideTripFilterDataProvider(@Global EventBus eventBus, SnappyRepository repository) {
+      return new TripFilterDataProvider(eventBus, repository);
+   }
 }

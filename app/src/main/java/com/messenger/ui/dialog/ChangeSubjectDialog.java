@@ -17,60 +17,59 @@ import rx.functions.Action1;
 
 public class ChangeSubjectDialog {
 
-    private final AlertDialog dialog;
-    private EditText etSubject;
+   private final AlertDialog dialog;
+   private EditText etSubject;
 
-    private Action1<String> positiveListener;
-    private Action0 cancelListener;
+   private Action1<String> positiveListener;
+   private Action0 cancelListener;
 
-    public ChangeSubjectDialog(Context context, String currentSubject) {
-        dialog = new AlertDialog.Builder(context)
-                .setView(obtainDialogUi(context, currentSubject))
-                .setNegativeButton(R.string.action_cancel, (dialog, which) -> {
-                    if (cancelListener != null)
-                        cancelListener.call();
-                })
-                .setPositiveButton(R.string.ok, (dialog, which1) -> {
-                    if (positiveListener != null)
-                        positiveListener.call(etSubject.getText().toString());
-                })
-                .setTitle(R.string.change_subject)
-                .create();
+   public ChangeSubjectDialog(Context context, String currentSubject) {
+      dialog = new AlertDialog.Builder(context).setView(obtainDialogUi(context, currentSubject))
+            .setNegativeButton(R.string.action_cancel, (dialog, which) -> {
+               if (cancelListener != null) cancelListener.call();
+            })
+            .setPositiveButton(R.string.ok, (dialog, which1) -> {
+               if (positiveListener != null) positiveListener.call(etSubject.getText().toString());
+            })
+            .setTitle(R.string.change_subject)
+            .create();
 
-        dialog.setOnShowListener(dialog -> setInputTextBehave());
-    }
+      dialog.setOnShowListener(dialog -> setInputTextBehave());
+   }
 
-    private View obtainDialogUi(Context context, String currentSubject) {
-        final View dialogView = View.inflate(context, R.layout.dialog_messenger_input, null);
-        etSubject = (EditText) dialogView.findViewById(R.id.et_input);
-        etSubject.setText(currentSubject);
-        etSubject.setHint(R.string.subject);
-        if (currentSubject != null) {
-            etSubject.setSelection(currentSubject.length());
-        }
+   private View obtainDialogUi(Context context, String currentSubject) {
+      final View dialogView = View.inflate(context, R.layout.dialog_messenger_input, null);
+      etSubject = (EditText) dialogView.findViewById(R.id.et_input);
+      etSubject.setText(currentSubject);
+      etSubject.setHint(R.string.subject);
+      if (currentSubject != null) {
+         etSubject.setSelection(currentSubject.length());
+      }
 
-        return dialogView;
-    }
+      return dialogView;
+   }
 
-    private void setInputTextBehave() {
-        RxTextView.textChangeEvents(etSubject)
-                .map(textChangeEvent -> !TextUtils.isEmpty(textChangeEvent.text().toString().trim()))
-                .distinctUntilChanged()
-                .compose(RxLifecycle.bindView(etSubject))
-                .subscribe(dialog.getButton(DialogInterface.BUTTON_POSITIVE)::setEnabled);
-    }
+   private void setInputTextBehave() {
+      RxTextView.textChangeEvents(etSubject)
+            .map(textChangeEvent -> !TextUtils.isEmpty(textChangeEvent.text()
+                  .toString()
+                  .trim()))
+            .distinctUntilChanged()
+            .compose(RxLifecycle.bindView(etSubject))
+            .subscribe(dialog.getButton(DialogInterface.BUTTON_POSITIVE)::setEnabled);
+   }
 
-    public ChangeSubjectDialog setPositiveListener(Action1<String> positiveListener) {
-        this.positiveListener = positiveListener;
-        return this;
-    }
+   public ChangeSubjectDialog setPositiveListener(Action1<String> positiveListener) {
+      this.positiveListener = positiveListener;
+      return this;
+   }
 
-    public ChangeSubjectDialog setCancelListener(Action0 cancelListener) {
-        this.cancelListener = cancelListener;
-        return this;
-    }
+   public ChangeSubjectDialog setCancelListener(Action0 cancelListener) {
+      this.cancelListener = cancelListener;
+      return this;
+   }
 
-    public void show() {
-        dialog.show();
-    }
+   public void show() {
+      dialog.show();
+   }
 }

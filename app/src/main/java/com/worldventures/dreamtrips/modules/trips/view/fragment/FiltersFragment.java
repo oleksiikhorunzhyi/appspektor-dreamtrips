@@ -40,94 +40,94 @@ import butterknife.OnClick;
 @Layout(R.layout.layout_filters)
 public class FiltersFragment extends BaseFragment<FiltersPresenter> implements FiltersPresenter.View {
 
-    @InjectView(R.id.recyclerViewFilters) protected EmptyRecyclerView recyclerView;
-    @InjectView(R.id.progress) ProgressBar progressBar;
-    @InjectView(R.id.error_container) View errorContainer;
+   @InjectView(R.id.recyclerViewFilters) protected EmptyRecyclerView recyclerView;
+   @InjectView(R.id.progress) ProgressBar progressBar;
+   @InjectView(R.id.error_container) View errorContainer;
 
-    protected BaseDelegateAdapter<Object> arrayListAdapter;
+   protected BaseDelegateAdapter<Object> arrayListAdapter;
 
-    @Override
-    public void afterCreateView(View rootView) {
-        super.afterCreateView(rootView);
+   @Override
+   public void afterCreateView(View rootView) {
+      super.afterCreateView(rootView);
 
-        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getActivity());
-        recyclerView.setLayoutManager(layoutManager);
+      RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getActivity());
+      recyclerView.setLayoutManager(layoutManager);
 
-        arrayListAdapter = new BaseDelegateAdapter<>(getActivity(), this);
-        arrayListAdapter.registerCell(RegionModel.class, RegionCell.class);
-        arrayListAdapter.registerCell(FilterModel.class, FilterRangeBarsCell.class);
-        arrayListAdapter.registerCell(ActivityModel.class, ThemeCell.class);
-        arrayListAdapter.registerCell(RegionHeaderModel.class, HeaderRegionCell.class);
-        arrayListAdapter.registerCell(ThemeHeaderModel.class, HeaderThemeCell.class);
-        arrayListAdapter.registerCell(DateFilterItem.class, DateCell.class);
-        arrayListAdapter.registerCell(FilterSoldOutModel.class, SoldOutCell.class);
-        arrayListAdapter.registerCell(FilterFavoriteModel.class, FavoritesCell.class);
-        arrayListAdapter.registerCell(FilterRecentlyAddedModel.class, FilterRecentlyAddedCell.class);
+      arrayListAdapter = new BaseDelegateAdapter<>(getActivity(), this);
+      arrayListAdapter.registerCell(RegionModel.class, RegionCell.class);
+      arrayListAdapter.registerCell(FilterModel.class, FilterRangeBarsCell.class);
+      arrayListAdapter.registerCell(ActivityModel.class, ThemeCell.class);
+      arrayListAdapter.registerCell(RegionHeaderModel.class, HeaderRegionCell.class);
+      arrayListAdapter.registerCell(ThemeHeaderModel.class, HeaderThemeCell.class);
+      arrayListAdapter.registerCell(DateFilterItem.class, DateCell.class);
+      arrayListAdapter.registerCell(FilterSoldOutModel.class, SoldOutCell.class);
+      arrayListAdapter.registerCell(FilterFavoriteModel.class, FavoritesCell.class);
+      arrayListAdapter.registerCell(FilterRecentlyAddedModel.class, FilterRecentlyAddedCell.class);
 
-        new FiltersCallbackHandler().init(arrayListAdapter, getPresenter());
+      new FiltersCallbackHandler().init(arrayListAdapter, getPresenter());
 
-        recyclerView.setHasFixedSize(false);
-        recyclerView.setAdapter(arrayListAdapter);
-    }
+      recyclerView.setHasFixedSize(false);
+      recyclerView.setAdapter(arrayListAdapter);
+   }
 
-    @Override
-    public void onDestroyView() {
-        this.recyclerView.setAdapter(null);
-        super.onDestroyView();
-    }
+   @Override
+   public void onDestroyView() {
+      this.recyclerView.setAdapter(null);
+      super.onDestroyView();
+   }
 
-    @OnClick(R.id.textViewApplyFilter)
-    void applyFilter() {
-        ((MainActivity) getActivity()).closeRightDrawer();
-        getPresenter().acceptFilters();
-    }
+   @OnClick(R.id.textViewApplyFilter)
+   void applyFilter() {
+      ((MainActivity) getActivity()).closeRightDrawer();
+      getPresenter().acceptFilters();
+   }
 
-    @OnClick(R.id.textViewResetFilter)
-    void resetFilter() {
-        ((MainActivity) getActivity()).closeRightDrawer();
-        getPresenter().resetFilters();
-    }
+   @OnClick(R.id.textViewResetFilter)
+   void resetFilter() {
+      ((MainActivity) getActivity()).closeRightDrawer();
+      getPresenter().resetFilters();
+   }
 
-    @OnClick(R.id.btn_retry)
-    void retry() {
-        hideErrorContainer();
-        getPresenter().loadFilters();
-    }
+   @OnClick(R.id.btn_retry)
+   void retry() {
+      hideErrorContainer();
+      getPresenter().loadFilters();
+   }
 
-    @Override
-    public void showProgress() {
-        progressBar.setVisibility(View.VISIBLE);
-    }
+   @Override
+   public void showProgress() {
+      progressBar.setVisibility(View.VISIBLE);
+   }
 
-    @Override
-    public void hideProgress() {
-        progressBar.setVisibility(View.GONE);
-    }
+   @Override
+   public void hideProgress() {
+      progressBar.setVisibility(View.GONE);
+   }
 
-    @Override
-    public void showErrorContainer() {
-        errorContainer.setVisibility(View.VISIBLE);
-    }
+   @Override
+   public void showErrorContainer() {
+      errorContainer.setVisibility(View.VISIBLE);
+   }
 
-    @Override
-    public void hideErrorContainer() {
-        errorContainer.setVisibility(View.GONE);
-    }
+   @Override
+   public void hideErrorContainer() {
+      errorContainer.setVisibility(View.GONE);
+   }
 
-    @Override
-    public void fillData(List data) {
-        if (recyclerView != null) recyclerView.setVisibility(View.VISIBLE);
-        arrayListAdapter.clear();
-        arrayListAdapter.addItems(data);
-    }
+   @Override
+   public void fillData(List data) {
+      if (recyclerView != null) recyclerView.setVisibility(View.VISIBLE);
+      arrayListAdapter.clear();
+      arrayListAdapter.addItems(data);
+   }
 
-    @Override
-    public void dataSetChanged() {
-        arrayListAdapter.notifyDataSetChanged();
-    }
+   @Override
+   public void dataSetChanged() {
+      arrayListAdapter.notifyDataSetChanged();
+   }
 
-    @Override
-    protected FiltersPresenter createPresenter(Bundle savedInstanceState) {
-        return new FiltersPresenter();
-    }
+   @Override
+   protected FiltersPresenter createPresenter(Bundle savedInstanceState) {
+      return new FiltersPresenter();
+   }
 }

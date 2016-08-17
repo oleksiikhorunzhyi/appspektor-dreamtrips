@@ -5,9 +5,9 @@ import com.worldventures.dreamtrips.modules.dtl_flow.ViewState;
 import com.worldventures.dreamtrips.modules.player.view.PodcastPlayerScreen;
 
 public interface PodcastPresenter extends DtlPresenter<PodcastPlayerScreen, ViewState.EMPTY> {
-    void seekTo(int position);
+   void seekTo(int position);
 
-    void playPause();
+   void playPause();
 
-    void onBackPressed();
+   void onBackPressed();
 }

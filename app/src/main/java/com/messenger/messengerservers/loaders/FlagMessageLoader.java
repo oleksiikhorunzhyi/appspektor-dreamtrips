@@ -6,6 +6,6 @@ import rx.Observable;
 
 public interface FlagMessageLoader {
 
-    Observable<FlagMessageDTO> flagMessage(FlagMessageDTO flagMessageDTO);
+   Observable<FlagMessageDTO> flagMessage(FlagMessageDTO flagMessageDTO);
 
 }

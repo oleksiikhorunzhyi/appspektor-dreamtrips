@@ -36,276 +36,267 @@ import timber.log.Timber;
 
 public class InvitePresenter extends Presenter<InvitePresenter.View> {
 
-    @Inject
-    SnappyRepository db;
-    @Inject
-    @ForApplication
-    Injector injector;
-    WeakHandler queryHandler = new WeakHandler();
-    @Inject
-    SearchFocusChangedDelegate searchFocusChangedDelegate;
+   @Inject SnappyRepository db;
+   @Inject @ForApplication Injector injector;
+   WeakHandler queryHandler = new WeakHandler();
+   @Inject SearchFocusChangedDelegate searchFocusChangedDelegate;
 
-    @State
-    ArrayList<Member> members = new ArrayList<>();
+   @State ArrayList<Member> members = new ArrayList<>();
 
-    @Override
-    public void handleError(SpiceException error) {
-        super.handleError(error);
-        view.finishLoading();
-    }
+   @Override
+   public void handleError(SpiceException error) {
+      super.handleError(error);
+      view.finishLoading();
+   }
 
-    @Override
-    public void takeView(View view) {
-        super.takeView(view);
-        if (members.isEmpty()) {
-            loadMembers();
-        } else {
-            handleResponse();
-        }
-        //
-        view.setAdapterComparator(getSelectedComparator());
-    }
+   @Override
+   public void takeView(View view) {
+      super.takeView(view);
+      if (members.isEmpty()) {
+         loadMembers();
+      } else {
+         handleResponse();
+      }
+      //
+      view.setAdapterComparator(getSelectedComparator());
+   }
 
-    @Override
-    public void restoreInstanceState(Bundle savedState) {
-        super.restoreInstanceState(savedState);
-    }
+   @Override
+   public void restoreInstanceState(Bundle savedState) {
+      super.restoreInstanceState(savedState);
+   }
 
-    public void loadMembers() {
-        view.startLoading();
-        Type from = Type.from(view.getSelectedType());
-        PhoneContactRequest request = new PhoneContactRequest(from);
-        injector.inject(request);
-        doRequest(request, members -> {
-            InvitePresenter.this.members = members;
-            handleResponse();
-        });
-    }
+   public void loadMembers() {
+      view.startLoading();
+      Type from = Type.from(view.getSelectedType());
+      PhoneContactRequest request = new PhoneContactRequest(from);
+      injector.inject(request);
+      doRequest(request, members -> {
+         InvitePresenter.this.members = members;
+         handleResponse();
+      });
+   }
 
-    private void handleResponse() {
-        doRequest(new GetInvitationsQuery(), inviteTemplates -> {
-            view.finishLoading();
-            sortContacts();
-            sortSelected();
-            linkHistoryWithMembers(inviteTemplates);
-            setMembers();
-            openTemplateInView();
-            showContinueBtnIfNeed();
-            view.setSelectedCount(Queryable.from(members).count(Member::isChecked));
-        });
+   private void handleResponse() {
+      doRequest(new GetInvitationsQuery(), inviteTemplates -> {
+         view.finishLoading();
+         sortContacts();
+         sortSelected();
+         linkHistoryWithMembers(inviteTemplates);
+         setMembers();
+         openTemplateInView();
+         showContinueBtnIfNeed();
+         view.setSelectedCount(Queryable.from(members).count(Member::isChecked));
+      });
 
-        TrackingHelper.inviteShareContacts(getAccountUserId());
-    }
+      TrackingHelper.inviteShareContacts(getAccountUserId());
+   }
 
-    private void linkHistoryWithMembers(ArrayList<History> inviteTemplates) {
-        for (History history : inviteTemplates) {
-            for (Member member : members) {
-                String contact = history.getContact();
-                if (contact.equals(member.getSubtitle())) {
-                    member.setHistory(history);
-                }
+   private void linkHistoryWithMembers(ArrayList<History> inviteTemplates) {
+      for (History history : inviteTemplates) {
+         for (Member member : members) {
+            String contact = history.getContact();
+            if (contact.equals(member.getSubtitle())) {
+               member.setHistory(history);
             }
-        }
-    }
+         }
+      }
+   }
 
-    public void addMember(Member member) {
-        addToContactList(member.getName(), member.getPhone(), member.getEmail());
-        boolean addToLoadedMembers = false;
-        switch (Type.from(view.getSelectedType())) {
-            case EMAIL:
-                addToLoadedMembers = !TextUtils.isEmpty(member.getEmail().trim());
-                if (addToLoadedMembers) member.setEmailIsMain(true);
-                break;
-            case SMS:
-                addToLoadedMembers = !TextUtils.isEmpty(member.getPhone().trim());
-                if (addToLoadedMembers) member.setEmailIsMain(false);
-                break;
-        }
-        if (addToLoadedMembers) {
-            members.add(member);
-            sortContacts();
-            setMembers();
-        }
-    }
+   public void addMember(Member member) {
+      addToContactList(member.getName(), member.getPhone(), member.getEmail());
+      boolean addToLoadedMembers = false;
+      switch (Type.from(view.getSelectedType())) {
+         case EMAIL:
+            addToLoadedMembers = !TextUtils.isEmpty(member.getEmail().trim());
+            if (addToLoadedMembers) member.setEmailIsMain(true);
+            break;
+         case SMS:
+            addToLoadedMembers = !TextUtils.isEmpty(member.getPhone().trim());
+            if (addToLoadedMembers) member.setEmailIsMain(false);
+            break;
+      }
+      if (addToLoadedMembers) {
+         members.add(member);
+         sortContacts();
+         setMembers();
+      }
+   }
 
-    public void addToContactList(String name, String phone, String email) {
-        int phoneType = ContactsContract.CommonDataKinds.Phone.TYPE_MOBILE;
-        int emailType = ContactsContract.CommonDataKinds.Email.TYPE_MOBILE;
+   public void addToContactList(String name, String phone, String email) {
+      int phoneType = ContactsContract.CommonDataKinds.Phone.TYPE_MOBILE;
+      int emailType = ContactsContract.CommonDataKinds.Email.TYPE_MOBILE;
 
-        ArrayList<ContentProviderOperation> ops =
-                new ArrayList<>();
-        ContentProviderOperation.Builder op =
-                ContentProviderOperation.newInsert(ContactsContract.RawContacts.CONTENT_URI)
-                        .withValue(ContactsContract.RawContacts.ACCOUNT_TYPE, AccountManager.KEY_ACCOUNT_TYPE)
-                        .withValue(ContactsContract.RawContacts.ACCOUNT_NAME, AccountManager.KEY_ACCOUNT_NAME);
-        ops.add(op.build());
+      ArrayList<ContentProviderOperation> ops = new ArrayList<>();
+      ContentProviderOperation.Builder op = ContentProviderOperation.newInsert(ContactsContract.RawContacts.CONTENT_URI)
+            .withValue(ContactsContract.RawContacts.ACCOUNT_TYPE, AccountManager.KEY_ACCOUNT_TYPE)
+            .withValue(ContactsContract.RawContacts.ACCOUNT_NAME, AccountManager.KEY_ACCOUNT_NAME);
+      ops.add(op.build());
 
-        op = ContentProviderOperation.newInsert(ContactsContract.Data.CONTENT_URI)
-                .withValueBackReference(ContactsContract.Data.RAW_CONTACT_ID, 0)
-                .withValue(ContactsContract.Data.MIMETYPE,
-                        ContactsContract.CommonDataKinds.StructuredName.CONTENT_ITEM_TYPE)
-                .withValue(ContactsContract.CommonDataKinds.StructuredName.DISPLAY_NAME, name);
-        ops.add(op.build());
+      op = ContentProviderOperation.newInsert(ContactsContract.Data.CONTENT_URI)
+            .withValueBackReference(ContactsContract.Data.RAW_CONTACT_ID, 0)
+            .withValue(ContactsContract.Data.MIMETYPE, ContactsContract.CommonDataKinds.StructuredName.CONTENT_ITEM_TYPE)
+            .withValue(ContactsContract.CommonDataKinds.StructuredName.DISPLAY_NAME, name);
+      ops.add(op.build());
 
-        op = ContentProviderOperation.newInsert(ContactsContract.Data.CONTENT_URI)
-                .withValueBackReference(ContactsContract.Data.RAW_CONTACT_ID, 0)
-                .withValue(ContactsContract.Data.MIMETYPE,
-                        ContactsContract.CommonDataKinds.Phone.CONTENT_ITEM_TYPE)
-                .withValue(ContactsContract.CommonDataKinds.Phone.NUMBER, phone)
-                .withValue(ContactsContract.CommonDataKinds.Phone.TYPE, phoneType);
-        ops.add(op.build());
+      op = ContentProviderOperation.newInsert(ContactsContract.Data.CONTENT_URI)
+            .withValueBackReference(ContactsContract.Data.RAW_CONTACT_ID, 0)
+            .withValue(ContactsContract.Data.MIMETYPE, ContactsContract.CommonDataKinds.Phone.CONTENT_ITEM_TYPE)
+            .withValue(ContactsContract.CommonDataKinds.Phone.NUMBER, phone)
+            .withValue(ContactsContract.CommonDataKinds.Phone.TYPE, phoneType);
+      ops.add(op.build());
 
-        op = ContentProviderOperation.newInsert(ContactsContract.Data.CONTENT_URI)
-                .withValueBackReference(ContactsContract.Data.RAW_CONTACT_ID, 0)
-                .withValue(ContactsContract.Data.MIMETYPE,
-                        ContactsContract.CommonDataKinds.Email.CONTENT_ITEM_TYPE)
-                .withValue(ContactsContract.CommonDataKinds.Email.ADDRESS, email)
-                .withValue(ContactsContract.CommonDataKinds.Email.TYPE, emailType);
+      op = ContentProviderOperation.newInsert(ContactsContract.Data.CONTENT_URI)
+            .withValueBackReference(ContactsContract.Data.RAW_CONTACT_ID, 0)
+            .withValue(ContactsContract.Data.MIMETYPE, ContactsContract.CommonDataKinds.Email.CONTENT_ITEM_TYPE)
+            .withValue(ContactsContract.CommonDataKinds.Email.ADDRESS, email)
+            .withValue(ContactsContract.CommonDataKinds.Email.TYPE, emailType);
 
-        op.withYieldAllowed(true);
-        ops.add(op.build());
+      op.withYieldAllowed(true);
+      ops.add(op.build());
 
-        try {
-            context.getContentResolver().applyBatch(ContactsContract.AUTHORITY, ops);
-        } catch (Exception e) {
-            Timber.e(e, "");
-        }
-    }
+      try {
+         context.getContentResolver().applyBatch(ContactsContract.AUTHORITY, ops);
+      } catch (Exception e) {
+         Timber.e(e, "");
+      }
+   }
 
-    public void searchToggle(boolean hasFocus) {
-        searchFocusChangedDelegate.post(hasFocus);
-    }
+   public void searchToggle(boolean hasFocus) {
+      searchFocusChangedDelegate.post(hasFocus);
+   }
 
-    public void onFilter(String newText) {
-        queryHandler.removeCallbacksAndMessages(null);
-        queryHandler.postDelayed(() -> {
-            String query = null;
-            if (view != null) {
-                switch (Type.from(view.getSelectedType())) {
-                    case SMS:
-                        if (Patterns.PHONE.matcher(newText).matches()) {
-                            query = PhoneNumberUtils.normalizeNumber(newText);
-                        } else {
-                            query = newText.toLowerCase();
-                        }
-                        break;
-                    default:
-                        query = newText.toLowerCase();
-                }
-                view.setFilter(query);
-                updatePositions(query);
+   public void onFilter(String newText) {
+      queryHandler.removeCallbacksAndMessages(null);
+      queryHandler.postDelayed(() -> {
+         String query = null;
+         if (view != null) {
+            switch (Type.from(view.getSelectedType())) {
+               case SMS:
+                  if (Patterns.PHONE.matcher(newText).matches()) {
+                     query = PhoneNumberUtils.normalizeNumber(newText);
+                  } else {
+                     query = newText.toLowerCase();
+                  }
+                  break;
+               default:
+                  query = newText.toLowerCase();
             }
-        }, 150L);
-    }
+            view.setFilter(query);
+            updatePositions(query);
+         }
+      }, 150L);
+   }
 
-    public void deselectAll() {
-        resetSelected();
-        eventBus.removeStickyEvent(MemberStickyEvent.class);
-        setMembers();
-    }
+   public void deselectAll() {
+      resetSelected();
+      eventBus.removeStickyEvent(MemberStickyEvent.class);
+      setMembers();
+   }
 
-    public void showContinueBtnIfNeed() {
-        int count = Queryable.from(members).count(element -> element.isChecked());
-        if (count > 0 && view != null) {
-            view.setSelectedCount(count);
-            view.showNextStepButtonVisibility(true);
-        }
-    }
+   public void showContinueBtnIfNeed() {
+      int count = Queryable.from(members).count(element -> element.isChecked());
+      if (count > 0 && view != null) {
+         view.setSelectedCount(count);
+         view.showNextStepButtonVisibility(true);
+      }
+   }
 
-    public void onMemberCellSelected(Member member) {
-        boolean isVisible = isVisible();
+   public void onMemberCellSelected(Member member) {
+      boolean isVisible = isVisible();
 
-        eventBus.removeStickyEvent(MemberStickyEvent.class);
-        eventBus.postSticky(new MemberStickyEvent(Queryable.from(members).filter(element -> {
-            return element.isChecked();
-        }).toList()));
+      eventBus.removeStickyEvent(MemberStickyEvent.class);
+      eventBus.postSticky(new MemberStickyEvent(Queryable.from(members).filter(element -> {
+         return element.isChecked();
+      }).toList()));
 
-        view.showNextStepButtonVisibility(isVisible);
-        int count = Queryable.from(members).count(element -> element.isChecked());
-        view.setSelectedCount(count);
+      view.showNextStepButtonVisibility(isVisible);
+      int count = Queryable.from(members).count(element -> element.isChecked());
+      view.setSelectedCount(count);
 
-        int to = member.getOriginalPosition();
-        Member lastSelectedMember = Queryable.from(members).lastOrDefault(Member::isChecked);
-        int lastSelected = lastSelectedMember != null ? lastSelectedMember.getOriginalPosition() : 0;
-        view.move(member, to < lastSelected ? lastSelected : to);
-    }
+      int to = member.getOriginalPosition();
+      Member lastSelectedMember = Queryable.from(members).lastOrDefault(Member::isChecked);
+      int lastSelected = lastSelectedMember != null ? lastSelectedMember.getOriginalPosition() : 0;
+      view.move(member, to < lastSelected ? lastSelected : to);
+   }
 
-    public boolean isVisible() {
-        return members != null && Queryable.from(members).any(Member::isChecked);
-    }
+   public boolean isVisible() {
+      return members != null && Queryable.from(members).any(Member::isChecked);
+   }
 
-    public void continueAction() {
-        view.continueAction2();
-    }
+   public void continueAction() {
+      view.continueAction2();
+   }
 
-    public void openTemplateInView() {
-        view.openTemplateView();
-    }
+   public void openTemplateInView() {
+      view.openTemplateView();
+   }
 
-    private void setMembers() {
-        setMembers(null);
-    }
+   private void setMembers() {
+      setMembers(null);
+   }
 
-    private void setMembers(String query) {
-        updatePositions(query);
-        view.setMembers(new ArrayList<>(members));
-    }
+   private void setMembers(String query) {
+      updatePositions(query);
+      view.setMembers(new ArrayList<>(members));
+   }
 
-    private void updatePositions(String query) {
-        List<Member> temporaryList = TextUtils.isEmpty(query) ? members
-                : Queryable.from(members).filter(item -> item.containsQuery(query)).toList();
-        Queryable.from(temporaryList).forEachR((member) -> member.setOriginalPosition(temporaryList.indexOf(member)));
-    }
+   private void updatePositions(String query) {
+      List<Member> temporaryList = TextUtils.isEmpty(query) ? members : Queryable.from(members)
+            .filter(item -> item.containsQuery(query))
+            .toList();
+      Queryable.from(temporaryList).forEachR((member) -> member.setOriginalPosition(temporaryList.indexOf(member)));
+   }
 
-    private void sortContacts() {
-        Collections.sort(members, (lhs, rhs) -> lhs.getName().compareTo(rhs.getName()));
-    }
+   private void sortContacts() {
+      Collections.sort(members, (lhs, rhs) -> lhs.getName().compareTo(rhs.getName()));
+   }
 
-    private void sortSelected() {
-        Collections.sort(members, getSelectedComparator());
-    }
+   private void sortSelected() {
+      Collections.sort(members, getSelectedComparator());
+   }
 
-    private Comparator<Member> getSelectedComparator() {
-        return (lhs, rhs) -> {
-            if (!lhs.isChecked() && !rhs.isChecked()) return lhs.getName().compareTo(rhs.getName());
-            //
-            return lhs.isChecked() && !rhs.isChecked() ? -1 : !lhs.isChecked() && rhs.isChecked() ? 1 : 0;
-        };
-    }
+   private Comparator<Member> getSelectedComparator() {
+      return (lhs, rhs) -> {
+         if (!lhs.isChecked() && !rhs.isChecked()) return lhs.getName().compareTo(rhs.getName());
+         //
+         return lhs.isChecked() && !rhs.isChecked() ? -1 : !lhs.isChecked() && rhs.isChecked() ? 1 : 0;
+      };
+   }
 
-    private void resetSelected() {
-        Queryable.from(members).forEachR(m -> m.setIsChecked(false));
-        view.setSelectedCount(0);
-        view.showNextStepButtonVisibility(false);
-    }
+   private void resetSelected() {
+      Queryable.from(members).forEachR(m -> m.setIsChecked(false));
+      view.setSelectedCount(0);
+      view.showNextStepButtonVisibility(false);
+   }
 
-    public void track() {
-        TrackingHelper.inviteShare(getAccountUserId());
-    }
+   public void track() {
+      TrackingHelper.inviteShare(getAccountUserId());
+   }
 
-    public interface View extends Presenter.View {
-        void startLoading();
+   public interface View extends Presenter.View {
+      void startLoading();
 
-        void finishLoading();
+      void finishLoading();
 
-        int getSelectedType();
+      int getSelectedType();
 
-        void setMembers(List<Member> memberList);
+      void setMembers(List<Member> memberList);
 
-        void setFilter(String newText);
+      void setFilter(String newText);
 
-        void sort(Comparator<Member> comparator);
+      void sort(Comparator<Member> comparator);
 
-        void setAdapterComparator(Comparator comparator);
+      void setAdapterComparator(Comparator comparator);
 
-        void showNextStepButtonVisibility(boolean isVisible);
+      void showNextStepButtonVisibility(boolean isVisible);
 
-        void setSelectedCount(int count);
+      void setSelectedCount(int count);
 
-        void move(Member member, int to);
+      void move(Member member, int to);
 
-        void openTemplateView();
+      void openTemplateView();
 
-        void continueAction2();
-    }
+      void continueAction2();
+   }
 }

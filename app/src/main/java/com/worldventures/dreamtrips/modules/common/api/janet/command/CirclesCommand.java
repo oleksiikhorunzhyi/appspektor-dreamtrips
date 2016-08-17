@@ -22,46 +22,46 @@ import rx.schedulers.Schedulers;
 @CommandAction
 public class CirclesCommand extends CommandWithError<List<Circle>> implements InjectableAction, CachedAction<List<Circle>> {
 
-    @Inject Janet janet;
+   @Inject Janet janet;
 
-    private List<Circle> cachedData;
+   private List<Circle> cachedData;
 
-    public CirclesCommand() {
-    }
+   public CirclesCommand() {
+   }
 
-    @Override
-    protected void run(CommandCallback<List<Circle>> callback) throws Throwable {
-        if (cachedData == null || cachedData.isEmpty()) {
-            janet.createPipe(GetCirclesHttpAction.class, Schedulers.io())
-                    .createObservableResult(new GetCirclesHttpAction())
-                    .map(getCirclesHttpAction -> {
-                        ArrayList<Circle> circles = getCirclesHttpAction.getCircles();
-                        if (circles == null) circles = new ArrayList<>();
-                        return circles;
-                    })
-                    .subscribe(callback::onSuccess, callback::onFail);
-        } else {
-            callback.onSuccess(cachedData);
-        }
-    }
+   @Override
+   protected void run(CommandCallback<List<Circle>> callback) throws Throwable {
+      if (cachedData == null || cachedData.isEmpty()) {
+         janet.createPipe(GetCirclesHttpAction.class, Schedulers.io())
+               .createObservableResult(new GetCirclesHttpAction())
+               .map(getCirclesHttpAction -> {
+                  ArrayList<Circle> circles = getCirclesHttpAction.getCircles();
+                  if (circles == null) circles = new ArrayList<>();
+                  return circles;
+               })
+               .subscribe(callback::onSuccess, callback::onFail);
+      } else {
+         callback.onSuccess(cachedData);
+      }
+   }
 
-    @Override
-    public int getFallbackErrorMessage() {
-        return R.string.error_fail_to_load_circles;
-    }
+   @Override
+   public int getFallbackErrorMessage() {
+      return R.string.error_fail_to_load_circles;
+   }
 
-    @Override
-    public List<Circle> getCacheData() {
-        return getResult();
-    }
+   @Override
+   public List<Circle> getCacheData() {
+      return getResult();
+   }
 
-    @Override
-    public void onRestore(ActionHolder holder, List<Circle> cache) {
-        cachedData = cache;
-    }
+   @Override
+   public void onRestore(ActionHolder holder, List<Circle> cache) {
+      cachedData = cache;
+   }
 
-    @Override
-    public CacheOptions getCacheOptions() {
-        return ImmutableCacheOptions.builder().build();
-    }
+   @Override
+   public CacheOptions getCacheOptions() {
+      return ImmutableCacheOptions.builder().build();
+   }
 }

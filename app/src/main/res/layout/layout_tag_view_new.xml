@@ -1,35 +1,38 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
-    android:id="@+id/new_user_suggestions_popup_anchor"
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:orientation="vertical">
+<RelativeLayout android:id="@+id/new_user_suggestions_popup_anchor"
+      xmlns:android="http://schemas.android.com/apk/res/android"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:orientation="vertical"
+      >
 
-    <Space
-        android:id="@+id/pointer_shift_x"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"/>
+   <Space
+         android:id="@+id/pointer_shift_x"
+         android:layout_width="wrap_content"
+         android:layout_height="wrap_content"
+         />
 
-    <ImageView
-        android:id="@+id/pointer_top"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_toRightOf="@+id/pointer_shift_x"
-        android:focusable="true"
-        android:focusableInTouchMode="true"
-        android:src="@drawable/photo_tag_additional_part"/>
+   <ImageView
+         android:id="@+id/pointer_top"
+         android:layout_width="wrap_content"
+         android:layout_height="wrap_content"
+         android:layout_toRightOf="@+id/pointer_shift_x"
+         android:focusable="true"
+         android:focusableInTouchMode="true"
+         android:src="@drawable/photo_tag_additional_part"
+         />
 
-    <LinearLayout
-        android:id="@+id/tag_container"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/pointer_top"
-        android:background="@drawable/photo_tag_main_part"
-        android:gravity="center"
-        android:padding="@dimen/spacing_small">
+   <LinearLayout
+         android:id="@+id/tag_container"
+         android:layout_width="wrap_content"
+         android:layout_height="wrap_content"
+         android:layout_below="@+id/pointer_top"
+         android:background="@drawable/photo_tag_main_part"
+         android:gravity="center"
+         android:padding="@dimen/spacing_small"
+         >
 
-        <com.worldventures.dreamtrips.modules.common.view.custom.tagview.FriendsAutoCompleteTextView
+      <com.worldventures.dreamtrips.modules.common.view.custom.tagview.FriendsAutoCompleteTextView
             android:id="@+id/new_user_input_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -40,28 +43,30 @@
             android:singleLine="true"
             android:textColor="@color/white"
             android:textColorHint="@color/white"
-            android:textSize="@dimen/font_medium">
-        </com.worldventures.dreamtrips.modules.common.view.custom.tagview.FriendsAutoCompleteTextView>
+            android:textSize="@dimen/font_medium"
+            ></com.worldventures.dreamtrips.modules.common.view.custom.tagview.FriendsAutoCompleteTextView>
 
-        <View
+      <View
             android:id="@+id/new_user_delete_tag"
             android:layout_width="15dp"
             android:layout_height="15dp"
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
             android:layout_marginLeft="30dp"
-            android:background="@drawable/ic_close_tag"/>
+            android:background="@drawable/ic_close_tag"
+            />
 
-    </LinearLayout>
+   </LinearLayout>
 
-    <ImageView
-        android:id="@+id/pointer_bottom"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/tag_container"
+   <ImageView
+         android:id="@+id/pointer_bottom"
+         android:layout_width="wrap_content"
+         android:layout_height="wrap_content"
+         android:layout_below="@+id/tag_container"
 
-        android:layout_toRightOf="@+id/pointer_shift_x"
-        android:rotation="180"
-        android:src="@drawable/photo_tag_additional_part"/>
+         android:layout_toRightOf="@+id/pointer_shift_x"
+         android:rotation="180"
+         android:src="@drawable/photo_tag_additional_part"
+         />
 
 </RelativeLayout>

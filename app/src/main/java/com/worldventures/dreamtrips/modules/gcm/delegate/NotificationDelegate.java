@@ -20,80 +20,78 @@ import timber.log.Timber;
 
 public class NotificationDelegate {
 
-    private final NotificationCountEventDelegate notificationCountEventDelegate;
-    private final SnappyRepository repository;
-    private final NotificationManager notificationManager;
-    //
-    private final NotificationFactoryHolder notificationFactoryHolder;
+   private final NotificationCountEventDelegate notificationCountEventDelegate;
+   private final SnappyRepository repository;
+   private final NotificationManager notificationManager;
+   //
+   private final NotificationFactoryHolder notificationFactoryHolder;
 
-    public NotificationDelegate(Context context, NotificationCountEventDelegate notificationCountEventDelegate, SnappyRepository repository, NotificationFactoryHolder notificationFactoryHolder) {
-        this.notificationCountEventDelegate = notificationCountEventDelegate;
-        this.repository = repository;
-        this.notificationFactoryHolder = notificationFactoryHolder;
-        this.notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
-    }
+   public NotificationDelegate(Context context, NotificationCountEventDelegate notificationCountEventDelegate, SnappyRepository repository, NotificationFactoryHolder notificationFactoryHolder) {
+      this.notificationCountEventDelegate = notificationCountEventDelegate;
+      this.repository = repository;
+      this.notificationFactoryHolder = notificationFactoryHolder;
+      this.notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+   }
 
-    public void updateNotificationCount(PushMessage data) {
-        repository.saveBadgeNotificationsCount(data.alertWrapper.badge);
-        repository.saveCountFromHeader(SnappyRepository.EXCLUSIVE_NOTIFICATIONS_COUNT, data.notificationsCount);
-        repository.saveCountFromHeader(SnappyRepository.FRIEND_REQUEST_COUNT, data.requestsCount);
-        notificationCountEventDelegate.post(null);
-    }
+   public void updateNotificationCount(PushMessage data) {
+      repository.saveBadgeNotificationsCount(data.alertWrapper.badge);
+      repository.saveCountFromHeader(SnappyRepository.EXCLUSIVE_NOTIFICATIONS_COUNT, data.notificationsCount);
+      repository.saveCountFromHeader(SnappyRepository.FRIEND_REQUEST_COUNT, data.requestsCount);
+      notificationCountEventDelegate.post(null);
+   }
 
-    public void notifyFriendRequestAccepted(UserPushMessage message) {
-        Notification notification = notificationFactoryHolder.getFriendNotificationFactory().createFriendRequestAccepted(message);
-        notificationManager.notify(message.userId, notification);
-    }
+   public void notifyFriendRequestAccepted(UserPushMessage message) {
+      Notification notification = notificationFactoryHolder.getFriendNotificationFactory()
+            .createFriendRequestAccepted(message);
+      notificationManager.notify(message.userId, notification);
+   }
 
-    public void notifyFriendRequestReceived(UserPushMessage message) {
-        Notification notification = notificationFactoryHolder.getFriendNotificationFactory().createFriendRequestReceived(message);
-        notificationManager.notify(message.userId, notification);
-    }
+   public void notifyFriendRequestReceived(UserPushMessage message) {
+      Notification notification = notificationFactoryHolder.getFriendNotificationFactory()
+            .createFriendRequestReceived(message);
+      notificationManager.notify(message.userId, notification);
+   }
 
-    public void notifyTaggedOnPhoto(TaggedOnPhotoPushMessage message) {
-        Notification notification = notificationFactoryHolder.getPhotoNotificationFactory().createTaggedOnPhoto(message);
-        notificationManager.notify(message.userId, notification);
-    }
+   public void notifyTaggedOnPhoto(TaggedOnPhotoPushMessage message) {
+      Notification notification = notificationFactoryHolder.getPhotoNotificationFactory().createTaggedOnPhoto(message);
+      notificationManager.notify(message.userId, notification);
+   }
 
-    public void notifyNewMessageReceived(NewMessagePushMessage message) {
-        Notification notification = notificationFactoryHolder.getMessengerNotificationFactory().createNewMessage(message);
-        notificationManager.notify(MessengerNotificationFactory.MESSENGER_TAG,
-                MessengerNotificationFactory.MESSAGE_NOTIFICATION_ID, notification);
-    }
+   public void notifyNewMessageReceived(NewMessagePushMessage message) {
+      Notification notification = notificationFactoryHolder.getMessengerNotificationFactory().createNewMessage(message);
+      notificationManager.notify(MessengerNotificationFactory.MESSENGER_TAG, MessengerNotificationFactory.MESSAGE_NOTIFICATION_ID, notification);
+   }
 
-    public void notifyNewImageMessageReceived(NewImagePushMessage message) {
-        notificationFactoryHolder.getMessengerNotificationFactory()
-                .createNewImageMessage(message)
-                .subscribeOn(Schedulers.io())
-                .subscribe(notification -> {
-                    notificationManager.notify(MessengerNotificationFactory.MESSENGER_TAG,
-                            MessengerNotificationFactory.MESSAGE_NOTIFICATION_ID, notification);
-                }, e -> Timber.w(e, "Failed with creation of image message notification"));
-    }
+   public void notifyNewImageMessageReceived(NewImagePushMessage message) {
+      notificationFactoryHolder.getMessengerNotificationFactory()
+            .createNewImageMessage(message)
+            .subscribeOn(Schedulers.io())
+            .subscribe(notification -> {
+               notificationManager.notify(MessengerNotificationFactory.MESSENGER_TAG, MessengerNotificationFactory.MESSAGE_NOTIFICATION_ID, notification);
+            }, e -> Timber.w(e, "Failed with creation of image message notification"));
+   }
 
-    public void notifyNewLocationMessageReceived(NewLocationPushMessage message) {
-        Notification notification = notificationFactoryHolder.getMessengerNotificationFactory()
-                .createNewLocationMessage(message);
-        notificationManager.notify(MessengerNotificationFactory.MESSENGER_TAG,
-                MessengerNotificationFactory.MESSAGE_NOTIFICATION_ID, notification);
-    }
+   public void notifyNewLocationMessageReceived(NewLocationPushMessage message) {
+      Notification notification = notificationFactoryHolder.getMessengerNotificationFactory()
+            .createNewLocationMessage(message);
+      notificationManager.notify(MessengerNotificationFactory.MESSENGER_TAG, MessengerNotificationFactory.MESSAGE_NOTIFICATION_ID, notification);
+   }
 
-    public void notifyUnsupportedMessageReceived(NewUnsupportedMessage newUnsupportedMessage){
-        Notification notification = notificationFactoryHolder.getMessengerNotificationFactory()
-                .createUnsupportedMessage(newUnsupportedMessage);
-        notificationManager.notify(MessengerNotificationFactory.MESSENGER_TAG,
-                MessengerNotificationFactory.MESSAGE_NOTIFICATION_ID, notification);
-    }
+   public void notifyUnsupportedMessageReceived(NewUnsupportedMessage newUnsupportedMessage) {
+      Notification notification = notificationFactoryHolder.getMessengerNotificationFactory()
+            .createUnsupportedMessage(newUnsupportedMessage);
+      notificationManager.notify(MessengerNotificationFactory.MESSENGER_TAG, MessengerNotificationFactory.MESSAGE_NOTIFICATION_ID, notification);
+   }
 
-    public void cancel(String tag) {
-        notificationManager.cancel(tag, 0);
-    }
+   public void cancel(String tag) {
+      notificationManager.cancel(tag, 0);
+   }
 
-    public void cancel(int id) {
-        notificationManager.cancel(id);
-    }
+   public void cancel(int id) {
+      notificationManager.cancel(id);
+   }
 
-    public void cancelAll() {
-        notificationManager.cancelAll();
-    }
+   public void cancelAll() {
+      notificationManager.cancelAll();
+   }
 }

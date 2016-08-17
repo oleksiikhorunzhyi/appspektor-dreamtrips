@@ -43,242 +43,229 @@ import rx.schedulers.Schedulers;
 
 public class UserPresenter extends ProfilePresenter<UserPresenter.View, User> {
 
-    @Inject CirclesInteractor circlesInteractor;
-    @Inject NotificationDelegate notificationDelegate;
-    @Inject StartChatDelegate startSingleChatDelegate;
+   @Inject CirclesInteractor circlesInteractor;
+   @Inject NotificationDelegate notificationDelegate;
+   @Inject StartChatDelegate startSingleChatDelegate;
 
-    private int notificationId;
-    private boolean acceptFriend;
-    private UidItemDelegate uidItemDelegate;
+   private int notificationId;
+   private boolean acceptFriend;
+   private UidItemDelegate uidItemDelegate;
 
-    public UserPresenter(UserBundle userBundle) {
-        super(userBundle.getUser());
-        this.notificationId = userBundle.getNotificationId();
-        this.acceptFriend = userBundle.isAcceptFriend();
-        userBundle.resetNotificationId();
-        userBundle.resetAcceptFriend();
+   public UserPresenter(UserBundle userBundle) {
+      super(userBundle.getUser());
+      this.notificationId = userBundle.getNotificationId();
+      this.acceptFriend = userBundle.isAcceptFriend();
+      userBundle.resetNotificationId();
+      userBundle.resetAcceptFriend();
 
-        uidItemDelegate = new UidItemDelegate(this);
-    }
+      uidItemDelegate = new UidItemDelegate(this);
+   }
 
-    @Override
-    public void onInjected() {
-        super.onInjected();
-        notificationDelegate.cancel(user.getId());
-    }
+   @Override
+   public void onInjected() {
+      super.onInjected();
+      notificationDelegate.cancel(user.getId());
+   }
 
-    @Override
-    public void takeView(View view) {
-        super.takeView(view);
-        subscribeLoadNextFeeds();
-        subscribeRefreshFeeds();
-    }
+   @Override
+   public void takeView(View view) {
+      super.takeView(view);
+      subscribeLoadNextFeeds();
+      subscribeRefreshFeeds();
+   }
 
-    @Override
-    public void onStart() {
-        super.onStart();
-        if (notificationId != UserBundle.NO_NOTIFICATION) {
-            doRequest(new MarkNotificationAsReadCommand(notificationId), aVoid -> {
-            });
-        }
-        if (acceptFriend) {
-            acceptClicked();
-            acceptFriend = false;
-        }
-    }
+   @Override
+   public void onStart() {
+      super.onStart();
+      if (notificationId != UserBundle.NO_NOTIFICATION) {
+         doRequest(new MarkNotificationAsReadCommand(notificationId), aVoid -> {
+         });
+      }
+      if (acceptFriend) {
+         acceptClicked();
+         acceptFriend = false;
+      }
+   }
 
-    private void subscribeRefreshFeeds() {
-        view.bindUntilDropView(feedInteractor.getRefreshUserTimelinePipe().observe()
-                .compose(new IoToMainComposer<>()))
-                .subscribe(new ActionStateSubscriber<GetUserTimelineCommand.Refresh>()
-                        .onFail(this::refreshFeedError)
-                        .onSuccess(action -> refreshFeedSucceed(action.getResult())));
-    }
+   private void subscribeRefreshFeeds() {
+      view.bindUntilDropView(feedInteractor.getRefreshUserTimelinePipe().observe().compose(new IoToMainComposer<>()))
+            .subscribe(new ActionStateSubscriber<GetUserTimelineCommand.Refresh>().onFail(this::refreshFeedError)
+                  .onSuccess(action -> refreshFeedSucceed(action.getResult())));
+   }
 
 
-    private void subscribeLoadNextFeeds() {
-        view.bindUntilDropView(feedInteractor.getLoadNextUserTimelinePipe().observe()
-                .compose(new IoToMainComposer<>()))
-                .subscribe(new ActionStateSubscriber<GetUserTimelineCommand.LoadNext>()
-                        .onFail(this::loadMoreItemsError)
-                        .onSuccess(action -> addFeedItems(action.getResult())));
-    }
+   private void subscribeLoadNextFeeds() {
+      view.bindUntilDropView(feedInteractor.getLoadNextUserTimelinePipe().observe().compose(new IoToMainComposer<>()))
+            .subscribe(new ActionStateSubscriber<GetUserTimelineCommand.LoadNext>().onFail(this::loadMoreItemsError)
+                  .onSuccess(action -> addFeedItems(action.getResult())));
+   }
 
-    @Override
-    public void refreshFeed() {
-        feedInteractor.getRefreshUserTimelinePipe().send(new GetUserTimelineCommand.Refresh(user.getId()));
-    }
+   @Override
+   public void refreshFeed() {
+      feedInteractor.getRefreshUserTimelinePipe().send(new GetUserTimelineCommand.Refresh(user.getId()));
+   }
 
-    @Override
-    public void loadNext(Date date) {
-        feedInteractor.getLoadNextUserTimelinePipe().send(new GetUserTimelineCommand.LoadNext(user.getId(), date));
-    }
+   @Override
+   public void loadNext(Date date) {
+      feedInteractor.getLoadNextUserTimelinePipe().send(new GetUserTimelineCommand.LoadNext(user.getId(), date));
+   }
 
-    @Override
-    protected void loadProfile() {
-        view.startLoading();
-        doRequest(new GetPublicProfileQuery(user), this::onProfileLoaded);
-    }
+   @Override
+   protected void loadProfile() {
+      view.startLoading();
+      doRequest(new GetPublicProfileQuery(user), this::onProfileLoaded);
+   }
 
-    @Override
-    public boolean isConnected() {
-        return super.isConnected();
-    }
+   @Override
+   public boolean isConnected() {
+      return super.isConnected();
+   }
 
-    public void onStartChatClicked() {
-        startSingleChatDelegate.startSingleChat(user, conversation ->
-                MessengerActivity.startMessengerWithConversation(activityRouter.getContext(), conversation.getId()));
-    }
+   public void onStartChatClicked() {
+      startSingleChatDelegate.startSingleChat(user, conversation -> MessengerActivity.startMessengerWithConversation(activityRouter
+            .getContext(), conversation.getId()));
+   }
 
-    public void addFriendClicked() {
-        User.Relationship userRelationship = user.getRelationship();
-        if (userRelationship == null) return;
+   public void addFriendClicked() {
+      User.Relationship userRelationship = user.getRelationship();
+      if (userRelationship == null) return;
 
-        switch (userRelationship) {
-            case REJECTED:
-            case NONE:
-                addFriend();
-                break;
-            case FRIEND:
-                view.showFriendDialog(user);
-                break;
-        }
-    }
+      switch (userRelationship) {
+         case REJECTED:
+         case NONE:
+            addFriend();
+            break;
+         case FRIEND:
+            view.showFriendDialog(user);
+            break;
+      }
+   }
 
-    private void unfriend() {
-        view.startLoading();
-        doRequest(new UnfriendCommand(user.getId()), object -> {
-            if (view != null) {
-                view.finishLoading();
-                user.unfriend();
-                view.notifyUserChanged();
-                eventBus.postSticky(new RemoveUserEvent(user));
-            }
-        });
-    }
-
-    private void addFriend() {
-        showAddFriendDialog(this::addAsFriend);
-    }
-
-    private void addAsFriend(Circle circle) {
-        view.startLoading();
-        doRequest(new AddUserRequestCommand(user.getId(), circle),
-                jsonObject -> {
-                    user.setRelationship(User.Relationship.OUTGOING_REQUEST);
-                    view.finishLoading();
-                    view.notifyUserChanged();
-                });
-    }
-
-    public void acceptClicked() {
-        showAddFriendDialog(this::accept);
-    }
-
-    private void accept(Circle circle) {
-        doRequest(new ActOnRequestCommand(user.getId(),
-                        ActOnRequestCommand.Action.CONFIRM.name(), circle.getId()),
-                object -> {
-                    user.setRelationship(User.Relationship.FRIEND);
-                    view.notifyUserChanged();
-                });
-    }
-
-    public void rejectClicked() {
-        reject();
-    }
-
-    private void reject() {
-        view.startLoading();
-        doRequest(new ActOnRequestCommand(user.getId(),
-                        ActOnRequestCommand.Action.REJECT.name()),
-                object -> {
-                    view.finishLoading();
-                    user.setRelationship(User.Relationship.REJECTED);
-                    view.notifyUserChanged();
-                });
-    }
-
-    public void onEvent(UnfriendEvent event) {
-        unfriend();
-    }
-
-    public void onEvent(OpenFriendPrefsEvent event) {
-        if (view.isVisibleOnScreen()) view.openFriendPrefs(new UserBundle(user));
-    }
-
-    public void onEvent(FriendGroupRelationChangedEvent event) {
-        if (user.getId() == event.getFriend().getId()) {
-            switch (event.getState()) {
-                case REMOVED:
-                    user.getCircles().remove(event.getCircle());
-                    break;
-                case ADDED:
-                    user.getCircles().add(event.getCircle());
-                    break;
-            }
+   private void unfriend() {
+      view.startLoading();
+      doRequest(new UnfriendCommand(user.getId()), object -> {
+         if (view != null) {
+            view.finishLoading();
+            user.unfriend();
             view.notifyUserChanged();
-        }
-    }
+            eventBus.postSticky(new RemoveUserEvent(user));
+         }
+      });
+   }
 
-    @Override
-    public void openBucketList() {
-        view.openBucketList(Route.FOREIGN_BUCKET_TABS, new ForeignBucketTabsBundle(user));
-    }
+   private void addFriend() {
+      showAddFriendDialog(this::addAsFriend);
+   }
 
-    @Override
-    public void openTripImages() {
-        view.openTripImages(Route.TRIP_LIST_IMAGES,
-                new TripsImagesBundle(TripImagesType.ACCOUNT_IMAGES, user.getId()));
-    }
+   private void addAsFriend(Circle circle) {
+      view.startLoading();
+      doRequest(new AddUserRequestCommand(user.getId(), circle), jsonObject -> {
+         user.setRelationship(User.Relationship.OUTGOING_REQUEST);
+         view.finishLoading();
+         view.notifyUserChanged();
+      });
+   }
 
-    public void onEvent(LoadFlagEvent event) {
-        if (view.isVisibleOnScreen())
-            uidItemDelegate.loadFlags(event.getFlaggableView());
-    }
+   public void acceptClicked() {
+      showAddFriendDialog(this::accept);
+   }
 
-    public void onEvent(ItemFlaggedEvent event) {
-        if (view.isVisibleOnScreen())
-            uidItemDelegate.flagItem(new FlagData(event.getEntity().getUid(),
-                    event.getFlagReasonId(), event.getNameOfReason()), view);
-    }
+   private void accept(Circle circle) {
+      doRequest(new ActOnRequestCommand(user.getId(), ActOnRequestCommand.Action.CONFIRM.name(), circle.getId()), object -> {
+         user.setRelationship(User.Relationship.FRIEND);
+         view.notifyUserChanged();
+      });
+   }
 
-    ///////////////////////////////////////////////////////////////////////////
-    // Circles
-    ///////////////////////////////////////////////////////////////////////////
+   public void rejectClicked() {
+      reject();
+   }
 
-    private void showAddFriendDialog(Action1<Circle> actionCircle) {
-        circlesInteractor.pipe()
-                .createObservable(new CirclesCommand())
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .compose(bindView())
-                .subscribe(new ActionStateSubscriber<CirclesCommand>()
-                        .onStart(circlesCommand -> onCirclesStart())
-                        .onSuccess(circlesCommand -> onCirclesSuccess(circlesCommand.getResult(), actionCircle))
-                        .onFail((circlesCommand, throwable) -> onCirclesError(circlesCommand.getErrorMessage())));
-    }
+   private void reject() {
+      view.startLoading();
+      doRequest(new ActOnRequestCommand(user.getId(), ActOnRequestCommand.Action.REJECT.name()), object -> {
+         view.finishLoading();
+         user.setRelationship(User.Relationship.REJECTED);
+         view.notifyUserChanged();
+      });
+   }
 
-    private void onCirclesStart() {
-        view.showBlockingProgress();
-    }
+   public void onEvent(UnfriendEvent event) {
+      unfriend();
+   }
 
-    private void onCirclesSuccess(List<Circle> resultCircles, Action1<Circle> actionCircle) {
-        view.showAddFriendDialog(resultCircles, actionCircle);
-        view.hideBlockingProgress();
-    }
+   public void onEvent(OpenFriendPrefsEvent event) {
+      if (view.isVisibleOnScreen()) view.openFriendPrefs(new UserBundle(user));
+   }
 
-    private void onCirclesError(@StringRes String messageId) {
-        view.hideBlockingProgress();
-        view.informUser(messageId);
-    }
+   public void onEvent(FriendGroupRelationChangedEvent event) {
+      if (user.getId() == event.getFriend().getId()) {
+         switch (event.getState()) {
+            case REMOVED:
+               user.getCircles().remove(event.getCircle());
+               break;
+            case ADDED:
+               user.getCircles().add(event.getCircle());
+               break;
+         }
+         view.notifyUserChanged();
+      }
+   }
 
-    public interface View extends ProfilePresenter.View, UidItemDelegate.View, BlockingProgressView {
+   @Override
+   public void openBucketList() {
+      view.openBucketList(Route.FOREIGN_BUCKET_TABS, new ForeignBucketTabsBundle(user));
+   }
 
-        void showAddFriendDialog(List<Circle> circles, Action1<Circle> selectAction);
+   @Override
+   public void openTripImages() {
+      view.openTripImages(Route.TRIP_LIST_IMAGES, new TripsImagesBundle(TripImagesType.ACCOUNT_IMAGES, user.getId()));
+   }
 
-        void showFriendDialog(User user);
+   public void onEvent(LoadFlagEvent event) {
+      if (view.isVisibleOnScreen()) uidItemDelegate.loadFlags(event.getFlaggableView());
+   }
 
-        void openFriendPrefs(UserBundle userBundle);
-    }
+   public void onEvent(ItemFlaggedEvent event) {
+      if (view.isVisibleOnScreen()) uidItemDelegate.flagItem(new FlagData(event.getEntity()
+            .getUid(), event.getFlagReasonId(), event.getNameOfReason()), view);
+   }
+
+   ///////////////////////////////////////////////////////////////////////////
+   // Circles
+   ///////////////////////////////////////////////////////////////////////////
+
+   private void showAddFriendDialog(Action1<Circle> actionCircle) {
+      circlesInteractor.pipe()
+            .createObservable(new CirclesCommand())
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .compose(bindView())
+            .subscribe(new ActionStateSubscriber<CirclesCommand>().onStart(circlesCommand -> onCirclesStart())
+                  .onSuccess(circlesCommand -> onCirclesSuccess(circlesCommand.getResult(), actionCircle))
+                  .onFail((circlesCommand, throwable) -> onCirclesError(circlesCommand.getErrorMessage())));
+   }
+
+   private void onCirclesStart() {
+      view.showBlockingProgress();
+   }
+
+   private void onCirclesSuccess(List<Circle> resultCircles, Action1<Circle> actionCircle) {
+      view.showAddFriendDialog(resultCircles, actionCircle);
+      view.hideBlockingProgress();
+   }
+
+   private void onCirclesError(@StringRes String messageId) {
+      view.hideBlockingProgress();
+      view.informUser(messageId);
+   }
+
+   public interface View extends ProfilePresenter.View, UidItemDelegate.View, BlockingProgressView {
+
+      void showAddFriendDialog(List<Circle> circles, Action1<Circle> selectAction);
+
+      void showFriendDialog(User user);
+
+      void openFriendPrefs(UserBundle userBundle);
+   }
 }

@@ -28,58 +28,56 @@ import rx.schedulers.Schedulers;
 @CommandAction
 public class SubscribeToPushNotificationsCommand extends Command<Void> implements InjectableAction {
 
-    @Inject @Named(JanetModule.JANET_API_LIB) Janet janet;
-    @Inject AppVersionNameBuilder appVersionNameBuilder;
-    @Inject SnappyRepository snappyRepository;
-    @Inject @ForApplication Context context;
+   @Inject @Named(JanetModule.JANET_API_LIB) Janet janet;
+   @Inject AppVersionNameBuilder appVersionNameBuilder;
+   @Inject SnappyRepository snappyRepository;
+   @Inject @ForApplication Context context;
 
-    private final boolean isTokenChangedFromCallback;
+   private final boolean isTokenChangedFromCallback;
 
-    public SubscribeToPushNotificationsCommand(boolean isTokenChanged) {
-        this.isTokenChangedFromCallback = isTokenChanged;
-    }
+   public SubscribeToPushNotificationsCommand(boolean isTokenChanged) {
+      this.isTokenChangedFromCallback = isTokenChanged;
+   }
 
-    @Override
-    protected void run(CommandCallback<Void> callback) throws Throwable {
-        String token = getGcmToken();
-        if (!TextUtils.isEmpty(token) && (isTokenChanged(token) || isAppVersionChanged())) {
-            janet.createPipe(SubscribeToPushNotificationsHttpAction.class, Schedulers.io())
-                    .createObservableResult(new SubscribeToPushNotificationsHttpAction(ImmutablePushSubscriptionParams
-                            .builder()
-                            .token(token)
-                            .appVersion(appVersionNameBuilder.getReleaseSemanticVersionName())
-                            .osVersion(String.valueOf(Build.VERSION.SDK_INT))
-                            .build()))
-                    .doOnNext(action -> updateSubscribeData(token))
-                    .subscribe(subscribeToPushNotificationsHttpAction -> {
-                        callback.onSuccess(null);
-                    }, throwable -> {
-                        resetToken();
-                    });
-        }
-    }
+   @Override
+   protected void run(CommandCallback<Void> callback) throws Throwable {
+      String token = getGcmToken();
+      if (!TextUtils.isEmpty(token) && (isTokenChanged(token) || isAppVersionChanged())) {
+         janet.createPipe(SubscribeToPushNotificationsHttpAction.class, Schedulers.io())
+               .createObservableResult(new SubscribeToPushNotificationsHttpAction(ImmutablePushSubscriptionParams.builder()
+                     .token(token)
+                     .appVersion(appVersionNameBuilder.getReleaseSemanticVersionName())
+                     .osVersion(String.valueOf(Build.VERSION.SDK_INT))
+                     .build()))
+               .doOnNext(action -> updateSubscribeData(token))
+               .subscribe(subscribeToPushNotificationsHttpAction -> {
+                  callback.onSuccess(null);
+               }, throwable -> {
+                  resetToken();
+               });
+      }
+   }
 
-    private String getGcmToken() throws IOException {
-        return InstanceID.getInstance(context)
-                .getToken(context.getString(R.string.gcm_defaultSenderId), GoogleCloudMessaging.INSTANCE_ID_SCOPE, null);
-    }
+   private String getGcmToken() throws IOException {
+      return InstanceID.getInstance(context)
+            .getToken(context.getString(R.string.gcm_defaultSenderId), GoogleCloudMessaging.INSTANCE_ID_SCOPE, null);
+   }
 
-    private boolean isTokenChanged(String token) {
-        return !token.equals(snappyRepository.getGcmRegToken()) || isTokenChangedFromCallback;
-    }
+   private boolean isTokenChanged(String token) {
+      return !token.equals(snappyRepository.getGcmRegToken()) || isTokenChangedFromCallback;
+   }
 
-    private boolean isAppVersionChanged() {
-        return TextUtils.isEmpty(snappyRepository.getLastSyncAppVersion())
-                || !snappyRepository.getLastSyncAppVersion()
-                .equals(appVersionNameBuilder.getReleaseSemanticVersionName());
-    }
+   private boolean isAppVersionChanged() {
+      return TextUtils.isEmpty(snappyRepository.getLastSyncAppVersion()) || !snappyRepository.getLastSyncAppVersion()
+            .equals(appVersionNameBuilder.getReleaseSemanticVersionName());
+   }
 
-    private void updateSubscribeData(String token) {
-        snappyRepository.setGcmRegToken(token);
-        snappyRepository.setLastSyncAppVersion(appVersionNameBuilder.getReleaseSemanticVersionName());
-    }
+   private void updateSubscribeData(String token) {
+      snappyRepository.setGcmRegToken(token);
+      snappyRepository.setLastSyncAppVersion(appVersionNameBuilder.getReleaseSemanticVersionName());
+   }
 
-    private void resetToken() {
-        snappyRepository.setGcmRegToken(null);
-    }
+   private void resetToken() {
+      snappyRepository.setGcmRegToken(null);
+   }
 }

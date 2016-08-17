@@ -20,65 +20,64 @@ import butterknife.InjectView;
 @Layout(R.layout.adapter_item_user)
 public class UserCell extends BaseUserCell<UserCellDelegate> {
 
-    @InjectView(R.id.iv_status)
-    ImageView ivStatus;
+   @InjectView(R.id.iv_status) ImageView ivStatus;
 
-    @Inject
-    protected SessionHolder<UserSession> appSessionHolder;
-    @Inject
-    protected DrawableUtil drawableUtil;
+   @Inject protected SessionHolder<UserSession> appSessionHolder;
+   @Inject protected DrawableUtil drawableUtil;
 
-    public UserCell(View view) {
-        super(view);
-    }
+   public UserCell(View view) {
+      super(view);
+   }
 
-    @Override
-    protected void syncUIStateWithModel() {
-        super.syncUIStateWithModel();
+   @Override
+   protected void syncUIStateWithModel() {
+      super.syncUIStateWithModel();
 
-        String circleName = getModelObject().getCirclesString();
-        tvGroup.setVisibility(TextUtils.isEmpty(circleName) ? View.GONE : View.VISIBLE);
-        tvGroup.setText(circleName);
+      String circleName = getModelObject().getCirclesString();
+      tvGroup.setVisibility(TextUtils.isEmpty(circleName) ? View.GONE : View.VISIBLE);
+      tvGroup.setText(circleName);
 
-        if (!appSessionHolder.get().get().getUser().equals(getModelObject())
-                && getModelObject().getRelationship() != null) {
-            ivStatus.setVisibility(View.VISIBLE);
-            switch (getModelObject().getRelationship()) {
-                case FRIEND:
-                    setStatusParameters(R.drawable.ic_profile_friend, v -> openFriendActionDialog());
-                    break;
-                case OUTGOING_REQUEST:
-                    setStatusParameters(R.drawable.ic_profile_friend_respond, null);
-                    break;
-                case INCOMING_REQUEST:
-                case REJECTED:
-                    setStatusParameters(R.drawable.ic_profile_add_friend_selector, v -> acceptRequest());
-                    break;
-                default:
-                    setStatusParameters(R.drawable.ic_profile_add_friend_selector, v -> addUser());
-                    break;
-            }
-        } else {
-            ivStatus.setVisibility(View.GONE);
-        }
-    }
+      if (!appSessionHolder.get()
+            .get()
+            .getUser()
+            .equals(getModelObject()) && getModelObject().getRelationship() != null) {
+         ivStatus.setVisibility(View.VISIBLE);
+         switch (getModelObject().getRelationship()) {
+            case FRIEND:
+               setStatusParameters(R.drawable.ic_profile_friend, v -> openFriendActionDialog());
+               break;
+            case OUTGOING_REQUEST:
+               setStatusParameters(R.drawable.ic_profile_friend_respond, null);
+               break;
+            case INCOMING_REQUEST:
+            case REJECTED:
+               setStatusParameters(R.drawable.ic_profile_add_friend_selector, v -> acceptRequest());
+               break;
+            default:
+               setStatusParameters(R.drawable.ic_profile_add_friend_selector, v -> addUser());
+               break;
+         }
+      } else {
+         ivStatus.setVisibility(View.GONE);
+      }
+   }
 
-    private void setStatusParameters(int drawableId, @Nullable View.OnClickListener listener){
-        ivStatus.setImageResource(drawableId);
-        ivStatus.setOnClickListener(listener);
-    }
+   private void setStatusParameters(int drawableId, @Nullable View.OnClickListener listener) {
+      ivStatus.setImageResource(drawableId);
+      ivStatus.setOnClickListener(listener);
+   }
 
-    void acceptRequest() {
-        cellDelegate.acceptRequest(getModelObject());
-    }
+   void acceptRequest() {
+      cellDelegate.acceptRequest(getModelObject());
+   }
 
-    void addUser() {
-        cellDelegate.addUserRequest(getModelObject());
-    }
+   void addUser() {
+      cellDelegate.addUserRequest(getModelObject());
+   }
 
-    private void openFriendActionDialog() {
-        sdvAvatar.setDrawingCacheEnabled(true);
-        new FriendActionDialogDelegate(itemView.getContext(), getEventBus())
-                .showFriendDialogSkipChat(getModelObject(), drawableUtil.copyIntoDrawable(sdvAvatar.getDrawingCache()));
-    }
+   private void openFriendActionDialog() {
+      sdvAvatar.setDrawingCacheEnabled(true);
+      new FriendActionDialogDelegate(itemView.getContext(), getEventBus()).showFriendDialogSkipChat(getModelObject(), drawableUtil
+            .copyIntoDrawable(sdvAvatar.getDrawingCache()));
+   }
 }

@@ -1,39 +1,43 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                xmlns:tools="http://schemas.android.com/tools"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:orientation="vertical">
+      xmlns:tools="http://schemas.android.com/tools"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:orientation="vertical"
+      >
 
-    <Space
-        android:id="@+id/pointer_shift_x"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentTop="true"
-        android:layout_marginLeft="0dp"
-        android:layout_marginTop="12dp"/>
+   <Space
+         android:id="@+id/pointer_shift_x"
+         android:layout_width="wrap_content"
+         android:layout_height="wrap_content"
+         android:layout_alignParentLeft="true"
+         android:layout_alignParentTop="true"
+         android:layout_marginLeft="0dp"
+         android:layout_marginTop="12dp"
+         />
 
-    <ImageView
-        android:id="@+id/pointer_top"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_toRightOf="@+id/pointer_shift_x"
-        android:adjustViewBounds="true"
-        android:src="@drawable/photo_tag_additional_part"/>
+   <ImageView
+         android:id="@+id/pointer_top"
+         android:layout_width="wrap_content"
+         android:layout_height="wrap_content"
+         android:layout_toRightOf="@+id/pointer_shift_x"
+         android:adjustViewBounds="true"
+         android:src="@drawable/photo_tag_additional_part"
+         />
 
-    <LinearLayout
-        android:id="@+id/tag_container"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/pointer_top"
-        android:animateLayoutChanges="true"
-        android:background="@drawable/photo_tag_main_part"
-        android:gravity="center"
-        android:orientation="horizontal"
-        android:padding="@dimen/spacing_small">
+   <LinearLayout
+         android:id="@+id/tag_container"
+         android:layout_width="wrap_content"
+         android:layout_height="wrap_content"
+         android:layout_below="@+id/pointer_top"
+         android:animateLayoutChanges="true"
+         android:background="@drawable/photo_tag_main_part"
+         android:gravity="center"
+         android:orientation="horizontal"
+         android:padding="@dimen/spacing_small"
+         >
 
-        <TextView
+      <TextView
             android:id="@+id/tagged_user_name"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -45,33 +49,37 @@
             android:textSize="@dimen/font_medium"
             tools:text="Techery Test"
             android:focusableInTouchMode="true"
-            android:gravity="center"/>
+            android:gravity="center"
+            />
 
-        <View
+      <View
             android:id="@+id/tagged_user_delete_tag_divider"
             android:layout_width="1dp"
             android:layout_height="match_parent"
             android:layout_marginLeft="@dimen/spacing_small"
             android:layout_marginRight="@dimen/spacing_small"
             android:background="@color/tag_view_background_border"
-            android:visibility="gone"/>
+            android:visibility="gone"
+            />
 
-        <ImageView
+      <ImageView
             android:id="@+id/tagged_user_delete_tag"
             android:layout_width="16dp"
             android:layout_height="16dp"
             android:src="@drawable/ic_close_tag"
             android:padding="@dimen/spacing_tiniest"
             android:scaleType="fitCenter"
-            android:visibility="gone"/>
-    </LinearLayout>
+            android:visibility="gone"
+            />
+   </LinearLayout>
 
-    <ImageView
-        android:id="@+id/pointer_bottom"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/tag_container"
-        android:layout_toRightOf="@+id/pointer_shift_x"
-        android:rotation="180"
-        android:src="@drawable/photo_tag_additional_part"/>
+   <ImageView
+         android:id="@+id/pointer_bottom"
+         android:layout_width="wrap_content"
+         android:layout_height="wrap_content"
+         android:layout_below="@+id/tag_container"
+         android:layout_toRightOf="@+id/pointer_shift_x"
+         android:rotation="180"
+         android:src="@drawable/photo_tag_additional_part"
+         />
 </RelativeLayout>

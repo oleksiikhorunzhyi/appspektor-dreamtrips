@@ -8,59 +8,58 @@ import java.util.List;
 
 public class Session {
 
-    private String token;
-    @SerializedName("sso_token")
-    private String ssoToken;
-    private User user;
-    private String locale;
-    private List<Feature> permissions;
-    private List<Setting> settings;
+   private String token;
+   @SerializedName("sso_token") private String ssoToken;
+   private User user;
+   private String locale;
+   private List<Feature> permissions;
+   private List<Setting> settings;
 
-    public String getToken() {
-        return token;
-    }
+   public String getToken() {
+      return token;
+   }
 
-    public String getSsoToken() {
-        return ssoToken;
-    }
+   public String getSsoToken() {
+      return ssoToken;
+   }
 
-    public void setLocale(String locale) {
-        this.locale = locale;
-    }
+   public void setLocale(String locale) {
+      this.locale = locale;
+   }
 
-    public void setSsoToken(String ssoToken) {
-        this.ssoToken = ssoToken;
-    }
+   public void setSsoToken(String ssoToken) {
+      this.ssoToken = ssoToken;
+   }
 
-    public User getUser() {
-        return user;
-    }
+   public User getUser() {
+      return user;
+   }
 
-    public String getLocale() {
-        return locale;
-    }
+   public String getLocale() {
+      return locale;
+   }
 
-    public List<Feature> getPermissions() {
-        return permissions;
-    }
+   public List<Feature> getPermissions() {
+      return permissions;
+   }
 
-    public List<Setting> getSettings() {
-        return settings;
-    }
+   public List<Setting> getSettings() {
+      return settings;
+   }
 
-    public void setToken(String token) {
-        this.token = token;
-    }
+   public void setToken(String token) {
+      this.token = token;
+   }
 
-    public void setUser(User user) {
-        this.user = user;
-    }
+   public void setUser(User user) {
+      this.user = user;
+   }
 
-    public void setPermissions(List<Feature> permissions) {
-        this.permissions = permissions;
-    }
+   public void setPermissions(List<Feature> permissions) {
+      this.permissions = permissions;
+   }
 
-    public void setSettings(List<Setting> settings) {
-        this.settings = settings;
-    }
+   public void setSettings(List<Setting> settings) {
+      this.settings = settings;
+   }
 }

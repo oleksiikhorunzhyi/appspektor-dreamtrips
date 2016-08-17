@@ -11,23 +11,23 @@ import java.util.List;
 
 public interface ChatSettingsScreen extends MessengerScreen {
 
-    void showLoading();
+   void showLoading();
 
-    void showContent();
+   void showContent();
 
-    void showClearChatDialog();
+   void showClearChatDialog();
 
-    void showError(Throwable e);
+   void showError(Throwable e);
 
-    void setConversation(@NonNull DataConversation conversation);
+   void setConversation(@NonNull DataConversation conversation);
 
-    void setParticipants(DataConversation conversation, List<DataUser> participants);
+   void setParticipants(DataConversation conversation, List<DataUser> participants);
 
-    void showErrorDialog(@StringRes int msg);
+   void showErrorDialog(@StringRes int msg);
 
-    void invalidateToolbarMenu();
+   void invalidateToolbarMenu();
 
-    void showProgressDialog();
+   void showProgressDialog();
 
-    void dismissProgressDialog();
+   void dismissProgressDialog();
 }

@@ -11,14 +11,14 @@ import rx.Observable;
 @CommandAction
 public class UpdateUserCommand extends Command<User> implements InjectableAction {
 
-    private final User user;
+   private final User user;
 
-    public UpdateUserCommand(User user) {
-        this.user = user;
-    }
+   public UpdateUserCommand(User user) {
+      this.user = user;
+   }
 
-    @Override
-    protected void run(CommandCallback<User> callback) throws Throwable {
-        Observable.just(user).subscribe(callback::onSuccess, callback::onFail);
-    }
+   @Override
+   protected void run(CommandCallback<User> callback) throws Throwable {
+      Observable.just(user).subscribe(callback::onSuccess, callback::onFail);
+   }
 }

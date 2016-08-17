@@ -46,185 +46,177 @@ import butterknife.InjectView;
 
 @Layout(R.layout.fragment_requests)
 @MenuResource(R.menu.menu_friend)
-public class RequestsFragment extends BaseFragment<RequestsPresenter>
-        implements RequestsPresenter.View, SwipeRefreshLayout.OnRefreshListener, RequestCellDelegate {
+public class RequestsFragment extends BaseFragment<RequestsPresenter> implements RequestsPresenter.View, SwipeRefreshLayout.OnRefreshListener, RequestCellDelegate {
 
-    @InjectView(R.id.requests)
-    RecyclerView recyclerView;
-    @InjectView(R.id.swipe_container)
-    SwipeRefreshLayout refreshLayout;
+   @InjectView(R.id.requests) RecyclerView recyclerView;
+   @InjectView(R.id.swipe_container) SwipeRefreshLayout refreshLayout;
 
-    RecyclerViewStateDelegate stateDelegate;
-    BaseDelegateAdapter<Object> adapter;
+   RecyclerViewStateDelegate stateDelegate;
+   BaseDelegateAdapter<Object> adapter;
 
-    @Inject
-    @Named(RouteCreatorModule.PROFILE)
-    RouteCreator<Integer> routeCreator;
+   @Inject @Named(RouteCreatorModule.PROFILE) RouteCreator<Integer> routeCreator;
 
-    private MaterialDialog blockingProgressDialog;
+   private MaterialDialog blockingProgressDialog;
 
-    private WeakHandler weakHandler;
+   private WeakHandler weakHandler;
 
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        weakHandler = new WeakHandler();
-        stateDelegate = new RecyclerViewStateDelegate();
-        stateDelegate.onCreate(savedInstanceState);
-    }
+   @Override
+   public void onCreate(Bundle savedInstanceState) {
+      super.onCreate(savedInstanceState);
+      weakHandler = new WeakHandler();
+      stateDelegate = new RecyclerViewStateDelegate();
+      stateDelegate.onCreate(savedInstanceState);
+   }
 
-    @Override
-    public void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
-        stateDelegate.saveStateIfNeeded(outState);
-    }
+   @Override
+   public void onSaveInstanceState(Bundle outState) {
+      super.onSaveInstanceState(outState);
+      stateDelegate.saveStateIfNeeded(outState);
+   }
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.add_friend:
-                TrackingHelper.tapFeedButton(TrackingHelper.ATTRIBUTE_ADD_FRIENDS);
-                TrackingHelper.tapFeedButton(TrackingHelper.ATTRIBUTE_SEARCH_FRIENDS);
-                router.moveTo(Route.FRIEND_SEARCH, NavigationConfigBuilder.forActivity().build());
-                break;
-        }
-        return super.onOptionsItemSelected(item);
-    }
+   @Override
+   public boolean onOptionsItemSelected(MenuItem item) {
+      switch (item.getItemId()) {
+         case R.id.add_friend:
+            TrackingHelper.tapFeedButton(TrackingHelper.ATTRIBUTE_ADD_FRIENDS);
+            TrackingHelper.tapFeedButton(TrackingHelper.ATTRIBUTE_SEARCH_FRIENDS);
+            router.moveTo(Route.FRIEND_SEARCH, NavigationConfigBuilder.forActivity().build());
+            break;
+      }
+      return super.onOptionsItemSelected(item);
+   }
 
-    @Override
-    public void afterCreateView(View rootView) {
-        super.afterCreateView(rootView);
-        stateDelegate.setRecyclerView(recyclerView);
-        recyclerView.setLayoutManager(getLayoutManager());
+   @Override
+   public void afterCreateView(View rootView) {
+      super.afterCreateView(rootView);
+      stateDelegate.setRecyclerView(recyclerView);
+      recyclerView.setLayoutManager(getLayoutManager());
 
-        adapter = new BaseDelegateAdapter<>(getActivity(), this);
-        adapter.registerCell(User.class, RequestCell.class);
-        adapter.registerCell(RequestHeaderModel.class, RequestHeaderCell.class);
-        adapter.registerDelegate(User.class, this);
-        adapter.registerDelegate(RequestHeaderModel.class, new RequestHeaderCellDelegate() {
+      adapter = new BaseDelegateAdapter<>(getActivity(), this);
+      adapter.registerCell(User.class, RequestCell.class);
+      adapter.registerCell(RequestHeaderModel.class, RequestHeaderCell.class);
+      adapter.registerDelegate(User.class, this);
+      adapter.registerDelegate(RequestHeaderModel.class, new RequestHeaderCellDelegate() {
+         @Override
+         public void acceptAllRequests() {
+            getPresenter().acceptAllRequests();
+         }
+
+         @Override
+         public void onCellClicked(RequestHeaderModel model) {
+
+         }
+      });
+
+      recyclerView.setAdapter(adapter);
+
+      recyclerView.addItemDecoration(new SimpleListDividerDecorator(getResources().getDrawable(R.drawable.list_divider), true));
+      refreshLayout.setOnRefreshListener(this);
+      refreshLayout.setColorSchemeResources(R.color.theme_main_darker);
+   }
+
+   private RecyclerView.LayoutManager getLayoutManager() {
+      if (ViewUtils.isLandscapeOrientation(getActivity())) {
+         int spanCount = ViewUtils.isTablet(getActivity()) ? 3 : 1;
+         GridLayoutManager gridLayoutManager = new GridLayoutManager(getActivity(), spanCount);
+         gridLayoutManager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
             @Override
-            public void acceptAllRequests() {
-                getPresenter().acceptAllRequests();
+            public int getSpanSize(int position) {
+               return adapter.getItem(position) instanceof RequestHeaderModel ? spanCount : 1;
             }
+         });
+         return gridLayoutManager;
+      } else {
+         return new LinearLayoutManager(getActivity());
+      }
+   }
 
-            @Override
-            public void onCellClicked(RequestHeaderModel model) {
+   @Override
+   protected RequestsPresenter createPresenter(Bundle savedInstanceState) {
+      return new RequestsPresenter();
+   }
 
-            }
-        });
+   @Override
+   public void onRefresh() {
+      getPresenter().reloadRequests();
+   }
 
-        recyclerView.setAdapter(adapter);
+   @Override
+   public BaseArrayListAdapter<Object> getAdapter() {
+      return adapter;
+   }
 
-        recyclerView.addItemDecoration(new SimpleListDividerDecorator(getResources().getDrawable(R.drawable.list_divider), true));
-        refreshLayout.setOnRefreshListener(this);
-        refreshLayout.setColorSchemeResources(R.color.theme_main_darker);
-    }
+   @Override
+   public void finishLoading() {
+      weakHandler.post(() -> {
+         if (refreshLayout != null) refreshLayout.setRefreshing(false);
+      });
+      stateDelegate.restoreStateIfNeeded();
+   }
 
-    private RecyclerView.LayoutManager getLayoutManager() {
-        if (ViewUtils.isLandscapeOrientation(getActivity())) {
-            int spanCount = ViewUtils.isTablet(getActivity()) ? 3 : 1;
-            GridLayoutManager gridLayoutManager = new GridLayoutManager(getActivity(), spanCount);
-            gridLayoutManager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
-                @Override
-                public int getSpanSize(int position) {
-                    return adapter.getItem(position) instanceof RequestHeaderModel ? spanCount : 1;
-                }
-            });
-            return gridLayoutManager;
-        } else {
-            return new LinearLayoutManager(getActivity());
-        }
-    }
+   @Override
+   public void startLoading() {
+      weakHandler.post(() -> {
+         if (refreshLayout != null) refreshLayout.setRefreshing(true);
+      });
+   }
 
-    @Override
-    protected RequestsPresenter createPresenter(Bundle savedInstanceState) {
-        return new RequestsPresenter();
-    }
+   @Override
+   public void showBlockingProgress() {
+      blockingProgressDialog = new MaterialDialog.Builder(getActivity()).progress(true, 0)
+            .content(R.string.loading)
+            .cancelable(false)
+            .canceledOnTouchOutside(false)
+            .show();
+   }
 
-    @Override
-    public void onRefresh() {
-        getPresenter().reloadRequests();
-    }
+   @Override
+   public void hideBlockingProgress() {
+      if (blockingProgressDialog != null) blockingProgressDialog.dismiss();
+   }
 
-    @Override
-    public BaseArrayListAdapter<Object> getAdapter() {
-        return adapter;
-    }
+   @Override
+   public void openUser(UserBundle userBundle) {
+      if (isVisibleOnScreen()) router.moveTo(routeCreator.createRoute(userBundle.getUser()
+            .getId()), NavigationConfigBuilder.forActivity().toolbarConfig(ToolbarConfig.Builder.create()
+            .visible(false)
+            .build()).data(userBundle).build());
+   }
 
-    @Override
-    public void finishLoading() {
-        weakHandler.post(() -> {
-            if (refreshLayout != null) refreshLayout.setRefreshing(false);
-        });
-        stateDelegate.restoreStateIfNeeded();
-    }
+   @Override
+   public void showAddFriendDialog(List<Circle> circles, Action1<Integer> selectedAction) {
+      MaterialDialog.Builder builder = new MaterialDialog.Builder(getActivity());
+      builder.title(getString(R.string.friend_add_to))
+            .adapter(new ArrayAdapter<>(getActivity(), R.layout.simple_list_item_circle, circles), (materialDialog, view, i, charSequence) -> {
+               selectedAction.apply(i);
+               materialDialog.dismiss();
+            })
+            .negativeText(R.string.action_cancel)
+            .show();
+   }
 
-    @Override
-    public void startLoading() {
-        weakHandler.post(() -> {
-            if (refreshLayout != null) refreshLayout.setRefreshing(true);
-        });
-    }
+   @Override
+   public void acceptRequest(User user) {
+      getPresenter().acceptRequest(user);
+   }
 
-    @Override
-    public void showBlockingProgress() {
-        blockingProgressDialog = new MaterialDialog.Builder(getActivity())
-                .progress(true, 0)
-                .content(R.string.loading)
-                .cancelable(false)
-                .canceledOnTouchOutside(false)
-                .show();
-    }
+   @Override
+   public void rejectRequest(User user) {
+      getPresenter().rejectRequest(user);
+   }
 
-    @Override
-    public void hideBlockingProgress() {
-        if (blockingProgressDialog != null) blockingProgressDialog.dismiss();
-    }
+   @Override
+   public void hideRequest(User user) {
+      getPresenter().hideRequest(user);
+   }
 
-    @Override
-    public void openUser(UserBundle userBundle) {
-        if (isVisibleOnScreen())
-            router.moveTo(routeCreator.createRoute(userBundle.getUser().getId()), NavigationConfigBuilder.forActivity()
-                    .toolbarConfig(ToolbarConfig.Builder.create().visible(false).build())
-                    .data(userBundle)
-                    .build());
-    }
+   @Override
+   public void cancelRequest(User user) {
+      getPresenter().cancelRequest(user);
+   }
 
-    @Override
-    public void showAddFriendDialog(List<Circle> circles, Action1<Integer> selectedAction) {
-        MaterialDialog.Builder builder = new MaterialDialog.Builder(getActivity());
-        builder.title(getString(R.string.friend_add_to))
-                .adapter(new ArrayAdapter<>(getActivity(), R.layout.simple_list_item_circle, circles),
-                        (materialDialog, view, i, charSequence) -> {
-                            selectedAction.apply(i);
-                            materialDialog.dismiss();
-                        })
-                .negativeText(R.string.action_cancel)
-                .show();
-    }
+   @Override
+   public void onCellClicked(User model) {
 
-    @Override
-    public void acceptRequest(User user) {
-        getPresenter().acceptRequest(user);
-    }
-
-    @Override
-    public void rejectRequest(User user) {
-        getPresenter().rejectRequest(user);
-    }
-
-    @Override
-    public void hideRequest(User user) {
-        getPresenter().hideRequest(user);
-    }
-
-    @Override
-    public void cancelRequest(User user) {
-        getPresenter().cancelRequest(user);
-    }
-
-    @Override
-    public void onCellClicked(User model) {
-
-    }
+   }
 }

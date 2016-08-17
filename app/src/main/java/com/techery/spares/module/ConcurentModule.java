@@ -8,8 +8,8 @@ import dagger.Provides;
 
 @Module(library = true, complete = false)
 public class ConcurentModule {
-    @Provides
-    ExecutorService provideExecutorService() {
-        return Executors.newSingleThreadExecutor();
-    }
+   @Provides
+   ExecutorService provideExecutorService() {
+      return Executors.newSingleThreadExecutor();
+   }
 }

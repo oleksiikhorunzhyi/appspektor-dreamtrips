@@ -26,81 +26,79 @@ import flow.Flow;
 import flow.History;
 import timber.log.Timber;
 
-public abstract class BaseGroupChatSettingsScreenPresenterImpl
-        extends BaseChatSettingsScreenPresenterImpl<GroupChatSettingsScreen>
-        implements GroupChatSettingsScreenPresenter {
+public abstract class BaseGroupChatSettingsScreenPresenterImpl extends BaseChatSettingsScreenPresenterImpl<GroupChatSettingsScreen> implements GroupChatSettingsScreenPresenter {
 
-    @Inject ChatGroupCommandsInteractor chatGroupCommandsInteractor;
+   @Inject ChatGroupCommandsInteractor chatGroupCommandsInteractor;
 
-    public BaseGroupChatSettingsScreenPresenterImpl(Context context, Injector injector, String conversationId) {
-        super(context, injector, conversationId);
-    }
+   public BaseGroupChatSettingsScreenPresenterImpl(Context context, Injector injector, String conversationId) {
+      super(context, injector, conversationId);
+   }
 
-    @Override
-    public void onAttachedToWindow() {
-        super.onAttachedToWindow();
-        TrackingHelper.groupSettingsOpened();
-    }
+   @Override
+   public void onAttachedToWindow() {
+      super.onAttachedToWindow();
+      TrackingHelper.groupSettingsOpened();
+   }
 
-    @Override
-    protected void onConversationChanged(DataConversation conversation, List<DataUser> participants) {
-        super.onConversationChanged(conversation, participants);
+   @Override
+   protected void onConversationChanged(DataConversation conversation, List<DataUser> participants) {
+      super.onConversationChanged(conversation, participants);
 
-        boolean conversationPresent = ConversationHelper.isPresent(conversation);
-        DataUser owner = Queryable.from(participants)
-                .filter(user -> ConversationHelper.isOwner(conversation, user))
-                .firstOrDefault();
+      boolean conversationPresent = ConversationHelper.isPresent(conversation);
+      DataUser owner = Queryable.from(participants)
+            .filter(user -> ConversationHelper.isOwner(conversation, user))
+            .firstOrDefault();
 
-        GroupChatSettingsScreen view = getView();
-        view.setOwner(owner);
-        view.setLeaveButtonVisible(conversationPresent && !ConversationHelper.isOwner(conversation, currentUser));
-    }
+      GroupChatSettingsScreen view = getView();
+      view.setOwner(owner);
+      view.setLeaveButtonVisible(conversationPresent && !ConversationHelper.isOwner(conversation, currentUser));
+   }
 
-    @Override
-    public void onLeaveChatClicked() {
-        TrackingHelper.leaveConversation();
-        chatGroupCommandsInteractor.getLeaveChatPipe()
-                .createObservableResult(new LeaveChatCommand(conversationId))
-                .compose(bindViewIoToMainComposer())
-                .subscribe(command -> {
-                    Flow flow = Flow.get(getContext());
-                    History history = flow.getHistory()
-                            .buildUpon().clear()
-                            .push(ConversationsPath.MASTER_PATH)
-                            .push(new ChatPath(command.getConversationId()))
-                            .build();
-                    flow.setHistory(history, Flow.Direction.BACKWARD);
-                }, e -> Timber.e(e, "Can't leave chat"));
-    }
+   @Override
+   public void onLeaveChatClicked() {
+      TrackingHelper.leaveConversation();
+      chatGroupCommandsInteractor.getLeaveChatPipe()
+            .createObservableResult(new LeaveChatCommand(conversationId))
+            .compose(bindViewIoToMainComposer())
+            .subscribe(command -> {
+               Flow flow = Flow.get(getContext());
+               History history = flow.getHistory()
+                     .buildUpon()
+                     .clear()
+                     .push(ConversationsPath.MASTER_PATH)
+                     .push(new ChatPath(command.getConversationId()))
+                     .build();
+               flow.setHistory(history, Flow.Direction.BACKWARD);
+            }, e -> Timber.e(e, "Can't leave chat"));
+   }
 
-    @Override
-    public void onMembersRowClicked() {
-        Flow.get(getContext()).set(new EditChatPath(conversationId));
-    }
+   @Override
+   public void onMembersRowClicked() {
+      Flow.get(getContext()).set(new EditChatPath(conversationId));
+   }
 
-    @Override
-    public void onLeaveButtonClick() {
-        if (currentConnectivityStatus != SyncStatus.CONNECTED) {
-            getView().showMessage(R.string.no_connection, this::onLeaveButtonClick);
-            return;
-        }
+   @Override
+   public void onLeaveButtonClick() {
+      if (currentConnectivityStatus != SyncStatus.CONNECTED) {
+         getView().showMessage(R.string.no_connection, this::onLeaveButtonClick);
+         return;
+      }
 
-        conversationObservable
-                .map(this::getLeaveConversationMessage)
-                .subscribe(message -> getView().showLeaveChatDialog(message));
-    }
+      conversationObservable.map(this::getLeaveConversationMessage)
+            .subscribe(message -> getView().showLeaveChatDialog(message));
+   }
 
-    protected String getLeaveConversationMessage(DataConversation conversation) {
-        String subject = conversation.getSubject();
-        if (TextUtils.isEmpty(subject)) {
-            return context.getString(R.string.chat_settings_leave_group_chat);
-        } else {
-            return String.format(context.getString(R.string.chat_settings_leave_group_chat_format), subject);
-        }
-    }
+   protected String getLeaveConversationMessage(DataConversation conversation) {
+      String subject = conversation.getSubject();
+      if (TextUtils.isEmpty(subject)) {
+         return context.getString(R.string.chat_settings_leave_group_chat);
+      } else {
+         return String.format(context.getString(R.string.chat_settings_leave_group_chat_format), subject);
+      }
+   }
 
-    @Override
-    public void applyNewChatSubject(String subject) {
-        throw new IllegalStateException("Method was not implemented");
-    }
+   @Override
+   public void applyNewChatSubject(String subject) {
+      throw new IllegalStateException("Method was not implemented");
+   }
 }

@@ -14,21 +14,21 @@ import io.techery.janet.Janet;
 @Module(library = true, complete = false)
 public class AnalyticsModule {
 
-    @Singleton
-    @Provides(type = Provides.Type.SET)
-    Tracker provideAdobeTracker() {
-        return new AdobeTracker();
-    }
+   @Singleton
+   @Provides(type = Provides.Type.SET)
+   Tracker provideAdobeTracker() {
+      return new AdobeTracker();
+   }
 
-    @Singleton
-    @Provides(type = Provides.Type.SET)
-    Tracker provideApptentiveTracker() {
-        return new ApptentiveTracker();
-    }
+   @Singleton
+   @Provides(type = Provides.Type.SET)
+   Tracker provideApptentiveTracker() {
+      return new ApptentiveTracker();
+   }
 
-    @Singleton
-    @Provides
-    AnalyticsInteractor provideAnalyticsInteractor(Janet janet) {
-        return new AnalyticsInteractor(janet);
-    }
+   @Singleton
+   @Provides
+   AnalyticsInteractor provideAnalyticsInteractor(Janet janet) {
+      return new AnalyticsInteractor(janet);
+   }
 }

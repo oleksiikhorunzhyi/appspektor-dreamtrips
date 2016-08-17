@@ -1,37 +1,40 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                xmlns:app="http://schemas.android.com/apk/res-auto"
-                xmlns:tools="http://schemas.android.com/tools"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="@color/white">
+      xmlns:app="http://schemas.android.com/apk/res-auto"
+      xmlns:tools="http://schemas.android.com/tools"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:background="@color/white"
+      >
 
-    <TextView
-        android:id="@+id/header"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center"
-        android:padding="@dimen/spacing_normal"
-        android:text="@string/dtl_congrats"
-        android:textColor="@color/black"
-        android:textSize="@dimen/font_large"/>
+   <TextView
+         android:id="@+id/header"
+         android:layout_width="match_parent"
+         android:layout_height="wrap_content"
+         android:gravity="center"
+         android:padding="@dimen/spacing_normal"
+         android:text="@string/dtl_congrats"
+         android:textColor="@color/black"
+         android:textSize="@dimen/font_large"
+         />
 
-    <LinearLayout
-        android:id="@+id/earned_holder"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/header"
-        android:layout_centerHorizontal="true"
-        >
+   <LinearLayout
+         android:id="@+id/earned_holder"
+         android:layout_width="wrap_content"
+         android:layout_height="wrap_content"
+         android:layout_below="@+id/header"
+         android:layout_centerHorizontal="true"
+         >
 
-        <TextView
+      <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/dtl_you_earned"
             android:textColor="@color/black"
-            android:textSize="@dimen/font_normal"/>
+            android:textSize="@dimen/font_normal"
+            />
 
-        <TextView
+      <TextView
             android:id="@+id/earned"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -44,27 +47,29 @@
             android:textColor="@color/theme_main_darker"
             android:textSize="@dimen/font_normal"
             android:textStyle="bold"
-            tools:text="+12pt"/>
+            tools:text="+12pt"
+            />
 
-    </LinearLayout>
+   </LinearLayout>
 
-    <LinearLayout
-        android:id="@+id/total_holder"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/earned_holder"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="@dimen/spacing_small"
-        >
+   <LinearLayout
+         android:id="@+id/total_holder"
+         android:layout_width="wrap_content"
+         android:layout_height="wrap_content"
+         android:layout_below="@+id/earned_holder"
+         android:layout_centerHorizontal="true"
+         android:layout_marginTop="@dimen/spacing_small"
+         >
 
-        <TextView
+      <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/dtl_total"
             android:textColor="@color/black"
-            android:textSize="@dimen/font_normal"/>
+            android:textSize="@dimen/font_normal"
+            />
 
-        <TextView
+      <TextView
             android:id="@+id/total"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -77,79 +82,86 @@
             android:textColor="@color/theme_main_darker"
             android:textSize="@dimen/font_normal"
             android:textStyle="bold"
-            tools:text="1625"/>
+            tools:text="1625"
+            />
 
-    </LinearLayout>
+   </LinearLayout>
 
-    <View
-        android:id="@+id/divider_1"
-        android:layout_width="match_parent"
-        android:layout_height="0.5dp"
-        android:layout_below="@+id/total_holder"
-        android:layout_marginLeft="@dimen/spacing_huge"
-        android:layout_marginRight="@dimen/spacing_huge"
-        android:layout_marginTop="@dimen/spacing_small"
-        android:background="@drawable/list_divider"/>
-
-
-    <TextView
-        android:id="@+id/rate_hint"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/divider_1"
-        android:layout_marginTop="@dimen/spacing_small"
-        android:gravity="center"
-        android:text="@string/rate_hint"
-        android:textColor="@color/black"
-        android:textSize="@dimen/font_normal"/>
-
-    <io.techery.properratingbar.ProperRatingBar
-        android:id="@+id/rating_bar"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/rate_hint"
-        android:layout_centerHorizontal="true"
-        app:prb_defaultRating="0"
-        app:prb_tickSpacing="8dp"
-        app:prb_tickNormalDrawable="@drawable/ic_star_normal"
-        app:prb_tickSelectedDrawable="@drawable/ic_star_selected"
-        app:prb_totalTicks="5"
-        app:prb_clickable="true"
-        />
+   <View
+         android:id="@+id/divider_1"
+         android:layout_width="match_parent"
+         android:layout_height="0.5dp"
+         android:layout_below="@+id/total_holder"
+         android:layout_marginLeft="@dimen/spacing_huge"
+         android:layout_marginRight="@dimen/spacing_huge"
+         android:layout_marginTop="@dimen/spacing_small"
+         android:background="@drawable/list_divider"
+         />
 
 
-    <View
-        android:id="@+id/divider_2"
-        android:layout_width="match_parent"
-        android:layout_height="0.5dp"
-        android:layout_below="@+id/rating_bar"
-        android:layout_marginTop="@dimen/spacing_small"
-        android:background="@drawable/list_divider"/>
+   <TextView
+         android:id="@+id/rate_hint"
+         android:layout_width="match_parent"
+         android:layout_height="wrap_content"
+         android:layout_below="@+id/divider_1"
+         android:layout_marginTop="@dimen/spacing_small"
+         android:gravity="center"
+         android:text="@string/rate_hint"
+         android:textColor="@color/black"
+         android:textSize="@dimen/font_normal"
+         />
 
-    <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentRight="true"
-        android:layout_below="@+id/divider_2"
-        android:orientation="horizontal">
+   <io.techery.properratingbar.ProperRatingBar
+         android:id="@+id/rating_bar"
+         android:layout_width="wrap_content"
+         android:layout_height="wrap_content"
+         android:layout_below="@+id/rate_hint"
+         android:layout_centerHorizontal="true"
+         app:prb_defaultRating="0"
+         app:prb_tickSpacing="8dp"
+         app:prb_tickNormalDrawable="@drawable/ic_star_normal"
+         app:prb_tickSelectedDrawable="@drawable/ic_star_selected"
+         app:prb_totalTicks="5"
+         app:prb_clickable="true"
+         />
 
-        <Button
+
+   <View
+         android:id="@+id/divider_2"
+         android:layout_width="match_parent"
+         android:layout_height="0.5dp"
+         android:layout_below="@+id/rating_bar"
+         android:layout_marginTop="@dimen/spacing_small"
+         android:background="@drawable/list_divider"
+         />
+
+   <LinearLayout
+         android:layout_width="wrap_content"
+         android:layout_height="wrap_content"
+         android:layout_alignParentEnd="true"
+         android:layout_alignParentRight="true"
+         android:layout_below="@+id/divider_2"
+         android:orientation="horizontal"
+         >
+
+      <Button
             android:id="@+id/share"
             style="?android:attr/borderlessButtonStyle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/action_share"
-            android:textColor="@color/theme_main_darker"/>
+            android:textColor="@color/theme_main_darker"
+            />
 
-        <Button
+      <Button
             android:id="@+id/done"
             style="?android:attr/borderlessButtonStyle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/ok"
-            android:textColor="@color/dtl_cities_text_color"/>
-    </LinearLayout>
+            android:textColor="@color/dtl_cities_text_color"
+            />
+   </LinearLayout>
 
 
 </RelativeLayout>

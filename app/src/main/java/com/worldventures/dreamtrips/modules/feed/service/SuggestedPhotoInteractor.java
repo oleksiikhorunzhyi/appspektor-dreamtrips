@@ -9,14 +9,14 @@ import io.techery.janet.Janet;
 
 public class SuggestedPhotoInteractor {
 
-    private final ActionPipe<SuggestedPhotoCommand> suggestedPhotoCommandActionPipe;
+   private final ActionPipe<SuggestedPhotoCommand> suggestedPhotoCommandActionPipe;
 
-    @Inject
-    public SuggestedPhotoInteractor(Janet janet) {
-        suggestedPhotoCommandActionPipe = janet.createPipe(SuggestedPhotoCommand.class);
-    }
+   @Inject
+   public SuggestedPhotoInteractor(Janet janet) {
+      suggestedPhotoCommandActionPipe = janet.createPipe(SuggestedPhotoCommand.class);
+   }
 
-    public ActionPipe<SuggestedPhotoCommand> getSuggestedPhotoCommandActionPipe() {
-        return suggestedPhotoCommandActionPipe;
-    }
+   public ActionPipe<SuggestedPhotoCommand> getSuggestedPhotoCommandActionPipe() {
+      return suggestedPhotoCommandActionPipe;
+   }
 }

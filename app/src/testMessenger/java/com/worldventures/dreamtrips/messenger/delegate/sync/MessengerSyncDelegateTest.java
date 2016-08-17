@@ -49,105 +49,95 @@ import static org.mockito.Mockito.verify;
 @PrepareForTest(MessengerDatabase.class)
 public class MessengerSyncDelegateTest extends MessengerBaseTest {
 
-    private static final List<Conversation> testConversations;
-    private static final String testConversationId = "1234123412";
+   private static final List<Conversation> testConversations;
+   private static final String testConversationId = "1234123412";
 
-    static {
-        testConversations = Collections.singletonList(ImmutableConversation.builder().id(testConversationId)
-                .type(ConversationType.GROUP)
-                .unreadMessageCount(0)
-                .leftTime(0)
-                .participants(Collections.singletonList(ImmutableParticipant
-                        .builder()
-                        .userId("userId")
-                        .affiliation(Affiliation.MEMBER)
-                        .conversationId(testConversationId)
-                        .build()))
-                .lastActiveDate(0)
-                .status(ConversationStatus.PRESENT)
-                .clearDate(0)
-                .build());
-    }
+   static {
+      testConversations = Collections.singletonList(ImmutableConversation.builder()
+            .id(testConversationId)
+            .type(ConversationType.GROUP)
+            .unreadMessageCount(0)
+            .leftTime(0)
+            .participants(Collections.singletonList(ImmutableParticipant.builder()
+                  .userId("userId")
+                  .affiliation(Affiliation.MEMBER)
+                  .conversationId(testConversationId)
+                  .build()))
+            .lastActiveDate(0)
+            .status(ConversationStatus.PRESENT)
+            .clearDate(0)
+            .build());
+   }
 
-    @Mock
-    List<MessengerUser> testUsers;
-    @Mock
-    ConversationSyncHelper conversationSyncHelper;
-    @Mock
-    MessengerServerFacade messengerServerFacade;
-    @Mock
-    UsersDelegate usersDelegate;
-    @Mock
-    UsersDAO usersDAO;
+   @Mock List<MessengerUser> testUsers;
+   @Mock ConversationSyncHelper conversationSyncHelper;
+   @Mock MessengerServerFacade messengerServerFacade;
+   @Mock UsersDelegate usersDelegate;
+   @Mock UsersDAO usersDAO;
 
-    private MessengerSyncDelegate messengerSyncDelegate;
+   private MessengerSyncDelegate messengerSyncDelegate;
 
-    @CallSuper
-    @Before
-    public void setup() {
-        Mockito.doReturn(new BaseLoaderManager() {
-            @Override
-            public ConversationsLoader createConversationsLoader() {
-                return new MockConversationsLoader(testConversations);
-            }
+   @CallSuper
+   @Before
+   public void setup() {
+      Mockito.doReturn(new BaseLoaderManager() {
+         @Override
+         public ConversationsLoader createConversationsLoader() {
+            return new MockConversationsLoader(testConversations);
+         }
 
-            @Override
-            public ContactsLoader createContactLoader() {
-                return new MockContactLoader(testUsers);
-            }
-        }).when(messengerServerFacade).getLoaderManager();
-        Mockito.doReturn(Observable.just(Collections.emptyList()))
-                .when(usersDelegate)
-                .loadUsers(any());
-        Mockito.doReturn(Observable.just(Collections.emptyList()))
-                .when(usersDelegate)
-                .loadAndSaveUsers(any());
+         @Override
+         public ContactsLoader createContactLoader() {
+            return new MockContactLoader(testUsers);
+         }
+      }).when(messengerServerFacade).getLoaderManager();
+      Mockito.doReturn(Observable.just(Collections.emptyList())).when(usersDelegate).loadUsers(any());
+      Mockito.doReturn(Observable.just(Collections.emptyList())).when(usersDelegate).loadAndSaveUsers(any());
 
 
-        MockDaggerActionService daggerActionService;
-        Janet janet = new Janet.Builder()
-                .addService(daggerActionService = new MockDaggerActionService(new CommandActionService()))
-                .build();
+      MockDaggerActionService daggerActionService;
+      Janet janet = new Janet.Builder().addService(daggerActionService = new MockDaggerActionService(new CommandActionService()))
+            .build();
 
-        daggerActionService.registerProvider(Janet.class, () -> janet);
-        daggerActionService.registerProvider(ConversationSyncHelper.class, () -> conversationSyncHelper);
-        daggerActionService.registerProvider(MessengerServerFacade.class, () -> messengerServerFacade);
-        daggerActionService.registerProvider(UsersDelegate.class, () -> usersDelegate);
-        daggerActionService.registerProvider(UsersDAO.class, () -> usersDAO);
+      daggerActionService.registerProvider(Janet.class, () -> janet);
+      daggerActionService.registerProvider(ConversationSyncHelper.class, () -> conversationSyncHelper);
+      daggerActionService.registerProvider(MessengerServerFacade.class, () -> messengerServerFacade);
+      daggerActionService.registerProvider(UsersDelegate.class, () -> usersDelegate);
+      daggerActionService.registerProvider(UsersDAO.class, () -> usersDAO);
 
-        messengerSyncDelegate = new MessengerSyncDelegate(janet);
-    }
+      messengerSyncDelegate = new MessengerSyncDelegate(janet);
+   }
 
-    @Test
-    public void testLoadContacts() {
-        TestSubscriber<ActionState<LoadContactsCommand>> testSubscriber = new TestSubscriber<>();
-        messengerSyncDelegate.getContactsPipe().createObservable(new LoadContactsCommand())
-                .subscribe(testSubscriber);
+   @Test
+   public void testLoadContacts() {
+      TestSubscriber<ActionState<LoadContactsCommand>> testSubscriber = new TestSubscriber<>();
+      messengerSyncDelegate.getContactsPipe().createObservable(new LoadContactsCommand()).subscribe(testSubscriber);
 
-        verify(usersDelegate, times(1)).loadUsers(testUsers);
-        verify(usersDAO, times(1)).unfriendAll();
-        verify(usersDAO, times(1)).save(anyList());
-        assertActionSuccess(testSubscriber, action -> action.getResult() != null);
-    }
+      verify(usersDelegate, times(1)).loadUsers(testUsers);
+      verify(usersDAO, times(1)).unfriendAll();
+      verify(usersDAO, times(1)).save(anyList());
+      assertActionSuccess(testSubscriber, action -> action.getResult() != null);
+   }
 
-    @Test
-    public void testLoadConversations() {
-        TestSubscriber<ActionState<SyncConversationsCommand>> testSubscriber = new TestSubscriber<>();
-        messengerSyncDelegate.getConversationsPipe().createObservable(new SyncConversationsCommand())
-                .subscribe(testSubscriber);
+   @Test
+   public void testLoadConversations() {
+      TestSubscriber<ActionState<SyncConversationsCommand>> testSubscriber = new TestSubscriber<>();
+      messengerSyncDelegate.getConversationsPipe()
+            .createObservable(new SyncConversationsCommand())
+            .subscribe(testSubscriber);
 
-        verify(usersDelegate, times(1)).loadAndSaveUsers(anyList());
-        verify(conversationSyncHelper).process(anyList());
-        assertActionSuccess(testSubscriber, action -> action.getResult() != null);
-    }
+      verify(usersDelegate, times(1)).loadAndSaveUsers(anyList());
+      verify(conversationSyncHelper).process(anyList());
+      assertActionSuccess(testSubscriber, action -> action.getResult() != null);
+   }
 
-    @Test
-    public void testFullSync() {
-        TestSubscriber<Boolean> testSubscriber = new TestSubscriber<>();
-        messengerSyncDelegate.sync().subscribe(testSubscriber);
+   @Test
+   public void testFullSync() {
+      TestSubscriber<Boolean> testSubscriber = new TestSubscriber<>();
+      messengerSyncDelegate.sync().subscribe(testSubscriber);
 
-        testSubscriber.assertNoErrors();
-        testSubscriber.assertValue(true);
-    }
+      testSubscriber.assertNoErrors();
+      testSubscriber.assertValue(true);
+   }
 
 }

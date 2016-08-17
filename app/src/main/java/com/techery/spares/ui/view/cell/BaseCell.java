@@ -7,19 +7,19 @@ import de.greenrobot.event.EventBus;
 
 public interface BaseCell<T> {
 
-    void fillWithItem(T item);
+   void fillWithItem(T item);
 
-    void prepareForReuse();
+   void prepareForReuse();
 
-    void setEventBus(EventBus eventBus);
+   void setEventBus(EventBus eventBus);
 
-    void saveState(Bundle b);
+   void saveState(Bundle b);
 
-    void restoreState(Bundle bundle);
+   void restoreState(Bundle bundle);
 
-    void clearResources();
+   void clearResources();
 
-    interface CellBuilder<T> {
-        BaseCell<T> build(Context c, Class<T> item);
-    }
+   interface CellBuilder<T> {
+      BaseCell<T> build(Context c, Class<T> item);
+   }
 }

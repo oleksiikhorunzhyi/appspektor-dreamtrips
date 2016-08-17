@@ -6,9 +6,9 @@ import com.worldventures.dreamtrips.modules.feed.model.FeedEntity;
 
 public interface CommentableBundle extends Parcelable {
 
-    FeedEntity getFeedEntity();
+   FeedEntity getFeedEntity();
 
-    boolean shouldOpenKeyboard();
+   boolean shouldOpenKeyboard();
 
-    boolean shouldShowLikersPanel();
+   boolean shouldShowLikersPanel();
 }

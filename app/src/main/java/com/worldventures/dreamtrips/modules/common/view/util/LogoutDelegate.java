@@ -31,45 +31,45 @@ import rx.schedulers.Schedulers;
 
 public class LogoutDelegate {
 
-    @Inject @Named(JanetModule.JANET_API_LIB) Janet janet;
-    @Inject @ForApplication Context context;
-    @Inject @Global EventBus eventBus;
-    @Inject SnappyRepository snappyRepository;
-    @Inject SessionHolder<UserSession> appSessionHolder;
-    @Inject NotificationDelegate notificationDelegate;
-    @Inject BadgeUpdater badgeUpdater;
-    @Inject DTCookieManager cookieManager;
-    @Inject AuthInteractor authInteractor;
-    @Inject FlagsDelegate flagsDelegate;
-    @Inject MessengerConnector messengerConnector;
-    @Inject ClearMemoryStoragesInteractor clearMemoryStoragesInteractor;
+   @Inject @Named(JanetModule.JANET_API_LIB) Janet janet;
+   @Inject @ForApplication Context context;
+   @Inject @Global EventBus eventBus;
+   @Inject SnappyRepository snappyRepository;
+   @Inject SessionHolder<UserSession> appSessionHolder;
+   @Inject NotificationDelegate notificationDelegate;
+   @Inject BadgeUpdater badgeUpdater;
+   @Inject DTCookieManager cookieManager;
+   @Inject AuthInteractor authInteractor;
+   @Inject FlagsDelegate flagsDelegate;
+   @Inject MessengerConnector messengerConnector;
+   @Inject ClearMemoryStoragesInteractor clearMemoryStoragesInteractor;
 
-    public LogoutDelegate(Injector injector) {
-        injector.inject(this);
-    }
+   public LogoutDelegate(Injector injector) {
+      injector.inject(this);
+   }
 
-    public void logout() {
-        eventBus.post(new SessionHolder.Events.SessionDestroyed());
-        messengerConnector.disconnect();
-        flagsDelegate.clearCache();
-        authInteractor.unsubribeFromPushPipe()
-                .createObservableResult(new UnsubribeFromPushCommand())
-                .subscribe(action ->  deleteSession(), throwable ->  deleteSession());
-    }
+   public void logout() {
+      eventBus.post(new SessionHolder.Events.SessionDestroyed());
+      messengerConnector.disconnect();
+      flagsDelegate.clearCache();
+      authInteractor.unsubribeFromPushPipe()
+            .createObservableResult(new UnsubribeFromPushCommand())
+            .subscribe(action -> deleteSession(), throwable -> deleteSession());
+   }
 
-    private void deleteSession() {
-        janet.createPipe(LogoutHttpAction.class, Schedulers.io())
-                .createObservableResult(new LogoutHttpAction())
-                .subscribe(action -> clearUserDataAndFinish(), throwable -> clearUserDataAndFinish());
-    }
+   private void deleteSession() {
+      janet.createPipe(LogoutHttpAction.class, Schedulers.io())
+            .createObservableResult(new LogoutHttpAction())
+            .subscribe(action -> clearUserDataAndFinish(), throwable -> clearUserDataAndFinish());
+   }
 
-    private void clearUserDataAndFinish() {
-        clearMemoryStoragesInteractor.clearMemoryStorageActionPipe().send(new ClearMemoryStorageCommand());
-        cookieManager.clearCookies();
-        snappyRepository.clearAll();
-        appSessionHolder.destroy();
-        notificationDelegate.cancelAll();
-        badgeUpdater.updateBadge(0);
-        FlowManager.getDatabase(MessengerDatabase.NAME).reset(context);
-    }
+   private void clearUserDataAndFinish() {
+      clearMemoryStoragesInteractor.clearMemoryStorageActionPipe().send(new ClearMemoryStorageCommand());
+      cookieManager.clearCookies();
+      snappyRepository.clearAll();
+      appSessionHolder.destroy();
+      notificationDelegate.cancelAll();
+      badgeUpdater.updateBadge(0);
+      FlowManager.getDatabase(MessengerDatabase.NAME).reset(context);
+   }
 }

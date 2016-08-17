@@ -12,15 +12,15 @@ import io.techery.janet.Janet;
 @Module(library = true, complete = false)
 public class SessionProcessingModule {
 
-    @Provides
-    @Singleton
-    public QueryTripsFilterDataInteractor provideQueryTripsFilterDataInteractor(Janet janet) {
-        return new QueryTripsFilterDataInteractor(janet);
-    }
+   @Provides
+   @Singleton
+   public QueryTripsFilterDataInteractor provideQueryTripsFilterDataInteractor(Janet janet) {
+      return new QueryTripsFilterDataInteractor(janet);
+   }
 
-    @Singleton
-    @Provides
-    public AuthInteractor provideAuthInteractor(Janet janet) {
-        return new AuthInteractor(janet);
-    }
+   @Singleton
+   @Provides
+   public AuthInteractor provideAuthInteractor(Janet janet) {
+      return new AuthInteractor(janet);
+   }
 }

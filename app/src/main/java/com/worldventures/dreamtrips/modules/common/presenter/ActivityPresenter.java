@@ -21,79 +21,78 @@ import io.techery.janet.helper.ActionStateSubscriber;
 
 public class ActivityPresenter<VT extends ActivityPresenter.View> extends Presenter<VT> {
 
-    @Inject protected Activity activity;
-    @Inject protected LocaleSwitcher localeSwitcher;
-    @Inject protected LocaleHelper localeHelper;
-    @Inject protected LogoutDelegate logoutDelegate;
-    @Inject protected AuthInteractor authInteractor;
+   @Inject protected Activity activity;
+   @Inject protected LocaleSwitcher localeSwitcher;
+   @Inject protected LocaleHelper localeHelper;
+   @Inject protected LogoutDelegate logoutDelegate;
+   @Inject protected AuthInteractor authInteractor;
 
-    @State boolean isTermsShown;
+   @State boolean isTermsShown;
 
-    @Override
-    public void onInjected() {
-        super.onInjected();
-        setupUserLocale();
-    }
+   @Override
+   public void onInjected() {
+      super.onInjected();
+      setupUserLocale();
+   }
 
-    @Override
-    public void takeView(VT view) {
-        super.takeView(view);
-        checkTermsAndConditionFromHolder();
-        subscribeToUserUpdate();
-    }
+   @Override
+   public void takeView(VT view) {
+      super.takeView(view);
+      checkTermsAndConditionFromHolder();
+      subscribeToUserUpdate();
+   }
 
-    @Override
-    public void onResume() {
-        super.onResume();
-        //Some third-party libraries can change the locale.
-        setupUserLocale();
-    }
+   @Override
+   public void onResume() {
+      super.onResume();
+      //Some third-party libraries can change the locale.
+      setupUserLocale();
+   }
 
-    public void logout() {
-        logoutDelegate.logout();
-    }
+   public void logout() {
+      logoutDelegate.logout();
+   }
 
-    @Override
-    public void dropView() {
-        super.dropView();
-        activity = null;
-    }
+   @Override
+   public void dropView() {
+      super.dropView();
+      activity = null;
+   }
 
-    public void onConfigurationChanged(Configuration configuration) {
-        localeSwitcher.onConfigurationLocaleChanged(configuration.locale);
-    }
+   public void onConfigurationChanged(Configuration configuration) {
+      localeSwitcher.onConfigurationLocaleChanged(configuration.locale);
+   }
 
-    private void checkTermsAndConditionFromHolder() {
-        Optional<UserSession> userSession = appSessionHolder.get();
-        if (userSession.isPresent()) {
-            checkTermsAndConditions(userSession.get().getUser());
-        }
-    }
-
-    protected boolean canShowTermsDialog() {
-        return !activity.isFinishing() && !isTermsShown;
-    }
-
-    protected void setupUserLocale() {
-        localeSwitcher.applyLocale(localeHelper.getDefaultLocale());
+   private void checkTermsAndConditionFromHolder() {
+      Optional<UserSession> userSession = appSessionHolder.get();
+      if (userSession.isPresent()) {
+         checkTermsAndConditions(userSession.get().getUser());
       }
+   }
 
-    private void subscribeToUserUpdate() {
-        view.bindUntilDropView(authInteractor.updateUserPipe().observe()
-                .compose(new IoToMainComposer<>()))
-                .subscribe(new ActionStateSubscriber<UpdateUserCommand>()
-                        .onSuccess(updateUserCommand -> checkTermsAndConditions(updateUserCommand.getResult())));
-    }
+   protected boolean canShowTermsDialog() {
+      return !activity.isFinishing() && !isTermsShown;
+   }
 
-    private boolean checkTermsAndConditions(User user) {
-        if (user == null || user.isTermsAccepted() || !canShowTermsDialog()) return true;
-        isTermsShown = true;
-        view.showTermsDialog();
-        return false;
-    }
+   protected void setupUserLocale() {
+      localeSwitcher.applyLocale(localeHelper.getDefaultLocale());
+   }
 
-    public interface View extends RxView {
+   private void subscribeToUserUpdate() {
+      view.bindUntilDropView(authInteractor.updateUserPipe().observe().compose(new IoToMainComposer<>()))
+            .subscribe(new ActionStateSubscriber<UpdateUserCommand>().onSuccess(updateUserCommand -> checkTermsAndConditions(updateUserCommand
+                  .getResult())));
+   }
 
-        void showTermsDialog();
-    }
+   private boolean checkTermsAndConditions(User user) {
+      if (user == null || user.isTermsAccepted() || !canShowTermsDialog()) return true;
+      isTermsShown = true;
+      view.showTermsDialog();
+      return false;
+   }
+
+   public interface View extends RxView {
+
+      void showTermsDialog();
+   }
 }

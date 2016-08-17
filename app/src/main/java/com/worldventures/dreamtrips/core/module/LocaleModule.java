@@ -17,14 +17,14 @@ import dagger.Provides;
 
 public class LocaleModule {
 
-    @Provides
-    LocaleHelper provideLocaleHelper(SessionHolder<UserSession> appSessionHolder) {
-        return new LocaleHelper(appSessionHolder);
-    }
+   @Provides
+   LocaleHelper provideLocaleHelper(SessionHolder<UserSession> appSessionHolder) {
+      return new LocaleHelper(appSessionHolder);
+   }
 
-    @Provides
-    @Singleton
-    LocaleSwitcher provideLocaleSwitcher(Context context) {
-        return new LocaleSwitcher(context);
-    }
+   @Provides
+   @Singleton
+   LocaleSwitcher provideLocaleSwitcher(Context context) {
+      return new LocaleSwitcher(context);
+   }
 }

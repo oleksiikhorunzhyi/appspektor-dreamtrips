@@ -14,26 +14,25 @@ import butterknife.InjectView;
 @Layout(R.layout.adapter_item_post_text)
 public class PostCreationTextCell extends AbstractDelegateCell<PostDescription, PostCreationTextCell.Delegate> {
 
-    @InjectView(R.id.post)
-    TextView post;
+   @InjectView(R.id.post) TextView post;
 
-    public PostCreationTextCell(View view) {
-        super(view);
-    }
+   public PostCreationTextCell(View view) {
+      super(view);
+   }
 
-    @Override
-    protected void syncUIStateWithModel() {
-        post.setText(getModelObject().getDescription());
-        post.setOnClickListener(v -> cellDelegate.onCellClicked(getModelObject()));
-    }
+   @Override
+   protected void syncUIStateWithModel() {
+      post.setText(getModelObject().getDescription());
+      post.setOnClickListener(v -> cellDelegate.onCellClicked(getModelObject()));
+   }
 
-    @Override
-    public void clearResources() {
-        super.clearResources();
-        post.setOnFocusChangeListener(null);
-    }
+   @Override
+   public void clearResources() {
+      super.clearResources();
+      post.setOnFocusChangeListener(null);
+   }
 
-    public interface Delegate extends CellDelegate<PostDescription> {
+   public interface Delegate extends CellDelegate<PostDescription> {
 
-    }
+   }
 }

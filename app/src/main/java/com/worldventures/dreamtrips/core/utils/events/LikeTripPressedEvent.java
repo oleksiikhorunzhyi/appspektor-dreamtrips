@@ -4,17 +4,17 @@ import com.worldventures.dreamtrips.modules.trips.model.TripModel;
 
 public class LikeTripPressedEvent {
 
-    protected TripModel trip;
+   protected TripModel trip;
 
-    public LikeTripPressedEvent(TripModel trip) {
-        this.trip = trip;
-    }
+   public LikeTripPressedEvent(TripModel trip) {
+      this.trip = trip;
+   }
 
-    public TripModel getTrip() {
-        return trip;
-    }
+   public TripModel getTrip() {
+      return trip;
+   }
 
-    public void setTrip(TripModel trip) {
-        this.trip = trip;
-    }
+   public void setTrip(TripModel trip) {
+      this.trip = trip;
+   }
 }

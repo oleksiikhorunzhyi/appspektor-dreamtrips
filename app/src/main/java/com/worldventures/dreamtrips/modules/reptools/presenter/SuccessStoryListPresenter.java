@@ -21,114 +21,112 @@ import javax.inject.Inject;
 
 public class SuccessStoryListPresenter extends Presenter<SuccessStoryListPresenter.View> {
 
-    private boolean onlyFavorites = false;
-    private int lastSelectedPosition = -1;
+   private boolean onlyFavorites = false;
+   private int lastSelectedPosition = -1;
 
-    @Inject StoryLikedEventDelegate storyLikedEventDelegate;
+   @Inject StoryLikedEventDelegate storyLikedEventDelegate;
 
-    @Override
-    public void takeView(View view) {
-        super.takeView(view);
-        storyLikedEventDelegate.getObservable()
-                .compose(bindViewToMainComposer())
-                .subscribe(this::onSuccessStoryLiked);
-    }
+   @Override
+   public void takeView(View view) {
+      super.takeView(view);
+      storyLikedEventDelegate.getObservable().compose(bindViewToMainComposer()).subscribe(this::onSuccessStoryLiked);
+   }
 
-    @Override
-    public void onResume() {
-        if (view.getAdapter().getCount() == 0) reload();
-    }
+   @Override
+   public void onResume() {
+      if (view.getAdapter().getCount() == 0) reload();
+   }
 
-    public void reload() {
-        view.startLoading();
-        doRequest(new GetSuccessStoriesQuery(), items -> {
-            view.finishLoading();
-            //
-            view.getAdapter().clear();
-            view.getAdapter().addItems(performFiltering(items));
-            view.getAdapter().notifyDataSetChanged();
-        });
-    }
+   public void reload() {
+      view.startLoading();
+      doRequest(new GetSuccessStoriesQuery(), items -> {
+         view.finishLoading();
+         //
+         view.getAdapter().clear();
+         view.getAdapter().addItems(performFiltering(items));
+         view.getAdapter().notifyDataSetChanged();
+      });
+   }
 
-    @Override
-    public void handleError(SpiceException error) {
-        view.finishLoading();
-        super.handleError(error);
-    }
+   @Override
+   public void handleError(SpiceException error) {
+      view.finishLoading();
+      super.handleError(error);
+   }
 
-    public void onSuccessStoryCellClick(SuccessStory successStory, int position) {
-        handleListItemClick(successStory, position);
-        view.onStoryClicked();
-    }
+   public void onSuccessStoryCellClick(SuccessStory successStory, int position) {
+      handleListItemClick(successStory, position);
+      view.onStoryClicked();
+   }
 
-    private void onSuccessStoryLiked(SuccessStory successStory) {
-        List<SuccessStory> stories = view.getAdapter().getItems();
-        Queryable.from(stories).filter(story -> story.getUrl().equals(successStory.getUrl())).forEachR(story -> {
-            story.setLiked(successStory.isLiked());
-            view.getAdapter().notifyItemChanged(stories.indexOf(story));
-        });
-    }
+   private void onSuccessStoryLiked(SuccessStory successStory) {
+      List<SuccessStory> stories = view.getAdapter().getItems();
+      Queryable.from(stories).filter(story -> story.getUrl().equals(successStory.getUrl())).forEachR(story -> {
+         story.setLiked(successStory.isLiked());
+         view.getAdapter().notifyItemChanged(stories.indexOf(story));
+      });
+   }
 
-    public void openFirst(SuccessStory successStory) {
-        if (lastSelectedPosition == -1) {
-            handleListItemClick(successStory, 0);
-        }
-    }
+   public void openFirst(SuccessStory successStory) {
+      if (lastSelectedPosition == -1) {
+         handleListItemClick(successStory, 0);
+      }
+   }
 
-    public void reloadWithFilter(int filterId) {
-        switch (filterId) {
-            case R.id.action_show_all:
-                onlyFavorites = false;
-                break;
-            case R.id.action_show_favorites:
-                onlyFavorites = true;
-                break;
-        }
-        reload();
-    }
+   public void reloadWithFilter(int filterId) {
+      switch (filterId) {
+         case R.id.action_show_all:
+            onlyFavorites = false;
+            break;
+         case R.id.action_show_favorites:
+            onlyFavorites = true;
+            break;
+      }
+      reload();
+   }
 
-    public boolean isFilterFavorites() {
-        return onlyFavorites;
-    }
+   public boolean isFilterFavorites() {
+      return onlyFavorites;
+   }
 
-    private void handleListItemClick(SuccessStory successStory, int position) {
-        lastSelectedPosition = position;
-        Bundle bundle = new Bundle();
-        bundle.putParcelable(SuccessStoryDetailsFragment.EXTRA_STORY, successStory);
-        view.openStory(bundle);
-    }
+   private void handleListItemClick(SuccessStory successStory, int position) {
+      lastSelectedPosition = position;
+      Bundle bundle = new Bundle();
+      bundle.putParcelable(SuccessStoryDetailsFragment.EXTRA_STORY, successStory);
+      view.openStory(bundle);
+   }
 
-    private ArrayList<SuccessStory> performFiltering(ArrayList<SuccessStory> successStories) {
-        ArrayList<SuccessStory> result = new ArrayList<>();
-        if (isFilterFavorites()) {
-            for (SuccessStory successStory : successStories) {
-                if (successStory.isLiked()) {
-                    result.add(successStory);
-                }
+   private ArrayList<SuccessStory> performFiltering(ArrayList<SuccessStory> successStories) {
+      ArrayList<SuccessStory> result = new ArrayList<>();
+      if (isFilterFavorites()) {
+         for (SuccessStory successStory : successStories) {
+            if (successStory.isLiked()) {
+               result.add(successStory);
             }
-        } else {
-            result.addAll(successStories);
-        }
+         }
+      } else {
+         result.addAll(successStories);
+      }
 
-        Collections.sort(result, (lhs, rhs) -> lhs.getAuthor().compareTo(rhs.getAuthor()));
-        Collections.sort(result, (lhs, rhs) -> lhs.getCategory().compareTo(rhs.getCategory()));
+      Collections.sort(result, (lhs, rhs) -> lhs.getAuthor().compareTo(rhs.getAuthor()));
+      Collections.sort(result, (lhs, rhs) -> lhs.getCategory().compareTo(rhs.getCategory()));
 
-        return result;
-    }
+      return result;
+   }
 
-    public interface View extends Presenter.View {
+   public interface View extends Presenter.View {
 
-        FilterableArrayListAdapter getAdapter();
+      FilterableArrayListAdapter getAdapter();
 
-        void finishLoading();
+      void finishLoading();
 
-        void startLoading();
+      void startLoading();
 
-        void onStoryClicked();
+      void onStoryClicked();
 
-        void openStory(Bundle bundle);
+      void openStory(Bundle bundle);
 
-        FragmentManager getSupportFragmentManager();
-    }
+      FragmentManager getSupportFragmentManager();
+   }
 }
 

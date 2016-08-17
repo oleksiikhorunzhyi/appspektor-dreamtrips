@@ -19,46 +19,44 @@ import rx.schedulers.Schedulers;
 
 @CommandAction
 public abstract class UploaderyImageCommand<T> extends BaseUploadImageCommand<T> implements InjectableAction {
-    private final int commandId;
+   private final int commandId;
 
-    @ForApplication @Inject Context context;
-    @Inject Janet janet;
-    @Inject StaticPageProvider staticPageProvider;
+   @ForApplication @Inject Context context;
+   @Inject Janet janet;
+   @Inject StaticPageProvider staticPageProvider;
 
-    private final String filePath;
+   private final String filePath;
 
-    public UploaderyImageCommand(String filePath, int commandId) {
-        this.commandId = commandId;
-        this.filePath = filePath;
-    }
+   public UploaderyImageCommand(String filePath, int commandId) {
+      this.commandId = commandId;
+      this.filePath = filePath;
+   }
 
-    @Override
-    protected void run(CommandCallback<T> callback) {
-        getFileObservable(context, filePath)
-                .flatMap(this::upload)
-                .compose(nextAction())
-                .subscribe(callback::onSuccess, callback::onFail);
+   @Override
+   protected void run(CommandCallback<T> callback) {
+      getFileObservable(context, filePath).flatMap(this::upload)
+            .compose(nextAction())
+            .subscribe(callback::onSuccess, callback::onFail);
 
-    }
+   }
 
-    public int getCommandId() {
-        return commandId;
-    }
+   public int getCommandId() {
+      return commandId;
+   }
 
-    public String getFilePath() {
-        return filePath;
-    }
+   public String getFilePath() {
+      return filePath;
+   }
 
-    protected Observable<ActionState<UploadImageAction>> upload(File file) {
-        String uploaderyUrl = staticPageProvider.getUploaderyUrl();
-        try {
-            return janet
-                    .createPipe(UploadImageAction.class, Schedulers.io())
-                    .createObservable(new UploadImageAction(uploaderyUrl, file));
-        } catch (IOException e) {
-            return Observable.error(e);
-        }
-    }
+   protected Observable<ActionState<UploadImageAction>> upload(File file) {
+      String uploaderyUrl = staticPageProvider.getUploaderyUrl();
+      try {
+         return janet.createPipe(UploadImageAction.class, Schedulers.io())
+               .createObservable(new UploadImageAction(uploaderyUrl, file));
+      } catch (IOException e) {
+         return Observable.error(e);
+      }
+   }
 
-    protected abstract Observable.Transformer<ActionState<UploadImageAction>, T> nextAction();
+   protected abstract Observable.Transformer<ActionState<UploadImageAction>, T> nextAction();
 }

@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string-array name="friend_settings_dialog">
-        <item>@string/social_remove_friend_title</item>
-        <item>@string/social_friend_preference_title</item>
-        <item>@string/chat</item>
-    </string-array>
-    <string-array name="friend_settings_dialog_skip_chat">
-        <item>@string/social_remove_friend_title</item>
-        <item>@string/social_friend_preference_title</item>
-    </string-array>
+   <string-array name="friend_settings_dialog">
+      <item>@string/social_remove_friend_title</item>
+      <item>@string/social_friend_preference_title</item>
+      <item>@string/chat</item>
+   </string-array>
+   <string-array name="friend_settings_dialog_skip_chat">
+      <item>@string/social_remove_friend_title</item>
+      <item>@string/social_friend_preference_title</item>
+   </string-array>
 
 </resources>

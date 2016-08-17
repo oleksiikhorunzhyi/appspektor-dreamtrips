@@ -21,72 +21,72 @@ import rx.Observable;
 import rx.Subscriber;
 
 public class XmppContactLoader implements ContactsLoader {
-    private final Observable<Roster> rosterObservable;
+   private final Observable<Roster> rosterObservable;
 
-    public XmppContactLoader(XmppServerFacade facade) {
-        this.rosterObservable = facade.getConnectionObservable().take(1).map(Roster::getInstanceFor);
-    }
+   public XmppContactLoader(XmppServerFacade facade) {
+      this.rosterObservable = facade.getConnectionObservable().take(1).map(Roster::getInstanceFor);
+   }
 
-    @Override
-    public Observable<List<MessengerUser>> load() {
-        return rosterObservable.flatMap(RosterObservable::create);
-    }
+   @Override
+   public Observable<List<MessengerUser>> load() {
+      return rosterObservable.flatMap(RosterObservable::create);
+   }
 
-    private static class RosterObservable implements Observable.OnSubscribe<List<MessengerUser>> {
+   private static class RosterObservable implements Observable.OnSubscribe<List<MessengerUser>> {
 
-        private final Roster roster;
+      private final Roster roster;
 
-        private RosterObservable(Roster roster) {
-            this.roster = roster;
-        }
+      private RosterObservable(Roster roster) {
+         this.roster = roster;
+      }
 
-        public static Observable<List<MessengerUser>> create(Roster roster) {
-            return Observable.create(new RosterObservable(roster));
-        }
+      public static Observable<List<MessengerUser>> create(Roster roster) {
+         return Observable.create(new RosterObservable(roster));
+      }
 
-        @Override
-        public void call(Subscriber<? super List<MessengerUser>> subscriber) {
-            // TODO encapsulate roster and use proxy instead
-            try {
-                loadRosterIfNeed();
-            } catch (Exception exception) {
-                subscriber.onError(exception);
+      @Override
+      public void call(Subscriber<? super List<MessengerUser>> subscriber) {
+         // TODO encapsulate roster and use proxy instead
+         try {
+            loadRosterIfNeed();
+         } catch (Exception exception) {
+            subscriber.onError(exception);
+         }
+
+         if (subscriber.isUnsubscribed()) return;
+         subscriber.onNext(obtainUsersFromRoster());
+         subscriber.onCompleted();
+      }
+
+      private void loadRosterIfNeed() throws ConnectionException, InterruptedException {
+         if (roster.isLoaded()) return;
+         try {
+            roster.reloadAndWait();
+         } catch (SmackException.NotLoggedInException | SmackException.NotConnectedException e) {
+            throw new ConnectionException(e);
+         }
+      }
+
+      private List<MessengerUser> obtainUsersFromRoster() {
+         Collection<RosterEntry> entries = roster.getEntries();
+         ArrayList<MessengerUser> messengerUsers = new ArrayList<>(entries.size());
+
+         for (RosterEntry entry : entries) {
+            if (entry.getType() != RosterPacket.ItemType.both) {
+               continue;
             }
 
-            if (subscriber.isUnsubscribed()) return;
-            subscriber.onNext(obtainUsersFromRoster());
-            subscriber.onCompleted();
-        }
+            String userName = entry.getUser();
+            boolean online = roster.getPresence(userName).getType().equals(Presence.Type.available);
 
-        private void loadRosterIfNeed() throws ConnectionException, InterruptedException {
-            if (roster.isLoaded()) return;
-            try {
-                roster.reloadAndWait();
-            } catch (SmackException.NotLoggedInException | SmackException.NotConnectedException e) {
-                throw new ConnectionException(e);
-            }
-        }
+            MessengerUser messengerUser = new MessengerUser(JidCreatorHelper.obtainId(userName));
+            messengerUser.setOnline(online);
+            messengerUser.setType(UserType.FRIEND);
+            messengerUsers.add(messengerUser);
+         }
 
-        private List<MessengerUser> obtainUsersFromRoster() {
-            Collection<RosterEntry> entries = roster.getEntries();
-            ArrayList<MessengerUser> messengerUsers = new ArrayList<>(entries.size());
+         return messengerUsers;
+      }
 
-            for (RosterEntry entry : entries) {
-                if (entry.getType() != RosterPacket.ItemType.both) {
-                    continue;
-                }
-
-                String userName = entry.getUser();
-                boolean online = roster.getPresence(userName).getType().equals(Presence.Type.available);
-
-                MessengerUser messengerUser = new MessengerUser(JidCreatorHelper.obtainId(userName));
-                messengerUser.setOnline(online);
-                messengerUser.setType(UserType.FRIEND);
-                messengerUsers.add(messengerUser);
-            }
-
-            return messengerUsers;
-        }
-
-    }
+   }
 }

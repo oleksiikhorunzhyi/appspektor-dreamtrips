@@ -1,32 +1,32 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-             android:id="@+id/points_view"
-             android:layout_width="match_parent"
-             android:layout_height="wrap_content"
-             android:background="@android:color/white"
-    >
+      android:id="@+id/points_view"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:background="@android:color/white"
+      >
 
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:layout_gravity="top"
-        android:background="@drawable/divider_list"
-        />
+   <View
+         android:layout_width="match_parent"
+         android:layout_height="1dp"
+         android:layout_gravity="top"
+         android:background="@drawable/divider_list"
+         />
 
-    <ImageView
-        android:src="@drawable/ic_points_earn_badge"
-        style="@style/DtlOfferImageView"
-        />
+   <ImageView
+         android:src="@drawable/ic_points_earn_badge"
+         style="@style/DtlOfferImageView"
+         />
 
-    <TextView
-        android:id="@+id/pointsDescription"
-        style="@style/DreamMerchantTextAppearance"
-        android:text="@string/dtl_earn_points"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_vertical"
-        android:layout_marginLeft="@dimen/dtlOfferCoverImageWidth"
-        android:padding="@dimen/spacing_tiny"
-        android:maxLines="1"
-        />
+   <TextView
+         android:id="@+id/pointsDescription"
+         style="@style/DreamMerchantTextAppearance"
+         android:text="@string/dtl_earn_points"
+         android:layout_width="match_parent"
+         android:layout_height="wrap_content"
+         android:layout_gravity="center_vertical"
+         android:layout_marginLeft="@dimen/dtlOfferCoverImageWidth"
+         android:padding="@dimen/spacing_tiny"
+         android:maxLines="1"
+         />
 </FrameLayout>

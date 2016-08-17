@@ -17,62 +17,58 @@ import java.util.List;
 
 public class DeleteMessageExtension implements ExtensionElement {
 
-    public static final String NAMESPACE = "worldventures.com#user";
-    public static final String ELEMENT = "x";
+   public static final String NAMESPACE = "worldventures.com#user";
+   public static final String ELEMENT = "x";
 
-    private List<DeletedMessage> deletedMessageList;
+   private List<DeletedMessage> deletedMessageList;
 
-    public DeleteMessageExtension(List<DeletedMessage> deletedMessageList) {
-        this.deletedMessageList = deletedMessageList;
-    }
+   public DeleteMessageExtension(List<DeletedMessage> deletedMessageList) {
+      this.deletedMessageList = deletedMessageList;
+   }
 
-    public List<DeletedMessage> getDeletedMessageList() {
-        return deletedMessageList;
-    }
+   public List<DeletedMessage> getDeletedMessageList() {
+      return deletedMessageList;
+   }
 
-    @Override
-    public String getNamespace() {
-        return NAMESPACE;
-    }
+   @Override
+   public String getNamespace() {
+      return NAMESPACE;
+   }
 
-    @Override
-    public String getElementName() {
-        return ELEMENT;
-    }
+   @Override
+   public String getElementName() {
+      return ELEMENT;
+   }
 
-    @Override
-    public CharSequence toXML() {
-        // not needed now
-        XmlStringBuilder xml = new XmlStringBuilder(this);
-        return xml;
-    }
+   @Override
+   public CharSequence toXML() {
+      // not needed now
+      XmlStringBuilder xml = new XmlStringBuilder(this);
+      return xml;
+   }
 
-    public static class Provider extends ExtensionElementProvider<DeleteMessageExtension> {
+   public static class Provider extends ExtensionElementProvider<DeleteMessageExtension> {
 
-        @Override
-        public DeleteMessageExtension parse(XmlPullParser parser, int initialDepth) throws IOException, XmlPullParserException {
-            List<DeletedMessage> deletedMessages = new ArrayList<>();
+      @Override
+      public DeleteMessageExtension parse(XmlPullParser parser, int initialDepth) throws IOException, XmlPullParserException {
+         List<DeletedMessage> deletedMessages = new ArrayList<>();
 
-            boolean done = false;
-            while (!done) {
-                int eventType = parser.next();
-                String elementName = parser.getName();
+         boolean done = false;
+         while (!done) {
+            int eventType = parser.next();
+            String elementName = parser.getName();
 
-                if (eventType == XmlPullParser.START_TAG && TextUtils.equals(elementName, "deleted-message")) {
-                    String source = parser.getAttributeValue("", "by");
-                    String messageId = parser.getAttributeValue("", "client_msg_id");
-                    deletedMessages.add(ImmutableDeletedMessage.builder()
-                            .source(source)
-                            .messageId(messageId)
-                            .build());
-                } else if (eventType == XmlPullParser.END_TAG
-                        && elementName.equalsIgnoreCase(ELEMENT)) {
-                    done = true;
-                }
+            if (eventType == XmlPullParser.START_TAG && TextUtils.equals(elementName, "deleted-message")) {
+               String source = parser.getAttributeValue("", "by");
+               String messageId = parser.getAttributeValue("", "client_msg_id");
+               deletedMessages.add(ImmutableDeletedMessage.builder().source(source).messageId(messageId).build());
+            } else if (eventType == XmlPullParser.END_TAG && elementName.equalsIgnoreCase(ELEMENT)) {
+               done = true;
             }
+         }
 
-            return new DeleteMessageExtension(deletedMessages);
-        }
-    }
+         return new DeleteMessageExtension(deletedMessages);
+      }
+   }
 
 }

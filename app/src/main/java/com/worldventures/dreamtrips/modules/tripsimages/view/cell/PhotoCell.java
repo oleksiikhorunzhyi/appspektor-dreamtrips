@@ -25,42 +25,42 @@ import butterknife.Optional;
 @Layout(R.layout.adapter_item_photo)
 public class PhotoCell extends AbstractCell<IFullScreenObject> {
 
-    @InjectView(R.id.imageViewPhoto) SimpleDraweeView draweeViewPhoto;
-    @Optional @InjectView(R.id.user_photo) SmartAvatarView imageViewUser;
-    @Optional @InjectView(R.id.user_location) TextView userLocation;
-    @Optional @InjectView(R.id.user_name) TextView userName;
-    @Optional @InjectView(R.id.title) TextView title;
-    @Optional @InjectView(R.id.shot_location) TextView shotLocation;
+   @InjectView(R.id.imageViewPhoto) SimpleDraweeView draweeViewPhoto;
+   @Optional @InjectView(R.id.user_photo) SmartAvatarView imageViewUser;
+   @Optional @InjectView(R.id.user_location) TextView userLocation;
+   @Optional @InjectView(R.id.user_name) TextView userName;
+   @Optional @InjectView(R.id.title) TextView title;
+   @Optional @InjectView(R.id.shot_location) TextView shotLocation;
 
-    @Inject @ForActivity Provider<Injector> injectorProvider;
+   @Inject @ForActivity Provider<Injector> injectorProvider;
 
-    public PhotoCell(View view) {
-        super(view);
-    }
+   public PhotoCell(View view) {
+      super(view);
+   }
 
-    @Override
-    protected void syncUIStateWithModel() {
-        if (imageViewUser != null) {
-            User user = getModelObject().getUser();
-            this.userLocation.setText(user.getLocation());
-            this.shotLocation.setText(getModelObject().getFSLocation());
-            this.title.setText(getModelObject().getFSTitle());
-            this.userName.setText(user.getFullName());
-            imageViewUser.setup(getModelObject().getUser(), injectorProvider.get());
-        }
+   @Override
+   protected void syncUIStateWithModel() {
+      if (imageViewUser != null) {
+         User user = getModelObject().getUser();
+         this.userLocation.setText(user.getLocation());
+         this.shotLocation.setText(getModelObject().getFSLocation());
+         this.title.setText(getModelObject().getFSTitle());
+         this.userName.setText(user.getFullName());
+         imageViewUser.setup(getModelObject().getUser(), injectorProvider.get());
+      }
 
-        Image fsImage = getModelObject().getFSImage();
-        draweeViewPhoto.getHierarchy().setActualImageFocusPoint(new PointF(0.5F, 0F));
+      Image fsImage = getModelObject().getFSImage();
+      draweeViewPhoto.getHierarchy().setActualImageFocusPoint(new PointF(0.5F, 0F));
 
-        if (fsImage.isFromFile()) {
-            draweeViewPhoto.setImageURI(Uri.parse(fsImage.getUrl()));
-        } else {
-            draweeViewPhoto.setImageURI(Uri.parse(fsImage.getThumbUrl(itemView.getResources())));
-        }
-    }
+      if (fsImage.isFromFile()) {
+         draweeViewPhoto.setImageURI(Uri.parse(fsImage.getUrl()));
+      } else {
+         draweeViewPhoto.setImageURI(Uri.parse(fsImage.getThumbUrl(itemView.getResources())));
+      }
+   }
 
-    @Override
-    public void prepareForReuse() {
-        this.draweeViewPhoto.setImageURI(null);
-    }
+   @Override
+   public void prepareForReuse() {
+      this.draweeViewPhoto.setImageURI(null);
+   }
 }

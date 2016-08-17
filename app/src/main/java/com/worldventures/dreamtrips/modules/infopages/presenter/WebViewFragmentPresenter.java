@@ -7,80 +7,80 @@ import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 
 public class WebViewFragmentPresenter<T extends WebViewFragmentPresenter.View> extends Presenter<T> {
 
-    private final String url;
-    private boolean inErrorState;
+   private final String url;
+   private boolean inErrorState;
 
-    public WebViewFragmentPresenter(String url) {
-        this.url = url;
-    }
+   public WebViewFragmentPresenter(String url) {
+      this.url = url;
+   }
 
-    @Override
-    public void takeView(T view) {
-        super.takeView(view);
-        load();
-    }
+   @Override
+   public void takeView(T view) {
+      super.takeView(view);
+      load();
+   }
 
-    @Override
-    public void onResume() {
-        super.onResume();
-        if (inErrorState) load();
-    }
+   @Override
+   public void onResume() {
+      super.onResume();
+      if (inErrorState) load();
+   }
 
-    protected void load() {
-        view.load(url);
-    }
+   protected void load() {
+      view.load(url);
+   }
 
-    protected void reload() {
-        view.reload(url);
-    }
+   protected void reload() {
+      view.reload(url);
+   }
 
-    public void onReload() {
-        reload();
-    }
+   public void onReload() {
+      reload();
+   }
 
-    public void setInErrorState(boolean inErrorState) {
-        this.inErrorState = inErrorState;
-    }
+   public void setInErrorState(boolean inErrorState) {
+      this.inErrorState = inErrorState;
+   }
 
-    public String getAuthToken() {
-        return "Token token=" + appSessionHolder.get().get().getApiToken();
-    }
+   public String getAuthToken() {
+      return "Token token=" + appSessionHolder.get().get().getApiToken();
+   }
 
-    public void track(Route route) {
-        switch (route) {
-            case TERMS_OF_SERVICE:
-                TrackingHelper.service(getAccountUserId());
-                break;
-            case FAQ:
-                TrackingHelper.actionFaq();
-                TrackingHelper.faq(getAccountUserId());
-                break;
-            case COOKIE_POLICY:
-                TrackingHelper.cookie(getAccountUserId());
-                break;
-            case PRIVACY_POLICY:
-                TrackingHelper.privacy(getAccountUserId());
-                break;
-            case OTA:
-                TrackingHelper.ota(getAccountUserId());
-                break;
-            case ENROLL_MEMBER:
-                TrackingHelper.enrollMember(getAccountUserId());
-                break;
-            case ENROLL_MERCHANT:
-                TrackingHelper.enrollMerchant(getAccountUserId());
-                break;
-        }
-    }
+   public void track(Route route) {
+      switch (route) {
+         case TERMS_OF_SERVICE:
+            TrackingHelper.service(getAccountUserId());
+            break;
+         case FAQ:
+            TrackingHelper.actionFaq();
+            TrackingHelper.faq(getAccountUserId());
+            break;
+         case COOKIE_POLICY:
+            TrackingHelper.cookie(getAccountUserId());
+            break;
+         case PRIVACY_POLICY:
+            TrackingHelper.privacy(getAccountUserId());
+            break;
+         case OTA:
+            TrackingHelper.ota(getAccountUserId());
+            break;
+         case ENROLL_MEMBER:
+            TrackingHelper.enrollMember(getAccountUserId());
+            break;
+         case ENROLL_MERCHANT:
+            TrackingHelper.enrollMerchant(getAccountUserId());
+            break;
+      }
+   }
 
-    public interface View extends RxView {
+   public interface View extends RxView {
 
-        void load(String localizedUrl);
+      void load(String localizedUrl);
 
-        void reload(String localizedUrl);
+      void reload(String localizedUrl);
 
-        void setRefreshing(boolean refreshing);
+      void setRefreshing(boolean refreshing);
 
-        void showError(int code);
-    }
+      void showError(int code);
+   }
 }

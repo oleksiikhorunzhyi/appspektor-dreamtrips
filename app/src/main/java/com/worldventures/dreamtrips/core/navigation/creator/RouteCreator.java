@@ -4,7 +4,7 @@ import com.worldventures.dreamtrips.core.navigation.Route;
 
 public interface RouteCreator<T> {
 
-    Route createRoute(T arg);
+   Route createRoute(T arg);
 
 }
 

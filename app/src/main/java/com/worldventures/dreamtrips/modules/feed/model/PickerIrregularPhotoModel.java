@@ -10,44 +10,40 @@ import java.lang.annotation.RetentionPolicy;
 
 public class PickerIrregularPhotoModel {
 
-    public static final int CAMERA = 1;
-    public static final int FACEBOOK = 2;
+   public static final int CAMERA = 1;
+   public static final int FACEBOOK = 2;
 
-    private int iconRes;
-    private int titleRes;
-    private int colorRes;
+   private int iconRes;
+   private int titleRes;
+   private int colorRes;
 
-    private int attachType;
+   private int attachType;
 
-    public PickerIrregularPhotoModel(@AttachType int attachType,
-                                     @DrawableRes int iconRes,
-                                     @StringRes int titleRes,
-                                     @ColorRes int colorRes) {
-        this.attachType = attachType;
-        this.iconRes = iconRes;
-        this.titleRes = titleRes;
-        this.colorRes = colorRes;
-    }
+   public PickerIrregularPhotoModel(@AttachType int attachType, @DrawableRes int iconRes, @StringRes int titleRes, @ColorRes int colorRes) {
+      this.attachType = attachType;
+      this.iconRes = iconRes;
+      this.titleRes = titleRes;
+      this.colorRes = colorRes;
+   }
 
-    public int getIconRes() {
-        return iconRes;
-    }
+   public int getIconRes() {
+      return iconRes;
+   }
 
-    public int getTitleRes() {
-        return titleRes;
-    }
+   public int getTitleRes() {
+      return titleRes;
+   }
 
-    public int getColorRes() {
-        return colorRes;
-    }
+   public int getColorRes() {
+      return colorRes;
+   }
 
-    @AttachType
-    public int getType() {
-        return attachType;
-    }
+   @AttachType
+   public int getType() {
+      return attachType;
+   }
 
-    @IntDef({CAMERA, FACEBOOK})
-    @Retention(RetentionPolicy.SOURCE)
-    @interface AttachType {
-    }
+   @IntDef({CAMERA, FACEBOOK})
+   @Retention(RetentionPolicy.SOURCE)
+   @interface AttachType {}
 }

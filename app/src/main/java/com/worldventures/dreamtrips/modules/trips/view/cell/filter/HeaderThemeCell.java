@@ -16,38 +16,38 @@ import butterknife.OnClick;
 @Layout(R.layout.adapter_item_activity_header)
 public class HeaderThemeCell extends AbstractDelegateCell<ThemeHeaderModel, HeaderThemeCell.Delegate> {
 
-    @InjectView(R.id.checkBoxSelectAllTheme) CheckBox checkBoxSelectAll;
+   @InjectView(R.id.checkBoxSelectAllTheme) CheckBox checkBoxSelectAll;
 
-    public HeaderThemeCell(View view) {
-        super(view);
-    }
+   public HeaderThemeCell(View view) {
+      super(view);
+   }
 
-    @Override
-    protected void syncUIStateWithModel() {
-        checkBoxSelectAll.setChecked(getModelObject().isChecked());
-    }
+   @Override
+   protected void syncUIStateWithModel() {
+      checkBoxSelectAll.setChecked(getModelObject().isChecked());
+   }
 
-    @OnClick(R.id.checkBoxSelectAllTheme)
-    void checkBoxClicked() {
-        getModelObject().setChecked(checkBoxSelectAll.isChecked());
-        cellDelegate.onCheckBoxAllThemePressedEvent(checkBoxSelectAll.isChecked());
-    }
+   @OnClick(R.id.checkBoxSelectAllTheme)
+   void checkBoxClicked() {
+      getModelObject().setChecked(checkBoxSelectAll.isChecked());
+      cellDelegate.onCheckBoxAllThemePressedEvent(checkBoxSelectAll.isChecked());
+   }
 
-    @OnClick(R.id.textViewSelectAllTheme)
-    void checkBoxTextViewClicked() {
-        checkBoxSelectAll.setChecked(!checkBoxSelectAll.isChecked());
-        getModelObject().setChecked(checkBoxSelectAll.isChecked());
-        cellDelegate.onCheckBoxAllThemePressedEvent(checkBoxSelectAll.isChecked());
-    }
+   @OnClick(R.id.textViewSelectAllTheme)
+   void checkBoxTextViewClicked() {
+      checkBoxSelectAll.setChecked(!checkBoxSelectAll.isChecked());
+      getModelObject().setChecked(checkBoxSelectAll.isChecked());
+      cellDelegate.onCheckBoxAllThemePressedEvent(checkBoxSelectAll.isChecked());
+   }
 
-    @OnClick(R.id.listHeader)
-    void toggleVisibility() {
-        getEventBus().post(new ToggleThemeVisibilityEvent());
-    }
+   @OnClick(R.id.listHeader)
+   void toggleVisibility() {
+      getEventBus().post(new ToggleThemeVisibilityEvent());
+   }
 
-    public interface Delegate extends CellDelegate<ThemeHeaderModel> {
+   public interface Delegate extends CellDelegate<ThemeHeaderModel> {
 
-        void onCheckBoxAllThemePressedEvent(boolean isChecked);
-    }
+      void onCheckBoxAllThemePressedEvent(boolean isChecked);
+   }
 }
 

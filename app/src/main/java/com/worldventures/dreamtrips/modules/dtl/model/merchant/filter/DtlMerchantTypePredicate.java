@@ -9,18 +9,18 @@ import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchantType;
  */
 public class DtlMerchantTypePredicate implements Predicate<DtlMerchant> {
 
-    private final DtlMerchantType merchantType;
+   private final DtlMerchantType merchantType;
 
-    public DtlMerchantTypePredicate(DtlMerchantType merchantType) {
-        this.merchantType = merchantType;
-    }
+   public DtlMerchantTypePredicate(DtlMerchantType merchantType) {
+      this.merchantType = merchantType;
+   }
 
-    public DtlMerchantType getMerchantType() {
-        return merchantType;
-    }
+   public DtlMerchantType getMerchantType() {
+      return merchantType;
+   }
 
-    @Override
-    public boolean apply(DtlMerchant dtlMerchant) {
-        return merchantType == null || dtlMerchant.getMerchantType() == merchantType;
-    }
+   @Override
+   public boolean apply(DtlMerchant dtlMerchant) {
+      return merchantType == null || dtlMerchant.getMerchantType() == merchantType;
+   }
 }

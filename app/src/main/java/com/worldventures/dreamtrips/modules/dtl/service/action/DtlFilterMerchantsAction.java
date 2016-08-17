@@ -23,61 +23,54 @@ import rx.Observable;
 @CommandAction
 public class DtlFilterMerchantsAction extends Command<List<DtlMerchant>> {
 
-    private final ReadActionPipe<DtlMerchantsAction> merchantsActionPipe;
-    private final ActionPipe<DtlLocationCommand> locationActionPipe;
-    private final LocationDelegate locationDelegate;
-    private final DtlFilterData filterData;
+   private final ReadActionPipe<DtlMerchantsAction> merchantsActionPipe;
+   private final ActionPipe<DtlLocationCommand> locationActionPipe;
+   private final LocationDelegate locationDelegate;
+   private final DtlFilterData filterData;
 
 
-    public DtlFilterMerchantsAction(DtlFilterData filterData, ReadActionPipe<DtlMerchantsAction> merchantsActionPipe,
-                                    ActionPipe<DtlLocationCommand> locationActionPipe, LocationDelegate locationDelegate) {
-        this.merchantsActionPipe = merchantsActionPipe;
-        this.locationActionPipe = locationActionPipe;
-        this.locationDelegate = locationDelegate;
-        this.filterData = filterData;
-    }
+   public DtlFilterMerchantsAction(DtlFilterData filterData, ReadActionPipe<DtlMerchantsAction> merchantsActionPipe, ActionPipe<DtlLocationCommand> locationActionPipe, LocationDelegate locationDelegate) {
+      this.merchantsActionPipe = merchantsActionPipe;
+      this.locationActionPipe = locationActionPipe;
+      this.locationDelegate = locationDelegate;
+      this.filterData = filterData;
+   }
 
-    @Override
-    protected void run(CommandCallback<List<DtlMerchant>> callback) throws Throwable {
-        getSearchLocation()
-                .flatMap(latLng ->
-                        merchantsActionPipe.observeWithReplay()
-                                .first()
-                                .compose(new ActionStateToActionTransformer<>())
-                                .map(DtlMerchantsAction::getResult)
-                                .map(merchants -> {
-                                    Queryable.from(merchants).forEachR(DtlMerchant::sortPerks);
-                                    DtlMerchantsPredicate predicate = DtlMerchantsPredicate.fromFilterData(filterData);
-                                    merchants = Queryable.from(merchants)
-                                            .map(element -> patchMerchantDistance(element, latLng, filterData.getDistanceType()))
-                                            .filter(predicate)
-                                            .sort(DtlMerchant.DISTANCE_COMPARATOR::compare)
-                                            .toList();
-                                    return merchants;
-                                }))
-                .subscribe(callback::onSuccess, callback::onFail);
-    }
+   @Override
+   protected void run(CommandCallback<List<DtlMerchant>> callback) throws Throwable {
+      getSearchLocation().flatMap(latLng -> merchantsActionPipe.observeWithReplay()
+            .first()
+            .compose(new ActionStateToActionTransformer<>())
+            .map(DtlMerchantsAction::getResult)
+            .map(merchants -> {
+               Queryable.from(merchants).forEachR(DtlMerchant::sortPerks);
+               DtlMerchantsPredicate predicate = DtlMerchantsPredicate.fromFilterData(filterData);
+               merchants = Queryable.from(merchants)
+                     .map(element -> patchMerchantDistance(element, latLng, filterData.getDistanceType()))
+                     .filter(predicate)
+                     .sort(DtlMerchant.DISTANCE_COMPARATOR::compare)
+                     .toList();
+               return merchants;
+            })).subscribe(callback::onSuccess, callback::onFail);
+   }
 
-    private Observable<LatLng> getSearchLocation() {
-        return locationActionPipe.createObservableResult(DtlLocationCommand.last())
-                .filter(DtlLocationCommand::isResultDefined)
-                .map(DtlLocationCommand::getResult)
-                .distinct(DtlLocation::getCoordinates)
-                .flatMap(location -> locationDelegate.getLastKnownLocationOrEmpty()
-                        .onErrorResumeNext(Observable.empty())
-                        .switchIfEmpty(locationDelegate.requestLocationUpdate()
-                                .take(1)
-                                .timeout(1, TimeUnit.SECONDS)
-                                .onErrorReturn(throwable -> location.getCoordinates().asAndroidLocation()))
-                        .map(last -> DtlLocationHelper.selectAcceptableLocation(last,
-                                location)));
-    }
+   private Observable<LatLng> getSearchLocation() {
+      return locationActionPipe.createObservableResult(DtlLocationCommand.last())
+            .filter(DtlLocationCommand::isResultDefined)
+            .map(DtlLocationCommand::getResult)
+            .distinct(DtlLocation::getCoordinates)
+            .flatMap(location -> locationDelegate.getLastKnownLocationOrEmpty()
+                  .onErrorResumeNext(Observable.empty())
+                  .switchIfEmpty(locationDelegate.requestLocationUpdate()
+                        .take(1)
+                        .timeout(1, TimeUnit.SECONDS)
+                        .onErrorReturn(throwable -> location.getCoordinates().asAndroidLocation()))
+                  .map(last -> DtlLocationHelper.selectAcceptableLocation(last, location)));
+   }
 
-    private static DtlMerchant patchMerchantDistance(DtlMerchant merchant, LatLng currentLatLng,
-                                                     DistanceType distanceType) {
-        merchant.setDistanceType(distanceType);
-        merchant.setDistance(DtlLocationHelper.calculateDistance(
-                currentLatLng, merchant.getCoordinates().asLatLng()));
-        return merchant;
-    }
+   private static DtlMerchant patchMerchantDistance(DtlMerchant merchant, LatLng currentLatLng, DistanceType distanceType) {
+      merchant.setDistanceType(distanceType);
+      merchant.setDistance(DtlLocationHelper.calculateDistance(currentLatLng, merchant.getCoordinates().asLatLng()));
+      return merchant;
+   }
 }

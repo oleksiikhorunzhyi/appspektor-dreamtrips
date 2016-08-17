@@ -20,45 +20,44 @@ import butterknife.OnClick;
 @Layout(R.layout.adapter_item_filter_checkbox)
 public class ThemeCell extends AbstractDelegateCell<ActivityModel, ThemeCell.Delegate> {
 
-    @InjectView(R.id.cell) LinearLayout cell;
-    @InjectView(R.id.textViewAttributeCaption) TextView textViewName;
-    @InjectView(R.id.checkBox) CheckBox checkBox;
+   @InjectView(R.id.cell) LinearLayout cell;
+   @InjectView(R.id.textViewAttributeCaption) TextView textViewName;
+   @InjectView(R.id.checkBox) CheckBox checkBox;
 
-    @Inject Context context;
+   @Inject Context context;
 
-    public ThemeCell(View view) {
-        super(view);
-    }
+   public ThemeCell(View view) {
+      super(view);
+   }
 
-    @Override
-    protected void syncUIStateWithModel() {
-        textViewName.setText(getModelObject().getName());
-        textViewName.setTextColor(getModelObject().isChecked() ?
-                context.getResources().getColor(R.color.black) :
-                context.getResources().getColor(R.color.grey));
-        checkBox.setChecked(getModelObject().isChecked());
-    }
+   @Override
+   protected void syncUIStateWithModel() {
+      textViewName.setText(getModelObject().getName());
+      textViewName.setTextColor(getModelObject().isChecked() ? context.getResources()
+            .getColor(R.color.black) : context.getResources().getColor(R.color.grey));
+      checkBox.setChecked(getModelObject().isChecked());
+   }
 
-    @OnClick(R.id.checkBox)
-    void checkBoxClick() {
-        getModelObject().setChecked(checkBox.isChecked());
-        cellDelegate.onThemeSetChangedEvent();
-    }
+   @OnClick(R.id.checkBox)
+   void checkBoxClick() {
+      getModelObject().setChecked(checkBox.isChecked());
+      cellDelegate.onThemeSetChangedEvent();
+   }
 
-    @OnClick(R.id.textViewAttributeCaption)
-    void textViewRegionClick() {
-        checkBox.setChecked(!checkBox.isChecked());
-        getModelObject().setChecked(checkBox.isChecked());
-        cellDelegate.onThemeSetChangedEvent();
-    }
+   @OnClick(R.id.textViewAttributeCaption)
+   void textViewRegionClick() {
+      checkBox.setChecked(!checkBox.isChecked());
+      getModelObject().setChecked(checkBox.isChecked());
+      cellDelegate.onThemeSetChangedEvent();
+   }
 
-    @Override
-    public void prepareForReuse() {
-        textViewName.setText("");
-    }
+   @Override
+   public void prepareForReuse() {
+      textViewName.setText("");
+   }
 
-    public interface Delegate extends CellDelegate<ActivityModel> {
+   public interface Delegate extends CellDelegate<ActivityModel> {
 
-        void onThemeSetChangedEvent();
-    }
+      void onThemeSetChangedEvent();
+   }
 }

@@ -2,15 +2,15 @@ package com.worldventures.dreamtrips.modules.player.playback;
 
 public interface DtPlayer extends ReadOnlyPlayer {
 
-    void prepare();
+   void prepare();
 
-    void start();
+   void start();
 
-    void pause();
+   void pause();
 
-    void stop();
+   void stop();
 
-    void release();
+   void release();
 
-    void seekTo(int position);
+   void seekTo(int position);
 }

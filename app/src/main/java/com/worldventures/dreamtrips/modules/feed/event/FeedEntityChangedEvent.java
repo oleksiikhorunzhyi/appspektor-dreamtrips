@@ -4,13 +4,13 @@ import com.worldventures.dreamtrips.modules.feed.model.FeedEntity;
 
 public class FeedEntityChangedEvent {
 
-    FeedEntity entity;
+   FeedEntity entity;
 
-    public FeedEntityChangedEvent(FeedEntity entity) {
-        this.entity = entity;
-    }
+   public FeedEntityChangedEvent(FeedEntity entity) {
+      this.entity = entity;
+   }
 
-    public FeedEntity getFeedEntity() {
-        return entity;
-    }
+   public FeedEntity getFeedEntity() {
+      return entity;
+   }
 }

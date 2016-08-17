@@ -5,20 +5,20 @@ import com.worldventures.dreamtrips.core.api.request.Command;
 import com.worldventures.dreamtrips.modules.common.model.FlagData;
 
 public class FlagItemCommand extends Command<Void> {
-    private FlagData data;
+   private FlagData data;
 
-    public FlagItemCommand(FlagData data) {
-        super(Void.class);
-        this.data = data;
-    }
+   public FlagItemCommand(FlagData data) {
+      super(Void.class);
+      this.data = data;
+   }
 
-    @Override
-    public Void loadDataFromNetwork() throws Exception {
-        return getService().flagItem(data.uid, data.flagReasonId, data.reason);
-    }
+   @Override
+   public Void loadDataFromNetwork() throws Exception {
+      return getService().flagItem(data.uid, data.flagReasonId, data.reason);
+   }
 
-    @Override
-    public int getErrorMessage() {
-        return R.string.error_fail_to_flag_item;
-    }
+   @Override
+   public int getErrorMessage() {
+      return R.string.error_fail_to_flag_item;
+   }
 }

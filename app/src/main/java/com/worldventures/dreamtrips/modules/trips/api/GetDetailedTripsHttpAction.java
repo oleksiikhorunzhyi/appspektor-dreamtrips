@@ -12,16 +12,16 @@ import io.techery.janet.http.annotations.Response;
 @HttpAction(value = "/api/trips/details", type = HttpAction.Type.SIMPLE, method = HttpAction.Method.GET)
 public class GetDetailedTripsHttpAction extends AuthorizedHttpAction {
 
-    @Query("trip_uids") String ids;
+   @Query("trip_uids") String ids;
 
-    @Response List<TripModel> tripList;
+   @Response List<TripModel> tripList;
 
-    public GetDetailedTripsHttpAction(List<String> tripUids) {
-        ids = android.text.TextUtils.join(",", tripUids);
-    }
+   public GetDetailedTripsHttpAction(List<String> tripUids) {
+      ids = android.text.TextUtils.join(",", tripUids);
+   }
 
-    public List<TripModel> getTripList() {
-        return tripList;
-    }
+   public List<TripModel> getTripList() {
+      return tripList;
+   }
 
 }

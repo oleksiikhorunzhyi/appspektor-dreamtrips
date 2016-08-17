@@ -1,96 +1,104 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    android:id="@+id/info"
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical">
+<LinearLayout android:id="@+id/info"
+      xmlns:android="http://schemas.android.com/apk/res/android"
+      xmlns:app="http://schemas.android.com/apk/res-auto"
+      android:layout_width="match_parent"
+      android:layout_height="match_parent"
+      android:orientation="vertical"
+      >
 
-    <LinearLayout
-        android:id="@+id/wrapper_date_of_birth"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center_vertical"
-        android:orientation="horizontal">
+   <LinearLayout
+         android:id="@+id/wrapper_date_of_birth"
+         android:layout_width="match_parent"
+         android:layout_height="wrap_content"
+         android:gravity="center_vertical"
+         android:orientation="horizontal"
+         >
 
-        <ImageView
+      <ImageView
             android:layout_width="@dimen/size_small"
             android:layout_height="@dimen/size_small"
             android:layout_marginLeft="@dimen/activity_vertical_margin"
             android:layout_marginStart="@dimen/activity_vertical_margin"
             android:layout_marginTop="3dp"
-            android:src="@drawable/ic_profile_birthday"/>
+            android:src="@drawable/ic_profile_birthday"
+            />
 
-        <LinearLayout
+      <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginLeft="@dimen/spacing_large"
             android:layout_marginRight="@dimen/spacing_normal"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            >
 
-            <com.worldventures.dreamtrips.modules.common.view.custom.DTEditText
-                android:id="@+id/et_date_of_birth"
-                style="@style/profile_fragment_edit_text"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:cursorVisible="false"
-                android:focusable="false"
-                android:hint="@string/profile_birth_hint"
-                android:inputType="none"
-                android:textIsSelectable="true"
-                app:met_baseColor="@android:color/black"
-                app:met_floatingLabel="normal"
-                app:met_hideUnderline="true"
-                app:met_primaryColor="@android:color/transparent"/>
+         <com.worldventures.dreamtrips.modules.common.view.custom.DTEditText
+               android:id="@+id/et_date_of_birth"
+               style="@style/profile_fragment_edit_text"
+               android:layout_width="wrap_content"
+               android:layout_height="wrap_content"
+               android:cursorVisible="false"
+               android:focusable="false"
+               android:hint="@string/profile_birth_hint"
+               android:inputType="none"
+               android:textIsSelectable="true"
+               app:met_baseColor="@android:color/black"
+               app:met_floatingLabel="normal"
+               app:met_hideUnderline="true"
+               app:met_primaryColor="@android:color/transparent"
+               />
 
-        </LinearLayout>
+      </LinearLayout>
 
 
-    </LinearLayout>
+   </LinearLayout>
 
-    <LinearLayout
-        android:id="@+id/wrapper_user_id"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center_vertical"
-        android:orientation="horizontal">
+   <LinearLayout
+         android:id="@+id/wrapper_user_id"
+         android:layout_width="match_parent"
+         android:layout_height="wrap_content"
+         android:gravity="center_vertical"
+         android:orientation="horizontal"
+         >
 
-        <ImageView
+      <ImageView
             android:layout_width="@dimen/size_small"
             android:layout_height="@dimen/size_small"
             android:layout_marginLeft="@dimen/activity_vertical_margin"
             android:layout_marginStart="@dimen/activity_vertical_margin"
             android:layout_marginTop="3dp"
-            android:src="@drawable/ic_profile_user_id"/>
+            android:src="@drawable/ic_profile_user_id"
+            />
 
-        <LinearLayout
+      <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginEnd="@dimen/spacing_normal"
             android:layout_marginLeft="@dimen/spacing_large"
             android:layout_marginRight="@dimen/spacing_normal"
             android:layout_marginStart="@dimen/spacing_large"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            >
 
-            <com.worldventures.dreamtrips.modules.common.view.custom.DTEditText
-                android:id="@+id/et_user_id"
-                style="@style/profile_fragment_edit_text"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:cursorVisible="false"
-                android:minWidth="300dp"
-                android:focusable="false"
-                android:hint="@string/profile_user_id_hint"
-                app:met_baseColor="@android:color/black"
-                app:met_floatingLabel="normal"
-                app:met_hideUnderline="true"
-                app:met_primaryColor="@android:color/transparent"/>
+         <com.worldventures.dreamtrips.modules.common.view.custom.DTEditText
+               android:id="@+id/et_user_id"
+               style="@style/profile_fragment_edit_text"
+               android:layout_width="wrap_content"
+               android:layout_height="wrap_content"
+               android:cursorVisible="false"
+               android:minWidth="300dp"
+               android:focusable="false"
+               android:hint="@string/profile_user_id_hint"
+               app:met_baseColor="@android:color/black"
+               app:met_floatingLabel="normal"
+               app:met_hideUnderline="true"
+               app:met_primaryColor="@android:color/transparent"
+               />
 
-        </LinearLayout>
+      </LinearLayout>
 
 
-    </LinearLayout>
+   </LinearLayout>
 
 
 </LinearLayout>

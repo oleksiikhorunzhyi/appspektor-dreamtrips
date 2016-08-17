@@ -6,17 +6,15 @@ import com.worldventures.dreamtrips.core.utils.tracksystem.Attribute;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchant;
 
 @AnalyticsEvent(action = "local:Restaurant-Listings:Merchant View:Congratulations:Rating",
-        trackers = AdobeTracker.TRACKER_KEY)
+                trackers = AdobeTracker.TRACKER_KEY)
 public class TransactionRatingEvent extends MerchantAnalyticsAction {
 
-    @Attribute("rateexperience")
-    final String attribute = "1";
+   @Attribute("rateexperience") final String attribute = "1";
 
-    @Attribute("ratedexperience")
-    final String rating;
+   @Attribute("ratedexperience") final String rating;
 
-    public TransactionRatingEvent(DtlMerchant dtlMerchant, int rating) {
-        super(dtlMerchant);
-        this.rating = String.valueOf(rating);
-    }
+   public TransactionRatingEvent(DtlMerchant dtlMerchant, int rating) {
+      super(dtlMerchant);
+      this.rating = String.valueOf(rating);
+   }
 }

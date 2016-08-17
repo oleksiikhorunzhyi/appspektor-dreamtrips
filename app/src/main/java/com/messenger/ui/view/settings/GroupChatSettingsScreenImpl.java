@@ -29,141 +29,132 @@ import butterknife.OnClick;
 import rx.Observable;
 import rx.functions.Action0;
 
-public class GroupChatSettingsScreenImpl<P extends GroupSettingsPath>
-        extends BaseChatSettingsScreen<GroupChatSettingsScreen, GroupChatSettingsScreenPresenter, P>
-        implements GroupChatSettingsScreen {
+public class GroupChatSettingsScreenImpl<P extends GroupSettingsPath> extends BaseChatSettingsScreen<GroupChatSettingsScreen, GroupChatSettingsScreenPresenter, P> implements GroupChatSettingsScreen {
 
-    @InjectView(R.id.chat_settings_group_avatars_view_progress_bar) ProgressBar groupAvatarsViewProgressBar;
+   @InjectView(R.id.chat_settings_group_avatars_view_progress_bar) ProgressBar groupAvatarsViewProgressBar;
 
-    @Inject MessengerMediaPickerDelegate messengerMediaPickerDelegate;
+   @Inject MessengerMediaPickerDelegate messengerMediaPickerDelegate;
 
-    private ChatSettingsRow membersSettingsRow;
+   private ChatSettingsRow membersSettingsRow;
 
-    public GroupChatSettingsScreenImpl(Context context) {
-        super(context);
-    }
+   public GroupChatSettingsScreenImpl(Context context) {
+      super(context);
+   }
 
-    public GroupChatSettingsScreenImpl(Context context, AttributeSet attrs) {
-        super(context, attrs);
-    }
+   public GroupChatSettingsScreenImpl(Context context, AttributeSet attrs) {
+      super(context, attrs);
+   }
 
-    @Override
-    protected void initUi() {
-        injector.inject(this);
-        super.initUi();
-    }
+   @Override
+   protected void initUi() {
+      injector.inject(this);
+      super.initUi();
+   }
 
-    @Override
-    protected void onAttachedToWindow() {
-        super.onAttachedToWindow();
-        messengerMediaPickerDelegate.register();
-    }
+   @Override
+   protected void onAttachedToWindow() {
+      super.onAttachedToWindow();
+      messengerMediaPickerDelegate.register();
+   }
 
-    @Override
-    protected void onDetachedFromWindow() {
-        super.onDetachedFromWindow();
-        messengerMediaPickerDelegate.unregister();
-    }
+   @Override
+   protected void onDetachedFromWindow() {
+      super.onDetachedFromWindow();
+      messengerMediaPickerDelegate.unregister();
+   }
 
-    @Override
-    public void setConversation(@NonNull DataConversation conversation) {
-        super.setConversation(conversation);
-        toolbarPresenter.setTitle(R.string.chat_settings_group_chat);
-        if (!TextUtils.isEmpty(conversation.getSubject())) {
-            chatNameTextView.setText(conversation.getSubject());
-        }
-        groupAvatarsView.setConversationAvatar(conversation);
-        groupAvatarsView.setVisibility(VISIBLE);
-    }
+   @Override
+   public void setConversation(@NonNull DataConversation conversation) {
+      super.setConversation(conversation);
+      toolbarPresenter.setTitle(R.string.chat_settings_group_chat);
+      if (!TextUtils.isEmpty(conversation.getSubject())) {
+         chatNameTextView.setText(conversation.getSubject());
+      }
+      groupAvatarsView.setConversationAvatar(conversation);
+      groupAvatarsView.setVisibility(VISIBLE);
+   }
 
-    @Override
-    public void setOwner(DataUser owner) {
-        if (owner != null) {
-            String createdByText = getResources()
-                    .getString(R.string.chat_settings_group_chat_info_text_format, owner.getName());
-            infoTextView.setVisibility(VISIBLE);
-            infoTextView.setText(createdByText);
-        }
-    }
+   @Override
+   public void setOwner(DataUser owner) {
+      if (owner != null) {
+         String createdByText = getResources().getString(R.string.chat_settings_group_chat_info_text_format, owner.getName());
+         infoTextView.setVisibility(VISIBLE);
+         infoTextView.setText(createdByText);
+      }
+   }
 
-    @Override
-    public void setParticipants(DataConversation conversation, List<DataUser> participants) {
-        ConversationUIHelper.setTitle(chatNameTextView, conversation, participants, false);
-        ConversationUIHelper.setSubtitle(chatDescriptionTextView, conversation, participants);
+   @Override
+   public void setParticipants(DataConversation conversation, List<DataUser> participants) {
+      ConversationUIHelper.setTitle(chatNameTextView, conversation, participants, false);
+      ConversationUIHelper.setSubtitle(chatDescriptionTextView, conversation, participants);
 
-        if (membersSettingsRow == null) {
-            membersSettingsRow = new ChatSettingsRow(getContext());
-            chatSettingsRows.addView(membersSettingsRow);
-            membersSettingsRow.setIcon(R.drawable.ic_people_black_24_px);
-            membersSettingsRow.setOnClickListener(v -> getPresenter().onMembersRowClicked());
-        }
-        String membersFormat = getContext().getString(R.string.chat_settings_row_members_format);
-        membersSettingsRow.setTitle(String.format(membersFormat, participants.size()));
-    }
+      if (membersSettingsRow == null) {
+         membersSettingsRow = new ChatSettingsRow(getContext());
+         chatSettingsRows.addView(membersSettingsRow);
+         membersSettingsRow.setIcon(R.drawable.ic_people_black_24_px);
+         membersSettingsRow.setOnClickListener(v -> getPresenter().onMembersRowClicked());
+      }
+      String membersFormat = getContext().getString(R.string.chat_settings_row_members_format);
+      membersSettingsRow.setTitle(String.format(membersFormat, participants.size()));
+   }
 
-    @NonNull
-    @Override
-    public GroupChatSettingsScreenPresenter createPresenter() {
-        return new GroupChatSettingsScreenPresenterImpl(getContext(), injector, getPath().getConversationId());
-    }
+   @NonNull
+   @Override
+   public GroupChatSettingsScreenPresenter createPresenter() {
+      return new GroupChatSettingsScreenPresenterImpl(getContext(), injector, getPath().getConversationId());
+   }
 
-    @Override
-    public Observable<String> getAvatarImagePathsStream() {
-        return messengerMediaPickerDelegate.getImagePathsStream();
-    }
+   @Override
+   public Observable<String> getAvatarImagePathsStream() {
+      return messengerMediaPickerDelegate.getImagePathsStream();
+   }
 
 
-    @OnClick(R.id.chat_settings_leave_chat_button)
-    void onLeaveChatButtonClicked() {
-        getPresenter().onLeaveButtonClick();
-    }
+   @OnClick(R.id.chat_settings_leave_chat_button)
+   void onLeaveChatButtonClicked() {
+      getPresenter().onLeaveButtonClick();
+   }
 
-    public void showLeaveChatDialog(String message) {
-        new LeaveChatDialog(getContext(), message)
-                .setPositiveListener(getPresenter()::onLeaveChatClicked)
-                .show();
-    }
+   public void showLeaveChatDialog(String message) {
+      new LeaveChatDialog(getContext(), message).setPositiveListener(getPresenter()::onLeaveChatClicked).show();
+   }
 
-    @Override
-    public void showSubjectDialog(String currentSubject) {
-        new ChangeSubjectDialog(getContext(), currentSubject)
-                .setPositiveListener(this::onSubjectEntered)
-                .show();
-    }
+   @Override
+   public void showSubjectDialog(String currentSubject) {
+      new ChangeSubjectDialog(getContext(), currentSubject).setPositiveListener(this::onSubjectEntered).show();
+   }
 
-    private void onSubjectEntered(String subject) {
-        getPresenter().applyNewChatSubject(subject);
-    }
+   private void onSubjectEntered(String subject) {
+      getPresenter().applyNewChatSubject(subject);
+   }
 
-    @Override
-    public void showAvatarPhotoPicker() {
-        messengerMediaPickerDelegate.showPhotoPicker();
-    }
+   @Override
+   public void showAvatarPhotoPicker() {
+      messengerMediaPickerDelegate.showPhotoPicker();
+   }
 
-    @Override
-    public void hideAvatarPhotoPicker() {
-        messengerMediaPickerDelegate.hidePhotoPicker();
-    }
+   @Override
+   public void hideAvatarPhotoPicker() {
+      messengerMediaPickerDelegate.hidePhotoPicker();
+   }
 
-    @Override
-    public void showChangingAvatarProgressBar() {
-        groupAvatarsViewProgressBar.setVisibility(View.VISIBLE);
-    }
+   @Override
+   public void showChangingAvatarProgressBar() {
+      groupAvatarsViewProgressBar.setVisibility(View.VISIBLE);
+   }
 
-    @Override
-    public void hideChangingAvatarProgressBar() {
-        groupAvatarsViewProgressBar.setVisibility(View.GONE);
-    }
+   @Override
+   public void hideChangingAvatarProgressBar() {
+      groupAvatarsViewProgressBar.setVisibility(View.GONE);
+   }
 
-    @Override
-    public void setLeaveButtonVisible(boolean visible) {
-        leaveChatButton.setVisibility(visible ? VISIBLE : GONE);
-    }
+   @Override
+   public void setLeaveButtonVisible(boolean visible) {
+      leaveChatButton.setVisibility(visible ? VISIBLE : GONE);
+   }
 
-    @Override
-    public void showMessage(@StringRes int text, Action0 action) {
-        Snackbar.make(this, text, Snackbar.LENGTH_SHORT)
-                .setAction(R.string.retry, v -> action.call())
-                .show();
-    }
+   @Override
+   public void showMessage(@StringRes int text, Action0 action) {
+      Snackbar.make(this, text, Snackbar.LENGTH_SHORT).setAction(R.string.retry, v -> action.call()).show();
+   }
 }

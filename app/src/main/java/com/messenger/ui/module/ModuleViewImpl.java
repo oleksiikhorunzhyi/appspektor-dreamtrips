@@ -5,46 +5,45 @@ import android.view.View;
 
 public abstract class ModuleViewImpl<P extends ModulePresenter> implements ModuleView<P> {
 
-    private View parentView;
+   private View parentView;
 
-    protected P presenter;
+   protected P presenter;
 
-    private View.OnAttachStateChangeListener parentAttachedStateListener
-            = new View.OnAttachStateChangeListener() {
-        @Override
-        public void onViewAttachedToWindow(View v) {
-            onParentViewAttachedToWindow();
-        }
+   private View.OnAttachStateChangeListener parentAttachedStateListener = new View.OnAttachStateChangeListener() {
+      @Override
+      public void onViewAttachedToWindow(View v) {
+         onParentViewAttachedToWindow();
+      }
 
-        @Override
-        public void onViewDetachedFromWindow(View v) {
-            onParentViewDetachedFromWindow();
-        }
-    };
+      @Override
+      public void onViewDetachedFromWindow(View v) {
+         onParentViewDetachedFromWindow();
+      }
+   };
 
-    public ModuleViewImpl(View parentView) {
-        this.parentView = parentView;
-        parentView.addOnAttachStateChangeListener(parentAttachedStateListener);
-    }
+   public ModuleViewImpl(View parentView) {
+      this.parentView = parentView;
+      parentView.addOnAttachStateChangeListener(parentAttachedStateListener);
+   }
 
-    public View getParentView() {
-        return parentView;
-    }
+   public View getParentView() {
+      return parentView;
+   }
 
-    protected void onParentViewAttachedToWindow() {
-        presenter.onParentViewAttachedToWindow();
-    }
+   protected void onParentViewAttachedToWindow() {
+      presenter.onParentViewAttachedToWindow();
+   }
 
-    protected void onParentViewDetachedFromWindow() {
-        presenter.onParentViewDetachedFromWindow();
-    }
+   protected void onParentViewDetachedFromWindow() {
+      presenter.onParentViewDetachedFromWindow();
+   }
 
-    @Override
-    public P getPresenter() {
-        return presenter;
-    }
+   @Override
+   public P getPresenter() {
+      return presenter;
+   }
 
-    public Context getContext() {
-        return parentView.getContext();
-    }
+   public Context getContext() {
+      return parentView.getContext();
+   }
 }

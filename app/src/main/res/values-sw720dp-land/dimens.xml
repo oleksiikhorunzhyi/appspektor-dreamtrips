@@ -1,24 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <dimen name="tripImageHeightDetailed">400dp</dimen>
-    <dimen name="bucket_detail_cover_size">300dp</dimen>
+   <dimen name="tripImageHeightDetailed">400dp</dimen>
+   <dimen name="bucket_detail_cover_size">300dp</dimen>
 
-    <dimen name="tablet_details_spacing">300dp</dimen>
+   <dimen name="tablet_details_spacing">300dp</dimen>
 
-    ///////Post sizes
-    <dimen name="post_spacing_horizontal">256dp</dimen>
-    <dimen name="post_spacing_vertical_top">30dp</dimen>
-    <dimen name="post_spacing_vertical_bottom">12dp</dimen>
+   ///////Post sizes
+   <dimen name="post_spacing_horizontal">256dp</dimen>
+   <dimen name="post_spacing_vertical_top">30dp</dimen>
+   <dimen name="post_spacing_vertical_bottom">12dp</dimen>
 
-    ///////Additional info fragment empty view spacing
-    <dimen name="additional_info_spacing_vertical">40dp</dimen>
-    <dimen name="additional_info_spacing_horizontal">78dp</dimen>
-    <dimen name="additional_info_items_margin">34dp</dimen>
-    <dimen name="additional_info_description_size">18sp</dimen>
+   ///////Additional info fragment empty view spacing
+   <dimen name="additional_info_spacing_vertical">40dp</dimen>
+   <dimen name="additional_info_spacing_horizontal">78dp</dimen>
+   <dimen name="additional_info_items_margin">34dp</dimen>
+   <dimen name="additional_info_description_size">18sp</dimen>
 
-    <!-- Dtl module dimens -->
-    <dimen name="dtl_details_header_height">300dp</dimen>
-    <dimen name="dtl_details_photo_height">210dp</dimen>
+   <!-- Dtl module dimens -->
+   <dimen name="dtl_details_header_height">300dp</dimen>
+   <dimen name="dtl_details_photo_height">210dp</dimen>
 
 </resources>

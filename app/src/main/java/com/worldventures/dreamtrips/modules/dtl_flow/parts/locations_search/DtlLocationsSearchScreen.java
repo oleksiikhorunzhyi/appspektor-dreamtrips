@@ -7,11 +7,11 @@ import java.util.List;
 
 public interface DtlLocationsSearchScreen extends DtlScreen {
 
-    void setItems(List<DtlExternalLocation> dtlExternalLocations);
+   void setItems(List<DtlExternalLocation> dtlExternalLocations);
 
-    void showProgress();
+   void showProgress();
 
-    void hideProgress();
+   void hideProgress();
 
-    void toggleDefaultCaptionVisibility(boolean visible);
+   void toggleDefaultCaptionVisibility(boolean visible);
 }

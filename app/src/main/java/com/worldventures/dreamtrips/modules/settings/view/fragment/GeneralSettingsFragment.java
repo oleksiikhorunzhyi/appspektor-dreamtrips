@@ -8,24 +8,24 @@ import com.worldventures.dreamtrips.modules.settings.view.cell.delegate.Settings
 @Layout(R.layout.fragment_settings)
 public class GeneralSettingsFragment extends SettingsFragment implements SettingsSelectCellDelegate {
 
-    @Override
-    protected void registerCells() {
-        super.registerCells();
-        adapter.registerDelegate(SelectSetting.class, this);
-    }
+   @Override
+   protected void registerCells() {
+      super.registerCells();
+      adapter.registerDelegate(SelectSetting.class, this);
+   }
 
-    @Override
-    public void onValueSelected() {
-        getPresenter().applyChanges();
-    }
+   @Override
+   public void onValueSelected() {
+      getPresenter().applyChanges();
+   }
 
-    @Override
-    public void onAppliedChanges() {
-        //nothing
-    }
+   @Override
+   public void onAppliedChanges() {
+      //nothing
+   }
 
-    @Override
-    public void onCellClicked(SelectSetting model) {
+   @Override
+   public void onCellClicked(SelectSetting model) {
 
-    }
+   }
 }

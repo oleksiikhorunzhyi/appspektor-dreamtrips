@@ -12,31 +12,31 @@ import com.worldventures.dreamtrips.modules.dtl.view.cell.DtlWorkingHoursCell;
 
 public class MerchantWorkingHoursAdapter extends BaseArrayListAdapter<OperationDay> {
 
-    private final DtlMerchant merchant;
+   private final DtlMerchant merchant;
 
-    public MerchantWorkingHoursAdapter(Context context, DtlMerchant merchant, Injector injector) {
-        super(context, injector);
-        this.merchant = merchant;
-    }
+   public MerchantWorkingHoursAdapter(Context context, DtlMerchant merchant, Injector injector) {
+      super(context, injector);
+      this.merchant = merchant;
+   }
 
-    @Override
-    public AbstractCell onCreateViewHolder(ViewGroup parent, int viewType) {
-        AbstractCell cell = super.onCreateViewHolder(parent, viewType);
-        if (shouldMerchantSet(cell)) {
-            bindMerchantHolder(cast(cell));
-        }
-        return cell;
-    }
+   @Override
+   public AbstractCell onCreateViewHolder(ViewGroup parent, int viewType) {
+      AbstractCell cell = super.onCreateViewHolder(parent, viewType);
+      if (shouldMerchantSet(cell)) {
+         bindMerchantHolder(cast(cell));
+      }
+      return cell;
+   }
 
-    private DtlWorkingHoursCell cast(AbstractCell cell) {
-        return (DtlWorkingHoursCell) cell;
-    }
+   private DtlWorkingHoursCell cast(AbstractCell cell) {
+      return (DtlWorkingHoursCell) cell;
+   }
 
-    private boolean shouldMerchantSet(AbstractCell cell) {
-        return cell instanceof DtlWorkingHoursCell;
-    }
+   private boolean shouldMerchantSet(AbstractCell cell) {
+      return cell instanceof DtlWorkingHoursCell;
+   }
 
-    private void bindMerchantHolder(DtlWorkingHoursCell cell) {
-        cell.setTimezone(merchant.getOffsetHours());
-    }
+   private void bindMerchantHolder(DtlWorkingHoursCell cell) {
+      cell.setTimezone(merchant.getOffsetHours());
+   }
 }

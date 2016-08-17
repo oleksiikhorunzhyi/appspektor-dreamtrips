@@ -15,38 +15,37 @@ import com.worldventures.dreamtrips.modules.trips.model.TripClusterItem;
 
 public class TripClusterRenderer extends DefaultClusterRenderer<TripClusterItem> {
 
-    private Context context;
+   private Context context;
 
-    public TripClusterRenderer(Context context, GoogleMap map, ClusterManager<TripClusterItem> clusterManager) {
-        super(context, map, clusterManager);
-        this.context = context;
-    }
+   public TripClusterRenderer(Context context, GoogleMap map, ClusterManager<TripClusterItem> clusterManager) {
+      super(context, map, clusterManager);
+      this.context = context;
+   }
 
-    @Override
-    protected void onBeforeClusterItemRendered(TripClusterItem item, MarkerOptions markerOptions) {
-        markerOptions.icon(BitmapDescriptorFactory.fromBitmap(TripPinFactory
-                .createPinBitmapFromMapObject(context, item.getMapObjectHolder())));
-    }
+   @Override
+   protected void onBeforeClusterItemRendered(TripClusterItem item, MarkerOptions markerOptions) {
+      markerOptions.icon(BitmapDescriptorFactory.fromBitmap(TripPinFactory.createPinBitmapFromMapObject(context, item.getMapObjectHolder())));
+   }
 
-    @Override
-    protected void onBeforeClusterRendered(Cluster<TripClusterItem> cluster, MarkerOptions markerOptions) {
-        int clusterTripSize = getTripsCountFromCluster(cluster);
-        markerOptions.icon(BitmapDescriptorFactory.fromBitmap(TripPinFactory.createClusterBitmap(context,
-                R.drawable.cluster_pin, String.valueOf(clusterTripSize > 99 ? "99+" : clusterTripSize))));
-    }
+   @Override
+   protected void onBeforeClusterRendered(Cluster<TripClusterItem> cluster, MarkerOptions markerOptions) {
+      int clusterTripSize = getTripsCountFromCluster(cluster);
+      markerOptions.icon(BitmapDescriptorFactory.fromBitmap(TripPinFactory.createClusterBitmap(context, R.drawable.cluster_pin, String
+            .valueOf(clusterTripSize > 99 ? "99+" : clusterTripSize))));
+   }
 
-    @Override
-    protected boolean shouldRenderAsCluster(Cluster<TripClusterItem> cluster) {
-        return cluster.getSize() > 1;
-    }
+   @Override
+   protected boolean shouldRenderAsCluster(Cluster<TripClusterItem> cluster) {
+      return cluster.getSize() > 1;
+   }
 
-    private int getTripsCountFromCluster(Cluster<TripClusterItem> cluster) {
-        int tripsCount = 0;
-        for(TripClusterItem item : cluster.getItems()) {
-            if (item.getMapObjectHolder().getType() == MapObjectHolder.Type.PIN) {
-                tripsCount += ((Pin) item.getMapObjectHolder().getItem()).getTripUids().size();
-            }
-        }
-        return tripsCount;
-    }
+   private int getTripsCountFromCluster(Cluster<TripClusterItem> cluster) {
+      int tripsCount = 0;
+      for (TripClusterItem item : cluster.getItems()) {
+         if (item.getMapObjectHolder().getType() == MapObjectHolder.Type.PIN) {
+            tripsCount += ((Pin) item.getMapObjectHolder().getItem()).getTripUids().size();
+         }
+      }
+      return tripsCount;
+   }
 }

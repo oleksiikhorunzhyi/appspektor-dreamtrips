@@ -1,24 +1,27 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/root"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@android:color/black"
-    android:keepScreenOn="true">
+      android:id="@+id/root"
+      android:layout_width="match_parent"
+      android:layout_height="match_parent"
+      android:background="@android:color/black"
+      android:keepScreenOn="true"
+      >
 
-    <tv.danmaku.ijk.media.widget.media.IjkVideoView
-        android:id="@+id/myVideo"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_gravity="center"/>
+   <tv.danmaku.ijk.media.widget.media.IjkVideoView
+         android:id="@+id/myVideo"
+         android:layout_width="match_parent"
+         android:layout_height="match_parent"
+         android:layout_gravity="center"
+         />
 
-    <TextView
-        android:id="@+id/retry"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerInParent="true"
-        android:textSize="@dimen/font_large"
-        android:visibility="gone"
-        android:textColor="@color/theme_main_darker"
-        android:text="@string/retry"/>
+   <TextView
+         android:id="@+id/retry"
+         android:layout_width="wrap_content"
+         android:layout_height="wrap_content"
+         android:layout_centerInParent="true"
+         android:textSize="@dimen/font_large"
+         android:visibility="gone"
+         android:textColor="@color/theme_main_darker"
+         android:text="@string/retry"
+         />
 </RelativeLayout>

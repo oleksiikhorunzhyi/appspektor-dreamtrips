@@ -11,5 +11,5 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
 @Documented
 @Retention(RUNTIME)
 public @interface UseModule {
-    Class value();
+   Class value();
 }

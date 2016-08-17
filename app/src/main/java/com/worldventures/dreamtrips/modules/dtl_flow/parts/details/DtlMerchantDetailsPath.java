@@ -20,31 +20,31 @@ import flow.path.Path;
 @Layout(R.layout.screen_dtl_details)
 public class DtlMerchantDetailsPath extends DtlDetailPath {
 
-    private final DtlMerchant merchant;
-    private final List<Integer> preExpandOfferPositions;
+   private final DtlMerchant merchant;
+   private final List<Integer> preExpandOfferPositions;
 
-    public DtlMerchantDetailsPath(MasterDetailPath path, @NonNull DtlMerchant merchant, @Nullable List<Integer> preExpandOfferPositions) {
-        super(path);
-        Preconditions.checkNotNull(merchant, "Merchant can not be null");
-        this.merchant = merchant;
-        this.preExpandOfferPositions = preExpandOfferPositions != null ? preExpandOfferPositions : Collections.emptyList();
-    }
+   public DtlMerchantDetailsPath(MasterDetailPath path, @NonNull DtlMerchant merchant, @Nullable List<Integer> preExpandOfferPositions) {
+      super(path);
+      Preconditions.checkNotNull(merchant, "Merchant can not be null");
+      this.merchant = merchant;
+      this.preExpandOfferPositions = preExpandOfferPositions != null ? preExpandOfferPositions : Collections.emptyList();
+   }
 
-    public DtlMerchant getMerchant() {
-        return merchant;
-    }
+   public DtlMerchant getMerchant() {
+      return merchant;
+   }
 
-    public List<Integer> getPreExpandOffers() {
-        return preExpandOfferPositions;
-    }
+   public List<Integer> getPreExpandOffers() {
+      return preExpandOfferPositions;
+   }
 
-    @Override
-    public PathAttrs getAttrs() {
-        return PathAttrs.WITHOUT_DRAWER;
-    }
+   @Override
+   public PathAttrs getAttrs() {
+      return PathAttrs.WITHOUT_DRAWER;
+   }
 
-    @Override
-    public Path getMasterToolbarPath() {
-        return MasterToolbarPath.INSTANCE;
-    }
+   @Override
+   public Path getMasterToolbarPath() {
+      return MasterToolbarPath.INSTANCE;
+   }
 }

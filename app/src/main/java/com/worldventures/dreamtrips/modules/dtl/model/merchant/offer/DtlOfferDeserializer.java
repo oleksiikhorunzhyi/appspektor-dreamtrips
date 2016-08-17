@@ -18,30 +18,28 @@ import java.util.Map;
 
 public class DtlOfferDeserializer implements JsonDeserializer<DtlOffer> {
 
-    private final Gson gson;
-    private static Map<String, java.lang.reflect.Type> modelByType = new HashMap<>();
+   private final Gson gson;
+   private static Map<String, java.lang.reflect.Type> modelByType = new HashMap<>();
 
-    static {
-        modelByType.put(DtlOffer.Type.PERK.value(), new TypeToken<DtlOfferPerk>() {}.getType());
-        modelByType.put(DtlOffer.Type.POINTS.value(), new TypeToken<DtlOfferPoints>() {}.getType());
-    }
+   static {
+      modelByType.put(DtlOffer.Type.PERK.value(), new TypeToken<DtlOfferPerk>() {}.getType());
+      modelByType.put(DtlOffer.Type.POINTS.value(), new TypeToken<DtlOfferPoints>() {}.getType());
+   }
 
-    public DtlOfferDeserializer() {
-        this.gson = new GsonBuilder()
-                .serializeNulls()
-                .setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES)
-                .registerTypeAdapter(Date.class, new DateTimeDeserializer())
-                .registerTypeAdapter(Date.class, new DateTimeSerializer())
-                .registerTypeAdapter(DayOfWeek.class, new DayOfWeekDeserializer())
-                .create();
-    }
+   public DtlOfferDeserializer() {
+      this.gson = new GsonBuilder().serializeNulls()
+            .setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES)
+            .registerTypeAdapter(Date.class, new DateTimeDeserializer())
+            .registerTypeAdapter(Date.class, new DateTimeSerializer())
+            .registerTypeAdapter(DayOfWeek.class, new DayOfWeekDeserializer())
+            .create();
+   }
 
-    @Override
-    public DtlOffer deserialize(JsonElement json, java.lang.reflect.Type typeOfT,
-                                JsonDeserializationContext context) throws JsonParseException {
+   @Override
+   public DtlOffer deserialize(JsonElement json, java.lang.reflect.Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
 
-        String type = json.getAsJsonObject().get("type").getAsString();
+      String type = json.getAsJsonObject().get("type").getAsString();
 
-        return modelByType.containsKey(type) ? gson.fromJson(json, modelByType.get(type)) : null;
-    }
+      return modelByType.containsKey(type) ? gson.fromJson(json, modelByType.get(type)) : null;
+   }
 }

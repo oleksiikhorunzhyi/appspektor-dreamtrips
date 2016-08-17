@@ -17,28 +17,28 @@ import rx.schedulers.Schedulers;
 @CommandAction
 public class GetCommentsCommand extends CommandWithError<List<Comment>> implements InjectableAction {
 
-    public static final int LIMIT = 10;
+   public static final int LIMIT = 10;
 
-    @Inject Janet janet;
+   @Inject Janet janet;
 
-    private final String itemUid;
-    private final int page;
+   private final String itemUid;
+   private final int page;
 
-    public GetCommentsCommand(String itemUid, int page) {
-        this.itemUid = itemUid;
-        this.page = page;
-    }
+   public GetCommentsCommand(String itemUid, int page) {
+      this.itemUid = itemUid;
+      this.page = page;
+   }
 
-    @Override
-    protected void run(CommandCallback<List<Comment>> callback) throws Throwable {
-        janet.createPipe(GetCommentsHttpAction.class, Schedulers.io())
-                .createObservableResult(new GetCommentsHttpAction(itemUid, page, LIMIT))
-                .map(GetCommentsHttpAction::response)
-                .subscribe(callback::onSuccess, callback::onFail);
-    }
+   @Override
+   protected void run(CommandCallback<List<Comment>> callback) throws Throwable {
+      janet.createPipe(GetCommentsHttpAction.class, Schedulers.io())
+            .createObservableResult(new GetCommentsHttpAction(itemUid, page, LIMIT))
+            .map(GetCommentsHttpAction::response)
+            .subscribe(callback::onSuccess, callback::onFail);
+   }
 
-    @Override
-    public int getFallbackErrorMessage() {
-        return R.string.error_fail_to_load_comments;
-    }
+   @Override
+   public int getFallbackErrorMessage() {
+      return R.string.error_fail_to_load_comments;
+   }
 }

@@ -1,233 +1,242 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.worldventures.dreamtrips.modules.dtl_flow.parts.details.DtlDetailsScreenImpl
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:fresco="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/root_detail_view"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent">
+<com.worldventures.dreamtrips.modules.dtl_flow.parts.details.DtlDetailsScreenImpl xmlns:android="http://schemas.android.com/apk/res/android"
+      xmlns:app="http://schemas.android.com/apk/res-auto"
+      xmlns:fresco="http://schemas.android.com/apk/res-auto"
+      xmlns:tools="http://schemas.android.com/tools"
+      android:id="@+id/root_detail_view"
+      android:layout_width="match_parent"
+      android:layout_height="match_parent"
+      >
 
-    <android.support.v7.widget.Toolbar
-        android:id="@+id/toolbar_actionbar"
-        style="@style/ToolBarStyle"/>
+   <android.support.v7.widget.Toolbar
+         android:id="@+id/toolbar_actionbar"
+         style="@style/ToolBarStyle"
+         />
 
-        <android.support.v4.widget.NestedScrollView
-            android:id="@+id/scrollView"
+   <android.support.v4.widget.NestedScrollView
+         android:id="@+id/scrollView"
+         android:layout_width="match_parent"
+         android:layout_height="match_parent"
+         android:background="@color/light_grey_background"
+         android:fillViewport="true"
+         >
+
+      <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="@color/light_grey_background"
-            android:fillViewport="true"
+            android:orientation="vertical"
             >
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:orientation="vertical">
+         <com.worldventures.dreamtrips.modules.common.view.custom.ImageryDraweeView
+               android:id="@+id/merchant_details_cover"
+               android:layout_width="match_parent"
+               android:layout_height="200dp"
+               android:background="@color/white"
+               fresco:actualImageScaleType="centerCrop"
+               fresco:placeholderImage="@drawable/ic_trip_image_placeholder"
+               fresco:placeholderImageScaleType="centerCrop"
+               />
 
-                <com.worldventures.dreamtrips.modules.common.view.custom.ImageryDraweeView
-                    android:id="@+id/merchant_details_cover"
-                    android:layout_width="match_parent"
-                    android:layout_height="200dp"
-                    android:background="@color/white"
-                    fresco:actualImageScaleType="centerCrop"
-                    fresco:placeholderImage="@drawable/ic_trip_image_placeholder"
-                    fresco:placeholderImageScaleType="centerCrop"
-                    />
+         <include layout="@layout/include_dtl_info" />
 
-                <include layout="@layout/include_dtl_info"/>
+         <View
+               android:layout_width="match_parent"
+               android:layout_height="1dp"
+               android:background="@drawable/divider_list"
+               />
 
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="1dp"
-                    android:background="@drawable/divider_list"/>
+         <LinearLayout
+               android:id="@+id/merchant_details_earn_wrapper"
+               style="@style/Widget.AppCompat.ButtonBar"
+               android:layout_width="match_parent"
+               android:layout_height="wrap_content"
+               android:background="@color/light_grey_background"
+               android:divider="@drawable/divider_list"
+               android:orientation="vertical"
+               android:showDividers="middle"
+               ></LinearLayout>
 
-                <LinearLayout
-                    android:id="@+id/merchant_details_earn_wrapper"
-                    style="@style/Widget.AppCompat.ButtonBar"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:background="@color/light_grey_background"
-                    android:divider="@drawable/divider_list"
-                    android:orientation="vertical"
-                    android:showDividers="middle">
-                </LinearLayout>
+         <View
+               android:id="@+id/perk_divider"
+               android:layout_width="match_parent"
+               android:layout_height="1dp"
+               android:background="@drawable/divider_list"
+               />
 
-                <View
-                    android:id="@+id/perk_divider"
-                    android:layout_width="match_parent"
-                    android:layout_height="1dp"
-                    android:background="@drawable/divider_list"/>
+         <FrameLayout
+               android:id="@+id/merchant_details_merchant_wrapper"
+               android:layout_width="match_parent"
+               android:layout_height="wrap_content"
+               android:background="#eeeeee"
+               android:orientation="horizontal"
+               android:padding="@dimen/spacing_normal"
+               >
 
-                <FrameLayout
-                    android:id="@+id/merchant_details_merchant_wrapper"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:background="#eeeeee"
-                    android:orientation="horizontal"
-                    android:padding="@dimen/spacing_normal"
-                    >
+            <Button
+                  android:id="@+id/merchant_details_suggest_merchant"
+                  android:layout_width="wrap_content"
+                  android:layout_height="wrap_content"
+                  android:layout_gravity="center"
+                  android:text="@string/suggest_merchant"
+                  android:textAllCaps="false"
+                  android:textColor="@color/white"
+                  android:theme="@style/Theme.DreamTripsTheme.TripButton"
+                  />
+         </FrameLayout>
 
-                    <Button
-                        android:id="@+id/merchant_details_suggest_merchant"
+         <LinearLayout
+               android:id="@+id/description_header"
+               android:layout_width="match_parent"
+               android:layout_height="wrap_content"
+               android:background="@color/light_grey_background"
+               android:orientation="vertical"
+               android:padding="@dimen/spacing_normal"
+               >
+
+            <TextView
+                  android:layout_width="match_parent"
+                  android:layout_height="wrap_content"
+                  android:fontFamily="sans-serif-medium"
+                  android:text="@string/dtl_description"
+                  android:textColor="@color/black"
+                  android:textSize="14sp"
+                  />
+
+            <TextView
+                  android:id="@+id/merchant_details_description"
+                  style="@style/TextAppearance.AppCompat.Body1"
+                  android:layout_width="wrap_content"
+                  android:layout_height="wrap_content"
+                  android:fontFamily="sans-serif"
+                  android:textSize="14sp"
+                  tools:text="Sed ut perspiciatis unde omnis iste natus error sit voluptatem, totam rem aperiam, eaque ipsa quae ab illo et quasi architecto beatae vitae sunt explicabo. "
+                  />
+
+         </LinearLayout>
+
+         <View
+               android:layout_width="match_parent"
+               android:layout_height="1dp"
+               android:background="@drawable/divider_list"
+               />
+
+         <com.worldventures.dreamtrips.modules.dtl.view.custom.ExpandableOfferView
+               android:id="@+id/expandedWorkingHoursView"
+               android:layout_width="match_parent"
+               android:layout_height="wrap_content"
+               app:el_contentLayout="@layout/adapter_item_merchant_hours_content"
+               app:el_headerLayout="@layout/adapter_item_merchant_hours_header"
+               ></com.worldventures.dreamtrips.modules.dtl.view.custom.ExpandableOfferView>
+
+         <LinearLayout
+               android:layout_width="match_parent"
+               android:layout_height="wrap_content"
+               android:divider="@drawable/list_divider_vertical"
+               android:orientation="vertical"
+               >
+
+            <FrameLayout
+                  android:layout_width="match_parent"
+                  android:layout_height="170dp"
+                  >
+
+               <FrameLayout
+                     android:id="@+id/merchant_details_map"
+                     android:layout_width="match_parent"
+                     android:layout_height="match_parent"
+                     />
+
+               <RelativeLayout
+                     android:layout_width="match_parent"
+                     android:layout_height="wrap_content"
+                     android:layout_gravity="bottom"
+                     android:layout_marginBottom="@dimen/spacing_medium"
+                     android:layout_marginLeft="@dimen/dtlInnerMapPadding"
+                     android:layout_marginRight="@dimen/dtlInnerMapPadding"
+                     android:background="@color/white"
+                     android:padding="@dimen/spacing_tiny"
+                     >
+
+                  <TextView
+                        android:id="@+id/merchant_address"
+                        style="@style/DreamMerchantTextAppearance"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentLeft="true"
+                        android:layout_centerVertical="true"
+                        android:layout_toLeftOf="@+id/merchant_direction"
+                        android:maxLines="2"
+                        android:padding="@dimen/spacing_small"
+                        tools:text="402 Mission Street San Francisco CA 94001"
+                        />
+
+                  <Button
+                        android:id="@+id/merchant_direction"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_gravity="center"
-                        android:text="@string/suggest_merchant"
-                        android:textAllCaps="false"
+                        android:layout_alignParentRight="true"
+                        android:layout_centerVertical="true"
+                        android:clickable="false"
+                        android:text="@string/directions"
+                        android:textAllCaps="true"
                         android:textColor="@color/white"
-                        android:theme="@style/Theme.DreamTripsTheme.TripButton"
-                        />
-                </FrameLayout>
-
-                <LinearLayout
-                    android:id="@+id/description_header"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:background="@color/light_grey_background"
-                    android:orientation="vertical"
-                    android:padding="@dimen/spacing_normal"
-                    >
-
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:fontFamily="sans-serif-medium"
-                        android:text="@string/dtl_description"
-                        android:textColor="@color/black"
-                        android:textSize="14sp"
                         />
 
-                    <TextView
-                        android:id="@+id/merchant_details_description"
-                        style="@style/TextAppearance.AppCompat.Body1"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:fontFamily="sans-serif"
-                        android:textSize="14sp"
-                        tools:text="Sed ut perspiciatis unde omnis iste natus error sit voluptatem, totam rem aperiam, eaque ipsa quae ab illo et quasi architecto beatae vitae sunt explicabo. "
-                        />
+               </RelativeLayout>
 
-                </LinearLayout>
+               <!-- Next layer is just to get clicks on map -->
+               <FrameLayout
+                     android:id="@+id/dtl_merchant_details_map_click_interceptor"
+                     android:layout_width="match_parent"
+                     android:layout_height="match_parent"
+                     android:background="@android:color/transparent"
+                     />
+            </FrameLayout>
 
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="1dp"
-                    android:background="@drawable/divider_list"/>
+            <LinearLayout
+                  android:id="@+id/merchant_details_additional"
+                  android:layout_width="match_parent"
+                  android:layout_height="wrap_content"
+                  android:background="@color/light_grey_background"
+                  android:divider="@drawable/list_divider_with_left_padding"
+                  android:gravity="top"
+                  android:orientation="vertical"
+                  android:showDividers="middle"
+                  />
+         </LinearLayout>
 
-                <com.worldventures.dreamtrips.modules.dtl.view.custom.ExpandableOfferView
-                    android:id="@+id/expandedWorkingHoursView"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    app:el_contentLayout="@layout/adapter_item_merchant_hours_content"
-                    app:el_headerLayout="@layout/adapter_item_merchant_hours_header">
-                </com.worldventures.dreamtrips.modules.dtl.view.custom.ExpandableOfferView>
+         <View
+               android:layout_width="match_parent"
+               android:layout_height="1dp"
+               android:background="@drawable/list_divider_with_right_padding"
+               />
 
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:divider="@drawable/list_divider_vertical"
-                    android:orientation="vertical"
-                    >
+         <LinearLayout
+               android:layout_width="match_parent"
+               android:layout_height="wrap_content"
+               android:orientation="vertical"
+               android:padding="@dimen/spacing_normal"
+               >
 
-                    <FrameLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="170dp"
-                        >
-
-                        <FrameLayout
-                            android:id="@+id/merchant_details_map"
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            />
-
-                        <RelativeLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_gravity="bottom"
-                            android:layout_marginBottom="@dimen/spacing_medium"
-                            android:layout_marginLeft="@dimen/dtlInnerMapPadding"
-                            android:layout_marginRight="@dimen/dtlInnerMapPadding"
-                            android:background="@color/white"
-                            android:padding="@dimen/spacing_tiny">
-
-                            <TextView
-                                android:id="@+id/merchant_address"
-                                style="@style/DreamMerchantTextAppearance"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:layout_alignParentLeft="true"
-                                android:layout_centerVertical="true"
-                                android:layout_toLeftOf="@+id/merchant_direction"
-                                android:maxLines="2"
-                                android:padding="@dimen/spacing_small"
-                                tools:text="402 Mission Street San Francisco CA 94001"/>
-
-                            <Button
-                                android:id="@+id/merchant_direction"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_alignParentRight="true"
-                                android:layout_centerVertical="true"
-                                android:clickable="false"
-                                android:text="@string/directions"
-                                android:textAllCaps="true"
-                                android:textColor="@color/white"/>
-
-                        </RelativeLayout>
-
-                        <!-- Next layer is just to get clicks on map -->
-                        <FrameLayout
-                            android:id="@+id/dtl_merchant_details_map_click_interceptor"
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:background="@android:color/transparent"
-                            />
-                    </FrameLayout>
-
-                    <LinearLayout
-                        android:id="@+id/merchant_details_additional"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:background="@color/light_grey_background"
-                        android:divider="@drawable/list_divider_with_left_padding"
-                        android:gravity="top"
-                        android:orientation="vertical"
-                        android:showDividers="middle"
-                        />
-                </LinearLayout>
-
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="1dp"
-                    android:background="@drawable/list_divider_with_right_padding"/>
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:padding="@dimen/spacing_normal"
-                    >
-
-                    <com.worldventures.dreamtrips.modules.common.view.custom.ShowMoreTextView
-                        android:id="@+id/legal_text"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:clickable="true"
-                        android:textColor="#929292"
-                        android:textSize="12sp"
-                        android:visibility="gone"
-                        app:smtv_captionCollapsed="@string/details_collapsed_text_caption"
-                        app:smtv_captionColor="#005e92"
-                        app:smtv_captionExpanded="@string/details_expanded_text_caption"
-                        app:smtv_extendClickableArea="true"
-                        app:smtv_separatorCollapsed="... "
-                        app:smtv_separatorExpanded=" "
-                        app:smtv_symbolsLimit="240"
-                        tools:text="DreamTrips Points are offered based on a varying percentage of transaction amount at each individual merchant. Offers are subject to change at any time and may vary based on day of the week. Earning DreamTrips Points through DreamTrips Local offers is capped at a maximum of 200 points per transaction and 500 points per day. Variable minimum spend applies before DreamTrips Points will be awarded. Transaction amounts in local currencies are converted to US Dollar based on a conversion rate fixed by WorldVentures at its sole discretion and DreamTrips Points are allocated based on the converted US Dollar amount."
-                        tools:visibility="visible"
-                        />
-                </LinearLayout>
-            </LinearLayout>
-        </android.support.v4.widget.NestedScrollView>
+            <com.worldventures.dreamtrips.modules.common.view.custom.ShowMoreTextView
+                  android:id="@+id/legal_text"
+                  android:layout_width="match_parent"
+                  android:layout_height="wrap_content"
+                  android:clickable="true"
+                  android:textColor="#929292"
+                  android:textSize="12sp"
+                  android:visibility="gone"
+                  app:smtv_captionCollapsed="@string/details_collapsed_text_caption"
+                  app:smtv_captionColor="#005e92"
+                  app:smtv_captionExpanded="@string/details_expanded_text_caption"
+                  app:smtv_extendClickableArea="true"
+                  app:smtv_separatorCollapsed="... "
+                  app:smtv_separatorExpanded=" "
+                  app:smtv_symbolsLimit="240"
+                  tools:text="DreamTrips Points are offered based on a varying percentage of transaction amount at each individual merchant. Offers are subject to change at any time and may vary based on day of the week. Earning DreamTrips Points through DreamTrips Local offers is capped at a maximum of 200 points per transaction and 500 points per day. Variable minimum spend applies before DreamTrips Points will be awarded. Transaction amounts in local currencies are converted to US Dollar based on a conversion rate fixed by WorldVentures at its sole discretion and DreamTrips Points are allocated based on the converted US Dollar amount."
+                  tools:visibility="visible"
+                  />
+         </LinearLayout>
+      </LinearLayout>
+   </android.support.v4.widget.NestedScrollView>
 </com.worldventures.dreamtrips.modules.dtl_flow.parts.details.DtlDetailsScreenImpl>

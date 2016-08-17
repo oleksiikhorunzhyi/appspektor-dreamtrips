@@ -13,21 +13,18 @@ import io.techery.janet.http.annotations.Response;
 @HttpAction(value = "/api/bucket_list_items/{uid}/position", method = HttpAction.Method.PUT)
 public class ChangeOrderHttpAction extends AuthorizedHttpAction {
 
-    @Path("uid")
-    String uid;
+   @Path("uid") String uid;
 
-    @Body
-    BucketOrderBody item;
+   @Body BucketOrderBody item;
 
-    @Response
-    JsonObject response;
+   @Response JsonObject response;
 
-    public ChangeOrderHttpAction(String uid, int to) {
-        this.uid = uid;
-        this.item = ImmutableBucketOrderBody.of(to);
-    }
+   public ChangeOrderHttpAction(String uid, int to) {
+      this.uid = uid;
+      this.item = ImmutableBucketOrderBody.of(to);
+   }
 
-    public JsonObject getResponse() {
-        return this.response;
-    }
+   public JsonObject getResponse() {
+      return this.response;
+   }
 }

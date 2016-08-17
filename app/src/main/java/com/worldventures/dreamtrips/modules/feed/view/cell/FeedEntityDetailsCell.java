@@ -12,13 +12,13 @@ import com.worldventures.dreamtrips.modules.feed.view.cell.base.BaseFeedCell;
 @Layout(R.layout.adapter_item_entity_details)
 public class FeedEntityDetailsCell<T extends FeedItem> extends BaseFeedCell<T, CellDelegate<T>> {
 
-    public FeedEntityDetailsCell(View view) {
-        super(view);
-    }
+   public FeedEntityDetailsCell(View view) {
+      super(view);
+   }
 
-    @Override
-    protected void syncUIStateWithModel() {
-        super.syncUIStateWithModel();
-        getEventBus().post(new FeedEntityShowEvent(getModelObject()));
-    }
+   @Override
+   protected void syncUIStateWithModel() {
+      super.syncUIStateWithModel();
+      getEventBus().post(new FeedEntityShowEvent(getModelObject()));
+   }
 }

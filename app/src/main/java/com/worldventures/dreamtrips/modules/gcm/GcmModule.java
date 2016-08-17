@@ -16,27 +16,20 @@ import dagger.Module;
 import dagger.Provides;
 
 @Module(
-        injects = {
-                RegistrationIntentService.class,
-                PushListenerService.class
-        },
-        includes = {
-                NotificationFactoryModule.class
-        },
-        complete = false,
-        library = true
-)
+      injects = {RegistrationIntentService.class, PushListenerService.class},
+      includes = {NotificationFactoryModule.class},
+      complete = false,
+      library = true)
 public class GcmModule {
 
-    @Provides
-    NotificationDelegate provideNotificationDelegate(@ForApplication Context context, NotificationCountEventDelegate notificationCountEventDelegate,
-                                                     SnappyRepository repository, NotificationFactoryHolder notificationFactoryHolder) {
-        return new NotificationDelegate(context, notificationCountEventDelegate, repository, notificationFactoryHolder);
-    }
+   @Provides
+   NotificationDelegate provideNotificationDelegate(@ForApplication Context context, NotificationCountEventDelegate notificationCountEventDelegate, SnappyRepository repository, NotificationFactoryHolder notificationFactoryHolder) {
+      return new NotificationDelegate(context, notificationCountEventDelegate, repository, notificationFactoryHolder);
+   }
 
-    @Provides
-    NotificationDataParser provideDataParser(Gson gson) {
-        return new NotificationDataParser(gson);
-    }
+   @Provides
+   NotificationDataParser provideDataParser(Gson gson) {
+      return new NotificationDataParser(gson);
+   }
 
 }

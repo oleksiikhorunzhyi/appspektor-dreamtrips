@@ -10,36 +10,34 @@ import java.util.Locale;
 
 public class LocaleHelper {
 
-    private SessionHolder<UserSession> appSessionHolder;
+   private SessionHolder<UserSession> appSessionHolder;
 
-    public LocaleHelper(SessionHolder<UserSession> appSessionHolder) {
-        this.appSessionHolder = appSessionHolder;
-    }
+   public LocaleHelper(SessionHolder<UserSession> appSessionHolder) {
+      this.appSessionHolder = appSessionHolder;
+   }
 
-    public Locale getDefaultLocale() {
-        if (!appSessionHolder.get().isPresent() ||
-                appSessionHolder.get().get().getLocale() == null)
-            return Locale.getDefault();
+   public Locale getDefaultLocale() {
+      if (!appSessionHolder.get().isPresent() || appSessionHolder.get().get().getLocale() == null)
+         return Locale.getDefault();
 
-        UserSession userSession = appSessionHolder.get().get();
-        String language = userSession.getLocale().split("-")[0];
-        String country = userSession.getLocale().split("-")[1];
+      UserSession userSession = appSessionHolder.get().get();
+      String language = userSession.getLocale().split("-")[0];
+      String country = userSession.getLocale().split("-")[1];
 
-        return new Locale(language, country);
-    }
+      return new Locale(language, country);
+   }
 
-    public String getDefaultLocaleFormatted() {
-        if (appSessionHolder.get().isPresent())
-            return appSessionHolder.get().get().getLocale();
+   public String getDefaultLocaleFormatted() {
+      if (appSessionHolder.get().isPresent()) return appSessionHolder.get().get().getLocale();
 
-        Locale locale = Locale.getDefault();
-        return android.text.TextUtils.join("-", new String[]{locale.getLanguage(), locale.getCountry()});
-    }
+      Locale locale = Locale.getDefault();
+      return android.text.TextUtils.join("-", new String[]{locale.getLanguage(), locale.getCountry()});
+   }
 
-    public boolean isOwnLanguage(@Nullable String languageCode) {
-        if (!appSessionHolder.get().isPresent()) return false;
+   public boolean isOwnLanguage(@Nullable String languageCode) {
+      if (!appSessionHolder.get().isPresent()) return false;
 
-        String userLanguageCode = appSessionHolder.get().get().getLocale().split("-")[0];
-        return userLanguageCode.equalsIgnoreCase(languageCode);
-    }
+      String userLanguageCode = appSessionHolder.get().get().getLocale().split("-")[0];
+      return userLanguageCode.equalsIgnoreCase(languageCode);
+   }
 }

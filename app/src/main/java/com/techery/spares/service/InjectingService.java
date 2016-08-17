@@ -15,55 +15,55 @@ import dagger.ObjectGraph;
 
 public abstract class InjectingService extends Service implements Injector {
 
-    public static final String EXTRA_PAYLOAD = "com.techery.spares.service.extra.PAYLOAD";
+   public static final String EXTRA_PAYLOAD = "com.techery.spares.service.extra.PAYLOAD";
 
-    protected ServiceActionRouter actionRouter = new ServiceActionRouter();
+   protected ServiceActionRouter actionRouter = new ServiceActionRouter();
 
-    private ObjectGraph objectGraph;
+   private ObjectGraph objectGraph;
 
-    @Override
-    public IBinder onBind(Intent intent) {
-        return null;
-    }
+   @Override
+   public IBinder onBind(Intent intent) {
+      return null;
+   }
 
-    @Override
-    public ObjectGraph getObjectGraph() {
-        return this.objectGraph;
-    }
+   @Override
+   public ObjectGraph getObjectGraph() {
+      return this.objectGraph;
+   }
 
-    @Override
-    public void inject(Object target) {
-        getObjectGraph().inject(target);
-    }
+   @Override
+   public void inject(Object target) {
+      getObjectGraph().inject(target);
+   }
 
-    @Override
-    public void onCreate() {
-        super.onCreate();
+   @Override
+   public void onCreate() {
+      super.onCreate();
 
-        objectGraph = ((Injector) getApplication()).getObjectGraph().plus(getModules().toArray());
+      objectGraph = ((Injector) getApplication()).getObjectGraph().plus(getModules().toArray());
 
-        inject(this);
-    }
+      inject(this);
+   }
 
-    @Override
-    public int onStartCommand(Intent intent, int flags, int startId) {
+   @Override
+   public int onStartCommand(Intent intent, int flags, int startId) {
 
-        actionRouter.dispatchIntent(intent);
+      actionRouter.dispatchIntent(intent);
 
-        return Service.START_STICKY;
-    }
+      return Service.START_STICKY;
+   }
 
-    protected List<Object> getModules() {
-        List<Object> result = new ArrayList<>();
+   protected List<Object> getModules() {
+      List<Object> result = new ArrayList<>();
 
-        result.add(new InjectingServiceModule(this, this));
+      result.add(new InjectingServiceModule(this, this));
 
-        Object usedModule = ModuleHelper.getUsedModule(this);
+      Object usedModule = ModuleHelper.getUsedModule(this);
 
-        if (usedModule != null) {
-            result.add(usedModule);
-        }
+      if (usedModule != null) {
+         result.add(usedModule);
+      }
 
-        return result;
-    }
+      return result;
+   }
 }

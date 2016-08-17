@@ -9,27 +9,27 @@ import javax.inject.Inject;
 
 public class MainActivityPresenter extends ActivityPresenter<MainActivityPresenter.View> {
 
-    @Inject RootComponentsProvider rootComponentsProvider;
+   @Inject RootComponentsProvider rootComponentsProvider;
 
-    @Override
-    public void takeView(View view) {
-        super.takeView(view);
-        checkGoogleServices();
-    }
+   @Override
+   public void takeView(View view) {
+      super.takeView(view);
+      checkGoogleServices();
+   }
 
-    private void checkGoogleServices() {
-        int code = GooglePlayServicesUtil.isGooglePlayServicesAvailable(context);
-        if (code != ConnectionResult.SUCCESS) {
-            GooglePlayServicesUtil.getErrorDialog(code, activity, 0).show();
-        } else {
-            activityRouter.startService(RegistrationIntentService.class);
-        }
-    }
+   private void checkGoogleServices() {
+      int code = GooglePlayServicesUtil.isGooglePlayServicesAvailable(context);
+      if (code != ConnectionResult.SUCCESS) {
+         GooglePlayServicesUtil.getErrorDialog(code, activity, 0).show();
+      } else {
+         activityRouter.startService(RegistrationIntentService.class);
+      }
+   }
 
-    public interface View extends ActivityPresenter.View {
+   public interface View extends ActivityPresenter.View {
 
-        void setTitle(int title);
+      void setTitle(int title);
 
-        void makeActionBarGone(boolean hide);
-    }
+      void makeActionBarGone(boolean hide);
+   }
 }

@@ -42,501 +42,496 @@ import timber.log.Timber;
 
 public class SnappyRepositoryImpl implements SnappyRepository {
 
-    private Context context;
-    private ExecutorService executorService;
+   private Context context;
+   private ExecutorService executorService;
 
-    public SnappyRepositoryImpl(Context context) {
-        ValidationUtils.checkNotNull(context);
-        this.context = context;
-        this.executorService = Executors.newSingleThreadExecutor();
-    }
+   public SnappyRepositoryImpl(Context context) {
+      ValidationUtils.checkNotNull(context);
+      this.context = context;
+      this.executorService = Executors.newSingleThreadExecutor();
+   }
 
-    ///////////////////////////////////////////////////////////////////////////
-    // Proxy helpers
-    ///////////////////////////////////////////////////////////////////////////
+   ///////////////////////////////////////////////////////////////////////////
+   // Proxy helpers
+   ///////////////////////////////////////////////////////////////////////////
 
-    private void act(SnappyAction action) {
-        executorService.execute(() -> {
-            DB snappyDb = null;
+   private void act(SnappyAction action) {
+      executorService.execute(() -> {
+         DB snappyDb = null;
+         try {
+            snappyDb = DBFactory.open(context);
+            action.call(snappyDb);
+         } catch (SnappydbException e) {
+            if (isNotFound(e)) Timber.v("Nothing found");
+            else Timber.w(e, "DB fails to act", e);
+         } finally {
             try {
-                snappyDb = DBFactory.open(context);
-                action.call(snappyDb);
+               if (snappyDb != null && snappyDb.isOpen()) snappyDb.close();
             } catch (SnappydbException e) {
-                if (isNotFound(e)) Timber.v("Nothing found");
-                else Timber.w(e, "DB fails to act", e);
-            } finally {
-                try {
-                    if (snappyDb != null && snappyDb.isOpen()) snappyDb.close();
-                } catch (SnappydbException e) {
-                    Timber.w(e, "DB fails to close");
-                }
+               Timber.w(e, "DB fails to close");
             }
-        });
-    }
+         }
+      });
+   }
 
-    private <T> Optional<T> actWithResult(SnappyResult<T> action) {
-        Future<T> future = executorService.submit(() -> {
-            DB snappyDb = null;
-            try {
-                snappyDb = DBFactory.open(context);
-                T result = action.call(snappyDb);
-                Timber.v("DB action result: %s", result);
-                return result;
+   private <T> Optional<T> actWithResult(SnappyResult<T> action) {
+      Future<T> future = executorService.submit(() -> {
+         DB snappyDb = null;
+         try {
+            snappyDb = DBFactory.open(context);
+            T result = action.call(snappyDb);
+            Timber.v("DB action result: %s", result);
+            return result;
+         } catch (SnappydbException e) {
+            if (isNotFound(e)) Timber.v("Nothing found");
+            else Timber.w(e, "DB fails to act with result", e);
+            return null;
+         } finally {
+            if (snappyDb != null) try {
+               snappyDb.close();
             } catch (SnappydbException e) {
-                if (isNotFound(e)) Timber.v("Nothing found");
-                else Timber.w(e, "DB fails to act with result", e);
-                return null;
-            } finally {
-                if (snappyDb != null)
-                    try {
-                        snappyDb.close();
-                    } catch (SnappydbException e) {
-                        Timber.w(e, "DB fails to close");
-                    }
+               Timber.w(e, "DB fails to close");
             }
-        });
-        try {
-            return Optional.fromNullable(future.get());
-        } catch (InterruptedException | ExecutionException e) {
-            Timber.w(e, "DB fails to act with result");
-            return Optional.absent();
-        }
-    }
+         }
+      });
+      try {
+         return Optional.fromNullable(future.get());
+      } catch (InterruptedException | ExecutionException e) {
+         Timber.w(e, "DB fails to act with result");
+         return Optional.absent();
+      }
+   }
 
-    private boolean isNotFound(SnappydbException e) {
-        return e.getMessage().contains("NotFound");
-    }
+   private boolean isNotFound(SnappydbException e) {
+      return e.getMessage().contains("NotFound");
+   }
 
-    @Override
-    public void clearAll() {
-        act(DB::destroy);
-    }
+   @Override
+   public void clearAll() {
+      act(DB::destroy);
+   }
 
-    @Override
-    public Boolean isEmpty(String key) {
-        return actWithResult((db) -> {
-            String[] keys = db.findKeys(key);
-            return keys == null || keys.length == 0;
-        }).or(false);
-    }
+   @Override
+   public Boolean isEmpty(String key) {
+      return actWithResult((db) -> {
+         String[] keys = db.findKeys(key);
+         return keys == null || keys.length == 0;
+      }).or(false);
+   }
 
-    ///////////////////////////////////////////////////////////////////////////
-    // Public
-    ///////////////////////////////////////////////////////////////////////////
+   ///////////////////////////////////////////////////////////////////////////
+   // Public
+   ///////////////////////////////////////////////////////////////////////////
 
-    @Override
-    public <T> void putList(String key, Collection<T> list) {
-        act(db -> db.put(key, list.toArray()));
-    }
+   @Override
+   public <T> void putList(String key, Collection<T> list) {
+      act(db -> db.put(key, list.toArray()));
+   }
 
-    @Override
-    public <T> List<T> readList(String key, Class<T> clazz) {
-        return actWithResult(db -> new ArrayList<>(Arrays.asList(db.getObjectArray(key, clazz))))
-                .or(new ArrayList<>());
-    }
+   @Override
+   public <T> List<T> readList(String key, Class<T> clazz) {
+      return actWithResult(db -> new ArrayList<>(Arrays.asList(db.getObjectArray(key, clazz)))).or(new ArrayList<>());
+   }
 
-    /**
-     * Method is intended to delete all records for given key.
-     *
-     * @param key key to be deleted.
-     */
-    @Override
-    public void clearAllForKey(String key) {
-        clearAllForKeys(key);
-    }
+   /**
+    * Method is intended to delete all records for given key.
+    *
+    * @param key key to be deleted.
+    */
+   @Override
+   public void clearAllForKey(String key) {
+      clearAllForKeys(key);
+   }
 
-    /**
-     * Method is intended to delete all records for given keys.
-     *
-     * @param keys keys array to be deleted.
-     */
-    @Override
-    public void clearAllForKeys(String... keys) {
-        Queryable.from(keys).forEachR(key -> act(db -> {
-            String[] placesKeys = db.findKeys(key);
-            for (String placeKey : placesKeys) {
-                db.del(placeKey);
+   /**
+    * Method is intended to delete all records for given keys.
+    *
+    * @param keys keys array to be deleted.
+    */
+   @Override
+   public void clearAllForKeys(String... keys) {
+      Queryable.from(keys).forEachR(key -> act(db -> {
+         String[] placesKeys = db.findKeys(key);
+         for (String placeKey : placesKeys) {
+            db.del(placeKey);
+         }
+      }));
+   }
+
+   ///////////////////////////////////////////////////////////////////////////
+   // BucketItems
+   ///////////////////////////////////////////////////////////////////////////
+   @Override
+   public void saveBucketList(List<BucketItem> items, int userId) {
+      putList(BUCKET_LIST + "_" + userId, items);
+   }
+
+   @Override
+   public List<BucketItem> readBucketList(int userId) {
+      return readBucketList(BUCKET_LIST + "_" + userId);
+   }
+
+   private List<BucketItem> readBucketList(String key) {
+      List<BucketItem> list = readList(key, BucketItem.class);
+      Collections.sort(list, (lhs, rhs) -> {
+         if (lhs.isDone() == rhs.isDone()) return 0;
+         else if (lhs.isDone() && !rhs.isDone()) return 1;
+         else return -1;
+      });
+      return list;
+   }
+
+   @Override
+   public void saveOpenBucketTabType(String type) {
+      act(db -> db.put(OPEN_BUCKET_TAB_TYPE, type));
+   }
+
+   @Override
+   public String getOpenBucketTabType() {
+      return actWithResult(db -> db.get(OPEN_BUCKET_TAB_TYPE)).orNull();
+   }
+
+   ///////////////////////////////////////////////////////////////////////////
+   // Media
+   ///////////////////////////////////////////////////////////////////////////
+   @Override
+   public void saveDownloadMediaEntity(CachedEntity e) {
+      act(db -> db.put(MEDIA_UPLOAD_ENTITY + e.getUuid(), e));
+   }
+
+   @Override
+   public CachedEntity getDownloadMediaEntity(String id) {
+      return actWithResult(db -> db.get(MEDIA_UPLOAD_ENTITY + id, CachedEntity.class)).orNull();
+   }
+
+   @Override
+   public void setLastSyncAppVersion(String appVersion) {
+      act(db -> db.put(LAST_SYNC_APP_VERSION, appVersion));
+   }
+
+   @Override
+   public String getLastSyncAppVersion() {
+      return actWithResult(db -> db.get(LAST_SYNC_APP_VERSION)).orNull();
+   }
+
+   ///////////////////////////////////////////////////////////////////////////
+   // Settings
+   ///////////////////////////////////////////////////////////////////////////
+
+   @Override
+   public void saveSettings(List<Setting> settingsList, boolean withClear) {
+      act(db -> {
+         if (withClear) clearSettings(db);
+         //
+         for (Setting settings : settingsList) {
+            db.put(SETTINGS_KEY + settings.getType().name() + settings.getName(), settings);
+         }
+      });
+   }
+
+   @Override
+   public List<Setting> getSettings() {
+      return actWithResult(db -> {
+         List<Setting> settingsList = new ArrayList<>();
+         String[] keys = db.findKeys(SETTINGS_KEY);
+         for (String key : keys) {
+            if (key.contains(Setting.Type.FLAG.name())) {
+               settingsList.add(db.get(key, FlagSetting.class));
+            } else if (key.contains(Setting.Type.SELECT.name())) {
+               settingsList.add(db.get(key, SelectSetting.class));
             }
-        }));
-    }
-
-    ///////////////////////////////////////////////////////////////////////////
-    // BucketItems
-    ///////////////////////////////////////////////////////////////////////////
-    @Override
-    public void saveBucketList(List<BucketItem> items, int userId) {
-        putList(BUCKET_LIST + "_" + userId, items);
-    }
-
-    @Override
-    public List<BucketItem> readBucketList(int userId) {
-        return readBucketList(BUCKET_LIST + "_" + userId);
-    }
-
-    private List<BucketItem> readBucketList(String key) {
-        List<BucketItem> list = readList(key, BucketItem.class);
-        Collections.sort(list, (lhs, rhs) -> {
-            if (lhs.isDone() == rhs.isDone()) return 0;
-            else if (lhs.isDone() && !rhs.isDone()) return 1;
-            else return -1;
-        });
-        return list;
-    }
-
-    @Override
-    public void saveOpenBucketTabType(String type) {
-        act(db -> db.put(OPEN_BUCKET_TAB_TYPE, type));
-    }
-
-    @Override
-    public String getOpenBucketTabType() {
-        return actWithResult(db -> db.get(OPEN_BUCKET_TAB_TYPE)).orNull();
-    }
-
-    ///////////////////////////////////////////////////////////////////////////
-    // Media
-    ///////////////////////////////////////////////////////////////////////////
-    @Override
-    public void saveDownloadMediaEntity(CachedEntity e) {
-        act(db -> db.put(MEDIA_UPLOAD_ENTITY + e.getUuid(), e));
-    }
-
-    @Override
-    public CachedEntity getDownloadMediaEntity(String id) {
-        return actWithResult(db -> db.get(MEDIA_UPLOAD_ENTITY + id, CachedEntity.class))
-                .orNull();
-    }
-
-    @Override
-    public void setLastSyncAppVersion(String appVersion) {
-        act(db -> db.put(LAST_SYNC_APP_VERSION, appVersion));
-    }
-
-    @Override
-    public String getLastSyncAppVersion() {
-        return actWithResult(db -> db.get(LAST_SYNC_APP_VERSION)).orNull();
-    }
-
-    ///////////////////////////////////////////////////////////////////////////
-    // Settings
-    ///////////////////////////////////////////////////////////////////////////
-
-    @Override
-    public void saveSettings(List<Setting> settingsList, boolean withClear) {
-        act(db -> {
-            if (withClear) clearSettings(db);
-            //
-            for (Setting settings : settingsList) {
-                db.put(SETTINGS_KEY + settings.getType().name() + settings.getName(), settings);
-            }
-        });
-    }
-
-    @Override
-    public List<Setting> getSettings() {
-        return actWithResult(db -> {
-            List<Setting> settingsList = new ArrayList<>();
-            String[] keys = db.findKeys(SETTINGS_KEY);
-            for (String key : keys) {
-                if (key.contains(Setting.Type.FLAG.name())) {
-                    settingsList.add(db.get(key, FlagSetting.class));
-                } else if (key.contains(Setting.Type.SELECT.name())) {
-                    settingsList.add(db.get(key, SelectSetting.class));
-                }
-            }
-            return settingsList;
-        }).or(Collections.emptyList());
-    }
-
-    @Override
-    public void clearSettings(DB snappyDb) throws SnappydbException {
-        String[] settingsKeys = snappyDb.findKeys(SETTINGS_KEY);
-        for (String key : settingsKeys) {
-            snappyDb.del(key);
-        }
-    }
-
-    ///////////////////////////////////////////////////////////////////////////
-    // Suggest photos
-    ///////////////////////////////////////////////////////////////////////////
-
-    @Override
-    public void saveLastSuggestedPhotosSyncTime(long time) {
-        act(db -> db.putLong(SUGGESTED_PHOTOS_SYNC_TIME, time));
-    }
-
-    @Override
-    public long getLastSuggestedPhotosSyncTime() {
-        return actWithResult(db -> db.getLong(SUGGESTED_PHOTOS_SYNC_TIME)).or(0L);
-    }
-
-    ///////////////////////////////////////////////////////////////////////////
-    // Photo List Tasks
-    ///////////////////////////////////////////////////////////////////////////
-
-    @Override
-    public void savePhotoEntityList(TripImagesType type, int userId, List<IFullScreenObject> items) {
-        putList(IMAGE + ":" + type + ":" + userId, items);
-    }
-
-    @Override
-    public List<IFullScreenObject> readPhotoEntityList(TripImagesType type, int userId) {
-        return readList(IMAGE + ":" + type + ":" + userId, IFullScreenObject.class);
-    }
-
-    @Override
-    public void saveLastSelectedVideoLocale(VideoLocale videoLocale) {
-        act(db -> db.put(LAST_SELECTED_VIDEO_LOCALE, videoLocale));
-    }
-
-    @Override
-    public VideoLocale getLastSelectedVideoLocale() {
-        return actWithResult(db -> db.get(LAST_SELECTED_VIDEO_LOCALE, VideoLocale.class))
-                .orNull();
-    }
-
-    @Override
-    public void saveLastSelectedVideoLanguage(VideoLanguage videoLocale) {
-        act(db -> db.put(LAST_SELECTED_VIDEO_LANGUAGE, videoLocale));
-    }
-
-    @Override
-    public VideoLanguage getLastSelectedVideoLanguage() {
-        return actWithResult(db -> db.get(LAST_SELECTED_VIDEO_LANGUAGE, VideoLanguage.class))
-                .orNull();
-    }
-
-    ///////////////////////////////////////////////////////////////////////////
-    // Notifications counters
-    ///////////////////////////////////////////////////////////////////////////
-
-    /**
-     * All notifications
-     */
-    @Override
-    public void saveBadgeNotificationsCount(int notificationsCount) {
-        act(db -> db.putInt(BADGE_NOTIFICATIONS_COUNT, notificationsCount));
-    }
-
-    /**
-     * All notifications
-     */
-    @Override
-    public int getBadgeNotificationsCount() {
-        return actWithResult(db -> db.getInt(BADGE_NOTIFICATIONS_COUNT)).or(0);
-    }
-
-    @Override
-    public void saveCountFromHeader(String headerKey, int count) {
-        act(db -> db.putInt(headerKey, count));
-    }
-
-    @Override
-    public int getExclusiveNotificationsCount() {
-        return actWithResult(db -> db.getInt(EXCLUSIVE_NOTIFICATIONS_COUNT)).or(0);
-    }
-
-    @Override
-    public int getFriendsRequestsCount() {
-        return actWithResult(db -> db.getInt(FRIEND_REQUEST_COUNT)).or(0);
-    }
-
-    ///////////////////////////////////////////////////////////////////////////
-    // Cached translations
-    ///////////////////////////////////////////////////////////////////////////
-
-    @Override
-    public void saveTranslation(String originalText, String translation, String toLanguage) {
-        act(db -> db.put(TRANSLATION + originalText + toLanguage, translation));
-    }
-
-    @Override
-    public String getTranslation(String originalText, String toLanguage) {
-        return actWithResult(db -> db.get(TRANSLATION + originalText + toLanguage)).or("");
-    }
-
-    ///////////////////////////////////////////////////////////////////////////
-    // Circles
-    ///////////////////////////////////////////////////////////////////////////
-
-    @Override
-    public void saveCircles(List<Circle> circles) {
-        if (circles == null) circles = new ArrayList<>();
-        putList(CIRCLES, circles);
-    }
-
-    @Override
-    public List<Circle> getCircles() {
-        return readList(CIRCLES, Circle.class);
-    }
-
-    @Override
-    public void saveFilterCircle(Circle circle) {
-        act(db -> db.put(FILTER_CIRCLE, circle));
-    }
-
-    @Override
-    public Circle getFilterCircle() {
-        return actWithResult(db -> db.get(FILTER_CIRCLE, Circle.class)).orNull();
-    }
-
-    @Override
-    public Circle getFeedFriendPickedCircle() {
-        return actWithResult(db -> db.get(FILTER_FEED_FRIEND_FILTER_CIRCLE, Circle.class)).orNull();
-    }
-
-    @Override
-    public void saveFeedFriendPickedCircle(Circle circle) {
-        act(db -> db.put(FILTER_FEED_FRIEND_FILTER_CIRCLE, circle));
-    }
-
-    ///////////////////////////////////////////////////////////////////////////
-    //
-    ///////////////////////////////////////////////////////////////////////////
-
-    @Override
-    public String getGcmRegToken() {
-        return actWithResult(db -> db.get(GCM_REG_TOKEN)).orNull();
-    }
-
-    @Override
-    public void setGcmRegToken(String token) {
-        act(db -> db.put(GCM_REG_TOKEN, token));
-    }
-
-    @Override
-    public void saveSocialViewPagerState(SocialViewPagerState state) {
-        act(db -> db.put(SOCIAL_VIEW_PAGER_STATE, state));
-    }
-
-    @Override
-    public SocialViewPagerState getSocialViewPagerState() {
-        return actWithResult(db -> db.get(SOCIAL_VIEW_PAGER_STATE, SocialViewPagerState.class)).orNull();
-    }
-
-    @Override
-    public List<FeedbackType> getFeedbackTypes() {
-        return readList(FEEDBACK_TYPES, FeedbackType.class);
-    }
-
-    @Override
-    public void setFeedbackTypes(ArrayList<FeedbackType> types) {
-        clearAllForKey(FEEDBACK_TYPES);
-        putList(FEEDBACK_TYPES, types);
-    }
-
-
-    ///////////////////////////////////////////////////////////////////////////
-    // GCM
-    ///////////////////////////////////////////////////////////////////////////
-
-    private interface SnappyAction {
-        void call(DB db) throws SnappydbException;
-    }
-
-    private interface SnappyResult<T> {
-        T call(DB db) throws SnappydbException;
-    }
-
-    ///////////////////////////////////////////////////////////////////////////
-    // DTL
-    ///////////////////////////////////////////////////////////////////////////
-
-    @Override
-    public void saveDtlLocation(DtlLocation dtlLocation) {
-        // list below is a hack to allow manipulating DtlLocation class since it is an interface
-        List<DtlLocation> location = new ArrayList<>();
-        location.add(dtlLocation);
-        putList(DTL_SELECTED_LOCATION, location);
-    }
-
-    @Override
-    public void cleanDtlLocation() {
-        clearAllForKey(DTL_SELECTED_LOCATION);
-    }
-
-    @Override
-    @Nullable
-    public DtlLocation getDtlLocation() {
-        // list below is a hack to allow manipulating DtlLocation class since it is an interface
-        List<DtlLocation> location = readList(DTL_SELECTED_LOCATION, DtlLocation.class);
-        if (location.isEmpty()) return DtlLocation.UNDEFINED;
-        else return location.get(0);
-    }
-
-    @Override
-    public void saveDtlMerhants(List<DtlMerchant> merchants) {
-        clearAllForKey(DTL_MERCHANTS);
-        putList(DTL_MERCHANTS, merchants);
-    }
-
-    @Override
-    public List<DtlMerchant> getDtlMerchants() {
-        return readList(DTL_MERCHANTS, DtlMerchant.class);
-    }
-
-    @Override
-    public void saveAmenities(Collection<DtlMerchantAttribute> amenities) {
-        clearAllForKey(DTL_AMENITIES);
-        putList(DTL_AMENITIES, amenities);
-    }
-
-    @Override
-    public List<DtlMerchantAttribute> getAmenities() {
-        return readList(DTL_AMENITIES, DtlMerchantAttribute.class);
-    }
-
-    @Override
-    public void clearMerchantData() {
-        clearAllForKeys(DTL_MERCHANTS, DTL_AMENITIES, DTL_TRANSACTION_PREFIX);
-    }
-
-    @Override
-    public void saveLastMapCameraPosition(Location location) {
-        act(db -> db.put(DTL_LAST_MAP_POSITION, location));
-    }
-
-    @Override
-    public Location getLastMapCameraPosition() {
-        return actWithResult(db -> db.getObject(DTL_LAST_MAP_POSITION, Location.class)).orNull();
-    }
-
-    @Override
-    public void cleanLastMapCameraPosition() {
-        clearAllForKey(DTL_LAST_MAP_POSITION);
-    }
-
-    @Override
-    public void saveLastSelectedOffersOnlyToogle(boolean state) {
-        act(db -> db.putBoolean(DTL_SHOW_OFFERS_ONLY_TOGGLE, state));
-    }
-
-    @Override
-    public Boolean getLastSelectedOffersOnlyToggle() {
-        return actWithResult(db -> db.getBoolean(DTL_SHOW_OFFERS_ONLY_TOGGLE)).or(Boolean.FALSE);
-    }
-
-    @Override
-    public void cleanLastSelectedOffersOnlyToggle() {
-        clearAllForKey(DTL_SHOW_OFFERS_ONLY_TOGGLE);
-    }
-
-    ///////////////////////////////////////////////////////////////////////////
-    // DTL Transaction
-    ///////////////////////////////////////////////////////////////////////////
-
-    @Override
-    public DtlTransaction getDtlTransaction(String id) {
-        return actWithResult(db -> db.getObject(DTL_TRANSACTION_PREFIX + id, ImmutableDtlTransaction.class)).orNull();
-    }
-
-    @Override
-    public void saveDtlTransaction(String id, DtlTransaction dtlTransaction) {
-        act(db -> db.put(DTL_TRANSACTION_PREFIX + id, dtlTransaction));
-    }
-
-    @Override
-    public void deleteDtlTransaction(String id) {
-        act(db -> db.del(DTL_TRANSACTION_PREFIX + id));
-    }
+         }
+         return settingsList;
+      }).or(Collections.emptyList());
+   }
+
+   @Override
+   public void clearSettings(DB snappyDb) throws SnappydbException {
+      String[] settingsKeys = snappyDb.findKeys(SETTINGS_KEY);
+      for (String key : settingsKeys) {
+         snappyDb.del(key);
+      }
+   }
+
+   ///////////////////////////////////////////////////////////////////////////
+   // Suggest photos
+   ///////////////////////////////////////////////////////////////////////////
+
+   @Override
+   public void saveLastSuggestedPhotosSyncTime(long time) {
+      act(db -> db.putLong(SUGGESTED_PHOTOS_SYNC_TIME, time));
+   }
+
+   @Override
+   public long getLastSuggestedPhotosSyncTime() {
+      return actWithResult(db -> db.getLong(SUGGESTED_PHOTOS_SYNC_TIME)).or(0L);
+   }
+
+   ///////////////////////////////////////////////////////////////////////////
+   // Photo List Tasks
+   ///////////////////////////////////////////////////////////////////////////
+
+   @Override
+   public void savePhotoEntityList(TripImagesType type, int userId, List<IFullScreenObject> items) {
+      putList(IMAGE + ":" + type + ":" + userId, items);
+   }
+
+   @Override
+   public List<IFullScreenObject> readPhotoEntityList(TripImagesType type, int userId) {
+      return readList(IMAGE + ":" + type + ":" + userId, IFullScreenObject.class);
+   }
+
+   @Override
+   public void saveLastSelectedVideoLocale(VideoLocale videoLocale) {
+      act(db -> db.put(LAST_SELECTED_VIDEO_LOCALE, videoLocale));
+   }
+
+   @Override
+   public VideoLocale getLastSelectedVideoLocale() {
+      return actWithResult(db -> db.get(LAST_SELECTED_VIDEO_LOCALE, VideoLocale.class)).orNull();
+   }
+
+   @Override
+   public void saveLastSelectedVideoLanguage(VideoLanguage videoLocale) {
+      act(db -> db.put(LAST_SELECTED_VIDEO_LANGUAGE, videoLocale));
+   }
+
+   @Override
+   public VideoLanguage getLastSelectedVideoLanguage() {
+      return actWithResult(db -> db.get(LAST_SELECTED_VIDEO_LANGUAGE, VideoLanguage.class)).orNull();
+   }
+
+   ///////////////////////////////////////////////////////////////////////////
+   // Notifications counters
+   ///////////////////////////////////////////////////////////////////////////
+
+   /**
+    * All notifications
+    */
+   @Override
+   public void saveBadgeNotificationsCount(int notificationsCount) {
+      act(db -> db.putInt(BADGE_NOTIFICATIONS_COUNT, notificationsCount));
+   }
+
+   /**
+    * All notifications
+    */
+   @Override
+   public int getBadgeNotificationsCount() {
+      return actWithResult(db -> db.getInt(BADGE_NOTIFICATIONS_COUNT)).or(0);
+   }
+
+   @Override
+   public void saveCountFromHeader(String headerKey, int count) {
+      act(db -> db.putInt(headerKey, count));
+   }
+
+   @Override
+   public int getExclusiveNotificationsCount() {
+      return actWithResult(db -> db.getInt(EXCLUSIVE_NOTIFICATIONS_COUNT)).or(0);
+   }
+
+   @Override
+   public int getFriendsRequestsCount() {
+      return actWithResult(db -> db.getInt(FRIEND_REQUEST_COUNT)).or(0);
+   }
+
+   ///////////////////////////////////////////////////////////////////////////
+   // Cached translations
+   ///////////////////////////////////////////////////////////////////////////
+
+   @Override
+   public void saveTranslation(String originalText, String translation, String toLanguage) {
+      act(db -> db.put(TRANSLATION + originalText + toLanguage, translation));
+   }
+
+   @Override
+   public String getTranslation(String originalText, String toLanguage) {
+      return actWithResult(db -> db.get(TRANSLATION + originalText + toLanguage)).or("");
+   }
+
+   ///////////////////////////////////////////////////////////////////////////
+   // Circles
+   ///////////////////////////////////////////////////////////////////////////
+
+   @Override
+   public void saveCircles(List<Circle> circles) {
+      if (circles == null) circles = new ArrayList<>();
+      putList(CIRCLES, circles);
+   }
+
+   @Override
+   public List<Circle> getCircles() {
+      return readList(CIRCLES, Circle.class);
+   }
+
+   @Override
+   public void saveFilterCircle(Circle circle) {
+      act(db -> db.put(FILTER_CIRCLE, circle));
+   }
+
+   @Override
+   public Circle getFilterCircle() {
+      return actWithResult(db -> db.get(FILTER_CIRCLE, Circle.class)).orNull();
+   }
+
+   @Override
+   public Circle getFeedFriendPickedCircle() {
+      return actWithResult(db -> db.get(FILTER_FEED_FRIEND_FILTER_CIRCLE, Circle.class)).orNull();
+   }
+
+   @Override
+   public void saveFeedFriendPickedCircle(Circle circle) {
+      act(db -> db.put(FILTER_FEED_FRIEND_FILTER_CIRCLE, circle));
+   }
+
+   ///////////////////////////////////////////////////////////////////////////
+   //
+   ///////////////////////////////////////////////////////////////////////////
+
+   @Override
+   public String getGcmRegToken() {
+      return actWithResult(db -> db.get(GCM_REG_TOKEN)).orNull();
+   }
+
+   @Override
+   public void setGcmRegToken(String token) {
+      act(db -> db.put(GCM_REG_TOKEN, token));
+   }
+
+   @Override
+   public void saveSocialViewPagerState(SocialViewPagerState state) {
+      act(db -> db.put(SOCIAL_VIEW_PAGER_STATE, state));
+   }
+
+   @Override
+   public SocialViewPagerState getSocialViewPagerState() {
+      return actWithResult(db -> db.get(SOCIAL_VIEW_PAGER_STATE, SocialViewPagerState.class)).orNull();
+   }
+
+   @Override
+   public List<FeedbackType> getFeedbackTypes() {
+      return readList(FEEDBACK_TYPES, FeedbackType.class);
+   }
+
+   @Override
+   public void setFeedbackTypes(ArrayList<FeedbackType> types) {
+      clearAllForKey(FEEDBACK_TYPES);
+      putList(FEEDBACK_TYPES, types);
+   }
+
+
+   ///////////////////////////////////////////////////////////////////////////
+   // GCM
+   ///////////////////////////////////////////////////////////////////////////
+
+   private interface SnappyAction {
+      void call(DB db) throws SnappydbException;
+   }
+
+   private interface SnappyResult<T> {
+      T call(DB db) throws SnappydbException;
+   }
+
+   ///////////////////////////////////////////////////////////////////////////
+   // DTL
+   ///////////////////////////////////////////////////////////////////////////
+
+   @Override
+   public void saveDtlLocation(DtlLocation dtlLocation) {
+      // list below is a hack to allow manipulating DtlLocation class since it is an interface
+      List<DtlLocation> location = new ArrayList<>();
+      location.add(dtlLocation);
+      putList(DTL_SELECTED_LOCATION, location);
+   }
+
+   @Override
+   public void cleanDtlLocation() {
+      clearAllForKey(DTL_SELECTED_LOCATION);
+   }
+
+   @Override
+   @Nullable
+   public DtlLocation getDtlLocation() {
+      // list below is a hack to allow manipulating DtlLocation class since it is an interface
+      List<DtlLocation> location = readList(DTL_SELECTED_LOCATION, DtlLocation.class);
+      if (location.isEmpty()) return DtlLocation.UNDEFINED;
+      else return location.get(0);
+   }
+
+   @Override
+   public void saveDtlMerhants(List<DtlMerchant> merchants) {
+      clearAllForKey(DTL_MERCHANTS);
+      putList(DTL_MERCHANTS, merchants);
+   }
+
+   @Override
+   public List<DtlMerchant> getDtlMerchants() {
+      return readList(DTL_MERCHANTS, DtlMerchant.class);
+   }
+
+   @Override
+   public void saveAmenities(Collection<DtlMerchantAttribute> amenities) {
+      clearAllForKey(DTL_AMENITIES);
+      putList(DTL_AMENITIES, amenities);
+   }
+
+   @Override
+   public List<DtlMerchantAttribute> getAmenities() {
+      return readList(DTL_AMENITIES, DtlMerchantAttribute.class);
+   }
+
+   @Override
+   public void clearMerchantData() {
+      clearAllForKeys(DTL_MERCHANTS, DTL_AMENITIES, DTL_TRANSACTION_PREFIX);
+   }
+
+   @Override
+   public void saveLastMapCameraPosition(Location location) {
+      act(db -> db.put(DTL_LAST_MAP_POSITION, location));
+   }
+
+   @Override
+   public Location getLastMapCameraPosition() {
+      return actWithResult(db -> db.getObject(DTL_LAST_MAP_POSITION, Location.class)).orNull();
+   }
+
+   @Override
+   public void cleanLastMapCameraPosition() {
+      clearAllForKey(DTL_LAST_MAP_POSITION);
+   }
+
+   @Override
+   public void saveLastSelectedOffersOnlyToogle(boolean state) {
+      act(db -> db.putBoolean(DTL_SHOW_OFFERS_ONLY_TOGGLE, state));
+   }
+
+   @Override
+   public Boolean getLastSelectedOffersOnlyToggle() {
+      return actWithResult(db -> db.getBoolean(DTL_SHOW_OFFERS_ONLY_TOGGLE)).or(Boolean.FALSE);
+   }
+
+   @Override
+   public void cleanLastSelectedOffersOnlyToggle() {
+      clearAllForKey(DTL_SHOW_OFFERS_ONLY_TOGGLE);
+   }
+
+   ///////////////////////////////////////////////////////////////////////////
+   // DTL Transaction
+   ///////////////////////////////////////////////////////////////////////////
+
+   @Override
+   public DtlTransaction getDtlTransaction(String id) {
+      return actWithResult(db -> db.getObject(DTL_TRANSACTION_PREFIX + id, ImmutableDtlTransaction.class)).orNull();
+   }
+
+   @Override
+   public void saveDtlTransaction(String id, DtlTransaction dtlTransaction) {
+      act(db -> db.put(DTL_TRANSACTION_PREFIX + id, dtlTransaction));
+   }
+
+   @Override
+   public void deleteDtlTransaction(String id) {
+      act(db -> db.del(DTL_TRANSACTION_PREFIX + id));
+   }
 }

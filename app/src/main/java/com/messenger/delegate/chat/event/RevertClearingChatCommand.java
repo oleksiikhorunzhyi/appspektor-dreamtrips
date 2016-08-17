@@ -11,21 +11,21 @@ import io.techery.janet.command.annotations.CommandAction;
 
 @CommandAction
 public class RevertClearingChatCommand extends Command<Void> implements InjectableAction {
-    private final RevertClearingEvent revertClearingEvent;
+   private final RevertClearingEvent revertClearingEvent;
 
-    @Inject ConversationsDAO conversationsDAO;
+   @Inject ConversationsDAO conversationsDAO;
 
-    public RevertClearingChatCommand(RevertClearingEvent revertClearingEvent) {
-        this.revertClearingEvent = revertClearingEvent;
-    }
+   public RevertClearingChatCommand(RevertClearingEvent revertClearingEvent) {
+      this.revertClearingEvent = revertClearingEvent;
+   }
 
-    @Override
-    protected void run(CommandCallback<Void> callback) throws Throwable {
-        conversationsDAO.setClearDate(revertClearingEvent.getConversationId(), 0);
-        callback.onSuccess(null);
-    }
+   @Override
+   protected void run(CommandCallback<Void> callback) throws Throwable {
+      conversationsDAO.setClearDate(revertClearingEvent.getConversationId(), 0);
+      callback.onSuccess(null);
+   }
 
-    public String getConversationId() {
-        return revertClearingEvent.getConversationId();
-    }
+   public String getConversationId() {
+      return revertClearingEvent.getConversationId();
+   }
 }

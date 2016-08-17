@@ -18,39 +18,39 @@ import butterknife.InjectView;
 @Layout(R.layout.adapter_item_photo_facebook)
 public class FacebookPhotoCell extends AbstractCell<FacebookPhoto> {
 
-    @InjectView(R.id.imageViewPhoto) SimpleDraweeView ivBg;
-    @InjectView(R.id.pick) ImageView pick;
+   @InjectView(R.id.imageViewPhoto) SimpleDraweeView ivBg;
+   @InjectView(R.id.pick) ImageView pick;
 
-    public FacebookPhotoCell(View view) {
-        super(view);
-    }
+   public FacebookPhotoCell(View view) {
+      super(view);
+   }
 
-    @Override
-    protected void syncUIStateWithModel() {
-        List<FacebookPhoto.ImageSource> is = getModelObject().getImageSources();
-        String picture;
-        if (is.size() > 2) {
-            picture = is.get(is.size() / 2 + 1).getSource();
-        } else {
-            picture = getModelObject().getPicture();
-        }
-        ivBg.setImageURI(Uri.parse(picture));
+   @Override
+   protected void syncUIStateWithModel() {
+      List<FacebookPhoto.ImageSource> is = getModelObject().getImageSources();
+      String picture;
+      if (is.size() > 2) {
+         picture = is.get(is.size() / 2 + 1).getSource();
+      } else {
+         picture = getModelObject().getPicture();
+      }
+      ivBg.setImageURI(Uri.parse(picture));
 
-        itemView.setOnClickListener(v -> {
-            getModelObject().setChecked(!getModelObject().isChecked());
-            getModelObject().setPickedTime(getModelObject().isChecked() ? System.currentTimeMillis() : -1);
+      itemView.setOnClickListener(v -> {
+         getModelObject().setChecked(!getModelObject().isChecked());
+         getModelObject().setPickedTime(getModelObject().isChecked() ? System.currentTimeMillis() : -1);
 
-            getEventBus().post(new PhotoPickedEvent(getModelObject()));
-        });
+         getEventBus().post(new PhotoPickedEvent(getModelObject()));
+      });
 
-        updatePickState();
-    }
+      updatePickState();
+   }
 
-    private void updatePickState() {
-        if (getModelObject().isChecked()) {
-            pick.setImageResource(R.drawable.add_photo_icon_selected);
-        } else {
-            pick.setImageResource(R.drawable.add_photo_icon);
-        }
-    }
+   private void updatePickState() {
+      if (getModelObject().isChecked()) {
+         pick.setImageResource(R.drawable.add_photo_icon_selected);
+      } else {
+         pick.setImageResource(R.drawable.add_photo_icon);
+      }
+   }
 }

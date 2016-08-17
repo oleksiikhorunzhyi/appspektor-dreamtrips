@@ -1,36 +1,40 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                xmlns:tools="http://schemas.android.com/tools"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent">
+      android:layout_width="match_parent"
+      android:layout_height="match_parent"
+      >
 
-    <FrameLayout
-        android:id="@+id/framecontainer"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
+   <FrameLayout
+         android:id="@+id/framecontainer"
+         android:layout_width="match_parent"
+         android:layout_height="match_parent"
+         />
 
-    <View
-        android:id="@+id/clickable_view"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="@android:color/transparent"/>
+   <View
+         android:id="@+id/clickable_view"
+         android:layout_width="match_parent"
+         android:layout_height="match_parent"
+         android:background="@android:color/transparent"
+         />
 
-    <!--Top bar-->
-    <RelativeLayout
-        android:id="@+id/topBar"
-        android:layout_width="match_parent"
-        android:layout_height="?android:attr/actionBarSize"
-        android:background="@color/black_semi_transparent"
-        android:clickable="true">
+   <!--Top bar-->
+   <RelativeLayout
+         android:id="@+id/topBar"
+         android:layout_width="match_parent"
+         android:layout_height="?android:attr/actionBarSize"
+         android:background="@color/black_semi_transparent"
+         android:clickable="true"
+         >
 
-        <Button
+      <Button
             android:id="@+id/topbar_btn_exit"
             android:layout_width="36dp"
             android:layout_height="36dp"
             android:layout_centerVertical="true"
             android:background="@drawable/ic_player360_exit"
-            android:layout_marginLeft="5dp"/>
+            android:layout_marginLeft="5dp"
+            />
 
-        <TextView
+      <TextView
             android:id="@+id/topBar_tv_title"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -41,15 +45,17 @@
             android:singleLine="true"
             android:ellipsize="end"
             android:textAppearance="@android:style/TextAppearance.Large"
-            android:textColor="@android:color/white"/>
+            android:textColor="@android:color/white"
+            />
 
-    </RelativeLayout>
+   </RelativeLayout>
 
-    <!--Bottom bar with media controls-->
-    <com.worldventures.dreamtrips.modules.common.view.custom.PFViewMediaControls
-        android:id="@+id/media_controls"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_gravity="bottom"
-        android:clickable="true"/>
+   <!--Bottom bar with media controls-->
+   <com.worldventures.dreamtrips.modules.common.view.custom.PFViewMediaControls
+         android:id="@+id/media_controls"
+         android:layout_width="match_parent"
+         android:layout_height="wrap_content"
+         android:layout_gravity="bottom"
+         android:clickable="true"
+         />
 </FrameLayout>

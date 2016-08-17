@@ -9,17 +9,16 @@ import javax.inject.Inject;
 
 public abstract class LanguageHeaderStaticInfoFragment extends StaticInfoFragment {
 
-    protected static final String ACCEPT_LANGUAGE_HEADER_KEY = "Accept-Language";
+   protected static final String ACCEPT_LANGUAGE_HEADER_KEY = "Accept-Language";
 
-    @Inject
-    LocaleHelper localeHelper;
+   @Inject LocaleHelper localeHelper;
 
-    @Override
-    public void load(String url) {
-        if (!isLoading && savedState == null) {
-            Map<String, String> additionalHeaders = new HashMap<>();
-            additionalHeaders.put(ACCEPT_LANGUAGE_HEADER_KEY, localeHelper.getDefaultLocaleFormatted());
-            webView.loadUrl(url, additionalHeaders);
-        }
-    }
+   @Override
+   public void load(String url) {
+      if (!isLoading && savedState == null) {
+         Map<String, String> additionalHeaders = new HashMap<>();
+         additionalHeaders.put(ACCEPT_LANGUAGE_HEADER_KEY, localeHelper.getDefaultLocaleFormatted());
+         webView.loadUrl(url, additionalHeaders);
+      }
+   }
 }

@@ -10,20 +10,20 @@ import rx.schedulers.Schedulers;
 
 public class TranslationFeedInteractor {
 
-    private final ActionPipe<TranslateUidItemCommand.TranslateCommentCommand> translateCommentPipe;
-    private final ActionPipe<TranslateUidItemCommand.TranslatePostCommand> translatePostPipe;
+   private final ActionPipe<TranslateUidItemCommand.TranslateCommentCommand> translateCommentPipe;
+   private final ActionPipe<TranslateUidItemCommand.TranslatePostCommand> translatePostPipe;
 
-    @Inject
-    public TranslationFeedInteractor(Janet janet) {
-        translateCommentPipe = janet.createPipe(TranslateUidItemCommand.TranslateCommentCommand.class, Schedulers.io());
-        translatePostPipe = janet.createPipe(TranslateUidItemCommand.TranslatePostCommand.class, Schedulers.io());
-    }
+   @Inject
+   public TranslationFeedInteractor(Janet janet) {
+      translateCommentPipe = janet.createPipe(TranslateUidItemCommand.TranslateCommentCommand.class, Schedulers.io());
+      translatePostPipe = janet.createPipe(TranslateUidItemCommand.TranslatePostCommand.class, Schedulers.io());
+   }
 
-    public ActionPipe<TranslateUidItemCommand.TranslateCommentCommand> translateCommentPipe() {
-        return translateCommentPipe;
-    }
+   public ActionPipe<TranslateUidItemCommand.TranslateCommentCommand> translateCommentPipe() {
+      return translateCommentPipe;
+   }
 
-    public ActionPipe<TranslateUidItemCommand.TranslatePostCommand> translatePostPipe() {
-        return translatePostPipe;
-    }
+   public ActionPipe<TranslateUidItemCommand.TranslatePostCommand> translatePostPipe() {
+      return translatePostPipe;
+   }
 }

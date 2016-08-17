@@ -31,137 +31,131 @@ import icepick.State;
 
 public class NotificationPresenter extends Presenter<NotificationPresenter.View> {
 
-    @State
-    protected ArrayList<FeedItem> notifications;
-    @Inject
-    protected FeedEntityManager entityManager;
-    @Inject
-    SnappyRepository db;
-    @Inject
-    @Named(RouteCreatorModule.PROFILE)
-    RouteCreator<Integer> routeCreator;
-    @Inject
-    BucketInteractor bucketInteractor;
-    @Inject NotificationCountEventDelegate notificationCountEventDelegate;
+   @State protected ArrayList<FeedItem> notifications;
+   @Inject protected FeedEntityManager entityManager;
+   @Inject SnappyRepository db;
+   @Inject @Named(RouteCreatorModule.PROFILE) RouteCreator<Integer> routeCreator;
+   @Inject BucketInteractor bucketInteractor;
+   @Inject NotificationCountEventDelegate notificationCountEventDelegate;
 
-    public NotificationPresenter() {
-    }
+   public NotificationPresenter() {
+   }
 
-    @Override
-    public void restoreInstanceState(Bundle savedState) {
-        super.restoreInstanceState(savedState);
-        if (savedState == null) notifications = new ArrayList<>();
-    }
+   @Override
+   public void restoreInstanceState(Bundle savedState) {
+      super.restoreInstanceState(savedState);
+      if (savedState == null) notifications = new ArrayList<>();
+   }
 
-    @Override
-    public void takeView(View view) {
-        super.takeView(view);
-        if (notifications.size() != 0) {
-            view.refreshNotifications(notifications);
-        }
-        notificationCountEventDelegate.getObservable()
-                .compose(bindViewToMainComposer())
-                .subscribe(event -> view.setRequestsCount(db.getFriendsRequestsCount()));
-    }
+   @Override
+   public void takeView(View view) {
+      super.takeView(view);
+      if (notifications.size() != 0) {
+         view.refreshNotifications(notifications);
+      }
+      notificationCountEventDelegate.getObservable()
+            .compose(bindViewToMainComposer())
+            .subscribe(event -> view.setRequestsCount(db.getFriendsRequestsCount()));
+   }
 
-    @Override
-    public void onInjected() {
-        super.onInjected();
-        entityManager.setRequestingPresenter(this);
-    }
+   @Override
+   public void onInjected() {
+      super.onInjected();
+      entityManager.setRequestingPresenter(this);
+   }
 
-    public void reload() {
-        refreshFeed();
-    }
+   public void reload() {
+      refreshFeed();
+   }
 
-    public void refreshRequestsCount() {
-        view.setRequestsCount(db.getFriendsRequestsCount());
-    }
+   public void refreshRequestsCount() {
+      view.setRequestsCount(db.getFriendsRequestsCount());
+   }
 
-    public void onRefresh() {
-        refreshFeed();
-    }
+   public void onRefresh() {
+      refreshFeed();
+   }
 
-    public void loadNext() {
-        if (notifications.size() > 0) {
-            doRequest(getNextPageFeedRequest(notifications.get(notifications.size() - 1).getCreatedAt()),
-                    this::addFeedItems, this::loadMoreItemsError);
-        }
-        TrackingHelper.loadMoreNotifications();
-    }
+   public void loadNext() {
+      if (notifications.size() > 0) {
+         doRequest(getNextPageFeedRequest(notifications.get(notifications.size() - 1)
+               .getCreatedAt()), this::addFeedItems, this::loadMoreItemsError);
+      }
+      TrackingHelper.loadMoreNotifications();
+   }
 
-    private DreamTripsRequest<ArrayList<ParentFeedItem>> getRefreshFeedRequest(Date date) {
-        return new NotificationsQuery();
-    }
+   private DreamTripsRequest<ArrayList<ParentFeedItem>> getRefreshFeedRequest(Date date) {
+      return new NotificationsQuery();
+   }
 
-    private DreamTripsRequest<ArrayList<ParentFeedItem>> getNextPageFeedRequest(Date date) {
-        return new NotificationsQuery(date);
-    }
+   private DreamTripsRequest<ArrayList<ParentFeedItem>> getNextPageFeedRequest(Date date) {
+      return new NotificationsQuery(date);
+   }
 
-    private void loadMoreItemsError(SpiceException spiceException) {
-        view.updateLoadingStatus(false, false);
-        addFeedItems(new ArrayList<>());
-    }
+   private void loadMoreItemsError(SpiceException spiceException) {
+      view.updateLoadingStatus(false, false);
+      addFeedItems(new ArrayList<>());
+   }
 
-    private void addFeedItems(List<ParentFeedItem> olderItems) {
-        boolean noMoreFeeds = olderItems == null || olderItems.size() == 0;
-        view.updateLoadingStatus(false, noMoreFeeds);
-        //
-        notifications.addAll(Queryable.from(olderItems)
-                .filter(ParentFeedItem::isSingle)
-                .map(element -> element.getItems().get(0))
-                .toList());
-        view.refreshNotifications(notifications);
-        markAsRead(olderItems);
-    }
+   private void addFeedItems(List<ParentFeedItem> olderItems) {
+      boolean noMoreFeeds = olderItems == null || olderItems.size() == 0;
+      view.updateLoadingStatus(false, noMoreFeeds);
+      //
+      notifications.addAll(Queryable.from(olderItems)
+            .filter(ParentFeedItem::isSingle)
+            .map(element -> element.getItems().get(0))
+            .toList());
+      view.refreshNotifications(notifications);
+      markAsRead(olderItems);
+   }
 
-    private void refreshFeed() {
-        view.startLoading();
-        doRequest(getRefreshFeedRequest(Calendar.getInstance().getTime()),
-                this::refreshFeedSucceed, this::refreshFeedError);
-    }
+   private void refreshFeed() {
+      view.startLoading();
+      doRequest(getRefreshFeedRequest(Calendar.getInstance()
+            .getTime()), this::refreshFeedSucceed, this::refreshFeedError);
+   }
 
-    private void refreshFeedError(SpiceException exception) {
-        super.handleError(exception);
-        view.updateLoadingStatus(false, false);
-        view.finishLoading();
-        view.refreshNotifications(notifications);
-    }
+   private void refreshFeedError(SpiceException exception) {
+      super.handleError(exception);
+      view.updateLoadingStatus(false, false);
+      view.finishLoading();
+      view.refreshNotifications(notifications);
+   }
 
-    private void refreshFeedSucceed(List<ParentFeedItem> freshItems) {
-        boolean noMoreFeeds = freshItems == null || freshItems.size() == 0;
-        view.updateLoadingStatus(false, noMoreFeeds);
-        //
-        view.finishLoading();
-        notifications.clear();
-        notifications.addAll(Queryable.from(freshItems)
-                .filter(ParentFeedItem::isSingle)
-                .map(element -> element.getItems().get(0))
-                .toList());
+   private void refreshFeedSucceed(List<ParentFeedItem> freshItems) {
+      boolean noMoreFeeds = freshItems == null || freshItems.size() == 0;
+      view.updateLoadingStatus(false, noMoreFeeds);
+      //
+      view.finishLoading();
+      notifications.clear();
+      notifications.addAll(Queryable.from(freshItems)
+            .filter(ParentFeedItem::isSingle)
+            .map(element -> element.getItems().get(0))
+            .toList());
 
-        view.refreshNotifications(notifications);
-        markAsRead(freshItems);
-    }
+      view.refreshNotifications(notifications);
+      markAsRead(freshItems);
+   }
 
-    private void markAsRead(List<ParentFeedItem> olderItems) {
-        if (olderItems.size() > 0 && olderItems.get(0).getItems().size() > 0) {
-            Date since = olderItems.get(olderItems.size() - 1).getItems().get(0).getCreatedAt();
-            Date before = olderItems.get(0).getItems().get(0).getCreatedAt();
-            doRequest(new MarkAsReadNotificationsCommand(since, before), aVoid -> {
-            });
-        }
-    }
+   private void markAsRead(List<ParentFeedItem> olderItems) {
+      if (olderItems.size() > 0 && olderItems.get(0).getItems().size() > 0) {
+         Date since = olderItems.get(olderItems.size() - 1).getItems().get(0).getCreatedAt();
+         Date before = olderItems.get(0).getItems().get(0).getCreatedAt();
+         doRequest(new MarkAsReadNotificationsCommand(since, before), aVoid -> {
+         });
+      }
+   }
 
-    public interface View extends RxView {
+   public interface View extends RxView {
 
-        void setRequestsCount(int count);
+      void setRequestsCount(int count);
 
-        void startLoading();
+      void startLoading();
 
-        void finishLoading();
+      void finishLoading();
 
-        void refreshNotifications(List<FeedItem> notifications);
+      void refreshNotifications(List<FeedItem> notifications);
 
-        void updateLoadingStatus(boolean loading, boolean noMoreElements);
-    }
+      void updateLoadingStatus(boolean loading, boolean noMoreElements);
+   }
 }

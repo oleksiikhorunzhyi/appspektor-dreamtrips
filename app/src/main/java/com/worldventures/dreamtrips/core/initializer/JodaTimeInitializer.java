@@ -9,14 +9,14 @@ import net.danlew.android.joda.JodaTimeAndroid;
 
 public class JodaTimeInitializer implements AppInitializer {
 
-    private Context context;
+   private Context context;
 
-    public JodaTimeInitializer(Context context) {
-        this.context = context;
-    }
+   public JodaTimeInitializer(Context context) {
+      this.context = context;
+   }
 
-    @Override
-    public void initialize(Injector injector) {
-        JodaTimeAndroid.init(context);
-    }
+   @Override
+   public void initialize(Injector injector) {
+      JodaTimeAndroid.init(context);
+   }
 }

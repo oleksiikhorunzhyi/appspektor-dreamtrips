@@ -16,24 +16,24 @@ import javax.inject.Inject;
 @Layout(R.layout.adapter_item_feed_trip_event)
 public class TripFeedItemDetailsCell extends FeedItemDetailsCell<TripFeedItem, CellDelegate<TripFeedItem>> {
 
-    @Inject SessionHolder<UserSession> appSessionHolder;
+   @Inject SessionHolder<UserSession> appSessionHolder;
 
-    private TripFeedViewInjector tripFeedViewInjector;
+   private TripFeedViewInjector tripFeedViewInjector;
 
-    public TripFeedItemDetailsCell(View view) {
-        super(view);
-    }
+   public TripFeedItemDetailsCell(View view) {
+      super(view);
+   }
 
-    @Override
-    public void afterInject() {
-        super.afterInject();
-        tripFeedViewInjector = new TripFeedViewInjector(itemView, router, getEventBus());
-        tripFeedViewInjector.setSyncStateListener(this::syncUIStateWithModel);
-    }
+   @Override
+   public void afterInject() {
+      super.afterInject();
+      tripFeedViewInjector = new TripFeedViewInjector(itemView, router, getEventBus());
+      tripFeedViewInjector.setSyncStateListener(this::syncUIStateWithModel);
+   }
 
-    @Override
-    protected void syncUIStateWithModel() {
-        super.syncUIStateWithModel();
-        tripFeedViewInjector.initTripData(getModelObject().getItem(), appSessionHolder.get().get().getUser());
-    }
+   @Override
+   protected void syncUIStateWithModel() {
+      super.syncUIStateWithModel();
+      tripFeedViewInjector.initTripData(getModelObject().getItem(), appSessionHolder.get().get().getUser());
+   }
 }

@@ -9,13 +9,13 @@ import com.worldventures.dreamtrips.modules.tripsimages.model.IFullScreenObject;
 
 public class TripImagePresenter extends BaseImagePresenter<IFullScreenObject> {
 
-    public TripImagePresenter(ImageBundle<IFullScreenObject> bundle) {
-        super(bundle);
-    }
+   public TripImagePresenter(ImageBundle<IFullScreenObject> bundle) {
+      super(bundle);
+   }
 
-    @Override
-    protected Uri createUri(IFullScreenObject image, int width, int height) {
-        return Uri.parse(image.getFSImage().getUrl(width, height));
-    }
+   @Override
+   protected Uri createUri(IFullScreenObject image, int width, int height) {
+      return Uri.parse(image.getFSImage().getUrl(width, height));
+   }
 }
 

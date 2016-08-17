@@ -6,7 +6,6 @@ import com.worldventures.dreamtrips.core.janet.cache.CacheBundle;
 import com.worldventures.dreamtrips.core.janet.cache.CachedAction;
 import com.worldventures.dreamtrips.core.janet.cache.storage.ActionStorage;
 import com.worldventures.dreamtrips.core.janet.cache.storage.MemoryStorage;
-import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.modules.trips.command.GetActivitiesCommand;
 import com.worldventures.dreamtrips.modules.trips.model.ActivityModel;
 
@@ -14,24 +13,24 @@ import java.util.List;
 
 public class ActivitiesStorage implements ActionStorage<List<ActivityModel>> {
 
-    private final MemoryStorage<List<ActivityModel>> memoryStorage;
+   private final MemoryStorage<List<ActivityModel>> memoryStorage;
 
-    public ActivitiesStorage(MemoryStorage<List<ActivityModel>> memoryStorage) {
-        this.memoryStorage = memoryStorage;
-    }
+   public ActivitiesStorage(MemoryStorage<List<ActivityModel>> memoryStorage) {
+      this.memoryStorage = memoryStorage;
+   }
 
-    @Override
-    public Class<? extends CachedAction> getActionClass() {
-        return GetActivitiesCommand.class;
-    }
+   @Override
+   public Class<? extends CachedAction> getActionClass() {
+      return GetActivitiesCommand.class;
+   }
 
-    @Override
-    public void save(@Nullable CacheBundle params, List<ActivityModel> data) {
-        memoryStorage.save(params, data);
-    }
+   @Override
+   public void save(@Nullable CacheBundle params, List<ActivityModel> data) {
+      memoryStorage.save(params, data);
+   }
 
-    @Override
-    public List<ActivityModel> get(@Nullable CacheBundle action) {
-        return memoryStorage.get(action);
-    }
+   @Override
+   public List<ActivityModel> get(@Nullable CacheBundle action) {
+      return memoryStorage.get(action);
+   }
 }

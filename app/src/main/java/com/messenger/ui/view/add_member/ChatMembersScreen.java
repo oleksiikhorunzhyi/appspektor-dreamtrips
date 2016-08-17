@@ -12,31 +12,32 @@ import java.util.List;
 import rx.Observable;
 
 public interface ChatMembersScreen extends MessengerScreen {
-    void showLoading();
+   void showLoading();
 
-    void showContent();
+   void showContent();
 
-    void showError(Throwable e);
+   void showError(Throwable e);
 
-    void setTitle(String title);
+   void setTitle(String title);
 
-    void setTitle(@StringRes int title);
+   void setTitle(@StringRes int title);
 
-    void setAdapterItems(List<Object> items);
+   void setAdapterItems(List<Object> items);
 
-    void setChosenUsers(List<DataUser> users);
+   void setChosenUsers(List<DataUser> users);
 
-    void setConversationNameEditTextVisibility(int visibility);
+   void setConversationNameEditTextVisibility(int visibility);
 
-    void slideInConversationNameEditText();
+   void slideInConversationNameEditText();
 
-    void slideOutConversationNameEditText();
+   void slideOutConversationNameEditText();
 
-    @NonNull String getConversationName();
+   @NonNull
+   String getConversationName();
 
-    Observable<CharSequence> getSearchQueryObservable();
+   Observable<CharSequence> getSearchQueryObservable();
 
-    Observable<DataUser> getRemovedUserObservable();
+   Observable<DataUser> getRemovedUserObservable();
 
-    void setSearchQuery(@Nullable CharSequence query);
+   void setSearchQuery(@Nullable CharSequence query);
 }

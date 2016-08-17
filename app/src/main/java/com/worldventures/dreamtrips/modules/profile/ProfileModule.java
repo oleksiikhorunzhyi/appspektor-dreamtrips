@@ -17,28 +17,15 @@ import dagger.Module;
 import dagger.Provides;
 
 @Module(
-        injects = {
-                UserFragment.class,
-                UserPresenter.class,
-                AccountFragment.class,
-                AccountPresenter.class,
-                FriendPreferenceFragment.class,
-                FriendPreferencesPresenter.class,
-                FriendPrefGroupCell.class,
-                ProfileCell.class,
-                ReloadFeedCell.class,
-        },
-        complete = false,
-        library = true
-)
+      injects = {UserFragment.class, UserPresenter.class, AccountFragment.class, AccountPresenter.class, FriendPreferenceFragment.class, FriendPreferencesPresenter.class, FriendPrefGroupCell.class, ProfileCell.class, ReloadFeedCell.class,},
+      complete = false,
+      library = true)
 public class ProfileModule {
 
-    public static final String MY_PROFILE = Route.ACCOUNT_PROFILE.name();
+   public static final String MY_PROFILE = Route.ACCOUNT_PROFILE.name();
 
-    @Provides(type = Provides.Type.SET)
-    ComponentDescription provideProfileComponent() {
-        return new ComponentDescription(MY_PROFILE, 0, R.string.my_profile, R.drawable.ic_profile,
-                true,
-                AccountFragment.class);
-    }
+   @Provides(type = Provides.Type.SET)
+   ComponentDescription provideProfileComponent() {
+      return new ComponentDescription(MY_PROFILE, 0, R.string.my_profile, R.drawable.ic_profile, true, AccountFragment.class);
+   }
 }

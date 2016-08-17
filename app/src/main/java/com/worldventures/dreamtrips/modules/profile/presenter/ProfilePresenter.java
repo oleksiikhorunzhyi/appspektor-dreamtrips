@@ -53,279 +53,275 @@ import rx.android.schedulers.AndroidSchedulers;
 
 public abstract class ProfilePresenter<T extends ProfilePresenter.View, U extends User> extends Presenter<T> {
 
-    protected U user;
+   protected U user;
 
-    @State ArrayList<FeedItem> feedItems;
+   @State ArrayList<FeedItem> feedItems;
 
-    @Inject FeedEntityManager entityManager;
-    @Inject LocaleHelper localeHelper;
-    @Inject @Named(RouteCreatorModule.PROFILE) RouteCreator<Integer> routeCreator;
-    @Inject TextualPostTranslationDelegate textualPostTranslationDelegate;
-    @Inject BucketInteractor bucketInteractor;
-    @Inject FeedInteractor feedInteractor;
+   @Inject FeedEntityManager entityManager;
+   @Inject LocaleHelper localeHelper;
+   @Inject @Named(RouteCreatorModule.PROFILE) RouteCreator<Integer> routeCreator;
+   @Inject TextualPostTranslationDelegate textualPostTranslationDelegate;
+   @Inject BucketInteractor bucketInteractor;
+   @Inject FeedInteractor feedInteractor;
 
-    public ProfilePresenter() {
-    }
+   public ProfilePresenter() {
+   }
 
-    public ProfilePresenter(U user) {
-        this.user = user;
-    }
+   public ProfilePresenter(U user) {
+      this.user = user;
+   }
 
-    @Override
-    public void restoreInstanceState(Bundle savedState) {
-        super.restoreInstanceState(savedState);
-        if (savedState == null) feedItems = new ArrayList<>();
-    }
+   @Override
+   public void restoreInstanceState(Bundle savedState) {
+      super.restoreInstanceState(savedState);
+      if (savedState == null) feedItems = new ArrayList<>();
+   }
 
-    @Override
-    public void onInjected() {
-        super.onInjected();
-        entityManager.setRequestingPresenter(this);
-    }
+   @Override
+   public void onInjected() {
+      super.onInjected();
+      entityManager.setRequestingPresenter(this);
+   }
 
-    @Override
-    public void onResume() {
-        super.onResume();
-        refreshFeed();
-    }
+   @Override
+   public void onResume() {
+      super.onResume();
+      refreshFeed();
+   }
 
-    @Override
-    public void takeView(T view) {
-        super.takeView(view);
-        if (feedItems.size() != 0) {
-            view.refreshFeedItems(feedItems);
-        }
-        //
-        attachUserToView(user);
-        loadProfile();
-        textualPostTranslationDelegate.onTakeView(view, feedItems);
-    }
+   @Override
+   public void takeView(T view) {
+      super.takeView(view);
+      if (feedItems.size() != 0) {
+         view.refreshFeedItems(feedItems);
+      }
+      //
+      attachUserToView(user);
+      loadProfile();
+      textualPostTranslationDelegate.onTakeView(view, feedItems);
+   }
 
-    @Override
-    public void dropView() {
-        textualPostTranslationDelegate.onDropView();
-        super.dropView();
-    }
+   @Override
+   public void dropView() {
+      textualPostTranslationDelegate.onDropView();
+      super.dropView();
+   }
 
-    protected void onProfileLoaded(U user) {
-        attachUserToView(user);
-        view.finishLoading();
-    }
+   protected void onProfileLoaded(U user) {
+      attachUserToView(user);
+      view.finishLoading();
+   }
 
-    private void attachUserToView(U user) {
-        this.user = user;
-        view.setUser(this.user);
-    }
+   private void attachUserToView(U user) {
+      this.user = user;
+      view.setUser(this.user);
+   }
 
-    @Override
-    public void handleError(SpiceException error) {
-        super.handleError(error);
-        view.finishLoading();
-    }
+   @Override
+   public void handleError(SpiceException error) {
+      super.handleError(error);
+      view.finishLoading();
+   }
 
-    public void makePost() {
-        view.openPost();
-    }
+   public void makePost() {
+      view.openPost();
+   }
 
-    protected abstract void loadProfile();
+   protected abstract void loadProfile();
 
-    public abstract void openBucketList();
+   public abstract void openBucketList();
 
-    public abstract void openTripImages();
+   public abstract void openTripImages();
 
-    public void openFriends() {
-        if (featureManager.available(Feature.SOCIAL)) {
-            view.openFriends();
-        }
-    }
+   public void openFriends() {
+      if (featureManager.available(Feature.SOCIAL)) {
+         view.openFriends();
+      }
+   }
 
-    public User getUser() {
-        return user;
-    }
+   public User getUser() {
+      return user;
+   }
 
-    public void onEvent(DownloadPhotoEvent event) {
-        if (view.isVisibleOnScreen())
-            doRequest(new DownloadImageCommand(context, event.url));
-    }
+   public void onEvent(DownloadPhotoEvent event) {
+      if (view.isVisibleOnScreen()) doRequest(new DownloadImageCommand(context, event.url));
+   }
 
-    public void onEvent(EditBucketEvent event) {
-        if (!view.isVisibleOnScreen()) return;
-        //
-        BucketBundle bundle = new BucketBundle();
-        bundle.setType(event.type());
-        bundle.setBucketItem(event.bucketItem());
+   public void onEvent(EditBucketEvent event) {
+      if (!view.isVisibleOnScreen()) return;
+      //
+      BucketBundle bundle = new BucketBundle();
+      bundle.setType(event.type());
+      bundle.setBucketItem(event.bucketItem());
 
-        view.showEdit(bundle);
-    }
+      view.showEdit(bundle);
+   }
 
-    public void onEvent(DeleteBucketEvent event) {
-        if (view.isVisibleOnScreen()) {
-            BucketItem item = event.getEntity();
+   public void onEvent(DeleteBucketEvent event) {
+      if (view.isVisibleOnScreen()) {
+         BucketItem item = event.getEntity();
 
-            view.bind(bucketInteractor.deleteItemPipe()
-                    .createObservable(new DeleteItemHttpAction(item.getUid()))
-                    .observeOn(AndroidSchedulers.mainThread()))
-                    .subscribe(new ActionStateSubscriber<DeleteItemHttpAction>()
-                            .onSuccess(deleteItemAction -> itemDeleted(item)));
-        }
-    }
+         view.bind(bucketInteractor.deleteItemPipe()
+               .createObservable(new DeleteItemHttpAction(item.getUid()))
+               .observeOn(AndroidSchedulers.mainThread()))
+               .subscribe(new ActionStateSubscriber<DeleteItemHttpAction>().onSuccess(deleteItemAction -> itemDeleted(item)));
+      }
+   }
 
-    private void itemDeleted(FeedEntity feedEntity) {
-        List<FeedItem> filteredItems = Queryable.from(feedItems)
-                .filter(element -> !element.getItem().equals(feedEntity))
-                .toList();
+   private void itemDeleted(FeedEntity feedEntity) {
+      List<FeedItem> filteredItems = Queryable.from(feedItems)
+            .filter(element -> !element.getItem().equals(feedEntity))
+            .toList();
 
-        feedItems.clear();
-        feedItems.addAll(filteredItems);
+      feedItems.clear();
+      feedItems.addAll(filteredItems);
 
-        view.refreshFeedItems(feedItems);
-    }
+      view.refreshFeedItems(feedItems);
+   }
 
-    public void onEvent(FeedEntityDeletedEvent event) {
-        itemDeleted(event.getEventModel());
-    }
+   public void onEvent(FeedEntityDeletedEvent event) {
+      itemDeleted(event.getEventModel());
+   }
 
-    public void onEvent(FeedItemAddedEvent event) {
-        feedItems.add(0, event.getFeedItem());
-        view.refreshFeedItems(feedItems);
-    }
+   public void onEvent(FeedItemAddedEvent event) {
+      feedItems.add(0, event.getFeedItem());
+      view.refreshFeedItems(feedItems);
+   }
 
-    public void onEvent(FeedEntityChangedEvent event) {
-        Queryable.from(feedItems).forEachR(item -> {
-            if (item.getItem() != null && item.getItem().equals(event.getFeedEntity())) {
-                FeedEntity feedEntity = event.getFeedEntity();
-                if (feedEntity.getOwner() == null) {
-                    feedEntity.setOwner(item.getItem().getOwner());
-                }
-                item.setItem(feedEntity);
+   public void onEvent(FeedEntityChangedEvent event) {
+      Queryable.from(feedItems).forEachR(item -> {
+         if (item.getItem() != null && item.getItem().equals(event.getFeedEntity())) {
+            FeedEntity feedEntity = event.getFeedEntity();
+            if (feedEntity.getOwner() == null) {
+               feedEntity.setOwner(item.getItem().getOwner());
             }
-        });
+            item.setItem(feedEntity);
+         }
+      });
 
-        view.refreshFeedItems(feedItems);
-    }
+      view.refreshFeedItems(feedItems);
+   }
 
-    public void onEvent(FeedEntityCommentedEvent event) {
-        Queryable.from(feedItems).forEachR(item -> {
-            if (item.getItem() != null && item.getItem().equals(event.getFeedEntity())) {
-                item.setItem(event.getFeedEntity());
-            }
-        });
+   public void onEvent(FeedEntityCommentedEvent event) {
+      Queryable.from(feedItems).forEachR(item -> {
+         if (item.getItem() != null && item.getItem().equals(event.getFeedEntity())) {
+            item.setItem(event.getFeedEntity());
+         }
+      });
 
-        view.refreshFeedItems(feedItems);
-    }
+      view.refreshFeedItems(feedItems);
+   }
 
-    public void onEvent(LikesPressedEvent event) {
-        if (view.isVisibleOnScreen()) {
-            FeedEntity model = event.getModel();
-            if (model.isLiked()) {
-                entityManager.unlike(model);
-            } else {
-                entityManager.like(model);
-            }
-        }
-    }
+   public void onEvent(LikesPressedEvent event) {
+      if (view.isVisibleOnScreen()) {
+         FeedEntity model = event.getModel();
+         if (model.isLiked()) {
+            entityManager.unlike(model);
+         } else {
+            entityManager.like(model);
+         }
+      }
+   }
 
-    public void onEvent(EntityLikedEvent event) {
-        itemLiked(event.getFeedEntity());
-    }
+   public void onEvent(EntityLikedEvent event) {
+      itemLiked(event.getFeedEntity());
+   }
 
-    public void onEvent(DeletePostEvent event) {
-        if (view.isVisibleOnScreen())
-            doRequest(new DeletePostCommand(event.getEntity().getUid()),
-                    aVoid -> itemDeleted(event.getEntity()));
-    }
+   public void onEvent(DeletePostEvent event) {
+      if (view.isVisibleOnScreen()) doRequest(new DeletePostCommand(event.getEntity()
+            .getUid()), aVoid -> itemDeleted(event.getEntity()));
+   }
 
-    public void onEvent(TranslatePostEvent event) {
-        if (view.isVisibleOnScreen()) {
-            textualPostTranslationDelegate.translate(event.getPostFeedItem(), localeHelper.getDefaultLocaleFormatted());
-        }
-    }
+   public void onEvent(TranslatePostEvent event) {
+      if (view.isVisibleOnScreen()) {
+         textualPostTranslationDelegate.translate(event.getPostFeedItem(), localeHelper.getDefaultLocaleFormatted());
+      }
+   }
 
-    public void onEvent(DeletePhotoEvent event) {
-        if (view.isVisibleOnScreen())
-            doRequest(new DeletePhotoCommand(event.getEntity().getUid()),
-                    aVoid -> itemDeleted(event.getEntity()));
+   public void onEvent(DeletePhotoEvent event) {
+      if (view.isVisibleOnScreen()) doRequest(new DeletePhotoCommand(event.getEntity()
+            .getUid()), aVoid -> itemDeleted(event.getEntity()));
 
-    }
+   }
 
-    private void itemLiked(FeedEntity feedEntity) {
-        Queryable.from(feedItems).forEachR(feedItem -> {
-            FeedEntity item = feedItem.getItem();
-            if (item.getUid().equals(feedEntity.getUid())) {
-                item.syncLikeState(feedEntity);
-            }
-        });
+   private void itemLiked(FeedEntity feedEntity) {
+      Queryable.from(feedItems).forEachR(feedItem -> {
+         FeedEntity item = feedItem.getItem();
+         if (item.getUid().equals(feedEntity.getUid())) {
+            item.syncLikeState(feedEntity);
+         }
+      });
 
-        view.refreshFeedItems(feedItems);
-    }
+      view.refreshFeedItems(feedItems);
+   }
 
-    public void onRefresh() {
-        view.startLoading();
-        refreshFeed();
-        loadProfile();
-    }
+   public void onRefresh() {
+      view.startLoading();
+      refreshFeed();
+      loadProfile();
+   }
 
-    public void onLoadNext() {
-        loadNext(feedItems.get(feedItems.size() - 1).getCreatedAt());
-    }
+   public void onLoadNext() {
+      loadNext(feedItems.get(feedItems.size() - 1).getCreatedAt());
+   }
 
-    public abstract void refreshFeed();
+   public abstract void refreshFeed();
 
-    public abstract void loadNext(Date date);
+   public abstract void loadNext(Date date);
 
-    protected void refreshFeedSucceed(List<FeedItem<FeedEntity>> freshItems) {
-        boolean noMoreElements = freshItems == null || freshItems.size() == 0;
-        view.updateLoadingStatus(false, noMoreElements);
-        //
-        view.finishLoading();
-        feedItems.clear();
-        feedItems.addAll(freshItems);
-        view.refreshFeedItems(feedItems);
-    }
+   protected void refreshFeedSucceed(List<FeedItem<FeedEntity>> freshItems) {
+      boolean noMoreElements = freshItems == null || freshItems.size() == 0;
+      view.updateLoadingStatus(false, noMoreElements);
+      //
+      view.finishLoading();
+      feedItems.clear();
+      feedItems.addAll(freshItems);
+      view.refreshFeedItems(feedItems);
+   }
 
-    protected void addFeedItems(List<FeedItem<FeedEntity>> olderItems) {
-        boolean noMoreElements = olderItems == null || olderItems.size() == 0;
-        view.updateLoadingStatus(false, noMoreElements);
-        //
-        feedItems.addAll(olderItems);
-        view.refreshFeedItems(feedItems);
-    }
+   protected void addFeedItems(List<FeedItem<FeedEntity>> olderItems) {
+      boolean noMoreElements = olderItems == null || olderItems.size() == 0;
+      view.updateLoadingStatus(false, noMoreElements);
+      //
+      feedItems.addAll(olderItems);
+      view.refreshFeedItems(feedItems);
+   }
 
-    protected void refreshFeedError(BaseGetFeedCommand action, Throwable throwable) {
-        view.informUser(action.getErrorMessage());
-        view.updateLoadingStatus(false, false);
-        view.finishLoading();
-        view.refreshFeedItems(feedItems);
-    }
+   protected void refreshFeedError(BaseGetFeedCommand action, Throwable throwable) {
+      view.informUser(action.getErrorMessage());
+      view.updateLoadingStatus(false, false);
+      view.finishLoading();
+      view.refreshFeedItems(feedItems);
+   }
 
-    protected void loadMoreItemsError(BaseGetFeedCommand action, Throwable throwable) {
-        view.informUser(action.getErrorMessage());
-        view.updateLoadingStatus(false, false);
-        addFeedItems(new ArrayList<>());
-    }
+   protected void loadMoreItemsError(BaseGetFeedCommand action, Throwable throwable) {
+      view.informUser(action.getErrorMessage());
+      view.updateLoadingStatus(false, false);
+      addFeedItems(new ArrayList<>());
+   }
 
-    public interface View extends RxView, TextualPostTranslationDelegate.View {
+   public interface View extends RxView, TextualPostTranslationDelegate.View {
 
-        void openPost();
+      void openPost();
 
-        void openFriends();
+      void openFriends();
 
-        void openTripImages(Route route, TripsImagesBundle tripImagesBundle);
+      void openTripImages(Route route, TripsImagesBundle tripImagesBundle);
 
-        void openBucketList(Route route, ForeignBucketTabsBundle foreignBucketBundle);
+      void openBucketList(Route route, ForeignBucketTabsBundle foreignBucketBundle);
 
-        void notifyUserChanged();
+      void notifyUserChanged();
 
-        void setUser(User user);
+      void setUser(User user);
 
-        void startLoading();
+      void startLoading();
 
-        void finishLoading();
+      void finishLoading();
 
-        void refreshFeedItems(List<FeedItem> events);
+      void refreshFeedItems(List<FeedItem> events);
 
-        void showEdit(BucketBundle bucketBundle);
+      void showEdit(BucketBundle bucketBundle);
 
-        void updateLoadingStatus(boolean loading, boolean noMoreElements);
-    }
+      void updateLoadingStatus(boolean loading, boolean noMoreElements);
+   }
 }

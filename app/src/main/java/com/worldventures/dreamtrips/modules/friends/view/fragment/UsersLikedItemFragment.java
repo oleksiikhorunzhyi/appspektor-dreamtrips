@@ -21,71 +21,69 @@ import java.util.List;
 import butterknife.InjectView;
 
 @Layout(R.layout.fragment_likes)
-public class UsersLikedItemFragment extends BaseUsersFragment<UsersLikedItemPresenter, UsersLikedEntityBundle>
-        implements UsersLikedItemPresenter.View, UserCellDelegate {
+public class UsersLikedItemFragment extends BaseUsersFragment<UsersLikedItemPresenter, UsersLikedEntityBundle> implements UsersLikedItemPresenter.View, UserCellDelegate {
 
-    @InjectView(R.id.title) TextView header;
+   @InjectView(R.id.title) TextView header;
 
-    @Override
-    protected UsersLikedItemPresenter createPresenter(Bundle savedInstanceState) {
-        return new UsersLikedItemPresenter(getArgs());
-    }
+   @Override
+   protected UsersLikedItemPresenter createPresenter(Bundle savedInstanceState) {
+      return new UsersLikedItemPresenter(getArgs());
+   }
 
-    @Override
-    public void afterCreateView(View rootView) {
-        super.afterCreateView(rootView);
-        adapter.registerCell(User.class, UserCell.class);
-        adapter.registerDelegate(User.class, this);
-    }
+   @Override
+   public void afterCreateView(View rootView) {
+      super.afterCreateView(rootView);
+      adapter.registerCell(User.class, UserCell.class);
+      adapter.registerDelegate(User.class, this);
+   }
 
-    @Override
-    public void onResume() {
-        super.onResume();
-        OrientationUtil.lockOrientation(getActivity());
-        //hack for https://trello.com/c/oKIh9Rnb/922-nav-bar-of-likers-pop-up-becomes-grey-if-go-back-from-profile (reproducible on android 5.0+ )
-        header.getBackground().mutate().setAlpha(255);
-    }
+   @Override
+   public void onResume() {
+      super.onResume();
+      OrientationUtil.lockOrientation(getActivity());
+      //hack for https://trello.com/c/oKIh9Rnb/922-nav-bar-of-likers-pop-up-becomes-grey-if-go-back-from-profile (reproducible on android 5.0+ )
+      header.getBackground().mutate().setAlpha(255);
+   }
 
-    @Override
-    public void onPause() {
-        super.onPause();
-        OrientationUtil.unlockOrientation(getActivity());
-    }
+   @Override
+   public void onPause() {
+      super.onPause();
+      OrientationUtil.unlockOrientation(getActivity());
+   }
 
-    @Override
-    public void refreshUsers(List<User> users) {
-        super.refreshUsers(users);
-        if (isTabletLandscape()) {
-            String titleArg = users.size() == 1 ? users.get(0).getFullName() : String.valueOf(getLikersCount(users));
-            @StringRes int quantityStringId = QuantityHelper.chooseResource(users.size(),
-                    R.string.users_who_liked_title, R.string.people_liked_one, R.string.people_liked_other);
-            String title = String.format(getResources().getString(quantityStringId), titleArg);
-            header.setText(title);
-            header.setVisibility(View.VISIBLE);
-        }
-    }
+   @Override
+   public void refreshUsers(List<User> users) {
+      super.refreshUsers(users);
+      if (isTabletLandscape()) {
+         String titleArg = users.size() == 1 ? users.get(0).getFullName() : String.valueOf(getLikersCount(users));
+         @StringRes int quantityStringId = QuantityHelper.chooseResource(users.size(), R.string.users_who_liked_title, R.string.people_liked_one, R.string.people_liked_other);
+         String title = String.format(getResources().getString(quantityStringId), titleArg);
+         header.setText(title);
+         header.setVisibility(View.VISIBLE);
+      }
+   }
 
-    private int getLikersCount(List<User> users) {
-        return getArgs() != null && getArgs().getLikersCount() > 0 ? getArgs().getLikersCount() : users.size();
-    }
+   private int getLikersCount(List<User> users) {
+      return getArgs() != null && getArgs().getLikersCount() > 0 ? getArgs().getLikersCount() : users.size();
+   }
 
-    @Override
-    protected LinearLayoutManager createLayoutManager() {
-        return new LinearLayoutManager(getActivity());
-    }
+   @Override
+   protected LinearLayoutManager createLayoutManager() {
+      return new LinearLayoutManager(getActivity());
+   }
 
-    @Override
-    public void acceptRequest(User user) {
-        getPresenter().acceptRequest(user);
-    }
+   @Override
+   public void acceptRequest(User user) {
+      getPresenter().acceptRequest(user);
+   }
 
-    @Override
-    public void addUserRequest(User user) {
-        getPresenter().addUserRequest(user);
-    }
+   @Override
+   public void addUserRequest(User user) {
+      getPresenter().addUserRequest(user);
+   }
 
-    @Override
-    public void onCellClicked(User model) {
+   @Override
+   public void onCellClicked(User model) {
 
-    }
+   }
 }

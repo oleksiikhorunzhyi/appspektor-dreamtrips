@@ -17,54 +17,51 @@ import rx.Subscription;
 
 public class PickLocationActivity extends BaseActivity {
 
-    @Inject
-    LocationSettingsDelegate locationSettingsDelegate;
+   @Inject LocationSettingsDelegate locationSettingsDelegate;
 
-    private PickLocationViewImpl view;
-    private Subscription permissionSubscription;
+   private PickLocationViewImpl view;
+   private Subscription permissionSubscription;
 
-    @Override
-    protected void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        view = new PickLocationViewImpl(this);
-        view.setId(R.id.master_container);
-        view.setLocationPermissionHelper(new LocationPermissionHelper(this));
-        setContentView(view);
-    }
+   @Override
+   protected void onCreate(@Nullable Bundle savedInstanceState) {
+      super.onCreate(savedInstanceState);
+      view = new PickLocationViewImpl(this);
+      view.setId(R.id.master_container);
+      view.setLocationPermissionHelper(new LocationPermissionHelper(this));
+      setContentView(view);
+   }
 
-    public void askForLocationPermission() {
-        permissionSubscription = permissionDispatcher
-                .requestPermission(PermissionConstants.LOCATION_PERMISSIONS)
-                .subscribe(new PermissionSubscriber()
-                        .onPermissionRationaleAction(this::showRationaleForLocation)
-                        .onPermissionDeniedAction(this::showDeniedForLocation)
-                        .onPermissionGrantedAction(this::locationPermissionGranted));
-    }
+   public void askForLocationPermission() {
+      permissionSubscription = permissionDispatcher.requestPermission(PermissionConstants.LOCATION_PERMISSIONS)
+            .subscribe(new PermissionSubscriber().onPermissionRationaleAction(this::showRationaleForLocation)
+                  .onPermissionDeniedAction(this::showDeniedForLocation)
+                  .onPermissionGrantedAction(this::locationPermissionGranted));
+   }
 
-    void locationPermissionGranted() {
-        view.getPresenter().onLocationPermissionGranted();
-    }
+   void locationPermissionGranted() {
+      view.getPresenter().onLocationPermissionGranted();
+   }
 
-    void showRationaleForLocation() {
-        view.getPresenter().onRationalForLocationPermissionRequired();
-    }
+   void showRationaleForLocation() {
+      view.getPresenter().onRationalForLocationPermissionRequired();
+   }
 
-    void showDeniedForLocation() {
-        view.getPresenter().onLocationPermissionDenied();
-    }
+   void showDeniedForLocation() {
+      view.getPresenter().onLocationPermissionDenied();
+   }
 
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (!locationSettingsDelegate.onActivityResult(requestCode, resultCode, data)) {
-            super.onActivityResult(requestCode, resultCode, data);
-        }
-    }
+   @Override
+   protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+      if (!locationSettingsDelegate.onActivityResult(requestCode, resultCode, data)) {
+         super.onActivityResult(requestCode, resultCode, data);
+      }
+   }
 
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        if (permissionSubscription != null && !permissionSubscription.isUnsubscribed()) {
-            permissionSubscription.unsubscribe();
-        }
-    }
+   @Override
+   protected void onDestroy() {
+      super.onDestroy();
+      if (permissionSubscription != null && !permissionSubscription.isUnsubscribed()) {
+         permissionSubscription.unsubscribe();
+      }
+   }
 }

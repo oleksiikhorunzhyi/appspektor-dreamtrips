@@ -6,17 +6,17 @@ import com.techery.spares.storage.preferences.SimpleKeyValueStorage;
 
 
 public class ComplexStorageBuilder {
-    private final SimpleKeyValueStorage simpleKeyValueStorage;
+   private final SimpleKeyValueStorage simpleKeyValueStorage;
 
-    public ComplexStorageBuilder(SimpleKeyValueStorage simpleKeyValueStorage) {
-        this.simpleKeyValueStorage = simpleKeyValueStorage;
-    }
+   public ComplexStorageBuilder(SimpleKeyValueStorage simpleKeyValueStorage) {
+      this.simpleKeyValueStorage = simpleKeyValueStorage;
+   }
 
-    public final <T> ObjectStorage<T> build(final String key, final Class<T> objectClass) {
-        return new ComplexObjectStorage<T>(getStorage(key), objectClass);
-    }
+   public final <T> ObjectStorage<T> build(final String key, final Class<T> objectClass) {
+      return new ComplexObjectStorage<T>(getStorage(key), objectClass);
+   }
 
-    private ObjectPreferenceStorage getStorage(final String key) {
-        return new ObjectPreferenceStorage(simpleKeyValueStorage, key);
-    }
+   private ObjectPreferenceStorage getStorage(final String key) {
+      return new ObjectPreferenceStorage(simpleKeyValueStorage, key);
+   }
 }

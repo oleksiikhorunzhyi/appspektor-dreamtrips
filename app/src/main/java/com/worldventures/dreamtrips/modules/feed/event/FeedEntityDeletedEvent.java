@@ -4,13 +4,13 @@ import com.worldventures.dreamtrips.modules.feed.model.FeedEntity;
 
 public class FeedEntityDeletedEvent {
 
-    FeedEntity eventModel;
+   FeedEntity eventModel;
 
-    public FeedEntityDeletedEvent(FeedEntity eventModel) {
-        this.eventModel = eventModel;
-    }
+   public FeedEntityDeletedEvent(FeedEntity eventModel) {
+      this.eventModel = eventModel;
+   }
 
-    public FeedEntity getEventModel() {
-        return eventModel;
-    }
+   public FeedEntity getEventModel() {
+      return eventModel;
+   }
 }

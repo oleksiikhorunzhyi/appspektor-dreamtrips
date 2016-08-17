@@ -40,248 +40,225 @@ import timber.log.Timber;
 import static com.messenger.ui.presenter.ConversationListScreenPresenter.ChatTypeItem.ALL_CHATS;
 import static com.messenger.ui.presenter.ConversationListScreenPresenter.ChatTypeItem.GROUP_CHATS;
 
-public class ConversationListScreenPresenterImpl extends MessengerPresenterImpl<ConversationListScreen,
-        ConversationListViewState> implements ConversationListScreenPresenter {
+public class ConversationListScreenPresenterImpl extends MessengerPresenterImpl<ConversationListScreen, ConversationListViewState> implements ConversationListScreenPresenter {
 
-    private static final int SELECTED_CONVERSATION_DELAY = 400;
+   private static final int SELECTED_CONVERSATION_DELAY = 400;
 
-    @Inject ConversationsDAO conversationsDAO;
-    @Inject NotificationDelegate notificationDelegate;
-    @Inject OpenedConversationTracker openedConversationTracker;
+   @Inject ConversationsDAO conversationsDAO;
+   @Inject NotificationDelegate notificationDelegate;
+   @Inject OpenedConversationTracker openedConversationTracker;
 
-    private PublishSubject<String> filterStream;
-    private BehaviorSubject<String> typeStream;
-    private PublishSubject<DataConversation> selectedConversationStream;
-    private Subscription conversationSubscription;
+   private PublishSubject<String> filterStream;
+   private BehaviorSubject<String> typeStream;
+   private PublishSubject<DataConversation> selectedConversationStream;
+   private Subscription conversationSubscription;
 
-    public ConversationListScreenPresenterImpl(Context context, Injector injector) {
-        super(context, injector);
-    }
+   public ConversationListScreenPresenterImpl(Context context, Injector injector) {
+      super(context, injector);
+   }
 
-    @Override
-    public void onAttachedToWindow() {
-        super.onAttachedToWindow();
-        notificationDelegate.cancel(MessengerNotificationFactory.MESSENGER_TAG);
-        getViewState().setLoadingState(ConversationListViewState.LoadingState.LOADING);
-        applyViewState();
-        connectData();
-        trackConversations();
-    }
+   @Override
+   public void onAttachedToWindow() {
+      super.onAttachedToWindow();
+      notificationDelegate.cancel(MessengerNotificationFactory.MESSENGER_TAG);
+      getViewState().setLoadingState(ConversationListViewState.LoadingState.LOADING);
+      applyViewState();
+      connectData();
+      trackConversations();
+   }
 
-    private void connectData() {
-        connectFilterStream();
-        connectTypeStream();
-        connectToFilters();
-        connectToOpenedConversation();
-        connectToSelectedConversationStream();
-    }
+   private void connectData() {
+      connectFilterStream();
+      connectTypeStream();
+      connectToFilters();
+      connectToOpenedConversation();
+      connectToSelectedConversationStream();
+   }
 
-    private void connectToOpenedConversation() {
-        openedConversationTracker
-                .watchOpenedConversationId()
-                .compose(bindViewIoToMainComposer())
-                .subscribe(getView()::setSelectedConversationId);
-    }
+   private void connectToOpenedConversation() {
+      openedConversationTracker.watchOpenedConversationId()
+            .compose(bindViewIoToMainComposer())
+            .subscribe(getView()::setSelectedConversationId);
+   }
 
-    private void connectFilterStream() {
-        filterStream = PublishSubject.create();
-        filterStream
-                .doOnNext(getViewState()::setSearchFilter)
-                .compose(bindView())
-                .subscribe();
-    }
+   private void connectFilterStream() {
+      filterStream = PublishSubject.create();
+      filterStream.doOnNext(getViewState()::setSearchFilter).compose(bindView()).subscribe();
+   }
 
-    private void connectTypeStream() {
-        typeStream = BehaviorSubject.create();
-        typeStream
-                .doOnNext(getViewState()::setChatType)
-                .compose(bindView()).subscribe();
-    }
+   private void connectTypeStream() {
+      typeStream = BehaviorSubject.create();
+      typeStream.doOnNext(getViewState()::setChatType).compose(bindView()).subscribe();
+   }
 
-    private void trackConversations() {
-        conversationsDAO.conversationsCount()
-                .take(1)
-                .compose(bindView())
-                .subscribe(count -> {
-                    if (count == 0) waitForSyncAndTrack();
-                    else TrackingHelper.setConversationCount(count);
-                });
-    }
+   private void trackConversations() {
+      conversationsDAO.conversationsCount().take(1).compose(bindView()).subscribe(count -> {
+         if (count == 0) waitForSyncAndTrack();
+         else TrackingHelper.setConversationCount(count);
+      });
+   }
 
-    private void waitForSyncAndTrack(){
-        connectionStatusStream
-                .filter(status -> status == SyncStatus.CONNECTED)
-                .flatMap(status -> conversationsDAO.conversationsCount())
-                .take(1)
-                .compose(bindView())
-                .subscribe(TrackingHelper::setConversationCount,
-                        e -> Timber.e(e, "Failed to get conv count"));
-    }
+   private void waitForSyncAndTrack() {
+      connectionStatusStream.filter(status -> status == SyncStatus.CONNECTED)
+            .flatMap(status -> conversationsDAO.conversationsCount())
+            .take(1)
+            .compose(bindView())
+            .subscribe(TrackingHelper::setConversationCount, e -> Timber.e(e, "Failed to get conv count"));
+   }
 
-    private void connectToFilters() {
-        Observable.combineLatest(
-                typeStream.asObservable()
-                        .startWith(ALL_CHATS)
-                        .distinctUntilChanged(),
-                filterStream.asObservable()
-                        .startWith(getViewState().getSearchFilter())
-                        .compose(new DelayedComposer<>(300L))
-                        .distinctUntilChanged(),
-                Pair::new)
-                .compose(bindView())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(filters -> {
-                    connectToConversations(TextUtils.equals(filters.first, GROUP_CHATS)
-                            ? ConversationType.GROUP : null, filters.second);
-                }, throwable -> Timber.e(throwable, "Filter error"));
-    }
+   private void connectToFilters() {
+      Observable.combineLatest(typeStream.asObservable()
+            .startWith(ALL_CHATS)
+            .distinctUntilChanged(), filterStream.asObservable()
+            .startWith(getViewState().getSearchFilter())
+            .compose(new DelayedComposer<>(300L))
+            .distinctUntilChanged(), Pair::new)
+            .compose(bindView())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe(filters -> {
+               connectToConversations(TextUtils.equals(filters.first, GROUP_CHATS) ? ConversationType.GROUP : null, filters.second);
+            }, throwable -> Timber.e(throwable, "Filter error"));
+   }
 
-    private void connectToSelectedConversationStream() {
-        selectedConversationStream = PublishSubject.<DataConversation>create();
-        selectedConversationStream
-                .throttleLast(SELECTED_CONVERSATION_DELAY, TimeUnit.MILLISECONDS)
-                .compose(bindViewIoToMainComposer())
-                .subscribe(this::openConversation);
-    }
+   private void connectToSelectedConversationStream() {
+      selectedConversationStream = PublishSubject.<DataConversation>create();
+      selectedConversationStream.throttleLast(SELECTED_CONVERSATION_DELAY, TimeUnit.MILLISECONDS)
+            .compose(bindViewIoToMainComposer())
+            .subscribe(this::openConversation);
+   }
 
-    private void connectToConversations(@ConversationType.Type String type, String searchQuery) {
-        if (conversationSubscription != null && !conversationSubscription.isUnsubscribed())
-            conversationSubscription.unsubscribe();
-        conversationSubscription = conversationsDAO.selectConversationsList(type, searchQuery)
-                .compose(bindViewIoToMainComposer())
-                .subscribe(this::applyViewState, throwable -> Timber.e(throwable, "ConversationsDAO error"));
-    }
+   private void connectToConversations(@ConversationType.Type String type, String searchQuery) {
+      if (conversationSubscription != null && !conversationSubscription.isUnsubscribed())
+         conversationSubscription.unsubscribe();
+      conversationSubscription = conversationsDAO.selectConversationsList(type, searchQuery)
+            .compose(bindViewIoToMainComposer())
+            .subscribe(this::applyViewState, throwable -> Timber.e(throwable, "ConversationsDAO error"));
+   }
 
-    @Override
-    public void onNewViewState() {
-        state = new ConversationListViewState();
-    }
+   @Override
+   public void onNewViewState() {
+      state = new ConversationListViewState();
+   }
 
-    private void applyViewState(Cursor cursor) {
-        state.setLoadingState(ConversationListViewState.LoadingState.CONTENT);
-        getView().showConversations(cursor);
-        applyViewState();
-    }
+   private void applyViewState(Cursor cursor) {
+      state.setLoadingState(ConversationListViewState.LoadingState.CONTENT);
+      getView().showConversations(cursor);
+      applyViewState();
+   }
 
-    @Override
-    public void applyViewState() {
-        switch (getViewState().getLoadingState()) {
-            case LOADING:
-                getView().showLoading();
-                break;
-            case CONTENT:
-                getView().showContent();
-                break;
-            case ERROR:
-                getView().showError(getViewState().getError());
-                break;
-        }
-    }
+   @Override
+   public void applyViewState() {
+      switch (getViewState().getLoadingState()) {
+         case LOADING:
+            getView().showLoading();
+            break;
+         case CONTENT:
+            getView().showContent();
+            break;
+         case ERROR:
+            getView().showError(getViewState().getError());
+            break;
+      }
+   }
 
-    ///////////////////////////////////////////////////////////////////////////
-    // Interaction
-    ///////////////////////////////////////////////////////////////////////////
+   ///////////////////////////////////////////////////////////////////////////
+   // Interaction
+   ///////////////////////////////////////////////////////////////////////////
 
-    @Override
-    public void onConversationSelected(DataConversation conversation) {
-        selectedConversationStream.onNext(conversation);
-    }
+   @Override
+   public void onConversationSelected(DataConversation conversation) {
+      selectedConversationStream.onNext(conversation);
+   }
 
-    public void openConversation(DataConversation conversation) {
-        History.Builder historyBuilder = Flow.get(getContext()).getHistory()
-                .buildUpon();
-        //
-        Object oldPath = historyBuilder.pop();
-        ChatPath chatPath = new ChatPath(conversation.getId());
-        Flow.Direction direction;
-        if (oldPath.equals(chatPath)) {
-            //don't show message if it exists
-            return;
-        } else if (oldPath instanceof ConversationsPath) {
-            historyBuilder.push(oldPath);
-            direction = Flow.Direction.FORWARD;
-        } else {
-            direction = Flow.Direction.REPLACE;
-        }
-        historyBuilder.push(chatPath);
-        //
-        Flow.get(getContext()).setHistory(historyBuilder.build(), direction);
-    }
+   public void openConversation(DataConversation conversation) {
+      History.Builder historyBuilder = Flow.get(getContext()).getHistory().buildUpon();
+      //
+      Object oldPath = historyBuilder.pop();
+      ChatPath chatPath = new ChatPath(conversation.getId());
+      Flow.Direction direction;
+      if (oldPath.equals(chatPath)) {
+         //don't show message if it exists
+         return;
+      } else if (oldPath instanceof ConversationsPath) {
+         historyBuilder.push(oldPath);
+         direction = Flow.Direction.FORWARD;
+      } else {
+         direction = Flow.Direction.REPLACE;
+      }
+      historyBuilder.push(chatPath);
+      //
+      Flow.get(getContext()).setHistory(historyBuilder.build(), direction);
+   }
 
-    @Override
-    public void onDeleteButtonPressed(DataConversation conversation) {
-        getView().showConversationDeletionConfirmationDialog(conversation);
-    }
+   @Override
+   public void onDeleteButtonPressed(DataConversation conversation) {
+      getView().showConversationDeletionConfirmationDialog(conversation);
+   }
 
-    @Override
-    public void onDeletionConfirmed(DataConversation conversation) {
-        //not implemented
-    }
+   @Override
+   public void onDeletionConfirmed(DataConversation conversation) {
+      //not implemented
+   }
 
-    @Override
-    public void onMoreOptionsButtonPressed(DataConversation conversation) {
-        getView().showConversationMoreActionsDialog(conversation);
-    }
+   @Override
+   public void onMoreOptionsButtonPressed(DataConversation conversation) {
+      getView().showConversationMoreActionsDialog(conversation);
+   }
 
-    @Override
-    public void onMarkAsUnreadButtonPressed(DataConversation conversation) {
-        Toast.makeText(getContext(), "Mark as unread not yet implemented",
-                Toast.LENGTH_SHORT).show();
-    }
+   @Override
+   public void onMarkAsUnreadButtonPressed(DataConversation conversation) {
+      Toast.makeText(getContext(), "Mark as unread not yet implemented", Toast.LENGTH_SHORT).show();
+   }
 
-    @Override
-    public void onTurnOffNotificationsButtonPressed(DataConversation conversation) {
-        Toast.makeText(getContext(), "Turn of notifications not yet implemented",
-                Toast.LENGTH_SHORT).show();
-    }
+   @Override
+   public void onTurnOffNotificationsButtonPressed(DataConversation conversation) {
+      Toast.makeText(getContext(), "Turn of notifications not yet implemented", Toast.LENGTH_SHORT).show();
+   }
 
-    @Override
-    public void onConversationsDropdownSelected(ChatTypeItem selectedItem) {
-        String lastSelectedType = typeStream.getValue();
-        typeStream.onNext(selectedItem.getType());
+   @Override
+   public void onConversationsDropdownSelected(ChatTypeItem selectedItem) {
+      String lastSelectedType = typeStream.getValue();
+      typeStream.onNext(selectedItem.getType());
 
-        if (lastSelectedType != null)
-            TrackingHelper.conversationType(TextUtils.equals(selectedItem.getType(), GROUP_CHATS)
-                    ? TrackingHelper.MESSENGER_VALUE_GROUPS
-                    : TrackingHelper.MESSENGER_VALUE_ALL);
-    }
+      if (lastSelectedType != null)
+         TrackingHelper.conversationType(TextUtils.equals(selectedItem.getType(), GROUP_CHATS) ? TrackingHelper.MESSENGER_VALUE_GROUPS : TrackingHelper.MESSENGER_VALUE_ALL);
+   }
 
-    @Override
-    public void onConversationsSearchFilterSelected(String searchFilter) {
-        filterStream.onNext(searchFilter);
-    }
+   @Override
+   public void onConversationsSearchFilterSelected(String searchFilter) {
+      filterStream.onNext(searchFilter);
+   }
 
-    ///////////////////////////////////////////////////////////////////////////
-    // Menu
-    ///////////////////////////////////////////////////////////////////////////
+   ///////////////////////////////////////////////////////////////////////////
+   // Menu
+   ///////////////////////////////////////////////////////////////////////////
 
-    @Override
-    public int getToolbarMenuRes() {
-        return R.menu.conversation_list;
-    }
+   @Override
+   public int getToolbarMenuRes() {
+      return R.menu.conversation_list;
+   }
 
-    @Override
-    public boolean onToolbarMenuItemClick(MenuItem menuItem) {
-        switch (menuItem.getItemId()) {
-            case R.id.action_add:
-                openRoster();
-                return true;
-        }
-        return false;
-    }
+   @Override
+   public boolean onToolbarMenuItemClick(MenuItem menuItem) {
+      switch (menuItem.getItemId()) {
+         case R.id.action_add:
+            openRoster();
+            return true;
+      }
+      return false;
+   }
 
-    private void openRoster() {
-        History.Builder historyBuilder = Flow.get(getContext()).getHistory()
-                .buildUpon();
-        //
-        Object oldPath = historyBuilder.pop();
+   private void openRoster() {
+      History.Builder historyBuilder = Flow.get(getContext()).getHistory().buildUpon();
+      //
+      Object oldPath = historyBuilder.pop();
 
-        if (oldPath instanceof NewChatPath) return;
+      if (oldPath instanceof NewChatPath) return;
 
-        historyBuilder.push(oldPath);
-        historyBuilder.push(new NewChatPath());
+      historyBuilder.push(oldPath);
+      historyBuilder.push(new NewChatPath());
 
-        Flow.get(getContext()).setHistory(historyBuilder.build(), Flow.Direction.FORWARD);
-    }
+      Flow.get(getContext()).setHistory(historyBuilder.build(), Flow.Direction.FORWARD);
+   }
 }
 

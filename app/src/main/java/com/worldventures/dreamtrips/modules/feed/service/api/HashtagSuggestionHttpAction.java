@@ -13,17 +13,15 @@ import io.techery.janet.http.annotations.Response;
 @HttpAction(value = "/api/hashtags/suggestions", method = HttpAction.Method.GET)
 public class HashtagSuggestionHttpAction extends AuthorizedHttpAction {
 
-    @Query("query")
-    String query;
+   @Query("query") String query;
 
-    @Response
-    List<HashtagSuggestion> hashtagSuggestions;
+   @Response List<HashtagSuggestion> hashtagSuggestions;
 
-    public HashtagSuggestionHttpAction(String query) {
-        this.query = query;
-    }
+   public HashtagSuggestionHttpAction(String query) {
+      this.query = query;
+   }
 
-    public List<HashtagSuggestion> hashtagSuggestions() {
-        return hashtagSuggestions;
-    }
+   public List<HashtagSuggestion> hashtagSuggestions() {
+      return hashtagSuggestions;
+   }
 }

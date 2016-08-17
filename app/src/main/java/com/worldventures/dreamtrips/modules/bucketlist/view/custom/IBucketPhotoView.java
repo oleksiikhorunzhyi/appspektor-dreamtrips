@@ -6,11 +6,11 @@ import com.worldventures.dreamtrips.modules.bucketlist.service.model.EntityState
 import java.util.List;
 
 public interface IBucketPhotoView {
-    void addItemInProgressState(EntityStateHolder<BucketPhoto> photoStateHolder);
+   void addItemInProgressState(EntityStateHolder<BucketPhoto> photoStateHolder);
 
-    void changeItemState(EntityStateHolder<BucketPhoto> photoEntityStateHolder);
+   void changeItemState(EntityStateHolder<BucketPhoto> photoEntityStateHolder);
 
-    void removeItem(EntityStateHolder<BucketPhoto> photo);
+   void removeItem(EntityStateHolder<BucketPhoto> photo);
 
-    void setImages(List<EntityStateHolder<BucketPhoto>> images);
+   void setImages(List<EntityStateHolder<BucketPhoto>> images);
 }

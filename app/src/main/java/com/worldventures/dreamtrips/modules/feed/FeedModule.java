@@ -1,6 +1,5 @@
 package com.worldventures.dreamtrips.modules.feed;
 
-import com.messenger.api.TranslationInteractor;
 import com.techery.spares.module.qualifier.Global;
 import com.techery.spares.session.SessionHolder;
 import com.worldventures.dreamtrips.R;
@@ -16,6 +15,7 @@ import com.worldventures.dreamtrips.modules.feed.presenter.ActionEntityPresenter
 import com.worldventures.dreamtrips.modules.feed.presenter.BaseCommentPresenter;
 import com.worldventures.dreamtrips.modules.feed.presenter.CreateEntityPresenter;
 import com.worldventures.dreamtrips.modules.feed.presenter.CreateFeedPostPresenter;
+import com.worldventures.dreamtrips.modules.feed.presenter.DescriptionCreatorPresenter;
 import com.worldventures.dreamtrips.modules.feed.presenter.EditCommentPresenter;
 import com.worldventures.dreamtrips.modules.feed.presenter.EditPhotoPresenter;
 import com.worldventures.dreamtrips.modules.feed.presenter.EditPostPresenter;
@@ -28,7 +28,6 @@ import com.worldventures.dreamtrips.modules.feed.presenter.FeedListAdditionalInf
 import com.worldventures.dreamtrips.modules.feed.presenter.FeedPresenter;
 import com.worldventures.dreamtrips.modules.feed.presenter.LocationPresenter;
 import com.worldventures.dreamtrips.modules.feed.presenter.NotificationPresenter;
-import com.worldventures.dreamtrips.modules.feed.presenter.DescriptionCreatorPresenter;
 import com.worldventures.dreamtrips.modules.feed.presenter.SuggestedPhotoCellPresenterHelper;
 import com.worldventures.dreamtrips.modules.feed.service.TranslationFeedInteractor;
 import com.worldventures.dreamtrips.modules.feed.view.cell.BucketFeedEntityDetailsCell;
@@ -82,124 +81,70 @@ import dagger.Provides;
 import de.greenrobot.event.EventBus;
 
 @Module(
-        injects = {
-                TripFeedItemDetailsCell.class,
-                FeedPresenter.class,
-                SuggestedPhotoCellPresenterHelper.class,
-                FeedFragment.class,
-                BucketFeedItemDetailsCell.class,
-                LoadMoreCell.class,
-                PhotoFeedItemDetailsCell.class,
-                PostFeedItemCell.class,
-                UndefinedFeedItemDetailsCell.class,
-                FeedHashtagFragment.class,
-                FeedHashtagPresenter.class,
+      injects = {TripFeedItemDetailsCell.class, FeedPresenter.class, SuggestedPhotoCellPresenterHelper.class, FeedFragment.class, BucketFeedItemDetailsCell.class, LoadMoreCell.class, PhotoFeedItemDetailsCell.class, PostFeedItemCell.class, UndefinedFeedItemDetailsCell.class, FeedHashtagFragment.class, FeedHashtagPresenter.class,
 
-                PickerIrregularPhotoCell.class,
-                PhotoGalleryCell.class,
+            PickerIrregularPhotoCell.class, PhotoGalleryCell.class,
 
-                EditCommentPresenter.class,
+            EditCommentPresenter.class,
 
-                CommentableFragment.class,
-                ComponentPresenter.class,
-                FeedItemDetailsFragment.class,
-                FeedItemDetailsPresenter.class,
-                FeedDetailsFragment.class,
-                FeedDetailsPresenter.class,
-                FeedEntityDetailsFragment.class,
-                FeedEntityDetailsPresenter.class,
-                CommentCell.class,
-                BaseCommentPresenter.class,
+            CommentableFragment.class, ComponentPresenter.class, FeedItemDetailsFragment.class, FeedItemDetailsPresenter.class, FeedDetailsFragment.class, FeedDetailsPresenter.class, FeedEntityDetailsFragment.class, FeedEntityDetailsPresenter.class, CommentCell.class, BaseCommentPresenter.class,
 
-                NotificationFragment.class,
-                NotificationPresenter.class,
-                NotificationCell.class,
-                NotificationFragment.NotificationAdapter.class,
+            NotificationFragment.class, NotificationPresenter.class, NotificationCell.class, NotificationFragment.NotificationAdapter.class,
 
-                FeedItemDetailsCell.class,
-                FeedItemCell.class,
-                BaseFeedCell.class,
-                FeedEntityDetailsCell.class,
-                BucketFeedEntityDetailsCell.class,
-                TripFeedItemDetailsCell.class,
+            FeedItemDetailsCell.class, FeedItemCell.class, BaseFeedCell.class, FeedEntityDetailsCell.class, BucketFeedEntityDetailsCell.class, TripFeedItemDetailsCell.class,
 
-                FeedListAdditionalInfoFragment.class,
-                FeedListAdditionalInfoPresenter.class,
-                FeedItemAdditionalInfoFragment.class,
-                FeedItemAdditionalInfoPresenter.class,
+            FeedListAdditionalInfoFragment.class, FeedListAdditionalInfoPresenter.class, FeedItemAdditionalInfoFragment.class, FeedItemAdditionalInfoPresenter.class,
 
-                EditCommentFragment.class,
-                EditCommentPresenter.class,
+            EditCommentFragment.class, EditCommentPresenter.class,
 
-                DtGalleryFragment.class,
-                GalleryPresenter.class,
+            DtGalleryFragment.class, GalleryPresenter.class,
 
-                ActionEntityFragment.class,
-                ActionEntityPresenter.class,
-                CreateTripImageFragment.class,
-                CreateFeedPostFragment.class,
-                CreateFeedPostPresenter.class,
-                CreateEntityFragment.class,
-                CreateEntityPresenter.class,
+            ActionEntityFragment.class, ActionEntityPresenter.class, CreateTripImageFragment.class, CreateFeedPostFragment.class, CreateFeedPostPresenter.class, CreateEntityFragment.class, CreateEntityPresenter.class,
 
-                LocationFragment.class,
-                LocationPresenter.class,
+            LocationFragment.class, LocationPresenter.class,
 
-                SuggestedPhotosCell.class,
-                SuggestionPhotoCell.class,
+            SuggestedPhotosCell.class, SuggestionPhotoCell.class,
 
-                PhotoPostCreationCell.class,
-                PostCreationTextCell.class,
-                SubPhotoAttachmentCell.class,
-                PostFeedItemDetailsCell.class,
+            PhotoPostCreationCell.class, PostCreationTextCell.class, SubPhotoAttachmentCell.class, PostFeedItemDetailsCell.class,
 
-                EditPostFragment.class,
-                EditPostPresenter.class,
-                EditPhotoFragment.class,
-                EditPhotoPresenter.class,
-                DescriptionCreatorFragment.class,
-                DescriptionCreatorPresenter.class,
-                HashtagSuggestionCell.class,
+            EditPostFragment.class, EditPostPresenter.class, EditPhotoFragment.class, EditPhotoPresenter.class, DescriptionCreatorFragment.class, DescriptionCreatorPresenter.class, HashtagSuggestionCell.class,
 
-                StatePaginatedRecyclerViewManager.class,
+            StatePaginatedRecyclerViewManager.class,
 
-        },
-        complete = false,
-        library = true
-)
+      },
+      complete = false,
+      library = true)
 public class FeedModule {
-    public static final String FEED = Route.FEED.name();
-    public static final String NOTIFICATIONS = Route.NOTIFICATIONS.name();
+   public static final String FEED = Route.FEED.name();
+   public static final String NOTIFICATIONS = Route.NOTIFICATIONS.name();
 
-    @Provides(type = Provides.Type.SET)
-    ComponentDescription provideFeedComponent() {
-        return new ComponentDescription(FEED, R.string.feed_title,
-                R.string.feed_title, R.drawable.ic_feed, FeedFragment.class);
-    }
+   @Provides(type = Provides.Type.SET)
+   ComponentDescription provideFeedComponent() {
+      return new ComponentDescription(FEED, R.string.feed_title, R.string.feed_title, R.drawable.ic_feed, FeedFragment.class);
+   }
 
-    @Provides(type = Provides.Type.SET)
-    ComponentDescription provideNotificationComponent() {
-        return new ComponentDescription(NOTIFICATIONS, R.string.notifications_title,
-                R.string.notifications_title, R.drawable.ic_notifications, NotificationFragment.class);
-    }
+   @Provides(type = Provides.Type.SET)
+   ComponentDescription provideNotificationComponent() {
+      return new ComponentDescription(NOTIFICATIONS, R.string.notifications_title, R.string.notifications_title, R.drawable.ic_notifications, NotificationFragment.class);
+   }
 
-    @Provides
-    FeedEntityContentFragmentFactory provideFeedEntityContentFragmentFactory(SessionHolder<UserSession> sessionHolder) {
-        return new FeedEntityContentFragmentFactory(sessionHolder);
-    }
+   @Provides
+   FeedEntityContentFragmentFactory provideFeedEntityContentFragmentFactory(SessionHolder<UserSession> sessionHolder) {
+      return new FeedEntityContentFragmentFactory(sessionHolder);
+   }
 
-    @Provides
-    FeedActionPanelViewActionHandler provideFeedActionPanelViewActionHandler(Router router, @Global EventBus eventBus, Presenter.TabletAnalytic tabletAnalytic) {
-        return new FeedActionPanelViewActionHandler(router, eventBus);
-    }
+   @Provides
+   FeedActionPanelViewActionHandler provideFeedActionPanelViewActionHandler(Router router, @Global EventBus eventBus, Presenter.TabletAnalytic tabletAnalytic) {
+      return new FeedActionPanelViewActionHandler(router, eventBus);
+   }
 
-    @Provides
-    FragmentWithFeedDelegate provideFragmentWithFeedDelegate(Router router) {
-        return new FragmentWithFeedDelegate(router);
-    }
+   @Provides
+   FragmentWithFeedDelegate provideFragmentWithFeedDelegate(Router router) {
+      return new FragmentWithFeedDelegate(router);
+   }
 
-    @Provides
-    TextualPostTranslationDelegate provideTextualPostTranslationDelegate(TranslationFeedInteractor translationFeedInteractor) {
-        return new TextualPostTranslationDelegate(translationFeedInteractor);
-    }
+   @Provides
+   TextualPostTranslationDelegate provideTextualPostTranslationDelegate(TranslationFeedInteractor translationFeedInteractor) {
+      return new TextualPostTranslationDelegate(translationFeedInteractor);
+   }
 }

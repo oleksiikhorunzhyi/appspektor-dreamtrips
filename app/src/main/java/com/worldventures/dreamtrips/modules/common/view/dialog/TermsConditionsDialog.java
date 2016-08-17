@@ -26,127 +26,126 @@ import butterknife.InjectView;
 @Layout(R.layout.dialog_terms_conditions)
 public class TermsConditionsDialog extends BaseDialogFragmentWithPresenter<TermsConditionsDialogPresenter> implements TermsConditionsDialogPresenter.View {
 
-    @InjectView(R.id.terms_content) WebView termsContent;
-    @InjectView(R.id.accept_checkbox) CheckBox acceptCheckbox;
-    @InjectView(R.id.accept) Button btnAccept;
-    @InjectView(R.id.reject) Button btnReject;
-    @InjectView(R.id.btn_retry) ImageButton btnRetry;
+   @InjectView(R.id.terms_content) WebView termsContent;
+   @InjectView(R.id.accept_checkbox) CheckBox acceptCheckbox;
+   @InjectView(R.id.accept) Button btnAccept;
+   @InjectView(R.id.reject) Button btnReject;
+   @InjectView(R.id.btn_retry) ImageButton btnRetry;
 
-    private String termsText;
-    private boolean onErrorReceived;
+   private String termsText;
+   private boolean onErrorReceived;
 
-    public static TermsConditionsDialog create() {
-        return new TermsConditionsDialog();
-    }
+   public static TermsConditionsDialog create() {
+      return new TermsConditionsDialog();
+   }
 
-    @Override
-    public void onViewCreated(View view, Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
+   @Override
+   public void onViewCreated(View view, Bundle savedInstanceState) {
+      super.onViewCreated(view, savedInstanceState);
 
-        termsContent.getSettings().setJavaScriptEnabled(true);
-        termsContent.addJavascriptInterface(new ContentJavaScriptInterface(), "HtmlViewer");
-        termsContent.setWebViewClient(new WebViewClient() {
-            @Override
-            public void onPageFinished(WebView view, String url) {
-                if (termsContent == null || btnRetry == null || onErrorReceived) return;
+      termsContent.getSettings().setJavaScriptEnabled(true);
+      termsContent.addJavascriptInterface(new ContentJavaScriptInterface(), "HtmlViewer");
+      termsContent.setWebViewClient(new WebViewClient() {
+         @Override
+         public void onPageFinished(WebView view, String url) {
+            if (termsContent == null || btnRetry == null || onErrorReceived) return;
 
-                termsContent.loadUrl("javascript:window.HtmlViewer.getHtml" +
-                        "('<html>'+document.getElementsByTagName('html')[0].innerHTML+'</html>');");
+            termsContent.loadUrl("javascript:window.HtmlViewer.getHtml" + "('<html>'+document.getElementsByTagName('html')[0].innerHTML+'</html>');");
 
-                termsContent.setVisibility(View.VISIBLE);
-                btnRetry.setVisibility(View.GONE);
+            termsContent.setVisibility(View.VISIBLE);
+            btnRetry.setVisibility(View.GONE);
+         }
+
+         @Override
+         public void onPageStarted(WebView view, String url, Bitmap favicon) {
+            super.onPageStarted(view, url, favicon);
+            onErrorReceived = false;
+            if (termsContent != null && btnRetry != null) {
+               termsContent.setVisibility(View.GONE);
+               btnRetry.setVisibility(View.GONE);
             }
+         }
 
-            @Override
-            public void onPageStarted(WebView view, String url, Bitmap favicon) {
-                super.onPageStarted(view, url, favicon);
-                onErrorReceived = false;
-                if (termsContent != null && btnRetry != null) {
-                    termsContent.setVisibility(View.GONE);
-                    btnRetry.setVisibility(View.GONE);
-                }
+         @Override
+         public void onReceivedHttpError(WebView view, WebResourceRequest request, WebResourceResponse errorResponse) {
+            super.onReceivedHttpError(view, request, errorResponse);
+            onErrorReceived = true;
+            if (termsContent != null && btnRetry != null) {
+               termsContent.setVisibility(View.GONE);
+               btnRetry.setVisibility(View.VISIBLE);
+               disableButtons();
             }
+         }
 
-            @Override
-            public void onReceivedHttpError(WebView view, WebResourceRequest request, WebResourceResponse errorResponse) {
-                super.onReceivedHttpError(view, request, errorResponse);
-                onErrorReceived = true;
-                if (termsContent != null && btnRetry != null) {
-                    termsContent.setVisibility(View.GONE);
-                    btnRetry.setVisibility(View.VISIBLE);
-                    disableButtons();
-                }
+         @Override
+         public boolean shouldOverrideUrlLoading(WebView view, String url) {
+            if (url.startsWith(MailTo.MAILTO_SCHEME) && getActivity() != null) {
+               String mailTo = url.substring(MailTo.MAILTO_SCHEME.length());
+               getActivity().startActivity(IntentUtils.newEmailIntent("", "", mailTo));
+               return true;
             }
+            return false;
+         }
+      });
 
-            @Override
-            public boolean shouldOverrideUrlLoading(WebView view, String url) {
-                if (url.startsWith(MailTo.MAILTO_SCHEME) && getActivity() != null) {
-                    String mailTo = url.substring(MailTo.MAILTO_SCHEME.length());
-                    getActivity().startActivity(IntentUtils.newEmailIntent("", "", mailTo));
-                    return true;
-                }
-                return false;
-            }
-        });
+      acceptCheckbox.setOnCheckedChangeListener((buttonView, isChecked) -> {
+         if (termsText == null && isChecked) {
+            acceptCheckbox.setChecked(false);
+            return;
+         }
+         btnAccept.setEnabled(isChecked);
+      });
+      btnAccept.setOnClickListener(v -> presenter.acceptTerms(termsText));
+      btnReject.setOnClickListener(v -> presenter.denyTerms());
+      btnRetry.setOnClickListener(v -> presenter.loadContent());
+   }
 
-        acceptCheckbox.setOnCheckedChangeListener((buttonView, isChecked) -> {
-            if (termsText == null && isChecked) {
-                acceptCheckbox.setChecked(false);
-                return;
-            }
-            btnAccept.setEnabled(isChecked);
-        });
-        btnAccept.setOnClickListener(v -> presenter.acceptTerms(termsText));
-        btnReject.setOnClickListener(v -> presenter.denyTerms());
-        btnRetry.setOnClickListener(v -> presenter.loadContent());
-    }
+   class ContentJavaScriptInterface {
 
-    class ContentJavaScriptInterface {
+      @JavascriptInterface
+      public void getHtml(String html) {
+         termsText = html;
+      }
+   }
 
-        @JavascriptInterface
-        public void getHtml(String html) {
-            termsText = html;
-        }
-    }
+   @Override
+   public void onDestroyView() {
+      termsContent.stopLoading();
+      super.onDestroyView();
+   }
 
-    @Override
-    public void onDestroyView() {
-        termsContent.stopLoading();
-        super.onDestroyView();
-    }
+   @NonNull
+   @Override
+   public Dialog onCreateDialog(Bundle savedInstanceState) {
+      setStyle(DialogFragment.STYLE_NO_TITLE, 0);
+      setCancelable(false);
+      return super.onCreateDialog(savedInstanceState);
+   }
 
-    @NonNull
-    @Override
-    public Dialog onCreateDialog(Bundle savedInstanceState) {
-        setStyle(DialogFragment.STYLE_NO_TITLE, 0);
-        setCancelable(false);
-        return super.onCreateDialog(savedInstanceState);
-    }
+   @Override
+   protected TermsConditionsDialogPresenter createPresenter() {
+      return new TermsConditionsDialogPresenter();
+   }
 
-    @Override
-    protected TermsConditionsDialogPresenter createPresenter() {
-        return new TermsConditionsDialogPresenter();
-    }
+   @Override
+   public void loadContent(String url) {
+      termsContent.loadUrl(url);
+   }
 
-    @Override
-    public void loadContent(String url) {
-        termsContent.loadUrl(url);
-    }
+   @Override
+   public void dismissDialog() {
+      this.dismissIfShown(getFragmentManager());
+   }
 
-    @Override
-    public void dismissDialog() {
-        this.dismissIfShown(getFragmentManager());
-    }
+   @Override
+   public void enableButtons() {
+      btnAccept.setEnabled(acceptCheckbox.isChecked());
+      btnReject.setEnabled(true);
+   }
 
-    @Override
-    public void enableButtons() {
-        btnAccept.setEnabled(acceptCheckbox.isChecked());
-        btnReject.setEnabled(true);
-    }
-
-    @Override
-    public void disableButtons() {
-        btnAccept.setEnabled(false);
-        btnReject.setEnabled(false);
-    }
+   @Override
+   public void disableButtons() {
+      btnAccept.setEnabled(false);
+      btnReject.setEnabled(false);
+   }
 }

@@ -10,13 +10,13 @@ import rx.subjects.Subject;
  */
 public class EventDelegate<Event> {
 
-    private final Subject<Event, Event> publishSubject = PublishSubject.<Event>create().toSerialized();
+   private final Subject<Event, Event> publishSubject = PublishSubject.<Event>create().toSerialized();
 
-    public void post(Event event) {
-        publishSubject.onNext(event);
-    }
+   public void post(Event event) {
+      publishSubject.onNext(event);
+   }
 
-    public Observable<Event> getObservable() {
-        return publishSubject;
-    }
+   public Observable<Event> getObservable() {
+      return publishSubject;
+   }
 }

@@ -9,58 +9,60 @@ import java.util.List;
 
 public class ConversationListViewState extends LceViewState<List<DataConversation>> {
 
-    private String chatType;
-    private String searchFilter;
+   private String chatType;
+   private String searchFilter;
 
-    public ConversationListViewState() {
-    }
+   public ConversationListViewState() {
+   }
 
-    public @ChatsType String getChatType() {
-        return chatType;
-    }
+   public
+   @ChatsType
+   String getChatType() {
+      return chatType;
+   }
 
-    public void setChatType(@ChatsType String type) {
-        this.chatType = type;
-    }
+   public void setChatType(@ChatsType String type) {
+      this.chatType = type;
+   }
 
-    public String getSearchFilter() {
-        return searchFilter;
-    }
+   public String getSearchFilter() {
+      return searchFilter;
+   }
 
-    public void setSearchFilter(String conversationsSearchFilter) {
-        this.searchFilter = conversationsSearchFilter;
-    }
+   public void setSearchFilter(String conversationsSearchFilter) {
+      this.searchFilter = conversationsSearchFilter;
+   }
 
-    ///////////////////////////////////////////////////////////////////////////
-    // Parcelable
-    ///////////////////////////////////////////////////////////////////////////
+   ///////////////////////////////////////////////////////////////////////////
+   // Parcelable
+   ///////////////////////////////////////////////////////////////////////////
 
 
-    @Override
-    public int describeContents() {
-        return 0;
-    }
+   @Override
+   public int describeContents() {
+      return 0;
+   }
 
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        super.writeToParcel(dest, flags);
-        dest.writeString(this.chatType);
-        dest.writeString(this.searchFilter);
-    }
+   @Override
+   public void writeToParcel(Parcel dest, int flags) {
+      super.writeToParcel(dest, flags);
+      dest.writeString(this.chatType);
+      dest.writeString(this.searchFilter);
+   }
 
-    protected ConversationListViewState(Parcel in) {
-        super(in);
-        this.chatType = in.readString();
-        this.searchFilter = in.readString();
-    }
+   protected ConversationListViewState(Parcel in) {
+      super(in);
+      this.chatType = in.readString();
+      this.searchFilter = in.readString();
+   }
 
-    public static final Creator<ConversationListViewState> CREATOR = new Creator<ConversationListViewState>() {
-        public ConversationListViewState createFromParcel(Parcel source) {
-            return new ConversationListViewState(source);
-        }
+   public static final Creator<ConversationListViewState> CREATOR = new Creator<ConversationListViewState>() {
+      public ConversationListViewState createFromParcel(Parcel source) {
+         return new ConversationListViewState(source);
+      }
 
-        public ConversationListViewState[] newArray(int size) {
-            return new ConversationListViewState[size];
-        }
-    };
+      public ConversationListViewState[] newArray(int size) {
+         return new ConversationListViewState[size];
+      }
+   };
 }

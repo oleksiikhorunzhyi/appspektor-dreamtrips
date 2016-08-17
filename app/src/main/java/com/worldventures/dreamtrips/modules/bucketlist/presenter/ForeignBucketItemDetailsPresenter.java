@@ -4,8 +4,8 @@ import com.worldventures.dreamtrips.modules.common.view.bundle.BucketBundle;
 
 public class ForeignBucketItemDetailsPresenter extends BucketItemDetailsPresenter {
 
-    public ForeignBucketItemDetailsPresenter(BucketBundle bundle) {
-        super(bundle);
-    }
+   public ForeignBucketItemDetailsPresenter(BucketBundle bundle) {
+      super(bundle);
+   }
 
 }

@@ -8,5 +8,5 @@ import java.util.List;
 
 @Value.Immutable
 public interface GroupNotificationData extends NotificationData {
-    List<DataUser> getParticipants();
+   List<DataUser> getParticipants();
 }

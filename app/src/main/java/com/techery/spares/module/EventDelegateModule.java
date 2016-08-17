@@ -13,27 +13,27 @@ import dagger.Provides;
 @Module(library = true)
 public class EventDelegateModule {
 
-    @Provides
-    @Singleton
-    SearchFocusChangedDelegate provideSearchFocusChangedDelegate() {
-        return new SearchFocusChangedDelegate();
-    }
+   @Provides
+   @Singleton
+   SearchFocusChangedDelegate provideSearchFocusChangedDelegate() {
+      return new SearchFocusChangedDelegate();
+   }
 
-    @Provides
-    @Singleton
-    ScreenChangedEventDelegate provideScreenChangedDelegate() {
-        return new ScreenChangedEventDelegate();
-    }
+   @Provides
+   @Singleton
+   ScreenChangedEventDelegate provideScreenChangedDelegate() {
+      return new ScreenChangedEventDelegate();
+   }
 
-    @Provides
-    @Singleton
-    StoryLikedEventDelegate provideStoryLikedEventDelegate() {
-        return new StoryLikedEventDelegate();
-    }
+   @Provides
+   @Singleton
+   StoryLikedEventDelegate provideStoryLikedEventDelegate() {
+      return new StoryLikedEventDelegate();
+   }
 
-    @Provides
-    @Singleton
-    NotificationCountEventDelegate provideNotificationCountDelegate() {
-        return new NotificationCountEventDelegate();
-    }
+   @Provides
+   @Singleton
+   NotificationCountEventDelegate provideNotificationCountDelegate() {
+      return new NotificationCountEventDelegate();
+   }
 }

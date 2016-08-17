@@ -18,49 +18,48 @@ import butterknife.Optional;
 @Layout(R.layout.activity_component)
 public class ComponentActivity extends ToolbarActivity<ComponentPresenter> implements ComponentPresenter.View {
 
-    @Optional @InjectView(R.id.container_details_floating) protected FrameLayout detailsFloatingContainer;
+   @Optional @InjectView(R.id.container_details_floating) protected FrameLayout detailsFloatingContainer;
 
-    Bundle extras;
+   Bundle extras;
 
-    @Override
-    protected int getToolbarTitle() {
-        return getPresentationModel().getTitle();
-    }
+   @Override
+   protected int getToolbarTitle() {
+      return getPresentationModel().getTitle();
+   }
 
-    @Override
-    protected void beforeCreateView(Bundle savedInstanceState) {
-        extras = getIntent().getBundleExtra(ComponentPresenter.COMPONENT_EXTRA);
-        super.beforeCreateView(savedInstanceState);
-    }
+   @Override
+   protected void beforeCreateView(Bundle savedInstanceState) {
+      extras = getIntent().getBundleExtra(ComponentPresenter.COMPONENT_EXTRA);
+      super.beforeCreateView(savedInstanceState);
+   }
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        initToolbar();
-    }
+   @Override
+   protected void onCreate(Bundle savedInstanceState) {
+      super.onCreate(savedInstanceState);
+      initToolbar();
+   }
 
-    private void initToolbar() {
-        ToolbarConfig toolbarConfig = (ToolbarConfig)
-                extras.getSerializable(ComponentPresenter.COMPONENT_TOOLBAR_CONFIG);
+   private void initToolbar() {
+      ToolbarConfig toolbarConfig = (ToolbarConfig) extras.getSerializable(ComponentPresenter.COMPONENT_TOOLBAR_CONFIG);
 
-        if (toolbarConfig != null) {
-            toolbar.setVisibility(toolbarConfig.isVisible() ? View.VISIBLE : View.GONE);
-            toolbar.setAlpha(toolbarConfig.getAlpha());
-        }
-    }
+      if (toolbarConfig != null) {
+         toolbar.setVisibility(toolbarConfig.isVisible() ? View.VISIBLE : View.GONE);
+         toolbar.setAlpha(toolbarConfig.getAlpha());
+      }
+   }
 
-    @Override
-    protected ComponentPresenter createPresentationModel(Bundle savedInstanceState) {
-        return new ComponentPresenter(extras);
-    }
+   @Override
+   protected ComponentPresenter createPresentationModel(Bundle savedInstanceState) {
+      return new ComponentPresenter(extras);
+   }
 
-    @Override
-    public void moveTo(Route route, Parcelable args) {
-        router.moveTo(route, NavigationConfigBuilder.forFragment()
-                .fragmentManager(getSupportFragmentManager())
-                .containerId(R.id.container_main)
-                .backStackEnabled(true)
-                .data(args)
-                .build());
-    }
+   @Override
+   public void moveTo(Route route, Parcelable args) {
+      router.moveTo(route, NavigationConfigBuilder.forFragment()
+            .fragmentManager(getSupportFragmentManager())
+            .containerId(R.id.container_main)
+            .backStackEnabled(true)
+            .data(args)
+            .build());
+   }
 }

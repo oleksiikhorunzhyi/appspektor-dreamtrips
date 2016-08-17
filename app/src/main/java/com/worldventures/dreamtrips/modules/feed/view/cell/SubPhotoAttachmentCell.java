@@ -17,37 +17,38 @@ import butterknife.InjectView;
 @Layout(R.layout.adapter_feed_item_photo_atachment)
 public class SubPhotoAttachmentCell extends AbstractDelegateCell<Photo, CellDelegate<Photo>> {
 
-    @InjectView(R.id.iv_photo) SimpleDraweeView photo;
-    @InjectView(R.id.tag) ImageView tag;
+   @InjectView(R.id.iv_photo) SimpleDraweeView photo;
+   @InjectView(R.id.tag) ImageView tag;
 
-    public SubPhotoAttachmentCell(View view) {
-        super(view);
-    }
+   public SubPhotoAttachmentCell(View view) {
+      super(view);
+   }
 
-    @Override
-    protected void syncUIStateWithModel() {
-        photo.setAspectRatio(getModelObject().getWidth() / (float) getModelObject().getHeight());
-        itemView.setOnClickListener(v -> {
-            if (cellDelegate != null) {
-                cellDelegate.onCellClicked(getModelObject());
-            }
-        });
-        tag.setOnClickListener(v -> {
-            if (cellDelegate != null) {
-                cellDelegate.onCellClicked(getModelObject());
-            }
-        });
+   @Override
+   protected void syncUIStateWithModel() {
+      photo.setAspectRatio(getModelObject().getWidth() / (float) getModelObject().getHeight());
+      itemView.setOnClickListener(v -> {
+         if (cellDelegate != null) {
+            cellDelegate.onCellClicked(getModelObject());
+         }
+      });
+      tag.setOnClickListener(v -> {
+         if (cellDelegate != null) {
+            cellDelegate.onCellClicked(getModelObject());
+         }
+      });
 
-        setImage(Uri.parse(getModelObject().getImages().getUrl()), photo);
-        tag.setVisibility(getModelObject().getPhotoTagsCount() > 0 || !getModelObject().getPhotoTags().isEmpty() ? View.VISIBLE : View.GONE);
-    }
+      setImage(Uri.parse(getModelObject().getImages().getUrl()), photo);
+      tag.setVisibility(getModelObject().getPhotoTagsCount() > 0 || !getModelObject().getPhotoTags()
+            .isEmpty() ? View.VISIBLE : View.GONE);
+   }
 
-    private void setImage(Uri uri, SimpleDraweeView draweeView) {
-        if (uri.equals(draweeView.getTag())) {
-            return;
-        }
+   private void setImage(Uri uri, SimpleDraweeView draweeView) {
+      if (uri.equals(draweeView.getTag())) {
+         return;
+      }
 
-        draweeView.setController(GraphicUtils.provideFrescoResizingController(uri, draweeView.getController()));
-        draweeView.setTag(uri);
-    }
+      draweeView.setController(GraphicUtils.provideFrescoResizingController(uri, draweeView.getController()));
+      draweeView.setTag(uri);
+   }
 }

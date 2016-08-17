@@ -9,348 +9,348 @@ apply plugin: 'newrelic'
 apply from: 'helper-methods.gradle'
 
 repositories {
-    jcenter()
-    mavenCentral()
-    maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
-    maven { url 'http://dl.bintray.com/techery/android' }
-    maven { url 'https://maven.fabric.io/public' }
-    maven { url "https://jitpack.io" }
-    maven { url "https://clojars.org/repo/" }
-    maven { url "http://nexus.idamob.ru/content/groups/public" }
-    maven { url "http://dl.bintray.com/populov/maven" }
-    maven { url "https://github.com/shaubert/maven-repo/raw/master/snapshots" }
-    maven { url 'http://dl.bintray.com/amulyakhare/maven' }
-    maven { url "http://repository.jetbrains.com/all" }
-    maven { url "http://artifactory.techery.io:8081/artifactory/worldventures" }
+   jcenter()
+   mavenCentral()
+   maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
+   maven { url 'http://dl.bintray.com/techery/android' }
+   maven { url 'https://maven.fabric.io/public' }
+   maven { url "https://jitpack.io" }
+   maven { url "https://clojars.org/repo/" }
+   maven { url "http://nexus.idamob.ru/content/groups/public" }
+   maven { url "http://dl.bintray.com/populov/maven" }
+   maven { url "https://github.com/shaubert/maven-repo/raw/master/snapshots" }
+   maven { url 'http://dl.bintray.com/amulyakhare/maven' }
+   maven { url "http://repository.jetbrains.com/all" }
+   maven { url "http://artifactory.techery.io:8081/artifactory/worldventures" }
 }
 
 configurations.all {
-    resolutionStrategy.cacheChangingModulesFor 0, 'seconds'
+   resolutionStrategy.cacheChangingModulesFor 0, 'seconds'
 }
 
 android {
-    compileSdkVersion 24
-    buildToolsVersion "24.0.1"
+   compileSdkVersion 24
+   buildToolsVersion "24.0.1"
 
-    // App version
-    def versionMajor = 1
-    def versionMinor = 14
-    def versionPatch = 0
-    def versionBuild = 0  // bump for dogfood builds, public betas, etc.
-    //
-    // flavor codes
-    String DEV_CODE = "dev"
-    String DEV_PRE_MARSHMALLOW_CODE = "devpremarshmallow"
-    String EXTERNAL_CODE = "external"
-    String[] BUILD_CODES = [DEV_PRE_MARSHMALLOW_CODE, DEV_CODE, EXTERNAL_CODE]
-    //
-    String DTL_CODE = "dtl"
-    String MESSENGER_CODE = "messenger"
-    String SOCIAL_CODE = "social"
-    String SMARTCARD_CODE = "smartcard"
-    String STABLE_CODE = "stable"
-    String[] STREAM_CODES = [DTL_CODE, MESSENGER_CODE, SOCIAL_CODE, SMARTCARD_CODE, STABLE_CODE]
-    //
-    String STAGE_CODE = "stage"
-    String PREPROD_CODE = "preprod"
-    String PERF_CODE = "perf"
-    String PROD_CODE = "prod"
-    String[] CONFIG_CODES = [STAGE_CODE, PREPROD_CODE, PERF_CODE, PROD_CODE]
-    //
-    def APP_VERSION_NAME_BASE = "${versionMajor}.${versionMinor}.${versionPatch}"
-    //
-    def ALLOW_BUILD_LOG = true
-    def BUILD_LOG_TAG = "BUILD_LOG"
-    //
-    def CONFIG_MAP_DEFAULT = [
-            'DreamTripsApi'     : '"http://techery-dt-staging.techery.io/"',
-            'S3Api'             : '"https://s3-us-west-2.amazonaws.com/techery-worldventures/config/staging"',
-            'MESSENGER_API_URL' : '"dtmsgapp-dev.worldventures.biz"',
-            'NEWRELIC_API_KEY'  : '"AA02bc55e3bfb4886360f8be57d75b526bea2b1bcf"',
-            'UPLOADERY_API_URL' : '"http://techery-dt-staging-uploadery.techery.io"',
-    ]
-    def CONFIG_MAP_EXTERNAL = [
-            'NEWRELIC_API_KEY'  : '"AAd06d4d4d218e74f8d48a7e0bf8d7de4623cb1662"',
-    ]
-    def CONFIG_MAP_PREPROD = [
-            'DreamTripsApi'     : '"http://techery-dt-preprod.techery.io/"',
-            'S3Api'             : '"https://s3-us-west-2.amazonaws.com/techery-worldventures/config/preprod"',
-            'MESSENGER_API_URL' : '"dtmsgapp-qa.worldventures.biz"',
-            'UPLOADERY_API_URL' : '"http://techery-dt-preprod-uploadery.techery.io"',
-    ]
-    def CONFIG_MAP_DTL = [
-            'DreamTripsApi'     : '"http://techery--dt--dtl-techery-io-b8ctgyaku6eu.runscope.net/"',
-            'UPLOADERY_API_URL' : '"http://techery-dt-dtl-uploadery.techery.io"',
-    ]
-    def CONFIG_MAP_PERF = [
-            'DreamTripsApi'     : '"http://dtapp-perf.worldventures.biz"',
-            'NEWRELIC_API_KEY'  : '"AA8998d2de5c99adddd3668515e76b5d501271a04b"',
-            'UPLOADERY_API_URL' : '"http://techery-dt-perf-uploadery.techery.io"',
-    ]
-    def CONFIG_MAP_PROD = [
-            'DreamTripsApi'     : '"https://dtapp.worldventures.biz"',
-            'S3Api'             : '"http://dtappprd.s3.amazonaws.com/config"',
-            'MESSENGER_API_URL' : '"dtmsgapp.worldventures.biz"',
-            'NEWRELIC_API_KEY'  : '"AAb8d55ede8fd2f0aeaaf66b18b8b53af90e48b371"',
-    ]
-    //
-    def CONFIG_MAPS = [
-            "external"  : CONFIG_MAP_EXTERNAL,
-            "preprod"   : CONFIG_MAP_PREPROD,
-            "perf"      : CONFIG_MAP_PERF,
-            "prod"      : CONFIG_MAP_PROD,
-    ]
+   // App version
+   def versionMajor = 1
+   def versionMinor = 14
+   def versionPatch = 0
+   def versionBuild = 0  // bump for dogfood builds, public betas, etc.
+   //
+   // flavor codes
+   String DEV_CODE = "dev"
+   String DEV_PRE_MARSHMALLOW_CODE = "devpremarshmallow"
+   String EXTERNAL_CODE = "external"
+   String[] BUILD_CODES = [DEV_PRE_MARSHMALLOW_CODE, DEV_CODE, EXTERNAL_CODE]
+   //
+   String DTL_CODE = "dtl"
+   String MESSENGER_CODE = "messenger"
+   String SOCIAL_CODE = "social"
+   String SMARTCARD_CODE = "smartcard"
+   String STABLE_CODE = "stable"
+   String[] STREAM_CODES = [DTL_CODE, MESSENGER_CODE, SOCIAL_CODE, SMARTCARD_CODE, STABLE_CODE]
+   //
+   String STAGE_CODE = "stage"
+   String PREPROD_CODE = "preprod"
+   String PERF_CODE = "perf"
+   String PROD_CODE = "prod"
+   String[] CONFIG_CODES = [STAGE_CODE, PREPROD_CODE, PERF_CODE, PROD_CODE]
+   //
+   def APP_VERSION_NAME_BASE = "${versionMajor}.${versionMinor}.${versionPatch}"
+   //
+   def ALLOW_BUILD_LOG = true
+   def BUILD_LOG_TAG = "BUILD_LOG"
+   //
+   def CONFIG_MAP_DEFAULT = [
+         'DreamTripsApi'    : '"http://techery-dt-staging.techery.io/"',
+         'S3Api'            : '"https://s3-us-west-2.amazonaws.com/techery-worldventures/config/staging"',
+         'MESSENGER_API_URL': '"dtmsgapp-dev.worldventures.biz"',
+         'NEWRELIC_API_KEY' : '"AA02bc55e3bfb4886360f8be57d75b526bea2b1bcf"',
+         'UPLOADERY_API_URL': '"http://techery-dt-staging-uploadery.techery.io"',
+   ]
+   def CONFIG_MAP_EXTERNAL = [
+         'NEWRELIC_API_KEY': '"AAd06d4d4d218e74f8d48a7e0bf8d7de4623cb1662"',
+   ]
+   def CONFIG_MAP_PREPROD = [
+         'DreamTripsApi'    : '"http://techery-dt-preprod.techery.io/"',
+         'S3Api'            : '"https://s3-us-west-2.amazonaws.com/techery-worldventures/config/preprod"',
+         'MESSENGER_API_URL': '"dtmsgapp-qa.worldventures.biz"',
+         'UPLOADERY_API_URL': '"http://techery-dt-preprod-uploadery.techery.io"',
+   ]
+   def CONFIG_MAP_DTL = [
+         'DreamTripsApi'    : '"http://techery--dt--dtl-techery-io-b8ctgyaku6eu.runscope.net/"',
+         'UPLOADERY_API_URL': '"http://techery-dt-dtl-uploadery.techery.io"',
+   ]
+   def CONFIG_MAP_PERF = [
+         'DreamTripsApi'    : '"http://dtapp-perf.worldventures.biz"',
+         'NEWRELIC_API_KEY' : '"AA8998d2de5c99adddd3668515e76b5d501271a04b"',
+         'UPLOADERY_API_URL': '"http://techery-dt-perf-uploadery.techery.io"',
+   ]
+   def CONFIG_MAP_PROD = [
+         'DreamTripsApi'    : '"https://dtapp.worldventures.biz"',
+         'S3Api'            : '"http://dtappprd.s3.amazonaws.com/config"',
+         'MESSENGER_API_URL': '"dtmsgapp.worldventures.biz"',
+         'NEWRELIC_API_KEY' : '"AAb8d55ede8fd2f0aeaaf66b18b8b53af90e48b371"',
+   ]
+   //
+   def CONFIG_MAPS = [
+         "external": CONFIG_MAP_EXTERNAL,
+         "preprod" : CONFIG_MAP_PREPROD,
+         "perf"    : CONFIG_MAP_PERF,
+         "prod"    : CONFIG_MAP_PROD,
+   ]
 
-    defaultConfig {
-        applicationId "com.worldventures.dreamtrips"
-        //
-        archivesBaseName = "DreamTrips"
-        versionCode versionMajor * 100000 + versionMinor * 1000 + versionPatch * 100 + versionBuild
-        versionName APP_VERSION_NAME_BASE
-        //
-        minSdkVersion 15
-        targetSdkVersion 22
-        //
-        multiDexEnabled true
-        //
-        buildConfigField 'String', 'AuthApiUrl', '"https://dreamTripsApi.dreamtrips.com/AuthenticationService/AuthenticationService.svc"'
-        buildConfigField 'String', 'SharedServicesApi', '"http://sharedservices.worldventures.biz"'
-        buildConfigField 'String', 'WorldVenturesApi', '"http://dtapp-auth-1384786496.us-west-2.elb.amazonaws.com"'
-        buildConfigField 'String', 'S3Api', '"https://s3-us-west-2.amazonaws.com/techery-worldventures/config/preprod"'
-        buildConfigField 'String', 'AWS_ACCOUNT_ID', '"503446126408"'
-        buildConfigField 'String', 'API_VERSION', '"2"'
-        buildConfigField 'boolean', 'SOCIAL_ENABLED', 'true'
-        buildConfigField 'boolean', 'ANALYTICS_LOG_ENABLED', 'false'
-        resValue "string", "facebook_app_id", "761062457321921"
-        //
-        buildConfigField 'String', 'COGNITO_POOL_ID', '"us-east-1:1ac30be0-63da-444a-b667-4a63cc32bb39"'
-        buildConfigField 'String', 'COGNITO_ROLE_UNAUTH', '"arn:aws:iam::503446126408:role/Cognito_dtapp_prod_poolUnauth_DefaultRole"'
-        buildConfigField 'String', 'COGNITO_ROLE_AUTH', '"arn:aws:iam::503446126408:role/Cognito_dtapp_prod_poolAuth_DefaultRole"'
-        buildConfigField 'String', 'BUCKET_NAME', '"dtappprd"'
-        buildConfigField 'String', 'BUCKET_ROOT_PATH', '"dtuploads/"'
-        buildConfigField 'long', 'API_TIMEOUT_SEC', '60'
+   defaultConfig {
+      applicationId "com.worldventures.dreamtrips"
+      //
+      archivesBaseName = "DreamTrips"
+      versionCode versionMajor * 100000 + versionMinor * 1000 + versionPatch * 100 + versionBuild
+      versionName APP_VERSION_NAME_BASE
+      //
+      minSdkVersion 15
+      targetSdkVersion 22
+      //
+      multiDexEnabled true
+      //
+      buildConfigField 'String', 'AuthApiUrl', '"https://dreamTripsApi.dreamtrips.com/AuthenticationService/AuthenticationService.svc"'
+      buildConfigField 'String', 'SharedServicesApi', '"http://sharedservices.worldventures.biz"'
+      buildConfigField 'String', 'WorldVenturesApi', '"http://dtapp-auth-1384786496.us-west-2.elb.amazonaws.com"'
+      buildConfigField 'String', 'S3Api', '"https://s3-us-west-2.amazonaws.com/techery-worldventures/config/preprod"'
+      buildConfigField 'String', 'AWS_ACCOUNT_ID', '"503446126408"'
+      buildConfigField 'String', 'API_VERSION', '"2"'
+      buildConfigField 'boolean', 'SOCIAL_ENABLED', 'true'
+      buildConfigField 'boolean', 'ANALYTICS_LOG_ENABLED', 'false'
+      resValue "string", "facebook_app_id", "761062457321921"
+      //
+      buildConfigField 'String', 'COGNITO_POOL_ID', '"us-east-1:1ac30be0-63da-444a-b667-4a63cc32bb39"'
+      buildConfigField 'String', 'COGNITO_ROLE_UNAUTH', '"arn:aws:iam::503446126408:role/Cognito_dtapp_prod_poolUnauth_DefaultRole"'
+      buildConfigField 'String', 'COGNITO_ROLE_AUTH', '"arn:aws:iam::503446126408:role/Cognito_dtapp_prod_poolAuth_DefaultRole"'
+      buildConfigField 'String', 'BUCKET_NAME', '"dtappprd"'
+      buildConfigField 'String', 'BUCKET_ROOT_PATH', '"dtuploads/"'
+      buildConfigField 'long', 'API_TIMEOUT_SEC', '60'
 
-        buildConfigField 'boolean', 'RX_DEBUG_HOOK_ENABLED', 'false'
-        buildConfigField 'boolean', 'CRASHLYTICS_DISABLED', 'false'
-        ext.enableCrashlytics = true
-        //
-        buildConfigField 'String', 'versionMajor', "\"${versionMajor}\""
-        buildConfigField 'String', 'versionMinor', "\"${versionMinor}\""
-        buildConfigField 'String', 'versionPatch', "\"${versionPatch}\""
-        buildConfigField 'String', 'versionBuild', "\"${versionBuild}\""
-        //
-        buildConfigField 'String', 'MESSENGER_API_URL', '"dtmsgapp-dev.worldventures.biz"'
-        buildConfigField 'int', 'MESSENGER_API_PORT', '5222'
-        //
-        manifestPlaceholders = [:]
-        manifestPlaceholders['fabricApiKey'] = "21da61424102fe8cf2f861fa914442a098312625"
-        manifestPlaceholders['surveyApiToken'] = "7bfd74f4bc1d1273aa54a5b0b6f7a8bd4c8eeaf36c6e902a1f0d66398f6707ba"
-    }
+      buildConfigField 'boolean', 'RX_DEBUG_HOOK_ENABLED', 'false'
+      buildConfigField 'boolean', 'CRASHLYTICS_DISABLED', 'false'
+      ext.enableCrashlytics = true
+      //
+      buildConfigField 'String', 'versionMajor', "\"${versionMajor}\""
+      buildConfigField 'String', 'versionMinor', "\"${versionMinor}\""
+      buildConfigField 'String', 'versionPatch', "\"${versionPatch}\""
+      buildConfigField 'String', 'versionBuild', "\"${versionBuild}\""
+      //
+      buildConfigField 'String', 'MESSENGER_API_URL', '"dtmsgapp-dev.worldventures.biz"'
+      buildConfigField 'int', 'MESSENGER_API_PORT', '5222'
+      //
+      manifestPlaceholders = [:]
+      manifestPlaceholders['fabricApiKey'] = "21da61424102fe8cf2f861fa914442a098312625"
+      manifestPlaceholders['surveyApiToken'] = "7bfd74f4bc1d1273aa54a5b0b6f7a8bd4c8eeaf36c6e902a1f0d66398f6707ba"
+   }
 
-    testOptions {
-        unitTests.returnDefaultValues = true
-    }
+   testOptions {
+      unitTests.returnDefaultValues = true
+   }
 
-    flavorDimensions "build", "stream", "config"
+   flavorDimensions "build", "stream", "config"
 
-    productFlavors {
-        // possible "build"-dimension flavors:
-        dev {
-            dimension "build"
-            applicationIdSuffix = DEV_CODE
-            minSdkVersion 23
-            ext.enableCrashlytics = false
-            buildConfigField 'boolean', 'CRASHLYTICS_DISABLED', 'true'
-        }
-        devpremarshmallow {
-            dimension "build"
-            applicationIdSuffix = DEV_CODE
-            ext.enableCrashlytics = false
-            buildConfigField 'boolean', 'CRASHLYTICS_DISABLED', 'true'
-        }
-        external { dimension "build" }
+   productFlavors {
+      // possible "build"-dimension flavors:
+      dev {
+         dimension "build"
+         applicationIdSuffix = DEV_CODE
+         minSdkVersion 23
+         ext.enableCrashlytics = false
+         buildConfigField 'boolean', 'CRASHLYTICS_DISABLED', 'true'
+      }
+      devpremarshmallow {
+         dimension "build"
+         applicationIdSuffix = DEV_CODE
+         ext.enableCrashlytics = false
+         buildConfigField 'boolean', 'CRASHLYTICS_DISABLED', 'true'
+      }
+      external { dimension "build" }
 
-        // possible "stream"-dimension flavors:
-        dtl {
-            dimension "stream"
-            applicationIdSuffix = DTL_CODE
-        }
-        messenger {
-            dimension "stream"
-            applicationIdSuffix = MESSENGER_CODE
-            buildConfigField 'String', 'HOCKEY_APP_ID', '"d1ada40641214b4e9728a832c2d78d5c"'
-        }
-        social {
-            dimension "stream"
-            applicationIdSuffix = SOCIAL_CODE
-        }
-        smartcard {
-            dimension "stream"
-            applicationIdSuffix = SMARTCARD_CODE
-        }
-        stable { dimension "stream" }
+      // possible "stream"-dimension flavors:
+      dtl {
+         dimension "stream"
+         applicationIdSuffix = DTL_CODE
+      }
+      messenger {
+         dimension "stream"
+         applicationIdSuffix = MESSENGER_CODE
+         buildConfigField 'String', 'HOCKEY_APP_ID', '"d1ada40641214b4e9728a832c2d78d5c"'
+      }
+      social {
+         dimension "stream"
+         applicationIdSuffix = SOCIAL_CODE
+      }
+      smartcard {
+         dimension "stream"
+         applicationIdSuffix = SMARTCARD_CODE
+      }
+      stable { dimension "stream" }
 
-        // possible "config"-dimension flavors:
-        stage {
-            dimension "config"
-            applicationIdSuffix = STAGE_CODE
-        }
-        preprod {
-            dimension "config"
-            applicationIdSuffix = PREPROD_CODE
-        }
-        perf {
-            dimension "config"
-            applicationIdSuffix = PERF_CODE
-        }
-        prod {
-            dimension "config"
-            //
-            manifestPlaceholders['surveyApiToken'] = ["48bf60f3d43c8f8b1acb157cedeb2d334acb38e1e2c04e820d7a72168fd584aa"]
-            buildConfigField 'long', 'API_TIMEOUT_SEC', '15'
-        }
-    }
+      // possible "config"-dimension flavors:
+      stage {
+         dimension "config"
+         applicationIdSuffix = STAGE_CODE
+      }
+      preprod {
+         dimension "config"
+         applicationIdSuffix = PREPROD_CODE
+      }
+      perf {
+         dimension "config"
+         applicationIdSuffix = PERF_CODE
+      }
+      prod {
+         dimension "config"
+         //
+         manifestPlaceholders['surveyApiToken'] = ["48bf60f3d43c8f8b1acb157cedeb2d334acb38e1e2c04e820d7a72168fd584aa"]
+         buildConfigField 'long', 'API_TIMEOUT_SEC', '15'
+      }
+   }
 
-    variantFilter { variant ->
-        variant.ignore = true
-        //
-        String build = variant.flavors.get(0).name.toLowerCase() // dev / devpremarshmallow / external
-        String stream = variant.flavors.get(1).name.toLowerCase() // dtl / messenger / social / smartcard / stable
-        String config = variant.flavors.get(2).name.toLowerCase() // stage / prepord / perf / prod
-        //
-        if (variant.buildType.name.equals("debug") && (config.equals(STAGE_CODE) || config.equals(PREPROD_CODE))) {
+   variantFilter { variant ->
+      variant.ignore = true
+      //
+      String build = variant.flavors.get(0).name.toLowerCase() // dev / devpremarshmallow / external
+      String stream = variant.flavors.get(1).name.toLowerCase() // dtl / messenger / social / smartcard / stable
+      String config = variant.flavors.get(2).name.toLowerCase() // stage / prepord / perf / prod
+      //
+      if (variant.buildType.name.equals("debug") && (config.equals(STAGE_CODE) || config.equals(PREPROD_CODE))) {
+         variant.ignore = false
+         return
+      }
+      //
+      if (variant.buildType.name.equals("release")) {
+         if (build.equals(EXTERNAL_CODE) && containsAnyOf(config, STAGE_CODE, PREPROD_CODE, PERF_CODE)) {
             variant.ignore = false
-            return
-        }
-        //
-        if (variant.buildType.name.equals("release")) {
-            if (build.equals(EXTERNAL_CODE) && containsAnyOf(config, STAGE_CODE, PREPROD_CODE, PERF_CODE)) {
-                variant.ignore = false
-            }
-            if (build.equals(EXTERNAL_CODE) && stream.equals(STABLE_CODE) && config.equals(PROD_CODE)) {
-                variant.ignore = false
-            }
-        }
-    }
+         }
+         if (build.equals(EXTERNAL_CODE) && stream.equals(STABLE_CODE) && config.equals(PROD_CODE)) {
+            variant.ignore = false
+         }
+      }
+   }
 
-    // TODO : move to external method later
-    android.applicationVariants.all { variant ->
+   // TODO : move to external method later
+   android.applicationVariants.all { variant ->
 
-        String flavorName = variant.flavorName.toLowerCase()
-        String buildSuffix, streamSuffix, configSuffix
-        //
-        buildSuffix = oneOfSubstrings(flavorName, BUILD_CODES)
-        streamSuffix = oneOfSubstrings(flavorName, STREAM_CODES)
-        configSuffix = oneOfSubstrings(flavorName, CONFIG_CODES)
+      String flavorName = variant.flavorName.toLowerCase()
+      String buildSuffix, streamSuffix, configSuffix
+      //
+      buildSuffix = oneOfSubstrings(flavorName, BUILD_CODES)
+      streamSuffix = oneOfSubstrings(flavorName, STREAM_CODES)
+      configSuffix = oneOfSubstrings(flavorName, CONFIG_CODES)
 
-        ///////////////////////////////////////////////////////////////////////////
-        // Patch config from config maps
-        ///////////////////////////////////////////////////////////////////////////
+      ///////////////////////////////////////////////////////////////////////////
+      // Patch config from config maps
+      ///////////////////////////////////////////////////////////////////////////
 
-        CONFIG_MAP_DEFAULT.each { entry ->
+      CONFIG_MAP_DEFAULT.each { entry ->
+         buildConfigField 'String', entry.key, entry.value
+      }
+      //
+      if (CONFIG_MAPS.containsKey(buildSuffix)) {
+         CONFIG_MAPS.get(buildSuffix).each { entry ->
             buildConfigField 'String', entry.key, entry.value
-        }
-        //
-        if (CONFIG_MAPS.containsKey(buildSuffix)) {
-            CONFIG_MAPS.get(buildSuffix).each { entry ->
-                buildConfigField 'String', entry.key, entry.value
-            }
-        }
-        //
-        if (CONFIG_MAPS.containsKey(streamSuffix)) {
-            CONFIG_MAPS.get(streamSuffix).each { entry ->
-                buildConfigField 'String', entry.key, entry.value
-            }
-        }
-        //
-        if (CONFIG_MAPS.containsKey(configSuffix)) {
-            CONFIG_MAPS.get(configSuffix).each { entry ->
-                buildConfigField 'String', entry.key, entry.value
-            }
-        }
+         }
+      }
+      //
+      if (CONFIG_MAPS.containsKey(streamSuffix)) {
+         CONFIG_MAPS.get(streamSuffix).each { entry ->
+            buildConfigField 'String', entry.key, entry.value
+         }
+      }
+      //
+      if (CONFIG_MAPS.containsKey(configSuffix)) {
+         CONFIG_MAPS.get(configSuffix).each { entry ->
+            buildConfigField 'String', entry.key, entry.value
+         }
+      }
 
-        ///////////////////////////////////////////////////////////////////////////
-        // Version name constructor
-        ///////////////////////////////////////////////////////////////////////////
+      ///////////////////////////////////////////////////////////////////////////
+      // Version name constructor
+      ///////////////////////////////////////////////////////////////////////////
 
-        String versionName = APP_VERSION_NAME_BASE
-        //
-        if (equalsAnyOf(buildSuffix, DEV_CODE, DEV_PRE_MARSHMALLOW_CODE))
-            versionName += "-${DEV_CODE}"
-        if (!streamSuffix.equals(STABLE_CODE)) versionName += "-${streamSuffix}"
-        if (!configSuffix.equals(PROD_CODE)) {
-            versionName += "-${configSuffix}"
-            versionName += "-${versionBuild}"
-        }
-        //
-        variant.mergedFlavor.setVersionName versionName
-        //
-        writeBuildLog(ALLOW_BUILD_LOG, BUILD_LOG_TAG,
-                "Flavor = ${variant.flavorName + variant.buildType.name}\n" +
-                        "versionName = ${versionName}"
-        )
-    }
+      String versionName = APP_VERSION_NAME_BASE
+      //
+      if (equalsAnyOf(buildSuffix, DEV_CODE, DEV_PRE_MARSHMALLOW_CODE))
+         versionName += "-${DEV_CODE}"
+      if (!streamSuffix.equals(STABLE_CODE)) versionName += "-${streamSuffix}"
+      if (!configSuffix.equals(PROD_CODE)) {
+         versionName += "-${configSuffix}"
+         versionName += "-${versionBuild}"
+      }
+      //
+      variant.mergedFlavor.setVersionName versionName
+      //
+      writeBuildLog(ALLOW_BUILD_LOG, BUILD_LOG_TAG,
+            "Flavor = ${variant.flavorName + variant.buildType.name}\n" +
+                  "versionName = ${versionName}"
+      )
+   }
 
-    signingConfigs {
-        debug {
-            storeFile rootProject.file('debug.keystore')
-        }
-        release {
-            Properties signingProperties = new Properties()
-            def pFile = rootProject.file('signing/signing.properties')
-            if (pFile.exists()) {
-                signingProperties.load(new FileInputStream(pFile))
-                storeFile rootProject.file("signing/" + signingProperties.storeFile)
-                storePassword signingProperties.storePassword
-                keyAlias signingProperties.keyAlias
-                keyPassword signingProperties.keyPassword
-            }
-        }
-    }
+   signingConfigs {
+      debug {
+         storeFile rootProject.file('debug.keystore')
+      }
+      release {
+         Properties signingProperties = new Properties()
+         def pFile = rootProject.file('signing/signing.properties')
+         if (pFile.exists()) {
+            signingProperties.load(new FileInputStream(pFile))
+            storeFile rootProject.file("signing/" + signingProperties.storeFile)
+            storePassword signingProperties.storePassword
+            keyAlias signingProperties.keyAlias
+            keyPassword signingProperties.keyPassword
+         }
+      }
+   }
 
-    buildTypes {
-        debug {
-            debuggable true
-            signingConfig signingConfigs.debug
-            applicationIdSuffix ".debug"
-            versionNameSuffix "-debug"
-        }
-        release {
-            minifyEnabled true
-            shrinkResources true
-            signingConfig signingConfigs.release
-            // proguard
-            def proConfigs = file('proguard-rules').listFiles().collect { it }
-            proConfigs << getDefaultProguardFile('proguard-android-optimize.txt')
-            proConfigs << file('dagger-proguard-keepnames.cfg')
-            proguardFiles proConfigs
-        }
-    }
+   buildTypes {
+      debug {
+         debuggable true
+         signingConfig signingConfigs.debug
+         applicationIdSuffix ".debug"
+         versionNameSuffix "-debug"
+      }
+      release {
+         minifyEnabled true
+         shrinkResources true
+         signingConfig signingConfigs.release
+         // proguard
+         def proConfigs = file('proguard-rules').listFiles().collect { it }
+         proConfigs << getDefaultProguardFile('proguard-android-optimize.txt')
+         proConfigs << file('dagger-proguard-keepnames.cfg')
+         proguardFiles proConfigs
+      }
+   }
 
-    compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_8
-        targetCompatibility JavaVersion.VERSION_1_8
-    }
-    dexOptions {
-        javaMaxHeapSize "4g"
-        preDexLibraries = rootProject.ext.preDexLibs
-    }
-    lintOptions {
-        disable 'MissingTranslation' // otherwise generated strings fucks you up
-        abortOnError false
-        checkReleaseBuilds false
-        // lint doesn't like retrolambda https://github.com/evant/gradle-retrolambda/issues/96
-    }
-    packagingOptions {
-        exclude 'LICENSE.txt'
-        exclude 'META-INF/services/javax.annotation.processing.Processor'
-        exclude 'META-INF/LICENSE.txt'
-        exclude 'META-INF/NOTICE.txt'
-    }
-    useLibrary 'org.apache.http.legacy'
-    sourceSets {
-        main.java.srcDirs += 'src/main/kotlin'
-    }
+   compileOptions {
+      sourceCompatibility JavaVersion.VERSION_1_8
+      targetCompatibility JavaVersion.VERSION_1_8
+   }
+   dexOptions {
+      javaMaxHeapSize "4g"
+      preDexLibraries = rootProject.ext.preDexLibs
+   }
+   lintOptions {
+      disable 'MissingTranslation' // otherwise generated strings fucks you up
+      abortOnError false
+      checkReleaseBuilds false
+      // lint doesn't like retrolambda https://github.com/evant/gradle-retrolambda/issues/96
+   }
+   packagingOptions {
+      exclude 'LICENSE.txt'
+      exclude 'META-INF/services/javax.annotation.processing.Processor'
+      exclude 'META-INF/LICENSE.txt'
+      exclude 'META-INF/NOTICE.txt'
+   }
+   useLibrary 'org.apache.http.legacy'
+   sourceSets {
+      main.java.srcDirs += 'src/main/kotlin'
+   }
 }
 
 def googleLibrariesVersion = '24.1.1'
@@ -359,153 +359,153 @@ def leakCanaryVersion = '1.3.1'
 def roboelectricVersion = '3.1.2'
 
 dependencies {
-    compile fileTree(dir: 'libs', include: ['*.jar'])
-    // Di
-    compile 'com.squareup.dagger:dagger:1.2.2'
-    apt 'com.squareup.dagger:dagger-compiler:1.2.2'
-    apt 'com.github.idamobile:dagger-proguard-helper-processor:1.0.1-SNAPSHOT'
-    // Dagger-related. Needed for @Generated annotation (missing in Java <= 1.6 & Android)
-    compile 'javax.annotation:jsr250-api:1.0'
-    // janet
-    compile "com.github.techery:janet:1.0.6"
-    compile "com.github.techery:janet-command:1.0.3"
-    compile "com.github.techery.janet-http:service:1.0.9"
-    apt "com.github.techery.janet-http:service-compiler:1.0.9"
-    compile "com.github.techery.janet-http:client-okhttp:1.0.9"
-    compile "com.github.techery.janet-converters:gson:1.0.1"
-    compile 'com.squareup.okhttp:logging-interceptor:2.+'
-    // Data storage, flow
-    compile 'de.greenrobot:eventbus:2.4.0'
-    compile 'com.snappydb:snappydb-lib:0.5.2'
-    compile 'com.esotericsoftware.kryo:kryo:2.24.0'
-    // Networking
-    compile(group: 'com.worldventures.dreamtrips', name: 'api', version: '2.1.0-STAGE-SNAPSHOT', changing: true) {
-        exclude group:"joda-time"
-    }
-    compile 'com.octo.android.robospice:robospice:1.4.14'
-    compile 'com.octo.android.robospice:robospice-retrofit:1.4.14'
-    compile 'com.squareup.okhttp:okhttp:2.7.5'
-    compile 'com.squareup.okhttp:okhttp-urlconnection:2.7.5'
-    compile 'com.google.code.gson:gson:2.7'
-    // Media
-    compile 'io.techery:ijkmediaplayer:0.4.0@aar'
-    compile 'io.techery:ijkmediawidget:0.4.0@aar'
-    // 3rd services
-    compile 'com.amazonaws:aws-android-sdk-core:2.2.6'
-    compile 'com.amazonaws:aws-android-sdk-s3:2.2.6'
-    compile "com.google.android.gms:play-services-maps:${googlePlayServicesVersion}"
-    compile "com.google.android.gms:play-services-gcm:${googlePlayServicesVersion}"
-    compile "com.google.android.gms:play-services-location:${googlePlayServicesVersion}"
-    compile "com.google.android.gms:play-services-vision:${googlePlayServicesVersion}"
-    //
-    compile 'me.dm7.barcodescanner:zxing:1.8.3'
-    compile 'com.facebook.android:facebook-android-sdk:3.23.1'
-    compile('com.twitter.sdk.android:twitter:1.9.1@aar') {
-        transitive = true;
-    }
-    compile('com.crashlytics.sdk.android:crashlytics:2.5.5@aar') {
-        transitive = true;
-    }
-    compile 'com.newrelic.agent.android:android-agent:5.6.0'
-    compile 'com.apptentive:apptentive-android:2.0.1@aar'
-    compile 'com.github.techery:job-executor:0.1.1'
-    compile 'com.amazonaws:aws-android-sdk-core:2.2.6'
-    compile 'com.amazonaws:aws-android-sdk-s3:2.2.6'
-    compile 'io.reactivex:rxjava:1.1.6'
-    compile 'io.reactivex:rxandroid:1.1.0'
-    compile 'com.jakewharton.rxbinding:rxbinding-appcompat-v7:0.4.0'
-    compile 'com.trello:rxlifecycle:0.4.0'
-    compile 'com.trello:rxlifecycle-components:0.4.0'
-    compile 'io.reactivex:rxjava-debug:1.0.3'
-    // Ui
-    compile 'com.github.markushi:android-ui:1.2' // fancy action view in custom DTL toolbar
-    compile 'com.github.techery:sweet-alert-dialog:d82b5e4764'
-    compile "com.android.support:design:${googleLibrariesVersion}"
-    compile 'com.github.traex.expandablelayout:library:1.3'
-    compile 'com.facebook.fresco:fresco:0.8.1'
-    compile 'com.facebook.fresco:imagepipeline-okhttp:0.8.1'
-    compile "com.android.support:appcompat-v7:${googleLibrariesVersion}"
-    compile "com.android.support:cardview-v7:${googleLibrariesVersion}"
-    compile "com.android.support:recyclerview-v7:${googleLibrariesVersion}"
-    compile "com.android.support:percent:${googleLibrariesVersion}"
-    compile 'com.rengwuxian.materialedittext:library:2.1.4'
-    compile 'com.getbase:floatingactionbutton:1.10.0'
-    compile 'com.github.flavienlaurent.datetimepicker:library:0.0.2'
-    compile 'com.github.afollestad.material-dialogs:core:0.8.6.2'
-    compile 'com.github.afollestad.material-dialogs:commons:0.8.6.2'
-    compile 'com.orhanobut:dialogplus:1.10@aar'
-    compile 'com.kbeanie:image-chooser-library:1.5.2@aar'
-    compile 'com.github.techery:material-range-bar:db6fec9fdd'
-    compile 'com.h6ah4i.android.widget.advrecyclerview:advrecyclerview:0.8.7'
-    compile 'com.github.frankiesardo:linearlistview:1.0.1@aar'
-    compile 'me.relex:circleindicator:1.1.5@aar'
-    compile 'com.ms-square:expandableTextView:0.1.4'
-    compile 'com.daimajia.swipelayout:library:1.2.0@aar'
-    compile 'com.eowise:recyclerview-stickyheaders:0.5.2@aar'
-    compile 'mbanje.kurt:fabbutton:1.2.1'
-    compile 'com.github.man4ik:poly-picker:fce2e41f009b2c9b1287ee1000431710939e22e6'
-    compile 'com.yalantis:ucrop:1.2.+'
-    compile 'com.github.dmytrodanylyk.shadow-layout:library:1.0.3'
-    compile 'me.leolin:ShortcutBadger:1.1.3@aar'
-    compile 'com.github.techery:properratingbar:0.0.5'
-    compile 'com.sothree.slidinguppanel:library:3.2.1'
-    compile 'com.amulyakhare:com.amulyakhare.textdrawable:1.0.1'
-    // Util
-    retrolambdaConfig 'net.orfjackal.retrolambda:retrolambda:2.3.0'
-    compile 'com.google.maps.android:android-maps-utils:0.4'
-    compile 'pl.charmas.android:android-reactive-location:0.8@aar'
-    compile 'com.intellij:annotations:12.0'
-    compile 'com.android.support:multidex:1.0.1'
-    compile "com.android.support:support-annotations:${googleLibrariesVersion}"
-    compile 'com.jakewharton:butterknife:6.1.0'
-    compile 'com.jakewharton.timber:timber:4.0.1'
-    compile 'com.innahema:collections-query:0.2.9'
-    compile 'net.danlew:android.joda:2.9.0'
-    compile 'com.badoo.mobile:android-weak-handler:1.1'
-    compile 'frankiesardo:icepick:3.2.0'
-    apt 'frankiesardo:icepick-processor:3.2.0'
+   compile fileTree(dir: 'libs', include: ['*.jar'])
+   // Di
+   compile 'com.squareup.dagger:dagger:1.2.2'
+   apt 'com.squareup.dagger:dagger-compiler:1.2.2'
+   apt 'com.github.idamobile:dagger-proguard-helper-processor:1.0.1-SNAPSHOT'
+   // Dagger-related. Needed for @Generated annotation (missing in Java <= 1.6 & Android)
+   compile 'javax.annotation:jsr250-api:1.0'
+   // janet
+   compile "com.github.techery:janet:1.0.6"
+   compile "com.github.techery:janet-command:1.0.3"
+   compile "com.github.techery.janet-http:service:1.0.9"
+   apt "com.github.techery.janet-http:service-compiler:1.0.9"
+   compile "com.github.techery.janet-http:client-okhttp:1.0.9"
+   compile "com.github.techery.janet-converters:gson:1.0.1"
+   compile 'com.squareup.okhttp:logging-interceptor:2.+'
+   // Data storage, flow
+   compile 'de.greenrobot:eventbus:2.4.0'
+   compile 'com.snappydb:snappydb-lib:0.5.2'
+   compile 'com.esotericsoftware.kryo:kryo:2.24.0'
+   // Networking
+   compile(group: 'com.worldventures.dreamtrips', name: 'api', version: '2.1.0-STAGE-SNAPSHOT', changing: true) {
+      exclude group: "joda-time"
+   }
+   compile 'com.octo.android.robospice:robospice:1.4.14'
+   compile 'com.octo.android.robospice:robospice-retrofit:1.4.14'
+   compile 'com.squareup.okhttp:okhttp:2.7.5'
+   compile 'com.squareup.okhttp:okhttp-urlconnection:2.7.5'
+   compile 'com.google.code.gson:gson:2.7'
+   // Media
+   compile 'io.techery:ijkmediaplayer:0.4.0@aar'
+   compile 'io.techery:ijkmediawidget:0.4.0@aar'
+   // 3rd services
+   compile 'com.amazonaws:aws-android-sdk-core:2.2.6'
+   compile 'com.amazonaws:aws-android-sdk-s3:2.2.6'
+   compile "com.google.android.gms:play-services-maps:${googlePlayServicesVersion}"
+   compile "com.google.android.gms:play-services-gcm:${googlePlayServicesVersion}"
+   compile "com.google.android.gms:play-services-location:${googlePlayServicesVersion}"
+   compile "com.google.android.gms:play-services-vision:${googlePlayServicesVersion}"
+   //
+   compile 'me.dm7.barcodescanner:zxing:1.8.3'
+   compile 'com.facebook.android:facebook-android-sdk:3.23.1'
+   compile('com.twitter.sdk.android:twitter:1.9.1@aar') {
+      transitive = true;
+   }
+   compile('com.crashlytics.sdk.android:crashlytics:2.5.5@aar') {
+      transitive = true;
+   }
+   compile 'com.newrelic.agent.android:android-agent:5.6.0'
+   compile 'com.apptentive:apptentive-android:2.0.1@aar'
+   compile 'com.github.techery:job-executor:0.1.1'
+   compile 'com.amazonaws:aws-android-sdk-core:2.2.6'
+   compile 'com.amazonaws:aws-android-sdk-s3:2.2.6'
+   compile 'io.reactivex:rxjava:1.1.6'
+   compile 'io.reactivex:rxandroid:1.1.0'
+   compile 'com.jakewharton.rxbinding:rxbinding-appcompat-v7:0.4.0'
+   compile 'com.trello:rxlifecycle:0.4.0'
+   compile 'com.trello:rxlifecycle-components:0.4.0'
+   compile 'io.reactivex:rxjava-debug:1.0.3'
+   // Ui
+   compile 'com.github.markushi:android-ui:1.2' // fancy action view in custom DTL toolbar
+   compile 'com.github.techery:sweet-alert-dialog:d82b5e4764'
+   compile "com.android.support:design:${googleLibrariesVersion}"
+   compile 'com.github.traex.expandablelayout:library:1.3'
+   compile 'com.facebook.fresco:fresco:0.8.1'
+   compile 'com.facebook.fresco:imagepipeline-okhttp:0.8.1'
+   compile "com.android.support:appcompat-v7:${googleLibrariesVersion}"
+   compile "com.android.support:cardview-v7:${googleLibrariesVersion}"
+   compile "com.android.support:recyclerview-v7:${googleLibrariesVersion}"
+   compile "com.android.support:percent:${googleLibrariesVersion}"
+   compile 'com.rengwuxian.materialedittext:library:2.1.4'
+   compile 'com.getbase:floatingactionbutton:1.10.0'
+   compile 'com.github.flavienlaurent.datetimepicker:library:0.0.2'
+   compile 'com.github.afollestad.material-dialogs:core:0.8.6.2'
+   compile 'com.github.afollestad.material-dialogs:commons:0.8.6.2'
+   compile 'com.orhanobut:dialogplus:1.10@aar'
+   compile 'com.kbeanie:image-chooser-library:1.5.2@aar'
+   compile 'com.github.techery:material-range-bar:db6fec9fdd'
+   compile 'com.h6ah4i.android.widget.advrecyclerview:advrecyclerview:0.8.7'
+   compile 'com.github.frankiesardo:linearlistview:1.0.1@aar'
+   compile 'me.relex:circleindicator:1.1.5@aar'
+   compile 'com.ms-square:expandableTextView:0.1.4'
+   compile 'com.daimajia.swipelayout:library:1.2.0@aar'
+   compile 'com.eowise:recyclerview-stickyheaders:0.5.2@aar'
+   compile 'mbanje.kurt:fabbutton:1.2.1'
+   compile 'com.github.man4ik:poly-picker:fce2e41f009b2c9b1287ee1000431710939e22e6'
+   compile 'com.yalantis:ucrop:1.2.+'
+   compile 'com.github.dmytrodanylyk.shadow-layout:library:1.0.3'
+   compile 'me.leolin:ShortcutBadger:1.1.3@aar'
+   compile 'com.github.techery:properratingbar:0.0.5'
+   compile 'com.sothree.slidinguppanel:library:3.2.1'
+   compile 'com.amulyakhare:com.amulyakhare.textdrawable:1.0.1'
+   // Util
+   retrolambdaConfig 'net.orfjackal.retrolambda:retrolambda:2.3.0'
+   compile 'com.google.maps.android:android-maps-utils:0.4'
+   compile 'pl.charmas.android:android-reactive-location:0.8@aar'
+   compile 'com.intellij:annotations:12.0'
+   compile 'com.android.support:multidex:1.0.1'
+   compile "com.android.support:support-annotations:${googleLibrariesVersion}"
+   compile 'com.jakewharton:butterknife:6.1.0'
+   compile 'com.jakewharton.timber:timber:4.0.1'
+   compile 'com.innahema:collections-query:0.2.9'
+   compile 'net.danlew:android.joda:2.9.0'
+   compile 'com.badoo.mobile:android-weak-handler:1.1'
+   compile 'frankiesardo:icepick:3.2.0'
+   apt 'frankiesardo:icepick-processor:3.2.0'
 
-    devCompile "com.squareup.leakcanary:leakcanary-android:${leakCanaryVersion}"
-    devpremarshmallowCompile "com.squareup.leakcanary:leakcanary-android:${leakCanaryVersion}"
-    externalCompile "com.squareup.leakcanary:leakcanary-android-no-op:${leakCanaryVersion}"
-    compile 'com.github.pwittchen:networkevents:2.1.2'
-    retrolambdaConfig 'net.orfjackal.retrolambda:retrolambda:2.1.0'
-    apt 'org.immutables:value:2.2.6'
-    provided 'org.immutables:value:2.2.6'
-    provided 'org.immutables:builder:2.2.6'
-    provided "org.immutables:gson:2.2.6"
+   devCompile "com.squareup.leakcanary:leakcanary-android:${leakCanaryVersion}"
+   devpremarshmallowCompile "com.squareup.leakcanary:leakcanary-android:${leakCanaryVersion}"
+   externalCompile "com.squareup.leakcanary:leakcanary-android-no-op:${leakCanaryVersion}"
+   compile 'com.github.pwittchen:networkevents:2.1.2'
+   retrolambdaConfig 'net.orfjackal.retrolambda:retrolambda:2.1.0'
+   apt 'org.immutables:value:2.2.6'
+   provided 'org.immutables:value:2.2.6'
+   provided 'org.immutables:builder:2.2.6'
+   provided "org.immutables:gson:2.2.6"
 
-    // Messenger
-    compile 'com.github.almozavr.flow:flow:0b702cdab7c639f94e37c792f0dbd7f4bf89a713'
-    compile 'com.github.almozavr.flow:flow-path:0b702cdab7c639f94e37c792f0dbd7f4bf89a713'
-    compile 'com.hannesdorfmann.mosby:mvp:2.0.0'
-    compile 'com.hannesdorfmann.mosby:mvp-common:2.0.0'
-    compile 'com.hannesdorfmann.mosby:viewstate:2.0.0'
+   // Messenger
+   compile 'com.github.almozavr.flow:flow:0b702cdab7c639f94e37c792f0dbd7f4bf89a713'
+   compile 'com.github.almozavr.flow:flow-path:0b702cdab7c639f94e37c792f0dbd7f4bf89a713'
+   compile 'com.hannesdorfmann.mosby:mvp:2.0.0'
+   compile 'com.hannesdorfmann.mosby:mvp-common:2.0.0'
+   compile 'com.hannesdorfmann.mosby:viewstate:2.0.0'
 
-    compile "com.raizlabs.android:DBFlow-Core:2.2.1"
-    compile "com.raizlabs.android:DBFlow:2.2.1"
-    apt 'com.raizlabs.android:DBFlow-Compiler:2.2.1'
+   compile "com.raizlabs.android:DBFlow-Core:2.2.1"
+   compile "com.raizlabs.android:DBFlow:2.2.1"
+   apt 'com.raizlabs.android:DBFlow-Compiler:2.2.1'
 
-    compile 'org.igniterealtime.smack:smack-android-extensions:4.1.6'
-    compile 'org.igniterealtime.smack:smack-tcp:4.1.6'
+   compile 'org.igniterealtime.smack:smack-android-extensions:4.1.6'
+   compile 'org.igniterealtime.smack:smack-tcp:4.1.6'
 
-    // Testing
-    testCompile 'junit:junit:4.12'
-    testCompile "org.robolectric:robolectric:$roboelectricVersion"
-    testCompile 'org.assertj:assertj-core:1.7.1'
-    testCompile "com.squareup.leakcanary:leakcanary-android-no-op:$leakCanaryVersion"
-    //
-    testCompile 'org.powermock:powermock-module-junit4:1.6.4'
-    testCompile 'org.powermock:powermock-module-junit4-rule:1.6.4'
-    testCompile 'org.powermock:powermock-api-mockito:1.6.4'
-    testCompile 'org.powermock:powermock-classloading-xstream:1.6.4'
-    testCompile "org.robolectric:shadows-multidex:$roboelectricVersion"
-    testCompile 'org.jetbrains.spek:spek:1.0.9'
-    testCompile "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
-    testCompile 'org.jetbrains.kotlin:kotlin-reflect:1.0.2'
-    testCompile 'io.reactivex:rxkotlin:0.55.0'
-    testCompile 'io.reactivex:rxjava:1.1.6'
-    testCompile ('com.nhaarman:mockito-kotlin:0.5.0'){
-        exclude group : 'org.mockito', module : 'mockito-core'
-    }
+   // Testing
+   testCompile 'junit:junit:4.12'
+   testCompile "org.robolectric:robolectric:$roboelectricVersion"
+   testCompile 'org.assertj:assertj-core:1.7.1'
+   testCompile "com.squareup.leakcanary:leakcanary-android-no-op:$leakCanaryVersion"
+   //
+   testCompile 'org.powermock:powermock-module-junit4:1.6.4'
+   testCompile 'org.powermock:powermock-module-junit4-rule:1.6.4'
+   testCompile 'org.powermock:powermock-api-mockito:1.6.4'
+   testCompile 'org.powermock:powermock-classloading-xstream:1.6.4'
+   testCompile "org.robolectric:shadows-multidex:$roboelectricVersion"
+   testCompile 'org.jetbrains.spek:spek:1.0.9'
+   testCompile "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
+   testCompile 'org.jetbrains.kotlin:kotlin-reflect:1.0.2'
+   testCompile 'io.reactivex:rxkotlin:0.55.0'
+   testCompile 'io.reactivex:rxjava:1.1.6'
+   testCompile('com.nhaarman:mockito-kotlin:0.5.0') {
+      exclude group: 'org.mockito', module: 'mockito-core'
+   }
 }

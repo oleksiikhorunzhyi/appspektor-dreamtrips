@@ -36,177 +36,171 @@ import io.techery.janet.helper.ActionStateSubscriber;
 
 public class PodcastsPresenter<T extends PodcastsPresenter.View> extends JobPresenter<T> {
 
-    @Inject protected SnappyRepository db;
-    @Inject @ForApplication protected Injector injector;
-    @Inject protected FileDownloadSpiceManager fileDownloadSpiceManager;
-    @Inject protected Janet janet;
-    @Inject protected Context context;
-    @Inject protected ActivityRouter activityRouter;
-    @Inject PodcastsInteractor podcastsInteractor;
+   @Inject protected SnappyRepository db;
+   @Inject @ForApplication protected Injector injector;
+   @Inject protected FileDownloadSpiceManager fileDownloadSpiceManager;
+   @Inject protected Janet janet;
+   @Inject protected Context context;
+   @Inject protected ActivityRouter activityRouter;
+   @Inject PodcastsInteractor podcastsInteractor;
 
-    private static final int PODCAST_PRE_PAGE = 10;
+   private static final int PODCAST_PRE_PAGE = 10;
 
-    private PublicMediaCachingDelegate fileCachingDelegate;
+   private PublicMediaCachingDelegate fileCachingDelegate;
 
-    private List<Podcast> items = new ArrayList<>();
+   private List<Podcast> items = new ArrayList<>();
 
-    private boolean loading;
-    private boolean noMoreItems;
+   private boolean loading;
+   private boolean noMoreItems;
 
-    @Override
-    public void takeView(T view) {
-        super.takeView(view);
-        apiErrorPresenter.setView(view);
-        fileCachingDelegate = new PublicMediaCachingDelegate(db, context, injector, fileDownloadSpiceManager, Environment.DIRECTORY_PODCASTS);
-        fileCachingDelegate.setView(this.view);
-        subscribeGetPodcasts();
-        reloadPodcasts();
-    }
+   @Override
+   public void takeView(T view) {
+      super.takeView(view);
+      apiErrorPresenter.setView(view);
+      fileCachingDelegate = new PublicMediaCachingDelegate(db, context, injector, fileDownloadSpiceManager, Environment.DIRECTORY_PODCASTS);
+      fileCachingDelegate.setView(this.view);
+      subscribeGetPodcasts();
+      reloadPodcasts();
+   }
 
-    @Override
-    public void dropView() {
-        apiErrorPresenter.dropView();
-        super.dropView();
-    }
+   @Override
+   public void dropView() {
+      apiErrorPresenter.dropView();
+      super.dropView();
+   }
 
-    @Override
-    public void onStart() {
-        super.onStart();
-        if (!fileDownloadSpiceManager.isStarted()) {
-            fileDownloadSpiceManager.start(context);
-        }
-    }
+   @Override
+   public void onStart() {
+      super.onStart();
+      if (!fileDownloadSpiceManager.isStarted()) {
+         fileDownloadSpiceManager.start(context);
+      }
+   }
 
-    @Override
-    public void onStop() {
-        super.onStop();
-        if (fileDownloadSpiceManager.isStarted()) {
-            fileDownloadSpiceManager.shouldStop();
-        }
-    }
+   @Override
+   public void onStop() {
+      super.onStop();
+      if (fileDownloadSpiceManager.isStarted()) {
+         fileDownloadSpiceManager.shouldStop();
+      }
+   }
 
-    public void onDeleteAction(CachedEntity entity) {
-        fileCachingDelegate.onDeleteAction(entity);
-    }
+   public void onDeleteAction(CachedEntity entity) {
+      fileCachingDelegate.onDeleteAction(entity);
+   }
 
-    public void onCancelAction(CachedEntity entity) {
-        fileCachingDelegate.onCancelAction(entity);
-    }
+   public void onCancelAction(CachedEntity entity) {
+      fileCachingDelegate.onCancelAction(entity);
+   }
 
-    public void scrolled(int totalItemCount, int lastVisible) {
-        if (!loading && !noMoreItems && lastVisible == totalItemCount - 1) {
-            loading = true;
-            loadMore();
-        }
-    }
+   public void scrolled(int totalItemCount, int lastVisible) {
+      if (!loading && !noMoreItems && lastVisible == totalItemCount - 1) {
+         loading = true;
+         loadMore();
+      }
+   }
 
-    protected void loadMore() {
-        if (items.size() > 0) {
-            loadPodcasts(items.size() / PODCAST_PRE_PAGE + 1);
-        }
-    }
+   protected void loadMore() {
+      if (items.size() > 0) {
+         loadPodcasts(items.size() / PODCAST_PRE_PAGE + 1);
+      }
+   }
 
-    public void reloadPodcasts() {
-        items.clear();
-        loadPodcasts(1);
-    }
+   public void reloadPodcasts() {
+      items.clear();
+      loadPodcasts(1);
+   }
 
-    private void loadPodcasts(int page) {
-        loading = true;
-        view.startLoading();
-        podcastsInteractor.podcastsActionPipe().send(new PodcastCommand(page, PODCAST_PRE_PAGE));
-    }
+   private void loadPodcasts(int page) {
+      loading = true;
+      view.startLoading();
+      podcastsInteractor.podcastsActionPipe().send(new PodcastCommand(page, PODCAST_PRE_PAGE));
+   }
 
-    private void subscribeGetPodcasts() {
-        view.bindUntilDropView(podcastsInteractor.podcastsActionPipe().observe()
-                .compose(new IoToMainComposer<>()))
-                .subscribe(new ActionStateSubscriber<PodcastCommand>()
-                        .onSuccess(podcastCommand -> onPodcastsLoaded(podcastCommand.getResult()))
-                        .onFail((podcastCommand, throwable) -> {
-                            apiErrorPresenter.handleActionError(podcastCommand, throwable);
-                            view.finishLoading();
-                        }));
-    }
+   private void subscribeGetPodcasts() {
+      view.bindUntilDropView(podcastsInteractor.podcastsActionPipe().observe().compose(new IoToMainComposer<>()))
+            .subscribe(new ActionStateSubscriber<PodcastCommand>().onSuccess(podcastCommand -> onPodcastsLoaded(podcastCommand
+                  .getResult())).onFail((podcastCommand, throwable) -> {
+               apiErrorPresenter.handleActionError(podcastCommand, throwable);
+               view.finishLoading();
+            }));
+   }
 
-    private void attachCache(Podcast podcast) {
-        CachedEntity e = db.getDownloadMediaEntity(podcast.getUid());
-        podcast.setCacheEntity(e);
-    }
+   private void attachCache(Podcast podcast) {
+      CachedEntity e = db.getDownloadMediaEntity(podcast.getUid());
+      podcast.setCacheEntity(e);
+   }
 
-    private void attachPodcastDownloadListener(Podcast podcast) {
-        CachedEntity entity = podcast.getCacheEntity();
-        boolean failed = entity.isFailed();
-        boolean inProgress = entity.getProgress() > 0;
-        boolean cached = entity.isCached(Environment.DIRECTORY_PODCASTS);
-        if (!failed && inProgress && !cached) {
-            DownloadFileListener listener = new DownloadFileListener(entity, fileCachingDelegate);
-            injector.inject(listener);
-            fileDownloadSpiceManager.addListenerIfPending(
-                    InputStream.class,
-                    entity.getUuid(),
-                    listener
-            );
-        }
-    }
+   private void attachPodcastDownloadListener(Podcast podcast) {
+      CachedEntity entity = podcast.getCacheEntity();
+      boolean failed = entity.isFailed();
+      boolean inProgress = entity.getProgress() > 0;
+      boolean cached = entity.isCached(Environment.DIRECTORY_PODCASTS);
+      if (!failed && inProgress && !cached) {
+         DownloadFileListener listener = new DownloadFileListener(entity, fileCachingDelegate);
+         injector.inject(listener);
+         fileDownloadSpiceManager.addListenerIfPending(InputStream.class, entity.getUuid(), listener);
+      }
+   }
 
-    private void onPodcastsLoaded(List<Podcast> podcasts) {
-        Queryable.from(podcasts).forEachR(podcast -> {
-            attachCache(podcast);
-            attachPodcastDownloadListener(podcast);
-        });
-        items.addAll(podcasts);
-        updateUi(items);
-    }
+   private void onPodcastsLoaded(List<Podcast> podcasts) {
+      Queryable.from(podcasts).forEachR(podcast -> {
+         attachCache(podcast);
+         attachPodcastDownloadListener(podcast);
+      });
+      items.addAll(podcasts);
+      updateUi(items);
+   }
 
-    protected void updateUi(List<Podcast> podcasts) {
-        List<Object> items = new ArrayList<>();
-        items.add(new MediaHeader(context.getString(R.string.recently_added)));
-        items.addAll(podcasts);
-        view.setItems(items);
-        view.notifyItemChanged(null);
-        view.finishLoading();
+   protected void updateUi(List<Podcast> podcasts) {
+      List<Object> items = new ArrayList<>();
+      items.add(new MediaHeader(context.getString(R.string.recently_added)));
+      items.addAll(podcasts);
+      view.setItems(items);
+      view.notifyItemChanged(null);
+      view.finishLoading();
 
-        noMoreItems = podcasts.size() < PODCAST_PRE_PAGE;
-        loading = false;
-    }
+      noMoreItems = podcasts.size() < PODCAST_PRE_PAGE;
+      loading = false;
+   }
 
-    public void downloadPodcast(CachedEntity entity) {
-        fileCachingDelegate.downloadFile(entity);
-    }
+   public void downloadPodcast(CachedEntity entity) {
+      fileCachingDelegate.downloadFile(entity);
+   }
 
-    public void deleteCachedPodcast(CachedEntity entity) {
-        fileCachingDelegate.deleteCachedFile(entity);
-    }
+   public void deleteCachedPodcast(CachedEntity entity) {
+      fileCachingDelegate.deleteCachedFile(entity);
+   }
 
-    public void cancelCachingPodcast(CachedEntity entity) {
-        fileCachingDelegate.cancelCachingFile(entity);
-    }
+   public void cancelCachingPodcast(CachedEntity entity) {
+      fileCachingDelegate.cancelCachingFile(entity);
+   }
 
-    public void play(Podcast podcast) {
-        try {
-            CachedEntity entity = podcast.getCacheEntity();
-            if (entity.isCached(Environment.DIRECTORY_PODCASTS)) {
-                String path = CachedEntity.getFileForStorage(Environment.DIRECTORY_PODCASTS, podcast.getFileUrl());
-                activityRouter.openPodcastPlayer(path);
-            } else {
-                String url = podcast.getFileUrl();
-                activityRouter.openPodcastPlayer(url);
-            }
-        } catch (ActivityNotFoundException e) {
-            view.informUser(R.string.audio_app_not_found_exception);
-        }
-    }
+   public void play(Podcast podcast) {
+      try {
+         CachedEntity entity = podcast.getCacheEntity();
+         if (entity.isCached(Environment.DIRECTORY_PODCASTS)) {
+            String path = CachedEntity.getFileForStorage(Environment.DIRECTORY_PODCASTS, podcast.getFileUrl());
+            activityRouter.openPodcastPlayer(path);
+         } else {
+            String url = podcast.getFileUrl();
+            activityRouter.openPodcastPlayer(url);
+         }
+      } catch (ActivityNotFoundException e) {
+         view.informUser(R.string.audio_app_not_found_exception);
+      }
+   }
 
-    public void track() {
-        TrackingHelper.podcasts(getAccountUserId());
-    }
+   public void track() {
+      TrackingHelper.podcasts(getAccountUserId());
+   }
 
-    public interface View extends RxView, FileCachingDelegate.View, ApiErrorView {
+   public interface View extends RxView, FileCachingDelegate.View, ApiErrorView {
 
-        void startLoading();
+      void startLoading();
 
-        void finishLoading();
+      void finishLoading();
 
-        void setItems(List items);
-    }
+      void setItems(List items);
+   }
 }

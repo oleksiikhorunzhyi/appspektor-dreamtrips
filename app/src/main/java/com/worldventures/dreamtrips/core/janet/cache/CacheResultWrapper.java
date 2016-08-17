@@ -13,72 +13,71 @@ import io.techery.janet.JanetException;
 
 public class CacheResultWrapper extends ActionServiceWrapper {
 
-    private Map<Class<? extends CachedAction>, Storage> storageMap = new HashMap<>();
+   private Map<Class<? extends CachedAction>, Storage> storageMap = new HashMap<>();
 
-    public CacheResultWrapper(ActionService actionService) {
-        super(actionService);
-    }
+   public CacheResultWrapper(ActionService actionService) {
+      super(actionService);
+   }
 
-    public CacheResultWrapper bindStorage(Class<? extends CachedAction> actionClass, Storage storage) {
-        storageMap.put(actionClass, storage);
-        return this;
-    }
+   public CacheResultWrapper bindStorage(Class<? extends CachedAction> actionClass, Storage storage) {
+      storageMap.put(actionClass, storage);
+      return this;
+   }
 
-    @Override
-    protected <A> boolean onInterceptSend(ActionHolder<A> holder) throws JanetException {
-        if (holder.action() instanceof CachedAction) {
-            CachedAction action = (CachedAction) holder.action();
-            CacheOptions options = action.getCacheOptions();
+   @Override
+   protected <A> boolean onInterceptSend(ActionHolder<A> holder) throws JanetException {
+      if (holder.action() instanceof CachedAction) {
+         CachedAction action = (CachedAction) holder.action();
+         CacheOptions options = action.getCacheOptions();
 
-            if (options.restoreFromCache()) {
-                Class actionClass = holder.action().getClass();
-                Object data = getStorage(actionClass).get(options.params());
-                if (data != null) {
-                    action.onRestore(holder, data);
-                    return !options.sendAfterRestore();
-                }
+         if (options.restoreFromCache()) {
+            Class actionClass = holder.action().getClass();
+            Object data = getStorage(actionClass).get(options.params());
+            if (data != null) {
+               action.onRestore(holder, data);
+               return !options.sendAfterRestore();
             }
-        }
-        return false;
-    }
+         }
+      }
+      return false;
+   }
 
-    @Override
-    protected <A> void onInterceptCancel(ActionHolder<A> holder) {
-    }
+   @Override
+   protected <A> void onInterceptCancel(ActionHolder<A> holder) {
+   }
 
-    @Override
-    protected <A> void onInterceptStart(ActionHolder<A> holder) {
-    }
+   @Override
+   protected <A> void onInterceptStart(ActionHolder<A> holder) {
+   }
 
-    @Override
-    protected <A> void onInterceptProgress(ActionHolder<A> holder, int progress) {
-    }
+   @Override
+   protected <A> void onInterceptProgress(ActionHolder<A> holder, int progress) {
+   }
 
-    @SuppressWarnings("unchecked")
-    @Override
-    protected <A> void onInterceptSuccess(ActionHolder<A> holder) {
-        if (holder.action() instanceof CachedAction) {
-            CachedAction action = (CachedAction) holder.action();
-            CacheOptions options = action.getCacheOptions();
+   @SuppressWarnings("unchecked")
+   @Override
+   protected <A> void onInterceptSuccess(ActionHolder<A> holder) {
+      if (holder.action() instanceof CachedAction) {
+         CachedAction action = (CachedAction) holder.action();
+         CacheOptions options = action.getCacheOptions();
 
-            if (options.saveToCache()) {
-                getStorage(holder.action().getClass())
-                        .save(options.params(), action.getCacheData());
-            }
-        }
-    }
+         if (options.saveToCache()) {
+            getStorage(holder.action().getClass()).save(options.params(), action.getCacheData());
+         }
+      }
+   }
 
-    @Override
-    protected <A> boolean onInterceptFail(ActionHolder<A> holder, JanetException e) {
-        return false;
-    }
+   @Override
+   protected <A> boolean onInterceptFail(ActionHolder<A> holder, JanetException e) {
+      return false;
+   }
 
-    private Storage getStorage(Class actionClass) {
-        Storage storage = storageMap.get(actionClass);
-        if (storage == null) {
-            storage = new MemoryStorage<>();
-            storageMap.put(actionClass, storage);
-        }
-        return storage;
-    }
+   private Storage getStorage(Class actionClass) {
+      Storage storage = storageMap.get(actionClass);
+      if (storage == null) {
+         storage = new MemoryStorage<>();
+         storageMap.put(actionClass, storage);
+      }
+      return storage;
+   }
 }

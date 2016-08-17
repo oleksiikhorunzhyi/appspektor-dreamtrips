@@ -24,122 +24,118 @@ import rx.android.schedulers.AndroidSchedulers;
 
 public class BucketItemDetailsPresenter extends BucketDetailsBasePresenter<BucketItemDetailsPresenter.View> {
 
-    public BucketItemDetailsPresenter(BucketBundle bundle) {
-        super(bundle);
-    }
+   public BucketItemDetailsPresenter(BucketBundle bundle) {
+      super(bundle);
+   }
 
-    @Override
-    public void takeView(View view) {
-        super.takeView(view);
-        TrackingHelper.bucketItemView(type.getName(), bucketItem.getUid());
+   @Override
+   public void takeView(View view) {
+      super.takeView(view);
+      TrackingHelper.bucketItemView(type.getName(), bucketItem.getUid());
 
-        view.bind(Observable.merge(bucketInteractor.updatePipe()
-                        .observeSuccess()
-                        .map(UpdateItemHttpAction::getResponse),
-                bucketInteractor.deleteItemPhotoPipe()
-                        .observeSuccess()
-                        .map(DeleteItemPhotoCommand::getResult),
-                bucketInteractor.addBucketItemPhotoPipe().observeSuccess()
-                        .map(AddBucketItemPhotoCommand::getResult)
-                        .map(bucketItemBucketPhotoModelPair -> bucketItemBucketPhotoModelPair.first))
-                .observeOn(AndroidSchedulers.mainThread()))
-                .subscribe(item -> {
-                    bucketItem = item;
-                    syncUI();
-                });
-    }
+      view.bind(Observable.merge(bucketInteractor.updatePipe()
+            .observeSuccess()
+            .map(UpdateItemHttpAction::getResponse), bucketInteractor.deleteItemPhotoPipe()
+            .observeSuccess()
+            .map(DeleteItemPhotoCommand::getResult), bucketInteractor.addBucketItemPhotoPipe()
+            .observeSuccess()
+            .map(AddBucketItemPhotoCommand::getResult)
+            .map(bucketItemBucketPhotoModelPair -> bucketItemBucketPhotoModelPair.first))
+            .observeOn(AndroidSchedulers.mainThread())).subscribe(item -> {
+         bucketItem = item;
+         syncUI();
+      });
+   }
 
-    @Override
-    protected void syncUI() {
-        super.syncUI();
-        if (bucketItem != null) {
-            List photos = bucketItem.getPhotos();
+   @Override
+   protected void syncUI() {
+      super.syncUI();
+      if (bucketItem != null) {
+         List photos = bucketItem.getPhotos();
 
-            if (photos != null) {
-                putCoverPhotoAsFirst(photos);
-                view.setImages(photos);
-            }
+         if (photos != null) {
+            putCoverPhotoAsFirst(photos);
+            view.setImages(photos);
+         }
 
-            if (!TextUtils.isEmpty(bucketItem.getType())) {
-                String s = bucketItem.getCategoryName();
-                view.setCategory(s);
-            }
-            view.setPlace(BucketItemInfoUtil.getPlace(bucketItem));
-            view.setupDiningView(bucketItem.getDining());
-            view.setGalleryEnabled(photos != null && !photos.isEmpty());
-        }
-    }
+         if (!TextUtils.isEmpty(bucketItem.getType())) {
+            String s = bucketItem.getCategoryName();
+            view.setCategory(s);
+         }
+         view.setPlace(BucketItemInfoUtil.getPlace(bucketItem));
+         view.setupDiningView(bucketItem.getDining());
+         view.setGalleryEnabled(photos != null && !photos.isEmpty());
+      }
+   }
 
-    public void onEvent(MarkBucketItemDoneEvent event) {
-        if (event.getBucketItem().equals(bucketItem)) {
-            updateBucketItem(event.getBucketItem());
-            syncUI();
-        }
-    }
+   public void onEvent(MarkBucketItemDoneEvent event) {
+      if (event.getBucketItem().equals(bucketItem)) {
+         updateBucketItem(event.getBucketItem());
+         syncUI();
+      }
+   }
 
-    public void onEvent(FeedEntityChangedEvent event) {
-        if (event.getFeedEntity().equals(bucketItem)) {
-            updateBucketItem((BucketItem) event.getFeedEntity());
-            syncUI();
-        }
-    }
+   public void onEvent(FeedEntityChangedEvent event) {
+      if (event.getFeedEntity().equals(bucketItem)) {
+         updateBucketItem((BucketItem) event.getFeedEntity());
+         syncUI();
+      }
+   }
 
-    public void onEvent(@SuppressWarnings("unused") BucketItemShared event) {
-        eventBus.post(new BucketItemAnalyticEvent(bucketItem.getUid(), TrackingHelper.ATTRIBUTE_SHARE));
-    }
+   public void onEvent(@SuppressWarnings("unused") BucketItemShared event) {
+      eventBus.post(new BucketItemAnalyticEvent(bucketItem.getUid(), TrackingHelper.ATTRIBUTE_SHARE));
+   }
 
-    public void onStatusUpdated(boolean status) {
-        if (bucketItem != null && status != bucketItem.isDone()) {
-            view.disableMarkAsDone();
+   public void onStatusUpdated(boolean status) {
+      if (bucketItem != null && status != bucketItem.isDone()) {
+         view.disableMarkAsDone();
 
-            view.bind(bucketInteractor.updatePipe()
-                    .createObservableResult(new UpdateItemHttpAction(ImmutableBucketBodyImpl.builder()
-                            .id(bucketItem.getUid())
-                            .status(getStatus(status))
-                            .build()))
-                    .map(UpdateItemHttpAction::getResponse)
-                    .observeOn(AndroidSchedulers.mainThread()))
-                    .subscribe(bucketItem -> {
-                        view.enableMarkAsDone();
-                    }, throwable -> {
-                        handleError(throwable);
+         view.bind(bucketInteractor.updatePipe().createObservableResult(new UpdateItemHttpAction(ImmutableBucketBodyImpl
+               .builder()
+               .id(bucketItem.getUid())
+               .status(getStatus(status))
+               .build())).map(UpdateItemHttpAction::getResponse).observeOn(AndroidSchedulers.mainThread()))
+               .subscribe(bucketItem -> {
+                  view.enableMarkAsDone();
+               }, throwable -> {
+                  handleError(throwable);
 
-                        view.setStatus(bucketItem.isDone());
-                        view.enableMarkAsDone();
-                    });
+                  view.setStatus(bucketItem.isDone());
+                  view.enableMarkAsDone();
+               });
 
-            eventBus.post(new BucketItemAnalyticEvent(bucketItem.getUid(), TrackingHelper.ATTRIBUTE_MARK_AS_DONE));
-        }
-    }
+         eventBus.post(new BucketItemAnalyticEvent(bucketItem.getUid(), TrackingHelper.ATTRIBUTE_MARK_AS_DONE));
+      }
+   }
 
-    private void updateBucketItem(BucketItem updatedItem) {
-        BucketItem tempItem = bucketItem;
-        bucketItem = updatedItem;
-        if (bucketItem.getOwner() == null) {
-            bucketItem.setOwner(tempItem.getOwner());
-        }
+   private void updateBucketItem(BucketItem updatedItem) {
+      BucketItem tempItem = bucketItem;
+      bucketItem = updatedItem;
+      if (bucketItem.getOwner() == null) {
+         bucketItem.setOwner(tempItem.getOwner());
+      }
 
-        //TODO: check it, its not suitable fro current approach
-//        getBucketChangePipe().send(BucketActionCreator.save(bucketItem));
-//        bucketItemManager.saveSingleBucketItem(bucketItem);
-    }
+      //TODO: check it, its not suitable fro current approach
+      //        getBucketChangePipe().send(BucketActionCreator.save(bucketItem));
+      //        bucketItemManager.saveSingleBucketItem(bucketItem);
+   }
 
-    @NonNull
-    private String getStatus(boolean status) {
-        return status ? BucketItem.COMPLETED : BucketItem.NEW;
-    }
+   @NonNull
+   private String getStatus(boolean status) {
+      return status ? BucketItem.COMPLETED : BucketItem.NEW;
+   }
 
-    public interface View extends BucketDetailsBasePresenter.View {
-        void setCategory(String category);
+   public interface View extends BucketDetailsBasePresenter.View {
+      void setCategory(String category);
 
-        void setPlace(String place);
+      void setPlace(String place);
 
-        void disableMarkAsDone();
+      void disableMarkAsDone();
 
-        void enableMarkAsDone();
+      void enableMarkAsDone();
 
-        void setGalleryEnabled(boolean enabled);
+      void setGalleryEnabled(boolean enabled);
 
-        void setupDiningView(DiningItem diningItem);
-    }
+      void setupDiningView(DiningItem diningItem);
+   }
 }

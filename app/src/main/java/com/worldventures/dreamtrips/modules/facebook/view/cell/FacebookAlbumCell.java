@@ -16,19 +16,19 @@ import butterknife.InjectView;
 @Layout(R.layout.adapter_item_facebook_album)
 public class FacebookAlbumCell extends AbstractCell<FacebookAlbum> {
 
-    @InjectView(R.id.iv_bg) SimpleDraweeView ivBg;
-    @InjectView(R.id.tv_album_title) TextView tvTitle;
-    @InjectView(R.id.tv_count) TextView tvCount;
+   @InjectView(R.id.iv_bg) SimpleDraweeView ivBg;
+   @InjectView(R.id.tv_album_title) TextView tvTitle;
+   @InjectView(R.id.tv_count) TextView tvCount;
 
-    public FacebookAlbumCell(View view) {
-        super(view);
-    }
+   public FacebookAlbumCell(View view) {
+      super(view);
+   }
 
-    @Override
-    protected void syncUIStateWithModel() {
-        tvTitle.setText(getModelObject().getName());
-        tvCount.setText(getModelObject().getCount() + "");
-        String accessToken = Session.getActiveSession().getAccessToken();
-        ivBg.setImageURI(Uri.parse(getModelObject().getCoverUrl(accessToken)));
-    }
+   @Override
+   protected void syncUIStateWithModel() {
+      tvTitle.setText(getModelObject().getName());
+      tvCount.setText(getModelObject().getCount() + "");
+      String accessToken = Session.getActiveSession().getAccessToken();
+      ivBg.setImageURI(Uri.parse(getModelObject().getCoverUrl(accessToken)));
+   }
 }

@@ -16,63 +16,61 @@ import rx.android.schedulers.AndroidSchedulers;
 
 public class BaseTripPresenter<V extends BaseTripPresenter.View> extends Presenter<V> {
 
-    @Inject BucketInteractor bucketInteractor;
-    @Inject FeedEntityManager feedEntityManager;
+   @Inject BucketInteractor bucketInteractor;
+   @Inject FeedEntityManager feedEntityManager;
 
-    protected TripModel trip;
+   protected TripModel trip;
 
-    public BaseTripPresenter(TripModel trip) {
-        this.trip = trip;
-    }
+   public BaseTripPresenter(TripModel trip) {
+      this.trip = trip;
+   }
 
-    public void onInjected() {
-        super.onInjected();
-        feedEntityManager.setRequestingPresenter(this);
-    }
+   public void onInjected() {
+      super.onInjected();
+      feedEntityManager.setRequestingPresenter(this);
+   }
 
-    @Override
-    public void onResume() {
-        super.onResume();
-        view.setup(trip);
-    }
+   @Override
+   public void onResume() {
+      super.onResume();
+      view.setup(trip);
+   }
 
-    public void addTripToBucket() {
-        view.bindUntilDropView(
-                bucketInteractor.createPipe()
-                        .createObservableResult(new CreateBucketItemHttpAction(ImmutableBucketBodyImpl.builder()
-                                .type("trip")
-                                .id(trip.getTripId())
-                                .build()))
-                        .map(CreateBucketItemHttpAction::getResponse)
-                        .observeOn(AndroidSchedulers.mainThread())
-        ).subscribe(bucketItem -> {
-            trip.setInBucketList(true);
-            view.setup(trip);
-            view.tripAddedToBucketItem(bucketItem);
-        }, this::handleError);
-    }
+   public void addTripToBucket() {
+      view.bindUntilDropView(bucketInteractor.createPipe()
+            .createObservableResult(new CreateBucketItemHttpAction(ImmutableBucketBodyImpl.builder()
+                  .type("trip")
+                  .id(trip.getTripId())
+                  .build()))
+            .map(CreateBucketItemHttpAction::getResponse)
+            .observeOn(AndroidSchedulers.mainThread())).subscribe(bucketItem -> {
+         trip.setInBucketList(true);
+         view.setup(trip);
+         view.tripAddedToBucketItem(bucketItem);
+      }, this::handleError);
+   }
 
-    public void likeTrip() {
-        if (!trip.isLiked()) {
-            feedEntityManager.like(trip);
-        } else {
-            feedEntityManager.unlike(trip);
-        }
-    }
+   public void likeTrip() {
+      if (!trip.isLiked()) {
+         feedEntityManager.like(trip);
+      } else {
+         feedEntityManager.unlike(trip);
+      }
+   }
 
-    public void onEvent(EntityLikedEvent event) {
-        if (event.getFeedEntity().getUid().equals(trip.getUid())) {
-            trip.syncLikeState(event.getFeedEntity());
-            view.setup(trip);
-            if (view.isVisibleOnScreen()) view.tripLiked(trip);
-        }
-    }
+   public void onEvent(EntityLikedEvent event) {
+      if (event.getFeedEntity().getUid().equals(trip.getUid())) {
+         trip.syncLikeState(event.getFeedEntity());
+         view.setup(trip);
+         if (view.isVisibleOnScreen()) view.tripLiked(trip);
+      }
+   }
 
-    public interface View extends RxView {
-        void setup(TripModel tripModel);
+   public interface View extends RxView {
+      void setup(TripModel tripModel);
 
-        void tripAddedToBucketItem(BucketItem bucketItem);
+      void tripAddedToBucketItem(BucketItem bucketItem);
 
-        void tripLiked(TripModel tripModel);
-    }
+      void tripLiked(TripModel tripModel);
+   }
 }

@@ -10,35 +10,35 @@ import javax.security.auth.callback.CallbackHandler;
  */
 class SASLWVMechanism extends SASLMechanism {
 
-    public static final String NAME = "WV";
+   public static final String NAME = "WV";
 
-    @Override
-    protected void authenticateInternal(CallbackHandler cbh) throws SmackException {
-        throw new UnsupportedOperationException("CallbackHandler not (yet) supported");
-    }
+   @Override
+   protected void authenticateInternal(CallbackHandler cbh) throws SmackException {
+      throw new UnsupportedOperationException("CallbackHandler not (yet) supported");
+   }
 
-    @Override
-    protected byte[] getAuthenticationText() throws SmackException {
-    	return toBytes('\u0000' + authenticationId + '\u0000' + password);
-    }
+   @Override
+   protected byte[] getAuthenticationText() throws SmackException {
+      return toBytes('\u0000' + authenticationId + '\u0000' + password);
+   }
 
-    @Override
-    public String getName() {
-        return NAME;
-    }
+   @Override
+   public String getName() {
+      return NAME;
+   }
 
-    @Override
-    public int getPriority() {
-        return 10;
-    }
+   @Override
+   public int getPriority() {
+      return 10;
+   }
 
-    @Override
-    public SASLWVMechanism newInstance() {
-        return new SASLWVMechanism();
-    }
+   @Override
+   public SASLWVMechanism newInstance() {
+      return new SASLWVMechanism();
+   }
 
-    @Override
-    public void checkIfSuccessfulOrThrow() throws SmackException {
-        // No check performed
-    }
+   @Override
+   public void checkIfSuccessfulOrThrow() throws SmackException {
+      // No check performed
+   }
 }

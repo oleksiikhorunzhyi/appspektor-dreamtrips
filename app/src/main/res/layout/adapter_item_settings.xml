@@ -1,19 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              xmlns:tools="http://schemas.android.com/tools"
-              android:id="@+id/settings_holder"
-              android:layout_width="match_parent"
-              android:layout_height="wrap_content"
-              android:orientation="vertical"
-              android:background="@color/white"
-              android:padding="@dimen/spacing_normal">
+      xmlns:tools="http://schemas.android.com/tools"
+      android:id="@+id/settings_holder"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:orientation="vertical"
+      android:background="@color/white"
+      android:padding="@dimen/spacing_normal"
+      >
 
-    <TextView
-        android:id="@+id/setting_title"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textSize="16sp"
-        android:textColor="@color/black"
-        tools:text="General"/>
+   <TextView
+         android:id="@+id/setting_title"
+         android:layout_width="wrap_content"
+         android:layout_height="wrap_content"
+         android:textSize="16sp"
+         android:textColor="@color/black"
+         tools:text="General"
+         />
 
 </LinearLayout>

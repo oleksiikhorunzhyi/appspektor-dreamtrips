@@ -12,59 +12,57 @@ import javax.inject.Inject;
 
 public class SuccessStoryDetailsPresenter extends WebViewFragmentPresenter<SuccessStoryDetailsPresenter.View> {
 
-    private SuccessStory successStory;
+   private SuccessStory successStory;
 
-    @Inject StoryLikedEventDelegate storyLikedEventDelegate;
+   @Inject StoryLikedEventDelegate storyLikedEventDelegate;
 
-    public SuccessStoryDetailsPresenter(SuccessStory story, String url) {
-        super(url);
-        this.successStory = story;
-    }
+   public SuccessStoryDetailsPresenter(SuccessStory story, String url) {
+      super(url);
+      this.successStory = story;
+   }
 
-    @Override
-    public void takeView(View view) {
-        super.takeView(view);
-        TrackingHelper.viewSS(getAccountUserId(), successStory.getId());
-    }
+   @Override
+   public void takeView(View view) {
+      super.takeView(view);
+      TrackingHelper.viewSS(getAccountUserId(), successStory.getId());
+   }
 
-    public void like(SuccessStory successStory) {
-        if (successStory.isLiked()) {
-            TrackingHelper.unlikeSS(getAccountUserId(), successStory.getId());
-            doRequest(new UnlikeSuccessStoryCommand(successStory.getId()),
-                    (object) -> onLiked());
-        } else {
-            TrackingHelper.likeSS(getAccountUserId(), successStory.getId());
-            doRequest(new LikeSuccessStoryCommand(successStory.getId()),
-                    (object) -> onLiked());
-        }
-    }
+   public void like(SuccessStory successStory) {
+      if (successStory.isLiked()) {
+         TrackingHelper.unlikeSS(getAccountUserId(), successStory.getId());
+         doRequest(new UnlikeSuccessStoryCommand(successStory.getId()), (object) -> onLiked());
+      } else {
+         TrackingHelper.likeSS(getAccountUserId(), successStory.getId());
+         doRequest(new LikeSuccessStoryCommand(successStory.getId()), (object) -> onLiked());
+      }
+   }
 
-    private void onLiked() {
-        view.likeRequestSuccess();
-    }
+   private void onLiked() {
+      view.likeRequestSuccess();
+   }
 
-    public void onStoryLiked(SuccessStory successStory) {
-        view.updateStoryLike(successStory.isLiked());
-        storyLikedEventDelegate.post(successStory);
-    }
+   public void onStoryLiked(SuccessStory successStory) {
+      view.updateStoryLike(successStory.isLiked());
+      storyLikedEventDelegate.post(successStory);
+   }
 
-    public void share() {
-        view.showShareDialog();
-    }
+   public void share() {
+      view.showShareDialog();
+   }
 
-    public void onShare(@ShareType String type, SuccessStory successStory) {
-        view.openShare(successStory.getSharingUrl(), type);
-    }
+   public void onShare(@ShareType String type, SuccessStory successStory) {
+      view.openShare(successStory.getSharingUrl(), type);
+   }
 
-    public interface View extends WebViewFragmentPresenter.View {
+   public interface View extends WebViewFragmentPresenter.View {
 
-        void showShareDialog();
+      void showShareDialog();
 
-        void likeRequestSuccess();
+      void likeRequestSuccess();
 
-        void openShare(String url, @ShareType String type);
+      void openShare(String url, @ShareType String type);
 
-        void updateStoryLike(boolean isLiked);
-    }
+      void updateStoryLike(boolean isLiked);
+   }
 
 }

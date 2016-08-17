@@ -1,21 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              xmlns:app="http://schemas.android.com/apk/res-auto"
-              xmlns:tools="http://schemas.android.com/tools"
-              android:layout_width="match_parent"
-              android:layout_height="wrap_content"
-              android:orientation="vertical">
+      xmlns:app="http://schemas.android.com/apk/res-auto"
+      xmlns:tools="http://schemas.android.com/tools"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:orientation="vertical"
+      >
 
-    <include layout="@layout/list_item_chat_date_entry"/>
+   <include layout="@layout/list_item_chat_date_entry" />
 
-    <android.support.percent.PercentRelativeLayout
-        android:id="@+id/chat_message_container"
-        style="@style/ChatMessageContainerStyle"
-        xmlns:android="http://schemas.android.com/apk/res/android"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
+   <android.support.percent.PercentRelativeLayout android:id="@+id/chat_message_container"
+         style="@style/ChatMessageContainerStyle"
+         xmlns:android="http://schemas.android.com/apk/res/android"
+         android:layout_width="match_parent"
+         android:layout_height="match_parent"
+         >
 
-        <com.messenger.ui.widget.ChatItemFrameLayout
+      <com.messenger.ui.widget.ChatItemFrameLayout
             android:id="@+id/message_container"
             style="@style/OwnTextMessageStyle"
             android:layout_width="wrap_content"
@@ -27,26 +28,27 @@
             tools:background="@drawable/blue_bubble_comics"
             >
 
-            <TextView
-                android:id="@+id/chat_message"
-                style="@style/ChatMessageTextView"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:fontFamily="sans-serif-light"
-                android:textColor="@color/chat_color_message_own"
-                android:textColorLink="@color/chat_color_message_own"
-                tools:text="Hello, how r u?"
-                tools:textColor="@color/black"
-                />
+         <TextView
+               android:id="@+id/chat_message"
+               style="@style/ChatMessageTextView"
+               android:layout_width="wrap_content"
+               android:layout_height="wrap_content"
+               android:fontFamily="sans-serif-light"
+               android:textColor="@color/chat_color_message_own"
+               android:textColorLink="@color/chat_color_message_own"
+               tools:text="Hello, how r u?"
+               tools:textColor="@color/black"
+               />
 
-        </com.messenger.ui.widget.ChatItemFrameLayout>
+      </com.messenger.ui.widget.ChatItemFrameLayout>
 
-        <include
+      <include
             layout="@layout/widget_retry_send_message_marker"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignEnd="@+id/message_container"
             android:layout_alignRight="@+id/message_container"
-            android:layout_below="@+id/message_container"/>
-    </android.support.percent.PercentRelativeLayout>
+            android:layout_below="@+id/message_container"
+            />
+   </android.support.percent.PercentRelativeLayout>
 </LinearLayout>

@@ -10,14 +10,14 @@ import rx.schedulers.Schedulers;
 
 public class ClearMemoryStoragesInteractor {
 
-    private final ActionPipe<ClearMemoryStorageCommand> clearMemoryStorageActionPipe;
+   private final ActionPipe<ClearMemoryStorageCommand> clearMemoryStorageActionPipe;
 
-    @Inject
-    public ClearMemoryStoragesInteractor(Janet janet) {
-        clearMemoryStorageActionPipe = janet.createPipe(ClearMemoryStorageCommand.class, Schedulers.io());
-    }
+   @Inject
+   public ClearMemoryStoragesInteractor(Janet janet) {
+      clearMemoryStorageActionPipe = janet.createPipe(ClearMemoryStorageCommand.class, Schedulers.io());
+   }
 
-    public ActionPipe<ClearMemoryStorageCommand> clearMemoryStorageActionPipe() {
-        return clearMemoryStorageActionPipe;
-    }
+   public ActionPipe<ClearMemoryStorageCommand> clearMemoryStorageActionPipe() {
+      return clearMemoryStorageActionPipe;
+   }
 }

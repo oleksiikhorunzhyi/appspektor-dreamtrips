@@ -28,58 +28,55 @@ import flow.Flow;
 
 public class DtlMapInfoPresenterImpl extends DtlPresenterImpl<DtlMapInfoScreen, ViewState.EMPTY> implements DtlMapInfoPresenter {
 
-    @Inject
-    DtlMerchantInteractor merchantInteractor;
-    @Inject
-    DtlFilterMerchantInteractor filterInteractor;
-    @Inject
-    DtlLocationInteractor locationInteractor;
-    //
-    protected DtlMerchant merchant;
+   @Inject DtlMerchantInteractor merchantInteractor;
+   @Inject DtlFilterMerchantInteractor filterInteractor;
+   @Inject DtlLocationInteractor locationInteractor;
+   //
+   protected DtlMerchant merchant;
 
-    public DtlMapInfoPresenterImpl(Context context, Injector injector, DtlMerchant merchant) {
-        super(context);
-        injector.inject(this);
-        this.merchant = merchant;
-    }
+   public DtlMapInfoPresenterImpl(Context context, Injector injector, DtlMerchant merchant) {
+      super(context);
+      injector.inject(this);
+      this.merchant = merchant;
+   }
 
-    @Override
-    public void onAttachedToWindow() {
-        super.onAttachedToWindow();
-        //
-        getView().setMerchant(merchant);
-    }
+   @Override
+   public void onAttachedToWindow() {
+      super.onAttachedToWindow();
+      //
+      getView().setMerchant(merchant);
+   }
 
-    public void onEvent(DtlShowMapInfoEvent event) {
-        getView().visibleLayout(true);
-    }
+   public void onEvent(DtlShowMapInfoEvent event) {
+      getView().visibleLayout(true);
+   }
 
-    @Override
-    public void onMarkerClick() {
-        eventBus.post(new ToggleMerchantSelectionEvent(merchant));
-        trackIfNeeded();
-        Flow.get(getContext()).set(new DtlMerchantDetailsPath(FlowUtil.currentMaster(getContext()),
-                merchant, null));
-    }
+   @Override
+   public void onMarkerClick() {
+      eventBus.post(new ToggleMerchantSelectionEvent(merchant));
+      trackIfNeeded();
+      Flow.get(getContext()).set(new DtlMerchantDetailsPath(FlowUtil.currentMaster(getContext()), merchant, null));
+   }
 
-    private void trackIfNeeded() {
-        filterInteractor.filterDataPipe().observeSuccessWithReplay()
-                .first()
-                .map(DtlFilterDataAction::getResult)
-                .map(DtlFilterData::getSearchQuery)
-                .filter(query -> !TextUtils.isEmpty(query))
-                .flatMap(query -> locationInteractor.locationPipe().createObservableResult(DtlLocationCommand.last())
-                        .map(DtlLocationCommand::getResult)
-                        .map(location -> new Pair<>(query, location)))
-                .subscribe(pair -> {
-                    analyticsInteractor.dtlAnalyticsCommandPipe()
-                            .send(DtlAnalyticsCommand.create(
-                                    new MerchantFromSearchEvent(pair.first)));
-                });
-    }
+   private void trackIfNeeded() {
+      filterInteractor.filterDataPipe()
+            .observeSuccessWithReplay()
+            .first()
+            .map(DtlFilterDataAction::getResult)
+            .map(DtlFilterData::getSearchQuery)
+            .filter(query -> !TextUtils.isEmpty(query))
+            .flatMap(query -> locationInteractor.locationPipe()
+                  .createObservableResult(DtlLocationCommand.last())
+                  .map(DtlLocationCommand::getResult)
+                  .map(location -> new Pair<>(query, location)))
+            .subscribe(pair -> {
+               analyticsInteractor.dtlAnalyticsCommandPipe()
+                     .send(DtlAnalyticsCommand.create(new MerchantFromSearchEvent(pair.first)));
+            });
+   }
 
-    @Override
-    public void onSizeReady(int height) {
-        eventBus.post(new DtlMapInfoReadyEvent(height));
-    }
+   @Override
+   public void onSizeReady(int height) {
+      eventBus.post(new DtlMapInfoReadyEvent(height));
+   }
 }

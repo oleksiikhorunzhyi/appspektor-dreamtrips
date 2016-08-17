@@ -14,44 +14,45 @@ import java.util.List;
 
 public class EditPhotoCommand extends DreamTripsRequest<Photo> {
 
-    private String uid;
-    private UploadTask task;
-    private List<PhotoTag> addedTags;
-    private List<PhotoTag> removedTags;
+   private String uid;
+   private UploadTask task;
+   private List<PhotoTag> addedTags;
+   private List<PhotoTag> removedTags;
 
-    public EditPhotoCommand(String uid, UploadTask task, List<PhotoTag> addedTags, List<PhotoTag> removedTags) {
-        super(Photo.class);
-        this.uid = uid;
-        this.task = task;
-        this.addedTags = addedTags;
-        this.removedTags = removedTags;
-    }
+   public EditPhotoCommand(String uid, UploadTask task, List<PhotoTag> addedTags, List<PhotoTag> removedTags) {
+      super(Photo.class);
+      this.uid = uid;
+      this.task = task;
+      this.addedTags = addedTags;
+      this.removedTags = removedTags;
+   }
 
-    @Override
-    public Photo loadDataFromNetwork() throws Exception {
-        Photo entity = getService().editTripPhoto(uid, task);
+   @Override
+   public Photo loadDataFromNetwork() throws Exception {
+      Photo entity = getService().editTripPhoto(uid, task);
 
-        addedTags.removeAll(entity.getPhotoTags());
-        if (addedTags.size() > 0) {
-            pushPhotoTags(entity);
-        }
-        if (removedTags.size() > 0) {
-            deletePhotoTags(entity);
-        }
-        entity.getPhotoTags().addAll(addedTags);
-        entity.getPhotoTags().removeAll(removedTags);
-        entity.setPhotoTagsCount(entity.getPhotoTags().size());
-        return entity;
-    }
+      addedTags.removeAll(entity.getPhotoTags());
+      if (addedTags.size() > 0) {
+         pushPhotoTags(entity);
+      }
+      if (removedTags.size() > 0) {
+         deletePhotoTags(entity);
+      }
+      entity.getPhotoTags().addAll(addedTags);
+      entity.getPhotoTags().removeAll(removedTags);
+      entity.setPhotoTagsCount(entity.getPhotoTags().size());
+      return entity;
+   }
 
-    private ArrayList<PhotoTag> pushPhotoTags(FeedEntity entity) {
-        return getService().addPhotoTags(entity.getUid(), new AddPhotoTag(addedTags));
-    }
+   private ArrayList<PhotoTag> pushPhotoTags(FeedEntity entity) {
+      return getService().addPhotoTags(entity.getUid(), new AddPhotoTag(addedTags));
+   }
 
-    private FeedEntity deletePhotoTags(FeedEntity feedEntity) {
-        List<Integer> userIds = Queryable.from(removedTags)
-                .concat(((Photo) feedEntity).getPhotoTags()).map(photo -> photo.getUser().getId()).toList();
-        getService().deletePhotoTags(feedEntity.getUid(), new DeletePhotoTag(userIds));
-        return feedEntity;
-    }
+   private FeedEntity deletePhotoTags(FeedEntity feedEntity) {
+      List<Integer> userIds = Queryable.from(removedTags).concat(((Photo) feedEntity).getPhotoTags()).map(photo -> photo
+            .getUser()
+            .getId()).toList();
+      getService().deletePhotoTags(feedEntity.getUid(), new DeletePhotoTag(userIds));
+      return feedEntity;
+   }
 }

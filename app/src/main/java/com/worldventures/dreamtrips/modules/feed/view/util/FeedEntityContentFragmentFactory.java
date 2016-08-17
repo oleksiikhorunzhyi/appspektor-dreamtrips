@@ -17,37 +17,37 @@ import com.worldventures.dreamtrips.modules.trips.view.bundle.TripDetailsBundle;
 
 public class FeedEntityContentFragmentFactory {
 
-    private final RouteCreator bucketRouteCreator;
+   private final RouteCreator bucketRouteCreator;
 
-    public FeedEntityContentFragmentFactory(SessionHolder<UserSession> sessionHolder) {
-        this.bucketRouteCreator = new BucketDetailsRouteCreator(sessionHolder);
-    }
+   public FeedEntityContentFragmentFactory(SessionHolder<UserSession> sessionHolder) {
+      this.bucketRouteCreator = new BucketDetailsRouteCreator(sessionHolder);
+   }
 
-    public Pair<Route, Parcelable> create(FeedEntityHolder holder) {
-        FeedEntityHolder.Type type = holder.getType();
+   public Pair<Route, Parcelable> create(FeedEntityHolder holder) {
+      FeedEntityHolder.Type type = holder.getType();
 
-        Route route = null;
-        Parcelable args = null;
-        switch (type) {
-            case UNDEFINED:
-                //now is not used.
-                break;
-            case TRIP:
-                route = Route.DETAILED_TRIP;
-                args = new TripDetailsBundle((TripModel) holder.getItem());
-                break;
-            case BUCKET_LIST_ITEM:
-                User user = holder.getItem().getOwner();
-                int userId = user != null ? user.getId() : 0;
-                route = bucketRouteCreator.createRoute(userId);
-                BucketBundle bucketBundle = new BucketBundle();
-                BucketItem item = (BucketItem) holder.getItem();
-                bucketBundle.setType(item.getType());
-                bucketBundle.setBucketItem(item);
-                bucketBundle.setOwnerId(userId);
-                args = bucketBundle;
-                break;
-        }
-        return new Pair<>(route, args);
-    }
+      Route route = null;
+      Parcelable args = null;
+      switch (type) {
+         case UNDEFINED:
+            //now is not used.
+            break;
+         case TRIP:
+            route = Route.DETAILED_TRIP;
+            args = new TripDetailsBundle((TripModel) holder.getItem());
+            break;
+         case BUCKET_LIST_ITEM:
+            User user = holder.getItem().getOwner();
+            int userId = user != null ? user.getId() : 0;
+            route = bucketRouteCreator.createRoute(userId);
+            BucketBundle bucketBundle = new BucketBundle();
+            BucketItem item = (BucketItem) holder.getItem();
+            bucketBundle.setType(item.getType());
+            bucketBundle.setBucketItem(item);
+            bucketBundle.setOwnerId(userId);
+            args = bucketBundle;
+            break;
+      }
+      return new Pair<>(route, args);
+   }
 }

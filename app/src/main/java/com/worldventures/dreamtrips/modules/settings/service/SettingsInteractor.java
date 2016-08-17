@@ -10,14 +10,14 @@ import rx.schedulers.Schedulers;
 
 public class SettingsInteractor {
 
-    private final ActionPipe<SettingsCommand> settingsActionPipe;
+   private final ActionPipe<SettingsCommand> settingsActionPipe;
 
-    @Inject
-    public SettingsInteractor(Janet janet) {
-        settingsActionPipe = janet.createPipe(SettingsCommand.class, Schedulers.io());
-    }
+   @Inject
+   public SettingsInteractor(Janet janet) {
+      settingsActionPipe = janet.createPipe(SettingsCommand.class, Schedulers.io());
+   }
 
-    public ActionPipe<SettingsCommand> settingsActionPipe() {
-        return settingsActionPipe;
-    }
+   public ActionPipe<SettingsCommand> settingsActionPipe() {
+      return settingsActionPipe;
+   }
 }

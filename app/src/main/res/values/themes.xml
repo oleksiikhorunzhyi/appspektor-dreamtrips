@@ -1,18 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <style name="Theme.DreamTripsTheme" parent="Theme.AppCompat.Light.NoActionBar">
-        <item name="colorPrimary">@color/theme_main</item>
-        <item name="colorPrimaryDark">@color/theme_main_darker</item>
-        <item name="colorAccent">@color/accent</item>
+   <style name="Theme.DreamTripsTheme" parent="Theme.AppCompat.Light.NoActionBar">
+      <item name="colorPrimary">@color/theme_main</item>
+      <item name="colorPrimaryDark">@color/theme_main_darker</item>
+      <item name="colorAccent">@color/accent</item>
 
-        <item name="colorControlActivated">@color/theme_main_darker</item>
-        <item name="colorControlHighlight">@color/theme_main</item>
-        <item name="colorButtonNormal">@color/theme_main_darker</item>
-        <item name="drawerArrowStyle">@style/DrawerArrowStyle</item>
+      <item name="colorControlActivated">@color/theme_main_darker</item>
+      <item name="colorControlHighlight">@color/theme_main</item>
+      <item name="colorButtonNormal">@color/theme_main_darker</item>
+      <item name="drawerArrowStyle">@style/DrawerArrowStyle</item>
 
-        <item name="windowActionModeOverlay">true</item>
-        <item name="actionModeBackground">@drawable/background_action_mode</item>
-    </style>
+      <item name="windowActionModeOverlay">true</item>
+      <item name="actionModeBackground">@drawable/background_action_mode</item>
+   </style>
 
 </resources>

@@ -10,26 +10,21 @@ import io.techery.janet.http.annotations.Response;
 @HttpAction(value = "/api/hashtags/search", method = HttpAction.Method.GET)
 public class GetFeedsByHashtagHttpAction extends AuthorizedHttpAction {
 
-    @Query("query")
-    String query;
-    @Query("per_page")
-    int perPage;
-    @Query("before")
-    String before;
-    @Query("type")
-    String type = "post";
+   @Query("query") String query;
+   @Query("per_page") int perPage;
+   @Query("before") String before;
+   @Query("type") String type = "post";
 
-    @Response
-    DataMetaData responseItems;
+   @Response DataMetaData responseItems;
 
-    public GetFeedsByHashtagHttpAction(String query, int perPage, String before) {
-        this.query = query;
-        this.perPage = perPage;
-        this.before = before;
-    }
+   public GetFeedsByHashtagHttpAction(String query, int perPage, String before) {
+      this.query = query;
+      this.perPage = perPage;
+      this.before = before;
+   }
 
-    public DataMetaData getResponseItems() {
-        if (responseItems == null) responseItems = new DataMetaData();
-        return responseItems;
-    }
+   public DataMetaData getResponseItems() {
+      if (responseItems == null) responseItems = new DataMetaData();
+      return responseItems;
+   }
 }

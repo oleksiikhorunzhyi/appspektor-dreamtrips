@@ -27,105 +27,103 @@ import icepick.Icepick;
 
 public class BucketPhotosView extends RecyclerView implements IBucketPhotoView {
 
-    public static final int COVER_POS = 2;
-    public static final int ADD_BTN_POS = 1;
-    private IgnoreFirstItemAdapter imagesAdapter;
-    private AddBucketPhotoModel createBtnObject = new AddBucketPhotoModel();
+   public static final int COVER_POS = 2;
+   public static final int ADD_BTN_POS = 1;
+   private IgnoreFirstItemAdapter imagesAdapter;
+   private AddBucketPhotoModel createBtnObject = new AddBucketPhotoModel();
 
-    @Inject
-    @Global
-    EventBus eventBus;
+   @Inject @Global EventBus eventBus;
 
-    BucketAddPhotoCellDelegate bucketAddPhotoCellDelegate;
-    BucketPhotoUploadCellDelegate bucketPhotoUploadCellDelegate;
+   BucketAddPhotoCellDelegate bucketAddPhotoCellDelegate;
+   BucketPhotoUploadCellDelegate bucketPhotoUploadCellDelegate;
 
-    public BucketPhotosView(Context context) {
-        super(context);
-    }
+   public BucketPhotosView(Context context) {
+      super(context);
+   }
 
-    public BucketPhotosView(Context context, AttributeSet attrs) {
-        super(context, attrs);
-    }
+   public BucketPhotosView(Context context, AttributeSet attrs) {
+      super(context, attrs);
+   }
 
-    public BucketPhotosView(Context context, AttributeSet attrs, int defStyle) {
-        super(context, attrs, defStyle);
-    }
+   public BucketPhotosView(Context context, AttributeSet attrs, int defStyle) {
+      super(context, attrs, defStyle);
+   }
 
 
-    public void init(Injector injector) {
-        injector.inject(this);
-        if (imagesAdapter == null) {
-            imagesAdapter = new IgnoreFirstItemAdapter(getContext(), injector);
+   public void init(Injector injector) {
+      injector.inject(this);
+      if (imagesAdapter == null) {
+         imagesAdapter = new IgnoreFirstItemAdapter(getContext(), injector);
 
-            imagesAdapter.registerCell(EntityStateHolder.class, BucketPhotoUploadCell.class);
-            imagesAdapter.registerCell(AddBucketPhotoModel.class, BucketAddPhotoCell.class);
+         imagesAdapter.registerCell(EntityStateHolder.class, BucketPhotoUploadCell.class);
+         imagesAdapter.registerCell(AddBucketPhotoModel.class, BucketAddPhotoCell.class);
 
-            imagesAdapter.registerDelegate(EntityStateHolder.class, bucketPhotoUploadCellDelegate);
-            imagesAdapter.registerDelegate(AddBucketPhotoModel.class, bucketAddPhotoCellDelegate);
+         imagesAdapter.registerDelegate(EntityStateHolder.class, bucketPhotoUploadCellDelegate);
+         imagesAdapter.registerDelegate(AddBucketPhotoModel.class, bucketAddPhotoCellDelegate);
 
-            createBtnObject.setVisibility(true);
-            imagesAdapter.addItem(createBtnObject);
+         createBtnObject.setVisibility(true);
+         imagesAdapter.addItem(createBtnObject);
 
-            setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
-            setAdapter(imagesAdapter);
-        }
-    }
+         setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
+         setAdapter(imagesAdapter);
+      }
+   }
 
-    @Override
-    public Parcelable onSaveInstanceState() {
-        return Icepick.saveInstanceState(this, super.onSaveInstanceState());
-    }
+   @Override
+   public Parcelable onSaveInstanceState() {
+      return Icepick.saveInstanceState(this, super.onSaveInstanceState());
+   }
 
-    @Override
-    public void onRestoreInstanceState(Parcelable state) {
-        super.onRestoreInstanceState(Icepick.restoreInstanceState(this, state));
-    }
+   @Override
+   public void onRestoreInstanceState(Parcelable state) {
+      super.onRestoreInstanceState(Icepick.restoreInstanceState(this, state));
+   }
 
-    protected void onDetachedFromWindow() {
-        this.setAdapter(null);
-        super.onDetachedFromWindow();
-    }
+   protected void onDetachedFromWindow() {
+      this.setAdapter(null);
+      super.onDetachedFromWindow();
+   }
 
-    @Override
-    public void addItemInProgressState(EntityStateHolder<BucketPhoto> photoStateHolder) {
-        imagesAdapter.addItem(photoStateHolder);
-        imagesAdapter.notifyDataSetChanged();
-    }
+   @Override
+   public void addItemInProgressState(EntityStateHolder<BucketPhoto> photoStateHolder) {
+      imagesAdapter.addItem(photoStateHolder);
+      imagesAdapter.notifyDataSetChanged();
+   }
 
-    @Override
-    public void changeItemState(EntityStateHolder<BucketPhoto> photoEntityStateHolder) {
-        removeItem(photoEntityStateHolder);
-        imagesAdapter.addItem(photoEntityStateHolder);
-        imagesAdapter.notifyDataSetChanged();
-    }
+   @Override
+   public void changeItemState(EntityStateHolder<BucketPhoto> photoEntityStateHolder) {
+      removeItem(photoEntityStateHolder);
+      imagesAdapter.addItem(photoEntityStateHolder);
+      imagesAdapter.notifyDataSetChanged();
+   }
 
-    @Override
-    public void removeItem(EntityStateHolder<BucketPhoto> photoStateHolder) {
-        for (int i = 0; i < imagesAdapter.getCount(); i++) {
-            Object item = imagesAdapter.getItem(i);
-            if (item instanceof EntityStateHolder) {
-                EntityStateHolder<BucketPhoto> itemPhotoStateHolder = (EntityStateHolder<BucketPhoto>) item;
-                boolean equals = photoStateHolder.equals(itemPhotoStateHolder);
-                if (equals) {
-                    imagesAdapter.remove(item);
-                    break;
-                }
+   @Override
+   public void removeItem(EntityStateHolder<BucketPhoto> photoStateHolder) {
+      for (int i = 0; i < imagesAdapter.getCount(); i++) {
+         Object item = imagesAdapter.getItem(i);
+         if (item instanceof EntityStateHolder) {
+            EntityStateHolder<BucketPhoto> itemPhotoStateHolder = (EntityStateHolder<BucketPhoto>) item;
+            boolean equals = photoStateHolder.equals(itemPhotoStateHolder);
+            if (equals) {
+               imagesAdapter.remove(item);
+               break;
             }
-        }
-    }
+         }
+      }
+   }
 
-    @Override
-    public void setImages(List<EntityStateHolder<BucketPhoto>> images) {
-        imagesAdapter.clear();
-        imagesAdapter.addItems(images);
-        imagesAdapter.notifyDataSetChanged();
-    }
+   @Override
+   public void setImages(List<EntityStateHolder<BucketPhoto>> images) {
+      imagesAdapter.clear();
+      imagesAdapter.addItems(images);
+      imagesAdapter.notifyDataSetChanged();
+   }
 
-    public void setBucketPhotoUploadCellDelegate(BucketPhotoUploadCellDelegate bucketPhotoUploadCellDelegate) {
-        this.bucketPhotoUploadCellDelegate = bucketPhotoUploadCellDelegate;
-    }
+   public void setBucketPhotoUploadCellDelegate(BucketPhotoUploadCellDelegate bucketPhotoUploadCellDelegate) {
+      this.bucketPhotoUploadCellDelegate = bucketPhotoUploadCellDelegate;
+   }
 
-    public void setBucketAddPhotoCellDelegate(BucketAddPhotoCellDelegate bucketAddPhotoCellDelegate) {
-        this.bucketAddPhotoCellDelegate = bucketAddPhotoCellDelegate;
-    }
+   public void setBucketAddPhotoCellDelegate(BucketAddPhotoCellDelegate bucketAddPhotoCellDelegate) {
+      this.bucketAddPhotoCellDelegate = bucketAddPhotoCellDelegate;
+   }
 }

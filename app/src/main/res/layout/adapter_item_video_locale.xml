@@ -1,30 +1,33 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              xmlns:fresco="http://schemas.android.com/apk/res-auto"
-              xmlns:tools="http://schemas.android.com/tools"
-              android:layout_width="match_parent"
-              android:layout_height="wrap_content"
-              android:gravity="center_vertical"
-              android:orientation="horizontal"
-              android:padding="@dimen/spacing_normal">
+      xmlns:fresco="http://schemas.android.com/apk/res-auto"
+      xmlns:tools="http://schemas.android.com/tools"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:gravity="center_vertical"
+      android:orientation="horizontal"
+      android:padding="@dimen/spacing_normal"
+      >
 
-    <com.facebook.drawee.view.SimpleDraweeView
-        android:id="@+id/flag_image"
-        android:layout_width="@dimen/locale_flag_size_width"
-        android:layout_height="@dimen/locale_flag_size_height"
-        android:background="@color/grey"
-        android:padding="1dp"
-        fresco:actualImageScaleType="fitXY"
-        fresco:placeholderImage="@drawable/ic_flag_placeholder"
-        fresco:placeholderImageScaleType="fitXY"/>
+   <com.facebook.drawee.view.SimpleDraweeView
+         android:id="@+id/flag_image"
+         android:layout_width="@dimen/locale_flag_size_width"
+         android:layout_height="@dimen/locale_flag_size_height"
+         android:background="@color/grey"
+         android:padding="1dp"
+         fresco:actualImageScaleType="fitXY"
+         fresco:placeholderImage="@drawable/ic_flag_placeholder"
+         fresco:placeholderImageScaleType="fitXY"
+         />
 
-    <TextView
-        android:id="@+id/country_name"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="@dimen/spacing_normal"
-        android:singleLine="true"
-        android:textSize="@dimen/font_normal"
-        tools:text="Hello USA"/>
+   <TextView
+         android:id="@+id/country_name"
+         android:layout_width="wrap_content"
+         android:layout_height="wrap_content"
+         android:layout_marginLeft="@dimen/spacing_normal"
+         android:singleLine="true"
+         android:textSize="@dimen/font_normal"
+         tools:text="Hello USA"
+         />
 
 </LinearLayout>

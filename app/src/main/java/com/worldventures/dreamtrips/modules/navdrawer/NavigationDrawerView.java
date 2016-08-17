@@ -9,17 +9,17 @@ import rx.Observable;
 
 public interface NavigationDrawerView {
 
-    <T> Observable<T> bind(Observable<T> observable);
+   <T> Observable<T> bind(Observable<T> observable);
 
-    void setData(List<ComponentDescription> activeComponents);
+   void setData(List<ComponentDescription> activeComponents);
 
-    void setUser(User user);
+   void setUser(User user);
 
-    void setCurrentComponent(ComponentDescription newComponent);
+   void setCurrentComponent(ComponentDescription newComponent);
 
-    void setNotificationCount(int count);
+   void setNotificationCount(int count);
 
-    void setUnreadMessagesCount(int count);
+   void setUnreadMessagesCount(int count);
 
-    void setNavigationDrawerPresenter(NavigationDrawerPresenter navigationDrawerPresenter);
+   void setNavigationDrawerPresenter(NavigationDrawerPresenter navigationDrawerPresenter);
 }

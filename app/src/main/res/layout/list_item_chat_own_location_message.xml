@@ -1,40 +1,44 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              xmlns:tools="http://schemas.android.com/tools"
-              android:layout_width="match_parent"
-              android:layout_height="wrap_content"
-              android:orientation="vertical">
+      xmlns:tools="http://schemas.android.com/tools"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:orientation="vertical"
+      >
 
-    <include layout="@layout/list_item_chat_date_entry"/>
+   <include layout="@layout/list_item_chat_date_entry" />
 
-    <RelativeLayout
-        android:id="@+id/chat_message_container"
-        style="@style/ChatMessageContainerStyle"
-        xmlns:android="http://schemas.android.com/apk/res/android"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content">
+   <RelativeLayout android:id="@+id/chat_message_container"
+         style="@style/ChatMessageContainerStyle"
+         xmlns:android="http://schemas.android.com/apk/res/android"
+         android:layout_width="wrap_content"
+         android:layout_height="wrap_content"
+         >
 
-        <com.messenger.ui.widget.ChatItemFrameLayout
+      <com.messenger.ui.widget.ChatItemFrameLayout
             android:id="@+id/message_container"
             style="@style/OwnImageMessageStyle"
             android:layout_width="@dimen/chat_image_width"
             android:layout_height="@dimen/chat_image_height"
             android:layout_alignParentEnd="true"
             android:layout_alignParentRight="true"
-            tools:background="@drawable/blue_bubble_comics_image_post">
+            tools:background="@drawable/blue_bubble_comics_image_post"
+            >
 
-            <include layout="@layout/rounded_map_view"/>
+         <include layout="@layout/rounded_map_view" />
 
-        </com.messenger.ui.widget.ChatItemFrameLayout>
+      </com.messenger.ui.widget.ChatItemFrameLayout>
 
-        <include layout="@layout/widget_retry_send_message_marker"
-                 android:layout_width="wrap_content"
-                 android:layout_height="wrap_content"
-                 android:layout_alignEnd="@+id/message_container"
-                 android:layout_alignRight="@+id/message_container"
-                 android:layout_below="@+id/message_container"/>
+      <include
+            layout="@layout/widget_retry_send_message_marker"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignEnd="@+id/message_container"
+            android:layout_alignRight="@+id/message_container"
+            android:layout_below="@+id/message_container"
+            />
 
-    </RelativeLayout>
+   </RelativeLayout>
 
 </LinearLayout>
 

@@ -5,7 +5,7 @@ import com.worldventures.dreamtrips.modules.dtl_flow.ViewState;
 
 public interface DtlMapInfoPresenter extends DtlPresenter<DtlMapInfoScreen, ViewState.EMPTY> {
 
-    void onMarkerClick();
+   void onMarkerClick();
 
-    void onSizeReady(int height);
+   void onSizeReady(int height);
 }

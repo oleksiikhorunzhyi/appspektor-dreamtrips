@@ -11,23 +11,23 @@ import rx.Observable;
 
 public interface EditChatMembersScreen extends MessengerScreen {
 
-    void showLoading();
+   void showLoading();
 
-    void showContent();
+   void showContent();
 
-    void showError(Throwable e);
+   void showError(Throwable e);
 
-    void setTitle(String title);
+   void setTitle(String title);
 
-    void setAdapterData(List<Object> item);
+   void setAdapterData(List<Object> item);
 
-    void invalidateAllSwipedLayouts();
+   void invalidateAllSwipedLayouts();
 
-    void showDeletionConfirmationDialog(DataUser user);
+   void showDeletionConfirmationDialog(DataUser user);
 
-    void restoreSearchQuery(String query);
+   void restoreSearchQuery(String query);
 
-    Observable<CharSequence> getSearchObservable();
+   Observable<CharSequence> getSearchObservable();
 
-    void showMessage(@StringRes int text);
+   void showMessage(@StringRes int text);
 }

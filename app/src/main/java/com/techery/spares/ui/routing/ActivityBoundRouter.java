@@ -9,38 +9,38 @@ import com.techery.spares.ui.activity.InjectingActivity;
 
 public class ActivityBoundRouter extends BaseRouter {
 
-    private final Activity activity;
+   private final Activity activity;
 
-    public ActivityBoundRouter(Activity activity) {
-        super(activity);
-        this.activity = activity;
-    }
+   public ActivityBoundRouter(Activity activity) {
+      super(activity);
+      this.activity = activity;
+   }
 
-    protected Activity getActivity() {
-        return activity;
-    }
+   protected Activity getActivity() {
+      return activity;
+   }
 
-    public void finish() {
-        activity.finish();
-    }
+   public void finish() {
+      activity.finish();
+   }
 
-    protected void startNewAndFinishCurrentActivity(Class<? extends InjectingActivity> activityClass) {
-        startActivity(activityClass);
-        finish();
-    }
+   protected void startNewAndFinishCurrentActivity(Class<? extends InjectingActivity> activityClass) {
+      startActivity(activityClass);
+      finish();
+   }
 
-    protected void startForResult(Fragment from, Class<? extends InjectingActivity> activityClass, int requestCode) {
-        startForResult(from, activityClass, requestCode, null);
-    }
+   protected void startForResult(Fragment from, Class<? extends InjectingActivity> activityClass, int requestCode) {
+      startForResult(from, activityClass, requestCode, null);
+   }
 
-    protected void startForResult(Fragment from, Class<? extends InjectingActivity> activityClass, int requestCode, Bundle bundle) {
-        if (from.isAdded()) {
-            Intent intent = new Intent(getContext(), activityClass);
+   protected void startForResult(Fragment from, Class<? extends InjectingActivity> activityClass, int requestCode, Bundle bundle) {
+      if (from.isAdded()) {
+         Intent intent = new Intent(getContext(), activityClass);
 
-            if (bundle != null) {
-                intent.putExtra(EXTRA_BUNDLE, bundle);
-            }
-            from.startActivityForResult(intent, requestCode);
-        }
-    }
+         if (bundle != null) {
+            intent.putExtra(EXTRA_BUNDLE, bundle);
+         }
+         from.startActivityForResult(intent, requestCode);
+      }
+   }
 }

@@ -1,22 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    ///////Post sizes
-    <dimen name="post_spacing_horizontal">128dp</dimen>
-    <dimen name="post_spacing_vertical_top">16dp</dimen>
-    <dimen name="post_spacing_vertical_bottom">12dp</dimen>
+   ///////Post sizes
+   <dimen name="post_spacing_horizontal">128dp</dimen>
+   <dimen name="post_spacing_vertical_top">16dp</dimen>
+   <dimen name="post_spacing_vertical_bottom">12dp</dimen>
 
-    <!-- Dtl module dimens -->
-    <dimen name="dtl_details_header_height">220dp</dimen>
-    <dimen name="dtl_details_photo_height">150dp</dimen>
+   <!-- Dtl module dimens -->
+   <dimen name="dtl_details_header_height">220dp</dimen>
+   <dimen name="dtl_details_photo_height">150dp</dimen>
 
-    ///////Additional info fragment empty view spacing
-    <dimen name="additional_info_spacing_vertical">8dp</dimen>
-    <dimen name="additional_info_spacing_horizontal">16dp</dimen>
-    <dimen name="additional_info_items_margin">8dp</dimen>
-    <dimen name="additional_info_description_size">16sp</dimen>
+   ///////Additional info fragment empty view spacing
+   <dimen name="additional_info_spacing_vertical">8dp</dimen>
+   <dimen name="additional_info_spacing_horizontal">16dp</dimen>
+   <dimen name="additional_info_items_margin">8dp</dimen>
+   <dimen name="additional_info_description_size">16sp</dimen>
 
-    <!--///////Additional info fragment empty view spacing-->
-    <!--<dimen name="dtlOfferCoverImageWidth">100dp</dimen>-->
-    <!--<dimen name="dtlOfferCoverImageHeight">75dp</dimen>-->
+   <!--///////Additional info fragment empty view spacing-->
+   <!--<dimen name="dtlOfferCoverImageWidth">100dp</dimen>-->
+   <!--<dimen name="dtlOfferCoverImageHeight">75dp</dimen>-->
 </resources>

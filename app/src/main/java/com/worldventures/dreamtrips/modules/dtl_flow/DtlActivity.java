@@ -19,40 +19,39 @@ import flow.History;
 @Layout(R.layout.activity_dtl)
 public class DtlActivity extends FlowActivity<ActivityPresenter<ActivityPresenter.View>> {
 
-    public static final int GPS_LOCATION_RESOLUTION_REQUEST = 481;
+   public static final int GPS_LOCATION_RESOLUTION_REQUEST = 481;
 
-    @InjectView(R.id.drawer_filter_layout)
-    DtlFilterViewImpl filterView;
+   @InjectView(R.id.drawer_filter_layout) DtlFilterViewImpl filterView;
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        //
-        navigationDrawerPresenter.setCurrentComponent(getCurrentComponent());
-        setupFilter();
-    }
+   @Override
+   protected void onCreate(Bundle savedInstanceState) {
+      super.onCreate(savedInstanceState);
+      //
+      navigationDrawerPresenter.setCurrentComponent(getCurrentComponent());
+      setupFilter();
+   }
 
-    protected void setupFilter() {
-        filterView.setInjector(this);
-    }
+   protected void setupFilter() {
+      filterView.setInjector(this);
+   }
 
-    @Override
-    protected ComponentDescription getCurrentComponent() {
-        return rootComponentsProvider.getComponentByKey(DtlActivityModule.DTL);
-    }
+   @Override
+   protected ComponentDescription getCurrentComponent() {
+      return rootComponentsProvider.getComponentByKey(DtlActivityModule.DTL);
+   }
 
-    @Override
-    protected History provideDefaultHistory() {
-        return History.single(new DtlStartPath());
-    }
+   @Override
+   protected History provideDefaultHistory() {
+      return History.single(new DtlStartPath());
+   }
 
-    @Override
-    protected ActivityPresenter<ActivityPresenter.View> createPresentationModel(Bundle savedInstanceState) {
-        return new ActivityPresenter<>();
-    }
+   @Override
+   protected ActivityPresenter<ActivityPresenter.View> createPresentationModel(Bundle savedInstanceState) {
+      return new ActivityPresenter<>();
+   }
 
-    //TODO refactor after merge with social and update social router
-    public static void startDtl(Context context) {
-        context.startActivity(new Intent(context, DtlActivity.class));
-    }
+   //TODO refactor after merge with social and update social router
+   public static void startDtl(Context context) {
+      context.startActivity(new Intent(context, DtlActivity.class));
+   }
 }

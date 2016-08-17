@@ -1,27 +1,28 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-             android:layout_width="match_parent"
-             android:layout_height="wrap_content"
-             android:orientation="horizontal"
-             android:padding="@dimen/spacing_medium">
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:orientation="horizontal"
+      android:padding="@dimen/spacing_medium"
+      >
 
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:fontFamily="sans-serif-medium"
-        android:gravity="center_vertical|start"
-        android:layout_margin="@dimen/spacing_tiny"
-        android:text="@string/merchant_working_hours_caption"
-        android:textColor="@color/black"
-        android:textSize="@dimen/font_medium"
-        />
+   <TextView
+         android:layout_width="match_parent"
+         android:layout_height="wrap_content"
+         android:fontFamily="sans-serif-medium"
+         android:gravity="center_vertical|start"
+         android:layout_margin="@dimen/spacing_tiny"
+         android:text="@string/merchant_working_hours_caption"
+         android:textColor="@color/black"
+         android:textSize="@dimen/font_medium"
+         />
 
-    <ImageView
-        android:id="@+id/view_arrow"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_vertical|end"
-        android:src="@drawable/ic_arrow_down_grey"
-        />
+   <ImageView
+         android:id="@+id/view_arrow"
+         android:layout_width="wrap_content"
+         android:layout_height="wrap_content"
+         android:layout_gravity="center_vertical|end"
+         android:src="@drawable/ic_arrow_down_grey"
+         />
 
 </FrameLayout>

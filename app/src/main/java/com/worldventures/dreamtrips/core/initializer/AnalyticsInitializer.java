@@ -11,12 +11,11 @@ import javax.inject.Inject;
 
 public class AnalyticsInitializer implements AppInitializer {
 
-    @Inject
-    Set<Tracker> trackers;
+   @Inject Set<Tracker> trackers;
 
-    @Override
-    public void initialize(Injector injector) {
-        injector.inject(this);
-        TrackingHelper.init(trackers);
-    }
+   @Override
+   public void initialize(Injector injector) {
+      injector.inject(this);
+      TrackingHelper.init(trackers);
+   }
 }

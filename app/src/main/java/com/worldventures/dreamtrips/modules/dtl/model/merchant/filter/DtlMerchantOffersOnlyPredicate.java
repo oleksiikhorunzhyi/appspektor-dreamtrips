@@ -6,14 +6,14 @@ import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchantType;
 
 public class DtlMerchantOffersOnlyPredicate implements Predicate<DtlMerchant> {
 
-    private final boolean offersOnly;
+   private final boolean offersOnly;
 
-    public DtlMerchantOffersOnlyPredicate(DtlFilterData filterData) {
-        offersOnly = filterData.isOffersOnly();
-    }
+   public DtlMerchantOffersOnlyPredicate(DtlFilterData filterData) {
+      offersOnly = filterData.isOffersOnly();
+   }
 
-    @Override
-    public boolean apply(DtlMerchant dtlMerchant) {
-        return !(offersOnly && dtlMerchant.getMerchantType() == DtlMerchantType.DINING);
-    }
+   @Override
+   public boolean apply(DtlMerchant dtlMerchant) {
+      return !(offersOnly && dtlMerchant.getMerchantType() == DtlMerchantType.DINING);
+   }
 }

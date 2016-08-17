@@ -4,13 +4,13 @@ import com.worldventures.dreamtrips.modules.feed.model.PostFeedItem;
 
 public class TranslatePostEvent {
 
-    private PostFeedItem postFeedItem;
+   private PostFeedItem postFeedItem;
 
-    public TranslatePostEvent(PostFeedItem postFeedItem) {
-        this.postFeedItem = postFeedItem;
-    }
+   public TranslatePostEvent(PostFeedItem postFeedItem) {
+      this.postFeedItem = postFeedItem;
+   }
 
-    public PostFeedItem getPostFeedItem() {
-        return postFeedItem;
-    }
+   public PostFeedItem getPostFeedItem() {
+      return postFeedItem;
+   }
 }

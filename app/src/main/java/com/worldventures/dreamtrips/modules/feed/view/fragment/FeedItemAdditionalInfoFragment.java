@@ -35,45 +35,45 @@ import static com.worldventures.dreamtrips.core.navigation.router.NavigationConf
 @Layout(R.layout.fragment_feed_item_additional_info)
 public class FeedItemAdditionalInfoFragment<P extends FeedItemAdditionalInfoPresenter> extends RxBaseFragmentWithArgs<P, FeedAdditionalInfoBundle> implements FeedItemAdditionalInfoPresenter.View {
 
-    @InjectView(R.id.user_cover) SimpleDraweeView userCover;
-    @InjectView(R.id.user_photo) SmartAvatarView userPhoto;
-    @InjectView(R.id.user_name) TextView userName;
-    @InjectView(R.id.company_name) TextView companyName;
-    @InjectView(R.id.view_profile) TextView viewProfile;
+   @InjectView(R.id.user_cover) SimpleDraweeView userCover;
+   @InjectView(R.id.user_photo) SmartAvatarView userPhoto;
+   @InjectView(R.id.user_name) TextView userName;
+   @InjectView(R.id.company_name) TextView companyName;
+   @InjectView(R.id.view_profile) TextView viewProfile;
 
-    @Inject @Named(RouteCreatorModule.PROFILE) RouteCreator<Integer> routeCreator;
-    @Inject @ForActivity Provider<Injector> injectorProvider;
+   @Inject @Named(RouteCreatorModule.PROFILE) RouteCreator<Integer> routeCreator;
+   @Inject @ForActivity Provider<Injector> injectorProvider;
 
-    DecimalFormat df = new DecimalFormat("#0.00");
+   DecimalFormat df = new DecimalFormat("#0.00");
 
-    @Override
-    protected P createPresenter(Bundle savedInstanceState) {
-        FeedItemAdditionalInfoPresenter presenter = new FeedItemAdditionalInfoPresenter(getArgs() != null ? getArgs().getUser() : null);
-        return (P) presenter;
-    }
+   @Override
+   protected P createPresenter(Bundle savedInstanceState) {
+      FeedItemAdditionalInfoPresenter presenter = new FeedItemAdditionalInfoPresenter(getArgs() != null ? getArgs().getUser() : null);
+      return (P) presenter;
+   }
 
-    @Override
-    public void onViewCreated(View view, Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-        getPresenter().loadUser();
-    }
+   @Override
+   public void onViewCreated(View view, Bundle savedInstanceState) {
+      super.onViewCreated(view, savedInstanceState);
+      getPresenter().loadUser();
+   }
 
-    @Override
-    public void setupView(User user) {
-        userPhoto.setImageURI(Uri.parse(user.getAvatar().getThumb()));
-        userPhoto.setup(user, injectorProvider.get());
-        userCover.setImageURI(Uri.parse(user.getBackgroundPhotoUrl()));
-        userName.setText(user.getFullName());
-        companyName.setText(user.getCompany());
-        viewProfile.setVisibility(View.VISIBLE);
-    }
+   @Override
+   public void setupView(User user) {
+      userPhoto.setImageURI(Uri.parse(user.getAvatar().getThumb()));
+      userPhoto.setup(user, injectorProvider.get());
+      userCover.setImageURI(Uri.parse(user.getBackgroundPhotoUrl()));
+      userName.setText(user.getFullName());
+      companyName.setText(user.getCompany());
+      viewProfile.setVisibility(View.VISIBLE);
+   }
 
-    @Optional
-    @OnClick({R.id.user_cover, R.id.view_profile})
-    protected void onUserClick() {
-        router.moveTo(routeCreator.createRoute(getArgs().getUser().getId()), forActivity()
-                .toolbarConfig(ToolbarConfig.Builder.create().visible(false).build())
-                .data(new UserBundle(getArgs().getUser()))
-                .build());
-    }
+   @Optional
+   @OnClick({R.id.user_cover, R.id.view_profile})
+   protected void onUserClick() {
+      router.moveTo(routeCreator.createRoute(getArgs().getUser()
+            .getId()), forActivity().toolbarConfig(ToolbarConfig.Builder.create().visible(false).build())
+            .data(new UserBundle(getArgs().getUser()))
+            .build());
+   }
 }

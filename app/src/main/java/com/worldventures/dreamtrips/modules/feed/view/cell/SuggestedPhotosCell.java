@@ -39,154 +39,154 @@ import butterknife.InjectView;
 import butterknife.OnClick;
 
 @Layout(R.layout.adapter_item_suggested_photos)
-public class SuggestedPhotosCell extends AbstractDelegateCell<MediaAttachment, SuggestedPhotosDelegate>
-        implements CellDelegate<PhotoGalleryModel>, SuggestedPhotoCellPresenterHelper.View {
+public class SuggestedPhotosCell extends AbstractDelegateCell<MediaAttachment, SuggestedPhotosDelegate> implements CellDelegate<PhotoGalleryModel>, SuggestedPhotoCellPresenterHelper.View {
 
-    private static final int OFFSET = 5;
-    private static final String SUGGESTION_LIST_STATE_KEY = "suggestion.list.state";
+   private static final int OFFSET = 5;
+   private static final String SUGGESTION_LIST_STATE_KEY = "suggestion.list.state";
 
-    @Inject @ForActivity Provider<Injector> injectorProvider;
+   @Inject @ForActivity Provider<Injector> injectorProvider;
 
-    @InjectView(R.id.suggestion_avatar) SmartAvatarView avatar;
-    @InjectView(R.id.suggested_photos_user) TextView userName;
-    @InjectView(R.id.suggested_photos_description) TextView description;
-    @InjectView(R.id.suggested_photos) RecyclerView suggestedList;
-    @InjectView(R.id.btn_attach) Button btnAttach;
-    @InjectView(R.id.card_view_wrapper) CardView cardViewWrapper;
+   @InjectView(R.id.suggestion_avatar) SmartAvatarView avatar;
+   @InjectView(R.id.suggested_photos_user) TextView userName;
+   @InjectView(R.id.suggested_photos_description) TextView description;
+   @InjectView(R.id.suggested_photos) RecyclerView suggestedList;
+   @InjectView(R.id.btn_attach) Button btnAttach;
+   @InjectView(R.id.card_view_wrapper) CardView cardViewWrapper;
 
-    private BaseDelegateAdapter suggestionAdapter;
-    private RecyclerViewStateDelegate stateDelegate;
+   private BaseDelegateAdapter suggestionAdapter;
+   private RecyclerViewStateDelegate stateDelegate;
 
-    public SuggestedPhotosCell(View view) {
-        super(view);
-        stateDelegate = new RecyclerViewStateDelegate(SUGGESTION_LIST_STATE_KEY); //@see RecyclerViewStateDelegate
-    }
+   public SuggestedPhotosCell(View view) {
+      super(view);
+      stateDelegate = new RecyclerViewStateDelegate(SUGGESTION_LIST_STATE_KEY); //@see RecyclerViewStateDelegate
+   }
 
-    @Override
-    protected void syncUIStateWithModel() {
-        if (suggestionAdapter == null) {
-            stateDelegate = new RecyclerViewStateDelegate();
+   @Override
+   protected void syncUIStateWithModel() {
+      if (suggestionAdapter == null) {
+         stateDelegate = new RecyclerViewStateDelegate();
 
-            final LinearLayoutManager layoutManager =
-                    new LinearLayoutManager(itemView.getContext(), LinearLayoutManager.HORIZONTAL, false);
-            layoutManager.setAutoMeasureEnabled(true);
+         final LinearLayoutManager layoutManager = new LinearLayoutManager(itemView.getContext(), LinearLayoutManager.HORIZONTAL, false);
+         layoutManager.setAutoMeasureEnabled(true);
 
-            RecyclerView.OnScrollListener preLoadScrollListener = new RecyclerView.OnScrollListener() {
-                @Override
-                public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
-                    super.onScrolled(recyclerView, dx, dy);
+         RecyclerView.OnScrollListener preLoadScrollListener = new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+               super.onScrolled(recyclerView, dx, dy);
 
-                    int count = layoutManager.getItemCount();
-                    int position = layoutManager.findLastVisibleItemPosition();
+               int count = layoutManager.getItemCount();
+               int position = layoutManager.findLastVisibleItemPosition();
 
-                    if (position >= count - OFFSET) {
-                        PhotoGalleryModel model = (PhotoGalleryModel) suggestionAdapter.getItem(layoutManager.getItemCount() - 1);
-                        if (model.getDateTaken() < cellDelegate.lastSyncTimestamp()) {
-                            cellDelegate.onPreloadSuggestionPhotos(model);
-                        }
-                    }
-                }
-            };
+               if (position >= count - OFFSET) {
+                  PhotoGalleryModel model = (PhotoGalleryModel) suggestionAdapter.getItem(layoutManager.getItemCount() - 1);
+                  if (model.getDateTaken() < cellDelegate.lastSyncTimestamp()) {
+                     cellDelegate.onPreloadSuggestionPhotos(model);
+                  }
+               }
+            }
+         };
 
-            suggestionAdapter = new BaseDelegateAdapter(itemView.getContext(), injectorProvider.get());
-            suggestionAdapter.registerCell(PhotoGalleryModel.class, SuggestionPhotoCell.class);
-            suggestionAdapter.registerDelegate(PhotoGalleryModel.class, this);
+         suggestionAdapter = new BaseDelegateAdapter(itemView.getContext(), injectorProvider.get());
+         suggestionAdapter.registerCell(PhotoGalleryModel.class, SuggestionPhotoCell.class);
+         suggestionAdapter.registerDelegate(PhotoGalleryModel.class, this);
 
-            suggestedList.setLayoutManager(layoutManager);
-            suggestedList.setAdapter(suggestionAdapter);
-            suggestedList.addItemDecoration(new SuggestedPhotosListDecorator());
-            suggestedList.addOnScrollListener(preLoadScrollListener);
+         suggestedList.setLayoutManager(layoutManager);
+         suggestedList.setAdapter(suggestionAdapter);
+         suggestedList.addItemDecoration(new SuggestedPhotosListDecorator());
+         suggestedList.addOnScrollListener(preLoadScrollListener);
 
-            stateDelegate.setRecyclerView(suggestedList);
-            cellDelegate.onSuggestionViewCreated(this);
-        }
+         stateDelegate.setRecyclerView(suggestedList);
+         cellDelegate.onSuggestionViewCreated(this);
+      }
 
-        //
-        if (ViewUtils.isTablet(itemView.getContext())) {
-            cardViewWrapper.setCardElevation(4);
-            int m = itemView.getContext().getResources().getDimensionPixelSize(R.dimen.spacing_small);
-            ((ViewGroup.MarginLayoutParams) cardViewWrapper.getLayoutParams()).setMargins(m, m, m, m);
-        } else {
-            cardViewWrapper.setCardElevation(0);
-        }
+      //
+      if (ViewUtils.isTablet(itemView.getContext())) {
+         cardViewWrapper.setCardElevation(4);
+         int m = itemView.getContext().getResources().getDimensionPixelSize(R.dimen.spacing_small);
+         ((ViewGroup.MarginLayoutParams) cardViewWrapper.getLayoutParams()).setMargins(m, m, m, m);
+      } else {
+         cardViewWrapper.setCardElevation(0);
+      }
 
-        cellDelegate.onSyncViewState();
-    }
+      cellDelegate.onSyncViewState();
+   }
 
-    @OnClick(R.id.suggestion_cancel)
-    void onCancel() {
-        cellDelegate.onCancelClicked();
-    }
+   @OnClick(R.id.suggestion_cancel)
+   void onCancel() {
+      cellDelegate.onCancelClicked();
+   }
 
-    @OnClick(R.id.btn_attach)
-    void onAttach() {
-        cellDelegate.onAttachClicked();
-    }
+   @OnClick(R.id.btn_attach)
+   void onAttach() {
+      cellDelegate.onAttachClicked();
+   }
 
-    @OnClick(R.id.suggestion_avatar)
-    void onAvatarClicked() {
-        cellDelegate.onOpenProfileClicked();
-    }
+   @OnClick(R.id.suggestion_avatar)
+   void onAvatarClicked() {
+      cellDelegate.onOpenProfileClicked();
+   }
 
-    @Override
-    public void onCellClicked(PhotoGalleryModel model) {
-        cellDelegate.onSelectPhoto(model);
-        suggestionAdapter.notifyDataSetChanged();
-    }
+   @Override
+   public void onCellClicked(PhotoGalleryModel model) {
+      cellDelegate.onSelectPhoto(model);
+      suggestionAdapter.notifyDataSetChanged();
+   }
 
-    @Override
-    public void appendPhotoSuggestions(List<PhotoGalleryModel> items) {
-        suggestionAdapter.addItems(items);
-    }
+   @Override
+   public void appendPhotoSuggestions(List<PhotoGalleryModel> items) {
+      suggestionAdapter.addItems(items);
+   }
 
-    @Override
-    public void replacePhotoSuggestions(List<PhotoGalleryModel> items) {
-        suggestionAdapter.clearAndUpdateItems(items);
-    }
+   @Override
+   public void replacePhotoSuggestions(List<PhotoGalleryModel> items) {
+      suggestionAdapter.clearAndUpdateItems(items);
+   }
 
-    @Override
-    public void setUser(User user) {
-        avatar.setImageURI(Uri.parse(user.getAvatar().getThumb()));
-        avatar.setup(user, injectorProvider.get());
-        avatar.invalidate();
-        //
-        userName.setText(user.getFullName());
-    }
+   @Override
+   public void setUser(User user) {
+      avatar.setImageURI(Uri.parse(user.getAvatar().getThumb()));
+      avatar.setup(user, injectorProvider.get());
+      avatar.invalidate();
+      //
+      userName.setText(user.getFullName());
+   }
 
-    @Override
-    public void setSuggestionTitle(int sizeOfSelectedPhotos) {
-        boolean hasPhotos = sizeOfSelectedPhotos > 0;
-        if (hasPhotos) {
-            int resource = QuantityHelper.chooseResource(sizeOfSelectedPhotos,
-                    R.string.suggested_photo_selected_one, R.string.suggested_photo_selected_multiple);
+   @Override
+   public void setSuggestionTitle(int sizeOfSelectedPhotos) {
+      boolean hasPhotos = sizeOfSelectedPhotos > 0;
+      if (hasPhotos) {
+         int resource = QuantityHelper.chooseResource(sizeOfSelectedPhotos, R.string.suggested_photo_selected_one, R.string.suggested_photo_selected_multiple);
 
-            description.setText(String.format(itemView.getContext().getResources().getString(resource), sizeOfSelectedPhotos));
-        } else {
-            description.setText(R.string.suggested_photo);
-        }
+         description.setText(String.format(itemView.getContext()
+               .getResources()
+               .getString(resource), sizeOfSelectedPhotos));
+      } else {
+         description.setText(R.string.suggested_photo);
+      }
 
-        btnAttach.setVisibility(hasPhotos ? View.VISIBLE : View.GONE);
-    }
+      btnAttach.setVisibility(hasPhotos ? View.VISIBLE : View.GONE);
+   }
 
-    @Override
-    public void showMaxSelectionMessage() {
-        Snackbar.make(itemView, itemView.getContext().getString(R.string.photo_limitation_message,
-                SuggestedPhotoCellPresenterHelper.MAX_SELECTION_SIZE), Snackbar.LENGTH_SHORT).show();
-    }
+   @Override
+   public void showMaxSelectionMessage() {
+      Snackbar.make(itemView, itemView.getContext()
+            .getString(R.string.photo_limitation_message, SuggestedPhotoCellPresenterHelper.MAX_SELECTION_SIZE), Snackbar.LENGTH_SHORT)
+            .show();
+   }
 
-    @Override
-    public void saveInstanceState(@Nullable Bundle bundle) {
-        stateDelegate.saveStateIfNeeded(bundle);
-    }
+   @Override
+   public void saveInstanceState(@Nullable Bundle bundle) {
+      stateDelegate.saveStateIfNeeded(bundle);
+   }
 
-    @Override
-    public void restoreInstanceState(@Nullable Bundle bundle) {
-        stateDelegate.onCreate(bundle);
-        stateDelegate.restoreStateIfNeeded();
-    }
+   @Override
+   public void restoreInstanceState(@Nullable Bundle bundle) {
+      stateDelegate.onCreate(bundle);
+      stateDelegate.restoreStateIfNeeded();
+   }
 
-    @Override
-    public void notifyListChange() {
-        suggestionAdapter.notifyDataSetChanged();
-    }
+   @Override
+   public void notifyListChange() {
+      suggestionAdapter.notifyDataSetChanged();
+   }
 }

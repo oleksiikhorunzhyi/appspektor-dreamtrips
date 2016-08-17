@@ -10,14 +10,14 @@ import rx.schedulers.Schedulers;
 
 public class SubscribeToPushNotificationsInteractor {
 
-    private ActionPipe<SubscribeToPushNotificationsCommand> subscribeToPushNotificationsActionPipe;
+   private ActionPipe<SubscribeToPushNotificationsCommand> subscribeToPushNotificationsActionPipe;
 
-    @Inject
-    public SubscribeToPushNotificationsInteractor(Janet janet) {
-        subscribeToPushNotificationsActionPipe = janet.createPipe(SubscribeToPushNotificationsCommand.class, Schedulers.io());
-    }
+   @Inject
+   public SubscribeToPushNotificationsInteractor(Janet janet) {
+      subscribeToPushNotificationsActionPipe = janet.createPipe(SubscribeToPushNotificationsCommand.class, Schedulers.io());
+   }
 
-    public ActionPipe<SubscribeToPushNotificationsCommand> subscribeToPushNotificationsActionPipe() {
-        return subscribeToPushNotificationsActionPipe;
-    }
+   public ActionPipe<SubscribeToPushNotificationsCommand> subscribeToPushNotificationsActionPipe() {
+      return subscribeToPushNotificationsActionPipe;
+   }
 }

@@ -18,6 +18,7 @@ import com.worldventures.dreamtrips.wallet.ui.common.base.screen.OperationScreen
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.delegate.DialogOperationScreen;
 import com.worldventures.dreamtrips.wallet.ui.widget.BankCardWidget;
 import com.worldventures.dreamtrips.wallet.util.AddressUtil;
+import com.worldventures.dreamtrips.wallet.util.NonCopyPastSelectionMode;
 
 import butterknife.InjectView;
 import butterknife.OnCheckedChanged;
@@ -63,6 +64,7 @@ public class AddCardDetailsScreen extends WalletFrameLayout<AddCardDetailsPresen
    protected void onFinishInflate() {
       super.onFinishInflate();
       toolbar.setNavigationOnClickListener(v -> navigateButtonClick());
+      cardCvv.setCustomSelectionActionModeCallback(new NonCopyPastSelectionMode());
    }
 
    @Override

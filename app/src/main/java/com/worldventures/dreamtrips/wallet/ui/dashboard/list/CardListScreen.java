@@ -28,13 +28,16 @@ import com.worldventures.dreamtrips.wallet.ui.dashboard.list.util.CardStackViewM
 import com.worldventures.dreamtrips.wallet.ui.dashboard.list.util.HidingScrollListener;
 import com.worldventures.dreamtrips.wallet.ui.dashboard.list.util.cell.CardStackCell;
 import com.worldventures.dreamtrips.wallet.ui.widget.SmartCardWidget;
-import com.worldventures.dreamtrips.wallet.util.CardListUtils;
+import com.worldventures.dreamtrips.wallet.util.CardUtils;
 
 import java.util.List;
 
 import butterknife.InjectView;
 import butterknife.OnClick;
 import rx.Observable;
+
+import static android.support.design.widget.AppBarLayout.LayoutParams.SCROLL_FLAG_SCROLL;
+import static android.support.design.widget.AppBarLayout.LayoutParams.SCROLL_FLAG_EXIT_UNTIL_COLLAPSED;
 
 public class CardListScreen extends WalletFrameLayout<CardListScreenPresenter.Screen, CardListScreenPresenter, CardListPath> implements CardListScreenPresenter.Screen {
 
@@ -76,13 +79,34 @@ public class CardListScreen extends WalletFrameLayout<CardListScreenPresenter.Sc
 
    @Override
    public void showRecordsInfo(List<CardStackViewModel> result) {
-      int cardCount = CardListUtils.stacksToItemsCount(result);
+      int cardCount = CardUtils.stacksToItemsCount(result);
 
       adapter.clearAndUpdateItems(result);
       smartCardWidget.bindCount(cardCount);
 
       bankCardList.setVisibility(cardCount == 0 ? GONE : VISIBLE);
       emptyCardListView.setVisibility(cardCount == 0 ? VISIBLE : GONE);
+
+      if (cardCount == 0) showEmptyCardListView();
+      else showCardList();
+   }
+
+   private void showCardList() {
+      bankCardList.setVisibility(VISIBLE);
+      emptyCardListView.setVisibility(GONE);
+
+      AppBarLayout.LayoutParams params = (AppBarLayout.LayoutParams) collapsingToolbar.getLayoutParams();
+      params.setScrollFlags(SCROLL_FLAG_SCROLL | SCROLL_FLAG_EXIT_UNTIL_COLLAPSED);
+      collapsingToolbar.setLayoutParams(params);
+   }
+
+   private void showEmptyCardListView() {
+      bankCardList.setVisibility(GONE);
+      emptyCardListView.setVisibility(VISIBLE);
+
+      AppBarLayout.LayoutParams params = (AppBarLayout.LayoutParams) collapsingToolbar.getLayoutParams();
+      params.setScrollFlags(0);
+      collapsingToolbar.setLayoutParams(params);
    }
 
    @Override

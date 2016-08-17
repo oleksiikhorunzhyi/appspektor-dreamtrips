@@ -7,9 +7,7 @@ import android.support.annotation.StringRes;
 import com.techery.spares.module.Injector;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.utils.LocaleHelper;
-import com.worldventures.dreamtrips.wallet.domain.entity.AddressInfo;
 import com.worldventures.dreamtrips.wallet.domain.entity.AddressInfoWithLocale;
-import com.worldventures.dreamtrips.wallet.domain.entity.ImmutableAddressInfo;
 import com.worldventures.dreamtrips.wallet.domain.entity.ImmutableAddressInfoWithLocale;
 import com.worldventures.dreamtrips.wallet.domain.entity.card.BankCard;
 import com.worldventures.dreamtrips.wallet.service.SmartCardInteractor;
@@ -50,22 +48,12 @@ public class CardDetailsPresenter extends WalletPresenter<CardDetailsPresenter.S
       view.showDefaultAddress(obtainAddressWithCountry());
    }
 
-   private AddressInfoWithLocale obtainAddressWithCountry() {
-      //todo rewrite in commands
-
-      AddressInfo addressInfo = ImmutableAddressInfo.builder()
-            .address1("12345 Lollipop Drive")
-            .address2("Apt 123")
-            .city("New York")
-            .state("NY")
-            .zip("10010")
-            .build();
-
-      return ImmutableAddressInfoWithLocale.builder()
-            .addressInfo(addressInfo)
-            .locale(localeHelper.getDefaultLocale())
-            .build();
-   }
+    private AddressInfoWithLocale obtainAddressWithCountry() {
+        return ImmutableAddressInfoWithLocale.builder()
+                .addressInfo(bankCard.addressInfo())
+                .locale(localeHelper.getDefaultLocale())
+                .build();
+    }
 
    @StringRes
    private int obtainFinancialServiceType(Record.FinancialService financialService) {

@@ -38,6 +38,8 @@
                 android:layout_alignParentEnd="true"
                 android:layout_alignParentRight="true"
                 android:layout_below="@+id/card"
+                android:maxLength="@integer/wallet_wizard_add_card_details_cvv_length"
+                android:inputType="number"
                 android:layout_marginTop="@dimen/wallet_add_card_details_component_margin_top"
                 android:hint="@string/wallet_add_card_details_hint_enter_cvv"/>
 
@@ -62,6 +64,7 @@
                 android:layout_marginLeft="@dimen/wallet_add_card_details_default_address_margin_left"
                 android:layout_marginTop="@dimen/wallet_add_card_details_component_margin_top"
                 android:visibility="gone"
+                android:inputType="textMultiLine"
                 tools:text="12345 Lollipop Drive\nNew York, NY 10010\nUSA"/>
 
             <include
@@ -81,7 +84,7 @@
                 android:layout_alignParentLeft="true"
                 android:layout_below="@+id/address_info"
                 android:layout_marginTop="@dimen/wallet_add_card_details_component_margin_top"
-                android:clickable="false"
+                android:enabled="false"
                 android:text="@string/wallet_add_card_details_option_set_as_default_card"/>
 
             <EditText
@@ -90,6 +93,7 @@
                 android:layout_height="wrap_content"
                 android:layout_alignParentEnd="true"
                 android:layout_alignParentRight="true"
+                android:imeOptions="actionDone"
                 android:layout_below="@+id/set_default_card_checkBox"
                 android:layout_marginTop="@dimen/wallet_add_card_details_component_margin_top"
                 android:hint="@string/wallet_add_card_details_hint_nickname_card"/>

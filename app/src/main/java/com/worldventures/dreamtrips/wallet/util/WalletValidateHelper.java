@@ -12,7 +12,7 @@ public class WalletValidateHelper {
 
    private static final Pattern CARD_NAME_PATTERN = Pattern.compile("[a-zA-Z ]{2,256}");
    private static final Pattern FULL_NAME_PATTERN = Pattern.compile("[A-Za-z]{2,21}+");
-   private static final Pattern CVV_PATTERN = Pattern.compile("[0-9]{3}");
+   private static final Pattern CVV_PATTERN = Pattern.compile("[0-9]{3,4}");
 
    public static boolean validateCardName(String cardName) {
       return CARD_NAME_PATTERN.matcher(cardName).matches();
@@ -42,8 +42,8 @@ public class WalletValidateHelper {
    }
 
    public static boolean validateAddressInfo(AddressInfo addressInfo) {
-      boolean infoInvalid = TextUtils.isEmpty(addressInfo.address1()) || TextUtils.isEmpty(addressInfo.address2()) || TextUtils
-            .isEmpty(addressInfo.city()) || TextUtils.isEmpty(addressInfo.state()) || TextUtils.isEmpty(addressInfo.zip());
+      boolean infoInvalid = TextUtils.isEmpty(addressInfo.address1()) || TextUtils.isEmpty(addressInfo.city()) || TextUtils
+            .isEmpty(addressInfo.state()) || TextUtils.isEmpty(addressInfo.zip());
 
       return !infoInvalid;
    }

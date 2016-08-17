@@ -47,7 +47,10 @@
         android:singleLine="true"
         android:textColor="@android:color/white"
         android:textSize="@dimen/font_large"
-        tools:text="Jhon's card"/>
+        tools:text="Jhon's card"
+        android:layout_toLeftOf="@+id/cardListSCAvatar"
+        android:layout_alignParentLeft="true"
+        android:layout_marginRight="10dp"/>
 
     <TextView
         android:id="@+id/connectedCardsCount"

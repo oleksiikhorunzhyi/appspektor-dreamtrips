@@ -1,14 +1,16 @@
 package com.worldventures.dreamtrips.wallet.util;
 
+import android.text.TextUtils;
+
 import com.innahema.collections.query.queriables.Queryable;
 import com.worldventures.dreamtrips.wallet.service.command.CardStacksCommand;
 import com.worldventures.dreamtrips.wallet.ui.dashboard.list.util.CardStackViewModel;
 
 import java.util.List;
 
-public class CardListUtils {
+public class CardUtils {
 
-   private CardListUtils() {
+   private CardUtils() {
    }
 
    public static int stacksToItemsCount(List<CardStackViewModel> items) {
@@ -17,6 +19,10 @@ public class CardListUtils {
             .filter(stack -> stack.getType() != CardStacksCommand.CardStackModel.StackType.DEFAULT)
             .sum(stack -> stack.getCardList() != null ? stack.getCardList().size() : 0);
       return sum != null ? sum : 0;
+   }
+
+   public static boolean isRealCardId(String cardId) {
+      return !TextUtils.equals(cardId, "0");
    }
 
 }

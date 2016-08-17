@@ -1,6 +1,8 @@
 package com.worldventures.dreamtrips.wallet.util;
 
 
+import android.text.TextUtils;
+
 import com.worldventures.dreamtrips.wallet.domain.entity.AddressInfo;
 import com.worldventures.dreamtrips.wallet.domain.entity.AddressInfoWithLocale;
 
@@ -12,8 +14,11 @@ public class AddressUtil {
       AddressInfo addressInfo = addressInfoWithLocale.addressInfo();
       Locale locale = addressInfoWithLocale.locale();
 
-      return String.format("%s\n%s\n%s, %s %s\n%s", addressInfo.address1(), addressInfo.address2(), addressInfo.city(), addressInfo
-            .state(), addressInfo.zip(), locale.getISO3Country());
+      String address = TextUtils.isEmpty(addressInfo.address2()) ? addressInfo.address1() : String.format("%s\n%s",
+            addressInfo.address1(), addressInfo.address2());
+
+      return String.format("%s\n%s, %s %s\n%s", address, addressInfo.city(), addressInfo.state(), addressInfo.zip(), locale
+            .getISO3Country());
    }
 
 }

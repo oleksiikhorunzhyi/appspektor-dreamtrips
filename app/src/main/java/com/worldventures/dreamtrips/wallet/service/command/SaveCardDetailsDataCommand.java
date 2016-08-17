@@ -1,5 +1,6 @@
 package com.worldventures.dreamtrips.wallet.service.command;
 
+import android.text.TextUtils;
 import android.util.Pair;
 
 import com.worldventures.dreamtrips.core.janet.dagger.InjectableAction;
@@ -8,6 +9,7 @@ import com.worldventures.dreamtrips.wallet.domain.entity.AddressInfo;
 import com.worldventures.dreamtrips.wallet.domain.entity.card.BankCard;
 import com.worldventures.dreamtrips.wallet.domain.entity.card.ImmutableBankCard;
 import com.worldventures.dreamtrips.wallet.service.SmartCardInteractor;
+import com.worldventures.dreamtrips.wallet.util.CardUtils;
 import com.worldventures.dreamtrips.wallet.util.FormatException;
 import com.worldventures.dreamtrips.wallet.util.WalletValidateHelper;
 
@@ -56,7 +58,7 @@ public class SaveCardDetailsDataCommand extends Command<Void> implements Injecta
       Observable<ActionState<GetDefaultAddressCommand>> defaultAddressInfoStateObservable = smartCardInteractor.getDefaultAddressCommandPipe()
             .observeWithReplay()
             .takeFirst(state -> state.status == ActionState.Status.SUCCESS || state.status == ActionState.Status.FAIL);
-      Observable<ActionState<CardCountCommand>> cardCountStateObservable = smartCardInteractor.cardCountCommandPipe()
+      Observable<ActionState<FetchDefaultCardCommand>> cardCountStateObservable = smartCardInteractor.fetchDefaultCardCommandActionPipe()
             .observeWithReplay()
             .takeFirst(state -> state.status == ActionState.Status.SUCCESS || state.status == ActionState.Status.FAIL);
 
@@ -66,7 +68,7 @@ public class SaveCardDetailsDataCommand extends Command<Void> implements Injecta
                .withCvv(Integer.parseInt(cvv))
                .withTitle(nickName)
                .withAddressInfo(address);
-         return new Pair<>(extandedBankCard, defaultCardState.action.getResult() == 0);
+         return new Pair<>(extandedBankCard, !CardUtils.isRealCardId(defaultCardState.action.getResult()));
       })
             .flatMap(bankCardPair -> smartCardInteractor.addRecordPipe()
                   .createObservableResult(new AttachCardCommand(bankCardPair.first, bankCardPair.second)))

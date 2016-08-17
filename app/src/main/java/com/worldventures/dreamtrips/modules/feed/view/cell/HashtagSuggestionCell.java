@@ -39,10 +39,6 @@ public class HashtagSuggestionCell extends AbstractDelegateCell<HashtagSuggestio
         itemView.setOnClickListener(v -> cellDelegate.onCellClicked(getModelObject()));
     }
 
-    public void prepareForReuse() {
-
-    }
-
     public interface Delegate extends CellDelegate<HashtagSuggestion> {
 
     }

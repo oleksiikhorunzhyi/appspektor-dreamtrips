@@ -3,11 +3,9 @@ package com.worldventures.dreamtrips.core.module;
 import android.content.Context;
 
 import com.messenger.storage.dao.PhotoDAO;
-import com.messenger.synchmechanism.MessengerConnector;
 import com.techery.spares.module.Injector;
 import com.techery.spares.module.qualifier.ForApplication;
 import com.techery.spares.module.qualifier.Global;
-import com.techery.spares.session.SessionHolder;
 import com.worldventures.dreamtrips.core.api.DreamSpiceManager;
 import com.worldventures.dreamtrips.core.api.DreamSpiceService;
 import com.worldventures.dreamtrips.core.api.FileDownloadSpiceManager;
@@ -17,17 +15,10 @@ import com.worldventures.dreamtrips.core.api.VideoDownloadSpiceService;
 import com.worldventures.dreamtrips.core.janet.JanetModule;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.core.session.CirclesInteractor;
-import com.worldventures.dreamtrips.core.session.UserSession;
 import com.worldventures.dreamtrips.core.utils.DTCookieManager;
 import com.worldventures.dreamtrips.modules.bucketlist.service.BucketInteractor;
-import com.worldventures.dreamtrips.modules.common.delegate.AppSettingsInteractor;
-import com.worldventures.dreamtrips.modules.common.delegate.AuthInteractor;
-import com.worldventures.dreamtrips.modules.common.delegate.GlobalConfigInteractor;
-import com.worldventures.dreamtrips.modules.common.delegate.LocalesInteractor;
 import com.worldventures.dreamtrips.modules.common.delegate.QueryTripsFilterDataInteractor;
 import com.worldventures.dreamtrips.modules.common.delegate.SocialCropImageManager;
-import com.worldventures.dreamtrips.modules.common.delegate.StaticPagesInteractor;
-import com.worldventures.dreamtrips.modules.common.presenter.delegate.AuthorizedDataManager;
 import com.worldventures.dreamtrips.modules.common.presenter.delegate.ClearDirectoryDelegate;
 import com.worldventures.dreamtrips.modules.common.view.util.LogoutDelegate;
 import com.worldventures.dreamtrips.modules.common.view.util.MediaPickerManager;
@@ -41,7 +32,7 @@ import com.worldventures.dreamtrips.modules.dtl.service.DtlTransactionInteractor
 import com.worldventures.dreamtrips.modules.feed.manager.FeedEntityManager;
 import com.worldventures.dreamtrips.modules.membership.api.PhoneContactRequest;
 import com.worldventures.dreamtrips.modules.trips.manager.TripFilterDataProvider;
-import com.worldventures.dreamtrips.modules.trips.manager.TripMapInteractor;
+import com.worldventures.dreamtrips.modules.trips.service.TripMapInteractor;
 import com.worldventures.dreamtrips.modules.tripsimages.view.util.EditPhotoTagsCallback;
 import com.worldventures.dreamtrips.modules.tripsimages.view.util.PostLocationPickerCallback;
 import com.worldventures.dreamtrips.modules.video.FileCachingDelegate;
@@ -74,11 +65,6 @@ import io.techery.janet.Janet;
                 DtlMerchantInteractor.class,
                 DtlTransactionInteractor.class,
 
-                GlobalConfigInteractor.class,
-                AuthorizedDataManager.class,
-                AppSettingsInteractor.class,
-                LocalesInteractor.class,
-                StaticPagesInteractor.class,
                 QueryTripsFilterDataInteractor.class,
         },
         library = true, complete = false
@@ -173,21 +159,14 @@ public class ManagerModule {
 
     @Provides
     @Singleton
-    ClearDirectoryDelegate provideClearDirectoryDelegate(@ForApplication Context context, PhotoDAO photoDAO, SnappyRepository snappyRepository) {
-        return new ClearDirectoryDelegate(context, photoDAO, snappyRepository);
+    ClearDirectoryDelegate provideClearDirectoryDelegate(@ForApplication Context context, PhotoDAO photoDAO) {
+        return new ClearDirectoryDelegate(context, photoDAO);
     }
 
     @Provides
     @Singleton
     MediaPickerManager provideMediaPickerManager() {
         return new MediaPickerManager();
-    }
-
-
-    @Provides
-    @Singleton
-    GlobalConfigInteractor provideGlobalConfigManager(Janet janet) {
-        return new GlobalConfigInteractor(janet);
     }
 
     @Provides
@@ -225,13 +204,5 @@ public class ManagerModule {
     @Singleton
     TripFilterDataProvider provideTripFilterDataProvider(@Global EventBus eventBus, SnappyRepository repository) {
         return new TripFilterDataProvider(eventBus, repository);
-    }
-
-    @Provides
-    @Singleton
-    AuthorizedDataManager provideAuthorizedDataUpdater(SessionHolder<UserSession> userSessionSessionHolder,
-                                                       AuthInteractor authInteractor,
-                                                       MessengerConnector messengerConnector) {
-        return new AuthorizedDataManager(userSessionSessionHolder, authInteractor, messengerConnector);
     }
 }

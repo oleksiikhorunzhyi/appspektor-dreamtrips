@@ -10,6 +10,7 @@ import com.facebook.drawee.interfaces.DraweeController;
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.facebook.imagepipeline.request.ImageRequest;
 import com.techery.spares.annotations.Layout;
+import com.techery.spares.ui.view.cell.CellDelegate;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.navigation.ToolbarConfig;
@@ -17,7 +18,7 @@ import com.worldventures.dreamtrips.core.navigation.router.NavigationConfigBuild
 import com.worldventures.dreamtrips.modules.bucketlist.service.common.BucketUtility;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem;
 import com.worldventures.dreamtrips.modules.bucketlist.util.BucketItemInfoUtil;
-import com.worldventures.dreamtrips.modules.feed.bundle.FeedDetailsBundle;
+import com.worldventures.dreamtrips.modules.feed.bundle.FeedEntityDetailsBundle;
 import com.worldventures.dreamtrips.modules.feed.event.DeleteBucketEvent;
 import com.worldventures.dreamtrips.modules.feed.event.EditBucketEvent;
 import com.worldventures.dreamtrips.modules.feed.model.BucketFeedItem;
@@ -27,17 +28,13 @@ import butterknife.InjectView;
 import butterknife.OnClick;
 
 @Layout(R.layout.adapter_item_feed_bucket_event)
-public class BucketFeedItemDetailsCell extends FeedItemDetailsCell<BucketFeedItem> {
-    @InjectView(R.id.imageViewCover)
-    SimpleDraweeView imageViewCover;
-    @InjectView(R.id.textViewName)
-    TextView textViewName;
-    @InjectView(R.id.textViewCategory)
-    TextView textViewCategory;
-    @InjectView(R.id.textViewDate)
-    TextView textViewDate;
-    @InjectView(R.id.textViewPlace)
-    TextView textViewPlace;
+public class BucketFeedItemDetailsCell extends FeedItemDetailsCell<BucketFeedItem, CellDelegate<BucketFeedItem>> {
+
+    @InjectView(R.id.imageViewCover) SimpleDraweeView imageViewCover;
+    @InjectView(R.id.textViewName) TextView textViewName;
+    @InjectView(R.id.textViewCategory) TextView textViewCategory;
+    @InjectView(R.id.textViewDate) TextView textViewDate;
+    @InjectView(R.id.textViewPlace) TextView textViewPlace;
 
     public BucketFeedItemDetailsCell(View view) {
         super(view);
@@ -76,14 +73,8 @@ public class BucketFeedItemDetailsCell extends FeedItemDetailsCell<BucketFeedIte
         textViewDate.setText(BucketItemInfoUtil.getTime(itemView.getContext(), bucketItem));
     }
 
-
     private String getCategory(BucketItem bucketItem) {
         return bucketItem.getCategoryName();
-    }
-
-    @Override
-    public void prepareForReuse() {
-
     }
 
     @Override
@@ -100,9 +91,6 @@ public class BucketFeedItemDetailsCell extends FeedItemDetailsCell<BucketFeedIte
     @Override
     protected void onEdit() {
         super.onEdit();
-//        BucketItem.BucketType bucketType = getType(getModelObject().getItem().getType());
-//        bucketItemManager.saveSingleBucketItem(getModelObject().getItem());
-        //
         BucketItem bucketItem = getModelObject().getItem();
         getEventBus().post(new EditBucketEvent(bucketItem, BucketUtility.typeFromItem(bucketItem)));
     }
@@ -111,7 +99,10 @@ public class BucketFeedItemDetailsCell extends FeedItemDetailsCell<BucketFeedIte
     void openBucketEntityDetails() {
         router.moveTo(Route.FEED_ENTITY_DETAILS, NavigationConfigBuilder.forActivity()
                 .toolbarConfig(ToolbarConfig.Builder.create().visible(false).build())
-                .data(new FeedDetailsBundle(getModelObject()))
+                .data(new FeedEntityDetailsBundle.Builder()
+                    .feedItem(getModelObject())
+                    .showAdditionalInfo(true)
+                    .build())
                 .build());
     }
 }

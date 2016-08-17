@@ -8,7 +8,8 @@ import android.widget.TextView;
 
 import com.techery.spares.session.SessionHolder;
 import com.techery.spares.storage.complex_objects.Optional;
-import com.techery.spares.ui.view.cell.AbstractCell;
+import com.techery.spares.ui.view.cell.AbstractDelegateCell;
+import com.techery.spares.ui.view.cell.CellDelegate;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.navigation.wrapper.NavigationWrapper;
@@ -26,25 +27,19 @@ import javax.inject.Inject;
 
 import butterknife.InjectView;
 
-public abstract class BaseFeedCell<ITEM extends FeedItem> extends AbstractCell<ITEM> {
+public abstract class BaseFeedCell<ITEM extends FeedItem, DELEGATE extends CellDelegate<ITEM>> extends AbstractDelegateCell<ITEM, DELEGATE> {
 
-    @Inject
-    FeedActionPanelViewActionHandler feedActionHandler;
-    @Inject
-    Presenter.TabletAnalytic tabletAnalytic;
-    @Inject
-    protected FragmentManager fragmentManager;
-    @Inject
-    protected SessionHolder<UserSession> sessionHolder;
+    @Inject FeedActionPanelViewActionHandler feedActionHandler;
+    @Inject Presenter.TabletAnalytic tabletAnalytic;
+    @Inject SessionHolder<UserSession> sessionHolder;
+    @Inject protected FragmentManager fragmentManager;
 
-    @InjectView(R.id.actionView)
-    FeedActionPanelView actionView;
-    @InjectView(R.id.likers_panel)
-    TextView likersPanel;
+    @InjectView(R.id.actionView) FeedActionPanelView actionView;
+    @InjectView(R.id.likers_panel) TextView likersPanel;
 
     private LikersPanelHelper likersPanelHelper;
     private NavigationWrapper navigationWrapper;
-    private boolean syncUIStateWithModelWasCalled = false;
+    private boolean syncUIStateWithModelWasCalled;
 
     public BaseFeedCell(View view) {
         super(view);
@@ -112,10 +107,7 @@ public abstract class BaseFeedCell<ITEM extends FeedItem> extends AbstractCell<I
                 getModelObject().getType());
     }
 
-    protected abstract void onMore();
-
-    @Override
-    public void prepareForReuse() {
+    protected void onMore() {
 
     }
 }

@@ -7,7 +7,6 @@ import com.innahema.collections.query.queriables.Queryable;
 import com.messenger.ui.fragment.MessageImageFullscreenFragment;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.ui.fragment.BaseImageFragment;
-import com.worldventures.dreamtrips.modules.auth.view.LoginFragment;
 import com.worldventures.dreamtrips.modules.bucketlist.view.fragment.BucketDetailsFragment;
 import com.worldventures.dreamtrips.modules.bucketlist.view.fragment.BucketItemEditFragment;
 import com.worldventures.dreamtrips.modules.bucketlist.view.fragment.BucketListFragment;
@@ -91,7 +90,6 @@ import com.worldventures.dreamtrips.modules.video.view.PresentationVideosFragmen
 import com.worldventures.dreamtrips.modules.video.view.ThreeSixtyVideosFragment;
 
 public enum Route {
-    LOGIN(LoginFragment.class),
     WEB_STATIC(StaticInfoFragment.class),
     DETAILED_TRIP(TripDetailsFragment.class),
     PICK_FB_ALBUM(FacebookAlbumFragment.class),
@@ -122,7 +120,7 @@ public enum Route {
 
     MEMBERSHIP(MembershipFragment.class),
     TRAINING_VIDEOS(TrainingVideosFragment.class),
-    ENROLL_MEMBER(StaticInfoFragment.EnrollMemberFragment.class),
+    ENROLL_MEMBER(StaticInfoFragment.EnrollMemberFragment.class, R.string.enroll_member),
     ENROLL_MERCHANT(StaticInfoFragment.EnrollMerchantFragment.class, R.string.suggest_merchant_title),
     SELECT_INVITE_TEMPLATE(SelectTemplateFragment.class, R.string.invitation_template),
     INVITE(InviteFragment.class),
@@ -182,6 +180,7 @@ public enum Route {
     MUTUAL_FRIENDS(MutualFriendsFragment.class, R.string.user_mutual_friends),
 
     ENROLL_REP(StaticInfoFragment.EnrollRepFragment.class),
+    ENROLL_UPGRADE(StaticInfoFragment.EnrollUpgradeFragment.class, R.string.enroll_member),
     SUCCESS_STORY_LIST(SuccessStoryListFragment.class),
 
     INSPIRE_PHOTO_FULLSCREEN(InspirePhotoFullscreenFragment.class),

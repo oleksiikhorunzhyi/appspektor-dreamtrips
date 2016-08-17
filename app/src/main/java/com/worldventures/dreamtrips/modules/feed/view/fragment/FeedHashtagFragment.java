@@ -20,14 +20,14 @@ import com.techery.spares.annotations.Layout;
 import com.techery.spares.annotations.MenuResource;
 import com.techery.spares.ui.recycler.RecyclerViewStateDelegate;
 import com.techery.spares.utils.ui.SoftInputUtil;
-import com.trello.rxlifecycle.FragmentEvent;
-import com.trello.rxlifecycle.RxLifecycle;
 import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.core.api.error.ErrorResponse;
 import com.worldventures.dreamtrips.core.rx.RxBaseFragmentWithArgs;
 import com.worldventures.dreamtrips.modules.common.view.bundle.BucketBundle;
 import com.worldventures.dreamtrips.modules.common.view.custom.ProgressEmptyRecyclerView;
 import com.worldventures.dreamtrips.modules.feed.bundle.FeedHashtagBundle;
 import com.worldventures.dreamtrips.modules.feed.event.CommentIconClickedEvent;
+import com.worldventures.dreamtrips.modules.feed.model.FeedItem;
 import com.worldventures.dreamtrips.modules.feed.model.LoadMoreModel;
 import com.worldventures.dreamtrips.modules.feed.model.feed.hashtag.HashtagSuggestion;
 import com.worldventures.dreamtrips.modules.feed.presenter.FeedHashtagPresenter;
@@ -43,20 +43,16 @@ import java.util.List;
 import javax.inject.Inject;
 
 import butterknife.InjectView;
-import rx.Observable;
 
 @MenuResource(R.menu.menu_hashtag_feed)
 @Layout(R.layout.fragment_hashtag_feed)
 public class FeedHashtagFragment extends RxBaseFragmentWithArgs<FeedHashtagPresenter, FeedHashtagBundle> implements FeedHashtagPresenter.View, SwipeRefreshLayout.OnRefreshListener {
 
-    @InjectView(R.id.empty_view)
-    ViewGroup emptyView;
-    @InjectView(R.id.suggestionProgress)
-    View suggestionProgressBar;
-    @InjectView(R.id.suggestions)
-    ProgressEmptyRecyclerView suggestions;
-    @Inject
-    FragmentWithFeedDelegate fragmentWithFeedDelegate;
+    @InjectView(R.id.empty_view) ViewGroup emptyView;
+    @InjectView(R.id.suggestionProgress) View suggestionProgressBar;
+    @InjectView(R.id.suggestions) ProgressEmptyRecyclerView suggestions;
+
+    @Inject FragmentWithFeedDelegate fragmentWithFeedDelegate;
 
     BaseDelegateAdapter<HashtagSuggestion> suggestionAdapter;
     RecyclerViewStateDelegate stateDelegate;
@@ -90,7 +86,9 @@ public class FeedHashtagFragment extends RxBaseFragmentWithArgs<FeedHashtagPrese
             }
             getPresenter().loadNext();
         });
-        statePaginatedRecyclerViewManager.addItemDecoration(new SideMarginsItemDecorator(false));
+        if (isTabletLandscape()) {
+            statePaginatedRecyclerViewManager.addItemDecoration(new SideMarginsItemDecorator(16));
+        }
         fragmentWithFeedDelegate.init(feedAdapter);
 
         suggestionAdapter = new BaseDelegateAdapter<>(getActivity(), this);
@@ -124,6 +122,12 @@ public class FeedHashtagFragment extends RxBaseFragmentWithArgs<FeedHashtagPrese
             searchText.setSelection(startReplace + HashtagSuggestionUtil.replaceableText(suggestion).length());
             searchPosts(searchText.getText().toString());
         }
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        fragmentWithFeedDelegate.resetTranslatedStatus();
     }
 
     public void onDestroyView() {
@@ -230,8 +234,8 @@ public class FeedHashtagFragment extends RxBaseFragmentWithArgs<FeedHashtagPrese
     }
 
     @Override
-    public <T> Observable<T> bindUntilStop(Observable<T> observable) {
-        return observable.compose(RxLifecycle.bindUntilFragmentEvent(lifecycle(), FragmentEvent.STOP));
+    public void updateItem(FeedItem feedItem) {
+        fragmentWithFeedDelegate.notifyItemChanged(feedItem);
     }
 
     @Override
@@ -306,5 +310,14 @@ public class FeedHashtagFragment extends RxBaseFragmentWithArgs<FeedHashtagPrese
 
     public void onEvent(CommentIconClickedEvent event) {
         fragmentWithFeedDelegate.openComments(event.getFeedItem(), isVisibleOnScreen(), isTabletLandscape());
+    }
+
+    @Override
+    public boolean onApiError(ErrorResponse errorResponse) {
+        return false;
+    }
+
+    @Override
+    public void onApiCallFailed() {
     }
 }

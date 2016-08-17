@@ -15,10 +15,8 @@ import timber.log.Timber;
 @Layout(R.layout.adapter_item_filters)
 public class FilterRangeBarsCell extends AbstractDelegateCell<FilterModel, FilterRangeBarsCell.Delegate> {
 
-    @InjectView(R.id.rangeBarDay)
-    protected RangeBar rangeBarDay;
-    @InjectView(R.id.rangeBarPrice)
-    protected RangeBar rangeBarPrice;
+    @InjectView(R.id.rangeBarDay) RangeBar rangeBarDay;
+    @InjectView(R.id.rangeBarPrice) RangeBar rangeBarPrice;
 
     private double maxPrice = Double.MAX_VALUE;
     private double minPrice = 0.0d;
@@ -51,12 +49,8 @@ public class FilterRangeBarsCell extends AbstractDelegateCell<FilterModel, Filte
         this.rangeBarPrice.setRangePinsByIndices(getModelObject().getIndexLeftPrice(), getModelObject().getIndexRightPrice());
     }
 
-    @Override
-    public void prepareForReuse() {
-        //nothing to do here
-    }
-
     public interface Delegate extends CellDelegate<FilterModel> {
+
         void rangeBarDurationEvent(int minNights, int maxNights);
 
         void rangeBarPriceEvent(double minPrice, double maxPrice);

@@ -17,12 +17,10 @@ import butterknife.OnClick;
 public class RequestHeaderCell extends AbstractDelegateCell<RequestHeaderModel, RequestHeaderCellDelegate> {
 
     public static final int MIN_REQUEST_COUNT_FOR_ADVANCED_VIEW = 2;
-    @InjectView(R.id.header)
-    TextView header;
-    @InjectView(R.id.requestCountDesc)
-    TextView requestCountDesc;
-    @InjectView(R.id.advanced_container)
-    LinearLayout advancedContainer;
+
+    @InjectView(R.id.header) TextView header;
+    @InjectView(R.id.requestCountDesc) TextView requestCountDesc;
+    @InjectView(R.id.advanced_container) LinearLayout advancedContainer;
 
     public RequestHeaderCell(View view) {
         super(view);
@@ -34,10 +32,6 @@ public class RequestHeaderCell extends AbstractDelegateCell<RequestHeaderModel, 
         boolean advanced = getModelObject().isAdvanced() && getModelObject().getCount() >= MIN_REQUEST_COUNT_FOR_ADVANCED_VIEW;
         advancedContainer.setVisibility(advanced ? View.VISIBLE : View.GONE);
         requestCountDesc.setText(requestCountDesc.getResources().getString(R.string.request_count_desc, getModelObject().getCount()));
-    }
-
-    @Override
-    public void prepareForReuse() {
     }
 
     @OnClick(R.id.accept_all_btn)

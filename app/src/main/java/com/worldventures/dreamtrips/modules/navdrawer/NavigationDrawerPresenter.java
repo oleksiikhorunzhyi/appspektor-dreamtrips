@@ -5,39 +5,35 @@ import android.support.v4.widget.DrawerLayout;
 
 import com.messenger.util.UnreadConversationObservable;
 import com.techery.spares.module.Injector;
-import com.techery.spares.module.qualifier.Global;
 import com.techery.spares.session.SessionHolder;
 import com.worldventures.dreamtrips.core.component.ComponentDescription;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
+import com.worldventures.dreamtrips.core.rx.composer.IoToMainComposer;
 import com.worldventures.dreamtrips.core.session.UserSession;
-import com.worldventures.dreamtrips.core.utils.events.UpdateUserInfoEvent;
-import com.worldventures.dreamtrips.modules.common.event.HeaderCountChangedEvent;
+import com.worldventures.dreamtrips.modules.auth.api.command.UpdateUserCommand;
+import com.worldventures.dreamtrips.modules.auth.service.AuthInteractor;
 
 import java.util.List;
 
 import javax.inject.Inject;
 
-import de.greenrobot.event.EventBus;
-import rx.Subscription;
+import io.techery.janet.helper.ActionStateSubscriber;
+import rx.Observable;
 import rx.functions.Action0;
 import rx.functions.Action1;
+import rx.subjects.PublishSubject;
 
 public class NavigationDrawerPresenter {
 
-    @Inject
-    protected SessionHolder<UserSession> appSessionHolder;
-    @Inject
-    protected SnappyRepository db;
-    @Inject
-    @Global
-    protected EventBus eventBus;
-    @Inject
-    protected UnreadConversationObservable unreadObservable;
+    @Inject SessionHolder<UserSession> appSessionHolder;
+    @Inject SnappyRepository db;
+    @Inject UnreadConversationObservable unreadObservable;
+    @Inject AuthInteractor authInteractor;
 
     private NavigationDrawerView navigationDrawerView;
     private DrawerLayout drawerLayout;
 
-    private Subscription unreadConversationSubscription;
+    private PublishSubject<Void> destroyViewStopper = PublishSubject.create();
 
     public NavigationDrawerPresenter() {
     }
@@ -58,11 +54,12 @@ public class NavigationDrawerPresenter {
         navigationDrawerView.setData(components);
         navigationDrawerView.setUser(appSessionHolder.get().get().getUser());
 
-        eventBus.register(this);
-
-        unreadConversationSubscription = unreadObservable
+        navigationDrawerView.bind(unreadObservable.getObservable())
                 .subscribe(navigationDrawerView::setUnreadMessagesCount);
-
+        navigationDrawerView.bind(authInteractor.updateUserPipe().observe()
+                .compose(new IoToMainComposer<>()))
+                .subscribe(new ActionStateSubscriber<UpdateUserCommand>()
+                        .onSuccess(updateUserCommand -> navigationDrawerView.setUser(updateUserCommand.getResult())));
     }
 
     public void detach() {
@@ -70,23 +67,15 @@ public class NavigationDrawerPresenter {
         onItemReselected = null;
         onItemSelected = null;
         onLogout = null;
-        eventBus.unregister(this);
-        if (unreadConversationSubscription != null &&
-                !unreadConversationSubscription.isUnsubscribed())
-            unreadConversationSubscription.unsubscribe();
+        destroyViewStopper.onNext(null);
     }
 
-    public void onEventMainThread(UpdateUserInfoEvent event) {
-        navigationDrawerView.setUser(appSessionHolder.get().get().getUser());
-    }
-
-    public void onEventMainThread(HeaderCountChangedEvent event) {
+    public void updateNotificationsCount() {
         navigationDrawerView.setNotificationCount(db.getExclusiveNotificationsCount());
     }
 
     public void setCurrentComponent(ComponentDescription componentDescription) {
         navigationDrawerView.setCurrentComponent(componentDescription);
-
     }
 
     private Action1<ComponentDescription> onItemSelected;
@@ -121,4 +110,7 @@ public class NavigationDrawerPresenter {
         if (onLogout != null) onLogout.call();
     }
 
+    protected <T> Observable.Transformer<T, T> bindView() {
+        return input -> input.takeUntil(destroyViewStopper);
+    }
 }

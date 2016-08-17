@@ -4,6 +4,7 @@ import android.view.View;
 
 import com.techery.spares.annotations.Layout;
 import com.techery.spares.session.SessionHolder;
+import com.techery.spares.ui.view.cell.CellDelegate;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.session.UserSession;
 import com.worldventures.dreamtrips.modules.feed.model.TripFeedItem;
@@ -13,12 +14,11 @@ import com.worldventures.dreamtrips.modules.trips.view.util.TripFeedViewInjector
 import javax.inject.Inject;
 
 @Layout(R.layout.adapter_item_feed_trip_event)
-public class TripFeedItemDetailsCell extends FeedItemDetailsCell<TripFeedItem> {
+public class TripFeedItemDetailsCell extends FeedItemDetailsCell<TripFeedItem, CellDelegate<TripFeedItem>> {
 
-    @Inject
-    protected SessionHolder<UserSession> appSessionHolder;
+    @Inject SessionHolder<UserSession> appSessionHolder;
 
-    TripFeedViewInjector tripFeedViewInjector;
+    private TripFeedViewInjector tripFeedViewInjector;
 
     public TripFeedItemDetailsCell(View view) {
         super(view);
@@ -35,15 +35,5 @@ public class TripFeedItemDetailsCell extends FeedItemDetailsCell<TripFeedItem> {
     protected void syncUIStateWithModel() {
         super.syncUIStateWithModel();
         tripFeedViewInjector.initTripData(getModelObject().getItem(), appSessionHolder.get().get().getUser());
-    }
-
-    @Override
-    protected void onMore() {
-
-    }
-
-    @Override
-    public void prepareForReuse() {
-
     }
 }

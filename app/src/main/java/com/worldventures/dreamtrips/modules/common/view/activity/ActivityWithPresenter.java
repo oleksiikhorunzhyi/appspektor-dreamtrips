@@ -1,6 +1,5 @@
 package com.worldventures.dreamtrips.modules.common.view.activity;
 
-
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
@@ -11,6 +10,8 @@ import com.afollestad.materialdialogs.MaterialDialog;
 import com.badoo.mobile.util.WeakHandler;
 import com.facebook.Session;
 import com.kbeanie.imagechooser.api.ChosenImage;
+import com.trello.rxlifecycle.ActivityEvent;
+import com.trello.rxlifecycle.RxLifecycle;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.utils.ViewUtils;
 import com.worldventures.dreamtrips.core.utils.events.ImagePickRequestEvent;
@@ -20,12 +21,16 @@ import com.worldventures.dreamtrips.modules.common.view.dialog.TermsConditionsDi
 import com.worldventures.dreamtrips.modules.tripsimages.view.custom.PickImageDelegate;
 
 import icepick.Icepick;
+import rx.Observable;
+import rx.subjects.PublishSubject;
 
-public abstract class ActivityWithPresenter<PM extends ActivityPresenter> extends BaseActivity implements ActivityPresenter.View {
+public abstract class ActivityWithPresenter<PM extends ActivityPresenter> extends BaseActivity
+        implements ActivityPresenter.View {
 
     private PM presenter;
     private PickImageDelegate pickImageDelegate;
     private WeakHandler handler = new WeakHandler();
+    private final PublishSubject<ActivityEvent> lifecycleSubject = PublishSubject.create();
 
     public PM getPresentationModel() {
         return presenter;
@@ -57,12 +62,6 @@ public abstract class ActivityWithPresenter<PM extends ActivityPresenter> extend
         pickImageDelegate = new PickImageDelegate(this);
         pickImageDelegate.restoreInstanceState(savedInstanceState);
         this.presenter.takeView(this);
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        this.presenter.onResume();
     }
 
     @Override
@@ -107,22 +106,39 @@ public abstract class ActivityWithPresenter<PM extends ActivityPresenter> extend
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         getPresentationModel().onCreate(savedInstanceState);
+        lifecycleSubject.onNext(ActivityEvent.CREATE);
     }
 
     @Override
     protected void onStart() {
         super.onStart();
         getPresentationModel().onStart();
+        lifecycleSubject.onNext(ActivityEvent.START);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        this.presenter.onResume();
+        lifecycleSubject.onNext(ActivityEvent.RESUME);
+    }
+
+    @Override
+    protected void onPause() {
+        lifecycleSubject.onNext(ActivityEvent.PAUSE);
+        super.onPause();
     }
 
     @Override
     protected void onStop() {
+        lifecycleSubject.onNext(ActivityEvent.STOP);
         super.onStop();
         getPresentationModel().onStop();
     }
 
     @Override
     public void onDestroy() {
+        lifecycleSubject.onNext(ActivityEvent.DESTROY);
         if (getPresentationModel() != null) {
             getPresentationModel().dropView();
         }
@@ -164,5 +180,20 @@ public abstract class ActivityWithPresenter<PM extends ActivityPresenter> extend
                     pickImageDelegate.getRequesterId(),
                     chosenImages));
         }, 400);
+    }
+
+    @Override
+    public <T> Observable<T> bind(Observable<T> observable) {
+        return bindUntilDropView(observable);
+    }
+
+    @Override
+    public <T> Observable<T> bindUntilStop(Observable<T> observable) {
+        return observable.compose(RxLifecycle.bindUntilActivityEvent(lifecycleSubject, ActivityEvent.STOP));
+    }
+
+    @Override
+    public <T> Observable<T> bindUntilDropView(Observable<T> observable) {
+        return observable.compose(RxLifecycle.bindUntilActivityEvent(lifecycleSubject, ActivityEvent.DESTROY));
     }
 }

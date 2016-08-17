@@ -64,7 +64,7 @@ public class FlagPopupMenu extends PopupMenu {
     }
 
     private void showFlagConfirmDialog(Flag flag, String reason) {
-        String content = context.getResources().getString(R.string.flag_photo_first) + " "
+        String content = context.getResources().getString(R.string.flag_content_message) + " "
                 + flag.getName().toLowerCase()
                 + " "
                 + context.getResources().getString(R.string.flag_photo_second);

@@ -3,13 +3,17 @@ package com.worldventures.dreamtrips.modules.infopages.view.fragment;
 import android.support.v4.view.ViewPager;
 import android.view.View;
 
-import com.techery.spares.utils.event.ScreenChangedEvent;
+import com.techery.spares.utils.delegate.ScreenChangedEventDelegate;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.modules.common.view.viewpager.BasePagerAdapter;
 import com.worldventures.dreamtrips.modules.common.view.viewpager.FragmentItem;
 
+import javax.inject.Inject;
+
 public class HelpFragment extends TermsTabFragment {
+
+    @Inject ScreenChangedEventDelegate screenChangedEventDelegate;
 
     @Override
     public void afterCreateView(View rootView) {
@@ -26,7 +30,7 @@ public class HelpFragment extends TermsTabFragment {
             @Override
             public void onPageSelected(int position) {
                 super.onPageSelected(position);
-                eventBus.post(new ScreenChangedEvent());
+                screenChangedEventDelegate.post(null);
             }
         });
 

@@ -1,6 +1,7 @@
 package com.worldventures.dreamtrips.modules.feed.view.fragment;
 
 import android.os.Bundle;
+import android.support.annotation.IdRes;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.SimpleItemAnimator;
 import android.view.Gravity;
@@ -9,11 +10,12 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
-import com.techery.spares.adapter.BaseArrayListAdapter;
+import com.techery.spares.adapter.BaseDelegateAdapter;
 import com.techery.spares.annotations.Layout;
 import com.techery.spares.ui.recycler.RecyclerViewStateDelegate;
 import com.techery.spares.utils.ui.SoftInputUtil;
 import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.core.api.error.ErrorResponse;
 import com.worldventures.dreamtrips.core.module.RouteCreatorModule;
 import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.navigation.creator.RouteCreator;
@@ -23,9 +25,8 @@ import com.worldventures.dreamtrips.core.navigation.wrapper.NavigationWrapperFac
 import com.worldventures.dreamtrips.core.rx.RxBaseFragmentWithArgs;
 import com.worldventures.dreamtrips.modules.common.view.bundle.BucketBundle;
 import com.worldventures.dreamtrips.modules.common.view.custom.EmptyRecyclerView;
-import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragmentWithArgs;
 import com.worldventures.dreamtrips.modules.common.view.util.TextWatcherAdapter;
-import com.worldventures.dreamtrips.modules.feed.bundle.CommentsBundle;
+import com.worldventures.dreamtrips.modules.feed.bundle.CommentableBundle;
 import com.worldventures.dreamtrips.modules.feed.bundle.SingleCommentBundle;
 import com.worldventures.dreamtrips.modules.feed.event.CommentIconClickedEvent;
 import com.worldventures.dreamtrips.modules.feed.model.FeedEntity;
@@ -33,6 +34,7 @@ import com.worldventures.dreamtrips.modules.feed.model.comment.Comment;
 import com.worldventures.dreamtrips.modules.feed.model.comment.LoadMore;
 import com.worldventures.dreamtrips.modules.feed.presenter.BaseCommentPresenter;
 import com.worldventures.dreamtrips.modules.feed.view.cell.CommentCell;
+import com.worldventures.dreamtrips.modules.feed.view.cell.Flaggable;
 import com.worldventures.dreamtrips.modules.feed.view.cell.LoadMoreCell;
 import com.worldventures.dreamtrips.modules.feed.view.util.LikersPanelHelper;
 import com.worldventures.dreamtrips.modules.friends.bundle.UsersLikedEntityBundle;
@@ -49,34 +51,25 @@ import butterknife.Optional;
 import timber.log.Timber;
 
 @Layout(R.layout.fragment_comments)
-public class CommentableFragment<T extends BaseCommentPresenter, P extends CommentsBundle> extends RxBaseFragmentWithArgs<T, P> implements BaseCommentPresenter.View {
+public class CommentableFragment<T extends BaseCommentPresenter, P extends CommentableBundle> extends RxBaseFragmentWithArgs<T, P>
+        implements BaseCommentPresenter.View {
 
-    @InjectView(R.id.list)
-    protected EmptyRecyclerView recyclerView;
-    @InjectView(R.id.input)
-    protected EditText input;
-    @InjectView(R.id.post)
-    protected Button post;
-    @Optional
-    @InjectView(R.id.likers_panel)
-    protected TextView likersPanel;
-    @Optional
-    @InjectView(R.id.title)
-    protected TextView header;
-    @InjectView(R.id.input_container)
-    View inputContainer;
+    @InjectView(R.id.list) protected EmptyRecyclerView recyclerView;
+    @InjectView(R.id.input) protected EditText input;
+    @InjectView(R.id.post) protected Button post;
+    @InjectView(R.id.input_container) View inputContainer;
+    @Optional @InjectView(R.id.likers_panel) protected TextView likersPanel;
+    @Optional @InjectView(R.id.title) protected TextView header;
+
+    @Inject @Named(RouteCreatorModule.PROFILE) RouteCreator<Integer> routeCreator;
 
     protected LoadMore loadMore;
     protected RecyclerViewStateDelegate stateDelegate;
-    protected BaseArrayListAdapter adapter;
+    protected BaseDelegateAdapter adapter;
     protected LinearLayoutManager layout;
     //
     private LikersPanelHelper likersPanelHelper;
     private NavigationWrapper likersNavigationWrapper;
-
-    @Inject
-    @Named(RouteCreatorModule.PROFILE)
-    RouteCreator<Integer> routeCreator;
 
     private TextWatcherAdapter inputWatcher = new TextWatcherAdapter() {
         @Override
@@ -116,9 +109,40 @@ public class CommentableFragment<T extends BaseCommentPresenter, P extends Comme
         super.afterCreateView(rootView);
         stateDelegate.setRecyclerView(recyclerView);
 
-        adapter = new BaseArrayListAdapter<>(getActivity(), this);
+        adapter = new BaseDelegateAdapter(getActivity(), this);
         adapter.registerCell(Comment.class, CommentCell.class);
         adapter.registerCell(LoadMore.class, LoadMoreCell.class);
+        adapter.registerDelegate(Comment.class, new CommentCell.CommentCellDelegate() {
+            @Override
+            public void onEditComment(Comment comment) {
+                getPresenter().editComment(comment);
+            }
+
+            @Override
+            public void onDeleteComment(Comment comment) {
+                getPresenter().deleteComment(comment);
+            }
+
+            @Override
+            public void onTranslateComment(Comment comment) {
+                getPresenter().translateComment(comment);
+            }
+
+            @Override
+            public void onFlagClicked(Flaggable flaggableView) {
+                getPresenter().loadFlags(flaggableView);
+            }
+
+            @Override
+            public void onFlagChosen(Comment comment, int flagReasonId, String reason) {
+                getPresenter().flagItem(comment.getUid(), flagReasonId, reason);
+            }
+
+            @Override
+            public void onCellClicked(Comment model) {
+
+            }
+        });
 
         loadMore = new LoadMore();
         loadMore.setVisible(false);
@@ -129,10 +153,9 @@ public class CommentableFragment<T extends BaseCommentPresenter, P extends Comme
         recyclerView.setAdapter(adapter);
         ((SimpleItemAnimator) recyclerView.getItemAnimator()).setSupportsChangeAnimations(false);
 
-        if (getArgs().isOpenKeyboard() && getArgs().getFeedEntity().getCommentsCount() == 0) {
+        if (getArgs().shouldOpenKeyboard() && getArgs().getFeedEntity().getCommentsCount() == 0) {
             showKeyboard();
         }
-        restorePostIfNeeded();
         showHeaderIfNeeded();
     }
 
@@ -141,10 +164,6 @@ public class CommentableFragment<T extends BaseCommentPresenter, P extends Comme
             header.setVisibility(View.VISIBLE);
             header.getBackground().mutate().setAlpha(255);
         }
-    }
-
-    private void restorePostIfNeeded() {
-
     }
 
     private void showKeyboard() {
@@ -173,7 +192,7 @@ public class CommentableFragment<T extends BaseCommentPresenter, P extends Comme
 
     @Override
     public void setLikePanel(FeedEntity entity) {
-        if (likersPanel == null || !getArgs().showLikersPanel()) return;
+        if (likersPanel == null || !getArgs().shouldShowLikersPanel()) return;
         likersPanelHelper.setup(likersPanel, entity);
         likersPanel.setOnClickListener(v -> likersNavigationWrapper.navigate(Route.USERS_LIKED_CONTENT, new UsersLikedEntityBundle(entity.getUid(), entity.getLikesCount())));
     }
@@ -187,7 +206,7 @@ public class CommentableFragment<T extends BaseCommentPresenter, P extends Comme
     public void addComments(List<Comment> commentList) {
         boolean commentsEmpty = layout.getItemCount() <= getAdditionalItemsCount();
         adapter.addItems(getAdditionalItemsCount(), commentList);
-        if (commentsEmpty && getArgs().isOpenKeyboard()) {
+        if (commentsEmpty && getArgs().shouldOpenKeyboard()) {
             showKeyboard();
         }
     }
@@ -245,7 +264,7 @@ public class CommentableFragment<T extends BaseCommentPresenter, P extends Comme
 
     @Override
     public void showEdit(BucketBundle bucketBundle) {
-        int containerId = R.id.container_details_floating;
+        @IdRes int containerId = R.id.container_details_floating;
         bucketBundle.setLock(true);
         try {
             bucketBundle.setOwnerId(getArgs().getFeedEntity().getOwner().getId());
@@ -267,7 +286,7 @@ public class CommentableFragment<T extends BaseCommentPresenter, P extends Comme
         }
     }
 
-    private void showContainer(int containerId) {
+    private void showContainer(@IdRes int containerId) {
         View container = ButterKnife.findById(getActivity(), containerId);
         if (container != null) container.setVisibility(View.VISIBLE);
     }
@@ -296,6 +315,11 @@ public class CommentableFragment<T extends BaseCommentPresenter, P extends Comme
         adapter.notifyItemChanged(getLoadMorePosition());
     }
 
+    @Override
+    public void notifyDataSetChanged() {
+        adapter.notifyDataSetChanged();
+    }
+
     public void onEvent(CommentIconClickedEvent event) {
         if (isVisibleOnScreen()) SoftInputUtil.showSoftInputMethod(input);
     }
@@ -306,5 +330,19 @@ public class CommentableFragment<T extends BaseCommentPresenter, P extends Comme
 
     protected int getAdditionalItemsCount() {
         return 1;
+    }
+
+    @Override
+    public void flagSentSuccess() {
+        informUser(R.string.flag_sent_success_msg);
+    }
+
+    @Override
+    public boolean onApiError(ErrorResponse errorResponse) {
+        return false;
+    }
+
+    @Override
+    public void onApiCallFailed() {
     }
 }

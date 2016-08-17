@@ -21,7 +21,7 @@ import com.worldventures.dreamtrips.core.session.UserSession;
 import com.worldventures.dreamtrips.core.utils.DateTimeUtils;
 import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.common.view.custom.SmartAvatarView;
-import com.worldventures.dreamtrips.modules.feed.bundle.FeedDetailsBundle;
+import com.worldventures.dreamtrips.modules.feed.bundle.FeedItemDetailsBundle;
 import com.worldventures.dreamtrips.modules.feed.model.FeedEntityHolder.Type;
 import com.worldventures.dreamtrips.modules.feed.model.FeedItem;
 import com.worldventures.dreamtrips.modules.feed.model.feed.item.Links;
@@ -43,32 +43,15 @@ import timber.log.Timber;
 @Layout(R.layout.adapter_item_notification)
 public class NotificationCell extends AbstractCell<FeedItem> {
 
-    @Optional
-    @InjectView(R.id.notification_avatar)
-    SmartAvatarView notificationAvatar;
-    @Optional
-    @InjectView(R.id.notification_owner)
-    TextView notificationOwner;
-    @Optional
-    @InjectView(R.id.notification_text)
-    TextView notificationText;
-    @Optional
-    @InjectView(R.id.notification_time)
-    TextView notificationTime;
-    @Optional
-    @InjectView(R.id.notification_header_image)
-    SimpleDraweeView notificationImage;
+    @Optional @InjectView(R.id.notification_avatar) SmartAvatarView notificationAvatar;
+    @Optional @InjectView(R.id.notification_owner) TextView notificationOwner;
+    @Optional @InjectView(R.id.notification_text) TextView notificationText;
+    @Optional @InjectView(R.id.notification_time) TextView notificationTime;
+    @Optional @InjectView(R.id.notification_header_image) SimpleDraweeView notificationImage;
 
-    @Inject
-    @Named(RouteCreatorModule.PROFILE)
-    RouteCreator<Integer> profileRouteCreator;
-
-    @Inject
-    SessionHolder<UserSession> appSessionHolder;
-
-    @Inject
-    @ForActivity
-    Provider<Injector> injectorProvider;
+    @Inject @Named(RouteCreatorModule.PROFILE) RouteCreator<Integer> profileRouteCreator;
+    @Inject SessionHolder<UserSession> appSessionHolder;
+    @Inject @ForActivity Provider<Injector> injectorProvider;
 
     public NotificationCell(View view) {
         super(view);
@@ -143,7 +126,10 @@ public class NotificationCell extends AbstractCell<FeedItem> {
 
     private void openDetails() {
         router.moveTo(Route.FEED_ITEM_DETAILS, NavigationConfigBuilder.forActivity()
-                .data(new FeedDetailsBundle(getModelObject()))
+                .data(new FeedItemDetailsBundle.Builder()
+                        .feedItem(getModelObject())
+                        .showAdditionalInfo(true)
+                        .build())
                 .build());
     }
 
@@ -162,10 +148,5 @@ public class NotificationCell extends AbstractCell<FeedItem> {
                 .data(bundle)
                 .toolbarConfig(ToolbarConfig.Builder.create().visible(false).build())
                 .build());
-    }
-
-    @Override
-    public void prepareForReuse() {
-
     }
 }

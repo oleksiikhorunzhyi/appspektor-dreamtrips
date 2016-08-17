@@ -18,7 +18,6 @@
     <dimen name="locale_flag_size_width">46dp</dimen>
     <dimen name="locale_flag_size_height">26dp</dimen>
 
-    <dimen name="feed_spacing">64dp</dimen>
     <dimen name="tablet_details_spacing">64dp</dimen>
 
     ///////Post sizes

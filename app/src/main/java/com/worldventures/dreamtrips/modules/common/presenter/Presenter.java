@@ -15,6 +15,7 @@ import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.api.DreamSpiceManager;
 import com.worldventures.dreamtrips.core.api.PhotoUploadingManagerS3;
 import com.worldventures.dreamtrips.core.navigation.ActivityRouter;
+import com.worldventures.dreamtrips.core.rx.composer.IoToMainComposer;
 import com.worldventures.dreamtrips.core.session.UserSession;
 import com.worldventures.dreamtrips.core.session.acl.FeatureManager;
 import com.worldventures.dreamtrips.core.utils.tracksystem.AnalyticsInteractor;
@@ -24,33 +25,28 @@ import javax.inject.Inject;
 
 import de.greenrobot.event.EventBus;
 import icepick.Icepick;
+import rx.Observable;
+import rx.subjects.PublishSubject;
 import timber.log.Timber;
 
 public class Presenter<VT extends Presenter.View> implements RequestingPresenter, DreamSpiceManager.FailureListener {
 
     protected VT view;
 
-    @Inject
-    protected Context context;
-    @Inject
-    protected ActivityRouter activityRouter;
-    @Inject
-    @Global
-    protected EventBus eventBus;
-    @Inject
-    protected SessionHolder<UserSession> appSessionHolder;
-    @Inject
-    protected AnalyticsInteractor analyticsInteractor;
-    @Inject
-    protected FeatureManager featureManager;
-    @Inject
-    protected DreamSpiceManager dreamSpiceManager;
-    @Inject
-    protected PhotoUploadingManagerS3 photoUploadingManagerS3;
+    @Inject protected Context context;
+    @Inject protected ActivityRouter activityRouter;
+    @Inject @Global protected EventBus eventBus;
+    @Inject protected SessionHolder<UserSession> appSessionHolder;
+    @Inject protected AnalyticsInteractor analyticsInteractor;
+    @Inject protected FeatureManager featureManager;
+    @Inject protected DreamSpiceManager dreamSpiceManager;
+    @Inject protected PhotoUploadingManagerS3 photoUploadingManagerS3;
 
     protected int priorityEventBus = 0;
 
     protected ApiErrorPresenter apiErrorPresenter;
+
+    PublishSubject<Void> destroyViewStopper = PublishSubject.create();
 
     public Presenter() {
         apiErrorPresenter = provideApiErrorPresenter();
@@ -86,6 +82,7 @@ public class Presenter<VT extends Presenter.View> implements RequestingPresenter
     }
 
     public void dropView() {
+        destroyViewStopper.onNext(null);
         this.view = null;
         apiErrorPresenter.dropView();
         if (eventBus.isRegistered(this)) eventBus.unregister(this);
@@ -115,6 +112,15 @@ public class Presenter<VT extends Presenter.View> implements RequestingPresenter
 
     }
 
+    protected <T> Observable.Transformer<T, T> bindView() {
+        return input -> input.takeUntil(destroyViewStopper);
+    }
+
+    protected <T> Observable.Transformer<T, T> bindViewToMainComposer() {
+        return input -> input
+                .compose(new IoToMainComposer<>())
+                .compose(bindView());
+    }
 
     ///////////////////////////////////////////////////////////////////////////
     // Spice manager
@@ -206,6 +212,7 @@ public class Presenter<VT extends Presenter.View> implements RequestingPresenter
     ///////////////////////////////////////////////////////////////////////////
 
     public interface View extends TabletAnalytic {
+
         void informUser(int stringId);
 
         void informUser(String string);
@@ -216,6 +223,7 @@ public class Presenter<VT extends Presenter.View> implements RequestingPresenter
     }
 
     public interface TabletAnalytic {
+
         boolean isTabletLandscape();
     }
 }

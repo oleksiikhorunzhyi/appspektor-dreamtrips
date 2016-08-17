@@ -4,6 +4,7 @@ import org.junit.Assert;
 
 import io.techery.janet.ActionState;
 import io.techery.janet.CancelException;
+import io.techery.janet.JanetException;
 import rx.functions.Func1;
 import rx.observers.TestSubscriber;
 
@@ -20,7 +21,8 @@ public final class AssertUtil {
         subscriber.assertUnsubscribed();
         assertStatusCount(subscriber, ActionState.Status.START, 1);
         assertStatusCount(subscriber, ActionState.Status.SUCCESS, 1);
-        Assert.assertTrue(assertPredicate.call(subscriber.getOnNextEvents().get(0).action));
+        Assert.assertTrue(assertPredicate.call(subscriber.getOnNextEvents()
+                .get(subscriber.getOnNextEvents().size() - 1).action));
     }
 
     public static <T> void assertSubscriberWithSingleValue(TestSubscriber<T> subscriber) {
@@ -42,6 +44,16 @@ public final class AssertUtil {
         assertStatusCount(subscriber, ActionState.Status.START, 1);
         assertStatusCount(subscriber, ActionState.Status.FAIL, 1);
         Assert.assertThat(subscriber.getOnNextEvents().get(1).exception, instanceOf(CancelException.class));
+    }
+
+    public static <T> void assertActionFail(TestSubscriber<ActionState<T>> subscriber, Func1<JanetException, Boolean> assertPredicate) {
+        subscriber.unsubscribe();
+        subscriber.assertNoErrors();
+        subscriber.assertUnsubscribed();
+        assertStatusCount(subscriber, ActionState.Status.START, 1);
+        assertStatusCount(subscriber, ActionState.Status.FAIL, 1);
+        Assert.assertTrue(assertPredicate.call(subscriber.getOnNextEvents()
+                .get(subscriber.getOnNextEvents().size() - 1).exception));
     }
 
     public static <T> void assertNoStatuses(TestSubscriber<ActionState<T>> subscriber) {

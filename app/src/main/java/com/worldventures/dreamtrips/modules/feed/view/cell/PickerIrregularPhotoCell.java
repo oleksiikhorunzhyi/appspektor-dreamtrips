@@ -18,10 +18,8 @@ import butterknife.InjectView;
 @Layout(R.layout.adapter_item_attach_photo)
 public class PickerIrregularPhotoCell extends AbstractCell<PickerIrregularPhotoModel> {
 
-    @InjectView(R.id.icon)
-    ImageView icon;
-    @InjectView(R.id.title)
-    TextView title;
+    @InjectView(R.id.icon) ImageView icon;
+    @InjectView(R.id.title) TextView title;
 
     public PickerIrregularPhotoCell(View view) {
         super(view);
@@ -46,10 +44,5 @@ public class PickerIrregularPhotoCell extends AbstractCell<PickerIrregularPhotoM
                     break;
             }
         });
-    }
-
-    @Override
-    public void prepareForReuse() {
-
     }
 }

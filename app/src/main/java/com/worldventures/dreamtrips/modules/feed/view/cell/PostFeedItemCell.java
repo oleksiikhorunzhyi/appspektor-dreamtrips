@@ -1,6 +1,6 @@
 package com.worldventures.dreamtrips.modules.feed.view.cell;
 
-import android.app.Activity;
+import android.support.annotation.IdRes;
 import android.support.v4.app.FragmentManager;
 import android.text.TextUtils;
 import android.view.View;
@@ -8,20 +8,26 @@ import android.widget.ImageView;
 
 import com.innahema.collections.query.queriables.Queryable;
 import com.techery.spares.annotations.Layout;
+import com.techery.spares.session.SessionHolder;
+import com.techery.spares.ui.view.cell.CellDelegate;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.navigation.ToolbarConfig;
 import com.worldventures.dreamtrips.core.navigation.router.NavigationConfig;
 import com.worldventures.dreamtrips.core.navigation.router.NavigationConfigBuilder;
+import com.worldventures.dreamtrips.core.session.UserSession;
+import com.worldventures.dreamtrips.core.utils.LocaleHelper;
 import com.worldventures.dreamtrips.modules.common.view.custom.HashtagTextView;
 import com.worldventures.dreamtrips.modules.feed.bundle.EditPostBundle;
-import com.worldventures.dreamtrips.modules.feed.bundle.FeedDetailsBundle;
+import com.worldventures.dreamtrips.modules.feed.bundle.FeedItemDetailsBundle;
 import com.worldventures.dreamtrips.modules.feed.bundle.FeedHashtagBundle;
 import com.worldventures.dreamtrips.modules.feed.event.DeletePostEvent;
+import com.worldventures.dreamtrips.modules.feed.event.TranslatePostEvent;
 import com.worldventures.dreamtrips.modules.feed.model.FeedEntityHolder;
 import com.worldventures.dreamtrips.modules.feed.model.PostFeedItem;
 import com.worldventures.dreamtrips.modules.feed.model.TextualPost;
 import com.worldventures.dreamtrips.modules.feed.view.cell.base.FeedItemDetailsCell;
+import com.worldventures.dreamtrips.modules.feed.view.custom.TranslateView;
 import com.worldventures.dreamtrips.modules.feed.view.custom.collage.CollageItem;
 import com.worldventures.dreamtrips.modules.feed.view.custom.collage.CollageView;
 import com.worldventures.dreamtrips.modules.tripsimages.bundle.FullScreenImagesBundle;
@@ -37,26 +43,22 @@ import java.util.List;
 import javax.inject.Inject;
 
 import butterknife.InjectView;
+import butterknife.OnClick;
 import butterknife.Optional;
 
 @Layout(R.layout.adapter_item_feed_post_event)
-public class PostFeedItemCell extends FeedItemDetailsCell<PostFeedItem> {
+public class PostFeedItemCell extends FeedItemDetailsCell<PostFeedItem, PostFeedItemCell.PostFeedItemDetailCellDelegate> {
 
-    @InjectView(R.id.post)
-    HashtagTextView post;
-    @InjectView(R.id.card_view_wrapper)
-    View cardViewWrapper;
-    @Optional
-    @InjectView(R.id.collage)
-    CollageView collageView;
-    @Optional
-    @InjectView(R.id.tag)
-    ImageView tag;
+    @InjectView(R.id.post) HashtagTextView post;
+    @InjectView(R.id.card_view_wrapper) View cardViewWrapper;
+    @InjectView(R.id.translate_view) TranslateView viewWithTranslation;
+    @InjectView(R.id.translate) View translateButton;
+    @Optional @InjectView(R.id.collage) CollageView collageView;
+    @Optional @InjectView(R.id.tag) ImageView tag;
 
-    @Inject
-    FragmentManager fragmentManager;
-    @Inject
-    Activity activity;
+    @Inject FragmentManager fragmentManager;
+    @Inject SessionHolder<UserSession> appSessionHolder;
+    @Inject LocaleHelper localeHelper;
 
     private int width;
 
@@ -73,9 +75,35 @@ public class PostFeedItemCell extends FeedItemDetailsCell<PostFeedItem> {
             itemView.setVisibility(View.VISIBLE);
             processAttachments(obj.getItem().getAttachments());
             processPostText(obj.getItem());
+            processTranslations();
         } else {
             itemView.setVisibility(View.INVISIBLE);
             itemView.post(this::syncUIStateWithModel);
+        }
+    }
+
+    private void processTranslations() {
+        PostFeedItem postFeedItem = getModelObject();
+        TextualPost textualPost = postFeedItem.getItem();
+
+        boolean ownPost = textualPost.getOwner().getId() == appSessionHolder.get().get().getUser().getId();
+        boolean emptyPostText = TextUtils.isEmpty(textualPost.getDescription());
+        boolean ownLanguage = localeHelper.isOwnLanguage(textualPost.getLanguageFrom());
+        boolean emptyPostLanguage = TextUtils.isEmpty(textualPost.getLanguageFrom());
+        boolean alreadyTranslated = postFeedItem.isTranslated();
+
+        if (!ownPost && !emptyPostText && !ownLanguage && !emptyPostLanguage) {
+            if (alreadyTranslated) {
+                translateButton.setVisibility(View.GONE);
+                viewWithTranslation.showTranslation(postFeedItem.getTranslation(),
+                        textualPost.getLanguageFrom());
+            } else {
+                translateButton.setVisibility(View.VISIBLE);
+                viewWithTranslation.hide();
+            }
+        } else {
+            translateButton.setVisibility(View.GONE);
+            viewWithTranslation.hide();
         }
     }
 
@@ -90,7 +118,8 @@ public class PostFeedItemCell extends FeedItemDetailsCell<PostFeedItem> {
                     .map(element -> element != null ? element.getName() : null)
                     .toList();
 
-            List<String> hightlightedHashtags = getModelObject().getMetaData() != null && getModelObject().getMetaData().getHashtags() != null ?
+            List<String> hightlightedHashtags = getModelObject().getMetaData() != null
+                    && getModelObject().getMetaData().getHashtags() != null ?
                     Queryable.from(getModelObject()
                             .getMetaData()
                             .getHashtags())
@@ -126,11 +155,20 @@ public class PostFeedItemCell extends FeedItemDetailsCell<PostFeedItem> {
         processTags(attachments);
     }
 
-    private void processTags(List<FeedEntityHolder> attachments) {
-        if (tag != null) tag.setVisibility(isHasTags(attachments) ? View.VISIBLE : View.GONE);
+    private List<CollageItem> attachmentsToCollageItems(List<FeedEntityHolder> attachments) {
+        return Queryable.from(attachments)
+                .map(element -> (Photo) element.getItem())
+                .map(photo -> {
+                    return new CollageItem(photo.getImages().getUrl(), photo.getWidth(), photo.getHeight());
+                })
+                .toList();
     }
 
-    private boolean isHasTags(List<FeedEntityHolder> attachments) {
+    private void processTags(List<FeedEntityHolder> attachments) {
+        if (tag != null) tag.setVisibility(hasTags(attachments) ? View.VISIBLE : View.GONE);
+    }
+
+    private boolean hasTags(List<FeedEntityHolder> attachments) {
         return Queryable.from(attachments)
                 .count(attachment -> attachment.getType() == FeedEntityHolder.Type.PHOTO &&
                         ((Photo) attachment.getItem()).getPhotoTagsCount() > 0) > 0;
@@ -159,17 +197,11 @@ public class PostFeedItemCell extends FeedItemDetailsCell<PostFeedItem> {
 
     private void openFeedItemDetails() {
         router.moveTo(Route.FEED_ITEM_DETAILS, NavigationConfigBuilder.forActivity()
-                .data(new FeedDetailsBundle(getModelObject()))
+                .data(new FeedItemDetailsBundle.Builder()
+                        .feedItem(getModelObject())
+                        .showAdditionalInfo(true)
+                        .build())
                 .build());
-    }
-
-    private List<CollageItem> attachmentsToCollageItems(List<FeedEntityHolder> attachments) {
-        return Queryable.from(attachments)
-                .map(element -> (Photo) element.getItem())
-                .map(photo -> {
-                    return new CollageItem(photo.getImages().getUrl(), photo.getWidth(), photo.getHeight());
-                })
-                .toList();
     }
 
     private void openHashtagFeeds(@NotNull String hashtag) {
@@ -177,6 +209,13 @@ public class PostFeedItemCell extends FeedItemDetailsCell<PostFeedItem> {
                 .data(new FeedHashtagBundle(hashtag))
                 .toolbarConfig(ToolbarConfig.Builder.create().visible(true).build())
                 .build());
+    }
+
+    @OnClick(R.id.translate)
+    public void translate() {
+        translateButton.setVisibility(View.GONE);
+        viewWithTranslation.showProgress();
+        getEventBus().post(new TranslatePostEvent(getModelObject()));
     }
 
     @Override
@@ -187,7 +226,7 @@ public class PostFeedItemCell extends FeedItemDetailsCell<PostFeedItem> {
 
     @Override
     protected void onEdit() {
-        int containerId = R.id.container_details_floating;
+        @IdRes int containerId = R.id.container_details_floating;
         router.moveTo(Route.EDIT_POST, NavigationConfigBuilder.forRemoval()
                 .containerId(containerId)
                 .fragmentManager(fragmentManager)
@@ -201,12 +240,17 @@ public class PostFeedItemCell extends FeedItemDetailsCell<PostFeedItem> {
     }
 
     @Override
-    public void prepareForReuse() {
-
-    }
-
-    @Override
     protected void onMore() {
         showMoreDialog(R.menu.menu_feed_entity_edit, R.string.post_delete, R.string.post_delete_caption);
+    }
+
+    public interface PostFeedItemDetailCellDelegate extends CellDelegate<PostFeedItem>{
+
+        void onEditPost(PostFeedItem postFeedItem);
+
+        void onDeletePost(PostFeedItem postFeedItem);
+
+        void onTranslatePost(PostFeedItem postFeedItem);
+
     }
 }

@@ -83,7 +83,6 @@
     <string name="delete_photo_text">¿Estás seguro de que deseas borrar esta foto?</string>
     <string name="delete_photo_positiove">Borrar</string>
     <string name="delete_photo_negative">Cancelar</string>
-    <string name="flag_photo_first">El personal de WorldVentures recibirá una notificación para revisar esta imagen para </string>
     <string name="flag_photo_second">. ¿Deseas continuar?</string>
     <string name="flag_photo_title">Confirmar</string>
     <string name="flag_photo_positive">Enviar</string>

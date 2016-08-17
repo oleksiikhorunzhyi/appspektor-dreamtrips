@@ -41,33 +41,24 @@ import butterknife.OnClick;
 @Layout(R.layout.adapter_item_suggested_photos)
 public class SuggestedPhotosCell extends AbstractDelegateCell<MediaAttachment, SuggestedPhotosDelegate>
         implements CellDelegate<PhotoGalleryModel>, SuggestedPhotoCellPresenterHelper.View {
-    private static final int OFFSET = 5;
 
+    private static final int OFFSET = 5;
     private static final String SUGGESTION_LIST_STATE_KEY = "suggestion.list.state";
 
-    @Inject
-    @ForActivity
-    Provider<Injector> injectorProvider;
+    @Inject @ForActivity Provider<Injector> injectorProvider;
 
-    @InjectView(R.id.suggestion_avatar)
-    SmartAvatarView avatar;
-    @InjectView(R.id.suggested_photos_user)
-    TextView userName;
-    @InjectView(R.id.suggested_photos_description)
-    TextView description;
-    @InjectView(R.id.suggested_photos)
-    RecyclerView suggestedList;
-    @InjectView(R.id.btn_attach)
-    Button btnAttach;
-    @InjectView(R.id.card_view_wrapper)
-    CardView cardViewWrapper;
+    @InjectView(R.id.suggestion_avatar) SmartAvatarView avatar;
+    @InjectView(R.id.suggested_photos_user) TextView userName;
+    @InjectView(R.id.suggested_photos_description) TextView description;
+    @InjectView(R.id.suggested_photos) RecyclerView suggestedList;
+    @InjectView(R.id.btn_attach) Button btnAttach;
+    @InjectView(R.id.card_view_wrapper) CardView cardViewWrapper;
 
     private BaseDelegateAdapter suggestionAdapter;
     private RecyclerViewStateDelegate stateDelegate;
 
     public SuggestedPhotosCell(View view) {
         super(view);
-
         stateDelegate = new RecyclerViewStateDelegate(SUGGESTION_LIST_STATE_KEY); //@see RecyclerViewStateDelegate
     }
 
@@ -122,11 +113,6 @@ public class SuggestedPhotosCell extends AbstractDelegateCell<MediaAttachment, S
         cellDelegate.onSyncViewState();
     }
 
-    @Override
-    public void prepareForReuse() {
-
-    }
-
     @OnClick(R.id.suggestion_cancel)
     void onCancel() {
         cellDelegate.onCancelClicked();
@@ -146,7 +132,6 @@ public class SuggestedPhotosCell extends AbstractDelegateCell<MediaAttachment, S
     public void onCellClicked(PhotoGalleryModel model) {
         cellDelegate.onSelectPhoto(model);
         suggestionAdapter.notifyDataSetChanged();
-        //
     }
 
     @Override

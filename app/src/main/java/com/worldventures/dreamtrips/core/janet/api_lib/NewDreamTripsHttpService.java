@@ -11,11 +11,13 @@ import com.worldventures.dreamtrips.api.api_common.AuthorizedHttpAction;
 import com.worldventures.dreamtrips.api.api_common.BaseHttpAction;
 import com.worldventures.dreamtrips.core.api.AuthRetryPolicy;
 import com.worldventures.dreamtrips.core.api.action.LoginAction;
-import com.worldventures.dreamtrips.core.api.action.LogoutAction;
+import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.core.session.UserSession;
 import com.worldventures.dreamtrips.core.utils.AppVersionNameBuilder;
 import com.worldventures.dreamtrips.core.utils.LocaleHelper;
 import com.worldventures.dreamtrips.modules.common.model.Session;
+import com.worldventures.dreamtrips.modules.settings.util.SettingsFactory;
+import com.worldventures.dreamtrips.modules.settings.util.SettingsManager;
 
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArraySet;
@@ -38,6 +40,7 @@ public class NewDreamTripsHttpService extends ActionServiceWrapper {
     @Inject SessionHolder<UserSession> appSessionHolder;
     @Inject LocaleHelper localeHelper;
     @Inject AppVersionNameBuilder appVersionNameBuilder;
+    @Inject SnappyRepository db;
 
     private final ActionPipe<LoginAction> loginActionPipe;
     private final Set<Object> retriedActions = new CopyOnWriteArraySet<>();
@@ -62,16 +65,16 @@ public class NewDreamTripsHttpService extends ActionServiceWrapper {
         return false;
     }
 
-    private void prepareNewHttpAction(com.worldventures.dreamtrips.api.api_common.BaseHttpAction action) {
+    private void prepareNewHttpAction(BaseHttpAction action) {
         action.setAppVersionHeader(appVersionNameBuilder.getSemanticVersionName());
         action.setAppLanguageHeader(localeHelper.getDefaultLocaleFormatted());
         action.setApiVersionForAccept(BuildConfig.API_VERSION);
         action.setAppPlatformHeader(String.format("android-%d", Build.VERSION.SDK_INT));
         //
-        if (action instanceof com.worldventures.dreamtrips.api.api_common.AuthorizedHttpAction
+        if (action instanceof AuthorizedHttpAction
                 && appSessionHolder.get().isPresent()) {
             UserSession userSession = appSessionHolder.get().get();
-            ((com.worldventures.dreamtrips.api.api_common.AuthorizedHttpAction) action).setAuthorizationHeader("Token token=" + userSession.getApiToken());
+            ((AuthorizedHttpAction) action).setAuthorizationHeader("Token token=" + userSession.getApiToken());
         }
     }
 
@@ -97,7 +100,6 @@ public class NewDreamTripsHttpService extends ActionServiceWrapper {
     protected <A> boolean onInterceptFail(ActionHolder<A> holder, JanetException e) {
         //checking with retry-login policy
         if (holder.action() instanceof AuthorizedHttpAction
-                && !(holder.action() instanceof LogoutAction)
                 && !retriedActions.remove(holder.action())) {
             AuthorizedHttpAction action = (AuthorizedHttpAction) holder.action();
             String authHeader = action.getAuthorizationHeader();

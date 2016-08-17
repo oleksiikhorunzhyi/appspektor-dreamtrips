@@ -70,14 +70,17 @@
     <dimen name="filter_popup_width">175dp</dimen>
 
     <dimen name="feed_item_height">250dp</dimen>
-    <dimen name="feed_spacing">0dp</dimen>
     <dimen name="tablet_details_spacing">0dp</dimen>
 
     <dimen name="locale_flag_size_width">38dp</dimen>
     <dimen name="locale_flag_size_height">22dp</dimen>
 
+    <dimen name="feed_details_additional_info_container_width">306dp</dimen>
+    <dimen name="feed_details_space_width">150dp</dimen>
+
     <!-- dimen for video items -->
     <dimen name="podcast_play_icon_size">24dp</dimen>
+    <dimen name="podcast_preview_size">245dp</dimen>
 
     /////Map info sizes
     <dimen name="map_trip_info_size">275dp</dimen>

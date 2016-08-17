@@ -19,10 +19,8 @@ import butterknife.InjectView;
 @Layout(R.layout.adapter_item_photo_pick)
 public class PhotoGalleryCell extends AbstractDelegateCell<PhotoGalleryModel, CellDelegate<PhotoGalleryModel>> {
 
-    @InjectView(R.id.iv_photo)
-    SimpleDraweeView photo;
-    @InjectView(R.id.pick)
-    ImageView pick;
+    @InjectView(R.id.iv_photo) SimpleDraweeView photo;
+    @InjectView(R.id.pick) ImageView pick;
 
     public PhotoGalleryCell(View view) {
         super(view);
@@ -52,11 +50,6 @@ public class PhotoGalleryCell extends AbstractDelegateCell<PhotoGalleryModel, Ce
         } else {
             pick.setImageResource(R.drawable.add_photo_icon);
         }
-    }
-
-    @Override
-    public void prepareForReuse() {
-
     }
 
     private void setImage(Uri uri, SimpleDraweeView draweeView) {

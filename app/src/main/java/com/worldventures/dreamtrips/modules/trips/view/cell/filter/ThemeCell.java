@@ -20,14 +20,11 @@ import butterknife.OnClick;
 @Layout(R.layout.adapter_item_filter_checkbox)
 public class ThemeCell extends AbstractDelegateCell<ActivityModel, ThemeCell.Delegate> {
 
-    @InjectView(R.id.cell)
-    protected LinearLayout cell;
-    @InjectView(R.id.textViewAttributeCaption)
-    protected TextView textViewName;
-    @InjectView(R.id.checkBox)
-    protected CheckBox checkBox;
-    @Inject
-    protected Context context;
+    @InjectView(R.id.cell) LinearLayout cell;
+    @InjectView(R.id.textViewAttributeCaption) TextView textViewName;
+    @InjectView(R.id.checkBox) CheckBox checkBox;
+
+    @Inject Context context;
 
     public ThemeCell(View view) {
         super(view);

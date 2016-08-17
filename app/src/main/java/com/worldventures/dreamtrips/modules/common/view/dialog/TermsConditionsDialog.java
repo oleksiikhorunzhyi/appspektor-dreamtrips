@@ -1,21 +1,24 @@
 package com.worldventures.dreamtrips.modules.common.view.dialog;
 
 import android.app.Dialog;
+import android.graphics.Bitmap;
 import android.net.MailTo;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.DialogFragment;
 import android.view.View;
 import android.webkit.JavascriptInterface;
+import android.webkit.WebResourceRequest;
+import android.webkit.WebResourceResponse;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.Button;
 import android.widget.CheckBox;
+import android.widget.ImageButton;
 
 import com.techery.spares.annotations.Layout;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.utils.IntentUtils;
-import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.common.presenter.TermsConditionsDialogPresenter;
 
 import butterknife.InjectView;
@@ -23,16 +26,14 @@ import butterknife.InjectView;
 @Layout(R.layout.dialog_terms_conditions)
 public class TermsConditionsDialog extends BaseDialogFragmentWithPresenter<TermsConditionsDialogPresenter> implements TermsConditionsDialogPresenter.View {
 
-    @InjectView(R.id.terms_content)
-    WebView termsContent;
-    @InjectView(R.id.accept_checkbox)
-    CheckBox acceptCheckbox;
-    @InjectView(R.id.accept)
-    Button accept;
-    @InjectView(R.id.reject)
-    Button reject;
+    @InjectView(R.id.terms_content) WebView termsContent;
+    @InjectView(R.id.accept_checkbox) CheckBox acceptCheckbox;
+    @InjectView(R.id.accept) Button btnAccept;
+    @InjectView(R.id.reject) Button btnReject;
+    @InjectView(R.id.btn_retry) ImageButton btnRetry;
 
     private String termsText;
+    private boolean onErrorReceived;
 
     public static TermsConditionsDialog create() {
         return new TermsConditionsDialog();
@@ -47,10 +48,34 @@ public class TermsConditionsDialog extends BaseDialogFragmentWithPresenter<Terms
         termsContent.setWebViewClient(new WebViewClient() {
             @Override
             public void onPageFinished(WebView view, String url) {
-                if (termsContent == null) return;
+                if (termsContent == null || btnRetry == null || onErrorReceived) return;
 
                 termsContent.loadUrl("javascript:window.HtmlViewer.getHtml" +
                         "('<html>'+document.getElementsByTagName('html')[0].innerHTML+'</html>');");
+
+                termsContent.setVisibility(View.VISIBLE);
+                btnRetry.setVisibility(View.GONE);
+            }
+
+            @Override
+            public void onPageStarted(WebView view, String url, Bitmap favicon) {
+                super.onPageStarted(view, url, favicon);
+                onErrorReceived = false;
+                if (termsContent != null && btnRetry != null) {
+                    termsContent.setVisibility(View.GONE);
+                    btnRetry.setVisibility(View.GONE);
+                }
+            }
+
+            @Override
+            public void onReceivedHttpError(WebView view, WebResourceRequest request, WebResourceResponse errorResponse) {
+                super.onReceivedHttpError(view, request, errorResponse);
+                onErrorReceived = true;
+                if (termsContent != null && btnRetry != null) {
+                    termsContent.setVisibility(View.GONE);
+                    btnRetry.setVisibility(View.VISIBLE);
+                    disableButtons();
+                }
             }
 
             @Override
@@ -67,18 +92,13 @@ public class TermsConditionsDialog extends BaseDialogFragmentWithPresenter<Terms
         acceptCheckbox.setOnCheckedChangeListener((buttonView, isChecked) -> {
             if (termsText == null && isChecked) {
                 acceptCheckbox.setChecked(false);
-
                 return;
             }
-
-            accept.setEnabled(isChecked);
+            btnAccept.setEnabled(isChecked);
         });
-        accept.setOnClickListener(v -> {
-            presenter.acceptTerms(termsText);
-        });
-        reject.setOnClickListener(v -> {
-            presenter.denyTerms();
-        });
+        btnAccept.setOnClickListener(v -> presenter.acceptTerms(termsText));
+        btnReject.setOnClickListener(v -> presenter.denyTerms());
+        btnRetry.setOnClickListener(v -> presenter.loadContent());
     }
 
     class ContentJavaScriptInterface {
@@ -92,7 +112,6 @@ public class TermsConditionsDialog extends BaseDialogFragmentWithPresenter<Terms
     @Override
     public void onDestroyView() {
         termsContent.stopLoading();
-
         super.onDestroyView();
     }
 
@@ -101,7 +120,6 @@ public class TermsConditionsDialog extends BaseDialogFragmentWithPresenter<Terms
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         setStyle(DialogFragment.STYLE_NO_TITLE, 0);
         setCancelable(false);
-
         return super.onCreateDialog(savedInstanceState);
     }
 
@@ -122,13 +140,13 @@ public class TermsConditionsDialog extends BaseDialogFragmentWithPresenter<Terms
 
     @Override
     public void enableButtons() {
-        accept.setEnabled(acceptCheckbox.isChecked());
-        reject.setEnabled(true);
+        btnAccept.setEnabled(acceptCheckbox.isChecked());
+        btnReject.setEnabled(true);
     }
 
     @Override
     public void disableButtons() {
-        accept.setEnabled(false);
-        reject.setEnabled(false);
+        btnAccept.setEnabled(false);
+        btnReject.setEnabled(false);
     }
 }

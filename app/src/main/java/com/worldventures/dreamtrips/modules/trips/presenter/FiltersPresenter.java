@@ -3,14 +3,16 @@ package com.worldventures.dreamtrips.modules.trips.presenter;
 import android.os.Bundle;
 
 import com.innahema.collections.query.queriables.Queryable;
-import com.techery.spares.adapter.BaseArrayListAdapter;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
+import com.worldventures.dreamtrips.core.rx.composer.IoToMainComposer;
 import com.worldventures.dreamtrips.core.utils.events.FilterBusEvent;
 import com.worldventures.dreamtrips.core.utils.events.RequestFilterDataEvent;
 import com.worldventures.dreamtrips.core.utils.events.ResetFiltersEvent;
 import com.worldventures.dreamtrips.core.utils.events.ToggleRegionVisibilityEvent;
 import com.worldventures.dreamtrips.core.utils.events.ToggleThemeVisibilityEvent;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
+import com.worldventures.dreamtrips.modules.common.api.janet.command.TripsFilterDataCommand;
+import com.worldventures.dreamtrips.modules.common.delegate.QueryTripsFilterDataInteractor;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.trips.model.ActivityModel;
 import com.worldventures.dreamtrips.modules.trips.model.DateFilterItem;
@@ -30,36 +32,27 @@ import java.util.List;
 import javax.inject.Inject;
 
 import icepick.State;
+import io.techery.janet.helper.ActionStateSubscriber;
 
 public class FiltersPresenter extends Presenter<FiltersPresenter.View> {
 
-    @Inject
-    protected SnappyRepository db;
+    @Inject protected SnappyRepository db;
+    @Inject QueryTripsFilterDataInteractor queryTripsFilterDataInteractor;
 
-    @State
-    ArrayList<RegionModel> regions = new ArrayList<>();
-    @State
-    ArrayList<ActivityModel> parentActivities = new ArrayList<>();
+    @State ArrayList<RegionModel> regions = new ArrayList<>();
+    @State ArrayList<ActivityModel> parentActivities = new ArrayList<>();
 
     /**
      * variables for filtering
      */
-    @State
-    FilterModel filterModel;
-    @State
-    ThemeHeaderModel themeHeaderModel;
-    @State
-    RegionHeaderModel regionHeaderModel;
-    @State
-    FilterSoldOutModel soldOutModel;
-    @State
-    FilterRecentlyAddedModel recentlyAddedModel;
-    @State
-    FilterFavoriteModel favoriteModel;
-    @State
-    DateFilterItem dateFilterItem;
-    @State
-    TripsFilterData tripFilterData;
+    @State FilterModel filterModel;
+    @State ThemeHeaderModel themeHeaderModel;
+    @State RegionHeaderModel regionHeaderModel;
+    @State FilterSoldOutModel soldOutModel;
+    @State FilterRecentlyAddedModel recentlyAddedModel;
+    @State FilterFavoriteModel favoriteModel;
+    @State DateFilterItem dateFilterItem;
+    @State TripsFilterData tripFilterData;
 
     @Override
     public void restoreInstanceState(Bundle savedState) {
@@ -72,22 +65,38 @@ public class FiltersPresenter extends Presenter<FiltersPresenter.View> {
             favoriteModel = new FilterFavoriteModel();
             recentlyAddedModel = new FilterRecentlyAddedModel();
             regionHeaderModel = new RegionHeaderModel();
-            loadFilters();
         }
     }
 
     @Override
     public void takeView(View view) {
         super.takeView(view);
-        fillData();
+        subscribeToFiltersLoading();
         if (tripFilterData == null) {
             tripFilterData = TripsFilterData.createDefault(db);
         }
+        loadFilters();
+    }
+
+    private void subscribeToFiltersLoading() {
+        queryTripsFilterDataInteractor.pipe()
+                .observe()
+                .compose(bindView())
+                .compose(new IoToMainComposer<>())
+                .subscribe(new ActionStateSubscriber<TripsFilterDataCommand>().onSuccess(tripsFilterDataCommand -> {
+                    view.hideProgress();
+                    parentActivities.addAll(getParentActivities(tripsFilterDataCommand.getResult().first));
+                    regions.addAll(tripsFilterDataCommand.getResult().second);
+                    fillData();
+                }).onFail((tripsFilterDataCommand, throwable) -> {
+                    view.hideProgress();
+                    view.showErrorContainer();
+                }));
     }
 
     public void loadFilters() {
-        parentActivities.addAll(getParentActivities());
-        regions.addAll(db.readList(SnappyRepository.REGIONS, RegionModel.class));
+        view.showProgress();
+        queryTripsFilterDataInteractor.pipe().send(new TripsFilterDataCommand());
     }
 
     public void fillData() {
@@ -111,8 +120,7 @@ public class FiltersPresenter extends Presenter<FiltersPresenter.View> {
                 data.addAll(parentActivities);
             }
 
-            view.getAdapter().clear();
-            view.getAdapter().addItems(data);
+            view.fillData(data);
         }
     }
 
@@ -157,8 +165,8 @@ public class FiltersPresenter extends Presenter<FiltersPresenter.View> {
         TrackingHelper.actionFilterTrips(new TripsFilterDataAnalyticsWrapper(tripFilterData));
     }
 
-    private List<ActivityModel> getParentActivities() {
-        return Queryable.from(db.readList(SnappyRepository.ACTIVITIES, ActivityModel.class))
+    private List<ActivityModel> getParentActivities(List<ActivityModel> activities) {
+        return Queryable.from(activities)
                 .filter(ActivityModel::isParent).toList();
     }
 
@@ -247,8 +255,16 @@ public class FiltersPresenter extends Presenter<FiltersPresenter.View> {
 
     public interface View extends Presenter.View {
 
-        void dataSetChanged();
+        void showProgress();
 
-        BaseArrayListAdapter getAdapter();
+        void hideProgress();
+
+        void showErrorContainer();
+
+        void hideErrorContainer();
+
+        void fillData(List data);
+
+        void dataSetChanged();
     }
 }

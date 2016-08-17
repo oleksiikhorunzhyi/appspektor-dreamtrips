@@ -83,7 +83,6 @@
     <string name="delete_photo_text">您確定要刪除該照片？</string>
     <string name="delete_photo_positiove">刪除</string>
     <string name="delete_photo_negative">取消</string>
-    <string name="flag_photo_first">WorldVentures人員將獲通知審查這一圖像 </string>
     <string name="flag_photo_second">。您想繼續嗎？</string>
     <string name="flag_photo_title">確認</string>
     <string name="flag_photo_positive">發送</string>

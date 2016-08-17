@@ -1,28 +1,25 @@
 package com.worldventures.dreamtrips.modules.bucketlist.view.adapter;
 
-import com.worldventures.dreamtrips.core.api.DreamSpiceManager;
+import com.worldventures.dreamtrips.core.api.AuthRetryPolicy;
 import com.worldventures.dreamtrips.core.api.DreamTripsApi;
+import com.worldventures.dreamtrips.modules.auth.api.command.LoginCommand;
+import com.worldventures.dreamtrips.modules.auth.service.LoginInteractor;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem;
 import com.worldventures.dreamtrips.modules.bucketlist.model.Suggestion;
-import com.worldventures.dreamtrips.modules.bucketlist.presenter.BucketTabsPresenter;
 
 import java.util.Collections;
 import java.util.List;
 
 public class SuggestionLoader extends AutoCompleteAdapter.Loader<Suggestion> {
 
-    protected DreamSpiceManager dreamSpiceManager;
-
     protected DreamTripsApi api;
-
     private BucketItem.BucketType type;
+    private LoginInteractor loginInteractor;
 
-    public SuggestionLoader(BucketItem.BucketType type,
-                            DreamSpiceManager dreamSpiceManager,
-                            DreamTripsApi api) {
+    public SuggestionLoader(BucketItem.BucketType type, DreamTripsApi api, LoginInteractor loginInteractor) {
         this.type = type;
-        this.dreamSpiceManager = dreamSpiceManager;
         this.api = api;
+        this.loginInteractor = loginInteractor;
     }
 
     @Override
@@ -39,8 +36,8 @@ public class SuggestionLoader extends AutoCompleteAdapter.Loader<Suggestion> {
 
     @Override
     public final void handleError(Exception e) {
-        if (DreamSpiceManager.isLoginError(e)) {
-            dreamSpiceManager.login(null);
+        if (AuthRetryPolicy.isLoginError(e)) {
+            loginInteractor.loginActionPipe().send(new LoginCommand());
         }
     }
 }

@@ -26,6 +26,7 @@ import com.worldventures.dreamtrips.modules.profile.model.ReloadFeedModel;
 import com.worldventures.dreamtrips.modules.profile.presenter.ProfilePresenter;
 import com.worldventures.dreamtrips.modules.profile.view.ProfileViewUtils;
 import com.worldventures.dreamtrips.modules.profile.view.cell.ProfileCell;
+import com.worldventures.dreamtrips.modules.profile.view.cell.delegate.ProfileCellDelegate;
 import com.worldventures.dreamtrips.modules.tripsimages.bundle.TripsImagesBundle;
 
 import java.util.List;
@@ -37,17 +38,13 @@ import butterknife.OnClick;
 import butterknife.Optional;
 
 public abstract class ProfileFragment<T extends ProfilePresenter> extends RxBaseFragmentWithArgs<T, UserBundle>
-        implements ProfilePresenter.View, SwipeRefreshLayout.OnRefreshListener {
+        implements ProfilePresenter.View, SwipeRefreshLayout.OnRefreshListener, ProfileCellDelegate {
 
-    @InjectView(R.id.profile_toolbar)
-    protected Toolbar profileToolbar;
-    @InjectView(R.id.profile_toolbar_title)
-    protected TextView profileToolbarTitle;
-    @InjectView(R.id.profile_user_status)
-    protected TextView profileToolbarUserStatus;
+    @InjectView(R.id.profile_toolbar) Toolbar profileToolbar;
+    @InjectView(R.id.profile_toolbar_title) TextView profileToolbarTitle;
+    @InjectView(R.id.profile_user_status) TextView profileToolbarUserStatus;
 
-    @Inject
-    FragmentWithFeedDelegate fragmentWithFeedDelegate;
+    @Inject FragmentWithFeedDelegate fragmentWithFeedDelegate;
 
     private int scrollArea;
 
@@ -72,6 +69,12 @@ public abstract class ProfileFragment<T extends ProfilePresenter> extends RxBase
     }
 
     @Override
+    public void onStop() {
+        super.onStop();
+        fragmentWithFeedDelegate.resetTranslatedStatus();
+    }
+
+    @Override
     public void onDestroyView() {
         setToolbarAlpha(100);
         super.onDestroyView();
@@ -89,9 +92,11 @@ public abstract class ProfileFragment<T extends ProfilePresenter> extends RxBase
                 fragmentWithFeedDelegate.addItem(new LoadMoreModel());
                 fragmentWithFeedDelegate.notifyDataSetChanged();
             }
-            getPresenter().loadNext();
+            getPresenter().onLoadNext();
         });
-        statePaginatedRecyclerViewManager.addItemDecoration(new SideMarginsItemDecorator(true));
+        if (isTabletLandscape()) {
+            statePaginatedRecyclerViewManager.addItemDecoration(new SideMarginsItemDecorator(16, true));
+        }
         statePaginatedRecyclerViewManager.setOffsetYListener(yOffset -> {
             float percent = calculateOffset();
             setToolbarAlpha(percent);
@@ -122,6 +127,11 @@ public abstract class ProfileFragment<T extends ProfilePresenter> extends RxBase
         //
         ProfileViewUtils.setUserStatus(user, profileToolbarUserStatus, getResources());
         profileToolbarTitle.setText(user.getFullName());
+    }
+
+    @Override
+    public void updateItem(FeedItem feedItem) {
+        fragmentWithFeedDelegate.notifyItemChanged(feedItem);
     }
 
     @Override
@@ -221,6 +231,57 @@ public abstract class ProfileFragment<T extends ProfilePresenter> extends RxBase
     }
 
     private void registerCellDelegates() {
+        fragmentWithFeedDelegate.registerDelegate(User.class, this);
         fragmentWithFeedDelegate.registerDelegate(ReloadFeedModel.class, model -> getPresenter().onRefresh());
+    }
+
+    @Override
+    public void onBucketListClicked() {
+        getPresenter().openBucketList();
+    }
+
+    @Override
+    public void onTripImagesClicked() {
+        getPresenter().openTripImages();
+    }
+
+    @Override
+    public void onFriendsClicked() {
+        getPresenter().openFriends();
+    }
+
+    @Override
+    public void onCreatePostClicked() {
+        getPresenter().makePost();
+    }
+
+    @Override
+    public void onUserPhotoClicked() {
+        //
+    }
+
+    @Override
+    public void onUserCoverClicked() {
+        //
+    }
+
+    @Override
+    public void onAcceptRequest() {
+        //
+    }
+
+    @Override
+    public void onRejectRequest() {
+        //
+    }
+
+    @Override
+    public void onAddFriend() {
+        //
+    }
+
+    @Override
+    public void onCellClicked(User model) {
+        //
     }
 }

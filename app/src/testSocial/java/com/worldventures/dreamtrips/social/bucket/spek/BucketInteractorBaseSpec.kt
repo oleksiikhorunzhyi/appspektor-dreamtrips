@@ -9,15 +9,13 @@ import com.techery.spares.session.SessionHolder
 import com.techery.spares.storage.complex_objects.Optional
 import com.worldventures.dreamtrips.BaseSpec
 import com.worldventures.dreamtrips.core.api.uploadery.UploaderyManager
-import com.worldventures.dreamtrips.core.janet.cache.CacheResultWrapper
 import com.worldventures.dreamtrips.core.janet.cache.storage.ActionStorage
-import com.worldventures.dreamtrips.core.janet.cache.storage.MemoryStorage
 import com.worldventures.dreamtrips.core.repository.SnappyRepository
 import com.worldventures.dreamtrips.core.session.UserSession
-import com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem
 import com.worldventures.dreamtrips.modules.bucketlist.service.BucketInteractor
 import com.worldventures.dreamtrips.modules.bucketlist.service.storage.BucketMemoryStorage
 import com.worldventures.dreamtrips.modules.common.model.User
+import com.worldventures.dreamtrips.modules.infopages.StaticPageProvider
 import io.techery.janet.CommandActionService
 import io.techery.janet.Janet
 import io.techery.janet.http.test.MockHttpActionService
@@ -32,6 +30,7 @@ abstract class BucketInteractorBaseSpec(speckBody: DescribeBody.() -> Unit) : Ba
 
         val mockSessionHolder: SessionHolder<UserSession> = mock()
         val userSession: UserSession = mock()
+        val staticPageProvider: StaticPageProvider = mock()
 
         lateinit var bucketInteractor: BucketInteractor
 
@@ -51,6 +50,7 @@ abstract class BucketInteractorBaseSpec(speckBody: DescribeBody.() -> Unit) : Ba
             daggerCommandActionService.registerProvider(BucketInteractor::class.java) { bucketInteractor }
             daggerCommandActionService.registerProvider(UploaderyManager::class.java) { UploaderyManager(janet) }
             daggerCommandActionService.registerProvider(Context::class.java, { MockContext() })
+            daggerCommandActionService.registerProvider(StaticPageProvider::class.java, { staticPageProvider})
 
             bucketInteractor = BucketInteractor(janet)
 
@@ -59,14 +59,7 @@ abstract class BucketInteractorBaseSpec(speckBody: DescribeBody.() -> Unit) : Ba
             whenever(mockUser.id).thenReturn(MOCK_USER_ID)
             whenever(userSession.user).thenReturn(mockUser)
             whenever(mockSessionHolder.get()).thenReturn(Optional.of(userSession))
-        }
-
-        fun CacheResultWrapper.bindStorageSet(storageSet: Set<ActionStorage<*>>): CacheResultWrapper {
-            storageSet.forEach {
-                bindStorage(it.actionClass, it)
-            }
-
-            return this
+            whenever(staticPageProvider.uploaderyUrl).thenReturn("http://test-uploadery")
         }
     }
 }

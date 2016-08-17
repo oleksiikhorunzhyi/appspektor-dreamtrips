@@ -1,6 +1,8 @@
 package com.messenger.ui.module.flagging;
 
 
+import android.support.annotation.StringRes;
+
 import com.jakewharton.rxbinding.widget.TextViewTextChangeEvent;
 import com.messenger.ui.module.ModuleStatefulView;
 import com.worldventures.dreamtrips.modules.tripsimages.model.Flag;
@@ -30,6 +32,8 @@ public interface FlaggingView extends ModuleStatefulView<FlaggingPresenter> {
     void showFlaggingError();
 
     void showError(String message);
+
+    void showError(@StringRes int message);
 
     Observable<Void> getCanceledDialogsStream();
 }

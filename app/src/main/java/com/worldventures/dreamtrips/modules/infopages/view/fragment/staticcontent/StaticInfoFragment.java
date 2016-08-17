@@ -29,14 +29,14 @@ import com.badoo.mobile.util.WeakHandler;
 import com.messenger.util.CrashlyticsTracker;
 import com.techery.spares.annotations.Layout;
 import com.techery.spares.annotations.MenuResource;
-import com.techery.spares.utils.event.ScreenChangedEvent;
+import com.techery.spares.utils.delegate.ScreenChangedEventDelegate;
 import com.worldventures.dreamtrips.BuildConfig;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.navigation.Route;
+import com.worldventures.dreamtrips.core.rx.RxBaseFragmentWithArgs;
 import com.worldventures.dreamtrips.core.utils.ViewUtils;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.common.view.dialog.MessageDialogFragment;
-import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragmentWithArgs;
 import com.worldventures.dreamtrips.modules.dtl.bundle.MerchantIdBundle;
 import com.worldventures.dreamtrips.modules.infopages.StaticPageProvider;
 import com.worldventures.dreamtrips.modules.infopages.presenter.WebViewFragmentPresenter;
@@ -49,27 +49,25 @@ import java.util.Map;
 import javax.inject.Inject;
 
 import butterknife.InjectView;
-import timber.log.Timber;
+import rx.android.schedulers.AndroidSchedulers;
 
 import static com.techery.spares.utils.ui.OrientationUtil.lockOrientation;
 import static com.techery.spares.utils.ui.OrientationUtil.unlockOrientation;
 
 @Layout(R.layout.fragment_webview)
 public abstract class StaticInfoFragment<T extends WebViewFragmentPresenter, P extends Parcelable>
-        extends BaseFragmentWithArgs<T, P>
+        extends RxBaseFragmentWithArgs<T, P>
         implements WebViewFragmentPresenter.View, SwipeRefreshLayout.OnRefreshListener {
 
-    @Inject
-    protected StaticPageProvider provider;
+    protected static final String AUTHORIZATION_HEADER_KEY = "Authorization";
 
-    @InjectView(R.id.web_view)
-    protected VideoEnabledWebView webView;
-    @InjectView(R.id.swipe_container)
-    protected SwipeRefreshLayout refreshLayout;
-    @InjectView(R.id.nonVideoLayout)
-    View nonVideoLayout;
-    @InjectView(R.id.videoLayout)
-    ViewGroup videoLayout;
+    @Inject protected StaticPageProvider provider;
+    @Inject ScreenChangedEventDelegate screenChangedEventDelegate;
+
+    @InjectView(R.id.web_view) protected VideoEnabledWebView webView;
+    @InjectView(R.id.swipe_container) protected SwipeRefreshLayout refreshLayout;
+    @InjectView(R.id.nonVideoLayout) View nonVideoLayout;
+    @InjectView(R.id.videoLayout) ViewGroup videoLayout;
 
     protected Bundle savedState;
     protected boolean isLoading;
@@ -133,7 +131,6 @@ public abstract class StaticInfoFragment<T extends WebViewFragmentPresenter, P e
             public void onPageStarted(WebView view, String url, Bitmap favicon) {
                 super.onPageStarted(view, url, favicon);
                 sendAnalyticEvent(TrackingHelper.ATTRIBUTE_VIEW);
-                Timber.d("Page started");
                 isLoading = true;
                 weakHandler.post(() -> {
                     if (refreshLayout != null) refreshLayout.setRefreshing(true);
@@ -144,7 +141,6 @@ public abstract class StaticInfoFragment<T extends WebViewFragmentPresenter, P e
             @Override
             public void onPageFinished(WebView view, String url) {
                 super.onPageFinished(view, url);
-                Timber.d("Page finished");
                 isLoading = false;
                 if (!(isDetached() || isRemoving() || refreshLayout == null)) {
                     weakHandler.post(() -> {
@@ -315,6 +311,13 @@ public abstract class StaticInfoFragment<T extends WebViewFragmentPresenter, P e
             return false;
         });
 
+        bindUntilDropView(screenChangedEventDelegate.getObservable())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(event -> {
+                    lockHandler.removeCallbacksAndMessages(null);
+                    lockOrientationIfNeeded();
+                });
+
         if (savedState != null) webView.restoreState(savedState);
     }
 
@@ -378,8 +381,9 @@ public abstract class StaticInfoFragment<T extends WebViewFragmentPresenter, P e
     @Override
     public void showError(int errorCode) {
         if (getPresenter() != null) getPresenter().setInErrorState(true);
-        if (isDetached() || isRemoving()) return;
-        //
+        if (isDetached() || isRemoving() || getActivity() == null) return;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1 && getActivity().isDestroyed()) return;
+
         int errorText;
         switch (errorCode) {
             case WebViewClient.ERROR_HOST_LOOKUP:
@@ -451,11 +455,6 @@ public abstract class StaticInfoFragment<T extends WebViewFragmentPresenter, P e
 
     WeakHandler lockHandler = new WeakHandler();
 
-    public void onEventMainThread(ScreenChangedEvent event) {
-        lockHandler.removeCallbacksAndMessages(null);
-        lockOrientationIfNeeded();
-    }
-
     protected void lockOrientationIfNeeded() {
         lockHandler.postDelayed(() -> {
             if (ViewUtils.isFullVisibleOnScreen(this)) {
@@ -476,7 +475,8 @@ public abstract class StaticInfoFragment<T extends WebViewFragmentPresenter, P e
     }
 
     @Layout(R.layout.fragment_webview)
-    public static class TermsOfServiceFragment extends StaticInfoFragment {
+    public static class TermsOfServiceFragment extends LanguageHeaderStaticInfoFragment {
+
         @Override
         protected String getURL() {
             return provider.getTermsOfServiceUrl();
@@ -496,10 +496,11 @@ public abstract class StaticInfoFragment<T extends WebViewFragmentPresenter, P e
     }
 
     @Layout(R.layout.fragment_webview)
-    public static class CookiePolicyFragment extends StaticInfoFragment {
+    public static class CookiePolicyFragment extends LanguageHeaderStaticInfoFragment {
+
         @Override
         protected String getURL() {
-            return provider.getCookiePolicyUrl();
+            return provider.getCookiesPolicyUrl();
         }
 
         @Override
@@ -516,7 +517,7 @@ public abstract class StaticInfoFragment<T extends WebViewFragmentPresenter, P e
 
     @Layout(R.layout.fragment_webview)
     @MenuResource(R.menu.menu_mock)
-    public static class FAQFragment extends StaticInfoFragment {
+    public static class FAQFragment extends LanguageHeaderStaticInfoFragment {
 
         @Override
         protected String getURL() {
@@ -536,7 +537,8 @@ public abstract class StaticInfoFragment<T extends WebViewFragmentPresenter, P e
     }
 
     @Layout(R.layout.fragment_webview)
-    public static class PrivacyPolicyFragment extends StaticInfoFragment {
+    public static class PrivacyPolicyFragment extends LanguageHeaderStaticInfoFragment {
+
         @Override
         protected String getURL() {
             return provider.getPrivacyPolicyUrl();
@@ -556,6 +558,7 @@ public abstract class StaticInfoFragment<T extends WebViewFragmentPresenter, P e
 
     @Layout(R.layout.fragment_webview)
     public static class EnrollMemberFragment extends AuthorizedStaticInfoFragment<UrlBundle> {
+
         @Override
         protected String getURL() {
             return provider.getEnrollMemberUrl();
@@ -619,7 +622,44 @@ public abstract class StaticInfoFragment<T extends WebViewFragmentPresenter, P e
     }
 
     @Layout(R.layout.fragment_webview)
-    public static class BookItFragment extends BundleUrlFragment {
+    public static class EnrollUpgradeFragment extends AuthorizedStaticInfoFragment {
+
+        @Override
+        protected String getURL() {
+            return provider.getEnrollUpgradeUrl();
+        }
+
+        @Override
+        public void load(String url) {
+            if (!isLoading && savedState == null) {
+                Map<String, String> additionalHeaders = new HashMap<>();
+                additionalHeaders.put(AUTHORIZATION_HEADER_KEY,
+                        ((WebViewFragmentPresenter) getPresenter()).getAuthToken());
+                webView.loadUrl(url, additionalHeaders);
+            }
+        }
+
+        @Override
+        public void reload(String url) {
+            webView.loadUrl("about:blank");
+            load(url);
+        }
+
+        @Override
+        public void afterCreateView(View rootView) {
+            super.afterCreateView(rootView);
+            webView.getSettings().setLoadWithOverviewMode(true);
+            webView.getSettings().setUseWideViewPort(true);
+        }
+
+        @Override
+        protected void sendAnalyticEvent(String actionAnalyticEvent) {
+        }
+
+    }
+
+    @Layout(R.layout.fragment_webview)
+    public static class BookItFragment extends BundleUrlFragment<WebViewFragmentPresenter> {
 
         private static final String BOOK_IT_HEADER_KEY = "DT-Device-Identifier";
         private static final String BOOK_IT_HEADER = "Android" + "-" + Build.VERSION.RELEASE + "-"
@@ -631,6 +671,7 @@ public abstract class StaticInfoFragment<T extends WebViewFragmentPresenter, P e
             if (!isLoading && savedState == null) {
                 Map<String, String> additionalHeaders = new HashMap<>();
                 additionalHeaders.put(BOOK_IT_HEADER_KEY, BOOK_IT_HEADER);
+                additionalHeaders.put(AUTHORIZATION_HEADER_KEY, getPresenter().getAuthToken());
                 webView.loadUrl(url, additionalHeaders);
             }
         }

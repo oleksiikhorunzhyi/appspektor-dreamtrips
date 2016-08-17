@@ -16,6 +16,7 @@ import dagger.Provides;
         includes = {
                 // base helpers and drivers
                 EventBusModule.class,
+                EventDelegateModule.class,
                 AndroidServicesModule.class,
                 ConcurentModule.class,
                 SupportModule.class,

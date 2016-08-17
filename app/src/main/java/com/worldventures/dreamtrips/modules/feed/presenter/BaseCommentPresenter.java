@@ -2,22 +2,24 @@ package com.worldventures.dreamtrips.modules.feed.presenter;
 
 import com.innahema.collections.query.queriables.Queryable;
 import com.worldventures.dreamtrips.core.rx.RxView;
+import com.worldventures.dreamtrips.core.rx.composer.IoToMainComposer;
+import com.worldventures.dreamtrips.core.utils.LocaleHelper;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem;
 import com.worldventures.dreamtrips.modules.bucketlist.service.BucketInteractor;
 import com.worldventures.dreamtrips.modules.bucketlist.service.action.DeleteItemHttpAction;
+import com.worldventures.dreamtrips.modules.common.model.FlagData;
 import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
+import com.worldventures.dreamtrips.modules.common.presenter.delegate.UidItemDelegate;
+import com.worldventures.dreamtrips.modules.common.view.ApiErrorView;
 import com.worldventures.dreamtrips.modules.common.view.bundle.BucketBundle;
 import com.worldventures.dreamtrips.modules.feed.api.DeletePostCommand;
-import com.worldventures.dreamtrips.modules.feed.api.GetCommentsQuery;
 import com.worldventures.dreamtrips.modules.feed.api.GetUsersLikedEntityQuery;
 import com.worldventures.dreamtrips.modules.feed.event.DeleteBucketEvent;
-import com.worldventures.dreamtrips.modules.feed.event.DeleteCommentRequestEvent;
 import com.worldventures.dreamtrips.modules.feed.event.DeletePhotoEvent;
 import com.worldventures.dreamtrips.modules.feed.event.DeletePostEvent;
 import com.worldventures.dreamtrips.modules.feed.event.EditBucketEvent;
-import com.worldventures.dreamtrips.modules.feed.event.EditCommentRequestEvent;
 import com.worldventures.dreamtrips.modules.feed.event.FeedEntityChangedEvent;
 import com.worldventures.dreamtrips.modules.feed.event.FeedEntityCommentedEvent;
 import com.worldventures.dreamtrips.modules.feed.event.FeedEntityDeletedEvent;
@@ -27,11 +29,15 @@ import com.worldventures.dreamtrips.modules.feed.model.FeedEntity;
 import com.worldventures.dreamtrips.modules.feed.model.FeedEntityHolder;
 import com.worldventures.dreamtrips.modules.feed.model.TextualPost;
 import com.worldventures.dreamtrips.modules.feed.model.comment.Comment;
+import com.worldventures.dreamtrips.modules.feed.service.CommentsInteractor;
+import com.worldventures.dreamtrips.modules.feed.service.TranslationFeedInteractor;
+import com.worldventures.dreamtrips.modules.feed.service.command.GetCommentsCommand;
+import com.worldventures.dreamtrips.modules.feed.service.command.TranslateUidItemCommand;
+import com.worldventures.dreamtrips.modules.feed.view.cell.Flaggable;
 import com.worldventures.dreamtrips.modules.trips.model.TripModel;
 import com.worldventures.dreamtrips.modules.tripsimages.api.DeletePhotoCommand;
 import com.worldventures.dreamtrips.modules.tripsimages.model.Photo;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -41,29 +47,30 @@ import io.techery.janet.helper.ActionStateSubscriber;
 import rx.android.schedulers.AndroidSchedulers;
 
 public class BaseCommentPresenter<T extends BaseCommentPresenter.View> extends Presenter<T> {
-    @Inject
-    FeedEntityManager entityManager;
 
-    @Inject
-    BucketInteractor bucketInteractor;
-    //
+    @Inject FeedEntityManager entityManager;
+    @Inject BucketInteractor bucketInteractor;
+    @Inject TranslationFeedInteractor translationFeedInteractor;
+    @Inject CommentsInteractor commentsInteractor;
+    @Inject LocaleHelper localeHelper;
 
-    @State
-    FeedEntity feedEntity;
-    @State
-    String draftComment;
+    private UidItemDelegate uidItemDelegate;
+
+    @State FeedEntity feedEntity;
+    @State String draftComment;
+
     private int page = 1;
     private int commentsCount = 0;
     private boolean loadInitiated;
 
     public BaseCommentPresenter(FeedEntity feedEntity) {
         this.feedEntity = feedEntity;
+        uidItemDelegate = new UidItemDelegate(this);
     }
 
     @Override
     public void onInjected() {
         super.onInjected();
-
         entityManager.setRequestingPresenter(this);
     }
 
@@ -72,9 +79,25 @@ public class BaseCommentPresenter<T extends BaseCommentPresenter.View> extends P
         super.takeView(view);
         view.setDraftComment(draftComment);
         view.setLikePanel(feedEntity);
-        //
+
         if (isNeedCheckCommentsWhenStart())
             checkCommentsAndLikesToLoad();
+
+        subscribeToCommentsLoading();
+        subscribeToCommentTranslation();
+    }
+
+    private void subscribeToCommentTranslation() {
+        view.bindUntilDropView(translationFeedInteractor.translateCommentPipe().observe()
+                .compose(new IoToMainComposer<>()))
+                .subscribe(new ActionStateSubscriber<TranslateUidItemCommand.TranslateCommentCommand>()
+                        .onSuccess(translateCommentCommand -> {
+                            updateEntityComments(translateCommentCommand.getResult());
+                            view.updateComment(translateCommentCommand.getResult());
+                        }).onFail((translateCommentCommand, throwable) -> {
+                            view.notifyDataSetChanged();
+                            view.informUser(translateCommentCommand.getErrorMessage());
+                        }));
     }
 
     /**
@@ -99,7 +122,32 @@ public class BaseCommentPresenter<T extends BaseCommentPresenter.View> extends P
 
     private void loadComments() {
         view.setLoading(true);
-        doRequest(new GetCommentsQuery(feedEntity.getUid(), page), this::onCommentsLoaded);
+        commentsInteractor.commentsPipe().send(new GetCommentsCommand(feedEntity.getUid(), page));
+    }
+
+    private void subscribeToCommentsLoading() {
+        view.bindUntilDropView(commentsInteractor.commentsPipe().observe()
+                .compose(new IoToMainComposer<>()))
+                .subscribe(new ActionStateSubscriber<GetCommentsCommand>()
+                        .onSuccess(getCommentsCommand -> onCommentsLoaded(getCommentsCommand.getResult()))
+                        .onFail((getCommentsCommand, throwable) -> view.informUser(getCommentsCommand.getErrorMessage())));
+    }
+
+    private void onCommentsLoaded(List<Comment> comments) {
+        if (comments.size() > 0) {
+            page++;
+            commentsCount += comments.size();
+            view.setLoading(false);
+            feedEntity.getComments().addAll(comments);
+            view.addComments(comments);
+            if (commentsCount >= feedEntity.getCommentsCount()) {
+                view.hideViewMore();
+            } else {
+                view.showViewMore();
+            }
+        } else {
+            view.hideViewMore();
+        }
     }
 
     private void loadLikes() {
@@ -114,6 +162,27 @@ public class BaseCommentPresenter<T extends BaseCommentPresenter.View> extends P
         entityManager.createComment(feedEntity, draftComment);
     }
 
+    public void loadFlags(Flaggable flaggableView) {
+        uidItemDelegate.loadFlags(flaggableView);
+    }
+
+    public void flagItem(String uid, int reasonId, String reason) {
+        uidItemDelegate.flagItem(new FlagData(uid, reasonId, reason), view);
+    }
+
+    public void editComment(Comment comment) {
+        view.editComment(feedEntity, comment);
+        sendAnalytic(TrackingHelper.ATTRIBUTE_EDIT_COMMENT);
+    }
+
+    public void deleteComment(Comment comment) {
+        entityManager.deleteComment(feedEntity, comment);
+    }
+
+    public void translateComment(Comment comment) {
+        translationFeedInteractor.translateCommentPipe().send(TranslateUidItemCommand.forComment(comment,
+                localeHelper.getDefaultLocaleFormatted()));
+    }
 
     public void onEvent(FeedEntityManager.CommentEvent event) {
         switch (event.getType()) {
@@ -133,24 +202,12 @@ public class BaseCommentPresenter<T extends BaseCommentPresenter.View> extends P
             case EDITED:
                 view.updateComment(event.getComment());
                 break;
-
         }
         eventBus.post(new FeedEntityCommentedEvent(feedEntity));
     }
 
     public void onEvent(LoadMoreEvent event) {
         loadComments();
-    }
-
-    public void onEvent(DeleteCommentRequestEvent event) {
-        if (!view.isVisibleOnScreen()) return;
-        entityManager.deleteComment(feedEntity, event.getComment());
-    }
-
-
-    public void onEvent(EditCommentRequestEvent event) {
-        view.editComment(feedEntity, event.getComment());
-        sendAnalytic(TrackingHelper.ATTRIBUTE_EDIT_COMMENT);
     }
 
     public void onEvent(EditBucketEvent event) {
@@ -222,21 +279,6 @@ public class BaseCommentPresenter<T extends BaseCommentPresenter.View> extends P
         }
     }
 
-    private void onCommentsLoaded(ArrayList<Comment> comments) {
-        if (comments.size() > 0) {
-            page++;
-            commentsCount += comments.size();
-            view.setLoading(false);
-            feedEntity.getComments().addAll(comments);
-            view.addComments(comments);
-            if (commentsCount >= feedEntity.getCommentsCount()) view.hideViewMore();
-            else view.showViewMore();
-
-        } else {
-            view.hideViewMore();
-        }
-    }
-
     private void onLikersLoaded(List<User> users) {
         if (users != null && !users.isEmpty()) {
             User userWhoLiked = Queryable.from(users).firstOrDefault(user -> user.getId() != getAccount().getId());
@@ -248,7 +290,12 @@ public class BaseCommentPresenter<T extends BaseCommentPresenter.View> extends P
         eventBus.post(new FeedEntityChangedEvent(feedEntity));
     }
 
-    public interface View extends RxView {
+    private void updateEntityComments(Comment comment) {
+        int commentIndex = feedEntity.getComments().indexOf(comment);
+        if (commentIndex != -1) feedEntity.getComments().set(commentIndex, comment);
+    }
+
+    public interface View extends RxView, UidItemDelegate.View, ApiErrorView {
 
         void addComments(List<Comment> commentList);
 
@@ -261,6 +308,8 @@ public class BaseCommentPresenter<T extends BaseCommentPresenter.View> extends P
         void setDraftComment(String comment);
 
         void setLoading(boolean loading);
+
+        void notifyDataSetChanged();
 
         void editComment(FeedEntity feedEntity, Comment comment);
 

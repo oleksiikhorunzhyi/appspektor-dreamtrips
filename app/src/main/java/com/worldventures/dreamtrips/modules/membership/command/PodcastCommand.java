@@ -1,7 +1,7 @@
 package com.worldventures.dreamtrips.modules.membership.command;
 
-import com.messenger.api.UiErrorAction;
 import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.core.api.action.CommandWithError;
 import com.worldventures.dreamtrips.core.janet.dagger.InjectableAction;
 import com.worldventures.dreamtrips.modules.membership.api.GetPodcastsHttpAction;
 import com.worldventures.dreamtrips.modules.membership.model.Podcast;
@@ -17,9 +17,10 @@ import rx.schedulers.Schedulers;
 
 
 @CommandAction
-public class PodcastCommand extends Command<List<Podcast>> implements InjectableAction, UiErrorAction {
-    @Inject
-    Janet janet;
+public class PodcastCommand extends CommandWithError<List<Podcast>> implements InjectableAction {
+
+    @Inject Janet janet;
+
     private int page;
     private int perPage;
 
@@ -37,7 +38,7 @@ public class PodcastCommand extends Command<List<Podcast>> implements Injectable
     }
 
     @Override
-    public int getErrorMessage() {
+    public int getFallbackErrorMessage() {
         return R.string.error_fail_to_load_podcast;
     }
 }

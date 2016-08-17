@@ -7,7 +7,7 @@ import com.worldventures.dreamtrips.core.session.UserSession;
 
 public class BucketDetailsRouteCreator implements RouteCreator<Integer> {
 
-    SessionHolder<UserSession> appSessionHolder;
+    private SessionHolder<UserSession> appSessionHolder;
 
     public BucketDetailsRouteCreator(SessionHolder<UserSession> appSessionHolder) {
         this.appSessionHolder = appSessionHolder;

@@ -16,8 +16,7 @@ import butterknife.OnClick;
 @Layout(R.layout.adapter_item_activity_header)
 public class HeaderThemeCell extends AbstractDelegateCell<ThemeHeaderModel, HeaderThemeCell.Delegate> {
 
-    @InjectView(R.id.checkBoxSelectAllTheme)
-    protected CheckBox checkBoxSelectAll;
+    @InjectView(R.id.checkBoxSelectAllTheme) CheckBox checkBoxSelectAll;
 
     public HeaderThemeCell(View view) {
         super(view);
@@ -46,12 +45,8 @@ public class HeaderThemeCell extends AbstractDelegateCell<ThemeHeaderModel, Head
         getEventBus().post(new ToggleThemeVisibilityEvent());
     }
 
-    @Override
-    public void prepareForReuse() {
-        //nothing to do here
-    }
-
     public interface Delegate extends CellDelegate<ThemeHeaderModel> {
+
         void onCheckBoxAllThemePressedEvent(boolean isChecked);
     }
 }

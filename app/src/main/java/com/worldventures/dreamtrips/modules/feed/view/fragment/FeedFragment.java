@@ -18,10 +18,12 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.afollestad.materialdialogs.MaterialDialog;
 import com.techery.spares.adapter.BaseDelegateAdapter;
 import com.techery.spares.annotations.Layout;
 import com.techery.spares.annotations.MenuResource;
 import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.core.api.error.ErrorResponse;
 import com.worldventures.dreamtrips.core.rx.RxBaseFragmentWithArgs;
 import com.worldventures.dreamtrips.core.utils.ViewUtils;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
@@ -64,18 +66,14 @@ public class FeedFragment extends RxBaseFragmentWithArgs<FeedPresenter, FeedBund
         implements FeedPresenter.View, SwipeRefreshLayout.OnRefreshListener,
         SuggestedPhotosDelegate, SuggestedPhotoCellPresenterHelper.OutViewBinder {
 
-    @InjectView(R.id.tv_search_friends)
-    public TextView tvSearchFriends;
-    @InjectView(R.id.arrow)
-    public ImageView ivArrow;
-    @InjectView(R.id.ll_empty_view)
-    public ViewGroup emptyView;
+    @InjectView(R.id.tv_search_friends) TextView tvSearchFriends;
+    @InjectView(R.id.arrow) ImageView ivArrow;
+    @InjectView(R.id.ll_empty_view) ViewGroup emptyView;
 
-    @Inject
-    FragmentWithFeedDelegate fragmentWithFeedDelegate;
+    @Inject FragmentWithFeedDelegate fragmentWithFeedDelegate;
 
-    BadgeImageView friendsBadge;
-    BadgeImageView unreadConversationBadge;
+    private BadgeImageView friendsBadge;
+    private BadgeImageView unreadConversationBadge;
 
     private CirclesFilterPopupWindow filterPopupWindow;
 
@@ -84,6 +82,8 @@ public class FeedFragment extends RxBaseFragmentWithArgs<FeedPresenter, FeedBund
 
     private StatePaginatedRecyclerViewManager statePaginatedRecyclerViewManager;
     private Bundle savedInstanceState;
+
+    private MaterialDialog blockingProgressDialog;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -95,6 +95,13 @@ public class FeedFragment extends RxBaseFragmentWithArgs<FeedPresenter, FeedBund
     public void onResume() {
         super.onResume();
         TrackingHelper.viewActivityFeedScreen();
+        getPresenter().refreshFeed();
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        fragmentWithFeedDelegate.resetTranslatedStatus();
     }
 
     @Override
@@ -254,6 +261,11 @@ public class FeedFragment extends RxBaseFragmentWithArgs<FeedPresenter, FeedBund
     }
 
     @Override
+    public void updateItem(FeedItem feedItem) {
+        fragmentWithFeedDelegate.notifyItemChanged(feedItem);
+    }
+
+    @Override
     public void setRequestsCount(int count) {
         if (friendsBadge != null) {
             friendsBadge.setBadgeValue(count);
@@ -308,6 +320,21 @@ public class FeedFragment extends RxBaseFragmentWithArgs<FeedPresenter, FeedBund
     }
 
     @Override
+    public void showBlockingProgress() {
+        blockingProgressDialog = new MaterialDialog.Builder(getActivity())
+                .progress(true, 0)
+                .content(R.string.loading)
+                .cancelable(false)
+                .canceledOnTouchOutside(false)
+                .show();
+    }
+
+    @Override
+    public void hideBlockingProgress() {
+        if (blockingProgressDialog != null) blockingProgressDialog.dismiss();
+    }
+
+    @Override
     public void showEdit(BucketBundle bucketBundle) {
         fragmentWithFeedDelegate.openBucketEdit(getActivity().getSupportFragmentManager(), isTabletLandscape(), bucketBundle);
     }
@@ -330,7 +357,7 @@ public class FeedFragment extends RxBaseFragmentWithArgs<FeedPresenter, FeedBund
 
     @Override
     public void onRefresh() {
-        getPresenter().onRefresh();
+        getPresenter().refreshFeed();
     }
 
     public void onEvent(CommentIconClickedEvent event) {
@@ -338,23 +365,28 @@ public class FeedFragment extends RxBaseFragmentWithArgs<FeedPresenter, FeedBund
     }
 
     private void actionFilter() {
+        if (getActivity().findViewById(R.id.action_filter) == null && getCollapseView() == null)
+            return;
+
+        getPresenter().actionFilter();
+    }
+
+    @Override
+    public void showFilter(List<Circle> circles, Circle selectedCircle) {
         View menuItemView = getActivity().findViewById(R.id.action_filter);
         if (menuItemView == null) {
-            if (getCollapseView() == null) {
-                return;
-            } else {
-                menuItemView = getCollapseView();
-            }
+            menuItemView = getCollapseView();
         }
+
         filterPopupWindow = new CirclesFilterPopupWindow(getContext());
-        filterPopupWindow.setCircles(getPresenter().getFilterCircles());
+        filterPopupWindow.setCircles(circles);
         filterPopupWindow.setAnchorView(menuItemView);
         filterPopupWindow.setOnItemClickListener((parent, view, position, id) -> {
             filterPopupWindow.dismiss();
             getPresenter().applyFilter((Circle) parent.getItemAtPosition(position));
         });
         filterPopupWindow.show();
-        filterPopupWindow.setCheckedCircle(getPresenter().getAppliedFilterCircle());
+        filterPopupWindow.setCheckedCircle(selectedCircle);
     }
 
     private View getCollapseView() {
@@ -383,7 +415,7 @@ public class FeedFragment extends RxBaseFragmentWithArgs<FeedPresenter, FeedBund
     private boolean isNeedToSaveSuggestions() {
         return fragmentWithFeedDelegate.getItemsCount() > 0
                 && fragmentWithFeedDelegate.getItem(0) instanceof MediaAttachment
-                && getPresenter().isHasNewPhotos(((MediaAttachment) fragmentWithFeedDelegate.getItem(0)).chosenImages);
+                && getPresenter().hasNewPhotos(((MediaAttachment) fragmentWithFeedDelegate.getItem(0)).chosenImages);
     }
 
     private void createSuggestionObserver() {
@@ -407,6 +439,15 @@ public class FeedFragment extends RxBaseFragmentWithArgs<FeedPresenter, FeedBund
 
     private void registerCellDelegates() {
         fragmentWithFeedDelegate.registerDelegate(MediaAttachment.class, this);
-        fragmentWithFeedDelegate.registerDelegate(ReloadFeedModel.class, model -> getPresenter().onRefresh());
+        fragmentWithFeedDelegate.registerDelegate(ReloadFeedModel.class, model -> getPresenter().refreshFeed());
+    }
+
+    @Override
+    public boolean onApiError(ErrorResponse errorResponse) {
+        return false;
+    }
+
+    @Override
+    public void onApiCallFailed() {
     }
 }

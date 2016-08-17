@@ -1,19 +1,23 @@
 package com.worldventures.dreamtrips.modules.profile.presenter;
 
+import android.support.annotation.StringRes;
+
 import com.innahema.collections.query.functions.Action1;
 import com.messenger.delegate.StartChatDelegate;
 import com.messenger.ui.activity.MessengerActivity;
-import com.worldventures.dreamtrips.core.api.request.DreamTripsRequest;
 import com.worldventures.dreamtrips.core.navigation.Route;
+import com.worldventures.dreamtrips.core.rx.composer.IoToMainComposer;
+import com.worldventures.dreamtrips.core.session.CirclesInteractor;
 import com.worldventures.dreamtrips.modules.bucketlist.bundle.ForeignBucketTabsBundle;
+import com.worldventures.dreamtrips.modules.common.api.janet.command.CirclesCommand;
 import com.worldventures.dreamtrips.modules.common.model.FlagData;
 import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.common.presenter.delegate.UidItemDelegate;
-import com.worldventures.dreamtrips.modules.feed.api.GetUserTimelineQuery;
+import com.worldventures.dreamtrips.modules.common.view.BlockingProgressView;
 import com.worldventures.dreamtrips.modules.feed.api.MarkNotificationAsReadCommand;
 import com.worldventures.dreamtrips.modules.feed.event.ItemFlaggedEvent;
 import com.worldventures.dreamtrips.modules.feed.event.LoadFlagEvent;
-import com.worldventures.dreamtrips.modules.feed.model.feed.base.ParentFeedItem;
+import com.worldventures.dreamtrips.modules.feed.service.command.GetUserTimelineCommand;
 import com.worldventures.dreamtrips.modules.friends.api.ActOnRequestCommand;
 import com.worldventures.dreamtrips.modules.friends.api.AddUserRequestCommand;
 import com.worldventures.dreamtrips.modules.friends.api.UnfriendCommand;
@@ -25,28 +29,26 @@ import com.worldventures.dreamtrips.modules.gcm.delegate.NotificationDelegate;
 import com.worldventures.dreamtrips.modules.profile.api.GetPublicProfileQuery;
 import com.worldventures.dreamtrips.modules.profile.bundle.UserBundle;
 import com.worldventures.dreamtrips.modules.profile.event.FriendGroupRelationChangedEvent;
-import com.worldventures.dreamtrips.modules.profile.event.profilecell.OnAcceptRequestEvent;
-import com.worldventures.dreamtrips.modules.profile.event.profilecell.OnAddFriendEvent;
-import com.worldventures.dreamtrips.modules.profile.event.profilecell.OnRejectRequestEvent;
 import com.worldventures.dreamtrips.modules.tripsimages.bundle.TripsImagesBundle;
 import com.worldventures.dreamtrips.modules.tripsimages.model.TripImagesType;
 
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
 import javax.inject.Inject;
 
+import io.techery.janet.helper.ActionStateSubscriber;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
+
 public class UserPresenter extends ProfilePresenter<UserPresenter.View, User> {
+
+    @Inject CirclesInteractor circlesInteractor;
+    @Inject NotificationDelegate notificationDelegate;
+    @Inject StartChatDelegate startSingleChatDelegate;
 
     private int notificationId;
     private boolean acceptFriend;
-
-    @Inject
-    NotificationDelegate notificationDelegate;
-    @Inject
-    StartChatDelegate startSingleChatDelegate;
-
     private UidItemDelegate uidItemDelegate;
 
     public UserPresenter(UserBundle userBundle) {
@@ -66,6 +68,13 @@ public class UserPresenter extends ProfilePresenter<UserPresenter.View, User> {
     }
 
     @Override
+    public void takeView(View view) {
+        super.takeView(view);
+        subscribeLoadNextFeeds();
+        subscribeRefreshFeeds();
+    }
+
+    @Override
     public void onStart() {
         super.onStart();
         if (notificationId != UserBundle.NO_NOTIFICATION) {
@@ -78,20 +87,37 @@ public class UserPresenter extends ProfilePresenter<UserPresenter.View, User> {
         }
     }
 
+    private void subscribeRefreshFeeds() {
+        view.bindUntilDropView(feedInteractor.getRefreshUserTimelinePipe().observe()
+                .compose(new IoToMainComposer<>()))
+                .subscribe(new ActionStateSubscriber<GetUserTimelineCommand.Refresh>()
+                        .onFail(this::refreshFeedError)
+                        .onSuccess(action -> refreshFeedSucceed(action.getResult())));
+    }
+
+
+    private void subscribeLoadNextFeeds() {
+        view.bindUntilDropView(feedInteractor.getLoadNextUserTimelinePipe().observe()
+                .compose(new IoToMainComposer<>()))
+                .subscribe(new ActionStateSubscriber<GetUserTimelineCommand.LoadNext>()
+                        .onFail(this::loadMoreItemsError)
+                        .onSuccess(action -> addFeedItems(action.getResult())));
+    }
+
+    @Override
+    public void refreshFeed() {
+        feedInteractor.getRefreshUserTimelinePipe().send(new GetUserTimelineCommand.Refresh(user.getId()));
+    }
+
+    @Override
+    public void loadNext(Date date) {
+        feedInteractor.getLoadNextUserTimelinePipe().send(new GetUserTimelineCommand.LoadNext(user.getId(), date));
+    }
+
     @Override
     protected void loadProfile() {
         view.startLoading();
         doRequest(new GetPublicProfileQuery(user), this::onProfileLoaded);
-    }
-
-    @Override
-    protected DreamTripsRequest<ArrayList<ParentFeedItem>> getRefreshFeedRequest(Date date) {
-        return new GetUserTimelineQuery(user.getId());
-    }
-
-    @Override
-    protected DreamTripsRequest<ArrayList<ParentFeedItem>> getNextPageFeedRequest(Date date) {
-        return new GetUserTimelineQuery(user.getId(), date);
     }
 
     @Override
@@ -111,7 +137,7 @@ public class UserPresenter extends ProfilePresenter<UserPresenter.View, User> {
         switch (userRelationship) {
             case REJECTED:
             case NONE:
-                view.showAddFriendDialog(circles, this::addAsFriend);
+                addFriend();
                 break;
             case FRIEND:
                 view.showFriendDialog(user);
@@ -131,23 +157,35 @@ public class UserPresenter extends ProfilePresenter<UserPresenter.View, User> {
         });
     }
 
-    public void acceptClicked() {
-        view.showAddFriendDialog(circles, this::accept);
+    private void addFriend() {
+        showAddFriendDialog(this::addAsFriend);
     }
 
-    public void rejectClicked() {
-        reject();
-    }
-
-    private void addAsFriend(int position) {
+    private void addAsFriend(Circle circle) {
         view.startLoading();
-        Circle circle = circles.get(position);
         doRequest(new AddUserRequestCommand(user.getId(), circle),
                 jsonObject -> {
                     user.setRelationship(User.Relationship.OUTGOING_REQUEST);
                     view.finishLoading();
                     view.notifyUserChanged();
                 });
+    }
+
+    public void acceptClicked() {
+        showAddFriendDialog(this::accept);
+    }
+
+    private void accept(Circle circle) {
+        doRequest(new ActOnRequestCommand(user.getId(),
+                        ActOnRequestCommand.Action.CONFIRM.name(), circle.getId()),
+                object -> {
+                    user.setRelationship(User.Relationship.FRIEND);
+                    view.notifyUserChanged();
+                });
+    }
+
+    public void rejectClicked() {
+        reject();
     }
 
     private void reject() {
@@ -157,17 +195,6 @@ public class UserPresenter extends ProfilePresenter<UserPresenter.View, User> {
                 object -> {
                     view.finishLoading();
                     user.setRelationship(User.Relationship.REJECTED);
-                    view.notifyUserChanged();
-                });
-    }
-
-    private void accept(int position) {
-        Circle circle = snappyRepository.getCircles().get(position);
-        doRequest(new ActOnRequestCommand(user.getId(),
-                        ActOnRequestCommand.Action.CONFIRM.name(),
-                        circle.getId()),
-                object -> {
-                    user.setRelationship(User.Relationship.FRIEND);
                     view.notifyUserChanged();
                 });
     }
@@ -216,21 +243,39 @@ public class UserPresenter extends ProfilePresenter<UserPresenter.View, User> {
                     event.getFlagReasonId(), event.getNameOfReason()), view);
     }
 
-    public void onEvent(OnAcceptRequestEvent e) {
-        acceptClicked();
+    ///////////////////////////////////////////////////////////////////////////
+    // Circles
+    ///////////////////////////////////////////////////////////////////////////
+
+    private void showAddFriendDialog(Action1<Circle> actionCircle) {
+        circlesInteractor.pipe()
+                .createObservable(new CirclesCommand())
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .compose(bindView())
+                .subscribe(new ActionStateSubscriber<CirclesCommand>()
+                        .onStart(circlesCommand -> onCirclesStart())
+                        .onSuccess(circlesCommand -> onCirclesSuccess(circlesCommand.getResult(), actionCircle))
+                        .onFail((circlesCommand, throwable) -> onCirclesError(circlesCommand.getErrorMessage())));
     }
 
-    public void onEvent(OnRejectRequestEvent e) {
-        rejectClicked();
+    private void onCirclesStart() {
+        view.showBlockingProgress();
     }
 
-    public void onEvent(OnAddFriendEvent e) {
-        addFriendClicked();
+    private void onCirclesSuccess(List<Circle> resultCircles, Action1<Circle> actionCircle) {
+        view.showAddFriendDialog(resultCircles, actionCircle);
+        view.hideBlockingProgress();
     }
 
-    public interface View extends ProfilePresenter.View, UidItemDelegate.View {
+    private void onCirclesError(@StringRes String messageId) {
+        view.hideBlockingProgress();
+        view.informUser(messageId);
+    }
 
-        void showAddFriendDialog(List<Circle> circles, Action1<Integer> selectAction);
+    public interface View extends ProfilePresenter.View, UidItemDelegate.View, BlockingProgressView {
+
+        void showAddFriendDialog(List<Circle> circles, Action1<Circle> selectAction);
 
         void showFriendDialog(User user);
 

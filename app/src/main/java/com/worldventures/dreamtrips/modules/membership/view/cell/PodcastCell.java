@@ -26,25 +26,16 @@ import butterknife.OnClick;
 @Layout(R.layout.adapter_item_podcast)
 public class PodcastCell extends AbstractDelegateCell<Podcast, PodcastCellDelegate> {
 
-    @InjectView(R.id.image)
-    SimpleDraweeView image;
-    @InjectView(R.id.play)
-    ImageView play;
-    @InjectView(R.id.title)
-    TextView title;
-    @InjectView(R.id.category)
-    TextView category;
-    @InjectView(R.id.date)
-    TextView date;
-    @InjectView(R.id.duration)
-    TextView duration;
-    @InjectView(R.id.description)
-    TextView description;
-    @InjectView(R.id.download_progress)
-    PinProgressButton downloadProgress;
+    @InjectView(R.id.image) SimpleDraweeView image;
+    @InjectView(R.id.play) ImageView play;
+    @InjectView(R.id.title) TextView title;
+    @InjectView(R.id.category) TextView category;
+    @InjectView(R.id.date) TextView date;
+    @InjectView(R.id.duration) TextView duration;
+    @InjectView(R.id.description) TextView description;
+    @InjectView(R.id.download_progress) PinProgressButton downloadProgress;
 
-    @Inject
-    protected Context context;
+    @Inject Context context;
 
     private ProgressVideoCellHelper progressVideoCellHelper;
 

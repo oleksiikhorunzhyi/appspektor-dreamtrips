@@ -62,6 +62,8 @@ public abstract class BaseUsersFragment<T extends BaseUserListPresenter, B exten
     protected WeakHandler weakHandler;
     private LinearLayoutManager layoutManager;
 
+    private MaterialDialog blockingProgressDialog;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -135,6 +137,21 @@ public abstract class BaseUsersFragment<T extends BaseUserListPresenter, B exten
             if (refreshLayout != null) refreshLayout.setRefreshing(false);
         }, 100);
         stateDelegate.restoreStateIfNeeded();
+    }
+
+    @Override
+    public void showBlockingProgress() {
+        blockingProgressDialog = new MaterialDialog.Builder(getActivity())
+                .progress(true, 0)
+                .content(R.string.loading)
+                .cancelable(false)
+                .canceledOnTouchOutside(false)
+                .show();
+    }
+
+    @Override
+    public void hideBlockingProgress() {
+        if (blockingProgressDialog != null) blockingProgressDialog.dismiss();
     }
 
     @Override

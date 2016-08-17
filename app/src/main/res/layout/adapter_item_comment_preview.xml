@@ -56,9 +56,7 @@
                 android:id="@+id/date"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                tools:text="1 min ago"
-
-                />
+                tools:text="1 min ago"/>
         </LinearLayout>
 
         <TextView
@@ -69,9 +67,6 @@
             android:layout_marginRight="@dimen/spacing_small"
             android:ellipsize="end"
             android:maxLines="2"
-            tools:text="Lorem ipsulm bla blabla. Lorem ipsulm bla blablaL  oremf ipsulm bla blabla Lorem ipsulm bla blabla Lorem ipsulm bla blabla"
-            />
-
+            tools:text="Lorem ipsulm bla blabla. Lorem ipsulm bla blablaL  oremf ipsulm bla blabla Lorem ipsulm bla blabla Lorem ipsulm bla blabla"/>
     </LinearLayout>
-
 </RelativeLayout>

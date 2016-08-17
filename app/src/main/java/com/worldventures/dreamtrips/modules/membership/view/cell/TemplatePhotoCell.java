@@ -27,9 +27,4 @@ public class TemplatePhotoCell extends AbstractCell<TemplatePhoto> {
         imageViewPhoto.setImageURI(getModelObject()
                 .getPath());
     }
-
-    @Override
-    public void prepareForReuse() {
-    }
-
 }

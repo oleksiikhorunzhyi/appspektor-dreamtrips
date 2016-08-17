@@ -9,12 +9,14 @@ import com.worldventures.dreamtrips.core.api.AuthRetryPolicy;
 import com.worldventures.dreamtrips.core.api.action.AuthorizedHttpAction;
 import com.worldventures.dreamtrips.core.api.action.BaseHttpAction;
 import com.worldventures.dreamtrips.core.api.action.LoginAction;
-import com.worldventures.dreamtrips.core.api.action.LogoutAction;
 import com.worldventures.dreamtrips.core.janet.api_lib.NewDreamTripsHttpService;
+import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.core.session.UserSession;
 import com.worldventures.dreamtrips.core.utils.AppVersionNameBuilder;
 import com.worldventures.dreamtrips.core.utils.LocaleHelper;
 import com.worldventures.dreamtrips.modules.common.model.Session;
+import com.worldventures.dreamtrips.modules.settings.util.SettingsFactory;
+import com.worldventures.dreamtrips.modules.settings.util.SettingsManager;
 
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArraySet;
@@ -39,12 +41,10 @@ import timber.log.Timber;
 @Deprecated
 public class DreamTripsHttpService extends ActionServiceWrapper {
 
-    @Inject
-    SessionHolder<UserSession> appSessionHolder;
-    @Inject
-    LocaleHelper localeHelper;
-    @Inject
-    AppVersionNameBuilder appVersionNameBuilder;
+    @Inject SessionHolder<UserSession> appSessionHolder;
+    @Inject LocaleHelper localeHelper;
+    @Inject AppVersionNameBuilder appVersionNameBuilder;
+    @Inject SnappyRepository db;
 
     private final ActionPipe<LoginAction> loginActionPipe;
     private final Set<Object> retriedActions = new CopyOnWriteArraySet<>();
@@ -100,7 +100,6 @@ public class DreamTripsHttpService extends ActionServiceWrapper {
     protected <A> boolean onInterceptFail(ActionHolder<A> holder, JanetException e) {
         //checking with retry-login policy
         if (holder.action() instanceof AuthorizedHttpAction
-                && !(holder.action() instanceof LogoutAction)
                 && !retriedActions.remove(holder.action())) {
             AuthorizedHttpAction action = (AuthorizedHttpAction) holder.action();
             String authHeader = action.getAuthorizationHeader();

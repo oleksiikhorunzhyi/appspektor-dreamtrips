@@ -2,7 +2,6 @@ package com.worldventures.dreamtrips.modules.membership.presenter;
 
 import android.accounts.AccountManager;
 import android.content.ContentProviderOperation;
-import android.content.Intent;
 import android.os.Bundle;
 import android.provider.ContactsContract;
 import android.telephony.PhoneNumberUtils;
@@ -14,21 +13,13 @@ import com.innahema.collections.query.queriables.Queryable;
 import com.octo.android.robospice.persistence.exception.SpiceException;
 import com.techery.spares.module.Injector;
 import com.techery.spares.module.qualifier.ForApplication;
-import com.worldventures.dreamtrips.R;
+import com.techery.spares.utils.delegate.SearchFocusChangedDelegate;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
-import com.worldventures.dreamtrips.core.utils.IntentUtils;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
-import com.worldventures.dreamtrips.modules.membership.api.GetFilledInvitationTemplateQuery;
 import com.worldventures.dreamtrips.modules.membership.api.GetInvitationsQuery;
-import com.worldventures.dreamtrips.modules.membership.api.InviteBody;
 import com.worldventures.dreamtrips.modules.membership.api.PhoneContactRequest;
-import com.worldventures.dreamtrips.modules.membership.api.SendInvitationsQuery;
-import com.worldventures.dreamtrips.modules.membership.event.InvitesSentEvent;
-import com.worldventures.dreamtrips.modules.membership.event.MemberCellResendEvent;
-import com.worldventures.dreamtrips.modules.membership.event.MemberCellSelectedEvent;
 import com.worldventures.dreamtrips.modules.membership.event.MemberStickyEvent;
-import com.worldventures.dreamtrips.modules.membership.event.SearchFocusChangedEvent;
 import com.worldventures.dreamtrips.modules.membership.model.History;
 import com.worldventures.dreamtrips.modules.membership.model.InviteTemplate.Type;
 import com.worldventures.dreamtrips.modules.membership.model.Member;
@@ -51,6 +42,8 @@ public class InvitePresenter extends Presenter<InvitePresenter.View> {
     @ForApplication
     Injector injector;
     WeakHandler queryHandler = new WeakHandler();
+    @Inject
+    SearchFocusChangedDelegate searchFocusChangedDelegate;
 
     @State
     ArrayList<Member> members = new ArrayList<>();
@@ -180,7 +173,7 @@ public class InvitePresenter extends Presenter<InvitePresenter.View> {
     }
 
     public void searchToggle(boolean hasFocus) {
-        eventBus.post(new SearchFocusChangedEvent(hasFocus));
+        searchFocusChangedDelegate.post(hasFocus);
     }
 
     public void onFilter(String newText) {
@@ -219,7 +212,7 @@ public class InvitePresenter extends Presenter<InvitePresenter.View> {
         }
     }
 
-    public void onEventMainThread(MemberCellSelectedEvent event) {
+    public void onMemberCellSelected(Member member) {
         boolean isVisible = isVisible();
 
         eventBus.removeStickyEvent(MemberStickyEvent.class);
@@ -231,65 +224,14 @@ public class InvitePresenter extends Presenter<InvitePresenter.View> {
         int count = Queryable.from(members).count(element -> element.isChecked());
         view.setSelectedCount(count);
 
-        if (event.isSelected()) {
-            view.move(event.getMember(), 0);
-        } else {
-            int to = event.getMember().getOriginalPosition();
-            Member lastSelectedMember = Queryable.from(members).lastOrDefault((member) -> member.isChecked());
-            int lastSelected = lastSelectedMember != null ? lastSelectedMember.getOriginalPosition() : 0;
-            view.move(event.getMember(), to < lastSelected ? lastSelected : to);
-        }
+        int to = member.getOriginalPosition();
+        Member lastSelectedMember = Queryable.from(members).lastOrDefault(Member::isChecked);
+        int lastSelected = lastSelectedMember != null ? lastSelectedMember.getOriginalPosition() : 0;
+        view.move(member, to < lastSelected ? lastSelected : to);
     }
 
     public boolean isVisible() {
         return members != null && Queryable.from(members).any(Member::isChecked);
-    }
-
-    public void onEventMainThread(MemberCellResendEvent event) {
-        doResend(event.history, event.userName);
-    }
-
-    /**
-     * Get configurationStarted-filled template by id, and try to resend
-     */
-    private void doResend(History history, String username) {
-        view.startLoading();
-        doRequest(new GetFilledInvitationTemplateQuery(history.getTemplateId()), template -> {
-            // open share intent
-            Intent intent = null;
-            switch (history.getType()) {
-                case EMAIL:
-                    TrackingHelper.inviteShareAction(TrackingHelper.ACTION_RESEND_EMAIL,
-                            template.getId(),
-                            template.getTo().size());
-                    intent = IntentUtils.newEmailIntent(template.getTitle(),
-                            String.format(context.getString(R.string.invitation_text_template),
-                                    " " + username,
-                                    "",
-                                    template.getLink()),
-                            history.getContact());
-                    break;
-                case SMS:
-                    TrackingHelper.inviteShareAction(TrackingHelper.ACTION_RESEND_SMS,
-                            template.getId(),
-                            template.getTo().size());
-                    intent = IntentUtils.newSmsIntent(context,
-                            template.getTitle() + " " + template.getLink(),
-                            history.getContact());
-                    break;
-            }
-            activityRouter.openDefaultShareIntent(intent);
-            // notify server
-            InviteBody body = new InviteBody();
-            body.setContacts(Collections.singletonList(history.getContact()));
-            body.setTemplateId(history.getTemplateId());
-            body.setType(history.getType());
-            doRequest(new SendInvitationsQuery(body), stub -> {
-                Timber.i("Invitation sending succeeded");
-                view.finishLoading();
-                eventBus.post(new InvitesSentEvent());
-            });
-        });
     }
 
     public void continueAction() {

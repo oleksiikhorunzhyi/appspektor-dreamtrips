@@ -11,16 +11,12 @@ import com.innahema.collections.query.queriables.Queryable;
 import com.techery.spares.module.qualifier.ForApplication;
 import com.techery.spares.session.SessionHolder;
 import com.techery.spares.storage.complex_objects.Optional;
-import com.worldventures.dreamtrips.core.navigation.Route;
-import com.worldventures.dreamtrips.core.navigation.ToolbarConfig;
-import com.worldventures.dreamtrips.core.navigation.router.NavigationConfigBuilder;
 import com.worldventures.dreamtrips.core.navigation.router.Router;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.core.rx.composer.IoToMainComposer;
 import com.worldventures.dreamtrips.core.session.UserSession;
 import com.worldventures.dreamtrips.modules.common.model.PhotoGalleryModel;
 import com.worldventures.dreamtrips.modules.common.model.User;
-import com.worldventures.dreamtrips.modules.profile.bundle.UserBundle;
 import com.worldventures.dreamtrips.modules.tripsimages.vision.ImageUtils;
 
 import java.util.ArrayList;
@@ -35,36 +31,22 @@ import rx.Subscriber;
 import timber.log.Timber;
 
 public final class SuggestedPhotoCellPresenterHelper {
+
     public static final int MAX_SELECTION_SIZE = 15;
-
     private static final int SUGGESTION_ITEM_CHUNK = 20;
-
     private static final long DEFAULT_START_SYNC_TIMESTAMP = Long.MAX_VALUE;
 
-    @Inject
-    SnappyRepository db;
+    @Inject SnappyRepository db;
+    @Inject Router router;
+    @Inject SessionHolder<UserSession> appSessionHolder;
+    @Inject @ForApplication Context context;
 
-    @Inject
-    @ForApplication
-    Context context;
-
-    @Inject
-    Router router;
-
-    @Inject
-    SessionHolder<UserSession> appSessionHolder;
+    @State ArrayList<PhotoGalleryModel> suggestionItems;
+    @State ArrayList<PhotoGalleryModel> selectedPhotos;
+    @State long syncTimestampLast = DEFAULT_START_SYNC_TIMESTAMP;
 
     private View view;
     private OutViewBinder binder;
-
-    @State
-    ArrayList<PhotoGalleryModel> suggestionItems;
-
-    @State
-    ArrayList<PhotoGalleryModel> selectedPhotos;
-
-    @State
-    long syncTimestampLast = DEFAULT_START_SYNC_TIMESTAMP;
 
     public void takeView(View view, OutViewBinder binder, Bundle bundle) {
         checkView(view);
@@ -254,6 +236,7 @@ public final class SuggestedPhotoCellPresenterHelper {
     }
 
     public interface View {
+
         void appendPhotoSuggestions(List<PhotoGalleryModel> items);
 
         void replacePhotoSuggestions(List<PhotoGalleryModel> items);

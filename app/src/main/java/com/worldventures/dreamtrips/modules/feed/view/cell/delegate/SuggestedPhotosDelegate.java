@@ -8,6 +8,7 @@ import com.worldventures.dreamtrips.modules.common.model.PhotoGalleryModel;
 import com.worldventures.dreamtrips.modules.feed.presenter.SuggestedPhotoCellPresenterHelper;
 
 public interface SuggestedPhotosDelegate extends CellDelegate<MediaAttachment> {
+
     void onCancelClicked();
 
     void onAttachClicked();

@@ -83,7 +83,6 @@
     <string name="delete_photo_text">Är du säker på att du vill ta bort fotot?</string>
     <string name="delete_photo_positiove">Ta bort</string>
     <string name="delete_photo_negative">Avbryt</string>
-    <string name="flag_photo_first">WorldVentures personal kommer att granska den här bilden för </string>
     <string name="flag_photo_second">. Vill du fortsätta?</string>
     <string name="flag_photo_title">Bekräfta</string>
     <string name="flag_photo_positive">Skicka</string>

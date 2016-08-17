@@ -3,27 +3,25 @@ package com.worldventures.dreamtrips.modules.profile.presenter;
 import android.content.Intent;
 
 import com.octo.android.robospice.request.simple.BigBinaryRequest;
-import com.worldventures.dreamtrips.core.api.request.DreamTripsRequest;
+import com.techery.spares.utils.delegate.NotificationCountEventDelegate;
 import com.worldventures.dreamtrips.core.component.RootComponentsProvider;
 import com.worldventures.dreamtrips.core.navigation.Route;
+import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.core.rx.composer.IoToMainComposer;
 import com.worldventures.dreamtrips.core.session.UserSession;
-import com.worldventures.dreamtrips.core.utils.events.UpdateUserInfoEvent;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
+import com.worldventures.dreamtrips.modules.auth.api.command.UpdateUserCommand;
+import com.worldventures.dreamtrips.modules.auth.service.AuthInteractor;
 import com.worldventures.dreamtrips.modules.common.delegate.SocialCropImageManager;
-import com.worldventures.dreamtrips.modules.common.event.HeaderCountChangedEvent;
 import com.worldventures.dreamtrips.modules.common.model.MediaAttachment;
 import com.worldventures.dreamtrips.modules.common.model.PhotoGalleryModel;
 import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.common.view.util.LogoutDelegate;
 import com.worldventures.dreamtrips.modules.common.view.util.MediaPickerManager;
-import com.worldventures.dreamtrips.modules.feed.api.GetUserTimelineQuery;
-import com.worldventures.dreamtrips.modules.feed.model.feed.base.ParentFeedItem;
+import com.worldventures.dreamtrips.modules.feed.service.command.GetAccountTimelineCommand;
 import com.worldventures.dreamtrips.modules.profile.api.GetProfileQuery;
 import com.worldventures.dreamtrips.modules.profile.api.UploadAvatarCommand;
 import com.worldventures.dreamtrips.modules.profile.api.UploadCoverCommand;
-import com.worldventures.dreamtrips.modules.profile.event.profilecell.OnCoverClickEvent;
-import com.worldventures.dreamtrips.modules.profile.event.profilecell.OnPhotoClickEvent;
 import com.worldventures.dreamtrips.modules.tripsimages.bundle.TripsImagesBundle;
 import com.worldventures.dreamtrips.modules.tripsimages.model.TripImagesType;
 import com.worldventures.dreamtrips.modules.video.model.CachedEntity;
@@ -31,12 +29,12 @@ import com.worldventures.dreamtrips.util.Action;
 import com.worldventures.dreamtrips.util.ValidationUtils;
 
 import java.io.File;
-import java.util.ArrayList;
 import java.util.Date;
 
 import javax.inject.Inject;
 
 import icepick.State;
+import io.techery.janet.helper.ActionStateSubscriber;
 import retrofit.mime.TypedFile;
 import rx.Subscription;
 import timber.log.Timber;
@@ -45,91 +43,27 @@ public class AccountPresenter extends ProfilePresenter<AccountPresenter.View, Us
 
     public static final int AVATAR_MEDIA_REQUEST_ID = 155322;
     public static final int COVER_MEDIA_REQUEST_ID = 155323;
-
     public static final int DEFAULT_RATIO_X = 3;
     public static final int DEFAULT_RATIO_Y = 1;
 
-    @Inject
-    RootComponentsProvider rootComponentsProvider;
-    @Inject
-    LogoutDelegate logoutDelegate;
-    @Inject
-    MediaPickerManager mediaPickerManager;
-    @Inject
-    SocialCropImageManager socialCropImageManager;
+    @Inject RootComponentsProvider rootComponentsProvider;
+    @Inject LogoutDelegate logoutDelegate;
+    @Inject MediaPickerManager mediaPickerManager;
+    @Inject SocialCropImageManager socialCropImageManager;
+    @Inject AuthInteractor authInteractor;
+    @Inject NotificationCountEventDelegate notificationCountEventDelegate;
+    @Inject SnappyRepository db;
 
     private Subscription mediaSubscription;
     private Subscription cropSubscription;
 
     private String coverTempFilePath;
 
-    @State
-    boolean shouldReload;
-    @State
-    int mediaRequestId;
+    @State boolean shouldReload;
+    @State int mediaRequestId;
 
     public AccountPresenter() {
         super();
-    }
-
-    @Override
-    protected void loadProfile() {
-        view.startLoading();
-        doRequest(new GetProfileQuery(appSessionHolder), this::onProfileLoaded);
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-        if (shouldReload) {
-            shouldReload = false;
-            loadProfile();
-        }
-        //
-        logoutDelegate.setDreamSpiceManager(dreamSpiceManager);
-    }
-
-    @Override
-    public void onInjected() {
-        super.onInjected();
-        user = getAccount();
-    }
-
-    private void onAvatarUploadSuccess(User obj) {
-        TrackingHelper.profileUploadFinish(getAccountUserId());
-        UserSession userSession = appSessionHolder.get().get();
-        User currentUser = userSession.getUser();
-        currentUser.setAvatar(obj.getAvatar());
-
-        appSessionHolder.put(userSession);
-        this.user.setAvatar(currentUser.getAvatar());
-        this.user.setAvatarUploadInProgress(false);
-        view.notifyUserChanged();
-        eventBus.postSticky(new UpdateUserInfoEvent(user));
-    }
-
-    private void onCoverUploadSuccess(User obj) {
-        UserSession userSession = appSessionHolder.get().get();
-        User currentUser = userSession.getUser();
-        currentUser.setBackgroundPhotoUrl(obj.getBackgroundPhotoUrl());
-
-        appSessionHolder.put(userSession);
-        this.user.setBackgroundPhotoUrl(currentUser.getBackgroundPhotoUrl());
-        this.user.setCoverUploadInProgress(false);
-        view.notifyUserChanged();
-        if (coverTempFilePath != null) {
-            new File(coverTempFilePath).delete();
-        }
-        eventBus.postSticky(new UpdateUserInfoEvent(user));
-    }
-
-    @Override
-    protected void onProfileLoaded(User user) {
-        super.onProfileLoaded(user);
-    }
-
-    public void logout() {
-        logoutDelegate.logout();
     }
 
     @Override
@@ -137,6 +71,10 @@ public class AccountPresenter extends ProfilePresenter<AccountPresenter.View, Us
         super.takeView(view);
         TrackingHelper.profile(getAccountUserId());
         //
+        subscribeNotificationsBadgeUpdates();
+        //
+        subscribeLoadNextFeeds();
+        subscribeRefreshFeeds();
         mediaSubscription = mediaPickerManager.toObservable()
                 .filter(attachment -> (attachment.requestId == AVATAR_MEDIA_REQUEST_ID
                         || attachment.requestId == COVER_MEDIA_REQUEST_ID) && attachment.chosenImages.size() > 0)
@@ -152,6 +90,96 @@ public class AccountPresenter extends ProfilePresenter<AccountPresenter.View, Us
         //
         socialCropImageManager.setAspectRatio(DEFAULT_RATIO_X, DEFAULT_RATIO_Y);
         connectToCroppedImageStream();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (shouldReload) {
+            shouldReload = false;
+            loadProfile();
+        }
+    }
+
+    @Override
+    public void onInjected() {
+        super.onInjected();
+        user = getAccount();
+    }
+
+    private void subscribeNotificationsBadgeUpdates() {
+        notificationCountEventDelegate.getObservable()
+                .compose(bindViewToMainComposer())
+                .subscribe(o -> view.updateBadgeCount(db.getFriendsRequestsCount()));
+    }
+
+    private void subscribeRefreshFeeds() {
+        view.bindUntilDropView(feedInteractor.getRefreshAccountTimelinePipe().observe()
+                .compose(new IoToMainComposer<>()))
+                .subscribe(new ActionStateSubscriber<GetAccountTimelineCommand.Refresh>()
+                        .onFail(this::refreshFeedError)
+                        .onSuccess(action -> refreshFeedSucceed(action.getResult())));
+    }
+
+    private void subscribeLoadNextFeeds() {
+        view.bindUntilDropView(feedInteractor.getLoadNextAccountTimelinePipe().observe()
+                .compose(new IoToMainComposer<>()))
+                .subscribe(new ActionStateSubscriber<GetAccountTimelineCommand.LoadNext>()
+                        .onFail(this::loadMoreItemsError)
+                        .onSuccess(action -> addFeedItems(action.getResult())));
+    }
+
+    @Override
+    public void refreshFeed() {
+        feedInteractor.getRefreshAccountTimelinePipe().send(new GetAccountTimelineCommand.Refresh());
+    }
+
+    @Override
+    public void loadNext(Date date) {
+        feedInteractor.getLoadNextAccountTimelinePipe().send(new GetAccountTimelineCommand.LoadNext(date));
+    }
+
+    @Override
+    protected void loadProfile() {
+        view.startLoading();
+        doRequest(new GetProfileQuery(appSessionHolder), this::onProfileLoaded);
+    }
+
+    private void onAvatarUploadSuccess(User obj) {
+        TrackingHelper.profileUploadFinish(getAccountUserId());
+        UserSession userSession = appSessionHolder.get().get();
+        User currentUser = userSession.getUser();
+        currentUser.setAvatar(obj.getAvatar());
+
+        appSessionHolder.put(userSession);
+        this.user.setAvatar(currentUser.getAvatar());
+        this.user.setAvatarUploadInProgress(false);
+        view.notifyUserChanged();
+        authInteractor.updateUserPipe().send(new UpdateUserCommand(user));
+    }
+
+    private void onCoverUploadSuccess(User obj) {
+        UserSession userSession = appSessionHolder.get().get();
+        User currentUser = userSession.getUser();
+        currentUser.setBackgroundPhotoUrl(obj.getBackgroundPhotoUrl());
+
+        appSessionHolder.put(userSession);
+        this.user.setBackgroundPhotoUrl(currentUser.getBackgroundPhotoUrl());
+        this.user.setCoverUploadInProgress(false);
+        view.notifyUserChanged();
+        if (coverTempFilePath != null) {
+            new File(coverTempFilePath).delete();
+        }
+        authInteractor.updateUserPipe().send(new UpdateUserCommand(user));
+    }
+
+    @Override
+    protected void onProfileLoaded(User user) {
+        super.onProfileLoaded(user);
+    }
+
+    public void logout() {
+        logoutDelegate.logout();
     }
 
     private void connectToCroppedImageStream() {
@@ -225,16 +253,6 @@ public class AccountPresenter extends ProfilePresenter<AccountPresenter.View, Us
         }
     }
 
-    @Override
-    protected DreamTripsRequest<ArrayList<ParentFeedItem>> getRefreshFeedRequest(Date date) {
-        return new GetUserTimelineQuery(user.getId());
-    }
-
-    @Override
-    protected DreamTripsRequest<ArrayList<ParentFeedItem>> getNextPageFeedRequest(Date date) {
-        return new GetUserTimelineQuery(user.getId(), date);
-    }
-
     ////////////////////////////////////////
     /////// Photo picking
     ////////////////////////////////////////
@@ -247,10 +265,6 @@ public class AccountPresenter extends ProfilePresenter<AccountPresenter.View, Us
     public void onCoverClicked() {
         this.mediaRequestId = COVER_MEDIA_REQUEST_ID;
         view.showMediaPicker(mediaRequestId);
-    }
-
-    public void onEventMainThread(HeaderCountChangedEvent event) {
-        view.updateBadgeCount(snappyRepository.getFriendsRequestsCount());
     }
 
     private void imageSelected(MediaAttachment mediaAttachment) {
@@ -291,14 +305,6 @@ public class AccountPresenter extends ProfilePresenter<AccountPresenter.View, Us
         return socialCropImageManager.onActivityResult(requestCode, resultCode, data);
     }
 
-    public void onEvent(OnPhotoClickEvent e) {
-        photoClicked();
-    }
-
-    public void onEvent(OnCoverClickEvent e) {
-        coverClicked();
-    }
-
     public interface View extends ProfilePresenter.View {
 
         void openAvatarPicker();
@@ -315,5 +321,4 @@ public class AccountPresenter extends ProfilePresenter<AccountPresenter.View, Us
 
         void cropImage(SocialCropImageManager socialCropImageManager, String path);
     }
-
 }

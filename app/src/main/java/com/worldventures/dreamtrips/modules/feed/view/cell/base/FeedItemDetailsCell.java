@@ -6,6 +6,7 @@ import android.view.ViewGroup;
 
 import com.techery.spares.module.Injector;
 import com.techery.spares.module.qualifier.ForActivity;
+import com.techery.spares.ui.view.cell.CellDelegate;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.module.RouteCreatorModule;
 import com.worldventures.dreamtrips.core.navigation.Route;
@@ -15,7 +16,7 @@ import com.worldventures.dreamtrips.core.navigation.router.NavigationConfigBuild
 import com.worldventures.dreamtrips.core.utils.ViewUtils;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.common.model.User;
-import com.worldventures.dreamtrips.modules.feed.bundle.FeedDetailsBundle;
+import com.worldventures.dreamtrips.modules.feed.bundle.FeedItemDetailsBundle;
 import com.worldventures.dreamtrips.modules.feed.model.FeedItem;
 import com.worldventures.dreamtrips.modules.feed.view.util.FeedItemCommonDataHelper;
 import com.worldventures.dreamtrips.modules.profile.bundle.UserBundle;
@@ -29,19 +30,14 @@ import butterknife.InjectView;
 import butterknife.OnClick;
 import butterknife.Optional;
 
-public abstract class FeedItemDetailsCell<T extends FeedItem> extends BaseFeedCell<T> {
+public abstract class FeedItemDetailsCell<I extends FeedItem, D extends CellDelegate<I>> extends BaseFeedCell<I, D> {
 
     FeedItemCommonDataHelper feedItemCommonDataHelper;
 
-    @Inject
-    @Named(RouteCreatorModule.PROFILE)
-    RouteCreator<Integer> routeCreator;
-    @Inject
-    @ForActivity
-    Provider<Injector> injectorProvider;
+    @Inject @Named(RouteCreatorModule.PROFILE) RouteCreator<Integer> routeCreator;
+    @Inject @ForActivity Provider<Injector> injectorProvider;
 
-    @InjectView(R.id.card_view_wrapper)
-    CardView cardViewWrapper;
+    @InjectView(R.id.card_view_wrapper) CardView cardViewWrapper;
 
     public FeedItemDetailsCell(View view) {
         super(view);
@@ -65,12 +61,14 @@ public abstract class FeedItemDetailsCell<T extends FeedItem> extends BaseFeedCe
 
     public void openItemDetails() {
         Route detailsRoute = Route.FEED_ITEM_DETAILS;
-        FeedDetailsBundle bundle = new FeedDetailsBundle(getModelObject());
+        FeedItemDetailsBundle.Builder bundleBuilder = new FeedItemDetailsBundle.Builder()
+                .feedItem(getModelObject())
+                .showAdditionalInfo(true);
         if (tabletAnalytic.isTabletLandscape()) {
-            bundle.setSlave(true);
+            bundleBuilder.slave(true);
         }
         router.moveTo(detailsRoute, NavigationConfigBuilder.forActivity()
-                .data(bundle)
+                .data(bundleBuilder.build())
                 .build());
         //
         sendAnalyticEvent(TrackingHelper.ATTRIBUTE_VIEW);
@@ -85,5 +83,4 @@ public abstract class FeedItemDetailsCell<T extends FeedItem> extends BaseFeedCe
                 .data(new UserBundle(user))
                 .build());
     }
-
 }

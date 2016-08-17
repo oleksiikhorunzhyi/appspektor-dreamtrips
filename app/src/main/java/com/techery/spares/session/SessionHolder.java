@@ -8,11 +8,11 @@ import de.greenrobot.event.EventBus;
 public class SessionHolder<S> extends ComplexObjectStorage<S> {
 
     public interface Events {
-        public class SessionChanged {
+        class SessionChanged {
 
         }
 
-        public class SessionCreated<SESSION_CLASS> extends SessionChanged {
+        class SessionCreated<SESSION_CLASS> extends SessionChanged {
             private final SESSION_CLASS session;
 
             public SessionCreated(SESSION_CLASS session) {
@@ -24,7 +24,7 @@ public class SessionHolder<S> extends ComplexObjectStorage<S> {
             }
         }
 
-        public class SessionDestroyed extends SessionChanged {
+        class SessionDestroyed extends SessionChanged {
 
         }
     }
@@ -38,11 +38,6 @@ public class SessionHolder<S> extends ComplexObjectStorage<S> {
 
     public void put(S session) {
         super.put(session);
-        this.eventBus.post(new Events.SessionCreated<S>(session));
-    }
-
-    public void destroy() {
-        super.destroy();
-        this.eventBus.post(new Events.SessionDestroyed());
+        this.eventBus.post(new Events.SessionCreated<>(session));
     }
 }

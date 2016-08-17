@@ -33,15 +33,11 @@ import butterknife.Optional;
 @Layout(R.layout.adapter_item_feed_post_details)
 public class PostFeedItemDetailsCell extends PostFeedItemCell {
 
-    @InjectView(R.id.item_holder)
-    View itemHolder;
+    @InjectView(R.id.item_holder) View itemHolder;
+    @Optional @InjectView(R.id.imagesList) RecyclerView imagesList;
 
-    @Optional
-    @InjectView(R.id.imagesList)
-    RecyclerView imagesList;
-    @Inject
-    @ForActivity
-    Injector injector;
+    @Inject @ForActivity Injector injector;
+
     private BaseDelegateAdapter adapter;
     private LinearLayoutManager layout;
 
@@ -66,7 +62,6 @@ public class PostFeedItemDetailsCell extends PostFeedItemCell {
 
     @Override
     protected void syncUIStateWithModel() {
-
         imagesList.setLayoutManager(layout);
         if (adapter != imagesList.getAdapter()) imagesList.setAdapter(adapter);
 
@@ -103,7 +98,6 @@ public class PostFeedItemDetailsCell extends PostFeedItemCell {
                 result = i;
             }
         }
-
         return result;
     }
 
@@ -121,11 +115,6 @@ public class PostFeedItemDetailsCell extends PostFeedItemCell {
     protected void onDelete() {
         super.onDelete();
         getEventBus().post(new DeletePostEvent(getModelObject().getItem()));
-    }
-
-    @Override
-    public void prepareForReuse() {
-
     }
 
     @Override

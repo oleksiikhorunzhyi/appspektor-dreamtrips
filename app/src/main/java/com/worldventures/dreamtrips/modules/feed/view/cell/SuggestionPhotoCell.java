@@ -19,12 +19,9 @@ import butterknife.InjectView;
 @Layout(R.layout.adapter_item_suggestion_photo)
 public class SuggestionPhotoCell extends AbstractDelegateCell<PhotoGalleryModel, CellDelegate<PhotoGalleryModel>> {
 
-    @InjectView(R.id.iv_photo)
-    SimpleDraweeView photo;
-    @InjectView(R.id.pick)
-    ImageView pick;
-    @InjectView(R.id.darkened_view)
-    View darkenedView;
+    @InjectView(R.id.iv_photo) SimpleDraweeView photo;
+    @InjectView(R.id.pick) ImageView pick;
+    @InjectView(R.id.darkened_view) View darkenedView;
 
     public SuggestionPhotoCell(View view) {
         super(view);
@@ -38,11 +35,6 @@ public class SuggestionPhotoCell extends AbstractDelegateCell<PhotoGalleryModel,
         darkenedView.setVisibility(getModelObject().isChecked() ? View.VISIBLE : View.GONE);
         //
         itemView.setOnClickListener(v -> cellDelegate.onCellClicked(getModelObject()));
-    }
-
-    @Override
-    public void prepareForReuse() {
-
     }
 
     private void setImage(Uri uri, SimpleDraweeView draweeView) {

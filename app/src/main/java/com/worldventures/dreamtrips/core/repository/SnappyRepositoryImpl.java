@@ -10,7 +10,6 @@ import com.snappydb.SnappydbException;
 import com.techery.spares.storage.complex_objects.Optional;
 import com.techery.spares.utils.ValidationUtils;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem;
-import com.worldventures.dreamtrips.modules.common.model.UploadTask;
 import com.worldventures.dreamtrips.modules.dtl.model.location.DtlLocation;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchant;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchantAttribute;
@@ -18,7 +17,6 @@ import com.worldventures.dreamtrips.modules.dtl.model.transaction.DtlTransaction
 import com.worldventures.dreamtrips.modules.dtl.model.transaction.ImmutableDtlTransaction;
 import com.worldventures.dreamtrips.modules.friends.model.Circle;
 import com.worldventures.dreamtrips.modules.infopages.model.FeedbackType;
-import com.worldventures.dreamtrips.modules.membership.model.Member;
 import com.worldventures.dreamtrips.modules.reptools.model.VideoLanguage;
 import com.worldventures.dreamtrips.modules.reptools.model.VideoLocale;
 import com.worldventures.dreamtrips.modules.settings.model.FlagSetting;
@@ -43,6 +41,7 @@ import java.util.concurrent.Future;
 import timber.log.Timber;
 
 public class SnappyRepositoryImpl implements SnappyRepository {
+
     private Context context;
     private ExecutorService executorService;
 
@@ -185,17 +184,6 @@ public class SnappyRepositoryImpl implements SnappyRepository {
     }
 
     @Override
-    public int getRecentlyAddedBucketItems(String type) {
-        return actWithResult(db -> db.getInt(RECENT_BUCKET_COUNT + ":" + type))
-                .or(0);
-    }
-
-    @Override
-    public void saveRecentlyAddedBucketItems(String type, final int count) {
-        act(db -> db.putInt(RECENT_BUCKET_COUNT + ":" + type, count));
-    }
-
-    @Override
     public void saveOpenBucketTabType(String type) {
         act(db -> db.put(OPEN_BUCKET_TAB_TYPE, type));
     }
@@ -217,6 +205,16 @@ public class SnappyRepositoryImpl implements SnappyRepository {
     public CachedEntity getDownloadMediaEntity(String id) {
         return actWithResult(db -> db.get(MEDIA_UPLOAD_ENTITY + id, CachedEntity.class))
                 .orNull();
+    }
+
+    @Override
+    public void setLastSyncAppVersion(String appVersion) {
+        act(db -> db.put(LAST_SYNC_APP_VERSION, appVersion));
+    }
+
+    @Override
+    public String getLastSyncAppVersion() {
+        return actWithResult(db -> db.get(LAST_SYNC_APP_VERSION)).orNull();
     }
 
     ///////////////////////////////////////////////////////////////////////////
@@ -259,7 +257,7 @@ public class SnappyRepositoryImpl implements SnappyRepository {
     }
 
     ///////////////////////////////////////////////////////////////////////////
-    // Settings
+    // Suggest photos
     ///////////////////////////////////////////////////////////////////////////
 
     @Override
@@ -273,52 +271,6 @@ public class SnappyRepositoryImpl implements SnappyRepository {
     }
 
     ///////////////////////////////////////////////////////////////////////////
-    // Image Tasks
-    ///////////////////////////////////////////////////////////////////////////
-
-    /**
-     * Use it from PhotoUploadManager
-     */
-    @Override
-    public void saveUploadTask(UploadTask uploadTask) {
-        act(db -> db.put(UPLOAD_TASK_KEY + uploadTask.getFilePath(), uploadTask));
-    }
-
-    @Override
-    public UploadTask getUploadTask(String filePath) {
-        return actWithResult(db -> db.get(UPLOAD_TASK_KEY + filePath, UploadTask.class)).orNull();
-    }
-
-    @Override
-    public void removeUploadTask(UploadTask uploadTask) {
-        act(db -> db.del(UPLOAD_TASK_KEY + uploadTask.getFilePath()));
-    }
-
-    @Override
-    public void removeAllUploadTasks() {
-        act(db -> Queryable.from(db.findKeys(UPLOAD_TASK_KEY)).forEachR(key -> {
-            try {
-                db.del(key);
-            } catch (SnappydbException e) {
-                Timber.e(e, "Error while deleting");
-            }
-        }));
-    }
-
-    @Override
-    public List<UploadTask> getAllUploadTask() {
-        return actWithResult(db -> {
-            List<UploadTask> tasks = new ArrayList<>();
-            String[] keys = db.findKeys(UPLOAD_TASK_KEY);
-            for (String key : keys) {
-                tasks.add(db.get(key, UploadTask.class));
-            }
-            return tasks;
-        }).or(Collections.emptyList());
-    }
-
-
-    ///////////////////////////////////////////////////////////////////////////
     // Photo List Tasks
     ///////////////////////////////////////////////////////////////////////////
 
@@ -330,27 +282,6 @@ public class SnappyRepositoryImpl implements SnappyRepository {
     @Override
     public List<IFullScreenObject> readPhotoEntityList(TripImagesType type, int userId) {
         return readList(IMAGE + ":" + type + ":" + userId, IFullScreenObject.class);
-    }
-
-    ///////////////////////////////////////////////////////////////////////////
-    // Invites
-    ///////////////////////////////////////////////////////////////////////////
-
-    @Override
-    public void addInviteMember(Member member) {
-        act(db -> db.put(INVITE_MEMBER + member.getId(), member));
-    }
-
-    @Override
-    public List<Member> getInviteMembers() {
-        return actWithResult(db -> {
-            List<Member> members = new ArrayList<>();
-            String[] keys = db.findKeys(INVITE_MEMBER);
-            for (String key : keys) {
-                members.add(db.get(key, Member.class));
-            }
-            return members;
-        }).or(Collections.emptyList());
     }
 
     @Override
@@ -408,6 +339,20 @@ public class SnappyRepositoryImpl implements SnappyRepository {
     @Override
     public int getFriendsRequestsCount() {
         return actWithResult(db -> db.getInt(FRIEND_REQUEST_COUNT)).or(0);
+    }
+
+    ///////////////////////////////////////////////////////////////////////////
+    // Cached translations
+    ///////////////////////////////////////////////////////////////////////////
+
+    @Override
+    public void saveTranslation(String originalText, String translation, String toLanguage) {
+        act(db -> db.put(TRANSLATION + originalText + toLanguage, translation));
+    }
+
+    @Override
+    public String getTranslation(String originalText, String toLanguage) {
+        return actWithResult(db -> db.get(TRANSLATION + originalText + toLanguage)).or("");
     }
 
     ///////////////////////////////////////////////////////////////////////////

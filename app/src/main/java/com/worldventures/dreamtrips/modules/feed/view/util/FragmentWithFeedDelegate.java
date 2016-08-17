@@ -1,7 +1,9 @@
 package com.worldventures.dreamtrips.modules.feed.view.util;
 
+import android.support.annotation.IdRes;
 import android.support.v4.app.FragmentManager;
 
+import com.innahema.collections.query.queriables.Queryable;
 import com.techery.spares.adapter.BaseDelegateAdapter;
 import com.techery.spares.ui.view.cell.AbstractCell;
 import com.techery.spares.ui.view.cell.CellDelegate;
@@ -15,7 +17,7 @@ import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.common.view.bundle.BucketBundle;
 import com.worldventures.dreamtrips.modules.feed.bundle.CreateEntityBundle;
 import com.worldventures.dreamtrips.modules.feed.bundle.FeedAdditionalInfoBundle;
-import com.worldventures.dreamtrips.modules.feed.bundle.FeedDetailsBundle;
+import com.worldventures.dreamtrips.modules.feed.bundle.FeedItemDetailsBundle;
 import com.worldventures.dreamtrips.modules.feed.model.BucketFeedItem;
 import com.worldventures.dreamtrips.modules.feed.model.FeedItem;
 import com.worldventures.dreamtrips.modules.feed.model.LoadMoreModel;
@@ -94,6 +96,32 @@ public class FragmentWithFeedDelegate {
         adapter.notifyItemInserted(position);
     }
 
+    public void notifyItemChanged(FeedItem feedItem) {
+        if (feedItem == null) {
+            adapter.notifyDataSetChanged();
+            return;
+        }
+        int size = adapter.getItems().size();
+        for (int i = 0; i < size; i++) {
+            Object object = adapter.getItems().get(i);
+            if (object instanceof FeedItem && ((FeedItem)object).equalsWith(feedItem)) {
+                adapter.notifyItemChanged(i);
+                return;
+            }
+        }
+    }
+
+    /**
+     * After leaving feed items list screen all translated items should reset view state to original
+     * (translation hides and 'Translation' button is visible)
+     */
+    public void resetTranslatedStatus() {
+        Queryable.from(adapter.getItems()).forEachR(item -> {
+            if (item instanceof FeedItem) ((FeedItem)item).setTranslated(false);
+        });
+        notifyDataSetChanged();
+    }
+
     public void clearItems() {
         adapter.clear();
     }
@@ -133,7 +161,7 @@ public class FragmentWithFeedDelegate {
 
     public void openBucketEdit(FragmentManager fragmentManager, boolean isTabletLandscape,
                                BucketBundle bucketBundle) {
-        int containerId = R.id.container_details_floating;
+        @IdRes int containerId = R.id.container_details_floating;
         bucketBundle.setLock(true);
         if (isTabletLandscape) {
             router.moveTo(Route.BUCKET_EDIT, NavigationConfigBuilder.forFragment()
@@ -158,13 +186,15 @@ public class FragmentWithFeedDelegate {
     public void openComments(FeedItem feedItem, boolean isVisible, boolean isTabletLandscape) {
         if (isVisible) {
             Route detailsRoute = Route.FEED_ITEM_DETAILS;
-            FeedDetailsBundle bundle = new FeedDetailsBundle(feedItem);
+            FeedItemDetailsBundle.Builder bundleBuilder = new FeedItemDetailsBundle.Builder()
+                    .feedItem(feedItem)
+                    .showAdditionalInfo(true)
+                    .openKeyboard(true);
             if (isTabletLandscape) {
-                bundle.setSlave(true);
+                bundleBuilder.slave(true);
             }
-            bundle.setOpenKeyboard(true);
             router.moveTo(detailsRoute, NavigationConfigBuilder.forActivity()
-                    .data(bundle)
+                    .data(bundleBuilder.build())
                     .build());
         }
     }

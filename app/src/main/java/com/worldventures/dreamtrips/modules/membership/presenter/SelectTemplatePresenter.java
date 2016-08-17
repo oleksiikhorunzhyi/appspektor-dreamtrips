@@ -12,10 +12,8 @@ import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.membership.api.GetInvitationsTemplateQuery;
 import com.worldventures.dreamtrips.modules.membership.bundle.TemplateBundle;
 import com.worldventures.dreamtrips.modules.membership.event.MemberStickyEvent;
-import com.worldventures.dreamtrips.modules.membership.event.TemplateSelectedEvent;
 import com.worldventures.dreamtrips.modules.membership.model.InviteTemplate;
 import com.worldventures.dreamtrips.modules.membership.model.Member;
-import com.worldventures.dreamtrips.modules.membership.view.fragment.EditTemplateFragment;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -38,10 +36,9 @@ public class SelectTemplatePresenter extends Presenter<SelectTemplatePresenter.V
 
     private ArrayList<Member> members = new ArrayList<>();
 
-    public void onEvent(TemplateSelectedEvent event) {
+    public void onTemplateSelected(InviteTemplate inviteTemplate) {
         getMembers();
         if (members != null && members.size() > 0) {
-            InviteTemplate inviteTemplate = event.getInviteTemplate();
             inviteTemplate.setFrom(getCurrentUserEmail());
             inviteTemplate.setName(members.get(0).getName());
             inviteTemplate.setTo(members);

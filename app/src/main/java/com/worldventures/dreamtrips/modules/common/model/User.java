@@ -32,10 +32,10 @@ public class User extends BaseEntity implements Parcelable {
     private String firstName;
     private String lastName;
     private String location;
-    private String locale;
     private List<String> badges;
     private Date birthDate;
     private Date enrollDate;
+    private String sponsorUsername;
 
     private double dreamTripsPoints;
     private double roviaBucks;
@@ -58,9 +58,6 @@ public class User extends BaseEntity implements Parcelable {
      * LDTM - ignore
      */
     private List<String> subscriptions;
-
-    //TEMP SOLUTION, NOT NEEDED IN FUTURE, JUST FOR APPERIAN RELEASE
-    private boolean socialEnabled;
 
     @SerializedName("circles")
     List<Circle> circles;
@@ -102,10 +99,6 @@ public class User extends BaseEntity implements Parcelable {
 
     public void setBackgroundPhotoUrl(String backgroundPhotoUrl) {
         this.backgroundPhotoUrl = backgroundPhotoUrl;
-    }
-
-    public boolean isSocialEnabled() {
-        return socialEnabled;
     }
 
     public String getUsername() {
@@ -168,16 +161,12 @@ public class User extends BaseEntity implements Parcelable {
         return location;
     }
 
+    public String getSponsorUsername() {
+        return sponsorUsername;
+    }
+
     public void setLocation(String location) {
         this.location = location;
-    }
-
-    public String getLocale() {
-        return locale;
-    }
-
-    public void setLocale(String locale) {
-        this.locale = locale;
     }
 
     public Avatar getAvatar() {
@@ -210,6 +199,10 @@ public class User extends BaseEntity implements Parcelable {
 
     public boolean isGeneral() {
         return contains(DTM_SUBSCRIPTION, DTS_SUBSCRIPTION);
+    }
+
+    public boolean isMember() {
+        return contains(DTM_SUBSCRIPTION, DTG_SUBSCRIPTION, DTP_SUBSCRIPTION);
     }
 
     private boolean contains(String... keys) {
@@ -390,7 +383,6 @@ public class User extends BaseEntity implements Parcelable {
         dest.writeString(this.lastName);
         dest.writeString(this.company);
         dest.writeString(this.location);
-        dest.writeString(this.locale);
         dest.writeLong(birthDate != null ? birthDate.getTime() : -1);
         dest.writeLong(enrollDate != null ? enrollDate.getTime() : -1);
         dest.writeDouble(this.dreamTripsPoints);
@@ -400,9 +392,9 @@ public class User extends BaseEntity implements Parcelable {
         dest.writeInt(this.relationship == null ? -1 : this.relationship.ordinal());
         dest.writeString(this.backgroundPhotoUrl);
         dest.writeStringList(this.subscriptions);
-        dest.writeByte(socialEnabled ? (byte) 1 : (byte) 0);
         dest.writeByte(termsAccepted ? (byte) 1 : (byte) 0);
         dest.writeParcelable(this.mutualFriends, 0);
+        dest.writeString(sponsorUsername);
         dest.writeList(this.circles);
         dest.writeStringList(this.badges);
     }
@@ -416,7 +408,6 @@ public class User extends BaseEntity implements Parcelable {
         this.lastName = in.readString();
         this.company = in.readString();
         this.location = in.readString();
-        this.locale = in.readString();
         long tmpBirthDate = in.readLong();
         this.birthDate = tmpBirthDate == -1 ? null : new Date(tmpBirthDate);
         long tmpEnrollDate = in.readLong();
@@ -429,9 +420,9 @@ public class User extends BaseEntity implements Parcelable {
         this.relationship = tmpRelationship == -1 ? null : Relationship.values()[tmpRelationship];
         this.backgroundPhotoUrl = in.readString();
         this.subscriptions = in.createStringArrayList();
-        this.socialEnabled = in.readByte() != 0;
         this.termsAccepted = in.readByte() != 0;
         this.mutualFriends = in.readParcelable(MutualFriends.class.getClassLoader());
+        this.sponsorUsername = in.readString();
         circles = new ArrayList<>();
         in.readList(circles, Circle.class.getClassLoader());
         badges = new ArrayList<>();

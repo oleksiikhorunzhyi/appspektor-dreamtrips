@@ -16,10 +16,9 @@ import static com.worldventures.dreamtrips.modules.profile.event.FriendGroupRela
 
 @Layout(R.layout.adapter_item_friend_pref_group)
 public class FriendPrefGroupCell extends AbstractCell<FriendGroupRelation> {
-    @InjectView(R.id.title)
-    TextView title;
-    @InjectView(R.id.cb)
-    CheckBox cb;
+
+    @InjectView(R.id.title) TextView title;
+    @InjectView(R.id.cb) CheckBox cb;
 
     public FriendPrefGroupCell(View view) {
         super(view);
@@ -39,10 +38,5 @@ public class FriendPrefGroupCell extends AbstractCell<FriendGroupRelation> {
                             state)
             );
         });
-    }
-
-    @Override
-    public void prepareForReuse() {
-
     }
 }

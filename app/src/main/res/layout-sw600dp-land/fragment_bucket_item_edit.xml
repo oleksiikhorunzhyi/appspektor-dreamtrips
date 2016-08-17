@@ -31,6 +31,7 @@
                 android:orientation="vertical">
 
                 <LinearLayout
+                    android:id="@+id/bucket_header"
                     android:layout_width="match_parent"
                     android:layout_height="?actionBarSize"
                     android:background="@color/theme_main"

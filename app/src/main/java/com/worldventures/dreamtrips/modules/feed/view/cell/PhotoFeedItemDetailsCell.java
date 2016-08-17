@@ -2,6 +2,7 @@ package com.worldventures.dreamtrips.modules.feed.view.cell;
 
 import android.graphics.PointF;
 import android.net.Uri;
+import android.support.annotation.IdRes;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.ImageView;
@@ -9,6 +10,7 @@ import android.widget.TextView;
 
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.techery.spares.annotations.Layout;
+import com.techery.spares.ui.view.cell.CellDelegate;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.navigation.ToolbarConfig;
@@ -31,14 +33,11 @@ import butterknife.InjectView;
 import butterknife.OnClick;
 
 @Layout(R.layout.adapter_item_feed_photo_event)
-public class PhotoFeedItemDetailsCell extends FeedItemDetailsCell<PhotoFeedItem> {
+public class PhotoFeedItemDetailsCell extends FeedItemDetailsCell<PhotoFeedItem, CellDelegate<PhotoFeedItem>> {
 
-    @InjectView(R.id.photo)
-    SimpleDraweeView photo;
-    @InjectView(R.id.title)
-    TextView title;
-    @InjectView(R.id.tag)
-    protected ImageView tag;
+    @InjectView(R.id.photo) SimpleDraweeView photo;
+    @InjectView(R.id.title) TextView title;
+    @InjectView(R.id.tag) ImageView tag;
     
     public PhotoFeedItemDetailsCell(View view) {
         super(view);
@@ -120,7 +119,7 @@ public class PhotoFeedItemDetailsCell extends FeedItemDetailsCell<PhotoFeedItem>
 
     @Override
     protected void onEdit() {
-        int containerId = R.id.container_details_floating;
+        @IdRes int containerId = R.id.container_details_floating;
         router.moveTo(Route.EDIT_PHOTO, NavigationConfigBuilder.forRemoval()
                 .containerId(containerId)
                 .fragmentManager(fragmentManager)
@@ -131,10 +130,5 @@ public class PhotoFeedItemDetailsCell extends FeedItemDetailsCell<PhotoFeedItem>
                 .fragmentManager(fragmentManager)
                 .data(new EditPhotoBundle(getModelObject().getItem()))
                 .build());
-    }
-
-    @Override
-    public void prepareForReuse() {
-
     }
 }

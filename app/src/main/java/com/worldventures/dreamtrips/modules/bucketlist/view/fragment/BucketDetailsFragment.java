@@ -51,60 +51,44 @@ import me.relex.circleindicator.CircleIndicator;
 public class BucketDetailsFragment<T extends BucketItemDetailsPresenter> extends RxBaseFragmentWithArgs<T, BucketBundle>
         implements BucketItemDetailsPresenter.View {
 
-    @InjectView(R.id.textViewName)
-    protected TextView textViewName;
-    @InjectView(R.id.textViewFriends)
-    protected TextView textViewFriends;
-    @InjectView(R.id.textViewTags)
-    protected TextView textViewTags;
-    @InjectView(R.id.textViewDescription)
-    protected TextView textViewDescription;
-    @InjectView(R.id.textViewCategory)
-    protected TextView textViewCategory;
-    @InjectView(R.id.textViewDate)
-    protected TextView textViewDate;
-    @InjectView(R.id.textViewPlace)
-    protected TextView textViewPlace;
-    @InjectView(R.id.checkBoxDone)
-    protected CheckBox markAsDone;
-    @InjectView(R.id.galleryPlaceHolder)
-    protected ImageView galleryPlaceHolder;
-    @InjectView(R.id.viewPagerBucketGallery)
-    protected ViewPager viewPagerBucketGallery;
-    @InjectView(R.id.circleIndicator)
-    protected CircleIndicator circleIndicator;
-    @InjectView(R.id.bucket_tags_container)
-    View bucketTags;
-    @InjectView(R.id.bucket_who_container)
-    View bucketWho;
-    @InjectView(R.id.diningName)
-    TextView diningName;
-    @InjectView(R.id.diningPriceRange)
-    TextView diningPriceRange;
-    @InjectView(R.id.diningAddress)
-    TextView diningAddress;
-    @InjectView(R.id.diningSite)
-    TextView diningSite;
-    @InjectView(R.id.diningPhone)
-    TextView diningPhone;
-    @InjectView(R.id.diningContainer)
-    View diningContainer;
-    @InjectView(R.id.diningDivider)
-    View diningDivider;
-    @InjectView(R.id.contentView)
-    ViewGroup contentView;
-    @InjectView(R.id.toolbar_actionbar)
-    Toolbar toolbar;
+    @InjectView(R.id.textViewName) TextView textViewName;
+    @InjectView(R.id.textViewFriends) TextView textViewFriends;
+    @InjectView(R.id.textViewTags) TextView textViewTags;
+    @InjectView(R.id.textViewDescription) TextView textViewDescription;
+    @InjectView(R.id.textViewCategory) TextView textViewCategory;
+    @InjectView(R.id.textViewDate) TextView textViewDate;
+    @InjectView(R.id.textViewPlace) TextView textViewPlace;
+    @InjectView(R.id.checkBoxDone) CheckBox markAsDone;
+    @InjectView(R.id.galleryPlaceHolder) ImageView galleryPlaceHolder;
+    @InjectView(R.id.viewPagerBucketGallery) ViewPager viewPagerBucketGallery;
+    @InjectView(R.id.circleIndicator) CircleIndicator circleIndicator;
+    @InjectView(R.id.bucket_tags_container) View bucketTags;
+    @InjectView(R.id.bucket_who_container) View bucketWho;
+    @InjectView(R.id.diningName) TextView diningName;
+    @InjectView(R.id.diningPriceRange) TextView diningPriceRange;
+    @InjectView(R.id.diningAddress) TextView diningAddress;
+    @InjectView(R.id.diningSite) TextView diningSite;
+    @InjectView(R.id.diningPhone) TextView diningPhone;
+    @InjectView(R.id.diningContainer) View diningContainer;
+    @InjectView(R.id.diningDivider) View diningDivider;
+    @InjectView(R.id.contentView) ViewGroup contentView;
+    @InjectView(R.id.toolbar_actionbar) Toolbar toolbar;
 
-    @Inject
-    @ForActivity
-    Provider<Injector> injector;
+    @Inject @ForActivity Provider<Injector> injector;
+
+    private int checkedPosition;
+    private ViewPager.SimpleOnPageChangeListener onPageSelectedListener = new ViewPager.SimpleOnPageChangeListener() {
+        @Override
+        public void onPageSelected(int position) {
+            checkedPosition = position;
+        }
+    };
 
     @Override
     public void afterCreateView(View view) {
         super.afterCreateView(view);
-
         setForeignIntentAction();
+        viewPagerBucketGallery.addOnPageChangeListener(onPageSelectedListener);
     }
 
     @Override
@@ -130,6 +114,7 @@ public class BucketDetailsFragment<T extends BucketItemDetailsPresenter> extends
 
     @Override
     public void onDestroyView() {
+        viewPagerBucketGallery.removeOnPageChangeListener(onPageSelectedListener);
         super.onDestroyView();
         OrientationUtil.unlockOrientation(getActivity());
     }
@@ -291,12 +276,13 @@ public class BucketDetailsFragment<T extends BucketItemDetailsPresenter> extends
             }
         };
         viewPagerBucketGallery.setAdapter(adapter);
-        viewPagerBucketGallery.setCurrentItem(0);
         Queryable.from(photos).forEachR(photo ->
                 adapter.add(new FragmentItem(Route.TRIP_IMAGES_PAGER, ""))
         );
         adapter.notifyDataSetChanged();
         circleIndicator.setViewPager(viewPagerBucketGallery);
+        circleIndicator.onPageSelected(checkedPosition);  //disable ui point position jumping
+        viewPagerBucketGallery.setCurrentItem(checkedPosition);
     }
 
 

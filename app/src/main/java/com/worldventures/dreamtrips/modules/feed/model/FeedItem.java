@@ -2,6 +2,7 @@ package com.worldventures.dreamtrips.modules.feed.model;
 
 import android.content.res.Resources;
 import android.os.Parcel;
+import android.support.annotation.Nullable;
 import android.text.TextUtils;
 
 import com.esotericsoftware.kryo.DefaultSerializer;
@@ -20,19 +21,18 @@ import java.util.Calendar;
 import java.util.Date;
 
 @DefaultSerializer(CompatibleFieldSerializer.class)
-public class FeedItem<T extends FeedEntity> extends BaseEntity implements FeedEntityHolder {
+public class FeedItem<T extends FeedEntity> extends BaseEntity implements FeedEntityHolder, TranslatableItem {
 
-    @SerializedName("notification_id")
-    protected int notificationId;
-
+    @SerializedName("notification_id") protected int notificationId;
     protected FeedItem.Type type = Type.UNDEFINED;
     protected FeedItem.Action action;
     protected T item;
     protected Links links;
-
-    @SerializedName("posted_at")
-    protected Date createdAt;
+    @SerializedName("posted_at") protected Date createdAt;
     protected Date readAt;
+
+    protected transient String translation;
+    protected transient boolean translated;
 
     private MetaData metaData;
 
@@ -134,6 +134,11 @@ public class FeedItem<T extends FeedEntity> extends BaseEntity implements FeedEn
     public int hashCode() {
         if (item == null) return super.hashCode();
         return item != null ? item.hashCode() : 0;
+    }
+
+    public boolean equalsWith(@Nullable FeedItem feedItem){
+        if (feedItem == null) return false;
+        return getItem().getUid().equals(feedItem.getItem().getUid()) && getAction().equals(feedItem.getAction());
     }
 
     public FeedItem() {
@@ -281,9 +286,37 @@ public class FeedItem<T extends FeedEntity> extends BaseEntity implements FeedEn
     }
 
     ///////////////////////////////////////////////////////////////////////////
-    // Inner
+    // Translation
     ///////////////////////////////////////////////////////////////////////////
 
+    @Override
+    public String getOriginalText() {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public String getTranslation() {
+        return translation;
+    }
+
+    @Override
+    public void setTranslation(String translation) {
+        this.translation = translation;
+    }
+
+    @Override
+    public boolean isTranslated() {
+        return translated;
+    }
+
+    @Override
+    public void setTranslated(boolean translated) {
+        this.translated = translated;
+    }
+
+    ///////////////////////////////////////////////////////////////////////////
+    // Inner
+    ///////////////////////////////////////////////////////////////////////////
 
     public enum Action {
         @SerializedName("share")

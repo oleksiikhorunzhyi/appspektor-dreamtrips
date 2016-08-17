@@ -11,6 +11,10 @@ public class ErrorResponse {
 
     transient List<FieldError> fieldErrors;
 
+    public void setErrors(HashMap<String, String[]> errors) {
+        this.errors = errors;
+    }
+
     public List<FieldError> getErrors() {
         if (fieldErrors == null) {
             fieldErrors = Queryable.from(errors.entrySet()).map(FieldError::from).toList();

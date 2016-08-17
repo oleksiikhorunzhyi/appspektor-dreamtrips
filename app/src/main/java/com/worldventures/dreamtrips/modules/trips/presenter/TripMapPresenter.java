@@ -12,7 +12,7 @@ import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.trips.api.GetDetailedTripsHttpAction;
 import com.worldventures.dreamtrips.modules.trips.api.GetMapObjectsHttpAction;
 import com.worldventures.dreamtrips.modules.trips.manager.TripFilterDataProvider;
-import com.worldventures.dreamtrips.modules.trips.manager.TripMapInteractor;
+import com.worldventures.dreamtrips.modules.trips.service.TripMapInteractor;
 import com.worldventures.dreamtrips.modules.trips.model.Cluster;
 import com.worldventures.dreamtrips.modules.trips.model.MapObjectHolder;
 import com.worldventures.dreamtrips.modules.trips.model.Pin;
@@ -32,13 +32,10 @@ import timber.log.Timber;
 
 public class TripMapPresenter extends Presenter<TripMapPresenter.View> {
 
-    @State
-    String query;
+    @State String query;
 
-    @Inject
-    TripMapInteractor tripMapInteractor;
-    @Inject
-    TripFilterDataProvider tripFilterDataProvider;
+    @Inject TripMapInteractor tripMapInteractor;
+    @Inject TripFilterDataProvider tripFilterDataProvider;
 
     private List<MapObjectHolder> mapObjects;
     private List<Marker> existsMarkers;

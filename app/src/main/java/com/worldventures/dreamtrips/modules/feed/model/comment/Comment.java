@@ -4,13 +4,14 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 import com.google.gson.annotations.SerializedName;
-import com.worldventures.dreamtrips.modules.feed.model.UidItem;
 import com.worldventures.dreamtrips.modules.common.model.User;
+import com.worldventures.dreamtrips.modules.feed.model.TranslatableItem;
+import com.worldventures.dreamtrips.modules.feed.model.UidItem;
 
 import java.io.Serializable;
 import java.util.Date;
 
-public class Comment implements Parcelable, Serializable, UidItem {
+public class Comment implements Parcelable, Serializable, UidItem, TranslatableItem {
 
     String uid;
     String parent_id;
@@ -25,6 +26,9 @@ public class Comment implements Parcelable, Serializable, UidItem {
     @SerializedName("updated_at")
     Date updatedAt;
     boolean update;
+    String language;
+    String translation;
+    boolean translated;
 
     public Comment() {
     }
@@ -34,6 +38,9 @@ public class Comment implements Parcelable, Serializable, UidItem {
         parent_id = in.readString();
         text = in.readString();
         user = in.readParcelable(User.class.getClassLoader());
+        language = in.readString();
+        translation = in.readString();
+        translated = in.readByte() == 1;
     }
 
     public static final Creator<Comment> CREATOR = new Creator<Comment>() {
@@ -88,6 +95,9 @@ public class Comment implements Parcelable, Serializable, UidItem {
         parcel.writeString(parent_id);
         parcel.writeString(text);
         parcel.writeParcelable(user, i);
+        parcel.writeString(language);
+        parcel.writeString(translation);
+        parcel.writeByte((byte) (translated ? 1 : 0));
     }
 
     @Override
@@ -104,5 +114,38 @@ public class Comment implements Parcelable, Serializable, UidItem {
     @Override
     public int hashCode() {
         return uid != null ? uid.hashCode() : 0;
+    }
+
+    ///////////////////////////////////////////////////////////////////////////
+    // Translation
+    ///////////////////////////////////////////////////////////////////////////
+
+    @Override
+    public String getTranslation() {
+        return translation;
+    }
+
+    @Override
+    public void setTranslation(String translation) {
+        this.translation = translation;
+    }
+
+    @Override
+    public String getOriginalText() {
+        return text;
+    }
+
+    public String getLanguageFrom() {
+        return language;
+    }
+
+    @Override
+    public boolean isTranslated() {
+        return translated;
+    }
+
+    @Override
+    public void setTranslated(boolean translated) {
+        this.translated = translated;
     }
 }

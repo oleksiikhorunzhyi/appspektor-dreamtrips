@@ -47,285 +47,271 @@ import cn.pedant.SweetAlert.SweetAlertDialog;
 
 import static com.worldventures.dreamtrips.modules.tripsimages.bundle.EditPhotoTagsBundle.PhotoEntity;
 
-public abstract class ActionEntityFragment<PM extends ActionEntityPresenter, P extends Parcelable>
-        extends RxBaseFragmentWithArgs<PM, P> implements ActionEntityPresenter.View, PhotoPostCreationDelegate {
+public abstract class ActionEntityFragment<PM extends ActionEntityPresenter, P extends Parcelable> extends RxBaseFragmentWithArgs<PM, P> implements ActionEntityPresenter.View, PhotoPostCreationDelegate {
 
-    @Inject
-    BackStackDelegate backStackDelegate;
-    @Inject
-    @ForActivity
-    Provider<Injector> injectorProvider;
+   @Inject BackStackDelegate backStackDelegate;
+   @Inject @ForActivity Provider<Injector> injectorProvider;
 
-    @InjectView(R.id.avatar)
-    protected SmartAvatarView avatar;
-    @InjectView(R.id.name)
-    protected TextView name;
-    @InjectView(R.id.post_button)
-    protected Button postButton;
-    @InjectView(R.id.image)
-    protected ImageView image;
-    @InjectView(R.id.location)
-    protected ImageView locationBtn;
-    @InjectView(R.id.photos)
-    protected RecyclerView photosList;
+   @InjectView(R.id.avatar) protected SmartAvatarView avatar;
+   @InjectView(R.id.name) protected TextView name;
+   @InjectView(R.id.post_button) protected Button postButton;
+   @InjectView(R.id.image) protected ImageView image;
+   @InjectView(R.id.location) protected ImageView locationBtn;
+   @InjectView(R.id.photos) protected RecyclerView photosList;
 
-    BaseDelegateAdapter adapter;
-    SweetAlertDialog dialog;
-    PostDescription description = new PostDescription();
+   BaseDelegateAdapter adapter;
+   SweetAlertDialog dialog;
+   PostDescription description = new PostDescription();
 
-    @Override
-    public void afterCreateView(View rootView) {
-        super.afterCreateView(rootView);
-        postButton.setText(getPostButtonText());
-        //
-        adapter = new BaseDelegateAdapter(getContext(), this);
-        adapter.registerCell(PhotoCreationItem.class, PhotoPostCreationCell.class);
-        adapter.registerCell(PostDescription.class, PostCreationTextCell.class);
-        adapter.registerDelegate(PostDescription.class, new PostCreationTextCell.Delegate() {
-            @Override
-            public void onCellClicked(PostDescription model) {
-                router.moveTo(Route.PHOTO_CREATION_DESC, NavigationConfigBuilder.forActivity()
-                        .data(new DescriptionBundle(model.getDescription()))
-                        .build());
-            }
-        });
-        adapter.registerDelegate(PhotoCreationItem.class, this);
-        LinearLayoutManager layout = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
-        photosList.setLayoutManager(layout);
-        photosList.addItemDecoration(new PhotoPostCreationItemDecorator());
-        photosList.setAdapter(adapter);
-    }
+   @Override
+   public void afterCreateView(View rootView) {
+      super.afterCreateView(rootView);
+      postButton.setText(getPostButtonText());
+      //
+      adapter = new BaseDelegateAdapter(getContext(), this);
+      adapter.registerCell(PhotoCreationItem.class, PhotoPostCreationCell.class);
+      adapter.registerCell(PostDescription.class, PostCreationTextCell.class);
+      adapter.registerDelegate(PostDescription.class, new PostCreationTextCell.Delegate() {
+         @Override
+         public void onCellClicked(PostDescription model) {
+            router.moveTo(Route.PHOTO_CREATION_DESC, NavigationConfigBuilder.forActivity()
+                  .data(new DescriptionBundle(model.getDescription()))
+                  .build());
+         }
+      });
+      adapter.registerDelegate(PhotoCreationItem.class, this);
+      LinearLayoutManager layout = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
+      photosList.setLayoutManager(layout);
+      photosList.addItemDecoration(new PhotoPostCreationItemDecorator());
+      photosList.setAdapter(adapter);
+   }
 
-    @Override
-    public void onActivityCreated(Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
-        if (getActivity() instanceof MainActivity) {
-            ((MainActivity) getActivity()).disableLeftDrawer();
-        }
-    }
+   @Override
+   public void onActivityCreated(Bundle savedInstanceState) {
+      super.onActivityCreated(savedInstanceState);
+      if (getActivity() instanceof MainActivity) {
+         ((MainActivity) getActivity()).disableLeftDrawer();
+      }
+   }
 
-    @Override
-    public void onDestroyView() {
-        super.onDestroyView();
-        if (getActivity() instanceof MainActivity) {
-            ((MainActivity) getActivity()).enableLeftDrawer();
-        }
-    }
+   @Override
+   public void onDestroyView() {
+      super.onDestroyView();
+      if (getActivity() instanceof MainActivity) {
+         ((MainActivity) getActivity()).enableLeftDrawer();
+      }
+   }
 
-    @Override
-    public void onResume() {
-        super.onResume();
-        backStackDelegate.setListener(this::onBack);
-        updateLocationButtonState();
-        getPresenter().invalidateDynamicViews();
-    }
+   @Override
+   public void onResume() {
+      super.onResume();
+      backStackDelegate.setListener(this::onBack);
+      updateLocationButtonState();
+      getPresenter().invalidateDynamicViews();
+   }
 
-    @Override
-    public void attachPhotos(List<PhotoCreationItem> images) {
-        adapter.addItems(images);
-        adapter.notifyDataSetChanged();
-    }
+   @Override
+   public void attachPhotos(List<PhotoCreationItem> images) {
+      adapter.addItems(images);
+      adapter.notifyDataSetChanged();
+   }
 
-    @Override
-    public void attachPhoto(PhotoCreationItem image) {
-        adapter.addItem(image);
-        adapter.notifyDataSetChanged();
-    }
+   @Override
+   public void attachPhoto(PhotoCreationItem image) {
+      adapter.addItem(image);
+      adapter.notifyDataSetChanged();
+   }
 
-    @Override
-    public void updateLocationButtonState() {
-        boolean isSelected = getPresenter().getLocation() != null && !TextUtils.isEmpty(getPresenter().getLocation().getName());
-        locationBtn.setSelected(isSelected);
-        locationBtn.setVisibility(View.VISIBLE);
-    }
+   @Override
+   public void updateLocationButtonState() {
+      boolean isSelected = getPresenter().getLocation() != null && !TextUtils.isEmpty(getPresenter().getLocation()
+            .getName());
+      locationBtn.setSelected(isSelected);
+      locationBtn.setVisibility(View.VISIBLE);
+   }
 
-    @Override
-    public void onPause() {
-        super.onPause();
-        backStackDelegate.setListener(null);
-        SoftInputUtil.hideSoftInputMethod(getActivity());
-    }
+   @Override
+   public void onPause() {
+      super.onPause();
+      backStackDelegate.setListener(null);
+      SoftInputUtil.hideSoftInputMethod(getActivity());
+   }
 
-    @Override
-    public void setName(String userName) {
-        name.setText(userName);
-    }
+   @Override
+   public void setName(String userName) {
+      name.setText(userName);
+   }
 
-    @Override
-    public void setAvatar(User user) {
-        avatar.setImageURI(Uri.parse(user.getAvatar().getThumb()));
-        avatar.setup(user, injectorProvider.get());
-    }
+   @Override
+   public void setAvatar(User user) {
+      avatar.setImageURI(Uri.parse(user.getAvatar().getThumb()));
+      avatar.setup(user, injectorProvider.get());
+   }
 
-    @Override
-    public void setText(String text) {
-        if (!adapter.getItems().contains(description)) {
-            adapter.addItem(description);
-        }
+   @Override
+   public void setText(String text) {
+      if (!adapter.getItems().contains(description)) {
+         adapter.addItem(description);
+      }
 
-        description.setDescription(text);
-        adapter.notifyDataSetChanged();
-    }
+      description.setDescription(text);
+      adapter.notifyDataSetChanged();
+   }
 
-    @Override
-    public void showCancelationDialog() {
-        if (dialog == null || !dialog.isShowing()) {
-            dialog = new SweetAlertDialog(getActivity(), SweetAlertDialog.WARNING_TYPE)
-                    .setTitleText(getString(R.string.app_name))
-                    .setContentText(getString(R.string.post_cancel_message))
-                    .setConfirmText(getString(R.string.social_add_friend_yes))
-                    .setCancelText(getString(R.string.social_add_friend_no))
-                    .setConfirmClickListener(sweetAlertDialog -> {
-                        sweetAlertDialog.dismissWithAnimation();
-                        dialog = null;
-                        cancel();
-                    })
-                    .setCancelClickListener(SweetAlertDialog::dismissWithAnimation);
-            dialog.show();
-        }
-    }
+   @Override
+   public void showCancelationDialog() {
+      if (dialog == null || !dialog.isShowing()) {
+         dialog = new SweetAlertDialog(getActivity(), SweetAlertDialog.WARNING_TYPE).setTitleText(getString(R.string.app_name))
+               .setContentText(getString(R.string.post_cancel_message))
+               .setConfirmText(getString(R.string.social_add_friend_yes))
+               .setCancelText(getString(R.string.social_add_friend_no))
+               .setConfirmClickListener(sweetAlertDialog -> {
+                  sweetAlertDialog.dismissWithAnimation();
+                  dialog = null;
+                  cancel();
+               })
+               .setCancelClickListener(SweetAlertDialog::dismissWithAnimation);
+         dialog.show();
+      }
+   }
 
-    @Override
-    public void cancel() {
-        if (dialog != null && dialog.isShowing()) dialog.dismiss();
+   @Override
+   public void cancel() {
+      if (dialog != null && dialog.isShowing()) dialog.dismiss();
 
-        router.moveTo(getRoute(), NavigationConfigBuilder.forRemoval()
-                .fragmentManager(getFragmentManager())
-                .build());
-    }
+      router.moveTo(getRoute(), NavigationConfigBuilder.forRemoval().fragmentManager(getFragmentManager()).build());
+   }
 
-    @Override
-    public void enableButton() {
-        postButton.setTextColor(getResources().getColor(R.color.bucket_detailed_text_color));
-        postButton.setClickable(true);
-    }
+   @Override
+   public void enableButton() {
+      postButton.setTextColor(getResources().getColor(R.color.bucket_detailed_text_color));
+      postButton.setClickable(true);
+   }
 
-    @Override
-    public void disableButton() {
-        postButton.setTextColor(getResources().getColor(R.color.grey));
-        postButton.setClickable(false);
-    }
+   @Override
+   public void disableButton() {
+      postButton.setTextColor(getResources().getColor(R.color.grey));
+      postButton.setClickable(false);
+   }
 
-    @Override
-    public void onPostError() {
-        postButton.setEnabled(true);
-    }
+   @Override
+   public void onPostError() {
+      postButton.setEnabled(true);
+   }
 
-    @OnClick(R.id.post_button)
-    void onPost() {
-        postButton.setEnabled(false);
-        getPresenter().post();
-    }
+   @OnClick(R.id.post_button)
+   void onPost() {
+      postButton.setEnabled(false);
+      getPresenter().post();
+   }
 
-    protected boolean onBack() {
-        if (getChildFragmentManager().popBackStackImmediate()) return true;
-        //
-        getPresenter().cancelClicked();
-        return true;
-    }
+   protected boolean onBack() {
+      if (getChildFragmentManager().popBackStackImmediate()) return true;
+      //
+      getPresenter().cancelClicked();
+      return true;
+   }
 
-    @OnClick(R.id.location)
-    void onLocation() {
-        getPresenter().onLocationClicked();
-    }
+   @OnClick(R.id.location)
+   void onLocation() {
+      getPresenter().onLocationClicked();
+   }
 
-    @OnClick(R.id.close)
-    void onClose() {
-        getPresenter().cancelClicked();
-    }
+   @OnClick(R.id.close)
+   void onClose() {
+      getPresenter().cancelClicked();
+   }
 
-    @OnClick(R.id.space)
-    void onSpaceClicked() {
-        if (ViewUtils.isTablet(getActivity())) getPresenter().cancelClicked();
-    }
+   @OnClick(R.id.space)
+   void onSpaceClicked() {
+      if (ViewUtils.isTablet(getActivity())) getPresenter().cancelClicked();
+   }
 
-    @Override
-    public void openLocation(Location location) {
-        router.moveTo(Route.ADD_LOCATION, NavigationConfigBuilder
-                .forFragment()
-                .backStackEnabled(true)
-                .fragmentManager(getChildFragmentManager())
-                .containerId(R.id.additional_page_container)
-                .data(location)
-                .build());
-    }
+   @Override
+   public void openLocation(Location location) {
+      router.moveTo(Route.ADD_LOCATION, NavigationConfigBuilder.forFragment()
+            .backStackEnabled(true)
+            .fragmentManager(getChildFragmentManager())
+            .containerId(R.id.additional_page_container)
+            .data(location)
+            .build());
+   }
 
-    @Override
-    public void updateItem(PhotoCreationItem item) {
-        adapter.notifyItemChanged(adapter.getItems().indexOf(item));
-    }
+   @Override
+   public void updateItem(PhotoCreationItem item) {
+      adapter.notifyItemChanged(adapter.getItems().indexOf(item));
+   }
 
-    //////////////////////////////////////////
-    // Cell callbacks
-    //////////////////////////////////////////
+   //////////////////////////////////////////
+   // Cell callbacks
+   //////////////////////////////////////////
 
-    @Override
-    public void onCellClicked(PhotoCreationItem model) {
-        // nothing to do
-    }
+   @Override
+   public void onCellClicked(PhotoCreationItem model) {
+      // nothing to do
+   }
 
-    @Override
-    public void onTagIconClicked(PhotoCreationItem item) {
-        openTagEditScreen(item, null);
-    }
+   @Override
+   public void onTagIconClicked(PhotoCreationItem item) {
+      openTagEditScreen(item, null);
+   }
 
-    @Override
-    public void onSuggestionClicked(PhotoCreationItem item, PhotoTag suggestion) {
-        openTagEditScreen(item, suggestion);
-    }
+   @Override
+   public void onSuggestionClicked(PhotoCreationItem item, PhotoTag suggestion) {
+      openTagEditScreen(item, suggestion);
+   }
 
-    protected void openTagEditScreen(PhotoCreationItem item, PhotoTag activeSuggestion) {
-        SoftInputUtil.hideSoftInputMethod(getView());
+   protected void openTagEditScreen(PhotoCreationItem item, PhotoTag activeSuggestion) {
+      SoftInputUtil.hideSoftInputMethod(getView());
 
-        PhotoEntity photoEntity = new PhotoEntity(item.getOriginUrl(), item.getFilePath());
-        EditPhotoTagsBundle bundle = new EditPhotoTagsBundle();
-        bundle.setPhoto(photoEntity);
-        bundle.setActiveSuggestion(activeSuggestion);
-        bundle.setPhotoTags(item.getCombinedTags());
-        bundle.setSuggestions(item.getSuggestions());
-        bundle.setRequestId(item.getId());
-        router.moveTo(Route.EDIT_PHOTO_TAG_FRAGMENT, NavigationConfigBuilder
-                .forFragment()
-                .backStackEnabled(true)
-                .fragmentManager(getChildFragmentManager())
-                .containerId(R.id.additional_page_container)
-                .data(bundle)
-                .build());
-    }
+      PhotoEntity photoEntity = new PhotoEntity(item.getOriginUrl(), item.getFilePath());
+      EditPhotoTagsBundle bundle = new EditPhotoTagsBundle();
+      bundle.setPhoto(photoEntity);
+      bundle.setActiveSuggestion(activeSuggestion);
+      bundle.setPhotoTags(item.getCombinedTags());
+      bundle.setSuggestions(item.getSuggestions());
+      bundle.setRequestId(item.getId());
+      router.moveTo(Route.EDIT_PHOTO_TAG_FRAGMENT, NavigationConfigBuilder.forFragment()
+            .backStackEnabled(true)
+            .fragmentManager(getChildFragmentManager())
+            .containerId(R.id.additional_page_container)
+            .data(bundle)
+            .build());
+   }
 
-    @Override
-    public void onProgressClicked(PhotoCreationItem uploadTask) {
-        // nothing to do
-    }
+   @Override
+   public void onProgressClicked(PhotoCreationItem uploadTask) {
+      // nothing to do
+   }
 
-    @Override
-    public void onRemoveClicked(PhotoCreationItem uploadTask) {
+   @Override
+   public void onRemoveClicked(PhotoCreationItem uploadTask) {
 
-    }
+   }
 
-    @Override
-    public void onPhotoTitleFocusChanged(boolean hasFocus) {
-        onTitleFocusChanged(hasFocus);
-    }
+   @Override
+   public void onPhotoTitleFocusChanged(boolean hasFocus) {
+      onTitleFocusChanged(hasFocus);
+   }
 
-    @Override
-    public void onTagsChanged() {
-        getPresenter().invalidateDynamicViews();
-    }
+   @Override
+   public void onTagsChanged() {
+      getPresenter().invalidateDynamicViews();
+   }
 
-    ///////////////////////////////////////////////////////////////
+   ///////////////////////////////////////////////////////////////
 
-    protected void onTitleFocusChanged(boolean hasFocus) {
+   protected void onTitleFocusChanged(boolean hasFocus) {
 
-    }
+   }
 
-    @Override
-    public void onPhotoTitleChanged(String title) {
-        getPresenter().invalidateDynamicViews();
-    }
+   @Override
+   public void onPhotoTitleChanged(String title) {
+      getPresenter().invalidateDynamicViews();
+   }
 
-    protected abstract int getPostButtonText();
+   protected abstract int getPostButtonText();
 
-    protected abstract Route getRoute();
+   protected abstract Route getRoute();
 
 }

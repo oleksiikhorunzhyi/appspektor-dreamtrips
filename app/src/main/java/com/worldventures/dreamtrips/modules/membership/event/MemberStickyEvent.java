@@ -6,14 +6,14 @@ import java.util.List;
 
 public class MemberStickyEvent {
 
-    private List<Member> members;
+   private List<Member> members;
 
-    public MemberStickyEvent(List<Member> members) {
-        this.members = members;
-    }
+   public MemberStickyEvent(List<Member> members) {
+      this.members = members;
+   }
 
-    public List<Member> getMembers() {
-        return members;
-    }
+   public List<Member> getMembers() {
+      return members;
+   }
 
 }

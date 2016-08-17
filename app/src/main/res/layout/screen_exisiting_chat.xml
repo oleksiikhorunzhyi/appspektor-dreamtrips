@@ -1,13 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.messenger.ui.view.add_member.AddChatMembersScreenImpl
-    android:id="@+id/existing_chat_screen"
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:background="@color/main_background"
-    >
+<com.messenger.ui.view.add_member.AddChatMembersScreenImpl android:id="@+id/existing_chat_screen"
+      xmlns:android="http://schemas.android.com/apk/res/android"
+      android:layout_width="match_parent"
+      android:layout_height="match_parent"
+      android:orientation="vertical"
+      android:background="@color/main_background"
+      >
 
-    <include layout="@layout/layout_new_chat"/>
+   <include layout="@layout/layout_new_chat" />
 
 </com.messenger.ui.view.add_member.AddChatMembersScreenImpl>

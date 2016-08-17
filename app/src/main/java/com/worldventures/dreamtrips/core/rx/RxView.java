@@ -6,6 +6,18 @@ import rx.Observable;
 
 public interface RxView extends Presenter.View {
 
+   /**
+    * Use bindUntilDropView()
+    *
+    * @param observable
+    * @param <T>
+    * @return
+    * @see RxView#bindUntilDropView(rx.Observable)
+    */
+   @Deprecated
    <T> Observable<T> bind(Observable<T> observable);
 
+   <T> Observable<T> bindUntilStop(Observable<T> observable);
+
+   <T> Observable<T> bindUntilDropView(Observable<T> observable);
 }

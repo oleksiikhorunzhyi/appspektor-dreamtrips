@@ -10,9 +10,9 @@ import dagger.Provides;
 @Module(library = true, complete = false)
 public class PermissionModule {
 
-    @Singleton
-    @Provides
-    PermissionDispatcher providePermissionDispatcher(Activity activity) {
-        return new PermissionDispatcher(activity);
-    }
+   @Singleton
+   @Provides
+   PermissionDispatcher providePermissionDispatcher(Activity activity) {
+      return new PermissionDispatcher(activity);
+   }
 }

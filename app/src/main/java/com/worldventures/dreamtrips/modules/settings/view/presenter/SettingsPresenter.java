@@ -1,15 +1,18 @@
 package com.worldventures.dreamtrips.modules.settings.view.presenter;
 
+import android.support.annotation.StringRes;
+
 import com.innahema.collections.query.queriables.Queryable;
-import com.octo.android.robospice.persistence.exception.SpiceException;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
+import com.worldventures.dreamtrips.core.rx.RxView;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.dtl.service.DtlFilterMerchantInteractor;
 import com.worldventures.dreamtrips.modules.dtl.service.action.DtlFilterDataAction;
-import com.worldventures.dreamtrips.modules.settings.api.UpdateSettingsCommand;
+import com.worldventures.dreamtrips.modules.settings.command.SettingsCommand;
 import com.worldventures.dreamtrips.modules.settings.model.Setting;
 import com.worldventures.dreamtrips.modules.settings.model.SettingsGroup;
+import com.worldventures.dreamtrips.modules.settings.service.SettingsInteractor;
 import com.worldventures.dreamtrips.modules.settings.util.SettingsFactory;
 import com.worldventures.dreamtrips.modules.settings.util.SettingsManager;
 
@@ -19,104 +22,106 @@ import java.util.List;
 import javax.inject.Inject;
 
 import icepick.State;
+import io.techery.janet.helper.ActionStateSubscriber;
 import rx.Observable;
+import rx.android.schedulers.AndroidSchedulers;
 
 public class SettingsPresenter extends Presenter<SettingsPresenter.View> {
 
-    @State
-    ArrayList<Setting> settingsList;
-    @State
-    ArrayList<Setting> immutableSettingsList;
+   @Inject SnappyRepository db;
+   @Inject DtlFilterMerchantInteractor dtlFilterMerchantInteractor;
+   @Inject SettingsInteractor settingsInteractor;
 
-    @Inject
-    SnappyRepository db;
+   @State ArrayList<Setting> settingsList;
+   @State ArrayList<Setting> immutableSettingsList;
 
-    @Inject
-    DtlFilterMerchantInteractor dtlFilterMerchantInteractor;
+   private SettingsGroup group;
 
-    private SettingsGroup group;
+   public SettingsPresenter(SettingsGroup group) {
+      this.group = group;
+   }
 
-    public SettingsPresenter(SettingsGroup group) {
-        this.group = group;
-    }
+   @Override
+   public void takeView(View view) {
+      super.takeView(view);
+      if (settingsList == null)
+         settingsList = (ArrayList<Setting>) SettingsManager.merge(db.getSettings(), SettingsFactory.createSettings(group));
+      //
+      if (immutableSettingsList == null) immutableSettingsList = cloneList(settingsList);
+      //
+      view.setSettings(settingsList);
+      subscribeUpdateSettings();
+   }
 
-    @Override
-    public void takeView(View view) {
-        super.takeView(view);
-        if (this.settingsList == null)
-            this.settingsList = (ArrayList<Setting>) SettingsManager.merge(db.getSettings(),
-                    SettingsFactory.createSettings(group));
-        //
-        if (immutableSettingsList == null)
-            immutableSettingsList = cloneList(this.settingsList);
-        //
-        view.setSettings(settingsList);
-    }
+   @Override
+   public void onResume() {
+      super.onResume();
+      TrackingHelper.settingsDetailed(group.getType());
+   }
 
-    @Override
-    public void onResume() {
-        super.onResume();
-        TrackingHelper.settingsDetailed(group.getType());
-    }
+   private void subscribeUpdateSettings() {
+      settingsInteractor.settingsActionPipe()
+            .observe()
+            .observeOn(AndroidSchedulers.mainThread())
+            .compose(bindView())
+            .subscribe(new ActionStateSubscriber<SettingsCommand>().onSuccess(settingsCommand -> onSettingsSaved())
+                  .onFail((settingsCommand, throwable) -> onSaveError(settingsCommand.getFallbackErrorMessage())));
+   }
 
-    private ArrayList<Setting> cloneList(List<Setting> settingsList) {
-        ArrayList<Setting> cloneList = new ArrayList<>();
-        Queryable.from(settingsList).forEachR(setting -> {
-            Setting<?> clone = new Setting<>(setting.getName(), setting.getType(), setting.getValue());
-            cloneList.add(clone);
-        });
-        return cloneList;
-    }
+   public void applyChanges() {
+      if (isSettingsChanged()) {
+         view.showLoading();
+         settingsInteractor.settingsActionPipe().send(new SettingsCommand(getChanges()));
+      }
+   }
 
-    private List<Setting> getChanges() {
-        return Queryable.from(settingsList).filter(setting ->
-                Queryable.from(immutableSettingsList)
-                        .filter(changeSetting -> changeSetting.equals(setting) &&
-                                !setting.getValue().equals(changeSetting.getValue()))
-                        .firstOrDefault() != null).toList();
-    }
+   private void onSettingsSaved() {
+      List<Setting> changes = getChanges();
+      db.saveSettings(changes, false);
+      immutableSettingsList = cloneList(settingsList);
+      //update state of DtlFilterMerchantStore
+      Observable.from(changes)
+            .filter((element) -> element.getName().equals(SettingsFactory.DISTANCE_UNITS))
+            .take(1)
+            .subscribe(setting -> dtlFilterMerchantInteractor.filterDataPipe().send(DtlFilterDataAction.init()));
+      //
+      view.hideLoading();
+      view.onAppliedChanges();
+   }
 
-    public boolean isSettingsChanged() {
-        return getChanges().size() > 0;
-    }
+   private void onSaveError(@StringRes int stringId) {
+      view.hideLoading();
+      view.informUser(stringId);
+   }
 
-    public void applyChanges(boolean withClose) {
-        if (isSettingsChanged()) {
-            view.showLoading();
-            List<Setting> changes = getChanges();
-            doRequest(new UpdateSettingsCommand(changes),
-                    aVoid -> {
-                        db.saveSettings(changes, false);
-                        immutableSettingsList = cloneList(this.settingsList);
-                        //update state of DtlFilterMerchantStore
-                        Observable.from(changes)
-                                .filter((element) -> element.getName().equals(SettingsFactory.DISTANCE_UNITS))
-                                .take(1)
-                                .subscribe(setting ->
-                                        dtlFilterMerchantInteractor.filterDataPipe().send(DtlFilterDataAction.init())
-                                );
-                        //
-                        view.hideLoading();
-                        if (withClose)
-                            view.close();
-                    });
-        }
-    }
+   private ArrayList<Setting> cloneList(List<Setting> settingsList) {
+      ArrayList<Setting> cloneList = new ArrayList<>();
+      Queryable.from(settingsList).forEachR(setting -> {
+         Setting<?> clone = new Setting<>(setting.getName(), setting.getType(), setting.getValue());
+         cloneList.add(clone);
+      });
+      return cloneList;
+   }
 
-    @Override
-    public void handleError(SpiceException error) {
-        super.handleError(error);
-        view.hideLoading();
-    }
+   private List<Setting> getChanges() {
+      return Queryable.from(settingsList).filter(setting -> Queryable.from(immutableSettingsList)
+            .filter(changeSetting -> changeSetting.equals(setting) && !setting.getValue()
+                  .equals(changeSetting.getValue()))
+            .firstOrDefault() != null).toList();
+   }
 
-    public interface View extends Presenter.View {
+   public boolean isSettingsChanged() {
+      return getChanges().size() > 0;
+   }
 
-        void setSettings(List<Setting> settingsList);
+   public interface View extends RxView {
 
-        void showLoading();
+      void setSettings(List<Setting> settingsList);
 
-        void hideLoading();
+      void showLoading();
 
-        void close();
-    }
+      void hideLoading();
+
+      void onAppliedChanges();
+   }
 }

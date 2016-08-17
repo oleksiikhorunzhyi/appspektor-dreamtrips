@@ -13,32 +13,33 @@ import retrofit.RetrofitError;
 
 public final class CrashlyticsTracker {
 
-    public static void trackError(Throwable throwable) {
-        Crashlytics.logException(throwable);
-    }
+   public static void trackError(Throwable throwable) {
+      Crashlytics.logException(throwable);
+   }
 
-    public static void trackError(RetrofitError throwable) {
-        Crashlytics.log("Server error");
-        Crashlytics.log("url: " + throwable.getResponse().getUrl());
-        Crashlytics.log("status: " + throwable.getResponse().getStatus());
-        Crashlytics.log("reason: " + throwable.getResponse().getReason());
-        Crashlytics.log("headers: " + TextUtils.join(", ", throwable.getResponse().getHeaders()));
-        Crashlytics.log("body: " + throwable.getBody());
-        Crashlytics.logException(new DtApiException(getErrorMessageForCrashlytics(throwable),
-                (ErrorResponse) throwable.getBodyAs(ErrorResponse.class), throwable.getResponse().getStatus()));
+   public static void trackError(RetrofitError throwable) {
+      Crashlytics.log("Server error");
+      Crashlytics.log("url: " + throwable.getResponse().getUrl());
+      Crashlytics.log("status: " + throwable.getResponse().getStatus());
+      Crashlytics.log("reason: " + throwable.getResponse().getReason());
+      Crashlytics.log("headers: " + TextUtils.join(", ", throwable.getResponse().getHeaders()));
+      Crashlytics.log("body: " + throwable.getBody());
+      Crashlytics.logException(new DtApiException(getErrorMessageForCrashlytics(throwable), (ErrorResponse) throwable.getBodyAs(ErrorResponse.class), throwable
+            .getResponse()
+            .getStatus()));
 
-    }
+   }
 
-    public static void trackErrorWithParams(Throwable throwable, ArrayMap<String, ?> paramsMap) {
-        Set<String> keys = paramsMap.keySet();
-        for(String key : keys) {
-            Crashlytics.log(key + " : " + paramsMap.get(key));
-        }
+   public static void trackErrorWithParams(Throwable throwable, ArrayMap<String, ?> paramsMap) {
+      Set<String> keys = paramsMap.keySet();
+      for (String key : keys) {
+         Crashlytics.log(key + " : " + paramsMap.get(key));
+      }
 
-        Crashlytics.logException(throwable);
-    }
+      Crashlytics.logException(throwable);
+   }
 
-    private static String getErrorMessageForCrashlytics(RetrofitError cause) {
-        return String.format("%s throws api exception", cause.getResponse().getUrl());
-    }
+   private static String getErrorMessageForCrashlytics(RetrofitError cause) {
+      return String.format("%s throws api exception", cause.getResponse().getUrl());
+   }
 }

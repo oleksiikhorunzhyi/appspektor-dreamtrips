@@ -21,29 +21,28 @@ import static com.worldventures.dreamtrips.modules.friends.api.ActOnRequestComma
 
 public class FriendRejectActionReceiver extends BroadcastReceiver {
 
-    @Inject
-    DreamSpiceManager dreamSpiceManager;
-    @Inject
-    NotificationDelegate notifDelegate;
+   @Inject DreamSpiceManager dreamSpiceManager;
+   @Inject NotificationDelegate notifDelegate;
 
-    @Override
-    public void onReceive(Context context, Intent intent) {
-        ((Injector) context.getApplicationContext()).inject(this);
-        //
-        UserBundle bundle = intent.getParcelableExtra(ComponentPresenter.EXTRA_DATA);
-        dreamSpiceManager.start(context);
-        dreamSpiceManager.execute(new ActOnRequestCommand(bundle.getUser().getId(), REJECT.name()), new RequestListener<JSONObject>() {
-            @Override
-            public void onRequestFailure(SpiceException spiceException) {
-                dreamSpiceManager.shouldStop();
-            }
+   @Override
+   public void onReceive(Context context, Intent intent) {
+      ((Injector) context.getApplicationContext()).inject(this);
+      //
+      UserBundle bundle = intent.getParcelableExtra(ComponentPresenter.EXTRA_DATA);
+      dreamSpiceManager.start(context);
+      dreamSpiceManager.execute(new ActOnRequestCommand(bundle.getUser()
+            .getId(), REJECT.name()), new RequestListener<JSONObject>() {
+         @Override
+         public void onRequestFailure(SpiceException spiceException) {
+            dreamSpiceManager.shouldStop();
+         }
 
-            @Override
-            public void onRequestSuccess(JSONObject jsonObject) {
-                dreamSpiceManager.shouldStop();
-            }
-        });
-        //
-        notifDelegate.cancel(bundle.getUser().getId());
-    }
+         @Override
+         public void onRequestSuccess(JSONObject jsonObject) {
+            dreamSpiceManager.shouldStop();
+         }
+      });
+      //
+      notifDelegate.cancel(bundle.getUser().getId());
+   }
 }

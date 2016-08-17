@@ -1,82 +1,65 @@
 package com.worldventures.dreamtrips.modules.common.model;
 
-import android.os.Parcel;
-
 import com.google.gson.annotations.SerializedName;
 import com.worldventures.dreamtrips.core.session.acl.Feature;
+import com.worldventures.dreamtrips.modules.settings.model.Setting;
 
 import java.util.List;
 
-public class Session extends BaseEntity {
+public class Session {
 
-    private String token;
-    @SerializedName("sso_token")
-    private String ssoToken;
-    private User user;
-    private List<Feature> permissions;
+   private String token;
+   @SerializedName("sso_token") private String ssoToken;
+   private User user;
+   private String locale;
+   private List<Feature> permissions;
+   private List<Setting> settings;
 
-    public Session() {
-        super();
-    }
+   public String getToken() {
+      return token;
+   }
 
-    public String getToken() {
-        return token;
-    }
+   public String getSsoToken() {
+      return ssoToken;
+   }
 
-    public void setToken(String token) {
-        this.token = token;
-    }
+   public void setLocale(String locale) {
+      this.locale = locale;
+   }
 
-    public String getSsoToken() {
-        return ssoToken;
-    }
+   public void setSsoToken(String ssoToken) {
+      this.ssoToken = ssoToken;
+   }
 
-    public void setSsoToken(String ssoToken) {
-        this.ssoToken = ssoToken;
-    }
+   public User getUser() {
+      return user;
+   }
 
-    public User getUser() {
-        return user;
-    }
+   public String getLocale() {
+      return locale;
+   }
 
-    public void setUser(User user) {
-        this.user = user;
-    }
+   public List<Feature> getPermissions() {
+      return permissions;
+   }
 
-    public List<Feature> getPermissions() {
-        return permissions;
-    }
+   public List<Setting> getSettings() {
+      return settings;
+   }
 
-    public void setPermissions(List<Feature> permissions) {
-        this.permissions = permissions;
-    }
+   public void setToken(String token) {
+      this.token = token;
+   }
 
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        super.writeToParcel(dest, flags);
-        dest.writeString(this.token);
-        dest.writeString(this.ssoToken);
-        dest.writeParcelable(this.user, flags);
-        dest.writeList(this.permissions);
-    }
+   public void setUser(User user) {
+      this.user = user;
+   }
 
-    public Session(Parcel in) {
-        super(in);
-        this.token = in.readString();
-        this.ssoToken = in.readString();
-        this.user = in.readParcelable(User.class.getClassLoader());
-        in.readList(this.permissions, Feature.class.getClassLoader());
-    }
+   public void setPermissions(List<Feature> permissions) {
+      this.permissions = permissions;
+   }
 
-    public static final Creator<Session> CREATOR = new Creator<Session>() {
-        @Override
-        public Session createFromParcel(Parcel in) {
-            return new Session(in);
-        }
-
-        @Override
-        public Session[] newArray(int size) {
-            return new Session[size];
-        }
-    };
+   public void setSettings(List<Setting> settings) {
+      this.settings = settings;
+   }
 }

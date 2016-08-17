@@ -17,26 +17,26 @@ import butterknife.InjectView;
 
 public class TripChatSettingsScreenImpl extends GroupChatSettingsScreenImpl<TripSettingsPath> {
 
-    @InjectView(R.id.chat_settings_trip_pic) ImageView tripIconView;
+   @InjectView(R.id.chat_settings_trip_pic) ImageView tripIconView;
 
-    public TripChatSettingsScreenImpl(Context context) {
-        super(context);
-    }
+   public TripChatSettingsScreenImpl(Context context) {
+      super(context);
+   }
 
-    public TripChatSettingsScreenImpl(Context context, AttributeSet attrs) {
-        super(context, attrs);
-    }
+   public TripChatSettingsScreenImpl(Context context, AttributeSet attrs) {
+      super(context, attrs);
+   }
 
-    @Override
-    public void setParticipants(DataConversation conversation, List<DataUser> participants) {
-        super.setParticipants(conversation, participants);
-        groupAvatarsView.setVisibility(GONE);
-        tripIconView.setVisibility(VISIBLE);
-    }
+   @Override
+   public void setParticipants(DataConversation conversation, List<DataUser> participants) {
+      super.setParticipants(conversation, participants);
+      groupAvatarsView.setVisibility(GONE);
+      tripIconView.setVisibility(VISIBLE);
+   }
 
-    @NonNull
-    @Override
-    public GroupChatSettingsScreenPresenter createPresenter() {
-        return new TripChatScreenPresenterImpl(getContext(), injector, getPath().getConversationId());
-    }
+   @NonNull
+   @Override
+   public GroupChatSettingsScreenPresenter createPresenter() {
+      return new TripChatScreenPresenterImpl(getContext(), injector, getPath().getConversationId());
+   }
 }

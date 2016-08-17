@@ -27,108 +27,97 @@ import rx.Observable;
 
 public class ChatContextualMenuProvider {
 
-    private Context context;
-    private UsersDAO usersDAO;
-    private ConversationsDAO conversationsDAO;
-    private AttachmentDAO attachmentDAO;
-    private TranslationsDAO translationsDAO;
-    private DataUser currentUser;
+   private Context context;
+   private UsersDAO usersDAO;
+   private ConversationsDAO conversationsDAO;
+   private AttachmentDAO attachmentDAO;
+   private TranslationsDAO translationsDAO;
+   private DataUser currentUser;
 
-    @Inject
-    public ChatContextualMenuProvider(@ForApplication Context context, DataUser currentUser,
-                                      UsersDAO usersDAO, TranslationsDAO translationsDAO,
-                                      ConversationsDAO conversationsDAO, AttachmentDAO attachmentDAO) {
-        this.context = context;
-        this.usersDAO = usersDAO;
-        this.currentUser = currentUser;
-        this.translationsDAO = translationsDAO;
-        this.conversationsDAO = conversationsDAO;
-        this.attachmentDAO = attachmentDAO;
-    }
+   @Inject
+   public ChatContextualMenuProvider(@ForApplication Context context, DataUser currentUser, UsersDAO usersDAO, TranslationsDAO translationsDAO, ConversationsDAO conversationsDAO, AttachmentDAO attachmentDAO) {
+      this.context = context;
+      this.usersDAO = usersDAO;
+      this.currentUser = currentUser;
+      this.translationsDAO = translationsDAO;
+      this.conversationsDAO = conversationsDAO;
+      this.attachmentDAO = attachmentDAO;
+   }
 
-    public Observable<Menu> provideMenu(DataMessage message,
-                                        String conversationId) {
-        return Observable
-                .combineLatest(
-                        conversationsDAO.getConversation(conversationId).take(1),
-                        attachmentDAO.getAttachmentByMessageId(message.getId()).take(1),
-                        usersDAO.getUserById(message.getFromId()).take(1),
-                        translationsDAO.getTranslation(message.getId()).take(1), QueryResult::new
-                )
-                .map(queryResult -> {
-                    Menu menu = new MenuBuilder(context);
-                    new SupportMenuInflater(context).inflate(R.menu.menu_chat_contextual, menu);
+   public Observable<Menu> provideMenu(DataMessage message, String conversationId) {
+      return Observable.combineLatest(conversationsDAO.getConversation(conversationId)
+            .take(1), attachmentDAO.getAttachmentByMessageId(message.getId())
+            .take(1), usersDAO.getUserById(message.getFromId()).take(1), translationsDAO.getTranslation(message.getId())
+            .take(1), QueryResult::new).map(queryResult -> {
+         Menu menu = new MenuBuilder(context);
+         new SupportMenuInflater(context).inflate(R.menu.menu_chat_contextual, menu);
 
-                    boolean currentUserMessage = currentUser.getId().equals(message.getFromId());
-                    DataConversation conversation = queryResult.conversation;
-                    DataAttachment attachment = queryResult.attachment;
-                    boolean locationAttachment = attachment != null
-                            && AttachmentType.LOCATION.equals(attachment.getType());
+         boolean currentUserMessage = currentUser.getId().equals(message.getFromId());
+         DataConversation conversation = queryResult.conversation;
+         DataAttachment attachment = queryResult.attachment;
+         boolean locationAttachment = attachment != null && AttachmentType.LOCATION.equals(attachment.getType());
 
-                    // cannot chat with yourself, doesn't make sense to start new 1 : 1 chat with the same user either
-                    if (currentUserMessage || ConversationHelper.isSingleChat(conversation)
-                            || queryResult.messageAuthor == null) {
-                        menu.removeItem(R.id.action_start_chat);
-                    } else {
-                        String title = String.format(context
-                                .getString(R.string.chat_contextual_start_chat_format), queryResult.messageAuthor.getFirstName());
-                        menu.findItem(R.id.action_start_chat).setTitle(title);
-                    }
-                    // attachment is not null, copying of attachment is not supported
-                    if (attachment != null) {
-                        menu.removeItem(R.id.action_copy_message);
-                    }
+         // cannot chat with yourself, doesn't make sense to start new 1 : 1 chat with the same user either
+         if (currentUserMessage || ConversationHelper.isSingleChat(conversation) || queryResult.messageAuthor == null) {
+            menu.removeItem(R.id.action_start_chat);
+         } else {
+            String title = String.format(context.getString(R.string.chat_contextual_start_chat_format), queryResult.messageAuthor
+                  .getFirstName());
+            menu.findItem(R.id.action_start_chat).setTitle(title);
+         }
+         // attachment is not null, copying of attachment is not supported
+         if (attachment != null) {
+            menu.removeItem(R.id.action_copy_message);
+         }
 
-                    setTranslationsSubMenu(menu, message, currentUser, queryResult);
-                    
-                    if (currentUserMessage || !ConversationHelper.isTripChat(conversation)
-                            || ConversationHelper.isAbandoned(conversation)
-                            || locationAttachment) {
-                        menu.removeItem(R.id.action_flag);
-                    }
-                    return menu;
-                });
-    }
+         setTranslationsSubMenu(menu, message, currentUser, queryResult);
 
-    private void setTranslationsSubMenu(Menu menu, DataMessage message, DataUser currentUser, QueryResult data) {
-        if (data.attachment != null || TextUtils.equals(message.getFromId(), currentUser.getId())) {
+         if (currentUserMessage || !ConversationHelper.isTripChat(conversation) || ConversationHelper.isAbandoned(conversation) || locationAttachment) {
+            menu.removeItem(R.id.action_flag);
+         }
+         return menu;
+      });
+   }
+
+   private void setTranslationsSubMenu(Menu menu, DataMessage message, DataUser currentUser, QueryResult data) {
+      if (data.attachment != null || TextUtils.equals(message.getFromId(), currentUser.getId())) {
+         menu.removeItem(R.id.action_translate);
+         menu.removeItem(R.id.action_revert_translate);
+         return;
+      }
+
+      DataTranslation dataTranslation = data.translation;
+      if (dataTranslation == null) {
+         menu.removeItem(R.id.action_revert_translate);
+         return;
+      }
+
+      switch (dataTranslation.getTranslateStatus()) {
+         case TranslationStatus.TRANSLATING:
             menu.removeItem(R.id.action_translate);
             menu.removeItem(R.id.action_revert_translate);
-            return;
-        }
-
-        DataTranslation dataTranslation = data.translation;
-        if (dataTranslation == null){
+            break;
+         case TranslationStatus.TRANSLATED:
+            menu.removeItem(R.id.action_translate);
+            break;
+         case TranslationStatus.ERROR:
+         case TranslationStatus.REVERTED:
             menu.removeItem(R.id.action_revert_translate);
-            return;
-        }
+            break;
+      }
+   }
 
-        switch (dataTranslation.getTranslateStatus()){
-            case TranslationStatus.TRANSLATING:
-                menu.removeItem(R.id.action_translate);
-                menu.removeItem(R.id.action_revert_translate);
-                break;
-            case TranslationStatus.TRANSLATED:
-                menu.removeItem(R.id.action_translate);
-                break;
-            case TranslationStatus.ERROR:
-            case TranslationStatus.REVERTED:
-                menu.removeItem(R.id.action_revert_translate);
-                break;
-        }
-    }
+   private static class QueryResult {
+      private DataConversation conversation;
+      private DataAttachment attachment;
+      private DataUser messageAuthor;
+      private DataTranslation translation;
 
-    private static class QueryResult {
-        private DataConversation conversation;
-        private DataAttachment attachment;
-        private DataUser messageAuthor;
-        private DataTranslation translation;
-
-        public QueryResult(DataConversation conversation, DataAttachment attachment, DataUser messageAuthor, DataTranslation translation) {
-            this.conversation = conversation;
-            this.attachment = attachment;
-            this.messageAuthor = messageAuthor;
-            this.translation = translation;
-        }
-    }
+      public QueryResult(DataConversation conversation, DataAttachment attachment, DataUser messageAuthor, DataTranslation translation) {
+         this.conversation = conversation;
+         this.attachment = attachment;
+         this.messageAuthor = messageAuthor;
+         this.translation = translation;
+      }
+   }
 }

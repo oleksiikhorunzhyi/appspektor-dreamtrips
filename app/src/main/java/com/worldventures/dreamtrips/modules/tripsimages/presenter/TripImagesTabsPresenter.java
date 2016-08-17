@@ -11,52 +11,52 @@ import com.worldventures.dreamtrips.modules.tripsimages.model.TripImagesType;
 public class TripImagesTabsPresenter extends Presenter<TripImagesTabsPresenter.View> {
 
 
-    public static final String SELECTION_EXTRA = "selection_extra";
+   public static final String SELECTION_EXTRA = "selection_extra";
 
-    private int selection;
+   private int selection;
 
-    public TripImagesTabsPresenter(Bundle args) {
-        if (args != null) {
-            selection = args.getInt(SELECTION_EXTRA);
-        }
-    }
+   public TripImagesTabsPresenter(Bundle args) {
+      if (args != null) {
+         selection = args.getInt(SELECTION_EXTRA);
+      }
+   }
 
-    @Override
-    public void takeView(View view) {
-        super.takeView(view);
-        view.setSelection(selection);
-    }
+   @Override
+   public void takeView(View view) {
+      super.takeView(view);
+      view.setSelection(selection);
+   }
 
-    @Override
-    public void dropView() {
-        eventBus.removeAllStickyEvents();
-        super.dropView();
-    }
+   @Override
+   public void dropView() {
+      eventBus.removeAllStickyEvents();
+      super.dropView();
+   }
 
-    public void trackState(int position) {
-        if (position == TripImagesType.ACCOUNT_IMAGES.ordinal()) {
-            TrackingHelper.mine(getAccountUserId());
-        } else if (position == TripImagesType.YOU_SHOULD_BE_HERE.ordinal()) {
-            TrackingHelper.ysbh(getAccountUserId());
-        } else if (position == TripImagesType.MEMBERS_IMAGES.ordinal()) {
-            TrackingHelper.all(getAccountUserId());
-        } else if (position == TripImagesType.VIDEO_360.ordinal()) {
-            TrackingHelper.video360(getAccountUserId());
-        } else if (position == TripImagesType.INSPIRE_ME.ordinal()) {
-            TrackingHelper.inspr(getAccountUserId());
-        }
-    }
+   public void trackState(int position) {
+      if (position == TripImagesType.ACCOUNT_IMAGES.ordinal()) {
+         TrackingHelper.mine(getAccountUserId());
+      } else if (position == TripImagesType.YOU_SHOULD_BE_HERE.ordinal()) {
+         TrackingHelper.ysbh(getAccountUserId());
+      } else if (position == TripImagesType.MEMBERS_IMAGES.ordinal()) {
+         TrackingHelper.all(getAccountUserId());
+      } else if (position == TripImagesType.VIDEO_360.ordinal()) {
+         TrackingHelper.video360(getAccountUserId());
+      } else if (position == TripImagesType.INSPIRE_ME.ordinal()) {
+         TrackingHelper.inspr(getAccountUserId());
+      }
+   }
 
-    public void onEventMainThread(MyImagesSelectionEvent event) {
-        view.setSelection(1);
-    }
+   public void onEventMainThread(MyImagesSelectionEvent event) {
+      view.setSelection(1);
+   }
 
-    public void onEvent(TripImageAnalyticEvent event) {
-        TrackingHelper.actionTripImage(event.getActionAttribute(), event.getTripImageId());
-    }
+   public void onEvent(TripImageAnalyticEvent event) {
+      TrackingHelper.actionTripImage(event.getActionAttribute(), event.getTripImageId());
+   }
 
-    public interface View extends Presenter.View {
+   public interface View extends Presenter.View {
 
-        void setSelection(int selection);
-    }
+      void setSelection(int selection);
+   }
 }

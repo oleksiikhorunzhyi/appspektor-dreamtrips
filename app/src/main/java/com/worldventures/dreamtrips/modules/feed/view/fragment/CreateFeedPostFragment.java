@@ -10,23 +10,23 @@ import com.worldventures.dreamtrips.modules.feed.presenter.CreateFeedPostPresent
 @Layout(R.layout.layout_post)
 public class CreateFeedPostFragment extends CreateEntityFragment<CreateFeedPostPresenter> implements CreateFeedPostPresenter.View {
 
-    @Override
-    protected CreateFeedPostPresenter createPresenter(Bundle savedInstanceState) {
-        return new CreateFeedPostPresenter();
-    }
+   @Override
+   protected CreateFeedPostPresenter createPresenter(Bundle savedInstanceState) {
+      return new CreateFeedPostPresenter();
+   }
 
-    @Override
-    public void onResume() {
-        super.onResume();
-        if (getArgs() != null && getArgs().isShowPickerImmediately()) {
-            showMediaPicker();
-            getArgs().setShowPickerImmediately(false);
-        }
-        updatePickerState();
-    }
+   @Override
+   public void onResume() {
+      super.onResume();
+      if (getArgs() != null && getArgs().isShowPickerImmediately()) {
+         showMediaPicker();
+         getArgs().setShowPickerImmediately(false);
+      }
+      updatePickerState();
+   }
 
-    @Override
-    protected Route getRoute() {
-        return Route.POST_CREATE;
-    }
+   @Override
+   protected Route getRoute() {
+      return Route.POST_CREATE;
+   }
 }

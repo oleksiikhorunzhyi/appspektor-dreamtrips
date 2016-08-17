@@ -7,42 +7,37 @@ import de.greenrobot.event.EventBus;
 
 public class SessionHolder<S> extends ComplexObjectStorage<S> {
 
-    public interface Events {
-        public class SessionChanged {
+   public interface Events {
+      class SessionChanged {
 
-        }
+      }
 
-        public class SessionCreated<SESSION_CLASS> extends SessionChanged {
-            private final SESSION_CLASS session;
+      class SessionCreated<SESSION_CLASS> extends SessionChanged {
+         private final SESSION_CLASS session;
 
-            public SessionCreated(SESSION_CLASS session) {
-                this.session = session;
-            }
+         public SessionCreated(SESSION_CLASS session) {
+            this.session = session;
+         }
 
-            public SESSION_CLASS getSession() {
-                return session;
-            }
-        }
+         public SESSION_CLASS getSession() {
+            return session;
+         }
+      }
 
-        public class SessionDestroyed extends SessionChanged {
+      class SessionDestroyed extends SessionChanged {
 
-        }
-    }
+      }
+   }
 
-    private final EventBus eventBus;
+   private final EventBus eventBus;
 
-    public SessionHolder(SimpleKeyValueStorage keyValueStorage, Class<S> cls, EventBus bus) {
-        super(keyValueStorage, "SESSION_KEY", cls);
-        this.eventBus = bus;
-    }
+   public SessionHolder(SimpleKeyValueStorage keyValueStorage, Class<S> cls, EventBus bus) {
+      super(keyValueStorage, "SESSION_KEY", cls);
+      this.eventBus = bus;
+   }
 
-    public void put(S session) {
-        super.put(session);
-        this.eventBus.post(new Events.SessionCreated<S>(session));
-    }
-
-    public void destroy() {
-        super.destroy();
-        this.eventBus.post(new Events.SessionDestroyed());
-    }
+   public void put(S session) {
+      super.put(session);
+      this.eventBus.post(new Events.SessionCreated<>(session));
+   }
 }

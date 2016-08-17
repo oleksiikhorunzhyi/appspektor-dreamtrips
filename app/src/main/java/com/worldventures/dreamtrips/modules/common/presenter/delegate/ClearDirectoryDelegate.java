@@ -5,7 +5,6 @@ import android.content.Context;
 import com.innahema.collections.query.queriables.Queryable;
 import com.messenger.entities.DataPhotoAttachment;
 import com.messenger.storage.dao.PhotoDAO;
-import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.core.utils.FileUtils;
 import com.worldventures.dreamtrips.modules.tripsimages.view.custom.PickImageDelegate;
 
@@ -18,32 +17,26 @@ import timber.log.Timber;
 
 public class ClearDirectoryDelegate {
 
-    private final Context context;
-    private final PhotoDAO photoDAO;
-    private final SnappyRepository snappyRepository;
+   private final Context context;
+   private final PhotoDAO photoDAO;
 
-    public ClearDirectoryDelegate(Context context, PhotoDAO photoDAO, SnappyRepository snappyRepository) {
-        this.context = context;
-        this.photoDAO = photoDAO;
-        this.snappyRepository = snappyRepository;
-    }
+   public ClearDirectoryDelegate(Context context, PhotoDAO photoDAO) {
+      this.context = context;
+      this.photoDAO = photoDAO;
+   }
 
-    public void clearTemporaryDirectory() {
-        photoDAO.getErrorAttachments()
-                .take(1)
-                .subscribeOn(Schedulers.io())
-                .subscribe(dataAttachments -> {
-                    List<String> exceptFilePaths = Queryable.from(dataAttachments).map(DataPhotoAttachment::getUrl).toList();
+   public void clearTemporaryDirectory() {
+      photoDAO.getErrorAttachments().take(1).subscribeOn(Schedulers.io()).subscribe(dataAttachments -> {
+         List<String> exceptFilePaths = Queryable.from(dataAttachments).map(DataPhotoAttachment::getUrl).toList();
 
-                    snappyRepository.removeAllUploadTasks();
-                    File directory = new File(com.kbeanie.imagechooser.api.FileUtils.getDirectory(PickImageDelegate.FOLDERNAME));
-                    if (!directory.exists()) return;
-                    try {
-                        FileUtils.cleanDirectory(context, directory, exceptFilePaths);
-                    } catch (IOException e) {
-                        Timber.e(e, "Problem with remove temp image directory");
-                    }
-                }, throwable -> Timber.e(throwable, "clearTemporaryDirectory() failed"));
-    }
+         File directory = new File(com.kbeanie.imagechooser.api.FileUtils.getDirectory(PickImageDelegate.FOLDERNAME));
+         if (!directory.exists()) return;
+         try {
+            FileUtils.cleanDirectory(context, directory, exceptFilePaths);
+         } catch (IOException e) {
+            Timber.e(e, "Problem with remove temp image directory");
+         }
+      }, throwable -> Timber.e(throwable, "clearTemporaryDirectory() failed"));
+   }
 
 }

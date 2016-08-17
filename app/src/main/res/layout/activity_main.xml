@@ -1,67 +1,74 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.v4.widget.DrawerLayout
-    android:id="@+id/drawer"
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent">
+<android.support.v4.widget.DrawerLayout android:id="@+id/drawer"
+      xmlns:android="http://schemas.android.com/apk/res/android"
+      xmlns:app="http://schemas.android.com/apk/res-auto"
+      xmlns:tools="http://schemas.android.com/tools"
+      android:layout_width="match_parent"
+      android:layout_height="match_parent"
+      >
 
-    <FrameLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
+   <FrameLayout
+         android:layout_width="match_parent"
+         android:layout_height="match_parent"
+         >
 
-        <RelativeLayout
+      <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
+            >
 
-            <android.support.v7.widget.Toolbar
-                android:id="@+id/toolbar_actionbar"
-                style="@style/ToolBarStyle"
-                android:layout_alignParentLeft="true"
-                android:layout_alignParentTop="true"
-                android:layout_marginLeft="0dp"
-                android:layout_marginTop="0dp"/>
+         <android.support.v7.widget.Toolbar
+               android:id="@+id/toolbar_actionbar"
+               style="@style/ToolBarStyle"
+               android:layout_alignParentLeft="true"
+               android:layout_alignParentTop="true"
+               android:layout_marginLeft="0dp"
+               android:layout_marginTop="0dp"
+               />
+
+         <FrameLayout
+               android:id="@+id/container_wrapper"
+               android:layout_width="match_parent"
+               android:layout_height="match_parent"
+               android:layout_alignParentLeft="true"
+               android:layout_below="@+id/toolbar_actionbar"
+               android:layout_marginLeft="0dp"
+               android:orientation="horizontal"
+               >
 
             <FrameLayout
-                android:id="@+id/container_wrapper"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_alignParentLeft="true"
-                android:layout_below="@+id/toolbar_actionbar"
-                android:layout_marginLeft="0dp"
-                android:orientation="horizontal">
+                  android:id="@+id/container_main"
+                  android:layout_width="match_parent"
+                  android:layout_height="match_parent"
+                  />
 
-                <FrameLayout
-                    android:id="@+id/container_main"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"/>
+         </FrameLayout>
 
-            </FrameLayout>
+      </RelativeLayout>
 
-        </RelativeLayout>
+   </FrameLayout>
 
-    </FrameLayout>
+   <FrameLayout
+         android:id="@+id/container_details_floating"
+         android:layout_width="match_parent"
+         android:layout_height="match_parent"
+         android:clickable="false"
+         />
 
-    <FrameLayout
-        android:id="@+id/container_details_floating"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:clickable="false"/>
+   <com.worldventures.dreamtrips.modules.navdrawer.NavigationDrawerViewImpl
+         android:id="@+id/drawer_layout"
+         android:layout_width="@dimen/navigation_drawer_width"
+         android:layout_height="match_parent"
+         android:layout_gravity="start"
+         app:layout="@layout/fragment_navigation_drawer"
+         tools:layout="@layout/fragment_navigation_drawer"
+         />
 
-    <com.worldventures.dreamtrips.modules.navdrawer.NavigationDrawerViewImpl
-        android:id="@+id/drawer_layout"
-        android:layout_width="@dimen/navigation_drawer_width"
-        android:layout_height="match_parent"
-        android:layout_gravity="start"
-        app:layout="@layout/fragment_navigation_drawer"
-        tools:layout="@layout/fragment_navigation_drawer"/>
-
-    <FrameLayout
-        android:id="@+id/container_filters"
-        android:layout_width="@dimen/navigation_drawer_width_filter"
-        android:layout_height="match_parent"
-        android:layout_gravity="end"
-        />
+   <FrameLayout
+         android:id="@+id/container_filters"
+         android:layout_width="@dimen/navigation_drawer_width_filter"
+         android:layout_height="match_parent"
+         android:layout_gravity="end"
+         />
 
 </android.support.v4.widget.DrawerLayout>

@@ -16,30 +16,27 @@ import dagger.Module;
 import dagger.Provides;
 
 @Module(
-        complete = false,
-        library = true
-)
+      complete = false,
+      library = true)
 public class NotificationFactoryModule {
 
-    @Provides
-    NotificationFactoryHolder provideNotificationFactoryHolder(FriendNotificationFactory friendNotificationFactory,
-                                                               PhotoNotificationFactory photoNotificationFactory,
-                                                               MessengerNotificationFactory messengerNotificationFactory) {
-        return new NotificationFactoryHolder(friendNotificationFactory, photoNotificationFactory, messengerNotificationFactory);
-    }
+   @Provides
+   NotificationFactoryHolder provideNotificationFactoryHolder(FriendNotificationFactory friendNotificationFactory, PhotoNotificationFactory photoNotificationFactory, MessengerNotificationFactory messengerNotificationFactory) {
+      return new NotificationFactoryHolder(friendNotificationFactory, photoNotificationFactory, messengerNotificationFactory);
+   }
 
-    @Provides
-    FriendNotificationFactory provideFriendNotificationFactory(@ForApplication Context context, @Named(RouteCreatorModule.PROFILE) RouteCreator<Integer> routeCreator) {
-        return new FriendNotificationFactory(context, routeCreator);
-    }
+   @Provides
+   FriendNotificationFactory provideFriendNotificationFactory(@ForApplication Context context, @Named(RouteCreatorModule.PROFILE) RouteCreator<Integer> routeCreator) {
+      return new FriendNotificationFactory(context, routeCreator);
+   }
 
-    @Provides
-    PhotoNotificationFactory providePhotoNotificationFactory(@ForApplication Context context) {
-        return new PhotoNotificationFactory(context);
-    }
+   @Provides
+   PhotoNotificationFactory providePhotoNotificationFactory(@ForApplication Context context) {
+      return new PhotoNotificationFactory(context);
+   }
 
-    @Provides
-    MessengerNotificationFactory provideMessengerNotificationFactory(@ForApplication Context context) {
-        return new MessengerNotificationFactory(context);
-    }
+   @Provides
+   MessengerNotificationFactory provideMessengerNotificationFactory(@ForApplication Context context) {
+      return new MessengerNotificationFactory(context);
+   }
 }

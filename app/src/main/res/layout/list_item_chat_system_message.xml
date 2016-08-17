@@ -1,19 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              xmlns:tools="http://schemas.android.com/tools"
-              android:layout_width="match_parent"
-              android:layout_height="wrap_content"
-              android:orientation="vertical">
+      xmlns:tools="http://schemas.android.com/tools"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:orientation="vertical"
+      >
 
-    <include layout="@layout/list_item_chat_date_entry"/>
+   <include layout="@layout/list_item_chat_date_entry" />
 
    <TextView
-       android:id="@+id/chat_system_message_text_view"
-       style="@style/ChatMessageContainerStyle"
-       android:layout_width="match_parent"
-       android:layout_height="wrap_content"
-       android:textColor="@color/chat_list_item_system_message_text_color"
-       android:textSize="@dimen/chat_item_list_system_message_text_size"
-       android:gravity="center"
-       tools:text="You is added to chat"/>
+         android:id="@+id/chat_system_message_text_view"
+         style="@style/ChatMessageContainerStyle"
+         android:layout_width="match_parent"
+         android:layout_height="wrap_content"
+         android:textColor="@color/chat_list_item_system_message_text_color"
+         android:textSize="@dimen/chat_item_list_system_message_text_size"
+         android:gravity="center"
+         tools:text="You is added to chat"
+         />
 </LinearLayout>

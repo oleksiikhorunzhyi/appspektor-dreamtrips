@@ -16,39 +16,31 @@ import butterknife.OnClick;
 @Layout(R.layout.adapter_item_filter_one_checkbox)
 public abstract class BoolCell<T extends BoolFilter, D extends CellDelegate<T>> extends AbstractDelegateCell<T, D> {
 
-    @InjectView(R.id.checkFavorites)
-    protected CheckBox checkFavorites;
+   @InjectView(R.id.checkFavorites) CheckBox checkFavorites;
+   @InjectView(R.id.textViewFavorite) TextView title;
 
-    @InjectView(R.id.textViewFavorite)
-    protected TextView title;
+   public BoolCell(View view) {
+      super(view);
+   }
 
-    public BoolCell(View view) {
-        super(view);
-    }
+   @Override
+   protected void syncUIStateWithModel() {
+      title.setText(getTitle());
+      checkFavorites.setChecked(getModelObject().isActive());
+      checkFavorites.setOnCheckedChangeListener((buttonView, isChecked) -> {
+         getModelObject().setActive(isChecked);
+         sendEvent(isChecked);
+      });
+   }
 
-    @Override
-    protected void syncUIStateWithModel() {
-        title.setText(getTitle());
-        checkFavorites.setChecked(getModelObject().isActive());
-        checkFavorites.setOnCheckedChangeListener((buttonView, isChecked) -> {
-            getModelObject().setActive(isChecked);
-            sendEvent(isChecked);
-        });
-    }
+   @OnClick(R.id.textViewFavorite)
+   void checkBoxTextViewClicked() {
+      checkFavorites.setChecked(!checkFavorites.isChecked());
+      getModelObject().setActive(checkFavorites.isChecked());
+   }
 
-    @OnClick(R.id.textViewFavorite)
-    void checkBoxTextViewClicked() {
-        checkFavorites.setChecked(!checkFavorites.isChecked());
-        getModelObject().setActive(checkFavorites.isChecked());
-    }
-
-    @Override
-    public void prepareForReuse() {
-        //nothing to do here
-    }
-
-    public abstract int getTitle();
+   public abstract int getTitle();
 
 
-    public abstract void sendEvent(boolean b);
+   public abstract void sendEvent(boolean b);
 }

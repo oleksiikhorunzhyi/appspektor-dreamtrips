@@ -18,34 +18,29 @@ import butterknife.OnClick;
 @Layout(R.layout.adapter_item_bucket_photo_cell)
 public class BucketAddPhotoCell extends AbstractDelegateCell<AddBucketPhotoModel, BucketAddPhotoCellDelegate> {
 
-    @InjectView(R.id.imageViewPhoto)
-    protected ImageView ivPhoto;
+   @InjectView(R.id.imageViewPhoto) protected ImageView ivPhoto;
 
-    public BucketAddPhotoCell(View view) {
-        super(view);
-    }
+   public BucketAddPhotoCell(View view) {
+      super(view);
+   }
 
-    @Override
-    protected void syncUIStateWithModel() {
-        itemView.setVisibility(View.VISIBLE);
-        ivPhoto.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
-        ivPhoto.setImageResource(R.drawable.ic_bucket_add_pic);
-        ivPhoto.setBackgroundColor(ivPhoto.getContext().getResources().getColor(R.color.grey_lighter));
+   @Override
+   protected void syncUIStateWithModel() {
+      itemView.setVisibility(View.VISIBLE);
+      ivPhoto.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
+      ivPhoto.setImageResource(R.drawable.ic_bucket_add_pic);
+      ivPhoto.setBackgroundColor(ivPhoto.getContext().getResources().getColor(R.color.grey_lighter));
 
 
-        itemView.setVisibility(getModelObject().isVisible() ? View.VISIBLE : View.GONE);
-        ViewGroup.LayoutParams layoutParams = itemView.getLayoutParams();
-        layoutParams.height = getModelObject().isVisible() ? ActionBar.LayoutParams.MATCH_PARENT : 0;
-        layoutParams.width = getModelObject().isVisible() ? ActionBar.LayoutParams.MATCH_PARENT : 0;
-        itemView.setLayoutParams(layoutParams);
-    }
+      itemView.setVisibility(getModelObject().isVisible() ? View.VISIBLE : View.GONE);
+      ViewGroup.LayoutParams layoutParams = itemView.getLayoutParams();
+      layoutParams.height = getModelObject().isVisible() ? ActionBar.LayoutParams.MATCH_PARENT : 0;
+      layoutParams.width = getModelObject().isVisible() ? ActionBar.LayoutParams.MATCH_PARENT : 0;
+      itemView.setLayoutParams(layoutParams);
+   }
 
-    @Override
-    public void prepareForReuse() {
-    }
-
-    @OnClick(R.id.imageViewPhoto)
-    public void onClick() {
-        cellDelegate.onCellClicked(getModelObject());
-    }
+   @OnClick(R.id.imageViewPhoto)
+   public void onClick() {
+      cellDelegate.onCellClicked(getModelObject());
+   }
 }

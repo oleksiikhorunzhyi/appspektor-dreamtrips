@@ -10,6 +10,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.afollestad.materialdialogs.MaterialDialog;
 import com.badoo.mobile.util.WeakHandler;
 import com.h6ah4i.android.widget.advrecyclerview.decoration.SimpleListDividerDecorator;
 import com.techery.spares.adapter.BaseArrayListAdapter;
@@ -40,185 +41,191 @@ import static android.support.v7.widget.RecyclerView.OnScrollListener;
 @Layout(R.layout.fragment_feed_list_additional_info)
 public class FeedListAdditionalInfoFragment extends FeedItemAdditionalInfoFragment<FeedListAdditionalInfoPresenter> implements FeedListAdditionalInfoPresenter.View {
 
-    @InjectView(R.id.account_type)
-    TextView accountType;
-    @InjectView(R.id.dt_points)
-    TextView dtPoints;
-    @InjectView(R.id.rovia_bucks)
-    TextView roviaBucks;
-    @InjectView(R.id.details)
-    ViewGroup details;
-    @InjectView(R.id.friends_card)
-    ViewGroup friendsCard;
-    @InjectView(R.id.lv_close_friends)
-    EmptyRecyclerView friendsView;
-    @InjectView(R.id.circle_title)
-    TextView circleTitle;
-    @InjectView(R.id.feed_friend_empty_view)
-    View emptyView;
-    @InjectView(R.id.swipe_container)
-    SwipeRefreshLayout refreshLayout;
+   @InjectView(R.id.account_type) TextView accountType;
+   @InjectView(R.id.dt_points) TextView dtPoints;
+   @InjectView(R.id.rovia_bucks) TextView roviaBucks;
+   @InjectView(R.id.details) ViewGroup details;
+   @InjectView(R.id.friends_card) ViewGroup friendsCard;
+   @InjectView(R.id.lv_close_friends) EmptyRecyclerView friendsView;
+   @InjectView(R.id.circle_title) TextView circleTitle;
+   @InjectView(R.id.feed_friend_empty_view) View emptyView;
+   @InjectView(R.id.swipe_container) SwipeRefreshLayout refreshLayout;
 
-    CirclesFilterPopupWindow filterPopupWindow;
-    BaseArrayListAdapter<User> adapter;
+   private CirclesFilterPopupWindow filterPopupWindow;
+   private BaseArrayListAdapter<User> adapter;
+   private MaterialDialog blockingProgressDialog;
 
-    WeakHandler handler = new WeakHandler();
+   WeakHandler handler = new WeakHandler();
 
-    @Override
-    protected FeedListAdditionalInfoPresenter createPresenter(Bundle savedInstanceState) {
-        return new FeedListAdditionalInfoPresenter(getArgs() == null ? null : getArgs().getUser());
-    }
+   @Override
+   protected FeedListAdditionalInfoPresenter createPresenter(Bundle savedInstanceState) {
+      return new FeedListAdditionalInfoPresenter(getArgs() == null ? null : getArgs().getUser());
+   }
 
-    @Override
-    public void afterCreateView(View rootView) {
-        super.afterCreateView(rootView);
+   @Override
+   public void afterCreateView(View rootView) {
+      super.afterCreateView(rootView);
 
-        if (friendsView == null) return;
-        //
-        refreshLayout.setOnRefreshListener(() -> getPresenter().reload());
-        refreshLayout.setColorSchemeResources(R.color.theme_main_darker);
-        //
-        friendsView.setEmptyView(emptyView);
-        friendsView.addOnScrollListener(new OnScrollListener() {
-            @Override
-            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
-                LinearLayoutManager layoutManager = ((LinearLayoutManager) recyclerView.getLayoutManager());
+      if (friendsView == null) return;
+      //
+      refreshLayout.setOnRefreshListener(() -> getPresenter().reload());
+      refreshLayout.setColorSchemeResources(R.color.theme_main_darker);
+      //
+      friendsView.setEmptyView(emptyView);
+      friendsView.addOnScrollListener(new OnScrollListener() {
+         @Override
+         public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+            LinearLayoutManager layoutManager = ((LinearLayoutManager) recyclerView.getLayoutManager());
 
-                int itemCount = recyclerView.getLayoutManager().getItemCount();
-                int lastVisibleItemPosition = layoutManager.findLastVisibleItemPosition();
-                getPresenter().onScrolled(itemCount, lastVisibleItemPosition);
+            int itemCount = recyclerView.getLayoutManager().getItemCount();
+            int lastVisibleItemPosition = layoutManager.findLastVisibleItemPosition();
+            getPresenter().onScrolled(itemCount, lastVisibleItemPosition);
 
-                boolean enableSwipeToRefresh = layoutManager.findFirstCompletelyVisibleItemPosition() == 0;
-                refreshLayout.setEnabled(enableSwipeToRefresh);
-            }
-        });
-        adapter = new BaseArrayListAdapter<>(getContext(), this);
-        adapter.registerCell(User.class, FeedFriendCell.class);
-        friendsView.setAdapter(adapter);
-        friendsView.setLayoutManager(new NestedLinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false));
-        friendsView.addItemDecoration(new SimpleListDividerDecorator(ResourcesCompat.getDrawable(getResources(), R.drawable.list_divider, null), true));
-    }
+            boolean enableSwipeToRefresh = layoutManager.findFirstCompletelyVisibleItemPosition() == 0;
+            refreshLayout.setEnabled(enableSwipeToRefresh);
+         }
+      });
+      adapter = new BaseArrayListAdapter<>(getContext(), this);
+      adapter.registerCell(User.class, FeedFriendCell.class);
+      friendsView.setAdapter(adapter);
+      friendsView.setLayoutManager(new NestedLinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false));
+      friendsView.addItemDecoration(new SimpleListDividerDecorator(ResourcesCompat.getDrawable(getResources(), R.drawable.list_divider, null), true));
+   }
 
-    @Override
-    public void setFriends(@NonNull List<User> friends) {
-        friendsCard.setVisibility(View.VISIBLE);
-        adapter.clear();
-        adapter.addItems(friends);
-    }
+   @Override
+   public void setFriends(@NonNull List<User> friends) {
+      friendsCard.setVisibility(View.VISIBLE);
+      adapter.clear();
+      adapter.addItems(friends);
+   }
 
-    @Override
-    public void addFriends(@NonNull List<User> friends) {
-        adapter.addItems(friends);
-    }
+   @Override
+   public void addFriends(@NonNull List<User> friends) {
+      adapter.addItems(friends);
+   }
 
-    @Override
-    public void removeFriend(@NonNull User friend) {
-        adapter.remove(friend);
-    }
+   @Override
+   public void removeFriend(@NonNull User friend) {
+      adapter.remove(friend);
+   }
 
-    @Override
-    public void startLoading() {
-        // timeout was set according to the issue:
-        // https://code.google.com/p/android/issues/detail?id=77712
-        handler.postDelayed(() -> {
-            if (refreshLayout != null) refreshLayout.setRefreshing(true);
-        }, 100);
-    }
+   @Override
+   public void startLoading() {
+      // timeout was set according to the issue:
+      // https://code.google.com/p/android/issues/detail?id=77712
+      handler.postDelayed(() -> {
+         if (refreshLayout != null) refreshLayout.setRefreshing(true);
+      }, 100);
+   }
 
-    @Override
-    public void finishLoading() {
-        handler.post(() -> {
-            if (refreshLayout != null) refreshLayout.setRefreshing(false);
-        });
-    }
+   @Override
+   public void finishLoading() {
+      handler.post(() -> {
+         if (refreshLayout != null) refreshLayout.setRefreshing(false);
+      });
+   }
 
-    @Override
-    public void showCirclePicker(@NonNull List<Circle> circles, Circle activeCircle) {
-        if (filterPopupWindow == null || filterPopupWindow.dismissPassed()) {
-            filterPopupWindow = new CirclesFilterPopupWindow(circleTitle.getContext());
-            filterPopupWindow.setCircles(circles);
-            filterPopupWindow.setAnchorView(circleTitle);
-            filterPopupWindow.setOnItemClickListener((parent, view, position, id) -> {
-                filterPopupWindow.dismiss();
-                getPresenter().onCirclePicked(circles.get(position));
-                circleTitle.setText(circles.get(position).getName());
-            });
-            filterPopupWindow.show();
-            filterPopupWindow.setCheckedCircle(activeCircle);
-        }
-    }
+   @Override
+   public void showBlockingProgress() {
+      blockingProgressDialog = new MaterialDialog.Builder(getActivity()).progress(true, 0)
+            .content(R.string.loading)
+            .cancelable(false)
+            .canceledOnTouchOutside(false)
+            .show();
+   }
 
-    @Override
-    public void setCurrentCircle(Circle currentCircle) {
-        circleTitle.setText(currentCircle.getName());
-    }
+   @Override
+   public void hideBlockingProgress() {
+      if (blockingProgressDialog != null) blockingProgressDialog.dismiss();
+   }
 
-    @Override
-    public void openUser(UserBundle bundle) {
-        router.moveTo(routeCreator.createRoute(bundle.getUser().getId()), NavigationConfigBuilder.forActivity()
-                .toolbarConfig(ToolbarConfig.Builder.create().visible(false).build())
-                .data(bundle)
-                .build());
-    }
+   @Override
+   public void showCirclePicker(@NonNull List<Circle> circles, Circle activeCircle) {
+      if (filterPopupWindow == null || filterPopupWindow.dismissPassed()) {
+         filterPopupWindow = new CirclesFilterPopupWindow(circleTitle.getContext());
+         filterPopupWindow.setCircles(circles);
+         filterPopupWindow.setAnchorView(circleTitle);
+         filterPopupWindow.setOnItemClickListener((parent, view, position, id) -> {
+            filterPopupWindow.dismiss();
+            getPresenter().onCirclePicked(circles.get(position));
+            circleTitle.setText(circles.get(position).getName());
+         });
+         filterPopupWindow.show();
+         filterPopupWindow.setCheckedCircle(activeCircle);
+      }
+   }
 
-    private void openPost() {
-        router.moveTo(Route.POST_CREATE, NavigationConfigBuilder.forFragment()
-                .backStackEnabled(false)
-                .fragmentManager(getActivity().getSupportFragmentManager())
-                .containerId(R.id.container_details_floating)
-                .build());
-    }
+   @Override
+   public void setCurrentCircle(Circle currentCircle) {
+      circleTitle.setText(currentCircle.getName());
+   }
 
-    private void openSharePhoto() {
-        router.moveTo(Route.POST_CREATE, NavigationConfigBuilder.forRemoval()
-                .containerId(R.id.container_details_floating)
-                .fragmentManager(getActivity().getSupportFragmentManager())
-                .build());
-        router.moveTo(Route.POST_CREATE, NavigationConfigBuilder.forFragment()
-                .backStackEnabled(false)
-                .fragmentManager(getActivity().getSupportFragmentManager())
-                .containerId(R.id.container_details_floating)
-                .data(new CreateEntityBundle(true))
-                .build());
+   @Override
+   public void openUser(UserBundle bundle) {
+      router.moveTo(routeCreator.createRoute(bundle.getUser().getId()), NavigationConfigBuilder.forActivity()
+            .toolbarConfig(ToolbarConfig.Builder.create().visible(false).build())
+            .data(bundle)
+            .build());
+   }
 
-    }
+   private void openPost() {
+      router.moveTo(Route.POST_CREATE, NavigationConfigBuilder.forFragment()
+            .backStackEnabled(false)
+            .fragmentManager(getActivity().getSupportFragmentManager())
+            .containerId(R.id.container_details_floating)
+            .build());
+   }
 
-    protected void openSearch() {
-        router.moveTo(Route.FRIEND_SEARCH, NavigationConfigBuilder.forActivity()
-                .data(new FriendGlobalSearchBundle(""))
-                .build());
-    }
+   private void openSharePhoto() {
+      router.moveTo(Route.POST_CREATE, NavigationConfigBuilder.forRemoval()
+            .containerId(R.id.container_details_floating)
+            .fragmentManager(getActivity().getSupportFragmentManager())
+            .build());
+      router.moveTo(Route.POST_CREATE, NavigationConfigBuilder.forFragment()
+            .backStackEnabled(false)
+            .fragmentManager(getActivity().getSupportFragmentManager())
+            .containerId(R.id.container_details_floating)
+            .data(new CreateEntityBundle(true))
+            .build());
 
-    @OnClick(R.id.share_post)
-    protected void onPostClicked() {
-        openPost();
-    }
+   }
 
-    @OnClick(R.id.share_photo)
-    protected void onSharePhotoClick() {
-        openSharePhoto();
-    }
+   protected void openSearch() {
+      router.moveTo(Route.FRIEND_SEARCH, NavigationConfigBuilder.forActivity()
+            .data(new FriendGlobalSearchBundle(""))
+            .build());
+   }
 
-    @OnClick(R.id.global)
-    protected void onGlobalSearchClicked() {
-        openSearch();
-    }
+   @OnClick(R.id.share_post)
+   protected void onPostClicked() {
+      openPost();
+   }
 
-    @OnClick(R.id.circle_title)
-    protected void onCircleFilterClicked() {
-        getPresenter().onCircleFilterClicked();
-    }
+   @OnClick(R.id.share_photo)
+   protected void onSharePhotoClick() {
+      openSharePhoto();
+   }
 
-    @Override
-    public void setupView(User user) {
-        super.setupView(user);
-        details.setVisibility(View.VISIBLE);
-        viewProfile.setVisibility(View.GONE);
-        accountType.setText(user.getCompany());
-        dtPoints.setText(String.valueOf((int) user.getDreamTripsPoints()));
-        roviaBucks.setText(df.format(user.getRoviaBucks()));
+   @OnClick(R.id.global)
+   protected void onGlobalSearchClicked() {
+      openSearch();
+   }
 
-        ProfileViewUtils.setUserStatus(user, accountType, companyName.getResources());
-    }
+   @OnClick(R.id.circle_title)
+   protected void onCircleFilterClicked() {
+      getPresenter().onCircleFilterClicked();
+   }
+
+   @Override
+   public void setupView(User user) {
+      super.setupView(user);
+      details.setVisibility(View.VISIBLE);
+      viewProfile.setVisibility(View.GONE);
+      accountType.setText(user.getCompany());
+      dtPoints.setText(String.valueOf((int) user.getDreamTripsPoints()));
+      roviaBucks.setText(df.format(user.getRoviaBucks()));
+
+      ProfileViewUtils.setUserStatus(user, accountType, companyName.getResources());
+   }
 
 }

@@ -14,84 +14,94 @@ import rx.subjects.PublishSubject;
 
 public abstract class RxBaseFragment<PM extends Presenter> extends BaseFragment<PM> implements RxView {
 
-    private final PublishSubject<FragmentEvent> lifecycleSubject = PublishSubject.create();
+   private final PublishSubject<FragmentEvent> lifecycleSubject = PublishSubject.create();
 
-    protected Observable<FragmentEvent> lifecycle() {
-        return lifecycleSubject.asObservable();
-    }
+   protected Observable<FragmentEvent> lifecycle() {
+      return lifecycleSubject.asObservable();
+   }
 
-    @Override
-    public <T> Observable<T> bind(Observable<T> observable) {
-        return observable.compose(RxLifecycle.bindUntilFragmentEvent(lifecycle(), FragmentEvent.DESTROY_VIEW));
-    }
+   @Override
+   public <T> Observable<T> bind(Observable<T> observable) {
+      return bindUntilDropView(observable);
+   }
 
-    @Override
-    @CallSuper
-    public void onAttach(android.app.Activity activity) {
-        super.onAttach(activity);
-        lifecycleSubject.onNext(FragmentEvent.ATTACH);
-    }
+   @Override
+   public <T> Observable<T> bindUntilStop(Observable<T> observable) {
+      return observable.compose(RxLifecycle.bindUntilFragmentEvent(lifecycle(), FragmentEvent.STOP));
+   }
 
-    @Override
-    @CallSuper
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        lifecycleSubject.onNext(FragmentEvent.CREATE);
-    }
+   @Override
+   public <T> Observable<T> bindUntilDropView(Observable<T> observable) {
+      return observable.compose(RxLifecycle.bindUntilFragmentEvent(lifecycle(), FragmentEvent.DESTROY_VIEW));
+   }
 
-    @Override
-    @CallSuper
-    public void onViewCreated(View view, Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-        lifecycleSubject.onNext(FragmentEvent.CREATE_VIEW);
-    }
+   @Override
+   @CallSuper
+   public void onAttach(android.app.Activity activity) {
+      super.onAttach(activity);
+      lifecycleSubject.onNext(FragmentEvent.ATTACH);
+   }
 
-    @Override
-    @CallSuper
-    public void onStart() {
-        super.onStart();
-        lifecycleSubject.onNext(FragmentEvent.START);
-    }
+   @Override
+   @CallSuper
+   public void onCreate(Bundle savedInstanceState) {
+      super.onCreate(savedInstanceState);
+      lifecycleSubject.onNext(FragmentEvent.CREATE);
+   }
 
-    @Override
-    @CallSuper
-    public void onResume() {
-        super.onResume();
-        lifecycleSubject.onNext(FragmentEvent.RESUME);
-    }
+   @Override
+   @CallSuper
+   public void onViewCreated(View view, Bundle savedInstanceState) {
+      super.onViewCreated(view, savedInstanceState);
+      lifecycleSubject.onNext(FragmentEvent.CREATE_VIEW);
+   }
 
-    @Override
-    @CallSuper
-    public void onPause() {
-        lifecycleSubject.onNext(FragmentEvent.PAUSE);
-        super.onPause();
-    }
+   @Override
+   @CallSuper
+   public void onStart() {
+      super.onStart();
+      lifecycleSubject.onNext(FragmentEvent.START);
+   }
 
-    @Override
-    @CallSuper
-    public void onStop() {
-        lifecycleSubject.onNext(FragmentEvent.STOP);
-        super.onStop();
-    }
+   @Override
+   @CallSuper
+   public void onResume() {
+      super.onResume();
+      lifecycleSubject.onNext(FragmentEvent.RESUME);
+   }
 
-    @Override
-    @CallSuper
-    public void onDestroyView() {
-        lifecycleSubject.onNext(FragmentEvent.DESTROY_VIEW);
-        super.onDestroyView();
-    }
+   @Override
+   @CallSuper
+   public void onPause() {
+      lifecycleSubject.onNext(FragmentEvent.PAUSE);
+      super.onPause();
+   }
 
-    @Override
-    @CallSuper
-    public void onDestroy() {
-        lifecycleSubject.onNext(FragmentEvent.DESTROY);
-        super.onDestroy();
-    }
+   @Override
+   @CallSuper
+   public void onStop() {
+      lifecycleSubject.onNext(FragmentEvent.STOP);
+      super.onStop();
+   }
 
-    @Override
-    @CallSuper
-    public void onDetach() {
-        lifecycleSubject.onNext(FragmentEvent.DETACH);
-        super.onDetach();
-    }
+   @Override
+   @CallSuper
+   public void onDestroyView() {
+      lifecycleSubject.onNext(FragmentEvent.DESTROY_VIEW);
+      super.onDestroyView();
+   }
+
+   @Override
+   @CallSuper
+   public void onDestroy() {
+      lifecycleSubject.onNext(FragmentEvent.DESTROY);
+      super.onDestroy();
+   }
+
+   @Override
+   @CallSuper
+   public void onDetach() {
+      lifecycleSubject.onNext(FragmentEvent.DETACH);
+      super.onDetach();
+   }
 }

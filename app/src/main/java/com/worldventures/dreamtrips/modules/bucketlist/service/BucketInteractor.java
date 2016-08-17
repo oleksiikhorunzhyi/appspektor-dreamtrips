@@ -23,135 +23,126 @@ import rx.Observable;
 import rx.schedulers.Schedulers;
 
 public final class BucketInteractor {
-    private final ActionPipe<LoadBucketListFullHttpAction> loadBucketListPipe;
-    private final ActionPipe<CreateBucketItemHttpAction> createBucketPipe;
-    private final ActionPipe<UpdateItemHttpAction> updateItemPipe;
-    private final ActionPipe<ChangeOrderHttpAction> moveItemPipe;
-    private final ActionPipe<MarkItemAsDoneHttpAction> markItemAsDonePipe;
-    private final ActionPipe<DeleteItemHttpAction> deleteItemPipe;
-    private final ActionPipe<DeleteItemPhotoCommand> deleteItemPhotoPipe;
-    private final ActionPipe<AddBucketItemPhotoCommand> addBucketItemPhotoPipe;
+   private final ActionPipe<LoadBucketListFullHttpAction> loadBucketListPipe;
+   private final ActionPipe<CreateBucketItemHttpAction> createBucketPipe;
+   private final ActionPipe<UpdateItemHttpAction> updateItemPipe;
+   private final ActionPipe<ChangeOrderHttpAction> moveItemPipe;
+   private final ActionPipe<MarkItemAsDoneHttpAction> markItemAsDonePipe;
+   private final ActionPipe<DeleteItemHttpAction> deleteItemPipe;
+   private final ActionPipe<DeleteItemPhotoCommand> deleteItemPhotoPipe;
+   private final ActionPipe<AddBucketItemPhotoCommand> addBucketItemPhotoPipe;
 
-    private final ActionPipe<BucketListCommand> bucketListActionPipe;
-    private final ActionPipe<FindBucketItemByPhotoCommand> findBucketItemByPhotoActionPipe;
-    private final ActionPipe<UploadPhotoControllerCommand> uploadPhotoControllerCommandPipe;
-    private final WriteActionPipe<MergeBucketItemPhotosWithStorageCommand> mergeBucketItemPhotosWithStorageCommandPipe;
-    private final ActionPipe<RecentlyAddedBucketsFromPopularCommand> recentlyAddedBucketsFromPopularCommandPipe;
+   private final ActionPipe<BucketListCommand> bucketListActionPipe;
+   private final ActionPipe<FindBucketItemByPhotoCommand> findBucketItemByPhotoActionPipe;
+   private final ActionPipe<UploadPhotoControllerCommand> uploadPhotoControllerCommandPipe;
+   private final WriteActionPipe<MergeBucketItemPhotosWithStorageCommand> mergeBucketItemPhotosWithStorageCommandPipe;
+   private final ActionPipe<RecentlyAddedBucketsFromPopularCommand> recentlyAddedBucketsFromPopularCommandPipe;
 
-    public BucketInteractor(Janet janet) {
-        loadBucketListPipe = janet.createPipe(LoadBucketListFullHttpAction.class, Schedulers.io());
-        createBucketPipe = janet.createPipe(CreateBucketItemHttpAction.class, Schedulers.io());
-        updateItemPipe = janet.createPipe(UpdateItemHttpAction.class, Schedulers.io());
-        moveItemPipe = janet.createPipe(ChangeOrderHttpAction.class, Schedulers.io());
-        markItemAsDonePipe = janet.createPipe(MarkItemAsDoneHttpAction.class, Schedulers.io());
-        deleteItemPipe = janet.createPipe(DeleteItemHttpAction.class, Schedulers.io());
-        deleteItemPhotoPipe = janet.createPipe(DeleteItemPhotoCommand.class, Schedulers.io());
-        addBucketItemPhotoPipe = janet.createPipe(AddBucketItemPhotoCommand.class, Schedulers.io());
+   public BucketInteractor(Janet janet) {
+      loadBucketListPipe = janet.createPipe(LoadBucketListFullHttpAction.class, Schedulers.io());
+      createBucketPipe = janet.createPipe(CreateBucketItemHttpAction.class, Schedulers.io());
+      updateItemPipe = janet.createPipe(UpdateItemHttpAction.class, Schedulers.io());
+      moveItemPipe = janet.createPipe(ChangeOrderHttpAction.class, Schedulers.io());
+      markItemAsDonePipe = janet.createPipe(MarkItemAsDoneHttpAction.class, Schedulers.io());
+      deleteItemPipe = janet.createPipe(DeleteItemHttpAction.class, Schedulers.io());
+      deleteItemPhotoPipe = janet.createPipe(DeleteItemPhotoCommand.class, Schedulers.io());
+      addBucketItemPhotoPipe = janet.createPipe(AddBucketItemPhotoCommand.class, Schedulers.io());
 
-        bucketListActionPipe = janet.createPipe(BucketListCommand.class, Schedulers.io());
-        findBucketItemByPhotoActionPipe = janet.createPipe(FindBucketItemByPhotoCommand.class, Schedulers.immediate());
-        uploadPhotoControllerCommandPipe = janet.createPipe(UploadPhotoControllerCommand.class, Schedulers.immediate());
-        mergeBucketItemPhotosWithStorageCommandPipe = janet.createPipe(MergeBucketItemPhotosWithStorageCommand.class, Schedulers.immediate());
-        recentlyAddedBucketsFromPopularCommandPipe = janet.createPipe(RecentlyAddedBucketsFromPopularCommand.class, Schedulers.immediate());
+      bucketListActionPipe = janet.createPipe(BucketListCommand.class, Schedulers.io());
+      findBucketItemByPhotoActionPipe = janet.createPipe(FindBucketItemByPhotoCommand.class, Schedulers.immediate());
+      uploadPhotoControllerCommandPipe = janet.createPipe(UploadPhotoControllerCommand.class, Schedulers.immediate());
+      mergeBucketItemPhotosWithStorageCommandPipe = janet.createPipe(MergeBucketItemPhotosWithStorageCommand.class, Schedulers
+            .immediate());
+      recentlyAddedBucketsFromPopularCommandPipe = janet.createPipe(RecentlyAddedBucketsFromPopularCommand.class, Schedulers
+            .immediate());
 
-        connect();
-    }
+      connect();
+   }
 
-    public ActionPipe<LoadBucketListFullHttpAction> loadPipe() {
-        return loadBucketListPipe;
-    }
+   public ActionPipe<LoadBucketListFullHttpAction> loadPipe() {
+      return loadBucketListPipe;
+   }
 
-    public ActionPipe<CreateBucketItemHttpAction> createPipe() {
-        return createBucketPipe;
-    }
+   public ActionPipe<CreateBucketItemHttpAction> createPipe() {
+      return createBucketPipe;
+   }
 
-    public ActionPipe<UpdateItemHttpAction> updatePipe() {
-        return updateItemPipe;
-    }
+   public ActionPipe<UpdateItemHttpAction> updatePipe() {
+      return updateItemPipe;
+   }
 
-    public ActionPipe<ChangeOrderHttpAction> movePipe() {
-        return moveItemPipe;
-    }
+   public ActionPipe<ChangeOrderHttpAction> movePipe() {
+      return moveItemPipe;
+   }
 
-    public ActionPipe<MarkItemAsDoneHttpAction> marksAsDonePipe() {
-        return markItemAsDonePipe;
-    }
+   public ActionPipe<MarkItemAsDoneHttpAction> marksAsDonePipe() {
+      return markItemAsDonePipe;
+   }
 
-    public ActionPipe<DeleteItemHttpAction> deleteItemPipe() {
-        return deleteItemPipe;
-    }
+   public ActionPipe<DeleteItemHttpAction> deleteItemPipe() {
+      return deleteItemPipe;
+   }
 
-    public ActionPipe<DeleteItemPhotoCommand> deleteItemPhotoPipe() {
-        return deleteItemPhotoPipe;
-    }
+   public ActionPipe<DeleteItemPhotoCommand> deleteItemPhotoPipe() {
+      return deleteItemPhotoPipe;
+   }
 
-    public ActionPipe<AddBucketItemPhotoCommand> addBucketItemPhotoPipe() {
-        return addBucketItemPhotoPipe;
-    }
+   public ActionPipe<AddBucketItemPhotoCommand> addBucketItemPhotoPipe() {
+      return addBucketItemPhotoPipe;
+   }
 
-    public ActionPipe<BucketListCommand> bucketListActionPipe() {
-        return bucketListActionPipe;
-    }
+   public ActionPipe<BucketListCommand> bucketListActionPipe() {
+      return bucketListActionPipe;
+   }
 
-    public ActionPipe<FindBucketItemByPhotoCommand> findBucketItemByPhotoActionPipe() {
-        return findBucketItemByPhotoActionPipe;
-    }
+   public ActionPipe<FindBucketItemByPhotoCommand> findBucketItemByPhotoActionPipe() {
+      return findBucketItemByPhotoActionPipe;
+   }
 
-    public ActionPipe<UploadPhotoControllerCommand> uploadControllerCommandPipe() {
-        return uploadPhotoControllerCommandPipe;
-    }
+   public ActionPipe<UploadPhotoControllerCommand> uploadControllerCommandPipe() {
+      return uploadPhotoControllerCommandPipe;
+   }
 
-    public WriteActionPipe<MergeBucketItemPhotosWithStorageCommand> mergeBucketItemPhotosWithStorageCommandPipe() {
-        return mergeBucketItemPhotosWithStorageCommandPipe;
-    }
+   public WriteActionPipe<MergeBucketItemPhotosWithStorageCommand> mergeBucketItemPhotosWithStorageCommandPipe() {
+      return mergeBucketItemPhotosWithStorageCommandPipe;
+   }
 
-    public ActionPipe<RecentlyAddedBucketsFromPopularCommand> recentlyAddedBucketsFromPopularCommandPipe() {
-        return recentlyAddedBucketsFromPopularCommandPipe;
-    }
+   public ActionPipe<RecentlyAddedBucketsFromPopularCommand> recentlyAddedBucketsFromPopularCommandPipe() {
+      return recentlyAddedBucketsFromPopularCommandPipe;
+   }
 
-    private void connect() {
-        createBucketPipe.observeSuccess()
-                .map(CreateBucketItemHttpAction::getResponse)
-                .subscribe(item -> {
-                    bucketListActionPipe.send(BucketListCommand.createItem(item));
-                });
-        Observable.merge(updateItemPipe.observeSuccess()
-                        .map(UpdateItemHttpAction::getResponse),
-                deleteItemPhotoPipe.observeSuccess()
-                        .map(DeleteItemPhotoCommand::getResult),
-                addBucketItemPhotoPipe.observeSuccess()
-                        .map(AddBucketItemPhotoCommand::getResult)
-                        .map(bucketItemBucketPhotoPair -> bucketItemBucketPhotoPair.first))
-                .subscribe(bucketItem -> {
-                    bucketListActionPipe.send(BucketListCommand.updateItem(bucketItem));
-                });
-        markItemAsDonePipe.observeSuccess()
-                .map(MarkItemAsDoneHttpAction::getResponse)
-                .subscribe(item -> {
-                    bucketListActionPipe.send(BucketListCommand.markItemAsDone(item));
-                });
-        deleteItemPipe.observeSuccess()
-                .map(DeleteItemHttpAction::getBucketItemUid)
-                .subscribe(bucketItemUid -> {
-                    bucketListActionPipe.send(BucketListCommand.deleteItem(bucketItemUid));
-                });
-        addBucketItemPhotoPipe.observe()
-                .subscribe(new ActionStateSubscriber<AddBucketItemPhotoCommand>()
-                        .onStart(this::sendCreateActionUploadCommandInternal)
-                        .onSuccess(this::sendCreateActionUploadCommandInternal)
-                        .onFail((command, throwable) -> {
-                            if (throwable instanceof CancelException) {
-                                uploadPhotoControllerCommandPipe.
-                                        send(UploadPhotoControllerCommand.cancel(command.bucketUid(), command.photoEntityStateHolder()));
-                                return;
-                            }
+   private void connect() {
+      createBucketPipe.observeSuccess().map(CreateBucketItemHttpAction::getResponse).subscribe(item -> {
+         bucketListActionPipe.send(BucketListCommand.createItem(item));
+      });
+      Observable.merge(updateItemPipe.observeSuccess()
+            .map(UpdateItemHttpAction::getResponse), deleteItemPhotoPipe.observeSuccess()
+            .map(DeleteItemPhotoCommand::getResult), addBucketItemPhotoPipe.observeSuccess()
+            .map(AddBucketItemPhotoCommand::getResult)
+            .map(bucketItemBucketPhotoPair -> bucketItemBucketPhotoPair.first)).subscribe(bucketItem -> {
+         bucketListActionPipe.send(BucketListCommand.updateItem(bucketItem));
+      });
+      markItemAsDonePipe.observeSuccess().map(MarkItemAsDoneHttpAction::getResponse).subscribe(item -> {
+         bucketListActionPipe.send(BucketListCommand.markItemAsDone(item));
+      });
+      deleteItemPipe.observeSuccess().map(DeleteItemHttpAction::getBucketItemUid).subscribe(bucketItemUid -> {
+         bucketListActionPipe.send(BucketListCommand.deleteItem(bucketItemUid));
+      });
+      addBucketItemPhotoPipe.observe()
+            .subscribe(new ActionStateSubscriber<AddBucketItemPhotoCommand>().onStart(this::sendCreateActionUploadCommandInternal)
+                  .onSuccess(this::sendCreateActionUploadCommandInternal)
+                  .onFail((command, throwable) -> {
+                     if (throwable instanceof CancelException) {
+                        uploadPhotoControllerCommandPipe.
+                              send(UploadPhotoControllerCommand.cancel(command.bucketUid(), command.photoEntityStateHolder()));
+                        return;
+                     }
 
-                            sendCreateActionUploadCommandInternal(command);
-                        }));
-    }
+                     sendCreateActionUploadCommandInternal(command);
+                  }));
+   }
 
-    private void sendCreateActionUploadCommandInternal(AddBucketItemPhotoCommand command) {
-        uploadControllerCommandPipe()
-                .send(UploadPhotoControllerCommand.create(command.bucketUid(), command.photoEntityStateHolder()));
-    }
+   private void sendCreateActionUploadCommandInternal(AddBucketItemPhotoCommand command) {
+      uploadControllerCommandPipe().send(UploadPhotoControllerCommand.create(command.bucketUid(), command.photoEntityStateHolder()));
+   }
 }

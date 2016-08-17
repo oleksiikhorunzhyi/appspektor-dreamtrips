@@ -1,37 +1,40 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.v7.widget.CardView
-    android:id="@+id/card_view"
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:fresco="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:layout_gravity="center"
-    android:layout_margin="@dimen/spacing_small"
-    fresco:cardCornerRadius="@dimen/spacing_tiny">
+<android.support.v7.widget.CardView android:id="@+id/card_view"
+      xmlns:android="http://schemas.android.com/apk/res/android"
+      xmlns:fresco="http://schemas.android.com/tools"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:layout_gravity="center"
+      android:layout_margin="@dimen/spacing_small"
+      fresco:cardCornerRadius="@dimen/spacing_tiny"
+      >
 
-    <FrameLayout
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/video_item_height"
-        android:layout_margin="@dimen/spacing_tiny">
+   <FrameLayout
+         android:layout_width="match_parent"
+         android:layout_height="@dimen/video_item_height"
+         android:layout_margin="@dimen/spacing_tiny"
+         >
 
-        <com.facebook.drawee.view.SimpleDraweeView
+      <com.facebook.drawee.view.SimpleDraweeView
             android:id="@+id/iv_bg"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_gravity="center_horizontal"
             fresco:actualImageScaleType="centerCrop"
             fresco:placeholderImage="@drawable/ic_trip_image_placeholder"
-            fresco:placeholderImageScaleType="fitXY"/>
+            fresco:placeholderImageScaleType="fitXY"
+            />
 
-        <ImageView
+      <ImageView
             android:id="@+id/iv_play"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_gravity="center"
             android:scaleType="centerInside"
-            android:src="@drawable/ic_video_play"/>
+            android:src="@drawable/ic_video_play"
+            />
 
-        <LinearLayout
+      <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="bottom"
@@ -40,26 +43,28 @@
             android:orientation="horizontal"
             >
 
-            <TextView
-                android:id="@+id/tv_title"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:gravity="center_vertical"
-                android:padding="12dp"
-                android:paddingLeft="@dimen/spacing_tiniest"
-                android:paddingRight="@dimen/spacing_tiniest"
-                android:singleLine="true"
-                android:textColor="@android:color/white"
-                android:textSize="16sp"/>
+         <TextView
+               android:id="@+id/tv_title"
+               android:layout_width="0dp"
+               android:layout_height="match_parent"
+               android:layout_weight="1"
+               android:gravity="center_vertical"
+               android:padding="12dp"
+               android:paddingLeft="@dimen/spacing_tiniest"
+               android:paddingRight="@dimen/spacing_tiniest"
+               android:singleLine="true"
+               android:textColor="@android:color/white"
+               android:textSize="16sp"
+               />
 
-            <com.worldventures.dreamtrips.modules.common.view.custom.PinProgressButton
-                android:id="@+id/download_progress"
-                android:layout_width="@dimen/pin_progress_button_size"
-                android:layout_height="@dimen/pin_progress_button_size"
-                android:padding="@dimen/spacing_small"/>
+         <com.worldventures.dreamtrips.modules.common.view.custom.PinProgressButton
+               android:id="@+id/download_progress"
+               android:layout_width="@dimen/pin_progress_button_size"
+               android:layout_height="@dimen/pin_progress_button_size"
+               android:padding="@dimen/spacing_small"
+               />
 
-        </LinearLayout>
+      </LinearLayout>
 
-    </FrameLayout>
+   </FrameLayout>
 </android.support.v7.widget.CardView>

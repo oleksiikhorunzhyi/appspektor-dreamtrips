@@ -1,27 +1,30 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                xmlns:tools="http://schemas.android.com/tools"
-                android:id="@+id/main_view"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="@color/white"
-                android:padding="@dimen/spacing_normal">
+      xmlns:tools="http://schemas.android.com/tools"
+      android:id="@+id/main_view"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:background="@color/white"
+      android:padding="@dimen/spacing_normal"
+      >
 
-    <TextView
-        android:id="@+id/settings_title"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
-        android:layout_centerVertical="true"
-        android:textColor="@color/black"
-        android:textSize="@dimen/font_normal"
-        tools:text="Hello world"/>
+   <TextView
+         android:id="@+id/settings_title"
+         android:layout_width="wrap_content"
+         android:layout_height="wrap_content"
+         android:layout_alignParentLeft="true"
+         android:layout_centerVertical="true"
+         android:textColor="@color/black"
+         android:textSize="@dimen/font_normal"
+         tools:text="Hello world"
+         />
 
-    <CheckBox
-        android:id="@+id/flag_checkbox"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:clickable="false"
-        android:layout_alignParentRight="true"/>
+   <CheckBox
+         android:id="@+id/flag_checkbox"
+         android:layout_width="wrap_content"
+         android:layout_height="wrap_content"
+         android:clickable="false"
+         android:layout_alignParentRight="true"
+         />
 
 </RelativeLayout>

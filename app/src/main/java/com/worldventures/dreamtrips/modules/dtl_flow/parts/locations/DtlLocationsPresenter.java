@@ -6,11 +6,11 @@ import com.worldventures.dreamtrips.modules.dtl_flow.ViewState;
 
 public interface DtlLocationsPresenter extends DtlPresenter<DtlLocationsScreen, ViewState.EMPTY> {
 
-    void loadNearMeRequested();
+   void loadNearMeRequested();
 
-    void onLocationSelected(DtlExternalLocation location);
+   void onLocationSelected(DtlExternalLocation location);
 
-    void onLocationResolutionGranted();
+   void onLocationResolutionGranted();
 
-    void onLocationResolutionDenied();
+   void onLocationResolutionDenied();
 }

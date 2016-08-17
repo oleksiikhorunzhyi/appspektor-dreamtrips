@@ -7,9 +7,9 @@ import com.techery.spares.loader.BaseListLoader;
 import java.util.List;
 
 public abstract class SimpleListFragment<T, LV> extends ArrayAdapterFragment<T, LV> {
-    public static class SimpleListLoader<T> extends BaseListLoader<T> {
-        public SimpleListLoader(Context context, LoadingTask<List<T>> loadingTask) {
-            super(context, loadingTask);
-        }
-    }
+   public static class SimpleListLoader<T> extends BaseListLoader<T> {
+      public SimpleListLoader(Context context, LoadingTask<List<T>> loadingTask) {
+         super(context, loadingTask);
+      }
+   }
 }

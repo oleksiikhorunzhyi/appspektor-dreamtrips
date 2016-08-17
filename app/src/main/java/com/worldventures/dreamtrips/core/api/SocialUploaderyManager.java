@@ -12,23 +12,22 @@ import rx.Observable;
 
 public class SocialUploaderyManager {
 
-    @Inject
-    UploaderyManager uploaderyManager;
+   @Inject UploaderyManager uploaderyManager;
 
-    public SocialUploaderyManager(Injector injector) {
-        injector.inject(this);
-    }
+   public SocialUploaderyManager(Injector injector) {
+      injector.inject(this);
+   }
 
-    public void upload(String filePath) {
-        upload(filePath, filePath.hashCode());
-    }
+   public void upload(String filePath) {
+      upload(filePath, filePath.hashCode());
+   }
 
-    public void upload(String filePath, int commandId) {
-        uploaderyManager.getUploadImagePipe().send(new SimpleUploaderyCommand(filePath, commandId));
-    }
+   public void upload(String filePath, int commandId) {
+      uploaderyManager.getUploadImagePipe().send(new SimpleUploaderyCommand(filePath, commandId));
+   }
 
-    public Observable<ActionState<UploaderyImageCommand>> getTaskChangingObservable() {
-        return uploaderyManager.getUploadImagePipe().observe();
-    }
+   public Observable<ActionState<UploaderyImageCommand>> getTaskChangingObservable() {
+      return uploaderyManager.getUploadImagePipe().observe();
+   }
 
 }

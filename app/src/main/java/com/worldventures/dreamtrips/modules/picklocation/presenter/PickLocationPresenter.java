@@ -4,22 +4,21 @@ import android.view.MenuItem;
 
 import com.google.android.gms.maps.GoogleMap;
 import com.hannesdorfmann.mosby.mvp.MvpPresenter;
-import com.worldventures.dreamtrips.modules.picklocation.util.LocationPermissionHelper;
 import com.worldventures.dreamtrips.modules.picklocation.view.PickLocationView;
 
 public interface PickLocationPresenter extends MvpPresenter<PickLocationView> {
 
-    void onRationalForLocationPermissionRequired();
+   void onRationalForLocationPermissionRequired();
 
-    void onLocationPermissionGranted();
+   void onLocationPermissionGranted();
 
-    void onLocationPermissionDenied();
+   void onLocationPermissionDenied();
 
-    void onShouldInitMap();
+   void onShouldInitMap();
 
-    void onMapInitialized(GoogleMap googleMap);
+   void onMapInitialized(GoogleMap googleMap);
 
-    int getToolbarMenuRes();
+   int getToolbarMenuRes();
 
-    boolean onMenuItemClick(MenuItem item);
+   boolean onMenuItemClick(MenuItem item);
 }

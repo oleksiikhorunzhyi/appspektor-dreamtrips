@@ -3,7 +3,6 @@ package com.worldventures.dreamtrips.core.navigation;
 import android.app.Activity;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
-import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -25,108 +24,104 @@ import javax.inject.Inject;
 
 public class DialogFragmentNavigator implements Navigator {
 
-    private static final String DIALOG_GRAVITY = "DIALOG_GRAVITY";
-    private final FragmentManager fragmentManager;
+   private static final String DIALOG_GRAVITY = "DIALOG_GRAVITY";
+   private final FragmentManager fragmentManager;
 
-    public DialogFragmentNavigator(FragmentManager fragmentManager) {
-        this.fragmentManager = fragmentManager;
-    }
+   public DialogFragmentNavigator(FragmentManager fragmentManager) {
+      this.fragmentManager = fragmentManager;
+   }
 
-    @Override
-    public void attach(Route route, Bundle bundle) {
-        move(route, bundle);
-    }
+   @Override
+   public void attach(Route route, Bundle bundle) {
+      move(route, bundle);
+   }
 
-    @Override
-    public void move(Route route, Bundle bundle) {
-        NavigationDialogFragment
-                .newInstance(route, bundle, bundle.getInt(ComponentPresenter.DIALOG_GRAVITY))
-                .show(fragmentManager, route.getClazzName());
-    }
+   @Override
+   public void move(Route route, Bundle bundle) {
+      NavigationDialogFragment.newInstance(route, bundle, bundle.getInt(ComponentPresenter.DIALOG_GRAVITY))
+            .show(fragmentManager, route.getClazzName());
+   }
 
-    @Layout(R.layout.dialog_container)
-    public static class NavigationDialogFragment extends BaseDialogFragment {
+   @Layout(R.layout.dialog_container)
+   public static class NavigationDialogFragment extends BaseDialogFragment {
 
-        private Route route;
-        private Bundle bundle;
+      private Route route;
+      private Bundle bundle;
 
-        @Inject
-        Router router;
+      @Inject Router router;
 
-        public static NavigationDialogFragment newInstance(Route route, Bundle bundle, int gravity) {
-            NavigationDialogFragment fragment = new NavigationDialogFragment();
-            Bundle args = new Bundle();
-            args.putSerializable(Route.class.getName(), route);
-            args.putBundle(Bundle.class.getName(), bundle);
-            args.putInt(DIALOG_GRAVITY, gravity);
-            fragment.setArguments(args);
-            return fragment;
-        }
+      public static NavigationDialogFragment newInstance(Route route, Bundle bundle, int gravity) {
+         NavigationDialogFragment fragment = new NavigationDialogFragment();
+         Bundle args = new Bundle();
+         args.putSerializable(Route.class.getName(), route);
+         args.putBundle(Bundle.class.getName(), bundle);
+         args.putInt(DIALOG_GRAVITY, gravity);
+         fragment.setArguments(args);
+         return fragment;
+      }
 
-        @Override
-        public void onAttach(Activity activity) {
-            super.onAttach(activity);
-        }
+      @Override
+      public void onAttach(Activity activity) {
+         super.onAttach(activity);
+      }
 
-        @Override
-        public void onCreate(Bundle savedInstanceState) {
-            super.onCreate(savedInstanceState);
-            route = (Route) getArguments().getSerializable(Route.class.getName());
-            bundle = getArguments().getBundle(Bundle.class.getName());
-            //
-            setStyle(DialogFragment.STYLE_NO_TITLE, 0);
-        }
+      @Override
+      public void onCreate(Bundle savedInstanceState) {
+         super.onCreate(savedInstanceState);
+         route = (Route) getArguments().getSerializable(Route.class.getName());
+         bundle = getArguments().getBundle(Bundle.class.getName());
+         //
+         setStyle(DialogFragment.STYLE_NO_TITLE, 0);
+      }
 
-        @Override
-        public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-            getDialog().getWindow().setGravity(getArguments().getInt(DIALOG_GRAVITY, 0));
+      @Override
+      public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+         getDialog().getWindow().setGravity(getArguments().getInt(DIALOG_GRAVITY, 0));
 
-            return super.onCreateView(inflater, container, savedInstanceState);
-        }
+         return super.onCreateView(inflater, container, savedInstanceState);
+      }
 
 
-        @Override
-        public void onActivityCreated(Bundle savedInstanceState) {
-            super.onActivityCreated(savedInstanceState);
-            BaseFragment currentFragment = (BaseFragment) getActivity().getSupportFragmentManager().findFragmentById(getView().getId());
-            if (currentFragment != null && currentFragment.getClass().getName().equals(route.getClazzName()))
-                return;
-            //
-            router.moveTo(route, NavigationConfigBuilder.forFragment()
-                    .backStackEnabled(true)
-                    .fragmentManager(getChildFragmentManager())
-                    .containerId(getView().getId())
-                    .data(bundle.getParcelable(ComponentPresenter.EXTRA_DATA))
-                    .build());
-        }
+      @Override
+      public void onActivityCreated(Bundle savedInstanceState) {
+         super.onActivityCreated(savedInstanceState);
+         BaseFragment currentFragment = (BaseFragment) getActivity().getSupportFragmentManager()
+               .findFragmentById(getView().getId());
+         if (currentFragment != null && currentFragment.getClass().getName().equals(route.getClazzName())) return;
+         //
+         router.moveTo(route, NavigationConfigBuilder.forFragment()
+               .backStackEnabled(true)
+               .fragmentManager(getChildFragmentManager())
+               .containerId(getView().getId())
+               .data(bundle.getParcelable(ComponentPresenter.EXTRA_DATA))
+               .build());
+      }
 
-        @Override
-        public void onResume() {
-            super.onResume();
-            OrientationUtil.lockOrientation(getActivity());
-        }
+      @Override
+      public void onResume() {
+         super.onResume();
+         OrientationUtil.lockOrientation(getActivity());
+      }
 
-        @Override
-        public void onPause() {
-            super.onPause();
-            if (isLastInStack())
-                OrientationUtil.unlockOrientation(getActivity());
-        }
+      @Override
+      public void onPause() {
+         super.onPause();
+         if (isLastInStack()) OrientationUtil.unlockOrientation(getActivity());
+      }
 
-        public void onEvent(CloseDialogEvent event) {
-            if (isVisible())
-                dismiss();
-        }
+      public void onEvent(CloseDialogEvent event) {
+         if (isVisible()) dismiss();
+      }
 
-        public void onEvent(EditCommentCloseRequest event) {
-            if (route.getClazzName().equals(event.getFragmentClazz())) {
-                dismissAllowingStateLoss();
-            }
-        }
+      public void onEvent(EditCommentCloseRequest event) {
+         if (route.getClazzName().equals(event.getFragmentClazz())) {
+            dismissAllowingStateLoss();
+         }
+      }
 
-        private boolean isLastInStack() {
-            return getFragmentManager().getFragments() != null && Queryable.from(getFragmentManager().getFragments())
-                    .count(fragment -> fragment instanceof NavigationDialogFragment) < 2;
-        }
-    }
+      private boolean isLastInStack() {
+         return getFragmentManager().getFragments() != null && Queryable.from(getFragmentManager().getFragments())
+               .count(fragment -> fragment instanceof NavigationDialogFragment) < 2;
+      }
+   }
 }

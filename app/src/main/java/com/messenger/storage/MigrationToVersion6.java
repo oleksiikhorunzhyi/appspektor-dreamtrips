@@ -10,10 +10,10 @@ import com.raizlabs.android.dbflow.annotation.Migration;
 @Migration(version = 6, databaseName = MessengerDatabase.NAME)
 public class MigrationToVersion6 extends BaseTableMigration {
 
-    @Override
-    public void migrate(SQLiteDatabase database) {
-        addColumn(database, DataConversation$Table.TABLE_NAME, DATA_TYPE_INTEGER, DataConversation$Table.CLEARTIME);
-        addColumn(database, DataMessage$Table.TABLE_NAME, DATA_TYPE_TEXT, DataMessage$Table.TYPE);
-        updateAllRowsInColumn(database, DataMessage$Table.TABLE_NAME, DataMessage$Table.TYPE, MessageType.MESSAGE);
-    }
+   @Override
+   public void migrate(SQLiteDatabase database) {
+      addColumn(database, DataConversation$Table.TABLE_NAME, DATA_TYPE_INTEGER, DataConversation$Table.CLEARTIME);
+      addColumn(database, DataMessage$Table.TABLE_NAME, DATA_TYPE_TEXT, DataMessage$Table.TYPE);
+      updateAllRowsInColumn(database, DataMessage$Table.TABLE_NAME, DataMessage$Table.TYPE, MessageType.MESSAGE);
+   }
 }

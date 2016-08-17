@@ -11,23 +11,20 @@ import io.techery.janet.http.annotations.Query;
 import io.techery.janet.http.annotations.Response;
 
 @HttpAction(value = "/api/podcasts", method = HttpAction.Method.GET)
-public class GetPodcastsHttpAction extends AuthorizedHttpAction{
+public class GetPodcastsHttpAction extends AuthorizedHttpAction {
 
-    @Query("page")
-    int page;
-    @Query("per_page")
-    int perPage;
+   @Query("page") int page;
+   @Query("per_page") int perPage;
 
-    @Response
-    List<Podcast> responseItems;
+   @Response List<Podcast> responseItems;
 
-    public GetPodcastsHttpAction(int page, int perPage) {
-        this.page = page;
-        this.perPage = perPage;
-    }
+   public GetPodcastsHttpAction(int page, int perPage) {
+      this.page = page;
+      this.perPage = perPage;
+   }
 
-    public List<Podcast> getResponseItems() {
-        if (responseItems == null) responseItems = new ArrayList<>();
-        return responseItems;
-    }
+   public List<Podcast> getResponseItems() {
+      if (responseItems == null) responseItems = new ArrayList<>();
+      return responseItems;
+   }
 }

@@ -4,22 +4,22 @@ import android.os.Parcel;
 
 public class PinHolder extends MapObjectHolder<Pin> {
 
-    public PinHolder() {
-    }
+   public PinHolder() {
+   }
 
-    protected PinHolder(Parcel in) {
-        super(in);
-    }
+   protected PinHolder(Parcel in) {
+      super(in);
+   }
 
-    public static final Creator<PinHolder> CREATOR = new Creator<PinHolder>() {
-        @Override
-        public PinHolder createFromParcel(Parcel source) {
-            return new PinHolder(source);
-        }
+   public static final Creator<PinHolder> CREATOR = new Creator<PinHolder>() {
+      @Override
+      public PinHolder createFromParcel(Parcel source) {
+         return new PinHolder(source);
+      }
 
-        @Override
-        public PinHolder[] newArray(int size) {
-            return new PinHolder[size];
-        }
-    };
+      @Override
+      public PinHolder[] newArray(int size) {
+         return new PinHolder[size];
+      }
+   };
 }

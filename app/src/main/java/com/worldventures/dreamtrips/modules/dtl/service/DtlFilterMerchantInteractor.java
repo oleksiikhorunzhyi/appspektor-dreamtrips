@@ -11,28 +11,26 @@ import rx.schedulers.Schedulers;
 
 public class DtlFilterMerchantInteractor {
 
-    private final ActionPipe<DtlFilterDataAction> filterDataPipe;
+   private final ActionPipe<DtlFilterDataAction> filterDataPipe;
 
-    private final ActionPipe<DtlFilterMerchantsAction> filterMerchantsPipe;
+   private final ActionPipe<DtlFilterMerchantsAction> filterMerchantsPipe;
 
 
-    public DtlFilterMerchantInteractor(DtlMerchantInteractor dtlMerchantInteractor,
-                                       DtlLocationInteractor locationInteractor,
-                                       LocationDelegate locationDelegate,
-                                       Janet janet) {
-        filterMerchantsPipe = janet.createPipe(DtlFilterMerchantsAction.class, Schedulers.io());
-        filterDataPipe = janet.createPipe(DtlFilterDataAction.class, Schedulers.io());
+   public DtlFilterMerchantInteractor(DtlMerchantInteractor dtlMerchantInteractor, DtlLocationInteractor locationInteractor, LocationDelegate locationDelegate, Janet janet) {
+      filterMerchantsPipe = janet.createPipe(DtlFilterMerchantsAction.class, Schedulers.io());
+      filterDataPipe = janet.createPipe(DtlFilterDataAction.class, Schedulers.io());
 
-        filterDataPipe.send(DtlFilterDataAction.init());
-        filterDataPipe.observeSuccess()
-                .subscribe(action -> filterMerchantsPipe.send(new DtlFilterMerchantsAction(action.getResult(), dtlMerchantInteractor.merchantsActionPipe(), locationInteractor.locationPipe(), locationDelegate)));
-    }
+      filterDataPipe.send(DtlFilterDataAction.init());
+      filterDataPipe.observeSuccess()
+            .subscribe(action -> filterMerchantsPipe.send(new DtlFilterMerchantsAction(action.getResult(), dtlMerchantInteractor
+                  .merchantsActionPipe(), locationInteractor.locationPipe(), locationDelegate)));
+   }
 
-    public ActionPipe<DtlFilterDataAction> filterDataPipe() {
-        return filterDataPipe;
-    }
+   public ActionPipe<DtlFilterDataAction> filterDataPipe() {
+      return filterDataPipe;
+   }
 
-    public ReadActionPipe<DtlFilterMerchantsAction> filterMerchantsActionPipe() {
-        return filterMerchantsPipe;
-    }
+   public ReadActionPipe<DtlFilterMerchantsAction> filterMerchantsActionPipe() {
+      return filterMerchantsPipe;
+   }
 }

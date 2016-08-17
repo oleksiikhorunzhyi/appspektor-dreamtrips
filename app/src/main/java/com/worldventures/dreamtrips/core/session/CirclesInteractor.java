@@ -7,13 +7,13 @@ import io.techery.janet.Janet;
 
 public class CirclesInteractor {
 
-    ActionPipe<CirclesCommand> pipe;
+   ActionPipe<CirclesCommand> pipe;
 
-    public CirclesInteractor(Janet janet) {
-        pipe = janet.createPipe(CirclesCommand.class);
-    }
+   public CirclesInteractor(Janet janet) {
+      pipe = janet.createPipe(CirclesCommand.class);
+   }
 
-    public ActionPipe<CirclesCommand> pipe() {
-        return pipe;
-    }
+   public ActionPipe<CirclesCommand> pipe() {
+      return pipe;
+   }
 }

@@ -14,29 +14,29 @@ import dagger.Module;
 import dagger.Provides;
 
 @Module(
-        injects = {
-                ProfileRouteCreator.class
-        },
-        complete = false,
-        library = true
-)
+      injects = {ProfileRouteCreator.class},
+      complete = false,
+      library = true)
 public class RouteCreatorModule {
-    public static final String PROFILE = "profile";
-    public static final String BUCKET_DETAILS = "bucket_details";
-    public static final String DTL_TRANSACTION = "dtl_transaction";
+   public static final String PROFILE = "profile";
+   public static final String BUCKET_DETAILS = "bucket_details";
+   public static final String DTL_TRANSACTION = "dtl_transaction";
 
-    @Provides @Named(PROFILE)
-    RouteCreator<Integer> provideProfileRouteCreator(SessionHolder<UserSession> appSessionHolder) {
-        return new ProfileRouteCreator(appSessionHolder);
-    }
+   @Provides
+   @Named(PROFILE)
+   RouteCreator<Integer> provideProfileRouteCreator(SessionHolder<UserSession> appSessionHolder) {
+      return new ProfileRouteCreator(appSessionHolder);
+   }
 
-    @Provides @Named(BUCKET_DETAILS)
-    RouteCreator<Integer> provideBucketDetailsRouteCreator(SessionHolder<UserSession> appSessionHolder) {
-        return new BucketDetailsRouteCreator(appSessionHolder);
-    }
+   @Provides
+   @Named(BUCKET_DETAILS)
+   RouteCreator<Integer> provideBucketDetailsRouteCreator(SessionHolder<UserSession> appSessionHolder) {
+      return new BucketDetailsRouteCreator(appSessionHolder);
+   }
 
-    @Provides @Named(DTL_TRANSACTION)
-    RouteCreator<DtlTransaction> provideDtlTransactionRouteCreator() {
-        return new DtlTransactionRouteCreator();
-    }
+   @Provides
+   @Named(DTL_TRANSACTION)
+   RouteCreator<DtlTransaction> provideDtlTransactionRouteCreator() {
+      return new DtlTransactionRouteCreator();
+   }
 }

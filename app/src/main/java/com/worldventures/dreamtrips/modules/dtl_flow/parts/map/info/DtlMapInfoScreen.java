@@ -5,7 +5,7 @@ import com.worldventures.dreamtrips.modules.dtl_flow.DtlScreen;
 
 public interface DtlMapInfoScreen extends DtlScreen {
 
-    void visibleLayout(boolean show);
+   void visibleLayout(boolean show);
 
-    void setMerchant(DtlMerchant merchant);
+   void setMerchant(DtlMerchant merchant);
 }

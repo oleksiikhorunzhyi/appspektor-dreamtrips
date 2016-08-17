@@ -10,8 +10,8 @@ import com.worldventures.dreamtrips.modules.video.presenter.HelpVideosPresenter;
 @Layout(R.layout.fragment_help_videos)
 public class HelpVideosFragment extends TrainingVideosFragment {
 
-    @Override
-    protected HelpVideosPresenter createPresenter(Bundle savedInstanceState) {
-        return new HelpVideosPresenter();
-    }
+   @Override
+   protected HelpVideosPresenter createPresenter(Bundle savedInstanceState) {
+      return new HelpVideosPresenter();
+   }
 }

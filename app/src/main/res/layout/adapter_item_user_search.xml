@@ -1,82 +1,91 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              xmlns:app="http://schemas.android.com/apk/res-auto"
-              xmlns:fresco="http://schemas.android.com/apk/res-auto"
-              xmlns:tools="http://schemas.android.com/tools"
-              android:layout_width="match_parent"
-              android:layout_height="wrap_content"
-              android:background="@android:color/white"
-              android:orientation="horizontal">
+      xmlns:app="http://schemas.android.com/apk/res-auto"
+      xmlns:fresco="http://schemas.android.com/apk/res-auto"
+      xmlns:tools="http://schemas.android.com/tools"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:background="@android:color/white"
+      android:orientation="horizontal"
+      >
 
-    <com.worldventures.dreamtrips.modules.common.view.custom.SmartAvatarView
-        android:id="@+id/sdv_avatar"
-        android:layout_width="48dp"
-        android:layout_height="48dp"
-        android:layout_margin="@dimen/spacing_normal"
-        fresco:placeholderImage="@drawable/ic_avatar_placeholder"
-        fresco:roundAsCircle="true"/>
+   <com.worldventures.dreamtrips.modules.common.view.custom.SmartAvatarView
+         android:id="@+id/sdv_avatar"
+         android:layout_width="48dp"
+         android:layout_height="48dp"
+         android:layout_margin="@dimen/spacing_normal"
+         fresco:placeholderImage="@drawable/ic_avatar_placeholder"
+         fresco:roundAsCircle="true"
+         />
 
-    <LinearLayout
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:layout_weight="1"
-        android:orientation="vertical">
+   <LinearLayout
+         android:layout_width="0dp"
+         android:layout_height="wrap_content"
+         android:layout_gravity="center"
+         android:layout_weight="1"
+         android:orientation="vertical"
+         >
 
-        <TextView
+      <TextView
             android:id="@+id/tv_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:singleLine="true"
             android:textColor="@color/black"
             android:textSize="16sp"
-            tools:text="Jon Snow"/>
+            tools:text="Jon Snow"
+            />
 
-        <TextView
+      <TextView
             android:id="@+id/tv_company"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:singleLine="true"
             android:textColor="@color/black"
             android:textSize="16sp"
-            tools:text="Adobe"/>
+            tools:text="Adobe"
+            />
 
-        <TextView
+      <TextView
             android:id="@+id/tv_mutual"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:singleLine="true"
             android:textSize="14sp"
-            tools:text="10 mutual friends"/>
-    </LinearLayout>
+            tools:text="10 mutual friends"
+            />
+   </LinearLayout>
 
 
-    <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:orientation="horizontal">
+   <LinearLayout
+         android:layout_width="wrap_content"
+         android:layout_height="wrap_content"
+         android:layout_gravity="center"
+         android:orientation="horizontal"
+         >
 
-        <com.dd.ShadowLayout
+      <com.dd.ShadowLayout
             android:id="@+id/add_wrapper"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="@dimen/spacing_tiny"
             app:sl_cornerRadius="2dp"
-            app:sl_shadowColor="@color/black_semi_transparent">
+            app:sl_shadowColor="@color/black_semi_transparent"
+            >
 
-            <TextView
-                android:id="@+id/add"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:background="@drawable/bg_button_blue"
-                android:padding="@dimen/spacing_small"
-                android:text="@string/add"
-                android:textAllCaps="true"
-                android:textColor="@android:color/white"/>
-        </com.dd.ShadowLayout>
+         <TextView
+               android:id="@+id/add"
+               android:layout_width="wrap_content"
+               android:layout_height="wrap_content"
+               android:background="@drawable/bg_button_blue"
+               android:padding="@dimen/spacing_small"
+               android:text="@string/add"
+               android:textAllCaps="true"
+               android:textColor="@android:color/white"
+               />
+      </com.dd.ShadowLayout>
 
-        <TextView
+      <TextView
             android:id="@+id/pending_wrapper"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -89,7 +98,7 @@
             />
 
 
-    </LinearLayout>
+   </LinearLayout>
 
 
 </LinearLayout>

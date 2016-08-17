@@ -7,10 +7,9 @@ import android.view.Menu;
 import com.messenger.entities.DataConversation;
 import com.messenger.entities.DataMessage;
 import com.messenger.entities.DataUser;
+import com.messenger.ui.model.AttachmentMenuItem;
 import com.messenger.ui.module.flagging.FlaggingView;
 import com.messenger.ui.view.layout.MessengerScreen;
-
-import com.messenger.ui.model.AttachmentMenuItem;
 
 import java.util.List;
 
@@ -18,49 +17,49 @@ import rx.Observable;
 
 public interface ChatScreen extends MessengerScreen {
 
-    void showLoading();
+   void showLoading();
 
-    void showContent();
+   void showContent();
 
-    void showError(Throwable e);
+   void showError(Throwable e);
 
-    void setTitle(DataConversation conversation, List<DataUser> users);
+   void setTitle(DataConversation conversation, List<DataUser> users);
 
-    void changeTypingUsers(List<DataUser> user);
+   void changeTypingUsers(List<DataUser> user);
 
-    void setShowMarkUnreadMessage(boolean needShow);
+   void setShowMarkUnreadMessage(boolean needShow);
 
-    void showMessages(Cursor cursor);
+   void showMessages(Cursor cursor);
 
-    void showAttachmentMenu(AttachmentMenuItem[] items);
+   void showAttachmentMenu(AttachmentMenuItem[] items);
 
-    void showRetrySendMessageDialog(DataMessage dataMessage);
+   void showRetrySendMessageDialog(DataMessage dataMessage);
 
-    Observable<DataMessage> getLastVisibleItemStream();
+   Observable<DataMessage> getLastVisibleItemStream();
 
-    Observable<String> getEditMessageObservable();
+   Observable<String> getEditMessageObservable();
 
-    Observable<String> getAttachmentClickStream();
+   Observable<String> getAttachmentClickStream();
 
-    void showContextualAction(Menu menu, DataMessage message);
+   void showContextualAction(Menu menu, DataMessage message);
 
-    void enableSendMessageButton(boolean enable);
+   void enableSendMessageButton(boolean enable);
 
-    void showPickLocationError();
+   void showPickLocationError();
 
-    FlaggingView getFlaggingView();
+   FlaggingView getFlaggingView();
 
-    void refreshChatTimestampView(int position);
+   void refreshChatTimestampView(int position);
 
-    void enableInput(boolean enabled);
+   void enableInput(boolean enabled);
 
-    void enableReloadChatButton(long clearDate);
+   void enableReloadChatButton(long clearDate);
 
-    void disableReloadChatButton();
+   void disableReloadChatButton();
 
-    void showProgressDialog();
+   void showProgressDialog();
 
-    void dismissProgressDialog();
+   void dismissProgressDialog();
 
-    void showErrorMessage(@StringRes int error_no_connection);
+   void showErrorMessage(@StringRes int error_no_connection);
 }

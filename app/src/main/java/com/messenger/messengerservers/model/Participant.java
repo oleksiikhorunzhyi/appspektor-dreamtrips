@@ -7,10 +7,10 @@ import org.immutables.value.Value;
 @Value.Immutable
 public interface Participant {
 
-    String getUserId();
+   String getUserId();
 
-    @Affiliation
-    String getAffiliation();
+   @Affiliation
+   String getAffiliation();
 
-    String getConversationId();
+   String getConversationId();
 }

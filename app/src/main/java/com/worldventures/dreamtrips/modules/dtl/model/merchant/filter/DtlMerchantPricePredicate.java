@@ -8,15 +8,14 @@ import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchant;
  */
 public class DtlMerchantPricePredicate implements Predicate<DtlMerchant> {
 
-    private final DtlFilterData filterData;
+   private final DtlFilterData filterData;
 
-    public DtlMerchantPricePredicate(DtlFilterData filterData) {
-        this.filterData = filterData;
-    }
+   public DtlMerchantPricePredicate(DtlFilterData filterData) {
+      this.filterData = filterData;
+   }
 
-    @Override
-    public boolean apply(DtlMerchant dtlMerchant) {
-        return dtlMerchant.getBudget() >= filterData.getMinPrice() &&
-                dtlMerchant.getBudget() <= filterData.getMaxPrice();
-    }
+   @Override
+   public boolean apply(DtlMerchant dtlMerchant) {
+      return dtlMerchant.getBudget() >= filterData.getMinPrice() && dtlMerchant.getBudget() <= filterData.getMaxPrice();
+   }
 }

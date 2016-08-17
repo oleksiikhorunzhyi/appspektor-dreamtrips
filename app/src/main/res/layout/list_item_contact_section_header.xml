@@ -1,17 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
-<TextView
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/section_name_textview"
-    android:layout_gravity="center_vertical"
-    android:layout_height="wrap_content"
-    android:layout_width="match_parent"
-    android:textColor="@color/new_chat_list_item_section_name_text"
-    android:background="@color/new_chat_list_item_section_background"
-    android:paddingBottom="@dimen/new_chat_list_item_vertical_padding"
-    android:paddingLeft="@dimen/new_chat_list_item_horizontal_padding"
-    android:paddingRight="@dimen/new_chat_list_item_horizontal_padding"
-    android:paddingTop="@dimen/new_chat_list_item_vertical_padding"
-    />
+<TextView xmlns:android="http://schemas.android.com/apk/res/android"
+      android:id="@+id/section_name_textview"
+      android:layout_gravity="center_vertical"
+      android:layout_height="wrap_content"
+      android:layout_width="match_parent"
+      android:textColor="@color/new_chat_list_item_section_name_text"
+      android:background="@color/new_chat_list_item_section_background"
+      android:paddingBottom="@dimen/new_chat_list_item_vertical_padding"
+      android:paddingLeft="@dimen/new_chat_list_item_horizontal_padding"
+      android:paddingRight="@dimen/new_chat_list_item_horizontal_padding"
+      android:paddingTop="@dimen/new_chat_list_item_vertical_padding"
+      />
 
 

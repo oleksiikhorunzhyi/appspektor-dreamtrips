@@ -4,8 +4,8 @@ import com.techery.spares.adapter.HeaderItem;
 
 public class LoadMoreModel implements HeaderItem {
 
-    @Override
-    public String getHeaderTitle() {
-        return null;
-    }
+   @Override
+   public String getHeaderTitle() {
+      return null;
+   }
 }

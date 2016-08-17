@@ -1,28 +1,36 @@
 package com.worldventures.dreamtrips.modules.feed.view.custom;
 
+import android.content.Context;
 import android.graphics.Rect;
+import android.support.annotation.IntRange;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 
-import com.worldventures.dreamtrips.R;
-
 public class SideMarginsItemDecorator extends RecyclerView.ItemDecoration {
 
-    private boolean ignoreFirstItem;
+   private int marginPercentage;
+   private boolean ignoreFirstItem;
 
-    public SideMarginsItemDecorator(boolean ignoreFirstItem) {
-        this.ignoreFirstItem = ignoreFirstItem;
-    }
+   public SideMarginsItemDecorator(@IntRange(from = 0, to = 100) int marginPercentage) {
+      this(marginPercentage, false);
+   }
 
-    @Override
-    public void getItemOffsets(Rect outRect, View view, RecyclerView parent, RecyclerView.State state) {
-        super.getItemOffsets(outRect, view, parent, state);
+   public SideMarginsItemDecorator(@IntRange(from = 0, to = 100) int marginPercentage, boolean ignoreFirstItem) {
+      this.marginPercentage = marginPercentage;
+      this.ignoreFirstItem = ignoreFirstItem;
+   }
 
-        if ((ignoreFirstItem && parent.getChildAdapterPosition(view) != 0) || !ignoreFirstItem) {
-            int spacing = (int) parent.getResources().getDimension(R.dimen.feed_spacing);
+   @Override
+   public void getItemOffsets(Rect outRect, View view, RecyclerView parent, RecyclerView.State state) {
+      super.getItemOffsets(outRect, view, parent, state);
 
-            outRect.left = spacing;
-            outRect.right = spacing;
-        }
-    }
+      if ((ignoreFirstItem && parent.getChildAdapterPosition(view) != 0) || !ignoreFirstItem) {
+         outRect.left = getMarginInPx(parent.getContext());
+         outRect.right = getMarginInPx(parent.getContext());
+      }
+   }
+
+   private int getMarginInPx(Context context) {
+      return context.getResources().getDisplayMetrics().widthPixels * marginPercentage / 100;
+   }
 }

@@ -4,11 +4,11 @@ import com.messenger.ui.view.settings.GroupChatSettingsScreen;
 
 public interface GroupChatSettingsScreenPresenter extends ChatSettingsScreenPresenter<GroupChatSettingsScreen> {
 
-    void onLeaveChatClicked();
+   void onLeaveChatClicked();
 
-    void onMembersRowClicked();
+   void onMembersRowClicked();
 
-    void applyNewChatSubject(String subject);
+   void applyNewChatSubject(String subject);
 
-    void onLeaveButtonClick();
+   void onLeaveButtonClick();
 }

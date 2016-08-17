@@ -1,21 +1,32 @@
 package com.worldventures.dreamtrips.modules.dtl.model.merchant.offer;
 
+import com.esotericsoftware.kryo.DefaultSerializer;
+import com.esotericsoftware.kryo.serializers.CompatibleFieldSerializer;
+
 import java.util.List;
 
+@DefaultSerializer(CompatibleFieldSerializer.class)
 public class DtlOfferPoints extends DtlOffer {
 
-    List<DtlCurrency> currencies;
+   List<DtlCurrency> currencies;
 
-    public List<DtlCurrency> getCurrencies() {
-        return currencies;
-    }
+   public DtlOfferPoints() {
+   }
 
-    public void setCurrencies(List<DtlCurrency> currencies) {
-        this.currencies = currencies;
-    }
+   public DtlOfferPoints(com.worldventures.dreamtrips.api.dtl.merchants.model.Offer offer) {
+      super(offer);
+   }
 
-    @Override
-    public Type getType() {
-        return Type.POINTS;
-    }
+   public List<DtlCurrency> getCurrencies() {
+      return currencies;
+   }
+
+   public void setCurrencies(List<DtlCurrency> currencies) {
+      this.currencies = currencies;
+   }
+
+   @Override
+   public Type getType() {
+      return Type.POINTS;
+   }
 }

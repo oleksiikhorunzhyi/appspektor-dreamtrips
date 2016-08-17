@@ -14,133 +14,131 @@ import timber.log.Timber;
 
 public class PhotoPickerLayoutDelegate {
 
-    private BackStackDelegate backStackDelegate;
+   private BackStackDelegate backStackDelegate;
 
-    private PhotoPickerLayout photoPickerLayout;
-    private Handler handler = new Handler();
-    private final Runnable openPikerTask = this::showPicker;
+   private PhotoPickerLayout photoPickerLayout;
+   private Handler handler = new Handler();
+   private final Runnable openPikerTask = this::showPicker;
 
 
-    public PhotoPickerLayoutDelegate(BackStackDelegate backStackDelegate) {
-        this.backStackDelegate = backStackDelegate;
-    }
+   public PhotoPickerLayoutDelegate(BackStackDelegate backStackDelegate) {
+      this.backStackDelegate = backStackDelegate;
+   }
 
-    public void setPhotoPickerLayout(PhotoPickerLayout photoPickerLayout) {
-        this.photoPickerLayout = photoPickerLayout;
-    }
+   public void setPhotoPickerLayout(PhotoPickerLayout photoPickerLayout) {
+      this.photoPickerLayout = photoPickerLayout;
+   }
 
-    public void initPicker(FragmentManager fragmentManager) {
-        initPicker(fragmentManager, true);
-    }
+   public void initPicker(FragmentManager fragmentManager) {
+      initPicker(fragmentManager, true);
+   }
 
-    /**
-     * Init picker and attach it to provided container
-     *
-     * @param fragmentManager  FragmentManager to init picker
-     * @param isVisible        default value is {true}
-     */
-    public void initPicker(FragmentManager fragmentManager, boolean isVisible) {
-        photoPickerLayout.setup(fragmentManager, isVisible);
-    }
+   /**
+    * Init picker and attach it to provided container
+    *
+    * @param fragmentManager FragmentManager to init picker
+    * @param isVisible       default value is {true}
+    */
+   public void initPicker(FragmentManager fragmentManager, boolean isVisible) {
+      photoPickerLayout.setup(fragmentManager, isVisible);
+   }
 
-    public void setPhotoPickerListener(PhotoPickerLayout.PhotoPickerListener listener) {
-        if (photoPickerLayout != null) photoPickerLayout.setPhotoPickerListener(listener);
-        else Timber.d("Photo picker was not initialized");
-    }
+   public void setPhotoPickerListener(PhotoPickerLayout.PhotoPickerListener listener) {
+      if (photoPickerLayout != null) photoPickerLayout.setPhotoPickerListener(listener);
+      else Timber.d("Photo picker was not initialized");
+   }
 
-    public boolean isPanelVisible() {
-        return photoPickerLayout != null && photoPickerLayout.isPanelVisible();
-    }
+   public boolean isPanelVisible() {
+      return photoPickerLayout != null && photoPickerLayout.isPanelVisible();
+   }
 
-    public void setOnDoneClickListener(PhotoPickerLayout.OnDoneClickListener onDoneClickListener) {
-        if (photoPickerLayout != null)  photoPickerLayout.setOnDoneClickListener(onDoneClickListener);
-        else Timber.d("Photo picker was not initialized");
-    }
+   public void setOnDoneClickListener(PhotoPickerLayout.OnDoneClickListener onDoneClickListener) {
+      if (photoPickerLayout != null) photoPickerLayout.setOnDoneClickListener(onDoneClickListener);
+      else Timber.d("Photo picker was not initialized");
+   }
 
-    @RequiresPermission(allOf = {Manifest.permission.READ_EXTERNAL_STORAGE})
-    public void showPickerAfterDelay() {
-        handler.postDelayed(openPikerTask, 400);
-    }
+   @RequiresPermission(allOf = {Manifest.permission.READ_EXTERNAL_STORAGE})
+   public void showPickerAfterDelay() {
+      handler.postDelayed(openPikerTask, 400);
+   }
 
-    @RequiresPermission(allOf = {Manifest.permission.READ_EXTERNAL_STORAGE})
-    public void showPicker() {
-        showPicker(false, Integer.MAX_VALUE);
-    }
+   @RequiresPermission(allOf = {Manifest.permission.READ_EXTERNAL_STORAGE})
+   public void showPicker() {
+      showPicker(false, Integer.MAX_VALUE);
+   }
 
-    @RequiresPermission(allOf = {Manifest.permission.READ_EXTERNAL_STORAGE})
-    public void showPicker(boolean multiPickEnabled) {
-        //noinspection all
-        showPicker(multiPickEnabled, Integer.MAX_VALUE);
-    }
+   @RequiresPermission(allOf = {Manifest.permission.READ_EXTERNAL_STORAGE})
+   public void showPicker(boolean multiPickEnabled) {
+      //noinspection all
+      showPicker(multiPickEnabled, Integer.MAX_VALUE);
+   }
 
-    @RequiresPermission(allOf = {Manifest.permission.READ_EXTERNAL_STORAGE})
-    public void showPicker(boolean multiPickEnabled, int pickerLimit) {
-        if (photoPickerLayout != null) {
-            photoPickerLayout.showPanel(multiPickEnabled, pickerLimit);
-            backStackDelegate.setListener(() -> {
-                if (photoPickerLayout.isPanelVisible()) {
-                    photoPickerLayout.hidePanel();
-                    return true;
-                }
-                return false;
-            });
-            applyWhiteScreenWorkaround();
-        }
-        else Timber.d("Photo picker was not initialized");
-    }
-
-    public void hidePicker() {
-        if (photoPickerLayout != null) {
-            photoPickerLayout.hidePanel();
-            backStackDelegate.setListener(null);
-        }
-        else Timber.d("Photo picker was not initialized");
-    }
-
-    /**
-     * Sometimes a bug happens in parent view (SlidingUpPanelLayout) that leads
-     * to photo picker shown with white screen. The reason for this is that SlidingUpPanelLayout
-     * for some reason randomly sets visibility of draggable view to INVISIBLE (cause white screen)
-     * and its panel state to HIDDEN (ignores all touch events). To avoid this we need
-     * to revert those and requestLayout so that SlidingUpPanelLayout can update it's state in onMeasure
-     */
-    private void applyWhiteScreenWorkaround() {
-        View draggableView = photoPickerLayout.getDraggableView();
-        if (draggableView.getVisibility() == View.INVISIBLE) {
-            draggableView.setVisibility(View.VISIBLE);
-            photoPickerLayout.setPanelState(SlidingUpPanelLayout.PanelState.COLLAPSED);
-            photoPickerLayout.requestLayout();
-        }
-    }
-
-    public void disableEditTextUntilPickerIsShown(EditText editText) {
-        if (photoPickerLayout == null) return;
-
-        photoPickerLayout.setPanelSlideListener(new SlidingUpPanelLayout.PanelSlideListener() {
-            @Override
-            public void onPanelSlide(View panel, float slideOffset) {
-                if (!editText.hasFocus()) editText.setEnabled(false);
+   @RequiresPermission(allOf = {Manifest.permission.READ_EXTERNAL_STORAGE})
+   public void showPicker(boolean multiPickEnabled, int pickerLimit) {
+      if (photoPickerLayout != null) {
+         photoPickerLayout.showPanel(multiPickEnabled, pickerLimit);
+         backStackDelegate.setListener(() -> {
+            if (photoPickerLayout.isPanelVisible()) {
+               photoPickerLayout.hidePanel();
+               return true;
             }
+            return false;
+         });
+         applyWhiteScreenWorkaround();
+      } else Timber.d("Photo picker was not initialized");
+   }
 
-            @Override
-            public void onPanelCollapsed(View panel) {
-                editText.setEnabled(true);
-            }
+   public void hidePicker() {
+      if (photoPickerLayout != null) {
+         photoPickerLayout.hidePanel();
+         backStackDelegate.setListener(null);
+      } else Timber.d("Photo picker was not initialized");
+   }
 
-            @Override
-            public void onPanelExpanded(View panel) {
-                editText.setEnabled(true);
-            }
+   /**
+    * Sometimes a bug happens in parent view (SlidingUpPanelLayout) that leads
+    * to photo picker shown with white screen. The reason for this is that SlidingUpPanelLayout
+    * for some reason randomly sets visibility of draggable view to INVISIBLE (cause white screen)
+    * and its panel state to HIDDEN (ignores all touch events). To avoid this we need
+    * to revert those and requestLayout so that SlidingUpPanelLayout can update it's state in onMeasure
+    */
+   private void applyWhiteScreenWorkaround() {
+      View draggableView = photoPickerLayout.getDraggableView();
+      if (draggableView.getVisibility() == View.INVISIBLE) {
+         draggableView.setVisibility(View.VISIBLE);
+         photoPickerLayout.setPanelState(SlidingUpPanelLayout.PanelState.COLLAPSED);
+         photoPickerLayout.requestLayout();
+      }
+   }
 
-            @Override
-            public void onPanelAnchored(View panel) {
-                editText.setEnabled(true);
-            }
+   public void disableEditTextUntilPickerIsShown(EditText editText) {
+      if (photoPickerLayout == null) return;
 
-            @Override
-            public void onPanelHidden(View panel) {
-                editText.setEnabled(true);
-            }
-        });
-    }
+      photoPickerLayout.setPanelSlideListener(new SlidingUpPanelLayout.PanelSlideListener() {
+         @Override
+         public void onPanelSlide(View panel, float slideOffset) {
+            if (!editText.hasFocus()) editText.setEnabled(false);
+         }
+
+         @Override
+         public void onPanelCollapsed(View panel) {
+            editText.setEnabled(true);
+         }
+
+         @Override
+         public void onPanelExpanded(View panel) {
+            editText.setEnabled(true);
+         }
+
+         @Override
+         public void onPanelAnchored(View panel) {
+            editText.setEnabled(true);
+         }
+
+         @Override
+         public void onPanelHidden(View panel) {
+            editText.setEnabled(true);
+         }
+      });
+   }
 }

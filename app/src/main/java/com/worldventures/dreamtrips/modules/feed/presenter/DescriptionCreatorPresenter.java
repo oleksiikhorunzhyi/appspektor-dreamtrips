@@ -18,62 +18,58 @@ import timber.log.Timber;
 
 public class DescriptionCreatorPresenter extends Presenter<DescriptionCreatorPresenter.View> {
 
-    private static final int MIN_QUERY_LENGTH = 3;
+   private static final int MIN_QUERY_LENGTH = 3;
 
-    @Inject
-    HashtagInteractor interactor;
-    @State
-    ArrayList<HashtagSuggestion> hashtagSuggestions = new ArrayList<>();
-    @State
-    String query = "";
+   @Inject HashtagInteractor interactor;
+   @State ArrayList<HashtagSuggestion> hashtagSuggestions = new ArrayList<>();
+   @State String query = "";
 
-    public void takeView(DescriptionCreatorPresenter.View view) {
-        super.takeView(view);
-        view.bind(interactor.getSuggestionPipe()
-                .observeSuccess()
-                .observeOn(AndroidSchedulers.mainThread()))
-                .subscribe(command -> {
-                    hashtagSuggestions.clear();
-                    hashtagSuggestions.addAll(command.getResult());
-                    view.onSuggestionsReceived(command.getFullQueryText(), hashtagSuggestions);
-                    view.hideSuggestionProgress();
-                }, throwable -> {
-                    Timber.e(throwable, "");
-                    view.hideSuggestionProgress();
-                });
-    }
+   public void takeView(DescriptionCreatorPresenter.View view) {
+      super.takeView(view);
+      view.bind(interactor.getSuggestionPipe().observeSuccess().observeOn(AndroidSchedulers.mainThread()))
+            .subscribe(command -> {
+               hashtagSuggestions.clear();
+               hashtagSuggestions.addAll(command.getResult());
+               view.onSuggestionsReceived(command.getFullQueryText(), hashtagSuggestions);
+               view.hideSuggestionProgress();
+            }, throwable -> {
+               Timber.e(throwable, "");
+               view.hideSuggestionProgress();
+            });
+   }
 
-    public void query(String fullQueryText, int cursorPosition) {
-        if (fullQueryText.equals(query)) return;//for restore state after rotation
-        query = fullQueryText;
-        String subStr = fullQueryText.substring(0, cursorPosition);
-        int lastDashIndex = subStr.lastIndexOf("#");
-        int lastSpaceIndex = Math.max(subStr.lastIndexOf(" "), subStr.lastIndexOf("\n"));
-        view.clearSuggestions();
-        if (lastDashIndex >= 0 && cursorPosition > lastDashIndex + MIN_QUERY_LENGTH && lastDashIndex > lastSpaceIndex) {
-            interactor.getSuggestionPipe().send(new HashtagSuggestionCommand(fullQueryText, fullQueryText.substring(lastDashIndex + 1, cursorPosition)));
-            view.showSuggestionProgress();
-        } else {
-            view.hideSuggestionProgress();
-        }
-    }
+   public void query(String fullQueryText, int cursorPosition) {
+      if (fullQueryText.equals(query)) return;//for restore state after rotation
+      query = fullQueryText;
+      String subStr = fullQueryText.substring(0, cursorPosition);
+      int lastDashIndex = subStr.lastIndexOf("#");
+      int lastSpaceIndex = Math.max(subStr.lastIndexOf(" "), subStr.lastIndexOf("\n"));
+      view.clearSuggestions();
+      if (lastDashIndex >= 0 && cursorPosition > lastDashIndex + MIN_QUERY_LENGTH && lastDashIndex > lastSpaceIndex) {
+         interactor.getSuggestionPipe()
+               .send(new HashtagSuggestionCommand(fullQueryText, fullQueryText.substring(lastDashIndex + 1, cursorPosition)));
+         view.showSuggestionProgress();
+      } else {
+         view.hideSuggestionProgress();
+      }
+   }
 
-    public void done(String desc) {
-        interactor.getDescPickedPipe().send(new PostDescriptionCreatedCommand(desc));
-    }
+   public void done(String desc) {
+      interactor.getDescPickedPipe().send(new PostDescriptionCreatedCommand(desc));
+   }
 
-    public void onViewStateRestored() {
-        view.onSuggestionsReceived(query, hashtagSuggestions);
-    }
+   public void onViewStateRestored() {
+      view.onSuggestionsReceived(query, hashtagSuggestions);
+   }
 
-    public interface View extends RxView {
-        void onSuggestionsReceived(String fullQueryText, List<HashtagSuggestion> suggestionList);
+   public interface View extends RxView {
+      void onSuggestionsReceived(String fullQueryText, List<HashtagSuggestion> suggestionList);
 
-        void clearSuggestions();
+      void clearSuggestions();
 
-        void showSuggestionProgress();
+      void showSuggestionProgress();
 
-        void hideSuggestionProgress();
-    }
+      void hideSuggestionProgress();
+   }
 
 }

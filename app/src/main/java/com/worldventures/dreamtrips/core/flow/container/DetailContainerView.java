@@ -11,24 +11,23 @@ import flow.path.PathContextFactory;
 
 public class DetailContainerView extends FramePathContainerView {
 
-    public DetailContainerView(Context context, AttributeSet attrs) {
-        super(context, attrs, null);
-        DetailPathContainer container =
-                new DetailPathContainer(context, R.id.screen_switcher_tag, Path.contextFactory());
-        setContainer(container);
-    }
+   public DetailContainerView(Context context, AttributeSet attrs) {
+      super(context, attrs, null);
+      DetailPathContainer container = new DetailPathContainer(context, R.id.screen_switcher_tag, Path.contextFactory());
+      setContainer(container);
+   }
 
-    static class DetailPathContainer extends SimplePathContainer {
+   static class DetailPathContainer extends SimplePathContainer {
 
-        DetailPathContainer(Context context, int tagKey, PathContextFactory contextFactory) {
-            super(context, tagKey, contextFactory);
-        }
+      DetailPathContainer(Context context, int tagKey, PathContextFactory contextFactory) {
+         super(context, tagKey, contextFactory);
+      }
 
-        @Override
-        protected int getLayout(Path path) {
-            MasterDetailPath mdPath = (MasterDetailPath) path;
-            Path emptyPath = mdPath.getEmpty();
-            return super.getLayout(mdPath.isMaster() ? emptyPath : mdPath);
-        }
-    }
+      @Override
+      protected int getLayout(Path path) {
+         MasterDetailPath mdPath = (MasterDetailPath) path;
+         Path emptyPath = mdPath.getEmpty();
+         return super.getLayout(mdPath.isMaster() ? emptyPath : mdPath);
+      }
+   }
 }

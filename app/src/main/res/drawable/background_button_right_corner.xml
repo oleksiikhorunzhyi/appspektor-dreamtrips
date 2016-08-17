@@ -1,17 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <selector xmlns:android="http://schemas.android.com/apk/res/android">
-    <item android:state_pressed="true">
-        <shape>
-            <solid android:color="@color/black_semi_transparent" />
-            <corners android:bottomRightRadius="@dimen/spacing_tiniest"
-                android:topRightRadius="@dimen/spacing_tiniest" />
-        </shape>
-    </item>
-    <item>
-        <shape>
-            <solid android:color="@color/black_semi_transparent_darker" />
-            <corners android:bottomRightRadius="@dimen/spacing_tiniest"
-                android:topRightRadius="@dimen/spacing_tiniest" />
-        </shape>
-    </item>
+   <item android:state_pressed="true">
+      <shape>
+         <solid android:color="@color/black_semi_transparent" />
+         <corners android:bottomRightRadius="@dimen/spacing_tiniest" android:topRightRadius="@dimen/spacing_tiniest" />
+      </shape>
+   </item>
+   <item>
+      <shape>
+         <solid android:color="@color/black_semi_transparent_darker" />
+         <corners android:bottomRightRadius="@dimen/spacing_tiniest" android:topRightRadius="@dimen/spacing_tiniest" />
+      </shape>
+   </item>
 </selector>

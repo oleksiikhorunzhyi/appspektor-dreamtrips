@@ -1,48 +1,53 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              android:layout_width="match_parent"
-              android:layout_height="match_parent"
-              android:background="@android:color/white"
-              android:orientation="vertical">
+      android:layout_width="match_parent"
+      android:layout_height="match_parent"
+      android:background="@android:color/white"
+      android:orientation="vertical"
+      >
 
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:padding="@dimen/spacing_normal"
-        android:text="@string/friend_pref_lists_title"
-        android:textColor="@android:color/black"
-        android:textSize="@dimen/font_large"
-        android:textStyle="bold"/>
+   <TextView
+         android:layout_width="match_parent"
+         android:layout_height="wrap_content"
+         android:padding="@dimen/spacing_normal"
+         android:text="@string/friend_pref_lists_title"
+         android:textColor="@android:color/black"
+         android:textSize="@dimen/font_large"
+         android:textStyle="bold"
+         />
 
-    <View
-        android:orientation="horizontal"
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:background="@drawable/trip_item_shadow">
-    </View>
+   <View
+         android:orientation="horizontal"
+         android:layout_width="match_parent"
+         android:layout_height="1dp"
+         android:background="@drawable/trip_item_shadow"
+         ></View>
 
-    <TextView
-        android:id="@+id/createNewListBtn"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:drawableRight="@drawable/ic_prefs_create_group"
-        android:padding="@dimen/spacing_normal"
-        android:text="@string/friend_pref_create_new_list"
-        android:textColor="@android:color/black"
-        android:textSize="@dimen/font_normal"
-        android:visibility="gone"/>
+   <TextView
+         android:id="@+id/createNewListBtn"
+         android:layout_width="match_parent"
+         android:layout_height="wrap_content"
+         android:drawableRight="@drawable/ic_prefs_create_group"
+         android:padding="@dimen/spacing_normal"
+         android:text="@string/friend_pref_create_new_list"
+         android:textColor="@android:color/black"
+         android:textSize="@dimen/font_normal"
+         android:visibility="gone"
+         />
 
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="0.5dp"
-        android:layout_marginLeft="50dp"
-        android:background="@color/grey_lighter"
-        android:visibility="gone"/>
+   <View
+         android:layout_width="match_parent"
+         android:layout_height="0.5dp"
+         android:layout_marginLeft="50dp"
+         android:background="@color/grey_lighter"
+         android:visibility="gone"
+         />
 
 
-    <com.worldventures.dreamtrips.modules.common.view.custom.EmptyRecyclerView
-        android:id="@+id/recyclerViewGroups"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
+   <com.worldventures.dreamtrips.modules.common.view.custom.EmptyRecyclerView
+         android:id="@+id/recyclerViewGroups"
+         android:layout_width="match_parent"
+         android:layout_height="match_parent"
+         />
 
 </LinearLayout>

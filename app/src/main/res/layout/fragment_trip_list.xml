@@ -1,29 +1,33 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@android:color/background_light"
-    android:orientation="vertical"
-    tools:context="com.worldventures.dreamtrips.modules.trips.view.fragment.TripListFragment">
+      xmlns:tools="http://schemas.android.com/tools"
+      android:layout_width="match_parent"
+      android:layout_height="match_parent"
+      android:background="@android:color/background_light"
+      android:orientation="vertical"
+      tools:context="com.worldventures.dreamtrips.modules.trips.view.fragment.TripListFragment"
+      >
 
-    <FrameLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
+   <FrameLayout
+         android:layout_width="match_parent"
+         android:layout_height="match_parent"
+         >
 
-        <android.support.v4.widget.SwipeRefreshLayout
+      <android.support.v4.widget.SwipeRefreshLayout
             android:id="@+id/swipe_container"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:visibility="visible">
+            android:visibility="visible"
+            >
 
-            <com.worldventures.dreamtrips.modules.common.view.custom.EmptyRecyclerView
-                android:id="@+id/recyclerViewTrips"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent" />
+         <com.worldventures.dreamtrips.modules.common.view.custom.EmptyRecyclerView
+               android:id="@+id/recyclerViewTrips"
+               android:layout_width="match_parent"
+               android:layout_height="match_parent"
+               />
 
-        </android.support.v4.widget.SwipeRefreshLayout>
+      </android.support.v4.widget.SwipeRefreshLayout>
 
-        <RelativeLayout
+      <RelativeLayout
             android:id="@+id/ll_empty_view"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -31,49 +35,54 @@
             android:layout_alignParentTop="false"
             android:gravity="center"
             android:orientation="vertical"
-            android:visibility="gone">
+            android:visibility="gone"
+            >
 
-            <ImageView
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_alignParentLeft="true"
-                android:layout_alignParentTop="true"
-                android:scaleType="centerCrop"
-                android:src="@drawable/ic_background_empty_view" />
+         <ImageView
+               android:layout_width="match_parent"
+               android:layout_height="match_parent"
+               android:layout_alignParentLeft="true"
+               android:layout_alignParentTop="true"
+               android:scaleType="centerCrop"
+               android:src="@drawable/ic_background_empty_view"
+               />
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_centerInParent="true"
-                android:orientation="vertical">
+         <LinearLayout
+               android:layout_width="match_parent"
+               android:layout_height="wrap_content"
+               android:layout_centerInParent="true"
+               android:orientation="vertical"
+               >
 
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_centerHorizontal="true"
-                    android:layout_gravity="center"
-                    android:alpha="0.54"
-                    android:gravity="center"
-                    android:padding="25dp"
-                    android:text="@string/filter_no_results"
-                    android:textColor="@android:color/black"
-                    android:textSize="18dp" />
+            <TextView
+                  android:layout_width="match_parent"
+                  android:layout_height="wrap_content"
+                  android:layout_centerHorizontal="true"
+                  android:layout_gravity="center"
+                  android:alpha="0.54"
+                  android:gravity="center"
+                  android:padding="25dp"
+                  android:text="@string/filter_no_results"
+                  android:textColor="@android:color/black"
+                  android:textSize="18dp"
+                  />
 
-                <TextView
-                    android:id="@+id/textViewResetFilters"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:padding="25dp"
-                    android:text="@string/filter_reset"
-                    android:textColor="#3D76A1"
-                    android:textSize="22dp" />
-            </LinearLayout>
+            <TextView
+                  android:id="@+id/textViewResetFilters"
+                  android:layout_width="wrap_content"
+                  android:layout_height="wrap_content"
+                  android:layout_gravity="center"
+                  android:padding="25dp"
+                  android:text="@string/filter_reset"
+                  android:textColor="#3D76A1"
+                  android:textSize="22dp"
+                  />
+         </LinearLayout>
 
 
-        </RelativeLayout>
+      </RelativeLayout>
 
-    </FrameLayout>
+   </FrameLayout>
 
 
 </LinearLayout>

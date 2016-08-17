@@ -14,48 +14,48 @@ import dagger.ObjectGraph;
 
 public abstract class InjectingIntentService extends IntentService implements Injector {
 
-    protected ServiceActionRouter actionRouter = new ServiceActionRouter();
+   protected ServiceActionRouter actionRouter = new ServiceActionRouter();
 
-    private ObjectGraph objectGraph;
+   private ObjectGraph objectGraph;
 
-    public InjectingIntentService(String name) {
-        super(name);
-    }
+   public InjectingIntentService(String name) {
+      super(name);
+   }
 
-    @Override
-    public ObjectGraph getObjectGraph() {
-        return this.objectGraph;
-    }
+   @Override
+   public ObjectGraph getObjectGraph() {
+      return this.objectGraph;
+   }
 
-    @Override
-    public void inject(Object target) {
-        getObjectGraph().inject(target);
-    }
+   @Override
+   public void inject(Object target) {
+      getObjectGraph().inject(target);
+   }
 
-    @Override
-    public void onCreate() {
-        super.onCreate();
+   @Override
+   public void onCreate() {
+      super.onCreate();
 
-        objectGraph = ((Injector) getApplication()).getObjectGraph().plus(getModules().toArray());
+      objectGraph = ((Injector) getApplication()).getObjectGraph().plus(getModules().toArray());
 
-        getObjectGraph().inject(this);
-    }
+      getObjectGraph().inject(this);
+   }
 
-    @Override
-    protected void onHandleIntent(Intent intent) {
-        actionRouter.dispatchIntent(intent);
-    }
+   @Override
+   protected void onHandleIntent(Intent intent) {
+      actionRouter.dispatchIntent(intent);
+   }
 
-    protected List<Object> getModules() {
-        List<Object> result = new ArrayList<Object>();
+   protected List<Object> getModules() {
+      List<Object> result = new ArrayList<Object>();
 
-        result.add(new InjectingServiceModule(this, this));
-        Object usedModule = ModuleHelper.getUsedModule(this);
+      result.add(new InjectingServiceModule(this, this));
+      Object usedModule = ModuleHelper.getUsedModule(this);
 
-        if (usedModule != null) {
-            result.add(usedModule);
-        }
+      if (usedModule != null) {
+         result.add(usedModule);
+      }
 
-        return result;
-    }
+      return result;
+   }
 }

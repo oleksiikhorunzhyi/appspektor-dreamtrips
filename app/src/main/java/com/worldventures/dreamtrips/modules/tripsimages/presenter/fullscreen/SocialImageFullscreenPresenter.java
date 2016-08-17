@@ -33,141 +33,136 @@ import javax.inject.Inject;
 
 public class SocialImageFullscreenPresenter extends FullScreenPresenter<Photo, SocialImageFullscreenPresenter.View> {
 
-    @Inject
-    FeedEntityManager entityManager;
+   @Inject FeedEntityManager entityManager;
 
-    private UidItemDelegate uidItemDelegate;
+   private UidItemDelegate uidItemDelegate;
 
-    public SocialImageFullscreenPresenter(Photo photo, TripImagesType type) {
-        super(photo, type);
-    }
+   public SocialImageFullscreenPresenter(Photo photo, TripImagesType type) {
+      super(photo, type);
+   }
 
-    @Inject
-    Router router;
-    @Inject
-    FragmentManager fm;
+   @Inject Router router;
+   @Inject FragmentManager fm;
 
-    @Override
-    public void takeView(View view) {
-        super.takeView(view);
-        uidItemDelegate = new UidItemDelegate(this);
-        loadEntity();
-    }
+   @Override
+   public void takeView(View view) {
+      super.takeView(view);
+      uidItemDelegate = new UidItemDelegate(this);
+      loadEntity();
+   }
 
-    @Override
-    public void onInjected() {
-        super.onInjected();
-        entityManager.setRequestingPresenter(this);
-    }
+   @Override
+   public void onInjected() {
+      super.onInjected();
+      entityManager.setRequestingPresenter(this);
+   }
 
-    public void loadEntity() {
-        doRequest(new GetFeedEntityQuery(photo.getUid()), feedEntityHolder -> {
-            FeedEntity feedEntity = feedEntityHolder.getItem();
-            if (photo.getUser() != null) {
-                photo.syncLikeState(feedEntity);
-                photo.setCommentsCount(feedEntity.getCommentsCount());
-                photo.setComments(feedEntity.getComments());
-                photo.setPhotoTags(((Photo) feedEntity).getPhotoTags());
-            } else {
-                photo = (Photo) feedEntity;
-                view.showContentWrapper();
-            }
+   public void loadEntity() {
+      doRequest(new GetFeedEntityQuery(photo.getUid()), feedEntityHolder -> {
+         FeedEntity feedEntity = feedEntityHolder.getItem();
+         if (photo.getUser() != null) {
+            photo.syncLikeState(feedEntity);
+            photo.setCommentsCount(feedEntity.getCommentsCount());
+            photo.setComments(feedEntity.getComments());
+            photo.setPhotoTags(((Photo) feedEntity).getPhotoTags());
+         } else {
+            photo = (Photo) feedEntity;
+            view.showContentWrapper();
+         }
+         setupActualViewState();
+      });
+   }
+
+   @Override
+   public void onDeleteAction() {
+      doRequest(new DeletePhotoCommand(photo.getFSId()), (jsonObject) -> {
+         view.informUser(context.getString(R.string.photo_deleted));
+         eventBus.postSticky(new PhotoDeletedEvent(photo.getFSId()));
+         eventBus.postSticky(new FeedEntityDeletedEvent(photo));
+      });
+   }
+
+   public void deleteTag(PhotoTag tag) {
+      List<Integer> userIds = new ArrayList<>();
+      userIds.add(tag.getUser().getId());
+      doRequest(new DeletePhotoTagsCommand(photo.getFSId(), userIds), aVoid -> {
+         photo.getPhotoTags().remove(tag);
+         photo.setPhotoTagsCount(photo.getPhotoTags().size());
+      });
+   }
+
+   @Override
+   public void sendFlagAction(int flagReasonId, String reason) {
+      uidItemDelegate.flagItem(new FlagData(photo.getUid(), flagReasonId, reason), view);
+   }
+
+   @Override
+   public void onLikeAction() {
+      if (!photo.isLiked()) {
+         entityManager.like(photo);
+      } else {
+         entityManager.unlike(photo);
+      }
+   }
+
+   public void onEvent(EntityLikedEvent event) {
+      photo.syncLikeState(event.getFeedEntity());
+      view.setContent(photo);
+      TrackingHelper.like(type, String.valueOf(photo.getFSId()), getAccountUserId());
+   }
+
+   @Override
+   public void onCommentsAction() {
+      new NavigationWrapperFactory().componentOrDialogNavigationWrapper(router, fm, view)
+            .navigate(Route.COMMENTS, new CommentsBundle(photo, false, true));
+   }
+
+   @Override
+   public void onLikesAction() {
+      onCommentsAction();
+   }
+
+   @Override
+   public void onEdit() {
+      if (view != null) view.openEdit(new EditPhotoBundle(photo));
+   }
+
+   @Override
+   public void onFlagAction(Flaggable flaggable) {
+      view.showProgress();
+      uidItemDelegate.loadFlags(flaggable);
+   }
+
+   public void onEvent(FeedEntityChangedEvent event) {
+      updatePhoto(event.getFeedEntity());
+   }
+
+   public void onEvent(FeedEntityCommentedEvent event) {
+      updatePhoto(event.getFeedEntity());
+   }
+
+   private void updatePhoto(FeedEntity feedEntity) {
+      if (feedEntity instanceof Photo) {
+         Photo temp = (Photo) feedEntity;
+         if (photo.equals(temp)) {
+            this.photo = temp;
             setupActualViewState();
-        });
-    }
+         }
+      }
+   }
 
-    @Override
-    public void onDeleteAction() {
-        doRequest(new DeletePhotoCommand(photo.getFSId()), (jsonObject) -> {
-            view.informUser(context.getString(R.string.photo_deleted));
-            eventBus.postSticky(new PhotoDeletedEvent(photo.getFSId()));
-            eventBus.postSticky(new FeedEntityDeletedEvent(photo));
-        });
-    }
+   public Photo getPhoto() {
+      return photo;
+   }
 
-    public void deleteTag(PhotoTag tag) {
-        List<Integer> userIds = new ArrayList<>();
-        userIds.add(tag.getUser().getId());
-        doRequest(new DeletePhotoTagsCommand(photo.getFSId(), userIds), aVoid -> {
-            photo.getPhotoTags().remove(tag);
-            photo.setPhotoTagsCount(photo.getPhotoTags().size());
-        });
-    }
+   public interface View extends FullScreenPresenter.View, UidItemDelegate.View {
 
-    @Override
-    public void sendFlagAction(int flagReasonId, String reason) {
-        uidItemDelegate.flagItem(new FlagData(photo.getUid(),
-                flagReasonId, reason), view);
-    }
+      void showProgress();
 
-    @Override
-    public void onLikeAction() {
-        if (!photo.isLiked()) {
-            entityManager.like(photo);
-        } else {
-            entityManager.unlike(photo);
-        }
-    }
+      void hideProgress();
 
-    public void onEvent(EntityLikedEvent event) {
-        photo.syncLikeState(event.getFeedEntity());
-        view.setContent(photo);
-        TrackingHelper.like(type, String.valueOf(photo.getFSId()), getAccountUserId());
-    }
+      void showContentWrapper();
 
-    @Override
-    public void onCommentsAction() {
-        new NavigationWrapperFactory()
-                .componentOrDialogNavigationWrapper(router, fm, view)
-                .navigate(Route.COMMENTS, new CommentsBundle(photo, false, true));
-    }
-
-    @Override
-    public void onLikesAction() {
-        onCommentsAction();
-    }
-
-    @Override
-    public void onEdit() {
-        if (view != null) view.openEdit(new EditPhotoBundle(photo));
-    }
-
-    @Override
-    public void onFlagAction(Flaggable flaggable) {
-        view.showProgress();
-        uidItemDelegate.loadFlags(flaggable);
-    }
-
-    public void onEvent(FeedEntityChangedEvent event) {
-        updatePhoto(event.getFeedEntity());
-    }
-
-    public void onEvent(FeedEntityCommentedEvent event) {
-        updatePhoto(event.getFeedEntity());
-    }
-
-    private void updatePhoto(FeedEntity feedEntity) {
-        if (feedEntity instanceof Photo) {
-            Photo temp = (Photo) feedEntity;
-            if (photo.equals(temp)) {
-                this.photo = temp;
-                setupActualViewState();
-            }
-        }
-    }
-
-    public Photo getPhoto() {
-        return photo;
-    }
-
-    public interface View extends FullScreenPresenter.View, UidItemDelegate.View {
-
-        void showProgress();
-
-        void hideProgress();
-
-        void showContentWrapper();
-
-        void openEdit(EditPhotoBundle bundle);
-    }
+      void openEdit(EditPhotoBundle bundle);
+   }
 }

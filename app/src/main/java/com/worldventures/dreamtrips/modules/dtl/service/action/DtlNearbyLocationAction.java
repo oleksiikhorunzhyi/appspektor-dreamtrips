@@ -14,18 +14,15 @@ import io.techery.janet.http.annotations.Response;
 @HttpAction("/api/dtl/v2/locations")
 public class DtlNearbyLocationAction extends AuthorizedHttpAction {
 
-    @Query("ll")
-    String latLng;
+   @Query("ll") String latLng;
 
-    @Response
-    List<DtlExternalLocation> response;
+   @Response List<DtlExternalLocation> response;
 
-    public DtlNearbyLocationAction(Location location) {
-        this.latLng = location.getLatitude() + ","
-                + location.getLongitude();
-    }
+   public DtlNearbyLocationAction(Location location) {
+      this.latLng = location.getLatitude() + "," + location.getLongitude();
+   }
 
-    public List<DtlExternalLocation> getResult() {
-        return response;
-    }
+   public List<DtlExternalLocation> getResult() {
+      return response;
+   }
 }

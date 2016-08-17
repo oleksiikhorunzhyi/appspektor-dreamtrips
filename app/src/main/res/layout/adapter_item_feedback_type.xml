@@ -1,28 +1,31 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              xmlns:tools="http://schemas.android.com/tools"
-              android:layout_width="match_parent"
-              android:layout_height="wrap_content"
-              android:background="@android:color/darker_gray"
-              android:orientation="vertical">
+      xmlns:tools="http://schemas.android.com/tools"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:background="@android:color/darker_gray"
+      android:orientation="vertical"
+      >
 
-    <TextView
-        android:id="@android:id/text1"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@android:color/white"
-        android:paddingBottom="@dimen/spacing_medium"
-        android:paddingLeft="@dimen/spacing_small"
-        android:paddingRight="@dimen/spacing_small"
-        android:paddingTop="@dimen/spacing_medium"
-        android:singleLine="true"
-        android:textAppearance="?android:attr/textAppearanceMedium"
-        android:textColor="@android:color/black"
-        android:textSize="@dimen/font_normal"
-        tools:text="Other bug"/>
+   <TextView
+         android:id="@android:id/text1"
+         android:layout_width="match_parent"
+         android:layout_height="wrap_content"
+         android:background="@android:color/white"
+         android:paddingBottom="@dimen/spacing_medium"
+         android:paddingLeft="@dimen/spacing_small"
+         android:paddingRight="@dimen/spacing_small"
+         android:paddingTop="@dimen/spacing_medium"
+         android:singleLine="true"
+         android:textAppearance="?android:attr/textAppearanceMedium"
+         android:textColor="@android:color/black"
+         android:textSize="@dimen/font_normal"
+         tools:text="Other bug"
+         />
 
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="0.5dp"
-        android:background="#aeaeae"/>
+   <View
+         android:layout_width="match_parent"
+         android:layout_height="0.5dp"
+         android:background="#aeaeae"
+         />
 </LinearLayout>

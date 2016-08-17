@@ -9,11 +9,10 @@ import javax.inject.Inject;
 
 public class BadgeCountObserverInitializer implements AppInitializer {
 
-    @Inject
-    BadgeCountObserver badgeCountObserver;
+   @Inject BadgeCountObserver badgeCountObserver;
 
-    @Override
-    public void initialize(Injector injector) {
-        injector.inject(this);
-    }
+   @Override
+   public void initialize(Injector injector) {
+      injector.inject(this);
+   }
 }

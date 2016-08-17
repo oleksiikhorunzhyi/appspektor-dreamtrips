@@ -13,36 +13,34 @@ import com.worldventures.dreamtrips.modules.tripsimages.bundle.EditPhotoBundle;
 import butterknife.InjectView;
 
 @Layout(R.layout.layout_post)
-public class EditPhotoFragment extends ActionEntityFragment<EditPhotoPresenter, EditPhotoBundle>
-        implements EditPhotoPresenter.View {
+public class EditPhotoFragment extends ActionEntityFragment<EditPhotoPresenter, EditPhotoBundle> implements EditPhotoPresenter.View {
 
-    @InjectView(R.id.image)
-    ImageView image;
+   @InjectView(R.id.image) ImageView image;
 
-    @Override
-    public void afterCreateView(View rootView) {
-        super.afterCreateView(rootView);
-        image.setVisibility(View.GONE);
-    }
+   @Override
+   public void afterCreateView(View rootView) {
+      super.afterCreateView(rootView);
+      image.setVisibility(View.GONE);
+   }
 
-    @Override
-    protected int getPostButtonText() {
-        return R.string.update;
-    }
+   @Override
+   protected int getPostButtonText() {
+      return R.string.update;
+   }
 
-    @Override
-    protected Route getRoute() {
-        return Route.EDIT_PHOTO;
-    }
+   @Override
+   protected Route getRoute() {
+      return Route.EDIT_PHOTO;
+   }
 
-    @Override
-    protected EditPhotoPresenter createPresenter(Bundle savedInstanceState) {
-        return new EditPhotoPresenter(getArgs().getPhoto());
-    }
+   @Override
+   protected EditPhotoPresenter createPresenter(Bundle savedInstanceState) {
+      return new EditPhotoPresenter(getArgs().getPhoto());
+   }
 
-    @Override
-    public void setText(String text) {
-        //nothing to do
-    }
+   @Override
+   public void setText(String text) {
+      //nothing to do
+   }
 
 }

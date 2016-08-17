@@ -13,27 +13,22 @@ import java.util.List;
  */
 public class DtlMerchantsPredicate implements Predicate<DtlMerchant> {
 
-    private final List<Predicate<DtlMerchant>> predicats;
+   private final List<Predicate<DtlMerchant>> predicats;
 
-    public static DtlMerchantsPredicate fromFilterData(DtlFilterData filterData) {
-        return new DtlMerchantsPredicate(
-                new DtlMerchantDistancePredicate(filterData),
-                new DtlMerchantAmenitiesPredicate(filterData),
-                new DtlMerchantPricePredicate(filterData),
-                new DtlMerchantQueryPredicate(filterData),
-                new DtlMerchantOffersOnlyPredicate(filterData));
-    }
+   public static DtlMerchantsPredicate fromFilterData(DtlFilterData filterData) {
+      return new DtlMerchantsPredicate(new DtlMerchantDistancePredicate(filterData), new DtlMerchantAmenitiesPredicate(filterData), new DtlMerchantPricePredicate(filterData), new DtlMerchantQueryPredicate(filterData), new DtlMerchantOffersOnlyPredicate(filterData));
+   }
 
-    @SafeVarargs
-    public DtlMerchantsPredicate(Predicate<DtlMerchant>... predicats) {
-        this.predicats = Collections.unmodifiableList(Arrays.asList(predicats));
-    }
+   @SafeVarargs
+   public DtlMerchantsPredicate(Predicate<DtlMerchant>... predicats) {
+      this.predicats = Collections.unmodifiableList(Arrays.asList(predicats));
+   }
 
-    @Override
-    public boolean apply(DtlMerchant merchant) {
-        for (Predicate<DtlMerchant> predicate : predicats) {
-            if (!predicate.apply(merchant)) return false;
-        }
-        return true;
-    }
+   @Override
+   public boolean apply(DtlMerchant merchant) {
+      for (Predicate<DtlMerchant> predicate : predicats) {
+         if (!predicate.apply(merchant)) return false;
+      }
+      return true;
+   }
 }

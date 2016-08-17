@@ -15,42 +15,38 @@ import io.techery.janet.command.annotations.CommandAction;
 import rx.Observable;
 
 @CommandAction
-public class MergeBucketItemPhotosWithStorageCommand extends Command<List<EntityStateHolder<BucketPhoto>>>
-        implements InjectableAction {
-    @Inject
-    BucketInteractor bucketInteractor;
+public class MergeBucketItemPhotosWithStorageCommand extends Command<List<EntityStateHolder<BucketPhoto>>> implements InjectableAction {
+   @Inject BucketInteractor bucketInteractor;
 
-    private String bucketUid;
+   private String bucketUid;
 
-    private List<BucketPhoto> listOfBucketPhoto;
+   private List<BucketPhoto> listOfBucketPhoto;
 
-    public MergeBucketItemPhotosWithStorageCommand(String bucketUid, List<BucketPhoto> listOfBucketPhoto) {
-        this.bucketUid = bucketUid;
-        this.listOfBucketPhoto = listOfBucketPhoto;
-    }
+   public MergeBucketItemPhotosWithStorageCommand(String bucketUid, List<BucketPhoto> listOfBucketPhoto) {
+      this.bucketUid = bucketUid;
+      this.listOfBucketPhoto = listOfBucketPhoto;
+   }
 
-    @Override
-    protected void run(CommandCallback<List<EntityStateHolder<BucketPhoto>>> callback) throws Throwable {
-        Observable.zip(photoAsDoneObservable(), bucketInteractor.uploadControllerCommandPipe()
-                        .createObservableResult(UploadPhotoControllerCommand.fetch(bucketUid))
-                        .map(UploadPhotoControllerCommand::getResult),
-                (existedPhotos, undonePhotos) -> {
-                    existedPhotos.addAll(undonePhotos);
-                    return existedPhotos;
-                })
-                .subscribe(callback::onSuccess, callback::onFail);
-    }
+   @Override
+   protected void run(CommandCallback<List<EntityStateHolder<BucketPhoto>>> callback) throws Throwable {
+      Observable.zip(photoAsDoneObservable(), bucketInteractor.uploadControllerCommandPipe()
+            .createObservableResult(UploadPhotoControllerCommand.fetch(bucketUid))
+            .map(UploadPhotoControllerCommand::getResult), (existedPhotos, undonePhotos) -> {
+         existedPhotos.addAll(undonePhotos);
+         return existedPhotos;
+      }).subscribe(callback::onSuccess, callback::onFail);
+   }
 
-    private Observable<List<EntityStateHolder<BucketPhoto>>> photoAsDoneObservable() {
-        return Observable.just(convertListOfPhotos());
-    }
+   private Observable<List<EntityStateHolder<BucketPhoto>>> photoAsDoneObservable() {
+      return Observable.just(convertListOfPhotos());
+   }
 
-    private List<EntityStateHolder<BucketPhoto>> convertListOfPhotos() {
-        List<EntityStateHolder<BucketPhoto>> photoStateList = new ArrayList<>(listOfBucketPhoto.size());
-        for (BucketPhoto photo : listOfBucketPhoto) {
-            photoStateList.add(EntityStateHolder.create(photo, EntityStateHolder.State.DONE));
-        }
+   private List<EntityStateHolder<BucketPhoto>> convertListOfPhotos() {
+      List<EntityStateHolder<BucketPhoto>> photoStateList = new ArrayList<>(listOfBucketPhoto.size());
+      for (BucketPhoto photo : listOfBucketPhoto) {
+         photoStateList.add(EntityStateHolder.create(photo, EntityStateHolder.State.DONE));
+      }
 
-        return photoStateList;
-    }
+      return photoStateList;
+   }
 }

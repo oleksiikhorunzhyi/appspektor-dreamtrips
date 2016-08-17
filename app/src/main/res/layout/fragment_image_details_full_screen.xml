@@ -1,22 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-             xmlns:fresco="http://schemas.android.com/apk/res-auto"
-             android:layout_width="match_parent"
-             android:layout_height="match_parent">
+      xmlns:fresco="http://schemas.android.com/apk/res-auto"
+      android:layout_width="match_parent"
+      android:layout_height="match_parent"
+      >
 
-    <com.worldventures.dreamtrips.modules.tripsimages.view.custom.ScaleImageView
-        android:id="@+id/imageViewTripImage"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        fresco:actualImageScaleType="centerCrop"
-        fresco:placeholderImage="@drawable/ic_trip_image_placeholder"
-        fresco:placeholderImageScaleType="centerCrop"/>
+   <com.worldventures.dreamtrips.modules.tripsimages.view.custom.ScaleImageView
+         android:id="@+id/imageViewTripImage"
+         android:layout_width="match_parent"
+         android:layout_height="match_parent"
+         fresco:actualImageScaleType="centerCrop"
+         fresco:placeholderImage="@drawable/ic_trip_image_placeholder"
+         fresco:placeholderImageScaleType="centerCrop"
+         />
 
 
-    <ProgressBar
-        android:id="@+id/progressBarImage"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"/>
+   <ProgressBar
+         android:id="@+id/progressBarImage"
+         android:layout_width="wrap_content"
+         android:layout_height="wrap_content"
+         android:layout_gravity="center"
+         />
 
 </FrameLayout>

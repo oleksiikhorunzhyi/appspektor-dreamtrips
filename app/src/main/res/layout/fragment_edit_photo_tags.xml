@@ -1,60 +1,67 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              xmlns:fresco="http://schemas.android.com/apk/res-auto"
-              xmlns:tools="http://schemas.android.com/tools"
-              android:layout_width="match_parent"
-              android:layout_height="match_parent"
-              android:orientation="vertical">
+      xmlns:fresco="http://schemas.android.com/apk/res-auto"
+      xmlns:tools="http://schemas.android.com/tools"
+      android:layout_width="match_parent"
+      android:layout_height="match_parent"
+      android:orientation="vertical"
+      >
 
-    <android.support.v7.widget.Toolbar
-        android:id="@+id/tag_toolbar"
-        style="@style/ToolBarStyle"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentTop="true"
-        android:layout_marginLeft="0dp"
-        android:layout_marginTop="0dp">
+   <android.support.v7.widget.Toolbar
+         android:id="@+id/tag_toolbar"
+         style="@style/ToolBarStyle"
+         android:layout_alignParentLeft="true"
+         android:layout_alignParentTop="true"
+         android:layout_marginLeft="0dp"
+         android:layout_marginTop="0dp"
+         >
 
-    </android.support.v7.widget.Toolbar>
+   </android.support.v7.widget.Toolbar>
 
-    <ScrollView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:fillViewport="true">
+   <ScrollView
+         android:layout_width="match_parent"
+         android:layout_height="match_parent"
+         android:fillViewport="true"
+         >
 
-        <FrameLayout
+      <FrameLayout
             android:id="@+id/photo_container"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/black">
+            android:background="@color/black"
+            >
 
-            <com.facebook.drawee.view.SimpleDraweeView
-                android:id="@+id/iv_image"
-                android:layout_width="match_parent"
-                android:layout_height="0dp"
-                fresco:actualImageScaleType="fitCenter"
-                fresco:placeholderImage="@drawable/ic_trip_image_placeholder"
-                fresco:placeholderImageScaleType="fitCenter"/>
+         <com.facebook.drawee.view.SimpleDraweeView
+               android:id="@+id/iv_image"
+               android:layout_width="match_parent"
+               android:layout_height="0dp"
+               fresco:actualImageScaleType="fitCenter"
+               fresco:placeholderImage="@drawable/ic_trip_image_placeholder"
+               fresco:placeholderImageScaleType="fitCenter"
+               />
 
-            <com.worldventures.dreamtrips.modules.common.view.custom.tagview.viewgroup.newio.PhotoTagHolder
-                android:id="@+id/taggable_holder"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:visibility="visible"/>
+         <com.worldventures.dreamtrips.modules.common.view.custom.tagview.viewgroup.newio.PhotoTagHolder
+               android:id="@+id/taggable_holder"
+               android:layout_width="match_parent"
+               android:layout_height="match_parent"
+               android:visibility="visible"
+               />
 
-            <TextView
-                android:id="@+id/tag_view_title"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="bottom|center_horizontal"
-                android:layout_marginBottom="@dimen/spacing_normal"
-                android:layout_marginTop="?android:attr/actionBarSize"
-                android:background="@drawable/bg_tag_title"
-                android:text="@string/photo_tag_title"
-                android:textColor="@android:color/white"
-                tools:showIn="@layout/fragment_create_photo"/>
+         <TextView
+               android:id="@+id/tag_view_title"
+               android:layout_width="wrap_content"
+               android:layout_height="wrap_content"
+               android:layout_gravity="bottom|center_horizontal"
+               android:layout_marginBottom="@dimen/spacing_normal"
+               android:layout_marginTop="?android:attr/actionBarSize"
+               android:background="@drawable/bg_tag_title"
+               android:text="@string/photo_tag_title"
+               android:textColor="@android:color/white"
+               tools:showIn="@layout/fragment_create_photo"
+               />
 
-        </FrameLayout>
+      </FrameLayout>
 
-    </ScrollView>
+   </ScrollView>
 
 </LinearLayout>

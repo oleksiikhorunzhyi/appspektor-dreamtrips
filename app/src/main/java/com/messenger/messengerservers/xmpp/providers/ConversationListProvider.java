@@ -8,17 +8,17 @@ import java.util.List;
 
 public class ConversationListProvider extends BaseConversationProvider<ConversationListIQ> {
 
-    public ConversationListProvider(Gson gson) {
-        super(gson);
-    }
+   public ConversationListProvider(Gson gson) {
+      super(gson);
+   }
 
-    @Override
-    protected ConversationListIQ constructIQ(List<Conversation> data) {
-        return new ConversationListIQ(data);
-    }
+   @Override
+   protected ConversationListIQ constructIQ(List<Conversation> data) {
+      return new ConversationListIQ(data);
+   }
 
-    @Override
-    protected String getEndElement() {
-        return "list";
-    }
+   @Override
+   protected String getEndElement() {
+      return "list";
+   }
 }

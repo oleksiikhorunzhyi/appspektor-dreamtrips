@@ -4,5 +4,5 @@ import com.worldventures.dreamtrips.modules.common.view.custom.tagview.TagAction
 import com.worldventures.dreamtrips.modules.common.view.custom.tagview.viewgroup.newio.model.PhotoTag;
 
 public interface ExistsTagViewListener extends TagActionListener {
-        void onTagDeleted(PhotoTag photoTag);
-    }
+   void onTagDeleted(PhotoTag photoTag);
+}

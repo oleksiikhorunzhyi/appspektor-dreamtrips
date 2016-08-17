@@ -15,30 +15,30 @@ import java.util.ArrayList;
  */
 public class MembersImagesPresenter extends TripImagesListPresenter<MembersImagesPresenter.View> {
 
-    public MembersImagesPresenter() {
-        this(TripImagesType.MEMBERS_IMAGES, 0);
-    }
+   public MembersImagesPresenter() {
+      this(TripImagesType.MEMBERS_IMAGES, 0);
+   }
 
-    public MembersImagesPresenter(TripImagesType type, int userId) {
-        super(type, userId);
-    }
+   public MembersImagesPresenter(TripImagesType type, int userId) {
+      super(type, userId);
+   }
 
-    @Override
-    protected SpiceRequest<ArrayList<IFullScreenObject>> getNextPageRequest(int currentCount) {
-        return new GetMemberPhotosQuery(PER_PAGE, currentCount / PER_PAGE + 1);
-    }
+   @Override
+   protected SpiceRequest<ArrayList<IFullScreenObject>> getNextPageRequest(int currentCount) {
+      return new GetMemberPhotosQuery(PER_PAGE, currentCount / PER_PAGE + 1);
+   }
 
-    @Override
-    protected SpiceRequest<ArrayList<IFullScreenObject>> getReloadRequest() {
-        return new GetMemberPhotosQuery(PER_PAGE, 1);
-    }
+   @Override
+   protected SpiceRequest<ArrayList<IFullScreenObject>> getReloadRequest() {
+      return new GetMemberPhotosQuery(PER_PAGE, 1);
+   }
 
-    public void onEvent(PickerDoneEvent event) {
-        view.openCreatePhoto(event.getMediaAttachment());
-    }
+   public void onEvent(PickerDoneEvent event) {
+      view.openCreatePhoto(event.getMediaAttachment());
+   }
 
-    public interface View extends TripImagesListPresenter.View {
+   public interface View extends TripImagesListPresenter.View {
 
-        void openCreatePhoto(MediaAttachment mediaAttachment);
-    }
+      void openCreatePhoto(MediaAttachment mediaAttachment);
+   }
 }

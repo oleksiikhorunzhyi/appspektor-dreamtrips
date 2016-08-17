@@ -8,19 +8,20 @@ import com.worldventures.dreamtrips.modules.common.model.PhotoGalleryModel;
 import com.worldventures.dreamtrips.modules.feed.presenter.SuggestedPhotoCellPresenterHelper;
 
 public interface SuggestedPhotosDelegate extends CellDelegate<MediaAttachment> {
-    void onCancelClicked();
 
-    void onAttachClicked();
+   void onCancelClicked();
 
-    void onOpenProfileClicked();
+   void onAttachClicked();
 
-    void onSuggestionViewCreated(@NonNull SuggestedPhotoCellPresenterHelper.View view);
+   void onOpenProfileClicked();
 
-    void onSyncViewState();
+   void onSuggestionViewCreated(@NonNull SuggestedPhotoCellPresenterHelper.View view);
 
-    void onPreloadSuggestionPhotos(@NonNull PhotoGalleryModel model);
+   void onSyncViewState();
 
-    void onSelectPhoto(@NonNull PhotoGalleryModel model);
+   void onPreloadSuggestionPhotos(@NonNull PhotoGalleryModel model);
 
-    long lastSyncTimestamp();
+   void onSelectPhoto(@NonNull PhotoGalleryModel model);
+
+   long lastSyncTimestamp();
 }

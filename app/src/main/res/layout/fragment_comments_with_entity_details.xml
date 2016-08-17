@@ -1,21 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:orientation="vertical">
+      android:layout_width="match_parent"
+      android:layout_height="match_parent"
+      android:orientation="vertical"
+      >
 
-    <com.worldventures.dreamtrips.modules.common.view.custom.EmptyRecyclerView
-        android:id="@+id/list"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_above="@+id/input_container"
-        android:layout_alignParentTop="true"/>
+   <com.worldventures.dreamtrips.modules.common.view.custom.EmptyRecyclerView
+         android:id="@+id/list"
+         android:layout_width="match_parent"
+         android:layout_height="match_parent"
+         android:layout_above="@+id/input_container"
+         android:layout_alignParentTop="true"
+         />
 
-    <include
-        android:id="@+id/input_container"
-        layout="@layout/adapter_item_add_comment"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"/>
-
+   <include
+         android:id="@+id/input_container"
+         layout="@layout/adapter_item_add_comment"
+         android:layout_width="match_parent"
+         android:layout_height="wrap_content"
+         android:layout_alignParentBottom="true"
+         />
 </RelativeLayout>

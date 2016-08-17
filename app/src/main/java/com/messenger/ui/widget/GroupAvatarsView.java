@@ -21,65 +21,64 @@ import com.worldventures.dreamtrips.R;
 
 public class GroupAvatarsView extends SimpleDraweeView {
 
-    private static final GroupAvatarColorHelper COLOR_HELPER = new GroupAvatarColorHelper();
+   private static final GroupAvatarColorHelper COLOR_HELPER = new GroupAvatarColorHelper();
 
-    public GroupAvatarsView(Context context, AttributeSet attrs) {
-        super(context, attrs);
-        init();
-    }
+   public GroupAvatarsView(Context context, AttributeSet attrs) {
+      super(context, attrs);
+      init();
+   }
 
-    public GroupAvatarsView(Context context, AttributeSet attrs, int defStyle) {
-        super(context, attrs, defStyle);
-        init();
-    }
+   public GroupAvatarsView(Context context, AttributeSet attrs, int defStyle) {
+      super(context, attrs, defStyle);
+      init();
+   }
 
-    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
-    public GroupAvatarsView(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
-        super(context, attrs, defStyleAttr, defStyleRes);
-        init();
-    }
+   @TargetApi(Build.VERSION_CODES.LOLLIPOP)
+   public GroupAvatarsView(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
+      super(context, attrs, defStyleAttr, defStyleRes);
+      init();
+   }
 
-    private void init() {
-        getHierarchy().setFadeDuration(0);
-        getHierarchy().setRoundingParams(RoundingParams.asCircle());
-    }
+   private void init() {
+      getHierarchy().setFadeDuration(0);
+      getHierarchy().setRoundingParams(RoundingParams.asCircle());
+   }
 
-    public void setConversationAvatar(DataConversation conversation) {
-        if (ConversationHelper.isTripChat(conversation)) {
-            setTripChatAvatar();
-        } else {
-            setGroupChatAvatar(conversation);
-        }
-    }
+   public void setConversationAvatar(DataConversation conversation) {
+      if (ConversationHelper.isTripChat(conversation)) {
+         setTripChatAvatar();
+      } else {
+         setGroupChatAvatar(conversation);
+      }
+   }
 
-    private void setGroupChatAvatar(DataConversation conversation) {
-        Drawable drawable = new RoundDrawableWrapper.Builder()
-                .drawable(ContextCompat.getDrawable(getContext(), R.drawable.regular_group))
-                .color(COLOR_HELPER.obtainColor(getContext(), conversation.getId()))
-                .build();
+   private void setGroupChatAvatar(DataConversation conversation) {
+      Drawable drawable = new RoundDrawableWrapper.Builder().drawable(ContextCompat.getDrawable(getContext(), R.drawable.regular_group))
+            .color(COLOR_HELPER.obtainColor(getContext(), conversation.getId()))
+            .build();
 
-        String avatarUrl = conversation.getAvatar();
-        setDefaultDrawable(drawable);
-        setController(Fresco.newDraweeControllerBuilder()
-                .setOldController(getController())
-                .setUri(TextUtils.isEmpty(avatarUrl) ? Uri.EMPTY : Uri.parse(avatarUrl))
-                .build());
-    }
+      String avatarUrl = conversation.getAvatar();
+      setDefaultDrawable(drawable);
+      setController(Fresco.newDraweeControllerBuilder()
+            .setOldController(getController())
+            .setUri(TextUtils.isEmpty(avatarUrl) ? Uri.EMPTY : Uri.parse(avatarUrl))
+            .build());
+   }
 
-    private void setTripChatAvatar() {
-        setDefaultDrawable(ContextCompat.getDrawable(getContext(), R.drawable.ic_trip_chat));
-        setController(null);
-    }
+   private void setTripChatAvatar() {
+      setDefaultDrawable(ContextCompat.getDrawable(getContext(), R.drawable.ic_trip_chat));
+      setController(null);
+   }
 
-    private void setDefaultDrawable(Drawable drawable) {
-        GenericDraweeHierarchy hierarchy = getHierarchy();
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
-            hierarchy.setPlaceholderImage(drawable, ScalingUtils.ScaleType.FIT_CENTER);
-            hierarchy.setFailureImage(drawable, ScalingUtils.ScaleType.FIT_CENTER);
-        } else {
-            hierarchy.setPlaceholderImage(drawable);
-            hierarchy.setFailureImage(drawable);
-        }
-    }
+   private void setDefaultDrawable(Drawable drawable) {
+      GenericDraweeHierarchy hierarchy = getHierarchy();
+      if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
+         hierarchy.setPlaceholderImage(drawable, ScalingUtils.ScaleType.FIT_CENTER);
+         hierarchy.setFailureImage(drawable, ScalingUtils.ScaleType.FIT_CENTER);
+      } else {
+         hierarchy.setPlaceholderImage(drawable);
+         hierarchy.setFailureImage(drawable);
+      }
+   }
 
 }

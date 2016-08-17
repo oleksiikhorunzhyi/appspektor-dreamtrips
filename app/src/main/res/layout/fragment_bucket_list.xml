@@ -1,102 +1,110 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:baselineAligned="false"
-    android:orientation="horizontal">
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+      android:layout_width="match_parent"
+      android:layout_height="match_parent"
+      android:baselineAligned="false"
+      android:orientation="horizontal"
+      >
 
-    <RelativeLayout
-        android:layout_width="0dp"
-        android:layout_height="match_parent"
-        android:layout_weight="1"
-        android:gravity="center"
-        android:orientation="vertical">
+   <RelativeLayout
+         android:layout_width="0dp"
+         android:layout_height="match_parent"
+         android:layout_weight="1"
+         android:gravity="center"
+         android:orientation="vertical"
+         >
 
-        <ScrollView
+      <ScrollView
             android:id="@+id/ll_empty_view"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:visibility="gone">
+            android:visibility="gone"
+            >
 
-            <RelativeLayout
-                android:id="@+id/ll_empty_view_container"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_alignParentLeft="false"
-                android:layout_alignParentTop="false"
-                android:gravity="center">
+         <RelativeLayout
+               android:id="@+id/ll_empty_view_container"
+               android:layout_width="match_parent"
+               android:layout_height="match_parent"
+               android:layout_alignParentLeft="false"
+               android:layout_alignParentTop="false"
+               android:gravity="center"
+               >
 
-                <TextView
-                    android:id="@+id/textViewEmpty"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="50dp"
-                    android:alpha="0.5"
-                    android:gravity="center"
-                    android:padding="16dp"
-                    android:text="@string/bucket_list_create_message"
-                    android:textColor="@android:color/black"
-                    android:textSize="16dp"/>
+            <TextView
+                  android:id="@+id/textViewEmpty"
+                  android:layout_width="wrap_content"
+                  android:layout_height="wrap_content"
+                  android:layout_marginTop="50dp"
+                  android:alpha="0.5"
+                  android:gravity="center"
+                  android:padding="16dp"
+                  android:text="@string/bucket_list_create_message"
+                  android:textColor="@android:color/black"
+                  android:textSize="16dp"
+                  />
 
-                <TextView
-                    android:id="@+id/textViewEmptyAdd"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_below="@id/textViewEmpty"
-                    android:alpha="0.8"
-                    android:gravity="center"
-                    android:padding="16dp"
-                    android:text="@string/bucket_list_add"
-                    android:textColor="@android:color/black"
-                    android:textSize="16dp"/>
+            <TextView
+                  android:id="@+id/textViewEmptyAdd"
+                  android:layout_width="match_parent"
+                  android:layout_height="wrap_content"
+                  android:layout_below="@id/textViewEmpty"
+                  android:alpha="0.8"
+                  android:gravity="center"
+                  android:padding="16dp"
+                  android:text="@string/bucket_list_add"
+                  android:textColor="@android:color/black"
+                  android:textSize="16dp"
+                  />
 
-                <ImageView
-                    android:id="@+id/imageViewArrow"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_below="@id/textViewEmptyAdd"
-                    android:layout_centerHorizontal="true"
-                    android:src="@drawable/ic_bucket_arrow_small"/>
+            <ImageView
+                  android:id="@+id/imageViewArrow"
+                  android:layout_width="wrap_content"
+                  android:layout_height="wrap_content"
+                  android:layout_below="@id/textViewEmptyAdd"
+                  android:layout_centerHorizontal="true"
+                  android:src="@drawable/ic_bucket_arrow_small"
+                  />
 
-                <Button
-                    android:id="@+id/buttonNew"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_below="@+id/imageViewArrow"
-                    android:layout_centerHorizontal="true"
-                    android:layout_marginLeft="@dimen/spacing_normal"
-                    android:layout_marginRight="@dimen/spacing_normal"
-                    android:text="@string/bucket_list_create_new"
-                    android:textColor="@android:color/white"
-                    />
+            <Button
+                  android:id="@+id/buttonNew"
+                  android:layout_width="match_parent"
+                  android:layout_height="wrap_content"
+                  android:layout_below="@+id/imageViewArrow"
+                  android:layout_centerHorizontal="true"
+                  android:layout_marginLeft="@dimen/spacing_normal"
+                  android:layout_marginRight="@dimen/spacing_normal"
+                  android:text="@string/bucket_list_create_new"
+                  android:textColor="@android:color/white"
+                  />
 
-                <Button
-                    android:id="@+id/buttonPopular"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_below="@+id/buttonNew"
-                    android:layout_centerHorizontal="true"
-                    android:layout_marginLeft="@dimen/spacing_normal"
-                    android:layout_marginRight="@dimen/spacing_normal"
-                    android:layout_marginTop="@dimen/spacing_small"
-                    android:text="@string/bucket_list_choose"
-                    android:textColor="@android:color/white"/>
-            </RelativeLayout>
+            <Button
+                  android:id="@+id/buttonPopular"
+                  android:layout_width="match_parent"
+                  android:layout_height="wrap_content"
+                  android:layout_below="@+id/buttonNew"
+                  android:layout_centerHorizontal="true"
+                  android:layout_marginLeft="@dimen/spacing_normal"
+                  android:layout_marginRight="@dimen/spacing_normal"
+                  android:layout_marginTop="@dimen/spacing_small"
+                  android:text="@string/bucket_list_choose"
+                  android:textColor="@android:color/white"
+                  />
+         </RelativeLayout>
 
-        </ScrollView>
+      </ScrollView>
 
 
-        <ProgressBar
+      <ProgressBar
             android:id="@+id/progressBar"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
-            android:visibility="gone"/>
+            android:visibility="gone"
+            />
 
-        <com.worldventures.dreamtrips.modules.common.view.custom.EmptyRecyclerView
+      <com.worldventures.dreamtrips.modules.common.view.custom.EmptyRecyclerView
             android:id="@+id/lv_items"
             style="@style/myRecyclerViewStyle"
             android:layout_width="match_parent"
@@ -104,15 +112,17 @@
             android:fadingEdgeLength="0dp"
             android:overScrollMode="never"
             android:padding="@dimen/spacing_tiniest"
-            android:visibility="visible"/>
+            android:visibility="visible"
+            />
 
 
-    </RelativeLayout>
+   </RelativeLayout>
 
-    <FrameLayout
-        android:id="@+id/detail_container"
-        android:layout_width="0dp"
-        android:layout_height="match_parent"
-        android:layout_weight="3"
-        android:visibility="gone"/>
+   <FrameLayout
+         android:id="@+id/detail_container"
+         android:layout_width="0dp"
+         android:layout_height="match_parent"
+         android:layout_weight="3"
+         android:visibility="gone"
+         />
 </LinearLayout>

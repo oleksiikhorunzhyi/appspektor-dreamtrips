@@ -19,17 +19,17 @@ import io.techery.janet.ActionService;
 @PrepareForTest({Location.class, TrackingHelper.class})
 public abstract class BaseTest {
 
-    static {
-        RxJavaSchedulerInitializer.init();
-    }
+   static {
+      RxJavaSchedulerInitializer.init();
+   }
 
-    @Before
-    public void setupBase() {
-        MockitoAnnotations.initMocks(this);
-        PowerMockito.mock(TrackingHelper.class);
-    }
+   @Before
+   public void setupBase() {
+      MockitoAnnotations.initMocks(this);
+      PowerMockito.mock(TrackingHelper.class);
+   }
 
-    protected static CacheResultWrapper cachedService(ActionService service) {
-        return new CacheResultWrapper(service);
-    }
+   protected static CacheResultWrapper cachedService(ActionService service) {
+      return new CacheResultWrapper(service);
+   }
 }

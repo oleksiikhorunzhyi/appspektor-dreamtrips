@@ -1,12 +1,8 @@
 package com.worldventures.dreamtrips.modules.infopages;
 
-import com.techery.spares.session.SessionHolder;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.component.ComponentDescription;
 import com.worldventures.dreamtrips.core.navigation.Route;
-import com.worldventures.dreamtrips.core.preference.StaticPageHolder;
-import com.worldventures.dreamtrips.core.session.UserSession;
-import com.worldventures.dreamtrips.core.utils.LocaleHelper;
 import com.worldventures.dreamtrips.modules.infopages.presenter.AuthorizedStaticInfoPresenter;
 import com.worldventures.dreamtrips.modules.infopages.presenter.SendFeedbackPresenter;
 import com.worldventures.dreamtrips.modules.infopages.presenter.WebViewFragmentPresenter;
@@ -29,63 +25,37 @@ import dagger.Module;
 import dagger.Provides;
 
 @Module(
-        injects = {
-                OtaFragment.class,
-                AuthorizedStaticInfoFragment.class,
-                AuthorizedStaticInfoPresenter.class,
-                PresentationVideosPresenter.class,
-                StaticInfoFragment.class,
-                StaticInfoFragment.BookItFragment.class,
-                StaticInfoFragment.BundleUrlFragment.class,
-                StaticInfoFragment.TermsOfServiceFragment.class,
-                StaticInfoFragment.PrivacyPolicyFragment.class,
-                StaticInfoFragment.CookiePolicyFragment.class,
-                StaticInfoFragment.FAQFragment.class,
-                StaticInfoFragment.EnrollRepFragment.class,
+      injects = {OtaFragment.class, AuthorizedStaticInfoFragment.class, AuthorizedStaticInfoPresenter.class, PresentationVideosPresenter.class, StaticInfoFragment.class, StaticInfoFragment.BookItFragment.class, StaticInfoFragment.BundleUrlFragment.class, StaticInfoFragment.TermsOfServiceFragment.class, StaticInfoFragment.PrivacyPolicyFragment.class, StaticInfoFragment.CookiePolicyFragment.class, StaticInfoFragment.FAQFragment.class, StaticInfoFragment.EnrollRepFragment.class, StaticInfoFragment.EnrollUpgradeFragment.class,
 
-                VideoCell.class,
-                MediaHeaderLightCell.class,
-                MediaHeaderCell.class,
+            VideoCell.class, MediaHeaderLightCell.class, MediaHeaderCell.class,
 
-                ThreeSixtyVideosFragment.class,
-                ThreeSixtyVideosPresenter.class,
+            ThreeSixtyVideosFragment.class, ThreeSixtyVideosPresenter.class,
 
-                HelpVideosFragment.class,
-                HelpVideosPresenter.class,
+            HelpVideosFragment.class, HelpVideosPresenter.class,
 
-                HelpFragment.class,
-                TermsTabFragment.class,
-                WebViewFragmentPresenter.class,
+            HelpFragment.class, TermsTabFragment.class, WebViewFragmentPresenter.class,
 
-                SendFeedbackFragment.class,
-                SendFeedbackPresenter.class
-        },
-        complete = false,
-        library = true
-)
+            SendFeedbackFragment.class, SendFeedbackPresenter.class},
+      complete = false,
+      library = true)
 public class InfoModule {
 
-    public static final String HELP = Route.HELP.name();
-    public static final String TERMS = Route.TERMS.name();
-    public static final String SEND_FEEDBACK = Route.SEND_FEEDBACK.name();
+   public static final String HELP = Route.HELP.name();
+   public static final String TERMS = Route.TERMS.name();
+   public static final String SEND_FEEDBACK = Route.SEND_FEEDBACK.name();
 
-    @Provides
-    StaticPageProvider provideStaticPageProvider(SessionHolder<UserSession> session, StaticPageHolder holder, LocaleHelper localeHelper) {
-        return new StaticPageProvider(holder, session, localeHelper);
-    }
+   @Provides(type = Provides.Type.SET)
+   ComponentDescription provideTermsOfServiceComponent() {
+      return new ComponentDescription(TERMS, R.string.legal_terms, R.string.legal_terms, R.drawable.ic_termsconditions, TermsTabFragment.class);
+   }
 
-    @Provides(type = Provides.Type.SET)
-    ComponentDescription provideTermsOfServiceComponent() {
-        return new ComponentDescription(TERMS, R.string.legal_terms, R.string.legal_terms, R.drawable.ic_termsconditions, TermsTabFragment.class);
-    }
+   @Provides(type = Provides.Type.SET)
+   ComponentDescription provideHelpComponent() {
+      return new ComponentDescription(HELP, R.string.help, R.string.help, R.drawable.ic_help, HelpFragment.class);
+   }
 
-    @Provides(type = Provides.Type.SET)
-    ComponentDescription provideHelpComponent() {
-        return new ComponentDescription(HELP, R.string.help, R.string.help, R.drawable.ic_help, HelpFragment.class);
-    }
-
-    @Provides(type = Provides.Type.SET)
-    ComponentDescription provideFeedbackComponent() {
-        return new ComponentDescription(SEND_FEEDBACK, R.string.send_feedback, R.string.send_feedback, R.drawable.ic_send_feedback, SendFeedbackFragment.class);
-    }
+   @Provides(type = Provides.Type.SET)
+   ComponentDescription provideFeedbackComponent() {
+      return new ComponentDescription(SEND_FEEDBACK, R.string.send_feedback, R.string.send_feedback, R.drawable.ic_send_feedback, SendFeedbackFragment.class);
+   }
 }

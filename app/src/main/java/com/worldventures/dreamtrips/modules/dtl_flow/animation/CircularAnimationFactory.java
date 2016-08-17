@@ -11,35 +11,27 @@ import flow.Flow;
 
 public class CircularAnimationFactory implements AnimatorFactory {
 
-    // TODO :: 4/8/16 add ability to set up animation center based on some touch coordinates etc
-    
-    @Override
-    public Animator createAnimator(View from, View to, Flow.Direction direction, ViewGroup container) {
-        switch (direction) {
-            case BACKWARD: return createBackwardAnimator(from, to);
-            case REPLACE: // TODO :: 4/8/16 add animation for REPLACE
-            case FORWARD:
-            default: return createForwardAnimator(from, to);
-        }
-    }
+   // TODO :: 4/8/16 add ability to set up animation center based on some touch coordinates etc
 
-    private Animator createForwardAnimator(View from, View to) {
-        return ViewAnimationUtils.createCircularReveal(
-                to,
-                from.getWidth() / 2,
-                from.getHeight() / 2,
-                0F,
-                Math.max(to.getWidth(), to.getHeight())
-        );
-    }
+   @Override
+   public Animator createAnimator(View from, View to, Flow.Direction direction, ViewGroup container) {
+      switch (direction) {
+         case BACKWARD:
+            return createBackwardAnimator(from, to);
+         case REPLACE: // TODO :: 4/8/16 add animation for REPLACE
+         case FORWARD:
+         default:
+            return createForwardAnimator(from, to);
+      }
+   }
 
-    private Animator createBackwardAnimator(View from, View to) {
-        return ViewAnimationUtils.createCircularReveal(
-                from,
-                from.getWidth() / 2,
-                from.getHeight() / 2,
-                Math.max(to.getWidth(), to.getHeight()),
-                0F
-        );
-    }
+   private Animator createForwardAnimator(View from, View to) {
+      return ViewAnimationUtils.createCircularReveal(to, from.getWidth() / 2, from.getHeight() / 2, 0F, Math.max(to.getWidth(), to
+            .getHeight()));
+   }
+
+   private Animator createBackwardAnimator(View from, View to) {
+      return ViewAnimationUtils.createCircularReveal(from, from.getWidth() / 2, from.getHeight() / 2, Math.max(to.getWidth(), to
+            .getHeight()), 0F);
+   }
 }

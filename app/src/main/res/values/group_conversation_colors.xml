@@ -1,19 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="group_avatar_color_0">#F87C72</color>
-    <color name="group_avatar_color_1">#F06292</color>
-    <color name="group_avatar_color_2">#BA68C8</color>
-    <color name="group_avatar_color_3">#9770DC</color>
-    <color name="group_avatar_color_4">#7E8DE5</color>
-    <color name="group_avatar_color_5">#64A9F7</color>
-    <color name="group_avatar_color_6">#4FCDF8</color>
-    <color name="group_avatar_color_7">#39D3E7</color>
-    <color name="group_avatar_color_8">#44B7AC</color>
-    <color name="group_avatar_color_9">#7BC37E</color>
-    <color name="group_avatar_color_10">#AED580</color>
-    <color name="group_avatar_color_11">#D0E775</color>
-    <color name="group_avatar_color_12">#E8E67D</color>
-    <color name="group_avatar_color_13">#FFD451</color>
-    <color name="group_avatar_color_14">#FFB74C</color>
-    <color name="group_avatar_color_15">#FF8B55</color>
+   <color name="group_avatar_color_0">#F87C72</color>
+   <color name="group_avatar_color_1">#F06292</color>
+   <color name="group_avatar_color_2">#BA68C8</color>
+   <color name="group_avatar_color_3">#9770DC</color>
+   <color name="group_avatar_color_4">#7E8DE5</color>
+   <color name="group_avatar_color_5">#64A9F7</color>
+   <color name="group_avatar_color_6">#4FCDF8</color>
+   <color name="group_avatar_color_7">#39D3E7</color>
+   <color name="group_avatar_color_8">#44B7AC</color>
+   <color name="group_avatar_color_9">#7BC37E</color>
+   <color name="group_avatar_color_10">#AED580</color>
+   <color name="group_avatar_color_11">#D0E775</color>
+   <color name="group_avatar_color_12">#E8E67D</color>
+   <color name="group_avatar_color_13">#FFD451</color>
+   <color name="group_avatar_color_14">#FFB74C</color>
+   <color name="group_avatar_color_15">#FF8B55</color>
 </resources>

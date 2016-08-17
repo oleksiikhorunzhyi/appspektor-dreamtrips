@@ -8,9 +8,8 @@ import com.worldventures.dreamtrips.wallet.di.WalletCommandModule;
 import dagger.Module;
 
 @Module(includes = {MessengerJanetCommandModule.class,
-        DtlJanetActionsModule.class,
-        WalletCommandModule.class,
-        SocialJanetCommandModule.class},
-        complete = false, library = true)
-public class JanetCommandModule {
-}
+      DtlJanetActionsModule.class,
+      WalletCommandModule.class,
+      SocialJanetCommandModule.class
+}, complete = false, library = true)
+public class JanetCommandModule {}

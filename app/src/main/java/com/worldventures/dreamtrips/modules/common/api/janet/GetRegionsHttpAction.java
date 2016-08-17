@@ -11,11 +11,10 @@ import io.techery.janet.http.annotations.Response;
 @HttpAction(value = "/api/regions", method = HttpAction.Method.GET)
 public class GetRegionsHttpAction extends AuthorizedHttpAction {
 
-    @Response
-    List<RegionModel> regionModels;
+   @Response List<RegionModel> regionModels;
 
-    public List<RegionModel> getRegionModels() {
-        return regionModels;
-    }
+   public List<RegionModel> getRegionModels() {
+      return regionModels;
+   }
 
 }

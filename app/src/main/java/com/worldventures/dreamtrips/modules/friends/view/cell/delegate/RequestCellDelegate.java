@@ -5,11 +5,11 @@ import com.worldventures.dreamtrips.modules.common.model.User;
 
 public interface RequestCellDelegate extends CellDelegate<User> {
 
-    void acceptRequest(User user);
+   void acceptRequest(User user);
 
-    void rejectRequest(User user);
+   void rejectRequest(User user);
 
-    void hideRequest(User user);
+   void hideRequest(User user);
 
-    void cancelRequest(User user);
+   void cancelRequest(User user);
 }

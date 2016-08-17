@@ -79,6 +79,7 @@
     <string name="wallet_card_settings_stealth_mode_on">Stealth mode was turned on</string>
 
     <!--card list-->
+    <string name="dashboard_default_card_stack_title">Default</string>
     <string name="wallet_wizard_empty_card_list_label">Add credit or debit cards\nto your flue\u2122 smart card</string>
 
     <!--add card details-->

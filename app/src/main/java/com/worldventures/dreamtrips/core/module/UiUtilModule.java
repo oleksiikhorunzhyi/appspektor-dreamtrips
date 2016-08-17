@@ -12,19 +12,18 @@ import dagger.Module;
 import dagger.Provides;
 
 @Module(
-        library = true, complete = false
-)
+      library = true, complete = false)
 public class UiUtilModule {
 
-    @Provides
-    Presenter.TabletAnalytic tabletAnalytic(Activity activity) {
-        return () -> ViewUtils.isTablet(activity) && ViewUtils.isLandscapeOrientation(activity);
-    }
+   @Provides
+   Presenter.TabletAnalytic tabletAnalytic(Activity activity) {
+      return () -> ViewUtils.isTablet(activity) && ViewUtils.isLandscapeOrientation(activity);
+   }
 
-    @Singleton
-    @Provides
-    ActivityResultDelegate activityResultDelegate() {
-        return new ActivityResultDelegate();
-    }
+   @Singleton
+   @Provides
+   ActivityResultDelegate activityResultDelegate() {
+      return new ActivityResultDelegate();
+   }
 
 }

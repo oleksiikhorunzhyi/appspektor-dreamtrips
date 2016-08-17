@@ -1,62 +1,69 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              xmlns:fresco="http://schemas.android.com/apk/res-auto"
-              android:layout_width="match_parent"
-              android:layout_height="wrap_content"
-              android:orientation="vertical"
-              android:minHeight="?attr/listPreferredItemHeight"
-              android:paddingLeft="@dimen/spacing_medium"
-              android:paddingRight="@dimen/spacing_medium"
-              android:paddingBottom="@dimen/spacing_small"
-              android:paddingTop="@dimen/spacing_small">
+      xmlns:fresco="http://schemas.android.com/apk/res-auto"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:orientation="vertical"
+      android:minHeight="?attr/listPreferredItemHeight"
+      android:paddingLeft="@dimen/spacing_medium"
+      android:paddingRight="@dimen/spacing_medium"
+      android:paddingBottom="@dimen/spacing_small"
+      android:paddingTop="@dimen/spacing_small"
+      >
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="horizontal">
+   <LinearLayout
+         android:layout_width="match_parent"
+         android:layout_height="match_parent"
+         android:orientation="horizontal"
+         >
 
-        <com.worldventures.dreamtrips.modules.common.view.custom.SmartAvatarView
+      <com.worldventures.dreamtrips.modules.common.view.custom.SmartAvatarView
             android:id="@+id/sdv_avatar"
             android:layout_width="45dp"
             android:layout_height="45dp"
             android:layout_gravity="center_vertical"
             fresco:placeholderImage="@drawable/ic_avatar_placeholder"
             fresco:placeholderImageScaleType="centerInside"
-            fresco:roundAsCircle="true"/>
+            fresco:roundAsCircle="true"
+            />
 
-        <LinearLayout
+      <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
             android:layout_marginLeft="@dimen/spacing_normal"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            >
 
-            <TextView
-                android:id="@+id/tv_name"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:singleLine="true"
-                android:text="Eric Cartman"
-                android:textColor="@android:color/black"
-                android:textSize="16sp"/>
+         <TextView
+               android:id="@+id/tv_name"
+               android:layout_width="wrap_content"
+               android:layout_height="wrap_content"
+               android:singleLine="true"
+               android:text="Eric Cartman"
+               android:textColor="@android:color/black"
+               android:textSize="16sp"
+               />
 
-            <TextView
-                android:id="@+id/tv_company"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:singleLine="true"
-                android:textColor="@color/black"
-                android:textSize="16sp"/>
+         <TextView
+               android:id="@+id/tv_company"
+               android:layout_width="wrap_content"
+               android:layout_height="wrap_content"
+               android:singleLine="true"
+               android:textColor="@color/black"
+               android:textSize="16sp"
+               />
 
-            <TextView
-                android:id="@+id/tv_mutual"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:singleLine="true"
-                android:text="Close Friend, 25 mutual friends"
-                android:textSize="16sp"/>
+         <TextView
+               android:id="@+id/tv_mutual"
+               android:layout_width="wrap_content"
+               android:layout_height="wrap_content"
+               android:singleLine="true"
+               android:text="Close Friend, 25 mutual friends"
+               android:textSize="16sp"
+               />
 
-        </LinearLayout>
-    </LinearLayout>
+      </LinearLayout>
+   </LinearLayout>
 
 </LinearLayout>

@@ -17,42 +17,41 @@ import timber.log.Timber;
 
 public class MessengerConnection extends XMPPTCPConnection {
 
-    public MessengerConnection(XMPPTCPConnectionConfiguration config) {
-        super(config);
-    }
+   public MessengerConnection(XMPPTCPConnectionConfiguration config) {
+      super(config);
+   }
 
-    @Override
-    protected void parseAndProcessStanza(XmlPullParser parser) throws Exception {
-        ParserUtils.assertAtStartTag(parser);
-        int parserDepth = parser.getDepth();
-        Stanza stanza = null;
+   @Override
+   protected void parseAndProcessStanza(XmlPullParser parser) throws Exception {
+      ParserUtils.assertAtStartTag(parser);
+      int parserDepth = parser.getDepth();
+      Stanza stanza = null;
 
-        try {
-            if (Presence.ELEMENT.equals(parser.getName())) {
-                stanza = ParseUtils.parsePresence(parser);
-            } else if (Message.ELEMENT.equals(parser.getName())) {
-                stanza = ParseUtils.parseMessage(parser);
-            } else {
-                stanza = PacketParserUtils.parseStanza(parser);
-            }
-        } catch (Exception e) {
-            Timber.e(e, "Could not parse stanza packet");
-            CharSequence content = PacketParserUtils.parseContentDepth(parser,
-                    parserDepth);
-            UnparsablePacket message = new UnparsablePacket(content, e);
-            ParsingExceptionCallback callback = getParsingExceptionCallback();
-            if (callback != null) {
-                callback.handleUnparsablePacket(message);
-            }
-        }
-        ParserUtils.assertAtEndTag(parser);
-        if (stanza != null) {
-            processPacket(stanza);
-        }
-    }
+      try {
+         if (Presence.ELEMENT.equals(parser.getName())) {
+            stanza = ParseUtils.parsePresence(parser);
+         } else if (Message.ELEMENT.equals(parser.getName())) {
+            stanza = ParseUtils.parseMessage(parser);
+         } else {
+            stanza = PacketParserUtils.parseStanza(parser);
+         }
+      } catch (Exception e) {
+         Timber.e(e, "Could not parse stanza packet");
+         CharSequence content = PacketParserUtils.parseContentDepth(parser, parserDepth);
+         UnparsablePacket message = new UnparsablePacket(content, e);
+         ParsingExceptionCallback callback = getParsingExceptionCallback();
+         if (callback != null) {
+            callback.handleUnparsablePacket(message);
+         }
+      }
+      ParserUtils.assertAtEndTag(parser);
+      if (stanza != null) {
+         processPacket(stanza);
+      }
+   }
 
-    @Override
-    public boolean isSecureConnection() {
-        return true;
-    }
+   @Override
+   public boolean isSecureConnection() {
+      return true;
+   }
 }

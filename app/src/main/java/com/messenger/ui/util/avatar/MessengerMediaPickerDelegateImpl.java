@@ -17,94 +17,84 @@ import rx.subjects.PublishSubject;
 
 public class MessengerMediaPickerDelegateImpl implements MessengerMediaPickerDelegate {
 
-    public static final int MESSENGER_MULTI_PICK_LIMIT = 15;
+   public static final int MESSENGER_MULTI_PICK_LIMIT = 15;
 
-    private LegacyPhotoPickerDelegate legacyPhotoPickerDelegate;
-    private PhotoPickerLayoutDelegate photoPickerLayoutDelegate;
-    private PermissionDispatcher permissionDispatcher;
+   private LegacyPhotoPickerDelegate legacyPhotoPickerDelegate;
+   private PhotoPickerLayoutDelegate photoPickerLayoutDelegate;
+   private PermissionDispatcher permissionDispatcher;
 
-    private PublishSubject<String> imagesStream = PublishSubject.create();
-    private Subscription cameraImagesStreamSubscription;
+   private PublishSubject<String> imagesStream = PublishSubject.create();
+   private Subscription cameraImagesStreamSubscription;
 
-    public MessengerMediaPickerDelegateImpl(LegacyPhotoPickerDelegate legacyPhotoPickerDelegate,
-                                            PhotoPickerLayoutDelegate photoPickerLayoutDelegate,
-                                            PermissionDispatcher permissionDispatcher) {
-        this.legacyPhotoPickerDelegate = legacyPhotoPickerDelegate;
-        this.photoPickerLayoutDelegate = photoPickerLayoutDelegate;
-        this.permissionDispatcher = permissionDispatcher;
-        initPhotoPicker();
-    }
+   public MessengerMediaPickerDelegateImpl(LegacyPhotoPickerDelegate legacyPhotoPickerDelegate, PhotoPickerLayoutDelegate photoPickerLayoutDelegate, PermissionDispatcher permissionDispatcher) {
+      this.legacyPhotoPickerDelegate = legacyPhotoPickerDelegate;
+      this.photoPickerLayoutDelegate = photoPickerLayoutDelegate;
+      this.permissionDispatcher = permissionDispatcher;
+      initPhotoPicker();
+   }
 
-    @Override
-    public void register() {
-        legacyPhotoPickerDelegate.register();
-        cameraImagesStreamSubscription = legacyPhotoPickerDelegate
-                .watchChosenImages()
-                .subscribe(photos -> {
-                    onImagesPicked(Queryable.from(photos)
-                            .map(ChosenImage::getFilePathOriginal)
-                            .toList());
-                });
-    }
+   @Override
+   public void resetPhotoPicker() {
+      initPhotoPicker();
+   }
 
-    @Override
-    public void unregister() {
-        legacyPhotoPickerDelegate.unregister();
-        cameraImagesStreamSubscription.unsubscribe();
-    }
+   @Override
+   public void register() {
+      legacyPhotoPickerDelegate.register();
+      cameraImagesStreamSubscription = legacyPhotoPickerDelegate.watchChosenImages().subscribe(photos -> {
+         onImagesPicked(Queryable.from(photos).map(ChosenImage::getFilePathOriginal).toList());
+      });
+   }
 
-    @Override
-    public void showPhotoPicker() {
-        checkPermissions()
-                .subscribe(aVoid -> {
-                    if (!photoPickerLayoutDelegate.isPanelVisible()) {
-                        photoPickerLayoutDelegate.showPickerAfterDelay();
-                    }
-                });
-    }
+   @Override
+   public void unregister() {
+      legacyPhotoPickerDelegate.unregister();
+      cameraImagesStreamSubscription.unsubscribe();
+   }
 
-    @Override
-    public void showMultiPhotoPicker() {
-        checkPermissions()
-                .subscribe(aVoid -> {
-                    if (!photoPickerLayoutDelegate.isPanelVisible()) {
-                        photoPickerLayoutDelegate.showPicker(true, MESSENGER_MULTI_PICK_LIMIT);
-                    } else {
-                        photoPickerLayoutDelegate.hidePicker();
-                    }
-                });
-    }
+   @Override
+   public void showPhotoPicker() {
+      checkPermissions().subscribe(aVoid -> {
+         if (!photoPickerLayoutDelegate.isPanelVisible()) {
+            photoPickerLayoutDelegate.showPickerAfterDelay();
+         }
+      });
+   }
 
-    private Observable<Void> checkPermissions(){
-        return permissionDispatcher
-                .requestPermission(PermissionConstants.STORE_PERMISSIONS, false)
-                .compose(new PermissionGrantedComposer());
-    }
+   @Override
+   public void showMultiPhotoPicker() {
+      checkPermissions().subscribe(aVoid -> {
+         if (!photoPickerLayoutDelegate.isPanelVisible()) {
+            photoPickerLayoutDelegate.showPicker(true, MESSENGER_MULTI_PICK_LIMIT);
+         } else {
+            photoPickerLayoutDelegate.hidePicker();
+         }
+      });
+   }
 
-    @Override
-    public void hidePhotoPicker() {
-        photoPickerLayoutDelegate.hidePicker();
-    }
+   private Observable<Void> checkPermissions() {
+      return permissionDispatcher.requestPermission(PermissionConstants.STORE_PERMISSIONS, false)
+            .compose(new PermissionGrantedComposer());
+   }
 
-    @Override
-    public Observable<String> getImagePathsStream() {
-        return imagesStream;
-    }
+   @Override
+   public void hidePhotoPicker() {
+      photoPickerLayoutDelegate.hidePicker();
+   }
 
-    private void initPhotoPicker() {
-        photoPickerLayoutDelegate.setOnDoneClickListener((chosenImages, type) ->
-                onImagesPicked(Queryable.from(chosenImages)
-                        .map(BasePhotoPickerModel::getOriginalPath)
-                        .toList()));
-    }
+   @Override
+   public Observable<String> getImagePathsStream() {
+      return imagesStream;
+   }
 
-    @Override
-    public void resetPhotoPicker() {
-        initPhotoPicker();
-    }
-    private void onImagesPicked(List<String> imagePaths) {
-        photoPickerLayoutDelegate.hidePicker();
-        Queryable.from(imagePaths)
-                .forEachR(path -> imagesStream.onNext(path));
-    }
+   private void initPhotoPicker() {
+      photoPickerLayoutDelegate.setOnDoneClickListener((chosenImages, type) -> onImagesPicked(Queryable.from(chosenImages)
+            .map(BasePhotoPickerModel::getOriginalPath)
+            .toList()));
+   }
+
+   private void onImagesPicked(List<String> imagePaths) {
+      photoPickerLayoutDelegate.hidePicker();
+      Queryable.from(imagePaths).forEachR(path -> imagesStream.onNext(path));
+   }
 }

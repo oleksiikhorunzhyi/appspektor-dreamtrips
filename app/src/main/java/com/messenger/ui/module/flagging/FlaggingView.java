@@ -1,7 +1,8 @@
 package com.messenger.ui.module.flagging;
 
 
-import com.jakewharton.rxbinding.widget.TextViewTextChangeEvent;
+import android.support.annotation.StringRes;
+
 import com.messenger.ui.module.ModuleStatefulView;
 import com.worldventures.dreamtrips.modules.tripsimages.model.Flag;
 
@@ -11,25 +12,27 @@ import rx.Observable;
 
 public interface FlaggingView extends ModuleStatefulView<FlaggingPresenter> {
 
-    void showFlagsLoadingDialog();
+   void showFlagsLoadingDialog();
 
-    void hideFlagsLoadingDialog();
+   void hideFlagsLoadingDialog();
 
-    void showFlagsListDialog(List<Flag> flags);
+   void showFlagsListDialog(List<Flag> flags);
 
-    Observable<CharSequence> showFlagReasonDialog(Flag flag, String prefilledReason);
+   Observable<CharSequence> showFlagReasonDialog(Flag flag, String prefilledReason);
 
-    void showFlagConfirmationDialog(Flag flag);
+   void showFlagConfirmationDialog(Flag flag);
 
-    void showFlaggingProgressDialog();
+   void showFlaggingProgressDialog();
 
-    void hideFlaggingProgressDialog();
+   void hideFlaggingProgressDialog();
 
-    void showFlaggingSuccess();
+   void showFlaggingSuccess();
 
-    void showFlaggingError();
+   void showFlaggingError();
 
-    void showError(String message);
+   void showError(String message);
 
-    Observable<Void> getCanceledDialogsStream();
+   void showError(@StringRes int message);
+
+   Observable<Void> getCanceledDialogsStream();
 }

@@ -1,32 +1,34 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              xmlns:app="http://schemas.android.com/apk/res-auto"
-              xmlns:fresco="http://schemas.android.com/tools"
-              xmlns:tools="http://schemas.android.com/tools"
-              android:layout_width="match_parent"
-              android:layout_height="match_parent"
-              android:orientation="vertical"
-              android:padding="@dimen/dtlScanReceiptPadding">
+      xmlns:app="http://schemas.android.com/apk/res-auto"
+      xmlns:fresco="http://schemas.android.com/tools"
+      xmlns:tools="http://schemas.android.com/tools"
+      android:layout_width="match_parent"
+      android:layout_height="match_parent"
+      android:orientation="vertical"
+      android:padding="@dimen/dtlScanReceiptPadding"
+      >
 
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/dtlReceiptHeight"
-        >
+   <RelativeLayout
+         android:layout_width="match_parent"
+         android:layout_height="@dimen/dtlReceiptHeight"
+         >
 
-        <com.facebook.drawee.view.SimpleDraweeView
+      <com.facebook.drawee.view.SimpleDraweeView
             android:id="@+id/receipt"
             android:layout_width="match_parent"
             android:layout_height="@dimen/dtlReceiptHeight"
             fresco:actualImageScaleType="centerInside"
             />
 
-        <View
+      <View
             android:id="@+id/shadow"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="@color/black_semi_transparent"/>
+            android:background="@color/black_semi_transparent"
+            />
 
-        <view
+      <view
             android:id="@+id/fab_progress"
             class="mbanje.kurt.fabbutton.FabButton"
             android:layout_width="48dp"
@@ -39,31 +41,35 @@
             app:fbb_autoStart="true"
             app:fbb_progressColor="#ffffff"
             app:fbb_progressWidthRatio="0.1"
-            app:fbb_showEndBitmap="true"/>
+            app:fbb_showEndBitmap="true"
+            />
 
-        <Button
+      <Button
             android:id="@+id/scan_receipt"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
             android:text="@string/dtl_receipt_scan"
-            android:textColor="@color/white"/>
+            android:textColor="@color/white"
+            />
 
-    </RelativeLayout>
+   </RelativeLayout>
 
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/spacing_small"
-        android:text="@string/dtl_points_estimation_input_hint"
-        android:textSize="@dimen/font_small"/>
+   <TextView
+         android:layout_width="match_parent"
+         android:layout_height="wrap_content"
+         android:layout_marginTop="@dimen/spacing_small"
+         android:text="@string/dtl_points_estimation_input_hint"
+         android:textSize="@dimen/font_small"
+         />
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal">
+   <LinearLayout
+         android:layout_width="match_parent"
+         android:layout_height="wrap_content"
+         android:orientation="horizontal"
+         >
 
-        <TextView
+      <TextView
             android:id="@+id/currency"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -74,7 +80,7 @@
             tools:text="USD"
             />
 
-        <com.worldventures.dreamtrips.modules.dtl.view.custom.CurrencyDTEditText
+      <com.worldventures.dreamtrips.modules.dtl.view.custom.CurrencyDTEditText
             android:id="@+id/inputPoints"
             style="@style/SuggestMerchantInput"
             android:layout_width="0dp"
@@ -89,21 +95,23 @@
             android:paddingStart="@dimen/spacing_medium"
             app:met_floatingLabel="none"
             />
-    </LinearLayout>
+   </LinearLayout>
 
-    <TextView
-        android:id="@+id/scan_receipt_note"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/dtl_verify_amount_note"/>
+   <TextView
+         android:id="@+id/scan_receipt_note"
+         android:layout_width="match_parent"
+         android:layout_height="wrap_content"
+         android:text="@string/dtl_verify_amount_note"
+         />
 
 
-    <FrameLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_gravity="bottom">
+   <FrameLayout
+         android:layout_width="match_parent"
+         android:layout_height="wrap_content"
+         android:layout_gravity="bottom"
+         >
 
-        <Button
+      <Button
             android:id="@+id/verify"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -113,12 +121,14 @@
             android:text="@string/dtl_receipt_verify"
             android:textColor="@color/button_text_color"
             android:textSize="@dimen/font_medium"
-            android:theme="@style/DtlButtonTheme"/>
-    </FrameLayout>
+            android:theme="@style/DtlButtonTheme"
+            />
+   </FrameLayout>
 
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/dtl_receipt_verify_hint"/>
+   <TextView
+         android:layout_width="match_parent"
+         android:layout_height="wrap_content"
+         android:text="@string/dtl_receipt_verify_hint"
+         />
 
 </LinearLayout>

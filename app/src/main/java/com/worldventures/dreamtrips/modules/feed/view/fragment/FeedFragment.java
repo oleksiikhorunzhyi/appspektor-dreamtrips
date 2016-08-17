@@ -18,10 +18,12 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.afollestad.materialdialogs.MaterialDialog;
 import com.techery.spares.adapter.BaseDelegateAdapter;
 import com.techery.spares.annotations.Layout;
 import com.techery.spares.annotations.MenuResource;
 import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.core.api.error.ErrorResponse;
 import com.worldventures.dreamtrips.core.rx.RxBaseFragmentWithArgs;
 import com.worldventures.dreamtrips.core.utils.ViewUtils;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
@@ -60,353 +62,382 @@ import rx.subjects.PublishSubject;
 
 @Layout(R.layout.fragment_feed)
 @MenuResource(R.menu.menu_activity_feed)
-public class FeedFragment extends RxBaseFragmentWithArgs<FeedPresenter, FeedBundle>
-        implements FeedPresenter.View, SwipeRefreshLayout.OnRefreshListener,
-        SuggestedPhotosDelegate, SuggestedPhotoCellPresenterHelper.OutViewBinder {
+public class FeedFragment extends RxBaseFragmentWithArgs<FeedPresenter, FeedBundle> implements FeedPresenter.View, SwipeRefreshLayout.OnRefreshListener, SuggestedPhotosDelegate, SuggestedPhotoCellPresenterHelper.OutViewBinder {
 
-    @InjectView(R.id.tv_search_friends)
-    public TextView tvSearchFriends;
-    @InjectView(R.id.arrow)
-    public ImageView ivArrow;
-    @InjectView(R.id.ll_empty_view)
-    public ViewGroup emptyView;
+   @InjectView(R.id.tv_search_friends) TextView tvSearchFriends;
+   @InjectView(R.id.arrow) ImageView ivArrow;
+   @InjectView(R.id.ll_empty_view) ViewGroup emptyView;
 
-    @Inject
-    FragmentWithFeedDelegate fragmentWithFeedDelegate;
+   @Inject FragmentWithFeedDelegate fragmentWithFeedDelegate;
 
-    BadgeImageView friendsBadge;
-    BadgeImageView unreadConversationBadge;
+   private BadgeImageView friendsBadge;
+   private BadgeImageView unreadConversationBadge;
 
-    private CirclesFilterPopupWindow filterPopupWindow;
+   private CirclesFilterPopupWindow filterPopupWindow;
 
-    private ContentObserver contentObserver;
-    private PublishSubject<Void> contentObserverSubject = PublishSubject.create();
+   private ContentObserver contentObserver;
+   private PublishSubject<Void> contentObserverSubject = PublishSubject.create();
 
-    private StatePaginatedRecyclerViewManager statePaginatedRecyclerViewManager;
-    private Bundle savedInstanceState;
+   private StatePaginatedRecyclerViewManager statePaginatedRecyclerViewManager;
+   private Bundle savedInstanceState;
 
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        this.savedInstanceState = savedInstanceState;
-    }
+   private MaterialDialog blockingProgressDialog;
 
-    @Override
-    public void onResume() {
-        super.onResume();
-        TrackingHelper.viewActivityFeedScreen();
-    }
+   @Override
+   public void onCreate(Bundle savedInstanceState) {
+      super.onCreate(savedInstanceState);
+      this.savedInstanceState = savedInstanceState;
+   }
 
-    @Override
-    public void onDetach() {
-        super.onDetach();
-        filterPopupWindow = null;
-    }
+   @Override
+   public void onResume() {
+      super.onResume();
+      TrackingHelper.viewActivityFeedScreen();
+      getPresenter().refreshFeed();
+   }
 
-    @Override
-    public void onDestroyView() {
-        if (contentObserver != null) {
-            getContext().getContentResolver().unregisterContentObserver(contentObserver);
-        }
-        super.onDestroyView();
-    }
+   @Override
+   public void onStop() {
+      super.onStop();
+      fragmentWithFeedDelegate.resetTranslatedStatus();
+   }
 
-    @Override
-    public void afterCreateView(View rootView) {
-        super.afterCreateView(rootView);
-        BaseDelegateAdapter adapter = new BaseDelegateAdapter<>(getContext(), this);
-        statePaginatedRecyclerViewManager = new StatePaginatedRecyclerViewManager(rootView);
-        statePaginatedRecyclerViewManager.stateRecyclerView.setEmptyView(emptyView);
-        statePaginatedRecyclerViewManager.init(adapter, savedInstanceState);
-        statePaginatedRecyclerViewManager.setOnRefreshListener(this);
-        statePaginatedRecyclerViewManager.setPaginationListener(() -> {
-            if (!statePaginatedRecyclerViewManager.isNoMoreElements()) {
-                fragmentWithFeedDelegate.addItem(new LoadMoreModel());
-                fragmentWithFeedDelegate.notifyDataSetChanged();
-            }
-            getPresenter().loadNext();
-        });
-        if (isTabletLandscape()) {
-            fragmentWithFeedDelegate.openFeedAdditionalInfo(getChildFragmentManager(),
-                    getPresenter().getAccount());
-        }
-        //
-        if (tvSearchFriends != null) {
-            tvSearchFriends.setPaintFlags(tvSearchFriends.getPaintFlags()
-                    | Paint.UNDERLINE_TEXT_FLAG);
-        }
-        if (ivArrow != null && ViewUtils.isPhoneLandscape(getContext())) {
-            ivArrow.setVisibility(View.GONE);
-        }
-        //
-        fragmentWithFeedDelegate.init(adapter);
-        registerAdditionalCells();
-        registerCellDelegates();
-    }
+   @Override
+   public void onDetach() {
+      super.onDetach();
+      filterPopupWindow = null;
+   }
 
-    @Override
-    protected void onMenuInflated(Menu menu) {
-        super.onMenuInflated(menu);
-        MenuItem friendsItem = menu.findItem(R.id.action_friend_requests);
-        friendsBadge = (BadgeImageView) MenuItemCompat.getActionView(friendsItem);
-        setRequestsCount(getPresenter().getFriendsRequestsCount());
-        friendsBadge.setOnClickListener(v -> {
-            fragmentWithFeedDelegate.openFriends(new FriendMainBundle(FriendMainBundle.REQUESTS));
-            TrackingHelper.tapFeedButton(TrackingHelper.ATTRIBUTE_OPEN_FRIENDS);
-        });
+   @Override
+   public void onDestroyView() {
+      if (contentObserver != null) {
+         getContext().getContentResolver().unregisterContentObserver(contentObserver);
+      }
+      super.onDestroyView();
+   }
 
-        MenuItem conversationItem = menu.findItem(R.id.action_unread_conversation);
-        if (conversationItem != null) {
-            unreadConversationBadge = (BadgeImageView) MenuItemCompat.getActionView(conversationItem);
-            unreadConversationBadge.setImage(R.drawable.messenger_icon_white);
-            unreadConversationBadge.setBadgeValue(getPresenter().getUnreadConversationCount());
-            unreadConversationBadge.setOnClickListener(v -> getPresenter().onUnreadConversationsClick());
-        }
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.action_filter:
-                if (filterPopupWindow == null || filterPopupWindow.dismissPassed()) {
-                    actionFilter();
-                }
-                return true;
-            case R.id.action_search:
-                fragmentWithFeedDelegate.openHashtagSearch();
-                return true;
-
-        }
-        return super.onOptionsItemSelected(item);
-    }
-
-    @Override
-    protected FeedPresenter createPresenter(Bundle savedInstanceState) {
-        return new FeedPresenter();
-    }
-
-    @Optional
-    @OnClick(R.id.share_post)
-    protected void onPostClicked() {
-        fragmentWithFeedDelegate.openPost(getActivity().getSupportFragmentManager());
-    }
-
-    @Optional
-    @OnClick(R.id.share_photo)
-    protected void onSharePhotoClick() {
-        fragmentWithFeedDelegate.openSharePhoto(getActivity().getSupportFragmentManager(),
-                new CreateEntityBundle(true));
-    }
-
-    @Override
-    public void onAttachClicked() {
-        fragmentWithFeedDelegate.openSharePhoto(getActivity().getSupportFragmentManager(), null);
-        getPresenter().attachSelectedSuggestionPhotos();
-        getPresenter().removeSuggestedPhotos();
-    }
-
-    @Override
-    public void onCancelClicked() {
-        getPresenter().removeSuggestedPhotos();
-    }
-
-    @Override
-    public void onOpenProfileClicked() {
-        fragmentWithFeedDelegate.openAccountProfile(getPresenter().getAccount());
-    }
-
-    @Override
-    public void onSuggestionViewCreated(@NonNull SuggestedPhotoCellPresenterHelper.View view) {
-        createSuggestionObserver();
-        getPresenter().takeSuggestionView(view, this, savedInstanceState, contentObserverSubject
-                .asObservable()
-                .throttleLast(1, TimeUnit.SECONDS));
-    }
-
-    @Override
-    public void onSyncViewState() {
-        getPresenter().syncSuggestionViewState();
-    }
-
-    @Override
-    public void onPreloadSuggestionPhotos(@NonNull PhotoGalleryModel model) {
-        getPresenter().preloadSuggestionChunk(model);
-    }
-
-    @Override
-    public void onSelectPhoto(@NonNull PhotoGalleryModel model) {
-        getPresenter().selectPhoto(model);
-    }
-
-    @Override
-    public long lastSyncTimestamp() {
-        return getPresenter().lastSyncTimestamp();
-    }
-
-    @Override
-    public void onCellClicked(MediaAttachment model) {
-        // nothing to do
-    }
-
-    @Override
-    public <T> Observable<T> bindOutLifecycle(Observable<T> observable) {
-        return bind(observable);
-    }
-
-    @Override
-    public void setRequestsCount(int count) {
-        if (friendsBadge != null) {
-            friendsBadge.setBadgeValue(count);
-        }
-    }
-
-    @Override
-    public void setUnreadConversationCount(int count) {
-        if (unreadConversationBadge != null) {
-            unreadConversationBadge.setBadgeValue(count);
-        }
-    }
-
-    @Override
-    public void refreshFeedItems(List<FeedItem> feedItems, List<PhotoGalleryModel> suggestedPhotos) {
-        if (isNeedAddSuggestions(suggestedPhotos.size(), feedItems.size())) {
-            List listWithSuggestion = new ArrayList<>(feedItems.size() + 1);
-            listWithSuggestion.add(new MediaAttachment(suggestedPhotos, PickImageDelegate.PICK_PICTURE, -1));
-            listWithSuggestion.addAll(feedItems);
-            //
-            fragmentWithFeedDelegate.clearItems();
-            refreshFeedItems(listWithSuggestion);
-            return;
-        }
-        refreshFeedItems(feedItems);
-    }
-
-    @Override
-    public void refreshFeedItems(List feedItems) {
-        if (isNeedToSaveSuggestions()) {
-            List listWithSuggestion = new ArrayList<>();
-            listWithSuggestion.add(0, fragmentWithFeedDelegate.getItem(0));
-            listWithSuggestion.addAll(feedItems);
-            fragmentWithFeedDelegate.clearItems();
-            fragmentWithFeedDelegate.addItems(listWithSuggestion);
+   @Override
+   public void afterCreateView(View rootView) {
+      super.afterCreateView(rootView);
+      BaseDelegateAdapter adapter = new BaseDelegateAdapter<>(getContext(), this);
+      statePaginatedRecyclerViewManager = new StatePaginatedRecyclerViewManager(rootView);
+      statePaginatedRecyclerViewManager.stateRecyclerView.setEmptyView(emptyView);
+      statePaginatedRecyclerViewManager.init(adapter, savedInstanceState);
+      statePaginatedRecyclerViewManager.setOnRefreshListener(this);
+      statePaginatedRecyclerViewManager.setPaginationListener(() -> {
+         if (!statePaginatedRecyclerViewManager.isNoMoreElements()) {
+            fragmentWithFeedDelegate.addItem(new LoadMoreModel());
             fragmentWithFeedDelegate.notifyDataSetChanged();
-            return;
-        }
-        fragmentWithFeedDelegate.clearItems();
-        fragmentWithFeedDelegate.addItems(feedItems);
-        fragmentWithFeedDelegate.notifyDataSetChanged();
-    }
+         }
+         getPresenter().loadNext();
+      });
+      if (isTabletLandscape()) {
+         fragmentWithFeedDelegate.openFeedAdditionalInfo(getChildFragmentManager(), getPresenter().getAccount());
+      }
+      //
+      if (tvSearchFriends != null) {
+         tvSearchFriends.setPaintFlags(tvSearchFriends.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
+      }
+      if (ivArrow != null && ViewUtils.isPhoneLandscape(getContext())) {
+         ivArrow.setVisibility(View.GONE);
+      }
+      //
+      fragmentWithFeedDelegate.init(adapter);
+      registerAdditionalCells();
+      registerCellDelegates();
+   }
 
-    @Override
-    public void startLoading() {
-        statePaginatedRecyclerViewManager.startLoading();
-    }
+   @Override
+   protected void onMenuInflated(Menu menu) {
+      super.onMenuInflated(menu);
+      MenuItem friendsItem = menu.findItem(R.id.action_friend_requests);
+      friendsBadge = (BadgeImageView) MenuItemCompat.getActionView(friendsItem);
+      setRequestsCount(getPresenter().getFriendsRequestsCount());
+      friendsBadge.setOnClickListener(v -> {
+         fragmentWithFeedDelegate.openFriends(new FriendMainBundle(FriendMainBundle.REQUESTS));
+         TrackingHelper.tapFeedButton(TrackingHelper.ATTRIBUTE_OPEN_FRIENDS);
+      });
 
-    @Override
-    public void finishLoading() {
-        statePaginatedRecyclerViewManager.finishLoading();
-    }
+      MenuItem conversationItem = menu.findItem(R.id.action_unread_conversation);
+      if (conversationItem != null) {
+         unreadConversationBadge = (BadgeImageView) MenuItemCompat.getActionView(conversationItem);
+         unreadConversationBadge.setImage(R.drawable.messenger_icon_white);
+         unreadConversationBadge.setBadgeValue(getPresenter().getUnreadConversationCount());
+         unreadConversationBadge.setOnClickListener(v -> getPresenter().onUnreadConversationsClick());
+      }
+   }
 
-    @Override
-    public void showEdit(BucketBundle bucketBundle) {
-        fragmentWithFeedDelegate.openBucketEdit(getActivity().getSupportFragmentManager(), isTabletLandscape(), bucketBundle);
-    }
-
-    @Override
-    public void updateLoadingStatus(boolean loading, boolean noMoreElements) {
-        statePaginatedRecyclerViewManager.updateLoadingStatus(loading, noMoreElements);
-    }
-
-    @Override
-    public void flagSentSuccess() {
-        informUser(R.string.flag_sent_success_msg);
-    }
-
-    @Optional
-    @OnClick(R.id.tv_search_friends)
-    public void onFriendsSearchClicked() {
-        fragmentWithFeedDelegate.openFriendsSearch();
-    }
-
-    @Override
-    public void onRefresh() {
-        getPresenter().onRefresh();
-    }
-
-    public void onEvent(CommentIconClickedEvent event) {
-        fragmentWithFeedDelegate.openComments(event.getFeedItem(), isVisibleOnScreen(), isTabletLandscape());
-    }
-
-    private void actionFilter() {
-        View menuItemView = getActivity().findViewById(R.id.action_filter);
-        if (menuItemView == null) {
-            if (getCollapseView() == null) {
-                return;
-            } else {
-                menuItemView = getCollapseView();
+   @Override
+   public boolean onOptionsItemSelected(MenuItem item) {
+      switch (item.getItemId()) {
+         case R.id.action_filter:
+            if (filterPopupWindow == null || filterPopupWindow.dismissPassed()) {
+               actionFilter();
             }
-        }
-        filterPopupWindow = new CirclesFilterPopupWindow(getContext());
-        filterPopupWindow.setCircles(getPresenter().getFilterCircles());
-        filterPopupWindow.setAnchorView(menuItemView);
-        filterPopupWindow.setOnItemClickListener((parent, view, position, id) -> {
-            filterPopupWindow.dismiss();
-            getPresenter().applyFilter((Circle) parent.getItemAtPosition(position));
-        });
-        filterPopupWindow.show();
-        filterPopupWindow.setCheckedCircle(getPresenter().getAppliedFilterCircle());
-    }
+            return true;
+         case R.id.action_search:
+            fragmentWithFeedDelegate.openHashtagSearch();
+            return true;
 
-    private View getCollapseView() {
-        Toolbar toolbar = (Toolbar) getActivity().findViewById(R.id.toolbar_actionbar);
+      }
+      return super.onOptionsItemSelected(item);
+   }
 
-        if (toolbar == null) return null;
+   @Override
+   protected FeedPresenter createPresenter(Bundle savedInstanceState) {
+      return new FeedPresenter();
+   }
 
-        View collapseView = null;
-        for (int i = 0; i < toolbar.getChildCount(); i++) {
-            View view = toolbar.getChildAt(i);
-            if (view instanceof ActionMenuView) {
-                collapseView = view;
-                break;
+   @Optional
+   @OnClick(R.id.share_post)
+   protected void onPostClicked() {
+      fragmentWithFeedDelegate.openPost(getActivity().getSupportFragmentManager());
+   }
+
+   @Optional
+   @OnClick(R.id.share_photo)
+   protected void onSharePhotoClick() {
+      fragmentWithFeedDelegate.openSharePhoto(getActivity().getSupportFragmentManager(), new CreateEntityBundle(true));
+   }
+
+   @Override
+   public void onAttachClicked() {
+      fragmentWithFeedDelegate.openSharePhoto(getActivity().getSupportFragmentManager(), null);
+      getPresenter().attachSelectedSuggestionPhotos();
+      getPresenter().removeSuggestedPhotos();
+   }
+
+   @Override
+   public void onCancelClicked() {
+      getPresenter().removeSuggestedPhotos();
+   }
+
+   @Override
+   public void onOpenProfileClicked() {
+      fragmentWithFeedDelegate.openAccountProfile(getPresenter().getAccount());
+   }
+
+   @Override
+   public void onSuggestionViewCreated(@NonNull SuggestedPhotoCellPresenterHelper.View view) {
+      createSuggestionObserver();
+      getPresenter().takeSuggestionView(view, this, savedInstanceState, contentObserverSubject.asObservable()
+            .throttleLast(1, TimeUnit.SECONDS));
+   }
+
+   @Override
+   public void onSyncViewState() {
+      getPresenter().syncSuggestionViewState();
+   }
+
+   @Override
+   public void onPreloadSuggestionPhotos(@NonNull PhotoGalleryModel model) {
+      getPresenter().preloadSuggestionChunk(model);
+   }
+
+   @Override
+   public void onSelectPhoto(@NonNull PhotoGalleryModel model) {
+      getPresenter().selectPhoto(model);
+   }
+
+   @Override
+   public long lastSyncTimestamp() {
+      return getPresenter().lastSyncTimestamp();
+   }
+
+   @Override
+   public void onCellClicked(MediaAttachment model) {
+      // nothing to do
+   }
+
+   @Override
+   public <T> Observable<T> bindOutLifecycle(Observable<T> observable) {
+      return bind(observable);
+   }
+
+   @Override
+   public void updateItem(FeedItem feedItem) {
+      fragmentWithFeedDelegate.notifyItemChanged(feedItem);
+   }
+
+   @Override
+   public void setRequestsCount(int count) {
+      if (friendsBadge != null) {
+         friendsBadge.setBadgeValue(count);
+      }
+   }
+
+   @Override
+   public void setUnreadConversationCount(int count) {
+      if (unreadConversationBadge != null) {
+         unreadConversationBadge.setBadgeValue(count);
+      }
+   }
+
+   @Override
+   public void refreshFeedItems(List<FeedItem> feedItems, List<PhotoGalleryModel> suggestedPhotos) {
+      if (isNeedAddSuggestions(suggestedPhotos.size(), feedItems.size())) {
+         List listWithSuggestion = new ArrayList<>(feedItems.size() + 1);
+         listWithSuggestion.add(new MediaAttachment(suggestedPhotos, PickImageDelegate.PICK_PICTURE, -1));
+         listWithSuggestion.addAll(feedItems);
+         //
+         fragmentWithFeedDelegate.clearItems();
+         refreshFeedItems(listWithSuggestion);
+         return;
+      }
+      refreshFeedItems(feedItems);
+   }
+
+   @Override
+   public void refreshFeedItems(List feedItems) {
+      if (isNeedToSaveSuggestions()) {
+         List listWithSuggestion = new ArrayList<>();
+         listWithSuggestion.add(0, fragmentWithFeedDelegate.getItem(0));
+         listWithSuggestion.addAll(feedItems);
+         fragmentWithFeedDelegate.clearItems();
+         fragmentWithFeedDelegate.addItems(listWithSuggestion);
+         fragmentWithFeedDelegate.notifyDataSetChanged();
+         return;
+      }
+      fragmentWithFeedDelegate.clearItems();
+      fragmentWithFeedDelegate.addItems(feedItems);
+      fragmentWithFeedDelegate.notifyDataSetChanged();
+   }
+
+   @Override
+   public void startLoading() {
+      statePaginatedRecyclerViewManager.startLoading();
+   }
+
+   @Override
+   public void finishLoading() {
+      statePaginatedRecyclerViewManager.finishLoading();
+   }
+
+   @Override
+   public void showBlockingProgress() {
+      blockingProgressDialog = new MaterialDialog.Builder(getActivity()).progress(true, 0)
+            .content(R.string.loading)
+            .cancelable(false)
+            .canceledOnTouchOutside(false)
+            .show();
+   }
+
+   @Override
+   public void hideBlockingProgress() {
+      if (blockingProgressDialog != null) blockingProgressDialog.dismiss();
+   }
+
+   @Override
+   public void showEdit(BucketBundle bucketBundle) {
+      fragmentWithFeedDelegate.openBucketEdit(getActivity().getSupportFragmentManager(), isTabletLandscape(), bucketBundle);
+   }
+
+   @Override
+   public void updateLoadingStatus(boolean loading, boolean noMoreElements) {
+      statePaginatedRecyclerViewManager.updateLoadingStatus(loading, noMoreElements);
+   }
+
+   @Override
+   public void flagSentSuccess() {
+      informUser(R.string.flag_sent_success_msg);
+   }
+
+   @Optional
+   @OnClick(R.id.tv_search_friends)
+   public void onFriendsSearchClicked() {
+      fragmentWithFeedDelegate.openFriendsSearch();
+   }
+
+   @Override
+   public void onRefresh() {
+      getPresenter().refreshFeed();
+   }
+
+   public void onEvent(CommentIconClickedEvent event) {
+      fragmentWithFeedDelegate.openComments(event.getFeedItem(), isVisibleOnScreen(), isTabletLandscape());
+   }
+
+   private void actionFilter() {
+      if (getActivity().findViewById(R.id.action_filter) == null && getCollapseView() == null) return;
+
+      getPresenter().actionFilter();
+   }
+
+   @Override
+   public void showFilter(List<Circle> circles, Circle selectedCircle) {
+      View menuItemView = getActivity().findViewById(R.id.action_filter);
+      if (menuItemView == null) {
+         menuItemView = getCollapseView();
+      }
+
+      filterPopupWindow = new CirclesFilterPopupWindow(getContext());
+      filterPopupWindow.setCircles(circles);
+      filterPopupWindow.setAnchorView(menuItemView);
+      filterPopupWindow.setOnItemClickListener((parent, view, position, id) -> {
+         filterPopupWindow.dismiss();
+         getPresenter().applyFilter((Circle) parent.getItemAtPosition(position));
+      });
+      filterPopupWindow.show();
+      filterPopupWindow.setCheckedCircle(selectedCircle);
+   }
+
+   private View getCollapseView() {
+      Toolbar toolbar = (Toolbar) getActivity().findViewById(R.id.toolbar_actionbar);
+
+      if (toolbar == null) return null;
+
+      View collapseView = null;
+      for (int i = 0; i < toolbar.getChildCount(); i++) {
+         View view = toolbar.getChildAt(i);
+         if (view instanceof ActionMenuView) {
+            collapseView = view;
+            break;
+         }
+      }
+      return collapseView;
+   }
+
+   private boolean isNeedAddSuggestions(int suggestedPhotosSize, int feedItemsSize) {
+      boolean isAdapterEmpty = fragmentWithFeedDelegate.getItemsCount() == 0;
+      boolean isAdapterContainsSuggestions = !isAdapterEmpty && fragmentWithFeedDelegate.getItem(0) instanceof MediaAttachment;
+      return feedItemsSize > 0 && suggestedPhotosSize > 0 || isAdapterContainsSuggestions;
+   }
+
+   private boolean isNeedToSaveSuggestions() {
+      return fragmentWithFeedDelegate.getItemsCount() > 0 && fragmentWithFeedDelegate.getItem(0) instanceof MediaAttachment && getPresenter()
+            .hasNewPhotos(((MediaAttachment) fragmentWithFeedDelegate.getItem(0)).chosenImages);
+   }
+
+   private void createSuggestionObserver() {
+      contentObserver = new ContentObserver(new Handler(Looper.getMainLooper())) {
+         @Override
+         public void onChange(boolean selfChange) {
+            super.onChange(selfChange);
+
+            if (!selfChange) {
+               contentObserverSubject.onNext(null);
             }
-        }
-        return collapseView;
-    }
+         }
+      };
+      getContext().getContentResolver()
+            .registerContentObserver(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, false, contentObserver);
+   }
 
-    private boolean isNeedAddSuggestions(int suggestedPhotosSize, int feedItemsSize) {
-        boolean isAdapterEmpty = fragmentWithFeedDelegate.getItemsCount() == 0;
-        boolean isAdapterContainsSuggestions = !isAdapterEmpty
-                && fragmentWithFeedDelegate.getItem(0) instanceof MediaAttachment;
-        return feedItemsSize > 0 && suggestedPhotosSize > 0 || isAdapterContainsSuggestions;
-    }
+   private void registerAdditionalCells() {
+      fragmentWithFeedDelegate.registerAdditionalCell(MediaAttachment.class, SuggestedPhotosCell.class);
+   }
 
-    private boolean isNeedToSaveSuggestions() {
-        return fragmentWithFeedDelegate.getItemsCount() > 0
-                && fragmentWithFeedDelegate.getItem(0) instanceof MediaAttachment
-                && getPresenter().isHasNewPhotos(((MediaAttachment) fragmentWithFeedDelegate.getItem(0)).chosenImages);
-    }
+   private void registerCellDelegates() {
+      fragmentWithFeedDelegate.registerDelegate(MediaAttachment.class, this);
+      fragmentWithFeedDelegate.registerDelegate(ReloadFeedModel.class, model -> getPresenter().refreshFeed());
+   }
 
-    private void createSuggestionObserver() {
-        contentObserver = new ContentObserver(new Handler(Looper.getMainLooper())) {
-            @Override
-            public void onChange(boolean selfChange) {
-                super.onChange(selfChange);
+   @Override
+   public boolean onApiError(ErrorResponse errorResponse) {
+      return false;
+   }
 
-                if (!selfChange) {
-                    contentObserverSubject.onNext(null);
-                }
-            }
-        };
-        getContext().getContentResolver()
-                .registerContentObserver(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, false, contentObserver);
-    }
-
-    private void registerAdditionalCells() {
-        fragmentWithFeedDelegate.registerAdditionalCell(MediaAttachment.class, SuggestedPhotosCell.class);
-    }
-
-    private void registerCellDelegates() {
-        fragmentWithFeedDelegate.registerDelegate(MediaAttachment.class, this);
-        fragmentWithFeedDelegate.registerDelegate(ReloadFeedModel.class, model -> getPresenter().onRefresh());
-    }
+   @Override
+   public void onApiCallFailed() {
+   }
 }

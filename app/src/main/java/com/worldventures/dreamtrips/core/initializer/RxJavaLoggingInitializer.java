@@ -9,9 +9,9 @@ import rx.plugins.RxJavaPlugins;
 
 public class RxJavaLoggingInitializer implements AppInitializer {
 
-    @Override
-    public void initialize(Injector injector) {
-        if (BuildConfig.RX_DEBUG_HOOK_ENABLED)
-            RxJavaPlugins.getInstance().registerObservableExecutionHook(new DTTimberDebugHook());
-    }
+   @Override
+   public void initialize(Injector injector) {
+      if (BuildConfig.RX_DEBUG_HOOK_ENABLED)
+         RxJavaPlugins.getInstance().registerObservableExecutionHook(new DTTimberDebugHook());
+   }
 }

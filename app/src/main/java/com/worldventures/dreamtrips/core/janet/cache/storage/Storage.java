@@ -5,7 +5,7 @@ import android.support.annotation.Nullable;
 import com.worldventures.dreamtrips.core.janet.cache.CacheBundle;
 
 public interface Storage<T> {
-    void save(@Nullable CacheBundle params, T data);
+   void save(@Nullable CacheBundle params, T data);
 
-    T get(@Nullable CacheBundle action);
+   T get(@Nullable CacheBundle action);
 }

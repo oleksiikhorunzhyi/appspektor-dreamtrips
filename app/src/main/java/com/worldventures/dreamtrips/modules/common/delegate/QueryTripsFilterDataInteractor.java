@@ -7,14 +7,14 @@ import io.techery.janet.Janet;
 
 public class QueryTripsFilterDataInteractor {
 
-    ActionPipe<TripsFilterDataCommand> pipe;
+   ActionPipe<TripsFilterDataCommand> pipe;
 
-    public QueryTripsFilterDataInteractor(Janet janet) {
-        this.pipe = janet.createPipe(TripsFilterDataCommand.class);
-    }
+   public QueryTripsFilterDataInteractor(Janet janet) {
+      this.pipe = janet.createPipe(TripsFilterDataCommand.class);
+   }
 
-    public ActionPipe<TripsFilterDataCommand> pipe() {
-        return pipe;
-    }
+   public ActionPipe<TripsFilterDataCommand> pipe() {
+      return pipe;
+   }
 }
 

@@ -40,152 +40,149 @@ import io.techery.janet.http.test.MockHttpActionService;
 import io.techery.janet.smartcard.client.SmartCardClient;
 
 @Module(
-        includes = {
-                JanetCommandModule.class,
-                JanetServiceModule.class,
-                CacheActionStorageModule.class,
-                SmartCardModule.class
-        },
-        complete = false, library = true)
+      includes = {
+            JanetCommandModule.class,
+            JanetServiceModule.class,
+            CacheActionStorageModule.class,
+            SmartCardModule.class
+      },
+      complete = false, library = true)
 public class JanetModule {
-    public static final String JANET_QUALIFIER = "JANET";
-    public static final String JANET_API_LIB = "JANET_API_LIB";
-    public static final String JANET_WALLET = "JANET_WALLET";
+   public static final String JANET_QUALIFIER = "JANET";
+   public static final String JANET_API_LIB = "JANET_API_LIB";
+   public static final String JANET_WALLET = "JANET_WALLET";
 
-    @Singleton
-    @Provides(type = Provides.Type.SET)
-    ActionService provideCommandService() {
-        return new CommandActionService();
-    }
+   @Singleton
+   @Provides(type = Provides.Type.SET)
+   ActionService provideCommandService(@ForApplication Context context) {
+      return new DreamTripsCommandService(context);
+   }
 
-    @Singleton
-    @Provides
-    Janet provideJanet(Set<ActionService> services,
-                       Set<ActionStorage> cacheStorageSet,
-                       @ForApplication Context context) {
-        Janet.Builder builder = new Janet.Builder();
-        for (ActionService service : services) {
-            service = new TimberServiceWrapper(service);
-            service = new CacheResultWrapper(service) {{
-                for (ActionStorage storage : cacheStorageSet) {
-                    bindStorage(storage.getActionClass(), storage);
-                }
-            }};
-            service = new DaggerActionServiceWrapper(service, context);
-            builder.addService(service);
-        }
-        return builder.build();
-    }
+   @Singleton
+   @Provides
+   Janet provideJanet(Set<ActionService> services, Set<ActionStorage> cacheStorageSet, @ForApplication Context context) {
+      Janet.Builder builder = new Janet.Builder();
+      for (ActionService service : services) {
+         service = new TimberServiceWrapper(service);
+         service = new CacheResultWrapper(service) {{
+            for (ActionStorage storage : cacheStorageSet) {
+               bindStorage(storage.getActionClass(), storage);
+            }
+         }};
+         service = new DaggerActionServiceWrapper(service, context);
+         builder.addService(service);
+      }
+      return builder.build();
+   }
 
-    @Singleton
-    @Provides
-    @Named(JANET_API_LIB)
-    Janet provideApiLibJanet(@Named(JANET_API_LIB) ActionService httpActionService) {
-        Janet.Builder builder = new Janet.Builder();
-        builder.addService(new TimberServiceWrapper(httpActionService));
-        return builder.build();
-    }
+   @Singleton
+   @Provides
+   @Named(JANET_API_LIB)
+   Janet provideApiLibJanet(@Named(JANET_API_LIB) ActionService httpActionService) {
+      Janet.Builder builder = new Janet.Builder();
+      builder.addService(new TimberServiceWrapper(httpActionService));
+      return builder.build();
+   }
 
 
-    @Named(JANET_QUALIFIER)
-    @Provides
-    OkHttpClient provideJanetOkHttpClient(CookieManager cookieManager, @Named(JANET_QUALIFIER) Interceptor interceptor) {
-        OkHttpClient okHttpClient = new OkHttpClient();
-        okHttpClient.setCookieHandler(cookieManager);
-        okHttpClient.interceptors().add(interceptor);
-        //Currently `api/{uid}/likes` (10k+ms)
-        okHttpClient.setConnectTimeout(BuildConfig.API_TIMEOUT_SEC, TimeUnit.SECONDS);
-        okHttpClient.setReadTimeout(BuildConfig.API_TIMEOUT_SEC, TimeUnit.SECONDS);
-        okHttpClient.setWriteTimeout(BuildConfig.API_TIMEOUT_SEC, TimeUnit.SECONDS);
-        return okHttpClient;
-    }
+   @Named(JANET_QUALIFIER)
+   @Provides
+   OkHttpClient provideJanetOkHttpClient(CookieManager cookieManager, @Named(JANET_QUALIFIER) Interceptor interceptor) {
+      OkHttpClient okHttpClient = new OkHttpClient();
+      okHttpClient.setCookieHandler(cookieManager);
+      okHttpClient.interceptors().add(interceptor);
+      //Currently `api/{uid}/likes` (10k+ms)
+      okHttpClient.setConnectTimeout(BuildConfig.API_TIMEOUT_SEC, TimeUnit.SECONDS);
+      okHttpClient.setReadTimeout(BuildConfig.API_TIMEOUT_SEC, TimeUnit.SECONDS);
+      okHttpClient.setWriteTimeout(BuildConfig.API_TIMEOUT_SEC, TimeUnit.SECONDS);
+      return okHttpClient;
+   }
 
-    @Named(JANET_QUALIFIER)
-    @Provides
-    Interceptor interceptor() {
-        HttpLoggingInterceptor logging = new HttpLoggingInterceptor();
-        logging.setLevel(HttpLoggingInterceptor.Level.BODY);
-        return logging;
-    }
+   @Named(JANET_QUALIFIER)
+   @Provides
+   Interceptor interceptor() {
+      HttpLoggingInterceptor logging = new HttpLoggingInterceptor();
+      logging.setLevel(HttpLoggingInterceptor.Level.BODY);
+      return logging;
+   }
 
-    @Singleton
-    @Provides
-    HttpClient provideJanetHttpClient(@Named(JANET_QUALIFIER) OkHttpClient okHttpClient) {
-        return new io.techery.janet.okhttp.OkClient(okHttpClient);
-    }
+   @Singleton
+   @Provides
+   HttpClient provideJanetHttpClient(@Named(JANET_QUALIFIER) OkHttpClient okHttpClient) {
+      return new io.techery.janet.okhttp.OkClient(okHttpClient);
+   }
 
-    @Singleton
-    @Provides(type = Provides.Type.SET)
-    ActionService provideHttpService(@ForApplication Context appContext, HttpClient httpClient, Gson gson) {
-        return new DreamTripsHttpService(appContext, BuildConfig.DreamTripsApi, httpClient,
-                new GsonConverter(gson));
-    }
+   @Singleton
+   @Provides(type = Provides.Type.SET)
+   ActionService provideHttpService(@ForApplication Context appContext, HttpClient httpClient, Gson gson) {
+      return new DreamTripsHttpService(appContext, BuildConfig.DreamTripsApi, httpClient, new GsonConverter(gson));
+   }
 
-    @Singleton
-    @Provides
-    @Named(JANET_API_LIB)
-    ActionService provideApiLibHttpService(@ForApplication Context appContext, HttpClient httpClient) {
-        return new NewDreamTripsHttpService(appContext, BuildConfig.DreamTripsApi, httpClient,
-                new GsonConverter(new GsonProvider().provideGson()));
-    }
+   @Singleton
+   @Provides
+   @Named(JANET_API_LIB)
+   ActionService provideApiLibHttpService(@ForApplication Context appContext, HttpClient httpClient) {
+      return new NewDreamTripsHttpService(appContext, BuildConfig.DreamTripsApi, httpClient, new GsonConverter(new GsonProvider()
+            .provideGson()));
+   }
 
-    @Singleton
-    @Provides(type = Provides.Type.SET)
-    ActionService provideAnalyticsService(Set<Tracker> trackers) {
-        return new AnalyticsService(trackers);
-    }
+   @Singleton
+   @Provides(type = Provides.Type.SET)
+   ActionService provideAnalyticsService(Set<Tracker> trackers) {
+      return new AnalyticsService(trackers);
+   }
 
-    //
-    @Singleton
-    @Provides
-    @Named(JANET_WALLET)
-    Janet provideWalletJanet(@Named(JANET_WALLET) Set<ActionService> services, Set<ActionStorage> cacheStorageSet,
-                             Set<MultipleActionStorage> multipleActionStorageSet, @ForApplication Context context) {
-        Janet.Builder builder = new Janet.Builder();
-        for (ActionService service : services) {
-            service = new TimberServiceWrapper(service);
-            service = new DaggerActionServiceWrapper(service, context);
-            service = new CacheResultWrapper(service) {{
-                for (ActionStorage storage : cacheStorageSet) {
-                    bindStorage(storage.getActionClass(), storage);
-                }
+   //
+   @Singleton
+   @Provides
+   @Named(JANET_WALLET)
+   Janet provideWalletJanet(@Named(JANET_WALLET) Set<ActionService> services, Set<ActionStorage> cacheStorageSet,
+         Set<MultipleActionStorage> multipleActionStorageSet, @ForApplication Context context) {
+      Janet.Builder builder = new Janet.Builder();
+      for (ActionService service : services) {
+         service = new TimberServiceWrapper(service);
+         service = new DaggerActionServiceWrapper(service, context);
+         service = new CacheResultWrapper(service) {{
+            for (ActionStorage storage : cacheStorageSet) {
+               bindStorage(storage.getActionClass(), storage);
+            }
 
-                for (MultipleActionStorage storage : multipleActionStorageSet) {
-                    List<Class<? extends CachedAction>> cachedActions = storage.getActionClasses();
-                    for (Class clazz : cachedActions) {
-                        bindStorage(clazz, storage);
-                    }
-                }
-            }};
-            builder.addService(service);
-        }
+            for (MultipleActionStorage storage : multipleActionStorageSet) {
+               List<Class<? extends CachedAction>> cachedActions = storage.getActionClasses();
+               for (Class clazz : cachedActions) {
+                  bindStorage(clazz, storage);
+               }
+            }
+         }};
+         builder.addService(service);
+      }
 
-        return builder.build();
-    }
+      return builder.build();
+   }
 
-    @Singleton
-    @Provides(type = Provides.Type.SET)
-    @Named(JANET_WALLET)
-    ActionService provideWalletHttpService() {
-        return new MockHttpActionService.Builder()
-                .bind(new MockHttpActionService.Response(200).body(ImmutableProvision.builder()
-                        .memberId("1")
-                        .userSecret("test")
-                        .build()), request -> request.getUrl().endsWith("create_card"))
-                .build();
-    }
+   @Singleton
+   @Provides(type = Provides.Type.SET)
+   @Named(JANET_WALLET)
+   ActionService provideWalletHttpService() {
+      return new MockHttpActionService.Builder()
+            .bind(new MockHttpActionService.Response(200).body(ImmutableProvision.builder()
+                  .memberId("1")
+                  .userSecret("test")
+                  .build()), request -> request.getUrl().endsWith("create_card"))
+            .build();
+   }
 
-    @Singleton
-    @Provides(type = Provides.Type.SET)
-    @Named(JANET_WALLET)
-    ActionService provideSmartCardService(@Named("MockSmartCardClient") SmartCardClient client) {
-        return SmartCardActionService.createDefault(client);
-    }
+   @Singleton
+   @Provides(type = Provides.Type.SET)
+   @Named(JANET_WALLET)
+   ActionService provideSmartCardService(@Named("MockSmartCardClient") SmartCardClient client) {
+      return SmartCardActionService.createDefault(client);
+   }
 
-    @Singleton
-    @Provides(type = Provides.Type.SET)
-    @Named(JANET_WALLET)
-    ActionService provideWalletCommandService() {
-        return new CommandActionService();
-    }
+   @Singleton
+   @Provides(type = Provides.Type.SET)
+   @Named(JANET_WALLET)
+   ActionService provideWalletCommandService() {
+      return new CommandActionService();
+   }
 }

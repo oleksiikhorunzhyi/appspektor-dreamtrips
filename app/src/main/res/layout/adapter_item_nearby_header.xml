@@ -1,23 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-             xmlns:tools="http://schemas.android.com/tools"
-             android:layout_width="match_parent"
-             android:layout_height="wrap_content"
-             android:background="@android:color/white"
-             >
+      xmlns:tools="http://schemas.android.com/tools"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:background="@android:color/white"
+      >
 
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:padding="@dimen/spacing_medium"
-        android:textColor="@color/dtl_cities_text_color"
-        android:textSize="@dimen/font_medium"
-        android:fontFamily="sans-serif"
-        android:gravity="center"
-        android:text="@string/dtl_location_select_from_nearby_caption"
-        android:maxLines="1"
-        android:ellipsize="end"
-        tools:text="Dallas, Texas"
-        />
+   <TextView
+         android:layout_width="match_parent"
+         android:layout_height="wrap_content"
+         android:padding="@dimen/spacing_medium"
+         android:textColor="@color/dtl_cities_text_color"
+         android:textSize="@dimen/font_medium"
+         android:fontFamily="sans-serif"
+         android:gravity="center"
+         android:text="@string/dtl_location_select_from_nearby_caption"
+         android:maxLines="1"
+         android:ellipsize="end"
+         tools:text="Dallas, Texas"
+         />
 
 </FrameLayout>

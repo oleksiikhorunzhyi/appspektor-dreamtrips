@@ -28,37 +28,35 @@ import dagger.Module;
 import dagger.Provides;
 
 @Module(
-        complete = false,
-        library = true
-)
+      complete = false,
+      library = true)
 public class MessengerServerModule {
 
-    @Singleton
-    @Provides
-    MessengerServerFacade provideXmppServerFacade(Set<IncomingMessageFilter> incomingMessageFilters) {
-        Gson gson = new GsonBuilder().registerTypeAdapter(AttachmentHolder.class, new GsonAttachmentAdapter()).create();
+   @Singleton
+   @Provides
+   MessengerServerFacade provideXmppServerFacade(Set<IncomingMessageFilter> incomingMessageFilters) {
+      Gson gson = new GsonBuilder().registerTypeAdapter(AttachmentHolder.class, new GsonAttachmentAdapter()).create();
 
-        Map<IncomingMessageFilterType, List<IncomingMessageFilter>> filters = new EnumMap<>(IncomingMessageFilterType.class);
-        filters.put(IncomingMessageFilterType.MESSAGE, new ArrayList<>(incomingMessageFilters));
+      Map<IncomingMessageFilterType, List<IncomingMessageFilter>> filters = new EnumMap<>(IncomingMessageFilterType.class);
+      filters.put(IncomingMessageFilterType.MESSAGE, new ArrayList<>(incomingMessageFilters));
 
-        XmppGlobalEventEmitter emitter = new XmppGlobalEventEmitter(filters);
+      XmppGlobalEventEmitter emitter = new XmppGlobalEventEmitter(filters);
 
-        return new XmppServerFacade(new XmppServerParams(BuildConfig.MESSENGER_API_URL,
-                BuildConfig.MESSENGER_API_PORT), emitter, gson);
-    }
+      return new XmppServerFacade(new XmppServerParams(BuildConfig.MESSENGER_API_URL, BuildConfig.MESSENGER_API_PORT), emitter, gson);
+   }
 
-    @Provides(type = Provides.Type.SET)
-    IncomingMessageFilter provideGeneralIncomingMessageFilter() {
-        return new GeneralIncomingMessageFilter();
-    }
+   @Provides(type = Provides.Type.SET)
+   IncomingMessageFilter provideGeneralIncomingMessageFilter() {
+      return new GeneralIncomingMessageFilter();
+   }
 
-    @Provides(type = Provides.Type.SET)
-    IncomingMessageFilter provideAbandonedConversationMessageFilter(LoadConversationDelegate loadConversationDelegate) {
-        return new AbandonedConversationMessageFilter(loadConversationDelegate);
-    }
+   @Provides(type = Provides.Type.SET)
+   IncomingMessageFilter provideAbandonedConversationMessageFilter(LoadConversationDelegate loadConversationDelegate) {
+      return new AbandonedConversationMessageFilter(loadConversationDelegate);
+   }
 
-    @Provides
-    ChatExtensions provideChatExtensions(MessengerServerFacade facade) {
-        return facade.getChatExtensions();
-    }
+   @Provides
+   ChatExtensions provideChatExtensions(MessengerServerFacade facade) {
+      return facade.getChatExtensions();
+   }
 }

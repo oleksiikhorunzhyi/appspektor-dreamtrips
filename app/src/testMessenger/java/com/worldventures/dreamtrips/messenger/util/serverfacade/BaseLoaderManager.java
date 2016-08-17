@@ -7,23 +7,23 @@ import com.messenger.messengerservers.loaders.ConversationsLoader;
 import com.messenger.messengerservers.loaders.FlagMessageLoader;
 
 public abstract class BaseLoaderManager implements LoaderManager {
-    @Override
-    public FlagMessageLoader createFlaggingLoader() {
-        return null;
-    }
+   @Override
+   public FlagMessageLoader createFlaggingLoader() {
+      return null;
+   }
 
-    @Override
-    public ConversationsLoader createConversationsLoader() {
-        return null;
-    }
+   @Override
+   public ConversationsLoader createConversationsLoader() {
+      return null;
+   }
 
-    @Override
-    public ConversationLoader createConversationLoader(String conversationId) {
-        return null;
-    }
+   @Override
+   public ConversationLoader createConversationLoader(String conversationId) {
+      return null;
+   }
 
-    @Override
-    public ContactsLoader createContactLoader() {
-        return null;
-    }
+   @Override
+   public ContactsLoader createContactLoader() {
+      return null;
+   }
 }

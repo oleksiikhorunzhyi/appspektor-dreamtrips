@@ -5,7 +5,7 @@ import com.worldventures.dreamtrips.modules.common.model.User;
 
 public interface UserCellDelegate extends CellDelegate<User> {
 
-    void acceptRequest(User user);
+   void acceptRequest(User user);
 
-    void addUserRequest(User user);
+   void addUserRequest(User user);
 }

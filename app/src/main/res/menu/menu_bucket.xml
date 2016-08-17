@@ -1,25 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+      xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <item
-        android:id="@+id/action_quick"
-        android:icon="@drawable/ic_menu_add_item"
-        android:title="@string/action_quick_input"
-        app:actionLayout="@layout/add_new_item_layout"
-        app:showAsAction="ifRoom|collapseActionView" />
+   <item
+         android:id="@+id/action_quick"
+         android:icon="@drawable/ic_menu_add_item"
+         android:title="@string/action_quick_input"
+         app:actionLayout="@layout/add_new_item_layout"
+         app:showAsAction="ifRoom|collapseActionView" />
 
-    <item
-        android:id="@+id/action_popular"
-        android:icon="@drawable/ic_menu_popular"
-        android:title="@string/action_popular_string"
-        app:showAsAction="ifRoom" />
+   <item
+         android:id="@+id/action_popular"
+         android:icon="@drawable/ic_menu_popular"
+         android:title="@string/action_popular_string"
+         app:showAsAction="ifRoom" />
 
-    <item
-        android:id="@+id/action_filter"
-        android:icon="@drawable/ic_menu_filter"
-        android:title="@string/action_filter"
-        app:showAsAction="always"/>
+   <item
+         android:id="@+id/action_filter"
+         android:icon="@drawable/ic_menu_filter"
+         android:title="@string/action_filter"
+         app:showAsAction="always" />
 
 
 </menu>

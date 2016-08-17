@@ -1,20 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
-<merge xmlns:android="http://schemas.android.com/apk/res/android"
-              >
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/chat_settings_row_vertical_margin"
-        android:layout_marginBottom="@dimen/chat_settings_row_vertical_margin"
-        android:layout_marginLeft="@dimen/chat_settings_row_vertical_margin"
-        android:layout_marginRight="@dimen/chat_settings_row_vertical_margin">
-        <ImageView
+<merge xmlns:android="http://schemas.android.com/apk/res/android">
+
+   <LinearLayout
+         android:layout_width="match_parent"
+         android:layout_height="wrap_content"
+         android:layout_marginTop="@dimen/chat_settings_row_vertical_margin"
+         android:layout_marginBottom="@dimen/chat_settings_row_vertical_margin"
+         android:layout_marginLeft="@dimen/chat_settings_row_vertical_margin"
+         android:layout_marginRight="@dimen/chat_settings_row_vertical_margin"
+         >
+
+      <ImageView
             android:id="@+id/chat_settings_row_icon"
             android:layout_width="@dimen/chat_settings_row_icon_size"
             android:layout_height="@dimen/chat_settings_row_icon_size"
             android:layout_weight="0"
-            android:src="@drawable/ic_notifications_black_24_px"/>
-        <TextView
+            android:src="@drawable/ic_notifications_black_24_px"
+            />
+
+      <TextView
             android:id="@+id/chat_settings_row_title"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -22,16 +26,21 @@
             android:textSize="@dimen/chat_settings_row_text_size"
             android:layout_marginLeft="@dimen/chat_settings_row_vertical_margin"
             android:textColor="@color/chat_settings_row_text_view"
-            android:layout_weight="1"/>
-        <android.support.v7.widget.SwitchCompat
+            android:layout_weight="1"
+            />
+
+      <android.support.v7.widget.SwitchCompat
             android:id="@+id/chat_settings_row_switch"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="0"
-            android:visibility="gone"/>
-    </LinearLayout>
-    <View
-        android:layout_width="wrap_content"
-        android:layout_height="1dp"
-        android:background="@color/chat_settings_divider"/>
+            android:visibility="gone"
+            />
+   </LinearLayout>
+
+   <View
+         android:layout_width="wrap_content"
+         android:layout_height="1dp"
+         android:background="@color/chat_settings_divider"
+         />
 </merge>

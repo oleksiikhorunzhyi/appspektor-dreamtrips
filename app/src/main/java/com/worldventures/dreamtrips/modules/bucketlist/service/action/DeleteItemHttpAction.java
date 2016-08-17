@@ -9,21 +9,19 @@ import io.techery.janet.http.annotations.Response;
 
 @HttpAction(value = "/api/bucket_list_items/{uid}", method = HttpAction.Method.DELETE)
 public class DeleteItemHttpAction extends AuthorizedHttpAction {
-    @Path("uid")
-    String uid;
+   @Path("uid") String uid;
 
-    @Response
-    JsonObject response;
+   @Response JsonObject response;
 
-    public DeleteItemHttpAction(String uid) {
-        this.uid = uid;
-    }
+   public DeleteItemHttpAction(String uid) {
+      this.uid = uid;
+   }
 
-    public JsonObject getResponse() {
-        return this.response;
-    }
+   public JsonObject getResponse() {
+      return this.response;
+   }
 
-    public String getBucketItemUid() {
-        return uid;
-    }
+   public String getBucketItemUid() {
+      return uid;
+   }
 }

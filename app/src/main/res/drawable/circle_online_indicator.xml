@@ -1,20 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layer-list xmlns:android="http://schemas.android.com/apk/res/android">
-    <item>
-        <shape android:shape="oval">
-            <solid android:color="@color/online_indicator_outer" />
-            <size
-                android:width="@dimen/online_indicator_size"
-                android:height="@dimen/online_indicator_size"/>
-        </shape>
-    </item>
-    <item android:top="1dp" android:left="1dp" android:bottom="1dp" android:right="1dp">
-        <shape
-            android:shape="oval">
-            <solid android:color="@color/online_indicator_inner" />
-            <size
-                android:width="@dimen/online_indicator_size_inner_ring"
-                android:height="@dimen/online_indicator_size_inner_ring"/>
-        </shape>
-    </item>
+   <item>
+      <shape android:shape="oval">
+         <solid android:color="@color/online_indicator_outer" />
+         <size
+               android:width="@dimen/online_indicator_size"
+               android:height="@dimen/online_indicator_size" />
+      </shape>
+   </item>
+   <item
+         android:top="1dp"
+         android:left="1dp"
+         android:bottom="1dp"
+         android:right="1dp">
+      <shape android:shape="oval">
+         <solid android:color="@color/online_indicator_inner" />
+         <size
+               android:width="@dimen/online_indicator_size_inner_ring"
+               android:height="@dimen/online_indicator_size_inner_ring" />
+      </shape>
+   </item>
 </layer-list>

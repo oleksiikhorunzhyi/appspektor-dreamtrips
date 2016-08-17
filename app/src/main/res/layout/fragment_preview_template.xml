@@ -1,18 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_gravity="center_horizontal">
+      android:layout_width="match_parent"
+      android:layout_height="match_parent"
+      android:layout_gravity="center_horizontal"
+      >
 
-    <include layout="@layout/include_web_non_video"/>
+   <include layout="@layout/include_web_non_video" />
 
-    <ProgressBar
-        android:id="@+id/progressBarWeb"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:visibility="gone"/>
+   <ProgressBar
+         android:id="@+id/progressBarWeb"
+         android:layout_width="wrap_content"
+         android:layout_height="wrap_content"
+         android:layout_gravity="center"
+         android:visibility="gone"
+         />
 
-    <include layout="@layout/include_web_video"/>
+   <include layout="@layout/include_web_video" />
 
 </RelativeLayout>

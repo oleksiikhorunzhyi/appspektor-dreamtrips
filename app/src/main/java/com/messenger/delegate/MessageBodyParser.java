@@ -14,42 +14,40 @@ import timber.log.Timber;
 
 public class MessageBodyParser {
 
-    private static final MessageBody UNSUPPORTED_MESSAGE_BODY = new MessageBody.Builder()
-            .text("This message is invalid")
-            .build();
+   private static final MessageBody UNSUPPORTED_MESSAGE_BODY = new MessageBody.Builder().text("This message is invalid")
+         .build();
 
-    private final Gson gson;
+   private final Gson gson;
 
-    public MessageBodyParser(Gson gson) {
-        this.gson = gson;
-    }
+   public MessageBodyParser(Gson gson) {
+      this.gson = gson;
+   }
 
-    public MessageBody parseMessageBody(String stanzaMessageBody) {
-        String messageBodyJson = Utils.unescapeXML(stanzaMessageBody);
+   public MessageBody parseMessageBody(String stanzaMessageBody) {
+      String messageBodyJson = Utils.unescapeXML(stanzaMessageBody);
 
-        MessageBody messageBody;
+      MessageBody messageBody;
 
-        try {
-            messageBody = gson.fromJson(messageBodyJson, MessageBody.class);
-            if (!validateMessageBody(messageBody)) messageBody = UNSUPPORTED_MESSAGE_BODY;
-        } catch (JsonSyntaxException syntaxException) {
-            Timber.e(syntaxException, "Fail to parse message body");
-            messageBody = UNSUPPORTED_MESSAGE_BODY;
-        }
+      try {
+         messageBody = gson.fromJson(messageBodyJson, MessageBody.class);
+         if (!validateMessageBody(messageBody)) messageBody = UNSUPPORTED_MESSAGE_BODY;
+      } catch (JsonSyntaxException syntaxException) {
+         Timber.e(syntaxException, "Fail to parse message body");
+         messageBody = UNSUPPORTED_MESSAGE_BODY;
+      }
 
-        return messageBody;
-    }
+      return messageBody;
+   }
 
-    private boolean validateMessageBody(MessageBody messageBody) {
-        List<AttachmentHolder> attachments = messageBody.getAttachments();
-        if (TextUtils.isEmpty(messageBody.getText()) &&
-                (attachments == null || attachments.isEmpty())) {
-            return false;
-        } else if (attachments != null && !attachments.isEmpty()) {
-            for (AttachmentHolder attachment : attachments) {
-                if (attachment == null) return false;
-            }
-        }
-        return true;
-    }
+   private boolean validateMessageBody(MessageBody messageBody) {
+      List<AttachmentHolder> attachments = messageBody.getAttachments();
+      if (TextUtils.isEmpty(messageBody.getText()) && (attachments == null || attachments.isEmpty())) {
+         return false;
+      } else if (attachments != null && !attachments.isEmpty()) {
+         for (AttachmentHolder attachment : attachments) {
+            if (attachment == null) return false;
+         }
+      }
+      return true;
+   }
 }

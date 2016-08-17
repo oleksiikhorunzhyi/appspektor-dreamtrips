@@ -1,30 +1,35 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              android:layout_width="match_parent"
-              android:layout_height="wrap_content"
-              android:orientation="vertical">
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:orientation="vertical"
+      >
 
-    <com.worldventures.dreamtrips.modules.feed.view.custom.FeedActionPanelView
-        android:id="@+id/actionView"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
+   <com.worldventures.dreamtrips.modules.feed.view.custom.FeedActionPanelView
+         android:id="@+id/actionView"
+         android:layout_width="match_parent"
+         android:layout_height="wrap_content"
+         />
 
-    <LinearLayout
-        android:id="@+id/comment_container"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:visibility="gone">
+   <LinearLayout
+         android:id="@+id/comment_container"
+         android:layout_width="match_parent"
+         android:layout_height="wrap_content"
+         android:orientation="vertical"
+         android:visibility="gone"
+         >
 
-        <View
+      <View
             android:id="@+id/comment_divider"
             android:layout_width="match_parent"
             android:layout_height="0.5dp"
-            android:background="@color/grey"/>
+            android:background="@color/grey"
+            />
 
-        <include
+      <include
             android:id="@+id/comment_preview"
-            layout="@layout/adapter_item_comment_preview"/>
-    </LinearLayout>
+            layout="@layout/adapter_item_comment_preview"
+            />
+   </LinearLayout>
 
 </LinearLayout>

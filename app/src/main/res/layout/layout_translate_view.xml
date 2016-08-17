@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<merge xmlns:android="http://schemas.android.com/apk/res/android"
+      xmlns:tools="http://schemas.android.com/tools"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:background="@android:color/transparent"
+      >
+
+   <ProgressBar
+         android:id="@+id/loading_translates"
+         android:layout_width="wrap_content"
+         android:layout_height="wrap_content"
+         android:layout_gravity="center"
+         android:visibility="gone"
+         />
+
+   <LinearLayout
+         android:id="@+id/translate_holder"
+         android:layout_width="wrap_content"
+         android:layout_height="wrap_content"
+         android:visibility="gone"
+         >
+
+      <View
+            android:layout_width="1dp"
+            android:layout_height="match_parent"
+            android:background="@color/translate_vertical_line_color"
+            />
+
+      <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            >
+
+         <TextView
+               android:id="@+id/translated_text"
+               android:layout_width="match_parent"
+               android:layout_height="wrap_content"
+               android:paddingBottom="@dimen/spacing_tiny"
+               android:paddingLeft="@dimen/spacing_small"
+               android:paddingRight="@dimen/spacing_small"
+               android:paddingTop="@dimen/spacing_tiny"
+               android:textColor="@android:color/black"
+               tools:text="#London #londonr #londonu #london. #gEAOjlvcELtNTF0hwADxUtZnWYP55JSO3W7KHXV0NmeNgoZXizmkssbuU7m5CtZ0fzO2sTRsJ1ZuFKqycoU2gwDHVeJCfYsaeXQ8UppPLovD8LPoeeU6O7bUwQzeCAaQpte0Rbpz1Q1Zu2QVBnTcycZn6G1Fw7iUu7J2fs1A5nyWfBa6VwZc6NZVlKowWllmVFB2cXLhv1z9XRXs3auNZtBRye9LzbFomCa6Hq7BjBnVQn5txXnEk9bY101"
+               />
+
+         <TextView
+               android:id="@+id/translated_info"
+               android:layout_width="match_parent"
+               android:layout_height="wrap_content"
+               android:paddingLeft="@dimen/spacing_small"
+               android:paddingRight="@dimen/spacing_small"
+               android:paddingTop="@dimen/spacing_tiny"
+               android:textColor="@color/translate_from_color"
+               tools:text="Translated from Chinese simplified"
+               />
+      </LinearLayout>
+   </LinearLayout>
+
+</merge>

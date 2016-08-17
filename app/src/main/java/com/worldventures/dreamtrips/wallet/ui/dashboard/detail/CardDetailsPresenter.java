@@ -25,78 +25,76 @@ import io.techery.janet.smartcard.model.Record;
 
 public class CardDetailsPresenter extends WalletPresenter<CardDetailsPresenter.Screen, Parcelable> {
 
-    @Inject
-    SessionHolder<UserSession> userSessionHolder;
-    @Inject
-    LocaleHelper localeHelper;
+   @Inject LocaleHelper localeHelper;
 
-    private final BankCard bankCard;
+   private final BankCard bankCard;
 
-    public CardDetailsPresenter(Context context, Injector injector, BankCard bankCard) {
-        super(context, injector);
-        this.bankCard = bankCard;
-    }
+   public CardDetailsPresenter(Context context, Injector injector, BankCard bankCard) {
+      super(context, injector);
+      this.bankCard = bankCard;
+   }
 
-    @Override
-    public void onAttachedToWindow() {
-        super.onAttachedToWindow();
+   @Override
+   public void onAttachedToWindow() {
+      super.onAttachedToWindow();
 
-        String toolBarTitle = String.format("%s •••• %d",
-                getContext().getResources().getString(obtainFinancialServiceType(bankCard.type())), bankCard.number() % 10000);
-        Screen view = getView();
+      String toolBarTitle = String.format("%s •••• %d",
+            getContext().getResources()
+                  .getString(obtainFinancialServiceType(bankCard.type())), bankCard.number() % 10000);
+      Screen view = getView();
 
-        view.setTitle(toolBarTitle);
-        view.showCardBankInfo(bankCard);
-        view.showDefaultAddress(obtainAddressWithCountry());
-    }
+      view.setTitle(toolBarTitle);
+      view.showCardBankInfo(bankCard);
+      view.showDefaultAddress(obtainAddressWithCountry());
+   }
 
-    private AddressInfoWithLocale obtainAddressWithCountry() {
-        //todo rewrite in commands
-        User user = userSessionHolder.get().get().getUser();
+   private AddressInfoWithLocale obtainAddressWithCountry() {
+      //todo rewrite in commands
 
-        AddressInfo addressInfo = ImmutableAddressInfo.builder()
-                .address1("12345 Lollipop Drive")
-                .address2("Apt 123")
-                .city("New York")
-                .state("NY")
-                .zip("10010")
-                .build();
+      AddressInfo addressInfo = ImmutableAddressInfo.builder()
+            .address1("12345 Lollipop Drive")
+            .address2("Apt 123")
+            .city("New York")
+            .state("NY")
+            .zip("10010")
+            .build();
 
-        return ImmutableAddressInfoWithLocale.builder()
-                .addressInfo(addressInfo)
-                .locale(localeHelper.getMappedLocale(user))
-                .build();
-    }
+      return ImmutableAddressInfoWithLocale.builder()
+            .addressInfo(addressInfo)
+            .locale(localeHelper.getDefaultLocale())
+            .build();
+   }
 
-    @StringRes
-    private int obtainFinancialServiceType(Record.FinancialService financialService) {
-        switch (financialService) {
-            case VISA:
-                return R.string.wallet_card_financial_service_visa;
-            case MASTERCARD:
-                return R.string.wallet_card_financial_service_master_card;
-            case DISCOVER:
-                return R.string.wallet_card_financial_service_discover;
-            case AMEX:
-                return R.string.wallet_card_financial_service_amex;
-            default: throw new IllegalStateException("Incorrect Financial Service");
-        }
-    }
+   @StringRes
+   private int obtainFinancialServiceType(Record.FinancialService financialService) {
+      switch (financialService) {
+         case VISA:
+            return R.string.wallet_card_financial_service_visa;
+         case MASTERCARD:
+            return R.string.wallet_card_financial_service_master_card;
+         case DISCOVER:
+            return R.string.wallet_card_financial_service_discover;
+         case AMEX:
+            return R.string.wallet_card_financial_service_amex;
+         default:
+            throw new IllegalStateException("Incorrect Financial Service");
+      }
+   }
 
-    public void onDeleteCardRequired() {
+   public void onDeleteCardRequired() {
 
-    }
+   }
 
-    public void goToBack() {
-        Flow.get(getContext()).goBack();
-    }
+   public void goToBack() {
+      Flow.get(getContext()).goBack();
+   }
 
-    public interface Screen extends WalletScreen {
-        void setTitle(String title);
+   public interface Screen extends WalletScreen {
+      void setTitle(String title);
 
-        void showCardBankInfo(BankCard bankCard);
+      void showCardBankInfo(BankCard bankCard);
 
-        void showDefaultAddress(AddressInfoWithLocale addressInfoWithLocale);
-    }
+      void showDefaultAddress(AddressInfoWithLocale addressInfoWithLocale);
+   }
 
 }

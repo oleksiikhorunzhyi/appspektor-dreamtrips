@@ -1,151 +1,169 @@
 <?xml version="1.0" encoding="utf-8"?>
 <merge xmlns:android="http://schemas.android.com/apk/res/android"
-              xmlns:app="http://schemas.android.com/apk/res-auto"
-       xmlns:tools="http://schemas.android.com/tools"
-       android:layout_width="match_parent"
-              android:layout_height="match_parent">
+      xmlns:app="http://schemas.android.com/apk/res-auto"
+      xmlns:tools="http://schemas.android.com/tools"
+      android:layout_width="match_parent"
+      android:layout_height="match_parent"
+      >
 
 
-    <android.support.v7.widget.Toolbar
-        android:id="@+id/chat_settings_toolbar"
-        style="@style/ToolBarStyle"
-        />
+   <android.support.v7.widget.Toolbar
+         android:id="@+id/chat_settings_toolbar"
+         style="@style/ToolBarStyle"
+         />
 
-    <FrameLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:focusable="true"
-        android:focusableInTouchMode="true"
-        >
+   <FrameLayout
+         android:layout_width="match_parent"
+         android:layout_height="match_parent"
+         android:focusable="true"
+         android:focusableInTouchMode="true"
+         >
 
-        <ScrollView
+      <ScrollView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:fillViewport="true">
-        <FrameLayout
-            android:id="@+id/chat_settings_content_view"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:background="@color/chat_settings_background">
+            android:fillViewport="true"
+            >
+
+         <FrameLayout
+               android:id="@+id/chat_settings_content_view"
+               android:layout_width="match_parent"
+               android:layout_height="match_parent"
+               android:background="@color/chat_settings_background"
+               >
 
             <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:orientation="vertical"
-                >
+                  android:layout_width="match_parent"
+                  android:layout_height="match_parent"
+                  android:orientation="vertical"
+                  >
 
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="0"
-                    style="@style/MessengerChatInfoSettingsContainer">
+               <LinearLayout
+                     android:layout_width="match_parent"
+                     android:layout_height="wrap_content"
+                     android:layout_weight="0"
+                     style="@style/MessengerChatInfoSettingsContainer"
+                     >
 
-                    <FrameLayout
+                  <FrameLayout
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         >
 
-                        <FrameLayout
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content">
+                     <FrameLayout
+                           android:layout_width="wrap_content"
+                           android:layout_height="wrap_content"
+                           >
 
-                            <com.messenger.ui.widget.GroupAvatarsView
-                                android:id="@+id/chat_settings_group_avatars_view"
-                                style="@style/GroupChatBigAvatarView"
-                                android:visibility="gone"/>
+                        <com.messenger.ui.widget.GroupAvatarsView
+                              android:id="@+id/chat_settings_group_avatars_view"
+                              style="@style/GroupChatBigAvatarView"
+                              android:visibility="gone"
+                              />
 
-                            <ProgressBar
-                                android:id="@+id/chat_settings_group_avatars_view_progress_bar"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_gravity="center"
-                                android:visibility="gone"/>
+                        <ProgressBar
+                              android:id="@+id/chat_settings_group_avatars_view_progress_bar"
+                              android:layout_width="wrap_content"
+                              android:layout_height="wrap_content"
+                              android:layout_gravity="center"
+                              android:visibility="gone"
+                              />
 
-                        </FrameLayout>
+                     </FrameLayout>
 
-                        <com.messenger.ui.widget.AvatarView
-                            android:id="@+id/chat_settings_single_chat_avatar_view"
-                            style="@style/SingleChatBigAvatarView"
-                            android:visibility="gone"
-                            app:placeholderImage="@drawable/noavatar_big"
-                            app:roundAsCircle="true"/>
+                     <com.messenger.ui.widget.AvatarView
+                           android:id="@+id/chat_settings_single_chat_avatar_view"
+                           style="@style/SingleChatBigAvatarView"
+                           android:visibility="gone"
+                           app:placeholderImage="@drawable/noavatar_big"
+                           app:roundAsCircle="true"
+                           />
 
-                        <ImageView
-                            android:id="@+id/chat_settings_trip_pic"
-                            style="@style/GroupChatBigAvatarView"
-                            android:src="@drawable/ic_trip_chat"
-                            android:visibility="gone"
-                            tools:ignore="ContentDescription"/>
-                    </FrameLayout>
+                     <ImageView
+                           android:id="@+id/chat_settings_trip_pic"
+                           style="@style/GroupChatBigAvatarView"
+                           android:src="@drawable/ic_trip_chat"
+                           android:visibility="gone"
+                           tools:ignore="ContentDescription"
+                           />
+                  </FrameLayout>
 
-                    <LinearLayout
+                  <LinearLayout
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_vertical"
                         android:layout_marginLeft="@dimen/chat_settings_chat_name_textview_left_margin"
-                        android:orientation="vertical">
+                        android:orientation="vertical"
+                        >
 
-                        <TextView
-                            android:id="@+id/chat_settings_chat_name_text_view"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:ellipsize="marquee"
-                            android:singleLine="true"
-                            android:textColor="@color/chat_settings_chat_name_title_textview"
-                            android:textSize="@dimen/chat_settings_chat_name_textview_text_size"/>
+                     <TextView
+                           android:id="@+id/chat_settings_chat_name_text_view"
+                           android:layout_width="wrap_content"
+                           android:layout_height="wrap_content"
+                           android:ellipsize="marquee"
+                           android:singleLine="true"
+                           android:textColor="@color/chat_settings_chat_name_title_textview"
+                           android:textSize="@dimen/chat_settings_chat_name_textview_text_size"
+                           />
 
-                        <TextView
-                            android:id="@+id/chat_settings_chat_description_text_view"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:ellipsize="marquee"
-                            android:singleLine="true"
-                            android:textColor="@color/chat_settings_chat_name_description_textview"
-                            android:textSize="@dimen/chat_settings_chat_description_textview_text_size"/>
-                    </LinearLayout>
-                </LinearLayout>
+                     <TextView
+                           android:id="@+id/chat_settings_chat_description_text_view"
+                           android:layout_width="wrap_content"
+                           android:layout_height="wrap_content"
+                           android:ellipsize="marquee"
+                           android:singleLine="true"
+                           android:textColor="@color/chat_settings_chat_name_description_textview"
+                           android:textSize="@dimen/chat_settings_chat_description_textview_text_size"
+                           />
+                  </LinearLayout>
+               </LinearLayout>
 
-                <LinearLayout
-                    android:id="@+id/char_settings_rows_parent"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="0"
-                    android:orientation="vertical"
-                    android:background="@color/main_background">
+               <LinearLayout
+                     android:id="@+id/char_settings_rows_parent"
+                     android:layout_width="match_parent"
+                     android:layout_height="wrap_content"
+                     android:layout_weight="0"
+                     android:orientation="vertical"
+                     android:background="@color/main_background"
+                     >
 
-                    <View
+                  <View
                         android:layout_width="wrap_content"
                         android:layout_height="1dp"
-                        android:background="@color/chat_settings_divider"/>
-                    <!-- Settings rows will be added here -->
-                </LinearLayout>
+                        android:background="@color/chat_settings_divider"
+                        />
+                  <!-- Settings rows will be added here -->
+               </LinearLayout>
 
-                <LinearLayout
-                    android:layout_width="@dimen/chat_settings_action_buttons_width"
-                    android:layout_height="match_parent"
-                    android:layout_gravity="center_horizontal|bottom"
-                    android:layout_marginBottom="@dimen/chat_settings_action_buttons_layout_vertical_margin"
-                    android:layout_marginTop="@dimen/chat_settings_action_buttons_layout_vertical_margin"
-                    android:layout_weight="1"
-                    android:gravity="bottom"
-                    android:orientation="vertical">
+               <LinearLayout
+                     android:layout_width="@dimen/chat_settings_action_buttons_width"
+                     android:layout_height="match_parent"
+                     android:layout_gravity="center_horizontal|bottom"
+                     android:layout_marginBottom="@dimen/chat_settings_action_buttons_layout_vertical_margin"
+                     android:layout_marginTop="@dimen/chat_settings_action_buttons_layout_vertical_margin"
+                     android:layout_weight="1"
+                     android:gravity="bottom"
+                     android:orientation="vertical"
+                     >
 
-                    <Button
+                  <Button
                         android:id="@+id/chat_settings_clear_history_button"
                         style="@style/SettingsButtonStyle"
                         android:background="@drawable/button_chat_settings_white"
                         android:text="@string/chat_settings_row_clear_chat"
-                        android:textColor="@color/chat_settings_action_white_button_text_color"/>
+                        android:textColor="@color/chat_settings_action_white_button_text_color"
+                        />
 
-                    <Button
+                  <Button
                         android:id="@+id/chat_settings_leave_chat_button"
                         style="@style/SettingsButtonStyle"
                         android:background="@drawable/button_chat_settings_red"
                         android:text="@string/chat_settings_row_leave_chat"
                         android:visibility="gone"
-                        android:textColor="@color/chat_settings_action_red_button_text_color"/>
+                        android:textColor="@color/chat_settings_action_red_button_text_color"
+                        />
 
-                    <TextView
+                  <TextView
                         android:id="@+id/chat_settings_group_chat_info_textview"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -155,14 +173,15 @@
                         android:paddingRight="@dimen/chat_settings_group_chat_info_horizontal_padding"
                         android:textColor="@color/chat_settings_group_info_text_view_color"
                         android:textSize="@dimen/chat_settings_group_chat_info_text_size"
-                        android:visibility="gone"/>
-                </LinearLayout>
+                        android:visibility="gone"
+                        />
+               </LinearLayout>
             </LinearLayout>
 
-        </FrameLayout>
-        </ScrollView>
+         </FrameLayout>
+      </ScrollView>
 
-        <TextView
+      <TextView
             android:id="@+id/chat_settings_error_view"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -171,7 +190,7 @@
             android:visibility="gone"
             />
 
-        <ProgressBar
+      <ProgressBar
             android:id="@+id/chat_settings_loading_view"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -179,6 +198,6 @@
             android:layout_marginTop="@dimen/new_chat_progress_bar_margin_top"
             android:visibility="gone"
             />
-    </FrameLayout>
+   </FrameLayout>
 
 </merge>

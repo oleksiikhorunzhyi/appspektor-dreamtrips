@@ -16,20 +16,20 @@ import static com.worldventures.dreamtrips.core.module.RouteCreatorModule.PROFIL
 
 public class ProfileCrosser {
 
-    private final RouteCreator<Integer> routeCreator;
-    private final Router router;
+   private final RouteCreator<Integer> routeCreator;
+   private final Router router;
 
-    @Inject
-    public ProfileCrosser(Router router, @Named(PROFILE) RouteCreator<Integer> routeCreator) {
-        this.router = router;
-        this.routeCreator = routeCreator;
-    }
+   @Inject
+   public ProfileCrosser(Router router, @Named(PROFILE) RouteCreator<Integer> routeCreator) {
+      this.router = router;
+      this.routeCreator = routeCreator;
+   }
 
-    public void crossToProfile(DataUser user) {
-        User socialUser = new User(user.getSocialId());
-        router.moveTo(routeCreator.createRoute(socialUser.getId()), NavigationConfigBuilder.forActivity()
-                .data(new UserBundle(socialUser))
-                .toolbarConfig(ToolbarConfig.Builder.create().visible(false).build())
-                .build());
-    }
+   public void crossToProfile(DataUser user) {
+      User socialUser = new User(user.getSocialId());
+      router.moveTo(routeCreator.createRoute(socialUser.getId()), NavigationConfigBuilder.forActivity()
+            .data(new UserBundle(socialUser))
+            .toolbarConfig(ToolbarConfig.Builder.create().visible(false).build())
+            .build());
+   }
 }

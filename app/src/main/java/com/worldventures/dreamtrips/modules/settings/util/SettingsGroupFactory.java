@@ -13,28 +13,28 @@ import static com.worldventures.dreamtrips.modules.settings.model.SettingsGroup.
 
 public class SettingsGroupFactory {
 
-    private Context context;
+   private Context context;
 
-    public SettingsGroupFactory(Context context) {
-        this.context = context;
-    }
+   public SettingsGroupFactory(Context context) {
+      this.context = context;
+   }
 
-    public List<SettingsGroup> createSettingsGroups() {
-        List<SettingsGroup> settingsGroups = new ArrayList<>();
-        settingsGroups.add(new SettingsGroup(GENERAL, getTitleByType(GENERAL)));
-        settingsGroups.add(new SettingsGroup(NOTIFICATIONS, getTitleByType(NOTIFICATIONS)));
+   public List<SettingsGroup> createSettingsGroups() {
+      List<SettingsGroup> settingsGroups = new ArrayList<>();
+      settingsGroups.add(new SettingsGroup(GENERAL, getTitleByType(GENERAL)));
+      settingsGroups.add(new SettingsGroup(NOTIFICATIONS, getTitleByType(NOTIFICATIONS)));
 
-        return settingsGroups;
-    }
+      return settingsGroups;
+   }
 
-    private String getTitleByType(SettingsGroup.Type type) {
-        switch (type) {
-            case GENERAL:
-                return context.getResources().getString(R.string.general);
-            case NOTIFICATIONS:
-                return context.getResources().getString(R.string.notifications);
-            default:
-                return "";
-        }
-    }
+   private String getTitleByType(SettingsGroup.Type type) {
+      switch (type) {
+         case GENERAL:
+            return context.getResources().getString(R.string.general);
+         case NOTIFICATIONS:
+            return context.getResources().getString(R.string.notifications);
+         default:
+            return "";
+      }
+   }
 }

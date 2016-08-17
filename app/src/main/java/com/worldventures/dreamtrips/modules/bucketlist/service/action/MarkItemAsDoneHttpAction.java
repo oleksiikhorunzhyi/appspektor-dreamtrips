@@ -13,21 +13,18 @@ import io.techery.janet.http.annotations.Response;
 @HttpAction(value = "/api/bucket_list_items/{uid}", method = HttpAction.Method.PATCH)
 public class MarkItemAsDoneHttpAction extends AuthorizedHttpAction {
 
-    @Path("uid")
-    String uid;
+   @Path("uid") String uid;
 
-    @Body
-    BucketStatusBody bucketPostItem;
+   @Body BucketStatusBody bucketPostItem;
 
-    @Response
-    BucketItem response;
+   @Response BucketItem response;
 
-    public MarkItemAsDoneHttpAction(String uid, String status) {
-        this.uid = uid;
-        this.bucketPostItem = ImmutableBucketStatusBody.of(status);
-    }
+   public MarkItemAsDoneHttpAction(String uid, String status) {
+      this.uid = uid;
+      this.bucketPostItem = ImmutableBucketStatusBody.of(status);
+   }
 
-    public BucketItem getResponse() {
-        return this.response;
-    }
+   public BucketItem getResponse() {
+      return this.response;
+   }
 }

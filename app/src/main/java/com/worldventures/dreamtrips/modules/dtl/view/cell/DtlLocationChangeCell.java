@@ -15,39 +15,35 @@ import butterknife.InjectView;
 import butterknife.OnClick;
 
 @Layout(R.layout.adapter_item_dtl_location_change)
-public class DtlLocationChangeCell
-        extends AbstractDelegateCell<DtlExternalLocation, CellDelegate<DtlExternalLocation>> {
+public class DtlLocationChangeCell extends AbstractDelegateCell<DtlExternalLocation, CellDelegate<DtlExternalLocation>> {
 
-    @InjectView(R.id.locationName)
-    TextView locationName;
+   @InjectView(R.id.locationName) TextView locationName;
 
-    public DtlLocationChangeCell(View view) {
-        super(view);
-    }
+   public DtlLocationChangeCell(View view) {
+      super(view);
+   }
 
-    @Override
-    protected void syncUIStateWithModel() {
-        StringBuilder sb = new StringBuilder();
-        sb.append(getModelObject().getLongName());
-        Queryable.from(getModelObject().getLocatedIn())
-                .filter(temp -> (temp.getType() != DtlLocationType.METRO))
-                .sort(DtlExternalLocation.CATEGORY_COMPARATOR)
-                .forEachR(tempLocation -> {
-                    sb.append(", ");
-                    sb.append(tempLocation.getLongName());
-                });
-        locationName.setText(sb.toString());
-        locationName.setCompoundDrawablesWithIntrinsicBounds(
-                getModelObject().getType() == DtlLocationType.CITY ?
-                        R.drawable.city_icon : R.drawable.metro_area_icon, 0, 0, 0);
-    }
+   @Override
+   protected void syncUIStateWithModel() {
+      StringBuilder sb = new StringBuilder();
+      sb.append(getModelObject().getLongName());
+      Queryable.from(getModelObject().getLocatedIn())
+            .filter(temp -> (temp.getType() != DtlLocationType.METRO))
+            .sort(DtlExternalLocation.CATEGORY_COMPARATOR)
+            .forEachR(tempLocation -> {
+               sb.append(", ");
+               sb.append(tempLocation.getLongName());
+            });
+      locationName.setText(sb.toString());
+      locationName.setCompoundDrawablesWithIntrinsicBounds(getModelObject().getType() == DtlLocationType.CITY ? R.drawable.city_icon : R.drawable.metro_area_icon, 0, 0, 0);
+   }
 
-    @OnClick(R.id.dtlLocationCellRoot)
-    void cellClicked() {
-        cellDelegate.onCellClicked(getModelObject());
-    }
+   @OnClick(R.id.dtlLocationCellRoot)
+   void cellClicked() {
+      cellDelegate.onCellClicked(getModelObject());
+   }
 
-    @Override
-    public void prepareForReuse() {
-    }
+   @Override
+   public void prepareForReuse() {
+   }
 }

@@ -13,32 +13,30 @@ import com.facebook.imagepipeline.request.ImageRequestBuilder;
 
 public class ProgressiveDraweeView extends SimpleDraweeView {
 
-    public ProgressiveDraweeView(Context context, GenericDraweeHierarchy hierarchy) {
-        super(context, hierarchy);
-    }
+   public ProgressiveDraweeView(Context context, GenericDraweeHierarchy hierarchy) {
+      super(context, hierarchy);
+   }
 
-    public ProgressiveDraweeView(Context context) {
-        super(context);
-    }
+   public ProgressiveDraweeView(Context context) {
+      super(context);
+   }
 
-    public ProgressiveDraweeView(Context context, AttributeSet attrs) {
-        super(context, attrs);
-    }
+   public ProgressiveDraweeView(Context context, AttributeSet attrs) {
+      super(context, attrs);
+   }
 
 
-    @Override
-    public void setImageURI(Uri uri) {
-        loadProgressiveImage(uri);
-    }
+   @Override
+   public void setImageURI(Uri uri) {
+      loadProgressiveImage(uri);
+   }
 
-    private void loadProgressiveImage(Uri uri) {
-        ImageRequest request = ImageRequestBuilder.newBuilderWithSource(uri)
-                .setProgressiveRenderingEnabled(true)
-                .build();
-        DraweeController controller = Fresco.newDraweeControllerBuilder()
-                .setImageRequest(request)
-                .setOldController(getController())
-                .build();
-        setController(controller);
-    }
+   private void loadProgressiveImage(Uri uri) {
+      ImageRequest request = ImageRequestBuilder.newBuilderWithSource(uri).setProgressiveRenderingEnabled(true).build();
+      DraweeController controller = Fresco.newDraweeControllerBuilder()
+            .setImageRequest(request)
+            .setOldController(getController())
+            .build();
+      setController(controller);
+   }
 }

@@ -9,37 +9,36 @@ import android.view.View;
 
 public class CustomViewPager extends ViewPager {
 
-    private boolean isPagingEnabled = true;
+   private boolean isPagingEnabled = true;
 
-    public CustomViewPager(Context context) {
-        super(context);
-    }
+   public CustomViewPager(Context context) {
+      super(context);
+   }
 
-    public CustomViewPager(Context context, AttributeSet attrs) {
-        super(context, attrs);
-    }
+   public CustomViewPager(Context context, AttributeSet attrs) {
+      super(context, attrs);
+   }
 
-    @Override
-    public boolean onTouchEvent(MotionEvent event) {
-        return this.isPagingEnabled && super.onTouchEvent(event);
-    }
+   @Override
+   public boolean onTouchEvent(MotionEvent event) {
+      return this.isPagingEnabled && super.onTouchEvent(event);
+   }
 
-    @Override
-    public boolean onInterceptTouchEvent(MotionEvent event) {
-        return this.isPagingEnabled && super.onInterceptTouchEvent(event);
-    }
+   @Override
+   public boolean onInterceptTouchEvent(MotionEvent event) {
+      return this.isPagingEnabled && super.onInterceptTouchEvent(event);
+   }
 
-    public void setPagingEnabled(boolean b) {
-        this.isPagingEnabled = b;
-    }
+   public void setPagingEnabled(boolean b) {
+      this.isPagingEnabled = b;
+   }
 
-    @Override
-    protected boolean canScroll(View v, boolean checkV, int dx, int x,
-                                int y) {
-        if (v instanceof RecyclerView) {
-            return true;
-        }
+   @Override
+   protected boolean canScroll(View v, boolean checkV, int dx, int x, int y) {
+      if (v instanceof RecyclerView) {
+         return true;
+      }
 
-        return super.canScroll(v, checkV, dx, x, y);
-    }
+      return super.canScroll(v, checkV, dx, x, y);
+   }
 }

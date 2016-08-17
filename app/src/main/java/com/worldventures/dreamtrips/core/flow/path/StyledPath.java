@@ -4,12 +4,12 @@ import android.support.v7.app.AppCompatActivity;
 
 public abstract class StyledPath extends MasterDetailPath implements AttributedPath {
 
-    public PathAttrs getAttrs() {
-        return PathAttrs.WITHOUT_DRAWER;
-    }
+   public PathAttrs getAttrs() {
+      return PathAttrs.WITHOUT_DRAWER;
+   }
 
-    @Override
-    public void onPreDispatch(AppCompatActivity activity) {
-        //
-    }
+   @Override
+   public void onPreDispatch(AppCompatActivity activity) {
+      //
+   }
 }

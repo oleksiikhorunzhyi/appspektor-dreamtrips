@@ -15,23 +15,23 @@ import rx.Observable;
 
 @CommandAction
 public class FindBucketItemByPhotoCommand extends Command<BucketItem> implements InjectableAction {
-    @Inject
-    BucketInteractor bucketInteractor;
+   @Inject BucketInteractor bucketInteractor;
 
-    private BucketPhoto photo;
+   private BucketPhoto photo;
 
-    public FindBucketItemByPhotoCommand(BucketPhoto photo) {
-        this.photo = photo;
-    }
+   public FindBucketItemByPhotoCommand(BucketPhoto photo) {
+      this.photo = photo;
+   }
 
-    @Override
-    protected void run(CommandCallback<BucketItem> callback) throws Throwable {
-        bucketInteractor.bucketListActionPipe().observeSuccessWithReplay()
-                .map(BucketListCommand::getResult)
-                .flatMap(Observable::from)
-                .filter(item -> item.getPhotos().contains(photo))
-                .first()
-                .timeout(1, TimeUnit.SECONDS)
-                .subscribe(callback::onSuccess, callback::onFail);
-    }
+   @Override
+   protected void run(CommandCallback<BucketItem> callback) throws Throwable {
+      bucketInteractor.bucketListActionPipe()
+            .observeSuccessWithReplay()
+            .map(BucketListCommand::getResult)
+            .flatMap(Observable::from)
+            .filter(item -> item.getPhotos().contains(photo))
+            .first()
+            .timeout(1, TimeUnit.SECONDS)
+            .subscribe(callback::onSuccess, callback::onFail);
+   }
 }

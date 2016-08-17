@@ -21,61 +21,58 @@ import butterknife.InjectView;
 import butterknife.OnClick;
 import timber.log.Timber;
 
-public class DtlFullscreenImageScreenImpl extends DtlLayout<DtlFullscreenImageScreen,
-        DtlFullscreenImagePresenter, DtlFullscreenImagePath>
-        implements DtlFullscreenImageScreen {
+public class DtlFullscreenImageScreenImpl extends DtlLayout<DtlFullscreenImageScreen, DtlFullscreenImagePresenter, DtlFullscreenImagePath> implements DtlFullscreenImageScreen {
 
-    @InjectView(R.id.imageView) SimpleDraweeView imageView;
-    @InjectView(R.id.progressBar) View progressBar;
+   @InjectView(R.id.imageView) SimpleDraweeView imageView;
+   @InjectView(R.id.progressBar) View progressBar;
 
-    @Override
-    public void showImage(String url) {
-        DraweeController controller = Fresco.newDraweeControllerBuilder()
-                .setControllerListener(controllerListener)
-                .setUri(Uri.parse(url))
-                .build();
-        imageView.setController(controller);
-//        imageView.setImageUrl(url); // TODO :: 4/27/16 no image resizing here
-    }
+   @Override
+   public void showImage(String url) {
+      DraweeController controller = Fresco.newDraweeControllerBuilder()
+            .setControllerListener(controllerListener)
+            .setUri(Uri.parse(url))
+            .build();
+      imageView.setController(controller);
+   }
 
-    @OnClick(R.id.back)
-    protected void onBackClick() {
-        getActivity().onBackPressed();
-    }
+   @OnClick(R.id.back)
+   protected void onBackClick() {
+      getActivity().onBackPressed();
+   }
 
-    private ControllerListener controllerListener = new BaseControllerListener<ImageInfo>() {
-        @Override
-        public void onFinalImageSet(String id, @Nullable ImageInfo imageInfo,
-                                    @Nullable Animatable anim) {
-            progressBar.setVisibility(GONE);
-        }
+   private ControllerListener controllerListener = new BaseControllerListener<ImageInfo>() {
+      @Override
+      public void onFinalImageSet(String id, @Nullable ImageInfo imageInfo, @Nullable Animatable anim) {
+         progressBar.setVisibility(GONE);
+      }
 
-        @Override
-        public void onIntermediateImageSet(String id, @Nullable ImageInfo imageInfo) {
-        }
+      @Override
+      public void onIntermediateImageSet(String id, @Nullable ImageInfo imageInfo) {
+      }
 
-        @Override
-        public void onFailure(String id, Throwable throwable) {
-            informUser("Could not load image");
-            Timber.e(throwable, "Error loading fullscreen image for offer");
-            Crashlytics.logException(throwable);
-        }
-    };
+      @Override
+      public void onFailure(String id, Throwable throwable) {
+         informUser("Could not load image");
+         progressBar.setVisibility(GONE);
+         Timber.e(throwable, "Error loading fullscreen image for offer");
+         Crashlytics.logException(throwable);
+      }
+   };
 
-    ///////////////////////////////////////////////////////////////////////////
-    // Boilerplate stuff
-    ///////////////////////////////////////////////////////////////////////////
+   ///////////////////////////////////////////////////////////////////////////
+   // Boilerplate stuff
+   ///////////////////////////////////////////////////////////////////////////
 
-    public DtlFullscreenImageScreenImpl(Context context) {
-        super(context);
-    }
+   public DtlFullscreenImageScreenImpl(Context context) {
+      super(context);
+   }
 
-    public DtlFullscreenImageScreenImpl(Context context, AttributeSet attrs) {
-        super(context, attrs);
-    }
+   public DtlFullscreenImageScreenImpl(Context context, AttributeSet attrs) {
+      super(context, attrs);
+   }
 
-    @Override
-    public DtlFullscreenImagePresenter createPresenter() {
-        return new DtlFullscreenImagePresenterImpl(getContext(), getPath().getUrl());
-    }
+   @Override
+   public DtlFullscreenImagePresenter createPresenter() {
+      return new DtlFullscreenImagePresenterImpl(getContext(), getPath().getUrl());
+   }
 }

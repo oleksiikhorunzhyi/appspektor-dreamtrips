@@ -13,32 +13,32 @@ import rx.subjects.PublishSubject;
 
 //TODO picking photo from camera based on event bus, get rid of it
 public class LegacyPhotoPickerDelegate {
-    private EventBus eventBus;
+   private EventBus eventBus;
 
-    private PublishSubject<List<ChosenImage>> stream = PublishSubject.create();
+   private PublishSubject<List<ChosenImage>> stream = PublishSubject.create();
 
-    public LegacyPhotoPickerDelegate(EventBus eventBus) {
-        this.eventBus = eventBus;
-    }
+   public LegacyPhotoPickerDelegate(EventBus eventBus) {
+      this.eventBus = eventBus;
+   }
 
-    public void onEvent(ImagePickedEvent event) {
-        if (event.getRequesterID() == GalleryPresenter.REQUESTER_ID) {
-            eventBus.cancelEventDelivery(event);
-            eventBus.removeStickyEvent(event);
+   public void onEvent(ImagePickedEvent event) {
+      if (event.getRequesterID() == GalleryPresenter.REQUESTER_ID) {
+         eventBus.cancelEventDelivery(event);
+         eventBus.removeStickyEvent(event);
 
-            stream.onNext(Queryable.from(event.getImages()).toList());
-        }
-    }
+         stream.onNext(Queryable.from(event.getImages()).toList());
+      }
+   }
 
-    public Observable<List<ChosenImage>> watchChosenImages() {
-        return stream.asObservable();
-    }
+   public Observable<List<ChosenImage>> watchChosenImages() {
+      return stream.asObservable();
+   }
 
-    public void register() {
-        eventBus.register(this);
-    }
+   public void register() {
+      eventBus.register(this);
+   }
 
-    public void unregister() {
-        eventBus.unregister(this);
-    }
+   public void unregister() {
+      eventBus.unregister(this);
+   }
 }

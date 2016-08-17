@@ -11,13 +11,13 @@ import flow.path.Path;
 @Layout(R.layout.screen_dtl_start)
 public class DtlStartPath extends DtlMasterPath {
 
-    @Override
-    public PathAttrs getAttrs() {
-        return PathAttrs.WITH_DRAWER;
-    }
+   @Override
+   public PathAttrs getAttrs() {
+      return PathAttrs.WITH_DRAWER;
+   }
 
-    @Override
-    public Path getEmpty() {
-        return DtlEmptyScreenPath.INSTANCE;
-    }
+   @Override
+   public Path getEmpty() {
+      return DtlEmptyScreenPath.INSTANCE;
+   }
 }

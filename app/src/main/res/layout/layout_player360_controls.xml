@@ -1,32 +1,35 @@
 <?xml version="1.0" encoding="utf-8"?>
 <merge xmlns:android="http://schemas.android.com/apk/res/android"
-       xmlns:custom="http://schemas.android.com/apk/res-auto"
-       android:layout_width="match_parent"
-       android:layout_height="wrap_content"
-       android:background="@android:color/transparent">
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:background="@android:color/transparent"
+      >
 
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="?android:attr/actionBarSize"
-        android:layout_below="@+id/pf_control_seek"
-        android:background="@color/black_semi_transparent">
+   <RelativeLayout
+         android:layout_width="match_parent"
+         android:layout_height="?android:attr/actionBarSize"
+         android:layout_below="@+id/pf_control_seek"
+         android:background="@color/black_semi_transparent"
+         >
 
-        <TextView
+      <TextView
             android:id="@+id/pf_control_time"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
             android:layout_marginLeft="20dp"
-            android:textColor="@android:color/white"/>
+            android:textColor="@android:color/white"
+            />
 
-        <com.worldventures.dreamtrips.modules.common.view.custom.HoldableButton
+      <com.worldventures.dreamtrips.modules.common.view.custom.HoldableButton
             android:id="@+id/pf_holdbtn_backward"
             style="@style/Player360HoldableButton"
             android:layout_marginRight="20dp"
             android:layout_toLeftOf="@+id/pf_control_play_pause"
-            android:background="@drawable/ic_player360_backward_selector"/>
+            android:background="@drawable/ic_player360_backward_selector"
+            />
 
-        <ToggleButton
+      <ToggleButton
             android:id="@id/pf_control_play_pause"
             android:layout_width="36dp"
             android:layout_height="36dp"
@@ -34,16 +37,18 @@
             android:background="@drawable/ic_player360_play_pause_switch"
             android:checked="true"
             android:textOff="@null"
-            android:textOn="@null"/>
+            android:textOn="@null"
+            />
 
-        <com.worldventures.dreamtrips.modules.common.view.custom.HoldableButton
+      <com.worldventures.dreamtrips.modules.common.view.custom.HoldableButton
             android:id="@+id/pf_holdbtn_forward"
             style="@style/Player360HoldableButton"
             android:layout_marginLeft="20dp"
             android:layout_toRightOf="@+id/pf_control_play_pause"
-            android:background="@drawable/ic_player360_forward_selector"/>
+            android:background="@drawable/ic_player360_forward_selector"
+            />
 
-        <ToggleButton
+      <ToggleButton
             android:id="@+id/pf_control_card_board"
             android:layout_width="40dp"
             android:layout_height="20dp"
@@ -53,15 +58,17 @@
             android:background="@drawable/ic_player360_mode_switch"
             android:textColor="@android:color/white"
             android:textOff="@null"
-            android:textOn="@null"/>
+            android:textOn="@null"
+            />
 
-    </RelativeLayout>
+   </RelativeLayout>
 
-    <SeekBar
-        android:id="@id/pf_control_seek"
-        style="@style/Player360SeekBar"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:progressDrawable="@drawable/background_player360_seekbar"/>
+   <SeekBar
+         android:id="@id/pf_control_seek"
+         style="@style/Player360SeekBar"
+         android:layout_width="match_parent"
+         android:layout_height="wrap_content"
+         android:progressDrawable="@drawable/background_player360_seekbar"
+         />
 
 </merge>

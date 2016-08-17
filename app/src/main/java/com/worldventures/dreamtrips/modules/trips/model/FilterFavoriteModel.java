@@ -1,5 +1,5 @@
 package com.worldventures.dreamtrips.modules.trips.model;
 
-public class FilterFavoriteModel extends BoolFilter{
+public class FilterFavoriteModel extends BoolFilter {
 
 }

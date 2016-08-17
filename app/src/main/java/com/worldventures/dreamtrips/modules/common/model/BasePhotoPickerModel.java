@@ -2,13 +2,13 @@ package com.worldventures.dreamtrips.modules.common.model;
 
 public interface BasePhotoPickerModel {
 
-    boolean isChecked();
+   boolean isChecked();
 
-    void setChecked(boolean checked);
+   void setChecked(boolean checked);
 
-    String getThumbnailPath();
+   String getThumbnailPath();
 
-    String getOriginalPath();
+   String getOriginalPath();
 
-    long getPickedTime();
+   long getPickedTime();
 }

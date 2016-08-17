@@ -7,13 +7,13 @@ import com.worldventures.dreamtrips.modules.dtl_flow.ViewState;
 
 public interface DtlMerchantsPresenter extends DtlPresenter<DtlMerchantsScreen, ViewState.EMPTY> {
 
-    void locationChangeRequested();
+   void locationChangeRequested();
 
-    void applySearch(String query);
+   void applySearch(String query);
 
-    void merchantClicked(DtlMerchant merchant);
+   void merchantClicked(DtlMerchant merchant);
 
-    void onOfferClick(DtlMerchant dtlMerchant, DtlOffer perk);
+   void onOfferClick(DtlMerchant dtlMerchant, DtlOffer perk);
 
-    void mapClicked();
+   void mapClicked();
 }

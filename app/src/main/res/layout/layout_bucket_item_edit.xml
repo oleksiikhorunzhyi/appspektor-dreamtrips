@@ -1,20 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-            xmlns:app="http://schemas.android.com/apk/res-auto"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:background="@android:color/white"
-            android:orientation="vertical">
+      xmlns:app="http://schemas.android.com/apk/res-auto"
+      android:layout_width="match_parent"
+      android:layout_height="match_parent"
+      android:background="@android:color/white"
+      android:orientation="vertical"
+      >
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:focusable="true"
-        android:focusableInTouchMode="true"
-        android:orientation="vertical"
-        android:padding="@dimen/activity_horizontal_margin">
+   <LinearLayout
+         android:layout_width="match_parent"
+         android:layout_height="match_parent"
+         android:focusable="true"
+         android:focusableInTouchMode="true"
+         android:orientation="vertical"
+         android:padding="@dimen/activity_horizontal_margin"
+         >
 
-        <com.rengwuxian.materialedittext.MaterialEditText
+      <com.rengwuxian.materialedittext.MaterialEditText
             android:id="@+id/editTextTitle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -24,9 +26,10 @@
             android:textColor="@android:color/black"
             android:textColorHint="@android:color/black"
             app:met_floatingLabel="normal"
-            app:met_primaryColor="@color/theme_main_darker"/>
+            app:met_primaryColor="@color/theme_main_darker"
+            />
 
-        <com.rengwuxian.materialedittext.MaterialEditText
+      <com.rengwuxian.materialedittext.MaterialEditText
             android:id="@+id/editTextDescription"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -36,29 +39,33 @@
             android:textColorHint="@android:color/black"
             app:met_floatingLabel="normal"
             app:met_floatingLabelText="@string/bucket_hint_description"
-            app:met_primaryColor="@color/theme_main_darker"/>
+            app:met_primaryColor="@color/theme_main_darker"
+            />
 
-        <TextView
+      <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginBottom="4dp"
-            android:text="@string/category"/>
+            android:text="@string/category"
+            />
 
-        <LinearLayout
+      <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginBottom="8dp"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            >
 
-            <Spinner
-                android:id="@+id/spinnerCategory"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:visibility="visible"/>
+         <Spinner
+               android:id="@+id/spinnerCategory"
+               android:layout_width="wrap_content"
+               android:layout_height="wrap_content"
+               android:visibility="visible"
+               />
 
-        </LinearLayout>
+      </LinearLayout>
 
-        <com.rengwuxian.materialedittext.MaterialAutoCompleteTextView
+      <com.rengwuxian.materialedittext.MaterialAutoCompleteTextView
             android:id="@+id/editTextTime"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -71,9 +78,10 @@
             android:textColorHint="@android:color/black"
             app:met_floatingLabel="highlight"
             app:met_floatingLabelText="@string/bucket_hint_time"
-            app:met_primaryColor="@color/theme_main_darker"/>
+            app:met_primaryColor="@color/theme_main_darker"
+            />
 
-        <com.rengwuxian.materialedittext.MaterialEditText
+      <com.rengwuxian.materialedittext.MaterialEditText
             android:id="@+id/editTextPeople"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -84,9 +92,10 @@
             android:textColorHint="@android:color/black"
             app:met_floatingLabel="normal"
             app:met_floatingLabelText="@string/bucket_hint_people"
-            app:met_primaryColor="@color/theme_main_darker"/>
+            app:met_primaryColor="@color/theme_main_darker"
+            />
 
-        <com.rengwuxian.materialedittext.MaterialEditText
+      <com.rengwuxian.materialedittext.MaterialEditText
             android:id="@+id/editTextTags"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -97,39 +106,45 @@
             android:textColorHint="@android:color/black"
             app:met_floatingLabel="highlight"
             app:met_floatingLabelText="@string/bucket_hint_tags"
-            app:met_primaryColor="@color/theme_main_darker"/>
+            app:met_primaryColor="@color/theme_main_darker"
+            />
 
-        <TextView
+      <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginBottom="8dp"
-            android:text="@string/add_pictures"/>
+            android:text="@string/add_pictures"
+            />
 
-        <LinearLayout
+      <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="60dp"
             android:layout_marginBottom="8dp"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            >
 
-            <com.worldventures.dreamtrips.modules.bucketlist.view.custom.BucketPhotosView
-                android:id="@+id/lv_items"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:overScrollMode="never"/>
-        </LinearLayout>
+         <com.worldventures.dreamtrips.modules.bucketlist.view.custom.BucketPhotosView
+               android:id="@+id/lv_items"
+               android:layout_width="match_parent"
+               android:layout_height="match_parent"
+               android:overScrollMode="never"
+               />
+      </LinearLayout>
 
-        <LinearLayout
+      <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal">
+            android:orientation="horizontal"
+            >
 
-            <CheckBox
-                android:id="@+id/checkBoxDone"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/bucket_item_edit_completed"/>
+         <CheckBox
+               android:id="@+id/checkBoxDone"
+               android:layout_width="wrap_content"
+               android:layout_height="wrap_content"
+               android:text="@string/bucket_item_edit_completed"
+               />
 
-        </LinearLayout>
-    </LinearLayout>
+      </LinearLayout>
+   </LinearLayout>
 
 </ScrollView>

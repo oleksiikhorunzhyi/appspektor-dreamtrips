@@ -25,102 +25,96 @@ import javax.inject.Inject;
 
 import butterknife.InjectView;
 
-public abstract class BaseConversationViewHolder extends BaseViewHolder
-     implements View.OnClickListener {
+public abstract class BaseConversationViewHolder extends BaseViewHolder implements View.OnClickListener {
 
-    @Inject
-    SessionHolder<UserSession> sessionHolder;
-    protected DataUser currentUser;
-    protected DataConversation conversation;
-    protected DataMessage message;
-    protected String attachmentType;
-    protected DataTranslation translation;
-    protected DataUser sender;
-    protected DataUser recipient;
+   @Inject SessionHolder<UserSession> sessionHolder;
+   protected DataUser currentUser;
+   protected DataConversation conversation;
+   protected DataMessage message;
+   protected String attachmentType;
+   protected DataTranslation translation;
+   protected DataUser sender;
+   protected DataUser recipient;
 
-    @InjectView(R.id.conversation_item_view)
-    ViewGroup contentLayout;
-    @InjectView(R.id.conversation_name_textview)
-    TextView nameTextView;
-    @InjectView(R.id.conversation_unread_messages_count_textview)
-    TextView unreadMessagesCountTextView;
+   @InjectView(R.id.conversation_item_view) ViewGroup contentLayout;
+   @InjectView(R.id.conversation_name_textview) TextView nameTextView;
+   @InjectView(R.id.conversation_unread_messages_count_textview) TextView unreadMessagesCountTextView;
 
-    private ConversationsCursorAdapter.ConversationClickListener conversationClickListener;
+   private ConversationsCursorAdapter.ConversationClickListener conversationClickListener;
 
-    private ConversationLastMessageInflater lastMessageInflater = new ConversationLastMessageInflater();
-    private ConversationLastMessageDateInflater lastMessageDateInflater = new ConversationLastMessageDateInflater();
-    private ConversationSwipeLayoutInflater conversationSwipeLayoutInflater = new ConversationSwipeLayoutInflater();
-    private ConversationListDataConverter converter = new ConversationListDataConverter();
+   private ConversationLastMessageInflater lastMessageInflater = new ConversationLastMessageInflater();
+   private ConversationLastMessageDateInflater lastMessageDateInflater = new ConversationLastMessageDateInflater();
+   private ConversationSwipeLayoutInflater conversationSwipeLayoutInflater = new ConversationSwipeLayoutInflater();
+   private ConversationListDataConverter converter = new ConversationListDataConverter();
 
-    public BaseConversationViewHolder(View itemView) {
-        super(itemView);
-        context = itemView.getContext();
-        itemView.setOnClickListener(this);
-        ((Injector) context.getApplicationContext()).inject(this);
-        currentUser = new DataUser(sessionHolder.get().get().getUsername());
-        lastMessageInflater.setView(itemView);
-        lastMessageDateInflater.setView(itemView);
-        conversationSwipeLayoutInflater.setView(itemView, this);
-    }
+   public BaseConversationViewHolder(View itemView) {
+      super(itemView);
+      context = itemView.getContext();
+      itemView.setOnClickListener(this);
+      ((Injector) context.getApplicationContext()).inject(this);
+      currentUser = new DataUser(sessionHolder.get().get().getUsername());
+      lastMessageInflater.setView(itemView);
+      lastMessageDateInflater.setView(itemView);
+      conversationSwipeLayoutInflater.setView(itemView, this);
+   }
 
-    public void bindCursor(Cursor cursor) {
-        ConversationListDataConverter.Result result = converter.convert(cursor);
-        conversation = result.getConversation();
-        message = result.getMessage();
-        translation = result.getTranslation();
-        sender = result.getSender();
-        recipient = result.getRecipient();
-        attachmentType = result.getAttachmentType();
-        bindConversation();
-        bindLastMessage();
-    }
+   public void bindCursor(Cursor cursor) {
+      ConversationListDataConverter.Result result = converter.convert(cursor);
+      conversation = result.getConversation();
+      message = result.getMessage();
+      translation = result.getTranslation();
+      sender = result.getSender();
+      recipient = result.getRecipient();
+      attachmentType = result.getAttachmentType();
+      bindConversation();
+      bindLastMessage();
+   }
 
-    private void bindConversation() {
-        updateUnreadCountTextView();
-        conversationSwipeLayoutInflater.bind(conversation, currentUser);
-    }
+   private void bindConversation() {
+      updateUnreadCountTextView();
+      conversationSwipeLayoutInflater.bind(conversation, currentUser);
+   }
 
-    protected void updateUnreadCountTextView() {
-        int unreadMessageCount = conversation.getUnreadMessageCount();
-        final boolean hasNewMessage = unreadMessageCount > 0;
-        unreadMessagesCountTextView.setVisibility(hasNewMessage ? View.VISIBLE : View.GONE);
-        unreadMessagesCountTextView.setText(hasNewMessage ? String.valueOf(unreadMessageCount) : null);
-    }
+   protected void updateUnreadCountTextView() {
+      int unreadMessageCount = conversation.getUnreadMessageCount();
+      final boolean hasNewMessage = unreadMessageCount > 0;
+      unreadMessagesCountTextView.setVisibility(hasNewMessage ? View.VISIBLE : View.GONE);
+      unreadMessagesCountTextView.setText(hasNewMessage ? String.valueOf(unreadMessageCount) : null);
+   }
 
-    private void bindLastMessage() {
-        lastMessageInflater.setLastMessage(conversation, message, sender, recipient, currentUser,
-                attachmentType, translation);
-        updateLastMessageDateTextView();
-    }
+   private void bindLastMessage() {
+      lastMessageInflater.setLastMessage(conversation, message, sender, recipient, currentUser, attachmentType, translation);
+      updateLastMessageDateTextView();
+   }
 
-    protected void updateLastMessageDateTextView() {
-        lastMessageDateInflater.setDate(conversation);
-    }
+   protected void updateLastMessageDateTextView() {
+      lastMessageDateInflater.setDate(conversation);
+   }
 
-    public void setConversationClickListener(ConversationsCursorAdapter.ConversationClickListener conversationClickListener) {
-        this.conversationClickListener = conversationClickListener;
-    }
+   public void setConversationClickListener(ConversationsCursorAdapter.ConversationClickListener conversationClickListener) {
+      this.conversationClickListener = conversationClickListener;
+   }
 
-    public void setSwipeButtonsListener(ConversationsCursorAdapter.SwipeButtonsListener swipeButtonsListener) {
-        conversationSwipeLayoutInflater.setSwipeButtonsListener(swipeButtonsListener);
-    }
+   public void setSwipeButtonsListener(ConversationsCursorAdapter.SwipeButtonsListener swipeButtonsListener) {
+      conversationSwipeLayoutInflater.setSwipeButtonsListener(swipeButtonsListener);
+   }
 
-    @Override
-    public void onClick(View view) {
-        if (conversationClickListener != null) conversationClickListener.onConversationClick(conversation);
-    }
+   @Override
+   public void onClick(View view) {
+      if (conversationClickListener != null) conversationClickListener.onConversationClick(conversation);
+   }
 
-    ///////////////////////////////////////////////////////////////////////////
-    // Selection
-    ///////////////////////////////////////////////////////////////////////////
+   ///////////////////////////////////////////////////////////////////////////
+   // Selection
+   ///////////////////////////////////////////////////////////////////////////
 
-    public void applySelection(String selectedConversationId) {
-        if (conversation.getId().equals(selectedConversationId)) {
-            contentLayout.setBackgroundColor(ContextCompat.getColor(context, R.color.conversation_list_selected_conversation_bg));
-        } else if (conversation.getUnreadMessageCount() > 0) {
-            contentLayout.setBackgroundColor(ContextCompat.getColor(context, R.color.conversation_list_unread_conversation_bg));
-        } else {
-            contentLayout.setBackgroundColor(ContextCompat.getColor(context, R.color.conversation_list_read_conversation_bg));
-        }
-    }
+   public void applySelection(String selectedConversationId) {
+      if (conversation.getId().equals(selectedConversationId)) {
+         contentLayout.setBackgroundColor(ContextCompat.getColor(context, R.color.conversation_list_selected_conversation_bg));
+      } else if (conversation.getUnreadMessageCount() > 0) {
+         contentLayout.setBackgroundColor(ContextCompat.getColor(context, R.color.conversation_list_unread_conversation_bg));
+      } else {
+         contentLayout.setBackgroundColor(ContextCompat.getColor(context, R.color.conversation_list_read_conversation_bg));
+      }
+   }
 }

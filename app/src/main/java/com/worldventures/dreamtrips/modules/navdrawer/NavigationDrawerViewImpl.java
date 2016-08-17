@@ -9,6 +9,7 @@ import android.view.LayoutInflater;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.trello.rxlifecycle.RxLifecycle;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.component.ComponentDescription;
 import com.worldventures.dreamtrips.core.navigation.NavigationDrawerListener;
@@ -22,123 +23,123 @@ import java.util.List;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
+import rx.Observable;
 
 public class NavigationDrawerViewImpl extends LinearLayout implements NavigationDrawerView, NavigationDrawerListener {
-    @InjectView(R.id.drawerList)
-    protected RecyclerView recyclerView;
-    @InjectView(R.id.version)
-    protected TextView version;
 
-    private NavigationDrawerPresenter navigationDrawerPresenter;
+   @InjectView(R.id.drawerList) protected RecyclerView recyclerView;
+   @InjectView(R.id.version) protected TextView version;
 
-    private NavigationDrawerAdapter adapter;
-    //
-    private ComponentDescription currentComponent;
+   private NavigationDrawerPresenter navigationDrawerPresenter;
 
-    public NavigationDrawerViewImpl(Context context) {
-        super(context);
-        init(context);
-    }
+   private NavigationDrawerAdapter adapter;
+   //
+   private ComponentDescription currentComponent;
 
-    public NavigationDrawerViewImpl(Context context, AttributeSet attrs) {
-        super(context, attrs);
-        init(context);
-    }
+   public NavigationDrawerViewImpl(Context context) {
+      super(context);
+      init(context);
+   }
 
-    public NavigationDrawerViewImpl(Context context, AttributeSet attrs, int defStyleAttr) {
-        super(context, attrs, defStyleAttr);
-        init(context);
-    }
+   public NavigationDrawerViewImpl(Context context, AttributeSet attrs) {
+      super(context, attrs);
+      init(context);
+   }
 
-    public NavigationDrawerViewImpl(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
-        super(context, attrs, defStyleAttr, defStyleRes);
-        init(context);
-    }
+   public NavigationDrawerViewImpl(Context context, AttributeSet attrs, int defStyleAttr) {
+      super(context, attrs, defStyleAttr);
+      init(context);
+   }
 
-    private void init(Context context) {
-        ButterKnife.inject(this, LayoutInflater.from(context).inflate(R.layout.fragment_navigation_drawer,
-                this, true));
-        //
-        recyclerView.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false));
-        setVersion();
-    }
+   public NavigationDrawerViewImpl(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
+      super(context, attrs, defStyleAttr, defStyleRes);
+      init(context);
+   }
 
-    @Override
-    public void setNavigationDrawerPresenter(NavigationDrawerPresenter navigationDrawerPresenter) {
-        this.navigationDrawerPresenter = navigationDrawerPresenter;
-    }
+   private void init(Context context) {
+      ButterKnife.inject(this, LayoutInflater.from(context).inflate(R.layout.fragment_navigation_drawer, this, true));
+      //
+      recyclerView.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false));
+      setVersion();
+   }
 
-    @Override
-    public void setData(List<ComponentDescription> components) {
-        adapter = new NavigationDrawerAdapter(components);
-        adapter.setNavigationDrawerCallbacks(this);
-        recyclerView.setAdapter(adapter);
-    }
+   @Override
+   public void setNavigationDrawerPresenter(NavigationDrawerPresenter navigationDrawerPresenter) {
+      this.navigationDrawerPresenter = navigationDrawerPresenter;
+   }
 
-    @Override
-    public void setUser(User user) {
-        if (ViewUtils.isLandscapeOrientation(getContext())) return;
-        //
-        if (adapter.setHeader(createNavigationHeader(user))) {
-            adapter.notifyItemInserted(0);
-        } else {
-            adapter.notifyItemChanged(0);
-        }
-    }
+   @Override
+   public <T> Observable<T> bind(Observable<T> observable) {
+      return observable.compose(RxLifecycle.bindView(this));
+   }
 
-    private void setVersion() {
-        try {
-            version.setText(getContext().getPackageManager()
-                    .getPackageInfo(getContext().getPackageName(), 0).versionName);
-        } catch (PackageManager.NameNotFoundException e) {
-            e.printStackTrace();
-        }
-    }
+   @Override
+   public void setData(List<ComponentDescription> components) {
+      adapter = new NavigationDrawerAdapter(components);
+      adapter.setNavigationDrawerCallbacks(this);
+      recyclerView.setAdapter(adapter);
+   }
 
-    private NavigationHeader createNavigationHeader(User user) {
-        return new NavigationHeader(user);
-    }
+   @Override
+   public void setUser(User user) {
+      if (ViewUtils.isLandscapeOrientation(getContext())) return;
+      //
+      if (adapter.setHeader(createNavigationHeader(user))) {
+         adapter.notifyItemInserted(0);
+      } else {
+         adapter.notifyItemChanged(0);
+      }
+   }
 
-    @Override
-    public void onNavigationDrawerItemSelected(ComponentDescription newComponent) {
-        if (newComponent.getKey().equals(CommonModule.LOGOUT)) {
-            navigationDrawerPresenter.onLogout();
-            return;
-        }
+   private void setVersion() {
+      try {
+         version.setText(getContext().getPackageManager().getPackageInfo(getContext().getPackageName(), 0).versionName);
+      } catch (PackageManager.NameNotFoundException e) {
+         e.printStackTrace();
+      }
+   }
 
-        boolean updateComponentSelection = currentComponent == null ||
-                !newComponent.getKey().equalsIgnoreCase(currentComponent.getKey());
+   private NavigationHeader createNavigationHeader(User user) {
+      return new NavigationHeader(user);
+   }
 
-        if (updateComponentSelection) {
-            navigationDrawerPresenter.onItemSelected(newComponent);
-        } else {
-            navigationDrawerPresenter.onItemReselected(newComponent);
-        }
-    }
+   @Override
+   public void onNavigationDrawerItemSelected(ComponentDescription newComponent) {
+      if (newComponent.getKey().equals(CommonModule.LOGOUT)) {
+         navigationDrawerPresenter.onLogout();
+         return;
+      }
 
-    @Override
-    public void onNavigationDrawerItemReselected(ComponentDescription newComponent) {
-        //
-    }
+      boolean updateComponentSelection = currentComponent == null || !newComponent.getKey()
+            .equalsIgnoreCase(currentComponent.getKey());
 
-    @Override
-    public void setCurrentComponent(ComponentDescription newComponent) {
-        recyclerView.post(() -> {
-            currentComponent = newComponent;
-            if (adapter != null)
-                adapter.selectComponent(newComponent);
-        });
-    }
+      if (updateComponentSelection) {
+         navigationDrawerPresenter.onItemSelected(newComponent);
+      } else {
+         navigationDrawerPresenter.onItemReselected(newComponent);
+      }
+   }
 
-    @Override
-    public void setNotificationCount(int count) {
-        if (adapter != null)
-            adapter.setNotificationCount(count);
-    }
+   @Override
+   public void onNavigationDrawerItemReselected(ComponentDescription newComponent) {
+      //
+   }
 
-    @Override
-    public void setUnreadMessagesCount(int count) {
-        if (adapter != null)
-            adapter.setUnreadMessageCount(count);
-    }
+   @Override
+   public void setCurrentComponent(ComponentDescription newComponent) {
+      recyclerView.post(() -> {
+         currentComponent = newComponent;
+         if (adapter != null) adapter.selectComponent(newComponent);
+      });
+   }
+
+   @Override
+   public void setNotificationCount(int count) {
+      if (adapter != null) adapter.setNotificationCount(count);
+   }
+
+   @Override
+   public void setUnreadMessagesCount(int count) {
+      if (adapter != null) adapter.setUnreadMessageCount(count);
+   }
 }

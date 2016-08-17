@@ -16,51 +16,43 @@ import butterknife.InjectView;
 import butterknife.OnClick;
 
 @Layout(R.layout.adapter_item_filter_header)
-public class DtlFilterAttributeHeaderCell extends AbstractDelegateCell<SelectableHeaderItem,
-        CellDelegate<SelectableHeaderItem>> implements SelectableCell {
+public class DtlFilterAttributeHeaderCell extends AbstractDelegateCell<SelectableHeaderItem, CellDelegate<SelectableHeaderItem>> implements SelectableCell {
 
-    private SelectableDelegate selectableDelegate;
+   private SelectableDelegate selectableDelegate;
 
-    @InjectView(R.id.checkBoxSelectAll)
-    protected CheckBox checkBoxSelectAll;
-    @InjectView(R.id.textViewAttributeHeaderCaption)
-    protected TextView textViewHeaderCaption;
+   @InjectView(R.id.checkBoxSelectAll) CheckBox checkBoxSelectAll;
+   @InjectView(R.id.textViewAttributeHeaderCaption) TextView textViewHeaderCaption;
 
-    public DtlFilterAttributeHeaderCell(View view) {
-        super(view);
-    }
+   public DtlFilterAttributeHeaderCell(View view) {
+      super(view);
+   }
 
-    @Override
-    protected void syncUIStateWithModel() {
-        textViewHeaderCaption.setText(getModelObject().getHeaderCaption());
-        checkBoxSelectAll.setChecked(selectableDelegate.isSelected(getAdapterPosition()));
-    }
+   @Override
+   protected void syncUIStateWithModel() {
+      textViewHeaderCaption.setText(getModelObject().getHeaderCaption());
+      checkBoxSelectAll.setChecked(selectableDelegate.isSelected(getAdapterPosition()));
+   }
 
-    @OnClick(R.id.checkBoxSelectAll)
-    void checkBoxClicked() {
-        getModelObject().setSelected(checkBoxSelectAll.isChecked());
-        selectableDelegate.setSelection(getAdapterPosition(), checkBoxSelectAll.isChecked());
-        cellDelegate.onCellClicked(getModelObject());
-    }
+   @OnClick(R.id.checkBoxSelectAll)
+   void checkBoxClicked() {
+      getModelObject().setSelected(checkBoxSelectAll.isChecked());
+      selectableDelegate.setSelection(getAdapterPosition(), checkBoxSelectAll.isChecked());
+      cellDelegate.onCellClicked(getModelObject());
+   }
 
-    @OnClick(R.id.textViewSelectAllCaption)
-    void checkBoxTextViewClicked() {
-        checkBoxSelectAll.setChecked(!checkBoxSelectAll.isChecked());
-        checkBoxClicked();
-    }
+   @OnClick(R.id.textViewSelectAllCaption)
+   void checkBoxTextViewClicked() {
+      checkBoxSelectAll.setChecked(!checkBoxSelectAll.isChecked());
+      checkBoxClicked();
+   }
 
-    @OnClick(R.id.textViewAttributeHeaderCaption)
-    void headerCaptionClicked() {
-    }
+   @OnClick(R.id.textViewAttributeHeaderCaption)
+   void headerCaptionClicked() {
+   }
 
-    @Override
-    public void setSelectableDelegate(SelectableDelegate selectableDelegate) {
-        this.selectableDelegate = selectableDelegate;
-    }
-
-    @Override
-    public void prepareForReuse() {
-        //nothing to do here
-    }
+   @Override
+   public void setSelectableDelegate(SelectableDelegate selectableDelegate) {
+      this.selectableDelegate = selectableDelegate;
+   }
 }
 

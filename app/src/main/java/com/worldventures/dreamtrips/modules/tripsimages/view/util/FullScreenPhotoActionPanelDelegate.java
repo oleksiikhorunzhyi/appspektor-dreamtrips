@@ -26,201 +26,182 @@ import icepick.State;
 
 public class FullScreenPhotoActionPanelDelegate {
 
-    @InjectView(R.id.iv_image)
-    ScaleImageView ivImage;
-    @InjectView(R.id.ll_global_content_wrapper)
-    protected LinearLayout llContentWrapper;
-    @InjectView(R.id.ll_more_info)
-    protected LinearLayout llMoreInfo;
-    @InjectView(R.id.tv_title)
-    protected TextView tvTitle;
-    @InjectView(R.id.tv_description)
-    protected TextView tvDescription;
-    @InjectView(R.id.tv_see_more)
-    protected TextView tvSeeMore;
-    @InjectView(R.id.tv_location)
-    protected TextView tvLocation;
-    @InjectView(R.id.textViewInspireMeTitle)
-    protected TextView textViewInspireMeTitle;
-    @InjectView(R.id.tv_date)
-    protected TextView tvDate;
-    @InjectView(R.id.tv_likes_count)
-    protected TextView tvLikesCount;
-    @InjectView(R.id.tv_comments_count)
-    protected TextView tvCommentsCount;
-    @InjectView(R.id.iv_like)
-    protected ImageView ivLike;
-    @InjectView(R.id.iv_share)
-    protected ImageView ivShare;
-    @InjectView(R.id.flag)
-    protected FlagView flag;
-    @InjectView(R.id.edit)
-    protected ImageView edit;
-    @InjectView(R.id.user_photo)
-    protected SmartAvatarView civUserPhoto;
-    @InjectView(R.id.checkBox)
-    protected CheckBox checkBox;
-    @InjectView(R.id.iv_comment)
-    protected ImageView ivComment;
+   @InjectView(R.id.iv_image) ScaleImageView ivImage;
+   @InjectView(R.id.ll_global_content_wrapper) protected LinearLayout llContentWrapper;
+   @InjectView(R.id.ll_more_info) protected LinearLayout llMoreInfo;
+   @InjectView(R.id.tv_title) protected TextView tvTitle;
+   @InjectView(R.id.tv_description) protected TextView tvDescription;
+   @InjectView(R.id.tv_see_more) protected TextView tvSeeMore;
+   @InjectView(R.id.tv_location) protected TextView tvLocation;
+   @InjectView(R.id.textViewInspireMeTitle) protected TextView textViewInspireMeTitle;
+   @InjectView(R.id.tv_date) protected TextView tvDate;
+   @InjectView(R.id.tv_likes_count) protected TextView tvLikesCount;
+   @InjectView(R.id.tv_comments_count) protected TextView tvCommentsCount;
+   @InjectView(R.id.iv_like) protected ImageView ivLike;
+   @InjectView(R.id.iv_share) protected ImageView ivShare;
+   @InjectView(R.id.flag) protected FlagView flag;
+   @InjectView(R.id.edit) protected ImageView edit;
+   @InjectView(R.id.user_photo) protected SmartAvatarView civUserPhoto;
+   @InjectView(R.id.checkBox) protected CheckBox checkBox;
+   @InjectView(R.id.iv_comment) protected ImageView ivComment;
 
-    Context context;
-    User account;
-    ContentVisibilityListener contentVisibilityListener;
-    private Injector injector;
+   Context context;
+   User account;
+   ContentVisibilityListener contentVisibilityListener;
+   private Injector injector;
 
-    @State
-    boolean isContentWrapperVisible = true;
+   @State boolean isContentWrapperVisible = true;
 
-    public void setup(Activity activity, View rootView, User account, Injector injector) {
-        ButterKnife.inject(this, rootView);
-        this.context = activity;
-        this.account = account;
-        this.injector = injector;
+   public void setup(Activity activity, View rootView, User account, Injector injector) {
+      ButterKnife.inject(this, rootView);
+      this.context = activity;
+      this.account = account;
+      this.injector = injector;
 
-        ivImage.setSingleTapListener(() -> {
-            toggleContent();
-            if (contentVisibilityListener != null) {
-                contentVisibilityListener.onVisibilityChange();
-            }
-        });
-        ivImage.setDoubleTapListener(this::hideContent);
-        if (isContentWrapperVisible) {
-            showContent();
-        } else {
-            hideContent();
-        }
-    }
+      ivImage.setSingleTapListener(() -> {
+         toggleContent();
+         if (contentVisibilityListener != null) {
+            contentVisibilityListener.onVisibilityChange();
+         }
+      });
+      ivImage.setDoubleTapListener(this::hideContent);
+      if (isContentWrapperVisible) {
+         showContent();
+      } else {
+         hideContent();
+      }
+   }
 
-    public void setContent(Photo photo) {
-        setTitleSpanned(photo.getUser().getUsernameWithCompany(context));
-        setCommentCount(photo.getFSCommentCount());
-        setDescription(photo.getFSDescription());
-        setLikeCount(photo.getFSLikeCount());
-        setLocation(photo.getFSLocation());
-        setDate(photo.getFSDate());
-        setUserPhoto(photo.getFSUserPhoto());
-        setLiked(photo.isLiked());
-        setUserPresence(photo.getUser());
+   public void setContent(Photo photo) {
+      setTitleSpanned(photo.getUser().getUsernameWithCompany(context));
+      setCommentCount(photo.getFSCommentCount());
+      setDescription(photo.getFSDescription());
+      setLikeCount(photo.getFSLikeCount());
+      setLocation(photo.getFSLocation());
+      setDate(photo.getFSDate());
+      setUserPhoto(photo.getFSUserPhoto());
+      setLiked(photo.isLiked());
+      setUserPresence(photo.getUser());
 
-        User owner = photo.getOwner();
-        boolean isAccountsPhoto = owner != null && account.getId() == owner.getId();
-        flag.setVisibility(isAccountsPhoto ? View.GONE : View.VISIBLE);
-        edit.setVisibility(isAccountsPhoto ? View.VISIBLE : View.GONE);
-    }
+      User owner = photo.getOwner();
+      boolean isAccountsPhoto = owner != null && account.getId() == owner.getId();
+      flag.setVisibility(isAccountsPhoto ? View.GONE : View.VISIBLE);
+      edit.setVisibility(isAccountsPhoto ? View.VISIBLE : View.GONE);
+   }
 
 
-    public void setUserPhoto(String fsPhoto) {
-        if (TextUtils.isEmpty(fsPhoto)) {
-            civUserPhoto.setVisibility(View.GONE);
-        } else {
-            civUserPhoto.setImageURI(Uri.parse(fsPhoto));
-        }
-    }
+   public void setUserPhoto(String fsPhoto) {
+      if (TextUtils.isEmpty(fsPhoto)) {
+         civUserPhoto.setVisibility(View.GONE);
+      } else {
+         civUserPhoto.setImageURI(Uri.parse(fsPhoto));
+      }
+   }
 
-    public void setDate(String date) {
-        if (TextUtils.isEmpty(date)) {
-            tvDate.setVisibility(View.GONE);
-        } else {
-            tvDate.setVisibility(View.VISIBLE);
-            tvDate.setText(date);
-        }
-    }
+   public void setDate(String date) {
+      if (TextUtils.isEmpty(date)) {
+         tvDate.setVisibility(View.GONE);
+      } else {
+         tvDate.setVisibility(View.VISIBLE);
+         tvDate.setText(date);
+      }
+   }
 
-    public void setLocation(String location) {
-        if (TextUtils.isEmpty(location)) {
-            tvLocation.setVisibility(View.GONE);
-        } else {
-            tvLocation.setVisibility(View.VISIBLE);
-            tvLocation.setText(location);
-        }
-    }
-
-
-    public void setCommentCount(int count) {
-        if (count > 0) {
-            tvCommentsCount.setText(context.getString(R.string.comments, count));
-            tvCommentsCount.setVisibility(View.VISIBLE);
-        } else {
-            tvCommentsCount.setVisibility(View.GONE);
-        }
-    }
-
-    public void setLikeCount(int count) {
-        if (count > 0) {
-            tvLikesCount.setText(context.getString(R.string.likes, count));
-            tvLikesCount.setVisibility(View.VISIBLE);
-        } else {
-            tvLikesCount.setVisibility(View.GONE);
-        }
-    }
-
-    public void setUserPresence(User user) {
-        civUserPhoto.setup(user, injector);
-    }
-
-    public void setDescription(String desc) {
-        if (TextUtils.isEmpty(desc)) {
-            tvDescription.setVisibility(View.GONE);
-        } else {
-            tvDescription.setText(desc);
-            tvDescription.setVisibility(View.VISIBLE);
-        }
-        actionSeeMore();
-    }
+   public void setLocation(String location) {
+      if (TextUtils.isEmpty(location)) {
+         tvLocation.setVisibility(View.GONE);
+      } else {
+         tvLocation.setVisibility(View.VISIBLE);
+         tvLocation.setText(location);
+      }
+   }
 
 
-    @OnClick(R.id.tv_see_more)
-    public void actionSeeMore() {
-        llMoreInfo.setVisibility(View.VISIBLE);
-        tvDescription.setSingleLine(false);
+   public void setCommentCount(int count) {
+      if (count > 0) {
+         tvCommentsCount.setText(context.getString(R.string.comments, count));
+         tvCommentsCount.setVisibility(View.VISIBLE);
+      } else {
+         tvCommentsCount.setVisibility(View.GONE);
+      }
+   }
 
-        tvSeeMore.setVisibility(View.GONE);
-    }
+   public void setLikeCount(int count) {
+      if (count > 0) {
+         tvLikesCount.setText(context.getString(R.string.likes, count));
+         tvLikesCount.setVisibility(View.VISIBLE);
+      } else {
+         tvLikesCount.setVisibility(View.GONE);
+      }
+   }
 
-    @OnClick({R.id.bottom_container, R.id.title_container})
-    public void actionSeeLess() {
-        llMoreInfo.setVisibility(View.GONE);
-        tvDescription.setSingleLine(true);
-        tvDescription.setVisibility(View.VISIBLE);
-        tvSeeMore.setVisibility(View.VISIBLE);
-    }
+   public void setUserPresence(User user) {
+      civUserPhoto.setup(user, injector);
+   }
 
-    public void setTitleSpanned(Spanned titleSpanned) {
-        tvTitle.setText(titleSpanned);
-    }
-
-    public void setLiked(boolean isLiked) {
-        ivLike.setSelected(isLiked);
-    }
+   public void setDescription(String desc) {
+      if (TextUtils.isEmpty(desc)) {
+         tvDescription.setVisibility(View.GONE);
+      } else {
+         tvDescription.setText(desc);
+         tvDescription.setVisibility(View.VISIBLE);
+      }
+      actionSeeMore();
+   }
 
 
-    public void hideContent() {
-        llContentWrapper.setVisibility(View.GONE);
-        isContentWrapperVisible = false;
-    }
+   @OnClick(R.id.tv_see_more)
+   public void actionSeeMore() {
+      llMoreInfo.setVisibility(View.VISIBLE);
+      tvDescription.setSingleLine(false);
 
-    public void showContent() {
-        llContentWrapper.setVisibility(View.VISIBLE);
-        isContentWrapperVisible = true;
-    }
+      tvSeeMore.setVisibility(View.GONE);
+   }
 
-    public void toggleContent() {
-        if (llContentWrapper.getVisibility() == View.VISIBLE) {
-            hideContent();
-        } else {
-            showContent();
-        }
-    }
+   @OnClick({R.id.bottom_container, R.id.title_container})
+   public void actionSeeLess() {
+      llMoreInfo.setVisibility(View.GONE);
+      tvDescription.setSingleLine(true);
+      tvDescription.setVisibility(View.VISIBLE);
+      tvSeeMore.setVisibility(View.VISIBLE);
+   }
 
-    public boolean isContentWrapperShown() {
-        return isContentWrapperVisible;
-    }
+   public void setTitleSpanned(Spanned titleSpanned) {
+      tvTitle.setText(titleSpanned);
+   }
 
-    public void setContentVisibilityListener(ContentVisibilityListener contentVisibilityListener) {
-        this.contentVisibilityListener = contentVisibilityListener;
-    }
+   public void setLiked(boolean isLiked) {
+      ivLike.setSelected(isLiked);
+   }
 
-    public interface ContentVisibilityListener {
-        void onVisibilityChange();
-    }
+
+   public void hideContent() {
+      llContentWrapper.setVisibility(View.GONE);
+      isContentWrapperVisible = false;
+   }
+
+   public void showContent() {
+      llContentWrapper.setVisibility(View.VISIBLE);
+      isContentWrapperVisible = true;
+   }
+
+   public void toggleContent() {
+      if (llContentWrapper.getVisibility() == View.VISIBLE) {
+         hideContent();
+      } else {
+         showContent();
+      }
+   }
+
+   public boolean isContentWrapperShown() {
+      return isContentWrapperVisible;
+   }
+
+   public void setContentVisibilityListener(ContentVisibilityListener contentVisibilityListener) {
+      this.contentVisibilityListener = contentVisibilityListener;
+   }
+
+   public interface ContentVisibilityListener {
+      void onVisibilityChange();
+   }
 }

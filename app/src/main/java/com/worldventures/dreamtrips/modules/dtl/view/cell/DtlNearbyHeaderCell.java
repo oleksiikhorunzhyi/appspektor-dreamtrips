@@ -9,25 +9,25 @@ import com.worldventures.dreamtrips.R;
 @Layout(R.layout.adapter_item_nearby_header)
 public class DtlNearbyHeaderCell extends AbstractCell<DtlNearbyHeaderCell.NearbyHeaderModel> {
 
-    public DtlNearbyHeaderCell(View view) {
-        super(view);
-    }
+   public DtlNearbyHeaderCell(View view) {
+      super(view);
+   }
 
-    public static final class NearbyHeaderModel {
+   public static final class NearbyHeaderModel {
 
-        private NearbyHeaderModel() {
-        }
+      private NearbyHeaderModel() {
+      }
 
-        public static final NearbyHeaderModel INSTANCE = new NearbyHeaderModel();
-    }
+      public static final NearbyHeaderModel INSTANCE = new NearbyHeaderModel();
+   }
 
-    @Override
-    protected void syncUIStateWithModel() {
+   @Override
+   protected void syncUIStateWithModel() {
 
-    }
+   }
 
-    @Override
-    public void prepareForReuse() {
+   @Override
+   public void prepareForReuse() {
 
-    }
+   }
 }

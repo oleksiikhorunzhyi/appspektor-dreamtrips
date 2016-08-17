@@ -11,18 +11,18 @@ import butterknife.InjectView;
 
 public class MerchantSingleImageDataInflater extends MerchantCommonDataInflater {
 
-    @InjectView(R.id.merchant_details_cover) ImageryDraweeView cover;
+   @InjectView(R.id.merchant_details_cover) ImageryDraweeView cover;
 
-    @Override
-    protected void onMerchantApply() {
-        super.onMerchantApply();
-        setImage(merchant.getImages());
-    }
+   @Override
+   protected void onMerchantApply() {
+      super.onMerchantApply();
+      setImage(merchant.getImages());
+   }
 
-    private void setImage(List<DtlMerchantMedia> mediaList) {
-        DtlMerchantMedia media = Queryable.from(mediaList).firstOrDefault();
-        if (media == null) return;
-        //
-        cover.setImageUrl(media.getImagePath());
-    }
+   private void setImage(List<DtlMerchantMedia> mediaList) {
+      DtlMerchantMedia media = Queryable.from(mediaList).firstOrDefault();
+      if (media == null) return;
+      //
+      cover.setImageUrl(media.getImagePath());
+   }
 }

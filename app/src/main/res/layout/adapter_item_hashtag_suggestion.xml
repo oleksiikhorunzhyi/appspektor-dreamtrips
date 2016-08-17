@@ -1,29 +1,32 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                xmlns:tools="http://schemas.android.com/tools"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical"
-                android:padding="@dimen/spacing_normal">
+      xmlns:tools="http://schemas.android.com/tools"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:layout_gravity="center_vertical"
+      android:padding="@dimen/spacing_normal"
+      >
 
-    <TextView
-        android:id="@+id/suggestionText"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
-        android:layout_marginRight="@dimen/spacing_tiny"
-        android:layout_toLeftOf="@+id/suggestionCount"
-        android:ellipsize="end"
-        android:lines="1"
-        android:textColor="@android:color/black"
-        tools:text="#amazing and very very long hashtag"/>
+   <TextView
+         android:id="@+id/suggestionText"
+         android:layout_width="wrap_content"
+         android:layout_height="wrap_content"
+         android:layout_alignParentLeft="true"
+         android:layout_marginRight="@dimen/spacing_tiny"
+         android:layout_toLeftOf="@+id/suggestionCount"
+         android:ellipsize="end"
+         android:lines="1"
+         android:textColor="@android:color/black"
+         tools:text="#amazing and very very long hashtag"
+         />
 
-    <TextView
-        android:id="@+id/suggestionCount"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentRight="true"
-        android:lines="1"
-        android:textColor="@color/hashtag_suggestion_count_color"
-        tools:text="100003 posts"/>
+   <TextView
+         android:id="@+id/suggestionCount"
+         android:layout_width="wrap_content"
+         android:layout_height="wrap_content"
+         android:layout_alignParentRight="true"
+         android:lines="1"
+         android:textColor="@color/hashtag_suggestion_count_color"
+         tools:text="100003 posts"
+         />
 </RelativeLayout>

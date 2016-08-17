@@ -8,11 +8,11 @@ import com.techery.spares.module.Injector;
 import javax.inject.Inject;
 
 public class FailedMessageInitializer implements AppInitializer {
-    @Inject MarkMessageDelegate markMessageDelegate;
+   @Inject MarkMessageDelegate markMessageDelegate;
 
-    @Override
-    public void initialize(Injector injector) {
-        injector.inject(this);
-        markMessageDelegate.removeSendingMessagesMessage();
-    }
+   @Override
+   public void initialize(Injector injector) {
+      injector.inject(this);
+      markMessageDelegate.removeSendingMessagesMessage();
+   }
 }

@@ -10,18 +10,21 @@ import timber.log.Timber;
 
 public class UnreadConversationObservable {
 
-    private Observable<Integer> observable;
+   private Observable<Integer> observable;
 
-    public UnreadConversationObservable(ConversationsDAO conversationsDAO) {
-        observable = conversationsDAO.getUnreadConversationsCount()
-                .distinctUntilChanged()
-                .compose(new IoToMainComposer<>())
-                .replay(1)
-                .autoConnect();
-    }
+   public UnreadConversationObservable(ConversationsDAO conversationsDAO) {
+      observable = conversationsDAO.getUnreadConversationsCount()
+            .distinctUntilChanged()
+            .compose(new IoToMainComposer<>())
+            .replay(1)
+            .autoConnect();
+   }
 
-    public Subscription subscribe(Action1<Integer> action) {
-        return observable.subscribe(action, throwable -> Timber.w("Can't get unread conv count"));
-    }
+   public Observable<Integer> getObservable() {
+      return observable;
+   }
 
+   public Subscription subscribe(Action1<Integer> action) {
+      return observable.subscribe(action, throwable -> Timber.w("Can't get unread conv count"));
+   }
 }

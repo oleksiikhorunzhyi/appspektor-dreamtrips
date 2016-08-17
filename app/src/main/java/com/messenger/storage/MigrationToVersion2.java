@@ -10,9 +10,9 @@ import com.raizlabs.android.dbflow.sql.migration.BaseMigration;
 @Migration(version = 2, databaseName = MessengerDatabase.NAME)
 public class MigrationToVersion2 extends BaseMigration {
 
-    @Override
-    public void migrate(SQLiteDatabase database) {
-        database.execSQL("DELETE FROM " + DataAttachment$Table.TABLE_NAME);
-        database.execSQL("DELETE FROM " + DataMessage$Table.TABLE_NAME);
-    }
+   @Override
+   public void migrate(SQLiteDatabase database) {
+      database.execSQL("DELETE FROM " + DataAttachment$Table.TABLE_NAME);
+      database.execSQL("DELETE FROM " + DataMessage$Table.TABLE_NAME);
+   }
 }

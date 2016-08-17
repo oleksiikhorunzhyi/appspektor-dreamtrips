@@ -17,32 +17,30 @@ import butterknife.InjectView;
 @Layout(R.layout.fragment_mutuals)
 public class MutualFriendsFragment extends BaseUsersFragment<MutualFriendsPresenter, MutualFriendsBundle> implements MutualFriendsPresenter.View {
 
-    @InjectView(R.id.title)
-    TextView header;
+   @InjectView(R.id.title) TextView header;
 
-    @Override
-    protected MutualFriendsPresenter createPresenter(Bundle savedInstanceState) {
-        return new MutualFriendsPresenter(getArgs());
-    }
+   @Override
+   protected MutualFriendsPresenter createPresenter(Bundle savedInstanceState) {
+      return new MutualFriendsPresenter(getArgs());
+   }
 
-    @Override
-    public void afterCreateView(View rootView) {
-        super.afterCreateView(rootView);
-        if (isTabletLandscape())
-            header.setVisibility(View.VISIBLE);
-        caption.setText(R.string.no_mutual_friends);
-        adapter.registerCell(User.class, MutualFriendCell.class);
-    }
+   @Override
+   public void afterCreateView(View rootView) {
+      super.afterCreateView(rootView);
+      if (isTabletLandscape()) header.setVisibility(View.VISIBLE);
+      caption.setText(R.string.no_mutual_friends);
+      adapter.registerCell(User.class, MutualFriendCell.class);
+   }
 
-    @Override
-    public void onResume() {
-        super.onResume();
-        //hack for https://trello.com/c/oKIh9Rnb/922-nav-bar-of-likers-pop-up-becomes-grey-if-go-back-from-profile (reproducible on android 5.0+ )
-        header.getBackground().setAlpha(255);
-    }
+   @Override
+   public void onResume() {
+      super.onResume();
+      //hack for https://trello.com/c/oKIh9Rnb/922-nav-bar-of-likers-pop-up-becomes-grey-if-go-back-from-profile (reproducible on android 5.0+ )
+      header.getBackground().setAlpha(255);
+   }
 
-    @Override
-    protected LinearLayoutManager createLayoutManager() {
-        return new LinearLayoutManager(getActivity());
-    }
+   @Override
+   protected LinearLayoutManager createLayoutManager() {
+      return new LinearLayoutManager(getActivity());
+   }
 }

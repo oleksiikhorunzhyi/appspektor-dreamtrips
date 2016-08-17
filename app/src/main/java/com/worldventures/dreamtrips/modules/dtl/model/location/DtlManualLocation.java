@@ -14,21 +14,23 @@ import org.immutables.value.Value;
 @Value.Style(privateNoargConstructor = true)
 public abstract class DtlManualLocation implements DtlLocation {
 
-    protected DtlManualLocation() {};
+   protected DtlManualLocation() {}
 
-    @Override
-    public abstract LocationSourceType getLocationSourceType();
+   ;
 
-    @Override
-    @Nullable
-    public abstract String getLongName();
+   @Override
+   public abstract LocationSourceType getLocationSourceType();
 
-    @Override
-    public abstract Location getCoordinates();
+   @Override
+   @Nullable
+   public abstract String getLongName();
 
-    @Override
-    @Value.Default
-    public String getAnalyticsName() {
-        return "-:-:-";
-    }
+   @Override
+   public abstract Location getCoordinates();
+
+   @Override
+   @Value.Default
+   public String getAnalyticsName() {
+      return "-:-:-";
+   }
 }

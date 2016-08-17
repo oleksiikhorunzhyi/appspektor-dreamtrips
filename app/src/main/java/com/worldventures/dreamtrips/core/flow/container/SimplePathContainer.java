@@ -51,105 +51,96 @@ import timber.log.Timber;
  * Uses {@link PathContext} to allow customized sub-containers.
  */
 public class SimplePathContainer extends PathContainer {
-    private static final Map<Class, Integer> PATH_LAYOUT_CACHE = new LinkedHashMap<>();
-    private final PathContextFactory contextFactory;
-    private Context context;
-    private DtlAnimatorRegistrar animatorRegistrar = new DtlAnimatorRegistrar();
+   private static final Map<Class, Integer> PATH_LAYOUT_CACHE = new LinkedHashMap<>();
+   private final PathContextFactory contextFactory;
+   private Context context;
+   private DtlAnimatorRegistrar animatorRegistrar = new DtlAnimatorRegistrar();
 
-    public SimplePathContainer(Context context, int tagKey, PathContextFactory contextFactory) {
-        super(tagKey);
-        this.context = context;
-        this.contextFactory = contextFactory;
-    }
+   public SimplePathContainer(Context context, int tagKey, PathContextFactory contextFactory) {
+      super(tagKey);
+      this.context = context;
+      this.contextFactory = contextFactory;
+   }
 
-    @Override
-    protected void performTraversal(final ViewGroup containerView,
-                                    final TraversalState traversalState, final Direction direction,
-                                    final Flow.TraversalCallback callback) {
+   @Override
+   protected void performTraversal(final ViewGroup containerView, final TraversalState traversalState, final Direction direction, final Flow.TraversalCallback callback) {
 
-        final PathContext pathContext;
-        final PathContext oldPath;
-        if (containerView.getChildCount() > 0) {
-            oldPath = PathContext.get(containerView.getChildAt(0).getContext());
-        } else {
-            oldPath = PathContext.root(containerView.getContext());
-        }
-        //
-        Path to = traversalState.toPath();
-        //
-        View newView;
-        pathContext = PathContext.create(oldPath, to, contextFactory);
-        int layout = getLayout(to);
-        newView =
-                LayoutInflater.from(pathContext).cloneInContext(pathContext).inflate(layout, containerView, false);
-        //
-        if (newView instanceof InjectorHolder
-                && context instanceof Injector) {
-            ((InjectorHolder) newView).setInjector((Injector) context);
-        }
-        //
-        if (newView instanceof PathView)
-            ((PathView) newView).setPath(to);
-        //
-        final View fromView;
-        if (traversalState.fromPath() != null) {
-            fromView = containerView.getChildAt(0);
-            traversalState.saveViewState(fromView);
-        } else {
-            fromView = null;
-        }
-        traversalState.restoreViewState(newView);
-        //
-        if (fromView == null) {
+      final PathContext pathContext;
+      final PathContext oldPath;
+      if (containerView.getChildCount() > 0) {
+         oldPath = PathContext.get(containerView.getChildAt(0).getContext());
+      } else {
+         oldPath = PathContext.root(containerView.getContext());
+      }
+      //
+      Path to = traversalState.toPath();
+      //
+      View newView;
+      pathContext = PathContext.create(oldPath, to, contextFactory);
+      int layout = getLayout(to);
+      newView = LayoutInflater.from(pathContext).cloneInContext(pathContext).inflate(layout, containerView, false);
+      //
+      if (newView instanceof InjectorHolder && context instanceof Injector) {
+         ((InjectorHolder) newView).setInjector((Injector) context);
+      }
+      //
+      if (newView instanceof PathView) ((PathView) newView).setPath(to);
+      //
+      final View fromView;
+      if (traversalState.fromPath() != null) {
+         fromView = containerView.getChildAt(0);
+         traversalState.saveViewState(fromView);
+      } else {
+         fromView = null;
+      }
+      traversalState.restoreViewState(newView);
+      //
+      if (fromView == null) {
+         finalizeViewTransition(containerView, fromView, pathContext, oldPath, callback);
+         containerView.addView(newView);
+         return;
+      }
+      //
+      containerView.addView(newView);
+      Utils.waitForMeasure(newView, ((view, width, height) -> {
+         if (animatorRegistrar == null) {
             finalizeViewTransition(containerView, fromView, pathContext, oldPath, callback);
-            containerView.addView(newView);
             return;
-        }
-        //
-        containerView.addView(newView);
-        Utils.waitForMeasure(newView, ((view, width, height) -> {
-                    if (animatorRegistrar == null) {
-                        finalizeViewTransition(containerView, fromView, pathContext, oldPath, callback);
-                        return;
-                    }
-                    //
-                    AnimatorFactory factory = animatorRegistrar.getAnimatorFactory(traversalState.fromPath(), to);
-                    Animator animator = factory.createAnimator(fromView, newView, direction, containerView);
-                    animator.addListener(new AnimatorListenerAdapter() {
-                        @Override
-                        public void onAnimationEnd(Animator animation) {
-                            finalizeViewTransition(containerView, fromView, pathContext, oldPath, callback);
-                        }
-                    });
-                    animator.start();
-                }), view -> {
-                    finalizeViewTransition(containerView, fromView, pathContext, oldPath, callback);
-                    String logMessage = String.format(Locale.US,
-                            "Measuring new view failed: fromView = %s, newView = ",
-                            fromView.getClass(), newView.getClass());
-                    Timber.e(logMessage);
-                    Crashlytics.log(logMessage);
-                    Crashlytics.logException(new IllegalStateException("Measuring view failed"));
-                }
-        );
-    }
+         }
+         //
+         AnimatorFactory factory = animatorRegistrar.getAnimatorFactory(traversalState.fromPath(), to);
+         Animator animator = factory.createAnimator(fromView, newView, direction, containerView);
+         animator.addListener(new AnimatorListenerAdapter() {
+            @Override
+            public void onAnimationEnd(Animator animation) {
+               finalizeViewTransition(containerView, fromView, pathContext, oldPath, callback);
+            }
+         });
+         animator.start();
+      }), view -> {
+         finalizeViewTransition(containerView, fromView, pathContext, oldPath, callback);
+         String logMessage = String.format(Locale.US, "Measuring new view failed: fromView = %s, newView = ", fromView.getClass(), newView
+               .getClass());
+         Timber.e(logMessage);
+         Crashlytics.log(logMessage);
+         Crashlytics.logException(new IllegalStateException("Measuring view failed"));
+      });
+   }
 
-    private void finalizeViewTransition(ViewGroup containerView, @Nullable View fromView,
-                                        PathContext pathContext, PathContext oldPath,
-                                        Flow.TraversalCallback callback) {
-        if (fromView == null) containerView.removeAllViews();
-        else containerView.removeView(fromView);
-        oldPath.destroyNotIn(pathContext, contextFactory);
-        callback.onTraversalCompleted();
-    }
+   private void finalizeViewTransition(ViewGroup containerView, @Nullable View fromView, PathContext pathContext, PathContext oldPath, Flow.TraversalCallback callback) {
+      if (fromView == null) containerView.removeAllViews();
+      else containerView.removeView(fromView);
+      oldPath.destroyNotIn(pathContext, contextFactory);
+      callback.onTraversalCompleted();
+   }
 
-    protected int getLayout(Path path) {
-        Class pathType = path.getClass();
-        @LayoutRes Integer layoutResId = PATH_LAYOUT_CACHE.get(pathType);
-        if (layoutResId == null) {
-            layoutResId = FlowUtil.layoutFrom(pathType);
-            PATH_LAYOUT_CACHE.put(pathType, layoutResId);
-        }
-        return layoutResId;
-    }
+   protected int getLayout(Path path) {
+      Class pathType = path.getClass();
+      @LayoutRes Integer layoutResId = PATH_LAYOUT_CACHE.get(pathType);
+      if (layoutResId == null) {
+         layoutResId = FlowUtil.layoutFrom(pathType);
+         PATH_LAYOUT_CACHE.put(pathType, layoutResId);
+      }
+      return layoutResId;
+   }
 }

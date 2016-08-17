@@ -8,15 +8,15 @@ import java.util.ArrayList;
 
 public class UploadPhotosCommand extends Command<ArrayList<Photo>> {
 
-    private CreatePhotoEntity createPhotoEntity;
+   private CreatePhotoEntity createPhotoEntity;
 
-    public UploadPhotosCommand(CreatePhotoEntity createPhotoEntity) {
-        super((Class<ArrayList<Photo>>) new ArrayList<Photo>().getClass());
-        this.createPhotoEntity = createPhotoEntity;
-    }
+   public UploadPhotosCommand(CreatePhotoEntity createPhotoEntity) {
+      super((Class<ArrayList<Photo>>) new ArrayList<Photo>().getClass());
+      this.createPhotoEntity = createPhotoEntity;
+   }
 
-    @Override
-    public ArrayList<Photo> loadDataFromNetwork() throws Exception {
-        return getService().uploadPhotos(createPhotoEntity);
-    }
+   @Override
+   public ArrayList<Photo> loadDataFromNetwork() throws Exception {
+      return getService().uploadPhotos(createPhotoEntity);
+   }
 }

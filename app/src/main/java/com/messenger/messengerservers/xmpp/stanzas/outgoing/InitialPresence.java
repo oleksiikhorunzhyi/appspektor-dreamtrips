@@ -5,25 +5,25 @@ import org.jivesoftware.smack.util.XmlStringBuilder;
 
 public class InitialPresence extends Stanza {
 
-    public static final String ELEMENT = "presence";
+   public static final String ELEMENT = "presence";
 
-    private String wvApiProtocolVersion;
+   private String wvApiProtocolVersion;
 
-    public InitialPresence(String wvApiProtocolVersion) {
-        super();
-        this.wvApiProtocolVersion = wvApiProtocolVersion;
-    }
+   public InitialPresence(String wvApiProtocolVersion) {
+      super();
+      this.wvApiProtocolVersion = wvApiProtocolVersion;
+   }
 
-    @Override
-    public CharSequence toXML() {
-        XmlStringBuilder buf = new XmlStringBuilder();
-        buf.halfOpenElement(ELEMENT);
-        addCommonAttributes(buf);
-        buf.attribute("wv-protocol-version", wvApiProtocolVersion);
-        buf.rightAngleBracket();
+   @Override
+   public CharSequence toXML() {
+      XmlStringBuilder buf = new XmlStringBuilder();
+      buf.halfOpenElement(ELEMENT);
+      addCommonAttributes(buf);
+      buf.attribute("wv-protocol-version", wvApiProtocolVersion);
+      buf.rightAngleBracket();
 
-        buf.closeElement(ELEMENT);
+      buf.closeElement(ELEMENT);
 
-        return buf;
-    }
+      return buf;
+   }
 }

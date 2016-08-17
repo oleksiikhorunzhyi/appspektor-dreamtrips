@@ -17,31 +17,30 @@ import butterknife.InjectView;
 @Layout(R.layout.adapter_item_dtl_location_header_cell)
 public class DtlLocationSearchHeaderCell extends AbstractDelegateCell<DtlLocationSearchHeaderCell.HeaderModel, CellDelegate<DtlLocationSearchHeaderCell.HeaderModel>> {
 
-    @InjectView(R.id.autoDetectNearMe)
-    Button autoDetectNearMe;
+   @InjectView(R.id.autoDetectNearMe) Button autoDetectNearMe;
 
-    public DtlLocationSearchHeaderCell(View view) {
-        super(view);
-    }
+   public DtlLocationSearchHeaderCell(View view) {
+      super(view);
+   }
 
-    @Override
-    protected void syncUIStateWithModel() {
-        RxView.clicks(autoDetectNearMe)
-                .compose(RxLifecycle.bindView(itemView))
-                .throttleFirst(3L, TimeUnit.SECONDS)
-                .subscribe(aVoid -> cellDelegate.onCellClicked(getModelObject()));
+   @Override
+   protected void syncUIStateWithModel() {
+      RxView.clicks(autoDetectNearMe)
+            .compose(RxLifecycle.bindView(itemView))
+            .throttleFirst(3L, TimeUnit.SECONDS)
+            .subscribe(aVoid -> cellDelegate.onCellClicked(getModelObject()));
 
-    }
+   }
 
-    @Override
-    public void prepareForReuse() {
-    }
+   @Override
+   public void prepareForReuse() {
+   }
 
-    public static final class HeaderModel {
+   public static final class HeaderModel {
 
-        private HeaderModel() {
-        }
+      private HeaderModel() {
+      }
 
-        public static final HeaderModel INSTANCE = new HeaderModel();
-    }
+      public static final HeaderModel INSTANCE = new HeaderModel();
+   }
 }

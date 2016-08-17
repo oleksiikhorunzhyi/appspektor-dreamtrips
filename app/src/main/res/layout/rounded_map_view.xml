@@ -1,18 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.messenger.ui.widget.roundedcorners.RoundedCornersLayout
-    android:id="@+id/rounded_map_view"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    app:rcl_radius="@dimen/chat_list_image_post_rounded_corners_radius"
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:map="http://schemas.android.com/apk/res-auto">
+<com.messenger.ui.widget.roundedcorners.RoundedCornersLayout android:id="@+id/rounded_map_view"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      app:rcl_radius="@dimen/chat_list_image_post_rounded_corners_radius"
+      xmlns:android="http://schemas.android.com/apk/res/android"
+      xmlns:app="http://schemas.android.com/apk/res-auto"
+      xmlns:map="http://schemas.android.com/apk/res-auto"
+      >
 
-    <com.google.android.gms.maps.MapView
-        android:id="@+id/lite_map_view"
-        android:layout_width="@dimen/chat_image_width"
-        android:layout_height="@dimen/chat_image_height"
-        map:liteMode="true"
-        map:mapType="none"/>
+   <com.google.android.gms.maps.MapView
+         android:id="@+id/lite_map_view"
+         android:layout_width="@dimen/chat_image_width"
+         android:layout_height="@dimen/chat_image_height"
+         map:liteMode="true"
+         map:mapType="none"
+         />
 
 </com.messenger.ui.widget.roundedcorners.RoundedCornersLayout>

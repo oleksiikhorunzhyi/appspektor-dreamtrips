@@ -1,25 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    android:id="@+id/dtlLocationCellRoot"
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:background="@android:color/white"
-    android:orientation="horizontal"
-    >
+<LinearLayout android:id="@+id/dtlLocationCellRoot"
+      xmlns:android="http://schemas.android.com/apk/res/android"
+      xmlns:tools="http://schemas.android.com/tools"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:background="@android:color/white"
+      android:orientation="horizontal"
+      >
 
-    <TextView
-        android:id="@+id/city_state"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:fontFamily="sans-serif"
-        android:padding="@dimen/spacing_normal"
-        android:textColor="@android:color/black"
-        android:drawablePadding="@dimen/spacing_small"
-        android:textSize="@dimen/font_normal"
-        android:textStyle="bold"
-        tools:text="Dallas, Texas, USA"
-        />
+   <TextView
+         android:id="@+id/city_state"
+         android:layout_width="match_parent"
+         android:layout_height="wrap_content"
+         android:fontFamily="sans-serif"
+         android:padding="@dimen/spacing_normal"
+         android:textColor="@android:color/black"
+         android:drawablePadding="@dimen/spacing_small"
+         android:textSize="@dimen/font_normal"
+         android:textStyle="bold"
+         tools:text="Dallas, Texas, USA"
+         />
 
 </LinearLayout>

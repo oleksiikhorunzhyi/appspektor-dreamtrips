@@ -17,33 +17,32 @@ import butterknife.OnClick;
 @Layout(R.layout.adapter_item_dtl_location_search)
 public class DtlLocationSearchCell extends AbstractDelegateCell<DtlExternalLocation, CellDelegate<DtlExternalLocation>> {
 
-    @InjectView(R.id.locationName)
-    TextView locationName;
+   @InjectView(R.id.locationName) TextView locationName;
 
-    public DtlLocationSearchCell(View view) {
-        super(view);
-    }
+   public DtlLocationSearchCell(View view) {
+      super(view);
+   }
 
-    @Override
-    protected void syncUIStateWithModel() {
-        StringBuilder sb = new StringBuilder();
-        sb.append(getModelObject().getLongName());
-        Queryable.from(getModelObject().getLocatedIn())
-                .filter(temp -> (temp.getType() != DtlLocationType.METRO))
-                .sort(DtlExternalLocation.CATEGORY_COMPARATOR)
-                .forEachR(tempLocation -> {
-                    sb.append(", ");
-                    sb.append(tempLocation.getLongName());
-                });
-        locationName.setText(sb.toString());
-    }
+   @Override
+   protected void syncUIStateWithModel() {
+      StringBuilder sb = new StringBuilder();
+      sb.append(getModelObject().getLongName());
+      Queryable.from(getModelObject().getLocatedIn())
+            .filter(temp -> (temp.getType() != DtlLocationType.METRO))
+            .sort(DtlExternalLocation.CATEGORY_COMPARATOR)
+            .forEachR(tempLocation -> {
+               sb.append(", ");
+               sb.append(tempLocation.getLongName());
+            });
+      locationName.setText(sb.toString());
+   }
 
-    @OnClick(R.id.locationName)
-    void cellClicked() {
-        cellDelegate.onCellClicked(getModelObject());
-    }
+   @OnClick(R.id.locationName)
+   void cellClicked() {
+      cellDelegate.onCellClicked(getModelObject());
+   }
 
-    @Override
-    public void prepareForReuse() {
-    }
+   @Override
+   public void prepareForReuse() {
+   }
 }

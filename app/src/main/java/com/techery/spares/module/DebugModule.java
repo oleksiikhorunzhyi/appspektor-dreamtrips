@@ -13,9 +13,9 @@ import dagger.Provides;
 @Module(library = true, complete = false)
 public class DebugModule {
 
-    @Provides
-    @Singleton
-    public RefWatcher provideRefWatcher(Application app) {
-        return LeakCanary.install(app);
-    }
+   @Provides
+   @Singleton
+   public RefWatcher provideRefWatcher(Application app) {
+      return LeakCanary.install(app);
+   }
 }

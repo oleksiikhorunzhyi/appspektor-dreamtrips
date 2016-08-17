@@ -14,59 +14,59 @@ import java.io.Serializable;
 @DefaultSerializer(CompatibleFieldSerializer.class)
 public class Image implements Parcelable, Serializable {
 
-    public static final Creator<Image> CREATOR = new Creator<Image>() {
-        public Image createFromParcel(Parcel source) {
-            return new Image(source);
-        }
+   public static final Creator<Image> CREATOR = new Creator<Image>() {
+      public Image createFromParcel(Parcel source) {
+         return new Image(source);
+      }
 
-        public Image[] newArray(int size) {
-            return new Image[size];
-        }
-    };
+      public Image[] newArray(int size) {
+         return new Image[size];
+      }
+   };
 
-    private boolean fromFile;
-    private String url;
+   private boolean fromFile;
+   private String url;
 
-    public Image() {
-    }
+   public Image() {
+   }
 
-    private Image(Parcel in) {
-        this.url = in.readString();
-    }
+   private Image(Parcel in) {
+      this.url = in.readString();
+   }
 
-    public String getUrl() {
-        return url;
-    }
+   public String getUrl() {
+      return url;
+   }
 
-    public String getUrl(int width, int height) {
-        int size = Math.max(width, height);
-        return ImageUtils.getParametrizedUrl(url, size, size);
-    }
+   public String getUrl(int width, int height) {
+      int size = Math.max(width, height);
+      return ImageUtils.getParametrizedUrl(url, size, size);
+   }
 
-    public String getThumbUrl(Resources resources) {
-        int dimensionPixelSize = resources.getDimensionPixelSize(R.dimen.photo_thumb_size);
-        return ImageUtils.getParametrizedUrl(url, dimensionPixelSize, dimensionPixelSize);
-    }
+   public String getThumbUrl(Resources resources) {
+      int dimensionPixelSize = resources.getDimensionPixelSize(R.dimen.photo_thumb_size);
+      return ImageUtils.getParametrizedUrl(url, dimensionPixelSize, dimensionPixelSize);
+   }
 
-    public void setUrl(String url) {
-        this.url = url;
-    }
+   public void setUrl(String url) {
+      this.url = url;
+   }
 
-    public void setFromFile(boolean fromFile) {
-        this.fromFile = fromFile;
-    }
+   public void setFromFile(boolean fromFile) {
+      this.fromFile = fromFile;
+   }
 
-    public boolean isFromFile() {
-        return fromFile;
-    }
+   public boolean isFromFile() {
+      return fromFile;
+   }
 
-    @Override
-    public int describeContents() {
-        return 0;
-    }
+   @Override
+   public int describeContents() {
+      return 0;
+   }
 
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(this.url);
-    }
+   @Override
+   public void writeToParcel(Parcel dest, int flags) {
+      dest.writeString(this.url);
+   }
 }

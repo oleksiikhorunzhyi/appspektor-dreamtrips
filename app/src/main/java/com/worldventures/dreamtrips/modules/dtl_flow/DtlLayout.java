@@ -26,108 +26,106 @@ import butterknife.ButterKnife;
 import flow.path.Path;
 import timber.log.Timber;
 
-public abstract class DtlLayout<V extends DtlScreen, P extends DtlPresenter<V, ?>, T extends DtlPath>
-        extends BaseViewStateLinearLayout<V, P> implements DtlScreen, InjectorHolder, PathView<T> {
+public abstract class DtlLayout<V extends DtlScreen, P extends DtlPresenter<V, ?>, T extends DtlPath> extends BaseViewStateLinearLayout<V, P> implements DtlScreen, InjectorHolder, PathView<T> {
 
-    protected Injector injector;
-    @Inject
-    protected ActivityResultDelegate activityResultDelegate;
+   protected Injector injector;
+   @Inject protected ActivityResultDelegate activityResultDelegate;
 
-    public DtlLayout(Context context) {
-        super(context);
-    }
+   public DtlLayout(Context context) {
+      super(context);
+   }
 
-    public DtlLayout(Context context, AttributeSet attrs) {
-        super(context, attrs);
-        MonitoringHelper.startInteractionName(this);
-    }
+   public DtlLayout(Context context, AttributeSet attrs) {
+      super(context, attrs);
+      MonitoringHelper.startInteractionName(this);
+   }
 
-    @Override
-    protected void onFinishInflate() {
-        super.onFinishInflate();
-        setOrientation(VERTICAL);
-        ButterKnife.inject(this);
-    }
+   @Override
+   protected void onFinishInflate() {
+      super.onFinishInflate();
+      setOrientation(VERTICAL);
+      ButterKnife.inject(this);
+   }
 
-    @Override
-    public void setInjector(Injector injector) {
-        this.injector = injector;
-        injector.inject(this);
-    }
+   @Override
+   public void setInjector(Injector injector) {
+      this.injector = injector;
+      injector.inject(this);
+   }
 
-    @Deprecated
-    @Override
-    public void setPath(T path) {
-        // it's so sad we don't have mortar
-        // so have to postpone view manipulation
-        // till every set* method is called
-    }
+   @Deprecated
+   @Override
+   public void setPath(T path) {
+      // it's so sad we don't have mortar
+      // so have to postpone view manipulation
+      // till every set* method is called
+   }
 
-    @Override
-    public T getPath() {
-        return Path.get(getContext());
-    }
+   @Override
+   public T getPath() {
+      return Path.get(getContext());
+   }
 
-    @Nullable
-    protected AppCompatActivity getActivity() {
-        Context context = getContext();
-        while (context instanceof ContextWrapper) {
-            if (context instanceof AppCompatActivity) {
-                return (AppCompatActivity) context;
-            }
-            context = ((ContextWrapper) context).getBaseContext();
-        }
-        return null;
-    }
+   @Nullable
+   protected AppCompatActivity getActivity() {
+      Context context = getContext();
+      while (context instanceof ContextWrapper) {
+         if (context instanceof AppCompatActivity) {
+            return (AppCompatActivity) context;
+         }
+         context = ((ContextWrapper) context).getBaseContext();
+      }
+      return null;
+   }
 
-    @Override
-    public void onApiCallFailed() {
-    }
+   @Override
+   public void onApiCallFailed() {
+   }
 
-    @Override
-    public boolean onApiError(ErrorResponse errorResponse) {
-        return false;
-    }
+   @Override
+   public boolean onApiError(ErrorResponse errorResponse) {
+      return false;
+   }
 
-    public void hideSoftInput() {
-        SoftInputUtil.hideSoftInputMethod(this);
-    }
+   public void hideSoftInput() {
+      SoftInputUtil.hideSoftInputMethod(this);
+   }
 
-    @Override
-    public boolean isTabletLandscape() {
-        return ViewUtils.isTablet(getContext()) && ViewUtils.isLandscapeOrientation(getContext());
-    }
+   @Override
+   public boolean isTabletLandscape() {
+      return ViewUtils.isTablet(getContext()) && ViewUtils.isLandscapeOrientation(getContext());
+   }
 
-    @Override
-    public void informUser(String message) {
-        try {
-            Snackbar.make(this, message, Snackbar.LENGTH_SHORT).show();
-        } catch (Exception e) {
-            Crashlytics.logException(e);
-            Timber.e(e, "Exception during showing snackbar to user");
-        }
-    }
+   @Override
+   public void informUser(String message) {
+      try {
+         Snackbar.make(this, message, Snackbar.LENGTH_SHORT).show();
+      } catch (Exception e) {
+         Crashlytics.logException(e);
+         Timber.e(e, "Exception during showing snackbar to user");
+      }
+   }
 
-    @Override
-    public void informUser(@StringRes int stringResId) {
-        try {
-            Snackbar.make(this, stringResId, Snackbar.LENGTH_SHORT).show();
-        } catch (Exception e) {
-            Crashlytics.logException(e);
-            Timber.e(e, "Exception during showing snackbar to user");
-        }
-    }
+   @Override
+   public void informUser(@StringRes int stringResId) {
+      try {
+         Snackbar.make(this, stringResId, Snackbar.LENGTH_SHORT).show();
+      } catch (Exception e) {
+         Crashlytics.logException(e);
+         Timber.e(e, "Exception during showing snackbar to user");
+      }
+   }
 
-    protected boolean inflateToolbarMenu(Toolbar toolbar) {
-        if (getPresenter().getToolbarMenuRes() <= 0) {
-            return false;
-        }
-        if (toolbar.getMenu() != null) {
-            toolbar.getMenu().clear();
-        }
-        toolbar.inflateMenu(getPresenter().getToolbarMenuRes());
-        getPresenter().onToolbarMenuPrepared(toolbar.getMenu());
-        toolbar.setOnMenuItemClickListener(getPresenter()::onToolbarMenuItemClick);
-        return true;
-    }
+   protected boolean inflateToolbarMenu(Toolbar toolbar) {
+      if (getPresenter().getToolbarMenuRes() <= 0) {
+         return false;
+      }
+      if (toolbar.getMenu() != null) {
+         toolbar.getMenu().clear();
+      }
+      toolbar.inflateMenu(getPresenter().getToolbarMenuRes());
+      getPresenter().onToolbarMenuPrepared(toolbar.getMenu());
+      toolbar.setOnMenuItemClickListener(getPresenter()::onToolbarMenuItemClick);
+      return true;
+   }
 }

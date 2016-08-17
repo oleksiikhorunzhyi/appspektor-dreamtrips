@@ -14,33 +14,37 @@ import java.util.List;
 
 public interface DtlDetailsScreen extends DtlScreen {
 
-    void showEstimationDialog(PointsEstimationDialogBundle data);
+   void showEstimationDialog(PointsEstimationDialogBundle data);
 
-    void openSuggestMerchant(MerchantIdBundle data);
+   void openSuggestMerchant(MerchantIdBundle data);
 
-    void openTransaction(DtlMerchant DtlMerchant, DtlTransaction dtlTransaction);
+   void openTransaction(DtlMerchant DtlMerchant, DtlTransaction dtlTransaction);
 
-    void showSucceed(DtlMerchant DtlMerchant, DtlTransaction dtlTransaction);
+   void showSucceed(DtlMerchant DtlMerchant, DtlTransaction dtlTransaction);
 
-    void setTransaction(DtlTransaction dtlTransaction);
+   void setTransaction(DtlTransaction dtlTransaction);
 
-    void setSuggestMerchantButtonAvailable(boolean available);
+   void setSuggestMerchantButtonAvailable(boolean available);
 
-    void share(DtlMerchant merchant);
+   void share(DtlMerchant merchant);
 
-    void locationResolutionRequired(Status status);
+   void locationResolutionRequired(Status status);
 
-    void enableCheckinButton();
+   void enableCheckinButton();
 
-    void disableCheckinButton();
+   void disableCheckinButton();
 
-    void showMerchantMap(@Nullable Intent intent);
+   void showMerchantMap(@Nullable Intent intent);
 
-    void setMerchant(DtlMerchant merchant);
+   void setMerchant(DtlMerchant merchant);
 
-    void setMap(DtlMerchant merchant);
+   void setMap(DtlMerchant merchant);
 
-    void expandOffers(List<Integer> positions);
+   void expandOffers(List<Integer> positions);
 
-    List<Integer> getExpandedOffers();
+   void expandHoursView();
+
+   List<Integer> getExpandedOffers();
+
+   boolean isHoursViewExpanded();
 }

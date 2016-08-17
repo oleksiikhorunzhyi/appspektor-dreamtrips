@@ -1,90 +1,99 @@
 <FrameLayout android:id="@+id/bucket_cell_root"
-             xmlns:android="http://schemas.android.com/apk/res/android"
-             android:layout_width="match_parent"
-             android:layout_height="wrap_content"
-             android:clickable="true">
+      xmlns:android="http://schemas.android.com/apk/res/android"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:clickable="true"
+      >
 
-    <com.daimajia.swipe.SwipeLayout
-        android:id="@+id/swipeLayout"
-        xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:app="http://schemas.android.com/apk/res-auto"
-        xmlns:tools="http://schemas.android.com/tools"
-        android:layout_width="match_parent"
-        android:layout_height="48dp"
-        app:drag_edge="left"
-        app:show_mode="pull_out">
+   <com.daimajia.swipe.SwipeLayout android:id="@+id/swipeLayout"
+         xmlns:android="http://schemas.android.com/apk/res/android"
+         xmlns:app="http://schemas.android.com/apk/res-auto"
+         xmlns:tools="http://schemas.android.com/tools"
+         android:layout_width="match_parent"
+         android:layout_height="48dp"
+         app:drag_edge="left"
+         app:show_mode="pull_out"
+         >
 
-        <FrameLayout
+      <FrameLayout
             android:id="@+id/bottom_wrapper"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="horizontal"
             android:paddingEnd="10dp"
-            android:paddingRight="10dp">
-            <!--What you want to show-->
-            <ImageView
-                android:id="@+id/imageViewStatusDone"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:layout_gravity="end"
-                android:src="@drawable/ic_bucket_cell_done"/>
+            android:paddingRight="10dp"
+            >
+         <!--What you want to show-->
+         <ImageView
+               android:id="@+id/imageViewStatusDone"
+               android:layout_width="wrap_content"
+               android:layout_height="match_parent"
+               android:layout_gravity="end"
+               android:src="@drawable/ic_bucket_cell_done"
+               />
 
-            <ImageView
-                android:id="@+id/imageViewStatusClose"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:layout_gravity="end"
-                android:src="@drawable/ic_bucket_item_delete"
-                android:visibility="invisible"/>
-        </FrameLayout>
+         <ImageView
+               android:id="@+id/imageViewStatusClose"
+               android:layout_width="wrap_content"
+               android:layout_height="match_parent"
+               android:layout_gravity="end"
+               android:src="@drawable/ic_bucket_item_delete"
+               android:visibility="invisible"
+               />
+      </FrameLayout>
 
-        <RelativeLayout
+      <RelativeLayout
             android:id="@+id/container_main"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:background="@drawable/bucket_item_selector"
-            tools:ignore="UselessParent">
+            tools:ignore="UselessParent"
+            >
 
-            <View
-                android:id="@+id/drag_handle"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_alignParentLeft="true"
-                android:layout_alignParentTop="true"
-                android:background="#20000000"/>
+         <View
+               android:id="@+id/drag_handle"
+               android:layout_width="0dp"
+               android:layout_height="match_parent"
+               android:layout_alignParentLeft="true"
+               android:layout_alignParentTop="true"
+               android:background="#20000000"
+               />
 
-            <FrameLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_toEndOf="@+id/drag_handle"
-                android:layout_toLeftOf="@+id/button_cancel"
-                android:layout_toRightOf="@+id/drag_handle"
-                android:animateLayoutChanges="true"
-                android:paddingLeft="8dp"
-                android:paddingStart="8dp">
+         <FrameLayout
+               android:layout_width="match_parent"
+               android:layout_height="match_parent"
+               android:layout_toEndOf="@+id/drag_handle"
+               android:layout_toLeftOf="@+id/button_cancel"
+               android:layout_toRightOf="@+id/drag_handle"
+               android:animateLayoutChanges="true"
+               android:paddingLeft="8dp"
+               android:paddingStart="8dp"
+               >
 
-                <TextView
-                    android:id="@+id/textViewName"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:duplicateParentState="true"
-                    android:gravity="center_vertical"
-                    android:singleLine="true"
-                    android:textSize="18sp"
-                    tools:ignore="RtlHardcoded"/>
+            <TextView
+                  android:id="@+id/textViewName"
+                  android:layout_width="match_parent"
+                  android:layout_height="match_parent"
+                  android:duplicateParentState="true"
+                  android:gravity="center_vertical"
+                  android:singleLine="true"
+                  android:textSize="18sp"
+                  tools:ignore="RtlHardcoded"
+                  />
 
-            </FrameLayout>
+         </FrameLayout>
 
-            <ImageView
-                android:id="@+id/button_cancel"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentEnd="true"
-                android:layout_alignParentRight="true"
-                android:layout_centerVertical="true"
-                android:src="@drawable/ic_bucket_arrow_right"
-                android:padding="10dp"/>
+         <ImageView
+               android:id="@+id/button_cancel"
+               android:layout_width="wrap_content"
+               android:layout_height="wrap_content"
+               android:layout_alignParentEnd="true"
+               android:layout_alignParentRight="true"
+               android:layout_centerVertical="true"
+               android:src="@drawable/ic_bucket_arrow_right"
+               android:padding="10dp"
+               />
 
-        </RelativeLayout>
-    </com.daimajia.swipe.SwipeLayout>
+      </RelativeLayout>
+   </com.daimajia.swipe.SwipeLayout>
 </FrameLayout>

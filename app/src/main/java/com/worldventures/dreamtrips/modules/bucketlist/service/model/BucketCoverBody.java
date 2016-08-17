@@ -8,6 +8,6 @@ import org.immutables.value.Value;
 @Value.Immutable
 @Gson.TypeAdapters
 public abstract class BucketCoverBody extends BucketBody {
-    @SerializedName("cover_photo_id")
-    public abstract String coverId();
+   @SerializedName("cover_photo_id")
+   public abstract String coverId();
 }

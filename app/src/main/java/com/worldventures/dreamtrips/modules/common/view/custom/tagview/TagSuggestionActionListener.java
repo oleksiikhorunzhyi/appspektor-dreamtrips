@@ -4,5 +4,5 @@ import com.worldventures.dreamtrips.modules.common.view.custom.tagview.viewgroup
 
 public interface TagSuggestionActionListener extends TagActionListener {
 
-    void onFrameClicked(PhotoTag tag);
+   void onFrameClicked(PhotoTag tag);
 }

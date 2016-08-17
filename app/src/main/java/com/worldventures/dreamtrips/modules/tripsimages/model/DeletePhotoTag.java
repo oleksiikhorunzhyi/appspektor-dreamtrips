@@ -5,17 +5,17 @@ import java.util.List;
 
 public class DeletePhotoTag {
 
-    private List<Integer> userIds;
+   private List<Integer> userIds;
 
-    public DeletePhotoTag() {
-        userIds = new ArrayList<>();
-    }
+   public DeletePhotoTag() {
+      userIds = new ArrayList<>();
+   }
 
-    public DeletePhotoTag(List<Integer> userIds) {
-        this.userIds = userIds;
-    }
+   public DeletePhotoTag(List<Integer> userIds) {
+      this.userIds = userIds;
+   }
 
-    public void addUserId(int userId) {
-        userIds.add(userId);
-    }
+   public void addUserId(int userId) {
+      userIds.add(userId);
+   }
 }

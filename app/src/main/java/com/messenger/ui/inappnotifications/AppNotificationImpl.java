@@ -9,47 +9,47 @@ import com.worldventures.dreamtrips.App;
 
 public class AppNotificationImpl implements AppNotification {
 
-    private static final int SHOWING_DURATION = 3000;
-    private static final int PRIORITY_NORMAL = 0;
-    private int currentMessagePriority = PRIORITY_NORMAL;
+   private static final int SHOWING_DURATION = 3000;
+   private static final int PRIORITY_NORMAL = 0;
+   private int currentMessagePriority = PRIORITY_NORMAL;
 
-    public AppNotificationImpl(App app) {
-    }
+   public AppNotificationImpl(App app) {
+   }
 
-    @Override
-    public void show(Activity activity, BaseInAppNotificationView view, final InAppNotificationEventListener listener) {
-        final AppMsg appMsg = AppMsg.showCustomView(activity, view, SHOWING_DURATION, currentMessagePriority--);
-        appMsg.show();
+   @Override
+   public void show(Activity activity, BaseInAppNotificationView view, final InAppNotificationEventListener listener) {
+      final AppMsg appMsg = AppMsg.showCustomView(activity, view, SHOWING_DURATION, currentMessagePriority--);
+      appMsg.show();
 
-        view.setListener(new InAppNotificationViewListener() {
-            @Override
-            public void onClick() {
-                appMsg.cancel();
-                if (listener != null) {
-                    listener.onClick();
-                }
+      view.setListener(new InAppNotificationViewListener() {
+         @Override
+         public void onClick() {
+            appMsg.cancel();
+            if (listener != null) {
+               listener.onClick();
             }
+         }
 
-            @Override
-            public void onCloseClick() {
-                appMsg.cancel();
-                if (listener != null) {
-                    listener.onClose();
-                }
+         @Override
+         public void onCloseClick() {
+            appMsg.cancel();
+            if (listener != null) {
+               listener.onClose();
             }
+         }
 
-            @Override
-            public void onCloseSwipe() {
-                appMsg.cancel();
-                if (listener != null) {
-                    listener.onClose();
-                }
+         @Override
+         public void onCloseSwipe() {
+            appMsg.cancel();
+            if (listener != null) {
+               listener.onClose();
             }
-        });
-    }
+         }
+      });
+   }
 
-    @Override
-    public void dismissForActivity(Activity activity) {
-        AppMsg.cancelAll(activity);
-    }
+   @Override
+   public void dismissForActivity(Activity activity) {
+      AppMsg.cancelAll(activity);
+   }
 }

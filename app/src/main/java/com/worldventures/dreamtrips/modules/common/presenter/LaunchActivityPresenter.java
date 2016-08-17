@@ -1,16 +1,19 @@
 package com.worldventures.dreamtrips.modules.common.presenter;
 
-import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+import android.text.TextUtils;
 
-import com.github.pwittchen.networkevents.library.BusWrapper;
-import com.github.pwittchen.networkevents.library.ConnectivityStatus;
-import com.github.pwittchen.networkevents.library.NetworkEvents;
-import com.github.pwittchen.networkevents.library.event.ConnectivityChanged;
-import com.worldventures.dreamtrips.core.api.AuthRetryPolicy;
+import com.messenger.synchmechanism.MessengerConnector;
+import com.techery.spares.utils.ValidationUtils;
+import com.worldventures.dreamtrips.core.navigation.ActivityRouter;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
-import com.worldventures.dreamtrips.modules.common.presenter.delegate.AuthorizedDataManager;
+import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
+import com.worldventures.dreamtrips.modules.auth.api.command.LoginCommand;
+import com.worldventures.dreamtrips.modules.auth.api.command.UpdateAuthInfoCommand;
+import com.worldventures.dreamtrips.modules.auth.service.AuthInteractor;
+import com.worldventures.dreamtrips.modules.auth.service.LoginInteractor;
+import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.common.presenter.delegate.ClearDirectoryDelegate;
-import com.worldventures.dreamtrips.modules.common.presenter.delegate.SessionAbsentException;
 import com.worldventures.dreamtrips.modules.common.view.ApiErrorView;
 import com.worldventures.dreamtrips.modules.common.view.util.DrawableUtil;
 import com.worldventures.dreamtrips.modules.dtl.model.location.DtlLocation;
@@ -19,136 +22,122 @@ import com.worldventures.dreamtrips.modules.dtl.service.action.DtlLocationComman
 
 import javax.inject.Inject;
 
-import de.greenrobot.event.EventBus;
+import io.techery.janet.helper.ActionStateSubscriber;
+import rx.android.schedulers.AndroidSchedulers;
 
-import static com.github.pwittchen.networkevents.library.ConnectivityStatus.MOBILE_CONNECTED;
-import static com.github.pwittchen.networkevents.library.ConnectivityStatus.WIFI_CONNECTED;
-import static com.github.pwittchen.networkevents.library.ConnectivityStatus.WIFI_CONNECTED_HAS_INTERNET;
+import static com.worldventures.dreamtrips.util.ValidationUtils.isPasswordValid;
+import static com.worldventures.dreamtrips.util.ValidationUtils.isUsernameValid;
 
 public class LaunchActivityPresenter extends ActivityPresenter<LaunchActivityPresenter.View> {
 
-    @Inject
-    SnappyRepository snappyRepository;
-    @Inject
-    ClearDirectoryDelegate clearTemporaryDirectoryDelegate;
-    @Inject
-    DrawableUtil drawableUtil;
-    @Inject
-    SnappyRepository db;
-    @Inject
-    DtlLocationInteractor dtlLocationInteractor;
-    @Inject
-    AuthorizedDataManager authorizedDataManager;
+   @Inject SnappyRepository snappyRepository;
+   @Inject ClearDirectoryDelegate clearTemporaryDirectoryDelegate;
+   @Inject DrawableUtil drawableUtil;
+   @Inject SnappyRepository db;
+   @Inject DtlLocationInteractor dtlLocationInteractor;
+   @Inject LoginInteractor loginInteractor;
+   @Inject MessengerConnector messengerConnector;
+   @Inject AuthInteractor authInteractor;
 
-    private AuthorizedDataManager.AuthDataSubscriber authDataSubscriber;
+   public void detectMode(@Nullable String type) {
+      if (TextUtils.isEmpty(type)) {
+         splashMode();
+         return;
+      }
+      switch (type) {
+         case ActivityRouter.LAUNCH_LOGIN:
+            loginMode();
+            break;
+         case ActivityRouter.LAUNCH_SPLASH:
+         default:
+            splashMode();
+            break;
+      }
+   }
 
-    private NetworkEvents networkEvents;
+   private void splashMode() {
+      view.openSplash();
+      clearTemporaryDirectoryDelegate.clearTemporaryDirectory();
+      drawableUtil.removeCacheImages();
+      startPreloadChain();
+   }
 
-    private AuthorizedDataManager.AuthDataSubscriber getAuthDataSubscriber() {
-        if (authDataSubscriber == null || authDataSubscriber.isUnsubscribed()) {
-            authDataSubscriber = new AuthorizedDataManager.AuthDataSubscriber()
-                    .onStart(this::onAuthStart)
-                    .onSuccess(this::onAuthSuccess)
-                    .onFail(this::onAuthFail);
-        }
-        return authDataSubscriber;
-    }
+   private void loginMode() {
+      view.openLogin();
+   }
 
-    @Override
-    public void takeView(View view) {
-        super.takeView(view);
-        clearTemporaryDirectoryDelegate.clearTemporaryDirectory();
-        drawableUtil.removeCacheImages();
-        BusWrapper busWrapper = getGreenRobotBusWrapper(eventBus);
-        networkEvents = new NetworkEvents(context, busWrapper).enableWifiScan();
-        networkEvents.register();
+   @Override
+   protected boolean canShowTermsDialog() {
+      return false;
+   }
 
-        startPreloadChain();
-    }
+   public void initDtl() {
+      db.cleanLastSelectedOffersOnlyToggle();
+      db.cleanLastMapCameraPosition();
+      dtlLocationInteractor.locationPipe().send(DtlLocationCommand.change(DtlLocation.UNDEFINED));
+   }
 
-    @Override
-    public void onResume() {
-        super.onResume();
-        authorizedDataManager.updateData(getAuthDataSubscriber());
-    }
+   public void loginAction() {
+      String username = view.getUsername();
+      String userPassword = view.getUserPassword();
 
-    @Override
-    public void dropView() {
-        super.dropView();
-        networkEvents.unregister();
-        if (authorizedDataManager != null) authorizedDataManager.unsubscribe();
-    }
+      ValidationUtils.VResult usernameValid = isUsernameValid(username);
+      ValidationUtils.VResult passwordValid = isPasswordValid(userPassword);
 
-    public void initDtl() {
-        db.cleanLastSelectedOffersOnlyToggle();
-        db.cleanLastMapCameraPosition();
-        dtlLocationInteractor.locationPipe().send(DtlLocationCommand.change(DtlLocation.UNDEFINED));
-    }
+      if (!usernameValid.isValid() || !passwordValid.isValid()) {
+         view.showLocalErrors(usernameValid.getMessage(), passwordValid.getMessage());
+         return;
+      }
 
-    public void onEvent(ConnectivityChanged event) {
-        ConnectivityStatus status = event.getConnectivityStatus();
-        boolean internetConnected = status == MOBILE_CONNECTED || status == WIFI_CONNECTED_HAS_INTERNET || status == WIFI_CONNECTED;
-        if (internetConnected) {
-            authorizedDataManager.updateData(getAuthDataSubscriber());
-        }
-    }
+      loginInteractor.loginActionPipe()
+            .createObservable(new LoginCommand(username, userPassword))
+            .observeOn(AndroidSchedulers.mainThread())
+            .compose(bindView())
+            .subscribe(new ActionStateSubscriber<LoginCommand>().onStart(loginCommand -> view.showLoginProgress())
+                  .onSuccess(loginCommand -> {
+                     User user = loginCommand.getResult().getUser();
+                     TrackingHelper.login(user.getEmail());
+                     TrackingHelper.setUserId(Integer.toString(user.getId()));
+                     splashMode();
+                  })
+                  .onFail((loginCommand, throwable) -> {
+                     TrackingHelper.loginError();
+                     view.alertLogin(loginCommand.getErrorMessage());
+                  }));
 
-    @Override
-    protected boolean canShowTermsDialog() {
-        return false;
-    }
+   }
 
-    @NonNull
-    private BusWrapper getGreenRobotBusWrapper(final EventBus bus) {
-        return new BusWrapper() {
-            @Override
-            public void register(Object object) {
-                bus.register(object);
-            }
+   public void startPreloadChain() {
+      authInteractor.updateAuthInfoCommandActionPipe()
+            .createObservable(new UpdateAuthInfoCommand())
+            .observeOn(AndroidSchedulers.mainThread())
+            .compose(bindView())
+            .subscribe(new ActionStateSubscriber<UpdateAuthInfoCommand>().onSuccess(updateAuthInfoCommand -> onAuthSuccess())
+                  .onFail((updateAuthInfoCommand, throwable) -> loginMode()));
+   }
 
-            @Override
-            public void unregister(Object object) {
-                bus.unregister(object);
-            }
+   private void onAuthSuccess() {
+      TrackingHelper.setUserId(Integer.toString(appSessionHolder.get().get().getUser().getId()));
+      messengerConnector.connect();
+      view.openMain();
+   }
 
-            @Override
-            public void post(Object event) {
-                bus.post(event);
-            }
-        };
-    }
+   public interface View extends ActivityPresenter.View, ApiErrorView {
 
-    public void startPreloadChain() {
-        authorizedDataManager.updateData(getAuthDataSubscriber());
-    }
+      void openLogin();
 
-    private void onAuthStart() {
-        if (view != null) view.configurationStarted();
-    }
+      void openSplash();
 
-    private void onAuthSuccess() {
-        if (view != null) view.openMain();
-    }
+      void openMain();
 
-    private void onAuthFail(Throwable throwable) {
-        if (view == null) return;
+      void alertLogin(String message);
 
-        if (throwable instanceof SessionAbsentException || AuthRetryPolicy.isLoginError(throwable)) {
-            view.openLogin();
-        } else {
-            view.informUser(new HumaneErrorTextFactory().create(throwable));
-            view.configurationFailed();
-        }
-    }
+      void showLoginProgress();
 
-    public interface View extends ActivityPresenter.View, ApiErrorView {
+      void showLocalErrors(int userNameError, int passwordError);
 
-        void configurationFailed();
+      String getUsername();
 
-        void configurationStarted();
-
-        void openLogin();
-
-        void openMain();
-    }
+      String getUserPassword();
+   }
 }

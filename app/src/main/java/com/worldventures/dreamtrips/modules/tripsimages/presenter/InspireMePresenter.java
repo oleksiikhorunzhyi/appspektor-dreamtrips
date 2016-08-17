@@ -8,20 +8,20 @@ import com.worldventures.dreamtrips.modules.tripsimages.model.TripImagesType;
 import java.util.ArrayList;
 
 public class InspireMePresenter extends TripImagesListPresenter<TripImagesListPresenter.View> {
-    protected double randomSeed;
+   protected double randomSeed;
 
-    public InspireMePresenter(int userId) {
-        super(TripImagesType.INSPIRE_ME, userId);
-    }
+   public InspireMePresenter(int userId) {
+      super(TripImagesType.INSPIRE_ME, userId);
+   }
 
-    @Override
-    public SpiceRequest<ArrayList<IFullScreenObject>> getReloadRequest() {
-        randomSeed = Math.random();
-        return new GetInspireMePhotosQuery(PER_PAGE, 1, randomSeed);
-    }
+   @Override
+   public SpiceRequest<ArrayList<IFullScreenObject>> getReloadRequest() {
+      randomSeed = Math.random();
+      return new GetInspireMePhotosQuery(PER_PAGE, 1, randomSeed);
+   }
 
-    @Override
-    public SpiceRequest<ArrayList<IFullScreenObject>> getNextPageRequest(int currentCount) {
-        return new GetInspireMePhotosQuery(PER_PAGE, currentCount / PER_PAGE + 1, randomSeed);
-    }
+   @Override
+   public SpiceRequest<ArrayList<IFullScreenObject>> getNextPageRequest(int currentCount) {
+      return new GetInspireMePhotosQuery(PER_PAGE, currentCount / PER_PAGE + 1, randomSeed);
+   }
 }

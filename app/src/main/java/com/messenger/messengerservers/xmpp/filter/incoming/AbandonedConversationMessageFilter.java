@@ -12,31 +12,31 @@ import rx.Observable;
 
 public class AbandonedConversationMessageFilter extends BaseIncomingMessageFilter {
 
-    private LoadConversationDelegate loadConversationDelegate;
+   private LoadConversationDelegate loadConversationDelegate;
 
-    public AbandonedConversationMessageFilter(LoadConversationDelegate loadConversationDelegate) {
-        this.loadConversationDelegate = loadConversationDelegate;
-    }
+   public AbandonedConversationMessageFilter(LoadConversationDelegate loadConversationDelegate) {
+      this.loadConversationDelegate = loadConversationDelegate;
+   }
 
-    @Override
-    public Observable<Boolean> skipMessage(int type, Message message) {
-        switch (type) {
-            case XmppPacketDetector.EXTENTION_STATUS:
-                if (message.getType() != org.jivesoftware.smack.packet.Message.Type.chat) {
-                    String conversationId = JidCreatorHelper.obtainId(message.getFrom());
-                    return checkIfAbandonedConversation(conversationId);
-                }
-                break;
-            case XmppPacketDetector.MESSAGE:
-                return checkIfAbandonedConversation(message.getThread());
-        }
-        return Observable.just(false);
-    }
+   @Override
+   public Observable<Boolean> skipMessage(int type, Message message) {
+      switch (type) {
+         case XmppPacketDetector.EXTENTION_STATUS:
+            if (message.getType() != org.jivesoftware.smack.packet.Message.Type.chat) {
+               String conversationId = JidCreatorHelper.obtainId(message.getFrom());
+               return checkIfAbandonedConversation(conversationId);
+            }
+            break;
+         case XmppPacketDetector.MESSAGE:
+            return checkIfAbandonedConversation(message.getThread());
+      }
+      return Observable.just(false);
+   }
 
-    public Observable<Boolean> checkIfAbandonedConversation(String conversationId) {
-        return loadConversationDelegate.loadConversationFromDb(conversationId)
-                .compose(new NonNullFilter<>())
-                .switchIfEmpty(loadConversationDelegate.loadConversationFromNetworkAndRefreshFromDb(conversationId))
-                .map(ConversationHelper::isAbandoned);
-    }
+   public Observable<Boolean> checkIfAbandonedConversation(String conversationId) {
+      return loadConversationDelegate.loadConversationFromDb(conversationId)
+            .compose(new NonNullFilter<>())
+            .switchIfEmpty(loadConversationDelegate.loadConversationFromNetworkAndRefreshFromDb(conversationId))
+            .map(ConversationHelper::isAbandoned);
+   }
 }

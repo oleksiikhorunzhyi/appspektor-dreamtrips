@@ -1,27 +1,29 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+      xmlns:app="http://schemas.android.com/apk/res-auto"
+      xmlns:tools="http://schemas.android.com/tools"
 
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:orientation="vertical">
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:orientation="vertical"
+      >
 
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal">
+   <RelativeLayout
+         android:layout_width="match_parent"
+         android:layout_height="wrap_content"
+         android:orientation="horizontal"
+         >
 
-        <com.facebook.drawee.view.SimpleDraweeView
+      <com.facebook.drawee.view.SimpleDraweeView
             android:id="@+id/user_cover"
             android:layout_width="match_parent"
             android:layout_height="100dp"
             android:layout_alignParentTop="true"
             app:placeholderImage="@drawable/ic_cover_place_holder"
-            app:placeholderImageScaleType="centerCrop"/>
+            app:placeholderImageScaleType="centerCrop"
+            />
 
-        <com.worldventures.dreamtrips.modules.common.view.custom.SmartAvatarView
+      <com.worldventures.dreamtrips.modules.common.view.custom.SmartAvatarView
             android:id="@+id/user_photo"
             android:layout_width="64dp"
             android:layout_height="64dp"
@@ -29,167 +31,188 @@
             android:layout_centerVertical="true"
             android:layout_margin="@dimen/spacing_normal"
             app:placeholderImage="@drawable/ic_avatar_placeholder"
-            app:roundAsCircle="true"/>
+            app:roundAsCircle="true"
+            />
 
-        <LinearLayout
+      <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
             android:layout_toRightOf="@+id/user_photo"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            >
 
-            <TextView
-                android:id="@+id/user_name"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textColor="@color/white"
-                android:textSize="@dimen/font_large"
-                tools:text="Nicole Bishop"/>
+         <TextView
+               android:id="@+id/user_name"
+               android:layout_width="wrap_content"
+               android:layout_height="wrap_content"
+               android:textColor="@color/white"
+               android:textSize="@dimen/font_large"
+               tools:text="Nicole Bishop"
+               />
 
-            <TextView
-                android:id="@+id/company_name"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textColor="@color/white"
-                android:textSize="@dimen/font_normal"
-                tools:text="Worldventures"/>
+         <TextView
+               android:id="@+id/company_name"
+               android:layout_width="wrap_content"
+               android:layout_height="wrap_content"
+               android:textColor="@color/white"
+               android:textSize="@dimen/font_normal"
+               tools:text="Worldventures"
+               />
 
-            <TextView
-                android:id="@+id/account_type"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textColor="@color/white"
-                android:textSize="@dimen/font_normal"
-                tools:text="Platinum"/>
-        </LinearLayout>
-    </RelativeLayout>
+         <TextView
+               android:id="@+id/account_type"
+               android:layout_width="wrap_content"
+               android:layout_height="wrap_content"
+               android:textColor="@color/white"
+               android:textSize="@dimen/font_normal"
+               tools:text="Platinum"
+               />
+      </LinearLayout>
+   </RelativeLayout>
 
-    <LinearLayout
-        android:id="@+id/details"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical"
-        android:visibility="gone">
+   <LinearLayout
+         android:id="@+id/details"
+         android:layout_width="match_parent"
+         android:layout_height="match_parent"
+         android:orientation="vertical"
+         android:visibility="gone"
+         >
 
-        <LinearLayout
+      <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:padding="@dimen/spacing_normal">
+            android:padding="@dimen/spacing_normal"
+            >
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:orientation="horizontal">
+         <LinearLayout
+               android:layout_width="match_parent"
+               android:layout_height="match_parent"
+               android:orientation="horizontal"
+               >
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/dream_trips_points"
-                    android:textColor="@color/black"
-                    android:textSize="@dimen/font_normal"/>
+            <TextView
+                  android:layout_width="wrap_content"
+                  android:layout_height="wrap_content"
+                  android:text="@string/dream_trips_points"
+                  android:textColor="@color/black"
+                  android:textSize="@dimen/font_normal"
+                  />
 
-                <TextView
-                    android:id="@+id/dt_points"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="@dimen/spacing_small"
-                    android:drawableLeft="@drawable/ic_profile_dt_points"
-                    android:drawablePadding="@dimen/spacing_small"
-                    android:textColor="@color/black"
-                    android:textSize="@dimen/font_normal"
-                    tools:text="1254"/>
-            </LinearLayout>
+            <TextView
+                  android:id="@+id/dt_points"
+                  android:layout_width="wrap_content"
+                  android:layout_height="wrap_content"
+                  android:layout_marginLeft="@dimen/spacing_small"
+                  android:drawableLeft="@drawable/ic_profile_dt_points"
+                  android:drawablePadding="@dimen/spacing_small"
+                  android:textColor="@color/black"
+                  android:textSize="@dimen/font_normal"
+                  tools:text="1254"
+                  />
+         </LinearLayout>
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_marginTop="@dimen/spacing_small"
-                android:orientation="horizontal">
+         <LinearLayout
+               android:layout_width="match_parent"
+               android:layout_height="match_parent"
+               android:layout_marginTop="@dimen/spacing_small"
+               android:orientation="horizontal"
+               >
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/rovia_bucks"
-                    android:textColor="@color/black"
-                    android:textSize="@dimen/font_normal"/>
+            <TextView
+                  android:layout_width="wrap_content"
+                  android:layout_height="wrap_content"
+                  android:text="@string/rovia_bucks"
+                  android:textColor="@color/black"
+                  android:textSize="@dimen/font_normal"
+                  />
 
-                <TextView
-                    android:id="@+id/rovia_bucks"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="@dimen/spacing_small"
-                    android:drawableLeft="@drawable/ic_profile_r_bucks"
-                    android:drawablePadding="@dimen/spacing_small"
-                    android:textColor="@color/black"
-                    android:textSize="@dimen/font_normal"
-                    tools:text="564"/>
+            <TextView
+                  android:id="@+id/rovia_bucks"
+                  android:layout_width="wrap_content"
+                  android:layout_height="wrap_content"
+                  android:layout_marginLeft="@dimen/spacing_small"
+                  android:drawableLeft="@drawable/ic_profile_r_bucks"
+                  android:drawablePadding="@dimen/spacing_small"
+                  android:textColor="@color/black"
+                  android:textSize="@dimen/font_normal"
+                  tools:text="564"
+                  />
 
-            </LinearLayout>
-        </LinearLayout>
+         </LinearLayout>
+      </LinearLayout>
 
-        <View
+      <View
             android:layout_width="match_parent"
             android:layout_height="1dp"
-            android:background="@android:color/darker_gray"/>
+            android:background="@android:color/darker_gray"
+            />
 
-        <LinearLayout
+      <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@color/grey_lighter"
             android:gravity="center_horizontal"
-            android:orientation="horizontal">
+            android:orientation="horizontal"
+            >
 
-            <LinearLayout
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:gravity="center">
+         <LinearLayout
+               android:layout_width="0dp"
+               android:layout_height="wrap_content"
+               android:layout_weight="1"
+               android:gravity="center"
+               >
 
-                <TextView
-                    android:id="@+id/share_post"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:drawableLeft="@drawable/ic_profile_post_normal"
-                    android:gravity="center"
-                    android:padding="@dimen/spacing_medium"
-                    android:text="@string/feed_share_post"
-                    android:textSize="@dimen/font_normal"/>
-            </LinearLayout>
+            <TextView
+                  android:id="@+id/share_post"
+                  android:layout_width="wrap_content"
+                  android:layout_height="wrap_content"
+                  android:drawableLeft="@drawable/ic_profile_post_normal"
+                  android:gravity="center"
+                  android:padding="@dimen/spacing_medium"
+                  android:text="@string/feed_share_post"
+                  android:textSize="@dimen/font_normal"
+                  />
+         </LinearLayout>
 
-            <View
-                android:layout_width="1dp"
-                android:layout_height="match_parent"
-                android:layout_marginBottom="@dimen/spacing_tiny"
-                android:layout_marginTop="@dimen/spacing_tiny"
-                android:background="@android:color/darker_gray"/>
+         <View
+               android:layout_width="1dp"
+               android:layout_height="match_parent"
+               android:layout_marginBottom="@dimen/spacing_tiny"
+               android:layout_marginTop="@dimen/spacing_tiny"
+               android:background="@android:color/darker_gray"
+               />
 
-            <LinearLayout
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:gravity="center">
+         <LinearLayout
+               android:layout_width="0dp"
+               android:layout_height="wrap_content"
+               android:layout_weight="1"
+               android:gravity="center"
+               >
 
-                <TextView
-                    android:id="@+id/share_photo"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:drawableLeft="@drawable/ic_post_add_image_normal"
-                    android:gravity="center"
-                    android:padding="@dimen/spacing_medium"
-                    android:text="@string/feed_share_photos"
-                    android:textSize="@dimen/font_normal"/>
-            </LinearLayout>
-        </LinearLayout>
-    </LinearLayout>
+            <TextView
+                  android:id="@+id/share_photo"
+                  android:layout_width="wrap_content"
+                  android:layout_height="wrap_content"
+                  android:drawableLeft="@drawable/ic_post_add_image_normal"
+                  android:gravity="center"
+                  android:padding="@dimen/spacing_medium"
+                  android:text="@string/feed_share_photos"
+                  android:textSize="@dimen/font_normal"
+                  />
+         </LinearLayout>
+      </LinearLayout>
+   </LinearLayout>
 
-    <TextView
-        android:id="@+id/view_profile"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
-        android:padding="@dimen/spacing_medium"
-        android:text="@string/feed_view_profile_btn"
-        android:textSize="@dimen/font_large"
-        android:visibility="gone"/>
+   <TextView
+         android:id="@+id/view_profile"
+         android:layout_width="wrap_content"
+         android:layout_height="wrap_content"
+         android:layout_gravity="center_horizontal"
+         android:padding="@dimen/spacing_medium"
+         android:text="@string/feed_view_profile_btn"
+         android:textSize="@dimen/font_large"
+         android:visibility="gone"
+         />
 </LinearLayout>

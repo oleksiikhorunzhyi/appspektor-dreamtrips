@@ -1,21 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:background="#ffc1c1c1"
-    android:orientation="vertical">
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:background="#ffc1c1c1"
+      android:orientation="vertical"
+      >
 
-    <TextView
-        android:id="@+id/tv_title"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="1dp"
-        android:layout_marginTop="1dp"
-        android:background="#fff4f4f4"
-        android:paddingLeft="16dp"
-        android:paddingTop="14dp"
-        android:paddingBottom="14dp"
-        android:singleLine="true"
-        android:textSize="18dp"
-        android:textColor="@color/theme_main_darker" />
+   <TextView
+         android:id="@+id/tv_title"
+         android:layout_width="match_parent"
+         android:layout_height="wrap_content"
+         android:layout_marginBottom="1dp"
+         android:layout_marginTop="1dp"
+         android:background="#fff4f4f4"
+         android:paddingLeft="16dp"
+         android:paddingTop="14dp"
+         android:paddingBottom="14dp"
+         android:singleLine="true"
+         android:textSize="18dp"
+         android:textColor="@color/theme_main_darker"
+         />
 </LinearLayout>

@@ -1,28 +1,31 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              xmlns:tools="http://schemas.android.com/tools"
-              android:id="@+id/settings_item_holder"
-              android:layout_width="match_parent"
-              android:layout_height="wrap_content"
-              android:clickable="true"
-              android:background="@color/white"
-              android:orientation="vertical"
-              android:padding="@dimen/spacing_normal">
+      xmlns:tools="http://schemas.android.com/tools"
+      android:id="@+id/settings_item_holder"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:clickable="true"
+      android:background="@color/white"
+      android:orientation="vertical"
+      android:padding="@dimen/spacing_normal"
+      >
 
-    <TextView
-        android:id="@+id/settings_title"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textColor="@color/black"
-        android:textSize="@dimen/font_normal"
-        tools:text="Distance test"/>
+   <TextView
+         android:id="@+id/settings_title"
+         android:layout_width="wrap_content"
+         android:layout_height="wrap_content"
+         android:textColor="@color/black"
+         android:textSize="@dimen/font_normal"
+         tools:text="Distance test"
+         />
 
-    <TextView
-        android:id="@+id/settings_value"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textColor="@color/grey"
-        android:textSize="@dimen/font_medium"
-        tools:text="mi"/>
+   <TextView
+         android:id="@+id/settings_value"
+         android:layout_width="wrap_content"
+         android:layout_height="wrap_content"
+         android:textColor="@color/grey"
+         android:textSize="@dimen/font_medium"
+         tools:text="mi"
+         />
 
 </LinearLayout>

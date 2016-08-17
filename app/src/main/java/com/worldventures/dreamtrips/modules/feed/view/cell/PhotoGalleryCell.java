@@ -19,55 +19,48 @@ import butterknife.InjectView;
 @Layout(R.layout.adapter_item_photo_pick)
 public class PhotoGalleryCell extends AbstractDelegateCell<PhotoGalleryModel, CellDelegate<PhotoGalleryModel>> {
 
-    @InjectView(R.id.iv_photo)
-    SimpleDraweeView photo;
-    @InjectView(R.id.pick)
-    ImageView pick;
+   @InjectView(R.id.iv_photo) SimpleDraweeView photo;
+   @InjectView(R.id.pick) ImageView pick;
 
-    public PhotoGalleryCell(View view) {
-        super(view);
-    }
+   public PhotoGalleryCell(View view) {
+      super(view);
+   }
 
-    @Override
-    protected void syncUIStateWithModel() {
-        setImage(Uri.parse(getModelObject().getThumbnailPath()), photo);
+   @Override
+   protected void syncUIStateWithModel() {
+      setImage(Uri.parse(getModelObject().getThumbnailPath()), photo);
 
-        itemView.setOnClickListener(v -> {
-            getModelObject().setChecked(!getModelObject().isChecked());
-            getModelObject().setPickedTime(getModelObject().isChecked() ? System.currentTimeMillis() : -1);
-            //
-            if (cellDelegate != null) {
-                cellDelegate.onCellClicked(getModelObject());
-            } else {
-                getEventBus().post(new PhotoPickedEvent(getModelObject()));
-            }
-        });
+      itemView.setOnClickListener(v -> {
+         getModelObject().setChecked(!getModelObject().isChecked());
+         getModelObject().setPickedTime(getModelObject().isChecked() ? System.currentTimeMillis() : -1);
+         //
+         if (cellDelegate != null) {
+            cellDelegate.onCellClicked(getModelObject());
+         } else {
+            getEventBus().post(new PhotoPickedEvent(getModelObject()));
+         }
+      });
 
-        updatePickState();
-    }
+      updatePickState();
+   }
 
-    private void updatePickState() {
-        if (getModelObject().isChecked()) {
-            pick.setImageResource(R.drawable.add_photo_icon_selected);
-        } else {
-            pick.setImageResource(R.drawable.add_photo_icon);
-        }
-    }
+   private void updatePickState() {
+      if (getModelObject().isChecked()) {
+         pick.setImageResource(R.drawable.add_photo_icon_selected);
+      } else {
+         pick.setImageResource(R.drawable.add_photo_icon);
+      }
+   }
 
-    @Override
-    public void prepareForReuse() {
+   private void setImage(Uri uri, SimpleDraweeView draweeView) {
+      if (draweeView.getTag() != null) {
+         if (uri.equals(draweeView.getTag())) {
+            return;
+         }
+      }
 
-    }
-
-    private void setImage(Uri uri, SimpleDraweeView draweeView) {
-        if (draweeView.getTag() != null) {
-            if (uri.equals(draweeView.getTag())) {
-                return;
-            }
-        }
-
-        PipelineDraweeController controller = GraphicUtils.provideFrescoResizingController(uri, draweeView.getController(), 100, 100);
-        draweeView.setController(controller);
-        draweeView.setTag(uri);
-    }
+      PipelineDraweeController controller = GraphicUtils.provideFrescoResizingController(uri, draweeView.getController(), 100, 100);
+      draweeView.setController(controller);
+      draweeView.setTag(uri);
+   }
 }

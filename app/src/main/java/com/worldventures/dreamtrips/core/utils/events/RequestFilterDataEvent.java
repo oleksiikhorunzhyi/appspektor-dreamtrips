@@ -1,4 +1,3 @@
 package com.worldventures.dreamtrips.core.utils.events;
 
-public class RequestFilterDataEvent {
-}
+public class RequestFilterDataEvent {}

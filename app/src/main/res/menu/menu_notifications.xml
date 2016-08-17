@@ -2,9 +2,9 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
       xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <item
-        android:id="@+id/action_friend_requests"
-        app:actionViewClass="com.worldventures.dreamtrips.modules.common.view.custom.BadgeImageView"
-        app:showAsAction="always"
-        android:title="@string/social_requests"/>
+   <item
+         android:id="@+id/action_friend_requests"
+         app:actionViewClass="com.worldventures.dreamtrips.modules.common.view.custom.BadgeImageView"
+         app:showAsAction="always"
+         android:title="@string/social_requests" />
 </menu>

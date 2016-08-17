@@ -16,40 +16,40 @@ import timber.log.Timber;
 
 public class FragmentHelper {
 
-    private FragmentHelper() {
-    }
+   private FragmentHelper() {
+   }
 
-    public static View onCreateView(LayoutInflater inflater, ViewGroup container, ConfigurableFragment configurableFragment) {
-        Layout layout = configurableFragment.getClass().getAnnotation(Layout.class);
+   public static View onCreateView(LayoutInflater inflater, ViewGroup container, ConfigurableFragment configurableFragment) {
+      Layout layout = configurableFragment.getClass().getAnnotation(Layout.class);
 
-        if (layout == null) {
-            throw new IllegalArgumentException("ConfigurableFragment should have Layout annotation");
-        }
+      if (layout == null) {
+         throw new IllegalArgumentException("ConfigurableFragment should have Layout annotation");
+      }
 
-        View rootView = inflater.inflate(layout.value(), container, false);
+      View rootView = inflater.inflate(layout.value(), container, false);
 
-        ButterKnife.inject(configurableFragment, rootView);
+      ButterKnife.inject(configurableFragment, rootView);
 
-        configurableFragment.afterCreateView(rootView);
+      configurableFragment.afterCreateView(rootView);
 
-        return rootView;
-    }
+      return rootView;
+   }
 
-    public static void inject(Activity activity, Object injectingFragment) {
-        if (!(activity instanceof Injector)) {
-            throw new IllegalArgumentException("InjectingFragment have to be attached to instance of Injector");
-        }
+   public static void inject(Activity activity, Object injectingFragment) {
+      if (!(activity instanceof Injector)) {
+         throw new IllegalArgumentException("InjectingFragment have to be attached to instance of Injector");
+      }
 
-        ((Injector) activity).inject(injectingFragment);
-    }
+      ((Injector) activity).inject(injectingFragment);
+   }
 
-    public static void resetChildFragmentManagerField(Fragment fragment) {
-        try {
-            Field fragmentManagerField = Fragment.class.getDeclaredField("mChildFragmentManager");
-            fragmentManagerField.setAccessible(true);
-            fragmentManagerField.set(fragment, null);
-        } catch (Exception ex) {
-            Timber.e(ex.toString());
-        }
-    }
+   public static void resetChildFragmentManagerField(Fragment fragment) {
+      try {
+         Field fragmentManagerField = Fragment.class.getDeclaredField("mChildFragmentManager");
+         fragmentManagerField.setAccessible(true);
+         fragmentManagerField.set(fragment, null);
+      } catch (Exception ex) {
+         Timber.e(ex.toString());
+      }
+   }
 }

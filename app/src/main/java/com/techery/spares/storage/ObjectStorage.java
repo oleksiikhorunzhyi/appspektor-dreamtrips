@@ -4,9 +4,9 @@ package com.techery.spares.storage;
 import com.techery.spares.storage.complex_objects.Optional;
 
 public interface ObjectStorage<T> {
-    Optional<T> get();
+   Optional<T> get();
 
-    void put(T obj);
+   void put(T obj);
 
-    void destroy();
+   void destroy();
 }

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <selector xmlns:android="http://schemas.android.com/apk/res/android">
-    <item android:color="@color/dtl_button_background_disabled" android:state_enabled="false"/>
-    <!-- pressed -->
-    <item android:color="@color/dtl_button_background_enabled"/>
+   <item android:color="@color/dtl_button_background_disabled" android:state_enabled="false" />
+   <!-- pressed -->
+   <item android:color="@color/dtl_button_background_enabled" />
 </selector>

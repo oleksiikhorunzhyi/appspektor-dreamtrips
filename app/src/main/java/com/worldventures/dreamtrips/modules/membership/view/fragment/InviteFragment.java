@@ -38,261 +38,244 @@ import butterknife.InjectView;
 import butterknife.OnClick;
 
 @Layout(R.layout.fragment_invite)
-public class InviteFragment
-        extends BaseFragment<InvitePresenter>
-        implements InvitePresenter.View, SwipeRefreshLayout.OnRefreshListener,
-        SearchView.OnQueryTextListener, AdapterView.OnItemSelectedListener {
+public class InviteFragment extends BaseFragment<InvitePresenter> implements InvitePresenter.View, SwipeRefreshLayout.OnRefreshListener, SearchView.OnQueryTextListener, AdapterView.OnItemSelectedListener {
 
-    @InjectView(R.id.frameContactCount)
-    LinearLayout frameContactCount;
-    @InjectView(R.id.lv_users)
-    RecyclerView lvUsers;
-    @InjectView(R.id.spinner)
-    Spinner spinner;
-    @InjectView(R.id.iv_add_contact)
-    ImageView ivAddContact;
-    @InjectView(R.id.tv_search)
-    SearchView tvSearch;
-    @InjectView(R.id.swipe_container)
-    SwipeRefreshLayout refreshLayout;
-    @InjectView(R.id.container_templates)
-    FrameLayout containerTemplates;
-    @InjectView(R.id.bt_continue)
-    Button buttonContinue;
-    @InjectView(R.id.textViewContactCount)
-    TextView textViewSelectedCount;
+   @InjectView(R.id.frameContactCount) LinearLayout frameContactCount;
+   @InjectView(R.id.lv_users) RecyclerView lvUsers;
+   @InjectView(R.id.spinner) Spinner spinner;
+   @InjectView(R.id.iv_add_contact) ImageView ivAddContact;
+   @InjectView(R.id.tv_search) SearchView tvSearch;
+   @InjectView(R.id.swipe_container) SwipeRefreshLayout refreshLayout;
+   @InjectView(R.id.container_templates) FrameLayout containerTemplates;
+   @InjectView(R.id.bt_continue) Button buttonContinue;
+   @InjectView(R.id.textViewContactCount) TextView textViewSelectedCount;
 
-    FilterableArrayListAdapter<Member> adapter;
-    RecyclerViewStateDelegate stateDelegate;
+   FilterableArrayListAdapter<Member> adapter;
+   RecyclerViewStateDelegate stateDelegate;
 
-    private boolean inhibitSpinner = true;
-    private WeakHandler weakHandler;
+   private boolean inhibitSpinner = true;
+   private WeakHandler weakHandler;
 
-    @Override
-    protected InvitePresenter createPresenter(Bundle savedInstanceState) {
-        return new InvitePresenter();
-    }
+   @Override
+   protected InvitePresenter createPresenter(Bundle savedInstanceState) {
+      return new InvitePresenter();
+   }
 
-    @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        weakHandler = new WeakHandler();
-        stateDelegate = new RecyclerViewStateDelegate();
-        stateDelegate.onCreate(savedInstanceState);
-    }
+   @Override
+   public void onCreate(@Nullable Bundle savedInstanceState) {
+      super.onCreate(savedInstanceState);
+      weakHandler = new WeakHandler();
+      stateDelegate = new RecyclerViewStateDelegate();
+      stateDelegate.onCreate(savedInstanceState);
+   }
 
 
-    @Override
-    public void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
-        stateDelegate.saveStateIfNeeded(outState);
-    }
+   @Override
+   public void onSaveInstanceState(Bundle outState) {
+      super.onSaveInstanceState(outState);
+      stateDelegate.saveStateIfNeeded(outState);
+   }
 
-    @Override
-    public void afterCreateView(View rootView) {
-        super.afterCreateView(rootView);
-        stateDelegate.setRecyclerView(lvUsers);
-        setUpView();
-        lvUsers.setLayoutManager(new LinearLayoutManager(getActivity()));
-        lvUsers.addItemDecoration(new DividerItemDecoration(getActivity(),
-                DividerItemDecoration.VERTICAL_LIST));
-        adapter = new FilterableArrayListAdapter<>(getActivity(), this);
-        adapter.registerCell(Member.class, MemberCell.class);
+   @Override
+   public void afterCreateView(View rootView) {
+      super.afterCreateView(rootView);
+      stateDelegate.setRecyclerView(lvUsers);
+      setUpView();
+      lvUsers.setLayoutManager(new LinearLayoutManager(getActivity()));
+      lvUsers.addItemDecoration(new DividerItemDecoration(getActivity(), DividerItemDecoration.VERTICAL_LIST));
+      adapter = new FilterableArrayListAdapter<>(getActivity(), this);
+      adapter.registerCell(Member.class, MemberCell.class);
+      adapter.registerDelegate(Member.class, getPresenter()::onMemberCellSelected);
 
-        lvUsers.setAdapter(adapter);
+      lvUsers.setAdapter(adapter);
 
-        refreshLayout.setOnRefreshListener(this);
-        refreshLayout.setColorSchemeResources(R.color.theme_main_darker);
-        lvUsers.addOnScrollListener(new RecyclerView.OnScrollListener() {
-            @Override
-            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
-                if (lvUsers != null) {
-                    int firstPos = ((LinearLayoutManager) lvUsers.getLayoutManager())
-                            .findFirstCompletelyVisibleItemPosition();
-                    refreshLayout.setEnabled(firstPos == 0);
-                    tvSearch.clearFocus();
-                }
+      refreshLayout.setOnRefreshListener(this);
+      refreshLayout.setColorSchemeResources(R.color.theme_main_darker);
+      lvUsers.addOnScrollListener(new RecyclerView.OnScrollListener() {
+         @Override
+         public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+            if (lvUsers != null) {
+               int firstPos = ((LinearLayoutManager) lvUsers.getLayoutManager()).findFirstCompletelyVisibleItemPosition();
+               refreshLayout.setEnabled(firstPos == 0);
+               tvSearch.clearFocus();
             }
-        });
+         }
+      });
 
-        SimpleImageArrayAdapter spinnerAdapter = new SimpleImageArrayAdapter(getActivity(),
-                new Integer[]{R.drawable.ic_invite_mail, R.drawable.ic_invite_phone});
-        spinner.setAdapter(spinnerAdapter);
-        spinner.setOnItemSelectedListener(this);
+      SimpleImageArrayAdapter spinnerAdapter = new SimpleImageArrayAdapter(getActivity(), new Integer[]{R.drawable.ic_invite_mail, R.drawable.ic_invite_phone});
+      spinner.setAdapter(spinnerAdapter);
+      spinner.setOnItemSelectedListener(this);
 
-        tvSearch.setOnQueryTextListener(this);
-        tvSearch.clearFocus();
-        tvSearch.setIconifiedByDefault(false);
-        tvSearch.setOnClickListener(v -> TrackingHelper.searchRepTools(TrackingHelper.ACTION_REP_TOOLS_INVITE_SHARE));
+      tvSearch.setOnQueryTextListener(this);
+      tvSearch.clearFocus();
+      tvSearch.setIconifiedByDefault(false);
+      tvSearch.setOnClickListener(v -> TrackingHelper.searchRepTools(TrackingHelper.ACTION_REP_TOOLS_INVITE_SHARE));
 
-        tvSearch.setOnQueryTextFocusChangeListener((v, hasFocus) -> {
-            if (hasFocus) {
-                buttonContinue.setVisibility(View.GONE);
-            } else {
-                getPresenter().showContinueBtnIfNeed();
-            }
-
-            getPresenter().searchToggle(hasFocus);
-        });
-
-        buttonContinue.setVisibility(View.GONE);
-    }
-
-    @Override
-    protected void track() {
-        getPresenter().track();
-    }
-
-    private void setUpView() {
-        if (isTabletLandscape()) {
-            containerTemplates.setVisibility(View.VISIBLE);
+      tvSearch.setOnQueryTextFocusChangeListener((v, hasFocus) -> {
+         if (hasFocus) {
             buttonContinue.setVisibility(View.GONE);
-        } else {
-            containerTemplates.setVisibility(View.GONE);
-            if (!tvSearch.hasFocus() && getPresenter().isVisible())
-                buttonContinue.setVisibility(View.VISIBLE);
-        }
-    }
+         } else {
+            getPresenter().showContinueBtnIfNeed();
+         }
 
-    @OnClick(R.id.textViewDeselectAll)
-    public void deselectOnClick() {
-        getPresenter().deselectAll();
-    }
+         getPresenter().searchToggle(hasFocus);
+      });
 
-    @Override
-    public void onDestroyView() {
-        lvUsers.setAdapter(null);
-        stateDelegate.onDestroyView();
-        tvSearch.setOnQueryTextListener(null);
-        tvSearch.setOnQueryTextFocusChangeListener(null);
-        spinner.setOnItemSelectedListener(null);
-        super.onDestroyView();
-    }
+      buttonContinue.setVisibility(View.GONE);
+   }
 
-    @Override
-    public void setSelectedCount(int count) {
-        textViewSelectedCount.setText(String.format(getString(R.string.selected), count));
-    }
+   @Override
+   protected void track() {
+      getPresenter().track();
+   }
 
-    @Override
-    public void startLoading() {
-        weakHandler.post(() -> {
-            if (refreshLayout != null) refreshLayout.setRefreshing(true);
-        });
-    }
+   private void setUpView() {
+      if (isTabletLandscape()) {
+         containerTemplates.setVisibility(View.VISIBLE);
+         buttonContinue.setVisibility(View.GONE);
+      } else {
+         containerTemplates.setVisibility(View.GONE);
+         if (!tvSearch.hasFocus() && getPresenter().isVisible()) buttonContinue.setVisibility(View.VISIBLE);
+      }
+   }
 
-    @Override
-    public void finishLoading() {
-        weakHandler.post(() -> {
-            if (refreshLayout != null) refreshLayout.setRefreshing(false);
-        });
-        stateDelegate.restoreStateIfNeeded();
-    }
+   @OnClick(R.id.textViewDeselectAll)
+   public void deselectOnClick() {
+      getPresenter().deselectAll();
+   }
 
-    @Override
-    public void onRefresh() {
-        getPresenter().loadMembers();
-    }
+   @Override
+   public void onDestroyView() {
+      lvUsers.setAdapter(null);
+      stateDelegate.onDestroyView();
+      tvSearch.setOnQueryTextListener(null);
+      tvSearch.setOnQueryTextFocusChangeListener(null);
+      spinner.setOnItemSelectedListener(null);
+      super.onDestroyView();
+   }
 
-    @OnClick(R.id.iv_add_contact)
-    public void addContact() {
-        TrackingHelper.actionRepToolsInviteShare(TrackingHelper.ATTRIBUTE_ADD_CONTACT);
-        new AddContactDialog(getActivity()).show(getPresenter()::addMember);
-    }
+   @Override
+   public void setSelectedCount(int count) {
+      textViewSelectedCount.setText(String.format(getString(R.string.selected), count));
+   }
 
-    @Override
-    public int getSelectedType() {
-        return spinner.getSelectedItemPosition();
-    }
+   @Override
+   public void startLoading() {
+      weakHandler.post(() -> {
+         if (refreshLayout != null) refreshLayout.setRefreshing(true);
+      });
+   }
 
-    @Override
-    public void setMembers(List<Member> memberList) {
-        adapter.setItems(memberList);
-    }
+   @Override
+   public void finishLoading() {
+      weakHandler.post(() -> {
+         if (refreshLayout != null) refreshLayout.setRefreshing(false);
+      });
+      stateDelegate.restoreStateIfNeeded();
+   }
 
-    @Override
-    public void move(Member member, int to) {
-        if (to > 0)
-            lvUsers.scrollToPosition(0);
-        //
-        adapter.moveItemSafely(member, to);
-    }
+   @Override
+   public void onRefresh() {
+      getPresenter().loadMembers();
+   }
 
-    @Override
-    public void openTemplateView() {
-        router.moveTo(Route.SELECT_INVITE_TEMPLATE, NavigationConfigBuilder.forFragment()
-                .backStackEnabled(false)
-                .fragmentManager(getChildFragmentManager())
-                .containerId(R.id.container_templates)
-                .build());
-    }
+   @OnClick(R.id.iv_add_contact)
+   public void addContact() {
+      TrackingHelper.actionRepToolsInviteShare(TrackingHelper.ATTRIBUTE_ADD_CONTACT);
+      new AddContactDialog(getActivity()).show(getPresenter()::addMember);
+   }
 
-    @Override
-    public void continueAction2() {
-        router.moveTo(Route.SELECT_INVITE_TEMPLATE, NavigationConfigBuilder.forRemoval()
-                .fragmentManager(getChildFragmentManager())
-                .containerId(R.id.container_templates)
-                .build());
-        if (isTabletLandscape()) {
-            openTemplateView();
-        } else {
-            router.moveTo(Route.SELECT_INVITE_TEMPLATE, NavigationConfigBuilder.forActivity()
-                    .build());
-        }
-    }
+   @Override
+   public int getSelectedType() {
+      return spinner.getSelectedItemPosition();
+   }
 
-    @Override
-    public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-        if (inhibitSpinner) {
-            inhibitSpinner = false;
-            return;
-        }
-        getPresenter().loadMembers();
-    }
+   @Override
+   public void setMembers(List<Member> memberList) {
+      adapter.setItems(memberList);
+   }
 
-    @Override
-    public void onNothingSelected(AdapterView<?> parent) {
+   @Override
+   public void move(Member member, int to) {
+      if (to > 0) lvUsers.scrollToPosition(0);
+      //
+      adapter.moveItemSafely(member, to);
+   }
 
-    }
+   @Override
+   public void openTemplateView() {
+      router.moveTo(Route.SELECT_INVITE_TEMPLATE, NavigationConfigBuilder.forFragment()
+            .backStackEnabled(false)
+            .fragmentManager(getChildFragmentManager())
+            .containerId(R.id.container_templates)
+            .build());
+   }
 
-    @Override
-    public boolean onQueryTextChange(String newText) {
-        getPresenter().onFilter(newText);
-        return false;
-    }
+   @Override
+   public void continueAction2() {
+      router.moveTo(Route.SELECT_INVITE_TEMPLATE, NavigationConfigBuilder.forRemoval()
+            .fragmentManager(getChildFragmentManager())
+            .containerId(R.id.container_templates)
+            .build());
+      if (isTabletLandscape()) {
+         openTemplateView();
+      } else {
+         router.moveTo(Route.SELECT_INVITE_TEMPLATE, NavigationConfigBuilder.forActivity().build());
+      }
+   }
 
-    @Override
-    public boolean onQueryTextSubmit(String query) {
-        tvSearch.clearFocus();
-        // adapter already has items filtered, nothing to do
-        return false;
-    }
+   @Override
+   public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+      if (inhibitSpinner) {
+         inhibitSpinner = false;
+         return;
+      }
+      getPresenter().loadMembers();
+   }
+
+   @Override
+   public void onNothingSelected(AdapterView<?> parent) {
+
+   }
+
+   @Override
+   public boolean onQueryTextChange(String newText) {
+      getPresenter().onFilter(newText);
+      return false;
+   }
+
+   @Override
+   public boolean onQueryTextSubmit(String query) {
+      tvSearch.clearFocus();
+      // adapter already has items filtered, nothing to do
+      return false;
+   }
 
 
-    @Override
-    public void setFilter(String newText) {
-        adapter.setFilter(newText);
-    }
+   @Override
+   public void setFilter(String newText) {
+      adapter.setFilter(newText);
+   }
 
-    @Override
-    public void sort(Comparator comparator) {
-        adapter.sort(comparator);
-    }
+   @Override
+   public void sort(Comparator comparator) {
+      adapter.sort(comparator);
+   }
 
-    @Override
-    public void setAdapterComparator(Comparator comparator) {
-        adapter.setDefaultComparator(comparator);
-    }
+   @Override
+   public void setAdapterComparator(Comparator comparator) {
+      adapter.setDefaultComparator(comparator);
+   }
 
-    @OnClick(R.id.bt_continue)
-    public void continueAction() {
-        getPresenter().continueAction();
-    }
+   @OnClick(R.id.bt_continue)
+   public void continueAction() {
+      getPresenter().continueAction();
+   }
 
-    @Override
-    public void showNextStepButtonVisibility(boolean isVisible) {
-        frameContactCount.setVisibility(isVisible ? View.VISIBLE : View.GONE);
-        if (!tvSearch.hasFocus())
-            buttonContinue.setVisibility(!isTabletLandscape() && isVisible ? View.VISIBLE : View.GONE);
-    }
+   @Override
+   public void showNextStepButtonVisibility(boolean isVisible) {
+      frameContactCount.setVisibility(isVisible ? View.VISIBLE : View.GONE);
+      if (!tvSearch.hasFocus())
+         buttonContinue.setVisibility(!isTabletLandscape() && isVisible ? View.VISIBLE : View.GONE);
+   }
 }

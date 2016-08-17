@@ -7,11 +7,11 @@ import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 
 public class NavigationWrapperFactory {
 
-    public NavigationWrapper componentOrDialogNavigationWrapper(Router router, FragmentManager fragmentManager, Presenter.TabletAnalytic tabletAnalytic) {
-        if (tabletAnalytic.isTabletLandscape()) {
-            return new DialogNavigationWrapper(router, fragmentManager);
-        } else {
-            return new ComponentNavigationWrapper(router);
-        }
-    }
+   public NavigationWrapper componentOrDialogNavigationWrapper(Router router, FragmentManager fragmentManager, Presenter.TabletAnalytic tabletAnalytic) {
+      if (tabletAnalytic.isTabletLandscape()) {
+         return new DialogNavigationWrapper(router, fragmentManager);
+      } else {
+         return new ComponentNavigationWrapper(router);
+      }
+   }
 }

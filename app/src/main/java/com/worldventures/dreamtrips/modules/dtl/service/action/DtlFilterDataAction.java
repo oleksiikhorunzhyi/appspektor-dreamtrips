@@ -28,111 +28,93 @@ import io.techery.janet.command.annotations.CommandAction;
 import rx.functions.Func3;
 
 @CommandAction
-public class DtlFilterDataAction extends Command<DtlFilterData>
-        implements CachedAction<DtlFilterData>, InjectableAction {
+public class DtlFilterDataAction extends Command<DtlFilterData> implements CachedAction<DtlFilterData>, InjectableAction {
 
-    @Inject
-    SnappyRepository db;
-    @Inject
-    AnalyticsInteractor analyticsInteractor;
+   @Inject SnappyRepository db;
+   @Inject AnalyticsInteractor analyticsInteractor;
 
-    private DtlFilterData data;
-    private final Func3<SnappyRepository, DtlFilterData, AnalyticsInteractor,
-            DtlFilterData> updateFunc;
+   private DtlFilterData data;
+   private final Func3<SnappyRepository, DtlFilterData, AnalyticsInteractor, DtlFilterData> updateFunc;
 
-    private DtlFilterDataAction(Func3<SnappyRepository, DtlFilterData,
-            AnalyticsInteractor, DtlFilterData> updateFunc) {
-        this(ImmutableDtlFilterData.builder().build(), updateFunc);
-    }
+   private DtlFilterDataAction(Func3<SnappyRepository, DtlFilterData, AnalyticsInteractor, DtlFilterData> updateFunc) {
+      this(ImmutableDtlFilterData.builder().build(), updateFunc);
+   }
 
-    private DtlFilterDataAction(DtlFilterData data,
-                                Func3<SnappyRepository, DtlFilterData,
-                                        AnalyticsInteractor, DtlFilterData> updateFunc) {
-        this.data = data;
-        this.updateFunc = updateFunc;
-    }
+   private DtlFilterDataAction(DtlFilterData data, Func3<SnappyRepository, DtlFilterData, AnalyticsInteractor, DtlFilterData> updateFunc) {
+      this.data = data;
+      this.updateFunc = updateFunc;
+   }
 
-    @Override
-    protected void run(CommandCallback<DtlFilterData> callback) throws Throwable {
-        callback.onSuccess(updateFunc.call(db, data, analyticsInteractor));
-    }
+   @Override
+   protected void run(CommandCallback<DtlFilterData> callback) throws Throwable {
+      callback.onSuccess(updateFunc.call(db, data, analyticsInteractor));
+   }
 
-    ///////////////////////////////////////////////////////////////////////////
-    // Actions
-    ///////////////////////////////////////////////////////////////////////////
+   ///////////////////////////////////////////////////////////////////////////
+   // Actions
+   ///////////////////////////////////////////////////////////////////////////
 
-    public static DtlFilterDataAction init() {
-        return new DtlFilterDataAction((db, data, analyticsInteractor) -> {
-            Setting distanceSetting = Queryable.from(db.getSettings()).filter(setting ->
-                    setting.getName().equals(SettingsFactory.DISTANCE_UNITS)).firstOrDefault();
-            return ImmutableDtlFilterData.copyOf(data)
-                    .withDistanceType(DistanceType.provideFromSetting(distanceSetting))
-                    .withIsOffersOnly(db.getLastSelectedOffersOnlyToggle());
-        });
-    }
+   public static DtlFilterDataAction init() {
+      return new DtlFilterDataAction((db, data, analyticsInteractor) -> {
+         Setting distanceSetting = Queryable.from(db.getSettings()).filter(setting -> setting.getName()
+               .equals(SettingsFactory.DISTANCE_UNITS)).firstOrDefault();
+         return ImmutableDtlFilterData.copyOf(data)
+               .withDistanceType(DistanceType.provideFromSetting(distanceSetting))
+               .withIsOffersOnly(db.getLastSelectedOffersOnlyToggle());
+      });
+   }
 
-    public static DtlFilterDataAction reset() {
-        return new DtlFilterDataAction((db, data, analyticsInteractor) ->
-                DtlFilterData.merge(
-                        ImmutableDtlFilterParameters.builder()
-                                .selectedAmenities(db.getAmenities())
-                                .build(),
-                        data)
-        );
-    }
+   public static DtlFilterDataAction reset() {
+      return new DtlFilterDataAction((db, data, analyticsInteractor) -> DtlFilterData.merge(ImmutableDtlFilterParameters
+            .builder()
+            .selectedAmenities(db.getAmenities())
+            .build(), data));
+   }
 
-    public static DtlFilterDataAction amenitiesUpdate(List<DtlMerchantAttribute> amenities) {
-        return new DtlFilterDataAction((db, data, analyticsInteractor) ->
-                DtlFilterData.merge(
-                        ImmutableDtlFilterParameters.builder()
-                                .selectedAmenities(amenities)
-                                .build(),
-                        ImmutableDtlFilterData.copyOf(data)
-                                .withAmenities(amenities)
-                                .withSelectedAmenities(amenities)));
-    }
+   public static DtlFilterDataAction amenitiesUpdate(List<DtlMerchantAttribute> amenities) {
+      return new DtlFilterDataAction((db, data, analyticsInteractor) -> DtlFilterData.merge(ImmutableDtlFilterParameters
+            .builder()
+            .selectedAmenities(amenities)
+            .build(), ImmutableDtlFilterData.copyOf(data).withAmenities(amenities).withSelectedAmenities(amenities)));
+   }
 
-    public static DtlFilterDataAction applyParams(DtlFilterParameters filterParameters) {
-        return new DtlFilterDataAction((db, data, analyticsInteractor) -> {
-            data = DtlFilterData.merge(filterParameters, data);
-            analyticsInteractor.dtlAnalyticsCommandPipe()
-                    .send(DtlAnalyticsCommand.create(new MerchantFilterAppliedEvent(data)));
-            return data;
-        });
-    }
+   public static DtlFilterDataAction applyParams(DtlFilterParameters filterParameters) {
+      return new DtlFilterDataAction((db, data, analyticsInteractor) -> {
+         data = DtlFilterData.merge(filterParameters, data);
+         analyticsInteractor.dtlAnalyticsCommandPipe()
+               .send(DtlAnalyticsCommand.create(new MerchantFilterAppliedEvent(data)));
+         return data;
+      });
+   }
 
-    public static DtlFilterDataAction applySearch(String query) {
-        return new DtlFilterDataAction((db, data, analyticsInteractor) ->
-                ImmutableDtlFilterData.copyOf(data)
-                        .withSearchQuery(query)
-        );
-    }
+   public static DtlFilterDataAction applySearch(String query) {
+      return new DtlFilterDataAction((db, data, analyticsInteractor) -> ImmutableDtlFilterData.copyOf(data)
+            .withSearchQuery(query));
+   }
 
-    public static DtlFilterDataAction applyOffersOnly(boolean offersOnly) {
-        return new DtlFilterDataAction((db, data, analyticsInteractor) -> {
-            db.saveLastSelectedOffersOnlyToogle(offersOnly);
-            return ImmutableDtlFilterData.copyOf(data)
-                    .withIsOffersOnly(offersOnly);
-        });
-    }
+   public static DtlFilterDataAction applyOffersOnly(boolean offersOnly) {
+      return new DtlFilterDataAction((db, data, analyticsInteractor) -> {
+         db.saveLastSelectedOffersOnlyToogle(offersOnly);
+         return ImmutableDtlFilterData.copyOf(data).withIsOffersOnly(offersOnly);
+      });
+   }
 
-    ///////////////////////////////////////////////////////////////////////////
-    // Caching
-    ///////////////////////////////////////////////////////////////////////////
+   ///////////////////////////////////////////////////////////////////////////
+   // Caching
+   ///////////////////////////////////////////////////////////////////////////
 
-    @Override
-    public DtlFilterData getCacheData() {
-        return getResult();
-    }
+   @Override
+   public DtlFilterData getCacheData() {
+      return getResult();
+   }
 
-    @Override
-    public void onRestore(ActionHolder holder, DtlFilterData cache) {
-        this.data = cache;
-    }
+   @Override
+   public void onRestore(ActionHolder holder, DtlFilterData cache) {
+      this.data = cache;
+   }
 
-    @Override
-    public CacheOptions getCacheOptions() {
-        return ImmutableCacheOptions.builder()
-                .build();
-    }
+   @Override
+   public CacheOptions getCacheOptions() {
+      return ImmutableCacheOptions.builder().build();
+   }
 }

@@ -12,14 +12,14 @@ import rx.schedulers.Schedulers;
 
 public class TranslationInteractor {
 
-    private final ActionPipe<TranslateTextHttpAction> translatePipe;
+   private final ActionPipe<TranslateTextHttpAction> translatePipe;
 
-    @Inject
-    public TranslationInteractor(@Named(JanetModule.JANET_API_LIB) Janet janet) {
-        translatePipe = janet.createPipe(TranslateTextHttpAction.class, Schedulers.io());
-    }
+   @Inject
+   public TranslationInteractor(@Named(JanetModule.JANET_API_LIB) Janet janet) {
+      translatePipe = janet.createPipe(TranslateTextHttpAction.class, Schedulers.io());
+   }
 
-    public ActionPipe<TranslateTextHttpAction> translatePipe() {
-        return translatePipe;
-    }
+   public ActionPipe<TranslateTextHttpAction> translatePipe() {
+      return translatePipe;
+   }
 }

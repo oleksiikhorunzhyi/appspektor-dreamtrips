@@ -17,33 +17,26 @@ import javax.inject.Inject;
 @Layout(R.layout.adapter_item_trip)
 public class TripCell extends AbstractCell<TripModel> {
 
-    @Inject
-    protected SessionHolder<UserSession> appSessionHolder;
-    @Inject
-    protected Presenter.TabletAnalytic tabletAnalytic;
+   @Inject SessionHolder<UserSession> appSessionHolder;
+   @Inject Presenter.TabletAnalytic tabletAnalytic;
 
-    private TripFeedViewInjector tripFeedViewInjector;
+   private TripFeedViewInjector tripFeedViewInjector;
 
-    public TripCell(View view) {
-        super(view);
-    }
+   public TripCell(View view) {
+      super(view);
+   }
 
-    @Override
-    public void afterInject() {
-        super.afterInject();
-        tripFeedViewInjector = new TripFeedViewInjector(itemView, router, getEventBus());
-        tripFeedViewInjector.setSyncStateListener(this::syncUIStateWithModel);
-    }
+   @Override
+   public void afterInject() {
+      super.afterInject();
+      tripFeedViewInjector = new TripFeedViewInjector(itemView, router, getEventBus());
+      tripFeedViewInjector.setSyncStateListener(this::syncUIStateWithModel);
+   }
 
-    @Override
-    protected void syncUIStateWithModel() {
-        Optional<UserSession> userSessionOptional = appSessionHolder.get();
-        if (userSessionOptional.isPresent())
-            tripFeedViewInjector.initTripData(getModelObject(), userSessionOptional.get().getUser());
-    }
-
-    @Override
-    public void prepareForReuse() {
-    }
-
+   @Override
+   protected void syncUIStateWithModel() {
+      Optional<UserSession> userSessionOptional = appSessionHolder.get();
+      if (userSessionOptional.isPresent()) tripFeedViewInjector.initTripData(getModelObject(), userSessionOptional.get()
+            .getUser());
+   }
 }

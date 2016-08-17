@@ -1,71 +1,27 @@
 package com.worldventures.dreamtrips.modules.gcm.service;
 
 import android.content.Intent;
-import android.text.TextUtils;
 
-import com.google.android.gms.gcm.GoogleCloudMessaging;
-import com.google.android.gms.iid.InstanceID;
 import com.techery.spares.service.InjectingIntentService;
-import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.core.api.DreamSpiceManager;
-import com.worldventures.dreamtrips.core.api.DreamSpiceManager.FailureListener;
-import com.worldventures.dreamtrips.core.repository.SnappyRepository;
-import com.worldventures.dreamtrips.core.utils.AppVersionNameBuilder;
-import com.worldventures.dreamtrips.modules.feed.api.SubscribeDeviceCommand;
+import com.worldventures.dreamtrips.modules.common.api.janet.command.SubscribeToPushNotificationsCommand;
+import com.worldventures.dreamtrips.modules.common.service.SubscribeToPushNotificationsInteractor;
 
 import javax.inject.Inject;
 
-import timber.log.Timber;
-
 public class RegistrationIntentService extends InjectingIntentService {
 
-    @Inject
-    SnappyRepository db;
-    @Inject
-    DreamSpiceManager spiceManager;
-    @Inject
-    AppVersionNameBuilder appVersionNameBuilder;
+   public static final String TOKEN_CHANGED = "token_changed";
 
-    public RegistrationIntentService() {
-        super("RegistrationIntentService");
-    }
+   @Inject SubscribeToPushNotificationsInteractor subscribeToPushNotificationsInteractor;
 
-    @Override
-    public void onCreate() {
-        super.onCreate();
-        spiceManager.start(this);
-    }
+   public RegistrationIntentService() {
+      super("RegistrationIntentService");
+   }
 
-    @Override
-    protected void onHandleIntent(Intent intent) {
-        try {
-            String token = InstanceID.getInstance(this)
-                    .getToken(getString(R.string.gcm_defaultSenderId), GoogleCloudMessaging.INSTANCE_ID_SCOPE, null);
-            Timber.d("GCM Registration Token: %s", token);
-            //
-            if (TextUtils.isEmpty(token) || token.equals(db.getGcmRegToken())) return;
-            sendTokenToServer(token);
-        } catch (Exception e) {
-            Timber.e(e, "Failed to complete token refresh");
-            // If an exception happens while fetching the new token or updating our registration data
-            // on a third-party server, this ensures that we'll attempt the update at a later time.
-            resetToken();
-        }
-    }
-
-    private void sendTokenToServer(String token) {
-        spiceManager.execute(new SubscribeDeviceCommand(token, appVersionNameBuilder.getReleaseSemanticVersionName()),
-                v -> saveToken(token),
-                FailureListener.STUB
-        );
-    }
-
-    private void saveToken(String token) {
-        db.setGcmRegToken(token);
-    }
-
-    private void resetToken() {
-        db.setGcmRegToken(null);
-    }
-
+   @Override
+   protected void onHandleIntent(Intent intent) {
+      boolean isTokenChangedFromCallback = intent.getBooleanExtra(TOKEN_CHANGED, false);
+      subscribeToPushNotificationsInteractor.subscribeToPushNotificationsActionPipe()
+            .send(new SubscribeToPushNotificationsCommand(isTokenChangedFromCallback));
+   }
 }

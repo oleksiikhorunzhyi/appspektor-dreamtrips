@@ -1,170 +1,170 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <resources>
-    <!-- messenger-->
-    <string name="error_something_went_wrong">Något gick fel</string>
-    <string name="error_no_connection">Du är inte ansluten</string>
-    <string name="messenger">Snabbmeddelanden</string>
-    <string name="chat">Chatta</string>
+   <!-- messenger-->
+   <string name="error_something_went_wrong">Något gick fel</string>
+   <string name="error_no_connection">Du är inte ansluten</string>
+   <string name="messenger">Snabbmeddelanden</string>
+   <string name="chat">Chatta</string>
 
-    <!---->
-    <!--Conversation List -->
-    <!---->
-    <string name="conversation_list_title">Konversationer</string>
+   <!---->
+   <!--Conversation List -->
+   <!---->
+   <string name="conversation_list_title">Konversationer</string>
 
-    <string name="conversation_list_spinner_item_all_chats">Alla chatter</string>
-    <string name="conversation_list_spinner_item_group_chats">Gruppchatter</string>
+   <string name="conversation_list_spinner_item_all_chats">Alla chatter</string>
+   <string name="conversation_list_spinner_item_group_chats">Gruppchatter</string>
 
-    <string name="conversation_list_search_hint">Sök konversationer…</string>
-    <string name="conversation_list_search_edittext_hint">Sök efter grupper och personer</string>
-    <string name="conversation_list_item_last_message_text_format_you">Du: %1$s</string>
-    <string name="conversation_list_item_last_message_image_format_you">Du skickade en bild</string>
-    <string name="conversation_list_item_last_message_image">skickad bild</string>
-    <string name="conversation_list_item_last_message_location_format_you">Du har skickat plats</string>
-    <string name="conversation_list_item_last_message_location">skickad plats</string>
-    <string name="conversation_list_last_message_date_format_yesterday">I går</string>
-    <string name="conversation_list_abandoned">Stängd</string>
-    <string name="conversation_list_swipe_button_delete">Ta bort</string>
-    <string name="conversation_list_delete_dialog_message">Är du säker på att du vill ta bort konversationen?</string>
-    <string name="conversation_list_delete_dialog_pos_button">Ta bort</string>
-    <string name="conversation_list_swipe_button_more">Mer</string>
-    <string-array name="conversation_list_more_actions">
-        <item>Markera som oläst</item>
-        <item>Stäng av notifikationer</item>
-        <item>Avbryt</item>
-    </string-array>
+   <string name="conversation_list_search_hint">Sök konversationer…</string>
+   <string name="conversation_list_search_edittext_hint">Sök efter grupper och personer</string>
+   <string name="conversation_list_item_last_message_text_format_you">Du: %1$s</string>
+   <string name="conversation_list_item_last_message_image_format_you">Du skickade en bild</string>
+   <string name="conversation_list_item_last_message_image">skickad bild</string>
+   <string name="conversation_list_item_last_message_location_format_you">Du har skickat plats</string>
+   <string name="conversation_list_item_last_message_location">skickad plats</string>
+   <string name="conversation_list_last_message_date_format_yesterday">I går</string>
+   <string name="conversation_list_abandoned">Stängd</string>
+   <string name="conversation_list_swipe_button_delete">Ta bort</string>
+   <string name="conversation_list_delete_dialog_message">Är du säker på att du vill ta bort konversationen?</string>
+   <string name="conversation_list_delete_dialog_pos_button">Ta bort</string>
+   <string name="conversation_list_swipe_button_more">Mer</string>
+   <string-array name="conversation_list_more_actions">
+      <item>Markera som oläst</item>
+      <item>Stäng av notifikationer</item>
+      <item>Avbryt</item>
+   </string-array>
 
 
-    <!---->
-    <!--New chat-->
-    <!---->
-    <string name="new_chat_title">Ny chatt</string>
-    <string name="new_chat_toast_no_users_selected_error">Välj först några användare</string>
-    <string name="new_multi_user_chat_not_supported">Skapande av gruppchatt stöds ej </string>
-    <string name="new_chat_error_loading_contacts">Kunde inte ladda kontakter</string>
-    <string name="new_chat_new_conversation_title_hint">Ange konverteringsnamn</string>
-    <string name="new_chat_chosen_contacts_header_empty">"Lägg till: "</string>
-    <string name="new_chat_chosen_contacts_header_contacts_list_start_value">Lägg till</string>
-    <string name="new_chat_list_item_section_close_friends">Nära vänner</string>
-    <string name="menu_done">Klar</string>
+   <!---->
+   <!--New chat-->
+   <!---->
+   <string name="new_chat_title">Ny chatt</string>
+   <string name="new_chat_toast_no_users_selected_error">Välj först några användare</string>
+   <string name="new_multi_user_chat_not_supported">Skapande av gruppchatt stöds ej </string>
+   <string name="new_chat_error_loading_contacts">Kunde inte ladda kontakter</string>
+   <string name="new_chat_new_conversation_title_hint">Ange konverteringsnamn</string>
+   <string name="new_chat_chosen_contacts_header_empty">"Lägg till: "</string>
+   <string name="new_chat_chosen_contacts_header_contacts_list_start_value">Lägg till</string>
+   <string name="new_chat_list_item_section_close_friends">Nära vänner</string>
+   <string name="menu_done">Klar</string>
 
-    <!---->
-    <!--Chat -->
-    <!---->
-    <string name="chat_subtitle_format_single_chat_online">online</string>
-    <string name="chat_subtitle_format_single_chat_offline">offline</string>
-    <string name="chat_subtitle_format_group_chat_format">%1$d medlemmar, %2$d online</string>
-    <string name="chat_subtitle_format_group_chat_format_closed">%1$d medlemmar</string>
-    <string name="chat_subtitle_format_group_chat_offline">Inga användare online</string>
-    <string name="chat_message_edittext_hint">Ditt meddelande</string>
-    <string name="chat_message_send_button_text">Skicka</string>
-    <string name="chat_message_sending_disabled">Du kan inte skicka meddelanden eftersom du inte längre är en deltagare</string>
-    <string name="chat_error_loading">Kunde inte ladda chatt-historik</string>
-    <string name="chat_unread_messages_textview_format">Du har %1$d olästa meddelanden</string>
-    <string name="chat_more_typing_users_hint_format">och %1$d till</string>
-    <string name="chat_list_date_entry_today">Idag</string>
-    <string name="chat_list_date_entry_yesterday">I går</string>
-    <string name="chat_contextual_copy_message">Kopiera</string>
-    <string name="chat_contextual_translate_message">Översätt</string>
-    <string name="chat_contextual_revert_translate_message">Visa ursprunglig</string>
-    <string name="chat_contextual_start_chat_format">Meddelande %1$s</string>
-    <string name="chat_contextual_flag">Flagga</string>
-    <string name="chat_share_dialog_location">Visa plats</string>
-    <string name="chat_share_dialog_image">Visa bild</string>
-    <string name="chat_share_dialog_cancel">Avbryt</string>
-    <string name="chat_could_not_share_location">Det gick inte att dela plats</string>
-    <string name="chat_error_marker_not_delivered">Inte levererat</string>
-    <string name="chat_retry_send_message_dialog_resend_message">Skicka meddelande igen?</string>
-    <string name="chat_retry_send_message_dialog_resend">SKICKA IGEN</string>
-    <string name="chat_retry_send_message_dialog_cancel">Avbryt</string>
-    <string name="chat_reload_chat_history_reload">Läs in igen</string>
-    <string name="chat_reload_chat_history_info_text">Din chatthistorik har rensats. Du kan få tillbaka den genom att trycka på \"Uppdatera\".</string>
+   <!---->
+   <!--Chat -->
+   <!---->
+   <string name="chat_subtitle_format_single_chat_online">online</string>
+   <string name="chat_subtitle_format_single_chat_offline">offline</string>
+   <string name="chat_subtitle_format_group_chat_format">%1$d medlemmar, %2$d online</string>
+   <string name="chat_subtitle_format_group_chat_format_closed">%1$d medlemmar</string>
+   <string name="chat_subtitle_format_group_chat_offline">Inga användare online</string>
+   <string name="chat_message_edittext_hint">Ditt meddelande</string>
+   <string name="chat_message_send_button_text">Skicka</string>
+   <string name="chat_message_sending_disabled">Du kan inte skicka meddelanden eftersom du inte längre är en deltagare</string>
+   <string name="chat_error_loading">Kunde inte ladda chatt-historik</string>
+   <string name="chat_unread_messages_textview_format">Du har %1$d olästa meddelanden</string>
+   <string name="chat_more_typing_users_hint_format">och %1$d till</string>
+   <string name="chat_list_date_entry_today">Idag</string>
+   <string name="chat_list_date_entry_yesterday">I går</string>
+   <string name="chat_contextual_copy_message">Kopiera</string>
+   <string name="chat_contextual_translate_message">Översätt</string>
+   <string name="chat_contextual_revert_translate_message">Visa ursprunglig</string>
+   <string name="chat_contextual_start_chat_format">Meddelande %1$s</string>
+   <string name="chat_contextual_flag">Flagga</string>
+   <string name="chat_share_dialog_location">Visa plats</string>
+   <string name="chat_share_dialog_image">Visa bild</string>
+   <string name="chat_share_dialog_cancel">Avbryt</string>
+   <string name="chat_could_not_share_location">Det gick inte att dela plats</string>
+   <string name="chat_error_marker_not_delivered">Inte levererat</string>
+   <string name="chat_retry_send_message_dialog_resend_message">Skicka meddelande igen?</string>
+   <string name="chat_retry_send_message_dialog_resend">SKICKA IGEN</string>
+   <string name="chat_retry_send_message_dialog_cancel">Avbryt</string>
+   <string name="chat_reload_chat_history_reload">Läs in igen</string>
+   <string name="chat_reload_chat_history_info_text">Din chatthistorik har rensats. Du kan få tillbaka den genom att trycka på \"Uppdatera\".</string>
 
-    <!-- system messages-->
-    <string name="system_message_you">DU</string>
-    <string name="system_message_admin" formatted="false">%1$s(Administratör)</string>
-    <string name="system_message_added" formatted="false">%1$s &lt;b&gt;lade till&lt;/b&gt; %2$s</string>
-    <string name="system_message_is_added" formatted="false">%1$s &lt;b&gt;har lagts till&lt;/b&gt;</string>
-    <string name="system_message_you_are_added" formatted="false">Du &lt;b&gt;har lagts till&lt;/b&gt;</string>
-    <string name="system_message_removed" formatted="false">%1$s &lt;b&gt;tog bort&lt;/b&gt; %2$s från chatten</string>
-    <string name="system_message_is_removed" formatted="false">%1$s &lt;b&gt;tas bort&lt;/b&gt;</string>
-    <string name="system_message_you_are_removed" formatted="false">Du &lt;b&gt;tas bort&lt;/b&gt;</string>
-    <string name="system_message_you_left_the_chat" formatted="false">Du &lt;b&gt;lämnade&lt;/b&gt; chatten</string>
-    <string name="system_message_left" formatted="false">%1$s &lt;b&gt;har lämnat chatten&lt;b&gt;</string>
+   <!-- system messages-->
+   <string name="system_message_you">DU</string>
+   <string name="system_message_admin" formatted="false">%1$s(Administratör)</string>
+   <string name="system_message_added" formatted="false">%1$s &lt;b&gt;lade till&lt;/b&gt; %2$s</string>
+   <string name="system_message_is_added" formatted="false">%1$s &lt;b&gt;har lagts till&lt;/b&gt;</string>
+   <string name="system_message_you_are_added" formatted="false">Du &lt;b&gt;har lagts till&lt;/b&gt;</string>
+   <string name="system_message_removed" formatted="false">%1$s &lt;b&gt;tog bort&lt;/b&gt; %2$s från chatten</string>
+   <string name="system_message_is_removed" formatted="false">%1$s &lt;b&gt;tas bort&lt;/b&gt;</string>
+   <string name="system_message_you_are_removed" formatted="false">Du &lt;b&gt;tas bort&lt;/b&gt;</string>
+   <string name="system_message_you_left_the_chat" formatted="false">Du &lt;b&gt;lämnade&lt;/b&gt; chatten</string>
+   <string name="system_message_left" formatted="false">%1$s &lt;b&gt;har lämnat chatten&lt;b&gt;</string>
 
-    <!-- flagging related -->
-    <string name="chat_flag_dialog_progress_loading_flags">Läser in …</string>
-    <string name="chat_flag_dialog_reason_title">Flagga</string>
-    <string name="chat_flag_dialog_reason_hint">Ange ditt skäl</string>
-    <string name="chat_flag_dialog_reason_positive_button">Acceptera</string>
-    <string name="chat_flag_dialog_reason_negative_button">Avbryt</string>
-    <string name="chat_flag_dialog_confirmation_title">Bekräfta</string>
-    <string name="chat_flag_dialog_confirmation_message_format">WorldVentures personal kommer att underrättas om att granska det här meddelandet för %1$s. Vill du fortsätta?</string>
-    <string name="chat_flag_dialog_confirmation_positive_button">Skicka</string>
-    <string name="chat_flag_dialog_confirmation_negative_button">Avbryt</string>
-    <string name="chat_flag_dialog_flagging_progress">Flaggning… </string>
-    <string name="chat_flag_failed">Kunde inte flagga meddelandet </string>
+   <!-- flagging related -->
+   <string name="chat_flag_dialog_progress_loading_flags">Läser in …</string>
+   <string name="chat_flag_dialog_reason_title">Flagga</string>
+   <string name="chat_flag_dialog_reason_hint">Ange ditt skäl</string>
+   <string name="chat_flag_dialog_reason_positive_button">Acceptera</string>
+   <string name="chat_flag_dialog_reason_negative_button">Avbryt</string>
+   <string name="chat_flag_dialog_confirmation_title">Bekräfta</string>
+   <string name="chat_flag_dialog_confirmation_message_format">WorldVentures personal kommer att underrättas om att granska det här meddelandet för %1$s. Vill du fortsätta?</string>
+   <string name="chat_flag_dialog_confirmation_positive_button">Skicka</string>
+   <string name="chat_flag_dialog_confirmation_negative_button">Avbryt</string>
+   <string name="chat_flag_dialog_flagging_progress">Flaggning… </string>
+   <string name="chat_flag_failed">Kunde inte flagga meddelandet </string>
 
-    <!---->
-    <!--Chat Settings -->
-    <!---->
-    <string name="chat_settings_single_chat">Chattinställningar</string>
-    <string name="chat_settings_group_chat">Grupp-chattsinställningar</string>
-    <string name="chat_settings_error_loading">Kunde inte ladda chattinställningar</string>
-    <string name="chat_settings_single_chat_online">online</string>
-    <string name="chat_settings_single_chat_offline">offline</string>
-    <string name="chat_settings_row_notifications">Aviseringar</string>
-    <string name="chat_settings_row_shared_content">Delat innehåll</string>
-    <string name="chat_settings_row_members_format">Medlemmar (%1$d)</string>
-    <string name="chat_settings_row_assign_new_admin">Lägg till en ny admin</string>
-    <string name="chat_settings_row_clear_chat">Rensa chatt</string>
-    <string name="chat_settings_row_leave_chat">Lämna chatt</string>
-    <string name="chat_settings_row_delete_chat">Ta bort chatt</string>
-    <string name="chat_settings_group_chat_info_text_format">Den här gruppen skapades av %1$s</string>
-    <string name="chat_settings_menu_settings">Inställningar</string>
-    <string name="chat_settings_menu_edit_chat_name">Redigera chattnamn</string>
-    <string name="chat_settings_menu_edit_change_chat_image">Ändra chattbild</string>
-    <string name="chat_settings_menu_edit_remove_chat_image">Ta bort chattbild</string>
-    <string name="chat_settings_clear_chat_confirmation_text">Chatten kommer att rensas från alla dina enheter. Du kan läsa in den igen senare. Vill du fortsätta?</string>
-    <string name="chat_settings_clear_chat_ok">OK</string>
-    <string name="chat_settings_clear_chat_cancel">Avbryt</string>
-    <string name="chat_settings_leave_group_chat">Är du säker på att du vill avbryta chatten</string>
-    <string name="chat_settings_leave_group_chat_format">Är du säker på att du vill avbryta chatten %1$s</string>
-    <string name="chat_settings_error_change_subject">Du kan inte ändra chattnamn utan nätverksanslutning</string>
-    <string name="chat_settings_error_changing_avatar_subject">Du kan inte ändra avatar för konversationen utan att vara ansluten till nätverket</string>
-    <!---->
-    <!--Add new members -->
-    <!---->
-    <string name="chat_add_new_members_title">Lägg till ny medlem</string>
-    <!---->
-    <!--Edit chat members -->
-    <!---->
-    <string name="edit_chat_members_title">Medlemmar (%1$d)</string>
-    <string name="edit_chat_members_search_hint">Letar efter medlemmar…</string>
-    <string name="edit_chat_members_row_button_delete">Ta bort</string>
-    <string name="edit_chat_dialog_confirm_user_deletion_message">Vill du radera denna användare från chatten?</string>
-    <string name="edit_chat_dialog_confirm_user_deletion_button_delete">Ta bort</string>
-    <string name="edit_chat_members_admin_section">Admin</string>
-    <string name="edit_chat_members_host_section">Resguide på plats</string>
-    <!--Messenger notifications-->
-    <string name="push_unsupported_message">Uppdatera senaste versionen av DreamTrips App för att visa bilaga</string>
-    <!---->
-    <!---->
-    <!--Messenger misc -->
-    <!---->
-    <string name="subject">Ämne</string>
-    <string name="change_subject">Skriv in chattnamn</string>
-    <string name="sent_photo">skickad bild</string>
-    <string name="sent_location">skickad plats</string>
-    <string name="unread_conversation">Konversationer</string>
+   <!---->
+   <!--Chat Settings -->
+   <!---->
+   <string name="chat_settings_single_chat">Chattinställningar</string>
+   <string name="chat_settings_group_chat">Grupp-chattsinställningar</string>
+   <string name="chat_settings_error_loading">Kunde inte ladda chattinställningar</string>
+   <string name="chat_settings_single_chat_online">online</string>
+   <string name="chat_settings_single_chat_offline">offline</string>
+   <string name="chat_settings_row_notifications">Aviseringar</string>
+   <string name="chat_settings_row_shared_content">Delat innehåll</string>
+   <string name="chat_settings_row_members_format">Medlemmar (%1$d)</string>
+   <string name="chat_settings_row_assign_new_admin">Lägg till en ny admin</string>
+   <string name="chat_settings_row_clear_chat">Rensa chatt</string>
+   <string name="chat_settings_row_leave_chat">Lämna chatt</string>
+   <string name="chat_settings_row_delete_chat">Ta bort chatt</string>
+   <string name="chat_settings_group_chat_info_text_format">Den här gruppen skapades av %1$s</string>
+   <string name="chat_settings_menu_settings">Inställningar</string>
+   <string name="chat_settings_menu_edit_chat_name">Redigera chattnamn</string>
+   <string name="chat_settings_menu_edit_change_chat_image">Ändra chattbild</string>
+   <string name="chat_settings_menu_edit_remove_chat_image">Ta bort chattbild</string>
+   <string name="chat_settings_clear_chat_confirmation_text">Chatten kommer att rensas från alla dina enheter. Du kan läsa in den igen senare. Vill du fortsätta?</string>
+   <string name="chat_settings_clear_chat_ok">OK</string>
+   <string name="chat_settings_clear_chat_cancel">Avbryt</string>
+   <string name="chat_settings_leave_group_chat">Är du säker på att du vill avbryta chatten</string>
+   <string name="chat_settings_leave_group_chat_format">Är du säker på att du vill avbryta chatten %1$s</string>
+   <string name="chat_settings_error_change_subject">Du kan inte ändra chattnamn utan nätverksanslutning</string>
+   <string name="chat_settings_error_changing_avatar_subject">Du kan inte ändra avatar för konversationen utan att vara ansluten till nätverket</string>
+   <!---->
+   <!--Add new members -->
+   <!---->
+   <string name="chat_add_new_members_title">Lägg till ny medlem</string>
+   <!---->
+   <!--Edit chat members -->
+   <!---->
+   <string name="edit_chat_members_title">Medlemmar (%1$d)</string>
+   <string name="edit_chat_members_search_hint">Letar efter medlemmar…</string>
+   <string name="edit_chat_members_row_button_delete">Ta bort</string>
+   <string name="edit_chat_dialog_confirm_user_deletion_message">Vill du radera denna användare från chatten?</string>
+   <string name="edit_chat_dialog_confirm_user_deletion_button_delete">Ta bort</string>
+   <string name="edit_chat_members_admin_section">Admin</string>
+   <string name="edit_chat_members_host_section">Resguide på plats</string>
+   <!--Messenger notifications-->
+   <string name="push_unsupported_message">Uppdatera senaste versionen av DreamTrips App för att visa bilaga</string>
+   <!---->
+   <!---->
+   <!--Messenger misc -->
+   <!---->
+   <string name="subject">Ämne</string>
+   <string name="change_subject">Skriv in chattnamn</string>
+   <string name="sent_photo">skickad bild</string>
+   <string name="sent_location">skickad plats</string>
+   <string name="unread_conversation">Konversationer</string>
 
-    <string name="disconnected_overlay_disconnected_message"> Anslutning bruten </string>
-    <string name="disconnected_overlay_connecting_message">Ansluter…</string>
+   <string name="disconnected_overlay_disconnected_message"> Anslutning bruten </string>
+   <string name="disconnected_overlay_connecting_message">Ansluter…</string>
 
-    <string name="warning_no_internet_connection">Internetanslutningen fungerar inte</string>
+   <string name="warning_no_internet_connection">Internetanslutningen fungerar inte</string>
 
-    <string name="chat_update_proposition"><![CDATA[Uppdatera senaste versionen av DreamTrips App för att visa bilaga <a href=\"https://play.google.com/store/apps/details?id=com.worldventures.dreamtrips\">här </a>]]></string>
+   <string name="chat_update_proposition"><![CDATA[Uppdatera senaste versionen av DreamTrips App för att visa bilaga <a href=\"https://play.google.com/store/apps/details?id=com.worldventures.dreamtrips\">här </a>]]></string>
 
-    <string name="translate_from">Översatt</string>
-    <string name="translate_error">Översättningsfel</string>
-    <!-- messenger ends-->
+   <string name="translate_from">Översatt</string>
+   <string name="translate_error">Översättningsfel</string>
+   <!-- messenger ends-->
 </resources>

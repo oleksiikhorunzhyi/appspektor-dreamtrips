@@ -9,27 +9,27 @@ import java.io.Serializable;
 
 public class MapObject implements Parcelable, Serializable {
 
-    protected Coordinates coordinates;
+   protected Coordinates coordinates;
 
-    public Coordinates getCoordinates() {
-        return coordinates;
-    }
+   public Coordinates getCoordinates() {
+      return coordinates;
+   }
 
-    @Override
-    public int describeContents() {
-        return 0;
-    }
+   @Override
+   public int describeContents() {
+      return 0;
+   }
 
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeParcelable(this.coordinates, flags);
-    }
+   @Override
+   public void writeToParcel(Parcel dest, int flags) {
+      dest.writeParcelable(this.coordinates, flags);
+   }
 
-    public MapObject() {
-    }
+   public MapObject() {
+   }
 
-    protected MapObject(Parcel in) {
-        this.coordinates = in.readParcelable(Coordinates.class.getClassLoader());
-    }
+   protected MapObject(Parcel in) {
+      this.coordinates = in.readParcelable(Coordinates.class.getClassLoader());
+   }
 
 }

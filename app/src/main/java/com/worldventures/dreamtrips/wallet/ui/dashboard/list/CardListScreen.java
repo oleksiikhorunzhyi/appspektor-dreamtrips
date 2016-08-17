@@ -157,7 +157,7 @@ public class CardListScreen extends WalletFrameLayout<CardListScreenPresenter.Sc
    }
 
    @OnClick(R.id.add_debit_list)
-   protected void addDeditCardClick() {
+   protected void addDebitCardClick() {
       presenter.addDebitCard();
    }
 

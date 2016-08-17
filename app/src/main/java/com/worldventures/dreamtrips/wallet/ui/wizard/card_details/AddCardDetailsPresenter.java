@@ -98,7 +98,7 @@ public class AddCardDetailsPresenter extends WalletPresenter<AddCardDetailsPrese
     }
 
     public void onCardInfoConfirmed(AddressInfo addressInfo, String cvv, String nickname, boolean useDefaultAddress, boolean setAsDefaultAddress){
-        smartCardInteractor.saveCardDetailsDataCommandPipe()
+        smartCardInteractor.saveCardDetailsDataPipe()
                 .createObservable(new SaveCardDetailsDataCommand(bankCard, addressInfo, nickname, cvv,useDefaultAddress, setAsDefaultAddress))
                 .compose(bindViewIoToMainComposer())
                 .subscribe(OperationSubscriberWrapper.<SaveCardDetailsDataCommand>forView(getView().provideOperationDelegate())

@@ -1,7 +1,6 @@
 package com.worldventures.dreamtrips.wallet.ui.common.base.screen.delegate;
 
 import android.content.Context;
-import android.content.DialogInterface;
 import android.support.annotation.NonNull;
 import android.view.View;
 
@@ -68,12 +67,14 @@ public class DialogOperationScreen implements OperationScreen<SweetAlertDialog> 
         errorDialog = buildErrorDialog(checkAndGetView());
         errorDialog.setContentText(msg);
         errorDialog.setOnCancelListener(dialog -> {
-            if(action != null) {
+            if (action != null) {
                 action.call(errorDialog);
             }
         });
         errorDialog.setConfirmClickListener(sweetAlertDialog -> {
-            if(action != null) {
+            sweetAlertDialog.dismissWithAnimation();
+            
+            if (action != null) {
                 action.call(sweetAlertDialog);
             }
             sweetAlertDialog.dismiss();

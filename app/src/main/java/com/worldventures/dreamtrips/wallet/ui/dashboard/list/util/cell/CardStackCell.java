@@ -27,7 +27,8 @@ public class CardStackCell extends AbstractDelegateCell<CardStackViewModel, Card
     @ForActivity
     Injector injector;
 
-    @InjectView(R.id.cardStack) RecyclerView cardStack;
+    @InjectView(R.id.cardStack)
+    RecyclerView cardStack;
     BaseDelegateAdapter adapter;
 
     private static final double VISIBLE_SCALE = 0.75;
@@ -55,11 +56,13 @@ public class CardStackCell extends AbstractDelegateCell<CardStackViewModel, Card
         cardStack.setAdapter(adapter);
     }
 
-    @Override protected void syncUIStateWithModel() {
-        adapter.clearAndUpdateItems(getModelObject().getBankCards());
+    @Override
+    protected void syncUIStateWithModel() {
+        adapter.clearAndUpdateItems(getModelObject().getCardList());
     }
 
-    @Override public void prepareForReuse() {
+    @Override
+    public void prepareForReuse() {
 
     }
 

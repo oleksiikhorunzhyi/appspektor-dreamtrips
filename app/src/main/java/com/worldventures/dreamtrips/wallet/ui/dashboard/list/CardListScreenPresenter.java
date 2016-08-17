@@ -144,13 +144,13 @@ public class CardListScreenPresenter extends WalletPresenter<CardListScreenPrese
          switch (vm.type()) {
             case DEBIT:
                int debitCardListSize = vm.bankCards().size();
-               int debitTitleId = QuantityHelper.chooseResource(debitCardListSize, R.string.wallet_debit_card_title, R.string.wallet_credit_cards_title);
+               int debitTitleId = QuantityHelper.chooseResource(debitCardListSize, R.string.wallet_debit_card_title, R.string.wallet_debit_cards_title);
 
                title = getContext().getString(debitTitleId, debitCardListSize);
                break;
             case CREDIT:
                int creditCardListSize = vm.bankCards().size();
-               int creditTitleId = QuantityHelper.chooseResource(creditCardListSize, R.string.wallet_credit_card_title, R.string.wallet_debit_cards_title);
+               int creditTitleId = QuantityHelper.chooseResource(creditCardListSize, R.string.wallet_credit_card_title, R.string.wallet_credit_cards_title);
 
                title = getContext().getString(creditTitleId, creditCardListSize);
                break;

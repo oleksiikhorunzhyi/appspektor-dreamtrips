@@ -74,6 +74,6 @@ public class CardDetailsScreen extends WalletFrameLayout<CardDetailsPresenter.Sc
     }
 
     protected void navigateButtonClick() {
-        presenter.goToBack();
+        presenter.goBack();
     }
 }

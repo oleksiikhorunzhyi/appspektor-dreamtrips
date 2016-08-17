@@ -106,7 +106,7 @@ public class CardListScreen extends WalletFrameLayout<CardListScreenPresenter.Sc
    }
 
    private void onNavigateButtonClick(View view) {
-      presenter.goBack();
+      presenter.navigationClick();
    }
 
    private void setupToolbar() {

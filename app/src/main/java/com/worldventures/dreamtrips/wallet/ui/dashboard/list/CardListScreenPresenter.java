@@ -6,6 +6,7 @@ import android.os.Parcelable;
 import com.techery.spares.module.Injector;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.utils.QuantityHelper;
+import com.worldventures.dreamtrips.modules.navdrawer.NavigationDrawerPresenter;
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCard;
 import com.worldventures.dreamtrips.wallet.domain.entity.card.BankCard;
 import com.worldventures.dreamtrips.wallet.domain.entity.card.BankCard.CardType;
@@ -36,6 +37,7 @@ import static com.worldventures.dreamtrips.wallet.service.command.CardStacksComm
 public class CardListScreenPresenter extends WalletPresenter<CardListScreenPresenter.Screen, Parcelable> {
 
    @Inject SmartCardInteractor smartCardInteractor;
+   @Inject NavigationDrawerPresenter navigationDrawerPresenter;
 
    private SmartCard activeSmartCard;
 
@@ -89,8 +91,8 @@ public class CardListScreenPresenter extends WalletPresenter<CardListScreenPrese
       Flow.get(getContext()).set(new CardDetailsPath(bankCard));
    }
 
-   public void goBack() {
-      Flow.get(getContext()).goBack();
+   public void navigationClick() {
+      navigationDrawerPresenter.openDrawer();
    }
 
    public void onSettingsChosen() {

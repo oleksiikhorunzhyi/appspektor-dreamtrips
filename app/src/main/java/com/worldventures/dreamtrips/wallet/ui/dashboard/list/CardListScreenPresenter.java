@@ -68,6 +68,12 @@ public class CardListScreenPresenter extends WalletPresenter<CardListScreenPrese
                 .skip(1)
                 .filter(checkedFlag -> activeSmartCard.lock() != checkedFlag)
                 .subscribe(this::lockChanged);
+
+        getView().unSupportedUnlockOperation()
+                .compose(bindView())
+                .subscribe(it -> {
+                    getView().provideOperationDelegate().showError(getContext().getString(R.string.wallet_dashboard_unlock_error), e -> {});
+                });
     }
 
     private void lockChanged(boolean isLocked) {
@@ -76,7 +82,7 @@ public class CardListScreenPresenter extends WalletPresenter<CardListScreenPrese
                 .compose(bindViewIoToMainComposer())
                 .subscribe(OperationSubscriberWrapper.<SetLockStateCommand>forView(getView().provideOperationDelegate())
                         .onFail(getContext().getString(R.string.error_something_went_wrong))
-                        .onSuccess(action -> {})
+                        .onSuccess(action -> { if (isLocked) getView().disableLockBtn();})
                         .wrap()
                 );
     }
@@ -120,5 +126,9 @@ public class CardListScreenPresenter extends WalletPresenter<CardListScreenPrese
         void showSmartCardInfo(SmartCard smartCard);
 
         Observable<Boolean> lockStatus();
+
+        Observable<Void> unSupportedUnlockOperation();
+
+        void disableLockBtn();
     }
 }

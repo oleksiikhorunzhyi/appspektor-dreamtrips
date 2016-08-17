@@ -97,6 +97,14 @@ public class CardListScreen extends WalletFrameLayout<CardListScreenPresenter.Sc
         return smartCardWidget.lockStatus();
     }
 
+    @Override public Observable<Void> unSupportedUnlockOperation() {
+        return smartCardWidget.unSupportedUnlockOperation();
+    }
+
+    @Override public void disableLockBtn() {
+        smartCardWidget.setLockBtnEnabled(false);
+    }
+
     private void onNavigateButtonClick(View view) {
         presenter.goBack();
     }

@@ -4,26 +4,27 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="@dimen/wallet_smart_card_default_width"
     android:layout_height="@dimen/wallet_smart_card_default_height"
+    android:animateLayoutChanges="true"
     android:background="@drawable/wallet_flye_card"
     android:paddingBottom="@dimen/spacing_normal"
     android:paddingLeft="@dimen/spacing_large"
     android:paddingRight="@dimen/spacing_large">
 
-   <CheckBox
-       android:id="@+id/cbLock"
-       android:layout_width="wrap_content"
-       android:layout_height="wrap_content"
-       android:button="@drawable/smart_card_lock_checkbox"
-       android:layout_marginLeft="65dp"
-       android:layout_marginTop="15dp"/>
+    <CheckBox
+        android:id="@+id/cbLock"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="65dp"
+        android:layout_marginTop="15dp"
+        android:button="@drawable/smart_card_lock_checkbox"/>
 
     <com.worldventures.dreamtrips.wallet.ui.widget.BatteryView
         android:id="@+id/batteryView"
-        android:layout_marginTop="12dp"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"/>
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:layout_marginTop="12dp"/>
 
     <com.facebook.drawee.view.SimpleDraweeView
         android:id="@+id/cardListSCAvatar"

@@ -70,7 +70,8 @@
     <string name="wallet_card_details_label_billing_address">Billing Address</string>
     <string name="wallet_card_details_button_edit_billing_address">Edit Billing Address</string>
     <string name="wallet_card_details_button_delete_card">Delete Card</string>
-    
+    <string name="wallet_card_details_progress_delete">Deleting %s...</string>
+
     <!--settings-->
     <string name="wallet_card_settings_title">Settings</string>
     <string name="wallet_card_settings_stealth_mode">Stealth Mode</string>

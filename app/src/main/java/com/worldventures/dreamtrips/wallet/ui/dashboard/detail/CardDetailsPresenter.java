@@ -15,20 +15,28 @@ import com.worldventures.dreamtrips.wallet.domain.entity.AddressInfoWithLocale;
 import com.worldventures.dreamtrips.wallet.domain.entity.ImmutableAddressInfo;
 import com.worldventures.dreamtrips.wallet.domain.entity.ImmutableAddressInfoWithLocale;
 import com.worldventures.dreamtrips.wallet.domain.entity.card.BankCard;
+import com.worldventures.dreamtrips.wallet.service.SmartCardInteractor;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletPresenter;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.WalletScreen;
+import com.worldventures.dreamtrips.wallet.ui.common.helper.OperationSubscriberWrapper;
 
 import javax.inject.Inject;
 
 import flow.Flow;
+import io.techery.janet.smartcard.action.records.DeleteRecordAction;
 import io.techery.janet.smartcard.model.Record;
 
-public class CardDetailsPresenter extends WalletPresenter<CardDetailsPresenter.Screen, Parcelable> {
+import static java.lang.Integer.valueOf;
 
+public class CardDetailsPresenter extends WalletPresenter<CardDetailsPresenter.Screen, Parcelable> {
     @Inject
     SessionHolder<UserSession> userSessionHolder;
+
     @Inject
     LocaleHelper localeHelper;
+
+    @Inject
+    SmartCardInteractor smartCardInteractor;
 
     private final BankCard bankCard;
 
@@ -84,10 +92,17 @@ public class CardDetailsPresenter extends WalletPresenter<CardDetailsPresenter.S
     }
 
     public void onDeleteCardRequired() {
-
+        smartCardInteractor.deleteCardPipe()
+                .createObservable(new DeleteRecordAction(valueOf(bankCard.id())))
+                .compose(bindViewIoToMainComposer())
+                .subscribe(OperationSubscriberWrapper.<DeleteRecordAction>forView(getView().provideOperationDelegate())
+                        .onStart(getContext().getString(R.string.wallet_card_details_progress_delete, bankCard.title()))
+                        .onSuccess(deleteRecordAction -> Flow.get(getContext()).goBack())
+                        .onFail(getContext().getString(R.string.error_something_went_wrong))
+                        .wrap());
     }
 
-    public void goToBack() {
+    public void goBack() {
         Flow.get(getContext()).goBack();
     }
 
@@ -98,5 +113,4 @@ public class CardDetailsPresenter extends WalletPresenter<CardDetailsPresenter.S
 
         void showDefaultAddress(AddressInfoWithLocale addressInfoWithLocale);
     }
-
 }

@@ -10,6 +10,7 @@ import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.wallet.domain.entity.card.BankCard.CardType;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletFrameLayout;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.OperationScreen;
+import com.worldventures.dreamtrips.wallet.ui.common.base.screen.delegate.DialogOperationScreen;
 
 import butterknife.InjectView;
 
@@ -46,7 +47,7 @@ public class WizardMagstripeScreen extends WalletFrameLayout<WizardMagstripePres
 
    @Override
    public OperationScreen provideOperationDelegate() {
-      return null;
+      return new DialogOperationScreen(this);
    }
 
    private void navigateClick() {

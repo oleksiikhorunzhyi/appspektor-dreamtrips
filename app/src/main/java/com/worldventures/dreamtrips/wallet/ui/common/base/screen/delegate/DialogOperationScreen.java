@@ -59,7 +59,9 @@ public class DialogOperationScreen implements OperationScreen<SweetAlertDialog> 
 
    @Override
    public void hideProgress() {
-      progressDialog.dismiss();
+      if (progressDialog != null && progressDialog.isShowing()) {
+         progressDialog.dismiss();
+      }
    }
 
    @Override

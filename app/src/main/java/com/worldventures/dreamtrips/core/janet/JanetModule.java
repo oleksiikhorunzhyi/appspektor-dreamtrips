@@ -17,6 +17,7 @@ import com.worldventures.dreamtrips.core.janet.cache.storage.ActionStorage;
 import com.worldventures.dreamtrips.core.janet.cache.storage.MultipleActionStorage;
 import com.worldventures.dreamtrips.core.janet.dagger.DaggerActionServiceWrapper;
 import com.worldventures.dreamtrips.core.utils.tracksystem.Tracker;
+import com.worldventures.dreamtrips.wallet.di.MagstripeReaderModule;
 import com.worldventures.dreamtrips.wallet.di.SmartCardModule;
 import com.worldventures.dreamtrips.wallet.domain.entity.ImmutableProvision;
 
@@ -33,10 +34,12 @@ import dagger.Provides;
 import io.techery.janet.ActionService;
 import io.techery.janet.CommandActionService;
 import io.techery.janet.Janet;
+import io.techery.janet.MagstripeActionService;
 import io.techery.janet.SmartCardActionService;
 import io.techery.janet.gson.GsonConverter;
 import io.techery.janet.http.HttpClient;
 import io.techery.janet.http.test.MockHttpActionService;
+import io.techery.janet.magstripe.MagstripeReaderClient;
 import io.techery.janet.smartcard.client.SmartCardClient;
 
 @Module(
@@ -44,7 +47,8 @@ import io.techery.janet.smartcard.client.SmartCardClient;
             JanetCommandModule.class,
             JanetServiceModule.class,
             CacheActionStorageModule.class,
-            SmartCardModule.class
+            SmartCardModule.class,
+            MagstripeReaderModule.class
       },
       complete = false, library = true)
 public class JanetModule {
@@ -183,5 +187,12 @@ public class JanetModule {
    @Named(JANET_WALLET)
    ActionService provideWalletCommandService() {
       return new CommandActionService();
+   }
+
+   @Singleton
+   @Provides(type = Provides.Type.SET)
+   @Named(JANET_WALLET)
+   ActionService provideMagstripeReaderService(MagstripeReaderClient client) {
+      return new MagstripeActionService(client);
    }
 }

@@ -5,7 +5,6 @@ import android.app.Activity;
 import com.octo.android.robospice.persistence.exception.SpiceException;
 import com.techery.spares.adapter.IRoboSpiceAdapter;
 import com.worldventures.dreamtrips.core.rx.RxView;
-import com.worldventures.dreamtrips.core.rx.composer.IoToMainComposer;
 import com.worldventures.dreamtrips.core.session.acl.Feature;
 import com.worldventures.dreamtrips.core.utils.events.AddToBucketEvent;
 import com.worldventures.dreamtrips.core.utils.events.EntityLikedEvent;
@@ -99,8 +98,7 @@ public class TripListPresenter extends Presenter<TripListPresenter.View> {
    private void subscribeToReloadTrips() {
       tripsInteractor.reloadTripsActionPipe()
             .observe()
-            .compose(bindView())
-            .compose(new IoToMainComposer<>())
+            .compose(bindViewToMainComposer())
             .subscribe(new ActionStateSubscriber<GetTripsCommand.ReloadTripsCommand>().onSuccess(getTripsCommand -> {
                loading = false;
                if (view != null) {
@@ -118,8 +116,7 @@ public class TripListPresenter extends Presenter<TripListPresenter.View> {
    private void subscribeToLoadNextTripsPage() {
       tripsInteractor.loadNextTripsActionPipe()
             .observe()
-            .compose(bindView())
-            .compose(new IoToMainComposer<>())
+            .compose(bindViewToMainComposer())
             .subscribe(new ActionStateSubscriber<GetTripsCommand.LoadNextTripsCommand>().onSuccess(getTripsCommand -> {
                loading = false;
                view.getAdapter().addItems(getTripsCommand.getResult());

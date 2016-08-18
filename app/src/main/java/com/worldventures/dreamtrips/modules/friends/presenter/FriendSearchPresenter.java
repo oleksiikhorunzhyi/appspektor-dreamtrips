@@ -7,7 +7,6 @@ import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.api.request.Query;
 import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.friends.api.SearchUsersQuery;
-import com.worldventures.dreamtrips.modules.friends.events.AddUserRequestEvent;
 
 import java.util.ArrayList;
 
@@ -73,7 +72,7 @@ public class FriendSearchPresenter extends BaseUserListPresenter<FriendSearchPre
    }
 
    public void addUserRequest(User user) {
-      eventBus.post(new AddUserRequestEvent(user));
+      addFriend(user);
    }
 
    @Override

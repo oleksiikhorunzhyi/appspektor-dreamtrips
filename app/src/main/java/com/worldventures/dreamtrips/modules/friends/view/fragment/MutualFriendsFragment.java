@@ -15,7 +15,8 @@ import com.worldventures.dreamtrips.modules.friends.view.cell.MutualFriendCell;
 import butterknife.InjectView;
 
 @Layout(R.layout.fragment_mutuals)
-public class MutualFriendsFragment extends BaseUsersFragment<MutualFriendsPresenter, MutualFriendsBundle> implements MutualFriendsPresenter.View {
+public class MutualFriendsFragment extends BaseUsersFragment<MutualFriendsPresenter, MutualFriendsBundle>
+      implements MutualFriendsPresenter.View {
 
    @InjectView(R.id.title) TextView header;
 

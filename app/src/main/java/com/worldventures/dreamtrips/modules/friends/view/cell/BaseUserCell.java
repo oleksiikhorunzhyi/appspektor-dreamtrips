@@ -9,7 +9,6 @@ import android.widget.TextView;
 import com.techery.spares.module.Injector;
 import com.techery.spares.module.qualifier.ForActivity;
 import com.techery.spares.ui.view.cell.AbstractDelegateCell;
-import com.techery.spares.ui.view.cell.CellDelegate;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.navigation.router.Router;
@@ -19,8 +18,9 @@ import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.common.view.custom.SmartAvatarView;
 import com.worldventures.dreamtrips.modules.friends.bundle.MutualFriendsBundle;
-import com.worldventures.dreamtrips.modules.friends.events.UserClickedEvent;
+import com.worldventures.dreamtrips.modules.friends.view.cell.delegate.UserActionDelegate;
 import com.worldventures.dreamtrips.modules.friends.view.util.MutualFriendsUtil;
+import com.worldventures.dreamtrips.modules.profile.view.dialog.FriendActionDialogDelegate;
 
 import javax.inject.Inject;
 import javax.inject.Provider;
@@ -29,7 +29,7 @@ import butterknife.InjectView;
 import butterknife.OnClick;
 import butterknife.Optional;
 
-public abstract class BaseUserCell<D extends CellDelegate<User>> extends AbstractDelegateCell<User, D> {
+public abstract class BaseUserCell<D extends UserActionDelegate> extends AbstractDelegateCell<User, D> {
 
    @Inject Presenter.TabletAnalytic tabletAnalytic;
    @Inject FragmentManager fragmentManager;
@@ -74,7 +74,7 @@ public abstract class BaseUserCell<D extends CellDelegate<User>> extends Abstrac
 
    @OnClick(R.id.sdv_avatar)
    void onUserClicked() {
-      getEventBus().post(new UserClickedEvent(getModelObject()));
+      if (cellDelegate != null) cellDelegate.userClicked(getModelObject());
    }
 
    protected String createMutualString() {

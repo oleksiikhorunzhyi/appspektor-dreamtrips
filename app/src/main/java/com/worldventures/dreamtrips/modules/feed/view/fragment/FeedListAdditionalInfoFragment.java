@@ -13,7 +13,7 @@ import android.widget.TextView;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.badoo.mobile.util.WeakHandler;
 import com.h6ah4i.android.widget.advrecyclerview.decoration.SimpleListDividerDecorator;
-import com.techery.spares.adapter.BaseArrayListAdapter;
+import com.techery.spares.adapter.BaseDelegateAdapter;
 import com.techery.spares.annotations.Layout;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.navigation.Route;
@@ -28,6 +28,7 @@ import com.worldventures.dreamtrips.modules.feed.view.util.NestedLinearLayoutMan
 import com.worldventures.dreamtrips.modules.friends.bundle.FriendGlobalSearchBundle;
 import com.worldventures.dreamtrips.modules.friends.model.Circle;
 import com.worldventures.dreamtrips.modules.friends.view.cell.FeedFriendCell;
+import com.worldventures.dreamtrips.modules.friends.view.cell.delegate.UserActionDelegate;
 import com.worldventures.dreamtrips.modules.profile.bundle.UserBundle;
 import com.worldventures.dreamtrips.modules.profile.view.ProfileViewUtils;
 
@@ -39,7 +40,8 @@ import butterknife.OnClick;
 import static android.support.v7.widget.RecyclerView.OnScrollListener;
 
 @Layout(R.layout.fragment_feed_list_additional_info)
-public class FeedListAdditionalInfoFragment extends FeedItemAdditionalInfoFragment<FeedListAdditionalInfoPresenter> implements FeedListAdditionalInfoPresenter.View {
+public class FeedListAdditionalInfoFragment extends FeedItemAdditionalInfoFragment<FeedListAdditionalInfoPresenter>
+      implements FeedListAdditionalInfoPresenter.View, UserActionDelegate {
 
    @InjectView(R.id.account_type) TextView accountType;
    @InjectView(R.id.dt_points) TextView dtPoints;
@@ -52,7 +54,7 @@ public class FeedListAdditionalInfoFragment extends FeedItemAdditionalInfoFragme
    @InjectView(R.id.swipe_container) SwipeRefreshLayout refreshLayout;
 
    private CirclesFilterPopupWindow filterPopupWindow;
-   private BaseArrayListAdapter<User> adapter;
+   private BaseDelegateAdapter<User> adapter;
    private MaterialDialog blockingProgressDialog;
 
    WeakHandler handler = new WeakHandler();
@@ -85,8 +87,9 @@ public class FeedListAdditionalInfoFragment extends FeedItemAdditionalInfoFragme
             refreshLayout.setEnabled(enableSwipeToRefresh);
          }
       });
-      adapter = new BaseArrayListAdapter<>(getContext(), this);
+      adapter = new BaseDelegateAdapter<>(getContext(), this);
       adapter.registerCell(User.class, FeedFriendCell.class);
+      adapter.registerDelegate(User.class, this);
       friendsView.setAdapter(adapter);
       friendsView.setLayoutManager(new NestedLinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false));
       friendsView.addItemDecoration(new SimpleListDividerDecorator(ResourcesCompat.getDrawable(getResources(), R.drawable.list_divider, null), true));
@@ -102,11 +105,6 @@ public class FeedListAdditionalInfoFragment extends FeedItemAdditionalInfoFragme
    @Override
    public void addFriends(@NonNull List<User> friends) {
       adapter.addItems(friends);
-   }
-
-   @Override
-   public void removeFriend(@NonNull User friend) {
-      adapter.remove(friend);
    }
 
    @Override
@@ -228,4 +226,13 @@ public class FeedListAdditionalInfoFragment extends FeedItemAdditionalInfoFragme
       ProfileViewUtils.setUserStatus(user, accountType, companyName.getResources());
    }
 
+   @Override
+   public void userClicked(User user) {
+      getPresenter().userClicked(user);
+   }
+
+   @Override
+   public void onCellClicked(User model) {
+
+   }
 }

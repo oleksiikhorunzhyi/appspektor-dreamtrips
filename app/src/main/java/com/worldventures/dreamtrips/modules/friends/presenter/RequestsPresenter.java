@@ -4,24 +4,20 @@ import android.support.annotation.StringRes;
 
 import com.innahema.collections.query.functions.Action1;
 import com.innahema.collections.query.queriables.Queryable;
-import com.octo.android.robospice.persistence.exception.SpiceException;
 import com.techery.spares.adapter.BaseArrayListAdapter;
 import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.core.api.action.CommandWithError;
 import com.worldventures.dreamtrips.core.session.CirclesInteractor;
 import com.worldventures.dreamtrips.modules.common.api.janet.command.CirclesCommand;
 import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.common.view.BlockingProgressView;
-import com.worldventures.dreamtrips.modules.friends.api.ActOnRequestCommand;
-import com.worldventures.dreamtrips.modules.friends.api.DeleteRequestCommand;
 import com.worldventures.dreamtrips.modules.friends.api.GetRequestsQuery;
-import com.worldventures.dreamtrips.modules.friends.api.ResponseBatchRequestCommand;
-import com.worldventures.dreamtrips.modules.friends.events.CancelRequestEvent;
-import com.worldventures.dreamtrips.modules.friends.events.HideRequestEvent;
-import com.worldventures.dreamtrips.modules.friends.events.RejectRequestEvent;
-import com.worldventures.dreamtrips.modules.friends.events.ReloadFriendListEvent;
 import com.worldventures.dreamtrips.modules.friends.events.RequestsLoadedEvent;
-import com.worldventures.dreamtrips.modules.friends.events.UserClickedEvent;
+import com.worldventures.dreamtrips.modules.friends.janet.AcceptAllFriendRequestsCommand;
+import com.worldventures.dreamtrips.modules.friends.janet.ActOnFriendRequestCommand;
+import com.worldventures.dreamtrips.modules.friends.janet.DeleteFriendRequestCommand;
+import com.worldventures.dreamtrips.modules.friends.janet.FriendsInteractor;
 import com.worldventures.dreamtrips.modules.friends.model.Circle;
 import com.worldventures.dreamtrips.modules.friends.model.RequestHeaderModel;
 import com.worldventures.dreamtrips.modules.profile.bundle.UserBundle;
@@ -31,17 +27,19 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import io.techery.janet.ActionState;
 import io.techery.janet.helper.ActionStateSubscriber;
+import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
 
 import static com.worldventures.dreamtrips.modules.common.model.User.Relationship.INCOMING_REQUEST;
 import static com.worldventures.dreamtrips.modules.common.model.User.Relationship.OUTGOING_REQUEST;
 import static com.worldventures.dreamtrips.modules.common.model.User.Relationship.REJECTED;
-import static com.worldventures.dreamtrips.modules.friends.api.ResponseBatchRequestCommand.RequestEntity;
 
 public class RequestsPresenter extends Presenter<RequestsPresenter.View> {
 
    @Inject CirclesInteractor circlesInteractor;
+   @Inject FriendsInteractor friendsInteractor;
 
    @Override
    public void onResume() {
@@ -73,8 +71,8 @@ public class RequestsPresenter extends Presenter<RequestsPresenter.View> {
       });
    }
 
-   public void onEvent(UserClickedEvent event) {
-      if (view.isVisibleOnScreen()) view.openUser(new UserBundle(event.getUser()));
+   public void userClicked(User user) {
+      view.openUser(new UserBundle(user));
    }
 
    private void setItems(List<User> items) {
@@ -103,11 +101,15 @@ public class RequestsPresenter extends Presenter<RequestsPresenter.View> {
       }
    }
 
-   public void acceptAllRequests() {
-      circlesInteractor.pipe()
+   private Observable<ActionState<CirclesCommand>> getCirclesObservable() {
+      return circlesInteractor.pipe()
             .createObservable(new CirclesCommand())
             .observeOn(AndroidSchedulers.mainThread())
-            .compose(bindView())
+            .compose(bindView());
+   }
+
+   public void acceptAllRequests() {
+      getCirclesObservable()
             .subscribe(new ActionStateSubscriber<CirclesCommand>().onStart(circlesCommand -> onCirclesStart())
                   .onSuccess(circlesCommand -> acceptAllCirclesSuccess(circlesCommand.getResult()))
                   .onFail((circlesCommand, throwable) -> onCirclesError(circlesCommand.getErrorMessage())));
@@ -115,33 +117,27 @@ public class RequestsPresenter extends Presenter<RequestsPresenter.View> {
 
    private void acceptAllCirclesSuccess(List<Circle> circles) {
       view.hideBlockingProgress();
-      view.showAddFriendDialog(circles, position -> {
-         if (view.isVisibleOnScreen()) {
-            view.startLoading();
-            List<RequestEntity> responses = Queryable.from(view.getAdapter().getItems())
-                  .filter(e -> e instanceof User && ((User) e).getRelationship() == INCOMING_REQUEST)
-                  .map(element -> {
-                     return new RequestEntity(((User) element).getId(), ActOnRequestCommand.Action.CONFIRM.name(), circles
-                           .get(position)
-                           .getId());
-                  })
-                  .toList();
-            doRequest(new ResponseBatchRequestCommand(responses), jsonObject -> {
-               reloadRequests();
-               eventBus.post(new ReloadFriendListEvent());
-            }, spiceException -> {
-               RequestsPresenter.this.handleError(spiceException);
-               view.finishLoading();
-            });
-         }
-      });
+      view.showAddFriendDialog(circles, position ->
+            friendsInteractor.acceptAllPipe()
+                  .createObservable(new AcceptAllFriendRequestsCommand(Queryable.from(view.getAdapter().getItems())
+                        .filter(e -> e instanceof User && ((User) e).getRelationship() == INCOMING_REQUEST)
+                        .map(e -> (User) e)
+                        .toList(), circles.get(position).getId()))
+                  .compose(bindView())
+                  .observeOn(AndroidSchedulers.mainThread())
+                  .subscribe(new ActionStateSubscriber<AcceptAllFriendRequestsCommand>()
+                        .onStart(action -> view.startLoading())
+                        .onSuccess(action -> {
+                           view.finishLoading();
+                           reloadRequests();
+                           updateRequestsCount();
+                        })
+                        .onFail((action, e) -> onError(action)))
+      );
    }
 
    public void acceptRequest(User user) {
-      circlesInteractor.pipe()
-            .createObservable(new CirclesCommand())
-            .observeOn(AndroidSchedulers.mainThread())
-            .compose(bindView())
+      getCirclesObservable()
             .subscribe(new ActionStateSubscriber<CirclesCommand>().onStart(circlesCommand -> onCirclesStart())
                   .onSuccess(circlesCommand -> acceptCirclesSuccess(user, circlesCommand.getResult()))
                   .onFail((circlesCommand, throwable) -> onCirclesError(circlesCommand.getErrorMessage())));
@@ -149,60 +145,62 @@ public class RequestsPresenter extends Presenter<RequestsPresenter.View> {
 
    private void acceptCirclesSuccess(User user, List<Circle> circles) {
       view.hideBlockingProgress();
-      view.showAddFriendDialog(circles, position -> {
-         view.startLoading();
-         doRequest(new ActOnRequestCommand(user.getId(), ActOnRequestCommand.Action.CONFIRM.name(), circles.get(position)
-               .getId()), object -> {
-            eventBus.post(new ReloadFriendListEvent());
-            onSuccess(user);
-            reloadRequests();
-            updateRequestsCount();
-         }, this::onError);
-      });
+      view.showAddFriendDialog(circles, position ->
+            friendsInteractor.acceptRequestPipe()
+                  .createObservable(new ActOnFriendRequestCommand.Accept(user, circles.get(position).getId()))
+                  .compose(bindView())
+                  .observeOn(AndroidSchedulers.mainThread())
+                  .subscribe(new ActionStateSubscriber<ActOnFriendRequestCommand.Accept>()
+                        .onStart(action -> view.startLoading())
+                        .onSuccess(action -> {
+                           onSuccess(user);
+                           updateRequestsCount();
+                        })
+                        .onFail((action, e) -> onError(action)))
+      );
    }
 
    public void rejectRequest(User user) {
-      eventBus.post(new RejectRequestEvent(user));
-      view.startLoading();
-      doRequest(new ActOnRequestCommand(user.getId(), ActOnRequestCommand.Action.REJECT.name()), object -> {
-         onSuccess(user);
-         updateRequestsCount();
-         reloadRequests();
-      }, this::onError);
+      friendsInteractor.rejectRequestPipe()
+            .createObservable(new ActOnFriendRequestCommand.Reject(user))
+            .compose(bindView())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe(new ActionStateSubscriber<ActOnFriendRequestCommand.Reject>()
+                  .onStart(action -> view.startLoading())
+                  .onSuccess(action -> {
+                     onSuccess(user);
+                     updateRequestsCount();
+                  })
+                  .onFail((action, e) -> onError(action)));
    }
 
    public void hideRequest(User user) {
-      eventBus.post(new HideRequestEvent(user));
-      deleteRequest(user, DeleteRequestCommand.Action.HIDE);
-      reloadRequests();
+      deleteRequest(user, DeleteFriendRequestCommand.Action.HIDE);
    }
 
    public void cancelRequest(User user) {
-      eventBus.post(new CancelRequestEvent(user));
-      deleteRequest(user, DeleteRequestCommand.Action.CANCEL);
-      reloadRequests();
+      deleteRequest(user, DeleteFriendRequestCommand.Action.CANCEL);
    }
 
-   private void deleteRequest(User user, DeleteRequestCommand.Action action) {
-      view.startLoading();
-      doRequest(new DeleteRequestCommand(user.getId(), action), object -> {
-         onSuccess(user);
-         reloadRequests();
-      }, this::onError);
+   private void deleteRequest(User user, DeleteFriendRequestCommand.Action actionType) {
+      friendsInteractor.deleteRequestPipe()
+            .createObservable(new DeleteFriendRequestCommand(user, actionType))
+            .compose(bindView())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe(new ActionStateSubscriber<DeleteFriendRequestCommand>()
+                  .onStart(action -> view.startLoading())
+                  .onSuccess(action -> onSuccess(user))
+                  .onFail((action, e) -> onError(action)));
    }
 
    private void onSuccess(User user) {
-      if (view != null) {
-         view.finishLoading();
-         view.getAdapter().remove(user);
-      }
+      view.finishLoading();
+      view.getAdapter().remove(user);
    }
 
-   private void onError(SpiceException exception) {
-      if (view != null) {
-         view.finishLoading();
-         handleError(exception);
-      }
+   private void onError(CommandWithError commandWithError) {
+      view.finishLoading();
+      view.informUser(commandWithError.getErrorMessage());
    }
 
    private void updateRequestsCount() {

@@ -30,7 +30,6 @@ import static com.worldventures.dreamtrips.util.ValidationUtils.isUsernameValid;
 
 public class LaunchActivityPresenter extends ActivityPresenter<LaunchActivityPresenter.View> {
 
-   @Inject SnappyRepository snappyRepository;
    @Inject ClearDirectoryDelegate clearTemporaryDirectoryDelegate;
    @Inject DrawableUtil drawableUtil;
    @Inject SnappyRepository db;

@@ -136,7 +136,8 @@ public class JanetModule {
    @Singleton
    @Provides
    @Named(JANET_WALLET)
-   Janet provideWalletJanet(@Named(JANET_WALLET) Set<ActionService> services, Set<ActionStorage> cacheStorageSet,
+   Janet provideWalletJanet(
+         @Named(JANET_WALLET) Set<ActionService> services, Set<ActionStorage> cacheStorageSet,
          Set<MultipleActionStorage> multipleActionStorageSet, @ForApplication Context context) {
       Janet.Builder builder = new Janet.Builder();
       for (ActionService service : services) {
@@ -164,12 +165,10 @@ public class JanetModule {
    @Provides(type = Provides.Type.SET)
    @Named(JANET_WALLET)
    ActionService provideWalletHttpService() {
-      return new MockHttpActionService.Builder()
-            .bind(new MockHttpActionService.Response(200).body(ImmutableProvision.builder()
-                  .memberId("1")
-                  .userSecret("test")
-                  .build()), request -> request.getUrl().endsWith("create_card"))
-            .build();
+      return new MockHttpActionService.Builder().bind(new MockHttpActionService.Response(200).body(ImmutableProvision.builder()
+            .memberId("1")
+            .userSecret("test")
+            .build()), request -> request.getUrl().endsWith("create_card")).build();
    }
 
    @Singleton

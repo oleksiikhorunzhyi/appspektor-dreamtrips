@@ -1,116 +1,116 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <!-- Common -->
-    <string name="wallet_next_label">Next</string>
-    <string name="wallet_done_label">Done</string>
-    <string name="wallet_continue_label">Continue</string>
-    <string name="wallet_got_it_label">Got it!</string>
+   <!-- Common -->
+   <string name="wallet_next_label">Next</string>
+   <string name="wallet_done_label">Done</string>
+   <string name="wallet_continue_label">Continue</string>
+   <string name="wallet_got_it_label">Got it!</string>
 
-    <string name="wallet">Wallet</string>
-    <string name="wallet_wizard_title">Set Up Smart Card</string>
-    <string name="wallet_input_data_is_incorrect">Input data is incorrect</string>
-    <string name="wallet_bank_card_good_thru">GOOD THRU</string>
+   <string name="wallet">Wallet</string>
+   <string name="wallet_wizard_title">Set Up Smart Card</string>
+   <string name="wallet_input_data_is_incorrect">Input data is incorrect</string>
+   <string name="wallet_bank_card_good_thru">GOOD THRU</string>
 
-    <!--card alias-->
-    <string name="wallet_wizard_card_alias_subtitle">Name your smart card</string>
-    <string name="wallet_wizard_card_alias_hint">Example: Shirley\'s Smart Card</string>
-    <string name="wallet_wizard_card_alias_format_error">Card name can contain only letters and has length more then 2 chars</string>
-    <string name="wallet_wizard_card_alias_was_setup">Card name was added</string>
-    <string name="wallet_wizard_card_alias_setup">Setup card name</string>
+   <!--card alias-->
+   <string name="wallet_wizard_card_alias_subtitle">Name your smart card</string>
+   <string name="wallet_wizard_card_alias_hint">Example: Shirley\'s Smart Card</string>
+   <string name="wallet_wizard_card_alias_format_error">Card name can contain only letters and has length more then 2 chars</string>
+   <string name="wallet_wizard_card_alias_was_setup">Card name was added</string>
+   <string name="wallet_wizard_card_alias_setup">Setup card name</string>
 
-    <!--edit profile-->
-    <string name="wallet_edit_profile_subtitle">Set your display photo and a name to be greeted by</string>
-    <string name="wallet_edit_profile_change_photo">Edit photo</string>
-    <string name="wallet_edit_profile_name_hint">Enter your name</string>
-    <string name="wallet_edit_profile_avatar_description">Your photo</string>
-    <string name="wallet_edit_profile_progress_dialog">Upload information to Smart Card</string>
-    <string name="wallet_edit_profile_success_dialog">Information was uploaded</string>
-    <string name="wallet_edit_profile_name_format_title">Wrong name format!</string>
-    <string name="wallet_edit_profile_name_format_detail">You should enter your first name and lats name (middle name is optional). Every part can contain from 2 to 21 letters.</string>
+   <!--edit profile-->
+   <string name="wallet_edit_profile_subtitle">Set your display photo and a name to be greeted by</string>
+   <string name="wallet_edit_profile_change_photo">Edit photo</string>
+   <string name="wallet_edit_profile_name_hint">Enter your name</string>
+   <string name="wallet_edit_profile_avatar_description">Your photo</string>
+   <string name="wallet_edit_profile_progress_dialog">Upload information to Smart Card</string>
+   <string name="wallet_edit_profile_success_dialog">Information was uploaded</string>
+   <string name="wallet_edit_profile_name_format_title">Wrong name format!</string>
+   <string name="wallet_edit_profile_name_format_detail">You should enter your first name and lats name (middle name is optional). Every part can contain from 2 to 21 letters.</string>
 
-    <!--pin setup-->
-    <string name="wallet_wizard_setup_pin_title">Set Touch PIN</string>
-    <string name="wallet_wizard_setup_pin_header">Set your PIN on the touch panel of the smart card with 4 swipe and tap motions</string>
-    <string name="wallet_wizard_setup_new_pin_header">Set new PIN on the touch panel of the smart card with 4 swipe and tap motions</string>
-    <string name="wallet_wizard_setup_progress">Set your PIN on the touch panel of the smart card…</string>
-    <string name="wallet_wizard_setup_error">Something went wrong…\nPls, try again!</string>
-    <string name="wallet_wizard_setup_new_pin_success">New PIN is set!</string>
+   <!--pin setup-->
+   <string name="wallet_wizard_setup_pin_title">Set Touch PIN</string>
+   <string name="wallet_wizard_setup_pin_header">Set your PIN on the touch panel of the smart card with 4 swipe and tap motions</string>
+   <string name="wallet_wizard_setup_new_pin_header">Set new PIN on the touch panel of the smart card with 4 swipe and tap motions</string>
+   <string name="wallet_wizard_setup_progress">Set your PIN on the touch panel of the smart card…</string>
+   <string name="wallet_wizard_setup_error">Something went wrong…\nPls, try again!</string>
+   <string name="wallet_wizard_setup_new_pin_success">New PIN is set!</string>
 
-    <!--pin is set-->
-    <string name="wallet_wizard_pin_is_set">Your PIN is set!</string>
-    <string name="wallet_wizard_pin_is_set_suggestion">You can now begin loading credit and debit cards</string>
+   <!--pin is set-->
+   <string name="wallet_wizard_pin_is_set">Your PIN is set!</string>
+   <string name="wallet_wizard_pin_is_set_suggestion">You can now begin loading credit and debit cards</string>
 
-    <!--splash-->
-    <string name="wallet_wizard_splash_title1">Get ready</string>
-    <string name="wallet_wizard_splash_title2">Scan the back of your flye&#8482; smart card to begin</string>
-    <string name="wallet_wizard_splash_start_btn">Scan Card</string>
-    <string name="wallet_wizard_splash_scan_title">Scan Card</string>
+   <!--splash-->
+   <string name="wallet_wizard_splash_title1">Get ready</string>
+   <string name="wallet_wizard_splash_title2">Scan the back of your flye&#8482; smart card to begin</string>
+   <string name="wallet_wizard_splash_start_btn">Scan Card</string>
+   <string name="wallet_wizard_splash_scan_title">Scan Card</string>
 
-    <string name="wallet_wizard_scan_barcode_header">Position smart card\nbarcode in the frame</string>
-    <string name="wallet_wizard_scan_barcode_footer_title">Not scanning?</string>
-    <string name="wallet_wizard_scan_barcode_footer_btn">Input ID manually</string>
-    <string name="waller_wizard_scan_barcode_progress_label">Connecting to smartcard…</string>
+   <string name="wallet_wizard_scan_barcode_header">Position smart card\nbarcode in the frame</string>
+   <string name="wallet_wizard_scan_barcode_footer_title">Not scanning?</string>
+   <string name="wallet_wizard_scan_barcode_footer_btn">Input ID manually</string>
+   <string name="waller_wizard_scan_barcode_progress_label">Connecting to smartcard…</string>
 
-    <string name="wallet_add_credit_card">Add credit card</string>
-    <string name="wallet_add_debit_card">Add debit card</string>
-    <string name="wallet_credit_cards_title">Credit Cards(%d)</string>
-    <string name="wallet_debit_cards_title">Debit Cards(%d)</string>
+   <string name="wallet_add_credit_card">Add credit card</string>
+   <string name="wallet_add_debit_card">Add debit card</string>
+   <string name="wallet_credit_cards_title">Credit Cards(%d)</string>
+   <string name="wallet_debit_cards_title">Debit Cards(%d)</string>
 
-    <string name="wallet_credit_card_title">Credit Card</string>
-    <string name="wallet_debit_card_title">Debit Card</string>
-    <string name="wallet_default_card_title">Default Card</string>
+   <string name="wallet_credit_card_title">Credit Card</string>
+   <string name="wallet_debit_card_title">Debit Card</string>
+   <string name="wallet_default_card_title">Default Card</string>
 
-    <string name="wallet_wizard_manual_input_header">Enter the SCID manually</string>
-    <string name="wallet_wizard_manual_input_title">Enter SCID</string>
-    <string name="wallet_wizard_manual_input_hint">SCID Number</string>
-    <string name="wallet_wizard_scid_validation_error">Wrong SCID Number</string>
-    <string name="wallet_bank_name_text_holder">Bank Name</string>
+   <string name="wallet_wizard_manual_input_header">Enter the SCID manually</string>
+   <string name="wallet_wizard_manual_input_title">Enter SCID</string>
+   <string name="wallet_wizard_manual_input_hint">SCID Number</string>
+   <string name="wallet_wizard_scid_validation_error">Wrong SCID Number</string>
+   <string name="wallet_bank_name_text_holder">Bank Name</string>
 
-    <!--details-->
-    <string name="wallet_card_details_label_billing_address">Billing Address</string>
-    <string name="wallet_card_details_button_edit_billing_address">Edit Billing Address</string>
-    <string name="wallet_card_details_button_delete_card">Delete Card</string>
-    <string name="wallet_card_details_progress_delete">Deleting %s...</string>
+   <!--details-->
+   <string name="wallet_card_details_label_billing_address">Billing Address</string>
+   <string name="wallet_card_details_button_edit_billing_address">Edit Billing Address</string>
+   <string name="wallet_card_details_button_delete_card">Delete Card</string>
+   <string name="wallet_card_details_progress_delete">Deleting %s...</string>
 
-    <!--settings-->
-    <string name="wallet_card_settings_title">Settings</string>
-    <string name="wallet_card_settings_stealth_mode">Stealth Mode</string>
-    <string name="wallet_card_settings_reset_pin">Reset Pin</string>
-    <string name="wallet_card_settings_stealth_mode_off">Stealth mode was turned off</string>
-    <string name="wallet_card_settings_stealth_mode_on">Stealth mode was turned on</string>
+   <!--settings-->
+   <string name="wallet_card_settings_title">Settings</string>
+   <string name="wallet_card_settings_stealth_mode">Stealth Mode</string>
+   <string name="wallet_card_settings_reset_pin">Reset Pin</string>
+   <string name="wallet_card_settings_stealth_mode_off">Stealth mode was turned off</string>
+   <string name="wallet_card_settings_stealth_mode_on">Stealth mode was turned on</string>
 
-    <!--card list-->
-    <string name="dashboard_default_card_stack_title">Default</string>
-    <string name="wallet_wizard_empty_card_list_label">Add credit or debit cards\nto your flue\u2122 smart card</string>
+   <!--card list-->
+   <string name="dashboard_default_card_stack_title">Default</string>
+   <string name="wallet_wizard_empty_card_list_label">Add credit or debit cards\nto your flue\u2122 smart card</string>
 
-    <!--add card details-->
-    <string name="wallet_add_card_details_title">Card Details</string>
-    <string name="wallet_add_card_details_hint_enter_cvv">Enter CVV</string>
-    <string name="wallet_add_card_details_hint_nickname_card">Nickname Card (optional)</string>
-    <string name="wallet_add_card_details_hint_address1">Address 1</string>
-    <string name="wallet_add_card_details_hint_address2">Address 2</string>
-    <string name="wallet_add_card_details_hint_city">City</string>
-    <string name="wallet_add_card_details_hint_state">State</string>
-    <string name="wallet_add_card_details_hint_zip">Zip</string>
-    <string name="wallet_add_card_details_button_confirm">Confirm</string>
-    <string name="wallet_add_card_details_option_use_default_address">Use Default Address</string>
-    <string name="wallet_add_card_details_option_set_as_default_card">Set As Default Payment Card</string>
-    <string name="wallet_add_card_details_option_set_as_default_address">Set As Default Address</string>
-    <string name="wallet_add_card_details_error_message">Some of requirement fields are empty or contains incorrect data</string>
+   <!--add card details-->
+   <string name="wallet_add_card_details_title">Card Details</string>
+   <string name="wallet_add_card_details_hint_enter_cvv">Enter CVV</string>
+   <string name="wallet_add_card_details_hint_nickname_card">Nickname Card (optional)</string>
+   <string name="wallet_add_card_details_hint_address1">Address 1</string>
+   <string name="wallet_add_card_details_hint_address2">Address 2</string>
+   <string name="wallet_add_card_details_hint_city">City</string>
+   <string name="wallet_add_card_details_hint_state">State</string>
+   <string name="wallet_add_card_details_hint_zip">Zip</string>
+   <string name="wallet_add_card_details_button_confirm">Confirm</string>
+   <string name="wallet_add_card_details_option_use_default_address">Use Default Address</string>
+   <string name="wallet_add_card_details_option_set_as_default_card">Set As Default Payment Card</string>
+   <string name="wallet_add_card_details_option_set_as_default_address">Set As Default Address</string>
+   <string name="wallet_add_card_details_error_message">Some of requirement fields are empty or contains incorrect data</string>
 
-    <!--card type-->
-    <string name="wallet_card_financial_service_master_card">Master Card</string>
-    <string name="wallet_card_financial_service_visa">Visa</string>
-    <string name="wallet_card_financial_service_discover">Discover</string>
-    <string name="wallet_card_financial_service_amex">Amex</string>
+   <!--card type-->
+   <string name="wallet_card_financial_service_master_card">Master Card</string>
+   <string name="wallet_card_financial_service_visa">Visa</string>
+   <string name="wallet_card_financial_service_discover">Discover</string>
+   <string name="wallet_card_financial_service_amex">Amex</string>
 
-    <string name="wallet_card_list_records_connected">%d cards loaded</string>
-    <string name="wallet_card_list_record_connected">%d card loaded</string>
-    <string name="wallet_dashboard_unlock_error">Unlock is not supported</string>
+   <string name="wallet_card_list_records_connected">%d cards loaded</string>
+   <string name="wallet_card_list_record_connected">%d card loaded</string>
+   <string name="wallet_dashboard_unlock_error">Unlock is not supported</string>
 
-    <!--magstripe-->
-    <string name="wallet_wizard_magstripe_title">Add Credit Card</string>
-    <string name="wallet_wizard_magstripe_description">Connect the magnetic reader</string>
-    <string name="wallet_wizard_magstripe_swipe_credit">Swipe a credit card</string>
-    <string name="wallet_wizard_magstripe_swipe_debit">Swipe a debit card</string>
+   <!--magstripe-->
+   <string name="wallet_wizard_magstripe_title">Add Credit Card</string>
+   <string name="wallet_wizard_magstripe_description">Connect the magnetic reader</string>
+   <string name="wallet_wizard_magstripe_swipe_credit">Swipe a credit card</string>
+   <string name="wallet_wizard_magstripe_swipe_debit">Swipe a debit card</string>
 </resources>

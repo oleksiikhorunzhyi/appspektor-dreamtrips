@@ -96,8 +96,7 @@ public class ImageUtils {
          builder.setResizeOptions(new ResizeOptions(width, height));
       }
       ImageRequest request = builder.build();
-      DataSource<CloseableReference<CloseableImage>>
-            dataSource = imagePipeline.fetchDecodedImage(request, context);
+      DataSource<CloseableReference<CloseableImage>> dataSource = imagePipeline.fetchDecodedImage(request, context);
       dataSource.subscribe(dataSubscriber, AsyncTask.THREAD_POOL_EXECUTOR);
    }
 
@@ -121,22 +120,19 @@ public class ImageUtils {
    }
 
    public static Observable<ArrayList<PhotoTag>> getRecognizedFaces(Context context, Observable<Bitmap> bitmapObservable) {
-      return getRecognizedFacesInternal(context, bitmapObservable)
-            .onErrorResumeNext(e -> Observable.just(new ArrayList<>()));
+      return getRecognizedFacesInternal(context, bitmapObservable).onErrorResumeNext(e -> Observable.just(new ArrayList<>()));
    }
 
    private static Observable<ArrayList<PhotoTag>> getRecognizedFacesInternal(Context context, Observable<Bitmap> bitmapObservable) {
-      Detector detector = new FaceDetector.Builder(context)
-            .setTrackingEnabled(false)
+      Detector detector = new FaceDetector.Builder(context).setTrackingEnabled(false)
             .setLandmarkType(FaceDetector.NO_LANDMARKS)
             .setClassificationType(FaceDetector.NO_CLASSIFICATIONS)
             .setMode(FaceDetector.FAST_MODE)
             .build();
 
-      return bitmapObservable
-            .doOnNext(bitmap -> {
-               if (!detector.isOperational()) throw new IllegalStateException();
-            })
+      return bitmapObservable.doOnNext(bitmap -> {
+         if (!detector.isOperational()) throw new IllegalStateException();
+      })
             .map(bitmap -> new Frame.Builder().setBitmap(bitmap).build())
             .map(frame -> new Pair<>(detector.detect(frame), new RectF(0, 0, frame.getMetadata()
                   .getWidth(), frame.getMetadata().getHeight())))

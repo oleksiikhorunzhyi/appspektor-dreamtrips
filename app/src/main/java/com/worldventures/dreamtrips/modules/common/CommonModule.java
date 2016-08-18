@@ -67,7 +67,13 @@ import dagger.Module;
 import dagger.Provides;
 
 @Module(
-      injects = {ActivityPresenter.class, LaunchActivityPresenter.class, MainActivityPresenter.class, Presenter.class, SharePresenter.class, TermsConditionsDialogPresenter.class, TermsConditionsDialog.class,
+      injects = {
+            ActivityPresenter.class,
+            LaunchActivityPresenter.class,
+            MainActivityPresenter.class,
+            Presenter.class, SharePresenter.class,
+            TermsConditionsDialogPresenter.class,
+            TermsConditionsDialog.class,
 
             LaunchActivity.class,
             MainActivity.class,
@@ -79,8 +85,7 @@ import dagger.Provides;
             DownloadFileListener.class,
             PresentationVideosPresenter.class,
             MessengerActivity.class,
-            DtlActivity.class,
-            WalletActivity.class,
+            DtlActivity.class, WalletActivity.class,
             ComponentActivity.class,
             ComponentPresenter.class,
             CopyFileCommand.class,
@@ -89,11 +94,16 @@ import dagger.Provides;
             PhotoPickerLayout.class,
             PodcastPlayerActivity.class,
 
-            DialogFragmentNavigator.NavigationDialogFragment.class, BaseImageFragment.class, BaseImagePresenter.class, BaseDialogFragmentWithPresenter.class,
+            DialogFragmentNavigator.NavigationDialogFragment.class,
+            BaseImageFragment.class,
+            BaseImagePresenter.class,
+            BaseDialogFragmentWithPresenter.class,
             //
             ToolbarPresenter.class,
             //
-            MediaPickerFragment.class, MediaPickerPresenter.class,},
+            MediaPickerFragment.class,
+            MediaPickerPresenter.class
+      },
       complete = false,
       library = true)
 public class CommonModule {

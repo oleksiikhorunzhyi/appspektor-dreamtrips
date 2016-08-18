@@ -1,52 +1,57 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<com.worldventures.dreamtrips.wallet.ui.wizard.magstripe.WizardMagstripeScreen
-    style="@style/WalletTheme.Wizard.RootStyle"
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:theme="@style/WalletTheme.Wizard">
+<com.worldventures.dreamtrips.wallet.ui.wizard.magstripe.WizardMagstripeScreen style="@style/WalletTheme.Wizard.RootStyle"
+      xmlns:android="http://schemas.android.com/apk/res/android"
+      xmlns:app="http://schemas.android.com/apk/res-auto"
+      xmlns:tools="http://schemas.android.com/tools"
+      android:layout_width="match_parent"
+      android:layout_height="match_parent"
+      android:theme="@style/WalletTheme.Wizard"
+      >
 
-    <android.support.v7.widget.Toolbar
-        android:id="@+id/toolbar"
-        android:layout_width="match_parent"
-        android:layout_height="?attr/actionBarSize"
-        android:theme="@style/WalletTheme.Wizard.ToolbarTheme"
-        app:navigationIcon="@drawable/back_icon"
-        app:title="@string/wallet_wizard_magstripe_title"/>
+   <android.support.v7.widget.Toolbar
+         android:id="@+id/toolbar"
+         android:layout_width="match_parent"
+         android:layout_height="?attr/actionBarSize"
+         android:theme="@style/WalletTheme.Wizard.ToolbarTheme"
+         app:navigationIcon="@drawable/back_icon"
+         app:title="@string/wallet_wizard_magstripe_title"
+         />
 
-    <FrameLayout
-        style="@style/WalletTheme.Wizard.ContentContainerStyle"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_marginTop="?attr/actionBarSize">
+   <FrameLayout
+         style="@style/WalletTheme.Wizard.ContentContainerStyle"
+         android:layout_width="match_parent"
+         android:layout_height="match_parent"
+         android:layout_marginTop="?attr/actionBarSize"
+         >
 
-        <TextView
+      <TextView
             android:id="@+id/header_text_view"
             style="@style/WalletTheme.Wizard.HeaderTextStyle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            tools:text="@string/wallet_wizard_magstripe_swipe_credit"/>
+            tools:text="@string/wallet_wizard_magstripe_swipe_credit"
+            />
 
-        <!--margin bottom = reader_image_view.layout_marginTop + reader_image_view.layout_height - c-->
-        <ImageView
+      <!--margin bottom = reader_image_view.layout_marginTop + reader_image_view.layout_height - c-->
+      <ImageView
             android:layout_width="wrap_content"
             android:layout_height="126dp"
             android:layout_marginTop="310dp"
             android:contentDescription="@string/wallet_wizard_magstripe_swipe_credit"
-            android:src="@drawable/credit_card"/>
+            android:src="@drawable/credit_card"
+            />
 
-        <ImageView
+      <ImageView
             android:id="@+id/reader_image_view"
             android:layout_width="wrap_content"
             android:layout_height="256dp"
             android:layout_gravity="center_horizontal"
             android:layout_marginTop="64dp"
             android:contentDescription="@string/wallet_wizard_magstripe_description"
-            android:src="@drawable/phone_reader"/>
+            android:src="@drawable/phone_reader"
+            />
 
-    </FrameLayout>
+   </FrameLayout>
 
 </com.worldventures.dreamtrips.wallet.ui.wizard.magstripe.WizardMagstripeScreen>

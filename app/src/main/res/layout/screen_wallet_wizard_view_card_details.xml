@@ -1,32 +1,36 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.worldventures.dreamtrips.wallet.ui.dashboard.detail.CardDetailsScreen
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@android:color/white">
+<com.worldventures.dreamtrips.wallet.ui.dashboard.detail.CardDetailsScreen xmlns:android="http://schemas.android.com/apk/res/android"
+      xmlns:app="http://schemas.android.com/apk/res-auto"
+      xmlns:tools="http://schemas.android.com/tools"
+      android:layout_width="match_parent"
+      android:layout_height="match_parent"
+      android:background="@android:color/white"
+      >
 
-    <android.support.v7.widget.Toolbar
-        android:id="@+id/toolbar"
-        android:layout_width="match_parent"
-        android:layout_height="?attr/actionBarSize"
-        android:theme="@style/WalletTheme.ToolbarStyle"
-        app:navigationIcon="@drawable/blue_arrow"/>
+   <android.support.v7.widget.Toolbar
+         android:id="@+id/toolbar"
+         android:layout_width="match_parent"
+         android:layout_height="?attr/actionBarSize"
+         android:theme="@style/WalletTheme.ToolbarStyle"
+         app:navigationIcon="@drawable/blue_arrow"
+         />
 
-    <RelativeLayout
-        style="@style/WalletTheme.Wizard.ContentContainerStyle"
-        android:layout_marginTop="?attr/actionBarSize"
-        android:theme="@style/WalletTheme.Wizard">
+   <RelativeLayout
+         style="@style/WalletTheme.Wizard.ContentContainerStyle"
+         android:layout_marginTop="?attr/actionBarSize"
+         android:theme="@style/WalletTheme.Wizard"
+         >
 
-        <include layout="@layout/adapter_item_wallet_bankcard"
-                 android:id="@+id/card"
-                 android:layout_alignParentTop="true"
-                 android:layout_width="@dimen/wallet_details_screen_card_width"
-                 android:layout_height="@dimen/wallet_bank_card_default_height"
-                 android:layout_centerHorizontal="true"/>
+      <include
+            layout="@layout/adapter_item_wallet_bankcard"
+            android:id="@+id/card"
+            android:layout_alignParentTop="true"
+            android:layout_width="@dimen/wallet_details_screen_card_width"
+            android:layout_height="@dimen/wallet_bank_card_default_height"
+            android:layout_centerHorizontal="true"
+            />
 
-        <TextView
+      <TextView
             android:id="@+id/billing_address_label"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -35,9 +39,10 @@
             android:textSize="@dimen/wallet_details_screen_billing_address_text_size"
             android:layout_alignParentStart="true"
             android:layout_below="@+id/card"
-            android:layout_marginTop="@dimen/wallet_details_screen_component_margin_top"/>
+            android:layout_marginTop="@dimen/wallet_details_screen_component_margin_top"
+            />
 
-        <TextView
+      <TextView
             android:id="@+id/address_textview"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -48,9 +53,10 @@
             android:lineSpacingExtra="@dimen/wallet_details_screen_address_space_between_lines"
             android:layout_below="@+id/billing_address_label"
             android:layout_alignLeft="@+id/billing_address_label"
-            android:layout_marginTop="@dimen/wallet_details_screen_address_margin_top"/>
+            android:layout_marginTop="@dimen/wallet_details_screen_address_margin_top"
+            />
 
-        <Button
+      <Button
             android:id="@+id/delete_button"
             android:layout_width="match_parent"
             android:layout_height="50dp"
@@ -58,8 +64,9 @@
             android:textSize="@dimen/wallet_details_screen_delete_card_button_text_size"
             android:background="@color/wallet_card_details_delete_card_button_color"
             android:layout_alignParentBottom="true"
-            android:layout_marginTop="@dimen/wallet_details_screen_component_margin_top"/>
+            android:layout_marginTop="@dimen/wallet_details_screen_component_margin_top"
+            />
 
-    </RelativeLayout>
+   </RelativeLayout>
 
 </com.worldventures.dreamtrips.wallet.ui.dashboard.detail.CardDetailsScreen>

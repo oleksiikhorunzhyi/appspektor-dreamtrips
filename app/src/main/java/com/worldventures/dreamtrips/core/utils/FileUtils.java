@@ -26,28 +26,27 @@ import timber.log.Timber;
 
 public class FileUtils {
 
-    public static byte[] readByteArray(File file) throws IOException {
-        byte[] buffer = new byte[(int) file.length()];
-        InputStream ios = null;
-        try {
-            ios = new FileInputStream(file);
-            if (ios.read(buffer) == -1) {
-                throw new IOException("EOF reached while trying to read the whole file");
-            }
-        } finally {
-            try {
-                if (ios != null)
-                    ios.close();
-            } catch (IOException ignored) {
-            }
-        }
-        return buffer;
-    }
+   public static byte[] readByteArray(File file) throws IOException {
+      byte[] buffer = new byte[(int) file.length()];
+      InputStream ios = null;
+      try {
+         ios = new FileInputStream(file);
+         if (ios.read(buffer) == -1) {
+            throw new IOException("EOF reached while trying to read the whole file");
+         }
+      } finally {
+         try {
+            if (ios != null) ios.close();
+         } catch (IOException ignored) {
+         }
+      }
+      return buffer;
+   }
 
-    public static void cleanDirectory(Context context, File directory, List<String> exceptFilePaths) throws IOException {
-        if (!directory.exists()) {
-            throw new IllegalArgumentException(directory + " does not exist");
-        }
+   public static void cleanDirectory(Context context, File directory, List<String> exceptFilePaths) throws IOException {
+      if (!directory.exists()) {
+         throw new IllegalArgumentException(directory + " does not exist");
+      }
 
       if (!directory.isDirectory()) {
          throw new IllegalArgumentException(directory + " is not a directory");

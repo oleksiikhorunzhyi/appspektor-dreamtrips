@@ -1,25 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
 <vector xmlns:android="http://schemas.android.com/apk/res/android"
-        android:width="286dp"
-        android:height="181dp"
-        android:viewportHeight="181"
-        android:viewportWidth="286">
+      android:width="286dp"
+      android:height="181dp"
+      android:viewportHeight="181"
+      android:viewportWidth="286">
 
-    <path
-        android:fillColor="#00b3e3"
-        android:pathData="M24.5,0.844 L261.5,0.844 C274.755,0.844,285.5,11.589,285.5,24.844 L285.5,156.906
+   <path
+         android:fillColor="#00b3e3"
+         android:pathData="M24.5,0.844 L261.5,0.844 C274.755,0.844,285.5,11.589,285.5,24.844 L285.5,156.906
 C285.5,170.161,274.755,180.906,261.5,180.906 L24.5,180.906
 C11.245,180.906,0.5,170.161,0.5,156.906 L0.5,24.844
-C0.5,11.589,11.245,0.844,24.5,0.844 Z"/>
-    <path
-        android:fillColor="#ffffff"
-        android:pathData="M29,144.983 L29,142.982 L129,142.982 L129,144.983 L29,144.983 Z"/>
-    <path
-        android:fillColor="#ffffff"
-        android:pathData="M29,120.983 L29,118.982 L129,118.982 L129,120.983 L29,120.983 Z"/>
-    <path
-        android:fillColor="#ffffff"
-        android:pathData="M254,77 C252.343,77,251,75.657,251,74 C251,72.343,252.343,71,254,71
+C0.5,11.589,11.245,0.844,24.5,0.844 Z" />
+   <path
+         android:fillColor="#ffffff"
+         android:pathData="M29,144.983 L29,142.982 L129,142.982 L129,144.983 L29,144.983 Z" />
+   <path
+         android:fillColor="#ffffff"
+         android:pathData="M29,120.983 L29,118.982 L129,118.982 L129,120.983 L29,120.983 Z" />
+   <path
+         android:fillColor="#ffffff"
+         android:pathData="M254,77 C252.343,77,251,75.657,251,74 C251,72.343,252.343,71,254,71
 C255.657,71,257,72.343,257,74 C257,75.657,255.657,77,254,77 Z M242,77
 C240.343,77,239,75.657,239,74 C239,72.343,240.343,71,242,71
 C243.657,71,245,72.343,245,74 C245,75.657,243.657,77,242,77 Z M230,77
@@ -49,5 +49,5 @@ C57.657,71,59,72.343,59,74 C59,75.657,57.657,77,56,77 Z M44,77
 C42.343,77,41,75.657,41,74 C41,72.343,42.343,71,44,71 C45.657,71,47,72.343,47,74
 C47,75.657,45.657,77,44,77 Z M32,77 C30.343,77,29,75.657,29,74
 C29,72.343,30.343,71,32,71 C33.657,71,35,72.343,35,74 C35,75.657,33.657,77,32,77
-Z"/>
+Z" />
 </vector>

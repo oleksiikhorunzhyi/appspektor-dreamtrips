@@ -21,25 +21,24 @@ import static com.worldventures.dreamtrips.modules.tripsimages.vision.ImageUtils
 
 public class SmartCardAvatarHelper {
 
-    private final Context context;
+   private final Context context;
 
-    @Inject SmartCardAvatarHelper(@ForApplication Context context) {
-        this.context = context;
-    }
+   @Inject
+   SmartCardAvatarHelper(@ForApplication Context context) {
+      this.context = context;
+   }
 
-    public File compressPhotoFromFile(String originImage, int imageSize) throws IOException {
-        return toMonochromeFile(scaleBitmap(fromFile(originImage), imageSize));
-    }
+   public File compressPhotoFromFile(String originImage, int imageSize) throws IOException {
+      return toMonochromeFile(scaleBitmap(fromFile(originImage), imageSize));
+   }
 
-    public Observable<File> compressPhotoFromUrl(String url, int imageSize) {
-        return ImageUtils.getBitmap(context, Uri.parse(url), imageSize, imageSize)
-                .flatMap(bitmap ->
-                        Observable.fromCallable(() -> toMonochromeFile(bitmap))
-                );
-    }
+   public Observable<File> compressPhotoFromUrl(String url, int imageSize) {
+      return ImageUtils.getBitmap(context, Uri.parse(url), imageSize, imageSize)
+            .flatMap(bitmap -> Observable.fromCallable(() -> toMonochromeFile(bitmap)));
+   }
 
-    public File toMonochromeFile(Bitmap bitmap) throws IOException {
-        return saveToFile(context, toMonochromeBitmap(bitmap));
-    }
+   public File toMonochromeFile(Bitmap bitmap) throws IOException {
+      return saveToFile(context, toMonochromeBitmap(bitmap));
+   }
 
 }

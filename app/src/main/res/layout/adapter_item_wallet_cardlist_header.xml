@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<TextView
-    android:id="@+id/tv_title"
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:background="@color/white"
-    android:paddingBottom="@dimen/spacing_small"
-    android:paddingLeft="@dimen/spacing_huge"
-    android:paddingRight="@dimen/spacing_huge"
-    android:paddingTop="@dimen/spacing_normal"
-    android:singleLine="true"
-    android:textColor="@color/wallet_card_list_header_text"
-    android:textSize="@dimen/font_normal"/>
+<TextView android:id="@+id/tv_title"
+      xmlns:android="http://schemas.android.com/apk/res/android"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:background="@color/white"
+      android:paddingBottom="@dimen/spacing_small"
+      android:paddingLeft="@dimen/spacing_huge"
+      android:paddingRight="@dimen/spacing_huge"
+      android:paddingTop="@dimen/spacing_normal"
+      android:singleLine="true"
+      android:textColor="@color/wallet_card_list_header_text"
+      android:textSize="@dimen/font_normal"
+      />

@@ -1,23 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.worldventures.dreamtrips.wallet.ui.wizard.success.WalletSuccessScreen
-    style="@style/WalletTheme.Wizard.RootStyle"
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:theme="@style/WalletTheme.Wizard">
+<com.worldventures.dreamtrips.wallet.ui.wizard.success.WalletSuccessScreen style="@style/WalletTheme.Wizard.RootStyle"
+      xmlns:android="http://schemas.android.com/apk/res/android"
+      xmlns:app="http://schemas.android.com/apk/res-auto"
+      xmlns:tools="http://schemas.android.com/tools"
+      android:theme="@style/WalletTheme.Wizard"
+      >
 
-    <android.support.v7.widget.Toolbar
-        android:id="@+id/toolbar"
-        android:layout_width="match_parent"
-        android:layout_height="?attr/actionBarSize"
-        android:theme="@style/WalletTheme.Wizard.ToolbarTheme"
-        app:navigationIcon="@drawable/back_icon"/>
+   <android.support.v7.widget.Toolbar
+         android:id="@+id/toolbar"
+         android:layout_width="match_parent"
+         android:layout_height="?attr/actionBarSize"
+         android:theme="@style/WalletTheme.Wizard.ToolbarTheme"
+         app:navigationIcon="@drawable/back_icon"
+         />
 
-    <RelativeLayout
-        style="@style/WalletTheme.Wizard.ContentContainerStyle"
-        android:layout_marginTop="?attr/actionBarSize">
+   <RelativeLayout
+         style="@style/WalletTheme.Wizard.ContentContainerStyle"
+         android:layout_marginTop="?attr/actionBarSize"
+         >
 
-        <ImageView
+      <ImageView
             android:id="@+id/iv_success_icon"
             android:layout_width="91dp"
             android:layout_height="91dp"
@@ -25,20 +27,23 @@
             android:layout_centerHorizontal="true"
             android:layout_marginBottom="16dp"
             android:src="@drawable/ic_wallet_success"
-            tools:ignore="ContentDescription"/>
+            tools:ignore="ContentDescription"
+            />
 
-        <TextView
+      <TextView
             android:id="@+id/success_label_text_view"
             style="@style/WalletTheme.Wizard.HeaderTextStyle"
             android:layout_centerVertical="true"
             android:textAppearance="?android:attr/textAppearanceLarge"
-            tools:text="@string/wallet_wizard_pin_is_set"/>
+            tools:text="@string/wallet_wizard_pin_is_set"
+            />
 
-        <Button
+      <Button
             android:id="@+id/next_button"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
-            tools:text="@string/wallet_next_label"/>
-    </RelativeLayout>
+            tools:text="@string/wallet_next_label"
+            />
+   </RelativeLayout>
 </com.worldventures.dreamtrips.wallet.ui.wizard.success.WalletSuccessScreen>

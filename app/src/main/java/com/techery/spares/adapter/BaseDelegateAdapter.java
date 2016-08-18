@@ -33,8 +33,7 @@ public class BaseDelegateAdapter<BaseItemClass> extends BaseArrayListAdapter<Bas
 
    public <U> void registerIdDelegate(Class<U> itemClass, CellIdDelegate<U> cellDelegate) {
       int index = viewTypes.indexOf(itemClass);
-      if (index < 0)
-         throw new IllegalStateException(itemClass.getSimpleName() + " is not registered as Cell");
+      if (index < 0) throw new IllegalStateException(itemClass.getSimpleName() + " is not registered as Cell");
       this.itemIdDelegateMapping.put(index, cellDelegate);
       setHasStableIds(true);
    }

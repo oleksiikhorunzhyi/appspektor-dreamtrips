@@ -48,12 +48,12 @@ public class CardDetailsPresenter extends WalletPresenter<CardDetailsPresenter.S
       view.showDefaultAddress(obtainAddressWithCountry());
    }
 
-    private AddressInfoWithLocale obtainAddressWithCountry() {
-        return ImmutableAddressInfoWithLocale.builder()
-                .addressInfo(bankCard.addressInfo())
-                .locale(localeHelper.getDefaultLocale())
-                .build();
-    }
+   private AddressInfoWithLocale obtainAddressWithCountry() {
+      return ImmutableAddressInfoWithLocale.builder()
+            .addressInfo(bankCard.addressInfo())
+            .locale(localeHelper.getDefaultLocale())
+            .build();
+   }
 
    @StringRes
    private int obtainFinancialServiceType(Record.FinancialService financialService) {

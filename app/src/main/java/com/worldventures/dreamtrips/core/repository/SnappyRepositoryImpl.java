@@ -159,19 +159,17 @@ public class SnappyRepositoryImpl implements SnappyRepository {
 
    @Override
    public <T> List<T> readList(String key, Class<T> clazz) {
-      return actWithResult(
-            db -> {
-               Collection<T> result;
-               Input input = new Input();
-               try {
-                  input.setBuffer(db.getBytes(key));
-                  result = (Collection<T>) kryo.readClassAndObject(input);
-               } finally {
-                  input.close();
-               }
-               return new ArrayList(result);
-            }
-      ).or(new ArrayList<>());
+      return actWithResult(db -> {
+         Collection<T> result;
+         Input input = new Input();
+         try {
+            input.setBuffer(db.getBytes(key));
+            result = (Collection<T>) kryo.readClassAndObject(input);
+         } finally {
+            input.close();
+         }
+         return new ArrayList(result);
+      }).or(new ArrayList<>());
    }
 
    /**
@@ -293,8 +291,7 @@ public class SnappyRepositoryImpl implements SnappyRepository {
 
    @Override
    public SmartCard getSmartCard(String smartCardId) {
-      return actWithResult(db -> db.getObject(WALLET_SMART_CARD + smartCardId, ImmutableSmartCard.class))
-            .orNull();
+      return actWithResult(db -> db.getObject(WALLET_SMART_CARD + smartCardId, ImmutableSmartCard.class)).orNull();
    }
 
    @Override

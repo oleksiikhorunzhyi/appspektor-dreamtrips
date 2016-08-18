@@ -1,28 +1,31 @@
 <?xml version="1.0" encoding="utf-8"?>
 <com.worldventures.dreamtrips.wallet.ui.wizard.splash.WizardSplashScreen style="@style/WalletTheme.Wizard.RootStyle"
-                                                                         xmlns:android="http://schemas.android.com/apk/res/android"
-                                                                         xmlns:app="http://schemas.android.com/apk/res-auto"
-                                                                         xmlns:tools="http://schemas.android.com/tools"
-                                                                         android:gravity="center"
-                                                                         android:orientation="vertical"
-                                                                         android:theme="@style/WalletTheme.Wizard"
-                                                                         android:weightSum="4">
+      xmlns:android="http://schemas.android.com/apk/res/android"
+      xmlns:app="http://schemas.android.com/apk/res-auto"
+      xmlns:tools="http://schemas.android.com/tools"
+      android:gravity="center"
+      android:orientation="vertical"
+      android:theme="@style/WalletTheme.Wizard"
+      android:weightSum="4"
+      >
 
-    <android.support.v7.widget.Toolbar
-        android:id="@+id/toolbar"
-        android:layout_width="match_parent"
-        android:layout_height="?attr/actionBarSize"
-        android:theme="@style/WalletTheme.Wizard.ToolbarTheme"
-        app:title="@string/wallet_wizard_title"/>
+   <android.support.v7.widget.Toolbar
+         android:id="@+id/toolbar"
+         android:layout_width="match_parent"
+         android:layout_height="?attr/actionBarSize"
+         android:theme="@style/WalletTheme.Wizard.ToolbarTheme"
+         app:title="@string/wallet_wizard_title"
+         />
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="?attr/actionBarSize"
-        android:gravity="center"
-        android:orientation="vertical">
+   <LinearLayout
+         android:layout_width="match_parent"
+         android:layout_height="wrap_content"
+         android:layout_marginTop="?attr/actionBarSize"
+         android:gravity="center"
+         android:orientation="vertical"
+         >
 
-        <TextView
+      <TextView
             android:id="@+id/wallet_wizard_splash_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -31,23 +34,25 @@
             android:gravity="center"
             android:layout_marginLeft="55dp"
             android:layout_marginRight="55dp"
-            android:layout_marginTop="32dp"/>
+            android:layout_marginTop="32dp"
+            />
 
-        <ImageView
+      <ImageView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:src="@drawable/flye_card_back"
             android:scaleType="fitCenter"
-            android:layout_marginTop="30dp"/>
+            android:layout_marginTop="30dp"
+            />
 
-    </LinearLayout>
+   </LinearLayout>
 
-    <Button
-        android:id="@+id/wallet_wizard_splash_btn"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_gravity="bottom"
-        android:layout_margin="@dimen/spacing_large"
-        android:text="@string/wallet_wizard_splash_start_btn"
-        />
+   <Button
+         android:id="@+id/wallet_wizard_splash_btn"
+         android:layout_width="match_parent"
+         android:layout_height="wrap_content"
+         android:layout_gravity="bottom"
+         android:layout_margin="@dimen/spacing_large"
+         android:text="@string/wallet_wizard_splash_start_btn"
+         />
 </com.worldventures.dreamtrips.wallet.ui.wizard.splash.WizardSplashScreen>

@@ -1,64 +1,69 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="@dimen/wallet_smart_card_default_width"
-    android:layout_height="@dimen/wallet_smart_card_default_height"
-    android:animateLayoutChanges="true"
-    android:background="@drawable/wallet_flye_card"
-    android:paddingBottom="@dimen/spacing_normal"
-    android:paddingLeft="@dimen/spacing_large"
-    android:paddingRight="@dimen/spacing_large">
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+      xmlns:tools="http://schemas.android.com/tools"
+      android:layout_width="@dimen/wallet_smart_card_default_width"
+      android:layout_height="@dimen/wallet_smart_card_default_height"
+      android:animateLayoutChanges="true"
+      android:background="@drawable/wallet_flye_card"
+      android:paddingBottom="@dimen/spacing_normal"
+      android:paddingLeft="@dimen/spacing_large"
+      android:paddingRight="@dimen/spacing_large"
+      >
 
-    <CheckBox
-        android:id="@+id/cbLock"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="65dp"
-        android:layout_marginTop="15dp"
-        android:button="@drawable/smart_card_lock_checkbox"/>
+   <CheckBox
+         android:id="@+id/cbLock"
+         android:layout_width="wrap_content"
+         android:layout_height="wrap_content"
+         android:layout_marginLeft="65dp"
+         android:layout_marginTop="15dp"
+         android:button="@drawable/smart_card_lock_checkbox"
+         />
 
-    <com.worldventures.dreamtrips.wallet.ui.widget.BatteryView
-        android:id="@+id/batteryView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentRight="true"
-        android:layout_marginTop="12dp"/>
+   <com.worldventures.dreamtrips.wallet.ui.widget.BatteryView
+         android:id="@+id/batteryView"
+         android:layout_width="wrap_content"
+         android:layout_height="wrap_content"
+         android:layout_alignParentEnd="true"
+         android:layout_alignParentRight="true"
+         android:layout_marginTop="12dp"
+         />
 
-    <com.facebook.drawee.view.SimpleDraweeView
-        android:id="@+id/cardListSCAvatar"
-        android:layout_width="55dp"
-        android:layout_height="55dp"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentEnd="false"
-        android:layout_alignParentRight="true"
-        android:layout_marginBottom="30dp"
-        android:layout_marginRight="2dp"
-        android:src="@drawable/avatar"/>
+   <com.facebook.drawee.view.SimpleDraweeView
+         android:id="@+id/cardListSCAvatar"
+         android:layout_width="55dp"
+         android:layout_height="55dp"
+         android:layout_alignParentBottom="true"
+         android:layout_alignParentEnd="false"
+         android:layout_alignParentRight="true"
+         android:layout_marginBottom="30dp"
+         android:layout_marginRight="2dp"
+         android:src="@drawable/avatar"
+         />
 
-    <TextView
-        android:id="@+id/bankLabel"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_above="@+id/connectedCardsCount"
-        android:layout_alignParentStart="false"
-        android:ellipsize="end"
-        android:singleLine="true"
-        android:textColor="@android:color/white"
-        android:textSize="@dimen/font_large"
-        tools:text="Jhon's card"
-        android:layout_toLeftOf="@+id/cardListSCAvatar"
-        android:layout_alignParentLeft="true"
-        android:layout_marginRight="10dp"/>
+   <TextView
+         android:id="@+id/bankLabel"
+         android:layout_width="wrap_content"
+         android:layout_height="wrap_content"
+         android:layout_above="@+id/connectedCardsCount"
+         android:layout_alignParentStart="false"
+         android:ellipsize="end"
+         android:singleLine="true"
+         android:textColor="@android:color/white"
+         android:textSize="@dimen/font_large"
+         tools:text="Jhon's card"
+         android:layout_toLeftOf="@+id/cardListSCAvatar"
+         android:layout_alignParentLeft="true"
+         android:layout_marginRight="10dp"
+         />
 
-    <TextView
-        android:id="@+id/connectedCardsCount"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:textColor="@color/wallet_card_list_header_text"
-        android:textSize="@dimen/font_medium"
-        tools:text="@string/wallet_card_list_records_connected"/>
+   <TextView
+         android:id="@+id/connectedCardsCount"
+         android:layout_width="wrap_content"
+         android:layout_height="wrap_content"
+         android:layout_alignParentBottom="true"
+         android:textColor="@color/wallet_card_list_header_text"
+         android:textSize="@dimen/font_medium"
+         tools:text="@string/wallet_card_list_records_connected"
+         />
 
 </RelativeLayout>

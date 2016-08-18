@@ -1,30 +1,33 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<com.worldventures.dreamtrips.wallet.ui.wizard.card_alias.WizardCardNameScreen
-    style="@style/WalletTheme.Wizard.RootStyle"
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+<com.worldventures.dreamtrips.wallet.ui.wizard.card_alias.WizardCardNameScreen style="@style/WalletTheme.Wizard.RootStyle"
+      xmlns:android="http://schemas.android.com/apk/res/android"
+      xmlns:app="http://schemas.android.com/apk/res-auto"
+      >
 
-    <android.support.v7.widget.Toolbar
-        android:id="@+id/toolbar"
-        android:layout_width="match_parent"
-        android:layout_height="?attr/actionBarSize"
-        android:theme="@style/WalletTheme.Wizard.ToolbarTheme"
-        app:navigationIcon="@drawable/back_icon"
-        app:title="@string/wallet_wizard_title"/>
+   <android.support.v7.widget.Toolbar
+         android:id="@+id/toolbar"
+         android:layout_width="match_parent"
+         android:layout_height="?attr/actionBarSize"
+         android:theme="@style/WalletTheme.Wizard.ToolbarTheme"
+         app:navigationIcon="@drawable/back_icon"
+         app:title="@string/wallet_wizard_title"
+         />
 
-    <FrameLayout
-        style="@style/WalletTheme.Wizard.ContentContainerStyle"
-        android:layout_marginTop="?attr/actionBarSize"
-        android:theme="@style/WalletTheme.Wizard">
+   <FrameLayout
+         style="@style/WalletTheme.Wizard.ContentContainerStyle"
+         android:layout_marginTop="?attr/actionBarSize"
+         android:theme="@style/WalletTheme.Wizard"
+         >
 
-        <TextView
+      <TextView
             style="@style/WalletTheme.Wizard.HeaderTextStyle"
             android:layout_gravity="top"
             android:layout_marginTop="32dp"
-            android:text="@string/wallet_wizard_card_alias_subtitle"/>
+            android:text="@string/wallet_wizard_card_alias_subtitle"
+            />
 
-        <EditText
+      <EditText
             android:id="@+id/card_name_field"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -32,14 +35,16 @@
             android:layout_marginTop="128dp"
             android:inputType="textPersonName"
             android:maxLength="@integer/wallet_wizard_card_alias_length"
-            android:hint="@string/wallet_wizard_card_alias_hint" />
+            android:hint="@string/wallet_wizard_card_alias_hint"
+            />
 
-        <Button
+      <Button
             android:id="@+id/next_button"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="bottom"
-            android:text="@string/wallet_next_label"/>
+            android:text="@string/wallet_next_label"
+            />
 
-    </FrameLayout>
+   </FrameLayout>
 </com.worldventures.dreamtrips.wallet.ui.wizard.card_alias.WizardCardNameScreen>

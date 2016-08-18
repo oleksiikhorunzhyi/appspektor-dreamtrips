@@ -14,7 +14,8 @@
          android:layout_width="match_parent"
          android:layout_height="?attr/actionBarSize"
          android:theme="@style/WalletTheme.Wizard.ToolbarTheme"
-         app:title="@string/wallet_wizard_title"
+         app:navigationIcon="@drawable/back_icon"
+         app:title="@string/wallet"
          />
 
    <LinearLayout
@@ -43,6 +44,7 @@
             android:src="@drawable/flye_card_back"
             android:scaleType="fitCenter"
             android:layout_marginTop="30dp"
+            tools:ignore="ContentDescription"
             />
 
    </LinearLayout>

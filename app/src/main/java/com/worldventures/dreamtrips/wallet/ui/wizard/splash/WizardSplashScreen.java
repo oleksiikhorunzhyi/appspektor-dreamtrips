@@ -1,6 +1,8 @@
 package com.worldventures.dreamtrips.wallet.ui.wizard.splash;
 
 import android.content.Context;
+import android.support.annotation.NonNull;
+import android.support.v7.widget.Toolbar;
 import android.util.AttributeSet;
 import android.widget.TextView;
 
@@ -12,7 +14,9 @@ import butterknife.InjectView;
 import butterknife.OnClick;
 
 public class WizardSplashScreen extends WalletFrameLayout<WizardSplashScreenPresenter.Screen, WizardSplashScreenPresenter, WizardSplashPath> implements WizardSplashScreenPresenter.Screen {
+
    @InjectView(R.id.wallet_wizard_splash_title) TextView title;
+   @InjectView(R.id.toolbar) Toolbar toolbar;
 
    public WizardSplashScreen(Context context) {
       super(context);
@@ -22,9 +26,20 @@ public class WizardSplashScreen extends WalletFrameLayout<WizardSplashScreenPres
       super(context, attrs);
    }
 
+   @NonNull
    @Override
    public WizardSplashScreenPresenter createPresenter() {
       return new WizardSplashScreenPresenter(getContext(), getInjector());
+   }
+
+   @Override
+   protected void onFinishInflate() {
+      super.onFinishInflate();
+      toolbar.setNavigationOnClickListener(v -> navigateClick());
+   }
+
+   private void navigateClick() {
+      presenter.onBack();
    }
 
    @OnClick(R.id.wallet_wizard_splash_btn)

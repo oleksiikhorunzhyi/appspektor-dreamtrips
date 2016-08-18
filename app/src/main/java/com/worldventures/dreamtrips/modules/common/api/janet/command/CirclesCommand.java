@@ -52,7 +52,7 @@ public class CirclesCommand extends CommandWithError<List<Circle>> implements In
 
    @Override
    public List<Circle> getCacheData() {
-      return getResult();
+      return new ArrayList<>(getResult());
    }
 
    @Override

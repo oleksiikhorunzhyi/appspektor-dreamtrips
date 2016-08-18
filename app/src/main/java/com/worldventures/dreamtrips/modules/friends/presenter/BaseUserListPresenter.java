@@ -16,8 +16,6 @@ import com.worldventures.dreamtrips.modules.friends.api.ActOnRequestCommand;
 import com.worldventures.dreamtrips.modules.friends.api.AddUserRequestCommand;
 import com.worldventures.dreamtrips.modules.friends.api.DeleteRequestCommand;
 import com.worldventures.dreamtrips.modules.friends.api.UnfriendCommand;
-import com.worldventures.dreamtrips.modules.friends.events.AcceptRequestEvent;
-import com.worldventures.dreamtrips.modules.friends.events.AddUserRequestEvent;
 import com.worldventures.dreamtrips.modules.friends.events.CancelRequestEvent;
 import com.worldventures.dreamtrips.modules.friends.events.HideRequestEvent;
 import com.worldventures.dreamtrips.modules.friends.events.OpenFriendPrefsEvent;
@@ -59,8 +57,10 @@ public abstract class BaseUserListPresenter<T extends BaseUserListPresenter.View
    }
 
    protected Observable<ActionState<CirclesCommand>> getCirclesObservable() {
-      return circlesInteractor.pipe().observe().observeOn(AndroidSchedulers.mainThread()).compose(bindView());
-
+      return circlesInteractor.pipe()
+            .createObservable(new CirclesCommand())
+            .observeOn(AndroidSchedulers.mainThread())
+            .compose(bindView());
    }
 
    protected void onCirclesStart() {
@@ -143,16 +143,10 @@ public abstract class BaseUserListPresenter<T extends BaseUserListPresenter.View
       loading = false;
    }
 
-   //////////////////////
-   /// events
-   //////////////////////
-
-   public void onEvent(AcceptRequestEvent event) {
-      if (view.isVisibleOnScreen())
-         getCirclesObservable().subscribe(new ActionStateSubscriber<CirclesCommand>().onStart(circlesCommand -> onCirclesStart())
-               .onSuccess(circlesCommand -> onCirclesSuccessAcceptRequest(event.getUser(), circlesCommand.getResult()))
-               .onFail((circlesCommand, throwable) -> onCirclesError(circlesCommand.getErrorMessage())));
-
+   protected void acceptRequest(User user) {
+      getCirclesObservable().subscribe(new ActionStateSubscriber<CirclesCommand>().onStart(circlesCommand -> onCirclesStart())
+            .onSuccess(circlesCommand -> onCirclesSuccessAcceptRequest(user, circlesCommand.getResult()))
+            .onFail((circlesCommand, throwable) -> onCirclesError(circlesCommand.getErrorMessage())));
    }
 
    private void onCirclesSuccessAcceptRequest(User user, List<Circle> circles) {
@@ -168,11 +162,10 @@ public abstract class BaseUserListPresenter<T extends BaseUserListPresenter.View
       });
    }
 
-   public void onEvent(AddUserRequestEvent event) {
-      if (view.isVisibleOnScreen())
-         getCirclesObservable().subscribe(new ActionStateSubscriber<CirclesCommand>().onStart(circlesCommand -> onCirclesStart())
-               .onSuccess(circlesCommand -> onCirclesSuccessAddUserRequest(event.getUser(), circlesCommand.getResult()))
-               .onFail((circlesCommand, throwable) -> onCirclesError(circlesCommand.getErrorMessage())));
+   protected void addFriend(User user) {
+      getCirclesObservable().subscribe(new ActionStateSubscriber<CirclesCommand>().onStart(circlesCommand -> onCirclesStart())
+            .onSuccess(circlesCommand -> onCirclesSuccessAddUserRequest(user, circlesCommand.getResult()))
+            .onFail((circlesCommand, throwable) -> onCirclesError(circlesCommand.getErrorMessage())));
    }
 
    private void onCirclesSuccessAddUserRequest(User user, List<Circle> circles) {
@@ -181,6 +174,10 @@ public abstract class BaseUserListPresenter<T extends BaseUserListPresenter.View
          addFriend(user, circles.get(arg));
       });
    }
+
+   //////////////////////
+   /// events
+   //////////////////////
 
    public void onEvent(CancelRequestEvent event) {
       deleteRequest(event.getUser(), DeleteRequestCommand.Action.CANCEL);

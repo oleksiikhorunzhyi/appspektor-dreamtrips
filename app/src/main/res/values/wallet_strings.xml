@@ -81,7 +81,7 @@
 
    <!--card list-->
    <string name="dashboard_default_card_stack_title">Default</string>
-   <string name="wallet_wizard_empty_card_list_label">Add credit or debit cards\nto your flue\u2122 smart card</string>
+   <string name="wallet_wizard_empty_card_list_label">Add credit or debit cards\nto your flye\u2122 smart card</string>
 
    <!--add card details-->
    <string name="wallet_add_card_details_title">Card Details</string>
@@ -109,7 +109,8 @@
    <string name="wallet_dashboard_unlock_error">Unlock is not supported</string>
 
    <!--magstripe-->
-   <string name="wallet_wizard_magstripe_title">Add Credit Card</string>
+   <string name="wallet_wizard_magstripe_add_credit_card_title">Add Credit Card</string>
+   <string name="wallet_wizard_magstripe_add_debit_card_title">Add Debit Card</string>
    <string name="wallet_wizard_magstripe_description">Connect the magnetic reader</string>
    <string name="wallet_wizard_magstripe_swipe_credit">Swipe a credit card</string>
    <string name="wallet_wizard_magstripe_swipe_debit">Swipe a debit card</string>

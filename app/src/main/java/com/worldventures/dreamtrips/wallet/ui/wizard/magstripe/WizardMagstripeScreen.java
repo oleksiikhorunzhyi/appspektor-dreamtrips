@@ -28,12 +28,6 @@ public class WizardMagstripeScreen extends WalletFrameLayout<WizardMagstripePres
    }
 
    @Override
-   protected void onPostAttachToWindowView() {
-      super.onPostAttachToWindowView();
-      setupScreen(getPath().cardType);
-   }
-
-   @Override
    protected void onFinishInflate() {
       super.onFinishInflate();
       toolbar.setNavigationOnClickListener(v -> navigateClick());
@@ -54,11 +48,14 @@ public class WizardMagstripeScreen extends WalletFrameLayout<WizardMagstripePres
       presenter.goBack();
    }
 
-   private void setupScreen(CardType cardType) {
+   @Override
+   public void showLabelsForCardType(CardType cardType) {
       if (cardType == CardType.DEBIT) {
          headerTextView.setText(R.string.wallet_wizard_magstripe_swipe_debit);
+         toolbar.setTitle(R.string.wallet_wizard_magstripe_add_debit_card_title);
       } else {
          headerTextView.setText(R.string.wallet_wizard_magstripe_swipe_credit);
+         toolbar.setTitle(R.string.wallet_wizard_magstripe_add_credit_card_title);
       }
    }
 

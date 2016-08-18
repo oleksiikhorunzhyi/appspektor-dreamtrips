@@ -21,6 +21,7 @@ import com.worldventures.dreamtrips.wallet.ui.dashboard.detail.CardDetailsPath;
 import com.worldventures.dreamtrips.wallet.ui.dashboard.list.util.CardStackViewModel;
 import com.worldventures.dreamtrips.wallet.ui.settings.WalletCardSettingsPath;
 import com.worldventures.dreamtrips.wallet.ui.wizard.magstripe.WizardMagstripePath;
+import com.worldventures.dreamtrips.wallet.util.CardUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -35,6 +36,8 @@ import rx.Observable;
 import static com.worldventures.dreamtrips.wallet.service.command.CardStacksCommand.CardStackModel;
 
 public class CardListScreenPresenter extends WalletPresenter<CardListScreenPresenter.Screen, Parcelable> {
+
+   private static final int MAX_CARD_LIMIT = 10;
 
    @Inject SmartCardInteractor smartCardInteractor;
    @Inject NavigationDrawerPresenter navigationDrawerPresenter;
@@ -73,8 +76,7 @@ public class CardListScreenPresenter extends WalletPresenter<CardListScreenPrese
 
    private void lockChanged(boolean isLocked) {
       smartCardInteractor.lockPipe()
-            .
-                  createObservable(new SetLockStateCommand(isLocked))
+            .createObservable(new SetLockStateCommand(isLocked))
             .compose(bindViewIoToMainComposer())
             .subscribe(OperationSubscriberWrapper.<SetLockStateCommand>forView(getView().provideOperationDelegate()).onFail(getContext()
                   .getString(R.string.error_something_went_wrong)).onSuccess(action -> {
@@ -100,24 +102,8 @@ public class CardListScreenPresenter extends WalletPresenter<CardListScreenPrese
       Flow.get(getContext()).set(new WalletCardSettingsPath(activeSmartCard));
    }
 
-   public void addCreditCard() {
-      Flow.get(getContext()).set(new WizardMagstripePath(CardType.CREDIT));
-   }
-
-   public void addDebitCard() {
-      Flow.get(getContext()).set(new WizardMagstripePath(CardType.DEBIT));
-   }
-
-   public interface Screen extends WalletScreen {
-      void showRecordsInfo(List<CardStackViewModel> result);
-
-      void showSmartCardInfo(SmartCard smartCard);
-
-      Observable<Boolean> lockStatus();
-
-      Observable<Void> unSupportedUnlockOperation();
-
-      void disableLockBtn();
+   public void addCardRequired(CardType cardType) {
+      Flow.get(getContext()).set(new WizardMagstripePath(cardType));
    }
 
    private void observeChanges() {
@@ -125,13 +111,21 @@ public class CardListScreenPresenter extends WalletPresenter<CardListScreenPrese
             .observe()
             .compose(bindViewIoToMainComposer())
             .subscribe(new ActionStateSubscriber<CardStacksCommand>() //TODO check for progress, f.e. swipe refresh
-                  .onSuccess(command -> getView().showRecordsInfo(adapt(command.getResult())))
+                  .onSuccess(command -> cardsLoaded(command.getResult()))
                   .onFail((command, throwable) -> {
                   }));
       smartCardInteractor.smartCardModifierPipe()
             .observeSuccess()
             .compose(bindViewIoToMainComposer())
             .subscribe(command -> setSmartCard(command.smartCard()));
+   }
+
+   private void cardsLoaded(List<CardStackModel> loadedModels){
+      List<CardStackViewModel> cards = adapt(loadedModels);
+      int cardsCount = CardUtils.stacksToItemsCount(cards);
+
+      getView().showRecordsInfo(cards);
+      getView().setEnableAddingCardButtons(cardsCount != MAX_CARD_LIMIT);
    }
 
    private List<CardStackViewModel> adapt(List<CardStackModel> stackList) {
@@ -162,5 +156,19 @@ public class CardListScreenPresenter extends WalletPresenter<CardListScreenPrese
       }
 
       return list;
+   }
+
+   public interface Screen extends WalletScreen {
+      void showRecordsInfo(List<CardStackViewModel> result);
+
+      void showSmartCardInfo(SmartCard smartCard);
+
+      Observable<Boolean> lockStatus();
+
+      Observable<Void> unSupportedUnlockOperation();
+
+      void disableLockBtn();
+
+      void setEnableAddingCardButtons(boolean enabled);
    }
 }

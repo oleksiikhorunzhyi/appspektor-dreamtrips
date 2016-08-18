@@ -48,6 +48,8 @@ public class CardListScreen extends WalletFrameLayout<CardListScreenPresenter.Sc
    @InjectView(R.id.main_content) CoordinatorLayout mainContent;
    @InjectView(R.id.wallet_list_buttons_wrapper) View buttonsWrapper;
    @InjectView(R.id.widget_dashboard_smart_card) SmartCardWidget smartCardWidget;
+   @InjectView(R.id.add_debit_list) View addDebitCard;
+   @InjectView(R.id.add_credit_list) View addCreditCard;
    @InjectView(R.id.empty_view_text) View emptyCardListView;
 
    private BaseDelegateAdapter adapter;
@@ -80,14 +82,15 @@ public class CardListScreen extends WalletFrameLayout<CardListScreenPresenter.Sc
    @Override
    public void showRecordsInfo(List<CardStackViewModel> result) {
       int cardCount = CardUtils.stacksToItemsCount(result);
+      boolean emptyCardCount = cardCount == 0;
 
       adapter.clearAndUpdateItems(result);
       smartCardWidget.bindCount(cardCount);
 
-      bankCardList.setVisibility(cardCount == 0 ? GONE : VISIBLE);
-      emptyCardListView.setVisibility(cardCount == 0 ? VISIBLE : GONE);
+      bankCardList.setVisibility(emptyCardCount? GONE : VISIBLE);
+      emptyCardListView.setVisibility(emptyCardCount? VISIBLE : GONE);
 
-      if (cardCount == 0) showEmptyCardListView();
+      if (emptyCardCount) showEmptyCardListView();
       else showCardList();
    }
 
@@ -127,6 +130,12 @@ public class CardListScreen extends WalletFrameLayout<CardListScreenPresenter.Sc
    @Override
    public void disableLockBtn() {
       smartCardWidget.setLockBtnEnabled(false);
+   }
+
+   @Override
+   public void setEnableAddingCardButtons(boolean enabled) {
+      addDebitCard.setEnabled(enabled);
+      addCreditCard.setEnabled(enabled);
    }
 
    private void onNavigateButtonClick(View view) {
@@ -177,12 +186,12 @@ public class CardListScreen extends WalletFrameLayout<CardListScreenPresenter.Sc
 
    @OnClick(R.id.add_credit_list)
    protected void addCreditCardClick() {
-      presenter.addCreditCard();
+      presenter.addCardRequired(BankCard.CardType.CREDIT);
    }
 
    @OnClick(R.id.add_debit_list)
    protected void addDebitCardClick() {
-      presenter.addDebitCard();
+      presenter.addCardRequired(BankCard.CardType.DEBIT);
    }
 
    private boolean onMenuItemClick(MenuItem item) {

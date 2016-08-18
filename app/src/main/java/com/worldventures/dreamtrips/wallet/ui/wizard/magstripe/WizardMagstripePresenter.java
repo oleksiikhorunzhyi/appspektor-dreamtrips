@@ -39,6 +39,7 @@ public class WizardMagstripePresenter extends WalletPresenter<WizardMagstripePre
    @Override
    public void onAttachedToWindow() {
       super.onAttachedToWindow();
+      getView().showLabelsForCardType(cardType);
 
       interactor.startRecordingActionPipe()
             .createObservable(new StartRecordingAction())
@@ -81,6 +82,6 @@ public class WizardMagstripePresenter extends WalletPresenter<WizardMagstripePre
    }
 
    public interface Screen extends WalletScreen {
-
+      void showLabelsForCardType(CardType cardType);
    }
 }

@@ -1,6 +1,5 @@
 package com.worldventures.dreamtrips.wallet.service.command;
 
-import android.text.TextUtils;
 import android.util.Pair;
 
 import com.worldventures.dreamtrips.core.janet.dagger.InjectableAction;
@@ -51,18 +50,18 @@ public class SaveCardDetailsDataCommand extends Command<Void> implements Injecta
    protected void run(CommandCallback<Void> callback) throws Throwable {
       checkCardAddress();
 
-      if (setAsDefaultAddress) {
+      if (setAsDefaultAddress && !useDefaultAddress) {
          snappyRepository.saveDefaultAddress(manualAddressInfo);
       }
 
       Observable<ActionState<GetDefaultAddressCommand>> defaultAddressInfoStateObservable = smartCardInteractor.getDefaultAddressCommandPipe()
             .observeWithReplay()
             .takeFirst(state -> state.status == ActionState.Status.SUCCESS || state.status == ActionState.Status.FAIL);
-      Observable<ActionState<FetchDefaultCardCommand>> cardCountStateObservable = smartCardInteractor.fetchDefaultCardCommandActionPipe()
+      Observable<ActionState<FetchDefaultCardCommand>> defaultCardStateObservable = smartCardInteractor.fetchDefaultCardCommandActionPipe()
             .observeWithReplay()
             .takeFirst(state -> state.status == ActionState.Status.SUCCESS || state.status == ActionState.Status.FAIL);
 
-      Observable.combineLatest(cardCountStateObservable, defaultAddressInfoStateObservable, (defaultCardState, addressInfoState) -> {
+      Observable.combineLatest(defaultCardStateObservable, defaultAddressInfoStateObservable, (defaultCardState, addressInfoState) -> {
          AddressInfo address = useDefaultAddress ? addressInfoState.action.getResult() : manualAddressInfo;
          BankCard extandedBankCard = ImmutableBankCard.copyOf(bankCard)
                .withCvv(Integer.parseInt(cvv))

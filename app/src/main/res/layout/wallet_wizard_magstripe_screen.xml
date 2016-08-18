@@ -15,7 +15,7 @@
          android:layout_height="?attr/actionBarSize"
          android:theme="@style/WalletTheme.Wizard.ToolbarTheme"
          app:navigationIcon="@drawable/back_icon"
-         app:title="@string/wallet_wizard_magstripe_title"
+         tools:title="@string/wallet_add_credit_card"
          />
 
    <FrameLayout

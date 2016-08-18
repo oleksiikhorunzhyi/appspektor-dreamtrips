@@ -37,7 +37,7 @@ public class UsersLikedItemPresenter extends BaseUserListPresenter<UsersLikedIte
    }
 
    public void acceptRequest(User user) {
-      acceptRequest(user);
+      super.acceptRequest(user);
    }
 
    public void addUserRequest(User user) {

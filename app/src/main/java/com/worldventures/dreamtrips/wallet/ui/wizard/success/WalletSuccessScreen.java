@@ -9,13 +9,13 @@ import android.widget.TextView;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletFrameLayout;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.OperationScreen;
-import com.worldventures.dreamtrips.wallet.ui.common.base.screen.WalletScreen;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.delegate.DialogOperationScreen;
 
 import butterknife.InjectView;
 import butterknife.OnClick;
 
-public class WalletSuccessScreen extends WalletFrameLayout<WalletScreen, WalletSuccessPresenter, WalletSuccessPath> implements WalletScreen {
+public class WalletSuccessScreen extends WalletFrameLayout<WalletSuccessPresenter.Screen, WalletSuccessPresenter, WalletSuccessPath>
+      implements WalletSuccessPresenter.Screen {
 
    @InjectView(R.id.toolbar) Toolbar toolbar;
    @InjectView(R.id.next_button) TextView nextButton;
@@ -32,21 +32,13 @@ public class WalletSuccessScreen extends WalletFrameLayout<WalletScreen, WalletS
    @NonNull
    @Override
    public WalletSuccessPresenter createPresenter() {
-      return new WalletSuccessPresenter(getContext(), getInjector(), getPath().nextPath);
+      return new WalletSuccessPresenter(getContext(), getInjector(), getPath());
    }
 
    @Override
    protected void onFinishInflate() {
       super.onFinishInflate();
       toolbar.setNavigationOnClickListener(v -> presenter.goToBack());
-   }
-
-   @Override
-   public void setPath(WalletSuccessPath path) {
-      super.setPath(path);
-      toolbar.setTitle(path.title);
-      nextButton.setText(path.buttonText);
-      successText.setText(path.text);
    }
 
    @OnClick(R.id.next_button)
@@ -57,5 +49,20 @@ public class WalletSuccessScreen extends WalletFrameLayout<WalletScreen, WalletS
    @Override
    public OperationScreen provideOperationDelegate() {
       return new DialogOperationScreen(this);
+   }
+
+   @Override
+   public void buttonText(String buttonText) {
+      nextButton.setText(buttonText);
+   }
+
+   @Override
+   public void text(String text) {
+      successText.setText(text);
+   }
+
+   @Override
+   public void title(String title) {
+      toolbar.setTitle(title);
    }
 }

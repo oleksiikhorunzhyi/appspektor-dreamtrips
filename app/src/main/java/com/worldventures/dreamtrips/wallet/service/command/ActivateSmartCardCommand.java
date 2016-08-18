@@ -11,7 +11,7 @@ import io.techery.janet.Command;
 import io.techery.janet.command.annotations.CommandAction;
 
 @CommandAction
-public class ActivateSmartCardCommand extends Command<SmartCard> implements InjectableAction {
+public class ActivateSmartCardCommand extends Command<SmartCard> implements InjectableAction, SmartCardModifier {
 
    @Inject SnappyRepository snappyRepository;
 

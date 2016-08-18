@@ -37,7 +37,7 @@ public final class SmartCardInteractor {
    private final ActionPipe<CardListCommand> cardsListPipe;
    private final ActionPipe<AttachCardCommand> addRecordPipe;
    private final ActionPipe<CardStacksCommand> cardStacksPipe;
-   private final ActionPipe<GetActiveSmartCardCommand> getActiveSmartCardPipe;
+   private final ActionPipe<GetActiveSmartCardCommand> activeSmartCardPipe;
    private final ActionPipe<CardCountCommand> cardCountCommandPipe;
    private final ActionPipe<GetDefaultAddressCommand> getDefaultAddressCommandPipe;
    private final WriteActionPipe<SaveCardDetailsDataCommand> saveCardDetailsDataCommandPipe;
@@ -53,7 +53,7 @@ public final class SmartCardInteractor {
       cardsListPipe = janet.createPipe(CardListCommand.class, Schedulers.io());
       addRecordPipe = janet.createPipe(AttachCardCommand.class, Schedulers.io());
       cardStacksPipe = janet.createPipe(CardStacksCommand.class, Schedulers.io());
-      getActiveSmartCardPipe = janet.createPipe(GetActiveSmartCardCommand.class, Schedulers.io());
+      activeSmartCardPipe = janet.createPipe(GetActiveSmartCardCommand.class, Schedulers.io());
       setStealthModePipe = janet.createPipe(SetStealthModeCommand.class, Schedulers.io());
 
       smartCardModifierPipe = janet.createPipe(SmartCardModifier.class, Schedulers.io());
@@ -88,8 +88,8 @@ public final class SmartCardInteractor {
       return deleteCardPipe;
    }
 
-   public ActionPipe<GetActiveSmartCardCommand> getActiveSmartCardPipe() {
-      return getActiveSmartCardPipe;
+   public ActionPipe<GetActiveSmartCardCommand> activeSmartCardPipe() {
+      return activeSmartCardPipe;
    }
 
    public ActionPipe<CardCountCommand> cardCountCommandPipe() {
@@ -108,10 +108,6 @@ public final class SmartCardInteractor {
       return setStealthModePipe;
    }
 
-   public ReadActionPipe<SmartCardModifier> smartCardModifierPipe() {
-      return smartCardModifierPipe;
-   }
-
    public ActionPipe<SetLockStateCommand> lockPipe() {
       return setLockPipe;
    }
@@ -121,6 +117,10 @@ public final class SmartCardInteractor {
    }
 
    private void connect() {
+      smartCardModifierPipe
+            .observeSuccess()
+            .subscribe(command -> activeSmartCardPipe.send(new GetActiveSmartCardCommand()));
+
       Observable.merge(deleteCardPipe.observeSuccess()
             .flatMap(deleteCommand -> cardsListPipe.createObservable(remove(valueOf(deleteCommand.recordId)))), addRecordPipe
             .observeSuccess()

@@ -24,25 +24,22 @@ public class WalletCardSettingsPresenter extends WalletPresenter<WalletCardSetti
 
    private SmartCard smartCard;
 
-   public WalletCardSettingsPresenter(Context context, Injector injector, SmartCard smartCard) {
+   public WalletCardSettingsPresenter(Context context, Injector injector) {
       super(context, injector);
-      this.smartCard = smartCard;
    }
 
    @Override
    public void attachView(Screen view) {
       super.attachView(view);
-      bindSmartCard(smartCard);
-
       observeSmartCardChanges();
       observeStealthModeController(view);
    }
 
    private void observeSmartCardChanges() {
-      smartCardInteractor.smartCardModifierPipe()
-            .observeSuccess()
+      smartCardInteractor.activeSmartCardPipe()
+            .observeSuccessWithReplay()
             .compose(bindViewIoToMainComposer())
-            .subscribe(command -> bindSmartCard(this.smartCard = command.smartCard()));
+            .subscribe(command -> bindSmartCard(this.smartCard = command.getResult()));
    }
 
    private void observeStealthModeController(Screen view) {

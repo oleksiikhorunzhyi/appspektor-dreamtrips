@@ -44,14 +44,9 @@ public class SetLockStateCommand extends Command<SmartCard> implements Injectabl
    }
 
    private Observable<SmartCard> fetchActiveSmartCard() {
-      return smartCardInteractor.getActiveSmartCardPipe()
+      return smartCardInteractor.activeSmartCardPipe()
             .createObservable(new GetActiveSmartCardCommand())
             .compose(new ActionStateToActionTransformer<>())
             .map(Command::getResult);
-   }
-
-   @Override
-   public SmartCard smartCard() {
-      return getResult();
    }
 }

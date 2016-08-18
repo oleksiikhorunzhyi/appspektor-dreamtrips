@@ -38,7 +38,7 @@ public class WalletCardSettingsScreen extends WalletFrameLayout<WalletCardSettin
    @NonNull
    @Override
    public WalletCardSettingsPresenter createPresenter() {
-      return new WalletCardSettingsPresenter(getContext(), getInjector(), getPath().getSmartCard());
+      return new WalletCardSettingsPresenter(getContext(), getInjector());
    }
 
    protected void onNavigationClick() {

@@ -37,13 +37,8 @@ public class FetchSmartCardLockState extends Command<SmartCard> implements Injec
             .subscribe(callback::onSuccess, callback::onFail);
    }
 
-   @Override
-   public SmartCard smartCard() {
-      return getResult();
-   }
-
    private Observable<SmartCard> fetchActiveSmartCard() {
-      return smartCardInteractor.getActiveSmartCardPipe()
+      return smartCardInteractor.activeSmartCardPipe()
             .createObservable(new GetActiveSmartCardCommand())
             .compose(new ActionStateToActionTransformer<>())
             .map(Command::getResult);

@@ -42,14 +42,9 @@ public class SetStealthModeCommand extends Command<SmartCard> implements Injecta
    }
 
    private Observable<SmartCard> fetchActiveSmartCard() {
-      return smartCardInteractor.getActiveSmartCardPipe()
+      return smartCardInteractor.activeSmartCardPipe()
             .createObservable(new GetActiveSmartCardCommand())
             .compose(new ActionStateToActionTransformer<>())
             .map(Command::getResult);
-   }
-
-   @Override
-   public SmartCard smartCard() {
-      return getResult();
    }
 }

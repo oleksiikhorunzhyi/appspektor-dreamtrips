@@ -40,9 +40,4 @@ public class ConnectSmartCardCommand extends Command<SmartCard> implements Injec
             .createObservableResult(new FetchCardPropertiesCommand(activeSmartCard))
             .map(Command::getResult);
    }
-
-   @Override
-   public SmartCard smartCard() {
-      return getResult();
-   }
 }

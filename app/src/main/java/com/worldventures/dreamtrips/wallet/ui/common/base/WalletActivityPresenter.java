@@ -35,7 +35,7 @@ public class WalletActivityPresenter extends ActivityPresenter<ActivityPresenter
    @Override
    public void onCreate(Bundle savedInstanceState) {
       super.onCreate(savedInstanceState);
-      interactor.getActiveSmartCardPipe().createObservableResult(new GetActiveSmartCardCommand()).flatMap(command -> {
+      interactor.activeSmartCardPipe().createObservableResult(new GetActiveSmartCardCommand()).flatMap(command -> {
          if (command != null) {
             return interactor.connectActionPipe().createObservable(new ConnectSmartCardCommand(command.getResult()));
          } else {

@@ -4,19 +4,26 @@ import android.content.Context;
 import android.os.Parcelable;
 
 import com.techery.spares.module.Injector;
-import com.worldventures.dreamtrips.core.flow.path.StyledPath;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletPresenter;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.WalletScreen;
 
 import flow.Flow;
 
-public class WalletSuccessPresenter extends WalletPresenter<WalletScreen, Parcelable> {
+public class WalletSuccessPresenter extends WalletPresenter<WalletSuccessPresenter.Screen, Parcelable> {
 
-   private final StyledPath styledPath;
+   private final ScreenContent screenContent;
 
-   public WalletSuccessPresenter(Context context, Injector injector, StyledPath styledPath) {
+   public WalletSuccessPresenter(Context context, Injector injector, ScreenContent screenContent) {
       super(context, injector);
-      this.styledPath = styledPath;
+      this.screenContent = screenContent;
+   }
+
+   @Override
+   public void attachView(Screen view) {
+      super.attachView(view);
+      view.title(screenContent.title());
+      view.text(screenContent.text());
+      view.buttonText(screenContent.buttonText());
    }
 
    public void goToBack() {
@@ -24,6 +31,16 @@ public class WalletSuccessPresenter extends WalletPresenter<WalletScreen, Parcel
    }
 
    public void goToNext() {
-      Flow.get(getContext()).set(styledPath);
+      Flow.get(getContext()).set(screenContent.nextPath());
+   }
+
+   public interface Screen extends WalletScreen {
+
+      void buttonText(String buttonText);
+
+      void text(String text);
+
+      void title(String title);
+
    }
 }

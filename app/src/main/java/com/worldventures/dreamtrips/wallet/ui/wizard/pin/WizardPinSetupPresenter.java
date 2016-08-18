@@ -73,8 +73,13 @@ public class WizardPinSetupPresenter extends WalletPresenter<WizardPinSetupPrese
    }
 
    public StyledPath createNextScreenPath() {
-      return isResetProcess ? new WalletSuccessPath(getContext().getString(R.string.wallet_wizard_setup_pin_title), getContext()
-            .getString(R.string.wallet_done_label), getContext().getString(R.string.wallet_wizard_setup_new_pin_success), new WalletCardSettingsPath(smartCard)) : new WalletPinIsSetPath(smartCard);
+      return isResetProcess ?
+            new WalletSuccessPath(
+                  getContext().getString(R.string.wallet_wizard_setup_pin_title),
+                  getContext().getString(R.string.wallet_done_label),
+                  getContext().getString(R.string.wallet_wizard_setup_new_pin_success),
+                  new WalletCardSettingsPath()) :
+            new WalletPinIsSetPath(smartCard);
    }
 
    public interface Screen extends WalletScreen {

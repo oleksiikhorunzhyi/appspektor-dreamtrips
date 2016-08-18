@@ -12,7 +12,6 @@ import com.worldventures.dreamtrips.wallet.domain.entity.card.BankCard;
 import com.worldventures.dreamtrips.wallet.domain.entity.card.BankCard.CardType;
 import com.worldventures.dreamtrips.wallet.service.SmartCardInteractor;
 import com.worldventures.dreamtrips.wallet.service.command.CardStacksCommand;
-import com.worldventures.dreamtrips.wallet.service.command.GetActiveSmartCardCommand;
 import com.worldventures.dreamtrips.wallet.service.command.SetLockStateCommand;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletPresenter;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.WalletScreen;
@@ -56,8 +55,9 @@ public class CardListScreenPresenter extends WalletPresenter<CardListScreenPrese
       Observable.concat(smartCardInteractor.cardStacksPipe()
             .createObservable(CardStacksCommand.get(false)), smartCardInteractor.cardStacksPipe()
             .createObservable(CardStacksCommand.get(true))).debounce(100, TimeUnit.MILLISECONDS).subscribe();
-      smartCardInteractor.getActiveSmartCardPipe()
-            .createObservableResult(new GetActiveSmartCardCommand())
+
+      smartCardInteractor.activeSmartCardPipe()
+            .observeSuccessWithReplay()
             .compose(bindViewIoToMainComposer())
             .subscribe(it -> setSmartCard(it.getResult()));
 
@@ -114,10 +114,6 @@ public class CardListScreenPresenter extends WalletPresenter<CardListScreenPrese
                   .onSuccess(command -> cardsLoaded(command.getResult()))
                   .onFail((command, throwable) -> {
                   }));
-      smartCardInteractor.smartCardModifierPipe()
-            .observeSuccess()
-            .compose(bindViewIoToMainComposer())
-            .subscribe(command -> setSmartCard(command.smartCard()));
    }
 
    private void cardsLoaded(List<CardStackModel> loadedModels){

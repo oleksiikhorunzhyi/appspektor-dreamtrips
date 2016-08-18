@@ -24,11 +24,11 @@
 
       <RelativeLayout style="@style/WalletTheme.Wizard.ContentContainerStyle">
 
-         <include
+         <com.worldventures.dreamtrips.wallet.ui.widget.BankCardWidget
                android:id="@+id/card"
                layout="@layout/adapter_item_wallet_bankcard"
-               android:layout_width="@dimen/wallet_details_screen_card_width"
-               android:layout_height="@dimen/wallet_bank_card_default_height"
+               android:layout_width="wrap_content"
+               android:layout_height="wrap_content"
                android:layout_alignParentTop="true"
                android:layout_centerHorizontal="true"
                />
@@ -40,10 +40,10 @@
                android:layout_alignParentEnd="true"
                android:layout_alignParentRight="true"
                android:layout_below="@+id/card"
-               android:maxLength="@integer/wallet_wizard_add_card_details_cvv_length"
-               android:inputType="number"
                android:layout_marginTop="@dimen/wallet_add_card_details_component_margin_top"
                android:hint="@string/wallet_add_card_details_hint_enter_cvv"
+               android:inputType="number"
+               android:maxLength="@integer/wallet_wizard_add_card_details_cvv_length"
                />
 
          <CheckBox
@@ -67,8 +67,8 @@
                android:layout_below="@+id/use_default_address_checkbox"
                android:layout_marginLeft="@dimen/wallet_add_card_details_default_address_margin_left"
                android:layout_marginTop="@dimen/wallet_add_card_details_component_margin_top"
-               android:visibility="gone"
                android:inputType="textMultiLine"
+               android:visibility="gone"
                tools:text="12345 Lollipop Drive\nNew York, NY 10010\nUSA"
                />
 
@@ -100,10 +100,10 @@
                android:layout_height="wrap_content"
                android:layout_alignParentEnd="true"
                android:layout_alignParentRight="true"
-               android:imeOptions="actionDone"
                android:layout_below="@+id/set_default_card_checkBox"
                android:layout_marginTop="@dimen/wallet_add_card_details_component_margin_top"
                android:hint="@string/wallet_add_card_details_hint_nickname_card"
+               android:imeOptions="actionDone"
                />
 
          <Button

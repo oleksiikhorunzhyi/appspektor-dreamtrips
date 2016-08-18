@@ -33,14 +33,19 @@ public class SetLockStateCommand extends Command<SmartCard> implements Injectabl
 
    @Override
    protected void run(CommandCallback<SmartCard> callback) throws Throwable {
-      janet.createPipe(LockDeviceAction.class)
-            .createObservableResult(new LockDeviceAction(lock))
-            .flatMap(it -> fetchActiveSmartCard().map(smartCard -> ImmutableSmartCard.builder()
-                  .from(smartCard)
-                  .lock(lock)
-                  .build()))
-            .doOnNext(snappyRepository::saveSmartCard)
-            .subscribe(callback::onSuccess, callback::onFail);
+      if (lock) {
+         janet.createPipe(LockDeviceAction.class)
+               .createObservableResult(new LockDeviceAction(lock))
+               .flatMap(it -> fetchActiveSmartCard()
+                     .map(smartCard -> ImmutableSmartCard.builder()
+                           .from(smartCard)
+                           .lock(lock)
+                           .build()))
+               .doOnNext(snappyRepository::saveSmartCard)
+               .subscribe(callback::onSuccess, callback::onFail);
+      } else {
+         callback.onFail(new IllegalArgumentException("Unlock is not supported"));
+      }
    }
 
    private Observable<SmartCard> fetchActiveSmartCard() {

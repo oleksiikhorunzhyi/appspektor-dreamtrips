@@ -7,6 +7,7 @@ import com.worldventures.dreamtrips.wallet.ui.dashboard.detail.CardDetailsPresen
 import com.worldventures.dreamtrips.wallet.ui.dashboard.list.CardListScreenPresenter;
 import com.worldventures.dreamtrips.wallet.ui.dashboard.list.util.cell.BankCardCell;
 import com.worldventures.dreamtrips.wallet.ui.dashboard.list.util.cell.CardStackCell;
+import com.worldventures.dreamtrips.wallet.ui.dashboard.list.util.cell.CardStackHeaderCell;
 import com.worldventures.dreamtrips.wallet.ui.settings.WalletCardSettingsPresenter;
 import com.worldventures.dreamtrips.wallet.ui.wizard.barcode.WizardScanBarcodePresenter;
 import com.worldventures.dreamtrips.wallet.ui.wizard.card_alias.WizardCardNamePresenter;
@@ -23,9 +24,29 @@ import dagger.Module;
 import dagger.Provides;
 
 @Module(
-      includes = {},
-      injects = {WalletActivityPresenter.class, BankCardCell.class, CardStackCell.class, WizardSplashScreenPresenter.class, WizardScanBarcodePresenter.class, WizardManualInputPresenter.class, WizardCardNamePresenter.class, WizardEditProfilePresenter.class, WalletPinIsSetPresenter.class, WizardMagstripePresenter.class, CardDetailsPresenter.class, CardListScreenPresenter.class, WalletCardSettingsPresenter.class, WalletSuccessPresenter.class, AddCardDetailsPresenter.class, WizardPinSetupPresenter.class},
-      complete = false, library = true)
+      includes = {
+      },
+      injects = {
+            WalletActivityPresenter.class,
+            BankCardCell.class,
+            CardStackCell.class,
+            CardStackHeaderCell.class,
+            WizardSplashScreenPresenter.class,
+            WizardScanBarcodePresenter.class,
+            WizardManualInputPresenter.class,
+            WizardCardNamePresenter.class,
+            WizardEditProfilePresenter.class,
+            WalletPinIsSetPresenter.class,
+            WizardMagstripePresenter.class,
+            CardDetailsPresenter.class,
+            CardListScreenPresenter.class,
+            WalletCardSettingsPresenter.class,
+            WalletSuccessPresenter.class,
+            AddCardDetailsPresenter.class,
+            WizardPinSetupPresenter.class
+      },
+      complete = false, library = true
+)
 public class WalletActivityModule {
    public static final String WALLET = "Wallet";
 

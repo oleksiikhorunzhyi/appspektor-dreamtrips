@@ -3,8 +3,9 @@ package com.worldventures.dreamtrips.wallet.ui.widget;
 
 import android.content.Context;
 import android.util.AttributeSet;
+import android.view.View;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.worldventures.dreamtrips.R;
@@ -13,7 +14,7 @@ import com.worldventures.dreamtrips.wallet.domain.entity.card.BankCard;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 
-public class BankCardWidget extends RelativeLayout {
+public class BankCardWidget extends FrameLayout {
 
    @InjectView(R.id.bankLabel) TextView bankLabel;
    @InjectView(R.id.cardTitle) TextView cardTitle;
@@ -28,6 +29,7 @@ public class BankCardWidget extends RelativeLayout {
    @Override
    protected void onFinishInflate() {
       super.onFinishInflate();
+      View.inflate(getContext(), R.layout.custom_view_bank_card, this);
       ButterKnife.inject(this);
    }
 

@@ -13,6 +13,7 @@ import java.util.List;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
+import butterknife.Optional;
 
 import static android.view.LayoutInflater.from;
 
@@ -26,28 +27,35 @@ public class CardListHeaderAdapter implements StickyHeadersAdapter<CardListHeade
 
    @Override
    public CardListHeaderViewHolder onCreateViewHolder(ViewGroup viewGroup) {
-      View itemView = from(viewGroup.getContext()).inflate(R.layout.adapter_item_wallet_cardlist_header, viewGroup, false);
+      View itemView = from(viewGroup.getContext()).inflate(R.layout.adapter_item_wallet_cardlist_item_header, viewGroup, false);
       return new CardListHeaderViewHolder(itemView);
    }
 
    @Override
    public void onBindViewHolder(CardListHeaderViewHolder headerViewHolder, int i) {
-      headerViewHolder.letter.setText(items.get(i).getHeaderTitle());
+      String headerTitle = items.get(i).getHeaderTitle();
+      if (headerTitle == null) {
+         headerViewHolder.itemView.setVisibility(View.GONE);
+      } else {
+         headerViewHolder.itemView.setVisibility(View.VISIBLE);
+         if (headerViewHolder.letter != null) {
+            headerViewHolder.letter.setText(headerTitle);
+         }
+      }
    }
 
    @Override
    public long getHeaderId(int i) {
       String category = items.get(i).getHeaderTitle();
-      return category.hashCode();
+      return (category != null) ? category.hashCode() : 0;
    }
 
    public static class CardListHeaderViewHolder extends RecyclerView.ViewHolder {
-      @InjectView(R.id.tv_title) protected TextView letter;
+      @Optional @InjectView(R.id.tv_title) TextView letter;
 
       public CardListHeaderViewHolder(View itemView) {
          super(itemView);
          ButterKnife.inject(this, itemView);
       }
    }
-
 }

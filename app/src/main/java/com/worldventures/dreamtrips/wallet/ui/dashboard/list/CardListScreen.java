@@ -2,57 +2,44 @@ package com.worldventures.dreamtrips.wallet.ui.dashboard.list;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
-import android.support.design.widget.AppBarLayout;
-import android.support.design.widget.CollapsingToolbarLayout;
-import android.support.design.widget.CoordinatorLayout;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.Toolbar;
 import android.util.AttributeSet;
-import android.view.MenuItem;
 import android.view.View;
 
 import com.eowise.recyclerview.stickyheaders.StickyHeadersBuilder;
 import com.eowise.recyclerview.stickyheaders.StickyHeadersItemDecoration;
+import com.innahema.collections.query.queriables.Queryable;
 import com.techery.spares.adapter.BaseArrayListAdapter;
-import com.techery.spares.adapter.BaseDelegateAdapter;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.wallet.domain.entity.SmartCard;
+import com.worldventures.dreamtrips.modules.bucketlist.view.adapter.IgnoreFirstItemAdapter;
 import com.worldventures.dreamtrips.wallet.domain.entity.card.BankCard;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletFrameLayout;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.OperationScreen;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.delegate.DialogOperationScreen;
 import com.worldventures.dreamtrips.wallet.ui.dashboard.list.util.CardListHeaderAdapter;
+import com.worldventures.dreamtrips.wallet.ui.dashboard.list.util.CardStackHeaderHolder;
 import com.worldventures.dreamtrips.wallet.ui.dashboard.list.util.CardStackViewModel;
 import com.worldventures.dreamtrips.wallet.ui.dashboard.list.util.HidingScrollListener;
+import com.worldventures.dreamtrips.wallet.ui.dashboard.list.util.ImmutableCardStackHeaderHolder;
 import com.worldventures.dreamtrips.wallet.ui.dashboard.list.util.cell.CardStackCell;
-import com.worldventures.dreamtrips.wallet.ui.widget.SmartCardWidget;
-import com.worldventures.dreamtrips.wallet.util.CardUtils;
+import com.worldventures.dreamtrips.wallet.ui.dashboard.list.util.cell.CardStackHeaderCell;
 
 import java.util.List;
 
 import butterknife.InjectView;
 import butterknife.OnClick;
-import rx.Observable;
-
-import static android.support.design.widget.AppBarLayout.LayoutParams.SCROLL_FLAG_SCROLL;
-import static android.support.design.widget.AppBarLayout.LayoutParams.SCROLL_FLAG_EXIT_UNTIL_COLLAPSED;
 
 public class CardListScreen extends WalletFrameLayout<CardListScreenPresenter.Screen, CardListScreenPresenter, CardListPath> implements CardListScreenPresenter.Screen {
 
-   @InjectView(R.id.toolbar) Toolbar toolbar;
-   @InjectView(R.id.collapsing_toolbar) CollapsingToolbarLayout collapsingToolbar;
-   @InjectView(R.id.appbar) AppBarLayout appbar;
    @InjectView(R.id.bankCardList) RecyclerView bankCardList;
-   @InjectView(R.id.main_content) CoordinatorLayout mainContent;
    @InjectView(R.id.wallet_list_buttons_wrapper) View buttonsWrapper;
-   @InjectView(R.id.widget_dashboard_smart_card) SmartCardWidget smartCardWidget;
    @InjectView(R.id.add_debit_list) View addDebitCard;
    @InjectView(R.id.add_credit_list) View addCreditCard;
    @InjectView(R.id.empty_view_text) View emptyCardListView;
 
-   private BaseDelegateAdapter adapter;
+   private IgnoreFirstItemAdapter adapter;
 
    public CardListScreen(Context context) {
       super(context);
@@ -70,7 +57,6 @@ public class CardListScreen extends WalletFrameLayout<CardListScreenPresenter.Sc
 
    @Override
    protected void onPostAttachToWindowView() {
-      setupToolbar();
       setupCardStackList();
    }
 
@@ -81,55 +67,19 @@ public class CardListScreen extends WalletFrameLayout<CardListScreenPresenter.Sc
 
    @Override
    public void showRecordsInfo(List<CardStackViewModel> result) {
-      int cardCount = CardUtils.stacksToItemsCount(result);
-      boolean emptyCardCount = cardCount == 0;
-
-      adapter.clearAndUpdateItems(result);
-      smartCardWidget.bindCount(cardCount);
-
-      bankCardList.setVisibility(emptyCardCount? GONE : VISIBLE);
-      emptyCardListView.setVisibility(emptyCardCount? VISIBLE : GONE);
-
-      if (emptyCardCount) showEmptyCardListView();
-      else showCardList();
-   }
-
-   private void showCardList() {
-      bankCardList.setVisibility(VISIBLE);
-      emptyCardListView.setVisibility(GONE);
-
-      AppBarLayout.LayoutParams params = (AppBarLayout.LayoutParams) collapsingToolbar.getLayoutParams();
-      params.setScrollFlags(SCROLL_FLAG_SCROLL | SCROLL_FLAG_EXIT_UNTIL_COLLAPSED);
-      collapsingToolbar.setLayoutParams(params);
-   }
-
-   private void showEmptyCardListView() {
-      bankCardList.setVisibility(GONE);
-      emptyCardListView.setVisibility(VISIBLE);
-
-      AppBarLayout.LayoutParams params = (AppBarLayout.LayoutParams) collapsingToolbar.getLayoutParams();
-      params.setScrollFlags(0);
-      collapsingToolbar.setLayoutParams(params);
+      adapter.clear();
+      adapter.addItems(result);
+      emptyCardListView.setVisibility(adapter.getCount() == 1 ? VISIBLE : GONE);
    }
 
    @Override
-   public void showSmartCardInfo(SmartCard smartCard) {
-      smartCardWidget.bindCard(smartCard);
-   }
-
-   @Override
-   public Observable<Boolean> lockStatus() {
-      return smartCardWidget.lockStatus();
-   }
-
-   @Override
-   public Observable<Void> unSupportedUnlockOperation() {
-      return smartCardWidget.unSupportedUnlockOperation();
-   }
-
-   @Override
-   public void disableLockBtn() {
-      smartCardWidget.setLockBtnEnabled(false);
+   public void notifySmartCardChanged(CardStackHeaderHolder cardStackHeaderHolder) {
+      Object header = Queryable.from(adapter.getItems()).firstOrDefault(it -> it instanceof CardStackHeaderHolder);
+      if (header != null) {
+         adapter.remove(header);
+      }
+      adapter.addItem(0, cardStackHeaderHolder);
+      adapter.notifyDataSetChanged();
    }
 
    @Override
@@ -138,19 +88,8 @@ public class CardListScreen extends WalletFrameLayout<CardListScreenPresenter.Sc
       addCreditCard.setEnabled(enabled);
    }
 
-   private void onNavigateButtonClick(View view) {
-      presenter.navigationClick();
-   }
-
-   private void setupToolbar() {
-      toolbar.setTitle(R.string.wallet);
-      toolbar.setNavigationOnClickListener(this::onNavigateButtonClick);
-      toolbar.inflateMenu(R.menu.menu_wallet_dashboard);
-      toolbar.setOnMenuItemClickListener(this::onMenuItemClick);
-   }
-
    private void setupCardStackList() {
-      adapter = new BaseDelegateAdapter(getContext(), getInjector());
+      adapter = new IgnoreFirstItemAdapter(getContext(), getInjector());
       adapter.registerCell(CardStackViewModel.class, CardStackCell.class);
       adapter.registerDelegate(CardStackViewModel.class, new CardStackCell.Delegate() {
          @Override
@@ -161,6 +100,29 @@ public class CardListScreen extends WalletFrameLayout<CardListScreenPresenter.Sc
       adapter.registerIdDelegate(CardStackViewModel.class, model -> {
          CardStackViewModel vm = ((CardStackViewModel) model);
          return vm.getHeaderTitle() != null ? vm.getHeaderTitle().hashCode() : 0;
+      });
+
+      adapter.registerCell(ImmutableCardStackHeaderHolder.class, CardStackHeaderCell.class);
+      adapter.registerDelegate(ImmutableCardStackHeaderHolder.class, new CardStackHeaderCell.Delegate() {
+         @Override
+         public void onCellClicked(CardStackHeaderHolder model) {
+
+         }
+
+         @Override
+         public void onSettingsChosen() {
+            presenter.onSettingsChosen();
+         }
+
+         @Override
+         public void onNavigateButtonClick() {
+            presenter.navigationClick();
+         }
+
+         @Override
+         public void onLockChanged(boolean isLocked) {
+            presenter.onLockChanged(isLocked);
+         }
       });
 
       bankCardList.setAdapter(adapter);
@@ -192,15 +154,5 @@ public class CardListScreen extends WalletFrameLayout<CardListScreenPresenter.Sc
    @OnClick(R.id.add_debit_list)
    protected void addDebitCardClick() {
       presenter.addCardRequired(BankCard.CardType.DEBIT);
-   }
-
-   private boolean onMenuItemClick(MenuItem item) {
-      switch (item.getItemId()) {
-         case R.id.action_card_settings:
-            presenter.onSettingsChosen();
-            return true;
-         default:
-            return false;
-      }
    }
 }

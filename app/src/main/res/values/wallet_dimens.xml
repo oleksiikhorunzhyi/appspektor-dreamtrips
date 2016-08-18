@@ -2,6 +2,7 @@
 <resources>
    <dimen name="wallet_photo_rounded_corner_radius">10dp</dimen>
    <dimen name="wallet_common_screen_padding">24dp</dimen>
+   <dimen name="wallet_bank_card_default_width">300dp</dimen>
    <dimen name="wallet_bank_card_default_height">150dp</dimen>
    <dimen name="wallet_smart_card_default_height">150dp</dimen>
    <dimen name="wallet_smart_card_default_width">270dp</dimen>

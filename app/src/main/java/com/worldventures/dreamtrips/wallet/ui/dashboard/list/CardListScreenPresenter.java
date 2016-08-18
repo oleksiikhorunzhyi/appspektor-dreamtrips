@@ -17,7 +17,9 @@ import com.worldventures.dreamtrips.wallet.ui.common.base.WalletPresenter;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.WalletScreen;
 import com.worldventures.dreamtrips.wallet.ui.common.helper.OperationSubscriberWrapper;
 import com.worldventures.dreamtrips.wallet.ui.dashboard.detail.CardDetailsPath;
+import com.worldventures.dreamtrips.wallet.ui.dashboard.list.util.CardStackHeaderHolder;
 import com.worldventures.dreamtrips.wallet.ui.dashboard.list.util.CardStackViewModel;
+import com.worldventures.dreamtrips.wallet.ui.dashboard.list.util.ImmutableCardStackHeaderHolder;
 import com.worldventures.dreamtrips.wallet.ui.settings.WalletCardSettingsPath;
 import com.worldventures.dreamtrips.wallet.ui.wizard.magstripe.WizardMagstripePath;
 import com.worldventures.dreamtrips.wallet.util.CardUtils;
@@ -41,7 +43,7 @@ public class CardListScreenPresenter extends WalletPresenter<CardListScreenPrese
    @Inject SmartCardInteractor smartCardInteractor;
    @Inject NavigationDrawerPresenter navigationDrawerPresenter;
 
-   private SmartCard activeSmartCard;
+   private CardStackHeaderHolder cardStackHeaderHolder = ImmutableCardStackHeaderHolder.builder().build();
 
    public CardListScreenPresenter(Context context, Injector injector) {
       super(context, injector);
@@ -60,33 +62,24 @@ public class CardListScreenPresenter extends WalletPresenter<CardListScreenPrese
             .observeSuccessWithReplay()
             .compose(bindViewIoToMainComposer())
             .subscribe(it -> setSmartCard(it.getResult()));
-
-      getView().lockStatus()
-            .compose(bindView())
-            .skip(1)
-            .filter(checkedFlag -> activeSmartCard.lock() != checkedFlag)
-            .subscribe(this::lockChanged);
-
-      getView().unSupportedUnlockOperation().compose(bindView()).subscribe(it -> {
-         getView().provideOperationDelegate()
-               .showError(getContext().getString(R.string.wallet_dashboard_unlock_error), e -> {
-               });
-      });
    }
 
-   private void lockChanged(boolean isLocked) {
+   public void onLockChanged(boolean isLocked) {
       smartCardInteractor.lockPipe()
             .createObservable(new SetLockStateCommand(isLocked))
             .compose(bindViewIoToMainComposer())
             .subscribe(OperationSubscriberWrapper.<SetLockStateCommand>forView(getView().provideOperationDelegate()).onFail(getContext()
-                  .getString(R.string.error_something_went_wrong)).onSuccess(action -> {
-               if (isLocked) getView().disableLockBtn();
-            }).wrap());
+                  .getString(R.string.wallet_dashboard_unlock_error), a -> getView().notifySmartCardChanged(cardStackHeaderHolder))
+                  .onSuccess(action -> { })
+                  .wrap());
    }
 
    private void setSmartCard(SmartCard smartCard) {
-      activeSmartCard = smartCard;
-      getView().showSmartCardInfo(smartCard);
+      cardStackHeaderHolder = ImmutableCardStackHeaderHolder.builder()
+            .from(cardStackHeaderHolder)
+            .smartCard(smartCard)
+            .build();
+      getView().notifySmartCardChanged(cardStackHeaderHolder);
    }
 
    public void showBankCardDetails(BankCard bankCard) {
@@ -98,8 +91,8 @@ public class CardListScreenPresenter extends WalletPresenter<CardListScreenPrese
    }
 
    public void onSettingsChosen() {
-      if (activeSmartCard == null) return;
-      Flow.get(getContext()).set(new WalletCardSettingsPath(activeSmartCard));
+      if (cardStackHeaderHolder.smartCard() == null) return;
+      Flow.get(getContext()).set(new WalletCardSettingsPath(cardStackHeaderHolder.smartCard()));
    }
 
    public void addCardRequired(CardType cardType) {
@@ -116,10 +109,15 @@ public class CardListScreenPresenter extends WalletPresenter<CardListScreenPrese
                   }));
    }
 
-   private void cardsLoaded(List<CardStackModel> loadedModels){
+   private void cardsLoaded(List<CardStackModel> loadedModels) {
       List<CardStackViewModel> cards = adapt(loadedModels);
       int cardsCount = CardUtils.stacksToItemsCount(cards);
+      cardStackHeaderHolder = ImmutableCardStackHeaderHolder.builder()
+            .from(cardStackHeaderHolder)
+            .cardCount(cardsCount)
+            .build();
 
+      getView().notifySmartCardChanged(cardStackHeaderHolder);
       getView().showRecordsInfo(cards);
       getView().setEnableAddingCardButtons(cardsCount != MAX_CARD_LIMIT);
    }
@@ -157,14 +155,8 @@ public class CardListScreenPresenter extends WalletPresenter<CardListScreenPrese
    public interface Screen extends WalletScreen {
       void showRecordsInfo(List<CardStackViewModel> result);
 
-      void showSmartCardInfo(SmartCard smartCard);
+      void notifySmartCardChanged(CardStackHeaderHolder smartCard);
 
-      Observable<Boolean> lockStatus();
-
-      Observable<Void> unSupportedUnlockOperation();
-
-      void disableLockBtn();
-
-      void setEnableAddingCardButtons(boolean enabled);
+      void setEnableAddingCardButtons(boolean enable);
    }
 }

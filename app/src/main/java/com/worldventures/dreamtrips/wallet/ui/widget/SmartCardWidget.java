@@ -4,21 +4,18 @@ import android.content.Context;
 import android.net.Uri;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.FrameLayout;
 import android.widget.TextView;
 
 import com.facebook.drawee.view.SimpleDraweeView;
-import com.jakewharton.rxbinding.view.RxView;
-import com.jakewharton.rxbinding.widget.RxCompoundButton;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.utils.QuantityHelper;
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCard;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
-import rx.Observable;
 
 public class SmartCardWidget extends FrameLayout {
 
@@ -27,8 +24,6 @@ public class SmartCardWidget extends FrameLayout {
    @InjectView(R.id.connectedCardsCount) TextView connectedCardsCount;
    @InjectView(R.id.cbLock) CheckBox lockView;
    @InjectView(R.id.batteryView) BatteryView batteryView;
-
-   private boolean lockEnabled;
 
    public SmartCardWidget(Context context) {
       this(context, null);
@@ -40,7 +35,7 @@ public class SmartCardWidget extends FrameLayout {
    }
 
    private void setup() {
-      LayoutInflater.from(getContext()).inflate(R.layout.adapter_item_wallet_smartcard, this);
+      LayoutInflater.from(getContext()).inflate(R.layout.custom_view_wallet_smartcard, this);
       ButterKnife.inject(this);
       setVisibility(INVISIBLE);
    }
@@ -51,7 +46,6 @@ public class SmartCardWidget extends FrameLayout {
       if (url != null) scAvatar.setImageURI(Uri.parse(url));
       batteryView.setLevel(smartCard.batteryLevel());
       lockView.setChecked(smartCard.lock());
-      setLockBtnEnabled(!smartCard.lock());
       setVisibility(VISIBLE);
    }
 
@@ -65,17 +59,7 @@ public class SmartCardWidget extends FrameLayout {
       }
    }
 
-   public void setLockBtnEnabled(boolean isEnabled) {
-      this.lockEnabled = isEnabled;
-   }
-
-   public Observable<Boolean> lockStatus() {
-      return RxCompoundButton.checkedChanges(lockView);
-   }
-
-   public Observable<Void> unSupportedUnlockOperation() {
-      return RxView.touches(lockView, motionEvent -> !lockEnabled)
-            .filter(motionEvent -> motionEvent.getAction() == MotionEvent.ACTION_UP && !lockEnabled)
-            .map(motionEvent -> null);
+   public void setOnLockChangedListener(CompoundButton.OnCheckedChangeListener listener) {
+      lockView.setOnCheckedChangeListener(listener);
    }
 }

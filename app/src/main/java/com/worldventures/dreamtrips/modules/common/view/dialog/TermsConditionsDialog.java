@@ -35,6 +35,11 @@ public class TermsConditionsDialog extends BaseDialogFragmentWithPresenter<Terms
    private String termsText;
    private boolean onErrorReceived;
 
+   // After actual request for Terms and Conditions and onPageFinished called, we get onReceivedHttpError for other url
+   // we cannot match urls to ensure that wrong one was failed, cause we are using redirects
+   // so this is the only decision
+   private boolean onPageShown;
+
    public static TermsConditionsDialog create() {
       return new TermsConditionsDialog();
    }
@@ -50,6 +55,7 @@ public class TermsConditionsDialog extends BaseDialogFragmentWithPresenter<Terms
          public void onPageFinished(WebView view, String url) {
             if (termsContent == null || btnRetry == null || onErrorReceived) return;
 
+            onPageShown = true;
             termsContent.loadUrl("javascript:window.HtmlViewer.getHtml" + "('<html>'+document.getElementsByTagName('html')[0].innerHTML+'</html>');");
 
             termsContent.setVisibility(View.VISIBLE);
@@ -60,6 +66,7 @@ public class TermsConditionsDialog extends BaseDialogFragmentWithPresenter<Terms
          public void onPageStarted(WebView view, String url, Bitmap favicon) {
             super.onPageStarted(view, url, favicon);
             onErrorReceived = false;
+            onPageShown = false;
             if (termsContent != null && btnRetry != null) {
                termsContent.setVisibility(View.GONE);
                btnRetry.setVisibility(View.GONE);
@@ -69,6 +76,7 @@ public class TermsConditionsDialog extends BaseDialogFragmentWithPresenter<Terms
          @Override
          public void onReceivedHttpError(WebView view, WebResourceRequest request, WebResourceResponse errorResponse) {
             super.onReceivedHttpError(view, request, errorResponse);
+            if (onPageShown) return;
             onErrorReceived = true;
             if (termsContent != null && btnRetry != null) {
                termsContent.setVisibility(View.GONE);

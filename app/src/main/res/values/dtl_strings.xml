@@ -38,8 +38,7 @@
    <string name="dtl_barcode_title">Scan QR Code</string>
    <string name="dtl_barcode_merchant">Scan Merchant Code</string>
    <string name="dtl_scan_receipt_screen_title">Enter Subtotal</string>
-   <string name="dtl_scan_receipt_input_caption">Enter Subtotal</string>
-   <string name="dtl_scan_receipt_input_subcaption"> (Amount exluding tax &amp; tip)</string>
+   <string name="dtl_scan_receipt_input_caption">Enter Subtotal (Amount exluding tax &amp; tip)</string>
    <string name="dtl_congrats">Congratulations!</string>
    <string name="dtl_you_earned">You have earned</string>
    <string name="dtl_total">Total DreamTrips Points:</string>

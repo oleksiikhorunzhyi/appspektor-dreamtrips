@@ -1,5 +1,6 @@
 package com.worldventures.dreamtrips.modules.common.api.janet.command;
 
+import com.worldventures.dreamtrips.modules.flags.storage.FlagsStorage;
 import com.worldventures.dreamtrips.core.janet.dagger.InjectableAction;
 import com.worldventures.dreamtrips.modules.trips.command.GetActivitiesCommand;
 import com.worldventures.dreamtrips.modules.trips.command.GetRegionsCommand;
@@ -15,10 +16,12 @@ import rx.schedulers.Schedulers;
 public class ClearMemoryStorageCommand extends Command<Void> implements InjectableAction {
 
    @Inject Janet janet;
+   @Inject FlagsStorage flagsStorage;
 
    @Override
    protected void run(CommandCallback<Void> callback) throws Throwable {
       janet.createPipe(GetActivitiesCommand.class, Schedulers.io()).send(GetActivitiesCommand.clearMemory());
       janet.createPipe(GetRegionsCommand.class, Schedulers.io()).send(GetRegionsCommand.clearMemory());
+      flagsStorage.clearMemory();
    }
 }

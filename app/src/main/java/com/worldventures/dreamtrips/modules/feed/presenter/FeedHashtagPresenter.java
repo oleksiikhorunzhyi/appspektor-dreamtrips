@@ -5,6 +5,7 @@ import android.support.annotation.Nullable;
 import android.text.TextUtils;
 
 import com.innahema.collections.query.queriables.Queryable;
+import com.messenger.delegate.FlagsInteractor;
 import com.worldventures.dreamtrips.core.rx.RxView;
 import com.worldventures.dreamtrips.core.rx.composer.IoToMainComposer;
 import com.worldventures.dreamtrips.core.utils.LocaleHelper;
@@ -67,12 +68,9 @@ public class FeedHashtagPresenter<T extends FeedHashtagPresenter.View> extends J
    @Inject HashtagInteractor interactor;
    @Inject FeedEntityManager entityManager;
    @Inject BucketInteractor bucketInteractor;
+   @Inject FlagsInteractor flagsInteractor;
 
    private UidItemDelegate uidItemDelegate;
-
-   public FeedHashtagPresenter() {
-      uidItemDelegate = new UidItemDelegate(this);
-   }
 
    @Override
    public void takeView(T view) {
@@ -98,6 +96,7 @@ public class FeedHashtagPresenter<T extends FeedHashtagPresenter.View> extends J
    public void onInjected() {
       super.onInjected();
       entityManager.setRequestingPresenter(this);
+      uidItemDelegate = new UidItemDelegate(this, flagsInteractor);
    }
 
    @Nullable

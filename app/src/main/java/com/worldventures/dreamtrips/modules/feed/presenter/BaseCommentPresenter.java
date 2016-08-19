@@ -1,6 +1,7 @@
 package com.worldventures.dreamtrips.modules.feed.presenter;
 
 import com.innahema.collections.query.queriables.Queryable;
+import com.messenger.delegate.FlagsInteractor;
 import com.worldventures.dreamtrips.core.rx.RxView;
 import com.worldventures.dreamtrips.core.rx.composer.IoToMainComposer;
 import com.worldventures.dreamtrips.core.utils.LocaleHelper;
@@ -53,6 +54,7 @@ public class BaseCommentPresenter<T extends BaseCommentPresenter.View> extends P
    @Inject TranslationFeedInteractor translationFeedInteractor;
    @Inject CommentsInteractor commentsInteractor;
    @Inject LocaleHelper localeHelper;
+   @Inject FlagsInteractor flagsInteractor;
 
    private UidItemDelegate uidItemDelegate;
 
@@ -65,13 +67,13 @@ public class BaseCommentPresenter<T extends BaseCommentPresenter.View> extends P
 
    public BaseCommentPresenter(FeedEntity feedEntity) {
       this.feedEntity = feedEntity;
-      uidItemDelegate = new UidItemDelegate(this);
    }
 
    @Override
    public void onInjected() {
       super.onInjected();
       entityManager.setRequestingPresenter(this);
+      uidItemDelegate = new UidItemDelegate(this, flagsInteractor);
    }
 
    @Override

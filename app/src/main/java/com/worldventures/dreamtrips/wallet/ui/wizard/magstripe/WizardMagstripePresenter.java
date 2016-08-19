@@ -75,8 +75,8 @@ public class WizardMagstripePresenter extends WalletPresenter<WizardMagstripePre
             .number(Long.parseLong(swipeData.pan()))
             .type(Record.FinancialService.MASTERCARD)
             .cardType(cardType)
-            .expiryMonth(Integer.parseInt(swipeData.exp().substring(0, 2)))
-            .expiryYear(Integer.parseInt(swipeData.exp().substring(2, 4)))
+            .expiryYear(Integer.parseInt(swipeData.exp().substring(0, 2)))
+            .expiryMonth(Integer.parseInt(swipeData.exp().substring(2, 4)))
             .build();
       Flow.get(getContext()).set(new AddCardDetailsPath(bankCard));
    }

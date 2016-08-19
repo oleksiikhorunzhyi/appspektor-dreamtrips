@@ -52,7 +52,20 @@ public class WalletActivity extends FlowActivity<WalletActivityPresenter> {
    @Override
    public void onDestroy() {
       messengerMediaPickerDelegate.unregister();
+      mediaPickerAdapter.destroy();
       super.onDestroy();
+   }
+
+   @Override
+   public void onSaveInstanceState(Bundle outState) {
+      super.onSaveInstanceState(outState);
+      mediaPickerAdapter.onSaveInstanceState(outState);
+   }
+
+   @Override
+   protected void onRestoreInstanceState(Bundle savedInstanceState) {
+      super.onRestoreInstanceState(savedInstanceState);
+      mediaPickerAdapter.onRestoreInstanceState(savedInstanceState);
    }
 
    @Override

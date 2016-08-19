@@ -1,5 +1,7 @@
 package com.worldventures.dreamtrips.wallet.ui.common.base;
 
+import android.os.Bundle;
+
 import java.io.File;
 
 import rx.Observable;
@@ -16,4 +18,10 @@ public interface MediaPickerService {
    Observable<String> observePicker();
 
    Observable<File> observeCropper();
+
+   void onSaveInstanceState(Bundle outState);
+
+   void onRestoreInstanceState(Bundle savedInstanceState);
+
+   void destroy();
 }

@@ -25,6 +25,10 @@ import com.worldventures.dreamtrips.modules.feed.service.command.HashtagSuggesti
 import com.worldventures.dreamtrips.modules.feed.service.command.SuggestedPhotoCommand;
 import com.worldventures.dreamtrips.modules.feed.service.command.TranslateTextCachedCommand;
 import com.worldventures.dreamtrips.modules.feed.service.command.TranslateUidItemCommand;
+import com.worldventures.dreamtrips.modules.friends.janet.AcceptAllFriendRequestsCommand;
+import com.worldventures.dreamtrips.modules.friends.janet.ActOnFriendRequestCommand;
+import com.worldventures.dreamtrips.modules.friends.janet.AddFriendCommand;
+import com.worldventures.dreamtrips.modules.friends.janet.DeleteFriendRequestCommand;
 import com.worldventures.dreamtrips.modules.membership.command.PodcastCommand;
 import com.worldventures.dreamtrips.modules.settings.command.SettingsCommand;
 import com.worldventures.dreamtrips.modules.trips.command.GetActivitiesCommand;
@@ -34,7 +38,20 @@ import com.worldventures.dreamtrips.modules.trips.command.GetTripsCommand;
 
 import dagger.Module;
 
-@Module(injects = {UploaderyImageCommand.class, SimpleUploaderyCommand.class, BucketListCommand.class, DeleteItemPhotoCommand.class, FindBucketItemByPhotoCommand.class, AddBucketItemPhotoCommand.class, MergeBucketItemPhotosWithStorageCommand.class, TripsFilterDataCommand.class, CirclesCommand.class, GetCommentsCommand.class, UpdateAuthInfoCommand.class, LoginCommand.class, UpdateUserCommand.class, PodcastCommand.class, SuggestedPhotoCommand.class, GetAccountFeedCommand.Refresh.class, GetAccountFeedCommand.LoadNext.class, GetAccountTimelineCommand.Refresh.class, GetAccountTimelineCommand.LoadNext.class, GetUserTimelineCommand.Refresh.class, GetUserTimelineCommand.LoadNext.class, FeedByHashtagCommand.Refresh.class, FeedByHashtagCommand.LoadNext.class, TranslateUidItemCommand.TranslateCommentCommand.class, TranslateUidItemCommand.TranslatePostCommand.class, TranslateTextCachedCommand.class, AcceptTermsCommand.class, UnsubribeFromPushCommand.class, GetTripDetailsCommand.class, GetActivitiesCommand.class, GetRegionsCommand.class, GetTripsCommand.LoadNextTripsCommand.class, GetTripsCommand.ReloadTripsCommand.class, HashtagSuggestionCommand.class, ClearMemoryStorageCommand.class, SubscribeToPushNotificationsCommand.class, SettingsCommand.class},
-
-        complete = false, library = true)
+@Module(injects = {
+      UploaderyImageCommand.class, SimpleUploaderyCommand.class, BucketListCommand.class, DeleteItemPhotoCommand.class,
+      FindBucketItemByPhotoCommand.class, AddBucketItemPhotoCommand.class, MergeBucketItemPhotosWithStorageCommand.class,
+      TripsFilterDataCommand.class, CirclesCommand.class, GetCommentsCommand.class, UpdateAuthInfoCommand.class,
+      LoginCommand.class, UpdateUserCommand.class, PodcastCommand.class, SuggestedPhotoCommand.class,
+      GetAccountFeedCommand.Refresh.class, GetAccountFeedCommand.LoadNext.class, GetAccountTimelineCommand.Refresh.class,
+      GetAccountTimelineCommand.LoadNext.class, GetUserTimelineCommand.Refresh.class, GetUserTimelineCommand.LoadNext.class,
+      FeedByHashtagCommand.Refresh.class, FeedByHashtagCommand.LoadNext.class,
+      TranslateUidItemCommand.TranslateCommentCommand.class, TranslateUidItemCommand.TranslatePostCommand.class,
+      TranslateTextCachedCommand.class, AcceptTermsCommand.class, UnsubribeFromPushCommand.class,
+      GetTripDetailsCommand.class, GetActivitiesCommand.class, GetRegionsCommand.class,
+      GetTripsCommand.LoadNextTripsCommand.class, GetTripsCommand.ReloadTripsCommand.class,
+      HashtagSuggestionCommand.class, ClearMemoryStorageCommand.class, SubscribeToPushNotificationsCommand.class,
+      SettingsCommand.class, DeleteFriendRequestCommand.class, AcceptAllFriendRequestsCommand.class, AddFriendCommand.class,
+      DeleteFriendRequestCommand.class, ActOnFriendRequestCommand.Accept.class, ActOnFriendRequestCommand.Reject.class,
+}, complete = false, library = true)
 public class SocialJanetCommandModule {}

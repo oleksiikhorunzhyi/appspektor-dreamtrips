@@ -5,6 +5,7 @@ import android.support.annotation.StringRes;
 import com.innahema.collections.query.functions.Action1;
 import com.messenger.delegate.StartChatDelegate;
 import com.messenger.ui.activity.MessengerActivity;
+import com.worldventures.dreamtrips.core.api.action.CommandWithError;
 import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.rx.composer.IoToMainComposer;
 import com.worldventures.dreamtrips.core.session.CirclesInteractor;
@@ -18,12 +19,10 @@ import com.worldventures.dreamtrips.modules.feed.api.MarkNotificationAsReadComma
 import com.worldventures.dreamtrips.modules.feed.event.ItemFlaggedEvent;
 import com.worldventures.dreamtrips.modules.feed.event.LoadFlagEvent;
 import com.worldventures.dreamtrips.modules.feed.service.command.GetUserTimelineCommand;
-import com.worldventures.dreamtrips.modules.friends.api.ActOnRequestCommand;
-import com.worldventures.dreamtrips.modules.friends.api.AddUserRequestCommand;
-import com.worldventures.dreamtrips.modules.friends.api.UnfriendCommand;
-import com.worldventures.dreamtrips.modules.friends.events.OpenFriendPrefsEvent;
-import com.worldventures.dreamtrips.modules.friends.events.RemoveUserEvent;
-import com.worldventures.dreamtrips.modules.friends.events.UnfriendEvent;
+import com.worldventures.dreamtrips.modules.friends.janet.ActOnFriendRequestCommand;
+import com.worldventures.dreamtrips.modules.friends.janet.AddFriendCommand;
+import com.worldventures.dreamtrips.modules.friends.janet.FriendsInteractor;
+import com.worldventures.dreamtrips.modules.friends.janet.RemoveFriendCommand;
 import com.worldventures.dreamtrips.modules.friends.model.Circle;
 import com.worldventures.dreamtrips.modules.gcm.delegate.NotificationDelegate;
 import com.worldventures.dreamtrips.modules.profile.api.GetPublicProfileQuery;
@@ -44,6 +43,7 @@ import rx.schedulers.Schedulers;
 public class UserPresenter extends ProfilePresenter<UserPresenter.View, User> {
 
    @Inject CirclesInteractor circlesInteractor;
+   @Inject FriendsInteractor friendsInteractor;
    @Inject NotificationDelegate notificationDelegate;
    @Inject StartChatDelegate startSingleChatDelegate;
 
@@ -141,16 +141,23 @@ public class UserPresenter extends ProfilePresenter<UserPresenter.View, User> {
       }
    }
 
-   private void unfriend() {
-      view.startLoading();
-      doRequest(new UnfriendCommand(user.getId()), object -> {
-         if (view != null) {
-            view.finishLoading();
-            user.unfriend();
-            view.notifyUserChanged();
-            eventBus.postSticky(new RemoveUserEvent(user));
-         }
-      });
+   public void openPrefs(User user) {
+      view.openFriendPrefs(new UserBundle(user));
+   }
+
+   public void unfriend() {
+      friendsInteractor.removeFriendPipe()
+            .createObservable(new RemoveFriendCommand(user))
+            .compose(bindView())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe(new ActionStateSubscriber<RemoveFriendCommand>()
+                  .onStart(action -> view.startLoading())
+                  .onSuccess(action -> {
+                     view.finishLoading();
+                     user.unfriend();
+                     view.notifyUserChanged();
+                  })
+                  .onFail((action, e) -> onError(action)));
    }
 
    private void addFriend() {
@@ -158,12 +165,18 @@ public class UserPresenter extends ProfilePresenter<UserPresenter.View, User> {
    }
 
    private void addAsFriend(Circle circle) {
-      view.startLoading();
-      doRequest(new AddUserRequestCommand(user.getId(), circle), jsonObject -> {
-         user.setRelationship(User.Relationship.OUTGOING_REQUEST);
-         view.finishLoading();
-         view.notifyUserChanged();
-      });
+      friendsInteractor.addFriendPipe()
+            .createObservable(new AddFriendCommand(user, circle.getId()))
+            .compose(bindView())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe(new ActionStateSubscriber<AddFriendCommand>()
+                  .onStart(action -> view.startLoading())
+                  .onSuccess(action -> {
+                     user.setRelationship(User.Relationship.OUTGOING_REQUEST);
+                     view.finishLoading();
+                     view.notifyUserChanged();
+                  })
+                  .onFail((action, e) -> onError(action)));
    }
 
    public void acceptClicked() {
@@ -171,10 +184,18 @@ public class UserPresenter extends ProfilePresenter<UserPresenter.View, User> {
    }
 
    private void accept(Circle circle) {
-      doRequest(new ActOnRequestCommand(user.getId(), ActOnRequestCommand.Action.CONFIRM.name(), circle.getId()), object -> {
-         user.setRelationship(User.Relationship.FRIEND);
-         view.notifyUserChanged();
-      });
+      friendsInteractor.acceptRequestPipe()
+            .createObservable(new ActOnFriendRequestCommand.Accept(user, circle.getId()))
+            .compose(bindView())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe(new ActionStateSubscriber<ActOnFriendRequestCommand.Accept>()
+                  .onStart(action -> view.startLoading())
+                  .onSuccess(action -> {
+                     view.finishLoading();
+                     user.setRelationship(User.Relationship.FRIEND);
+                     view.notifyUserChanged();
+                  })
+                  .onFail((action, e) -> onError(action)));
    }
 
    public void rejectClicked() {
@@ -182,20 +203,23 @@ public class UserPresenter extends ProfilePresenter<UserPresenter.View, User> {
    }
 
    private void reject() {
-      view.startLoading();
-      doRequest(new ActOnRequestCommand(user.getId(), ActOnRequestCommand.Action.REJECT.name()), object -> {
-         view.finishLoading();
-         user.setRelationship(User.Relationship.REJECTED);
-         view.notifyUserChanged();
-      });
+      friendsInteractor.rejectRequestPipe()
+            .createObservable(new ActOnFriendRequestCommand.Reject(user))
+            .compose(bindView())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe(new ActionStateSubscriber<ActOnFriendRequestCommand.Reject>()
+                  .onStart(action -> view.startLoading())
+                  .onSuccess(action -> {
+                     view.finishLoading();
+                     user.setRelationship(User.Relationship.REJECTED);
+                     view.notifyUserChanged();
+                  })
+                  .onFail((action, e) -> onError(action)));
    }
 
-   public void onEvent(UnfriendEvent event) {
-      unfriend();
-   }
-
-   public void onEvent(OpenFriendPrefsEvent event) {
-      if (view.isVisibleOnScreen()) view.openFriendPrefs(new UserBundle(user));
+   private void onError(CommandWithError commandWithError) {
+      view.finishLoading();
+      view.informUser(commandWithError.getErrorMessage());
    }
 
    public void onEvent(FriendGroupRelationChangedEvent event) {

@@ -77,7 +77,9 @@ public class UserCell extends BaseUserCell<UserCellDelegate> {
 
    private void openFriendActionDialog() {
       sdvAvatar.setDrawingCacheEnabled(true);
-      new FriendActionDialogDelegate(itemView.getContext(), getEventBus()).showFriendDialogSkipChat(getModelObject(), drawableUtil
-            .copyIntoDrawable(sdvAvatar.getDrawingCache()));
+      new FriendActionDialogDelegate(itemView.getContext())
+            .onFriendPrefsAction(cellDelegate::onOpenPrefs)
+            .onUnfriend(cellDelegate::onUnfriend)
+            .showFriendDialogSkipChat(getModelObject(), drawableUtil.copyIntoDrawable(sdvAvatar.getDrawingCache()));
    }
 }

@@ -7,7 +7,6 @@ import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.modules.common.api.janet.command.CirclesCommand;
 import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.friends.api.GetFriendsQuery;
-import com.worldventures.dreamtrips.modules.friends.events.ReloadFriendListEvent;
 import com.worldventures.dreamtrips.modules.friends.model.Circle;
 import com.worldventures.dreamtrips.modules.profile.bundle.UserBundle;
 
@@ -18,6 +17,7 @@ import javax.inject.Inject;
 
 import icepick.State;
 import io.techery.janet.helper.ActionStateSubscriber;
+import rx.android.schedulers.AndroidSchedulers;
 
 public class FriendListPresenter extends BaseUserListPresenter<FriendListPresenter.View> {
 
@@ -28,14 +28,19 @@ public class FriendListPresenter extends BaseUserListPresenter<FriendListPresent
    @Inject SnappyRepository snappyRepository;
 
    @Override
-   protected Query<ArrayList<User>> getUserListQuery(int page) {
-      return new GetFriendsQuery(selectedCircle, query, page, getPerPageCount());
-   }
-
-   @Override
    public void onInjected() {
       super.onInjected();
       query = "";
+   }
+
+   @Override
+   public void takeView(View view) {
+      super.takeView(view);
+      friendsInteractor.acceptRequestPipe()
+            .observeSuccess()
+            .compose(bindView())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe(action -> reload());
    }
 
    public void onFilterClicked() {
@@ -63,10 +68,6 @@ public class FriendListPresenter extends BaseUserListPresenter<FriendListPresent
       view.refreshUsers(users);
    }
 
-   public void onEvent(ReloadFriendListEvent event) {
-      reload();
-   }
-
    public String getQuery() {
       return query;
    }
@@ -83,6 +84,11 @@ public class FriendListPresenter extends BaseUserListPresenter<FriendListPresent
    public void handleError(SpiceException error) {
       super.handleError(error);
       if (view != null) view.finishLoading();
+   }
+
+   @Override
+   protected Query<ArrayList<User>> getUserListQuery(int page) {
+      return new GetFriendsQuery(selectedCircle, query, page, getPerPageCount());
    }
 
    public interface View extends BaseUserListPresenter.View {

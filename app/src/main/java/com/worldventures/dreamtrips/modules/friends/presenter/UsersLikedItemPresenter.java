@@ -7,7 +7,7 @@ import com.worldventures.dreamtrips.modules.friends.bundle.UsersLikedEntityBundl
 
 import java.util.ArrayList;
 
-public class UsersLikedItemPresenter extends BaseUserListPresenter<UsersLikedItemPresenter.View> {
+public class UsersLikedItemPresenter extends BaseUserListPresenter<BaseUserListPresenter.View> {
 
    private String entityUid;
 
@@ -32,12 +32,8 @@ public class UsersLikedItemPresenter extends BaseUserListPresenter<UsersLikedIte
       }
    }
 
-   public interface View extends BaseUserListPresenter.View {
-
-   }
-
    public void acceptRequest(User user) {
-      acceptRequest(user);
+      super.acceptRequest(user);
    }
 
    public void addUserRequest(User user) {

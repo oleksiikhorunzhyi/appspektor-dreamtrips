@@ -20,6 +20,7 @@ import com.worldventures.dreamtrips.modules.friends.bundle.FriendGlobalSearchBun
 import com.worldventures.dreamtrips.modules.friends.model.Circle;
 import com.worldventures.dreamtrips.modules.friends.presenter.FriendListPresenter;
 import com.worldventures.dreamtrips.modules.friends.view.cell.FriendCell;
+import com.worldventures.dreamtrips.modules.friends.view.cell.delegate.FriendCellDelegate;
 import com.worldventures.dreamtrips.modules.profile.view.widgets.SwipeRefreshLayoutWithText;
 
 import java.util.List;
@@ -29,7 +30,8 @@ import butterknife.OnClick;
 
 @Layout(R.layout.fragment_account_friends)
 @MenuResource(R.menu.menu_friend)
-public class FriendListFragment extends BaseUsersFragment<FriendListPresenter, BaseUsersBundle> implements FriendListPresenter.View {
+public class FriendListFragment extends BaseUsersFragment<FriendListPresenter, BaseUsersBundle>
+      implements FriendListPresenter.View, FriendCellDelegate {
 
    @InjectView(R.id.iv_filter) ImageView filter;
    @InjectView(R.id.search) DelaySearchView search;
@@ -62,6 +64,7 @@ public class FriendListFragment extends BaseUsersFragment<FriendListPresenter, B
    public void afterCreateView(View rootView) {
       super.afterCreateView(rootView);
       adapter.registerCell(User.class, FriendCell.class);
+      adapter.registerDelegate(User.class, this);
       search.setDelayInMillis(500);
       search.setIconifiedByDefault(false);
 
@@ -125,5 +128,20 @@ public class FriendListFragment extends BaseUsersFragment<FriendListPresenter, B
    @Override
    protected FriendListPresenter createPresenter(Bundle savedInstanceState) {
       return new FriendListPresenter();
+   }
+
+   @Override
+   public void onOpenPrefs(User user) {
+      getPresenter().openPrefs(user);
+   }
+
+   @Override
+   public void onStartSingleChat(User user) {
+      getPresenter().startChat(user);
+   }
+
+   @Override
+   public void onUnfriend(User user) {
+      getPresenter().unfriend(user);
    }
 }

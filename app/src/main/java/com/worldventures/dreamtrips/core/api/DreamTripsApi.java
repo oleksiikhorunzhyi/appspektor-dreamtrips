@@ -39,7 +39,6 @@ import retrofit.http.Field;
 import retrofit.http.FormUrlEncoded;
 import retrofit.http.GET;
 import retrofit.http.Multipart;
-import retrofit.http.PATCH;
 import retrofit.http.POST;
 import retrofit.http.PUT;
 import retrofit.http.Part;
@@ -47,7 +46,6 @@ import retrofit.http.Path;
 import retrofit.http.Query;
 import retrofit.mime.TypedFile;
 
-import static com.worldventures.dreamtrips.modules.friends.api.ResponseBatchRequestCommand.RequestBody;
 import static com.worldventures.dreamtrips.modules.infopages.api.SendFeedbackCommand.FeedbackBody;
 
 public interface DreamTripsApi {
@@ -188,19 +186,6 @@ public interface DreamTripsApi {
 
    @GET("/api/social/friends/requests")
    ArrayList<User> getRequests();
-
-   @POST("/api/social/friends/requests")
-   JSONObject addFriend(@Query("user_id") int userId, @Query("circle_id") String circleId);
-
-   @FormUrlEncoded
-   @PUT("/api/social/friends/request_responses")
-   JSONObject actOnRequest(@Query("user_id") int userId, @Field("action") String action, @Field("circle_id") String circleId);
-
-   @PATCH("/api/social/friends/request_responses")
-   ArrayList<JSONObject> actOnBatchRequests(@Body RequestBody userIds);
-
-   @DELETE("/api/social/friends/request_responses")
-   JSONObject deleteRequest(@Query("user_id") int userId);
 
    @DELETE("/api/social/friends/{user_id}")
    JSONObject unfriend(@Path("user_id") int userId);

@@ -1,16 +1,17 @@
 package com.worldventures.dreamtrips.modules.common.view.activity;
 
 import android.os.Bundle;
-import android.os.Handler;
 import android.view.View;
 import android.widget.Button;
 
 import com.afollestad.materialdialogs.MaterialDialog;
+import com.badoo.mobile.util.WeakHandler;
 import com.techery.spares.annotations.Layout;
 import com.techery.spares.utils.ui.SoftInputUtil;
 import com.worldventures.dreamtrips.BuildConfig;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.api.error.ErrorResponse;
+import com.worldventures.dreamtrips.core.utils.ViewUtils;
 import com.worldventures.dreamtrips.modules.common.presenter.LaunchActivityPresenter;
 import com.worldventures.dreamtrips.modules.common.view.custom.DTEditText;
 
@@ -20,16 +21,13 @@ import butterknife.OnClick;
 @Layout(R.layout.activity_launch)
 public class LaunchActivity extends ActivityWithPresenter<LaunchActivityPresenter> implements LaunchActivityPresenter.View {
 
-   public static final String LOGIN = "login";
-   public static final String SPLASH = "splash";
-   public static final String EXTRA_TYPE = "type";
-
    @InjectView(R.id.splash_mode_holder) View splashModeHolder;
    @InjectView(R.id.et_username) DTEditText usernameEditText;
    @InjectView(R.id.et_password) DTEditText passwordEditText;
    @InjectView(R.id.btn_login) Button loginButton;
    @InjectView(R.id.login_progress) View loginProgress;
 
+   @InjectView(R.id.login_edittexts_holder) View loginEditTextsHolder;
    @InjectView(R.id.login_mode_holder) View loginModeHolder;
 
    @Override
@@ -40,14 +38,7 @@ public class LaunchActivity extends ActivityWithPresenter<LaunchActivityPresente
    @Override
    protected void onCreate(Bundle savedInstanceState) {
       super.onCreate(savedInstanceState);
-      if (savedInstanceState == null) getPresentationModel().initDtl();
-   }
-
-   @Override
-   protected void onPostCreate(Bundle savedInstanceState) {
-      super.onPostCreate(savedInstanceState);
-      Bundle bundle = getIntent().getExtras();
-      getPresentationModel().detectMode(bundle != null ? bundle.getString(EXTRA_TYPE) : null);
+      loginEditTextsHolder.getLayoutParams().width = ViewUtils.getMinSideSize(this);
    }
 
    @OnClick(R.id.iv_title)
@@ -107,6 +98,10 @@ public class LaunchActivity extends ActivityWithPresenter<LaunchActivityPresente
 
    @Override
    public void showLoginProgress() {
+      usernameEditText.clearFocus();
+      usernameEditText.setEnabled(false);
+      passwordEditText.clearFocus();
+      passwordEditText.setEnabled(false);
       loginButton.setVisibility(View.GONE);
       loginButton.setClickable(false);
    }
@@ -118,8 +113,10 @@ public class LaunchActivity extends ActivityWithPresenter<LaunchActivityPresente
    }
 
    private void dismissLoginProgress() {
-      new Handler().postDelayed(() -> {
+      new WeakHandler().postDelayed(() -> {
          if (loginButton != null) {
+            usernameEditText.setEnabled(true);
+            passwordEditText.setEnabled(true);
             loginButton.setVisibility(View.VISIBLE);
             loginButton.setClickable(true);
          }

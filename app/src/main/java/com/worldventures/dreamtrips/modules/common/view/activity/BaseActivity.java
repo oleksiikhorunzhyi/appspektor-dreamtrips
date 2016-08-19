@@ -144,7 +144,7 @@ public abstract class BaseActivity extends InjectingActivity {
    }
 
    public void onEvent(SessionHolder.Events.SessionDestroyed sessionDestroyed) {
-      activityRouter.openLaunch(ActivityRouter.LAUNCH_LOGIN);
+      activityRouter.openLaunch();
    }
 
    @Override

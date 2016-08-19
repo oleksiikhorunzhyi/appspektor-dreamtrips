@@ -1,5 +1,5 @@
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-      android:id="@+id/address_info_container"
+<RelativeLayout android:id="@+id/address_info_container"
+      xmlns:android="http://schemas.android.com/apk/res/android"
       android:layout_width="match_parent"
       android:layout_height="match_parent"
       android:theme="@style/WalletTheme.Settings"
@@ -7,64 +7,69 @@
 
    <EditText
          android:id="@+id/address1"
+         style="@style/WalletTheme.GrayEditText"
          android:layout_width="match_parent"
          android:layout_height="wrap_content"
-         android:hint="@string/wallet_add_card_details_hint_address1"
-         android:layout_alignParentRight="true"
          android:layout_alignParentEnd="true"
+         android:layout_alignParentRight="true"
+         android:hint="@string/wallet_add_card_details_hint_address1"
          />
 
    <EditText
          android:id="@+id/address2"
+         style="@style/WalletTheme.GrayEditText"
          android:layout_width="match_parent"
          android:layout_height="wrap_content"
-         android:hint="@string/wallet_add_card_details_hint_address2"
-         android:layout_marginTop="@dimen/wallet_add_card_details_edittext_margin_top"
-         android:layout_below="@+id/address1"
-         android:layout_alignParentRight="true"
          android:layout_alignParentEnd="true"
+         android:layout_alignParentRight="true"
+         android:layout_below="@+id/address1"
+         android:layout_marginTop="@dimen/wallet_add_card_details_edittext_margin_top"
+         android:hint="@string/wallet_add_card_details_hint_address2"
          />
 
    <EditText
          android:id="@+id/city"
+         style="@style/WalletTheme.GrayEditText"
          android:layout_width="match_parent"
          android:layout_height="wrap_content"
-         android:hint="@string/wallet_add_card_details_hint_city"
-         android:layout_marginTop="@dimen/wallet_add_card_details_edittext_margin_top"
-         android:layout_below="@+id/address2"
-         android:layout_alignParentRight="true"
          android:layout_alignParentEnd="true"
+         android:layout_alignParentRight="true"
+         android:layout_below="@+id/address2"
+         android:layout_marginTop="@dimen/wallet_add_card_details_edittext_margin_top"
+         android:hint="@string/wallet_add_card_details_hint_city"
          />
 
    <LinearLayout
          android:id="@+id/state_zip_container"
-         android:orientation="horizontal"
          android:layout_width="match_parent"
          android:layout_height="wrap_content"
-         android:layout_marginTop="@dimen/wallet_add_card_details_edittext_margin_top"
-         android:layout_below="@+id/city"
          android:layout_alignParentLeft="true"
          android:layout_alignParentStart="true"
+         android:layout_below="@+id/city"
+         android:layout_marginTop="@dimen/wallet_add_card_details_edittext_margin_top"
+         android:orientation="horizontal"
          >
 
       <EditText
             android:id="@+id/state"
+            style="@style/WalletTheme.GrayEditText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="@string/wallet_add_card_details_hint_state"
-            android:layout_weight="1"
-            android:layout_alignParentRight="true"
             android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:layout_weight="1"
+            android:hint="@string/wallet_add_card_details_hint_state"
             />
 
       <EditText
             android:id="@+id/zip"
+            style="@style/WalletTheme.GrayEditText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="@string/wallet_add_card_details_hint_zip"
-            android:layout_weight="1"
-            android:layout_alignParentRight="true"
             android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:layout_weight="1"
+            android:hint="@string/wallet_add_card_details_hint_zip"
             />
 
    </LinearLayout>
@@ -73,12 +78,12 @@
          android:id="@+id/set_default_address_checkBox"
          android:layout_width="wrap_content"
          android:layout_height="wrap_content"
-         android:text="@string/wallet_add_card_details_option_set_as_default_address"
-         android:checked="true"
-         android:layout_marginTop="@dimen/wallet_add_card_details_component_margin_top"
-         android:layout_below="@+id/state_zip_container"
          android:layout_alignParentLeft="true"
          android:layout_alignParentStart="true"
+         android:layout_below="@+id/state_zip_container"
+         android:layout_marginTop="@dimen/wallet_add_card_details_component_margin_top"
+         android:checked="false"
+         android:text="@string/wallet_add_card_details_option_set_as_default_address"
          />
 
 </RelativeLayout>

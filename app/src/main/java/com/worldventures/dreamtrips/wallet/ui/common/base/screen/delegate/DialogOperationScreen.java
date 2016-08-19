@@ -50,6 +50,8 @@ public class DialogOperationScreen implements OperationScreen<SweetAlertDialog> 
 
    @Override
    public void showProgress(String msg, Action1<SweetAlertDialog> cancelAction) {
+      hideDialogs();
+
       View view = checkAndGetView();
       progressDialog = buildProgressDialog(view);
       progressDialog.setContentText(msg);
@@ -66,6 +68,8 @@ public class DialogOperationScreen implements OperationScreen<SweetAlertDialog> 
 
    @Override
    public void showError(String msg, Action1<SweetAlertDialog> action) {
+      hideDialogs();
+
       errorDialog = buildErrorDialog(checkAndGetView());
       errorDialog.setContentText(msg);
       errorDialog.setOnCancelListener(dialog -> {
@@ -74,6 +78,7 @@ public class DialogOperationScreen implements OperationScreen<SweetAlertDialog> 
          }
       });
       errorDialog.setConfirmClickListener(sweetAlertDialog -> {
+         sweetAlertDialog.setConfirmClickListener(null);
          sweetAlertDialog.dismissWithAnimation();
 
          if (action != null) {
@@ -81,14 +86,18 @@ public class DialogOperationScreen implements OperationScreen<SweetAlertDialog> 
          }
          sweetAlertDialog.dismiss();
       });
+
       errorDialog.show();
    }
 
    @Override
    public void showSuccess(String msg, Action1<SweetAlertDialog> action) {
+      hideDialogs();
+
       successDialog = buildSuccessDialog(checkAndGetView());
       successDialog.setContentText(msg);
       successDialog.setConfirmClickListener(sweetAlertDialog -> {
+         sweetAlertDialog.setConfirmClickListener(null);
          timeoutHandler.removeCallbacksAndMessages(null);
          sweetAlertDialog.dismissWithAnimation();
 

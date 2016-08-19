@@ -14,7 +14,7 @@
    <string name="conversation_list_spinner_item_all_chats">Todos los chats</string>
    <string name="conversation_list_spinner_item_group_chats">Chats de grupo</string>
 
-   <string name="conversation_list_search_hint">Buscar conversaciones ...</string>
+   <string name="conversation_list_search_hint">Buscar conversaciones …</string>
    <string name="conversation_list_search_edittext_hint">Buscar grupos y personas</string>
    <string name="conversation_list_item_last_message_text_format_you">Tú: %1$s</string>
    <string name="conversation_list_item_last_message_image_format_you">Has enviado una foto</string>
@@ -92,7 +92,7 @@
    <string name="system_message_left" formatted="false">%1$s &lt;b&gt;salió&lt;b&gt;</string>
 
    <!-- flagging related -->
-   <string name="chat_flag_dialog_progress_loading_flags">Cargando...</string>
+   <string name="chat_flag_dialog_progress_loading_flags">Cargando…</string>
    <string name="chat_flag_dialog_reason_title">Marcar</string>
    <string name="chat_flag_dialog_reason_hint">Escribe el motivo</string>
    <string name="chat_flag_dialog_reason_positive_button">Aceptar</string>
@@ -158,7 +158,7 @@
    <string name="unread_conversation">Conversaciones</string>
 
    <string name="disconnected_overlay_disconnected_message">Conexión perdida</string>
-   <string name="disconnected_overlay_connecting_message">Conectando ...</string>
+   <string name="disconnected_overlay_connecting_message">Conectando …</string>
 
    <string name="warning_no_internet_connection">La conexión al Internet está ausente</string>
 

@@ -101,7 +101,7 @@
    <string name="chat_flag_dialog_confirmation_message_format">A WorldVentures munkatársai értesítést kapnak arról, hogy ellenőrizzék ezt az üzenetet %1$s számára. Folytatod?</string>
    <string name="chat_flag_dialog_confirmation_positive_button">Küldés</string>
    <string name="chat_flag_dialog_confirmation_negative_button">Mégse</string>
-   <string name="chat_flag_dialog_flagging_progress">Megjelölés ...</string>
+   <string name="chat_flag_dialog_flagging_progress">Megjelölés …</string>
    <string name="chat_flag_failed">Üzenet megjelölés sikertelen</string>
 
    <!---->

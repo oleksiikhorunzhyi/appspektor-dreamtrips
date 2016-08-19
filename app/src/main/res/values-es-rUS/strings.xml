@@ -630,6 +630,9 @@
    <string name="audio_app_not_found_exception">No se ha encontrado la aplicación para reproducir el audio</string>
    <string name="complete_action_with">Completar acción con</string>
    <string name="error_fail_to_load_podcast">Error al cargar podcast</string>
+   <string name="podcasts_button_resume">Reanudar</string>
+   <string name="podcasts_button_pause">Pausar</string>
+   <string name="podcasts_button_stop">Detener</string>
 
    <string name="min">minutos</string>
    <string name="post_hint_with_hashtag">Di algo, agregar #hashtags</string>
@@ -644,5 +647,15 @@
    <string name="hashtag_multiple_posts">%1$d Publicaciones</string>
 
    <string name="error_webview_secure_connection">Lo lamentamos, pero la aplicación DreamTrips no puede establecer una conexión segura.\nHemos recibido notificación de este problema y en breve nos encargaremos del asunto.\n\nPor favor, ponte en contacto con Atención al cliente para solucionarlo rápidamente.</string>
+
+   <string name="translate">Traducir</string>
+   <string name="translated_from">Traducido de %1$s</string>
+
+   <string name="error_fail_to_translate_text">Error al traducir el texto</string>
+
+   <string name="book_it_disabled">Debes ser un Miembro de DreamTrips para reservar un\nviaje. Haz clic aquí para  <a href="enroll_member">registrarte</a></string>
+
+   <string name="error_fail_to_load_filters">Lo sentimos, error al cargar los filtros</string>
+   <string name="flag_content_message">El personal de WorldVentures recibirá una notificación para revisar este contenido por </string>
 
 </resources>

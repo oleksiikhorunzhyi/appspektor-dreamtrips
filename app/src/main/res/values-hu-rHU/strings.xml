@@ -630,7 +630,6 @@
    <string name="audio_app_not_found_exception">Nem talált hangot lejátszó alkalmazást</string>
    <string name="complete_action_with">Akció befejezés</string>
    <string name="error_fail_to_load_podcast">Podcast betöltés sikertelen</string>
-
    <string name="min">perc</string>
    <string name="post_hint_with_hashtag">Mondj valamit, add hozzá #hashtags</string>
    <string name="add_text">Szöveg hozzáadás</string>
@@ -644,5 +643,12 @@
    <string name="hashtag_multiple_posts">%1$d posztok</string>
 
    <string name="error_webview_secure_connection">Sajnáljuk, de a DreamTrips alkalmazás nem tudott biztonságos kapcsolatot létesíteni.\nFeljegyeztük ezt a problémát és hamarosan megnézzük.\n\nKérjük, lépj kapcsolatba az ügyfélszolgálattal gyorsabb megoldásért.</string>
+
+   <string name="translate">Fordítás</string>
+   <string name="translated_from">Lefordítva %1$s -ról</string>
+
+   <string name="error_fail_to_translate_text">Nem sikerült lefordítani a szöveget</string>
+
+   
 
 </resources>

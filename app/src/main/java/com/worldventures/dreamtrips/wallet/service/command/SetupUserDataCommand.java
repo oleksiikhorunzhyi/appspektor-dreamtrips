@@ -68,6 +68,9 @@ public class SetupUserDataCommand extends Command<SmartCard> implements Injectab
    }
 
    private User validateUserNameAndCreateUser() throws FormatException {
+      if (avatarFile == null) throw new MissedAvatarException("avatarFile == null");
+      if (!avatarFile.exists()) throw new MissedAvatarException("Avatar does not exist");
+
       String[] nameParts = fullName.split(" ");
       String firstName, lastName, middleName = null;
       if (nameParts.length < 2) throw new FormatException();
@@ -99,5 +102,12 @@ public class SetupUserDataCommand extends Command<SmartCard> implements Injectab
 
    private byte[] getAvatarAsByteArray() throws IOException {
       return FileUtils.readByteArray(avatarFile);
+   }
+
+   public static class MissedAvatarException extends RuntimeException {
+
+      public MissedAvatarException(String message) {
+         super(message);
+      }
    }
 }

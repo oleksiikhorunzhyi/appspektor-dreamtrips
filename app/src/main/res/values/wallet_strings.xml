@@ -26,7 +26,8 @@
    <string name="wallet_edit_profile_progress_dialog">Upload information to Smart Card</string>
    <string name="wallet_edit_profile_success_dialog">Information was uploaded</string>
    <string name="wallet_edit_profile_name_format_title">Wrong name format!</string>
-   <string name="wallet_edit_profile_name_format_detail">You should enter your first name and lats name (middle name is optional). Every part can contain from 2 to 21 letters.</string>
+   <string name="wallet_edit_profile_name_format_detail">You should enter your first name and lats name (middle name is optional)\nEvery part can contain from 2 to 21 letters</string>
+   <string name="wallet_edit_profile_avatar_not_chosen">Please, choose your photo for the Smart Card</string>
 
    <!--pin setup-->
    <string name="wallet_wizard_setup_pin_title">Set Touch PIN</string>

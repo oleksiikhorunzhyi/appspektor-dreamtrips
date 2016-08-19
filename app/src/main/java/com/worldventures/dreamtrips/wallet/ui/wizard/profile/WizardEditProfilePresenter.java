@@ -3,6 +3,8 @@ package com.worldventures.dreamtrips.wallet.ui.wizard.profile;
 import android.content.Context;
 import android.os.Parcelable;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+import android.text.TextUtils;
 
 import com.techery.spares.module.Injector;
 import com.techery.spares.session.SessionHolder;
@@ -31,11 +33,12 @@ import rx.Observable;
 import timber.log.Timber;
 
 public class WizardEditProfilePresenter extends WalletPresenter<WizardEditProfilePresenter.Screen, Parcelable> {
+
    @Inject SmartCardAvatarInteractor smartCardAvatarInteractor;
    @Inject WizardInteractor wizardInteractor;
    @Inject SessionHolder<UserSession> appSessionHolder;
 
-   private File preparedPhotoFile;
+   @Nullable private File preparedPhotoFile;
 
    private final String smartCardId;
 
@@ -53,8 +56,10 @@ public class WizardEditProfilePresenter extends WalletPresenter<WizardEditProfil
 
       User userProfile = appSessionHolder.get().get().getUser();
       view.setUserFullName(userProfile.getFullName());
-      smartCardAvatarInteractor.getSmartCardAvatarCommandPipe()
-            .send(new LoadImageForSmartCardCommand(userProfile.getAvatar().getThumb()));
+      String defaultUserAvatar = userProfile.getAvatar().getThumb();
+      if (!TextUtils.isEmpty(defaultUserAvatar)) {
+         smartCardAvatarInteractor.smartCardAvatarPipe().send(new LoadImageForSmartCardCommand(defaultUserAvatar));
+      }
    }
 
 
@@ -65,7 +70,7 @@ public class WizardEditProfilePresenter extends WalletPresenter<WizardEditProfil
    }
 
    public void subscribePreparingAvatarCommand() {
-      smartCardAvatarInteractor.getSmartCardAvatarCommandPipe()
+      smartCardAvatarInteractor.smartCardAvatarPipe()
             .observe()
             .compose(bindViewIoToMainComposer())
             .subscribe(new ActionStateSubscriber<SmartCardAvatarCommand>().onFail((command, throwable) -> Timber.e("", throwable))
@@ -81,13 +86,21 @@ public class WizardEditProfilePresenter extends WalletPresenter<WizardEditProfil
                   .onSuccess(getContext().getString(R.string.wallet_edit_profile_success_dialog), setupUserDataCommand -> Flow
                         .get(getContext())
                         .set(new WizardPinSetupPath(setupUserDataCommand.getResult())))
-                  .onFail(throwable -> {
-                     Context context = getContext();
-                     String msg = throwable instanceof FormatException ? context.getString(R.string.wallet_edit_profile_name_format_detail) : context
-                           .getString(R.string.error_something_went_wrong);
-                     return new OperationSubscriberWrapper.MessageActionHolder<>(msg, null);
-                  })
+                  .onFail(throwable -> createFailMessageActionHolder(throwable.getCause()))
                   .wrap());
+   }
+
+   private OperationSubscriberWrapper.MessageActionHolder createFailMessageActionHolder(Throwable throwable) {
+      Context context = getContext();
+      String msg;
+      if (throwable instanceof FormatException) {
+         msg = context.getString(R.string.wallet_edit_profile_name_format_detail);
+      } else if (throwable instanceof SetupUserDataCommand.MissedAvatarException) {
+         msg = context.getString(R.string.wallet_edit_profile_avatar_not_chosen);
+      } else {
+         msg = context.getString(R.string.error_something_went_wrong);
+      }
+      return new OperationSubscriberWrapper.MessageActionHolder<>(msg, null);
    }
 
    private void photoPrepared(File filePhoto) {
@@ -105,7 +118,7 @@ public class WizardEditProfilePresenter extends WalletPresenter<WizardEditProfil
    }
 
    private void prepareImage(String path) {
-      smartCardAvatarInteractor.getSmartCardAvatarCommandPipe().send(new CompressImageForSmartCardCommand(path));
+      smartCardAvatarInteractor.smartCardAvatarPipe().send(new CompressImageForSmartCardCommand(path));
    }
 
    public void setupUserData() {

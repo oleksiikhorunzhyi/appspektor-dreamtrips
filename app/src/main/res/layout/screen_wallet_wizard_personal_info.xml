@@ -42,6 +42,8 @@
                android:layout_width="match_parent"
                android:layout_height="match_parent"
                android:contentDescription="@string/wallet_edit_profile_avatar_description"
+               app:placeholderImage="@drawable/ic_avatar_placeholder"
+               app:failureImage="@drawable/ic_avatar_placeholder"
                android:src="@drawable/ic_dt_launcher"
                />
 

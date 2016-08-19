@@ -23,10 +23,9 @@ import butterknife.OnEditorAction;
 import rx.Observable;
 
 public class WizardEditProfileScreen extends WalletFrameLayout<WizardEditProfilePresenter.Screen, WizardEditProfilePresenter, WizardEditProfilePath> implements WizardEditProfilePresenter.Screen {
+
    @InjectView(R.id.toolbar) Toolbar toolbar;
-
    @InjectView(R.id.person_name) TextView personName;
-
    @InjectView(R.id.photo_preview) SimpleDraweeView previewPhotoView;
 
    private MediaPickerService mediaPickerService;

@@ -14,8 +14,8 @@ import com.messenger.ui.adapter.ConversationsCursorAdapter;
 import com.messenger.ui.adapter.converter.ConversationListDataConverter;
 import com.messenger.ui.adapter.holder.BaseViewHolder;
 import com.messenger.ui.adapter.inflater.conversation.ConversationLastMessageDateInflater;
-import com.messenger.ui.adapter.inflater.conversation.ConversationLastMessageInflater;
 import com.messenger.ui.adapter.inflater.conversation.ConversationSwipeLayoutInflater;
+import com.messenger.ui.adapter.inflater.conversation.LastMessageTextProvider;
 import com.techery.spares.module.Injector;
 import com.techery.spares.session.SessionHolder;
 import com.worldventures.dreamtrips.R;
@@ -25,7 +25,8 @@ import javax.inject.Inject;
 
 import butterknife.InjectView;
 
-public abstract class BaseConversationViewHolder extends BaseViewHolder implements View.OnClickListener {
+public abstract class BaseConversationViewHolder extends BaseViewHolder
+      implements View.OnClickListener {
 
    @Inject SessionHolder<UserSession> sessionHolder;
    protected DataUser currentUser;
@@ -38,14 +39,16 @@ public abstract class BaseConversationViewHolder extends BaseViewHolder implemen
 
    @InjectView(R.id.conversation_item_view) ViewGroup contentLayout;
    @InjectView(R.id.conversation_name_textview) TextView nameTextView;
-   @InjectView(R.id.conversation_unread_messages_count_textview) TextView unreadMessagesCountTextView;
+   @InjectView(R.id.conversation_last_message_textview) TextView lastMessageTextView;
+   @InjectView(R.id.conversation_unread_messages_count_textview)
+   TextView unreadMessagesCountTextView;
 
    private ConversationsCursorAdapter.ConversationClickListener conversationClickListener;
 
-   private ConversationLastMessageInflater lastMessageInflater = new ConversationLastMessageInflater();
    private ConversationLastMessageDateInflater lastMessageDateInflater = new ConversationLastMessageDateInflater();
    private ConversationSwipeLayoutInflater conversationSwipeLayoutInflater = new ConversationSwipeLayoutInflater();
    private ConversationListDataConverter converter = new ConversationListDataConverter();
+   private LastMessageTextProvider lastMessageTextProvider;
 
    public BaseConversationViewHolder(View itemView) {
       super(itemView);
@@ -53,7 +56,7 @@ public abstract class BaseConversationViewHolder extends BaseViewHolder implemen
       itemView.setOnClickListener(this);
       ((Injector) context.getApplicationContext()).inject(this);
       currentUser = new DataUser(sessionHolder.get().get().getUsername());
-      lastMessageInflater.setView(itemView);
+      lastMessageTextProvider = new LastMessageTextProvider(context, currentUser);
       lastMessageDateInflater.setView(itemView);
       conversationSwipeLayoutInflater.setView(itemView, this);
    }
@@ -83,7 +86,9 @@ public abstract class BaseConversationViewHolder extends BaseViewHolder implemen
    }
 
    private void bindLastMessage() {
-      lastMessageInflater.setLastMessage(conversation, message, sender, recipient, currentUser, attachmentType, translation);
+      String lastMessageText = lastMessageTextProvider.getLastMessageText(conversation, message, sender,
+            recipient, attachmentType, translation);
+      lastMessageTextView.setText(lastMessageText);
       updateLastMessageDateTextView();
    }
 

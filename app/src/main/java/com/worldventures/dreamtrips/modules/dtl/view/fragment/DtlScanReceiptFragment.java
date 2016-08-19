@@ -48,7 +48,6 @@ public class DtlScanReceiptFragment extends RxBaseFragmentWithArgs<DtlScanReceip
    @InjectView(R.id.fabbutton_circle) CircleImageView circleView;
    @InjectView(R.id.inputPoints) CurrencyDTEditText amountInput;
    @InjectView(R.id.currency) TextView currencyHint;
-   @InjectView(R.id.scan_receipt_note) TextView scanReceiptNode;
 
    @Inject @Named(RouteCreatorModule.DTL_TRANSACTION) RouteCreator<DtlTransaction> routeCreator;
 
@@ -129,6 +128,8 @@ public class DtlScanReceiptFragment extends RxBaseFragmentWithArgs<DtlScanReceip
 
    @Override
    public void showCurrency(DtlCurrency currency) {
+      final int padding = amountInput.getPaddingForCurrency(currency.getPrefix());
+      currencyHint.setPadding(0, padding, 0, 0);
       currencyHint.setText(currency.getCurrencyHint());
       amountInput.setCurrencySymbol(currency.getPrefix());
    }

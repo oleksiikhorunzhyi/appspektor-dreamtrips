@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-   <integer name="wallet_wizard_card_alias_length">256</integer>
+   <integer name="wallet_wizard_card_alias_length">31</integer>
 
    <integer name="wallet_wizard_user_full_name_length">43</integer>
 

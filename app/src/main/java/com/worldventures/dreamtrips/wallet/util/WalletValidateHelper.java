@@ -10,8 +10,8 @@ import java.util.regex.Pattern;
 
 public class WalletValidateHelper {
 
-   private static final Pattern CARD_NAME_PATTERN = Pattern.compile("[a-zA-Z ]{2,256}");
-   private static final Pattern FULL_NAME_PATTERN = Pattern.compile("[A-Za-z]{2,21}+");
+   private static final Pattern CARD_NAME_PATTERN = Pattern.compile("[\\p{L} ]{2,31}");
+   private static final Pattern FULL_NAME_PATTERN = Pattern.compile("[\\p{L}]{2,21}+");
    private static final Pattern CVV_PATTERN = Pattern.compile("[0-9]{3,4}");
 
    public static boolean validateCardName(String cardName) {

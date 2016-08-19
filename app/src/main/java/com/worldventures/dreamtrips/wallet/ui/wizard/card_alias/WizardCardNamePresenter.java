@@ -60,8 +60,8 @@ public class WizardCardNamePresenter extends WalletPresenter<WizardCardNamePrese
    }
 
    public void setupCardName() {
-      wizardInteractor.setupSmartCardNamePipe().send(new SetupSmartCardNameCommand(getView().getCardName()
-            .trim(), smartCardId));
+      wizardInteractor.setupSmartCardNamePipe()
+            .send(new SetupSmartCardNameCommand(getView().getCardName().trim(), smartCardId));
    }
 
    public interface Screen extends WalletScreen {

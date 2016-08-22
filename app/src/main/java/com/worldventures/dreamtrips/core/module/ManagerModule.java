@@ -30,6 +30,7 @@ import com.worldventures.dreamtrips.modules.dtl.service.DtlLocationInteractor;
 import com.worldventures.dreamtrips.modules.dtl.service.DtlMerchantInteractor;
 import com.worldventures.dreamtrips.modules.dtl.service.DtlTransactionInteractor;
 import com.worldventures.dreamtrips.modules.feed.manager.FeedEntityManager;
+import com.worldventures.dreamtrips.modules.feed.service.CreatePostBodyInteractor;
 import com.worldventures.dreamtrips.modules.membership.api.PhoneContactRequest;
 import com.worldventures.dreamtrips.modules.trips.manager.TripFilterDataProvider;
 import com.worldventures.dreamtrips.modules.trips.service.TripMapInteractor;
@@ -186,5 +187,11 @@ public class ManagerModule {
    @Singleton
    TripFilterDataProvider provideTripFilterDataProvider(@Global EventBus eventBus, SnappyRepository repository) {
       return new TripFilterDataProvider(eventBus, repository);
+   }
+
+   @Provides
+   @Singleton
+   CreatePostBodyInteractor provideCreatePostBodyInteractor(Janet janet) {
+      return new CreatePostBodyInteractor(janet);
    }
 }

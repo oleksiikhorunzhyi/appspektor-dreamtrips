@@ -630,6 +630,10 @@
    <string name="audio_app_not_found_exception">Nem talált hangot lejátszó alkalmazást</string>
    <string name="complete_action_with">Akció befejezés</string>
    <string name="error_fail_to_load_podcast">Podcast betöltés sikertelen</string>
+   <string name="podcasts_button_resume">Visszatérés</string>
+   <string name="podcasts_button_pause">Szünet</string>
+   <string name="podcasts_button_stop">Stop</string>
+
    <string name="min">perc</string>
    <string name="post_hint_with_hashtag">Mondj valamit, add hozzá #hashtags</string>
    <string name="add_text">Szöveg hozzáadás</string>
@@ -649,6 +653,9 @@
 
    <string name="error_fail_to_translate_text">Nem sikerült lefordítani a szöveget</string>
 
-   
+   <string name="book_it_disabled">DreamTrips klubtagnak kell lenni az út foglalásához. Katt. ide<a href="enroll_member">beiratkozáshoz</a></string>
+
+   <string name="error_fail_to_load_filters">Sajnáljuk, nem sikerült betölteni a szűrőket</string>
+   <string name="flag_content_message">A WorldVentures munkatársai értesítést kapnak arról, hogy ellenőrizzék ezt a tartalmat </string>
 
 </resources>

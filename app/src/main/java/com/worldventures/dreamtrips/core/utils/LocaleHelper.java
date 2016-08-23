@@ -2,6 +2,7 @@ package com.worldventures.dreamtrips.core.utils;
 
 
 import android.support.annotation.Nullable;
+import android.text.TextUtils;
 
 import com.techery.spares.session.SessionHolder;
 import com.worldventures.dreamtrips.core.session.UserSession;
@@ -28,7 +29,9 @@ public class LocaleHelper {
    }
 
    public String getDefaultLocaleFormatted() {
-      if (appSessionHolder.get().isPresent()) return appSessionHolder.get().get().getLocale();
+      if (appSessionHolder.get().isPresent() && appSessionHolder.get().get().getLocale() != null) {
+         return appSessionHolder.get().get().getLocale();
+      }
 
       Locale locale = Locale.getDefault();
       return android.text.TextUtils.join("-", new String[]{locale.getLanguage(), locale.getCountry()});
@@ -37,7 +40,8 @@ public class LocaleHelper {
    public boolean isOwnLanguage(@Nullable String languageCode) {
       if (!appSessionHolder.get().isPresent()) return false;
 
-      String userLanguageCode = appSessionHolder.get().get().getLocale().split("-")[0];
+      String locale = appSessionHolder.get().get().getLocale();
+      String userLanguageCode = TextUtils.isEmpty(locale) ? getDefaultLocaleFormatted() : locale;
       return userLanguageCode.equalsIgnoreCase(languageCode);
    }
 }

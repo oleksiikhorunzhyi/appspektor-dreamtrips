@@ -29,27 +29,19 @@ public class FetchCardPropertiesCommand extends Command<SmartCard> implements In
 
    @Override
    protected void run(CommandCallback<SmartCard> callback) throws Throwable {
-      getBatteryLevel(ImmutableSmartCard.builder().from(smartCard)).flatMap(this::getLockStatus)
-            .flatMap(this::getStealthMode)
-            .map(ImmutableSmartCard.Builder::build)
+      Observable.zip(
+            janet.createPipe(GetBatteryLevelAction.class)
+                  .createObservableResult(new GetBatteryLevelAction()),
+            janet.createPipe(GetLockDeviceStatusAction.class)
+                  .createObservableResult(new GetLockDeviceStatusAction()),
+            janet.createPipe(GetStealthModeAction.class)
+                  .createObservableResult(new GetStealthModeAction()),
+            (getBatteryLevelAction, getLockDeviceStatusAction, getStealthModeAction) ->
+                  ImmutableSmartCard.builder().from(smartCard)
+                        .batteryLevel(Integer.parseInt(getBatteryLevelAction.level))
+                        .lock(getLockDeviceStatusAction.locked)
+                        .stealthMode(getStealthModeAction.enabled)
+                        .build())
             .subscribe(callback::onSuccess, callback::onFail);
-   }
-
-   private Observable<ImmutableSmartCard.Builder> getBatteryLevel(ImmutableSmartCard.Builder smartCardBuilder) {
-      return janet.createPipe(GetBatteryLevelAction.class)
-            .createObservableResult(new GetBatteryLevelAction())
-            .map(action -> smartCardBuilder.batteryLevel(Integer.parseInt(action.level)));
-   }
-
-   private Observable<ImmutableSmartCard.Builder> getLockStatus(ImmutableSmartCard.Builder smartCardBuilder) {
-      return janet.createPipe(GetLockDeviceStatusAction.class)
-            .createObservableResult(new GetLockDeviceStatusAction())
-            .map(action -> smartCardBuilder.lock(action.locked));
-   }
-
-   private Observable<ImmutableSmartCard.Builder> getStealthMode(ImmutableSmartCard.Builder smartCardBuilder) {
-      return janet.createPipe(GetStealthModeAction.class)
-            .createObservableResult(new GetStealthModeAction())
-            .map(action -> smartCardBuilder.stealthMode(action.enabled));
    }
 }

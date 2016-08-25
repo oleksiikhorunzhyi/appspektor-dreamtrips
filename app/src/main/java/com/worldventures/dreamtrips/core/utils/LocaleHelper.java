@@ -42,6 +42,6 @@ public class LocaleHelper {
 
       String locale = appSessionHolder.get().get().getLocale();
       String userLanguageCode = TextUtils.isEmpty(locale) ? getDefaultLocaleFormatted() : locale;
-      return userLanguageCode.equalsIgnoreCase(languageCode);
+      return userLanguageCode.split("-")[0].equalsIgnoreCase(languageCode);
    }
 }

@@ -33,6 +33,7 @@ import javax.inject.Inject;
 
 import icepick.State;
 import io.techery.janet.helper.ActionStateSubscriber;
+import timber.log.Timber;
 
 public class FiltersPresenter extends Presenter<FiltersPresenter.View> {
 
@@ -81,8 +82,7 @@ public class FiltersPresenter extends Presenter<FiltersPresenter.View> {
    private void subscribeToFiltersLoading() {
       queryTripsFilterDataInteractor.pipe()
             .observe()
-            .compose(bindView())
-            .compose(new IoToMainComposer<>())
+            .compose(bindViewToMainComposer())
             .subscribe(new ActionStateSubscriber<TripsFilterDataCommand>().onSuccess(tripsFilterDataCommand -> {
                view.hideProgress();
                parentActivities.addAll(getParentActivities(tripsFilterDataCommand.getResult().first));

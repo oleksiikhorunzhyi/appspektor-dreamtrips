@@ -24,13 +24,6 @@ import java.lang.annotation.RetentionPolicy;
 
 public class ActivityRouter extends ActivityBoundRouter {
 
-   @StringDef({LAUNCH_LOGIN, LAUNCH_SPLASH})
-   @Retention(RetentionPolicy.SOURCE)
-   public @interface LaunchType {}
-
-   public static final String LAUNCH_LOGIN = LaunchActivity.LOGIN;
-   public static final String LAUNCH_SPLASH = LaunchActivity.SPLASH;
-
    public ActivityRouter(Activity activity) {
       super(activity);
    }
@@ -45,10 +38,8 @@ public class ActivityRouter extends ActivityBoundRouter {
       startActivity(MainActivity.class, bundle);
    }
 
-   public void openLaunch(@LaunchType String type) {
-      Bundle bundle = new Bundle();
-      bundle.putString(LaunchActivity.EXTRA_TYPE, type);
-      startActivity(LaunchActivity.class, bundle, Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+   public void openLaunch() {
+      startActivity(LaunchActivity.class, null, Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
    }
 
    public void open360Activity(String url, String title) {

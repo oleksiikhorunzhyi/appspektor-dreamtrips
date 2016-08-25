@@ -14,7 +14,7 @@
    <string name="conversation_list_spinner_item_all_chats">所有聊天</string>
    <string name="conversation_list_spinner_item_group_chats">群聊</string>
 
-   <string name="conversation_list_search_hint">搜索會話...</string>
+   <string name="conversation_list_search_hint">搜索會話…</string>
    <string name="conversation_list_search_edittext_hint">搜索團隊和人員</string>
    <string name="conversation_list_item_last_message_text_format_you">您： %1$s</string>
    <string name="conversation_list_item_last_message_image_format_you">您發送了照片</string>
@@ -92,7 +92,7 @@
    <string name="system_message_left" formatted="false">%1$s&lt;b&gt;離開&lt;b&gt;</string>
 
    <!-- flagging related -->
-   <string name="chat_flag_dialog_progress_loading_flags">載入中...</string>
+   <string name="chat_flag_dialog_progress_loading_flags">載入中…</string>
    <string name="chat_flag_dialog_reason_title">檢舉</string>
    <string name="chat_flag_dialog_reason_hint">輸入您的理由</string>
    <string name="chat_flag_dialog_reason_positive_button">接受</string>
@@ -139,7 +139,7 @@
    <!--Edit chat members -->
    <!---->
    <string name="edit_chat_members_title">會員（ %1$d ）</string>
-   <string name="edit_chat_members_search_hint">搜索會員...</string>
+   <string name="edit_chat_members_search_hint">搜索會員…</string>
    <string name="edit_chat_members_row_button_delete">刪除</string>
    <string name="edit_chat_dialog_confirm_user_deletion_message">您想從聊天室刪除此用戶？</string>
    <string name="edit_chat_dialog_confirm_user_deletion_button_delete">刪除</string>
@@ -158,7 +158,7 @@
    <string name="unread_conversation">對話</string>
 
    <string name="disconnected_overlay_disconnected_message">失去連接</string>
-   <string name="disconnected_overlay_connecting_message">正在連接...</string>
+   <string name="disconnected_overlay_connecting_message">正在連接…</string>
 
    <string name="warning_no_internet_connection">互聯網連接不存在</string>
 

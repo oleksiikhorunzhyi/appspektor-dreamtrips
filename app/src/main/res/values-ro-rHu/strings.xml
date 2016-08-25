@@ -630,6 +630,9 @@
    <string name="audio_app_not_found_exception">Aplicație pentru a reda audio nu a fost găsit</string>
    <string name="complete_action_with">acțiune complet cu</string>
    <string name="error_fail_to_load_podcast"> Nu s-a reușit încărcarea podcast-urilor </string>
+   <string name="podcasts_button_resume">Reluare</string>
+   <string name="podcasts_button_pause">Pauză</string>
+   <string name="podcasts_button_stop">Oprire</string>
 
    <string name="min">min</string>
    <string name="post_hint_with_hashtag">Spuneți ceva, adăugați #hashtag-uri</string>
@@ -644,5 +647,15 @@
    <string name="hashtag_multiple_posts">%1$d postări</string>
 
    <string name="error_webview_secure_connection">Ne pare rău, aplicația DreamTrips nu poate stabili o conexiune securizată.\nAm primit o notificare legată de această problemă și o vom analiza în scurt timp.\n\nContactați asistența pentru clienți pentru o soluționare mai rapidă.</string>
+
+   <string name="translate">Traducere</string>
+   <string name="translated_from">Traducere din %1$s</string>
+
+   <string name="error_fail_to_translate_text">Textul nu a putut fi tradus</string>
+
+   <string name="book_it_disabled">Trebuie să fiți membru DreamTrips⏎pentru a rezerva o călătorie.  Dați clic aici pentru a vă <a href="enroll_member">înscrie</a></string>
+
+   <string name="error_fail_to_load_filters">Ne pare rău, încărcarea filtrelor este nereușită.</string>
+   <string name="flag_content_message">Personalul WorldVentures va fi notificat pentru a analiza acest conținut. </string>
 
 </resources>

@@ -47,8 +47,9 @@ public class LogoutDelegate {
    }
 
    public void logout() {
-      eventBus.post(new SessionHolder.Events.SessionDestroyed());
       messengerConnector.disconnect();
+      appSessionHolder.destroy();
+      eventBus.post(new SessionHolder.Events.SessionDestroyed());
       authInteractor.unsubribeFromPushPipe()
             .createObservableResult(new UnsubribeFromPushCommand())
             .subscribe(action -> deleteSession(), throwable -> deleteSession());
@@ -57,14 +58,14 @@ public class LogoutDelegate {
    private void deleteSession() {
       janet.createPipe(LogoutHttpAction.class, Schedulers.io())
             .createObservableResult(new LogoutHttpAction())
-            .subscribe(action -> clearUserDataAndFinish(), throwable -> clearUserDataAndFinish());
+            .subscribe(action -> clearUserDataAndFinish(),
+                  throwable -> clearUserDataAndFinish());
    }
 
    private void clearUserDataAndFinish() {
       clearMemoryStoragesInteractor.clearMemoryStorageActionPipe().send(new ClearMemoryStorageCommand());
       cookieManager.clearCookies();
       snappyRepository.clearAll();
-      appSessionHolder.destroy();
       notificationDelegate.cancelAll();
       badgeUpdater.updateBadge(0);
       FlowManager.getDatabase(MessengerDatabase.NAME).reset(context);

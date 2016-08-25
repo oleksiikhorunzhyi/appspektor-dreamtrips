@@ -89,7 +89,7 @@ public class RouterImpl implements Router {
          if (fragment != null) {
             FragmentTransaction fragmentTransaction = config.getFragmentManager().beginTransaction();
             fragmentTransaction.remove(fragment);
-            fragmentTransaction.commit();
+            fragmentTransaction.commitAllowingStateLoss();
          }
       }
    }

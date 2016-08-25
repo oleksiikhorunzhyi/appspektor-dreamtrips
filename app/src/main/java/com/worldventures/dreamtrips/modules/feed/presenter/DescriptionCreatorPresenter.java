@@ -3,6 +3,7 @@ package com.worldventures.dreamtrips.modules.feed.presenter;
 import com.worldventures.dreamtrips.core.rx.RxView;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.feed.model.feed.hashtag.HashtagSuggestion;
+import com.worldventures.dreamtrips.modules.feed.service.CreatePostBodyInteractor;
 import com.worldventures.dreamtrips.modules.feed.service.HashtagInteractor;
 import com.worldventures.dreamtrips.modules.feed.service.command.HashtagSuggestionCommand;
 import com.worldventures.dreamtrips.modules.feed.service.command.PostDescriptionCreatedCommand;
@@ -20,13 +21,16 @@ public class DescriptionCreatorPresenter extends Presenter<DescriptionCreatorPre
 
    private static final int MIN_QUERY_LENGTH = 3;
 
-   @Inject HashtagInteractor interactor;
+   @Inject HashtagInteractor hashtagsInteractor;
+   @Inject CreatePostBodyInteractor createPostBodyInteractor;
    @State ArrayList<HashtagSuggestion> hashtagSuggestions = new ArrayList<>();
    @State String query = "";
 
    public void takeView(DescriptionCreatorPresenter.View view) {
       super.takeView(view);
-      view.bind(interactor.getSuggestionPipe().observeSuccess().observeOn(AndroidSchedulers.mainThread()))
+      hashtagsInteractor.getSuggestionPipe().observeSuccess()
+            .observeOn(AndroidSchedulers.mainThread())
+            .compose(bindView())
             .subscribe(command -> {
                hashtagSuggestions.clear();
                hashtagSuggestions.addAll(command.getResult());
@@ -46,7 +50,7 @@ public class DescriptionCreatorPresenter extends Presenter<DescriptionCreatorPre
       int lastSpaceIndex = Math.max(subStr.lastIndexOf(" "), subStr.lastIndexOf("\n"));
       view.clearSuggestions();
       if (lastDashIndex >= 0 && cursorPosition > lastDashIndex + MIN_QUERY_LENGTH && lastDashIndex > lastSpaceIndex) {
-         interactor.getSuggestionPipe()
+         hashtagsInteractor.getSuggestionPipe()
                .send(new HashtagSuggestionCommand(fullQueryText, fullQueryText.substring(lastDashIndex + 1, cursorPosition)));
          view.showSuggestionProgress();
       } else {
@@ -55,7 +59,7 @@ public class DescriptionCreatorPresenter extends Presenter<DescriptionCreatorPre
    }
 
    public void done(String desc) {
-      interactor.getDescPickedPipe().send(new PostDescriptionCreatedCommand(desc));
+      createPostBodyInteractor.getPostDescriptionPipe().send(new PostDescriptionCreatedCommand(desc));
    }
 
    public void onViewStateRestored() {

@@ -24,6 +24,8 @@ import com.worldventures.dreamtrips.modules.feed.event.EditBucketEvent;
 import com.worldventures.dreamtrips.modules.feed.event.FeedEntityChangedEvent;
 import com.worldventures.dreamtrips.modules.feed.event.FeedEntityCommentedEvent;
 import com.worldventures.dreamtrips.modules.feed.event.FeedEntityDeletedEvent;
+import com.worldventures.dreamtrips.modules.feed.event.ItemFlaggedEvent;
+import com.worldventures.dreamtrips.modules.feed.event.LoadFlagEvent;
 import com.worldventures.dreamtrips.modules.feed.event.LoadMoreEvent;
 import com.worldventures.dreamtrips.modules.feed.manager.FeedEntityManager;
 import com.worldventures.dreamtrips.modules.feed.model.FeedEntity;
@@ -243,6 +245,15 @@ public class BaseCommentPresenter<T extends BaseCommentPresenter.View> extends P
                         handleError(throwable);
                      }));
       }
+   }
+
+   public void onEvent(LoadFlagEvent event) {
+      if (view.isVisibleOnScreen()) uidItemDelegate.loadFlags(event.getFlaggableView());
+   }
+
+   public void onEvent(ItemFlaggedEvent event) {
+      if (view.isVisibleOnScreen()) uidItemDelegate.flagItem(new FlagData(event.getEntity()
+            .getUid(), event.getFlagReasonId(), event.getNameOfReason()), view);
    }
 
    protected void itemDeleted(FeedEntity model) {

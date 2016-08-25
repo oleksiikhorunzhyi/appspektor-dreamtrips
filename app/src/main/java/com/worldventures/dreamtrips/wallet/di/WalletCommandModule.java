@@ -15,6 +15,7 @@ import com.worldventures.dreamtrips.wallet.service.command.GetActiveSmartCardCom
 import com.worldventures.dreamtrips.wallet.service.command.GetDefaultAddressCommand;
 import com.worldventures.dreamtrips.wallet.service.command.LoadImageForSmartCardCommand;
 import com.worldventures.dreamtrips.wallet.service.command.SaveCardDetailsDataCommand;
+import com.worldventures.dreamtrips.wallet.service.command.SaveDefaultAddressCommand;
 import com.worldventures.dreamtrips.wallet.service.command.SetDefaultCardOnDeviceCommand;
 import com.worldventures.dreamtrips.wallet.service.command.SetLockStateCommand;
 import com.worldventures.dreamtrips.wallet.service.command.SetStealthModeCommand;
@@ -26,9 +27,31 @@ import dagger.Module;
 
 @Module(
       includes = {},
-      injects = {CompressImageForSmartCardCommand.class, CardListCommand.class, AttachCardCommand.class, CardStacksCommand.class, LoadImageForSmartCardCommand.class, SetupSmartCardNameCommand.class, SetupUserDataCommand.class, FetchDefaultCardCommand.class, ActivateSmartCardCommand.class, CreateAndConnectToCardCommand.class, GetActiveSmartCardCommand.class,
-
-            CardCountCommand.class, GetDefaultAddressCommand.class, SaveCardDetailsDataCommand.class, SetupDefaultAddressCommand.class, SetDefaultCardOnDeviceCommand.class, FetchSmartCardLockState.class, SetStealthModeCommand.class, GetActiveSmartCardCommand.class, ConnectSmartCardCommand.class, FetchCardPropertiesCommand.class, SetLockStateCommand.class},
+      injects = {
+            CompressImageForSmartCardCommand.class,
+            CardListCommand.class,
+            AttachCardCommand.class,
+            CardStacksCommand.class,
+            LoadImageForSmartCardCommand.class,
+            SetupSmartCardNameCommand.class,
+            SetupUserDataCommand.class,
+            FetchDefaultCardCommand.class,
+            ActivateSmartCardCommand.class,
+            CreateAndConnectToCardCommand.class,
+            GetActiveSmartCardCommand.class,
+            CardCountCommand.class,
+            GetDefaultAddressCommand.class,
+            SaveCardDetailsDataCommand.class,
+            SetupDefaultAddressCommand.class,
+            SetDefaultCardOnDeviceCommand.class,
+            FetchSmartCardLockState.class,
+            SetStealthModeCommand.class,
+            GetActiveSmartCardCommand.class,
+            ConnectSmartCardCommand.class,
+            FetchCardPropertiesCommand.class,
+            SetLockStateCommand.class,
+            SaveDefaultAddressCommand.class
+      },
       complete = false, library = true)
 public class WalletCommandModule {}
 

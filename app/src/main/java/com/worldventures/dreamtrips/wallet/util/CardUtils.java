@@ -3,6 +3,7 @@ package com.worldventures.dreamtrips.wallet.util;
 import android.text.TextUtils;
 
 import com.innahema.collections.query.queriables.Queryable;
+import com.worldventures.dreamtrips.wallet.domain.entity.card.Card;
 import com.worldventures.dreamtrips.wallet.service.command.CardStacksCommand;
 import com.worldventures.dreamtrips.wallet.ui.dashboard.list.util.CardStackViewModel;
 
@@ -22,7 +23,7 @@ public class CardUtils {
    }
 
    public static boolean isRealCardId(String cardId) {
-      return !TextUtils.equals(cardId, "0");
+      return !TextUtils.equals(cardId, Card.NO_ID);
    }
 
 }

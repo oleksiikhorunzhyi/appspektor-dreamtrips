@@ -9,6 +9,7 @@ import com.worldventures.dreamtrips.wallet.service.command.FetchDefaultCardComma
 import com.worldventures.dreamtrips.wallet.service.command.GetActiveSmartCardCommand;
 import com.worldventures.dreamtrips.wallet.service.command.GetDefaultAddressCommand;
 import com.worldventures.dreamtrips.wallet.service.command.SaveCardDetailsDataCommand;
+import com.worldventures.dreamtrips.wallet.service.command.SaveDefaultAddressCommand;
 import com.worldventures.dreamtrips.wallet.service.command.SetLockStateCommand;
 import com.worldventures.dreamtrips.wallet.service.command.SetStealthModeCommand;
 import com.worldventures.dreamtrips.wallet.service.command.SmartCardModifier;
@@ -39,6 +40,7 @@ public final class SmartCardInteractor {
    private final ActionPipe<CardStacksCommand> cardStacksPipe;
    private final ActionPipe<GetActiveSmartCardCommand> activeSmartCardPipe;
    private final ActionPipe<CardCountCommand> cardCountCommandPipe;
+   private final ActionPipe<SaveDefaultAddressCommand> saveDefaultAddressPipe;
    private final ActionPipe<GetDefaultAddressCommand> getDefaultAddressCommandPipe;
    private final WriteActionPipe<SaveCardDetailsDataCommand> saveCardDetailsDataCommandPipe;
    private final ActionPipe<SetStealthModeCommand> setStealthModePipe;
@@ -60,6 +62,7 @@ public final class SmartCardInteractor {
       setLockPipe = janet.createPipe(SetLockStateCommand.class, Schedulers.io());
 
       cardCountCommandPipe = janet.createPipe(CardCountCommand.class, Schedulers.io());
+      saveDefaultAddressPipe = janet.createPipe(SaveDefaultAddressCommand.class, Schedulers.io());
       getDefaultAddressCommandPipe = janet.createPipe(GetDefaultAddressCommand.class, Schedulers.io());
       saveCardDetailsDataCommandPipe = janet.createPipe(SaveCardDetailsDataCommand.class, Schedulers.io());
       fetchDefaultCardCommandActionPipe = janet.createPipe(FetchDefaultCardCommand.class, Schedulers.io());
@@ -96,12 +99,12 @@ public final class SmartCardInteractor {
       return cardCountCommandPipe;
    }
 
-   public ActionPipe<GetDefaultAddressCommand> getDefaultAddressCommandPipe() {
-      return getDefaultAddressCommandPipe;
+   public ActionPipe<SaveDefaultAddressCommand> saveDefaultAddressPipe() {
+      return saveDefaultAddressPipe;
    }
 
-   public WriteActionPipe<SaveCardDetailsDataCommand> saveCardDetailsDataCommandPipe() {
-      return saveCardDetailsDataCommandPipe;
+   public ActionPipe<GetDefaultAddressCommand> getDefaultAddressCommandPipe() {
+      return getDefaultAddressCommandPipe;
    }
 
    public ActionPipe<SetStealthModeCommand> setStealthModePipe() {

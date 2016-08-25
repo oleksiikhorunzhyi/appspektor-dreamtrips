@@ -4,7 +4,7 @@ import android.support.annotation.Nullable;
 
 public interface Card {
 
-   String NO_ID = "-1";
+   String NO_ID = "0";
 
    String id();
 

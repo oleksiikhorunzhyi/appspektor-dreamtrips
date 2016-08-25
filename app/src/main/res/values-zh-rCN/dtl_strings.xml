@@ -23,7 +23,6 @@
    <string name="dtl_distance">距离， %1$s</string>
    <string name="dtl_receipt_scan">捕捉收据</string>
    <string name="dtl_receipt_rescan">重新捕捉</string>
-   <string name="dtl_receipt_verify">确认金额</string>
    <string name="dtl_receipt_verify_hint">这笔款项将通过商家进行验证。输入的任何数量差异会导致延迟赚取DreamTrips点数。</string>
    <string name="dtl_action_next">下一个</string>
    <string name="dtl_amenities">设施</string>
@@ -37,7 +36,6 @@
    <string name="dtl_checkin_location_error">启动位置服务方可报到</string>
    <string name="dtl_barcode_title">扫描QR码</string>
    <string name="dtl_barcode_merchant">扫描商家编号</string>
-   <string name="dtl_enter_amount">输入金额</string>
    <string name="dtl_congrats">恭喜！</string>
    <string name="dtl_you_earned">您赚取了</string>
    <string name="dtl_total">DreamTrips总点数：</string>
@@ -46,7 +44,6 @@
    <string name="dtl_amount_invalid">金额无效</string>
    <string name="dtl_invalid">输入无效</string>
    <string name="dtl_verify_amount">确认金额</string>
-   <string name="dtl_verify_amount_note">注意： 金额应是发票上注明的总量，不包括小费和税</string>
    <string name="dtl_total_amount">总金额：</string>
    <string name="dtl_verify_earn_hint">您可以赚取 </string>
    <string name="dtl_check_in">入住并赚取</string>

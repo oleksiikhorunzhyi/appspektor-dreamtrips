@@ -23,7 +23,6 @@
    <string name="dtl_distance">Távolság, %1$s</string>
    <string name="dtl_receipt_scan">Nyugta rögzítése</string>
    <string name="dtl_receipt_rescan">Újabb felvétel</string>
-   <string name="dtl_receipt_verify">Összeg ellenőrzése</string>
    <string name="dtl_receipt_verify_hint">Az értékesítő ellenőrizni fogja az összeget. Az összeg bármilyen eltérése a DreamTrips-pontok megszerzésének késleltetését fogja eredményezni.</string>
    <string name="dtl_action_next">Következő</string>
    <string name="dtl_amenities">Szórakozási lehetőségek</string>
@@ -37,7 +36,6 @@
    <string name="dtl_checkin_location_error">A bejelentkezéshez engedélyezni kell a helyszolgáltatásokat</string>
    <string name="dtl_barcode_title">QR-kód beolvasása</string>
    <string name="dtl_barcode_merchant">Értékesítői kód beolvasása</string>
-   <string name="dtl_enter_amount">Összeg megadása</string>
    <string name="dtl_congrats">Gratulálunk!</string>
    <string name="dtl_you_earned">Ennyit kerestél:</string>
    <string name="dtl_total">Összes DreamTrips pontok:</string>
@@ -46,7 +44,6 @@
    <string name="dtl_amount_invalid">Érvénytelen összeg</string>
    <string name="dtl_invalid">Érvénytelen bevitel</string>
    <string name="dtl_verify_amount">Összeg ellenőrzése</string>
-   <string name="dtl_verify_amount_note">Megjegyzés: az összeg a teljes összeg legyen ÁFA és felszolgálási díj nélkül.</string>
    <string name="dtl_total_amount">Teljes összeg:</string>
    <string name="dtl_verify_earn_hint">Megszerezhető: </string>
    <string name="dtl_check_in">Bejelentkezés és pontgyűjtés</string>

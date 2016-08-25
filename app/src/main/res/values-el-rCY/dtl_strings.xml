@@ -23,7 +23,6 @@
    <string name="dtl_distance">Απόσταση, %1$s</string>
    <string name="dtl_receipt_scan">Αποθήκευση απόδειξης</string>
    <string name="dtl_receipt_rescan">Νέα αποθήκευση</string>
-   <string name="dtl_receipt_verify">Επαλήθευση ποσού</string>
    <string name="dtl_receipt_verify_hint">Θα γίνει επαλήθευση του ποσού από τον έμπορο. Τυχόν διαφορά στο ποσό που έχει εισαχθεί θα έχει ως αποτέλεσμα καθυστερήσεις στη συγκέντρωση πόντων DreamTrips.</string>
    <string name="dtl_action_next">Επόμενο</string>
    <string name="dtl_amenities">Παροχές</string>
@@ -37,7 +36,6 @@
    <string name="dtl_checkin_location_error">Η εξυπηρέτηση τοποθεσίας πρέπει να είναι ενεργοποιημένη προκειμένου να κάνετε check-in</string>
    <string name="dtl_barcode_title">Σάρωση κωδικού QR</string>
    <string name="dtl_barcode_merchant">Σάρωση κωδικού εμπόρου</string>
-   <string name="dtl_enter_amount">Εισαγωγή ποσού</string>
    <string name="dtl_congrats">Συγχαρητήρια!</string>
    <string name="dtl_you_earned">Έχετε κερδίσει</string>
    <string name="dtl_total">Συνολικοί DreamTrips Πόντοι:</string>
@@ -46,7 +44,6 @@
    <string name="dtl_amount_invalid">Το ποσό δεν είναι έγκυρο</string>
    <string name="dtl_invalid">Μη έγκυρη εισαγωγή</string>
    <string name="dtl_verify_amount">Επαλήθευση ποσού</string>
-   <string name="dtl_verify_amount_note">Σημείωση: Το ποσό θα πρέπει να είναι το συνολικό του λογαριασμού αφαιρουμένου του φόρου και του φιλοδωρήματος.</string>
    <string name="dtl_total_amount">Συνολικό ποσό:</string>
    <string name="dtl_verify_earn_hint">Μπορείτε να κερδίσετε </string>
    <string name="dtl_check_in">Δηλώστε παρουσία &amp; κερδίστε</string>

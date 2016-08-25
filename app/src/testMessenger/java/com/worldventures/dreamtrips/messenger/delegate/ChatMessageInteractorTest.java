@@ -51,8 +51,8 @@ public class ChatMessageInteractorTest extends BaseChatActionDelegateTest {
    @Before
    public void setup() {
       super.setup();
-      messageBodyCreator = new MessageBodyCreator(localeHelper, new User());
-      doReturn(Locale.getDefault()).when(localeHelper).getAccountLocale(any());
+      messageBodyCreator = new MessageBodyCreator(localeHelper);
+      doReturn(Locale.getDefault()).when(localeHelper).getDefaultLocale();
 
       UserSession userSession = new UserSession();
       userSession.setUsername(testDataUserId);

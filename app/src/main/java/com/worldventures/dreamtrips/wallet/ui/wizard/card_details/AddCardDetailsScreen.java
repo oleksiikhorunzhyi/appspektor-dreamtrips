@@ -79,8 +79,9 @@ public class AddCardDetailsScreen extends WalletFrameLayout<AddCardDetailsPresen
    }
 
    @Override
-   public void setDefaultAddress(AddressInfoWithLocale defaultAddressInfo) {
+   public void useDefaultAddress(AddressInfoWithLocale defaultAddressInfo) {
       defaultAddressText.setText(AddressUtil.obtainAddressLabel(defaultAddressInfo));
+      useDefaultAddressCheckBox.setChecked(true);
    }
 
    @Override

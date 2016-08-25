@@ -2,7 +2,6 @@ package com.worldventures.dreamtrips.wallet.ui.wizard.card_details;
 
 import android.content.Context;
 import android.os.Parcelable;
-import android.text.TextUtils;
 
 import com.techery.spares.module.Injector;
 import com.worldventures.dreamtrips.R;
@@ -75,7 +74,7 @@ public class AddCardDetailsPresenter extends WalletPresenter<AddCardDetailsPrese
                if (addressInfoWithLocale == null) {
                   getView().hideDefaultAddressCheckbox();
                } else {
-                  getView().setDefaultAddress(addressInfoWithLocale);
+                  getView().useDefaultAddress(addressInfoWithLocale);
                }
             });
       smartCardInteractor.getDefaultAddressCommandPipe().send(new GetDefaultAddressCommand());
@@ -117,7 +116,7 @@ public class AddCardDetailsPresenter extends WalletPresenter<AddCardDetailsPrese
 
       void setCardBankInfo(BankCard bankCard);
 
-      void setDefaultAddress(AddressInfoWithLocale defaultAddressInfo);
+      void useDefaultAddress(AddressInfoWithLocale defaultAddressInfo);
 
       void setAsDefaultPaymentCard(boolean defaultPaymentCard);
    }

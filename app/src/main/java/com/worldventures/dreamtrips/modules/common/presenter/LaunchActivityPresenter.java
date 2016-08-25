@@ -61,7 +61,7 @@ public class LaunchActivityPresenter extends ActivityPresenter<LaunchActivityPre
                      User user = loginCommand.getResult().getUser();
                      TrackingHelper.login(user.getEmail());
                      TrackingHelper.setUserId(Integer.toString(user.getId()));
-                     splashMode();
+                     launchModeBasedOnExistingSession();
                   })
                   .onFail((loginCommand, throwable) -> {
                      loginInteractor.loginActionPipe().clearReplays();

@@ -5,7 +5,7 @@ import android.text.TextUtils;
 import android.util.Pair;
 
 import com.innahema.collections.query.queriables.Queryable;
-import com.messenger.api.GetShortProfileAction;
+import com.messenger.api.GetShortProfilesCommand;
 import com.messenger.entities.DataUser;
 import com.messenger.messengerservers.model.MessengerUser;
 import com.messenger.storage.dao.UsersDAO;
@@ -25,13 +25,13 @@ import static com.innahema.collections.query.queriables.Queryable.from;
 class UserDataFetcher {
    private static final String HOST_BADGE = "DreamTrips Host";
 
-   private final ActionPipe<GetShortProfileAction> shortProfilesPipe;
+   private final ActionPipe<GetShortProfilesCommand> shortProfilesPipe;
    private final UsersDAO usersDAO;
 
    @Inject
    public UserDataFetcher(Janet janet, UsersDAO usersDAO) {
       this.usersDAO = usersDAO;
-      this.shortProfilesPipe = janet.createPipe(GetShortProfileAction.class);
+      this.shortProfilesPipe = janet.createPipe(GetShortProfilesCommand.class);
    }
 
    public Observable<List<DataUser>> fetchUserData(List<MessengerUser> messengerUsers) {
@@ -39,8 +39,8 @@ class UserDataFetcher {
 
       List<String> userNames = from(messengerUsers).map(MessengerUser::getName).toList();
 
-      return shortProfilesPipe.createObservableResult(new GetShortProfileAction(userNames))
-            .map(action -> composeDataUsers(messengerUsers, action.getShortUsers()));
+      return shortProfilesPipe.createObservableResult(new GetShortProfilesCommand(userNames))
+            .map(action -> composeDataUsers(messengerUsers, action.getResult()));
    }
 
    private List<DataUser> composeDataUsers(List<MessengerUser> messengerUsers, List<User> socialUsers) {

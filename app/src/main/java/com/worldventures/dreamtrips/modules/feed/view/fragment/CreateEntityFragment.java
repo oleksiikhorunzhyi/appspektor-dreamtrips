@@ -35,7 +35,7 @@ public abstract class CreateEntityFragment<PM extends CreateEntityPresenter> ext
 
          @Override
          public void onChildViewRemoved(View parent, View child) {
-            backStackDelegate.setListener(() -> onBack());
+            if (isResumed()) backStackDelegate.setListener(() -> onBack());
          }
       });
       //

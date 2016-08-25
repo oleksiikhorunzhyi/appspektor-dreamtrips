@@ -1,5 +1,6 @@
 package com.worldventures.dreamtrips.core.janet.cache;
 
+import com.worldventures.dreamtrips.modules.flags.storage.FlagsStorage;
 import com.worldventures.dreamtrips.core.janet.cache.storage.ActionStorage;
 import com.worldventures.dreamtrips.core.janet.cache.storage.MemoryStorage;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
@@ -81,5 +82,11 @@ public class CacheActionStorageModule {
    @Provides(type = Provides.Type.SET)
    ActionStorage provideCirclesStorage(SnappyRepository db) {
       return new CirclesStorage(db);
+   }
+
+   @Singleton
+   @Provides(type = Provides.Type.SET)
+   ActionStorage provideFlagsStorage(FlagsStorage flagsStorage) {
+      return flagsStorage;
    }
 }

@@ -11,6 +11,7 @@ import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.common.view.custom.tagview.viewgroup.newio.model.PhotoTag;
 import com.worldventures.dreamtrips.modules.feed.model.FeedEntity;
 import com.worldventures.dreamtrips.modules.feed.model.PhotoCreationItem;
+import com.worldventures.dreamtrips.modules.feed.service.CreatePostBodyInteractor;
 import com.worldventures.dreamtrips.modules.feed.service.HashtagInteractor;
 import com.worldventures.dreamtrips.modules.trips.model.Location;
 import com.worldventures.dreamtrips.modules.tripsimages.model.Photo;
@@ -37,8 +38,10 @@ public abstract class ActionEntityPresenter<V extends ActionEntityPresenter.View
    @Inject EditPhotoTagsCallback editPhotoTagsCallback;
    @Inject PostLocationPickerCallback postLocationPickerCallback;
    @Inject HashtagInteractor hashtagInteractor;
+   @Inject CreatePostBodyInteractor createPostBodyInteractor;
    private Subscription editTagsSubscription;
    private Subscription locationPickerSubscription;
+   private Subscription postDescriptionSubscription;
 
    @Override
    public void takeView(V view) {
@@ -56,19 +59,35 @@ public abstract class ActionEntityPresenter<V extends ActionEntityPresenter.View
       }, error -> {
          Timber.e(error, "");
       });
+   }
 
-      hashtagInteractor.getDescPickedPipe()
-            .observeSuccess()
+   @Override
+   public void onResume() {
+      super.onResume();
+      // we must have this subscription in onResume as during rotation
+      // view of the old fragment is dropped after view for new one was created
+      postDescriptionSubscription = createPostBodyInteractor.getPostDescriptionPipe()
+            .observeSuccessWithReplay()
             .observeOn(AndroidSchedulers.mainThread())
-            .subscribe(command -> {
-               cachedText = command.getResult();
+            .compose(bindView())
+            .subscribe(action -> {
+               cachedText = action.getResult();
                if (view != null) {
                   view.setText(cachedText);
                   invalidateDynamicViews();
                }
+               createPostBodyInteractor.getPostDescriptionPipe().clearReplays();
             }, throwable -> {
                Timber.e(throwable, "");
             });
+   }
+
+   @Override
+   public void onPause() {
+      super.onPause();
+      if (postDescriptionSubscription != null && !postDescriptionSubscription.isUnsubscribed()) {
+         postDescriptionSubscription.unsubscribe();
+      }
    }
 
    @Override

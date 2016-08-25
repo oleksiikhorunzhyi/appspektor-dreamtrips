@@ -2,6 +2,7 @@ package com.worldventures.dreamtrips.modules.tripsimages.presenter.fullscreen;
 
 import android.support.v4.app.FragmentManager;
 
+import com.messenger.delegate.FlagsInteractor;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.navigation.router.Router;
@@ -43,11 +44,11 @@ public class SocialImageFullscreenPresenter extends FullScreenPresenter<Photo, S
 
    @Inject Router router;
    @Inject FragmentManager fm;
+   @Inject FlagsInteractor flagsInteractor;
 
    @Override
    public void takeView(View view) {
       super.takeView(view);
-      uidItemDelegate = new UidItemDelegate(this);
       loadEntity();
    }
 
@@ -55,6 +56,7 @@ public class SocialImageFullscreenPresenter extends FullScreenPresenter<Photo, S
    public void onInjected() {
       super.onInjected();
       entityManager.setRequestingPresenter(this);
+      uidItemDelegate = new UidItemDelegate(this, flagsInteractor);
    }
 
    public void loadEntity() {

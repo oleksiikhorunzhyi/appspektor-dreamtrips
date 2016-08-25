@@ -14,7 +14,7 @@
    <string name="conversation_list_spinner_item_all_chats">Toate chaturile</string>
    <string name="conversation_list_spinner_item_group_chats">Chaturi de grup</string>
 
-   <string name="conversation_list_search_hint">Căutare conversații...</string>
+   <string name="conversation_list_search_hint">Căutare conversații…</string>
    <string name="conversation_list_search_edittext_hint">Căutați grupuri și oameni</string>
    <string name="conversation_list_item_last_message_text_format_you">Dvs.: %1$s</string>
    <string name="conversation_list_item_last_message_image_format_you">Ați trimis fotografia</string>
@@ -139,7 +139,7 @@
    <!--Edit chat members -->
    <!---->
    <string name="edit_chat_members_title">Membri (%1$d)</string>
-   <string name="edit_chat_members_search_hint">Se caută membrii... </string>
+   <string name="edit_chat_members_search_hint">Se caută membrii… </string>
    <string name="edit_chat_members_row_button_delete">Ștergeți</string>
    <string name="edit_chat_dialog_confirm_user_deletion_message">Doriți să eliminați acest utilizator din conversație? </string>
    <string name="edit_chat_dialog_confirm_user_deletion_button_delete">Ștergeți</string>
@@ -158,7 +158,7 @@
    <string name="unread_conversation">Conversații </string>
 
    <string name="disconnected_overlay_disconnected_message">Conexiune pierdută</string>
-   <string name="disconnected_overlay_connecting_message">Se conectează...</string>
+   <string name="disconnected_overlay_connecting_message">Se conectează…</string>
 
    <string name="warning_no_internet_connection">Nu există conexiune la internet </string>
 

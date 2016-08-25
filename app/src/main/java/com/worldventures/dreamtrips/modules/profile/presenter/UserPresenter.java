@@ -3,6 +3,7 @@ package com.worldventures.dreamtrips.modules.profile.presenter;
 import android.support.annotation.StringRes;
 
 import com.innahema.collections.query.functions.Action1;
+import com.messenger.delegate.FlagsInteractor;
 import com.messenger.delegate.StartChatDelegate;
 import com.messenger.ui.activity.MessengerActivity;
 import com.worldventures.dreamtrips.core.api.action.CommandWithError;
@@ -46,6 +47,7 @@ public class UserPresenter extends ProfilePresenter<UserPresenter.View, User> {
    @Inject FriendsInteractor friendsInteractor;
    @Inject NotificationDelegate notificationDelegate;
    @Inject StartChatDelegate startSingleChatDelegate;
+   @Inject FlagsInteractor flagsInteractor;
 
    private int notificationId;
    private boolean acceptFriend;
@@ -57,14 +59,13 @@ public class UserPresenter extends ProfilePresenter<UserPresenter.View, User> {
       this.acceptFriend = userBundle.isAcceptFriend();
       userBundle.resetNotificationId();
       userBundle.resetAcceptFriend();
-
-      uidItemDelegate = new UidItemDelegate(this);
    }
 
    @Override
    public void onInjected() {
       super.onInjected();
       notificationDelegate.cancel(user.getId());
+      uidItemDelegate = new UidItemDelegate(this, flagsInteractor);
    }
 
    @Override

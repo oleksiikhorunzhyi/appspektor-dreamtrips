@@ -630,6 +630,9 @@
    <string name="audio_app_not_found_exception">Aplikasi untuk memainkan audio tidak didapati</string>
    <string name="complete_action_with">Lengkapkan tindakan dengan</string>
    <string name="error_fail_to_load_podcast">Gagal untuk memuatkan fail media digital</string>
+   <string name="podcasts_button_resume">Sambung semula</string>
+   <string name="podcasts_button_pause">Berhenti seketika</string>
+   <string name="podcasts_button_stop">Berhenti</string>
 
    <string name="min">min</string>
    <string name="post_hint_with_hashtag">Kata sesuatu, tambah #hashtags</string>
@@ -644,5 +647,15 @@
    <string name="hashtag_multiple_posts">%1$d catatan</string>
 
    <string name="error_webview_secure_connection">Minta maaf tetapi aplikasi DreamTrips tidak boleh menetapkan sambungan selamat.\nKami telah dimaklumkan mengenai isu ini dan kami akan menyiasatnya tidak lama lagi.\n\nSila hubungi sokongan pelanggan untuk penyelesaian yang lebih cepat.</string>
+
+   <string name="translate">Terjemahkan</string>
+   <string name="translated_from">Diterjemah daripada %1$s</string>
+
+   <string name="error_fail_to_translate_text">Gagal menterjemah teks</string>
+
+   <string name="book_it_disabled">Anda mestilah Ahli DreamTrips\nuntuk menempah perjalanan. Klik di sini untuk <a href="enroll_member">Daftar diri</a></string>
+
+   <string name="error_fail_to_load_filters">Maaf, gagal untuk muat penapis</string>
+   <string name="flag_content_message">Kakitangan WorldVentures akan dimaklumkan untuk menyemak kandungan ini untuk  </string>
 
 </resources>

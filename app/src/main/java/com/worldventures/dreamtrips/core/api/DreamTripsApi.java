@@ -172,9 +172,6 @@ public interface DreamTripsApi {
    @GET("/api/member_videos/locales")
    ArrayList<VideoLocale> getTrainingVideosLocales();
 
-   @GET("/api/flag_reasons")
-   ArrayList<Flag> getFlags();
-
    @GET("/api/social/friends")
    ArrayList<User> getFriends(@Query("circle_id") String circle_id, @Query("query") String query, @Query("page") int page, @Query("per_page") int perPage);
 

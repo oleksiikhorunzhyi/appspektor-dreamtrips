@@ -6,6 +6,7 @@ import android.support.annotation.StringRes;
 import android.util.Pair;
 
 import com.innahema.collections.query.queriables.Queryable;
+import com.messenger.delegate.FlagsInteractor;
 import com.messenger.ui.activity.MessengerActivity;
 import com.messenger.util.UnreadConversationObservable;
 import com.techery.spares.module.Injector;
@@ -95,6 +96,7 @@ public class FeedPresenter extends Presenter<FeedPresenter.View> {
    @Inject FeedInteractor feedInteractor;
    @Inject SuggestedPhotoInteractor suggestedPhotoInteractor;
    @Inject CirclesInteractor circlesInteractor;
+   @Inject FlagsInteractor flagsInteractor;
 
    private Circle filterCircle;
    private UidItemDelegate uidItemDelegate;
@@ -103,14 +105,11 @@ public class FeedPresenter extends Presenter<FeedPresenter.View> {
    @State ArrayList<FeedItem> feedItems;
    @State int unreadConversationCount;
 
-   public FeedPresenter() {
-      uidItemDelegate = new UidItemDelegate(this);
-   }
-
    @Override
    public void onInjected() {
       super.onInjected();
       entityManager.setRequestingPresenter(this);
+      uidItemDelegate = new UidItemDelegate(this, flagsInteractor);
    }
 
    @Override

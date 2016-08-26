@@ -31,7 +31,7 @@ import com.worldventures.dreamtrips.modules.friends.janet.AcceptAllFriendRequest
 import com.worldventures.dreamtrips.modules.friends.janet.ActOnFriendRequestCommand;
 import com.worldventures.dreamtrips.modules.friends.janet.AddFriendCommand;
 import com.worldventures.dreamtrips.modules.friends.janet.DeleteFriendRequestCommand;
-import com.worldventures.dreamtrips.modules.membership.command.PodcastCommand;
+import com.worldventures.dreamtrips.modules.membership.command.GetPodcastsCommand;
 import com.worldventures.dreamtrips.modules.settings.command.SettingsCommand;
 import com.worldventures.dreamtrips.modules.trips.command.GetActivitiesCommand;
 import com.worldventures.dreamtrips.modules.trips.command.GetRegionsCommand;
@@ -44,7 +44,7 @@ import dagger.Module;
       UploaderyImageCommand.class, SimpleUploaderyCommand.class, BucketListCommand.class, DeleteItemPhotoCommand.class,
       FindBucketItemByPhotoCommand.class, AddBucketItemPhotoCommand.class, MergeBucketItemPhotosWithStorageCommand.class,
       TripsFilterDataCommand.class, CirclesCommand.class, GetCommentsCommand.class,
-      LoginCommand.class, UpdateUserCommand.class, PodcastCommand.class, SuggestedPhotoCommand.class,
+      LoginCommand.class, UpdateUserCommand.class, GetPodcastsCommand.class, SuggestedPhotoCommand.class,
       GetAccountFeedCommand.Refresh.class, GetAccountFeedCommand.LoadNext.class, GetAccountTimelineCommand.Refresh.class,
       GetAccountTimelineCommand.LoadNext.class, GetUserTimelineCommand.Refresh.class, GetUserTimelineCommand.LoadNext.class,
       FeedByHashtagCommand.Refresh.class, FeedByHashtagCommand.LoadNext.class,

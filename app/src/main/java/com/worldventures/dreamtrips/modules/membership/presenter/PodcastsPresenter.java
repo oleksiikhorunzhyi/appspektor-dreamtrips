@@ -16,7 +16,7 @@ import com.worldventures.dreamtrips.core.rx.composer.IoToMainComposer;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.common.presenter.JobPresenter;
 import com.worldventures.dreamtrips.modules.common.view.ApiErrorView;
-import com.worldventures.dreamtrips.modules.membership.command.PodcastCommand;
+import com.worldventures.dreamtrips.modules.membership.command.GetPodcastsCommand;
 import com.worldventures.dreamtrips.modules.membership.model.MediaHeader;
 import com.worldventures.dreamtrips.modules.membership.model.Podcast;
 import com.worldventures.dreamtrips.modules.membership.service.PodcastsInteractor;
@@ -31,6 +31,7 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import io.techery.janet.Command;
 import io.techery.janet.Janet;
 import io.techery.janet.helper.ActionStateSubscriber;
 
@@ -114,42 +115,35 @@ public class PodcastsPresenter<T extends PodcastsPresenter.View> extends JobPres
    private void loadPodcasts(int page) {
       loading = true;
       view.startLoading();
-      podcastsInteractor.podcastsActionPipe().send(new PodcastCommand(page, PODCAST_PRE_PAGE));
+      podcastsInteractor.podcastsActionPipe().send(new GetPodcastsCommand(page, PODCAST_PRE_PAGE));
    }
 
    private void subscribeGetPodcasts() {
-      view.bindUntilDropView(podcastsInteractor.podcastsActionPipe().observe().compose(new IoToMainComposer<>()))
-            .subscribe(new ActionStateSubscriber<PodcastCommand>().onSuccess(podcastCommand -> onPodcastsLoaded(podcastCommand
-                  .getResult())).onFail((podcastCommand, throwable) -> {
-               apiErrorPresenter.handleActionError(podcastCommand, throwable);
-               view.finishLoading();
-            }));
+      podcastsInteractor.podcastsActionPipe().observe()
+            .compose(bindViewToMainComposer())
+            .subscribe(new ActionStateSubscriber<GetPodcastsCommand>()
+                  .onSuccess(this::onPodcastsLoaded)
+                  .onFail(this::onPodcastsLoadingFailed));
    }
 
-   private void attachCache(Podcast podcast) {
-      CachedEntity e = db.getDownloadMediaEntity(podcast.getUid());
-      podcast.setCacheEntity(e);
-   }
-
-   private void attachPodcastDownloadListener(Podcast podcast) {
-      CachedEntity entity = podcast.getCacheEntity();
-      boolean failed = entity.isFailed();
-      boolean inProgress = entity.getProgress() > 0;
-      boolean cached = entity.isCached(Environment.DIRECTORY_PODCASTS);
-      if (!failed && inProgress && !cached) {
-         DownloadFileListener listener = new DownloadFileListener(entity, fileCachingDelegate);
-         injector.inject(listener);
-         fileDownloadSpiceManager.addListenerIfPending(InputStream.class, entity.getUuid(), listener);
-      }
-   }
-
-   private void onPodcastsLoaded(List<Podcast> podcasts) {
+   private void onPodcastsLoaded(GetPodcastsCommand command) {
+      List<Podcast> podcasts = command.getResult();
       Queryable.from(podcasts).forEachR(podcast -> {
          attachCache(podcast);
          attachPodcastDownloadListener(podcast);
       });
       items.addAll(podcasts);
       updateUi(items);
+   }
+
+   private void onPodcastsLoadingFailed(GetPodcastsCommand command, Throwable error) {
+      apiErrorPresenter.handleActionError(command, error);
+      view.finishLoading();
+   }
+
+   private void attachCache(Podcast podcast) {
+      CachedEntity e = db.getDownloadMediaEntity(podcast.getUid());
+      podcast.setCacheEntity(e);
    }
 
    protected void updateUi(List<Podcast> podcasts) {
@@ -162,6 +156,18 @@ public class PodcastsPresenter<T extends PodcastsPresenter.View> extends JobPres
 
       noMoreItems = podcasts.size() < PODCAST_PRE_PAGE;
       loading = false;
+   }
+
+   private void attachPodcastDownloadListener(Podcast podcast) {
+      CachedEntity entity = podcast.getCacheEntity();
+      boolean failed = entity.isFailed();
+      boolean inProgress = entity.getProgress() > 0;
+      boolean cached = entity.isCached(Environment.DIRECTORY_PODCASTS);
+      if (!failed && inProgress && !cached) {
+         DownloadFileListener listener = new DownloadFileListener(entity, fileCachingDelegate);
+         injector.inject(listener);
+         fileDownloadSpiceManager.addListenerIfPending(InputStream.class, entity.getUuid(), listener);
+      }
    }
 
    public void downloadPodcast(CachedEntity entity) {

@@ -3,6 +3,7 @@ package com.worldventures.dreamtrips.modules.mapping;
 import com.worldventures.dreamtrips.modules.mapping.converter.Converter;
 import com.worldventures.dreamtrips.modules.mapping.converter.ShortProfilesConverter;
 import com.worldventures.dreamtrips.modules.mapping.mapper.FlagsMapper;
+import com.worldventures.dreamtrips.modules.mapping.mapper.PodcastsMapper;
 import com.worldventures.dreamtrips.modules.mapping.mapper.ShortProfilesMapper;
 
 import java.util.Set;
@@ -44,5 +45,11 @@ public class MappingModule {
          builder.map(converter.sourceClass()).to(converter.targetClass(), converter);
       }
       return builder.build();
+   }
+
+   @Provides
+   @Singleton
+   PodcastsMapper providePodcastsMapper() {
+      return new PodcastsMapper();  
    }
 }

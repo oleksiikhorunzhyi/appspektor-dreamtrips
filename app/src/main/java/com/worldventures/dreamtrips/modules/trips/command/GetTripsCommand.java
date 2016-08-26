@@ -2,6 +2,7 @@ package com.worldventures.dreamtrips.modules.trips.command;
 
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.api.action.CommandWithError;
+import com.worldventures.dreamtrips.core.janet.CommandActionBaseHelper.ActionCommandSubscriber;
 import com.worldventures.dreamtrips.core.janet.dagger.InjectableAction;
 import com.worldventures.dreamtrips.modules.trips.api.GetTripsHttpAction;
 import com.worldventures.dreamtrips.modules.trips.model.TripModel;
@@ -30,7 +31,7 @@ public class GetTripsCommand extends CommandWithError<List<TripModel>> implement
       janet.createPipe(GetTripsHttpAction.class)
             .createObservableResult(new GetTripsHttpAction(requestParams))
             .map(GetTripsHttpAction::getResponseItems)
-            .subscribe(callback::onSuccess, callback::onFail);
+            .subscribe(ActionCommandSubscriber.wrap(callback));
    }
 
    @Override

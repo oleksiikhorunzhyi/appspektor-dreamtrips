@@ -92,7 +92,6 @@
                android:layout_alignParentLeft="true"
                android:layout_below="@+id/address_info"
                android:layout_marginTop="@dimen/wallet_add_card_details_component_margin_top"
-               android:enabled="false"
                android:text="@string/wallet_add_card_details_option_set_as_default_card"
                />
 

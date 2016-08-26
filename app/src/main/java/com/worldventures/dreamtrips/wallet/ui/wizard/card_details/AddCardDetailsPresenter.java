@@ -29,6 +29,7 @@ import flow.History;
 import io.techery.janet.helper.ActionStateSubscriber;
 import io.techery.janet.helper.ActionStateToActionTransformer;
 import timber.log.Timber;
+import rx.Observable;
 
 public class AddCardDetailsPresenter extends WalletPresenter<AddCardDetailsPresenter.Screen, Parcelable> {
 
@@ -67,7 +68,10 @@ public class AddCardDetailsPresenter extends WalletPresenter<AddCardDetailsPrese
             .observeWithReplay()
             .compose(bindViewIoToMainComposer())
             .subscribe(new ActionStateSubscriber<FetchDefaultCardCommand>()
-                  .onSuccess(command -> getView().setAsDefaultPaymentCard(!CardUtils.isRealCardId(command.getResult()))));
+                  .onSuccess(command -> {
+                     getView().setAsDefaultPaymentCard(!CardUtils.isRealCardId(command.getResult()));
+                     getView().setAsDefaultPaymentCardCondition().compose(bindView()).subscribe(this::onSetAsDefaultCard);
+                  }));
 
       smartCardInteractor.getDefaultAddressCommandPipe()
             .observeWithReplay()
@@ -121,6 +125,16 @@ public class AddCardDetailsPresenter extends WalletPresenter<AddCardDetailsPrese
             .send(new SaveCardDetailsDataCommand(bankCard, addressInfo, nickname, cvv, useDefaultAddress, setAsDefaultAddress));
    }
 
+   private void onSetAsDefaultCard(boolean setDefaultCard){
+      if (!setDefaultCard) return;
+      //todo replace it
+      getView().showDefaultCardDialog("DEFAULT CARD NAME");
+   }
+
+   public void defaultCardDialogConfirmed(boolean confirmed) {
+      if (!confirmed) getView().setAsDefaultPaymentCard(false);
+   }
+
    public void goBack() {
       Flow.get(getContext()).goBack();
    }
@@ -137,6 +151,10 @@ public class AddCardDetailsPresenter extends WalletPresenter<AddCardDetailsPrese
       void useDefaultAddress(AddressInfoWithLocale defaultAddressInfo);
 
       void setAsDefaultPaymentCard(boolean defaultPaymentCard);
+
+      void showDefaultCardDialog(String defaultCardName);
+
+      Observable<Boolean> setAsDefaultPaymentCardCondition();
    }
 
 }

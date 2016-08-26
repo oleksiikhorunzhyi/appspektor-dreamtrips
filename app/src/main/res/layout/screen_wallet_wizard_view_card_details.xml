@@ -29,13 +29,24 @@
             android:layout_centerHorizontal="true"
             />
 
+      <CheckBox
+            android:id="@+id/default_payment_card_checkbox"
+            style="@style/WalletTheme.RoundCheckBox"
+            android:text="@string/wallet_add_card_details_option_set_as_default_card"
+            android:layout_below="@+id/card"
+            android:layout_alignParentStart="true"
+            android:layout_marginTop="@dimen/wallet_details_screen_component_margin_top"
+            android:layout_alignLeft="@+id/card"/>
+
       <TextView
             android:id="@+id/billing_address_label"
+            style="@style/WalletTheme.GrayTextView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentStart="true"
-            android:layout_below="@+id/card"
             android:layout_marginTop="@dimen/wallet_details_screen_component_margin_top"
+            android:layout_below="@+id/default_payment_card_checkbox"
+            android:text="@string/wallet_card_details_label_billing_address"
             />
 
       <TextView

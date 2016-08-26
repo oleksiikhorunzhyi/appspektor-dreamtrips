@@ -8,6 +8,7 @@ import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import com.jakewharton.rxbinding.widget.RxCompoundButton;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.wallet.domain.entity.AddressInfo;
 import com.worldventures.dreamtrips.wallet.domain.entity.AddressInfoWithLocale;
@@ -16,6 +17,7 @@ import com.worldventures.dreamtrips.wallet.domain.entity.card.BankCard;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletFrameLayout;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.OperationScreen;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.delegate.DialogOperationScreen;
+import com.worldventures.dreamtrips.wallet.ui.dialog.DefaultCardDialog;
 import com.worldventures.dreamtrips.wallet.ui.widget.BankCardWidget;
 import com.worldventures.dreamtrips.wallet.util.AddressUtil;
 import com.worldventures.dreamtrips.wallet.util.NonCopyPastSelectionMode;
@@ -23,6 +25,7 @@ import com.worldventures.dreamtrips.wallet.util.NonCopyPastSelectionMode;
 import butterknife.InjectView;
 import butterknife.OnCheckedChanged;
 import butterknife.OnClick;
+import rx.Observable;
 
 public class AddCardDetailsScreen extends WalletFrameLayout<AddCardDetailsPresenter.Screen, AddCardDetailsPresenter, AddCardDetailsPath> implements AddCardDetailsPresenter.Screen {
 
@@ -46,6 +49,7 @@ public class AddCardDetailsScreen extends WalletFrameLayout<AddCardDetailsPresen
    @InjectView(R.id.address_info) View addressInfoContainer;
 
    private DialogOperationScreen dialogOperationScreen;
+   private Observable<Boolean> setAsDefaultCardObservable;
 
    public AddCardDetailsScreen(Context context) {
       super(context);
@@ -65,6 +69,7 @@ public class AddCardDetailsScreen extends WalletFrameLayout<AddCardDetailsPresen
       super.onFinishInflate();
       toolbar.setNavigationOnClickListener(v -> navigateButtonClick());
       cardCvv.setCustomSelectionActionModeCallback(new NonCopyPastSelectionMode());
+      setAsDefaultCardObservable = RxCompoundButton.checkedChanges(setDefaultPaymentCard).skip(1);
    }
 
    @Override
@@ -105,6 +110,18 @@ public class AddCardDetailsScreen extends WalletFrameLayout<AddCardDetailsPresen
    public OperationScreen provideOperationDelegate() {
       if (dialogOperationScreen == null) dialogOperationScreen = new DialogOperationScreen(this);
       return dialogOperationScreen;
+   }
+
+   @Override
+   public void showDefaultCardDialog(String defaultCardName) {
+      new DefaultCardDialog(getContext(), defaultCardName)
+            .setOnCancelAction(() -> getPresenter().defaultCardDialogConfirmed(false))
+            .show();
+   }
+
+   @Override
+   public Observable<Boolean> setAsDefaultPaymentCardCondition() {
+      return setAsDefaultCardObservable;
    }
 
    protected void navigateButtonClick() {

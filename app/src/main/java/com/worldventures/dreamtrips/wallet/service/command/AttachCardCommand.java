@@ -55,9 +55,11 @@ public class AttachCardCommand extends Command<Record> implements InjectableActi
    }
 
    private Observable<Record> saveDefaultCard(Record record) {
-      return !setAsDefaultCard ? Observable.just(record) : janet.createPipe(SetDefaultCardOnDeviceCommand.class, Schedulers.io())
-            .createObservableResult(new SetDefaultCardOnDeviceCommand(String.valueOf(record.id())))
-            .map(setDefaultCardOnDeviceAction -> record);
+      return setAsDefaultCard ?
+            janet.createPipe(SetDefaultCardOnDeviceCommand.class, Schedulers.io())
+                  .createObservableResult(new SetDefaultCardOnDeviceCommand(String.valueOf(record.id())))
+                  .map(setDefaultCardOnDeviceAction -> record) :
+            Observable.just(record);
    }
 
    public BankCard bankCard() {

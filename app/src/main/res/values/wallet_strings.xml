@@ -98,6 +98,7 @@
    <string name="wallet_add_card_details_option_set_as_default_card">Set As Default Payment Card</string>
    <string name="wallet_add_card_details_option_set_as_default_address">Set As Default Address</string>
    <string name="wallet_add_card_details_error_message">Some of requirement fields are empty or contains incorrect data</string>
+   <string name="wallet_add_card_details_default_card_exist_dialog_text">Your default card %s will be replaced with this card. Do you want to proceed?</string>
 
    <!--card type-->
    <string name="wallet_card_financial_service_master_card">Master Card</string>

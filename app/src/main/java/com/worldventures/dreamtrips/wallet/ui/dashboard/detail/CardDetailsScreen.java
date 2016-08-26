@@ -3,27 +3,34 @@ package com.worldventures.dreamtrips.wallet.ui.dashboard.detail;
 import android.content.Context;
 import android.support.v7.widget.Toolbar;
 import android.util.AttributeSet;
+import android.widget.CheckBox;
 import android.widget.TextView;
 
+import com.jakewharton.rxbinding.widget.RxCompoundButton;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.wallet.domain.entity.AddressInfoWithLocale;
 import com.worldventures.dreamtrips.wallet.domain.entity.card.BankCard;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletFrameLayout;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.OperationScreen;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.delegate.DialogOperationScreen;
+import com.worldventures.dreamtrips.wallet.ui.dialog.DefaultCardDialog;
 import com.worldventures.dreamtrips.wallet.ui.widget.BankCardWidget;
 import com.worldventures.dreamtrips.wallet.util.AddressUtil;
 
 import butterknife.InjectView;
 import butterknife.OnClick;
+import rx.Observable;
 
 public class CardDetailsScreen extends WalletFrameLayout<CardDetailsPresenter.Screen, CardDetailsPresenter, CardDetailsPath> implements CardDetailsPresenter.Screen {
 
    @InjectView(R.id.toolbar) Toolbar toolbar;
 
+   @InjectView(R.id.default_payment_card_checkbox) CheckBox defaultPaymentCardCheckBox;
    @InjectView(R.id.address_textview) TextView addressText;
 
    @InjectView(R.id.card) BankCardWidget bankCardWidget;
+
+   private Observable<Boolean> setAsDefaultCardObservable;
 
    public CardDetailsScreen(Context context) {
       super(context);
@@ -42,6 +49,7 @@ public class CardDetailsScreen extends WalletFrameLayout<CardDetailsPresenter.Sc
    protected void onFinishInflate() {
       super.onFinishInflate();
       toolbar.setNavigationOnClickListener(v -> navigateButtonClick());
+      setAsDefaultCardObservable = RxCompoundButton.checkedChanges(defaultPaymentCardCheckBox).skip(1);
    }
 
    @OnClick(R.id.delete_button)
@@ -62,6 +70,23 @@ public class CardDetailsScreen extends WalletFrameLayout<CardDetailsPresenter.Sc
    @Override
    public void showCardBankInfo(BankCard bankCard) {
       bankCardWidget.setBankCardInfo(bankCard);
+   }
+
+   @Override
+   public void showDefaultCardDialog(String defaultCardName) {
+      new DefaultCardDialog(getContext(), defaultCardName)
+            .setOnCancelAction(() -> getPresenter().defaultCardDialogConfirmed(false))
+            .show();
+   }
+
+   @Override
+   public Observable<Boolean> setAsDefaultPaymentCardCondition() {
+      return setAsDefaultCardObservable;
+   }
+
+   @Override
+   public void setDefaultCardCondition(boolean defaultCard) {
+      defaultPaymentCardCheckBox.setChecked(defaultCard);
    }
 
    @Override

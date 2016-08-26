@@ -21,6 +21,7 @@ import javax.inject.Inject;
 import flow.Flow;
 import io.techery.janet.smartcard.action.records.DeleteRecordAction;
 import io.techery.janet.smartcard.model.Record;
+import rx.Observable;
 
 import static java.lang.Integer.valueOf;
 
@@ -47,6 +48,7 @@ public class CardDetailsPresenter extends WalletPresenter<CardDetailsPresenter.S
       view.setTitle(toolBarTitle);
       view.showCardBankInfo(bankCard);
       view.showDefaultAddress(obtainAddressWithCountry());
+      view.setAsDefaultPaymentCardCondition().compose(bindView()).subscribe(this::onSetAsDefaultCard);
 
       smartCardInteractor.deleteCardPipe()
             .observeWithReplay()
@@ -87,6 +89,16 @@ public class CardDetailsPresenter extends WalletPresenter<CardDetailsPresenter.S
       smartCardInteractor.deleteCardPipe().send(new DeleteRecordAction(valueOf(bankCard.id())));
    }
 
+   public void onSetAsDefaultCard(boolean setDefaultCard){
+      if (!setDefaultCard) return;
+      //todo replace it
+      getView().showDefaultCardDialog("DEFAULT CARD NAME");
+   }
+
+   public void defaultCardDialogConfirmed(boolean confirmed) {
+      if (!confirmed) getView().setDefaultCardCondition(false);
+   }
+
    public void goBack() {
       Flow.get(getContext()).goBack();
    }
@@ -97,6 +109,12 @@ public class CardDetailsPresenter extends WalletPresenter<CardDetailsPresenter.S
       void showCardBankInfo(BankCard bankCard);
 
       void showDefaultAddress(AddressInfoWithLocale addressInfoWithLocale);
+
+      void showDefaultCardDialog(String defaultCardName);
+
+      void setDefaultCardCondition(boolean defaultCard);
+
+      Observable<Boolean> setAsDefaultPaymentCardCondition();
    }
 
 }

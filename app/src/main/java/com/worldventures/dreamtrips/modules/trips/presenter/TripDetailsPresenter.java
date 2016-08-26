@@ -45,7 +45,7 @@ public class TripDetailsPresenter extends BaseTripPresenter<TripDetailsPresenter
       super.onResume();
       if (!featureManager.available(Feature.BOOK_TRAVEL)) {
          view.hideBookIt();
-         view.showSignUp();
+        // view.showSignUp();
       } else if (trip.isSoldOut() || (!getAccount().isPlatinum() && trip.isPlatinum())) {
          view.hideBookIt();
       }

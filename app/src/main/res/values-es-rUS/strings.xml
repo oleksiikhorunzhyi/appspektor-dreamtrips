@@ -653,7 +653,7 @@
 
    <string name="error_fail_to_translate_text">Error al traducir el texto</string>
 
-   <string name="book_it_disabled">Debes ser un Miembro de DreamTrips para reservar un\nviaje. Haz clic aquí para  <a href="enroll_member">registrarte</a></string>
+   <string name="book_it_disabled">Debes ser un Miembro de DreamTrips para reservar un viaje</string>
 
    <string name="error_fail_to_load_filters">Lo sentimos, error al cargar los filtros</string>
    <string name="flag_content_message">El personal de WorldVentures recibirá una notificación para revisar este contenido por </string>

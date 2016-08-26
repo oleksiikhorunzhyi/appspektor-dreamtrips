@@ -653,7 +653,7 @@
 
    <string name="error_fail_to_translate_text">Αποτυχία να μεταφραστεί το κείμενο</string>
 
-   <string name="book_it_disabled">Πρέπει να είστε DreamTrips Μέλος\n για να κλείσετε ένα ταξίδι. Κάντε κλικ εδώ για να <a href="enroll_member"> Εγγραφείτε </a></string>
+   <string name="book_it_disabled">Πρέπει να είστε DreamTrips Μέλος για να κλείσετε ένα ταξίδι</string>
 
    <string name="error_fail_to_load_filters">Λυπούμαστε, απέτυχε να φορτώσει τα φίλτρα</string>
    <string name="flag_content_message">To προσωπικό της WorldVentures θα ειδοποιηθεί να αναθεωρήσει αυτό το περιεχόμενο για ακατάλληλο περιεχόμενο. </string>

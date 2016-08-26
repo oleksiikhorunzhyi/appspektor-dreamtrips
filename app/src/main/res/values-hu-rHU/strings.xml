@@ -653,7 +653,7 @@
 
    <string name="error_fail_to_translate_text">Nem sikerült lefordítani a szöveget</string>
 
-   <string name="book_it_disabled">DreamTrips klubtagnak kell lenni az út foglalásához. Katt. ide<a href="enroll_member">beiratkozáshoz</a></string>
+   <string name="book_it_disabled">DreamTrips klubtagnak kell lenni az út foglalásához</string>
 
    <string name="error_fail_to_load_filters">Sajnáljuk, nem sikerült betölteni a szűrőket</string>
    <string name="flag_content_message">A WorldVentures munkatársai értesítést kapnak arról, hogy ellenőrizzék ezt a tartalmat </string>

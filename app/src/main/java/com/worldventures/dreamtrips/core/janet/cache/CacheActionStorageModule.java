@@ -16,6 +16,7 @@ import com.worldventures.dreamtrips.modules.friends.service.CirclesStorage;
 import com.worldventures.dreamtrips.modules.trips.service.storage.ActivitiesStorage;
 import com.worldventures.dreamtrips.modules.trips.service.storage.RegionsStorage;
 import com.worldventures.dreamtrips.wallet.domain.storage.DefaultBankCardStorage;
+import com.worldventures.dreamtrips.wallet.domain.storage.SmartCardStorage;
 import com.worldventures.dreamtrips.wallet.domain.storage.WalletCardsDiskStorage;
 
 import javax.inject.Singleton;
@@ -88,7 +89,7 @@ public class CacheActionStorageModule {
 
    @Singleton
    @Provides(type = Provides.Type.SET)
-   ActionStorage provideWalletCardListStorage(SnappyRepository snappyRepository) {
+   MultipleActionStorage provideWalletCardListStorage(SnappyRepository snappyRepository) {
       return new WalletCardsDiskStorage(snappyRepository);
    }
 
@@ -96,5 +97,11 @@ public class CacheActionStorageModule {
    @Provides(type = Provides.Type.SET)
    MultipleActionStorage provideDefaultBankCardStorage(SnappyRepository snappyRepository) {
       return new DefaultBankCardStorage(snappyRepository);
+   }
+
+   @Singleton
+   @Provides(type = Provides.Type.SET)
+   MultipleActionStorage provideSmartCardStorage(SnappyRepository snappyRepository) {
+      return new SmartCardStorage(snappyRepository);
    }
 }

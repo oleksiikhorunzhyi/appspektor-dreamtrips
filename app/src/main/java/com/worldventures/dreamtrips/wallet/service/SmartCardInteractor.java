@@ -124,10 +124,13 @@ public final class SmartCardInteractor {
             .observeSuccess()
             .subscribe(command -> activeSmartCardPipe.send(new GetActiveSmartCardCommand()));
 
-      Observable.merge(deleteCardPipe.observeSuccess()
-            .flatMap(deleteCommand -> cardsListPipe.createObservable(remove(valueOf(deleteCommand.recordId)))), addRecordPipe
-            .observeSuccess()
-            .flatMap(attachCardCommand -> cardsListPipe.createObservable(add(attachCardCommand.bankCard()))))
+      Observable.merge(
+            deleteCardPipe
+                  .observeSuccess()
+                  .flatMap(deleteCommand -> cardsListPipe.createObservable(remove(valueOf(deleteCommand.recordId)))),
+            addRecordPipe
+                  .observeSuccess()
+                  .flatMap(attachCardCommand -> cardsListPipe.createObservable(add(attachCardCommand.bankCard()))))
             .subscribe(new ActionStateSubscriber<CardListCommand>().onSuccess(cardListCommand -> cardStacksPipe.send(CardStacksCommand
                   .get(false))).onFail((cardListCommand, throwable) -> {
                throw new IllegalStateException("Cannot perform operation onto card list cache", throwable);

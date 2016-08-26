@@ -2,6 +2,7 @@ package com.worldventures.dreamtrips.wallet
 
 import android.content.Context
 import android.test.mock.MockContext
+import android.text.TextUtils
 import com.nhaarman.mockito_kotlin.*
 import com.worldventures.dreamtrips.AssertUtil
 import com.worldventures.dreamtrips.AssertUtil.assertActionSuccess
@@ -15,6 +16,7 @@ import com.worldventures.dreamtrips.wallet.domain.entity.ImmutableProvision
 import com.worldventures.dreamtrips.wallet.domain.entity.card.BankCard
 import com.worldventures.dreamtrips.wallet.domain.entity.card.BankCard.CardType
 import com.worldventures.dreamtrips.wallet.domain.storage.DefaultBankCardStorage
+import com.worldventures.dreamtrips.wallet.domain.storage.SmartCardStorage
 import com.worldventures.dreamtrips.wallet.domain.storage.WalletCardsDiskStorage
 import com.worldventures.dreamtrips.wallet.service.SmartCardInteractor
 import com.worldventures.dreamtrips.wallet.service.command.*
@@ -31,12 +33,15 @@ import io.techery.janet.smartcard.action.records.SetRecordAsDefaultAction
 import io.techery.janet.smartcard.action.support.ConnectAction
 import io.techery.janet.smartcard.mock.client.MockSmartCardClient
 import io.techery.janet.smartcard.model.Record
+import org.powermock.api.mockito.PowerMockito
 import rx.functions.Func1
 import rx.observers.TestSubscriber
 
 class SmartCardInteractorSpec : BaseSpec({
    describe("SmartCard SDK actions") {
       beforeEach {
+         staticMockTextUtils()
+
          mockDb = createMockDb()
          janet = createJanet()
          smartCardInteractor = createInteractor(janet)
@@ -47,7 +52,7 @@ class SmartCardInteractorSpec : BaseSpec({
          mockedCreditCard = mock()
          mockedDefaultCard = mock()
          mockedAddressInfo = mock()
-         prepareCardsMock()
+         prepareCardsAndAddressMock()
 
          mockedListOfCards = mutableListOf(mockedDebitCard, mockedCreditCard, mockedDefaultCard)
       }
@@ -151,7 +156,7 @@ class SmartCardInteractorSpec : BaseSpec({
             assertActionSuccess(saveBankCardData(bankCard = mockedDebitCard, setAsDefaultAddress = true), { true })
 
             verify(mockDb, times(1)).saveDefaultAddress(any())
-            verify(mockDb, times(1)).saveWalletDefaultCardId(any())
+            verify(mockDb, times(3)).saveWalletDefaultCardId(any())
          }
 
          it("Card with valid data should be stored without default address and not marked as default") {
@@ -162,8 +167,8 @@ class SmartCardInteractorSpec : BaseSpec({
             verify(mockDb, times(0)).saveDefaultAddress(any())
             //method below shouldn't be called at all, but it's called because of
             // implementation CachedAction interface by FetchDefaultCardCommand
-            verify(mockDb, times(1)).saveWalletDefaultCardId(any())
-            verify(mockDb, times(1)).saveWalletDefaultCardId(defaultCardId)
+            verify(mockDb, times(2)).saveWalletDefaultCardId(any())
+            verify(mockDb, times(2)).saveWalletDefaultCardId(defaultCardId)
          }
 
          it("Card with invalid data shouldn't be stored") {
@@ -174,6 +179,7 @@ class SmartCardInteractorSpec : BaseSpec({
          }
       }
    }
+
 }) {
    private companion object {
       val TEST_CARD_ID = 1
@@ -189,12 +195,18 @@ class SmartCardInteractorSpec : BaseSpec({
       lateinit var mockedAddressInfo: AddressInfo
       lateinit var mockedListOfCards: List<BankCard>
 
-      val setOfStorage: () -> Set<ActionStorage<*>> = {
-         setOf(WalletCardsDiskStorage(mockDb))
+      val setOfMultiplyStorage: () -> Set<MultipleActionStorage<*>> = {
+         setOf(DefaultBankCardStorage(mockDb), WalletCardsDiskStorage(mockDb), SmartCardStorage(mockDb))
       }
 
-      val setOfMultiplyStorage: () -> Set<MultipleActionStorage<*>> = {
-         setOf(DefaultBankCardStorage(mockDb))
+      fun staticMockTextUtils () {
+         PowerMockito.`mockStatic`(TextUtils::class.java)
+         PowerMockito.`doAnswer`({ invocation ->
+            val arg1 : String = invocation.getArgumentAt(0, String::class.java)
+            var arg2 : String = invocation.getArgumentAt(1, String::class.java)
+            arg1 == arg2
+         }).`when`(TextUtils::class.java)
+         TextUtils.`equals`(anyString(), anyString())
       }
 
       fun createInteractor(janet: Janet) = SmartCardInteractor(janet)
@@ -203,7 +215,6 @@ class SmartCardInteractorSpec : BaseSpec({
          val daggerCommandActionService = CommandActionService()
                .wrapCache()
                .bindMultiplyStorageSet(setOfMultiplyStorage())
-               .bindStorageSet(setOfStorage())
                .wrapDagger()
 
          janet = Janet.Builder()
@@ -292,21 +303,20 @@ class SmartCardInteractorSpec : BaseSpec({
          this.createPipe(ConnectAction::class.java).createObservableResult(ConnectAction("any", "any")).subscribe()
       }
 
-      private fun prepareCardsMock() {
+      private fun prepareCardsAndAddressMock() {
          whenever(mockedDefaultCard.id()).thenReturn(TEST_DEFAULT_CARD_ID.toString())
 
-         val addressInfo: AddressInfo = mock()
-         whenever(addressInfo.address1()).thenReturn("test address 1")
-         whenever(addressInfo.address2()).thenReturn("test address 2")
-         whenever(addressInfo.city()).thenReturn("test city")
-         whenever(addressInfo.state()).thenReturn("test state")
-         whenever(addressInfo.zip()).thenReturn("test zip")
+         whenever(mockedAddressInfo.address1()).thenReturn("test address 1")
+         whenever(mockedAddressInfo.address2()).thenReturn("test address 2")
+         whenever(mockedAddressInfo.city()).thenReturn("test city")
+         whenever(mockedAddressInfo.state()).thenReturn("test state")
+         whenever(mockedAddressInfo.zip()).thenReturn("test zip")
 
          whenever(mockedDebitCard.id()).thenReturn(TEST_CARD_ID.toString())
          whenever(mockedDebitCard.title()).thenReturn("TEST")
          whenever(mockedDebitCard.number()).thenReturn(123456789L)
          whenever(mockedDebitCard.cvv()).thenReturn(375)
-         whenever(mockedDebitCard.addressInfo()).thenReturn(addressInfo)
+         whenever(mockedDebitCard.addressInfo()).thenReturn(mockedAddressInfo)
          whenever(mockedDebitCard.expiryMonth()).thenReturn(12)
          whenever(mockedDebitCard.expiryYear()).thenReturn(34)
          whenever(mockedDebitCard.type()).thenReturn(Record.FinancialService.MASTERCARD)

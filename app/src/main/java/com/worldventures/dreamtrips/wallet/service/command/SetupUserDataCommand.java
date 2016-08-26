@@ -1,12 +1,17 @@
 package com.worldventures.dreamtrips.wallet.service.command;
 
 import com.techery.spares.session.SessionHolder;
+import com.worldventures.dreamtrips.core.janet.cache.CacheBundle;
+import com.worldventures.dreamtrips.core.janet.cache.CacheBundleImpl;
+import com.worldventures.dreamtrips.core.janet.cache.CacheOptions;
+import com.worldventures.dreamtrips.core.janet.cache.CachedAction;
+import com.worldventures.dreamtrips.core.janet.cache.ImmutableCacheOptions;
 import com.worldventures.dreamtrips.core.janet.dagger.InjectableAction;
-import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.core.session.UserSession;
 import com.worldventures.dreamtrips.core.utils.FileUtils;
 import com.worldventures.dreamtrips.wallet.domain.entity.ImmutableSmartCard;
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCard;
+import com.worldventures.dreamtrips.wallet.domain.storage.SmartCardStorage;
 import com.worldventures.dreamtrips.wallet.util.FormatException;
 import com.worldventures.dreamtrips.wallet.util.WalletValidateHelper;
 
@@ -16,6 +21,7 @@ import java.io.IOException;
 import javax.inject.Inject;
 import javax.inject.Named;
 
+import io.techery.janet.ActionHolder;
 import io.techery.janet.Command;
 import io.techery.janet.Janet;
 import io.techery.janet.command.annotations.CommandAction;
@@ -28,15 +34,15 @@ import rx.Observable;
 import static com.worldventures.dreamtrips.core.janet.JanetModule.JANET_WALLET;
 
 @CommandAction
-public class SetupUserDataCommand extends Command<SmartCard> implements InjectableAction {
+public class SetupUserDataCommand extends Command<SmartCard> implements InjectableAction, CachedAction<SmartCard> {
 
    @Inject @Named(JANET_WALLET) Janet janet;
    @Inject SessionHolder<UserSession> userSessionHolder;
-   @Inject SnappyRepository snappyRepository;
 
    private final String fullName;
    private final File avatarFile;
    private final String getSmartCardId;
+   private SmartCard smartCard;
 
    public SetupUserDataCommand(String fullName, File avatarFile, String getSmartCardId) {
       // TODO: 8/2/16 change on first name and second name
@@ -58,12 +64,10 @@ public class SetupUserDataCommand extends Command<SmartCard> implements Injectab
    }
 
    private SmartCard attachAvatarToLocalSmartCard() {
-      SmartCard smartCard = snappyRepository.getSmartCard(getSmartCardId);
       smartCard = ImmutableSmartCard.builder()
             .from(smartCard)
             .userPhoto("file://" + avatarFile.getAbsolutePath())
             .build();
-      snappyRepository.saveSmartCard(smartCard);
       return smartCard;
    }
 
@@ -102,6 +106,28 @@ public class SetupUserDataCommand extends Command<SmartCard> implements Injectab
 
    private byte[] getAvatarAsByteArray() throws IOException {
       return FileUtils.readByteArray(avatarFile);
+   }
+
+   @Override
+   public SmartCard getCacheData() {
+      return smartCard;
+   }
+
+   @Override
+   public void onRestore(ActionHolder holder, SmartCard cache) {
+      this.smartCard = cache;
+   }
+
+   @Override
+   public CacheOptions getCacheOptions() {
+      CacheBundle bundle = new CacheBundleImpl();
+      bundle.put(SmartCardStorage.CARD_ID_PARAM, getSmartCardId);
+
+      return ImmutableCacheOptions.builder()
+            .params(bundle)
+            .restoreFromCache(true)
+            .saveToCache(true)
+            .build();
    }
 
    public static class MissedAvatarException extends RuntimeException {

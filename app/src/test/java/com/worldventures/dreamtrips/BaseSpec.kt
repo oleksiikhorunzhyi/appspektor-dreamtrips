@@ -1,6 +1,7 @@
 package com.worldventures.dreamtrips
 
 import android.location.Location
+import android.text.TextUtils
 import com.nhaarman.mockito_kotlin.spy
 import com.worldventures.dreamtrips.common.RxJavaSchedulerInitializer
 import com.worldventures.dreamtrips.core.janet.cache.CacheResultWrapper
@@ -19,7 +20,7 @@ import org.powermock.modules.junit4.PowerMockRunnerDelegate
 
 @RunWith(PowerMockRunner::class)
 @PowerMockRunnerDelegate(JUnitSpekRunner::class)
-@PrepareForTest(Location::class)
+@PrepareForTest(Location::class, TextUtils::class)
 abstract class BaseSpec(spekBody: DescribeBody.() -> Unit) : Spek(spekBody) {
    companion object {
       init {

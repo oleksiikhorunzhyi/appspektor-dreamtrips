@@ -19,7 +19,7 @@ import rx.schedulers.Schedulers;
 import static com.worldventures.dreamtrips.core.janet.JanetModule.JANET_WALLET;
 
 public final class WizardInteractor {
-   private final WriteActionPipe<CreateAndConnectToCardCommand> createAndConnectPipe;
+   private final ActionPipe<CreateAndConnectToCardCommand> createAndConnectPipe;
    private final ActionPipe<SetupSmartCardNameCommand> setupSmartCardNamePipe;
    private final ActionPipe<SetupUserDataCommand> setupUserDataPipe;
 
@@ -38,7 +38,7 @@ public final class WizardInteractor {
       startPinSetupPipe = janet.createPipe(StartPinSetupAction.class, Schedulers.io());
    }
 
-   public WriteActionPipe<CreateAndConnectToCardCommand> createAndConnectActionPipe() {
+   public ActionPipe<CreateAndConnectToCardCommand> createAndConnectActionPipe() {
       return createAndConnectPipe;
    }
 

@@ -549,9 +549,10 @@ public class TrackingHelper {
 
    // ---------------- Tracking helper methods
 
-   public static void setUserId(String userId) {
+   public static void setUserId(String username, String userId) {
       HashMap<String, String> headerData = new HashMap<>(1);
-      headerData.put("member_id", userId);
+      headerData.put("member_id", username);
+      headerData.put("old_member_id", userId);
       trackers.get(KEY_ADOBE_TRACKER).setHeaderData(headerData);
    }
 

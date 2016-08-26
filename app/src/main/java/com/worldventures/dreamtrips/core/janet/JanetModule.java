@@ -192,7 +192,7 @@ public class JanetModule {
    @Singleton
    @Provides(type = Provides.Type.SET)
    @Named(JANET_WALLET)
-   ActionService provideMagstripeReaderService(MagstripeReaderClient client) {
+   ActionService provideMagstripeReaderService(@Named("Mock") MagstripeReaderClient client) {
       return new MagstripeActionService(client);
    }
 }

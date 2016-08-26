@@ -48,7 +48,7 @@ public class WizardPinSetupPresenter extends WalletPresenter<WizardPinSetupPrese
 
    private void observeSetupFinishedPipe() {
       wizardInteractor.pinSetupFinishedPipe()
-            .observe()
+            .observeWithReplay()
             .compose(bindViewIoToMainComposer())
             .subscribe(new ActionStateSubscriber<PinSetupFinishedEvent>().onSuccess(action -> {
                getView().provideOperationDelegate().hideProgress();
@@ -56,16 +56,18 @@ public class WizardPinSetupPresenter extends WalletPresenter<WizardPinSetupPrese
             })
                   .onFail((action, throwable) -> getView().provideOperationDelegate()
                         .showError(getContext().getString(R.string.wallet_wizard_setup_error), null)));
-   }
 
-   public void setupPIN() {
       wizardInteractor.startPinSetupPipe()
-            .createObservable(new StartPinSetupAction())
+            .observeWithReplay()
             .compose(bindViewIoToMainComposer())
             .subscribe(new ActionStateSubscriber<StartPinSetupAction>().onFail((action1, throwable) -> getView().provideOperationDelegate()
                   .showError(getContext().getString(R.string.wallet_wizard_setup_error), null))
                   .onStart(action -> getView().provideOperationDelegate()
                         .showProgress(getContext().getString(R.string.wallet_wizard_setup_progress), null)));
+   }
+
+   public void setupPIN() {
+      wizardInteractor.startPinSetupPipe().send(new StartPinSetupAction());
    }
 
    private void navigateToNextScreen() {

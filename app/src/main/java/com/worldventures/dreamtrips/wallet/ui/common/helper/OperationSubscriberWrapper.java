@@ -41,8 +41,13 @@ public final class OperationSubscriberWrapper<T> {
       return this;
    }
 
+   public OperationSubscriberWrapper<T> onSuccess(MessageProvider<T> messageProvider, @Nullable Action1<T> onSuccess) {
+      this.onSuccessHolder = new MessageActionHolder<>(messageProvider, onSuccess);
+      return this;
+   }
+
    public OperationSubscriberWrapper<T> onSuccess(@Nullable Action1<T> onSuccess) {
-      return onSuccess(null, onSuccess);
+      return onSuccess(MessageProvider.NULL, onSuccess);
    }
 
    public OperationSubscriberWrapper<T> onFail(String message, @Nullable Action1<T> onFail) {
@@ -67,19 +72,19 @@ public final class OperationSubscriberWrapper<T> {
 
    public ActionStateSubscriber<T> wrap() {
       return new ActionStateSubscriber<T>().onStart(t -> {
-         String message = hasActionMessage(onStartHolder) ? onStartHolder.message : view.context()
+         String message = hasActionMessage(onStartHolder) ? onStartHolder.message.provide(t) : view.context()
                .getString(R.string.loading);
 
          view.showProgress(message, o -> onStartHolder.action.call(t));
       }).onSuccess(t -> {
-         String message = hasActionMessage(onSuccessHolder) ? onSuccessHolder.message : view.context()
+         String message = hasActionMessage(onSuccessHolder) ? onSuccessHolder.message.provide(t) : view.context()
                .getString(R.string.ok);
 
          view.hideProgress();
          view.showSuccess(message, o -> onSuccessHolder.action.call(t));
       }).onFail((t, throwable) -> {
          final MessageActionHolder<T> failHolder = onFailFactory != null ? onFailFactory.call(throwable) : null;
-         String message = hasActionMessage(failHolder) ? failHolder.message : view.context()
+         String message = hasActionMessage(failHolder) ? failHolder.message.provide(t) : view.context()
                .getString(R.string.error_something_went_wrong);
 
          view.hideProgress();
@@ -93,12 +98,22 @@ public final class OperationSubscriberWrapper<T> {
 
    public static final class MessageActionHolder<T> {
       Action1<T> action;
-      String message;
+      MessageProvider<T> message;
 
       public MessageActionHolder(String message, Action1<T> action) {
+         this(t -> message, action);
+      }
+
+      public MessageActionHolder(MessageProvider<T> message, Action1<T> action) {
          this.message = message;
          this.action = action;
       }
+   }
+
+   public interface MessageProvider<T> {
+      MessageProvider NULL = action -> null;
+
+      String provide(T action);
    }
 
    private boolean hasActionMessage(MessageActionHolder<T> holder) {

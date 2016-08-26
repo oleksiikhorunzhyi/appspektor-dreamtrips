@@ -5,6 +5,7 @@ import android.os.Parcelable;
 
 import com.techery.spares.module.Injector;
 import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.core.janet.composer.ActionPipeCacheWiper;
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCard;
 import com.worldventures.dreamtrips.wallet.service.WizardInteractor;
 import com.worldventures.dreamtrips.wallet.service.command.ActivateSmartCardCommand;
@@ -33,9 +34,11 @@ public class WalletPinIsSetPresenter extends WalletPresenter<WalletPinIsSetPrese
    public void attachView(Screen view) {
       super.attachView(view);
       wizardInteractor.activateSmartCardPipe()
-            .observe()
+            .observeWithReplay()
+            .compose(new ActionPipeCacheWiper<>(wizardInteractor.activateSmartCardPipe()))
             .compose(bindViewIoToMainComposer())
-            .subscribe(OperationSubscriberWrapper.<ActivateSmartCardCommand>forView(view.provideOperationDelegate()).onSuccess(command -> navigateToDashboardScreen())
+            .subscribe(OperationSubscriberWrapper.<ActivateSmartCardCommand>forView(view.provideOperationDelegate())
+                  .onSuccess(command -> navigateToDashboardScreen())
                   .onFail(getContext().getString(R.string.error_something_went_wrong))
                   .wrap());
    }

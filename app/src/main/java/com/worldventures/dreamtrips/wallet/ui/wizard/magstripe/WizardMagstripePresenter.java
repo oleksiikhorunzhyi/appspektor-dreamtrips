@@ -5,6 +5,7 @@ import android.os.Parcelable;
 
 import com.techery.spares.module.Injector;
 import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.core.janet.composer.ActionPipeCacheWiper;
 import com.worldventures.dreamtrips.wallet.domain.entity.card.BankCard;
 import com.worldventures.dreamtrips.wallet.domain.entity.card.BankCard.CardType;
 import com.worldventures.dreamtrips.wallet.domain.entity.card.Card;
@@ -52,6 +53,7 @@ public class WizardMagstripePresenter extends WalletPresenter<WizardMagstripePre
       interactor.swipeCardEventActionPipe()
             .observe()
             .compose(bindViewIoToMainComposer())
+            .compose(new ActionPipeCacheWiper<>(interactor.swipeCardEventActionPipe()))
             .subscribe(OperationSubscriberWrapper.<SwipeCardEventAction>forView(getView().provideOperationDelegate())
                   .onSuccess(action -> cardSwiped(action.data()))
                   .onFail(getContext().getString(R.string.wallet_wizard_magstripe_swipe_error)).wrap());

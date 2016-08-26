@@ -42,7 +42,7 @@ public final class SmartCardInteractor {
    private final ActionPipe<CardCountCommand> cardCountCommandPipe;
    private final ActionPipe<SaveDefaultAddressCommand> saveDefaultAddressPipe;
    private final ActionPipe<GetDefaultAddressCommand> getDefaultAddressCommandPipe;
-   private final WriteActionPipe<SaveCardDetailsDataCommand> saveCardDetailsDataCommandPipe;
+   private final ActionPipe<SaveCardDetailsDataCommand> saveCardDetailsDataCommandPipe;
    private final ActionPipe<SetStealthModeCommand> setStealthModePipe;
    private final ActionPipe<SetLockStateCommand> setLockPipe;
    private final ReadActionPipe<SmartCardModifier> smartCardModifierPipe;
@@ -115,7 +115,7 @@ public final class SmartCardInteractor {
       return setLockPipe;
    }
 
-   public WriteActionPipe<SaveCardDetailsDataCommand> saveCardDetailsDataPipe() {
+   public ActionPipe<SaveCardDetailsDataCommand> saveCardDetailsDataPipe() {
       return saveCardDetailsDataCommandPipe;
    }
 

@@ -6,6 +6,7 @@ import android.support.annotation.NonNull;
 
 import com.techery.spares.module.Injector;
 import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.core.janet.composer.ActionPipeCacheWiper;
 import com.worldventures.dreamtrips.wallet.service.WizardInteractor;
 import com.worldventures.dreamtrips.wallet.service.command.SetupSmartCardNameCommand;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletPresenter;
@@ -43,8 +44,9 @@ public class WizardCardNamePresenter extends WalletPresenter<WizardCardNamePrese
 
    private void observeSmartCardNamePipe() {
       wizardInteractor.setupSmartCardNamePipe()
-            .observe()
+            .observeWithReplay()
             .compose(bindViewIoToMainComposer())
+            .compose(new ActionPipeCacheWiper<>(wizardInteractor.setupSmartCardNamePipe()))
             .subscribe(OperationSubscriberWrapper.<SetupSmartCardNameCommand>forView(getView().provideOperationDelegate())
                   .onStart(getContext().getString(R.string.wallet_wizard_card_alias_setup))
                   .onSuccess(getContext().getString(R.string.wallet_wizard_card_alias_was_setup), command -> Flow.get(getContext())

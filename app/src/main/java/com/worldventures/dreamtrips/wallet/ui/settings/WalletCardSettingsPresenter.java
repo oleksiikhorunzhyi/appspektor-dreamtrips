@@ -40,6 +40,16 @@ public class WalletCardSettingsPresenter extends WalletPresenter<WalletCardSetti
             .observeSuccessWithReplay()
             .compose(bindViewIoToMainComposer())
             .subscribe(command -> bindSmartCard(this.smartCard = command.getResult()));
+
+      smartCardInteractor.setStealthModePipe()
+            .observeWithReplay()
+            .compose(bindViewIoToMainComposer())
+            .subscribe(
+                  OperationSubscriberWrapper.<SetStealthModeCommand>forView(getView().provideOperationDelegate())
+                        .onFail(getContext().getString(R.string.error_something_went_wrong))
+                        .onSuccess(action -> getSuccessMessage(action.stealthModeEnabled), action -> {})
+                        .wrap()
+            );
    }
 
    private void observeStealthModeController(Screen view) {
@@ -63,13 +73,7 @@ public class WalletCardSettingsPresenter extends WalletPresenter<WalletCardSetti
    }
 
    private void stealthModeChanged(boolean isEnabled) {
-      smartCardInteractor.setStealthModePipe()
-            .createObservable(new SetStealthModeCommand(isEnabled))
-            .compose(bindViewIoToMainComposer())
-            .subscribe(OperationSubscriberWrapper.<SetStealthModeCommand>forView(getView().provideOperationDelegate()).onFail(getContext()
-                  .getString(R.string.error_something_went_wrong))
-                  .onSuccess(getSuccessMessage(isEnabled), action -> {})
-                  .wrap());
+      smartCardInteractor.setStealthModePipe().send(new SetStealthModeCommand(isEnabled));
    }
 
    private String getSuccessMessage(boolean isEnabled) {

@@ -62,16 +62,18 @@ public class CardListScreenPresenter extends WalletPresenter<CardListScreenPrese
             .observeSuccessWithReplay()
             .compose(bindViewIoToMainComposer())
             .subscribe(it -> setSmartCard(it.getResult()));
-   }
 
-   public void onLockChanged(boolean isLocked) {
       smartCardInteractor.lockPipe()
-            .createObservable(new SetLockStateCommand(isLocked))
+            .observeWithReplay()
             .compose(bindViewIoToMainComposer())
             .subscribe(OperationSubscriberWrapper.<SetLockStateCommand>forView(getView().provideOperationDelegate()).onFail(getContext()
                   .getString(R.string.wallet_dashboard_unlock_error), a -> getView().notifySmartCardChanged(cardStackHeaderHolder))
                   .onSuccess(action -> { })
                   .wrap());
+   }
+
+   public void onLockChanged(boolean isLocked) {
+      smartCardInteractor.lockPipe().send(new SetLockStateCommand(isLocked));
    }
 
    private void setSmartCard(SmartCard smartCard) {

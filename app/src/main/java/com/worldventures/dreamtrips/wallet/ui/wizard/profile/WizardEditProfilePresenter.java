@@ -9,6 +9,7 @@ import android.text.TextUtils;
 import com.techery.spares.module.Injector;
 import com.techery.spares.session.SessionHolder;
 import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.core.janet.composer.ActionPipeCacheWiper;
 import com.worldventures.dreamtrips.core.session.UserSession;
 import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.wallet.service.SmartCardAvatarInteractor;
@@ -79,8 +80,9 @@ public class WizardEditProfilePresenter extends WalletPresenter<WizardEditProfil
 
    public void subscribeSetupUserCommand() {
       wizardInteractor.setupUserDataPipe()
-            .observe()
+            .observeWithReplay()
             .compose(bindViewIoToMainComposer())
+            .compose(new ActionPipeCacheWiper<>(wizardInteractor.setupUserDataPipe()))
             .subscribe(OperationSubscriberWrapper.<SetupUserDataCommand>forView(getView().provideOperationDelegate()).onStart(getContext()
                   .getString(R.string.wallet_edit_profile_progress_dialog))
                   .onSuccess(getContext().getString(R.string.wallet_edit_profile_success_dialog), setupUserDataCommand -> Flow

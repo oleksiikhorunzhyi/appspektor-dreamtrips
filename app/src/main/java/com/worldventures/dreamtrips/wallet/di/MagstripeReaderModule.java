@@ -21,6 +21,9 @@ public class MagstripeReaderModule {
     @Provides
     @Named("Mock")
     MagstripeReaderClient provideMockSmartCardClient() {
-        return new MockClient.Builder().build();
+        return new MockClient.Builder()
+              .swipeDelay(200)
+              .swipeRepeatCount(1)
+              .build();
     }
 }

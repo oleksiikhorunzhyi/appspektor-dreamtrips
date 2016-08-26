@@ -24,7 +24,7 @@ public final class WizardInteractor {
    private final ActionPipe<SetupUserDataCommand> setupUserDataPipe;
 
    private final ReadActionPipe<PinSetupFinishedEvent> pinSetupFinishedPipe;
-   private final WriteActionPipe<StartPinSetupAction> startPinSetupPipe;
+   private final ActionPipe<StartPinSetupAction> startPinSetupPipe;
    private final ActionPipe<ActivateSmartCardCommand> activateSmartCardPipe;
 
    @Inject
@@ -50,7 +50,7 @@ public final class WizardInteractor {
       return setupUserDataPipe;
    }
 
-   public WriteActionPipe<StartPinSetupAction> startPinSetupPipe() {
+   public ActionPipe<StartPinSetupAction> startPinSetupPipe() {
       return startPinSetupPipe;
    }
 

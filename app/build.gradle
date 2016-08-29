@@ -85,7 +85,7 @@ android {
    def CONFIG_MAP_PERF = [
          'DreamTripsApi'    : '"http://dtapp-perf.worldventures.biz"',
          'NEWRELIC_API_KEY' : '"AA8998d2de5c99adddd3668515e76b5d501271a04b"',
-         'UPLOADERY_API_URL': '"http://techery-dt-perf-uploadery.techery.io"',
+         'UPLOADERY_API_URL': '"dtappupload-perf.wvholdings.com"',
    ]
    def CONFIG_MAP_PROD = [
          'DreamTripsApi'    : '"https://dtapp.worldventures.biz"',

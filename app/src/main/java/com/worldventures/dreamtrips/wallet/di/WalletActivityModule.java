@@ -52,6 +52,6 @@ public class WalletActivityModule {
 
    @Provides(type = Provides.Type.SET)
    ComponentDescription provideMessengerComponent() {
-      return new ComponentDescription(WALLET, R.string.wallet, R.string.wallet, R.drawable.ic_messenger, true, null);
+      return new ComponentDescription(WALLET, R.string.wallet, R.string.wallet, R.drawable.ic_wallet, true, null);
    }
 }

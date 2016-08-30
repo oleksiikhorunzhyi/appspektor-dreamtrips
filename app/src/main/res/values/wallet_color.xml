@@ -11,4 +11,7 @@
    <color name="wallet_card_list_empty_list_label_color">#006699</color>
 
    <color name="wallet_card_list_header_text">#90979a</color>
+
+   <color name="wallet_color_background_with_alpha">#BF22262D</color>
+   <color name="wallet_bar_code_scanner_border">@android:color/white</color>
 </resources>

@@ -47,7 +47,7 @@
    <string name="wallet_wizard_splash_start_btn">Scan Card</string>
    <string name="wallet_wizard_splash_scan_title">Scan Card</string>
 
-   <string name="wallet_wizard_scan_barcode_header">Position smart card\nbarcode in the frame</string>
+   <string name="wallet_wizard_scan_barcode_header">Position the flye™ card barcode in the viewfinder box.</string>
    <string name="wallet_wizard_scan_barcode_footer_title">Not scanning?</string>
    <string name="wallet_wizard_scan_barcode_footer_btn">Input ID manually</string>
    <string name="waller_wizard_scan_barcode_progress_label">Connecting to smartcard…</string>

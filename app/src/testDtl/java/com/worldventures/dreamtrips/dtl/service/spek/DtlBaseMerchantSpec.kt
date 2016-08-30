@@ -3,16 +3,16 @@ package com.worldventures.dreamtrips.dtl.service.spek
 import com.nhaarman.mockito_kotlin.*
 import com.worldventures.dreamtrips.AssertUtil.assertActionSuccess
 import com.worldventures.dreamtrips.BaseSpec
+import com.worldventures.dreamtrips.api.dtl.merchants.model.Merchant
+import com.worldventures.dreamtrips.api.dtl.merchants.model.MerchantAttribute
 import com.worldventures.dreamtrips.api.dtl.merchants.model.MerchantType
 import com.worldventures.dreamtrips.api.dtl.merchants.model.PartnerStatus
 import com.worldventures.dreamtrips.core.repository.SnappyRepository
 import com.worldventures.dreamtrips.core.utils.tracksystem.AnalyticsInteractor
 import com.worldventures.dreamtrips.janet.StubServiceWrapper
-import com.worldventures.dreamtrips.modules.dtl.model.merchant.*
 import com.worldventures.dreamtrips.modules.dtl.service.DtlLocationInteractor
 import com.worldventures.dreamtrips.modules.dtl.service.DtlMerchantInteractor
 import com.worldventures.dreamtrips.modules.dtl.service.action.DtlMerchantsAction
-import com.worldventures.dreamtrips.modules.trips.model.Location
 import io.techery.janet.ActionHolder
 import io.techery.janet.ActionState
 import io.techery.janet.CommandActionService
@@ -26,7 +26,7 @@ abstract class DtlBaseMerchantSpec(spekBody: DescribeBody.() -> Unit) : BaseSpec
    companion object {
 
       val MERCHANT_ID = "test"
-      private val merchant: DtlMerchant = mock()
+      private val merchant: Merchant = mock()
       private val merchantList = listOf(merchant)
 
       lateinit var janet: Janet
@@ -62,15 +62,14 @@ abstract class DtlBaseMerchantSpec(spekBody: DescribeBody.() -> Unit) : BaseSpec
          commandDaggerService.registerProvider(AnalyticsInteractor::class.java) { AnalyticsInteractor(janet) }
 
          //mock merchant properties
-         whenever(merchant.id).thenReturn(MERCHANT_ID)
-         whenever(merchant.coordinates).thenReturn(Location(1.0, 1.0))
-         whenever(merchant.analyticsName).thenReturn("test")
-         whenever(merchant.amenities).thenReturn(emptyList<DtlMerchantAttribute>())
-         whenever(merchant.budget).thenReturn(3)
-         whenever(merchant.displayName).thenReturn("test")
-         whenever(merchant.merchantType).thenReturn(DtlMerchantType.DINING)
-         whenever(merchant.partnerStatus).thenReturn(PartnerStatus.PARTICIPANT)
-         whenever(merchant.type).thenReturn(MerchantType.RESTAURANT)
+         whenever(merchant.id()).thenReturn(MERCHANT_ID)
+         whenever(merchant.coordinates()).thenReturn(com.worldventures.dreamtrips.api.dtl.locations.model
+               .ImmutableCoordinates.builder().lat(1.0).lng(1.0).build())
+         whenever(merchant.amenities()).thenReturn(emptyList<MerchantAttribute>())
+         whenever(merchant.budget()).thenReturn(3)
+         whenever(merchant.displayName()).thenReturn("test")
+         whenever(merchant.partnerStatus()).thenReturn(PartnerStatus.PARTICIPANT)
+         whenever(merchant.type()).thenReturn(MerchantType.RESTAURANT)
       }
 
       fun checkMerchantActionLoad() {

@@ -47,7 +47,6 @@ import static org.mockito.Mockito.verify;
 @PrepareForTest({MessengerDatabase.class, TrackingHelper.class})
 public class MessageTranslationDelegateTest extends MessengerBaseTest {
 
-   User testUser;
    TranslationsDAO translationsDAO;
    SessionHolder<UserSession> userSessionHolder;
    LocaleHelper localeHelper;
@@ -58,8 +57,7 @@ public class MessageTranslationDelegateTest extends MessengerBaseTest {
 
    @Before
    public void setup() {
-      testUser = obtainMockUser();
-      userSessionHolder = obtainMockUserSession(testUser);
+      userSessionHolder = obtainMockUserSession();
       localeHelper = obtainMockLocaleHelper();
 
       testMessage = new DataMessage.Builder().id("21").text("Привет мир").build();
@@ -86,7 +84,7 @@ public class MessageTranslationDelegateTest extends MessengerBaseTest {
 
       verify(translationsDAO, times(0)).save(any(DataTranslation.class));
       verify(translationsDAO, times(1)).getTranslation(testMessage.getId());
-      verify(localeHelper, times(1)).getAccountLocaleFormatted(testUser);
+      verify(localeHelper, times(1)).getDefaultLocaleFormatted();
 
       PowerMockito.verifyStatic(times(0));
       TrackingHelper.translateMessage(anyString());
@@ -112,7 +110,7 @@ public class MessageTranslationDelegateTest extends MessengerBaseTest {
 
       verify(translationsDAO, times(2)).save(any(DataTranslation.class));
       verify(translationsDAO, times(1)).getTranslation(testMessage.getId());
-      verify(localeHelper, times(1)).getAccountLocaleFormatted(testUser);
+      verify(localeHelper, times(1)).getDefaultLocaleFormatted();
 
       PowerMockito.verifyStatic();
       TrackingHelper.translateMessage(anyString());
@@ -139,7 +137,7 @@ public class MessageTranslationDelegateTest extends MessengerBaseTest {
 
       verify(translationsDAO, times(1)).save(any(DataTranslation.class));
       verify(translationsDAO, times(1)).getTranslation(testMessage.getId());
-      verify(localeHelper, times(1)).getAccountLocaleFormatted(testUser);
+      verify(localeHelper, times(1)).getDefaultLocaleFormatted();
 
       PowerMockito.verifyStatic();
       TrackingHelper.translateMessage(anyString());
@@ -174,7 +172,7 @@ public class MessageTranslationDelegateTest extends MessengerBaseTest {
 
       verify(translationsDAO, times(2)).save(any(DataTranslation.class));
       verify(translationsDAO, times(1)).getTranslation(testMessage.getId());
-      verify(localeHelper, times(1)).getAccountLocaleFormatted(testUser);
+      verify(localeHelper, times(1)).getDefaultLocaleFormatted();
 
       PowerMockito.verifyStatic(times(0));
       TrackingHelper.translateMessage(anyString());
@@ -251,16 +249,9 @@ public class MessageTranslationDelegateTest extends MessengerBaseTest {
    //////// Mock Objects
    //////////////////////////////////////////////////////////////////////////////////////////////
 
-   private User obtainMockUser() {
-      User testUser = mock(User.class);
-      doReturn("en-us").when(testUser).getLocale();
-
-      return testUser;
-   }
-
-   private SessionHolder<UserSession> obtainMockUserSession(User user) {
+   private SessionHolder<UserSession> obtainMockUserSession() {
       UserSession userSession = mock(UserSession.class);
-      doReturn(user).when(userSession).getUser();
+      doReturn("en-us").when(userSession).getLocale();
 
       Optional<UserSession> optionalMock = mock(Optional.class);
       doReturn(true).when(optionalMock).isPresent();
@@ -274,7 +265,7 @@ public class MessageTranslationDelegateTest extends MessengerBaseTest {
 
    private LocaleHelper obtainMockLocaleHelper() {
       LocaleHelper localeHelperMock = mock(LocaleHelper.class);
-      doReturn("en-us").when(localeHelperMock).getAccountLocaleFormatted(testUser);
+      doReturn("en-us").when(localeHelperMock).getDefaultLocaleFormatted();
       return localeHelperMock;
    }
 

@@ -13,6 +13,7 @@ public class WalletValidateHelper {
    private static final Pattern CARD_NAME_PATTERN = Pattern.compile("[\\p{L} ]{2,31}");
    private static final Pattern FULL_NAME_PATTERN = Pattern.compile("[\\p{L}]{2,21}+");
    private static final Pattern CVV_PATTERN = Pattern.compile("[0-9]{3,4}");
+   private static final Pattern SCID_PATTERN = Pattern.compile("[0-9]{10}");
 
    public static boolean validateCardName(String cardName) {
       return CARD_NAME_PATTERN.matcher(cardName).matches();
@@ -53,6 +54,6 @@ public class WalletValidateHelper {
    }
 
    public static boolean validateSCId(String scid) {
-      return scid != null && !scid.isEmpty();
+      return SCID_PATTERN.matcher(scid).matches();
    }
 }

@@ -61,9 +61,9 @@
    <string name="wallet_debit_card_title">Debit Card</string>
    <string name="wallet_default_card_title">Default Card</string>
 
-   <string name="wallet_wizard_manual_input_header">Enter the SCID manually</string>
-   <string name="wallet_wizard_manual_input_title">Enter SCID</string>
-   <string name="wallet_wizard_manual_input_hint">SCID Number</string>
+   <!--scid manual-->
+   <string name="wallet_wizard_manual_input_header">Enter the 10-digit number located below barcode</string>
+   <string name="wallet_wizard_manual_input_title">flye™ Card Number</string>
    <string name="wallet_wizard_scid_validation_error">Wrong SCID Number</string>
    <string name="wallet_bank_name_text_holder">Bank Name</string>
 

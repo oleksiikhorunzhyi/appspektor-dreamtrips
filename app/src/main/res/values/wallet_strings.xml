@@ -19,7 +19,7 @@
    <string name="wallet_wizard_card_alias_setup">Setup card name</string>
 
    <!--edit profile-->
-   <string name="wallet_edit_profile_subtitle">Set your display photo and a name to be greeted by</string>
+   <string name="wallet_edit_profile_subtitle">Set your display photo and name you would like on your card.</string>
    <string name="wallet_edit_profile_change_photo">Edit photo</string>
    <string name="wallet_edit_profile_name_hint">Enter your name</string>
    <string name="wallet_edit_profile_avatar_description">Your photo</string>

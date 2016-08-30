@@ -27,14 +27,13 @@
             android:text="@string/wallet_edit_profile_subtitle"
             />
 
-      <com.messenger.ui.widget.roundedcorners.RoundedCornersLayout
+      <FrameLayout
             android:id="@+id/imageContainer"
             android:layout_width="136dp"
             android:layout_height="136dp"
             android:layout_below="@+id/text_description"
             android:layout_centerHorizontal="true"
-            android:layout_marginTop="32dp"
-            app:rcl_radius="@dimen/wallet_photo_rounded_corner_radius"
+            android:layout_marginTop="50dp"
             >
 
          <com.facebook.drawee.view.SimpleDraweeView
@@ -51,13 +50,14 @@
                android:layout_width="match_parent"
                android:layout_height="wrap_content"
                android:layout_gravity="bottom"
-               android:background="#66666666"
+               android:background="#ee333333"
                android:gravity="center"
                android:padding="8dp"
+               android:textAllCaps="true"
                android:text="@string/wallet_edit_profile_change_photo"
                android:textAppearance="?android:attr/textAppearanceMedium"
                />
-      </com.messenger.ui.widget.roundedcorners.RoundedCornersLayout>
+      </FrameLayout>
 
       <EditText
             android:id="@+id/person_name"
@@ -69,6 +69,7 @@
             android:inputType="textPersonName"
             android:imeOptions="actionDone"
             android:maxLength="@integer/wallet_wizard_user_full_name_length"
+            android:drawableRight="@drawable/ic_wallet_pencil"
             tools:text="Shirley Temple"
             />
 

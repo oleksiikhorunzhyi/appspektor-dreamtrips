@@ -6,7 +6,7 @@ import android.support.annotation.NonNull;
 import android.support.v7.widget.Toolbar;
 import android.util.AttributeSet;
 import android.view.inputmethod.EditorInfo;
-import android.widget.TextView;
+import android.widget.EditText;
 
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.worldventures.dreamtrips.R;
@@ -25,7 +25,7 @@ import rx.Observable;
 public class WizardEditProfileScreen extends WalletFrameLayout<WizardEditProfilePresenter.Screen, WizardEditProfilePresenter, WizardEditProfilePath> implements WizardEditProfilePresenter.Screen {
 
    @InjectView(R.id.toolbar) Toolbar toolbar;
-   @InjectView(R.id.person_name) TextView personName;
+   @InjectView(R.id.person_name) EditText personName;
    @InjectView(R.id.photo_preview) SimpleDraweeView previewPhotoView;
 
    private MediaPickerService mediaPickerService;
@@ -109,8 +109,9 @@ public class WizardEditProfileScreen extends WalletFrameLayout<WizardEditProfile
    }
 
    @Override
-   public void setUserFullName(String fullName) {
+   public void setUserFullName(@NonNull String fullName) {
       personName.setText(fullName);
+      personName.setSelection(fullName.length());
    }
 
    @NonNull

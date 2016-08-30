@@ -116,6 +116,7 @@
       <item name="android:layout_height">wrap_content</item>
       <item name="android:gravity">center</item>
       <item name="android:textAppearance">?android:attr/textAppearanceLarge</item>
+      <item name="android:textColor">@color/wallet_wizard_profile_header_color</item>
    </style>
 
    <style name="WalletTheme.Wizard.PinImageButton">

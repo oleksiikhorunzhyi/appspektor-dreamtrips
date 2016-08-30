@@ -8,7 +8,6 @@ import com.techery.spares.module.qualifier.ForApplication;
 import com.techery.spares.module.qualifier.Global;
 import com.worldventures.dreamtrips.core.api.DreamSpiceManager;
 import com.worldventures.dreamtrips.core.api.DreamSpiceService;
-import com.worldventures.dreamtrips.core.api.FileDownloadSpiceManager;
 import com.worldventures.dreamtrips.core.api.PhotoUploadingManagerS3;
 import com.worldventures.dreamtrips.core.api.SocialUploaderyManager;
 import com.worldventures.dreamtrips.core.api.VideoDownloadSpiceService;
@@ -39,8 +38,6 @@ import com.worldventures.dreamtrips.modules.trips.manager.TripFilterDataProvider
 import com.worldventures.dreamtrips.modules.trips.service.TripMapInteractor;
 import com.worldventures.dreamtrips.modules.tripsimages.view.util.EditPhotoTagsCallback;
 import com.worldventures.dreamtrips.modules.tripsimages.view.util.PostLocationPickerCallback;
-import com.worldventures.dreamtrips.modules.video.FileCachingDelegate;
-import com.worldventures.dreamtrips.modules.video.api.DownloadFileListener;
 
 import javax.inject.Named;
 import javax.inject.Singleton;
@@ -51,9 +48,9 @@ import de.greenrobot.event.EventBus;
 import io.techery.janet.Janet;
 
 @Module(
-      injects = {DreamSpiceManager.class, DreamSpiceService.class, CirclesInteractor.class, FileCachingDelegate.class, VideoDownloadSpiceService.class, PhotoUploadingManagerS3.class, SocialUploaderyManager.class,
+      injects = {DreamSpiceManager.class, DreamSpiceService.class, CirclesInteractor.class, VideoDownloadSpiceService.class, PhotoUploadingManagerS3.class, SocialUploaderyManager.class,
             //
-            DownloadFileListener.class, PhoneContactRequest.class,
+            PhoneContactRequest.class,
 
             LogoutDelegate.class,
             //
@@ -83,11 +80,6 @@ public class ManagerModule {
    @Provides
    public PhotoUploadingManagerS3 providePhotoUploadingManagerS3(@ForApplication Injector injector) {
       return new PhotoUploadingManagerS3(injector);
-   }
-
-   @Provides
-   public FileDownloadSpiceManager provideVideoDownloadSpiceManager(@ForApplication Injector injector) {
-      return new FileDownloadSpiceManager(VideoDownloadSpiceService.class);
    }
 
    @Singleton

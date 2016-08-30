@@ -15,6 +15,8 @@ import com.worldventures.dreamtrips.modules.common.api.janet.command.CirclesComm
 import com.worldventures.dreamtrips.modules.common.api.janet.command.ClearMemoryStorageCommand;
 import com.worldventures.dreamtrips.modules.common.api.janet.command.SubscribeToPushNotificationsCommand;
 import com.worldventures.dreamtrips.modules.common.api.janet.command.TripsFilterDataCommand;
+import com.worldventures.dreamtrips.modules.common.command.DeleteCachedEntityCommand;
+import com.worldventures.dreamtrips.modules.common.command.DownloadCachedEntityCommand;
 import com.worldventures.dreamtrips.modules.feed.service.command.FeedByHashtagCommand;
 import com.worldventures.dreamtrips.modules.feed.service.command.GetAccountFeedCommand;
 import com.worldventures.dreamtrips.modules.feed.service.command.GetAccountTimelineCommand;
@@ -56,5 +58,6 @@ import dagger.Module;
       SettingsCommand.class, DeleteFriendRequestCommand.class, AcceptAllFriendRequestsCommand.class, AddFriendCommand.class,
       DeleteFriendRequestCommand.class, ActOnFriendRequestCommand.Accept.class, ActOnFriendRequestCommand.Reject.class,
       GetNotificationsCommand.class, MarkNotificationsAsReadCommand.class, MarkNotificationAsReadCommand.class,
+      DeleteCachedEntityCommand.class, DownloadCachedEntityCommand.class
 }, complete = false, library = true)
 public class SocialJanetCommandModule {}

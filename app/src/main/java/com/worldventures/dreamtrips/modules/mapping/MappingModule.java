@@ -50,6 +50,6 @@ public class MappingModule {
    @Provides
    @Singleton
    PodcastsMapper providePodcastsMapper() {
-      return new PodcastsMapper();  
+      return new PodcastsMapper();
    }
 }

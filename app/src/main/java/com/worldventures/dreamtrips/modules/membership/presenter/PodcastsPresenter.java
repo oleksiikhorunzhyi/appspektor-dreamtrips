@@ -5,49 +5,45 @@ import android.content.Context;
 import android.os.Environment;
 
 import com.innahema.collections.query.queriables.Queryable;
-import com.techery.spares.module.Injector;
-import com.techery.spares.module.qualifier.ForApplication;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.core.api.FileDownloadSpiceManager;
 import com.worldventures.dreamtrips.core.navigation.ActivityRouter;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.core.rx.RxView;
-import com.worldventures.dreamtrips.core.rx.composer.IoToMainComposer;
+import com.worldventures.dreamtrips.core.rx.composer.NonNullFilter;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
+import com.worldventures.dreamtrips.modules.common.command.CachedEntityCommand;
+import com.worldventures.dreamtrips.modules.common.command.DeleteCachedEntityCommand;
+import com.worldventures.dreamtrips.modules.common.command.DownloadCachedEntityCommand;
+import com.worldventures.dreamtrips.modules.common.delegate.CachedEntityDelegate;
+import com.worldventures.dreamtrips.modules.common.delegate.CachedEntityInteractor;
 import com.worldventures.dreamtrips.modules.common.presenter.JobPresenter;
 import com.worldventures.dreamtrips.modules.common.view.ApiErrorView;
 import com.worldventures.dreamtrips.modules.membership.command.GetPodcastsCommand;
 import com.worldventures.dreamtrips.modules.membership.model.MediaHeader;
 import com.worldventures.dreamtrips.modules.membership.model.Podcast;
 import com.worldventures.dreamtrips.modules.membership.service.PodcastsInteractor;
-import com.worldventures.dreamtrips.modules.video.FileCachingDelegate;
-import com.worldventures.dreamtrips.modules.video.PublicMediaCachingDelegate;
-import com.worldventures.dreamtrips.modules.video.api.DownloadFileListener;
 import com.worldventures.dreamtrips.modules.video.model.CachedEntity;
 
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
 
-import io.techery.janet.Command;
-import io.techery.janet.Janet;
 import io.techery.janet.helper.ActionStateSubscriber;
+import rx.Observable;
+import rx.android.schedulers.AndroidSchedulers;
 
 public class PodcastsPresenter<T extends PodcastsPresenter.View> extends JobPresenter<T> {
 
-   @Inject protected SnappyRepository db;
-   @Inject @ForApplication protected Injector injector;
-   @Inject protected FileDownloadSpiceManager fileDownloadSpiceManager;
-   @Inject protected Janet janet;
-   @Inject protected Context context;
-   @Inject protected ActivityRouter activityRouter;
-   @Inject PodcastsInteractor podcastsInteractor;
-
    private static final int PODCAST_PRE_PAGE = 10;
 
-   private PublicMediaCachingDelegate fileCachingDelegate;
+   @Inject Context context;
+   @Inject ActivityRouter activityRouter;
+
+   @Inject SnappyRepository db;
+   @Inject PodcastsInteractor podcastsInteractor;
+   @Inject CachedEntityInteractor cachedEntityInteractor;
+   @Inject CachedEntityDelegate cachedEntityDelegate;
 
    private List<Podcast> items = new ArrayList<>();
 
@@ -58,9 +54,8 @@ public class PodcastsPresenter<T extends PodcastsPresenter.View> extends JobPres
    public void takeView(T view) {
       super.takeView(view);
       apiErrorPresenter.setView(view);
-      fileCachingDelegate = new PublicMediaCachingDelegate(db, context, injector, fileDownloadSpiceManager, Environment.DIRECTORY_PODCASTS);
-      fileCachingDelegate.setView(this.view);
-      subscribeGetPodcasts();
+      subscribeToApiUpdates();
+      subscribeToCachingStatusUpdates();
       reloadPodcasts();
    }
 
@@ -68,30 +63,6 @@ public class PodcastsPresenter<T extends PodcastsPresenter.View> extends JobPres
    public void dropView() {
       apiErrorPresenter.dropView();
       super.dropView();
-   }
-
-   @Override
-   public void onStart() {
-      super.onStart();
-      if (!fileDownloadSpiceManager.isStarted()) {
-         fileDownloadSpiceManager.start(context);
-      }
-   }
-
-   @Override
-   public void onStop() {
-      super.onStop();
-      if (fileDownloadSpiceManager.isStarted()) {
-         fileDownloadSpiceManager.shouldStop();
-      }
-   }
-
-   public void onDeleteAction(CachedEntity entity) {
-      fileCachingDelegate.onDeleteAction(entity);
-   }
-
-   public void onCancelAction(CachedEntity entity) {
-      fileCachingDelegate.onCancelAction(entity);
    }
 
    public void scrolled(int totalItemCount, int lastVisible) {
@@ -118,7 +89,7 @@ public class PodcastsPresenter<T extends PodcastsPresenter.View> extends JobPres
       podcastsInteractor.podcastsActionPipe().send(new GetPodcastsCommand(page, PODCAST_PRE_PAGE));
    }
 
-   private void subscribeGetPodcasts() {
+   private void subscribeToApiUpdates() {
       podcastsInteractor.podcastsActionPipe().observe()
             .compose(bindViewToMainComposer())
             .subscribe(new ActionStateSubscriber<GetPodcastsCommand>()
@@ -128,22 +99,10 @@ public class PodcastsPresenter<T extends PodcastsPresenter.View> extends JobPres
 
    private void onPodcastsLoaded(GetPodcastsCommand command) {
       List<Podcast> podcasts = command.getResult();
-      Queryable.from(podcasts).forEachR(podcast -> {
-         attachCache(podcast);
-         attachPodcastDownloadListener(podcast);
-      });
+      Queryable.from(podcasts).forEachR(podcast
+            -> podcast.setCacheEntity(db.getDownloadMediaEntity(podcast.getUid())));
       items.addAll(podcasts);
       updateUi(items);
-   }
-
-   private void onPodcastsLoadingFailed(GetPodcastsCommand command, Throwable error) {
-      apiErrorPresenter.handleActionError(command, error);
-      view.finishLoading();
-   }
-
-   private void attachCache(Podcast podcast) {
-      CachedEntity e = db.getDownloadMediaEntity(podcast.getUid());
-      podcast.setCacheEntity(e);
    }
 
    protected void updateUi(List<Podcast> podcasts) {
@@ -158,28 +117,52 @@ public class PodcastsPresenter<T extends PodcastsPresenter.View> extends JobPres
       loading = false;
    }
 
-   private void attachPodcastDownloadListener(Podcast podcast) {
-      CachedEntity entity = podcast.getCacheEntity();
-      boolean failed = entity.isFailed();
-      boolean inProgress = entity.getProgress() > 0;
-      boolean cached = entity.isCached(Environment.DIRECTORY_PODCASTS);
-      if (!failed && inProgress && !cached) {
-         DownloadFileListener listener = new DownloadFileListener(entity, fileCachingDelegate);
-         injector.inject(listener);
-         fileDownloadSpiceManager.addListenerIfPending(InputStream.class, entity.getUuid(), listener);
-      }
+   private void onPodcastsLoadingFailed(GetPodcastsCommand command, Throwable error) {
+      apiErrorPresenter.handleActionError(command, error);
+      view.finishLoading();
+   }
+
+   private void subscribeToCachingStatusUpdates() {
+      Observable.merge(cachedEntityInteractor.getDownloadCachedEntityPipe().observe(),
+            cachedEntityInteractor.getDeleteCachedEntityPipe().observe())
+            .observeOn(AndroidSchedulers.mainThread())
+            .compose(bindView())
+            .map(actionState -> actionState.action.getCachedEntity())
+            .subscribe(this::processCachingState);
+   }
+
+   private void processCachingState(CachedEntity cachedEntity) {
+      Queryable.from(items).notNulls()
+            .filter(podcast -> podcast.getCacheEntity().getUuid()
+                     .equals(cachedEntity.getUuid()))
+            .forEachR(podcast -> {
+               podcast.setCacheEntity(cachedEntity);
+               view.notifyItemChanged(cachedEntity);
+            });
    }
 
    public void downloadPodcast(CachedEntity entity) {
-      fileCachingDelegate.downloadFile(entity);
+      cachedEntityDelegate.startCaching(entity, getPathForPodcastCache(entity));
    }
 
    public void deleteCachedPodcast(CachedEntity entity) {
-      fileCachingDelegate.deleteCachedFile(entity);
+      view.onDeleteAction(entity);
+   }
+
+   public void onDeleteAction(CachedEntity entity) {
+      cachedEntityDelegate.deleteCache(entity, getPathForPodcastCache(entity));
    }
 
    public void cancelCachingPodcast(CachedEntity entity) {
-      fileCachingDelegate.cancelCachingFile(entity);
+      view.onCancelCaching(entity);
+   }
+
+   public void onCancelAction(CachedEntity entity) {
+      cachedEntityDelegate.cancelCaching(entity, getPathForPodcastCache(entity));
+   }
+
+   private String getPathForPodcastCache(CachedEntity entity) {
+      return CachedEntity.getFileForStorage(Environment.DIRECTORY_PODCASTS, entity.getUrl());
    }
 
    public void play(Podcast podcast) {
@@ -201,12 +184,18 @@ public class PodcastsPresenter<T extends PodcastsPresenter.View> extends JobPres
       TrackingHelper.podcasts(getAccountUserId());
    }
 
-   public interface View extends RxView, FileCachingDelegate.View, ApiErrorView {
+   public interface View extends RxView, ApiErrorView {
 
       void startLoading();
 
       void finishLoading();
 
       void setItems(List items);
+
+      void notifyItemChanged(CachedEntity entity);
+
+      void onDeleteAction(CachedEntity entity);
+
+      void onCancelCaching(CachedEntity entity);
    }
 }

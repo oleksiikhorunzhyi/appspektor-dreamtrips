@@ -17,6 +17,9 @@ import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.core.session.CirclesInteractor;
 import com.worldventures.dreamtrips.core.utils.DTCookieManager;
 import com.worldventures.dreamtrips.modules.bucketlist.service.BucketInteractor;
+import com.worldventures.dreamtrips.modules.common.delegate.CachedEntityInteractor;
+import com.worldventures.dreamtrips.modules.common.delegate.CachedEntityDelegate;
+import com.worldventures.dreamtrips.modules.common.delegate.DownloadFileInteractor;
 import com.worldventures.dreamtrips.modules.common.delegate.QueryTripsFilterDataInteractor;
 import com.worldventures.dreamtrips.modules.common.delegate.SocialCropImageManager;
 import com.worldventures.dreamtrips.modules.common.presenter.delegate.ClearDirectoryDelegate;
@@ -193,5 +196,23 @@ public class ManagerModule {
    @Singleton
    CreatePostBodyInteractor provideCreatePostBodyInteractor(Janet janet) {
       return new CreatePostBodyInteractor(janet);
+   }
+
+   @Provides
+   @Singleton
+   DownloadFileInteractor provideDownloadFileInteractor(Janet janet) {
+      return new DownloadFileInteractor(janet);
+   }
+
+   @Provides
+   @Singleton
+   CachedEntityInteractor provideDownloadCachedEntityInteractor(Janet janet) {
+      return new CachedEntityInteractor(janet);
+   }
+
+   @Provides
+   @Singleton
+   CachedEntityDelegate provideDownloadFileDelegate(CachedEntityInteractor cachedEntityInteractor) {
+      return new CachedEntityDelegate(cachedEntityInteractor);
    }
 }

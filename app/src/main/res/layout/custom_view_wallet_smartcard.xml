@@ -4,10 +4,9 @@
       android:layout_width="@dimen/wallet_smart_card_default_width"
       android:layout_height="@dimen/wallet_smart_card_default_height"
       android:animateLayoutChanges="true"
-      android:background="@drawable/wallet_flye_card"
+      android:background="@drawable/ic_flye_card_front"
       android:paddingBottom="@dimen/spacing_normal"
       android:paddingLeft="19dp"
-      android:paddingRight="@dimen/spacing_large"
       android:paddingTop="@dimen/spacing_normal"
       >
 
@@ -17,18 +16,17 @@
          android:layout_height="wrap_content"
          android:layout_alignParentEnd="true"
          android:layout_alignParentRight="true"
+         android:layout_marginRight="@dimen/spacing_large"
          android:layout_marginTop="5dp"
          />
 
    <com.facebook.drawee.view.SimpleDraweeView
          android:id="@+id/cardListSCAvatar"
-         android:layout_width="55dp"
-         android:layout_height="55dp"
-         android:layout_alignParentBottom="true"
-         android:layout_alignParentEnd="false"
+         android:layout_width="78dp"
+         android:layout_height="71dp"
          android:layout_alignParentRight="true"
-         android:layout_marginBottom="30dp"
-         android:layout_marginRight="2dp"
+         android:layout_centerVertical="true"
+         android:layout_marginRight="15dp"
          android:src="@drawable/avatar"
          />
 

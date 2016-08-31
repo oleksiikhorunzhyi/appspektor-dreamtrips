@@ -43,12 +43,14 @@ public class TripDetailsPresenter extends BaseTripPresenter<TripDetailsPresenter
    @Override
    public void onResume() {
       super.onResume();
-      if (!featureManager.available(Feature.BOOK_TRAVEL)) {
-         view.hideBookIt();
-         view.showSignUp();
-      } else if (trip.isSoldOut() || (!getAccount().isPlatinum() && trip.isPlatinum())) {
-         view.hideBookIt();
-      }
+      boolean isSoldOut = trip.isSoldOut();
+      boolean canBook = featureManager.available(Feature.BOOK_TRAVEL);
+      boolean showSignUpLabel = !featureManager.available(Feature.BOOK_TRAVEL);
+
+      if (showSignUpLabel) view.showSignUp();
+
+      if (isSoldOut) view.soldOutTrip();
+      else if (!canBook || (trip.isPlatinum() && !getAccount().isPlatinum())) view.disableBookIt();
    }
 
    public List<TripImage> getFilteredImages() {
@@ -96,7 +98,9 @@ public class TripDetailsPresenter extends BaseTripPresenter<TripDetailsPresenter
 
       void setContent(List<ContentItem> contentItems);
 
-      void hideBookIt();
+      void disableBookIt();
+
+      void soldOutTrip();
 
       void showSignUp();
 

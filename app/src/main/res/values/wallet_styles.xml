@@ -15,7 +15,7 @@
    <color name="wallet_wizard_button_disable">#9900b3e3</color>
    <color name="wallet_wizard_button_pressed">#008eb4</color>
 
-   <style name="WalletTheme" parent="AppTheme">
+   <style name="WalletTheme" parent="Theme.AppCompat.Light.DarkActionBar">
       <item name="android:textAppearanceLarge">@style/WalletTheme.TextAppearanceLarge</item>
       <item name="android:textColorPrimary">@color/wallet_common_primary_text_color</item>
 
@@ -36,8 +36,12 @@
 
    <!--wizard-->
    <style name="WalletTheme.Wizard">
+      <item name="colorControlActivated">@android:color/white</item>
+      <item name="colorControlNormal">@android:color/white</item>
+
       <item name="android:buttonStyle">@style/WalletTheme.Wizard.ButtonStyle</item>
       <item name="android:editTextStyle">@style/WalletTheme.Wizard.EditTextStyle</item>
+
       <item name="android:textColorPrimary">@android:color/white</item>
       <item name="android:textColorHint">@color/wallet_color_white_text_with_alpha</item>
 
@@ -46,10 +50,6 @@
       <item name="android:textAppearanceSmall">@style/WalletTheme.Wizard.TextAppearanceSmall</item>
 
       <item name="android:imeOptions">actionNext</item>
-
-      <item name="colorControlNormal">@android:color/white</item>
-      <item name="colorControlActivated">@color/wallet_color_background_light</item>
-      <item name="colorControlHighlight">@color/wallet_color_background_light</item>
    </style>
 
    <style name="WalletTheme.Settings">

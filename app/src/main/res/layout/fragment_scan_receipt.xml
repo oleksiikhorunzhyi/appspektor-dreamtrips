@@ -13,6 +13,4 @@
          android:paddingRight="@dimen/dtlScanReceiptPadding"
          android:paddingTop="@dimen/spacing_normal"
          />
-
-
 </ScrollView>

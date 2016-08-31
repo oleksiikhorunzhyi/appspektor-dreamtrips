@@ -653,7 +653,7 @@
 
    <string name="error_fail_to_translate_text">无法翻译文本</string>
 
-   <string name="book_it_disabled">您必须是DreamTrips会员才可以预订行程。\n点击此处<a href="enroll_member">注册</a></string>
+   <string name="book_it_disabled">您必须是DreamTrips会员才可以预订行程</string>
 
    <string name="error_fail_to_load_filters">很抱歉，无法加载筛选条件</string>
    <string name="flag_content_message">WorldVentures人员将被通知审查此内容 </string>

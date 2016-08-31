@@ -653,7 +653,7 @@
 
    <string name="error_fail_to_translate_text">Misslyckades med att översätta text</string>
 
-   <string name="book_it_disabled">Du måste vara DreamTrips-medlem\nför att kunna boka en resa. Klicka här för att <a href="enroll_member">Registrera dig</a></string>
+   <string name="book_it_disabled">Du måste vara DreamTrips-medlem för att kunna boka en resa</string>
 
    <string name="error_fail_to_load_filters">Det gick inte att ladda filter</string>
    <string name="flag_content_message">WorldVentures personal kommer att granska det här innehållet för </string>

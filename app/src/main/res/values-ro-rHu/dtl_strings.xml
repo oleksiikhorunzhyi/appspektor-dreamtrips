@@ -23,7 +23,7 @@
    <string name="dtl_distance">Distanță, %1$s</string>
    <string name="dtl_receipt_scan">Scanați nota de plată</string>
    <string name="dtl_receipt_rescan">Rescanați</string>
-   <string name="dtl_receipt_verify">Confirmați suma</string>
+   <string name="dtl_receipt_verify_button_caption">Verificare</string>
    <string name="dtl_receipt_verify_hint">Această sumă va fi confirmată de comerciant. Orice discrepanță între suma introdusă și cea reală va conduce la întârzieri în câștigarea punctelor DreamTrips.</string>
    <string name="dtl_action_next">Înainte</string>
    <string name="dtl_amenities">Dotări</string>
@@ -37,7 +37,8 @@
    <string name="dtl_checkin_location_error">Serviciile de localizare trebuie să fie activate pentru a face check-in</string>
    <string name="dtl_barcode_title">Scanați codul QR</string>
    <string name="dtl_barcode_merchant">Scanați codul comerciantului</string>
-   <string name="dtl_enter_amount">Introduceți suma</string>
+   <string name="dtl_scan_receipt_screen_title">Introducere subtotal</string>
+   <string name="dtl_scan_receipt_input_caption">Introducere subtotal (Sumă exclusiv TVA și bacșiș)</string>
    <string name="dtl_congrats">Felicitări!</string>
    <string name="dtl_you_earned">Ați câștigat</string>
    <string name="dtl_total">Total puncte DreamTrips Points:</string>
@@ -46,7 +47,6 @@
    <string name="dtl_amount_invalid">Suma nu este validă</string>
    <string name="dtl_invalid">Intrare nevalidă</string>
    <string name="dtl_verify_amount">Confirmați suma</string>
-   <string name="dtl_verify_amount_note">Notă: Suma trebuie să fie totalul de pe factură, fără TVA-ul per articol și bacșiș.</string>
    <string name="dtl_total_amount">Suma totală:</string>
    <string name="dtl_verify_earn_hint">Ați putea câștiga </string>
    <string name="dtl_check_in">Înregistrați-vă și câștigați</string>
@@ -68,6 +68,7 @@
    <string name="presentation">Prezentări</string>
    <string name="dtl_open_now">Acum este deschis</string>
    <string name="dtl_closed_now">Acum este închis</string>
+   <string name="dtl_closed">Închis</string>
    <string name="directions">Indicații de orientare</string>
    <string name="checked_in">Ați făcut check-in</string>
    <string name="point_estimator">Calculator de puncte</string>
@@ -89,6 +90,7 @@
    <string name="help">Ajutor</string>
    <string name="merchants_list_empty_text">Locuri în curând</string>
    <string name="merchants_list_empty_text_additional">- sau -</string>
+   <string name="merchant_working_hours_caption">ore</string>
 
    <!-- DtlToolbar strings -->
    <string name="dtlt_search_hint">Mâncare și băuturi</string>

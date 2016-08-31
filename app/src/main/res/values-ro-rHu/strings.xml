@@ -653,7 +653,7 @@
 
    <string name="error_fail_to_translate_text">Textul nu a putut fi tradus</string>
 
-   <string name="book_it_disabled">Trebuie să fiți membru DreamTrips⏎pentru a rezerva o călătorie.  Dați clic aici pentru a vă <a href="enroll_member">înscrie</a></string>
+   <string name="book_it_disabled">Trebuie să fiți membru DreamTrips⏎pentru a rezerva o călătorie</string>
 
    <string name="error_fail_to_load_filters">Ne pare rău, încărcarea filtrelor este nereușită.</string>
    <string name="flag_content_message">Personalul WorldVentures va fi notificat pentru a analiza acest conținut. </string>

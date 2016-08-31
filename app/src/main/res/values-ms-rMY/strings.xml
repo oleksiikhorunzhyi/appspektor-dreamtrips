@@ -653,7 +653,7 @@
 
    <string name="error_fail_to_translate_text">Gagal menterjemah teks</string>
 
-   <string name="book_it_disabled">Anda mestilah Ahli DreamTrips\nuntuk menempah perjalanan. Klik di sini untuk <a href="enroll_member">Daftar diri</a></string>
+   <string name="book_it_disabled">Anda mestilah Ahli DreamTrips untuk menempah perjalanan</string>
 
    <string name="error_fail_to_load_filters">Maaf, gagal untuk muat penapis</string>
    <string name="flag_content_message">Kakitangan WorldVentures akan dimaklumkan untuk menyemak kandungan ini untuk  </string>

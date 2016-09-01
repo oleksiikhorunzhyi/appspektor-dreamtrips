@@ -10,6 +10,8 @@ import com.worldventures.dreamtrips.modules.video.model.CachedEntity;
 
 public class ProgressVideoCellHelper {
 
+   private static final int MIN_PROGRESS = 10;
+
    private final PinProgressButton pinProgressButton;
 
    private CachedEntity cacheEntity;
@@ -36,7 +38,12 @@ public class ProgressVideoCellHelper {
       if (cacheEntity.isCached(pinProgressButton.getContext())) {
          pinProgressButton.setProgress(100);
       } else {
-         pinProgressButton.setProgress(cacheEntity.getProgress());
+         int progress = cacheEntity.getProgress();
+         // put this check as 0 indicates on data level that entity is NOT downloading
+         if (progress > 0) {
+            progress = Math.max(MIN_PROGRESS, progress);
+         }
+         pinProgressButton.setProgress(progress);
       }
    }
 

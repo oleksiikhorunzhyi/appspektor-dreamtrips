@@ -16,13 +16,17 @@ import io.techery.janet.helper.ActionStateSubscriber;
 @CommandAction
 public class DownloadCachedEntityCommand extends CachedEntityCommand implements InjectableAction {
 
+   // TODO We must send min progress > 0 as view level determines is entity is NOT in progress
+   // if entity is not failed and progress is 0.
+   public static final int PROGRESS_START_MIN = 1;
+
    private File file;
 
    @Inject DownloadFileInteractor downloadFileInteractor;
    @Inject SnappyRepository db;
 
    private DownloadFileCommand downloadFileCommand;
-   private int lastProgress;
+   private int lastProgress = PROGRESS_START_MIN;
 
    public DownloadCachedEntityCommand(CachedEntity cachedEntity, File file) {
       super(cachedEntity);
@@ -44,7 +48,7 @@ public class DownloadCachedEntityCommand extends CachedEntityCommand implements 
 
    private void onStart(DownloadFileCommand command) {
       cachedEntity.setIsFailed(false);
-      cachedEntity.setProgress(0);
+      cachedEntity.setProgress(PROGRESS_START_MIN);
       db.saveDownloadMediaEntity(cachedEntity);
    }
 
@@ -62,6 +66,7 @@ public class DownloadCachedEntityCommand extends CachedEntityCommand implements 
    }
 
    private void onProgress(CommandCallback<CachedEntity> callback, int progress) {
+      if (progress == 0) progress = PROGRESS_START_MIN;
       if (progress <= lastProgress) return;
       lastProgress = progress;
       cachedEntity.setProgress(progress);

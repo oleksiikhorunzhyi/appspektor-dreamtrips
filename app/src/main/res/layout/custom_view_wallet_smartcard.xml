@@ -22,8 +22,8 @@
 
    <com.facebook.drawee.view.SimpleDraweeView
          android:id="@+id/cardListSCAvatar"
-         android:layout_width="78dp"
-         android:layout_height="71dp"
+         android:layout_width="60dp"
+         android:layout_height="60dp"
          android:layout_alignParentRight="true"
          android:layout_centerVertical="true"
          android:layout_marginRight="15dp"
@@ -61,7 +61,6 @@
          android:layout_width="wrap_content"
          android:layout_height="wrap_content"
          android:button="@drawable/smart_card_lock_checkbox"
-         android:layout_alignParentTop="true"
          android:layout_centerHorizontal="true"
          />
 

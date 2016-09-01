@@ -29,7 +29,12 @@
    <dimen name="wallet_add_card_details_default_address_margin_left">34dp</dimen>
 
    <dimen name="wallet_wizard_avatar_size">192dp</dimen>
-   <dimen name="wallet_wizard_bar_code_border_size">48dp</dimen>
+   <dimen name="wallet_wizard_bar_code_border_stroke_width">3dp</dimen>
+   <dimen name="wallet_wizard_bar_code_border_radius">8dp</dimen>
+   <dimen name="wallet_wizard_bar_code_view_left">18dp</dimen>
+   <dimen name="wallet_wizard_bar_code_view_top">170dp</dimen>
+   <dimen name="wallet_wizard_bar_code_view_right">18dp</dimen>
+   <dimen name="wallet_wizard_bar_code_view_bottom">150dp</dimen>
 
    <dimen name="wallet_common_item_padding">16dp</dimen>
    <dimen name="wallet_common_item_icon_size">24dp</dimen>

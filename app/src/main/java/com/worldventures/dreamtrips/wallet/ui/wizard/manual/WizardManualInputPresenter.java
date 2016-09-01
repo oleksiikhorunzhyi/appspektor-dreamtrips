@@ -2,6 +2,7 @@ package com.worldventures.dreamtrips.wallet.ui.wizard.manual;
 
 import android.content.Context;
 import android.os.Parcelable;
+import android.support.annotation.NonNull;
 
 import com.techery.spares.module.Injector;
 import com.worldventures.dreamtrips.R;
@@ -16,10 +17,14 @@ import com.worldventures.dreamtrips.wallet.ui.wizard.card_alias.WizardCardNamePa
 import javax.inject.Inject;
 
 import flow.Flow;
+import rx.Observable;
 import timber.log.Timber;
 
 public class WizardManualInputPresenter extends WalletPresenter<WizardManualInputPresenter.Screen, Parcelable> {
+
    @Inject WizardInteractor wizardInteractor;
+
+   private int scidLength;
 
    public WizardManualInputPresenter(Context context, Injector injector) {
       super(context, injector);
@@ -28,11 +33,17 @@ public class WizardManualInputPresenter extends WalletPresenter<WizardManualInpu
    @Override
    public void attachView(Screen view) {
       super.attachView(view);
+      scidLength = getContext().getResources().getInteger(R.integer.wallet_smart_card_id_length);
+      connectToSmartCard();
+      observeScidInput();
+   }
+
+   private void connectToSmartCard() {
       wizardInteractor.createAndConnectActionPipe()
             .observeWithReplay()
             .compose(bindViewIoToMainComposer())
             .compose(new ActionPipeCacheWiper<>(wizardInteractor.createAndConnectActionPipe()))
-            .subscribe(OperationSubscriberWrapper.<CreateAndConnectToCardCommand>forView(view.provideOperationDelegate())
+            .subscribe(OperationSubscriberWrapper.<CreateAndConnectToCardCommand>forView(getView().provideOperationDelegate())
                   .onStart(getContext().getString(R.string.waller_wizard_scan_barcode_progress_label))
                   .onSuccess(getContext().getString(R.string.wallet_got_it_label),
                         command -> Flow.get(getContext()).set(new WizardCardNamePath(command.getCode()))
@@ -40,6 +51,12 @@ public class WizardManualInputPresenter extends WalletPresenter<WizardManualInpu
                   .onFail(throwable -> new OperationSubscriberWrapper.MessageActionHolder<>(getContext().getString(R.string.wallet_wizard_scid_validation_error),
                         command -> Timber.e("Could not connect to device")))
                   .wrap());
+   }
+
+   private void observeScidInput() {
+      getView().scidInput()
+            .compose(bindView())
+            .subscribe(scid -> getView().buttonEnable(scid.length() == scidLength));
    }
 
    public void checkBarcode(String barcode) {
@@ -50,5 +67,11 @@ public class WizardManualInputPresenter extends WalletPresenter<WizardManualInpu
       Flow.get(getContext()).goBack();
    }
 
-   public interface Screen extends WalletScreen {}
+   public interface Screen extends WalletScreen {
+
+      void buttonEnable(boolean isEnable);
+
+      @NonNull
+      Observable<CharSequence> scidInput();
+   }
 }

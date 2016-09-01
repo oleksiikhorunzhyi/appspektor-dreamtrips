@@ -19,7 +19,7 @@
    <string name="wallet_wizard_card_alias_setup">Setup card name</string>
 
    <!--edit profile-->
-   <string name="wallet_edit_profile_subtitle">Set your display photo and a name to be greeted by</string>
+   <string name="wallet_edit_profile_subtitle">Set your display photo and name you would like on your card.</string>
    <string name="wallet_edit_profile_change_photo">Edit photo</string>
    <string name="wallet_edit_profile_name_hint">Enter your name</string>
    <string name="wallet_edit_profile_avatar_description">Your photo</string>
@@ -47,7 +47,7 @@
    <string name="wallet_wizard_splash_start_btn">Scan Card</string>
    <string name="wallet_wizard_splash_scan_title">Scan Card</string>
 
-   <string name="wallet_wizard_scan_barcode_header">Position smart card\nbarcode in the frame</string>
+   <string name="wallet_wizard_scan_barcode_header">Position the flye™ card barcode in the viewfinder box.</string>
    <string name="wallet_wizard_scan_barcode_footer_title">Not scanning?</string>
    <string name="wallet_wizard_scan_barcode_footer_btn">Input ID manually</string>
    <string name="waller_wizard_scan_barcode_progress_label">Connecting to smartcard…</string>
@@ -61,9 +61,9 @@
    <string name="wallet_debit_card_title">Debit Card</string>
    <string name="wallet_default_card_title">Default Card</string>
 
-   <string name="wallet_wizard_manual_input_header">Enter the SCID manually</string>
-   <string name="wallet_wizard_manual_input_title">Enter SCID</string>
-   <string name="wallet_wizard_manual_input_hint">SCID Number</string>
+   <!--scid manual-->
+   <string name="wallet_wizard_manual_input_header">Enter the 10-digit number located below barcode</string>
+   <string name="wallet_wizard_manual_input_title">flye™ Card Number</string>
    <string name="wallet_wizard_scid_validation_error">Wrong SCID Number</string>
    <string name="wallet_bank_name_text_holder">Bank Name</string>
 

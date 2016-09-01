@@ -7,4 +7,6 @@
    <integer name="wallet_gray_edit_text_text_length">256</integer>
 
    <integer name="wallet_wizard_add_card_details_cvv_length">4</integer>
+
+   <integer name="wallet_smart_card_id_length">10</integer>
 </resources>

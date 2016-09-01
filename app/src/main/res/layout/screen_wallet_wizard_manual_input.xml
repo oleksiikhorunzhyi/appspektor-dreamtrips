@@ -2,9 +2,10 @@
 <com.worldventures.dreamtrips.wallet.ui.wizard.manual.WizardManualInputScreen style="@style/WalletTheme.Wizard.RootStyle"
       xmlns:android="http://schemas.android.com/apk/res/android"
       xmlns:app="http://schemas.android.com/apk/res-auto"
+      xmlns:tools="http://schemas.android.com/tools"
       android:layout_width="match_parent"
       android:layout_height="match_parent"
-      android:background="@drawable/wallet_wizard_background"
+      android:theme="@style/WalletTheme.Wizard"
       >
 
    <android.support.v7.widget.Toolbar
@@ -38,20 +39,28 @@
             android:layout_below="@+id/wizard_manual_text"
             android:layout_marginTop="30dp"
             android:src="@drawable/wallet_manual_scid_input_card_holder"
+            tools:ignore="ContentDescription"
             />
 
-      <EditText
+      <!--we cannot use `android:maxLength="@integer/wallet_smart_card_id_length" because library has a bug (see 163 line in PinEntryEditText)`-->
+      <com.alimuzaffar.lib.pin.PinEntryEditText
             android:id="@+id/wallet_wizard_manual_input_scid"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_above="@+id/wallet_wizard_manual_input_next_btn"
             android:layout_marginBottom="30dp"
-            android:hint="@string/wallet_wizard_manual_input_hint"
+            android:layout_marginTop="32dp"
+            android:cursorVisible="false"
             android:inputType="numberSigned"
+            android:maxLength="10"
+            android:textIsSelectable="false"
+            app:pinCharacterSpacing="6dp"
+            app:pinLineColors="?android:attr/textColorPrimary"
+            app:pinRepeatedHint="#"
             >
 
          <requestFocus />
-      </EditText>
+      </com.alimuzaffar.lib.pin.PinEntryEditText>
 
       <Button
             android:id="@+id/wallet_wizard_manual_input_next_btn"

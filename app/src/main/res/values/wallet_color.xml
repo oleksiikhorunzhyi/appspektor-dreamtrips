@@ -3,6 +3,8 @@
 
    <color name="wallet_common_primary_text_color">#666666</color>
 
+   <color name="wallet_wizard_profile_header_color">#eeeeee</color>
+
    <color name="wallet_card_details_billing_address_text_color">#90979a</color>
    <color name="wallet_card_details_address_text_color">#666666</color>
    <color name="wallet_card_details_edit_billing_address_color">#00b3e3</color>
@@ -11,4 +13,7 @@
    <color name="wallet_card_list_empty_list_label_color">#006699</color>
 
    <color name="wallet_card_list_header_text">#90979a</color>
+
+   <color name="wallet_color_background_with_alpha">#BF22262D</color>
+   <color name="wallet_bar_code_scanner_border">@android:color/white</color>
 </resources>

@@ -1,30 +1,22 @@
 package com.worldventures.dreamtrips.wallet.service.command;
 
-import android.support.v4.util.Pair;
-
 import com.worldventures.dreamtrips.core.janet.dagger.InjectableAction;
 import com.worldventures.dreamtrips.wallet.domain.entity.AddressInfo;
 import com.worldventures.dreamtrips.wallet.domain.entity.card.BankCard;
 import com.worldventures.dreamtrips.wallet.domain.entity.card.ImmutableBankCard;
 import com.worldventures.dreamtrips.wallet.service.SmartCardInteractor;
-import com.worldventures.dreamtrips.wallet.util.CardUtils;
 import com.worldventures.dreamtrips.wallet.util.FormatException;
 import com.worldventures.dreamtrips.wallet.util.WalletValidateHelper;
 
 import javax.inject.Inject;
-import javax.inject.Named;
 
 import io.techery.janet.Command;
-import io.techery.janet.Janet;
 import io.techery.janet.command.annotations.CommandAction;
 import rx.Observable;
-
-import static com.worldventures.dreamtrips.core.janet.JanetModule.JANET_WALLET;
 
 @CommandAction
 public class SaveCardDetailsDataCommand extends Command<Void> implements InjectableAction {
 
-   @Inject @Named(JANET_WALLET) Janet janet;
    @Inject SmartCardInteractor smartCardInteractor;
 
    private final BankCard bankCard;
@@ -33,14 +25,16 @@ public class SaveCardDetailsDataCommand extends Command<Void> implements Injecta
    private final String nickName;
    private final boolean setAsDefaultAddress;
    private final boolean useDefaultAddress;
+   private final boolean setAsDefaultCard;
 
-   public SaveCardDetailsDataCommand(BankCard bankCard, AddressInfo manualAddressInfo, String nickName, String cvv, boolean useDefaultAddress, boolean setAsDefaultAddress) {
+   public SaveCardDetailsDataCommand(BankCard bankCard, AddressInfo manualAddressInfo, String nickName, String cvv, boolean useDefaultAddress, boolean setAsDefaultAddress, boolean setAsDefaultCard) {
       this.setAsDefaultAddress = setAsDefaultAddress;
       this.useDefaultAddress = useDefaultAddress;
       this.nickName = nickName;
       this.cvv = cvv;
       this.bankCard = bankCard;
       this.manualAddressInfo = manualAddressInfo;
+      this.setAsDefaultCard = setAsDefaultCard;
    }
 
    @Override
@@ -49,27 +43,26 @@ public class SaveCardDetailsDataCommand extends Command<Void> implements Injecta
 
       Observable.just(setAsDefaultAddress && !useDefaultAddress)
             .flatMap(this::saveDefaultAddressObservable)
-            .flatMap(saveDefaultAddressCommand -> fetchDefaultCardAndAddressObservable())
-            .flatMap(bankCardPair -> smartCardInteractor.addRecordPipe().createObservableResult(new AttachCardCommand(bankCardPair.first, bankCardPair.second)))
+            .flatMap(saveDefaultAddressCommand -> fetchCardWithAddressObservable())
+            .flatMap(cardWithAddress -> smartCardInteractor.addRecordPipe()
+                  .createObservableResult(new AttachCardCommand(cardWithAddress, setAsDefaultCard)))
             .subscribe(attachCardCommand -> callback.onSuccess(null));
    }
 
-   private Observable<SaveDefaultAddressCommand> saveDefaultAddressObservable (boolean saveDefaultAddress){
-         return !setAsDefaultAddress ? Observable.just(null) :
-            smartCardInteractor.saveDefaultAddressPipe().createObservableResult(new SaveDefaultAddressCommand(manualAddressInfo));
+   private Observable<SaveDefaultAddressCommand> saveDefaultAddressObservable(boolean saveDefaultAddress) {
+      return !setAsDefaultAddress ? Observable.just(null) :
+            smartCardInteractor.saveDefaultAddressPipe()
+                  .createObservableResult(new SaveDefaultAddressCommand(manualAddressInfo));
    }
 
-   private Observable<Pair<BankCard, Boolean>> fetchDefaultCardAndAddressObservable() {
-      return Observable.zip(
-            smartCardInteractor.fetchDefaultCardCommandActionPipe().createObservableResult(FetchDefaultCardCommand.fetch(false)),
-            smartCardInteractor.getDefaultAddressCommandPipe().createObservableResult(new GetDefaultAddressCommand()),
-            (defaultCardAction, addressInfoAction) -> {
+   private Observable<BankCard> fetchCardWithAddressObservable() {
+      return smartCardInteractor.getDefaultAddressCommandPipe().createObservableResult(new GetDefaultAddressCommand())
+            .map(addressInfoAction -> {
                AddressInfo address = useDefaultAddress ? addressInfoAction.getResult() : manualAddressInfo;
-               BankCard extandedBankCard = ImmutableBankCard.copyOf(bankCard)
+               return ImmutableBankCard.copyOf(bankCard)
                      .withCvv(Integer.parseInt(cvv))
                      .withTitle(nickName)
                      .withAddressInfo(address);
-               return new Pair<>(extandedBankCard, !CardUtils.isRealCardId(defaultCardAction.getResult()));
             });
    }
 

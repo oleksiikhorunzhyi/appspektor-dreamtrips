@@ -21,6 +21,7 @@ import com.worldventures.dreamtrips.modules.tripsimages.model.TripImagesType;
 import com.worldventures.dreamtrips.modules.video.model.CachedEntity;
 import com.worldventures.dreamtrips.wallet.domain.entity.AddressInfo;
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCard;
+import com.worldventures.dreamtrips.wallet.domain.entity.card.BankCard;
 import com.worldventures.dreamtrips.wallet.domain.entity.card.Card;
 
 import java.util.ArrayList;
@@ -203,6 +204,8 @@ public interface SnappyRepository {
    void saveWalletDefaultCardId(String id);
 
    String readWalletDefaultCardId();
+
+   Card readDefaultCard();
 
    void saveDefaultAddress(AddressInfo addressInfo);
 

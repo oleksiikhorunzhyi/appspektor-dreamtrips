@@ -2,6 +2,7 @@ package com.worldventures.dreamtrips.core.repository;
 
 import android.content.Context;
 import android.support.annotation.Nullable;
+import android.text.TextUtils;
 
 import com.esotericsoftware.kryo.Kryo;
 import com.esotericsoftware.kryo.io.Input;
@@ -36,6 +37,7 @@ import com.worldventures.dreamtrips.wallet.domain.entity.AddressInfo;
 import com.worldventures.dreamtrips.wallet.domain.entity.ImmutableAddressInfo;
 import com.worldventures.dreamtrips.wallet.domain.entity.ImmutableSmartCard;
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCard;
+import com.worldventures.dreamtrips.wallet.domain.entity.card.BankCard;
 import com.worldventures.dreamtrips.wallet.domain.entity.card.Card;
 
 import org.objenesis.strategy.StdInstantiatorStrategy;
@@ -272,6 +274,13 @@ public class SnappyRepositoryImpl implements SnappyRepository {
    @Override
    public String readWalletDefaultCardId() {
       return actWithResult(db -> db.get(WALLET_DEFAULT_BANK_CARD)).orNull();
+   }
+
+   @Override
+   public Card readDefaultCard() {
+      String id = readWalletDefaultCardId();
+      List<Card> cards = readWalletCardsList();
+      return Queryable.from(cards).firstOrDefault(card -> TextUtils.equals(card.id(), id));
    }
 
    @Override

@@ -21,12 +21,12 @@ import com.worldventures.dreamtrips.wallet.ui.common.helper.OperationSubscriberW
 import com.worldventures.dreamtrips.wallet.ui.dashboard.list.CardListPath;
 import com.worldventures.dreamtrips.wallet.util.CardUtils;
 import com.worldventures.dreamtrips.wallet.util.FormatException;
+import com.worldventures.dreamtrips.wallet.util.SmartCardInteractorHelper;
 
 import javax.inject.Inject;
 
 import flow.Flow;
 import flow.History;
-import io.techery.janet.helper.ActionStateSubscriber;
 import io.techery.janet.helper.ActionStateToActionTransformer;
 import timber.log.Timber;
 import rx.Observable;
@@ -35,6 +35,7 @@ public class AddCardDetailsPresenter extends WalletPresenter<AddCardDetailsPrese
 
    @Inject LocaleHelper localeHelper;
    @Inject SmartCardInteractor smartCardInteractor;
+   @Inject SmartCardInteractorHelper smartCardInteractorHelper;
 
    private final BankCard bankCard;
 
@@ -54,25 +55,21 @@ public class AddCardDetailsPresenter extends WalletPresenter<AddCardDetailsPrese
    @Override
    public void onAttachedToWindow() {
       super.onAttachedToWindow();
-      subscribePipes();
+      connectToDefaultCardPipe();
+      connectToDefaultAddressPipe();
+      connectToSaveCardDetailsPipe();
       loadDataFromDevice();
    }
 
-   private void loadDataFromDevice() {
-      smartCardInteractor.fetchDefaultCardCommandActionPipe().send(FetchDefaultCardCommand.fetch(true));
-      smartCardInteractor.getDefaultAddressCommandPipe().send(new GetDefaultAddressCommand());
+   private void connectToDefaultCardPipe() {
+      smartCardInteractor.fetchDefaultCardCommandPipe().clearReplays();
+      smartCardInteractorHelper.sendSingleDefaultCardTask(bankCard -> {
+         getView().setAsDefaultPaymentCard(!CardUtils.isRealCard(bankCard));
+         getView().setAsDefaultPaymentCardCondition().compose(bindView()).subscribe(this::onSetAsDefaultCard);
+      }, bindViewIoToMainComposer());
    }
 
-   private void subscribePipes() {
-      smartCardInteractor.fetchDefaultCardCommandActionPipe()
-            .observeWithReplay()
-            .compose(bindViewIoToMainComposer())
-            .subscribe(new ActionStateSubscriber<FetchDefaultCardCommand>()
-                  .onSuccess(command -> {
-                     getView().setAsDefaultPaymentCard(!CardUtils.isRealCardId(command.getResult()));
-                     getView().setAsDefaultPaymentCardCondition().compose(bindView()).subscribe(this::onSetAsDefaultCard);
-                  }));
-
+   private void connectToDefaultAddressPipe() {
       smartCardInteractor.getDefaultAddressCommandPipe()
             .observeWithReplay()
             .compose(new ActionStateToActionTransformer<>())
@@ -96,7 +93,9 @@ public class AddCardDetailsPresenter extends WalletPresenter<AddCardDetailsPrese
                Timber.e(throwable, "Fail to use GetDefaultAddressCommand");
                // TODO: 8/24/16 add error handling
             });
+   }
 
+   private void connectToSaveCardDetailsPipe() {
       smartCardInteractor.saveCardDetailsDataPipe()
             .observeWithReplay()
             .compose(bindViewIoToMainComposer())
@@ -115,20 +114,28 @@ public class AddCardDetailsPresenter extends WalletPresenter<AddCardDetailsPrese
                   .wrap());
    }
 
+   private void loadDataFromDevice() {
+      smartCardInteractor.fetchDefaultCardCommandPipe().send(new FetchDefaultCardCommand());
+      smartCardInteractor.getDefaultAddressCommandPipe().send(new GetDefaultAddressCommand());
+   }
+
    public void useDefaultAddressRequirement(boolean useDefaultAddress) {
       if (useDefaultAddress) getView().showDefaultAddress();
       else getView().showAddressFields();
    }
 
-   public void onCardInfoConfirmed(AddressInfo addressInfo, String cvv, String nickname, boolean useDefaultAddress, boolean setAsDefaultAddress) {
+   public void onCardInfoConfirmed(AddressInfo addressInfo, String cvv, String nickname, boolean useDefaultAddress, boolean setAsDefaultAddress, boolean setAsDefaultCard) {
       smartCardInteractor.saveCardDetailsDataPipe()
-            .send(new SaveCardDetailsDataCommand(bankCard, addressInfo, nickname, cvv, useDefaultAddress, setAsDefaultAddress));
+            .send(new SaveCardDetailsDataCommand(bankCard, addressInfo, nickname, cvv, useDefaultAddress, setAsDefaultAddress, setAsDefaultCard));
    }
 
-   private void onSetAsDefaultCard(boolean setDefaultCard){
+   private void onSetAsDefaultCard(boolean setDefaultCard) {
       if (!setDefaultCard) return;
-      //todo replace it
-      getView().showDefaultCardDialog("DEFAULT CARD NAME");
+
+      smartCardInteractorHelper.sendSingleDefaultCardTask(defaultCard -> {
+         if (!CardUtils.isRealCard(defaultCard)) return;
+         getView().showDefaultCardDialog(defaultCard.title());
+      }, bindViewIoToMainComposer());
    }
 
    public void defaultCardDialogConfirmed(boolean confirmed) {

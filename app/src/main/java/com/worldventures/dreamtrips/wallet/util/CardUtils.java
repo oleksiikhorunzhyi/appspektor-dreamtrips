@@ -1,5 +1,6 @@
 package com.worldventures.dreamtrips.wallet.util;
 
+import android.support.annotation.Nullable;
 import android.text.TextUtils;
 
 import com.innahema.collections.query.queriables.Queryable;
@@ -22,8 +23,13 @@ public class CardUtils {
       return sum != null ? sum : 0;
    }
 
-   public static boolean isRealCardId(String cardId) {
-      return !TextUtils.equals(cardId, Card.NO_ID);
+   public static boolean isRealCard(@Nullable Card card) {
+      return card != null && !TextUtils.equals(card.id(), Card.NO_ID);
+   }
+
+   public static boolean equals(@Nullable Card card1, @Nullable Card card2) {
+      if (card1 == null || card2 == null) return false;
+      return TextUtils.equals(card1.id(), card2.id());
    }
 
 }

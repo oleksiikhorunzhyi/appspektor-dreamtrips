@@ -153,22 +153,22 @@ class SmartCardInteractorSpec : BaseSpec({
 
          it("Card with valid data should be stored with default address and marked as default") {
             whenever(mockDb.readWalletDefaultCardId()).thenReturn(null)
-            assertActionSuccess(saveBankCardData(bankCard = mockedDebitCard, setAsDefaultAddress = true), { true })
+            assertActionSuccess(saveBankCardData(bankCard = mockedDebitCard, setAsDefaultAddress = true, setAsDefaultCard = true), { true })
 
             verify(mockDb, times(1)).saveDefaultAddress(any())
-            verify(mockDb, times(3)).saveWalletDefaultCardId(any())
+            verify(mockDb, times(2)).saveWalletDefaultCardId(any())
          }
 
          it("Card with valid data should be stored without default address and not marked as default") {
             val defaultCardId = "9"
             whenever(mockDb.readWalletDefaultCardId()).thenReturn(defaultCardId)
 
-            AssertUtil.assertActionSuccess(saveBankCardData(bankCard = mockedDebitCard), { true })
+            AssertUtil.assertActionSuccess(saveBankCardData(bankCard = mockedDebitCard, setAsDefaultCard = false), { true })
             verify(mockDb, times(0)).saveDefaultAddress(any())
             //method below shouldn't be called at all, but it's called because of
             // implementation CachedAction interface by FetchDefaultCardCommand
-            verify(mockDb, times(2)).saveWalletDefaultCardId(any())
-            verify(mockDb, times(2)).saveWalletDefaultCardId(defaultCardId)
+            verify(mockDb, times(1)).saveWalletDefaultCardId(any())
+            verify(mockDb, times(1)).saveWalletDefaultCardId(defaultCardId)
          }
 
          it("Card with invalid data shouldn't be stored") {
@@ -199,11 +199,11 @@ class SmartCardInteractorSpec : BaseSpec({
          setOf(DefaultBankCardStorage(mockDb), WalletCardsDiskStorage(mockDb), SmartCardStorage(mockDb))
       }
 
-      fun staticMockTextUtils () {
+      fun staticMockTextUtils() {
          PowerMockito.`mockStatic`(TextUtils::class.java)
          PowerMockito.`doAnswer`({ invocation ->
-            val arg1 : String = invocation.getArgumentAt(0, String::class.java)
-            var arg2 : String = invocation.getArgumentAt(1, String::class.java)
+            val arg1: String = invocation.getArgumentAt(0, String::class.java)
+            var arg2: String = invocation.getArgumentAt(1, String::class.java)
             arg1 == arg2
          }).`when`(TextUtils::class.java)
          TextUtils.`equals`(anyString(), anyString())
@@ -233,11 +233,11 @@ class SmartCardInteractorSpec : BaseSpec({
 
       fun createMockDb(): SnappyRepository = spy()
 
-      fun loadDefaultCardId(force: Boolean = false): TestSubscriber<ActionState<FetchDefaultCardCommand>> {
-         val testSubscriber = TestSubscriber<ActionState<FetchDefaultCardCommand>>()
+      fun loadDefaultCardId(force: Boolean = false): TestSubscriber<ActionState<FetchDefaultCardIdCommand>> {
+         val testSubscriber = TestSubscriber<ActionState<FetchDefaultCardIdCommand>>()
 
-         smartCardInteractor.fetchDefaultCardCommandActionPipe()
-               .createObservable(FetchDefaultCardCommand.fetch(force))
+         smartCardInteractor.fetchDefaultCardIdCommandPipe()
+               .createObservable(FetchDefaultCardIdCommand.fetch(force))
                .subscribe(testSubscriber)
          return testSubscriber
       }
@@ -271,11 +271,11 @@ class SmartCardInteractorSpec : BaseSpec({
 
       fun saveBankCardData(bankCard: BankCard, manualAddressInfo: AddressInfo = mockedAddressInfo,
                            nickName: String = "Card1", cvv: String = "0000", useDefaultAddress: Boolean = false,
-                           setAsDefaultAddress: Boolean = false): TestSubscriber<ActionState<SaveCardDetailsDataCommand>> {
+                           setAsDefaultAddress: Boolean = false, setAsDefaultCard: Boolean = true): TestSubscriber<ActionState<SaveCardDetailsDataCommand>> {
          val testSubscriber = TestSubscriber<ActionState<SaveCardDetailsDataCommand>>()
 
          smartCardInteractor.saveCardDetailsDataPipe()
-               .createObservable(SaveCardDetailsDataCommand(bankCard, manualAddressInfo, nickName, cvv, useDefaultAddress, setAsDefaultAddress))
+               .createObservable(SaveCardDetailsDataCommand(bankCard, manualAddressInfo, nickName, cvv, useDefaultAddress, setAsDefaultAddress, setAsDefaultCard))
                .subscribe(testSubscriber)
          return testSubscriber
       }

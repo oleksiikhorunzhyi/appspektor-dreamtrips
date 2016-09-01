@@ -139,6 +139,7 @@ public class AddCardDetailsScreen extends WalletFrameLayout<AddCardDetailsPresen
       String nickname = cardNickname.getText().toString().trim();
       boolean useDefaultAddress = useDefaultAddressCheckBox.isChecked();
       boolean setDefaultAddress = setDefaultAddressCheckBox.isChecked();
+      boolean setAsDefaultCard = setDefaultPaymentCard.isChecked();
 
       AddressInfo addressInfo = ImmutableAddressInfo.builder()
             .address1(address1.getText().toString().trim())
@@ -148,6 +149,6 @@ public class AddCardDetailsScreen extends WalletFrameLayout<AddCardDetailsPresen
             .zip(zip.getText().toString().trim())
             .build();
 
-      getPresenter().onCardInfoConfirmed(addressInfo, cvv, nickname, useDefaultAddress, setDefaultAddress);
+      getPresenter().onCardInfoConfirmed(addressInfo, cvv, nickname, useDefaultAddress, setDefaultAddress, setAsDefaultCard);
    }
 }

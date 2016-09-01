@@ -10,6 +10,7 @@ import com.worldventures.dreamtrips.wallet.service.command.ConnectSmartCardComma
 import com.worldventures.dreamtrips.wallet.service.command.CreateAndConnectToCardCommand;
 import com.worldventures.dreamtrips.wallet.service.command.FetchCardPropertiesCommand;
 import com.worldventures.dreamtrips.wallet.service.command.FetchDefaultCardCommand;
+import com.worldventures.dreamtrips.wallet.service.command.FetchDefaultCardIdCommand;
 import com.worldventures.dreamtrips.wallet.service.command.FetchSmartCardLockState;
 import com.worldventures.dreamtrips.wallet.service.command.GetActiveSmartCardCommand;
 import com.worldventures.dreamtrips.wallet.service.command.GetDefaultAddressCommand;
@@ -35,7 +36,7 @@ import dagger.Module;
             LoadImageForSmartCardCommand.class,
             SetupSmartCardNameCommand.class,
             SetupUserDataCommand.class,
-            FetchDefaultCardCommand.class,
+            FetchDefaultCardIdCommand.class,
             ActivateSmartCardCommand.class,
             CreateAndConnectToCardCommand.class,
             GetActiveSmartCardCommand.class,
@@ -50,7 +51,8 @@ import dagger.Module;
             ConnectSmartCardCommand.class,
             FetchCardPropertiesCommand.class,
             SetLockStateCommand.class,
-            SaveDefaultAddressCommand.class
+            SaveDefaultAddressCommand.class,
+            FetchDefaultCardCommand.class
       },
       complete = false, library = true)
 public class WalletCommandModule {}

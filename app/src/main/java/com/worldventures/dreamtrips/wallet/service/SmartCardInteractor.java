@@ -6,10 +6,12 @@ import com.worldventures.dreamtrips.wallet.service.command.CardListCommand;
 import com.worldventures.dreamtrips.wallet.service.command.CardStacksCommand;
 import com.worldventures.dreamtrips.wallet.service.command.ConnectSmartCardCommand;
 import com.worldventures.dreamtrips.wallet.service.command.FetchDefaultCardCommand;
+import com.worldventures.dreamtrips.wallet.service.command.FetchDefaultCardIdCommand;
 import com.worldventures.dreamtrips.wallet.service.command.GetActiveSmartCardCommand;
 import com.worldventures.dreamtrips.wallet.service.command.GetDefaultAddressCommand;
 import com.worldventures.dreamtrips.wallet.service.command.SaveCardDetailsDataCommand;
 import com.worldventures.dreamtrips.wallet.service.command.SaveDefaultAddressCommand;
+import com.worldventures.dreamtrips.wallet.service.command.SetDefaultCardOnDeviceCommand;
 import com.worldventures.dreamtrips.wallet.service.command.SetLockStateCommand;
 import com.worldventures.dreamtrips.wallet.service.command.SetStealthModeCommand;
 import com.worldventures.dreamtrips.wallet.service.command.SmartCardModifier;
@@ -46,7 +48,9 @@ public final class SmartCardInteractor {
    private final ActionPipe<SetStealthModeCommand> setStealthModePipe;
    private final ActionPipe<SetLockStateCommand> setLockPipe;
    private final ReadActionPipe<SmartCardModifier> smartCardModifierPipe;
-   private final ActionPipe<FetchDefaultCardCommand> fetchDefaultCardCommandActionPipe;
+   private final ActionPipe<FetchDefaultCardIdCommand> fetchDefaultCardIdCommandPipe;
+   private final ActionPipe<FetchDefaultCardCommand> fetchDefaultCardCommandPipe;
+   private final ActionPipe<SetDefaultCardOnDeviceCommand> setDefaultCardOnDeviceCommandPipe;
    private final ActionPipe<DeleteRecordAction> deleteCardPipe;
 
    @Inject
@@ -65,7 +69,9 @@ public final class SmartCardInteractor {
       saveDefaultAddressPipe = janet.createPipe(SaveDefaultAddressCommand.class, Schedulers.io());
       getDefaultAddressCommandPipe = janet.createPipe(GetDefaultAddressCommand.class, Schedulers.io());
       saveCardDetailsDataCommandPipe = janet.createPipe(SaveCardDetailsDataCommand.class, Schedulers.io());
-      fetchDefaultCardCommandActionPipe = janet.createPipe(FetchDefaultCardCommand.class, Schedulers.io());
+      fetchDefaultCardIdCommandPipe = janet.createPipe(FetchDefaultCardIdCommand.class, Schedulers.io());
+      fetchDefaultCardCommandPipe = janet.createPipe(FetchDefaultCardCommand.class, Schedulers.io());
+      setDefaultCardOnDeviceCommandPipe = janet.createPipe(SetDefaultCardOnDeviceCommand.class, Schedulers.io());
       deleteCardPipe = janet.createPipe(DeleteRecordAction.class, Schedulers.io());
 
       connect();
@@ -83,8 +89,12 @@ public final class SmartCardInteractor {
       return cardStacksPipe;
    }
 
-   public ActionPipe<FetchDefaultCardCommand> fetchDefaultCardCommandActionPipe() {
-      return fetchDefaultCardCommandActionPipe;
+   public ActionPipe<FetchDefaultCardIdCommand> fetchDefaultCardIdCommandPipe() {
+      return fetchDefaultCardIdCommandPipe;
+   }
+
+   public ActionPipe<FetchDefaultCardCommand> fetchDefaultCardCommandPipe() {
+      return fetchDefaultCardCommandPipe;
    }
 
    public ActionPipe<DeleteRecordAction> deleteCardPipe() {
@@ -117,6 +127,10 @@ public final class SmartCardInteractor {
 
    public ActionPipe<SaveCardDetailsDataCommand> saveCardDetailsDataPipe() {
       return saveCardDetailsDataCommandPipe;
+   }
+
+   public ActionPipe<SetDefaultCardOnDeviceCommand> setDefaultCardOnDeviceCommandPipe() {
+      return setDefaultCardOnDeviceCommandPipe;
    }
 
    private void connect() {

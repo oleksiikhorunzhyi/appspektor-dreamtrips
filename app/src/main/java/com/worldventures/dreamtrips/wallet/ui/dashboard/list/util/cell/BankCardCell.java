@@ -6,13 +6,13 @@ import com.techery.spares.annotations.Layout;
 import com.techery.spares.ui.view.cell.AbstractDelegateCell;
 import com.techery.spares.ui.view.cell.CellDelegate;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.wallet.domain.entity.card.BankCard;
+import com.worldventures.dreamtrips.wallet.ui.dashboard.list.util.BankCardViewModel;
 import com.worldventures.dreamtrips.wallet.ui.widget.BankCardWidget;
 
 import butterknife.InjectView;
 
 @Layout(R.layout.adapter_item_wallet_bankcard)
-public class BankCardCell extends AbstractDelegateCell<BankCard, BankCardCell.Delegate> {
+public class BankCardCell extends AbstractDelegateCell<BankCardViewModel, BankCardCell.Delegate> {
 
    @InjectView(R.id.bank_card) BankCardWidget bankCardWidget;
 
@@ -22,7 +22,8 @@ public class BankCardCell extends AbstractDelegateCell<BankCard, BankCardCell.De
 
    @Override
    protected void syncUIStateWithModel() {
-      bankCardWidget.setBankCardInfo(getModelObject());
+      bankCardWidget.setBankCardInfo(getModelObject().bankCard);
+      bankCardWidget.setAsDefault(getModelObject().defaultCard);
       itemView.setOnClickListener(v -> cellDelegate.onCellClicked(getModelObject()));
    }
 
@@ -31,7 +32,7 @@ public class BankCardCell extends AbstractDelegateCell<BankCard, BankCardCell.De
 
    }
 
-   public interface Delegate extends CellDelegate<BankCard> {
+   public interface Delegate extends CellDelegate<BankCardViewModel> {
 
    }
 }

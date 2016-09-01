@@ -4,6 +4,7 @@
    <dimen name="wallet_common_screen_padding">24dp</dimen>
    <dimen name="wallet_bank_card_default_width">300dp</dimen>
    <dimen name="wallet_bank_card_default_height">150dp</dimen>
+   <dimen name="wallet_bank_card_default_bank_info_container_height">35dp</dimen>
    <dimen name="wallet_smart_card_default_height">150dp</dimen>
    <dimen name="wallet_smart_card_default_width">270dp</dimen>
 

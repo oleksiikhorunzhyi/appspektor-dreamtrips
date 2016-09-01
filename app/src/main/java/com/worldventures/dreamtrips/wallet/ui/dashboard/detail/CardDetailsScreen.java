@@ -54,7 +54,7 @@ public class CardDetailsScreen extends WalletFrameLayout<CardDetailsPresenter.Sc
 
    @OnClick(R.id.delete_button)
    public void onDeleteCardClicked() {
-      getPresenter().onDeleteCardRequired();
+      getPresenter().onDeleteCardClick();
    }
 
    @Override
@@ -75,6 +75,7 @@ public class CardDetailsScreen extends WalletFrameLayout<CardDetailsPresenter.Sc
    @Override
    public void showDefaultCardDialog(String defaultCardName) {
       new DefaultCardDialog(getContext(), defaultCardName)
+            .setOnConfimAction(() -> getPresenter().defaultCardDialogConfirmed(true))
             .setOnCancelAction(() -> getPresenter().defaultCardDialogConfirmed(false))
             .show();
    }

@@ -5,7 +5,6 @@ import android.os.Parcelable;
 
 import com.techery.spares.module.Injector;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.core.utils.QuantityHelper;
 import com.worldventures.dreamtrips.modules.navdrawer.NavigationDrawerPresenter;
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCard;
 import com.worldventures.dreamtrips.wallet.domain.entity.card.BankCard;
@@ -22,9 +21,9 @@ import com.worldventures.dreamtrips.wallet.ui.dashboard.list.util.CardStackViewM
 import com.worldventures.dreamtrips.wallet.ui.dashboard.list.util.ImmutableCardStackHeaderHolder;
 import com.worldventures.dreamtrips.wallet.ui.settings.WalletCardSettingsPath;
 import com.worldventures.dreamtrips.wallet.ui.wizard.magstripe.WizardMagstripePath;
+import com.worldventures.dreamtrips.wallet.util.CardListStackConverter;
 import com.worldventures.dreamtrips.wallet.util.CardUtils;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
@@ -43,10 +42,13 @@ public class CardListScreenPresenter extends WalletPresenter<CardListScreenPrese
    @Inject SmartCardInteractor smartCardInteractor;
    @Inject NavigationDrawerPresenter navigationDrawerPresenter;
 
+   private final CardListStackConverter cardListStackConverter;
+
    private CardStackHeaderHolder cardStackHeaderHolder = ImmutableCardStackHeaderHolder.builder().build();
 
    public CardListScreenPresenter(Context context, Injector injector) {
       super(context, injector);
+      cardListStackConverter = new CardListStackConverter(context);
    }
 
    @Override
@@ -112,7 +114,7 @@ public class CardListScreenPresenter extends WalletPresenter<CardListScreenPrese
    }
 
    private void cardsLoaded(List<CardStackModel> loadedModels) {
-      List<CardStackViewModel> cards = adapt(loadedModels);
+      List<CardStackViewModel> cards = cardListStackConverter.convertToModelViews(loadedModels);
       int cardsCount = CardUtils.stacksToItemsCount(cards);
       cardStackHeaderHolder = ImmutableCardStackHeaderHolder.builder()
             .from(cardStackHeaderHolder)
@@ -122,36 +124,6 @@ public class CardListScreenPresenter extends WalletPresenter<CardListScreenPrese
       getView().notifySmartCardChanged(cardStackHeaderHolder);
       getView().showRecordsInfo(cards);
       getView().setEnableAddingCardButtons(cardsCount != MAX_CARD_LIMIT);
-   }
-
-   private List<CardStackViewModel> adapt(List<CardStackModel> stackList) {
-      int sourceLength = stackList.size();
-      List<CardStackViewModel> list = new ArrayList<>(sourceLength);
-
-      for (int i = 0; i < sourceLength; i++) {
-         CardStackModel vm = stackList.get(i);
-         String title;
-         switch (vm.type()) {
-            case DEBIT:
-               int debitCardListSize = vm.bankCards().size();
-               int debitTitleId = QuantityHelper.chooseResource(debitCardListSize, R.string.wallet_debit_card_title, R.string.wallet_debit_cards_title);
-
-               title = getContext().getString(debitTitleId, debitCardListSize);
-               break;
-            case CREDIT:
-               int creditCardListSize = vm.bankCards().size();
-               int creditTitleId = QuantityHelper.chooseResource(creditCardListSize, R.string.wallet_credit_card_title, R.string.wallet_credit_cards_title);
-
-               title = getContext().getString(creditTitleId, creditCardListSize);
-               break;
-            default:
-               title = getContext().getString(R.string.dashboard_default_card_stack_title);
-         }
-
-         list.add(new CardStackViewModel(vm.type(), vm.bankCards(), title));
-      }
-
-      return list;
    }
 
    public interface Screen extends WalletScreen {

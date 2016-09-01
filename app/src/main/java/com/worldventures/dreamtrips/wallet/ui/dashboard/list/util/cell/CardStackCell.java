@@ -12,8 +12,8 @@ import com.techery.spares.ui.view.cell.AbstractDelegateCell;
 import com.techery.spares.ui.view.cell.CellDelegate;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.wallet.domain.entity.card.BankCard;
-import com.worldventures.dreamtrips.wallet.domain.entity.card.ImmutableBankCard;
 import com.worldventures.dreamtrips.wallet.ui.dashboard.list.util.CardStackViewModel;
+import com.worldventures.dreamtrips.wallet.ui.dashboard.list.util.BankCardViewModel;
 import com.worldventures.dreamtrips.wallet.ui.dashboard.list.util.OverlapDecoration;
 
 import javax.inject.Inject;
@@ -28,7 +28,7 @@ public class CardStackCell extends AbstractDelegateCell<CardStackViewModel, Card
    @InjectView(R.id.cardStack) RecyclerView cardStack;
    BaseDelegateAdapter adapter;
 
-   private static final double VISIBLE_SCALE = 0.75;
+   private static final double VISIBLE_SCALE = 0.64;
 
    public CardStackCell(View view) {
       super(view);
@@ -45,10 +45,10 @@ public class CardStackCell extends AbstractDelegateCell<CardStackViewModel, Card
    @Override
    public void afterInject() {
       super.afterInject();
-      BankCardCell.Delegate childCellDelegate = model -> cellDelegate.onCardClicked(model);
+      BankCardCell.Delegate childCellDelegate = model -> cellDelegate.onCardClicked(model.bankCard);
       adapter = new BaseDelegateAdapter(itemView.getContext(), injector);
-      adapter.registerCell(ImmutableBankCard.class, BankCardCell.class);
-      adapter.registerDelegate(ImmutableBankCard.class, childCellDelegate);
+      adapter.registerCell(BankCardViewModel.class, BankCardCell.class);
+      adapter.registerDelegate(BankCardViewModel.class, childCellDelegate);
 
       cardStack.setAdapter(adapter);
    }

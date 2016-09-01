@@ -6,7 +6,7 @@ import com.worldventures.dreamtrips.core.janet.cache.CacheBundle;
 import com.worldventures.dreamtrips.core.janet.cache.CachedAction;
 import com.worldventures.dreamtrips.core.janet.cache.storage.MultipleActionStorage;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
-import com.worldventures.dreamtrips.wallet.service.command.FetchDefaultCardCommand;
+import com.worldventures.dreamtrips.wallet.service.command.FetchDefaultCardIdCommand;
 import com.worldventures.dreamtrips.wallet.service.command.SetDefaultCardOnDeviceCommand;
 
 import java.util.Arrays;
@@ -32,7 +32,7 @@ public class DefaultBankCardStorage implements MultipleActionStorage<String> {
 
    @Override
    public List<Class<? extends CachedAction>> getActionClasses() {
-      return Arrays.asList(FetchDefaultCardCommand.class, SetDefaultCardOnDeviceCommand.class);
+      return Arrays.asList(FetchDefaultCardIdCommand.class, SetDefaultCardOnDeviceCommand.class);
    }
 
 }

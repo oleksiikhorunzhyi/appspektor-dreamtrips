@@ -16,7 +16,7 @@ import com.worldventures.dreamtrips.core.initializer.NewrelicInitializer;
 import com.worldventures.dreamtrips.core.initializer.RxJavaLoggingInitializer;
 import com.worldventures.dreamtrips.core.initializer.SoftInputInitializer;
 import com.worldventures.dreamtrips.core.initializer.ViewServerInitializer;
-import com.worldventures.dreamtrips.core.repository.SnappyRepository;
+import com.worldventures.dreamtrips.modules.common.delegate.CachedEntityInteractor;
 
 import dagger.Module;
 import dagger.Provides;
@@ -90,7 +90,7 @@ public class InitializerModule {
    }
 
    @Provides(type = Provides.Type.SET)
-   public AppInitializer provideCachedEntitiesInitializer(SnappyRepository db) {
-      return new CachedEntityCommandInitializer(db);
+   public AppInitializer provideCachedEntitiesInitializer(CachedEntityInteractor interactor) {
+      return new CachedEntityCommandInitializer(interactor);
    }
 }

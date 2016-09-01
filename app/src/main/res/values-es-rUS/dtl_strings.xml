@@ -23,7 +23,7 @@
    <string name="dtl_distance">Distancia, %1$s</string>
    <string name="dtl_receipt_scan">Captura de recibo</string>
    <string name="dtl_receipt_rescan">Volver a capturar</string>
-   <string name="dtl_receipt_verify">Verificar cantidad</string>
+   <string name="dtl_receipt_verify_button_caption">Verificar</string>
    <string name="dtl_receipt_verify_hint">Esta cantidad debe ser verificada por el comerciante. Cualquier discrepancia en la cantidad ingresada demorará la obtención de los puntos DreamTrips.</string>
    <string name="dtl_action_next">Siguiente</string>
    <string name="dtl_amenities">Amenidades</string>
@@ -37,7 +37,8 @@
    <string name="dtl_checkin_location_error">Debería estar activados los servicios de ubicación para hacer el registro</string>
    <string name="dtl_barcode_title">Escanea el código QR</string>
    <string name="dtl_barcode_merchant">Escanear código del comerciante</string>
-   <string name="dtl_enter_amount">Ingresar cantidad</string>
+   <string name="dtl_scan_receipt_screen_title">Ingresar Subtotal</string>
+   <string name="dtl_scan_receipt_input_caption"> Ingresar Subtotal (Cantidad sin impuestos y propina)</string>
    <string name="dtl_congrats">¡Felicidades!</string>
    <string name="dtl_you_earned">Has ganado</string>
    <string name="dtl_total">Total de Puntos: Dreamtrips</string>
@@ -46,7 +47,6 @@
    <string name="dtl_amount_invalid">Cantidad no válida</string>
    <string name="dtl_invalid">Entrada inválida</string>
    <string name="dtl_verify_amount">Verificar cantidad</string>
-   <string name="dtl_verify_amount_note">Nota: El importe debe ser el total que figura en la factura, excluidos los impuestos y propinas detallados. </string>
    <string name="dtl_total_amount">Cantidad total:</string>
    <string name="dtl_verify_earn_hint">Podrías ganar </string>
    <string name="dtl_check_in">Registraste y gana</string>
@@ -68,6 +68,7 @@
    <string name="presentation">Presentación</string>
    <string name="dtl_open_now">Abierto ahora</string>
    <string name="dtl_closed_now">Cerrado ahora</string>
+   <string name="dtl_closed">Cerrado</string>
    <string name="directions">Indicaciones para llegar</string>
    <string name="checked_in">Te has registrado correctamente</string>
    <string name="point_estimator">Estimador de puntos</string>
@@ -89,6 +90,7 @@
    <string name="help">Ayuda</string>
    <string name="merchants_list_empty_text">Nuevos lugares próximamente</string>
    <string name="merchants_list_empty_text_additional">- o -</string>
+   <string name="merchant_working_hours_caption">horas</string>
 
    <!-- DtlToolbar strings -->
    <string name="dtlt_search_hint">Comida y Bebidas</string>

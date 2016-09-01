@@ -170,7 +170,7 @@ public enum Route {
    // TODO :: 4/24/16 re-write the rest of DTL to Flow-powered views
    DTL_TRANSACTION_SUCCEED(DtlTransactionSucceedFragment.class, R.string.dtl_success_title),
    DTL_POINTS_ESTIMATION(DtlPointsEstimationFragment.class),
-   DTL_SCAN_RECEIPT(DtlScanReceiptFragment.class, R.string.dtl_enter_amount),
+   DTL_SCAN_RECEIPT(DtlScanReceiptFragment.class, R.string.dtl_scan_receipt_screen_title),
    DTL_SCAN_QR(DtlScanQrCodeFragment.class, R.string.dtl_barcode_title),
    DTL_VERIFY(DtlVerifyAmountFragment.class, R.string.dtl_verify_amount),
    // </dtl_legasy_routes>

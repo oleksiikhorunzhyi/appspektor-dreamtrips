@@ -59,8 +59,7 @@ public class LaunchActivityPresenter extends ActivityPresenter<LaunchActivityPre
                      loginInteractor.loginActionPipe().clearReplays();
                      User user = loginCommand.getResult().getUser();
                      TrackingHelper.login(user.getEmail());
-                     TrackingHelper.setUserId(Integer.toString(user.getId()));
-                     splashMode();
+                     launchModeBasedOnExistingSession();
                   })
                   .onFail((loginCommand, throwable) -> {
                      loginInteractor.loginActionPipe().clearReplays();
@@ -120,7 +119,7 @@ public class LaunchActivityPresenter extends ActivityPresenter<LaunchActivityPre
    }
 
    private void onAuthSuccess() {
-      TrackingHelper.setUserId(Integer.toString(appSessionHolder.get().get().getUser().getId()));
+      TrackingHelper.setUserId(getAccount().getUsername(), Integer.toString(getAccount().getId()));
       messengerConnector.connect();
       view.openMain();
    }

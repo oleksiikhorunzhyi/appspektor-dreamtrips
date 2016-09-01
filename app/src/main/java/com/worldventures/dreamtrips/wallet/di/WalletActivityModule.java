@@ -17,8 +17,9 @@ import com.worldventures.dreamtrips.wallet.ui.wizard.magstripe.WizardMagstripePr
 import com.worldventures.dreamtrips.wallet.ui.wizard.manual.WizardManualInputPresenter;
 import com.worldventures.dreamtrips.wallet.ui.wizard.pin.WizardPinSetupPresenter;
 import com.worldventures.dreamtrips.wallet.ui.wizard.profile.WizardEditProfilePresenter;
-import com.worldventures.dreamtrips.wallet.ui.wizard.splash.WizardSplashScreenPresenter;
+import com.worldventures.dreamtrips.wallet.ui.wizard.splash.WizardSplashPresenter;
 import com.worldventures.dreamtrips.wallet.ui.wizard.success.WalletSuccessPresenter;
+import com.worldventures.dreamtrips.wallet.ui.wizard.termsandconditionals.WizardTermsScreenPresenter;
 
 import dagger.Module;
 import dagger.Provides;
@@ -31,7 +32,8 @@ import dagger.Provides;
             BankCardCell.class,
             CardStackCell.class,
             CardStackHeaderCell.class,
-            WizardSplashScreenPresenter.class,
+            WizardSplashPresenter.class,
+            WizardTermsScreenPresenter.class,
             WizardScanBarcodePresenter.class,
             WizardManualInputPresenter.class,
             WizardCardNamePresenter.class,

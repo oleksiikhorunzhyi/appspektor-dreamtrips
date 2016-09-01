@@ -30,22 +30,40 @@
             android:id="@+id/wallet_wizard_splash_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceLarge"
-            android:text="@string/wallet_wizard_splash_title2"
-            android:gravity="center"
             android:layout_marginLeft="55dp"
             android:layout_marginRight="55dp"
             android:layout_marginTop="32dp"
+            android:gravity="center"
+            android:text="@string/wallet_wizard_splash_title2"
+            android:textAppearance="?android:attr/textAppearanceLarge"
             />
 
-      <ImageView
+      <FrameLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:src="@drawable/flye_card_back"
-            android:scaleType="fitCenter"
-            android:layout_marginTop="30dp"
-            tools:ignore="ContentDescription"
-            />
+            >
+
+         <ImageView
+               android:id="@+id/wallet_wizard_smarcard_back"
+               android:layout_width="match_parent"
+               android:layout_height="wrap_content"
+               android:layout_marginTop="30dp"
+               android:scaleType="fitCenter"
+               android:src="@drawable/flye_card_back"
+               tools:ignore="ContentDescription"
+               />
+
+         <ImageView
+               android:id="@+id/wallet_wizard_smarcard_front"
+               android:layout_width="match_parent"
+               android:layout_height="wrap_content"
+               android:layout_marginTop="30dp"
+               android:scaleType="fitCenter"
+               android:src="@drawable/ic_flye_card_front"
+               tools:ignore="ContentDescription"
+               />
+      </FrameLayout>
+
 
    </LinearLayout>
 
@@ -55,6 +73,7 @@
          android:layout_height="wrap_content"
          android:layout_gravity="bottom"
          android:layout_margin="@dimen/spacing_large"
-         android:text="@string/wallet_wizard_splash_start_btn"
+         android:text="@string/wallet_wizard_scan_start_btn"
          />
+
 </com.worldventures.dreamtrips.wallet.ui.wizard.splash.WizardSplashScreen>

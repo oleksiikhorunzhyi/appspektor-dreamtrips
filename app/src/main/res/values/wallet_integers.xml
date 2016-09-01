@@ -8,5 +8,8 @@
 
    <integer name="wallet_wizard_add_card_details_cvv_length">4</integer>
 
+   <integer name="smart_card_flip_time_full">600</integer>
+   <integer name="smart_card_flip_time_half">300</integer>
+
    <integer name="wallet_smart_card_id_length">10</integer>
 </resources>

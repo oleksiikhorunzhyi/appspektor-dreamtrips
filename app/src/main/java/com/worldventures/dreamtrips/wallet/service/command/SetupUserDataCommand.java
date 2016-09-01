@@ -59,6 +59,9 @@ public class SetupUserDataCommand extends Command<SmartCard> implements Injectab
             .flatMap(action -> Observable.fromCallable(this::getAvatarAsByteArray))
             .flatMap(bytesArray -> janet.createPipe(UpdateUserPhotoAction.class)
                   .createObservableResult(new UpdateUserPhotoAction(bytesArray)))
+            .doOnNext(updateUserPhotoAction -> {
+               //todo send update user info & photo to origin server AssociateCardUser
+            })
             .map(action -> attachAvatarToLocalSmartCard())
             .subscribe(callback::onSuccess, callback::onFail);
    }

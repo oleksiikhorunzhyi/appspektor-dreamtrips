@@ -1,8 +1,11 @@
 package com.worldventures.dreamtrips.wallet.ui.wizard.manual;
 
+import android.app.Activity;
 import android.content.Context;
 import android.os.Parcelable;
+import android.view.WindowManager;
 import android.support.annotation.NonNull;
+import android.view.WindowManager;
 
 import com.techery.spares.module.Injector;
 import com.worldventures.dreamtrips.R;
@@ -23,6 +26,7 @@ import timber.log.Timber;
 public class WizardManualInputPresenter extends WalletPresenter<WizardManualInputPresenter.Screen, Parcelable> {
 
    @Inject WizardInteractor wizardInteractor;
+   @Inject Activity activity;
 
    private int scidLength;
 
@@ -33,6 +37,10 @@ public class WizardManualInputPresenter extends WalletPresenter<WizardManualInpu
    @Override
    public void attachView(Screen view) {
       super.attachView(view);
+      // TODO: 9/1/16 investigate and fix this problem (photo piker brake SoftInputMode too)
+      // hotfix, web view brake SoftInputMode (set ADJUST_RESIZE)
+      activity.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
+
       scidLength = getContext().getResources().getInteger(R.integer.wallet_smart_card_id_length);
       connectToSmartCard();
       observeScidInput();

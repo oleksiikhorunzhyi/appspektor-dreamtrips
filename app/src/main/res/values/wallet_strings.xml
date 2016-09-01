@@ -42,10 +42,13 @@
    <string name="wallet_wizard_pin_is_set_suggestion">You can now begin loading credit and debit cards</string>
 
    <!--splash-->
-   <string name="wallet_wizard_splash_title1">Get ready</string>
-   <string name="wallet_wizard_splash_title2">Scan the back of your flye&#8482; smart card to begin</string>
-   <string name="wallet_wizard_splash_start_btn">Scan Card</string>
-   <string name="wallet_wizard_splash_scan_title">Scan Card</string>
+   <string name="wallet_wizard_splash_title1">Get ready to soar</string>
+   <string name="wallet_wizard_splash_title2">Before we set up your new flyes mart card, you must agree to the Terms and Conditions.</string>
+   <string name="wallet_wizard_splash_review_btn">Review Terms</string>
+
+   <string name="wallet_wizard_scan_proposal">Scan the back of your flye&#8482; smart card to begin</string>
+   <string name="wallet_wizard_scan_start_btn">Scan Card</string>
+   <string name="wallet_wizard_scan_title">Scan Card</string>
 
    <string name="wallet_wizard_scan_barcode_header">Position the flye™ card barcode in the viewfinder box.</string>
    <string name="wallet_wizard_scan_barcode_footer_title">Not scanning?</string>
@@ -118,4 +121,9 @@
    <string name="wallet_wizard_magstripe_swipe_credit">Swipe a credit card</string>
    <string name="wallet_wizard_magstripe_swipe_debit">Swipe a debit card</string>
    <string name="wallet_wizard_magstripe_swipe_error">Incorrect card reading. Try again</string>
+   <string name="wallet_terms_and_conditions_header">Terms And Conditions</string>
+   <string name="wallet_wizard_terms_and_conditions_agree_btn">Agree</string>
+   <string name="wallet_terms_and_conditions_try_again">Try Again</string>
+   <string name="wallet_terms_and_conditions_load_failed">Failed to retrieve terms and conditions</string>
+   <string name="wallet_terms_and_conditions_accept_failed">Failed to accept terms and conditions</string>
 </resources>

@@ -33,7 +33,7 @@ public class WizardCardNamePresenter extends WalletPresenter<WizardCardNamePrese
    }
 
    public void goToBack() {
-      Flow.get(getContext()).setHistory(History.single(new WizardSplashPath()), Flow.Direction.BACKWARD);
+      Flow.get(getContext()).setHistory(History.single(new WizardSplashPath(true)), Flow.Direction.BACKWARD);
    }
 
    @Override

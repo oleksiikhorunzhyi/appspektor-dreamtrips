@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.worldventures.dreamtrips.wallet.ui.wizard.termsandconditionals.WizardTermsScreen style="@style/WalletTheme.Wizard.RootStyle"
+      xmlns:android="http://schemas.android.com/apk/res/android"
+      xmlns:app="http://schemas.android.com/apk/res-auto"
+      android:background="@color/white"
+      android:gravity="center"
+      android:orientation="vertical"
+      android:theme="@style/WalletTheme.Wizard"
+      >
+
+   <android.support.v7.widget.Toolbar
+         android:id="@+id/toolbar"
+         android:layout_width="match_parent"
+         android:layout_height="?attr/actionBarSize"
+         android:theme="@style/WalletTheme.Wizard.ToolbarTheme"
+         app:navigationIcon="@drawable/blue_arrow"
+         app:title="@string/wallet_terms_and_conditions_header"
+         app:titleTextColor="@color/wallet_terms_text_color"
+         />
+
+   <LinearLayout
+         android:layout_width="match_parent"
+         android:layout_height="match_parent"
+         android:layout_marginTop="?attr/actionBarSize"
+         android:orientation="vertical"
+         >
+
+      <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            >
+
+         <WebView
+               android:id="@+id/termsView"
+               android:layout_width="match_parent"
+               android:layout_height="match_parent"
+               />
+
+         <View
+               android:layout_width="match_parent"
+               android:layout_height="@dimen/spacing_large"
+               android:layout_gravity="bottom"
+               android:background="@drawable/white_gradient"
+               />
+
+         <me.zhanghai.android.materialprogressbar.MaterialProgressBar
+               android:id="@+id/pb"
+               android:layout_width="wrap_content"
+               android:layout_height="wrap_content"
+               android:layout_gravity="center"
+               />
+      </FrameLayout>
+
+      <Button
+            android:id="@+id/wallet_wizard_terms_and_conditions_agree_btn"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/spacing_large"
+            android:layout_marginLeft="@dimen/spacing_large"
+            android:layout_marginRight="@dimen/spacing_large"
+            android:text="@string/wallet_wizard_terms_and_conditions_agree_btn"
+            />
+   </LinearLayout>
+
+</com.worldventures.dreamtrips.wallet.ui.wizard.termsandconditionals.WizardTermsScreen>

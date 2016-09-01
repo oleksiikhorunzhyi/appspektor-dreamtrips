@@ -23,6 +23,7 @@ import com.worldventures.dreamtrips.wallet.service.command.SetStealthModeCommand
 import com.worldventures.dreamtrips.wallet.service.command.SetupDefaultAddressCommand;
 import com.worldventures.dreamtrips.wallet.service.command.SetupSmartCardNameCommand;
 import com.worldventures.dreamtrips.wallet.service.command.SetupUserDataCommand;
+import com.worldventures.dreamtrips.wallet.service.command.http.FetchTermsAndConditionsCommand;
 
 import dagger.Module;
 
@@ -52,7 +53,8 @@ import dagger.Module;
             FetchCardPropertiesCommand.class,
             SetLockStateCommand.class,
             SaveDefaultAddressCommand.class,
-            FetchDefaultCardCommand.class
+            FetchDefaultCardCommand.class,
+            FetchTermsAndConditionsCommand.class
       },
       complete = false, library = true)
 public class WalletCommandModule {}

@@ -36,7 +36,9 @@ import com.worldventures.dreamtrips.modules.video.model.CachedEntity;
 import com.worldventures.dreamtrips.wallet.domain.entity.AddressInfo;
 import com.worldventures.dreamtrips.wallet.domain.entity.ImmutableAddressInfo;
 import com.worldventures.dreamtrips.wallet.domain.entity.ImmutableSmartCard;
+import com.worldventures.dreamtrips.wallet.domain.entity.ImmutableTermsAndConditionsResponse;
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCard;
+import com.worldventures.dreamtrips.wallet.domain.entity.TermsAndConditionsResponse;
 import com.worldventures.dreamtrips.wallet.domain.entity.card.BankCard;
 import com.worldventures.dreamtrips.wallet.domain.entity.card.Card;
 
@@ -322,6 +324,16 @@ public class SnappyRepositoryImpl implements SnappyRepository {
    @Override
    public void setActiveSmartCardId(String scid) {
       act(db -> db.put(WALLET_ACTIVE_SMART_CARD_ID, scid));
+   }
+
+   @Override
+   public void saveWalletTermsAndConditions(TermsAndConditionsResponse data) {
+      act(db -> db.put(WALLET_TERMS_AND_CONDITIONS, data));
+   }
+
+   @Override
+   public TermsAndConditionsResponse getWalletTermsAndConditions() {
+      return actWithResult(db -> db.getObject(WALLET_TERMS_AND_CONDITIONS, ImmutableTermsAndConditionsResponse.class)).orNull();
    }
 
    @Override

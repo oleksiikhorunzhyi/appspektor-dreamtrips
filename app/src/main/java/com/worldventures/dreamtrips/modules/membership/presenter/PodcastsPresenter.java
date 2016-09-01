@@ -1,19 +1,12 @@
 package com.worldventures.dreamtrips.modules.membership.presenter;
 
 import android.content.ActivityNotFoundException;
-import android.content.Context;
 import android.os.Environment;
 
 import com.innahema.collections.query.queriables.Queryable;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.core.navigation.ActivityRouter;
-import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.core.rx.RxView;
-import com.worldventures.dreamtrips.core.rx.composer.NonNullFilter;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
-import com.worldventures.dreamtrips.modules.common.command.CachedEntityCommand;
-import com.worldventures.dreamtrips.modules.common.command.DeleteCachedEntityCommand;
-import com.worldventures.dreamtrips.modules.common.command.DownloadCachedEntityCommand;
 import com.worldventures.dreamtrips.modules.common.delegate.CachedEntityDelegate;
 import com.worldventures.dreamtrips.modules.common.delegate.CachedEntityInteractor;
 import com.worldventures.dreamtrips.modules.common.presenter.JobPresenter;
@@ -35,17 +28,13 @@ import rx.android.schedulers.AndroidSchedulers;
 
 public class PodcastsPresenter<T extends PodcastsPresenter.View> extends JobPresenter<T> {
 
-   private static final int PODCAST_PRE_PAGE = 10;
+   private static final int PODCAST_PER_PAGE = 10;
 
-   @Inject Context context;
-   @Inject ActivityRouter activityRouter;
-
-   @Inject SnappyRepository db;
    @Inject PodcastsInteractor podcastsInteractor;
    @Inject CachedEntityInteractor cachedEntityInteractor;
    @Inject CachedEntityDelegate cachedEntityDelegate;
 
-   private List<Podcast> items = new ArrayList<>();
+   private List<Podcast> podcasts = new ArrayList<>();
 
    private boolean loading;
    private boolean noMoreItems;
@@ -73,20 +62,20 @@ public class PodcastsPresenter<T extends PodcastsPresenter.View> extends JobPres
    }
 
    protected void loadMore() {
-      if (items.size() > 0) {
-         loadPodcasts(items.size() / PODCAST_PRE_PAGE + 1);
+      if (podcasts.size() > 0) {
+         loadPodcasts(podcasts.size() / PODCAST_PER_PAGE + 1);
       }
    }
 
    public void reloadPodcasts() {
-      items.clear();
+      podcasts.clear();
       loadPodcasts(1);
    }
 
    private void loadPodcasts(int page) {
       loading = true;
       view.startLoading();
-      podcastsInteractor.podcastsActionPipe().send(new GetPodcastsCommand(page, PODCAST_PRE_PAGE));
+      podcastsInteractor.podcastsActionPipe().send(new GetPodcastsCommand(page, PODCAST_PER_PAGE));
    }
 
    private void subscribeToApiUpdates() {
@@ -98,14 +87,7 @@ public class PodcastsPresenter<T extends PodcastsPresenter.View> extends JobPres
    }
 
    private void onPodcastsLoaded(GetPodcastsCommand command) {
-      List<Podcast> podcasts = command.getResult();
-      Queryable.from(podcasts).forEachR(podcast
-            -> podcast.setCacheEntity(db.getDownloadMediaEntity(podcast.getUid())));
-      items.addAll(podcasts);
-      updateUi(items);
-   }
-
-   protected void updateUi(List<Podcast> podcasts) {
+      podcasts.addAll(command.getResult());
       List<Object> items = new ArrayList<>();
       items.add(new MediaHeader(context.getString(R.string.recently_added)));
       items.addAll(podcasts);
@@ -113,7 +95,7 @@ public class PodcastsPresenter<T extends PodcastsPresenter.View> extends JobPres
       view.notifyItemChanged(null);
       view.finishLoading();
 
-      noMoreItems = podcasts.size() < PODCAST_PRE_PAGE;
+      noMoreItems = podcasts.size() < PODCAST_PER_PAGE;
       loading = false;
    }
 
@@ -132,7 +114,7 @@ public class PodcastsPresenter<T extends PodcastsPresenter.View> extends JobPres
    }
 
    private void processCachingState(CachedEntity cachedEntity) {
-      Queryable.from(items).notNulls()
+      Queryable.from(podcasts).notNulls()
             .filter(podcast -> podcast.getCacheEntity().getUuid()
                      .equals(cachedEntity.getUuid()))
             .forEachR(podcast -> {

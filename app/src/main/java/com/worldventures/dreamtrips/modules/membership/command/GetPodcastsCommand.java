@@ -5,6 +5,7 @@ import com.worldventures.dreamtrips.api.podcasts.GetPodcastsHttpAction;
 import com.worldventures.dreamtrips.core.api.action.CommandWithError;
 import com.worldventures.dreamtrips.core.janet.JanetModule;
 import com.worldventures.dreamtrips.core.janet.dagger.InjectableAction;
+import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.modules.mapping.mapper.PodcastsMapper;
 import com.worldventures.dreamtrips.modules.membership.model.Podcast;
 
@@ -25,6 +26,7 @@ public class GetPodcastsCommand extends CommandWithError<List<Podcast>> implemen
 
    @Inject @Named(JanetModule.JANET_API_LIB) Janet janet;
    @Inject PodcastsMapper podcastsMapper;
+   @Inject SnappyRepository db;
 
    private int page;
    private int perPage;
@@ -41,6 +43,9 @@ public class GetPodcastsCommand extends CommandWithError<List<Podcast>> implemen
             .map(GetPodcastsHttpAction::response)
             .flatMap(Observable::from)
             .map(podcastsMapper::map)
+            .doOnNext(podcast -> {
+               podcast.setCacheEntity(db.getDownloadMediaEntity(podcast.getUid()));
+            })
             .toList()
             .subscribe(callback::onSuccess, callback::onFail);
    }

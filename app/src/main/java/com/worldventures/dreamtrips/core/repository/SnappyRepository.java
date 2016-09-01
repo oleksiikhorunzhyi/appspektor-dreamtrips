@@ -182,6 +182,8 @@ public interface SnappyRepository {
 
    void saveDownloadMediaEntity(CachedEntity e);
 
+   List<CachedEntity> getDownloadMediaEntities();
+
    CachedEntity getDownloadMediaEntity(String id);
 
    void setLastSyncAppVersion(String appVersion);

@@ -6,6 +6,7 @@ import com.messenger.di.MessengerInitializerModule;
 import com.techery.spares.application.AppInitializer;
 import com.worldventures.dreamtrips.core.initializer.AnalyticsInitializer;
 import com.worldventures.dreamtrips.core.initializer.BadgeCountObserverInitializer;
+import com.worldventures.dreamtrips.core.initializer.CachedEntityCommandInitializer;
 import com.worldventures.dreamtrips.core.initializer.FabricInitializer;
 import com.worldventures.dreamtrips.core.initializer.FrescoInitializer;
 import com.worldventures.dreamtrips.core.initializer.JodaTimeInitializer;
@@ -15,6 +16,7 @@ import com.worldventures.dreamtrips.core.initializer.NewrelicInitializer;
 import com.worldventures.dreamtrips.core.initializer.RxJavaLoggingInitializer;
 import com.worldventures.dreamtrips.core.initializer.SoftInputInitializer;
 import com.worldventures.dreamtrips.core.initializer.ViewServerInitializer;
+import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 
 import dagger.Module;
 import dagger.Provides;
@@ -85,5 +87,10 @@ public class InitializerModule {
    @Provides(type = Provides.Type.SET)
    public AppInitializer provideBadgeCountObserverInitializer() {
       return new BadgeCountObserverInitializer();
+   }
+
+   @Provides(type = Provides.Type.SET)
+   public AppInitializer provideCachedEntitiesInitializer(SnappyRepository db) {
+      return new CachedEntityCommandInitializer(db);
    }
 }

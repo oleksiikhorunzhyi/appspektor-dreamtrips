@@ -202,6 +202,19 @@ public class SnappyRepositoryImpl implements SnappyRepository {
    ///////////////////////////////////////////////////////////////////////////
    // Media
    ///////////////////////////////////////////////////////////////////////////
+
+   @Override
+   public List<CachedEntity> getDownloadMediaEntities() {
+      return actWithResult(db -> {
+         List<CachedEntity> entities = new ArrayList<>();
+         String[] keys = db.findKeys(MEDIA_UPLOAD_ENTITY);
+         for (String key : keys) {
+            entities.add(db.get(key, CachedEntity.class));
+         }
+         return entities;
+      }).or(Collections.emptyList());
+   }
+
    @Override
    public void saveDownloadMediaEntity(CachedEntity e) {
       act(db -> db.put(MEDIA_UPLOAD_ENTITY + e.getUuid(), e));

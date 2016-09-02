@@ -24,9 +24,6 @@ import com.worldventures.dreamtrips.modules.bucketlist.service.model.GsonAdapter
 import com.worldventures.dreamtrips.modules.bucketlist.service.model.GsonAdaptersBucketCoverBody;
 import com.worldventures.dreamtrips.modules.bucketlist.service.model.GsonAdaptersBucketPostBody;
 import com.worldventures.dreamtrips.modules.bucketlist.service.model.GsonAdaptersBucketStatusBody;
-import com.worldventures.dreamtrips.modules.dtl.model.merchant.offer.DtlOffer;
-import com.worldventures.dreamtrips.modules.dtl.model.merchant.offer.DtlOfferDeserializer;
-import com.worldventures.dreamtrips.modules.dtl.model.merchant.offer.DtlOfferSerializer;
 import com.worldventures.dreamtrips.modules.feed.model.FeedEntityHolder;
 import com.worldventures.dreamtrips.modules.feed.model.FeedItem;
 import com.worldventures.dreamtrips.modules.feed.model.serializer.FeedEntityDeserializer;
@@ -110,8 +107,8 @@ public class ApiModule {
             .registerTypeAdapter(Date.class, new DateTimeSerializer())
             .registerTypeAdapter(FeedItem.class, new FeedItemDeserializer())
             .registerTypeAdapter(FeedEntityHolder.class, new FeedEntityDeserializer())
-            .registerTypeAdapter(DtlOffer.class, new DtlOfferDeserializer())
-            .registerTypeAdapter(DtlOffer.class, new DtlOfferSerializer())
+//            .registerTypeAdapter(Offer.class, new DtlOfferDeserializer())
+//            .registerTypeAdapter(Offer.class, new DtlOfferSerializer())
             .registerTypeAdapter(Setting.class, new SettingsDeserializer())
             .registerTypeAdapter(Setting.class, new SettingsSerializer())
             //new

@@ -89,8 +89,8 @@ public class ManagerModule {
 
    @Singleton
    @Provides
-   DtlMerchantInteractor dtlMerchantInteractor(Janet janet, DtlLocationInteractor locationInteractor) {
-      return new DtlMerchantInteractor(janet, locationInteractor);
+   DtlMerchantInteractor dtlMerchantInteractor(Janet janet, @Named(JanetModule.JANET_API_LIB) Janet apiLibJanet, DtlLocationInteractor locationInteractor) {
+      return new DtlMerchantInteractor(janet, apiLibJanet, locationInteractor);
    }
 
    @Singleton

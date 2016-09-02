@@ -2,6 +2,7 @@ package com.worldventures.dreamtrips.modules.dtl.service;
 
 import com.innahema.collections.query.queriables.Queryable;
 import com.newrelic.agent.android.NewRelic;
+import com.worldventures.dreamtrips.api.dtl.merchants.MerchantByIdHttpAction;
 import com.worldventures.dreamtrips.modules.dtl.helper.DtlLocationHelper;
 import com.worldventures.dreamtrips.modules.dtl.model.LocationSourceType;
 import com.worldventures.dreamtrips.modules.dtl.model.location.DtlLocation;
@@ -28,16 +29,18 @@ public class DtlMerchantInteractor {
    private final ActionPipe<DtlUpdateAmenitiesAction> updateAmenitiesPipe;
    private final ActionPipe<DtlMerchantsAction> merchantsPipe;
    private final ActionPipe<DtlMerchantByIdAction> merchantByIdPipe;
+   private final ActionPipe<MerchantByIdHttpAction> merchantByIdHttpPipe;
 
    private final WriteActionPipe<DtlFilterDataAction> filterDataActionPipe;
 
-   public DtlMerchantInteractor(Janet janet, DtlLocationInteractor locationInteractor) {
+   public DtlMerchantInteractor(Janet janet, Janet apiLibJanet, DtlLocationInteractor locationInteractor) {
       this.locationInteractor = locationInteractor;
 
       updateAmenitiesPipe = janet.createPipe(DtlUpdateAmenitiesAction.class, Schedulers.io());
       merchantsPipe = janet.createPipe(DtlMerchantsAction.class, Schedulers.io());
       merchantByIdPipe = janet.createPipe(DtlMerchantByIdAction.class);
       filterDataActionPipe = janet.createPipe(DtlFilterDataAction.class, Schedulers.io());
+      merchantByIdHttpPipe = apiLibJanet.createPipe(MerchantByIdHttpAction.class, Schedulers.io());
 
       connectMerchantsPipe();
       connectUpdateAmenitiesPipe();
@@ -63,6 +66,10 @@ public class DtlMerchantInteractor {
 
    public ActionPipe<DtlMerchantByIdAction> merchantByIdPipe() {
       return merchantByIdPipe;
+   }
+
+   public ActionPipe<MerchantByIdHttpAction> merchantByIdHttpPipe() {
+      return merchantByIdHttpPipe;
    }
 
    //TODO: move to action

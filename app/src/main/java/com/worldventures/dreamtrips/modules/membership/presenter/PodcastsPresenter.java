@@ -82,12 +82,14 @@ public class PodcastsPresenter<T extends PodcastsPresenter.View> extends JobPres
       podcastsInteractor.podcastsActionPipe().observe()
             .compose(bindViewToMainComposer())
             .subscribe(new ActionStateSubscriber<GetPodcastsCommand>()
-                  .onSuccess(this::onPodcastsLoaded)
+                  .onProgress((command, progress) -> onPodcastsLoaded(command.getItems()))
+                  .onSuccess(successCommand -> onPodcastsLoaded(successCommand.getResult()))
                   .onFail(this::onPodcastsLoadingFailed));
    }
 
-   private void onPodcastsLoaded(GetPodcastsCommand command) {
-      podcasts.addAll(command.getResult());
+   private void onPodcastsLoaded(List<Podcast> newPodcasts) {
+      podcasts.clear();
+      podcasts.addAll(newPodcasts);
       List<Object> items = new ArrayList<>();
       items.add(new MediaHeader(context.getString(R.string.recently_added)));
       items.addAll(podcasts);

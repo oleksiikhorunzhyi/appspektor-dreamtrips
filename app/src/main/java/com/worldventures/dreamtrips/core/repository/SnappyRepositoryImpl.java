@@ -23,6 +23,7 @@ import com.worldventures.dreamtrips.modules.feed.model.TripFeedItem;
 import com.worldventures.dreamtrips.modules.feed.model.UndefinedFeedItem;
 import com.worldventures.dreamtrips.modules.friends.model.Circle;
 import com.worldventures.dreamtrips.modules.infopages.model.FeedbackType;
+import com.worldventures.dreamtrips.modules.membership.model.Podcast;
 import com.worldventures.dreamtrips.modules.reptools.model.VideoLanguage;
 import com.worldventures.dreamtrips.modules.reptools.model.VideoLocale;
 import com.worldventures.dreamtrips.modules.settings.model.FlagSetting;
@@ -593,5 +594,17 @@ public class SnappyRepositoryImpl implements SnappyRepository {
       return Queryable.from(feedItems)
             .sort((feedItemL, feedItemR) -> feedItemR.getCreatedAt().compareTo(feedItemL.getCreatedAt()))
             .toList();
+   }
+
+   @Override
+   public void savePodcasts(List<Podcast> podcasts) {
+      if (podcasts == null) podcasts = new ArrayList<>();
+      putList(PODCASTS, podcasts);
+   }
+
+   @Override
+   public List<Podcast> getPodcasts() {
+      return readList(PODCASTS, Podcast.class);
+
    }
 }

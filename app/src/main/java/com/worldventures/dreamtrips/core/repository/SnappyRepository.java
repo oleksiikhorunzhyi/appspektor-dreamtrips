@@ -12,6 +12,7 @@ import com.worldventures.dreamtrips.modules.dtl.model.transaction.DtlTransaction
 import com.worldventures.dreamtrips.modules.feed.model.FeedItem;
 import com.worldventures.dreamtrips.modules.friends.model.Circle;
 import com.worldventures.dreamtrips.modules.infopages.model.FeedbackType;
+import com.worldventures.dreamtrips.modules.membership.model.Podcast;
 import com.worldventures.dreamtrips.modules.reptools.model.VideoLanguage;
 import com.worldventures.dreamtrips.modules.reptools.model.VideoLocale;
 import com.worldventures.dreamtrips.modules.settings.model.Setting;
@@ -48,6 +49,7 @@ public interface SnappyRepository {
    String FILTER_CIRCLE = "FILTER_CIRCLE";
    String FILTER_FEED_FRIEND_FILTER_CIRCLE = "FILTER_FEED_FRIEND_FILTER_CIRCLE";
    String SOCIAL_VIEW_PAGER_STATE = "SOCIAL_VIEW_PAGER_STATE";
+   String PODCASTS = "PODCASTS";
 
    String DTL_MERCHANTS = "DTL_MERCHANTS";
    String DTL_SELECTED_LOCATION = "DTL_SELECTED_LOCATION";
@@ -193,4 +195,8 @@ public interface SnappyRepository {
    void saveNotifications(List<FeedItem> notifications);
 
    List<FeedItem> getNotifications();
+
+   void savePodcasts(List<Podcast> podcasts);
+
+   List<Podcast> getPodcasts();
 }

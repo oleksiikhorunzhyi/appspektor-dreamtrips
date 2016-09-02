@@ -1,9 +1,12 @@
 package com.worldventures.dreamtrips.modules.membership.model;
 
+import com.esotericsoftware.kryo.DefaultSerializer;
+import com.esotericsoftware.kryo.serializers.CompatibleFieldSerializer;
 import com.worldventures.dreamtrips.modules.video.model.CachedEntity;
 
 import java.util.Date;
 
+@DefaultSerializer(CompatibleFieldSerializer.class)
 public class Podcast {
 
    private String title;

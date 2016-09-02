@@ -5,16 +5,18 @@ import android.text.TextUtils;
 import com.esotericsoftware.kryo.DefaultSerializer;
 import com.esotericsoftware.kryo.serializers.CompatibleFieldSerializer;
 import com.innahema.collections.query.queriables.Queryable;
-import com.worldventures.dreamtrips.api.dtl.merchants.model.Merchant;
+import com.worldventures.dreamtrips.api.dtl.merchants.model.MerchantBackward;
 import com.worldventures.dreamtrips.api.dtl.merchants.model.MerchantType;
+import com.worldventures.dreamtrips.api.dtl.merchants.model.OfferType;
 import com.worldventures.dreamtrips.api.dtl.merchants.model.PartnerStatus;
 import com.worldventures.dreamtrips.modules.dtl.helper.DtlLocationHelper;
 import com.worldventures.dreamtrips.modules.dtl.model.DistanceType;
-import com.worldventures.dreamtrips.modules.dtl.model.mapping.OfferMapper;
-import com.worldventures.dreamtrips.modules.dtl.model.merchant.disclaimer.DtlDisclaimer;
-import com.worldventures.dreamtrips.modules.dtl.model.merchant.offer.DtlCurrency;
-import com.worldventures.dreamtrips.modules.dtl.model.merchant.offer.DtlOffer;
-import com.worldventures.dreamtrips.modules.dtl.model.merchant.offer.DtlOfferPoints;
+import com.worldventures.dreamtrips.modules.dtl.model.mapping.MerchantMediaMapper;
+import com.worldventures.dreamtrips.modules.dtl.model.mapping.OperationDayMapper;
+import com.worldventures.dreamtrips.modules.dtl.model.mapping.QueryableMapper;
+import com.worldventures.dreamtrips.modules.dtl.model.merchant.disclaimer.Disclaimer;
+import com.worldventures.dreamtrips.modules.dtl.model.merchant.offer.Currency;
+import com.worldventures.dreamtrips.modules.dtl.model.merchant.offer.Offer;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.operational_hour.OperationDay;
 import com.worldventures.dreamtrips.modules.trips.model.Location;
 
@@ -45,19 +47,19 @@ public class DtlMerchant {
    int budget;
    double rating;
    String timeZone;
-   List<DtlOffer> offers;
+   List<Offer> offers;
    List<DtlMerchantAttribute> categories;
    List<DtlMerchantAttribute> amenities;
-   List<DtlMerchantMedia> images;
+   List<MerchantMedia> images;
    List<OperationDay> operationDays;
-   List<DtlDisclaimer> disclaimers;
+   List<Disclaimer> disclaimers;
 
    private transient boolean expanded = false;
 
    public DtlMerchant() {
    }
 
-   public DtlMerchant(Merchant merchant) {
+   public DtlMerchant(MerchantBackward merchant) {
       id = merchant.id();
       type = merchant.type();
       partnerStatus = merchant.partnerStatus();
@@ -75,17 +77,17 @@ public class DtlMerchant {
       budget = merchant.budget();
       rating = merchant.rating();
       timeZone = merchant.timeZone();
-      //
-      offers = Queryable.from(merchant.offers()).map(offer -> new OfferMapper().map(offer)).toList();
+      // TODO : Thin model contains new offers format
+      //offers = Queryable.from(merchant.offers()).map(offer -> new OfferMapper().map(offer)).toList();
       categories = Queryable.from(merchant.categories())
             .map(category -> new DtlMerchantAttribute(category.name()))
             .toList();
-      amenities = Queryable.from(merchant.amenities())
-            .map(amenity -> new DtlMerchantAttribute(amenity.name()))
-            .toList();
-      images = Queryable.from(merchant.images()).map(DtlMerchantMedia::new).toList();
-      operationDays = Queryable.from(merchant.operationDays()).map(OperationDay::new).toList();
-      disclaimers = Queryable.from(merchant.disclaimers()).map(DtlDisclaimer::new).toList();
+//      amenities = Queryable.from(merchant.amenities())
+//            .map(amenity -> new DtlMerchantAttribute(amenity.name()))
+//            .toList();
+      images = new QueryableMapper<>(MerchantMediaMapper.INSTANCE).map(merchant.images());
+      operationDays = new QueryableMapper<>(OperationDayMapper.INSTANCE).map(merchant.operationDays());
+      //disclaimers = Queryable.from(merchant.disclaimers()).map(Disclaimer::new).toList();
    }
 
    public String getId() {
@@ -160,7 +162,7 @@ public class DtlMerchant {
       return budget;
    }
 
-   public List<DtlDisclaimer> getDisclaimers() {
+   public List<Disclaimer> getDisclaimers() {
       return disclaimers;
    }
 
@@ -173,11 +175,11 @@ public class DtlMerchant {
       return rating;
    }
 
-   public List<DtlOffer> getOffers() {
+   public List<Offer> getOffers() {
       return hasNoOffers() ? new ArrayList<>() : offers;
    }
 
-   public void setOffers(List<DtlOffer> offers) {
+   public void setOffers(List<Offer> offers) {
       this.offers = offers;
    }
 
@@ -197,7 +199,7 @@ public class DtlMerchant {
       return amenities;
    }
 
-   public List<DtlMerchantMedia> getImages() {
+   public List<MerchantMedia> getImages() {
       return images;
    }
 
@@ -221,29 +223,32 @@ public class DtlMerchant {
       expanded = !expanded;
    }
 
-   public boolean hasOffer(DtlOffer dtlOffer) {
+   public boolean hasOffer(Offer dtlOffer) {
       return offers != null && offers.contains(dtlOffer);
    }
 
    public boolean hasPerks() {
-      return !hasNoOffers() && Queryable.from(offers).count(DtlOffer::isPerk) > 0;
+      return !hasNoOffers() && Queryable.from(offers).firstOrDefault(offer -> offer.type() == OfferType.PERK) != null;
    }
 
    public boolean hasPoints() {
-      return !hasNoOffers() && Queryable.from(offers).count(DtlOffer::isPoint) > 0;
+      return !hasNoOffers() && Queryable.from(offers).firstOrDefault(offer -> offer.type() == OfferType.POINTS) != null;
    }
 
+   // TODO : STUB!!! Will be implement in middleware
    public void sortPerks() {
-      if (!hasPerks()) return;
-      offers = Queryable.from(offers)
-            .filter(offer -> !(TextUtils.isEmpty(offer.getTitle()) && offer.isPerk()))
-            .sort(DtlOffer.END_DATE_COMPARATOR)
-            .toList();
+//      if (!hasPerks()) return;
+//      offers = Queryable.from(offers)
+//            .filter(offer -> !(TextUtils.isEmpty(offer.getTitle()) && offer.isPerk()))
+//            .sort(DtlOffer.END_DATE_COMPARATOR)
+//            .toList();
    }
 
-   public DtlCurrency getDefaultCurrency() {
-      DtlOfferPoints points = (DtlOfferPoints) Queryable.from(getOffers()).filter(DtlOffer::isPoint).firstOrDefault();
-      return points != null ? Queryable.from(points.getCurrencies()).firstOrDefault(DtlCurrency::isDefault) : null;
+   // TODO : STUB!!! New thin model update this
+   public Currency getDefaultCurrency() {
+      return null;
+//      DtlOfferPoints points = (DtlOfferPoints) Queryable.from(getOffers()).filter(DtlOffer::isPoint).firstOrDefault();
+//      return points != null ? Queryable.from(points.getCurrencies()).firstOrDefault(DtlCurrency::isDefault) : null;
    }
 
    public boolean hasNoOffers() {

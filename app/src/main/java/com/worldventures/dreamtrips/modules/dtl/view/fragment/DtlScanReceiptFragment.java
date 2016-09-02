@@ -20,7 +20,7 @@ import com.worldventures.dreamtrips.modules.common.view.dialog.ProgressDialogFra
 import com.worldventures.dreamtrips.modules.common.view.util.TextWatcherAdapter;
 import com.worldventures.dreamtrips.modules.dtl.bundle.MerchantIdBundle;
 import com.worldventures.dreamtrips.modules.dtl.helper.DtlEnrollWizard;
-import com.worldventures.dreamtrips.modules.dtl.model.merchant.offer.DtlCurrency;
+import com.worldventures.dreamtrips.modules.dtl.model.merchant.offer.Currency;
 import com.worldventures.dreamtrips.modules.dtl.model.transaction.DtlTransaction;
 import com.worldventures.dreamtrips.modules.dtl.presenter.DtlPointsEstimationPresenter;
 import com.worldventures.dreamtrips.modules.dtl.presenter.DtlScanReceiptPresenter;
@@ -128,11 +128,11 @@ public class DtlScanReceiptFragment extends RxBaseFragmentWithArgs<DtlScanReceip
    }
 
    @Override
-   public void showCurrency(DtlCurrency currency) {
-      final int padding = amountInput.getPaddingForCurrency(currency.getPrefix());
+   public void showCurrency(Currency currency) {
+      final int padding = amountInput.getPaddingForCurrency(currency.prefix());
       currencyHint.setPadding(0, padding, 0, 0);
       currencyHint.setText(currency.getCurrencyHint());
-      amountInput.setCurrencySymbol(currency.getPrefix());
+      amountInput.setCurrencySymbol(currency.prefix());
    }
 
    @Override

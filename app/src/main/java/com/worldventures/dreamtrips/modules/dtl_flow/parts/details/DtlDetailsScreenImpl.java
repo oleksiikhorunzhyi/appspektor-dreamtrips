@@ -43,7 +43,7 @@ import com.worldventures.dreamtrips.modules.dtl.helper.inflater.MerchantInfoInfl
 import com.worldventures.dreamtrips.modules.dtl.helper.inflater.MerchantOffersInflater;
 import com.worldventures.dreamtrips.modules.dtl.helper.inflater.MerchantWorkingHoursInflater;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchant;
-import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchantMedia;
+import com.worldventures.dreamtrips.modules.dtl.model.merchant.MerchantMedia;
 import com.worldventures.dreamtrips.modules.dtl.model.transaction.DtlTransaction;
 import com.worldventures.dreamtrips.modules.dtl_flow.DtlActivity;
 import com.worldventures.dreamtrips.modules.dtl_flow.DtlLayout;
@@ -265,7 +265,7 @@ public class DtlDetailsScreenImpl extends DtlLayout<DtlDetailsScreen, DtlDetails
          shareBundle.setShareUrl(merchant.getWebsite());
          // don't attach media if website is attached, this image will go nowhere
          if (TextUtils.isEmpty(merchant.getWebsite()) || type.equals(ShareType.TWITTER)) {
-            DtlMerchantMedia media = Queryable.from(merchant.getImages()).firstOrDefault();
+            MerchantMedia media = Queryable.from(merchant.getImages()).firstOrDefault();
             if (media != null) shareBundle.setImageUrl(media.getImagePath());
             // for twitter: sharing image via web (not official app) currently not supported (android sdk v1.9.1)
          }

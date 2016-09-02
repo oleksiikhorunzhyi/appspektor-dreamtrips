@@ -13,7 +13,7 @@ import com.worldventures.dreamtrips.modules.dtl.analytics.MerchantsListingViewEv
 import com.worldventures.dreamtrips.modules.dtl.event.ToggleMerchantSelectionEvent;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchant;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.filter.DtlFilterData;
-import com.worldventures.dreamtrips.modules.dtl.model.merchant.offer.DtlOffer;
+import com.worldventures.dreamtrips.modules.dtl.model.merchant.offer.Offer;
 import com.worldventures.dreamtrips.modules.dtl.service.DtlFilterMerchantInteractor;
 import com.worldventures.dreamtrips.modules.dtl.service.DtlLocationInteractor;
 import com.worldventures.dreamtrips.modules.dtl.service.DtlMerchantInteractor;
@@ -183,7 +183,7 @@ public class DtlMerchantsPresenterImpl extends DtlPresenterImpl<DtlMerchantsScre
       navigateToDetails(merchant, null);
    }
 
-   private void navigateToDetails(DtlMerchant dtlMerchant, @Nullable DtlOffer dtlOffer) {
+   private void navigateToDetails(DtlMerchant dtlMerchant, @Nullable Offer dtlOffer) {
       if (Flow.get(getContext()).getHistory().size() < 2) {
          Flow.get(getContext())
                .set(new DtlMerchantDetailsPath(FlowUtil.currentMaster(getContext()), dtlMerchant, dtlOffer == null ? null : findExpandablePosition(dtlMerchant, dtlOffer)));
@@ -196,7 +196,7 @@ public class DtlMerchantsPresenterImpl extends DtlPresenterImpl<DtlMerchantsScre
    }
 
    @Override
-   public void onOfferClick(DtlMerchant dtlMerchant, DtlOffer offer) {
+   public void onOfferClick(DtlMerchant dtlMerchant, Offer offer) {
       navigateToDetails(dtlMerchant, offer);
    }
 
@@ -217,8 +217,8 @@ public class DtlMerchantsPresenterImpl extends DtlPresenterImpl<DtlMerchantsScre
       getView().toggleSelection(event.getDtlMerchant());
    }
 
-   protected List<Integer> findExpandablePosition(DtlMerchant merchant, DtlOffer... expandedOffers) {
-      List<DtlOffer> merchantOffers = merchant.getOffers();
+   protected List<Integer> findExpandablePosition(DtlMerchant merchant, Offer... expandedOffers) {
+      List<Offer> merchantOffers = merchant.getOffers();
       return Queryable.from(Arrays.asList(expandedOffers))
             .filter(merchantOffers::contains)
             .map(merchantOffers::indexOf)

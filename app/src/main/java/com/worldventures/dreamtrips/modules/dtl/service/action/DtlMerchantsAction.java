@@ -49,7 +49,7 @@ public class DtlMerchantsAction extends Command<List<DtlMerchant>> implements Ca
                .createObservableResult(new MerchantsHttpAction(ll))
                .map(MerchantsHttpAction::merchants)
                .flatMap(Observable::from)
-               .compose(new MerchantTransformer())
+               .compose(MerchantTransformer.INSTANCE)
                .filter(merchant -> merchant.getPartnerStatus() != PartnerStatus.UNKNOWN)
                .filter(merchant -> merchant.getType() != MerchantType.UNKNOWN)
                .toList()

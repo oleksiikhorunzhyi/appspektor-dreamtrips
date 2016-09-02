@@ -14,7 +14,7 @@ import com.worldventures.dreamtrips.core.rx.RxBaseFragmentWithArgs;
 import com.worldventures.dreamtrips.modules.common.view.util.TextWatcherAdapter;
 import com.worldventures.dreamtrips.modules.dtl.bundle.PointsEstimationDialogBundle;
 import com.worldventures.dreamtrips.modules.dtl.event.CloseDialogEvent;
-import com.worldventures.dreamtrips.modules.dtl.model.merchant.offer.DtlCurrency;
+import com.worldventures.dreamtrips.modules.dtl.model.merchant.offer.Currency;
 import com.worldventures.dreamtrips.modules.dtl.presenter.DtlPointsEstimationPresenter;
 import com.worldventures.dreamtrips.modules.dtl.view.custom.CurrencyDTEditText;
 
@@ -59,9 +59,9 @@ public class DtlPointsEstimationFragment extends RxBaseFragmentWithArgs<DtlPoint
    }
 
    @Override
-   public void showCurrency(DtlCurrency dtlCurrency) {
-      currency.setText(dtlCurrency.getCurrencyHint());
-      inputPoints.setCurrencySymbol(dtlCurrency.getPrefix());
+   public void showCurrency(Currency currency) {
+      this.currency.setText(currency.getCurrencyHint());
+      inputPoints.setCurrencySymbol(currency.prefix());
    }
 
    @Override

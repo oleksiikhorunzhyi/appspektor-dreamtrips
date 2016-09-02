@@ -17,7 +17,7 @@ import com.worldventures.dreamtrips.modules.common.view.dialog.ShareDialog;
 import com.worldventures.dreamtrips.modules.dtl.bundle.MerchantIdBundle;
 import com.worldventures.dreamtrips.modules.dtl.event.CloseDialogEvent;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchant;
-import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchantMedia;
+import com.worldventures.dreamtrips.modules.dtl.model.merchant.MerchantMedia;
 import com.worldventures.dreamtrips.modules.dtl.model.transaction.DtlTransactionResult;
 import com.worldventures.dreamtrips.modules.dtl.presenter.DtlTransactionSucceedPresenter;
 
@@ -77,7 +77,7 @@ public class DtlTransactionSucceedFragment extends RxBaseFragmentWithArgs<DtlTra
          shareBundle.setShareUrl(merchant.getWebsite());
          // don't attach media is website is attached, this image will go nowhere
          if (TextUtils.isEmpty(merchant.getWebsite())) {
-            DtlMerchantMedia media = Queryable.from(merchant.getImages()).firstOrDefault();
+            MerchantMedia media = Queryable.from(merchant.getImages()).firstOrDefault();
             if (media != null) shareBundle.setImageUrl(media.getImagePath());
          }
          router.moveTo(Route.SHARE, NavigationConfigBuilder.forActivity().data(shareBundle).build());

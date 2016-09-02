@@ -14,6 +14,7 @@ import com.techery.spares.annotations.Layout;
 import com.techery.spares.ui.view.cell.AbstractDelegateCell;
 import com.trello.rxlifecycle.RxLifecycle;
 import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.api.dtl.merchants.model.OfferType;
 import com.worldventures.dreamtrips.core.utils.DateTimeUtils;
 import com.worldventures.dreamtrips.core.utils.LocaleHelper;
 import com.worldventures.dreamtrips.core.utils.ViewUtils;
@@ -24,8 +25,8 @@ import com.worldventures.dreamtrips.modules.dtl.analytics.MerchantsListingExpand
 import com.worldventures.dreamtrips.modules.dtl.helper.DtlMerchantHelper;
 import com.worldventures.dreamtrips.modules.dtl.model.DistanceType;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchant;
-import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchantMedia;
-import com.worldventures.dreamtrips.modules.dtl.model.merchant.offer.DtlOffer;
+import com.worldventures.dreamtrips.modules.dtl.model.merchant.MerchantMedia;
+import com.worldventures.dreamtrips.modules.dtl.model.merchant.offer.Offer;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.operational_hour.OperationDay;
 
 import java.util.List;
@@ -81,8 +82,8 @@ public class DtlMerchantExpandableCell extends AbstractDelegateCell<DtlMerchant,
       setExpandedArea();
    }
 
-   private void setImage(List<DtlMerchantMedia> mediaList) {
-      DtlMerchantMedia media = Queryable.from(mediaList).firstOrDefault();
+   private void setImage(List<MerchantMedia> mediaList) {
+      MerchantMedia media = Queryable.from(mediaList).firstOrDefault();
       if (media == null) return;
       //
       merchantCoverImage.setImageUrl(media.getImagePath());
@@ -113,7 +114,7 @@ public class DtlMerchantExpandableCell extends AbstractDelegateCell<DtlMerchant,
       if (getModelObject().hasNoOffers()) ViewUtils.setViewVisibility(offersContainer, View.GONE);
       else {
          ViewUtils.setViewVisibility(offersContainer, View.VISIBLE);
-         int perksNumber = Queryable.from(getModelObject().getOffers()).count(DtlOffer::isPerk);
+         int perksNumber = Queryable.from(getModelObject().getOffers()).count(offer -> offer.type() == OfferType.PERK);
          setOfferBadges(perksNumber, getModelObject().getOffers().size() - perksNumber);
       }
    }
@@ -145,7 +146,7 @@ public class DtlMerchantExpandableCell extends AbstractDelegateCell<DtlMerchant,
          expandedContainer.setVisibility(View.VISIBLE);
          expandedContainer.removeAllViews();
          Queryable.from(getModelObject().getOffers()).forEachR(offer -> {
-            if (offer.isPerk()) bindPerkCell(offer, expandedContainer);
+            if (offer.type() == OfferType.PERK) bindPerkCell(offer, expandedContainer);
             else bindPointsCell(offer, expandedContainer);
          });
       } else {
@@ -153,7 +154,7 @@ public class DtlMerchantExpandableCell extends AbstractDelegateCell<DtlMerchant,
       }
    }
 
-   private View.OnClickListener offerClickedListener = v -> cellDelegate.onOfferClick(getModelObject(), (DtlOffer) v.getTag());
+   private View.OnClickListener offerClickedListener = v -> cellDelegate.onOfferClick(getModelObject(), (Offer) v.getTag());
 
    @OnClick(R.id.offers_container)
    void togglExpandClicked() {
@@ -170,14 +171,14 @@ public class DtlMerchantExpandableCell extends AbstractDelegateCell<DtlMerchant,
       cellDelegate.onCellClicked(getModelObject());
    }
 
-   private void bindPointsCell(DtlOffer offer, ViewGroup container) {
+   private void bindPointsCell(Offer offer, ViewGroup container) {
       View cellView = inflater.inflate(R.layout.adapter_item_offer_points, container, false);
       cellView.setTag(offer);
       cellView.setOnClickListener(offerClickedListener);
       container.addView(cellView);
    }
 
-   private void bindPerkCell(DtlOffer offer, ViewGroup container) {
+   private void bindPerkCell(Offer offer, ViewGroup container) {
       View cellView = inflater.inflate(R.layout.adapter_item_offer_perk, container, false);
       cellView.setTag(offer);
       cellView.setOnClickListener(offerClickedListener);
@@ -186,7 +187,7 @@ public class DtlMerchantExpandableCell extends AbstractDelegateCell<DtlMerchant,
       TextView operationDaysCaption = ButterKnife.<TextView>findById(cellView, R.id.perks_operation_days);
       AppCompatTextView expirationBar = ButterKnife.<AppCompatTextView>findById(cellView, R.id.expirationBar);
       //
-      DtlMerchantMedia media = Queryable.from(offer.getImages()).firstOrDefault(); // image
+      MerchantMedia media = Queryable.from(offer.images()).firstOrDefault(); // image
       if (media != null) {
          image.setImageUrl(media.getImagePath());
       }
@@ -196,9 +197,9 @@ public class DtlMerchantExpandableCell extends AbstractDelegateCell<DtlMerchant,
                getOfferExpiringCaption(itemView.getContext(), offer, localeHelper.getDefaultLocale()));
       } else ViewUtils.setViewVisibility(View.GONE, expirationBar);
       //
-      title.setText(offer.getTitle()); // description
+      title.setText(offer.title()); // description
       //
-      List<OperationDay> operationDays = offer.getOperationDays(); // operation days
+      List<OperationDay> operationDays = offer.operationDays(); // operation days
       if (operationDays == null) return;
       String concatDays = DateTimeUtils.concatOperationDays(itemView.getResources(), operationDays);
       operationDaysCaption.setText(concatDays);

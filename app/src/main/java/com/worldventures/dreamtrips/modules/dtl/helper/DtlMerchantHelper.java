@@ -15,7 +15,7 @@ import com.innahema.collections.query.queriables.Queryable;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchant;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchantAttribute;
-import com.worldventures.dreamtrips.modules.dtl.model.merchant.offer.DtlOffer;
+import com.worldventures.dreamtrips.modules.dtl.model.merchant.offer.Offer;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.operational_hour.DayOfWeek;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.operational_hour.OperationDay;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.operational_hour.OperationHours;
@@ -66,20 +66,20 @@ public class DtlMerchantHelper {
       return getOperationalTime(context, merchant, true);
    }
 
-   public static boolean isOfferExpiringSoon(DtlOffer offerData) {
-      if (offerData.getEndDate() == null) return false;
+   public static boolean isOfferExpiringSoon(Offer offerData) {
+      if (offerData.endDate() == null) return false;
       DateTime currentDate = DateTime.now();
-      DateTime expirationDate = new DateTime(offerData.getEndDate().getTime());
+      DateTime expirationDate = new DateTime(offerData.endDate().getTime());
       return Days.daysBetween(currentDate, expirationDate).isLessThan(Days.SEVEN);
    }
 
-   public static Spannable getOfferExpiringCaption(Context context, DtlOffer offerData, Locale locale) {
+   public static Spannable getOfferExpiringCaption(Context context, Offer offerData, Locale locale) {
       return getOfferExpiringCaption(context.getResources(), offerData, locale);
    }
 
-   public static Spannable getOfferExpiringCaption(Resources resources, DtlOffer offerData, Locale locale) {
+   public static Spannable getOfferExpiringCaption(Resources resources, Offer offerData, Locale locale) {
       String format = resources.getString(R.string.offer_expiration_format);
-      DateTime expiringDate = new DateTime(offerData.getEndDate()
+      DateTime expiringDate = new DateTime(offerData.endDate()
             .getTime(), ISOChronology.getInstance(DateTimeZone.UTC));
       String caption = expiringDate.toString(DateTimeFormat.forPattern("MMM d"));
       String captionFormatted = String.format(locale, format, caption);
@@ -95,13 +95,13 @@ public class DtlMerchantHelper {
       DayOfWeek current = DayOfWeek.from(Calendar.getInstance().get(Calendar.DAY_OF_WEEK));
 
       OperationDay operationDay = Queryable.from(dtlMerchant.getOperationDays())
-            .firstOrDefault(element -> element.getDayOfWeek() == current);
+            .firstOrDefault(element -> element.dayOfWeek() == current);
 
-      if (operationDay != null && operationDay.getOperationHours() != null) {
-         for (OperationHours hours : operationDay.getOperationHours()) {
+      if (operationDay != null && operationDay.operationHours() != null) {
+         for (OperationHours hours : operationDay.operationHours()) {
             DateTimeZone timeZone = DateTimeZone.forOffsetHours(dtlMerchant.getOffsetHours());
-            LocalTime localTimeStart = LocalTime.parse(hours.getFrom());
-            LocalTime localTimeEnd = LocalTime.parse(hours.getTo());
+            LocalTime localTimeStart = LocalTime.parse(hours.from());
+            LocalTime localTimeEnd = LocalTime.parse(hours.to());
             //
             DateTime dateTimeStart = DateTime.now(timeZone)
                   .withTime(localTimeStart.getHourOfDay(), localTimeStart.getMinuteOfHour(), 0, 0);
@@ -158,8 +158,8 @@ public class DtlMerchantHelper {
     */
    private static String getFormattedHours(OperationHours hours) {
       try {
-         LocalTime localTimeStart = LocalTime.parse(hours.getFrom());
-         LocalTime localTimeEnd = LocalTime.parse(hours.getTo());
+         LocalTime localTimeStart = LocalTime.parse(hours.from());
+         LocalTime localTimeEnd = LocalTime.parse(hours.to());
          //
          DateTime start = DateTime.now()
                .withTime(localTimeStart.getHourOfDay(), localTimeStart.getMinuteOfHour(), 0, 0);

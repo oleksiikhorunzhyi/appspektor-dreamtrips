@@ -32,7 +32,7 @@ public class TransactionSuccessEvent extends MerchantAnalyticsAction {
       super(dtlMerchant);
       perksAvailable = dtlMerchant.hasPerks() ? "Yes" : "No";
       pointsAvailable = dtlMerchant.hasPoints() ? "Yes" : "No";
-      currencyCode = dtlMerchant.getDefaultCurrency().getCode();
+      currencyCode = dtlMerchant.getDefaultCurrency().code();
       earnedAmount = String.format(Locale.US, "%.0f", dtlTransaction.getDtlTransactionResult().getEarnedPoints());
       spentAmount = String.format(Locale.US, "%.2f", dtlTransaction.getBillTotal());
       coordinates = String.format(Locale.US, "%f,%f", location.getLatitude(), location.getLongitude());

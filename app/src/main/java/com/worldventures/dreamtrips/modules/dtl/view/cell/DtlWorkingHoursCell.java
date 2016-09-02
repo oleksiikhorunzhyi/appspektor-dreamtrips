@@ -32,8 +32,8 @@ public class DtlWorkingHoursCell extends AbstractCell<OperationDay> {
 
    @Override
    protected void syncUIStateWithModel() {
-      final DayOfWeek dayOfWeek = getModelObject().getDayOfWeek();
-      final List<OperationHours> operationDays = getModelObject().getOperationHours();
+      final DayOfWeek dayOfWeek = getModelObject().dayOfWeek();
+      final List<OperationHours> operationDays = getModelObject().operationHours();
       //
       workingDay.setText(DateTimeUtils.getDisplayWeekDay(dayOfWeek.getDay(), Calendar.LONG));
       workingHours.setText(DtlMerchantHelper.formatOperationDayHours(itemView.getContext(), operationDays));

@@ -18,7 +18,7 @@ import com.worldventures.dreamtrips.modules.dtl.analytics.CaptureReceiptEvent;
 import com.worldventures.dreamtrips.modules.dtl.analytics.DtlAnalyticsCommand;
 import com.worldventures.dreamtrips.modules.dtl.analytics.VerifyAmountEvent;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchant;
-import com.worldventures.dreamtrips.modules.dtl.model.merchant.offer.DtlCurrency;
+import com.worldventures.dreamtrips.modules.dtl.model.merchant.offer.Currency;
 import com.worldventures.dreamtrips.modules.dtl.model.transaction.DtlTransaction;
 import com.worldventures.dreamtrips.modules.dtl.model.transaction.ImmutableDtlTransaction;
 import com.worldventures.dreamtrips.modules.dtl.service.DtlMerchantInteractor;
@@ -120,7 +120,7 @@ public class DtlScanReceiptPresenter extends JobPresenter<DtlScanReceiptPresente
    public void verify() {
       analyticsInteractor.dtlAnalyticsCommandPipe()
             .send(DtlAnalyticsCommand.create(new VerifyAmountEvent(dtlMerchant, dtlMerchant.getDefaultCurrency()
-                  .getCode(), amount)));
+                  .code(), amount)));
       transactionInteractor.transactionActionPipe()
             .createObservableResult(DtlTransactionAction.update(dtlMerchant, transaction -> ImmutableDtlTransaction.copyOf(transaction)
                   .withBillTotal(amount)))
@@ -129,7 +129,7 @@ public class DtlScanReceiptPresenter extends JobPresenter<DtlScanReceiptPresente
                   .createObservableResult(new EstimationHttpAction(dtlMerchant.getId(), ImmutableEstimationParams.builder()
                         .checkinTime(DateTimeUtils.currentUtcString())
                         .billTotal(transaction.getBillTotal())
-                        .currencyCode(dtlMerchant.getDefaultCurrency().getCode())
+                        .currencyCode(dtlMerchant.getDefaultCurrency().code())
                         .build())))
             .compose(bindViewIoToMainComposer())
             .subscribe(action -> {
@@ -202,6 +202,6 @@ public class DtlScanReceiptPresenter extends JobPresenter<DtlScanReceiptPresente
 
       void preSetBillAmount(double amount);
 
-      void showCurrency(DtlCurrency dtlCurrency);
+      void showCurrency(Currency currency);
    }
 }

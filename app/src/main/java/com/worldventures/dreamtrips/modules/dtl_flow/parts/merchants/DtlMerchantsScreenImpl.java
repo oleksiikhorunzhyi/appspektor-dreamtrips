@@ -18,7 +18,7 @@ import com.worldventures.dreamtrips.core.selectable.SingleSelectionManager;
 import com.worldventures.dreamtrips.modules.common.view.custom.EmptyRecyclerView;
 import com.worldventures.dreamtrips.modules.dtl.model.location.DtlLocation;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchant;
-import com.worldventures.dreamtrips.modules.dtl.model.merchant.offer.DtlOffer;
+import com.worldventures.dreamtrips.modules.dtl.model.merchant.offer.Offer;
 import com.worldventures.dreamtrips.modules.dtl.view.cell.DtlMerchantCellDelegate;
 import com.worldventures.dreamtrips.modules.dtl.view.cell.DtlMerchantExpandableCell;
 import com.worldventures.dreamtrips.modules.dtl_flow.DtlLayout;
@@ -130,7 +130,7 @@ public class DtlMerchantsScreenImpl extends DtlLayout<DtlMerchantsScreen, DtlMer
    }
 
    @Override
-   public void onOfferClick(DtlMerchant dtlMerchant, DtlOffer dtlOffer) {
+   public void onOfferClick(DtlMerchant dtlMerchant, Offer dtlOffer) {
       getPresenter().onOfferClick(dtlMerchant, dtlOffer);
    }
 

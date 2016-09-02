@@ -13,7 +13,7 @@ import com.worldventures.dreamtrips.modules.common.view.ApiErrorView;
 import com.worldventures.dreamtrips.modules.dtl.analytics.DtlAnalyticsCommand;
 import com.worldventures.dreamtrips.modules.dtl.analytics.PointsEstimatorCalculateEvent;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchant;
-import com.worldventures.dreamtrips.modules.dtl.model.merchant.offer.DtlCurrency;
+import com.worldventures.dreamtrips.modules.dtl.model.merchant.offer.Currency;
 import com.worldventures.dreamtrips.modules.dtl.service.DtlMerchantInteractor;
 import com.worldventures.dreamtrips.modules.dtl.service.DtlTransactionInteractor;
 import com.worldventures.dreamtrips.modules.dtl.service.action.DtlMerchantByIdAction;
@@ -75,7 +75,7 @@ public class DtlPointsEstimationPresenter extends JobPresenter<DtlPointsEstimati
             .send(new EstimationHttpAction(dtlMerchant.getId(), ImmutableEstimationParams.builder()
                   .billTotal(Double.valueOf(userInput))
                   .checkinTime(DateTimeUtils.currentUtcString())
-                  .currencyCode(dtlMerchant.getDefaultCurrency().getCode())
+                  .currencyCode(dtlMerchant.getDefaultCurrency().code())
                   .build()));
    }
 
@@ -99,6 +99,6 @@ public class DtlPointsEstimationPresenter extends JobPresenter<DtlPointsEstimati
 
       void showEstimatedPoints(int value);
 
-      void showCurrency(DtlCurrency dtlCurrency);
+      void showCurrency(Currency currency);
    }
 }

@@ -1,23 +1,24 @@
 package com.worldventures.dreamtrips.modules.dtl.model.mapping;
 
-import com.innahema.collections.query.queriables.Queryable;
-import com.worldventures.dreamtrips.api.dtl.merchants.model.Offer;
-import com.worldventures.dreamtrips.api.dtl.merchants.model.OfferType;
-import com.worldventures.dreamtrips.modules.dtl.model.merchant.offer.DtlCurrency;
-import com.worldventures.dreamtrips.modules.dtl.model.merchant.offer.DtlOffer;
-import com.worldventures.dreamtrips.modules.dtl.model.merchant.offer.DtlOfferPerk;
-import com.worldventures.dreamtrips.modules.dtl.model.merchant.offer.DtlOfferPoints;
+import com.innahema.collections.query.functions.Converter;
+import com.worldventures.dreamtrips.modules.dtl.model.merchant.offer.ImmutableOffer;
+import com.worldventures.dreamtrips.modules.dtl.model.merchant.offer.Offer;
 
-public class OfferMapper implements Mapper<Offer, DtlOffer> {
+public class OfferMapper implements Converter<com.worldventures.dreamtrips.api.dtl.merchants.model.Offer, Offer> {
+
+   public static final OfferMapper INSTANCE = new OfferMapper();
 
    @Override
-   public DtlOffer map(Offer source) {
-      if (source.type() == OfferType.PERK) {
-         return new DtlOfferPerk(source);
-      } else {
-         DtlOfferPoints offer = new DtlOfferPoints(source);
-         offer.setCurrencies(Queryable.from(source.offerData().currencies()).map(DtlCurrency::new).toList());
-         return offer;
-      }
+   public Offer convert(com.worldventures.dreamtrips.api.dtl.merchants.model.Offer source) {
+      return ImmutableOffer.builder()
+            .type(source.type())
+            .title(source.title())
+            .description(source.description())
+            .disclaimer(source.disclaimer())
+            .startDate(source.startDate())
+            .endDate(source.endDate())
+            .images(new QueryableMapper<>(MerchantMediaMapper.INSTANCE).map(source.images()))
+            .operationDays(new QueryableMapper<>(OperationDayMapper.INSTANCE).map(source.operationDays()))
+            .build();
    }
 }

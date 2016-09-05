@@ -14,7 +14,7 @@ public abstract class OperationDay {
    public abstract DayOfWeek dayOfWeek();
    public abstract List<OperationHours> operationHours();
 
-   @Value.Default
+   @Value.Derived
    public boolean isHaveOperationHours() {
       return operationHours() != null && !operationHours().isEmpty();
    }

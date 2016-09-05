@@ -15,6 +15,7 @@ public class CurrencyMapper implements Converter<com.worldventures.dreamtrips.ap
             .name(source.name())
             .prefix(source.prefix())
             .suffix(source.suffix())
+            .isDefault(source.isDefault())
             .build();
    }
 }

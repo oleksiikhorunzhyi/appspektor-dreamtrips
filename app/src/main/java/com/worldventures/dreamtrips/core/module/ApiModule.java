@@ -107,8 +107,6 @@ public class ApiModule {
             .registerTypeAdapter(Date.class, new DateTimeSerializer())
             .registerTypeAdapter(FeedItem.class, new FeedItemDeserializer())
             .registerTypeAdapter(FeedEntityHolder.class, new FeedEntityDeserializer())
-//            .registerTypeAdapter(Offer.class, new DtlOfferDeserializer())
-//            .registerTypeAdapter(Offer.class, new DtlOfferSerializer())
             .registerTypeAdapter(Setting.class, new SettingsDeserializer())
             .registerTypeAdapter(Setting.class, new SettingsSerializer())
             //new

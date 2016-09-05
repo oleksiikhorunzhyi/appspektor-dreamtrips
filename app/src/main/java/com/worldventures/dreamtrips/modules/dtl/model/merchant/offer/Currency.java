@@ -20,12 +20,11 @@ public abstract class Currency {
 
    public abstract String name();
 
-   @Value.Default
-   public Boolean isDefault() {
+   @Value.Default public Boolean isDefault() {
       return Boolean.FALSE;
    }
 
-   @Value.Default
+   @Value.Derived
    public String getCurrencyHint() {
       return !TextUtils.isEmpty(suffix()) ? suffix() : code();
    }

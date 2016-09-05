@@ -46,7 +46,7 @@ public abstract class Merchant {
    public abstract @Nullable List<OperationDay> operationDays();
    public abstract @Nullable List<Disclaimer> disclaimers();
 
-   @Value.Default
+   @Value.Derived
    public int timeOffset(){
       try {
          return Integer.valueOf(timeZone());
@@ -55,9 +55,9 @@ public abstract class Merchant {
       }
    }
 
-   @Value.Default
+   @Nullable @Value.Derived
    public Currency defaultCurrency() {
-      return Queryable.from(currencies()).first(Currency::isDefault);
+     return currencies() != null ? Queryable.from(currencies()).first(Currency::isDefault) : null;
    }
 
 }

@@ -16,7 +16,7 @@ import com.worldventures.dreamtrips.core.rx.RxBaseFragmentWithArgs;
 import com.worldventures.dreamtrips.core.utils.GraphicUtils;
 import com.worldventures.dreamtrips.modules.dtl.bundle.MerchantIdBundle;
 import com.worldventures.dreamtrips.modules.dtl.helper.DtlEnrollWizard;
-import com.worldventures.dreamtrips.modules.dtl.model.merchant.offer.DtlCurrency;
+import com.worldventures.dreamtrips.modules.dtl.model.merchant.offer.Currency;
 import com.worldventures.dreamtrips.modules.dtl.model.transaction.DtlTransaction;
 import com.worldventures.dreamtrips.modules.dtl.presenter.DtlVerifyAmountPresenter;
 
@@ -78,9 +78,9 @@ public class DtlVerifyAmountFragment extends RxBaseFragmentWithArgs<DtlVerifyAmo
    }
 
    @Override
-   public void attachTransaction(DtlTransaction dtlTransaction, DtlCurrency dtlCurrency) {
-      spentAmount.setText(String.format("%s %.2f %s", dtlCurrency.getPrefix(), dtlTransaction.getBillTotal(), dtlCurrency
-            .getSuffix()));
+   public void attachTransaction(DtlTransaction dtlTransaction, Currency currency) {
+      spentAmount.setText(String.format("%s %.2f %s", currency.prefix(), dtlTransaction.getBillTotal(), currency
+            .suffix()));
       receipt.setController(GraphicUtils.provideFrescoResizingController(Uri.parse(dtlTransaction.getUploadTask()
             .getFilePath()), receipt.getController()));
    }

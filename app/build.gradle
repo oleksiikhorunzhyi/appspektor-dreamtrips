@@ -79,7 +79,7 @@ android {
          'UPLOADERY_API_URL': '"http://techery-dt-preprod-uploadery.techery.io"',
    ]
    def CONFIG_MAP_DTL = [
-         'DreamTripsApi'    : '"http://techery--dt--dtl-techery-io-b8ctgyaku6eu.runscope.net/"',
+         'DreamTripsApi'    : '"http://techery-dt-dtl.techery.io/"',
          'UPLOADERY_API_URL': '"http://techery-dt-dtl-uploadery.techery.io"',
    ]
    def CONFIG_MAP_PERF = [
@@ -99,6 +99,7 @@ android {
          "preprod" : CONFIG_MAP_PREPROD,
          "perf"    : CONFIG_MAP_PERF,
          "prod"    : CONFIG_MAP_PROD,
+         "dtl"     : CONFIG_MAP_DTL
    ]
 
    defaultConfig {
@@ -379,9 +380,9 @@ dependencies {
    compile 'com.snappydb:snappydb-lib:0.5.2'
    compile 'com.esotericsoftware.kryo:kryo:2.24.0'
    // Networking
-   compile(group: 'com.worldventures.dreamtrips', name: 'api', version: '2.1.0-STAGE-SNAPSHOT', changing: true) {
-      exclude group: "joda-time"
-   }
+//   compile(group: 'com.worldventures.dreamtrips', name: 'api', version: '2.1.0-STAGE-SNAPSHOT', changing: true) {
+//      exclude group: "joda-time"
+//   }
    compile 'com.octo.android.robospice:robospice:1.4.14'
    compile 'com.octo.android.robospice:robospice-retrofit:1.4.14'
    compile 'com.squareup.okhttp:okhttp:2.7.5'

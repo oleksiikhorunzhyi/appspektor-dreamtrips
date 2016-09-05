@@ -4,7 +4,7 @@ import android.content.Intent;
 import android.support.annotation.Nullable;
 
 import com.worldventures.dreamtrips.modules.common.model.ShareType;
-import com.worldventures.dreamtrips.modules.dtl.model.merchant.offer.DtlOffer;
+import com.worldventures.dreamtrips.modules.dtl.model.merchant.offer.Offer;
 import com.worldventures.dreamtrips.modules.dtl_flow.DtlPresenter;
 
 public interface DtlDetailsPresenter extends DtlPresenter<DtlDetailsScreen, DtlMerchantDetailsState> {
@@ -16,5 +16,5 @@ public interface DtlDetailsPresenter extends DtlPresenter<DtlDetailsScreen, DtlM
    void locationNotGranted();
    void onEstimationClick();
    void onMerchantClick();
-   void onOfferClick(DtlOffer offer);
+   void onOfferClick(Offer offer);
 }

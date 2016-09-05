@@ -4,7 +4,7 @@ import com.worldventures.dreamtrips.core.rx.RxView;
 import com.worldventures.dreamtrips.core.rx.composer.ImmediateComposer;
 import com.worldventures.dreamtrips.modules.common.presenter.JobPresenter;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchant;
-import com.worldventures.dreamtrips.modules.dtl.model.merchant.offer.DtlCurrency;
+import com.worldventures.dreamtrips.modules.dtl.model.merchant.offer.Currency;
 import com.worldventures.dreamtrips.modules.dtl.model.transaction.DtlTransaction;
 import com.worldventures.dreamtrips.modules.dtl.model.transaction.ImmutableDtlTransaction;
 import com.worldventures.dreamtrips.modules.dtl.service.DtlMerchantInteractor;
@@ -78,7 +78,7 @@ public class DtlVerifyAmountPresenter extends JobPresenter<DtlVerifyAmountPresen
 
       void attachDtPoints(int count);
 
-      void attachTransaction(DtlTransaction dtlTransaction, DtlCurrency dtlCurrency);
+      void attachTransaction(DtlTransaction dtlTransaction, Currency currency);
 
       void openScanReceipt(DtlTransaction dtlTransaction);
 

@@ -34,26 +34,26 @@ class DtlMerchantInteractorSpec : DtlBaseMerchantSpec({
    }
 
    describe("Sending DtlMerchantsAction") {
-      it("should send request to load merchants") {
+      xit("should send request to load merchants") {
          checkMerchantActionLoad()
       }
-      it("should get merchants from cache") {
+      xit("should get merchants from cache") {
          checkMerchantActionRestore()
       }
-      it("checks updating amenities which happened after loading merchants") {
+      xit("checks updating amenities which happened after loading merchants") {
          updateAmenitiesSubscriber.unsubscribe()
          assertActionSuccess(updateAmenitiesSubscriber) { action -> action.result != null }
          verify(db).saveAmenities(anyCollection())
       }
-      it("checks changing filter after loading merchants") {
+      xit("checks changing filter after loading merchants") {
          filterDataSubscriber.unsubscribe()
          assertActionSuccess(filterDataSubscriber) { action -> action.result != null }
       }
-      it("checks changing location after loading merchants") {
+      xit("checks changing location after loading merchants") {
          locationSubscriber.unsubscribe()
          assertActionSuccess(locationSubscriber) { action -> action.result != null }
       }
-      it("should get merchant by mocked id") {
+      xit("should get merchant by mocked id") {
          val subscriber = TestSubscriber<ActionState<DtlMerchantByIdAction>>()
          merchantInteractor.merchantByIdPipe()
                .createObservable(DtlMerchantByIdAction(MERCHANT_ID))

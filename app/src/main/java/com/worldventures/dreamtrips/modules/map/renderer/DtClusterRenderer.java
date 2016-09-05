@@ -17,7 +17,7 @@ import com.google.maps.android.clustering.Cluster;
 import com.google.maps.android.clustering.ClusterManager;
 import com.google.maps.android.clustering.view.DefaultClusterRenderer;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchantType;
+import com.worldventures.dreamtrips.modules.dtl.model.merchant.MerchantType;
 import com.worldventures.dreamtrips.modules.map.model.ClusterType;
 import com.worldventures.dreamtrips.modules.map.model.DtlClusterItem;
 
@@ -42,7 +42,7 @@ public class DtClusterRenderer extends DefaultClusterRenderer<DtlClusterItem> {
 
    @Override
    protected void onBeforeClusterItemRendered(DtlClusterItem cluster, MarkerOptions markerOptions) {
-      final int resourceId = cluster.getDtlMerchantType() == DtlMerchantType.DINING ? R.drawable.blue_pin_icon_big : R.drawable.offer_pin_icon;
+      final int resourceId = cluster.getMerchantType() == MerchantType.DINING ? R.drawable.blue_pin_icon_big : R.drawable.offer_pin_icon;
       pin.setImageResource(resourceId);
       markerOptions.icon(BitmapDescriptorFactory.fromBitmap(makeIcon(pin)));
    }
@@ -51,7 +51,7 @@ public class DtClusterRenderer extends DefaultClusterRenderer<DtlClusterItem> {
    @Override
    protected void onBeforeClusterRendered(Cluster<DtlClusterItem> cluster, MarkerOptions markerOptions) {
       Observable.from(cluster.getItems())
-            .distinct(DtlClusterItem::getDtlMerchantType)
+            .distinct(DtlClusterItem::getMerchantType)
             .toList()
             .subscribe(merchants -> setupClusterRendering(cluster, markerOptions, merchants));
    }

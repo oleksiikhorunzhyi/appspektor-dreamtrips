@@ -2,6 +2,7 @@ package com.worldventures.dreamtrips.core.janet.cache;
 
 import com.worldventures.dreamtrips.core.janet.cache.storage.ActionStorage;
 import com.worldventures.dreamtrips.core.janet.cache.storage.MemoryStorage;
+import com.worldventures.dreamtrips.core.janet.cache.storage.PaginatedMemoryStorage;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.modules.bucketlist.service.storage.BucketListDiskStorage;
 import com.worldventures.dreamtrips.modules.bucketlist.service.storage.BucketMemoryStorage;
@@ -15,6 +16,7 @@ import com.worldventures.dreamtrips.modules.feed.service.storage.NotificationsSt
 import com.worldventures.dreamtrips.modules.feed.service.storage.TranslationDiscStorage;
 import com.worldventures.dreamtrips.modules.flags.storage.FlagsStorage;
 import com.worldventures.dreamtrips.modules.friends.service.CirclesStorage;
+import com.worldventures.dreamtrips.modules.membership.storage.PodcastsDiskStorage;
 import com.worldventures.dreamtrips.modules.membership.storage.PodcastsStorage;
 import com.worldventures.dreamtrips.modules.trips.service.storage.ActivitiesStorage;
 import com.worldventures.dreamtrips.modules.trips.service.storage.RegionsStorage;
@@ -102,6 +104,6 @@ public class CacheActionStorageModule {
    @Singleton
    @Provides(type = Provides.Type.SET)
    ActionStorage providePodcastsStorage(SnappyRepository snappyRepository) {
-      return new PodcastsStorage(snappyRepository, new MemoryStorage());
+      return new PodcastsStorage(new PaginatedMemoryStorage<>(), new PodcastsDiskStorage(snappyRepository));
    }
 }

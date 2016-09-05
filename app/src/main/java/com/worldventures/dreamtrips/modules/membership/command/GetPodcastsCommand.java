@@ -4,9 +4,12 @@ import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.api.podcasts.GetPodcastsHttpAction;
 import com.worldventures.dreamtrips.core.api.action.CommandWithError;
 import com.worldventures.dreamtrips.core.janet.JanetModule;
+import com.worldventures.dreamtrips.core.janet.cache.CacheBundle;
+import com.worldventures.dreamtrips.core.janet.cache.CacheBundleImpl;
 import com.worldventures.dreamtrips.core.janet.cache.CacheOptions;
 import com.worldventures.dreamtrips.core.janet.cache.CachedAction;
 import com.worldventures.dreamtrips.core.janet.cache.ImmutableCacheOptions;
+import com.worldventures.dreamtrips.core.janet.cache.storage.PaginatedStorage;
 import com.worldventures.dreamtrips.core.janet.dagger.InjectableAction;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.core.rx.composer.IoToMainComposer;
@@ -31,23 +34,24 @@ import rx.schedulers.Schedulers;
 public class GetPodcastsCommand extends CommandWithError<List<Podcast>> implements InjectableAction,
       CachedAction<List<Podcast>> {
 
+   public static final int PAGE_SIZE = 10;
+
    @Inject @Named(JanetModule.JANET_API_LIB) Janet janet;
    @Inject PodcastsMapper podcastsMapper;
    @Inject SnappyRepository db;
 
-   private int page;
-   private int perPage;
+   private boolean refresh;
+   private boolean hasMore;
 
    private List<Podcast> cachedData;
 
-   public GetPodcastsCommand(int page, int perPage) {
-      this.page = page;
-      this.perPage = perPage;
+   private GetPodcastsCommand(boolean refresh) {
+      this.refresh = refresh;
    }
 
    @Override
    protected void run(Command.CommandCallback<List<Podcast>> callback) throws Throwable {
-      if (cachedData != null) {
+      if (cachedData != null && !cachedData.isEmpty()) {
          Observable.from(cachedData)
                .compose(new IoToMainComposer<>())
                .doOnNext(this::connectCachedEntity)
@@ -55,8 +59,11 @@ public class GetPodcastsCommand extends CommandWithError<List<Podcast>> implemen
                .subscribe();
       }
       janet.createPipe(GetPodcastsHttpAction.class, Schedulers.io())
-            .createObservableResult(new GetPodcastsHttpAction(page, perPage))
+            .createObservableResult(new GetPodcastsHttpAction(getPage(), PAGE_SIZE))
             .map(GetPodcastsHttpAction::response)
+            .doOnNext(podcasts -> {
+               hasMore = podcasts.size() < PAGE_SIZE;
+            })
             .flatMap(Observable::from)
             .map(podcastsMapper::map)
             .doOnNext(this::connectCachedEntity)
@@ -68,9 +75,20 @@ public class GetPodcastsCommand extends CommandWithError<List<Podcast>> implemen
       podcast.setCacheEntity(db.getDownloadMediaEntity(podcast.getUid()));
    }
 
+   private int getPage() {
+      if (refresh || cachedData == null || cachedData.isEmpty()) {
+         return 1;
+      }
+      return cachedData.size() / PAGE_SIZE + 1;
+   }
+
    @Override
    public List<Podcast> getCacheData() {
       return new ArrayList<>(getResult());
+   }
+
+   public boolean hasMore() {
+      return hasMore;
    }
 
    @Override
@@ -80,7 +98,9 @@ public class GetPodcastsCommand extends CommandWithError<List<Podcast>> implemen
 
    @Override
    public CacheOptions getCacheOptions() {
-      return ImmutableCacheOptions.builder().build();
+      CacheBundle cacheBundle = new CacheBundleImpl();
+      cacheBundle.put(PaginatedStorage.BUNDLE_REFRESH, refresh);
+      return ImmutableCacheOptions.builder().params(cacheBundle).build();
    }
 
    public List<Podcast> getItems() {
@@ -96,5 +116,13 @@ public class GetPodcastsCommand extends CommandWithError<List<Podcast>> implemen
    @Override
    public int getFallbackErrorMessage() {
       return R.string.error_fail_to_load_podcast;
+   }
+
+   public static GetPodcastsCommand refresh() {
+      return new GetPodcastsCommand(true);
+   }
+
+   public static GetPodcastsCommand loadMore() {
+      return new GetPodcastsCommand(false);
    }
 }

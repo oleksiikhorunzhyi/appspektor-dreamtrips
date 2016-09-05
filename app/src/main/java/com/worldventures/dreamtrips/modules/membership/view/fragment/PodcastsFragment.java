@@ -124,7 +124,7 @@ public class PodcastsFragment extends RxBaseFragment<PodcastsPresenter> implemen
 
    @Override
    public void onRefresh() {
-      getPresenter().reloadPodcasts();
+      getPresenter().onRefresh();
    }
 
    @Override

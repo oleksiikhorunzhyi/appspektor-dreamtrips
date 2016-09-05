@@ -28,16 +28,14 @@ import rx.android.schedulers.AndroidSchedulers;
 
 public class PodcastsPresenter<T extends PodcastsPresenter.View> extends JobPresenter<T> {
 
-   private static final int PODCAST_PER_PAGE = 10;
-
    @Inject PodcastsInteractor podcastsInteractor;
    @Inject CachedEntityInteractor cachedEntityInteractor;
    @Inject CachedEntityDelegate cachedEntityDelegate;
 
-   private List<Podcast> podcasts = new ArrayList<>();
-
    private boolean loading;
-   private boolean noMoreItems;
+   private boolean hasMore;
+
+   private List<Podcast> podcasts = new ArrayList<>();
 
    @Override
    public void takeView(T view) {
@@ -45,7 +43,7 @@ public class PodcastsPresenter<T extends PodcastsPresenter.View> extends JobPres
       apiErrorPresenter.setView(view);
       subscribeToApiUpdates();
       subscribeToCachingStatusUpdates();
-      reloadPodcasts();
+      loadPodcasts(true);
    }
 
    @Override
@@ -55,27 +53,21 @@ public class PodcastsPresenter<T extends PodcastsPresenter.View> extends JobPres
    }
 
    public void scrolled(int totalItemCount, int lastVisible) {
-      if (!loading && !noMoreItems && lastVisible == totalItemCount - 1) {
+      if (!loading && hasMore && lastVisible == totalItemCount - 1) {
          loading = true;
-         loadMore();
+         loadPodcasts(false);
       }
    }
 
-   protected void loadMore() {
-      if (podcasts.size() > 0) {
-         loadPodcasts(podcasts.size() / PODCAST_PER_PAGE + 1);
-      }
+   public void onRefresh() {
+      loadPodcasts(true);
    }
 
-   public void reloadPodcasts() {
-      podcasts.clear();
-      loadPodcasts(1);
-   }
-
-   private void loadPodcasts(int page) {
+   private void loadPodcasts(boolean refresh) {
       loading = true;
       view.startLoading();
-      podcastsInteractor.podcastsActionPipe().send(new GetPodcastsCommand(page, PODCAST_PER_PAGE));
+      podcastsInteractor.podcastsActionPipe().send(refresh ?
+            GetPodcastsCommand.refresh() : GetPodcastsCommand.loadMore());
    }
 
    private void subscribeToApiUpdates() {
@@ -83,7 +75,10 @@ public class PodcastsPresenter<T extends PodcastsPresenter.View> extends JobPres
             .compose(bindViewToMainComposer())
             .subscribe(new ActionStateSubscriber<GetPodcastsCommand>()
                   .onProgress((command, progress) -> onPodcastsLoaded(command.getItems()))
-                  .onSuccess(successCommand -> onPodcastsLoaded(successCommand.getResult()))
+                  .onSuccess(successCommand -> {
+                     onPodcastsLoaded(successCommand.getResult());
+                     hasMore = successCommand.hasMore();
+                  })
                   .onFail(this::onPodcastsLoadingFailed));
    }
 
@@ -93,11 +88,9 @@ public class PodcastsPresenter<T extends PodcastsPresenter.View> extends JobPres
       List<Object> items = new ArrayList<>();
       items.add(new MediaHeader(context.getString(R.string.recently_added)));
       items.addAll(podcasts);
-      view.setItems(items);
+      view.setItems(podcasts);
       view.notifyItemChanged(null);
       view.finishLoading();
-
-      noMoreItems = podcasts.size() < PODCAST_PER_PAGE;
       loading = false;
    }
 

@@ -12,6 +12,7 @@ import com.worldventures.dreamtrips.core.repository.SnappyRepository
 import com.worldventures.dreamtrips.core.utils.DateTimeUtils
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchant
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.offer.Currency
+import com.worldventures.dreamtrips.modules.dtl.model.merchant.offer.ImmutableCurrency
 import com.worldventures.dreamtrips.modules.dtl.model.transaction.DtlTransaction
 import com.worldventures.dreamtrips.modules.dtl.model.transaction.DtlTransactionResult
 import com.worldventures.dreamtrips.modules.dtl.model.transaction.ImmutableDtlTransaction
@@ -37,7 +38,7 @@ class DtlTransactionInteractorSpec : BaseSpec({
    estimationResult = mock()
 
    whenever(merchant.id).thenReturn("test")
-   whenever(merchant.defaultCurrency).thenReturn(Currency())
+   whenever(merchant.defaultCurrency).thenReturn(ImmutableCurrency.builder().isDefault(true).build())
    whenever(transaction.asTransactionRequest(any())).thenReturn(mock())
    whenever(transaction.lat).thenReturn(1.toDouble())
    whenever(transaction.lng).thenReturn(1.toDouble())

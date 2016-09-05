@@ -4,7 +4,7 @@ import com.nhaarman.mockito_kotlin.*
 import com.worldventures.dreamtrips.AssertUtil.assertActionSuccess
 import com.worldventures.dreamtrips.BaseSpec
 import com.worldventures.dreamtrips.api.dtl.merchants.model.Merchant
-import com.worldventures.dreamtrips.api.dtl.merchants.model.MerchantAttribute
+import com.worldventures.dreamtrips.api.dtl.merchants.model.ThinAttribute
 import com.worldventures.dreamtrips.api.dtl.merchants.model.MerchantType
 import com.worldventures.dreamtrips.api.dtl.merchants.model.PartnerStatus
 import com.worldventures.dreamtrips.core.repository.SnappyRepository
@@ -53,7 +53,7 @@ abstract class DtlBaseMerchantSpec(spekBody: DescribeBody.() -> Unit) : BaseSpec
                .build()
 
          locationInteractor = DtlLocationInteractor(janet)
-         merchantInteractor = DtlMerchantInteractor(janet, locationInteractor)
+         merchantInteractor = DtlMerchantInteractor(janet, janet, locationInteractor)
          db = spy()
 
          commandDaggerService.registerProvider(Janet::class.java) { janet }
@@ -65,7 +65,7 @@ abstract class DtlBaseMerchantSpec(spekBody: DescribeBody.() -> Unit) : BaseSpec
          whenever(merchant.id()).thenReturn(MERCHANT_ID)
          whenever(merchant.coordinates()).thenReturn(com.worldventures.dreamtrips.api.dtl.locations.model
                .ImmutableCoordinates.builder().lat(1.0).lng(1.0).build())
-         whenever(merchant.amenities()).thenReturn(emptyList<MerchantAttribute>())
+         whenever(merchant.amenities()).thenReturn(emptyList<ThinAttribute>())
          whenever(merchant.budget()).thenReturn(3)
          whenever(merchant.displayName()).thenReturn("test")
          whenever(merchant.partnerStatus()).thenReturn(PartnerStatus.PARTICIPANT)

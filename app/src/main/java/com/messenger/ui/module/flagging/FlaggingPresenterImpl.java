@@ -2,15 +2,13 @@ package com.messenger.ui.module.flagging;
 
 import android.text.TextUtils;
 
-import com.messenger.api.GetFlagsAction;
-import com.messenger.delegate.FlagsDelegate;
+import com.worldventures.dreamtrips.modules.flags.command.GetFlagsCommand;
+import com.messenger.delegate.FlagsInteractor;
 import com.messenger.delegate.chat.flagging.FlagMessageCommand;
 import com.messenger.delegate.chat.flagging.FlagMessageDelegate;
 import com.messenger.delegate.chat.flagging.ImmutableFlagMessageDTO;
 import com.messenger.ui.module.ModuleStatefulPresenterImpl;
 import com.techery.spares.module.Injector;
-import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.core.api.action.BaseHttpAction;
 import com.worldventures.dreamtrips.modules.tripsimages.model.Flag;
 
 import javax.inject.Inject;
@@ -22,7 +20,7 @@ import timber.log.Timber;
 
 public class FlaggingPresenterImpl extends ModuleStatefulPresenterImpl<FlaggingView, FlaggingState> implements FlaggingPresenter {
 
-   @Inject FlagsDelegate flagsDelegate;
+   @Inject FlagsInteractor flagsInteractor;
    @Inject FlagMessageDelegate flagMessageDelegate;
 
    private Subscription getFlagsSubscription;
@@ -85,27 +83,25 @@ public class FlaggingPresenterImpl extends ModuleStatefulPresenterImpl<FlaggingV
    private void loadFlags() {
       getView().showFlagsLoadingDialog();
       if (getFlagsSubscription != null) getFlagsSubscription.unsubscribe();
-      getFlagsSubscription = flagsDelegate.getFlags()
+      getFlagsSubscription = flagsInteractor.getFlagsPipe()
+            .createObservable(new GetFlagsCommand())
             .observeOn(AndroidSchedulers.mainThread())
             .compose(bindView())
-            .subscribe(new ActionStateSubscriber<GetFlagsAction>().onSuccess(this::onFlagsLoadingSuccess)
-                  .onFail(this::onFlagsLoadingError));
+            .subscribe(new ActionStateSubscriber<GetFlagsCommand>()
+               .onSuccess(this::onFlagsLoadingSuccess)
+               .onFail(this::onFlagsLoadingError));
    }
 
-   private void onFlagsLoadingSuccess(GetFlagsAction action) {
+   private void onFlagsLoadingSuccess(GetFlagsCommand getFlagsCommand) {
       getView().hideFlagsLoadingDialog();
       getState().setDialogState(FlaggingState.DialogState.FLAGS_LIST);
-      getState().setFlags(action.getFlags());
+      getState().setFlags(getFlagsCommand.getResult());
       showFlagsListDialog();
    }
 
-   private void onFlagsLoadingError(BaseHttpAction action, Throwable e) {
+   private void onFlagsLoadingError(GetFlagsCommand command, Throwable e) {
       getView().hideFlagsLoadingDialog();
-
-      if (action.getErrorResponse() != null && !action.getErrorResponse().getErrors().isEmpty())
-         getView().showError((action.getErrorResponse().getFirstMessage()));
-      else getView().showError(R.string.error_fail_to_load_flag_reason);
-
+      getView().showError(command.getErrorMessage());
       Timber.e(e, "[Flagging] Could not load flags");
    }
 

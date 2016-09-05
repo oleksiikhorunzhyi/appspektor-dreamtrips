@@ -101,7 +101,7 @@
    <string name="chat_flag_dialog_confirmation_message_format">Το προσωπικό της WorldVentures θα ειδοποιηθεί για να αναθεωρήσει αυτό το μήνυμα για %1$s. Θέλετε να συνεχίσετε;</string>
    <string name="chat_flag_dialog_confirmation_positive_button">Αποστολή</string>
    <string name="chat_flag_dialog_confirmation_negative_button">Ακύρωση</string>
-   <string name="chat_flag_dialog_flagging_progress">Επισημαίνεται...</string>
+   <string name="chat_flag_dialog_flagging_progress">Επισημαίνεται…</string>
    <string name="chat_flag_failed">Αποτυχία επισήμανσης μηνύματος</string>
 
    <!---->

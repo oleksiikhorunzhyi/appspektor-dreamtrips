@@ -11,6 +11,7 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.crashlytics.android.Crashlytics;
 import com.techery.spares.adapter.BaseDelegateAdapter;
 import com.techery.spares.module.Injector;
 import com.techery.spares.module.qualifier.ForActivity;
@@ -44,6 +45,7 @@ import javax.inject.Provider;
 import butterknife.InjectView;
 import butterknife.OnClick;
 import cn.pedant.SweetAlert.SweetAlertDialog;
+import timber.log.Timber;
 
 import static com.worldventures.dreamtrips.modules.tripsimages.bundle.EditPhotoTagsBundle.PhotoEntity;
 
@@ -206,7 +208,11 @@ public abstract class ActionEntityFragment<PM extends ActionEntityPresenter, P e
    }
 
    protected boolean onBack() {
-      if (getChildFragmentManager().popBackStackImmediate()) return true;
+      try {
+         if (getChildFragmentManager().popBackStackImmediate()) return true;
+      } catch (Exception e) {
+         Timber.e(e, "OnBack error"); //for avoid application crash
+      }
       //
       getPresenter().cancelClicked();
       return true;

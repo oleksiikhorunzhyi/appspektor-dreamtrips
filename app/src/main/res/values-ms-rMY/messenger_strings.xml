@@ -14,7 +14,7 @@
    <string name="conversation_list_spinner_item_all_chats">Semua Bualan</string>
    <string name="conversation_list_spinner_item_group_chats">Kumpulan Sembang</string>
 
-   <string name="conversation_list_search_hint">Cari perbualan ...</string>
+   <string name="conversation_list_search_hint">Cari perbualan …</string>
    <string name="conversation_list_search_edittext_hint">Cari kumpulan dan orang</string>
    <string name="conversation_list_item_last_message_text_format_you">Anda: %1$s</string>
    <string name="conversation_list_item_last_message_image_format_you">Anda telah menghantar foto</string>
@@ -101,7 +101,7 @@
    <string name="chat_flag_dialog_confirmation_message_format">Kakitangan WorldVentures akan dimaklumkan untuk membaca pesanan ini untuk %1$s. Adakah anda mahu meneruskan?</string>
    <string name="chat_flag_dialog_confirmation_positive_button">Hantar</string>
    <string name="chat_flag_dialog_confirmation_negative_button">Batal</string>
-   <string name="chat_flag_dialog_flagging_progress">Membenderakan...</string>
+   <string name="chat_flag_dialog_flagging_progress">Membenderakan…</string>
    <string name="chat_flag_failed">Gagal untuk membenderakan pesanan </string>
 
    <!---->

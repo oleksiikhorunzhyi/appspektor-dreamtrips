@@ -1,6 +1,7 @@
 package com.worldventures.dreamtrips.modules.feed.presenter;
 
 import com.innahema.collections.query.queriables.Queryable;
+import com.messenger.delegate.FlagsInteractor;
 import com.worldventures.dreamtrips.core.rx.RxView;
 import com.worldventures.dreamtrips.core.rx.composer.IoToMainComposer;
 import com.worldventures.dreamtrips.core.utils.LocaleHelper;
@@ -23,6 +24,8 @@ import com.worldventures.dreamtrips.modules.feed.event.EditBucketEvent;
 import com.worldventures.dreamtrips.modules.feed.event.FeedEntityChangedEvent;
 import com.worldventures.dreamtrips.modules.feed.event.FeedEntityCommentedEvent;
 import com.worldventures.dreamtrips.modules.feed.event.FeedEntityDeletedEvent;
+import com.worldventures.dreamtrips.modules.feed.event.ItemFlaggedEvent;
+import com.worldventures.dreamtrips.modules.feed.event.LoadFlagEvent;
 import com.worldventures.dreamtrips.modules.feed.event.LoadMoreEvent;
 import com.worldventures.dreamtrips.modules.feed.manager.FeedEntityManager;
 import com.worldventures.dreamtrips.modules.feed.model.FeedEntity;
@@ -53,6 +56,7 @@ public class BaseCommentPresenter<T extends BaseCommentPresenter.View> extends P
    @Inject TranslationFeedInteractor translationFeedInteractor;
    @Inject CommentsInteractor commentsInteractor;
    @Inject LocaleHelper localeHelper;
+   @Inject FlagsInteractor flagsInteractor;
 
    private UidItemDelegate uidItemDelegate;
 
@@ -65,13 +69,13 @@ public class BaseCommentPresenter<T extends BaseCommentPresenter.View> extends P
 
    public BaseCommentPresenter(FeedEntity feedEntity) {
       this.feedEntity = feedEntity;
-      uidItemDelegate = new UidItemDelegate(this);
    }
 
    @Override
    public void onInjected() {
       super.onInjected();
       entityManager.setRequestingPresenter(this);
+      uidItemDelegate = new UidItemDelegate(this, flagsInteractor);
    }
 
    @Override
@@ -241,6 +245,15 @@ public class BaseCommentPresenter<T extends BaseCommentPresenter.View> extends P
                         handleError(throwable);
                      }));
       }
+   }
+
+   public void onEvent(LoadFlagEvent event) {
+      if (view.isVisibleOnScreen()) uidItemDelegate.loadFlags(event.getFlaggableView());
+   }
+
+   public void onEvent(ItemFlaggedEvent event) {
+      if (view.isVisibleOnScreen()) uidItemDelegate.flagItem(new FlagData(event.getEntity()
+            .getUid(), event.getFlagReasonId(), event.getNameOfReason()), view);
    }
 
    protected void itemDeleted(FeedEntity model) {

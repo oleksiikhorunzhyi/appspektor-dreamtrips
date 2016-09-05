@@ -630,13 +630,16 @@
    <string name="audio_app_not_found_exception">未找到應用播放音頻</string>
    <string name="complete_action_with">完成操作</string>
    <string name="error_fail_to_load_podcast">無法加載播客</string>
+   <string name="podcasts_button_resume">重新開始</string>
+   <string name="podcasts_button_pause">暫停</string>
+   <string name="podcasts_button_stop">停</string>
 
    <string name="min">分鐘</string>
    <string name="post_hint_with_hashtag">說些什麼，添加#標籤</string>
    <string name="add_text">添加文字</string>
    <string name="action_search_by_hashtag">通過標籤搜索</string>
    <string name="error_fail_to_load_feeds_by_hashtag">無法通過標籤加載内容</string>
-   <string name="no_feed_by_hashtag">没有发现帖子</string>
+   <string name="no_feed_by_hashtag">沒有發現帖子</string>
 
    <string name="friends_loading_info_text">正在加載您的好友</string>
 
@@ -644,5 +647,15 @@
    <string name="hashtag_multiple_posts">%1$d篇帖子</string>
 
    <string name="error_webview_secure_connection">很抱歉，DreamTrips app無法建立安全連接。\n我們被告知這個問題，我們會在短期內查看。\n\n為更快地解決問題請聯繫客服。</string>
+
+   <string name="translate">翻譯</string>
+   <string name="translated_from">翻譯自%1$s</string>
+
+   <string name="error_fail_to_translate_text">無法翻譯文本</string>
+
+   <string name="book_it_disabled">您必須是DreamTrips會員才可以預訂行程</string>
+
+   <string name="error_fail_to_load_filters">很抱歉，無法加載篩選條件</string>
+   <string name="flag_content_message">WorldVentures人員將被通知審查此內容 </string>
 
 </resources>

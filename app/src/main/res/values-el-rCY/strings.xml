@@ -630,6 +630,9 @@
    <string name="audio_app_not_found_exception">Η εφαρμογή για την αναπαραγωγή ήχου δεν βρέθηκε</string>
    <string name="complete_action_with">Ολοκλήρωση ενέργειας με</string>
    <string name="error_fail_to_load_podcast">Αποτυχία φόρτωσης ψηφιακού αρχείου</string>
+   <string name="podcasts_button_resume">Aνακεφαλαίωση</string>
+   <string name="podcasts_button_pause">Παύση</string>
+   <string name="podcasts_button_stop">Στάση</string>
 
    <string name="min">λεπτά</string>
    <string name="post_hint_with_hashtag">Πείτε κάτι, προσθέστε #hashtags</string>
@@ -644,5 +647,15 @@
    <string name="hashtag_multiple_posts">%1$d δημοσιεύει</string>
 
    <string name="error_webview_secure_connection">Λυπούμαστε αλλά η εφαρμογή DreamTrips δεν μπορεί να δημιουργήσει ασφαλή σύνδεση.\nΈχουμε ενημερωθεί για αυτό το θέμα και θα το ερευνήσουμε σύντομα.\n\nΠαρακαλούμε επικοινωνήστε με την εξυπηρέτηση πελατών για γρηγορότερη λύση.</string>
+
+   <string name="translate">Μετάφραση</string>
+   <string name="translated_from">Mεταφράστηκε από %1$s</string>
+
+   <string name="error_fail_to_translate_text">Αποτυχία να μεταφραστεί το κείμενο</string>
+
+   <string name="book_it_disabled">Πρέπει να είστε DreamTrips Μέλος για να κλείσετε ένα ταξίδι</string>
+
+   <string name="error_fail_to_load_filters">Λυπούμαστε, απέτυχε να φορτώσει τα φίλτρα</string>
+   <string name="flag_content_message">To προσωπικό της WorldVentures θα ειδοποιηθεί να αναθεωρήσει αυτό το περιεχόμενο για ακατάλληλο περιεχόμενο. </string>
 
 </resources>

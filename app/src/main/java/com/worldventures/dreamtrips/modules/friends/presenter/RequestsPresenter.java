@@ -105,7 +105,7 @@ public class RequestsPresenter extends Presenter<RequestsPresenter.View> {
 
    public void acceptAllRequests() {
       circlesInteractor.pipe()
-            .observe()
+            .createObservable(new CirclesCommand())
             .observeOn(AndroidSchedulers.mainThread())
             .compose(bindView())
             .subscribe(new ActionStateSubscriber<CirclesCommand>().onStart(circlesCommand -> onCirclesStart())
@@ -139,7 +139,7 @@ public class RequestsPresenter extends Presenter<RequestsPresenter.View> {
 
    public void acceptRequest(User user) {
       circlesInteractor.pipe()
-            .observe()
+            .createObservable(new CirclesCommand())
             .observeOn(AndroidSchedulers.mainThread())
             .compose(bindView())
             .subscribe(new ActionStateSubscriber<CirclesCommand>().onStart(circlesCommand -> onCirclesStart())

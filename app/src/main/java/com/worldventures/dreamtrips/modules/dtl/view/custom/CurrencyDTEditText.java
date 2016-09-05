@@ -23,13 +23,8 @@ public class CurrencyDTEditText extends DTEditText {
    }
 
    public void setCurrencySymbol(String symbol) {
-      int drawablePadding;
-      if (symbol.length() > 2) {
-         //TODO think about fix, very-very dirty
-         symbol = " " + symbol;
-         drawablePadding = getResources().getDimensionPixelSize(R.dimen.spacing_large);
-      } else if (symbol.length() > 1) drawablePadding = getResources().getDimensionPixelSize(R.dimen.spacing_normal);
-      else drawablePadding = getResources().getDimensionPixelSize(R.dimen.spacing_small);
+      final int padding = getPaddingForCurrency(symbol);
+      if (symbol.length() > 2) symbol = " " + symbol; //TODO think about fix, very-very dirty
 
       TextDrawable drawable = TextDrawable.builder()
             .beginConfig()
@@ -38,7 +33,13 @@ public class CurrencyDTEditText extends DTEditText {
             .endConfig()
             .buildRect(symbol, Color.TRANSPARENT);
 
-      setCompoundDrawablePadding(drawablePadding);
+      setCompoundDrawablePadding(padding);
       setCompoundDrawables(drawable, null, null, null);
+   }
+
+   public int getPaddingForCurrency(String symbol) {
+      return symbol.length() > 2 ? getResources().getDimensionPixelSize(R.dimen.spacing_large) :
+             symbol.length() > 1 ? getResources().getDimensionPixelSize(R.dimen.spacing_normal) :
+                  getResources().getDimensionPixelSize(R.dimen.spacing_small);
    }
 }

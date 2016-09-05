@@ -15,6 +15,7 @@ import com.worldventures.dreamtrips.modules.feed.view.cell.PhotoGalleryCell;
 import com.worldventures.dreamtrips.modules.feed.view.cell.PickerIrregularPhotoCell;
 import com.worldventures.dreamtrips.modules.tripsimages.view.custom.PickImageDelegate;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -43,8 +44,10 @@ public class DtGalleryFragment extends BasePickerFragment<GalleryPresenter> impl
 
    @Override
    public void addItems(List<BasePhotoPickerModel> items) {
-      adapter.addItem(new PickerIrregularPhotoModel(PickerIrregularPhotoModel.CAMERA, R.drawable.ic_picker_camera, R.string.camera, R.color.share_camera_color));
-      adapter.addItem(new PickerIrregularPhotoModel(PickerIrregularPhotoModel.FACEBOOK, R.drawable.fb_logo, R.string.add_from_facebook, R.color.facebook_color));
+      List staticItems = new ArrayList<>();
+      staticItems.add(new PickerIrregularPhotoModel(PickerIrregularPhotoModel.CAMERA, R.drawable.ic_picker_camera, R.string.camera, R.color.share_camera_color));
+      staticItems.add(new PickerIrregularPhotoModel(PickerIrregularPhotoModel.FACEBOOK, R.drawable.fb_logo, R.string.add_from_facebook, R.color.facebook_color));
+      adapter.addItems(staticItems);
       super.addItems(items);
    }
 

@@ -1,17 +1,14 @@
 package com.worldventures.dreamtrips.modules.common.presenter;
 
-import android.support.annotation.Nullable;
-import android.text.TextUtils;
+import android.os.Debug;
 
 import com.messenger.synchmechanism.MessengerConnector;
 import com.techery.spares.utils.ValidationUtils;
-import com.worldventures.dreamtrips.core.navigation.ActivityRouter;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.auth.api.command.LoginCommand;
-import com.worldventures.dreamtrips.modules.auth.api.command.UpdateAuthInfoCommand;
-import com.worldventures.dreamtrips.modules.auth.service.AuthInteractor;
 import com.worldventures.dreamtrips.modules.auth.service.LoginInteractor;
+import com.worldventures.dreamtrips.modules.auth.util.SessionUtil;
 import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.common.presenter.delegate.ClearDirectoryDelegate;
 import com.worldventures.dreamtrips.modules.common.view.ApiErrorView;
@@ -22,8 +19,10 @@ import com.worldventures.dreamtrips.modules.dtl.service.action.DtlLocationComman
 
 import javax.inject.Inject;
 
+import icepick.State;
 import io.techery.janet.helper.ActionStateSubscriber;
 import rx.android.schedulers.AndroidSchedulers;
+import timber.log.Timber;
 
 import static com.worldventures.dreamtrips.util.ValidationUtils.isPasswordValid;
 import static com.worldventures.dreamtrips.util.ValidationUtils.isUsernameValid;
@@ -37,29 +36,57 @@ public class LaunchActivityPresenter extends ActivityPresenter<LaunchActivityPre
    @Inject DtlLocationInteractor dtlLocationInteractor;
    @Inject LoginInteractor loginInteractor;
    @Inject MessengerConnector messengerConnector;
-   @Inject AuthInteractor authInteractor;
 
-   public void detectMode(@Nullable String type) {
-      if (TextUtils.isEmpty(type)) {
-         splashMode();
-         return;
+   @State boolean dtlInitDone;
+   @State boolean clearCacheDone;
+
+   @Override
+   public void takeView(View view) {
+      super.takeView(view);
+      launchModeBasedOnExistingSession();
+
+      if (!dtlInitDone) {
+         initDtl();
+         dtlInitDone = true;
       }
-      switch (type) {
-         case ActivityRouter.LAUNCH_LOGIN:
-            loginMode();
-            break;
-         case ActivityRouter.LAUNCH_SPLASH:
-         default:
-            splashMode();
-            break;
+
+      loginInteractor.loginActionPipe()
+            .observeWithReplay()
+            .observeOn(AndroidSchedulers.mainThread())
+            .compose(bindView())
+            .subscribe(new ActionStateSubscriber<LoginCommand>()
+                  .onStart(loginCommand -> view.showLoginProgress())
+                  .onSuccess(loginCommand -> {
+                     loginInteractor.loginActionPipe().clearReplays();
+                     User user = loginCommand.getResult().getUser();
+                     TrackingHelper.login(user.getEmail());
+                     launchModeBasedOnExistingSession();
+                  })
+                  .onFail((loginCommand, throwable) -> {
+                     loginInteractor.loginActionPipe().clearReplays();
+                     TrackingHelper.loginError();
+                     view.alertLogin(loginCommand.getErrorMessage());
+                  }));
+   }
+
+   private void launchModeBasedOnExistingSession() {
+      if (SessionUtil.isUserSessionTokenExist(appSessionHolder)) {
+         splashMode();
+      } else {
+         loginMode();
       }
    }
 
    private void splashMode() {
       view.openSplash();
-      clearTemporaryDirectoryDelegate.clearTemporaryDirectory();
-      drawableUtil.removeCacheImages();
-      startPreloadChain();
+
+      if (!clearCacheDone) {
+         clearTemporaryDirectoryDelegate.clearTemporaryDirectory();
+         drawableUtil.removeCacheImages();
+         clearCacheDone = true;
+      }
+
+      onAuthSuccess();
    }
 
    private void loginMode() {
@@ -89,35 +116,11 @@ public class LaunchActivityPresenter extends ActivityPresenter<LaunchActivityPre
          return;
       }
 
-      loginInteractor.loginActionPipe()
-            .createObservable(new LoginCommand(username, userPassword))
-            .observeOn(AndroidSchedulers.mainThread())
-            .compose(bindView())
-            .subscribe(new ActionStateSubscriber<LoginCommand>().onStart(loginCommand -> view.showLoginProgress())
-                  .onSuccess(loginCommand -> {
-                     User user = loginCommand.getResult().getUser();
-                     TrackingHelper.login(user.getEmail());
-                     TrackingHelper.setUserId(Integer.toString(user.getId()));
-                     splashMode();
-                  })
-                  .onFail((loginCommand, throwable) -> {
-                     TrackingHelper.loginError();
-                     view.alertLogin(loginCommand.getErrorMessage());
-                  }));
-
-   }
-
-   public void startPreloadChain() {
-      authInteractor.updateAuthInfoCommandActionPipe()
-            .createObservable(new UpdateAuthInfoCommand())
-            .observeOn(AndroidSchedulers.mainThread())
-            .compose(bindView())
-            .subscribe(new ActionStateSubscriber<UpdateAuthInfoCommand>().onSuccess(updateAuthInfoCommand -> onAuthSuccess())
-                  .onFail((updateAuthInfoCommand, throwable) -> loginMode()));
+      loginInteractor.loginActionPipe().send(new LoginCommand(username, userPassword));
    }
 
    private void onAuthSuccess() {
-      TrackingHelper.setUserId(Integer.toString(appSessionHolder.get().get().getUser().getId()));
+      TrackingHelper.setUserId(getAccount().getUsername(), Integer.toString(getAccount().getId()));
       messengerConnector.connect();
       view.openMain();
    }

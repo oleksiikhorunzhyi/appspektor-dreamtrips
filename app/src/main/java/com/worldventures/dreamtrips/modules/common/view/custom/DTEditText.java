@@ -20,7 +20,6 @@ public class DTEditText extends MaterialEditText {
 
    public DTEditText(Context context, AttributeSet attrs) {
       this(context, attrs, 0);
-
    }
 
    public DTEditText(Context context, AttributeSet attrs, int style) {
@@ -39,15 +38,6 @@ public class DTEditText extends MaterialEditText {
       setFocusableInTouchMode(b1);
       setFocusable(focusable);
       setClickable(clickable);
-   }
-
-   public boolean validateCharactersCount() {
-      boolean isValid = super.isCharactersCountValid();
-      if (!isValid && requestFocusOnValidationFail) {
-         this.requestFocus();
-      }
-      return isValid;
-
    }
 
    @Override

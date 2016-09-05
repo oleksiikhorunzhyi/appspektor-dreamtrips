@@ -1,6 +1,8 @@
 package com.worldventures.dreamtrips.wallet.ui.widget.anim;
 
+import android.animation.Animator;
 import android.animation.AnimatorInflater;
+import android.animation.AnimatorListenerAdapter;
 import android.animation.AnimatorSet;
 import android.content.Context;
 import android.view.View;
@@ -41,11 +43,26 @@ public class FlipAnim {
             isBackVisible = false;
          }
       }, delay);
+
    }
 
    private void init(Context context) {
       setRightOut = (AnimatorSet) AnimatorInflater.loadAnimator(context, R.animator.wallet_smart_card_flip_out_animation);
+      setRightOut.addListener(new AnimatorListenerAdapter() {
+         @Override
+         public void onAnimationEnd(Animator animation) {
+            super.onAnimationEnd(animation);
+            flipCard();
+         }
+      });
+
       setLeftIn = (AnimatorSet) AnimatorInflater.loadAnimator(context, R.animator.wallet_smart_card_flip_in_animation);
+      setLeftIn.addListener(new AnimatorListenerAdapter() {
+         @Override
+         public void onAnimationEnd(Animator animation) {
+            super.onAnimationEnd(animation);
+         }
+      });
    }
 
    public static class Builder {
@@ -66,6 +83,10 @@ public class FlipAnim {
       public FlipAnim createAnim() {
          FlipAnim flipAnim = new FlipAnim(cardFrontLayout, cardBackLayout);
          flipAnim.init(cardFrontLayout.getContext());
+         int distance = 22000;
+         float scale = cardFrontLayout.getContext().getResources().getDisplayMetrics().density * distance;
+         cardFrontLayout.setCameraDistance(scale);
+         cardBackLayout.setCameraDistance(scale);
          return flipAnim;
       }
    }

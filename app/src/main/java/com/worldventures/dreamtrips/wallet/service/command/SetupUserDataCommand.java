@@ -70,6 +70,7 @@ public class SetupUserDataCommand extends Command<SmartCard> implements Injectab
       smartCard = ImmutableSmartCard.builder()
             .from(smartCard)
             .userPhoto("file://" + avatarFile.getAbsolutePath())
+            .cardName(fullName)
             .build();
       return smartCard;
    }

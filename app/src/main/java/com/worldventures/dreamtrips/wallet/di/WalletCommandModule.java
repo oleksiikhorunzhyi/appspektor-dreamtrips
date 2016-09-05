@@ -21,7 +21,6 @@ import com.worldventures.dreamtrips.wallet.service.command.SetDefaultCardOnDevic
 import com.worldventures.dreamtrips.wallet.service.command.SetLockStateCommand;
 import com.worldventures.dreamtrips.wallet.service.command.SetStealthModeCommand;
 import com.worldventures.dreamtrips.wallet.service.command.SetupDefaultAddressCommand;
-import com.worldventures.dreamtrips.wallet.service.command.SetupSmartCardNameCommand;
 import com.worldventures.dreamtrips.wallet.service.command.SetupUserDataCommand;
 import com.worldventures.dreamtrips.wallet.service.command.http.FetchTermsAndConditionsCommand;
 
@@ -35,7 +34,6 @@ import dagger.Module;
             AttachCardCommand.class,
             CardStacksCommand.class,
             LoadImageForSmartCardCommand.class,
-            SetupSmartCardNameCommand.class,
             SetupUserDataCommand.class,
             FetchDefaultCardIdCommand.class,
             ActivateSmartCardCommand.class,

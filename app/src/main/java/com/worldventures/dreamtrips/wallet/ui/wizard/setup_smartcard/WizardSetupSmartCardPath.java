@@ -1,16 +1,16 @@
-package com.worldventures.dreamtrips.wallet.ui.wizard.card_alias;
+package com.worldventures.dreamtrips.wallet.ui.wizard.setup_smartcard;
 
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.flow.path.MasterDetailPath;
 import com.worldventures.dreamtrips.core.flow.path.StyledPath;
 import com.worldventures.dreamtrips.core.flow.util.Layout;
 
-@Layout(R.layout.screen_wallet_wizard_card_alias)
-public class WizardCardNamePath extends StyledPath {
+@Layout(R.layout.screen_wallet_wizard_setup_smartcard)
+public class WizardSetupSmartCardPath extends StyledPath {
 
-   private final String smartCardId;
+   public final String smartCardId;
 
-   public WizardCardNamePath(String smartCardId) {
+   public WizardSetupSmartCardPath(String smartCardId) {
       this.smartCardId = smartCardId;
    }
 
@@ -19,7 +19,4 @@ public class WizardCardNamePath extends StyledPath {
       return this;
    }
 
-   public String getSmartCardId() {
-      return smartCardId;
-   }
 }

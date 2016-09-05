@@ -36,13 +36,13 @@ public class WalletCardSettingsPresenter extends WalletPresenter<WalletCardSetti
    }
 
    private void observeSmartCardChanges() {
-      smartCardInteractor.activeSmartCardPipe()
+      smartCardInteractor.smartCardModifierPipe()
             .observeSuccessWithReplay()
             .compose(bindViewIoToMainComposer())
             .subscribe(command -> bindSmartCard(this.smartCard = command.getResult()));
 
       smartCardInteractor.setStealthModePipe()
-            .observeWithReplay()
+            .observe()
             .compose(bindViewIoToMainComposer())
             .subscribe(
                   OperationSubscriberWrapper.<SetStealthModeCommand>forView(getView().provideOperationDelegate())

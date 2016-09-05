@@ -1,10 +1,12 @@
 package com.worldventures.dreamtrips.wallet.ui.wizard.profile;
 
+import android.app.Activity;
 import android.content.Context;
 import android.os.Parcelable;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
+import android.view.WindowManager;
 
 import com.techery.spares.module.Injector;
 import com.techery.spares.session.SessionHolder;
@@ -35,6 +37,7 @@ import timber.log.Timber;
 
 public class WizardEditProfilePresenter extends WalletPresenter<WizardEditProfilePresenter.Screen, Parcelable> {
 
+   @Inject Activity activity;
    @Inject SmartCardAvatarInteractor smartCardAvatarInteractor;
    @Inject WizardInteractor wizardInteractor;
    @Inject SessionHolder<UserSession> appSessionHolder;
@@ -51,6 +54,10 @@ public class WizardEditProfilePresenter extends WalletPresenter<WizardEditProfil
    @Override
    public void attachView(Screen view) {
       super.attachView(view);
+      // TODO: 9/1/16 investigate and fix this problem (photo piker brake SoftInputMode too)
+      // hotfix, web view brake SoftInputMode (set ADJUST_RESIZE)
+      activity.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
+
       observePickerAndCropper(view);
       subscribePreparingAvatarCommand();
       subscribeSetupUserCommand();

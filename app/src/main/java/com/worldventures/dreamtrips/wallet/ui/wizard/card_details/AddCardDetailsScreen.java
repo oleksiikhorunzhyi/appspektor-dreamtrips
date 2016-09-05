@@ -1,9 +1,11 @@
 package com.worldventures.dreamtrips.wallet.ui.wizard.card_details;
 
 import android.content.Context;
+import android.support.annotation.NonNull;
 import android.support.v7.widget.Toolbar;
 import android.util.AttributeSet;
 import android.view.View;
+import android.view.inputmethod.EditorInfo;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -25,6 +27,7 @@ import com.worldventures.dreamtrips.wallet.util.NonCopyPastSelectionMode;
 import butterknife.InjectView;
 import butterknife.OnCheckedChanged;
 import butterknife.OnClick;
+import butterknife.OnEditorAction;
 import rx.Observable;
 
 public class AddCardDetailsScreen extends WalletFrameLayout<AddCardDetailsPresenter.Screen, AddCardDetailsPresenter, AddCardDetailsPath> implements AddCardDetailsPresenter.Screen {
@@ -59,6 +62,7 @@ public class AddCardDetailsScreen extends WalletFrameLayout<AddCardDetailsPresen
       super(context, attrs);
    }
 
+   @NonNull
    @Override
    public AddCardDetailsPresenter createPresenter() {
       return new AddCardDetailsPresenter(getContext(), getInjector(), getPath().getBankCard());
@@ -67,6 +71,7 @@ public class AddCardDetailsScreen extends WalletFrameLayout<AddCardDetailsPresen
    @Override
    protected void onFinishInflate() {
       super.onFinishInflate();
+      if (isInEditMode()) return;
       toolbar.setNavigationOnClickListener(v -> navigateButtonClick());
       cardCvv.setCustomSelectionActionModeCallback(new NonCopyPastSelectionMode());
       setAsDefaultCardObservable = RxCompoundButton.checkedChanges(setDefaultPaymentCard).skip(1);
@@ -131,6 +136,15 @@ public class AddCardDetailsScreen extends WalletFrameLayout<AddCardDetailsPresen
    @OnCheckedChanged(R.id.use_default_address_checkbox)
    public void useDefaultAddressCheckedChanged(boolean isChecked) {
       presenter.useDefaultAddressRequirement(isChecked);
+   }
+
+   @OnEditorAction(R.id.card_nickname)
+   boolean onEditorAction(int action) {
+      if (action == EditorInfo.IME_ACTION_DONE) {
+         onConfirmButtonClicked();
+         return true;
+      }
+      return false;
    }
 
    @OnClick(R.id.confirm_button)

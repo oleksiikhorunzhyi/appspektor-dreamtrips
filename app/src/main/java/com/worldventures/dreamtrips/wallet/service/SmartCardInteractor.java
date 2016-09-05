@@ -77,6 +77,10 @@ public final class SmartCardInteractor {
       connect();
    }
 
+   public ReadActionPipe<SmartCardModifier> smartCardModifierPipe() {
+      return smartCardModifierPipe;
+   }
+
    public ActionPipe<ConnectSmartCardCommand> connectActionPipe() {
       return connectionPipe;
    }
@@ -134,10 +138,6 @@ public final class SmartCardInteractor {
    }
 
    private void connect() {
-      smartCardModifierPipe
-            .observeSuccess()
-            .subscribe(command -> activeSmartCardPipe.send(new GetActiveSmartCardCommand()));
-
       Observable.merge(
             deleteCardPipe
                   .observeSuccess()

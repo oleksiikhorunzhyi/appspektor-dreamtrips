@@ -1,4 +1,5 @@
-<com.worldventures.dreamtrips.wallet.ui.dashboard.list.CardListScreen style="@style/WalletTheme.Wizard.RootStyle"
+<com.worldventures.dreamtrips.wallet.ui.dashboard.list.CardListScreen
+      style="@style/WalletTheme.Wizard.RootStyle"
       xmlns:android="http://schemas.android.com/apk/res/android"
       xmlns:app="http://schemas.android.com/apk/res-auto"
       xmlns:tools="http://schemas.android.com/tools"

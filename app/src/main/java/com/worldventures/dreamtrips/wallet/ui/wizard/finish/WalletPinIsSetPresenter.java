@@ -1,5 +1,6 @@
 package com.worldventures.dreamtrips.wallet.ui.wizard.finish;
 
+import android.app.Activity;
 import android.content.Context;
 import android.os.Parcelable;
 
@@ -22,6 +23,7 @@ import flow.History;
 public class WalletPinIsSetPresenter extends WalletPresenter<WalletPinIsSetPresenter.Screen, Parcelable> {
 
    @Inject WizardInteractor wizardInteractor;
+   @Inject Activity activity;
 
    private final SmartCard smartCard;
 
@@ -44,7 +46,7 @@ public class WalletPinIsSetPresenter extends WalletPresenter<WalletPinIsSetPrese
    }
 
    public void goBack() {
-      Flow.get(getContext()).goBack();
+      activity.onBackPressed();
    }
 
    public void activateSmartCard() {

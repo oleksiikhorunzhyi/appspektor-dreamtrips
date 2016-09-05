@@ -45,6 +45,7 @@ public class CardListScreenPresenter extends WalletPresenter<CardListScreenPrese
    private final CardListStackConverter cardListStackConverter;
 
    private CardStackHeaderHolder cardStackHeaderHolder = ImmutableCardStackHeaderHolder.builder().build();
+   private SmartCard smartCard;
 
    public CardListScreenPresenter(Context context, Injector injector) {
       super(context, injector);
@@ -60,13 +61,13 @@ public class CardListScreenPresenter extends WalletPresenter<CardListScreenPrese
             .createObservable(CardStacksCommand.get(false)), smartCardInteractor.cardStacksPipe()
             .createObservable(CardStacksCommand.get(true))).debounce(100, TimeUnit.MILLISECONDS).subscribe();
 
-      smartCardInteractor.activeSmartCardPipe()
+      smartCardInteractor.smartCardModifierPipe()
             .observeSuccessWithReplay()
             .compose(bindViewIoToMainComposer())
             .subscribe(it -> setSmartCard(it.getResult()));
 
       smartCardInteractor.lockPipe()
-            .observeWithReplay()
+            .observe()
             .compose(bindViewIoToMainComposer())
             .subscribe(OperationSubscriberWrapper.<SetLockStateCommand>forView(getView().provideOperationDelegate()).onFail(getContext()
                   .getString(R.string.wallet_dashboard_unlock_error), a -> getView().notifySmartCardChanged(cardStackHeaderHolder))
@@ -75,11 +76,13 @@ public class CardListScreenPresenter extends WalletPresenter<CardListScreenPrese
    }
 
    public void onLockChanged(boolean isLocked) {
+      if (smartCard.lock() == isLocked) return;
       smartCardInteractor.lockPipe().send(new SetLockStateCommand(isLocked));
    }
 
    private void setSmartCard(SmartCard smartCard) {
-      cardStackHeaderHolder = ImmutableCardStackHeaderHolder.builder()
+      this.smartCard = smartCard;
+      this.cardStackHeaderHolder = ImmutableCardStackHeaderHolder.builder()
             .from(cardStackHeaderHolder)
             .smartCard(smartCard)
             .build();

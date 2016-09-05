@@ -4,6 +4,7 @@
    <color name="wallet_color_background_light">#008dbe</color>
    <color name="wallet_color_background_dark">#006699</color>
    <color name="wallet_color_primary">#00b3e3</color>
+   <color name="wallet_color_primary_dark">#006699</color>
    <color name="wallet_color_background_dark_with_alpha">#CC006699</color>
    <color name="wallet_color_text_color_toolbar">#005e92</color>
    <color name="wallet_color_round_check_box_text">#666666</color>
@@ -31,7 +32,6 @@
       <item name="colorSwitchThumbNormal">#888888</item>
       <!-- Inactive track color(30% transparency) -->
       <item name="android:colorForeground">#888888</item>
-      <item name="android:singleLine">false</item>
    </style>
 
    <!--wizard-->
@@ -52,14 +52,23 @@
       <item name="android:imeOptions">actionNext</item>
    </style>
 
-   <style name="WalletTheme.Settings">
-      <item name="colorControlActivated">@android:color/white</item>
+   <style name="WalletTheme.BaseDetailsTheme" >
       <item name="android:imeOptions">actionNext</item>
 
       <item name="android:buttonStyle">@style/WalletTheme.Wizard.WhiteTextButton</item>
       <item name="android:editTextStyle">@style/WalletTheme.GrayEditText</item>
       <item name="android:textViewStyle">@style/WalletTheme.GrayTextView</item>
       <item name="android:checkboxStyle">@style/WalletTheme.RoundCheckBox</item>
+   </style>
+
+   <style name="WalletTheme.Settings" parent="WalletTheme.BaseDetailsTheme">
+      <item name="colorControlActivated">@android:color/white</item>
+
+   </style>
+
+   <style name="WalletTheme.DetailsTheme" parent="WalletTheme.BaseDetailsTheme">
+      <item name="colorControlActivated">@color/wallet_color_primary_dark</item>
+      <item name="colorControlNormal">@color/wallet_color_primary_dark</item>
    </style>
 
    <style name="WalletTheme.Wizard.ToolbarTheme" parent="ThemeOverlay.AppCompat.Dark">
@@ -120,8 +129,8 @@
    </style>
 
    <style name="WalletTheme.Wizard.PinImageButton">
-      <item name="android:layout_width">36dp</item>
-      <item name="android:layout_height">36dp</item>
+      <item name="android:layout_width">28dp</item>
+      <item name="android:layout_height">28dp</item>
       <item name="android:scaleType">fitCenter</item>
       <item name="android:src">@drawable/ic_smart_card_pin_button</item>
    </style>
@@ -157,6 +166,7 @@
    </style>
 
    <style name="WalletTheme.GrayEditText" parent="Widget.AppCompat.EditText">
+      <item name="android:singleLine">true</item>
       <item name="android:textColorHint">@color/wallet_color_gray_hint_text_color</item>
       <item name="android:textSize">@dimen/wallet_gray_edit_text_text_size</item>
       <item name="android:maxLength">@integer/wallet_gray_edit_text_text_length</item>

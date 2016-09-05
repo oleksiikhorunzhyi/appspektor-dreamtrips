@@ -39,9 +39,10 @@ public class ActivityRouter extends ActivityBoundRouter {
       startActivity(MainActivity.class);
    }
 
-   public void openMainWithComponent(String key) {
+   public void openMainWithComponent(String key, Class<? extends Activity> activitySender) {
       Bundle bundle = new Bundle();
       bundle.putString(MainActivity.COMPONENT_KEY, key);
+      bundle.putSerializable(MainActivity.FROM_ACTIVITY_KEY, activitySender);
       startActivity(MainActivity.class, bundle);
    }
 

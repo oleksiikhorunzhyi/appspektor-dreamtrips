@@ -52,7 +52,7 @@ public class FetchTermsAndConditionsCommand extends Command<TermsAndConditionsRe
    private ImmutableTermsAndConditionsResponse getMockResponse() {
       return ImmutableTermsAndConditionsResponse.builder()
             .tacVersion("random")
-            .url("https://en.wikipedia.org/wiki/Terms_of_service")
+            .url("http://assets.wvholdings.com/1/dtapp/legal/us_en/html/terms_of_service07112016.html")
             .build();
    }
 }

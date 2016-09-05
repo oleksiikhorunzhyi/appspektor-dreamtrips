@@ -75,6 +75,8 @@
    <string name="wallet_card_details_button_edit_billing_address">Edit Billing Address</string>
    <string name="wallet_card_details_button_delete_card">Delete Card</string>
    <string name="wallet_card_details_progress_delete">Deleting %s...</string>
+   <string name="wallet_card_details_delete_card_dialog_title">Delete payment card</string>
+   <string name="wallet_card_details_delete_card_dialog_content">Are you sure?</string>
 
    <!--settings-->
    <string name="wallet_card_settings_title">Settings</string>
@@ -93,7 +95,7 @@
    <string name="wallet_add_card_details_hint_enter_cvv">Enter CVV</string>
    <string name="wallet_add_card_details_hint_nickname_card">Nickname Card (optional)</string>
    <string name="wallet_add_card_details_hint_address1">Address 1</string>
-   <string name="wallet_add_card_details_hint_address2">Address 2</string>
+   <string name="wallet_add_card_details_hint_address2">Address 2 (optional)</string>
    <string name="wallet_add_card_details_hint_city">City</string>
    <string name="wallet_add_card_details_hint_state">State</string>
    <string name="wallet_add_card_details_hint_zip">Zip</string>
@@ -126,4 +128,11 @@
    <string name="wallet_terms_and_conditions_try_again">Try Again</string>
    <string name="wallet_terms_and_conditions_load_failed">Failed to retrieve terms and conditions</string>
    <string name="wallet_terms_and_conditions_accept_failed">Failed to accept terms and conditions</string>
+
+   <!--set up smart card-->
+   <string name="wallet_setup_smart_card_title">Set Up Smart Card</string>
+   <string name="wallet_setup_smart_card_greeting">Hi %s!</string>
+   <string name="wallet_setup_smart_card_content">Take your platinum membership\nto new heights with flye\u2122.</string>
+   <string name="wallet_setup_smart_set_up_button_text">Set Up</string>
+
 </resources>

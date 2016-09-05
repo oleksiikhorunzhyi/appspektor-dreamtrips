@@ -41,10 +41,10 @@ public class WizardSplashPresenter extends WalletPresenter<WizardSplashPresenter
 
    public void onBack() {
       // Flow.goBack() in this case is useless, because flow stack is empty (goBack modifies only stack).
-      activity.onBackPressed();
+      activity.finish();
    }
 
-   public interface Screen extends WalletScreen {
+        public interface Screen extends WalletScreen {
 
       void setup(boolean termsAccepted);
    }

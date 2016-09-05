@@ -1,23 +1,23 @@
 <RelativeLayout android:id="@+id/address_info_container"
       xmlns:android="http://schemas.android.com/apk/res/android"
+      xmlns:tools="http://schemas.android.com/tools"
       android:layout_width="match_parent"
       android:layout_height="match_parent"
-      android:theme="@style/WalletTheme.Settings"
+      tools:theme="@style/WalletTheme.DetailsTheme"
       >
 
    <EditText
          android:id="@+id/address1"
-         style="@style/WalletTheme.GrayEditText"
          android:layout_width="match_parent"
          android:layout_height="wrap_content"
          android:layout_alignParentEnd="true"
          android:layout_alignParentRight="true"
          android:hint="@string/wallet_add_card_details_hint_address1"
+         android:singleLine="true"
          />
 
    <EditText
          android:id="@+id/address2"
-         style="@style/WalletTheme.GrayEditText"
          android:layout_width="match_parent"
          android:layout_height="wrap_content"
          android:layout_alignParentEnd="true"
@@ -25,11 +25,11 @@
          android:layout_below="@+id/address1"
          android:layout_marginTop="@dimen/wallet_add_card_details_edittext_margin_top"
          android:hint="@string/wallet_add_card_details_hint_address2"
+         android:singleLine="true"
          />
 
    <EditText
          android:id="@+id/city"
-         style="@style/WalletTheme.GrayEditText"
          android:layout_width="match_parent"
          android:layout_height="wrap_content"
          android:layout_alignParentEnd="true"
@@ -37,6 +37,7 @@
          android:layout_below="@+id/address2"
          android:layout_marginTop="@dimen/wallet_add_card_details_edittext_margin_top"
          android:hint="@string/wallet_add_card_details_hint_city"
+         android:singleLine="true"
          />
 
    <LinearLayout
@@ -52,24 +53,27 @@
 
       <EditText
             android:id="@+id/state"
-            style="@style/WalletTheme.GrayEditText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_alignParentEnd="true"
             android:layout_alignParentRight="true"
             android:layout_weight="1"
             android:hint="@string/wallet_add_card_details_hint_state"
+            android:singleLine="true"
             />
 
       <EditText
             android:id="@+id/zip"
-            style="@style/WalletTheme.GrayEditText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_alignParentEnd="true"
             android:layout_alignParentRight="true"
             android:layout_weight="1"
+            android:gravity="center_horizontal"
             android:hint="@string/wallet_add_card_details_hint_zip"
+            android:inputType="number"
+            android:maxLength="5"
+            android:singleLine="true"
             />
 
    </LinearLayout>

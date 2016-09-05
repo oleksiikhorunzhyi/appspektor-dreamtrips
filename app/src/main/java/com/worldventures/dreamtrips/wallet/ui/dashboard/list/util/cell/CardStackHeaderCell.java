@@ -26,7 +26,6 @@ public class CardStackHeaderCell extends AbstractDelegateCell<CardStackHeaderHol
    @Override
    protected void syncUIStateWithModel() {
       setupToolbar();
-      smartCardWidget.setOnLockChangedListener(null);
       if (getModelObject().smartCard() != null) {
          smartCardWidget.bindCard(getModelObject().smartCard());
       }

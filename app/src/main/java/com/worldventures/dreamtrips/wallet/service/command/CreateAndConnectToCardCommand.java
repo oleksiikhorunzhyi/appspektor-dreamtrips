@@ -40,9 +40,10 @@ public class CreateAndConnectToCardCommand extends Command<Void> implements Inje
             .createObservable(new CreateCardHttpAction(code))
             .compose(new ActionStateToActionTransformer<>())
             .map(httpAction -> createSmartCard(httpAction.getResponse()))
-            .doOnNext(smartCard -> this.smartCard = smartCard)
             .flatMap(smartCard -> smartCardInteractor.connectActionPipe()
                   .createObservableResult(new ConnectSmartCardCommand(smartCard)))
+            // TODO: add next modification operation in this place.
+            .doOnNext(command -> this.smartCard = command.getResult())
             .subscribe(connectCommand -> callback.onSuccess(null), callback::onFail);
    }
 

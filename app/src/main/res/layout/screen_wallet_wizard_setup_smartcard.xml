@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.worldventures.dreamtrips.wallet.ui.wizard.setup_smartcard.WizardSetupSmartCardScreen
+      style="@style/WalletTheme.Wizard.RootStyle"
+      xmlns:android="http://schemas.android.com/apk/res/android"
+      xmlns:app="http://schemas.android.com/apk/res-auto"
+      xmlns:tools="http://schemas.android.com/tools"
+      android:gravity="center"
+      android:orientation="vertical"
+      android:theme="@style/WalletTheme.Wizard"
+      android:weightSum="4"
+      >
+
+   <android.support.v7.widget.Toolbar
+         android:id="@+id/toolbar"
+         android:layout_width="match_parent"
+         android:layout_height="?attr/actionBarSize"
+         android:theme="@style/WalletTheme.Wizard.ToolbarTheme"
+         app:navigationIcon="@drawable/back_icon"
+         app:title="@string/wallet_setup_smart_card_title"
+         />
+
+   <LinearLayout
+         android:layout_width="match_parent"
+         android:layout_height="wrap_content"
+         android:layout_marginTop="?attr/actionBarSize"
+         android:gravity="center"
+         android:orientation="vertical"
+         >
+
+      <TextView
+            android:id="@+id/greeting_label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="25dp"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:visibility="invisible"
+            tools:text="Hi Shirley Temple!"
+            />
+
+      <TextView
+            android:id="@+id/content_label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/greeting_label"
+            android:layout_marginTop="25dp"
+            android:gravity="center"
+            android:text="@string/wallet_setup_smart_card_content"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:visibility="invisible"
+            />
+
+      <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="35dp"
+            >
+
+         <ImageView
+               android:id="@+id/smart_card"
+               android:layout_width="match_parent"
+               android:layout_height="wrap_content"
+               android:scaleType="fitCenter"
+               android:src="@drawable/ic_flye_card_front"
+               tools:ignore="ContentDescription"
+               />
+
+         <com.facebook.drawee.view.SimpleDraweeView
+               android:id="@+id/user_photo"
+               android:layout_width="70dp"
+               android:layout_height="70dp"
+               android:layout_gravity="center"
+               android:layout_marginLeft="80dp"
+               android:src="@drawable/ic_dt_launcher"
+               app:failureImage="@drawable/ic_avatar_placeholder"
+               app:placeholderImage="@drawable/ic_avatar_placeholder"
+               />
+
+      </FrameLayout>
+
+
+   </LinearLayout>
+
+   <Button
+         android:id="@+id/setup_button"
+         android:layout_width="match_parent"
+         android:layout_height="wrap_content"
+         android:layout_gravity="bottom"
+         android:layout_margin="@dimen/spacing_large"
+         android:text="@string/wallet_setup_smart_set_up_button_text"
+         android:visibility="invisible"
+         />
+
+</com.worldventures.dreamtrips.wallet.ui.wizard.setup_smartcard.WizardSetupSmartCardScreen>

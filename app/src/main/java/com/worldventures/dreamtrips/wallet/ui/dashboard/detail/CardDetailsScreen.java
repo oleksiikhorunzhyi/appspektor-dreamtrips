@@ -19,6 +19,7 @@ import com.worldventures.dreamtrips.wallet.util.AddressUtil;
 
 import butterknife.InjectView;
 import butterknife.OnClick;
+import cn.pedant.SweetAlert.SweetAlertDialog;
 import rx.Observable;
 
 public class CardDetailsScreen extends WalletFrameLayout<CardDetailsPresenter.Screen, CardDetailsPresenter, CardDetailsPath> implements CardDetailsPresenter.Screen {
@@ -78,6 +79,20 @@ public class CardDetailsScreen extends WalletFrameLayout<CardDetailsPresenter.Sc
             .setOnConfimAction(() -> getPresenter().defaultCardDialogConfirmed(true))
             .setOnCancelAction(() -> getPresenter().defaultCardDialogConfirmed(false))
             .show();
+   }
+
+   @Override
+   public void showDeleteCardDialog() {
+      Context context = getContext();
+      SweetAlertDialog sweetDialog = new SweetAlertDialog(context)
+            .setTitleText(context.getResources().getString(R.string.wallet_card_details_delete_card_dialog_title))
+            .setContentText(context.getResources().getString(R.string.wallet_card_details_delete_card_dialog_content))
+            .setConfirmClickListener(dialog -> {
+               dialog.dismissWithAnimation();
+               getPresenter().onDeleteCardConfirmed();
+            });
+      sweetDialog.show();
+      sweetDialog.showCancelButton(true);
    }
 
    @Override

@@ -5,6 +5,7 @@ import android.os.Parcelable;
 
 import com.techery.spares.module.Injector;
 import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.core.flow.path.StyledPath;
 import com.worldventures.dreamtrips.core.janet.composer.ActionPipeCacheWiper;
 import com.worldventures.dreamtrips.wallet.domain.entity.card.BankCard;
 import com.worldventures.dreamtrips.wallet.domain.entity.card.BankCard.CardType;
@@ -19,6 +20,7 @@ import com.worldventures.dreamtrips.wallet.ui.wizard.card_details.AddCardDetails
 import javax.inject.Inject;
 
 import flow.Flow;
+import flow.History;
 import io.techery.janet.helper.ActionStateSubscriber;
 import io.techery.janet.magstripe.SwipeData;
 import io.techery.janet.magstripe.action.StartRecordingAction;
@@ -80,10 +82,19 @@ public class WizardMagstripePresenter extends WalletPresenter<WizardMagstripePre
             .expiryYear(Integer.parseInt(swipeData.exp().substring(0, 2)))
             .expiryMonth(Integer.parseInt(swipeData.exp().substring(2, 4)))
             .build();
-      Flow.get(getContext()).set(new AddCardDetailsPath(bankCard));
+      navigate(new AddCardDetailsPath(bankCard));
+   }
+
+   private void navigate(StyledPath styledPath) {
+      Flow flow = Flow.get(getContext());
+      History.Builder historyBuilder = flow.getHistory().buildUpon();
+      historyBuilder.pop();
+      historyBuilder.push(styledPath);
+      flow.setHistory(historyBuilder.build(), Flow.Direction.FORWARD);
    }
 
    public interface Screen extends WalletScreen {
+
       void showLabelsForCardType(CardType cardType);
    }
 }

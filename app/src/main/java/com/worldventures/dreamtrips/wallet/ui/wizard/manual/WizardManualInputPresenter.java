@@ -3,7 +3,6 @@ package com.worldventures.dreamtrips.wallet.ui.wizard.manual;
 import android.app.Activity;
 import android.content.Context;
 import android.os.Parcelable;
-import android.view.WindowManager;
 import android.support.annotation.NonNull;
 import android.view.WindowManager;
 
@@ -15,7 +14,7 @@ import com.worldventures.dreamtrips.wallet.service.command.CreateAndConnectToCar
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletPresenter;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.WalletScreen;
 import com.worldventures.dreamtrips.wallet.ui.common.helper.OperationSubscriberWrapper;
-import com.worldventures.dreamtrips.wallet.ui.wizard.card_alias.WizardCardNamePath;
+import com.worldventures.dreamtrips.wallet.ui.wizard.setup_smartcard.WizardSetupSmartCardPath;
 
 import javax.inject.Inject;
 
@@ -54,7 +53,7 @@ public class WizardManualInputPresenter extends WalletPresenter<WizardManualInpu
             .subscribe(OperationSubscriberWrapper.<CreateAndConnectToCardCommand>forView(getView().provideOperationDelegate())
                   .onStart(getContext().getString(R.string.waller_wizard_scan_barcode_progress_label))
                   .onSuccess(getContext().getString(R.string.wallet_got_it_label),
-                        command -> Flow.get(getContext()).set(new WizardCardNamePath(command.getCode()))
+                        command -> Flow.get(getContext()).set(new WizardSetupSmartCardPath(command.getCode()))
                   )
                   .onFail(throwable -> new OperationSubscriberWrapper.MessageActionHolder<>(getContext().getString(R.string.wallet_wizard_scid_validation_error),
                         command -> Timber.e("Could not connect to device")))

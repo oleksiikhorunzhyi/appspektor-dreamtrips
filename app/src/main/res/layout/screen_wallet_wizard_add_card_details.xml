@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
+
 <com.worldventures.dreamtrips.wallet.ui.wizard.card_details.AddCardDetailsScreen xmlns:android="http://schemas.android.com/apk/res/android"
       xmlns:app="http://schemas.android.com/apk/res-auto"
       xmlns:tools="http://schemas.android.com/tools"
       android:layout_width="match_parent"
       android:layout_height="match_parent"
-      android:theme="@style/WalletTheme.Settings"
+      android:theme="@style/WalletTheme.DetailsTheme"
       >
 
    <android.support.v7.widget.Toolbar
@@ -35,17 +36,16 @@
 
          <EditText
                android:id="@+id/card_cvv"
-               style="@style/WalletTheme.GrayEditText"
                android:layout_width="match_parent"
                android:layout_height="wrap_content"
                android:layout_alignParentEnd="true"
                android:layout_alignParentRight="true"
                android:layout_below="@+id/card"
-               android:maxLength="@integer/wallet_wizard_add_card_details_cvv_length"
-               android:inputType="number"
-               android:singleLine="true"
                android:layout_marginTop="@dimen/wallet_add_card_details_component_margin_top"
                android:hint="@string/wallet_add_card_details_hint_enter_cvv"
+               android:inputType="number"
+               android:maxLength="@integer/wallet_wizard_add_card_details_cvv_length"
+               android:singleLine="true"
                />
 
          <CheckBox
@@ -69,7 +69,6 @@
                android:layout_below="@+id/use_default_address_checkbox"
                android:layout_marginLeft="@dimen/wallet_add_card_details_default_address_margin_left"
                android:layout_marginTop="@dimen/wallet_add_card_details_component_margin_top"
-               android:inputType="textMultiLine"
                android:visibility="gone"
                tools:text="12345 Lollipop Drive\nNew York, NY 10010\nUSA"
                />
@@ -97,7 +96,6 @@
 
          <EditText
                android:id="@+id/card_nickname"
-               style="@style/WalletTheme.GrayEditText"
                android:layout_width="match_parent"
                android:layout_height="wrap_content"
                android:layout_alignParentEnd="true"
@@ -106,6 +104,7 @@
                android:layout_marginTop="@dimen/wallet_add_card_details_component_margin_top"
                android:hint="@string/wallet_add_card_details_hint_nickname_card"
                android:imeOptions="actionDone"
+               android:singleLine="true"
                />
 
          <Button

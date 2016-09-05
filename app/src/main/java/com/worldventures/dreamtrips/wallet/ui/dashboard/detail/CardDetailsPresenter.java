@@ -103,6 +103,10 @@ public class CardDetailsPresenter extends WalletPresenter<CardDetailsPresenter.S
    }
 
    public void onDeleteCardClick() {
+      getView().showDeleteCardDialog();
+   }
+
+   public void onDeleteCardConfirmed() {
       smartCardInteractor.deleteCardPipe().send(new DeleteRecordAction(valueOf(bankCard.id())));
    }
 
@@ -148,6 +152,8 @@ public class CardDetailsPresenter extends WalletPresenter<CardDetailsPresenter.S
       void showDefaultAddress(AddressInfoWithLocale addressInfoWithLocale);
 
       void showDefaultCardDialog(String defaultCardName);
+
+      void showDeleteCardDialog();
 
       void setDefaultCardCondition(boolean defaultCard);
 

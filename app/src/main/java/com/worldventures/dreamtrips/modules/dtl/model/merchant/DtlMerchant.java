@@ -6,7 +6,6 @@ import com.esotericsoftware.kryo.DefaultSerializer;
 import com.esotericsoftware.kryo.serializers.CompatibleFieldSerializer;
 import com.innahema.collections.query.queriables.Queryable;
 import com.worldventures.dreamtrips.api.dtl.merchants.model.MerchantBackward;
-import com.worldventures.dreamtrips.api.dtl.merchants.model.MerchantType;
 import com.worldventures.dreamtrips.api.dtl.merchants.model.OfferType;
 import com.worldventures.dreamtrips.api.dtl.merchants.model.PartnerStatus;
 import com.worldventures.dreamtrips.modules.dtl.helper.DtlLocationHelper;
@@ -31,7 +30,7 @@ import timber.log.Timber;
 public class DtlMerchant {
 
    String id;
-   MerchantType type;
+   com.worldventures.dreamtrips.api.dtl.merchants.model.MerchantType type;
    PartnerStatus partnerStatus;
    String displayName;
    String address1;
@@ -94,7 +93,7 @@ public class DtlMerchant {
       return id;
    }
 
-   public MerchantType getType() {
+   public com.worldventures.dreamtrips.api.dtl.merchants.model.MerchantType getType() {
       return type;
    }
 
@@ -207,8 +206,8 @@ public class DtlMerchant {
       return operationDays;
    }
 
-   public DtlMerchantType getMerchantType() {
-      return hasNoOffers() ? DtlMerchantType.DINING : DtlMerchantType.OFFER;
+   public MerchantType getMerchantType() {
+      return hasNoOffers() ? MerchantType.DINING : MerchantType.OFFER;
    }
 
    public boolean isExpanded() {

@@ -3,7 +3,6 @@ package com.worldventures.dreamtrips.modules.dtl.model.merchant;
 import com.esotericsoftware.kryo.DefaultSerializer;
 import com.esotericsoftware.kryo.serializers.CompatibleFieldSerializer;
 import com.innahema.collections.query.queriables.Queryable;
-import com.worldventures.dreamtrips.api.dtl.locations.model.Coordinates;
 import com.worldventures.dreamtrips.api.dtl.merchants.model.MerchantType;
 import com.worldventures.dreamtrips.api.dtl.merchants.model.PartnerStatus;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.disclaimer.Disclaimer;

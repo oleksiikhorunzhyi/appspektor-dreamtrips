@@ -38,7 +38,12 @@ class DtlTransactionInteractorSpec : BaseSpec({
    estimationResult = mock()
 
    whenever(merchant.id).thenReturn("test")
-   whenever(merchant.defaultCurrency).thenReturn(ImmutableCurrency.builder().isDefault(true).build())
+   whenever(merchant.defaultCurrency).thenReturn(ImmutableCurrency.builder()
+         .code("$")
+         .prefix("")
+         .suffix("")
+         .name("USD")
+         .isDefault(true).build())
    whenever(transaction.asTransactionRequest(any())).thenReturn(mock())
    whenever(transaction.lat).thenReturn(1.toDouble())
    whenever(transaction.lng).thenReturn(1.toDouble())

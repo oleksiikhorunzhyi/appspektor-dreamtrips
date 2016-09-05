@@ -32,7 +32,11 @@ public class DtlMerchantsPredicateTest {
       DtlMerchantTypePredicate predicate = new DtlMerchantTypePredicate(DtlMerchantType.OFFER);
       //
       DtlMerchant dtlMerchant = createDefaultMerchant();
-      dtlMerchant.setOffers(Collections.singletonList(ImmutableOffer.builder().type(OfferType.PERK).build()));
+      dtlMerchant.setOffers(Collections.singletonList(ImmutableOffer.builder()
+            .title("")
+            .description("")
+            .disclaimer("")
+            .type(OfferType.PERK).build()));
       //
       boolean result = predicate.apply(dtlMerchant);
       assertThat(result).isTrue();

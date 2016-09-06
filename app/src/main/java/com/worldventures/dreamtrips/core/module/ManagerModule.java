@@ -25,6 +25,7 @@ import com.worldventures.dreamtrips.modules.common.view.util.MediaPickerManager;
 import com.worldventures.dreamtrips.modules.common.view.util.PhotoPickerDelegate;
 import com.worldventures.dreamtrips.modules.dtl.location.LocationDelegate;
 import com.worldventures.dreamtrips.modules.dtl.location.LocationDelegateImpl;
+import com.worldventures.dreamtrips.modules.dtl.service.AttributesInteractor;
 import com.worldventures.dreamtrips.modules.dtl.service.DtlFilterMerchantInteractor;
 import com.worldventures.dreamtrips.modules.dtl.service.DtlLocationInteractor;
 import com.worldventures.dreamtrips.modules.dtl.service.DtlMerchantInteractor;
@@ -111,6 +112,11 @@ public class ManagerModule {
       return new DtlLocationInteractor(janet);
    }
 
+   @Singleton
+   @Provides
+   AttributesInteractor provideDtlAttributesInteractor(@Named(JanetModule.JANET_API_LIB) Janet janet) {
+      return new AttributesInteractor(janet);
+   }
 
    @Singleton
    @Provides

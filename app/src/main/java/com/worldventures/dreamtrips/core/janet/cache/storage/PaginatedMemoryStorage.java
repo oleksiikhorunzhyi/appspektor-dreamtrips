@@ -13,14 +13,14 @@ public class PaginatedMemoryStorage<T> implements PaginatedStorage<List<T>> {
 
    @Override
    public void save(@Nullable CacheBundle params, List<T> data) {
-      if (params.contains(BUNDLE_REFRESH)) {
+      if (params.get(BUNDLE_REFRESH, false)) {
          cache.clear();
       }
       cache.addAll(data);
    }
 
    @Override
-   public List<T> get(@Nullable CacheBundle action) {
+   public List<T> get(@Nullable CacheBundle params) {
       return cache;
    }
 }

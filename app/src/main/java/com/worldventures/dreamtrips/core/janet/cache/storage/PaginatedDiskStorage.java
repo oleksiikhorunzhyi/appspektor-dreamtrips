@@ -15,7 +15,7 @@ public abstract class PaginatedDiskStorage<T> implements PaginatedStorage<List<T
 
    @Override
    public void save(@Nullable CacheBundle params, List<T> data) {
-      if (params.contains(BUNDLE_REFRESH)) {
+      if (params.get(BUNDLE_REFRESH, false)) {
          lastRestoredData.clear();
       }
       List<T> dataToSave = new ArrayList<>(lastRestoredData);
@@ -24,7 +24,7 @@ public abstract class PaginatedDiskStorage<T> implements PaginatedStorage<List<T
    }
 
    @Override
-   public List<T> get(@Nullable CacheBundle action) {
+   public List<T> get(@Nullable CacheBundle params) {
       return lastRestoredData = getRestoreAction().call();
    }
 

@@ -74,15 +74,19 @@ public class PodcastsPresenter<T extends PodcastsPresenter.View> extends JobPres
       podcastsInteractor.podcastsActionPipe().observe()
             .compose(bindViewToMainComposer())
             .subscribe(new ActionStateSubscriber<GetPodcastsCommand>()
-                  .onProgress((command, progress) -> onPodcastsLoaded(command.getItems()))
-                  .onSuccess(successCommand -> {
-                     onPodcastsLoaded(successCommand.getResult());
-                     hasMore = successCommand.hasMore();
-                  })
+                  .onProgress((command, progress) -> refreshPodcasts(command.getItems()))
+                  .onSuccess(this::onPodcastsFinishedLoading)
                   .onFail(this::onPodcastsLoadingFailed));
    }
 
-   private void onPodcastsLoaded(List<Podcast> newPodcasts) {
+   private void onPodcastsFinishedLoading(GetPodcastsCommand successCommand) {
+      hasMore = successCommand.hasMore();
+      loading = false;
+      view.finishLoading();
+      refreshPodcasts(successCommand.getItems());
+   }
+
+   private void refreshPodcasts(List<Podcast> newPodcasts) {
       podcasts.clear();
       podcasts.addAll(newPodcasts);
       List<Object> items = new ArrayList<>();
@@ -90,13 +94,12 @@ public class PodcastsPresenter<T extends PodcastsPresenter.View> extends JobPres
       items.addAll(podcasts);
       view.setItems(podcasts);
       view.notifyItemChanged(null);
-      view.finishLoading();
-      loading = false;
    }
 
    private void onPodcastsLoadingFailed(GetPodcastsCommand command, Throwable error) {
       apiErrorPresenter.handleActionError(command, error);
       view.finishLoading();
+      loading = false;
    }
 
    private void subscribeToCachingStatusUpdates() {

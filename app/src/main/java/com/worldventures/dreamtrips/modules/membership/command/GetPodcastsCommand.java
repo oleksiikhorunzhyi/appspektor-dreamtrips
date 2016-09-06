@@ -55,24 +55,28 @@ public class GetPodcastsCommand extends CommandWithError<List<Podcast>> implemen
          Observable.from(cachedData)
                .compose(new IoToMainComposer<>())
                .doOnNext(this::connectCachedEntity)
-               .doOnNext(podcast -> callback.onProgress(0))
+               .toList()
+               .doOnNext(podcasts -> callback.onProgress(0))
                .subscribe();
       }
       janet.createPipe(GetPodcastsHttpAction.class, Schedulers.io())
             .createObservableResult(new GetPodcastsHttpAction(getPage(), PAGE_SIZE))
             .map(GetPodcastsHttpAction::response)
-            .doOnNext(podcasts -> {
-               hasMore = podcasts.size() < PAGE_SIZE;
-            })
+            .doOnNext(podcasts -> hasMore = podcasts.size() == PAGE_SIZE)
             .flatMap(Observable::from)
             .map(podcastsMapper::map)
             .doOnNext(this::connectCachedEntity)
             .toList()
+            .doOnNext(podcasts -> clearCacheIfNeeded())
             .subscribe(callback::onSuccess, callback::onFail);
    }
 
    private void connectCachedEntity(Podcast podcast) {
       podcast.setCacheEntity(db.getDownloadMediaEntity(podcast.getUid()));
+   }
+
+   private void clearCacheIfNeeded() {
+      if (refresh) cachedData = null;
    }
 
    private int getPage() {
@@ -93,7 +97,7 @@ public class GetPodcastsCommand extends CommandWithError<List<Podcast>> implemen
 
    @Override
    public void onRestore(ActionHolder holder, List<Podcast> cache) {
-      cachedData = cache;
+      cachedData = new ArrayList<>(cache);
    }
 
    @Override
@@ -105,11 +109,8 @@ public class GetPodcastsCommand extends CommandWithError<List<Podcast>> implemen
 
    public List<Podcast> getItems() {
       List<Podcast> podcasts = new ArrayList<>();
-      if (getResult() != null) {
-         podcasts.addAll(getResult());
-      } else if (cachedData != null) {
-         podcasts.addAll(cachedData);
-      }
+      if (cachedData != null) podcasts.addAll(cachedData);
+      if (getResult() != null) podcasts.addAll(getResult());
       return podcasts;
    }
 

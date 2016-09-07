@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 
-import org.intellij.lang.annotations.MagicConstant;
 
 import java.lang.ref.WeakReference;
 
@@ -26,12 +25,12 @@ public class LifecycleEvent extends BaseAnalyticsAction {
    private Bundle state;
    private WeakReference<Activity> weakActivity;
 
-   public LifecycleEvent(Activity activity, @MagicConstant(stringValues = {ACTION_ONCREATE, ACTION_ONSTART, ACTION_ONRESUME, ACTION_ONPAUSE, ACTION_ONSTOP}) String action) {
+   public LifecycleEvent(Activity activity, String action) {
       this.action = action;
       weakActivity = new WeakReference<Activity>(activity);
    }
 
-   public LifecycleEvent(@MagicConstant(stringValues = {ACTION_ONSAVESTATE, ACTION_ONRESTORESTATE}) String action, Bundle state) {
+   public LifecycleEvent(String action, Bundle state) {
       this.action = action;
       this.state = state;
    }

@@ -7,14 +7,11 @@ import android.util.Pair;
 
 import com.innahema.collections.query.queriables.Queryable;
 import com.techery.spares.module.Injector;
-import com.worldventures.dreamtrips.api.dtl.merchants.MerchantByIdHttpAction;
 import com.worldventures.dreamtrips.modules.dtl.analytics.DtlAnalyticsCommand;
 import com.worldventures.dreamtrips.modules.dtl.analytics.MerchantFromSearchEvent;
 import com.worldventures.dreamtrips.modules.dtl.analytics.MerchantsListingViewEvent;
 import com.worldventures.dreamtrips.modules.dtl.event.ToggleMerchantSelectionEvent;
-import com.worldventures.dreamtrips.modules.dtl.model.mapping.MerchantMapper;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchant;
-import com.worldventures.dreamtrips.modules.dtl.model.merchant.Merchant;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.filter.DtlFilterData;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.offer.Offer;
 import com.worldventures.dreamtrips.modules.dtl.service.DtlFilterMerchantInteractor;

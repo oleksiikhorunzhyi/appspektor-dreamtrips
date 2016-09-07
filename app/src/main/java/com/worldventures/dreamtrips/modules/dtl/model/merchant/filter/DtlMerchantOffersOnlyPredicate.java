@@ -2,7 +2,7 @@ package com.worldventures.dreamtrips.modules.dtl.model.merchant.filter;
 
 import com.innahema.collections.query.functions.Predicate;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchant;
-import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchantType;
+import com.worldventures.dreamtrips.modules.dtl.model.merchant.MerchantType;
 
 public class DtlMerchantOffersOnlyPredicate implements Predicate<DtlMerchant> {
 
@@ -14,6 +14,6 @@ public class DtlMerchantOffersOnlyPredicate implements Predicate<DtlMerchant> {
 
    @Override
    public boolean apply(DtlMerchant dtlMerchant) {
-      return !(offersOnly && dtlMerchant.getMerchantType() == DtlMerchantType.DINING);
+      return !(offersOnly && dtlMerchant.getMerchantType() == MerchantType.DINING);
    }
 }

@@ -8,7 +8,7 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.worldventures.dreamtrips.modules.dtl.model.location.DtlLocation;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchant;
-import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchantType;
+import com.worldventures.dreamtrips.modules.dtl.model.merchant.MerchantType;
 import com.worldventures.dreamtrips.modules.dtl_flow.DtlScreen;
 import com.worldventures.dreamtrips.modules.trips.model.Location;
 
@@ -28,7 +28,7 @@ public interface DtlMapScreen extends DtlScreen {
 
    void addLocationMarker(LatLng location);
 
-   void addPin(String id, LatLng latLng, DtlMerchantType type);
+   void addPin(String id, LatLng latLng, MerchantType type);
 
    void clearMap();
 

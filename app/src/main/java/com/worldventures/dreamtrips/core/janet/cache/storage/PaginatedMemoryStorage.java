@@ -12,15 +12,15 @@ public class PaginatedMemoryStorage<T> implements PaginatedStorage<List<T>> {
    private List<T> cache = new ArrayList<>();
 
    @Override
-   public void save(@Nullable CacheBundle params, List<T> data) {
-      if (params.get(BUNDLE_REFRESH, false)) {
+   public synchronized void save(@Nullable CacheBundle params, List<T> data) {
+      if (params != null && params.get(BUNDLE_REFRESH, false)) {
          cache.clear();
       }
       cache.addAll(data);
    }
 
    @Override
-   public List<T> get(@Nullable CacheBundle params) {
+   public synchronized List<T> get(@Nullable CacheBundle params) {
       return cache;
    }
 }

@@ -454,7 +454,6 @@ dependencies {
    retrolambdaConfig 'net.orfjackal.retrolambda:retrolambda:2.3.0'
    compile 'com.google.maps.android:android-maps-utils:0.4'
    compile 'pl.charmas.android:android-reactive-location:0.8@aar'
-   compile 'com.intellij:annotations:12.0'
    compile 'com.android.support:multidex:1.0.1'
    compile "com.android.support:support-annotations:${googleLibrariesVersion}"
    compile 'com.jakewharton:butterknife:6.1.0'
@@ -503,7 +502,7 @@ dependencies {
    testCompile "org.robolectric:shadows-multidex:$roboelectricVersion"
    testCompile 'org.jetbrains.spek:spek:1.0.9'
    testCompile "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
-   testCompile 'org.jetbrains.kotlin:kotlin-reflect:1.0.2'
+   testCompile "org.jetbrains.kotlin:kotlin-reflect:$kotlin_version"
    testCompile 'io.reactivex:rxkotlin:0.55.0'
    testCompile 'io.reactivex:rxjava:1.1.6'
    testCompile('com.nhaarman:mockito-kotlin:0.5.0') {

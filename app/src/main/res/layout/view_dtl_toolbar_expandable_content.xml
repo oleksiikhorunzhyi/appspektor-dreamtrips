@@ -100,35 +100,37 @@
       </LinearLayout>
    </LinearLayout>
 
-   <FrameLayout
+   <LinearLayout
          android:id="@+id/dtlToolbarFilterBarRoot"
          android:layout_width="match_parent"
          android:layout_height="wrap_content"
+         android:gravity="center_vertical"
          android:background="@android:color/white"
          >
 
-      <com.worldventures.dreamtrips.modules.dtl_flow.view.toolbar.DtlFilterButton xmlns:android="http://schemas.android.com/apk/res/android"
-            xmlns:tools="http://schemas.android.com/tools"
-            android:layout_width="@dimen/dtlfb_width"
+      <com.worldventures.dreamtrips.modules.dtl_flow.view.toolbar.DtlFilterButton
+            android:id="@+id/filer_offers_only_btn"
+            android:layout_width="wrap_content"
             android:layout_height="@dimen/dtlfb_height"
             tools:background="@color/dtlfb_disabled_background_color"
             tools:showIn="@layout/screen_dtl_merchants"
             />
 
+
       <android.support.v7.widget.SwitchCompat
             android:id="@+id/filterDiningsSwitch"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical|end"
-            android:layout_margin="8dp"
+            android:layout_weight="1"
+            android:layout_margin="@dimen/spacing_small"
+            android:gravity="end|center_vertical"
             android:checked="false"
             android:text="@string/dtl_show_offers_only"
             android:textColor="@android:color/black"
             android:textSize="@dimen/dtlfb_caption_text_size"
             android:textAllCaps="true"
-            textAllCaps="true"
             app:switchPadding="@dimen/dtlfb_icon_padding"
             app:theme="@style/Theme.DreamTripsTheme"
             />
-   </FrameLayout>
+   </LinearLayout>
 </LinearLayout>

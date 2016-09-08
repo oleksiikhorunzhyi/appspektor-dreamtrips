@@ -229,4 +229,15 @@ public class PersistentDeviceStorage implements DeviceStorage {
       memoryStorage.updateUserPhoto(bytes);
       persistStorage();
    }
+
+   @Override
+   public boolean isCardRecording() {
+      return memoryStorage.isCardRecording();
+   }
+
+   @Override
+   public void setCardRecording(boolean recording) {
+      memoryStorage.setCardRecording(recording);
+      persistStorage();
+   }
 }

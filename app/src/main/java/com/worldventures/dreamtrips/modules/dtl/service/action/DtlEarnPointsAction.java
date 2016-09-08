@@ -25,8 +25,8 @@ public class DtlEarnPointsAction extends AuthorizedHttpAction {
    public DtlEarnPointsAction(DtlMerchant merchant, DtlTransaction transaction) {
       this.merchant = merchant;
       this.transaction = transaction;
-      this.merchantId = merchant.getId();
-      this.request = transaction.asTransactionRequest(merchant.getDefaultCurrency().code());
+      this.merchantId = merchant.id();
+      this.request = transaction.asTransactionRequest(MerchantHelper.merchantDefaultCurrency(merchant).code());
    }
 
    public DtlTransaction getTransaction() {

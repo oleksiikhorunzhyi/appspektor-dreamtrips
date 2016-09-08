@@ -22,7 +22,7 @@ import com.worldventures.dreamtrips.core.utils.tracksystem.AnalyticsInteractor;
 import com.worldventures.dreamtrips.modules.common.view.custom.ImageryDraweeView;
 import com.worldventures.dreamtrips.modules.dtl.analytics.DtlAnalyticsCommand;
 import com.worldventures.dreamtrips.modules.dtl.analytics.MerchantsListingExpandEvent;
-import com.worldventures.dreamtrips.modules.dtl.helper.DtlMerchantHelper;
+import com.worldventures.dreamtrips.modules.dtl.helper.MerchantHelper;
 import com.worldventures.dreamtrips.modules.dtl.model.DistanceType;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchant;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.MerchantMedia;
@@ -96,7 +96,7 @@ public class DtlMerchantExpandableCell extends AbstractDelegateCell<DtlMerchant,
    }
 
    private void setCategories() {
-      String categoriesString = DtlMerchantHelper.getCategories(getModelObject());
+      String categoriesString = MerchantHelper.getCategories(getModelObject());
       ViewUtils.setTextOrHideView(merchantCategories, categoriesString);
    }
 
@@ -104,7 +104,7 @@ public class DtlMerchantExpandableCell extends AbstractDelegateCell<DtlMerchant,
       if (getModelObject().hasPoints() && getModelObject().getOperationDays() != null && !getModelObject().getOperationDays()
             .isEmpty()) {
          ViewUtils.setViewVisibility(merchantOperationalStatus, View.VISIBLE);
-         Observable.fromCallable(() -> DtlMerchantHelper.getOperationalTime(itemView.getContext(), getModelObject(), false))
+         Observable.fromCallable(() -> MerchantHelper.getOperationalTime(itemView.getContext(), getModelObject(), false))
                .compose(RxLifecycle.bindView(itemView))
                .subscribe(merchantOperationalStatus::setText, ex -> merchantOperationalStatus.setVisibility(View.GONE));
       } else ViewUtils.setViewVisibility(merchantOperationalStatus, View.INVISIBLE);
@@ -192,8 +192,8 @@ public class DtlMerchantExpandableCell extends AbstractDelegateCell<DtlMerchant,
          image.setImageUrl(media.getImagePath());
       }
       //
-      if (DtlMerchantHelper.isOfferExpiringSoon(offer)) { // expiration bar
-         ViewUtils.setTextOrHideView(expirationBar, DtlMerchantHelper.
+      if (MerchantHelper.isOfferExpiringSoon(offer)) { // expiration bar
+         ViewUtils.setTextOrHideView(expirationBar, MerchantHelper.
                getOfferExpiringCaption(itemView.getContext(), offer, localeHelper.getDefaultLocale()));
       } else ViewUtils.setViewVisibility(View.GONE, expirationBar);
       //

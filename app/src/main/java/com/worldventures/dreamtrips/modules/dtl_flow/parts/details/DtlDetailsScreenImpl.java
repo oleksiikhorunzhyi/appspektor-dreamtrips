@@ -164,14 +164,14 @@ public class DtlDetailsScreenImpl extends DtlLayout<DtlDetailsScreen, DtlDetails
    }
 
    private void setContacts() {
-      Queryable.from(DtlMerchantHelper.getContactsData(getContext(), merchant))
+      Queryable.from(MerchantHelper.getContactsData(getContext(), merchant))
             .filter(contact -> contact.type != ImageTextItem.Type.ADDRESS)
             .forEachR(contact -> {
                TextView contactView = inflateContactView();
                contactView.setCompoundDrawablesWithIntrinsicBounds(contact.icon, null, null, null);
                contactView.setText(contact.text);
                //
-               if (DtlMerchantHelper.contactCanBeResolved(contact, getActivity())) RxView.clicks(contactView)
+               if (MerchantHelper.contactCanBeResolved(contact, getActivity())) RxView.clicks(contactView)
                      .compose(RxLifecycle.bindView(contactView))
                      .subscribe(aVoid -> onContactClick(contact));
 
@@ -256,19 +256,9 @@ public class DtlDetailsScreenImpl extends DtlLayout<DtlDetailsScreen, DtlDetails
    }
 
    @Override
-   public void share(DtlMerchant merchant) {
+   public void share(Merchant merchant) {
       new ShareDialog(getContext(), type -> {
-         ShareBundle shareBundle = new ShareBundle();
-         shareBundle.setShareType(type);
-         shareBundle.setText(getContext().getString(merchant.hasPoints() ? R.string.dtl_details_share_title : R.string.dtl_details_share_title_without_points, merchant
-               .getDisplayName()));
-         shareBundle.setShareUrl(merchant.getWebsite());
-         // don't attach media if website is attached, this image will go nowhere
-         if (TextUtils.isEmpty(merchant.getWebsite()) || type.equals(ShareType.TWITTER)) {
-            MerchantMedia media = Queryable.from(merchant.getImages()).firstOrDefault();
-            if (media != null) shareBundle.setImageUrl(media.getImagePath());
-            // for twitter: sharing image via web (not official app) currently not supported (android sdk v1.9.1)
-         }
+         ShareBundle shareBundle = MerchantHelper.buildShareBundle(getContext(), merchant, type);
          //
          getPresenter().trackSharing(type);
          //

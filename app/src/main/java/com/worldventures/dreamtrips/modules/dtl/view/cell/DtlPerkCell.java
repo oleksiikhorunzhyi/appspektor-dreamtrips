@@ -13,7 +13,7 @@ import com.worldventures.dreamtrips.core.utils.DateTimeUtils;
 import com.worldventures.dreamtrips.core.utils.LocaleHelper;
 import com.worldventures.dreamtrips.core.utils.ViewUtils;
 import com.worldventures.dreamtrips.modules.common.view.custom.ImageryDraweeView;
-import com.worldventures.dreamtrips.modules.dtl.helper.DtlMerchantHelper;
+import com.worldventures.dreamtrips.modules.dtl.helper.MerchantHelper;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.MerchantMedia;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.offer.Offer;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.operational_hour.OperationDay;
@@ -64,8 +64,8 @@ public class DtlPerkCell extends AbstractDelegateCell<Offer, CellDelegate<Offer>
    }
 
    private void bindExpirationBar() {
-      if (DtlMerchantHelper.isOfferExpiringSoon(getModelObject())) {
-         ViewUtils.setTextOrHideView(expirationBar, DtlMerchantHelper.
+      if (MerchantHelper.isOfferExpiringSoon(getModelObject())) {
+         ViewUtils.setTextOrHideView(expirationBar, MerchantHelper.
                getOfferExpiringCaption(itemView.getContext(), getModelObject(), localeHelper.getDefaultLocale()));
       } else ViewUtils.setViewVisibility(View.GONE, expirationBar);
    }

@@ -102,7 +102,7 @@ public class DtlDetailsPresenterImpl extends DtlPresenterImpl<DtlDetailsScreen, 
       if (visibility == View.VISIBLE) {
          getView().setMap(merchant);
       }
-      if (visibility == View.VISIBLE && !merchant.hasNoOffers()) {
+      if (visibility == View.VISIBLE && MerchantHelper.merchantHasOffers(merchant)) {
          processTransaction();
       }
    }
@@ -133,7 +133,7 @@ public class DtlDetailsPresenterImpl extends DtlPresenterImpl<DtlDetailsScreen, 
 
    private void tryHideSuggestMerchantButton() {
       boolean repToolsAvailable = featureManager.available(Feature.REP_SUGGEST_MERCHANT);
-      if (merchant.hasNoOffers()) {
+      if (!MerchantHelper.merchantHasOffers(merchant)) {
          getView().setSuggestMerchantButtonAvailable(repToolsAvailable);
       } else processTransaction();
    }

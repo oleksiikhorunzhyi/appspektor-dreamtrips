@@ -36,7 +36,7 @@ public class MerchantWorkingHoursAdapter extends BaseArrayListAdapter<OperationD
       return cell instanceof DtlWorkingHoursCell;
    }
 
-   private void bindMerchantHolder(DtlWorkingHoursCell cell) {
-      cell.setTimezone(merchant.getOffsetHours());
+   private void bindMerchantHolder(WorkingHoursCell cell) {
+      cell.setTimezone(MerchantHelper.merchantTimeOffset(merchant));
    }
 }

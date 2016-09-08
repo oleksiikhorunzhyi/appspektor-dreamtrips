@@ -144,7 +144,7 @@ public class DtlDetailsScreenImpl extends DtlLayout<DtlDetailsScreen, DtlDetails
    }
 
    @Override
-   public void expandOffers(List<Integer> offers) {
+   public void expandOffers(List<String> offers) {
       merchantDataInflater.expandOffers(offers);
    }
 
@@ -154,7 +154,7 @@ public class DtlDetailsScreenImpl extends DtlLayout<DtlDetailsScreen, DtlDetails
    }
 
    @Override
-   public List<Integer> getExpandedOffers() {
+   public List<String> getExpandedOffersIds() {
       return merchantDataInflater.getExpandedOffers();
    }
 

@@ -5,13 +5,16 @@ import android.support.annotation.Nullable;
 import android.text.TextUtils;
 import android.util.Pair;
 
-import com.innahema.collections.query.queriables.Queryable;
 import com.techery.spares.module.Injector;
+import com.worldventures.dreamtrips.api.dtl.merchants.MerchantByIdHttpAction;
 import com.worldventures.dreamtrips.modules.dtl.analytics.DtlAnalyticsCommand;
 import com.worldventures.dreamtrips.modules.dtl.analytics.MerchantFromSearchEvent;
 import com.worldventures.dreamtrips.modules.dtl.analytics.MerchantsListingViewEvent;
 import com.worldventures.dreamtrips.modules.dtl.event.ToggleMerchantSelectionEvent;
+import com.worldventures.dreamtrips.modules.dtl.helper.MerchantHelper;
+import com.worldventures.dreamtrips.modules.dtl.model.mapping.MerchantMapper;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchant;
+import com.worldventures.dreamtrips.modules.dtl.model.merchant.Merchant;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.filter.DtlFilterData;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.offer.Offer;
 import com.worldventures.dreamtrips.modules.dtl.service.DtlFilterMerchantInteractor;
@@ -28,7 +31,6 @@ import com.worldventures.dreamtrips.modules.dtl_flow.parts.details.DtlMerchantDe
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.location_change.DtlLocationChangePath;
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.map.DtlMapPath;
 
-import java.util.Arrays;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -180,24 +182,35 @@ public class DtlMerchantsPresenterImpl extends DtlPresenterImpl<DtlMerchantsScre
                analyticsInteractor.dtlAnalyticsCommandPipe()
                      .send(DtlAnalyticsCommand.create(new MerchantFromSearchEvent(pair.first)));
             });
-      navigateToDetails(merchant, null);
+      //
+      loadFullMerchant(merchant, null);
    }
 
-   private void navigateToDetails(DtlMerchant dtlMerchant, @Nullable Offer dtlOffer) {
+   private void loadFullMerchant(DtlMerchant dtlMerchant, @Nullable String expadedOfferId) {
+      merchantInteractor.merchantByIdHttpPipe()
+            .createObservableResult(new MerchantByIdHttpAction(dtlMerchant.getId()))
+            .compose(bindViewIoToMainComposer())
+            .map(MerchantByIdHttpAction::merchant)
+            .map(MerchantMapper.INSTANCE::convert)
+            .subscribe(merchant -> navigateToDetails(merchant, expadedOfferId), Throwable::printStackTrace);
+   }
+
+   public void navigateToDetails(Merchant merchant, String id) {
+      List<String> expandIds = MerchantHelper.buildExpandedOffersIds(id);
+      Path path = new DtlMerchantDetailsPath(FlowUtil.currentMaster(getContext()), merchant, expandIds);
       if (Flow.get(getContext()).getHistory().size() < 2) {
-         Flow.get(getContext())
-               .set(new DtlMerchantDetailsPath(FlowUtil.currentMaster(getContext()), dtlMerchant, dtlOffer == null ? null : findExpandablePosition(dtlMerchant, dtlOffer)));
+         Flow.get(getContext()).set(path);
       } else {
          History.Builder historyBuilder = Flow.get(getContext()).getHistory().buildUpon();
          historyBuilder.pop();
-         historyBuilder.push(new DtlMerchantDetailsPath(FlowUtil.currentMaster(getContext()), dtlMerchant, dtlOffer == null ? null : findExpandablePosition(dtlMerchant, dtlOffer)));
+         historyBuilder.push(path);
          Flow.get(getContext()).setHistory(historyBuilder.build(), Flow.Direction.FORWARD);
       }
    }
 
    @Override
    public void onOfferClick(DtlMerchant dtlMerchant, Offer offer) {
-      navigateToDetails(dtlMerchant, offer);
+      loadFullMerchant(dtlMerchant, offer.id());
    }
 
    private void showEmptyView() {
@@ -215,14 +228,6 @@ public class DtlMerchantsPresenterImpl extends DtlPresenterImpl<DtlMerchantsScre
 
    public void onEventMainThread(ToggleMerchantSelectionEvent event) {
       getView().toggleSelection(event.getDtlMerchant());
-   }
-
-   protected List<Integer> findExpandablePosition(DtlMerchant merchant, Offer... expandedOffers) {
-      List<Offer> merchantOffers = merchant.getOffers();
-      return Queryable.from(Arrays.asList(expandedOffers))
-            .filter(merchantOffers::contains)
-            .map(merchantOffers::indexOf)
-            .toList();
    }
 
    @Override

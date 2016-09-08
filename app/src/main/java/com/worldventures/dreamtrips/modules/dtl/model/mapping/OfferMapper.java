@@ -11,6 +11,7 @@ public class OfferMapper implements Converter<com.worldventures.dreamtrips.api.d
    @Override
    public Offer convert(com.worldventures.dreamtrips.api.dtl.merchants.model.Offer source) {
       return ImmutableOffer.builder()
+            .id(source.id())
             .type(source.type())
             .title(source.title())
             .description(source.description())

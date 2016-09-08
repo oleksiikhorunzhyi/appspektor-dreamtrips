@@ -56,8 +56,8 @@ public class DtlDetailsPresenterImpl extends DtlPresenterImpl<DtlDetailsScreen, 
    @Inject DtlTransactionInteractor transactionInteractor;
    @Inject protected PhotoUploadingManagerS3 photoUploadingManagerS3;
    //
-   protected DtlMerchant merchant;
-   protected List<Integer> preExpandOffers;
+   protected Merchant merchant;
+   protected List<String> preExpandOffers;
 
    public DtlDetailsPresenterImpl(Context context, Injector injector, DtlMerchant merchant, List<Integer> preExpandOffers) {
       super(context);
@@ -85,7 +85,7 @@ public class DtlDetailsPresenterImpl extends DtlPresenterImpl<DtlDetailsScreen, 
 
    @Override
    public void onSaveInstanceState(Bundle bundle) {
-      state.setOffers(getView().getExpandedOffers());
+      state.setOffersIds(getView().getExpandedOffersIds());
       state.setHoursViewExpanded(getView().isHoursViewExpanded());
       super.onSaveInstanceState(bundle);
    }
@@ -119,8 +119,8 @@ public class DtlDetailsPresenterImpl extends DtlPresenterImpl<DtlDetailsScreen, 
    }
 
    protected void preExpandOffers() {
-      boolean isRestore = getViewState().getOffers() != null;
-      final List<Integer> offers = isRestore ? getViewState().getOffers() : this.preExpandOffers;
+      boolean isRestore = getViewState().getOffersIds() != null;
+      final List<String> offers = isRestore ? getViewState().getOffersIds() : this.preExpandOffers;
       //
       getView().expandOffers(offers);
    }

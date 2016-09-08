@@ -40,11 +40,11 @@ public interface DtlDetailsScreen extends DtlScreen {
 
    void setMap(DtlMerchant merchant);
 
-   void expandOffers(List<Integer> positions);
+   void expandOffers(List<String> positions);
 
    void expandHoursView();
 
-   List<Integer> getExpandedOffers();
+   List<String> getExpandedOffersIds();
 
    boolean isHoursViewExpanded();
 }

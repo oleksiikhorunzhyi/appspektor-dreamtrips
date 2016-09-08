@@ -8,13 +8,13 @@ import java.util.List;
 
 public class DtlMerchantDetailsState extends ViewState {
 
-   private List<Integer> offers;
+   private List<String> offers;
    private boolean hoursViewExpanded;
 
    public DtlMerchantDetailsState() {
    }
 
-   public void setOffers(List<Integer> offers) {
+   public void setOffersIds(List<String> offers) {
       this.offers = offers;
    }
 
@@ -22,7 +22,7 @@ public class DtlMerchantDetailsState extends ViewState {
       this.hoursViewExpanded = hoursViewExpanded;
    }
 
-   public List<Integer> getOffers() {
+   public List<String> getOffersIds() {
       return offers;
    }
 

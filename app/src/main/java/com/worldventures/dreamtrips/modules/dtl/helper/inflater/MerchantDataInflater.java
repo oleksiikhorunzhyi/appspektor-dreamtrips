@@ -3,14 +3,14 @@ package com.worldventures.dreamtrips.modules.dtl.helper.inflater;
 import android.view.View;
 
 import com.jakewharton.rxbinding.internal.Preconditions;
-import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchant;
+import com.worldventures.dreamtrips.modules.dtl.model.merchant.Merchant;
 
 import butterknife.ButterKnife;
 
 public abstract class MerchantDataInflater implements MerchantInflater {
 
    protected View rootView;
-   protected DtlMerchant merchant;
+   protected Merchant merchant;
 
    @Override
    public void setView(View rootView) {
@@ -20,7 +20,7 @@ public abstract class MerchantDataInflater implements MerchantInflater {
    }
 
    @Override
-   public void applyMerchant(DtlMerchant merchant) {
+   public void applyMerchant(Merchant merchant) {
       Preconditions.checkNotNull(rootView, "Root view is not set, call setView() method first");
       Preconditions.checkNotNull(merchant, "Merchant must be not null");
       this.merchant = merchant;

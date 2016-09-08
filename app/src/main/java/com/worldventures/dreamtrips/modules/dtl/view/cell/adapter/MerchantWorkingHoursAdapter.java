@@ -6,15 +6,16 @@ import android.view.ViewGroup;
 import com.techery.spares.adapter.BaseArrayListAdapter;
 import com.techery.spares.module.Injector;
 import com.techery.spares.ui.view.cell.AbstractCell;
-import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchant;
+import com.worldventures.dreamtrips.modules.dtl.helper.MerchantHelper;
+import com.worldventures.dreamtrips.modules.dtl.model.merchant.Merchant;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.operational_hour.OperationDay;
-import com.worldventures.dreamtrips.modules.dtl.view.cell.DtlWorkingHoursCell;
+import com.worldventures.dreamtrips.modules.dtl.view.cell.WorkingHoursCell;
 
 public class MerchantWorkingHoursAdapter extends BaseArrayListAdapter<OperationDay> {
 
-   private final DtlMerchant merchant;
+   private final Merchant merchant;
 
-   public MerchantWorkingHoursAdapter(Context context, DtlMerchant merchant, Injector injector) {
+   public MerchantWorkingHoursAdapter(Context context, Merchant merchant, Injector injector) {
       super(context, injector);
       this.merchant = merchant;
    }
@@ -28,12 +29,12 @@ public class MerchantWorkingHoursAdapter extends BaseArrayListAdapter<OperationD
       return cell;
    }
 
-   private DtlWorkingHoursCell cast(AbstractCell cell) {
-      return (DtlWorkingHoursCell) cell;
+   private WorkingHoursCell cast(AbstractCell cell) {
+      return (WorkingHoursCell) cell;
    }
 
    private boolean shouldMerchantSet(AbstractCell cell) {
-      return cell instanceof DtlWorkingHoursCell;
+      return cell instanceof WorkingHoursCell;
    }
 
    private void bindMerchantHolder(WorkingHoursCell cell) {

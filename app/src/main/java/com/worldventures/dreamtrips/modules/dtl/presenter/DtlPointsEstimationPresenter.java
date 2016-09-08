@@ -13,6 +13,7 @@ import com.worldventures.dreamtrips.modules.common.view.ApiErrorView;
 import com.worldventures.dreamtrips.modules.dtl.analytics.DtlAnalyticsCommand;
 import com.worldventures.dreamtrips.modules.dtl.analytics.PointsEstimatorCalculateEvent;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchant;
+import com.worldventures.dreamtrips.modules.dtl.model.merchant.Merchant;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.offer.Currency;
 import com.worldventures.dreamtrips.modules.dtl.service.DtlMerchantInteractor;
 import com.worldventures.dreamtrips.modules.dtl.service.DtlTransactionInteractor;
@@ -27,25 +28,15 @@ public class DtlPointsEstimationPresenter extends JobPresenter<DtlPointsEstimati
    public static final String BILL_TOTAL = "billTotal";
    private static final String NUMBER_REGEX = "[+-]?\\d*(\\.\\d+)?";
 
-   protected final String merchantId;
+   protected final Merchant merchant;
 
    @Inject DtlTransactionInteractor transactionInteractor;
    @Inject DtlMerchantInteractor merchantInteractor;
    //
    private DtlMerchant dtlMerchant;
 
-   public DtlPointsEstimationPresenter(String merchantId) {
-      this.merchantId = merchantId;
-   }
-
-   @Override
-   public void onInjected() {
-      super.onInjected();
-      merchantInteractor.merchantByIdPipe()
-            .createObservable(new DtlMerchantByIdAction(merchantId))
-            .compose(ImmediateComposer.instance())
-            .subscribe(new ActionStateSubscriber<DtlMerchantByIdAction>().onFail(apiErrorPresenter::handleActionError)
-                  .onSuccess(action -> dtlMerchant = action.getResult()));
+   public DtlPointsEstimationPresenter(Merchant merchant) {
+      this.merchant = merchant;
    }
 
    @Override
@@ -69,7 +60,7 @@ public class DtlPointsEstimationPresenter extends JobPresenter<DtlPointsEstimati
       if (!validateInput(userInput)) return;
       //
       analyticsInteractor.dtlAnalyticsCommandPipe()
-            .send(DtlAnalyticsCommand.create(new PointsEstimatorCalculateEvent(dtlMerchant)));
+            .send(DtlAnalyticsCommand.create(new PointsEstimatorCalculateEvent(merchant)));
       //
       transactionInteractor.estimatePointsActionPipe()
             .send(new EstimationHttpAction(dtlMerchant.getId(), ImmutableEstimationParams.builder()

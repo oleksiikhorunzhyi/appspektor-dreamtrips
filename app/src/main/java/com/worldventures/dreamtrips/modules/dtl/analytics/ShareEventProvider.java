@@ -5,26 +5,27 @@ import com.worldventures.dreamtrips.core.utils.tracksystem.AnalyticsEvent;
 import com.worldventures.dreamtrips.core.utils.tracksystem.Attribute;
 import com.worldventures.dreamtrips.modules.common.model.ShareType;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchant;
+import com.worldventures.dreamtrips.modules.dtl.model.merchant.Merchant;
 
 public final class ShareEventProvider {
 
    private ShareEventProvider() {
    }
 
-   public static TransactionSuccessShareEvent provideTransactionSuccessShareEvent(DtlMerchant dtlMerchant, @ShareType String sharingType) {
-      return new TransactionSuccessShareEvent(dtlMerchant, sharingType);
+   public static TransactionSuccessShareEvent provideTransactionSuccessShareEvent(Merchant merchant, @ShareType String sharingType) {
+      return new TransactionSuccessShareEvent(merchant, sharingType);
    }
 
-   public static MerchantShareEvent provideMerchantShareEvent(DtlMerchant dtlMerchant, @ShareType String sharingType) {
-      return new MerchantShareEvent(dtlMerchant, sharingType);
+   public static MerchantShareEvent provideMerchantShareEvent(Merchant merchant, @ShareType String sharingType) {
+      return new MerchantShareEvent(merchant, sharingType);
    }
 
    @AnalyticsEvent(action = "local:Restaurant-Listings:Merchant View:Congratulations:Share",
                    trackers = AdobeTracker.TRACKER_KEY)
    public static class TransactionSuccessShareEvent extends BaseDtlShareEvent {
 
-      public TransactionSuccessShareEvent(DtlMerchant dtlMerchant, @ShareType String sharingType) {
-         super(dtlMerchant, sharingType);
+      public TransactionSuccessShareEvent(Merchant merchant, @ShareType String sharingType) {
+         super(merchant, sharingType);
       }
    }
 
@@ -32,8 +33,8 @@ public final class ShareEventProvider {
                    trackers = AdobeTracker.TRACKER_KEY)
    public static class MerchantShareEvent extends BaseDtlShareEvent {
 
-      public MerchantShareEvent(DtlMerchant dtlMerchant, @ShareType String sharingType) {
-         super(dtlMerchant, sharingType);
+      public MerchantShareEvent(Merchant merchant, @ShareType String sharingType) {
+         super(merchant, sharingType);
       }
    }
 
@@ -43,8 +44,8 @@ public final class ShareEventProvider {
 
       @Attribute("share_id") final String sharingType;
 
-      public BaseDtlShareEvent(DtlMerchant dtlMerchant, @ShareType String sharingType) {
-         super(dtlMerchant);
+      public BaseDtlShareEvent(Merchant merchant, @ShareType String sharingType) {
+         super(merchant);
          this.sharingType = sharingType;
       }
    }

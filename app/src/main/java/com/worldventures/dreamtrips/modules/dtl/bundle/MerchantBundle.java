@@ -5,11 +5,11 @@ import android.os.Parcelable;
 
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.Merchant;
 
-public class PointsEstimationDialogBundle implements Parcelable {
+public class MerchantBundle implements Parcelable {
 
    private Merchant merchant;
 
-   public PointsEstimationDialogBundle(Merchant merchant) {
+   public MerchantBundle(Merchant merchant) {
       this.merchant = merchant;
    }
 
@@ -25,7 +25,7 @@ public class PointsEstimationDialogBundle implements Parcelable {
    // Parcelable part
    ///////////////////////////////////////////////////////////////////////////
 
-   protected PointsEstimationDialogBundle(Parcel in) {
+   protected MerchantBundle(Parcel in) {
       merchant = (Merchant) in.readSerializable();
    }
 

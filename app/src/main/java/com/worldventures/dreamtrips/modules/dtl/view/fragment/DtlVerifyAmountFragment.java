@@ -14,7 +14,7 @@ import com.worldventures.dreamtrips.core.module.RouteCreatorModule;
 import com.worldventures.dreamtrips.core.navigation.creator.RouteCreator;
 import com.worldventures.dreamtrips.core.rx.RxBaseFragmentWithArgs;
 import com.worldventures.dreamtrips.core.utils.GraphicUtils;
-import com.worldventures.dreamtrips.modules.dtl.bundle.MerchantIdBundle;
+import com.worldventures.dreamtrips.modules.dtl.bundle.MerchantBundle;
 import com.worldventures.dreamtrips.modules.dtl.helper.DtlEnrollWizard;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.offer.Currency;
 import com.worldventures.dreamtrips.modules.dtl.model.transaction.DtlTransaction;
@@ -29,7 +29,7 @@ import butterknife.OnClick;
 
 @SuppressLint("DefaultLocale")
 @Layout(R.layout.fragment_verify_amount)
-public class DtlVerifyAmountFragment extends RxBaseFragmentWithArgs<DtlVerifyAmountPresenter, MerchantIdBundle> implements DtlVerifyAmountPresenter.View {
+public class DtlVerifyAmountFragment extends RxBaseFragmentWithArgs<DtlVerifyAmountPresenter, MerchantBundle> implements DtlVerifyAmountPresenter.View {
 
    @InjectView(R.id.dt_points) TextView dtPoints;
    @InjectView(R.id.spent_amount) TextView spentAmount;
@@ -42,7 +42,7 @@ public class DtlVerifyAmountFragment extends RxBaseFragmentWithArgs<DtlVerifyAmo
 
    @Override
    protected DtlVerifyAmountPresenter createPresenter(Bundle savedInstanceState) {
-      return new DtlVerifyAmountPresenter(getArgs().getMerchantId());
+      return new DtlVerifyAmountPresenter(getArgs().getMerchant());
    }
 
    @Override

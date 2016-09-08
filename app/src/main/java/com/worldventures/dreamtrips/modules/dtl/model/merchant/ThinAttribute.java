@@ -5,9 +5,11 @@ import com.esotericsoftware.kryo.serializers.CompatibleFieldSerializer;
 
 import org.immutables.value.Value;
 
+import java.io.Serializable;
+
 @DefaultSerializer(CompatibleFieldSerializer.class)
 @Value.Immutable
-public interface ThinAttribute {
+public interface ThinAttribute extends Serializable {
 
    String name();
 }

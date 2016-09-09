@@ -54,7 +54,10 @@ public class PresentationVideosPresenter<T extends PresentationVideosPresenter.V
          attachCacheToVideos(categories);
          addCategories(categories);
          subscribeToCachingStatusUpdates();
-      }, spiceException -> view.finishLoading());
+      }, spiceException -> {
+         super.handleError(spiceException);
+         view.finishLoading();
+      });
    }
 
    private void attachCacheToVideos(List<Category> categories) {

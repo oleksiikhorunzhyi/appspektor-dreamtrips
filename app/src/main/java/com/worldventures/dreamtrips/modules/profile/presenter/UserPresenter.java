@@ -115,12 +115,10 @@ public class UserPresenter extends ProfilePresenter<UserPresenter.View, User> {
    @Override
    protected void loadProfile() {
       view.startLoading();
-      doRequest(new GetPublicProfileQuery(user), this::onProfileLoaded);
-   }
-
-   @Override
-   public boolean isConnected() {
-      return super.isConnected();
+      doRequest(new GetPublicProfileQuery(user), this::onProfileLoaded, spiceException -> {
+         view.finishLoading();
+         super.handleError(spiceException);
+      });
    }
 
    public void onStartChatClicked() {
@@ -249,7 +247,7 @@ public class UserPresenter extends ProfilePresenter<UserPresenter.View, User> {
    }
 
    public void onEvent(LoadFlagEvent event) {
-      if (view.isVisibleOnScreen()) uidItemDelegate.loadFlags(event.getFlaggableView());
+      if (view.isVisibleOnScreen()) uidItemDelegate.loadFlags(event.getFlaggableView(), this::handleError);
    }
 
    public void onEvent(ItemFlaggedEvent event) {

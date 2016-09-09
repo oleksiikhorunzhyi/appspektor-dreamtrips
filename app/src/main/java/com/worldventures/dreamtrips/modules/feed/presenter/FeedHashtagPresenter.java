@@ -305,7 +305,7 @@ public class FeedHashtagPresenter<T extends FeedHashtagPresenter.View> extends J
    }
 
    public void onEvent(LoadFlagEvent event) {
-      if (view.isVisibleOnScreen()) uidItemDelegate.loadFlags(event.getFlaggableView());
+      if (view.isVisibleOnScreen()) uidItemDelegate.loadFlags(event.getFlaggableView(), this::handleError);
    }
 
    public void onEvent(ItemFlaggedEvent event) {

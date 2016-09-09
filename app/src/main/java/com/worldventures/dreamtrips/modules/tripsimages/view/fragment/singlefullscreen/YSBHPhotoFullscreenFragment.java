@@ -8,6 +8,7 @@ import android.widget.TextView;
 
 import com.techery.spares.annotations.Layout;
 import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.core.api.error.ErrorResponse;
 import com.worldventures.dreamtrips.modules.tripsimages.model.IFullScreenObject;
 import com.worldventures.dreamtrips.modules.tripsimages.model.YSBHPhoto;
 import com.worldventures.dreamtrips.modules.tripsimages.presenter.fullscreen.YouShouldBeHerePhotoFullscreenPresenter;
@@ -50,5 +51,15 @@ public class YSBHPhotoFullscreenFragment extends FullScreenPhotoFragment<YouShou
       tvDescription.setSingleLine(true);
       tvDescription.setVisibility(View.VISIBLE);
       tvSeeMore.setVisibility(View.VISIBLE);
+   }
+
+   @Override
+   public boolean onApiError(ErrorResponse errorResponse) {
+      return false;
+   }
+
+   @Override
+   public void onApiCallFailed() {
+
    }
 }

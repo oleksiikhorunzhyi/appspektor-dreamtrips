@@ -97,7 +97,7 @@ public class PodcastsPresenter<T extends PodcastsPresenter.View> extends JobPres
    }
 
    private void onPodcastsLoadingFailed(GetPodcastsCommand command, Throwable error) {
-      apiErrorPresenter.handleActionError(command, error);
+      super.handleError(command, error);
       view.finishLoading();
       loading = false;
    }

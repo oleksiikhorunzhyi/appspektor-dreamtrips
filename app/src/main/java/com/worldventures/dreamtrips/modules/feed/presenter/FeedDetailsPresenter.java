@@ -69,7 +69,10 @@ public class FeedDetailsPresenter<V extends FeedDetailsPresenter.View> extends B
       //TODO trip details is requested from other place, all this hierarchy should be refactored
       if (!isTrip()) doRequest(new GetFeedEntityQuery(feedEntity.getUid()),
             feedEntityHolder -> updateFullEventInfo(feedEntityHolder.getItem()),
-            spiceException -> Timber.e(spiceException, TAG));
+            spiceException -> {
+               Timber.e(spiceException, TAG);
+               handleError(spiceException);
+            });
    }
 
    protected void updateFullEventInfo(FeedEntity updatedFeedEntity) {

@@ -1,12 +1,9 @@
 package com.worldventures.dreamtrips.modules.common.presenter;
 
 import android.content.Context;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.text.TextUtils;
 
-import com.octo.android.robospice.persistence.DurationInMillis;
 import com.octo.android.robospice.persistence.exception.SpiceException;
 import com.octo.android.robospice.request.SpiceRequest;
 import com.techery.spares.module.qualifier.Global;
@@ -14,17 +11,21 @@ import com.techery.spares.session.SessionHolder;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.api.DreamSpiceManager;
 import com.worldventures.dreamtrips.core.api.PhotoUploadingManagerS3;
+import com.worldventures.dreamtrips.core.api.action.CommandWithError;
+import com.worldventures.dreamtrips.core.flow.util.Utils;
 import com.worldventures.dreamtrips.core.navigation.ActivityRouter;
 import com.worldventures.dreamtrips.core.rx.composer.IoToMainComposer;
 import com.worldventures.dreamtrips.core.session.UserSession;
 import com.worldventures.dreamtrips.core.session.acl.FeatureManager;
 import com.worldventures.dreamtrips.core.utils.tracksystem.AnalyticsInteractor;
 import com.worldventures.dreamtrips.modules.common.model.User;
+import com.worldventures.dreamtrips.util.JanetHttpErrorHandlingUtils;
 
 import javax.inject.Inject;
 
 import de.greenrobot.event.EventBus;
 import icepick.Icepick;
+import io.techery.janet.CancelException;
 import rx.Observable;
 import rx.subjects.PublishSubject;
 import timber.log.Timber;
@@ -148,20 +149,13 @@ public class Presenter<VT extends Presenter.View> implements RequestingPresenter
    }
 
    @Override
-   public <T> void doRequestWithCacheKey(SpiceRequest<T> request, String cacheKey, DreamSpiceManager.SuccessListener<T> successListener) {
-      dreamSpiceManager.execute(request, cacheKey, DurationInMillis.ALWAYS_RETURNED, successListener, this);
-   }
-
-   @Override
    @Deprecated
    public <T> void doRequest(SpiceRequest<T> request, DreamSpiceManager.SuccessListener<T> successListener, DreamSpiceManager.FailureListener failureListener) {
       dreamSpiceManager.execute(request, successListener, failureListener);
    }
 
    public boolean isConnected() {
-      ConnectivityManager conMgr = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
-      NetworkInfo i = conMgr.getActiveNetworkInfo();
-      return i != null && i.isConnected() && i.isAvailable();
+      return Utils.isConnected(context);
    }
 
    @Deprecated
@@ -178,6 +172,9 @@ public class Presenter<VT extends Presenter.View> implements RequestingPresenter
       }
    }
 
+   /**
+    * @deprecated use CommandWithError and Presenter.handleError(action, throwable)
+    */
    protected void handleError(Throwable throwable) {
       if (apiErrorPresenter.hasView()) {
          apiErrorPresenter.handleError(throwable);
@@ -185,6 +182,17 @@ public class Presenter<VT extends Presenter.View> implements RequestingPresenter
          Timber.d("ApiErrorPresenter has detached view");
          view.informUser(R.string.smth_went_wrong);
       }
+   }
+
+   protected void handleError(Object action, Throwable error) {
+      if (error instanceof CancelException) return;
+      if (action instanceof CommandWithError) {
+         view.informUser(((CommandWithError) action).getErrorMessage());
+         return;
+      }
+      String message = JanetHttpErrorHandlingUtils.handleJanetHttpError(context,
+            action, error, context.getString(R.string.smth_went_wrong));
+      view.informUser(message);
    }
 
    ///////////////////////////////////////////////////////////////////////////

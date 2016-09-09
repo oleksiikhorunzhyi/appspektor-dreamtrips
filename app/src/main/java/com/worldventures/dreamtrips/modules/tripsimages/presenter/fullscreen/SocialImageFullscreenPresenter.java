@@ -32,7 +32,7 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-public class SocialImageFullscreenPresenter extends FullScreenPresenter<Photo, SocialImageFullscreenPresenter.View> {
+public class SocialImageFullscreenPresenter extends SocialFullScreenPresenter<Photo, SocialImageFullscreenPresenter.View> {
 
    @Inject FeedEntityManager entityManager;
 
@@ -132,7 +132,10 @@ public class SocialImageFullscreenPresenter extends FullScreenPresenter<Photo, S
    @Override
    public void onFlagAction(Flaggable flaggable) {
       view.showProgress();
-      uidItemDelegate.loadFlags(flaggable);
+      uidItemDelegate.loadFlags(flaggable, (command, throwable) -> {
+         view.hideProgress();
+         handleError(command, throwable);
+      });
    }
 
    public void onEvent(FeedEntityChangedEvent event) {
@@ -157,7 +160,7 @@ public class SocialImageFullscreenPresenter extends FullScreenPresenter<Photo, S
       return photo;
    }
 
-   public interface View extends FullScreenPresenter.View, UidItemDelegate.View {
+   public interface View extends SocialFullScreenPresenter.View, UidItemDelegate.View {
 
       void showProgress();
 

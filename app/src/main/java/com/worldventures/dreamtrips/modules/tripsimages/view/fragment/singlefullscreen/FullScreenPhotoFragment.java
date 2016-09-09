@@ -17,12 +17,10 @@ import com.worldventures.dreamtrips.core.navigation.ToolbarConfig;
 import com.worldventures.dreamtrips.core.navigation.creator.RouteCreator;
 import com.worldventures.dreamtrips.core.navigation.router.NavigationConfigBuilder;
 import com.worldventures.dreamtrips.core.rx.RxBaseFragmentWithArgs;
-import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.common.model.ShareType;
 import com.worldventures.dreamtrips.modules.common.view.bundle.ShareBundle;
 import com.worldventures.dreamtrips.modules.common.view.dialog.PhotosShareDialog;
 import com.worldventures.dreamtrips.modules.profile.bundle.UserBundle;
-import com.worldventures.dreamtrips.modules.trips.event.TripImageAnalyticEvent;
 import com.worldventures.dreamtrips.modules.tripsimages.bundle.FullScreenPhotoBundle;
 import com.worldventures.dreamtrips.modules.tripsimages.model.IFullScreenObject;
 import com.worldventures.dreamtrips.modules.tripsimages.model.Image;
@@ -63,6 +61,11 @@ public abstract class FullScreenPhotoFragment<PRESENTER extends FullScreenPresen
                         public void onFinalImageSet(String id, ImageInfo imageInfo, Animatable animatable) {
                            super.onFinalImageSet(id, imageInfo, animatable);
                            onImageGlobalLayout();
+                        }
+
+                        @Override
+                        public void onFailure(String id, Throwable throwable) {
+                           getPresenter().onCouldNotLoadImage(throwable);
                         }
                      });
                if (getPresenter().isConnected())
@@ -110,7 +113,11 @@ public abstract class FullScreenPhotoFragment<PRESENTER extends FullScreenPresen
    @Optional
    @OnClick(R.id.iv_share)
    public void actionShare() {
-      eventBus.post(new TripImageAnalyticEvent(getArgs().getPhoto().getFSId(), TrackingHelper.ATTRIBUTE_SHARE_IMAGE));
-      new PhotosShareDialog(getActivity(), type -> getPresenter().onShare(type)).show();
+      getPresenter().onShareAction();
+   }
+
+   @Override
+   public void onShowShareOptions() {
+      new PhotosShareDialog(getActivity(), type -> getPresenter().onShareOptionChosen(type)).show();
    }
 }

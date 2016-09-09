@@ -157,7 +157,7 @@ public class BaseCommentPresenter<T extends BaseCommentPresenter.View> extends P
    }
 
    public void loadFlags(Flaggable flaggableView) {
-      uidItemDelegate.loadFlags(flaggableView);
+      uidItemDelegate.loadFlags(flaggableView, this::handleError);
    }
 
    public void flagItem(String uid, int reasonId, String reason) {
@@ -234,13 +234,13 @@ public class BaseCommentPresenter<T extends BaseCommentPresenter.View> extends P
                .subscribe(new ActionStateSubscriber<DeleteItemHttpAction>().onSuccess(deleteItemAction -> itemDeleted(bucketItemToDelete))
                      .onFail((deleteItemAction, throwable) -> {
                         view.setLoading(false); //TODO: review, after leave from robospice completely
-                        handleError(throwable);
+                        handleError(deleteItemAction, throwable);
                      }));
       }
    }
 
    public void onEvent(LoadFlagEvent event) {
-      if (view.isVisibleOnScreen()) uidItemDelegate.loadFlags(event.getFlaggableView());
+      if (view.isVisibleOnScreen()) uidItemDelegate.loadFlags(event.getFlaggableView(), this::handleError);
    }
 
    public void onEvent(ItemFlaggedEvent event) {

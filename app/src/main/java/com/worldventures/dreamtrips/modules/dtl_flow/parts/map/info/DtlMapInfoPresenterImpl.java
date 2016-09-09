@@ -63,16 +63,11 @@ public class DtlMapInfoPresenterImpl extends DtlPresenterImpl<DtlMapInfoScreen, 
    public void onMarkerClick() {
       eventBus.post(new ToggleMerchantSelectionEvent(merchant));
       trackIfNeeded();
-      loadFullMerchant();
+      //loadFullMerchant();
    }
 
+   // TODO :: load merchant and navigate to details screen
    private void loadFullMerchant() {
-      merchantInteractor.merchantByIdHttpPipe()
-            .createObservableResult(new MerchantByIdHttpAction(merchant.getId()))
-            .compose(new IoToMainComposer<>())
-            .map(MerchantByIdHttpAction::merchant)
-            .map(MerchantMapper.INSTANCE::convert)
-            .subscribe(this::navigateToDetails, Throwable::printStackTrace);
    }
 
    private void navigateToDetails(Merchant merchant) {

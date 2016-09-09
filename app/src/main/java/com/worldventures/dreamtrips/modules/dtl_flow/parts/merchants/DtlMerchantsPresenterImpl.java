@@ -6,13 +6,11 @@ import android.text.TextUtils;
 import android.util.Pair;
 
 import com.techery.spares.module.Injector;
-import com.worldventures.dreamtrips.api.dtl.merchants.MerchantByIdHttpAction;
 import com.worldventures.dreamtrips.modules.dtl.analytics.DtlAnalyticsCommand;
 import com.worldventures.dreamtrips.modules.dtl.analytics.MerchantFromSearchEvent;
 import com.worldventures.dreamtrips.modules.dtl.analytics.MerchantsListingViewEvent;
 import com.worldventures.dreamtrips.modules.dtl.event.ToggleMerchantSelectionEvent;
 import com.worldventures.dreamtrips.modules.dtl.helper.MerchantHelper;
-import com.worldventures.dreamtrips.modules.dtl.model.mapping.MerchantMapper;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchant;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.Merchant;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.filter.DtlFilterData;
@@ -24,6 +22,7 @@ import com.worldventures.dreamtrips.modules.dtl.service.action.DtlFilterDataActi
 import com.worldventures.dreamtrips.modules.dtl.service.action.DtlFilterMerchantsAction;
 import com.worldventures.dreamtrips.modules.dtl.service.action.DtlLocationCommand;
 import com.worldventures.dreamtrips.modules.dtl.service.action.DtlMerchantsAction;
+import com.worldventures.dreamtrips.modules.dtl.service.action.MerchantByIdCommand;
 import com.worldventures.dreamtrips.modules.dtl_flow.DtlPresenterImpl;
 import com.worldventures.dreamtrips.modules.dtl_flow.FlowUtil;
 import com.worldventures.dreamtrips.modules.dtl_flow.ViewState;
@@ -92,6 +91,12 @@ public class DtlMerchantsPresenterImpl extends DtlPresenterImpl<DtlMerchantsScre
             .map(DtlMerchantsAction::getResult)
             .filter(List::isEmpty)
             .subscribe(s -> showEmptyView(), e -> {});
+      //
+      merchantInteractor.merchantByIdHttpPipe()
+            .observe()
+            .compose(bindViewIoToMainComposer())
+            .subscribe(new ActionStateSubscriber<MerchantByIdCommand>()
+                  .onSuccess(command -> navigateToDetails(command.getResult(), command.getOfferId())));
       //
       locationInteractor.locationPipe()
             .observeSuccessWithReplay()
@@ -167,6 +172,11 @@ public class DtlMerchantsPresenterImpl extends DtlPresenterImpl<DtlMerchantsScre
    }
 
    @Override
+   public void onOfferClick(DtlMerchant dtlMerchant, Offer offer) {
+      loadMerchant(dtlMerchant, offer.id());
+   }
+
+   @Override
    public void merchantClicked(DtlMerchant merchant) {
       Observable.combineLatest(filterInteractor.filterDataPipe()
             .observeSuccessWithReplay()
@@ -183,16 +193,19 @@ public class DtlMerchantsPresenterImpl extends DtlPresenterImpl<DtlMerchantsScre
                      .send(DtlAnalyticsCommand.create(new MerchantFromSearchEvent(pair.first)));
             });
       //
-      loadFullMerchant(merchant, null);
+      loadMerchant(merchant, null);
    }
 
-   private void loadFullMerchant(DtlMerchant dtlMerchant, @Nullable String expadedOfferId) {
-      merchantInteractor.merchantByIdHttpPipe()
-            .createObservableResult(new MerchantByIdHttpAction(dtlMerchant.getId()))
-            .compose(bindViewIoToMainComposer())
-            .map(MerchantByIdHttpAction::merchant)
-            .map(MerchantMapper.INSTANCE::convert)
-            .subscribe(merchant -> navigateToDetails(merchant, expadedOfferId), Throwable::printStackTrace);
+   private void loadMerchant(DtlMerchant merchant, @Nullable String expadedOfferId) {
+      merchantInteractor.merchantByIdHttpPipe().send(MerchantByIdCommand.create(merchant.getId(), expadedOfferId));
+   }
+
+   private void showEmptyView() {
+      if (!getView().isTabletLandscape() && getView().getPath().isAllowRedirect()) {
+         navigateToPath(new DtlLocationChangePath());
+      } else {
+         getView().showEmptyMerchantView(true);
+      }
    }
 
    public void navigateToDetails(Merchant merchant, String id) {
@@ -205,19 +218,6 @@ public class DtlMerchantsPresenterImpl extends DtlPresenterImpl<DtlMerchantsScre
          historyBuilder.pop();
          historyBuilder.push(path);
          Flow.get(getContext()).setHistory(historyBuilder.build(), Flow.Direction.FORWARD);
-      }
-   }
-
-   @Override
-   public void onOfferClick(DtlMerchant dtlMerchant, Offer offer) {
-      loadFullMerchant(dtlMerchant, offer.id());
-   }
-
-   private void showEmptyView() {
-      if (!getView().isTabletLandscape() && getView().getPath().isAllowRedirect()) {
-         navigateToPath(new DtlLocationChangePath());
-      } else {
-         getView().showEmptyMerchantView(true);
       }
    }
 

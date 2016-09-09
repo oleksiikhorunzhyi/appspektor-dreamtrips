@@ -14,6 +14,7 @@ import com.worldventures.dreamtrips.modules.dtl.service.action.DtlLocationComman
 import com.worldventures.dreamtrips.modules.dtl.service.action.DtlMerchantByIdAction;
 import com.worldventures.dreamtrips.modules.dtl.service.action.DtlMerchantsAction;
 import com.worldventures.dreamtrips.modules.dtl.service.action.DtlUpdateAmenitiesAction;
+import com.worldventures.dreamtrips.modules.dtl.service.action.MerchantByIdCommand;
 
 import java.util.List;
 
@@ -29,18 +30,18 @@ public class DtlMerchantInteractor {
    private final ActionPipe<DtlUpdateAmenitiesAction> updateAmenitiesPipe;
    private final ActionPipe<DtlMerchantsAction> merchantsPipe;
    private final ActionPipe<DtlMerchantByIdAction> merchantByIdPipe;
-   private final ActionPipe<MerchantByIdHttpAction> merchantByIdHttpPipe;
+   private final ActionPipe<MerchantByIdCommand> merchantByIdHttpPipe;
 
    private final WriteActionPipe<DtlFilterDataAction> filterDataActionPipe;
 
-   public DtlMerchantInteractor(Janet janet, Janet apiLibJanet, DtlLocationInteractor locationInteractor) {
+   public DtlMerchantInteractor(Janet janet, DtlLocationInteractor locationInteractor) {
       this.locationInteractor = locationInteractor;
 
       updateAmenitiesPipe = janet.createPipe(DtlUpdateAmenitiesAction.class, Schedulers.io());
       merchantsPipe = janet.createPipe(DtlMerchantsAction.class, Schedulers.io());
       merchantByIdPipe = janet.createPipe(DtlMerchantByIdAction.class);
       filterDataActionPipe = janet.createPipe(DtlFilterDataAction.class, Schedulers.io());
-      merchantByIdHttpPipe = apiLibJanet.createPipe(MerchantByIdHttpAction.class, Schedulers.io());
+      merchantByIdHttpPipe = janet.createPipe(MerchantByIdCommand.class, Schedulers.io());
 
       connectMerchantsPipe();
       connectUpdateAmenitiesPipe();
@@ -68,7 +69,7 @@ public class DtlMerchantInteractor {
       return merchantByIdPipe;
    }
 
-   public ActionPipe<MerchantByIdHttpAction> merchantByIdHttpPipe() {
+   public ActionPipe<MerchantByIdCommand> merchantByIdHttpPipe() {
       return merchantByIdHttpPipe;
    }
 

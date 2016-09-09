@@ -2,8 +2,11 @@ package com.worldventures.dreamtrips.modules.dtl_flow.parts.filter;
 
 import com.hannesdorfmann.mosby.mvp.MvpView;
 import com.techery.spares.module.Injector;
+import com.worldventures.dreamtrips.modules.dtl.model.merchant.Attribute;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.filter.DtlFilterData;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.filter.DtlFilterParameters;
+
+import java.util.List;
 
 public interface FilterView extends MvpView {
 
@@ -24,4 +27,10 @@ public interface FilterView extends MvpView {
     * @param filterData dataSet to map to UI
     */
    void syncUi(DtlFilterData filterData);
+
+   void showAmenitiesItems(List<Attribute> amenities);
+
+   void showAmenitiesListProgress();
+
+   void showAmenitiesError();
 }

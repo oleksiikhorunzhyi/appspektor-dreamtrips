@@ -13,7 +13,6 @@ import com.worldventures.dreamtrips.modules.feed.model.CreatePhotoPostEntity;
 import com.worldventures.dreamtrips.modules.feed.model.FeedEntityHolder;
 import com.worldventures.dreamtrips.modules.feed.model.TextualPost;
 import com.worldventures.dreamtrips.modules.feed.model.comment.Comment;
-import com.worldventures.dreamtrips.modules.feed.model.feed.base.ParentFeedItem;
 import com.worldventures.dreamtrips.modules.infopages.model.FeedbackType;
 import com.worldventures.dreamtrips.modules.membership.api.InviteBody;
 import com.worldventures.dreamtrips.modules.membership.model.History;
@@ -22,7 +21,6 @@ import com.worldventures.dreamtrips.modules.reptools.model.SuccessStory;
 import com.worldventures.dreamtrips.modules.reptools.model.VideoLocale;
 import com.worldventures.dreamtrips.modules.tripsimages.model.AddPhotoTag;
 import com.worldventures.dreamtrips.modules.tripsimages.model.DeletePhotoTag;
-import com.worldventures.dreamtrips.modules.tripsimages.model.Flag;
 import com.worldventures.dreamtrips.modules.tripsimages.model.Inspiration;
 import com.worldventures.dreamtrips.modules.tripsimages.model.Photo;
 import com.worldventures.dreamtrips.modules.tripsimages.model.YSBHPhoto;
@@ -225,17 +223,8 @@ public interface DreamTripsApi {
    @GET("/api/{uid}/likes")
    ArrayList<User> getUsersWhoLikedEntity(@Path("uid") String uid, @Query("page") int page, @Query("per_page") int perPage);
 
-   @GET("/api/social/notifications")
-   ArrayList<ParentFeedItem> getNotifications(@Query("per_page") int perPage, @Query("before") String page);
-
    @GET("/api/{uid}")
    FeedEntityHolder getFeedEntity(@Path("uid") String uid);
-
-   @PUT("/api/social/notifications")
-   Void markAsRead(@Query("since") String since, @Query("before") String before);
-
-   @PUT("/api/social/notifications/{id}")
-   Void markAsRead(@Path("id") int id);
 
    @FormUrlEncoded
    @POST("/api/{uid}/flags")

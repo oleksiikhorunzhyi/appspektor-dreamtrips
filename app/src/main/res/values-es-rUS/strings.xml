@@ -586,8 +586,6 @@
    <string name="error_fail_to_load_videos">No se pudo cargar vídeos</string>
    <string name="error_fail_to_like_item">Error al marcar “me gusta”</string>
    <string name="error_fail_to_unlike_item">Error al quitar la merca de “me gusta” </string>
-   <string name="error_fail_to_mark_notification">Error al marcar la notificación</string>
-   <string name="error_fail_to_mark_notifications">Error al marcar las notificaciones</string>
    <string name="tag_people">Etiqueta personas</string>
 
    <string name="say_something">Dile algo al mundo</string>

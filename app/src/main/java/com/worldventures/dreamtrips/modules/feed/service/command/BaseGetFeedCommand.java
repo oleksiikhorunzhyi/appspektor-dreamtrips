@@ -16,6 +16,7 @@ import java.util.List;
 import javax.inject.Inject;
 
 import io.techery.janet.Janet;
+import rx.Observable;
 import rx.schedulers.Schedulers;
 
 public abstract class BaseGetFeedCommand<T extends GetFeedHttpAction> extends CommandWithError<List<FeedItem<FeedEntity>>> implements InjectableAction {
@@ -27,8 +28,15 @@ public abstract class BaseGetFeedCommand<T extends GetFeedHttpAction> extends Co
 
    protected String before;
 
+   public BaseGetFeedCommand() {
+   }
+
    public BaseGetFeedCommand(Date before) {
-      this.before = before == null ? null : DateTimeUtils.convertDateToUTCString(before);
+      this.before = getBeforeDateString(before);
+   }
+
+   protected String getBeforeDateString(Date beforeDate) {
+      return beforeDate == null ? null : DateTimeUtils.convertDateToUTCString(beforeDate);
    }
 
    @Override
@@ -38,7 +46,11 @@ public abstract class BaseGetFeedCommand<T extends GetFeedHttpAction> extends Co
             .map(GetFeedHttpAction::getResponseItems)
             .compose(new ListFilter<>(ParentFeedItem::isSingle))
             .compose(new ListMapper<>(parentFeedItem -> parentFeedItem.getItems().get(0)))
-            .subscribe(callback::onSuccess, callback::onFail);
+            .subscribe(items -> itemsLoaded(callback, items), callback::onFail);
+   }
+
+   protected void itemsLoaded(CommandCallback<List<FeedItem<FeedEntity>>> callback, List<FeedItem<FeedEntity>> items) {
+      callback.onSuccess(items);
    }
 
    protected abstract Class<T> provideHttpActionClass();

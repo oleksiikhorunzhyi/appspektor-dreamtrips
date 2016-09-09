@@ -19,8 +19,11 @@ import com.worldventures.dreamtrips.modules.feed.service.command.FeedByHashtagCo
 import com.worldventures.dreamtrips.modules.feed.service.command.GetAccountFeedCommand;
 import com.worldventures.dreamtrips.modules.feed.service.command.GetAccountTimelineCommand;
 import com.worldventures.dreamtrips.modules.feed.service.command.GetCommentsCommand;
+import com.worldventures.dreamtrips.modules.feed.service.command.GetNotificationsCommand;
 import com.worldventures.dreamtrips.modules.feed.service.command.GetUserTimelineCommand;
 import com.worldventures.dreamtrips.modules.feed.service.command.HashtagSuggestionCommand;
+import com.worldventures.dreamtrips.modules.feed.service.command.MarkNotificationAsReadCommand;
+import com.worldventures.dreamtrips.modules.feed.service.command.MarkNotificationsAsReadCommand;
 import com.worldventures.dreamtrips.modules.feed.service.command.SuggestedPhotoCommand;
 import com.worldventures.dreamtrips.modules.feed.service.command.TranslateTextCachedCommand;
 import com.worldventures.dreamtrips.modules.feed.service.command.TranslateUidItemCommand;
@@ -52,5 +55,6 @@ import dagger.Module;
       HashtagSuggestionCommand.class, ClearMemoryStorageCommand.class, SubscribeToPushNotificationsCommand.class,
       SettingsCommand.class, DeleteFriendRequestCommand.class, AcceptAllFriendRequestsCommand.class, AddFriendCommand.class,
       DeleteFriendRequestCommand.class, ActOnFriendRequestCommand.Accept.class, ActOnFriendRequestCommand.Reject.class,
+      GetNotificationsCommand.class, MarkNotificationsAsReadCommand.class, MarkNotificationAsReadCommand.class,
 }, complete = false, library = true)
 public class SocialJanetCommandModule {}

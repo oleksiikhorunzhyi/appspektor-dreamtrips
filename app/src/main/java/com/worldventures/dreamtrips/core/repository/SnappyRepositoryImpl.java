@@ -15,6 +15,12 @@ import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchant;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchantAttribute;
 import com.worldventures.dreamtrips.modules.dtl.model.transaction.DtlTransaction;
 import com.worldventures.dreamtrips.modules.dtl.model.transaction.ImmutableDtlTransaction;
+import com.worldventures.dreamtrips.modules.feed.model.BucketFeedItem;
+import com.worldventures.dreamtrips.modules.feed.model.FeedItem;
+import com.worldventures.dreamtrips.modules.feed.model.PhotoFeedItem;
+import com.worldventures.dreamtrips.modules.feed.model.PostFeedItem;
+import com.worldventures.dreamtrips.modules.feed.model.TripFeedItem;
+import com.worldventures.dreamtrips.modules.feed.model.UndefinedFeedItem;
 import com.worldventures.dreamtrips.modules.friends.model.Circle;
 import com.worldventures.dreamtrips.modules.infopages.model.FeedbackType;
 import com.worldventures.dreamtrips.modules.reptools.model.VideoLanguage;
@@ -32,7 +38,9 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -205,13 +213,13 @@ public class SnappyRepositoryImpl implements SnappyRepository {
    }
 
    @Override
-   public void setLastSyncAppVersion(String appVersion) {
-      act(db -> db.put(LAST_SYNC_APP_VERSION, appVersion));
+   public String getLastSyncAppVersion() {
+      return actWithResult(db -> db.get(LAST_SYNC_APP_VERSION)).orNull();
    }
 
    @Override
-   public String getLastSyncAppVersion() {
-      return actWithResult(db -> db.get(LAST_SYNC_APP_VERSION)).orNull();
+   public void setLastSyncAppVersion(String appVersion) {
+      act(db -> db.put(LAST_SYNC_APP_VERSION, appVersion));
    }
 
    ///////////////////////////////////////////////////////////////////////////
@@ -533,5 +541,44 @@ public class SnappyRepositoryImpl implements SnappyRepository {
    @Override
    public void deleteDtlTransaction(String id) {
       act(db -> db.del(DTL_TRANSACTION_PREFIX + id));
+   }
+
+   ///////////////////////////////////////////////////////////////////////////
+   // Notifications
+   ///////////////////////////////////////////////////////////////////////////
+
+   private static final Map<String, Class<? extends FeedItem>> feedItemsMapping = new HashMap<>();
+
+   static {
+      feedItemsMapping.put(NOTIFICATIONS + UNDEFINED_FEED_ITEM, UndefinedFeedItem.class);
+      feedItemsMapping.put(NOTIFICATIONS + TRIP_FEED_ITEM, TripFeedItem.class);
+      feedItemsMapping.put(NOTIFICATIONS + PHOTO_FEED_ITEM, PhotoFeedItem.class);
+      feedItemsMapping.put(NOTIFICATIONS + BUCKET_FEED_ITEM, BucketFeedItem.class);
+      feedItemsMapping.put(NOTIFICATIONS + POST_FEED_ITEM, PostFeedItem.class);
+   }
+
+   @Override
+   public void saveNotifications(List<FeedItem> notifications) {
+      for (Map.Entry<String, Class<? extends FeedItem>> entry : feedItemsMapping.entrySet()) {
+         saveNotificationByType(notifications, entry.getValue(), entry.getKey());
+      }
+   }
+
+   private void saveNotificationByType(List<FeedItem> notifications, Class itemClass, String typeKey) {
+      List<FeedItem> notificationsByClass = Queryable.from(notifications)
+            .filter(item -> item.getClass().equals(itemClass))
+            .toList();
+      putList(typeKey, notificationsByClass);
+   }
+
+   @Override
+   public List<FeedItem> getNotifications() {
+      List<FeedItem> feedItems = new ArrayList<>();
+      for (Map.Entry<String, Class<? extends FeedItem>> entry : feedItemsMapping.entrySet()) {
+         feedItems.addAll(readList(entry.getKey(), entry.getValue()));
+      }
+      return Queryable.from(feedItems)
+            .sort((feedItemL, feedItemR) -> feedItemR.getCreatedAt().compareTo(feedItemL.getCreatedAt()))
+            .toList();
    }
 }

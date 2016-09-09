@@ -9,6 +9,7 @@ import com.worldventures.dreamtrips.modules.dtl.model.location.DtlLocation;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchant;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchantAttribute;
 import com.worldventures.dreamtrips.modules.dtl.model.transaction.DtlTransaction;
+import com.worldventures.dreamtrips.modules.feed.model.FeedItem;
 import com.worldventures.dreamtrips.modules.friends.model.Circle;
 import com.worldventures.dreamtrips.modules.infopages.model.FeedbackType;
 import com.worldventures.dreamtrips.modules.reptools.model.VideoLanguage;
@@ -56,6 +57,13 @@ public interface SnappyRepository {
    String DTL_AMENITIES = "DTL_AMENITIES";
    String FEEDBACK_TYPES = "FEEDBACK_TYPES";
    String SUGGESTED_PHOTOS_SYNC_TIME = "SUGGESTED_PHOTOS_SYNC_TIME";
+
+   String NOTIFICATIONS = "notifications";
+   String UNDEFINED_FEED_ITEM = "undefined";
+   String PHOTO_FEED_ITEM = "photo";
+   String POST_FEED_ITEM = "post";
+   String TRIP_FEED_ITEM = "trip";
+   String BUCKET_FEED_ITEM = "bucket";
 
    void clearAll();
 
@@ -179,4 +187,8 @@ public interface SnappyRepository {
    void setLastSyncAppVersion(String appVersion);
 
    String getLastSyncAppVersion();
+
+   void saveNotifications(List<FeedItem> notifications);
+
+   List<FeedItem> getNotifications();
 }

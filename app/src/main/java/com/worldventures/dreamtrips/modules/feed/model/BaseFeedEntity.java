@@ -32,6 +32,10 @@ public abstract class BaseFeedEntity implements FeedEntity {
       return uid;
    }
 
+   public void setUid(String uid) {
+      this.uid = uid;
+   }
+
    @Override
    public User getOwner() {
       return owner;

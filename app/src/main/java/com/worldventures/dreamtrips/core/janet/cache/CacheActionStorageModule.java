@@ -11,6 +11,8 @@ import com.worldventures.dreamtrips.modules.bucketlist.service.storage.UploadBuc
 import com.worldventures.dreamtrips.modules.dtl.helper.cache.DtlLocationStorage;
 import com.worldventures.dreamtrips.modules.dtl.helper.cache.DtlMerchantsStorage;
 import com.worldventures.dreamtrips.modules.dtl.helper.cache.DtlSearchLocationStorage;
+import com.worldventures.dreamtrips.modules.feed.service.storage.NotificationMemoryStorage;
+import com.worldventures.dreamtrips.modules.feed.service.storage.NotificationsStorage;
 import com.worldventures.dreamtrips.modules.feed.service.storage.TranslationDiscStorage;
 import com.worldventures.dreamtrips.modules.friends.service.CirclesStorage;
 import com.worldventures.dreamtrips.modules.trips.service.storage.ActivitiesStorage;
@@ -52,6 +54,12 @@ public class CacheActionStorageModule {
    @Provides(type = Provides.Type.SET)
    ActionStorage provideTranslationStorage(SnappyRepository snappyRepository) {
       return new TranslationDiscStorage(snappyRepository);
+   }
+
+   @Singleton
+   @Provides(type = Provides.Type.SET)
+   ActionStorage provideNotificationStorage(SnappyRepository snappyRepository) {
+      return new NotificationsStorage(snappyRepository, new NotificationMemoryStorage());
    }
 
    @Singleton

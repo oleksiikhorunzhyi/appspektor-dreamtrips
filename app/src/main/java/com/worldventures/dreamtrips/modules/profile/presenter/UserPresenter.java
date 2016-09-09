@@ -16,10 +16,11 @@ import com.worldventures.dreamtrips.modules.common.model.FlagData;
 import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.common.presenter.delegate.UidItemDelegate;
 import com.worldventures.dreamtrips.modules.common.view.BlockingProgressView;
-import com.worldventures.dreamtrips.modules.feed.api.MarkNotificationAsReadCommand;
 import com.worldventures.dreamtrips.modules.feed.event.ItemFlaggedEvent;
 import com.worldventures.dreamtrips.modules.feed.event.LoadFlagEvent;
+import com.worldventures.dreamtrips.modules.feed.service.NotificationFeedInteractor;
 import com.worldventures.dreamtrips.modules.feed.service.command.GetUserTimelineCommand;
+import com.worldventures.dreamtrips.modules.feed.service.command.MarkNotificationAsReadCommand;
 import com.worldventures.dreamtrips.modules.friends.janet.ActOnFriendRequestCommand;
 import com.worldventures.dreamtrips.modules.friends.janet.AddFriendCommand;
 import com.worldventures.dreamtrips.modules.friends.janet.FriendsInteractor;
@@ -45,6 +46,7 @@ public class UserPresenter extends ProfilePresenter<UserPresenter.View, User> {
 
    @Inject CirclesInteractor circlesInteractor;
    @Inject FriendsInteractor friendsInteractor;
+   @Inject NotificationFeedInteractor notificationFeedInteractor;
    @Inject NotificationDelegate notificationDelegate;
    @Inject StartChatDelegate startSingleChatDelegate;
    @Inject FlagsInteractor flagsInteractor;
@@ -78,10 +80,9 @@ public class UserPresenter extends ProfilePresenter<UserPresenter.View, User> {
    @Override
    public void onStart() {
       super.onStart();
-      if (notificationId != UserBundle.NO_NOTIFICATION) {
-         doRequest(new MarkNotificationAsReadCommand(notificationId), aVoid -> {
-         });
-      }
+      if (notificationId != UserBundle.NO_NOTIFICATION)
+         notificationFeedInteractor.markNotificationPipe()
+               .send(new MarkNotificationAsReadCommand(notificationId));
       if (acceptFriend) {
          acceptClicked();
          acceptFriend = false;

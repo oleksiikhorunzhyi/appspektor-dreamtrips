@@ -52,7 +52,6 @@ import com.worldventures.dreamtrips.modules.settings.SettingsModule;
 import com.worldventures.dreamtrips.modules.trips.TripsModule;
 import com.worldventures.dreamtrips.modules.tripsimages.TripsImagesModule;
 import com.worldventures.dreamtrips.modules.video.VideoModule;
-import com.worldventures.dreamtrips.modules.video.api.DownloadFileListener;
 import com.worldventures.dreamtrips.modules.video.presenter.PresentationVideosPresenter;
 
 import java.util.ArrayList;
@@ -67,7 +66,7 @@ import dagger.Provides;
 @Module(
       injects = {ActivityPresenter.class, LaunchActivityPresenter.class, MainActivityPresenter.class, Presenter.class, SharePresenter.class, TermsConditionsDialogPresenter.class, TermsConditionsDialog.class,
 
-            LaunchActivity.class, MainActivity.class, PlayerActivity.class, ShareFragment.class, Player360Activity.class, FilterableArrayListAdapter.class, DraggableArrayListAdapter.class, DownloadFileListener.class, PresentationVideosPresenter.class, MessengerActivity.class, PodcastPlayerActivity.class, DtlActivity.class, ComponentActivity.class, ComponentPresenter.class, CopyFileCommand.class, ProgressDialogFragment.class, MessageDialogFragment.class, PhotoPickerLayout.class,
+            LaunchActivity.class, MainActivity.class, PlayerActivity.class, ShareFragment.class, Player360Activity.class, FilterableArrayListAdapter.class, DraggableArrayListAdapter.class, PresentationVideosPresenter.class, MessengerActivity.class, PodcastPlayerActivity.class, DtlActivity.class, ComponentActivity.class, ComponentPresenter.class, CopyFileCommand.class, ProgressDialogFragment.class, MessageDialogFragment.class, PhotoPickerLayout.class,
 
             DialogFragmentNavigator.NavigationDialogFragment.class, BaseImageFragment.class, BaseImagePresenter.class, BaseDialogFragmentWithPresenter.class,
             //

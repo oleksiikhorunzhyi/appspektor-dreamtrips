@@ -1,6 +1,6 @@
 package com.worldventures.dreamtrips.modules.membership.service;
 
-import com.worldventures.dreamtrips.modules.membership.command.PodcastCommand;
+import com.worldventures.dreamtrips.modules.membership.command.GetPodcastsCommand;
 
 import javax.inject.Inject;
 
@@ -10,14 +10,14 @@ import rx.schedulers.Schedulers;
 
 public class PodcastsInteractor {
 
-   private final ActionPipe<PodcastCommand> podcastsActionPipe;
+   private final ActionPipe<GetPodcastsCommand> podcastsActionPipe;
 
    @Inject
    public PodcastsInteractor(Janet janet) {
-      this.podcastsActionPipe = janet.createPipe(PodcastCommand.class, Schedulers.io());
+      this.podcastsActionPipe = janet.createPipe(GetPodcastsCommand.class, Schedulers.io());
    }
 
-   public ActionPipe<PodcastCommand> podcastsActionPipe() {
+   public ActionPipe<GetPodcastsCommand> podcastsActionPipe() {
       return podcastsActionPipe;
    }
 }

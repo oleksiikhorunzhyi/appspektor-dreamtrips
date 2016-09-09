@@ -15,6 +15,9 @@ import com.worldventures.dreamtrips.modules.common.api.janet.command.CirclesComm
 import com.worldventures.dreamtrips.modules.common.api.janet.command.ClearMemoryStorageCommand;
 import com.worldventures.dreamtrips.modules.common.api.janet.command.SubscribeToPushNotificationsCommand;
 import com.worldventures.dreamtrips.modules.common.api.janet.command.TripsFilterDataCommand;
+import com.worldventures.dreamtrips.modules.common.command.DeleteCachedEntityCommand;
+import com.worldventures.dreamtrips.modules.common.command.DownloadCachedEntityCommand;
+import com.worldventures.dreamtrips.modules.common.command.ResetCachedEntitiesInProgressCommand;
 import com.worldventures.dreamtrips.modules.feed.service.command.FeedByHashtagCommand;
 import com.worldventures.dreamtrips.modules.feed.service.command.GetAccountFeedCommand;
 import com.worldventures.dreamtrips.modules.feed.service.command.GetAccountTimelineCommand;
@@ -31,7 +34,7 @@ import com.worldventures.dreamtrips.modules.friends.janet.AcceptAllFriendRequest
 import com.worldventures.dreamtrips.modules.friends.janet.ActOnFriendRequestCommand;
 import com.worldventures.dreamtrips.modules.friends.janet.AddFriendCommand;
 import com.worldventures.dreamtrips.modules.friends.janet.DeleteFriendRequestCommand;
-import com.worldventures.dreamtrips.modules.membership.command.PodcastCommand;
+import com.worldventures.dreamtrips.modules.membership.command.GetPodcastsCommand;
 import com.worldventures.dreamtrips.modules.settings.command.SettingsCommand;
 import com.worldventures.dreamtrips.modules.trips.command.GetActivitiesCommand;
 import com.worldventures.dreamtrips.modules.trips.command.GetRegionsCommand;
@@ -44,7 +47,7 @@ import dagger.Module;
       UploaderyImageCommand.class, SimpleUploaderyCommand.class, BucketListCommand.class, DeleteItemPhotoCommand.class,
       FindBucketItemByPhotoCommand.class, AddBucketItemPhotoCommand.class, MergeBucketItemPhotosWithStorageCommand.class,
       TripsFilterDataCommand.class, CirclesCommand.class, GetCommentsCommand.class,
-      LoginCommand.class, UpdateUserCommand.class, PodcastCommand.class, SuggestedPhotoCommand.class,
+      LoginCommand.class, UpdateUserCommand.class, GetPodcastsCommand.class, SuggestedPhotoCommand.class,
       GetAccountFeedCommand.Refresh.class, GetAccountFeedCommand.LoadNext.class, GetAccountTimelineCommand.Refresh.class,
       GetAccountTimelineCommand.LoadNext.class, GetUserTimelineCommand.Refresh.class, GetUserTimelineCommand.LoadNext.class,
       FeedByHashtagCommand.Refresh.class, FeedByHashtagCommand.LoadNext.class,
@@ -56,5 +59,6 @@ import dagger.Module;
       SettingsCommand.class, DeleteFriendRequestCommand.class, AcceptAllFriendRequestsCommand.class, AddFriendCommand.class,
       DeleteFriendRequestCommand.class, ActOnFriendRequestCommand.Accept.class, ActOnFriendRequestCommand.Reject.class,
       GetNotificationsCommand.class, MarkNotificationsAsReadCommand.class, MarkNotificationAsReadCommand.class,
+      DeleteCachedEntityCommand.class, DownloadCachedEntityCommand.class, ResetCachedEntitiesInProgressCommand.class
 }, complete = false, library = true)
 public class SocialJanetCommandModule {}

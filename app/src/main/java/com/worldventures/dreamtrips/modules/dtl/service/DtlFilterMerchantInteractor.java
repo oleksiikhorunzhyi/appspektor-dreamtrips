@@ -12,18 +12,17 @@ import rx.schedulers.Schedulers;
 public class DtlFilterMerchantInteractor {
 
    private final ActionPipe<DtlFilterDataAction> filterDataPipe;
-
    private final ActionPipe<DtlFilterMerchantsAction> filterMerchantsPipe;
 
-
-   public DtlFilterMerchantInteractor(DtlMerchantInteractor dtlMerchantInteractor, DtlLocationInteractor locationInteractor, LocationDelegate locationDelegate, Janet janet) {
+   public DtlFilterMerchantInteractor(DtlMerchantInteractor dtlMerchantInteractor,
+         DtlLocationInteractor locationInteractor, LocationDelegate locationDelegate, Janet janet) {
       filterMerchantsPipe = janet.createPipe(DtlFilterMerchantsAction.class, Schedulers.io());
       filterDataPipe = janet.createPipe(DtlFilterDataAction.class, Schedulers.io());
 
       filterDataPipe.send(DtlFilterDataAction.init());
       filterDataPipe.observeSuccess()
-            .subscribe(action -> filterMerchantsPipe.send(new DtlFilterMerchantsAction(action.getResult(), dtlMerchantInteractor
-                  .merchantsActionPipe(), locationInteractor.locationPipe(), locationDelegate)));
+            .subscribe(action -> filterMerchantsPipe.send(new DtlFilterMerchantsAction(action.getResult(),
+                  dtlMerchantInteractor.merchantsActionPipe(), locationInteractor.locationPipe(), locationDelegate)));
    }
 
    public ActionPipe<DtlFilterDataAction> filterDataPipe() {

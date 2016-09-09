@@ -74,11 +74,13 @@ public class DtlMerchantInteractor {
 
    //TODO: move to action
    private void tryUpdateLocation(List<DtlMerchant> dtlMerchants) {
-      locationInteractor.locationPipe().createObservableResult(DtlLocationCommand.last()).filter(command -> {
-         LocationSourceType sourceType = command.getResult().getLocationSourceType();
-         return (sourceType == LocationSourceType.FROM_MAP || sourceType == LocationSourceType.NEAR_ME) && !dtlMerchants
-               .isEmpty();
-      }).map(DtlLocationCommand::getResult).subscribe(location -> {
+      locationInteractor.locationPipe().observeSuccessWithReplay()
+            .filter(command -> {
+               LocationSourceType sourceType = command.getResult().getLocationSourceType();
+               return (sourceType == LocationSourceType.FROM_MAP || sourceType == LocationSourceType.NEAR_ME) && !dtlMerchants
+                     .isEmpty();
+            })
+            .map(DtlLocationCommand::getResult).subscribe(location -> {
          DtlMerchant nearestMerchant = Queryable.from(dtlMerchants).map(merchant -> {
             merchant.setDistance(DtlLocationHelper.calculateDistance(location.getCoordinates()
                   .asLatLng(), merchant.getCoordinates().asLatLng()));

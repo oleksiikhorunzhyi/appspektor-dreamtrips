@@ -55,7 +55,7 @@ public class DtlFilterMerchantsAction extends Command<List<DtlMerchant>> {
    }
 
    private Observable<LatLng> getSearchLocation() {
-      return locationActionPipe.createObservableResult(DtlLocationCommand.last())
+      return locationActionPipe.observeSuccessWithReplay()
             .filter(DtlLocationCommand::isResultDefined)
             .map(DtlLocationCommand::getResult)
             .distinct(DtlLocation::getCoordinates)

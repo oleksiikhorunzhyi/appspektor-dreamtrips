@@ -1,59 +1,45 @@
 package com.worldventures.dreamtrips.modules.dtl.service.action;
 
-import com.worldventures.dreamtrips.core.api.action.ValueCommandAction;
-import com.worldventures.dreamtrips.core.janet.cache.CacheOptions;
-import com.worldventures.dreamtrips.core.janet.cache.CachedAction;
-import com.worldventures.dreamtrips.core.janet.cache.ImmutableCacheOptions;
+import com.worldventures.dreamtrips.core.janet.dagger.InjectableAction;
 import com.worldventures.dreamtrips.modules.dtl.model.LocationSourceType;
 import com.worldventures.dreamtrips.modules.dtl.model.location.DtlLocation;
+import com.worldventures.dreamtrips.modules.dtl.service.AttributesInteractor;
+import com.worldventures.dreamtrips.modules.dtl.service.DtlFilterMerchantInteractor;
 
-import io.techery.janet.ActionHolder;
+import javax.inject.Inject;
+
+import io.techery.janet.Command;
 import io.techery.janet.command.annotations.CommandAction;
 
 @CommandAction
-public class DtlLocationCommand extends ValueCommandAction<DtlLocation> implements CachedAction<DtlLocation> {
+public class DtlLocationCommand extends Command<DtlLocation> implements InjectableAction {
 
-   private boolean fromCache;
+   @Inject AttributesInteractor attributesInteractor;
+   @Inject DtlFilterMerchantInteractor filterMerchantInteractor;
 
-   private DtlLocationCommand() {
-      super(DtlLocation.UNDEFINED);
-      fromCache = true;
-   }
-
-   private DtlLocationCommand(DtlLocation location) {
-      super(location);
-   }
-
-   public static DtlLocationCommand last() {
-      return new DtlLocationCommand();
-   }
+   private final DtlLocation dtlLocation;
 
    public static DtlLocationCommand change(DtlLocation location) {
       return new DtlLocationCommand(location);
    }
 
+   public static DtlLocationCommand clear() {
+      return change(DtlLocation.UNDEFINED);
+   }
+
+   private DtlLocationCommand(DtlLocation dtlLocation) {
+      this.dtlLocation = dtlLocation;
+   }
+
+   @Override
+   protected void run(CommandCallback<DtlLocation> callback) throws Throwable {
+      filterMerchantInteractor.filterMerchantsActionPipe().clearReplays();
+      attributesInteractor.attributesPipe().clearReplays();
+      callback.onSuccess(dtlLocation);
+      attributesInteractor.attributesPipe().send(new AttributesAction());
+   }
+
    public boolean isResultDefined() {
       return getResult() != null && getResult().getLocationSourceType() != LocationSourceType.UNDEFINED;
-   }
-
-   ///////////////////////////////////////////////////////////////////////////
-   // Caching
-   ///////////////////////////////////////////////////////////////////////////
-
-   @Override
-   public DtlLocation getCacheData() {
-      return getResult();
-   }
-
-   @Override
-   public void onRestore(ActionHolder holder, DtlLocation cache) {
-      if (cache.getLocationSourceType() != LocationSourceType.UNDEFINED) {
-         holder.newAction(new DtlLocationCommand(cache));
-      }
-   }
-
-   @Override
-   public CacheOptions getCacheOptions() {
-      return ImmutableCacheOptions.builder().restoreFromCache(fromCache).saveToCache(!fromCache).build();
    }
 }

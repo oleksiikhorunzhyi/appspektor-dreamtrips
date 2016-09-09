@@ -38,7 +38,7 @@ public class DtlAnalyticsCommand extends Command<Void> implements InjectableActi
    @Override
    protected void run(CommandCallback<Void> callback) throws Throwable {
       dtlLocationInteractor.locationPipe()
-            .createObservableResult(DtlLocationCommand.last())
+            .observeSuccessWithReplay()
             .map(DtlLocationCommand::getResult)
             .map(dtlLocation -> {
                if (dtlLocation.getLocationSourceType() == LocationSourceType.EXTERNAL) {

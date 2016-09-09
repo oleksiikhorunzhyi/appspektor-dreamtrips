@@ -24,7 +24,7 @@ public class DtlLocationInteractor {
       searchLocationPipe.observe().subscribe(new ActionStateSubscriber<DtlSearchLocationAction>().onStart(action -> {
          nearbyLocationPipe.cancelLatest();
       }));
-      locationPipe.send(DtlLocationCommand.last());
+      locationPipe.send(DtlLocationCommand.clear());
    }
 
    public ActionPipe<DtlLocationCommand> locationPipe() {

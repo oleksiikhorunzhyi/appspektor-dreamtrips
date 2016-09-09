@@ -73,7 +73,7 @@ public class DtlMerchantsPresenterImpl extends DtlPresenterImpl<DtlMerchantsScre
       connectFilterDataChanges();
       //
       locationInteractor.locationPipe()
-            .createObservableResult(DtlLocationCommand.last())
+            .observeSuccessWithReplay()
             .filter(command -> !this.initialized)
             .map(DtlLocationCommand::getResult)
             .compose(bindViewIoToMainComposer())
@@ -171,7 +171,7 @@ public class DtlMerchantsPresenterImpl extends DtlPresenterImpl<DtlMerchantsScre
             .first()
             .map(DtlFilterDataAction::getResult)
             .map(DtlFilterData::getSearchQuery), locationInteractor.locationPipe()
-            .createObservableResult(DtlLocationCommand.last())
+            .observeSuccessWithReplay()
             .map(DtlLocationCommand::getResult), Pair::new)
             .compose(bindViewIoToMainComposer())
             .take(1)

@@ -1,13 +1,13 @@
 package com.worldventures.dreamtrips.modules.dtl.service.action;
 
-import android.support.annotation.Nullable;
-
 import com.worldventures.dreamtrips.api.dtl.attributes.AttributesHttpAction;
 import com.worldventures.dreamtrips.api.dtl.attributes.model.AttributeType;
 import com.worldventures.dreamtrips.core.janet.JanetModule;
 import com.worldventures.dreamtrips.core.janet.dagger.InjectableAction;
 import com.worldventures.dreamtrips.modules.dtl.model.mapping.AttributeMapper;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.Attribute;
+import com.worldventures.dreamtrips.modules.dtl.service.DtlFilterMerchantInteractor;
+import com.worldventures.dreamtrips.modules.dtl.service.DtlLocationInteractor;
 
 import java.util.List;
 
@@ -17,31 +17,34 @@ import javax.inject.Named;
 import io.techery.janet.Command;
 import io.techery.janet.Janet;
 import io.techery.janet.command.annotations.CommandAction;
+import rx.Observable;
 
 @CommandAction
 public class AttributesAction extends Command<List<Attribute>> implements InjectableAction {
 
    @Inject @Named(JanetModule.JANET_API_LIB) Janet janet;
-
-   @Nullable private final String ll;
-   @Nullable private final Double radius;
-
-   private AttributesAction(String ll, Double radius) {
-      this.ll = ll;
-      this.radius = radius;
-   }
-
-   public static AttributesAction load(String ll, Double radius) {
-      return new AttributesAction(ll, radius);
-   }
+   @Inject DtlFilterMerchantInteractor filterInteractor;
+   @Inject DtlLocationInteractor dtlLocationInteractor;
 
    @Override
    protected void run(CommandCallback<List<Attribute>> callback) throws Throwable {
-      janet.createPipe(AttributesHttpAction.class)
-            .createObservableResult(
-                  new AttributesHttpAction(ll, radius, AttributeType.AMENITY.toString().toLowerCase()))
-            .map(AttributesHttpAction::attributes)
-            .compose(new AttributeMapper())
+      callback.onProgress(0);
+      Observable.combineLatest(
+            dtlLocationInteractor.locationPipe()
+                  .observeSuccessWithReplay()
+                  .take(1)
+                  .map(dtlLocationCommand -> dtlLocationCommand.getResult().getCoordinates()),
+            filterInteractor.filterDataPipe()
+                  .observeSuccessWithReplay()
+                  .take(1)
+                  .map(DtlFilterDataAction::getResult),
+            (location, dtlFilterData) ->
+                     new AttributesHttpAction(location.getLat() + "," + location.getLng(),
+                        dtlFilterData.getMaxDistance(), AttributeType.AMENITY.toString().toLowerCase()))
+            .flatMap(attributesHttpAction -> janet.createPipe(AttributesHttpAction.class)
+                  .createObservableResult(attributesHttpAction)
+                  .map(AttributesHttpAction::attributes)
+                  .compose(new AttributeMapper()))
             .subscribe(callback::onSuccess, callback::onFail);
    }
 }

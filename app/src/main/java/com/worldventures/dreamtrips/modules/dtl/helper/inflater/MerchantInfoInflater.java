@@ -8,7 +8,7 @@ import android.widget.TextView;
 import com.trello.rxlifecycle.RxLifecycle;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.utils.ViewUtils;
-import com.worldventures.dreamtrips.modules.dtl.helper.DtlMerchantHelper;
+import com.worldventures.dreamtrips.modules.dtl.helper.MerchantHelper;
 import com.worldventures.dreamtrips.modules.dtl.model.DistanceType;
 
 import butterknife.InjectView;
@@ -36,22 +36,23 @@ public class MerchantInfoInflater extends MerchantDataInflater {
    }
 
    private void setInfo() {
-      pricing.setRating(merchant.getBudget());
+      pricing.setRating(merchant.budget());
       //
-      boolean hasDistance = merchant.getDistance() != 0.0d;
-      boolean hasOperationDays = merchant.hasPoints() && merchant.getOperationDays() != null && !merchant.getOperationDays()
-            .isEmpty();
-      boolean hasCategories = !TextUtils.isEmpty(DtlMerchantHelper.getCategories(merchant));
+      boolean hasDistance = merchant.distance() != null;
+      boolean hasOperationDays = MerchantHelper.merchantHasOperationDays(merchant);
+      boolean hasCategories = !TextUtils.isEmpty(MerchantHelper.getCategories(merchant));
 
-      CharSequence distanceText = hasDistance ? resources.getString(R.string.distance_caption_format, merchant.getDistance(), resources
-            .getString(merchant.getDistanceType() == DistanceType.MILES ? R.string.mi : R.string.km)) : "";
-      CharSequence categoriesText = hasCategories ? DtlMerchantHelper.getCategories(merchant) : "";
+      // TODO Think about distance !!
+//      CharSequence distanceText = hasDistance ? resources.getString(R.string.distance_caption_format, merchant.getDistance(), resources
+//            .getString(merchant.getDistanceType() == DistanceType.MILES ? R.string.mi : R.string.km)) : "";
+      CharSequence distanceText = hasDistance ? resources.getString(R.string.distance_caption_format, merchant.distance(), "") : "";
+      CharSequence categoriesText = hasCategories ? MerchantHelper.getCategories(merchant) : "";
 
       ViewUtils.setTextOrHideView(distance, distanceText);
       ViewUtils.setTextOrHideView(categories, categoriesText);
 
       if (hasOperationDays) {
-         Observable.fromCallable(() -> DtlMerchantHelper.getOperationalTime(rootView.getContext(), merchant))
+         Observable.fromCallable(() -> MerchantHelper.getOperationalTime(rootView.getContext(), merchant))
                .compose(RxLifecycle.bindView(rootView))
                .subscribe(operationalTime::setText, ex -> operationalTime.setVisibility(View.GONE));
       } else ViewUtils.setViewVisibility(operationalTime, View.GONE);

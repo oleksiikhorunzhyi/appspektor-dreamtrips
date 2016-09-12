@@ -21,9 +21,10 @@ import com.worldventures.dreamtrips.core.permission.PermissionDispatcher;
 import com.worldventures.dreamtrips.core.permission.PermissionSubscriber;
 import com.worldventures.dreamtrips.core.rx.RxBaseFragmentWithArgs;
 import com.worldventures.dreamtrips.modules.common.view.custom.ImageryDraweeView;
-import com.worldventures.dreamtrips.modules.dtl.bundle.MerchantIdBundle;
+import com.worldventures.dreamtrips.modules.dtl.bundle.MerchantBundle;
 import com.worldventures.dreamtrips.modules.dtl.helper.DtlEnrollWizard;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchant;
+import com.worldventures.dreamtrips.modules.dtl.model.merchant.Merchant;
 import com.worldventures.dreamtrips.modules.dtl.model.transaction.DtlTransaction;
 import com.worldventures.dreamtrips.modules.dtl.presenter.DtlScanQrCodePresenter;
 
@@ -37,7 +38,7 @@ import me.dm7.barcodescanner.zxing.ZXingScannerView;
 import timber.log.Timber;
 
 @Layout(R.layout.fragment_scan_qr)
-public class DtlScanQrCodeFragment extends RxBaseFragmentWithArgs<DtlScanQrCodePresenter, MerchantIdBundle> implements DtlScanQrCodePresenter.View, ZXingScannerView.ResultHandler {
+public class DtlScanQrCodeFragment extends RxBaseFragmentWithArgs<DtlScanQrCodePresenter, MerchantBundle> implements DtlScanQrCodePresenter.View, ZXingScannerView.ResultHandler {
 
    @Inject @Named(RouteCreatorModule.DTL_TRANSACTION) RouteCreator<DtlTransaction> routeCreator;
    @Inject PermissionDispatcher permissionDispatcher;
@@ -55,7 +56,7 @@ public class DtlScanQrCodeFragment extends RxBaseFragmentWithArgs<DtlScanQrCodeP
 
    @Override
    protected DtlScanQrCodePresenter createPresenter(Bundle savedInstanceState) {
-      return new DtlScanQrCodePresenter(getArgs().getMerchantId());
+      return new DtlScanQrCodePresenter(getArgs().getMerchant());
    }
 
    @Override
@@ -89,14 +90,14 @@ public class DtlScanQrCodeFragment extends RxBaseFragmentWithArgs<DtlScanQrCodeP
    }
 
    @Override
-   public void setMerchant(DtlMerchant dtlMerchant) {
-      name.setText(dtlMerchant.getDisplayName());
-      if (!TextUtils.isEmpty(dtlMerchant.getAddress1())) {
-         address.setText(String.format("%s, %s, %s, %s", dtlMerchant.getAddress1(), dtlMerchant.getCity(), dtlMerchant.getState(), dtlMerchant
-               .getZip()));
+   public void setMerchant(Merchant merchant) {
+      name.setText(merchant.displayName());
+      if (!TextUtils.isEmpty(merchant.address())) {
+         address.setText(String.format("%s, %s, %s, %s", merchant.address(), merchant.city(), merchant.state(), merchant
+               .zip()));
       }
-      if (!dtlMerchant.getImages().isEmpty()) {
-         merchantImage.setImageUrl(dtlMerchant.getImages().get(0).getImagePath());
+      if (merchant.images() != null && !merchant.images().isEmpty()) {
+         merchantImage.setImageUrl(merchant.images().get(0).getImagePath());
       }
    }
 

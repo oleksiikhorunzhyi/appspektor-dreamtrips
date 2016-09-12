@@ -23,11 +23,12 @@ import com.worldventures.dreamtrips.modules.dtl.analytics.MerchantMapDestination
 import com.worldventures.dreamtrips.modules.dtl.analytics.PointsEstimatorViewEvent;
 import com.worldventures.dreamtrips.modules.dtl.analytics.ShareEventProvider;
 import com.worldventures.dreamtrips.modules.dtl.analytics.SuggestMerchantEvent;
-import com.worldventures.dreamtrips.modules.dtl.bundle.MerchantIdBundle;
+import com.worldventures.dreamtrips.modules.dtl.bundle.MerchantBundle;
 import com.worldventures.dreamtrips.modules.dtl.bundle.PointsEstimationDialogBundle;
 import com.worldventures.dreamtrips.modules.dtl.event.DtlTransactionSucceedEvent;
+import com.worldventures.dreamtrips.modules.dtl.helper.MerchantHelper;
 import com.worldventures.dreamtrips.modules.dtl.location.LocationDelegate;
-import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchant;
+import com.worldventures.dreamtrips.modules.dtl.model.merchant.Merchant;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.MerchantMedia;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.offer.Offer;
 import com.worldventures.dreamtrips.modules.dtl.model.transaction.DtlTransaction;
@@ -56,10 +57,10 @@ public class DtlDetailsPresenterImpl extends DtlPresenterImpl<DtlDetailsScreen, 
    @Inject DtlTransactionInteractor transactionInteractor;
    @Inject protected PhotoUploadingManagerS3 photoUploadingManagerS3;
    //
-   protected DtlMerchant merchant;
-   protected List<Integer> preExpandOffers;
+   protected Merchant merchant;
+   protected List<String> preExpandOffers;
 
-   public DtlDetailsPresenterImpl(Context context, Injector injector, DtlMerchant merchant, List<Integer> preExpandOffers) {
+   public DtlDetailsPresenterImpl(Context context, Injector injector, Merchant merchant, List<String> preExpandOffers) {
       super(context);
       injector.inject(this);
       this.merchant = merchant;
@@ -85,7 +86,7 @@ public class DtlDetailsPresenterImpl extends DtlPresenterImpl<DtlDetailsScreen, 
 
    @Override
    public void onSaveInstanceState(Bundle bundle) {
-      state.setOffers(getView().getExpandedOffers());
+      state.setOffersIds(getView().getExpandedOffersIds());
       state.setHoursViewExpanded(getView().isHoursViewExpanded());
       super.onSaveInstanceState(bundle);
    }
@@ -100,9 +101,9 @@ public class DtlDetailsPresenterImpl extends DtlPresenterImpl<DtlDetailsScreen, 
    public void onVisibilityChanged(int visibility) {
       super.onVisibilityChanged(visibility);
       if (visibility == View.VISIBLE) {
-         getView().setMap(merchant);
+         getView().setupMap();
       }
-      if (visibility == View.VISIBLE && !merchant.hasNoOffers()) {
+      if (visibility == View.VISIBLE && MerchantHelper.merchantHasOffers(merchant)) {
          processTransaction();
       }
    }
@@ -119,8 +120,8 @@ public class DtlDetailsPresenterImpl extends DtlPresenterImpl<DtlDetailsScreen, 
    }
 
    protected void preExpandOffers() {
-      boolean isRestore = getViewState().getOffers() != null;
-      final List<Integer> offers = isRestore ? getViewState().getOffers() : this.preExpandOffers;
+      boolean isRestore = getViewState().getOffersIds() != null;
+      final List<String> offers = isRestore ? getViewState().getOffersIds() : this.preExpandOffers;
       //
       getView().expandOffers(offers);
    }
@@ -133,7 +134,7 @@ public class DtlDetailsPresenterImpl extends DtlPresenterImpl<DtlDetailsScreen, 
 
    private void tryHideSuggestMerchantButton() {
       boolean repToolsAvailable = featureManager.available(Feature.REP_SUGGEST_MERCHANT);
-      if (merchant.hasNoOffers()) {
+      if (!MerchantHelper.merchantHasOffers(merchant)) {
          getView().setSuggestMerchantButtonAvailable(repToolsAvailable);
       } else processTransaction();
    }
@@ -226,14 +227,14 @@ public class DtlDetailsPresenterImpl extends DtlPresenterImpl<DtlDetailsScreen, 
 
    @Override
    public void onEstimationClick() {
-      getView().showEstimationDialog(new PointsEstimationDialogBundle(merchant.getId()));
+      getView().showEstimationDialog(new PointsEstimationDialogBundle(merchant));
    }
 
    @Override
    public void onMerchantClick() {
       analyticsInteractor.dtlAnalyticsCommandPipe()
             .send(DtlAnalyticsCommand.create(new SuggestMerchantEvent(merchant)));
-      getView().openSuggestMerchant(new MerchantIdBundle(merchant.getId()));
+      getView().openSuggestMerchant(new MerchantBundle(merchant));
    }
 
    @Override

@@ -28,13 +28,14 @@ import com.worldventures.dreamtrips.core.utils.GraphicUtils;
 import com.worldventures.dreamtrips.core.utils.LocaleHelper;
 import com.worldventures.dreamtrips.core.utils.ViewUtils;
 import com.worldventures.dreamtrips.modules.common.view.custom.ShowMoreTextView;
-import com.worldventures.dreamtrips.modules.dtl.helper.DtlMerchantHelper;
+import com.worldventures.dreamtrips.modules.dtl.helper.MerchantHelper;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.MerchantMedia;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.offer.Offer;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.operational_hour.OperationDay;
 import com.worldventures.dreamtrips.modules.dtl.view.custom.ExpandableOfferView;
 
 import java.lang.ref.WeakReference;
+import java.sql.Struct;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -60,7 +61,7 @@ public class MerchantOffersInflater extends MerchantDataInflater {
    @Inject LocaleHelper localeHelper;
 
    private List<OfferClickListener> offerClickListeners = new ArrayList<>();
-   private Map<Integer, WeakReference<ExpandableOfferView>> cashedViewMap = new HashMap<>();
+   private Map<String, WeakReference<ExpandableOfferView>> cashedViewMap = new HashMap<>();
 
    public MerchantOffersInflater(Injector injector) {
       injector.inject(this);
@@ -90,31 +91,31 @@ public class MerchantOffersInflater extends MerchantDataInflater {
     *
     * @param offers offers to expand
     */
-   public void expandOffers(List<Integer> offers) {
+   public void expandOffers(List<String> offers) {
       Preconditions.checkNotNull(merchant, "Merchant not set");
       //
       if (offers == null || cashedViewMap.size() == 0) return;
       //
-      Queryable.from(offers).filter(offer -> cashedViewMap.get(offer) != null).filter(offer -> cashedViewMap.get(offer)
+      Queryable.from(offers).filter(id -> cashedViewMap.get(id) != null).filter(id -> cashedViewMap.get(id)
             .get() != null).forEachR(entry -> cashedViewMap.get(entry).get().showWithoutAnimation());
    }
 
-   public List<Integer> getExpandedOffers() {
+   public List<String> getExpandedOffers() {
       return Queryable.from(cashedViewMap.keySet())
-            .filter(index -> cashedViewMap.get(index) != null)
-            .filter(index -> cashedViewMap.get(index).get() != null)
-            .filter(index -> cashedViewMap.get(index).get().isOpened())
+            .filter(id -> cashedViewMap.get(id) != null)
+            .filter(id -> cashedViewMap.get(id).get() != null)
+            .filter(id -> cashedViewMap.get(id).get().isOpened())
             .toList();
    }
 
    private void setType() {
-      ViewUtils.setViewVisibility(earnWrapper, !merchant.hasNoOffers() ? View.VISIBLE : View.GONE);
-      ViewUtils.setViewVisibility(merchantWrapper, merchant.hasNoOffers() ? View.VISIBLE : View.GONE);
-      ViewUtils.setViewVisibility(perkDivider, merchant.hasNoOffers() ? View.GONE : View.VISIBLE);
+      ViewUtils.setViewVisibility(earnWrapper, MerchantHelper.merchantHasOffers(merchant)  ? View.VISIBLE : View.GONE);
+      ViewUtils.setViewVisibility(merchantWrapper, !MerchantHelper.merchantHasOffers(merchant) ? View.VISIBLE : View.GONE);
+      ViewUtils.setViewVisibility(perkDivider, !MerchantHelper.merchantHasOffers(merchant) ? View.GONE : View.VISIBLE);
    }
 
    private void setImage() {
-      MerchantMedia media = Queryable.from(merchant.getImages()).firstOrDefault();
+      MerchantMedia media = Queryable.from(merchant.images() != null ? merchant.images() : Queryable.empty()).firstOrDefault();
       if (media == null) return;
       //
       RxView.layoutChangeEvents(cover)
@@ -130,15 +131,15 @@ public class MerchantOffersInflater extends MerchantDataInflater {
    }
 
    private void setDescriptions() {
-      description.setText(Html.fromHtml(merchant.getDescription()));
+      description.setText(Html.fromHtml(merchant.description()));
       description.setMovementMethod(new LinkMovementMethod());
       //
-      ViewUtils.setViewVisibility(descriptionHeader, TextUtils.isEmpty(merchant.getDescription()) ? View.GONE : View.VISIBLE);
-      ViewUtils.setViewVisibility(legalTextView, merchant.getDisclaimers() != null ? View.GONE : View.VISIBLE);
+      ViewUtils.setViewVisibility(descriptionHeader, TextUtils.isEmpty(merchant.description()) ? View.GONE : View.VISIBLE);
+      ViewUtils.setViewVisibility(legalTextView, merchant.disclaimers() != null ? View.GONE : View.VISIBLE);
       //
       if (legalTextView.getVisibility() == View.GONE) return;
-      if (merchant.getDisclaimers() != null) {
-         legalTextView.setFullText(TextUtils.join("\n\n", merchant.getDisclaimers()));
+      if (merchant.disclaimers() != null) {
+         legalTextView.setFullText(TextUtils.join("\n\n", merchant.disclaimers()));
       }
       legalTextView.setSimpleListener((view, collapsed) -> {
          if (!collapsed) scrollViewRoot.post(() -> scrollViewRoot.fullScroll(View.FOCUS_DOWN));
@@ -146,24 +147,24 @@ public class MerchantOffersInflater extends MerchantDataInflater {
    }
 
    private void setOffers() {
-      if (merchant.hasNoOffers()) return;
+      if (!MerchantHelper.merchantHasOffers(merchant)) return;
       //
-      List<Offer> offers = merchant.getOffers();
-      for (int index = 0; index < offers.size(); index++) {
-         addOffer(offers.get(index), index);
+      List<Offer> offers = merchant.offers();
+      for (Offer offer : offers) {
+         addOffer(offer);
       }
    }
 
-   private void addOffer(Offer offer, int index) {
-      View view = (offer.type() == OfferType.PERK) ? createAndBindPerkView(offer, index) : createPointView();
-      earnWrapper.addView(view, index);
+   private void addOffer(Offer offer) {
+      View view = (offer.type() == OfferType.PERK) ? createAndBindPerkView(offer, offer.id()) : createPointView();
+      earnWrapper.addView(view);
    }
 
    private View createPointView() {
       return LayoutInflater.from(rootView.getContext()).inflate(R.layout.item_point_view, earnWrapper, false);
    }
 
-   private View createAndBindPerkView(Offer perk, int index) {
+   private View createAndBindPerkView(Offer perk, String id) {
       ExpandableOfferView perkView = (ExpandableOfferView) LayoutInflater.from(rootView.getContext())
             .inflate(R.layout.item_perk_view, earnWrapper, false);
       bindInfo(ButterKnife.<TextView>findById(perkView, R.id.perk_description), perk.description());
@@ -174,14 +175,14 @@ public class MerchantOffersInflater extends MerchantDataInflater {
       bindDisclaimer(perkView, perk);
       patchExpiringBar(perkView, perk);
       //
-      cashedViewMap.put(index, new WeakReference<>(perkView));
+      cashedViewMap.put(id, new WeakReference<>(perkView));
       return perkView;
    }
 
    private void patchExpiringBar(ViewGroup perkView, Offer offerData) {
       AppCompatTextView expirationBarCaption = ButterKnife.<AppCompatTextView>findById(perkView, R.id.expirationBarCaption);
-      if (DtlMerchantHelper.isOfferExpiringSoon(offerData)) {
-         ViewUtils.setTextOrHideView(expirationBarCaption, DtlMerchantHelper.
+      if (MerchantHelper.isOfferExpiringSoon(offerData)) {
+         ViewUtils.setTextOrHideView(expirationBarCaption, MerchantHelper.
                getOfferExpiringCaption(perkView.getContext(), offerData, localeHelper.getDefaultLocale()));
       }
    }

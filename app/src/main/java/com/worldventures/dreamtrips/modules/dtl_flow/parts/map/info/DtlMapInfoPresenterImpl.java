@@ -1,17 +1,23 @@
 package com.worldventures.dreamtrips.modules.dtl_flow.parts.map.info;
 
 import android.content.Context;
+import android.support.annotation.Nullable;
 import android.text.TextUtils;
 import android.util.Pair;
 
 import com.techery.spares.module.Injector;
+import com.worldventures.dreamtrips.api.dtl.merchants.MerchantByIdHttpAction;
+import com.worldventures.dreamtrips.core.rx.composer.IoToMainComposer;
 import com.worldventures.dreamtrips.modules.dtl.analytics.DtlAnalyticsCommand;
 import com.worldventures.dreamtrips.modules.dtl.analytics.MerchantFromSearchEvent;
 import com.worldventures.dreamtrips.modules.dtl.event.DtlMapInfoReadyEvent;
 import com.worldventures.dreamtrips.modules.dtl.event.DtlShowMapInfoEvent;
 import com.worldventures.dreamtrips.modules.dtl.event.ToggleMerchantSelectionEvent;
+import com.worldventures.dreamtrips.modules.dtl.model.mapping.MerchantMapper;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchant;
+import com.worldventures.dreamtrips.modules.dtl.model.merchant.Merchant;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.filter.DtlFilterData;
+import com.worldventures.dreamtrips.modules.dtl.model.merchant.offer.Offer;
 import com.worldventures.dreamtrips.modules.dtl.service.DtlFilterMerchantInteractor;
 import com.worldventures.dreamtrips.modules.dtl.service.DtlLocationInteractor;
 import com.worldventures.dreamtrips.modules.dtl.service.DtlMerchantInteractor;
@@ -25,6 +31,8 @@ import com.worldventures.dreamtrips.modules.dtl_flow.parts.details.DtlMerchantDe
 import javax.inject.Inject;
 
 import flow.Flow;
+import flow.History;
+import flow.path.Path;
 
 public class DtlMapInfoPresenterImpl extends DtlPresenterImpl<DtlMapInfoScreen, ViewState.EMPTY> implements DtlMapInfoPresenter {
 
@@ -55,7 +63,23 @@ public class DtlMapInfoPresenterImpl extends DtlPresenterImpl<DtlMapInfoScreen, 
    public void onMarkerClick() {
       eventBus.post(new ToggleMerchantSelectionEvent(merchant));
       trackIfNeeded();
-      Flow.get(getContext()).set(new DtlMerchantDetailsPath(FlowUtil.currentMaster(getContext()), merchant, null));
+      //loadFullMerchant();
+   }
+
+   // TODO :: load merchant and navigate to details screen
+   private void loadFullMerchant() {
+   }
+
+   private void navigateToDetails(Merchant merchant) {
+      Path path = new DtlMerchantDetailsPath(FlowUtil.currentMaster(getContext()), merchant, null);
+      if (Flow.get(getContext()).getHistory().size() < 2) {
+         Flow.get(getContext()).set(path);
+      } else {
+         History.Builder historyBuilder = Flow.get(getContext()).getHistory().buildUpon();
+         historyBuilder.pop();
+         historyBuilder.push(path);
+         Flow.get(getContext()).setHistory(historyBuilder.build(), Flow.Direction.FORWARD);
+      }
    }
 
    private void trackIfNeeded() {

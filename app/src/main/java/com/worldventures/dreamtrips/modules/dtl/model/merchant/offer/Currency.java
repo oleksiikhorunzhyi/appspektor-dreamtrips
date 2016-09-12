@@ -8,9 +8,11 @@ import com.esotericsoftware.kryo.serializers.CompatibleFieldSerializer;
 import org.immutables.value.Value;
 import org.jetbrains.annotations.Nullable;
 
+import java.io.Serializable;
+
 @DefaultSerializer(CompatibleFieldSerializer.class)
 @Value.Immutable
-public abstract class Currency {
+public abstract class Currency implements Serializable {
 
    public abstract String code();
 

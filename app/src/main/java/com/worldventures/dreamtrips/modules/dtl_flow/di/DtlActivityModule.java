@@ -20,7 +20,7 @@ import com.worldventures.dreamtrips.modules.dtl.view.cell.DtlMerchantExpandableC
 import com.worldventures.dreamtrips.modules.dtl.view.cell.DtlNearbyHeaderCell;
 import com.worldventures.dreamtrips.modules.dtl.view.cell.DtlPerkCell;
 import com.worldventures.dreamtrips.modules.dtl.view.cell.DtlPointsCell;
-import com.worldventures.dreamtrips.modules.dtl.view.cell.DtlWorkingHoursCell;
+import com.worldventures.dreamtrips.modules.dtl.view.cell.WorkingHoursCell;
 import com.worldventures.dreamtrips.modules.dtl.view.cell.adapter.MerchantWorkingHoursAdapter;
 import com.worldventures.dreamtrips.modules.dtl.view.dialog.DtlPointsEstimationFragment;
 import com.worldventures.dreamtrips.modules.dtl.view.fragment.DtlScanQrCodeFragment;
@@ -86,7 +86,7 @@ import dagger.Provides;
             DtlPerkCell.class,
             DtlPointsCell.class,
             DtlLocationChangeCell.class,
-            DtlWorkingHoursCell.class,
+            WorkingHoursCell.class,
             DtlScanReceiptFragment.class,
             DtlScanReceiptPresenter.class,
             DtlPointsEstimationFragment.class,

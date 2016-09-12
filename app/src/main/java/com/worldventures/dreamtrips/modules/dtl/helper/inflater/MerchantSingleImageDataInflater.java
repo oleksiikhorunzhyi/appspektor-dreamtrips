@@ -16,7 +16,7 @@ public class MerchantSingleImageDataInflater extends MerchantCommonDataInflater 
    @Override
    protected void onMerchantApply() {
       super.onMerchantApply();
-      setImage(merchant.getImages());
+      setImage(merchant.images());
    }
 
    private void setImage(List<MerchantMedia> mediaList) {

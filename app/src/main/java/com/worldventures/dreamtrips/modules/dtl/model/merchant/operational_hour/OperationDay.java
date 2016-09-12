@@ -5,11 +5,12 @@ import com.esotericsoftware.kryo.serializers.CompatibleFieldSerializer;
 
 import org.immutables.value.Value;
 
+import java.io.Serializable;
 import java.util.List;
 
 @DefaultSerializer(CompatibleFieldSerializer.class)
 @Value.Immutable
-public abstract class OperationDay {
+public abstract class OperationDay implements Serializable {
 
    public abstract DayOfWeek dayOfWeek();
    public abstract List<OperationHours> operationHours();

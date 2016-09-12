@@ -4,9 +4,9 @@ import android.content.Intent;
 import android.support.annotation.Nullable;
 
 import com.google.android.gms.common.api.Status;
-import com.worldventures.dreamtrips.modules.dtl.bundle.MerchantIdBundle;
+import com.worldventures.dreamtrips.modules.dtl.bundle.MerchantBundle;
 import com.worldventures.dreamtrips.modules.dtl.bundle.PointsEstimationDialogBundle;
-import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchant;
+import com.worldventures.dreamtrips.modules.dtl.model.merchant.Merchant;
 import com.worldventures.dreamtrips.modules.dtl.model.transaction.DtlTransaction;
 import com.worldventures.dreamtrips.modules.dtl_flow.DtlScreen;
 
@@ -16,17 +16,17 @@ public interface DtlDetailsScreen extends DtlScreen {
 
    void showEstimationDialog(PointsEstimationDialogBundle data);
 
-   void openSuggestMerchant(MerchantIdBundle data);
+   void openSuggestMerchant(MerchantBundle data);
 
-   void openTransaction(DtlMerchant DtlMerchant, DtlTransaction dtlTransaction);
+   void openTransaction(Merchant merchant, DtlTransaction dtlTransaction);
 
-   void showSucceed(DtlMerchant DtlMerchant, DtlTransaction dtlTransaction);
+   void showSucceed(Merchant merchant, DtlTransaction dtlTransaction);
 
    void setTransaction(DtlTransaction dtlTransaction);
 
    void setSuggestMerchantButtonAvailable(boolean available);
 
-   void share(DtlMerchant merchant);
+   void share(Merchant merchant);
 
    void locationResolutionRequired(Status status);
 
@@ -36,15 +36,15 @@ public interface DtlDetailsScreen extends DtlScreen {
 
    void showMerchantMap(@Nullable Intent intent);
 
-   void setMerchant(DtlMerchant merchant);
+   void setMerchant(Merchant merchant);
 
-   void setMap(DtlMerchant merchant);
+   void setupMap();
 
-   void expandOffers(List<Integer> positions);
+   void expandOffers(List<String> positions);
 
    void expandHoursView();
 
-   List<Integer> getExpandedOffers();
+   List<String> getExpandedOffersIds();
 
    boolean isHoursViewExpanded();
 }

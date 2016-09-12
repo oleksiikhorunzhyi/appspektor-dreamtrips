@@ -10,13 +10,15 @@ import com.worldventures.dreamtrips.modules.dtl.model.merchant.operational_hour.
 
 import org.immutables.value.Value;
 
+import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 
 @DefaultSerializer(CompatibleFieldSerializer.class)
 @Value.Immutable
-public interface Offer {
+public interface Offer extends Serializable {
 
+   String id();
    OfferType type();
    String title();
    String description();

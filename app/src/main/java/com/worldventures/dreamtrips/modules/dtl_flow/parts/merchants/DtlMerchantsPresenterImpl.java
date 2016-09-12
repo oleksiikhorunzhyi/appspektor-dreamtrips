@@ -5,13 +5,14 @@ import android.support.annotation.Nullable;
 import android.text.TextUtils;
 import android.util.Pair;
 
-import com.innahema.collections.query.queriables.Queryable;
 import com.techery.spares.module.Injector;
 import com.worldventures.dreamtrips.modules.dtl.analytics.DtlAnalyticsCommand;
 import com.worldventures.dreamtrips.modules.dtl.analytics.MerchantFromSearchEvent;
 import com.worldventures.dreamtrips.modules.dtl.analytics.MerchantsListingViewEvent;
 import com.worldventures.dreamtrips.modules.dtl.event.ToggleMerchantSelectionEvent;
+import com.worldventures.dreamtrips.modules.dtl.helper.MerchantHelper;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchant;
+import com.worldventures.dreamtrips.modules.dtl.model.merchant.Merchant;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.filter.DtlFilterData;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.offer.Offer;
 import com.worldventures.dreamtrips.modules.dtl.service.DtlFilterMerchantInteractor;
@@ -21,6 +22,7 @@ import com.worldventures.dreamtrips.modules.dtl.service.action.DtlFilterDataActi
 import com.worldventures.dreamtrips.modules.dtl.service.action.DtlFilterMerchantsAction;
 import com.worldventures.dreamtrips.modules.dtl.service.action.DtlLocationCommand;
 import com.worldventures.dreamtrips.modules.dtl.service.action.DtlMerchantsAction;
+import com.worldventures.dreamtrips.modules.dtl.service.action.MerchantByIdCommand;
 import com.worldventures.dreamtrips.modules.dtl_flow.DtlPresenterImpl;
 import com.worldventures.dreamtrips.modules.dtl_flow.FlowUtil;
 import com.worldventures.dreamtrips.modules.dtl_flow.ViewState;
@@ -28,7 +30,6 @@ import com.worldventures.dreamtrips.modules.dtl_flow.parts.details.DtlMerchantDe
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.location_change.DtlLocationChangePath;
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.map.DtlMapPath;
 
-import java.util.Arrays;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -90,6 +91,12 @@ public class DtlMerchantsPresenterImpl extends DtlPresenterImpl<DtlMerchantsScre
             .map(DtlMerchantsAction::getResult)
             .filter(List::isEmpty)
             .subscribe(s -> showEmptyView(), e -> {});
+      //
+      merchantInteractor.merchantByIdHttpPipe()
+            .observe()
+            .compose(bindViewIoToMainComposer())
+            .subscribe(new ActionStateSubscriber<MerchantByIdCommand>()
+                  .onSuccess(command -> navigateToDetails(command.getResult(), command.getOfferId())));
       //
       locationInteractor.locationPipe()
             .observeSuccessWithReplay()
@@ -165,6 +172,11 @@ public class DtlMerchantsPresenterImpl extends DtlPresenterImpl<DtlMerchantsScre
    }
 
    @Override
+   public void onOfferClick(DtlMerchant dtlMerchant, Offer offer) {
+      loadMerchant(dtlMerchant, offer.id());
+   }
+
+   @Override
    public void merchantClicked(DtlMerchant merchant) {
       Observable.combineLatest(filterInteractor.filterDataPipe()
             .observeSuccessWithReplay()
@@ -180,24 +192,12 @@ public class DtlMerchantsPresenterImpl extends DtlPresenterImpl<DtlMerchantsScre
                analyticsInteractor.dtlAnalyticsCommandPipe()
                      .send(DtlAnalyticsCommand.create(new MerchantFromSearchEvent(pair.first)));
             });
-      navigateToDetails(merchant, null);
+      //
+      loadMerchant(merchant, null);
    }
 
-   private void navigateToDetails(DtlMerchant dtlMerchant, @Nullable Offer dtlOffer) {
-      if (Flow.get(getContext()).getHistory().size() < 2) {
-         Flow.get(getContext())
-               .set(new DtlMerchantDetailsPath(FlowUtil.currentMaster(getContext()), dtlMerchant, dtlOffer == null ? null : findExpandablePosition(dtlMerchant, dtlOffer)));
-      } else {
-         History.Builder historyBuilder = Flow.get(getContext()).getHistory().buildUpon();
-         historyBuilder.pop();
-         historyBuilder.push(new DtlMerchantDetailsPath(FlowUtil.currentMaster(getContext()), dtlMerchant, dtlOffer == null ? null : findExpandablePosition(dtlMerchant, dtlOffer)));
-         Flow.get(getContext()).setHistory(historyBuilder.build(), Flow.Direction.FORWARD);
-      }
-   }
-
-   @Override
-   public void onOfferClick(DtlMerchant dtlMerchant, Offer offer) {
-      navigateToDetails(dtlMerchant, offer);
+   private void loadMerchant(DtlMerchant merchant, @Nullable String expadedOfferId) {
+      merchantInteractor.merchantByIdHttpPipe().send(MerchantByIdCommand.create(merchant.getId(), expadedOfferId));
    }
 
    private void showEmptyView() {
@@ -208,6 +208,19 @@ public class DtlMerchantsPresenterImpl extends DtlPresenterImpl<DtlMerchantsScre
       }
    }
 
+   public void navigateToDetails(Merchant merchant, String id) {
+      List<String> expandIds = MerchantHelper.buildExpandedOffersIds(id);
+      Path path = new DtlMerchantDetailsPath(FlowUtil.currentMaster(getContext()), merchant, expandIds);
+      if (Flow.get(getContext()).getHistory().size() < 2) {
+         Flow.get(getContext()).set(path);
+      } else {
+         History.Builder historyBuilder = Flow.get(getContext()).getHistory().buildUpon();
+         historyBuilder.pop();
+         historyBuilder.push(path);
+         Flow.get(getContext()).setHistory(historyBuilder.build(), Flow.Direction.FORWARD);
+      }
+   }
+
    protected void navigateToPath(Path path) {
       History history = History.single(path);
       Flow.get(getContext()).setHistory(history, Flow.Direction.REPLACE);
@@ -215,14 +228,6 @@ public class DtlMerchantsPresenterImpl extends DtlPresenterImpl<DtlMerchantsScre
 
    public void onEventMainThread(ToggleMerchantSelectionEvent event) {
       getView().toggleSelection(event.getDtlMerchant());
-   }
-
-   protected List<Integer> findExpandablePosition(DtlMerchant merchant, Offer... expandedOffers) {
-      List<Offer> merchantOffers = merchant.getOffers();
-      return Queryable.from(Arrays.asList(expandedOffers))
-            .filter(merchantOffers::contains)
-            .map(merchantOffers::indexOf)
-            .toList();
    }
 
    @Override

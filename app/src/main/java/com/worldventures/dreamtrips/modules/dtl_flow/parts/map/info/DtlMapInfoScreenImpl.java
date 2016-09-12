@@ -61,7 +61,7 @@ public class DtlMapInfoScreenImpl extends DtlLayout<DtlMapInfoScreen, DtlMapInfo
 
    @Override
    public void setMerchant(DtlMerchant merchant) {
-      commonDataInflater.applyMerchant(merchant);
-      categoryDataInflater.applyMerchant(merchant);
+//      commonDataInflater.applyMerchant(merchant);
+//      categoryDataInflater.applyMerchant(merchant); // TODO :: implement after add thin merchant as argument
    }
 }

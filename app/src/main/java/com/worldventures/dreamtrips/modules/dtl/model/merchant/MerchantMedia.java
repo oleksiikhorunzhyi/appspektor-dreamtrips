@@ -8,7 +8,7 @@ import org.immutables.value.Value;
 
 @DefaultSerializer(CompatibleFieldSerializer.class)
 @Value.Immutable
-public interface MerchantMedia extends ImagePathHolder {
+public interface MerchantMedia extends ImagePathHolder  {
 
    String category();
    Integer width();

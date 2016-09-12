@@ -6,7 +6,6 @@ import android.content.Intent;
 import android.content.IntentSender;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.Toolbar;
-import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -32,18 +31,16 @@ import com.worldventures.dreamtrips.core.navigation.router.NavigationConfigBuild
 import com.worldventures.dreamtrips.core.navigation.router.Router;
 import com.worldventures.dreamtrips.core.utils.ActivityResultDelegate;
 import com.worldventures.dreamtrips.core.utils.ViewUtils;
-import com.worldventures.dreamtrips.modules.common.model.ShareType;
 import com.worldventures.dreamtrips.modules.common.view.bundle.ShareBundle;
 import com.worldventures.dreamtrips.modules.common.view.dialog.ShareDialog;
-import com.worldventures.dreamtrips.modules.dtl.bundle.MerchantIdBundle;
+import com.worldventures.dreamtrips.modules.dtl.bundle.MerchantBundle;
 import com.worldventures.dreamtrips.modules.dtl.bundle.PointsEstimationDialogBundle;
-import com.worldventures.dreamtrips.modules.dtl.helper.DtlMerchantHelper;
+import com.worldventures.dreamtrips.modules.dtl.helper.MerchantHelper;
 import com.worldventures.dreamtrips.modules.dtl.helper.inflater.MerchantInflater;
 import com.worldventures.dreamtrips.modules.dtl.helper.inflater.MerchantInfoInflater;
 import com.worldventures.dreamtrips.modules.dtl.helper.inflater.MerchantOffersInflater;
 import com.worldventures.dreamtrips.modules.dtl.helper.inflater.MerchantWorkingHoursInflater;
-import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchant;
-import com.worldventures.dreamtrips.modules.dtl.model.merchant.MerchantMedia;
+import com.worldventures.dreamtrips.modules.dtl.model.merchant.Merchant;
 import com.worldventures.dreamtrips.modules.dtl.model.transaction.DtlTransaction;
 import com.worldventures.dreamtrips.modules.dtl_flow.DtlActivity;
 import com.worldventures.dreamtrips.modules.dtl_flow.DtlLayout;
@@ -78,7 +75,7 @@ public class DtlDetailsScreenImpl extends DtlLayout<DtlDetailsScreen, DtlDetails
    MerchantOffersInflater merchantDataInflater;
    MerchantWorkingHoursInflater merchantHoursInflater;
    MerchantInflater merchantInfoInflater;
-   DtlMerchant merchant;
+   Merchant merchant;
 
    @Override
    public DtlDetailsPresenter createPresenter() {
@@ -114,13 +111,13 @@ public class DtlDetailsScreenImpl extends DtlLayout<DtlDetailsScreen, DtlDetails
    }
 
    @Override
-   public void setMerchant(DtlMerchant merchant) {
+   public void setMerchant(Merchant merchant) {
       this.merchant = merchant;
       merchantDataInflater.applyMerchant(merchant);
       merchantInfoInflater.applyMerchant(merchant);
       merchantHoursInflater.applyMerchant(merchant);
       //
-      toolbar.setTitle(merchant.getDisplayName());
+      toolbar.setTitle(merchant.displayName());
       //
       setContacts();
       setLocation();
@@ -128,7 +125,7 @@ public class DtlDetailsScreenImpl extends DtlLayout<DtlDetailsScreen, DtlDetails
    }
 
    @Override
-   public void setMap(DtlMerchant merchant) {
+   public void setupMap() {
       GoogleMapOptions mapOptions = new GoogleMapOptions();
       mapOptions.liteMode(true);
       //
@@ -144,7 +141,7 @@ public class DtlDetailsScreenImpl extends DtlLayout<DtlDetailsScreen, DtlDetails
    }
 
    @Override
-   public void expandOffers(List<Integer> offers) {
+   public void expandOffers(List<String> offers) {
       merchantDataInflater.expandOffers(offers);
    }
 
@@ -154,7 +151,7 @@ public class DtlDetailsScreenImpl extends DtlLayout<DtlDetailsScreen, DtlDetails
    }
 
    @Override
-   public List<Integer> getExpandedOffers() {
+   public List<String> getExpandedOffersIds() {
       return merchantDataInflater.getExpandedOffers();
    }
 
@@ -164,14 +161,14 @@ public class DtlDetailsScreenImpl extends DtlLayout<DtlDetailsScreen, DtlDetails
    }
 
    private void setContacts() {
-      Queryable.from(DtlMerchantHelper.getContactsData(getContext(), merchant))
+      Queryable.from(MerchantHelper.getContactsData(getContext(), merchant))
             .filter(contact -> contact.type != ImageTextItem.Type.ADDRESS)
             .forEachR(contact -> {
                TextView contactView = inflateContactView();
                contactView.setCompoundDrawablesWithIntrinsicBounds(contact.icon, null, null, null);
                contactView.setText(contact.text);
                //
-               if (DtlMerchantHelper.contactCanBeResolved(contact, getActivity())) RxView.clicks(contactView)
+               if (MerchantHelper.contactCanBeResolved(contact, getActivity())) RxView.clicks(contactView)
                      .compose(RxLifecycle.bindView(contactView))
                      .subscribe(aVoid -> onContactClick(contact));
 
@@ -199,7 +196,7 @@ public class DtlDetailsScreenImpl extends DtlLayout<DtlDetailsScreen, DtlDetails
       //
       int paddingX = getContext().getResources().getDimensionPixelOffset(R.dimen.spacing_large);
       int paddingY = getContext().getResources().getDimensionPixelOffset(R.dimen.spacing_normal);
-      LatLng pos = new LatLng(merchant.getCoordinates().getLat(), merchant.getCoordinates().getLng());
+      LatLng pos = new LatLng(merchant.coordinates().lat(), merchant.coordinates().lng());
       //
       map.getUiSettings().setMapToolbarEnabled(false);
       map.setPadding(paddingX, paddingY, paddingX, paddingY);
@@ -228,21 +225,21 @@ public class DtlDetailsScreenImpl extends DtlLayout<DtlDetailsScreen, DtlDetails
    }
 
    @Override
-   public void openSuggestMerchant(MerchantIdBundle data) {
+   public void openSuggestMerchant(MerchantBundle data) {
       router.moveTo(Route.ENROLL_MERCHANT, NavigationConfigBuilder.forActivity().data(data).build());
    }
 
    @Override
-   public void openTransaction(DtlMerchant dtlMerchant, DtlTransaction dtlTransaction) {
+   public void openTransaction(Merchant merchant, DtlTransaction dtlTransaction) {
       router.moveTo(Route.DTL_SCAN_RECEIPT, NavigationConfigBuilder.forActivity()
-            .data(new MerchantIdBundle(dtlMerchant.getId()))
+            .data(new MerchantBundle(merchant))
             .build());
    }
 
    @Override
-   public void showSucceed(DtlMerchant dtlMerchant, DtlTransaction dtlTransaction) {
+   public void showSucceed(Merchant merchant, DtlTransaction dtlTransaction) {
       router.moveTo(Route.DTL_TRANSACTION_SUCCEED, NavigationConfigBuilder.forDialog()
-            .data(new MerchantIdBundle(dtlMerchant.getId()))
+            .data(new MerchantBundle(merchant))
             .build());
    }
 
@@ -256,19 +253,9 @@ public class DtlDetailsScreenImpl extends DtlLayout<DtlDetailsScreen, DtlDetails
    }
 
    @Override
-   public void share(DtlMerchant merchant) {
+   public void share(Merchant merchant) {
       new ShareDialog(getContext(), type -> {
-         ShareBundle shareBundle = new ShareBundle();
-         shareBundle.setShareType(type);
-         shareBundle.setText(getContext().getString(merchant.hasPoints() ? R.string.dtl_details_share_title : R.string.dtl_details_share_title_without_points, merchant
-               .getDisplayName()));
-         shareBundle.setShareUrl(merchant.getWebsite());
-         // don't attach media if website is attached, this image will go nowhere
-         if (TextUtils.isEmpty(merchant.getWebsite()) || type.equals(ShareType.TWITTER)) {
-            MerchantMedia media = Queryable.from(merchant.getImages()).firstOrDefault();
-            if (media != null) shareBundle.setImageUrl(media.getImagePath());
-            // for twitter: sharing image via web (not official app) currently not supported (android sdk v1.9.1)
-         }
+         ShareBundle shareBundle = MerchantHelper.buildShareBundle(getContext(), merchant, type);
          //
          getPresenter().trackSharing(type);
          //

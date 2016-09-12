@@ -6,10 +6,11 @@ import com.worldventures.dreamtrips.api.dtl.merchants.model.DisclaimerType;
 
 import org.immutables.value.Value;
 
-@SuppressWarnings("unused")
+import java.io.Serializable;
+
 @DefaultSerializer(CompatibleFieldSerializer.class)
 @Value.Immutable
-public interface Disclaimer {
+public interface Disclaimer extends Serializable {
 
    DisclaimerType type();
    String text();

@@ -73,6 +73,11 @@ public class DtlFilterPresenterImpl implements DtlFilterPresenter {
                   attributesInteractor.attributesPipe().send(new AttributesAction()));
    }
 
+   @Override
+   public void retryAmenities() {
+      attributesInteractor.attributesPipe().send(new AttributesAction());
+   }
+
    private void bindFilterUpdates() {
       filterInteractor.filterDataPipe().observeSuccess()
             .map(DtlFilterDataAction::getResult)

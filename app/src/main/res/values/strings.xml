@@ -657,5 +657,6 @@
 
    <string name="error_fail_to_load_filters">Sorry, failed to load filters</string>
    <string name="flag_content_message">WorldVentures personnel will be notified to review this content for </string>
+   <string name="try_again">Try again</string>
 
 </resources>

@@ -137,22 +137,29 @@
             android:layout_height="match_parent"
             />
 
-      <me.zhanghai.android.materialprogressbar.MaterialProgressBar
+      <FrameLayout
             android:id="@+id/amenities_progress"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:indeterminate="true"
+            android:layout_width="match_parent"
+            android:layout_height="83dp"
             android:visibility="gone"
             tools:visibility="visible"
-            />
+            >
+
+         <me.zhanghai.android.materialprogressbar.MaterialProgressBar
+               android:layout_width="wrap_content"
+               android:layout_height="wrap_content"
+               android:layout_gravity="center"
+               android:indeterminate="true"
+               />
+      </FrameLayout>
 
       <LinearLayout
             android:id="@+id/amenities_error_view"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginTop="57dp"
             android:orientation="vertical"
-            android:layout_gravity="center"
+            android:gravity="center"
             android:visibility="gone"
             tools:visibility="visible"
             >
@@ -161,14 +168,20 @@
                android:id="@+id/amenities_error_caption"
                android:layout_width="wrap_content"
                android:layout_height="wrap_content"
-               android:text="error caption TODO TEXT"
+               android:paddingLeft="24dp"
+               android:paddingRight="24dp"
+               android:gravity="center_horizontal"
+               android:text="@string/filter_amenities_error_caption"
+               android:textColor="@android:color/black"
                />
 
          <android.support.v7.widget.AppCompatButton
                android:id="@+id/amenities_retry_button"
                android:layout_width="wrap_content"
                android:layout_height="wrap_content"
-               android:text="Retry TODO TEXT"
+               android:layout_marginTop="14dp"
+               android:text="@string/try_again"
+               android:theme="@style/DtlButtonWhiteTheme"
                />
       </LinearLayout>
    </FrameLayout>

@@ -166,7 +166,7 @@ public class DtlMapPresenterImpl extends DtlPresenterImpl<DtlMapScreen, ViewStat
    }
 
    protected Observable<Location> getFirstCenterLocation() {
-      return locationInteractor.locationPipe().createObservableResult(DtlLocationCommand.last()).map(command -> {
+      return locationInteractor.locationPipe().observeSuccessWithReplay().map(command -> {
          Location lastPosition = db.getLastMapCameraPosition();
          boolean validLastPosition = lastPosition != null && lastPosition.getLat() != 0 && lastPosition.getLng() != 0;
          DtlLocation lastSelectedLocation = command.getResult();
@@ -183,7 +183,7 @@ public class DtlMapPresenterImpl extends DtlPresenterImpl<DtlMapScreen, ViewStat
                   return just(true);
                }
                return locationInteractor.locationPipe()
-                     .createObservableResult(DtlLocationCommand.last())
+                     .observeSuccessWithReplay()
                      .compose(bindViewIoToMainComposer())
                      .map(command -> !DtlLocationHelper.checkLocation(MAX_DISTANCE, command.getResult()
                            .getCoordinates()
@@ -197,7 +197,7 @@ public class DtlMapPresenterImpl extends DtlPresenterImpl<DtlMapScreen, ViewStat
       showPins(dtlMerchants);
       //
       locationInteractor.locationPipe()
-            .createObservableResult(DtlLocationCommand.last())
+            .observeSuccessWithReplay()
             .map(DtlLocationCommand::getResult)
             .compose(bindViewIoToMainComposer())
             .subscribe(location -> {

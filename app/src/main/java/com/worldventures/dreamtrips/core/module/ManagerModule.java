@@ -114,7 +114,7 @@ public class ManagerModule {
 
    @Singleton
    @Provides
-   AttributesInteractor provideDtlAttributesInteractor(@Named(JanetModule.JANET_API_LIB) Janet janet) {
+   AttributesInteractor provideDtlAttributesInteractor(Janet janet) {
       return new AttributesInteractor(janet);
    }
 

@@ -6,6 +6,7 @@
       android:layout_height="match_parent"
       android:background="@color/white"
       android:clickable="true"
+      tools:layout_marginLeft="100dp"
       >
 
    <FrameLayout
@@ -62,7 +63,6 @@
             android:textSize="14sp"
             tools:ignore="HardcodedText"
             />
-
    </FrameLayout>
 
    <FrameLayout
@@ -122,16 +122,56 @@
             android:textSize="14sp"
             tools:ignore="HardcodedText"
             />
-
    </FrameLayout>
 
-   <android.support.v7.widget.RecyclerView
-         android:id="@+id/recyclerViewFilters"
+   <FrameLayout
          android:layout_width="match_parent"
-         android:layout_height="wrap_content"
-         android:layout_above="@+id/footer"
+         android:layout_height="match_parent"
          android:layout_below="@+id/distance_view_group"
-         />
+         android:layout_above="@+id/footer"
+         >
+
+      <android.support.v7.widget.RecyclerView
+            android:id="@+id/recyclerViewFilters"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            />
+
+      <me.zhanghai.android.materialprogressbar.MaterialProgressBar
+            android:id="@+id/amenities_progress"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:indeterminate="true"
+            android:visibility="gone"
+            tools:visibility="visible"
+            />
+
+      <LinearLayout
+            android:id="@+id/amenities_error_view"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_gravity="center"
+            android:visibility="gone"
+            tools:visibility="visible"
+            >
+
+         <android.support.v7.widget.AppCompatTextView
+               android:id="@+id/amenities_error_caption"
+               android:layout_width="wrap_content"
+               android:layout_height="wrap_content"
+               android:text="error caption TODO TEXT"
+               />
+
+         <android.support.v7.widget.AppCompatButton
+               android:id="@+id/amenities_retry_button"
+               android:layout_width="wrap_content"
+               android:layout_height="wrap_content"
+               android:text="Retry TODO TEXT"
+               />
+      </LinearLayout>
+   </FrameLayout>
 
    <LinearLayout
          android:id="@+id/footer"
@@ -167,8 +207,5 @@
             android:textColor="#025E93"
             android:textStyle="bold"
             />
-
    </LinearLayout>
-
-
 </RelativeLayout>

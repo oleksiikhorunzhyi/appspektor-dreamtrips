@@ -78,7 +78,7 @@ class AttributesSpec : BaseSpec({
          val spyHttpCallback = httpStubWrapper.spyCallback()
 
          attributesInteractor.attributesPipe()
-               .createObservable(AttributesAction.load("1.0,1.0", 80.6))
+               .createObservable(AttributesAction())
                .subscribe(subscriber)
 
          AssertUtil.assertActionSuccess(subscriber) { action -> action.result.isNotEmpty() }

@@ -4,6 +4,7 @@ import com.worldventures.dreamtrips.modules.dtl.analytics.DtlAnalyticsCommand;
 import com.worldventures.dreamtrips.modules.dtl.analytics.MerchantDetailsViewCommand;
 import com.worldventures.dreamtrips.modules.dtl.service.action.AttributesAction;
 import com.worldventures.dreamtrips.modules.dtl.service.action.DtlFilterDataAction;
+import com.worldventures.dreamtrips.modules.dtl.service.action.DtlLocationCommand;
 import com.worldventures.dreamtrips.modules.dtl.service.action.DtlMerchantByIdAction;
 import com.worldventures.dreamtrips.modules.dtl.service.action.DtlMerchantsAction;
 import com.worldventures.dreamtrips.modules.dtl.service.action.DtlSearchLocationAction;
@@ -23,7 +24,8 @@ import dagger.Module;
             DtlAnalyticsCommand.class,
             MerchantDetailsViewCommand.class,
             AttributesAction.class,
+            DtlLocationCommand.class,
       },
       complete = false, library = true)
-public class DtlJanetActionsModule {
+public class DtlJanetCommandModule {
 }

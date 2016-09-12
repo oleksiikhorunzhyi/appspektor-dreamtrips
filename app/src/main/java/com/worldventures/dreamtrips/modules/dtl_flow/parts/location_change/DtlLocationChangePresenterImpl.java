@@ -116,7 +116,7 @@ public class DtlLocationChangePresenterImpl extends DtlPresenterImpl<DtlLocation
 
    private Observable<DtlLocation> connectDtlLocationUpdate() {
       Observable<DtlLocation> locationObservable = locationInteractor.locationPipe()
-            .createObservableResult(DtlLocationCommand.last())
+            .observeSuccessWithReplay()
             .map(DtlLocationCommand::getResult)
             .compose(bindViewIoToMainComposer());
       Observable.combineLatest(locationObservable, filterInteractor.filterDataPipe()
@@ -174,7 +174,7 @@ public class DtlLocationChangePresenterImpl extends DtlPresenterImpl<DtlLocation
 
    private void tryHideNearMeButton() {
       locationInteractor.locationPipe()
-            .createObservableResult(DtlLocationCommand.last())
+            .observeSuccessWithReplay()
             .filter(command -> command.getResult().getLocationSourceType() == LocationSourceType.NEAR_ME)
             .compose(bindViewIoToMainComposer())
             .subscribe(command -> getView().hideNearMeButton());

@@ -1,6 +1,9 @@
 package com.worldventures.dreamtrips.dtl.service.spek
 
-import com.nhaarman.mockito_kotlin.*
+import com.nhaarman.mockito_kotlin.mock
+import com.nhaarman.mockito_kotlin.never
+import com.nhaarman.mockito_kotlin.verify
+import com.nhaarman.mockito_kotlin.whenever
 import com.worldventures.dreamtrips.AssertUtil.assertActionSuccess
 import com.worldventures.dreamtrips.BaseSpec
 import com.worldventures.dreamtrips.modules.dtl.model.LocationSourceType
@@ -47,7 +50,7 @@ class DtlLocationInteractorSpec : BaseSpec({
 
       it("should return undefined location at first") {
          locationInteractor.locationPipe()
-               .createObservable(DtlLocationCommand.last())
+               .observeWithReplay()
                .subscribe(subscriber)
          assertActionSuccess(subscriber) { action -> action.result.locationSourceType == LocationSourceType.UNDEFINED }
       }
@@ -62,7 +65,7 @@ class DtlLocationInteractorSpec : BaseSpec({
 
       it("checks location after changing") {
          subscriber = TestSubscriber()
-         locationInteractor.locationPipe().createObservable(DtlLocationCommand.last())
+         locationInteractor.locationPipe().observeWithReplay()
                .subscribe(subscriber)
          assertActionSuccess(subscriber) { action -> action.result == location }
       }
@@ -112,7 +115,5 @@ class DtlLocationInteractorSpec : BaseSpec({
          assertActionSuccess(subscriber) { action -> !action.result.isEmpty() }
          verify(spyHttpCallback, never()).onSend(any<ActionHolder<Any>>())
       }
-
    }
-
 })

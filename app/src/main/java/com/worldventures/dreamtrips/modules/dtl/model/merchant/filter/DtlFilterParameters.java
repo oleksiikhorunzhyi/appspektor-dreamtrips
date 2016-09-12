@@ -30,7 +30,6 @@ public abstract class DtlFilterParameters {
       return MAX_DISTANCE;
    }
 
-
    @Value.Default
    public List<DtlMerchantAttribute> getSelectedAmenities() {
       return Collections.emptyList();

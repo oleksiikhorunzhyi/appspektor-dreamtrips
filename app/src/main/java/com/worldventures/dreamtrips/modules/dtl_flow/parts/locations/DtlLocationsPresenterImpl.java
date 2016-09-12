@@ -116,7 +116,7 @@ public class DtlLocationsPresenterImpl extends DtlPresenterImpl<DtlLocationsScre
 
    private void tryHideNearMeButton() {
       locationInteractor.locationPipe()
-            .createObservableResult(DtlLocationCommand.last())
+            .observeSuccessWithReplay()
             .filter(command -> command.getResult().getLocationSourceType() == LocationSourceType.NEAR_ME)
             .compose(bindViewIoToMainComposer())
             .subscribe(command -> getView().hideNearMeButton());

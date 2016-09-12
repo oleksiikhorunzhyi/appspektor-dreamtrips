@@ -66,7 +66,7 @@ public class DtlMapInfoPresenterImpl extends DtlPresenterImpl<DtlMapInfoScreen, 
             .map(DtlFilterData::getSearchQuery)
             .filter(query -> !TextUtils.isEmpty(query))
             .flatMap(query -> locationInteractor.locationPipe()
-                  .createObservableResult(DtlLocationCommand.last())
+                  .observeSuccessWithReplay()
                   .map(DtlLocationCommand::getResult)
                   .map(location -> new Pair<>(query, location)))
             .subscribe(pair -> {

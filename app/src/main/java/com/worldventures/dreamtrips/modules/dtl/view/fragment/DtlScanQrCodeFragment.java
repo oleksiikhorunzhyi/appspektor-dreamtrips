@@ -96,7 +96,7 @@ public class DtlScanQrCodeFragment extends RxBaseFragmentWithArgs<DtlScanQrCodeP
          address.setText(String.format("%s, %s, %s, %s", merchant.address(), merchant.city(), merchant.state(), merchant
                .zip()));
       }
-      if (merchant.images() != null) {
+      if (merchant.images() != null && !merchant.images().isEmpty()) {
          merchantImage.setImageUrl(merchant.images().get(0).getImagePath());
       }
    }

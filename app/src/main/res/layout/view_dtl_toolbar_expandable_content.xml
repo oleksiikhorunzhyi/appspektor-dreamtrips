@@ -116,7 +116,6 @@
             tools:showIn="@layout/screen_dtl_merchants"
             />
 
-
       <android.support.v7.widget.SwitchCompat
             android:id="@+id/filterDiningsSwitch"
             android:layout_width="0dp"

@@ -55,7 +55,7 @@ public class DtlMapPresenterImpl extends DtlPresenterImpl<DtlMapScreen, ViewStat
 
    @Inject LocationDelegate gpsLocationDelegate;
    @Inject SnappyRepository db;
-   @Inject protected Presenter.TabletAnalytic tabletAnalytic;
+   @Inject Presenter.TabletAnalytic tabletAnalytic;
    @Inject Janet janet;
    @Inject DtlMerchantInteractor merchantInteractor;
    @Inject DtlFilterMerchantInteractor filterInteractor;
@@ -275,8 +275,9 @@ public class DtlMapPresenterImpl extends DtlPresenterImpl<DtlMapScreen, ViewStat
       merchantInteractor.merchantByIdPipe()
             .createObservable(new DtlMerchantByIdAction(merchantId))
             .compose(bindViewIoToMainComposer())
-            .subscribe(new ActionStateSubscriber<DtlMerchantByIdAction>().onSuccess(action -> getView().showPinInfo(action
-                  .getResult())).onFail(apiErrorPresenter::handleActionError));
+            .subscribe(new ActionStateSubscriber<DtlMerchantByIdAction>()
+                  .onSuccess(action -> getView().showPinInfo(action.getResult()))
+                  .onFail(apiErrorPresenter::handleActionError));
    }
 
    @Override

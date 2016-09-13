@@ -17,7 +17,7 @@ public class DialogFactory {
    }
 
    public static SweetAlertDialog createErrorDialog(Activity activity, String content) {
-      return createDialog(activity, SweetAlertDialog.ERROR_TYPE, R.string.alert, R.string.ok, content, false);
+      return createDialog(activity, SweetAlertDialog.ERROR_TYPE, R.string.alert, R.string.ok, content, true);
    }
 
    public static SweetAlertDialog createDialog(Activity activity, int type, @StringRes int titleRes, @StringRes int textButtonRes, @Nullable String content, boolean cancellable) {
@@ -28,9 +28,10 @@ public class DialogFactory {
 
    public static SweetAlertDialog create(Activity activity, int type, String title, String textButton, @Nullable String content, boolean cancellable) {
       final SweetAlertDialog dialog = new SweetAlertDialog(activity, type);
-      dialog.setTitle(title);
+      dialog.setTitleText(title);
       dialog.setConfirmText(textButton);
       dialog.setCancelable(cancellable);
+      dialog.setCanceledOnTouchOutside(true);
       if (content != null) dialog.setContentText(content);
       return dialog;
    }

@@ -5,6 +5,7 @@ import com.worldventures.dreamtrips.api.dtl.merchants.MerchantByIdHttpAction;
 import com.worldventures.dreamtrips.core.api.action.CommandWithError;
 import com.worldventures.dreamtrips.core.janet.JanetModule;
 import com.worldventures.dreamtrips.core.janet.dagger.InjectableAction;
+import com.worldventures.dreamtrips.core.rx.composer.IoToMainComposer;
 import com.worldventures.dreamtrips.modules.dtl.model.mapping.MerchantMapper;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.Merchant;
 
@@ -48,6 +49,10 @@ public class MerchantByIdCommand extends CommandWithError<Merchant> implements I
 
    public String getOfferId() {
       return offerId;
+   }
+
+   public String getMerchantId() {
+      return merchantId;
    }
 
    @Override

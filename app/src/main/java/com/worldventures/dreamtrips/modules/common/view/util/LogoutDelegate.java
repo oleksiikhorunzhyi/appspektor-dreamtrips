@@ -18,6 +18,7 @@ import com.worldventures.dreamtrips.core.utils.DTCookieManager;
 import com.worldventures.dreamtrips.modules.auth.api.command.UnsubribeFromPushCommand;
 import com.worldventures.dreamtrips.modules.auth.service.AuthInteractor;
 import com.worldventures.dreamtrips.modules.common.api.janet.command.ClearMemoryStorageCommand;
+import com.worldventures.dreamtrips.modules.common.presenter.delegate.OfflineWarningDelegate;
 import com.worldventures.dreamtrips.modules.common.service.ClearMemoryStoragesInteractor;
 import com.worldventures.dreamtrips.modules.gcm.delegate.NotificationDelegate;
 
@@ -41,6 +42,7 @@ public class LogoutDelegate {
    @Inject AuthInteractor authInteractor;
    @Inject MessengerConnector messengerConnector;
    @Inject ClearMemoryStoragesInteractor clearMemoryStoragesInteractor;
+   @Inject OfflineWarningDelegate offlineWarningDelegate;
 
    public LogoutDelegate(Injector injector) {
       injector.inject(this);
@@ -69,5 +71,6 @@ public class LogoutDelegate {
       notificationDelegate.cancelAll();
       badgeUpdater.updateBadge(0);
       FlowManager.getDatabase(MessengerDatabase.NAME).reset(context);
+      offlineWarningDelegate.resetState();
    }
 }

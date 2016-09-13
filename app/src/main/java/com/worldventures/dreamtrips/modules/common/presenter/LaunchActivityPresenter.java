@@ -124,6 +124,11 @@ public class LaunchActivityPresenter extends ActivityPresenter<LaunchActivityPre
       view.openMain();
    }
 
+   @Override
+   protected boolean canShowOfflineAlert() {
+      return false;
+   }
+
    public interface View extends ActivityPresenter.View, ApiErrorView {
 
       void openLogin();

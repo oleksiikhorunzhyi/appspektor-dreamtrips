@@ -4,6 +4,7 @@ import android.content.Context;
 import android.os.Bundle;
 import android.text.TextUtils;
 
+import com.github.pwittchen.reactivenetwork.library.ReactiveNetwork;
 import com.octo.android.robospice.persistence.exception.SpiceException;
 import com.octo.android.robospice.request.SpiceRequest;
 import com.techery.spares.module.qualifier.Global;
@@ -19,6 +20,7 @@ import com.worldventures.dreamtrips.core.session.UserSession;
 import com.worldventures.dreamtrips.core.session.acl.FeatureManager;
 import com.worldventures.dreamtrips.core.utils.tracksystem.AnalyticsInteractor;
 import com.worldventures.dreamtrips.modules.common.model.User;
+import com.worldventures.dreamtrips.modules.common.presenter.delegate.OfflineWarningDelegate;
 import com.worldventures.dreamtrips.util.JanetHttpErrorHandlingUtils;
 
 import javax.inject.Inject;
@@ -42,6 +44,7 @@ public class Presenter<VT extends Presenter.View> implements RequestingPresenter
    @Inject protected FeatureManager featureManager;
    @Inject protected DreamSpiceManager dreamSpiceManager;
    @Inject protected PhotoUploadingManagerS3 photoUploadingManagerS3;
+   @Inject OfflineWarningDelegate offlineWarningDelegate;
 
    protected int priorityEventBus = 0;
 
@@ -79,6 +82,9 @@ public class Presenter<VT extends Presenter.View> implements RequestingPresenter
          eventBus.registerSticky(this, priorityEventBus);
       } catch (Exception ignored) {
          Timber.v("EventBus :: Problem on registering sticky - no \'onEvent' method found in " + getClass().getName());
+      }
+      if (canShowOfflineAlert()) {
+         subscribeToConnectivityStateUpdates();
       }
    }
 
@@ -194,6 +200,21 @@ public class Presenter<VT extends Presenter.View> implements RequestingPresenter
             action, error, context.getString(R.string.smth_went_wrong));
       view.informUser(message);
    }
+   private void subscribeToConnectivityStateUpdates() {
+      // since there is no replay functionality in the lib make delegate check it straight away
+      Observable.merge(Observable.just(null), ReactiveNetwork.observeNetworkConnectivity(context))
+            .compose(bindViewToMainComposer())
+            .subscribe(connectivity -> {
+               if (view.isVisibleOnScreen() && offlineWarningDelegate.needToShowOfflineAlert(context)) {
+                  Timber.d("Show alert -- class %s", getClass().getSimpleName());
+                  view.showOfflineAlert();
+               }
+            });
+   }
+
+   protected boolean canShowOfflineAlert() {
+      return true;
+   }
 
    ///////////////////////////////////////////////////////////////////////////
    // User helpers
@@ -220,6 +241,8 @@ public class Presenter<VT extends Presenter.View> implements RequestingPresenter
       void alert(String s);
 
       boolean isVisibleOnScreen();
+
+      void showOfflineAlert();
    }
 
    public interface TabletAnalytic {

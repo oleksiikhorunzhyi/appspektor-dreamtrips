@@ -21,6 +21,7 @@ import com.worldventures.dreamtrips.modules.common.delegate.DownloadFileInteract
 import com.worldventures.dreamtrips.modules.common.delegate.QueryTripsFilterDataInteractor;
 import com.worldventures.dreamtrips.modules.common.delegate.SocialCropImageManager;
 import com.worldventures.dreamtrips.modules.common.presenter.delegate.ClearDirectoryDelegate;
+import com.worldventures.dreamtrips.modules.common.presenter.delegate.OfflineWarningDelegate;
 import com.worldventures.dreamtrips.modules.common.view.util.LogoutDelegate;
 import com.worldventures.dreamtrips.modules.common.view.util.MediaPickerManager;
 import com.worldventures.dreamtrips.modules.common.view.util.PhotoPickerDelegate;
@@ -198,5 +199,11 @@ public class ManagerModule {
    @Singleton
    CachedEntityDelegate provideDownloadFileDelegate(CachedEntityInteractor cachedEntityInteractor) {
       return new CachedEntityDelegate(cachedEntityInteractor);
+   }
+
+   @Provides
+   @Singleton
+   OfflineWarningDelegate provideOfflineWarningDelegate() {
+      return new OfflineWarningDelegate();
    }
 }

@@ -17,8 +17,11 @@ import com.worldventures.dreamtrips.core.utils.ViewUtils;
 import com.worldventures.dreamtrips.core.utils.events.ImagePickRequestEvent;
 import com.worldventures.dreamtrips.core.utils.events.ImagePickedEvent;
 import com.worldventures.dreamtrips.modules.common.presenter.ActivityPresenter;
+import com.worldventures.dreamtrips.modules.common.presenter.delegate.OfflineWarningDelegate;
 import com.worldventures.dreamtrips.modules.common.view.dialog.TermsConditionsDialog;
 import com.worldventures.dreamtrips.modules.tripsimages.view.custom.PickImageDelegate;
+
+import javax.inject.Inject;
 
 import icepick.Icepick;
 import rx.Observable;
@@ -30,6 +33,8 @@ public abstract class ActivityWithPresenter<PM extends ActivityPresenter> extend
    private PickImageDelegate pickImageDelegate;
    private WeakHandler handler = new WeakHandler();
    private final PublishSubject<ActivityEvent> lifecycleSubject = PublishSubject.create();
+   private boolean isPaused;
+   @Inject OfflineWarningDelegate offlineWarningDelegate;
 
    public PM getPresentationModel() {
       return presenter;
@@ -79,13 +84,18 @@ public abstract class ActivityWithPresenter<PM extends ActivityPresenter> extend
    }
 
    @Override
+   public void showOfflineAlert() {
+      offlineWarningDelegate.showOfflineWarning(this);
+   }
+
+   @Override
    public boolean isTabletLandscape() {
       return ViewUtils.isTablet(this) && ViewUtils.isLandscapeOrientation(this);
    }
 
    @Override
    public boolean isVisibleOnScreen() {
-      return true;
+      return !isPaused;
    }
 
    @Override
@@ -117,6 +127,7 @@ public abstract class ActivityWithPresenter<PM extends ActivityPresenter> extend
 
    @Override
    protected void onResume() {
+      isPaused = false;
       super.onResume();
       this.presenter.onResume();
       lifecycleSubject.onNext(ActivityEvent.RESUME);
@@ -124,6 +135,7 @@ public abstract class ActivityWithPresenter<PM extends ActivityPresenter> extend
 
    @Override
    protected void onPause() {
+      isPaused = true;
       lifecycleSubject.onNext(ActivityEvent.PAUSE);
       super.onPause();
    }

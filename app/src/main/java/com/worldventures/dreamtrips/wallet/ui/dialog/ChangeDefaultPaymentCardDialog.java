@@ -1,24 +1,22 @@
 package com.worldventures.dreamtrips.wallet.ui.dialog;
 
-
 import android.content.Context;
-import android.text.TextUtils;
+import android.support.annotation.NonNull;
 
 import com.worldventures.dreamtrips.R;
 
 import cn.pedant.SweetAlert.SweetAlertDialog;
 import rx.functions.Action0;
 
-public class DefaultCardDialog {
+public class ChangeDefaultPaymentCardDialog {
 
    private SweetAlertDialog dialog;
    private Action0 confirmAction;
    private Action0 cancelAction;
 
-   public DefaultCardDialog(Context context, String existingCardName) {
+   public ChangeDefaultPaymentCardDialog(Context context, @NonNull String paymentCardName) {
       String contentText = context.getResources()
-            .getString(R.string.wallet_add_card_details_default_card_exist_dialog_text,
-                  TextUtils.isEmpty(existingCardName) ? "" : String.format("\"%s\"", existingCardName));
+            .getString(R.string.wallet_add_card_details_default_card_exist_dialog_text, paymentCardName);
       dialog = new SweetAlertDialog(context, SweetAlertDialog.WARNING_TYPE);
       dialog.setTitleText("")
             .setContentText(contentText)
@@ -32,12 +30,12 @@ public class DefaultCardDialog {
       if (eventAction != null) eventAction.call();
    }
 
-   public DefaultCardDialog setOnConfimAction(Action0 onConfimAction) {
-      this.confirmAction = onConfimAction;
+   public ChangeDefaultPaymentCardDialog setOnConfirmAction(Action0 onConfirmAction) {
+      this.confirmAction = onConfirmAction;
       return this;
    }
 
-   public DefaultCardDialog setOnCancelAction(Action0 onCancelAction) {
+   public ChangeDefaultPaymentCardDialog setOnCancelAction(Action0 onCancelAction) {
       this.cancelAction = onCancelAction;
       return this;
    }

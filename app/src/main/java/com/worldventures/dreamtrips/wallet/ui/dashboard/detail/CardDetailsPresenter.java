@@ -2,6 +2,7 @@ package com.worldventures.dreamtrips.wallet.ui.dashboard.detail;
 
 import android.content.Context;
 import android.os.Parcelable;
+import android.support.annotation.NonNull;
 
 import com.techery.spares.module.Injector;
 import com.worldventures.dreamtrips.R;
@@ -17,8 +18,8 @@ import com.worldventures.dreamtrips.wallet.service.command.SetDefaultCardOnDevic
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletPresenter;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.WalletScreen;
 import com.worldventures.dreamtrips.wallet.ui.common.helper.OperationSubscriberWrapper;
+import com.worldventures.dreamtrips.wallet.util.BankCardHelper;
 import com.worldventures.dreamtrips.wallet.util.CardUtils;
-import com.worldventures.dreamtrips.wallet.util.FinancialServiceResourceProvider;
 
 import javax.inject.Inject;
 
@@ -32,7 +33,7 @@ public class CardDetailsPresenter extends WalletPresenter<CardDetailsPresenter.S
 
    @Inject LocaleHelper localeHelper;
    @Inject SmartCardInteractor smartCardInteractor;
-   private FinancialServiceResourceProvider financialResourceProvider = new FinancialServiceResourceProvider();
+   @Inject BankCardHelper bankCardHelper;
 
    private final BankCard bankCard;
 
@@ -45,11 +46,9 @@ public class CardDetailsPresenter extends WalletPresenter<CardDetailsPresenter.S
    public void onAttachedToWindow() {
       super.onAttachedToWindow();
 
-      String toolBarTitle = String.format("%s •••• %d", getContext().getResources()
-            .getString(financialResourceProvider.obtainFinancialServiceType(bankCard.type())), bankCard.number() % 10000);
       Screen view = getView();
 
-      view.setTitle(toolBarTitle);
+      view.setTitle(bankCardHelper.financialServiceWithCardNumber(bankCard));
       view.showCardBankInfo(bankCard);
       view.showDefaultAddress(obtainAddressWithCountry());
 
@@ -90,7 +89,8 @@ public class CardDetailsPresenter extends WalletPresenter<CardDetailsPresenter.S
             .compose(new ActionPipeCacheWiper<>(smartCardInteractor.setDefaultCardOnDeviceCommandPipe()))
             .subscribe(OperationSubscriberWrapper.<SetDefaultCardOnDeviceCommand>forView(getView().provideOperationDelegate())
                   .onStart("")
-                  .onSuccess(action -> {})
+                  .onSuccess(action -> {
+                  })
                   .onFail(getContext().getString(R.string.error_something_went_wrong))
                   .wrap());
    }
@@ -118,7 +118,7 @@ public class CardDetailsPresenter extends WalletPresenter<CardDetailsPresenter.S
             .subscribe(defaultCard -> {
                if (setDefaultCard) {
                   if (CardUtils.isRealCard(defaultCard)) {
-                     getView().showDefaultCardDialog(defaultCard.title());
+                     getView().showDefaultCardDialog(bankCardHelper.bankNameWithCardNumber(defaultCard));
                   } else {
                      smartCardInteractor.setDefaultCardOnDeviceCommandPipe()
                            .send(new SetDefaultCardOnDeviceCommand(bankCard.id()));
@@ -151,7 +151,7 @@ public class CardDetailsPresenter extends WalletPresenter<CardDetailsPresenter.S
 
       void showDefaultAddress(AddressInfoWithLocale addressInfoWithLocale);
 
-      void showDefaultCardDialog(String defaultCardName);
+      void showDefaultCardDialog(@NonNull String bankCardName);
 
       void showDeleteCardDialog();
 

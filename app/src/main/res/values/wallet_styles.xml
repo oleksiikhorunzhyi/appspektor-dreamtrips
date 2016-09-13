@@ -16,6 +16,7 @@
    <color name="wallet_wizard_button_disable">#9900b3e3</color>
    <color name="wallet_wizard_button_pressed">#008eb4</color>
 
+   <color name="wallet_detail_inactive_edit_text">#999999</color>
    <style name="WalletTheme" parent="Theme.AppCompat.Light.DarkActionBar">
       <item name="android:textAppearanceLarge">@style/WalletTheme.TextAppearanceLarge</item>
       <item name="android:textColorPrimary">@color/wallet_common_primary_text_color</item>
@@ -68,7 +69,7 @@
 
    <style name="WalletTheme.DetailsTheme" parent="WalletTheme.BaseDetailsTheme">
       <item name="colorControlActivated">@color/wallet_color_primary_dark</item>
-      <item name="colorControlNormal">@color/wallet_color_primary_dark</item>
+      <item name="colorControlNormal">@color/wallet_detail_inactive_edit_text</item>
    </style>
 
    <style name="WalletTheme.Wizard.ToolbarTheme" parent="ThemeOverlay.AppCompat.Dark">

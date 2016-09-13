@@ -23,84 +23,63 @@
          android:layout_marginTop="?attr/actionBarSize"
          >
 
-      <RelativeLayout style="@style/WalletTheme.Wizard.ContentContainerStyle">
+      <LinearLayout
+            style="@style/WalletTheme.Wizard.ContentContainerStyle"
+            android:orientation="vertical"
+            >
 
          <com.worldventures.dreamtrips.wallet.ui.widget.BankCardWidget
                android:id="@+id/card"
                layout="@layout/adapter_item_wallet_bankcard"
                android:layout_width="wrap_content"
                android:layout_height="wrap_content"
-               android:layout_alignParentTop="true"
-               android:layout_centerHorizontal="true"
-               />
-
-         <EditText
-               android:id="@+id/card_cvv"
-               android:layout_width="match_parent"
-               android:layout_height="wrap_content"
-               android:layout_alignParentEnd="true"
-               android:layout_alignParentRight="true"
-               android:layout_below="@+id/card"
-               android:layout_marginTop="@dimen/wallet_add_card_details_component_margin_top"
-               android:hint="@string/wallet_add_card_details_hint_enter_cvv"
-               android:inputType="number"
-               android:maxLength="@integer/wallet_wizard_add_card_details_cvv_length"
-               android:singleLine="true"
-               />
-
-         <CheckBox
-               android:id="@+id/use_default_address_checkbox"
-               android:layout_width="wrap_content"
-               android:layout_height="wrap_content"
-               android:layout_alignParentLeft="true"
-               android:layout_alignParentStart="true"
-               android:layout_below="@+id/card_cvv"
-               android:layout_marginTop="@dimen/wallet_add_card_details_component_margin_top"
-               android:checked="false"
-               android:text="@string/wallet_add_card_details_option_use_default_address"
+               android:layout_gravity="center_horizontal"
                />
 
          <TextView
-               android:id="@+id/default_address_text"
+               android:id="@+id/cvv_label"
                android:layout_width="wrap_content"
                android:layout_height="wrap_content"
-               android:layout_alignParentLeft="true"
-               android:layout_alignParentStart="true"
-               android:layout_below="@+id/use_default_address_checkbox"
-               android:layout_marginLeft="@dimen/wallet_add_card_details_default_address_margin_left"
+               android:layout_gravity="center_horizontal"
                android:layout_marginTop="@dimen/wallet_add_card_details_component_margin_top"
-               android:visibility="gone"
-               tools:text="12345 Lollipop Drive\nNew York, NY 10010\nUSA"
+               android:text="@string/wallet_add_card_details_cvv_label"
+               />
+
+         <com.alimuzaffar.lib.pin.PinEntryEditText
+               android:id="@+id/card_cvv"
+               android:layout_width="wrap_content"
+               android:layout_height="wrap_content"
+               android:layout_gravity="center_horizontal"
+               android:hint="@string/wallet_add_card_details_hint_enter_cvv"
+               android:inputType="number"
+               android:maxLength="3"
+               android:singleLine="true"
+               app:pinCharacterSpacing="8dp"
+               app:pinLineColors="?android:attr/textColorPrimary"
+               app:pinRepeatedHint="#"
                />
 
          <include
                android:id="@+id/address_info"
                layout="@layout/include_wallet_address_info"
-               android:layout_width="wrap_content"
+               android:layout_width="match_parent"
                android:layout_height="wrap_content"
-               android:layout_alignParentLeft="true"
-               android:layout_alignParentStart="true"
-               android:layout_below="@+id/default_address_text"
                android:layout_marginTop="@dimen/wallet_add_card_details_component_margin_top"
                />
 
-         <CheckBox
-               android:id="@+id/set_default_card_checkBox"
-               android:layout_width="wrap_content"
+         <android.support.v7.widget.SwitchCompat
+               android:id="@+id/set_default_card_switcher"
+               android:layout_width="match_parent"
                android:layout_height="wrap_content"
-               android:layout_alignParentLeft="true"
-               android:layout_below="@+id/address_info"
                android:layout_marginTop="@dimen/wallet_add_card_details_component_margin_top"
                android:text="@string/wallet_add_card_details_option_set_as_default_card"
+               tools:checked="true"
                />
 
          <EditText
                android:id="@+id/card_nickname"
                android:layout_width="match_parent"
                android:layout_height="wrap_content"
-               android:layout_alignParentEnd="true"
-               android:layout_alignParentRight="true"
-               android:layout_below="@+id/set_default_card_checkBox"
                android:layout_marginTop="@dimen/wallet_add_card_details_component_margin_top"
                android:hint="@string/wallet_add_card_details_hint_nickname_card"
                android:imeOptions="actionDone"
@@ -111,13 +90,11 @@
                android:id="@+id/confirm_button"
                android:layout_width="match_parent"
                android:layout_height="wrap_content"
-               android:layout_alignParentBottom="false"
-               android:layout_below="@+id/card_nickname"
                android:layout_marginTop="@dimen/wallet_add_card_details_component_margin_top"
                android:text="@string/wallet_add_card_details_button_confirm"
                />
 
-      </RelativeLayout>
+      </LinearLayout>
 
    </ScrollView>
 

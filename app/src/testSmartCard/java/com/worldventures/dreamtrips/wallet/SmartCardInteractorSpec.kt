@@ -83,7 +83,7 @@ class SmartCardInteractorSpec : BaseSpec({
          }
 
          it("should fetch from cache") {
-            fetchCardStackListOfCard { it.result.size == StackType.values().size }
+            fetchCardStackListOfCard { it.result.size == 1 }
          }
 
          it("should fetch from device, even if cache is present") {
@@ -92,8 +92,8 @@ class SmartCardInteractorSpec : BaseSpec({
 
             fetchCardStackListOfCard(true) {
                it.result.size == 1 &&
-                     it.result[0].bankCards().size == 1 &&
-                     it.result[0].type() === StackType.DEBIT
+                     it.result[0].bankCards.size == 1 &&
+                     it.result[0].stackStackType === StackType.PAYMENT
             }
          }
       }
@@ -113,7 +113,7 @@ class SmartCardInteractorSpec : BaseSpec({
                   .createObservable(DeleteRecordAction(TEST_CARD_ID))
                   .subscribe()
 
-            assertActionSuccess(testSubscriber, { it.result.flatMap { it.bankCards() }.find { it.id() == TEST_CARD_ID.toString() } == null })
+            assertActionSuccess(testSubscriber, { it.result.flatMap { it.bankCards }.find { it.id() == TEST_CARD_ID.toString() } == null })
          }
       }
 

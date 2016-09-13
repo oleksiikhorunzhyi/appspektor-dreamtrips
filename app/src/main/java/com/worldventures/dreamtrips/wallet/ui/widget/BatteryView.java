@@ -2,6 +2,7 @@ package com.worldventures.dreamtrips.wallet.ui.widget;
 
 import android.content.Context;
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
 import android.support.v4.content.ContextCompat;
@@ -27,10 +28,10 @@ public class BatteryView extends AppCompatImageView {
    public BatteryView(Context context, AttributeSet attrs, int defStyleAttr) {
       super(context, attrs, defStyleAttr);
       //        setup margins
-      rightLevelMargin = ViewUtils.pxFromDp(getContext(), 5);
-      leftLevelMargin = ViewUtils.pxFromDp(getContext(), 3);
-      topLevelMargin = ViewUtils.pxFromDp(getContext(), 3);
-      bottomLevelMargin = ViewUtils.pxFromDp(getContext(), 3);
+      rightLevelMargin = ViewUtils.pxFromDp(getContext(), 1.5f);
+      leftLevelMargin = ViewUtils.pxFromDp(getContext(), 4f);
+      topLevelMargin = ViewUtils.pxFromDp(getContext(), 4f);
+      bottomLevelMargin = ViewUtils.pxFromDp(getContext(), 0f);
    }
 
    public void setLevel(int level) {
@@ -41,9 +42,9 @@ public class BatteryView extends AppCompatImageView {
    @Override
    protected void onFinishInflate() {
       super.onFinishInflate();
-      int primaryColor = ContextCompat.getColor(getContext(), R.color.wallet_color_primary);
+      int primaryColor = Color.WHITE;
       levelPaint.setColor(primaryColor);
-      setImageResource(R.drawable.ic_battery);
+      setImageResource(R.drawable.ic_wallet_battery);
    }
 
    @Override

@@ -21,7 +21,6 @@ import com.worldventures.dreamtrips.wallet.ui.common.base.screen.delegate.Dialog
 import com.worldventures.dreamtrips.wallet.ui.dashboard.list.util.CardListHeaderAdapter;
 import com.worldventures.dreamtrips.wallet.ui.dashboard.list.util.CardStackHeaderHolder;
 import com.worldventures.dreamtrips.wallet.ui.dashboard.list.util.CardStackViewModel;
-import com.worldventures.dreamtrips.wallet.ui.dashboard.list.util.HidingScrollListener;
 import com.worldventures.dreamtrips.wallet.ui.dashboard.list.util.ImmutableCardStackHeaderHolder;
 import com.worldventures.dreamtrips.wallet.ui.dashboard.list.util.cell.CardStackCell;
 import com.worldventures.dreamtrips.wallet.ui.dashboard.list.util.cell.CardStackHeaderCell;
@@ -30,14 +29,12 @@ import java.util.List;
 
 import butterknife.InjectView;
 import butterknife.OnClick;
+import cn.pedant.SweetAlert.SweetAlertDialog;
 
 public class CardListScreen extends WalletFrameLayout<CardListScreenPresenter.Screen, CardListScreenPresenter, CardListPath> implements CardListScreenPresenter.Screen {
 
-   @InjectView(R.id.bankCardList) RecyclerView bankCardList;
-   @InjectView(R.id.wallet_list_buttons_wrapper) View buttonsWrapper;
-   @InjectView(R.id.add_debit_list) View addDebitCard;
-   @InjectView(R.id.add_credit_list) View addCreditCard;
-   @InjectView(R.id.empty_view_text) View emptyCardListView;
+   @InjectView(R.id.bank_card_list) RecyclerView bankCardList;
+   @InjectView(R.id.empty_card_view) View emptyCardListView;
 
    private IgnoreFirstItemAdapter adapter;
 
@@ -83,9 +80,12 @@ public class CardListScreen extends WalletFrameLayout<CardListScreenPresenter.Sc
    }
 
    @Override
-   public void setEnableAddingCardButtons(boolean enabled) {
-      addDebitCard.setEnabled(enabled);
-      addCreditCard.setEnabled(enabled);
+   public void showAddCardErrorDialog() {
+      SweetAlertDialog dialog = new SweetAlertDialog(getContext(), SweetAlertDialog.ERROR_TYPE)
+            .setTitleText("")
+            .setContentText(getString(R.string.wallet_wizard_full_card_list_error_message));
+      dialog.show();
+      dialog.showCancelButton(true);
    }
 
    private void setupCardStackList() {
@@ -119,11 +119,7 @@ public class CardListScreen extends WalletFrameLayout<CardListScreenPresenter.Sc
             presenter.navigationClick();
          }
 
-         @Override
-         public void onLockChanged(boolean isLocked) {
-            presenter.onLockChanged(isLocked);
-         }
-      });
+         });
 
       bankCardList.setAdapter(adapter);
       bankCardList.setItemAnimator(new DefaultItemAnimator());
@@ -131,12 +127,6 @@ public class CardListScreen extends WalletFrameLayout<CardListScreenPresenter.Sc
       LinearLayoutManager layout = new LinearLayoutManager(getContext());
       layout.setAutoMeasureEnabled(true);
       bankCardList.setLayoutManager(layout);
-      bankCardList.addOnScrollListener(new HidingScrollListener() {
-         @Override
-         public void onVisibilityChangeRequested(boolean show) {
-            buttonsWrapper.setVisibility(show ? VISIBLE : GONE);
-         }
-      });
    }
 
    private StickyHeadersItemDecoration getStickyHeadersItemDecoration(BaseArrayListAdapter adapter) {
@@ -146,13 +136,9 @@ public class CardListScreen extends WalletFrameLayout<CardListScreenPresenter.Sc
             .build();
    }
 
-   @OnClick(R.id.add_credit_list)
-   protected void addCreditCardClick() {
-      presenter.addCardRequired(BankCard.CardType.CREDIT);
+   @OnClick(R.id.add_card_button)
+   protected void addCardButtonClick() {
+      getPresenter().addCardRequired();
    }
 
-   @OnClick(R.id.add_debit_list)
-   protected void addDebitCardClick() {
-      presenter.addCardRequired(BankCard.CardType.DEBIT);
-   }
 }

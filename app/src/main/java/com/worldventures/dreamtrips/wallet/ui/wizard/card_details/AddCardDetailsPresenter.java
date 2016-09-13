@@ -2,6 +2,8 @@ package com.worldventures.dreamtrips.wallet.ui.wizard.card_details;
 
 import android.content.Context;
 import android.os.Parcelable;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 import com.techery.spares.module.Injector;
 import com.worldventures.dreamtrips.R;
@@ -19,6 +21,7 @@ import com.worldventures.dreamtrips.wallet.ui.common.base.WalletPresenter;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.WalletScreen;
 import com.worldventures.dreamtrips.wallet.ui.common.helper.OperationSubscriberWrapper;
 import com.worldventures.dreamtrips.wallet.ui.dashboard.list.CardListPath;
+import com.worldventures.dreamtrips.wallet.util.BankCardHelper;
 import com.worldventures.dreamtrips.wallet.util.CardUtils;
 import com.worldventures.dreamtrips.wallet.util.FormatException;
 import com.worldventures.dreamtrips.wallet.util.SmartCardInteractorHelper;
@@ -28,12 +31,13 @@ import javax.inject.Inject;
 import flow.Flow;
 import flow.History;
 import io.techery.janet.helper.ActionStateToActionTransformer;
-import timber.log.Timber;
 import rx.Observable;
+import timber.log.Timber;
 
 public class AddCardDetailsPresenter extends WalletPresenter<AddCardDetailsPresenter.Screen, Parcelable> {
 
    @Inject LocaleHelper localeHelper;
+   @Inject BankCardHelper bankCardHelper;
    @Inject SmartCardInteractor smartCardInteractor;
    @Inject SmartCardInteractorHelper smartCardInteractorHelper;
 
@@ -49,7 +53,7 @@ public class AddCardDetailsPresenter extends WalletPresenter<AddCardDetailsPrese
    public void attachView(Screen view) {
       super.attachView(view);
 
-      getView().setCardBankInfo(bankCard);
+      getView().cardBankInfo(bankCard);
    }
 
    @Override
@@ -64,7 +68,7 @@ public class AddCardDetailsPresenter extends WalletPresenter<AddCardDetailsPrese
    private void connectToDefaultCardPipe() {
       smartCardInteractor.fetchDefaultCardCommandPipe().clearReplays();
       smartCardInteractorHelper.sendSingleDefaultCardTask(bankCard -> {
-         getView().setAsDefaultPaymentCard(!CardUtils.isRealCard(bankCard));
+         getView().defaultPaymentCard(!CardUtils.isRealCard(bankCard));
          getView().setAsDefaultPaymentCardCondition().compose(bindView()).subscribe(this::onSetAsDefaultCard);
       }, bindViewIoToMainComposer());
    }
@@ -83,16 +87,15 @@ public class AddCardDetailsPresenter extends WalletPresenter<AddCardDetailsPrese
                      .build();
             })
             .compose(bindViewIoToMainComposer())
-            .subscribe(addressInfoWithLocale -> {
-               if (addressInfoWithLocale == null) {
-                  getView().hideDefaultAddressCheckbox();
-               } else {
-                  getView().useDefaultAddress(addressInfoWithLocale);
-               }
-            }, throwable -> {
+            .subscribe(this::setDefaultAddress, throwable -> {
                Timber.e(throwable, "Fail to use GetDefaultAddressCommand");
                // TODO: 8/24/16 add error handling
             });
+   }
+
+   private void setDefaultAddress(@Nullable AddressInfoWithLocale defaultAddress) {
+      if (defaultAddress == null) return;
+      getView().defaultAddress(defaultAddress);
    }
 
    private void connectToSaveCardDetailsPipe() {
@@ -119,11 +122,6 @@ public class AddCardDetailsPresenter extends WalletPresenter<AddCardDetailsPrese
       smartCardInteractor.getDefaultAddressCommandPipe().send(new GetDefaultAddressCommand());
    }
 
-   public void useDefaultAddressRequirement(boolean useDefaultAddress) {
-      if (useDefaultAddress) getView().showDefaultAddress();
-      else getView().showAddressFields();
-   }
-
    public void onCardInfoConfirmed(AddressInfo addressInfo, String cvv, String nickname, boolean useDefaultAddress, boolean setAsDefaultAddress, boolean setAsDefaultCard) {
       smartCardInteractor.saveCardDetailsDataPipe()
             .send(new SaveCardDetailsDataCommand(bankCard, addressInfo, nickname, cvv, useDefaultAddress, setAsDefaultAddress, setAsDefaultCard));
@@ -134,12 +132,13 @@ public class AddCardDetailsPresenter extends WalletPresenter<AddCardDetailsPrese
 
       smartCardInteractorHelper.sendSingleDefaultCardTask(defaultCard -> {
          if (!CardUtils.isRealCard(defaultCard)) return;
-         getView().showDefaultCardDialog(defaultCard.title());
+         // TODO: 9/7/16 (Sprint 4) we should use bank name instead of fin service
+         getView().showChangeCardDialog(bankCardHelper.financialServiceWithCardNumber(defaultCard));
       }, bindViewIoToMainComposer());
    }
 
    public void defaultCardDialogConfirmed(boolean confirmed) {
-      if (!confirmed) getView().setAsDefaultPaymentCard(false);
+      if (!confirmed) getView().defaultPaymentCard(false);
    }
 
    public void goBack() {
@@ -147,19 +146,13 @@ public class AddCardDetailsPresenter extends WalletPresenter<AddCardDetailsPrese
    }
 
    public interface Screen extends WalletScreen {
-      void showDefaultAddress();
+      void cardBankInfo(BankCard bankCard);
 
-      void showAddressFields();
+      void defaultAddress(AddressInfoWithLocale defaultAddress);
 
-      void hideDefaultAddressCheckbox();
+      void defaultPaymentCard(boolean defaultPaymentCard);
 
-      void setCardBankInfo(BankCard bankCard);
-
-      void useDefaultAddress(AddressInfoWithLocale defaultAddressInfo);
-
-      void setAsDefaultPaymentCard(boolean defaultPaymentCard);
-
-      void showDefaultCardDialog(String defaultCardName);
+      void showChangeCardDialog(@NonNull String bankCardName);
 
       Observable<Boolean> setAsDefaultPaymentCardCondition();
    }

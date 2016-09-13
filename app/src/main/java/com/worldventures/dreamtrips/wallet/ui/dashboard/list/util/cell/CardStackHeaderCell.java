@@ -29,26 +29,13 @@ public class CardStackHeaderCell extends AbstractDelegateCell<CardStackHeaderHol
       if (getModelObject().smartCard() != null) {
          smartCardWidget.bindCard(getModelObject().smartCard());
       }
-      smartCardWidget.setOnLockChangedListener((v, b) -> cellDelegate.onLockChanged(b));
       smartCardWidget.bindCount(getModelObject().cardCount());
+      smartCardWidget.setOnSettingsClickListener(v -> cellDelegate.onSettingsChosen());
    }
 
    private void setupToolbar() {
       toolbar.setTitle(R.string.wallet);
       toolbar.setNavigationOnClickListener(it -> cellDelegate.onNavigateButtonClick());
-      toolbar.getMenu().clear();
-      toolbar.inflateMenu(R.menu.menu_wallet_dashboard);
-      toolbar.setOnMenuItemClickListener(this::onMenuItemClick);
-   }
-
-   private boolean onMenuItemClick(MenuItem item) {
-      switch (item.getItemId()) {
-         case R.id.action_card_settings:
-            cellDelegate.onSettingsChosen();
-            return true;
-         default:
-            return false;
-      }
    }
 
    @Override
@@ -61,7 +48,5 @@ public class CardStackHeaderCell extends AbstractDelegateCell<CardStackHeaderHol
       void onSettingsChosen();
 
       void onNavigateButtonClick();
-
-      void onLockChanged(boolean isLocked);
    }
 }

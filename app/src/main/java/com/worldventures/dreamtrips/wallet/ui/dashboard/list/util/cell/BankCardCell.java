@@ -8,6 +8,9 @@ import com.techery.spares.ui.view.cell.CellDelegate;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.wallet.ui.dashboard.list.util.BankCardViewModel;
 import com.worldventures.dreamtrips.wallet.ui.widget.BankCardWidget;
+import com.worldventures.dreamtrips.wallet.util.BankCardHelper;
+
+import javax.inject.Inject;
 
 import butterknife.InjectView;
 
@@ -15,6 +18,7 @@ import butterknife.InjectView;
 public class BankCardCell extends AbstractDelegateCell<BankCardViewModel, BankCardCell.Delegate> {
 
    @InjectView(R.id.bank_card) BankCardWidget bankCardWidget;
+   @Inject BankCardHelper bankCardHelper;
 
    public BankCardCell(View view) {
       super(view);
@@ -22,8 +26,9 @@ public class BankCardCell extends AbstractDelegateCell<BankCardViewModel, BankCa
 
    @Override
    protected void syncUIStateWithModel() {
-      bankCardWidget.setBankCardInfo(getModelObject().bankCard);
+      bankCardWidget.setBankCardInfoForList(bankCardHelper, getModelObject().bankCard);
       bankCardWidget.setAsDefault(getModelObject().defaultCard);
+      bankCardWidget.setBankCardHolder(getAdapterPosition() % 2 == 0? R.drawable.creditcard_blue : R.drawable.creditcard_darkblue);
       itemView.setOnClickListener(v -> cellDelegate.onCellClicked(getModelObject()));
    }
 

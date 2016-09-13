@@ -5,7 +5,6 @@ import com.worldventures.dreamtrips.core.janet.dagger.InjectableAction;
 import com.worldventures.dreamtrips.wallet.domain.entity.card.BankCard;
 import com.worldventures.dreamtrips.wallet.domain.entity.card.Card;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -19,8 +18,6 @@ import io.techery.janet.helper.ActionStateToActionTransformer;
 import rx.Observable;
 
 import static com.worldventures.dreamtrips.core.janet.JanetModule.JANET_WALLET;
-import static com.worldventures.dreamtrips.wallet.domain.entity.card.BankCard.CardType;
-import static com.worldventures.dreamtrips.wallet.service.command.CardStacksCommand.CardStackModel.StackType;
 
 @CommandAction
 public class CardStacksCommand extends Command<List<CardStacksCommand.CardStackModel>> implements InjectableAction {
@@ -47,66 +44,25 @@ public class CardStacksCommand extends Command<List<CardStacksCommand.CardStackM
    }
 
    private List<CardStackModel> convert(List<Card> cardList, String defaultCardId) {
-      if (cardList == null) return new ArrayList<>();
-      ArrayList<CardStackModel> result = new ArrayList<>();
-
-      CardStackModel stack = defaultCardStack((BankCard) findDefaultCard(cardList, defaultCardId));
-      if (stack != null) result.add(stack);
-
-      List<BankCard> creditsBankCards = getBankCardsByType(cardList, CardType.CREDIT);
-      List<BankCard> debitBankCards = getBankCardsByType(cardList, CardType.DEBIT);
-
-      if (!creditsBankCards.isEmpty())
-         result.add(new CardStackModel(CardStackModel.StackType.CREDIT, creditsBankCards));
-      if (!debitBankCards.isEmpty()) result.add(new CardStackModel(StackType.DEBIT, debitBankCards));
-
-      return result;
-   }
-
-   private Card findDefaultCard(List<Card> cardList, String defaultCardId) {
-      if (defaultCardId == null) {
-         return null;
-      }
-      return Queryable.from(cardList)
-            .firstOrDefault(card -> card != null && card.id() != null && defaultCardId.equals(card.id()));
-   }
-
-   private CardStackModel defaultCardStack(BankCard defaultCard) {
-      if (defaultCard == null) return null;
-      ArrayList<BankCard> bankCards = new ArrayList<>();
-      bankCards.add(defaultCard);
-
-      return new CardStackModel(StackType.DEFAULT, bankCards);
-   }
-
-   protected List<BankCard> getBankCardsByType(List<Card> cardList, CardType cardType) {
-      if (cardList == null) return Collections.emptyList();
-      return Queryable.from(cardList)
-            .filter(it -> it instanceof BankCard)
-            .map(it -> (BankCard) it)
-            .filter(it -> it.cardType() == cardType)
-            .toList();
+      List<BankCard> bankCards = Queryable.from(cardList).map(element -> (BankCard) element).toList();
+      return bankCards.isEmpty() ? Collections.emptyList() :
+            Collections.singletonList(new CardStackModel(CardStackModel.StackType.PAYMENT, bankCards, defaultCardId));
    }
 
    public static class CardStackModel {
-      private StackType stackStackType;
-      private List<BankCard> bankCards;
+      public final StackType stackStackType;
+      public final List<BankCard> bankCards;
+      public final String defaultCardId;
 
-      public CardStackModel(StackType stackStackType, List<BankCard> bankCard) {
+
+      public CardStackModel(StackType stackStackType, List<BankCard> bankCards, String defaultCardId) {
          this.stackStackType = stackStackType;
-         this.bankCards = bankCard;
-      }
-
-      public List<BankCard> bankCards() {
-         return bankCards;
-      }
-
-      public StackType type() {
-         return stackStackType;
+         this.bankCards = bankCards;
+         this.defaultCardId = defaultCardId;
       }
 
       public enum StackType {
-         DEBIT, CREDIT, DEFAULT
+         PAYMENT, LOYALTY
       }
    }
 }

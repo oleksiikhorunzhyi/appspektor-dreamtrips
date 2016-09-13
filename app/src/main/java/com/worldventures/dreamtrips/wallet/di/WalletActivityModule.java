@@ -11,8 +11,8 @@ import com.worldventures.dreamtrips.wallet.ui.dashboard.list.util.cell.CardStack
 import com.worldventures.dreamtrips.wallet.ui.settings.WalletCardSettingsPresenter;
 import com.worldventures.dreamtrips.wallet.ui.wizard.barcode.WizardScanBarcodePresenter;
 import com.worldventures.dreamtrips.wallet.ui.wizard.card_details.AddCardDetailsPresenter;
+import com.worldventures.dreamtrips.wallet.ui.wizard.charging.WizardChargingPresenter;
 import com.worldventures.dreamtrips.wallet.ui.wizard.finish.WalletPinIsSetPresenter;
-import com.worldventures.dreamtrips.wallet.ui.wizard.magstripe.WizardMagstripePresenter;
 import com.worldventures.dreamtrips.wallet.ui.wizard.manual.WizardManualInputPresenter;
 import com.worldventures.dreamtrips.wallet.ui.wizard.pin.WizardPinSetupPresenter;
 import com.worldventures.dreamtrips.wallet.ui.wizard.profile.WizardEditProfilePresenter;
@@ -38,7 +38,7 @@ import dagger.Provides;
             WizardManualInputPresenter.class,
             WizardEditProfilePresenter.class,
             WalletPinIsSetPresenter.class,
-            WizardMagstripePresenter.class,
+            WizardChargingPresenter.class,
             CardDetailsPresenter.class,
             CardListScreenPresenter.class,
             WalletCardSettingsPresenter.class,

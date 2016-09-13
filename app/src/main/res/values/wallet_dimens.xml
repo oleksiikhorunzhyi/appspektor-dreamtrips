@@ -26,7 +26,6 @@
    <dimen name="wallet_add_card_details_component_text_margin_left">8dp</dimen>
    <dimen name="wallet_add_card_details_component_margin_top">10dp</dimen>
    <dimen name="wallet_add_card_details_edittext_margin_top">3dp</dimen>
-   <dimen name="wallet_add_card_details_default_address_margin_left">34dp</dimen>
 
    <dimen name="wallet_wizard_avatar_size">192dp</dimen>
    <dimen name="wallet_wizard_bar_code_border_stroke_width">3dp</dimen>

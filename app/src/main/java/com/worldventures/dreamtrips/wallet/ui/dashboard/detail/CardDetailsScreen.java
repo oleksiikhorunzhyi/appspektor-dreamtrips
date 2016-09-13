@@ -1,6 +1,7 @@
 package com.worldventures.dreamtrips.wallet.ui.dashboard.detail;
 
 import android.content.Context;
+import android.support.annotation.NonNull;
 import android.support.v7.widget.Toolbar;
 import android.util.AttributeSet;
 import android.widget.CheckBox;
@@ -13,7 +14,7 @@ import com.worldventures.dreamtrips.wallet.domain.entity.card.BankCard;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletFrameLayout;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.OperationScreen;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.delegate.DialogOperationScreen;
-import com.worldventures.dreamtrips.wallet.ui.dialog.DefaultCardDialog;
+import com.worldventures.dreamtrips.wallet.ui.dialog.ChangeDefaultPaymentCardDialog;
 import com.worldventures.dreamtrips.wallet.ui.widget.BankCardWidget;
 import com.worldventures.dreamtrips.wallet.util.AddressUtil;
 
@@ -41,6 +42,7 @@ public class CardDetailsScreen extends WalletFrameLayout<CardDetailsPresenter.Sc
       super(context, attrs);
    }
 
+   @NonNull
    @Override
    public CardDetailsPresenter createPresenter() {
       return new CardDetailsPresenter(getContext(), getInjector(), getPath().getBankCard());
@@ -74,9 +76,9 @@ public class CardDetailsScreen extends WalletFrameLayout<CardDetailsPresenter.Sc
    }
 
    @Override
-   public void showDefaultCardDialog(String defaultCardName) {
-      new DefaultCardDialog(getContext(), defaultCardName)
-            .setOnConfimAction(() -> getPresenter().defaultCardDialogConfirmed(true))
+   public void showDefaultCardDialog(@NonNull String bankCardName) {
+      new ChangeDefaultPaymentCardDialog(getContext(), bankCardName)
+            .setOnConfirmAction(() -> getPresenter().defaultCardDialogConfirmed(true))
             .setOnCancelAction(() -> getPresenter().defaultCardDialogConfirmed(false))
             .show();
    }

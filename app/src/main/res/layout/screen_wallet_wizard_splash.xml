@@ -51,7 +51,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="30dp"
             android:scaleType="fitCenter"
-            android:src="@drawable/flye_card_back"
+            android:src="@drawable/flyecard_back"
             tools:ignore="ContentDescription"
             />
 
@@ -61,7 +61,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="30dp"
             android:scaleType="fitCenter"
-            android:src="@drawable/ic_flye_card_front"
+            android:src="@drawable/flyecard_front"
             tools:ignore="ContentDescription"
             />
    </FrameLayout>

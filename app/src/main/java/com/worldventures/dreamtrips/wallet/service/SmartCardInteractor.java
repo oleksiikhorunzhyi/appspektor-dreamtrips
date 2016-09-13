@@ -25,7 +25,10 @@ import io.techery.janet.Janet;
 import io.techery.janet.ReadActionPipe;
 import io.techery.janet.WriteActionPipe;
 import io.techery.janet.helper.ActionStateSubscriber;
+import io.techery.janet.smartcard.action.charger.StartCardRecordingAction;
+import io.techery.janet.smartcard.action.charger.StopCardRecordingAction;
 import io.techery.janet.smartcard.action.records.DeleteRecordAction;
+import io.techery.janet.smartcard.event.CardChargedEvent;
 import rx.Observable;
 import rx.schedulers.Schedulers;
 
@@ -53,6 +56,10 @@ public final class SmartCardInteractor {
    private final ActionPipe<SetDefaultCardOnDeviceCommand> setDefaultCardOnDeviceCommandPipe;
    private final ActionPipe<DeleteRecordAction> deleteCardPipe;
 
+   private final ReadActionPipe<CardChargedEvent> chargedEventPipe;
+   private final ActionPipe<StartCardRecordingAction> startCardRecordingPipe;
+   private final ActionPipe<StopCardRecordingAction> stopCardRecordingPipe;
+
    @Inject
    public SmartCardInteractor(@Named(JANET_WALLET) Janet janet) {
       connectionPipe = janet.createPipe(ConnectSmartCardCommand.class, Schedulers.io());
@@ -74,6 +81,9 @@ public final class SmartCardInteractor {
       setDefaultCardOnDeviceCommandPipe = janet.createPipe(SetDefaultCardOnDeviceCommand.class, Schedulers.io());
       deleteCardPipe = janet.createPipe(DeleteRecordAction.class, Schedulers.io());
 
+      chargedEventPipe = janet.createPipe(CardChargedEvent.class, Schedulers.io());
+      startCardRecordingPipe = janet.createPipe(StartCardRecordingAction.class, Schedulers.io());
+      stopCardRecordingPipe = janet.createPipe(StopCardRecordingAction.class, Schedulers.io());
       connect();
    }
 
@@ -135,6 +145,18 @@ public final class SmartCardInteractor {
 
    public ActionPipe<SetDefaultCardOnDeviceCommand> setDefaultCardOnDeviceCommandPipe() {
       return setDefaultCardOnDeviceCommandPipe;
+   }
+
+   public ReadActionPipe<CardChargedEvent> chargedEventPipe() {
+      return chargedEventPipe;
+   }
+
+   public ActionPipe<StartCardRecordingAction> startCardRecordingPipe() {
+      return startCardRecordingPipe;
+   }
+
+   public ActionPipe<StopCardRecordingAction> stopCardRecordingPipe() {
+      return stopCardRecordingPipe;
    }
 
    private void connect() {

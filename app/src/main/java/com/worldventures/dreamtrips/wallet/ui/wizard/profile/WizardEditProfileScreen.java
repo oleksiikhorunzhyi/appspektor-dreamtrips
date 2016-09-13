@@ -47,6 +47,7 @@ public class WizardEditProfileScreen extends WalletFrameLayout<WizardEditProfile
    @Override
    protected void onFinishInflate() {
       super.onFinishInflate();
+      if (isInEditMode()) return;
       //noinspection all
       mediaPickerService = (MediaPickerService) getContext().getSystemService(MediaPickerService.SERVICE_NAME);
       toolbar.setNavigationOnClickListener(v -> navigateButtonClick());

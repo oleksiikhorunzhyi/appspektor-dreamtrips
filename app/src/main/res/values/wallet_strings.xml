@@ -57,12 +57,7 @@
 
    <string name="wallet_add_credit_card">Add credit card</string>
    <string name="wallet_add_debit_card">Add debit card</string>
-   <string name="wallet_credit_cards_title">Credit Cards(%d)</string>
-   <string name="wallet_debit_cards_title">Debit Cards(%d)</string>
-
-   <string name="wallet_credit_card_title">Credit Card</string>
-   <string name="wallet_debit_card_title">Debit Card</string>
-   <string name="wallet_default_card_title">Default Card</string>
+   <string name="wallet_payment_cards_title">Payment cards</string>
 
    <!--scid manual-->
    <string name="wallet_wizard_manual_input_header">Enter the 10-digit number located below barcode</string>
@@ -88,21 +83,22 @@
    <!--card list-->
    <string name="dashboard_default_card_stack_title">Default</string>
    <string name="wallet_wizard_default_card_label">DEFAULT</string>
-   <string name="wallet_wizard_empty_card_list_label">Add credit or debit cards\nto your flye\u2122 smart card</string>
+   <string name="wallet_wizard_empty_card_list_label">Add credit and debit cards\nto your flye\u2122 SmartCard</string>
+   <string name="wallet_wizard_full_card_list_error_message">Your flye card is full.\nPlease delete one or more cards to proceed</string>
 
    <!--add card details-->
    <string name="wallet_add_card_details_title">Card Details</string>
    <string name="wallet_add_card_details_hint_enter_cvv">Enter CVV</string>
-   <string name="wallet_add_card_details_hint_nickname_card">Nickname Card (optional)</string>
+   <string name="wallet_add_card_details_hint_nickname_card">Card Nickname (optional)</string>
    <string name="wallet_add_card_details_hint_address1">Address 1</string>
    <string name="wallet_add_card_details_hint_address2">Address 2 (optional)</string>
    <string name="wallet_add_card_details_hint_city">City</string>
    <string name="wallet_add_card_details_hint_state">State</string>
    <string name="wallet_add_card_details_hint_zip">Zip</string>
    <string name="wallet_add_card_details_button_confirm">Confirm</string>
-   <string name="wallet_add_card_details_option_use_default_address">Use Default Address</string>
+   <string name="wallet_add_card_details_cvv_label">CVV Number</string>
+   <string name="wallet_add_card_details_billing_address_label">Billing address</string>
    <string name="wallet_add_card_details_option_set_as_default_card">Set As Default Payment Card</string>
-   <string name="wallet_add_card_details_option_set_as_default_address">Set As Default Address</string>
    <string name="wallet_add_card_details_error_message">Some of requirement fields are empty or contains incorrect data</string>
    <string name="wallet_add_card_details_default_card_exist_dialog_text">Your default card %s will be replaced with this card. Do you want to proceed?</string>
 
@@ -116,13 +112,11 @@
    <string name="wallet_card_list_record_connected">%d card loaded</string>
    <string name="wallet_dashboard_unlock_error">Unlock is not supported</string>
 
-   <!--magstripe-->
-   <string name="wallet_wizard_magstripe_add_credit_card_title">Add Credit Card</string>
-   <string name="wallet_wizard_magstripe_add_debit_card_title">Add Debit Card</string>
-   <string name="wallet_wizard_magstripe_description">Connect the magnetic reader</string>
-   <string name="wallet_wizard_magstripe_swipe_credit">Swipe a credit card</string>
-   <string name="wallet_wizard_magstripe_swipe_debit">Swipe a debit card</string>
-   <string name="wallet_wizard_magstripe_swipe_error">Incorrect card reading. Try again</string>
+   <!--charging-->
+   <string name="wallet_charging_swiping_screen_title">Add Payment Card</string>
+   <string name="wallet_charging_swiping_screen_instruction">Plug flye\u2122 into the charger and swipe credit or debit cards.</string>
+   <string name="wallet_charging_swiping_screen_notes">Be sure your flye\u2122 card is turned on and the 2 charger LEDs are on.</string>
+   <string name="wallet_wizard_charging_swipe_error">Incorrect card reading. Try again</string>
    <string name="wallet_terms_and_conditions_header">Terms And Conditions</string>
    <string name="wallet_wizard_terms_and_conditions_agree_btn">Agree</string>
    <string name="wallet_terms_and_conditions_try_again">Try Again</string>

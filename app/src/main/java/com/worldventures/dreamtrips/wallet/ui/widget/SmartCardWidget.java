@@ -4,9 +4,9 @@ import android.content.Context;
 import android.net.Uri;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
-import android.widget.CheckBox;
-import android.widget.CompoundButton;
+import android.view.View;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.facebook.drawee.view.SimpleDraweeView;
@@ -22,8 +22,12 @@ public class SmartCardWidget extends FrameLayout {
    @InjectView(R.id.cardListSCAvatar) SimpleDraweeView scAvatar;
    @InjectView(R.id.bankLabel) TextView bankLabel;
    @InjectView(R.id.connectedCardsCount) TextView connectedCardsCount;
-   @InjectView(R.id.cbLock) CheckBox lockView;
    @InjectView(R.id.batteryView) BatteryView batteryView;
+   @InjectView(R.id.settings_button) View settingsButton;
+
+   @InjectView(R.id.stealth_indicator) View stealthIndicator;
+   @InjectView(R.id.lock_indicator) ImageView lockIndicator;
+   @InjectView(R.id.link_indicator) ImageView lickIndicator;
 
    public SmartCardWidget(Context context) {
       this(context, null);
@@ -45,8 +49,19 @@ public class SmartCardWidget extends FrameLayout {
       bankLabel.setText(smartCard.cardName());
       if (url != null) scAvatar.setImageURI(Uri.parse(url));
       batteryView.setLevel(smartCard.batteryLevel());
-      lockView.setChecked(smartCard.lock());
+      stealthIndicator.setVisibility(smartCard.stealthMode() ? VISIBLE : GONE);
+      bindLockStatus(smartCard.lock());
+      //// TODO: 9/7/16 add logic for get connect status
+      bindConnectionStatus(true);
       setVisibility(VISIBLE);
+   }
+
+   private void bindLockStatus(boolean lock) {
+      lockIndicator.setImageResource(lock ? R.drawable.ic_wallet_lock_indicator : R.drawable.ic_wallet_unlock_indicator);
+   }
+
+   private void bindConnectionStatus(boolean connected) {
+      lickIndicator.setImageResource(connected ? R.drawable.ic_wallet_link_indicator : R.drawable.ic_wallet_unlink_indicator);
    }
 
    public void bindCount(int cardCount) {
@@ -59,7 +74,7 @@ public class SmartCardWidget extends FrameLayout {
       }
    }
 
-   public void setOnLockChangedListener(CompoundButton.OnCheckedChangeListener listener) {
-      lockView.setOnCheckedChangeListener(listener);
+   public void setOnSettingsClickListener(View.OnClickListener listener) {
+      settingsButton.setOnClickListener(listener);
    }
 }

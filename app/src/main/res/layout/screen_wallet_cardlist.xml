@@ -1,5 +1,4 @@
-<com.worldventures.dreamtrips.wallet.ui.dashboard.list.CardListScreen
-      style="@style/WalletTheme.Wizard.RootStyle"
+<com.worldventures.dreamtrips.wallet.ui.dashboard.list.CardListScreen style="@style/WalletTheme.Wizard.RootStyle"
       xmlns:android="http://schemas.android.com/apk/res/android"
       xmlns:app="http://schemas.android.com/apk/res-auto"
       xmlns:tools="http://schemas.android.com/tools"
@@ -7,74 +6,52 @@
       android:theme="@style/WalletTheme.Wizard"
       >
 
-   <android.support.v7.widget.RecyclerView
-         android:id="@+id/bankCardList"
-         android:layout_width="match_parent"
-         android:layout_height="wrap_content"
-         android:background="@color/white"
-         android:clipToPadding="false"
-         android:paddingBottom="@dimen/spacing_large"
-         app:layout_behavior="@string/appbar_scrolling_view_behavior"
-         tools:listitem="@layout/adapter_item_wallet_bankcard"
-         />
-
-   <LinearLayout
+   <android.support.design.widget.CoordinatorLayout
+         android:id="@+id/main_content"
          android:layout_width="match_parent"
          android:layout_height="match_parent"
-         android:layout_gravity="bottom"
-         android:layout_marginTop="290dp"
-         android:gravity="bottom"
-         android:orientation="vertical"
          >
 
-      <TextView
-            android:id="@+id/empty_view_text"
+      <android.support.v7.widget.RecyclerView
+            android:id="@+id/bank_card_list"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:gravity="center"
-            android:text="@string/wallet_wizard_empty_card_list_label"
-            android:textColor="@color/wallet_card_list_empty_list_label_color"
-            android:visibility="gone"
+            android:background="@color/white"
+            android:clipToPadding="false"
+            android:paddingBottom="@dimen/spacing_large"
+            tools:listitem="@layout/adapter_item_wallet_bankcard"
             />
 
-      <LinearLayout
-            android:id="@+id/wallet_list_buttons_wrapper"
-            android:layout_width="match_parent"
-            android:layout_height="60dp"
-            android:layout_weight="0"
-            android:background="@color/wallet_color_background_light"
-            android:gravity="center"
-            android:padding="@dimen/spacing_normal"
-            >
+      <android.support.design.widget.FloatingActionButton
+            android:id="@+id/add_card_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp"
+            android:src="@drawable/ic_white_plus"
+            app:backgroundTint="@color/wallet_add_card_button_color"
+            app:fab_size="normal"
+            app:layout_anchor="@id/bank_card_list"
+            app:layout_anchorGravity="bottom|center_horizontal"
+            app:layout_behavior="com.worldventures.dreamtrips.wallet.ui.dashboard.list.util.ScrollFABBehavior"
+            />
 
-         <TextView
-               android:id="@+id/add_credit_list"
-               android:layout_width="0dp"
-               android:layout_height="wrap_content"
-               android:layout_weight="1"
-               android:gravity="center"
-               android:text="@string/wallet_add_credit_card"
-               android:textColor="@color/white_text_color"
-               />
+   </android.support.design.widget.CoordinatorLayout>
 
-         <View
-               android:layout_width="1dp"
-               android:layout_height="match_parent"
-               android:background="@android:color/white"
-               android:padding="@dimen/spacing_normal"
-               />
-
-         <TextView
-               android:id="@+id/add_debit_list"
-               android:layout_width="0dp"
-               android:layout_height="wrap_content"
-               android:layout_weight="1"
-               android:gravity="center"
-               android:text="@string/wallet_add_debit_card"
-               android:textColor="@color/white_text_color"
-               />
-      </LinearLayout>
-
-   </LinearLayout>
+   <TextView
+         android:id="@+id/empty_card_view"
+         android:layout_width="match_parent"
+         android:layout_height="150dp"
+         android:layout_gravity="bottom"
+         android:layout_marginBottom="80dp"
+         android:layout_marginLeft="30dp"
+         android:layout_marginRight="30dp"
+         android:background="@drawable/background_empty_card_list_message"
+         android:gravity="center"
+         android:paddingBottom="15dp"
+         android:text="@string/wallet_wizard_empty_card_list_label"
+         android:textColor="@color/wallet_card_list_empty_list_label_color"
+         android:textSize="18sp"
+         android:visibility="visible"
+         />
 
 </com.worldventures.dreamtrips.wallet.ui.dashboard.list.CardListScreen>

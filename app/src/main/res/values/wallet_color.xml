@@ -10,7 +10,11 @@
    <color name="wallet_card_details_edit_billing_address_color">#00b3e3</color>
    <color name="wallet_card_details_delete_card_button_color">#ea283b</color>
 
-   <color name="wallet_card_list_empty_list_label_color">#006699</color>
+   <color name="wallet_card_list_empty_list_label_color">#333333</color>
+   <color name="wallet_add_card_button_color">#81c435</color>
+
+   <color name="wallet_charging_swiping_screen_text_color">#222222</color>
+
    <color name="wallet_terms_text_color">#006699</color>
 
    <color name="wallet_card_list_header_text">#90979a</color>

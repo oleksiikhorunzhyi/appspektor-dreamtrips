@@ -22,7 +22,8 @@ public class OfflineWarningDelegate {
    public void showOfflineWarning(Activity activity) {
       new MaterialDialog.Builder(activity)
             .title(R.string.offline_warning_dialog_title)
-            .content(R.string.offline_warning_dialog_title)
+            .content(R.string.offline_warning_dialog_message)
+            .positiveText(R.string.ok)
             .show();
       offlineHintShown = true;
    }

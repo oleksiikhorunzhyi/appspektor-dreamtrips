@@ -15,6 +15,7 @@ import com.worldventures.dreamtrips.modules.dtl.service.action.DtlMerchantByIdAc
 import com.worldventures.dreamtrips.modules.dtl.service.action.DtlMerchantsAction;
 import com.worldventures.dreamtrips.modules.dtl.service.action.DtlUpdateAmenitiesAction;
 import com.worldventures.dreamtrips.modules.dtl.service.action.MerchantByIdCommand;
+import com.worldventures.dreamtrips.modules.dtl.service.action.ThinMerchantsCommand;
 
 import java.util.List;
 
@@ -30,17 +31,19 @@ public class DtlMerchantInteractor {
    private final ActionPipe<DtlMerchantsAction> merchantsPipe;
    private final ActionPipe<DtlMerchantByIdAction> merchantByIdPipe;
    private final ActionPipe<MerchantByIdCommand> merchantByIdHttpPipe;
+   private final ActionPipe<ThinMerchantsCommand> thinMerchantsPipe;
 
    private final WriteActionPipe<DtlFilterDataAction> filterDataActionPipe;
 
    public DtlMerchantInteractor(SessionActionPipeCreator sessionActionPipeCreator, DtlLocationInteractor locationInteractor) {
       this.locationInteractor = locationInteractor;
-
+      
       updateAmenitiesPipe = sessionActionPipeCreator.createPipe(DtlUpdateAmenitiesAction.class, Schedulers.io());
       merchantsPipe = sessionActionPipeCreator.createPipe(DtlMerchantsAction.class, Schedulers.io());
       merchantByIdPipe = sessionActionPipeCreator.createPipe(DtlMerchantByIdAction.class);
       filterDataActionPipe = sessionActionPipeCreator.createPipe(DtlFilterDataAction.class, Schedulers.io());
       merchantByIdHttpPipe = sessionActionPipeCreator.createPipe(MerchantByIdCommand.class, Schedulers.io());
+      thinMerchantsPipe = sessionActionPipeCreator.createPipe(ThinMerchantsCommand.class, Schedulers.io());
 
       connectMerchantsPipe();
       connectUpdateAmenitiesPipe();
@@ -70,6 +73,10 @@ public class DtlMerchantInteractor {
 
    public ActionPipe<MerchantByIdCommand> merchantByIdHttpPipe() {
       return merchantByIdHttpPipe;
+   }
+
+   public ActionPipe<ThinMerchantsCommand> thinMerchantsHttpPipe() {
+      return thinMerchantsPipe;
    }
 
    //TODO: move to action

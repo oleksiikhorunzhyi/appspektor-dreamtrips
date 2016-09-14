@@ -219,7 +219,7 @@
                >
 
             <com.worldventures.dreamtrips.modules.common.view.custom.ShowMoreTextView
-                  android:id="@+id/legal_text"
+                  android:id="@+id/disclaimer"
                   android:layout_width="match_parent"
                   android:layout_height="wrap_content"
                   android:clickable="true"

@@ -12,6 +12,7 @@ import com.worldventures.dreamtrips.modules.common.presenter.JobPresenter;
 import com.worldventures.dreamtrips.modules.common.view.ApiErrorView;
 import com.worldventures.dreamtrips.modules.dtl.analytics.DtlAnalyticsCommand;
 import com.worldventures.dreamtrips.modules.dtl.analytics.PointsEstimatorCalculateEvent;
+import com.worldventures.dreamtrips.modules.dtl.helper.MerchantHelper;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchant;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.Merchant;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.offer.Currency;
@@ -32,8 +33,6 @@ public class DtlPointsEstimationPresenter extends JobPresenter<DtlPointsEstimati
 
    @Inject DtlTransactionInteractor transactionInteractor;
    @Inject DtlMerchantInteractor merchantInteractor;
-   //
-   private DtlMerchant dtlMerchant;
 
    public DtlPointsEstimationPresenter(Merchant merchant) {
       this.merchant = merchant;
@@ -43,7 +42,7 @@ public class DtlPointsEstimationPresenter extends JobPresenter<DtlPointsEstimati
    public void takeView(View view) {
       super.takeView(view);
       apiErrorPresenter.setView(view);
-      view.showCurrency(dtlMerchant.getDefaultCurrency());
+      view.showCurrency(MerchantHelper.merchantDefaultCurrency(merchant));
       bindApiJob();
    }
 
@@ -63,10 +62,10 @@ public class DtlPointsEstimationPresenter extends JobPresenter<DtlPointsEstimati
             .send(DtlAnalyticsCommand.create(new PointsEstimatorCalculateEvent(merchant)));
       //
       transactionInteractor.estimatePointsActionPipe()
-            .send(new EstimationHttpAction(dtlMerchant.getId(), ImmutableEstimationParams.builder()
+            .send(new EstimationHttpAction(merchant.id(), ImmutableEstimationParams.builder()
                   .billTotal(Double.valueOf(userInput))
                   .checkinTime(DateTimeUtils.currentUtcString())
-                  .currencyCode(dtlMerchant.getDefaultCurrency().code())
+                  .currencyCode(MerchantHelper.merchantDefaultCurrency(merchant).code())
                   .build()));
    }
 

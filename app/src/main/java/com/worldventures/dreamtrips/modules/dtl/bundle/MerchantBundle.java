@@ -7,7 +7,7 @@ import com.worldventures.dreamtrips.modules.dtl.model.merchant.Merchant;
 
 public class MerchantBundle implements Parcelable {
 
-   private Merchant merchant;
+   private final Merchant merchant;
 
    public MerchantBundle(Merchant merchant) {
       this.merchant = merchant;
@@ -15,10 +15,6 @@ public class MerchantBundle implements Parcelable {
 
    public Merchant getMerchant() {
       return merchant;
-   }
-
-   public void setMerchant(Merchant merchant) {
-      this.merchant = merchant;
    }
 
    ///////////////////////////////////////////////////////////////////////////

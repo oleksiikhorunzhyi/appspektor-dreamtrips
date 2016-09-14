@@ -5,6 +5,7 @@ import android.support.annotation.Nullable;
 
 import com.google.android.gms.common.api.Status;
 import com.worldventures.dreamtrips.modules.dtl.bundle.MerchantBundle;
+import com.worldventures.dreamtrips.modules.dtl.bundle.MerchantIdBundle;
 import com.worldventures.dreamtrips.modules.dtl.bundle.PointsEstimationDialogBundle;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.Merchant;
 import com.worldventures.dreamtrips.modules.dtl.model.transaction.DtlTransaction;
@@ -16,7 +17,7 @@ public interface DtlDetailsScreen extends DtlScreen {
 
    void showEstimationDialog(PointsEstimationDialogBundle data);
 
-   void openSuggestMerchant(MerchantBundle data);
+   void openSuggestMerchant(MerchantIdBundle data);
 
    void openTransaction(Merchant merchant, DtlTransaction dtlTransaction);
 

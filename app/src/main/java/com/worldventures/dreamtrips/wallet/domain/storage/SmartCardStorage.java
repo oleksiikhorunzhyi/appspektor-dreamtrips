@@ -11,6 +11,7 @@ import com.worldventures.dreamtrips.wallet.domain.entity.SmartCard;
 import com.worldventures.dreamtrips.wallet.service.command.ActivateSmartCardCommand;
 import com.worldventures.dreamtrips.wallet.service.command.ConnectSmartCardCommand;
 import com.worldventures.dreamtrips.wallet.service.command.CreateAndConnectToCardCommand;
+import com.worldventures.dreamtrips.wallet.service.command.UpdateSmartCardConnectionStatus;
 import com.worldventures.dreamtrips.wallet.service.command.FetchSmartCardLockState;
 import com.worldventures.dreamtrips.wallet.service.command.SetLockStateCommand;
 import com.worldventures.dreamtrips.wallet.service.command.SetStealthModeCommand;
@@ -50,6 +51,7 @@ public class SmartCardStorage implements MultipleActionStorage<SmartCard> {
    public List<Class<? extends CachedAction>> getActionClasses() {
       return Arrays.asList(
             ConnectSmartCardCommand.class,
+            UpdateSmartCardConnectionStatus.class,
             ActivateSmartCardCommand.class,
             CreateAndConnectToCardCommand.class,
             FetchSmartCardLockState.class,

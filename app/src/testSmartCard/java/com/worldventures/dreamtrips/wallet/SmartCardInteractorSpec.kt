@@ -13,6 +13,7 @@ import com.worldventures.dreamtrips.core.janet.cache.storage.MultipleActionStora
 import com.worldventures.dreamtrips.core.repository.SnappyRepository
 import com.worldventures.dreamtrips.wallet.domain.entity.AddressInfo
 import com.worldventures.dreamtrips.wallet.domain.entity.ImmutableProvision
+import com.worldventures.dreamtrips.wallet.domain.entity.SmartCard
 import com.worldventures.dreamtrips.wallet.domain.entity.card.BankCard
 import com.worldventures.dreamtrips.wallet.domain.entity.card.BankCard.CardType
 import com.worldventures.dreamtrips.wallet.domain.storage.DefaultBankCardStorage
@@ -55,6 +56,38 @@ class SmartCardInteractorSpec : BaseSpec({
          prepareCardsAndAddressMock()
 
          mockedListOfCards = mutableListOf(mockedDebitCard, mockedCreditCard, mockedDefaultCard)
+      }
+
+      context("Smart Card connection status should be changed") {
+
+         it("Connect to smart card") {
+            val smartcard: SmartCard = mockSmartCard("4")
+            whenever(smartcard.cardStatus()).thenReturn(SmartCard.CardStatus.DRAFT)
+
+            val testSubscriber: TestSubscriber<ActionState<ConnectSmartCardCommand>> = TestSubscriber()
+            janet.createPipe(ConnectSmartCardCommand::class.java)
+                  .createObservable(ConnectSmartCardCommand(smartcard))
+                  .subscribe(testSubscriber)
+
+            assertActionSuccess(testSubscriber, { it.result.connectionStatus() === SmartCard.ConnectionStatus.CONNECTED })
+            verify(mockDb, times(1)).saveSmartCard(any())
+         }
+
+         it("set disconnect status if the event is thrown") {
+            val activeSmartCardId = "4"
+            val smartcard: SmartCard = mockSmartCard(activeSmartCardId)
+            whenever(mockDb.getActiveSmartCardId()).thenReturn(activeSmartCardId)
+            whenever(mockDb.getSmartCard(activeSmartCardId)).thenReturn(smartcard)
+
+            val testSubscriber: TestSubscriber<ActionState<UpdateSmartCardConnectionStatus>> = TestSubscriber()
+            janet.createPipe(UpdateSmartCardConnectionStatus::class.java)
+                  .createObservable(UpdateSmartCardConnectionStatus(SmartCard.ConnectionStatus.DISCONNECTED))
+                  .subscribe(testSubscriber)
+
+            assertActionSuccess(testSubscriber, { it.result.connectionStatus() === SmartCard.ConnectionStatus.DISCONNECTED })
+            verify(mockDb, times(1)).saveSmartCard(any())
+         }
+
       }
 
       context("Default card id is fetching") {
@@ -301,6 +334,18 @@ class SmartCardInteractorSpec : BaseSpec({
 
       fun Janet.connectToSmartCardSdk() {
          this.createPipe(ConnectAction::class.java).createObservableResult(ConnectAction("any", "any")).subscribe()
+      }
+
+      fun mockSmartCard(cardId: String): SmartCard {
+         var mockedSmartCard: SmartCard = mock()
+         whenever(mockedSmartCard.smartCardId()).thenReturn(cardId)
+         whenever(mockedSmartCard.cardStatus()).thenReturn(SmartCard.CardStatus.ACTIVE)
+         whenever(mockedSmartCard.connectionStatus()).thenReturn(SmartCard.ConnectionStatus.DISCONNECTED)
+         whenever(mockedSmartCard.deviceName()).thenReturn("device name")
+         whenever(mockedSmartCard.deviceAddress()).thenReturn("device address")
+         whenever(mockedSmartCard.cardName()).thenReturn("card name")
+
+         return mockedSmartCard
       }
 
       private fun prepareCardsAndAddressMock() {

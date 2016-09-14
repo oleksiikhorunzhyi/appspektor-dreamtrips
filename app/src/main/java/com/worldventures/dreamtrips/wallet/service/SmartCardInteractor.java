@@ -15,12 +15,14 @@ import com.worldventures.dreamtrips.wallet.service.command.SetDefaultCardOnDevic
 import com.worldventures.dreamtrips.wallet.service.command.SetLockStateCommand;
 import com.worldventures.dreamtrips.wallet.service.command.SetStealthModeCommand;
 import com.worldventures.dreamtrips.wallet.service.command.SmartCardModifier;
+import com.worldventures.dreamtrips.wallet.service.command.UpdateSmartCardConnectionStatus;
 
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.inject.Singleton;
 
 import io.techery.janet.ActionPipe;
+import io.techery.janet.ActionState;
 import io.techery.janet.Janet;
 import io.techery.janet.ReadActionPipe;
 import io.techery.janet.WriteActionPipe;
@@ -28,11 +30,15 @@ import io.techery.janet.helper.ActionStateSubscriber;
 import io.techery.janet.smartcard.action.charger.StartCardRecordingAction;
 import io.techery.janet.smartcard.action.charger.StopCardRecordingAction;
 import io.techery.janet.smartcard.action.records.DeleteRecordAction;
+import io.techery.janet.smartcard.action.support.DisconnectAction;
 import io.techery.janet.smartcard.event.CardChargedEvent;
 import rx.Observable;
 import rx.schedulers.Schedulers;
+import timber.log.Timber;
 
 import static com.worldventures.dreamtrips.core.janet.JanetModule.JANET_WALLET;
+import static com.worldventures.dreamtrips.wallet.domain.entity.SmartCard.ConnectionStatus.DISCONNECTED;
+import static com.worldventures.dreamtrips.wallet.domain.entity.SmartCard.ConnectionStatus.ERROR;
 import static com.worldventures.dreamtrips.wallet.service.command.CardListCommand.add;
 import static com.worldventures.dreamtrips.wallet.service.command.CardListCommand.remove;
 import static java.lang.String.valueOf;
@@ -55,6 +61,8 @@ public final class SmartCardInteractor {
    private final ActionPipe<FetchDefaultCardCommand> fetchDefaultCardCommandPipe;
    private final ActionPipe<SetDefaultCardOnDeviceCommand> setDefaultCardOnDeviceCommandPipe;
    private final ActionPipe<DeleteRecordAction> deleteCardPipe;
+   private final ActionPipe<DisconnectAction> disconnectPipe;
+   private final ActionPipe<UpdateSmartCardConnectionStatus> updateSmartCardConnectionStatusPipe;
 
    private final ReadActionPipe<CardChargedEvent> chargedEventPipe;
    private final ActionPipe<StartCardRecordingAction> startCardRecordingPipe;
@@ -80,6 +88,9 @@ public final class SmartCardInteractor {
       fetchDefaultCardCommandPipe = janet.createPipe(FetchDefaultCardCommand.class, Schedulers.io());
       setDefaultCardOnDeviceCommandPipe = janet.createPipe(SetDefaultCardOnDeviceCommand.class, Schedulers.io());
       deleteCardPipe = janet.createPipe(DeleteRecordAction.class, Schedulers.io());
+
+      disconnectPipe = janet.createPipe(DisconnectAction.class, Schedulers.io());
+      updateSmartCardConnectionStatusPipe = janet.createPipe(UpdateSmartCardConnectionStatus.class, Schedulers.io());
 
       chargedEventPipe = janet.createPipe(CardChargedEvent.class, Schedulers.io());
       startCardRecordingPipe = janet.createPipe(StartCardRecordingAction.class, Schedulers.io());
@@ -160,6 +171,13 @@ public final class SmartCardInteractor {
    }
 
    private void connect() {
+      disconnectPipe
+            .observe()
+            .filter(state -> state.status == ActionState.Status.SUCCESS || state.status == ActionState.Status.FAIL)
+            .map(state -> state.status == ActionState.Status.SUCCESS ? DISCONNECTED : ERROR)
+            .subscribe(connectionStatus -> updateSmartCardConnectionStatusPipe.send(new UpdateSmartCardConnectionStatus(connectionStatus)),
+                  throwable -> Timber.e(throwable, "Error while updating status of active card"));
+
       Observable.merge(
             deleteCardPipe
                   .observeSuccess()

@@ -51,8 +51,7 @@ public class SmartCardWidget extends FrameLayout {
       batteryView.setLevel(smartCard.batteryLevel());
       stealthIndicator.setVisibility(smartCard.stealthMode() ? VISIBLE : GONE);
       bindLockStatus(smartCard.lock());
-      //// TODO: 9/7/16 add logic for get connect status
-      bindConnectionStatus(true);
+      bindConnectionStatus(smartCard.connectionStatus() == SmartCard.ConnectionStatus.CONNECTED);
       setVisibility(VISIBLE);
    }
 

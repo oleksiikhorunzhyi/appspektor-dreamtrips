@@ -16,6 +16,11 @@ public abstract class SmartCard {
    public abstract String deviceAddress();
 
    @Value.Default
+   public ConnectionStatus connectionStatus() {
+      return ConnectionStatus.DISCONNECTED;
+   }
+
+   @Value.Default
    public String cardName() {
       return "";
    }
@@ -40,5 +45,9 @@ public abstract class SmartCard {
 
    public enum CardStatus {
       ACTIVE, INACTIVE, DRAFT
+   }
+
+   public enum ConnectionStatus {
+      CONNECTED, DISCONNECTED, ERROR
    }
 }

@@ -5,6 +5,7 @@ import com.worldventures.dreamtrips.core.janet.cache.CacheOptions;
 import com.worldventures.dreamtrips.core.janet.cache.CachedAction;
 import com.worldventures.dreamtrips.core.janet.cache.ImmutableCacheOptions;
 import com.worldventures.dreamtrips.core.janet.dagger.InjectableAction;
+import com.worldventures.dreamtrips.wallet.domain.entity.ImmutableSmartCard;
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCard;
 
 import javax.inject.Inject;
@@ -16,6 +17,7 @@ import io.techery.janet.Janet;
 import io.techery.janet.command.annotations.CommandAction;
 import io.techery.janet.smartcard.action.support.ConnectAction;
 import rx.Observable;
+import timber.log.Timber;
 
 @CommandAction
 public class ConnectSmartCardCommand extends Command<SmartCard> implements InjectableAction, SmartCardModifier, CachedAction<SmartCard> {
@@ -33,8 +35,16 @@ public class ConnectSmartCardCommand extends Command<SmartCard> implements Injec
       janet.createPipe(ConnectAction.class)
             .createObservableResult(new ConnectAction(activeSmartCard.deviceName(), activeSmartCard.deviceAddress()))
             .flatMap(action -> fetchTechnicalProperties())
-            .doOnNext(smartCard -> activeSmartCard = smartCard)
-            .subscribe(callback::onSuccess, callback::onFail);
+            .subscribe(smartCard -> setStatusAndNotifyCallback(SmartCard.ConnectionStatus.CONNECTED, callback),
+                  throwable -> {
+                     Timber.e(throwable, "Error while connecting to smart card");
+                     setStatusAndNotifyCallback(SmartCard.ConnectionStatus.ERROR, callback);
+                  });
+   }
+
+   private void setStatusAndNotifyCallback(SmartCard.ConnectionStatus connectionStatus, CommandCallback<SmartCard> callback) {
+      activeSmartCard = ImmutableSmartCard.copyOf(activeSmartCard).withConnectionStatus(connectionStatus);
+      callback.onSuccess(activeSmartCard);
    }
 
    public Observable<SmartCard> fetchTechnicalProperties() {

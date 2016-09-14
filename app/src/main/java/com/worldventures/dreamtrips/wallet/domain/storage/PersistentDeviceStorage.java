@@ -145,6 +145,17 @@ public class PersistentDeviceStorage implements DeviceStorage {
    }
 
    @Override
+   public long getDisableDefaultCardDelay() {
+      return memoryStorage.getDisableDefaultCardDelay();
+   }
+
+   @Override
+   public void setDisableDefaultCardDelay(long delay) {
+      memoryStorage.setDisableDefaultCardDelay(delay);
+      persistStorage();
+   }
+
+   @Override
    public List<Record> getMemberRecords() {
       return memoryStorage.getMemberRecords();
    }
@@ -200,6 +211,17 @@ public class PersistentDeviceStorage implements DeviceStorage {
    @Override
    public int getActiveRecord() {
       return memoryStorage.getActiveRecord();
+   }
+
+   @Override
+   public void setClearRecordsDelay(long delay) {
+      memoryStorage.setClearRecordsDelay(delay);
+      persistStorage();
+   }
+
+   @Override
+   public long getClearRecordsDelay() {
+      return memoryStorage.getClearRecordsDelay();
    }
 
    @Override

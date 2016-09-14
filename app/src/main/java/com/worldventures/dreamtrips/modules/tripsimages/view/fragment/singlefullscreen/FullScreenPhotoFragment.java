@@ -11,6 +11,7 @@ import com.facebook.drawee.interfaces.DraweeController;
 import com.facebook.imagepipeline.image.ImageInfo;
 import com.facebook.imagepipeline.request.ImageRequest;
 import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.core.api.error.ErrorResponse;
 import com.worldventures.dreamtrips.core.module.RouteCreatorModule;
 import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.navigation.ToolbarConfig;
@@ -25,6 +26,7 @@ import com.worldventures.dreamtrips.modules.tripsimages.bundle.FullScreenPhotoBu
 import com.worldventures.dreamtrips.modules.tripsimages.model.IFullScreenObject;
 import com.worldventures.dreamtrips.modules.tripsimages.model.Image;
 import com.worldventures.dreamtrips.modules.tripsimages.presenter.fullscreen.FullScreenPresenter;
+import com.worldventures.dreamtrips.modules.tripsimages.presenter.fullscreen.SocialFullScreenPresenter;
 import com.worldventures.dreamtrips.modules.tripsimages.view.custom.ScaleImageView;
 
 import javax.inject.Inject;
@@ -34,7 +36,7 @@ import butterknife.InjectView;
 import butterknife.OnClick;
 import butterknife.Optional;
 
-public abstract class FullScreenPhotoFragment<PRESENTER extends FullScreenPresenter<T, ? extends FullScreenPresenter.View>, T extends IFullScreenObject> extends RxBaseFragmentWithArgs<PRESENTER, FullScreenPhotoBundle> implements FullScreenPresenter.View {
+public abstract class FullScreenPhotoFragment<PRESENTER extends FullScreenPresenter<T, ? extends FullScreenPresenter.View>, T extends IFullScreenObject> extends RxBaseFragmentWithArgs<PRESENTER, FullScreenPhotoBundle> implements SocialFullScreenPresenter.View {
 
    @InjectView(R.id.iv_image) protected ScaleImageView ivImage;
 
@@ -119,5 +121,15 @@ public abstract class FullScreenPhotoFragment<PRESENTER extends FullScreenPresen
    @Override
    public void onShowShareOptions() {
       new PhotosShareDialog(getActivity(), type -> getPresenter().onShareOptionChosen(type)).show();
+   }
+
+   @Override
+   public boolean onApiError(ErrorResponse errorResponse) {
+      return false;
+   }
+
+   @Override
+   public void onApiCallFailed() {
+
    }
 }

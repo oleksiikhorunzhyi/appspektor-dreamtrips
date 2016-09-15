@@ -11,6 +11,8 @@ import com.worldventures.dreamtrips.wallet.ui.common.base.WalletPresenter;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.WalletScreen;
 import com.worldventures.dreamtrips.wallet.ui.common.helper.OperationSubscriberWrapper;
 
+import java.util.concurrent.TimeUnit;
+
 import javax.inject.Inject;
 
 import flow.Flow;

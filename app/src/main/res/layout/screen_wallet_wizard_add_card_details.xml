@@ -30,7 +30,6 @@
 
          <com.worldventures.dreamtrips.wallet.ui.widget.BankCardWidget
                android:id="@+id/card"
-               layout="@layout/adapter_item_wallet_bankcard"
                android:layout_width="wrap_content"
                android:layout_height="wrap_content"
                android:layout_gravity="center_horizontal"

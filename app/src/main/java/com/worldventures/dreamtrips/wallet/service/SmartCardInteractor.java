@@ -15,6 +15,7 @@ import com.worldventures.dreamtrips.wallet.service.command.SetDefaultCardOnDevic
 import com.worldventures.dreamtrips.wallet.service.command.SetLockStateCommand;
 import com.worldventures.dreamtrips.wallet.service.command.SetStealthModeCommand;
 import com.worldventures.dreamtrips.wallet.service.command.SmartCardModifier;
+import com.worldventures.dreamtrips.wallet.service.command.http.FetchRecordIssuerInfoCommand;
 import com.worldventures.dreamtrips.wallet.service.command.UpdateSmartCardConnectionStatus;
 
 import javax.inject.Inject;
@@ -67,6 +68,7 @@ public final class SmartCardInteractor {
    private final ReadActionPipe<CardChargedEvent> chargedEventPipe;
    private final ActionPipe<StartCardRecordingAction> startCardRecordingPipe;
    private final ActionPipe<StopCardRecordingAction> stopCardRecordingPipe;
+   private final ActionPipe<FetchRecordIssuerInfoCommand> recordIssuerInfoPipe;
 
    @Inject
    public SmartCardInteractor(@Named(JANET_WALLET) Janet janet) {
@@ -95,6 +97,8 @@ public final class SmartCardInteractor {
       chargedEventPipe = janet.createPipe(CardChargedEvent.class, Schedulers.io());
       startCardRecordingPipe = janet.createPipe(StartCardRecordingAction.class, Schedulers.io());
       stopCardRecordingPipe = janet.createPipe(StopCardRecordingAction.class, Schedulers.io());
+
+      recordIssuerInfoPipe = janet.createPipe(FetchRecordIssuerInfoCommand.class, Schedulers.io());
       connect();
    }
 
@@ -168,6 +172,11 @@ public final class SmartCardInteractor {
 
    public ActionPipe<StopCardRecordingAction> stopCardRecordingPipe() {
       return stopCardRecordingPipe;
+   }
+
+
+   public ActionPipe<FetchRecordIssuerInfoCommand> recordIssuerInfoPipe() {
+      return recordIssuerInfoPipe;
    }
 
    private void connect() {

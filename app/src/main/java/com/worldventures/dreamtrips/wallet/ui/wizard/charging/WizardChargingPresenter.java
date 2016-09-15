@@ -72,8 +72,6 @@ public class WizardChargingPresenter extends WalletPresenter<WizardChargingPrese
       BankCard bankCard = ImmutableBankCard.builder()
             .id(Card.NO_ID)
             .number(Long.parseLong(card.pan()))
-            .type(Record.FinancialService.MASTERCARD)
-            .cardType(CardType.CREDIT)
             .expiryYear(Integer.parseInt(card.exp().substring(0, 2)))
             .expiryMonth(Integer.parseInt(card.exp().substring(2, 4)))
             .build();

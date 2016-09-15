@@ -4,6 +4,7 @@ import android.text.TextUtils;
 
 import com.worldventures.dreamtrips.wallet.domain.entity.AddressInfo;
 import com.worldventures.dreamtrips.wallet.domain.entity.ImmutableAddressInfo;
+import com.worldventures.dreamtrips.wallet.domain.entity.ImmutableRecordIssuerInfo;
 import com.worldventures.dreamtrips.wallet.domain.entity.card.BankCard;
 import com.worldventures.dreamtrips.wallet.domain.entity.card.ImmutableBankCard;
 
@@ -22,6 +23,7 @@ public class BankCardConverter implements Converter<Record, BankCard> {
    private final static String ZIP_FIELD = "zip";
 
    private final static String TYPE_CARD_FIELD = "type_card";
+   private final static String BANK_NAME_FIELD = "bank_name";
 
    @Override
    public BankCard from(Record record) {
@@ -42,11 +44,14 @@ public class BankCardConverter implements Converter<Record, BankCard> {
             .title(record.title())
             .cvv(Integer.parseInt(record.cvv()))
             .number(Long.parseLong(record.cardNumber()))
-            .type(record.financialService())
+            .issuerInfo(ImmutableRecordIssuerInfo.builder()
+                  .bankName(metadata.get(BANK_NAME_FIELD))
+                  .cardType(BankCard.CardType.valueOf(metadata.get(TYPE_CARD_FIELD)))
+                  .financialService(record.financialService())
+                  .build())
             .expiryMonth(record.expiryMonth())
             .expiryYear(record.expiryYear())
             .addressInfo(addressInfo)
-            .cardType(BankCard.CardType.valueOf(metadata.get(TYPE_CARD_FIELD)))
             .build();
    }
 
@@ -60,7 +65,8 @@ public class BankCardConverter implements Converter<Record, BankCard> {
       metadata.put(STATE_FIELD, addressInfo.state());
       metadata.put(ZIP_FIELD, addressInfo.zip());
 
-      metadata.put(TYPE_CARD_FIELD, card.cardType().name());
+      metadata.put(TYPE_CARD_FIELD, card.issuerInfo().cardType().name());
+      metadata.put(BANK_NAME_FIELD, card.issuerInfo().bankName());
 
       // TODO: use normal id
       return ImmutableRecord.builder()
@@ -70,7 +76,7 @@ public class BankCardConverter implements Converter<Record, BankCard> {
             .cvv(String.valueOf(card.cvv()))
             .expiryMonth(card.expiryMonth())
             .expiryYear(card.expiryYear())
-            .financialService(Record.FinancialService.MASTERCARD)
+            .financialService(card.issuerInfo().financialService())
             .t1("")
             .t2("")
             .t3("")

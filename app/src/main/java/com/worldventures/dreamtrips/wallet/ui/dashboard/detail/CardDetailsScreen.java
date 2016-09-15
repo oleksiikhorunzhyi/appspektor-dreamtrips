@@ -17,6 +17,7 @@ import com.worldventures.dreamtrips.wallet.ui.common.base.screen.delegate.Dialog
 import com.worldventures.dreamtrips.wallet.ui.dialog.ChangeDefaultPaymentCardDialog;
 import com.worldventures.dreamtrips.wallet.ui.widget.BankCardWidget;
 import com.worldventures.dreamtrips.wallet.util.AddressUtil;
+import com.worldventures.dreamtrips.wallet.util.BankCardHelper;
 
 import butterknife.InjectView;
 import butterknife.OnClick;
@@ -71,8 +72,8 @@ public class CardDetailsScreen extends WalletFrameLayout<CardDetailsPresenter.Sc
    }
 
    @Override
-   public void showCardBankInfo(BankCard bankCard) {
-      bankCardWidget.setBankCardInfo(bankCard);
+   public void showCardBankInfo(BankCardHelper cardHelper, BankCard bankCard) {
+      bankCardWidget.setBankCardInfo(cardHelper, bankCard);
    }
 
    @Override

@@ -19,6 +19,7 @@ import com.worldventures.dreamtrips.wallet.ui.common.base.screen.OperationScreen
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.delegate.DialogOperationScreen;
 import com.worldventures.dreamtrips.wallet.ui.dialog.ChangeDefaultPaymentCardDialog;
 import com.worldventures.dreamtrips.wallet.ui.widget.BankCardWidget;
+import com.worldventures.dreamtrips.wallet.util.BankCardHelper;
 
 import butterknife.InjectView;
 import butterknife.OnClick;
@@ -28,9 +29,7 @@ import rx.Observable;
 public class AddCardDetailsScreen extends WalletFrameLayout<AddCardDetailsPresenter.Screen, AddCardDetailsPresenter, AddCardDetailsPath> implements AddCardDetailsPresenter.Screen {
 
    @InjectView(R.id.toolbar) Toolbar toolbar;
-
    @InjectView(R.id.card) BankCardWidget bankCardWidget;
-
    @InjectView(R.id.card_cvv) EditText cardCvvField;
    @InjectView(R.id.address1) EditText address1Field;
    @InjectView(R.id.address2) EditText address2Field;
@@ -67,8 +66,8 @@ public class AddCardDetailsScreen extends WalletFrameLayout<AddCardDetailsPresen
    }
 
    @Override
-   public void cardBankInfo(BankCard bankCard) {
-      bankCardWidget.setBankCardInfo(bankCard);
+   public void cardBankInfo(BankCardHelper cardHelper, BankCard bankCard) {
+      bankCardWidget.setBankCardInfo(cardHelper, bankCard);
    }
 
    @Override

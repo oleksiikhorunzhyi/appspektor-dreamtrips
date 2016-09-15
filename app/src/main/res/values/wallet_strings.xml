@@ -128,5 +128,7 @@
    <string name="wallet_setup_smart_card_greeting">Hi %s!</string>
    <string name="wallet_setup_smart_card_content">Take your platinum membership\nto new heights with flye\u2122.</string>
    <string name="wallet_setup_smart_set_up_button_text">Set Up</string>
+   <string name="wallet_record_type_credit">Credit</string>
+   <string name="wallet_record_type_debit">Debit</string>
 
 </resources>

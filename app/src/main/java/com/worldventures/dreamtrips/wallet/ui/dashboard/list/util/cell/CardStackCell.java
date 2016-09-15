@@ -28,7 +28,7 @@ public class CardStackCell extends AbstractDelegateCell<CardStackViewModel, Card
    @InjectView(R.id.cardStack) RecyclerView cardStack;
    BaseDelegateAdapter adapter;
 
-   private static final double VISIBLE_SCALE = 0.64;
+   private static final double VISIBLE_SCALE = 0.6;
 
    public CardStackCell(View view) {
       super(view);

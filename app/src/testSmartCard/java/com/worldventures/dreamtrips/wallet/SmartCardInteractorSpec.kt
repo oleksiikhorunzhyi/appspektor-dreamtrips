@@ -13,6 +13,7 @@ import com.worldventures.dreamtrips.core.janet.cache.storage.MultipleActionStora
 import com.worldventures.dreamtrips.core.repository.SnappyRepository
 import com.worldventures.dreamtrips.wallet.domain.entity.AddressInfo
 import com.worldventures.dreamtrips.wallet.domain.entity.ImmutableProvision
+import com.worldventures.dreamtrips.wallet.domain.entity.RecordIssuerInfo
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCard
 import com.worldventures.dreamtrips.wallet.domain.entity.card.BankCard
 import com.worldventures.dreamtrips.wallet.domain.entity.card.BankCard.CardType
@@ -53,6 +54,8 @@ class SmartCardInteractorSpec : BaseSpec({
          mockedCreditCard = mock()
          mockedDefaultCard = mock()
          mockedAddressInfo = mock()
+         mockedIssuerInfo = mock()
+
          prepareCardsAndAddressMock()
 
          mockedListOfCards = mutableListOf(mockedDebitCard, mockedCreditCard, mockedDefaultCard)
@@ -186,7 +189,7 @@ class SmartCardInteractorSpec : BaseSpec({
 
          it("Card with valid data should be stored with default address and marked as default") {
             whenever(mockDb.readWalletDefaultCardId()).thenReturn(null)
-            assertActionSuccess(saveBankCardData(bankCard = mockedDebitCard, setAsDefaultAddress = true, setAsDefaultCard = true), { true })
+            assertActionSuccess(saveBankCardData(bankCard = mockedDebitCard, issuerInfo = mockedIssuerInfo, setAsDefaultAddress = true, setAsDefaultCard = true), { true })
 
             verify(mockDb, times(1)).saveDefaultAddress(any())
             verify(mockDb, times(2)).saveWalletDefaultCardId(any())
@@ -196,7 +199,7 @@ class SmartCardInteractorSpec : BaseSpec({
             val defaultCardId = "9"
             whenever(mockDb.readWalletDefaultCardId()).thenReturn(defaultCardId)
 
-            AssertUtil.assertActionSuccess(saveBankCardData(bankCard = mockedDebitCard, setAsDefaultCard = false), { true })
+            AssertUtil.assertActionSuccess(saveBankCardData(bankCard = mockedDebitCard, issuerInfo = mockedIssuerInfo, setAsDefaultCard = false), { true })
             verify(mockDb, times(0)).saveDefaultAddress(any())
             //method below shouldn't be called at all, but it's called because of
             // implementation CachedAction interface by FetchDefaultCardCommand
@@ -205,7 +208,7 @@ class SmartCardInteractorSpec : BaseSpec({
          }
 
          it("Card with invalid data shouldn't be stored") {
-            AssertUtil.assertActionFail(saveBankCardData(bankCard = mockedDebitCard, cvv = "pp"), { it.cause is FormatException })
+            AssertUtil.assertActionFail(saveBankCardData(bankCard = mockedDebitCard, cvv = "pp", issuerInfo = mockedIssuerInfo), { it.cause is FormatException })
 
             verify(mockDb, times(0)).saveDefaultAddress(any())
             verify(mockDb, times(0)).saveWalletDefaultCardId(any())
@@ -226,6 +229,9 @@ class SmartCardInteractorSpec : BaseSpec({
       lateinit var mockedCreditCard: BankCard
       lateinit var mockedDefaultCard: BankCard
       lateinit var mockedAddressInfo: AddressInfo
+
+      lateinit var mockedIssuerInfo: RecordIssuerInfo
+
       lateinit var mockedListOfCards: List<BankCard>
 
       val setOfMultiplyStorage: () -> Set<MultipleActionStorage<*>> = {
@@ -303,12 +309,21 @@ class SmartCardInteractorSpec : BaseSpec({
       }
 
       fun saveBankCardData(bankCard: BankCard, manualAddressInfo: AddressInfo = mockedAddressInfo,
-                           nickName: String = "Card1", cvv: String = "0000", useDefaultAddress: Boolean = false,
-                           setAsDefaultAddress: Boolean = false, setAsDefaultCard: Boolean = true): TestSubscriber<ActionState<SaveCardDetailsDataCommand>> {
+                           nickName: String = "Card1", cvv: String = "0000", issuerInfo: RecordIssuerInfo,
+                           useDefaultAddress: Boolean = false, setAsDefaultAddress: Boolean = false, setAsDefaultCard: Boolean = true): TestSubscriber<ActionState<SaveCardDetailsDataCommand>> {
          val testSubscriber = TestSubscriber<ActionState<SaveCardDetailsDataCommand>>()
+         val cmd = SaveCardDetailsDataCommand.Builder()
+               .setBankCard(bankCard)
+               .setManualAddressInfo(manualAddressInfo)
+               .setNickName(nickName)
+               .setCvv(cvv)
+               .setIssuerInfo(issuerInfo)
+               .setUseDefaultAddress(useDefaultAddress)
+               .setSetAsDefaultAddress(setAsDefaultAddress)
+               .setSetAsDefaultCard(setAsDefaultCard).create();
 
          smartCardInteractor.saveCardDetailsDataPipe()
-               .createObservable(SaveCardDetailsDataCommand(bankCard, manualAddressInfo, nickName, cvv, useDefaultAddress, setAsDefaultAddress, setAsDefaultCard))
+               .createObservable(cmd)
                .subscribe(testSubscriber)
          return testSubscriber
       }
@@ -349,6 +364,12 @@ class SmartCardInteractorSpec : BaseSpec({
       }
 
       private fun prepareCardsAndAddressMock() {
+
+
+         whenever(mockedIssuerInfo.financialService()).thenReturn(Record.FinancialService.MASTERCARD)
+         whenever(mockedIssuerInfo.cardType()).thenReturn(CardType.DEBIT)
+         whenever(mockedIssuerInfo.bankName()).thenReturn("Bank Name")
+
          whenever(mockedDefaultCard.id()).thenReturn(TEST_DEFAULT_CARD_ID.toString())
 
          whenever(mockedAddressInfo.address1()).thenReturn("test address 1")
@@ -364,11 +385,8 @@ class SmartCardInteractorSpec : BaseSpec({
          whenever(mockedDebitCard.addressInfo()).thenReturn(mockedAddressInfo)
          whenever(mockedDebitCard.expiryMonth()).thenReturn(12)
          whenever(mockedDebitCard.expiryYear()).thenReturn(34)
-         whenever(mockedDebitCard.type()).thenReturn(Record.FinancialService.MASTERCARD)
+         whenever(mockedDebitCard.issuerInfo()).thenReturn(mockedIssuerInfo)
 
-         whenever(mockedDebitCard.cardType()).thenReturn(CardType.DEBIT)
-         whenever(mockedCreditCard.cardType()).thenReturn(CardType.CREDIT)
-         whenever(mockedDefaultCard.cardType()).thenReturn(CardType.DEBIT)
       }
    }
 }

@@ -23,7 +23,6 @@ public class FetchTermsAndConditionsCommand extends Command<TermsAndConditionsRe
 
    @Inject @Named(JANET_WALLET) Janet janet;
 
-
    @Override
    protected void run(CommandCallback<TermsAndConditionsResponse> callback) throws Throwable {
       Observable.just(getMockResponse())

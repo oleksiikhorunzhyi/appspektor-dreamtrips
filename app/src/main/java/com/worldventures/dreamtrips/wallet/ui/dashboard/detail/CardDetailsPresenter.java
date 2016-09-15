@@ -49,7 +49,7 @@ public class CardDetailsPresenter extends WalletPresenter<CardDetailsPresenter.S
       Screen view = getView();
 
       view.setTitle(bankCardHelper.financialServiceWithCardNumber(bankCard));
-      view.showCardBankInfo(bankCard);
+      view.showCardBankInfo(bankCardHelper, bankCard);
       view.showDefaultAddress(obtainAddressWithCountry());
 
       connectToDefaultCardPipe();
@@ -147,7 +147,7 @@ public class CardDetailsPresenter extends WalletPresenter<CardDetailsPresenter.S
    public interface Screen extends WalletScreen {
       void setTitle(String title);
 
-      void showCardBankInfo(BankCard bankCard);
+      void showCardBankInfo(BankCardHelper bankCardHelper, BankCard bankCard);
 
       void showDefaultAddress(AddressInfoWithLocale addressInfoWithLocale);
 

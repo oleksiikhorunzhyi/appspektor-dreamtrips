@@ -24,6 +24,8 @@ public class BankCardWidget extends FrameLayout {
    @InjectView(R.id.cardNumber) TextView cardNumber;
    @InjectView(R.id.typeIcon) ImageView cardTypeIcon;
    @InjectView(R.id.expireDate) TextView expireDate;
+   @InjectView(R.id.cardType) TextView cardType;
+
    private View bankCardHolder;
 
    public BankCardWidget(Context context) {
@@ -47,22 +49,20 @@ public class BankCardWidget extends FrameLayout {
    }
 
    public void setBankCardInfoForList(BankCardHelper bankCardHelper, BankCard bankCard) {
-      // TODO: 9/13/16 change mock bank name into bankCardHelper
-      setBankCardInfo(bankCardHelper.formattedBankNameWithCardNumber(bankCard), bankCard);
+      setBankCardInfo(bankCardHelper.formattedBankNameWithCardNumber(bankCard), bankCardHelper, bankCard);
    }
 
-   public void setBankCardInfo(BankCard bankCard) {
-      // TODO: 9/13/16 change mock bank name
-      setBankCardInfo("Bank Name", bankCard);
+   public void setBankCardInfo(BankCardHelper bankCardHelper, BankCard bankCard) {
+      setBankCardInfo(bankCardHelper.formattedBankName(bankCard), bankCardHelper, bankCard);
    }
 
-   private void setBankCardInfo(CharSequence bankLabel, BankCard bankCard) {
+   private void setBankCardInfo(CharSequence bankLabel, BankCardHelper bankCardHelper, BankCard bankCard) {
       cardTitle.setText(bankCard.title());
-      // // TODO: 9/13/16 move to bankCardHelper next formatting:
-      cardNumber.setText(String.format("•••• •••• •••• •••• %04d", bankCard.number() % 10000));
+      cardNumber.setText(String.format("•••• •••• •••• %04d", bankCard.number() % 10000));
       expireDate.setText(String.format("%02d/%02d", bankCard.expiryMonth(), bankCard.expiryYear()));
       tvBankLabel.setText(bankLabel);
-      //// TODO: add setting cardTypeIcon
+      cardTypeIcon.setImageResource(bankCardHelper.obtainFinancialServiceImageRes(bankCard.issuerInfo().financialService()));
+      cardType.setText(bankCardHelper.obtainCardType(bankCard.issuerInfo().cardType()));
    }
 
    public void setBankCardHolder(@DrawableRes int resource) {

@@ -12,6 +12,59 @@
       android:paddingTop="@dimen/spacing_medium"
       >
 
+   <RelativeLayout
+         android:id="@+id/bankInfoContainer"
+         android:layout_width="wrap_content"
+         android:layout_height="@dimen/wallet_bank_card_default_bank_info_container_height"
+         android:layout_marginBottom="@dimen/spacing_small"
+         android:gravity="center_vertical"
+         >
+
+      <TextView
+            android:id="@+id/defaultCardLabel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/wallet_wizard_default_card_label"
+            android:textColor="@android:color/white"
+            android:textSize="9sp"
+            android:visibility="gone"
+            />
+
+      <TextView
+            android:id="@+id/bankLabel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/defaultCardLabel"
+            android:textColor="@android:color/white"
+            android:textSize="16sp"
+            tools:text="@string/wallet_bank_name_text_holder"
+            />
+
+      <ImageView
+            android:id="@+id/typeIcon"
+            android:layout_width="60dp"
+            android:layout_height="30dp"
+            android:layout_alignParentRight="true"
+            android:textColor="@android:color/white"
+            android:visibility="visible"
+            tools:src="@drawable/wallet_finansial_service_mastercard"
+            />
+
+      <TextView
+            android:id="@+id/cardType"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignRight="@+id/typeIcon"
+            android:layout_below="@+id/typeIcon"
+            android:layout_marginRight="8dp"
+            android:textAllCaps="true"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:textColor="@color/white"
+            tools:text="Credit"
+            />
+
+   </RelativeLayout>
+
    <TextView
          android:id="@+id/cardTitle"
          android:layout_width="wrap_content"
@@ -57,47 +110,5 @@
          android:textSize="@dimen/font_normal"
          tools:text="09/18"
          />
-
-   <RelativeLayout
-         android:id="@+id/bankInfoContainer"
-         android:layout_width="wrap_content"
-         android:layout_height="@dimen/wallet_bank_card_default_bank_info_container_height"
-         android:gravity="center_vertical"
-         android:layout_alignParentTop="true"
-         android:layout_alignParentStart="true"
-         >
-
-      <TextView
-            android:id="@+id/defaultCardLabel"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/wallet_wizard_default_card_label"
-            android:textColor="@android:color/white"
-            android:textSize="9sp"
-            android:visibility="gone"
-            />
-
-      <TextView
-            android:id="@+id/bankLabel"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/defaultCardLabel"
-            tools:text="@string/wallet_bank_name_text_holder"
-            android:textColor="@android:color/white"
-            android:textSize="16sp"
-            />
-
-      <ImageView
-            android:id="@+id/typeIcon"
-            android:layout_width="60dp"
-            android:layout_height="30dp"
-            android:layout_alignParentEnd="true"
-            android:src="@drawable/mastercard"
-            android:textColor="@android:color/white"
-            android:visibility="visible"
-            tools:ignore="ContentDescription"
-            />
-
-   </RelativeLayout>
 </RelativeLayout>
 

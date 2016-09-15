@@ -2,6 +2,8 @@ package com.worldventures.dreamtrips.wallet.service.command;
 
 import com.worldventures.dreamtrips.core.janet.dagger.InjectableAction;
 import com.worldventures.dreamtrips.wallet.domain.entity.AddressInfo;
+import com.worldventures.dreamtrips.wallet.domain.entity.ImmutableRecordIssuerInfo;
+import com.worldventures.dreamtrips.wallet.domain.entity.RecordIssuerInfo;
 import com.worldventures.dreamtrips.wallet.domain.entity.card.BankCard;
 import com.worldventures.dreamtrips.wallet.domain.entity.card.ImmutableBankCard;
 import com.worldventures.dreamtrips.wallet.service.SmartCardInteractor;
@@ -23,11 +25,21 @@ public class SaveCardDetailsDataCommand extends Command<Void> implements Injecta
    private final AddressInfo manualAddressInfo;
    private final String cvv;
    private final String nickName;
+   private final RecordIssuerInfo issuerInfo;
    private final boolean setAsDefaultAddress;
    private final boolean useDefaultAddress;
    private final boolean setAsDefaultCard;
 
-   public SaveCardDetailsDataCommand(BankCard bankCard, AddressInfo manualAddressInfo, String nickName, String cvv, boolean useDefaultAddress, boolean setAsDefaultAddress, boolean setAsDefaultCard) {
+   private SaveCardDetailsDataCommand(BankCard bankCard,
+         AddressInfo manualAddressInfo,
+         String nickName,
+         String cvv,
+         RecordIssuerInfo issuerInfo,
+         boolean useDefaultAddress,
+         boolean setAsDefaultAddress,
+         boolean setAsDefaultCard
+   ) {
+      this.issuerInfo = issuerInfo;
       this.setAsDefaultAddress = setAsDefaultAddress;
       this.useDefaultAddress = useDefaultAddress;
       this.nickName = nickName;
@@ -46,7 +58,7 @@ public class SaveCardDetailsDataCommand extends Command<Void> implements Injecta
             .flatMap(saveDefaultAddressCommand -> fetchCardWithAddressObservable())
             .flatMap(cardWithAddress -> smartCardInteractor.addRecordPipe()
                   .createObservableResult(new AttachCardCommand(cardWithAddress, setAsDefaultCard)))
-            .subscribe(attachCardCommand -> callback.onSuccess(null));
+            .subscribe(attachCardCommand -> callback.onSuccess(null), callback::onFail);
    }
 
    private Observable<SaveDefaultAddressCommand> saveDefaultAddressObservable(boolean saveDefaultAddress) {
@@ -62,6 +74,7 @@ public class SaveCardDetailsDataCommand extends Command<Void> implements Injecta
                return ImmutableBankCard.copyOf(bankCard)
                      .withCvv(Integer.parseInt(cvv))
                      .withTitle(nickName)
+                     .withIssuerInfo(issuerInfo)
                      .withAddressInfo(address);
             });
    }
@@ -73,4 +86,60 @@ public class SaveCardDetailsDataCommand extends Command<Void> implements Injecta
       if (!validInfo) throw new FormatException();
    }
 
+   public static class Builder {
+
+      private BankCard bankCard;
+      private AddressInfo manualAddressInfo;
+      private String cvv;
+      private String nickName;
+      private RecordIssuerInfo issuerInfo;
+      private boolean useDefaultAddress;
+      private boolean setAsDefaultAddress;
+      private boolean setAsDefaultCard;
+
+      public Builder setBankCard(BankCard bankCard) {
+         this.bankCard = bankCard;
+         return this;
+      }
+
+      public Builder setManualAddressInfo(AddressInfo manualAddressInfo) {
+         this.manualAddressInfo = manualAddressInfo;
+         return this;
+      }
+
+      public Builder setNickName(String nickName) {
+         this.nickName = nickName;
+         return this;
+      }
+
+      public Builder setCvv(String cvv) {
+         this.cvv = cvv;
+         return this;
+      }
+
+      public Builder setIssuerInfo(RecordIssuerInfo issuerInfo) {
+         this.issuerInfo = issuerInfo;
+         return this;
+      }
+
+      public Builder setUseDefaultAddress(boolean useDefaultAddress) {
+         this.useDefaultAddress = useDefaultAddress;
+         return this;
+      }
+
+      public Builder setSetAsDefaultAddress(boolean setAsDefaultAddress) {
+         this.setAsDefaultAddress = setAsDefaultAddress;
+         return this;
+      }
+
+      public Builder setSetAsDefaultCard(boolean setAsDefaultCard) {
+         this.setAsDefaultCard = setAsDefaultCard;
+         return this;
+      }
+
+      public SaveCardDetailsDataCommand create() {
+         return new SaveCardDetailsDataCommand(bankCard, manualAddressInfo, nickName, cvv, issuerInfo,
+               useDefaultAddress, setAsDefaultAddress, setAsDefaultCard);
+      }
+   }
 }

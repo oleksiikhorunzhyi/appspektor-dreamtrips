@@ -137,6 +137,11 @@ public class MainActivity extends ActivityWithPresenter<MainActivityPresenter> i
       else getSupportActionBar().setTitle("");
    }
 
+   public void setToolbarLogo(int logo) {
+      if (logo != 0) getSupportActionBar().setLogo(logo);
+      else getSupportActionBar().setLogo(null);
+   }
+
    @Override
    public void makeActionBarGone(boolean hide) {
       this.toolbarGone = hide;
@@ -231,6 +236,7 @@ public class MainActivity extends ActivityWithPresenter<MainActivityPresenter> i
 
    private void openComponent(ComponentDescription component, @Nullable Bundle args) {
       setTitle(component.getToolbarTitle());
+      setToolbarLogo(component.getToolbarLogo());
       Fragment currentFragment = getSupportFragmentManager().findFragmentById(R.id.container_main);
       // check if current
       boolean theSame = currentFragment != null && currentFragment.getClass().equals(component.getFragmentClass());

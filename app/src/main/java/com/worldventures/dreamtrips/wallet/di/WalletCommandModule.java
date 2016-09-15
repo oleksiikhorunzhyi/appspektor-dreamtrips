@@ -57,8 +57,8 @@ import dagger.Module;
             SetLockStateCommand.class,
             SaveDefaultAddressCommand.class,
             FetchDefaultCardCommand.class,
-            FetchRecordIssuerInfoCommand.class,
             FetchTermsAndConditionsCommand.class,
+            FetchRecordIssuerInfoCommand.class,
             SetAutoClearSmartCardDelayCommand.class,
             SetDisableDefaultCardDelayCommand.class
       },

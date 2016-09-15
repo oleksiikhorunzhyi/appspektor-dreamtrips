@@ -21,8 +21,8 @@ import com.worldventures.dreamtrips.modules.tripsimages.model.TripImagesType;
 import com.worldventures.dreamtrips.modules.video.model.CachedEntity;
 import com.worldventures.dreamtrips.wallet.domain.entity.AddressInfo;
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCard;
-import com.worldventures.dreamtrips.wallet.domain.entity.TermsAndConditionsResponse;
-import com.worldventures.dreamtrips.wallet.domain.entity.card.BankCard;
+import com.worldventures.dreamtrips.wallet.domain.entity.SmartCardDetails;
+import com.worldventures.dreamtrips.wallet.domain.entity.TermsAndConditions;
 import com.worldventures.dreamtrips.wallet.domain.entity.card.Card;
 
 import java.util.ArrayList;
@@ -66,6 +66,7 @@ public interface SnappyRepository {
 
    String WALLET_CARDS_LIST = "WALLET_CARDS_LIST";
    String WALLET_SMART_CARD = "WALLET_SMART_CARD";
+   String WALLET_DETAILS_SMART_CARD = "WALLET_DETAILS_SMART_CARD";
    String WALLET_ACTIVE_SMART_CARD_ID = "WALLET_ACTIVE_SMART_CARD_ID";
    String WALLET_DEVICE_STORAGE = "WALLET_DEVICE_STORAGE";
    String WALLET_DEFAULT_BANK_CARD = "WALLET_DEFAULT_BANK_CARD";
@@ -223,7 +224,11 @@ public interface SnappyRepository {
 
    void setActiveSmartCardId(String scid);
 
-   void saveWalletTermsAndConditions(TermsAndConditionsResponse data);
+   void saveWalletTermsAndConditions(TermsAndConditions data);
 
-   TermsAndConditionsResponse getWalletTermsAndConditions();
+   TermsAndConditions getWalletTermsAndConditions();
+
+   void saveSmartCardDetails(SmartCardDetails details);
+
+   SmartCardDetails getSmartCardDetails(String smartCardId);
 }

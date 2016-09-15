@@ -11,6 +11,7 @@ import com.worldventures.dreamtrips.core.permission.PermissionDispatcher;
 import com.worldventures.dreamtrips.core.permission.PermissionSubscriber;
 import com.worldventures.dreamtrips.wallet.service.WizardInteractor;
 import com.worldventures.dreamtrips.wallet.service.command.CreateAndConnectToCardCommand;
+import com.worldventures.dreamtrips.wallet.service.command.http.AssociateCardUserCommand;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletPresenter;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.WalletScreen;
 import com.worldventures.dreamtrips.wallet.ui.common.helper.OperationSubscriberWrapper;
@@ -57,7 +58,7 @@ public class WizardScanBarcodePresenter extends WalletPresenter<WizardScanBarcod
    }
 
    public void barcodeScanned(String barcode) {
-      wizardInteractor.createAndConnectActionPipe().send(new CreateAndConnectToCardCommand(barcode));
+      wizardInteractor.associateCardUserCommandPipe().send(new AssociateCardUserCommand(barcode));
    }
 
    public void startManualInput() {

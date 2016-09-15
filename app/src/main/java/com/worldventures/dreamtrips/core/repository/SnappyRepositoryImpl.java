@@ -36,10 +36,11 @@ import com.worldventures.dreamtrips.modules.video.model.CachedEntity;
 import com.worldventures.dreamtrips.wallet.domain.entity.AddressInfo;
 import com.worldventures.dreamtrips.wallet.domain.entity.ImmutableAddressInfo;
 import com.worldventures.dreamtrips.wallet.domain.entity.ImmutableSmartCard;
-import com.worldventures.dreamtrips.wallet.domain.entity.ImmutableTermsAndConditionsResponse;
+import com.worldventures.dreamtrips.wallet.domain.entity.ImmutableSmartCardDetails;
+import com.worldventures.dreamtrips.wallet.domain.entity.ImmutableTermsAndConditions;
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCard;
-import com.worldventures.dreamtrips.wallet.domain.entity.TermsAndConditionsResponse;
-import com.worldventures.dreamtrips.wallet.domain.entity.card.BankCard;
+import com.worldventures.dreamtrips.wallet.domain.entity.SmartCardDetails;
+import com.worldventures.dreamtrips.wallet.domain.entity.TermsAndConditions;
 import com.worldventures.dreamtrips.wallet.domain.entity.card.Card;
 
 import org.objenesis.strategy.StdInstantiatorStrategy;
@@ -296,13 +297,14 @@ public class SnappyRepositoryImpl implements SnappyRepository {
    }
 
    @Override
-   public void saveSmartCard(SmartCard smartCard) {
-      act(db -> db.put(WALLET_SMART_CARD + smartCard.smartCardId(), smartCard));
+   public void saveSmartCardDetails(SmartCardDetails smartCardDetails) {
+      act(db -> db.put(WALLET_DETAILS_SMART_CARD + smartCardDetails.smartCardId(), smartCardDetails));
    }
 
    @Override
-   public SmartCard getSmartCard(String smartCardId) {
-      return actWithResult(db -> db.getObject(WALLET_SMART_CARD + smartCardId, ImmutableSmartCard.class)).orNull();
+   public SmartCardDetails getSmartCardDetails(String smartCardId) {
+      return actWithResult(db -> db.getObject(WALLET_DETAILS_SMART_CARD + smartCardId, ImmutableSmartCardDetails.class))
+            .orNull();
    }
 
    @Override
@@ -327,13 +329,13 @@ public class SnappyRepositoryImpl implements SnappyRepository {
    }
 
    @Override
-   public void saveWalletTermsAndConditions(TermsAndConditionsResponse data) {
+   public void saveWalletTermsAndConditions(TermsAndConditions data) {
       act(db -> db.put(WALLET_TERMS_AND_CONDITIONS, data));
    }
 
    @Override
-   public TermsAndConditionsResponse getWalletTermsAndConditions() {
-      return actWithResult(db -> db.getObject(WALLET_TERMS_AND_CONDITIONS, ImmutableTermsAndConditionsResponse.class)).orNull();
+   public TermsAndConditions getWalletTermsAndConditions() {
+      return actWithResult(db -> db.getObject(WALLET_TERMS_AND_CONDITIONS, ImmutableTermsAndConditions.class)).orNull();
    }
 
    @Override
@@ -344,6 +346,16 @@ public class SnappyRepositoryImpl implements SnappyRepository {
    @Override
    public void saveWalletDeviceStorage(SimpleDeviceStorage deviceStorage) {
       act(db -> db.put(WALLET_DEVICE_STORAGE, deviceStorage));
+   }
+
+   @Override
+   public void saveSmartCard(SmartCard smartCard) {
+      act(db -> db.put(WALLET_SMART_CARD + smartCard.smartCardId(), smartCard));
+   }
+
+   @Override
+   public SmartCard getSmartCard(String smartCardId) {
+      return actWithResult(db -> db.getObject(WALLET_SMART_CARD + smartCardId, ImmutableSmartCard.class)).orNull();
    }
 
    ///////////////////////////////////////////////////////////////////////////

@@ -48,8 +48,6 @@ public class LogoutDelegate {
 
    public void logout() {
       messengerConnector.disconnect();
-      appSessionHolder.destroy();
-      eventBus.post(new SessionHolder.Events.SessionDestroyed());
       authInteractor.unsubribeFromPushPipe()
             .createObservableResult(new UnsubribeFromPushCommand())
             .subscribe(action -> deleteSession(), throwable -> deleteSession());
@@ -63,6 +61,8 @@ public class LogoutDelegate {
    }
 
    private void clearUserDataAndFinish() {
+      appSessionHolder.destroy();
+      eventBus.post(new SessionHolder.Events.SessionDestroyed());
       clearMemoryStoragesInteractor.clearMemoryStorageActionPipe().send(new ClearMemoryStorageCommand());
       cookieManager.clearCookies();
       snappyRepository.clearAll();

@@ -11,4 +11,6 @@ public interface DtlFilterPresenter extends MvpPresenter<FilterView> {
    void onDrawerOpened();
 
    void onDrawerClosed();
+
+   void retryAmenities();
 }

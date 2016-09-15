@@ -2,6 +2,7 @@ package com.worldventures.dreamtrips.modules.dtl_flow.parts.filter;
 
 import android.content.Context;
 import android.support.v4.widget.DrawerLayout;
+import android.support.v7.widget.AppCompatButton;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
@@ -14,8 +15,10 @@ import android.widget.TextView;
 import com.appyvet.rangebar.RangeBar;
 import com.hannesdorfmann.mosby.mvp.layout.MvpLinearLayout;
 import com.innahema.collections.query.queriables.Queryable;
+import com.jakewharton.rxbinding.view.RxView;
 import com.techery.spares.adapter.BaseDelegateAdapter;
 import com.techery.spares.module.Injector;
+import com.trello.rxlifecycle.RxLifecycle;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.selectable.MultiSelectionManager;
 import com.worldventures.dreamtrips.modules.common.view.adapter.item.SelectableHeaderItem;
@@ -30,11 +33,11 @@ import com.worldventures.dreamtrips.modules.dtl.view.cell.DtlFilterAttributeCell
 import com.worldventures.dreamtrips.modules.trips.view.cell.filter.DtlFilterAttributeHeaderCell;
 
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
-import me.zhanghai.android.materialprogressbar.MaterialProgressBar;
 
 public class DtlFilterViewImpl extends MvpLinearLayout<FilterView, DtlFilterPresenter> implements FilterView {
 
@@ -42,11 +45,11 @@ public class DtlFilterViewImpl extends MvpLinearLayout<FilterView, DtlFilterPres
    @InjectView(R.id.range_bar_price) RangeBar rangeBarPrice;
    @InjectView(R.id.distance_filter_caption) TextView distanceCaption;
    @InjectView(R.id.recyclerViewFilters) RecyclerView recyclerView;
-   @InjectView(R.id.amenities_progress) MaterialProgressBar amenitiesProgress;
+   @InjectView(R.id.amenities_progress) ViewGroup amenitiesProgress;
    @InjectView(R.id.amenities_error_view) ViewGroup amenitiesErrorView;
-   //
+   @InjectView(R.id.amenities_retry_button) AppCompatButton amenitiesErrorButton;
+
    protected MultiSelectionManager selectionManager;
-   //
    protected BaseDelegateAdapter baseDelegateAdapter;
 
    private Injector injector;
@@ -79,11 +82,12 @@ public class DtlFilterViewImpl extends MvpLinearLayout<FilterView, DtlFilterPres
    private void attachAdapter() {
       setupAdapter();
       setupRecyclerView();
+      bindAmenitiesErrorButton();
    }
 
    protected void setupAdapter() {
       if (injector == null) throw new NullPointerException("Set injector before setup adapter");
-      //
+
       baseDelegateAdapter = new BaseDelegateAdapter<>(getContext(), injector);
       baseDelegateAdapter.registerCell(SelectableHeaderItem.class, DtlFilterAttributeHeaderCell.class);
       baseDelegateAdapter.registerCell(ImmutableAttribute.class, DtlFilterAttributeCell.class);
@@ -109,12 +113,12 @@ public class DtlFilterViewImpl extends MvpLinearLayout<FilterView, DtlFilterPres
 
          @Override
          public void onDrawerOpened(View drawerView) {
-            presenter.onDrawerOpened();
+            getPresenter().onDrawerOpened();
          }
 
          @Override
          public void onDrawerClosed(View drawerView) {
-            presenter.onDrawerClosed();
+            getPresenter().onDrawerClosed();
          }
 
          @Override
@@ -123,9 +127,11 @@ public class DtlFilterViewImpl extends MvpLinearLayout<FilterView, DtlFilterPres
       });
    }
 
-   @OnClick(R.id.amenities_retry_button)
-   void amenitiesErrorButtonClick() {
-      // TODO :: 07.09.16 STUB
+   private void bindAmenitiesErrorButton() {
+      RxView.clicks(amenitiesErrorButton)
+            .compose(RxLifecycle.bindView(this))
+            .throttleFirst(700L, TimeUnit.MILLISECONDS)
+            .subscribe(aVoid -> getPresenter().retryAmenities());
    }
 
    @OnClick(R.id.apply)
@@ -168,9 +174,6 @@ public class DtlFilterViewImpl extends MvpLinearLayout<FilterView, DtlFilterPres
       rangeBarPrice.setRangePinsByValue(filterData.getMinPrice(), filterData.getMaxPrice());
       distanceCaption.setText(getContext().getString(R.string.dtl_distance,
             getContext().getString(filterData.getDistanceType() == DistanceType.MILES ? R.string.mi : R.string.km)));
-      //      if (filterData.hasAmenities()) setupAttributesHeader(filterData);
-      //      updateSelection(filterData);
-      //      drawHeaderSelection();
    }
 
    private List<DtlMerchantAttribute> obtainSelectedAmenities() {
@@ -181,6 +184,7 @@ public class DtlFilterViewImpl extends MvpLinearLayout<FilterView, DtlFilterPres
    }
 
    private void updateSelection(DtlFilterData filterData) {
+      // TODO :: 12.09.16 utilize once Filtering fully implemented
       if (filterData.hasAmenities()) {
          selectionManager.setSelectedPositions(Queryable.from(filterData.getSelectedAmenities())
                .map(element -> baseDelegateAdapter.getItems().indexOf(element))

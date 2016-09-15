@@ -9,10 +9,12 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.AttributeSet;
 
+import com.afollestad.materialdialogs.MaterialDialog;
 import com.crashlytics.android.Crashlytics;
 import com.messenger.ui.view.layout.BaseViewStateLinearLayout;
 import com.techery.spares.module.Injector;
 import com.techery.spares.utils.ui.SoftInputUtil;
+import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.api.error.ErrorResponse;
 import com.worldventures.dreamtrips.core.flow.layout.InjectorHolder;
 import com.worldventures.dreamtrips.core.flow.path.PathView;
@@ -29,7 +31,10 @@ import timber.log.Timber;
 public abstract class DtlLayout<V extends DtlScreen, P extends DtlPresenter<V, ?>, T extends DtlPath> extends BaseViewStateLinearLayout<V, P> implements DtlScreen, InjectorHolder, PathView<T> {
 
    protected Injector injector;
+
    @Inject protected ActivityResultDelegate activityResultDelegate;
+
+   private MaterialDialog blockingProgressDialog;
 
    public DtlLayout(Context context) {
       super(context);
@@ -107,6 +112,20 @@ public abstract class DtlLayout<V extends DtlScreen, P extends DtlPresenter<V, ?
    }
 
    @Override
+   public void showBlockingProgress() {
+      blockingProgressDialog = new MaterialDialog.Builder(getContext()).progress(true, 0)
+            .content(R.string.loading)
+            .cancelable(false)
+            .canceledOnTouchOutside(false)
+            .show();
+   }
+
+   @Override
+   public void hideBlockingProgress() {
+      if (blockingProgressDialog != null) blockingProgressDialog.dismiss();
+   }
+
+   @Override
    public void informUser(@StringRes int stringResId) {
       try {
          Snackbar.make(this, stringResId, Snackbar.LENGTH_SHORT).show();
@@ -114,6 +133,12 @@ public abstract class DtlLayout<V extends DtlScreen, P extends DtlPresenter<V, ?
          Crashlytics.logException(e);
          Timber.e(e, "Exception during showing snackbar to user");
       }
+   }
+
+   @Override
+   protected void onDetachedFromWindow() {
+      hideBlockingProgress();
+      super.onDetachedFromWindow();
    }
 
    protected boolean inflateToolbarMenu(Toolbar toolbar) {

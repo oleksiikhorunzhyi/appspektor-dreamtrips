@@ -35,7 +35,6 @@ import com.worldventures.dreamtrips.modules.dtl.model.merchant.operational_hour.
 import com.worldventures.dreamtrips.modules.dtl.view.custom.ExpandableOfferView;
 
 import java.lang.ref.WeakReference;
-import java.sql.Struct;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -52,7 +51,7 @@ public class MerchantOffersInflater extends MerchantDataInflater {
    @InjectView(R.id.merchant_details_description) TextView description;
    @InjectView(R.id.description_header) ViewGroup descriptionHeader;
    @InjectView(R.id.scrollView) NestedScrollView scrollViewRoot;
-   @InjectView(R.id.legal_text) ShowMoreTextView legalTextView;
+   @InjectView(R.id.disclaimer) ShowMoreTextView disclaimer;
    @InjectView(R.id.merchant_details_cover) SimpleDraweeView cover;
    @InjectView(R.id.merchant_details_earn_wrapper) ViewGroup earnWrapper;
    @InjectView(R.id.perk_divider) View perkDivider;
@@ -135,13 +134,11 @@ public class MerchantOffersInflater extends MerchantDataInflater {
       description.setMovementMethod(new LinkMovementMethod());
       //
       ViewUtils.setViewVisibility(descriptionHeader, TextUtils.isEmpty(merchant.description()) ? View.GONE : View.VISIBLE);
-      ViewUtils.setViewVisibility(legalTextView, merchant.disclaimers() != null ? View.GONE : View.VISIBLE);
+      ViewUtils.setViewVisibility(disclaimer, merchant.disclaimers() != null ? View.VISIBLE : View.GONE);
       //
-      if (legalTextView.getVisibility() == View.GONE) return;
-      if (merchant.disclaimers() != null) {
-         legalTextView.setFullText(TextUtils.join("\n\n", merchant.disclaimers()));
-      }
-      legalTextView.setSimpleListener((view, collapsed) -> {
+      if (disclaimer.getVisibility() == View.GONE) return;
+      disclaimer.setFullText(TextUtils.join("\n\n", merchant.disclaimers()));
+      disclaimer.setSimpleListener((view, collapsed) -> {
          if (!collapsed) scrollViewRoot.post(() -> scrollViewRoot.fullScroll(View.FOCUS_DOWN));
       });
    }

@@ -109,4 +109,14 @@ public class PodcastPlayerScreenImpl extends BaseViewStateLinearLayout<PodcastPl
    public void onBackPressed() {
       getPresenter().onBackPressed();
    }
+
+   @Override
+   public void showBlockingProgress() {
+      //
+   }
+
+   @Override
+   public void hideBlockingProgress() {
+      //
+   }
 }

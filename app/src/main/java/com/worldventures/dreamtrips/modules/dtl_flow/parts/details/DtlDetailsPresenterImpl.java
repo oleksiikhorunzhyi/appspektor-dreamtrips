@@ -24,6 +24,7 @@ import com.worldventures.dreamtrips.modules.dtl.analytics.PointsEstimatorViewEve
 import com.worldventures.dreamtrips.modules.dtl.analytics.ShareEventProvider;
 import com.worldventures.dreamtrips.modules.dtl.analytics.SuggestMerchantEvent;
 import com.worldventures.dreamtrips.modules.dtl.bundle.MerchantBundle;
+import com.worldventures.dreamtrips.modules.dtl.bundle.MerchantIdBundle;
 import com.worldventures.dreamtrips.modules.dtl.bundle.PointsEstimationDialogBundle;
 import com.worldventures.dreamtrips.modules.dtl.event.DtlTransactionSucceedEvent;
 import com.worldventures.dreamtrips.modules.dtl.helper.MerchantHelper;
@@ -234,7 +235,7 @@ public class DtlDetailsPresenterImpl extends DtlPresenterImpl<DtlDetailsScreen, 
    public void onMerchantClick() {
       analyticsInteractor.dtlAnalyticsCommandPipe()
             .send(DtlAnalyticsCommand.create(new SuggestMerchantEvent(merchant)));
-      getView().openSuggestMerchant(new MerchantBundle(merchant));
+      getView().openSuggestMerchant(new MerchantIdBundle(merchant.id()));
    }
 
    @Override

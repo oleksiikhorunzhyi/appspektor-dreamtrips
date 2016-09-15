@@ -6,7 +6,6 @@ import com.esotericsoftware.kryo.DefaultSerializer;
 import com.esotericsoftware.kryo.serializers.CompatibleFieldSerializer;
 
 import org.immutables.value.Value;
-import org.jetbrains.annotations.Nullable;
 
 import java.io.Serializable;
 

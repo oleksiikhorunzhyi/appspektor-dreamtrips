@@ -21,6 +21,7 @@ import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchant;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.offer.Offer;
 import com.worldventures.dreamtrips.modules.dtl.view.cell.DtlMerchantCellDelegate;
 import com.worldventures.dreamtrips.modules.dtl.view.cell.DtlMerchantExpandableCell;
+import com.worldventures.dreamtrips.modules.dtl.view.dialog.DialogFactory;
 import com.worldventures.dreamtrips.modules.dtl_flow.DtlLayout;
 import com.worldventures.dreamtrips.modules.dtl_flow.view.toolbar.DtlToolbarHelper;
 import com.worldventures.dreamtrips.modules.dtl_flow.view.toolbar.ExpandableDtlToolbar;
@@ -44,6 +45,7 @@ public class DtlMerchantsScreenImpl extends DtlLayout<DtlMerchantsScreen, DtlMer
    //
    BaseDelegateAdapter baseDelegateAdapter;
    SelectionManager selectionManager;
+   SweetAlertDialog errorDialog;
 
    @Override
    protected void onFinishInflate() {
@@ -160,6 +162,16 @@ public class DtlMerchantsScreenImpl extends DtlLayout<DtlMerchantsScreen, DtlMer
    }
 
    @Override
+   public void showError(String error) {
+      errorDialog = DialogFactory.createRetryDialog(getActivity(), error);
+      errorDialog.setConfirmClickListener(listener -> {
+         listener.dismissWithAnimation();
+         getPresenter().retryLoadMerchant();
+      });
+      errorDialog.show();
+   }
+
+   @Override
    public void toggleDiningFilterSwitch(boolean enabled) {
       if (dtlToolbar == null) return;
       dtlToolbar.toggleDiningFilterSwitch(enabled);
@@ -191,12 +203,8 @@ public class DtlMerchantsScreenImpl extends DtlLayout<DtlMerchantsScreen, DtlMer
 
    @Override
    public boolean onApiError(ErrorResponse errorResponse) {
-      SweetAlertDialog alertDialog = new SweetAlertDialog(getActivity(), SweetAlertDialog.ERROR_TYPE).setTitleText(getContext()
-            .getString(R.string.alert))
-            .setContentText(errorResponse.getFirstMessage())
-            .setConfirmText(getContext().getString(R.string.ok))
-            .setConfirmClickListener(SweetAlertDialog::dismissWithAnimation);
-      alertDialog.setCancelable(false);
+      SweetAlertDialog alertDialog = DialogFactory.createErrorDialog(getActivity(), errorResponse.getFirstMessage());
+      alertDialog.setConfirmClickListener(SweetAlertDialog::dismissWithAnimation);
       alertDialog.show();
       return true;
    }

@@ -15,5 +15,7 @@ public interface DtlMerchantsPresenter extends DtlPresenter<DtlMerchantsScreen, 
 
    void onOfferClick(DtlMerchant dtlMerchant, Offer perk);
 
+   void retryLoadMerchant();
+
    void mapClicked();
 }

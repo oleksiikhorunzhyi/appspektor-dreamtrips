@@ -34,6 +34,7 @@ import com.worldventures.dreamtrips.core.utils.ViewUtils;
 import com.worldventures.dreamtrips.modules.common.view.bundle.ShareBundle;
 import com.worldventures.dreamtrips.modules.common.view.dialog.ShareDialog;
 import com.worldventures.dreamtrips.modules.dtl.bundle.MerchantBundle;
+import com.worldventures.dreamtrips.modules.dtl.bundle.MerchantIdBundle;
 import com.worldventures.dreamtrips.modules.dtl.bundle.PointsEstimationDialogBundle;
 import com.worldventures.dreamtrips.modules.dtl.helper.MerchantHelper;
 import com.worldventures.dreamtrips.modules.dtl.helper.inflater.MerchantInflater;
@@ -225,7 +226,7 @@ public class DtlDetailsScreenImpl extends DtlLayout<DtlDetailsScreen, DtlDetails
    }
 
    @Override
-   public void openSuggestMerchant(MerchantBundle data) {
+   public void openSuggestMerchant(MerchantIdBundle data) {
       router.moveTo(Route.ENROLL_MERCHANT, NavigationConfigBuilder.forActivity().data(data).build());
    }
 

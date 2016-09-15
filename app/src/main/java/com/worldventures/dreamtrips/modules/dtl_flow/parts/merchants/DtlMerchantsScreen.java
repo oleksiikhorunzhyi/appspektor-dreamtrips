@@ -22,6 +22,8 @@ public interface DtlMerchantsScreen extends DtlScreen {
 
    void hideProgress();
 
+   void showError(String error);
+
    void toggleSelection(DtlMerchant DtlMerchant);
 
    void toggleDiningFilterSwitch(boolean enabled);

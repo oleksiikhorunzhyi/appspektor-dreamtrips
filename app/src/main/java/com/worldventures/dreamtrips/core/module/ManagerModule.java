@@ -19,6 +19,7 @@ import com.worldventures.dreamtrips.modules.bucketlist.service.BucketInteractor;
 import com.worldventures.dreamtrips.modules.common.delegate.CachedEntityDelegate;
 import com.worldventures.dreamtrips.modules.common.delegate.CachedEntityInteractor;
 import com.worldventures.dreamtrips.modules.common.delegate.DownloadFileInteractor;
+import com.worldventures.dreamtrips.modules.common.delegate.QueryTripsFilterDataInteractor;
 import com.worldventures.dreamtrips.modules.common.delegate.SocialCropImageManager;
 import com.worldventures.dreamtrips.modules.common.presenter.delegate.ClearDirectoryDelegate;
 import com.worldventures.dreamtrips.modules.common.presenter.delegate.OfflineWarningDelegate;
@@ -31,6 +32,7 @@ import com.worldventures.dreamtrips.modules.dtl.service.DtlFilterMerchantInterac
 import com.worldventures.dreamtrips.modules.dtl.service.DtlLocationInteractor;
 import com.worldventures.dreamtrips.modules.dtl.service.DtlMerchantInteractor;
 import com.worldventures.dreamtrips.modules.dtl.service.DtlTransactionInteractor;
+import com.worldventures.dreamtrips.modules.dtl.service.FilterDataInteractor;
 import com.worldventures.dreamtrips.modules.dtl.service.PresentationInteractor;
 import com.worldventures.dreamtrips.modules.feed.manager.FeedEntityManager;
 import com.worldventures.dreamtrips.modules.membership.api.PhoneContactRequest;
@@ -44,8 +46,6 @@ import dagger.Module;
 import dagger.Provides;
 import de.greenrobot.event.EventBus;
 
-import static com.worldventures.dreamtrips.R.string.dtl;
-
 @Module(
       injects = {
             DreamSpiceManager.class,
@@ -57,6 +57,7 @@ import static com.worldventures.dreamtrips.R.string.dtl;
             DtlFilterMerchantInteractor.class,
             DtlMerchantInteractor.class,
             DtlTransactionInteractor.class,
+            QueryTripsFilterDataInteractor.class,
       },
       library = true, complete = false)
 public class ManagerModule {
@@ -102,6 +103,12 @@ public class ManagerModule {
    DtlTransactionInteractor provideDtlTransactionInteractor(SessionActionPipeCreator sessionActionPipeCreator,
          @Named(JanetModule.JANET_API_LIB) SessionActionPipeCreator sessionApiActionPipeCreator) {
       return new DtlTransactionInteractor(sessionActionPipeCreator, sessionApiActionPipeCreator);
+   }
+
+   @Singleton
+   @Provides
+   FilterDataInteractor provideFilterDataInteractor(SessionActionPipeCreator sessionActionPipeCreator) {
+      return new FilterDataInteractor(sessionActionPipeCreator);
    }
 
    @Singleton

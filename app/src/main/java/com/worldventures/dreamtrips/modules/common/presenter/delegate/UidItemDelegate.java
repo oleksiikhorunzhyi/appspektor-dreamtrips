@@ -10,6 +10,7 @@ import com.worldventures.dreamtrips.modules.flags.command.GetFlagsCommand;
 import io.techery.janet.Command;
 import io.techery.janet.helper.ActionStateSubscriber;
 import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Action1;
 import rx.functions.Action2;
 
 public class UidItemDelegate {
@@ -33,11 +34,7 @@ public class UidItemDelegate {
    }
 
    public void flagItem(FlagData data, View view) {
-      requestingPresenter.doRequest(new FlagItemCommand(data), aVoid -> {
-         if (view != null) {
-            view.flagSentSuccess();
-         }
-      });
+      requestingPresenter.doRequest(new FlagItemCommand(data), aVoid -> view.flagSentSuccess());
    }
 
    public interface View {

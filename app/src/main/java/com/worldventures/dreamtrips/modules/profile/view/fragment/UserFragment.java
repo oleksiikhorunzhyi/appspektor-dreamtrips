@@ -12,6 +12,7 @@ import com.techery.spares.adapter.BaseDelegateAdapter;
 import com.techery.spares.annotations.Layout;
 import com.techery.spares.annotations.MenuResource;
 import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.core.api.error.ErrorResponse;
 import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.navigation.router.NavigationConfigBuilder;
 import com.worldventures.dreamtrips.modules.bucketlist.view.adapter.IgnoreFirstItemAdapter;
@@ -144,5 +145,15 @@ public class UserFragment extends ProfileFragment<UserPresenter> implements User
    @Override
    public void hideBlockingProgress() {
       if (blockingProgressDialog != null) blockingProgressDialog.dismiss();
+   }
+
+   @Override
+   public boolean onApiError(ErrorResponse errorResponse) {
+      return false;
+   }
+
+   @Override
+   public void onApiCallFailed() {
+
    }
 }

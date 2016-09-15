@@ -49,6 +49,7 @@ public class SocialImageFullscreenPresenter extends SocialFullScreenPresenter<Ph
    @Override
    public void takeView(View view) {
       super.takeView(view);
+      apiErrorPresenter.setView(view);
       loadEntity();
    }
 

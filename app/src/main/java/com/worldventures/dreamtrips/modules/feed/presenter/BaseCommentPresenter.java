@@ -81,6 +81,7 @@ public class BaseCommentPresenter<T extends BaseCommentPresenter.View> extends P
    @Override
    public void takeView(T view) {
       super.takeView(view);
+      apiErrorPresenter.setView(view);
       view.setDraftComment(draftComment);
       view.setLikePanel(feedEntity);
 

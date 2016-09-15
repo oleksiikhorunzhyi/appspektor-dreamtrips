@@ -20,7 +20,6 @@ import io.techery.janet.ActionHolder;
 import io.techery.janet.Command;
 import io.techery.janet.Janet;
 import io.techery.janet.command.annotations.CommandAction;
-import rx.schedulers.Schedulers;
 
 import static com.worldventures.dreamtrips.core.janet.JanetModule.JANET_API_LIB;
 
@@ -39,7 +38,7 @@ public class AssociateCardUserCommand extends Command<SmartCardDetails> implemen
    @Override
    protected void run(CommandCallback<SmartCardDetails> callback) throws Throwable {
       AssociationCardUserData data = ImmutableAssociationCardUserData.builder()
-            .scid(smartCardId)
+            .scid(Long.parseLong(smartCardId))
             .deviceModel(SmartphoneUtils.getDeviceName())
             .deviceOsVersion(SmartphoneUtils.getOsVersion())
             .acceptedTermsAndConditionVersion(obtainTACVersion())
@@ -63,8 +62,13 @@ public class AssociateCardUserCommand extends Command<SmartCardDetails> implemen
    private SmartCardDetails convertResponse(com.worldventures.dreamtrips.api.smart_card.user_association.model.SmartCardDetails details) {
       return ImmutableSmartCardDetails.builder()
             //todo replace it in future. For now server returns stub value 123
-            .smartCardId(smartCardId)
+            .smartCardId(Long.parseLong(smartCardId))
             .bleAddress(details.bleAddress())
+            .nxtOrderId(details.nxtOrderId())
+            .orderDate(details.orderDate())
+            .wvOrderId(details.wvOrderId())
+            .serialNumber(details.serialNumber())
+            .revVersion(details.revVersion())
             .build();
    }
 

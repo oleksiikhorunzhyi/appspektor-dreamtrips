@@ -67,7 +67,7 @@ public final class WizardInteractor {
       associateCardUserCommandPipe
             .observeSuccess()
             .subscribe(command -> createAndConnectActionPipe()
-                  .send(new CreateAndConnectToCardCommand(command.getResult().smartCardId())));
+                  .send(new CreateAndConnectToCardCommand(String.valueOf(command.getResult().smartCardId()))));
    }
 
 }

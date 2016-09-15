@@ -81,7 +81,9 @@ public final class OperationSubscriberWrapper<T> {
                .getString(R.string.ok);
 
          view.hideProgress();
-         view.showSuccess(message, o -> onSuccessHolder.action.call(t));
+         view.showSuccess(message, o -> {
+            if (onSuccessHolder != null && onSuccessHolder.action != null) onSuccessHolder.action.call(t);
+         });
       }).onFail((t, throwable) -> {
          final MessageActionHolder<T> failHolder = onFailFactory != null ? onFailFactory.call(throwable) : null;
          String message = hasActionMessage(failHolder) ? failHolder.message.provide(t) : view.context()

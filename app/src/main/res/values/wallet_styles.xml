@@ -53,21 +53,27 @@
       <item name="android:imeOptions">actionNext</item>
    </style>
 
-   <style name="WalletTheme.BaseDetailsTheme" >
+   <style name="WalletTheme.BaseDetailsTheme">
       <item name="android:imeOptions">actionNext</item>
 
       <item name="android:buttonStyle">@style/WalletTheme.Wizard.WhiteTextButton</item>
       <item name="android:editTextStyle">@style/WalletTheme.GrayEditText</item>
-      <item name="android:textViewStyle">@style/WalletTheme.GrayTextView</item>
       <item name="android:checkboxStyle">@style/WalletTheme.RoundCheckBox</item>
    </style>
 
    <style name="WalletTheme.Settings" parent="WalletTheme.BaseDetailsTheme">
-      <item name="colorControlActivated">@android:color/white</item>
+      <item name="toolbarStyle">@style/WalletTheme.Settings.ToolbarStyle</item>
+      <item name="colorControlActivated">@color/wallet_color_primary_dark</item>
 
+      <item name="android:textColorPrimary">@android:color/black</item>
+      <item name="android:textColorSecondary">@color/wallet_color_gray_textview_text_color</item>
+      <item name="android:textAppearanceLarge">@style/WalletTheme.Settings.TextAppearanceLarge</item>
+      <item name="android:textAppearanceMedium">@style/WalletTheme.Settings.TextAppearanceMedium</item>
    </style>
 
    <style name="WalletTheme.DetailsTheme" parent="WalletTheme.BaseDetailsTheme">
+      <item name="android:textViewStyle">@style/WalletTheme.GrayTextView</item>
+
       <item name="colorControlActivated">@color/wallet_color_primary_dark</item>
       <item name="colorControlNormal">@color/wallet_detail_inactive_edit_text</item>
    </style>
@@ -134,6 +140,35 @@
       <item name="android:layout_height">28dp</item>
       <item name="android:scaleType">fitCenter</item>
       <item name="android:src">@drawable/ic_smart_card_pin_button</item>
+   </style>
+
+   <!--settings-->
+   <style name="WalletTheme.Settings.TextAppearanceLarge" parent="TextAppearance.AppCompat.Large">
+      <item name="android:textColor">?android:attr/textColorPrimary</item>
+   </style>
+
+   <style name="WalletTheme.Settings.TextAppearanceMedium" parent="TextAppearance.AppCompat.Medium">
+      <item name="android:textColor">?android:attr/textColorPrimary</item>
+   </style>
+
+   <style name="SettingsSectionDividerStyle">
+      <item name="android:background">#226D6D72</item>
+      <item name="android:gravity">center</item>
+   </style>
+
+   <style name="SettingsItemDividerStyle">
+      <item name="android:layout_width">match_parent</item>
+      <item name="android:layout_height">0.5dp</item>
+      <item name="android:layout_marginStart">@dimen/spacing_normal</item>
+      <item name="android:background">#C8C7CC</item>
+      <item name="android:gravity">center</item>
+   </style>
+
+   <style name="WalletTheme.Settings.ToolbarStyle" parent="Widget.AppCompat.Toolbar">
+      <item name="navigationIcon">@drawable/back_icon</item>
+      <item name="android:gravity">center_vertical</item>
+      <item name="titleTextColor">@android:color/white</item>
+      <item name="android:background">@color/wallet_color_primary_dark</item>
    </style>
 
    <!--common-->

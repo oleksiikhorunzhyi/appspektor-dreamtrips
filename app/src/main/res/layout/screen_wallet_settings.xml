@@ -5,7 +5,7 @@
       xmlns:tools="http://schemas.android.com/tools"
       android:layout_width="match_parent"
       android:layout_height="match_parent"
-      android:theme="@style/WalletTheme"
+      android:theme="@style/WalletTheme.Settings"
       >
 
    <android.support.v7.widget.Toolbar
@@ -15,66 +15,191 @@
          app:title="@string/wallet_card_settings_title"
          />
 
-   <LinearLayout
+   <android.support.v4.widget.NestedScrollView
          android:layout_width="match_parent"
          android:layout_height="match_parent"
          android:layout_marginTop="?attr/actionBarSize"
-         android:orientation="vertical"
          >
 
-      <FrameLayout
-            android:id="@+id/item_stealth_mode"
+      <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:padding="@dimen/wallet_common_item_padding"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
             >
-
-         <ImageView
-               android:layout_width="wrap_content"
-               android:layout_height="@dimen/wallet_common_item_icon_size"
-               android:layout_gravity="center_vertical"
-               android:layout_marginLeft="8dp"
-               android:src="@drawable/ic_stealth_mode"
-               tools:ignore="ContentDescription"
-               />
-
-         <android.support.v7.widget.SwitchCompat
-               android:id="@+id/stealth_mode_switcher"
-               android:layout_width="match_parent"
-               android:layout_height="wrap_content"
-               android:layout_marginLeft="@dimen/wallet_settings_item_text_margin_left"
-               android:text="@string/wallet_card_settings_stealth_mode"
-               />
-
-      </FrameLayout>
-
-
-      <FrameLayout
-            android:id="@+id/item_reset_pin"
-            android:background="?attr/selectableItemBackground"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:padding="@dimen/wallet_common_item_padding"
-            >
-
-         <ImageView
-               android:layout_width="wrap_content"
-               android:layout_height="@dimen/wallet_common_item_icon_size"
-               android:layout_gravity="center_vertical"
-               android:layout_marginLeft="10dp"
-               android:src="@drawable/ic_reset_pin"
-               tools:ignore="ContentDescription"
-               />
 
          <TextView
+               style="@style/SettingsSectionDividerStyle"
                android:layout_width="match_parent"
                android:layout_height="wrap_content"
-               android:layout_marginLeft="@dimen/wallet_settings_item_text_margin_left"
-               android:text="@string/wallet_card_settings_reset_pin"
+               android:paddingBottom="@dimen/spacing_normal"
+               android:paddingEnd="36dp"
+               android:paddingStart="36dp"
+               android:paddingTop="@dimen/spacing_normal"
+               android:text="@string/wallet_card_settings_device_section_header"
+               android:textAppearance="?android:attr/textAppearanceSmall"
                />
 
-      </FrameLayout>
+         <android.support.v7.widget.CardView
+               android:layout_width="match_parent"
+               android:layout_height="wrap_content"
+               >
+
+            <LinearLayout
+                  android:layout_width="match_parent"
+                  android:layout_height="wrap_content"
+                  android:orientation="vertical"
+                  >
+
+               <android.support.v7.widget.SwitchCompat
+                     android:id="@+id/stealth_mode_switcher"
+                     android:layout_width="match_parent"
+                     android:layout_height="wrap_content"
+                     android:padding="@dimen/spacing_normal"
+                     android:text="@string/wallet_card_settings_stealth_mode"
+                     android:textAppearance="?android:attr/textAppearanceMedium"
+                     tools:checked="true"
+                     />
+
+               <View style="@style/SettingsItemDividerStyle" />
+
+               <android.support.v7.widget.SwitchCompat
+                     android:id="@+id/lock_switcher"
+                     android:layout_width="match_parent"
+                     android:layout_height="wrap_content"
+                     android:padding="@dimen/spacing_normal"
+                     android:text="@string/wallet_card_settings_lock"
+                     android:textAppearance="?android:attr/textAppearanceMedium"
+
+                     />
+
+            </LinearLayout>
+         </android.support.v7.widget.CardView>
 
 
-   </LinearLayout>
+         <View
+               style="@style/SettingsSectionDividerStyle"
+               android:layout_width="match_parent"
+               android:layout_height="48dp"
+               />
+
+         <android.support.v7.widget.CardView
+               android:layout_width="match_parent"
+               android:layout_height="wrap_content"
+               >
+
+            <LinearLayout
+                  android:layout_width="match_parent"
+                  android:layout_height="wrap_content"
+                  android:orientation="vertical"
+                  >
+
+               <TextView
+                     android:id="@+id/item_reset_pin"
+                     android:layout_width="match_parent"
+                     android:layout_height="wrap_content"
+                     android:padding="@dimen/spacing_normal"
+                     android:text="@string/wallet_card_settings_reset_pin"
+                     android:textAppearance="?android:attr/textAppearanceMedium"
+                     />
+
+               <View style="@style/SettingsItemDividerStyle" />
+
+               <RelativeLayout
+                     android:id="@+id/item_disable_default_payment_card"
+                     android:layout_width="match_parent"
+                     android:layout_height="wrap_content"
+                     android:padding="@dimen/spacing_normal"
+                     >
+
+                  <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentStart="true"
+                        android:layout_toStartOf="@+id/disable_default_payment_card_label"
+                        android:maxLines="1"
+                        android:text="@string/wallet_card_settings_disable_default_payment_card"
+                        android:textAppearance="?android:attr/textAppearanceMedium"
+                        />
+
+                  <TextView
+                        android:id="@+id/disable_default_payment_card_label"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentEnd="true"
+                        android:textAppearance="?android:attr/textAppearanceMedium"
+                        android:textColor="?android:attr/textColorSecondary"
+                        tools:text="4 hours"
+                        />
+               </RelativeLayout>
+
+               <View style="@style/SettingsItemDividerStyle" />
+
+               <RelativeLayout
+                     android:id="@+id/item_auto_delete_cards"
+                     android:layout_width="match_parent"
+                     android:layout_height="wrap_content"
+                     android:padding="@dimen/spacing_normal"
+                     >
+
+                  <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentStart="true"
+                        android:layout_toStartOf="@+id/auto_delete_cards_labels"
+                        android:maxLines="1"
+                        android:text="@string/wallet_card_settings_auto_delete_cards"
+                        android:textAppearance="?android:attr/textAppearanceMedium"
+                        />
+
+                  <TextView
+                        android:id="@+id/auto_delete_cards_labels"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentEnd="true"
+                        android:textAppearance="?android:attr/textAppearanceMedium"
+                        android:textColor="?android:attr/textColorSecondary"
+                        tools:text="Never"
+                        />
+               </RelativeLayout>
+            </LinearLayout>
+         </android.support.v7.widget.CardView>
+
+         <!--todo: remove after demo-->
+         <TextView
+               style="@style/SettingsSectionDividerStyle"
+               android:layout_width="match_parent"
+               android:layout_height="wrap_content"
+               android:paddingBottom="@dimen/spacing_normal"
+               android:paddingEnd="@dimen/spacing_normal"
+               android:paddingStart="@dimen/spacing_normal"
+               android:paddingTop="@dimen/spacing_normal"
+               android:text="Test section"
+               android:textAppearance="?android:attr/textAppearanceSmall"
+               />
+
+         <android.support.v7.widget.CardView
+               android:layout_width="match_parent"
+               android:layout_height="wrap_content"
+               >
+
+            <android.support.v7.widget.SwitchCompat
+                  android:id="@+id/test_connection_switcher"
+                  android:layout_width="match_parent"
+                  android:layout_height="wrap_content"
+                  android:padding="@dimen/spacing_normal"
+                  android:text="Connection"
+                  android:textAppearance="?android:attr/textAppearanceMedium"
+                  tools:checked="true"
+                  tools:ignore="HardcodedText"
+                  />
+
+         </android.support.v7.widget.CardView>
+
+         <!--todo: empty view was used to add shadows for last section -->
+         <View
+               android:layout_width="match_parent"
+               android:layout_height="4dp"
+               />
+      </LinearLayout>
+   </android.support.v4.widget.NestedScrollView>
 </com.worldventures.dreamtrips.wallet.ui.settings.WalletCardSettingsScreen>

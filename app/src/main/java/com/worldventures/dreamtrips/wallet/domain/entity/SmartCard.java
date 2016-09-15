@@ -43,6 +43,16 @@ public abstract class SmartCard {
       return 0;
    }
 
+   @Value.Default
+   public long disableCardDelay() {
+      return 0; //never
+   }
+
+   @Value.Default
+   public long clearFlyeDelay() {
+      return 0; //never
+   }
+
    public enum CardStatus {
       ACTIVE, INACTIVE, DRAFT
    }

@@ -9,6 +9,10 @@ import com.worldventures.dreamtrips.wallet.ui.dashboard.list.util.cell.BankCardC
 import com.worldventures.dreamtrips.wallet.ui.dashboard.list.util.cell.CardStackCell;
 import com.worldventures.dreamtrips.wallet.ui.dashboard.list.util.cell.CardStackHeaderCell;
 import com.worldventures.dreamtrips.wallet.ui.settings.WalletCardSettingsPresenter;
+import com.worldventures.dreamtrips.wallet.ui.settings.common.cell.SectionDividerCell;
+import com.worldventures.dreamtrips.wallet.ui.settings.common.cell.SettingsRadioCell;
+import com.worldventures.dreamtrips.wallet.ui.settings.disabledefaultcard.WalletDisableDefaultCardPresenter;
+import com.worldventures.dreamtrips.wallet.ui.settings.removecards.WalletAutoClearCardsPresenter;
 import com.worldventures.dreamtrips.wallet.ui.wizard.barcode.WizardScanBarcodePresenter;
 import com.worldventures.dreamtrips.wallet.ui.wizard.card_details.AddCardDetailsPresenter;
 import com.worldventures.dreamtrips.wallet.ui.wizard.charging.WizardChargingPresenter;
@@ -32,6 +36,8 @@ import dagger.Provides;
             BankCardCell.class,
             CardStackCell.class,
             CardStackHeaderCell.class,
+            SettingsRadioCell.class,
+            SectionDividerCell.class,
             WizardSplashPresenter.class,
             WizardTermsScreenPresenter.class,
             WizardScanBarcodePresenter.class,
@@ -45,7 +51,9 @@ import dagger.Provides;
             WalletSuccessPresenter.class,
             AddCardDetailsPresenter.class,
             WizardPinSetupPresenter.class,
-            WizardSetupSmartCardPresenter.class
+            WizardSetupSmartCardPresenter.class,
+            WalletAutoClearCardsPresenter.class,
+            WalletDisableDefaultCardPresenter.class
       },
       complete = false, library = true
 )
@@ -53,7 +61,7 @@ public class WalletActivityModule {
    public static final String WALLET = "Wallet";
 
    @Provides(type = Provides.Type.SET)
-   ComponentDescription provideMessengerComponent() {
+   ComponentDescription provideWalletComponent() {
       return new ComponentDescription(WALLET, R.string.wallet, R.string.wallet, R.drawable.ic_wallet, true, null);
    }
 }

@@ -16,34 +16,33 @@ import io.techery.janet.Command;
 import io.techery.janet.Janet;
 import io.techery.janet.command.annotations.CommandAction;
 import io.techery.janet.helper.ActionStateToActionTransformer;
-import io.techery.janet.smartcard.action.lock.LockDeviceAction;
+import io.techery.janet.smartcard.action.settings.SetDisableDefaultCardDelayAction;
 import rx.Observable;
 
 import static com.worldventures.dreamtrips.core.janet.JanetModule.JANET_WALLET;
 
 @CommandAction
-public class SetLockStateCommand extends Command<SmartCard> implements InjectableAction, SmartCardModifier, CachedAction<SmartCard> {
+public class SetDisableDefaultCardDelayCommand extends Command<SmartCard>
+      implements InjectableAction, SmartCardModifier, CachedAction<SmartCard> {
 
    @Inject @Named(JANET_WALLET) Janet janet;
    @Inject SmartCardInteractor smartCardInteractor;
 
-   private final boolean lock;
+   private final long delay;
    private SmartCard smartCard;
 
-   public SetLockStateCommand(boolean lock) {
-      this.lock = lock;
+   public SetDisableDefaultCardDelayCommand(long delay) {
+      this.delay = delay;
    }
 
    @Override
    protected void run(CommandCallback<SmartCard> callback) throws Throwable {
-      if (!lock) throw new IllegalArgumentException("Unlock is not supported");
-
-      janet.createPipe(LockDeviceAction.class)
-            .createObservableResult(new LockDeviceAction(true))
+      janet.createPipe(SetDisableDefaultCardDelayAction.class)
+            .createObservableResult(new SetDisableDefaultCardDelayAction(delay))
             .flatMap(it -> fetchActiveSmartCard()
                   .map(smartCard -> ImmutableSmartCard.builder()
                         .from(smartCard)
-                        .lock(true)
+                        .disableCardDelay(it.delay)
                         .build()))
             .doOnNext(smartCard -> this.smartCard = smartCard)
             .subscribe(callback::onSuccess, callback::onFail);

@@ -12,6 +12,8 @@ import io.techery.janet.Command;
 import io.techery.janet.Janet;
 import io.techery.janet.command.annotations.CommandAction;
 import io.techery.janet.smartcard.action.lock.GetLockDeviceStatusAction;
+import io.techery.janet.smartcard.action.records.GetClearRecordsDelayAction;
+import io.techery.janet.smartcard.action.settings.GetDisableDefaultCardDelayAction;
 import io.techery.janet.smartcard.action.settings.GetStealthModeAction;
 import io.techery.janet.smartcard.action.support.GetBatteryLevelAction;
 import rx.Observable;
@@ -36,11 +38,18 @@ public class FetchCardPropertiesCommand extends Command<SmartCard> implements In
                   .createObservableResult(new GetLockDeviceStatusAction()),
             janet.createPipe(GetStealthModeAction.class)
                   .createObservableResult(new GetStealthModeAction()),
-            (getBatteryLevelAction, getLockDeviceStatusAction, getStealthModeAction) ->
+            janet.createPipe(GetDisableDefaultCardDelayAction.class)
+                  .createObservableResult(new GetDisableDefaultCardDelayAction()),
+            janet.createPipe(GetClearRecordsDelayAction.class)
+                  .createObservableResult(new GetClearRecordsDelayAction()),
+            (getBatteryLevelAction, getLockDeviceStatusAction, getStealthModeAction, getDisableDefaultCardDelayAction,
+                  getClearRecordsDelayAction) ->
                   ImmutableSmartCard.builder().from(smartCard)
                         .batteryLevel(Integer.parseInt(getBatteryLevelAction.level))
                         .lock(getLockDeviceStatusAction.locked)
                         .stealthMode(getStealthModeAction.enabled)
+                        .disableCardDelay(getDisableDefaultCardDelayAction.delay)
+                        .clearFlyeDelay(getClearRecordsDelayAction.delay)
                         .build())
             .subscribe(callback::onSuccess, callback::onFail);
    }

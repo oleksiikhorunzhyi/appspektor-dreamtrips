@@ -17,12 +17,15 @@ import com.worldventures.dreamtrips.wallet.service.command.GetDefaultAddressComm
 import com.worldventures.dreamtrips.wallet.service.command.LoadImageForSmartCardCommand;
 import com.worldventures.dreamtrips.wallet.service.command.SaveCardDetailsDataCommand;
 import com.worldventures.dreamtrips.wallet.service.command.SaveDefaultAddressCommand;
+import com.worldventures.dreamtrips.wallet.service.command.SetAutoClearSmartCardDelayCommand;
 import com.worldventures.dreamtrips.wallet.service.command.SetDefaultCardOnDeviceCommand;
+import com.worldventures.dreamtrips.wallet.service.command.SetDisableDefaultCardDelayCommand;
 import com.worldventures.dreamtrips.wallet.service.command.SetLockStateCommand;
 import com.worldventures.dreamtrips.wallet.service.command.SetStealthModeCommand;
 import com.worldventures.dreamtrips.wallet.service.command.SetupDefaultAddressCommand;
 import com.worldventures.dreamtrips.wallet.service.command.SetupUserDataCommand;
 import com.worldventures.dreamtrips.wallet.service.command.http.FetchRecordIssuerInfoCommand;
+import com.worldventures.dreamtrips.wallet.service.command.UpdateSmartCardConnectionStatus;
 import com.worldventures.dreamtrips.wallet.service.command.http.FetchTermsAndConditionsCommand;
 
 import dagger.Module;
@@ -46,6 +49,7 @@ import dagger.Module;
             SetupDefaultAddressCommand.class,
             SetDefaultCardOnDeviceCommand.class,
             FetchSmartCardLockState.class,
+            UpdateSmartCardConnectionStatus.class,
             SetStealthModeCommand.class,
             GetActiveSmartCardCommand.class,
             ConnectSmartCardCommand.class,
@@ -54,7 +58,9 @@ import dagger.Module;
             SaveDefaultAddressCommand.class,
             FetchDefaultCardCommand.class,
             FetchRecordIssuerInfoCommand.class,
-            FetchTermsAndConditionsCommand.class
+            FetchTermsAndConditionsCommand.class,
+            SetAutoClearSmartCardDelayCommand.class,
+            SetDisableDefaultCardDelayCommand.class
       },
       complete = false, library = true)
 public class WalletCommandModule {}

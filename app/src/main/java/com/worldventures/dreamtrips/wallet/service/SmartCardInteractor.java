@@ -11,7 +11,9 @@ import com.worldventures.dreamtrips.wallet.service.command.GetActiveSmartCardCom
 import com.worldventures.dreamtrips.wallet.service.command.GetDefaultAddressCommand;
 import com.worldventures.dreamtrips.wallet.service.command.SaveCardDetailsDataCommand;
 import com.worldventures.dreamtrips.wallet.service.command.SaveDefaultAddressCommand;
+import com.worldventures.dreamtrips.wallet.service.command.SetAutoClearSmartCardDelayCommand;
 import com.worldventures.dreamtrips.wallet.service.command.SetDefaultCardOnDeviceCommand;
+import com.worldventures.dreamtrips.wallet.service.command.SetDisableDefaultCardDelayCommand;
 import com.worldventures.dreamtrips.wallet.service.command.SetLockStateCommand;
 import com.worldventures.dreamtrips.wallet.service.command.SetStealthModeCommand;
 import com.worldventures.dreamtrips.wallet.service.command.SmartCardModifier;
@@ -55,7 +57,7 @@ public final class SmartCardInteractor {
    private final ActionPipe<SaveDefaultAddressCommand> saveDefaultAddressPipe;
    private final ActionPipe<GetDefaultAddressCommand> getDefaultAddressCommandPipe;
    private final ActionPipe<SaveCardDetailsDataCommand> saveCardDetailsDataCommandPipe;
-   private final ActionPipe<SetStealthModeCommand> setStealthModePipe;
+   private final ActionPipe<SetStealthModeCommand> stealthModePipe;
    private final ActionPipe<SetLockStateCommand> setLockPipe;
    private final ReadActionPipe<SmartCardModifier> smartCardModifierPipe;
    private final ActionPipe<FetchDefaultCardIdCommand> fetchDefaultCardIdCommandPipe;
@@ -70,6 +72,9 @@ public final class SmartCardInteractor {
    private final ActionPipe<StopCardRecordingAction> stopCardRecordingPipe;
    private final ActionPipe<FetchRecordIssuerInfoCommand> recordIssuerInfoPipe;
 
+   private final ActionPipe<SetAutoClearSmartCardDelayCommand> autoClearDelayPipe;
+   private final ActionPipe<SetDisableDefaultCardDelayCommand> disableDefaultCardPipe;
+
    @Inject
    public SmartCardInteractor(@Named(JANET_WALLET) Janet janet) {
       connectionPipe = janet.createPipe(ConnectSmartCardCommand.class, Schedulers.io());
@@ -77,7 +82,7 @@ public final class SmartCardInteractor {
       addRecordPipe = janet.createPipe(AttachCardCommand.class, Schedulers.io());
       cardStacksPipe = janet.createPipe(CardStacksCommand.class, Schedulers.io());
       activeSmartCardPipe = janet.createPipe(GetActiveSmartCardCommand.class, Schedulers.io());
-      setStealthModePipe = janet.createPipe(SetStealthModeCommand.class, Schedulers.io());
+      stealthModePipe = janet.createPipe(SetStealthModeCommand.class, Schedulers.io());
 
       smartCardModifierPipe = janet.createPipe(SmartCardModifier.class, Schedulers.io());
       setLockPipe = janet.createPipe(SetLockStateCommand.class, Schedulers.io());
@@ -99,6 +104,10 @@ public final class SmartCardInteractor {
       stopCardRecordingPipe = janet.createPipe(StopCardRecordingAction.class, Schedulers.io());
 
       recordIssuerInfoPipe = janet.createPipe(FetchRecordIssuerInfoCommand.class, Schedulers.io());
+
+      autoClearDelayPipe = janet.createPipe(SetAutoClearSmartCardDelayCommand.class, Schedulers.io());
+      disableDefaultCardPipe = janet.createPipe(SetDisableDefaultCardDelayCommand.class, Schedulers.io());
+
       connect();
    }
 
@@ -146,8 +155,8 @@ public final class SmartCardInteractor {
       return getDefaultAddressCommandPipe;
    }
 
-   public ActionPipe<SetStealthModeCommand> setStealthModePipe() {
-      return setStealthModePipe;
+   public ActionPipe<SetStealthModeCommand> stealthModePipe() {
+      return stealthModePipe;
    }
 
    public ActionPipe<SetLockStateCommand> lockPipe() {
@@ -177,6 +186,18 @@ public final class SmartCardInteractor {
 
    public ActionPipe<FetchRecordIssuerInfoCommand> recordIssuerInfoPipe() {
       return recordIssuerInfoPipe;
+   }
+
+   public WriteActionPipe<DisconnectAction> disconnectPipe() {
+      return disconnectPipe;
+   }
+
+   public ActionPipe<SetAutoClearSmartCardDelayCommand> autoClearDelayPipe() {
+      return autoClearDelayPipe;
+   }
+
+   public ActionPipe<SetDisableDefaultCardDelayCommand> disableDefaultCardPipe() {
+      return disableDefaultCardPipe;
    }
 
    private void connect() {

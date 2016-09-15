@@ -38,6 +38,11 @@ public class BaseDelegateAdapter<BaseItemClass> extends BaseArrayListAdapter<Bas
       setHasStableIds(true);
    }
 
+   public void registerCell(Class<?> itemClass, Class<? extends AbstractCell> cellClass, CellDelegate<? extends BaseItemClass> cellDelegate) {
+      registerCell(itemClass, cellClass);
+      registerDelegate(itemClass, cellDelegate);
+   }
+
    @Override
    public long getItemId(int position) {
       int viewType = getItemViewType(position);

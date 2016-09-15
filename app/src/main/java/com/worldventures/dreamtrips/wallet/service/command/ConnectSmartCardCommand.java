@@ -35,6 +35,7 @@ public class ConnectSmartCardCommand extends Command<SmartCard> implements Injec
       janet.createPipe(ConnectAction.class)
             .createObservableResult(new ConnectAction(activeSmartCard.deviceName(), activeSmartCard.deviceAddress()))
             .flatMap(action -> fetchTechnicalProperties())
+            .doOnNext(smartCard -> activeSmartCard = smartCard)
             .subscribe(smartCard -> setStatusAndNotifyCallback(SmartCard.ConnectionStatus.CONNECTED, callback),
                   throwable -> {
                      Timber.e(throwable, "Error while connecting to smart card");
@@ -47,7 +48,7 @@ public class ConnectSmartCardCommand extends Command<SmartCard> implements Injec
       callback.onSuccess(activeSmartCard);
    }
 
-   public Observable<SmartCard> fetchTechnicalProperties() {
+   private Observable<SmartCard> fetchTechnicalProperties() {
       return janet.createPipe(FetchCardPropertiesCommand.class)
             .createObservableResult(new FetchCardPropertiesCommand(activeSmartCard))
             .map(Command::getResult);

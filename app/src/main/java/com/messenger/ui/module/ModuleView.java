@@ -4,7 +4,7 @@ import android.view.View;
 
 public interface ModuleView<P> {
 
-    View getParentView();
+   View getParentView();
 
-    P getPresenter();
+   P getPresenter();
 }

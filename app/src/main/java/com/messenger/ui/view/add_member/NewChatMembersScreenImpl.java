@@ -8,16 +8,16 @@ import com.messenger.ui.presenter.NewChatScreenPresenterImpl;
 
 public class NewChatMembersScreenImpl extends ChatMembersScreenImpl<NewChatPath> {
 
-    public NewChatMembersScreenImpl(Context context) {
-        super(context);
-    }
+   public NewChatMembersScreenImpl(Context context) {
+      super(context);
+   }
 
-    public NewChatMembersScreenImpl(Context context, AttributeSet attrs) {
-        super(context, attrs);
-    }
+   public NewChatMembersScreenImpl(Context context, AttributeSet attrs) {
+      super(context, attrs);
+   }
 
-    @Override
-    public ChatMembersScreenPresenter createPresenter() {
-        return new NewChatScreenPresenterImpl(getContext(), injector);
-    }
+   @Override
+   public ChatMembersScreenPresenter createPresenter() {
+      return new NewChatScreenPresenterImpl(getContext(), injector);
+   }
 }

@@ -8,17 +8,15 @@ import io.techery.janet.command.annotations.CommandAction;
 @CommandAction
 public class SendChatStateCommand extends BaseChatCommand<String> {
 
-    @ChatState.State
-    private String chatState;
+   @ChatState.State private String chatState;
 
-    public SendChatStateCommand(String conversationId, @ChatState.State String chatState) {
-        super(conversationId);
-        this.chatState = chatState;
-    }
+   public SendChatStateCommand(String conversationId, @ChatState.State String chatState) {
+      super(conversationId);
+      this.chatState = chatState;
+   }
 
-    @Override
-    protected void run(CommandCallback<String> callback) throws Throwable {
-        getChat().flatMap(chat -> chat.setCurrentState(chatState))
-                .subscribe(callback::onSuccess, callback::onFail);
-    }
+   @Override
+   protected void run(CommandCallback<String> callback) throws Throwable {
+      getChat().flatMap(chat -> chat.setCurrentState(chatState)).subscribe(callback::onSuccess, callback::onFail);
+   }
 }

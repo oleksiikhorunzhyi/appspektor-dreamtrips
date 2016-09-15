@@ -4,8 +4,7 @@ import com.messenger.ui.model.SelectableDataUser;
 import com.messenger.ui.view.add_member.ChatMembersScreen;
 import com.messenger.ui.viewstate.ChatMembersScreenViewState;
 
-public interface ChatMembersScreenPresenter
-        extends MessengerPresenter<ChatMembersScreen, ChatMembersScreenViewState> {
+public interface ChatMembersScreenPresenter extends MessengerPresenter<ChatMembersScreen, ChatMembersScreenViewState> {
 
-    void onItemSelectChange(SelectableDataUser item);
+   void onItemSelectChange(SelectableDataUser item);
 }

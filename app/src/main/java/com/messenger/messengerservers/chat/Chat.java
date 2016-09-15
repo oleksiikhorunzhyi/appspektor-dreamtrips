@@ -5,9 +5,9 @@ import com.messenger.messengerservers.model.Message;
 import rx.Observable;
 
 public interface Chat {
-    Observable<Message> send(Message message);
+   Observable<Message> send(Message message);
 
-    Observable<String> sendReadStatus(String messageId);
+   Observable<String> sendReadStatus(String messageId);
 
-    Observable<String> setCurrentState(@ChatState.State String state);
+   Observable<String> setCurrentState(@ChatState.State String state);
 }

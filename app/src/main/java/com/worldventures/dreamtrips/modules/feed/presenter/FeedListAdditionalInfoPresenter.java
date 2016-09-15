@@ -1,145 +1,174 @@
 package com.worldventures.dreamtrips.modules.feed.presenter;
 
-import android.net.Uri;
 import android.support.annotation.NonNull;
+import android.support.annotation.StringRes;
 
 import com.octo.android.robospice.persistence.exception.SpiceException;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
+import com.worldventures.dreamtrips.core.session.CirclesInteractor;
+import com.worldventures.dreamtrips.modules.common.api.janet.command.CirclesCommand;
 import com.worldventures.dreamtrips.modules.common.model.User;
+import com.worldventures.dreamtrips.modules.common.view.BlockingProgressView;
 import com.worldventures.dreamtrips.modules.friends.api.GetFriendsQuery;
 import com.worldventures.dreamtrips.modules.friends.events.UnfriendEvent;
 import com.worldventures.dreamtrips.modules.friends.events.UserClickedEvent;
 import com.worldventures.dreamtrips.modules.friends.model.Circle;
 import com.worldventures.dreamtrips.modules.profile.bundle.UserBundle;
 
+import java.util.Collections;
 import java.util.List;
 
 import javax.inject.Inject;
 
+import io.techery.janet.helper.ActionStateSubscriber;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
+
 public class FeedListAdditionalInfoPresenter extends FeedItemAdditionalInfoPresenter<FeedListAdditionalInfoPresenter.View> {
 
-    @Inject
-    SnappyRepository db;
+   @Inject SnappyRepository db;
+   @Inject CirclesInteractor circlesInteractor;
 
-    private int nextPage = 1;
-    private int prevTotalItemCount = 0;
-    private boolean loading = true;
-    private boolean canLoadMore = true;
+   private int nextPage = 1;
+   private int prevTotalItemCount = 0;
+   private boolean loading = true;
+   private boolean canLoadMore = true;
 
-    public FeedListAdditionalInfoPresenter(User user) {
-        super(user);
-    }
+   public FeedListAdditionalInfoPresenter(User user) {
+      super(user);
+   }
 
-    @Override
-    public void takeView(View view) {
-        super.takeView(view);
-        if (view.isTabletLandscape()) {
-            loadFriends();
-            view.setCurrentCircle(getFilterCircle());
-        }
-    }
+   @Override
+   public void takeView(View view) {
+      super.takeView(view);
+      if (view.isTabletLandscape()) {
+         loadFriends();
+         view.setCurrentCircle(getFilterCircle());
+      }
+   }
 
-    ///////////////////////////////////////////////////////////////////////////
-    // Circles interaction
-    ///////////////////////////////////////////////////////////////////////////
+   ///////////////////////////////////////////////////////////////////////////
+   // Circles interaction
+   ///////////////////////////////////////////////////////////////////////////
 
-    public void onCirclePicked(Circle c) {
-        db.saveFeedFriendPickedCircle(c);
-        reload();
-    }
+   public void onCirclePicked(Circle c) {
+      db.saveFeedFriendPickedCircle(c);
+      reload();
+   }
 
-    public void onCircleFilterClicked() {
-        List<Circle> circles = db.getCircles();
-        circles.add(0, getDefaultCircleFilter());
-        view.showCirclePicker(circles, getFilterCircle());
-    }
+   public void onCircleFilterClicked() {
+      circlesInteractor.pipe()
+            .createObservable(new CirclesCommand())
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .compose(bindView())
+            .subscribe(new ActionStateSubscriber<CirclesCommand>().onStart(circlesCommand -> onCirclesStart())
+                  .onSuccess(circlesCommand -> onCirclesSuccess(circlesCommand.getResult()))
+                  .onFail((circlesCommand, throwable) -> onCirclesError(circlesCommand.getErrorMessage())));
 
-    @NonNull
-    private Circle getFilterCircle() {
-        Circle filterCircle = db.getFeedFriendPickedCircle();
-        return filterCircle == null ? getDefaultCircleFilter() : filterCircle;
-    }
+   }
 
-    private Circle getDefaultCircleFilter() {
-        return Circle.all(context.getString(R.string.all_friends));
-    }
+   private void onCirclesStart() {
+      view.showBlockingProgress();
+   }
 
-    ///////////////////////////////////////////////////////////////////////////
-    // Friends loading
-    ///////////////////////////////////////////////////////////////////////////
+   private void onCirclesError(@StringRes String messageId) {
+      view.hideBlockingProgress();
+      view.informUser(messageId);
+   }
 
-    public void loadFriends() {
-        loading = true;
-        view.startLoading();
-        doRequest(new GetFriendsQuery(getFilterCircle(), null, nextPage, getPageSize()), users -> {
-            if (nextPage == 1) view.setFriends(users);
-            else view.addFriends(users);
-            canLoadMore = users.size() > 0;
-            nextPage++;
-            loading = false;
-            view.finishLoading();
-        });
-    }
+   private void onCirclesSuccess(List<Circle> resultCircles) {
+      resultCircles.add(getDefaultCircleFilter());
+      Collections.sort(resultCircles);
+      view.hideBlockingProgress();
+      view.showCirclePicker(resultCircles, getFilterCircle());
+   }
 
-    public void reload() {
-        nextPage = 1;
-        prevTotalItemCount = 0;
-        loadFriends();
-    }
+   @NonNull
+   private Circle getFilterCircle() {
+      Circle filterCircle = db.getFeedFriendPickedCircle();
+      return filterCircle == null ? getDefaultCircleFilter() : filterCircle;
+   }
 
-    @Override
-    public void handleError(SpiceException error) {
-        super.handleError(error);
-        loading = false;
-        view.finishLoading();
-    }
+   private Circle getDefaultCircleFilter() {
+      return Circle.all(context.getString(R.string.all_friends));
+   }
 
-    public void onScrolled(int totalItemCount, int lastVisible) {
-        if (totalItemCount > prevTotalItemCount) {
-            prevTotalItemCount = totalItemCount;
-        }
-        if (!loading && canLoadMore && lastVisible >= totalItemCount - 1) {
-            loadFriends();
-        }
-    }
+   ///////////////////////////////////////////////////////////////////////////
+   // Friends loading
+   ///////////////////////////////////////////////////////////////////////////
 
-    public int getPageSize() {
-        return 100;
-    }
+   public void loadFriends() {
+      loading = true;
+      view.startLoading();
+      doRequest(new GetFriendsQuery(getFilterCircle(), null, nextPage, getPageSize()), users -> {
+         if (nextPage == 1) view.setFriends(users);
+         else view.addFriends(users);
+         canLoadMore = users.size() > 0;
+         nextPage++;
+         loading = false;
+         view.finishLoading();
+      });
+   }
 
-    ///////////////////////////////////////////////////////////////////////////
-    // User related events
-    ///////////////////////////////////////////////////////////////////////////
+   public void reload() {
+      nextPage = 1;
+      prevTotalItemCount = 0;
+      loadFriends();
+   }
 
-    public void onEvent(UserClickedEvent event) {
-        if (view.isVisibleOnScreen()) {
-            view.openUser(new UserBundle(event.getUser()));
-            eventBus.cancelEventDelivery(event);
-        }
-    }
+   @Override
+   public void handleError(SpiceException error) {
+      super.handleError(error);
+      loading = false;
+      view.finishLoading();
+   }
 
-    public void onEvent(UnfriendEvent event) {
-        view.removeFriend(event.getFriend());
-    }
+   public void onScrolled(int totalItemCount, int lastVisible) {
+      if (totalItemCount > prevTotalItemCount) {
+         prevTotalItemCount = totalItemCount;
+      }
+      if (!loading && canLoadMore && lastVisible >= totalItemCount - 1) {
+         loadFriends();
+      }
+   }
 
-    public interface View extends FeedItemAdditionalInfoPresenter.View {
+   public int getPageSize() {
+      return 100;
+   }
 
-        void startLoading();
+   ///////////////////////////////////////////////////////////////////////////
+   // User related events
+   ///////////////////////////////////////////////////////////////////////////
 
-        void finishLoading();
+   public void onEvent(UserClickedEvent event) {
+      if (view.isVisibleOnScreen()) {
+         view.openUser(new UserBundle(event.getUser()));
+         eventBus.cancelEventDelivery(event);
+      }
+   }
 
-        void setFriends(@NonNull List<User> friends);
+   public void onEvent(UnfriendEvent event) {
+      view.removeFriend(event.getFriend());
+   }
 
-        void addFriends(@NonNull List<User> friends);
+   public interface View extends FeedItemAdditionalInfoPresenter.View, BlockingProgressView {
 
-        void removeFriend(@NonNull User friend);
+      void startLoading();
 
-        void showCirclePicker(@NonNull List<Circle> circles, @NonNull Circle activeCircle);
+      void finishLoading();
 
-        void setCurrentCircle(Circle currentCircle);
+      void setFriends(@NonNull List<User> friends);
 
-        void openUser(UserBundle bundle);
+      void addFriends(@NonNull List<User> friends);
 
-    }
+      void removeFriend(@NonNull User friend);
+
+      void showCirclePicker(@NonNull List<Circle> circles, @NonNull Circle activeCircle);
+
+      void setCurrentCircle(Circle currentCircle);
+
+      void openUser(UserBundle bundle);
+   }
 }

@@ -12,27 +12,27 @@ import rx.Observable;
 
 public interface DtlMerchantsScreen extends DtlScreen {
 
-    void updateToolbarLocationTitle(@Nullable DtlLocation dtlLocation);
+   void updateToolbarLocationTitle(@Nullable DtlLocation dtlLocation);
 
-    void updateToolbarSearchCaption(@Nullable String searchCaption);
+   void updateToolbarSearchCaption(@Nullable String searchCaption);
 
-    void setItems(List<DtlMerchant> dtlMerchants);
+   void setItems(List<DtlMerchant> dtlMerchants);
 
-    void showProgress();
+   void showProgress();
 
-    void hideProgress();
+   void hideProgress();
 
-    void toggleSelection(DtlMerchant DtlMerchant);
+   void toggleSelection(DtlMerchant DtlMerchant);
 
-    void toggleDiningFilterSwitch(boolean enabled);
+   void toggleDiningFilterSwitch(boolean enabled);
 
-    boolean isToolbarCollapsed();
+   boolean isToolbarCollapsed();
 
-    void setFilterButtonState(boolean enabled);
+   void setFilterButtonState(boolean enabled);
 
-    void showEmptyMerchantView(boolean show);
+   void showEmptyMerchantView(boolean show);
 
-    DtlMerchantsPath getPath();
+   DtlMerchantsPath getPath();
 
-    Observable<Boolean> getToggleObservable();
+   Observable<Boolean> getToggleObservable();
 }

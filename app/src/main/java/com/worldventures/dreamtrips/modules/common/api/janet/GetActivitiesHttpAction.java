@@ -11,11 +11,10 @@ import io.techery.janet.http.annotations.Response;
 @HttpAction(value = "/api/activities", method = HttpAction.Method.GET)
 public class GetActivitiesHttpAction extends AuthorizedHttpAction {
 
-    @Response
-    List<ActivityModel> activityModels;
+   @Response List<ActivityModel> activityModels;
 
-    public List<ActivityModel> getActivityModels() {
-        return activityModels;
-    }
+   public List<ActivityModel> getActivityModels() {
+      return activityModels;
+   }
 
 }

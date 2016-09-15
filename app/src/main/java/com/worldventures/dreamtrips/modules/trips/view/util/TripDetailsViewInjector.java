@@ -28,72 +28,62 @@ import me.relex.circleindicator.CircleIndicator;
 
 public class TripDetailsViewInjector extends TripViewInjector {
 
-    protected MenuItem likeItem;
-    protected MenuItem addToBucketItem;
+   protected MenuItem likeItem;
+   protected MenuItem addToBucketItem;
 
-    @Optional
-    @InjectView(R.id.viewPagerGallery)
-    protected ViewPager viewPagerGallery;
-    @Optional
-    @InjectView(R.id.circleIndicator)
-    protected CircleIndicator circleIndicator;
-    @Optional
-    @InjectView(R.id.textViewDescription)
-    TextView textViewDescription;
-    @Optional
-    @InjectView(R.id.textViewScheduleDescription)
-    TextView textViewScheduleDescription;
+   @Optional @InjectView(R.id.viewPagerGallery) protected ViewPager viewPagerGallery;
+   @Optional @InjectView(R.id.circleIndicator) protected CircleIndicator circleIndicator;
+   @Optional @InjectView(R.id.textViewDescription) TextView textViewDescription;
+   @Optional @InjectView(R.id.textViewScheduleDescription) TextView textViewScheduleDescription;
 
-    public TripDetailsViewInjector(View rootView) {
-        super(rootView);
-    }
+   public TripDetailsViewInjector(View rootView) {
+      super(rootView);
+   }
 
-    public void initMenuItems(Menu menu) {
-        likeItem = menu.findItem(R.id.action_like);
-        addToBucketItem = menu.findItem(R.id.action_add_to_bucket);
-    }
+   public void initMenuItems(Menu menu) {
+      likeItem = menu.findItem(R.id.action_like);
+      addToBucketItem = menu.findItem(R.id.action_add_to_bucket);
+   }
 
-    public void initGalleryData(FragmentManager fragmentManager, List<TripImage> filteredImages) {
-        BaseStatePagerAdapter adapter = new BaseStatePagerAdapter(fragmentManager) {
-            @Override
-            public void setArgs(int position, Fragment fragment) {
-                TripImage photo = filteredImages.get(position);
-                ((TripImagePagerFragment) fragment).setArgs(new ImageBundle<>(photo));
-            }
-        };
+   public void initGalleryData(FragmentManager fragmentManager, List<TripImage> filteredImages) {
+      BaseStatePagerAdapter adapter = new BaseStatePagerAdapter(fragmentManager) {
+         @Override
+         public void setArgs(int position, Fragment fragment) {
+            TripImage photo = filteredImages.get(position);
+            ((TripImagePagerFragment) fragment).setArgs(new ImageBundle<>(photo));
+         }
+      };
 
-        Queryable.from(filteredImages).forEachR(photo ->
-                        adapter.add(new FragmentItem(Route.TRIP_IMAGES_PAGER, ""))
-        );
+      Queryable.from(filteredImages).forEachR(photo -> adapter.add(new FragmentItem(Route.TRIP_IMAGES_PAGER, "")));
 
-        if (viewPagerGallery != null) {
-            viewPagerGallery.setAdapter(adapter);
-            viewPagerGallery.setCurrentItem(0);
-            circleIndicator.setViewPager(viewPagerGallery);
-        }
-    }
+      if (viewPagerGallery != null) {
+         viewPagerGallery.setAdapter(adapter);
+         viewPagerGallery.setCurrentItem(0);
+         circleIndicator.setViewPager(viewPagerGallery);
+      }
+   }
 
-    @Override
-    public void initTripData(TripModel tripModel, User currentUser) {
-        super.initTripData(tripModel, currentUser);
-        if (textViewScheduleDescription != null) {
-            Resources resources = textViewScheduleDescription.getResources();
-            textViewScheduleDescription.setText(String.format(resources.getString(R.string.duration), tripModel.getDuration()));
-        }
-        if (likeItem != null) {
-            int iconLike = tripModel.isLiked() ? R.drawable.ic_trip_like_selected : R.drawable.ic_trip_like_normal;
-            likeItem.setIcon(iconLike);
-        }
-        if (addToBucketItem != null) {
-            int iconBucket = tripModel.isInBucketList() ? R.drawable.ic_trip_add_to_bucket_selected : R.drawable.ic_trip_add_to_bucket_normal;
-            addToBucketItem.setIcon(iconBucket);
-            addToBucketItem.setEnabled(!tripModel.isInBucketList());
-        }
-        if (textViewDescription != null) textViewDescription.setText(tripModel.getDescription());
-    }
+   @Override
+   public void initTripData(TripModel tripModel, User currentUser) {
+      super.initTripData(tripModel, currentUser);
+      if (textViewScheduleDescription != null) {
+         Resources resources = textViewScheduleDescription.getResources();
+         textViewScheduleDescription.setText(String.format(resources.getString(R.string.duration), tripModel.getDuration()));
+      }
+      if (likeItem != null) {
+         int iconLike = tripModel.isLiked() ? R.drawable.ic_trip_like_selected : R.drawable.ic_trip_like_normal;
+         likeItem.setIcon(iconLike);
+      }
+      if (addToBucketItem != null) {
+         int iconBucket = tripModel.isInBucketList() ? R.drawable.ic_trip_add_to_bucket_selected : R.drawable.ic_trip_add_to_bucket_normal;
+         addToBucketItem.setIcon(iconBucket);
+         addToBucketItem.setEnabled(!tripModel.isInBucketList());
+      }
+      if (textViewDescription != null) textViewDescription.setText(tripModel.getDescription());
+   }
 
-    public int getCurrentActivePhotoPosition() {
-        return viewPagerGallery.getCurrentItem();
-    }
+   public int getCurrentActivePhotoPosition() {
+      return viewPagerGallery.getCurrentItem();
+   }
 }
 

@@ -11,21 +11,21 @@ import rx.schedulers.Schedulers;
 
 public class ChatGroupCommandsInteractor {
 
-    private final ActionPipe<LeaveChatCommand> leaveChatPipe;
-    private final ActionPipe<KickChatCommand> kickChatPipe;
+   private final ActionPipe<LeaveChatCommand> leaveChatPipe;
+   private final ActionPipe<KickChatCommand> kickChatPipe;
 
-    @Inject
-    public ChatGroupCommandsInteractor(Janet janet) {
-        leaveChatPipe = janet.createPipe(LeaveChatCommand.class, Schedulers.io());
-        kickChatPipe = janet.createPipe(KickChatCommand.class, Schedulers.io());
-    }
+   @Inject
+   public ChatGroupCommandsInteractor(Janet janet) {
+      leaveChatPipe = janet.createPipe(LeaveChatCommand.class, Schedulers.io());
+      kickChatPipe = janet.createPipe(KickChatCommand.class, Schedulers.io());
+   }
 
-    public ActionPipe<LeaveChatCommand> getLeaveChatPipe() {
-        return leaveChatPipe;
-    }
+   public ActionPipe<LeaveChatCommand> getLeaveChatPipe() {
+      return leaveChatPipe;
+   }
 
-    public ActionPipe<KickChatCommand> getKickChatPipe() {
-        return kickChatPipe;
-    }
+   public ActionPipe<KickChatCommand> getKickChatPipe() {
+      return kickChatPipe;
+   }
 }
 

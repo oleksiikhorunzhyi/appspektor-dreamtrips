@@ -11,13 +11,11 @@ import javax.inject.Inject;
 
 public class NewrelicInitializer implements AppInitializer {
 
-    @Inject
-    protected Application application;
+   @Inject protected Application application;
 
-    @Override
-    public void initialize(Injector injector) {
-        injector.inject(this);
-        NewRelic.withApplicationToken(BuildConfig.NEWRELIC_API_KEY)
-                .start(application);
-    }
+   @Override
+   public void initialize(Injector injector) {
+      injector.inject(this);
+      NewRelic.withApplicationToken(BuildConfig.NEWRELIC_API_KEY).start(application);
+   }
 }

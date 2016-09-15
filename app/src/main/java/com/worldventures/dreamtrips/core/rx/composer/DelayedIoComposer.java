@@ -5,11 +5,12 @@ import rx.schedulers.Schedulers;
 
 public class DelayedIoComposer<T> extends DelayedComposer<T> {
 
-    public DelayedIoComposer(long timeout) {
-        super(timeout);
-    }
+   public DelayedIoComposer(long timeout) {
+      super(timeout);
+   }
 
-    @Override public Observable<T> call(Observable<T> observable) {
-        return super.call(observable).subscribeOn(Schedulers.io());
-    }
+   @Override
+   public Observable<T> call(Observable<T> observable) {
+      return super.call(observable).subscribeOn(Schedulers.io());
+   }
 }

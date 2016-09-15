@@ -7,36 +7,36 @@ import com.techery.spares.ui.fragment.loadable.LoadableFragment;
 import com.techery.spares.ui.view.cell.BaseCell;
 
 public abstract class CollectionFragment<T> extends LoadableFragment<T> {
-    protected DataListAdapter<T> dataAdapter;
+   protected DataListAdapter<T> dataAdapter;
 
-    @Override
-    public void setContentLoader(ContentLoader<T> contentLoader) {
-        super.setContentLoader(contentLoader);
+   @Override
+   public void setContentLoader(ContentLoader<T> contentLoader) {
+      super.setContentLoader(contentLoader);
 
-        if (getDataAdapter() != null) {
-            getDataAdapter().setContentLoader(getContentLoader());
-        }
+      if (getDataAdapter() != null) {
+         getDataAdapter().setContentLoader(getContentLoader());
+      }
 
-        getContentLoader().load();
-    }
+      getContentLoader().load();
+   }
 
-    protected ContentLoader<T> createLoaderWithFactory(ContentLoader.LoaderCreator factory) {
-        return new ContentLoaderController<T>(getActivity(), getLoaderManager(), factory);
-    }
+   protected ContentLoader<T> createLoaderWithFactory(ContentLoader.LoaderCreator factory) {
+      return new ContentLoaderController<T>(getActivity(), getLoaderManager(), factory);
+   }
 
-    protected void setConterLoaderFromLoaderCreator(ContentLoader.LoaderCreator creator) {
-        setContentLoader(createLoaderWithFactory(creator));
-    }
+   protected void setConterLoaderFromLoaderCreator(ContentLoader.LoaderCreator creator) {
+      setContentLoader(createLoaderWithFactory(creator));
+   }
 
-    public DataListAdapter<T> getDataAdapter() {
-        return dataAdapter;
-    }
+   public DataListAdapter<T> getDataAdapter() {
+      return dataAdapter;
+   }
 
-    public void setDataAdapter(DataListAdapter<T> dataAdapter) {
-        this.dataAdapter = dataAdapter;
+   public void setDataAdapter(DataListAdapter<T> dataAdapter) {
+      this.dataAdapter = dataAdapter;
 
-        getDataAdapter().setContentLoader(getContentLoader());
-    }
+      getDataAdapter().setContentLoader(getContentLoader());
+   }
 
-    protected abstract BaseCell.CellBuilder getCellBuilder();
+   protected abstract BaseCell.CellBuilder getCellBuilder();
 }

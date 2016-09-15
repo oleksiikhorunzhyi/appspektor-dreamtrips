@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.worldventures.dreamtrips.modules.player.view.PodcastPlayerScreenImpl xmlns:android="http://schemas.android.com/apk/res/android"
+      android:layout_width="match_parent"
+      android:layout_height="match_parent"
+      android:background="@color/black_semi_transparent_darker"
+      android:orientation="vertical"
+      >
+
+   <FrameLayout
+         android:id="@+id/player_view"
+         android:layout_width="match_parent"
+         android:layout_height="match_parent"
+         >
+
+      <ImageView
+            android:id="@+id/player_preview"
+            android:layout_width="@dimen/podcast_preview_size"
+            android:layout_height="@dimen/podcast_preview_size"
+            android:src="@drawable/podcasts_placeholder_big"
+            android:layout_gravity="center"
+            />
+
+      <ProgressBar
+            android:id="@+id/progress"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            />
+
+      <com.worldventures.dreamtrips.modules.player.view.custom.DtMediaController
+            android:id="@+id/media_control"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom"
+            />
+
+   </FrameLayout>
+
+
+</com.worldventures.dreamtrips.modules.player.view.PodcastPlayerScreenImpl>

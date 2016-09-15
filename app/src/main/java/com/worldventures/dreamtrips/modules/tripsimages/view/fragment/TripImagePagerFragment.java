@@ -11,9 +11,9 @@ import com.worldventures.dreamtrips.modules.tripsimages.presenter.TripImagePrese
 @Layout(R.layout.fragment_image_details)
 public class TripImagePagerFragment extends BaseImageFragment<IFullScreenObject> implements TripImagePresenter.View {
 
-    @Override
-    protected TripImagePresenter createPresenter(Bundle savedInstanceState) {
-        return new TripImagePresenter(getArgs());
-    }
+   @Override
+   protected TripImagePresenter createPresenter(Bundle savedInstanceState) {
+      return new TripImagePresenter(getArgs());
+   }
 
 }

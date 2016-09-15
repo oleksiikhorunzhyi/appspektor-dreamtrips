@@ -11,51 +11,50 @@ import javax.inject.Inject;
 
 public class ChatAdapter extends HeaderableCursorRecyclerViewAdapter<MessageViewHolder> {
 
-    private boolean needMarkUnreadMessages;
+   private boolean needMarkUnreadMessages;
 
-    @Inject
-    ChatViewHolderProvider viewHolderProvider;
-    ChatTimestampInflater chatTimestampInflater;
+   @Inject ChatViewHolderProvider viewHolderProvider;
+   ChatTimestampInflater chatTimestampInflater;
 
-    private ChatCellDelegate cellDelegate;
+   private ChatCellDelegate cellDelegate;
 
-    public ChatAdapter(Cursor cursor, ChatTimestampInflater chatTimestampInflater) {
-        super(cursor);
-        chatTimestampInflater.getClickedTimestampPositionsObservable()
-                .subscribe(position -> cellDelegate.onTimestampViewClicked(position));
-        this.chatTimestampInflater = chatTimestampInflater;
-        this.chatTimestampInflater.setAdapter(this);
-    }
+   public ChatAdapter(Cursor cursor, ChatTimestampInflater chatTimestampInflater) {
+      super(cursor);
+      chatTimestampInflater.getClickedTimestampPositionsObservable()
+            .subscribe(position -> cellDelegate.onTimestampViewClicked(position));
+      this.chatTimestampInflater = chatTimestampInflater;
+      this.chatTimestampInflater.setAdapter(this);
+   }
 
-    @Override
-    public MessageViewHolder onCreateElementViewHolder(ViewGroup parent, int viewType) {
-        MessageViewHolder messageViewHolder = viewHolderProvider.provideViewHolder(getCursor(), parent, viewType);
-        messageViewHolder.setCellDelegate(cellDelegate);
-        return messageViewHolder;
-    }
+   @Override
+   public MessageViewHolder onCreateElementViewHolder(ViewGroup parent, int viewType) {
+      MessageViewHolder messageViewHolder = viewHolderProvider.provideViewHolder(getCursor(), parent, viewType);
+      messageViewHolder.setCellDelegate(cellDelegate);
+      return messageViewHolder;
+   }
 
-    @Override
-    protected void onBindElementViewHolderCursor(MessageViewHolder holder, Cursor cursor) {
-        int position = cursor.getPosition();
-        holder.setSelected(chatTimestampInflater.bindTimeStampIfNeeded(holder, cursor, position, getHeaderViewCount()));
-        holder.setNeedMarkUnreadMessage(needMarkUnreadMessages);
-        holder.bindCursor(cursor);
-    }
+   @Override
+   protected void onBindElementViewHolderCursor(MessageViewHolder holder, Cursor cursor) {
+      int position = cursor.getPosition();
+      holder.setSelected(chatTimestampInflater.bindTimeStampIfNeeded(holder, cursor, position, getHeaderViewCount()));
+      holder.setNeedMarkUnreadMessage(needMarkUnreadMessages);
+      holder.bindCursor(cursor);
+   }
 
-    @Override
-    protected int getElementViewType(int position) {
-        return viewHolderProvider.provideViewType(getCursor(), position);
-    }
+   @Override
+   protected int getElementViewType(int position) {
+      return viewHolderProvider.provideViewType(getCursor(), position);
+   }
 
-    public void setCellDelegate(ChatCellDelegate cellDelegate) {
-        this.cellDelegate = cellDelegate;
-    }
+   public void setCellDelegate(ChatCellDelegate cellDelegate) {
+      this.cellDelegate = cellDelegate;
+   }
 
-    public void setNeedMarkUnreadMessages(boolean needMarkUnreadMessages) {
-        this.needMarkUnreadMessages = needMarkUnreadMessages;
-    }
+   public void setNeedMarkUnreadMessages(boolean needMarkUnreadMessages) {
+      this.needMarkUnreadMessages = needMarkUnreadMessages;
+   }
 
-    public void refreshTimestampView(int position) {
-        chatTimestampInflater.showManualTimestampForPosition(position);
-    }
+   public void refreshTimestampView(int position) {
+      chatTimestampInflater.showManualTimestampForPosition(position);
+   }
 }

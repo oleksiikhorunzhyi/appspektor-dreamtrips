@@ -1,31 +1,34 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              xmlns:fresco="http://schemas.android.com/apk/res-auto"
-              xmlns:tools="http://schemas.android.com/tools"
-              android:layout_width="match_parent"
-              android:layout_height="wrap_content"
-              android:background="@color/white"
-              android:orientation="horizontal"
-              android:id="@+id/feed_item_header"
-              tools:showIn="@layout/adapter_item_feed_trip_event">
+      xmlns:fresco="http://schemas.android.com/apk/res-auto"
+      xmlns:tools="http://schemas.android.com/tools"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:background="@color/white"
+      android:orientation="horizontal"
+      android:id="@+id/feed_item_header"
+      tools:showIn="@layout/adapter_item_feed_trip_event"
+      >
 
-    <com.worldventures.dreamtrips.modules.common.view.custom.SmartAvatarView
-        android:id="@+id/feed_header_avatar"
-        android:layout_width="48dp"
-        android:layout_height="48dp"
-        android:layout_margin="@dimen/spacing_normal"
-        fresco:placeholderImage="@drawable/ic_avatar_placeholder"
-        fresco:roundAsCircle="true"/>
+   <com.worldventures.dreamtrips.modules.common.view.custom.SmartAvatarView
+         android:id="@+id/feed_header_avatar"
+         android:layout_width="48dp"
+         android:layout_height="48dp"
+         android:layout_margin="@dimen/spacing_normal"
+         fresco:placeholderImage="@drawable/ic_avatar_placeholder"
+         fresco:roundAsCircle="true"
+         />
 
-    <LinearLayout
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/spacing_normal"
-        android:layout_weight="1"
-        android:gravity="top"
-        android:orientation="vertical">
+   <LinearLayout
+         android:layout_width="0dp"
+         android:layout_height="wrap_content"
+         android:layout_marginTop="@dimen/spacing_normal"
+         android:layout_weight="1"
+         android:gravity="top"
+         android:orientation="vertical"
+         >
 
-        <TextView
+      <TextView
             android:id="@+id/feed_header_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -37,7 +40,7 @@
             tools:text="John Doe, Adobe booked a DreamTrip"
             />
 
-        <TextView
+      <TextView
             android:id="@+id/feed_header_location"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -48,9 +51,10 @@
             android:gravity="center_vertical"
             android:textSize="@dimen/abc_text_size_small_material"
             android:visibility="gone"
-            tools:text="Katerini, Greece"/>
+            tools:text="Katerini, Greece"
+            />
 
-        <TextView
+      <TextView
             android:id="@+id/feed_header_date"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -61,6 +65,7 @@
             android:drawableStart="@drawable/ic_feed_calendar_small"
             android:gravity="center_vertical"
             android:textSize="@dimen/abc_text_size_small_material"
-            tools:text="Jan 27, 2015   9:00AM"/>
-    </LinearLayout>
+            tools:text="Jan 27, 2015   9:00AM"
+            />
+   </LinearLayout>
 </LinearLayout>

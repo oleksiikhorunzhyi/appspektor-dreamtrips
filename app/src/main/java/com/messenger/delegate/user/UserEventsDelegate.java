@@ -19,76 +19,67 @@ import timber.log.Timber;
 
 public class UserEventsDelegate {
 
-    private final UsersDAO usersDAO;
-    private final UsersDelegate usersDelegate;
-    private final TypingManager typingManager;
+   private final UsersDAO usersDAO;
+   private final UsersDelegate usersDelegate;
+   private final TypingManager typingManager;
 
-    @Inject
-    public UserEventsDelegate(UsersDAO usersDAO, UsersDelegate usersDelegate, TypingManager typingManager) {
-        this.usersDAO = usersDAO;
-        this.usersDelegate = usersDelegate;
-        this.typingManager = typingManager;
-    }
+   @Inject
+   public UserEventsDelegate(UsersDAO usersDAO, UsersDelegate usersDelegate, TypingManager typingManager) {
+      this.usersDAO = usersDAO;
+      this.usersDelegate = usersDelegate;
+      this.typingManager = typingManager;
+   }
 
-    ///////////////////////////////////////////////////////////////////////////
-    // Friends related
-    ///////////////////////////////////////////////////////////////////////////
+   ///////////////////////////////////////////////////////////////////////////
+   // Friends related
+   ///////////////////////////////////////////////////////////////////////////
 
-    public void friendsAdded(Collection<String> userIds) {
-        Queryable.from(userIds).forEachR(this::friendAdded);
-    }
+   public void friendsAdded(Collection<String> userIds) {
+      Queryable.from(userIds).forEachR(this::friendAdded);
+   }
 
-    private void friendAdded(String userId) {
-        getUser(userId)
-                .flatMap(user -> {
-                    if (user == null) {
-                        MessengerUser messengerUser = new MessengerUser(userId);
-                        messengerUser.setType(UserType.FRIEND);
-                        return usersDelegate.loadUsers(Collections.singletonList(messengerUser));
-                    } else {
-                        user.setFriend(true);
-                        return Observable.just(Collections.singletonList(user));
-                    }
-                })
-                .subscribe(usersDAO::save, e -> Timber.e(e, "Failed to add friend"));
-    }
+   private void friendAdded(String userId) {
+      getUser(userId).flatMap(user -> {
+         if (user == null) {
+            MessengerUser messengerUser = new MessengerUser(userId);
+            messengerUser.setType(UserType.FRIEND);
+            return usersDelegate.loadUsers(Collections.singletonList(messengerUser));
+         } else {
+            user.setFriend(true);
+            return Observable.just(Collections.singletonList(user));
+         }
+      }).subscribe(usersDAO::save, e -> Timber.e(e, "Failed to add friend"));
+   }
 
-    public void friendsRemoved(Collection<String> userIds) {
-        Queryable.from(userIds).forEachR(this::friendRemoved);
-    }
+   public void friendsRemoved(Collection<String> userIds) {
+      Queryable.from(userIds).forEachR(this::friendRemoved);
+   }
 
-    private void friendRemoved(String userId) {
-        getUser(userId)
-                .compose(new NonNullFilter<>())
-                .subscribe(user -> {
-                    user.setFriend(false);
-                    usersDAO.save(user);
-                });
-    }
+   private void friendRemoved(String userId) {
+      getUser(userId).compose(new NonNullFilter<>()).subscribe(user -> {
+         user.setFriend(false);
+         usersDAO.save(user);
+      });
+   }
 
-    ///////////////////////////////////////////////////////////////////////////
-    // Presence
-    ///////////////////////////////////////////////////////////////////////////
+   ///////////////////////////////////////////////////////////////////////////
+   // Presence
+   ///////////////////////////////////////////////////////////////////////////
 
-    public void presenceChanged(String userId, boolean isOnline) {
-        if (!isOnline) typingManager.userOffline(userId);
-        getUser(userId)
-                .compose(new NonNullFilter<>())
-                .doOnNext(user -> {
-                    user.setOnline(isOnline);
-                    usersDAO.save(user);
-                })
-                .subscribe();
-    }
+   public void presenceChanged(String userId, boolean isOnline) {
+      if (!isOnline) typingManager.userOffline(userId);
+      getUser(userId).compose(new NonNullFilter<>()).doOnNext(user -> {
+         user.setOnline(isOnline);
+         usersDAO.save(user);
+      }).subscribe();
+   }
 
-    ///////////////////////////////////////////////////////////////////////////
-    // Helper methods
-    ///////////////////////////////////////////////////////////////////////////
+   ///////////////////////////////////////////////////////////////////////////
+   // Helper methods
+   ///////////////////////////////////////////////////////////////////////////
 
-    private Observable<DataUser> getUser(String userId) {
-        return usersDAO.getUserById(userId)
-                .take(1)
-                .subscribeOn(Schedulers.io());
-    }
+   private Observable<DataUser> getUser(String userId) {
+      return usersDAO.getUserById(userId).take(1).subscribeOn(Schedulers.io());
+   }
 
 }

@@ -8,22 +8,22 @@ import java.util.List;
 
 public class DeletePhotoTagsCommand extends Command<Void> {
 
-    private String photoId;
-    private List<Integer> userIds;
+   private String photoId;
+   private List<Integer> userIds;
 
-    public DeletePhotoTagsCommand(String photoId, List<Integer> userIds) {
-        super(Void.class);
-        this.photoId = photoId;
-        this.userIds = userIds;
-    }
+   public DeletePhotoTagsCommand(String photoId, List<Integer> userIds) {
+      super(Void.class);
+      this.photoId = photoId;
+      this.userIds = userIds;
+   }
 
-    @Override
-    public Void loadDataFromNetwork() throws Exception {
-        return getService().deletePhotoTags(photoId, new DeletePhotoTag(userIds));
-    }
+   @Override
+   public Void loadDataFromNetwork() throws Exception {
+      return getService().deletePhotoTags(photoId, new DeletePhotoTag(userIds));
+   }
 
-    @Override
-    public int getErrorMessage() {
-        return R.string.error_fail_to_delete_tag;
-    }
+   @Override
+   public int getErrorMessage() {
+      return R.string.error_fail_to_delete_tag;
+   }
 }

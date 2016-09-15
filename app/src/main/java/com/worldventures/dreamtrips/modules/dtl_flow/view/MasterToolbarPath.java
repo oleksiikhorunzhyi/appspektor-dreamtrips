@@ -4,5 +4,5 @@ import flow.path.Path;
 
 public interface MasterToolbarPath {
 
-    Path getMasterToolbarPath();
+   Path getMasterToolbarPath();
 }

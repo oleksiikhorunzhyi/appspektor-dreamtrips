@@ -1,21 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              xmlns:app="http://schemas.android.com/apk/res-auto"
-              android:layout_width="match_parent"
-              android:layout_height="wrap_content"
-              android:gravity="center_vertical"
-              android:orientation="horizontal">
+      xmlns:app="http://schemas.android.com/apk/res-auto"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:gravity="center_vertical"
+      android:orientation="horizontal"
+      >
 
-    <include layout="@layout/include_user_info"/>
+   <include layout="@layout/include_user_info" />
 
-    <com.dd.ShadowLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_margin="@dimen/spacing_tiny"
-        app:sl_cornerRadius="2dp"
-        app:sl_shadowColor="@color/black_semi_transparent">
+   <com.dd.ShadowLayout
+         android:layout_width="wrap_content"
+         android:layout_height="wrap_content"
+         android:layout_margin="@dimen/spacing_tiny"
+         app:sl_cornerRadius="2dp"
+         app:sl_shadowColor="@color/black_semi_transparent"
+         >
 
-        <TextView
+      <TextView
             android:id="@+id/tv_actions"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -23,8 +25,9 @@
             android:padding="@dimen/spacing_small"
             android:text="@string/social_user_wrapper_cell_actions"
             android:textAllCaps="true"
-            android:textColor="@android:color/black"/>
+            android:textColor="@android:color/black"
+            />
 
-    </com.dd.ShadowLayout>
+   </com.dd.ShadowLayout>
 
 </LinearLayout>

@@ -4,13 +4,13 @@ import com.worldventures.dreamtrips.modules.common.model.User;
 
 public class RemoveUserEvent {
 
-    private User user;
+   private User user;
 
-    public RemoveUserEvent(User user) {
-        this.user = user;
-    }
+   public RemoveUserEvent(User user) {
+      this.user = user;
+   }
 
-    public User getUser() {
-        return user;
-    }
+   public User getUser() {
+      return user;
+   }
 }

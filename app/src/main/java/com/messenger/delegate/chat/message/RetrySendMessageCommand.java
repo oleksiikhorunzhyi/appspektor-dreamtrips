@@ -14,27 +14,26 @@ import io.techery.janet.command.annotations.CommandAction;
 @CommandAction
 public class RetrySendMessageCommand extends BaseChatCommand<Message> {
 
-    @Inject MessageBodyCreator messageBodyCreator;
-    @Inject MessageDAO messageDAO;
+   @Inject MessageBodyCreator messageBodyCreator;
+   @Inject MessageDAO messageDAO;
 
-    private DataMessage failedMessage;
+   private DataMessage failedMessage;
 
-    public RetrySendMessageCommand(DataMessage failedMessage) {
-        super(failedMessage.getConversationId());
-        this.failedMessage = failedMessage;
-    }
+   public RetrySendMessageCommand(DataMessage failedMessage) {
+      super(failedMessage.getConversationId());
+      this.failedMessage = failedMessage;
+   }
 
-    @Override
-    protected void run(CommandCallback<Message> callback) throws Throwable {
-        Message message = failedMessage.toChatMessage();
-        message.setMessageBody(messageBodyCreator.provideForText(failedMessage.getText()));
-        getChat().flatMap(chat -> chat.send(message))
-                .subscribe(callback::onSuccess, throwable -> {
-                    long time =  ChatDateUtils.getErrorMessageDate();
-                    messageDAO.updateStatus(message.getId(), message.getStatus(), time);
-                    conversationsDAO.updateDate(message.getConversationId(), time);
+   @Override
+   protected void run(CommandCallback<Message> callback) throws Throwable {
+      Message message = failedMessage.toChatMessage();
+      message.setMessageBody(messageBodyCreator.provideForText(failedMessage.getText()));
+      getChat().flatMap(chat -> chat.send(message)).subscribe(callback::onSuccess, throwable -> {
+         long time = ChatDateUtils.getErrorMessageDate();
+         messageDAO.updateStatus(message.getId(), message.getStatus(), time);
+         conversationsDAO.updateDate(message.getConversationId(), time);
 
-                    callback.onFail(throwable);
-                });
-    }
+         callback.onFail(throwable);
+      });
+   }
 }

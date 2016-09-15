@@ -1,20 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:layout_weight="4"
-    android:background="@android:color/white"
-    android:orientation="vertical"
-    android:visibility="visible">
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+      android:layout_width="match_parent"
+      android:layout_height="match_parent"
+      android:layout_weight="4"
+      android:background="@android:color/white"
+      android:orientation="vertical"
+      android:visibility="visible"
+      >
 
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/abc_action_bar_default_height_material"
-        android:focusable="true"
-        android:focusableInTouchMode="true">
+   <RelativeLayout
+         android:layout_width="match_parent"
+         android:layout_height="@dimen/abc_action_bar_default_height_material"
+         android:focusable="true"
+         android:focusableInTouchMode="true"
+         >
 
-        <ImageView
+      <ImageView
             android:id="@+id/iv_filter"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -23,9 +24,10 @@
             android:layout_centerVertical="true"
             android:nestedScrollingEnabled="false"
             android:padding="16dp"
-            android:src="@drawable/ic_success_story_filters_normal"/>
+            android:src="@drawable/ic_success_story_filters_normal"
+            />
 
-        <com.worldventures.dreamtrips.modules.common.view.custom.DelaySearchView
+      <com.worldventures.dreamtrips.modules.common.view.custom.DelaySearchView
             android:id="@+id/search"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
@@ -33,66 +35,75 @@
             android:layout_toLeftOf="@+id/iv_filter"
             android:layout_toStartOf="@+id/iv_filter"
             android:background="@android:color/white"
-            android:src="@drawable/ic_success_story_search"/>
-    </RelativeLayout>
+            android:src="@drawable/ic_success_story_search"
+            />
+   </RelativeLayout>
 
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:background="#ffc6c6c6"/>
+   <View
+         android:layout_width="match_parent"
+         android:layout_height="1dp"
+         android:background="#ffc6c6c6"
+         />
 
-    <FrameLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
+   <FrameLayout
+         android:layout_width="match_parent"
+         android:layout_height="match_parent"
+         >
 
-        <com.worldventures.dreamtrips.modules.profile.view.widgets.SwipeRefreshLayoutWithText
+      <com.worldventures.dreamtrips.modules.profile.view.widgets.SwipeRefreshLayoutWithText
             android:id="@+id/swipe_container"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:visibility="visible">
+            android:visibility="visible"
+            >
 
-            <FrameLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent">
+         <FrameLayout
+               android:layout_width="match_parent"
+               android:layout_height="match_parent"
+               >
 
-                <com.worldventures.dreamtrips.modules.common.view.custom.EmptyRecyclerView
-                    android:id="@+id/recyclerViewFriends"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"/>
-            </FrameLayout>
-        </com.worldventures.dreamtrips.modules.profile.view.widgets.SwipeRefreshLayoutWithText>
+            <com.worldventures.dreamtrips.modules.common.view.custom.EmptyRecyclerView
+                  android:id="@+id/recyclerViewFriends"
+                  android:layout_width="match_parent"
+                  android:layout_height="match_parent"
+                  />
+         </FrameLayout>
+      </com.worldventures.dreamtrips.modules.profile.view.widgets.SwipeRefreshLayoutWithText>
 
-        <RelativeLayout
+      <RelativeLayout
             android:id="@+id/empty"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="vertical"
-            android:visibility="gone">
+            android:visibility="gone"
+            >
 
-            <TextView
-                android:id="@+id/caption"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_alignParentTop="true"
-                android:alpha="0.54"
-                android:gravity="center"
-                android:padding="25dp"
-                android:text="@string/filter_no_results"
-                android:textColor="@android:color/black"
-                android:textSize="18dp"/>
+         <TextView
+               android:id="@+id/caption"
+               android:layout_width="match_parent"
+               android:layout_height="wrap_content"
+               android:layout_alignParentTop="true"
+               android:alpha="0.54"
+               android:gravity="center"
+               android:padding="25dp"
+               android:text="@string/filter_no_results"
+               android:textColor="@android:color/black"
+               android:textSize="18dp"
+               />
 
-            <TextView
-                android:id="@+id/global"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_below="@+id/caption"
-                android:layout_centerHorizontal="true"
-                android:layout_centerVertical="true"
-                android:layout_gravity="center"
-                android:padding="25dp"
-                android:text="@string/friend_global_search"
-                android:textColor="#3D76A1"
-                android:textSize="22dp"/>
-        </RelativeLayout>
-    </FrameLayout>
+         <TextView
+               android:id="@+id/global"
+               android:layout_width="wrap_content"
+               android:layout_height="wrap_content"
+               android:layout_below="@+id/caption"
+               android:layout_centerHorizontal="true"
+               android:layout_centerVertical="true"
+               android:layout_gravity="center"
+               android:padding="25dp"
+               android:text="@string/friend_global_search"
+               android:textColor="#3D76A1"
+               android:textSize="22dp"
+               />
+      </RelativeLayout>
+   </FrameLayout>
 </LinearLayout>

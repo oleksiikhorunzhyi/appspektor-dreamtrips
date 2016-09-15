@@ -11,34 +11,33 @@ import dagger.Module;
 import dagger.Provides;
 
 @Module(
-        complete = false,
-        library = true
-)
+      complete = false,
+      library = true)
 public class BaseFragmentModule {
 
-    private final Injector injector;
-    private final Fragment fragment;
-    private final Presenter.TabletAnalytic tableAnalytic;
+   private final Injector injector;
+   private final Fragment fragment;
+   private final Presenter.TabletAnalytic tableAnalytic;
 
-    public BaseFragmentModule(Injector injector, Fragment fragment, Presenter.TabletAnalytic tableAnalytic) {
-        this.injector = injector;
-        this.fragment = fragment;
-        this.tableAnalytic = tableAnalytic;
-    }
+   public BaseFragmentModule(Injector injector, Fragment fragment, Presenter.TabletAnalytic tableAnalytic) {
+      this.injector = injector;
+      this.fragment = fragment;
+      this.tableAnalytic = tableAnalytic;
+   }
 
-    @ForFragment
-    @Provides
-    Injector activityFragmentInjector() {
-        return injector;
-    }
+   @ForFragment
+   @Provides
+   Injector activityFragmentInjector() {
+      return injector;
+   }
 
-    @Provides
-    FragmentManager childManager() {
-        return fragment.getChildFragmentManager();
-    }
+   @Provides
+   FragmentManager childManager() {
+      return fragment.getChildFragmentManager();
+   }
 
-    @Provides
-    Presenter.TabletAnalytic tabletAnalytic() {
-        return tableAnalytic;
-    }
+   @Provides
+   Presenter.TabletAnalytic tabletAnalytic() {
+      return tableAnalytic;
+   }
 }

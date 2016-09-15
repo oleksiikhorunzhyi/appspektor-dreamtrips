@@ -13,34 +13,31 @@ import io.techery.janet.http.annotations.Response;
 @HttpAction(value = "/api/dtl/v2/merchants/{id}/transactions", method = HttpAction.Method.POST)
 public class DtlEarnPointsAction extends AuthorizedHttpAction {
 
-    @Path("id")
-    String merchantId;
+   @Path("id") String merchantId;
 
-    @Body
-    DtlTransaction.Request request;
+   @Body DtlTransaction.Request request;
 
-    @Response
-    DtlTransactionResult result;
+   @Response DtlTransactionResult result;
 
-    private final DtlTransaction transaction;
-    private final DtlMerchant merchant;
+   private final DtlTransaction transaction;
+   private final DtlMerchant merchant;
 
-    public DtlEarnPointsAction(DtlMerchant merchant, DtlTransaction transaction) {
-        this.merchant = merchant;
-        this.transaction = transaction;
-        this.merchantId = merchant.getId();
-        this.request = transaction.asTransactionRequest(merchant.getDefaultCurrency().getCode());
-    }
+   public DtlEarnPointsAction(DtlMerchant merchant, DtlTransaction transaction) {
+      this.merchant = merchant;
+      this.transaction = transaction;
+      this.merchantId = merchant.getId();
+      this.request = transaction.asTransactionRequest(merchant.getDefaultCurrency().getCode());
+   }
 
-    public DtlTransaction getTransaction() {
-        return transaction;
-    }
+   public DtlTransaction getTransaction() {
+      return transaction;
+   }
 
-    public DtlMerchant getMerchant() {
-        return merchant;
-    }
+   public DtlMerchant getMerchant() {
+      return merchant;
+   }
 
-    public DtlTransactionResult getResult() {
-        return result;
-    }
+   public DtlTransactionResult getResult() {
+      return result;
+   }
 }

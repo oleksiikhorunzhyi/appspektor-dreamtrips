@@ -8,17 +8,17 @@ import java.util.ArrayList;
 
 public class GetVideoLocales extends Query<ArrayList<VideoLocale>> {
 
-    public GetVideoLocales() {
-        super((Class<ArrayList<VideoLocale>>) new ArrayList<VideoLocale>().getClass());
-    }
+   public GetVideoLocales() {
+      super((Class<ArrayList<VideoLocale>>) new ArrayList<VideoLocale>().getClass());
+   }
 
-    @Override
-    public ArrayList<VideoLocale> loadDataFromNetwork() throws Exception {
-        return getService().getTrainingVideosLocales();
-    }
+   @Override
+   public ArrayList<VideoLocale> loadDataFromNetwork() throws Exception {
+      return getService().getTrainingVideosLocales();
+   }
 
-    @Override
-    public int getErrorMessage() {
-        return R.string.error_fail_to_locales;
-    }
+   @Override
+   public int getErrorMessage() {
+      return R.string.error_fail_to_locales;
+   }
 }

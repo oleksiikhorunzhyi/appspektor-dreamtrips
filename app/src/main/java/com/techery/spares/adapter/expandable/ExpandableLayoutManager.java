@@ -6,16 +6,16 @@ import android.support.v7.widget.RecyclerView;
 
 public class ExpandableLayoutManager extends LinearLayoutManager {
 
-    public ExpandableLayoutManager(Context context) {
-        super(context);
-    }
+   public ExpandableLayoutManager(Context context) {
+      super(context);
+   }
 
-    @Override
-    public void onLayoutChildren(RecyclerView.Recycler recycler, RecyclerView.State state) {
-        try {
-            super.onLayoutChildren(recycler, state);
-        } catch (IndexOutOfBoundsException e) {
-            // ignore
-        }
-    }
+   @Override
+   public void onLayoutChildren(RecyclerView.Recycler recycler, RecyclerView.State state) {
+      try {
+         super.onLayoutChildren(recycler, state);
+      } catch (IndexOutOfBoundsException e) {
+         // ignore
+      }
+   }
 }

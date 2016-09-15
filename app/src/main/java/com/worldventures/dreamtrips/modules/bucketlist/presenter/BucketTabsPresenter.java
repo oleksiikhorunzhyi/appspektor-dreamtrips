@@ -7,122 +7,123 @@ import com.worldventures.dreamtrips.modules.bucketlist.api.GetCategoryQuery;
 import com.worldventures.dreamtrips.modules.bucketlist.event.BucketAnalyticEvent;
 import com.worldventures.dreamtrips.modules.bucketlist.event.BucketItemAnalyticEvent;
 import com.worldventures.dreamtrips.modules.bucketlist.event.BucketItemPhotoAnalyticEvent;
-import com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem;
 import com.worldventures.dreamtrips.modules.bucketlist.service.BucketInteractor;
 import com.worldventures.dreamtrips.modules.bucketlist.service.command.BucketListCommand;
+import com.worldventures.dreamtrips.modules.bucketlist.service.command.RecentlyAddedBucketsFromPopularCommand;
 import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import javax.inject.Inject;
 
+import io.techery.janet.ActionPipe;
+import io.techery.janet.Command;
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
 
 import static com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem.BucketType;
+import static com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem.BucketType.ACTIVITY;
+import static com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem.BucketType.DINING;
+import static com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem.BucketType.LOCATION;
 
 public class BucketTabsPresenter extends Presenter<BucketTabsPresenter.View> {
-    @Inject
-    SnappyRepository db;
+   @Inject SnappyRepository db;
 
-    @Inject
-    BucketInteractor bucketInteractor;
+   @Inject BucketInteractor bucketInteractor;
 
-    @Override
-    public void takeView(View view) {
-        super.takeView(view);
-        setTabs();
-        loadCategories();
+   @Override
+   public void takeView(View view) {
+      super.takeView(view);
+      setTabs();
+      loadCategories();
 
-        view.bind(bucketInteractor.bucketListActionPipe().createObservableResult(BucketListCommand.fetch(getUser().getId(),false))
-                .concatMap(bucketListAction -> bucketListAction.isFromCache() ?
-                        bucketInteractor.bucketListActionPipe().createObservable(BucketListCommand.fetch(getUser().getId(), true))
-                        : Observable.just(bucketListAction))
-                .observeOn(AndroidSchedulers.mainThread()))
-                .subscribe(bucketListAction -> {
-                }, this::handleError);
-    }
+      view.bind(bucketInteractor.bucketListActionPipe()
+            .createObservableResult(BucketListCommand.fetch(getUser().getId(), false))
+            .concatMap(bucketListAction -> bucketListAction.isFromCache() ? bucketInteractor.bucketListActionPipe()
+                  .createObservable(BucketListCommand.fetch(getUser().getId(), true)) : Observable.just(bucketListAction))
+            .observeOn(AndroidSchedulers.mainThread())).subscribe(bucketListAction -> {
+      }, this::handleError);
+   }
 
-    @Override
-    public void dropView() {
-        super.dropView();
-        db.saveOpenBucketTabType(null);
-    }
+   @Override
+   public void onResume() {
+      super.onResume();
 
-    protected User getUser() {
-        return getAccount();
-    }
+      view.bind(recentTabCountObservable().map(Command::getResult)).subscribe(bucketTypeListPair -> {
+         view.setRecentBucketItemCountByType(bucketTypeListPair.first, bucketTypeListPair.second.size());
+      });
+   }
 
-    @Override
-    public void onResume() {
-        setRecentBucketItemsCounts();
-    }
+   @Override
+   public void dropView() {
+      super.dropView();
+      db.saveOpenBucketTabType(null);
+   }
 
-    private void loadCategories() {
-        doRequest(new GetCategoryQuery(),
-                categoryItems -> db.putList(SnappyRepository.CATEGORIES, categoryItems));
-    }
+   protected User getUser() {
+      return getAccount();
+   }
 
-    public void setTabs() {
-        view.setTypes(Arrays.asList(BucketType.LOCATION, BucketType.ACTIVITY, BucketType.DINING));
-        view.updateSelection();
-    }
+   private void loadCategories() {
+      doRequest(new GetCategoryQuery(), categoryItems -> db.putList(SnappyRepository.CATEGORIES, categoryItems));
+   }
 
-    public void onTabChange(BucketType type) {
-        db.saveRecentlyAddedBucketItems(type.name(), 0);
-        db.saveOpenBucketTabType(type.name());
-        view.resetRecentlyAddedBucketItem(type);
-    }
+   public void setTabs() {
+      view.setTypes(Arrays.asList(LOCATION, ACTIVITY, DINING));
+      view.updateSelection();
+   }
 
-    private void setRecentBucketItemsCounts() {
-        Map<BucketItem.BucketType, Integer> recentBucketItems = new HashMap<>();
-        for (BucketType type : BucketType.values()) {
-            recentBucketItems.put(type, db.getRecentlyAddedBucketItems(type.name()));
-        }
-        view.setRecentBucketItemsCount(recentBucketItems);
-    }
+   public void onTabChange(BucketType type) {
+      bucketInteractor.recentlyAddedBucketsFromPopularCommandPipe()
+            .send(RecentlyAddedBucketsFromPopularCommand.clear(type));
 
-    public void onEvent(BucketAnalyticEvent event) {
-        TrackingHelper.actionBucket(event.getActionAttribute(), getTabAttributeAnalytic());
-    }
+      db.saveOpenBucketTabType(type.name());
+   }
 
-    public void onEvent(BucketItemAnalyticEvent event) {
-        TrackingHelper.actionBucketItem(event.getActionAttribute(), event.getBucketItemId());
-    }
+   public void onEvent(BucketAnalyticEvent event) {
+      TrackingHelper.actionBucket(event.getActionAttribute(), getTabAttributeAnalytic());
+   }
 
-    public void onEvent(BucketItemPhotoAnalyticEvent event) {
-        TrackingHelper.actionBucketItemPhoto(event.getActionAttribute(), event.getBucketItemId());
-    }
+   public void onEvent(BucketItemAnalyticEvent event) {
+      TrackingHelper.actionBucketItem(event.getActionAttribute(), event.getBucketItemId());
+   }
 
-    private String getTabAttributeAnalytic() {
-        String tabAttribute = "";
-        switch (view.getCurrentTabPosition()) {
-            case 0:
-                tabAttribute = TrackingHelper.ATTRIBUTE_LOCATIONS;
-                break;
-            case 1:
-                tabAttribute = TrackingHelper.ATTRIBUTE_ACTIVITIES;
-                break;
-            case 2:
-                tabAttribute = TrackingHelper.ATTRIBUTE_DINING;
-                break;
-        }
-        return tabAttribute;
-    }
+   public void onEvent(BucketItemPhotoAnalyticEvent event) {
+      TrackingHelper.actionBucketItemPhoto(event.getActionAttribute(), event.getBucketItemId());
+   }
 
-    public interface View extends RxView {
-        void setTypes(List<BucketType> type);
+   private Observable<RecentlyAddedBucketsFromPopularCommand> recentTabCountObservable() {
+      ActionPipe<RecentlyAddedBucketsFromPopularCommand> recentPipe = bucketInteractor.recentlyAddedBucketsFromPopularCommandPipe();
+      return Observable.merge(recentPipe.createObservableResult(RecentlyAddedBucketsFromPopularCommand.get(LOCATION)), recentPipe
+            .createObservableResult(RecentlyAddedBucketsFromPopularCommand.get(ACTIVITY)), recentPipe.createObservableResult(RecentlyAddedBucketsFromPopularCommand
+            .get(DINING)));
+   }
 
-        void setRecentBucketItemsCount(Map<BucketType, Integer> items);
+   private String getTabAttributeAnalytic() {
+      String tabAttribute = "";
+      switch (view.getCurrentTabPosition()) {
+         case 0:
+            tabAttribute = TrackingHelper.ATTRIBUTE_LOCATIONS;
+            break;
+         case 1:
+            tabAttribute = TrackingHelper.ATTRIBUTE_ACTIVITIES;
+            break;
+         case 2:
+            tabAttribute = TrackingHelper.ATTRIBUTE_DINING;
+            break;
+      }
+      return tabAttribute;
+   }
 
-        void resetRecentlyAddedBucketItem(BucketType type);
+   public interface View extends RxView {
+      void setTypes(List<BucketType> type);
 
-        void updateSelection();
+      void setRecentBucketItemCountByType(BucketType type, int count);
 
-        int getCurrentTabPosition();
-    }
+      void updateSelection();
+
+      int getCurrentTabPosition();
+   }
 }

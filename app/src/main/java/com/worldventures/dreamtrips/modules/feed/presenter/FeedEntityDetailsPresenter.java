@@ -14,36 +14,35 @@ import javax.inject.Inject;
 
 public class FeedEntityDetailsPresenter extends FeedDetailsPresenter<FeedEntityDetailsPresenter.View> {
 
-    @Inject
-    FeedEntityContentFragmentFactory fragmentFactory;
+   @Inject FeedEntityContentFragmentFactory fragmentFactory;
 
-    private boolean isSlave;
+   private boolean isSlave;
 
-    public FeedEntityDetailsPresenter(FeedItem feedItem, boolean isSlave) {
-        super(feedItem);
-        this.isSlave = isSlave;
-    }
+   public FeedEntityDetailsPresenter(FeedItem feedItem, boolean isSlave) {
+      super(feedItem);
+      this.isSlave = isSlave;
+   }
 
-    public void onEvent(FeedEntityShowEvent event) {
-        if (!this.feedItem.equals(event.feedItem)) return;
-        //
-        Pair<Route, Parcelable> entityData = fragmentFactory.create(event.feedItem);
-        /**
-         * for bucket list tablet landscape orientation (slave mode)
-         */
-        if (feedItem.getType() == FeedEntityHolder.Type.BUCKET_LIST_ITEM) {
-            ((BucketBundle) entityData.second).setSlave(isSlave);
-        }
-        view.showDetails(entityData.first, entityData.second);
-    }
+   public void onEvent(FeedEntityShowEvent event) {
+      if (!this.feedItem.equals(event.feedItem)) return;
+      //
+      Pair<Route, Parcelable> entityData = fragmentFactory.create(event.feedItem);
+      /**
+       * for bucket list tablet landscape orientation (slave mode)
+       */
+      if (feedItem.getType() == FeedEntityHolder.Type.BUCKET_LIST_ITEM) {
+         ((BucketBundle) entityData.second).setSlave(isSlave);
+      }
+      view.showDetails(entityData.first, entityData.second);
+   }
 
-    @Override
-    protected void back() {
-        if (!isSlave) view.back();
-    }
+   @Override
+   protected void back() {
+      if (!isSlave) view.back();
+   }
 
-    public interface View extends FeedDetailsPresenter.View {
+   public interface View extends FeedDetailsPresenter.View {
 
-        void showDetails(Route route, Parcelable extra);
-    }
+      void showDetails(Route route, Parcelable extra);
+   }
 }

@@ -5,5 +5,5 @@ import com.worldventures.dreamtrips.modules.settings.model.SelectSetting;
 
 public interface SettingsSelectCellDelegate extends CellDelegate<SelectSetting> {
 
-    void onValueSelected();
+   void onValueSelected();
 }

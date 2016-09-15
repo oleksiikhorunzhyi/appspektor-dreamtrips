@@ -22,52 +22,47 @@ import rx.Observable;
 
 @CommandAction
 public class ClearChatCommand extends Command<Void> implements InjectableAction {
-    private final ClearChatEvent clearChatEvent;
+   private final ClearChatEvent clearChatEvent;
 
-    @Inject ConversationsDAO conversationsDAO;
-    @Inject MessageDAO messageDAO;
-    @Inject PhotoDAO photoDAO;
+   @Inject ConversationsDAO conversationsDAO;
+   @Inject MessageDAO messageDAO;
+   @Inject PhotoDAO photoDAO;
 
-    public ClearChatCommand(ClearChatEvent clearChatEvent) {
-        this.clearChatEvent = clearChatEvent;
-    }
+   public ClearChatCommand(ClearChatEvent clearChatEvent) {
+      this.clearChatEvent = clearChatEvent;
+   }
 
-    @Override
-    protected void run(CommandCallback<Void> callback) throws Throwable {
-        clearCache(clearChatEvent.getConversationId())
-                .doOnNext(aVoid -> setClearDate())
-                .subscribe(callback::onSuccess, callback::onFail);
-    }
+   @Override
+   protected void run(CommandCallback<Void> callback) throws Throwable {
+      clearCache(clearChatEvent.getConversationId()).doOnNext(aVoid -> setClearDate())
+            .subscribe(callback::onSuccess, callback::onFail);
+   }
 
-    private void setClearDate() {
-        conversationsDAO.setClearDate(clearChatEvent.getConversationId(), clearChatEvent.clearTime());
-    }
+   private void setClearDate() {
+      conversationsDAO.setClearDate(clearChatEvent.getConversationId(), clearChatEvent.clearTime());
+   }
 
-    private Observable<Void> clearCache(String conversationId) {
-        return clearImageCache(conversationId)
-                .doOnNext(aVoid -> {
-                    messageDAO.deleteMessagesByConversation(conversationId);
-                    conversationsDAO.setUnreadCount(conversationId, 0);
-                });
-    }
+   private Observable<Void> clearCache(String conversationId) {
+      return clearImageCache(conversationId).doOnNext(aVoid -> {
+         messageDAO.deleteMessagesByConversation(conversationId);
+         conversationsDAO.setUnreadCount(conversationId, 0);
+      });
+   }
 
-    private Observable<Void> clearImageCache(String conversationId) {
-        return photoDAO.getPhotoAttachments(conversationId)
-                .take(1)
-                .doOnNext(this::clearFrescoCache)
-                .map(photos -> null);
-    }
+   private Observable<Void> clearImageCache(String conversationId) {
+      return photoDAO.getPhotoAttachments(conversationId).take(1).doOnNext(this::clearFrescoCache).map(photos -> null);
+   }
 
-    private void clearFrescoCache(List<DataPhotoAttachment> photoAttachments) {
-        ImagePipeline imagePipeline = Fresco.getImagePipeline();
-        for (DataPhotoAttachment photo : photoAttachments) {
-            String url = photo.getUrl();
-            if (TextUtils.isEmpty(url)) continue;
-            imagePipeline.evictFromCache(Uri.parse(url));
-        }
-    }
+   private void clearFrescoCache(List<DataPhotoAttachment> photoAttachments) {
+      ImagePipeline imagePipeline = Fresco.getImagePipeline();
+      for (DataPhotoAttachment photo : photoAttachments) {
+         String url = photo.getUrl();
+         if (TextUtils.isEmpty(url)) continue;
+         imagePipeline.evictFromCache(Uri.parse(url));
+      }
+   }
 
-    public String getConversationId() {
-        return clearChatEvent.getConversationId();
-    }
+   public String getConversationId() {
+      return clearChatEvent.getConversationId();
+   }
 }

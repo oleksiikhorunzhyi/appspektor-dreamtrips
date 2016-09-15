@@ -1,83 +1,47 @@
 package com.worldventures.dreamtrips.core.utils;
 
 
-import com.innahema.collections.query.queriables.Queryable;
-import com.worldventures.dreamtrips.core.preference.LocalesHolder;
-import com.worldventures.dreamtrips.modules.common.model.AvailableLocale;
-import com.worldventures.dreamtrips.modules.common.model.User;
+import android.support.annotation.Nullable;
+import android.text.TextUtils;
 
-import java.util.ArrayList;
+import com.techery.spares.session.SessionHolder;
+import com.worldventures.dreamtrips.core.session.UserSession;
+
 import java.util.Locale;
 
 public class LocaleHelper {
 
-    private LocalesHolder localesStorage;
+   private SessionHolder<UserSession> appSessionHolder;
 
-    public LocaleHelper(LocalesHolder localesStorage) {
-        this.localesStorage = localesStorage;
-    }
+   public LocaleHelper(SessionHolder<UserSession> appSessionHolder) {
+      this.appSessionHolder = appSessionHolder;
+   }
 
-    public Locale getDefaultLocale() {
-        return Locale.getDefault();
-    }
+   public Locale getDefaultLocale() {
+      if (!appSessionHolder.get().isPresent() || appSessionHolder.get().get().getLocale() == null)
+         return Locale.getDefault();
 
-    /**
-     * @return `Accept-Language` style formatted, e.g. `en-us`
-     */
-    public String getDefaultLocaleFormatted() {
-        Locale locale = getDefaultLocale();
-        return android.text.TextUtils.join("-", new String[]{locale.getLanguage(), locale.getCountry()});
-    }
+      UserSession userSession = appSessionHolder.get().get();
+      String language = userSession.getLocale().split("-")[0];
+      String country = userSession.getLocale().split("-")[1];
 
-    public String getAccountLocaleFormatted(User user) {
-        Locale userLocale = getAccountLocale(user);
-        Locale locale = userLocale == null ? getDefaultLocale() : userLocale;
-        return android.text.TextUtils.join("-", new String[]{locale.getLanguage(), locale.getCountry()})
-                .toLowerCase();
-    }
+      return new Locale(language, country);
+   }
 
-    @Deprecated
-    public Locale getAccountLocale(User user) {
-        if (user.getLocale() == null) return null;
-        //
-        // check mapped locale first
-        AvailableLocale mappedLocale = obtainAvailableLocale(user.getLocale());
+   public String getDefaultLocaleFormatted() {
+      if (appSessionHolder.get().isPresent() && appSessionHolder.get().get().getLocale() != null) {
+         return appSessionHolder.get().get().getLocale();
+      }
 
-        String language;
-        String country;
-        if (mappedLocale == null) {
-            String[] args = user.getLocale().split("-"); // e.g. en-us
-            language = args[0];
-            country = args[1];
-        } else {
-            language = mappedLocale.getLanguage();
-            country = mappedLocale.getCountry();
-        }
+      Locale locale = Locale.getDefault();
+      return android.text.TextUtils.join("-", new String[]{locale.getLanguage(), locale.getCountry()});
+   }
 
-        return new Locale(language, country);
-    }
+   public boolean isOwnLanguage(@Nullable String languageCode) {
+      if (!appSessionHolder.get().isPresent()) return false;
 
-    public Locale getMappedLocale(User user) {
-        if (user.getLocale() == null) return Locale.US;
-
-        AvailableLocale mappedLocale = obtainAvailableLocale(user.getLocale());
-        if (mappedLocale == null) {
-            return Locale.US;
-        } else {
-            String language = mappedLocale.getLanguage();
-            String country = mappedLocale.getCountry();
-            return new Locale(language, country);
-        }
-    }
-
-    private AvailableLocale obtainAvailableLocale(String localeName){
-        AvailableLocale mappedLocale = null;
-        if (localesStorage.get().isPresent()) {
-            ArrayList<AvailableLocale> availableLocales = localesStorage.get().get();
-            mappedLocale = Queryable.from(availableLocales).firstOrDefault(l ->
-                            l.getLocale().toLowerCase().equals(localeName.toLowerCase())
-            );
-        }
-        return mappedLocale;
-    }
+      String locale = appSessionHolder.get().get().getLocale();
+      String userLanguageCode = TextUtils.isEmpty(locale) ? getDefaultLocaleFormatted() : locale;
+      return userLanguageCode.split("-")[0].equalsIgnoreCase(languageCode);
+   }
 }

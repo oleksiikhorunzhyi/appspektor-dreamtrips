@@ -29,79 +29,69 @@ import butterknife.OnClick;
 
 @SuppressLint("DefaultLocale")
 @Layout(R.layout.fragment_verify_amount)
-public class DtlVerifyAmountFragment extends RxBaseFragmentWithArgs<DtlVerifyAmountPresenter, MerchantIdBundle>
-        implements DtlVerifyAmountPresenter.View {
+public class DtlVerifyAmountFragment extends RxBaseFragmentWithArgs<DtlVerifyAmountPresenter, MerchantIdBundle> implements DtlVerifyAmountPresenter.View {
 
-    @InjectView(R.id.dt_points)
-    TextView dtPoints;
-    @InjectView(R.id.spent_amount)
-    TextView spentAmount;
-    @InjectView(R.id.receipt)
-    SimpleDraweeView receipt;
-    @InjectView(R.id.info)
-    TextView info;
-    //
-    @Inject
-    @Named(RouteCreatorModule.DTL_TRANSACTION)
-    RouteCreator<DtlTransaction> routeCreator;
-    //
-    private DtlEnrollWizard dtlEnrollWizard;
+   @InjectView(R.id.dt_points) TextView dtPoints;
+   @InjectView(R.id.spent_amount) TextView spentAmount;
+   @InjectView(R.id.receipt) SimpleDraweeView receipt;
+   @InjectView(R.id.info) TextView info;
+   //
+   @Inject @Named(RouteCreatorModule.DTL_TRANSACTION) RouteCreator<DtlTransaction> routeCreator;
+   //
+   private DtlEnrollWizard dtlEnrollWizard;
 
-    @Override
-    protected DtlVerifyAmountPresenter createPresenter(Bundle savedInstanceState) {
-        return new DtlVerifyAmountPresenter(getArgs().getMerchantId());
-    }
+   @Override
+   protected DtlVerifyAmountPresenter createPresenter(Bundle savedInstanceState) {
+      return new DtlVerifyAmountPresenter(getArgs().getMerchantId());
+   }
 
-    @Override
-    public void afterCreateView(View rootView) {
-        super.afterCreateView(rootView);
-        dtlEnrollWizard = new DtlEnrollWizard(router, routeCreator);
-    }
+   @Override
+   public void afterCreateView(View rootView) {
+      super.afterCreateView(rootView);
+      dtlEnrollWizard = new DtlEnrollWizard(router, routeCreator);
+   }
 
-    @Override
-    public void onResume() {
-        super.onResume();
-        ButterKnife.<Toolbar>findById(getActivity(), R.id.toolbar_actionbar).setTitle(R.string.dtl_verify_amount);
-    }
+   @Override
+   public void onResume() {
+      super.onResume();
+      ButterKnife.<Toolbar>findById(getActivity(), R.id.toolbar_actionbar).setTitle(R.string.dtl_verify_amount);
+   }
 
-    @OnClick(R.id.rescan)
-    void onRescan() {
-        getPresenter().rescan();
-    }
+   @OnClick(R.id.rescan)
+   void onRescan() {
+      getPresenter().rescan();
+   }
 
-    @OnClick(R.id.scan_merchant_code)
-    void onScanQr() {
-        getPresenter().scanQr();
-    }
+   @OnClick(R.id.scan_merchant_code)
+   void onScanQr() {
+      getPresenter().scanQr();
+   }
 
-    @Override
-    public void openScanQr(DtlTransaction dtlTransaction) {
-        dtlEnrollWizard.proceed(getFragmentManager(), dtlTransaction, getArgs());
-    }
+   @Override
+   public void openScanQr(DtlTransaction dtlTransaction) {
+      dtlEnrollWizard.proceed(getFragmentManager(), dtlTransaction, getArgs());
+   }
 
-    @Override
-    public void openScanReceipt(DtlTransaction dtlTransaction) {
-        dtlEnrollWizard.clearAndProceed(getFragmentManager(), dtlTransaction, getArgs());
-    }
+   @Override
+   public void openScanReceipt(DtlTransaction dtlTransaction) {
+      dtlEnrollWizard.clearAndProceed(getFragmentManager(), dtlTransaction, getArgs());
+   }
 
-    @Override
-    public void attachTransaction(DtlTransaction dtlTransaction, DtlCurrency dtlCurrency) {
-        spentAmount.setText(String.format("%s %.2f %s",
-                dtlCurrency.getPrefix(),
-                dtlTransaction.getBillTotal(),
-                dtlCurrency.getSuffix()));
-        receipt.setController(
-                GraphicUtils.provideFrescoResizingController(Uri.parse(dtlTransaction.getUploadTask().getFilePath()),
-                        receipt.getController()));
-    }
+   @Override
+   public void attachTransaction(DtlTransaction dtlTransaction, DtlCurrency dtlCurrency) {
+      spentAmount.setText(String.format("%s %.2f %s", dtlCurrency.getPrefix(), dtlTransaction.getBillTotal(), dtlCurrency
+            .getSuffix()));
+      receipt.setController(GraphicUtils.provideFrescoResizingController(Uri.parse(dtlTransaction.getUploadTask()
+            .getFilePath()), receipt.getController()));
+   }
 
-    @OnClick(R.id.infoToggle)
-    void infoToggle() {
-        info.setVisibility(info.getVisibility() == View.GONE ? View.VISIBLE : View.GONE);
-    }
+   @OnClick(R.id.infoToggle)
+   void infoToggle() {
+      info.setVisibility(info.getVisibility() == View.GONE ? View.VISIBLE : View.GONE);
+   }
 
-    @Override
-    public void attachDtPoints(int count) {
-        dtPoints.setText(String.format("+%dpt", count));
-    }
+   @Override
+   public void attachDtPoints(int count) {
+      dtPoints.setText(String.format("+%dpt", count));
+   }
 }

@@ -1,5 +1,7 @@
 package com.worldventures.dreamtrips.modules.dtl.analytics;
 
+import android.location.Location;
+
 import com.worldventures.dreamtrips.core.utils.tracksystem.AdobeTracker;
 import com.worldventures.dreamtrips.core.utils.tracksystem.AnalyticsEvent;
 import com.worldventures.dreamtrips.core.utils.tracksystem.Attribute;
@@ -9,41 +11,30 @@ import com.worldventures.dreamtrips.modules.dtl.model.transaction.DtlTransaction
 import java.util.Locale;
 
 @AnalyticsEvent(action = "local:Restaurant-Listings:Merchant View:Congratulations",
-        trackers = AdobeTracker.TRACKER_KEY)
-public class TransactionSuccessEvent extends DtlAnalyticsAction {
+                trackers = AdobeTracker.TRACKER_KEY)
+public class TransactionSuccessEvent extends MerchantAnalyticsAction {
 
-    @Attribute("merchantname")
-    final String merchantName;
+   @Attribute("merchantearned") final String attribute = "1";
 
-    @Attribute("merchantID")
-    final String merchantId;
+   @Attribute("localpointsearned") final String earnedAmount;
 
-    @Attribute("merchantearned")
-    final String attribute = "1";
+   @Attribute("completedamount") final String spentAmount;
 
-    @Attribute("localpointsearned")
-    final String earnedAmount;
+   @Attribute("amount_cc") final String currencyCode;
 
-    @Attribute("completedamount")
-    final String spentAmount;
+   @Attribute("areperksavail") final String perksAvailable;
 
-    @Attribute("amount_cc")
-    final String currencyCode;
+   @Attribute("arepointsavail") final String pointsAvailable;
 
-    @Attribute("areperksavail")
-    final String perksAvailable;
+   @Attribute("coordinates") final String coordinates;
 
-    @Attribute("arepointsavail")
-    final String pointsAvailable;
-
-    public TransactionSuccessEvent(DtlMerchant dtlMerchant, DtlTransaction dtlTransaction) {
-        merchantId = dtlMerchant.getId();
-        merchantName = dtlMerchant.getDisplayName();
-        perksAvailable = dtlMerchant.hasPerks() ? "Yes" : "No";
-        pointsAvailable = dtlMerchant.hasPoints() ? "Yes" : "No";
-        currencyCode = dtlMerchant.getDefaultCurrency().getCode();
-        earnedAmount = String.format(Locale.US, "%.0f",
-                dtlTransaction.getDtlTransactionResult().getEarnedPoints());
-        spentAmount = String.format(Locale.US, "%.2f", dtlTransaction.getBillTotal());
-    }
+   public TransactionSuccessEvent(DtlMerchant dtlMerchant, DtlTransaction dtlTransaction, Location location) {
+      super(dtlMerchant);
+      perksAvailable = dtlMerchant.hasPerks() ? "Yes" : "No";
+      pointsAvailable = dtlMerchant.hasPoints() ? "Yes" : "No";
+      currencyCode = dtlMerchant.getDefaultCurrency().getCode();
+      earnedAmount = String.format(Locale.US, "%.0f", dtlTransaction.getDtlTransactionResult().getEarnedPoints());
+      spentAmount = String.format(Locale.US, "%.2f", dtlTransaction.getBillTotal());
+      coordinates = String.format(Locale.US, "%f,%f", location.getLatitude(), location.getLongitude());
+   }
 }

@@ -12,61 +12,59 @@ import java.io.IOException;
 
 public abstract class CustomizedTypeAdapterFactory<C> implements TypeAdapterFactory {
 
-    private final Class<C> customizedClass;
+   private final Class<C> customizedClass;
 
-    public CustomizedTypeAdapterFactory(Class<C> customizedClass) {
-        this.customizedClass = customizedClass;
-    }
+   public CustomizedTypeAdapterFactory(Class<C> customizedClass) {
+      this.customizedClass = customizedClass;
+   }
 
-    @SuppressWarnings("unchecked")
-    // we use a runtime check to guarantee that 'C' and 'T' are equal
-    public final <T> TypeAdapter<T> create(Gson gson, TypeToken<T> type) {
-        return type.getRawType() == customizedClass
-            ? (TypeAdapter<T>) customizeMyClassAdapter(gson, (TypeToken<C>) type)
-            : null;
-    }
+   @SuppressWarnings("unchecked")
+   // we use a runtime check to guarantee that 'C' and 'T' are equal
+   public final <T> TypeAdapter<T> create(Gson gson, TypeToken<T> type) {
+      return type.getRawType() == customizedClass ? (TypeAdapter<T>) customizeMyClassAdapter(gson, (TypeToken<C>) type) : null;
+   }
 
-    private TypeAdapter<C> customizeMyClassAdapter(Gson gson, TypeToken<C> type) {
-        final TypeAdapter<C> delegate = gson.getDelegateAdapter(this, type);
-        final TypeAdapter<JsonElement> elementAdapter = gson.getAdapter(JsonElement.class);
-        return new TypeAdapter<C>() {
+   private TypeAdapter<C> customizeMyClassAdapter(Gson gson, TypeToken<C> type) {
+      final TypeAdapter<C> delegate = gson.getDelegateAdapter(this, type);
+      final TypeAdapter<JsonElement> elementAdapter = gson.getAdapter(JsonElement.class);
+      return new TypeAdapter<C>() {
 
-            @Override
-            public void write(JsonWriter out, C value) throws IOException {
-                JsonElement tree = delegate.toJsonTree(value);
-                beforeWrite(value, tree);
-                elementAdapter.write(out, tree);
-            }
+         @Override
+         public void write(JsonWriter out, C value) throws IOException {
+            JsonElement tree = delegate.toJsonTree(value);
+            beforeWrite(value, tree);
+            elementAdapter.write(out, tree);
+         }
 
-            @Override
-            public C read(JsonReader in) throws IOException {
-                JsonElement tree = elementAdapter.read(in);
-                afterRead(tree);
-                C c = delegate.fromJsonTree(tree);
-                afterParsed(c);
-                return c;
-            }
-        };
-    }
+         @Override
+         public C read(JsonReader in) throws IOException {
+            JsonElement tree = elementAdapter.read(in);
+            afterRead(tree);
+            C c = delegate.fromJsonTree(tree);
+            afterParsed(c);
+            return c;
+         }
+      };
+   }
 
-    /**
-     * Override this to muck with {@code toSerialize} before it is written to
-     * the outgoing JSON stream.
-     */
-    protected void beforeWrite(C source, JsonElement toSerialize) {
-    }
+   /**
+    * Override this to muck with {@code toSerialize} before it is written to
+    * the outgoing JSON stream.
+    */
+   protected void beforeWrite(C source, JsonElement toSerialize) {
+   }
 
-    /**
-     * Override this to muck with {@code deserialized} before it parsed into
-     * the application type.
-     */
-    protected void afterRead(JsonElement deserialized) {
-    }
+   /**
+    * Override this to muck with {@code deserialized} before it parsed into
+    * the application type.
+    */
+   protected void afterRead(JsonElement deserialized) {
+   }
 
-    /**
-     * Override this to muck with {@code parsed} after it parsed into
-     * the application type.
-     */
-    protected void afterParsed(C parsed) {
-    }
+   /**
+    * Override this to muck with {@code parsed} after it parsed into
+    * the application type.
+    */
+   protected void afterParsed(C parsed) {
+   }
 }

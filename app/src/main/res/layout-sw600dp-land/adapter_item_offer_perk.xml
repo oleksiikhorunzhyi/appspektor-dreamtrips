@@ -1,22 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout android:id="@+id/perks_view"
-                xmlns:android="http://schemas.android.com/apk/res/android"
-                xmlns:fresco="http://schemas.android.com/apk/res-auto"
-                xmlns:tools="http://schemas.android.com/tools"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="@android:color/white"
-                android:orientation="horizontal"
-    >
+      xmlns:android="http://schemas.android.com/apk/res/android"
+      xmlns:fresco="http://schemas.android.com/apk/res-auto"
+      xmlns:tools="http://schemas.android.com/tools"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:background="@android:color/white"
+      android:orientation="horizontal"
+      >
 
-    <FrameLayout
-        android:id="@+id/perk_logo_root"
-        android:layout_width="@dimen/dtlOfferCoverImageWidth"
-        android:layout_height="@dimen/dtlOfferCoverImageHeight"
-        android:layout_gravity="center_vertical"
-        >
+   <FrameLayout
+         android:id="@+id/perk_logo_root"
+         android:layout_width="@dimen/dtlOfferCoverImageWidth"
+         android:layout_height="@dimen/dtlOfferCoverImageHeight"
+         android:layout_gravity="center_vertical"
+         >
 
-        <com.worldventures.dreamtrips.modules.common.view.custom.ImageryDraweeView
+      <com.worldventures.dreamtrips.modules.common.view.custom.ImageryDraweeView
             android:id="@+id/perk_logo"
             style="@style/DtlOfferImageView"
             fresco:actualImageScaleType="centerInside"
@@ -24,7 +24,7 @@
             tools:src="@drawable/ic_trip_image_placeholder"
             />
 
-        <android.support.v7.widget.AppCompatTextView
+      <android.support.v7.widget.AppCompatTextView
             android:id="@+id/expirationBar"
             android:layout_width="@dimen/dtlOfferExpirationWidth"
             android:layout_height="@dimen/dtlOfferExpirationHeight"
@@ -38,17 +38,17 @@
             tools:text="Until Apr 7"
             tools:visibility="visible"
             />
-    </FrameLayout>
+   </FrameLayout>
 
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_toRightOf="@+id/perk_logo_root"
-        android:paddingTop="@dimen/spacing_tiny"
-        android:orientation="vertical"
-        >
+   <RelativeLayout
+         android:layout_width="match_parent"
+         android:layout_height="wrap_content"
+         android:layout_toRightOf="@+id/perk_logo_root"
+         android:paddingTop="@dimen/spacing_tiny"
+         android:orientation="vertical"
+         >
 
-        <ImageView
+      <ImageView
             android:id="@+id/perks_icon"
             android:layout_marginRight="@dimen/spacing_tiny"
             android:layout_width="wrap_content"
@@ -56,7 +56,7 @@
             android:src="@drawable/perks_icon"
             />
 
-        <TextView
+      <TextView
             android:id="@+id/perks_description"
             style="@style/DreamMerchantTextAppearance"
             android:layout_width="match_parent"
@@ -69,7 +69,7 @@
             tools:text="Complimentary Margarita"
             />
 
-        <TextView
+      <TextView
             android:id="@+id/perks_operation_days"
             style="@style/DreamMerchantTextAppearance"
             android:layout_width="match_parent"
@@ -80,12 +80,12 @@
             android:layout_below="@+id/perks_description"
             android:layout_toEndOf="@+id/perks_icon"
             />
-    </RelativeLayout>
+   </RelativeLayout>
 
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:layout_alignParentTop="true"
-        android:background="@drawable/divider_list"
-        />
+   <View
+         android:layout_width="match_parent"
+         android:layout_height="1dp"
+         android:layout_alignParentTop="true"
+         android:background="@drawable/divider_list"
+         />
 </RelativeLayout>

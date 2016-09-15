@@ -33,136 +33,132 @@ import butterknife.OnClick;
 
 public class DtlFilterViewImpl extends MvpLinearLayout<FilterView, DtlFilterPresenter> implements FilterView {
 
-    @InjectView(R.id.range_bar_distance)
-    protected RangeBar rangeBarDistance;
-    @InjectView(R.id.range_bar_price)
-    protected RangeBar rangeBarPrice;
-    @InjectView(R.id.distance_filter_caption)
-    protected TextView distanceCaption;
-    @InjectView(R.id.recyclerViewFilters)
-    protected RecyclerView recyclerView;
-    //
-    protected MultiSelectionManager selectionManager;
-    //
-    protected BaseDelegateAdapter baseDelegateAdapter;
+   @InjectView(R.id.range_bar_distance) protected RangeBar rangeBarDistance;
+   @InjectView(R.id.range_bar_price) protected RangeBar rangeBarPrice;
+   @InjectView(R.id.distance_filter_caption) protected TextView distanceCaption;
+   @InjectView(R.id.recyclerViewFilters) protected RecyclerView recyclerView;
+   //
+   protected MultiSelectionManager selectionManager;
+   //
+   protected BaseDelegateAdapter baseDelegateAdapter;
 
-    private Injector injector;
+   private Injector injector;
 
-    public DtlFilterViewImpl(Context context) {
-        super(context);
-        init(context);
-    }
+   public DtlFilterViewImpl(Context context) {
+      super(context);
+      init(context);
+   }
 
-    public DtlFilterViewImpl(Context context, AttributeSet attrs) {
-        super(context, attrs);
-        init(context);
-    }
+   public DtlFilterViewImpl(Context context, AttributeSet attrs) {
+      super(context, attrs);
+      init(context);
+   }
 
-    @Override
-    public DtlFilterPresenter createPresenter() {
-        return new DtlFilterPresenterImpl();
-    }
+   @Override
+   public DtlFilterPresenter createPresenter() {
+      return new DtlFilterPresenterImpl();
+   }
 
-    private void init(Context context) {
-        ButterKnife.inject(this, LayoutInflater.from(context).inflate(R.layout.fragment_dtl_filters, this, true));
-    }
+   private void init(Context context) {
+      ButterKnife.inject(this, LayoutInflater.from(context).inflate(R.layout.fragment_dtl_filters, this, true));
+   }
 
-    public void setInjector(Injector injector) {
-        this.injector = injector;
-        attachAdapter();
-    }
+   public void setInjector(Injector injector) {
+      this.injector = injector;
+      attachAdapter();
+   }
 
-    private void attachAdapter() {
-        setupAdapter();
-        setupRecyclerView();
-    }
+   private void attachAdapter() {
+      setupAdapter();
+      setupRecyclerView();
+   }
 
-    protected void setupRecyclerView() {
-        selectionManager = new MultiSelectionManager(recyclerView);
-        selectionManager.setEnabled(true);
-        //
-        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-        recyclerView.setAdapter(selectionManager.provideWrappedAdapter(baseDelegateAdapter));
-    }
+   protected void setupRecyclerView() {
+      selectionManager = new MultiSelectionManager(recyclerView);
+      selectionManager.setEnabled(true);
+      //
+      recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+      recyclerView.setAdapter(selectionManager.provideWrappedAdapter(baseDelegateAdapter));
+   }
 
-    protected void setupAdapter() {
-        if (injector == null) throw new NullPointerException("Set injector before setup adapter");
-        //
-        baseDelegateAdapter = new BaseDelegateAdapter<>(getContext(), injector);
-        baseDelegateAdapter.registerCell(SelectableHeaderItem.class, DtlFilterAttributeHeaderCell.class);
-        baseDelegateAdapter.registerCell(DtlMerchantAttribute.class, DtlFilterAttributeCell.class);
-        baseDelegateAdapter.registerDelegate(SelectableHeaderItem.class, model -> selectionManager.setSelectionForAll(((SelectableHeaderItem) model).isSelected()));
-        baseDelegateAdapter.registerDelegate(DtlMerchantAttribute.class, model -> drawHeaderSelection());
-    }
+   protected void setupAdapter() {
+      if (injector == null) throw new NullPointerException("Set injector before setup adapter");
+      //
+      baseDelegateAdapter = new BaseDelegateAdapter<>(getContext(), injector);
+      baseDelegateAdapter.registerCell(SelectableHeaderItem.class, DtlFilterAttributeHeaderCell.class);
+      baseDelegateAdapter.registerCell(DtlMerchantAttribute.class, DtlFilterAttributeCell.class);
+      baseDelegateAdapter.registerDelegate(SelectableHeaderItem.class, model -> selectionManager.setSelectionForAll(((SelectableHeaderItem) model)
+            .isSelected()));
+      baseDelegateAdapter.registerDelegate(DtlMerchantAttribute.class, model -> drawHeaderSelection());
+   }
 
-    @OnClick(R.id.apply)
-    void onApply() {
-        getPresenter().apply();
-    }
+   @OnClick(R.id.apply)
+   void onApply() {
+      getPresenter().apply();
+   }
 
-    @OnClick(R.id.reset)
-    void onReset() {
-        getPresenter().resetAll();
-    }
+   @OnClick(R.id.reset)
+   void onReset() {
+      getPresenter().resetAll();
+   }
 
-    @Override
-    public Injector getInjector() {
-        return injector;
-    }
+   @Override
+   public Injector getInjector() {
+      return injector;
+   }
 
-    @Override
-    public void toggleDrawer(boolean show) {
-        DrawerLayout drawer = ButterKnife.<DrawerLayout>findById(getRootView(), R.id.drawer);
-        if (drawer == null) return;
+   @Override
+   public void toggleDrawer(boolean show) {
+      DrawerLayout drawer = ButterKnife.<DrawerLayout>findById(getRootView(), R.id.drawer);
+      if (drawer == null) return;
 
-        if(show) drawer.openDrawer(Gravity.RIGHT);
-        else drawer.closeDrawer(Gravity.RIGHT);
-    }
+      if (show) drawer.openDrawer(Gravity.RIGHT);
+      else drawer.closeDrawer(Gravity.RIGHT);
+   }
 
-    @Override
-    public DtlFilterParameters getFilterParameters() {
-        return ImmutableDtlFilterParameters.builder()
-                .minPrice(Integer.valueOf(rangeBarPrice.getLeftValue()))
-                .maxPrice(Integer.valueOf(rangeBarPrice.getRightValue()))
-                .maxDistance(Integer.valueOf(rangeBarDistance.getRightValue()))
-                .selectedAmenities(obtainSelectedAmenities())
-                .build();
-    }
+   @Override
+   public DtlFilterParameters getFilterParameters() {
+      return ImmutableDtlFilterParameters.builder()
+            .minPrice(Integer.valueOf(rangeBarPrice.getLeftValue()))
+            .maxPrice(Integer.valueOf(rangeBarPrice.getRightValue()))
+            .maxDistance(Integer.valueOf(rangeBarDistance.getRightValue()))
+            .selectedAmenities(obtainSelectedAmenities())
+            .build();
+   }
 
-    @Override
-    public void syncUi(DtlFilterData filterData) {
-        rangeBarDistance.setRangePinsByValue(10f, (float) filterData.getMaxDistance());
-        rangeBarPrice.setRangePinsByValue(filterData.getMinPrice(), filterData.getMaxPrice());
-        distanceCaption.setText(getContext().getString(R.string.dtl_distance,
-                getContext().getString(filterData.getDistanceType() == DistanceType.MILES ?
-                        R.string.mi : R.string.km)));
-        if (filterData.hasAmenities()) setupAttributesHeader(filterData);
-        updateSelection(filterData);
-        drawHeaderSelection();
-    }
+   @Override
+   public void syncUi(DtlFilterData filterData) {
+      rangeBarDistance.setRangePinsByValue(10f, (float) filterData.getMaxDistance());
+      rangeBarPrice.setRangePinsByValue(filterData.getMinPrice(), filterData.getMaxPrice());
+      distanceCaption.setText(getContext().getString(R.string.dtl_distance, getContext().getString(filterData.getDistanceType() == DistanceType.MILES ? R.string.mi : R.string.km)));
+      if (filterData.hasAmenities()) setupAttributesHeader(filterData);
+      updateSelection(filterData);
+      drawHeaderSelection();
+   }
 
-    private List<DtlMerchantAttribute> obtainSelectedAmenities() {
-        List<Integer> positions = selectionManager
-                .getSelectedPositions(baseDelegateAdapter.getClassItemViewType(DtlMerchantAttribute.class));
-        return Queryable.from(baseDelegateAdapter.getItems())
-                .filter((element, index) -> positions.contains(index)).toList();
-    }
+   private List<DtlMerchantAttribute> obtainSelectedAmenities() {
+      List<Integer> positions = selectionManager.getSelectedPositions(baseDelegateAdapter.getClassItemViewType(DtlMerchantAttribute.class));
+      return Queryable.from(baseDelegateAdapter.getItems())
+            .filter((element, index) -> positions.contains(index))
+            .toList();
+   }
 
-    private void updateSelection(DtlFilterData filterData) {
-        if (filterData.hasAmenities()) {
-            selectionManager.setSelectedPositions(Queryable.from(filterData.getSelectedAmenities())
-                    .map(element -> baseDelegateAdapter.getItems().indexOf(element)).toList());
-        }
-    }
+   private void updateSelection(DtlFilterData filterData) {
+      if (filterData.hasAmenities()) {
+         selectionManager.setSelectedPositions(Queryable.from(filterData.getSelectedAmenities())
+               .map(element -> baseDelegateAdapter.getItems().indexOf(element))
+               .toList());
+      }
+   }
 
-    private void drawHeaderSelection() {
-        final int amenityViewTypeId = baseDelegateAdapter.getClassItemViewType(DtlMerchantAttribute.class);
-        final boolean allSelected = selectionManager.isAllSelected(amenityViewTypeId);
-        selectionManager.setSelection(0, allSelected);
-    }
+   private void drawHeaderSelection() {
+      final int amenityViewTypeId = baseDelegateAdapter.getClassItemViewType(DtlMerchantAttribute.class);
+      final boolean allSelected = selectionManager.isAllSelected(amenityViewTypeId);
+      selectionManager.setSelection(0, allSelected);
+   }
 
-    private void setupAttributesHeader(DtlFilterData filterData) {
-        baseDelegateAdapter.clearAndUpdateItems(filterData.getAmenities());
-        baseDelegateAdapter.addItem(0, new SelectableHeaderItem(getContext().getString(R.string.dtl_amenities), true));
-    }
+   private void setupAttributesHeader(DtlFilterData filterData) {
+      baseDelegateAdapter.clearAndUpdateItems(filterData.getAmenities());
+      baseDelegateAdapter.addItem(0, new SelectableHeaderItem(getContext().getString(R.string.dtl_amenities), true));
+   }
 }

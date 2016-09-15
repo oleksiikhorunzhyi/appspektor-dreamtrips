@@ -14,44 +14,43 @@ import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
-public class SmartAvatarView extends AvatarView{
+public class SmartAvatarView extends AvatarView {
 
-    private User user;
-    private Subscription subscription;
+   private User user;
+   private Subscription subscription;
 
-    @Inject
-    UserStatusAdapter userStatusAdapter;
+   @Inject UserStatusAdapter userStatusAdapter;
 
-    public SmartAvatarView(Context context) {
-        this(context, null);
-    }
+   public SmartAvatarView(Context context) {
+      this(context, null);
+   }
 
-    public SmartAvatarView(Context context, AttributeSet attrs) {
-        super(context, attrs);
-    }
+   public SmartAvatarView(Context context, AttributeSet attrs) {
+      super(context, attrs);
+   }
 
-    public void setup(User user, Injector injector) {
-        this.user = user;
-        injector.inject(this);
-        unsubscribe();
-        subscription = userStatusAdapter.getUserHolder(user.getUsername())
-                .first()
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(isOnline -> {
-                    setOnline(isOnline);
-                });
-    }
+   public void setup(User user, Injector injector) {
+      this.user = user;
+      injector.inject(this);
+      unsubscribe();
+      subscription = userStatusAdapter.getUserHolder(user.getUsername())
+            .first()
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe(isOnline -> {
+               setOnline(isOnline);
+            });
+   }
 
-    @Override
-    protected void onDetachedFromWindow() {
-        super.onDetachedFromWindow();
-        unsubscribe();
-    }
+   @Override
+   protected void onDetachedFromWindow() {
+      super.onDetachedFromWindow();
+      unsubscribe();
+   }
 
-    private void unsubscribe(){
-        if (subscription != null && !subscription.isUnsubscribed()) {
-            subscription.unsubscribe();
-        }
-    }
+   private void unsubscribe() {
+      if (subscription != null && !subscription.isUnsubscribed()) {
+         subscription.unsubscribe();
+      }
+   }
 }

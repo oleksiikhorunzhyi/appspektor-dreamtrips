@@ -22,126 +22,123 @@ import timber.log.Timber;
 
 public abstract class InjectingFragment extends Fragment implements ConfigurableFragment, Injector {
 
-    ///////////////////////////////////////////////////////////////////////////
-    // Injection
-    ///////////////////////////////////////////////////////////////////////////
+   ///////////////////////////////////////////////////////////////////////////
+   // Injection
+   ///////////////////////////////////////////////////////////////////////////
 
-    private ObjectGraph objectGraph;
+   private ObjectGraph objectGraph;
 
-    @Override
-    public void onAttach(Activity activity) {
-        super.onAttach(activity);
-        objectGraph = getInitialObjectGraph();
-        objectGraph.inject(this);
-    }
+   @Override
+   public void onAttach(Activity activity) {
+      super.onAttach(activity);
+      objectGraph = getInitialObjectGraph();
+      objectGraph.inject(this);
+   }
 
-    @Override
-    public void onDetach() {
-        super.onDetach();
-        objectGraph = null;
-    }
+   @Override
+   public void onDetach() {
+      super.onDetach();
+      objectGraph = null;
+   }
 
-    protected ObjectGraph getInitialObjectGraph() {
-        return ((InjectingActivity) getActivity()).getObjectGraph();
-    }
+   protected ObjectGraph getInitialObjectGraph() {
+      return ((InjectingActivity) getActivity()).getObjectGraph();
+   }
 
-    @Override
-    public void inject(Object target) {
-        this.objectGraph.inject(target);
-    }
+   @Override
+   public void inject(Object target) {
+      this.objectGraph.inject(target);
+   }
 
-    @Override
-    public ObjectGraph getObjectGraph() {
-        return this.objectGraph;
-    }
+   @Override
+   public ObjectGraph getObjectGraph() {
+      return this.objectGraph;
+   }
 
-    ///////////////////////////////////////////////////////////////////////////
-    // UI
-    ///////////////////////////////////////////////////////////////////////////
+   ///////////////////////////////////////////////////////////////////////////
+   // UI
+   ///////////////////////////////////////////////////////////////////////////
 
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        return FragmentHelper.onCreateView(inflater, container, this);
-    }
+   @Override
+   public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+      return FragmentHelper.onCreateView(inflater, container, this);
+   }
 
-    @Override
-    public void onViewCreated(View view, Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-    }
+   @Override
+   public void onViewCreated(View view, Bundle savedInstanceState) {
+      super.onViewCreated(view, savedInstanceState);
+   }
 
-    @Override
-    public void onActivityCreated(Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
-        setupMenuIfNeed();
-    }
+   @Override
+   public void onActivityCreated(Bundle savedInstanceState) {
+      super.onActivityCreated(savedInstanceState);
+      setupMenuIfNeed();
+   }
 
-    private MenuResource menuResource;
+   private MenuResource menuResource;
 
-    private void setupMenuIfNeed() {
-        menuResource = this.getClass().getAnnotation(MenuResource.class);
-        setHasOptionsMenu(menuResource != null);
-    }
+   private void setupMenuIfNeed() {
+      menuResource = this.getClass().getAnnotation(MenuResource.class);
+      setHasOptionsMenu(menuResource != null);
+   }
 
-    @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        // isAdded use for onCreateOptionsMenu method
-        // when we take smth from resource and fragment isn't attached
-        if (menuResource != null && isAdded()) {
-            menu.clear();
-            inflater.inflate(menuResource.value(), menu);
-            onMenuInflated(menu);
-        }
-    }
+   @Override
+   public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+      // isAdded use for onCreateOptionsMenu method
+      // when we take smth from resource and fragment isn't attached
+      if (menuResource != null && isAdded()) {
+         menu.clear();
+         inflater.inflate(menuResource.value(), menu);
+         onMenuInflated(menu);
+      }
+   }
 
-    protected void onMenuInflated(Menu menu) {
+   protected void onMenuInflated(Menu menu) {
 
-    }
+   }
 
-    @Override
-    public void afterCreateView(View rootView) {
-    }
+   @Override
+   public void afterCreateView(View rootView) {
+   }
 
-    ///////////////////////////////////////////////////////////////////////////
-    // Event handling
-    ///////////////////////////////////////////////////////////////////////////
+   ///////////////////////////////////////////////////////////////////////////
+   // Event handling
+   ///////////////////////////////////////////////////////////////////////////
 
-    @Inject
-    @Global
-    public EventBus eventBus;
+   @Inject @Global public EventBus eventBus;
 
-    public interface Events {
-        class ReloadEvent {
-        }
-    }
+   public interface Events {
+      class ReloadEvent {}
+   }
 
-    public void onEvent(Events.ReloadEvent reloadEvent) {
-        //do nothing
-    }
+   public void onEvent(Events.ReloadEvent reloadEvent) {
+      //do nothing
+   }
 
-    public EventBus getEventBus() {
-        return eventBus;
-    }
+   public EventBus getEventBus() {
+      return eventBus;
+   }
 
-    @Override
-    public void onResume() {
-        super.onResume();
-        try {
-            this.eventBus.registerSticky(this, getEventBusPriority());
-        } catch (Exception e) {
-            Timber.v(e, "Can't register");
-        }
-    }
+   @Override
+   public void onResume() {
+      super.onResume();
+      try {
+         this.eventBus.registerSticky(this, getEventBusPriority());
+      } catch (Exception e) {
+         Timber.v(e, "Can't register");
+      }
+   }
 
-    @Override
-    public void onPause() {
-        super.onPause();
-        if (this.eventBus.isRegistered(this)) {
-            this.eventBus.unregister(this);
-        }
-    }
+   @Override
+   public void onPause() {
+      super.onPause();
+      if (this.eventBus.isRegistered(this)) {
+         this.eventBus.unregister(this);
+      }
+   }
 
-    public int getEventBusPriority() {
-        return 0;
-    }
+   public int getEventBusPriority() {
+      return 0;
+   }
 
 }

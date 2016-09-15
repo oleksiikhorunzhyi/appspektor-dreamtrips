@@ -17,48 +17,44 @@ import org.jivesoftware.smack.packet.Message.Type;
 import rx.Observable;
 
 public class XmppSingleUserChat extends XmppChat implements SingleUserChat {
-    private final String companionId;
+   private final String companionId;
 
-    public XmppSingleUserChat(final XmppServerFacade facade, @NonNull String companionId, @NonNull String roomId) {
-        super(facade, roomId);
-        this.companionId = companionId;
-    }
+   public XmppSingleUserChat(final XmppServerFacade facade, @NonNull String companionId, @NonNull String roomId) {
+      super(facade, roomId);
+      this.companionId = companionId;
+   }
 
-    protected Observable<Chat> provideChatObservable() {
-        return facade.getConnectionObservable()
-                .map(this::createChat);
-    }
+   protected Observable<Chat> provideChatObservable() {
+      return facade.getConnectionObservable().map(this::createChat);
+   }
 
-    @Override
-    protected Observable<Void> trySendSmackMessage(Message message) {
-        return provideChatObservable()
-                .take(1)
-                .flatMap(chat -> Observable.create(subscriber -> {
-                    try {
-                        chat.sendMessage(message);
-                        subscriber.onNext(null);
-                        subscriber.onCompleted();
-                    } catch (SmackException.NotConnectedException e) {
-                        subscriber.onError(e);
-                    }
-                }));
-    }
+   @Override
+   protected Observable<Void> trySendSmackMessage(Message message) {
+      return provideChatObservable().take(1).flatMap(chat -> Observable.create(subscriber -> {
+         try {
+            chat.sendMessage(message);
+            subscriber.onNext(null);
+            subscriber.onCompleted();
+         } catch (SmackException.NotConnectedException e) {
+            subscriber.onError(e);
+         }
+      }));
+   }
 
-    @Override
-    protected StatusMessageStanza createStatusMessage(String messageId) {
-        return new StatusMessageStanza(messageId, Status.DISPLAYED,
-                JidCreatorHelper.obtainUserJid(companionId), Type.chat);
-    }
+   @Override
+   protected StatusMessageStanza createStatusMessage(String messageId) {
+      return new StatusMessageStanza(messageId, Status.DISPLAYED, JidCreatorHelper.obtainUserJid(companionId), Type.chat);
+   }
 
-    private Chat createChat(@NonNull XMPPConnection connection) {
-        ChatManager chatManager = ChatManager.getInstanceFor(connection);
-        Chat chat = chatManager.getThreadChat(roomId);
+   private Chat createChat(@NonNull XMPPConnection connection) {
+      ChatManager chatManager = ChatManager.getInstanceFor(connection);
+      Chat chat = chatManager.getThreadChat(roomId);
 
-        if (chat == null) {
-            chat = chatManager.createChat(JidCreatorHelper.obtainUserJid(companionId), roomId, null);
-        }
+      if (chat == null) {
+         chat = chatManager.createChat(JidCreatorHelper.obtainUserJid(companionId), roomId, null);
+      }
 
-        return chat;
-    }
+      return chat;
+   }
 
 }

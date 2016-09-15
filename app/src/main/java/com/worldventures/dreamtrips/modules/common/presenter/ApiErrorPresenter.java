@@ -21,100 +21,102 @@ import static com.worldventures.dreamtrips.util.ThrowableUtils.getCauseByType;
 
 public class ApiErrorPresenter {
 
-    ApiErrorView apiErrorView;
+   ApiErrorView apiErrorView;
 
-    public void setView(ApiErrorView apiErrorView) {
-        this.apiErrorView = apiErrorView;
-    }
+   public void setView(ApiErrorView apiErrorView) {
+      this.apiErrorView = apiErrorView;
+   }
 
-    public void dropView() {
-        apiErrorView = null;
-    }
+   public void dropView() {
+      apiErrorView = null;
+   }
 
-    public boolean hasView() {
-        return apiErrorView != null;
-    }
+   public boolean hasView() {
+      return apiErrorView != null;
+   }
 
-    public void handleError(Throwable exception) {
-        if (exception instanceof CancelException) return;
-        Timber.e(exception, this.getClass().getName() + " handled caught exception");
-        if (!hasView()) {
-            Crashlytics.logException(exception);
-            Timber.e(exception, "ApiErrorPresenter expects apiErrorView to be set, which is null.");
+   public void handleError(Throwable exception) {
+      if (exception instanceof CancelException) return;
+      Timber.e(exception, this.getClass().getName() + " handled caught exception");
+      if (!hasView()) {
+         Crashlytics.logException(exception);
+         Timber.e(exception, "ApiErrorPresenter expects apiErrorView to be set, which is null.");
+         return;
+      }
+      //
+      apiErrorView.onApiCallFailed();
+      //
+      DtApiException dtApiException = getCauseByType(DtApiException.class, exception);
+      if (dtApiException != null) {
+         ErrorResponse errorResponse = dtApiException.getErrorResponse();
+         if (errorResponse == null || errorResponse.getErrors() == null || errorResponse.getErrors().isEmpty()) {
+            apiErrorView.informUser(exception.getCause().getLocalizedMessage());
             return;
-        }
-        //
-        apiErrorView.onApiCallFailed();
-        //
-        DtApiException dtApiException = getCauseByType(DtApiException.class, exception);
-        if (dtApiException != null) {
-            ErrorResponse errorResponse = dtApiException.getErrorResponse();
-            if (errorResponse == null || errorResponse.getErrors() == null
-                    || errorResponse.getErrors().isEmpty()) {
-                apiErrorView.informUser(exception.getCause().getLocalizedMessage());
-                return;
-            }
-            //
+         }
+         //
+         logError(errorResponse);
+         //
+         if (!apiErrorView.onApiError(errorResponse)) apiErrorView.informUser(errorResponse.getFirstMessage());
+      } else if (!handleJanetHttpError(null, exception)) {
+         apiErrorView.informUser(R.string.smth_went_wrong);
+      }
+   }
+
+   public void handleActionError(Object action, Throwable exception) {
+      if (exception instanceof CancelException) return;
+      Timber.e(exception, this.getClass().getName() + " handled caught exception");
+      if (!hasView()) {
+         Crashlytics.logException(exception);
+         Timber.e(exception, "ApiErrorPresenter expects apiErrorView to be set, which is null.");
+         return;
+      }
+      //
+      if (!handleJanetHttpError(action, exception)) {
+         apiErrorView.informUser(R.string.smth_went_wrong);
+      }
+   }
+
+   private boolean handleJanetHttpError(Object action, Throwable exception) {
+      if ((action instanceof BaseHttpAction || action instanceof com.worldventures.dreamtrips.api.api_common.BaseHttpAction) && exception instanceof HttpServiceException) {
+         apiErrorView.onApiCallFailed();
+
+         ErrorResponse errorResponse;
+         if (action instanceof BaseHttpAction) {
+            errorResponse = ((BaseHttpAction) action).getErrorResponse();
+         } else {
+            errorResponse = new ErrorResponse();
+            com.worldventures.dreamtrips.api.api_common.error.ErrorResponse errorResponseNew = ((com.worldventures.dreamtrips.api.api_common.BaseHttpAction) action)
+                  .errorResponse();
+            if (errorResponseNew != null) errorResponse.setErrors(errorResponseNew.errors());
+         }
+
+         if (getCauseByType(IOException.class, exception.getCause()) != null) {
+            apiErrorView.informUser(R.string.no_connection);
+         } else if (errorResponse != null) {
             logError(errorResponse);
-            //
-            if (!apiErrorView.onApiError(errorResponse))
-                apiErrorView.informUser(errorResponse.getFirstMessage());
-        } else if (!handleJanetHttpError(null, exception)) {
-            apiErrorView.informUser(R.string.smth_went_wrong);
-        }
-    }
+            if (!apiErrorView.onApiError(errorResponse)) apiErrorView.informUser(errorResponse.getFirstMessage());
+         } else {
+            apiErrorView.informUser(exception.getCause().getLocalizedMessage());
+         }
+         return true;
+      }
+      if (exception instanceof JanetActionException) {
+         JanetActionException actionError = (JanetActionException) exception;
+         return handleJanetHttpError(actionError.getAction(), actionError.getCause());
+      }
+      if (exception.getCause() != null) {
+         return handleJanetHttpError(action, exception.getCause());
+      }
+      return false;
+   }
 
-    public void handleActionError(Object action, Throwable exception) {
-        if (exception instanceof CancelException) return;
-        Timber.e(exception, this.getClass().getName() + " handled caught exception");
-        if (!hasView()) {
-            Crashlytics.logException(exception);
-            Timber.e(exception, "ApiErrorPresenter expects apiErrorView to be set, which is null.");
-            return;
-        }
-        //
-        if (!handleJanetHttpError(action, exception)) {
-            apiErrorView.informUser(R.string.smth_went_wrong);
-        }
-    }
-
-    private boolean handleJanetHttpError(Object action, Throwable exception) {
-        if (action instanceof BaseHttpAction
-                && exception instanceof HttpServiceException) {//janet-http
-            apiErrorView.onApiCallFailed();
-            BaseHttpAction httpAction = (BaseHttpAction) action;
-            if (getCauseByType(IOException.class, exception.getCause()) != null) {
-                apiErrorView.informUser(R.string.no_connection);
-            } else if (httpAction.getErrorResponse() != null) {
-                ErrorResponse errorResponse = httpAction.getErrorResponse();
-                logError(errorResponse);
-                if (!apiErrorView.onApiError(errorResponse))
-                    apiErrorView.informUser(errorResponse.getFirstMessage());
-            } else {
-                apiErrorView.informUser(exception.getCause().getLocalizedMessage());
-            }
-            return true;
-        }
-        if (exception instanceof JanetActionException) {
-            JanetActionException actionError = (JanetActionException) exception;
-            return handleJanetHttpError(actionError.getAction(), actionError.getCause());
-        }
-        if (exception.getCause() != null) {
-            return handleJanetHttpError(action, exception.getCause());
-        }
-        return false;
-    }
-
-    private void logError(ErrorResponse errorResponse) {
-        StringBuilder stringBuilder = new StringBuilder("Fields failed: ");
-        //
-        Queryable.from(errorResponse.getErrors()).forEachR(entry -> {
-            stringBuilder.append("\n")
-                    .append(entry.field)
-                    .append(" : ")
-                    .append(TextUtils.join(",", entry.errors));
-        });
-        //
-        Timber.e(stringBuilder.toString());
-    }
+   private void logError(ErrorResponse errorResponse) {
+      StringBuilder stringBuilder = new StringBuilder("Fields failed: ");
+      //
+      Queryable.from(errorResponse.getErrors()).forEachR(entry -> {
+         stringBuilder.append("\n").append(entry.field).append(" : ").append(TextUtils.join(",", entry.errors));
+      });
+      //
+      Timber.e(stringBuilder.toString());
+   }
 }

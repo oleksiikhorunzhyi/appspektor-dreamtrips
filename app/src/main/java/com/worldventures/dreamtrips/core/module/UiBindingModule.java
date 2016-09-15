@@ -19,24 +19,19 @@ import dagger.Module;
 import dagger.Provides;
 
 @Module(
-        injects = {
-                BaseArrayListAdapter.class,
-                BaseDelegateAdapter.class,
-                LoaderRecycleAdapter.class,
-        },
-        library = true, complete = false
-)
+      injects = {BaseArrayListAdapter.class, BaseDelegateAdapter.class, LoaderRecycleAdapter.class,},
+      library = true, complete = false)
 public class UiBindingModule {
 
-    @Provides
-    public AppNotification provideInAppNotification(App app) {
-        return new AppNotificationImpl(app);
-    }
+   @Provides
+   public AppNotification provideInAppNotification(App app) {
+      return new AppNotificationImpl(app);
+   }
 
-    @Singleton
-    @Provides
-    ActivityWatcher provideActivityWatcher(@ForApplication Context context, SessionHolder<UserSession> sessionHolder) {
-        return new ActivityWatcher(context, sessionHolder);
-    }
+   @Singleton
+   @Provides
+   ActivityWatcher provideActivityWatcher(@ForApplication Context context, SessionHolder<UserSession> sessionHolder) {
+      return new ActivityWatcher(context, sessionHolder);
+   }
 
 }

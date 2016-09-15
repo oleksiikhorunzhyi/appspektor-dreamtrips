@@ -37,245 +37,227 @@ import cn.pedant.SweetAlert.SweetAlertDialog;
 
 public class FeedActionPanelView extends LinearLayout implements Flaggable {
 
-    @Optional
-    @InjectView(R.id.comments_count)
-    TextView tvCommentsCount;
-    @Optional
-    @InjectView(R.id.comments)
-    ImageView comments;
-    @Optional
-    @InjectView(R.id.likes_count)
-    TextView tvLikesCount;
-    @Optional
-    @InjectView(R.id.likes)
-    ImageView likes;
-    @Optional
-    @InjectView(R.id.more)
-    ImageView more;
+   @Optional @InjectView(R.id.comments_count) TextView tvCommentsCount;
+   @Optional @InjectView(R.id.comments) ImageView comments;
+   @Optional @InjectView(R.id.likes_count) TextView tvLikesCount;
+   @Optional @InjectView(R.id.likes) ImageView likes;
+   @Optional @InjectView(R.id.more) ImageView more;
 
-    @InjectView(R.id.feed_share)
-    ImageView share;
+   @InjectView(R.id.feed_share) ImageView share;
 
-    OnViewClickListener onCommentIconClickListener;
-    OnViewClickListener onLikeIconClickListener;
-    OnViewClickListener onLikersClickListener;
-    OnViewClickListener onShareClickListener;
-    OnViewClickListener onFlagClickListener;
-    OnViewClickListener onMoreClickListener;
-    OnViewClickListener onEditClickListener;
-    OnViewClickListener onDeleteClickListener;
+   OnViewClickListener onCommentIconClickListener;
+   OnViewClickListener onLikeIconClickListener;
+   OnViewClickListener onLikersClickListener;
+   OnViewClickListener onShareClickListener;
+   OnViewClickListener onFlagClickListener;
+   OnViewClickListener onMoreClickListener;
+   OnViewClickListener onEditClickListener;
+   OnViewClickListener onDeleteClickListener;
 
-    OnFlagDialogClickListener onFlagDialogClickListener;
+   OnFlagDialogClickListener onFlagDialogClickListener;
 
-    private FeedItem feedItem;
-    private boolean foreign;
+   private FeedItem feedItem;
+   private boolean foreign;
 
-    private WeakHandler handler;
+   private WeakHandler handler;
 
-    public FeedActionPanelView(Context context) {
-        this(context, null);
-    }
+   public FeedActionPanelView(Context context) {
+      this(context, null);
+   }
 
-    public FeedActionPanelView(Context context, AttributeSet attrs) {
-        this(context, attrs, 0);
-    }
+   public FeedActionPanelView(Context context, AttributeSet attrs) {
+      this(context, attrs, 0);
+   }
 
-    public FeedActionPanelView(Context context, AttributeSet attrs, int defStyleAttr) {
-        super(context, attrs, defStyleAttr);
-        LayoutInflater.from(context).inflate(R.layout.adapter_item_feed_comment_footer, this, true);
-        ButterKnife.inject(this);
-        setOrientation(VERTICAL);
-        setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
-        handler = new WeakHandler();
-    }
+   public FeedActionPanelView(Context context, AttributeSet attrs, int defStyleAttr) {
+      super(context, attrs, defStyleAttr);
+      LayoutInflater.from(context).inflate(R.layout.adapter_item_feed_comment_footer, this, true);
+      ButterKnife.inject(this);
+      setOrientation(VERTICAL);
+      setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+      handler = new WeakHandler();
+   }
 
-    @OnClick(R.id.likes)
-    public void onLikeIconClick() {
-        if (onLikeIconClickListener != null) {
-            onLikeIconClickListener.onClick(feedItem);
-        }
-    }
+   @OnClick(R.id.likes)
+   public void onLikeIconClick() {
+      if (onLikeIconClickListener != null) {
+         onLikeIconClickListener.onClick(feedItem);
+      }
+   }
 
-    @OnClick({R.id.comments})
-    public void onCommentIconClick() {
-        if (onCommentIconClickListener != null) {
-            onCommentIconClickListener.onClick(feedItem);
-        }
-    }
+   @OnClick({R.id.comments})
+   public void onCommentIconClick() {
+      if (onCommentIconClickListener != null) {
+         onCommentIconClickListener.onClick(feedItem);
+      }
+   }
 
-    @OnClick(R.id.likes_count)
-    public void onLikersClick() {
-        if (onLikersClickListener != null) {
-            onLikersClickListener.onClick(feedItem);
-        }
-    }
+   @OnClick(R.id.likes_count)
+   public void onLikersClick() {
+      if (onLikersClickListener != null) {
+         onLikersClickListener.onClick(feedItem);
+      }
+   }
 
-    @OnClick(R.id.feed_share)
-    public void onShareClick() {
-        if (onShareClickListener != null) {
-            onShareClickListener.onClick(feedItem);
-        }
-    }
+   @OnClick(R.id.feed_share)
+   public void onShareClick() {
+      if (onShareClickListener != null) {
+         onShareClickListener.onClick(feedItem);
+      }
+   }
 
-    @OnClick(R.id.more)
-    public void onMoreClick() {
-        if (foreign) {
-            if (onMoreClickListener != null)
-                onMoreClickListener.onClick(feedItem);
-        } else {
-            PopupMenu popup = new PopupMenu(getContext(), more);
-            popup.inflate(R.menu.menu_feed_flag);
-            popup.setOnMenuItemClickListener(item -> {
-                switch (item.getItemId()) {
-                    case R.id.action_flag:
-                        if (onFlagClickListener != null) {
-                            onFlagClickListener.onClick(feedItem);
-                        }
+   @OnClick(R.id.more)
+   public void onMoreClick() {
+      if (foreign) {
+         if (onMoreClickListener != null) onMoreClickListener.onClick(feedItem);
+      } else {
+         PopupMenu popup = new PopupMenu(getContext(), more);
+         popup.inflate(R.menu.menu_feed_flag);
+         popup.setOnMenuItemClickListener(item -> {
+            switch (item.getItemId()) {
+               case R.id.action_flag:
+                  if (onFlagClickListener != null) {
+                     onFlagClickListener.onClick(feedItem);
+                  }
 
-                        break;
-                }
+                  break;
+            }
 
-                return true;
+            return true;
+         });
+         popup.show();
+      }
+   }
+
+   public void showMoreDialog(@MenuRes int menuRes, @StringRes int headerDelete, @StringRes int textDelete) {
+      more.setEnabled(false);
+      FeedItemMenuBuilder.create(getContext(), more, menuRes)
+            .onDelete(() -> showDeleteDialog(headerDelete, textDelete))
+            .onEdit(this::onEdit)
+            .dismissListener(menu -> handler.postDelayed(() -> more.setEnabled(true), 500))
+            .show();
+   }
+
+   private void showDeleteDialog(@StringRes int headerDelete, @StringRes int textDelete) {
+      Dialog dialog = new SweetAlertDialog(getContext(), SweetAlertDialog.WARNING_TYPE).setTitleText(getResources().getString(headerDelete))
+            .setContentText(getResources().getString(textDelete))
+            .setConfirmText(getResources().getString(R.string.post_delete_confirm))
+            .setConfirmClickListener(sDialog -> {
+               sDialog.dismissWithAnimation();
+               onDelete();
             });
-            popup.show();
-        }
-    }
+      dialog.setCanceledOnTouchOutside(true);
+      dialog.show();
+   }
 
-    public void showMoreDialog(@MenuRes int menuRes, @StringRes int headerDelete, @StringRes int textDelete) {
-        more.setEnabled(false);
-        FeedItemMenuBuilder.create(getContext(), more, menuRes)
-                .onDelete(() -> showDeleteDialog(headerDelete, textDelete))
-                .onEdit(this::onEdit)
-                .dismissListener(menu -> handler.postDelayed(() -> more.setEnabled(true), 500))
-                .show();
-    }
+   protected void onDelete() {
+      onDeleteClickListener.onClick(feedItem);
+   }
 
-    private void showDeleteDialog(@StringRes int headerDelete, @StringRes int textDelete) {
-        Dialog dialog = new SweetAlertDialog(getContext(), SweetAlertDialog.WARNING_TYPE)
-                .setTitleText(getResources().getString(headerDelete))
-                .setContentText(getResources().getString(textDelete))
-                .setConfirmText(getResources().getString(R.string.post_delete_confirm))
-                .setConfirmClickListener(sDialog -> {
-                    sDialog.dismissWithAnimation();
-                    onDelete();
-                });
-        dialog.setCanceledOnTouchOutside(true);
-        dialog.show();
-    }
+   protected void onEdit() {
+      onEditClickListener.onClick(feedItem);
+   }
 
-    protected void onDelete() {
-        onDeleteClickListener.onClick(feedItem);
-    }
+   public void setState(FeedItem feedItem, boolean foreign) {
+      this.feedItem = feedItem;
+      this.foreign = foreign;
+      FeedEntity feedEntity = feedItem.getItem();
+      Resources res = getResources();
 
-    protected void onEdit() {
-        onEditClickListener.onClick(feedItem);
-    }
+      int likesCount = feedEntity.getLikesCount();
+      int commentsCount = feedEntity.getCommentsCount();
+      if (likesCount > 0) {
+         if (tvLikesCount != null) {
+            tvLikesCount.setVisibility(View.VISIBLE);
+            Spanned text = Html.fromHtml(String.format(res.getString(QuantityHelper.chooseResource(likesCount, R.string.likes_count_one, R.string.likes_count_other)), likesCount));
+            tvLikesCount.setText(text);
+         }
+      } else {
+         tvLikesCount.setVisibility(View.GONE);
+      }
 
-    public void setState(FeedItem feedItem, boolean foreign) {
-        this.feedItem = feedItem;
-        this.foreign = foreign;
-        FeedEntity feedEntity = feedItem.getItem();
-        Resources res = getResources();
+      if (tvCommentsCount != null) {
+         if (commentsCount > 0) {
+            tvCommentsCount.setVisibility(View.VISIBLE);
+            Spanned text = Html.fromHtml(String.format(res.getString(QuantityHelper.chooseResource(commentsCount, R.string.comments_count_one, R.string.comments_count_other)), commentsCount));
+            tvCommentsCount.setText(text);
+         } else tvCommentsCount.setVisibility(View.GONE);
+      }
 
-        int likesCount = feedEntity.getLikesCount();
-        int commentsCount = feedEntity.getCommentsCount();
-        if (likesCount > 0) {
-            if (tvLikesCount != null) {
-                tvLikesCount.setVisibility(View.VISIBLE);
-                Spanned text = Html.fromHtml(String.format(res.getString(
-                        QuantityHelper.chooseResource(likesCount, R.string.likes_count_one, R.string.likes_count_other)), likesCount));
-                tvLikesCount.setText(text);
-            }
-        } else {
-            tvLikesCount.setVisibility(View.GONE);
-        }
+      if (likes != null) {
+         likes.setEnabled(true);
+         likes.setImageResource(feedEntity.isLiked() ? R.drawable.ic_feed_thumb_up_blue : R.drawable.ic_feed_thumb_up);
+      }
 
-        if (tvCommentsCount != null) {
-            if (commentsCount > 0) {
-                tvCommentsCount.setVisibility(View.VISIBLE);
-                Spanned text = Html.fromHtml(String.format(res.getString(
-                        QuantityHelper.chooseResource(commentsCount, R.string.comments_count_one, R.string.comments_count_other)), commentsCount));
-                tvCommentsCount.setText(text);
-            } else tvCommentsCount.setVisibility(View.GONE);
-        }
+      if (comments != null) {
+         comments.setEnabled(true);
+      }
 
-        if (likes != null) {
-            likes.setEnabled(true);
-            likes.setImageResource(feedEntity.isLiked() ?
-                    R.drawable.ic_feed_thumb_up_blue :
-                    R.drawable.ic_feed_thumb_up);
-        }
+      boolean isEditableItem = feedItem.getType() != FeedEntityHolder.Type.TRIP;
+      if ((foreign && isEditableItem) || isEditableItem) {
+         more.setVisibility(View.VISIBLE);
+      } else {
+         more.setVisibility(View.GONE);
+      }
 
-        if (comments != null) {
-            comments.setEnabled(true);
-        }
+      if (feedItem.getType() == FeedEntityHolder.Type.POST || feedItem.getType() == FeedEntityHolder.Type.TRIP) {
+         share.setVisibility(View.GONE);
+      } else {
+         share.setVisibility(View.VISIBLE);
+      }
+   }
 
-        boolean isEditableItem = feedItem.getType() != FeedEntityHolder.Type.TRIP;
-        if ((foreign && isEditableItem) || isEditableItem) {
-            more.setVisibility(View.VISIBLE);
-        } else {
-            more.setVisibility(View.GONE);
-        }
+   public void setOnCommentIconClickListener(OnViewClickListener onCommentIconClickListener) {
+      this.onCommentIconClickListener = onCommentIconClickListener;
+   }
 
-        if (feedItem.getType() == FeedEntityHolder.Type.POST
-                || feedItem.getType() == FeedEntityHolder.Type.TRIP) {
-            share.setVisibility(View.GONE);
-        } else {
-            share.setVisibility(View.VISIBLE);
-        }
-    }
+   public void setOnLikeIconClickListener(OnViewClickListener onLikeIconClickListener) {
+      this.onLikeIconClickListener = onLikeIconClickListener;
+   }
 
-    public void setOnCommentIconClickListener(OnViewClickListener onCommentIconClickListener) {
-        this.onCommentIconClickListener = onCommentIconClickListener;
-    }
+   public void setOnLikersClickListener(OnViewClickListener onLikersClickListener) {
+      this.onLikersClickListener = onLikersClickListener;
+   }
 
-    public void setOnLikeIconClickListener(OnViewClickListener onLikeIconClickListener) {
-        this.onLikeIconClickListener = onLikeIconClickListener;
-    }
+   public void setOnShareClickListener(OnViewClickListener onShareClickListener) {
+      this.onShareClickListener = onShareClickListener;
+   }
 
-    public void setOnLikersClickListener(OnViewClickListener onLikersClickListener) {
-        this.onLikersClickListener = onLikersClickListener;
-    }
+   public void setOnFlagClickListener(OnViewClickListener onFlagClickListener) {
+      this.onFlagClickListener = onFlagClickListener;
+   }
 
-    public void setOnShareClickListener(OnViewClickListener onShareClickListener) {
-        this.onShareClickListener = onShareClickListener;
-    }
+   public void setOnFlagDialogClickListener(OnFlagDialogClickListener onFlagDialogClickListener) {
+      this.onFlagDialogClickListener = onFlagDialogClickListener;
+   }
 
-    public void setOnFlagClickListener(OnViewClickListener onFlagClickListener) {
-        this.onFlagClickListener = onFlagClickListener;
-    }
+   public void setOnMoreClickListener(OnViewClickListener onMoreClickListener) {
+      this.onMoreClickListener = onMoreClickListener;
+   }
 
-    public void setOnFlagDialogClickListener(OnFlagDialogClickListener onFlagDialogClickListener) {
-        this.onFlagDialogClickListener = onFlagDialogClickListener;
-    }
+   public void setOnEditClickListener(OnViewClickListener onEditClickListener) {
+      this.onEditClickListener = onEditClickListener;
+   }
 
-    public void setOnMoreClickListener(OnViewClickListener onMoreClickListener) {
-        this.onMoreClickListener = onMoreClickListener;
-    }
+   public void setOnDeleteClickListener(OnViewClickListener onDeleteClickListener) {
+      this.onDeleteClickListener = onDeleteClickListener;
+   }
 
-    public void setOnEditClickListener(OnViewClickListener onEditClickListener) {
-        this.onEditClickListener = onEditClickListener;
-    }
+   @Override
+   public void showFlagDialog(List<Flag> flags) {
+      FlagPopupMenu popupMenu = new FlagPopupMenu(getContext(), more);
+      popupMenu.show(flags, (flagReasonId, reason) -> {
+         if (onFlagDialogClickListener != null) {
+            onFlagDialogClickListener.onClick(feedItem, flagReasonId, reason);
+         }
+      });
+   }
 
-    public void setOnDeleteClickListener(OnViewClickListener onDeleteClickListener) {
-        this.onDeleteClickListener = onDeleteClickListener;
-    }
+   public interface OnViewClickListener {
+      void onClick(FeedItem feedItem);
+   }
 
-    @Override
-    public void showFlagDialog(List<Flag> flags) {
-        FlagPopupMenu popupMenu = new FlagPopupMenu(getContext(), more);
-        popupMenu.show(flags, (flagReasonId, reason) -> {
-            if (onFlagDialogClickListener != null) {
-                onFlagDialogClickListener.onClick(feedItem, flagReasonId, reason);
-            }
-        });
-    }
-
-    public interface OnViewClickListener {
-        void onClick(FeedItem feedItem);
-    }
-
-    public interface OnFlagDialogClickListener {
-        void onClick(FeedItem feedItem, int flagReasonId, String reason);
-    }
+   public interface OnFlagDialogClickListener {
+      void onClick(FeedItem feedItem, int flagReasonId, String reason);
+   }
 }

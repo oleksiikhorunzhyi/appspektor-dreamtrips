@@ -24,120 +24,118 @@ import icepick.State;
 
 public class PhotoEditPresenter extends Presenter<PhotoEditPresenter.View> {
 
-    @State
-    Photo photo;
+   @State Photo photo;
 
-    public PhotoEditPresenter(EditPhotoBundle editPhotoBundle) {
-        photo = editPhotoBundle.getPhoto();
-    }
+   public PhotoEditPresenter(EditPhotoBundle editPhotoBundle) {
+      photo = editPhotoBundle.getPhoto();
+   }
 
-    @Override
-    public void takeView(View view) {
-        super.takeView(view);
-        updatePhotoInfo();
-        syncUi();
-        view.setupTaggingHolder(this.photo);
-    }
+   @Override
+   public void takeView(View view) {
+      super.takeView(view);
+      updatePhotoInfo();
+      syncUi();
+      view.setupTaggingHolder(this.photo);
+   }
 
-    public void updatePhotoInfo() {
-        doRequest(new GetFeedEntityQuery(photo.getFSId()), entity -> {
-            this.photo = (Photo) entity.getItem();
-            view.setupTaggingHolder(this.photo);
-        }, spiceException -> view.setupTaggingHolder(photo));
-    }
+   public void updatePhotoInfo() {
+      doRequest(new GetFeedEntityQuery(photo.getFSId()), entity -> {
+         this.photo = (Photo) entity.getItem();
+         view.setupTaggingHolder(this.photo);
+      }, spiceException -> view.setupTaggingHolder(photo));
+   }
 
-    private void syncUi() {
-        Calendar calendar = Calendar.getInstance();
-        Date photoDate = photo.getShotAt();
-        if (photoDate != null) calendar.setTime(photoDate);
+   private void syncUi() {
+      Calendar calendar = Calendar.getInstance();
+      Date photoDate = photo.getShotAt();
+      if (photoDate != null) calendar.setTime(photoDate);
 
-        int year = calendar.get(Calendar.YEAR);
-        int month = calendar.get(Calendar.MONTH);
-        int day = calendar.get(Calendar.DAY_OF_MONTH);
-        int hour = calendar.get(Calendar.HOUR_OF_DAY);
-        int minute = calendar.get(Calendar.MINUTE);
+      int year = calendar.get(Calendar.YEAR);
+      int month = calendar.get(Calendar.MONTH);
+      int day = calendar.get(Calendar.DAY_OF_MONTH);
+      int hour = calendar.get(Calendar.HOUR_OF_DAY);
+      int minute = calendar.get(Calendar.MINUTE);
 
-        onDataSet(year, month, day);
-        onTimeSet(hour, minute);
+      onDataSet(year, month, day);
+      onTimeSet(hour, minute);
 
-        view.setImage(Uri.parse(photo.getFSImage().getUrl()));
-        view.setTitle(photo.getTitle());
-        view.setLocation(photo.getFSLocation());
+      view.setImage(Uri.parse(photo.getFSImage().getUrl()));
+      view.setTitle(photo.getTitle());
+      view.setLocation(photo.getFSLocation());
 
-        if (photo.getTags() != null)
-            view.setTags(TextUtils.join(", ", photo.getTags()));
-    }
+      if (photo.getTags() != null) view.setTags(TextUtils.join(", ", photo.getTags()));
+   }
 
-    public void onDataSet(int year, int month, int day) {
-        String format = DateTimeUtils.convertDateToString(year, month, day);
-        view.setDate(format);
-    }
+   public void onDataSet(int year, int month, int day) {
+      String format = DateTimeUtils.convertDateToString(year, month, day);
+      view.setDate(format);
+   }
 
-    public void onTimeSet(int h, int m) {
-        String format = DateTimeUtils.convertTimeToString(h, m);
-        view.setTime(format);
-    }
+   public void onTimeSet(int h, int m) {
+      String format = DateTimeUtils.convertTimeToString(h, m);
+      view.setTime(format);
+   }
 
-    public void saveAction() {
-        view.setEnabledSaveButton(false);
-        UploadTask imageUploadTask = new UploadTask();
-        imageUploadTask.setTitle(view.getTitle());
+   public void saveAction() {
+      view.setEnabledSaveButton(false);
+      UploadTask imageUploadTask = new UploadTask();
+      imageUploadTask.setTitle(view.getTitle());
 
-        List<String> tags = Queryable.from(view.getTags().split(",")).map(String::trim).toList();
-        imageUploadTask.setTags(new ArrayList<>(tags));
-        imageUploadTask.setLatitude(0);
-        imageUploadTask.setLongitude(0);
-        imageUploadTask.setLocationName(view.getLocation());
+      List<String> tags = Queryable.from(view.getTags().split(",")).map(String::trim).toList();
+      imageUploadTask.setTags(new ArrayList<>(tags));
+      imageUploadTask.setLatitude(0);
+      imageUploadTask.setLongitude(0);
+      imageUploadTask.setLocationName(view.getLocation());
 
-        Date date = DateTimeUtils.dateFromString(view.getDate());
-        Date time = DateTimeUtils.timeFromString(view.getTime());
-        imageUploadTask.setShotAt(DateTimeUtils.mergeDateTime(date, time));
+      Date date = DateTimeUtils.dateFromString(view.getDate());
+      Date time = DateTimeUtils.timeFromString(view.getTime());
+      imageUploadTask.setShotAt(DateTimeUtils.mergeDateTime(date, time));
 
-        doRequest(new EditTripPhotoCommand(photo.getUid(), imageUploadTask), updatedPhoto -> {
-            photo.setTitle(view.getTitle());
-            photo.setTags(new ArrayList<>(tags));
-            Location location = new Location(0, 0);
-            location.setName(view.getLocation());
-            photo.setCoordinates(location);
-            photo.setShotAt(DateTimeUtils.mergeDateTime(date, time));
-            eventBus.post(new FeedEntityChangedEvent((updatedPhoto)));
-            view.pushTags();
-        }, spiceException -> {
-            super.handleError(spiceException);
-            view.setEnabledSaveButton(true);
-        });
-    }
+      doRequest(new EditTripPhotoCommand(photo.getUid(), imageUploadTask), updatedPhoto -> {
+         photo.setTitle(view.getTitle());
+         photo.setTags(new ArrayList<>(tags));
+         Location location = new Location(0, 0);
+         location.setName(view.getLocation());
+         photo.setCoordinates(location);
+         photo.setShotAt(DateTimeUtils.mergeDateTime(date, time));
+         eventBus.post(new FeedEntityChangedEvent((updatedPhoto)));
+         view.pushTags();
+      }, spiceException -> {
+         super.handleError(spiceException);
+         view.setEnabledSaveButton(true);
+      });
+   }
 
-    public interface View extends Presenter.View {
+   public interface View extends Presenter.View {
 
-        void finish();
+      void finish();
 
-        void setImage(Uri uri);
+      void setImage(Uri uri);
 
-        void setTitle(String title);
+      void setTitle(String title);
 
-        void setLocation(String location);
+      void setLocation(String location);
 
-        void setTags(String tags);
+      void setTags(String tags);
 
-        String getLocation();
+      String getLocation();
 
-        String getTags();
+      String getTags();
 
-        String getTitle();
+      String getTitle();
 
-        String getDate();
+      String getDate();
 
-        void setDate(String format);
+      void setDate(String format);
 
-        String getTime();
+      String getTime();
 
-        void setTime(String format);
+      void setTime(String format);
 
-        void setEnabledSaveButton(boolean enabled);
+      void setEnabledSaveButton(boolean enabled);
 
-        void setupTaggingHolder(Photo photo);
+      void setupTaggingHolder(Photo photo);
 
-        void pushTags();
-    }
+      void pushTags();
+   }
 }

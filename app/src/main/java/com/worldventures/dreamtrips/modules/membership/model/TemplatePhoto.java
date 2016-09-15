@@ -4,13 +4,13 @@ import android.net.Uri;
 
 public class TemplatePhoto {
 
-    private Uri path;
+   private Uri path;
 
-    public TemplatePhoto(Uri path) {
-        this.path = path;
-    }
+   public TemplatePhoto(Uri path) {
+      this.path = path;
+   }
 
-    public Uri getPath() {
-        return path;
-    }
+   public Uri getPath() {
+      return path;
+   }
 }

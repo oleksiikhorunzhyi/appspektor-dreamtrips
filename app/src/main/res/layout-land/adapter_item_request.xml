@@ -1,18 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.v7.widget.CardView
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:fresco="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:layout_margin="@dimen/spacing_normal">
+<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+      xmlns:app="http://schemas.android.com/apk/res-auto"
+      xmlns:fresco="http://schemas.android.com/apk/res-auto"
+      xmlns:tools="http://schemas.android.com/tools"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:layout_margin="@dimen/spacing_normal"
+      >
 
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+   <RelativeLayout
+         android:layout_width="match_parent"
+         android:layout_height="wrap_content"
+         >
 
-        <com.worldventures.dreamtrips.modules.common.view.custom.SmartAvatarView
+      <com.worldventures.dreamtrips.modules.common.view.custom.SmartAvatarView
             android:id="@+id/sdv_avatar"
             android:layout_width="72dp"
             android:layout_height="72dp"
@@ -23,9 +24,10 @@
             android:layout_marginTop="@dimen/spacing_normal"
             fresco:placeholderImage="@drawable/ic_avatar_placeholder"
             fresco:placeholderImageScaleType="centerInside"
-            fresco:roundAsCircle="true"/>
+            fresco:roundAsCircle="true"
+            />
 
-        <LinearLayout
+      <LinearLayout
             android:id="@+id/user_info_container"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -34,36 +36,40 @@
             android:layout_toRightOf="@id/sdv_avatar"
             android:orientation="vertical"
             android:paddingLeft="@dimen/spacing_normal"
-            android:paddingRight="@dimen/spacing_normal">
+            android:paddingRight="@dimen/spacing_normal"
+            >
 
-            <TextView
-                android:id="@+id/tv_name"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:singleLine="true"
-                android:textColor="@color/black"
-                android:textSize="16sp"
-                tools:text="Jon Snow"/>
+         <TextView
+               android:id="@+id/tv_name"
+               android:layout_width="wrap_content"
+               android:layout_height="wrap_content"
+               android:singleLine="true"
+               android:textColor="@color/black"
+               android:textSize="16sp"
+               tools:text="Jon Snow"
+               />
 
-            <TextView
-                android:id="@+id/tv_company"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:singleLine="true"
-                android:textColor="@color/black"
-                android:textSize="16sp"
-                tools:text="Adobe"/>
+         <TextView
+               android:id="@+id/tv_company"
+               android:layout_width="wrap_content"
+               android:layout_height="wrap_content"
+               android:singleLine="true"
+               android:textColor="@color/black"
+               android:textSize="16sp"
+               tools:text="Adobe"
+               />
 
-            <TextView
-                android:id="@+id/tv_mutual"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:singleLine="true"
-                android:textSize="14sp"
-                tools:text="10 mutual friends"/>
-        </LinearLayout>
+         <TextView
+               android:id="@+id/tv_mutual"
+               android:layout_width="wrap_content"
+               android:layout_height="wrap_content"
+               android:singleLine="true"
+               android:textSize="14sp"
+               tools:text="10 mutual friends"
+               />
+      </LinearLayout>
 
-        <LinearLayout
+      <LinearLayout
             android:id="@+id/buttonContainer"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -71,93 +77,98 @@
             android:layout_toEndOf="@id/sdv_avatar"
             android:layout_toRightOf="@id/sdv_avatar"
             android:orientation="horizontal"
-            android:padding="@dimen/spacing_small">
+            android:padding="@dimen/spacing_small"
+            >
 
-            <com.dd.ShadowLayout
-                android:id="@+id/accept_button"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_margin="@dimen/spacing_tiny"
-                app:sl_cornerRadius="2dp"
-                app:sl_shadowColor="@color/black_semi_transparent">
+         <com.dd.ShadowLayout
+               android:id="@+id/accept_button"
+               android:layout_width="wrap_content"
+               android:layout_height="wrap_content"
+               android:layout_margin="@dimen/spacing_tiny"
+               app:sl_cornerRadius="2dp"
+               app:sl_shadowColor="@color/black_semi_transparent"
+               >
 
-                <TextView
-                    android:id="@+id/accept"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:background="@drawable/bg_button_blue"
-                    android:padding="@dimen/spacing_small"
-                    android:text="@string/friend_accept"
-                    android:textAllCaps="true"
-                    android:textColor="@android:color/white"
-                    />
+            <TextView
+                  android:id="@+id/accept"
+                  android:layout_width="wrap_content"
+                  android:layout_height="wrap_content"
+                  android:background="@drawable/bg_button_blue"
+                  android:padding="@dimen/spacing_small"
+                  android:text="@string/friend_accept"
+                  android:textAllCaps="true"
+                  android:textColor="@android:color/white"
+                  />
 
-            </com.dd.ShadowLayout>
+         </com.dd.ShadowLayout>
 
-            <com.dd.ShadowLayout
-                android:id="@+id/reject_button"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_margin="@dimen/spacing_tiny"
-                app:sl_cornerRadius="2dp"
-                app:sl_shadowColor="@color/black_semi_transparent">
+         <com.dd.ShadowLayout
+               android:id="@+id/reject_button"
+               android:layout_width="wrap_content"
+               android:layout_height="wrap_content"
+               android:layout_margin="@dimen/spacing_tiny"
+               app:sl_cornerRadius="2dp"
+               app:sl_shadowColor="@color/black_semi_transparent"
+               >
 
-                <TextView
-                    android:id="@+id/reject"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:background="@drawable/bg_button_white"
-                    android:padding="@dimen/spacing_small"
-                    android:text="@string/friend_reject"
-                    android:textAllCaps="true"
-                    android:textColor="@android:color/black"
-                    />
+            <TextView
+                  android:id="@+id/reject"
+                  android:layout_width="wrap_content"
+                  android:layout_height="wrap_content"
+                  android:background="@drawable/bg_button_white"
+                  android:padding="@dimen/spacing_small"
+                  android:text="@string/friend_reject"
+                  android:textAllCaps="true"
+                  android:textColor="@android:color/black"
+                  />
 
-            </com.dd.ShadowLayout>
+         </com.dd.ShadowLayout>
 
-            <com.dd.ShadowLayout
-                android:id="@+id/hide_button"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_margin="@dimen/spacing_tiny"
-                app:sl_cornerRadius="2dp"
-                app:sl_shadowColor="@color/black_semi_transparent">
+         <com.dd.ShadowLayout
+               android:id="@+id/hide_button"
+               android:layout_width="wrap_content"
+               android:layout_height="wrap_content"
+               android:layout_margin="@dimen/spacing_tiny"
+               app:sl_cornerRadius="2dp"
+               app:sl_shadowColor="@color/black_semi_transparent"
+               >
 
-                <TextView
-                    android:id="@+id/hide"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:background="@drawable/bg_button_white"
-                    android:padding="@dimen/spacing_small"
-                    android:text="@string/friend_hide"
-                    android:textAllCaps="true"
-                    android:textColor="@android:color/black"
-                    />
+            <TextView
+                  android:id="@+id/hide"
+                  android:layout_width="wrap_content"
+                  android:layout_height="wrap_content"
+                  android:background="@drawable/bg_button_white"
+                  android:padding="@dimen/spacing_small"
+                  android:text="@string/friend_hide"
+                  android:textAllCaps="true"
+                  android:textColor="@android:color/black"
+                  />
 
-            </com.dd.ShadowLayout>
+         </com.dd.ShadowLayout>
 
-            <com.dd.ShadowLayout
-                android:id="@+id/cancel_button"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_margin="@dimen/spacing_tiny"
-                app:sl_cornerRadius="2dp"
-                app:sl_shadowColor="@color/black_semi_transparent">
+         <com.dd.ShadowLayout
+               android:id="@+id/cancel_button"
+               android:layout_width="wrap_content"
+               android:layout_height="wrap_content"
+               android:layout_margin="@dimen/spacing_tiny"
+               app:sl_cornerRadius="2dp"
+               app:sl_shadowColor="@color/black_semi_transparent"
+               >
 
-                <TextView
-                    android:id="@+id/cancel"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:background="@drawable/bg_button_white"
-                    android:padding="@dimen/spacing_small"
-                    android:text="@string/friend_cancel"
-                    android:textAllCaps="true"
-                    android:textColor="@android:color/black"
-                    />
+            <TextView
+                  android:id="@+id/cancel"
+                  android:layout_width="wrap_content"
+                  android:layout_height="wrap_content"
+                  android:background="@drawable/bg_button_white"
+                  android:padding="@dimen/spacing_small"
+                  android:text="@string/friend_cancel"
+                  android:textAllCaps="true"
+                  android:textColor="@android:color/black"
+                  />
 
-            </com.dd.ShadowLayout>
-        </LinearLayout>
+         </com.dd.ShadowLayout>
+      </LinearLayout>
 
-    </RelativeLayout>
+   </RelativeLayout>
 
 </android.support.v7.widget.CardView>

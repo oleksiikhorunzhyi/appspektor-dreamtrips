@@ -16,64 +16,60 @@ import javax.inject.Inject;
 import de.greenrobot.event.EventBus;
 import timber.log.Timber;
 
-public abstract class DtlPresenterImpl<V extends DtlScreen, S extends Parcelable>
-        extends BaseViewStateMvpPresenter<V, S> implements DtlPresenter<V, S> {
+public abstract class DtlPresenterImpl<V extends DtlScreen, S extends Parcelable> extends BaseViewStateMvpPresenter<V, S> implements DtlPresenter<V, S> {
 
-    @Inject
-    @Global
-    protected EventBus eventBus;
-    @Inject
-    protected AnalyticsInteractor analyticsInteractor;
+   @Inject @Global protected EventBus eventBus;
+   @Inject protected AnalyticsInteractor analyticsInteractor;
 
-    protected ApiErrorPresenter apiErrorPresenter;
+   protected ApiErrorPresenter apiErrorPresenter;
 
-    protected Context context;
+   protected Context context;
 
-    public DtlPresenterImpl(Context context) {
-        this.context = context;
-        apiErrorPresenter = new ApiErrorPresenter();
-    }
+   public DtlPresenterImpl(Context context) {
+      this.context = context;
+      apiErrorPresenter = new ApiErrorPresenter();
+   }
 
-    public Context getContext() {
-        return context;
-    }
+   public Context getContext() {
+      return context;
+   }
 
-    @Override
-    public int getToolbarMenuRes() {
-        return 0;
-    }
+   @Override
+   public int getToolbarMenuRes() {
+      return 0;
+   }
 
-    @Override
-    public void onToolbarMenuPrepared(Menu menu) {
-    }
+   @Override
+   public void onToolbarMenuPrepared(Menu menu) {
+   }
 
-    @Override
-    public boolean onToolbarMenuItemClick(MenuItem item) {
-        return false;
-    }
+   @Override
+   public boolean onToolbarMenuItemClick(MenuItem item) {
+      return false;
+   }
 
-    @Override
-    public void onNewViewState() {
-    }
+   @Override
+   public void onNewViewState() {
+   }
 
-    @Override
-    public void applyViewState() {
-    }
+   @Override
+   public void applyViewState() {
+   }
 
-    @Override
-    @CallSuper
-    public void onAttachedToWindow() {
-        try {
-            eventBus.registerSticky(this);
-        } catch (Exception ignored) {
-            Timber.v("EventBus :: Problem on registering sticky - no \'onEvent' method found in " + getClass().getName());
-        }
-    }
+   @Override
+   @CallSuper
+   public void onAttachedToWindow() {
+      try {
+         eventBus.registerSticky(this);
+      } catch (Exception ignored) {
+         Timber.v("EventBus :: Problem on registering sticky - no \'onEvent' method found in " + getClass().getName());
+      }
+   }
 
-    @Override
-    @CallSuper
-    public void onDetachedFromWindow() {
-        apiErrorPresenter.dropView();
-        if (EventBus.getDefault().isRegistered(this)) eventBus.unregister(this);
-    }
+   @Override
+   @CallSuper
+   public void onDetachedFromWindow() {
+      apiErrorPresenter.dropView();
+      if (EventBus.getDefault().isRegistered(this)) eventBus.unregister(this);
+   }
 }

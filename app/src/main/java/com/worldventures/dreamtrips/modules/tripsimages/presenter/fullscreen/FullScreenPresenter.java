@@ -14,71 +14,70 @@ import com.worldventures.dreamtrips.modules.tripsimages.model.TripImagesType;
 
 public abstract class FullScreenPresenter<T extends IFullScreenObject, PRESENTER_VIEW extends FullScreenPresenter.View> extends Presenter<PRESENTER_VIEW> {
 
-    protected TripImagesType type;
-    protected T photo;
+   protected TripImagesType type;
+   protected T photo;
 
-    public FullScreenPresenter(T photo, TripImagesType type) {
-        this.photo = photo;
-        this.type = type;
-    }
+   public FullScreenPresenter(T photo, TripImagesType type) {
+      this.photo = photo;
+      this.type = type;
+   }
 
-    @Override
-    public void takeView(PRESENTER_VIEW view) {
-        super.takeView(view);
-        setupActualViewState();
-        TrackingHelper.view(type, String.valueOf(photo.getFSId()), getAccountUserId());
-    }
+   @Override
+   public void takeView(PRESENTER_VIEW view) {
+      super.takeView(view);
+      setupActualViewState();
+      TrackingHelper.view(type, String.valueOf(photo.getFSId()), getAccountUserId());
+   }
 
-    public void onEdit() {
-    }
+   public void onEdit() {
+   }
 
-    public void onLikeAction() {
-    }
+   public void onLikeAction() {
+   }
 
-    public void onFlagAction(Flaggable flaggable) {
-    }
+   public void onFlagAction(Flaggable flaggable) {
+   }
 
-    public void onCommentsAction() {
+   public void onCommentsAction() {
 
-    }
+   }
 
-    public void onLikesAction() {
+   public void onLikesAction() {
 
-    }
+   }
 
-    public void onUserClicked() {
-        User user = photo.getUser();
-        if (user != null)
-            view.openUser(new UserBundle(user));
-    }
+   public void onUserClicked() {
+      User user = photo.getUser();
+      if (user != null) view.openUser(new UserBundle(user));
+   }
 
-    public final void setupActualViewState() {
-        view.setContent(photo);
-    }
+   public final void setupActualViewState() {
+      view.setContent(photo);
+   }
 
-    public void sendFlagAction(int flagReasonId, String reason) {
-    }
+   public void sendFlagAction(int flagReasonId, String reason) {
+   }
 
-    public void onDeleteAction() {
-    }
+   public void onDeleteAction() {
+   }
 
-    public void onShare(@ShareType String type) {
-        if (type.equals(ShareType.EXTERNAL_STORAGE)) {
-            doRequest(new DownloadImageCommand(context, photo.getFSImage().getUrl()));
-        } else {
-            view.openShare(photo.getFSImage().getUrl(), photo.getFSShareText(), type);
-        }
-        if (photo instanceof Inspiration) {
-            TrackingHelper.insprShare(photo.getFSId(), type);
-        }
-    }
+   public void onShare(@ShareType String type) {
+      if (type.equals(ShareType.EXTERNAL_STORAGE)) {
+         doRequest(new DownloadImageCommand(context, photo.getFSImage().getUrl()));
+      } else {
+         view.openShare(photo.getFSImage().getUrl(), photo.getFSShareText(), type);
+      }
+      if (photo instanceof Inspiration) {
+         TrackingHelper.insprShare(photo.getFSId(), type);
+      }
+   }
 
-    public interface View extends RxView {
+   public interface View extends RxView {
 
-        void openUser(UserBundle bundle);
+      void openUser(UserBundle bundle);
 
-        void openShare(String imageUrl, String text, @ShareType String type);
+      void openShare(String imageUrl, String text, @ShareType String type);
 
-        <T extends IFullScreenObject> void setContent(T photo);
-    }
+      <T extends IFullScreenObject> void setContent(T photo);
+   }
 }

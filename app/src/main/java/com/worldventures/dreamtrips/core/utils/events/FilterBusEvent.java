@@ -4,13 +4,13 @@ import com.worldventures.dreamtrips.util.TripsFilterData;
 
 
 public class FilterBusEvent {
-    TripsFilterData tripsFilterData;
+   TripsFilterData tripsFilterData;
 
-    public FilterBusEvent(TripsFilterData tripsFilterData) {
-        this.tripsFilterData = tripsFilterData;
-    }
+   public FilterBusEvent(TripsFilterData tripsFilterData) {
+      this.tripsFilterData = tripsFilterData;
+   }
 
-    public TripsFilterData getTripsFilterData() {
-        return tripsFilterData;
-    }
+   public TripsFilterData getTripsFilterData() {
+      return tripsFilterData;
+   }
 }

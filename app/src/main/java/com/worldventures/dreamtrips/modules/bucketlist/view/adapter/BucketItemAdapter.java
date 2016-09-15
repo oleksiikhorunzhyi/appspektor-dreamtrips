@@ -8,12 +8,12 @@ import com.worldventures.dreamtrips.modules.common.view.adapter.DraggableArrayLi
 
 public class BucketItemAdapter extends DraggableArrayListAdapter<BucketItem> {
 
-    public BucketItemAdapter(Context context, Injector injector) {
-        super(context, injector);
-    }
+   public BucketItemAdapter(Context context, Injector injector) {
+      super(context, injector);
+   }
 
-    @Override
-    public long getItemId(int position) {
-        return getItem(position).getUid().hashCode();
-    }
+   @Override
+   public long getItemId(int position) {
+      return getItem(position).getUid().hashCode();
+   }
 }

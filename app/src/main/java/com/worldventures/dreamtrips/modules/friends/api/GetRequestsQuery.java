@@ -8,17 +8,17 @@ import java.util.ArrayList;
 
 public class GetRequestsQuery extends Query<ArrayList<User>> {
 
-    public GetRequestsQuery() {
-        super((Class<ArrayList<User>>) new ArrayList<User>().getClass());
-    }
+   public GetRequestsQuery() {
+      super((Class<ArrayList<User>>) new ArrayList<User>().getClass());
+   }
 
-    @Override
-    public ArrayList<User> loadDataFromNetwork() throws Exception {
-        return getService().getRequests();
-    }
+   @Override
+   public ArrayList<User> loadDataFromNetwork() throws Exception {
+      return getService().getRequests();
+   }
 
-    @Override
-    public int getErrorMessage() {
-        return R.string.error_failed_to_load_friend_requests;
-    }
+   @Override
+   public int getErrorMessage() {
+      return R.string.error_failed_to_load_friend_requests;
+   }
 }

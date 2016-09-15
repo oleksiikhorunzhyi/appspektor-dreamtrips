@@ -8,13 +8,13 @@ import com.worldventures.dreamtrips.modules.dtl_flow.DtlMasterPath;
 @Layout(R.layout.screen_dtl_location_change)
 public class DtlLocationChangePath extends DtlMasterPath {
 
-    @Override
-    public PathAttrs getAttrs() {
-        return PathAttrs.WITHOUT_DRAWER;
-    }
+   @Override
+   public PathAttrs getAttrs() {
+      return PathAttrs.WITHOUT_DRAWER;
+   }
 
-    @Override
-    public boolean isFullScreen() {
-        return false;
-    }
+   @Override
+   public boolean isFullScreen() {
+      return false;
+   }
 }

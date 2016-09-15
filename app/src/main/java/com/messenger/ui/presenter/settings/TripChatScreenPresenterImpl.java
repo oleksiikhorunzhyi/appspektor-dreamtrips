@@ -8,13 +8,13 @@ import com.worldventures.dreamtrips.R;
 
 public class TripChatScreenPresenterImpl extends BaseGroupChatSettingsScreenPresenterImpl {
 
-    public TripChatScreenPresenterImpl(Context context, Injector injector, String conversationId) {
-        super(context, injector, conversationId);
-    }
+   public TripChatScreenPresenterImpl(Context context, Injector injector, String conversationId) {
+      super(context, injector, conversationId);
+   }
 
-    @Override
-    public void onToolbarMenuPrepared(Menu menu) {
-        super.onToolbarMenuPrepared(menu);
-        menu.findItem(R.id.action_overflow).setVisible(false);
-    }
+   @Override
+   public void onToolbarMenuPrepared(Menu menu) {
+      super.onToolbarMenuPrepared(menu);
+      menu.findItem(R.id.action_overflow).setVisible(false);
+   }
 }

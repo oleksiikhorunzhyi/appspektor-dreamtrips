@@ -1,4 +1,3 @@
 package com.worldventures.dreamtrips.modules.tripsimages.events;
 
-public class MyImagesSelectionEvent {
-}
+public class MyImagesSelectionEvent {}

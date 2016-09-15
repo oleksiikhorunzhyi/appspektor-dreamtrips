@@ -5,9 +5,9 @@ import com.worldventures.dreamtrips.modules.dtl_flow.DtlScreen;
 
 public interface DtlStartScreen extends DtlScreen {
 
-    void locationResolutionRequired(Status status);
+   void locationResolutionRequired(Status status);
 
-    void showProgress();
+   void showProgress();
 
-    void hideProgress();
+   void hideProgress();
 }

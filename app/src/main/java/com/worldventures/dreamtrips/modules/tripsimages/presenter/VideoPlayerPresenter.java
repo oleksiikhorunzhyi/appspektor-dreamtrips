@@ -8,38 +8,38 @@ import com.worldventures.dreamtrips.modules.video.utils.HeadphonesPlugReceiver;
 
 public class VideoPlayerPresenter extends ActivityPresenter<VideoPlayerPresenter.View> {
 
-    private HeadphonesPlugReceiver headphonesPlugReceiver;
+   private HeadphonesPlugReceiver headphonesPlugReceiver;
 
-    @Override
-    public void takeView(View view) {
-        super.takeView(view);
-        registerHeadphonesPlugReceiver();
-    }
+   @Override
+   public void takeView(View view) {
+      super.takeView(view);
+      registerHeadphonesPlugReceiver();
+   }
 
-    @Override
-    public void dropView() {
-        super.dropView();
-        unregisterHeadphonesPlugReceiver();
-    }
+   @Override
+   public void dropView() {
+      super.dropView();
+      unregisterHeadphonesPlugReceiver();
+   }
 
-    private void registerHeadphonesPlugReceiver() {
-        headphonesPlugReceiver = new HeadphonesPlugReceiver(){
-            @Override
-            protected void onHeadphonesUnPlugged() {
-                view.onHeadphonesUnPlugged();
-            }
-        };
-        IntentFilter filter = new IntentFilter(Intent.ACTION_HEADSET_PLUG);
-        context.registerReceiver(headphonesPlugReceiver, filter);
-    }
+   private void registerHeadphonesPlugReceiver() {
+      headphonesPlugReceiver = new HeadphonesPlugReceiver() {
+         @Override
+         protected void onHeadphonesUnPlugged() {
+            view.onHeadphonesUnPlugged();
+         }
+      };
+      IntentFilter filter = new IntentFilter(Intent.ACTION_HEADSET_PLUG);
+      context.registerReceiver(headphonesPlugReceiver, filter);
+   }
 
-    private void unregisterHeadphonesPlugReceiver() {
-        if (headphonesPlugReceiver != null) {
-            context.unregisterReceiver(headphonesPlugReceiver);
-        }
-    }
+   private void unregisterHeadphonesPlugReceiver() {
+      if (headphonesPlugReceiver != null) {
+         context.unregisterReceiver(headphonesPlugReceiver);
+      }
+   }
 
-    public interface View extends ActivityPresenter.View {
-        void onHeadphonesUnPlugged();
-    }
+   public interface View extends ActivityPresenter.View {
+      void onHeadphonesUnPlugged();
+   }
 }

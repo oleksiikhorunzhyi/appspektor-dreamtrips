@@ -16,45 +16,42 @@ import butterknife.InjectView;
 import butterknife.OnClick;
 
 @Layout(R.layout.adapter_item_filter_checkbox)
-public class DtlFilterAttributeCell extends AbstractDelegateCell<DtlMerchantAttribute,
-        CellDelegate<DtlMerchantAttribute>> implements SelectableCell {
+public class DtlFilterAttributeCell extends AbstractDelegateCell<DtlMerchantAttribute, CellDelegate<DtlMerchantAttribute>> implements SelectableCell {
 
-    @InjectView(R.id.textViewAttributeCaption)
-    protected TextView textViewName;
-    @InjectView(R.id.checkBox)
-    protected CheckBox checkBox;
-    //
-    private SelectableDelegate selectableDelegate;
+   @InjectView(R.id.textViewAttributeCaption) protected TextView textViewName;
+   @InjectView(R.id.checkBox) protected CheckBox checkBox;
+   //
+   private SelectableDelegate selectableDelegate;
 
-    public DtlFilterAttributeCell(View view) {
-        super(view);
-    }
+   public DtlFilterAttributeCell(View view) {
+      super(view);
+   }
 
-    @Override
-    protected void syncUIStateWithModel() {
-        textViewName.setText(getModelObject().getName());
-        checkBox.setChecked(selectableDelegate.isSelected(getAdapterPosition()));
-    }
+   @Override
+   protected void syncUIStateWithModel() {
+      textViewName.setText(getModelObject().getName());
+      checkBox.setChecked(selectableDelegate.isSelected(getAdapterPosition()));
+   }
 
-    @OnClick(R.id.checkBox)
-    void checkBoxClicked() {
-        selectableDelegate.toggleSelection(getAdapterPosition());
-        cellDelegate.onCellClicked(getModelObject());
-    }
+   @OnClick(R.id.checkBox)
+   void checkBoxClicked() {
+      selectableDelegate.toggleSelection(getAdapterPosition());
+      cellDelegate.onCellClicked(getModelObject());
+   }
 
-    @OnClick(R.id.textViewAttributeCaption)
-    void textViewRegionClick() {
-        checkBox.setChecked(!checkBox.isChecked());
-        checkBoxClicked();
-    }
+   @OnClick(R.id.textViewAttributeCaption)
+   void textViewRegionClick() {
+      checkBox.setChecked(!checkBox.isChecked());
+      checkBoxClicked();
+   }
 
-    @Override
-    public void setSelectableDelegate(SelectableDelegate selectableDelegate) {
-        this.selectableDelegate = selectableDelegate;
-    }
+   @Override
+   public void setSelectableDelegate(SelectableDelegate selectableDelegate) {
+      this.selectableDelegate = selectableDelegate;
+   }
 
-    @Override
-    public void prepareForReuse() {
-        textViewName.setText("");
-    }
+   @Override
+   public void prepareForReuse() {
+      textViewName.setText("");
+   }
 }

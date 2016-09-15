@@ -11,27 +11,16 @@ import com.messenger.util.ChatFacadeManager;
 import dagger.Module;
 
 @Module(
-        includes = {
-                MessengerServerModule.class,
-                MessengerStorageModule.class,
-                MessengerDelegateModule.class,
-                MessengerTypingManagerModule.class
-        },
-        injects = {
-                GroupConversationViewHolder.class,
-                OneToOneConversationViewHolder.class,
-                ClosedGroupConversationViewHolder.class,
+      includes = {MessengerServerModule.class, MessengerStorageModule.class, MessengerDelegateModule.class, MessengerTypingManagerModule.class},
+      injects = {GroupConversationViewHolder.class, OneToOneConversationViewHolder.class, ClosedGroupConversationViewHolder.class,
 
-                ChatFacadeInitializer.class,
-                ChatFacadeManager.class,
+            ChatFacadeInitializer.class, ChatFacadeManager.class,
 
-                // adapters
-                SwipeableContactsAdapter.class,
+            // adapters
+            SwipeableContactsAdapter.class,
 
-                GroupChatEventDelegate.class,
-        },
-        complete = false, library = true
-)
+            GroupChatEventDelegate.class,},
+      complete = false, library = true)
 public class MessengerModule {
 
 

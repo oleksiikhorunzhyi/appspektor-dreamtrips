@@ -1,25 +1,28 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:background="@android:color/transparent"
-                android:gravity="center"
-                android:orientation="vertical">
+      android:layout_width="match_parent"
+      android:layout_height="match_parent"
+      android:background="@android:color/transparent"
+      android:gravity="center"
+      android:orientation="vertical"
+      >
 
-    <FrameLayout
-        android:id="@+id/empty_view"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_marginTop="@dimen/spacing_tiny"
-        android:visibility="gone">
+   <FrameLayout
+         android:id="@+id/empty_view"
+         android:layout_width="match_parent"
+         android:layout_height="match_parent"
+         android:layout_marginTop="@dimen/spacing_tiny"
+         android:visibility="gone"
+         >
 
-        <ImageView
+      <ImageView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:scaleType="fitEnd"
-            android:src="@drawable/ic_background_empty_view"/>
+            android:src="@drawable/ic_background_empty_view"
+            />
 
-        <TextView
+      <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
@@ -27,22 +30,25 @@
             android:padding="25dp"
             android:text="@string/filter_no_results"
             android:textColor="@android:color/black"
-            android:textSize="22dp"/>
-    </FrameLayout>
+            android:textSize="22dp"
+            />
+   </FrameLayout>
 
-    <android.support.v4.widget.SwipeRefreshLayout
-        android:id="@+id/swipe_container"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="@android:color/background_light"
-        android:visibility="visible">
+   <android.support.v4.widget.SwipeRefreshLayout
+         android:id="@+id/swipe_container"
+         android:layout_width="match_parent"
+         android:layout_height="match_parent"
+         android:background="@android:color/background_light"
+         android:visibility="visible"
+         >
 
-        <com.worldventures.dreamtrips.modules.common.view.custom.EmptyRecyclerView
+      <com.worldventures.dreamtrips.modules.common.view.custom.EmptyRecyclerView
             android:id="@+id/list_items"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:padding="@dimen/spacing_tiniest"/>
+            android:padding="@dimen/spacing_tiniest"
+            />
 
-    </android.support.v4.widget.SwipeRefreshLayout>
+   </android.support.v4.widget.SwipeRefreshLayout>
 
 </RelativeLayout>

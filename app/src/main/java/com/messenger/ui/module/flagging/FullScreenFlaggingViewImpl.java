@@ -15,17 +15,16 @@ import butterknife.InjectView;
 
 public class FullScreenFlaggingViewImpl extends FlaggingViewImpl {
 
-    @InjectView(R.id.flag)
-    FlagView flagView;
+   @InjectView(R.id.flag) FlagView flagView;
 
-    public FullScreenFlaggingViewImpl(View view, Injector injector) {
-        super(view, injector);
-        ButterKnife.inject(this, view);
-    }
+   public FullScreenFlaggingViewImpl(View view, Injector injector) {
+      super(view, injector);
+      ButterKnife.inject(this, view);
+   }
 
-    @Override
-    public void showFlagsListDialog(List<Flag> flags) {
-        FlagPopupMenu popupMenu = new FlagPopupMenu(getContext(), flagView);
-        flagView.post(() -> popupMenu.show(flags, flag -> getPresenter().onFlagTypeChosen(flag)));
-    }
+   @Override
+   public void showFlagsListDialog(List<Flag> flags) {
+      FlagPopupMenu popupMenu = new FlagPopupMenu(getContext(), flagView);
+      flagView.post(() -> popupMenu.show(flags, flag -> getPresenter().onFlagTypeChosen(flag)));
+   }
 }

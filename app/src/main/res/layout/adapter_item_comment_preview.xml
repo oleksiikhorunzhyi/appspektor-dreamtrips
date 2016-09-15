@@ -1,67 +1,72 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                xmlns:fresco="http://schemas.android.com/apk/res-auto"
-                xmlns:tools="http://schemas.android.com/tools"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="@color/white"
-                android:orientation="vertical">
+      xmlns:fresco="http://schemas.android.com/apk/res-auto"
+      xmlns:tools="http://schemas.android.com/tools"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:background="@color/white"
+      android:orientation="vertical"
+      >
 
-    <com.worldventures.dreamtrips.modules.common.view.custom.SmartAvatarView
-        android:id="@+id/user_photo"
-        android:layout_width="48dp"
-        android:layout_height="48dp"
-        android:layout_gravity="center_vertical"
-        android:layout_margin="16dp"
-        fresco:placeholderImage="@drawable/ic_avatar_placeholder"
-        fresco:roundAsCircle="true"/>
+   <com.worldventures.dreamtrips.modules.common.view.custom.SmartAvatarView
+         android:id="@+id/user_photo"
+         android:layout_width="48dp"
+         android:layout_height="48dp"
+         android:layout_gravity="center_vertical"
+         android:layout_margin="16dp"
+         fresco:placeholderImage="@drawable/ic_avatar_placeholder"
+         fresco:roundAsCircle="true"
+         />
 
-    <LinearLayout
-        android:id="@+id/content_wrapper"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="@dimen/spacing_normal"
-        android:layout_marginRight="@dimen/spacing_normal"
-        android:layout_marginTop="@dimen/spacing_normal"
-        android:layout_toEndOf="@+id/user_photo"
-        android:layout_toRightOf="@+id/user_photo"
-        android:orientation="vertical">
+   <LinearLayout
+         android:id="@+id/content_wrapper"
+         android:layout_width="match_parent"
+         android:layout_height="wrap_content"
+         android:layout_marginBottom="@dimen/spacing_normal"
+         android:layout_marginRight="@dimen/spacing_normal"
+         android:layout_marginTop="@dimen/spacing_normal"
+         android:layout_toEndOf="@+id/user_photo"
+         android:layout_toRightOf="@+id/user_photo"
+         android:orientation="vertical"
+         >
 
-        <LinearLayout
+      <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="@dimen/spacing_tiny"
             android:layout_marginEnd="@dimen/spacing_small"
             android:layout_marginRight="@dimen/spacing_small"
-            android:orientation="horizontal">
+            android:orientation="horizontal"
+            >
 
-            <TextView
-                android:id="@+id/user_name"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:textColor="@android:color/black"
-                android:textSize="@dimen/font_normal"
-                tools:text="Eldar Mensutov"/>
+         <TextView
+               android:id="@+id/user_name"
+               android:layout_width="0dp"
+               android:layout_height="wrap_content"
+               android:layout_weight="1"
+               android:textColor="@android:color/black"
+               android:textSize="@dimen/font_normal"
+               tools:text="Eldar Mensutov"
+               />
 
-            <ImageView
-                android:id="@+id/edited"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:padding="@dimen/spacing_tiny"
-                android:src="@drawable/ic_edited"
-                android:visibility="gone"/>
+         <ImageView
+               android:id="@+id/edited"
+               android:layout_width="wrap_content"
+               android:layout_height="wrap_content"
+               android:padding="@dimen/spacing_tiny"
+               android:src="@drawable/ic_edited"
+               android:visibility="gone"
+               />
 
-            <TextView
-                android:id="@+id/date"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                tools:text="1 min ago"
+         <TextView
+               android:id="@+id/date"
+               android:layout_width="wrap_content"
+               android:layout_height="wrap_content"
+               tools:text="1 min ago"
+               />
+      </LinearLayout>
 
-                />
-        </LinearLayout>
-
-        <TextView
+      <TextView
             android:id="@+id/text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -71,7 +76,5 @@
             android:maxLines="2"
             tools:text="Lorem ipsulm bla blabla. Lorem ipsulm bla blablaL  oremf ipsulm bla blabla Lorem ipsulm bla blabla Lorem ipsulm bla blabla"
             />
-
-    </LinearLayout>
-
+   </LinearLayout>
 </RelativeLayout>

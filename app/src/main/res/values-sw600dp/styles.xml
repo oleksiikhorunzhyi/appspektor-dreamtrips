@@ -1,16 +1,16 @@
 <resources>
 
-    <!--messenger-->
-    <style name="MessengerChatInfoSettingsContainer" parent="BaseMessengerChatInfoSettingsContainer">
-        <item name="android:gravity">center_horizontal</item>
-    </style>
-    <!--end messenger-->
+   <!--messenger-->
+   <style name="MessengerChatInfoSettingsContainer" parent="BaseMessengerChatInfoSettingsContainer">
+      <item name="android:gravity">center_horizontal</item>
+   </style>
+   <!--end messenger-->
 
-    <!--in app notifications-->
-    <style name="InAppNotificationUiElementsContainer" parent="BaseInAppNotificationUiElementsContainer">
-        <item name="android:layout_width">380dp</item>
-        <item name="android:layout_centerInParent">true</item>
-    </style>
-    <!--end in app notifications-->
+   <!--in app notifications-->
+   <style name="InAppNotificationUiElementsContainer" parent="BaseInAppNotificationUiElementsContainer">
+      <item name="android:layout_width">380dp</item>
+      <item name="android:layout_centerInParent">true</item>
+   </style>
+   <!--end in app notifications-->
 
 </resources>

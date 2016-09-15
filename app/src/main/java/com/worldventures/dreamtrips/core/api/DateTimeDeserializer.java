@@ -16,25 +16,24 @@ import timber.log.Timber;
 
 public class DateTimeDeserializer implements JsonDeserializer<Date> {
 
-    private DateFormat[] dateFormats;
+   private DateFormat[] dateFormats;
 
-    public DateTimeDeserializer() {
-        dateFormats = DateTimeUtils.getISO1DateFormats();
-    }
+   public DateTimeDeserializer() {
+      dateFormats = DateTimeUtils.getISO1DateFormats();
+   }
 
-    @Override
-    public Date deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context)
-            throws JsonParseException {
-        for (DateFormat format : dateFormats) {
-            try {
-                format.setTimeZone(TimeZone.getTimeZone("UTC"));
-                Date date = format.parse(json.getAsString());
-                return date;
-            } catch (ParseException e) {
-            }
-        }
-        Timber.e("Can't parse date with any format, date string: %s", json);
-        return null;
-    }
+   @Override
+   public Date deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
+      for (DateFormat format : dateFormats) {
+         try {
+            format.setTimeZone(TimeZone.getTimeZone("UTC"));
+            Date date = format.parse(json.getAsString());
+            return date;
+         } catch (ParseException e) {
+         }
+      }
+      Timber.e("Can't parse date with any format, date string: %s", json);
+      return null;
+   }
 
 }

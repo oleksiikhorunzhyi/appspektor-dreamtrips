@@ -4,9 +4,9 @@ import com.worldventures.dreamtrips.core.ui.fragment.ImagePathHolder;
 
 public class ImageClickedEvent {
 
-    public final ImagePathHolder image;
+   public final ImagePathHolder image;
 
-    public ImageClickedEvent(ImagePathHolder image) {
-        this.image = image;
-    }
+   public ImageClickedEvent(ImagePathHolder image) {
+      this.image = image;
+   }
 }

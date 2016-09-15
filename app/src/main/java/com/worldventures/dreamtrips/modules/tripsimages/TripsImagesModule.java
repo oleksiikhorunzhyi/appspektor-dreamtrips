@@ -41,76 +41,42 @@ import com.worldventures.dreamtrips.modules.tripsimages.view.fragment.singlefull
 import com.worldventures.dreamtrips.modules.tripsimages.view.fragment.singlefullscreen.SocialImageFullscreenFragment;
 import com.worldventures.dreamtrips.modules.tripsimages.view.fragment.singlefullscreen.TripPhotoFullscreenFragment;
 import com.worldventures.dreamtrips.modules.tripsimages.view.fragment.singlefullscreen.YSBHPhotoFullscreenFragment;
-import com.worldventures.dreamtrips.modules.tripsimages.view.util.EditPhotoTagsCallback;
-
-import javax.inject.Singleton;
 
 import dagger.Module;
 import dagger.Provides;
 
 @Module(
-        injects = {
-                TripImagesTabsPresenter.class,
-                TripImagesListPresenter.class,
-                InspireMePresenter.class,
-                AccountImagesPresenter.class,
-                MembersImagesPresenter.class,
-                YSBHPresenter.class,
-                FullScreenPhotoFragment.class,
-                TripImagePresenter.class,
+      injects = {TripImagesTabsPresenter.class, TripImagesListPresenter.class, InspireMePresenter.class, AccountImagesPresenter.class, MembersImagesPresenter.class, YSBHPresenter.class, FullScreenPhotoFragment.class, TripImagePresenter.class,
 
-                FullScreenPresenter.class,
-                BucketFullscreenPresenter.class,
-                InspirationFullscreenPresenter.class,
+            FullScreenPresenter.class, BucketFullscreenPresenter.class, InspirationFullscreenPresenter.class,
 
-                TripImagesTabsFragment.class,
-                TripImagesListFragment.class,
-                TripImagesTabsFragment.class,
-                TripImagePagerFragment.class,
-                PhotoEditPresenter.class,
-                FullScreenTripImageFragment.class,
-                PhotoCell.class,
-                PhotoUploadCell.class,
+            TripImagesTabsFragment.class, TripImagesListFragment.class, TripImagesTabsFragment.class, TripImagePagerFragment.class, PhotoEditPresenter.class, FullScreenTripImageFragment.class, PhotoCell.class, PhotoUploadCell.class,
 
-                FullScreenPhotoWrapperFragment.class,
-                GetUserPhotosQuery.class,
-                AccountImagesListFragment.class,
-                MemberImagesListFragment.class,
+            FullScreenPhotoWrapperFragment.class, GetUserPhotosQuery.class, AccountImagesListFragment.class, MemberImagesListFragment.class,
 
-                InspirePhotoFullscreenFragment.class,
-                YSBHPhotoFullscreenFragment.class,
-                YouShouldBeHerePhotoFullscreenPresenter.class,
-                TripPhotoFullscreenFragment.class,
-                BucketPhotoFullscreenFragment.class,
-                SocialImageFullscreenPresenter.class,
-                SocialImageFullscreenFragment.class,
+            InspirePhotoFullscreenFragment.class, YSBHPhotoFullscreenFragment.class, YouShouldBeHerePhotoFullscreenPresenter.class, TripPhotoFullscreenFragment.class, BucketPhotoFullscreenFragment.class, SocialImageFullscreenPresenter.class, SocialImageFullscreenFragment.class,
 
-                InspirationFullscreenPresenter.class,
-                TripImageFullscreenPresenter.class,
+            InspirationFullscreenPresenter.class, TripImageFullscreenPresenter.class,
 
-                MessageImageFullscreenFragment.class,
-                MessageImageFullscreenPresenter.class,
+            MessageImageFullscreenFragment.class, MessageImageFullscreenPresenter.class,
 
-                EditPhotoTagsPresenter.class,
-                EditPhotoTagsFragment.class,
+            EditPhotoTagsPresenter.class, EditPhotoTagsFragment.class,
 
-                CreateTripImagePresenter.class,
-        },
-        complete = false,
-        library = true
-)
+            CreateTripImagePresenter.class,},
+      complete = false,
+      library = true)
 public class TripsImagesModule {
 
-    public static final String TRIP_IMAGES = Route.TRIP_TAB_IMAGES.name();
+   public static final String TRIP_IMAGES = Route.TRIP_TAB_IMAGES.name();
 
-    @Provides(type = Provides.Type.SET)
-    ComponentDescription provideTripImagesComponent() {
-        return new ComponentDescription(TRIP_IMAGES, R.string.trip_images, R.string.trip_images, R.drawable.ic_trip_images, TripImagesTabsFragment.class);
-    }
+   @Provides(type = Provides.Type.SET)
+   ComponentDescription provideTripImagesComponent() {
+      return new ComponentDescription(TRIP_IMAGES, R.string.trip_images, R.string.trip_images, R.drawable.ic_trip_images, TripImagesTabsFragment.class);
+   }
 
-    @Provides
-    DrawableUtil provideDrawableUtil(Context context) {
-        return new DrawableUtil(context);
-    }
+   @Provides
+   DrawableUtil provideDrawableUtil(Context context) {
+      return new DrawableUtil(context);
+   }
 
 }

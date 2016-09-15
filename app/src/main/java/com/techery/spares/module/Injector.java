@@ -3,7 +3,7 @@ package com.techery.spares.module;
 import dagger.ObjectGraph;
 
 public interface Injector {
-    ObjectGraph getObjectGraph();
+   ObjectGraph getObjectGraph();
 
-    void inject(Object target);
+   void inject(Object target);
 }

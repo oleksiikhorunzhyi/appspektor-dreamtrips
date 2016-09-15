@@ -1,61 +1,68 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              android:layout_width="match_parent"
-              android:layout_height="match_parent"
-              android:orientation="vertical">
+      android:layout_width="match_parent"
+      android:layout_height="match_parent"
+      android:orientation="vertical"
+      >
 
-    <android.support.v4.widget.SwipeRefreshLayout
-        android:id="@+id/swipe_container"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:visibility="visible">
+   <android.support.v4.widget.SwipeRefreshLayout
+         android:id="@+id/swipe_container"
+         android:layout_width="match_parent"
+         android:layout_height="match_parent"
+         android:visibility="visible"
+         >
 
-        <com.worldventures.dreamtrips.modules.feed.view.custom.StateRecyclerView
+      <com.worldventures.dreamtrips.modules.feed.view.custom.StateRecyclerView
             android:id="@+id/recyclerView"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"/>
+            android:layout_height="match_parent"
+            />
 
-    </android.support.v4.widget.SwipeRefreshLayout>
+   </android.support.v4.widget.SwipeRefreshLayout>
 
-    <RelativeLayout
-        android:id="@+id/ll_empty_view"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_alignParentLeft="false"
-        android:layout_alignParentTop="false"
-        android:gravity="center"
-        android:orientation="vertical"
-        android:visibility="gone">
+   <RelativeLayout
+         android:id="@+id/ll_empty_view"
+         android:layout_width="match_parent"
+         android:layout_height="match_parent"
+         android:layout_alignParentLeft="false"
+         android:layout_alignParentTop="false"
+         android:gravity="center"
+         android:orientation="vertical"
+         android:visibility="gone"
+         >
 
-        <ImageView
+      <ImageView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_alignParentLeft="true"
             android:layout_alignParentTop="true"
             android:scaleType="centerCrop"
-            android:src="@drawable/ic_background_empty_view" />
+            android:src="@drawable/ic_background_empty_view"
+            />
 
-        <LinearLayout
+      <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            >
 
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_centerHorizontal="true"
-                android:layout_gravity="center"
-                android:alpha="0.54"
-                android:gravity="center"
-                android:padding="25dp"
-                android:text="@string/no_notifications"
-                android:textColor="@android:color/black"
-                android:textSize="18dp" />
+         <TextView
+               android:layout_width="match_parent"
+               android:layout_height="wrap_content"
+               android:layout_centerHorizontal="true"
+               android:layout_gravity="center"
+               android:alpha="0.54"
+               android:gravity="center"
+               android:padding="25dp"
+               android:text="@string/no_notifications"
+               android:textColor="@android:color/black"
+               android:textSize="18dp"
+               />
 
-        </LinearLayout>
+      </LinearLayout>
 
 
-    </RelativeLayout>
+   </RelativeLayout>
 
 </FrameLayout>

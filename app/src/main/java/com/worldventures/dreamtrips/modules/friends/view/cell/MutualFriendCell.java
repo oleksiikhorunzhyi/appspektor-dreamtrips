@@ -10,13 +10,13 @@ import butterknife.OnClick;
 @Layout(R.layout.adapter_item_mutual)
 public class MutualFriendCell extends FriendCell {
 
-    public MutualFriendCell(View view) {
-        super(view);
-    }
+   public MutualFriendCell(View view) {
+      super(view);
+   }
 
-    @OnClick(R.id.tv_actions)
-    public void onAction() {
-        sdvAvatar.setDrawingCacheEnabled(true);
-        dialog.showFriendDialogSkipChat(getModelObject(), drawableUtil.copyIntoDrawable(sdvAvatar.getDrawingCache()));
-    }
+   @OnClick(R.id.tv_actions)
+   public void onAction() {
+      sdvAvatar.setDrawingCacheEnabled(true);
+      dialog.showFriendDialogSkipChat(getModelObject(), drawableUtil.copyIntoDrawable(sdvAvatar.getDrawingCache()));
+   }
 }

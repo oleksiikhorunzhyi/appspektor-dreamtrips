@@ -4,13 +4,13 @@ import android.view.View;
 
 public abstract class AbstractDelegateCell<T, V extends CellDelegate<T>> extends AbstractCell<T> {
 
-    protected V cellDelegate;
+   protected V cellDelegate;
 
-    public AbstractDelegateCell(View view) {
-        super(view);
-    }
+   public AbstractDelegateCell(View view) {
+      super(view);
+   }
 
-    public void setCellDelegate(V cellDelegate) {
-        this.cellDelegate = cellDelegate;
-    }
+   public void setCellDelegate(V cellDelegate) {
+      this.cellDelegate = cellDelegate;
+   }
 }

@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
-    <item
-        android:id="@+id/action_edit"
-        android:title="@string/feed_edit_item"/>
-    <item
-        android:id="@+id/action_delete"
-        android:title="@string/feed_delete_item"/>
+   <item
+         android:id="@+id/action_edit"
+         android:title="@string/feed_edit_item" />
+   <item
+         android:id="@+id/action_delete"
+         android:title="@string/feed_delete_item" />
 </menu>

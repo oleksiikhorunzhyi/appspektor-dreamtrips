@@ -1,42 +1,45 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                xmlns:custom="http://schemas.android.com/apk/res-auto"
-                xmlns:materialdesign="http://schemas.android.com/tools"
-                xmlns:tools="http://schemas.android.com/tools"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:background="@color/white"
-                android:clickable="true">
+      xmlns:custom="http://schemas.android.com/apk/res-auto"
+      xmlns:tools="http://schemas.android.com/tools"
+      android:layout_width="match_parent"
+      android:layout_height="match_parent"
+      android:background="@color/white"
+      android:clickable="true"
+      >
 
-    <FrameLayout
-        android:id="@+id/price_view_group"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+   <FrameLayout
+         android:id="@+id/price_view_group"
+         android:layout_width="match_parent"
+         android:layout_height="wrap_content"
+         >
 
-        <TextView
+      <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:paddingLeft="25dp"
             android:paddingRight="25dp"
             android:paddingTop="15dp"
             android:text="@string/dtl_price"
-            android:textColor="@color/black"/>
+            android:textColor="@color/black"
+            />
 
-        <com.appyvet.rangebar.RangeBar
+      <com.appyvet.rangebar.RangeBar
             android:id="@+id/range_bar_price"
             android:layout_width="match_parent"
             android:layout_height="72dp"
             android:layout_marginLeft="16dp"
             android:layout_marginRight="16dp"
-            custom:connectingLineColor="#54B5FC"
-            custom:pinColor="#54B5FC"
-            custom:rangeBar="true"
-            custom:selectorColor="#54B5FC"
-            custom:tickEnd="5"
-            custom:tickInterval="1"
-            custom:tickStart="1"/>
+            custom:mrb_connectingLineColor="#54B5FC"
+            custom:mrb_pinColor="#54B5FC"
+            custom:mrb_rangeBar="true"
+            custom:mrb_selectorColor="#54B5FC"
+            custom:mrb_tickEnd="5"
+            custom:mrb_tickInterval="1"
+            custom:mrb_tickStart="1"
+            />
 
-        <TextView
+      <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="bottom"
@@ -48,7 +51,7 @@
             tools:ignore="HardcodedText"
             />
 
-        <TextView
+      <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="bottom|end"
@@ -60,31 +63,32 @@
             tools:ignore="HardcodedText"
             />
 
-    </FrameLayout>
+   </FrameLayout>
 
-    <FrameLayout
-        android:id="@+id/distance_view_group"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/price_view_group"
-        android:layout_marginBottom="15dp"
-        >
+   <FrameLayout
+         android:id="@+id/distance_view_group"
+         android:layout_width="match_parent"
+         android:layout_height="wrap_content"
+         android:layout_below="@+id/price_view_group"
+         android:layout_marginBottom="15dp"
+         >
 
-        <com.appyvet.rangebar.RangeBar
+      <com.appyvet.rangebar.RangeBar
             android:id="@+id/range_bar_distance"
             android:layout_width="match_parent"
             android:layout_height="72dp"
             android:layout_marginLeft="16dp"
             android:layout_marginRight="16dp"
-            custom:connectingLineColor="#54B5FC"
-            custom:pinColor="#54B5FC"
-            custom:rangeBar="false"
-            custom:selectorColor="#54B5FC"
-            custom:tickEnd="50"
-            custom:tickInterval="10"
-            custom:tickStart="10"/>
+            custom:mrb_connectingLineColor="#54B5FC"
+            custom:mrb_pinColor="#54B5FC"
+            custom:mrb_rangeBar="false"
+            custom:mrb_selectorColor="#54B5FC"
+            custom:mrb_tickEnd="50"
+            custom:mrb_tickInterval="10"
+            custom:mrb_tickStart="10"
+            />
 
-        <TextView
+      <TextView
             android:id="@+id/distance_filter_caption"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -92,9 +96,10 @@
             android:paddingLeft="25dp"
             android:paddingTop="15dp"
             android:text="@string/dtl_distance"
-            android:textColor="@color/black"/>
+            android:textColor="@color/black"
+            />
 
-        <TextView
+      <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="bottom"
@@ -106,7 +111,7 @@
             tools:ignore="HardcodedText"
             />
 
-        <TextView
+      <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="bottom|end"
@@ -118,26 +123,28 @@
             tools:ignore="HardcodedText"
             />
 
-    </FrameLayout>
+   </FrameLayout>
 
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/recyclerViewFilters"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_above="@+id/footer"
-        android:layout_below="@+id/distance_view_group"/>
+   <android.support.v7.widget.RecyclerView
+         android:id="@+id/recyclerViewFilters"
+         android:layout_width="match_parent"
+         android:layout_height="wrap_content"
+         android:layout_above="@+id/footer"
+         android:layout_below="@+id/distance_view_group"
+         />
 
-    <LinearLayout
-        android:id="@+id/footer"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:orientation="horizontal"
-        android:gravity="center_vertical"
-        android:paddingLeft="20dp"
-        android:paddingRight="20dp">
+   <LinearLayout
+         android:id="@+id/footer"
+         android:layout_width="match_parent"
+         android:layout_height="wrap_content"
+         android:layout_alignParentBottom="true"
+         android:orientation="horizontal"
+         android:gravity="center_vertical"
+         android:paddingLeft="20dp"
+         android:paddingRight="20dp"
+         >
 
-        <TextView
+      <TextView
             android:id="@+id/apply"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -146,9 +153,10 @@
             android:padding="15dp"
             android:text="@string/filter_apply_all"
             android:textColor="#025E93"
-            android:textStyle="bold"/>
+            android:textStyle="bold"
+            />
 
-        <TextView
+      <TextView
             android:id="@+id/reset"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -157,9 +165,10 @@
             android:padding="15dp"
             android:text="@string/filter_reset_all"
             android:textColor="#025E93"
-            android:textStyle="bold"/>
+            android:textStyle="bold"
+            />
 
-    </LinearLayout>
+   </LinearLayout>
 
 
 </RelativeLayout>

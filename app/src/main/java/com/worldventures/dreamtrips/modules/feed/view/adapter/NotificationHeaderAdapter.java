@@ -17,64 +17,63 @@ import butterknife.InjectView;
 
 public class NotificationHeaderAdapter<T> implements StickyHeadersAdapter<NotificationHeaderAdapter.NotificationHeaderViewHolder> {
 
-    private List<T> items;
-    private int layout;
-    private final HeaderConverter<T> converter;
+   private List<T> items;
+   private int layout;
+   private final HeaderConverter<T> converter;
 
-    public NotificationHeaderAdapter(List<T> items, int layout, HeaderConverter<T> converter) {
-        this.items = items;
-        this.layout = layout;
-        this.converter = converter;
-    }
+   public NotificationHeaderAdapter(List<T> items, int layout, HeaderConverter<T> converter) {
+      this.items = items;
+      this.layout = layout;
+      this.converter = converter;
+   }
 
-    public void setItems(List newItems) {
-        this.items.clear();
-        this.items.addAll(newItems);
-    }
+   public void setItems(List newItems) {
+      this.items.clear();
+      this.items.addAll(newItems);
+   }
 
-    @Override
-    public NotificationHeaderViewHolder onCreateViewHolder(ViewGroup viewGroup) {
-        View itemView = LayoutInflater.from(viewGroup.getContext()).inflate(layout, viewGroup, false);
-        return new NotificationHeaderViewHolder(itemView);
-    }
+   @Override
+   public NotificationHeaderViewHolder onCreateViewHolder(ViewGroup viewGroup) {
+      View itemView = LayoutInflater.from(viewGroup.getContext()).inflate(layout, viewGroup, false);
+      return new NotificationHeaderViewHolder(itemView);
+   }
 
-    @Override
-    public void onBindViewHolder(NotificationHeaderViewHolder headerViewHolder, int i) {
-        HeaderItem header = converter.createHeader(items.get(i));
-        String headerTitle = header.getHeaderTitle();
-        headerViewHolder.itemView.setVisibility(headerTitle == null ? View.GONE : View.VISIBLE);
-        if (headerTitle != null) headerViewHolder.letter.setText(headerTitle.toUpperCase());
-    }
+   @Override
+   public void onBindViewHolder(NotificationHeaderViewHolder headerViewHolder, int i) {
+      HeaderItem header = converter.createHeader(items.get(i));
+      String headerTitle = header.getHeaderTitle();
+      headerViewHolder.itemView.setVisibility(headerTitle == null ? View.GONE : View.VISIBLE);
+      if (headerTitle != null) headerViewHolder.letter.setText(headerTitle.toUpperCase());
+   }
 
-    @Override
-    public long getHeaderId(int i) {
-        if (items.isEmpty() || items.size() < i) return RecyclerView.NO_ID;
-        //
-        HeaderItem header = converter.createHeader(items.get(i));
-        String categoryTitle = header.getHeaderTitle();
-        int headerId = 0;
+   @Override
+   public long getHeaderId(int i) {
+      if (items.isEmpty() || items.size() < i) return RecyclerView.NO_ID;
+      //
+      HeaderItem header = converter.createHeader(items.get(i));
+      String categoryTitle = header.getHeaderTitle();
+      int headerId = 0;
 
-        if (categoryTitle == null) return headerId;
+      if (categoryTitle == null) return headerId;
 
-        for (int cursor = 0; cursor < categoryTitle.length(); cursor++) {
-            headerId += categoryTitle.charAt(cursor);
-        }
-        return headerId;
-    }
+      for (int cursor = 0; cursor < categoryTitle.length(); cursor++) {
+         headerId += categoryTitle.charAt(cursor);
+      }
+      return headerId;
+   }
 
 
-    public static class NotificationHeaderViewHolder extends RecyclerView.ViewHolder {
-        @InjectView(R.id.divider_title)
-        protected TextView letter;
+   public static class NotificationHeaderViewHolder extends RecyclerView.ViewHolder {
+      @InjectView(R.id.divider_title) protected TextView letter;
 
-        public NotificationHeaderViewHolder(View itemView) {
-            super(itemView);
-            ButterKnife.inject(this, itemView);
-        }
-    }
+      public NotificationHeaderViewHolder(View itemView) {
+         super(itemView);
+         ButterKnife.inject(this, itemView);
+      }
+   }
 
-    public interface HeaderConverter<T> {
-        HeaderItem createHeader(T item);
-    }
+   public interface HeaderConverter<T> {
+      HeaderItem createHeader(T item);
+   }
 
 }

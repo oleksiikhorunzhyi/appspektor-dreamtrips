@@ -20,52 +20,45 @@ import rx.Observable;
 
 public class XmppConversationsListLoader extends XmppBaseConversationsLoader implements ConversationsLoader {
 
-    private static final int MAX_CONVERSATIONS = 512;
+   private static final int MAX_CONVERSATIONS = 512;
 
-    public XmppConversationsListLoader(XmppServerFacade facade) {
-        super(facade);
-        ConversationListProvider provider = new ConversationListProvider(facade.getGson());
-        ProviderManager.addIQProvider(
-                ConversationListIQ.ELEMENT_LIST, ConversationListIQ.NAMESPACE, provider);
-    }
+   public XmppConversationsListLoader(XmppServerFacade facade) {
+      super(facade);
+      ConversationListProvider provider = new ConversationListProvider(facade.getGson());
+      ProviderManager.addIQProvider(ConversationListIQ.ELEMENT_LIST, ConversationListIQ.NAMESPACE, provider);
+   }
 
-    @Override
-    public Observable<List<Conversation>> load() {
-        return facade.getConnectionObservable()
-                .take(1)
-                .flatMap(this::loadConversations)
-                .flatMap(this::loadParticipants);
-    }
+   @Override
+   public Observable<List<Conversation>> load() {
+      return facade.getConnectionObservable().take(1).flatMap(this::loadConversations).flatMap(this::loadParticipants);
+   }
 
-    private Observable<List<Conversation>> loadConversations(XMPPConnection connection) {
-        return Observable.<List<Conversation>>create(subscriber -> {
-            try {
-                connection.sendStanzaWithResponseCallback(createConversationStanza(),
-                        this::stanzaFilter, stanza -> {
-                            List<Conversation> data = ((ConversationListIQ) stanza).getConversations();
-                            subscriber.onNext(data);
-                            subscriber.onCompleted();
-                        },
-                        subscriber::onError);
-            } catch (SmackException.NotConnectedException e) {
-                subscriber.onError(new ConnectionException(e));
-            }
-        }).doOnUnsubscribe(() ->
-                ProviderManager.removeIQProvider(ConversationListIQ.ELEMENT_LIST, ConversationListIQ.NAMESPACE));
-    }
+   private Observable<List<Conversation>> loadConversations(XMPPConnection connection) {
+      return Observable.<List<Conversation>>create(subscriber -> {
+         try {
+            connection.sendStanzaWithResponseCallback(createConversationStanza(), this::stanzaFilter, stanza -> {
+               List<Conversation> data = ((ConversationListIQ) stanza).getConversations();
+               subscriber.onNext(data);
+               subscriber.onCompleted();
+            }, subscriber::onError);
+         } catch (SmackException.NotConnectedException e) {
+            subscriber.onError(new ConnectionException(e));
+         }
+      }).doOnUnsubscribe(() -> ProviderManager.removeIQProvider(ConversationListIQ.ELEMENT_LIST, ConversationListIQ.NAMESPACE));
+   }
 
-    private boolean stanzaFilter(Stanza stanza) {
-        return stanza instanceof ConversationListIQ;
-    }
+   private boolean stanzaFilter(Stanza stanza) {
+      return stanza instanceof ConversationListIQ;
+   }
 
-    private Stanza createConversationStanza() {
-        ObtainConversationListIQ packet = new ObtainConversationListIQ();
-        packet.setMax(MAX_CONVERSATIONS);
-        packet.setType(IQ.Type.get);
-        return packet;
-    }
+   private Stanza createConversationStanza() {
+      ObtainConversationListIQ packet = new ObtainConversationListIQ();
+      packet.setMax(MAX_CONVERSATIONS);
+      packet.setType(IQ.Type.get);
+      return packet;
+   }
 
-    private Observable<List<Conversation>> loadParticipants(List<Conversation> conversations) {
-        return obtainParticipants(new XmppParticipantsLoader(facade), conversations);
-    }
+   private Observable<List<Conversation>> loadParticipants(List<Conversation> conversations) {
+      return obtainParticipants(new XmppParticipantsLoader(facade), conversations);
+   }
 }

@@ -14,26 +14,24 @@ import rx.Observable;
 
 public abstract class BaseChatCommand<Result> extends Command<Result> implements InjectableAction {
 
-    protected final String conversationId;
+   protected final String conversationId;
 
-    @Inject protected CreateChatHelper createChatHelper;
-    @Inject protected ConversationsDAO conversationsDAO;
+   @Inject protected CreateChatHelper createChatHelper;
+   @Inject protected ConversationsDAO conversationsDAO;
 
-    protected BaseChatCommand(String conversationId) {
-        this.conversationId = conversationId;
-    }
+   protected BaseChatCommand(String conversationId) {
+      this.conversationId = conversationId;
+   }
 
-    public String getConversationId() {
-        return conversationId;
-    }
+   public String getConversationId() {
+      return conversationId;
+   }
 
-    protected Observable<Chat> getChat() {
-        return conversationsDAO.getConversation(conversationId)
-                .take(1)
-                .flatMap(dataConversation -> {
-                    if (ConversationHelper.isAbandoned(dataConversation)) {
-                        return Observable.error(new AccessConversationDeniedException());
-                    } else return createChatHelper.createChat(conversationId);
-                });
-    }
+   protected Observable<Chat> getChat() {
+      return conversationsDAO.getConversation(conversationId).take(1).flatMap(dataConversation -> {
+         if (ConversationHelper.isAbandoned(dataConversation)) {
+            return Observable.error(new AccessConversationDeniedException());
+         } else return createChatHelper.createChat(conversationId);
+      });
+   }
 }

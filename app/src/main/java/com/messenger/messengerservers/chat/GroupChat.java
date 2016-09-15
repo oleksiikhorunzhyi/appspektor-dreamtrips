@@ -8,15 +8,15 @@ import rx.Observable;
 
 public interface GroupChat extends Chat {
 
-    void invite(List<String> userIds);
+   void invite(List<String> userIds);
 
-    Observable<GroupChat> kick(String userId);
+   Observable<GroupChat> kick(String userId);
 
-    void join(String userId);
+   void join(String userId);
 
-    Observable<GroupChat> leave();
+   Observable<GroupChat> leave();
 
-    Observable<GroupChat> setSubject(@Nullable String subject);
+   Observable<GroupChat> setSubject(@Nullable String subject);
 
-    Observable<GroupChat> setAvatar(String avatar);
+   Observable<GroupChat> setAvatar(String avatar);
 }

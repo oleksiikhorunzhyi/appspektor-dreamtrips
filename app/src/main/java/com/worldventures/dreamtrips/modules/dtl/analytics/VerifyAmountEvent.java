@@ -8,28 +8,18 @@ import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchant;
 import java.util.Locale;
 
 @AnalyticsEvent(action = "local:Restaurant-Listings:Merchant View:Amount Verified",
-        trackers = AdobeTracker.TRACKER_KEY)
-public class VerifyAmountEvent extends DtlAnalyticsAction {
+                trackers = AdobeTracker.TRACKER_KEY)
+public class VerifyAmountEvent extends MerchantAnalyticsAction {
 
-    @Attribute("verify")
-    final String attribute = "1";
+   @Attribute("verify") final String attribute = "1";
 
-    @Attribute("amount_id")
-    final String enteredAmount;
+   @Attribute("amount_id") final String enteredAmount;
 
-    @Attribute("merchantname")
-    final String merchantName;
+   @Attribute("amount_cc") final String currencyCode;
 
-    @Attribute("merchantID")
-    final String merchantId;
-
-    @Attribute("amount_cc")
-    final String currencyCode;
-
-    public VerifyAmountEvent(DtlMerchant dtlMerchant, String currencyCode, Double enteredAmount) {
-        this.enteredAmount = String.format(Locale.US, "%.2f", enteredAmount);
-        merchantName = dtlMerchant.getDisplayName();
-        merchantId = dtlMerchant.getId();
-        this.currencyCode = currencyCode;
-    }
+   public VerifyAmountEvent(DtlMerchant dtlMerchant, String currencyCode, Double enteredAmount) {
+      super(dtlMerchant);
+      this.enteredAmount = String.format(Locale.US, "%.2f", enteredAmount);
+      this.currencyCode = currencyCode;
+   }
 }

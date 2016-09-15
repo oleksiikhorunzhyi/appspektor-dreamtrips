@@ -1,28 +1,30 @@
 <?xml version="1.0" encoding="utf-8"?>
-<custom:com.worldventures.dreamtrips.modules.bucketlist.view.custom.SquareLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:custom="http://schemas.android.com/apk/res-auto"
-    xmlns:fresco="http://schemas.android.com/apk/res-auto"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    custom:side_priority="width">
+<custom:com.worldventures.dreamtrips.modules.bucketlist.view.custom.SquareLayout xmlns:android="http://schemas.android.com/apk/res/android"
+      xmlns:custom="http://schemas.android.com/apk/res-auto"
+      xmlns:fresco="http://schemas.android.com/apk/res-auto"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      custom:side_priority="width"
+      >
 
-    <com.facebook.drawee.view.SimpleDraweeView
-        android:id="@+id/imageViewPhoto"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_gravity="center_horizontal"
-        android:layout_margin="@dimen/spacing_tiniest"
-        fresco:actualImageScaleType="focusCrop"
-        fresco:placeholderImage="@drawable/ic_trip_image_placeholder"
-        fresco:placeholderImageScaleType="fitXY"/>
+   <com.facebook.drawee.view.SimpleDraweeView
+         android:id="@+id/imageViewPhoto"
+         android:layout_width="match_parent"
+         android:layout_height="match_parent"
+         android:layout_gravity="center_horizontal"
+         android:layout_margin="@dimen/spacing_tiniest"
+         fresco:actualImageScaleType="focusCrop"
+         fresco:placeholderImage="@drawable/ic_trip_image_placeholder"
+         fresco:placeholderImageScaleType="fitXY"
+         />
 
-    <ImageView
-        android:id="@+id/pick"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="top|right"
-        android:layout_margin="@dimen/spacing_tiny"
-        android:src="@drawable/add_photo_icon"/>
+   <ImageView
+         android:id="@+id/pick"
+         android:layout_width="wrap_content"
+         android:layout_height="wrap_content"
+         android:layout_gravity="top|right"
+         android:layout_margin="@dimen/spacing_tiny"
+         android:src="@drawable/add_photo_icon"
+         />
 
 </custom:com.worldventures.dreamtrips.modules.bucketlist.view.custom.SquareLayout>

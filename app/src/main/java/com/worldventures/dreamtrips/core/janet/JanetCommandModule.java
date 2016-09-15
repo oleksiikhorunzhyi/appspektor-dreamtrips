@@ -6,9 +6,6 @@ import com.worldventures.dreamtrips.modules.dtl_flow.di.DtlJanetActionsModule;
 
 import dagger.Module;
 
-@Module(includes = {MessengerJanetCommandModule.class,
-        DtlJanetActionsModule.class,
-        SocialJanetCommandModule.class},
+@Module(includes = {MessengerJanetCommandModule.class, DtlJanetActionsModule.class, SocialJanetCommandModule.class},
         complete = false, library = true)
-public class JanetCommandModule {
-}
+public class JanetCommandModule {}

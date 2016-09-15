@@ -6,49 +6,48 @@ import android.os.Parcelable;
 import icepick.Icepick;
 import icepick.State;
 
-public abstract class ModuleStatefulPresenterImpl<V extends ModuleView, S extends Parcelable>
-        extends ModulePresenterImpl<V> implements ModuleStatefulPresenter<V, S> {
+public abstract class ModuleStatefulPresenterImpl<V extends ModuleView, S extends Parcelable> extends ModulePresenterImpl<V> implements ModuleStatefulPresenter<V, S> {
 
-    @State S state;
+   @State S state;
 
-    public ModuleStatefulPresenterImpl(V view) {
-        super(view);
-        this.state = createNewState();
-    }
+   public ModuleStatefulPresenterImpl(V view) {
+      super(view);
+      this.state = createNewState();
+   }
 
-    @Override
-    public void onSaveInstanceState(Parcelable parcelable) {
-        checkParcelableType(parcelable);
-        Icepick.saveInstanceState(this, (Bundle) parcelable);
-    }
+   @Override
+   public void onSaveInstanceState(Parcelable parcelable) {
+      checkParcelableType(parcelable);
+      Icepick.saveInstanceState(this, (Bundle) parcelable);
+   }
 
-    @Override
-    public void onRestoreInstanceState(Parcelable parcelable) {
-        if (parcelable == null) return;
+   @Override
+   public void onRestoreInstanceState(Parcelable parcelable) {
+      if (parcelable == null) return;
 
-        checkParcelableType(parcelable);
-        Icepick.restoreInstanceState(this, (Bundle) parcelable);
-        applyState(state);
-    }
+      checkParcelableType(parcelable);
+      Icepick.restoreInstanceState(this, (Bundle) parcelable);
+      applyState(state);
+   }
 
-    private void checkParcelableType(Parcelable parcelable) {
-        if (! (parcelable instanceof Bundle)) {
-            throw new IllegalStateException("State Parcelable must be instance of Bundle");
-        }
-    }
+   private void checkParcelableType(Parcelable parcelable) {
+      if (!(parcelable instanceof Bundle)) {
+         throw new IllegalStateException("State Parcelable must be instance of Bundle");
+      }
+   }
 
-    @Override
-    public S getState() {
-        return state;
-    }
+   @Override
+   public S getState() {
+      return state;
+   }
 
-    protected void setState(S state) {
-        this.state = state;
-    }
+   protected void setState(S state) {
+      this.state = state;
+   }
 
-    protected void resetState() {
-        setState(createNewState());
-    }
+   protected void resetState() {
+      setState(createNewState());
+   }
 
-    protected abstract S createNewState();
+   protected abstract S createNewState();
 }

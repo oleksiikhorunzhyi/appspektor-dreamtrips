@@ -15,49 +15,48 @@ import com.worldventures.dreamtrips.modules.video.view.PresentationVideosFragmen
 import java.util.ArrayList;
 
 @Layout(R.layout.fragment_presentation_videos)
-public class TrainingVideosFragment extends PresentationVideosFragment<TrainingVideosPresenter>
-        implements TrainingVideosPresenter.View {
+public class TrainingVideosFragment extends PresentationVideosFragment<TrainingVideosPresenter> implements TrainingVideosPresenter.View {
 
-    FilterLanguageDialogFragment dialog = new FilterLanguageDialogFragment();
+   FilterLanguageDialogFragment dialog = new FilterLanguageDialogFragment();
 
-    private VideoHeaderDelegate videoHeaderDelegate = new VideoHeaderDelegate() {
-        @Override
-        public void onLanguageClicked() {
-            showDialog();
-        }
+   private VideoHeaderDelegate videoHeaderDelegate = new VideoHeaderDelegate() {
+      @Override
+      public void onLanguageClicked() {
+         showDialog();
+      }
 
-        @Override
-        public void onCellClicked(MediaHeader model) {
+      @Override
+      public void onCellClicked(MediaHeader model) {
 
-        }
-    };
+      }
+   };
 
-    @Override
-    public void afterCreateView(View rootView) {
-        super.afterCreateView(rootView);
-        adapter.registerDelegate(MediaHeader.class, videoHeaderDelegate);
-    }
+   @Override
+   public void afterCreateView(View rootView) {
+      super.afterCreateView(rootView);
+      adapter.registerDelegate(MediaHeader.class, videoHeaderDelegate);
+   }
 
-    @Override
-    protected TrainingVideosPresenter createPresenter(Bundle savedInstanceState) {
-        return new TrainingVideosPresenter();
-    }
+   @Override
+   protected TrainingVideosPresenter createPresenter(Bundle savedInstanceState) {
+      return new TrainingVideosPresenter();
+   }
 
-    @Override
-    public void setLocales(ArrayList<VideoLocale> locales, VideoLocale defaultValue) {
-        dialog.setData(locales);
-    }
+   @Override
+   public void setLocales(ArrayList<VideoLocale> locales, VideoLocale defaultValue) {
+      dialog.setData(locales);
+   }
 
-    @Override
-    public void localeLoaded() {
-        adapter.notifyDataSetChanged();
-    }
+   @Override
+   public void localeLoaded() {
+      adapter.notifyDataSetChanged();
+   }
 
-    @Override
-    public void showDialog() {
-        if (!dialog.isAdded()) {
-            dialog.setSelectionListener((locale, language) -> getPresenter().onLanguageSelected(locale, language));
-            dialog.show(getChildFragmentManager(), FilterLanguageDialogFragment.class.getSimpleName());
-        }
-    }
+   @Override
+   public void showDialog() {
+      if (!dialog.isAdded()) {
+         dialog.setSelectionListener((locale, language) -> getPresenter().onLanguageSelected(locale, language));
+         dialog.show(getChildFragmentManager(), FilterLanguageDialogFragment.class.getSimpleName());
+      }
+   }
 }

@@ -25,84 +25,80 @@ import java.util.List;
 
 public abstract class LayoutManager {
 
-    protected static final int LANDSCAPE = 0;
-    protected static final int PORTRAIT = 1;
-    protected static final int SQUARE = 2;
+   protected static final int LANDSCAPE = 0;
+   protected static final int PORTRAIT = 1;
+   protected static final int SQUARE = 2;
 
-    @Retention(RetentionPolicy.SOURCE)
-    @IntDef({LANDSCAPE, PORTRAIT, SQUARE})
-    private @interface PhotoType {
-    }
+   @Retention(RetentionPolicy.SOURCE)
+   @IntDef({LANDSCAPE, PORTRAIT, SQUARE})
+   private @interface PhotoType {}
 
-    protected Context context;
-    protected List<CollageItem> items;
+   protected Context context;
+   protected List<CollageItem> items;
 
-    protected int halfPadding;
-    protected float textSize;
-    protected int iconResId;
+   protected int halfPadding;
+   protected float textSize;
+   protected int iconResId;
 
-    public void initialize(Context context, List<CollageItem> items) {
-        this.context = context;
-        this.items = items;
-    }
+   public void initialize(Context context, List<CollageItem> items) {
+      this.context = context;
+      this.items = items;
+   }
 
-    public void setAttributes(int padding, float textSize, @DrawableRes int iconResId) {
-        halfPadding = padding / 2;
-        this.textSize = textSize;
-        this.iconResId = iconResId;
-    }
+   public void setAttributes(int padding, float textSize, @DrawableRes int iconResId) {
+      halfPadding = padding / 2;
+      this.textSize = textSize;
+      this.iconResId = iconResId;
+   }
 
-    public abstract List<View> getLocatedViews(int holderSide, CollageView.ItemClickListener itemClickListener);
+   public abstract List<View> getLocatedViews(int holderSide, CollageView.ItemClickListener itemClickListener);
 
-    public abstract Size getHolderSize();
+   public abstract Size getHolderSize();
 
-    @PhotoType
-    protected int getType(CollageItem item) {
-        if (item.width > item.height) {
-            return LANDSCAPE;
-        } else if (item.width < item.height) {
-            return PORTRAIT;
-        } else {
-            return SQUARE;
-        }
-    }
+   @PhotoType
+   protected int getType(CollageItem item) {
+      if (item.width > item.height) {
+         return LANDSCAPE;
+      } else if (item.width < item.height) {
+         return PORTRAIT;
+      } else {
+         return SQUARE;
+      }
+   }
 
-    protected FrameLayout.LayoutParams getLayoutParams(int width, int height) {
-        return getLayoutParams(width, height, Gravity.NO_GRAVITY);
-    }
+   protected FrameLayout.LayoutParams getLayoutParams(int width, int height) {
+      return getLayoutParams(width, height, Gravity.NO_GRAVITY);
+   }
 
-    protected FrameLayout.LayoutParams getLayoutParams(int width, int height, int gravity) {
-        return new FrameLayout.LayoutParams(width, height, gravity);
-    }
+   protected FrameLayout.LayoutParams getLayoutParams(int width, int height, int gravity) {
+      return new FrameLayout.LayoutParams(width, height, gravity);
+   }
 
-    protected Rect getPaddings(int left, int top, int right, int bottom) {
-        return new Rect(left, top, right, bottom);
-    }
+   protected Rect getPaddings(int left, int top, int right, int bottom) {
+      return new Rect(left, top, right, bottom);
+   }
 
-    protected View getImageView(final int position, FrameLayout.LayoutParams params) {
-        return getImageView(position, params, new Rect(), null);
-    }
+   protected View getImageView(final int position, FrameLayout.LayoutParams params) {
+      return getImageView(position, params, new Rect(), null);
+   }
 
-    protected View getImageView(final int position, FrameLayout.LayoutParams params,
-                                CollageView.ItemClickListener itemClickListener) {
-        return getImageView(position, params, new Rect(), itemClickListener);
-    }
+   protected View getImageView(final int position, FrameLayout.LayoutParams params, CollageView.ItemClickListener itemClickListener) {
+      return getImageView(position, params, new Rect(), itemClickListener);
+   }
 
-    protected View getImageView(final int position, FrameLayout.LayoutParams params,
-                                Rect paddings, CollageView.ItemClickListener itemClickListener) {
-        String url = ImageUtils.getParametrizedUrl(items.get(position).url, params.width, params.height);
-        ImageRequest request = ImageRequestBuilder.newBuilderWithSource(Uri.parse(url))
-                .build();
-        PipelineDraweeController controller = (PipelineDraweeController) Fresco.newDraweeControllerBuilder()
-                .setImageRequest(request)
-                .build();
-        SimpleDraweeView view = new SimpleDraweeView(context);
-        view.setController(controller);
-        view.setPadding(paddings.left, paddings.top, paddings.right, paddings.bottom);
-        view.setLayoutParams(params);
-        view.setOnClickListener(v -> {
-            if (itemClickListener != null) itemClickListener.itemClicked(position);
-        });
-        return view;
-    }
+   protected View getImageView(final int position, FrameLayout.LayoutParams params, Rect paddings, CollageView.ItemClickListener itemClickListener) {
+      String url = ImageUtils.getParametrizedUrl(items.get(position).url, params.width, params.height);
+      ImageRequest request = ImageRequestBuilder.newBuilderWithSource(Uri.parse(url)).build();
+      PipelineDraweeController controller = (PipelineDraweeController) Fresco.newDraweeControllerBuilder()
+            .setImageRequest(request)
+            .build();
+      SimpleDraweeView view = new SimpleDraweeView(context);
+      view.setController(controller);
+      view.setPadding(paddings.left, paddings.top, paddings.right, paddings.bottom);
+      view.setLayoutParams(params);
+      view.setOnClickListener(v -> {
+         if (itemClickListener != null) itemClickListener.itemClicked(position);
+      });
+      return view;
+   }
 }

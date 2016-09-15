@@ -1,17 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              android:layout_width="match_parent"
-              android:layout_height="wrap_content"
-              android:gravity="center_vertical"
-              android:orientation="horizontal">
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:gravity="center_vertical"
+      android:orientation="horizontal"
+      >
 
-    <include layout="@layout/include_user_info"/>
+   <include layout="@layout/include_user_info" />
 
-    <ImageView
-        android:id="@+id/iv_status"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_margin="@dimen/spacing_small"
-        android:src="@drawable/ic_profile_add_friend_normal"/>
+   <ImageView
+         android:id="@+id/iv_status"
+         android:layout_width="wrap_content"
+         android:layout_height="wrap_content"
+         android:layout_margin="@dimen/spacing_small"
+         android:src="@drawable/ic_profile_add_friend_normal"
+         />
 
 </LinearLayout>

@@ -11,17 +11,15 @@ import io.techery.janet.http.annotations.Response;
 
 @HttpAction(value = "/api/users/{user_id}/bucket_list_items", method = HttpAction.Method.GET)
 public class LoadBucketListFullHttpAction extends AuthorizedHttpAction {
-    @Path("user_id")
-    Integer userId;
+   @Path("user_id") Integer userId;
 
-    @Response
-    List<BucketItem> response;
+   @Response List<BucketItem> response;
 
-    public LoadBucketListFullHttpAction(int userId) {
-        this.userId = userId;
-    }
+   public LoadBucketListFullHttpAction(int userId) {
+      this.userId = userId;
+   }
 
-    public List<BucketItem> getResponse() {
-        return this.response;
-    }
+   public List<BucketItem> getResponse() {
+      return this.response;
+   }
 }

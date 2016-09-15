@@ -11,35 +11,35 @@ import java.util.List;
 
 public class UidItemDelegate {
 
-    private RequestingPresenter requestingPresenter;
+   private RequestingPresenter requestingPresenter;
 
-    private List<Flag> flagsList;
+   private List<Flag> flagsList;
 
-    public UidItemDelegate(RequestingPresenter requestingPresenter) {
-        this.requestingPresenter = requestingPresenter;
-    }
+   public UidItemDelegate(RequestingPresenter requestingPresenter) {
+      this.requestingPresenter = requestingPresenter;
+   }
 
-    public void loadFlags(Flaggable flaggable) {
-        if (flagsList == null) {
-            requestingPresenter.doRequest(new GetFlagContentQuery(), flags -> {
-                flagsList = flags;
-                flaggable.showFlagDialog(flagsList);
-            });
-        } else {
+   public void loadFlags(Flaggable flaggable) {
+      if (flagsList == null) {
+         requestingPresenter.doRequest(new GetFlagContentQuery(), flags -> {
+            flagsList = flags;
             flaggable.showFlagDialog(flagsList);
-        }
-    }
+         });
+      } else {
+         flaggable.showFlagDialog(flagsList);
+      }
+   }
 
-    public void flagItem(FlagData data, View view) {
-        requestingPresenter.doRequest(new FlagItemCommand(data), aVoid -> {
-            if (view != null) {
-                view.flagSentSuccess();
-            }
-        });
-    }
+   public void flagItem(FlagData data, View view) {
+      requestingPresenter.doRequest(new FlagItemCommand(data), aVoid -> {
+         if (view != null) {
+            view.flagSentSuccess();
+         }
+      });
+   }
 
-    public interface View {
+   public interface View {
 
-        void flagSentSuccess();
-    }
+      void flagSentSuccess();
+   }
 }

@@ -6,29 +6,29 @@ import rx.Observable;
 
 public interface MessengerServerFacade {
 
-    void connect(String username, String password);
+   void connect(String username, String password);
 
-    void disconnect();
+   void disconnect();
 
-    boolean isConnected();
+   boolean isConnected();
 
-    boolean sendInitialPresence();
+   boolean sendInitialPresence();
 
-    boolean isActive();
+   boolean isActive();
 
-    void setActive(boolean active);
+   void setActive(boolean active);
 
-    ChatManager getChatManager();
+   ChatManager getChatManager();
 
-    LoaderManager getLoaderManager();
+   LoaderManager getLoaderManager();
 
-    PaginationManager getPaginationManager();
+   PaginationManager getPaginationManager();
 
-    GlobalEventEmitter getGlobalEventEmitter();
+   GlobalEventEmitter getGlobalEventEmitter();
 
-    String getUsername();
+   String getUsername();
 
-    Observable<ConnectionStatus> getStatusObservable();
+   Observable<ConnectionStatus> getStatusObservable();
 
-    ChatExtensions getChatExtensions();
+   ChatExtensions getChatExtensions();
 }

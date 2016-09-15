@@ -1,207 +1,251 @@
 <?xml version="1.0" encoding="utf-8"?>
-<manifest
-    package="com.worldventures.dreamtrips"
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:installLocation="preferExternal">
+<manifest package="com.worldventures.dreamtrips"
+      xmlns:android="http://schemas.android.com/apk/res/android"
+      xmlns:tools="http://schemas.android.com/tools"
+      android:installLocation="preferExternal"
+      >
 
-    <uses-permission android:name="android.permission.CAMERA"/>
-    <uses-permission android:name="android.permission.INTERNET"/>
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
-    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE"/>
-    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
-    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
-    <uses-permission android:name="android.permission.MANAGE_DOCUMENTS"/>
-    <uses-permission android:name="android.permission.GET_ACCOUNTS"/>
-    <uses-permission android:name="android.permission.READ_CONTACTS"/>
-    <uses-permission android:name="android.permission.WRITE_CONTACTS"/>
+   <uses-permission android:name="android.permission.CAMERA" />
+   <uses-permission android:name="android.permission.INTERNET" />
+   <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+   <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+   <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+   <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+   <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+   <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+   <uses-permission android:name="android.permission.MANAGE_DOCUMENTS" />
+   <uses-permission android:name="android.permission.GET_ACCOUNTS" />
+   <uses-permission android:name="android.permission.READ_CONTACTS" />
+   <uses-permission android:name="android.permission.WRITE_CONTACTS" />
 
-    <uses-permission android:name="android.permission.WAKE_LOCK"/>
-    <uses-permission android:name="com.google.android.c2dm.permission.RECEIVE"/>
+   <uses-permission android:name="android.permission.WAKE_LOCK" />
+   <uses-permission android:name="com.google.android.c2dm.permission.RECEIVE" />
 
-    <permission
-        android:name="${applicationId}.permission.C2D_MESSAGE"
-        android:protectionLevel="signature"/>
-    <uses-permission android:name="${applicationId}.permission.C2D_MESSAGE"/>
+   <permission
+         android:name="${applicationId}.permission.C2D_MESSAGE"
+         android:protectionLevel="signature"
+         />
+   <uses-permission android:name="${applicationId}.permission.C2D_MESSAGE" />
 
-    <uses-feature
-        android:glEsVersion="0x00020000"
-        android:required="true"/>
-    <uses-feature android:name="android.hardware.camera"/>
+   <uses-feature
+         android:glEsVersion="0x00020000"
+         android:required="true"
+         />
+   <uses-feature android:name="android.hardware.camera" />
 
-    <supports-screens
-        android:anyDensity="true"
-        android:largeScreens="true"
-        android:normalScreens="true"
-        android:smallScreens="true"/>
+   <supports-screens
+         android:anyDensity="true"
+         android:largeScreens="true"
+         android:normalScreens="true"
+         android:smallScreens="true"
+         />
 
-    <application
-        android:name=".App"
-        android:allowBackup="true"
-        android:icon="@drawable/ic_dt_launcher"
-        android:label="@string/app_name"
-        android:largeHeap="true"
-        android:theme="@style/Theme.DreamTripsTheme"
-        tools:replace="icon, label">
-        <meta-data
+   <application
+         android:name=".App"
+         android:allowBackup="true"
+         android:icon="@drawable/ic_dt_launcher"
+         android:label="@string/app_name"
+         android:largeHeap="true"
+         android:theme="@style/Theme.DreamTripsTheme"
+         tools:replace="icon, label"
+         >
+      <meta-data
             android:name="com.crashlytics.ApiKey"
-            android:value="0335b8ecdc78ddc687fb4d90b2cdceab4329482f"/>
-        <meta-data
+            android:value="0335b8ecdc78ddc687fb4d90b2cdceab4329482f"
+            />
+      <meta-data
             android:name="com.facebook.sdk.ApplicationId"
-            android:value="@string/facebook_app_id"/>
-        <meta-data
+            android:value="@string/facebook_app_id"
+            />
+      <meta-data
             android:name="com.google.android.gms.version"
-            android:value="@integer/google_play_services_version"/>
-        <meta-data
+            android:value="@integer/google_play_services_version"
+            />
+      <meta-data
             android:name="com.google.android.maps.v2.API_KEY"
-            android:value="AIzaSyBdicT31P63SyGzc9KWgrF2vB05nBTPciU"/>
-        <meta-data
+            android:value="AIzaSyBdicT31P63SyGzc9KWgrF2vB05nBTPciU"
+            />
+      <meta-data
             android:name="apptentive_api_key"
-            android:value="${surveyApiToken}"/>
-        <meta-data
+            android:value="${surveyApiToken}"
+            />
+      <meta-data
             android:name="io.fabric.ApiKey"
-            android:value="${fabricApiKey}"/>
-        <!-- This will prevent VERBOSE and DEBUG level logging. -->
-        <meta-data
+            android:value="${fabricApiKey}"
+            />
+      <!-- This will prevent VERBOSE and DEBUG level logging. -->
+      <meta-data
             android:name="apptentive_log_level"
-            android:value="DEBUG"/>
+            android:value="DEBUG"
+            />
 
-        <activity
+      <activity
             android:name=".modules.common.view.activity.LaunchActivity"
+            android:label="@string/app_name"
+            >
+         <intent-filter>
+            <action android:name="android.intent.action.MAIN" />
+
+            <category android:name="android.intent.category.LAUNCHER" />
+         </intent-filter>
+      </activity>
+
+      <activity
+            android:name=".modules.player.PodcastPlayerActivity"
             android:configChanges="orientation|screenSize|layoutDirection|locale"
-            android:label="@string/app_name">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN"/>
+            android:label="@string/app_name"
+            >
+         <meta-data
+               android:name="android.support.PARENT_ACTIVITY"
+               android:value=".modules.common.view.activity.MainActivity"
+               />
+      </activity>
 
-                <category android:name="android.intent.category.LAUNCHER"/>
-            </intent-filter>
-        </activity>
-
-        <activity
+      <activity
             android:name=".modules.common.view.activity.MainActivity"
             android:configChanges="layoutDirection|locale"
             android:label="@string/trips"
-            android:windowSoftInputMode="adjustResize"/>
-        <activity
+            android:windowSoftInputMode="adjustResize"
+            />
+      <activity
             android:name=".modules.common.view.activity.ComponentActivity"
             android:configChanges="layoutDirection|locale"
             android:hardwareAccelerated="true"
             android:parentActivityName=".modules.common.view.activity.MainActivity"
-            android:windowSoftInputMode="adjustResize">
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value=".modules.common.view.activity.MainActivity"/>
+            android:windowSoftInputMode="adjustResize"
+            >
+         <meta-data
+               android:name="android.support.PARENT_ACTIVITY"
+               android:value=".modules.common.view.activity.MainActivity"
+               />
 
-        </activity>
+      </activity>
 
 
-        <activity
+      <activity
             android:name=".modules.common.view.activity.Player360Activity"
-            android:configChanges="keyboardHidden|orientation|screenSize"/>
+            android:configChanges="keyboardHidden|orientation|screenSize"
+            />
 
-        <activity
+      <activity
             android:name=".modules.common.view.activity.PlayerActivity"
             android:configChanges="orientation|screenSize|layoutDirection|locale"
-            android:screenOrientation="sensorLandscape"/>
+            android:screenOrientation="sensorLandscape"
+            />
 
-        <!--Chat activities-->
-        <activity
+      <!--Chat activities-->
+      <activity
             android:name="com.messenger.ui.activity.MessengerActivity"
-            android:launchMode="singleTop">
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.worldventures.dreamtrips.modules.common.view.activity.MainActivity"/>
-        </activity>
+            android:launchMode="singleTop"
+            >
+         <meta-data
+               android:name="android.support.PARENT_ACTIVITY"
+               android:value="com.worldventures.dreamtrips.modules.common.view.activity.MainActivity"
+               />
+      </activity>
 
-        <!--Dtl activities-->
-        <activity
+      <!--Dtl activities-->
+      <activity
             android:name=".modules.dtl_flow.DtlActivity"
-            android:launchMode="singleTop">
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.worldventures.dreamtrips.modules.common.view.activity.MainActivity" />
-        </activity>
+            android:launchMode="singleTop"
+            >
+         <meta-data
+               android:name="android.support.PARENT_ACTIVITY"
+               android:value="com.worldventures.dreamtrips.modules.common.view.activity.MainActivity"
+               />
+      </activity>
 
-        <!--For result activities-->
+      <!--For result activities-->
 
-        <receiver android:name=".modules.friends.notification.FriendRejectActionReceiver"/>
+      <receiver android:name=".modules.friends.notification.FriendRejectActionReceiver" />
 
-        <activity
-            android:name=".modules.picklocation.view.PickLocationActivity"/>
+      <activity android:name=".modules.picklocation.view.PickLocationActivity" />
 
-        <!--Content Provider-->
+      <!--Content Provider-->
 
-        <provider
+      <provider
             android:name="com.messenger.storage.MessengerDatabase$Provider"
             android:authorities="${applicationId}"
             android:exported="false"
             />
 
-        <!--Foreign activities-->
+      <!--Foreign activities-->
 
-        <activity
+      <activity
             android:name="com.facebook.LoginActivity"
             android:configChanges="keyboard|keyboardHidden|screenLayout|screenSize|orientation"
             android:label="@string/app_name"
-            android:theme="@android:style/Theme.Translucent.NoTitleBar"/>
+            android:theme="@android:style/Theme.Translucent.NoTitleBar"
+            />
 
-        <activity
+      <activity
             android:name="com.yalantis.ucrop.UCropActivity"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar"/>
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar"
+            />
 
-        <activity android:name="nl.changer.polypicker.ImagePickerActivity"/>
+      <activity android:name="nl.changer.polypicker.ImagePickerActivity" />
 
-        <activity
+      <activity
             android:name="com.apptentive.android.sdk.ViewActivity"
-            android:theme="@style/ApptentiveTheme.Transparent"/>
+            android:theme="@style/ApptentiveTheme.Transparent"
+            />
 
-        <service
+      <service
             android:name="com.amazonaws.mobileconnectors.s3.transferutility.TransferService"
-            android:enabled="true"/>
+            android:enabled="true"
+            />
 
-        <service
+      <service
             android:name=".core.api.DreamSpiceService"
-            android:exported="false"/>
-        <service
+            android:exported="false"
+            />
+      <service
             android:name=".core.api.VideoDownloadSpiceService"
-            android:exported="false"/>
+            android:exported="false"
+            />
+      <service
+            android:name=".modules.player.playback.PodcastService"
+            android:exported="false"
+            />
 
-        <!--GCM-->
+      <!--GCM-->
 
-        <receiver
+      <receiver
             android:name="com.google.android.gms.gcm.GcmReceiver"
             android:exported="true"
-            android:permission="com.google.android.c2dm.permission.SEND">
-            <intent-filter>
-                <action android:name="com.google.android.c2dm.intent.RECEIVE"/>
-                <action android:name="com.google.android.c2dm.intent.REGISTRATION"/>
+            android:permission="com.google.android.c2dm.permission.SEND"
+            >
+         <intent-filter>
+            <action android:name="com.google.android.c2dm.intent.RECEIVE" />
+            <action android:name="com.google.android.c2dm.intent.REGISTRATION" />
 
-                <category android:name="com.worldventures.dreamtrips"/>
-            </intent-filter>
-        </receiver>
+            <category android:name="com.worldventures.dreamtrips" />
+         </intent-filter>
+      </receiver>
 
-        <service
+      <service
             android:name="com.worldventures.dreamtrips.modules.gcm.service.PushListenerService"
-            android:exported="false">
-            <intent-filter>
-                <action android:name="com.google.android.c2dm.intent.RECEIVE"/>
-            </intent-filter>
-        </service>
+            android:exported="false"
+            >
+         <intent-filter>
+            <action android:name="com.google.android.c2dm.intent.RECEIVE" />
+         </intent-filter>
+      </service>
 
-        <service
+      <service
             android:name="com.worldventures.dreamtrips.modules.gcm.service.GcmIDListenerService"
-            android:exported="false">
-            <intent-filter>
-                <action android:name="com.google.android.gms.iid.InstanceID"/>
-            </intent-filter>
-        </service>
+            android:exported="false"
+            >
+         <intent-filter>
+            <action android:name="com.google.android.gms.iid.InstanceID" />
+         </intent-filter>
+      </service>
 
-        <service
+      <service
             android:name="com.worldventures.dreamtrips.modules.gcm.service.RegistrationIntentService"
-            android:exported="false"/>
-    </application>
+            android:exported="false"
+            />
+   </application>
 
 </manifest>

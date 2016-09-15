@@ -1,9 +1,9 @@
 package com.messenger.ui.widget.inappnotification;
 
 public interface InAppNotificationViewListener {
-    void onClick();
+   void onClick();
 
-    void onCloseClick();
+   void onCloseClick();
 
-    void onCloseSwipe();
+   void onCloseSwipe();
 }

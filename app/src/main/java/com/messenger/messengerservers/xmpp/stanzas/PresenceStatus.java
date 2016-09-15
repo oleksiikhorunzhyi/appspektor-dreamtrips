@@ -4,5 +4,5 @@ import android.support.annotation.StringDef;
 
 @StringDef({PresenceStatus.INVITED})
 public @interface PresenceStatus {
-    String INVITED = "invited";
+   String INVITED = "invited";
 }

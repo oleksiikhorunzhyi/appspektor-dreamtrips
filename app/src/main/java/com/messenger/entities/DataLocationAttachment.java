@@ -27,115 +27,111 @@ import java.util.List;
 @Table(tableName = DataLocationAttachment.TABLE_NAME, databaseName = MessengerDatabase.NAME, insertConflict = ConflictAction.REPLACE)
 @TableEndpoint(name = DataLocationAttachment.TABLE_NAME, contentProviderName = MessengerDatabase.NAME)
 public class DataLocationAttachment extends BaseProviderModel<DataAttachment> {
-    public static final String TABLE_NAME = "Locations";
+   public static final String TABLE_NAME = "Locations";
 
-    @ContentUri(path = TABLE_NAME, type = ContentUri.ContentType.VND_MULTIPLE + TABLE_NAME)
-    public static final Uri CONTENT_URI = MessengerDatabase.buildUri(TABLE_NAME);
+   @ContentUri(path = TABLE_NAME, type = ContentUri.ContentType.VND_MULTIPLE + TABLE_NAME) public static final Uri CONTENT_URI = MessengerDatabase
+         .buildUri(TABLE_NAME);
 
-    @Unique(unique = true, onUniqueConflict = ConflictAction.REPLACE)
-    @PrimaryKey
-    @Column(name = BaseColumns._ID)
-    String id;
-    @Column
-    double lat;
-    @Column
-    double lng;
+   @Unique(unique = true, onUniqueConflict = ConflictAction.REPLACE) @PrimaryKey @Column(name = BaseColumns._ID)
+   String id;
+   @Column double lat;
+   @Column double lng;
 
-    public DataLocationAttachment() {
-    }
+   public DataLocationAttachment() {
+   }
 
-    private DataLocationAttachment(Builder builder) {
-        setId(builder.id);
-        setCoordinates(builder.lat, builder.lng);
-    }
+   private DataLocationAttachment(Builder builder) {
+      setId(builder.id);
+      setCoordinates(builder.lat, builder.lng);
+   }
 
-    public DataLocationAttachment(@NonNull LocationAttachment attachment, Message message, int index) {
-        this.id = createId(message.getId(), index);
-        this.lat = attachment.getLat();
-        this.lng = attachment.getLng();
-    }
+   public DataLocationAttachment(@NonNull LocationAttachment attachment, Message message, int index) {
+      this.id = createId(message.getId(), index);
+      this.lat = attachment.getLat();
+      this.lng = attachment.getLng();
+   }
 
-    private String createId(String messageId, int index) {
-        return String.format("%s__%s", messageId, index);
-    }
+   private String createId(String messageId, int index) {
+      return String.format("%s__%s", messageId, index);
+   }
 
-    public String getId() {
-        return id;
-    }
+   public String getId() {
+      return id;
+   }
 
-    public void setId(String id) {
-        this.id = id;
-    }
+   public void setId(String id) {
+      this.id = id;
+   }
 
-    public void setCoordinates(double lat, double lng) {
-        this.lat = lat;
-        this.lng = lng;
-    }
+   public void setCoordinates(double lat, double lng) {
+      this.lat = lat;
+      this.lng = lng;
+   }
 
-    public double getLng() {
-        return lng;
-    }
+   public double getLng() {
+      return lng;
+   }
 
-    public double getLat() {
-        return lat;
-    }
+   public double getLat() {
+      return lat;
+   }
 
-    @Override
-    public Uri getDeleteUri() {
-        return CONTENT_URI;
-    }
+   @Override
+   public Uri getDeleteUri() {
+      return CONTENT_URI;
+   }
 
-    @Override
-    public Uri getInsertUri() {
-        return CONTENT_URI;
-    }
+   @Override
+   public Uri getInsertUri() {
+      return CONTENT_URI;
+   }
 
-    @Override
-    public Uri getUpdateUri() {
-        return CONTENT_URI;
-    }
+   @Override
+   public Uri getUpdateUri() {
+      return CONTENT_URI;
+   }
 
-    @Override
-    public Uri getQueryUri() {
-        return CONTENT_URI;
-    }
+   @Override
+   public Uri getQueryUri() {
+      return CONTENT_URI;
+   }
 
-    @NonNull
-    public static List<DataLocationAttachment> fromMessage(@NonNull Message message) {
-        MessageBody body = message.getMessageBody();
-        List<AttachmentHolder> attachmentHolders;
-        if (body == null || (attachmentHolders = body.getAttachments()) == null || attachmentHolders.isEmpty()) {
-            return Collections.emptyList();
-        }
+   @NonNull
+   public static List<DataLocationAttachment> fromMessage(@NonNull Message message) {
+      MessageBody body = message.getMessageBody();
+      List<AttachmentHolder> attachmentHolders;
+      if (body == null || (attachmentHolders = body.getAttachments()) == null || attachmentHolders.isEmpty()) {
+         return Collections.emptyList();
+      }
 
-        return Queryable.from(attachmentHolders)
-                .filter(attachmentHolder -> attachmentHolder != null)
-                .filter(attachmentHolder -> TextUtils.equals(attachmentHolder.getType(), AttachmentType.LOCATION))
-                .map((elem, idx) -> new DataLocationAttachment((LocationAttachment) elem.getItem(), message, idx))
-                .toList();
-    }
+      return Queryable.from(attachmentHolders)
+            .filter(attachmentHolder -> attachmentHolder != null)
+            .filter(attachmentHolder -> TextUtils.equals(attachmentHolder.getType(), AttachmentType.LOCATION))
+            .map((elem, idx) -> new DataLocationAttachment((LocationAttachment) elem.getItem(), message, idx))
+            .toList();
+   }
 
-    public static final class Builder {
-        String id;
-        double lat;
-        double lng;
+   public static final class Builder {
+      String id;
+      double lat;
+      double lng;
 
-        public Builder() {
-        }
+      public Builder() {
+      }
 
-        public Builder id(String id){
-            this.id = id;
-            return this;
-        }
+      public Builder id(String id) {
+         this.id = id;
+         return this;
+      }
 
-        public Builder coordinates(double lat, double lng) {
-            this.lat = lat;
-            this.lng = lng;
-            return this;
-        }
+      public Builder coordinates(double lat, double lng) {
+         this.lat = lat;
+         this.lng = lng;
+         return this;
+      }
 
-        public DataLocationAttachment build() {
-            return new DataLocationAttachment(this);
-        }
-    }
+      public DataLocationAttachment build() {
+         return new DataLocationAttachment(this);
+      }
+   }
 }

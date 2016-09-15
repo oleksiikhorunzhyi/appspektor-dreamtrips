@@ -34,157 +34,147 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.observables.ConnectableObservable;
 import timber.log.Timber;
 
-public class EditChatMembersScreenPresenterImpl extends MessengerPresenterImpl<EditChatMembersScreen,
-        EditChatMembersViewState> implements EditChatMembersScreenPresenter {
+public class EditChatMembersScreenPresenterImpl extends MessengerPresenterImpl<EditChatMembersScreen, EditChatMembersViewState> implements EditChatMembersScreenPresenter {
 
-    @Inject
-    ChatGroupCommandsInteractor chatGroupCommandsInteractor;
-    @Inject ParticipantsDAO participantsDAO;
-    @Inject ConversationsDAO conversationsDAO;
-    @Inject ProfileCrosser profileCrosser;
-    @Inject ActivityWatcher activityWatcher;
-    @Inject UserSectionHelper userSectionHelper;
+   @Inject ChatGroupCommandsInteractor chatGroupCommandsInteractor;
+   @Inject ParticipantsDAO participantsDAO;
+   @Inject ConversationsDAO conversationsDAO;
+   @Inject ProfileCrosser profileCrosser;
+   @Inject ActivityWatcher activityWatcher;
+   @Inject UserSectionHelper userSectionHelper;
 
-    private final RxSearchHelper<Pair<DataUser, String>> rxSearchHelper = new RxSearchHelper<>();
+   private final RxSearchHelper<Pair<DataUser, String>> rxSearchHelper = new RxSearchHelper<>();
 
-    private final String conversationId;
-    private Observable<DataConversation> conversationObservable;
+   private final String conversationId;
+   private Observable<DataConversation> conversationObservable;
 
-    public EditChatMembersScreenPresenterImpl(Context context, Injector injector, String conversationId) {
-        super(context, injector);
-        this.conversationId = conversationId;
-    }
+   public EditChatMembersScreenPresenterImpl(Context context, Injector injector, String conversationId) {
+      super(context, injector);
+      this.conversationId = conversationId;
+   }
 
-    @Override
-    public void onAttachedToWindow() {
-        super.onAttachedToWindow();
+   @Override
+   public void onAttachedToWindow() {
+      super.onAttachedToWindow();
 
-        getViewState().setLoadingState(LceViewState.LoadingState.LOADING);
-        getView().showLoading();
+      getViewState().setLoadingState(LceViewState.LoadingState.LOADING);
+      getView().showLoading();
 
-        connectConversation();
-        connectParticipants();
+      connectConversation();
+      connectParticipants();
 
-        activityWatcher.addOnStartStopListener(startStopAppListener);
-    }
+      activityWatcher.addOnStartStopListener(startStopAppListener);
+   }
 
-    @Override
-    public void onDetachedFromWindow() {
-        super.onDetachedFromWindow();
-        activityWatcher.removeOnStartStopListener(startStopAppListener);
-    }
+   @Override
+   public void onDetachedFromWindow() {
+      super.onDetachedFromWindow();
+      activityWatcher.removeOnStartStopListener(startStopAppListener);
+   }
 
 
-    private void connectConversation() {
-        conversationObservable = conversationsDAO.getConversation(conversationId)
-                .compose(new NonNullFilter<>())
-                .replay(1)
-                .autoConnect();
-    }
+   private void connectConversation() {
+      conversationObservable = conversationsDAO.getConversation(conversationId)
+            .compose(new NonNullFilter<>())
+            .replay(1)
+            .autoConnect();
+   }
 
-    private void connectParticipants() {
-        ConnectableObservable<List<Pair<DataUser, String>>> membersObservable =
-                participantsDAO.getParticipants(conversationId).publish();
+   private void connectParticipants() {
+      ConnectableObservable<List<Pair<DataUser, String>>> membersObservable = participantsDAO.getParticipants(conversationId)
+            .publish();
 
-        ConnectableObservable<CharSequence> searchObservable =
-                getView().getSearchObservable().publish();
+      ConnectableObservable<CharSequence> searchObservable = getView().getSearchObservable().publish();
 
-        searchObservable
-                .compose(bindView())
-                .subscribe(filterQuery ->
-                getViewState().setSearchFilter(filterQuery.toString()));
+      searchObservable.compose(bindView())
+            .subscribe(filterQuery -> getViewState().setSearchFilter(filterQuery.toString()));
 
-        membersObservable
-                .compose(bindView())
-                .filter(pairs -> pairs.size() <= 1)
-                .subscribe(pairs -> Flow.get(getContext()).set(ConversationsPath.MASTER_PATH),
-                        throwable -> Timber.d(throwable, ""));
+      membersObservable.compose(bindView()).filter(pairs -> pairs.size() <= 1).subscribe(pairs -> Flow.get(getContext())
+            .set(ConversationsPath.MASTER_PATH), throwable -> Timber.d(throwable, ""));
 
-        rxSearchHelper.search(membersObservable, searchObservable,
-                (pair, searchFilter) -> StringUtils.containsIgnoreCase(pair.first.getDisplayedName(), searchFilter))
-                .compose(userSectionHelper.groupTransformer(conversationObservable))
-                .compose(bindView())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(itemsWithUserCount ->
-                        adapterDataPrepared(itemsWithUserCount.first, itemsWithUserCount.second),
-                        throwable -> Timber.d(throwable, ""));
+      rxSearchHelper.search(membersObservable, searchObservable, (pair, searchFilter) -> StringUtils.containsIgnoreCase(pair.first
+            .getDisplayedName(), searchFilter))
+            .compose(userSectionHelper.groupTransformer(conversationObservable))
+            .compose(bindView())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe(itemsWithUserCount -> adapterDataPrepared(itemsWithUserCount.first, itemsWithUserCount.second), throwable -> Timber
+                  .d(throwable, ""));
 
-        membersObservable.connect();
-        searchObservable.connect();
-    }
+      membersObservable.connect();
+      searchObservable.connect();
+   }
 
-    private void adapterDataPrepared(List<Object> items, int userCount) {
-        EditChatMembersScreen view = getView();
-        view.showContent();
-        view.setAdapterData(items);
-        view.setTitle(String.format(getContext().getString(R.string.edit_chat_members_title), userCount));
-    }
+   private void adapterDataPrepared(List<Object> items, int userCount) {
+      EditChatMembersScreen view = getView();
+      view.showContent();
+      view.setAdapterData(items);
+      view.setTitle(String.format(getContext().getString(R.string.edit_chat_members_title), userCount));
+   }
 
 
-    ActivityWatcher.OnStartStopAppListener startStopAppListener = new ActivityWatcher.OnStartStopAppListener() {
-        @Override
-        public void onStartApplication() {
-        }
+   ActivityWatcher.OnStartStopAppListener startStopAppListener = new ActivityWatcher.OnStartStopAppListener() {
+      @Override
+      public void onStartApplication() {
+      }
 
-        @Override
-        public void onStopApplication() {
-            if (getView() != null) getView().invalidateAllSwipedLayouts();
-        }
-    };
+      @Override
+      public void onStopApplication() {
+         if (getView() != null) getView().invalidateAllSwipedLayouts();
+      }
+   };
 
-    @Override
-    public void onNewViewState() {
-        state = new EditChatMembersViewState();
-        state.setLoadingState(ChatLayoutViewState.LoadingState.CONTENT);
-        getView().showContent();
-    }
+   @Override
+   public void onNewViewState() {
+      state = new EditChatMembersViewState();
+      state.setLoadingState(ChatLayoutViewState.LoadingState.CONTENT);
+      getView().showContent();
+   }
 
-    @Override
-    public void applyViewState() {
-        EditChatMembersViewState editChatMembersViewState = getViewState();
-        EditChatMembersScreen view = getView();
+   @Override
+   public void applyViewState() {
+      EditChatMembersViewState editChatMembersViewState = getViewState();
+      EditChatMembersScreen view = getView();
 
-        assert view != null;
-        view.restoreSearchQuery(editChatMembersViewState.getSearchFilter());
-        switch (editChatMembersViewState.getLoadingState()) {
-            case LOADING:
-                view.showLoading();
-                break;
-            case CONTENT:
-                view.showContent();
-                break;
-            case ERROR:
-                view.showError(editChatMembersViewState.getError());
-                break;
-        }
-    }
+      assert view != null;
+      view.restoreSearchQuery(editChatMembersViewState.getSearchFilter());
+      switch (editChatMembersViewState.getLoadingState()) {
+         case LOADING:
+            view.showLoading();
+            break;
+         case CONTENT:
+            view.showContent();
+            break;
+         case ERROR:
+            view.showError(editChatMembersViewState.getError());
+            break;
+      }
+   }
 
-    ///////////////////////////////////////////////////////////////////////////
-    // Menu
-    ///////////////////////////////////////////////////////////////////////////
+   ///////////////////////////////////////////////////////////////////////////
+   // Menu
+   ///////////////////////////////////////////////////////////////////////////
 
-    @Override
-    public int getToolbarMenuRes() {
-        return R.menu.menu_edit_chat_members;
-    }
+   @Override
+   public int getToolbarMenuRes() {
+      return R.menu.menu_edit_chat_members;
+   }
 
-    @Override
-    public void onDeleteUserFromChat(DataUser user) {
-        getView().showDeletionConfirmationDialog(user);
-    }
+   @Override
+   public void onDeleteUserFromChat(DataUser user) {
+      getView().showDeletionConfirmationDialog(user);
+   }
 
-    @Override
-    public void onDeleteUserFromChatConfirmed(DataUser user) {
-        if (currentConnectivityStatus != SyncStatus.CONNECTED) {
-            getView().showMessage(R.string.no_connection);
-            return;
-        }
-        chatGroupCommandsInteractor.getKickChatPipe()
-                .send(new KickChatCommand(conversationId, user.getId()));
-    }
+   @Override
+   public void onDeleteUserFromChatConfirmed(DataUser user) {
+      if (currentConnectivityStatus != SyncStatus.CONNECTED) {
+         getView().showMessage(R.string.no_connection);
+         return;
+      }
+      chatGroupCommandsInteractor.getKickChatPipe().send(new KickChatCommand(conversationId, user.getId()));
+   }
 
-    @Override
-    public void onUserClicked(DataUser user) {
-        profileCrosser.crossToProfile(user);
-    }
+   @Override
+   public void onUserClicked(DataUser user) {
+      profileCrosser.crossToProfile(user);
+   }
 }

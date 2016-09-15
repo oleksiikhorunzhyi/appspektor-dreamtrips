@@ -16,108 +16,107 @@ import rx.functions.Action1;
 
 public class PhotoTagHolderManager {
 
-    PhotoTagHolder photoTagHolder;
-    User account;
-    private User photoOwner;
+   PhotoTagHolder photoTagHolder;
+   User account;
+   private User photoOwner;
 
-    private boolean creationEnabled;
-    private GestureDetector gestureDetector;
-    private FriendRequestProxy friendRequestProxy;
+   private boolean creationEnabled;
+   private GestureDetector gestureDetector;
+   private FriendRequestProxy friendRequestProxy;
 
-    private Action1<PhotoTag> tagCreatedListener;
-    private Action1<PhotoTag> tagDeletedListener;
+   private Action1<PhotoTag> tagCreatedListener;
+   private Action1<PhotoTag> tagDeletedListener;
 
-    public PhotoTagHolderManager(PhotoTagHolder photoTagHolder, User account, User photoOwner) {
-        this.photoTagHolder = photoTagHolder;
-        this.account = account;
-        this.photoOwner = photoOwner;
+   public PhotoTagHolderManager(PhotoTagHolder photoTagHolder, User account, User photoOwner) {
+      this.photoTagHolder = photoTagHolder;
+      this.account = account;
+      this.photoOwner = photoOwner;
 
-        gestureDetector = createGestureDetector(photoTagHolder);
-    }
+      gestureDetector = createGestureDetector(photoTagHolder);
+   }
 
-    public void show(SimpleDraweeView imageView) {
-        photoTagHolder.show(this, imageView);
-    }
+   public void show(SimpleDraweeView imageView) {
+      photoTagHolder.show(this, imageView);
+   }
 
-    public void hide() {
-        photoTagHolder.hide();
-    }
+   public void hide() {
+      photoTagHolder.hide();
+   }
 
-    public void addExistsTagViews(List<PhotoTag> photoTags) {
-        for (PhotoTag photoTag : photoTags) {
-            boolean isAccountOnPhoto = photoTag.getUser().getId() == account.getId();
-            boolean isAccountOwner = creationEnabled || photoOwner.getId() == account.getId();
-            photoTagHolder.addExistsTagView(photoTag, isAccountOnPhoto || isAccountOwner);
-        }
-    }
+   public void addExistsTagViews(List<PhotoTag> photoTags) {
+      for (PhotoTag photoTag : photoTags) {
+         boolean isAccountOnPhoto = photoTag.getUser().getId() == account.getId();
+         boolean isAccountOwner = creationEnabled || photoOwner.getId() == account.getId();
+         photoTagHolder.addExistsTagView(photoTag, isAccountOnPhoto || isAccountOwner);
+      }
+   }
 
-    public void addSuggestionTagView(List<PhotoTag> photoTags, TagSuggestionActionListener listener) {
-        Queryable.from(photoTags).forEachR(arg -> photoTagHolder.addSuggestionTagView(arg, listener));
-    }
+   public void addSuggestionTagView(List<PhotoTag> photoTags, TagSuggestionActionListener listener) {
+      Queryable.from(photoTags).forEachR(arg -> photoTagHolder.addSuggestionTagView(arg, listener));
+   }
 
-    public void addCreationTagBasedOnSuggestion(PhotoTag suggestion) {
-        photoTagHolder.addCreationTagViewBasedOnSuggestion(suggestion);
-    }
+   public void addCreationTagBasedOnSuggestion(PhotoTag suggestion) {
+      photoTagHolder.addCreationTagViewBasedOnSuggestion(suggestion);
+   }
 
-    public void creationTagEnabled(boolean creationEnabled) {
-        this.creationEnabled = creationEnabled;
-        if (creationEnabled) {
-            photoTagHolder.setOnTouchListener((v, event) -> {
-                gestureDetector.onTouchEvent(event);
-                return true;
-            });
-        } else {
-            photoTagHolder.setOnTouchListener(null);
-        }
-    }
+   public void creationTagEnabled(boolean creationEnabled) {
+      this.creationEnabled = creationEnabled;
+      if (creationEnabled) {
+         photoTagHolder.setOnTouchListener((v, event) -> {
+            gestureDetector.onTouchEvent(event);
+            return true;
+         });
+      } else {
+         photoTagHolder.setOnTouchListener(null);
+      }
+   }
 
-    public void setFriendRequestProxy(FriendRequestProxy friendRequestProxy) {
-        this.friendRequestProxy = friendRequestProxy;
-    }
+   public void setFriendRequestProxy(FriendRequestProxy friendRequestProxy) {
+      this.friendRequestProxy = friendRequestProxy;
+   }
 
-    public void setTagCreatedListener(Action1<PhotoTag> tagCreatedListener) {
-        this.tagCreatedListener = tagCreatedListener;
-    }
+   public void setTagCreatedListener(Action1<PhotoTag> tagCreatedListener) {
+      this.tagCreatedListener = tagCreatedListener;
+   }
 
-    public void setTagDeletedListener(Action1<PhotoTag> tagDeletedListener) {
-        this.tagDeletedListener = tagDeletedListener;
-    }
+   public void setTagDeletedListener(Action1<PhotoTag> tagDeletedListener) {
+      this.tagDeletedListener = tagDeletedListener;
+   }
 
-    void requestFriends(String query, int page) {
-        if (friendRequestProxy != null) {
-            friendRequestProxy.requestFriends(query, page, users -> {
-                if (photoTagHolder.getCreationTagView() != null)
-                    photoTagHolder.getCreationTagView().setUserFriends(users);
-            });
-        }
-    }
+   void requestFriends(String query, int page) {
+      if (friendRequestProxy != null) {
+         friendRequestProxy.requestFriends(query, page, users -> {
+            if (photoTagHolder.getCreationTagView() != null) photoTagHolder.getCreationTagView().setUserFriends(users);
+         });
+      }
+   }
 
-    void notifyTagCreated(PhotoTag photoTag) {
-        tagCreatedListener.call(photoTag);
-    }
+   void notifyTagCreated(PhotoTag photoTag) {
+      tagCreatedListener.call(photoTag);
+   }
 
-    void notifyTagDeleted(PhotoTag photoTag) {
-        tagDeletedListener.call(photoTag);
-    }
+   void notifyTagDeleted(PhotoTag photoTag) {
+      tagDeletedListener.call(photoTag);
+   }
 
-    @NonNull
-    private GestureDetector createGestureDetector(final PhotoTagHolder photoTagHolder) {
-        return new GestureDetector(photoTagHolder.getContext(), new GestureDetector.SimpleOnGestureListener() {
-            @Override
-            public boolean onSingleTapConfirmed(MotionEvent e) {
-                if (isEnableToTag(e)) photoTagHolder.addCreationTagView(e.getX(), e.getY());
-                return isEnableToTag(e);
-            }
-        });
-    }
+   @NonNull
+   private GestureDetector createGestureDetector(final PhotoTagHolder photoTagHolder) {
+      return new GestureDetector(photoTagHolder.getContext(), new GestureDetector.SimpleOnGestureListener() {
+         @Override
+         public boolean onSingleTapConfirmed(MotionEvent e) {
+            if (isEnableToTag(e)) photoTagHolder.addCreationTagView(e.getX(), e.getY());
+            return isEnableToTag(e);
+         }
+      });
+   }
 
-    private boolean isEnableToTag(MotionEvent e) {
-        return creationEnabled && photoTagHolder.getImageBounds().contains(e.getX(), e.getY());
-    }
+   private boolean isEnableToTag(MotionEvent e) {
+      return creationEnabled && photoTagHolder.getImageBounds().contains(e.getX(), e.getY());
+   }
 
-    public interface FriendRequestProxy {
+   public interface FriendRequestProxy {
 
-        void requestFriends(String query, int page, Action1<List<User>> friends);
-    }
+      void requestFriends(String query, int page, Action1<List<User>> friends);
+   }
 
 }

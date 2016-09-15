@@ -7,21 +7,21 @@ import java.util.List;
 
 public class TripMapListPresenter extends Presenter<TripMapListPresenter.View> {
 
-    private List<TripModel> trips;
+   private List<TripModel> trips;
 
-    public TripMapListPresenter(List<TripModel> trips) {
-        this.trips = trips;
-    }
+   public TripMapListPresenter(List<TripModel> trips) {
+      this.trips = trips;
+   }
 
-    @Override
-    public void takeView(View view) {
-        super.takeView(view);
-        //
-        view.updateItems(trips);
-    }
+   @Override
+   public void takeView(View view) {
+      super.takeView(view);
+      //
+      view.updateItems(trips);
+   }
 
-    public interface View extends Presenter.View {
+   public interface View extends Presenter.View {
 
-        void updateItems(List<TripModel> trips);
-    }
+      void updateItems(List<TripModel> trips);
+   }
 }

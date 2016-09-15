@@ -28,40 +28,23 @@ import dagger.Module;
 import dagger.Provides;
 
 @Module(
-        injects = {
-                FriendSearchFragment.class,
-                FriendSearchPresenter.class,
-                FriendsMainPresenter.class,
-                FriendListFragment.class,
-                FriendsMainFragment.class,
-                FriendListPresenter.class,
-                FriendCell.class,
-                UserCell.class,
-                FeedFriendCell.class,
-                MutualFriendCell.class,
+      injects = {FriendSearchFragment.class, FriendSearchPresenter.class, FriendsMainPresenter.class, FriendListFragment.class, FriendsMainFragment.class, FriendListPresenter.class, FriendCell.class, UserCell.class, FeedFriendCell.class, MutualFriendCell.class,
 
-                UsersLikedItemPresenter.class,
-                UsersLikedItemFragment.class,
+            UsersLikedItemPresenter.class, UsersLikedItemFragment.class,
 
-                MutualFriendsFragment.class,
-                MutualFriendsPresenter.class,
+            MutualFriendsFragment.class, MutualFriendsPresenter.class,
 
-                RequestsFragment.class,
-                RequestsPresenter.class,
+            RequestsFragment.class, RequestsPresenter.class,
 
-                RequestCell.class,
-                RequestHeaderCell.class,
-                UserSearchCell.class,
+            RequestCell.class, RequestHeaderCell.class, UserSearchCell.class,
 
-                SmartAvatarView.class
-        },
-        complete = false,
-        library = true
-)
+            SmartAvatarView.class},
+      complete = false,
+      library = true)
 public class FriendsModule {
 
-        @Provides
-        UserStatusAdapter provideUserStatusAdapter(UsersDAO usersDao){
-                return new UserStatusDaoAdapter(usersDao);
-        }
+   @Provides
+   UserStatusAdapter provideUserStatusAdapter(UsersDAO usersDao) {
+      return new UserStatusDaoAdapter(usersDao);
+   }
 }

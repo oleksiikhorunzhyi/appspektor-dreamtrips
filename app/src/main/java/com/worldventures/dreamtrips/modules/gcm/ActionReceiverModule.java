@@ -5,11 +5,7 @@ import com.worldventures.dreamtrips.modules.friends.notification.FriendRejectAct
 import dagger.Module;
 
 @Module(
-        injects = {
-                FriendRejectActionReceiver.class,
-        },
-        complete = false,
-        library = true
-)
-public class ActionReceiverModule {
-}
+      injects = {FriendRejectActionReceiver.class,},
+      complete = false,
+      library = true)
+public class ActionReceiverModule {}

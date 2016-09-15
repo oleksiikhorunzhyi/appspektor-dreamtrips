@@ -6,10 +6,10 @@ import com.worldventures.dreamtrips.modules.common.view.viewpager.FragmentItem;
 import java.io.Serializable;
 
 public class DataFragmentItem<T extends Serializable> extends FragmentItem {
-        public final T data;
+   public final T data;
 
-        public DataFragmentItem(Route route, String title, T data) {
-            super(route, title);
-            this.data = data;
-        }
-    }
+   public DataFragmentItem(Route route, String title, T data) {
+      super(route, title);
+      this.data = data;
+   }
+}

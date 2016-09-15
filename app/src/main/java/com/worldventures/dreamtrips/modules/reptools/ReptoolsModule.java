@@ -15,24 +15,15 @@ import dagger.Module;
 import dagger.Provides;
 
 @Module(
-        injects = {
-                SuccessStoryDetailsFragment.class,
-                SuccessStoryCell.class,
-                SuccessStoryListFragment.class,
-                SuccessStoryListPresenter.class,
-                SuccessStoryDetailsPresenter.class,
-                RepToolsFragment.class,
-                RepToolsPresenter.class,
-        },
-        complete = false,
-        library = true
-)
+      injects = {SuccessStoryDetailsFragment.class, SuccessStoryCell.class, SuccessStoryListFragment.class, SuccessStoryListPresenter.class, SuccessStoryDetailsPresenter.class, RepToolsFragment.class, RepToolsPresenter.class,},
+      complete = false,
+      library = true)
 public class ReptoolsModule {
 
-    public static final String REP_TOOLS = Route.REP_TOOLS.name();
+   public static final String REP_TOOLS = Route.REP_TOOLS.name();
 
-    @Provides(type = Provides.Type.SET)
-    ComponentDescription provideRepToolsComponent() {
-        return new ComponentDescription(REP_TOOLS, R.string.rep_tools, R.string.rep_tools, R.drawable.ic_rep_tools, RepToolsFragment.class);
-    }
+   @Provides(type = Provides.Type.SET)
+   ComponentDescription provideRepToolsComponent() {
+      return new ComponentDescription(REP_TOOLS, R.string.rep_tools, R.string.rep_tools, R.drawable.ic_rep_tools, RepToolsFragment.class);
+   }
 }

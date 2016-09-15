@@ -18,23 +18,21 @@ import io.techery.janet.command.annotations.CommandAction;
 @CommandAction
 public class SyncConversationsCommand extends Command<List<Conversation>> implements InjectableAction {
 
-    @Inject Janet janet;
-    @Inject UsersDelegate usersDelegate;
-    @Inject ConversationSyncHelper conversationSyncHelper;
+   @Inject Janet janet;
+   @Inject UsersDelegate usersDelegate;
+   @Inject ConversationSyncHelper conversationSyncHelper;
 
-    @Override
-    protected void run(CommandCallback<List<Conversation>> callback) throws Throwable {
-        janet.createPipe(LoadConversationsCommand.class)
-                .createObservableResult(new LoadConversationsCommand())
-                .map(Command::getResult)
-                .flatMap(conversations ->
-                        usersDelegate.loadAndSaveUsers(ConversationHelper.getUsersFromConversations(conversations))
-                                .map(action -> conversations)
-                )
-                .subscribe(conversations -> {
-                    conversationSyncHelper.process(conversations);
-                    callback.onSuccess(conversations);
-                }, callback::onFail);
-    }
+   @Override
+   protected void run(CommandCallback<List<Conversation>> callback) throws Throwable {
+      janet.createPipe(LoadConversationsCommand.class)
+            .createObservableResult(new LoadConversationsCommand())
+            .map(Command::getResult)
+            .flatMap(conversations -> usersDelegate.loadAndSaveUsers(ConversationHelper.getUsersFromConversations(conversations))
+                  .map(action -> conversations))
+            .subscribe(conversations -> {
+               conversationSyncHelper.process(conversations);
+               callback.onSuccess(conversations);
+            }, callback::onFail);
+   }
 
 }

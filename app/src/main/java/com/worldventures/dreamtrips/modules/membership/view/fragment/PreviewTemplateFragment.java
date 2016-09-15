@@ -7,8 +7,8 @@ import com.worldventures.dreamtrips.modules.infopages.view.fragment.staticconten
 @Layout(R.layout.fragment_preview_template)
 public class PreviewTemplateFragment extends StaticInfoFragment.BundleUrlFragment {
 
-    @Override
-    protected void lockOrientationIfNeeded() {
-        // don't lock
-    }
+   @Override
+   protected void lockOrientationIfNeeded() {
+      // don't lock
+   }
 }

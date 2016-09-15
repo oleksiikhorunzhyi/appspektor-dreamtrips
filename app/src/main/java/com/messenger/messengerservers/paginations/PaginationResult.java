@@ -7,7 +7,7 @@ import java.util.List;
 @Value.Immutable
 public interface PaginationResult<T> {
 
-    List<T> getResult();
+   List<T> getResult();
 
-    int getLoadedCount();
+   int getLoadedCount();
 }

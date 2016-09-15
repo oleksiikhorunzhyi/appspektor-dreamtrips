@@ -4,14 +4,11 @@ import com.messenger.entities.DataUser;
 import com.messenger.ui.view.edit_member.EditChatMembersScreen;
 import com.messenger.ui.viewstate.EditChatMembersViewState;
 
-import rx.Observable;
+public interface EditChatMembersScreenPresenter extends MessengerPresenter<EditChatMembersScreen, EditChatMembersViewState> {
 
-public interface EditChatMembersScreenPresenter extends MessengerPresenter<EditChatMembersScreen,
-        EditChatMembersViewState> {
+   void onDeleteUserFromChat(DataUser user);
 
-    void onDeleteUserFromChat(DataUser user);
+   void onDeleteUserFromChatConfirmed(DataUser user);
 
-    void onDeleteUserFromChatConfirmed(DataUser user);
-
-    void onUserClicked(DataUser user);
+   void onUserClicked(DataUser user);
 }

@@ -15,13 +15,13 @@ import io.techery.janet.command.annotations.CommandAction;
 @CommandAction
 public class LoadConversationsCommand extends Command<List<Conversation>> implements InjectableAction {
 
-    @Inject MessengerServerFacade messengerServerFacade;
+   @Inject MessengerServerFacade messengerServerFacade;
 
-    @Override
-    protected void run(CommandCallback<List<Conversation>> callback) throws Throwable {
-        messengerServerFacade.getLoaderManager()
-                .createConversationsLoader()
-                .load()
-                .subscribe(callback::onSuccess, callback::onFail);
-    }
+   @Override
+   protected void run(CommandCallback<List<Conversation>> callback) throws Throwable {
+      messengerServerFacade.getLoaderManager()
+            .createConversationsLoader()
+            .load()
+            .subscribe(callback::onSuccess, callback::onFail);
+   }
 }

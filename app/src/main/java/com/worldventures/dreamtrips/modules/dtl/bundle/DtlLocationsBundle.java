@@ -9,47 +9,47 @@ import android.os.Parcelable;
  */
 public class DtlLocationsBundle implements Parcelable {
 
-    final public boolean shouldShowEmptyMerchantsCaption;
+   final public boolean shouldShowEmptyMerchantsCaption;
 
-    /**
-     * Default constructor emplies false for
-     * {@link DtlLocationsBundle#shouldShowEmptyMerchantsCaption shouldShowEmptyMerchantsCaption} flag
-     */
-    public DtlLocationsBundle() {
-        this.shouldShowEmptyMerchantsCaption = false;
-    }
+   /**
+    * Default constructor emplies false for
+    * {@link DtlLocationsBundle#shouldShowEmptyMerchantsCaption shouldShowEmptyMerchantsCaption} flag
+    */
+   public DtlLocationsBundle() {
+      this.shouldShowEmptyMerchantsCaption = false;
+   }
 
-    public DtlLocationsBundle(boolean shouldShowEmptyMerchantsCaption) {
-        this.shouldShowEmptyMerchantsCaption = shouldShowEmptyMerchantsCaption;
-    }
+   public DtlLocationsBundle(boolean shouldShowEmptyMerchantsCaption) {
+      this.shouldShowEmptyMerchantsCaption = shouldShowEmptyMerchantsCaption;
+   }
 
-    ///////////////////////////////////////////////////////////////////////////
-    // Parcelable
-    ///////////////////////////////////////////////////////////////////////////
+   ///////////////////////////////////////////////////////////////////////////
+   // Parcelable
+   ///////////////////////////////////////////////////////////////////////////
 
-    protected DtlLocationsBundle(Parcel in) {
-        shouldShowEmptyMerchantsCaption = in.readByte() != 0;
-    }
+   protected DtlLocationsBundle(Parcel in) {
+      shouldShowEmptyMerchantsCaption = in.readByte() != 0;
+   }
 
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeByte((byte) (shouldShowEmptyMerchantsCaption ? 1 : 0));
-    }
+   @Override
+   public void writeToParcel(Parcel dest, int flags) {
+      dest.writeByte((byte) (shouldShowEmptyMerchantsCaption ? 1 : 0));
+   }
 
-    @Override
-    public int describeContents() {
-        return 0;
-    }
+   @Override
+   public int describeContents() {
+      return 0;
+   }
 
-    public static final Creator<DtlLocationsBundle> CREATOR = new Creator<DtlLocationsBundle>() {
-        @Override
-        public DtlLocationsBundle createFromParcel(Parcel in) {
-            return new DtlLocationsBundle(in);
-        }
+   public static final Creator<DtlLocationsBundle> CREATOR = new Creator<DtlLocationsBundle>() {
+      @Override
+      public DtlLocationsBundle createFromParcel(Parcel in) {
+         return new DtlLocationsBundle(in);
+      }
 
-        @Override
-        public DtlLocationsBundle[] newArray(int size) {
-            return new DtlLocationsBundle[size];
-        }
-    };
+      @Override
+      public DtlLocationsBundle[] newArray(int size) {
+         return new DtlLocationsBundle[size];
+      }
+   };
 }

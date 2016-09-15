@@ -1,29 +1,80 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@color/white"
-    android:orientation="vertical">
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+      android:layout_width="match_parent"
+      android:layout_height="match_parent"
+      android:background="@color/white"
+      android:orientation="vertical"
+      >
 
-    <com.worldventures.dreamtrips.modules.common.view.custom.EmptyRecyclerView
-        android:id="@+id/recyclerViewFilters"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:paddingTop="15dp"
-        android:layout_above="@+id/footer"/>
+   <FrameLayout
+         android:layout_width="match_parent"
+         android:layout_height="match_parent"
+         android:layout_above="@+id/footer"
+         android:paddingTop="15dp"
+         >
 
-    <LinearLayout
-        android:id="@+id/footer"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:orientation="horizontal"
-        android:paddingLeft="20dp"
-        android:paddingRight="20dp"
-        android:weightSum="2">
+      <LinearLayout
+            android:id="@+id/error_container"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:orientation="vertical"
+            android:visibility="gone"
+            >
 
-        <TextView
+         <TextView
+               android:layout_width="wrap_content"
+               android:layout_height="wrap_content"
+               android:layout_gravity="center_horizontal"
+               android:text="@string/error_fail_to_load_filters"
+               android:textColor="@color/filters_error_text"
+               android:textSize="@dimen/font_normal"
+               />
+
+         <TextView
+               android:id="@+id/btn_retry"
+               android:layout_width="wrap_content"
+               android:layout_height="wrap_content"
+               android:layout_gravity="center_horizontal"
+               android:clickable="true"
+               android:drawableLeft="@drawable/ic_retry_filters"
+               android:drawablePadding="@dimen/spacing_tiny"
+               android:gravity="center"
+               android:padding="@dimen/spacing_normal"
+               android:text="@string/retry"
+               android:textColor="@color/filters_retry_text"
+               android:textSize="@dimen/font_normal"
+               />
+      </LinearLayout>
+
+      <ProgressBar
+            android:id="@+id/progress"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:visibility="gone"
+            />
+
+      <com.worldventures.dreamtrips.modules.common.view.custom.EmptyRecyclerView
+            android:id="@+id/recyclerViewFilters"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:visibility="gone"
+            />
+   </FrameLayout>
+
+   <LinearLayout
+         android:id="@+id/footer"
+         android:layout_width="match_parent"
+         android:layout_height="wrap_content"
+         android:layout_alignParentBottom="true"
+         android:orientation="horizontal"
+         android:paddingLeft="20dp"
+         android:paddingRight="20dp"
+         android:weightSum="2"
+         >
+
+      <TextView
             android:id="@+id/textViewApplyFilter"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -31,9 +82,10 @@
             android:padding="15dp"
             android:text="@string/filter_apply_all"
             android:textColor="@color/dt_filter_apply_reset"
-            android:textStyle="bold"/>
+            android:textStyle="bold"
+            />
 
-        <TextView
+      <TextView
             android:id="@+id/textViewResetFilter"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -41,6 +93,7 @@
             android:padding="15dp"
             android:text="@string/filter_reset_all"
             android:textColor="@color/dt_filter_apply_reset"
-            android:textStyle="bold"/>
-    </LinearLayout>
+            android:textStyle="bold"
+            />
+   </LinearLayout>
 </RelativeLayout>

@@ -17,87 +17,86 @@ import com.raizlabs.android.dbflow.structure.provider.BaseProviderModel;
 @Table(tableName = DataParticipant.TABLE_NAME, databaseName = MessengerDatabase.NAME, insertConflict = ConflictAction.REPLACE)
 @TableEndpoint(name = DataParticipant.TABLE_NAME, contentProviderName = MessengerDatabase.NAME)
 public class DataParticipant extends BaseProviderModel<DataParticipant> {
-    public static final String TABLE_NAME = "Participants";
+   public static final String TABLE_NAME = "Participants";
 
-    @ContentUri(path = TABLE_NAME, type = ContentUri.ContentType.VND_MULTIPLE + TABLE_NAME)
-    public static final Uri CONTENT_URI = MessengerDatabase.buildUri(TABLE_NAME);
+   @ContentUri(path = TABLE_NAME, type = ContentUri.ContentType.VND_MULTIPLE + TABLE_NAME) public static final Uri CONTENT_URI = MessengerDatabase
+         .buildUri(TABLE_NAME);
 
-    @Unique(unique = true, onUniqueConflict = ConflictAction.REPLACE)
-    @PrimaryKey @Column() String id;
+   @Unique(unique = true, onUniqueConflict = ConflictAction.REPLACE) @PrimaryKey @Column() String id;
 
-    @Column String conversationId;
-    @Column String userId;
-    @Column long syncTime;
-    @Column String affiliation;
+   @Column String conversationId;
+   @Column String userId;
+   @Column long syncTime;
+   @Column String affiliation;
 
-    public DataParticipant(Participant participant) {
-        affiliation = participant.getAffiliation();
-        String conversationId = this.conversationId = participant.getConversationId();
-        String userId = this.userId = participant.getUserId();
-        id = createId(conversationId, userId);
-    }
+   public DataParticipant(Participant participant) {
+      affiliation = participant.getAffiliation();
+      String conversationId = this.conversationId = participant.getConversationId();
+      String userId = this.userId = participant.getUserId();
+      id = createId(conversationId, userId);
+   }
 
-    public DataParticipant(String conversationId, String userId, @Affiliation String affiliation) {
-        this.id = createId(conversationId, userId);
-        this.conversationId = conversationId;
-        this.userId = userId;
-        this.affiliation = affiliation;
-    }
+   public DataParticipant(String conversationId, String userId, @Affiliation String affiliation) {
+      this.id = createId(conversationId, userId);
+      this.conversationId = conversationId;
+      this.userId = userId;
+      this.affiliation = affiliation;
+   }
 
-    private String createId(String conversationId, String userId) {
-        return String.format("%s_%s", conversationId, userId);
-    }
+   private String createId(String conversationId, String userId) {
+      return String.format("%s_%s", conversationId, userId);
+   }
 
-    public DataParticipant() {
-    }
+   public DataParticipant() {
+   }
 
-    public String getId() {
-        return id;
-    }
+   public String getId() {
+      return id;
+   }
 
-    public String getConversationId() {
-        return conversationId;
-    }
+   public String getConversationId() {
+      return conversationId;
+   }
 
-    public String getUserId() {
-        return userId;
-    }
+   public String getUserId() {
+      return userId;
+   }
 
-    public long getSyncTime() {
-        return syncTime;
-    }
+   public long getSyncTime() {
+      return syncTime;
+   }
 
-    public void setSyncTime(long syncTime) {
-        this.syncTime = syncTime;
-    }
+   public void setSyncTime(long syncTime) {
+      this.syncTime = syncTime;
+   }
 
-    @Affiliation
-    public String getAffiliation() {
-        return affiliation;
-    }
+   @Affiliation
+   public String getAffiliation() {
+      return affiliation;
+   }
 
-    @Override
-    public Uri getDeleteUri() {
-        return CONTENT_URI;
-    }
+   @Override
+   public Uri getDeleteUri() {
+      return CONTENT_URI;
+   }
 
-    @Override
-    public Uri getInsertUri() {
-        return CONTENT_URI;
-    }
+   @Override
+   public Uri getInsertUri() {
+      return CONTENT_URI;
+   }
 
-    @Override
-    public Uri getUpdateUri() {
-        return CONTENT_URI;
-    }
+   @Override
+   public Uri getUpdateUri() {
+      return CONTENT_URI;
+   }
 
-    @Override
-    public Uri getQueryUri() {
-        return CONTENT_URI;
-    }
+   @Override
+   public Uri getQueryUri() {
+      return CONTENT_URI;
+   }
 
-    @Override
-    public String toString() {
-        return id;
-    }
+   @Override
+   public String toString() {
+      return id;
+   }
 }

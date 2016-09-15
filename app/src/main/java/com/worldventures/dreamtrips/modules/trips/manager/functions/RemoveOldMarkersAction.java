@@ -16,25 +16,25 @@ import rx.functions.Action1;
 
 public class RemoveOldMarkersAction implements Action1<List<Pair<Bitmap, MapObject>>> {
 
-    private final List<Marker> existsMarkers;
+   private final List<Marker> existsMarkers;
 
-    public RemoveOldMarkersAction(List<Marker> existsMarkers) {
-        this.existsMarkers = existsMarkers;
-    }
+   public RemoveOldMarkersAction(List<Marker> existsMarkers) {
+      this.existsMarkers = existsMarkers;
+   }
 
-    @Override
-    public void call(List<Pair<Bitmap, MapObject>> pairs) {
-        List<Marker> markersToRemove = new ArrayList<>();
-        Queryable.from(existsMarkers).forEachR(marker -> {
-            if (Queryable.from(pairs).firstOrDefault(pair -> {
-                Coordinates coordinates = pair.second.getCoordinates();
-                LatLng latLng = new LatLng(coordinates.getLat(), coordinates.getLng());
-                return marker.getPosition().equals(latLng);
-            }) == null) {
-                markersToRemove.add(marker);
-                marker.remove();
-            }
-        });
-        existsMarkers.removeAll(markersToRemove);
-    }
+   @Override
+   public void call(List<Pair<Bitmap, MapObject>> pairs) {
+      List<Marker> markersToRemove = new ArrayList<>();
+      Queryable.from(existsMarkers).forEachR(marker -> {
+         if (Queryable.from(pairs).firstOrDefault(pair -> {
+            Coordinates coordinates = pair.second.getCoordinates();
+            LatLng latLng = new LatLng(coordinates.getLat(), coordinates.getLng());
+            return marker.getPosition().equals(latLng);
+         }) == null) {
+            markersToRemove.add(marker);
+            marker.remove();
+         }
+      });
+      existsMarkers.removeAll(markersToRemove);
+   }
 }

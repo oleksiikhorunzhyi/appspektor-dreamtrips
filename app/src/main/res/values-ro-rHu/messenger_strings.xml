@@ -1,170 +1,170 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <resources>
-    <!-- messenger-->
-    <string name="error_something_went_wrong">A apărut o eroare</string>
-    <string name="error_no_connection">Nu sunteți conectat</string>
-    <string name="messenger">Messenger</string>
-    <string name="chat">Chat</string>
+   <!-- messenger-->
+   <string name="error_something_went_wrong">A apărut o eroare</string>
+   <string name="error_no_connection">Nu sunteți conectat</string>
+   <string name="messenger">Messenger</string>
+   <string name="chat">Chat</string>
 
-    <!---->
-    <!--Conversation List -->
-    <!---->
-    <string name="conversation_list_title">Conversații</string>
+   <!---->
+   <!--Conversation List -->
+   <!---->
+   <string name="conversation_list_title">Conversații</string>
 
-    <string name="conversation_list_spinner_item_all_chats">Toate chaturile</string>
-    <string name="conversation_list_spinner_item_group_chats">Chaturi de grup</string>
+   <string name="conversation_list_spinner_item_all_chats">Toate chaturile</string>
+   <string name="conversation_list_spinner_item_group_chats">Chaturi de grup</string>
 
-    <string name="conversation_list_search_hint">Căutare conversații...</string>
-    <string name="conversation_list_search_edittext_hint">Căutați grupuri și oameni</string>
-    <string name="conversation_list_item_last_message_text_format_you">Dvs.: %1$s</string>
-    <string name="conversation_list_item_last_message_image_format_you">Ați trimis fotografia</string>
-    <string name="conversation_list_item_last_message_image">fotografie trimisă</string>
-    <string name="conversation_list_item_last_message_location_format_you">Ați trimis locația</string>
-    <string name="conversation_list_item_last_message_location">locație trimisă</string>
-    <string name="conversation_list_last_message_date_format_yesterday">Ieri</string>
-    <string name="conversation_list_abandoned">Închis</string>
-    <string name="conversation_list_swipe_button_delete">Ștergeți</string>
-    <string name="conversation_list_delete_dialog_message">Sigur doriți să ștergeți această conversație?</string>
-    <string name="conversation_list_delete_dialog_pos_button">Ștergeți</string>
-    <string name="conversation_list_swipe_button_more">Mai mult</string>
-    <string-array name="conversation_list_more_actions">
-        <item>Marchează ca necitit </item>
-        <item>Dezactivați notificările</item>
-        <item>Anulați</item>
-    </string-array>
+   <string name="conversation_list_search_hint">Căutare conversații…</string>
+   <string name="conversation_list_search_edittext_hint">Căutați grupuri și oameni</string>
+   <string name="conversation_list_item_last_message_text_format_you">Dvs.: %1$s</string>
+   <string name="conversation_list_item_last_message_image_format_you">Ați trimis fotografia</string>
+   <string name="conversation_list_item_last_message_image">fotografie trimisă</string>
+   <string name="conversation_list_item_last_message_location_format_you">Ați trimis locația</string>
+   <string name="conversation_list_item_last_message_location">locație trimisă</string>
+   <string name="conversation_list_last_message_date_format_yesterday">Ieri</string>
+   <string name="conversation_list_abandoned">Închis</string>
+   <string name="conversation_list_swipe_button_delete">Ștergeți</string>
+   <string name="conversation_list_delete_dialog_message">Sigur doriți să ștergeți această conversație?</string>
+   <string name="conversation_list_delete_dialog_pos_button">Ștergeți</string>
+   <string name="conversation_list_swipe_button_more">Mai mult</string>
+   <string-array name="conversation_list_more_actions">
+      <item>Marchează ca necitit </item>
+      <item>Dezactivați notificările</item>
+      <item>Anulați</item>
+   </string-array>
 
 
-    <!---->
-    <!--New chat-->
-    <!---->
-    <string name="new_chat_title">Chat nou</string>
-    <string name="new_chat_toast_no_users_selected_error">Înainte, vă rugăm să selectați câțiva utilizatori </string>
-    <string name="new_multi_user_chat_not_supported">Nu se poate crea conversație de grup </string>
-    <string name="new_chat_error_loading_contacts">Contactele nu au putut fi încărcate</string>
-    <string name="new_chat_new_conversation_title_hint">Setați denumirea conversației</string>
-    <string name="new_chat_chosen_contacts_header_empty">"Adăugați: "</string>
-    <string name="new_chat_chosen_contacts_header_contacts_list_start_value">Adăugați</string>
-    <string name="new_chat_list_item_section_close_friends">Prieteni apropiați</string>
-    <string name="menu_done">Terminat</string>
+   <!---->
+   <!--New chat-->
+   <!---->
+   <string name="new_chat_title">Chat nou</string>
+   <string name="new_chat_toast_no_users_selected_error">Înainte, vă rugăm să selectați câțiva utilizatori </string>
+   <string name="new_multi_user_chat_not_supported">Nu se poate crea conversație de grup </string>
+   <string name="new_chat_error_loading_contacts">Contactele nu au putut fi încărcate</string>
+   <string name="new_chat_new_conversation_title_hint">Setați denumirea conversației</string>
+   <string name="new_chat_chosen_contacts_header_empty">"Adăugați: "</string>
+   <string name="new_chat_chosen_contacts_header_contacts_list_start_value">Adăugați</string>
+   <string name="new_chat_list_item_section_close_friends">Prieteni apropiați</string>
+   <string name="menu_done">Terminat</string>
 
-    <!---->
-    <!--Chat -->
-    <!---->
-    <string name="chat_subtitle_format_single_chat_online">online</string>
-    <string name="chat_subtitle_format_single_chat_offline">offline</string>
-    <string name="chat_subtitle_format_group_chat_format">%1$d membri, %2$d online</string>
-    <string name="chat_subtitle_format_group_chat_format_closed">%1$d membri</string>
-    <string name="chat_subtitle_format_group_chat_offline">Niciun utilizator online </string>
-    <string name="chat_message_edittext_hint">Mesajul dvs. </string>
-    <string name="chat_message_send_button_text">Trimiteți</string>
-    <string name="chat_message_sending_disabled">Nu puteți să trimiteți mesaje deoarece nu mai sunteți participant</string>
-    <string name="chat_error_loading">Istoria conversației nu s-a putut încărca </string>
-    <string name="chat_unread_messages_textview_format">Aveți %1$d mesaje necitite </string>
-    <string name="chat_more_typing_users_hint_format">și încă %1$d</string>
-    <string name="chat_list_date_entry_today">Astăzi</string>
-    <string name="chat_list_date_entry_yesterday">Ieri</string>
-    <string name="chat_contextual_copy_message">Copiați</string>
-    <string name="chat_contextual_translate_message">Traducere</string>
-    <string name="chat_contextual_revert_translate_message">Afișați originalul</string>
-    <string name="chat_contextual_start_chat_format">Mesaj %1$s</string>
-    <string name="chat_contextual_flag">Marcați</string>
-    <string name="chat_share_dialog_location">Partajați locația</string>
-    <string name="chat_share_dialog_image">Partajați imaginea</string>
-    <string name="chat_share_dialog_cancel">Anulați</string>
-    <string name="chat_could_not_share_location">Nu s-a putut partaja locația</string>
-    <string name="chat_error_marker_not_delivered">Nu a fost livrat</string>
-    <string name="chat_retry_send_message_dialog_resend_message">Retrimiteți mesajul?</string>
-    <string name="chat_retry_send_message_dialog_resend">Retrimiteți</string>
-    <string name="chat_retry_send_message_dialog_cancel">Anulați</string>
-    <string name="chat_reload_chat_history_reload">Reîncărcați</string>
-    <string name="chat_reload_chat_history_info_text">Istoricul chatului dvs. a fost șters. Îl puteți recupera atingând „Reîncărcare”.</string>
+   <!---->
+   <!--Chat -->
+   <!---->
+   <string name="chat_subtitle_format_single_chat_online">online</string>
+   <string name="chat_subtitle_format_single_chat_offline">offline</string>
+   <string name="chat_subtitle_format_group_chat_format">%1$d membri, %2$d online</string>
+   <string name="chat_subtitle_format_group_chat_format_closed">%1$d membri</string>
+   <string name="chat_subtitle_format_group_chat_offline">Niciun utilizator online </string>
+   <string name="chat_message_edittext_hint">Mesajul dvs. </string>
+   <string name="chat_message_send_button_text">Trimiteți</string>
+   <string name="chat_message_sending_disabled">Nu puteți să trimiteți mesaje deoarece nu mai sunteți participant</string>
+   <string name="chat_error_loading">Istoria conversației nu s-a putut încărca </string>
+   <string name="chat_unread_messages_textview_format">Aveți %1$d mesaje necitite </string>
+   <string name="chat_more_typing_users_hint_format">și încă %1$d</string>
+   <string name="chat_list_date_entry_today">Astăzi</string>
+   <string name="chat_list_date_entry_yesterday">Ieri</string>
+   <string name="chat_contextual_copy_message">Copiați</string>
+   <string name="chat_contextual_translate_message">Traducere</string>
+   <string name="chat_contextual_revert_translate_message">Afișați originalul</string>
+   <string name="chat_contextual_start_chat_format">Mesaj %1$s</string>
+   <string name="chat_contextual_flag">Marcați</string>
+   <string name="chat_share_dialog_location">Partajați locația</string>
+   <string name="chat_share_dialog_image">Partajați imaginea</string>
+   <string name="chat_share_dialog_cancel">Anulați</string>
+   <string name="chat_could_not_share_location">Nu s-a putut partaja locația</string>
+   <string name="chat_error_marker_not_delivered">Nu a fost livrat</string>
+   <string name="chat_retry_send_message_dialog_resend_message">Retrimiteți mesajul?</string>
+   <string name="chat_retry_send_message_dialog_resend">Retrimiteți</string>
+   <string name="chat_retry_send_message_dialog_cancel">Anulați</string>
+   <string name="chat_reload_chat_history_reload">Reîncărcați</string>
+   <string name="chat_reload_chat_history_info_text">Istoricul chatului dvs. a fost șters. Îl puteți recupera atingând „Reîncărcare”.</string>
 
-    <!-- system messages-->
-    <string name="system_message_you">Dvs.</string>
-    <string name="system_message_admin" formatted="false">%1$s(Admin)</string>
-    <string name="system_message_added" formatted="false">%1$s adăugat %2$s &lt;b&gt;&lt;/b&gt;</string>
-    <string name="system_message_is_added" formatted="false">%1$s este adăugat &lt;b&gt;&lt;/b&gt;</string>
-    <string name="system_message_you_are_added" formatted="false">Sunteți adăugat &lt;b&gt;&lt;/b&gt;</string>
-    <string name="system_message_removed" formatted="false">%1$s îndepărtat %2$s de pe chat &lt;b&gt;&lt;/b&gt;</string>
-    <string name="system_message_is_removed" formatted="false">%1$s este îndepărtat &lt;b&gt;&lt;/b&gt;</string>
-    <string name="system_message_you_are_removed" formatted="false">Sunteți îndepărtat &lt;b&gt;&lt;/b&gt;</string>
-    <string name="system_message_you_left_the_chat" formatted="false">Ați ieșit de pe chat &lt;b&gt;&lt;/b&gt;</string>
-    <string name="system_message_left" formatted="false">%1$s ieșit &lt;b&gt;&lt;b&gt;</string>
+   <!-- system messages-->
+   <string name="system_message_you">Dvs.</string>
+   <string name="system_message_admin" formatted="false">%1$s(Admin)</string>
+   <string name="system_message_added" formatted="false">%1$s adăugat %2$s &lt;b&gt;&lt;/b&gt;</string>
+   <string name="system_message_is_added" formatted="false">%1$s este adăugat &lt;b&gt;&lt;/b&gt;</string>
+   <string name="system_message_you_are_added" formatted="false">Sunteți adăugat &lt;b&gt;&lt;/b&gt;</string>
+   <string name="system_message_removed" formatted="false">%1$s îndepărtat %2$s de pe chat &lt;b&gt;&lt;/b&gt;</string>
+   <string name="system_message_is_removed" formatted="false">%1$s este îndepărtat &lt;b&gt;&lt;/b&gt;</string>
+   <string name="system_message_you_are_removed" formatted="false">Sunteți îndepărtat &lt;b&gt;&lt;/b&gt;</string>
+   <string name="system_message_you_left_the_chat" formatted="false">Ați ieșit de pe chat &lt;b&gt;&lt;/b&gt;</string>
+   <string name="system_message_left" formatted="false">%1$s ieșit &lt;b&gt;&lt;b&gt;</string>
 
-    <!-- flagging related -->
-    <string name="chat_flag_dialog_progress_loading_flags">Se încarcă…</string>
-    <string name="chat_flag_dialog_reason_title">Marcați</string>
-    <string name="chat_flag_dialog_reason_hint">Introduceți motivul</string>
-    <string name="chat_flag_dialog_reason_positive_button">Acceptați</string>
-    <string name="chat_flag_dialog_reason_negative_button">Anulați</string>
-    <string name="chat_flag_dialog_confirmation_title">Confirmați</string>
-    <string name="chat_flag_dialog_confirmation_message_format">Personalul WorldVentures va fi notificat în vederea revizurii acestui mesaj pentru %1$s. Doriți să continuați?</string>
-    <string name="chat_flag_dialog_confirmation_positive_button">Trimiteți</string>
-    <string name="chat_flag_dialog_confirmation_negative_button">Anulați</string>
-    <string name="chat_flag_dialog_flagging_progress"> Marcare… </string>
-    <string name="chat_flag_failed">Nu s-a reușit marcarea mesajului </string>
+   <!-- flagging related -->
+   <string name="chat_flag_dialog_progress_loading_flags">Se încarcă…</string>
+   <string name="chat_flag_dialog_reason_title">Marcați</string>
+   <string name="chat_flag_dialog_reason_hint">Introduceți motivul</string>
+   <string name="chat_flag_dialog_reason_positive_button">Acceptați</string>
+   <string name="chat_flag_dialog_reason_negative_button">Anulați</string>
+   <string name="chat_flag_dialog_confirmation_title">Confirmați</string>
+   <string name="chat_flag_dialog_confirmation_message_format">Personalul WorldVentures va fi notificat în vederea revizurii acestui mesaj pentru %1$s. Doriți să continuați?</string>
+   <string name="chat_flag_dialog_confirmation_positive_button">Trimiteți</string>
+   <string name="chat_flag_dialog_confirmation_negative_button">Anulați</string>
+   <string name="chat_flag_dialog_flagging_progress"> Marcare… </string>
+   <string name="chat_flag_failed">Nu s-a reușit marcarea mesajului </string>
 
-    <!---->
-    <!--Chat Settings -->
-    <!---->
-    <string name="chat_settings_single_chat">Setări chat</string>
-    <string name="chat_settings_group_chat">Setări conversații de grup</string>
-    <string name="chat_settings_error_loading">Setările conversațiilor nu s-au putut încărca</string>
-    <string name="chat_settings_single_chat_online">online</string>
-    <string name="chat_settings_single_chat_offline">offline</string>
-    <string name="chat_settings_row_notifications">Notificări</string>
-    <string name="chat_settings_row_shared_content">Conținut partajat</string>
-    <string name="chat_settings_row_members_format">Membri (%1$d)</string>
-    <string name="chat_settings_row_assign_new_admin">Alocați un nou administrator</string>
-    <string name="chat_settings_row_clear_chat">Ștergere chat</string>
-    <string name="chat_settings_row_leave_chat">Păsăriți chatul</string>
-    <string name="chat_settings_row_delete_chat">Ștergeți chat</string>
-    <string name="chat_settings_group_chat_info_text_format">Acest grup a fost creat de %1$s</string>
-    <string name="chat_settings_menu_settings">Setări</string>
-    <string name="chat_settings_menu_edit_chat_name">Editați numele conversației</string>
-    <string name="chat_settings_menu_edit_change_chat_image">Schimbați imaginea chatului</string>
-    <string name="chat_settings_menu_edit_remove_chat_image">Eliminați imaginea chatului</string>
-    <string name="chat_settings_clear_chat_confirmation_text">Chat-ul se va șterge de pe toate dispozitivele dvs. Îl puteți reîncărca mai târziu. Doriți să continuați?</string>
-    <string name="chat_settings_clear_chat_ok">OK</string>
-    <string name="chat_settings_clear_chat_cancel">Anulați</string>
-    <string name="chat_settings_leave_group_chat">Sigur doriți să părăsiți acest chat?</string>
-    <string name="chat_settings_leave_group_chat_format">Sigur doriți să părăsiți chatul %1$s?</string>
-    <string name="chat_settings_error_change_subject">Nu puteți schimba subiectul fără o conexiune la internet </string>
-    <string name="chat_settings_error_changing_avatar_subject">Nu puteți schimba avatarul conversației dacă nu aveți conexiune la rețea</string>
-    <!---->
-    <!--Add new members -->
-    <!---->
-    <string name="chat_add_new_members_title">Adăugați membru nou</string>
-    <!---->
-    <!--Edit chat members -->
-    <!---->
-    <string name="edit_chat_members_title">Membri (%1$d)</string>
-    <string name="edit_chat_members_search_hint">Se caută membrii... </string>
-    <string name="edit_chat_members_row_button_delete">Ștergeți</string>
-    <string name="edit_chat_dialog_confirm_user_deletion_message">Doriți să eliminați acest utilizator din conversație? </string>
-    <string name="edit_chat_dialog_confirm_user_deletion_button_delete">Ștergeți</string>
-    <string name="edit_chat_members_admin_section">Admin</string>
-    <string name="edit_chat_members_host_section">Ghid local</string>
-    <!--Messenger notifications-->
-    <string name="push_unsupported_message">Pentru a vedea atașamentul, treceți la cea mai recentă versiune a aplicației DreamTrips</string>
-    <!---->
-    <!---->
-    <!--Messenger misc -->
-    <!---->
-    <string name="subject">Subiect</string>
-    <string name="change_subject">Introduceți numele conversației</string>
-    <string name="sent_photo">fotografie trimisă</string>
-    <string name="sent_location">locație trimisă</string>
-    <string name="unread_conversation">Conversații </string>
+   <!---->
+   <!--Chat Settings -->
+   <!---->
+   <string name="chat_settings_single_chat">Setări chat</string>
+   <string name="chat_settings_group_chat">Setări conversații de grup</string>
+   <string name="chat_settings_error_loading">Setările conversațiilor nu s-au putut încărca</string>
+   <string name="chat_settings_single_chat_online">online</string>
+   <string name="chat_settings_single_chat_offline">offline</string>
+   <string name="chat_settings_row_notifications">Notificări</string>
+   <string name="chat_settings_row_shared_content">Conținut partajat</string>
+   <string name="chat_settings_row_members_format">Membri (%1$d)</string>
+   <string name="chat_settings_row_assign_new_admin">Alocați un nou administrator</string>
+   <string name="chat_settings_row_clear_chat">Ștergere chat</string>
+   <string name="chat_settings_row_leave_chat">Păsăriți chatul</string>
+   <string name="chat_settings_row_delete_chat">Ștergeți chat</string>
+   <string name="chat_settings_group_chat_info_text_format">Acest grup a fost creat de %1$s</string>
+   <string name="chat_settings_menu_settings">Setări</string>
+   <string name="chat_settings_menu_edit_chat_name">Editați numele conversației</string>
+   <string name="chat_settings_menu_edit_change_chat_image">Schimbați imaginea chatului</string>
+   <string name="chat_settings_menu_edit_remove_chat_image">Eliminați imaginea chatului</string>
+   <string name="chat_settings_clear_chat_confirmation_text">Chat-ul se va șterge de pe toate dispozitivele dvs. Îl puteți reîncărca mai târziu. Doriți să continuați?</string>
+   <string name="chat_settings_clear_chat_ok">OK</string>
+   <string name="chat_settings_clear_chat_cancel">Anulați</string>
+   <string name="chat_settings_leave_group_chat">Sigur doriți să părăsiți acest chat?</string>
+   <string name="chat_settings_leave_group_chat_format">Sigur doriți să părăsiți chatul %1$s?</string>
+   <string name="chat_settings_error_change_subject">Nu puteți schimba subiectul fără o conexiune la internet </string>
+   <string name="chat_settings_error_changing_avatar_subject">Nu puteți schimba avatarul conversației dacă nu aveți conexiune la rețea</string>
+   <!---->
+   <!--Add new members -->
+   <!---->
+   <string name="chat_add_new_members_title">Adăugați membru nou</string>
+   <!---->
+   <!--Edit chat members -->
+   <!---->
+   <string name="edit_chat_members_title">Membri (%1$d)</string>
+   <string name="edit_chat_members_search_hint">Se caută membrii… </string>
+   <string name="edit_chat_members_row_button_delete">Ștergeți</string>
+   <string name="edit_chat_dialog_confirm_user_deletion_message">Doriți să eliminați acest utilizator din conversație? </string>
+   <string name="edit_chat_dialog_confirm_user_deletion_button_delete">Ștergeți</string>
+   <string name="edit_chat_members_admin_section">Admin</string>
+   <string name="edit_chat_members_host_section">Ghid local</string>
+   <!--Messenger notifications-->
+   <string name="push_unsupported_message">Pentru a vedea atașamentul, treceți la cea mai recentă versiune a aplicației DreamTrips</string>
+   <!---->
+   <!---->
+   <!--Messenger misc -->
+   <!---->
+   <string name="subject">Subiect</string>
+   <string name="change_subject">Introduceți numele conversației</string>
+   <string name="sent_photo">fotografie trimisă</string>
+   <string name="sent_location">locație trimisă</string>
+   <string name="unread_conversation">Conversații </string>
 
-    <string name="disconnected_overlay_disconnected_message">Conexiune pierdută</string>
-    <string name="disconnected_overlay_connecting_message">Se conectează...</string>
+   <string name="disconnected_overlay_disconnected_message">Conexiune pierdută</string>
+   <string name="disconnected_overlay_connecting_message">Se conectează…</string>
 
-    <string name="warning_no_internet_connection">Nu există conexiune la internet </string>
+   <string name="warning_no_internet_connection">Nu există conexiune la internet </string>
 
-    <string name="chat_update_proposition"><![CDATA[Pentru a vedea atasamentul, actualizați aici până la ultima versiune a aplicației DreamTrips <a href=\"https://play.google.com/store/apps/details?id=com.worldventures.dreamtrips\">aici </a>]]></string>
+   <string name="chat_update_proposition"><![CDATA[Pentru a vedea atasamentul, actualizați aici până la ultima versiune a aplicației DreamTrips <a href=\"https://play.google.com/store/apps/details?id=com.worldventures.dreamtrips\">aici </a>]]></string>
 
-    <string name="translate_from">Tradus</string>
-    <string name="translate_error">Eroare de traducere</string>
-    <!-- messenger ends-->
+   <string name="translate_from">Tradus</string>
+   <string name="translate_error">Eroare de traducere</string>
+   <!-- messenger ends-->
 </resources>

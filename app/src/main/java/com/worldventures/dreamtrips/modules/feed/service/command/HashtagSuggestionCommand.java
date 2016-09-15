@@ -16,24 +16,23 @@ import rx.schedulers.Schedulers;
 @CommandAction
 public class HashtagSuggestionCommand extends Command<List<HashtagSuggestion>> implements InjectableAction {
 
-    @Inject
-    Janet janet;
-    private String fullQueryText;
-    private String query;
+   @Inject Janet janet;
+   private String fullQueryText;
+   private String query;
 
-    public HashtagSuggestionCommand(String fullText, String query) {
-        this.fullQueryText = fullText;
-        this.query = query;
-    }
+   public HashtagSuggestionCommand(String fullText, String query) {
+      this.fullQueryText = fullText;
+      this.query = query;
+   }
 
-    public void run(Command.CommandCallback<List<HashtagSuggestion>> callback) {
-        janet.createPipe(HashtagSuggestionHttpAction.class, Schedulers.io())
-                .createObservableResult(new HashtagSuggestionHttpAction(query))
-                .map(HashtagSuggestionHttpAction::hashtagSuggestions)
-                .subscribe(callback::onSuccess, callback::onFail);
-    }
+   public void run(Command.CommandCallback<List<HashtagSuggestion>> callback) {
+      janet.createPipe(HashtagSuggestionHttpAction.class, Schedulers.io())
+            .createObservableResult(new HashtagSuggestionHttpAction(query))
+            .map(HashtagSuggestionHttpAction::hashtagSuggestions)
+            .subscribe(callback::onSuccess, callback::onFail);
+   }
 
-    public String getFullQueryText() {
-        return fullQueryText;
-    }
+   public String getFullQueryText() {
+      return fullQueryText;
+   }
 }

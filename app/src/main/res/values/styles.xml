@@ -1,496 +1,501 @@
 <resources>
 
-    <style name="DrawerArrowStyle" parent="Widget.AppCompat.DrawerArrowToggle">
-        <item name="spinBars">true</item>
-        <item name="color">@android:color/white</item>
-    </style>
-
-    <style name="ToolBarStyle" parent="Widget.AppCompat.ActionBar">
-        <item name="popupTheme">@style/ThemeOverlay.AppCompat.Light</item>
-        <item name="android:theme">@style/ThemeOverlay.AppCompat.Dark.ActionBar</item>
-        <item name="android:layout_width">match_parent</item>
-        <item name="android:layout_height">?attr/actionBarSize</item>
-        <item name="android:background">?attr/colorPrimary</item>
-    </style>
-
-    <style name="ToolBarStyle.Transient">
-        <item name="android:background">@android:color/transparent</item>
-    </style>
-
-    <style name="ToolBarStyle.Header">
-        <item name="android:layout_width">match_parent</item>
-        <item name="android:layout_height">?attr/actionBarSize</item>
-        <item name="android:gravity">center</item>
-        <item name="android:textColor">@color/white</item>
-        <item name="android:textSize">19sp</item>
-        <item name="android:textStyle">bold</item>
-    </style>
-
-    <style name="profile_fragment_edit_text">
-        <item name="android:layout_width">match_parent</item>
-        <item name="android:layout_height">wrap_content</item>
-        <item name="android:gravity">center_vertical</item>
-        <item name="android:inputType">textCapSentences</item>
-        <item name="android:textAppearance">@style/TextAppearance.AppCompat.Body2</item>
-        <item name="android:textColor">@color/selector_navigation_drawer_text</item>
-        <item name="android:textIsSelectable">false</item>
-        <item name="android:textSize">15sp</item>
-    </style>
-
-    <style name="menu_labels_style">
-        <item name="android:textColor">@color/white</item>
-    </style>
-
-    <style name="myRecyclerViewStyle">
-        <item name="android:clipChildren">false</item>
-        <item name="android:clipToPadding">false</item>
-        <item name="android:scrollbarStyle">outsideOverlay</item>
-        <item name="android:scrollbars">vertical</item>
-    </style>
-
-    <style name="DtlRecyclerViewStyle" parent="myRecyclerViewStyle">
-        <item name="android:fadingEdgeLength">0dp</item>
-        <item name="android:overScrollMode">never</item>
-    </style>
-
-    <style name="BottomSheetDialog">
-        <item name="android:windowEnterAnimation">@anim/slide_up_dialog</item>
-        <item name="android:windowExitAnimation">@anim/slide_out_down</item>
-        <item name="android:windowBackground">@null</item>
-        <item name="android:windowFrame">@null</item>
-        <item name="android:windowNoTitle">true</item>
-    </style>
-
-    <style name="DreamTabLayout" parent="Widget.Design.TabLayout">
-        <item name="tabIndicatorColor">@color/theme_main_darker</item>
-        <item name="tabMode">scrollable</item>
-        <item name="tabPaddingStart">0dp</item>
-        <item name="tabPaddingEnd">0dp</item>
-        <item name="tabGravity">fill</item>
-        <item name="tabIndicatorHeight">3dp</item>
-    </style>
-
-    <style name="DreamFixedTabLayout" parent="DreamTabLayout">
-        <item name="tabMode">fixed</item>
-    </style>
-
-    <style name="DreamTabTextAppearance" parent="TextAppearance.Design.Tab">
-        <item name="android:textSize">12sp</item>
-        <item name="android:textColor">@color/black_semi_transparent</item>
-        <item name="textAllCaps">true</item>
-        <item name="android:textStyle">normal</item>
-    </style>
-
-    <style name="DreamMerchantTextAppearance">
-        <item name="android:textSize">13sp</item>
-        <item name="android:fontFamily">sans_serif</item>
-        <item name="android:textColor">@color/black</item>
-    </style>
-
-    <style name="DreamMerchantHeaderTextAppearance" parent="DreamMerchantTextAppearance">
-        <item name="android:ellipsize">end</item>
-        <item name="android:maxLines">1</item>
-        <item name="android:textSize">@dimen/font_normal</item>
-    </style>
-
-    <style name="DreamMerchantSubHeaderTextAppearance" parent="DreamMerchantTextAppearance">
-        <item name="android:textColor">@color/chat_grey_color</item>
-        <item name="android:textSize">@dimen/font_medium</item>
-    </style>
-
-    <style name="DtlTabLayout" parent="Widget.Design.TabLayout">
-        <item name="tabIndicatorColor">@color/dtl_tab_indicator</item>
-        <item name="tabMode">fixed</item>
-        <item name="tabPaddingStart">0dp</item>
-        <item name="tabPaddingEnd">0dp</item>
-        <item name="tabGravity">fill</item>
-        <item name="tabIndicatorHeight">2dp</item>
-    </style>
-
-    <style name="DtlTabTextAppearance" parent="TextAppearance.Design.Tab">
-        <item name="android:textSize">14sp</item>
-        <item name="android:textColor">@color/dtl_tab_text_normal</item>
-        <item name="textAllCaps">true</item>
-        <item name="android:textStyle">normal</item>
-    </style>
-
-    <style name="Theme.DreamTripsTheme.Progress.White" parent="Theme.AppCompat.Light">
-        <item name="colorControlActivated">@color/white</item>
-    </style>
-
-    <style name="DtlOfferImageView">
-        <item name="android:layout_gravity">center_vertical</item>
-        <item name="android:layout_width">@dimen/dtlOfferCoverImageWidth</item>
-        <item name="android:layout_height">@dimen/dtlOfferCoverImageHeight</item>
-        <item name="android:padding">@dimen/spacing_tiny</item>
-    </style>
-
-    <style name="DtlOfferDetailsImageView">
-        <item name="android:layout_gravity">center_vertical</item>
-        <item name="android:layout_width">@dimen/dtlOfferCoverImageWidth</item>
-        <item name="android:layout_height">@dimen/dtlOfferCoverImageHeight</item>
-        <item name="android:layout_margin">@dimen/spacing_tiny</item>
-    </style>
-
-    <style name="UserStatusTextAppearance" parent="TextAppearance.AppCompat.Subhead">
-        <item name="android:shadowColor">@color/user_status_text_shadow</item>
-        <item name="android:shadowDx">2</item>
-        <item name="android:shadowDy">2</item>
-        <item name="android:shadowRadius">2</item>
-    </style>
-
-    <style name="Theme.DreamTripsTheme.TripButton" parent="Base.Widget.AppCompat.Button">
-        <item name="colorButtonNormal">@color/tripButtonColor</item>
-        <item name="colorControlHighlight">@color/tripButtonColorPressed</item>
-        <item name="android:textColorPrimary">@android:color/white</item>
-    </style>
-
-    <style name="SuggestMerchantInput">
-        <item name="android:textSize">@dimen/suggest_merchant_input_text_size</item>
-        <item name="met_baseColor">@color/suggest_merchant_input_text</item>
-        <item name="met_floatingLabel">normal</item>
-        <item name="met_primaryColor">@color/suggest_merchant_hint_text</item>
-        <item name="android:singleLine">true</item>
-        <item name="android:imeOptions">actionNext</item>
-        <item name="android:layout_marginBottom">@dimen/suggest_merchant_default_vertical_margin
-        </item>
-        <item name="requestFocusOnValidationFail">true</item>
-    </style>
-
-    <style name="SpinnerToolbarTitle">
-        <item name="android:textColor">@android:color/white</item>
-        <item name="android:textSize">@dimen/toolbar_spinner_styled_title_text_size</item>
-        <item name="android:drawableRight">@drawable/ic_spinner_arrow_white</item>
-        <item name="android:drawablePadding">@dimen/toolbar_spinner_styled_icon_margin</item>
-    </style>
-
-    <style name="DtlButtonGreenTheme" parent="Theme.DreamTripsTheme.TripButton">
-        <item name="android:textSize">@dimen/font_small</item>
-        <item name="android:textColorPrimary">@android:color/white</item>
-    </style>
-
-    <style name="DtlButtonWhiteTheme" parent="WhiteButtonTheme">
-        <item name="android:textSize">@dimen/font_small</item>
-        <item name="android:textColorPrimary">@android:color/black</item>
-    </style>
-
-    <style name="DtlToolbarInput">
-        <item name="android:inputType">textCapWords</item>
-        <item name="android:imeOptions">actionDone</item>
-        <item name="android:selectAllOnFocus">true</item>
-        <item name="android:singleLine">true</item>
-        <item name="android:textSize">@dimen/dtlt_input_text_size</item>
-        <item name="android:textColor">@color/dtlt_input_text_color</item>
-        <item name="android:layout_marginTop">@dimen/dtlt_input_vertical_margin</item>
-        <item name="android:layout_marginBottom">@dimen/dtlt_input_vertical_margin</item>
-        <item name="android:paddingLeft">@dimen/dtlt_input_side_padding</item>
-        <item name="android:paddingTop">@dimen/dtlt_input_vertical_margin</item>
-        <item name="android:paddingRight">@dimen/dtlt_input_side_padding</item>
-        <item name="android:paddingBottom">@dimen/dtlt_input_vertical_margin</item>
-        <item name="android:background">@drawable/bg_edittext_white</item>
-        <item name="android:clipToPadding">false</item>
-        <item name="android:elevation">@dimen/dtlt_input_elevation</item>
-        <item name="android:outlineProvider">background</item>
-        <item name="android:drawablePadding">@dimen/dtlt_input_drawable_padding</item>
-    </style>
-
-    <style name="WhiteButtonTheme" parent="Base.Widget.AppCompat.Button">
-        <item name="colorButtonNormal">@color/white</item>
-    </style>
-
-    <style name="Player360SeekBar">
-        <item name="android:thumb">@drawable/background_player360_seekbar_thumb_selector</item>
-        <item name="android:layout_marginLeft">-2dp</item>
-        <item name="android:layout_marginRight">-2dp</item>
-        <item name="android:layout_marginBottom">-9dp</item>
-        <item name="android:thumbOffset">3dp</item>
-    </style>
-
-    <style name="Player360HoldableButton">
-        <item name="android:layout_width">27dp</item>
-        <item name="android:layout_height">18dp</item>
-        <item name="android:layout_centerVertical">true</item>
-        <item name="holdInitialDelay">1000</item>
-        <item name="holdRepeatDelay">1000</item>
-    </style>
-
-
-    <style name="EditTextMessage" parent="Theme.AppCompat.Light.NoActionBar">
-        <item name="colorAccent">@color/theme_main_darker</item>
-        <item name="colorControlActivated">@color/theme_main_darker</item>
-        <item name="android:textColorSecondary">@color/theme_main_darker</item>
-    </style>
-
-    <!--messenger-->
-    <style name="SmallSingleChatAvatarView">
-        <item name="android:layout_width">@dimen/list_item_small_avatar_image_size</item>
-        <item name="android:layout_height">@dimen/list_item_small_avatar_image_size</item>
-        <item name="android:scaleType">centerCrop</item>
-    </style>
-
-    <style name="SingleChatBigAvatarView">
-        <item name="android:layout_width">@dimen/list_item_avatar_image_view_size</item>
-        <item name="android:layout_height">@dimen/list_item_avatar_image_view_size</item>
-        <item name="android:scaleType">centerCrop</item>
-    </style>
-
-    <style name="GroupChatBigAvatarView">
-        <item name="android:layout_width">@dimen/list_item_avatar_image_view_size</item>
-        <item name="android:layout_height">@dimen/list_item_avatar_image_view_size</item>
-        <item name="android:scaleType">center</item>
-    </style>
-
-    <style name="TypingAvatarImageView">
-        <item name="android:layout_width">@dimen/chat_avatar_size</item>
-        <item name="android:layout_height">@dimen/chat_avatar_size</item>
-        <item name="android:scaleType">centerCrop</item>
-        <item name="android:visibility">gone</item>
-    </style>
-
-    <style name="ActionBarTitle" parent="TextAppearance.AppCompat.Widget.ActionBar.Title">
-        <item name="android:textColor">@color/white</item>
-    </style>
-
-    <style name="ActionBarSubtitle" parent="TextAppearance.Widget.AppCompat.Toolbar.Subtitle">
-        <item name="android:textColor">@color/white</item>
-        <item name="android:textSize">@dimen/action_bar_subtitle_size</item>
-    </style>
-
-    <style name="ChatMessageContainerStyle">
-        <item name="android:paddingBottom">@dimen/chat_list_item_vertical_padding</item>
-        <item name="android:paddingLeft">@dimen/chat_list_item_horizontal_padding</item>
-        <item name="android:paddingRight">@dimen/chat_list_item_horizontal_padding</item>
-        <item name="android:paddingTop">@dimen/chat_list_item_vertical_padding</item>
-        <item name="android:background">@color/main_background</item>
-    </style>
-
-    <style name="ChatAvatarImageView">
-        <item name="android:layout_width">@dimen/chat_avatar_size</item>
-        <item name="android:layout_height">@dimen/chat_avatar_size</item>
-        <item name="android:scaleType">centerCrop</item>
-        <item name="android:layout_alignParentLeft">true</item>
-    </style>
-
-    <style name="ChatUsernameTextView">
-        <item name="android:layout_width">match_parent</item>
-        <item name="android:layout_height">wrap_content</item>
-        <item name="android:textColor">@color/chat_color_username</item>
-        <item name="android:textSize">@dimen/chat_list_username_text_size</item>
-        <item name="android:layout_marginBottom">@dimen/chat_list_username_bottom_margin</item>
-    </style>
-
-    <style name="ChatMessageTextView" parent="@android:style/Widget.TextView">
-        <item name="android:textSize">@dimen/chat_list_message_text_size</item>
-        <item name="android:maxLength">@integer/messenger_max_message_length</item>
-        <item name="android:ellipsize">end</item>
-    </style>
-
-    <style name="ConversationListItemContentLayout">
-        <item name="android:orientation">horizontal</item>
-        <item name="android:paddingBottom">@dimen/conversation_list_item_vertical_padding</item>
-        <item name="android:paddingLeft">@dimen/conversation_list_item_horizontal_padding</item>
-        <item name="android:paddingRight">@dimen/conversation_list_item_horizontal_padding</item>
-        <item name="android:paddingTop">@dimen/conversation_list_item_vertical_padding</item>
-    </style>
-
-    <style name="GroupChatBigAvatarViewClosed" parent="GroupChatBigAvatarView">
-        <item name="android:alpha">@dimen/conversation_list_item_closed_conversation_alpha</item>
-    </style>
-
-    <style name="ConversationListNameTextViewClosed" parent="ConversationListNameTextView">
-        <item name="android:alpha">@dimen/conversation_list_item_closed_conversation_alpha</item>
-    </style>
-
-    <style name="ConversationListNameTextView">
-        <item name="android:layout_marginLeft">
-            @dimen/conversation_list_item_conversation_name_textview_left_margin
-        </item>
-        <item name="android:layout_marginTop">
-            @dimen/conversation_list_item_conversation_name_textview_top_margin
-        </item>
-        <item name="android:ellipsize">marquee</item>
-        <item name="android:singleLine">true</item>
-        <item name="android:textColor">@color/conversation_list_name</item>
-        <item name="android:textSize">@dimen/conversation_list_item_conversation_name_text_size
-        </item>
-    </style>
-
-    <style name="ConversationListLastMessageTextViewClosed" parent="ConversationListLastMessageTextView">
-        <item name="android:alpha">@dimen/conversation_list_item_closed_conversation_alpha</item>
-    </style>
-
-    <style name="ConversationListLastMessageTextView">
-        <item name="android:layout_marginRight">
-            @dimen/conversation_list_item_conversation_last_message_textview_right_margin
-        </item>
-        <item name="android:layout_marginTop">
-            @dimen/conversation_list_item_conversation_last_message_textview_top_margin
-        </item>
-        <item name="android:ellipsize">marquee</item>
-        <item name="android:singleLine">true</item>
-        <item name="android:textColor">@color/conversation_list_message</item>
-        <item name="android:textSize">@dimen/list_item_description_text_size</item>
-    </style>
-
-    <style name="ConversationListItemLastMessageDateAndCountLayout">
-        <item name="android:layout_marginRight">
-            @dimen/conversation_list_item_conversation_last_message_date_textview_right_margin
-        </item>
-    </style>
-
-    <style name="ConversationListLastMessageDateTextViewClosed" parent="ConversationListLastMessageDateTextView">
-        <item name="android:textColor">@color/conversation_list_closed_conversation</item>
-    </style>
-
-    <style name="ConversationListLastMessageDateTextView">
-        <item name="android:textColor">@color/conversation_list_last_message_date</item>
-        <item name="android:textSize">
-            @dimen/new_chat_conversation_list_last_message_textview_textsize
-        </item>
-    </style>
-
-    <style name="ConversationListUnreadMessagesCountTextViewClosed" parent="ConversationListUnreadMessagesCountTextView">
-        <item name="android:visibility">gone</item>
-    </style>
-
-    <style name="ConversationListUnreadMessagesCountTextView">
-        <item name="android:layout_marginTop">
-            @dimen/conversation_list_item_conversation_unread_messages_count_textview_top_margin
-        </item>
-        <item name="android:textColor">@color/white</item>
-        <item name="android:textSize">
-            @dimen/new_chat_conversation_list_last_message_textview_textsize
-        </item>
-        <item name="android:background">@drawable/badge_blue_small</item>
-    </style>
-
-    <style name="MessengerSwappableActionButton">
-        <item name="android:textSize">@dimen/messenger_swappable_action_button_text_size</item>
-        <item name="android:textColor">@color/chat_edit_members_delete_button_text_color</item>
-        <item name="android:padding">@dimen/messenger_swappable_action_button_padding</item>
-        <item name="android:drawablePadding">
-            @dimen/messenger_swappable_action_button_drawable_padding
-        </item>
-    </style>
-
-    <style name="NewChatMembersEditText">
-        <item name="android:textColor">@color/new_chat_header_text_color</item>
-        <item name="android:textSize">@dimen/new_chat_name_chosen_contacts_text_size</item>
-        <item name="android:gravity">center_vertical</item>
-        <item name="android:background">@android:color/transparent</item>
-    </style>
-
-    <style name="BaseMessengerChatInfoSettingsContainer">
-        <item name="android:layout_marginTop">@dimen/chat_settings_chat_info_vertical_margin</item>
-        <item name="android:layout_marginBottom">@dimen/chat_settings_chat_info_vertical_margin
-        </item>
-        <item name="android:layout_marginLeft">@dimen/chat_settings_chat_info_horizontal_margin
-        </item>
-        <item name="android:layout_marginRight">@dimen/chat_settings_chat_info_vertical_margin
-        </item>
-    </style>
-
-    <style name="MessengerChatInfoSettingsContainer" parent="BaseMessengerChatInfoSettingsContainer">
-        <item name="android:gravity">left</item>
-    </style>
-
-    <style name="MessengerImageFullscreenDateStyle">
-        <item name="android:textColor">@color/grey</item>
-        <item name="android:gravity">center_vertical</item>
-    </style>
-
-    <style name="OwnMessageStyle">
-        <item name="own">true</item>
-    </style>
-    <style name="OwnTextMessageStyle" parent="OwnMessageStyle">
-        <item name="background_following">@drawable/background_chat_text_item_own</item>
-        <item name="background_initial">@drawable/background_chat_text_item_own_initial</item>
-    </style>
-    <style name="OwnImageMessageStyle" parent="OwnMessageStyle">
-        <item name="background_following">@drawable/background_chat_image_item_own</item>
-        <item name="background_initial">@drawable/background_chat_image_item_own_initial</item>
-    </style>
-    <style name="UserMessageStyle">
-        <item name="own">false</item>
-    </style>
-    <style name="UserTextMessageStyle" parent="UserMessageStyle">
-        <item name="background_following">@drawable/background_chat_text_item_user</item>
-        <item name="background_initial">@drawable/background_chat_text_item_user_initial</item>
-    </style>
-    <style name="UserImageMessageStyle" parent="UserMessageStyle">
-        <item name="background_following">@drawable/background_chat_image_item_user</item>
-        <item name="background_initial">@drawable/background_chat_image_item_user_initial</item>
-    </style>
-
-    <!--end messenger-->
-
-    <!--in app notifications-->
-    <style name="BaseInAppNotificationUiElementsContainer">
-        <item name="android:layout_height">wrap_content</item>
-    </style>
-
-    <style name="InAppNotificationUiElementsContainer" parent="BaseInAppNotificationUiElementsContainer">
-        <item name="android:layout_width">match_parent</item>
-        <item name="android:layout_gravity">left</item>
-        <item name="android:layout_toLeftOf">@+id/in_app_notif_close_btn</item>
-    </style>
-
-    <style name="InAppNotificationSingleChatAvatarView">
-        <item name="android:layout_width">@dimen/in_app_notification_avatar_image_view_size</item>
-        <item name="android:layout_height">@dimen/in_app_notification_avatar_image_view_size</item>
-        <item name="android:scaleType">centerCrop</item>
-    </style>
-
-    <style name="InAppNotificationGroupChatAvatarView">
-        <item name="android:layout_width">@dimen/in_app_notification_avatar_image_view_size</item>
-        <item name="android:layout_height">@dimen/in_app_notification_avatar_image_view_size</item>
-        <item name="android:layout_gravity">center</item>
-    </style>
-
-    <style name="InAppNotificationTitle">
-        <item name="android:layout_width">wrap_content</item>
-        <item name="android:layout_height">wrap_content</item>
-        <item name="android:textColor">@color/in_app_notification_title_text_color</item>
-        <item name="android:textSize">16sp</item>
-        <item name="android:layout_marginLeft">16dp</item>
-        <item name="android:layout_marginRight">16dp</item>
-        <item name="android:ellipsize">marquee</item>
-        <item name="android:singleLine">true</item>
-    </style>
-
-    <style name="InAppNotificationText">
-        <item name="android:layout_width">wrap_content</item>
-        <item name="android:layout_height">wrap_content</item>
-        <item name="android:textColor">@color/in_app_notification_subtitle_text_color</item>
-        <item name="android:textSize">14sp</item>
-        <item name="android:layout_marginLeft">16dp</item>
-        <item name="android:layout_marginRight">16dp</item>
-        <item name="android:ellipsize">marquee</item>
-        <item name="android:singleLine">true</item>
-    </style>
-
-    <style name="InAppNotificationCloseButton">
-        <item name="android:layout_width">wrap_content</item>
-        <item name="android:layout_height">wrap_content</item>
-        <item name="android:layout_centerVertical">true</item>
-        <item name="android:layout_alignParentRight">true</item>
-        <item name="android:paddingLeft">@dimen/in_app_notification_close_button_padding</item>
-        <item name="android:paddingTop">@dimen/in_app_notification_close_button_padding</item>
-        <item name="android:paddingBottom">@dimen/in_app_notification_close_button_padding</item>
-        <item name="android:paddingRight">@dimen/in_app_notification_close_button_padding_right
-        </item>
-        <item name="android:src">@drawable/close</item>
-    </style>
-
-    <style name="RetrySendMessageDialogStyle" parent="Theme.AppCompat.Light.Dialog.Alert">
-        <item name="colorAccent">@color/retry_send_message_dialog_button_text_color</item>
-    </style>
-
-    <style name="SettingsButtonStyle">
-        <item name="android:layout_width">match_parent</item>
-        <item name="android:layout_height">wrap_content</item>
-        <item name="android:layout_marginTop">@dimen/chat_settings_action_button_top_margin</item>
-        <item name="android:textSize">@dimen/chat_settings_action_buttons_text_size</item>
-    </style>
-    <!--end in app notifications-->
+   <style name="DrawerArrowStyle" parent="Widget.AppCompat.DrawerArrowToggle">
+      <item name="spinBars">true</item>
+      <item name="color">@android:color/white</item>
+   </style>
+
+   <style name="ToolBarStyle" parent="Widget.AppCompat.ActionBar">
+      <item name="popupTheme">@style/ThemeOverlay.AppCompat.Light</item>
+      <item name="android:theme">@style/ThemeOverlay.AppCompat.Dark.ActionBar</item>
+      <item name="android:layout_width">match_parent</item>
+      <item name="android:layout_height">?attr/actionBarSize</item>
+      <item name="android:background">?attr/colorPrimary</item>
+   </style>
+
+   <style name="ToolBarStyle.Transient">
+      <item name="android:background">@android:color/transparent</item>
+   </style>
+
+   <style name="ToolBarStyle.Header">
+      <item name="android:layout_width">match_parent</item>
+      <item name="android:layout_height">?attr/actionBarSize</item>
+      <item name="android:gravity">center</item>
+      <item name="android:textColor">@color/white</item>
+      <item name="android:textSize">19sp</item>
+      <item name="android:textStyle">bold</item>
+   </style>
+
+   <style name="profile_fragment_edit_text">
+      <item name="android:layout_width">match_parent</item>
+      <item name="android:layout_height">wrap_content</item>
+      <item name="android:gravity">center_vertical</item>
+      <item name="android:inputType">textCapSentences</item>
+      <item name="android:textAppearance">@style/TextAppearance.AppCompat.Body2</item>
+      <item name="android:textColor">@color/selector_navigation_drawer_text</item>
+      <item name="android:textIsSelectable">false</item>
+      <item name="android:textSize">15sp</item>
+   </style>
+
+   <style name="menu_labels_style">
+      <item name="android:textColor">@color/white</item>
+   </style>
+
+   <style name="myRecyclerViewStyle">
+      <item name="android:clipChildren">false</item>
+      <item name="android:clipToPadding">false</item>
+      <item name="android:scrollbarStyle">outsideOverlay</item>
+      <item name="android:scrollbars">vertical</item>
+   </style>
+
+   <style name="DtlRecyclerViewStyle" parent="myRecyclerViewStyle">
+      <item name="android:fadingEdgeLength">0dp</item>
+      <item name="android:overScrollMode">never</item>
+   </style>
+
+   <style name="BottomSheetDialog">
+      <item name="android:windowEnterAnimation">@anim/slide_up_dialog</item>
+      <item name="android:windowExitAnimation">@anim/slide_out_down</item>
+      <item name="android:windowBackground">@null</item>
+      <item name="android:windowFrame">@null</item>
+      <item name="android:windowNoTitle">true</item>
+   </style>
+
+   <style name="DreamTabLayout" parent="Widget.Design.TabLayout">
+      <item name="tabIndicatorColor">@color/theme_main_darker</item>
+      <item name="tabMode">scrollable</item>
+      <item name="tabPaddingStart">0dp</item>
+      <item name="tabPaddingEnd">0dp</item>
+      <item name="tabGravity">fill</item>
+      <item name="tabIndicatorHeight">3dp</item>
+   </style>
+
+   <style name="DreamFixedTabLayout" parent="DreamTabLayout">
+      <item name="tabMode">fixed</item>
+   </style>
+
+   <style name="DreamTabTextAppearance" parent="TextAppearance.Design.Tab">
+      <item name="android:textSize">12sp</item>
+      <item name="android:textColor">@color/black_semi_transparent</item>
+      <item name="textAllCaps">true</item>
+      <item name="android:textStyle">normal</item>
+   </style>
+
+   <style name="DreamMerchantTextAppearance">
+      <item name="android:textSize">13sp</item>
+      <item name="android:fontFamily">sans_serif</item>
+      <item name="android:textColor">@color/black</item>
+   </style>
+
+   <style name="DreamMerchantHeaderTextAppearance" parent="DreamMerchantTextAppearance">
+      <item name="android:ellipsize">end</item>
+      <item name="android:maxLines">1</item>
+      <item name="android:textSize">@dimen/font_normal</item>
+   </style>
+
+   <style name="DreamMerchantSubHeaderTextAppearance" parent="DreamMerchantTextAppearance">
+      <item name="android:textColor">@color/chat_grey_color</item>
+      <item name="android:textSize">@dimen/font_medium</item>
+   </style>
+
+   <style name="DtlTabLayout" parent="Widget.Design.TabLayout">
+      <item name="tabIndicatorColor">@color/dtl_tab_indicator</item>
+      <item name="tabMode">fixed</item>
+      <item name="tabPaddingStart">0dp</item>
+      <item name="tabPaddingEnd">0dp</item>
+      <item name="tabGravity">fill</item>
+      <item name="tabIndicatorHeight">2dp</item>
+   </style>
+
+   <style name="DtlTabTextAppearance" parent="TextAppearance.Design.Tab">
+      <item name="android:textSize">14sp</item>
+      <item name="android:textColor">@color/dtl_tab_text_normal</item>
+      <item name="textAllCaps">true</item>
+      <item name="android:textStyle">normal</item>
+   </style>
+
+   <style name="Theme.DreamTripsTheme.Progress.White" parent="Theme.AppCompat.Light">
+      <item name="colorControlActivated">@color/white</item>
+   </style>
+
+   <style name="DtlOfferImageView">
+      <item name="android:layout_gravity">center_vertical</item>
+      <item name="android:layout_width">@dimen/dtlOfferCoverImageWidth</item>
+      <item name="android:layout_height">@dimen/dtlOfferCoverImageHeight</item>
+      <item name="android:padding">@dimen/spacing_tiny</item>
+   </style>
+
+   <style name="DtlOfferDetailsImageView">
+      <item name="android:layout_gravity">center_vertical</item>
+      <item name="android:layout_width">@dimen/dtlOfferCoverImageWidth</item>
+      <item name="android:layout_height">@dimen/dtlOfferCoverImageHeight</item>
+      <item name="android:layout_margin">@dimen/spacing_tiny</item>
+   </style>
+
+   <style name="UserStatusTextAppearance" parent="TextAppearance.AppCompat.Subhead">
+      <item name="android:shadowColor">@color/user_status_text_shadow</item>
+      <item name="android:shadowDx">2</item>
+      <item name="android:shadowDy">2</item>
+      <item name="android:shadowRadius">2</item>
+   </style>
+
+   <style name="Theme.DreamTripsTheme.TripButton" parent="Base.Widget.AppCompat.Button">
+      <item name="colorButtonNormal">@color/tripButtonColor</item>
+      <item name="colorControlHighlight">@color/tripButtonColorPressed</item>
+      <item name="android:textColorPrimary">@android:color/white</item>
+   </style>
+
+   <style name="SuggestMerchantInput">
+      <item name="android:textSize">@dimen/suggest_merchant_input_text_size</item>
+      <item name="met_baseColor">@color/suggest_merchant_input_text</item>
+      <item name="met_floatingLabel">normal</item>
+      <item name="met_primaryColor">@color/suggest_merchant_hint_text</item>
+      <item name="android:singleLine">true</item>
+      <item name="android:imeOptions">actionNext</item>
+      <item name="android:layout_marginBottom">@dimen/suggest_merchant_default_vertical_margin
+      </item>
+      <item name="requestFocusOnValidationFail">true</item>
+   </style>
+
+   <style name="SpinnerToolbarTitle">
+      <item name="android:textColor">@android:color/white</item>
+      <item name="android:textSize">@dimen/toolbar_spinner_styled_title_text_size</item>
+      <item name="android:drawableRight">@drawable/ic_spinner_arrow_white</item>
+      <item name="android:drawablePadding">@dimen/toolbar_spinner_styled_icon_margin</item>
+   </style>
+
+   <style name="DtlButtonGreenTheme" parent="Theme.DreamTripsTheme.TripButton">
+      <item name="android:textSize">@dimen/font_small</item>
+      <item name="android:textColorPrimary">@android:color/white</item>
+   </style>
+
+   <style name="DtlButtonWhiteTheme" parent="WhiteButtonTheme">
+      <item name="android:textSize">@dimen/font_small</item>
+      <item name="android:textColorPrimary">@android:color/black</item>
+   </style>
+
+   <style name="DtlToolbarInput">
+      <item name="android:inputType">textCapWords</item>
+      <item name="android:imeOptions">actionDone</item>
+      <item name="android:selectAllOnFocus">true</item>
+      <item name="android:singleLine">true</item>
+      <item name="android:textSize">@dimen/dtlt_input_text_size</item>
+      <item name="android:textColor">@color/dtlt_input_text_color</item>
+      <item name="android:layout_marginTop">@dimen/dtlt_input_vertical_margin</item>
+      <item name="android:layout_marginBottom">@dimen/dtlt_input_vertical_margin</item>
+      <item name="android:paddingLeft">@dimen/dtlt_input_side_padding</item>
+      <item name="android:paddingTop">@dimen/dtlt_input_vertical_margin</item>
+      <item name="android:paddingRight">@dimen/dtlt_input_side_padding</item>
+      <item name="android:paddingBottom">@dimen/dtlt_input_vertical_margin</item>
+      <item name="android:background">@drawable/bg_edittext_white</item>
+      <item name="android:clipToPadding">false</item>
+      <item name="android:elevation">@dimen/dtlt_input_elevation</item>
+      <item name="android:outlineProvider">background</item>
+      <item name="android:drawablePadding">@dimen/dtlt_input_drawable_padding</item>
+   </style>
+
+   <style name="WhiteButtonTheme" parent="Base.Widget.AppCompat.Button">
+      <item name="colorButtonNormal">@color/white</item>
+   </style>
+
+   <style name="Player360SeekBar">
+      <item name="android:thumb">@drawable/background_player360_seekbar_thumb_selector</item>
+      <item name="android:layout_marginLeft">-2dp</item>
+      <item name="android:layout_marginRight">-2dp</item>
+      <item name="android:layout_marginBottom">-9dp</item>
+      <item name="android:thumbOffset">3dp</item>
+   </style>
+
+   <style name="Player360HoldableButton">
+      <item name="android:layout_width">27dp</item>
+      <item name="android:layout_height">18dp</item>
+      <item name="android:layout_centerVertical">true</item>
+      <item name="holdInitialDelay">1000</item>
+      <item name="holdRepeatDelay">1000</item>
+   </style>
+
+
+   <style name="EditTextMessage" parent="Theme.AppCompat.Light.NoActionBar">
+      <item name="colorAccent">@color/theme_main_darker</item>
+      <item name="colorControlActivated">@color/theme_main_darker</item>
+      <item name="android:textColorSecondary">@color/theme_main_darker</item>
+   </style>
+
+   <!--messenger-->
+   <style name="SmallSingleChatAvatarView">
+      <item name="android:layout_width">@dimen/list_item_small_avatar_image_size</item>
+      <item name="android:layout_height">@dimen/list_item_small_avatar_image_size</item>
+      <item name="android:scaleType">centerCrop</item>
+   </style>
+
+   <style name="SingleChatBigAvatarView">
+      <item name="android:layout_width">@dimen/list_item_avatar_image_view_size</item>
+      <item name="android:layout_height">@dimen/list_item_avatar_image_view_size</item>
+      <item name="android:scaleType">centerCrop</item>
+   </style>
+
+   <style name="GroupChatBigAvatarView">
+      <item name="android:layout_width">@dimen/list_item_avatar_image_view_size</item>
+      <item name="android:layout_height">@dimen/list_item_avatar_image_view_size</item>
+      <item name="android:scaleType">center</item>
+   </style>
+
+   <style name="TypingAvatarImageView">
+      <item name="android:layout_width">@dimen/chat_avatar_size</item>
+      <item name="android:layout_height">@dimen/chat_avatar_size</item>
+      <item name="android:scaleType">centerCrop</item>
+      <item name="android:visibility">gone</item>
+   </style>
+
+   <style name="ActionBarTitle" parent="TextAppearance.AppCompat.Widget.ActionBar.Title">
+      <item name="android:textColor">@color/white</item>
+   </style>
+
+   <style name="ActionBarSubtitle" parent="TextAppearance.Widget.AppCompat.Toolbar.Subtitle">
+      <item name="android:textColor">@color/white</item>
+      <item name="android:textSize">@dimen/action_bar_subtitle_size</item>
+   </style>
+
+   <style name="ChatMessageContainerStyle">
+      <item name="android:paddingBottom">@dimen/chat_list_item_vertical_padding</item>
+      <item name="android:paddingLeft">@dimen/chat_list_item_horizontal_padding</item>
+      <item name="android:paddingRight">@dimen/chat_list_item_horizontal_padding</item>
+      <item name="android:paddingTop">@dimen/chat_list_item_vertical_padding</item>
+      <item name="android:background">@color/main_background</item>
+   </style>
+
+   <style name="ChatAvatarImageView">
+      <item name="android:layout_width">@dimen/chat_avatar_size</item>
+      <item name="android:layout_height">@dimen/chat_avatar_size</item>
+      <item name="android:scaleType">centerCrop</item>
+      <item name="android:layout_alignParentLeft">true</item>
+   </style>
+
+   <style name="ChatUsernameTextView">
+      <item name="android:layout_width">match_parent</item>
+      <item name="android:layout_height">wrap_content</item>
+      <item name="android:textColor">@color/chat_color_username</item>
+      <item name="android:textSize">@dimen/chat_list_username_text_size</item>
+      <item name="android:layout_marginBottom">@dimen/chat_list_username_bottom_margin</item>
+   </style>
+
+   <style name="ChatMessageTextView" parent="@android:style/Widget.TextView">
+      <item name="android:textSize">@dimen/chat_list_message_text_size</item>
+      <item name="android:maxLength">@integer/messenger_max_message_length</item>
+      <item name="android:ellipsize">end</item>
+   </style>
+
+   <style name="ConversationListItemContentLayout">
+      <item name="android:orientation">horizontal</item>
+      <item name="android:paddingBottom">@dimen/conversation_list_item_vertical_padding</item>
+      <item name="android:paddingLeft">@dimen/conversation_list_item_horizontal_padding</item>
+      <item name="android:paddingRight">@dimen/conversation_list_item_horizontal_padding</item>
+      <item name="android:paddingTop">@dimen/conversation_list_item_vertical_padding</item>
+   </style>
+
+   <style name="GroupChatBigAvatarViewClosed" parent="GroupChatBigAvatarView">
+      <item name="android:alpha">@dimen/conversation_list_item_closed_conversation_alpha</item>
+   </style>
+
+   <style name="ConversationListNameTextViewClosed" parent="ConversationListNameTextView">
+      <item name="android:alpha">@dimen/conversation_list_item_closed_conversation_alpha</item>
+   </style>
+
+   <style name="ConversationListNameTextView">
+      <item name="android:layout_marginLeft">
+         @dimen/conversation_list_item_conversation_name_textview_left_margin
+      </item>
+      <item name="android:layout_marginTop">
+         @dimen/conversation_list_item_conversation_name_textview_top_margin
+      </item>
+      <item name="android:ellipsize">marquee</item>
+      <item name="android:singleLine">true</item>
+      <item name="android:textColor">@color/conversation_list_name</item>
+      <item name="android:textSize">@dimen/conversation_list_item_conversation_name_text_size
+      </item>
+   </style>
+
+   <style name="ConversationListLastMessageTextViewClosed" parent="ConversationListLastMessageTextView">
+      <item name="android:alpha">@dimen/conversation_list_item_closed_conversation_alpha</item>
+   </style>
+
+   <style name="ConversationListLastMessageTextView">
+      <item name="android:layout_marginRight">
+         @dimen/conversation_list_item_conversation_last_message_textview_right_margin
+      </item>
+      <item name="android:layout_marginTop">
+         @dimen/conversation_list_item_conversation_last_message_textview_top_margin
+      </item>
+      <item name="android:ellipsize">marquee</item>
+      <item name="android:singleLine">true</item>
+      <item name="android:textColor">@color/conversation_list_message</item>
+      <item name="android:textSize">@dimen/list_item_description_text_size</item>
+   </style>
+
+   <style name="ConversationListItemLastMessageDateAndCountLayout">
+      <item name="android:layout_marginRight">
+         @dimen/conversation_list_item_conversation_last_message_date_textview_right_margin
+      </item>
+   </style>
+
+   <style name="ConversationListLastMessageDateTextViewClosed" parent="ConversationListLastMessageDateTextView">
+      <item name="android:textColor">@color/conversation_list_closed_conversation</item>
+   </style>
+
+   <style name="ConversationListLastMessageDateTextView">
+      <item name="android:textColor">@color/conversation_list_last_message_date</item>
+      <item name="android:textSize">
+         @dimen/new_chat_conversation_list_last_message_textview_textsize
+      </item>
+   </style>
+
+   <style name="ConversationListUnreadMessagesCountTextViewClosed" parent="ConversationListUnreadMessagesCountTextView">
+      <item name="android:visibility">gone</item>
+   </style>
+
+   <style name="ConversationListUnreadMessagesCountTextView">
+      <item name="android:layout_marginTop">
+         @dimen/conversation_list_item_conversation_unread_messages_count_textview_top_margin
+      </item>
+      <item name="android:textColor">@color/white</item>
+      <item name="android:textSize">
+         @dimen/new_chat_conversation_list_last_message_textview_textsize
+      </item>
+      <item name="android:background">@drawable/badge_blue_small</item>
+   </style>
+
+   <style name="MessengerSwappableActionButton">
+      <item name="android:textSize">@dimen/messenger_swappable_action_button_text_size</item>
+      <item name="android:textColor">@color/chat_edit_members_delete_button_text_color</item>
+      <item name="android:padding">@dimen/messenger_swappable_action_button_padding</item>
+      <item name="android:drawablePadding">
+         @dimen/messenger_swappable_action_button_drawable_padding
+      </item>
+   </style>
+
+   <style name="NewChatMembersEditText">
+      <item name="android:textColor">@color/new_chat_header_text_color</item>
+      <item name="android:textSize">@dimen/new_chat_name_chosen_contacts_text_size</item>
+      <item name="android:gravity">center_vertical</item>
+      <item name="android:background">@android:color/transparent</item>
+   </style>
+
+   <style name="BaseMessengerChatInfoSettingsContainer">
+      <item name="android:layout_marginTop">@dimen/chat_settings_chat_info_vertical_margin</item>
+      <item name="android:layout_marginBottom">@dimen/chat_settings_chat_info_vertical_margin
+      </item>
+      <item name="android:layout_marginLeft">@dimen/chat_settings_chat_info_horizontal_margin
+      </item>
+      <item name="android:layout_marginRight">@dimen/chat_settings_chat_info_vertical_margin
+      </item>
+   </style>
+
+   <style name="MessengerChatInfoSettingsContainer" parent="BaseMessengerChatInfoSettingsContainer">
+      <item name="android:gravity">left</item>
+   </style>
+
+   <style name="MessengerImageFullscreenDateStyle">
+      <item name="android:textColor">@color/grey</item>
+      <item name="android:gravity">center_vertical</item>
+   </style>
+
+   <style name="OwnMessageStyle">
+      <item name="own">true</item>
+   </style>
+
+   <style name="OwnTextMessageStyle" parent="OwnMessageStyle">
+      <item name="background_following">@drawable/background_chat_text_item_own</item>
+      <item name="background_initial">@drawable/background_chat_text_item_own_initial</item>
+   </style>
+
+   <style name="OwnImageMessageStyle" parent="OwnMessageStyle">
+      <item name="background_following">@drawable/background_chat_image_item_own</item>
+      <item name="background_initial">@drawable/background_chat_image_item_own_initial</item>
+   </style>
+
+   <style name="UserMessageStyle">
+      <item name="own">false</item>
+   </style>
+
+   <style name="UserTextMessageStyle" parent="UserMessageStyle">
+      <item name="background_following">@drawable/background_chat_text_item_user</item>
+      <item name="background_initial">@drawable/background_chat_text_item_user_initial</item>
+   </style>
+
+   <style name="UserImageMessageStyle" parent="UserMessageStyle">
+      <item name="background_following">@drawable/background_chat_image_item_user</item>
+      <item name="background_initial">@drawable/background_chat_image_item_user_initial</item>
+   </style>
+
+   <!--end messenger-->
+
+   <!--in app notifications-->
+   <style name="BaseInAppNotificationUiElementsContainer">
+      <item name="android:layout_height">wrap_content</item>
+   </style>
+
+   <style name="InAppNotificationUiElementsContainer" parent="BaseInAppNotificationUiElementsContainer">
+      <item name="android:layout_width">match_parent</item>
+      <item name="android:layout_gravity">left</item>
+      <item name="android:layout_toLeftOf">@+id/in_app_notif_close_btn</item>
+   </style>
+
+   <style name="InAppNotificationSingleChatAvatarView">
+      <item name="android:layout_width">@dimen/in_app_notification_avatar_image_view_size</item>
+      <item name="android:layout_height">@dimen/in_app_notification_avatar_image_view_size</item>
+      <item name="android:scaleType">centerCrop</item>
+   </style>
+
+   <style name="InAppNotificationGroupChatAvatarView">
+      <item name="android:layout_width">@dimen/in_app_notification_avatar_image_view_size</item>
+      <item name="android:layout_height">@dimen/in_app_notification_avatar_image_view_size</item>
+      <item name="android:layout_gravity">center</item>
+   </style>
+
+   <style name="InAppNotificationTitle">
+      <item name="android:layout_width">wrap_content</item>
+      <item name="android:layout_height">wrap_content</item>
+      <item name="android:textColor">@color/in_app_notification_title_text_color</item>
+      <item name="android:textSize">16sp</item>
+      <item name="android:layout_marginLeft">16dp</item>
+      <item name="android:layout_marginRight">16dp</item>
+      <item name="android:ellipsize">marquee</item>
+      <item name="android:singleLine">true</item>
+   </style>
+
+   <style name="InAppNotificationText">
+      <item name="android:layout_width">wrap_content</item>
+      <item name="android:layout_height">wrap_content</item>
+      <item name="android:textColor">@color/in_app_notification_subtitle_text_color</item>
+      <item name="android:textSize">14sp</item>
+      <item name="android:layout_marginLeft">16dp</item>
+      <item name="android:layout_marginRight">16dp</item>
+      <item name="android:ellipsize">marquee</item>
+      <item name="android:singleLine">true</item>
+   </style>
+
+   <style name="InAppNotificationCloseButton">
+      <item name="android:layout_width">wrap_content</item>
+      <item name="android:layout_height">wrap_content</item>
+      <item name="android:layout_centerVertical">true</item>
+      <item name="android:layout_alignParentRight">true</item>
+      <item name="android:paddingLeft">@dimen/in_app_notification_close_button_padding</item>
+      <item name="android:paddingTop">@dimen/in_app_notification_close_button_padding</item>
+      <item name="android:paddingBottom">@dimen/in_app_notification_close_button_padding</item>
+      <item name="android:paddingRight">@dimen/in_app_notification_close_button_padding_right
+      </item>
+      <item name="android:src">@drawable/close</item>
+   </style>
+
+   <style name="RetrySendMessageDialogStyle" parent="Theme.AppCompat.Light.Dialog.Alert">
+      <item name="colorAccent">@color/retry_send_message_dialog_button_text_color</item>
+   </style>
+
+   <style name="SettingsButtonStyle">
+      <item name="android:layout_width">match_parent</item>
+      <item name="android:layout_height">wrap_content</item>
+      <item name="android:layout_marginTop">@dimen/chat_settings_action_button_top_margin</item>
+      <item name="android:textSize">@dimen/chat_settings_action_buttons_text_size</item>
+   </style>
+   <!--end in app notifications-->
 </resources>

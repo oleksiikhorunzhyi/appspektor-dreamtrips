@@ -1,24 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:orientation="vertical"
-    android:focusableInTouchMode="true"
-    >
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+      xmlns:app="http://schemas.android.com/apk/res-auto"
+      xmlns:tools="http://schemas.android.com/tools"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:orientation="vertical"
+      android:focusableInTouchMode="true"
+      >
 
-    <LinearLayout
-        android:id="@+id/dtlToolbarLayout"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:background="@color/theme_main"
-        android:gravity="top"
-        >
+   <LinearLayout
+         android:id="@+id/dtlToolbarLayout"
+         android:layout_width="match_parent"
+         android:layout_height="wrap_content"
+         android:orientation="vertical"
+         android:background="@color/theme_main"
+         android:gravity="top"
+         >
 
-        <LinearLayout
+      <LinearLayout
             android:id="@+id/dtlToolbarFirstRow"
             android:layout_width="match_parent"
             android:layout_height="@dimen/dtlt_row_height"
@@ -26,60 +25,60 @@
             android:gravity="center_vertical"
             >
 
-            <FrameLayout
-                android:id="@+id/dtlToolbarActionViewLayout"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                >
+         <FrameLayout
+               android:id="@+id/dtlToolbarActionViewLayout"
+               android:layout_width="wrap_content"
+               android:layout_height="wrap_content"
+               >
 
-                <at.markushi.ui.ActionView
-                    android:id="@+id/dtlToolbarActionView"
-                    android:layout_width="@dimen/dtlt_action_view_size"
-                    android:layout_height="@dimen/dtlt_action_view_size"
-                    android:layout_marginLeft="@dimen/dtlt_action_view_side_margin"
-                    android:layout_marginTop="@dimen/dtlt_action_view_vertical_margin"
-                    android:layout_marginRight="@dimen/dtlt_action_view_side_margin"
-                    android:layout_marginBottom="@dimen/dtlt_action_view_vertical_margin"
-                    android:padding="0dp"
-                    android:layout_gravity="center"
-                    app:av_color="@android:color/white"
-                    app:av_action="drawer"
-                    />
-            </FrameLayout>
+            <at.markushi.ui.ActionView
+                  android:id="@+id/dtlToolbarActionView"
+                  android:layout_width="@dimen/dtlt_action_view_size"
+                  android:layout_height="@dimen/dtlt_action_view_size"
+                  android:layout_marginLeft="@dimen/dtlt_action_view_side_margin"
+                  android:layout_marginTop="@dimen/dtlt_action_view_vertical_margin"
+                  android:layout_marginRight="@dimen/dtlt_action_view_side_margin"
+                  android:layout_marginBottom="@dimen/dtlt_action_view_vertical_margin"
+                  android:padding="0dp"
+                  android:layout_gravity="center"
+                  app:av_color="@android:color/white"
+                  app:av_action="drawer"
+                  />
+         </FrameLayout>
 
-            <android.support.v7.widget.AppCompatEditText
-                android:id="@+id/dtlToolbarMerchantSearchInput"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                style="@style/DtlToolbarInput"
-                android:textColorHint="@color/dtlt_input_hint_color"
-                android:drawableLeft="@drawable/ic_dtlt_search_input"
-                tools:text="Mexican"
-                />
+         <android.support.v7.widget.AppCompatEditText
+               android:id="@+id/dtlToolbarMerchantSearchInput"
+               android:layout_width="match_parent"
+               android:layout_height="wrap_content"
+               android:layout_weight="1"
+               style="@style/DtlToolbarInput"
+               android:textColorHint="@color/dtlt_input_hint_color"
+               android:drawableLeft="@drawable/ic_dtlt_search_input"
+               tools:text="Mexican"
+               />
 
-            <FrameLayout
-                android:id="@+id/dtlToolbarNavigationLayout"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                >
+         <FrameLayout
+               android:id="@+id/dtlToolbarNavigationLayout"
+               android:layout_width="wrap_content"
+               android:layout_height="wrap_content"
+               >
 
-                <ImageView
-                    android:id="@+id/dtlToolbarNavigationIcon"
-                    android:layout_width="@dimen/dtlt_icon_size"
-                    android:layout_height="@dimen/dtlt_icon_size"
-                    android:layout_marginLeft="@dimen/dtlt_icon_side_margin"
-                    android:layout_marginTop="@dimen/dtlt_icon_vertical_margin"
-                    android:layout_marginRight="@dimen/dtlt_icon_side_margin"
-                    android:layout_marginBottom="@dimen/dtlt_icon_vertical_margin"
-                    android:scaleType="center"
-                    android:layout_gravity="center"
-                    tools:src="@drawable/ic_menu_trip_map"
-                    />
-            </FrameLayout>
-        </LinearLayout>
+            <ImageView
+                  android:id="@+id/dtlToolbarNavigationIcon"
+                  android:layout_width="@dimen/dtlt_icon_size"
+                  android:layout_height="@dimen/dtlt_icon_size"
+                  android:layout_marginLeft="@dimen/dtlt_icon_side_margin"
+                  android:layout_marginTop="@dimen/dtlt_icon_vertical_margin"
+                  android:layout_marginRight="@dimen/dtlt_icon_side_margin"
+                  android:layout_marginBottom="@dimen/dtlt_icon_vertical_margin"
+                  android:scaleType="center"
+                  android:layout_gravity="center"
+                  tools:src="@drawable/ic_menu_trip_map"
+                  />
+         </FrameLayout>
+      </LinearLayout>
 
-        <LinearLayout
+      <LinearLayout
             android:id="@+id/dtlToolbarLocationSearchLayout"
             android:layout_width="match_parent"
             android:layout_height="@dimen/dtlt_row_height"
@@ -89,27 +88,26 @@
             android:gravity="center_vertical"
             >
 
-            <android.support.v7.widget.AppCompatEditText
-                android:id="@+id/dtlToolbarLocationSearchInput"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                style="@style/DtlToolbarInput"
-                android:textColorHint="@color/dtlt_input_hint_color"
-                android:drawableLeft="@drawable/ic_dtlt_location_input"
-                tools:text="London"
-                />
-        </LinearLayout>
-    </LinearLayout>
+         <android.support.v7.widget.AppCompatEditText
+               android:id="@+id/dtlToolbarLocationSearchInput"
+               android:layout_width="match_parent"
+               android:layout_height="wrap_content"
+               style="@style/DtlToolbarInput"
+               android:textColorHint="@color/dtlt_input_hint_color"
+               android:drawableLeft="@drawable/ic_dtlt_location_input"
+               tools:text="London"
+               />
+      </LinearLayout>
+   </LinearLayout>
 
-    <FrameLayout
-        android:id="@+id/dtlToolbarFilterBarRoot"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@android:color/white"
-        >
+   <FrameLayout
+         android:id="@+id/dtlToolbarFilterBarRoot"
+         android:layout_width="match_parent"
+         android:layout_height="wrap_content"
+         android:background="@android:color/white"
+         >
 
-        <com.worldventures.dreamtrips.modules.dtl_flow.view.toolbar.DtlFilterButton
-            xmlns:android="http://schemas.android.com/apk/res/android"
+      <com.worldventures.dreamtrips.modules.dtl_flow.view.toolbar.DtlFilterButton xmlns:android="http://schemas.android.com/apk/res/android"
             xmlns:tools="http://schemas.android.com/tools"
             android:layout_width="@dimen/dtlfb_width"
             android:layout_height="@dimen/dtlfb_height"
@@ -117,7 +115,7 @@
             tools:showIn="@layout/screen_dtl_merchants"
             />
 
-        <android.support.v7.widget.SwitchCompat
+      <android.support.v7.widget.SwitchCompat
             android:id="@+id/filterDiningsSwitch"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -132,5 +130,5 @@
             app:switchPadding="@dimen/dtlfb_icon_padding"
             app:theme="@style/Theme.DreamTripsTheme"
             />
-    </FrameLayout>
+   </FrameLayout>
 </LinearLayout>

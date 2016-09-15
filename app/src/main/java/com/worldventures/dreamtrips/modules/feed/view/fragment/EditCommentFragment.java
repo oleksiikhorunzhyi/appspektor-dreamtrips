@@ -26,71 +26,67 @@ import butterknife.OnClick;
 public class EditCommentFragment extends BaseFragmentWithArgs<EditCommentPresenter, SingleCommentBundle> implements EditCommentPresenter.View {
 
 
-    @InjectView(R.id.user_photo)
-    SimpleDraweeView userPhoto;
-    @InjectView(R.id.user_name)
-    TextView userName;
-    @InjectView(R.id.comment_edit)
-    EditText editComment;
-    @InjectView(R.id.save)
-    Button save;
+   @InjectView(R.id.user_photo) SimpleDraweeView userPhoto;
+   @InjectView(R.id.user_name) TextView userName;
+   @InjectView(R.id.comment_edit) EditText editComment;
+   @InjectView(R.id.save) Button save;
 
-    @Override
-    public void afterCreateView(View rootView) {
-        editComment.addTextChangedListener(new TextWatcherAdapter() {
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-                save.setEnabled(!TextUtils.isEmpty(s.toString().trim()));
-            }
-        });
-    }
+   @Override
+   public void afterCreateView(View rootView) {
+      editComment.addTextChangedListener(new TextWatcherAdapter() {
+         @Override
+         public void onTextChanged(CharSequence s, int start, int before, int count) {
+            save.setEnabled(!TextUtils.isEmpty(s.toString().trim()));
+         }
+      });
+   }
 
-    @OnClick(R.id.save)
-    public void onSave() {
-        SoftInputUtil.hideSoftInputMethod(editComment);
-        save.setEnabled(false);
-        getPresenter().onSave();
-    }
+   @OnClick(R.id.save)
+   public void onSave() {
+      SoftInputUtil.hideSoftInputMethod(editComment);
+      save.setEnabled(false);
+      getPresenter().onSave();
+   }
 
-    @Override
-    public void enableSaveButton() {
-        save.setEnabled(true);
-    }
+   @Override
+   public void enableSaveButton() {
+      save.setEnabled(true);
+   }
 
-    @OnClick(R.id.cancel)
-    public void onCancel() {
-        SoftInputUtil.hideSoftInputMethod(editComment);
-        close();
-    }
+   @OnClick(R.id.cancel)
+   public void onCancel() {
+      SoftInputUtil.hideSoftInputMethod(editComment);
+      close();
+   }
 
-    @Override
-    public void setUsername(String name) {
-        userName.setText(name);
-    }
+   @Override
+   public void setUsername(String name) {
+      userName.setText(name);
+   }
 
-    @Override
-    public void setImageURI(Uri uri) {
-        userPhoto.setImageURI(uri);
-    }
+   @Override
+   public void setImageURI(Uri uri) {
+      userPhoto.setImageURI(uri);
+   }
 
-    @Override
-    public void close() {
-        eventBus.post(new EditCommentCloseRequest(this.getClass().getName()));
-    }
+   @Override
+   public void close() {
+      eventBus.post(new EditCommentCloseRequest(this.getClass().getName()));
+   }
 
-    @Override
-    public String getText() {
-        return editComment.getText().toString().trim();
-    }
+   @Override
+   public String getText() {
+      return editComment.getText().toString().trim();
+   }
 
-    @Override
-    public void setText(String text) {
-        editComment.setText(text);
-        if (text != null) editComment.setSelection(text.length());
-    }
+   @Override
+   public void setText(String text) {
+      editComment.setText(text);
+      if (text != null) editComment.setSelection(text.length());
+   }
 
-    @Override
-    protected EditCommentPresenter createPresenter(Bundle savedInstanceState) {
-        return new EditCommentPresenter(getArgs());
-    }
+   @Override
+   protected EditCommentPresenter createPresenter(Bundle savedInstanceState) {
+      return new EditCommentPresenter(getArgs());
+   }
 }

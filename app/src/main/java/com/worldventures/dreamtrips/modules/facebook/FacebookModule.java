@@ -10,16 +10,7 @@ import com.worldventures.dreamtrips.modules.facebook.view.fragment.FacebookPhoto
 import dagger.Module;
 
 @Module(
-        injects = {
-                FacebookAlbumPresenter.class,
-                FacebookPhotoPresenter.class,
-                FacebookAlbumFragment.class,
-                FacebookPhotoFragment.class,
-                FacebookAlbumCell.class,
-                FacebookPhotoCell.class,
-        },
-        complete = false,
-        library = true
-)
-public class FacebookModule {
-}
+      injects = {FacebookAlbumPresenter.class, FacebookPhotoPresenter.class, FacebookAlbumFragment.class, FacebookPhotoFragment.class, FacebookAlbumCell.class, FacebookPhotoCell.class,},
+      complete = false,
+      library = true)
+public class FacebookModule {}

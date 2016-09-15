@@ -1,649 +1,661 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <resources>
-    <string name="app_name">DreamTrips</string>
-    <string name="web_title">Web</string>
-    <string name="new_photo">Web</string>
-    <string name="detailed_trip">Λεπτομερές ταξίδι</string>
-    <string name="membership">Συνδρομή</string>
-    <string name="trip_images">Εικόνες από Ταξίδια</string>
-    <string name="bucket_list">Καλάθι Αγορών</string>
-    <string name="dtl">Ανακαλύψτε</string>
-    <string name="my_profile">Το προφίλ μου</string>
-    <string name="terms">Όροι</string>
-    <string name="terms_of_service">Όροι υπηρεσίας</string>
-    <string name="faq">Συχνές ερωτήσεις</string>
-    <string name="privacy">Πολιτική Προστασίας Προσωπικών Δεδομένων</string>
-    <string name="cookie">Πολιτική για τα Cookies</string>
-    <string name="action_settings">Ρυθμίσεις</string>
-    <string name="action_quick_input">Γρήγορη προσθήκη</string>
-    <string name="action_popular_string">Προσθήκη από τα Δημοφιλή</string>
-    <string name="action_done">Ολοκληρώθηκε</string>
-    <string name="action_cancel">Ακύρωση</string>
-    <string name="action_enroll">Εγγραφή</string>
-    <string name="action_filter">Φίλτρο</string>
-    <string name="action_map">Χάρτης</string>
-    <string name="action_like">Μου Αρέσει</string>
-    <string name="title_activity_login">LoginActivity</string>
-    <string name="trips">DreamTrips</string>
-    <string name="drawer_open">Το μενού είναι ανοικτό</string>
-    <string name="drawer_close">Το μενού είναι κλειστό</string>
-    <string name="empty" translatable="false"></string>
-    <string name="logout_dialog_title">Αποσύνδεση</string>
-    <string name="logout_dialog_message">Είστε σίγουροι ότι θέλετε να αποσυνδεθείτε;</string>
-    <string name="logout_dialog_positive_btn">Αποσύνδεση</string>
-    <string name="logout_dialog_negative_btn">Ακύρωση</string>
-    <string name="member_images">Εικόνες μελών</string>
-    <string name="my_images">Οι εικόνες μου</string>
-    <string name="you_should_be_here">You Should Be Here (Εδώ θα έπρεπε να είστε)</string>
-    <string name="title_activity_full_screen_photo">DreamTrips</string>
-    <string name="skip_login">Παράλειψη σύνδεσης</string>
-    <string name="duration">%1$d νύχτες</string>
-    <string name="smth_went_wrong">Κάτι δεν πήγε καλά =(</string>
-    <string name="inspire_me">Δώσ\' μου έμπνευση</string>
-    <string name="three_sixty">Εμπειρία 360</string>
-    <string name="book_it">Κλείστε το!</string>
-    <string name="reload_trip_details">Νέα φόρτωση λεπτομερειών ταξιδιού</string>
-    <string name="title_book_it">Κλείστε το</string>
-    <string name="title_enroll_it">Εγγραφή</string>
-    <string name="user_id_hint">Id μέλους της WV</string>
-    <string name="user_password_hint">Κωδικός πρόσβασης μέλους της WV</string>
-    <string name="type_your_reason">Πληκτρολογήστε τον λόγο</string>
-    <string name="filter_region_header">ΠΕΡΙΟΧΗ</string>
-    <string name="filter_duration_header">ΔΙΑΡΚΕΙΑ (ΔΙΑΝΥΚΤΕΡΕΥΣΕΙΣ)</string>
-    <string name="filter_price_header">ΤΙΜΗ ($)</string>
-    <string name="filter_select_all">ΕΠΙΛΟΓΗ ΟΛΩΝ</string>
-    <string name="filter_show_sold_out">ΕΜΦΑΝΙΣΗ SOLD OUT ΤΑΞΙΔΙΩΝ</string>
-    <string name="filter_theme_header">ΘΕΜΑ</string>
-    <string name="filter_no_results">Λυπούμαστε, δεν υπήρχαν αποτελέσματα που να αντιστοιχούν στα κριτήριά σας.</string>
-    <string name="filter_apply_all">ΕΦΑΡΜΟΓΗ ΦΙΛΤΡΩΝ</string>
-    <string name="filter_reset_all">ΕΠΑΝΑΦΟΡΑ ΟΛΩΝ</string>
-    <string name="filter_reset">Επαναφορά Φίλτρων</string>
-    <string name="trip_details">Λεπτομέρειες Ταξιδιού</string>
-    <string name="trip_featured">ΕΠΙΛΕΓΜΕΝΟ ΤΑΞΙΔΙ</string>
-    <string name="profile_from_hint">Από</string>
-    <string name="profile_location_hint">Ζει στον/στην/στο</string>
-    <string name="profile_enroll_hint">Ημερομηνία εγγραφής</string>
-    <string name="profile_birth_hint">Ημερομηνία γέννησης</string>
-    <string name="profile_user_id_hint">ID χρήστη</string>
-    <string name="bucket_locations">Τοποθεσίες</string>
-    <string name="bucket_activities">Δραστηριότητες</string>
-    <string name="bucket_restaurants">Γεύματα</string>
-    <string name="photo_what">Τι</string>
-    <string name="photo_what_hint">Γράψτε μια σύντομη περιγραφή της φωτογραφίας σας</string>
-    <string name="photo_where">Πού</string>
-    <string name="photo_where_hint">Ορισμός τοποθεσίας</string>
-    <string name="photo_when">Πότε</string>
-    <string name="photo_when_date_hint">Ημερομηνία</string>
-    <string name="photo_when_time_hint">Ώρα</string>
-    <string name="photo_tags">Ετικέτες</string>
-    <string name="photo_tags_hint">Προσθέστε εδώ ετικέτες διαχωρισμένες με κόμματα</string>
-    <string name="photo_deleted">Η φωτογραφία διαγράφηκε</string>
-    <string name="photo_flagged">Η φωτογραφία διαθέτει πλέον σημαία</string>
-    <string name="delete_photo_title">Διαγραφή φωτογραφίας</string>
-    <string name="delete_photo_text">Είστε σίγουροι ότι θέλετε να διαγράψετε αυτή τη φωτογραφία;</string>
-    <string name="delete_photo_positiove">Διαγραφή</string>
-    <string name="delete_photo_negative">Ακύρωση</string>
-    <string name="flag_photo_first">Το προσωπικό της WorldVentures θα ειδοποιηθεί να εξετάσει αυτή την εικόνα για </string>
-    <string name="flag_photo_second">. Θέλετε να συνεχίσετε;</string>
-    <string name="flag_photo_title">Επιβεβαίωση</string>
-    <string name="flag_photo_positive">Αποστολή</string>
-    <string name="flag_photo_negative">Ακύρωση</string>
-    <string name="flag_description_title">Σημαία</string>
-    <string name="flag_description_positive">Αποδοχή</string>
-    <string name="flag_description_negative">Ακύρωση</string>
-    <string name="log_in">Σύνδεση</string>
-    <string name="error_log_in">Το id σύνδεσης ή/και ο κωδικός πρόσβασής σας δεν είναι σωστά. Χρησιμοποιήστε το ID και τον κωδικό πρόσβασης Μέλους της WorldVentures που διαθέτετε για να συνδεθείτε</string>
-    <string name="error_image_not_loaded">Η φόρτωση της εικόνας δεν έχει ολοκληρωθεί</string>
-    <string name="error_while_loading">Σφάλμα κατά τη φόρτωση της εικόνας</string>
-    <string name="fab_select_album">Επιλογή άλμπουμ</string>
-    <string name="fab_select_photo">Επιλογή Φωτογραφίας</string>
-    <string name="fab_posted">Δημοσιεύτηκε με επιτυχία στο Facebook</string>
-    <string-array name="photo_dialog_items">
-        <item>Λήψη φωτογραφίας</item>
-        <item>Επιλογή φωτογραφίας</item>
-        <item>Επιλογή από Facebook</item>
-    </string-array>
-    <string-array name="share_dialog_items">
-        <item>Facebook</item>
-        <item>Twitter</item>
-    </string-array>
-    <string-array name="share_dialog_with_download_items">
-        <item>Facebook</item>
-        <item>Twitter</item>
-        <item>Αποθήκευση στη Συλλογή</item>
-    </string-array>
-    <string name="buffering">Αποθήκευση σε buffer…</string>
-    <string name="profile_select_avatar_header">Επιλογή Avatar</string>
-    <string name="profile_select_cover_header">Επιλογή Εξωφύλλου</string>
-    <string name="error_internal_server">Εσωτερικό Σφάλμα Διακομιστή</string>
-    <string name="username_empty">Το όνομα χρήστη είναι κενό</string>
-    <string name="username_not_valid">Το όνομα χρήστη δεν είναι έγκυρο</string>
-    <string name="password_empty">Ο κωδικός πρόσβασης είναι κενός</string>
-    <string name="password_not_valid">Ο κωδικός πρόσβασης δεν είναι έγκυρος</string>
-    <string name="bucket_list_my_title">Προσθήκη αντικειμένων στο Καλάθι αγορών</string>
-    <string name="bucket_list_location_popular">Δημοφιλή Καλάθια αγορών</string>
-    <string name="bucket_list_activity_popular">Δημοφιλείς δραστηριότητες Καλαθιού αγορών</string>
-    <string name="bucket_list_dinning_popular">Δημοφιλή αντικείμενα Φαγητού και Διασκέδασης στα Καλάθια Αγορών</string>
-    <string name="bucket_list_edit_header">Επεξεργασία αντικειμένου Καλαθιού αγορών</string>
-    <string name="bucket_list_add">Προσθήκη %1$s στο καλάθι αγορών σας</string>
-    <string name="bucket_list_create_message">Αυτή τη στιγμή, δεν έχετε αντικείμενα στο Καλάθι αγορών σας. Μπορείτε να επιλέξετε αντικείμενα από τα δημοφιλή αντικείμενα του Καλαθιού αγορών ή να δημιουργήσετε τους δικούς σας στόχους</string>
-    <string name="bucket_list_choose">Επιλογή από τα Δημοφιλή αντικείμενα</string>
-    <string name="bucket_list_create_new">Δημιουργία του δικού μου Καλαθιού</string>
-    <string name="bucket_hint_title">Τίτλος</string>
-    <string name="bucket_hint_description">Περιγραφή</string>
-    <string name="bucket_hint_description_text">Πληκτρολογήστε την περιγραφή σας εδώ</string>
-    <string name="bucket_hint_time">Ώρα</string>
-    <string name="bucket_hint_time_text">Πότε θα θέλατε να επιτύχετε αυτόν τον στόχο;</string>
-    <string name="bucket_hint_location">Τοποθεσια</string>
-    <string name="bucket_hint_location_text">Υπάρχει κάποια συγκεκριμένη τοποθεσία γι΄ αυτόν τον στόχο;</string>
-    <string name="bucket_hint_people">Άτομα</string>
-    <string name="bucket_hint_people_text">Προσθήκη ατόμων με τα οποία θέλετε να επιτύχετε αυτόν τον στόχο</string>
-    <string name="bucket_hint_tags">Ετικέτες</string>
-    <string name="bucket_hint_tags_text">Προσθέστε ετικέτες που περιγράφουν το αντικείμενο στο καλάθι αγορών σας</string>
-    <string name="bucket_item_edit_done">Το αντικείμενο του Καλαθιού αποθηκεύτηκε!</string>
-    <string name="bucket_item_edit_error">Προέκυψε σφάλμα κατά την αποθήκευση του αντικειμένου</string>
-    <string name="bucket_item_photos">Προσθήκη εικόνων</string>
-    <string name="category">Κατηγορία</string>
-    <string name="bucket_added">%1$s προστίθεται στο καλάθι αγορών σας</string>
-    <string name="trip_liked">Το αντικείμενο %1$s προστέθηκε στα Αγαπημένα σας</string>
-    <string name="trip_unliked">Το αντικείμενο %1$s αφαιρέθηκε από τα Αγαπημένα σας</string>
-    <string name="congrats">Συγχαρητήρια!</string>
-    <string name="bucket_delete_undo">Το αντικείμενο διαγράφηκε</string>
-    <string name="undo">ΑΝΑΙΡΕΣΗ</string>
-    <string name="location">τοποθεσία</string>
-    <string name="activity">δραστηριότητα</string>
-    <string name="dinning"> το ίδιο βράδυ απολαμβάνετε το δείπνο σας</string>
-    <string name="show_all">Εμφάνιση όλων</string>
-    <string name="show_completed">Εμφάνιση ολοκληρωμένων</string>
-    <string name="show_to_do">Εμφάνιση των ΠΡΟΣ ΕΠΙΤΕΥΞΗ</string>
-    <string name="rep_tools">Εργαλεία για τους Αντιπροσώπους</string>
-    <string name="success_stories">Ιστορίες επιτυχίας</string>
-    <string name="to_do">Προς Επίτευξη</string>
-    <string name="completed">Ολοκληρώθηκε</string>
-    <string name="action_share">Κοινοποίηση</string>
-    <string name="recent_header">Εμπειρία 360 που προστέθηκε πρόσφατα</string>
-    <string name="recently_added">Πρόσφατες προσθήκες</string>
-    <string name="featured_header">Επιλεγμένη εμπειρία 360</string>
-    <string name="title_activity_success_story_details">SuccessStoryDetailsActivity</string>
-    <string name="hello_world">Γεια σου, κόσμε!</string>
-    <string name="ss_has_been_added_to_favorites">Η ιστορία επιτυχίας προστέθηκε στα αγαπημένα σας</string>
-    <string name="ss_has_been_removed_from_favorites">Η ιστορία επιτυχίας αφαιρέθηκε από τα αγαπημένα σας</string>
-    <string name="ss_filter_show_favorites">Εμφάνιση Αγαπημένων</string>
-    <string name="other_travel">Κλείστε Ταξίδια</string>
-    <string name="training_videos">Εκπαιδευτικά βίντεο</string>
-    <string name="error_while_sync">Κάτι δεν πήγε καλά</string>
-    <string name="can_not_like_photo">Δεν είναι δυνατό να γίνει like στη φωτογραφία</string>
-    <string name="likes">%1$d Μου Αρέσει</string>
-    <string name="comments">%1$d σχόλια</string>
-    <string name="wrong_image">Λάθος εικόνα</string>
-    <string name="could_not_load">Δεν ήταν δυνατή η φόρτωση </string>
-    <string name="someday">Κάποια μέρα</string>
-    <string name="who">Ποιος: </string>
-    <string name="tags">Ετικέτες: </string>
-    <string name="my_pictures">Οι εικόνες μου</string>
-    <string name="today">Σήμερα</string>
-    <string name="rep_enrollment">Εγγραφή αντιπροσώπου</string>
-    <string name="no_connection">Δεν υπάρχει σύνδεση στο διαδίκτυο</string>
-    <string name="popular_add">ΠΡΟΣΘΗΚΗ</string>
-    <string name="popular_done">ΟΛΟΚΛΗΡΩΘΗΚΕ</string>
-    <string name="see_more">Δείτε περισσότερα</string>
-    <string name="alert">Προειδοποίηση</string>
-    <string name="OK">OK</string>
-    <string name="share_error">Δεν είναι δυνατή η κοινοποίηση του αρχείου</string>
-    <string-array name="bucket_date_items">
-        <item>Συγκεκριμένη ημερομηνία</item>
-        <item>Αύριο</item>
-        <item>Αυτή την εβδομάδα</item>
-        <item>Επόμενη εβδομάδα</item>
-        <item>Αυτό τον μήνα</item>
-        <item>Επόμενος μήνας</item>
-        <item>Σε έξι μήνες</item>
-        <item>Αυτό το έτος</item>
-        <item>Επόμενο έτος</item>
-        <item>Κάποια μέρα</item>
-    </string-array>
-    <string name="choose_fb">Επιλογή από Facebook</string>
-    <string name="choose_camera">Πάρτε μια φωτογραφία</string>
-    <string name="choose_gallery">Επιλογή φωτογραφίας</string>
-    <string name="uploading_photo">Αποστολή φωτογραφίας</string>
-    <string name="bucket_photo_cover">Ορισμός ως εξώφυλλο</string>
-    <string name="bucket_photo_delete">Διαγραφή</string>
-    <string name="add_pictures">Προσθήκη εικόνων</string>
-    <string name="select_photo">Επιλογή φωτογραφίας</string>
-    <string name="bucket_photo_dialog">Φωτογραφία Καλαθιού</string>
-    <string name="download_in_progress">Λήψη σε εξέλιξη</string>
-    <string name="delete_cached_video_title">Βίντεο</string>
-    <string name="delete_cached_video_text">Είστε σίγουροι ότι θέλετε να διαγράψετε το βίντεο από το τοπικό cache;</string>
-    <string name="fail">Αποτυχία</string>
-    <string name="cancel_cached_video_title">Βίντεο</string>
-    <string name="cancel_cached_video_text">Είστε σίγουροι ότι θέλετε να ακυρώσετε τη λήψη του αρχείου;</string>
-    <string name="cancel_photo_positiove">Ναι</string>
-    <string name="cancel_photo_negative">Όχι</string>
-    <string name="presentations">Βίντεο</string>
-    <string name="enroll_member">Εγγραφή μέλους</string>
-    <string name="invite_and_share">Πρόσκληση και κοινοποίηση</string>
-    <string name="add_contact">Προσθήκη επαφής</string>
-    <string name="add">Προσθήκη</string>
-    <string name="invite_add_name">Όνομα</string>
-    <string name="invite_email">Email</string>
-    <string name="invite_phone">Τηλέφωνο</string>
-    <string name="invite_add_message">Προσθήκη προσωπικού μηνύματος</string>
-    <string name="action_send">Αποστολή</string>
-    <string name="action_preview">Προεπισκόπηση</string>
-    <string name="title_edit_template">Επεξεργασία φόρμας</string>
-    <string name="title_activity_invite">Πρόσκληση</string>
-    <string name="invitation_continue">Συνέχεια</string>
-    <string name="invitation_select_contacts">Επιλογή επαφών</string>
-    <string name="invitation_select_template">Επιλογή φόρμας πρόσκλησης</string>
-    <string name="invitation_select">Επιλογή</string>
-    <string name="invitation_from">Από:</string>
-    <string name="invitation_to">Προς:</string>
-    <string name="invitation_subject">Θέμα:</string>
+   <string name="app_name">DreamTrips</string>
+   <string name="web_title">Web</string>
+   <string name="new_photo">Web</string>
+   <string name="detailed_trip">Λεπτομερές ταξίδι</string>
+   <string name="membership">Συνδρομή</string>
+   <string name="trip_images">Εικόνες από Ταξίδια</string>
+   <string name="bucket_list">Καλάθι Αγορών</string>
+   <string name="dtl">Ανακαλύψτε</string>
+   <string name="my_profile">Το προφίλ μου</string>
+   <string name="terms">Όροι</string>
+   <string name="terms_of_service">Όροι υπηρεσίας</string>
+   <string name="faq">Συχνές ερωτήσεις</string>
+   <string name="privacy">Πολιτική Προστασίας Προσωπικών Δεδομένων</string>
+   <string name="cookie">Πολιτική για τα Cookies</string>
+   <string name="action_settings">Ρυθμίσεις</string>
+   <string name="action_quick_input">Γρήγορη προσθήκη</string>
+   <string name="action_popular_string">Προσθήκη από τα Δημοφιλή</string>
+   <string name="action_done">Ολοκληρώθηκε</string>
+   <string name="action_cancel">Ακύρωση</string>
+   <string name="action_enroll">Εγγραφή</string>
+   <string name="action_filter">Φίλτρο</string>
+   <string name="action_map">Χάρτης</string>
+   <string name="action_like">Μου Αρέσει</string>
+   <string name="title_activity_login">LoginActivity</string>
+   <string name="trips">DreamTrips</string>
+   <string name="drawer_open">Το μενού είναι ανοικτό</string>
+   <string name="drawer_close">Το μενού είναι κλειστό</string>
+   <string name="empty" translatable="false"></string>
+   <string name="logout_dialog_title">Αποσύνδεση</string>
+   <string name="logout_dialog_message">Είστε σίγουροι ότι θέλετε να αποσυνδεθείτε;</string>
+   <string name="logout_dialog_positive_btn">Αποσύνδεση</string>
+   <string name="logout_dialog_negative_btn">Ακύρωση</string>
+   <string name="member_images">Εικόνες μελών</string>
+   <string name="my_images">Οι εικόνες μου</string>
+   <string name="you_should_be_here">You Should Be Here (Εδώ θα έπρεπε να είστε)</string>
+   <string name="title_activity_full_screen_photo">DreamTrips</string>
+   <string name="skip_login">Παράλειψη σύνδεσης</string>
+   <string name="duration">%1$d νύχτες</string>
+   <string name="smth_went_wrong">Κάτι δεν πήγε καλά =(</string>
+   <string name="inspire_me">Δώσ\' μου έμπνευση</string>
+   <string name="three_sixty">Εμπειρία 360</string>
+   <string name="book_it">Κλείστε το!</string>
+   <string name="reload_trip_details">Νέα φόρτωση λεπτομερειών ταξιδιού</string>
+   <string name="title_book_it">Κλείστε το</string>
+   <string name="title_enroll_it">Εγγραφή</string>
+   <string name="user_id_hint">Id μέλους της WV</string>
+   <string name="user_password_hint">Κωδικός πρόσβασης μέλους της WV</string>
+   <string name="type_your_reason">Πληκτρολογήστε τον λόγο</string>
+   <string name="filter_region_header">ΠΕΡΙΟΧΗ</string>
+   <string name="filter_duration_header">ΔΙΑΡΚΕΙΑ (ΔΙΑΝΥΚΤΕΡΕΥΣΕΙΣ)</string>
+   <string name="filter_price_header">ΤΙΜΗ ($)</string>
+   <string name="filter_select_all">ΕΠΙΛΟΓΗ ΟΛΩΝ</string>
+   <string name="filter_show_sold_out">ΕΜΦΑΝΙΣΗ SOLD OUT ΤΑΞΙΔΙΩΝ</string>
+   <string name="filter_theme_header">ΘΕΜΑ</string>
+   <string name="filter_no_results">Λυπούμαστε, δεν υπήρχαν αποτελέσματα που να αντιστοιχούν στα κριτήριά σας.</string>
+   <string name="filter_apply_all">ΕΦΑΡΜΟΓΗ ΦΙΛΤΡΩΝ</string>
+   <string name="filter_reset_all">ΕΠΑΝΑΦΟΡΑ ΟΛΩΝ</string>
+   <string name="filter_reset">Επαναφορά Φίλτρων</string>
+   <string name="trip_details">Λεπτομέρειες Ταξιδιού</string>
+   <string name="trip_featured">ΕΠΙΛΕΓΜΕΝΟ ΤΑΞΙΔΙ</string>
+   <string name="profile_from_hint">Από</string>
+   <string name="profile_location_hint">Ζει στον/στην/στο</string>
+   <string name="profile_enroll_hint">Ημερομηνία εγγραφής</string>
+   <string name="profile_birth_hint">Ημερομηνία γέννησης</string>
+   <string name="profile_user_id_hint">ID χρήστη</string>
+   <string name="bucket_locations">Τοποθεσίες</string>
+   <string name="bucket_activities">Δραστηριότητες</string>
+   <string name="bucket_restaurants">Γεύματα</string>
+   <string name="photo_what">Τι</string>
+   <string name="photo_what_hint">Γράψτε μια σύντομη περιγραφή της φωτογραφίας σας</string>
+   <string name="photo_where">Πού</string>
+   <string name="photo_where_hint">Ορισμός τοποθεσίας</string>
+   <string name="photo_when">Πότε</string>
+   <string name="photo_when_date_hint">Ημερομηνία</string>
+   <string name="photo_when_time_hint">Ώρα</string>
+   <string name="photo_tags">Ετικέτες</string>
+   <string name="photo_tags_hint">Προσθέστε εδώ ετικέτες διαχωρισμένες με κόμματα</string>
+   <string name="photo_deleted">Η φωτογραφία διαγράφηκε</string>
+   <string name="photo_flagged">Η φωτογραφία διαθέτει πλέον σημαία</string>
+   <string name="delete_photo_title">Διαγραφή φωτογραφίας</string>
+   <string name="delete_photo_text">Είστε σίγουροι ότι θέλετε να διαγράψετε αυτή τη φωτογραφία;</string>
+   <string name="delete_photo_positiove">Διαγραφή</string>
+   <string name="delete_photo_negative">Ακύρωση</string>
+   <string name="flag_photo_second">. Θέλετε να συνεχίσετε;</string>
+   <string name="flag_photo_title">Επιβεβαίωση</string>
+   <string name="flag_photo_positive">Αποστολή</string>
+   <string name="flag_photo_negative">Ακύρωση</string>
+   <string name="flag_description_title">Σημαία</string>
+   <string name="flag_description_positive">Αποδοχή</string>
+   <string name="flag_description_negative">Ακύρωση</string>
+   <string name="log_in">Σύνδεση</string>
+   <string name="error_log_in">Το id σύνδεσης ή/και ο κωδικός πρόσβασής σας δεν είναι σωστά. Χρησιμοποιήστε το ID και τον κωδικό πρόσβασης Μέλους της WorldVentures που διαθέτετε για να συνδεθείτε</string>
+   <string name="error_image_not_loaded">Η φόρτωση της εικόνας δεν έχει ολοκληρωθεί</string>
+   <string name="error_while_loading">Σφάλμα κατά τη φόρτωση της εικόνας</string>
+   <string name="fab_select_album">Επιλογή άλμπουμ</string>
+   <string name="fab_select_photo">Επιλογή Φωτογραφίας</string>
+   <string name="fab_posted">Δημοσιεύτηκε με επιτυχία στο Facebook</string>
+   <string-array name="photo_dialog_items">
+      <item>Λήψη φωτογραφίας</item>
+      <item>Επιλογή φωτογραφίας</item>
+      <item>Επιλογή από Facebook</item>
+   </string-array>
+   <string-array name="share_dialog_items">
+      <item>Facebook</item>
+      <item>Twitter</item>
+   </string-array>
+   <string-array name="share_dialog_with_download_items">
+      <item>Facebook</item>
+      <item>Twitter</item>
+      <item>Αποθήκευση στη Συλλογή</item>
+   </string-array>
+   <string name="buffering">Αποθήκευση σε buffer…</string>
+   <string name="profile_select_avatar_header">Επιλογή Avatar</string>
+   <string name="profile_select_cover_header">Επιλογή Εξωφύλλου</string>
+   <string name="error_internal_server">Εσωτερικό Σφάλμα Διακομιστή</string>
+   <string name="username_empty">Το όνομα χρήστη είναι κενό</string>
+   <string name="username_not_valid">Το όνομα χρήστη δεν είναι έγκυρο</string>
+   <string name="password_empty">Ο κωδικός πρόσβασης είναι κενός</string>
+   <string name="password_not_valid">Ο κωδικός πρόσβασης δεν είναι έγκυρος</string>
+   <string name="bucket_list_my_title">Προσθήκη αντικειμένων στο Καλάθι αγορών</string>
+   <string name="bucket_list_location_popular">Δημοφιλή Καλάθια αγορών</string>
+   <string name="bucket_list_activity_popular">Δημοφιλείς δραστηριότητες Καλαθιού αγορών</string>
+   <string name="bucket_list_dinning_popular">Δημοφιλή αντικείμενα Φαγητού και Διασκέδασης στα Καλάθια Αγορών</string>
+   <string name="bucket_list_edit_header">Επεξεργασία αντικειμένου Καλαθιού αγορών</string>
+   <string name="bucket_list_add">Προσθήκη %1$s στο καλάθι αγορών σας</string>
+   <string name="bucket_list_create_message">Αυτή τη στιγμή, δεν έχετε αντικείμενα στο Καλάθι αγορών σας. Μπορείτε να επιλέξετε αντικείμενα από τα δημοφιλή αντικείμενα του Καλαθιού αγορών ή να δημιουργήσετε τους δικούς σας στόχους</string>
+   <string name="bucket_list_choose">Επιλογή από τα Δημοφιλή αντικείμενα</string>
+   <string name="bucket_list_create_new">Δημιουργία του δικού μου Καλαθιού</string>
+   <string name="bucket_hint_title">Τίτλος</string>
+   <string name="bucket_hint_description">Περιγραφή</string>
+   <string name="bucket_hint_description_text">Πληκτρολογήστε την περιγραφή σας εδώ</string>
+   <string name="bucket_hint_time">Ώρα</string>
+   <string name="bucket_hint_time_text">Πότε θα θέλατε να επιτύχετε αυτόν τον στόχο;</string>
+   <string name="bucket_hint_location">Τοποθεσια</string>
+   <string name="bucket_hint_location_text">Υπάρχει κάποια συγκεκριμένη τοποθεσία γι΄ αυτόν τον στόχο;</string>
+   <string name="bucket_hint_people">Άτομα</string>
+   <string name="bucket_hint_people_text">Προσθήκη ατόμων με τα οποία θέλετε να επιτύχετε αυτόν τον στόχο</string>
+   <string name="bucket_hint_tags">Ετικέτες</string>
+   <string name="bucket_hint_tags_text">Προσθέστε ετικέτες που περιγράφουν το αντικείμενο στο καλάθι αγορών σας</string>
+   <string name="bucket_item_edit_done">Το αντικείμενο του Καλαθιού αποθηκεύτηκε!</string>
+   <string name="bucket_item_edit_error">Προέκυψε σφάλμα κατά την αποθήκευση του αντικειμένου</string>
+   <string name="bucket_item_photos">Προσθήκη εικόνων</string>
+   <string name="category">Κατηγορία</string>
+   <string name="bucket_added">%1$s προστίθεται στο καλάθι αγορών σας</string>
+   <string name="trip_liked">Το αντικείμενο %1$s προστέθηκε στα Αγαπημένα σας</string>
+   <string name="trip_unliked">Το αντικείμενο %1$s αφαιρέθηκε από τα Αγαπημένα σας</string>
+   <string name="congrats">Συγχαρητήρια!</string>
+   <string name="bucket_delete_undo">Το αντικείμενο διαγράφηκε</string>
+   <string name="undo">ΑΝΑΙΡΕΣΗ</string>
+   <string name="location">τοποθεσία</string>
+   <string name="activity">δραστηριότητα</string>
+   <string name="dinning"> το ίδιο βράδυ απολαμβάνετε το δείπνο σας</string>
+   <string name="show_all">Εμφάνιση όλων</string>
+   <string name="show_completed">Εμφάνιση ολοκληρωμένων</string>
+   <string name="show_to_do">Εμφάνιση των ΠΡΟΣ ΕΠΙΤΕΥΞΗ</string>
+   <string name="rep_tools">Εργαλεία για τους Αντιπροσώπους</string>
+   <string name="success_stories">Ιστορίες επιτυχίας</string>
+   <string name="to_do">Προς Επίτευξη</string>
+   <string name="completed">Ολοκληρώθηκε</string>
+   <string name="action_share">Κοινοποίηση</string>
+   <string name="recent_header">Εμπειρία 360 που προστέθηκε πρόσφατα</string>
+   <string name="recently_added">Πρόσφατες προσθήκες</string>
+   <string name="featured_header">Επιλεγμένη εμπειρία 360</string>
+   <string name="title_activity_success_story_details">SuccessStoryDetailsActivity</string>
+   <string name="hello_world">Γεια σου, κόσμε!</string>
+   <string name="ss_has_been_added_to_favorites">Η ιστορία επιτυχίας προστέθηκε στα αγαπημένα σας</string>
+   <string name="ss_has_been_removed_from_favorites">Η ιστορία επιτυχίας αφαιρέθηκε από τα αγαπημένα σας</string>
+   <string name="ss_filter_show_favorites">Εμφάνιση Αγαπημένων</string>
+   <string name="other_travel">Κλείστε Ταξίδια</string>
+   <string name="training_videos">Εκπαιδευτικά βίντεο</string>
+   <string name="error_while_sync">Κάτι δεν πήγε καλά</string>
+   <string name="can_not_like_photo">Δεν είναι δυνατό να γίνει like στη φωτογραφία</string>
+   <string name="likes">%1$d Μου Αρέσει</string>
+   <string name="comments">%1$d σχόλια</string>
+   <string name="wrong_image">Λάθος εικόνα</string>
+   <string name="could_not_load">Δεν ήταν δυνατή η φόρτωση </string>
+   <string name="someday">Κάποια μέρα</string>
+   <string name="who">Ποιος: </string>
+   <string name="tags">Ετικέτες: </string>
+   <string name="my_pictures">Οι εικόνες μου</string>
+   <string name="today">Σήμερα</string>
+   <string name="rep_enrollment">Εγγραφή αντιπροσώπου</string>
+   <string name="no_connection">Δεν υπάρχει σύνδεση στο διαδίκτυο</string>
+   <string name="popular_add">ΠΡΟΣΘΗΚΗ</string>
+   <string name="popular_done">ΟΛΟΚΛΗΡΩΘΗΚΕ</string>
+   <string name="see_more">Δείτε περισσότερα</string>
+   <string name="alert">Προειδοποίηση</string>
+   <string name="OK">OK</string>
+   <string name="share_error">Δεν είναι δυνατή η κοινοποίηση του αρχείου</string>
+   <string-array name="bucket_date_items">
+      <item>Συγκεκριμένη ημερομηνία</item>
+      <item>Αύριο</item>
+      <item>Αυτή την εβδομάδα</item>
+      <item>Επόμενη εβδομάδα</item>
+      <item>Αυτό τον μήνα</item>
+      <item>Επόμενος μήνας</item>
+      <item>Σε έξι μήνες</item>
+      <item>Αυτό το έτος</item>
+      <item>Επόμενο έτος</item>
+      <item>Κάποια μέρα</item>
+   </string-array>
+   <string name="choose_fb">Επιλογή από Facebook</string>
+   <string name="choose_camera">Πάρτε μια φωτογραφία</string>
+   <string name="choose_gallery">Επιλογή φωτογραφίας</string>
+   <string name="uploading_photo">Αποστολή φωτογραφίας</string>
+   <string name="bucket_photo_cover">Ορισμός ως εξώφυλλο</string>
+   <string name="bucket_photo_delete">Διαγραφή</string>
+   <string name="add_pictures">Προσθήκη εικόνων</string>
+   <string name="select_photo">Επιλογή φωτογραφίας</string>
+   <string name="bucket_photo_dialog">Φωτογραφία Καλαθιού</string>
+   <string name="download_in_progress">Λήψη σε εξέλιξη</string>
+   <string name="delete_cached_video_title">Βίντεο</string>
+   <string name="delete_cached_video_text">Είστε σίγουροι ότι θέλετε να διαγράψετε το βίντεο από το τοπικό cache;</string>
+   <string name="fail">Αποτυχία</string>
+   <string name="cancel_cached_video_title">Βίντεο</string>
+   <string name="cancel_cached_video_text">Είστε σίγουροι ότι θέλετε να ακυρώσετε τη λήψη του αρχείου;</string>
+   <string name="cancel_photo_positiove">Ναι</string>
+   <string name="cancel_photo_negative">Όχι</string>
+   <string name="presentations">Βίντεο</string>
+   <string name="enroll_member">Εγγραφή μέλους</string>
+   <string name="invite_and_share">Πρόσκληση και κοινοποίηση</string>
+   <string name="add_contact">Προσθήκη επαφής</string>
+   <string name="add">Προσθήκη</string>
+   <string name="invite_add_name">Όνομα</string>
+   <string name="invite_email">Email</string>
+   <string name="invite_phone">Τηλέφωνο</string>
+   <string name="invite_add_message">Προσθήκη προσωπικού μηνύματος</string>
+   <string name="action_send">Αποστολή</string>
+   <string name="action_preview">Προεπισκόπηση</string>
+   <string name="title_edit_template">Επεξεργασία φόρμας</string>
+   <string name="title_activity_invite">Πρόσκληση</string>
+   <string name="invitation_continue">Συνέχεια</string>
+   <string name="invitation_select_contacts">Επιλογή επαφών</string>
+   <string name="invitation_select_template">Επιλογή φόρμας πρόσκλησης</string>
+   <string name="invitation_select">Επιλογή</string>
+   <string name="invitation_from">Από:</string>
+   <string name="invitation_to">Προς:</string>
+   <string name="invitation_subject">Θέμα:</string>
 
-    <string name="invite_add_last_name">Επώνυμο</string>
-    <string name="preview_template">Προεπισκόπηση φόρμας</string>
-    <string name="selected">Επιλέχθηκαν %1$d</string>
-    <string name="error_personal_message_is_empty">Το προσωπικό μήνυμα δεν πρέπει να είναι κενό</string>
-    <string name="email_is_not_valid">Το Email δεν είναι έγκυρο</string>
-    <string name="invitation_deselect_all">Αποεπιλογή όλων</string>
-    <string name="invitation_text_template" formatted="false"><![CDATA[ Γεια%1$s, %2$s <br/>Δείτε το <a href=\"%3$s\">εδώ</a>.]]></string>
-    <string name="terms_and_conditions"><![CDATA[Έχω διαβάσει και αποδέχομαι <a href=\"http://gs1.wpc.edgecastcdn.net/80289E/media/1/dtapp/legal/us_en/html/terms_of_service.html\">τους Όρους και τις Προϋποθέσεις</a>]]></string>
-    <string name="invite_add_photo">Προσθήκη φωτογραφίας</string>
-    <string name="invite_select_first">Επιλογή επαφών στην αρχή</string>
-    <string name="filters_show_favorite">ΕΜΦΑΝΙΣΗ ΑΓΑΠΗΜΕΝΩΝ ΤΑΞΙΔΙΩΝ</string>
-    <string name="filter_recently_added">ΠΡΟΣΦΑΤΕΣ ΠΡΟΣΘΗΚΕΣ</string>
-    <string name="bucketlist_share" formatted="false">Στο Καλάθι αγορών μου: %1$s</string>
-    <string name="choose_multiselect">Επιλογή φωτογραφιών</string>
-    <string name="last_sent">Τελευταίες αποστολές</string>
-    <string name="search_trips">Αναζήτηση ταξιδιών</string>
-    <string name="search">Αναζήτηση</string>
+   <string name="invite_add_last_name">Επώνυμο</string>
+   <string name="preview_template">Προεπισκόπηση φόρμας</string>
+   <string name="selected">Επιλέχθηκαν %1$d</string>
+   <string name="error_personal_message_is_empty">Το προσωπικό μήνυμα δεν πρέπει να είναι κενό</string>
+   <string name="email_is_not_valid">Το Email δεν είναι έγκυρο</string>
+   <string name="invitation_deselect_all">Αποεπιλογή όλων</string>
+   <string name="invitation_text_template" formatted="false"><![CDATA[ Γεια%1$s, %2$s <br/>Δείτε το <a href=\"%3$s\">εδώ</a>.]]></string>
+   <string name="terms_and_conditions"><![CDATA[Έχω διαβάσει και αποδέχομαι <a href=\"http://gs1.wpc.edgecastcdn.net/80289E/media/1/dtapp/legal/us_en/html/terms_of_service.html\">τους Όρους και τις Προϋποθέσεις</a>]]></string>
+   <string name="invite_add_photo">Προσθήκη φωτογραφίας</string>
+   <string name="invite_select_first">Επιλογή επαφών στην αρχή</string>
+   <string name="filters_show_favorite">ΕΜΦΑΝΙΣΗ ΑΓΑΠΗΜΕΝΩΝ ΤΑΞΙΔΙΩΝ</string>
+   <string name="filter_recently_added">ΠΡΟΣΦΑΤΕΣ ΠΡΟΣΘΗΚΕΣ</string>
+   <string name="bucketlist_share" formatted="false">Στο Καλάθι αγορών μου: %1$s</string>
+   <string name="choose_multiselect">Επιλογή φωτογραφιών</string>
+   <string name="last_sent">Τελευταίες αποστολές</string>
+   <string name="search_trips">Αναζήτηση ταξιδιών</string>
+   <string name="search">Αναζήτηση</string>
 
-    <string name="profile_update_info">Ενημέρωση πληροφοριών</string>
-    <string name="profile_zero_trip_images">Εικόνες από Ταξίδια</string>
-    <string name="profile_zero_bucket_list">Αντικείμενα Καλαθιού αγορών</string>
-    <string name="profile_trip_images">%1$d εικόνες από ταξίδια</string>
-    <string name="profile_bucket_list">%1$d αντικείμενα Καλαθιού αγορών</string>
-    <string name="profile_post">Δημοσίευση</string>
-    <string name="profile_friends">Φίλοι</string>
-    <string name="profile_messages">Μηνύματα</string>
-    <string name="profile_more">Περισσότερα</string>
-    <string name="profile_platinum">Μέλος Platinum</string>
-    <string name="profile_golden">Μέλος Gold</string>
-    <string name="profile_dt_points">&lt;b&gt;%1$s&lt;/b&gt; Πόντοι DT</string>
-    <string name="profile_rovia_bucks">&lt;b&gt;%1$s&lt;/b&gt; Rovia Bucks</string>
-    <string name="bucket_delete_dialog">Είστε σίγουροι ότι θέλετε να διαγράψετε αυτό το αντικείμενο από το καλάθι αγορών σας;</string>
+   <string name="profile_update_info">Ενημέρωση πληροφοριών</string>
+   <string name="profile_zero_trip_images">Εικόνες από Ταξίδια</string>
+   <string name="profile_zero_bucket_list">Αντικείμενα Καλαθιού αγορών</string>
+   <string name="profile_trip_images">%1$d εικόνες από ταξίδια</string>
+   <string name="profile_bucket_list">%1$d αντικείμενα Καλαθιού αγορών</string>
+   <string name="profile_post">Δημοσίευση</string>
+   <string name="profile_friends">Φίλοι</string>
+   <string name="profile_messages">Μηνύματα</string>
+   <string name="profile_more">Περισσότερα</string>
+   <string name="profile_platinum">Μέλος Platinum</string>
+   <string name="profile_golden">Μέλος Gold</string>
+   <string name="profile_dt_points">&lt;b&gt;%1$s&lt;/b&gt; Πόντοι DT</string>
+   <string name="profile_rovia_bucks">&lt;b&gt;%1$s&lt;/b&gt; Rovia Bucks</string>
+   <string name="bucket_delete_dialog">Είστε σίγουροι ότι θέλετε να διαγράψετε αυτό το αντικείμενο από το καλάθι αγορών σας;</string>
 
-    <string name="action_add_to_bucket">Προσθήκη στο Καλάθι αγορών</string>
-    <string name="profile_dream_trips">%1$d Dream Trips</string>
-    <string name="profile_add_friend">Προσθήκη Φίλου</string>
-    <string name="profile_friend_request" formatted="false">Ο/Η %1$s σας έστειλε αίτημα φιλίας</string>
-    <string name="profile_accept">Επιβεβαίωση</string>
-    <string name="profile_reject">Διαγραφή αιτήματος</string>
-    <string name="title_activity_friends">Φίλοι</string>
-    <string name="profile_request">Αίτημα</string>
-    <string name="profile_respond">Απάντηση</string>
-    <string name="profile_waiting">Αναμονή</string>
-    <string name="social_my_friends">Οι φίλοι μου</string>
-    <string name="social_requests">Αιτήματα</string>
-    <string name="social_add_friend_yes">Ναι</string>
-    <string name="social_add_friend_no">Όχι</string>
-    <string name="social_add_friend_title">Προσθήκη Φίλου</string>
-    <string name="social_add_friend_content" formatted="false">Να προστεθεί ο/η %1$s στους φίλους σας;</string>
-    <string name="social_postfix_mutual_friends_one">%1$d κοινός φίλος</string>
-    <string name="social_postfix_mutual_friends">%1$d κοινοί φίλοι</string>
-    <string name="social_user_wrapper_cell_actions">Ενέργειες</string>
-    <string name="social_remove_friend_title">Κατάργηση από φίλο</string>
-    <string name="action_social_show_all">Εμφάνιση όλων</string>
-    <string name="friend_search_placeholder">Αναζήτηση ονομάτων, ομάδων</string>
-    <string name="bucket_photo_upload_error">Δεν ήταν δυνατή η αποστολή της φωτογραφίας</string>
-    <string name="training_video_hint">Επιλογή γλώσσας</string>
-    <string name="friend_reject">Απόρριψη</string>
-    <string name="friend_accept">Αποδοχή</string>
-    <string name="friend_hide">Απόκρυψη</string>
-    <string name="friend_cancel">Ακύρωση</string>
-    <string name="request_incoming">Εισερχόμενα</string>
-    <string name="request_outgoing">Εξερχόμενα</string>
-    <string name="friend_global_search">Αναζήτηση όλων των μελών</string>
-    <string name="friend_add_to">Προσθήκη σε:</string>
-    <string name="bucket_current_cover">Τρέχον εξώφυλλο</string>
-    <string name="bucket_item_edit_completed">Σήμανση ως ολοκληρωμένο!</string>
-    <string name="reload_feed">Νέα φόρτωση τροφοδοσίας</string>
-    <string name="feed_header" formatted="false">&lt;b&gt;%1$s%2$s&lt;/b&gt; %3$s &lt;b&gt;%4$s&lt;/b&gt;</string>
-    <string name="added">πρόσθεσε</string>
-    <string name="booked">έκλεισε</string>
-    <string name="shared">κοινοποίησε</string>
-    <string name="updated">ενημέρωσε</string>
-    <string name="liked">άρεσε το</string>
-    <string name="feed_trip">Ταξίδι</string>
-    <string name="feed_photo">Φωτογραφία</string>
-    <string name="feed_bucket">Αντικείμενο Καλαθιού αγορών</string>
-    <string name="coming_soon">Έρχεται Σύντομα</string>
-    <string name="loading">Φόρτωση…</string>
-    <string name="filter_video_title_language">Επιλογή γλώσσας</string>
-    <string name="filter_video_title_country">Επιλογή χώρας</string>
-    <string name="comments_title">Σχόλια</string>
-    <string name="comment_add_hint">Προσθήκη σχολίου</string>
-    <string name="comment_post_btn_title">Δημοσίευση</string>
-    <string name="comment_view_more">Προβολή περισσότερων σχολίων</string>
-    <string name="comment_edit">Επεξεργασία σχολίου</string>
-    <string name="save">Αποθήκευση</string>
-    <string name="comment_delete">Διαγραφή σχολίου</string>
-    <string name="comment_delete_caption">Είστε σίγουροι ότι θέλετε να διαγράψετε αυτό το σχόλιο;</string>
-    <string name="comment_delete_confirm">Ναι, να διαγραφεί!</string>
-    <string name="post_visibility_public">Δημόσιο</string>
-    <string name="post_hint">Τι κάνετε αυτή τη στιγμή;</string>
-    <string name="photo_hint">Πείτε κάτι για τη φωτογραφία…</string>
-    <string name="post">Δημοσίευση</string>
+   <string name="action_add_to_bucket">Προσθήκη στο Καλάθι αγορών</string>
+   <string name="profile_dream_trips">%1$d Dream Trips</string>
+   <string name="profile_add_friend">Προσθήκη Φίλου</string>
+   <string name="profile_friend_request" formatted="false">Ο/Η %1$s σας έστειλε αίτημα φιλίας</string>
+   <string name="profile_accept">Επιβεβαίωση</string>
+   <string name="profile_reject">Διαγραφή αιτήματος</string>
+   <string name="title_activity_friends">Φίλοι</string>
+   <string name="profile_request">Αίτημα</string>
+   <string name="profile_respond">Απάντηση</string>
+   <string name="profile_waiting">Αναμονή</string>
+   <string name="social_my_friends">Οι φίλοι μου</string>
+   <string name="social_requests">Αιτήματα</string>
+   <string name="social_add_friend_yes">Ναι</string>
+   <string name="social_add_friend_no">Όχι</string>
+   <string name="social_add_friend_title">Προσθήκη Φίλου</string>
+   <string name="social_add_friend_content" formatted="false">Να προστεθεί ο/η %1$s στους φίλους σας;</string>
+   <string name="social_postfix_mutual_friends_one">%1$d κοινός φίλος</string>
+   <string name="social_postfix_mutual_friends">%1$d κοινοί φίλοι</string>
+   <string name="social_user_wrapper_cell_actions">Ενέργειες</string>
+   <string name="social_remove_friend_title">Κατάργηση από φίλο</string>
+   <string name="action_social_show_all">Εμφάνιση όλων</string>
+   <string name="friend_search_placeholder">Αναζήτηση ονομάτων, ομάδων</string>
+   <string name="bucket_photo_upload_error">Δεν ήταν δυνατή η αποστολή της φωτογραφίας</string>
+   <string name="training_video_hint">Επιλογή γλώσσας</string>
+   <string name="friend_reject">Απόρριψη</string>
+   <string name="friend_accept">Αποδοχή</string>
+   <string name="friend_hide">Απόκρυψη</string>
+   <string name="friend_cancel">Ακύρωση</string>
+   <string name="request_incoming">Εισερχόμενα</string>
+   <string name="request_outgoing">Εξερχόμενα</string>
+   <string name="friend_global_search">Αναζήτηση όλων των μελών</string>
+   <string name="friend_add_to">Προσθήκη σε:</string>
+   <string name="bucket_current_cover">Τρέχον εξώφυλλο</string>
+   <string name="bucket_item_edit_completed">Σήμανση ως ολοκληρωμένο!</string>
+   <string name="reload_feed">Νέα φόρτωση τροφοδοσίας</string>
+   <string name="feed_header" formatted="false">&lt;b&gt;%1$s%2$s&lt;/b&gt; %3$s &lt;b&gt;%4$s&lt;/b&gt;</string>
+   <string name="added">πρόσθεσε</string>
+   <string name="booked">έκλεισε</string>
+   <string name="shared">κοινοποίησε</string>
+   <string name="updated">ενημέρωσε</string>
+   <string name="liked">άρεσε το</string>
+   <string name="feed_trip">Ταξίδι</string>
+   <string name="feed_photo">Φωτογραφία</string>
+   <string name="feed_bucket">Αντικείμενο Καλαθιού αγορών</string>
+   <string name="coming_soon">Έρχεται Σύντομα</string>
+   <string name="loading">Φόρτωση…</string>
+   <string name="filter_video_title_language">Επιλογή γλώσσας</string>
+   <string name="filter_video_title_country">Επιλογή χώρας</string>
+   <string name="comments_title">Σχόλια</string>
+   <string name="comment_add_hint">Προσθήκη σχολίου</string>
+   <string name="comment_post_btn_title">Δημοσίευση</string>
+   <string name="comment_view_more">Προβολή περισσότερων σχολίων</string>
+   <string name="comment_edit">Επεξεργασία σχολίου</string>
+   <string name="save">Αποθήκευση</string>
+   <string name="comment_delete">Διαγραφή σχολίου</string>
+   <string name="comment_delete_caption">Είστε σίγουροι ότι θέλετε να διαγράψετε αυτό το σχόλιο;</string>
+   <string name="comment_delete_confirm">Ναι, να διαγραφεί!</string>
+   <string name="post_visibility_public">Δημόσιο</string>
+   <string name="post_hint">Τι κάνετε αυτή τη στιγμή;</string>
+   <string name="photo_hint">Πείτε κάτι για τη φωτογραφία…</string>
+   <string name="post">Δημοσίευση</string>
 
-    /////////Date time relative strings
-    <string name="just_now">Μόλις τώρα</string>
-    <string name="days_ago">πριν από %1$d ημέρες</string>
-    <string name="hours_ago">πριν από %1$d ώρες</string>
-    <string name="minutes_ago">πριν από %1$d λεπτά</string>
-    <string name="months_ago">πριν από %1$d μήνες</string>
-    <string name="weeks_ago">πριν από %1$d εβδομάδες</string>
-    <string name="seconds_ago">πριν από %1$d δευτερόλεπτα</string>
-    <string name="minute_ago">Πριν από ένα λεπτό</string>
-    <string name="hour_ago">Πριν από μία ώρα</string>
-    <string name="last_month">Τον προηγούμενο μήνα</string>
-    <string name="last_week">Την προηγούμενη εβδομάδα</string>
-    <string name="last_year">Πέρυσι</string>
-    <string name="yesterday">Εχθές</string>
-    <string name="year_ago">Πριν από 1 έτος</string>
-    <string name="month_ago">Πριν από έναν μήνα</string>
-    <string name="week_ago">Πριν από 1 εβδομάδα</string>
-    <string name="day_ago">Πριν από 1 ημέρα</string>
+   /////////Date time relative strings
+   <string name="just_now">Μόλις τώρα</string>
+   <string name="days_ago">πριν από %1$d ημέρες</string>
+   <string name="hours_ago">πριν από %1$d ώρες</string>
+   <string name="minutes_ago">πριν από %1$d λεπτά</string>
+   <string name="months_ago">πριν από %1$d μήνες</string>
+   <string name="weeks_ago">πριν από %1$d εβδομάδες</string>
+   <string name="seconds_ago">πριν από %1$d δευτερόλεπτα</string>
+   <string name="minute_ago">Πριν από ένα λεπτό</string>
+   <string name="hour_ago">Πριν από μία ώρα</string>
+   <string name="last_month">Τον προηγούμενο μήνα</string>
+   <string name="last_week">Την προηγούμενη εβδομάδα</string>
+   <string name="last_year">Πέρυσι</string>
+   <string name="yesterday">Εχθές</string>
+   <string name="year_ago">Πριν από 1 έτος</string>
+   <string name="month_ago">Πριν από έναν μήνα</string>
+   <string name="week_ago">Πριν από 1 εβδομάδα</string>
+   <string name="day_ago">Πριν από 1 ημέρα</string>
 
-    <string name="social_remove_and_block_friend_title">Κατάργηση από φίλος και αποκλεισμός</string>
-    <string name="social_friend_preference_title">Επεξεργασία προτιμήσεων φίλων</string>
-    <string name="friend_pref_create_new_list">Δημιουργία νέου καταλόγου</string>
-    <string name="friend_pref_lists_title">Κατάλογοι</string>
-    <string name="friend_pref_lists_header">Προτιμήσεις Φίλων</string>
-    <string name="social_unfriend_confirmation_title">Είστε σίγουροι ότι θέλετε να διαγράψετε τον χρήστη από τους φίλους;</string>
-    <string name="social_unfriend_confiramation_accept">Ναι</string>
-    <string name="social_unfriend_confiramation_cancel">Όχι</string>
-    <string name="feed_title">Τροφοδοσία δραστηριότητας</string>
-    <string name="post_cancel_message">Είστε σίγουροι ότι θέλετε να απορρίψετε τις αλλαγές;</string>
-    <string name="pictures">Εικόνες</string>
-    <string name="bucket_list_foreign_message">Αυτός ο χρήστης δεν έχει αυτή τη στιγμή αντικείμενα στο Καλάθι αγορών</string>
+   <string name="social_remove_and_block_friend_title">Κατάργηση από φίλος και αποκλεισμός</string>
+   <string name="social_friend_preference_title">Επεξεργασία προτιμήσεων φίλων</string>
+   <string name="friend_pref_create_new_list">Δημιουργία νέου καταλόγου</string>
+   <string name="friend_pref_lists_title">Κατάλογοι</string>
+   <string name="friend_pref_lists_header">Προτιμήσεις Φίλων</string>
+   <string name="social_unfriend_confirmation_title">Είστε σίγουροι ότι θέλετε να διαγράψετε τον χρήστη από τους φίλους;</string>
+   <string name="social_unfriend_confiramation_accept">Ναι</string>
+   <string name="social_unfriend_confiramation_cancel">Όχι</string>
+   <string name="feed_title">Τροφοδοσία δραστηριότητας</string>
+   <string name="post_cancel_message">Είστε σίγουροι ότι θέλετε να απορρίψετε τις αλλαγές;</string>
+   <string name="pictures">Εικόνες</string>
+   <string name="bucket_list_foreign_message">Αυτός ο χρήστης δεν έχει αυτή τη στιγμή αντικείμενα στο Καλάθι αγορών</string>
 
-    <string name="user_name" formatted="false">&lt;b&gt;%1$s&lt;/b&gt;</string>
-    <string name="user_name_with_company" formatted="false">&lt;b&gt;%1$s&lt;/b&gt;, %2$s</string>
-    <string name="configuration_acitve_button">Δοκιμάστε ξανά</string>
-    <string name="configuration_failed">Η φόρτωση της ρύθμισης παραμέτρων απέτυχε</string>
-    <string name="email_app_choose_dialog_title">Επιλογή εφαρμογής</string>
+   <string name="user_name" formatted="false">&lt;b&gt;%1$s&lt;/b&gt;</string>
+   <string name="user_name_with_company" formatted="false">&lt;b&gt;%1$s&lt;/b&gt;, %2$s</string>
+   <string name="configuration_acitve_button">Δοκιμάστε ξανά</string>
+   <string name="configuration_failed">Η φόρτωση της ρύθμισης παραμέτρων απέτυχε</string>
+   <string name="email_app_choose_dialog_title">Επιλογή εφαρμογής</string>
 
-    <string name="account_who_liked_with_first_zero" formatted="false">&lt;b&gt;%1$s&lt;/b&gt;τους αρέσει αυτό</string>
-    <string name="users_who_liked_with_first_zero" formatted="false">&lt;b&gt;%1$s&lt;/b&gt;του αρέσει αυτό</string>
-    <string name="users_who_liked_with_first_single" formatted="false">&lt;b&gt;Ο/Η %1$s και %2$d ακόμη&lt;/b&gt;τους αρέσει αυτό</string>
-    <string name="users_who_liked_with_first_multiple" formatted="false">&lt;b&gt;Ο/Η %1$s και %2$d ακόμη&lt;/b&gt;τους αρέσει αυτό</string>
+   <string name="account_who_liked_with_first_zero" formatted="false">&lt;b&gt;%1$s&lt;/b&gt;τους αρέσει αυτό</string>
+   <string name="users_who_liked_with_first_zero" formatted="false">&lt;b&gt;%1$s&lt;/b&gt;του αρέσει αυτό</string>
+   <string name="users_who_liked_with_first_single" formatted="false">&lt;b&gt;Ο/Η %1$s και %2$d ακόμη&lt;/b&gt;τους αρέσει αυτό</string>
+   <string name="users_who_liked_with_first_multiple" formatted="false">&lt;b&gt;Ο/Η %1$s και %2$d ακόμη&lt;/b&gt;τους αρέσει αυτό</string>
 
-    <string name="users_who_liked_title">Άτομα που τους άρεσε</string>
-    <string name="users_who_liked_empty">Σε κανέναν δεν άρεσε αυτό το αντικείμενο</string>
-    <string name="notifications_title">Ειδοποιήσεις</string>
-    <string name="accept_request">αποδέχτηκε το αίτημά σας</string>
-    <string name="reject_request">απέρριψε το αίτημά σας</string>
-    <string name="comment">σας έκανε σχόλιο σε</string>
-    <string name="send_request">στείλτε το αίτημα φιλίας σας</string>
+   <string name="users_who_liked_title">Άτομα που τους άρεσε</string>
+   <string name="users_who_liked_empty">Σε κανέναν δεν άρεσε αυτό το αντικείμενο</string>
+   <string name="notifications_title">Ειδοποιήσεις</string>
+   <string name="accept_request">αποδέχτηκε το αίτημά σας</string>
+   <string name="reject_request">απέρριψε το αίτημά σας</string>
+   <string name="comment">σας έκανε σχόλιο σε</string>
+   <string name="send_request">στείλτε το αίτημα φιλίας σας</string>
 
-    <string name="post_delete">Διαγραφή δημοσίευσης</string>
-    <string name="post_edit">Επεξεργασία δημοσίευσης</string>
-    <string name="post_delete_caption">Είστε σίγουροι ότι θέλετε να διαγράψετε αυτή τη δημοσίευση;</string>
-    <string name="post_delete_confirm">Ναι, να διαγραφεί!</string>
+   <string name="post_delete">Διαγραφή δημοσίευσης</string>
+   <string name="post_edit">Επεξεργασία δημοσίευσης</string>
+   <string name="post_delete_caption">Είστε σίγουροι ότι θέλετε να διαγράψετε αυτή τη δημοσίευση;</string>
+   <string name="post_delete_confirm">Ναι, να διαγραφεί!</string>
 
-    <string name="photo_delete">Διαγραφή φωτογραφίας</string>
-    <string name="photo_edit">Επεξεργασία φωτογραφίας</string>
-    <string name="photo_delete_caption">Είστε σίγουροι ότι θέλετε να διαγράψετε αυτή τη φωτογραφία;</string>
+   <string name="photo_delete">Διαγραφή φωτογραφίας</string>
+   <string name="photo_edit">Επεξεργασία φωτογραφίας</string>
+   <string name="photo_delete_caption">Είστε σίγουροι ότι θέλετε να διαγράψετε αυτή τη φωτογραφία;</string>
 
-    <string name="bucket_delete">Διαγραφή αντικειμένου καλαθιού αγορών</string>
-    <string name="bucket_edit">Επεξεργασία αντικειμένου Καλαθιού αγορών</string>
-    <string name="bucket_delete_caption">Είστε σίγουροι ότι θέλετε να διαγράψετε αυτό το αντικείμενο του καλαθιού αγορών;</string>
+   <string name="bucket_delete">Διαγραφή αντικειμένου καλαθιού αγορών</string>
+   <string name="bucket_edit">Επεξεργασία αντικειμένου Καλαθιού αγορών</string>
+   <string name="bucket_delete_caption">Είστε σίγουροι ότι θέλετε να διαγράψετε αυτό το αντικείμενο του καλαθιού αγορών;</string>
 
-    <string name="feed_header_two" formatted="false">&lt;b&gt;%1$s%2$s&lt;/b&gt; και &lt;b&gt;%3$s%4$s&lt;/b&gt; %5$s &lt;b&gt;%6$s&lt;/b&gt;</string>
-    <string name="feed_header_many" formatted="false">&lt;b&gt;%1$s%2$s&lt;/b&gt; και &lt;b&gt;%3$s από τους φίλους σας&lt;/b&gt; %4$s &lt;b&gt;%5$s&lt;/b&gt;</string>
+   <string name="feed_header_two" formatted="false">&lt;b&gt;%1$s%2$s&lt;/b&gt; και &lt;b&gt;%3$s%4$s&lt;/b&gt; %5$s &lt;b&gt;%6$s&lt;/b&gt;</string>
+   <string name="feed_header_many" formatted="false">&lt;b&gt;%1$s%2$s&lt;/b&gt; και &lt;b&gt;%3$s από τους φίλους σας&lt;/b&gt; %4$s &lt;b&gt;%5$s&lt;/b&gt;</string>
 
-    <string name="player_error_header">Σφάλμα αναπαραγωγής</string>
-    <string name="player_error">Λυπούμαστε, δεν ήταν δυνατή η αναπαραγωγή του βίντεο αυτή τη στιγμή, ελέγξτε τη σύνδεσή σας ή δοκιμάστε αργότερα</string>
+   <string name="player_error_header">Σφάλμα αναπαραγωγής</string>
+   <string name="player_error">Λυπούμαστε, δεν ήταν δυνατή η αναπαραγωγή του βίντεο αυτή τη στιγμή, ελέγξτε τη σύνδεσή σας ή δοκιμάστε αργότερα</string>
 
-    <string name="retry">Επανάληψη</string>
+   <string name="retry">Επανάληψη</string>
 
-    <string name="no_notifications">Δεν έχετε καμία ειδοποίηση μέχρι στιγμής</string>
-    <string name="notification_message_friend_accepted">Ο/Η %1$s αποδέχτηκε το αίτημα φιλίας σας</string>
-    <string name="notification_message_friend_request">Ο/Η %1$s σας έστειλε αίτημα φιλίας</string>
-    <string name="notification_message_tagged_on_photo">Ο/Η %1$s σάς σημείωσε με ετικέτα σε φωτογραφία</string>
+   <string name="no_notifications">Δεν έχετε καμία ειδοποίηση μέχρι στιγμής</string>
+   <string name="notification_message_friend_accepted">Ο/Η %1$s αποδέχτηκε το αίτημα φιλίας σας</string>
+   <string name="notification_message_friend_request">Ο/Η %1$s σας έστειλε αίτημα φιλίας</string>
+   <string name="notification_message_tagged_on_photo">Ο/Η %1$s σάς σημείωσε με ετικέτα σε φωτογραφία</string>
 
-    <string name="error_webview_no_internet">Δεν υπάρχει σύνδεση στο διαδίκτυο. Διορθώστε το πρόβλημα και φορτώστε ξανά τη σελίδα.</string>
-    <string name="error_webview_default">Υπάρχει πρόβλημα στη σύνδεση. Δοκιμάστε να φορτώσετε ξανά τη σελίδα.</string>
+   <string name="error_webview_no_internet">Δεν υπάρχει σύνδεση στο διαδίκτυο. Διορθώστε το πρόβλημα και φορτώστε ξανά τη σελίδα.</string>
+   <string name="error_webview_default">Υπάρχει πρόβλημα στη σύνδεση. Δοκιμάστε να φορτώσετε ξανά τη σελίδα.</string>
 
-    <string name="notifaction_new">Νέο</string>
-    <string name="notifaction_older">Παλαιότερο</string>
+   <string name="notifaction_new">Νέο</string>
+   <string name="notifaction_older">Παλαιότερο</string>
 
-    <string name="all">ΟΛΟΙ</string>
-    <string name="you">Εσείς</string>
+   <string name="all">ΟΛΟΙ</string>
+   <string name="you">Εσείς</string>
 
-    <string name="likes_count_one">%1$d Μου αρέσει</string>
-    <string name="likes_count_other">%1$d Μου αρέσει</string>
+   <string name="likes_count_one">%1$d Μου αρέσει</string>
+   <string name="likes_count_other">%1$d Μου αρέσει</string>
 
-    <string name="comments_count_one">%1$d σχόλιο</string>
-    <string name="comments_count_other">%1$d σχόλια</string>
+   <string name="comments_count_one">%1$d σχόλιο</string>
+   <string name="comments_count_other">%1$d σχόλια</string>
 
-    <string name="feed_edit_item">Επεξεργασία</string>
-    <string name="feed_delete_item">Διαγραφή</string>
+   <string name="feed_edit_item">Επεξεργασία</string>
+   <string name="feed_delete_item">Διαγραφή</string>
 
-    <string name="liked_foreign">άρεσε ένα</string>
-    <string name="comment_foreign">σχολίασε</string>
+   <string name="liked_foreign">άρεσε ένα</string>
+   <string name="comment_foreign">σχολίασε</string>
 
-    <string name="no_feed">Εδώ θα βλέπετε τη δραστηριότητα των Φίλων σας.\n Κάντε κλικ στον παρακάτω σύνδεσμο για να βρείτε τους φίλους σας</string>
-    <string name="search_friends">Αναζήτηση Φίλων</string>
+   <string name="no_feed">Εδώ θα βλέπετε τη δραστηριότητα των Φίλων σας.\n Κάντε κλικ στον παρακάτω σύνδεσμο για να βρείτε τους φίλους σας</string>
+   <string name="search_friends">Αναζήτηση Φίλων</string>
 
-    <string name="feed_share_post">Κοινοποίηση δημοσίευσης</string>
-    <string name="feed_share_photos">Κοινοποίηση φωτογραφίας</string>
-    <string name="feed_view_profile_btn">Προβολή προφίλ</string>
-    <string name="feed_close_friends">Στενοί φίλοι</string>
-    <string name="start_searching">Πληκτρολογήστε για να ξεκινήσει η αναζήτηση</string>
+   <string name="feed_share_post">Κοινοποίηση δημοσίευσης</string>
+   <string name="feed_share_photos">Κοινοποίηση φωτογραφίας</string>
+   <string name="feed_view_profile_btn">Προβολή προφίλ</string>
+   <string name="feed_close_friends">Στενοί φίλοι</string>
+   <string name="start_searching">Πληκτρολογήστε για να ξεκινήσει η αναζήτηση</string>
 
-    <string name="people_liked_one">%1$s τους άρεσε</string>
-    <string name="people_liked_other">%1$s άτομα τους άρεσε</string>
+   <string name="people_liked_one">%1$s τους άρεσε</string>
+   <string name="people_liked_other">%1$s άτομα τους άρεσε</string>
 
-    <string name="terms_and_conditions_title">Όροι και Προϋποθέσεις</string>
-    <string name="terms_and_conditions_subtitle">Διαβάστε και αποδεχτείτε τους παρακάτω όρους και τις προϋποθέσεις για να συνεχίσετε</string>
-    <string name="terms_and_conditions_checkbox">Κάντε κλικ εδώ για να αποδεχτείτε τους όρους και τις προϋποθέσεις</string>
-    <string name="terms_and_conditions_accept">Συγκατάθεση</string>
-    <string name="terms_and_conditions_reject">Όχι τώρα</string>
+   <string name="terms_and_conditions_title">Όροι και Προϋποθέσεις</string>
+   <string name="terms_and_conditions_subtitle">Διαβάστε και αποδεχτείτε τους παρακάτω όρους και τις προϋποθέσεις για να συνεχίσετε</string>
+   <string name="terms_and_conditions_checkbox">Κάντε κλικ εδώ για να αποδεχτείτε τους όρους και τις προϋποθέσεις</string>
+   <string name="terms_and_conditions_accept">Συγκατάθεση</string>
+   <string name="terms_and_conditions_reject">Όχι τώρα</string>
 
-    <string name="camera">Κάμερα</string>
-    <string name="add_from_facebook">Προσθήκη από το Facebook</string>
+   <string name="camera">Κάμερα</string>
+   <string name="add_from_facebook">Προσθήκη από το Facebook</string>
 
-    <string name="photos_selected">Επιλέχθηκαν %1$d</string>
+   <string name="photos_selected">Επιλέχθηκαν %1$d</string>
 
-    <string name="no_friends">Δεν έχετε ακόμα φίλους σε αυτό τον κατάλογο</string>
-    <string name="feed_add_friends">Προσθήκη φίλων</string>
-    <string name="all_friends">Όλοι οι φίλοι</string>
-    <string name="trip_view_and_book"><![CDATA[Προβάλετε και Κλείστε το]]></string>
-    <string name="accept_all">Αποδοχή όλων</string>
-    <string name="request_count_desc">Έχετε %1$d εισερχόμενα αιτήματα φιλίας</string>
+   <string name="no_friends">Δεν έχετε ακόμα φίλους σε αυτό τον κατάλογο</string>
+   <string name="feed_add_friends">Προσθήκη φίλων</string>
+   <string name="all_friends">Όλοι οι φίλοι</string>
+   <string name="trip_view_and_book"><![CDATA[Προβάλετε και Κλείστε το]]></string>
+   <string name="accept_all">Αποδοχή όλων</string>
+   <string name="request_count_desc">Έχετε %1$d εισερχόμενα αιτήματα φιλίας</string>
 
-    <string name="user_mutual_friends">Κοινοί φίλοι</string>
-    <string name="no_mutual_friends">Δεν έχετε κοινούς φίλους</string>
+   <string name="user_mutual_friends">Κοινοί φίλοι</string>
+   <string name="no_mutual_friends">Δεν έχετε κοινούς φίλους</string>
 
-    <string name="photo_limitation_message">Επιλέξτε έως %1$d φωτογραφίες</string>
-    <string name="pending">Σε εκκρεμότητα…</string>
+   <string name="photo_limitation_message">Επιλέξτε έως %1$d φωτογραφίες</string>
+   <string name="pending">Σε εκκρεμότητα…</string>
 
-    <string name="back">Πίσω</string>
-    <string name="logout_component">Αποσύνδεση</string>
-    <string name="start_typing_name">Ξεκινήστε να πληκτρολογείτε το όνομα</string>
+   <string name="back">Πίσω</string>
+   <string name="logout_component">Αποσύνδεση</string>
+   <string name="start_typing_name">Ξεκινήστε να πληκτρολογείτε το όνομα</string>
 
-    <string name="multiple_dates">Πολλαπλές ημερομηνίες, %1$s…</string>
+   <string name="multiple_dates">Πολλαπλές ημερομηνίες, %1$s…</string>
 
-    <string name="tag_photo">σας σημείωσε με ετικέτα</string>
+   <string name="tag_photo">σας σημείωσε με ετικέτα</string>
 
-    <string name="user_already_exists">Ο χρήστης %1$s υπάρχει ήδη</string>
-    <string name="photo_tag_title">Αγγίξτε σε οποιοδήποτε σημείο για να σημειώσετε άτομα με ετικέτα</string>
-    <string name="profile_friend_formatter">%1$d Φίλος</string>
-    <string name="profile_friends_formatter">%1$d Φίλοι</string>
+   <string name="user_already_exists">Ο χρήστης %1$s υπάρχει ήδη</string>
+   <string name="photo_tag_title">Αγγίξτε σε οποιοδήποτε σημείο για να σημειώσετε άτομα με ετικέτα</string>
+   <string name="profile_friend_formatter">%1$d Φίλος</string>
+   <string name="profile_friends_formatter">%1$d Φίλοι</string>
 
-    <string name="send_feedback">Αποστολή σχολίων</string>
-    <string name="working_hard">Δουλεύουμε σκληρά για να βελτιώσουμε τα DreamTrips. Βοηθήστε μας να γίνουμε καλύτεροι.</string>
-    <string name="feedback_message_hint">Πληκτρολογήστε το μήνυμά σας εδώ</string>
-    <string name="message_can_not_be_empty">Το μήνυμα δεν πρέπει να είναι κενό</string>
-    <string name="feedback_has_been_sent">Τα σχόλιά σας στάλθηκαν. Ευχαριστούμε</string>
-    <string name="feedback_send_btn">Αποστολή</string>
-    <string name="feedback_select_category">Επιλέξτε Κατηγορία</string>
+   <string name="send_feedback">Αποστολή σχολίων</string>
+   <string name="working_hard">Δουλεύουμε σκληρά για να βελτιώσουμε τα DreamTrips. Βοηθήστε μας να γίνουμε καλύτεροι.</string>
+   <string name="feedback_message_hint">Πληκτρολογήστε το μήνυμά σας εδώ</string>
+   <string name="message_can_not_be_empty">Το μήνυμα δεν πρέπει να είναι κενό</string>
+   <string name="feedback_has_been_sent">Τα σχόλιά σας στάλθηκαν. Ευχαριστούμε</string>
+   <string name="feedback_send_btn">Αποστολή</string>
+   <string name="feedback_select_category">Επιλέξτε Κατηγορία</string>
 
-    <string name="years_ago">πριν από %1$d έτη</string>
-    <string name="invitation_template">Επιλογή φόρμας</string>
+   <string name="years_ago">πριν από %1$d έτη</string>
+   <string name="invitation_template">Επιλογή φόρμας</string>
 
-    <string name="settings">Ρυθμίσεις</string>
-    <string name="notifications">Ειδοποιήσεις</string>
-    <string name="general">Γενικά</string>
+   <string name="settings">Ρυθμίσεις</string>
+   <string name="notifications">Ειδοποιήσεις</string>
+   <string name="general">Γενικά</string>
 
-    <string name="what_notifications_get">Τι είδους ειδοποιήσεις λαμβάνετε</string>
+   <string name="what_notifications_get">Τι είδους ειδοποιήσεις λαμβάνετε</string>
 
-    <string name="settings_distance_units">Μονάδες μέτρησης απόστασης</string>
-    <string name="settings_friend_requests">Αιτήματα φιλίας</string>
-    <string name="settings_new_message">Νέο μήνυμα</string>
-    <string name="settings_photo_tagging">Σημείωση με ετικέτα σε φωτογραφία</string>
+   <string name="settings_distance_units">Μονάδες μέτρησης απόστασης</string>
+   <string name="settings_friend_requests">Αιτήματα φιλίας</string>
+   <string name="settings_new_message">Νέο μήνυμα</string>
+   <string name="settings_photo_tagging">Σημείωση με ετικέτα σε φωτογραφία</string>
 
-    <string name="abbreviated_miles">λεπ.</string>
-    <string name="abbreviated_kilometers">χλμ.</string>
-    <string name="show_distance_in">Εμφάνιση απόστασης σε:</string>
-    <string name="settings_kilometers">Χιλιόμετρα</string>
-    <string name="settings_miles">Μίλια</string>
+   <string name="abbreviated_miles">λεπ.</string>
+   <string name="abbreviated_kilometers">χλμ.</string>
+   <string name="show_distance_in">Εμφάνιση απόστασης σε:</string>
+   <string name="settings_kilometers">Χιλιόμετρα</string>
+   <string name="settings_miles">Μίλια</string>
 
-    <string name="save_changes_before_proceed">Θέλετε να αποθηκεύσετε τις αλλαγές προτού συνεχίσετε;</string>
-    <string name="discard">Απόρριψη</string>
+   <string name="save_changes_before_proceed">Θέλετε να αποθηκεύσετε τις αλλαγές προτού συνεχίσετε;</string>
+   <string name="discard">Απόρριψη</string>
 
-    <string name="error_fail_to_load_success_stories">Αποτυχία φόρτωσης ιστοριών επιτυχίας</string>
-    <string name="error_fail_to_like_success_story">Αποτυχία εντολής Μου αρέσει στην ιστορία επιτυχίας</string>
-    <string name="error_fail_to_unlike_success_story">Αποτυχία εντολής Δεν μου αρέσει στην ιστορία επιτυχίας</string>
-    <string name="error_fail_to_load_settings">Αποτυχία φόρτωσης ρύθμισης</string>
-    <string name="error_fail_to_update_settings">Αποτυχία αναβάθμισης ρυθμίσεων</string>
-    <string name="error_fail_to_load_bl">Αποτυχία φόρτωσης Καλαθιού Αγορών</string>
-    <string name="error_fail_to_delete_bl">Αποτυχία διαγραφής Αντικειμένου από το Καλάθι Αγορών</string>
-    <string name="error_fail_to_create_bl">Αποτυχία δημιουργίας Αντικειμένου στο Καλάθι Αγορών</string>
-    <string name="error_fail_to_edit_bl">Αποτυχία προσαρμογής Αντικειμένου στο Καλάθι Αγορών</string>
-    <string name="error_fail_to_load_categories">Αποτυχία φόρτωσης κατηγοριών</string>
-    <string name="error_fail_to_load_suggestions">Αποτυχία φόρτωσης προτεινόμενων</string>
-    <string name="error_fail_to_load_popular_bl">Αποτυχία φόρτωσης δημοφιλών Αντικειμένων σπό το Καλάθι Αγορών</string>
-    <string name="error_fail_to_add_bl_item">Αποτυχία προσθήκης αντικειμένου</string>
-    <string name="error_fail_to_upload_bl_photo">Αποτυχία φόρτωσης φωτογραφίας</string>
-    <string name="error_fail_to_delete_bl_photo">Αποτυχία διαγραφής φωτογραφίας</string>
-    <string name="error_fail_to_load_circles">Αποτυχία φόρτωσης κύκλων</string>
-    <string name="error_fail_to_load_feed">Αποτυχία φόρτωσης ροής</string>
-    <string name="error_fail_to_load_item_details">Αποτυχία φόρτωσης λεπτομερειών αντικειμένου</string>
-    <string name="error_fail_to_create_post">Αποτυχία δημιουργίας δημοσίευσης</string>
-    <string name="error_fail_to_update_post">Αποτυχία ενημέρωσης δημοσίευσης</string>
-    <string name="error_fail_to_delete_post">Αποτυχία διαγραφής δημοσίευσης</string>
-    <string name="error_fail_to_load_comments">Αποτυχία φόρτωσης σχολίων</string>
-    <string name="error_fail_to_post_comment">Αποτυχία δημοσίευσης σχολίου</string>
-    <string name="error_fail_to_delete_comment">Αποτυχία διαγραφής σχολίου</string>
-    <string name="error_fail_to_edit_comment">Αποτυχία επεξεργασίας σχολίου</string>
-    <string name="error_fail_to_load_flag_reason">Αποτυχία φόρτωσης λόγων επισήμανσης</string>
-    <string name="error_fail_to_flag_item">Αποτυχία επισήμανσης αντικειμένου</string>
-    <string name="error_fail_to_accept_friend_requests">Αποτυχία αποδοχής αιτημάτων φιλίας</string>
-    <string name="error_fail_to_accept_friend_request">Αποτυχία αποδοχής αιτήματος φιλίας</string>
-    <string name="error_fail_to_reject_friend_request">Αποτυχία απόρριψης αιτήματος φιλίας</string>
-    <string name="error_fail_to_hide_friend_request">Αποτυχία απόκρυψης αιτήματος φιλίας</string>
-    <string name="error_fail_to_cancel_friend_request">Αποτυχία ακύρωσης αιτήματος φιλίας</string>
-    <string name="error_failed_to_send_friend_request">Αποτυχία αποστολής αιτήματος φιλίας</string>
-    <string name="error_failed_to_load_friend_requests">Αποτυχία φόρτωσης αιτημάτων φιλίας</string>
-    <string name="error_failed_to_load_friends">Αποτυχία φόρτωσης φίλων</string>
-    <string name="error_failed_to_unfriend_user">Αποτυχία ακύρωσης φιλίας με χρήστη</string>
-    <string name="error_failed_to_add_user_to_circle">Αποτυχία προσθήκης χρήστη στον κύκλο</string>
-    <string name="error_failed_to_remove_user_from_circle">Αποτυχία μετακίνησης χρήστη από τον κύκλο</string>
-    <string name="error_failed_to_load_people_who_liked">Αποτυχία φόρτωσης ατόμων που έκαναν \'Μου Αρέσει\'</string>
-    <string name="error_failed_to_load_mutual_friends">Αποτυχία φόρτωσης κοινών φίλων</string>
-    <string name="error_failed_to_load_notifications">Αποτυχία φόρτωσης ειδοποιήσεων</string>
-    <string name="error_failed_to_accept_terms_and_conditions">Αποτυχία αποδοχής όρων και προϋποθέσεων</string>
-    <string name="error_failed_to_load_my_images">Αποτυχία φόρτωσης εικόνων μου</string>
-    <string name="error_failed_to_load_member_images">Αποτυχία φόρτωσης εικόνων μελών</string>
-    <string name="error_failed_to_load_ysbh_images">Αποτυχία φόρτωσης εικόνων you should be here</string>
-    <string name="error_failed_to_load_inspire_images">Αποτυχία φόρτωσης εικόνων με εμπνέουν</string>
-    <string name="error_failed_to_create_image">Αποτυχία δημιουργίας εικόνας</string>
-    <string name="error_failed_to_edit_image">Αποτυχία επεξεργασίας εικόνας</string>
-    <string name="error_failed_to_delete_image">Αποτυχία διαγραφής εικόνας</string>
-    <string name="string_failed_to_load_trips">Αποτυχία φόρτωσης ταξιδιών</string>
-    <string name="error_failed_to_load_activities">Αποτυχία φόρτωσης δραστηριοτήτων</string>
-    <string name="error_failed_to_load_users">Αποτυχία φόρτωσης χρηστών</string>
-    <string name="error_failed_to_load_feedback_reasons">Αποτυχία φόρτωσης λόγων ανατροφοδότησης</string>
-    <string name="error_fail_to_tag_people">"Αποτυχία επισήμανσης ατόμων"</string>
-    <string name="error_fail_to_delete_tag">Αποτυχία διαγραφής επισήμανσης</string>
-    <string name="error_fail_to_load_feedback_reasons">Αποτυχία φόρτωσης λόγων σχολιασμού τροφοδότησης</string>
-    <string name="error_fail_to_send_feedback">Αποτυχία αποστολής σχολίων τροφοδότησης</string>
-    <string name="error_fail_to_upload_image">Αποτυχία φόρτωσης εικόνας</string>
-    <string name="error_fail_to_load_timeline">Αποτυχία φόρτωσης χρονολογίου</string>
-    <string name="error_fail_to_download_video">Αποτυχία λήψης βίντεο</string>
-    <string name="error_fail_to_get_invitations">Αποτυχία λήψης προσκλήσεων</string>
-    <string name="error_fail_to_create_invitation">Αποτυχία δημιουργίας πρόσκλησης</string>
-    <string name="error_fail_to_send_invitation">Αποτυχία αποστολής πρόσκλησης</string>
-    <string name="error_fail_to_invitation_templates">Αποτυχία λήψης δειγμάτων πρόσκλησης</string>
-    <string name="error_fail_to_fill_template">Αποτυχία συμπλήρωσης δείγματος</string>
-    <string name="error_fail_to_get_preview_for_template">Αποτυχία λήψης προεπισκόπησης δείγματος</string>
-    <string name="error_fail_to_locales">Αποτυχία λήψης τοποθεσιών</string>
-    <string name="error_fail_to_login">Αποτυχία εισόδου</string>
-    <string name="error_fail_to_load_profile_info">Αποτυχία φόρτωσης πληροφοριών προφίλ</string>
-    <string name="error_fail_to_update_avatar">Αποτυχία ενημέρωσης εικονιδίου</string>
-    <string name="error_fail_to_update_cover_photo">Αποτυχία ενημέρωσης φωτογραφίας εξωφύλλου</string>
-    <string name="error_fail_to_load_videos">Αποτυχία φόρτωσης βίντεο</string>
-    <string name="error_fail_to_like_item">Αποτυχία \'Μου αρέσει\' αντικειμένου</string>
-    <string name="error_fail_to_unlike_item">Αποτυχία \'Δεν μου αρέσει\' αντικειμένου</string>
-    <string name="error_fail_to_mark_notification">Αποτυχία επισήμανσης ειδοποίησης</string>
-    <string name="error_fail_to_mark_notifications">Αποτυχία επισήμανσης ειδοποιήσεων</string>
-    <string name="tag_people">Επισήμανση ατόμων</string>
+   <string name="error_fail_to_load_success_stories">Αποτυχία φόρτωσης ιστοριών επιτυχίας</string>
+   <string name="error_fail_to_like_success_story">Αποτυχία εντολής Μου αρέσει στην ιστορία επιτυχίας</string>
+   <string name="error_fail_to_unlike_success_story">Αποτυχία εντολής Δεν μου αρέσει στην ιστορία επιτυχίας</string>
+   <string name="error_fail_to_load_settings">Αποτυχία φόρτωσης ρύθμισης</string>
+   <string name="error_fail_to_update_settings">Αποτυχία αναβάθμισης ρυθμίσεων</string>
+   <string name="error_fail_to_load_bl">Αποτυχία φόρτωσης Καλαθιού Αγορών</string>
+   <string name="error_fail_to_delete_bl">Αποτυχία διαγραφής Αντικειμένου από το Καλάθι Αγορών</string>
+   <string name="error_fail_to_create_bl">Αποτυχία δημιουργίας Αντικειμένου στο Καλάθι Αγορών</string>
+   <string name="error_fail_to_edit_bl">Αποτυχία προσαρμογής Αντικειμένου στο Καλάθι Αγορών</string>
+   <string name="error_fail_to_load_categories">Αποτυχία φόρτωσης κατηγοριών</string>
+   <string name="error_fail_to_load_suggestions">Αποτυχία φόρτωσης προτεινόμενων</string>
+   <string name="error_fail_to_load_popular_bl">Αποτυχία φόρτωσης δημοφιλών Αντικειμένων σπό το Καλάθι Αγορών</string>
+   <string name="error_fail_to_add_bl_item">Αποτυχία προσθήκης αντικειμένου</string>
+   <string name="error_fail_to_upload_bl_photo">Αποτυχία φόρτωσης φωτογραφίας</string>
+   <string name="error_fail_to_delete_bl_photo">Αποτυχία διαγραφής φωτογραφίας</string>
+   <string name="error_fail_to_load_circles">Αποτυχία φόρτωσης κύκλων</string>
+   <string name="error_fail_to_load_feed">Αποτυχία φόρτωσης ροής</string>
+   <string name="error_fail_to_load_item_details">Αποτυχία φόρτωσης λεπτομερειών αντικειμένου</string>
+   <string name="error_fail_to_create_post">Αποτυχία δημιουργίας δημοσίευσης</string>
+   <string name="error_fail_to_update_post">Αποτυχία ενημέρωσης δημοσίευσης</string>
+   <string name="error_fail_to_delete_post">Αποτυχία διαγραφής δημοσίευσης</string>
+   <string name="error_fail_to_load_comments">Αποτυχία φόρτωσης σχολίων</string>
+   <string name="error_fail_to_post_comment">Αποτυχία δημοσίευσης σχολίου</string>
+   <string name="error_fail_to_delete_comment">Αποτυχία διαγραφής σχολίου</string>
+   <string name="error_fail_to_edit_comment">Αποτυχία επεξεργασίας σχολίου</string>
+   <string name="error_fail_to_load_flag_reason">Αποτυχία φόρτωσης λόγων επισήμανσης</string>
+   <string name="error_fail_to_flag_item">Αποτυχία επισήμανσης αντικειμένου</string>
+   <string name="error_fail_to_accept_friend_requests">Αποτυχία αποδοχής αιτημάτων φιλίας</string>
+   <string name="error_fail_to_accept_friend_request">Αποτυχία αποδοχής αιτήματος φιλίας</string>
+   <string name="error_fail_to_reject_friend_request">Αποτυχία απόρριψης αιτήματος φιλίας</string>
+   <string name="error_fail_to_hide_friend_request">Αποτυχία απόκρυψης αιτήματος φιλίας</string>
+   <string name="error_fail_to_cancel_friend_request">Αποτυχία ακύρωσης αιτήματος φιλίας</string>
+   <string name="error_failed_to_send_friend_request">Αποτυχία αποστολής αιτήματος φιλίας</string>
+   <string name="error_failed_to_load_friend_requests">Αποτυχία φόρτωσης αιτημάτων φιλίας</string>
+   <string name="error_failed_to_load_friends">Αποτυχία φόρτωσης φίλων</string>
+   <string name="error_failed_to_unfriend_user">Αποτυχία ακύρωσης φιλίας με χρήστη</string>
+   <string name="error_failed_to_add_user_to_circle">Αποτυχία προσθήκης χρήστη στον κύκλο</string>
+   <string name="error_failed_to_remove_user_from_circle">Αποτυχία μετακίνησης χρήστη από τον κύκλο</string>
+   <string name="error_failed_to_load_people_who_liked">Αποτυχία φόρτωσης ατόμων που έκαναν \'Μου Αρέσει\'</string>
+   <string name="error_failed_to_load_mutual_friends">Αποτυχία φόρτωσης κοινών φίλων</string>
+   <string name="error_failed_to_load_notifications">Αποτυχία φόρτωσης ειδοποιήσεων</string>
+   <string name="error_failed_to_accept_terms_and_conditions">Αποτυχία αποδοχής όρων και προϋποθέσεων</string>
+   <string name="error_failed_to_load_my_images">Αποτυχία φόρτωσης εικόνων μου</string>
+   <string name="error_failed_to_load_member_images">Αποτυχία φόρτωσης εικόνων μελών</string>
+   <string name="error_failed_to_load_ysbh_images">Αποτυχία φόρτωσης εικόνων you should be here</string>
+   <string name="error_failed_to_load_inspire_images">Αποτυχία φόρτωσης εικόνων με εμπνέουν</string>
+   <string name="error_failed_to_create_image">Αποτυχία δημιουργίας εικόνας</string>
+   <string name="error_failed_to_edit_image">Αποτυχία επεξεργασίας εικόνας</string>
+   <string name="error_failed_to_delete_image">Αποτυχία διαγραφής εικόνας</string>
+   <string name="string_failed_to_load_trips">Αποτυχία φόρτωσης ταξιδιών</string>
+   <string name="error_failed_to_load_activities">Αποτυχία φόρτωσης δραστηριοτήτων</string>
+   <string name="error_failed_to_load_users">Αποτυχία φόρτωσης χρηστών</string>
+   <string name="error_failed_to_load_feedback_reasons">Αποτυχία φόρτωσης λόγων ανατροφοδότησης</string>
+   <string name="error_fail_to_tag_people">"Αποτυχία επισήμανσης ατόμων"</string>
+   <string name="error_fail_to_delete_tag">Αποτυχία διαγραφής επισήμανσης</string>
+   <string name="error_fail_to_load_feedback_reasons">Αποτυχία φόρτωσης λόγων σχολιασμού τροφοδότησης</string>
+   <string name="error_fail_to_send_feedback">Αποτυχία αποστολής σχολίων τροφοδότησης</string>
+   <string name="error_fail_to_upload_image">Αποτυχία φόρτωσης εικόνας</string>
+   <string name="error_fail_to_load_timeline">Αποτυχία φόρτωσης χρονολογίου</string>
+   <string name="error_fail_to_download_video">Αποτυχία λήψης βίντεο</string>
+   <string name="error_fail_to_get_invitations">Αποτυχία λήψης προσκλήσεων</string>
+   <string name="error_fail_to_create_invitation">Αποτυχία δημιουργίας πρόσκλησης</string>
+   <string name="error_fail_to_send_invitation">Αποτυχία αποστολής πρόσκλησης</string>
+   <string name="error_fail_to_invitation_templates">Αποτυχία λήψης δειγμάτων πρόσκλησης</string>
+   <string name="error_fail_to_fill_template">Αποτυχία συμπλήρωσης δείγματος</string>
+   <string name="error_fail_to_get_preview_for_template">Αποτυχία λήψης προεπισκόπησης δείγματος</string>
+   <string name="error_fail_to_locales">Αποτυχία λήψης τοποθεσιών</string>
+   <string name="error_fail_to_login">Αποτυχία εισόδου</string>
+   <string name="error_fail_to_load_profile_info">Αποτυχία φόρτωσης πληροφοριών προφίλ</string>
+   <string name="error_fail_to_update_avatar">Αποτυχία ενημέρωσης εικονιδίου</string>
+   <string name="error_fail_to_update_cover_photo">Αποτυχία ενημέρωσης φωτογραφίας εξωφύλλου</string>
+   <string name="error_fail_to_load_videos">Αποτυχία φόρτωσης βίντεο</string>
+   <string name="error_fail_to_like_item">Αποτυχία \'Μου αρέσει\' αντικειμένου</string>
+   <string name="error_fail_to_unlike_item">Αποτυχία \'Δεν μου αρέσει\' αντικειμένου</string>
+   <string name="error_fail_to_mark_notification">Αποτυχία επισήμανσης ειδοποίησης</string>
+   <string name="error_fail_to_mark_notifications">Αποτυχία επισήμανσης ειδοποιήσεων</string>
+   <string name="tag_people">Επισήμανση ατόμων</string>
 
-    <string name="say_something">Πείτε κάτι στον κόσμο</string>
+   <string name="say_something">Πείτε κάτι στον κόσμο</string>
 
-    <string name="update">Ενημέρωση</string>
-    <string name="add_location">Προσθέστε τοποθεσία</string>
-    <string name="find_your_location">Βρείτε την τοποθεσία σας</string>
+   <string name="update">Ενημέρωση</string>
+   <string name="add_location">Προσθέστε τοποθεσία</string>
+   <string name="find_your_location">Βρείτε την τοποθεσία σας</string>
 
-    <string name="who_is_this">Ποιος είναι;</string>
-    <string name="dream_trips_points">DreamTrips Πόντοι:</string>
-    <string name="rovia_bucks">Rovia Bucks:</string>
+   <string name="who_is_this">Ποιος είναι;</string>
+   <string name="dream_trips_points">DreamTrips Πόντοι:</string>
+   <string name="rovia_bucks">Rovia Bucks:</string>
 
-    <string name="suggested_photo">Έχετε νέες φωτογραφίες</string>
-    <string name="suggested_photo_selected_one">%1$d φωτογραφία επιλέχθηκε</string>
-    <string name="suggested_photo_selected_multiple">%1$d φωτογραφίες επιλέχθηκαν</string>
-    <string name="share_recent_photos">Μοιραστείτε φωτογραφίες</string>
+   <string name="suggested_photo">Έχετε νέες φωτογραφίες</string>
+   <string name="suggested_photo_selected_one">%1$d φωτογραφία επιλέχθηκε</string>
+   <string name="suggested_photo_selected_multiple">%1$d φωτογραφίες επιλέχθηκαν</string>
+   <string name="share_recent_photos">Μοιραστείτε φωτογραφίες</string>
 
-    <string name="legal_terms">Νομικοί Όροι</string>
+   <string name="legal_terms">Νομικοί Όροι</string>
 
-    <string name="location_picker_title">Επιλέξτε τοποθεσία</string>
-    <string name="location_picker_no_play_services">Λυπούμαστε, αλλά για να δείτε το χάρτη πρέπει να έχετε τις υπηρεσίες Google Play εγκατεστημένες στη συσκευή σας.</string>
-    <string name="location_picker_could_not_get_location">Η τρέχουσα τοποθεσία δεν βρέθηκε</string>
+   <string name="location_picker_title">Επιλέξτε τοποθεσία</string>
+   <string name="location_picker_no_play_services">Λυπούμαστε, αλλά για να δείτε το χάρτη πρέπει να έχετε τις υπηρεσίες Google Play εγκατεστημένες στη συσκευή σας.</string>
+   <string name="location_picker_could_not_get_location">Η τρέχουσα τοποθεσία δεν βρέθηκε</string>
 
-    <string name="request_incoming_long">Εισερχόμενα Αιτήματα </string>
-    <string name="request_outgoing_long">Εξερχόμενα Αιτήματα </string>
+   <string name="request_incoming_long">Εισερχόμενα Αιτήματα </string>
+   <string name="request_outgoing_long">Εξερχόμενα Αιτήματα </string>
 
-    <string name="add_title">Προσθέστε έναν τίτλο</string>
-    <string name="flag_sent_success_msg">Το περιεχόμενο διαθέτει πλέον σημαία</string>
+   <string name="add_title">Προσθέστε έναν τίτλο</string>
+   <string name="flag_sent_success_msg">Το περιεχόμενο διαθέτει πλέον σημαία</string>
 
-    <string name="location_name_length_message">Το όνομα της τοποθεσίας δεν μπορεί να είναι μεγαλύτερο από 255 χαρακτήρες.</string>
+   <string name="location_name_length_message">Το όνομα της τοποθεσίας δεν μπορεί να είναι μεγαλύτερο από 255 χαρακτήρες.</string>
 
-    <string name="featured_trip">ΠΡΟΤΕΙΝΟΜΕΝΟ ΤΑΞΙΔΙ</string>
-    <string name="sold_out_trip">Εξαντλήθηκε</string>
+   <string name="featured_trip">ΠΡΟΤΕΙΝΟΜΕΝΟ ΤΑΞΙΔΙ</string>
+   <string name="sold_out_trip">Εξαντλήθηκε</string>
 
-    <string name="podcasts">Ψηφιακά αρχεία</string>
-    <string name="delete_cached_podcast_title">Ψηφιακό αρχείο</string>
-    <string name="delete_cached_podcast_text">Είστε σίγουροι ότι θέλετε να διαγράψετε το ψηφιακό αρχείο από την τοπική μνήμη;</string>
-    <string name="cancel_cached_podcast_title">Ψηφιακό αρχείο</string>
-    <string name="cancel_cached_podcast_text">Είστε σίγουροι ότι θέλετε να ακυρώσετε τη λήψη του αρχείου;</string>
-    <string name="audio_app_not_found_exception">Η εφαρμογή για την αναπαραγωγή ήχου δεν βρέθηκε</string>
-    <string name="complete_action_with">Ολοκλήρωση ενέργειας με</string>
-    <string name="error_fail_to_load_podcast">Αποτυχία φόρτωσης ψηφιακού αρχείου</string>
+   <string name="podcasts">Ψηφιακά αρχεία</string>
+   <string name="delete_cached_podcast_title">Ψηφιακό αρχείο</string>
+   <string name="delete_cached_podcast_text">Είστε σίγουροι ότι θέλετε να διαγράψετε το ψηφιακό αρχείο από την τοπική μνήμη;</string>
+   <string name="cancel_cached_podcast_title">Ψηφιακό αρχείο</string>
+   <string name="cancel_cached_podcast_text">Είστε σίγουροι ότι θέλετε να ακυρώσετε τη λήψη του αρχείου;</string>
+   <string name="audio_app_not_found_exception">Η εφαρμογή για την αναπαραγωγή ήχου δεν βρέθηκε</string>
+   <string name="complete_action_with">Ολοκλήρωση ενέργειας με</string>
+   <string name="error_fail_to_load_podcast">Αποτυχία φόρτωσης ψηφιακού αρχείου</string>
+   <string name="podcasts_button_resume">Aνακεφαλαίωση</string>
+   <string name="podcasts_button_pause">Παύση</string>
+   <string name="podcasts_button_stop">Στάση</string>
 
-    <string name="min">λεπτά</string>
-    <string name="post_hint_with_hashtag">Πείτε κάτι, προσθέστε #hashtags</string>
-    <string name="add_text">Προσθέστε κείμενο</string>
-    <string name="action_search_by_hashtag">Αναζήτηση βάσει hashtag</string>
-    <string name="error_fail_to_load_feeds_by_hashtag">Αποτυχία φόρτωσης πληροφοριών βάσει hashtag</string>
-    <string name="no_feed_by_hashtag">Δεν βρέθηκαν δημοσιεύσεις</string>
+   <string name="min">λεπτά</string>
+   <string name="post_hint_with_hashtag">Πείτε κάτι, προσθέστε #hashtags</string>
+   <string name="add_text">Προσθέστε κείμενο</string>
+   <string name="action_search_by_hashtag">Αναζήτηση βάσει hashtag</string>
+   <string name="error_fail_to_load_feeds_by_hashtag">Αποτυχία φόρτωσης πληροφοριών βάσει hashtag</string>
+   <string name="no_feed_by_hashtag">Δεν βρέθηκαν δημοσιεύσεις</string>
 
-    <string name="friends_loading_info_text">Φόρτωση των Φίλων σας</string>
+   <string name="friends_loading_info_text">Φόρτωση των Φίλων σας</string>
 
-    <string name="hashtag_one_post">%1$d δημοσιεύουν</string>
-    <string name="hashtag_multiple_posts">%1$d δημοσιεύει</string>
+   <string name="hashtag_one_post">%1$d δημοσιεύουν</string>
+   <string name="hashtag_multiple_posts">%1$d δημοσιεύει</string>
 
-    <string name="error_webview_secure_connection">Λυπούμαστε αλλά η εφαρμογή DreamTrips δεν μπορεί να δημιουργήσει ασφαλή σύνδεση.\nΈχουμε ενημερωθεί για αυτό το θέμα και θα το ερευνήσουμε σύντομα.\n\nΠαρακαλούμε επικοινωνήστε με την εξυπηρέτηση πελατών για γρηγορότερη λύση.</string>
+   <string name="error_webview_secure_connection">Λυπούμαστε αλλά η εφαρμογή DreamTrips δεν μπορεί να δημιουργήσει ασφαλή σύνδεση.\nΈχουμε ενημερωθεί για αυτό το θέμα και θα το ερευνήσουμε σύντομα.\n\nΠαρακαλούμε επικοινωνήστε με την εξυπηρέτηση πελατών για γρηγορότερη λύση.</string>
+
+   <string name="translate">Μετάφραση</string>
+   <string name="translated_from">Mεταφράστηκε από %1$s</string>
+
+   <string name="error_fail_to_translate_text">Αποτυχία να μεταφραστεί το κείμενο</string>
+
+   <string name="book_it_disabled">Πρέπει να είστε DreamTrips Μέλος για να κλείσετε ένα ταξίδι</string>
+
+   <string name="error_fail_to_load_filters">Λυπούμαστε, απέτυχε να φορτώσει τα φίλτρα</string>
+   <string name="flag_content_message">To προσωπικό της WorldVentures θα ειδοποιηθεί να αναθεωρήσει αυτό το περιεχόμενο για ακατάλληλο περιεχόμενο. </string>
 
 </resources>

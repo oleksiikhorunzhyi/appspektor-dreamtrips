@@ -6,18 +6,18 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class AnnotationsHelper {
-    public List<Field> getFieldsWithAnnotation(Object target, Class<? extends Annotation> annotationClass) {
-        List<Field> foundedFields = new ArrayList<Field>();
+   public List<Field> getFieldsWithAnnotation(Object target, Class<? extends Annotation> annotationClass) {
+      List<Field> foundedFields = new ArrayList<Field>();
 
-        Field[] fields = target.getClass().getFields();
+      Field[] fields = target.getClass().getFields();
 
-        for (Field f : fields) {
-            Object annotation = f.getAnnotation(annotationClass);
+      for (Field f : fields) {
+         Object annotation = f.getAnnotation(annotationClass);
 
-            if (annotation != null) {
-                foundedFields.add(f);
-            }
-        }
-        return foundedFields;
-    }
+         if (annotation != null) {
+            foundedFields.add(f);
+         }
+      }
+      return foundedFields;
+   }
 }

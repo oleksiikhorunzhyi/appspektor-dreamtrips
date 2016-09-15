@@ -1,18 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              android:layout_width="match_parent"
-              android:layout_height="match_parent"
-              android:clickable="false"
-              android:orientation="vertical"
-              android:background="@android:color/white">
+      android:layout_width="match_parent"
+      android:layout_height="match_parent"
+      android:clickable="false"
+      android:orientation="vertical"
+      android:background="@android:color/white"
+      >
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@android:color/white"
-        android:orientation="vertical">
+   <LinearLayout
+         android:layout_width="match_parent"
+         android:layout_height="wrap_content"
+         android:background="@android:color/white"
+         android:orientation="vertical"
+         >
 
-        <TextView
+      <TextView
             android:id="@+id/textView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -21,56 +23,63 @@
             android:layout_marginTop="@dimen/spacing_normal"
             android:text="@string/working_hard"
             android:textAppearance="?android:attr/textAppearanceMedium"
-            android:textSize="@dimen/font_small"/>
+            android:textSize="@dimen/font_small"
+            />
 
-        <FrameLayout
+      <FrameLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_margin="@dimen/spacing_normal"
             android:background="@color/theme_main_darker"
-            android:padding="1dp">
+            android:padding="1dp"
+            >
 
-            <Spinner
-                android:id="@+id/spinner"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="@android:color/white"/>
+         <Spinner
+               android:id="@+id/spinner"
+               android:layout_width="match_parent"
+               android:layout_height="wrap_content"
+               android:background="@android:color/white"
+               />
 
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical|right"
-                android:src="@drawable/ic_spinner_drop_down"/>
+         <ImageView
+               android:layout_width="wrap_content"
+               android:layout_height="wrap_content"
+               android:layout_gravity="center_vertical|right"
+               android:src="@drawable/ic_spinner_drop_down"
+               />
 
-            <ProgressBar
-                android:layout_width="40dp"
-                android:layout_height="40dp"
-                android:id="@+id/progressBar"
-                android:layout_gravity="center"/>
+         <ProgressBar
+               android:layout_width="40dp"
+               android:layout_height="40dp"
+               android:id="@+id/progressBar"
+               android:layout_gravity="center"
+               />
 
-        </FrameLayout>
+      </FrameLayout>
 
-        <FrameLayout
+      <FrameLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_margin="@dimen/spacing_normal"
             android:background="@color/theme_main_darker"
-            android:padding="1dp">
+            android:padding="1dp"
+            >
 
-            <EditText
-                android:id="@+id/tv_message"
-                android:layout_width="match_parent"
-                android:layout_height="150dp"
-                android:layout_gravity="center_horizontal"
-                android:background="@android:color/white"
-                android:enabled="true"
-                android:gravity="top"
-                android:hint="@string/feedback_message_hint"
-                android:inputType="textMultiLine|textCapSentences"
-                android:padding="4dp"
-                android:textSize="@dimen/font_normal"
-                android:theme="@style/EditTextMessage"/>
-        </FrameLayout>
+         <EditText
+               android:id="@+id/tv_message"
+               android:layout_width="match_parent"
+               android:layout_height="150dp"
+               android:layout_gravity="center_horizontal"
+               android:background="@android:color/white"
+               android:enabled="true"
+               android:gravity="top"
+               android:hint="@string/feedback_message_hint"
+               android:inputType="textMultiLine|textCapSentences"
+               android:padding="4dp"
+               android:textSize="@dimen/font_normal"
+               android:theme="@style/EditTextMessage"
+               />
+      </FrameLayout>
 
-    </LinearLayout>
+   </LinearLayout>
 </LinearLayout>

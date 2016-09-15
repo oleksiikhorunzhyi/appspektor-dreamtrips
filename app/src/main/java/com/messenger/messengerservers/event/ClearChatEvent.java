@@ -5,7 +5,7 @@ import org.immutables.value.Value;
 @Value.Immutable
 public interface ClearChatEvent {
 
-    String getConversationId();
+   String getConversationId();
 
-    long clearTime();
+   long clearTime();
 }

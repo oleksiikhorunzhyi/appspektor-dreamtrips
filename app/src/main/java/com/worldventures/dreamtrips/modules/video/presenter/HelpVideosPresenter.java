@@ -6,27 +6,26 @@ import com.worldventures.dreamtrips.modules.video.api.MemberVideosRequest;
 
 public class HelpVideosPresenter extends TrainingVideosPresenter {
 
-    // TODO :: change endpoint after middleware implementation
-    @Override
-    protected MemberVideosRequest getMemberVideosRequest() {
-        if (videoLocale != null && videoLanguage != null)
-            return new MemberVideosRequest(DreamTripsApi.TYPE_HELP, videoLanguage.getLocaleName());
-        else
-            return new MemberVideosRequest(DreamTripsApi.TYPE_HELP);
-    }
+   // TODO :: change endpoint after middleware implementation
+   @Override
+   protected MemberVideosRequest getMemberVideosRequest() {
+      if (videoLocale != null && videoLanguage != null)
+         return new MemberVideosRequest(DreamTripsApi.TYPE_HELP, videoLanguage.getLocaleName());
+      else return new MemberVideosRequest(DreamTripsApi.TYPE_HELP);
+   }
 
-    @Override
-    protected boolean isNeedToSendAnalytics() {
-        return false;
-    }
+   @Override
+   protected boolean isNeedToSendAnalytics() {
+      return false;
+   }
 
-    @Override
-    protected void trackAnalyticsOnPostResume() {
-        // Add analytics if needed when fragment resumed
-    }
+   @Override
+   protected void trackAnalyticsOnPostResume() {
+      // Add analytics if needed when fragment resumed
+   }
 
-    @Override
-    public void sendAnalytic(String action, String name) {
-        // Add analytics when click to video
-    }
+   @Override
+   public void sendAnalytic(String action, String name) {
+      // Add analytics when click to video
+   }
 }

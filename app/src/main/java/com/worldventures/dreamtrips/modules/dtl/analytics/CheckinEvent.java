@@ -1,33 +1,30 @@
 package com.worldventures.dreamtrips.modules.dtl.analytics;
 
+import android.location.Location;
+
 import com.worldventures.dreamtrips.core.utils.tracksystem.AdobeTracker;
 import com.worldventures.dreamtrips.core.utils.tracksystem.AnalyticsEvent;
 import com.worldventures.dreamtrips.core.utils.tracksystem.Attribute;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchant;
 
+import java.util.Locale;
+
 @AnalyticsEvent(action = "local:Restaurant-Listings:Merchant View:Check-In",
-        trackers = AdobeTracker.TRACKER_KEY)
-public class CheckinEvent extends DtlAnalyticsAction {
+                trackers = AdobeTracker.TRACKER_KEY)
+public class CheckinEvent extends MerchantAnalyticsAction {
 
-    @Attribute("checkin")
-    final String attribute = "1";
+   @Attribute("checkin") final String attribute = "1";
 
-    @Attribute("merchantID")
-    final String merchantId;
+   @Attribute("areperksavail") final String perksAvailable;
 
-    @Attribute("merchantname")
-    final String merchantName;
+   @Attribute("arepointsavail") final String pointsAvailable;
 
-    @Attribute("areperksavail")
-    final String perksAvailable;
+   @Attribute("coordinates") final String coordinates;
 
-    @Attribute("arepointsavail")
-    final String pointsAvailable;
-
-    public CheckinEvent(DtlMerchant merchant) {
-        merchantId = merchant.getId();
-        merchantName = merchant.getDisplayName();
-        perksAvailable = merchant.hasPerks() ? "Yes" : "No";
-        pointsAvailable = merchant.hasPoints() ? "Yes" : "No";
-    }
+   public CheckinEvent(DtlMerchant merchant, Location location) {
+      super(merchant);
+      perksAvailable = merchant.hasPerks() ? "Yes" : "No";
+      pointsAvailable = merchant.hasPoints() ? "Yes" : "No";
+      coordinates = String.format(Locale.US, "%f,%f", location.getLatitude(), location.getLongitude());
+   }
 }

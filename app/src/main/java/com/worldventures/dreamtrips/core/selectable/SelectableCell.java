@@ -1,5 +1,5 @@
 package com.worldventures.dreamtrips.core.selectable;
 
 public interface SelectableCell {
-    void setSelectableDelegate(SelectableDelegate selectableDelegate);
+   void setSelectableDelegate(SelectableDelegate selectableDelegate);
 }

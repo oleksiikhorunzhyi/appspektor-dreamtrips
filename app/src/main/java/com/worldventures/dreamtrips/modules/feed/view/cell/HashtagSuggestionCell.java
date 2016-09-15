@@ -17,38 +17,31 @@ import butterknife.InjectView;
 @Layout(R.layout.adapter_item_hashtag_suggestion)
 public class HashtagSuggestionCell extends AbstractDelegateCell<HashtagSuggestion, HashtagSuggestionCell.Delegate> {
 
-    @InjectView(R.id.suggestionText)
-    TextView suggestionText;
-    @InjectView(R.id.suggestionCount)
-    TextView suggestionCount;
+   @InjectView(R.id.suggestionText) TextView suggestionText;
+   @InjectView(R.id.suggestionCount) TextView suggestionCount;
 
-    public HashtagSuggestionCell(View view) {
-        super(view);
-    }
+   public HashtagSuggestionCell(View view) {
+      super(view);
+   }
 
-    public void syncUIStateWithModel() {
-        suggestionText.setText(String.format("#%s", getModelObject().getName()));
-        if (getModelObject().getUsageCount() > 0) {
-            int usageCount = getModelObject().getUsageCount();
-            suggestionCount.setText(String.format(Locale.getDefault(), getSuggestionsCountString(usageCount),
-                    usageCount));
-            suggestionCount.setVisibility(View.VISIBLE);
-        } else {
-            suggestionCount.setVisibility(View.GONE);
-        }
-        itemView.setOnClickListener(v -> cellDelegate.onCellClicked(getModelObject()));
-    }
+   public void syncUIStateWithModel() {
+      suggestionText.setText(String.format("#%s", getModelObject().getName()));
+      if (getModelObject().getUsageCount() > 0) {
+         int usageCount = getModelObject().getUsageCount();
+         suggestionCount.setText(String.format(Locale.getDefault(), getSuggestionsCountString(usageCount), usageCount));
+         suggestionCount.setVisibility(View.VISIBLE);
+      } else {
+         suggestionCount.setVisibility(View.GONE);
+      }
+      itemView.setOnClickListener(v -> cellDelegate.onCellClicked(getModelObject()));
+   }
 
-    public void prepareForReuse() {
+   public interface Delegate extends CellDelegate<HashtagSuggestion> {
 
-    }
+   }
 
-    public interface Delegate extends CellDelegate<HashtagSuggestion> {
-
-    }
-
-    private String getSuggestionsCountString(int suggestionsCount) {
-        return itemView.getResources().getString(QuantityHelper.chooseResource(suggestionsCount,
-                R.string.hashtag_one_post, R.string.hashtag_multiple_posts));
-    }
+   private String getSuggestionsCountString(int suggestionsCount) {
+      return itemView.getResources()
+            .getString(QuantityHelper.chooseResource(suggestionsCount, R.string.hashtag_one_post, R.string.hashtag_multiple_posts));
+   }
 }

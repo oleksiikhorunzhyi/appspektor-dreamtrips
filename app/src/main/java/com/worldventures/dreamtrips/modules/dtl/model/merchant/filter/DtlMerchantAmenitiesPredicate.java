@@ -10,15 +10,15 @@ import java.util.Collections;
  */
 public class DtlMerchantAmenitiesPredicate implements Predicate<DtlMerchant> {
 
-    private final DtlFilterData filterData;
+   private final DtlFilterData filterData;
 
-    public DtlMerchantAmenitiesPredicate(DtlFilterData filterData) {
-        this.filterData = filterData;
-    }
+   public DtlMerchantAmenitiesPredicate(DtlFilterData filterData) {
+      this.filterData = filterData;
+   }
 
-    @Override
-    public boolean apply(DtlMerchant dtlMerchant) {
-        return dtlMerchant.getAmenities() == null || dtlMerchant.getAmenities().isEmpty() ||
-                !Collections.disjoint(filterData.getSelectedAmenities(), dtlMerchant.getAmenities());
-    }
+   @Override
+   public boolean apply(DtlMerchant dtlMerchant) {
+      return dtlMerchant.getAmenities() == null || dtlMerchant.getAmenities().isEmpty() ||
+            !Collections.disjoint(filterData.getSelectedAmenities(), dtlMerchant.getAmenities());
+   }
 }

@@ -5,39 +5,39 @@ import android.os.Parcelable;
 
 public abstract class ViewState implements Parcelable {
 
-    public ViewState() {
-    }
+   public ViewState() {
+   }
 
-    protected ViewState(Parcel in) {
-    }
+   protected ViewState(Parcel in) {
+   }
 
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-    }
+   @Override
+   public void writeToParcel(Parcel dest, int flags) {
+   }
 
-    @Override
-    public int describeContents() {
-        return 0;
-    }
+   @Override
+   public int describeContents() {
+      return 0;
+   }
 
-    public static final class EMPTY extends ViewState {
+   public static final class EMPTY extends ViewState {
 
-        ///////////////////////////////////////////////////////////////////////////
-        // Parcelable
-        ///////////////////////////////////////////////////////////////////////////
+      ///////////////////////////////////////////////////////////////////////////
+      // Parcelable
+      ///////////////////////////////////////////////////////////////////////////
 
-        public static final Parcelable.Creator<EMPTY> CREATOR = new Parcelable.Creator<EMPTY>() {
-            public EMPTY createFromParcel(Parcel source) {
-                return new EMPTY(source);
-            }
+      public static final Parcelable.Creator<EMPTY> CREATOR = new Parcelable.Creator<EMPTY>() {
+         public EMPTY createFromParcel(Parcel source) {
+            return new EMPTY(source);
+         }
 
-            public EMPTY[] newArray(int size) {
-                return new EMPTY[size];
-            }
-        };
+         public EMPTY[] newArray(int size) {
+            return new EMPTY[size];
+         }
+      };
 
-        public EMPTY(Parcel in) {
-            super(in);
-        }
-    }
+      public EMPTY(Parcel in) {
+         super(in);
+      }
+   }
 }

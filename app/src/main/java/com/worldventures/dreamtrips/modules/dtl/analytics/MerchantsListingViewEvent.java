@@ -4,5 +4,4 @@ import com.worldventures.dreamtrips.core.utils.tracksystem.AdobeTracker;
 import com.worldventures.dreamtrips.core.utils.tracksystem.AnalyticsEvent;
 
 @AnalyticsEvent(action = "local:Restaurant-Listings", trackers = AdobeTracker.TRACKER_KEY)
-public class MerchantsListingViewEvent extends DtlAnalyticsAction {
-}
+public class MerchantsListingViewEvent extends DtlAnalyticsAction {}

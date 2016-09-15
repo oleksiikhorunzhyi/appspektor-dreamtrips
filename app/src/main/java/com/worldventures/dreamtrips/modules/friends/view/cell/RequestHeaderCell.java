@@ -16,32 +16,27 @@ import butterknife.OnClick;
 @Layout(R.layout.adapter_friend_header)
 public class RequestHeaderCell extends AbstractDelegateCell<RequestHeaderModel, RequestHeaderCellDelegate> {
 
-    public static final int MIN_REQUEST_COUNT_FOR_ADVANCED_VIEW = 2;
-    @InjectView(R.id.header)
-    TextView header;
-    @InjectView(R.id.requestCountDesc)
-    TextView requestCountDesc;
-    @InjectView(R.id.advanced_container)
-    LinearLayout advancedContainer;
+   public static final int MIN_REQUEST_COUNT_FOR_ADVANCED_VIEW = 2;
 
-    public RequestHeaderCell(View view) {
-        super(view);
-    }
+   @InjectView(R.id.header) TextView header;
+   @InjectView(R.id.requestCountDesc) TextView requestCountDesc;
+   @InjectView(R.id.advanced_container) LinearLayout advancedContainer;
 
-    @Override
-    protected void syncUIStateWithModel() {
-        header.setText(getModelObject().getName());
-        boolean advanced = getModelObject().isAdvanced() && getModelObject().getCount() >= MIN_REQUEST_COUNT_FOR_ADVANCED_VIEW;
-        advancedContainer.setVisibility(advanced ? View.VISIBLE : View.GONE);
-        requestCountDesc.setText(requestCountDesc.getResources().getString(R.string.request_count_desc, getModelObject().getCount()));
-    }
+   public RequestHeaderCell(View view) {
+      super(view);
+   }
 
-    @Override
-    public void prepareForReuse() {
-    }
+   @Override
+   protected void syncUIStateWithModel() {
+      header.setText(getModelObject().getName());
+      boolean advanced = getModelObject().isAdvanced() && getModelObject().getCount() >= MIN_REQUEST_COUNT_FOR_ADVANCED_VIEW;
+      advancedContainer.setVisibility(advanced ? View.VISIBLE : View.GONE);
+      requestCountDesc.setText(requestCountDesc.getResources()
+            .getString(R.string.request_count_desc, getModelObject().getCount()));
+   }
 
-    @OnClick(R.id.accept_all_btn)
-    void onAcceptAll() {
-        cellDelegate.acceptAllRequests();
-    }
+   @OnClick(R.id.accept_all_btn)
+   void onAcceptAll() {
+      cellDelegate.acceptAllRequests();
+   }
 }

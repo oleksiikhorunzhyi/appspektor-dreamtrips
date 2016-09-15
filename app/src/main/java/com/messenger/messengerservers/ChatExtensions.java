@@ -7,7 +7,7 @@ import rx.Observable;
 
 public interface ChatExtensions {
 
-    Observable<ClearChatEvent> clearChat(String chatId, long clearToDate);
+   Observable<ClearChatEvent> clearChat(String chatId, long clearToDate);
 
-    Observable<RevertClearingEvent> revertChatClearing(String chatId);
+   Observable<RevertClearingEvent> revertChatClearing(String chatId);
 }

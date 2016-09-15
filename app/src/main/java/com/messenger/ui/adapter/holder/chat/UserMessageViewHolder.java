@@ -21,72 +21,69 @@ import butterknife.Optional;
 
 public class UserMessageViewHolder extends MessageViewHolder {
 
-    protected static final float ALPHA_MESSAGE_SENDING = 0.5f;
-    protected static final float ALPHA_MESSAGE_NORMAL = 1f;
+   protected static final float ALPHA_MESSAGE_SENDING = 0.5f;
+   protected static final float ALPHA_MESSAGE_NORMAL = 1f;
 
-    protected DataAttachment dataAttachment;
-    protected DataTranslation dataTranslation;
+   protected DataAttachment dataAttachment;
+   protected DataTranslation dataTranslation;
 
-    @Optional
-    @InjectView(R.id.view_retry_send)
-    public View viewRetrySend;
-    @InjectView(R.id.message_container)
-    public View messageContainer;
+   @Optional @InjectView(R.id.view_retry_send) public View viewRetrySend;
+   @InjectView(R.id.message_container) public View messageContainer;
 
-    protected boolean isGroupMessage;
+   protected boolean isGroupMessage;
 
-    private final UserMessageCommonInflater messageCommonInflater;
-    private final UserMessageHolderInflater userMessageHolderInflater;
+   private final UserMessageCommonInflater messageCommonInflater;
+   private final UserMessageHolderInflater userMessageHolderInflater;
 
-    public UserMessageViewHolder(View itemView) {
-        super(itemView);
-        messageCommonInflater = new UserMessageCommonInflater(itemView);
-        userMessageHolderInflater = new UserMessageHolderInflater(itemView);
-    }
+   public UserMessageViewHolder(View itemView) {
+      super(itemView);
+      messageCommonInflater = new UserMessageCommonInflater(itemView);
+      userMessageHolderInflater = new UserMessageHolderInflater(itemView);
+   }
 
-    @Override
-    public void bindCursor(Cursor cursor) {
-        super.bindCursor(cursor);
-        dataAttachment = SqlUtils.convertToModel(true, DataAttachment.class, cursor);
-        boolean translationExist = !TextUtils.isEmpty(cursor.getString(cursor.getColumnIndex(MessageDAO.TRANSLATION_ID)));
-        dataTranslation = translationExist ? SqlUtils.convertToModel(true, DataTranslation.class, cursor) : null;
-        isGroupMessage = !TextUtils.equals(conversationType, ConversationType.CHAT);
-        //
-        messageCommonInflater.onCellBind(previousMessageIsTheSameType, shouldMarkAsUnread() && isUnread(), selected);
-        userMessageHolderInflater.onCellBind(dataUserSender, isGroupMessage, previousMessageIsTheSameType);
-    }
+   @Override
+   public void bindCursor(Cursor cursor) {
+      super.bindCursor(cursor);
+      dataAttachment = SqlUtils.convertToModel(true, DataAttachment.class, cursor);
+      boolean translationExist = !TextUtils.isEmpty(cursor.getString(cursor.getColumnIndex(MessageDAO.TRANSLATION_ID)));
+      dataTranslation = translationExist ? SqlUtils.convertToModel(true, DataTranslation.class, cursor) : null;
+      isGroupMessage = !TextUtils.equals(conversationType, ConversationType.CHAT);
+      //
+      messageCommonInflater.onCellBind(previousMessageIsTheSameType, shouldMarkAsUnread() && isUnread(), selected);
+      userMessageHolderInflater.onCellBind(dataUserSender, isGroupMessage, previousMessageIsTheSameType);
+   }
 
-    @Optional
-    @OnLongClick(R.id.message_container)
-    boolean onMessageLongClicked() {
-        cellDelegate.onMessageLongClicked(dataMessage);
-        return true;
-    }
+   @Optional
+   @OnLongClick(R.id.message_container)
+   boolean onMessageLongClicked() {
+      cellDelegate.onMessageLongClicked(dataMessage);
+      return true;
+   }
 
-    @Optional
-    @OnClick(R.id.view_retry_send)
-    void onRetry() {
-        cellDelegate.onRetryClicked(dataMessage);
-    }
+   @Optional
+   @OnClick(R.id.view_retry_send)
+   void onRetry() {
+      cellDelegate.onRetryClicked(dataMessage);
+   }
 
-    @Optional
-    @OnClick(R.id.chat_item_avatar)
-    void onUserAvatarClicked() {
-        cellDelegate.onAvatarClicked(dataUserSender);
-    }
+   @Optional
+   @OnClick(R.id.chat_item_avatar)
+   void onUserAvatarClicked() {
+      cellDelegate.onAvatarClicked(dataUserSender);
+   }
 
-    protected boolean isUnread() {
-        return dataMessage.getStatus() == MessageStatus.SENT;
-    }
+   protected boolean isUnread() {
+      return dataMessage.getStatus() == MessageStatus.SENT;
+   }
 
-    protected boolean shouldMarkAsUnread() {
-        // server always keeps SENT status for our own messages,
-        // make sure we don't show our own messages as unread
-        return !isOwnMessage && needMarkUnreadMessage;
-    }
+   protected boolean shouldMarkAsUnread() {
+      // server always keeps SENT status for our own messages,
+      // make sure we don't show our own messages as unread
+      return !isOwnMessage && needMarkUnreadMessage;
+   }
 
-    @Override
-    public View getTimestampClickableView() {
-        return messageContainer;
-    }
+   @Override
+   public View getTimestampClickableView() {
+      return messageContainer;
+   }
 }

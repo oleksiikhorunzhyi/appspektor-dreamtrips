@@ -6,15 +6,15 @@ import com.worldventures.dreamtrips.modules.feed.model.FeedEntity;
 
 public class CreatePostCommand extends Command<FeedEntity> {
 
-    private CreatePhotoPostEntity createPhotoPostEntity;
+   private CreatePhotoPostEntity createPhotoPostEntity;
 
-    public CreatePostCommand(CreatePhotoPostEntity createPhotoPostEntity) {
-        super(FeedEntity.class);
-        this.createPhotoPostEntity = createPhotoPostEntity;
-    }
+   public CreatePostCommand(CreatePhotoPostEntity createPhotoPostEntity) {
+      super(FeedEntity.class);
+      this.createPhotoPostEntity = createPhotoPostEntity;
+   }
 
-    @Override
-    public FeedEntity loadDataFromNetwork() throws Exception {
-        return getService().createPhotoPost(createPhotoPostEntity);
-    }
+   @Override
+   public FeedEntity loadDataFromNetwork() throws Exception {
+      return getService().createPhotoPost(createPhotoPostEntity);
+   }
 }

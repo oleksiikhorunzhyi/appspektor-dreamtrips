@@ -1,20 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
-<custom:com.worldventures.dreamtrips.modules.bucketlist.view.custom.SquareLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:custom="http://schemas.android.com/apk/res-auto"
-    xmlns:fresco="http://schemas.android.com/apk/res-auto"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    custom:side_priority="width">
+<custom:com.worldventures.dreamtrips.modules.bucketlist.view.custom.SquareLayout xmlns:android="http://schemas.android.com/apk/res/android"
+      xmlns:custom="http://schemas.android.com/apk/res-auto"
+      xmlns:fresco="http://schemas.android.com/apk/res-auto"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      custom:side_priority="width"
+      >
 
-    <com.worldventures.dreamtrips.modules.common.view.custom.SmartAvatarView
-        android:id="@+id/imageViewPhoto"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_gravity="center_horizontal"
-        android:layout_margin="@dimen/spacing_tiniest"
-        fresco:actualImageScaleType="focusCrop"
-        fresco:placeholderImage="@drawable/trip_images_placeholder"
-        fresco:placeholderImageScaleType="fitXY"/>
+   <com.worldventures.dreamtrips.modules.common.view.custom.SmartAvatarView
+         android:id="@+id/imageViewPhoto"
+         android:layout_width="match_parent"
+         android:layout_height="match_parent"
+         android:layout_gravity="center_horizontal"
+         android:layout_margin="@dimen/spacing_tiniest"
+         fresco:actualImageScaleType="focusCrop"
+         fresco:placeholderImage="@drawable/trip_images_placeholder"
+         fresco:placeholderImageScaleType="fitXY"
+         />
 
 </custom:com.worldventures.dreamtrips.modules.bucketlist.view.custom.SquareLayout>

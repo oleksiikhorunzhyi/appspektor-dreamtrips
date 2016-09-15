@@ -30,92 +30,117 @@ import butterknife.ButterKnife;
 
 @Layout(R.layout.fragment_profile)
 @MenuResource(R.menu.menu_empty)
-public class UserFragment extends ProfileFragment<UserPresenter>
-        implements UserPresenter.View {
+public class UserFragment extends ProfileFragment<UserPresenter> implements UserPresenter.View {
 
-    private MenuItem chatActionItem;
-    @Inject
-    protected DrawableUtil drawableUtil;
+   private MenuItem chatActionItem;
+   @Inject protected DrawableUtil drawableUtil;
 
-    @Override
-    protected UserPresenter createPresenter(Bundle savedInstanceState) {
-        return new UserPresenter(getArgs());
-    }
+   private MaterialDialog blockingProgressDialog;
 
-    @Override
-    public void afterCreateView(View rootView) {
-        super.afterCreateView(rootView);
-        profileToolbarTitle.setVisibility(View.INVISIBLE);
-        profileToolbarUserStatus.setVisibility(View.INVISIBLE);
+   @Override
+   protected UserPresenter createPresenter(Bundle savedInstanceState) {
+      return new UserPresenter(getArgs());
+   }
 
-        profileToolbar.inflateMenu(R.menu.user_profile_fragment);
-        chatActionItem = profileToolbar.getMenu().findItem(R.id.action_chat);
-        chatActionItem.setOnMenuItemClickListener(item -> {
-            getPresenter().onStartChatClicked();
-            return true;
-        });
-        showChatButtonForFriend(getPresenter().getUser());
-    }
+   @Override
+   public void afterCreateView(View rootView) {
+      super.afterCreateView(rootView);
+      profileToolbarTitle.setVisibility(View.INVISIBLE);
+      profileToolbarUserStatus.setVisibility(View.INVISIBLE);
 
-    @Override
-    public void setUser(User user) {
-        super.setUser(user);
-        showChatButtonForFriend(user);
-    }
+      profileToolbar.inflateMenu(R.menu.user_profile_fragment);
+      chatActionItem = profileToolbar.getMenu().findItem(R.id.action_chat);
+      chatActionItem.setOnMenuItemClickListener(item -> {
+         getPresenter().onStartChatClicked();
+         return true;
+      });
+      showChatButtonForFriend(getPresenter().getUser());
+   }
 
-    @Override
-    public void notifyUserChanged() {
-        super.notifyUserChanged();
-        showChatButtonForFriend(getPresenter().getUser());
-    }
+   @Override
+   public void setUser(User user) {
+      super.setUser(user);
+      showChatButtonForFriend(user);
+   }
 
-    public void showChatButtonForFriend(User user) {
-        chatActionItem.setVisible(user.getRelationship() == User.Relationship.FRIEND);
-    }
+   @Override
+   public void notifyUserChanged() {
+      super.notifyUserChanged();
+      showChatButtonForFriend(getPresenter().getUser());
+   }
 
-    public void showAddFriendDialog(List<Circle> circles, Action1<Integer> selectedAction) {
-        MaterialDialog.Builder builder = new MaterialDialog.Builder(getActivity());
-        builder.title(getString(R.string.friend_add_to))
-                .adapter(new ArrayAdapter<>(getActivity(), android.R.layout.simple_list_item_1, circles),
-                        (materialDialog, view, i, charSequence) -> {
-                            selectedAction.apply(i);
-                            materialDialog.dismiss();
-                        })
-                .negativeText(R.string.action_cancel)
-                .show();
-    }
+   public void showChatButtonForFriend(User user) {
+      chatActionItem.setVisible(user.getRelationship() == User.Relationship.FRIEND);
+   }
 
-    @Override
-    public void showFriendDialog(User user) {
-        ImageView userPhoto = ButterKnife.findById(statePaginatedRecyclerViewManager.stateRecyclerView, R.id.user_photo);
-        if (userPhoto != null) {
-            userPhoto.setDrawingCacheEnabled(true);
-            new FriendActionDialogDelegate(getActivity(), getEventBus())
-                    .showFriendDialogSkipChat
-                            (user, drawableUtil.copyIntoDrawable(userPhoto.getDrawingCache()));
-        }
-    }
+   public void showAddFriendDialog(List<Circle> circles, Action1<Circle> selectedAction) {
+      MaterialDialog.Builder builder = new MaterialDialog.Builder(getActivity());
+      builder.title(getString(R.string.friend_add_to))
+            .adapter(new ArrayAdapter<>(getActivity(), android.R.layout.simple_list_item_1, circles), (materialDialog, view, i, charSequence) -> {
+               selectedAction.apply(circles.get(i));
+               materialDialog.dismiss();
+            })
+            .negativeText(R.string.action_cancel)
+            .show();
+   }
 
-    @Override
-    public void openFriendPrefs(UserBundle userBundle) {
-        router.moveTo(Route.FRIEND_PREFERENCES, NavigationConfigBuilder.forActivity()
-                .data(userBundle)
-                .build());
-    }
+   @Override
+   public void showFriendDialog(User user) {
+      ImageView userPhoto = ButterKnife.findById(statePaginatedRecyclerViewManager.stateRecyclerView, R.id.user_photo);
+      if (userPhoto != null) {
+         userPhoto.setDrawingCacheEnabled(true);
+         new FriendActionDialogDelegate(getActivity(), getEventBus()).showFriendDialogSkipChat(user, drawableUtil.copyIntoDrawable(userPhoto
+               .getDrawingCache()));
+      }
+   }
 
-    @Override
-    protected void initialToolbar() {
-        profileToolbar.setNavigationIcon(R.drawable.abc_ic_ab_back_mtrl_am_alpha);
-        profileToolbar.setNavigationOnClickListener(view -> getActivity().onBackPressed());
-    }
+   @Override
+   public void openFriendPrefs(UserBundle userBundle) {
+      router.moveTo(Route.FRIEND_PREFERENCES, NavigationConfigBuilder.forActivity().data(userBundle).build());
+   }
 
-    @Override
-    protected BaseDelegateAdapter createAdapter() {
-        return new IgnoreFirstItemAdapter(getContext(), this);
-    }
+   @Override
+   protected void initialToolbar() {
+      profileToolbar.setNavigationIcon(R.drawable.back_icon);
+      profileToolbar.setNavigationOnClickListener(view -> getActivity().onBackPressed());
+   }
 
-    @Override
-    public void flagSentSuccess() {
-        informUser(R.string.flag_sent_success_msg);
-    }
+   @Override
+   protected BaseDelegateAdapter createAdapter() {
+      return new IgnoreFirstItemAdapter(getContext(), this);
+   }
+
+   @Override
+   public void flagSentSuccess() {
+      informUser(R.string.flag_sent_success_msg);
+   }
+
+   @Override
+   public void onAcceptRequest() {
+      getPresenter().acceptClicked();
+   }
+
+   @Override
+   public void onRejectRequest() {
+      getPresenter().rejectClicked();
+   }
+
+   @Override
+   public void onAddFriend() {
+      getPresenter().addFriendClicked();
+   }
+
+   @Override
+   public void showBlockingProgress() {
+      blockingProgressDialog = new MaterialDialog.Builder(getActivity()).progress(true, 0)
+            .content(R.string.loading)
+            .cancelable(false)
+            .canceledOnTouchOutside(false)
+            .show();
+   }
+
+   @Override
+   public void hideBlockingProgress() {
+      if (blockingProgressDialog != null) blockingProgressDialog.dismiss();
+   }
 }

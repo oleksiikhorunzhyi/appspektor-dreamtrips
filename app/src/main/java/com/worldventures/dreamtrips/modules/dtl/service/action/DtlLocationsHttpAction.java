@@ -13,17 +13,15 @@ import io.techery.janet.http.annotations.Response;
 @HttpAction("/api/dtl/v2/locations")
 public class DtlLocationsHttpAction extends AuthorizedHttpAction {
 
-    @Query("query")
-    String query;
+   @Query("query") String query;
 
-    @Response
-    List<DtlExternalLocation> response = new ArrayList<>();
+   @Response List<DtlExternalLocation> response = new ArrayList<>();
 
-    public DtlLocationsHttpAction(String query) {
-        this.query = query;
-    }
+   public DtlLocationsHttpAction(String query) {
+      this.query = query;
+   }
 
-    public List<DtlExternalLocation> getResponse() {
-        return response;
-    }
+   public List<DtlExternalLocation> getResponse() {
+      return response;
+   }
 }

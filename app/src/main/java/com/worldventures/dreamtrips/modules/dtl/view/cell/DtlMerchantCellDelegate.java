@@ -6,7 +6,7 @@ import com.worldventures.dreamtrips.modules.dtl.model.merchant.offer.DtlOffer;
 
 public interface DtlMerchantCellDelegate extends CellDelegate<DtlMerchant> {
 
-    void onExpandedToggle(int position);
+   void onExpandedToggle(int position);
 
-    void onOfferClick(DtlMerchant dtlMerchant, DtlOffer dtlOffer);
+   void onOfferClick(DtlMerchant dtlMerchant, DtlOffer dtlOffer);
 }

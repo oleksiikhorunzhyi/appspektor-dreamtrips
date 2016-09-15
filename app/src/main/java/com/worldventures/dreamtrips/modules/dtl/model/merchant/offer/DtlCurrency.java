@@ -1,59 +1,100 @@
 package com.worldventures.dreamtrips.modules.dtl.model.merchant.offer;
 
+import android.os.Parcel;
+import android.os.Parcelable;
 import android.text.TextUtils;
 
-import com.google.gson.annotations.SerializedName;
+import com.esotericsoftware.kryo.DefaultSerializer;
+import com.esotericsoftware.kryo.serializers.CompatibleFieldSerializer;
+import com.worldventures.dreamtrips.api.dtl.merchants.model.Currency;
 
-public class DtlCurrency {
+@DefaultSerializer(CompatibleFieldSerializer.class)
+public class DtlCurrency implements Parcelable {
 
-    private String code;
-    private String prefix;
-    private String suffix;
-    private String name;
-    @SerializedName("default")
-    private boolean isDefault;
+   private String code;
+   private String prefix;
+   private String suffix;
+   private String name;
+   private boolean isDefault;
 
-    public String getCode() {
-        return code;
-    }
+   public DtlCurrency() {
+   }
 
-    public void setCode(String code) {
-        this.code = code;
-    }
+   public DtlCurrency(Currency currency) {
+      code = currency.code();
+      prefix = currency.prefix();
+      suffix = currency.suffix();
+      name = currency.name();
+      isDefault = currency.isDefault();
+   }
 
-    public String getPrefix() {
-        return prefix;
-    }
+   public String getCode() {
+      return code;
+   }
 
-    public void setPrefix(String prefix) {
-        this.prefix = prefix;
-    }
+   public void setCode(String code) {
+      this.code = code;
+   }
 
-    public String getSuffix() {
-        return suffix;
-    }
+   public String getPrefix() {
+      return prefix;
+   }
 
-    public String getCurrencyHint() {
-        return !TextUtils.isEmpty(suffix) ? suffix : code;
-    }
+   public String getSuffix() {
+      return suffix;
+   }
 
-    public void setSuffix(String suffix) {
-        this.suffix = suffix;
-    }
+   public String getCurrencyHint() {
+      return !TextUtils.isEmpty(suffix) ? suffix : code;
+   }
 
-    public String getName() {
-        return name;
-    }
+   public String getName() {
+      return name;
+   }
 
-    public void setName(String name) {
-        this.name = name;
-    }
+   public void setDefault(boolean isDefault) {
+      this.isDefault = isDefault;
+   }
 
-    public void setDefault(boolean isDefault) {
-        this.isDefault = isDefault;
-    }
+   public boolean isDefault() {
+      return isDefault;
+   }
 
-    public boolean isDefault() {
-        return isDefault;
-    }
+   ///////////////////////////////////////////////////////////////////////////
+   // Parcelable
+   ///////////////////////////////////////////////////////////////////////////
+
+   protected DtlCurrency(Parcel in) {
+      code = in.readString();
+      prefix = in.readString();
+      suffix = in.readString();
+      name = in.readString();
+      isDefault = in.readByte() != 0;
+   }
+
+   @Override
+   public void writeToParcel(Parcel dest, int flags) {
+      dest.writeString(code);
+      dest.writeString(prefix);
+      dest.writeString(suffix);
+      dest.writeString(name);
+      dest.writeByte((byte) (isDefault ? 1 : 0));
+   }
+
+   @Override
+   public int describeContents() {
+      return 0;
+   }
+
+   public static final Creator<DtlCurrency> CREATOR = new Creator<DtlCurrency>() {
+      @Override
+      public DtlCurrency createFromParcel(Parcel in) {
+         return new DtlCurrency(in);
+      }
+
+      @Override
+      public DtlCurrency[] newArray(int size) {
+         return new DtlCurrency[size];
+      }
+   };
 }

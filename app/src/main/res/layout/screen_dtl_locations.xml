@@ -1,58 +1,57 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.worldventures.dreamtrips.modules.dtl_flow.parts.locations.DtlLocationsScreenImpl
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@color/light_grey_background"
-    android:orientation="vertical"
-    >
+<com.worldventures.dreamtrips.modules.dtl_flow.parts.locations.DtlLocationsScreenImpl xmlns:android="http://schemas.android.com/apk/res/android"
+      xmlns:tools="http://schemas.android.com/tools"
+      android:layout_width="match_parent"
+      android:layout_height="match_parent"
+      android:background="@color/light_grey_background"
+      android:orientation="vertical"
+      >
 
-    <android.support.design.widget.AppBarLayout
-        android:id="@+id/appbar"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
-        >
+   <android.support.design.widget.AppBarLayout
+         android:id="@+id/appbar"
+         android:layout_width="match_parent"
+         android:layout_height="wrap_content"
+         android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
+         >
 
-        <android.support.v7.widget.Toolbar
+      <android.support.v7.widget.Toolbar
             android:id="@+id/toolbar_actionbar"
             style="@style/ToolBarStyle"
             />
-    </android.support.design.widget.AppBarLayout>
+   </android.support.design.widget.AppBarLayout>
 
-    <Button
-        android:id="@+id/autoDetectNearMe"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_margin="@dimen/spacing_medium"
-        android:layout_gravity="center_horizontal"
-        android:textColor="@android:color/white"
-        android:text="@string/dtl_autodetect_location"
-        />
+   <Button
+         android:id="@+id/autoDetectNearMe"
+         android:layout_width="wrap_content"
+         android:layout_height="wrap_content"
+         android:layout_margin="@dimen/spacing_medium"
+         android:layout_gravity="center_horizontal"
+         android:textColor="@android:color/white"
+         android:text="@string/dtl_autodetect_location"
+         />
 
-    <TextView
-        android:id="@+id/emptyMerchantsCaption"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:layout_marginLeft="15dp"
-        android:layout_marginRight="15dp"
-        android:layout_marginBottom="15dp"
-        android:gravity="center"
-        android:text="@string/dtl_location_no_merchants_caption"
-        android:textColor="@color/dtl_cities_text_color"
-        android:textSize="@dimen/font_extra_large"
-        android:visibility="gone"
-        tools:visibility="visible"
-        />
+   <TextView
+         android:id="@+id/emptyMerchantsCaption"
+         android:layout_width="match_parent"
+         android:layout_height="wrap_content"
+         android:layout_gravity="center"
+         android:layout_marginLeft="15dp"
+         android:layout_marginRight="15dp"
+         android:layout_marginBottom="15dp"
+         android:gravity="center"
+         android:text="@string/dtl_location_no_merchants_caption"
+         android:textColor="@color/dtl_cities_text_color"
+         android:textSize="@dimen/font_extra_large"
+         android:visibility="gone"
+         tools:visibility="visible"
+         />
 
-    <FrameLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        >
+   <FrameLayout
+         android:layout_width="match_parent"
+         android:layout_height="match_parent"
+         >
 
-        <android.support.v7.widget.RecyclerView
+      <android.support.v7.widget.RecyclerView
             android:id="@+id/locationsList"
             style="@style/myRecyclerViewStyle"
             android:layout_width="match_parent"
@@ -62,7 +61,7 @@
             android:padding="@dimen/spacing_tiniest"
             />
 
-        <ProgressBar
+      <ProgressBar
             android:id="@+id/progress"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -70,5 +69,5 @@
             android:visibility="gone"
             tools:visibility="gone"
             />
-    </FrameLayout>
+   </FrameLayout>
 </com.worldventures.dreamtrips.modules.dtl_flow.parts.locations.DtlLocationsScreenImpl>

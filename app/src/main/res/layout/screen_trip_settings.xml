@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.messenger.ui.view.settings.TripChatSettingsScreenImpl
-    android:id="@+id/trip_settings_screen"
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical">
+<com.messenger.ui.view.settings.TripChatSettingsScreenImpl android:id="@+id/trip_settings_screen"
+      xmlns:android="http://schemas.android.com/apk/res/android"
+      android:layout_width="match_parent"
+      android:layout_height="match_parent"
+      android:orientation="vertical"
+      >
 
-    <include layout="@layout/layout_chat_settings"/>
+   <include layout="@layout/layout_chat_settings" />
 </com.messenger.ui.view.settings.TripChatSettingsScreenImpl>

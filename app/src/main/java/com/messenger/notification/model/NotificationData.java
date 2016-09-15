@@ -8,11 +8,12 @@ import com.messenger.entities.DataUser;
 import org.jetbrains.annotations.Nullable;
 
 public interface NotificationData {
-    DataConversation getConversation();
+   DataConversation getConversation();
 
-    DataMessage getMessage();
+   DataMessage getMessage();
 
-    @Nullable DataAttachment getAttachment();
+   @Nullable
+   DataAttachment getAttachment();
 
-    DataUser getSender();
+   DataUser getSender();
 }

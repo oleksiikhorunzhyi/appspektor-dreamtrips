@@ -1,10 +1,10 @@
 <resources>
 
-    <style name="SpinnerToolbarTitle">
-        <item name="android:layout_gravity">center</item>
-        <item name="android:textColor">@android:color/white</item>
-        <item name="android:textSize">@dimen/toolbar_spinner_styled_title_text_size</item>
-        <item name="android:drawableRight">@drawable/ic_spinner_arrow_white</item>
-        <item name="android:drawablePadding">@dimen/toolbar_spinner_styled_icon_margin</item>
-    </style>
+   <style name="SpinnerToolbarTitle">
+      <item name="android:layout_gravity">center</item>
+      <item name="android:textColor">@android:color/white</item>
+      <item name="android:textSize">@dimen/toolbar_spinner_styled_title_text_size</item>
+      <item name="android:drawableRight">@drawable/ic_spinner_arrow_white</item>
+      <item name="android:drawablePadding">@dimen/toolbar_spinner_styled_icon_margin</item>
+   </style>
 </resources>

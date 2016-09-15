@@ -24,61 +24,57 @@ import java.util.ArrayList;
 
 public class PhotoNotificationFactory extends NotificationFactory {
 
-    public PhotoNotificationFactory(Context context) {
-        super(context);
-    }
+   public PhotoNotificationFactory(Context context) {
+      super(context);
+   }
 
-    public Notification createTaggedOnPhoto(TaggedOnPhotoPushMessage data) {
-        String message = context.getString(R.string.notification_message_tagged_on_photo,
-                TextUtils.join(" ", data.alertWrapper.alert.locArgs));
-        NotificationCompat.Builder notification = createFriendNotification(data.photoUid, data.userId, data.notificationId, message);
-        return notification.build();
-    }
+   public Notification createTaggedOnPhoto(TaggedOnPhotoPushMessage data) {
+      String message = context.getString(R.string.notification_message_tagged_on_photo, TextUtils.join(" ", data.alertWrapper.alert.locArgs));
+      NotificationCompat.Builder notification = createFriendNotification(data.photoUid, data.userId, data.notificationId, message);
+      return notification.build();
+   }
 
-    /**
-     * Shows a push notification with ability to open full screen photo
-     *
-     * @param uid            photoUid to create Photo object to put it to bundle
-     * @param userId         userId for FullScreenImagesBundle
-     * @param notificationId SocialFullScreenPresenter need notification to mark actual notification
-     * @param message        actual message that will be shown in notification
-     */
-    private NotificationCompat.Builder createFriendNotification(String uid, int userId, int notificationId, String message) {
-        PendingIntent intent = createPhotoIntent(createPhotoBundle(uid, userId, notificationId));
-        return super.createNotification()
-                .setContentIntent(intent)
-                .setContentText(message);
-    }
+   /**
+    * Shows a push notification with ability to open full screen photo
+    *
+    * @param uid            photoUid to create Photo object to put it to bundle
+    * @param userId         userId for FullScreenImagesBundle
+    * @param notificationId SocialFullScreenPresenter need notification to mark actual notification
+    * @param message        actual message that will be shown in notification
+    */
+   private NotificationCompat.Builder createFriendNotification(String uid, int userId, int notificationId, String message) {
+      PendingIntent intent = createPhotoIntent(createPhotoBundle(uid, userId, notificationId));
+      return super.createNotification().setContentIntent(intent).setContentText(message);
+   }
 
-    private PendingIntent createPhotoIntent(FullScreenImagesBundle bundle) {
-        Intent resultIntent = new Intent(context, ComponentActivity.class);
-        //set args to pending intent
-        Bundle args = new Bundle();
-        args.putSerializable(ComponentPresenter.ROUTE, Route.FULLSCREEN_PHOTO_LIST);
-        args.putSerializable(ComponentPresenter.COMPONENT_TOOLBAR_CONFIG,
-                ToolbarConfig.Builder.create().visible(false).build());
-        args.putParcelable(ComponentPresenter.EXTRA_DATA,
-                bundle);
-        resultIntent.putExtra(ComponentPresenter.COMPONENT_EXTRA, args);
-        //
-        TaskStackBuilder stackBuilder = TaskStackBuilder.create(context);
-        stackBuilder.addParentStack(ComponentActivity.class);
-        stackBuilder.addNextIntent(resultIntent);
-        //
-        return stackBuilder.getPendingIntent(0, PendingIntent.FLAG_CANCEL_CURRENT);
-    }
+   private PendingIntent createPhotoIntent(FullScreenImagesBundle bundle) {
+      Intent resultIntent = new Intent(context, ComponentActivity.class);
+      //set args to pending intent
+      Bundle args = new Bundle();
+      args.putSerializable(ComponentPresenter.ROUTE, Route.FULLSCREEN_PHOTO_LIST);
+      args.putSerializable(ComponentPresenter.COMPONENT_TOOLBAR_CONFIG, ToolbarConfig.Builder.create()
+            .visible(false)
+            .build());
+      args.putParcelable(ComponentPresenter.EXTRA_DATA, bundle);
+      resultIntent.putExtra(ComponentPresenter.COMPONENT_EXTRA, args);
+      //
+      TaskStackBuilder stackBuilder = TaskStackBuilder.create(context);
+      stackBuilder.addParentStack(ComponentActivity.class);
+      stackBuilder.addNextIntent(resultIntent);
+      //
+      return stackBuilder.getPendingIntent(0, PendingIntent.FLAG_CANCEL_CURRENT);
+   }
 
-    private FullScreenImagesBundle createPhotoBundle(String uid, int userId, int notificationId) {
-        ArrayList<IFullScreenObject> fixedList = new ArrayList<>();
-        fixedList.add(new Photo(uid));
-        //
-        return new FullScreenImagesBundle.Builder()
-                .position(0)
-                .userId(userId)
-                .type(TripImagesType.FIXED)
-                .route(Route.SOCIAL_IMAGE_FULLSCREEN)
-                .fixedList(fixedList)
-                .notificationId(notificationId)
-                .build();
-    }
+   private FullScreenImagesBundle createPhotoBundle(String uid, int userId, int notificationId) {
+      ArrayList<IFullScreenObject> fixedList = new ArrayList<>();
+      fixedList.add(new Photo(uid));
+      //
+      return new FullScreenImagesBundle.Builder().position(0)
+            .userId(userId)
+            .type(TripImagesType.FIXED)
+            .route(Route.SOCIAL_IMAGE_FULLSCREEN)
+            .fixedList(fixedList)
+            .notificationId(notificationId)
+            .build();
+   }
 }

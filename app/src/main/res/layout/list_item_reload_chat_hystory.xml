@@ -1,44 +1,48 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              xmlns:tools="http://schemas.android.com/tools"
-              android:orientation="vertical"
-              android:layout_width="match_parent"
-              android:layout_height="wrap_content"
-              android:gravity="center_horizontal">
+      xmlns:tools="http://schemas.android.com/tools"
+      android:orientation="vertical"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:gravity="center_horizontal"
+      >
 
-    <TextView
-        android:id="@+id/timestamp"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/chat_reload_history_element_margin_top"
-        android:textSize="@dimen/chat_reload_history_date_text_size"
-        android:textStyle="bold"
-        android:textAllCaps="true"
-        android:textColor="@color/chat_list_item_reload_chat_history_info_text_color"
-        tools:text="Today, 12:30"/>
+   <TextView
+         android:id="@+id/timestamp"
+         android:layout_width="wrap_content"
+         android:layout_height="wrap_content"
+         android:layout_marginTop="@dimen/chat_reload_history_element_margin_top"
+         android:textSize="@dimen/chat_reload_history_date_text_size"
+         android:textStyle="bold"
+         android:textAllCaps="true"
+         android:textColor="@color/chat_list_item_reload_chat_history_info_text_color"
+         tools:text="Today, 12:30"
+         />
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/chat_reload_chat_history_info_text"
-        android:textColor="@color/chat_list_item_reload_chat_history_info_text_color"
-        android:textSize="@dimen/chat_reload_history_text_size"
-        android:layout_marginTop="@dimen/chat_reload_history_element_margin_top"
-        android:layout_marginRight="@dimen/chat_reload_history_info_text_margin_left_right"
-        android:layout_marginLeft="@dimen/chat_reload_history_info_text_margin_left_right"
-        android:gravity="center"/>
+   <TextView
+         android:layout_width="wrap_content"
+         android:layout_height="wrap_content"
+         android:text="@string/chat_reload_chat_history_info_text"
+         android:textColor="@color/chat_list_item_reload_chat_history_info_text_color"
+         android:textSize="@dimen/chat_reload_history_text_size"
+         android:layout_marginTop="@dimen/chat_reload_history_element_margin_top"
+         android:layout_marginRight="@dimen/chat_reload_history_info_text_margin_left_right"
+         android:layout_marginLeft="@dimen/chat_reload_history_info_text_margin_left_right"
+         android:gravity="center"
+         />
 
-    <TextView
-        android:id="@+id/reload"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/chat_reload_history_element_margin_top"
-        android:layout_marginBottom="@dimen/chat_reload_history_reload_text_margin_bottom"
-        android:gravity="center"
-        android:text="@string/chat_reload_chat_history_reload"
-        android:textSize="@dimen/chat_reload_history_text_size"
-        android:textColor="@color/chat_list_item_reload_chat_history_reload_text_color"
-        android:drawableLeft="@drawable/ic_reload"
-        android:drawablePadding="@dimen/chat_reload_history_space_between_text_and_icon"/>
+   <TextView
+         android:id="@+id/reload"
+         android:layout_width="wrap_content"
+         android:layout_height="wrap_content"
+         android:layout_marginTop="@dimen/chat_reload_history_element_margin_top"
+         android:layout_marginBottom="@dimen/chat_reload_history_reload_text_margin_bottom"
+         android:gravity="center"
+         android:text="@string/chat_reload_chat_history_reload"
+         android:textSize="@dimen/chat_reload_history_text_size"
+         android:textColor="@color/chat_list_item_reload_chat_history_reload_text_color"
+         android:drawableLeft="@drawable/ic_reload"
+         android:drawablePadding="@dimen/chat_reload_history_space_between_text_and_icon"
+         />
 
 </LinearLayout>

@@ -10,21 +10,18 @@ import io.techery.janet.http.annotations.Response;
 
 @HttpAction(value = "/api/bucket_list_items/{uid}/photos", method = HttpAction.Method.POST)
 public class UploadPhotoHttpAction extends AuthorizedHttpAction {
-    @Path("uid")
-    String uid;
+   @Path("uid") String uid;
 
-    @Body
-    BucketPhoto photo;
+   @Body BucketPhoto photo;
 
-    @Response
-    BucketPhoto responsePhoto;
+   @Response BucketPhoto responsePhoto;
 
-    public UploadPhotoHttpAction(String uid, BucketPhoto photo) {
-        this.uid = uid;
-        this.photo = photo;
-    }
+   public UploadPhotoHttpAction(String uid, BucketPhoto photo) {
+      this.uid = uid;
+      this.photo = photo;
+   }
 
-    public BucketPhoto getResponse() {
-        return responsePhoto;
-    }
+   public BucketPhoto getResponse() {
+      return responsePhoto;
+   }
 }

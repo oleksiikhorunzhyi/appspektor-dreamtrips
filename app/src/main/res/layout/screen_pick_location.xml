@@ -1,33 +1,37 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              android:orientation="vertical"
-              android:layout_width="match_parent"
-              android:layout_height="match_parent">
+      android:orientation="vertical"
+      android:layout_width="match_parent"
+      android:layout_height="match_parent"
+      >
 
-    <android.support.v7.widget.Toolbar
-        android:id="@+id/pick_location_toolbar"
-        style="@style/ToolBarStyle"
-        />
+   <android.support.v7.widget.Toolbar
+         android:id="@+id/pick_location_toolbar"
+         style="@style/ToolBarStyle"
+         />
 
-    <FrameLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
+   <FrameLayout
+         android:layout_width="match_parent"
+         android:layout_height="match_parent"
+         >
 
-        <fragment
+      <fragment
             class="com.google.android.gms.maps.MapFragment"
             android:id="@+id/pick_location_map_fragment"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"/>
+            android:layout_height="match_parent"
+            />
 
-        <TextView
+      <TextView
             android:id="@+id/pick_location_no_play_services"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:gravity="center"
             android:padding="16dp"
             android:text="@string/location_picker_no_play_services"
-            android:visibility="gone"/>
+            android:visibility="gone"
+            />
 
-    </FrameLayout>
+   </FrameLayout>
 
 </LinearLayout>

@@ -1,33 +1,37 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-             android:layout_width="match_parent"
-             android:layout_height="wrap_content"
-             android:background="@color/grey_lighter">
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:background="@color/grey_lighter"
+      >
 
-    <android.support.v7.widget.CardView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_margin="@dimen/spacing_tiny">
+   <android.support.v7.widget.CardView
+         android:layout_width="match_parent"
+         android:layout_height="match_parent"
+         android:layout_margin="@dimen/spacing_tiny"
+         >
 
-        <LinearLayout
+      <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:background="@color/white"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            >
 
-            <include layout="@layout/adapter_item_feed_header"/>
+         <include layout="@layout/adapter_item_feed_header" />
 
-            <TextView
-                android:id="@+id/post"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:padding="@dimen/spacing_small"
-                android:textColor="@color/black"/>
+         <TextView
+               android:id="@+id/post"
+               android:layout_width="match_parent"
+               android:layout_height="wrap_content"
+               android:padding="@dimen/spacing_small"
+               android:textColor="@color/black"
+               />
 
-            <include layout="@layout/adapter_item_feed_comment_footer"/>
+         <include layout="@layout/adapter_item_feed_comment_footer" />
 
-            <include layout="@layout/include_user_liked"/>
+         <include layout="@layout/include_user_liked" />
 
-        </LinearLayout>
-    </android.support.v7.widget.CardView>
+      </LinearLayout>
+   </android.support.v7.widget.CardView>
 </FrameLayout>

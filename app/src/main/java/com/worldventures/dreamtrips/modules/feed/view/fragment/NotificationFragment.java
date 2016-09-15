@@ -41,138 +41,134 @@ import butterknife.InjectView;
 
 @Layout(R.layout.fragment_notification)
 @MenuResource(R.menu.menu_notifications)
-public class NotificationFragment extends RxBaseFragment<NotificationPresenter>
-        implements NotificationPresenter.View, SwipeRefreshLayout.OnRefreshListener {
+public class NotificationFragment extends RxBaseFragment<NotificationPresenter> implements NotificationPresenter.View, SwipeRefreshLayout.OnRefreshListener {
 
-    @InjectView(R.id.ll_empty_view)
-    ViewGroup emptyView;
+   @InjectView(R.id.ll_empty_view) ViewGroup emptyView;
 
-    BadgeImageView friendsBadge;
+   BadgeImageView friendsBadge;
 
-    private StatePaginatedRecyclerViewManager statePaginatedRecyclerViewManager;
-    private Bundle savedInstanceState;
-    private NotificationAdapter adapter;
+   private StatePaginatedRecyclerViewManager statePaginatedRecyclerViewManager;
+   private Bundle savedInstanceState;
+   private NotificationAdapter adapter;
 
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        this.savedInstanceState = savedInstanceState;
-    }
+   @Override
+   public void onCreate(Bundle savedInstanceState) {
+      super.onCreate(savedInstanceState);
+      this.savedInstanceState = savedInstanceState;
+   }
 
-    @Override
-    public void onResume() {
-        super.onResume();
-        TrackingHelper.viewNotificationsScreen();
-        getPresenter().reload();
-    }
+   @Override
+   public void onResume() {
+      super.onResume();
+      TrackingHelper.viewNotificationsScreen();
+      getPresenter().reload();
+   }
 
-    @Override
-    public void afterCreateView(View rootView) {
-        super.afterCreateView(rootView);
-        adapter = new NotificationAdapter(getActivity(), this);
-        adapter.setHasStableIds(true);
-        statePaginatedRecyclerViewManager = new StatePaginatedRecyclerViewManager(rootView);
-        statePaginatedRecyclerViewManager.init(adapter, savedInstanceState);
-        statePaginatedRecyclerViewManager.setOnRefreshListener(this);
-        statePaginatedRecyclerViewManager.setPaginationListener(() -> {
-            if (!statePaginatedRecyclerViewManager.isNoMoreElements()) {
-                adapter.addItem(new LoadMoreModel());
-                adapter.notifyDataSetChanged();
-            }
-            getPresenter().loadNext();
-        });
-        statePaginatedRecyclerViewManager.stateRecyclerView.setEmptyView(emptyView);
-        //
-        NotificationHeaderAdapter headerAdapter = new NotificationHeaderAdapter(adapter.getItems(), R.layout.adapter_item_notification_divider, item -> () -> {
-            if (item instanceof FeedItem) {
-                return getString(((FeedItem) item).getReadAt() == null ? R.string.notifaction_new : R.string.notifaction_older);
-            } else return null;
-        });
-        StickyHeadersItemDecoration decoration = new StickyHeadersBuilder()
-                .setAdapter(adapter)
-                .setStickyHeadersAdapter(headerAdapter, false)
-                .setOnHeaderClickListener((header, headerId) -> {
-                    // make sticky header clickable to make items below it not clickable
-                })
-                .setRecyclerView(statePaginatedRecyclerViewManager.stateRecyclerView)
-                .build();
-        statePaginatedRecyclerViewManager.addItemDecoration(decoration);
-        statePaginatedRecyclerViewManager.stateRecyclerView.setEmptyView(emptyView);
-        //
-        registerCells();
-    }
+   @Override
+   public void afterCreateView(View rootView) {
+      super.afterCreateView(rootView);
+      adapter = new NotificationAdapter(getActivity(), this);
+      adapter.setHasStableIds(true);
+      statePaginatedRecyclerViewManager = new StatePaginatedRecyclerViewManager(rootView);
+      statePaginatedRecyclerViewManager.init(adapter, savedInstanceState);
+      statePaginatedRecyclerViewManager.setOnRefreshListener(this);
+      statePaginatedRecyclerViewManager.setPaginationListener(() -> {
+         if (!statePaginatedRecyclerViewManager.isNoMoreElements()) {
+            adapter.addItem(new LoadMoreModel());
+            adapter.notifyDataSetChanged();
+         }
+         getPresenter().loadNext();
+      });
+      statePaginatedRecyclerViewManager.stateRecyclerView.setEmptyView(emptyView);
+      //
+      NotificationHeaderAdapter headerAdapter = new NotificationHeaderAdapter(adapter.getItems(), R.layout.adapter_item_notification_divider, item -> () -> {
+         if (item instanceof FeedItem) {
+            return getString(((FeedItem) item).getReadAt() == null ? R.string.notifaction_new : R.string.notifaction_older);
+         } else return null;
+      });
+      StickyHeadersItemDecoration decoration = new StickyHeadersBuilder().setAdapter(adapter)
+            .setStickyHeadersAdapter(headerAdapter, false)
+            .setOnHeaderClickListener((header, headerId) -> {
+               // make sticky header clickable to make items below it not clickable
+            })
+            .setRecyclerView(statePaginatedRecyclerViewManager.stateRecyclerView)
+            .build();
+      statePaginatedRecyclerViewManager.addItemDecoration(decoration);
+      statePaginatedRecyclerViewManager.stateRecyclerView.setEmptyView(emptyView);
+      //
+      registerCells();
+   }
 
-    @Override
-    protected void onMenuInflated(Menu menu) {
-        super.onMenuInflated(menu);
-        friendsBadge = (BadgeImageView) MenuItemCompat.getActionView(menu.findItem(R.id.action_friend_requests));
-        friendsBadge.setOnClickListener(v ->
-                router.moveTo(Route.FRIENDS, NavigationConfigBuilder.forActivity()
-                        .data(new FriendMainBundle(FriendMainBundle.REQUESTS))
-                        .build()));
-        getPresenter().refreshRequestsCount();
-    }
+   @Override
+   protected void onMenuInflated(Menu menu) {
+      super.onMenuInflated(menu);
+      friendsBadge = (BadgeImageView) MenuItemCompat.getActionView(menu.findItem(R.id.action_friend_requests));
+      friendsBadge.setOnClickListener(v -> router.moveTo(Route.FRIENDS, NavigationConfigBuilder.forActivity()
+            .data(new FriendMainBundle(FriendMainBundle.REQUESTS))
+            .build()));
+      getPresenter().refreshRequestsCount();
+   }
 
-    @Override
-    protected NotificationPresenter createPresenter(Bundle savedInstanceState) {
-        return new NotificationPresenter();
-    }
+   @Override
+   protected NotificationPresenter createPresenter(Bundle savedInstanceState) {
+      return new NotificationPresenter();
+   }
 
-    @Override
-    public void startLoading() {
-        statePaginatedRecyclerViewManager.startLoading();
-    }
+   @Override
+   public void startLoading() {
+      statePaginatedRecyclerViewManager.startLoading();
+   }
 
-    @Override
-    public void finishLoading() {
-        statePaginatedRecyclerViewManager.finishLoading();
-    }
+   @Override
+   public void finishLoading() {
+      statePaginatedRecyclerViewManager.finishLoading();
+   }
 
-    @Override
-    public void updateLoadingStatus(boolean loading, boolean noMoreElements) {
-        statePaginatedRecyclerViewManager.updateLoadingStatus(loading, noMoreElements);
-    }
+   @Override
+   public void updateLoadingStatus(boolean loading, boolean noMoreElements) {
+      statePaginatedRecyclerViewManager.updateLoadingStatus(loading, noMoreElements);
+   }
 
-    @Override
-    public void refreshNotifications(List<FeedItem> notifications) {
-        if (!adapter.getItems().containsAll(notifications)) {
-            adapter.clearAndUpdateItems(notifications);
-        }
-    }
+   @Override
+   public void refreshNotifications(List<FeedItem> notifications) {
+      if (!adapter.getItems().containsAll(notifications)) {
+         adapter.clearAndUpdateItems(notifications);
+      }
+   }
 
-    @Override
-    public void onRefresh() {
-        getPresenter().reload();
-    }
+   @Override
+   public void onRefresh() {
+      getPresenter().reload();
+   }
 
-    @Override
-    public void setRequestsCount(int count) {
-        if (friendsBadge != null) {
-            friendsBadge.setBadgeValue(count);
-        }
-    }
+   @Override
+   public void setRequestsCount(int count) {
+      if (friendsBadge != null) {
+         friendsBadge.setBadgeValue(count);
+      }
+   }
 
-    public static class NotificationAdapter extends BaseArrayListAdapter {
+   public static class NotificationAdapter extends BaseArrayListAdapter {
 
-        private static final long LOADER_ID = Long.MIN_VALUE;
+      private static final long LOADER_ID = Long.MIN_VALUE;
 
-        public NotificationAdapter(Context context, Injector injector) {
-            super(context, injector);
-        }
+      public NotificationAdapter(Context context, Injector injector) {
+         super(context, injector);
+      }
 
-        @Override
-        public long getItemId(int position) {
-            long id = super.getItemId(position);
-            return id != RecyclerView.NO_ID ? id : LOADER_ID;
-        }
-    }
+      @Override
+      public long getItemId(int position) {
+         long id = super.getItemId(position);
+         return id != RecyclerView.NO_ID ? id : LOADER_ID;
+      }
+   }
 
-    private void registerCells() {
-        this.adapter.registerCell(PhotoFeedItem.class, NotificationCell.class);
-        this.adapter.registerCell(TripFeedItem.class, NotificationCell.class);
-        this.adapter.registerCell(BucketFeedItem.class, NotificationCell.class);
-        this.adapter.registerCell(PostFeedItem.class, NotificationCell.class);
-        this.adapter.registerCell(UndefinedFeedItem.class, NotificationCell.class);
-        this.adapter.registerCell(LoadMoreModel.class, LoaderCell.class);
-    }
+   private void registerCells() {
+      this.adapter.registerCell(PhotoFeedItem.class, NotificationCell.class);
+      this.adapter.registerCell(TripFeedItem.class, NotificationCell.class);
+      this.adapter.registerCell(BucketFeedItem.class, NotificationCell.class);
+      this.adapter.registerCell(PostFeedItem.class, NotificationCell.class);
+      this.adapter.registerCell(UndefinedFeedItem.class, NotificationCell.class);
+      this.adapter.registerCell(LoadMoreModel.class, LoaderCell.class);
+   }
 }

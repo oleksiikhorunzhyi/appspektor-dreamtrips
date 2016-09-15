@@ -10,8 +10,8 @@ import java.util.Date;
 
 public class DateTimeSerializer implements JsonSerializer<Date> {
 
-    @Override
-    public JsonElement serialize(Date src, Type typeOfSrc, JsonSerializationContext context) {
-        return context.serialize(DateTimeUtils.convertDateToUTCString(src));
-    }
+   @Override
+   public JsonElement serialize(Date src, Type typeOfSrc, JsonSerializationContext context) {
+      return context.serialize(DateTimeUtils.convertDateToUTCString(src));
+   }
 }

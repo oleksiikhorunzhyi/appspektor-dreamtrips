@@ -27,34 +27,15 @@ import dagger.Module;
 import dagger.Provides;
 
 @Module(
-        injects = {
-                MembershipPresenter.class,
-                MembershipFragment.class,
-                EnrollMemberFragment.class,
-                EnrollMerchantFragment.class,
-                InviteFragment.class,
-                InvitePresenter.class,
-                PodcastsFragment.class,
-                PodcastsPresenter.class,
-                PodcastCell.class,
-                MemberCell.class,
-                PhoneContactRequest.class,
-                SelectTemplateFragment.class,
-                SelectTemplatePresenter.class,
-                InviteTemplateCell.class,
-                EditTemplateFragment.class,
-                EditTemplatePresenter.class,
-                PreviewTemplateFragment.class,
-                TemplatePhotoCell.class,
-                FilterLanguageDialogFragment.class
+      injects = {MembershipPresenter.class, MembershipFragment.class, EnrollMemberFragment.class, EnrollMerchantFragment.class, InviteFragment.class, InvitePresenter.class, PodcastsFragment.class, PodcastsPresenter.class, PodcastCell.class, MemberCell.class, PhoneContactRequest.class, SelectTemplateFragment.class, SelectTemplatePresenter.class, InviteTemplateCell.class, EditTemplateFragment.class, EditTemplatePresenter.class, PreviewTemplateFragment.class, TemplatePhotoCell.class, FilterLanguageDialogFragment.class
 
-        },
-        complete = false,
-        library = true
-)
+      },
+      complete = false,
+      library = true)
 public class MembershipModule {
-    @Provides(type = Provides.Type.SET)
-    ComponentDescription provideMembershipComponent() {
-        return new ComponentDescription(Route.MEMBERSHIP.name(), R.string.membership, R.string.membership, R.drawable.ic_membership, MembershipFragment.class);
-    }
+
+   @Provides(type = Provides.Type.SET)
+   ComponentDescription provideMembershipComponent() {
+      return new ComponentDescription(Route.MEMBERSHIP.name(), R.string.membership, R.string.membership, R.drawable.ic_membership, MembershipFragment.class);
+   }
 }

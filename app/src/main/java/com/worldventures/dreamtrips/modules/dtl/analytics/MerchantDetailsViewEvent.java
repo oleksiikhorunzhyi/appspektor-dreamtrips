@@ -8,37 +8,25 @@ import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchant;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.offer.DtlOffer;
 
 @AnalyticsEvent(action = "local:Restaurant-Listings:Merchant View",
-        trackers = AdobeTracker.TRACKER_KEY)
-public class MerchantDetailsViewEvent extends DtlAnalyticsAction {
+                trackers = AdobeTracker.TRACKER_KEY)
+public class MerchantDetailsViewEvent extends MerchantAnalyticsAction {
 
-    @Attribute("merchantname")
-    final String merchantName;
+   @Attribute("areperksavail") final String perksAvailable;
 
-    @Attribute("merchantID")
-    final String merchantId;
+   @Attribute("arepointsavail") final String pointsAvailable;
 
-    @Attribute("areperksavail")
-    final String perksAvailable;
+   @Attribute("numperks") final String perksNumber;
 
-    @Attribute("arepointsavail")
-    final String pointsAvailable;
+   @Attribute("offersonly") String isOffersOnly;
 
-    @Attribute("numperks")
-    final String perksNumber;
+   public MerchantDetailsViewEvent(DtlMerchant dtlMerchant) {
+      super(dtlMerchant);
+      perksAvailable = dtlMerchant.hasPerks() ? "Yes" : "No";
+      pointsAvailable = dtlMerchant.hasPoints() ? "Yes" : "No";
+      perksNumber = String.valueOf(Queryable.from(dtlMerchant.getOffers()).count(DtlOffer::isPerk));
+   }
 
-    @Attribute("offersonly")
-    String isOffersOnly;
-
-    public MerchantDetailsViewEvent(DtlMerchant dtlMerchant) {
-        merchantId = dtlMerchant.getId();
-        merchantName = dtlMerchant.getDisplayName();
-        perksAvailable = dtlMerchant.hasPerks() ? "Yes" : "No";
-        pointsAvailable = dtlMerchant.hasPoints() ? "Yes" : "No";
-        perksNumber = String.valueOf(Queryable.from(dtlMerchant.getOffers())
-                .count(DtlOffer::isPerk));
-    }
-
-    public void setOffersOnly(boolean isOffersOnly) {
-        this.isOffersOnly = isOffersOnly ? "1" : null;
-    }
+   public void setOffersOnly(boolean isOffersOnly) {
+      this.isOffersOnly = isOffersOnly ? "1" : null;
+   }
 }

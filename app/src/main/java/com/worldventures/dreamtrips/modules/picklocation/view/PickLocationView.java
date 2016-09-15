@@ -6,17 +6,17 @@ import com.hannesdorfmann.mosby.mvp.MvpView;
 
 public interface PickLocationView extends MvpView {
 
-    void initMap();
+   void initMap();
 
-    boolean isCurrentLocationSet();
+   boolean isCurrentLocationSet();
 
-    void setCurrentLocation(Location location, boolean animated);
+   void setCurrentLocation(Location location, boolean animated);
 
-    void showPlayServicesAbsentOverlay();
+   void showPlayServicesAbsentOverlay();
 
-    void showRationalForLocationPermission();
+   void showRationalForLocationPermission();
 
-    void showDeniedLocationPermissionError();
+   void showDeniedLocationPermissionError();
 
-    void showObtainLocationError();
+   void showObtainLocationError();
 }

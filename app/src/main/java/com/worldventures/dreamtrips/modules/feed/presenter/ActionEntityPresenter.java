@@ -11,6 +11,7 @@ import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.common.view.custom.tagview.viewgroup.newio.model.PhotoTag;
 import com.worldventures.dreamtrips.modules.feed.model.FeedEntity;
 import com.worldventures.dreamtrips.modules.feed.model.PhotoCreationItem;
+import com.worldventures.dreamtrips.modules.feed.service.CreatePostBodyInteractor;
 import com.worldventures.dreamtrips.modules.feed.service.HashtagInteractor;
 import com.worldventures.dreamtrips.modules.trips.model.Location;
 import com.worldventures.dreamtrips.modules.tripsimages.model.Photo;
@@ -30,186 +31,199 @@ import timber.log.Timber;
 
 public abstract class ActionEntityPresenter<V extends ActionEntityPresenter.View> extends Presenter<V> {
 
-    @State
-    String cachedText = "";
-    @State
-    Location location;
-    @State
-    ArrayList<PhotoCreationItem> cachedCreationItems = new ArrayList<>();
+   @State String cachedText = "";
+   @State Location location;
+   @State ArrayList<PhotoCreationItem> cachedCreationItems = new ArrayList<>();
 
-    @Inject
-    EditPhotoTagsCallback editPhotoTagsCallback;
-    @Inject
-    PostLocationPickerCallback postLocationPickerCallback;
-    @Inject
-    HashtagInteractor hashtagInteractor;
-    private Subscription editTagsSubscription;
-    private Subscription locationPickerSubscription;
+   @Inject EditPhotoTagsCallback editPhotoTagsCallback;
+   @Inject PostLocationPickerCallback postLocationPickerCallback;
+   @Inject HashtagInteractor hashtagInteractor;
+   @Inject CreatePostBodyInteractor createPostBodyInteractor;
+   private Subscription editTagsSubscription;
+   private Subscription locationPickerSubscription;
+   private Subscription postDescriptionSubscription;
 
-    @Override
-    public void takeView(V view) {
-        super.takeView(view);
-        updateUi();
-        //
-        editTagsSubscription = editPhotoTagsCallback.toObservable().subscribe(bundle -> {
-            onTagSelected(bundle.requestId, bundle.addedTags, bundle.removedTags);
-        }, error -> {
-            Timber.e(error, "");
-        });
+   @Override
+   public void takeView(V view) {
+      super.takeView(view);
+      updateUi();
+      //
+      editTagsSubscription = editPhotoTagsCallback.toObservable().subscribe(bundle -> {
+         onTagSelected(bundle.requestId, bundle.addedTags, bundle.removedTags);
+      }, error -> {
+         Timber.e(error, "");
+      });
 
-        locationPickerSubscription = postLocationPickerCallback.toObservable().subscribe((loc) -> {
-            updateLocation(loc);
-        }, error -> {
-            Timber.e(error, "");
-        });
+      locationPickerSubscription = postLocationPickerCallback.toObservable().subscribe((loc) -> {
+         updateLocation(loc);
+      }, error -> {
+         Timber.e(error, "");
+      });
+   }
 
-        hashtagInteractor.getDescPickedPipe().observeSuccess()
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(command -> {
-                    cachedText = command.getResult();
-                    if (view != null) {
-                        view.setText(cachedText);
-                        invalidateDynamicViews();
-                    }
-                }, throwable -> {
-                    Timber.e(throwable, "");
-                });
-    }
+   @Override
+   public void onResume() {
+      super.onResume();
+      // we must have this subscription in onResume as during rotation
+      // view of the old fragment is dropped after view for new one was created
+      postDescriptionSubscription = createPostBodyInteractor.getPostDescriptionPipe()
+            .observeSuccessWithReplay()
+            .observeOn(AndroidSchedulers.mainThread())
+            .compose(bindView())
+            .subscribe(action -> {
+               cachedText = action.getResult();
+               if (view != null) {
+                  view.setText(cachedText);
+                  invalidateDynamicViews();
+               }
+               createPostBodyInteractor.getPostDescriptionPipe().clearReplays();
+            }, throwable -> {
+               Timber.e(throwable, "");
+            });
+   }
 
-    @Override
-    public void dropView() {
-        super.dropView();
-        //
-        if (editTagsSubscription != null && !editTagsSubscription.isUnsubscribed())
-            editTagsSubscription.unsubscribe();
+   @Override
+   public void onPause() {
+      super.onPause();
+      if (postDescriptionSubscription != null && !postDescriptionSubscription.isUnsubscribed()) {
+         postDescriptionSubscription.unsubscribe();
+      }
+   }
 
-        if (locationPickerSubscription != null && !locationPickerSubscription.isUnsubscribed())
-            locationPickerSubscription.unsubscribe();
-    }
+   @Override
+   public void dropView() {
+      super.dropView();
+      //
+      if (editTagsSubscription != null && !editTagsSubscription.isUnsubscribed()) editTagsSubscription.unsubscribe();
 
-    protected void updateUi() {
-        view.setName(getAccount().getFullName());
-        view.setAvatar(getAccount());
-        view.setText(cachedText);
-    }
+      if (locationPickerSubscription != null && !locationPickerSubscription.isUnsubscribed())
+         locationPickerSubscription.unsubscribe();
+   }
 
-    public void cancelClicked() {
-        if (view != null) {
-            if (isChanged()) {
-                view.showCancelationDialog();
-            } else {
-                view.cancel();
-            }
-        }
-    }
+   protected void updateUi() {
+      view.setName(getAccount().getFullName());
+      view.setAvatar(getAccount());
+      view.setText(cachedText);
+   }
 
-    protected abstract boolean isChanged();
+   public void cancelClicked() {
+      if (view != null) {
+         if (isChanged()) {
+            view.showCancelationDialog();
+         } else {
+            view.cancel();
+         }
+      }
+   }
 
-    public void invalidateDynamicViews() {
-        if (isChanged()) {
-            view.enableButton();
-        } else {
-            view.disableButton();
-        }
-    }
+   protected abstract boolean isChanged();
 
-    public abstract void post();
+   public void invalidateDynamicViews() {
+      if (isChanged()) {
+         view.enableButton();
+      } else {
+         view.disableButton();
+      }
+   }
 
-    public void onTagSelected(long requestId, ArrayList<PhotoTag> photoTags, ArrayList<PhotoTag> removedTags) {
-        PhotoCreationItem item = Queryable.from(cachedCreationItems).firstOrDefault(element -> element.getId() == requestId);
-        //
-        if (item != null) {
-            item.getCachedAddedPhotoTags().removeAll(photoTags);
-            item.getCachedAddedPhotoTags().addAll(photoTags);
-            item.getCachedAddedPhotoTags().removeAll(removedTags);
+   public abstract void post();
 
-            item.getCachedRemovedPhotoTags().removeAll(removedTags);
-            item.getCachedRemovedPhotoTags().addAll(removedTags);
-            //if view ==null state will be updated on attach view.
-            if (view != null) {
-                view.updateItem(item);
-            }
-        }
-        //
-        invalidateDynamicViews();
-    }
+   public void onTagSelected(long requestId, ArrayList<PhotoTag> photoTags, ArrayList<PhotoTag> removedTags) {
+      PhotoCreationItem item = Queryable.from(cachedCreationItems)
+            .firstOrDefault(element -> element.getId() == requestId);
+      //
+      if (item != null) {
+         item.getCachedAddedPhotoTags().removeAll(photoTags);
+         item.getCachedAddedPhotoTags().addAll(photoTags);
+         item.getCachedAddedPhotoTags().removeAll(removedTags);
 
-    @Override
-    public void handleError(SpiceException error) {
-        super.handleError(error);
-        view.onPostError();
-        view.enableButton();
-    }
+         item.getCachedRemovedPhotoTags().removeAll(removedTags);
+         item.getCachedRemovedPhotoTags().addAll(removedTags);
+         //if view ==null state will be updated on attach view.
+         if (view != null) {
+            view.updateItem(item);
+         }
+      }
+      //
+      invalidateDynamicViews();
+   }
 
-    @Nullable
-    public Location getLocation() {
-        return location;
-    }
+   @Override
+   public void handleError(SpiceException error) {
+      super.handleError(error);
+      view.onPostError();
+      view.enableButton();
+   }
 
-    protected void updateLocation(Location location) {
-        this.location = location;
-        invalidateDynamicViews();
-        view.updateLocationButtonState();
-    }
+   @Nullable
+   public Location getLocation() {
+      return location;
+   }
 
-    protected boolean isCachedTextEmpty() {
-        return TextUtils.isEmpty(cachedText);
-    }
+   protected void updateLocation(Location location) {
+      this.location = location;
+      invalidateDynamicViews();
+      view.updateLocationButtonState();
+   }
 
-    protected void processPostSuccess(FeedEntity feedEntity) {
-        closeView();
-    }
+   protected boolean isCachedTextEmpty() {
+      return TextUtils.isEmpty(cachedText);
+   }
 
-    protected PhotoCreationItem createItemFromPhoto(Photo photo) {
-        PhotoCreationItem photoCreationItem = new PhotoCreationItem();
-        photoCreationItem.setTitle(photo.getTitle());
-        photoCreationItem.setOriginUrl(photo.getImagePath());
-        photoCreationItem.setHeight(photo.getHeight());
-        photoCreationItem.setWidth(photo.getWidth());
-        photoCreationItem.setStatus(ActionState.Status.SUCCESS);
-        photoCreationItem.setLocation(photo.getLocation().getName());
-        photoCreationItem.setBasePhotoTags((ArrayList<PhotoTag>) photo.getPhotoTags());
-        photoCreationItem.setCanDelete(true);
-        photoCreationItem.setCanEdit(true);
-        return photoCreationItem;
-    }
+   protected void processPostSuccess(FeedEntity feedEntity) {
+      closeView();
+   }
 
-    private void closeView() {
-        view.cancel();
-        view = null;
-    }
+   protected PhotoCreationItem createItemFromPhoto(Photo photo) {
+      PhotoCreationItem photoCreationItem = new PhotoCreationItem();
+      photoCreationItem.setTitle(photo.getTitle());
+      photoCreationItem.setOriginUrl(photo.getImagePath());
+      photoCreationItem.setHeight(photo.getHeight());
+      photoCreationItem.setWidth(photo.getWidth());
+      photoCreationItem.setStatus(ActionState.Status.SUCCESS);
+      photoCreationItem.setLocation(photo.getLocation().getName());
+      photoCreationItem.setBasePhotoTags((ArrayList<PhotoTag>) photo.getPhotoTags());
+      photoCreationItem.setCanDelete(true);
+      photoCreationItem.setCanEdit(true);
+      return photoCreationItem;
+   }
 
-    public void onLocationClicked() {
-        view.openLocation(getLocation());
-    }
+   private void closeView() {
+      view.cancel();
+      view = null;
+   }
 
-    public interface View extends RxView {
+   public void onLocationClicked() {
+      view.openLocation(getLocation());
+   }
 
-        void attachPhotos(List<PhotoCreationItem> images);
+   public interface View extends RxView {
 
-        void attachPhoto(PhotoCreationItem image);
+      void attachPhotos(List<PhotoCreationItem> images);
 
-        void updateItem(PhotoCreationItem item);
+      void attachPhoto(PhotoCreationItem image);
 
-        void setName(String userName);
+      void updateItem(PhotoCreationItem item);
 
-        void setAvatar(User user);
+      void setName(String userName);
 
-        void setText(String text);
+      void setAvatar(User user);
 
-        void cancel();
+      void setText(String text);
 
-        void showCancelationDialog();
+      void cancel();
 
-        void enableButton();
+      void showCancelationDialog();
 
-        void disableButton();
+      void enableButton();
 
-        void onPostError();
+      void disableButton();
 
-        void updateLocationButtonState();
+      void onPostError();
 
-        void openLocation(Location location);
-    }
+      void updateLocationButtonState();
+
+      void openLocation(Location location);
+   }
 
 }

@@ -13,66 +13,64 @@ import icepick.State;
 import rx.Observable;
 import rx.subjects.PublishSubject;
 
-public abstract class BaseViewStateMvpPresenter<V extends MvpView, S extends Parcelable> extends MvpBasePresenter<V>
-        implements ViewStateMvpPresenter<V, S> {
+public abstract class BaseViewStateMvpPresenter<V extends MvpView, S extends Parcelable> extends MvpBasePresenter<V> implements ViewStateMvpPresenter<V, S> {
 
-    @State protected S state;
+   @State protected S state;
 
-    @Override public S getViewState() {
-        return state;
-    }
+   @Override
+   public S getViewState() {
+      return state;
+   }
 
-    PublishSubject<Void> detachStopper = PublishSubject.create();
+   PublishSubject<Void> detachStopper = PublishSubject.create();
 
-    PublishSubject<Void> visibilityStopper = PublishSubject.create();
+   PublishSubject<Void> visibilityStopper = PublishSubject.create();
 
-    @Override public void onSaveInstanceState(Bundle bundle) {
-        Icepick.saveInstanceState(this, bundle);
-    }
+   @Override
+   public void onSaveInstanceState(Bundle bundle) {
+      Icepick.saveInstanceState(this, bundle);
+   }
 
-    @Override public void onRestoreInstanceState(Bundle instanceState) {
-        Icepick.restoreInstanceState(this, instanceState);
-        applyViewState();
-    }
+   @Override
+   public void onRestoreInstanceState(Bundle instanceState) {
+      Icepick.restoreInstanceState(this, instanceState);
+      applyViewState();
+   }
 
-    @Override
-    public void onAttachedToWindow() {
+   @Override
+   public void onAttachedToWindow() {
 
-    }
+   }
 
-    @Override
-    public void onDetachedFromWindow() {
+   @Override
+   public void onDetachedFromWindow() {
 
-    }
+   }
 
-    @Override
-    public void onVisibilityChanged(int visibility) {
-        if (visibility == View.GONE) visibilityStopper.onNext(null);
-    }
+   @Override
+   public void onVisibilityChanged(int visibility) {
+      if (visibility == View.GONE) visibilityStopper.onNext(null);
+   }
 
-    @Override
-    public void detachView(boolean retainInstance) {
-        detachStopper.onNext(null);
-        super.detachView(retainInstance);
-    }
+   @Override
+   public void detachView(boolean retainInstance) {
+      detachStopper.onNext(null);
+      super.detachView(retainInstance);
+   }
 
-    protected <T> Observable.Transformer<T, T> bindVisibility() {
-        return input -> input.takeUntil(visibilityStopper);
-    }
+   protected <T> Observable.Transformer<T, T> bindVisibility() {
+      return input -> input.takeUntil(visibilityStopper);
+   }
 
-    protected <T> Observable.Transformer<T, T> bindView() {
-        return input -> input.takeUntil(detachStopper);
-    }
+   protected <T> Observable.Transformer<T, T> bindView() {
+      return input -> input.takeUntil(detachStopper);
+   }
 
-    protected <T> Observable.Transformer<T, T> bindVisibilityIoToMainComposer() {
-        return input -> input
-                .compose(new IoToMainComposer<>())
-                .compose(bindVisibility());
-    }
+   protected <T> Observable.Transformer<T, T> bindVisibilityIoToMainComposer() {
+      return input -> input.compose(new IoToMainComposer<>()).compose(bindVisibility());
+   }
 
-    protected <T> Observable.Transformer<T, T> bindViewIoToMainComposer() {
-        return input -> input
-                .compose(new IoToMainComposer<>())
-                .compose(bindView());
-    }
+   protected <T> Observable.Transformer<T, T> bindViewIoToMainComposer() {
+      return input -> input.compose(new IoToMainComposer<>()).compose(bindView());
+   }
 }

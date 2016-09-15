@@ -12,64 +12,60 @@ import icepick.State;
 
 public abstract class BasePickerPresenter<T extends BasePickerPresenter.View> extends Presenter<T> {
 
-    @State
-    protected ArrayList<BasePhotoPickerModel> photos;
-    private int pickLimit;
+   @State protected ArrayList<BasePhotoPickerModel> photos;
+   private int pickLimit;
 
-    public BasePickerPresenter() {
-        this.photos = new ArrayList<>();
-    }
+   public BasePickerPresenter() {
+      this.photos = new ArrayList<>();
+   }
 
-    public void onEvent(PhotoPickedEvent event) {
-        if (!view.isVisibleOnScreen() || !view.isResumed()) return;
-        //
-        if (!view.isMultiPickEnabled()) {
-            BasePhotoPickerModel photoGalleryModel = Queryable.from(photos).filter(element ->
-                    element.isChecked() && !element.equals(event.model)).firstOrDefault();
-            if (photoGalleryModel != null) {
-                photoGalleryModel.setChecked(false);
-                view.updateItem(photoGalleryModel);
-            }
-        } else {
-            if (isLimitReached(Queryable.from(photos).count(BasePhotoPickerModel::isChecked))) {
-                event.model.setChecked(false);
-                view.informUser(String.format(context.getResources()
-                        .getString(R.string.photo_limitation_message), pickLimit));
-                return;
-            }
-        }
+   public void onEvent(PhotoPickedEvent event) {
+      if (!view.isVisibleOnScreen() || !view.isResumed()) return;
+      //
+      if (!view.isMultiPickEnabled()) {
+         BasePhotoPickerModel photoGalleryModel = Queryable.from(photos)
+               .filter(element -> element.isChecked() && !element.equals(event.model))
+               .firstOrDefault();
+         if (photoGalleryModel != null) {
+            photoGalleryModel.setChecked(false);
+            view.updateItem(photoGalleryModel);
+         }
+      } else {
+         if (isLimitReached(Queryable.from(photos).count(BasePhotoPickerModel::isChecked))) {
+            event.model.setChecked(false);
+            view.informUser(String.format(context.getResources()
+                  .getString(R.string.photo_limitation_message), pickLimit));
+            return;
+         }
+      }
 
-        view.updatePickedItemsCount(Queryable.from(photos).count(BasePhotoPickerModel::isChecked));
-        view.updateItem(event.model);
-    }
+      view.updatePickedItemsCount(Queryable.from(photos).count(BasePhotoPickerModel::isChecked));
+      view.updateItem(event.model);
+   }
 
-    public List<BasePhotoPickerModel> getSelectedPhotos() {
-        return Queryable.from(photos)
-                .filter(BasePhotoPickerModel::isChecked)
-                .sort((lhs, rhs) -> lhs.getPickedTime() > rhs.getPickedTime()
-                        ? 1
-                        : lhs.getPickedTime() < rhs.getPickedTime() ? -1 : 0)
-                .toList();
-    }
+   public List<BasePhotoPickerModel> getSelectedPhotos() {
+      return Queryable.from(photos).filter(BasePhotoPickerModel::isChecked).sort((lhs, rhs) -> lhs.getPickedTime() > rhs
+            .getPickedTime() ? 1 : lhs.getPickedTime() < rhs.getPickedTime() ? -1 : 0).toList();
+   }
 
-    public void setLimit(int pickLimit) {
-        this.pickLimit = pickLimit;
-    }
+   public void setLimit(int pickLimit) {
+      this.pickLimit = pickLimit;
+   }
 
-    private boolean isLimitReached(int pickedCount) {
-        return pickLimit != 0 && pickedCount > pickLimit;
-    }
+   private boolean isLimitReached(int pickedCount) {
+      return pickLimit != 0 && pickedCount > pickLimit;
+   }
 
-    public interface View extends Presenter.View {
+   public interface View extends Presenter.View {
 
-        void updateItem(BasePhotoPickerModel item);
+      void updateItem(BasePhotoPickerModel item);
 
-        void addItems(List<BasePhotoPickerModel> items);
+      void addItems(List<BasePhotoPickerModel> items);
 
-        void updatePickedItemsCount(int count);
+      void updatePickedItemsCount(int count);
 
-        boolean isMultiPickEnabled();
+      boolean isMultiPickEnabled();
 
-        boolean isResumed();
-    }
+      boolean isResumed();
+   }
 }

@@ -13,11 +13,10 @@ import butterknife.InjectView;
 @Layout(R.layout.fragment_fullscreen_trip_photo)
 public class TripPhotoFullscreenFragment extends FullScreenPhotoFragment<TripImageFullscreenPresenter, TripImage> {
 
-    @InjectView(R.id.iv_image)
-    ScaleImageView ivImage;
+   @InjectView(R.id.iv_image) ScaleImageView ivImage;
 
-    @Override
-    protected TripImageFullscreenPresenter createPresenter(Bundle savedInstanceState) {
-        return new TripImageFullscreenPresenter((TripImage) getArgs().getPhoto(), getArgs().getType());
-    }
+   @Override
+   protected TripImageFullscreenPresenter createPresenter(Bundle savedInstanceState) {
+      return new TripImageFullscreenPresenter((TripImage) getArgs().getPhoto(), getArgs().getType());
+   }
 }

@@ -11,23 +11,22 @@ import com.worldventures.dreamtrips.modules.dtl.model.merchant.offer.DtlOffer;
 import butterknife.OnClick;
 
 @Layout(R.layout.adapter_item_offer_points)
-public class DtlPointsCell
-        extends AbstractDelegateCell<DtlOffer, CellDelegate<DtlOffer>> {
+public class DtlPointsCell extends AbstractDelegateCell<DtlOffer, CellDelegate<DtlOffer>> {
 
-    public DtlPointsCell(View view) {
-        super(view);
-    }
+   public DtlPointsCell(View view) {
+      super(view);
+   }
 
-    @OnClick(R.id.points_view)
-    protected void onPerkClick() {
-        cellDelegate.onCellClicked(getModelObject());
-    }
+   @OnClick(R.id.points_view)
+   protected void onPerkClick() {
+      cellDelegate.onCellClicked(getModelObject());
+   }
 
-    @Override
-    protected void syncUIStateWithModel() {
-    }
+   @Override
+   protected void syncUIStateWithModel() {
+   }
 
-    @Override
-    public void prepareForReuse() {
-    }
+   @Override
+   public void prepareForReuse() {
+   }
 }

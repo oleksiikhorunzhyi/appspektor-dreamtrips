@@ -1,8 +1,12 @@
 package com.worldventures.dreamtrips.modules.mapping;
 
 import com.worldventures.dreamtrips.modules.feed.model.converter.FeedCommentConverter;
+import com.worldventures.dreamtrips.modules.mapping.converter.CircleConverter;
 import com.worldventures.dreamtrips.modules.mapping.converter.Converter;
 import com.worldventures.dreamtrips.modules.mapping.converter.FlagConverter;
+import com.worldventures.dreamtrips.modules.mapping.converter.PrivateProfileConverter;
+import com.worldventures.dreamtrips.modules.mapping.converter.PublicProfileConverter;
+import com.worldventures.dreamtrips.modules.mapping.converter.RelationshipConverter;
 import com.worldventures.dreamtrips.modules.mapping.converter.ShortProfilesConverter;
 import com.worldventures.dreamtrips.modules.mapping.converter.UserAvatarConverter;
 import com.worldventures.dreamtrips.modules.mapping.mapper.PodcastsMapper;
@@ -60,12 +64,6 @@ public class MappingModule {
 
    @Provides(type = Provides.Type.SET)
    @Singleton
-   Converter provideUserAvatarConverter() {
-      return new UserAvatarConverter();
-   }
-
-   @Provides(type = Provides.Type.SET)
-   @Singleton
    Converter provideFeedCommentConverter() {
       return new FeedCommentConverter();
    }
@@ -108,5 +106,35 @@ public class MappingModule {
    @Singleton
    PodcastsMapper providePodcastsMapper() {
       return new PodcastsMapper();
+   }
+
+   @Provides(type = Provides.Type.SET)
+   @Singleton
+   Converter providePrivateProfileConverter() {
+      return new PrivateProfileConverter();
+   }
+
+   @Provides(type = Provides.Type.SET)
+   @Singleton
+   Converter providePublicProfileConverter() {
+      return new PublicProfileConverter();
+   }
+
+   @Provides(type = Provides.Type.SET)
+   @Singleton
+   Converter provideCircleConverter() {
+      return new CircleConverter();
+   }
+
+   @Provides(type = Provides.Type.SET)
+   @Singleton
+   Converter provideUserAvatarConverter() {
+      return new UserAvatarConverter();
+   }
+
+   @Provides(type = Provides.Type.SET)
+   @Singleton
+   Converter provideRelationshipConverter() {
+      return new RelationshipConverter();
    }
 }

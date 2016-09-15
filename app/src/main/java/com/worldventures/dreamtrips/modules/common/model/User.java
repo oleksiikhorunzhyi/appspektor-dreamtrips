@@ -74,6 +74,9 @@ public class User extends BaseEntity implements Parcelable {
       this.id = id;
    }
 
+   public void setMutualFriends(MutualFriends mutualFriends) {
+      this.mutualFriends = mutualFriends;
+   }
 
    public MutualFriends getMutualFriends() {
       return mutualFriends;
@@ -82,6 +85,10 @@ public class User extends BaseEntity implements Parcelable {
    public String getCirclesString() {
       if (circles == null || circles.size() == 0) return "";
       return TextUtils.join(", ", Queryable.from(circles).map(Circle::getName).toList());
+   }
+
+   public void setCircles(List<Circle> circles) {
+      this.circles = circles;
    }
 
    public List<Circle> getCircles() {
@@ -139,16 +146,32 @@ public class User extends BaseEntity implements Parcelable {
       this.company = company;
    }
 
+   public void setBirthDate(Date birthDate) {
+      this.birthDate = birthDate;
+   }
+
    public Date getBirthDate() {
       return birthDate;
+   }
+
+   public void setEnrollDate(Date enrollDate) {
+      this.enrollDate = enrollDate;
    }
 
    public Date getEnrollDate() {
       return enrollDate;
    }
 
+   public void setDreamTripsPoints(double dreamTripsPoints) {
+      this.dreamTripsPoints = dreamTripsPoints;
+   }
+
    public double getDreamTripsPoints() {
       return dreamTripsPoints;
+   }
+
+   public void setRoviaBucks(double roviaBucks) {
+      this.roviaBucks = roviaBucks;
    }
 
    public double getRoviaBucks() {
@@ -159,8 +182,20 @@ public class User extends BaseEntity implements Parcelable {
       return tripImagesCount;
    }
 
+   public void setTripImagesCount(int tripImagesCount) {
+      this.tripImagesCount = tripImagesCount;
+   }
+
+   public void setBucketListItemsCount(int bucketListItemsCount) {
+      this.bucketListItemsCount = bucketListItemsCount;
+   }
+
    public int getBucketListItemsCount() {
       return bucketListItemsCount;
+   }
+
+   public void setFriendsCount(int friendsCount) {
+      this.friendsCount = friendsCount;
    }
 
    public int getFriendsCount() {
@@ -260,6 +295,14 @@ public class User extends BaseEntity implements Parcelable {
       return countryCode;
    }
 
+   public List<String> getSubscriptions() {
+      return subscriptions;
+   }
+
+   public void setSubscriptions(List<String> subscriptions) {
+      this.subscriptions = subscriptions;
+   }
+
    public static class Avatar implements Parcelable, Serializable {
       public static final Creator<Avatar> CREATOR = new Creator<Avatar>() {
          public Avatar createFromParcel(Parcel source) {
@@ -326,6 +369,10 @@ public class User extends BaseEntity implements Parcelable {
       private int count;
 
       public MutualFriends() {
+      }
+
+      public MutualFriends(int count) {
+         this.count = count;
       }
 
       protected MutualFriends(Parcel in) {

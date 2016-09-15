@@ -20,9 +20,10 @@ import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.common.service.LogoutInteractor;
 import com.worldventures.dreamtrips.modules.common.view.util.MediaPickerManager;
 import com.worldventures.dreamtrips.modules.feed.service.command.GetAccountTimelineCommand;
-import com.worldventures.dreamtrips.modules.profile.api.GetProfileQuery;
 import com.worldventures.dreamtrips.modules.profile.api.UploadAvatarCommand;
 import com.worldventures.dreamtrips.modules.profile.api.UploadCoverCommand;
+import com.worldventures.dreamtrips.modules.profile.command.GetPrivateProfileCommand;
+import com.worldventures.dreamtrips.modules.profile.service.ProfileInteractor;
 import com.worldventures.dreamtrips.modules.tripsimages.bundle.TripsImagesBundle;
 import com.worldventures.dreamtrips.modules.tripsimages.model.TripImagesType;
 import com.worldventures.dreamtrips.modules.video.model.CachedEntity;
@@ -52,6 +53,7 @@ public class AccountPresenter extends ProfilePresenter<AccountPresenter.View, Us
    @Inject MediaPickerManager mediaPickerManager;
    @Inject SocialCropImageManager socialCropImageManager;
    @Inject AuthInteractor authInteractor;
+   @Inject ProfileInteractor profileInteractor;
    @Inject NotificationCountEventDelegate notificationCountEventDelegate;
    @Inject SnappyRepository db;
 
@@ -141,7 +143,11 @@ public class AccountPresenter extends ProfilePresenter<AccountPresenter.View, Us
    @Override
    protected void loadProfile() {
       view.startLoading();
-      doRequest(new GetProfileQuery(appSessionHolder), this::onProfileLoaded);
+      profileInteractor.privateProfilePipe().createObservable(new GetPrivateProfileCommand())
+            .compose(bindViewToMainComposer())
+            .subscribe(new ActionStateSubscriber<GetPrivateProfileCommand>()
+               .onSuccess(command -> this.onProfileLoaded(command.getResult()))
+               .onFail((getCurrentUserCommand, throwable) -> this.handleError(throwable)));
    }
 
    private void onAvatarUploadSuccess(User obj) {

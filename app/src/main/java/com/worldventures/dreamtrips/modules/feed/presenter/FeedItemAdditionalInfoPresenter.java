@@ -8,7 +8,8 @@ import com.worldventures.dreamtrips.modules.auth.api.command.UpdateUserCommand;
 import com.worldventures.dreamtrips.modules.auth.service.AuthInteractor;
 import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
-import com.worldventures.dreamtrips.modules.profile.api.GetPublicProfileQuery;
+import com.worldventures.dreamtrips.modules.profile.command.GetPublicProfileCommand;
+import com.worldventures.dreamtrips.modules.profile.service.ProfileInteractor;
 
 import javax.inject.Inject;
 
@@ -17,6 +18,7 @@ import io.techery.janet.helper.ActionStateSubscriber;
 public class FeedItemAdditionalInfoPresenter<V extends FeedItemAdditionalInfoPresenter.View> extends Presenter<V> {
 
    @Inject AuthInteractor authInteractor;
+   @Inject ProfileInteractor profileInteractor;
 
    private User user;
 
@@ -36,7 +38,11 @@ public class FeedItemAdditionalInfoPresenter<V extends FeedItemAdditionalInfoPre
       if (!TextUtils.isEmpty(user.getBackgroundPhotoUrl())) {
          view.setupView(user);
       } else {
-         doRequest(new GetPublicProfileQuery(user), view::setupView, spiceException -> view.setupView(user));
+         profileInteractor.publicProfilePipe().createObservable(new GetPublicProfileCommand(user.getId()))
+               .compose(bindViewToMainComposer())
+               .subscribe(new ActionStateSubscriber<GetPublicProfileCommand>()
+                     .onSuccess(command -> view.setupView(command.getResult()))
+                     .onFail((getPublicProfileCommand, throwable) -> view.setupView(user)));
       }
    }
 

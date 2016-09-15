@@ -28,9 +28,10 @@ import com.worldventures.dreamtrips.modules.friends.janet.FriendsInteractor;
 import com.worldventures.dreamtrips.modules.friends.janet.RemoveFriendCommand;
 import com.worldventures.dreamtrips.modules.friends.model.Circle;
 import com.worldventures.dreamtrips.modules.gcm.delegate.NotificationDelegate;
-import com.worldventures.dreamtrips.modules.profile.api.GetPublicProfileQuery;
 import com.worldventures.dreamtrips.modules.profile.bundle.UserBundle;
+import com.worldventures.dreamtrips.modules.profile.command.GetPublicProfileCommand;
 import com.worldventures.dreamtrips.modules.profile.event.FriendGroupRelationChangedEvent;
+import com.worldventures.dreamtrips.modules.profile.service.ProfileInteractor;
 import com.worldventures.dreamtrips.modules.tripsimages.bundle.TripsImagesBundle;
 import com.worldventures.dreamtrips.modules.tripsimages.model.TripImagesType;
 
@@ -51,6 +52,7 @@ public class UserPresenter extends ProfilePresenter<UserPresenter.View, User> {
    @Inject NotificationDelegate notificationDelegate;
    @Inject StartChatDelegate startSingleChatDelegate;
    @Inject FlagsInteractor flagsInteractor;
+   @Inject ProfileInteractor profileInteractor;
 
    private int notificationId;
    private boolean acceptFriend;
@@ -117,10 +119,14 @@ public class UserPresenter extends ProfilePresenter<UserPresenter.View, User> {
    @Override
    protected void loadProfile() {
       view.startLoading();
-      doRequest(new GetPublicProfileQuery(user), this::onProfileLoaded, spiceException -> {
-         view.finishLoading();
-         super.handleError(spiceException);
-      });
+      profileInteractor.publicProfilePipe().createObservable(new GetPublicProfileCommand(user.getId()))
+            .compose(bindViewToMainComposer())
+            .subscribe(new ActionStateSubscriber<GetPublicProfileCommand>()
+            .onSuccess(command -> this.onProfileLoaded(command.getResult()))
+            .onFail((getPublicProfileCommand, throwable) -> {
+               view.finishLoading();
+               super.handleError(getPublicProfileCommand, throwable);
+            }));
    }
 
    public void onStartChatClicked() {

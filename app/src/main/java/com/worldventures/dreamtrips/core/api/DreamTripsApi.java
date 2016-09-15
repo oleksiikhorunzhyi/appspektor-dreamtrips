@@ -61,12 +61,6 @@ public interface DreamTripsApi {
    @Multipart
    User uploadBackgroundPhoto(@Part("background_photo") TypedFile image);
 
-   @GET("/api/profile")
-   User getProfile();
-
-   @GET("/api/profiles/{id}")
-   User getPublicProfile(@Path("id") int id);
-
     /* *** PHOTOS *****************************/
 
    /**

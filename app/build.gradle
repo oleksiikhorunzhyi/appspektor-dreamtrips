@@ -92,6 +92,7 @@ android {
          'S3Api'            : '"http://dtappprd.s3.amazonaws.com/config"',
          'MESSENGER_API_URL': '"dtmsgapp.worldventures.biz"',
          'NEWRELIC_API_KEY' : '"AAb8d55ede8fd2f0aeaaf66b18b8b53af90e48b371"',
+         'UPLOADERY_API_URL': '"http://dtappuploads.wvholdings.com"',
    ]
    //
    def CONFIG_MAPS = [

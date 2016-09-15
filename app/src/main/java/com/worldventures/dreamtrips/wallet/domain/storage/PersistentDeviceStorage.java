@@ -180,8 +180,8 @@ public class PersistentDeviceStorage implements DeviceStorage {
    }
 
    @Override
-   public void editRecord(int recordId, String title) {
-      memoryStorage.editRecord(recordId, title);
+   public void editRecord(Record record) {
+      memoryStorage.editRecord(record);
       persistStorage();
    }
 

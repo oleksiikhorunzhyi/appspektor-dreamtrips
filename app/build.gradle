@@ -445,7 +445,7 @@ dependencies {
    compile 'com.eowise:recyclerview-stickyheaders:0.5.2@aar'
    compile 'mbanje.kurt:fabbutton:1.2.1'
    compile 'com.github.man4ik:poly-picker:fce2e41f009b2c9b1287ee1000431710939e22e6'
-   compile 'com.yalantis:ucrop:1.2.+'
+   compile 'com.yalantis:ucrop:1.2.4'
    compile 'com.github.dmytrodanylyk.shadow-layout:library:1.0.3'
    compile 'me.leolin:ShortcutBadger:1.1.3@aar'
    compile 'com.github.techery:properratingbar:0.0.5'
@@ -491,7 +491,10 @@ dependencies {
    compile 'org.igniterealtime.smack:smack-android-extensions:4.1.6'
    compile 'org.igniterealtime.smack:smack-tcp:4.1.6'
 
-   compile(group: 'io.techery.janet', name: 'smartcard', version: '0.3.0-SNAPSHOT', changing: true)
+   compile(group: 'io.techery.janet', name: 'smartcard', version: '0.4.0-SNAPSHOT', changing: true) {
+      exclude module: 'kotlin-runtime'
+      exclude module: 'annotations'
+   }
    compile(group: 'io.techery.janet.magstripe-reader', name: 'service', version: '0.1.0-SNAPSHOT', changing: true)
    compile(group: 'io.techery.janet.magstripe-reader', name: 'client-mock', version: '0.1.0-SNAPSHOT', changing: true)
    compile(group: 'io.techery.janet.magstripe-reader', name: 'client-rhombus', version: '0.1.0-SNAPSHOT', changing: true)
@@ -509,7 +512,7 @@ dependencies {
    testCompile "org.robolectric:shadows-multidex:$roboelectricVersion"
    testCompile 'org.jetbrains.spek:spek:1.0.9'
    testCompile "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
-   testCompile 'org.jetbrains.kotlin:kotlin-reflect:1.0.2'
+   testCompile "org.jetbrains.kotlin:kotlin-reflect:$kotlin_version"
    testCompile 'io.reactivex:rxkotlin:0.55.0'
    testCompile 'io.reactivex:rxjava:1.1.6'
    testCompile('com.nhaarman:mockito-kotlin:0.5.0') {

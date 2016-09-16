@@ -117,7 +117,6 @@ public class BankCardHelper {
    public SpannableString formattedBankName(BankCard bankCard) {
       if (TextUtils.isEmpty(bankCard.issuerInfo().bankName())) return null;
       SpannableString bankName = new SpannableString(bankCard.issuerInfo().bankName());
-      bankName.setSpan(new RelativeSizeSpan(1.2f), 0, bankName.length(), 0);
       bankName.setSpan(new StyleSpan(Typeface.BOLD), 0, bankName.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
       return bankName;
    }

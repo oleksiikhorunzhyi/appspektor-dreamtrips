@@ -12,7 +12,6 @@ import com.worldventures.dreamtrips.core.api.PhotoUploadingManagerS3;
 import com.worldventures.dreamtrips.core.api.SocialUploaderyManager;
 import com.worldventures.dreamtrips.core.api.VideoDownloadSpiceService;
 import com.worldventures.dreamtrips.core.janet.JanetModule;
-import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.core.session.CirclesInteractor;
 import com.worldventures.dreamtrips.core.utils.DTCookieManager;
 import com.worldventures.dreamtrips.modules.bucketlist.service.BucketInteractor;
@@ -34,7 +33,6 @@ import com.worldventures.dreamtrips.modules.dtl.service.DtlTransactionInteractor
 import com.worldventures.dreamtrips.modules.feed.manager.FeedEntityManager;
 import com.worldventures.dreamtrips.modules.feed.service.CreatePostBodyInteractor;
 import com.worldventures.dreamtrips.modules.membership.api.PhoneContactRequest;
-import com.worldventures.dreamtrips.modules.trips.manager.TripFilterDataProvider;
 import com.worldventures.dreamtrips.modules.trips.service.TripMapInteractor;
 import com.worldventures.dreamtrips.modules.tripsimages.view.util.EditPhotoTagsCallback;
 import com.worldventures.dreamtrips.modules.tripsimages.view.util.PostLocationPickerCallback;
@@ -176,12 +174,6 @@ public class ManagerModule {
    @Singleton
    BucketInteractor provideBucketService(Janet janet) {
       return new BucketInteractor(janet);
-   }
-
-   @Provides
-   @Singleton
-   TripFilterDataProvider provideTripFilterDataProvider(@Global EventBus eventBus, SnappyRepository repository) {
-      return new TripFilterDataProvider(eventBus, repository);
    }
 
    @Provides

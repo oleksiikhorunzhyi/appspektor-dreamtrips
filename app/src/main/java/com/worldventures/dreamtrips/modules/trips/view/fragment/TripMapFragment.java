@@ -21,12 +21,13 @@ import com.google.android.gms.maps.Projection;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
-import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.maps.android.clustering.ClusterManager;
 import com.innahema.collections.query.queriables.Queryable;
+import com.jakewharton.rxbinding.support.v7.widget.RxSearchView;
 import com.techery.spares.annotations.Layout;
 import com.techery.spares.annotations.MenuResource;
 import com.techery.spares.ui.fragment.FragmentHelper;
+import com.trello.rxlifecycle.RxLifecycle;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.navigation.BackStackDelegate;
 import com.worldventures.dreamtrips.core.navigation.Route;
@@ -54,7 +55,7 @@ import butterknife.InjectView;
 import butterknife.Optional;
 import icepick.Icepick;
 import icepick.State;
-import rx.Subscription;
+import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
 import timber.log.Timber;
 
@@ -68,9 +69,9 @@ public class TripMapFragment extends RxBaseFragment<TripMapPresenter> implements
    private static final int SMALL_PADDING = 20;
 
    protected ToucheableMapView mapView;
-   @InjectView(R.id.container_info) protected FrameLayout containerInfo;
-   @InjectView(R.id.container_info_wrapper) protected ViewGroup containerInfoWrapper;
-   @InjectView(R.id.container_no_google) protected FrameLayout noGoogleContainer;
+   @InjectView(R.id.container_info) FrameLayout containerInfo;
+   @InjectView(R.id.container_info_wrapper) ViewGroup containerInfoWrapper;
+   @InjectView(R.id.container_no_google) FrameLayout noGoogleContainer;
    @Optional @InjectView(R.id.left_pointer) View leftPointer;
    @Optional @InjectView(R.id.right_pointer) View rightPointer;
    @Optional @InjectView(R.id.bottom_pointer) View bottomPointer;
@@ -85,11 +86,10 @@ public class TripMapFragment extends RxBaseFragment<TripMapPresenter> implements
 
    private LatLng selectedLocation;
 
-   private Subscription mapChangesSubscription;
-   private Subscription markersClickSubscription;
-
    private ClusterManager<TripClusterItem> clusterManager;
    private TripClusterRenderer tripClusterRenderer;
+
+   private SearchView searchView;
 
    @Override
    protected TripMapPresenter createPresenter(Bundle savedInstanceState) {
@@ -178,18 +178,10 @@ public class TripMapFragment extends RxBaseFragment<TripMapPresenter> implements
          googleMap.clear();
          googleMap.setOnMarkerClickListener(null);
       }
-      if (mapChangesSubscription != null && !mapChangesSubscription.isUnsubscribed()) {
-         mapChangesSubscription.unsubscribe();
-      }
-      if (markersClickSubscription != null && !markersClickSubscription.isUnsubscribed()) {
-         markersClickSubscription.unsubscribe();
-      }
-      //local clustering
       if (clusterManager != null) {
          clusterManager.setOnClusterItemClickListener(null);
          clusterManager.setOnClusterClickListener(null);
       }
-      //
       super.onDestroyView();
    }
 
@@ -260,13 +252,18 @@ public class TripMapFragment extends RxBaseFragment<TripMapPresenter> implements
             return true;
          }
       });
-      SearchView searchView = (SearchView) MenuItemCompat.getActionView(searchItem);
+      searchView = (SearchView) MenuItemCompat.getActionView(searchItem);
       searchView.setQuery(getPresenter().getQuery(), false);
-      searchView.setOnCloseListener(() -> {
-         TripMapFragment.this.getPresenter().applySearch(null);
-         return false;
-      });
-      searchView.setOnQueryTextListener(onQueryTextListener);
+   }
+
+   @Override
+   public Observable<String> textChanges() {
+      return RxSearchView.queryTextChanges(searchView)
+            .skip(1)
+            .map(CharSequence::toString)
+            .throttleLast(600, TimeUnit.MILLISECONDS)
+            .debounce(200, TimeUnit.MILLISECONDS)
+            .onBackpressureLatest();
    }
 
    @Override
@@ -286,11 +283,6 @@ public class TripMapFragment extends RxBaseFragment<TripMapPresenter> implements
    ///////////////////////////////////////////////////////////////////////////
    // Map stuff
    ///////////////////////////////////////////////////////////////////////////
-
-   @Override
-   public void addMarker(MarkerOptions options) {
-      getPresenter().addMarker(googleMap.addMarker(options));
-   }
 
    @Override
    public void moveTo(List<TripModel> trips) {
@@ -326,11 +318,6 @@ public class TripMapFragment extends RxBaseFragment<TripMapPresenter> implements
             .build());
       selectedLocation = null;
       hideInfoContainer();
-   }
-
-   @Override
-   public void zoomToBounds(LatLngBounds latLngBounds) {
-      googleMap.animateCamera(CameraUpdateFactory.newLatLngBounds(latLngBounds, 0));
    }
 
    @Override
@@ -376,33 +363,31 @@ public class TripMapFragment extends RxBaseFragment<TripMapPresenter> implements
 
    protected void onMapLoaded() {
       getPresenter().onMapLoaded();
-      mapChangesSubscription = subscribeToCameraChanges();
-      markersClickSubscription = subscribeToMarkersClicks();
+      subscribeToCameraChanges();
+      subscribeToMarkersClicks();
    }
 
-   private Subscription subscribeToCameraChanges() {
-      return MapObservableFactory.createCameraChangeObservable(googleMap)
+   private void subscribeToCameraChanges() {
+      MapObservableFactory.createCameraChangeObservable(googleMap)
             .throttleLast(100, TimeUnit.MILLISECONDS)
             .observeOn(AndroidSchedulers.mainThread())
+            .compose(RxLifecycle.bindFragment(lifecycle()))
             .subscribe(cameraPosition -> {
-               //                    getPresenter().reloadMapObjects();
-               //local clustering
                clusterManager.onCameraChange(cameraPosition);
-               //
             }, error -> {
                Timber.e(error.getMessage());
             });
    }
 
-   private Subscription subscribeToMarkersClicks() {
-      return MapObservableFactory.createMarkerClickObservable(googleMap).subscribe(marker -> {
-         //                    getPresenter().onMarkerClicked(marker);
-         //local clustering
-         clusterManager.onMarkerClick(marker);
-         //
-      }, error -> {
-         Timber.e(error, error.getMessage());
-      });
+   private void subscribeToMarkersClicks() {
+      MapObservableFactory.createMarkerClickObservable(googleMap)
+            .observeOn(AndroidSchedulers.mainThread())
+            .compose(RxLifecycle.bindFragment(lifecycle()))
+            .subscribe(marker -> {
+               clusterManager.onMarkerClick(marker);
+            }, error -> {
+               Timber.e(error, error.getMessage());
+            });
    }
 
    private void updatePointerPosition(TripMapDetailsAnchor anchor) {
@@ -446,22 +431,6 @@ public class TripMapFragment extends RxBaseFragment<TripMapPresenter> implements
       getPresenter().onCameraChanged();
    }
 
-   private SearchView.OnQueryTextListener onQueryTextListener = new SearchView.OnQueryTextListener() {
-      @Override
-      public boolean onQueryTextSubmit(String s) {
-         return false;
-      }
-
-      @Override
-      public boolean onQueryTextChange(String s) {
-         if (getPresenter() != null) {
-            getPresenter().applySearch(s);
-         }
-         return true;
-      }
-   };
-
-   //local clustering
    @Override
    public void addItems(List<TripClusterItem> tripClusterItems) {
       clusterManager.addItems(tripClusterItems);
@@ -480,5 +449,4 @@ public class TripMapFragment extends RxBaseFragment<TripMapPresenter> implements
       markers.addAll(clusterManager.getMarkerCollection().getMarkers());
       return markers;
    }
-   //
 }

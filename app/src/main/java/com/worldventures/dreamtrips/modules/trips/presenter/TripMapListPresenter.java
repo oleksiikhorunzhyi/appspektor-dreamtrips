@@ -16,7 +16,6 @@ public class TripMapListPresenter extends Presenter<TripMapListPresenter.View> {
    @Override
    public void takeView(View view) {
       super.takeView(view);
-      //
       view.updateItems(trips);
    }
 

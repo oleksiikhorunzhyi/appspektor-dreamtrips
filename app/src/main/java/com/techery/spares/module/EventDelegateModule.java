@@ -4,13 +4,16 @@ import com.techery.spares.utils.delegate.NotificationCountEventDelegate;
 import com.techery.spares.utils.delegate.ScreenChangedEventDelegate;
 import com.techery.spares.utils.delegate.SearchFocusChangedDelegate;
 import com.techery.spares.utils.delegate.StoryLikedEventDelegate;
+import com.worldventures.dreamtrips.core.repository.SnappyRepository;
+import com.worldventures.dreamtrips.modules.trips.delegate.ResetFilterEventDelegate;
+import com.worldventures.dreamtrips.modules.trips.delegate.TripFilterEventDelegate;
 
 import javax.inject.Singleton;
 
 import dagger.Module;
 import dagger.Provides;
 
-@Module(library = true)
+@Module(library = true, complete = false)
 public class EventDelegateModule {
 
    @Provides
@@ -35,5 +38,17 @@ public class EventDelegateModule {
    @Singleton
    NotificationCountEventDelegate provideNotificationCountDelegate() {
       return new NotificationCountEventDelegate();
+   }
+
+   @Provides
+   @Singleton
+   TripFilterEventDelegate provideTripFilterEventDelegate(SnappyRepository snappyRepository) {
+      return new TripFilterEventDelegate(snappyRepository);
+   }
+
+   @Provides
+   @Singleton
+   ResetFilterEventDelegate provideResetFilterEventDelegate() {
+      return new ResetFilterEventDelegate();
    }
 }

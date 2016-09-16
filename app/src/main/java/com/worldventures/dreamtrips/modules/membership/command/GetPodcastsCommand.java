@@ -41,7 +41,6 @@ public class GetPodcastsCommand extends CommandWithError<List<Podcast>> implemen
    @Inject SnappyRepository db;
 
    private boolean refresh;
-   private boolean hasMore;
 
    private List<Podcast> cachedData;
 
@@ -62,7 +61,6 @@ public class GetPodcastsCommand extends CommandWithError<List<Podcast>> implemen
       janet.createPipe(GetPodcastsHttpAction.class, Schedulers.io())
             .createObservableResult(new GetPodcastsHttpAction(getPage(), PAGE_SIZE))
             .map(GetPodcastsHttpAction::response)
-            .doOnNext(podcasts -> hasMore = podcasts.size() == PAGE_SIZE)
             .flatMap(Observable::from)
             .map(podcastsMapper::map)
             .doOnNext(this::connectCachedEntity)
@@ -92,7 +90,7 @@ public class GetPodcastsCommand extends CommandWithError<List<Podcast>> implemen
    }
 
    public boolean hasMore() {
-      return hasMore;
+      return getResult().size() == PAGE_SIZE;
    }
 
    @Override

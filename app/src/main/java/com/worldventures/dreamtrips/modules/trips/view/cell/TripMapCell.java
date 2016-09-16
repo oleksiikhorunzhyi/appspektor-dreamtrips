@@ -32,7 +32,7 @@ public class TripMapCell extends AbstractDelegateCell<TripModel, CellDelegate<Tr
       int coverSize = itemView.getResources().getDimensionPixelSize(R.dimen.map_trip_detail_cover_size);
       cover.setImageURI(Uri.parse(getModelObject().getThumb(coverSize, coverSize)));
       title.setText(getModelObject().getName());
-      location.setText(getModelObject().getGeoLocation().getName());
+      location.setText(getModelObject().getLocation().getName());
       date.setText(getModelObject().isHasMultipleDates() ? String.format(date.getResources()
             .getString(R.string.multiple_dates), getModelObject().getAvailabilityDates()
             .getStartDateString()) : getModelObject().getAvailabilityDates().toString());

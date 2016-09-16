@@ -18,7 +18,6 @@ import java.util.List;
 import javax.inject.Inject;
 
 import io.techery.janet.helper.ActionStateSubscriber;
-import rx.android.schedulers.AndroidSchedulers;
 
 public class TripDetailsPresenter extends BaseTripPresenter<TripDetailsPresenter.View> {
 
@@ -37,6 +36,7 @@ public class TripDetailsPresenter extends BaseTripPresenter<TripDetailsPresenter
    public void takeView(View view) {
       super.takeView(view);
       TrackingHelper.trip(String.valueOf(trip.getTripId()), getAccountUserId());
+      subscribeForTripsDetails();
       loadTripDetails();
    }
 
@@ -53,35 +53,35 @@ public class TripDetailsPresenter extends BaseTripPresenter<TripDetailsPresenter
       else if (!canBook || (trip.isPlatinum() && !getAccount().isPlatinum())) view.disableBookIt();
    }
 
-   public List<TripImage> getFilteredImages() {
-      return filteredImages;
-   }
-
-   public void actionBookIt() {
-      TrackingHelper.actionBookIt(TrackingHelper.ATTRIBUTE_BOOK_IT, trip.getTripId(), getAccountUserId());
-
-      String url = staticPageProvider.getBookingPageUrl(trip.getTripId());
-      view.openBookIt(url);
-   }
-
    @Override
    public void onMenuPrepared() {
-      if (view != null && trip != null) {
-         view.setup(trip);
-      }
+      if (view != null && trip != null) view.setup(trip);
    }
 
    public void loadTripDetails() {
-      view.bindUntilDropView(tripsInteractor.detailsPipe()
-            .createObservable(new GetTripDetailsCommand(trip.getTripId()))
-            .observeOn(AndroidSchedulers.mainThread()))
-            .subscribe(new ActionStateSubscriber<GetTripDetailsCommand>().onSuccess(command -> {
-               TrackingHelper.tripInfo(String.valueOf(trip.getTripId()), getAccountUserId());
-               view.setContent(command.getResult().getContent());
-            }).onFail((command, e) -> {
-               view.setContent(null);
-               view.informUser(command.getErrorMessage());
-            }));
+      tripsInteractor.detailsPipe().send(new GetTripDetailsCommand(trip.getUid()));
+   }
+
+   private void subscribeForTripsDetails() {
+      tripsInteractor.detailsPipe()
+            .observe()
+            .compose(bindViewToMainComposer())
+            .subscribe(new ActionStateSubscriber<GetTripDetailsCommand>()
+                  .onProgress((command, progress) -> tripLoaded(command.getCachedModel()))
+                  .onSuccess(command -> {
+                     tripLoaded(command.getResult());
+                     TrackingHelper.tripInfo(String.valueOf(trip.getTripId()), getAccountUserId());
+                  }).onFail((command, e) -> {
+                     if (command.getCacheData() == null || command.getCacheData().getContent() == null)
+                        view.setContent(null);
+                     view.informUser(command.getErrorMessage());
+                  }));
+   }
+
+   private void tripLoaded(TripModel tripModel) {
+      trip = tripModel;
+      view.setup(trip);
+      view.setContent(tripModel.getContent());
    }
 
    public void onItemClick(int position) {
@@ -92,6 +92,17 @@ public class TripDetailsPresenter extends BaseTripPresenter<TripDetailsPresenter
             .build();
 
       view.openFullscreen(data);
+   }
+
+   public List<TripImage> getFilteredImages() {
+      return filteredImages;
+   }
+
+   public void actionBookIt() {
+      TrackingHelper.actionBookIt(TrackingHelper.ATTRIBUTE_BOOK_IT, trip.getTripId(), getAccountUserId());
+      //
+      String url = staticPageProvider.getBookingPageUrl(trip.getTripId());
+      view.openBookIt(url);
    }
 
    public interface View extends BaseTripPresenter.View {

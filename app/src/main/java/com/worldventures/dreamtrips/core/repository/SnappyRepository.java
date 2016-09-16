@@ -4,6 +4,7 @@ import android.support.annotation.Nullable;
 
 import com.snappydb.DB;
 import com.snappydb.SnappydbException;
+import com.worldventures.dreamtrips.api.trip.model.Trip;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem;
 import com.worldventures.dreamtrips.modules.dtl.model.location.DtlLocation;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchant;
@@ -17,6 +18,8 @@ import com.worldventures.dreamtrips.modules.reptools.model.VideoLanguage;
 import com.worldventures.dreamtrips.modules.reptools.model.VideoLocale;
 import com.worldventures.dreamtrips.modules.settings.model.Setting;
 import com.worldventures.dreamtrips.modules.trips.model.Location;
+import com.worldventures.dreamtrips.modules.trips.model.Pin;
+import com.worldventures.dreamtrips.modules.trips.model.TripModel;
 import com.worldventures.dreamtrips.modules.tripsimages.model.IFullScreenObject;
 import com.worldventures.dreamtrips.modules.tripsimages.model.SocialViewPagerState;
 import com.worldventures.dreamtrips.modules.tripsimages.model.TripImagesType;
@@ -50,6 +53,9 @@ public interface SnappyRepository {
    String FILTER_FEED_FRIEND_FILTER_CIRCLE = "FILTER_FEED_FRIEND_FILTER_CIRCLE";
    String SOCIAL_VIEW_PAGER_STATE = "SOCIAL_VIEW_PAGER_STATE";
    String PODCASTS = "PODCASTS";
+   String TRIPS = "TRIPS";
+   String PINS = "PINS";
+   String TRIPS_DETAILS = "TRIPS_DETAILS";
 
    String DTL_MERCHANTS = "DTL_MERCHANTS";
    String DTL_SELECTED_LOCATION = "DTL_SELECTED_LOCATION";
@@ -199,4 +205,20 @@ public interface SnappyRepository {
    void savePodcasts(List<Podcast> podcasts);
 
    List<Podcast> getPodcasts();
+
+   void saveTrips(List<TripModel> trips);
+
+   List<TripModel> getTrips();
+
+   void savePins(List<Pin> pins);
+
+   List<Pin> getPins();
+
+   void saveTripDetails(TripModel tripModel);
+
+   void saveTripsDetails(List<TripModel> trips);
+
+   List<TripModel> getTripsDetailsForUids(List<String> uids);
+
+   TripModel getTripDetail(String uid);
 }

@@ -20,6 +20,11 @@ import com.worldventures.dreamtrips.modules.membership.storage.PodcastsDiskStora
 import com.worldventures.dreamtrips.modules.membership.storage.PodcastsStorage;
 import com.worldventures.dreamtrips.modules.trips.service.storage.ActivitiesStorage;
 import com.worldventures.dreamtrips.modules.trips.service.storage.RegionsStorage;
+import com.worldventures.dreamtrips.modules.trips.storage.TripDetailsStorage;
+import com.worldventures.dreamtrips.modules.trips.storage.TripPinsStorage;
+import com.worldventures.dreamtrips.modules.trips.storage.TripsByUidsStorage;
+import com.worldventures.dreamtrips.modules.trips.storage.TripsDiskStorage;
+import com.worldventures.dreamtrips.modules.trips.storage.TripsStorage;
 
 import javax.inject.Singleton;
 
@@ -105,5 +110,29 @@ public class CacheActionStorageModule {
    @Provides(type = Provides.Type.SET)
    ActionStorage providePodcastsStorage(SnappyRepository snappyRepository) {
       return new PodcastsStorage(new PaginatedMemoryStorage<>(), new PodcastsDiskStorage(snappyRepository));
+   }
+
+   @Singleton
+   @Provides(type = Provides.Type.SET)
+   ActionStorage provideTripsStorage(SnappyRepository snappyRepository) {
+      return new TripsStorage(new PaginatedMemoryStorage<>(), new TripsDiskStorage(snappyRepository));
+   }
+
+   @Singleton
+   @Provides(type = Provides.Type.SET)
+   ActionStorage provideTripsPinsStorage(SnappyRepository snappyRepository) {
+      return new TripPinsStorage(snappyRepository);
+   }
+
+   @Singleton
+   @Provides(type = Provides.Type.SET)
+   ActionStorage provideTripsDetailsStorage(SnappyRepository snappyRepository) {
+      return new TripsByUidsStorage(snappyRepository);
+   }
+
+   @Singleton
+   @Provides(type = Provides.Type.SET)
+   ActionStorage provideTripDetailsStorage(SnappyRepository snappyRepository) {
+      return new TripDetailsStorage(snappyRepository);
    }
 }

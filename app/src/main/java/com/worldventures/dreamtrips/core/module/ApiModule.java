@@ -34,8 +34,6 @@ import com.worldventures.dreamtrips.modules.feed.model.serializer.FeedItemDeseri
 import com.worldventures.dreamtrips.modules.settings.model.Setting;
 import com.worldventures.dreamtrips.modules.settings.model.serializer.SettingsDeserializer;
 import com.worldventures.dreamtrips.modules.settings.model.serializer.SettingsSerializer;
-import com.worldventures.dreamtrips.modules.trips.model.MapObjectHolder;
-import com.worldventures.dreamtrips.modules.trips.model.serializer.MapObjectDeserializer;
 
 import java.net.CookieManager;
 import java.net.CookiePolicy;
@@ -119,8 +117,6 @@ public class ApiModule {
             .registerTypeAdapterFactory(new GsonAdaptersBucketCoverBody())
             .registerTypeAdapterFactory(new GsonAdaptersBucketStatusBody())
             .registerTypeAdapterFactory(new GsonAdaptersBucketBodyImpl())
-            //
-            .registerTypeAdapter(MapObjectHolder.class, new MapObjectDeserializer<>())
             .create();
    }
 

@@ -103,20 +103,12 @@ public class BaseCommentPresenter<T extends BaseCommentPresenter.View> extends P
             }));
    }
 
-   /**
-    * Request comments and likes only once per view loading if suitable count > 0
-    */
    protected void checkCommentsAndLikesToLoad() {
       if (loadInitiated) return;
       //
-      if (feedEntity.getCommentsCount() > 0) {
-         loadComments();
-         loadInitiated = true;
-      }
-      if (feedEntity.getLikesCount() > 0) {
-         loadLikes();
-         loadInitiated = true;
-      }
+      loadComments();
+      loadInitiated = true;
+      loadLikes();
    }
 
    protected boolean isNeedCheckCommentsWhenStart() {
@@ -130,8 +122,8 @@ public class BaseCommentPresenter<T extends BaseCommentPresenter.View> extends P
 
    private void subscribeToCommentsLoading() {
       view.bindUntilDropView(commentsInteractor.commentsPipe().observe().compose(new IoToMainComposer<>()))
-            .subscribe(new ActionStateSubscriber<GetCommentsCommand>().onSuccess(getCommentsCommand -> onCommentsLoaded(getCommentsCommand
-                  .getResult()))
+            .subscribe(new ActionStateSubscriber<GetCommentsCommand>()
+                  .onSuccess(getCommentsCommand -> onCommentsLoaded(getCommentsCommand.getResult()))
                   .onFail((getCommentsCommand, throwable) -> view.informUser(getCommentsCommand.getErrorMessage())));
    }
 

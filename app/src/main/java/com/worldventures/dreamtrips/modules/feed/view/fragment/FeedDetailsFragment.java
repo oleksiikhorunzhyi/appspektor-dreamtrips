@@ -18,7 +18,8 @@ import com.worldventures.dreamtrips.modules.feed.presenter.FeedDetailsPresenter;
 import butterknife.InjectView;
 import butterknife.Optional;
 
-public abstract class FeedDetailsFragment<PRESENTER extends FeedDetailsPresenter, P extends FeedDetailsBundle> extends CommentableFragment<PRESENTER, P> implements FeedDetailsPresenter.View {
+public abstract class FeedDetailsFragment<PRESENTER extends FeedDetailsPresenter, P extends FeedDetailsBundle>
+      extends CommentableFragment<PRESENTER, P> implements FeedDetailsPresenter.View {
 
    private static final int INPUT_PANEL_SHOW_OFFSET = 20;
 

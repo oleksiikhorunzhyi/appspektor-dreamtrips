@@ -37,6 +37,8 @@ import com.worldventures.dreamtrips.modules.friends.janet.DeleteFriendRequestCom
 import com.worldventures.dreamtrips.modules.membership.command.GetPodcastsCommand;
 import com.worldventures.dreamtrips.modules.settings.command.SettingsCommand;
 import com.worldventures.dreamtrips.modules.trips.command.GetActivitiesCommand;
+import com.worldventures.dreamtrips.modules.trips.command.GetTripsByUidCommand;
+import com.worldventures.dreamtrips.modules.trips.command.GetTripsLocationsCommand;
 import com.worldventures.dreamtrips.modules.trips.command.GetRegionsCommand;
 import com.worldventures.dreamtrips.modules.trips.command.GetTripDetailsCommand;
 import com.worldventures.dreamtrips.modules.trips.command.GetTripsCommand;
@@ -54,7 +56,7 @@ import dagger.Module;
       TranslateUidItemCommand.TranslateCommentCommand.class, TranslateUidItemCommand.TranslatePostCommand.class,
       TranslateTextCachedCommand.class, AcceptTermsCommand.class, UnsubribeFromPushCommand.class,
       GetTripDetailsCommand.class, GetActivitiesCommand.class, GetRegionsCommand.class,
-      GetTripsCommand.LoadNextTripsCommand.class, GetTripsCommand.ReloadTripsCommand.class,
+      GetTripsCommand.class, GetTripsLocationsCommand.class, GetTripsByUidCommand.class,
       HashtagSuggestionCommand.class, ClearMemoryStorageCommand.class, SubscribeToPushNotificationsCommand.class,
       SettingsCommand.class, DeleteFriendRequestCommand.class, AcceptAllFriendRequestsCommand.class, AddFriendCommand.class,
       DeleteFriendRequestCommand.class, ActOnFriendRequestCommand.Accept.class, ActOnFriendRequestCommand.Reject.class,

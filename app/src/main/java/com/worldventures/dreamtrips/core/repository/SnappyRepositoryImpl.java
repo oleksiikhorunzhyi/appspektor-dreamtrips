@@ -30,6 +30,8 @@ import com.worldventures.dreamtrips.modules.settings.model.FlagSetting;
 import com.worldventures.dreamtrips.modules.settings.model.SelectSetting;
 import com.worldventures.dreamtrips.modules.settings.model.Setting;
 import com.worldventures.dreamtrips.modules.trips.model.Location;
+import com.worldventures.dreamtrips.modules.trips.model.Pin;
+import com.worldventures.dreamtrips.modules.trips.model.TripModel;
 import com.worldventures.dreamtrips.modules.tripsimages.model.IFullScreenObject;
 import com.worldventures.dreamtrips.modules.tripsimages.model.SocialViewPagerState;
 import com.worldventures.dreamtrips.modules.tripsimages.model.TripImagesType;
@@ -605,6 +607,58 @@ public class SnappyRepositoryImpl implements SnappyRepository {
    @Override
    public List<Podcast> getPodcasts() {
       return readList(PODCASTS, Podcast.class);
+   }
 
+   @Override
+   public void saveTrips(List<TripModel> tripModels) {
+      if (tripModels == null) tripModels = new ArrayList<>();
+      putList(TRIPS, tripModels);
+   }
+
+   @Override
+   public List<TripModel> getTrips() {
+      return readList(TRIPS, TripModel.class);
+   }
+
+   @Override
+   public void savePins(List<Pin> pins) {
+      if (pins == null) pins = new ArrayList<>();
+      putList(PINS, pins);
+   }
+
+   @Override
+   public List<Pin> getPins() {
+      return readList(PINS, Pin.class);
+   }
+
+   @Override
+   public void saveTripDetails(TripModel tripModel) {
+      act(db -> db.put(TRIPS_DETAILS + tripModel.getUid(), tripModel));
+   }
+
+   @Override
+   public void saveTripsDetails(List<TripModel> trips) {
+      act(db -> {
+         for (TripModel tripModel : trips) {
+            db.put(TRIPS_DETAILS + tripModel.getUid(), tripModel);
+         }
+      });
+   }
+
+   @Override
+   public TripModel getTripDetail(String uid) {
+      return actWithResult(db -> db.get(TRIPS_DETAILS + uid, TripModel.class)).orNull();
+   }
+
+   @Override
+   public List<TripModel> getTripsDetailsForUids(List<String> uids) {
+      return actWithResult(db -> {
+         List<TripModel> tripModels = new ArrayList<>();
+         for (String uid : uids) {
+            TripModel tripModel = db.get(TRIPS_DETAILS + uid, TripModel.class);
+            if (tripModel != null) tripModels.add(tripModel);
+         }
+         return tripModels;
+      }).or(new ArrayList<>());
    }
 }

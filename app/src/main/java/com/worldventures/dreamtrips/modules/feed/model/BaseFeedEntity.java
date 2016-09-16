@@ -27,13 +27,17 @@ public abstract class BaseFeedEntity implements FeedEntity {
    // Getters & Setters
    ///////////////////////////////////////////////////////////////////////////
 
+   public void setUid(String uid) {
+      this.uid = uid;
+   }
+
+   public void setLanguage(String language) {
+      this.language = language;
+   }
+
    @Override
    public String getUid() {
       return uid;
-   }
-
-   public void setUid(String uid) {
-      this.uid = uid;
    }
 
    @Override

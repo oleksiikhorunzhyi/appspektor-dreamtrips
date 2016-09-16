@@ -1,10 +1,18 @@
 package com.worldventures.dreamtrips.modules.mapping;
 
+import com.worldventures.dreamtrips.modules.feed.model.converter.FeedCommentConverter;
 import com.worldventures.dreamtrips.modules.mapping.converter.Converter;
+import com.worldventures.dreamtrips.modules.mapping.converter.FlagConverter;
 import com.worldventures.dreamtrips.modules.mapping.converter.ShortProfilesConverter;
-import com.worldventures.dreamtrips.modules.mapping.mapper.FlagsMapper;
+import com.worldventures.dreamtrips.modules.mapping.converter.UserAvatarConverter;
 import com.worldventures.dreamtrips.modules.mapping.mapper.PodcastsMapper;
-import com.worldventures.dreamtrips.modules.mapping.mapper.ShortProfilesMapper;
+import com.worldventures.dreamtrips.modules.trips.model.converter.ActivityConverter;
+import com.worldventures.dreamtrips.modules.trips.model.converter.ContentItemConverter;
+import com.worldventures.dreamtrips.modules.trips.model.converter.RegionConverter;
+import com.worldventures.dreamtrips.modules.trips.model.converter.TripImageConverter;
+import com.worldventures.dreamtrips.modules.trips.model.converter.TripPinToPinConverter;
+import com.worldventures.dreamtrips.modules.trips.model.converter.TripWithDetailsToTripConverter;
+import com.worldventures.dreamtrips.modules.trips.model.converter.TripWithoutDetailsToTripConverter;
 
 import java.util.Set;
 
@@ -13,22 +21,35 @@ import javax.inject.Singleton;
 import dagger.Module;
 import dagger.Provides;
 import io.techery.mappery.Mappery;
+import io.techery.mappery.MapperyContext;
 
 @Module(
       injects = {},
       library = true, complete = false)
 public class MappingModule {
 
-   @Provides
+   @Provides(type = Provides.Type.SET)
    @Singleton
-   FlagsMapper provideFlagsMapper() {
-      return new FlagsMapper();
+   Converter provideFlagsMapper() {
+      return new FlagConverter();
    }
 
-   @Provides
+   @Provides(type = Provides.Type.SET)
    @Singleton
-   ShortProfilesMapper provideShortProfilesMapper() {
-      return new ShortProfilesMapper();
+   Converter providePinConverter() {
+      return new TripPinToPinConverter();
+   }
+
+   @Provides(type = Provides.Type.SET)
+   @Singleton
+   Converter provideTripConverter() {
+      return new TripWithoutDetailsToTripConverter();
+   }
+
+   @Provides(type = Provides.Type.SET)
+   @Singleton
+   Converter provideTripWithDetailsConverter() {
+      return new TripWithDetailsToTripConverter();
    }
 
    @Provides(type = Provides.Type.SET)
@@ -37,9 +58,45 @@ public class MappingModule {
       return new ShortProfilesConverter();
    }
 
+   @Provides(type = Provides.Type.SET)
+   @Singleton
+   Converter provideUserAvatarConverter() {
+      return new UserAvatarConverter();
+   }
+
+   @Provides(type = Provides.Type.SET)
+   @Singleton
+   Converter provideFeedCommentConverter() {
+      return new FeedCommentConverter();
+   }
+
+   @Provides(type = Provides.Type.SET)
+   @Singleton
+   Converter provideActivityConverter() {
+      return new ActivityConverter();
+   }
+
+   @Provides(type = Provides.Type.SET)
+   @Singleton
+   Converter provideRegionConverter() {
+      return new RegionConverter();
+   }
+
+   @Provides(type = Provides.Type.SET)
+   @Singleton
+   Converter provideTripImageConverter() {
+      return new TripImageConverter();
+   }
+
+   @Provides(type = Provides.Type.SET)
+   @Singleton
+   Converter provideContentItemConverter() {
+      return new ContentItemConverter();
+   }
+
    @Provides
    @Singleton
-   Mappery provideMappery(Set<Converter> converters) {
+   MapperyContext provideMappery(Set<Converter> converters) {
       Mappery.Builder builder = new Mappery.Builder();
       for (Converter converter : converters) {
          builder.map(converter.sourceClass()).to(converter.targetClass(), converter);

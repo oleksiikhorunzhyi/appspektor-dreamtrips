@@ -166,7 +166,7 @@ public class AddCardDetailsPresenter extends WalletPresenter<AddCardDetailsPrese
 
       smartCardInteractorHelper.sendSingleDefaultCardTask(defaultCard -> {
          if (!CardUtils.isRealCard(defaultCard)) return;
-         getView().showChangeCardDialog(defaultCard.issuerInfo().bankName());
+         getView().showChangeCardDialog(bankCardHelper.bankNameWithCardNumber(defaultCard));
       }, bindViewIoToMainComposer());
    }
 

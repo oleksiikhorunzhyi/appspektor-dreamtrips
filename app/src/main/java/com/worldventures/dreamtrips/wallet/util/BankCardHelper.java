@@ -78,7 +78,8 @@ public class BankCardHelper {
    }
 
    public String financialServiceWithCardNumber(BankCard bankCard) {
-      return format("%s •••• %s", obtainFinancialServiceType(bankCard.issuerInfo().financialService()), obtainLastCardDigits(bankCard.number()));
+      return format("%s •••• %s", obtainFinancialServiceType(bankCard.issuerInfo()
+            .financialService()), obtainLastCardDigits(bankCard.number()));
    }
 
    public String obtainCardType(BankCard.CardType cardType) {
@@ -95,7 +96,9 @@ public class BankCardHelper {
    }
 
    public String bankNameWithCardNumber(BankCard bankCard) {
-      return format("%s •••• %s", bankCard.issuerInfo().bankName(), obtainLastCardDigits(bankCard.number()));
+      String bankName = bankCard.issuerInfo().bankName();
+      bankName = (bankName == null) ? "" : bankName;
+      return format("%s •••• %s", bankName, obtainLastCardDigits(bankCard.number()));
    }
 
    public CharSequence formattedBankNameWithCardNumber(BankCard bankCard) {
@@ -114,7 +117,6 @@ public class BankCardHelper {
    public SpannableString formattedBankName(BankCard bankCard) {
       if (TextUtils.isEmpty(bankCard.issuerInfo().bankName())) return null;
       SpannableString bankName = new SpannableString(bankCard.issuerInfo().bankName());
-      bankName.setSpan(new RelativeSizeSpan(1.2f), 0, bankName.length(), 0);
       bankName.setSpan(new StyleSpan(Typeface.BOLD), 0, bankName.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
       return bankName;
    }

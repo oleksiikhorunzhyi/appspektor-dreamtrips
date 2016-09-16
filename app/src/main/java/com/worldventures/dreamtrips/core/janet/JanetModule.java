@@ -169,10 +169,12 @@ public class JanetModule {
    @Provides(type = Provides.Type.SET)
    @Named(JANET_WALLET)
    ActionService provideWalletHttpService() {
-      return new MockHttpActionService.Builder().bind(new MockHttpActionService.Response(200).body(ImmutableProvision.builder()
-            .memberId("1")
-            .userSecret("test")
-            .build()), request -> request.getUrl().endsWith("create_card")).build();
+      return new MockHttpActionService.Builder()
+            .bind(new MockHttpActionService.Response(200).body(ImmutableProvision.builder()
+                  .memberId("NXTID")               // dev board member id
+                  .userSecret("DA:30:55:CF:B4:9E") // dev board address
+                  .build()), request -> request.getUrl().endsWith("create_card")
+            ).build();
    }
 
    @Singleton

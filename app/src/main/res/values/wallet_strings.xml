@@ -44,7 +44,7 @@
 
    <!--splash-->
    <string name="wallet_wizard_splash_title1">Get ready to soar</string>
-   <string name="wallet_wizard_splash_title2">Before we set up your new flyes mart card, you must agree to the Terms and Conditions.</string>
+   <string name="wallet_wizard_splash_title2">Before we set up your new flyes smart card, you must agree to the Terms and Conditions.</string>
    <string name="wallet_wizard_splash_review_btn">Review Terms</string>
 
    <string name="wallet_wizard_scan_proposal">Scan the back of your flye&#8482; smart card to begin</string>
@@ -130,10 +130,12 @@
    <string name="wallet_terms_and_conditions_accept_failed">Failed to accept terms and conditions</string>
 
    <!--set up smart card-->
-   <string name="wallet_setup_smart_card_title">Set Up Smart Card</string>
-   <string name="wallet_setup_smart_card_greeting">Hi %s!</string>
-   <string name="wallet_setup_smart_card_content">Take your platinum membership\nto new heights with flye\u2122.</string>
-   <string name="wallet_setup_smart_set_up_button_text">Set Up</string>
+   <string name="wallet_wizard_welcome_title">Set Up Smart Card</string>
+   <string name="wallet_wizard_welcome_greeting">Hi %s!</string>
+   <string name="wallet_wizard_welcome_platinum_user">Take your platinum membership to new heights with flye\u2122.</string>
+   <string name="wallet_wizard_welcome_gold_user">Take your gold membership to new heights with flye\u2122.</string>
+   <string name="wallet_wizard_welcome_button_text">Set Up</string>
+
    <string name="wallet_record_type_credit">Credit</string>
    <string name="wallet_record_type_debit">Debit</string>
 

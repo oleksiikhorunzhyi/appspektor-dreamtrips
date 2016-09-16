@@ -2,7 +2,6 @@ package com.worldventures.dreamtrips.wallet.service.command;
 
 import com.worldventures.dreamtrips.core.janet.dagger.InjectableAction;
 import com.worldventures.dreamtrips.wallet.domain.entity.AddressInfo;
-import com.worldventures.dreamtrips.wallet.domain.entity.ImmutableRecordIssuerInfo;
 import com.worldventures.dreamtrips.wallet.domain.entity.RecordIssuerInfo;
 import com.worldventures.dreamtrips.wallet.domain.entity.card.BankCard;
 import com.worldventures.dreamtrips.wallet.domain.entity.card.ImmutableBankCard;
@@ -51,7 +50,7 @@ public class SaveCardDetailsDataCommand extends Command<Void> implements Injecta
 
    @Override
    protected void run(CommandCallback<Void> callback) throws Throwable {
-      checkCardAddress();
+      checkCardData();
 
       Observable.just(setAsDefaultAddress && !useDefaultAddress)
             .flatMap(this::saveDefaultAddressObservable)
@@ -79,9 +78,9 @@ public class SaveCardDetailsDataCommand extends Command<Void> implements Injecta
             });
    }
 
-   private void checkCardAddress() throws FormatException {
-      boolean validInfo = (useDefaultAddress || WalletValidateHelper.validateAddressInfo(manualAddressInfo)) && WalletValidateHelper
-            .validateCardCvv(cvv);
+   private void checkCardData() throws FormatException {
+      boolean validInfo = (WalletValidateHelper.validateAddressInfo(manualAddressInfo)) &&
+            WalletValidateHelper.validateCardCvv(cvv);
 
       if (!validInfo) throw new FormatException();
    }

@@ -1,11 +1,12 @@
 package com.worldventures.dreamtrips.wallet.service.command.http;
 
+import com.worldventures.dreamtrips.api.smart_card.terms_and_condition.GetTermsAndConditionsHttpAction;
 import com.worldventures.dreamtrips.core.janet.cache.CacheOptions;
 import com.worldventures.dreamtrips.core.janet.cache.CachedAction;
 import com.worldventures.dreamtrips.core.janet.cache.ImmutableCacheOptions;
 import com.worldventures.dreamtrips.core.janet.dagger.InjectableAction;
-import com.worldventures.dreamtrips.wallet.domain.entity.ImmutableTermsAndConditionsResponse;
-import com.worldventures.dreamtrips.wallet.domain.entity.TermsAndConditionsResponse;
+import com.worldventures.dreamtrips.wallet.domain.entity.ImmutableTermsAndConditions;
+import com.worldventures.dreamtrips.wallet.domain.entity.TermsAndConditions;
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -14,29 +15,37 @@ import io.techery.janet.ActionHolder;
 import io.techery.janet.Command;
 import io.techery.janet.Janet;
 import io.techery.janet.command.annotations.CommandAction;
-import rx.Observable;
+import rx.schedulers.Schedulers;
 
-import static com.worldventures.dreamtrips.core.janet.JanetModule.JANET_WALLET;
+import static com.worldventures.dreamtrips.core.janet.JanetModule.JANET_API_LIB;
 
 @CommandAction
-public class FetchTermsAndConditionsCommand extends Command<TermsAndConditionsResponse> implements InjectableAction, CachedAction<TermsAndConditionsResponse> {
+public class FetchTermsAndConditionsCommand extends Command<TermsAndConditions> implements InjectableAction, CachedAction<TermsAndConditions> {
 
-   @Inject @Named(JANET_WALLET) Janet janet;
+   @Inject @Named(JANET_API_LIB) Janet janet;
 
    @Override
-   protected void run(CommandCallback<TermsAndConditionsResponse> callback) throws Throwable {
-      Observable.just(getMockResponse())
+   protected void run(CommandCallback<TermsAndConditions> callback) throws Throwable {
+      janet.createPipe(GetTermsAndConditionsHttpAction.class, Schedulers.io())
+            .createObservableResult(new GetTermsAndConditionsHttpAction())
+            .map(action -> convertResponse(action.response()))
             .subscribe(callback::onSuccess, callback::onFail);
-      //todo use real route for get T&C from API library]..
+   }
+
+   private TermsAndConditions convertResponse(com.worldventures.dreamtrips.api.smart_card.terms_and_condition.model.TermsAndConditions response) {
+      return ImmutableTermsAndConditions.builder()
+            .tacVersion(String.valueOf(response.version()))
+            .url(response.url())
+            .build();
    }
 
    @Override
-   public TermsAndConditionsResponse getCacheData() {
+   public TermsAndConditions getCacheData() {
       return getResult();
    }
 
    @Override
-   public void onRestore(ActionHolder holder, TermsAndConditionsResponse cache) {
+   public void onRestore(ActionHolder holder, TermsAndConditions cache) {
 
    }
 
@@ -48,10 +57,4 @@ public class FetchTermsAndConditionsCommand extends Command<TermsAndConditionsRe
             .build();
    }
 
-   private ImmutableTermsAndConditionsResponse getMockResponse() {
-      return ImmutableTermsAndConditionsResponse.builder()
-            .tacVersion("random")
-            .url("http://assets.wvholdings.com/1/dtapp/legal/us_en/html/terms_of_service07112016.html")
-            .build();
-   }
 }

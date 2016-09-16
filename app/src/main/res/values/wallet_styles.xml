@@ -197,7 +197,7 @@
    </style>
 
    <style name="WalletTheme.SwitchStyle" parent="Widget.AppCompat.CompoundButton.Switch">
-      <item name="android:textAppearance">?android:attr/textAppearanceLarge</item>
+      <item name="android:textAppearance">?android:attr/textAppearanceMedium</item>
       <item name="android:textColor">?android:attr/textColorPrimary</item>
    </style>
 

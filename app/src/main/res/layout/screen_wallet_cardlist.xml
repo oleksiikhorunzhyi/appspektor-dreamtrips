@@ -29,6 +29,7 @@
             android:layout_marginBottom="16dp"
             android:src="@drawable/ic_white_plus"
             app:backgroundTint="@color/wallet_add_card_button_color"
+            app:rippleColor="@color/wallet_add_card_button_color"
             app:fab_size="normal"
             app:layout_anchor="@id/bank_card_list"
             app:layout_anchorGravity="bottom|center_horizontal"

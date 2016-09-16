@@ -5,17 +5,12 @@ import com.worldventures.dreamtrips.wallet.service.command.CreateAndConnectToCar
 import com.worldventures.dreamtrips.wallet.service.command.SetupUserDataCommand;
 import com.worldventures.dreamtrips.wallet.service.command.http.AssociateCardUserCommand;
 
-import javax.inject.Inject;
-import javax.inject.Named;
-
 import io.techery.janet.ActionPipe;
 import io.techery.janet.Janet;
 import io.techery.janet.ReadActionPipe;
 import io.techery.janet.smartcard.action.settings.StartPinSetupAction;
 import io.techery.janet.smartcard.event.PinSetupFinishedEvent;
 import rx.schedulers.Schedulers;
-
-import static com.worldventures.dreamtrips.core.janet.JanetModule.JANET_WALLET;
 
 public final class WizardInteractor {
    private final ActionPipe<AssociateCardUserCommand> associateCardUserCommandPipe;
@@ -26,8 +21,7 @@ public final class WizardInteractor {
    private final ActionPipe<StartPinSetupAction> startPinSetupPipe;
    private final ActionPipe<ActivateSmartCardCommand> activateSmartCardPipe;
 
-   @Inject
-   public WizardInteractor(@Named(JANET_WALLET) Janet janet) {
+   public WizardInteractor(Janet janet) {
       associateCardUserCommandPipe = janet.createPipe(AssociateCardUserCommand.class, Schedulers.io());
       createAndConnectPipe = janet.createPipe(CreateAndConnectToCardCommand.class, Schedulers.io());
       setupUserDataPipe = janet.createPipe(SetupUserDataCommand.class, Schedulers.io());

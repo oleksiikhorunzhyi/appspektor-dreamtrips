@@ -3,7 +3,6 @@ package com.worldventures.dreamtrips.modules.dtl_flow.parts.merchants;
 import android.content.Context;
 import android.support.annotation.Nullable;
 import android.support.v4.widget.SwipeRefreshLayout;
-import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.View;
 
@@ -85,9 +84,7 @@ public class DtlMerchantsScreenImpl extends DtlLayout<DtlMerchantsScreen, DtlMer
             .throttleFirst(250L, TimeUnit.MILLISECONDS)
             .compose(RxLifecycle.bindView(this))
             .subscribe(aVoid -> getPresenter().mapClicked());
-      RxDtlToolbar.merchantSearchTextChanges(dtlToolbar)
-            .debounce(250L, TimeUnit.MILLISECONDS)
-            .skipWhile(TextUtils::isEmpty)
+      RxDtlToolbar.merchantSearchApplied(dtlToolbar)
             .filter(s -> !dtlToolbar.isCollapsed())
             .compose(RxLifecycle.bindView(this))
             .subscribe(getPresenter()::applySearch);

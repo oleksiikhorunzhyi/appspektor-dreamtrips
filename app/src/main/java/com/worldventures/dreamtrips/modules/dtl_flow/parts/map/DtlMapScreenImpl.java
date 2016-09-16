@@ -107,9 +107,7 @@ public class DtlMapScreenImpl extends DtlLayout<DtlMapScreen, DtlMapPresenter, D
             .throttleFirst(250L, TimeUnit.MILLISECONDS)
             .compose(RxLifecycle.bindView(this))
             .subscribe(aVoid -> ((FlowActivity) getActivity()).openLeftDrawer());
-      RxDtlToolbar.merchantSearchTextChanges(dtlToolbar)
-            .skip(1)
-            .debounce(250L, TimeUnit.MILLISECONDS)
+      RxDtlToolbar.merchantSearchApplied(dtlToolbar)
             .filter(s -> !dtlToolbar.isCollapsed())
             .compose(RxLifecycle.bindView(this))
             .subscribe(getPresenter()::applySearch);

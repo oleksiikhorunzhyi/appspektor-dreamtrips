@@ -67,7 +67,6 @@ public class DtlToolbar extends LinearLayout {
 
    protected void bindSearchQueryPersisting() {
       RxDtlToolbar.merchantSearchTextChanges(this)
-            .skip(1)
             .compose(RxLifecycle.bindView(this))
             .subscribe(searchQuery -> this.searchQuery = searchQuery);
    }

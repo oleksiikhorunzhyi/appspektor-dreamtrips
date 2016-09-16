@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout
+      xmlns:android="http://schemas.android.com/apk/res/android"
       xmlns:app="http://schemas.android.com/apk/res-auto"
       xmlns:tools="http://schemas.android.com/tools"
       android:id="@+id/dtl_toolbar_root"
@@ -19,6 +20,7 @@
          style="@style/DtlToolbarInput"
          android:textColorHint="@color/dtlt_input_hint_color"
          android:drawableLeft="@drawable/ic_dtlt_search_input"
+         android:imeOptions="actionSearch"
          tools:text="Mexican"
          />
 
@@ -31,11 +33,11 @@
          android:layout_marginRight="8dp"
          android:textColorHint="@color/dtlt_input_hint_color"
          android:drawableLeft="@drawable/ic_dtlt_location_input"
+         android:imeOptions="actionDone"
          tools:text="London"
          />
 
-   <com.worldventures.dreamtrips.modules.dtl_flow.view.toolbar.DtlFilterButton xmlns:android="http://schemas.android.com/apk/res/android"
-         xmlns:tools="http://schemas.android.com/tools"
+   <com.worldventures.dreamtrips.modules.dtl_flow.view.toolbar.DtlFilterButton
          android:layout_width="@dimen/dtlfb_width"
          android:layout_height="@dimen/dtlfb_height"
          android:layout_gravity="center_vertical"
@@ -55,7 +57,7 @@
          android:layout_height="wrap_content"
          android:layout_gravity="center_vertical|end"
          android:layout_margin="8dp"
-         android:gravity="right"
+         android:gravity="center_vertical|right"
          android:checked="false"
          android:text="@string/dtl_show_offers_only"
          android:textColor="@android:color/white"

@@ -9,7 +9,6 @@ import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -82,9 +81,7 @@ public class MasterToolbarScreenImpl extends DtlLayout<MasterToolbarScreen, Mast
    }
 
    protected void initDtlToolbar() {
-      RxDtlToolbar.merchantSearchTextChanges(toolbar)
-            .debounce(250L, TimeUnit.MILLISECONDS)
-            .skipWhile(TextUtils::isEmpty)
+      RxDtlToolbar.merchantSearchApplied(toolbar)
             .compose(RxLifecycle.bindView(this))
             .subscribe(getPresenter()::applySearch);
       RxDtlToolbar.filterButtonClicks(toolbar)

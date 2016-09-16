@@ -2,6 +2,7 @@ package com.worldventures.dreamtrips.modules.dtl_flow.view.toolbar;
 
 import android.support.annotation.CheckResult;
 import android.support.annotation.NonNull;
+import android.view.inputmethod.EditorInfo;
 import android.widget.CompoundButton;
 
 import com.jakewharton.rxbinding.view.RxView;
@@ -113,6 +114,30 @@ public class RxDtlToolbar {
       return RxTextView.textChangeEvents(dtlToolbar.getMerchantSearchView())
             .filter(textViewTextChangeEvent -> textViewTextChangeEvent.view().hasFocus())
             .map(textViewTextChangeEvent -> textViewTextChangeEvent.text().toString());
+   }
+
+   /**
+    * Create an observable of character sequences for text when ime action 'search' applied on {@code view}.
+    * <p>
+    * <em>Warning:</em> Values emitted by this observable are <b>mutable</b> and owned by the host
+    * {@code TextView} and thus are <b>not safe</b> to cache or delay reading (such as by observing
+    * on a different thread). If you want to cache or delay reading the items emitted then you must
+    * map values through a function which calls {@link String#valueOf} or
+    * {@link CharSequence#toString() .toString()} to create a copy.
+    * <p>
+    * <em>Warning:</em> The created observable keeps a strong reference to {@code view}. Unsubscribe
+    * to free this reference.
+    * <p>
+    * <em>Note:</em> A value will be emitted immediately on subscribe.
+    */
+   @CheckResult
+   @NonNull
+   public static Observable<String> merchantSearchApplied(@NonNull DtlToolbar dtlToolbar) {
+      checkNotNull(dtlToolbar, "dtlToolbar == null");
+      checkNotNull(dtlToolbar.getMerchantSearchView(), "view == null");
+      return RxTextView.editorActionEvents(dtlToolbar.getMerchantSearchView())
+            .filter(actionEvent -> actionEvent.actionId() == EditorInfo.IME_ACTION_SEARCH)
+            .map(actionEvent -> actionEvent.view().getText().toString());
    }
 
    /**

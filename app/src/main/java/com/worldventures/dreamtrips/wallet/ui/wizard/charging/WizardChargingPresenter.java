@@ -17,6 +17,8 @@ import com.worldventures.dreamtrips.wallet.ui.common.base.screen.WalletScreen;
 import com.worldventures.dreamtrips.wallet.ui.common.helper.OperationSubscriberWrapper;
 import com.worldventures.dreamtrips.wallet.ui.wizard.card_details.AddCardDetailsPath;
 
+import java.util.concurrent.TimeUnit;
+
 import javax.inject.Inject;
 
 import flow.Flow;
@@ -49,6 +51,7 @@ public class WizardChargingPresenter extends WalletPresenter<WizardChargingPrese
 
       smartCardInteractor.chargedEventPipe()
             .observe()
+            .delay(2, TimeUnit.SECONDS) // // TODO: 9/16/16 for demo mock device
             .compose(bindViewIoToMainComposer())
             .compose(new ActionPipeCacheWiper<>(smartCardInteractor.chargedEventPipe()))
             .subscribe(OperationSubscriberWrapper.<CardChargedEvent>forView(getView().provideOperationDelegate())

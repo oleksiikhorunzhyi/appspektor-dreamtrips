@@ -44,7 +44,7 @@
 
    <!--splash-->
    <string name="wallet_wizard_splash_title1">Get ready to soar</string>
-   <string name="wallet_wizard_splash_title2">Before we set up your new flyes mart card, you must agree to the Terms and Conditions.</string>
+   <string name="wallet_wizard_splash_title2">Before we set up your new flyes smart card, you must agree to the Terms and Conditions.</string>
    <string name="wallet_wizard_splash_review_btn">Review Terms</string>
 
    <string name="wallet_wizard_scan_proposal">Scan the back of your flye&#8482; smart card to begin</string>

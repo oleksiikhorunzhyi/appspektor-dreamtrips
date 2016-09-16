@@ -29,6 +29,7 @@ import de.greenrobot.event.EventBus;
 import icepick.Icepick;
 import io.techery.janet.CancelException;
 import rx.Observable;
+import rx.Subscription;
 import rx.subjects.PublishSubject;
 import timber.log.Timber;
 
@@ -45,6 +46,8 @@ public class Presenter<VT extends Presenter.View> implements RequestingPresenter
    @Inject protected DreamSpiceManager dreamSpiceManager;
    @Inject protected PhotoUploadingManagerS3 photoUploadingManagerS3;
    @Inject OfflineWarningDelegate offlineWarningDelegate;
+
+   private Subscription connectivityEventsSubscription;
 
    protected int priorityEventBus = 0;
 
@@ -83,9 +86,6 @@ public class Presenter<VT extends Presenter.View> implements RequestingPresenter
       } catch (Exception ignored) {
          Timber.v("EventBus :: Problem on registering sticky - no \'onEvent' method found in " + getClass().getName());
       }
-      if (canShowOfflineAlert()) {
-         subscribeToConnectivityStateUpdates();
-      }
    }
 
    public void dropView() {
@@ -101,10 +101,15 @@ public class Presenter<VT extends Presenter.View> implements RequestingPresenter
 
    public void onResume() {
       //nothing to do here
+      if (canShowOfflineAlert()) {
+         subscribeToConnectivityStateUpdates();
+      }
    }
 
    public void onPause() {
-      //nothing to do here
+      if (connectivityEventsSubscription != null && !connectivityEventsSubscription.isUnsubscribed()) {
+         connectivityEventsSubscription.unsubscribe();
+      }
    }
 
    public void onStop() {
@@ -202,7 +207,7 @@ public class Presenter<VT extends Presenter.View> implements RequestingPresenter
    }
    private void subscribeToConnectivityStateUpdates() {
       // since there is no replay functionality in the lib make delegate check it straight away
-      Observable.merge(Observable.just(null), ReactiveNetwork.observeNetworkConnectivity(context))
+      connectivityEventsSubscription = Observable.merge(Observable.just(null), ReactiveNetwork.observeNetworkConnectivity(context))
             .compose(bindViewToMainComposer())
             .subscribe(connectivity -> {
                if (view.isVisibleOnScreen() && offlineWarningDelegate.needToShowOfflineAlert(context)) {

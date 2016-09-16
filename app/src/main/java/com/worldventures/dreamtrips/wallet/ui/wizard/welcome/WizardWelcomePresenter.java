@@ -1,4 +1,4 @@
-package com.worldventures.dreamtrips.wallet.ui.wizard.setup_smartcard;
+package com.worldventures.dreamtrips.wallet.ui.wizard.welcome;
 
 
 import android.content.Context;
@@ -7,6 +7,7 @@ import android.text.TextUtils;
 
 import com.techery.spares.module.Injector;
 import com.techery.spares.session.SessionHolder;
+import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.session.UserSession;
 import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.wallet.service.SmartCardAvatarInteractor;
@@ -24,14 +25,14 @@ import flow.Flow;
 import io.techery.janet.helper.ActionStateSubscriber;
 import timber.log.Timber;
 
-public class WizardSetupSmartCardPresenter extends WalletPresenter<WizardSetupSmartCardPresenter.Screen, Parcelable> {
+public class WizardWelcomePresenter extends WalletPresenter<WizardWelcomePresenter.Screen, Parcelable> {
 
    @Inject SessionHolder<UserSession> appSessionHolder;
    @Inject SmartCardAvatarInteractor smartCardAvatarInteractor;
 
    private final String smartCardId;
 
-   public WizardSetupSmartCardPresenter(Context context, Injector injector, String smartCardId) {
+   public WizardWelcomePresenter(Context context, Injector injector, String smartCardId) {
       super(context, injector);
       this.smartCardId = smartCardId;
    }
@@ -40,9 +41,10 @@ public class WizardSetupSmartCardPresenter extends WalletPresenter<WizardSetupSm
    public void attachView(Screen view) {
       super.attachView(view);
 
-      User userProfile = appSessionHolder.get().get().getUser();
-      view.setUserName(userProfile.getFullName());
-      loadUserPhoto(userProfile.getAvatar().getThumb());
+      User user = appSessionHolder.get().get().getUser();
+      view.userName(user.getFullName());
+      loadUserPhoto(user.getAvatar().getThumb());
+      view.welcomeMessage(obtainMessage(user));
       view.showAnimation();
    }
 
@@ -52,11 +54,17 @@ public class WizardSetupSmartCardPresenter extends WalletPresenter<WizardSetupSm
                .observe()
                .compose(bindViewIoToMainComposer())
                .subscribe(new ActionStateSubscriber<SmartCardAvatarCommand>()
-                     .onSuccess(command -> getView().setUserPhoto(command.getResult()))
+                     .onSuccess(command -> getView().userPhoto(command.getResult()))
                      .onFail((command, throwable) -> Timber.e("", throwable)));
 
          smartCardAvatarInteractor.smartCardAvatarPipe().send(new LoadImageForSmartCardCommand(avatarPath));
       }
+   }
+
+   private String obtainMessage(User user) {
+      if (user.isGold()) return getContext().getString(R.string.wallet_wizard_welcome_gold_user);
+      if (user.isPlatinum()) return getContext().getString(R.string.wallet_wizard_welcome_platinum_user);
+      return "";
    }
 
    public void setupCardClicked() {
@@ -69,9 +77,11 @@ public class WizardSetupSmartCardPresenter extends WalletPresenter<WizardSetupSm
 
    public interface Screen extends WalletScreen {
 
-      void setUserName(String userName);
+      void userName(String userName);
 
-      void setUserPhoto(File file);
+      void welcomeMessage(String message);
+
+      void userPhoto(File file);
 
       void showAnimation();
 

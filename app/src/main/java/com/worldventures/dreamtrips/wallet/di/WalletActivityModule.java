@@ -20,7 +20,7 @@ import com.worldventures.dreamtrips.wallet.ui.wizard.finish.WalletPinIsSetPresen
 import com.worldventures.dreamtrips.wallet.ui.wizard.manual.WizardManualInputPresenter;
 import com.worldventures.dreamtrips.wallet.ui.wizard.pin.WizardPinSetupPresenter;
 import com.worldventures.dreamtrips.wallet.ui.wizard.profile.WizardEditProfilePresenter;
-import com.worldventures.dreamtrips.wallet.ui.wizard.setup_smartcard.WizardSetupSmartCardPresenter;
+import com.worldventures.dreamtrips.wallet.ui.wizard.welcome.WizardWelcomePresenter;
 import com.worldventures.dreamtrips.wallet.ui.wizard.splash.WizardSplashPresenter;
 import com.worldventures.dreamtrips.wallet.ui.wizard.success.WalletSuccessPresenter;
 import com.worldventures.dreamtrips.wallet.ui.wizard.termsandconditionals.WizardTermsScreenPresenter;
@@ -51,7 +51,7 @@ import dagger.Provides;
             WalletSuccessPresenter.class,
             AddCardDetailsPresenter.class,
             WizardPinSetupPresenter.class,
-            WizardSetupSmartCardPresenter.class,
+            WizardWelcomePresenter.class,
             WalletAutoClearCardsPresenter.class,
             WalletDisableDefaultCardPresenter.class
       },

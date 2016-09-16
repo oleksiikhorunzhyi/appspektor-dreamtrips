@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.worldventures.dreamtrips.wallet.ui.wizard.setup_smartcard.WizardSetupSmartCardScreen
-      style="@style/WalletTheme.Wizard.RootStyle"
+<com.worldventures.dreamtrips.wallet.ui.wizard.welcome.WizardWelcomeScreen style="@style/WalletTheme.Wizard.RootStyle"
       xmlns:android="http://schemas.android.com/apk/res/android"
       xmlns:app="http://schemas.android.com/apk/res-auto"
       xmlns:tools="http://schemas.android.com/tools"
@@ -16,7 +15,7 @@
          android:layout_height="?attr/actionBarSize"
          android:theme="@style/WalletTheme.Wizard.ToolbarTheme"
          app:navigationIcon="@drawable/back_icon"
-         app:title="@string/wallet_setup_smart_card_title"
+         app:title="@string/wallet_wizard_welcome_title"
          />
 
    <LinearLayout
@@ -35,18 +34,22 @@
             android:textAppearance="?android:attr/textAppearanceLarge"
             android:visibility="invisible"
             tools:text="Hi Shirley Temple!"
+            tools:visibility="visible"
             />
 
       <TextView
             android:id="@+id/content_label"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@+id/greeting_label"
             android:layout_marginTop="25dp"
             android:gravity="center"
-            android:text="@string/wallet_setup_smart_card_content"
+            android:paddingEnd="@dimen/spacing_normal"
+            android:paddingStart="@dimen/spacing_large"
             android:textAppearance="?android:attr/textAppearanceLarge"
             android:visibility="invisible"
+            tools:text="@string/wallet_wizard_welcome_platinum_user"
+            tools:visibility="visible"
             />
 
       <FrameLayout
@@ -86,8 +89,8 @@
          android:layout_height="wrap_content"
          android:layout_gravity="bottom"
          android:layout_margin="@dimen/spacing_large"
-         android:text="@string/wallet_setup_smart_set_up_button_text"
+         android:text="@string/wallet_wizard_welcome_button_text"
          android:visibility="invisible"
          />
 
-</com.worldventures.dreamtrips.wallet.ui.wizard.setup_smartcard.WizardSetupSmartCardScreen>
+</com.worldventures.dreamtrips.wallet.ui.wizard.welcome.WizardWelcomeScreen>

@@ -41,14 +41,14 @@ public class SetupUserDataCommand extends Command<SmartCard> implements Injectab
 
    private final String fullName;
    private final File avatarFile;
-   private final String getSmartCardId;
+   private final String smartCardId;
    private SmartCard smartCard;
 
-   public SetupUserDataCommand(String fullName, File avatarFile, String getSmartCardId) {
+   public SetupUserDataCommand(String fullName, File avatarFile, String smartCardId) {
       // TODO: 8/2/16 change on first name and second name
       this.fullName = fullName;
       this.avatarFile = avatarFile;
-      this.getSmartCardId = getSmartCardId;
+      this.smartCardId = smartCardId;
    }
 
    @Override
@@ -98,6 +98,7 @@ public class SetupUserDataCommand extends Command<SmartCard> implements Injectab
             .middleName(middleName)
             .memberStatus(getMemberStatus())
             .memberId(userSessionHolder.get().get().getUser().getId())
+            .barcodeId(Long.valueOf(smartCardId))
             .build();
    }
 
@@ -125,7 +126,7 @@ public class SetupUserDataCommand extends Command<SmartCard> implements Injectab
    @Override
    public CacheOptions getCacheOptions() {
       CacheBundle bundle = new CacheBundleImpl();
-      bundle.put(SmartCardStorage.CARD_ID_PARAM, getSmartCardId);
+      bundle.put(SmartCardStorage.CARD_ID_PARAM, smartCardId);
 
       return ImmutableCacheOptions.builder()
             .params(bundle)

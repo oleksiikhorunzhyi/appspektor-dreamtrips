@@ -28,10 +28,10 @@ public class BatteryView extends AppCompatImageView {
    public BatteryView(Context context, AttributeSet attrs, int defStyleAttr) {
       super(context, attrs, defStyleAttr);
       //        setup margins
-      rightLevelMargin = ViewUtils.pxFromDp(getContext(), 1.5f);
-      leftLevelMargin = ViewUtils.pxFromDp(getContext(), 4f);
-      topLevelMargin = ViewUtils.pxFromDp(getContext(), 4f);
-      bottomLevelMargin = ViewUtils.pxFromDp(getContext(), 0f);
+      rightLevelMargin = ViewUtils.pxFromDp(getContext(), 18f);
+      leftLevelMargin = ViewUtils.pxFromDp(getContext(), 2f);
+      topLevelMargin = ViewUtils.pxFromDp(getContext(), 7f);
+      bottomLevelMargin = ViewUtils.pxFromDp(getContext(), 4f);
    }
 
    public void setLevel(int level) {

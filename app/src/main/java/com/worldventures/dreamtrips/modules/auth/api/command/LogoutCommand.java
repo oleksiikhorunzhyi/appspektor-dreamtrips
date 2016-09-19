@@ -11,6 +11,7 @@ import com.techery.spares.session.SessionHolder;
 import com.worldventures.dreamtrips.api.session.LogoutHttpAction;
 import com.worldventures.dreamtrips.core.janet.JanetModule;
 import com.worldventures.dreamtrips.core.janet.SessionActionPipeCreator;
+import com.worldventures.dreamtrips.core.janet.api_lib.NewDreamTripsHttpService;
 import com.worldventures.dreamtrips.core.janet.dagger.InjectableAction;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.core.session.UserSession;
@@ -19,7 +20,6 @@ import com.worldventures.dreamtrips.core.utils.DTCookieManager;
 import com.worldventures.dreamtrips.modules.auth.service.AuthInteractor;
 import com.worldventures.dreamtrips.modules.common.api.janet.command.ClearStoragesCommand;
 import com.worldventures.dreamtrips.modules.common.presenter.delegate.OfflineWarningDelegate;
-import com.worldventures.dreamtrips.modules.common.service.ClearMemoryStoragesInteractor;
 import com.worldventures.dreamtrips.modules.common.service.ClearStoragesInteractor;
 import com.worldventures.dreamtrips.modules.gcm.delegate.NotificationDelegate;
 
@@ -44,7 +44,6 @@ public class LogoutCommand extends Command implements InjectableAction {
    @Inject DTCookieManager cookieManager;
    @Inject AuthInteractor authInteractor;
    @Inject MessengerConnector messengerConnector;
-   @Inject ClearMemoryStoragesInteractor clearMemoryStoragesInteractor;
    @Inject OfflineWarningDelegate offlineWarningDelegate;
    @Inject ClearStoragesInteractor clearStoragesInteractor;
    @Inject SessionActionPipeCreator sessionActionPipeCreator;
@@ -52,14 +51,22 @@ public class LogoutCommand extends Command implements InjectableAction {
 
    @Override
    protected void run(CommandCallback callback) throws Throwable {
+      String apiToken = appSessionHolder.get().get().getApiToken();
+      String pushToken = snappyRepository.getGcmRegToken();
+      clearUserData();
+      //
       messengerConnector.disconnect();
-      authInteractor.unsubribeFromPushPipe()
-            .createObservable(new UnsubribeFromPushCommand())
-            .flatMap(actionState -> janet.createPipe(LogoutHttpAction.class).createObservable(new LogoutHttpAction()))
-            .subscribe(actionState -> clearUserDataAndFinish());
+      authInteractor.unsubribeFromPushPipe().send(new UnsubribeFromPushCommand(apiToken, pushToken));
+      logout(apiToken);
    }
 
-   private void clearUserDataAndFinish() {
+   private void logout(String token) {
+      LogoutHttpAction logoutHttpAction = new LogoutHttpAction();
+      logoutHttpAction.setAuthorizationHeader(NewDreamTripsHttpService.getAuthorizationHeader(token));
+      janet.createPipe(LogoutHttpAction.class).send(logoutHttpAction);
+   }
+
+   private void clearUserData() {
       appSessionHolder.destroy();
       eventBus.post(new SessionHolder.Events.SessionDestroyed());
       clearStoragesInteractor.clearMemoryStorageActionPipe().send(new ClearStoragesCommand());

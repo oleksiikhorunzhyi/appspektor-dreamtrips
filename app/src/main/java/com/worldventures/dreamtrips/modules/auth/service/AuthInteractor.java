@@ -5,7 +5,6 @@ import com.worldventures.dreamtrips.modules.auth.api.command.UnsubribeFromPushCo
 import com.worldventures.dreamtrips.modules.auth.api.command.UpdateUserCommand;
 
 import io.techery.janet.ActionPipe;
-import io.techery.janet.Janet;
 import rx.schedulers.Schedulers;
 
 public class AuthInteractor {
@@ -13,7 +12,7 @@ public class AuthInteractor {
    protected ActionPipe<UpdateUserCommand> updateUserPipe;
 
    public AuthInteractor(SessionActionPipeCreator sessionActionPipeCreator) {
-      unsubribeFromPushPipe = sessionActionPipeCreator.createPipe(UnsubribeFromPushCommand.class, Schedulers.io());
+      unsubribeFromPushPipe = sessionActionPipeCreator.createPipe(UnsubribeFromPushCommand.class);
       updateUserPipe = sessionActionPipeCreator.createPipe(UpdateUserCommand.class, Schedulers.io());
    }
 

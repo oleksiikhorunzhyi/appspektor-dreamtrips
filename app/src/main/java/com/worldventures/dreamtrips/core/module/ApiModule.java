@@ -15,6 +15,7 @@ import com.worldventures.dreamtrips.core.api.DateTimeDeserializer;
 import com.worldventures.dreamtrips.core.api.DateTimeSerializer;
 import com.worldventures.dreamtrips.core.api.DreamTripsApi;
 import com.worldventures.dreamtrips.core.api.error.DTErrorHandler;
+import com.worldventures.dreamtrips.core.janet.api_lib.NewDreamTripsHttpService;
 import com.worldventures.dreamtrips.core.session.UserSession;
 import com.worldventures.dreamtrips.core.utils.AppVersionNameBuilder;
 import com.worldventures.dreamtrips.core.utils.InterceptingOkClient;
@@ -83,7 +84,7 @@ public class ApiModule {
       return request -> {
          if (appSessionHolder.get().isPresent()) {
             UserSession userSession = appSessionHolder.get().get();
-            String authToken = "Token token=" + userSession.getApiToken();
+            String authToken = NewDreamTripsHttpService.getAuthorizationHeader(userSession.getApiToken());
             request.addHeader("Authorization", authToken);
          }
          request.addHeader("Accept-Language", localeHelper.getDefaultLocaleFormatted());

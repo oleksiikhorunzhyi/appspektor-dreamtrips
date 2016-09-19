@@ -41,7 +41,6 @@ import javax.inject.Singleton;
 import dagger.Module;
 import dagger.Provides;
 import de.greenrobot.event.EventBus;
-import io.techery.janet.Janet;
 
 @Module(
       injects = {
@@ -97,8 +96,8 @@ public class ManagerModule {
    @Singleton
    @Provides
    DtlTransactionInteractor provideDtlTransactionInteractor(SessionActionPipeCreator sessionActionPipeCreator,
-         @Named(JanetModule.JANET_API_LIB) Janet apiLibJanet) {
-      return new DtlTransactionInteractor(sessionActionPipeCreator, apiLibJanet);
+         @Named(JanetModule.JANET_API_LIB) SessionActionPipeCreator sessionApiActionPipeCreator) {
+      return new DtlTransactionInteractor(sessionActionPipeCreator, sessionApiActionPipeCreator);
    }
 
    @Singleton

@@ -7,7 +7,6 @@ import com.worldventures.dreamtrips.modules.dtl.service.action.DtlEarnPointsActi
 import com.worldventures.dreamtrips.modules.dtl.service.action.DtlTransactionAction;
 
 import io.techery.janet.ActionPipe;
-import io.techery.janet.Janet;
 import rx.schedulers.Schedulers;
 
 public class DtlTransactionInteractor {
@@ -17,10 +16,10 @@ public class DtlTransactionInteractor {
    private final ActionPipe<DtlEarnPointsAction> earnPointsActionPipe;
    private final ActionPipe<DtlTransactionAction> transactionActionPipe;
 
-   public DtlTransactionInteractor(SessionActionPipeCreator sessionActionPipeCreator, Janet apiLibJanet) {
-      estimatePointsActionPipe = sessionActionPipeCreator.createPipe(apiLibJanet, EstimationHttpAction.class,
-            Schedulers.io());
-      rateActionPipe = sessionActionPipeCreator.createPipe(apiLibJanet, RatingHttpAction.class, Schedulers.io());
+   public DtlTransactionInteractor(SessionActionPipeCreator sessionActionPipeCreator,
+         SessionActionPipeCreator sessionApiActionPipeCreator) {
+      estimatePointsActionPipe = sessionApiActionPipeCreator.createPipe(EstimationHttpAction.class, Schedulers.io());
+      rateActionPipe = sessionApiActionPipeCreator.createPipe(RatingHttpAction.class, Schedulers.io());
       earnPointsActionPipe = sessionActionPipeCreator.createPipe(DtlEarnPointsAction.class, Schedulers.io());
       transactionActionPipe = sessionActionPipeCreator.createPipe(DtlTransactionAction.class, Schedulers.io());
    }

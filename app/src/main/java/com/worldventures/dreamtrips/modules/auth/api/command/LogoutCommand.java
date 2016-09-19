@@ -48,6 +48,7 @@ public class LogoutCommand extends Command implements InjectableAction {
    @Inject OfflineWarningDelegate offlineWarningDelegate;
    @Inject ClearStoragesInteractor clearStoragesInteractor;
    @Inject SessionActionPipeCreator sessionActionPipeCreator;
+   @Inject @Named(JanetModule.JANET_API_LIB) SessionActionPipeCreator sessionApoActionPipeCreator;
 
    @Override
    protected void run(CommandCallback callback) throws Throwable {
@@ -67,6 +68,7 @@ public class LogoutCommand extends Command implements InjectableAction {
       notificationDelegate.cancelAll();
       badgeUpdater.updateBadge(0);
       sessionActionPipeCreator.clearReplays();
+      sessionApoActionPipeCreator.clearReplays();
       FlowManager.getDatabase(MessengerDatabase.NAME).reset(context);
       offlineWarningDelegate.resetState();
    }

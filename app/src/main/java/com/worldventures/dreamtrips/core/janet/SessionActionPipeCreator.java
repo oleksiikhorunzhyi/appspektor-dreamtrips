@@ -12,21 +12,17 @@ public class SessionActionPipeCreator {
 
    private Set<ActionPipe> actionPipes = Collections.synchronizedSet(new HashSet<>());
 
-   private Janet defaultJanet;
+   private Janet janet;
 
-   public SessionActionPipeCreator(Janet defaultJanet) {
-      this.defaultJanet = defaultJanet;
+   public SessionActionPipeCreator(Janet janet) {
+      this.janet = janet;
    }
 
    public <A> ActionPipe<A> createPipe(Class<A> actionClass) {
-      return createPipe(defaultJanet, actionClass, null);
+      return createPipe(actionClass, null);
    }
 
    public <A> ActionPipe<A> createPipe(Class<A> actionClass, Scheduler defaultSubscribeOn) {
-      return createPipe(defaultJanet, actionClass, defaultSubscribeOn);
-   }
-
-   public <A> ActionPipe<A> createPipe(Janet janet, Class<A> actionClass, Scheduler defaultSubscribeOn) {
       ActionPipe<A> actionPipe = janet.createPipe(actionClass, defaultSubscribeOn);
       actionPipes.add(actionPipe);
       return actionPipe;

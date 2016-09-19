@@ -70,6 +70,13 @@ public class JanetModule {
    }
 
    @Singleton
+   @Named(JANET_API_LIB)
+   @Provides
+   SessionActionPipeCreator provideSessionApiLibActionPipeCreator(@Named(JANET_API_LIB) Janet janet) {
+      return new SessionActionPipeCreator(janet);
+   }
+
+   @Singleton
    @Provides
    SessionActionPipeCreator provideSessionActionPipeCreator(Janet janet) {
       return new SessionActionPipeCreator(janet);

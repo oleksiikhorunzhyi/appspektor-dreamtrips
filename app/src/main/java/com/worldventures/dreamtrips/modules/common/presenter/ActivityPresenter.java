@@ -9,10 +9,11 @@ import com.worldventures.dreamtrips.core.rx.composer.IoToMainComposer;
 import com.worldventures.dreamtrips.core.session.UserSession;
 import com.worldventures.dreamtrips.core.utils.LocaleHelper;
 import com.worldventures.dreamtrips.core.utils.LocaleSwitcher;
+import com.worldventures.dreamtrips.modules.auth.api.command.LogoutCommand;
 import com.worldventures.dreamtrips.modules.auth.api.command.UpdateUserCommand;
 import com.worldventures.dreamtrips.modules.auth.service.AuthInteractor;
 import com.worldventures.dreamtrips.modules.common.model.User;
-import com.worldventures.dreamtrips.modules.common.view.util.LogoutDelegate;
+import com.worldventures.dreamtrips.modules.common.service.LogoutInteractor;
 
 import javax.inject.Inject;
 
@@ -24,7 +25,7 @@ public class ActivityPresenter<VT extends ActivityPresenter.View> extends Presen
    @Inject protected Activity activity;
    @Inject protected LocaleSwitcher localeSwitcher;
    @Inject protected LocaleHelper localeHelper;
-   @Inject protected LogoutDelegate logoutDelegate;
+   @Inject LogoutInteractor logoutInteractor;
    @Inject protected AuthInteractor authInteractor;
 
    @State boolean isTermsShown;
@@ -50,7 +51,7 @@ public class ActivityPresenter<VT extends ActivityPresenter.View> extends Presen
    }
 
    public void logout() {
-      logoutDelegate.logout();
+      logoutInteractor.logoutPipe().send(new LogoutCommand());
    }
 
    @Override

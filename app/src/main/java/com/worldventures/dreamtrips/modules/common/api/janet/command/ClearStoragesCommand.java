@@ -11,7 +11,6 @@ import javax.inject.Inject;
 import io.techery.janet.Command;
 import io.techery.janet.Janet;
 import io.techery.janet.command.annotations.CommandAction;
-import timber.log.Timber;
 
 @CommandAction
 public class ClearStoragesCommand extends Command<Void> implements InjectableAction {
@@ -23,7 +22,5 @@ public class ClearStoragesCommand extends Command<Void> implements InjectableAct
    protected void run(CommandCallback<Void> callback) throws Throwable {
       for (ActionStorage storage : storageSet)
          if (storage instanceof ClearableStorage) ((ClearableStorage) storage).clearMemory();
-
-      Timber.d("Storage cleared!");
    }
 }

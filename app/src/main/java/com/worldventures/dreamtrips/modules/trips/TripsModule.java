@@ -54,12 +54,12 @@ public class TripsModule {
 
    @Provides(type = Provides.Type.SET)
    ComponentDescription provideTripsComponent(SessionHolder<UserSession> sessionHolder) {
-      return new ComponentDescription(TRIPS, R.string.trips, getLogo(sessionHolder), R.string.trips, R.drawable.ic_dreamtrips, TripListFragment.class);
+      return new ComponentDescription(TRIPS, 0, getLogo(sessionHolder), R.string.trips, R.drawable.ic_dreamtrips, TripListFragment.class);
    }
 
    @Provides(type = Provides.Type.SET)
    ComponentDescription provideMapTripsComponent(SessionHolder<UserSession> sessionHolder) {
-      return new ComponentDescription(MAP_TRIPS, R.string.trips, getLogo(sessionHolder), R.string.trips, R.drawable.ic_dreamtrips, true, true, TripMapFragment.class);
+      return new ComponentDescription(MAP_TRIPS, 0, getLogo(sessionHolder), R.string.trips, R.drawable.ic_dreamtrips, true, true, TripMapFragment.class);
    }
 
    @Provides(type = Provides.Type.SET)
@@ -70,8 +70,8 @@ public class TripsModule {
    private @DrawableRes int getLogo(SessionHolder<UserSession> sessionHolder) {
       String countryCode = sessionHolder.get().get().getUser().getCountryCode();
       if (countryCode.equalsIgnoreCase(MALAYSIYA_COUNTRY_CODE)) {
-         return R.drawable.dt_powered_by_skyzone;
+         return R.drawable.dt_action_bar_logo_skyzone;
       }
-      return 0;
+      return R.drawable.dt_action_bar_logo;
    }
 }

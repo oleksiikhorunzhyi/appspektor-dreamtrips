@@ -141,7 +141,6 @@ public class TripMapFragment extends RxBaseFragment<TripMapPresenter> implements
    public void onResume() {
       super.onResume();
       mapView.onResume();
-      getActivity().setTitle(R.string.trips);
       backStackDelegate.setListener(this::onBackPressed);
    }
 

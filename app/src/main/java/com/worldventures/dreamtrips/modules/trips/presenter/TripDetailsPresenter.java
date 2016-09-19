@@ -44,8 +44,8 @@ public class TripDetailsPresenter extends BaseTripPresenter<TripDetailsPresenter
    public void onResume() {
       super.onResume();
       boolean isSoldOut = trip.isSoldOut();
-      boolean canBook = featureManager.available(Feature.BOOK_TRAVEL);
-      boolean showSignUpLabel = !featureManager.available(Feature.BOOK_TRAVEL);
+      boolean canBook = featureManager.available(Feature.BOOK_TRIP);
+      boolean showSignUpLabel = !canBook;
 
       if (showSignUpLabel) view.showSignUp();
 

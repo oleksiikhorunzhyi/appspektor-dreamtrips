@@ -10,14 +10,13 @@ import com.worldventures.dreamtrips.wallet.domain.entity.SmartCard;
 import com.worldventures.dreamtrips.wallet.service.WizardInteractor;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletPresenter;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.WalletScreen;
+import com.worldventures.dreamtrips.wallet.ui.common.navigation.Navigator;
 import com.worldventures.dreamtrips.wallet.ui.settings.WalletCardSettingsPath;
 import com.worldventures.dreamtrips.wallet.ui.wizard.finish.WalletPinIsSetPath;
 import com.worldventures.dreamtrips.wallet.ui.wizard.success.WalletSuccessPath;
 
 import javax.inject.Inject;
 
-import flow.Flow;
-import flow.History;
 import io.techery.janet.helper.ActionStateSubscriber;
 import io.techery.janet.smartcard.action.settings.StartPinSetupAction;
 import io.techery.janet.smartcard.event.PinSetupFinishedEvent;
@@ -27,6 +26,7 @@ public class WizardPinSetupPresenter extends WalletPresenter<WizardPinSetupPrese
    private final SmartCard smartCard;
    private final boolean isResetProcess;
 
+   @Inject Navigator navigator;
    @Inject WizardInteractor wizardInteractor;
 
    public WizardPinSetupPresenter(Context context, Injector injector, SmartCard smartCard, boolean isResetProcess) {
@@ -36,7 +36,7 @@ public class WizardPinSetupPresenter extends WalletPresenter<WizardPinSetupPrese
    }
 
    public void goToBack() {
-      Flow.get(getContext()).goBack();
+      navigator.goBack();
    }
 
    @Override
@@ -72,13 +72,13 @@ public class WizardPinSetupPresenter extends WalletPresenter<WizardPinSetupPrese
 
    private void navigateToNextScreen() {
       if (isResetProcess) {
-         Flow.get(getContext()).set(new WalletSuccessPath(
+         navigator.go(new WalletSuccessPath(
                getContext().getString(R.string.wallet_wizard_setup_pin_title),
                getContext().getString(R.string.wallet_done_label),
                getContext().getString(R.string.wallet_wizard_setup_new_pin_success),
                new WalletCardSettingsPath()));
       } else {
-         Flow.get(getContext()).setHistory(History.single(new WalletPinIsSetPath(smartCard)), Flow.Direction.FORWARD);
+         navigator.single(new WalletPinIsSetPath(smartCard));
       }
    }
 

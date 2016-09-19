@@ -1,6 +1,5 @@
 package com.worldventures.dreamtrips.wallet.ui.wizard.welcome;
 
-
 import android.content.Context;
 import android.os.Parcelable;
 import android.text.TextUtils;
@@ -15,18 +14,19 @@ import com.worldventures.dreamtrips.wallet.service.command.LoadImageForSmartCard
 import com.worldventures.dreamtrips.wallet.service.command.SmartCardAvatarCommand;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletPresenter;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.WalletScreen;
+import com.worldventures.dreamtrips.wallet.ui.common.navigation.Navigator;
 import com.worldventures.dreamtrips.wallet.ui.wizard.profile.WizardEditProfilePath;
 
 import java.io.File;
 
 import javax.inject.Inject;
 
-import flow.Flow;
 import io.techery.janet.helper.ActionStateSubscriber;
 import timber.log.Timber;
 
 public class WizardWelcomePresenter extends WalletPresenter<WizardWelcomePresenter.Screen, Parcelable> {
 
+   @Inject Navigator navigator;
    @Inject SessionHolder<UserSession> appSessionHolder;
    @Inject SmartCardAvatarInteractor smartCardAvatarInteractor;
 
@@ -68,11 +68,11 @@ public class WizardWelcomePresenter extends WalletPresenter<WizardWelcomePresent
    }
 
    public void setupCardClicked() {
-      Flow.get(getContext()).set(new WizardEditProfilePath(smartCardId));
+      navigator.go(new WizardEditProfilePath(smartCardId));
    }
 
    public void backButtonClicked() {
-      Flow.get(getContext()).goBack();
+      navigator.goBack();
    }
 
    public interface Screen extends WalletScreen {

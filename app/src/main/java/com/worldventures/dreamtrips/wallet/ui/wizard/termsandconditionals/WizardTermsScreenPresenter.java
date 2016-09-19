@@ -8,13 +8,13 @@ import com.techery.spares.module.Injector;
 import com.worldventures.dreamtrips.wallet.service.command.http.FetchTermsAndConditionsCommand;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletPresenter;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.WalletScreen;
+import com.worldventures.dreamtrips.wallet.ui.common.navigation.Navigator;
 import com.worldventures.dreamtrips.wallet.ui.wizard.splash.WizardSplashPath;
 
 import javax.inject.Inject;
 import javax.inject.Named;
 
-import flow.Flow;
-import flow.History;
+import flow.Flow.Direction;
 import io.techery.janet.Janet;
 
 import static com.worldventures.dreamtrips.core.janet.JanetModule.JANET_WALLET;
@@ -22,6 +22,7 @@ import static com.worldventures.dreamtrips.core.janet.JanetModule.JANET_WALLET;
 public class WizardTermsScreenPresenter extends WalletPresenter<WizardTermsScreenPresenter.Screen, Parcelable> {
 
    @Inject Activity activity;
+   @Inject Navigator navigator;
    @Inject @Named(JANET_WALLET) Janet janet;
 
    public WizardTermsScreenPresenter(Context context, Injector injector) {
@@ -35,8 +36,7 @@ public class WizardTermsScreenPresenter extends WalletPresenter<WizardTermsScree
    }
 
    public void acceptTermsPressed() {
-      History single = History.single(new WizardSplashPath(true));
-      Flow.get(getContext()).setHistory(single, Flow.Direction.BACKWARD);
+      navigator.single(new WizardSplashPath(true), Direction.BACKWARD);
    }
 
    protected void loadTerms() {
@@ -48,7 +48,7 @@ public class WizardTermsScreenPresenter extends WalletPresenter<WizardTermsScree
    }
 
    public void onBack() {
-      Flow.get(getContext()).goBack();
+      navigator.goBack();
    }
 
    public interface Screen extends WalletScreen {

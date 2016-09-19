@@ -5,33 +5,30 @@ import android.os.Parcelable;
 
 import com.techery.spares.module.Injector;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.core.flow.path.StyledPath;
 import com.worldventures.dreamtrips.core.janet.composer.ActionPipeCacheWiper;
 import com.worldventures.dreamtrips.wallet.domain.entity.card.BankCard;
-import com.worldventures.dreamtrips.wallet.domain.entity.card.BankCard.CardType;
 import com.worldventures.dreamtrips.wallet.domain.entity.card.Card;
 import com.worldventures.dreamtrips.wallet.domain.entity.card.ImmutableBankCard;
 import com.worldventures.dreamtrips.wallet.service.SmartCardInteractor;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletPresenter;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.WalletScreen;
 import com.worldventures.dreamtrips.wallet.ui.common.helper.OperationSubscriberWrapper;
+import com.worldventures.dreamtrips.wallet.ui.common.navigation.Navigator;
 import com.worldventures.dreamtrips.wallet.ui.wizard.card_details.AddCardDetailsPath;
 
 import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
 
-import flow.Flow;
-import flow.History;
 import io.techery.janet.helper.ActionStateSubscriber;
 import io.techery.janet.smartcard.action.charger.StartCardRecordingAction;
 import io.techery.janet.smartcard.action.charger.StopCardRecordingAction;
 import io.techery.janet.smartcard.event.CardChargedEvent;
-import io.techery.janet.smartcard.model.Record;
 
 public class WizardChargingPresenter extends WalletPresenter<WizardChargingPresenter.Screen, Parcelable> {
 
    @Inject SmartCardInteractor smartCardInteractor;
+   @Inject Navigator navigator;
 
    public WizardChargingPresenter(Context context, Injector injector) {
       super(context, injector);
@@ -67,7 +64,7 @@ public class WizardChargingPresenter extends WalletPresenter<WizardChargingPrese
    }
 
    public void goBack() {
-      Flow.get(getContext()).goBack();
+      navigator.goBack();
    }
 
    public void cardSwiped(io.techery.janet.smartcard.model.Card card) {
@@ -78,15 +75,7 @@ public class WizardChargingPresenter extends WalletPresenter<WizardChargingPrese
             .expiryYear(Integer.parseInt(card.exp().substring(0, 2)))
             .expiryMonth(Integer.parseInt(card.exp().substring(2, 4)))
             .build();
-      navigate(new AddCardDetailsPath(bankCard));
-   }
-
-   private void navigate(StyledPath styledPath) {
-      Flow flow = Flow.get(getContext());
-      History.Builder historyBuilder = flow.getHistory().buildUpon();
-      historyBuilder.pop();
-      historyBuilder.push(styledPath);
-      flow.setHistory(historyBuilder.build(), Flow.Direction.FORWARD);
+      navigator.withoutLast(new AddCardDetailsPath(bankCard));
    }
 
    public interface Screen extends WalletScreen {

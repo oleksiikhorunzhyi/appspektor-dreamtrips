@@ -31,7 +31,7 @@ import butterknife.InjectView;
 import butterknife.OnClick;
 import cn.pedant.SweetAlert.SweetAlertDialog;
 
-public class CardListScreen extends WalletFrameLayout<CardListScreenPresenter.Screen, CardListScreenPresenter, CardListPath> implements CardListScreenPresenter.Screen {
+public class CardListScreen extends WalletFrameLayout<CardListPresenter.Screen, CardListPresenter, CardListPath> implements CardListPresenter.Screen {
 
    @InjectView(R.id.bank_card_list) RecyclerView bankCardList;
    @InjectView(R.id.empty_card_view) View emptyCardListView;
@@ -48,8 +48,8 @@ public class CardListScreen extends WalletFrameLayout<CardListScreenPresenter.Sc
 
    @NonNull
    @Override
-   public CardListScreenPresenter createPresenter() {
-      return new CardListScreenPresenter(getContext(), getInjector());
+   public CardListPresenter createPresenter() {
+      return new CardListPresenter(getContext(), getInjector());
    }
 
    @Override

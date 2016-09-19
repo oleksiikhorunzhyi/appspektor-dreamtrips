@@ -11,6 +11,7 @@ import com.worldventures.dreamtrips.wallet.service.SmartCardInteractor;
 import com.worldventures.dreamtrips.wallet.service.command.CardStacksCommand;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletPresenter;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.WalletScreen;
+import com.worldventures.dreamtrips.wallet.ui.common.navigation.Navigator;
 import com.worldventures.dreamtrips.wallet.ui.dashboard.detail.CardDetailsPath;
 import com.worldventures.dreamtrips.wallet.ui.dashboard.list.util.CardStackHeaderHolder;
 import com.worldventures.dreamtrips.wallet.ui.dashboard.list.util.CardStackViewModel;
@@ -25,17 +26,17 @@ import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
 
-import flow.Flow;
 import io.techery.janet.helper.ActionStateSubscriber;
 import rx.Observable;
 import timber.log.Timber;
 
 import static com.worldventures.dreamtrips.wallet.service.command.CardStacksCommand.CardStackModel;
 
-public class CardListScreenPresenter extends WalletPresenter<CardListScreenPresenter.Screen, Parcelable> {
+public class CardListPresenter extends WalletPresenter<CardListPresenter.Screen, Parcelable> {
 
    private static final int MAX_CARD_LIMIT = 10;
 
+   @Inject Navigator navigator;
    @Inject SmartCardInteractor smartCardInteractor;
    @Inject NavigationDrawerPresenter navigationDrawerPresenter;
 
@@ -44,7 +45,7 @@ public class CardListScreenPresenter extends WalletPresenter<CardListScreenPrese
 
    private CardStackHeaderHolder cardStackHeaderHolder = ImmutableCardStackHeaderHolder.builder().build();
 
-   public CardListScreenPresenter(Context context, Injector injector) {
+   public CardListPresenter(Context context, Injector injector) {
       super(context, injector);
       cardListStackConverter = new CardListStackConverter(context);
    }
@@ -73,7 +74,7 @@ public class CardListScreenPresenter extends WalletPresenter<CardListScreenPrese
    }
 
    public void showBankCardDetails(BankCard bankCard) {
-      Flow.get(getContext()).set(new CardDetailsPath(bankCard));
+      navigator.go(new CardDetailsPath(bankCard));
    }
 
    public void navigationClick() {
@@ -81,12 +82,12 @@ public class CardListScreenPresenter extends WalletPresenter<CardListScreenPrese
    }
 
    public void onSettingsChosen() {
-      Flow.get(getContext()).set(new WalletCardSettingsPath());
+      navigator.go(new WalletCardSettingsPath());
    }
 
    public void addCardRequired() {
       if (cardLoaded < MAX_CARD_LIMIT) {
-         Flow.get(getContext()).set(new WizardChargingPath());
+         navigator.go(new WizardChargingPath());
       } else {
          getView().showAddCardErrorDialog();
       }

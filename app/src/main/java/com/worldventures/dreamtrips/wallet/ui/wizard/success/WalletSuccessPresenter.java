@@ -6,10 +6,13 @@ import android.os.Parcelable;
 import com.techery.spares.module.Injector;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletPresenter;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.WalletScreen;
+import com.worldventures.dreamtrips.wallet.ui.common.navigation.Navigator;
 
-import flow.Flow;
+import javax.inject.Inject;
 
 public class WalletSuccessPresenter extends WalletPresenter<WalletSuccessPresenter.Screen, Parcelable> {
+
+   @Inject Navigator navigator;
 
    private final ScreenContent screenContent;
 
@@ -27,11 +30,11 @@ public class WalletSuccessPresenter extends WalletPresenter<WalletSuccessPresent
    }
 
    public void goToBack() {
-      Flow.get(getContext()).goBack();
+      navigator.goBack();
    }
 
    public void goToNext() {
-      Flow.get(getContext()).set(screenContent.nextPath());
+      navigator.go(screenContent.nextPath());
    }
 
    public interface Screen extends WalletScreen {

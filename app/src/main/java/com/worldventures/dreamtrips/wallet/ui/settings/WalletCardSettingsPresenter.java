@@ -13,6 +13,7 @@ import com.worldventures.dreamtrips.wallet.service.command.SetStealthModeCommand
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletPresenter;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.WalletScreen;
 import com.worldventures.dreamtrips.wallet.ui.common.helper.OperationSubscriberWrapper;
+import com.worldventures.dreamtrips.wallet.ui.common.navigation.Navigator;
 import com.worldventures.dreamtrips.wallet.ui.settings.disabledefaultcard.WalletDisableDefaultCardPath;
 import com.worldventures.dreamtrips.wallet.ui.settings.removecards.WalletAutoClearCardsPath;
 import com.worldventures.dreamtrips.wallet.ui.wizard.pin.WizardPinSetupPath;
@@ -20,12 +21,12 @@ import com.worldventures.dreamtrips.wallet.util.ThrowableHelper;
 
 import javax.inject.Inject;
 
-import flow.Flow;
 import io.techery.janet.smartcard.action.support.DisconnectAction;
 import rx.Observable;
 
 public class WalletCardSettingsPresenter extends WalletPresenter<WalletCardSettingsPresenter.Screen, Parcelable> {
 
+   @Inject Navigator navigator;
    @Inject SmartCardInteractor smartCardInteractor;
    @Inject ThrowableHelper throwableHelper;
 
@@ -133,19 +134,19 @@ public class WalletCardSettingsPresenter extends WalletPresenter<WalletCardSetti
    }
 
    public void goBack() {
-      Flow.get(getContext()).goBack();
+      navigator.goBack();
    }
 
    public void resetPin() {
-      Flow.get(getContext()).set(new WizardPinSetupPath(smartCard, WizardPinSetupPath.Action.RESET));
+      navigator.go(new WizardPinSetupPath(smartCard, WizardPinSetupPath.Action.RESET));
    }
 
    public void disableDefaultCardTimer() {
-      Flow.get(getContext()).set(new WalletDisableDefaultCardPath());
+      navigator.go(new WalletDisableDefaultCardPath());
    }
 
    public void autoClearSmartCardClick() {
-      Flow.get(getContext()).set(new WalletAutoClearCardsPath());
+      navigator.go(new WalletAutoClearCardsPath());
    }
 
    private void stealthModeChanged(boolean isEnabled) {

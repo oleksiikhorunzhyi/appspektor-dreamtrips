@@ -1,6 +1,5 @@
 package com.worldventures.dreamtrips.wallet.ui.wizard.finish;
 
-import android.app.Activity;
 import android.content.Context;
 import android.os.Parcelable;
 
@@ -13,17 +12,15 @@ import com.worldventures.dreamtrips.wallet.service.command.ActivateSmartCardComm
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletPresenter;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.WalletScreen;
 import com.worldventures.dreamtrips.wallet.ui.common.helper.OperationSubscriberWrapper;
+import com.worldventures.dreamtrips.wallet.ui.common.navigation.Navigator;
 import com.worldventures.dreamtrips.wallet.ui.dashboard.list.CardListPath;
 
 import javax.inject.Inject;
 
-import flow.Flow;
-import flow.History;
-
 public class WalletPinIsSetPresenter extends WalletPresenter<WalletPinIsSetPresenter.Screen, Parcelable> {
 
    @Inject WizardInteractor wizardInteractor;
-   @Inject Activity activity;
+   @Inject Navigator navigator;
 
    private final SmartCard smartCard;
 
@@ -46,7 +43,7 @@ public class WalletPinIsSetPresenter extends WalletPresenter<WalletPinIsSetPrese
    }
 
    public void goBack() {
-      activity.onBackPressed();
+      navigator.goBack();
    }
 
    public void activateSmartCard() {
@@ -54,7 +51,7 @@ public class WalletPinIsSetPresenter extends WalletPresenter<WalletPinIsSetPrese
    }
 
    private void navigateToDashboardScreen() {
-      Flow.get(getContext()).setHistory(History.single(new CardListPath()), Flow.Direction.REPLACE);
+      navigator.single(new CardListPath());
    }
 
    public interface Screen extends WalletScreen {

@@ -1,10 +1,14 @@
 package com.worldventures.dreamtrips.wallet.di;
 
+import android.app.Activity;
+
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.component.ComponentDescription;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletActivityPresenter;
+import com.worldventures.dreamtrips.wallet.ui.common.navigation.FlowNavigator;
+import com.worldventures.dreamtrips.wallet.ui.common.navigation.Navigator;
 import com.worldventures.dreamtrips.wallet.ui.dashboard.detail.CardDetailsPresenter;
-import com.worldventures.dreamtrips.wallet.ui.dashboard.list.CardListScreenPresenter;
+import com.worldventures.dreamtrips.wallet.ui.dashboard.list.CardListPresenter;
 import com.worldventures.dreamtrips.wallet.ui.dashboard.list.util.cell.BankCardCell;
 import com.worldventures.dreamtrips.wallet.ui.dashboard.list.util.cell.CardStackCell;
 import com.worldventures.dreamtrips.wallet.ui.dashboard.list.util.cell.CardStackHeaderCell;
@@ -24,6 +28,8 @@ import com.worldventures.dreamtrips.wallet.ui.wizard.welcome.WizardWelcomePresen
 import com.worldventures.dreamtrips.wallet.ui.wizard.splash.WizardSplashPresenter;
 import com.worldventures.dreamtrips.wallet.ui.wizard.success.WalletSuccessPresenter;
 import com.worldventures.dreamtrips.wallet.ui.wizard.termsandconditionals.WizardTermsScreenPresenter;
+
+import javax.inject.Singleton;
 
 import dagger.Module;
 import dagger.Provides;
@@ -46,7 +52,7 @@ import dagger.Provides;
             WalletPinIsSetPresenter.class,
             WizardChargingPresenter.class,
             CardDetailsPresenter.class,
-            CardListScreenPresenter.class,
+            CardListPresenter.class,
             WalletCardSettingsPresenter.class,
             WalletSuccessPresenter.class,
             AddCardDetailsPresenter.class,
@@ -63,5 +69,11 @@ public class WalletActivityModule {
    @Provides(type = Provides.Type.SET)
    ComponentDescription provideWalletComponent() {
       return new ComponentDescription(WALLET, R.string.wallet, R.string.wallet, R.drawable.ic_wallet, true, null);
+   }
+
+   @Singleton
+   @Provides
+   Navigator provideNavigator(Activity activity) {
+      return new FlowNavigator(activity);
    }
 }

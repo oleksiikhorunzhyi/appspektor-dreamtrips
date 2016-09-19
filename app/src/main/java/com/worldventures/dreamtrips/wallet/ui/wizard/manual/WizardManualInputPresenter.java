@@ -15,16 +15,17 @@ import com.worldventures.dreamtrips.wallet.service.command.http.AssociateCardUse
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletPresenter;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.WalletScreen;
 import com.worldventures.dreamtrips.wallet.ui.common.helper.OperationSubscriberWrapper;
+import com.worldventures.dreamtrips.wallet.ui.common.navigation.Navigator;
 import com.worldventures.dreamtrips.wallet.ui.wizard.welcome.WizardWelcomePath;
 
 import javax.inject.Inject;
 
-import flow.Flow;
 import rx.Observable;
 import timber.log.Timber;
 
 public class WizardManualInputPresenter extends WalletPresenter<WizardManualInputPresenter.Screen, Parcelable> {
 
+   @Inject Navigator navigator;
    @Inject WizardInteractor wizardInteractor;
    @Inject Activity activity;
 
@@ -54,7 +55,7 @@ public class WizardManualInputPresenter extends WalletPresenter<WizardManualInpu
             .subscribe(OperationSubscriberWrapper.<CreateAndConnectToCardCommand>forView(getView().provideOperationDelegate())
                   .onStart(getContext().getString(R.string.waller_wizard_scan_barcode_progress_label))
                   .onSuccess(getContext().getString(R.string.wallet_got_it_label),
-                        command -> Flow.get(getContext()).set(new WizardWelcomePath(command.getCode()))
+                        command -> navigator.go(new WizardWelcomePath(command.getCode()))
                   )
                   .onFail(throwable -> new OperationSubscriberWrapper.MessageActionHolder<>(getContext().getString(R.string.wallet_wizard_scid_validation_error),
                         command -> Timber.e("Could not connect to device")))
@@ -72,7 +73,7 @@ public class WizardManualInputPresenter extends WalletPresenter<WizardManualInpu
    }
 
    public void goBack() {
-      Flow.get(getContext()).goBack();
+      navigator.goBack();
    }
 
    public interface Screen extends WalletScreen {

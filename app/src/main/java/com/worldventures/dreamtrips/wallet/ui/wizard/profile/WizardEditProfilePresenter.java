@@ -23,6 +23,7 @@ import com.worldventures.dreamtrips.wallet.service.command.SmartCardAvatarComman
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletPresenter;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.WalletScreen;
 import com.worldventures.dreamtrips.wallet.ui.common.helper.OperationSubscriberWrapper;
+import com.worldventures.dreamtrips.wallet.ui.common.navigation.Navigator;
 import com.worldventures.dreamtrips.wallet.ui.wizard.pin.WizardPinSetupPath;
 import com.worldventures.dreamtrips.wallet.util.FormatException;
 
@@ -30,7 +31,6 @@ import java.io.File;
 
 import javax.inject.Inject;
 
-import flow.Flow;
 import io.techery.janet.helper.ActionStateSubscriber;
 import rx.Observable;
 import timber.log.Timber;
@@ -38,6 +38,7 @@ import timber.log.Timber;
 public class WizardEditProfilePresenter extends WalletPresenter<WizardEditProfilePresenter.Screen, Parcelable> {
 
    @Inject Activity activity;
+   @Inject Navigator navigator;
    @Inject SmartCardAvatarInteractor smartCardAvatarInteractor;
    @Inject WizardInteractor wizardInteractor;
    @Inject SessionHolder<UserSession> appSessionHolder;
@@ -92,9 +93,8 @@ public class WizardEditProfilePresenter extends WalletPresenter<WizardEditProfil
             .compose(new ActionPipeCacheWiper<>(wizardInteractor.setupUserDataPipe()))
             .subscribe(OperationSubscriberWrapper.<SetupUserDataCommand>forView(getView().provideOperationDelegate()).onStart(getContext()
                   .getString(R.string.wallet_edit_profile_progress_dialog))
-                  .onSuccess(getContext().getString(R.string.wallet_edit_profile_success_dialog), setupUserDataCommand -> Flow
-                        .get(getContext())
-                        .set(new WizardPinSetupPath(setupUserDataCommand.getResult())))
+                  .onSuccess(getContext().getString(R.string.wallet_edit_profile_success_dialog), setupUserDataCommand ->
+                        navigator.go(new WizardPinSetupPath(setupUserDataCommand.getResult())))
                   .onFail(throwable -> createFailMessageActionHolder(throwable.getCause()))
                   .wrap());
    }
@@ -119,7 +119,7 @@ public class WizardEditProfilePresenter extends WalletPresenter<WizardEditProfil
 
    public void goToBack() {
       getView().hidePhotoPicker();
-      Flow.get(getContext()).goBack();
+      navigator.goBack();
    }
 
    public void choosePhoto() {

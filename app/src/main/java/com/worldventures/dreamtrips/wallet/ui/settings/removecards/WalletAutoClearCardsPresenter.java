@@ -10,15 +10,13 @@ import com.worldventures.dreamtrips.wallet.service.command.SetAutoClearSmartCard
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletPresenter;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.WalletScreen;
 import com.worldventures.dreamtrips.wallet.ui.common.helper.OperationSubscriberWrapper;
-
-import java.util.concurrent.TimeUnit;
+import com.worldventures.dreamtrips.wallet.ui.common.navigation.Navigator;
 
 import javax.inject.Inject;
 
-import flow.Flow;
-
 public class WalletAutoClearCardsPresenter extends WalletPresenter<WalletAutoClearCardsPresenter.Screen, Parcelable> {
 
+   @Inject Navigator navigator;
    @Inject SmartCardInteractor smartCardInteractor;
 
    public WalletAutoClearCardsPresenter(Context context, Injector injector) {
@@ -33,7 +31,7 @@ public class WalletAutoClearCardsPresenter extends WalletPresenter<WalletAutoCle
    }
 
    public void goBack() {
-      Flow.get(getContext()).goBack();
+      navigator.goBack();
    }
 
    /**

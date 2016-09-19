@@ -10,13 +10,13 @@ import com.worldventures.dreamtrips.wallet.service.command.SetDisableDefaultCard
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletPresenter;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.WalletScreen;
 import com.worldventures.dreamtrips.wallet.ui.common.helper.OperationSubscriberWrapper;
+import com.worldventures.dreamtrips.wallet.ui.common.navigation.Navigator;
 
 import javax.inject.Inject;
 
-import flow.Flow;
-
 public class WalletDisableDefaultCardPresenter extends WalletPresenter<WalletDisableDefaultCardPresenter.Screen, Parcelable> {
 
+   @Inject Navigator navigator;
    @Inject SmartCardInteractor smartCardInteractor;
 
    public WalletDisableDefaultCardPresenter(Context context, Injector injector) {
@@ -31,7 +31,7 @@ public class WalletDisableDefaultCardPresenter extends WalletPresenter<WalletDis
    }
 
    void goBack() {
-      Flow.get(getContext()).goBack();
+      navigator.goBack();
    }
 
    /**

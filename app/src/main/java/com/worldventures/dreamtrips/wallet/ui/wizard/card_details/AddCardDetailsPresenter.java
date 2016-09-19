@@ -24,6 +24,7 @@ import com.worldventures.dreamtrips.wallet.service.command.http.FetchRecordIssue
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletPresenter;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.WalletScreen;
 import com.worldventures.dreamtrips.wallet.ui.common.helper.OperationSubscriberWrapper;
+import com.worldventures.dreamtrips.wallet.ui.common.navigation.Navigator;
 import com.worldventures.dreamtrips.wallet.ui.dashboard.list.CardListPath;
 import com.worldventures.dreamtrips.wallet.util.BankCardHelper;
 import com.worldventures.dreamtrips.wallet.util.CardUtils;
@@ -32,8 +33,7 @@ import com.worldventures.dreamtrips.wallet.util.SmartCardInteractorHelper;
 
 import javax.inject.Inject;
 
-import flow.Flow;
-import flow.History;
+import flow.Flow.Direction;
 import io.techery.janet.Command;
 import io.techery.janet.helper.ActionStateToActionTransformer;
 import rx.Observable;
@@ -41,6 +41,7 @@ import timber.log.Timber;
 
 public class AddCardDetailsPresenter extends WalletPresenter<AddCardDetailsPresenter.Screen, Parcelable> {
 
+   @Inject Navigator navigator;
    @Inject LocaleHelper localeHelper;
    @Inject BankCardHelper bankCardHelper;
    @Inject SmartCardInteractor smartCardInteractor;
@@ -131,8 +132,8 @@ public class AddCardDetailsPresenter extends WalletPresenter<AddCardDetailsPrese
             .compose(new ActionPipeCacheWiper<>(smartCardInteractor.saveCardDetailsDataPipe()))
             .subscribe(OperationSubscriberWrapper.<SaveCardDetailsDataCommand>forView(getView().provideOperationDelegate())
                   .onStart("")
-                  .onSuccess(saveCardDetailsDataCommand -> Flow.get(getContext())
-                        .setHistory(History.single(new CardListPath()), Flow.Direction.REPLACE))
+                  .onSuccess(saveCardDetailsDataCommand ->
+                        navigator.single(new CardListPath(), Direction.REPLACE))
                   .onFail(throwable -> {
                      Context context = getContext();
                      String msg = throwable.getCause() instanceof FormatException ? context.getString(R.string.wallet_add_card_details_error_message) : context
@@ -175,7 +176,7 @@ public class AddCardDetailsPresenter extends WalletPresenter<AddCardDetailsPrese
    }
 
    public void goBack() {
-      Flow.get(getContext()).goBack();
+      navigator.goBack();
    }
 
    public interface Screen extends WalletScreen {

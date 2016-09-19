@@ -18,12 +18,12 @@ import com.worldventures.dreamtrips.wallet.service.command.SetDefaultCardOnDevic
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletPresenter;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.WalletScreen;
 import com.worldventures.dreamtrips.wallet.ui.common.helper.OperationSubscriberWrapper;
+import com.worldventures.dreamtrips.wallet.ui.common.navigation.Navigator;
 import com.worldventures.dreamtrips.wallet.util.BankCardHelper;
 import com.worldventures.dreamtrips.wallet.util.CardUtils;
 
 import javax.inject.Inject;
 
-import flow.Flow;
 import io.techery.janet.smartcard.action.records.DeleteRecordAction;
 import rx.Observable;
 
@@ -31,6 +31,7 @@ import static java.lang.Integer.valueOf;
 
 public class CardDetailsPresenter extends WalletPresenter<CardDetailsPresenter.Screen, Parcelable> {
 
+   @Inject Navigator navigator;
    @Inject LocaleHelper localeHelper;
    @Inject SmartCardInteractor smartCardInteractor;
    @Inject BankCardHelper bankCardHelper;
@@ -76,7 +77,7 @@ public class CardDetailsPresenter extends WalletPresenter<CardDetailsPresenter.S
             .compose(new ActionPipeCacheWiper<>(smartCardInteractor.deleteCardPipe()))
             .subscribe(OperationSubscriberWrapper.<DeleteRecordAction>forView(getView().provideOperationDelegate())
                   .onStart(getContext().getString(R.string.wallet_card_details_progress_delete, bankCard.title()))
-                  .onSuccess(deleteRecordAction -> Flow.get(getContext()).goBack())
+                  .onSuccess(deleteRecordAction -> navigator.goBack())
                   .onFail(getContext().getString(R.string.error_something_went_wrong))
                   .wrap());
    }
@@ -141,7 +142,7 @@ public class CardDetailsPresenter extends WalletPresenter<CardDetailsPresenter.S
    }
 
    public void goBack() {
-      Flow.get(getContext()).goBack();
+      navigator.goBack();
    }
 
    public interface Screen extends WalletScreen {

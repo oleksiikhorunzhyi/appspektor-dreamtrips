@@ -1,6 +1,7 @@
 package com.worldventures.dreamtrips.wallet.ui.wizard.barcode;
 
 import android.content.Context;
+import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
 import android.support.v7.widget.Toolbar;
 import android.util.AttributeSet;
@@ -13,15 +14,12 @@ import com.worldventures.dreamtrips.wallet.ui.common.base.screen.delegate.Dialog
 
 import butterknife.InjectView;
 import butterknife.OnClick;
-import cn.pedant.SweetAlert.SweetAlertDialog;
 import me.dm7.barcodescanner.zxing.ZXingScannerView;
 
 public class WizardScanBarcodeScreen extends WalletFrameLayout<WizardScanBarcodePresenter.Screen, WizardScanBarcodePresenter, WizardScanBarcodePath> implements WizardScanBarcodePresenter.Screen, ZXingScannerView.ResultHandler {
+
    @InjectView(R.id.toolbar) Toolbar toolbar;
-
    @InjectView(R.id.scanner_view) ZXingScannerView scanner;
-
-   private SweetAlertDialog progressDialog;
 
    public WizardScanBarcodeScreen(Context context) {
       super(context);
@@ -52,6 +50,7 @@ public class WizardScanBarcodeScreen extends WalletFrameLayout<WizardScanBarcode
       scanner.stopCamera();
    }
 
+   @NonNull
    @Override
    public WizardScanBarcodePresenter createPresenter() {
       return new WizardScanBarcodePresenter(getContext(), getInjector());

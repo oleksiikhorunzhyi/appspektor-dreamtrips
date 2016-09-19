@@ -5,6 +5,7 @@ import android.support.annotation.Nullable;
 import com.worldventures.dreamtrips.core.janet.cache.CacheBundle;
 import com.worldventures.dreamtrips.core.janet.cache.CachedAction;
 import com.worldventures.dreamtrips.core.janet.cache.storage.ActionStorage;
+import com.worldventures.dreamtrips.core.janet.cache.storage.ClearableStorage;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem.BucketType;
 import com.worldventures.dreamtrips.modules.bucketlist.service.command.RecentlyAddedBucketsFromPopularCommand;
@@ -16,7 +17,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import static com.worldventures.dreamtrips.modules.bucketlist.service.command.RecentlyAddedBucketsFromPopularCommand.BUCKET_TYPE_EXTRA;
 
-public class RecentlyAddedBucketItemStorage implements ActionStorage<List<BucketItem>> {
+public class RecentlyAddedBucketItemStorage implements ActionStorage<List<BucketItem>>, ClearableStorage {
    private Map<BucketType, List<BucketItem>> mapOfItems = new ConcurrentHashMap<>();
 
    @Override
@@ -42,5 +43,10 @@ public class RecentlyAddedBucketItemStorage implements ActionStorage<List<Bucket
       if (bundle == null || !bundle.contains(BUCKET_TYPE_EXTRA)) {
          throw new AssertionError("No bucket type parameter found");
       }
+   }
+
+   @Override
+   public void clearMemory() {
+      mapOfItems.clear();
    }
 }

@@ -27,6 +27,12 @@ public class BucketMemoryStorage extends MemoryStorage<List<BucketItem>> {
       return cache.get(userId);
    }
 
+   @Override
+   public void clearMemory() {
+      super.clearMemory();
+      cache.clear();
+   }
+
    protected void checkBundle(@Nullable CacheBundle bundle) {
       if (bundle == null) {
          throw new IllegalArgumentException("User id should been provided");

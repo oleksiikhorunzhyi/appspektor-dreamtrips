@@ -7,7 +7,7 @@ import com.worldventures.dreamtrips.core.janet.cache.CacheBundle;
 import java.util.ArrayList;
 import java.util.List;
 
-public class PaginatedMemoryStorage<T> implements PaginatedStorage<List<T>> {
+public class PaginatedMemoryStorage<T> implements PaginatedStorage<List<T>>, ClearableStorage {
 
    private List<T> cache = new ArrayList<>();
 
@@ -22,5 +22,10 @@ public class PaginatedMemoryStorage<T> implements PaginatedStorage<List<T>> {
    @Override
    public synchronized List<T> get(@Nullable CacheBundle params) {
       return cache;
+   }
+
+   @Override
+   public void clearMemory() {
+      cache.clear();
    }
 }

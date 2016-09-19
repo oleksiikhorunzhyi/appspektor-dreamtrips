@@ -69,6 +69,11 @@ public class JanetModule {
       return builder.build();
    }
 
+   @Singleton
+   @Provides
+   SessionActionPipeCreator provideSessionActionPipeCreator(Janet janet) {
+      return new SessionActionPipeCreator(janet);
+   }
 
    @Named(JANET_QUALIFIER)
    @Provides

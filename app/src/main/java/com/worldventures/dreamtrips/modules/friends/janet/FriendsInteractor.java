@@ -1,10 +1,11 @@
 package com.worldventures.dreamtrips.modules.friends.janet;
 
+import com.worldventures.dreamtrips.core.janet.SessionActionPipeCreator;
+
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
 import io.techery.janet.ActionPipe;
-import io.techery.janet.Janet;
 import rx.schedulers.Schedulers;
 
 @Singleton
@@ -18,13 +19,13 @@ public class FriendsInteractor {
    private ActionPipe<AddFriendCommand> addFriendPipe;
 
    @Inject
-   public FriendsInteractor(Janet janet) {
-      deleteRequestPipe = janet.createPipe(DeleteFriendRequestCommand.class, Schedulers.io());
-      acceptRequestPipe= janet.createPipe(ActOnFriendRequestCommand.Accept.class, Schedulers.io());
-      rejectRequestPipe= janet.createPipe(ActOnFriendRequestCommand.Reject.class, Schedulers.io());
-      acceptAllPipe = janet.createPipe(AcceptAllFriendRequestsCommand.class, Schedulers.io());
-      addFriendPipe = janet.createPipe(AddFriendCommand.class, Schedulers.io());
-      removeFriendPipe = janet.createPipe(RemoveFriendCommand.class, Schedulers.io());
+   public FriendsInteractor(SessionActionPipeCreator sessionActionPipeCreator) {
+      deleteRequestPipe = sessionActionPipeCreator.createPipe(DeleteFriendRequestCommand.class, Schedulers.io());
+      acceptRequestPipe= sessionActionPipeCreator.createPipe(ActOnFriendRequestCommand.Accept.class, Schedulers.io());
+      rejectRequestPipe= sessionActionPipeCreator.createPipe(ActOnFriendRequestCommand.Reject.class, Schedulers.io());
+      acceptAllPipe = sessionActionPipeCreator.createPipe(AcceptAllFriendRequestsCommand.class, Schedulers.io());
+      addFriendPipe = sessionActionPipeCreator.createPipe(AddFriendCommand.class, Schedulers.io());
+      removeFriendPipe = sessionActionPipeCreator.createPipe(RemoveFriendCommand.class, Schedulers.io());
    }
 
    public ActionPipe<DeleteFriendRequestCommand> deleteRequestPipe() {

@@ -2,6 +2,7 @@ package com.worldventures.dreamtrips.modules.dtl.service;
 
 import com.worldventures.dreamtrips.api.dtl.merchants.EstimationHttpAction;
 import com.worldventures.dreamtrips.api.dtl.merchants.RatingHttpAction;
+import com.worldventures.dreamtrips.core.janet.SessionActionPipeCreator;
 import com.worldventures.dreamtrips.modules.dtl.service.action.DtlEarnPointsAction;
 import com.worldventures.dreamtrips.modules.dtl.service.action.DtlTransactionAction;
 
@@ -16,11 +17,12 @@ public class DtlTransactionInteractor {
    private final ActionPipe<DtlEarnPointsAction> earnPointsActionPipe;
    private final ActionPipe<DtlTransactionAction> transactionActionPipe;
 
-   public DtlTransactionInteractor(Janet janet, Janet apiLibJanet) {
-      estimatePointsActionPipe = apiLibJanet.createPipe(EstimationHttpAction.class, Schedulers.io());
-      rateActionPipe = apiLibJanet.createPipe(RatingHttpAction.class, Schedulers.io());
-      earnPointsActionPipe = janet.createPipe(DtlEarnPointsAction.class, Schedulers.io());
-      transactionActionPipe = janet.createPipe(DtlTransactionAction.class, Schedulers.io());
+   public DtlTransactionInteractor(SessionActionPipeCreator sessionActionPipeCreator, Janet apiLibJanet) {
+      estimatePointsActionPipe = sessionActionPipeCreator.createPipe(apiLibJanet, EstimationHttpAction.class,
+            Schedulers.io());
+      rateActionPipe = sessionActionPipeCreator.createPipe(apiLibJanet, RatingHttpAction.class, Schedulers.io());
+      earnPointsActionPipe = sessionActionPipeCreator.createPipe(DtlEarnPointsAction.class, Schedulers.io());
+      transactionActionPipe = sessionActionPipeCreator.createPipe(DtlTransactionAction.class, Schedulers.io());
    }
 
    public ActionPipe<EstimationHttpAction> estimatePointsActionPipe() {

@@ -1,5 +1,6 @@
 package com.worldventures.dreamtrips.modules.auth.service;
 
+import com.worldventures.dreamtrips.core.janet.SessionActionPipeCreator;
 import com.worldventures.dreamtrips.modules.auth.api.command.UnsubribeFromPushCommand;
 import com.worldventures.dreamtrips.modules.auth.api.command.UpdateUserCommand;
 
@@ -11,9 +12,9 @@ public class AuthInteractor {
    protected ActionPipe<UnsubribeFromPushCommand> unsubribeFromPushPipe;
    protected ActionPipe<UpdateUserCommand> updateUserPipe;
 
-   public AuthInteractor(Janet janet) {
-      unsubribeFromPushPipe = janet.createPipe(UnsubribeFromPushCommand.class, Schedulers.io());
-      updateUserPipe = janet.createPipe(UpdateUserCommand.class, Schedulers.io());
+   public AuthInteractor(SessionActionPipeCreator sessionActionPipeCreator) {
+      unsubribeFromPushPipe = sessionActionPipeCreator.createPipe(UnsubribeFromPushCommand.class, Schedulers.io());
+      updateUserPipe = sessionActionPipeCreator.createPipe(UpdateUserCommand.class, Schedulers.io());
    }
 
    public ActionPipe<UnsubribeFromPushCommand> unsubribeFromPushPipe() {

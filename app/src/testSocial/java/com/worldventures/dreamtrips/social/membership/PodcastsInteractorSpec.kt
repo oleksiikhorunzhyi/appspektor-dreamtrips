@@ -5,6 +5,7 @@ import com.nhaarman.mockito_kotlin.verify
 import com.worldventures.dreamtrips.AssertUtil.assertActionSuccess
 import com.worldventures.dreamtrips.BaseSpec
 import com.worldventures.dreamtrips.api.podcasts.model.ImmutablePodcast
+import com.worldventures.dreamtrips.core.janet.SessionActionPipeCreator
 import com.worldventures.dreamtrips.core.repository.SnappyRepository
 import com.worldventures.dreamtrips.modules.mapping.mapper.PodcastsMapper
 import com.worldventures.dreamtrips.modules.membership.command.GetPodcastsCommand
@@ -57,7 +58,7 @@ class PodcastsInteractorSpec : BaseSpec({
          daggerCommandActionService.registerProvider(SnappyRepository::class.java) { mockDb }
          daggerCommandActionService.registerProvider(PodcastsMapper::class.java) { PodcastsMapper() }
 
-         podcastsInteractor = PodcastsInteractor(janet)
+         podcastsInteractor = PodcastsInteractor(SessionActionPipeCreator(janet))
       }
 
       fun mockHttpService(podcasts: List<com.worldventures.dreamtrips.api.podcasts.model.Podcast>): MockHttpActionService {

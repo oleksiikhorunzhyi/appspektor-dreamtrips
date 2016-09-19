@@ -1,5 +1,6 @@
 package com.worldventures.dreamtrips.core.module;
 
+import com.worldventures.dreamtrips.core.janet.SessionActionPipeCreator;
 import com.worldventures.dreamtrips.core.utils.tracksystem.AdobeTracker;
 import com.worldventures.dreamtrips.core.utils.tracksystem.AnalyticsInteractor;
 import com.worldventures.dreamtrips.core.utils.tracksystem.ApptentiveTracker;
@@ -28,7 +29,7 @@ public class AnalyticsModule {
 
    @Singleton
    @Provides
-   AnalyticsInteractor provideAnalyticsInteractor(Janet janet) {
-      return new AnalyticsInteractor(janet);
+   AnalyticsInteractor provideAnalyticsInteractor(SessionActionPipeCreator sessionActionPipeCreator) {
+      return new AnalyticsInteractor(sessionActionPipeCreator);
    }
 }

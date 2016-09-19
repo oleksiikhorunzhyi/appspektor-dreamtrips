@@ -1,5 +1,6 @@
 package com.worldventures.dreamtrips.modules.bucketlist.service;
 
+import com.worldventures.dreamtrips.core.janet.SessionActionPipeCreator;
 import com.worldventures.dreamtrips.modules.bucketlist.service.action.ChangeOrderHttpAction;
 import com.worldventures.dreamtrips.modules.bucketlist.service.action.CreateBucketItemHttpAction;
 import com.worldventures.dreamtrips.modules.bucketlist.service.action.DeleteItemHttpAction;
@@ -16,7 +17,6 @@ import com.worldventures.dreamtrips.modules.bucketlist.service.command.UploadPho
 
 import io.techery.janet.ActionPipe;
 import io.techery.janet.CancelException;
-import io.techery.janet.Janet;
 import io.techery.janet.WriteActionPipe;
 import io.techery.janet.helper.ActionStateSubscriber;
 import rx.Observable;
@@ -38,22 +38,22 @@ public final class BucketInteractor {
    private final WriteActionPipe<MergeBucketItemPhotosWithStorageCommand> mergeBucketItemPhotosWithStorageCommandPipe;
    private final ActionPipe<RecentlyAddedBucketsFromPopularCommand> recentlyAddedBucketsFromPopularCommandPipe;
 
-   public BucketInteractor(Janet janet) {
-      loadBucketListPipe = janet.createPipe(LoadBucketListFullHttpAction.class, Schedulers.io());
-      createBucketPipe = janet.createPipe(CreateBucketItemHttpAction.class, Schedulers.io());
-      updateItemPipe = janet.createPipe(UpdateItemHttpAction.class, Schedulers.io());
-      moveItemPipe = janet.createPipe(ChangeOrderHttpAction.class, Schedulers.io());
-      markItemAsDonePipe = janet.createPipe(MarkItemAsDoneHttpAction.class, Schedulers.io());
-      deleteItemPipe = janet.createPipe(DeleteItemHttpAction.class, Schedulers.io());
-      deleteItemPhotoPipe = janet.createPipe(DeleteItemPhotoCommand.class, Schedulers.io());
-      addBucketItemPhotoPipe = janet.createPipe(AddBucketItemPhotoCommand.class, Schedulers.io());
+   public BucketInteractor(SessionActionPipeCreator sessionActionPipeCreator) {
+      loadBucketListPipe = sessionActionPipeCreator.createPipe(LoadBucketListFullHttpAction.class, Schedulers.io());
+      createBucketPipe = sessionActionPipeCreator.createPipe(CreateBucketItemHttpAction.class, Schedulers.io());
+      updateItemPipe = sessionActionPipeCreator.createPipe(UpdateItemHttpAction.class, Schedulers.io());
+      moveItemPipe = sessionActionPipeCreator.createPipe(ChangeOrderHttpAction.class, Schedulers.io());
+      markItemAsDonePipe = sessionActionPipeCreator.createPipe(MarkItemAsDoneHttpAction.class, Schedulers.io());
+      deleteItemPipe = sessionActionPipeCreator.createPipe(DeleteItemHttpAction.class, Schedulers.io());
+      deleteItemPhotoPipe = sessionActionPipeCreator.createPipe(DeleteItemPhotoCommand.class, Schedulers.io());
+      addBucketItemPhotoPipe = sessionActionPipeCreator.createPipe(AddBucketItemPhotoCommand.class, Schedulers.io());
 
-      bucketListActionPipe = janet.createPipe(BucketListCommand.class, Schedulers.io());
-      findBucketItemByPhotoActionPipe = janet.createPipe(FindBucketItemByPhotoCommand.class, Schedulers.immediate());
-      uploadPhotoControllerCommandPipe = janet.createPipe(UploadPhotoControllerCommand.class, Schedulers.immediate());
-      mergeBucketItemPhotosWithStorageCommandPipe = janet.createPipe(MergeBucketItemPhotosWithStorageCommand.class, Schedulers
+      bucketListActionPipe = sessionActionPipeCreator.createPipe(BucketListCommand.class, Schedulers.io());
+      findBucketItemByPhotoActionPipe = sessionActionPipeCreator.createPipe(FindBucketItemByPhotoCommand.class, Schedulers.immediate());
+      uploadPhotoControllerCommandPipe = sessionActionPipeCreator.createPipe(UploadPhotoControllerCommand.class, Schedulers.immediate());
+      mergeBucketItemPhotosWithStorageCommandPipe = sessionActionPipeCreator.createPipe(MergeBucketItemPhotosWithStorageCommand.class, Schedulers
             .immediate());
-      recentlyAddedBucketsFromPopularCommandPipe = janet.createPipe(RecentlyAddedBucketsFromPopularCommand.class, Schedulers
+      recentlyAddedBucketsFromPopularCommandPipe = sessionActionPipeCreator.createPipe(RecentlyAddedBucketsFromPopularCommand.class, Schedulers
             .immediate());
 
       connect();

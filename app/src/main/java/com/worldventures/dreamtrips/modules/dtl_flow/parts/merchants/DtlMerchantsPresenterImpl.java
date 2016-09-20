@@ -13,18 +13,17 @@ import com.worldventures.dreamtrips.modules.dtl.analytics.MerchantsListingViewEv
 import com.worldventures.dreamtrips.modules.dtl.event.ToggleMerchantSelectionEvent;
 import com.worldventures.dreamtrips.modules.dtl.helper.MerchantHelper;
 import com.worldventures.dreamtrips.modules.dtl.helper.holder.MerchantByIdParamsHolder;
-import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchant;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.Merchant;
+import com.worldventures.dreamtrips.modules.dtl.model.merchant.ThinMerchant;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.filter.DtlFilterData;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.offer.Offer;
 import com.worldventures.dreamtrips.modules.dtl.service.DtlFilterMerchantInteractor;
 import com.worldventures.dreamtrips.modules.dtl.service.DtlLocationInteractor;
 import com.worldventures.dreamtrips.modules.dtl.service.DtlMerchantInteractor;
 import com.worldventures.dreamtrips.modules.dtl.service.action.DtlFilterDataAction;
-import com.worldventures.dreamtrips.modules.dtl.service.action.DtlFilterMerchantsAction;
 import com.worldventures.dreamtrips.modules.dtl.service.action.DtlLocationCommand;
-import com.worldventures.dreamtrips.modules.dtl.service.action.DtlMerchantsAction;
 import com.worldventures.dreamtrips.modules.dtl.service.action.MerchantByIdCommand;
+import com.worldventures.dreamtrips.modules.dtl.service.action.ThinMerchantsCommand;
 import com.worldventures.dreamtrips.modules.dtl_flow.DtlPresenterImpl;
 import com.worldventures.dreamtrips.modules.dtl_flow.FlowUtil;
 import com.worldventures.dreamtrips.modules.dtl_flow.ViewState;
@@ -44,7 +43,8 @@ import io.techery.janet.helper.ActionStateSubscriber;
 import io.techery.janet.helper.ActionStateToActionTransformer;
 import rx.Observable;
 
-public class DtlMerchantsPresenterImpl extends DtlPresenterImpl<DtlMerchantsScreen, ViewState.EMPTY> implements DtlMerchantsPresenter {
+public class DtlMerchantsPresenterImpl extends DtlPresenterImpl<DtlMerchantsScreen, ViewState.EMPTY>
+      implements DtlMerchantsPresenter {
 
    @Inject DtlFilterMerchantInteractor filterInteractor;
    @Inject DtlMerchantInteractor merchantInteractor;
@@ -63,7 +63,7 @@ public class DtlMerchantsPresenterImpl extends DtlPresenterImpl<DtlMerchantsScre
       super.onAttachedToWindow();
       apiErrorPresenter.setView(getView());
       //
-      merchantInteractor.merchantsActionPipe()
+      merchantInteractor.thinMerchantsHttpPipe()
             .observe()
             .compose(bindView())
             .compose(new ActionStateToActionTransformer())
@@ -82,16 +82,16 @@ public class DtlMerchantsPresenterImpl extends DtlPresenterImpl<DtlMerchantsScre
             .map(DtlLocationCommand::getResult)
             .compose(bindViewIoToMainComposer())
             .subscribe(location -> {
-               merchantInteractor.merchantsActionPipe().send(DtlMerchantsAction.load(location.getCoordinates()
+               merchantInteractor.thinMerchantsHttpPipe().send(ThinMerchantsCommand.load(location.getCoordinates()
                      .asAndroidLocation()));
                initialized = true;
             });
       //
-      merchantInteractor.merchantsActionPipe()
+      merchantInteractor.thinMerchantsHttpPipe()
             .observe()
             .compose(bindViewIoToMainComposer())
             .compose(new ActionStateToActionTransformer<>())
-            .map(DtlMerchantsAction::getResult)
+            .map(ThinMerchantsCommand::getResult)
             .filter(List::isEmpty)
             .subscribe(s -> showEmptyView(), e -> {});
       //
@@ -124,7 +124,13 @@ public class DtlMerchantsPresenterImpl extends DtlPresenterImpl<DtlMerchantsScre
                   .onProgress(this::onProgressMerchantLoad)
                   .onFail(this::onFailMerchantLoad));
       //
-      bindToolbarLocationCaptionUpdates(); // TODO :: not needed??
+      merchantInteractor.thinMerchantsHttpPipe()
+            .observeSuccessWithReplay()
+            .compose(bindViewIoToMainComposer())
+            .map(ThinMerchantsCommand::getResult)
+            .subscribe(items -> getView().setItems(items));
+      //
+      bindToolbarLocationCaptionUpdates(); // TODO :: 15.09.16 not needed?
    }
 
    private void bindToolbarLocationCaptionUpdates() {
@@ -146,19 +152,12 @@ public class DtlMerchantsPresenterImpl extends DtlPresenterImpl<DtlMerchantsScre
    }
 
    private void connectService() {
-      merchantInteractor.merchantsActionPipe()
+      merchantInteractor.thinMerchantsHttpPipe()
             .observeWithReplay()
             .compose(bindViewIoToMainComposer())
-            .subscribe(new ActionStateSubscriber<DtlMerchantsAction>().onStart(action -> getView().showProgress())
+            .subscribe(new ActionStateSubscriber<ThinMerchantsCommand>()
+                  .onStart(action -> getView().showProgress())
                   .onFail(apiErrorPresenter::handleActionError));
-
-      filterInteractor.filterMerchantsActionPipe()//observe data
-            .observeWithReplay()
-            .compose(bindViewIoToMainComposer())
-            .subscribe(new ActionStateSubscriber<DtlFilterMerchantsAction>().onFail((action, throwable) -> {
-               getView().hideProgress();
-               apiErrorPresenter.handleActionError(action, throwable);
-            }).onSuccess(action -> getView().setItems(action.getResult())));
    }
 
    @Override
@@ -177,18 +176,19 @@ public class DtlMerchantsPresenterImpl extends DtlPresenterImpl<DtlMerchantsScre
    }
 
    @Override
-   public void onOfferClick(DtlMerchant dtlMerchant, Offer offer) {
+   public void onOfferClick(ThinMerchant dtlMerchant, Offer offer) {
       loadMerchant(dtlMerchant, offer.id());
    }
 
    @Override
    public void retryLoadMerchant() {
       if (actionParamsHolder == null) return;
+      //
       merchantInteractor.merchantByIdHttpPipe().send(MerchantByIdParamsHolder.toAction(actionParamsHolder));
    }
 
    @Override
-   public void merchantClicked(DtlMerchant merchant) {
+   public void merchantClicked(ThinMerchant merchant) {
       Observable.combineLatest(filterInteractor.filterDataPipe()
             .observeSuccessWithReplay()
             .first()
@@ -207,8 +207,8 @@ public class DtlMerchantsPresenterImpl extends DtlPresenterImpl<DtlMerchantsScre
       loadMerchant(merchant, null);
    }
 
-   private void loadMerchant(DtlMerchant merchant, @Nullable String expandedOfferId) {
-      merchantInteractor.merchantByIdHttpPipe().send(MerchantByIdCommand.create(merchant.getId(), expandedOfferId));
+   private void loadMerchant(ThinMerchant merchant, @Nullable String expandedOfferId) {
+      merchantInteractor.merchantByIdHttpPipe().send(MerchantByIdCommand.create(merchant.id(), expandedOfferId));
    }
 
    private void showEmptyView() {
@@ -259,6 +259,6 @@ public class DtlMerchantsPresenterImpl extends DtlPresenterImpl<DtlMerchantsScre
    }
 
    public void onEventMainThread(ToggleMerchantSelectionEvent event) {
-      getView().toggleSelection(event.getDtlMerchant());
+      //getView().toggleSelection(event.getDtlMerchant()); TODO :: toggle selection
    }
 }

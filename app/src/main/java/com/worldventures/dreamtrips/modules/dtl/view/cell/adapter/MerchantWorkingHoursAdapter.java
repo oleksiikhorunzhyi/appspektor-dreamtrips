@@ -38,6 +38,6 @@ public class MerchantWorkingHoursAdapter extends BaseArrayListAdapter<OperationD
    }
 
    private void bindMerchantHolder(WorkingHoursCell cell) {
-      cell.setTimezone(MerchantHelper.merchantTimeOffset(merchant));
+      cell.setTimezone(MerchantHelper.merchantTimeOffset(merchant.timeZone()));
    }
 }

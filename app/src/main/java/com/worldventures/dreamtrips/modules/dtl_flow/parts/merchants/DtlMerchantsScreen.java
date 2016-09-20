@@ -4,6 +4,8 @@ import android.support.annotation.Nullable;
 
 import com.worldventures.dreamtrips.modules.dtl.model.location.DtlLocation;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchant;
+import com.worldventures.dreamtrips.modules.dtl.model.merchant.Merchant;
+import com.worldventures.dreamtrips.modules.dtl.model.merchant.ThinMerchant;
 import com.worldventures.dreamtrips.modules.dtl_flow.DtlScreen;
 
 import java.util.List;
@@ -16,7 +18,7 @@ public interface DtlMerchantsScreen extends DtlScreen {
 
    void updateToolbarSearchCaption(@Nullable String searchCaption);
 
-   void setItems(List<DtlMerchant> dtlMerchants);
+   void setItems(List<ThinMerchant> merchants);
 
    void showProgress();
 
@@ -24,7 +26,7 @@ public interface DtlMerchantsScreen extends DtlScreen {
 
    void showError(String error);
 
-   void toggleSelection(DtlMerchant DtlMerchant);
+   void toggleSelection(ThinMerchant merchant);
 
    void toggleDiningFilterSwitch(boolean enabled);
 

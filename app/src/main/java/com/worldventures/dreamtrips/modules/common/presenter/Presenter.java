@@ -30,6 +30,7 @@ import icepick.Icepick;
 import io.techery.janet.CancelException;
 import rx.Observable;
 import rx.Subscription;
+import rx.android.schedulers.AndroidSchedulers;
 import rx.subjects.PublishSubject;
 import timber.log.Timber;
 
@@ -208,13 +209,13 @@ public class Presenter<VT extends Presenter.View> implements RequestingPresenter
    private void subscribeToConnectivityStateUpdates() {
       // since there is no replay functionality in the lib make delegate check it straight away
       connectivityEventsSubscription = Observable.merge(Observable.just(null), ReactiveNetwork.observeNetworkConnectivity(context))
-            .compose(bindViewToMainComposer())
+            .compose(bindView())
+            .observeOn(AndroidSchedulers.mainThread())
             .subscribe(connectivity -> {
                if (view.isVisibleOnScreen() && offlineWarningDelegate.needToShowOfflineAlert(context)) {
-                  Timber.d("Show alert -- class %s", getClass().getSimpleName());
                   view.showOfflineAlert();
                }
-            });
+            }, e -> Timber.e(e, "Could not subscribe to network events"));
    }
 
    protected boolean canShowOfflineAlert() {

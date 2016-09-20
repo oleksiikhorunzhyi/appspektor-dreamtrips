@@ -5,20 +5,18 @@ import com.google.maps.android.clustering.ClusterItem;
 
 public class TripClusterItem implements ClusterItem {
 
-   private MapObjectHolder mapObjectHolder;
+   private Pin pin;
 
-   public TripClusterItem(MapObjectHolder mapObjectHolder) {
-      this.mapObjectHolder = mapObjectHolder;
+   public TripClusterItem(Pin pin) {
+      this.pin = pin;
    }
 
    @Override
    public LatLng getPosition() {
-      return new LatLng(mapObjectHolder.getItem().getCoordinates().getLat(), mapObjectHolder.getItem()
-            .getCoordinates()
-            .getLng());
+      return new LatLng(pin.getCoordinates().getLat(), pin.getCoordinates().getLng());
    }
 
-   public MapObjectHolder getMapObjectHolder() {
-      return mapObjectHolder;
+   public Pin getPin() {
+      return pin;
    }
 }

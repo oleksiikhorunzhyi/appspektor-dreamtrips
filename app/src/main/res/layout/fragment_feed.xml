@@ -45,6 +45,7 @@
                      android:layout_width="wrap_content"
                      android:layout_height="wrap_content"
                      android:drawableLeft="@drawable/ic_profile_post_normal"
+                     android:drawablePadding="@dimen/spacing_small"
                      android:gravity="center"
                      android:padding="@dimen/spacing_medium"
                      android:text="@string/feed_share_post"
@@ -73,6 +74,7 @@
                      android:layout_width="wrap_content"
                      android:layout_height="wrap_content"
                      android:drawableLeft="@drawable/ic_post_add_image_normal"
+                     android:drawablePadding="@dimen/spacing_small"
                      android:gravity="center"
                      android:padding="@dimen/spacing_medium"
                      android:text="@string/feed_share_photos"
@@ -116,8 +118,10 @@
             android:layout_width="wrap_content"
             android:layout_height="0dp"
             android:layout_gravity="center_horizontal"
-            android:layout_weight="0.8"
+            android:layout_weight="1"
             android:src="@drawable/empty_feed_placeholder"
+            android:layout_marginTop="16dp"
+            android:layout_marginBottom="16dp"
             />
 
       <LinearLayout
@@ -132,7 +136,6 @@
                android:layout_width="wrap_content"
                android:layout_height="wrap_content"
                android:layout_gravity="center_horizontal"
-               android:layout_marginTop="16dp"
                android:alpha="0.54"
                android:gravity="center"
                android:text="@string/no_feed"
@@ -145,7 +148,8 @@
                android:layout_width="wrap_content"
                android:layout_height="wrap_content"
                android:layout_gravity="center_horizontal"
-               android:layout_marginTop="8dp"
+               android:layout_marginTop="@dimen/spacing_normal"
+               android:layout_marginBottom="@dimen/spacing_normal"
                android:src="@drawable/freedraw_arrow"
                />
 
@@ -168,7 +172,8 @@
                   android:layout_width="wrap_content"
                   android:layout_height="wrap_content"
                   android:layout_gravity="center_vertical"
-                  android:padding="8dp"
+                  android:paddingLeft="8dp"
+                  android:paddingRight="8dp"
                   android:text="@string/search_friends"
                   android:textColor="@color/theme_main"
                   android:textSize="20sp"

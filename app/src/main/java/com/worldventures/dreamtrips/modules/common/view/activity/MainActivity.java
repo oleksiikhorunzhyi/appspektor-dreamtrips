@@ -67,6 +67,7 @@ public class MainActivity extends ActivityWithPresenter<MainActivityPresenter> i
 
    @State ComponentDescription currentComponent;
    @State boolean toolbarGone;
+   @State int defaultActionBarContentInset;
 
    private NavigationDrawerPresenter navigationDrawerPresenter;
 
@@ -108,7 +109,7 @@ public class MainActivity extends ActivityWithPresenter<MainActivityPresenter> i
          if(fromActivityClazz == null) fromActivityClazz = this.getClass();
       }
       //
-      setSupportActionBar(this.toolbar);
+      setupActionBar();
       setUpBurger();
       setUpMenu();
       //
@@ -129,7 +130,7 @@ public class MainActivity extends ActivityWithPresenter<MainActivityPresenter> i
       if (currentFragment == null) {
          itemSelected(currentComponent, fromActivityClazz);
       } else {
-         setTitle(currentComponent.getToolbarTitle());
+         initActionBar(currentComponent);
          navigationDrawerPresenter.setCurrentComponent(currentComponent);
       }
    }
@@ -142,8 +143,21 @@ public class MainActivity extends ActivityWithPresenter<MainActivityPresenter> i
 
    @Override
    public void setTitle(int title) {
-      if (title != 0) getSupportActionBar().setTitle(title);
-      else getSupportActionBar().setTitle("");
+      if (title != 0) {
+         getSupportActionBar().setTitle(title);
+         toolbar.setContentInsetStartWithNavigation(defaultActionBarContentInset);
+      } else {
+         getSupportActionBar().setTitle("");
+      }
+   }
+
+   public void setToolbarLogo(int logo) {
+      if (logo != 0) {
+         getSupportActionBar().setLogo(logo);
+         toolbar.setContentInsetStartWithNavigation(0);
+      } else {
+         getSupportActionBar().setLogo(null);
+      }
    }
 
    @Override
@@ -154,6 +168,13 @@ public class MainActivity extends ActivityWithPresenter<MainActivityPresenter> i
       } else {
          toolbar.setVisibility(View.VISIBLE);
          toolbar.getBackground().setAlpha(255);
+      }
+   }
+
+   private void setupActionBar() {
+      setSupportActionBar(toolbar);
+      if (defaultActionBarContentInset == 0) {
+         defaultActionBarContentInset = toolbar.getContentInsetStartWithNavigation();
       }
    }
 
@@ -204,6 +225,11 @@ public class MainActivity extends ActivityWithPresenter<MainActivityPresenter> i
       navigationDrawerPresenter.setOnLogout(this::logout);
    }
 
+   private void initActionBar(ComponentDescription component) {
+      setTitle(component.getToolbarTitle());
+      setToolbarLogo(component.getToolbarLogo());
+   }
+
    private void itemSelected(ComponentDescription component, Class<? extends Activity> activitySender) {
       if (component.getKey().equals(MessengerActivityModule.MESSENGER)) {
          MessengerActivity.startMessenger(this);
@@ -251,7 +277,7 @@ public class MainActivity extends ActivityWithPresenter<MainActivityPresenter> i
    }
 
    private void openComponent(ComponentDescription component, @Nullable Bundle args) {
-      setTitle(component.getToolbarTitle());
+      initActionBar(component);
       Fragment currentFragment = getSupportFragmentManager().findFragmentById(R.id.container_main);
       // check if current
       boolean theSame = currentFragment != null && currentFragment.getClass().equals(component.getFragmentClass());
@@ -365,15 +391,15 @@ public class MainActivity extends ActivityWithPresenter<MainActivityPresenter> i
    @Override
    protected void onTopLevelBackStackPopped() {
       super.onTopLevelBackStackPopped();
-      updateTitle();
+      updateCurrentComponentTitle();
    }
 
-   protected void updateTitle() {
+   protected void updateCurrentComponentTitle() {
       currentComponent = this.rootComponentsProvider.getComponent(getSupportFragmentManager());
       //
       if (rootComponentsProvider.getActiveComponents().contains(currentComponent)) {
          navigationDrawerPresenter.setCurrentComponent(currentComponent);
-         setTitle(currentComponent.getToolbarTitle());
+         initActionBar(currentComponent);
          makeActionBarGone(currentComponent.isSkipGeneralToolbar());
       }
    }

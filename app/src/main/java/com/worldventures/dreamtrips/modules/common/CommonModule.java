@@ -52,7 +52,6 @@ import com.worldventures.dreamtrips.modules.settings.SettingsModule;
 import com.worldventures.dreamtrips.modules.trips.TripsModule;
 import com.worldventures.dreamtrips.modules.tripsimages.TripsImagesModule;
 import com.worldventures.dreamtrips.modules.video.VideoModule;
-import com.worldventures.dreamtrips.modules.video.api.DownloadFileListener;
 import com.worldventures.dreamtrips.modules.video.presenter.PresentationVideosPresenter;
 import com.worldventures.dreamtrips.wallet.di.WalletActivityModule;
 import com.worldventures.dreamtrips.wallet.ui.WalletActivity;
@@ -82,17 +81,16 @@ import dagger.Provides;
             Player360Activity.class,
             FilterableArrayListAdapter.class,
             DraggableArrayListAdapter.class,
-            DownloadFileListener.class,
             PresentationVideosPresenter.class,
             MessengerActivity.class,
-            DtlActivity.class, WalletActivity.class,
+            PodcastPlayerActivity.class,
+            DtlActivity.class,
             ComponentActivity.class,
             ComponentPresenter.class,
             CopyFileCommand.class,
             ProgressDialogFragment.class,
             MessageDialogFragment.class,
             PhotoPickerLayout.class,
-            PodcastPlayerActivity.class,
 
             DialogFragmentNavigator.NavigationDialogFragment.class,
             BaseImageFragment.class,

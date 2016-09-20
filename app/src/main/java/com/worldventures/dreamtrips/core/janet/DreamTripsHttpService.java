@@ -69,7 +69,7 @@ public class DreamTripsHttpService extends ActionServiceWrapper {
       action.setLanguageHeader(localeHelper.getDefaultLocaleFormatted());
       if (action instanceof AuthorizedHttpAction && appSessionHolder.get().isPresent()) {
          UserSession userSession = appSessionHolder.get().get();
-         ((AuthorizedHttpAction) action).setAuthorizationHeader("Token token=" + userSession.getApiToken());
+         ((AuthorizedHttpAction) action).setAuthorizationHeader(NewDreamTripsHttpService.getAuthorizationHeader(userSession.getApiToken()));
       }
    }
 

@@ -586,8 +586,6 @@
    <string name="error_fail_to_load_videos">Det gick inte att ladda videoklipp</string>
    <string name="error_fail_to_like_item">Det gick inte att gilla objekt</string>
    <string name="error_fail_to_unlike_item">Det gick inte att ogilla objekt</string>
-   <string name="error_fail_to_mark_notification">Det gick inte att markera meddelande</string>
-   <string name="error_fail_to_mark_notifications">Det gick inte att markera meddelanden</string>
    <string name="tag_people">Tagga personer</string>
 
    <string name="say_something">Berätta något för världen</string>

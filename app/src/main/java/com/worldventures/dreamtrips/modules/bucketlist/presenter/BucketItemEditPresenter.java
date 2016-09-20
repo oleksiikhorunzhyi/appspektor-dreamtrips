@@ -96,14 +96,17 @@ public class BucketItemEditPresenter extends BucketDetailsBasePresenter<BucketIt
       savingItem = true;
 
       view.bind(bucketInteractor.updatePipe()
-            .createObservableResult(new UpdateItemHttpAction(createBucketPostBody()))
-            .observeOn(AndroidSchedulers.mainThread())
-            .map(UpdateItemHttpAction::getResponse)).subscribe(item -> {
-         if (savingItem) {
-            savingItem = false;
-            view.done();
-         }
-      }, this::handleError);
+            .createObservable(new UpdateItemHttpAction(createBucketPostBody()))
+            .observeOn(AndroidSchedulers.mainThread()))
+            .subscribe(new ActionStateSubscriber<UpdateItemHttpAction>().onSuccess(result -> {
+               if (savingItem) {
+                  savingItem = false;
+                  view.done();
+               }
+            }).onFail((updateItemHttpAction, throwable) -> {
+               view.hideLoading();
+               super.handleError(updateItemHttpAction, throwable);
+            }));
    }
 
    public Date getDate() {
@@ -120,7 +123,7 @@ public class BucketItemEditPresenter extends BucketDetailsBasePresenter<BucketIt
                .createObservable(new DeleteItemPhotoCommand(bucketItem, bucketPhoto))
                .observeOn(AndroidSchedulers.mainThread())).subscribe(new ActionStateSubscriber<DeleteItemPhotoCommand>()
                .onSuccess(deleteItemPhotoAction -> view.deleteImage(EntityStateHolder.create(bucketPhoto, EntityStateHolder.State.DONE)))
-               .onFail((deleteItemPhotoAction, throwable) -> handleError(throwable)));
+               .onFail(this::handleError));
       }
    }
 

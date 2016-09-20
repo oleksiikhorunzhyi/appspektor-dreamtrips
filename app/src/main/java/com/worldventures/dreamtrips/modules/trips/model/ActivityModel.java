@@ -4,13 +4,12 @@ import android.os.Parcel;
 
 import com.esotericsoftware.kryo.DefaultSerializer;
 import com.esotericsoftware.kryo.serializers.CompatibleFieldSerializer;
-import com.google.gson.annotations.SerializedName;
 import com.worldventures.dreamtrips.modules.common.model.BaseEntity;
 
 @DefaultSerializer(CompatibleFieldSerializer.class)
 public class ActivityModel extends BaseEntity {
 
-   @SerializedName("parent_id") private int parentId;
+   private int parentId;
    private int position;
    private String icon;
    private String name;

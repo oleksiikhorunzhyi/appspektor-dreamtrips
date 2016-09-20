@@ -6,6 +6,7 @@ import android.text.TextUtils;
 import com.google.android.gms.iid.InstanceID;
 import com.worldventures.dreamtrips.api.push_notifications.UnsubscribeFromPushNotificationsHttpAction;
 import com.worldventures.dreamtrips.core.janet.JanetModule;
+import com.worldventures.dreamtrips.core.janet.api_lib.NewDreamTripsHttpService;
 import com.worldventures.dreamtrips.core.janet.dagger.InjectableAction;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 
@@ -27,20 +28,30 @@ public class UnsubribeFromPushCommand extends Command<Void> implements Injectabl
    @Inject SnappyRepository snappyRepository;
    @Inject Context context;
 
+   private String sessionToken;
+   private String pushToken;
+
+   public UnsubribeFromPushCommand(String sessionToken, String pushToken) {
+      this.sessionToken = sessionToken;
+      this.pushToken = pushToken;
+   }
+
    @Override
    protected void run(CommandCallback<Void> callback) throws Throwable {
-      String token = snappyRepository.getGcmRegToken();
-
-      if (TextUtils.isEmpty(token)) callback.onSuccess(null);
-      else janet.createPipe(UnsubscribeFromPushNotificationsHttpAction.class, Schedulers.io())
-            .createObservableResult(new UnsubscribeFromPushNotificationsHttpAction(token))
-            .doOnNext(action -> {
-               try {
-                  InstanceID.getInstance(context).deleteInstanceID();
-               } catch (IOException e) {
-                  Timber.e(e, "Failed to delete instance ID");
-               }
-            })
-            .subscribe(action -> callback.onSuccess(null), callback::onFail);
+      if (TextUtils.isEmpty(pushToken)) callback.onSuccess(null);
+      else {
+         UnsubscribeFromPushNotificationsHttpAction unsubscribeFromPushAction = new UnsubscribeFromPushNotificationsHttpAction(sessionToken);
+         unsubscribeFromPushAction.setAuthorizationHeader(NewDreamTripsHttpService.getAuthorizationHeader(sessionToken));
+         janet.createPipe(UnsubscribeFromPushNotificationsHttpAction.class, Schedulers.io())
+               .createObservableResult(new UnsubscribeFromPushNotificationsHttpAction(pushToken))
+               .doOnNext(action -> {
+                  try {
+                     InstanceID.getInstance(context).deleteInstanceID();
+                  } catch (IOException e) {
+                     Timber.e(e, "Failed to delete instance ID");
+                  }
+               })
+               .subscribe(action -> callback.onSuccess(null), callback::onFail);
+      }
    }
 }

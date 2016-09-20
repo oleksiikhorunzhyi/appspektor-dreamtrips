@@ -7,8 +7,7 @@ import com.techery.spares.annotations.Layout;
 import com.techery.spares.ui.view.cell.AbstractDelegateCell;
 import com.techery.spares.ui.view.cell.CellDelegate;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.core.utils.events.ToggleThemeVisibilityEvent;
-import com.worldventures.dreamtrips.modules.trips.model.ThemeHeaderModel;
+import com.worldventures.dreamtrips.modules.trips.model.filter.ThemeHeaderModel;
 
 import butterknife.InjectView;
 import butterknife.OnClick;
@@ -42,10 +41,11 @@ public class HeaderThemeCell extends AbstractDelegateCell<ThemeHeaderModel, Head
 
    @OnClick(R.id.listHeader)
    void toggleVisibility() {
-      getEventBus().post(new ToggleThemeVisibilityEvent());
+      cellDelegate.toggleVisibility();
    }
 
    public interface Delegate extends CellDelegate<ThemeHeaderModel> {
+      void toggleVisibility();
 
       void onCheckBoxAllThemePressedEvent(boolean isChecked);
    }

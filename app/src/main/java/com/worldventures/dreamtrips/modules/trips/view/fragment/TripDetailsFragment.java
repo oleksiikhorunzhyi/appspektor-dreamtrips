@@ -132,7 +132,14 @@ public class TripDetailsFragment extends RxBaseFragmentWithArgs<TripDetailsPrese
    }
 
    @Override
-   public void hideBookIt() {
+   public void disableBookIt() {
+      textViewBookIt.setEnabled(false);
+      textViewBookIt.setBackgroundColor(getResources().getColor(R.color.tripButtonDisabled));
+   }
+
+   @Override
+   public void soldOutTrip() {
+      textViewBookIt.setText(R.string.sold_out_trip);
       textViewBookIt.setEnabled(false);
       textViewBookIt.setBackgroundColor(getResources().getColor(R.color.tripButtonDisabled));
    }
@@ -152,7 +159,7 @@ public class TripDetailsFragment extends RxBaseFragmentWithArgs<TripDetailsPrese
 
    @Override
    public void setup(TripModel tripModel) {
-      tripDetailsViewInjector.initTripData(tripModel, getPresenter().getAccount());
+      tripDetailsViewInjector.initTripData(tripModel);
       if (toolbarLandscape != null)
          ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle(tripModel.getName());
    }

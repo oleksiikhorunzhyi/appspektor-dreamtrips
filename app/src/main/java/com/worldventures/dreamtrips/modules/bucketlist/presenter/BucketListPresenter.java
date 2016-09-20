@@ -75,6 +75,8 @@ public class BucketListPresenter extends Presenter<BucketListPresenter.View> {
 
          view.finishLoading();
          refresh();
+      }, throwable -> {
+         view.finishLoading();
       });
    }
 
@@ -192,7 +194,7 @@ public class BucketListPresenter extends Presenter<BucketListPresenter.View> {
             .observeOn(AndroidSchedulers.mainThread()))
             .subscribe(new ActionStateSubscriber<MarkItemAsDoneHttpAction>().onFail((markItemAsDoneAction, throwable) -> {
                refresh();
-               handleError(throwable);
+               handleError(markItemAsDoneAction, throwable);
             }));
    }
 
@@ -213,7 +215,7 @@ public class BucketListPresenter extends Presenter<BucketListPresenter.View> {
                   .status(NEW)
                   .build()))
             .observeOn(AndroidSchedulers.mainThread()))
-            .subscribe(new ActionStateSubscriber<CreateBucketItemHttpAction>().onFail((bucketListAction, throwable) -> handleError(throwable)));
+            .subscribe(new ActionStateSubscriber<CreateBucketItemHttpAction>().onFail(this::handleError));
    }
 
    public boolean isShowToDO() {

@@ -4,6 +4,7 @@ import android.view.View;
 
 import com.techery.spares.annotations.Layout;
 import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.modules.profile.view.dialog.FriendActionDialogDelegate;
 
 import butterknife.OnClick;
 
@@ -17,6 +18,9 @@ public class MutualFriendCell extends FriendCell {
    @OnClick(R.id.tv_actions)
    public void onAction() {
       sdvAvatar.setDrawingCacheEnabled(true);
-      dialog.showFriendDialogSkipChat(getModelObject(), drawableUtil.copyIntoDrawable(sdvAvatar.getDrawingCache()));
+      new FriendActionDialogDelegate(itemView.getContext())
+            .onFriendPrefsAction(cellDelegate::onOpenPrefs)
+            .onUnfriend(cellDelegate::onUnfriend)
+            .showFriendDialogSkipChat(getModelObject(), drawableUtil.copyIntoDrawable(sdvAvatar.getDrawingCache()));
    }
 }

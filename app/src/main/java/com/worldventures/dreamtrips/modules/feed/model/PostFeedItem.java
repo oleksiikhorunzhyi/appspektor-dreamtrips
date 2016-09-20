@@ -2,6 +2,10 @@ package com.worldventures.dreamtrips.modules.feed.model;
 
 import android.os.Parcel;
 
+import com.esotericsoftware.kryo.DefaultSerializer;
+import com.esotericsoftware.kryo.serializers.CompatibleFieldSerializer;
+
+@DefaultSerializer(CompatibleFieldSerializer.class)
 public class PostFeedItem extends FeedItem<TextualPost> {
 
    public PostFeedItem() {

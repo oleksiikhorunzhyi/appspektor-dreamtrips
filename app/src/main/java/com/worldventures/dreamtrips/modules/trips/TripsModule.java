@@ -69,7 +69,7 @@ public class TripsModule {
 
    private @DrawableRes int getLogo(SessionHolder<UserSession> sessionHolder) {
       String countryCode = sessionHolder.get().get().getUser().getCountryCode();
-      if (countryCode.equalsIgnoreCase(MALAYSIYA_COUNTRY_CODE)) {
+      if (MALAYSIYA_COUNTRY_CODE.equalsIgnoreCase(countryCode)) {
          return R.drawable.dt_action_bar_logo_skyzone;
       }
       return R.drawable.dt_action_bar_logo;

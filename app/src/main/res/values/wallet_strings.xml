@@ -167,4 +167,9 @@
    <string name="wallet_settings_clear_flye_card_1_month">1 month</string>
    <string name="wallet_settings_clear_flye_card_never">Never</string>
 
+   <!--firmware-->
+   <string name="wallet_settings_last_version_title">flye SmartCard Update</string>
+   <string name="wallet_settings_version">Version %s</string>
+   <string name="wallet_settings_last_version">Your flye SmartCard is updated with latest version</string>
+
 </resources>

@@ -14,12 +14,14 @@ import com.worldventures.dreamtrips.BaseRoboelectricTest;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 /**
  * Class to test last message text in conversation list.
  * System messages are not tested since they are tested in SystemMessagesTextProvider test.
  */
+@Ignore
 public class LastMessageTextProviderTest extends BaseRoboelectricTest {
 
     private final static String CURRENT_USER_ID = "6566375";

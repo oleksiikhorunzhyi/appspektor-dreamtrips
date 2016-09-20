@@ -13,10 +13,10 @@ import com.messenger.storage.MessengerDatabase;
 import com.messenger.storage.dao.ConversationsDAO;
 import com.techery.spares.session.SessionHolder;
 import com.techery.spares.storage.complex_objects.Optional;
+import com.worldventures.dreamtrips.core.janet.SessionActionPipeCreator;
 import com.worldventures.dreamtrips.core.session.UserSession;
 import com.worldventures.dreamtrips.core.utils.LocaleHelper;
 import com.worldventures.dreamtrips.janet.MockDaggerActionService;
-import com.worldventures.dreamtrips.modules.common.model.User;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -29,7 +29,6 @@ import rx.Observable;
 import rx.observers.TestSubscriber;
 
 import static junit.framework.Assert.assertEquals;
-import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.doReturn;
 
 @PrepareForTest(MessengerDatabase.class)
@@ -65,7 +64,7 @@ public class ChatMessageInteractorTest extends BaseChatActionDelegateTest {
             .build();
       doReturn(Observable.just(conversationFromBd)).when(conversationsDAO).getConversation(testConversationId);
 
-      chatMessageInteractor = new ChatMessageInteractor(mockJanet());
+      chatMessageInteractor = new ChatMessageInteractor(new SessionActionPipeCreator(mockJanet()));
    }
 
    @Test

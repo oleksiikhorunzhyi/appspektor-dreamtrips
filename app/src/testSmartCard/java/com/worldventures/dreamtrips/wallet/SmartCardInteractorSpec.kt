@@ -12,7 +12,6 @@ import com.worldventures.dreamtrips.core.janet.cache.storage.ActionStorage
 import com.worldventures.dreamtrips.core.janet.cache.storage.MultipleActionStorage
 import com.worldventures.dreamtrips.core.repository.SnappyRepository
 import com.worldventures.dreamtrips.wallet.domain.entity.AddressInfo
-import com.worldventures.dreamtrips.wallet.domain.entity.ImmutableProvision
 import com.worldventures.dreamtrips.wallet.domain.entity.RecordIssuerInfo
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCard
 import com.worldventures.dreamtrips.wallet.domain.entity.card.BankCard
@@ -329,12 +328,7 @@ class SmartCardInteractorSpec : BaseSpec({
       }
 
       fun mockHttpService(): MockHttpActionService {
-         return MockHttpActionService.Builder()
-               .bind(MockHttpActionService.Response(200).body(
-                     ImmutableProvision.builder().memberId("1").userSecret("test").build())) {
-                  it.url.endsWith("create_card")
-               }
-               .build()
+         return MockHttpActionService.Builder().build()
       }
 
       fun CacheResultWrapper.bindStorageSet(storageSet: Set<ActionStorage<*>>): CacheResultWrapper {

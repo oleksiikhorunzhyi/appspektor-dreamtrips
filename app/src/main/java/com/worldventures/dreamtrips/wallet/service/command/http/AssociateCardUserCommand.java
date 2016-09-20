@@ -61,9 +61,9 @@ public class AssociateCardUserCommand extends Command<SmartCardDetails> implemen
 
    private SmartCardDetails convertResponse(com.worldventures.dreamtrips.api.smart_card.user_association.model.SmartCardDetails details) {
       return ImmutableSmartCardDetails.builder()
-            //todo replace it in future. For now server returns stub value 123
+            //todo replace it in future. For now server returns stub values
             .smartCardId(Long.parseLong(smartCardId))
-            .bleAddress(details.bleAddress())
+            .bleAddress("DA:30:55:CF:B4:9E") // dev board address
             .nxtOrderId(details.nxtOrderId())
             .orderDate(details.orderDate())
             .wvOrderId(details.wvOrderId())

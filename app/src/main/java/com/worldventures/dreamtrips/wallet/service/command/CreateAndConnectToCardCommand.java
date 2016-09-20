@@ -6,8 +6,8 @@ import com.worldventures.dreamtrips.core.janet.cache.CachedAction;
 import com.worldventures.dreamtrips.core.janet.cache.ImmutableCacheOptions;
 import com.worldventures.dreamtrips.core.janet.dagger.InjectableAction;
 import com.worldventures.dreamtrips.wallet.domain.entity.ImmutableSmartCard;
-import com.worldventures.dreamtrips.wallet.domain.entity.Provision;
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCard;
+import com.worldventures.dreamtrips.wallet.domain.entity.SmartCardDetails;
 import com.worldventures.dreamtrips.wallet.service.SmartCardInteractor;
 import com.worldventures.dreamtrips.wallet.util.WalletValidateHelper;
 
@@ -18,7 +18,7 @@ import io.techery.janet.ActionHolder;
 import io.techery.janet.Command;
 import io.techery.janet.Janet;
 import io.techery.janet.command.annotations.CommandAction;
-import io.techery.janet.helper.ActionStateToActionTransformer;
+import rx.Observable;
 
 @CommandAction
 public class CreateAndConnectToCardCommand extends Command<Void> implements InjectableAction, CachedAction<SmartCard> {
@@ -26,38 +26,39 @@ public class CreateAndConnectToCardCommand extends Command<Void> implements Inje
    @Inject @Named(JanetModule.JANET_WALLET) Janet janet;
    @Inject SmartCardInteractor smartCardInteractor;
 
-   private String code;
+   private static final String DUMMY_DEVICE_NAME = "DUMMY_DEVICE_NAME"; // deviceName is not used inside SDK
+
+   private SmartCardDetails smartCardDetails;
    private SmartCard smartCard;
 
-   public CreateAndConnectToCardCommand(String code) {
-      this.code = code;
+   private String smartCardId;
+
+   public CreateAndConnectToCardCommand(SmartCardDetails smartCardDetails) {
+      this.smartCardDetails = smartCardDetails;
+      this.smartCardId = String.valueOf(smartCardDetails.smartCardId());
    }
 
    @Override
    protected void run(CommandCallback<Void> callback) throws Throwable {
-      WalletValidateHelper.validateSCIdOrThrow(code);
-      janet.createPipe(CreateCardHttpAction.class)
-            .createObservable(new CreateCardHttpAction(code))
-            .compose(new ActionStateToActionTransformer<>())
-            .map(httpAction -> createSmartCard(httpAction.getResponse()))
+      WalletValidateHelper.validateSCIdOrThrow(smartCardId);
+      Observable.just(createSmartCard())
             .flatMap(smartCard -> smartCardInteractor.connectActionPipe()
                   .createObservableResult(new ConnectSmartCardCommand(smartCard)))
-            // TODO: add next modification operation in this place.
             .doOnNext(command -> this.smartCard = command.getResult())
             .subscribe(connectCommand -> callback.onSuccess(null), callback::onFail);
    }
 
-   public SmartCard createSmartCard(Provision provision) {
+   private SmartCard createSmartCard() {
       return ImmutableSmartCard.builder()
-            .deviceName(provision.memberId())
-            .deviceAddress(provision.userSecret())
-            .smartCardId(code)
+            .deviceName(DUMMY_DEVICE_NAME)
+            .deviceAddress(smartCardDetails.bleAddress())
+            .smartCardId(smartCardId)
             .cardStatus(SmartCard.CardStatus.DRAFT)
             .build();
    }
 
-   public String getCode() {
-      return code;
+   public String getSmartCardId() {
+      return smartCardId;
    }
 
    @Override

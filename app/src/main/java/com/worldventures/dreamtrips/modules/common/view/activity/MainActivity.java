@@ -1,5 +1,6 @@
 package com.worldventures.dreamtrips.modules.common.view.activity;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -50,6 +51,7 @@ import rx.schedulers.Schedulers;
 public class MainActivity extends ActivityWithPresenter<MainActivityPresenter> implements MainActivityPresenter.View {
 
    public static final String COMPONENT_KEY = "MainActivity$ComponentKey";
+   public static final String FROM_ACTIVITY_KEY = "MainActivity$FromActivityKey";
 
    @InjectView(R.id.toolbar_actionbar) protected Toolbar toolbar;
    @InjectView(R.id.drawer) protected DrawerLayout drawerLayout;
@@ -97,8 +99,13 @@ public class MainActivity extends ActivityWithPresenter<MainActivityPresenter> i
       super.afterCreateView(savedInstanceState);
       //
       String keyComponent = null;
-      if (getIntent().getExtras() != null)
-         keyComponent = getIntent().getBundleExtra(ActivityRouter.EXTRA_BUNDLE).getString(COMPONENT_KEY);
+      Class<? extends Activity> fromActivityClazz = this.getClass();
+      if (getIntent().getExtras() != null) {
+         Bundle bundle = getIntent().getBundleExtra(ActivityRouter.EXTRA_BUNDLE);
+         keyComponent = bundle.getString(COMPONENT_KEY);
+         fromActivityClazz = (Class<? extends Activity>) bundle.getSerializable(FROM_ACTIVITY_KEY);
+         if(fromActivityClazz == null) fromActivityClazz = this.getClass();
+      }
       //
       setupActionBar();
       setUpBurger();
@@ -119,7 +126,7 @@ public class MainActivity extends ActivityWithPresenter<MainActivityPresenter> i
       initNavDrawer();
       //
       if (currentFragment == null) {
-         itemSelected(currentComponent);
+         itemSelected(currentComponent, fromActivityClazz);
       } else {
          initActionBar(currentComponent);
          navigationDrawerPresenter.setCurrentComponent(currentComponent);
@@ -212,7 +219,7 @@ public class MainActivity extends ActivityWithPresenter<MainActivityPresenter> i
       //
       navigationDrawerPresenter.attachView(navDrawer, rootComponentsProvider.getActiveComponents());
       navigationDrawerPresenter.setOnItemReselected(this::itemReseleted);
-      navigationDrawerPresenter.setOnItemSelected(this::itemSelected);
+      navigationDrawerPresenter.setOnItemSelected(componentDescription -> itemSelected(componentDescription, this.getClass()));
       navigationDrawerPresenter.setOnLogout(this::logout);
    }
 
@@ -221,14 +228,16 @@ public class MainActivity extends ActivityWithPresenter<MainActivityPresenter> i
       setToolbarLogo(component.getToolbarLogo());
    }
 
-   private void itemSelected(ComponentDescription component) {
+   private void itemSelected(ComponentDescription component, Class<? extends Activity> activitySender) {
       if (component.getKey().equals(MessengerActivityModule.MESSENGER)) {
          MessengerActivity.startMessenger(this);
+         finishActivityIfNeed(activitySender);
          return;
       }
       if (component.getKey().equals(DtlActivityModule.DTL)) {
          closeLeftDrawer();
          DtlActivity.startDtl(this);
+         finishActivityIfNeed(activitySender);
          return;
       }
       //
@@ -242,6 +251,10 @@ public class MainActivity extends ActivityWithPresenter<MainActivityPresenter> i
       //
       currentComponent = component;
       openComponent(component);
+   }
+
+   private void finishActivityIfNeed(Class<? extends Activity> componentSender) {
+      if (this.getClass() != componentSender) this.finish();
    }
 
    @Override

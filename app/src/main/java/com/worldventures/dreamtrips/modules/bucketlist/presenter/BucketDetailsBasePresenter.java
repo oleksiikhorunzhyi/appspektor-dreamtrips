@@ -24,6 +24,7 @@ import java.util.List;
 import javax.inject.Inject;
 
 import icepick.State;
+import io.techery.janet.helper.ActionStateSubscriber;
 import rx.android.schedulers.AndroidSchedulers;
 
 public class BucketDetailsBasePresenter<V extends BucketDetailsBasePresenter.View> extends Presenter<V> {
@@ -132,17 +133,17 @@ public class BucketDetailsBasePresenter<V extends BucketDetailsBasePresenter.Vie
 
    public void saveCover(BucketPhoto photo) {
       view.bind(bucketInteractor.updatePipe()
-            .createObservableResult(new UpdateItemHttpAction(ImmutableBucketCoverBody.builder()
+            .createObservable(new UpdateItemHttpAction(ImmutableBucketCoverBody.builder()
                   .id(bucketItem.getUid())
                   .status(bucketItem.getStatus())
                   .type(bucketItem.getType())
                   .coverId(photo.getFSId())
                   .build()))
-            .map(UpdateItemHttpAction::getResponse)
-            .observeOn(AndroidSchedulers.mainThread())).subscribe(item -> {
-         bucketItem = item;
-         syncUI();
-      }, this::handleError);
+            .observeOn(AndroidSchedulers.mainThread()))
+            .subscribe(new ActionStateSubscriber<UpdateItemHttpAction>().onSuccess(action -> {
+               bucketItem = action.getResponse();
+               syncUI();
+            }).onFail(this::handleError));
    }
 
    @Override

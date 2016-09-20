@@ -19,6 +19,10 @@ import timber.log.Timber;
 
 import static com.worldventures.dreamtrips.util.ThrowableUtils.getCauseByType;
 
+/**
+ * @deprecated use CommandWithError and Presenter.handleError(action, throwable)
+ */
+@Deprecated
 public class ApiErrorPresenter {
 
    ApiErrorView apiErrorView;

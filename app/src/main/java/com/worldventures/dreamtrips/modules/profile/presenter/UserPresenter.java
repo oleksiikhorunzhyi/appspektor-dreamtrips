@@ -15,6 +15,7 @@ import com.worldventures.dreamtrips.modules.common.api.janet.command.CirclesComm
 import com.worldventures.dreamtrips.modules.common.model.FlagData;
 import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.common.presenter.delegate.UidItemDelegate;
+import com.worldventures.dreamtrips.modules.common.view.ApiErrorView;
 import com.worldventures.dreamtrips.modules.common.view.BlockingProgressView;
 import com.worldventures.dreamtrips.modules.feed.event.ItemFlaggedEvent;
 import com.worldventures.dreamtrips.modules.feed.event.LoadFlagEvent;
@@ -73,6 +74,7 @@ public class UserPresenter extends ProfilePresenter<UserPresenter.View, User> {
    @Override
    public void takeView(View view) {
       super.takeView(view);
+      apiErrorPresenter.setView(view);
       subscribeLoadNextFeeds();
       subscribeRefreshFeeds();
    }
@@ -115,12 +117,10 @@ public class UserPresenter extends ProfilePresenter<UserPresenter.View, User> {
    @Override
    protected void loadProfile() {
       view.startLoading();
-      doRequest(new GetPublicProfileQuery(user), this::onProfileLoaded);
-   }
-
-   @Override
-   public boolean isConnected() {
-      return super.isConnected();
+      doRequest(new GetPublicProfileQuery(user), this::onProfileLoaded, spiceException -> {
+         view.finishLoading();
+         super.handleError(spiceException);
+      });
    }
 
    public void onStartChatClicked() {
@@ -249,7 +249,7 @@ public class UserPresenter extends ProfilePresenter<UserPresenter.View, User> {
    }
 
    public void onEvent(LoadFlagEvent event) {
-      if (view.isVisibleOnScreen()) uidItemDelegate.loadFlags(event.getFlaggableView());
+      if (view.isVisibleOnScreen()) uidItemDelegate.loadFlags(event.getFlaggableView(), this::handleError);
    }
 
    public void onEvent(ItemFlaggedEvent event) {
@@ -286,7 +286,7 @@ public class UserPresenter extends ProfilePresenter<UserPresenter.View, User> {
       view.informUser(messageId);
    }
 
-   public interface View extends ProfilePresenter.View, UidItemDelegate.View, BlockingProgressView {
+   public interface View extends ProfilePresenter.View, UidItemDelegate.View, BlockingProgressView, ApiErrorView {
 
       void showAddFriendDialog(List<Circle> circles, Action1<Circle> selectAction);
 

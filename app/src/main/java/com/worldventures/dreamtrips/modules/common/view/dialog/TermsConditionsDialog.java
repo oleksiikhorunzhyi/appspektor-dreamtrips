@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.DialogFragment;
 import android.view.View;
+import android.view.ViewTreeObserver;
 import android.webkit.JavascriptInterface;
 import android.webkit.WebResourceRequest;
 import android.webkit.WebResourceResponse;
@@ -103,9 +104,31 @@ public class TermsConditionsDialog extends BaseDialogFragmentWithPresenter<Terms
          }
          btnAccept.setEnabled(isChecked);
       });
+
+      initAcceptRejectButtons();
+   }
+
+   private void initAcceptRejectButtons() {
       btnAccept.setOnClickListener(v -> presenter.acceptTerms(termsText));
       btnReject.setOnClickListener(v -> presenter.denyTerms());
       btnRetry.setOnClickListener(v -> presenter.loadContent());
+      setEqualAcceptRejectButtonsHeight();
+   }
+
+   private void setEqualAcceptRejectButtonsHeight() {
+      btnAccept.setEnabled(true);
+      final ViewTreeObserver.OnPreDrawListener globalLayoutListener = new ViewTreeObserver.OnPreDrawListener() {
+         @Override
+         public boolean onPreDraw() {
+            int maxHeight = Math.max(btnAccept.getMeasuredHeight(), btnReject.getMeasuredHeight());
+            btnAccept.getLayoutParams().height = maxHeight;
+            btnReject.getLayoutParams().height = maxHeight;
+            btnAccept.getViewTreeObserver().removeOnPreDrawListener(this);
+            btnAccept.setEnabled(false);
+            return true;
+         }
+      };
+      btnAccept.getViewTreeObserver().addOnPreDrawListener(globalLayoutListener);
    }
 
    class ContentJavaScriptInterface {

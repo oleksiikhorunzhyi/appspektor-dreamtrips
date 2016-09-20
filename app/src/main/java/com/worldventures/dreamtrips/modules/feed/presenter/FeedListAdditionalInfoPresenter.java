@@ -11,8 +11,6 @@ import com.worldventures.dreamtrips.modules.common.api.janet.command.CirclesComm
 import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.common.view.BlockingProgressView;
 import com.worldventures.dreamtrips.modules.friends.api.GetFriendsQuery;
-import com.worldventures.dreamtrips.modules.friends.events.UnfriendEvent;
-import com.worldventures.dreamtrips.modules.friends.events.UserClickedEvent;
 import com.worldventures.dreamtrips.modules.friends.model.Circle;
 import com.worldventures.dreamtrips.modules.profile.bundle.UserBundle;
 
@@ -142,15 +140,8 @@ public class FeedListAdditionalInfoPresenter extends FeedItemAdditionalInfoPrese
    // User related events
    ///////////////////////////////////////////////////////////////////////////
 
-   public void onEvent(UserClickedEvent event) {
-      if (view.isVisibleOnScreen()) {
-         view.openUser(new UserBundle(event.getUser()));
-         eventBus.cancelEventDelivery(event);
-      }
-   }
-
-   public void onEvent(UnfriendEvent event) {
-      view.removeFriend(event.getFriend());
+   public void userClicked(User user) {
+      view.openUser(new UserBundle(user));
    }
 
    public interface View extends FeedItemAdditionalInfoPresenter.View, BlockingProgressView {
@@ -162,8 +153,6 @@ public class FeedListAdditionalInfoPresenter extends FeedItemAdditionalInfoPrese
       void setFriends(@NonNull List<User> friends);
 
       void addFriends(@NonNull List<User> friends);
-
-      void removeFriend(@NonNull User friend);
 
       void showCirclePicker(@NonNull List<Circle> circles, @NonNull Circle activeCircle);
 

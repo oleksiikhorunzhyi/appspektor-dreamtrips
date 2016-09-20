@@ -1,5 +1,6 @@
 package com.worldventures.dreamtrips.modules.bucketlist.presenter;
 
+import com.amazonaws.services.s3.model.Bucket;
 import com.octo.android.robospice.persistence.exception.SpiceException;
 import com.worldventures.dreamtrips.core.rx.RxView;
 import com.worldventures.dreamtrips.modules.bucketlist.api.GetPopularLocation;
@@ -17,6 +18,7 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import io.techery.janet.helper.ActionStateSubscriber;
 import rx.android.schedulers.AndroidSchedulers;
 
 import static com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem.COMPLETED;
@@ -66,24 +68,25 @@ public class BucketPopularPresenter extends Presenter<BucketPopularPresenter.Vie
 
    private void add(PopularBucketItem popularBucketItem, boolean done, int position) {
       view.bind(bucketInteractor.createPipe()
-            .createObservableResult(new CreateBucketItemHttpAction(ImmutableBucketBodyImpl.builder()
+            .createObservable(new CreateBucketItemHttpAction(ImmutableBucketBodyImpl.builder()
                   .type(type.getName())
                   .id(String.valueOf(popularBucketItem.getId()))
                   .status(done ? COMPLETED : NEW)
                   .build()))
-            .map(CreateBucketItemHttpAction::getResponse)
-            .observeOn(AndroidSchedulers.mainThread())).subscribe(bucketItem -> {
-         bucketInteractor.recentlyAddedBucketsFromPopularCommandPipe()
-               .send(RecentlyAddedBucketsFromPopularCommand.add(bucketItem));
+            .observeOn(AndroidSchedulers.mainThread()))
+            .subscribe(new ActionStateSubscriber<CreateBucketItemHttpAction>()
+                  .onSuccess(createBucketItemHttpAction -> {
+                     BucketItem bucketItem = createBucketItemHttpAction.getResponse();
+                     bucketInteractor.recentlyAddedBucketsFromPopularCommandPipe()
+                           .send(RecentlyAddedBucketsFromPopularCommand.add(bucketItem));
 
-         view.notifyItemWasAddedToBucketList(bucketItem);
-         view.getAdapter().remove(popularBucketItem);
-      }, throwable -> {
-         handleError(throwable);
-
-         popularBucketItem.setLoading(false);
-         view.getAdapter().notifyDataSetChanged();
-      });
+                     view.notifyItemWasAddedToBucketList(bucketItem);
+                     view.getAdapter().remove(popularBucketItem);
+                  }).onFail((failedAction, throwable) -> {
+                     handleError(failedAction, throwable);
+                     popularBucketItem.setLoading(false);
+                     view.getAdapter().notifyDataSetChanged();
+                  }));
    }
 
    public void reload() {

@@ -9,8 +9,6 @@ import com.google.maps.android.clustering.Cluster;
 import com.google.maps.android.clustering.ClusterManager;
 import com.google.maps.android.clustering.view.DefaultClusterRenderer;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.modules.trips.model.MapObjectHolder;
-import com.worldventures.dreamtrips.modules.trips.model.Pin;
 import com.worldventures.dreamtrips.modules.trips.model.TripClusterItem;
 
 public class TripClusterRenderer extends DefaultClusterRenderer<TripClusterItem> {
@@ -24,7 +22,7 @@ public class TripClusterRenderer extends DefaultClusterRenderer<TripClusterItem>
 
    @Override
    protected void onBeforeClusterItemRendered(TripClusterItem item, MarkerOptions markerOptions) {
-      markerOptions.icon(BitmapDescriptorFactory.fromBitmap(TripPinFactory.createPinBitmapFromMapObject(context, item.getMapObjectHolder())));
+      markerOptions.icon(BitmapDescriptorFactory.fromBitmap(TripPinFactory.createPinBitmapFromMapObject(context, item.getPin())));
    }
 
    @Override
@@ -42,9 +40,7 @@ public class TripClusterRenderer extends DefaultClusterRenderer<TripClusterItem>
    private int getTripsCountFromCluster(Cluster<TripClusterItem> cluster) {
       int tripsCount = 0;
       for (TripClusterItem item : cluster.getItems()) {
-         if (item.getMapObjectHolder().getType() == MapObjectHolder.Type.PIN) {
-            tripsCount += ((Pin) item.getMapObjectHolder().getItem()).getTripUids().size();
-         }
+         tripsCount += item.getPin().getTripUids().size();
       }
       return tripsCount;
    }

@@ -6,7 +6,6 @@ public class EntityLikedEvent {
 
    FeedEntity feedEntity;
 
-
    public EntityLikedEvent(FeedEntity feedEntity) {
       this.feedEntity = feedEntity;
    }

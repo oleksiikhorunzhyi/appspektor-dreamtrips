@@ -32,6 +32,22 @@ public class TripImage implements IFullScreenObject {
       return type;
    }
 
+   public void setId(String id) {
+      this.id = id;
+   }
+
+   public void setDescription(String description) {
+      this.description = description;
+   }
+
+   public void setType(String type) {
+      this.type = type;
+   }
+
+   public void setOriginUrl(String originUrl) {
+      this.originUrl = originUrl;
+   }
+
    @Override
    public String getImagePath() {
       return url;

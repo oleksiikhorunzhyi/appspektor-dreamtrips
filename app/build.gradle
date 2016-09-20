@@ -324,7 +324,7 @@ android {
          def proConfigs = file('proguard-rules').listFiles().collect { it }
          proConfigs << getDefaultProguardFile('proguard-android-optimize.txt')
          proConfigs << file('dagger-proguard-keepnames.cfg')
-         proguardFiles proConfigs
+         setProguardFiles proConfigs
       }
    }
 
@@ -485,11 +485,17 @@ dependencies {
    compile 'com.badoo.mobile:android-weak-handler:1.1'
    compile 'frankiesardo:icepick:3.2.0'
    apt 'frankiesardo:icepick-processor:3.2.0'
+   compile 'com.github.techery:mappery:8675fb6'
 
    devCompile "com.squareup.leakcanary:leakcanary-android:${leakCanaryVersion}"
    devpremarshmallowCompile "com.squareup.leakcanary:leakcanary-android:${leakCanaryVersion}"
    externalCompile "com.squareup.leakcanary:leakcanary-android-no-op:${leakCanaryVersion}"
-   compile 'com.github.pwittchen:networkevents:2.1.2'
+   compile ("com.github.pwittchen:reactivenetwork:0.5.2") {
+      // we should update RxJava to 1.1.9, for now exclude conflicting version
+      exclude group: 'io.reactivex', module: 'rxjava'
+   }
+   compile 'com.github.pwittchen:networkevents:2.1.2' //deprecated, use reactive network lib above
+
    retrolambdaConfig 'net.orfjackal.retrolambda:retrolambda:2.1.0'
    apt 'org.immutables:value:2.2.6'
    provided 'org.immutables:value:2.2.6'

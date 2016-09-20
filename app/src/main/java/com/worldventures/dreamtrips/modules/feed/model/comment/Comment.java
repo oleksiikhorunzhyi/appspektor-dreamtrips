@@ -24,6 +24,7 @@ public class Comment implements Parcelable, Serializable, UidItem, TranslatableI
    @SerializedName("created_at") Date createdAt;
    @SerializedName("updated_at") Date updatedAt;
    boolean update;
+   String company;
    String language;
    String translation;
    boolean translated;
@@ -52,6 +53,42 @@ public class Comment implements Parcelable, Serializable, UidItem, TranslatableI
          return new Comment[size];
       }
    };
+
+   public void setCompany(String company) {
+      this.company = company;
+   }
+
+   public void setUid(String uid) {
+      this.uid = uid;
+   }
+
+   public void setParentId(String parent_id) {
+      this.parent_id = parent_id;
+   }
+
+   public void setPostId(String originId) {
+      this.originId = originId;
+   }
+
+   public void setText(String text) {
+      this.text = text;
+   }
+
+   public void setUser(User user) {
+      this.user = user;
+   }
+
+   public void setUpdatedAt(Date updatedAt) {
+      this.updatedAt = updatedAt;
+   }
+
+   public void setUpdate(boolean update) {
+      this.update = update;
+   }
+
+   public void setLanguage(String language) {
+      this.language = language;
+   }
 
    public boolean isUpdate() {
       return update;

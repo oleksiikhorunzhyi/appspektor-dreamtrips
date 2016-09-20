@@ -5,7 +5,7 @@ import android.view.View;
 import com.techery.spares.annotations.Layout;
 import com.techery.spares.ui.view.cell.CellDelegate;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.modules.trips.model.FilterRecentlyAddedModel;
+import com.worldventures.dreamtrips.modules.trips.model.filter.FilterRecentlyAddedModel;
 
 @Layout(R.layout.adapter_item_filter_one_checkbox)
 public class FilterRecentlyAddedCell extends BoolCell<FilterRecentlyAddedModel, FilterRecentlyAddedCell.Delegate> {

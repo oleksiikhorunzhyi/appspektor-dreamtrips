@@ -16,6 +16,9 @@
 
 package com.worldventures.dreamtrips.core.flow.util;
 
+import android.content.Context;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.support.annotation.Nullable;
 import android.view.View;
 import android.view.ViewTreeObserver;
@@ -56,6 +59,12 @@ public final class Utils {
             return true;
          }
       });
+   }
+
+   public static boolean isConnected(Context context) {
+      ConnectivityManager conMgr = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+      NetworkInfo i = conMgr.getActiveNetworkInfo();
+      return i != null && i.isConnected() && i.isAvailable();
    }
 
    private Utils() {

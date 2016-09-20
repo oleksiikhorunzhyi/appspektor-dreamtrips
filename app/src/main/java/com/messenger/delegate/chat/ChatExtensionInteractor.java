@@ -3,12 +3,12 @@ package com.messenger.delegate.chat;
 import com.messenger.delegate.chat.command.ClearChatServerCommand;
 import com.messenger.delegate.chat.command.LoadChatMessagesCommand;
 import com.messenger.delegate.chat.command.RevertClearingChatServerCommand;
+import com.worldventures.dreamtrips.core.janet.SessionActionPipeCreator;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
 import io.techery.janet.ActionPipe;
-import io.techery.janet.Janet;
 import rx.schedulers.Schedulers;
 
 @Singleton
@@ -20,10 +20,13 @@ public class ChatExtensionInteractor {
    private final ActionPipe<LoadChatMessagesCommand> loadChatMessagesCommandActionPipe;
 
    @Inject
-   ChatExtensionInteractor(Janet janet) {
-      clearChatServerCommandActionPipe = janet.createPipe(ClearChatServerCommand.class, Schedulers.io());
-      revertClearingChatServerCommandActionPipe = janet.createPipe(RevertClearingChatServerCommand.class, Schedulers.io());
-      loadChatMessagesCommandActionPipe = janet.createPipe(LoadChatMessagesCommand.class, Schedulers.io());
+   ChatExtensionInteractor(SessionActionPipeCreator sessionActionPipeCreator) {
+      clearChatServerCommandActionPipe = sessionActionPipeCreator.createPipe(ClearChatServerCommand.class,
+            Schedulers.io());
+      revertClearingChatServerCommandActionPipe = sessionActionPipeCreator.createPipe(RevertClearingChatServerCommand.class,
+            Schedulers.io());
+      loadChatMessagesCommandActionPipe = sessionActionPipeCreator.createPipe(LoadChatMessagesCommand.class,
+            Schedulers.io());
    }
 
    public ActionPipe<ClearChatServerCommand> getClearChatServerCommandActionPipe() {

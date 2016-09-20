@@ -216,6 +216,11 @@ public class RequestsFragment extends BaseFragment<RequestsPresenter> implements
    }
 
    @Override
+   public void userClicked(User user) {
+      getPresenter().userClicked(user);
+   }
+
+   @Override
    public void onCellClicked(User model) {
 
    }

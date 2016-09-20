@@ -586,8 +586,6 @@
    <string name="error_fail_to_load_videos">無法加載視頻</string>
    <string name="error_fail_to_like_item">無法點贊項目</string>
    <string name="error_fail_to_unlike_item">無法取消點贊項目</string>
-   <string name="error_fail_to_mark_notification">無法標記通知</string>
-   <string name="error_fail_to_mark_notifications">無法標記通知</string>
    <string name="tag_people">給人加標籤</string>
 
    <string name="say_something">向世界說點什麼</string>

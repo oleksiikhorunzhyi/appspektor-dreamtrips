@@ -4,25 +4,21 @@ import android.os.Bundle;
 
 import com.innahema.collections.query.queriables.Queryable;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
-import com.worldventures.dreamtrips.core.rx.composer.IoToMainComposer;
-import com.worldventures.dreamtrips.core.utils.events.FilterBusEvent;
-import com.worldventures.dreamtrips.core.utils.events.RequestFilterDataEvent;
-import com.worldventures.dreamtrips.core.utils.events.ResetFiltersEvent;
-import com.worldventures.dreamtrips.core.utils.events.ToggleRegionVisibilityEvent;
-import com.worldventures.dreamtrips.core.utils.events.ToggleThemeVisibilityEvent;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.common.api.janet.command.TripsFilterDataCommand;
 import com.worldventures.dreamtrips.modules.common.delegate.QueryTripsFilterDataInteractor;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
+import com.worldventures.dreamtrips.modules.trips.delegate.ResetFilterEventDelegate;
+import com.worldventures.dreamtrips.modules.trips.delegate.TripFilterEventDelegate;
 import com.worldventures.dreamtrips.modules.trips.model.ActivityModel;
-import com.worldventures.dreamtrips.modules.trips.model.DateFilterItem;
-import com.worldventures.dreamtrips.modules.trips.model.FilterFavoriteModel;
-import com.worldventures.dreamtrips.modules.trips.model.FilterModel;
-import com.worldventures.dreamtrips.modules.trips.model.FilterRecentlyAddedModel;
-import com.worldventures.dreamtrips.modules.trips.model.FilterSoldOutModel;
-import com.worldventures.dreamtrips.modules.trips.model.RegionHeaderModel;
+import com.worldventures.dreamtrips.modules.trips.model.filter.DateFilterItem;
+import com.worldventures.dreamtrips.modules.trips.model.filter.FilterFavoriteModel;
+import com.worldventures.dreamtrips.modules.trips.model.filter.FilterModel;
+import com.worldventures.dreamtrips.modules.trips.model.filter.FilterRecentlyAddedModel;
+import com.worldventures.dreamtrips.modules.trips.model.filter.FilterSoldOutModel;
+import com.worldventures.dreamtrips.modules.trips.model.filter.RegionHeaderModel;
 import com.worldventures.dreamtrips.modules.trips.model.RegionModel;
-import com.worldventures.dreamtrips.modules.trips.model.ThemeHeaderModel;
+import com.worldventures.dreamtrips.modules.trips.model.filter.ThemeHeaderModel;
 import com.worldventures.dreamtrips.modules.trips.model.TripsFilterDataAnalyticsWrapper;
 import com.worldventures.dreamtrips.util.TripsFilterData;
 
@@ -33,19 +29,17 @@ import javax.inject.Inject;
 
 import icepick.State;
 import io.techery.janet.helper.ActionStateSubscriber;
-import timber.log.Timber;
 
 public class FiltersPresenter extends Presenter<FiltersPresenter.View> {
 
-   @Inject protected SnappyRepository db;
+   @Inject SnappyRepository db;
+   @Inject TripFilterEventDelegate tripFilterEventDelegate;
+   @Inject ResetFilterEventDelegate resetFilterEventDelegate;
    @Inject QueryTripsFilterDataInteractor queryTripsFilterDataInteractor;
 
    @State ArrayList<RegionModel> regions = new ArrayList<>();
    @State ArrayList<ActivityModel> parentActivities = new ArrayList<>();
 
-   /**
-    * variables for filtering
-    */
    @State FilterModel filterModel;
    @State ThemeHeaderModel themeHeaderModel;
    @State RegionHeaderModel regionHeaderModel;
@@ -77,6 +71,7 @@ public class FiltersPresenter extends Presenter<FiltersPresenter.View> {
          tripFilterData = TripsFilterData.createDefault(db);
       }
       loadFilters();
+      observeResetFilters();
    }
 
    private void subscribeToFiltersLoading() {
@@ -92,6 +87,12 @@ public class FiltersPresenter extends Presenter<FiltersPresenter.View> {
                view.hideProgress();
                view.showErrorContainer();
             }));
+   }
+
+   private void observeResetFilters() {
+      resetFilterEventDelegate.getObservable()
+            .compose(bindViewToMainComposer())
+            .subscribe(object -> resetFilters());
    }
 
    public void loadFilters() {
@@ -141,8 +142,7 @@ public class FiltersPresenter extends Presenter<FiltersPresenter.View> {
    }
 
    public void acceptFilters() {
-      eventBus.removeStickyEvent(FilterBusEvent.class);
-      eventBus.postSticky(new FilterBusEvent(tripFilterData));
+      tripFilterEventDelegate.post(tripFilterData);
       TrackingHelper.actionFilterTrips(new TripsFilterDataAnalyticsWrapper(tripFilterData));
    }
 
@@ -159,18 +159,12 @@ public class FiltersPresenter extends Presenter<FiltersPresenter.View> {
       view.dataSetChanged();
       //
       tripFilterData = TripsFilterData.createDefault(db);
-      FilterBusEvent filterBusEvent = new FilterBusEvent(tripFilterData);
-      eventBus.removeAllStickyEvents();
-      eventBus.postSticky(filterBusEvent);
+      tripFilterEventDelegate.post(tripFilterData);
       TrackingHelper.actionFilterTrips(new TripsFilterDataAnalyticsWrapper(tripFilterData));
    }
 
    private List<ActivityModel> getParentActivities(List<ActivityModel> activities) {
       return Queryable.from(activities).filter(ActivityModel::isParent).toList();
-   }
-
-   public void onEvent(RequestFilterDataEvent event) {
-      acceptFilters();
    }
 
    public void onRangeBarDurationEvent(int minNights, int maxNights) {
@@ -183,12 +177,12 @@ public class FiltersPresenter extends Presenter<FiltersPresenter.View> {
       tripFilterData.setMaxPrice(maxPrice);
    }
 
-   public void onEvent(ToggleThemeVisibilityEvent event) {
+   public void toggleThemeVisibility() {
       themeHeaderModel.setHide(!themeHeaderModel.isHide());
       fillData();
    }
 
-   public void onEvent(ToggleRegionVisibilityEvent event) {
+   public void toggleRegionVisibility() {
       regionHeaderModel.setHide(!regionHeaderModel.isHide());
       fillData();
    }
@@ -215,10 +209,6 @@ public class FiltersPresenter extends Presenter<FiltersPresenter.View> {
       setThemesChecked(isChecked);
       tripFilterData.setAllParentActivities(parentActivities);
       view.dataSetChanged();
-   }
-
-   public void onEvent(ResetFiltersEvent event) {
-      resetFilters();
    }
 
    public void onThemeSetChangedEvent() {

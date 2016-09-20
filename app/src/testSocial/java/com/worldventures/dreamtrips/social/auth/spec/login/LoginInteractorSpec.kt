@@ -9,6 +9,7 @@ import com.techery.spares.storage.complex_objects.Optional
 import com.worldventures.dreamtrips.AssertUtil.assertActionFail
 import com.worldventures.dreamtrips.AssertUtil.assertActionSuccess
 import com.worldventures.dreamtrips.BaseSpec
+import com.worldventures.dreamtrips.core.janet.SessionActionPipeCreator
 import com.worldventures.dreamtrips.core.repository.SnappyRepository
 import com.worldventures.dreamtrips.core.session.UserSession
 import com.worldventures.dreamtrips.core.session.acl.Feature
@@ -96,7 +97,8 @@ class LoginInteractorSpec : BaseSpec({
                .addService(daggerCommandActionService)
                .addService(httpService().wrapStub().wrapCache())
                .build()
-         val authInteractor = AuthInteractor(janet)
+         val sessionPiperCreator = SessionActionPipeCreator(janet)
+         val authInteractor = AuthInteractor(sessionPiperCreator)
 
          daggerCommandActionService.registerProvider(Janet::class.java) { janet }
          daggerCommandActionService.registerProvider(SessionHolder::class.java) { sessionHolderMock }
@@ -104,7 +106,7 @@ class LoginInteractorSpec : BaseSpec({
          daggerCommandActionService.registerProvider(AuthInteractor::class.java) { authInteractor }
          daggerCommandActionService.registerProvider(SnappyRepository::class.java) { mockDB }
 
-         loginInteractor = LoginInteractor(janet)
+         loginInteractor = LoginInteractor(sessionPiperCreator)
 
          whenever(sessionHolderMock.put(any())).then { }
       }

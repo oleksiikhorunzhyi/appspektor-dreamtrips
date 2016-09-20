@@ -29,7 +29,6 @@ import static com.worldventures.dreamtrips.util.ValidationUtils.isUsernameValid;
 
 public class LaunchActivityPresenter extends ActivityPresenter<LaunchActivityPresenter.View> {
 
-   @Inject SnappyRepository snappyRepository;
    @Inject ClearDirectoryDelegate clearTemporaryDirectoryDelegate;
    @Inject DrawableUtil drawableUtil;
    @Inject SnappyRepository db;
@@ -123,6 +122,11 @@ public class LaunchActivityPresenter extends ActivityPresenter<LaunchActivityPre
       TrackingHelper.setUserId(getAccount().getUsername(), Integer.toString(getAccount().getId()));
       messengerConnector.connect();
       view.openMain();
+   }
+
+   @Override
+   protected boolean canShowOfflineAlert() {
+      return false;
    }
 
    public interface View extends ActivityPresenter.View, ApiErrorView {

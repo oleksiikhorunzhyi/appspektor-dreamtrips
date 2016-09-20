@@ -12,6 +12,7 @@ import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.utils.QuantityHelper;
 import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.friends.bundle.UsersLikedEntityBundle;
+import com.worldventures.dreamtrips.modules.friends.presenter.BaseUserListPresenter;
 import com.worldventures.dreamtrips.modules.friends.presenter.UsersLikedItemPresenter;
 import com.worldventures.dreamtrips.modules.friends.view.cell.UserCell;
 import com.worldventures.dreamtrips.modules.friends.view.cell.delegate.UserCellDelegate;
@@ -21,7 +22,8 @@ import java.util.List;
 import butterknife.InjectView;
 
 @Layout(R.layout.fragment_likes)
-public class UsersLikedItemFragment extends BaseUsersFragment<UsersLikedItemPresenter, UsersLikedEntityBundle> implements UsersLikedItemPresenter.View, UserCellDelegate {
+public class UsersLikedItemFragment extends BaseUsersFragment<UsersLikedItemPresenter, UsersLikedEntityBundle>
+      implements BaseUserListPresenter.View, UserCellDelegate {
 
    @InjectView(R.id.title) TextView header;
 
@@ -83,7 +85,17 @@ public class UsersLikedItemFragment extends BaseUsersFragment<UsersLikedItemPres
    }
 
    @Override
-   public void onCellClicked(User model) {
+   public void onOpenPrefs(User user) {
+      getPresenter().openPrefs(user);
+   }
 
+   @Override
+   public void onStartSingleChat(User user) {
+      getPresenter().startChat(user);
+   }
+
+   @Override
+   public void onUnfriend(User user) {
+      getPresenter().unfriend(user);
    }
 }

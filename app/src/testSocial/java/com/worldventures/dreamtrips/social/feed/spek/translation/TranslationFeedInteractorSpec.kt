@@ -6,6 +6,7 @@ import com.nhaarman.mockito_kotlin.whenever
 import com.worldventures.dreamtrips.AssertUtil.assertActionSuccess
 import com.worldventures.dreamtrips.BaseSpec
 import com.worldventures.dreamtrips.api.messenger.model.response.ImmutableTranslatedText
+import com.worldventures.dreamtrips.core.janet.SessionActionPipeCreator
 import com.worldventures.dreamtrips.core.janet.cache.storage.ActionStorage
 import com.worldventures.dreamtrips.core.repository.SnappyRepository
 import com.worldventures.dreamtrips.modules.feed.model.PostFeedItem
@@ -104,7 +105,7 @@ class TranslationFeedInteractorSpec : BaseSpec({
          daggerCommandActionService.registerProvider(TranslationFeedInteractor::class.java) { translateFeedInteractor }
          daggerCommandActionService.registerProvider(TranslationInteractor::class.java) { translationInteractor }
 
-         translateFeedInteractor = TranslationFeedInteractor(janet)
+         translateFeedInteractor = TranslationFeedInteractor(SessionActionPipeCreator(janet))
          translationInteractor = TranslationInteractor(janet)
       }
 

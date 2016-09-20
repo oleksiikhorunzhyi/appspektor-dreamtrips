@@ -4,17 +4,22 @@ import android.support.annotation.Nullable;
 
 import com.snappydb.DB;
 import com.snappydb.SnappydbException;
+import com.worldventures.dreamtrips.api.trip.model.Trip;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem;
 import com.worldventures.dreamtrips.modules.dtl.model.location.DtlLocation;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchant;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchantAttribute;
 import com.worldventures.dreamtrips.modules.dtl.model.transaction.DtlTransaction;
+import com.worldventures.dreamtrips.modules.feed.model.FeedItem;
 import com.worldventures.dreamtrips.modules.friends.model.Circle;
 import com.worldventures.dreamtrips.modules.infopages.model.FeedbackType;
+import com.worldventures.dreamtrips.modules.membership.model.Podcast;
 import com.worldventures.dreamtrips.modules.reptools.model.VideoLanguage;
 import com.worldventures.dreamtrips.modules.reptools.model.VideoLocale;
 import com.worldventures.dreamtrips.modules.settings.model.Setting;
 import com.worldventures.dreamtrips.modules.trips.model.Location;
+import com.worldventures.dreamtrips.modules.trips.model.Pin;
+import com.worldventures.dreamtrips.modules.trips.model.TripModel;
 import com.worldventures.dreamtrips.modules.tripsimages.model.IFullScreenObject;
 import com.worldventures.dreamtrips.modules.tripsimages.model.SocialViewPagerState;
 import com.worldventures.dreamtrips.modules.tripsimages.model.TripImagesType;
@@ -54,6 +59,10 @@ public interface SnappyRepository {
    String FILTER_CIRCLE = "FILTER_CIRCLE";
    String FILTER_FEED_FRIEND_FILTER_CIRCLE = "FILTER_FEED_FRIEND_FILTER_CIRCLE";
    String SOCIAL_VIEW_PAGER_STATE = "SOCIAL_VIEW_PAGER_STATE";
+   String PODCASTS = "PODCASTS";
+   String TRIPS = "TRIPS";
+   String PINS = "PINS";
+   String TRIPS_DETAILS = "TRIPS_DETAILS";
 
    String DTL_MERCHANTS = "DTL_MERCHANTS";
    String DTL_SELECTED_LOCATION = "DTL_SELECTED_LOCATION";
@@ -63,6 +72,13 @@ public interface SnappyRepository {
    String DTL_AMENITIES = "DTL_AMENITIES";
    String FEEDBACK_TYPES = "FEEDBACK_TYPES";
    String SUGGESTED_PHOTOS_SYNC_TIME = "SUGGESTED_PHOTOS_SYNC_TIME";
+
+   String NOTIFICATIONS = "notifications";
+   String UNDEFINED_FEED_ITEM = "undefined";
+   String PHOTO_FEED_ITEM = "photo";
+   String POST_FEED_ITEM = "post";
+   String TRIP_FEED_ITEM = "trip";
+   String BUCKET_FEED_ITEM = "bucket";
 
    String WALLET_CARDS_LIST = "WALLET_CARDS_LIST";
    String WALLET_SMART_CARD = "WALLET_SMART_CARD";
@@ -190,11 +206,37 @@ public interface SnappyRepository {
 
    void saveDownloadMediaEntity(CachedEntity e);
 
+   List<CachedEntity> getDownloadMediaEntities();
+
    CachedEntity getDownloadMediaEntity(String id);
 
    void setLastSyncAppVersion(String appVersion);
 
    String getLastSyncAppVersion();
+
+   void saveNotifications(List<FeedItem> notifications);
+
+   List<FeedItem> getNotifications();
+
+   void savePodcasts(List<Podcast> podcasts);
+
+   List<Podcast> getPodcasts();
+
+   void saveTrips(List<TripModel> trips);
+
+   List<TripModel> getTrips();
+
+   void savePins(List<Pin> pins);
+
+   List<Pin> getPins();
+
+   void saveTripDetails(TripModel tripModel);
+
+   void saveTripsDetails(List<TripModel> trips);
+
+   List<TripModel> getTripsDetailsForUids(List<String> uids);
+
+   TripModel getTripDetail(String uid);
 
    SimpleDeviceStorage getWalletDeviceStorage();
 

@@ -18,6 +18,7 @@ import com.worldventures.dreamtrips.core.navigation.router.Router;
 import com.worldventures.dreamtrips.core.utils.ViewUtils;
 import com.worldventures.dreamtrips.core.utils.tracksystem.MonitoringHelper;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
+import com.worldventures.dreamtrips.modules.common.presenter.delegate.OfflineWarningDelegate;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -35,6 +36,7 @@ public abstract class BaseFragment<PM extends Presenter> extends InjectingFragme
 
    @Inject protected Router router;
    @Inject protected Presenter.TabletAnalytic tabletAnalytic;
+   @Inject OfflineWarningDelegate offlineWarningDelegate;
 
    public PM getPresenter() {
       return presenter;
@@ -198,6 +200,11 @@ public abstract class BaseFragment<PM extends Presenter> extends InjectingFragme
             builder.title(R.string.alert).content(s).positiveText(R.string.OK).show();
          }));
       }
+   }
+
+   @Override
+   public void showOfflineAlert() {
+      offlineWarningDelegate.showOfflineWarning(getActivity());
    }
 
    protected void track() {

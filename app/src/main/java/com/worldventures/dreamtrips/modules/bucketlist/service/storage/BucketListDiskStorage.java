@@ -4,13 +4,14 @@ import android.support.annotation.Nullable;
 
 import com.worldventures.dreamtrips.core.janet.cache.CacheBundle;
 import com.worldventures.dreamtrips.core.janet.cache.storage.ActionStorage;
+import com.worldventures.dreamtrips.core.janet.cache.storage.ClearableStorage;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem;
 import com.worldventures.dreamtrips.modules.bucketlist.service.command.BucketListCommand;
 
 import java.util.List;
 
-public class BucketListDiskStorage implements ActionStorage<List<BucketItem>> {
+public class BucketListDiskStorage implements ActionStorage<List<BucketItem>>, ClearableStorage {
    public static final String USER_ID_EXTRA = "userId";
 
    private final BucketMemoryStorage memoryStorage;
@@ -50,5 +51,10 @@ public class BucketListDiskStorage implements ActionStorage<List<BucketItem>> {
    @Override
    public Class<BucketListCommand> getActionClass() {
       return BucketListCommand.class;
+   }
+
+   @Override
+   public void clearMemory() {
+      memoryStorage.clearMemory();
    }
 }

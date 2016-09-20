@@ -10,7 +10,11 @@ import com.worldventures.dreamtrips.modules.dtl.helper.inflater.MerchantDataInfl
 import com.worldventures.dreamtrips.modules.dtl.helper.inflater.MerchantMapInfoInflater;
 import com.worldventures.dreamtrips.modules.dtl.helper.inflater.MerchantSingleImageDataInflater;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchant;
+import com.worldventures.dreamtrips.modules.dtl.model.merchant.ThinMerchant;
+import com.worldventures.dreamtrips.modules.dtl.view.dialog.DialogFactory;
 import com.worldventures.dreamtrips.modules.dtl_flow.DtlLayout;
+
+import cn.pedant.SweetAlert.SweetAlertDialog;
 
 public class DtlMapInfoScreenImpl extends DtlLayout<DtlMapInfoScreen, DtlMapInfoPresenter, DtlMapInfoPath> implements DtlMapInfoScreen {
 
@@ -60,7 +64,7 @@ public class DtlMapInfoScreenImpl extends DtlLayout<DtlMapInfoScreen, DtlMapInfo
    }
 
    @Override
-   public void setMerchant(DtlMerchant merchant) {
+   public void setMerchant(ThinMerchant merchant) {
 //      commonDataInflater.applyMerchant(merchant);
 //      categoryDataInflater.applyMerchant(merchant); // TODO :: implement after add thin merchant as argument
    }

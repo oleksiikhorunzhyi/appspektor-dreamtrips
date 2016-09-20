@@ -1,67 +1,39 @@
 package com.worldventures.dreamtrips.modules.feed.presenter;
 
-import android.os.Bundle;
-
-import com.innahema.collections.query.queriables.Queryable;
-import com.octo.android.robospice.persistence.exception.SpiceException;
 import com.techery.spares.utils.delegate.NotificationCountEventDelegate;
-import com.worldventures.dreamtrips.core.api.request.DreamTripsRequest;
-import com.worldventures.dreamtrips.core.module.RouteCreatorModule;
-import com.worldventures.dreamtrips.core.navigation.creator.RouteCreator;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.core.rx.RxView;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
-import com.worldventures.dreamtrips.modules.bucketlist.service.BucketInteractor;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
-import com.worldventures.dreamtrips.modules.feed.api.MarkAsReadNotificationsCommand;
-import com.worldventures.dreamtrips.modules.feed.api.NotificationsQuery;
-import com.worldventures.dreamtrips.modules.feed.manager.FeedEntityManager;
+import com.worldventures.dreamtrips.modules.feed.model.FeedEntity;
 import com.worldventures.dreamtrips.modules.feed.model.FeedItem;
-import com.worldventures.dreamtrips.modules.feed.model.feed.base.ParentFeedItem;
+import com.worldventures.dreamtrips.modules.feed.service.NotificationFeedInteractor;
+import com.worldventures.dreamtrips.modules.feed.service.command.BaseGetFeedCommand;
+import com.worldventures.dreamtrips.modules.feed.service.command.GetNotificationsCommand;
+import com.worldventures.dreamtrips.modules.feed.service.command.MarkNotificationsAsReadCommand;
 
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
 
 import javax.inject.Inject;
-import javax.inject.Named;
 
-import icepick.State;
+import io.techery.janet.helper.ActionStateSubscriber;
 
 public class NotificationPresenter extends Presenter<NotificationPresenter.View> {
 
-   @State protected ArrayList<FeedItem> notifications;
-   @Inject protected FeedEntityManager entityManager;
    @Inject SnappyRepository db;
-   @Inject @Named(RouteCreatorModule.PROFILE) RouteCreator<Integer> routeCreator;
-   @Inject BucketInteractor bucketInteractor;
+   @Inject NotificationFeedInteractor feedInteractor;
    @Inject NotificationCountEventDelegate notificationCountEventDelegate;
 
    public NotificationPresenter() {
    }
 
    @Override
-   public void restoreInstanceState(Bundle savedState) {
-      super.restoreInstanceState(savedState);
-      if (savedState == null) notifications = new ArrayList<>();
-   }
-
-   @Override
    public void takeView(View view) {
       super.takeView(view);
-      if (notifications.size() != 0) {
-         view.refreshNotifications(notifications);
-      }
       notificationCountEventDelegate.getObservable()
             .compose(bindViewToMainComposer())
             .subscribe(event -> view.setRequestsCount(db.getFriendsRequestsCount()));
-   }
-
-   @Override
-   public void onInjected() {
-      super.onInjected();
-      entityManager.setRequestingPresenter(this);
+      subscribeToNotificationUpdates();
    }
 
    public void reload() {
@@ -76,74 +48,42 @@ public class NotificationPresenter extends Presenter<NotificationPresenter.View>
       refreshFeed();
    }
 
-   public void loadNext() {
-      if (notifications.size() > 0) {
-         doRequest(getNextPageFeedRequest(notifications.get(notifications.size() - 1)
-               .getCreatedAt()), this::addFeedItems, this::loadMoreItemsError);
-      }
-      TrackingHelper.loadMoreNotifications();
-   }
-
-   private DreamTripsRequest<ArrayList<ParentFeedItem>> getRefreshFeedRequest(Date date) {
-      return new NotificationsQuery();
-   }
-
-   private DreamTripsRequest<ArrayList<ParentFeedItem>> getNextPageFeedRequest(Date date) {
-      return new NotificationsQuery(date);
-   }
-
-   private void loadMoreItemsError(SpiceException spiceException) {
-      view.updateLoadingStatus(false, false);
-      addFeedItems(new ArrayList<>());
-   }
-
-   private void addFeedItems(List<ParentFeedItem> olderItems) {
-      boolean noMoreFeeds = olderItems == null || olderItems.size() == 0;
-      view.updateLoadingStatus(false, noMoreFeeds);
-      //
-      notifications.addAll(Queryable.from(olderItems)
-            .filter(ParentFeedItem::isSingle)
-            .map(element -> element.getItems().get(0))
-            .toList());
-      view.refreshNotifications(notifications);
-      markAsRead(olderItems);
-   }
-
    private void refreshFeed() {
       view.startLoading();
-      doRequest(getRefreshFeedRequest(Calendar.getInstance()
-            .getTime()), this::refreshFeedSucceed, this::refreshFeedError);
+      feedInteractor.notificationsPipe().send(GetNotificationsCommand.refresh());
    }
 
-   private void refreshFeedError(SpiceException exception) {
-      super.handleError(exception);
+   private void subscribeToNotificationUpdates() {
+      feedInteractor.notificationsPipe()
+            .observe()
+            .compose(bindViewToMainComposer())
+            .subscribe(new ActionStateSubscriber<GetNotificationsCommand>()
+                  .onProgress((action, progress) -> view.refreshNotifications(action.getItems()))
+                  .onFail(this::notificationsError)
+                  .onSuccess(action -> notificationsSucceed(action.getItems(), action.getResult())));
+   }
+
+   private void notificationsError(BaseGetFeedCommand action, Throwable throwable) {
+      view.informUser(action.getErrorMessage());
       view.updateLoadingStatus(false, false);
       view.finishLoading();
-      view.refreshNotifications(notifications);
    }
 
-   private void refreshFeedSucceed(List<ParentFeedItem> freshItems) {
-      boolean noMoreFeeds = freshItems == null || freshItems.size() == 0;
-      view.updateLoadingStatus(false, noMoreFeeds);
-      //
+
+   private void notificationsSucceed(List<FeedItem<FeedEntity>> items, List<FeedItem<FeedEntity>> newItems) {
+      boolean noMoreItems = newItems == null || newItems.size() == 0;
+      view.updateLoadingStatus(false, noMoreItems);
       view.finishLoading();
-      notifications.clear();
-      notifications.addAll(Queryable.from(freshItems)
-            .filter(ParentFeedItem::isSingle)
-            .map(element -> element.getItems().get(0))
-            .toList());
-
-      view.refreshNotifications(notifications);
-      markAsRead(freshItems);
+      view.refreshNotifications(items);
+      //
+      if (!noMoreItems) feedInteractor.markNotificationsPipe().send(new MarkNotificationsAsReadCommand(newItems));
    }
 
-   private void markAsRead(List<ParentFeedItem> olderItems) {
-      if (olderItems.size() > 0 && olderItems.get(0).getItems().size() > 0) {
-         Date since = olderItems.get(olderItems.size() - 1).getItems().get(0).getCreatedAt();
-         Date before = olderItems.get(0).getItems().get(0).getCreatedAt();
-         doRequest(new MarkAsReadNotificationsCommand(since, before), aVoid -> {
-         });
-      }
+
+   public void loadNext() {
+      feedInteractor.notificationsPipe()
+            .send(GetNotificationsCommand.loadMore());
+      TrackingHelper.loadMoreNotifications();
    }
 
    public interface View extends RxView {
@@ -154,7 +94,7 @@ public class NotificationPresenter extends Presenter<NotificationPresenter.View>
 
       void finishLoading();
 
-      void refreshNotifications(List<FeedItem> notifications);
+      void refreshNotifications(List<FeedItem<FeedEntity>> notifications);
 
       void updateLoadingStatus(boolean loading, boolean noMoreElements);
    }

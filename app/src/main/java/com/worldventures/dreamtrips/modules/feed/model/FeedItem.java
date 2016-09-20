@@ -5,8 +5,6 @@ import android.os.Parcel;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
 
-import com.esotericsoftware.kryo.DefaultSerializer;
-import com.esotericsoftware.kryo.serializers.CompatibleFieldSerializer;
 import com.google.gson.annotations.SerializedName;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem;
@@ -20,7 +18,6 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 
-@DefaultSerializer(CompatibleFieldSerializer.class)
 public class FeedItem<T extends FeedEntity> extends BaseEntity implements FeedEntityHolder, TranslatableItem {
 
    @SerializedName("notification_id") protected int notificationId;
@@ -65,6 +62,11 @@ public class FeedItem<T extends FeedEntity> extends BaseEntity implements FeedEn
       return feedItem;
    }
 
+   public FeedItem(int id) {
+      super();
+      this.id = id;
+   }
+
    ///////////////////////////////////////////////////////////////////////////
    // Getters / Setters
    ///////////////////////////////////////////////////////////////////////////
@@ -101,6 +103,10 @@ public class FeedItem<T extends FeedEntity> extends BaseEntity implements FeedEn
 
    public Date getCreatedAt() {
       return createdAt;
+   }
+
+   public void setCreatedAt(Date createdAt) {
+      this.createdAt = createdAt;
    }
 
    public Date getReadAt() {

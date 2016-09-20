@@ -11,7 +11,9 @@ import android.view.ViewGroup;
 
 import com.eowise.recyclerview.stickyheaders.StickyHeadersBuilder;
 import com.eowise.recyclerview.stickyheaders.StickyHeadersItemDecoration;
+import com.innahema.collections.query.queriables.Queryable;
 import com.techery.spares.adapter.BaseArrayListAdapter;
+import com.techery.spares.adapter.HeaderItem;
 import com.techery.spares.annotations.Layout;
 import com.techery.spares.annotations.MenuResource;
 import com.techery.spares.module.Injector;
@@ -22,6 +24,7 @@ import com.worldventures.dreamtrips.core.rx.RxBaseFragment;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.common.view.custom.BadgeImageView;
 import com.worldventures.dreamtrips.modules.feed.model.BucketFeedItem;
+import com.worldventures.dreamtrips.modules.feed.model.FeedEntity;
 import com.worldventures.dreamtrips.modules.feed.model.FeedItem;
 import com.worldventures.dreamtrips.modules.feed.model.LoadMoreModel;
 import com.worldventures.dreamtrips.modules.feed.model.PhotoFeedItem;
@@ -45,7 +48,7 @@ public class NotificationFragment extends RxBaseFragment<NotificationPresenter> 
 
    @InjectView(R.id.ll_empty_view) ViewGroup emptyView;
 
-   BadgeImageView friendsBadge;
+   private BadgeImageView friendsBadge;
 
    private StatePaginatedRecyclerViewManager statePaginatedRecyclerViewManager;
    private Bundle savedInstanceState;
@@ -72,31 +75,35 @@ public class NotificationFragment extends RxBaseFragment<NotificationPresenter> 
       statePaginatedRecyclerViewManager = new StatePaginatedRecyclerViewManager(rootView);
       statePaginatedRecyclerViewManager.init(adapter, savedInstanceState);
       statePaginatedRecyclerViewManager.setOnRefreshListener(this);
-      statePaginatedRecyclerViewManager.setPaginationListener(() -> {
-         if (!statePaginatedRecyclerViewManager.isNoMoreElements()) {
-            adapter.addItem(new LoadMoreModel());
-            adapter.notifyDataSetChanged();
-         }
-         getPresenter().loadNext();
-      });
+      statePaginatedRecyclerViewManager.setPaginationListener(this::loadNext);
       statePaginatedRecyclerViewManager.stateRecyclerView.setEmptyView(emptyView);
       //
-      NotificationHeaderAdapter headerAdapter = new NotificationHeaderAdapter(adapter.getItems(), R.layout.adapter_item_notification_divider, item -> () -> {
-         if (item instanceof FeedItem) {
-            return getString(((FeedItem) item).getReadAt() == null ? R.string.notifaction_new : R.string.notifaction_older);
-         } else return null;
-      });
+      NotificationHeaderAdapter headerAdapter = new NotificationHeaderAdapter(adapter.getItems(),
+            R.layout.adapter_item_notification_divider, item -> () -> createHeaderString(item));
       StickyHeadersItemDecoration decoration = new StickyHeadersBuilder().setAdapter(adapter)
             .setStickyHeadersAdapter(headerAdapter, false)
-            .setOnHeaderClickListener((header, headerId) -> {
-               // make sticky header clickable to make items below it not clickable
-            })
+            .setOnHeaderClickListener((header, headerId) -> {})// make sticky header clickable to make items below it not clickable
             .setRecyclerView(statePaginatedRecyclerViewManager.stateRecyclerView)
             .build();
       statePaginatedRecyclerViewManager.addItemDecoration(decoration);
       statePaginatedRecyclerViewManager.stateRecyclerView.setEmptyView(emptyView);
       //
       registerCells();
+   }
+
+   private void loadNext() {
+      if (!statePaginatedRecyclerViewManager.isNoMoreElements() &&
+            Queryable.from(adapter.getItems()).firstOrDefault(item -> item instanceof LoadMoreModel) == null) {
+         adapter.addItem(new LoadMoreModel());
+         adapter.notifyDataSetChanged();
+         getPresenter().loadNext();
+      }
+   }
+
+   private String createHeaderString(Object item) {
+      if (item instanceof FeedItem) {
+         return getString(((FeedItem) item).getReadAt() == null ? R.string.notifaction_new : R.string.notifaction_older);
+      } else return null;
    }
 
    @Override
@@ -130,10 +137,8 @@ public class NotificationFragment extends RxBaseFragment<NotificationPresenter> 
    }
 
    @Override
-   public void refreshNotifications(List<FeedItem> notifications) {
-      if (!adapter.getItems().containsAll(notifications)) {
-         adapter.clearAndUpdateItems(notifications);
-      }
+   public void refreshNotifications(List<FeedItem<FeedEntity>> notifications) {
+      adapter.clearAndUpdateItems(notifications);
    }
 
    @Override

@@ -12,6 +12,7 @@ import com.worldventures.dreamtrips.modules.bucketlist.service.command.BucketLis
 import com.worldventures.dreamtrips.modules.bucketlist.service.command.RecentlyAddedBucketsFromPopularCommand;
 import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
+import com.worldventures.dreamtrips.modules.common.view.ApiErrorView;
 
 import java.util.Arrays;
 import java.util.List;
@@ -36,6 +37,7 @@ public class BucketTabsPresenter extends Presenter<BucketTabsPresenter.View> {
    @Override
    public void takeView(View view) {
       super.takeView(view);
+      apiErrorPresenter.setView(view);
       setTabs();
       loadCategories();
 
@@ -117,7 +119,7 @@ public class BucketTabsPresenter extends Presenter<BucketTabsPresenter.View> {
       return tabAttribute;
    }
 
-   public interface View extends RxView {
+   public interface View extends RxView, ApiErrorView {
       void setTypes(List<BucketType> type);
 
       void setRecentBucketItemCountByType(BucketType type, int count);

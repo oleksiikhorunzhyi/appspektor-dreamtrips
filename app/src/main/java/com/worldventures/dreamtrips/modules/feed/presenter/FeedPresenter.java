@@ -131,6 +131,7 @@ public class FeedPresenter extends Presenter<FeedPresenter.View> {
    @Override
    public void takeView(View view) {
       super.takeView(view);
+      apiErrorPresenter.setView(view);
       updateCircles();
       subscribeRefreshFeeds();
       subscribeLoadNextFeeds();
@@ -374,7 +375,7 @@ public class FeedPresenter extends Presenter<FeedPresenter.View> {
    }
 
    public void onEvent(LoadFlagEvent event) {
-      if (view.isVisibleOnScreen()) uidItemDelegate.loadFlags(event.getFlaggableView());
+      if (view.isVisibleOnScreen()) uidItemDelegate.loadFlags(event.getFlaggableView(), this::handleError);
    }
 
    public void onEvent(ItemFlaggedEvent event) {

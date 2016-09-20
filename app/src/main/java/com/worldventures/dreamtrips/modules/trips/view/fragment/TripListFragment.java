@@ -15,42 +15,48 @@ import android.view.ViewGroup;
 
 import com.badoo.mobile.util.WeakHandler;
 import com.innahema.collections.query.queriables.Queryable;
-import com.techery.spares.adapter.BaseArrayListAdapter;
-import com.techery.spares.adapter.IRoboSpiceAdapter;
+import com.jakewharton.rxbinding.support.v7.widget.RxSearchView;
+import com.techery.spares.adapter.BaseDelegateAdapter;
 import com.techery.spares.annotations.Layout;
 import com.techery.spares.annotations.MenuResource;
 import com.techery.spares.ui.recycler.RecyclerViewStateDelegate;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.navigation.Route;
+import com.worldventures.dreamtrips.core.navigation.ToolbarConfig;
 import com.worldventures.dreamtrips.core.navigation.router.NavigationConfigBuilder;
 import com.worldventures.dreamtrips.core.rx.RxBaseFragment;
 import com.worldventures.dreamtrips.core.utils.ViewUtils;
-import com.worldventures.dreamtrips.core.utils.events.ResetFiltersEvent;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
+import com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem;
 import com.worldventures.dreamtrips.modules.bucketlist.presenter.SweetDialogHelper;
 import com.worldventures.dreamtrips.modules.common.view.activity.MainActivity;
-import com.worldventures.dreamtrips.modules.common.view.adapter.FilterableArrayListAdapter;
 import com.worldventures.dreamtrips.modules.common.view.custom.EmptyRecyclerView;
+import com.worldventures.dreamtrips.modules.feed.bundle.FeedEntityDetailsBundle;
 import com.worldventures.dreamtrips.modules.feed.model.FeedEntity;
+import com.worldventures.dreamtrips.modules.feed.model.FeedItem;
 import com.worldventures.dreamtrips.modules.trips.model.TripModel;
 import com.worldventures.dreamtrips.modules.trips.presenter.TripListPresenter;
 import com.worldventures.dreamtrips.modules.trips.view.cell.TripCell;
+import com.worldventures.dreamtrips.modules.trips.view.cell.TripCellDelegate;
+
+import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import butterknife.InjectView;
 import butterknife.OnClick;
 import icepick.State;
+import rx.Observable;
 
 @Layout(R.layout.fragment_trip_list)
 @MenuResource(R.menu.menu_dream_trips)
-public class TripListFragment extends RxBaseFragment<TripListPresenter> implements TripListPresenter.View, SwipeRefreshLayout.OnRefreshListener, SearchView.OnQueryTextListener {
+public class TripListFragment extends RxBaseFragment<TripListPresenter> implements TripListPresenter.View,
+      SwipeRefreshLayout.OnRefreshListener, TripCellDelegate {
 
    @InjectView(R.id.recyclerViewTrips) protected EmptyRecyclerView recyclerView;
-
    @InjectView(R.id.ll_empty_view) protected ViewGroup emptyView;
-
    @InjectView(R.id.swipe_container) protected SwipeRefreshLayout refreshLayout;
 
-   private BaseArrayListAdapter<TripModel> adapter;
+   private BaseDelegateAdapter<TripModel> adapter;
 
    private SearchView searchView;
    RecyclerViewStateDelegate stateDelegate;
@@ -81,8 +87,9 @@ public class TripListFragment extends RxBaseFragment<TripListPresenter> implemen
       recyclerView.setLayoutManager(layout);
       recyclerView.setEmptyView(emptyView);
 
-      adapter = new FilterableArrayListAdapter<>(getActivity(), this);
+      adapter = new BaseDelegateAdapter<>(getActivity(), this);
       adapter.registerCell(TripModel.class, TripCell.class);
+      adapter.registerDelegate(TripModel.class, this);
 
       recyclerView.setAdapter(adapter);
 
@@ -96,7 +103,8 @@ public class TripListFragment extends RxBaseFragment<TripListPresenter> implemen
          public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
             int itemCount = recyclerView.getLayoutManager().getItemCount();
             int lastVisibleItemPosition = layout.findLastVisibleItemPosition();
-            getPresenter().scrolled(itemCount, lastVisibleItemPosition);
+            if (lastVisibleItemPosition == itemCount - 1)
+               getPresenter().scrolled();
          }
       });
    }
@@ -123,17 +131,6 @@ public class TripListFragment extends RxBaseFragment<TripListPresenter> implemen
    @Override
    protected void restoreState(Bundle savedInstanceState) {
       super.restoreState(savedInstanceState);
-   }
-
-   @Override
-   public boolean onQueryTextSubmit(String s) {
-      return false;
-   }
-
-   @Override
-   public boolean onQueryTextChange(String s) {
-      getPresenter().search(s);
-      return false;
    }
 
    private int getSpanCount() {
@@ -178,12 +175,18 @@ public class TripListFragment extends RxBaseFragment<TripListPresenter> implemen
          searchView = (SearchView) MenuItemCompat.getActionView(searchItem);
          searchView.setQueryHint(getString(R.string.search_trips));
          searchView.setQuery(getPresenter().getQuery(), false);
-         searchView.setOnCloseListener(() -> {
-            getPresenter().search("");
-            return false;
-         });
-         searchView.setOnQueryTextListener(this);
+         getPresenter().onMenuInflated();
       }
+   }
+
+   @Override
+   public Observable<String> textChanges() {
+      return RxSearchView.queryTextChanges(searchView)
+            .skip(1)
+            .map(CharSequence::toString)
+            .throttleLast(600, TimeUnit.MILLISECONDS)
+            .debounce(200, TimeUnit.MILLISECONDS)
+            .onBackpressureLatest();
    }
 
    @Override
@@ -202,10 +205,9 @@ public class TripListFragment extends RxBaseFragment<TripListPresenter> implemen
 
    @OnClick(R.id.textViewResetFilters)
    public void resetFilters() {
-      getEventBus().post(new ResetFiltersEvent());
+      getPresenter().resetFilters();
       clearSearch();
    }
-
 
    @Override
    public void onDestroyView() {
@@ -240,8 +242,8 @@ public class TripListFragment extends RxBaseFragment<TripListPresenter> implemen
    }
 
    @Override
-   public IRoboSpiceAdapter<TripModel> getAdapter() {
-      return adapter;
+   public void itemsChanged(List<TripModel> items) {
+      adapter.clearAndUpdateItems(items);
    }
 
    @Override
@@ -255,7 +257,11 @@ public class TripListFragment extends RxBaseFragment<TripListPresenter> implemen
             new SweetDialogHelper().notifyTripLiked(getActivity(), trip);
          }
       }
+   }
 
+   @Override
+   public void notifyItemAddedToBucket(BucketItem bucketItem) {
+      new SweetDialogHelper().notifyItemAddedToBucket(getActivity(), bucketItem);
    }
 
    @Override
@@ -275,6 +281,33 @@ public class TripListFragment extends RxBaseFragment<TripListPresenter> implemen
             .fragmentManager(getFragmentManager())
             .containerId(R.id.container_main)
             .backStackEnabled(true)
+            .build());
+   }
+
+   @Override
+   public void onLikeClicked(TripModel tripModel) {
+      getPresenter().likeItem(tripModel);
+   }
+
+   @Override
+   public void onAddToBucketClicked(TripModel tripModel) {
+      getPresenter().addItemToBucket(tripModel);
+   }
+
+   @Override
+   public void onCellClicked(TripModel model) {
+      getPresenter().openTrip(model);
+   }
+
+   @Override
+   public void moveToTripDetails(TripModel model) {
+      router.moveTo(Route.FEED_ENTITY_DETAILS, NavigationConfigBuilder.forActivity()
+            .toolbarConfig(ToolbarConfig.Builder.create()
+                  .visible(false)
+                  .build())
+            .data(new FeedEntityDetailsBundle.Builder().feedItem(FeedItem.create(model, null))
+                  .showAdditionalInfo(true)
+                  .build())
             .build());
    }
 }

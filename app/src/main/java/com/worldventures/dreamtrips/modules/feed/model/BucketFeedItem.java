@@ -3,9 +3,12 @@ package com.worldventures.dreamtrips.modules.feed.model;
 import android.content.res.Resources;
 import android.os.Parcel;
 
+import com.esotericsoftware.kryo.DefaultSerializer;
+import com.esotericsoftware.kryo.serializers.CompatibleFieldSerializer;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem;
 
+@DefaultSerializer(CompatibleFieldSerializer.class)
 public class BucketFeedItem extends FeedItem<BucketItem> {
 
    @Override

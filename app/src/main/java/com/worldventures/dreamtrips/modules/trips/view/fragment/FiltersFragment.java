@@ -13,14 +13,14 @@ import com.worldventures.dreamtrips.modules.common.view.activity.MainActivity;
 import com.worldventures.dreamtrips.modules.common.view.custom.EmptyRecyclerView;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragment;
 import com.worldventures.dreamtrips.modules.trips.model.ActivityModel;
-import com.worldventures.dreamtrips.modules.trips.model.DateFilterItem;
-import com.worldventures.dreamtrips.modules.trips.model.FilterFavoriteModel;
-import com.worldventures.dreamtrips.modules.trips.model.FilterModel;
-import com.worldventures.dreamtrips.modules.trips.model.FilterRecentlyAddedModel;
-import com.worldventures.dreamtrips.modules.trips.model.FilterSoldOutModel;
-import com.worldventures.dreamtrips.modules.trips.model.RegionHeaderModel;
+import com.worldventures.dreamtrips.modules.trips.model.filter.DateFilterItem;
+import com.worldventures.dreamtrips.modules.trips.model.filter.FilterFavoriteModel;
+import com.worldventures.dreamtrips.modules.trips.model.filter.FilterModel;
+import com.worldventures.dreamtrips.modules.trips.model.filter.FilterRecentlyAddedModel;
+import com.worldventures.dreamtrips.modules.trips.model.filter.FilterSoldOutModel;
+import com.worldventures.dreamtrips.modules.trips.model.filter.RegionHeaderModel;
 import com.worldventures.dreamtrips.modules.trips.model.RegionModel;
-import com.worldventures.dreamtrips.modules.trips.model.ThemeHeaderModel;
+import com.worldventures.dreamtrips.modules.trips.model.filter.ThemeHeaderModel;
 import com.worldventures.dreamtrips.modules.trips.presenter.FiltersPresenter;
 import com.worldventures.dreamtrips.modules.trips.view.cell.filter.DateCell;
 import com.worldventures.dreamtrips.modules.trips.view.cell.filter.FavoritesCell;
@@ -40,7 +40,7 @@ import butterknife.OnClick;
 @Layout(R.layout.layout_filters)
 public class FiltersFragment extends BaseFragment<FiltersPresenter> implements FiltersPresenter.View {
 
-   @InjectView(R.id.recyclerViewFilters) protected EmptyRecyclerView recyclerView;
+   @InjectView(R.id.recyclerViewFilters) EmptyRecyclerView recyclerView;
    @InjectView(R.id.progress) ProgressBar progressBar;
    @InjectView(R.id.error_container) View errorContainer;
 

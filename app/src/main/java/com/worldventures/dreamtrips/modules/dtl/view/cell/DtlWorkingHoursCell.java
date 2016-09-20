@@ -8,6 +8,7 @@ import com.techery.spares.annotations.Layout;
 import com.techery.spares.ui.view.cell.AbstractCell;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.utils.DateTimeUtils;
+import com.worldventures.dreamtrips.core.utils.LocaleHelper;
 import com.worldventures.dreamtrips.modules.dtl.helper.DtlMerchantHelper;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.operational_hour.DayOfWeek;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.operational_hour.OperationDay;
@@ -16,6 +17,8 @@ import com.worldventures.dreamtrips.modules.dtl.model.merchant.operational_hour.
 import java.util.Calendar;
 import java.util.List;
 
+import javax.inject.Inject;
+
 import butterknife.InjectView;
 
 @Layout(R.layout.adapter_item_dtl_details_working_hours_cell)
@@ -23,6 +26,8 @@ public class DtlWorkingHoursCell extends AbstractCell<OperationDay> {
 
    @InjectView(R.id.workingDay) TextView workingDay;
    @InjectView(R.id.workingHours) TextView workingHours;
+
+   @Inject LocaleHelper localeHelper;
 
    private int timezone;
 
@@ -35,7 +40,7 @@ public class DtlWorkingHoursCell extends AbstractCell<OperationDay> {
       final DayOfWeek dayOfWeek = getModelObject().getDayOfWeek();
       final List<OperationHours> operationDays = getModelObject().getOperationHours();
       //
-      workingDay.setText(DateTimeUtils.getDisplayWeekDay(dayOfWeek.getDay(), Calendar.LONG));
+      workingDay.setText(DateTimeUtils.getDisplayWeekDay(dayOfWeek.getDay(), Calendar.LONG, localeHelper.getDefaultLocale()));
       workingHours.setText(DtlMerchantHelper.formatOperationDayHours(itemView.getContext(), operationDays));
       //
       if (DateTimeUtils.isSameDayOfWeek(dayOfWeek, timezone)) {
@@ -46,7 +51,7 @@ public class DtlWorkingHoursCell extends AbstractCell<OperationDay> {
 
    @Override
    public boolean shouldInject() {
-      return false;
+      return true;
    }
 
    @Override

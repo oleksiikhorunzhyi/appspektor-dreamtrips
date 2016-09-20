@@ -49,7 +49,12 @@ public class PodcastCell extends AbstractDelegateCell<Podcast, PodcastCellDelega
       Podcast podcast = getModelObject();
       image.setImageURI(Uri.parse(podcast.getImageUrl()));
       title.setText(podcast.getTitle());
-      category.setText(podcast.getCategory());
+      if (TextUtils.isEmpty(podcast.getCategory())) {
+         category.setVisibility(View.GONE);
+      } else {
+         category.setVisibility(View.VISIBLE);
+         category.setText(podcast.getCategory());
+      }
       date.setText(DateTimeUtils.convertDateToString(podcast.getDate(), DateTimeUtils.PODCAST_DATE_FORMAT));
 
       if (podcast.getDuration() == 0) {

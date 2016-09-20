@@ -18,8 +18,9 @@ import com.worldventures.dreamtrips.core.api.error.DTErrorHandler;
 import com.worldventures.dreamtrips.core.api.request.DreamTripsRequest;
 import com.worldventures.dreamtrips.core.session.UserSession;
 import com.worldventures.dreamtrips.modules.auth.api.command.LoginCommand;
+import com.worldventures.dreamtrips.modules.auth.api.command.LogoutCommand;
 import com.worldventures.dreamtrips.modules.auth.service.LoginInteractor;
-import com.worldventures.dreamtrips.modules.common.view.util.LogoutDelegate;
+import com.worldventures.dreamtrips.modules.common.service.LogoutInteractor;
 
 import org.apache.http.HttpStatus;
 import org.json.JSONArray;
@@ -46,7 +47,7 @@ public class DreamSpiceManager extends SpiceManager {
    @Inject protected Context context;
    @Inject protected SessionHolder<UserSession> appSessionHolder;
    @Inject DTErrorHandler dtErrorHandler;
-   @Inject LogoutDelegate logoutDelegate;
+   @Inject LogoutInteractor logoutInteractor;
    @Inject LoginInteractor loginInteractor;
 
    private final ErrorParser errorParser;
@@ -72,7 +73,7 @@ public class DreamSpiceManager extends SpiceManager {
                   execute(request, successListener, failureListener);
                } else {
                   //logout, token is invalid
-                  logoutDelegate.logout();
+                  logoutInteractor.logoutPipe().send(new LogoutCommand());
                }
             });
          }
@@ -94,7 +95,7 @@ public class DreamSpiceManager extends SpiceManager {
                   execute(request, successListener, failureListener);
                } else {
                   //logout, token is invalid
-                  logoutDelegate.logout();
+                  logoutInteractor.logoutPipe().send(new LogoutCommand());
                }
             });
          }

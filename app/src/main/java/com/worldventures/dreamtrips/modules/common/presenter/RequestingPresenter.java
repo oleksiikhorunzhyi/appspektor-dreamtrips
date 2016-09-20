@@ -8,8 +8,6 @@ public interface RequestingPresenter extends DreamSpiceManager.FailureListener {
 
    <T> void doRequest(SpiceRequest<T> request, DreamSpiceManager.SuccessListener<T> successListener);
 
-   <T> void doRequestWithCacheKey(SpiceRequest<T> request, String cacheKey, DreamSpiceManager.SuccessListener<T> successListener);
-
    /**
     * @deprecated use {@link ApiErrorPresenter} for custom failure listening instead.
     */

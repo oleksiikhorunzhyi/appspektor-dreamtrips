@@ -52,5 +52,4 @@ public class TranslationDiscStorage implements ActionStorage<String> {
          throw new AssertionError("Language To was not found");
       }
    }
-
 }

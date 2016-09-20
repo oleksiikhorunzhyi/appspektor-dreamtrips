@@ -9,6 +9,7 @@ import android.widget.ImageView;
 
 import com.techery.spares.annotations.Layout;
 import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.core.api.error.ErrorResponse;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketPhoto;
 import com.worldventures.dreamtrips.modules.tripsimages.model.IFullScreenObject;
 import com.worldventures.dreamtrips.modules.tripsimages.presenter.fullscreen.BucketFullscreenPresenter;
@@ -98,5 +99,15 @@ public class BucketPhotoFullscreenFragment extends FullScreenPhotoFragment<Bucke
             });
       dialog.setCanceledOnTouchOutside(true);
       dialog.show();
+   }
+
+   @Override
+   public boolean onApiError(ErrorResponse errorResponse) {
+      return false;
+   }
+
+   @Override
+   public void onApiCallFailed() {
+
    }
 }

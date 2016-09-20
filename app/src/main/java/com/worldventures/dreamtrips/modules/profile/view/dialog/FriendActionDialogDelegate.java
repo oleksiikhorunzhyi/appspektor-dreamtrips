@@ -8,34 +8,55 @@ import android.support.v7.app.AlertDialog;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.common.model.User;
-import com.worldventures.dreamtrips.modules.friends.events.OpenFriendPrefsEvent;
-import com.worldventures.dreamtrips.modules.friends.events.StartSingleChatEvent;
-import com.worldventures.dreamtrips.modules.friends.events.UnfriendEvent;
 
-import de.greenrobot.event.EventBus;
+import java.lang.ref.WeakReference;
+
+import rx.functions.Action1;
 
 public class FriendActionDialogDelegate {
 
-   Context context;
-   EventBus eventBus;
+   private WeakReference<Context> context;
+   private Action1<User> onUnfriendAction;
+   private Action1<User> onFriendPrefsAction;
+   private Action1<User> onStartSingleChatAction;
 
-   public FriendActionDialogDelegate(Context context, EventBus eventBus) {
-      this.context = context;
-      this.eventBus = eventBus;
+   public FriendActionDialogDelegate(Context context) {
+      this.context = new WeakReference<>(context);
+   }
+
+   public FriendActionDialogDelegate onUnfriend(Action1<User> onUnfriendAction) {
+      this.onUnfriendAction = onUnfriendAction;
+      return this;
+   }
+
+   public FriendActionDialogDelegate onFriendPrefsAction(Action1<User> onFriendPrefsAction) {
+      this.onFriendPrefsAction = onFriendPrefsAction;
+      return this;
+   }
+
+   public FriendActionDialogDelegate onStartSingleChatAction(Action1<User> onStartSingleChatAction) {
+      this.onStartSingleChatAction = onStartSingleChatAction;
+      return this;
    }
 
    public void showFriendDialog(User user, Drawable profileIcon) {
-      showFriendSettingsDialog(user, profileIcon, context.getResources()
+      if (context.get() == null) return;
+
+      showFriendSettingsDialog(user, profileIcon, context.get().getResources()
             .getStringArray(R.array.friend_settings_dialog));
    }
 
    public void showFriendDialogSkipChat(User user, Drawable profileIcon) {
-      showFriendSettingsDialog(user, profileIcon, context.getResources()
+      if (context.get() == null) return;
+
+      showFriendSettingsDialog(user, profileIcon, context.get().getResources()
             .getStringArray(R.array.friend_settings_dialog_skip_chat));
    }
 
    public void showFriendSettingsDialog(User user, Drawable profileIcon, String... items) {
-      AlertDialog.Builder builder = new AlertDialog.Builder(context);
+      if (context.get() == null) return;
+
+      AlertDialog.Builder builder = new AlertDialog.Builder(context.get());
       builder.setTitle(user.getFullName());
       if (profileIcon != null) builder.setIcon(profileIcon);
       builder.setNegativeButton(R.string.friend_cancel, (dialogInterface, i) -> dialogInterface.dismiss());
@@ -47,24 +68,26 @@ public class FriendActionDialogDelegate {
       switch (actionCode) {
          case 0:
             showConfirmationDialog((dialog, which) -> {
-               eventBus.post(new UnfriendEvent(user));
+               onUnfriendAction.call(user);
                TrackingHelper.tapMyFriendsButtonFeed(TrackingHelper.ATTRIBUTE_UNFRIEND);
             });
             break;
          case 1:
-            eventBus.post(new OpenFriendPrefsEvent(user));
+            onFriendPrefsAction.call(user);
             break;
          case 2:
-            eventBus.post(new StartSingleChatEvent(user));
+            onStartSingleChatAction.call(user);
             break;
       }
    }
 
    private void showConfirmationDialog(DialogInterface.OnClickListener accept) {
-      AlertDialog.Builder builder = new AlertDialog.Builder(context);
-      builder.setTitle(context.getString(R.string.social_unfriend_confirmation_title));
-      builder.setPositiveButton(context.getString(R.string.social_unfriend_confiramation_accept), accept);
-      builder.setNegativeButton(context.getString(R.string.social_unfriend_confiramation_cancel), null);
+      if (context.get() == null) return;
+
+      AlertDialog.Builder builder = new AlertDialog.Builder(context.get());
+      builder.setTitle(context.get().getString(R.string.social_unfriend_confirmation_title));
+      builder.setPositiveButton(context.get().getString(R.string.social_unfriend_confiramation_accept), accept);
+      builder.setNegativeButton(context.get().getString(R.string.social_unfriend_confiramation_cancel), null);
       builder.show();
    }
 }

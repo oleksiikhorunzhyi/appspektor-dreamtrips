@@ -20,6 +20,7 @@ import com.worldventures.dreamtrips.modules.dtl.view.cell.DtlMerchantExpandableC
 import com.worldventures.dreamtrips.modules.dtl.view.cell.DtlNearbyHeaderCell;
 import com.worldventures.dreamtrips.modules.dtl.view.cell.DtlPerkCell;
 import com.worldventures.dreamtrips.modules.dtl.view.cell.DtlPointsCell;
+import com.worldventures.dreamtrips.modules.dtl.view.cell.DtlWorkingHoursCell;
 import com.worldventures.dreamtrips.modules.dtl.view.cell.adapter.MerchantWorkingHoursAdapter;
 import com.worldventures.dreamtrips.modules.dtl.view.dialog.DtlPointsEstimationFragment;
 import com.worldventures.dreamtrips.modules.dtl.view.fragment.DtlScanQrCodeFragment;
@@ -52,7 +53,54 @@ import dagger.Module;
 import dagger.Provides;
 
 @Module(
-      injects = {DtlLocationsSearchScreenImpl.class, DtlLocationsSearchPresenterImpl.class, DtlLocationsScreenImpl.class, DtlLocationsPresenterImpl.class, DtlMapPresenterImpl.class, DtlMapScreenImpl.class, DtlMapInfoPresenterImpl.class, MasterToolbarScreenImpl.class, MasterToolbarPresenterImpl.class, DtlMapInfoScreenImpl.class, DtlStartPresenterImpl.class, DtlStartScreenImpl.class, DtlMerchantsPresenterImpl.class, DtlMerchantsScreenImpl.class, DtlLocationChangePresenterImpl.class, DtlLocationChangeScreenImpl.class, DtlDetailsPresenterImpl.class, DtlDetailsScreenImpl.class, DtlFullscreenImageScreenImpl.class, ActivityPresenter.class, DtlFilterPresenterImpl.class, DtlLocationSearchHeaderCell.class, DtlNearbyHeaderCell.class, DtlLocationCell.class, DtlFilterAttributeCell.class, DtlFilterAttributeHeaderCell.class, DtlMerchantExpandableCell.class, DtlLocationSearchCell.class, MerchantOffersInflater.class, DtlPerkCell.class, DtlPointsCell.class, DtlLocationChangeCell.class, DtlScanReceiptFragment.class, DtlScanReceiptPresenter.class, DtlPointsEstimationFragment.class, DtlPointsEstimationPresenter.class, DtlScanQrCodeFragment.class, DtlScanQrCodePresenter.class, DtlTransactionSucceedFragment.class, DtlTransactionSucceedPresenter.class, DtlVerifyAmountFragment.class, DtlVerifyAmountPresenter.class, MerchantWorkingHoursAdapter.class, BaseExpandableAdapter.class, BaseExpandableDelegateAdapter.class,},
+      injects = {
+            DtlLocationsSearchScreenImpl.class,
+            DtlLocationsSearchPresenterImpl.class,
+            DtlLocationsScreenImpl.class,
+            DtlLocationsPresenterImpl.class,
+            DtlMapPresenterImpl.class,
+            DtlMapScreenImpl.class,
+            DtlMapInfoPresenterImpl.class,
+            MasterToolbarScreenImpl.class,
+            MasterToolbarPresenterImpl.class,
+            DtlMapInfoScreenImpl.class,
+            DtlStartPresenterImpl.class,
+            DtlStartScreenImpl.class,
+            DtlMerchantsPresenterImpl.class,
+            DtlMerchantsScreenImpl.class,
+            DtlLocationChangePresenterImpl.class,
+            DtlLocationChangeScreenImpl.class,
+            DtlDetailsPresenterImpl.class,
+            DtlDetailsScreenImpl.class,
+            DtlFullscreenImageScreenImpl.class,
+            ActivityPresenter.class,
+            DtlFilterPresenterImpl.class,
+            DtlLocationSearchHeaderCell.class,
+            DtlNearbyHeaderCell.class,
+            DtlLocationCell.class,
+            DtlFilterAttributeCell.class,
+            DtlFilterAttributeHeaderCell.class,
+            DtlMerchantExpandableCell.class,
+            DtlLocationSearchCell.class,
+            MerchantOffersInflater.class,
+            DtlPerkCell.class,
+            DtlPointsCell.class,
+            DtlLocationChangeCell.class,
+            DtlWorkingHoursCell.class,
+            DtlScanReceiptFragment.class,
+            DtlScanReceiptPresenter.class,
+            DtlPointsEstimationFragment.class,
+            DtlPointsEstimationPresenter.class,
+            DtlScanQrCodeFragment.class,
+            DtlScanQrCodePresenter.class,
+            DtlTransactionSucceedFragment.class,
+            DtlTransactionSucceedPresenter.class,
+            DtlVerifyAmountFragment.class,
+            DtlVerifyAmountPresenter.class,
+            MerchantWorkingHoursAdapter.class,
+            BaseExpandableAdapter.class,
+            BaseExpandableDelegateAdapter.class,
+      },
       complete = false, library = true)
 public class DtlActivityModule {
 

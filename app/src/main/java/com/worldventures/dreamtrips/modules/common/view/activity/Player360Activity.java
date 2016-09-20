@@ -28,6 +28,7 @@ import com.panframe.android.lib.PFObjectFactory;
 import com.panframe.android.lib.PFView;
 import com.techery.spares.annotations.Layout;
 import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.core.flow.util.Utils;
 import com.worldventures.dreamtrips.core.navigation.ActivityRouter;
 import com.worldventures.dreamtrips.core.utils.AnimationUtils;
 import com.worldventures.dreamtrips.modules.common.view.custom.PFViewMediaControls;
@@ -70,6 +71,7 @@ public class Player360Activity extends ActivityWithPresenter<VideoPlayerPresente
       if (TextUtils.isEmpty(url)) {
          finish();
       } else {
+         if (!Utils.isConnected(this)) informUser(R.string.no_connection);
          loadVideo(url);
       }
 
@@ -222,7 +224,7 @@ public class Player360Activity extends ActivityWithPresenter<VideoPlayerPresente
             Timber.d("Complete");
             break;
          case ERROR:
-            Timber.d("Error");
+            informUser(Utils.isConnected(this) ? R.string.error_something_went_wrong : R.string.no_connection);
             break;
       }
    }

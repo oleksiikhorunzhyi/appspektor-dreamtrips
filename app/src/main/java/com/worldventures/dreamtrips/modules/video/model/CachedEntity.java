@@ -6,6 +6,18 @@ import android.os.Environment;
 import java.io.File;
 import java.io.Serializable;
 
+/**
+ * Note of what needs to be improved in this class:
+ *
+ * 1. Store progress state in actual variable, currently NOT in progress state is determined by when progress is 0,
+ * which is wrong because download can be already initiated but progress is still zero
+ * as connection hasn't established yet.
+ * 2. This class should store link to actual cache file location as it's initiated each time with a new download
+ *
+ * In order to do this we should :
+ * 1. Refactor related commands and presenters
+ * 2. Migrate it from using default Kryo's FieldSerializer which does not support adding new fields to entities.
+ */
 public class CachedEntity implements Serializable {
 
    protected static final long serialVersionUID = 12332;
@@ -55,6 +67,10 @@ public class CachedEntity implements Serializable {
 
    public String getUrl() {
       return url;
+   }
+
+   public boolean inProgress() {
+      return !failed && progress > 0 && progress < 100;
    }
 
    public static String getFilePath(Context context, String url) {

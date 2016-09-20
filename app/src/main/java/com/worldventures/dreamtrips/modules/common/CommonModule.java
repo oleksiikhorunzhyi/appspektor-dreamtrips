@@ -91,6 +91,7 @@ import dagger.Provides;
             ProgressDialogFragment.class,
             MessageDialogFragment.class,
             PhotoPickerLayout.class,
+            WalletActivity.class,
 
             DialogFragmentNavigator.NavigationDialogFragment.class,
             BaseImageFragment.class,

@@ -88,6 +88,17 @@ public class CardListScreen extends WalletFrameLayout<CardListPresenter.Screen, 
       dialog.showCancelButton(true);
    }
 
+   @Override
+   public void hideFirmwareUpdateBtn() {
+      //// TODO: 20.09.16 Add btn reaction
+
+   }
+
+   @Override
+   public void showFirmwareUpdateBtn() {
+      //// TODO: 20.09.16 Add btn reaction
+   }
+
    private void setupCardStackList() {
       adapter = new IgnoreFirstItemAdapter(getContext(), getInjector());
       adapter.registerCell(CardStackViewModel.class, CardStackCell.class);
@@ -119,7 +130,7 @@ public class CardListScreen extends WalletFrameLayout<CardListPresenter.Screen, 
             presenter.navigationClick();
          }
 
-         });
+      });
 
       bankCardList.setAdapter(adapter);
       bankCardList.setItemAnimator(new DefaultItemAnimator());

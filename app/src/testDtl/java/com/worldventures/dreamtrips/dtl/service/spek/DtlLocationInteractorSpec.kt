@@ -3,6 +3,7 @@ package com.worldventures.dreamtrips.dtl.service.spek
 import com.nhaarman.mockito_kotlin.*
 import com.worldventures.dreamtrips.AssertUtil.assertActionSuccess
 import com.worldventures.dreamtrips.BaseSpec
+import com.worldventures.dreamtrips.core.janet.SessionActionPipeCreator
 import com.worldventures.dreamtrips.modules.dtl.model.LocationSourceType
 import com.worldventures.dreamtrips.modules.dtl.model.location.DtlExternalLocation
 import com.worldventures.dreamtrips.modules.dtl.service.DtlLocationInteractor
@@ -38,7 +39,7 @@ class DtlLocationInteractorSpec : BaseSpec({
 
    commandDaggerService.registerProvider(Janet::class.java, { janet })
 
-   val locationInteractor = DtlLocationInteractor(janet)
+   val locationInteractor = DtlLocationInteractor(SessionActionPipeCreator(janet))
 
    //
 

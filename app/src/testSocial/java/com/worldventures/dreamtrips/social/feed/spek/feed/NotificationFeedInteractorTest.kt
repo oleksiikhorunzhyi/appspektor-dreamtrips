@@ -5,6 +5,7 @@ import com.nhaarman.mockito_kotlin.spy
 import com.nhaarman.mockito_kotlin.whenever
 import com.worldventures.dreamtrips.AssertUtil
 import com.worldventures.dreamtrips.BaseSpec
+import com.worldventures.dreamtrips.core.janet.SessionActionPipeCreator
 import com.worldventures.dreamtrips.core.janet.cache.storage.ActionStorage
 import com.worldventures.dreamtrips.core.repository.SnappyRepository
 import com.worldventures.dreamtrips.modules.feed.model.FeedEntity
@@ -126,7 +127,7 @@ class NotificationFeedInteractorTest : BaseSpec({
          daggerCommandActionService.registerProvider(Janet::class.java) { janet }
          daggerCommandActionService.registerProvider(NotificationFeedInteractor::class.java) { feedInteractor }
 
-         feedInteractor = NotificationFeedInteractor(janet)
+         feedInteractor = NotificationFeedInteractor(SessionActionPipeCreator(janet))
       }
 
       fun mockHttpService(): MockHttpActionService {

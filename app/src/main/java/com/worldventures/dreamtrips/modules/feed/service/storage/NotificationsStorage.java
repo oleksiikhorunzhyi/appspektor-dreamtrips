@@ -5,15 +5,15 @@ import android.support.annotation.Nullable;
 import com.worldventures.dreamtrips.core.janet.cache.CacheBundle;
 import com.worldventures.dreamtrips.core.janet.cache.CachedAction;
 import com.worldventures.dreamtrips.core.janet.cache.storage.ActionStorage;
+import com.worldventures.dreamtrips.core.janet.cache.storage.ClearableStorage;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
-import com.worldventures.dreamtrips.modules.feed.model.FeedEntity;
 import com.worldventures.dreamtrips.modules.feed.model.FeedItem;
 import com.worldventures.dreamtrips.modules.feed.service.command.GetNotificationsCommand;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class NotificationsStorage implements ActionStorage<List<FeedItem>> {
+public class NotificationsStorage implements ActionStorage<List<FeedItem>>, ClearableStorage {
 
    public static final String REFRESH = "REFRESH";
 
@@ -49,5 +49,10 @@ public class NotificationsStorage implements ActionStorage<List<FeedItem>> {
          items = snappyRepository.getNotifications();
       }
       return items;
+   }
+
+   @Override
+   public void clearMemory() {
+      memoryStorage.clearMemory();
    }
 }

@@ -6,7 +6,7 @@ import com.worldventures.dreamtrips.core.janet.cache.CacheBundle;
 
 import java.util.List;
 
-public abstract class PaginatedCombinedStorage<T> implements PaginatedStorage<List<T>> {
+public abstract class PaginatedCombinedStorage<T> implements PaginatedStorage<List<T>>, ClearableStorage {
 
    private PaginatedMemoryStorage<T> memoryStorage;
    private PaginatedDiskStorage<T> diskStorage;
@@ -29,5 +29,10 @@ public abstract class PaginatedCombinedStorage<T> implements PaginatedStorage<Li
          data = diskStorage.get(params);
       }
       return data;
+   }
+
+   @Override
+   public void clearMemory() {
+      memoryStorage.clearMemory();
    }
 }

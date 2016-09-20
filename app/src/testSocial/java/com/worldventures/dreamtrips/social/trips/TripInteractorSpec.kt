@@ -8,6 +8,7 @@ import com.worldventures.dreamtrips.BaseSpec
 import com.worldventures.dreamtrips.api.entity.model.EntityHolder
 import com.worldventures.dreamtrips.api.trip.model.Trip
 import com.worldventures.dreamtrips.api.trip.model.TripWithDetails
+import com.worldventures.dreamtrips.core.janet.SessionActionPipeCreator
 import com.worldventures.dreamtrips.core.janet.cache.storage.PaginatedMemoryStorage
 import com.worldventures.dreamtrips.core.repository.SnappyRepository
 import com.worldventures.dreamtrips.modules.trips.command.GetTripDetailsCommand
@@ -162,7 +163,7 @@ class TripInteractorSpec : BaseSpec({
          daggerCommandActionService.registerProvider(MapperyContext::class.java) { mappery }
          daggerCommandActionService.registerProvider(SnappyRepository::class.java) { snappy }
 
-         tripsInteractor = TripsInteractor(janet)
+         tripsInteractor = TripsInteractor(SessionActionPipeCreator(janet))
       }
 
       fun mockHttpServiceForTrips(): MockHttpActionService {

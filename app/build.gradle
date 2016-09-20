@@ -30,7 +30,7 @@ configurations.all {
 
 android {
    compileSdkVersion 24
-   buildToolsVersion "24.0.1"
+   buildToolsVersion "24.0.2"
 
    // App version
    def versionMajor = 1
@@ -324,7 +324,7 @@ android {
          def proConfigs = file('proguard-rules').listFiles().collect { it }
          proConfigs << getDefaultProguardFile('proguard-android-optimize.txt')
          proConfigs << file('dagger-proguard-keepnames.cfg')
-         proguardFiles proConfigs
+         setProguardFiles proConfigs
       }
    }
 

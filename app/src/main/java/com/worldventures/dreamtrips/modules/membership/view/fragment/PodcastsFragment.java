@@ -59,7 +59,6 @@ public class PodcastsFragment extends RxBaseFragment<PodcastsPresenter> implemen
       recyclerView.setLayoutManager(layoutManager);
       recyclerView.addItemDecoration(new DividerItemDecoration(getActivity(), DividerItemDecoration.VERTICAL_LIST));
       adapter = new BaseDelegateAdapter<>(getContext(), this);
-      adapter.setHasStableIds(true);
 
       adapter.registerCell(Podcast.class, PodcastCell.class);
       adapter.registerDelegate(Podcast.class, this);
@@ -124,7 +123,7 @@ public class PodcastsFragment extends RxBaseFragment<PodcastsPresenter> implemen
 
    @Override
    public void onRefresh() {
-      getPresenter().reloadPodcasts();
+      getPresenter().onRefresh();
    }
 
    @Override

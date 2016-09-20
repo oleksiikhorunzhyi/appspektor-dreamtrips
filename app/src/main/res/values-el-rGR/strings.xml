@@ -586,8 +586,6 @@
    <string name="error_fail_to_load_videos">Αποτυχία φόρτωσης βίντεο</string>
    <string name="error_fail_to_like_item">Αποτυχία \'Μου αρέσει\' αντικειμένου</string>
    <string name="error_fail_to_unlike_item">Αποτυχία \'Δεν μου αρέσει\' αντικειμένου</string>
-   <string name="error_fail_to_mark_notification">Αποτυχία επισήμανσης ειδοποίησης</string>
-   <string name="error_fail_to_mark_notifications">Αποτυχία επισήμανσης ειδοποιήσεων</string>
    <string name="tag_people">Επισήμανση ατόμων</string>
 
    <string name="say_something">Πείτε κάτι στον κόσμο</string>

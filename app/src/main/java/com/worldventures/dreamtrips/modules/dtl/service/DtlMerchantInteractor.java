@@ -2,7 +2,7 @@ package com.worldventures.dreamtrips.modules.dtl.service;
 
 import com.innahema.collections.query.queriables.Queryable;
 import com.newrelic.agent.android.NewRelic;
-import com.worldventures.dreamtrips.api.dtl.merchants.MerchantByIdHttpAction;
+import com.worldventures.dreamtrips.core.janet.SessionActionPipeCreator;
 import com.worldventures.dreamtrips.modules.dtl.helper.DtlLocationHelper;
 import com.worldventures.dreamtrips.modules.dtl.model.LocationSourceType;
 import com.worldventures.dreamtrips.modules.dtl.model.location.DtlLocation;
@@ -19,7 +19,6 @@ import com.worldventures.dreamtrips.modules.dtl.service.action.MerchantByIdComma
 import java.util.List;
 
 import io.techery.janet.ActionPipe;
-import io.techery.janet.Janet;
 import io.techery.janet.WriteActionPipe;
 import rx.schedulers.Schedulers;
 
@@ -34,14 +33,14 @@ public class DtlMerchantInteractor {
 
    private final WriteActionPipe<DtlFilterDataAction> filterDataActionPipe;
 
-   public DtlMerchantInteractor(Janet janet, DtlLocationInteractor locationInteractor) {
+   public DtlMerchantInteractor(SessionActionPipeCreator sessionActionPipeCreator, DtlLocationInteractor locationInteractor) {
       this.locationInteractor = locationInteractor;
 
-      updateAmenitiesPipe = janet.createPipe(DtlUpdateAmenitiesAction.class, Schedulers.io());
-      merchantsPipe = janet.createPipe(DtlMerchantsAction.class, Schedulers.io());
-      merchantByIdPipe = janet.createPipe(DtlMerchantByIdAction.class);
-      filterDataActionPipe = janet.createPipe(DtlFilterDataAction.class, Schedulers.io());
-      merchantByIdHttpPipe = janet.createPipe(MerchantByIdCommand.class, Schedulers.io());
+      updateAmenitiesPipe = sessionActionPipeCreator.createPipe(DtlUpdateAmenitiesAction.class, Schedulers.io());
+      merchantsPipe = sessionActionPipeCreator.createPipe(DtlMerchantsAction.class, Schedulers.io());
+      merchantByIdPipe = sessionActionPipeCreator.createPipe(DtlMerchantByIdAction.class);
+      filterDataActionPipe = sessionActionPipeCreator.createPipe(DtlFilterDataAction.class, Schedulers.io());
+      merchantByIdHttpPipe = sessionActionPipeCreator.createPipe(MerchantByIdCommand.class, Schedulers.io());
 
       connectMerchantsPipe();
       connectUpdateAmenitiesPipe();

@@ -586,8 +586,6 @@
    <string name="error_fail_to_load_videos">Videók betöltése sikertelen</string>
    <string name="error_fail_to_like_item">Tétel like-olása sikertelen</string>
    <string name="error_fail_to_unlike_item">Tétel vissza like-olása sikertelen</string>
-   <string name="error_fail_to_mark_notification">Értesítés megjelölés sikertelen</string>
-   <string name="error_fail_to_mark_notifications">Értesítések megjelölése sikertelen</string>
    <string name="tag_people">Emberek megjelölése</string>
 
    <string name="say_something">Mondj valamit a világnak</string>

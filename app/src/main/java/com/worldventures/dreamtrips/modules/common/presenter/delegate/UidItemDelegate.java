@@ -1,15 +1,17 @@
 package com.worldventures.dreamtrips.modules.common.presenter.delegate;
 
-import com.worldventures.dreamtrips.modules.flags.command.GetFlagsCommand;
 import com.messenger.delegate.FlagsInteractor;
 import com.worldventures.dreamtrips.modules.common.model.FlagData;
 import com.worldventures.dreamtrips.modules.common.presenter.RequestingPresenter;
 import com.worldventures.dreamtrips.modules.feed.api.FlagItemCommand;
 import com.worldventures.dreamtrips.modules.feed.view.cell.Flaggable;
+import com.worldventures.dreamtrips.modules.flags.command.GetFlagsCommand;
 
 import io.techery.janet.Command;
+import io.techery.janet.helper.ActionStateSubscriber;
 import rx.android.schedulers.AndroidSchedulers;
-import timber.log.Timber;
+import rx.functions.Action1;
+import rx.functions.Action2;
 
 public class UidItemDelegate {
 
@@ -22,20 +24,17 @@ public class UidItemDelegate {
       this.flagsInteractor = flagsInteractor;
    }
 
-   public void loadFlags(Flaggable flaggable) {
+   public void loadFlags(Flaggable flaggable, Action2<Command, Throwable> errorAction) {
       flagsInteractor.getFlagsPipe()
-            .createObservableResult(new GetFlagsCommand())
+            .createObservable(new GetFlagsCommand())
             .observeOn(AndroidSchedulers.mainThread())
-            .map(Command::getResult)
-            .subscribe(flaggable::showFlagDialog, e -> Timber.e(e, "Could not load flags"));
+            .subscribe(new ActionStateSubscriber<GetFlagsCommand>()
+                  .onSuccess(command -> flaggable.showFlagDialog(command.getResult()))
+                  .onFail(errorAction::call));
    }
 
    public void flagItem(FlagData data, View view) {
-      requestingPresenter.doRequest(new FlagItemCommand(data), aVoid -> {
-         if (view != null) {
-            view.flagSentSuccess();
-         }
-      });
+      requestingPresenter.doRequest(new FlagItemCommand(data), aVoid -> view.flagSentSuccess());
    }
 
    public interface View {

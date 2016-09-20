@@ -9,6 +9,7 @@ import com.techery.spares.session.SessionHolder
 import com.techery.spares.storage.complex_objects.Optional
 import com.worldventures.dreamtrips.BaseSpec
 import com.worldventures.dreamtrips.core.api.uploadery.UploaderyManager
+import com.worldventures.dreamtrips.core.janet.SessionActionPipeCreator
 import com.worldventures.dreamtrips.core.janet.cache.storage.ActionStorage
 import com.worldventures.dreamtrips.core.repository.SnappyRepository
 import com.worldventures.dreamtrips.core.session.UserSession
@@ -52,7 +53,7 @@ abstract class BucketInteractorBaseSpec(speckBody: DescribeBody.() -> Unit) : Ba
          daggerCommandActionService.registerProvider(Context::class.java, { MockContext() })
          daggerCommandActionService.registerProvider(StaticPageProvider::class.java, { staticPageProvider })
 
-         bucketInteractor = BucketInteractor(janet)
+         bucketInteractor = BucketInteractor(SessionActionPipeCreator(janet))
 
          val mockUser = mock<User>()
 

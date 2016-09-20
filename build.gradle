@@ -12,7 +12,7 @@ buildscript {
       maven { url 'https://maven.fabric.io/public' }
    }
 
-   def androidPluginVersion = "2.1.2"
+   def androidPluginVersion = "2.2.0"
    def buildScriptPropertiesFile = rootProject.file('./buildscript.properties')
    Properties buildscriptProperties = new Properties()
    if (buildScriptPropertiesFile.exists()) {

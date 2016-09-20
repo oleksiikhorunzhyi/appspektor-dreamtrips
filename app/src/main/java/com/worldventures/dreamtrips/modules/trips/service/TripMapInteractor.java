@@ -1,27 +1,32 @@
 package com.worldventures.dreamtrips.modules.trips.service;
 
-import com.worldventures.dreamtrips.modules.trips.api.GetDetailedTripsHttpAction;
-import com.worldventures.dreamtrips.modules.trips.api.GetMapObjectsHttpAction;
+import com.worldventures.dreamtrips.core.janet.SessionActionPipeCreator;
+import com.worldventures.dreamtrips.modules.trips.command.GetTripsByUidCommand;
+import com.worldventures.dreamtrips.modules.trips.command.GetTripsLocationsCommand;
+
+import javax.inject.Inject;
+import javax.inject.Singleton;
 
 import io.techery.janet.ActionPipe;
-import io.techery.janet.Janet;
 import rx.schedulers.Schedulers;
 
+@Singleton
 public class TripMapInteractor {
 
-   private ActionPipe<GetMapObjectsHttpAction> mapObjectsActionPipe;
-   private ActionPipe<GetDetailedTripsHttpAction> detailedTripsActionPipe;
+   private ActionPipe<GetTripsLocationsCommand> mapObjectsActionPipe;
+   private ActionPipe<GetTripsByUidCommand> tripsByUidPipe;
 
-   public TripMapInteractor(Janet janet) {
-      mapObjectsActionPipe = janet.createPipe(GetMapObjectsHttpAction.class, Schedulers.io());
-      detailedTripsActionPipe = janet.createPipe(GetDetailedTripsHttpAction.class, Schedulers.io());
+   @Inject
+   public TripMapInteractor(SessionActionPipeCreator sessionActionPipeCreator) {
+      mapObjectsActionPipe = sessionActionPipeCreator.createPipe(GetTripsLocationsCommand.class, Schedulers.io());
+      tripsByUidPipe = sessionActionPipeCreator.createPipe(GetTripsByUidCommand.class, Schedulers.io());
    }
 
-   public ActionPipe<GetMapObjectsHttpAction> mapObjectsPipe() {
+   public ActionPipe<GetTripsLocationsCommand> mapObjectsPipe() {
       return mapObjectsActionPipe;
    }
 
-   public ActionPipe<GetDetailedTripsHttpAction> detailedTripsPipe() {
-      return detailedTripsActionPipe;
+   public ActionPipe<GetTripsByUidCommand> tripsByUidPipe() {
+      return tripsByUidPipe;
    }
 }

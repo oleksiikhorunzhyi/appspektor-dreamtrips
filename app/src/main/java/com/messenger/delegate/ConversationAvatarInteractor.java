@@ -3,12 +3,13 @@ package com.messenger.delegate;
 import com.messenger.delegate.command.avatar.RemoveChatAvatarCommand;
 import com.messenger.delegate.command.avatar.SendChatAvatarCommand;
 import com.messenger.delegate.command.avatar.SetChatAvatarCommand;
+import com.worldventures.dreamtrips.core.janet.SessionActionPipeCreator;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
 import io.techery.janet.ActionPipe;
-import io.techery.janet.Janet;
+import rx.schedulers.Schedulers;
 
 @Singleton
 public class ConversationAvatarInteractor {
@@ -17,10 +18,10 @@ public class ConversationAvatarInteractor {
    private final ActionPipe<RemoveChatAvatarCommand> removeChatAvatarCommandPipe;
 
    @Inject
-   ConversationAvatarInteractor(Janet janet) {
-      this.sendChatAvatarCommandActionPipe = janet.createPipe(SendChatAvatarCommand.class);
-      this.setChatAvatarCommandPipe = janet.createPipe(SetChatAvatarCommand.class);
-      this.removeChatAvatarCommandPipe = janet.createPipe(RemoveChatAvatarCommand.class);
+   ConversationAvatarInteractor(SessionActionPipeCreator sessionActionPipeCreator) {
+      this.sendChatAvatarCommandActionPipe = sessionActionPipeCreator.createPipe(SendChatAvatarCommand.class, Schedulers.io());
+      this.setChatAvatarCommandPipe = sessionActionPipeCreator.createPipe(SetChatAvatarCommand.class, Schedulers.io());
+      this.removeChatAvatarCommandPipe = sessionActionPipeCreator.createPipe(RemoveChatAvatarCommand.class, Schedulers.io());
    }
 
    public ActionPipe<SendChatAvatarCommand> getSendChatAvatarCommandPipe() {

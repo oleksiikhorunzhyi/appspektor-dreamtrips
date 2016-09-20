@@ -10,10 +10,12 @@ import com.techery.spares.annotations.Layout;
 import com.techery.spares.module.Injector;
 import com.techery.spares.module.qualifier.ForActivity;
 import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.core.api.error.ErrorResponse;
 import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.navigation.router.NavigationConfigBuilder;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
+import com.worldventures.dreamtrips.modules.common.view.ApiErrorView;
 import com.worldventures.dreamtrips.modules.common.view.custom.FlagView;
 import com.worldventures.dreamtrips.modules.common.view.custom.tagview.viewgroup.newio.PhotoTagHolder;
 import com.worldventures.dreamtrips.modules.common.view.custom.tagview.viewgroup.newio.PhotoTagHolderManager;
@@ -40,7 +42,8 @@ import cn.pedant.SweetAlert.SweetAlertDialog;
 import icepick.Icepick;
 
 @Layout(R.layout.fragment_fullscreen_photo)
-public class SocialImageFullscreenFragment extends FullScreenPhotoFragment<SocialImageFullscreenPresenter, Photo> implements SocialImageFullscreenPresenter.View, Flaggable, FullScreenPhotoActionPanelDelegate.ContentVisibilityListener {
+public class SocialImageFullscreenFragment extends FullScreenPhotoFragment<SocialImageFullscreenPresenter, Photo>
+      implements SocialImageFullscreenPresenter.View, Flaggable, FullScreenPhotoActionPanelDelegate.ContentVisibilityListener {
 
    FullScreenPhotoActionPanelDelegate viewDelegate = new FullScreenPhotoActionPanelDelegate();
 
@@ -279,5 +282,15 @@ public class SocialImageFullscreenFragment extends FullScreenPhotoFragment<Socia
    @Override
    public void flagSentSuccess() {
       informUser(R.string.flag_sent_success_msg);
+   }
+
+   @Override
+   public boolean onApiError(ErrorResponse errorResponse) {
+      return false;
+   }
+
+   @Override
+   public void onApiCallFailed() {
+
    }
 }

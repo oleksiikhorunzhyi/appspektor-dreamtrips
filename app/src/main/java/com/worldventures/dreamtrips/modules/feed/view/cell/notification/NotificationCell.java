@@ -59,18 +59,15 @@ public class NotificationCell extends AbstractCell<FeedItem> {
 
    @Override
    protected void syncUIStateWithModel() {
-      User user = getModelObject().getLinks().getUsers().get(0);
-      String thumb = user.getAvatar().getThumb();
+      User firstUser = getModelObject().getLinks().getUsers().get(0);
+      notificationAvatar.setImageURI(Uri.parse(firstUser.getAvatar().getThumb()));
+      notificationAvatar.setup(firstUser, injectorProvider.get());
+      notificationOwner.setText(firstUser.getFullName());
 
-      notificationAvatar.setImageURI(Uri.parse(thumb));
-      notificationAvatar.setup(user, injectorProvider.get());
-      notificationOwner.setText(user.getFullName());
-      int accountId = appSessionHolder.get().get().getUser().getId();
-      notificationText.setText(Html.fromHtml(getModelObject().infoText(itemView.getResources(), accountId)));
-      CharSequence relativeTimeSpanString = DateTimeUtils.getRelativeTimeSpanString(itemView.getResources(), getModelObject()
-            .getCreatedAt()
-            .getTime());
-      notificationTime.setText(relativeTimeSpanString);
+      int currentAccountId = appSessionHolder.get().get().getUser().getId();
+      notificationText.setText(Html.fromHtml(getModelObject().infoText(itemView.getResources(), currentAccountId)));
+      notificationTime.setText(DateTimeUtils.getRelativeTimeSpanString(itemView.getResources(),
+            getModelObject().getCreatedAt().getTime()));
 
       if (getModelObject().getType() == Type.UNDEFINED || getModelObject().getType() == Type.POST) {
          notificationImage.setVisibility(View.GONE);

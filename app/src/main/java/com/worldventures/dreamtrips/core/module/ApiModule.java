@@ -15,6 +15,7 @@ import com.worldventures.dreamtrips.core.api.DateTimeDeserializer;
 import com.worldventures.dreamtrips.core.api.DateTimeSerializer;
 import com.worldventures.dreamtrips.core.api.DreamTripsApi;
 import com.worldventures.dreamtrips.core.api.error.DTErrorHandler;
+import com.worldventures.dreamtrips.core.janet.api_lib.NewDreamTripsHttpService;
 import com.worldventures.dreamtrips.core.session.UserSession;
 import com.worldventures.dreamtrips.core.utils.AppVersionNameBuilder;
 import com.worldventures.dreamtrips.core.utils.InterceptingOkClient;
@@ -31,8 +32,6 @@ import com.worldventures.dreamtrips.modules.feed.model.serializer.FeedItemDeseri
 import com.worldventures.dreamtrips.modules.settings.model.Setting;
 import com.worldventures.dreamtrips.modules.settings.model.serializer.SettingsDeserializer;
 import com.worldventures.dreamtrips.modules.settings.model.serializer.SettingsSerializer;
-import com.worldventures.dreamtrips.modules.trips.model.MapObjectHolder;
-import com.worldventures.dreamtrips.modules.trips.model.serializer.MapObjectDeserializer;
 
 import java.net.CookieManager;
 import java.net.CookiePolicy;
@@ -82,7 +81,7 @@ public class ApiModule {
       return request -> {
          if (appSessionHolder.get().isPresent()) {
             UserSession userSession = appSessionHolder.get().get();
-            String authToken = "Token token=" + userSession.getApiToken();
+            String authToken = NewDreamTripsHttpService.getAuthorizationHeader(userSession.getApiToken());
             request.addHeader("Authorization", authToken);
          }
          request.addHeader("Accept-Language", localeHelper.getDefaultLocaleFormatted());
@@ -114,8 +113,6 @@ public class ApiModule {
             .registerTypeAdapterFactory(new GsonAdaptersBucketCoverBody())
             .registerTypeAdapterFactory(new GsonAdaptersBucketStatusBody())
             .registerTypeAdapterFactory(new GsonAdaptersBucketBodyImpl())
-            //
-            .registerTypeAdapter(MapObjectHolder.class, new MapObjectDeserializer<>())
             .create();
    }
 

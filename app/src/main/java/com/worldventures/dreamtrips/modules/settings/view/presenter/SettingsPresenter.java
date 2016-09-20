@@ -1,12 +1,12 @@
 package com.worldventures.dreamtrips.modules.settings.view.presenter;
 
-import android.support.annotation.StringRes;
-
 import com.innahema.collections.query.queriables.Queryable;
+import com.worldventures.dreamtrips.core.api.action.CommandWithError;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.core.rx.RxView;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
+import com.worldventures.dreamtrips.modules.common.view.ApiErrorView;
 import com.worldventures.dreamtrips.modules.dtl.service.DtlFilterMerchantInteractor;
 import com.worldventures.dreamtrips.modules.dtl.service.action.DtlFilterDataAction;
 import com.worldventures.dreamtrips.modules.settings.command.SettingsCommand;
@@ -65,7 +65,7 @@ public class SettingsPresenter extends Presenter<SettingsPresenter.View> {
             .observeOn(AndroidSchedulers.mainThread())
             .compose(bindView())
             .subscribe(new ActionStateSubscriber<SettingsCommand>().onSuccess(settingsCommand -> onSettingsSaved())
-                  .onFail((settingsCommand, throwable) -> onSaveError(settingsCommand.getFallbackErrorMessage())));
+                  .onFail(this::onSaveError));
    }
 
    public void applyChanges() {
@@ -89,9 +89,9 @@ public class SettingsPresenter extends Presenter<SettingsPresenter.View> {
       view.onAppliedChanges();
    }
 
-   private void onSaveError(@StringRes int stringId) {
+   private void onSaveError(CommandWithError command, Throwable exception) {
+      super.handleError(command, exception);
       view.hideLoading();
-      view.informUser(stringId);
    }
 
    private ArrayList<Setting> cloneList(List<Setting> settingsList) {

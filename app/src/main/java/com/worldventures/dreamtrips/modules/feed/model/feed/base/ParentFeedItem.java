@@ -25,6 +25,10 @@ public class ParentFeedItem {
       return type.equals("Single");
    }
 
+   public void setType(String type) {
+      this.type = type;
+   }
+
    public void setItems(List<FeedItem<FeedEntity>> items) {
       this.items = items;
    }

@@ -4,12 +4,10 @@ import android.content.res.Resources;
 
 import com.esotericsoftware.kryo.DefaultSerializer;
 import com.esotericsoftware.kryo.serializers.CompatibleFieldSerializer;
-import com.google.gson.annotations.SerializedName;
 import com.innahema.collections.query.queriables.Queryable;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.modules.common.model.User;
-import com.worldventures.dreamtrips.modules.common.view.util.Filterable;
 import com.worldventures.dreamtrips.modules.feed.model.BaseFeedEntity;
+import com.worldventures.dreamtrips.modules.trips.model.filter.DateFilterItem;
 import com.worldventures.dreamtrips.modules.tripsimages.model.TripImage;
 
 import java.util.ArrayList;
@@ -17,22 +15,24 @@ import java.util.Collections;
 import java.util.List;
 
 @DefaultSerializer(CompatibleFieldSerializer.class)
-public class TripModel extends BaseFeedEntity implements Filterable {
+public class TripModel extends BaseFeedEntity {
+
+   public static final String RETINA = "RETINA";
+   public static final String NORMAL = "NORMAL";
+   public static final String THUMB = "THUMB";
    public static final String PATTERN = "?width=%d&height=%d";
 
    public static final long serialVersionUID = 123L;
 
-   @SerializedName("trip_id") private String tripId;
-
+   private String tripId;
    private String name;
    private String description;
    private boolean featured;
    private boolean rewarded;
    private int duration;
-   @SerializedName("price_available") private boolean priceAvailable;
    private boolean available;
    private boolean hasMultipleDates;
-   @SerializedName("sold_out") private boolean soldOut;
+   private boolean soldOut;
    private long rewardsLimit;
    private Price price;
    private Location location;
@@ -41,9 +41,9 @@ public class TripModel extends BaseFeedEntity implements Filterable {
    private List<TripImage> images;
    private List<ActivityModel> activities;
    private boolean platinum;
-   @SerializedName("rewards_rules") private RewardsRuleModel rewardsRules;
-   @SerializedName("recent") private boolean recentlyAdded;
+   private boolean recent;
    private boolean inBucketList;
+   private List<ContentItem> content;
 
    @Override
    public String place() {
@@ -52,6 +52,10 @@ public class TripModel extends BaseFeedEntity implements Filterable {
 
    public String getTripId() {
       return tripId;
+   }
+
+   public void setTripId(String tripId) {
+      this.tripId = tripId;
    }
 
    public String getName() {
@@ -78,6 +82,14 @@ public class TripModel extends BaseFeedEntity implements Filterable {
       this.featured = featured;
    }
 
+   public void setLocation(Location location) {
+      this.location = location;
+   }
+
+   public void setDates(Schedule dates) {
+      this.dates = dates;
+   }
+
    public boolean isRewarded() {
       return rewarded;
    }
@@ -90,6 +102,10 @@ public class TripModel extends BaseFeedEntity implements Filterable {
       return soldOut;
    }
 
+   public void setSoldOut(boolean soldOut) {
+      this.soldOut = soldOut;
+   }
+
    public int getDuration() {
       return duration;
    }
@@ -98,40 +114,24 @@ public class TripModel extends BaseFeedEntity implements Filterable {
       this.duration = duration;
    }
 
-   public boolean isPriceAvailable() {
-      return priceAvailable;
-   }
-
-   public void setPriceAvailable(boolean priceAvailable) {
-      this.priceAvailable = priceAvailable;
-   }
-
    public boolean isAvailable() {
       return available;
-   }
-
-   public boolean isHasMultipleDates() {
-      return hasMultipleDates;
    }
 
    public void setAvailable(boolean available) {
       this.available = available;
    }
 
-   public String getRewardsLimit(User user) {
-      String result = String.valueOf(rewardsLimit);
+   public boolean isHasMultipleDates() {
+      return hasMultipleDates;
+   }
 
-      if (rewardsRules != null) {
-         if (user.isPlatinum() && rewardsRules.hasDtp()) {
-            result = rewardsRules.getDtp();
-         } else if (user.isGold() && rewardsRules.hasDtg()) {
-            result = rewardsRules.getDtg();
-         } else if (user.isGeneral() && rewardsRules.hasDtm()) {
-            result = rewardsRules.getDtm();
-         }
-      }
+   public void setHasMultipleDates(boolean hasMultipleDates) {
+      this.hasMultipleDates = hasMultipleDates;
+   }
 
-      return result;
+   public long getRewardsLimit() {
+      return rewardsLimit;
    }
 
    public void setRewardsLimit(long rewardsLimit) {
@@ -146,20 +146,12 @@ public class TripModel extends BaseFeedEntity implements Filterable {
       this.price = price;
    }
 
-   public Location getGeoLocation() {
+   public Location getLocation() {
       return location;
-   }
-
-   public void setGeoLocation(Location geoLocation) {
-      this.location = geoLocation;
    }
 
    public Schedule getAvailabilityDates() {
       return dates;
-   }
-
-   public void setAvailabilityDates(Schedule availabilityDates) {
-      this.dates = availabilityDates;
    }
 
    public RegionModel getRegion() {
@@ -170,9 +162,20 @@ public class TripModel extends BaseFeedEntity implements Filterable {
       this.region = region;
    }
 
-
    public boolean isRecentlyAdded() {
-      return recentlyAdded;
+      return recent;
+   }
+
+   public void setRecentlyAdded(boolean recentlyAdded) {
+      this.recent = recentlyAdded;
+   }
+
+   public List<ContentItem> getContent() {
+      return content;
+   }
+
+   public void setContent(List<ContentItem> content) {
+      this.content = content;
    }
 
    public String getImageUrl(String type) {
@@ -188,29 +191,37 @@ public class TripModel extends BaseFeedEntity implements Filterable {
    }
 
    public String getThumb(Resources resources) {
-      String url = getImageUrl("THUMB");
+      String url = getImageUrl(THUMB);
       int dimensionPixelSize = resources.getDimensionPixelSize(R.dimen.tripImageHeight);
       return url + String.format(PATTERN, dimensionPixelSize, dimensionPixelSize);
    }
 
    public String getThumb(int width, int height) {
-      return getImageUrl("THUMB") + String.format(PATTERN, width, height);
+      return getImageUrl(THUMB) + String.format(PATTERN, width, height);
    }
 
    public List<ActivityModel> getActivities() {
       return activities;
    }
 
+   public void setActivities(List<ActivityModel> activities) {
+      this.activities = activities;
+   }
+
    public List<TripImage> getImages() {
       return images;
    }
 
+   public void setImages(List<TripImage> images) {
+      this.images = images;
+   }
+
    public List<TripImage> getFilteredImages() {
       List<TripImage> filteredImages = new ArrayList<>();
-      filteredImages.addAll(getFilteredImagesByTag("RETINA"));
+      filteredImages.addAll(getFilteredImagesByTag(RETINA));
 
       if (filteredImages.isEmpty()) {
-         filteredImages.addAll(getFilteredImagesByTag("NORMAL"));
+         filteredImages.addAll(getFilteredImagesByTag(NORMAL));
       }
 
       return filteredImages;
@@ -234,7 +245,6 @@ public class TripModel extends BaseFeedEntity implements Filterable {
             getAvailabilityDates().check(dateFilterItem);
    }
 
-
    public boolean isCategoriesAccepted(List<ActivityModel> acceptedThemes, List<Integer> acceptedRegions) {
       return themesAccepted(acceptedThemes) && regionsAccepted(acceptedRegions);
    }
@@ -255,6 +265,10 @@ public class TripModel extends BaseFeedEntity implements Filterable {
       return platinum;
    }
 
+   public void setPlatinum(boolean platinum) {
+      this.platinum = platinum;
+   }
+
    public boolean isInBucketList() {
       return inBucketList;
    }
@@ -264,15 +278,7 @@ public class TripModel extends BaseFeedEntity implements Filterable {
    }
 
    @Override
-   public boolean containsQuery(String query) {
-      return name == null || location == null ||
-            query == null || name.toLowerCase().contains(query) ||
-            location.getName().toLowerCase().contains(query);
-   }
-
-   @Override
    public String toString() {
       return tripId;
    }
-
 }

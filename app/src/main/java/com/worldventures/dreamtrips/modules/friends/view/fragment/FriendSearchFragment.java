@@ -22,9 +22,8 @@ import java.util.ArrayList;
 
 @Layout(R.layout.fragment_search_friends)
 @MenuResource(R.menu.menu_search)
-public class FriendSearchFragment extends BaseUsersFragment<FriendSearchPresenter, FriendGlobalSearchBundle> implements FriendSearchPresenter.View, UserSearchCellDelegate {
-
-   private DelaySearchView searchView;
+public class FriendSearchFragment extends BaseUsersFragment<FriendSearchPresenter, FriendGlobalSearchBundle>
+      implements FriendSearchPresenter.View, UserSearchCellDelegate {
 
    @Override
    public void afterCreateView(View rootView) {
@@ -43,7 +42,7 @@ public class FriendSearchFragment extends BaseUsersFragment<FriendSearchPresente
    protected void onMenuInflated(Menu menu) {
       super.onMenuInflated(menu);
       MenuItem searchItem = menu.findItem(R.id.action_search);
-      searchView = (DelaySearchView) MenuItemCompat.getActionView(searchItem);
+      DelaySearchView searchView = (DelaySearchView) MenuItemCompat.getActionView(searchItem);
       searchView.setIconified(false);
       searchView.setIconifiedByDefault(false);
       searchView.setDelayInMillis(500);
@@ -113,11 +112,6 @@ public class FriendSearchFragment extends BaseUsersFragment<FriendSearchPresente
    @Override
    public void addUserRequest(User user) {
       getPresenter().addUserRequest(user);
-   }
-
-   @Override
-   public void onCellClicked(User model) {
-
    }
 
    private void enableRefreshLayout(boolean isEnable) {

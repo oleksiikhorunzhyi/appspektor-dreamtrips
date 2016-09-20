@@ -7,8 +7,7 @@ import com.techery.spares.annotations.Layout;
 import com.techery.spares.ui.view.cell.AbstractDelegateCell;
 import com.techery.spares.ui.view.cell.CellDelegate;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.core.utils.events.ToggleRegionVisibilityEvent;
-import com.worldventures.dreamtrips.modules.trips.model.RegionHeaderModel;
+import com.worldventures.dreamtrips.modules.trips.model.filter.RegionHeaderModel;
 
 import butterknife.InjectView;
 import butterknife.OnClick;
@@ -43,12 +42,14 @@ public class HeaderRegionCell extends AbstractDelegateCell<RegionHeaderModel, He
 
    @OnClick(R.id.listHeader)
    void toggleVisibility() {
-      getEventBus().post(new ToggleRegionVisibilityEvent());
+      cellDelegate.toggleVisibility();
    }
 
    public interface Delegate extends CellDelegate<RegionHeaderModel> {
 
       void onCheckBoxAllRegionsPressedEvent(boolean isChecked);
+
+      void toggleVisibility();
    }
 }
 

@@ -6,6 +6,7 @@ import android.support.v4.util.ArrayMap;
 import com.worldventures.dreamtrips.core.janet.cache.CacheBundle;
 import com.worldventures.dreamtrips.core.janet.cache.CachedAction;
 import com.worldventures.dreamtrips.core.janet.cache.storage.ActionStorage;
+import com.worldventures.dreamtrips.core.janet.cache.storage.ClearableStorage;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketPhoto;
 import com.worldventures.dreamtrips.modules.bucketlist.service.command.UploadPhotoControllerCommand;
 import com.worldventures.dreamtrips.modules.bucketlist.service.model.EntityStateHolder;
@@ -14,7 +15,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-public class UploadBucketPhotoInMemoryStorage implements ActionStorage<List<EntityStateHolder<BucketPhoto>>> {
+public class UploadBucketPhotoInMemoryStorage implements ActionStorage<List<EntityStateHolder<BucketPhoto>>>,
+      ClearableStorage {
    public static final String BUCKET_ID_PARAM = "bucket_id";
 
    private Map<String, List<EntityStateHolder<BucketPhoto>>> mapOfBucketPhoto = new ArrayMap<>();
@@ -48,5 +50,10 @@ public class UploadBucketPhotoInMemoryStorage implements ActionStorage<List<Enti
       if (!params.contains(BUCKET_ID_PARAM)) {
          throw new AssertionError("bucketId key was not found");
       }
+   }
+
+   @Override
+   public void clearMemory() {
+      mapOfBucketPhoto.clear();
    }
 }

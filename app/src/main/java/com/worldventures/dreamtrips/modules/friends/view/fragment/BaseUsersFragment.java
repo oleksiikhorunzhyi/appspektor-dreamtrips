@@ -30,6 +30,7 @@ import com.worldventures.dreamtrips.modules.friends.bundle.BaseUsersBundle;
 import com.worldventures.dreamtrips.modules.friends.model.Circle;
 import com.worldventures.dreamtrips.modules.friends.presenter.BaseUserListPresenter;
 import com.worldventures.dreamtrips.modules.friends.view.cell.FriendCell;
+import com.worldventures.dreamtrips.modules.friends.view.cell.delegate.UserActionDelegate;
 import com.worldventures.dreamtrips.modules.profile.bundle.UserBundle;
 
 import java.util.List;
@@ -39,7 +40,8 @@ import javax.inject.Named;
 
 import butterknife.InjectView;
 
-public abstract class BaseUsersFragment<T extends BaseUserListPresenter, B extends BaseUsersBundle> extends BaseFragmentWithArgs<T, B> implements BaseUserListPresenter.View, SwipeRefreshLayout.OnRefreshListener {
+public abstract class BaseUsersFragment<T extends BaseUserListPresenter, B extends BaseUsersBundle> extends BaseFragmentWithArgs<T, B>
+      implements BaseUserListPresenter.View, SwipeRefreshLayout.OnRefreshListener, UserActionDelegate {
 
    @InjectView(R.id.empty) protected RelativeLayout emptyView;
    @InjectView(R.id.recyclerViewFriends) protected EmptyRecyclerView recyclerView;
@@ -181,6 +183,16 @@ public abstract class BaseUsersFragment<T extends BaseUserListPresenter, B exten
             .getId()), NavigationConfigBuilder.forActivity().toolbarConfig(ToolbarConfig.Builder.create()
             .visible(false)
             .build()).data(userBundle).build());
+
+   }
+
+   @Override
+   public void userClicked(User user) {
+      getPresenter().userClicked(user);
+   }
+
+   @Override
+   public void onCellClicked(User model) {
 
    }
 

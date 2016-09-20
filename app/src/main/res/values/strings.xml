@@ -586,8 +586,6 @@
    <string name="error_fail_to_load_videos">Failed to load videos</string>
    <string name="error_fail_to_like_item">Failed to like item</string>
    <string name="error_fail_to_unlike_item">Failed to unlike item</string>
-   <string name="error_fail_to_mark_notification">Failed to mark notification</string>
-   <string name="error_fail_to_mark_notifications">Failed to mark notifications</string>
    <string name="tag_people">Tag people</string>
 
    <string name="say_something">Say something to the world</string>
@@ -658,5 +656,9 @@
    <string name="error_fail_to_load_filters">Sorry, failed to load filters</string>
    <string name="flag_content_message">WorldVentures personnel will be notified to review this content for </string>
    <string name="try_again">Try again</string>
+
+   <!-- change this later after approval from WV -->
+   <string name="offline_warning_dialog_title">No Internet Connection</string>
+   <string name="offline_warning_dialog_message">Your access will be limited</string>
 
 </resources>

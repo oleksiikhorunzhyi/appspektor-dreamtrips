@@ -30,7 +30,7 @@ configurations.all {
 
 android {
    compileSdkVersion 24
-   buildToolsVersion "24.0.1"
+   buildToolsVersion "24.0.2"
 
    // App version
    def versionMajor = 1
@@ -92,6 +92,7 @@ android {
          'S3Api'            : '"http://dtappprd.s3.amazonaws.com/config"',
          'MESSENGER_API_URL': '"dtmsgapp.worldventures.biz"',
          'NEWRELIC_API_KEY' : '"AAb8d55ede8fd2f0aeaaf66b18b8b53af90e48b371"',
+         'UPLOADERY_API_URL': '"http://dtappuploads.wvholdings.com"',
    ]
    //
    def CONFIG_MAPS = [
@@ -323,7 +324,7 @@ android {
          def proConfigs = file('proguard-rules').listFiles().collect { it }
          proConfigs << getDefaultProguardFile('proguard-android-optimize.txt')
          proConfigs << file('dagger-proguard-keepnames.cfg')
-         proguardFiles proConfigs
+         setProguardFiles proConfigs
       }
    }
 
@@ -454,7 +455,6 @@ dependencies {
    retrolambdaConfig 'net.orfjackal.retrolambda:retrolambda:2.3.0'
    compile 'com.google.maps.android:android-maps-utils:0.4'
    compile 'pl.charmas.android:android-reactive-location:0.8@aar'
-   compile 'com.intellij:annotations:12.0'
    compile 'com.android.support:multidex:1.0.1'
    compile "com.android.support:support-annotations:${googleLibrariesVersion}"
    compile 'com.jakewharton:butterknife:6.1.0'
@@ -464,11 +464,17 @@ dependencies {
    compile 'com.badoo.mobile:android-weak-handler:1.1'
    compile 'frankiesardo:icepick:3.2.0'
    apt 'frankiesardo:icepick-processor:3.2.0'
+   compile 'com.github.techery:mappery:8675fb6'
 
    devCompile "com.squareup.leakcanary:leakcanary-android:${leakCanaryVersion}"
    devpremarshmallowCompile "com.squareup.leakcanary:leakcanary-android:${leakCanaryVersion}"
    externalCompile "com.squareup.leakcanary:leakcanary-android-no-op:${leakCanaryVersion}"
-   compile 'com.github.pwittchen:networkevents:2.1.2'
+   compile ("com.github.pwittchen:reactivenetwork:0.5.2") {
+      // we should update RxJava to 1.1.9, for now exclude conflicting version
+      exclude group: 'io.reactivex', module: 'rxjava'
+   }
+   compile 'com.github.pwittchen:networkevents:2.1.2' //deprecated, use reactive network lib above
+
    retrolambdaConfig 'net.orfjackal.retrolambda:retrolambda:2.1.0'
    apt 'org.immutables:value:2.2.6'
    provided 'org.immutables:value:2.2.6'
@@ -502,7 +508,7 @@ dependencies {
    testCompile "org.robolectric:shadows-multidex:$roboelectricVersion"
    testCompile 'org.jetbrains.spek:spek:1.0.9'
    testCompile "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
-   testCompile 'org.jetbrains.kotlin:kotlin-reflect:1.0.2'
+   testCompile "org.jetbrains.kotlin:kotlin-reflect:$kotlin_version"
    testCompile 'io.reactivex:rxkotlin:0.55.0'
    testCompile 'io.reactivex:rxjava:1.1.6'
    testCompile('com.nhaarman:mockito-kotlin:0.5.0') {

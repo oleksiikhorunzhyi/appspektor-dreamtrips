@@ -5,7 +5,7 @@ import android.view.View;
 import com.techery.spares.annotations.Layout;
 import com.techery.spares.ui.view.cell.CellDelegate;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.modules.trips.model.FilterFavoriteModel;
+import com.worldventures.dreamtrips.modules.trips.model.filter.FilterFavoriteModel;
 
 @Layout(R.layout.adapter_item_filter_one_checkbox)
 public class FavoritesCell extends BoolCell<FilterFavoriteModel, FavoritesCell.Delegate> {

@@ -10,13 +10,14 @@ import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.core.rx.composer.IoToMainComposer;
 import com.worldventures.dreamtrips.core.session.UserSession;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
+import com.worldventures.dreamtrips.modules.auth.api.command.LogoutCommand;
 import com.worldventures.dreamtrips.modules.auth.api.command.UpdateUserCommand;
 import com.worldventures.dreamtrips.modules.auth.service.AuthInteractor;
 import com.worldventures.dreamtrips.modules.common.delegate.SocialCropImageManager;
 import com.worldventures.dreamtrips.modules.common.model.MediaAttachment;
 import com.worldventures.dreamtrips.modules.common.model.PhotoGalleryModel;
 import com.worldventures.dreamtrips.modules.common.model.User;
-import com.worldventures.dreamtrips.modules.common.view.util.LogoutDelegate;
+import com.worldventures.dreamtrips.modules.common.service.LogoutInteractor;
 import com.worldventures.dreamtrips.modules.common.view.util.MediaPickerManager;
 import com.worldventures.dreamtrips.modules.feed.service.command.GetAccountTimelineCommand;
 import com.worldventures.dreamtrips.modules.profile.api.GetProfileQuery;
@@ -47,7 +48,7 @@ public class AccountPresenter extends ProfilePresenter<AccountPresenter.View, Us
    public static final int DEFAULT_RATIO_Y = 1;
 
    @Inject RootComponentsProvider rootComponentsProvider;
-   @Inject LogoutDelegate logoutDelegate;
+   @Inject LogoutInteractor logoutInteractor;
    @Inject MediaPickerManager mediaPickerManager;
    @Inject SocialCropImageManager socialCropImageManager;
    @Inject AuthInteractor authInteractor;
@@ -177,7 +178,7 @@ public class AccountPresenter extends ProfilePresenter<AccountPresenter.View, Us
    }
 
    public void logout() {
-      logoutDelegate.logout();
+      logoutInteractor.logoutPipe().send(new LogoutCommand());
    }
 
    private void connectToCroppedImageStream() {

@@ -30,7 +30,8 @@ import com.worldventures.dreamtrips.core.flow.activity.FlowActivity;
 import com.worldventures.dreamtrips.modules.dtl.event.DtlShowMapInfoEvent;
 import com.worldventures.dreamtrips.modules.dtl.model.location.DtlLocation;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchant;
-import com.worldventures.dreamtrips.modules.dtl.model.merchant.MerchantType;
+import com.worldventures.dreamtrips.modules.dtl.model.merchant.ThinMerchant;
+import com.worldventures.dreamtrips.modules.dtl.view.dialog.DialogFactory;
 import com.worldventures.dreamtrips.modules.dtl_flow.DtlLayout;
 import com.worldventures.dreamtrips.modules.dtl_flow.FlowUtil;
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.map.info.DtlMapInfoPath;
@@ -49,6 +50,7 @@ import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
 import butterknife.Optional;
+import cn.pedant.SweetAlert.SweetAlertDialog;
 import de.greenrobot.event.EventBus;
 import flow.path.Path;
 import flow.path.PathContext;
@@ -73,6 +75,7 @@ public class DtlMapScreenImpl extends DtlLayout<DtlMapScreen, DtlMapPresenter, D
    private ClusterManager<DtlClusterItem> clusterManager;
    private Marker locationPin;
    private GoogleMap googleMap;
+   private SweetAlertDialog errorDialog;
 
    public DtlMapScreenImpl(Context context) {
       super(context);
@@ -215,8 +218,8 @@ public class DtlMapScreenImpl extends DtlLayout<DtlMapScreen, DtlMapPresenter, D
    }
 
    @Override
-   public void addPin(String id, LatLng latLng, MerchantType type) {
-      clusterManager.addItem(new DtlClusterItem(id, latLng, type));
+   public void addPin(ThinMerchant merchant) {
+      clusterManager.addItem(new DtlClusterItem(merchant));
    }
 
    @Override
@@ -271,7 +274,7 @@ public class DtlMapScreenImpl extends DtlLayout<DtlMapScreen, DtlMapPresenter, D
    }
 
    @Override
-   public void showPinInfo(DtlMerchant merchant) {
+   public void showPinInfo(ThinMerchant merchant) {
       infoContainer.removeAllViews();
       PathContext newContext = PathContext.create((PathContext) getContext(), new DtlMapInfoPath(FlowUtil.currentMaster(this), merchant), Path
             .contextFactory());
@@ -280,6 +283,16 @@ public class DtlMapScreenImpl extends DtlLayout<DtlMapScreen, DtlMapPresenter, D
             .inflate(FlowUtil.layoutFrom(DtlMapInfoPath.class), infoContainer, false);
       infoView.setInjector(injector);
       infoContainer.addView(infoView);
+   }
+
+   @Override
+   public void showError(String error) {
+      errorDialog = DialogFactory.createRetryDialog(getActivity(), error);
+      errorDialog.setConfirmClickListener(listener -> {
+         listener.dismissWithAnimation();
+         getPresenter().retryLoadMerchant();
+      });
+      errorDialog.show();
    }
 
    @Override
@@ -338,13 +351,13 @@ public class DtlMapScreenImpl extends DtlLayout<DtlMapScreen, DtlMapPresenter, D
       //
       clusterManager.setOnClusterItemClickListener(dtlClusterItem -> {
          selectedLocation = dtlClusterItem.getPosition();
-         getPresenter().onMarkerClick(dtlClusterItem.getId());
+         getPresenter().onMarkerClick(dtlClusterItem.getMerchant());
          return true;
       });
       //
       clusterManager.setOnClusterClickListener(cluster -> {
          if (googleMap.getCameraPosition().zoom >= 17.0f) {
-            getPresenter().onMarkerClick(Queryable.from(cluster.getItems()).first().getId());
+            getPresenter().onMarkerClick(Queryable.from(cluster.getItems()).first().getMerchant());
          } else {
             googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(cluster.getPosition(), googleMap.getCameraPosition().zoom + 1.0f), MapViewUtils.MAP_ANIMATION_DURATION, null);
          }

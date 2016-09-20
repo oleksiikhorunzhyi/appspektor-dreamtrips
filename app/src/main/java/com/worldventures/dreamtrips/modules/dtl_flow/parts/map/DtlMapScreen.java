@@ -8,7 +8,8 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.worldventures.dreamtrips.modules.dtl.model.location.DtlLocation;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchant;
-import com.worldventures.dreamtrips.modules.dtl.model.merchant.MerchantType;
+import com.worldventures.dreamtrips.modules.dtl.model.merchant.ThinMerchant;
+import com.worldventures.dreamtrips.modules.dtl.view.dialog.DialogFactory;
 import com.worldventures.dreamtrips.modules.dtl_flow.DtlScreen;
 import com.worldventures.dreamtrips.modules.trips.model.Location;
 
@@ -28,7 +29,7 @@ public interface DtlMapScreen extends DtlScreen {
 
    void addLocationMarker(LatLng location);
 
-   void addPin(String id, LatLng latLng, MerchantType type);
+   void addPin(ThinMerchant merchant);
 
    void clearMap();
 
@@ -54,7 +55,9 @@ public interface DtlMapScreen extends DtlScreen {
 
    Observable<Boolean> getToggleObservable();
 
-   void showPinInfo(DtlMerchant merchant);
+   void showPinInfo(ThinMerchant merchant);
+
+   void showError(String error);
 
    void openFilter();
 

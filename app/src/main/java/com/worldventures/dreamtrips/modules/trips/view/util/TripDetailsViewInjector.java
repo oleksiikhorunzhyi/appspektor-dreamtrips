@@ -64,8 +64,8 @@ public class TripDetailsViewInjector extends TripViewInjector {
    }
 
    @Override
-   public void initTripData(TripModel tripModel, User currentUser) {
-      super.initTripData(tripModel, currentUser);
+   public void initTripData(TripModel tripModel) {
+      super.initTripData(tripModel);
       if (textViewScheduleDescription != null) {
          Resources resources = textViewScheduleDescription.getResources();
          textViewScheduleDescription.setText(String.format(resources.getString(R.string.duration), tripModel.getDuration()));

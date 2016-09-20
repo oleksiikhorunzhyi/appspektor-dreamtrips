@@ -1,19 +1,21 @@
 package com.worldventures.dreamtrips.modules.feed.service;
 
+import com.worldventures.dreamtrips.core.janet.SessionActionPipeCreator;
 import com.worldventures.dreamtrips.modules.feed.service.command.SuggestedPhotoCommand;
 
 import javax.inject.Inject;
+import javax.inject.Singleton;
 
 import io.techery.janet.ActionPipe;
-import io.techery.janet.Janet;
 
+@Singleton
 public class SuggestedPhotoInteractor {
 
    private final ActionPipe<SuggestedPhotoCommand> suggestedPhotoCommandActionPipe;
 
    @Inject
-   public SuggestedPhotoInteractor(Janet janet) {
-      suggestedPhotoCommandActionPipe = janet.createPipe(SuggestedPhotoCommand.class);
+   public SuggestedPhotoInteractor(SessionActionPipeCreator sessionActionPipeCreator) {
+      suggestedPhotoCommandActionPipe = sessionActionPipeCreator.createPipe(SuggestedPhotoCommand.class);
    }
 
    public ActionPipe<SuggestedPhotoCommand> getSuggestedPhotoCommandActionPipe() {

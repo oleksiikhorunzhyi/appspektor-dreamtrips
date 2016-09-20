@@ -8,7 +8,6 @@ import com.worldventures.dreamtrips.core.janet.cache.CacheOptions;
 import com.worldventures.dreamtrips.core.janet.cache.CachedAction;
 import com.worldventures.dreamtrips.core.janet.cache.ImmutableCacheOptions;
 import com.worldventures.dreamtrips.core.janet.dagger.InjectableAction;
-import com.worldventures.dreamtrips.modules.mapping.mapper.FlagsMapper;
 import com.worldventures.dreamtrips.modules.tripsimages.model.Flag;
 
 import java.util.ArrayList;
@@ -20,13 +19,14 @@ import javax.inject.Named;
 import io.techery.janet.ActionHolder;
 import io.techery.janet.Janet;
 import io.techery.janet.command.annotations.CommandAction;
+import io.techery.mappery.MapperyContext;
 import rx.Observable;
 
 @CommandAction
 public class GetFlagsCommand extends CommandWithError<List<Flag>> implements InjectableAction, CachedAction<List<Flag>> {
 
    @Inject @Named(JanetModule.JANET_API_LIB) Janet janet;
-   @Inject FlagsMapper flagsMapper;
+   @Inject MapperyContext mappery;
 
    private List<Flag> cachedFlags;
 
@@ -40,7 +40,7 @@ public class GetFlagsCommand extends CommandWithError<List<Flag>> implements Inj
             .createObservableResult(new GetFlagReasonsHttpAction())
             .map(GetFlagReasonsHttpAction::getFlagReasons)
             .flatMap(Observable::from)
-            .map(flagsMapper::map)
+            .map(flags -> mappery.convert(flags, Flag.class))
             .toList()
             .subscribe(callback::onSuccess, callback::onFail);
    }

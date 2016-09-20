@@ -1,6 +1,7 @@
 package com.worldventures.dreamtrips.modules.trips.model;
 
 import java.io.Serializable;
+import java.util.List;
 
 public class ContentItem implements Serializable {
    public static final long serialVersionUID = 138L;
@@ -8,8 +9,7 @@ public class ContentItem implements Serializable {
    private String description;
    private String language;
    private String name;
-   private String order;
-   private String tag;
+   private List<String> tags;
 
    public String getDescription() {
       return description != null ? description.replaceAll("\n", "").replaceAll("\t", "") : "";
@@ -35,19 +35,11 @@ public class ContentItem implements Serializable {
       this.name = name;
    }
 
-   public String getOrder() {
-      return order;
+   public List<String> getTags() {
+      return tags;
    }
 
-   public void setOrder(String order) {
-      this.order = order;
-   }
-
-   public String getTag() {
-      return tag;
-   }
-
-   public void setTag(String tag) {
-      this.tag = tag;
+   public void setTags(List<String> tags) {
+      this.tags = tags;
    }
 }

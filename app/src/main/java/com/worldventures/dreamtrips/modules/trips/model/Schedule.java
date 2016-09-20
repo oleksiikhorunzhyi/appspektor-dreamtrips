@@ -1,6 +1,7 @@
 package com.worldventures.dreamtrips.modules.trips.model;
 
 import com.google.gson.annotations.SerializedName;
+import com.worldventures.dreamtrips.modules.trips.model.filter.DateFilterItem;
 
 import java.io.Serializable;
 import java.text.SimpleDateFormat;

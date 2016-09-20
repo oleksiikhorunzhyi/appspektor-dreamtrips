@@ -586,8 +586,6 @@
    <string name="error_fail_to_load_videos">Gagal memuatkan video</string>
    <string name="error_fail_to_like_item">Gagal untuk suka item</string>
    <string name="error_fail_to_unlike_item">Gagal menyah suka item</string>
-   <string name="error_fail_to_mark_notification">Gagal menandakan pemberitahuan</string>
-   <string name="error_fail_to_mark_notifications">Gagal menandakan pemberitahuan</string>
    <string name="tag_people">Tag orang</string>
 
    <string name="say_something">Ucapkan sesuatu kepada dunia</string>

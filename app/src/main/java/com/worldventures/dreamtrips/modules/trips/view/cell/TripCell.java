@@ -3,22 +3,15 @@ package com.worldventures.dreamtrips.modules.trips.view.cell;
 import android.view.View;
 
 import com.techery.spares.annotations.Layout;
-import com.techery.spares.session.SessionHolder;
-import com.techery.spares.storage.complex_objects.Optional;
-import com.techery.spares.ui.view.cell.AbstractCell;
+import com.techery.spares.ui.view.cell.AbstractDelegateCell;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.core.session.UserSession;
-import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.trips.model.TripModel;
 import com.worldventures.dreamtrips.modules.trips.view.util.TripFeedViewInjector;
 
-import javax.inject.Inject;
+import butterknife.OnClick;
 
 @Layout(R.layout.adapter_item_trip)
-public class TripCell extends AbstractCell<TripModel> {
-
-   @Inject SessionHolder<UserSession> appSessionHolder;
-   @Inject Presenter.TabletAnalytic tabletAnalytic;
+public class TripCell extends AbstractDelegateCell<TripModel, TripCellDelegate> {
 
    private TripFeedViewInjector tripFeedViewInjector;
 
@@ -29,14 +22,31 @@ public class TripCell extends AbstractCell<TripModel> {
    @Override
    public void afterInject() {
       super.afterInject();
-      tripFeedViewInjector = new TripFeedViewInjector(itemView, router, getEventBus());
-      tripFeedViewInjector.setSyncStateListener(this::syncUIStateWithModel);
+      tripFeedViewInjector = new TripFeedViewInjector(itemView);
    }
 
    @Override
    protected void syncUIStateWithModel() {
-      Optional<UserSession> userSessionOptional = appSessionHolder.get();
-      if (userSessionOptional.isPresent()) tripFeedViewInjector.initTripData(getModelObject(), userSessionOptional.get()
-            .getUser());
+      tripFeedViewInjector.initTripData(getModelObject());
+   }
+
+   @OnClick(R.id.imageViewLike)
+   void onLike() {
+      cellDelegate.onLikeClicked(getModelObject());
+   }
+
+   @OnClick(R.id.imageViewAddToBucket)
+   void onAddToBucket() {
+      cellDelegate.onAddToBucketClicked(getModelObject());
+   }
+
+   @OnClick(R.id.layoutInfo)
+   void onInfoClick() {
+      actionItemClick();
+   }
+
+   @OnClick(R.id.itemLayout)
+   void actionItemClick() {
+      cellDelegate.onCellClicked(getModelObject());
    }
 }

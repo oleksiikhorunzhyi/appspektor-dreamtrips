@@ -11,25 +11,15 @@ import android.graphics.Typeface;
 
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.utils.ViewUtils;
-import com.worldventures.dreamtrips.modules.trips.model.Cluster;
-import com.worldventures.dreamtrips.modules.trips.model.MapObjectHolder;
 import com.worldventures.dreamtrips.modules.trips.model.Pin;
 
 public class TripPinFactory {
 
-   public static Bitmap createPinBitmapFromMapObject(Context context, MapObjectHolder mapObjectHolder) {
-      switch (mapObjectHolder.getType()) {
-         case CLUSTER:
-            return createClusterBitmap(context, R.drawable.cluster_pin, String.valueOf(((Cluster) mapObjectHolder.getItem())
-                  .getTripCount() > 99 ? "99+" : ((Cluster) mapObjectHolder.getItem()).getTripCount()));
-         case PIN:
-            Pin pin = (Pin) mapObjectHolder.getItem();
-            if (pin.getTripUids().size() > 1)
-               return createClusterBitmap(context, R.drawable.cluster_pin, String.valueOf(pin.getTripUids()
-                     .size() > 99 ? "99+" : pin.getTripUids().size()));
-            else return BitmapFactory.decodeResource(context.getResources(), R.drawable.dt_pin_icon);
-      }
-      return null;
+   public static Bitmap createPinBitmapFromMapObject(Context context, Pin pin) {
+      if (pin.getTripUids().size() > 1)
+         return createClusterBitmap(context, R.drawable.cluster_pin, String.valueOf(pin.getTripUids()
+               .size() > 99 ? "99+" : pin.getTripUids().size()));
+      else return BitmapFactory.decodeResource(context.getResources(), R.drawable.dt_pin_icon);
    }
 
    public static Bitmap createClusterBitmap(Context context, int drawableId, String text) {

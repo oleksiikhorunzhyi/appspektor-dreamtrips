@@ -28,7 +28,10 @@ import dagger.Module;
 import dagger.Provides;
 
 @Module(
-      injects = {FriendSearchFragment.class, FriendSearchPresenter.class, FriendsMainPresenter.class, FriendListFragment.class, FriendsMainFragment.class, FriendListPresenter.class, FriendCell.class, UserCell.class, FeedFriendCell.class, MutualFriendCell.class,
+      injects = {
+            FriendSearchFragment.class, FriendSearchPresenter.class, FriendsMainPresenter.class,
+            FriendListFragment.class, FriendsMainFragment.class, FriendListPresenter.class,
+            FriendCell.class, UserCell.class, FeedFriendCell.class, MutualFriendCell.class,
 
             UsersLikedItemPresenter.class, UsersLikedItemFragment.class,
 

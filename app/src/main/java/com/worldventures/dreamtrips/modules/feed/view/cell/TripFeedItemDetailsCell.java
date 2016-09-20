@@ -27,13 +27,12 @@ public class TripFeedItemDetailsCell extends FeedItemDetailsCell<TripFeedItem, C
    @Override
    public void afterInject() {
       super.afterInject();
-      tripFeedViewInjector = new TripFeedViewInjector(itemView, router, getEventBus());
-      tripFeedViewInjector.setSyncStateListener(this::syncUIStateWithModel);
+      tripFeedViewInjector = new TripFeedViewInjector(itemView);
    }
 
    @Override
    protected void syncUIStateWithModel() {
       super.syncUIStateWithModel();
-      tripFeedViewInjector.initTripData(getModelObject().getItem(), appSessionHolder.get().get().getUser());
+      tripFeedViewInjector.initTripData(getModelObject().getItem());
    }
 }

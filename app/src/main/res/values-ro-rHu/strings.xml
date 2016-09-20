@@ -586,8 +586,6 @@
    <string name="error_fail_to_load_videos">Nu s-au putut încărca videoclipurile</string>
    <string name="error_fail_to_like_item">Nu s-a putut aprecia elementul</string>
    <string name="error_fail_to_unlike_item">Nu s-a putut anula aprecierea pentru element</string>
-   <string name="error_fail_to_mark_notification">Nu s-a putut marca notificarea</string>
-   <string name="error_fail_to_mark_notifications">Nu s-au putut marca notificările</string>
    <string name="tag_people">Etichetați persoane</string>
 
    <string name="say_something">Comunicați ceva restului lumii</string>

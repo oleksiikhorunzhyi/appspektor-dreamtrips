@@ -2,6 +2,7 @@ package com.worldventures.dreamtrips.core.janet.api_lib;
 
 import android.content.Context;
 import android.os.Build;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import com.techery.spares.module.Injector;
@@ -69,8 +70,13 @@ public class NewDreamTripsHttpService extends ActionServiceWrapper {
       //
       if (action instanceof AuthorizedHttpAction && appSessionHolder.get().isPresent()) {
          UserSession userSession = appSessionHolder.get().get();
-         ((AuthorizedHttpAction) action).setAuthorizationHeader("Token token=" + userSession.getApiToken());
+         ((AuthorizedHttpAction) action).setAuthorizationHeader(getAuthorizationHeader(userSession.getApiToken()));
       }
+   }
+
+   @NonNull
+   public static String getAuthorizationHeader(String apiToken) {
+      return "Token token=" + apiToken;
    }
 
 

@@ -1,9 +1,7 @@
 package com.messenger.delegate;
 
-import com.worldventures.dreamtrips.core.janet.JanetModule;
+import com.worldventures.dreamtrips.core.janet.SessionActionPipeCreator;
 import com.worldventures.dreamtrips.modules.flags.command.GetFlagsCommand;
-
-import javax.inject.Named;
 
 import io.techery.janet.ActionPipe;
 import io.techery.janet.Janet;
@@ -13,8 +11,8 @@ public class FlagsInteractor {
 
    private ActionPipe<GetFlagsCommand> flagsPipe;
 
-   public FlagsInteractor(@Named(JanetModule.JANET_API_LIB) Janet janet) {
-      flagsPipe = janet.createPipe(GetFlagsCommand.class, Schedulers.io());
+   public FlagsInteractor(SessionActionPipeCreator sessionActionPipeCreator) {
+      flagsPipe = sessionActionPipeCreator.createPipe( GetFlagsCommand.class, Schedulers.io());
    }
 
    public ActionPipe<GetFlagsCommand> getFlagsPipe() {

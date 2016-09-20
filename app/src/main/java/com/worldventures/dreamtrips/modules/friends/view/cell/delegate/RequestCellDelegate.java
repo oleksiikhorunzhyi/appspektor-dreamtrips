@@ -1,9 +1,8 @@
 package com.worldventures.dreamtrips.modules.friends.view.cell.delegate;
 
-import com.techery.spares.ui.view.cell.CellDelegate;
 import com.worldventures.dreamtrips.modules.common.model.User;
 
-public interface RequestCellDelegate extends CellDelegate<User> {
+public interface RequestCellDelegate extends UserActionDelegate {
 
    void acceptRequest(User user);
 

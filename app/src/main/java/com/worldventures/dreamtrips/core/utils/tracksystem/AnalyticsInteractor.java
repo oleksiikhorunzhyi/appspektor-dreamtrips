@@ -1,5 +1,6 @@
 package com.worldventures.dreamtrips.core.utils.tracksystem;
 
+import com.worldventures.dreamtrips.core.janet.SessionActionPipeCreator;
 import com.worldventures.dreamtrips.modules.dtl.analytics.DtlAnalyticsCommand;
 
 import io.techery.janet.ActionPipe;
@@ -12,9 +13,9 @@ public class AnalyticsInteractor {
    private final ActionPipe<BaseAnalyticsAction> analyticEventPipe;
    private final ActionPipe<DtlAnalyticsCommand> dtlAnalyticCommandPipe;
 
-   public AnalyticsInteractor(Janet janet) {
-      analyticEventPipe = janet.createPipe(BaseAnalyticsAction.class, Schedulers.io());
-      dtlAnalyticCommandPipe = janet.createPipe(DtlAnalyticsCommand.class, Schedulers.io());
+   public AnalyticsInteractor(SessionActionPipeCreator sessionActionPipeCreator) {
+      analyticEventPipe = sessionActionPipeCreator.createPipe(BaseAnalyticsAction.class, Schedulers.io());
+      dtlAnalyticCommandPipe = sessionActionPipeCreator.createPipe(DtlAnalyticsCommand.class, Schedulers.io());
    }
 
    public WriteActionPipe<BaseAnalyticsAction> analyticsActionPipe() {

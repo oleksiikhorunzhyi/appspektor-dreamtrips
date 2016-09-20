@@ -19,7 +19,7 @@ import rx.schedulers.Schedulers;
 
 /* TODO: send bucket item instead of bucket photo as an argument
  */
-public class BucketFullscreenPresenter extends FullScreenPresenter<BucketPhoto, BucketFullscreenPresenter.View> {
+public class BucketFullscreenPresenter extends SocialFullScreenPresenter<BucketPhoto, BucketFullscreenPresenter.View> {
    @Inject BucketInteractor bucketInteractor;
 
    private BucketItem bucketItem;
@@ -35,10 +35,10 @@ public class BucketFullscreenPresenter extends FullScreenPresenter<BucketPhoto, 
    public void takeView(View view) {
       super.takeView(view);
       view.bind(bucketInteractor.findBucketItemByPhotoActionPipe()
-            .createObservableResult(new FindBucketItemByPhotoCommand(photo))
-            .observeOn(Schedulers.immediate())).subscribe(findBucketItemByPhotoAction -> {
-         bucketItem = findBucketItemByPhotoAction.getResult();
-      }, this::handleError);
+            .createObservable(new FindBucketItemByPhotoCommand(photo))
+            .observeOn(Schedulers.immediate()))
+            .subscribe(new ActionStateSubscriber<FindBucketItemByPhotoCommand>()
+                  .onSuccess(findBucketItemByPhotoCommand -> bucketItem = findBucketItemByPhotoCommand.getResult()));
 
       bindChanges(view);
    }
@@ -66,7 +66,7 @@ public class BucketFullscreenPresenter extends FullScreenPresenter<BucketPhoto, 
                   view.informUser(context.getString(R.string.photo_deleted));
                   eventBus.postSticky(new PhotoDeletedEvent(photo.getFSId()));
                })
-               .onFail((deleteItemPhotoAction, throwable) -> handleError(throwable)));
+               .onFail(this::handleError));
       }
    }
 
@@ -87,7 +87,7 @@ public class BucketFullscreenPresenter extends FullScreenPresenter<BucketPhoto, 
                   .subscribe(new ActionStateSubscriber<UpdateItemHttpAction>().onSuccess(itemAction -> view.hideCoverProgress())
                         .onFail((itemAction, throwable) -> {
                            view.hideCoverProgress();
-                           handleError(throwable);
+                           handleError(itemAction, throwable);
                         }));
          }
       }
@@ -106,7 +106,7 @@ public class BucketFullscreenPresenter extends FullScreenPresenter<BucketPhoto, 
       });
    }
 
-   public interface View extends FullScreenPresenter.View {
+   public interface View extends SocialFullScreenPresenter.View {
       void showCheckbox(boolean show);
 
       void showCoverProgress();

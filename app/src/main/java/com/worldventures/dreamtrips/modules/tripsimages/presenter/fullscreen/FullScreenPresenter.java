@@ -1,5 +1,6 @@
 package com.worldventures.dreamtrips.modules.tripsimages.presenter.fullscreen;
 
+import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.rx.RxView;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.common.model.ShareType;
@@ -7,6 +8,7 @@ import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.feed.view.cell.Flaggable;
 import com.worldventures.dreamtrips.modules.profile.bundle.UserBundle;
+import com.worldventures.dreamtrips.modules.trips.event.TripImageAnalyticEvent;
 import com.worldventures.dreamtrips.modules.tripsimages.api.DownloadImageCommand;
 import com.worldventures.dreamtrips.modules.tripsimages.model.IFullScreenObject;
 import com.worldventures.dreamtrips.modules.tripsimages.model.Inspiration;
@@ -61,7 +63,20 @@ public abstract class FullScreenPresenter<T extends IFullScreenObject, PRESENTER
    public void onDeleteAction() {
    }
 
-   public void onShare(@ShareType String type) {
+   public void onShareAction() {
+      if (!isConnected()) {
+         view.informUser(R.string.no_connection);
+         return;
+      }
+      eventBus.post(new TripImageAnalyticEvent(photo.getFSId(), TrackingHelper.ATTRIBUTE_SHARE_IMAGE));
+      view.onShowShareOptions();
+   }
+
+   public void onShareOptionChosen(@ShareType String type) {
+      if (!isConnected()) {
+         view.informUser(R.string.no_connection);
+         return;
+      }
       if (type.equals(ShareType.EXTERNAL_STORAGE)) {
          doRequest(new DownloadImageCommand(context, photo.getFSImage().getUrl()));
       } else {
@@ -72,9 +87,15 @@ public abstract class FullScreenPresenter<T extends IFullScreenObject, PRESENTER
       }
    }
 
+   public void onCouldNotLoadImage(Throwable e) {
+      view.informUser(isConnected() ? R.string.error_something_went_wrong : R.string.no_connection);
+   }
+
    public interface View extends RxView {
 
       void openUser(UserBundle bundle);
+
+      void onShowShareOptions();
 
       void openShare(String imageUrl, String text, @ShareType String type);
 

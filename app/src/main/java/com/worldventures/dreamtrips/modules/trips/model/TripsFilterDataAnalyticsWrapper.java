@@ -49,9 +49,9 @@ public class TripsFilterDataAnalyticsWrapper {
       this.startDate = DateTimeUtils.convertDateToString(tripsFilterData.getStartDate(), sdf);
       this.endDate = DateTimeUtils.convertDateToString(tripsFilterData.getEndDate(), sdf);
       //
-      this.isShowFavorites = tripsFilterData.isShowFavorites() == 1;
-      this.isShowRecentlyAdded = tripsFilterData.isShowRecentlyAdded() == 1;
-      this.isShowSoldOut = tripsFilterData.isShowSoldOut() == 1;
+      this.isShowFavorites = tripsFilterData.isShowFavorites();
+      this.isShowRecentlyAdded = tripsFilterData.isShowRecentlyAdded();
+      this.isShowSoldOut = tripsFilterData.isShowSoldOut();
       //
       this.allRegions = tripsFilterData.getAllRegions();
       this.allParentActivities = tripsFilterData.getAllParentActivities();

@@ -36,6 +36,7 @@ public class User extends BaseEntity implements Parcelable {
    private Date birthDate;
    private Date enrollDate;
    private String sponsorUsername;
+   private String countryCode;
 
    private double dreamTripsPoints;
    private double roviaBucks;
@@ -251,6 +252,13 @@ public class User extends BaseEntity implements Parcelable {
       this.badges = badges;
    }
 
+   public void setCountryCode(String countryCode) {
+      this.countryCode = countryCode;
+   }
+
+   public String getCountryCode() {
+      return countryCode;
+   }
 
    public static class Avatar implements Parcelable, Serializable {
       public static final Creator<Avatar> CREATOR = new Creator<Avatar>() {

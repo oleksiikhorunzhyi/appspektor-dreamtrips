@@ -12,6 +12,7 @@ import com.worldventures.dreamtrips.modules.dtl.helper.cache.DtlMerchantsStorage
 import com.worldventures.dreamtrips.modules.dtl.helper.cache.DtlSearchLocationStorage;
 import com.worldventures.dreamtrips.modules.feed.service.storage.NotificationMemoryStorage;
 import com.worldventures.dreamtrips.modules.feed.service.storage.NotificationsStorage;
+import com.worldventures.dreamtrips.modules.dtl.helper.cache.ThinMerchantsStorage;
 import com.worldventures.dreamtrips.modules.feed.service.storage.TranslationDiscStorage;
 import com.worldventures.dreamtrips.modules.flags.storage.FlagsStorage;
 import com.worldventures.dreamtrips.modules.friends.service.CirclesStorage;
@@ -37,6 +38,12 @@ public class CacheActionStorageModule {
    @Provides(type = Provides.Type.SET)
    ActionStorage provideDtlMerchantsStorage(SnappyRepository db) {
       return new DtlMerchantsStorage(db);
+   }
+
+   @Singleton
+   @Provides(type = Provides.Type.SET)
+   ActionStorage provideThinMerchantsStorage(SnappyRepository db) {
+      return new ThinMerchantsStorage(db);
    }
 
    @Singleton

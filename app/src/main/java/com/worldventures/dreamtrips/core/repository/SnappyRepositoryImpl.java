@@ -13,6 +13,7 @@ import com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem;
 import com.worldventures.dreamtrips.modules.dtl.model.location.DtlLocation;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchant;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchantAttribute;
+import com.worldventures.dreamtrips.modules.dtl.model.merchant.ThinMerchant;
 import com.worldventures.dreamtrips.modules.dtl.model.transaction.DtlTransaction;
 import com.worldventures.dreamtrips.modules.dtl.model.transaction.ImmutableDtlTransaction;
 import com.worldventures.dreamtrips.modules.feed.model.BucketFeedItem;
@@ -492,6 +493,17 @@ public class SnappyRepositoryImpl implements SnappyRepository {
    @Override
    public List<DtlMerchant> getDtlMerchants() {
       return readList(DTL_MERCHANTS, DtlMerchant.class);
+   }
+
+   @Override
+   public void saveThinMerchants(List<ThinMerchant> merchants) {
+      clearAllForKey(DTL_THIN_MERCHANTS);
+      putList(DTL_THIN_MERCHANTS, merchants);
+   }
+
+   @Override
+   public List<ThinMerchant> getThinMerchants() {
+      return readList(DTL_THIN_MERCHANTS, ThinMerchant.class);
    }
 
    @Override

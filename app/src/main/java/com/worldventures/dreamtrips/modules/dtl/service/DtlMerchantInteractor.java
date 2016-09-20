@@ -37,7 +37,7 @@ public class DtlMerchantInteractor {
 
    public DtlMerchantInteractor(SessionActionPipeCreator sessionActionPipeCreator, DtlLocationInteractor locationInteractor) {
       this.locationInteractor = locationInteractor;
-      
+
       updateAmenitiesPipe = sessionActionPipeCreator.createPipe(DtlUpdateAmenitiesAction.class, Schedulers.io());
       merchantsPipe = sessionActionPipeCreator.createPipe(DtlMerchantsAction.class, Schedulers.io());
       merchantByIdPipe = sessionActionPipeCreator.createPipe(DtlMerchantByIdAction.class);

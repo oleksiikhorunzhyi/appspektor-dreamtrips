@@ -21,6 +21,7 @@ import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchantAttrib
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.Merchant;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.MerchantMedia;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.ThinAttribute;
+import com.worldventures.dreamtrips.modules.dtl.model.merchant.ThinMerchant;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.offer.Currency;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.offer.Offer;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.operational_hour.DayOfWeek;
@@ -52,9 +53,10 @@ public class MerchantHelper {
       throw new UnsupportedOperationException("No instance");
    }
 
-   public static String getCategories(DtlMerchant merchant) {
-      List<DtlMerchantAttribute> categories = merchant.getCategories();
-      return categories == null ? null : TextUtils.join(", ", categories);
+   public static String getCategories(ThinMerchant merchant) {
+      if (merchant.categories() == null) return null;
+      List<String> categories =  Queryable.from(merchant.categories()).map(ThinAttribute::name).toList();
+      return TextUtils.join(", ", categories);
    }
 
    public static String getCategories(Merchant merchant) {
@@ -76,16 +78,12 @@ public class MerchantHelper {
       return contact.intent != null && contact.intent.resolveActivityInfo(activity.getPackageManager(), 0) != null;
    }
 
-   public static Spannable getOperationalTime(Context context, DtlMerchant merchant) throws Exception {
-      return getOperationalTime(context, merchant.getOperationDays(), merchant.getOffsetHours(), true);
-   }
-
-   public static Spannable getOperationalTime(Context context, DtlMerchant merchant, boolean includeTime) throws Exception {
-      return getOperationalTime(context, merchant.getOperationDays(), merchant.getOffsetHours(), includeTime);
+   public static Spannable getOperationalTime(Context context, ThinMerchant merchant, boolean includeTime) throws Exception {
+      return getOperationalTime(context, merchant.operationDays(),  merchant.timeOffset(), includeTime);
    }
 
    public static Spannable getOperationalTime(Context context, Merchant merchant) throws Exception {
-      return getOperationalTime(context, merchant.operationDays(), merchantTimeOffset(merchant), true);
+      return getOperationalTime(context, merchant.operationDays(), merchantTimeOffset(merchant.timeZone()), true);
    }
 
    public static boolean isOfferExpiringSoon(Offer offerData) {
@@ -236,9 +234,9 @@ public class MerchantHelper {
       return Queryable.from(merchant.currencies()).first(Currency::isDefault);
    }
 
-   public static int merchantTimeOffset(Merchant merchant) {
+   public static int merchantTimeOffset(String offset) {
       try {
-         return Integer.valueOf(merchant.timeZone());
+         return Integer.valueOf(offset);
       } catch (Exception e) {
          return 0;
       }

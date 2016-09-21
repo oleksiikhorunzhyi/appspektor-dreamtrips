@@ -63,12 +63,6 @@ public class MerchantHelper {
       throw new UnsupportedOperationException("No instance");
    }
 
-   public static String getCategories(MerchantAttributes merchantAttributes) {
-      if (merchantAttributes.categories() == null) return null;
-      List<String> categories =  Queryable.from(merchantAttributes.categories()).map(ThinAttribute::name).toList();
-      return TextUtils.join(", ", categories);
-   }
-
    public static List<ImageTextItem> getContactsData(Context context, Merchant merchant) {
       ArrayList<ImageTextItem> items = new ArrayList<>();
       Queryable.from(ImageTextItem.Type.values()).forEachR(type -> {

@@ -1,13 +1,17 @@
 package com.worldventures.dreamtrips.modules.dtl.helper.inflater;
 
 import android.content.Context;
+import android.content.res.Resources;
 import android.text.Spannable;
+import android.text.TextUtils;
 
 import com.innahema.collections.query.queriables.Queryable;
+import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.api.dtl.merchants.model.MerchantType;
 import com.worldventures.dreamtrips.api.dtl.merchants.model.OfferType;
 import com.worldventures.dreamtrips.api.dtl.merchants.model.PartnerStatus;
 import com.worldventures.dreamtrips.modules.dtl.helper.MerchantHelper;
+import com.worldventures.dreamtrips.modules.dtl.model.DistanceType;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.Coordinates;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.MerchantMedia;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.ThinAttribute;
@@ -78,12 +82,23 @@ public abstract class MerchantAttributes {
       }
    }
 
-   @Value.Derived public Spannable getOperationalTime(Context context, boolean includeTime) throws Exception {
+   @Value.Derived @Nullable public Currency defaultCurrency() {
+      return currencies() != null && hasPoints() ? Queryable.from(currencies()).first(Currency::isDefault) : null;
+   }
+
+   @Value.Derived public Spannable provideFormattedOperationalTime(Context context, boolean includeTime) throws Exception {
       return MerchantHelper.getOperationalTime(context, operationDays(), timeOffset(), includeTime);
    }
 
-   @Value.Derived @Nullable public Currency defaultCurrency() {
-      return currencies() != null && hasPoints() ? Queryable.from(currencies()).first(Currency::isDefault) : null;
+   @Value.Derived public String provideFormattedDistance(Resources context, DistanceType distanceType) {
+      return distance() != null ? context.getString(R.string.distance_caption_format, distance(),
+            context.getString(distanceType == DistanceType.MILES ? R.string.mi : R.string.km)) : "";
+   }
+
+   @Value.Derived public String provideFormattedCategories() {
+      if (categories() == null) return "";
+      List<String> categories =  Queryable.from(categories()).map(ThinAttribute::name).toList();
+      return TextUtils.join(", ", categories);
    }
 
 }

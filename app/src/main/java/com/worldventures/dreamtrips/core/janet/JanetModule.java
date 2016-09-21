@@ -19,7 +19,6 @@ import com.worldventures.dreamtrips.core.janet.dagger.DaggerActionServiceWrapper
 import com.worldventures.dreamtrips.core.utils.tracksystem.Tracker;
 import com.worldventures.dreamtrips.wallet.di.MagstripeReaderModule;
 import com.worldventures.dreamtrips.wallet.di.SmartCardModule;
-import com.worldventures.dreamtrips.wallet.domain.entity.ImmutableProvision;
 
 import java.net.CookieManager;
 import java.util.List;
@@ -38,7 +37,6 @@ import io.techery.janet.MagstripeActionService;
 import io.techery.janet.SmartCardActionService;
 import io.techery.janet.gson.GsonConverter;
 import io.techery.janet.http.HttpClient;
-import io.techery.janet.http.test.MockHttpActionService;
 import io.techery.janet.magstripe.MagstripeReaderClient;
 import io.techery.janet.smartcard.client.SmartCardClient;
 
@@ -175,18 +173,6 @@ public class JanetModule {
       }
 
       return builder.build();
-   }
-
-   @Singleton
-   @Provides(type = Provides.Type.SET)
-   @Named(JANET_WALLET)
-   ActionService provideWalletHttpService() {
-      return new MockHttpActionService.Builder()
-            .bind(new MockHttpActionService.Response(200).body(ImmutableProvision.builder()
-                  .memberId("NXTID")               // dev board member id
-                  .userSecret("DA:30:55:CF:B4:9E") // dev board address
-                  .build()), request -> request.getUrl().endsWith("create_card")
-            ).build();
    }
 
    @Singleton

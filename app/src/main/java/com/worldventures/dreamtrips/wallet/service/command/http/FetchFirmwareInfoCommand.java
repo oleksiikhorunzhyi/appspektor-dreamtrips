@@ -2,14 +2,20 @@ package com.worldventures.dreamtrips.wallet.service.command.http;
 
 
 import com.worldventures.dreamtrips.BuildConfig;
+import com.worldventures.dreamtrips.core.janet.dagger.InjectableAction;
 import com.worldventures.dreamtrips.wallet.domain.entity.FirmwareInfo;
 import com.worldventures.dreamtrips.wallet.domain.entity.ImmutableFirmwareInfo;
+import com.worldventures.dreamtrips.wallet.domain.storage.TemporaryStorage;
+
+import javax.inject.Inject;
 
 import io.techery.janet.Command;
 import io.techery.janet.command.annotations.CommandAction;
 
 @CommandAction
-public class FetchFirmwareInfoCommand extends Command<FirmwareInfo> {
+public class FetchFirmwareInfoCommand extends Command<FirmwareInfo> implements InjectableAction {
+
+   @Inject TemporaryStorage temporaryStorage;
 
    private final long versionCode;
    private final long appVersion;
@@ -25,11 +31,18 @@ public class FetchFirmwareInfoCommand extends Command<FirmwareInfo> {
    }
 
    private FirmwareInfo getMockInfo() {
-      return ImmutableFirmwareInfo.builder()
-            .byteSize((long) 10000)
-            .releaseNotes("Amazing new update")
-            .versionName("5.0.0")
-            .isCompatible(true)
-            .build();
+      if (temporaryStorage.newFirmwareIsAvailable()) {
+         return ImmutableFirmwareInfo.builder()
+               .isCompatible(temporaryStorage.firmwareIsCompatible())
+               .byteSize(10000)
+               .releaseNotes("Amazing new update")
+               .versionName("5.0.0")
+               .build();
+      } else {
+         return ImmutableFirmwareInfo.builder()
+               .isCompatible(false)
+               .byteSize(0)
+               .build();
+      }
    }
 }

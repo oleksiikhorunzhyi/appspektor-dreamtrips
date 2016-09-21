@@ -233,17 +233,46 @@
                android:layout_height="wrap_content"
                >
 
-            <android.support.v7.widget.SwitchCompat
-                  android:id="@+id/test_connection_switcher"
+            <LinearLayout
                   android:layout_width="match_parent"
                   android:layout_height="wrap_content"
-                  android:padding="@dimen/spacing_normal"
-                  android:text="Connection"
-                  android:textAppearance="?android:attr/textAppearanceMedium"
-                  tools:checked="true"
-                  tools:ignore="HardcodedText"
-                  />
+                  android:orientation="vertical"
+                  >
 
+               <android.support.v7.widget.SwitchCompat
+                     android:id="@+id/test_connection_switcher"
+                     android:layout_width="match_parent"
+                     android:layout_height="wrap_content"
+                     android:padding="@dimen/spacing_normal"
+                     android:text="Connection"
+                     android:textAppearance="?android:attr/textAppearanceMedium"
+                     tools:checked="true"
+                     tools:ignore="HardcodedText"
+                     />
+
+               <android.support.v7.widget.SwitchCompat
+                     android:id="@+id/test_new_firmware_available"
+                     android:layout_width="match_parent"
+                     android:layout_height="wrap_content"
+                     android:padding="@dimen/spacing_normal"
+                     android:text="New firmware is available"
+                     android:textAppearance="?android:attr/textAppearanceMedium"
+                     tools:checked="true"
+                     tools:ignore="HardcodedText"
+                     />
+
+               <android.support.v7.widget.SwitchCompat
+                     android:id="@+id/test_firmware_is_compatible"
+                     android:layout_width="match_parent"
+                     android:layout_height="wrap_content"
+                     android:padding="@dimen/spacing_normal"
+                     android:text="Firmware is compatible"
+                     android:textAppearance="?android:attr/textAppearanceMedium"
+                     tools:checked="true"
+                     tools:ignore="HardcodedText"
+                     />
+
+            </LinearLayout>
          </android.support.v7.widget.CardView>
          <!--END test settings section-->
 

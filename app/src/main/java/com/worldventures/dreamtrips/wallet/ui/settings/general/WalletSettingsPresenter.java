@@ -8,11 +8,13 @@ import com.techery.spares.module.Injector;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.wallet.domain.entity.FirmwareInfo;
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCard;
+import com.worldventures.dreamtrips.wallet.domain.storage.TemporaryStorage;
 import com.worldventures.dreamtrips.wallet.service.FirmwareInteractor;
 import com.worldventures.dreamtrips.wallet.service.SmartCardInteractor;
 import com.worldventures.dreamtrips.wallet.service.command.ConnectSmartCardCommand;
 import com.worldventures.dreamtrips.wallet.service.command.SetLockStateCommand;
 import com.worldventures.dreamtrips.wallet.service.command.SetStealthModeCommand;
+import com.worldventures.dreamtrips.wallet.service.command.http.FetchFirmwareInfoCommand;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletPresenter;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.WalletScreen;
 import com.worldventures.dreamtrips.wallet.ui.common.helper.OperationSubscriberWrapper;
@@ -34,6 +36,7 @@ public class WalletSettingsPresenter extends WalletPresenter<WalletSettingsPrese
    @Inject SmartCardInteractor smartCardInteractor;
    @Inject FirmwareInteractor firmwareInteractor;
    @Inject ThrowableHelper throwableHelper;
+   @Inject TemporaryStorage temporaryStorage;
 
    private SmartCard smartCard;
    private FirmwareInfo firmware;
@@ -46,10 +49,15 @@ public class WalletSettingsPresenter extends WalletPresenter<WalletSettingsPrese
    @Override
    public void attachView(Screen view) {
       super.attachView(view);
+      view.testNewFirmwareAvailable(temporaryStorage.newFirmwareIsAvailable());
+      view.testFirmwareIsCompatible(temporaryStorage.firmwareIsCompatible());
+
       observeSmartCardChanges();
 
       observeStealthModeController(view);
       observeLockController(view);
+      observeFirmwareAvailableController(view);
+      observeFirmwareCompatibleController(view);
       observeConnectionController(view);
       observeFirmwareUpdates();
    }
@@ -117,6 +125,22 @@ public class WalletSettingsPresenter extends WalletPresenter<WalletSettingsPrese
             .subscribe(this::manageConnection);
    }
 
+   private void observeFirmwareAvailableController(Screen view) {
+      view.testNewFirmwareAvailable()
+            .compose(bindView())
+            .skip(1)
+            .filter(available -> temporaryStorage.newFirmwareIsAvailable() != available)
+            .subscribe(this::changeFirmwareUpdates);
+   }
+
+   private void observeFirmwareCompatibleController(Screen view) {
+      view.testFirmwareIsCompatible()
+            .compose(bindView())
+            .skip(1)
+            .filter(compatible -> temporaryStorage.firmwareIsCompatible() != compatible)
+            .subscribe(this::changeFirmwareIsCompatible);
+   }
+
    private void manageConnection(boolean connected) {
       if (connected) {
          smartCardInteractor.connectActionPipe()
@@ -172,6 +196,20 @@ public class WalletSettingsPresenter extends WalletPresenter<WalletSettingsPrese
       smartCardInteractor.stealthModePipe().send(new SetStealthModeCommand(isEnabled));
    }
 
+   // for test and demo
+   private void changeFirmwareUpdates(boolean available) {
+      temporaryStorage.newFirmwareIsAvailable(available);
+      //for ui will updated
+      firmwareInteractor.firmwareInfoPipe().send(new FetchFirmwareInfoCommand());
+   }
+
+   // for test and demo
+   private void changeFirmwareIsCompatible(boolean compatible) {
+      temporaryStorage.firmwareIsCompatible(compatible);
+      //for ui will updated
+      firmwareInteractor.firmwareInfoPipe().send(new FetchFirmwareInfoCommand());
+   }
+
    private void lockStatusChanged(boolean lock) {
       smartCardInteractor.lockPipe().send(new SetLockStateCommand(lock));
    }
@@ -206,10 +244,18 @@ public class WalletSettingsPresenter extends WalletPresenter<WalletSettingsPrese
 
       void firmwareUpdateCount(int count);
 
+      void testNewFirmwareAvailable(boolean available);
+
+      void testFirmwareIsCompatible(boolean compatible);
+
       Observable<Boolean> stealthModeStatus();
 
       Observable<Boolean> lockStatus();
 
       Observable<Boolean> testConnection();
+
+      Observable<Boolean> testNewFirmwareAvailable();
+
+      Observable<Boolean> testFirmwareIsCompatible();
    }
 }

@@ -4,7 +4,6 @@ import android.support.annotation.Nullable;
 
 import com.snappydb.DB;
 import com.snappydb.SnappydbException;
-import com.worldventures.dreamtrips.api.trip.model.Trip;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem;
 import com.worldventures.dreamtrips.modules.dtl.model.location.DtlLocation;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchant;
@@ -30,7 +29,6 @@ import com.worldventures.dreamtrips.wallet.domain.entity.SmartCardDetails;
 import com.worldventures.dreamtrips.wallet.domain.entity.TermsAndConditions;
 import com.worldventures.dreamtrips.wallet.domain.entity.card.Card;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
@@ -167,7 +165,7 @@ public interface SnappyRepository {
 
    List<FeedbackType> getFeedbackTypes();
 
-   void setFeedbackTypes(ArrayList<FeedbackType> types);
+   void setFeedbackTypes(List<FeedbackType> types);
 
    void saveDtlLocation(DtlLocation dtlLocation);
 

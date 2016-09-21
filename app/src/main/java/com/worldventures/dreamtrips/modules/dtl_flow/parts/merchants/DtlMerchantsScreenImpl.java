@@ -22,6 +22,7 @@ import com.worldventures.dreamtrips.modules.dtl.model.merchant.ThinMerchant;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.offer.Offer;
 import com.worldventures.dreamtrips.modules.dtl.view.cell.DtlMerchantCellDelegate;
 import com.worldventures.dreamtrips.modules.dtl.view.cell.DtlMerchantExpandableCell;
+import com.worldventures.dreamtrips.modules.dtl.view.cell.adapter.ThinMerchantsAdapter;
 import com.worldventures.dreamtrips.modules.dtl.view.dialog.DialogFactory;
 import com.worldventures.dreamtrips.modules.dtl_flow.DtlLayout;
 import com.worldventures.dreamtrips.modules.dtl_flow.view.toolbar.DtlToolbarHelper;
@@ -60,7 +61,7 @@ public class DtlMerchantsScreenImpl extends DtlLayout<DtlMerchantsScreen, DtlMer
       super.onPostAttachToWindowView();
       initDtlToolbar();
       //
-      baseDelegateAdapter = new BaseDelegateAdapter(getActivity(), injector);
+      baseDelegateAdapter = new ThinMerchantsAdapter(getActivity(), injector);
       baseDelegateAdapter.registerCell(ImmutableThinMerchant.class, DtlMerchantExpandableCell.class);
       baseDelegateAdapter.registerDelegate(ImmutableThinMerchant.class, this);
       //

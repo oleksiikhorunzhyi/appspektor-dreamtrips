@@ -15,16 +15,20 @@ import com.techery.spares.ui.view.cell.AbstractDelegateCell;
 import com.trello.rxlifecycle.RxLifecycle;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.api.dtl.merchants.model.OfferType;
+import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.core.utils.DateTimeUtils;
 import com.worldventures.dreamtrips.core.utils.LocaleHelper;
 import com.worldventures.dreamtrips.core.utils.ViewUtils;
 import com.worldventures.dreamtrips.core.utils.tracksystem.AnalyticsInteractor;
 import com.worldventures.dreamtrips.modules.common.view.custom.ImageryDraweeView;
 import com.worldventures.dreamtrips.modules.dtl.helper.MerchantHelper;
+import com.worldventures.dreamtrips.modules.dtl.model.DistanceType;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.ImmutableThinMerchant;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.MerchantMedia;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.offer.Offer;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.operational_hour.OperationDay;
+import com.worldventures.dreamtrips.modules.settings.model.Setting;
+import com.worldventures.dreamtrips.modules.settings.util.SettingsFactory;
 
 import java.util.List;
 
@@ -56,6 +60,7 @@ public class DtlMerchantExpandableCell extends AbstractDelegateCell<ImmutableThi
    @Inject LocaleHelper localeHelper;
 
    private final LayoutInflater inflater;
+   private DistanceType distanceType;
 
    public DtlMerchantExpandableCell(View view) {
       super(view);
@@ -79,6 +84,10 @@ public class DtlMerchantExpandableCell extends AbstractDelegateCell<ImmutableThi
       setExpandedArea();
    }
 
+   public void setDistanceType(DistanceType distanceType) {
+      this.distanceType = distanceType;
+   }
+
    private void setImage(List<MerchantMedia> mediaList) {
       MerchantMedia media = Queryable.from(mediaList).firstOrDefault();
       if (media == null) return;
@@ -88,20 +97,18 @@ public class DtlMerchantExpandableCell extends AbstractDelegateCell<ImmutableThi
 
    private void setDistance() {
       Resources res = merchantDistance.getResources();
-      // TODO :: set distance
-//      ViewUtils.setTextOrHideView(merchantDistance, res.getString(R.string.distance_caption_format, getModelObject().getDistance(), res
-//            .getString(getModelObject().getDistanceType() == DistanceType.MILES ? R.string.mi : R.string.km)));
+      ViewUtils.setTextOrHideView(merchantDistance, getModelObject().asMerchantAttributes().provideFormattedDistance(res, distanceType));
    }
 
    private void setCategories() {
-      String categoriesString = MerchantHelper.getCategories(getModelObject().asMerchantAttributes());
+      String categoriesString = getModelObject().asMerchantAttributes().provideFormattedCategories();
       ViewUtils.setTextOrHideView(merchantCategories, categoriesString);
    }
 
    private void setOperationalStatus() {
       if (getModelObject().asMerchantAttributes().hasPoints() && getModelObject().asMerchantAttributes().hasOperationDays()) {
          ViewUtils.setViewVisibility(merchantOperationalStatus, View.VISIBLE);
-         Observable.fromCallable(() -> getModelObject().asMerchantAttributes().getOperationalTime(itemView.getContext(), false))
+         Observable.fromCallable(() -> getModelObject().asMerchantAttributes().provideFormattedOperationalTime(itemView.getContext(), false))
                .compose(RxLifecycle.bindView(itemView))
                .subscribe(merchantOperationalStatus::setText, ex -> merchantOperationalStatus.setVisibility(View.GONE));
       } else ViewUtils.setViewVisibility(merchantOperationalStatus, View.INVISIBLE);

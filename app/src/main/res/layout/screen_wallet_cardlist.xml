@@ -20,20 +20,14 @@
             app:title="@string/wallet_dashboard_title"
             />
 
-      <FrameLayout
-            android:id="@+id/firmware_available"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:padding="@dimen/spacing_normal"
-            >
-
          <Button
+               android:id="@+id/firmware_available"
                android:layout_width="wrap_content"
                android:layout_height="wrap_content"
                android:layout_gravity="center"
+               android:layout_margin="@dimen/spacing_normal"
                android:text="@string/wallet_dashboard_flye_firmware_update"
                />
-      </FrameLayout>
 
       <android.support.design.widget.CoordinatorLayout
             android:id="@+id/main_content"

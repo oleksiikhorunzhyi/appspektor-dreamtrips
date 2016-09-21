@@ -100,4 +100,13 @@ public class ActivityRouter extends ActivityBoundRouter {
       intent.setDataAndType(Uri.fromFile(file), "audio/*");
       startActivity(Intent.createChooser(intent, getContext().getString(R.string.complete_action_with)));
    }
+
+   public void openMarket() {
+      String appPackageName = "com.worldventures.dreamtrips";
+      try {
+         startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=" + appPackageName)));
+      } catch (android.content.ActivityNotFoundException exception) {
+         startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://play.google.com/store/apps/details?id=" + appPackageName)));
+      }
+   }
 }

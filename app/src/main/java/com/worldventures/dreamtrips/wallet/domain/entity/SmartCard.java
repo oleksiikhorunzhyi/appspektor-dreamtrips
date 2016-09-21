@@ -7,6 +7,11 @@ import org.immutables.value.Value;
 @Value.Immutable
 public abstract class SmartCard {
 
+   @Value.Default
+   public String currentSdkVersion() {
+      return "0.0.1"; //todo temp
+   }
+
    public abstract String smartCardId();
 
    public abstract CardStatus cardStatus();

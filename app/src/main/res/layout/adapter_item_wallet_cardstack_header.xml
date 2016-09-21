@@ -1,21 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-      xmlns:app="http://schemas.android.com/apk/res-auto"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
-      android:background="@drawable/wallet_wizard_background"
       android:orientation="vertical"
       android:paddingBottom="@dimen/spacing_normal"
       >
-
-   <android.support.v7.widget.Toolbar
-         android:id="@+id/toolbar"
-         android:layout_width="match_parent"
-         android:layout_height="?attr/actionBarSize"
-         app:navigationIcon="@drawable/ic_menu_hamburger"
-         app:titleTextColor="@android:color/white"
-         />
 
    <com.worldventures.dreamtrips.wallet.ui.widget.SmartCardWidget
          android:id="@+id/widget_dashboard_smart_card"

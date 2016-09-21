@@ -12,6 +12,8 @@ import android.widget.TextView;
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.utils.QuantityHelper;
+import com.worldventures.dreamtrips.modules.common.view.custom.BadgeView;
+import com.worldventures.dreamtrips.wallet.domain.entity.FirmwareInfo;
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCard;
 
 import butterknife.ButterKnife;
@@ -28,6 +30,7 @@ public class SmartCardWidget extends FrameLayout {
    @InjectView(R.id.stealth_indicator) View stealthIndicator;
    @InjectView(R.id.lock_indicator) ImageView lockIndicator;
    @InjectView(R.id.link_indicator) ImageView lickIndicator;
+   @InjectView(R.id.smartcard_badge) BadgeView badgeView;
 
    public SmartCardWidget(Context context) {
       this(context, null);
@@ -44,7 +47,7 @@ public class SmartCardWidget extends FrameLayout {
       setVisibility(INVISIBLE);
    }
 
-   public void bindCard(SmartCard smartCard) {
+   public void bindCard(SmartCard smartCard, FirmwareInfo firmwareInfo) {
       String url = smartCard.userPhoto();
       bankLabel.setText(smartCard.cardName());
       if (url != null) scAvatar.setImageURI(Uri.parse(url));
@@ -52,6 +55,12 @@ public class SmartCardWidget extends FrameLayout {
       stealthIndicator.setVisibility(smartCard.stealthMode() ? VISIBLE : GONE);
       bindLockStatus(smartCard.lock());
       bindConnectionStatus(smartCard.connectionStatus() == SmartCard.ConnectionStatus.CONNECTED);
+      //// TODO: 21.09.16 temporary, until we know how to check it
+      if (firmwareInfo.byteSize() > 0) {
+         badgeView.show();
+      } else {
+         badgeView.hide();
+      }
       setVisibility(VISIBLE);
    }
 

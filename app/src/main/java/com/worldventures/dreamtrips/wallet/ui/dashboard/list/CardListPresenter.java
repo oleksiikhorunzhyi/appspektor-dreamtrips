@@ -72,6 +72,11 @@ public class CardListPresenter extends WalletPresenter<CardListPresenter.Screen,
             .compose(bindViewIoToMainComposer())
             .map(it -> it.getResult())
             .subscribe(it -> {
+               this.cardStackHeaderHolder = ImmutableCardStackHeaderHolder.builder()
+                     .from(cardStackHeaderHolder)
+                     .firmwareInfo(it)
+                     .build();
+               getView().notifySmartCardChanged(cardStackHeaderHolder);
                // TODO: 9/21/16 need contract between client and server
                if (it.byteSize() > 0) {
                   getView().showFirmwareUpdateBtn();

@@ -31,6 +31,7 @@
       <!-- Active thumb color & Active track color(30% transparency) -->
       <item name="colorControlActivated">@color/wallet_color_background_light</item>
       <item name="colorControlHighlight">@color/wallet_color_background_light</item>
+      <item name="colorButtonNormal">@color/wallet_color_background_light</item>
 
       <!-- Inactive thumb color -->
       <item name="colorSwitchThumbNormal">#888888</item>
@@ -91,9 +92,9 @@
    </style>
 
    <style name="WalletTheme.Wizard.ButtonStyle" parent="Widget.AppCompat.Button">
-      <item name="android:background">@color/wallet_color_primary</item>
       <item name="android:textAppearance">?android:attr/textAppearanceLarge</item>
       <item name="android:textColor">@color/wallet_wizard_button_text_color</item>
+      <item name="android:padding">@dimen/spacing_normal</item>
    </style>
 
    <style name="WalletTheme.Wizard.WhiteTextButton" parent="WalletTheme.Wizard.ButtonStyle">

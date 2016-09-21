@@ -5,6 +5,7 @@ import android.support.annotation.NonNull;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
 import android.util.AttributeSet;
 import android.view.View;
 
@@ -35,6 +36,8 @@ public class CardListScreen extends WalletFrameLayout<CardListPresenter.Screen, 
 
    @InjectView(R.id.bank_card_list) RecyclerView bankCardList;
    @InjectView(R.id.empty_card_view) View emptyCardListView;
+   @InjectView(R.id.firmware_available) View firmwareAvailableView;
+   @InjectView(R.id.toolbar) Toolbar toolbar;
 
    private IgnoreFirstItemAdapter adapter;
 
@@ -54,6 +57,9 @@ public class CardListScreen extends WalletFrameLayout<CardListPresenter.Screen, 
 
    @Override
    protected void onPostAttachToWindowView() {
+      firmwareAvailableView.setVisibility(GONE);
+      toolbar.setNavigationOnClickListener(it -> presenter.navigationClick());
+
       setupCardStackList();
    }
 
@@ -90,13 +96,12 @@ public class CardListScreen extends WalletFrameLayout<CardListPresenter.Screen, 
 
    @Override
    public void hideFirmwareUpdateBtn() {
-      //// TODO: 20.09.16 Add btn reaction
-
+      firmwareAvailableView.setVisibility(GONE);
    }
 
    @Override
    public void showFirmwareUpdateBtn() {
-      //// TODO: 20.09.16 Add btn reaction
+      firmwareAvailableView.setVisibility(VISIBLE);
    }
 
    private void setupCardStackList() {
@@ -125,11 +130,6 @@ public class CardListScreen extends WalletFrameLayout<CardListPresenter.Screen, 
             presenter.onSettingsChosen();
          }
 
-         @Override
-         public void onNavigateButtonClick() {
-            presenter.navigationClick();
-         }
-
       });
 
       bankCardList.setAdapter(adapter);
@@ -150,6 +150,11 @@ public class CardListScreen extends WalletFrameLayout<CardListPresenter.Screen, 
    @OnClick(R.id.add_card_button)
    protected void addCardButtonClick() {
       getPresenter().addCardRequired();
+   }
+
+   @OnClick(R.id.firmware_available)
+   protected void firmwareAvailableBtnClick() {
+      //// TODO: 20.09.16 add real navigation
    }
 
 }

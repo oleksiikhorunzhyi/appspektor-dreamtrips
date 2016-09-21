@@ -18,7 +18,7 @@ import com.worldventures.dreamtrips.wallet.ui.dashboard.detail.CardDetailsPath;
 import com.worldventures.dreamtrips.wallet.ui.dashboard.list.util.CardStackHeaderHolder;
 import com.worldventures.dreamtrips.wallet.ui.dashboard.list.util.CardStackViewModel;
 import com.worldventures.dreamtrips.wallet.ui.dashboard.list.util.ImmutableCardStackHeaderHolder;
-import com.worldventures.dreamtrips.wallet.ui.settings.WalletCardSettingsPath;
+import com.worldventures.dreamtrips.wallet.ui.settings.general.WalletSettingsPath;
 import com.worldventures.dreamtrips.wallet.ui.wizard.charging.WizardChargingPath;
 import com.worldventures.dreamtrips.wallet.util.CardListStackConverter;
 import com.worldventures.dreamtrips.wallet.util.CardUtils;
@@ -98,7 +98,7 @@ public class CardListPresenter extends WalletPresenter<CardListPresenter.Screen,
    }
 
    public void onSettingsChosen() {
-      navigator.go(new WalletCardSettingsPath());
+      navigator.go(new WalletSettingsPath());
    }
 
    public void addCardRequired() {

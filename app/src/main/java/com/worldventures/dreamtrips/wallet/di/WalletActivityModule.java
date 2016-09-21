@@ -12,7 +12,7 @@ import com.worldventures.dreamtrips.wallet.ui.dashboard.list.CardListPresenter;
 import com.worldventures.dreamtrips.wallet.ui.dashboard.list.util.cell.BankCardCell;
 import com.worldventures.dreamtrips.wallet.ui.dashboard.list.util.cell.CardStackCell;
 import com.worldventures.dreamtrips.wallet.ui.dashboard.list.util.cell.CardStackHeaderCell;
-import com.worldventures.dreamtrips.wallet.ui.settings.WalletCardSettingsPresenter;
+import com.worldventures.dreamtrips.wallet.ui.settings.general.WalletSettingsPresenter;
 import com.worldventures.dreamtrips.wallet.ui.settings.common.cell.SectionDividerCell;
 import com.worldventures.dreamtrips.wallet.ui.settings.common.cell.SettingsRadioCell;
 import com.worldventures.dreamtrips.wallet.ui.settings.disabledefaultcard.WalletDisableDefaultCardPresenter;
@@ -54,7 +54,7 @@ import dagger.Provides;
             WizardChargingPresenter.class,
             CardDetailsPresenter.class,
             CardListPresenter.class,
-            WalletCardSettingsPresenter.class,
+            WalletSettingsPresenter.class,
             WalletSuccessPresenter.class,
             AddCardDetailsPresenter.class,
             WizardPinSetupPresenter.class,

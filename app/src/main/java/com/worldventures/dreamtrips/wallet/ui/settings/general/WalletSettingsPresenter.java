@@ -1,4 +1,4 @@
-package com.worldventures.dreamtrips.wallet.ui.settings;
+package com.worldventures.dreamtrips.wallet.ui.settings.general;
 
 import android.content.Context;
 import android.os.Parcelable;
@@ -24,7 +24,7 @@ import javax.inject.Inject;
 import io.techery.janet.smartcard.action.support.DisconnectAction;
 import rx.Observable;
 
-public class WalletCardSettingsPresenter extends WalletPresenter<WalletCardSettingsPresenter.Screen, Parcelable> {
+public class WalletSettingsPresenter extends WalletPresenter<WalletSettingsPresenter.Screen, Parcelable> {
 
    @Inject Navigator navigator;
    @Inject SmartCardInteractor smartCardInteractor;
@@ -32,7 +32,7 @@ public class WalletCardSettingsPresenter extends WalletPresenter<WalletCardSetti
 
    private SmartCard smartCard;
 
-   public WalletCardSettingsPresenter(Context context, Injector injector) {
+   public WalletSettingsPresenter(Context context, Injector injector) {
       super(context, injector);
    }
 
@@ -40,6 +40,9 @@ public class WalletCardSettingsPresenter extends WalletPresenter<WalletCardSetti
    public void attachView(Screen view) {
       super.attachView(view);
       observeSmartCardChanges();
+
+      // // TODO: 9/21/16 stub version
+      view.firmwareUpdateCount(0);
 
       observeStealthModeController(view);
       observeLockController(view);
@@ -163,6 +166,10 @@ public class WalletCardSettingsPresenter extends WalletPresenter<WalletCardSetti
       );
    }
 
+   public void firmwareUpdatesClick() {
+      // TODO: 9/21/16 need impl
+   }
+
    public interface Screen extends WalletScreen {
 
       void stealthModeStatus(boolean isEnabled);
@@ -174,6 +181,8 @@ public class WalletCardSettingsPresenter extends WalletPresenter<WalletCardSetti
       void disableDefaultPaymentValue(long millis);
 
       void autoClearSmartCardValue(long millis);
+
+      void firmwareUpdateCount(int count);
 
       Observable<Boolean> stealthModeStatus();
 

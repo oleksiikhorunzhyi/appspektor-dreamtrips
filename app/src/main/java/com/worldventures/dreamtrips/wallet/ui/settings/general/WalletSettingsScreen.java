@@ -1,4 +1,4 @@
-package com.worldventures.dreamtrips.wallet.ui.settings;
+package com.worldventures.dreamtrips.wallet.ui.settings.general;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
@@ -9,6 +9,7 @@ import android.widget.TextView;
 
 import com.jakewharton.rxbinding.widget.RxCompoundButton;
 import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.modules.common.view.custom.BadgeView;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletFrameLayout;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.OperationScreen;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.delegate.DialogOperationScreen;
@@ -19,13 +20,14 @@ import butterknife.InjectView;
 import butterknife.OnClick;
 import rx.Observable;
 
-public class WalletCardSettingsScreen extends WalletFrameLayout<WalletCardSettingsPresenter.Screen, WalletCardSettingsPresenter, WalletCardSettingsPath> implements WalletCardSettingsPresenter.Screen {
+public class WalletSettingsScreen extends WalletFrameLayout<WalletSettingsPresenter.Screen, WalletSettingsPresenter, WalletSettingsPath> implements WalletSettingsPresenter.Screen {
 
    @InjectView(R.id.toolbar) Toolbar toolbar;
    @InjectView(R.id.stealth_mode_switcher) SwitchCompat stealthModeSwitcher;
    @InjectView(R.id.lock_switcher) SwitchCompat lockSwitcher;
    @InjectView(R.id.test_connection_switcher) SwitchCompat testConnectionSwitcher;
 
+   @InjectView(R.id.badgeFirmwareUpdates) BadgeView badgeFirmwareUpdates;
    @InjectView(R.id.disable_default_payment_card_label) TextView disableDefaultPaymentCardAfterLabel;
    @InjectView(R.id.auto_delete_cards_labels) TextView autoDeleteCardLabel;
 
@@ -36,11 +38,11 @@ public class WalletCardSettingsScreen extends WalletFrameLayout<WalletCardSettin
    private final AutoClearSmartCardItemProvider autoClearSmartCardItemProvider = new AutoClearSmartCardItemProvider();
    private final DisableDefaultCardItemProvider disableDefaultCardItemProvider = new DisableDefaultCardItemProvider();
 
-   public WalletCardSettingsScreen(Context context) {
+   public WalletSettingsScreen(Context context) {
       super(context);
    }
 
-   public WalletCardSettingsScreen(Context context, AttributeSet attrs) {
+   public WalletSettingsScreen(Context context, AttributeSet attrs) {
       super(context, attrs);
    }
 
@@ -56,8 +58,8 @@ public class WalletCardSettingsScreen extends WalletFrameLayout<WalletCardSettin
 
    @NonNull
    @Override
-   public WalletCardSettingsPresenter createPresenter() {
-      return new WalletCardSettingsPresenter(getContext(), getInjector());
+   public WalletSettingsPresenter createPresenter() {
+      return new WalletSettingsPresenter(getContext(), getInjector());
    }
 
    protected void onNavigationClick() {
@@ -77,6 +79,10 @@ public class WalletCardSettingsScreen extends WalletFrameLayout<WalletCardSettin
    @OnClick(R.id.item_auto_delete_cards)
    protected void onAutoDeleteCardsClick() {
       presenter.autoClearSmartCardClick();
+   }
+
+   protected void onFirmwareUpdateClick() {
+      presenter.firmwareUpdatesClick();
    }
 
    @Override
@@ -102,6 +108,16 @@ public class WalletCardSettingsScreen extends WalletFrameLayout<WalletCardSettin
    @Override
    public void autoClearSmartCardValue(long millis) {
       autoDeleteCardLabel.setText(autoClearSmartCardItemProvider.provideTextByValue(millis));
+   }
+
+   @Override
+   public void firmwareUpdateCount(int count) {
+      badgeFirmwareUpdates.setText(String.valueOf(count));
+      if (count == 0) {
+         badgeFirmwareUpdates.hide();
+      } else {
+         badgeFirmwareUpdates.show();
+      }
    }
 
    @Override

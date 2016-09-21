@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<com.worldventures.dreamtrips.wallet.ui.settings.WalletCardSettingsScreen xmlns:android="http://schemas.android.com/apk/res/android"
+<com.worldventures.dreamtrips.wallet.ui.settings.general.WalletSettingsScreen xmlns:android="http://schemas.android.com/apk/res/android"
       xmlns:app="http://schemas.android.com/apk/res-auto"
       xmlns:tools="http://schemas.android.com/tools"
       android:layout_width="match_parent"
@@ -39,6 +39,7 @@
                android:textAppearance="?android:attr/textAppearanceSmall"
                />
 
+         <!--BEGIN device settings section-->
          <android.support.v7.widget.CardView
                android:layout_width="match_parent"
                android:layout_height="wrap_content"
@@ -74,7 +75,7 @@
 
             </LinearLayout>
          </android.support.v7.widget.CardView>
-
+         <!--END hardware settings section-->
 
          <View
                style="@style/SettingsSectionDividerStyle"
@@ -82,6 +83,53 @@
                android:layout_height="48dp"
                />
 
+         <!--BEGIN firmware settings section-->
+         <android.support.v7.widget.CardView
+               android:layout_width="match_parent"
+               android:layout_height="wrap_content"
+               >
+
+            <FrameLayout
+                  android:id="@+id/item_firmware_update"
+                  android:layout_width="match_parent"
+                  android:layout_height="wrap_content"
+                  android:padding="@dimen/spacing_normal"
+                  >
+
+               <TextView
+                     android:layout_width="match_parent"
+                     android:layout_height="wrap_content"
+                     android:layout_gravity="start"
+                     android:text="@string/wallet_card_settings_firmware_update"
+                     android:textAppearance="?android:attr/textAppearanceMedium"
+                     />
+
+               <com.worldventures.dreamtrips.modules.common.view.custom.BadgeView
+                     android:id="@+id/badgeFirmwareUpdates"
+                     android:layout_width="28dp"
+                     android:layout_height="wrap_content"
+                     android:layout_gravity="end|center_vertical"
+                     android:gravity="center"
+                     android:paddingTop="6dp"
+                     android:textAppearance="?android:attr/textAppearanceSmall"
+                     android:visibility="gone"
+                     app:background_color="?attr/colorPrimaryDark"
+                     tools:text="1"
+                     tools:visibility="visible"
+                     />
+            </FrameLayout>
+         </android.support.v7.widget.CardView>
+         <!--END firmware settings section-->
+
+         <!--BEGIN test settings section-->
+
+         <View
+               style="@style/SettingsSectionDividerStyle"
+               android:layout_width="match_parent"
+               android:layout_height="48dp"
+               />
+
+         <!--BEGIN security settings section-->
          <android.support.v7.widget.CardView
                android:layout_width="match_parent"
                android:layout_height="wrap_content"
@@ -163,8 +211,10 @@
                </RelativeLayout>
             </LinearLayout>
          </android.support.v7.widget.CardView>
+         <!--END security settings section-->
 
          <!--todo: remove after demo-->
+         <!--BEGIN test settings section-->
          <TextView
                style="@style/SettingsSectionDividerStyle"
                android:layout_width="match_parent"
@@ -175,6 +225,7 @@
                android:paddingTop="@dimen/spacing_normal"
                android:text="Test section"
                android:textAppearance="?android:attr/textAppearanceSmall"
+               tools:ignore="HardcodedText"
                />
 
          <android.support.v7.widget.CardView
@@ -194,6 +245,7 @@
                   />
 
          </android.support.v7.widget.CardView>
+         <!--END test settings section-->
 
          <!--todo: empty view was used to add shadows for last section -->
          <View
@@ -202,4 +254,4 @@
                />
       </LinearLayout>
    </android.support.v4.widget.NestedScrollView>
-</com.worldventures.dreamtrips.wallet.ui.settings.WalletCardSettingsScreen>
+</com.worldventures.dreamtrips.wallet.ui.settings.general.WalletSettingsScreen>

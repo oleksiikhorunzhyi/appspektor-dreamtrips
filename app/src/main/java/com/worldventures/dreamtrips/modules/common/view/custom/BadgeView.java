@@ -2,10 +2,13 @@ package com.worldventures.dreamtrips.modules.common.view.custom;
 
 import android.content.Context;
 import android.content.res.Resources;
+import android.content.res.TypedArray;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.graphics.drawable.ShapeDrawable;
 import android.graphics.drawable.shapes.RoundRectShape;
+import android.os.Build;
+import android.support.annotation.Nullable;
 import android.util.AttributeSet;
 import android.util.TypedValue;
 import android.view.Gravity;
@@ -20,6 +23,8 @@ import android.view.animation.DecelerateInterpolator;
 import android.widget.FrameLayout;
 import android.widget.TabWidget;
 import android.widget.TextView;
+
+import com.worldventures.dreamtrips.R;
 
 /**
  * A simple text label view that can be applied as a "badge" to any given {@link android.view.View}.
@@ -99,10 +104,10 @@ public class BadgeView extends TextView {
 
    public BadgeView(Context context, AttributeSet attrs, int defStyle, View target, int tabIndex) {
       super(context, attrs, defStyle);
-      init(context, target, tabIndex);
+      init(context, attrs, target, tabIndex);
    }
 
-   private void init(Context context, View target, int tabIndex) {
+   private void init(Context context, @Nullable AttributeSet attrs, View target, int tabIndex) {
 
       this.context = context;
       this.target = target;
@@ -112,7 +117,15 @@ public class BadgeView extends TextView {
       badgePosition = DEFAULT_POSITION;
       badgeMarginH = dipToPixels(DEFAULT_MARGIN_DIP);
       badgeMarginV = badgeMarginH;
-      badgeColor = DEFAULT_BADGE_COLOR;
+
+
+      if (attrs != null) {
+         TypedArray arr = getContext().obtainStyledAttributes(attrs, R.styleable.BadgeView);
+         badgeColor = arr.getColor(R.styleable.BadgeView_background_color, DEFAULT_BADGE_COLOR);
+         arr.recycle();
+      } else {
+         badgeColor = DEFAULT_BADGE_COLOR;
+      }
 
       setTypeface(Typeface.DEFAULT_BOLD);
       int paddingPixels = dipToPixels(DEFAULT_LR_PADDING_DIP);
@@ -255,7 +268,13 @@ public class BadgeView extends TextView {
          if (badgeBg == null) {
             badgeBg = getDefaultBackground();
          }
-         setBackgroundDrawable(badgeBg);
+         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
+            //noinspection all
+            setBackgroundDrawable(badgeBg);
+         } else {
+            //noinspection all
+            setBackground(badgeBg);
+         }
       }
       applyLayoutParams();
 

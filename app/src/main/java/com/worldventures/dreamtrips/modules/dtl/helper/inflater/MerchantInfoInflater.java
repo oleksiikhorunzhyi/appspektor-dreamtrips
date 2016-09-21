@@ -31,28 +31,28 @@ public class MerchantInfoInflater extends MerchantDataInflater {
    }
 
    @Override
-   protected void onMerchantApply() {
+   protected void onMerchantAttributesApply() {
       setInfo();
    }
 
    private void setInfo() {
-      pricing.setRating(merchant.budget());
+      pricing.setRating(merchantAttributes.budget());
       //
-      boolean hasDistance = merchant.distance() != null;
-      boolean hasOperationDays = MerchantHelper.merchantHasOperationDays(merchant);
-      boolean hasCategories = !TextUtils.isEmpty(MerchantHelper.getCategories(merchant));
+      boolean hasDistance = merchantAttributes.distance() != null;
+      boolean hasOperationDays = merchantAttributes.hasOperationDays();
+      boolean hasCategories = !TextUtils.isEmpty(MerchantHelper.getCategories(merchantAttributes));
 
       // TODO Think about distance !!
 //      CharSequence distanceText = hasDistance ? resources.getString(R.string.distance_caption_format, merchant.getDistance(), resources
 //            .getString(merchant.getDistanceType() == DistanceType.MILES ? R.string.mi : R.string.km)) : "";
-      CharSequence distanceText = hasDistance ? resources.getString(R.string.distance_caption_format, merchant.distance(), "") : "";
-      CharSequence categoriesText = hasCategories ? MerchantHelper.getCategories(merchant) : "";
+      CharSequence distanceText = hasDistance ? resources.getString(R.string.distance_caption_format, merchantAttributes.distance(), "") : "";
+      CharSequence categoriesText = hasCategories ? MerchantHelper.getCategories(merchantAttributes) : "";
 
       ViewUtils.setTextOrHideView(distance, distanceText);
       ViewUtils.setTextOrHideView(categories, categoriesText);
 
       if (hasOperationDays) {
-         Observable.fromCallable(() -> MerchantHelper.getOperationalTime(rootView.getContext(), merchant))
+         Observable.fromCallable(() -> merchantAttributes.getOperationalTime(rootView.getContext(), true))
                .compose(RxLifecycle.bindView(rootView))
                .subscribe(operationalTime::setText, ex -> operationalTime.setVisibility(View.GONE));
       } else ViewUtils.setViewVisibility(operationalTime, View.GONE);

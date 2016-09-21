@@ -12,8 +12,8 @@ public class MerchantMapInfoInflater extends MerchantInfoInflater {
    @InjectView(R.id.merchant_title) TextView merchantTitle;
 
    @Override
-   protected void onMerchantApply() {
-      super.onMerchantApply();
-      ViewUtils.setTextOrHideView(merchantTitle, merchant.displayName());
+   protected void onMerchantAttributesApply() {
+      super.onMerchantAttributesApply();
+      ViewUtils.setTextOrHideView(merchantTitle, merchantAttributes.displayName());
    }
 }

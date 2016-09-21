@@ -71,7 +71,7 @@ public class MerchantOffersInflater extends MerchantDataInflater {
    }
 
    @Override
-   protected void onMerchantApply() {
+   protected void onMerchantAttributesApply() {
       setType();
       setImage();
       setDescriptions();
@@ -91,7 +91,7 @@ public class MerchantOffersInflater extends MerchantDataInflater {
     * @param offers offers to expand
     */
    public void expandOffers(List<String> offers) {
-      Preconditions.checkNotNull(merchant, "Merchant not set");
+      Preconditions.checkNotNull(merchantAttributes, "MerchantAttributes not set");
       //
       if (offers == null || cashedViewMap.size() == 0) return;
       //
@@ -108,13 +108,13 @@ public class MerchantOffersInflater extends MerchantDataInflater {
    }
 
    private void setType() {
-      ViewUtils.setViewVisibility(earnWrapper, MerchantHelper.merchantHasOffers(merchant)  ? View.VISIBLE : View.GONE);
-      ViewUtils.setViewVisibility(merchantWrapper, !MerchantHelper.merchantHasOffers(merchant) ? View.VISIBLE : View.GONE);
-      ViewUtils.setViewVisibility(perkDivider, !MerchantHelper.merchantHasOffers(merchant) ? View.GONE : View.VISIBLE);
+      ViewUtils.setViewVisibility(earnWrapper, merchantAttributes.hasOffers()  ? View.VISIBLE : View.GONE);
+      ViewUtils.setViewVisibility(merchantWrapper, !merchantAttributes.hasOffers() ? View.VISIBLE : View.GONE);
+      ViewUtils.setViewVisibility(perkDivider, !merchantAttributes.hasOffers() ? View.GONE : View.VISIBLE);
    }
 
    private void setImage() {
-      MerchantMedia media = Queryable.from(merchant.images() != null ? merchant.images() : Queryable.empty()).firstOrDefault();
+      MerchantMedia media = Queryable.from(merchantAttributes.images() != null ? merchantAttributes.images() : Queryable.empty()).firstOrDefault();
       if (media == null) return;
       //
       RxView.layoutChangeEvents(cover)
@@ -130,23 +130,23 @@ public class MerchantOffersInflater extends MerchantDataInflater {
    }
 
    private void setDescriptions() {
-      description.setText(Html.fromHtml(merchant.description()));
+      description.setText(Html.fromHtml(merchantAttributes.description()));
       description.setMovementMethod(new LinkMovementMethod());
       //
-      ViewUtils.setViewVisibility(descriptionHeader, TextUtils.isEmpty(merchant.description()) ? View.GONE : View.VISIBLE);
-      ViewUtils.setViewVisibility(disclaimer, merchant.disclaimers() != null ? View.VISIBLE : View.GONE);
+      ViewUtils.setViewVisibility(descriptionHeader, TextUtils.isEmpty(merchantAttributes.description()) ? View.GONE : View.VISIBLE);
+      ViewUtils.setViewVisibility(disclaimer, merchantAttributes.disclaimers() != null ? View.VISIBLE : View.GONE);
       //
       if (disclaimer.getVisibility() == View.GONE) return;
-      disclaimer.setFullText(TextUtils.join("\n\n", merchant.disclaimers()));
+      disclaimer.setFullText(TextUtils.join("\n\n", merchantAttributes.disclaimers()));
       disclaimer.setSimpleListener((view, collapsed) -> {
          if (!collapsed) scrollViewRoot.post(() -> scrollViewRoot.fullScroll(View.FOCUS_DOWN));
       });
    }
 
    private void setOffers() {
-      if (!MerchantHelper.merchantHasOffers(merchant)) return;
+      if (!merchantAttributes.hasOffers()) return;
       //
-      List<Offer> offers = merchant.offers();
+      List<Offer> offers = merchantAttributes.offers();
       for (Offer offer : offers) {
          addOffer(offer);
       }

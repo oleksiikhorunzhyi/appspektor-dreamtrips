@@ -7,7 +7,6 @@ import android.widget.TextView;
 
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.utils.ViewUtils;
-import com.worldventures.dreamtrips.modules.dtl.helper.MerchantHelper;
 
 import butterknife.InjectView;
 import io.techery.properratingbar.ProperRatingBar;
@@ -20,18 +19,18 @@ public class MerchantCommonDataInflater extends MerchantDataInflater {
    @InjectView(R.id.perks) TextView perks;
 
    @Override
-   protected void onMerchantApply() {
-      ViewUtils.setViewVisibility(coverStub, merchant.images() == null ? View.VISIBLE : View.GONE);
+   protected void onMerchantAttributesApply() {
+      ViewUtils.setViewVisibility(coverStub, merchantAttributes.images() == null ? View.VISIBLE : View.GONE);
       //
-      if (merchant.rating() != 0.0d) {
+      if (merchantAttributes.rating() != 0.0d) {
          ViewUtils.setViewVisibility(rating, View.VISIBLE);
-         rating.setRating(Double.valueOf(merchant.rating()).intValue());
+         rating.setRating(Double.valueOf(merchantAttributes.rating()).intValue());
       } else ViewUtils.setViewVisibility(rating, View.GONE);
       //
-      int offerMargin = MerchantHelper.merchantHasPoints(merchant) ? rootView.getResources().getDimensionPixelSize(R.dimen.perks_margin) : 0;
+      int offerMargin = merchantAttributes.hasPoints() ? rootView.getResources().getDimensionPixelSize(R.dimen.perks_margin) : 0;
       ((LinearLayout.LayoutParams) perks.getLayoutParams()).setMargins(offerMargin, 0, 0, 0);
       //
-      ViewUtils.setViewVisibility(perks, MerchantHelper.merchantHasPerks(merchant) ? View.VISIBLE : View.GONE);
-      ViewUtils.setViewVisibility(earnPointsBadge, MerchantHelper.merchantHasPoints(merchant) ? View.VISIBLE : View.GONE);
+      ViewUtils.setViewVisibility(perks, merchantAttributes.hasPerks() ? View.VISIBLE : View.GONE);
+      ViewUtils.setViewVisibility(earnPointsBadge, merchantAttributes.hasPoints() ? View.VISIBLE : View.GONE);
    }
 }

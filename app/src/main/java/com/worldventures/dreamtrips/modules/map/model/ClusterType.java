@@ -1,6 +1,7 @@
 package com.worldventures.dreamtrips.modules.map.model;
 
 import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.modules.dtl.helper.MerchantHelper;
 
 public enum ClusterType {
 
@@ -17,6 +18,6 @@ public enum ClusterType {
    }
 
    public static ClusterType from(DtlClusterItem clusterItem) {
-      return clusterItem.getMerchant().hasOffers() ? OFFERS : DININGS;
+      return clusterItem.getMerchant().asMerchantAttributes().hasOffers() ? OFFERS : DININGS;
    }
 }

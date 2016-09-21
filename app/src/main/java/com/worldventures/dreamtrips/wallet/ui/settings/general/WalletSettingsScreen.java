@@ -81,6 +81,7 @@ public class WalletSettingsScreen extends WalletFrameLayout<WalletSettingsPresen
       presenter.autoClearSmartCardClick();
    }
 
+   @OnClick(R.id.item_firmware_updates)
    protected void onFirmwareUpdateClick() {
       presenter.firmwareUpdatesClick();
    }

@@ -2,10 +2,13 @@ package com.worldventures.dreamtrips.wallet.ui.settings.general;
 
 import android.content.Context;
 import android.os.Parcelable;
+import android.widget.Toast;
 
 import com.techery.spares.module.Injector;
 import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.wallet.domain.entity.FirmwareInfo;
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCard;
+import com.worldventures.dreamtrips.wallet.service.FirmwareInteractor;
 import com.worldventures.dreamtrips.wallet.service.SmartCardInteractor;
 import com.worldventures.dreamtrips.wallet.service.command.ConnectSmartCardCommand;
 import com.worldventures.dreamtrips.wallet.service.command.SetLockStateCommand;
@@ -15,6 +18,7 @@ import com.worldventures.dreamtrips.wallet.ui.common.base.screen.WalletScreen;
 import com.worldventures.dreamtrips.wallet.ui.common.helper.OperationSubscriberWrapper;
 import com.worldventures.dreamtrips.wallet.ui.common.navigation.Navigator;
 import com.worldventures.dreamtrips.wallet.ui.settings.disabledefaultcard.WalletDisableDefaultCardPath;
+import com.worldventures.dreamtrips.wallet.ui.settings.firmware.uptodate.WalletUpToDateFirmwarePath;
 import com.worldventures.dreamtrips.wallet.ui.settings.removecards.WalletAutoClearCardsPath;
 import com.worldventures.dreamtrips.wallet.ui.wizard.pin.WizardPinSetupPath;
 import com.worldventures.dreamtrips.wallet.util.ThrowableHelper;
@@ -28,9 +32,12 @@ public class WalletSettingsPresenter extends WalletPresenter<WalletSettingsPrese
 
    @Inject Navigator navigator;
    @Inject SmartCardInteractor smartCardInteractor;
+   @Inject FirmwareInteractor firmwareInteractor;
    @Inject ThrowableHelper throwableHelper;
 
    private SmartCard smartCard;
+   private FirmwareInfo firmware;
+
 
    public WalletSettingsPresenter(Context context, Injector injector) {
       super(context, injector);
@@ -41,12 +48,21 @@ public class WalletSettingsPresenter extends WalletPresenter<WalletSettingsPrese
       super.attachView(view);
       observeSmartCardChanges();
 
-      // // TODO: 9/21/16 stub version
-      view.firmwareUpdateCount(0);
-
       observeStealthModeController(view);
       observeLockController(view);
       observeConnectionController(view);
+      observeFirmwareUpdates();
+   }
+
+   private void observeFirmwareUpdates() {
+      firmwareInteractor.firmwareInfoPipe()
+            .observeSuccessWithReplay()
+            .compose(bindViewIoToMainComposer())
+            .subscribe(command -> {
+               firmware = command.getResult();
+               // this solution is not like iOS. After server was deploy, update this criteria
+               getView().firmwareUpdateCount(firmware.byteSize() > 0 ? 1 : 0);
+            });
    }
 
    private void observeSmartCardChanges() {
@@ -167,7 +183,13 @@ public class WalletSettingsPresenter extends WalletPresenter<WalletSettingsPrese
    }
 
    public void firmwareUpdatesClick() {
-      // TODO: 9/21/16 need impl
+      // TODO: 9/21/16 firmware.byteSize() > 0 is a temp criteria
+      if (firmware != null && firmware.byteSize() > 0) {
+         // // TODO: 9/21/16 open update screen
+         Toast.makeText(getContext(), "Need implement", Toast.LENGTH_LONG).show();
+      } else {
+         navigator.go(new WalletUpToDateFirmwarePath());
+      }
    }
 
    public interface Screen extends WalletScreen {

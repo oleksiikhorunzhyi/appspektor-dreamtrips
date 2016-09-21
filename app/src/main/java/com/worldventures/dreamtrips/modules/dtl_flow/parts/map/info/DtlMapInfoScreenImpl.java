@@ -36,7 +36,7 @@ public class DtlMapInfoScreenImpl extends DtlLayout<DtlMapInfoScreen, DtlMapInfo
    @Override
    protected void onPostAttachToWindowView() {
       commonDataInflater = new MerchantSingleImageDataInflater();
-      categoryDataInflater = new MerchantMapInfoInflater();
+      categoryDataInflater = new MerchantMapInfoInflater(injector);
       commonDataInflater.setView(this);
       categoryDataInflater.setView(this);
       observeSize(this);

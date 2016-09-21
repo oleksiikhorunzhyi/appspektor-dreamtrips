@@ -14,10 +14,12 @@ import android.text.style.StyleSpan;
 import com.innahema.collections.query.queriables.Queryable;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.api.dtl.merchants.model.OfferType;
+import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.modules.common.model.ShareType;
 import com.worldventures.dreamtrips.modules.common.view.bundle.ShareBundle;
 import com.worldventures.dreamtrips.modules.dtl.helper.inflater.ImmutableMerchantAttributes;
 import com.worldventures.dreamtrips.modules.dtl.helper.inflater.MerchantAttributes;
+import com.worldventures.dreamtrips.modules.dtl.model.DistanceType;
 import com.worldventures.dreamtrips.modules.dtl.model.mapping.CoordinatesMapper;
 import com.worldventures.dreamtrips.modules.dtl.model.mapping.CurrencyMapper;
 import com.worldventures.dreamtrips.modules.dtl.model.mapping.DisclaimerMapper;
@@ -37,6 +39,8 @@ import com.worldventures.dreamtrips.modules.dtl.model.merchant.offer.Offer;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.operational_hour.DayOfWeek;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.operational_hour.OperationDay;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.operational_hour.OperationHours;
+import com.worldventures.dreamtrips.modules.settings.model.Setting;
+import com.worldventures.dreamtrips.modules.settings.util.SettingsFactory;
 import com.worldventures.dreamtrips.util.ImageTextItem;
 import com.worldventures.dreamtrips.util.ImageTextItemFactory;
 
@@ -160,6 +164,11 @@ public class MerchantHelper {
       return TextUtils.join("\n", workingHours);
    }
 
+   private static String provideDistance(Context context, MerchantAttributes merchantAttributes, DistanceType type) {
+      return merchantAttributes.distance() != null ? context.getString(R.string.distance_caption_format, merchantAttributes.distance(),
+            context.getString(type == DistanceType.MILES ? R.string.mi : R.string.km)) : "";
+   }
+
    /**
     * Formatting merchant operation hours to format %s - %s. Return empty string if formatting failed
     *
@@ -198,6 +207,13 @@ public class MerchantHelper {
 
    public static List<String> buildExpandedOffersIds(String id) {
       return id != null ? Collections.singletonList(id) : null;
+   }
+
+   public static DistanceType getDistanceTypeFromSettings(SnappyRepository db) {
+      final Setting distanceTypeSetting = Queryable.from(db.getSettings())
+            .filter(setting -> setting.getName().equals(SettingsFactory.DISTANCE_UNITS))
+            .firstOrDefault();
+      return DistanceType.provideFromSetting(distanceTypeSetting);
    }
 
 }

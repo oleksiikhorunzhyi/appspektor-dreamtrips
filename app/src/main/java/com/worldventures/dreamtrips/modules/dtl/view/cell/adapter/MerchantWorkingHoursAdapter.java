@@ -7,17 +7,18 @@ import com.techery.spares.adapter.BaseArrayListAdapter;
 import com.techery.spares.module.Injector;
 import com.techery.spares.ui.view.cell.AbstractCell;
 import com.worldventures.dreamtrips.modules.dtl.helper.MerchantHelper;
+import com.worldventures.dreamtrips.modules.dtl.helper.inflater.MerchantAttributes;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.Merchant;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.operational_hour.OperationDay;
 import com.worldventures.dreamtrips.modules.dtl.view.cell.WorkingHoursCell;
 
 public class MerchantWorkingHoursAdapter extends BaseArrayListAdapter<OperationDay> {
 
-   private final Merchant merchant;
+   private final MerchantAttributes merchantAttributes;
 
-   public MerchantWorkingHoursAdapter(Context context, Merchant merchant, Injector injector) {
+   public MerchantWorkingHoursAdapter(Context context, MerchantAttributes merchantAttributes, Injector injector) {
       super(context, injector);
-      this.merchant = merchant;
+      this.merchantAttributes = merchantAttributes;
    }
 
    @Override
@@ -38,6 +39,6 @@ public class MerchantWorkingHoursAdapter extends BaseArrayListAdapter<OperationD
    }
 
    private void bindMerchantHolder(WorkingHoursCell cell) {
-      cell.setTimezone(MerchantHelper.merchantTimeOffset(merchant.timeZone()));
+      cell.setTimezone(merchantAttributes.timeOffset());
    }
 }

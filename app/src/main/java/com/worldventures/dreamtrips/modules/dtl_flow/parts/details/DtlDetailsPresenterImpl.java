@@ -73,7 +73,7 @@ public class DtlDetailsPresenterImpl extends DtlPresenterImpl<DtlDetailsScreen, 
       super.onAttachedToWindow();
       //
       analyticsInteractor.dtlAnalyticsCommandPipe()
-            .send(new MerchantDetailsViewCommand(new MerchantDetailsViewEvent(merchant)));
+            .send(new MerchantDetailsViewCommand(new MerchantDetailsViewEvent(merchant.asMerchantAttributes())));
       //
       getView().setMerchant(merchant);
       preExpandOffers();
@@ -104,7 +104,7 @@ public class DtlDetailsPresenterImpl extends DtlPresenterImpl<DtlDetailsScreen, 
       if (visibility == View.VISIBLE) {
          getView().setupMap();
       }
-      if (visibility == View.VISIBLE && MerchantHelper.merchantHasOffers(merchant)) {
+      if (visibility == View.VISIBLE && merchant.asMerchantAttributes().hasOffers()) {
          processTransaction();
       }
    }
@@ -135,7 +135,7 @@ public class DtlDetailsPresenterImpl extends DtlPresenterImpl<DtlDetailsScreen, 
 
    private void tryHideSuggestMerchantButton() {
       boolean repToolsAvailable = featureManager.available(Feature.REP_SUGGEST_MERCHANT);
-      if (!MerchantHelper.merchantHasOffers(merchant)) {
+      if (!merchant.asMerchantAttributes().hasOffers()) {
          getView().setSuggestMerchantButtonAvailable(repToolsAvailable);
       } else processTransaction();
    }
@@ -223,7 +223,7 @@ public class DtlDetailsPresenterImpl extends DtlPresenterImpl<DtlDetailsScreen, 
       getView().setTransaction(dtlTransaction);
       //
       analyticsInteractor.dtlAnalyticsCommandPipe()
-            .send(DtlAnalyticsCommand.create(new CheckinEvent(merchant, location)));
+            .send(DtlAnalyticsCommand.create(new CheckinEvent(merchant.asMerchantAttributes(), location)));
    }
 
    @Override
@@ -234,7 +234,7 @@ public class DtlDetailsPresenterImpl extends DtlPresenterImpl<DtlDetailsScreen, 
    @Override
    public void onMerchantClick() {
       analyticsInteractor.dtlAnalyticsCommandPipe()
-            .send(DtlAnalyticsCommand.create(new SuggestMerchantEvent(merchant)));
+            .send(DtlAnalyticsCommand.create(new SuggestMerchantEvent(merchant.asMerchantAttributes())));
       getView().openSuggestMerchant(new MerchantIdBundle(merchant.id()));
    }
 
@@ -252,13 +252,13 @@ public class DtlDetailsPresenterImpl extends DtlPresenterImpl<DtlDetailsScreen, 
    @Override
    public void trackSharing(@ShareType String type) {
       analyticsInteractor.dtlAnalyticsCommandPipe()
-            .send(DtlAnalyticsCommand.create(ShareEventProvider.provideMerchantShareEvent(merchant, type)));
+            .send(DtlAnalyticsCommand.create(ShareEventProvider.provideMerchantShareEvent(merchant.asMerchantAttributes(), type)));
    }
 
    @Override
    public void trackPointEstimator() {
       analyticsInteractor.dtlAnalyticsCommandPipe()
-            .send(DtlAnalyticsCommand.create(new PointsEstimatorViewEvent(merchant)));
+            .send(DtlAnalyticsCommand.create(new PointsEstimatorViewEvent(merchant.asMerchantAttributes())));
    }
 
    @Override

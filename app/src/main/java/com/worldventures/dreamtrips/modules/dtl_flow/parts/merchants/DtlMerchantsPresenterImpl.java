@@ -85,7 +85,7 @@ public class DtlMerchantsPresenterImpl extends DtlPresenterImpl<DtlMerchantsScre
                merchantInteractor.thinMerchantsHttpPipe().send(ThinMerchantsCommand.load(location.getCoordinates()
                      .asAndroidLocation()));
                initialized = true;
-            });
+            }, Throwable::printStackTrace);
       //
       merchantInteractor.thinMerchantsHttpPipe()
             .observe()

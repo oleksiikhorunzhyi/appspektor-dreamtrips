@@ -5,7 +5,6 @@ import android.location.Location;
 import com.worldventures.dreamtrips.api.dtl.merchants.RatingHttpAction;
 import com.worldventures.dreamtrips.api.dtl.merchants.requrest.ImmutableRatingParams;
 import com.worldventures.dreamtrips.core.rx.RxView;
-import com.worldventures.dreamtrips.core.rx.composer.ImmediateComposer;
 import com.worldventures.dreamtrips.modules.common.model.ShareType;
 import com.worldventures.dreamtrips.modules.common.presenter.JobPresenter;
 import com.worldventures.dreamtrips.modules.common.view.ApiErrorView;
@@ -14,12 +13,10 @@ import com.worldventures.dreamtrips.modules.dtl.analytics.ShareEventProvider;
 import com.worldventures.dreamtrips.modules.dtl.analytics.TransactionRatingEvent;
 import com.worldventures.dreamtrips.modules.dtl.analytics.TransactionSuccessEvent;
 import com.worldventures.dreamtrips.modules.dtl.location.LocationDelegate;
-import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchant;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.Merchant;
 import com.worldventures.dreamtrips.modules.dtl.model.transaction.DtlTransactionResult;
 import com.worldventures.dreamtrips.modules.dtl.service.DtlMerchantInteractor;
 import com.worldventures.dreamtrips.modules.dtl.service.DtlTransactionInteractor;
-import com.worldventures.dreamtrips.modules.dtl.service.action.DtlMerchantByIdAction;
 import com.worldventures.dreamtrips.modules.dtl.service.action.DtlTransactionAction;
 
 import javax.inject.Inject;
@@ -68,7 +65,7 @@ public class DtlTransactionSucceedPresenter extends JobPresenter<DtlTransactionS
             .subscribe(action -> {
             }, apiErrorPresenter::handleError);
       analyticsInteractor.dtlAnalyticsCommandPipe()
-            .send(DtlAnalyticsCommand.create(new TransactionRatingEvent(merchant, stars)));
+            .send(DtlAnalyticsCommand.create(new TransactionRatingEvent(merchant.asMerchantAttributes(), stars)));
    }
 
    @Override
@@ -81,12 +78,13 @@ public class DtlTransactionSucceedPresenter extends JobPresenter<DtlTransactionS
             .compose(bindViewIoToMainComposer())
             .subscribe(transaction -> {
                view.setCongratulations(transaction.getDtlTransactionResult());
-               locationDelegate.requestLocationUpdate().compose(bindViewIoToMainComposer()).onErrorReturn(throwable -> {
-                  return new Location("");
-               }).subscribe(location -> {
-                  analyticsInteractor.dtlAnalyticsCommandPipe()
-                        .send(DtlAnalyticsCommand.create(new TransactionSuccessEvent(merchant, transaction, location)));
-               }, e -> {});
+               locationDelegate.requestLocationUpdate()
+                     .compose(bindViewIoToMainComposer())
+                     .onErrorReturn(throwable -> new Location(""))
+                     .subscribe(location -> {
+                        analyticsInteractor.dtlAnalyticsCommandPipe()
+                              .send(DtlAnalyticsCommand.create(new TransactionSuccessEvent(merchant.asMerchantAttributes(), transaction, location)));
+                     }, e -> {});
             }, apiErrorPresenter::handleError);
       bindApiPipe();
    }
@@ -99,7 +97,7 @@ public class DtlTransactionSucceedPresenter extends JobPresenter<DtlTransactionS
 
    public void trackSharing(@ShareType String type) {
       analyticsInteractor.dtlAnalyticsCommandPipe()
-            .send(DtlAnalyticsCommand.create(ShareEventProvider.provideTransactionSuccessShareEvent(merchant, type)));
+            .send(DtlAnalyticsCommand.create(ShareEventProvider.provideTransactionSuccessShareEvent(merchant.asMerchantAttributes(), type)));
    }
 
    public interface View extends ApiErrorView, RxView {

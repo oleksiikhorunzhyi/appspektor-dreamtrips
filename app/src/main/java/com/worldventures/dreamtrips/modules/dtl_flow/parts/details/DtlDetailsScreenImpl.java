@@ -114,9 +114,9 @@ public class DtlDetailsScreenImpl extends DtlLayout<DtlDetailsScreen, DtlDetails
    @Override
    public void setMerchant(Merchant merchant) {
       this.merchant = merchant;
-      merchantDataInflater.applyMerchant(merchant);
-      merchantInfoInflater.applyMerchant(merchant);
-      merchantHoursInflater.applyMerchant(merchant);
+      merchantDataInflater.applyMerchantAttributes(merchant.asMerchantAttributes());
+      merchantInfoInflater.applyMerchantAttributes(merchant.asMerchantAttributes());
+      merchantHoursInflater.applyMerchantAttributes(merchant.asMerchantAttributes());
       //
       toolbar.setTitle(merchant.displayName());
       //

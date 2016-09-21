@@ -6,19 +6,15 @@ import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.api.dtl.merchants.EstimationHttpAction;
 import com.worldventures.dreamtrips.api.dtl.merchants.requrest.ImmutableEstimationParams;
 import com.worldventures.dreamtrips.core.rx.RxView;
-import com.worldventures.dreamtrips.core.rx.composer.ImmediateComposer;
 import com.worldventures.dreamtrips.core.utils.DateTimeUtils;
 import com.worldventures.dreamtrips.modules.common.presenter.JobPresenter;
 import com.worldventures.dreamtrips.modules.common.view.ApiErrorView;
 import com.worldventures.dreamtrips.modules.dtl.analytics.DtlAnalyticsCommand;
 import com.worldventures.dreamtrips.modules.dtl.analytics.PointsEstimatorCalculateEvent;
-import com.worldventures.dreamtrips.modules.dtl.helper.MerchantHelper;
-import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchant;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.Merchant;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.offer.Currency;
 import com.worldventures.dreamtrips.modules.dtl.service.DtlMerchantInteractor;
 import com.worldventures.dreamtrips.modules.dtl.service.DtlTransactionInteractor;
-import com.worldventures.dreamtrips.modules.dtl.service.action.DtlMerchantByIdAction;
 
 import javax.inject.Inject;
 
@@ -42,7 +38,7 @@ public class DtlPointsEstimationPresenter extends JobPresenter<DtlPointsEstimati
    public void takeView(View view) {
       super.takeView(view);
       apiErrorPresenter.setView(view);
-      view.showCurrency(MerchantHelper.merchantDefaultCurrency(merchant));
+      view.showCurrency(merchant.asMerchantAttributes().defaultCurrency());
       bindApiJob();
    }
 
@@ -59,13 +55,13 @@ public class DtlPointsEstimationPresenter extends JobPresenter<DtlPointsEstimati
       if (!validateInput(userInput)) return;
       //
       analyticsInteractor.dtlAnalyticsCommandPipe()
-            .send(DtlAnalyticsCommand.create(new PointsEstimatorCalculateEvent(merchant)));
+            .send(DtlAnalyticsCommand.create(new PointsEstimatorCalculateEvent(merchant.asMerchantAttributes())));
       //
       transactionInteractor.estimatePointsActionPipe()
             .send(new EstimationHttpAction(merchant.id(), ImmutableEstimationParams.builder()
                   .billTotal(Double.valueOf(userInput))
                   .checkinTime(DateTimeUtils.currentUtcString())
-                  .currencyCode(MerchantHelper.merchantDefaultCurrency(merchant).code())
+                  .currencyCode(merchant.asMerchantAttributes().defaultCurrency().code())
                   .build()));
    }
 

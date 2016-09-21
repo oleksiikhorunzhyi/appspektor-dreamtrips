@@ -142,7 +142,7 @@ public class DtlScanQrCodePresenter extends JobPresenter<DtlScanQrCodePresenter.
 
    private void processTransactionResult(DtlEarnPointsAction action) {
       analyticsInteractor.dtlAnalyticsCommandPipe()
-            .send(DtlAnalyticsCommand.create(new ScanMerchantEvent(merchant, action.getTransaction()
+            .send(DtlAnalyticsCommand.create(new ScanMerchantEvent(merchant.asMerchantAttributes(), action.getTransaction()
                   .getMerchantToken())));
       view.hideProgress();
       //

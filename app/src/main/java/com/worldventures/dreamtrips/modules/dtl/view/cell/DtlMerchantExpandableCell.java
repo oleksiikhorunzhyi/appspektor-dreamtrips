@@ -94,24 +94,24 @@ public class DtlMerchantExpandableCell extends AbstractDelegateCell<ImmutableThi
    }
 
    private void setCategories() {
-      String categoriesString = MerchantHelper.getCategories(getModelObject());
+      String categoriesString = MerchantHelper.getCategories(getModelObject().asMerchantAttributes());
       ViewUtils.setTextOrHideView(merchantCategories, categoriesString);
    }
 
    private void setOperationalStatus() {
-      if (getModelObject().hasPoints() && getModelObject().hasOperationDays()) {
+      if (getModelObject().asMerchantAttributes().hasPoints() && getModelObject().asMerchantAttributes().hasOperationDays()) {
          ViewUtils.setViewVisibility(merchantOperationalStatus, View.VISIBLE);
-         Observable.fromCallable(() -> MerchantHelper.getOperationalTime(itemView.getContext(), getModelObject(), false))
+         Observable.fromCallable(() -> getModelObject().asMerchantAttributes().getOperationalTime(itemView.getContext(), false))
                .compose(RxLifecycle.bindView(itemView))
                .subscribe(merchantOperationalStatus::setText, ex -> merchantOperationalStatus.setVisibility(View.GONE));
       } else ViewUtils.setViewVisibility(merchantOperationalStatus, View.INVISIBLE);
    }
 
    private void setOffersSection() {
-      if (!getModelObject().hasOffers()) ViewUtils.setViewVisibility(offersContainer, View.GONE);
+      if (!getModelObject().asMerchantAttributes().hasOffers()) ViewUtils.setViewVisibility(offersContainer, View.GONE);
       else {
          ViewUtils.setViewVisibility(offersContainer, View.VISIBLE);
-         int perksNumber = getModelObject().offersCount(OfferType.PERK);
+         int perksNumber = getModelObject().asMerchantAttributes().offersCount(OfferType.PERK);
          setOfferBadges(perksNumber, getModelObject().offers().size() - perksNumber);
       }
    }

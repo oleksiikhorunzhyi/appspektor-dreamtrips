@@ -151,16 +151,24 @@ public class FeedItem<T extends FeedEntity> extends BaseEntity implements FeedEn
       super();
    }
 
-   public FeedItem(Parcel in) {
+   ///////////////////////////////////////////////////////////////////////////
+   // Parcelable
+   ///////////////////////////////////////////////////////////////////////////
+
+   protected FeedItem(Parcel in) {
       super(in);
       this.notificationId = in.readInt();
-      this.type = (Type) in.readSerializable();
-      this.action = (Action) in.readSerializable();
+      int tmpType = in.readInt();
+      this.type = tmpType == -1 ? null : Type.values()[tmpType];
+      int tmpAction = in.readInt();
+      this.action = tmpAction == -1 ? null : Action.values()[tmpAction];
       this.item = (T) in.readSerializable();
-      this.links = (Links) in.readSerializable();
-      this.createdAt = (Date) in.readSerializable();
-      this.readAt = (Date) in.readSerializable();
-      this.metaData = new MetaData(in);
+      this.links = in.readParcelable(Links.class.getClassLoader());
+      long tmpCreatedAt = in.readLong();
+      this.createdAt = tmpCreatedAt == -1 ? null : new Date(tmpCreatedAt);
+      long tmpReadAt = in.readLong();
+      this.readAt = tmpReadAt == -1 ? null : new Date(tmpReadAt);
+      this.metaData = in.readParcelable(MetaData.class.getClassLoader());
    }
 
    @Override
@@ -172,14 +180,14 @@ public class FeedItem<T extends FeedEntity> extends BaseEntity implements FeedEn
    @Override
    public void writeToParcel(Parcel dest, int flags) {
       super.writeToParcel(dest, flags);
-      dest.writeInt(notificationId);
-      dest.writeSerializable(type);
-      dest.writeSerializable(action);
-      dest.writeSerializable(item);
-      dest.writeSerializable(links);
-      dest.writeSerializable(createdAt);
-      dest.writeSerializable(readAt);
-      dest.writeParcelable(metaData, flags);
+      dest.writeInt(this.notificationId);
+      dest.writeInt(this.type == null ? -1 : this.type.ordinal());
+      dest.writeInt(this.action == null ? -1 : this.action.ordinal());
+      dest.writeSerializable(this.item);
+      dest.writeParcelable(this.links, flags);
+      dest.writeLong(this.createdAt != null ? this.createdAt.getTime() : -1);
+      dest.writeLong(this.readAt != null ? this.readAt.getTime() : -1);
+      dest.writeParcelable(this.metaData, flags);
    }
 
 

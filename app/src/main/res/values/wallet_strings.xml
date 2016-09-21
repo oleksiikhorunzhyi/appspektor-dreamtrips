@@ -174,5 +174,12 @@
    <string name="wallet_settings_last_version_title">flye SmartCard Update</string>
    <string name="wallet_settings_version">Version %s</string>
    <string name="wallet_settings_last_version">Your flye SmartCard is updated with latest version</string>
+   <string name="wallet_settings_latest_dt_version_required">The latest version of DreamTrips is required for this update.</string>
+   <string name="wallet_settings_update_dt_app">Update DreamTrips</string>
+   <string name="wallet_settings_update_size">%dKB</string>
+   <string name="wallet_settings_version_latest">Latest Version %s</string>
+   <string name="wallet_settings_version_current">Current Version %s</string>
+   <string name="wallet_settings_version_whats_new">What\'s new</string>
+   <string name="wallet_settings_download_install">Download and Install</string>
 
 </resources>

@@ -18,6 +18,7 @@ import com.worldventures.dreamtrips.wallet.ui.dashboard.detail.CardDetailsPath;
 import com.worldventures.dreamtrips.wallet.ui.dashboard.list.util.CardStackHeaderHolder;
 import com.worldventures.dreamtrips.wallet.ui.dashboard.list.util.CardStackViewModel;
 import com.worldventures.dreamtrips.wallet.ui.dashboard.list.util.ImmutableCardStackHeaderHolder;
+import com.worldventures.dreamtrips.wallet.ui.settings.firmware.newavailable.WalletNewFirmwareAvailablePath;
 import com.worldventures.dreamtrips.wallet.ui.settings.general.WalletSettingsPath;
 import com.worldventures.dreamtrips.wallet.ui.wizard.charging.WizardChargingPath;
 import com.worldventures.dreamtrips.wallet.util.CardListStackConverter;
@@ -113,6 +114,10 @@ public class CardListPresenter extends WalletPresenter<CardListPresenter.Screen,
       } else {
          getView().showAddCardErrorDialog();
       }
+   }
+
+   void firmwareAvailable() {
+      navigator.go(new WalletNewFirmwareAvailablePath());
    }
 
    private void observeChanges() {

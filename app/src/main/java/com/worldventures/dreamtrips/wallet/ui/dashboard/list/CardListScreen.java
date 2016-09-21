@@ -154,7 +154,6 @@ public class CardListScreen extends WalletFrameLayout<CardListPresenter.Screen, 
 
    @OnClick(R.id.firmware_available)
    protected void firmwareAvailableBtnClick() {
-      //// TODO: 20.09.16 add real navigation
+      getPresenter().firmwareAvailable();
    }
-
 }

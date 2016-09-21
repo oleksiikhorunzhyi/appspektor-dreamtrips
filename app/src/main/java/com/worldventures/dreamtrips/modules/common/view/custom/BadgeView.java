@@ -11,7 +11,6 @@ import android.os.Build;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
 import android.util.TypedValue;
-import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewGroup.LayoutParams;
@@ -34,16 +33,9 @@ import com.worldventures.dreamtrips.R;
  */
 public class BadgeView extends TextView {
 
-   public static final int POSITION_TOP_LEFT = 1;
-   public static final int POSITION_TOP_RIGHT = 2;
-   public static final int POSITION_BOTTOM_LEFT = 3;
-   public static final int POSITION_BOTTOM_RIGHT = 4;
-   public static final int POSITION_CENTER = 5;
-
    private static final int DEFAULT_MARGIN_DIP = 5;
    private static final int DEFAULT_LR_PADDING_DIP = 5;
    private static final int DEFAULT_CORNER_RADIUS_DIP = 8;
-   private static final int DEFAULT_POSITION = POSITION_TOP_RIGHT;
    private static final int DEFAULT_BADGE_COLOR = Color.parseColor("#CCFF0000"); //Color.RED;
    private static final int DEFAULT_TEXT_COLOR = Color.WHITE;
 
@@ -114,7 +106,6 @@ public class BadgeView extends TextView {
       this.targetTabIndex = tabIndex;
 
       // apply defaults
-      badgePosition = DEFAULT_POSITION;
       badgeMarginH = dipToPixels(DEFAULT_MARGIN_DIP);
       badgeMarginV = badgeMarginH;
 
@@ -162,7 +153,7 @@ public class BadgeView extends TextView {
          target = ((TabWidget) target).getChildTabViewAt(targetTabIndex);
          this.target = target;
 
-         ((ViewGroup) target).addView(container, new LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.FILL_PARENT));
+         ((ViewGroup) target).addView(container, new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT));
 
          this.setVisibility(View.GONE);
          container.addView(this);
@@ -276,7 +267,6 @@ public class BadgeView extends TextView {
             setBackground(badgeBg);
          }
       }
-      applyLayoutParams();
 
       if (animate) {
          this.startAnimation(anim);
@@ -344,40 +334,6 @@ public class BadgeView extends TextView {
       drawable.getPaint().setColor(badgeColor);
 
       return drawable;
-
-   }
-
-   //wtf ?? this method was write by stupid asshole
-   private void applyLayoutParams() {
-      // you should not muse about why FrameLayout.LayoutParams. I don't know.
-      FrameLayout.LayoutParams lp = (FrameLayout.LayoutParams) getLayoutParams();
-      if (lp == null) lp = new FrameLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
-      switch (badgePosition) {
-         case POSITION_TOP_LEFT:
-            lp.gravity = Gravity.LEFT | Gravity.TOP;
-            lp.setMargins(badgeMarginH, badgeMarginV, 0, 0);
-            break;
-         case POSITION_TOP_RIGHT:
-            lp.gravity = Gravity.RIGHT | Gravity.TOP;
-            lp.setMargins(0, badgeMarginV, badgeMarginH, 0);
-            break;
-         case POSITION_BOTTOM_LEFT:
-            lp.gravity = Gravity.LEFT | Gravity.BOTTOM;
-            lp.setMargins(badgeMarginH, 0, 0, badgeMarginV);
-            break;
-         case POSITION_BOTTOM_RIGHT:
-            lp.gravity = Gravity.RIGHT | Gravity.BOTTOM;
-            lp.setMargins(0, 0, badgeMarginH, badgeMarginV);
-            break;
-         case POSITION_CENTER:
-            lp.gravity = Gravity.CENTER;
-            lp.setMargins(0, 0, 0, 0);
-            break;
-         default:
-            break;
-      }
-
-      setLayoutParams(lp);
 
    }
 

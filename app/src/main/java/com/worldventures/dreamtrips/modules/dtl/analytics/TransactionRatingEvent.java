@@ -3,6 +3,7 @@ package com.worldventures.dreamtrips.modules.dtl.analytics;
 import com.worldventures.dreamtrips.core.utils.tracksystem.AdobeTracker;
 import com.worldventures.dreamtrips.core.utils.tracksystem.AnalyticsEvent;
 import com.worldventures.dreamtrips.core.utils.tracksystem.Attribute;
+import com.worldventures.dreamtrips.modules.dtl.helper.inflater.MerchantAttributes;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchant;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.Merchant;
 
@@ -14,8 +15,8 @@ public class TransactionRatingEvent extends MerchantAnalyticsAction {
 
    @Attribute("ratedexperience") final String rating;
 
-   public TransactionRatingEvent(Merchant merchant, int rating) {
-      super(merchant);
+   public TransactionRatingEvent(MerchantAttributes merchantAttributes, int rating) {
+      super(merchantAttributes);
       this.rating = String.valueOf(rating);
    }
 }

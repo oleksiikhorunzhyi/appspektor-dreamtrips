@@ -5,9 +5,8 @@ import com.worldventures.dreamtrips.api.dtl.merchants.model.OfferType;
 import com.worldventures.dreamtrips.core.utils.tracksystem.AdobeTracker;
 import com.worldventures.dreamtrips.core.utils.tracksystem.AnalyticsEvent;
 import com.worldventures.dreamtrips.core.utils.tracksystem.Attribute;
-import com.worldventures.dreamtrips.modules.dtl.helper.MerchantHelper;
+import com.worldventures.dreamtrips.modules.dtl.helper.inflater.MerchantAttributes;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchant;
-import com.worldventures.dreamtrips.modules.dtl.model.merchant.Merchant;
 
 @AnalyticsEvent(action = "local:Restaurant-Listings:Offer View", trackers = AdobeTracker.TRACKER_KEY)
 public class MerchantsListingExpandEvent extends MerchantAnalyticsAction {
@@ -20,11 +19,11 @@ public class MerchantsListingExpandEvent extends MerchantAnalyticsAction {
 
    @Attribute("arepointsavail") final String pointsAvailable;
 
-   public MerchantsListingExpandEvent(Merchant merchant) {
-      super(merchant);
-      perksAvailable = MerchantHelper.merchantHasPerks(merchant) ? "Yes" : "No";
-      pointsAvailable = MerchantHelper.merchantHasPoints(merchant) ? "Yes" : "No";
-      perksNumber = String.valueOf(MerchantHelper.merchantOffersCount(merchant, OfferType.PERK));
+   public MerchantsListingExpandEvent(MerchantAttributes merchantAttributes) {
+      super(merchantAttributes);
+      perksAvailable = merchantAttributes.hasPerks() ? "Yes" : "No";
+      pointsAvailable = merchantAttributes.hasPoints() ? "Yes" : "No";
+      perksNumber = String.valueOf(merchantAttributes.offersCount(OfferType.PERK));
    }
 
    public MerchantsListingExpandEvent(DtlMerchant merchant) {

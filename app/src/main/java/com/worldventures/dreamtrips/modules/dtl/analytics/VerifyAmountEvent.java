@@ -3,6 +3,7 @@ package com.worldventures.dreamtrips.modules.dtl.analytics;
 import com.worldventures.dreamtrips.core.utils.tracksystem.AdobeTracker;
 import com.worldventures.dreamtrips.core.utils.tracksystem.AnalyticsEvent;
 import com.worldventures.dreamtrips.core.utils.tracksystem.Attribute;
+import com.worldventures.dreamtrips.modules.dtl.helper.inflater.MerchantAttributes;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchant;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.Merchant;
 
@@ -18,9 +19,9 @@ public class VerifyAmountEvent extends MerchantAnalyticsAction {
 
    @Attribute("amount_cc") final String currencyCode;
 
-   public VerifyAmountEvent(Merchant merchant, String currencyCode, Double enteredAmount) {
-      super(merchant);
+   public VerifyAmountEvent(MerchantAttributes merchantAttributes, Double enteredAmount) {
+      super(merchantAttributes);
       this.enteredAmount = String.format(Locale.US, "%.2f", enteredAmount);
-      this.currencyCode = currencyCode;
+      this.currencyCode = merchantAttributes.defaultCurrency().code();
    }
 }

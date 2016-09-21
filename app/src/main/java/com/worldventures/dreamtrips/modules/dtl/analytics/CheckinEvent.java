@@ -5,9 +5,7 @@ import android.location.Location;
 import com.worldventures.dreamtrips.core.utils.tracksystem.AdobeTracker;
 import com.worldventures.dreamtrips.core.utils.tracksystem.AnalyticsEvent;
 import com.worldventures.dreamtrips.core.utils.tracksystem.Attribute;
-import com.worldventures.dreamtrips.modules.dtl.helper.MerchantHelper;
-import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchant;
-import com.worldventures.dreamtrips.modules.dtl.model.merchant.Merchant;
+import com.worldventures.dreamtrips.modules.dtl.helper.inflater.MerchantAttributes;
 
 import java.util.Locale;
 
@@ -23,10 +21,10 @@ public class CheckinEvent extends MerchantAnalyticsAction {
 
    @Attribute("coordinates") final String coordinates;
 
-   public CheckinEvent(Merchant merchant, Location location) {
-      super(merchant);
-      perksAvailable = MerchantHelper.merchantHasPerks(merchant) ? "Yes" : "No";
-      pointsAvailable = MerchantHelper.merchantHasPoints(merchant) ? "Yes" : "No";
+   public CheckinEvent(MerchantAttributes merchantAttributes, Location location) {
+      super(merchantAttributes);
+      perksAvailable = merchantAttributes.hasPerks() ? "Yes" : "No";
+      pointsAvailable = merchantAttributes.hasPoints() ? "Yes" : "No";
       coordinates = String.format(Locale.US, "%f,%f", location.getLatitude(), location.getLongitude());
    }
 }

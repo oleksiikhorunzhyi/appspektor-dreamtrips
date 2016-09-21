@@ -16,6 +16,16 @@ import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.api.dtl.merchants.model.OfferType;
 import com.worldventures.dreamtrips.modules.common.model.ShareType;
 import com.worldventures.dreamtrips.modules.common.view.bundle.ShareBundle;
+import com.worldventures.dreamtrips.modules.dtl.helper.inflater.ImmutableMerchantAttributes;
+import com.worldventures.dreamtrips.modules.dtl.helper.inflater.MerchantAttributes;
+import com.worldventures.dreamtrips.modules.dtl.model.mapping.CoordinatesMapper;
+import com.worldventures.dreamtrips.modules.dtl.model.mapping.CurrencyMapper;
+import com.worldventures.dreamtrips.modules.dtl.model.mapping.DisclaimerMapper;
+import com.worldventures.dreamtrips.modules.dtl.model.mapping.MerchantMediaMapper;
+import com.worldventures.dreamtrips.modules.dtl.model.mapping.OfferMapper;
+import com.worldventures.dreamtrips.modules.dtl.model.mapping.OperationDayMapper;
+import com.worldventures.dreamtrips.modules.dtl.model.mapping.QueryableMapper;
+import com.worldventures.dreamtrips.modules.dtl.model.mapping.ThinAttributeMapper;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchant;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchantAttribute;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.Merchant;
@@ -53,15 +63,9 @@ public class MerchantHelper {
       throw new UnsupportedOperationException("No instance");
    }
 
-   public static String getCategories(ThinMerchant merchant) {
-      if (merchant.categories() == null) return null;
-      List<String> categories =  Queryable.from(merchant.categories()).map(ThinAttribute::name).toList();
-      return TextUtils.join(", ", categories);
-   }
-
-   public static String getCategories(Merchant merchant) {
-      if (merchant.categories() == null) return null;
-      List<String> categories =  Queryable.from(merchant.categories()).map(ThinAttribute::name).toList();
+   public static String getCategories(MerchantAttributes merchantAttributes) {
+      if (merchantAttributes.categories() == null) return null;
+      List<String> categories =  Queryable.from(merchantAttributes.categories()).map(ThinAttribute::name).toList();
       return TextUtils.join(", ", categories);
    }
 
@@ -76,14 +80,6 @@ public class MerchantHelper {
 
    public static boolean contactCanBeResolved(ImageTextItem contact, Activity activity) {
       return contact.intent != null && contact.intent.resolveActivityInfo(activity.getPackageManager(), 0) != null;
-   }
-
-   public static Spannable getOperationalTime(Context context, ThinMerchant merchant, boolean includeTime) throws Exception {
-      return getOperationalTime(context, merchant.operationDays(),  merchant.timeOffset(), includeTime);
-   }
-
-   public static Spannable getOperationalTime(Context context, Merchant merchant) throws Exception {
-      return getOperationalTime(context, merchant.operationDays(), merchantTimeOffset(merchant.timeZone()), true);
    }
 
    public static boolean isOfferExpiringSoon(Offer offerData) {
@@ -194,7 +190,7 @@ public class MerchantHelper {
    public static ShareBundle buildShareBundle(Context context, Merchant merchant, @ShareType String type) {
       ShareBundle shareBundle = new ShareBundle();
       shareBundle.setShareType(type);
-      shareBundle.setText(context.getString(merchantHasPoints(merchant) ? R.string.dtl_details_share_title : R.string.dtl_details_share_title_without_points, merchant
+      shareBundle.setText(context.getString(merchant.asMerchantAttributes().hasPoints() ? R.string.dtl_details_share_title : R.string.dtl_details_share_title_without_points, merchant
             .displayName()));
       shareBundle.setShareUrl(merchant.website());
       // don't attach media if website is attached, this image will go nowhere
@@ -208,38 +204,6 @@ public class MerchantHelper {
 
    public static List<String> buildExpandedOffersIds(String id) {
       return id != null ? Collections.singletonList(id) : null;
-   }
-
-   public static boolean merchantHasPoints(Merchant merchant) {
-      return merchantOffersCount(merchant, OfferType.POINTS) > 0;
-   }
-
-   public static boolean merchantHasPerks(Merchant merchant) {
-      return merchantOffersCount(merchant, OfferType.PERK) > 0;
-   }
-
-   public static int merchantOffersCount(Merchant merchant, OfferType type) {
-      return !merchantHasOffers(merchant) ? 0 : Queryable.from(merchant.offers()).filter(offer -> offer.type() == type).count();
-   }
-
-   public static boolean merchantHasOffers(Merchant merchant) {
-      return merchant != null && merchant.offers() != null && !merchant.offers().isEmpty();
-   }
-
-   public static boolean merchantHasOperationDays(Merchant merchant) {
-      return merchant.operationDays() != null && !merchant.operationDays().isEmpty();
-   }
-
-   public static Currency merchantDefaultCurrency(Merchant merchant) {
-      return Queryable.from(merchant.currencies()).first(Currency::isDefault);
-   }
-
-   public static int merchantTimeOffset(String offset) {
-      try {
-         return Integer.valueOf(offset);
-      } catch (Exception e) {
-         return 0;
-      }
    }
 
 }

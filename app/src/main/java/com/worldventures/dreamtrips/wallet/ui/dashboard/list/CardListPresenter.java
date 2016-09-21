@@ -72,7 +72,8 @@ public class CardListPresenter extends WalletPresenter<CardListPresenter.Screen,
             .compose(bindViewIoToMainComposer())
             .map(it -> it.getResult())
             .subscribe(it -> {
-               if (it.versionCode() > 0) {
+               // TODO: 9/21/16 need contract between client and server
+               if (it.byteSize() > 0) {
                   getView().showFirmwareUpdateBtn();
                } else {
                   getView().hideFirmwareUpdateBtn();

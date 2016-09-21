@@ -347,10 +347,11 @@ public class BadgeView extends TextView {
 
    }
 
+   //wtf ?? this method was write by stupid asshole
    private void applyLayoutParams() {
-
-      FrameLayout.LayoutParams lp = new FrameLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
-
+      // you should not muse about why FrameLayout.LayoutParams. I don't know.
+      FrameLayout.LayoutParams lp = (FrameLayout.LayoutParams) getLayoutParams();
+      if (lp == null) lp = new FrameLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
       switch (badgePosition) {
          case POSITION_TOP_LEFT:
             lp.gravity = Gravity.LEFT | Gravity.TOP;

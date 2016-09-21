@@ -20,6 +20,7 @@ public class FirmwareInteractor {
    public FirmwareInteractor(@Named(JANET_WALLET) Janet janet) {
       firmwareInfo = janet.createPipe(FetchFirmwareInfoCommand.class, Schedulers.io());
    }
+
    public ActionPipe<FetchFirmwareInfoCommand> firmwareInfoPipe() {
       return firmwareInfo;
    }

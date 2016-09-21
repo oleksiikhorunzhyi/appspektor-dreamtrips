@@ -5,7 +5,9 @@ import android.os.Parcelable;
 
 import com.techery.spares.module.Injector;
 import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.wallet.domain.entity.FirmwareInfo;
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCard;
+import com.worldventures.dreamtrips.wallet.service.FirmwareInteractor;
 import com.worldventures.dreamtrips.wallet.service.SmartCardInteractor;
 import com.worldventures.dreamtrips.wallet.service.command.ConnectSmartCardCommand;
 import com.worldventures.dreamtrips.wallet.service.command.SetLockStateCommand;
@@ -28,6 +30,7 @@ public class WalletSettingsPresenter extends WalletPresenter<WalletSettingsPrese
 
    @Inject Navigator navigator;
    @Inject SmartCardInteractor smartCardInteractor;
+   @Inject FirmwareInteractor firmwareInteractor;
    @Inject ThrowableHelper throwableHelper;
 
    private SmartCard smartCard;
@@ -41,12 +44,21 @@ public class WalletSettingsPresenter extends WalletPresenter<WalletSettingsPrese
       super.attachView(view);
       observeSmartCardChanges();
 
-      // // TODO: 9/21/16 stub version
-      view.firmwareUpdateCount(0);
-
       observeStealthModeController(view);
       observeLockController(view);
       observeConnectionController(view);
+      observeFirmwareUpdates();
+   }
+
+   private void observeFirmwareUpdates() {
+      firmwareInteractor.firmwareInfoPipe()
+            .observeSuccessWithReplay()
+            .compose(bindViewIoToMainComposer())
+            .subscribe(command -> {
+               FirmwareInfo firmware = command.getResult();
+               // this solution is not like iOS. After server was deploy, update this criteria
+               getView().firmwareUpdateCount(firmware.byteSize() > 0 ? 1 : 0);
+            });
    }
 
    private void observeSmartCardChanges() {

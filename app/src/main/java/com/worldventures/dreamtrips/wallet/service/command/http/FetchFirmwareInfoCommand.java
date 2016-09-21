@@ -26,10 +26,10 @@ public class FetchFirmwareInfoCommand extends Command<FirmwareInfo> {
 
    private FirmwareInfo getMockInfo() {
       return ImmutableFirmwareInfo.builder()
+            .isCompatible(true)
             .byteSize((long) 10000)
             .releaseNotes("Amazing new update")
             .versionName("5.0.0")
-            .versionCode((long) 500)
             .build();
    }
 }

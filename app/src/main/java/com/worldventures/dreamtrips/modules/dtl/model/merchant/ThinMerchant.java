@@ -2,11 +2,10 @@ package com.worldventures.dreamtrips.modules.dtl.model.merchant;
 
 import com.esotericsoftware.kryo.DefaultSerializer;
 import com.esotericsoftware.kryo.serializers.CompatibleFieldSerializer;
-import com.innahema.collections.query.queriables.Queryable;
 import com.worldventures.dreamtrips.api.dtl.merchants.model.MerchantType;
-import com.worldventures.dreamtrips.api.dtl.merchants.model.OfferType;
 import com.worldventures.dreamtrips.api.dtl.merchants.model.PartnerStatus;
-import com.worldventures.dreamtrips.modules.dtl.model.merchant.offer.Currency;
+import com.worldventures.dreamtrips.modules.dtl.helper.inflater.MerchantAttributes;
+import com.worldventures.dreamtrips.modules.dtl.helper.inflater.MerchantAttributesFactory;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.offer.Offer;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.operational_hour.OperationDay;
 
@@ -24,51 +23,20 @@ public abstract class ThinMerchant implements Serializable {
    public abstract MerchantType type();
    public abstract PartnerStatus partnerStatus();
    public abstract String displayName();
-   public abstract @Nullable Coordinates coordinates();
-   public abstract @Nullable String city();
-   public abstract @Nullable String state();
-   public abstract @Nullable String country();
-   public abstract @Nullable Integer budget();
-   public abstract @Nullable Double rating();
-   public abstract @Nullable Double distance();
-   public abstract @Nullable List<Offer> offers();
-   public abstract @Nullable String timeZone();
-   public abstract @Nullable List<ThinAttribute> categories();
-   public abstract @Nullable List<MerchantMedia> images();
-   public abstract @Nullable List<OperationDay> operationDays();
+   @Nullable public abstract Coordinates coordinates();
+   @Nullable public abstract String city();
+   @Nullable public abstract String state();
+   @Nullable public abstract String country();
+   @Nullable public abstract Integer budget();
+   @Nullable public abstract Double rating();
+   @Nullable public abstract Double distance();
+   @Nullable public abstract List<Offer> offers();
+   @Nullable public abstract String timeZone();
+   @Nullable public abstract List<ThinAttribute> categories();
+   @Nullable public abstract List<MerchantMedia> images();
+   @Nullable public abstract List<OperationDay> operationDays();
 
-   @Value.Derived
-   public boolean hasPoints() {
-      return offersCount(OfferType.POINTS) > 0;
+   @Value.Derived public MerchantAttributes asMerchantAttributes() {
+      return MerchantAttributesFactory.create(this);
    }
-
-   @Value.Derived
-   public boolean hasPerks() {
-      return offersCount(OfferType.PERK) > 0;
-   }
-
-   @Value.Derived
-   public int offersCount(OfferType type) {
-      return !hasOffers() ? 0 : Queryable.from(offers()).filter(offer -> offer.type() == type).count();
-   }
-
-   @Value.Derived
-   public boolean hasOffers() {
-      return offers() != null && !offers().isEmpty();
-   }
-
-   @Value.Derived
-   public boolean hasOperationDays() {
-      return operationDays() != null && operationDays().isEmpty();
-   }
-
-   @Value.Derived
-   public int timeOffset() {
-      try {
-         return Integer.valueOf(timeZone());
-      } catch (Exception e) {
-         return 0;
-      }
-   }
-
 }

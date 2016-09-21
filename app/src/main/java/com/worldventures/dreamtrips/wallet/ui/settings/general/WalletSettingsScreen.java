@@ -26,6 +26,8 @@ public class WalletSettingsScreen extends WalletFrameLayout<WalletSettingsPresen
    @InjectView(R.id.stealth_mode_switcher) SwitchCompat stealthModeSwitcher;
    @InjectView(R.id.lock_switcher) SwitchCompat lockSwitcher;
    @InjectView(R.id.test_connection_switcher) SwitchCompat testConnectionSwitcher;
+   @InjectView(R.id.test_new_firmware_available) SwitchCompat testNewFirmwareAvailableSwitcher;
+   @InjectView(R.id.test_firmware_is_compatible) SwitchCompat testFirmwareIsCompatibleSwitcher;
 
    @InjectView(R.id.badgeFirmwareUpdates) BadgeView badgeFirmwareUpdates;
    @InjectView(R.id.disable_default_payment_card_label) TextView disableDefaultPaymentCardAfterLabel;
@@ -34,6 +36,8 @@ public class WalletSettingsScreen extends WalletFrameLayout<WalletSettingsPresen
    private Observable<Boolean> stealthModeSwitcherObservable;
    private Observable<Boolean> lockSwitcherObservable;
    private Observable<Boolean> testConnectionObservable;
+   private Observable<Boolean> testNewFirmwareAvailableObservable;
+   private Observable<Boolean> testFirmwareIsCompatibleObservable;
 
    private final AutoClearSmartCardItemProvider autoClearSmartCardItemProvider = new AutoClearSmartCardItemProvider();
    private final DisableDefaultCardItemProvider disableDefaultCardItemProvider = new DisableDefaultCardItemProvider();
@@ -54,6 +58,8 @@ public class WalletSettingsScreen extends WalletFrameLayout<WalletSettingsPresen
       lockSwitcherObservable = RxCompoundButton.checkedChanges(lockSwitcher);
       stealthModeSwitcherObservable = RxCompoundButton.checkedChanges(stealthModeSwitcher);
       testConnectionObservable = RxCompoundButton.checkedChanges(testConnectionSwitcher);
+      testNewFirmwareAvailableObservable = RxCompoundButton.checkedChanges(testNewFirmwareAvailableSwitcher);
+      testFirmwareIsCompatibleObservable = RxCompoundButton.checkedChanges(testFirmwareIsCompatibleSwitcher);
    }
 
    @NonNull
@@ -122,6 +128,16 @@ public class WalletSettingsScreen extends WalletFrameLayout<WalletSettingsPresen
    }
 
    @Override
+   public void testNewFirmwareAvailable(boolean available) {
+      testNewFirmwareAvailableSwitcher.setChecked(available);
+   }
+
+   @Override
+   public void testFirmwareIsCompatible(boolean compatible) {
+      testFirmwareIsCompatibleSwitcher.setChecked(compatible);
+   }
+
+   @Override
    public Observable<Boolean> stealthModeStatus() {
       return stealthModeSwitcherObservable;
    }
@@ -136,6 +152,15 @@ public class WalletSettingsScreen extends WalletFrameLayout<WalletSettingsPresen
       return testConnectionObservable;
    }
 
+   @Override
+   public Observable<Boolean> testNewFirmwareAvailable() {
+      return testNewFirmwareAvailableObservable;
+   }
+
+   @Override
+   public Observable<Boolean> testFirmwareIsCompatible() {
+      return testFirmwareIsCompatibleObservable;
+   }
 
    @Override
    public OperationScreen provideOperationDelegate() {

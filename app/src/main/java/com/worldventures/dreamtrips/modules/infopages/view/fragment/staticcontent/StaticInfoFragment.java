@@ -10,6 +10,7 @@ import android.net.http.SslError;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Parcelable;
+import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
@@ -34,6 +35,7 @@ import com.worldventures.dreamtrips.BuildConfig;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.rx.RxBaseFragmentWithArgs;
+import com.worldventures.dreamtrips.core.utils.HeaderProvider;
 import com.worldventures.dreamtrips.core.utils.ViewUtils;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.common.view.dialog.MessageDialogFragment;
@@ -60,6 +62,7 @@ public abstract class StaticInfoFragment<T extends WebViewFragmentPresenter, P e
    protected static final String AUTHORIZATION_HEADER_KEY = "Authorization";
 
    @Inject protected StaticPageProvider provider;
+   @Inject protected HeaderProvider headerProvider;
    @Inject ScreenChangedEventDelegate screenChangedEventDelegate;
 
    @InjectView(R.id.web_view) protected VideoEnabledWebView webView;
@@ -556,6 +559,23 @@ public abstract class StaticInfoFragment<T extends WebViewFragmentPresenter, P e
       }
 
       @Override
+      public void load(String url) {
+         if (!isLoading && savedState == null) {
+            webView.loadUrl(url, getHeaders());
+         }
+      }
+
+      @NonNull
+      private Map<String, String> getHeaders() {
+         Map<String, String> additionalHeaders = new HashMap<>();
+         HeaderProvider.Header appPlatformHeader = headerProvider.getAppPlatformHeader();
+         additionalHeaders.put(appPlatformHeader.getName(), appPlatformHeader.getValue());
+         HeaderProvider.Header appVersionHeader = headerProvider.getAppVersionHeader();
+         additionalHeaders.put(appVersionHeader.getName(), appVersionHeader.getValue());
+         return additionalHeaders;
+      }
+
+      @Override
       public void afterCreateView(View rootView) {
          super.afterCreateView(rootView);
          webView.getSettings().setLoadWithOverviewMode(true);
@@ -595,6 +615,23 @@ public abstract class StaticInfoFragment<T extends WebViewFragmentPresenter, P e
       @Override
       protected String getURL() {
          return provider.getEnrollRepUrl();
+      }
+
+      @Override
+      public void load(String url) {
+         if (!isLoading && savedState == null) {
+            webView.loadUrl(url, getHeaders());
+         }
+      }
+
+      @NonNull
+      private Map<String, String> getHeaders() {
+         Map<String, String> additionalHeaders = new HashMap<>();
+         HeaderProvider.Header appPlatformHeader = headerProvider.getAppPlatformHeader();
+         additionalHeaders.put(appPlatformHeader.getName(), appPlatformHeader.getValue());
+         HeaderProvider.Header appVersionHeader = headerProvider.getAppVersionHeader();
+         additionalHeaders.put(appVersionHeader.getName(), appVersionHeader.getValue());
+         return additionalHeaders;
       }
 
       @Override

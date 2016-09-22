@@ -5,18 +5,14 @@
    <color name="wallet_color_background_dark">#006699</color>
    <color name="wallet_color_primary">#00b3e3</color>
    <color name="wallet_color_primary_dark">#006699</color>
+   <color name="wallet_color_inactive_controller">#999999</color>
+
    <color name="wallet_color_background_dark_with_alpha">#CC006699</color>
    <color name="wallet_color_text_color_toolbar">#005e92</color>
    <color name="wallet_color_round_check_box_text">#666666</color>
    <color name="wallet_color_gray_hint_text_color">#9a9a9a</color>
    <color name="wallet_color_gray_textview_text_color">#999999</color>
    <color name="wallet_color_white_text_with_alpha">#99FFFFFF</color>
-
-   <color name="wallet_wizard_button_enable">@color/wallet_color_primary</color>
-   <color name="wallet_wizard_button_disable">#9900b3e3</color>
-   <color name="wallet_wizard_button_pressed">#008eb4</color>
-
-   <color name="wallet_detail_inactive_edit_text">#999999</color>
 
    <style name="WalletTheme" parent="Theme.AppCompat.Light.DarkActionBar">
       <item name="colorPrimary">@color/wallet_color_primary</item>
@@ -31,12 +27,14 @@
       <!-- Active thumb color & Active track color(30% transparency) -->
       <item name="colorControlActivated">@color/wallet_color_background_light</item>
       <item name="colorControlHighlight">@color/wallet_color_background_light</item>
-      <item name="colorButtonNormal">@color/wallet_color_background_light</item>
+
+      <item name="colorAccent">@color/wallet_color_primary_dark</item>
+      <item name="colorButtonNormal">@color/wallet_button_colors</item>
 
       <!-- Inactive thumb color -->
-      <item name="colorSwitchThumbNormal">#888888</item>
+      <item name="colorSwitchThumbNormal">@color/wallet_color_inactive_controller</item>
       <!-- Inactive track color(30% transparency) -->
-      <item name="android:colorForeground">#888888</item>
+      <item name="android:colorForeground">@color/wallet_color_inactive_controller</item>
    </style>
 
    <!--wizard-->
@@ -79,7 +77,7 @@
       <item name="android:textViewStyle">@style/WalletTheme.GrayTextView</item>
 
       <item name="colorControlActivated">@color/wallet_color_primary_dark</item>
-      <item name="colorControlNormal">@color/wallet_detail_inactive_edit_text</item>
+      <item name="colorControlNormal">@color/wallet_color_inactive_controller</item>
    </style>
 
    <style name="WalletTheme.Wizard.ToolbarTheme" parent="ThemeOverlay.AppCompat.Dark">

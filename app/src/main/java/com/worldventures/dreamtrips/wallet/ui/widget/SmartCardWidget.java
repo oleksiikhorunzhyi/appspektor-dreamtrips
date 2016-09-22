@@ -57,6 +57,7 @@ public class SmartCardWidget extends FrameLayout {
       bindConnectionStatus(smartCard.connectionStatus() == SmartCard.ConnectionStatus.CONNECTED);
       //// TODO: 21.09.16 temporary, until we know how to check it
       if (firmwareInfo.byteSize() > 0) {
+         badgeView.setText("1"); // maybe we should show count of available firmware versions. Need contract with the server
          badgeView.show();
       } else {
          badgeView.hide();

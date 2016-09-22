@@ -145,7 +145,7 @@ public class TripListPresenter extends Presenter<TripListPresenter.View> {
 
    public void addItemToBucket(TripModel tripModel) {
       trackAction(tripModel, TrackingHelper.ATTRIBUTE_ADD_TO_BUCKET_LIST);
-      if (tripModel.isInBucketList()) {
+      if (!tripModel.isInBucketList()) {
          bucketInteractor.createPipe()
                .createObservableResult(new CreateBucketItemHttpAction(ImmutableBucketBodyImpl.builder()
                      .type("trip")
@@ -154,7 +154,9 @@ public class TripListPresenter extends Presenter<TripListPresenter.View> {
                .map(CreateBucketItemHttpAction::getResponse)
                .compose(bindViewToMainComposer())
                .subscribe(bucketItem -> {
-                  view.notifyItemAddedToBucket(bucketItem);
+                  tripModel.setInBucketList(true);
+                  view.dataSetChanged();
+                  view.showItemAddedToBucketList(bucketItem);
                }, throwable -> {
                   tripModel.setInBucketList(!tripModel.isInBucketList());
                   handleError(throwable);
@@ -212,7 +214,7 @@ public class TripListPresenter extends Presenter<TripListPresenter.View> {
 
       boolean isSearchOpened();
 
-      void notifyItemAddedToBucket(BucketItem bucketItem);
+      void showItemAddedToBucketList(BucketItem bucketItem);
 
       void moveToTripDetails(TripModel tripModel);
    }

@@ -122,6 +122,7 @@ public class FeedHashtagPresenter<T extends FeedHashtagPresenter.View> extends J
 
    public void onRefresh() {
       if (!TextUtils.isEmpty(query)) {
+         hashtagSuggestions.clear();
          view.startLoading();
          interactor.getRefreshFeedsByHashtagsPipe().send(new FeedByHashtagCommand.Refresh(query, FEEDS_PER_PAGE));
       }
@@ -197,7 +198,9 @@ public class FeedHashtagPresenter<T extends FeedHashtagPresenter.View> extends J
    private void subscribeSuggestions() {
       view.bindUntilStop(interactor.getSuggestionPipe().observe().compose(new IoToMainComposer<>()))
             .subscribe(new ActionStateSubscriber<HashtagSuggestionCommand>().onSuccess(hashtagSuggestionCommand -> {
-               view.onSuggestionsReceived(hashtagSuggestionCommand.getFullQueryText(), hashtagSuggestionCommand.getResult());
+               hashtagSuggestions.clear();
+               hashtagSuggestions.addAll(hashtagSuggestionCommand.getResult());
+               view.onSuggestionsReceived(hashtagSuggestionCommand.getFullQueryText(), hashtagSuggestions);
                view.hideSuggestionProgress();
             }).onFail((hashtagSuggestionCommand, throwable) -> {
                Timber.e(throwable, "");

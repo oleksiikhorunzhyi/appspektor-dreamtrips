@@ -260,7 +260,7 @@ public class TripListFragment extends RxBaseFragment<TripListPresenter> implemen
    }
 
    @Override
-   public void notifyItemAddedToBucket(BucketItem bucketItem) {
+   public void showItemAddedToBucketList(BucketItem bucketItem) {
       new SweetDialogHelper().notifyItemAddedToBucket(getActivity(), bucketItem);
    }
 

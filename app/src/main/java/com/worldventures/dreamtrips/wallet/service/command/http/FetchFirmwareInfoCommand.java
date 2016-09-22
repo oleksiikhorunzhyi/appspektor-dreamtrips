@@ -27,6 +27,7 @@ public class FetchFirmwareInfoCommand extends Command<FirmwareInfo> implements I
 
    @Override
    protected void run(CommandCallback<FirmwareInfo> callback) throws Throwable {
+      Thread.sleep(1500); // for simulate server response
       callback.onSuccess(getMockInfo());
    }
 

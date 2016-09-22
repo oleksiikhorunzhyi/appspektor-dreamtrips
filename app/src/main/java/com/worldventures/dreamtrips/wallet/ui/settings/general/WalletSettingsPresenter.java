@@ -2,7 +2,6 @@ package com.worldventures.dreamtrips.wallet.ui.settings.general;
 
 import android.content.Context;
 import android.os.Parcelable;
-import android.widget.Toast;
 
 import com.techery.spares.module.Injector;
 import com.worldventures.dreamtrips.R;
@@ -20,6 +19,7 @@ import com.worldventures.dreamtrips.wallet.ui.common.base.screen.WalletScreen;
 import com.worldventures.dreamtrips.wallet.ui.common.helper.OperationSubscriberWrapper;
 import com.worldventures.dreamtrips.wallet.ui.common.navigation.Navigator;
 import com.worldventures.dreamtrips.wallet.ui.settings.disabledefaultcard.WalletDisableDefaultCardPath;
+import com.worldventures.dreamtrips.wallet.ui.settings.firmware.newavailable.WalletNewFirmwareAvailablePath;
 import com.worldventures.dreamtrips.wallet.ui.settings.firmware.uptodate.WalletUpToDateFirmwarePath;
 import com.worldventures.dreamtrips.wallet.ui.settings.removecards.WalletAutoClearCardsPath;
 import com.worldventures.dreamtrips.wallet.ui.wizard.pin.WizardPinSetupPath;
@@ -180,15 +180,15 @@ public class WalletSettingsPresenter extends WalletPresenter<WalletSettingsPrese
       navigator.goBack();
    }
 
-   public void resetPin() {
+   void resetPin() {
       navigator.go(new WizardPinSetupPath(smartCard, WizardPinSetupPath.Action.RESET));
    }
 
-   public void disableDefaultCardTimer() {
+   void disableDefaultCardTimer() {
       navigator.go(new WalletDisableDefaultCardPath());
    }
 
-   public void autoClearSmartCardClick() {
+   void autoClearSmartCardClick() {
       navigator.go(new WalletAutoClearCardsPath());
    }
 
@@ -220,11 +220,11 @@ public class WalletSettingsPresenter extends WalletPresenter<WalletSettingsPrese
       );
    }
 
-   public void firmwareUpdatesClick() {
+   void firmwareUpdatesClick() {
       // TODO: 9/21/16 firmware.byteSize() > 0 is a temp criteria
       if (firmware != null && firmware.byteSize() > 0) {
          // // TODO: 9/21/16 open update screen
-         Toast.makeText(getContext(), "Need implement", Toast.LENGTH_LONG).show();
+         navigator.go(new WalletNewFirmwareAvailablePath());
       } else {
          navigator.go(new WalletUpToDateFirmwarePath());
       }

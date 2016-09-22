@@ -22,6 +22,8 @@ import com.worldventures.dreamtrips.wallet.ui.settings.removecards.WalletAutoCle
 import com.worldventures.dreamtrips.wallet.ui.wizard.barcode.WizardScanBarcodePresenter;
 import com.worldventures.dreamtrips.wallet.ui.wizard.card_details.AddCardDetailsPresenter;
 import com.worldventures.dreamtrips.wallet.ui.wizard.charging.WizardChargingPresenter;
+import com.worldventures.dreamtrips.wallet.ui.wizard.edit_card.EditCardDetailsPresenter;
+import com.worldventures.dreamtrips.wallet.ui.wizard.edit_card.EditCardDetailsScreen;
 import com.worldventures.dreamtrips.wallet.ui.wizard.finish.WalletPinIsSetPresenter;
 import com.worldventures.dreamtrips.wallet.ui.wizard.manual.WizardManualInputPresenter;
 import com.worldventures.dreamtrips.wallet.ui.wizard.pin.WizardPinSetupPresenter;
@@ -60,6 +62,8 @@ import dagger.Provides;
             AddCardDetailsPresenter.class,
             WizardPinSetupPresenter.class,
             WizardWelcomePresenter.class,
+            EditCardDetailsPresenter.class,
+            EditCardDetailsScreen.class,
             WalletAutoClearCardsPresenter.class,
             WalletDisableDefaultCardPresenter.class,
             WalletUpToDateFirmwarePresenter.class,

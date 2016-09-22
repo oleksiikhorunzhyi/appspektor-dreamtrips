@@ -583,7 +583,7 @@ public class SnappyRepositoryImpl implements SnappyRepository {
    }
 
    @Override
-   public void setFeedbackTypes(ArrayList<FeedbackType> types) {
+   public void setFeedbackTypes(List<FeedbackType> types) {
       clearAllForKey(FEEDBACK_TYPES);
       putList(FEEDBACK_TYPES, types);
    }

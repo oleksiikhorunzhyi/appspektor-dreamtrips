@@ -15,6 +15,8 @@ public interface DtlMapPresenter extends DtlPresenter<DtlMapScreen, ViewState.EM
 
    void onMarkerClick(ThinMerchant merchant);
 
+   void onMarkerFocused();
+
    void onLoadMerchantsClick(LatLng cameraPosition);
 
    void onListClicked();

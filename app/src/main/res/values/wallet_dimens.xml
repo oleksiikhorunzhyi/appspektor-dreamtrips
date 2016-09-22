@@ -2,16 +2,14 @@
 <resources>
    <dimen name="wallet_photo_rounded_corner_radius">10dp</dimen>
    <dimen name="wallet_common_screen_padding">24dp</dimen>
-   <dimen name="wallet_bank_card_default_width">300dp</dimen>
-   <dimen name="wallet_bank_card_default_height">150dp</dimen>
    <dimen name="wallet_bank_card_default_bank_info_container_height">45dp</dimen>
-   <dimen name="wallet_smart_card_default_height">195dp</dimen>
-   <dimen name="wallet_smart_card_default_width">320dp</dimen>
+
+   <dimen name="wallet_card_height">200dp</dimen>
+   <dimen name="wallet_card_margin">20dp</dimen>
 
    <dimen name="wallet_round_check_box_left_padding">10dp</dimen>
    <dimen name="wallet_round_check_box_text_size">16sp</dimen>
 
-   <dimen name="wallet_details_screen_card_width">300dp</dimen>
    <dimen name="wallet_details_screen_component_margin_top">15dp</dimen>
    <dimen name="wallet_details_screen_address_margin_top">10dp</dimen>
    <dimen name="wallet_details_screen_address_text_size">16sp</dimen>

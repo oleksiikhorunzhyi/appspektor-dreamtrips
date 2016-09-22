@@ -9,5 +9,7 @@
          android:id="@+id/bank_card"
          android:layout_width="wrap_content"
          android:layout_height="wrap_content"
+         android:layout_marginLeft="@dimen/wallet_card_margin"
+         android:layout_marginRight="@dimen/wallet_card_margin"
          />
 </LinearLayout>

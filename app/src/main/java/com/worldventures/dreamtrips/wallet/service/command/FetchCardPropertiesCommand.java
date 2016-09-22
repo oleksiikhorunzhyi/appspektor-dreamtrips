@@ -16,6 +16,8 @@ import io.techery.janet.smartcard.action.records.GetClearRecordsDelayAction;
 import io.techery.janet.smartcard.action.settings.GetDisableDefaultCardDelayAction;
 import io.techery.janet.smartcard.action.settings.GetStealthModeAction;
 import io.techery.janet.smartcard.action.support.GetBatteryLevelAction;
+import io.techery.janet.smartcard.action.support.GetFirmwareVersionAction;
+import io.techery.janet.smartcard.action.support.GetSDKVersionAction;
 import rx.Observable;
 
 @CommandAction
@@ -32,6 +34,10 @@ public class FetchCardPropertiesCommand extends Command<SmartCard> implements In
    @Override
    protected void run(CommandCallback<SmartCard> callback) throws Throwable {
       Observable.zip(
+            janet.createPipe(GetSDKVersionAction.class)
+                  .createObservableResult(new GetSDKVersionAction()),
+            janet.createPipe(GetFirmwareVersionAction.class)
+                  .createObservableResult(new GetFirmwareVersionAction()),
             janet.createPipe(GetBatteryLevelAction.class)
                   .createObservableResult(new GetBatteryLevelAction()),
             janet.createPipe(GetLockDeviceStatusAction.class)
@@ -42,9 +48,11 @@ public class FetchCardPropertiesCommand extends Command<SmartCard> implements In
                   .createObservableResult(new GetDisableDefaultCardDelayAction()),
             janet.createPipe(GetClearRecordsDelayAction.class)
                   .createObservableResult(new GetClearRecordsDelayAction()),
-            (getBatteryLevelAction, getLockDeviceStatusAction, getStealthModeAction, getDisableDefaultCardDelayAction,
-                  getClearRecordsDelayAction) ->
+            (sdkVersionAction, firmwareVersionAction, getBatteryLevelAction, getLockDeviceStatusAction,
+                  getStealthModeAction, getDisableDefaultCardDelayAction, getClearRecordsDelayAction) ->
                   ImmutableSmartCard.builder().from(smartCard)
+                        .sdkVersion(sdkVersionAction.version)
+                        .firmWareVersion(firmwareVersionAction.version)
                         .batteryLevel(Integer.parseInt(getBatteryLevelAction.level))
                         .lock(getLockDeviceStatusAction.locked)
                         .stealthMode(getStealthModeAction.enabled)

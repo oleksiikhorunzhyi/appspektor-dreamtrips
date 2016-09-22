@@ -1,27 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.worldventures.dreamtrips.wallet.ui.wizard.termsandconditionals.WizardTermsScreen style="@style/WalletTheme.Wizard.RootStyle"
-      xmlns:android="http://schemas.android.com/apk/res/android"
+<com.worldventures.dreamtrips.wallet.ui.wizard.termsandconditionals.WizardTermsScreen xmlns:android="http://schemas.android.com/apk/res/android"
       xmlns:app="http://schemas.android.com/apk/res-auto"
-      android:background="@color/white"
+      android:layout_width="match_parent"
+      android:layout_height="match_parent"
       android:gravity="center"
       android:orientation="vertical"
-      android:theme="@style/WalletTheme.Wizard"
+      android:theme="@style/WalletTheme"
       >
 
    <android.support.v7.widget.Toolbar
          android:id="@+id/toolbar"
          android:layout_width="match_parent"
          android:layout_height="?attr/actionBarSize"
-         android:theme="@style/WalletTheme.Wizard.ToolbarTheme"
-         app:navigationIcon="@drawable/blue_arrow"
          app:title="@string/wallet_terms_and_conditions_header"
-         app:titleTextColor="@color/wallet_terms_text_color"
          />
 
    <LinearLayout
          android:layout_width="match_parent"
          android:layout_height="match_parent"
          android:layout_marginTop="?attr/actionBarSize"
+         android:background="@color/white"
          android:orientation="vertical"
          >
 

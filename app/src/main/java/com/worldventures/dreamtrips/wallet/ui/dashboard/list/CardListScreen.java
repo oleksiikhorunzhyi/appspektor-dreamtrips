@@ -4,6 +4,7 @@ import android.content.Context;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.annotation.NonNull;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -40,6 +41,7 @@ public class CardListScreen extends WalletFrameLayout<CardListPresenter.Screen, 
 
    @InjectView(R.id.bank_card_list) RecyclerView bankCardList;
    @InjectView(R.id.empty_card_view) View emptyCardListView;
+   @InjectView(R.id.add_card_button) FloatingActionButton addCardButton;
    @InjectView(R.id.firmware_available) View firmwareAvailableView;
    @InjectView(R.id.toolbar) Toolbar toolbar;
 
@@ -76,6 +78,11 @@ public class CardListScreen extends WalletFrameLayout<CardListPresenter.Screen, 
       adapter.clear();
       adapter.addItems(result);
       emptyCardListView.setVisibility(adapter.getCount() == 1 ? VISIBLE : GONE);
+   }
+
+   @Override
+   public void enableAddCardButton(boolean enabled) {
+      addCardButton.setEnabled(enabled);
    }
 
    @Override

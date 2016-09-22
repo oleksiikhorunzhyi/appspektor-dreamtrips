@@ -1,6 +1,7 @@
 package com.worldventures.dreamtrips.modules.mapping;
 
 import com.worldventures.dreamtrips.modules.feed.model.converter.FeedCommentConverter;
+import com.worldventures.dreamtrips.modules.infopages.model.FeedbackTypeConverter;
 import com.worldventures.dreamtrips.modules.mapping.converter.Converter;
 import com.worldventures.dreamtrips.modules.mapping.converter.FlagConverter;
 import com.worldventures.dreamtrips.modules.mapping.converter.ShortProfilesConverter;
@@ -92,6 +93,12 @@ public class MappingModule {
    @Singleton
    Converter provideContentItemConverter() {
       return new ContentItemConverter();
+   }
+
+   @Provides(type = Provides.Type.SET)
+   @Singleton
+   Converter provideFeedbackTypeConverter() {
+      return new FeedbackTypeConverter();
    }
 
    @Provides

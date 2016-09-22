@@ -5,7 +5,7 @@
       xmlns:tools="http://schemas.android.com/tools"
       android:layout_width="match_parent"
       android:layout_height="match_parent"
-      android:theme="@style/WalletTheme.Settings"
+      android:theme="@style/WalletTheme"
       >
 
    <android.support.v7.widget.Toolbar
@@ -187,6 +187,7 @@
                      android:layout_width="match_parent"
                      android:layout_height="wrap_content"
                      android:padding="@dimen/spacing_normal"
+                     android:theme="@style/WalletTheme"
                      >
 
                   <TextView

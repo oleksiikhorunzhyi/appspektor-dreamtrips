@@ -51,6 +51,7 @@ public class CreateAndConnectToCardCommand extends Command<Void> implements Inje
    private SmartCard createSmartCard() {
       return ImmutableSmartCard.builder()
             .deviceName(DUMMY_DEVICE_NAME)
+            .serialNumber(smartCardDetails.serialNumber())
             .deviceAddress(smartCardDetails.bleAddress())
             .smartCardId(smartCardId)
             .cardStatus(SmartCard.CardStatus.DRAFT)

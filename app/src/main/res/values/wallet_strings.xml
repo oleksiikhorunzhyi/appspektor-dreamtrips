@@ -8,7 +8,7 @@
 
    <string name="wallet">Wallet</string>
    <string name="wallet_dashboard_title">My flye SmartCard</string>
-   <string name="wallet_wizard_title">Set Up Smart Card</string>
+   <string name="wallet_wizard_title">flye SmartCard</string>
    <string name="wallet_input_data_is_incorrect">Input data is incorrect</string>
    <string name="wallet_bank_card_good_thru">GOOD THRU</string>
    <string name="wallet_smart_card_is_disconnected">Smart Card is disconnected</string>
@@ -21,10 +21,9 @@
    <string name="wallet_wizard_card_alias_setup">Setup card name</string>
 
    <!--edit profile-->
-   <string name="wallet_edit_profile_subtitle">Set your display photo and name you would like on your card.</string>
-   <string name="wallet_edit_profile_change_photo">Edit photo</string>
+   <string name="wallet_wizard__welcom_screen_title">Set Up flye SmartCard</string>
+   <string name="wallet_edit_profile_subtitle">Set the display photo and name you would like on your card.</string>
    <string name="wallet_edit_profile_name_hint">Enter your name</string>
-   <string name="wallet_edit_profile_avatar_description">Your photo</string>
    <string name="wallet_edit_profile_progress_dialog">Upload information to Smart Card</string>
    <string name="wallet_edit_profile_success_dialog">Information was uploaded</string>
    <string name="wallet_edit_profile_name_format_title">Wrong name format!</string>
@@ -32,8 +31,8 @@
    <string name="wallet_edit_profile_avatar_not_chosen">Please, choose your photo for the Smart Card</string>
 
    <!--pin setup-->
-   <string name="wallet_wizard_setup_pin_title">Set Touch PIN</string>
-   <string name="wallet_wizard_setup_pin_header">Set your PIN on the touch panel of the smart card with 4 swipe and tap motions</string>
+   <string name="wallet_wizard_setup_pin_title">Set PIN</string>
+   <string name="wallet_wizard_setup_pin_header">Set your PIN on the touch panel\nwith 4 tap motions.</string>
    <string name="wallet_wizard_setup_new_pin_header">Set new PIN on the touch panel of the smart card with 4 swipe and tap motions</string>
    <string name="wallet_wizard_setup_progress">Set your PIN on the touch panel of the smart card…</string>
    <string name="wallet_wizard_setup_error">Something went wrong…\nPls, try again!</string>
@@ -45,14 +44,14 @@
 
    <!--splash-->
    <string name="wallet_wizard_splash_title1">Get ready to soar</string>
-   <string name="wallet_wizard_splash_title2">Before we set up your new flyes smart card, you must agree to the Terms and Conditions.</string>
-   <string name="wallet_wizard_splash_review_btn">Review Terms</string>
+   <string name="wallet_wizard_splash_title2">Next, you must agree to\nthe Terms and Conditions.</string>
+   <string name="wallet_wizard_splash_review_btn">Terms and Conditions</string>
 
-   <string name="wallet_wizard_scan_proposal">Scan the back of your flye&#8482; smart card to begin</string>
+   <string name="wallet_wizard_scan_proposal">Scan the back of your flye&#8482; smart card to set up</string>
    <string name="wallet_wizard_scan_start_btn">Scan Card</string>
-   <string name="wallet_wizard_scan_title">Scan Card</string>
+   <string name="wallet_wizard_scan_title">Scan flye SmartCard</string>
 
-   <string name="wallet_wizard_scan_barcode_header">Position the flye™ card barcode in the viewfinder box.</string>
+   <string name="wallet_wizard_scan_barcode_header">Position the flye™ SmartCard barcode in the viewfinder box.</string>
    <string name="wallet_wizard_scan_barcode_footer_title">Not scanning?</string>
    <string name="wallet_wizard_scan_barcode_footer_btn">Input ID manually</string>
    <string name="waller_wizard_scan_barcode_progress_label">Connecting to smartcard…</string>
@@ -63,7 +62,7 @@
 
    <!--scid manual-->
    <string name="wallet_wizard_manual_input_header">Enter the 10-digit number located below barcode</string>
-   <string name="wallet_wizard_manual_input_title">flye™ Card Number</string>
+   <string name="wallet_wizard_manual_input_title">flye SmartCard Number</string>
    <string name="wallet_wizard_scid_validation_error">Wrong SCID Number</string>
    <string name="wallet_bank_name_text_holder">Bank Name</string>
 
@@ -89,6 +88,7 @@
    <string name="wallet_card_settings_unlock_error">Unlock is not supported</string>
 
    <!--card list-->
+   <string name="wallet_card_list_title">My flye SmartCard</string>
    <string name="dashboard_default_card_stack_title">Default</string>
    <string name="wallet_wizard_default_card_label">DEFAULT</string>
    <string name="wallet_wizard_empty_card_list_label">Add credit and debit cards\nto your flye\u2122 SmartCard</string>

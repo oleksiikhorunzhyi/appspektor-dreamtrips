@@ -353,6 +353,9 @@ class SmartCardInteractorSpec : BaseSpec({
          whenever(mockedSmartCard.deviceName()).thenReturn("device name")
          whenever(mockedSmartCard.deviceAddress()).thenReturn("device address")
          whenever(mockedSmartCard.cardName()).thenReturn("card name")
+         whenever(mockedSmartCard.sdkVersion()).thenReturn("1.0.0")
+         whenever(mockedSmartCard.firmWareVersion()).thenReturn("1.0.0")
+         whenever(mockedSmartCard.serialNumber()).thenReturn("")
 
          return mockedSmartCard
       }

@@ -1,29 +1,28 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<com.worldventures.dreamtrips.wallet.ui.wizard.profile.WizardEditProfileScreen style="@style/WalletTheme.Wizard.RootStyle"
-      xmlns:android="http://schemas.android.com/apk/res/android"
+<com.worldventures.dreamtrips.wallet.ui.wizard.profile.WizardEditProfileScreen xmlns:android="http://schemas.android.com/apk/res/android"
       xmlns:app="http://schemas.android.com/apk/res-auto"
       xmlns:tools="http://schemas.android.com/tools"
+      android:layout_width="match_parent"
+      android:layout_height="match_parent"
+      android:theme="@style/WalletTheme"
       >
 
    <android.support.v7.widget.Toolbar
          android:id="@+id/toolbar"
          android:layout_width="match_parent"
          android:layout_height="?attr/actionBarSize"
-         android:theme="@style/WalletTheme.Wizard.ToolbarTheme"
-         app:navigationIcon="@drawable/back_icon"
-         app:title="@string/wallet_wizard_title"
+         app:title="@string/wallet_wizard__welcom_screen_title"
          />
 
    <RelativeLayout
-         style="@style/WalletTheme.Wizard.ContentContainerStyle"
+         style="@style/WalletTheme.ContentContainerStyle"
          android:layout_marginTop="?attr/actionBarSize"
-         android:theme="@style/WalletTheme.Wizard"
          >
 
       <TextView
             android:id="@+id/text_description"
-            style="@style/WalletTheme.Wizard.HeaderTextStyle"
+            style="@style/WalletTheme.HeaderTextStyle"
             android:text="@string/wallet_edit_profile_subtitle"
             />
 
@@ -40,23 +39,19 @@
                android:id="@+id/photo_preview"
                android:layout_width="match_parent"
                android:layout_height="match_parent"
-               android:contentDescription="@string/wallet_edit_profile_avatar_description"
-               app:placeholderImage="@drawable/ic_avatar_placeholder"
-               app:failureImage="@drawable/ic_avatar_placeholder"
                android:src="@drawable/ic_dt_launcher"
+               app:failureImage="@drawable/ic_avatar_placeholder"
+               app:placeholderImage="@drawable/ic_avatar_placeholder"
                />
 
-         <TextView
-               android:layout_width="match_parent"
-               android:layout_height="wrap_content"
-               android:layout_gravity="bottom"
-               android:background="#ee333333"
-               android:gravity="center"
-               android:padding="8dp"
-               android:textAllCaps="true"
-               android:text="@string/wallet_edit_profile_change_photo"
-               android:textAppearance="?android:attr/textAppearanceMedium"
+         <ImageView
+               android:layout_width="36dp"
+               android:layout_height="36dp"
+               android:layout_gravity="right|bottom"
+               android:layout_marginRight="5dp"
+               android:src="@drawable/ic_edit_photo"
                />
+
       </FrameLayout>
 
       <EditText
@@ -65,11 +60,12 @@
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
             android:layout_marginBottom="136dp"
-            android:hint="@string/wallet_edit_profile_name_hint"
-            android:inputType="textPersonName"
-            android:imeOptions="actionDone"
-            android:maxLength="@integer/wallet_wizard_user_full_name_length"
             android:drawableRight="@drawable/ic_wallet_pencil"
+            android:hint="@string/wallet_edit_profile_name_hint"
+            android:imeOptions="actionDone"
+            android:inputType="textPersonName"
+            android:maxLength="@integer/wallet_wizard_user_full_name_length"
+            android:textColor="#666666"
             tools:text="Shirley Temple"
             />
 

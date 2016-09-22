@@ -28,18 +28,17 @@ public class CardStackCell extends AbstractDelegateCell<CardStackViewModel, Card
    @InjectView(R.id.cardStack) RecyclerView cardStack;
    BaseDelegateAdapter adapter;
 
-   private static final double VISIBLE_SCALE = 0.6;
+   private static final double VISIBLE_SCALE = 0.64;
 
    public CardStackCell(View view) {
       super(view);
 
-      int dimension = itemView.getResources().getDimensionPixelSize(R.dimen.wallet_bank_card_default_height);
+      int dimension = itemView.getResources().getDimensionPixelSize(R.dimen.wallet_card_height);
       cardStack.addItemDecoration(new OverlapDecoration((int) (dimension * VISIBLE_SCALE * -1)));
       LinearLayoutManager layoutManager = new LinearLayoutManager(itemView.getContext());
       layoutManager.setAutoMeasureEnabled(true);
       cardStack.setLayoutManager(layoutManager);
       cardStack.setNestedScrollingEnabled(false);
-
    }
 
    @Override

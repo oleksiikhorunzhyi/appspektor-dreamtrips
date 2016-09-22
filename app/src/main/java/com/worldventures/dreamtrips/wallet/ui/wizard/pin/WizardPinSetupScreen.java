@@ -1,15 +1,11 @@
 package com.worldventures.dreamtrips.wallet.ui.wizard.pin;
 
 import android.content.Context;
-import android.net.Uri;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.support.v7.widget.Toolbar;
-import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.widget.TextView;
 
-import com.facebook.drawee.view.SimpleDraweeView;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletFrameLayout;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.OperationScreen;
@@ -21,7 +17,6 @@ import butterknife.OnClick;
 public class WizardPinSetupScreen extends WalletFrameLayout<WizardPinSetupPresenter.Screen, WizardPinSetupPresenter, WizardPinSetupPath> implements WizardPinSetupPresenter.Screen {
 
    @InjectView(R.id.toolbar) Toolbar toolbar;
-   @InjectView(R.id.profile_proto) SimpleDraweeView profilePhotoView;
    @InjectView(R.id.header_text_view) TextView headerTextView;
    @InjectView(R.id.button_next) TextView nextButton;
    private DialogOperationScreen dialogOperationScreen;
@@ -73,9 +68,4 @@ public class WizardPinSetupScreen extends WalletFrameLayout<WizardPinSetupPresen
       return dialogOperationScreen;
    }
 
-   @Override
-   public void setUserAvatar(@Nullable String fileUri) {
-      if (TextUtils.isEmpty(fileUri)) return;
-      profilePhotoView.setImageURI(Uri.parse(fileUri));
-   }
 }

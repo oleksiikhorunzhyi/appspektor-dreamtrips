@@ -21,6 +21,21 @@ public abstract class SmartCard {
    public abstract String deviceAddress();
 
    @Value.Default
+   public String sdkVersion() {
+      return "";
+   }
+
+   @Value.Default
+   public String firmWareVersion() {
+      return "";
+   }
+
+   @Value.Default
+   public String serialNumber() {
+      return "";
+   }
+
+   @Value.Default
    public ConnectionStatus connectionStatus() {
       return ConnectionStatus.DISCONNECTED;
    }

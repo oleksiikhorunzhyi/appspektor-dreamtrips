@@ -139,9 +139,12 @@ public class CardListPresenter extends WalletPresenter<CardListPresenter.Screen,
 
       getView().notifySmartCardChanged(cardStackHeaderHolder);
       getView().showRecordsInfo(cards);
+      getView().enableAddCardButton(cardLoaded != MAX_CARD_LIMIT);
    }
 
    public interface Screen extends WalletScreen {
+      void enableAddCardButton(boolean enabled);
+
       void showRecordsInfo(List<CardStackViewModel> result);
 
       void notifySmartCardChanged(CardStackHeaderHolder smartCard);

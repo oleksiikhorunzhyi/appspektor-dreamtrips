@@ -4,6 +4,7 @@ import android.location.Location
 import com.google.android.gms.maps.model.LatLng
 import com.nhaarman.mockito_kotlin.*
 import com.worldventures.dreamtrips.AssertUtil.assertActionSuccess
+import com.worldventures.dreamtrips.core.janet.SessionActionPipeCreator
 import com.worldventures.dreamtrips.modules.dtl.helper.DtlLocationHelper
 import com.worldventures.dreamtrips.modules.dtl.location.LocationDelegate
 import com.worldventures.dreamtrips.modules.dtl.model.DistanceType
@@ -43,7 +44,8 @@ class DtlFilterMerchantInteractorSpec : DtlBaseMerchantSpec({
       whenever(db.settings).thenReturn(listOf(testDistanceSetting))
       whenever(db.lastSelectedOffersOnlyToggle).thenReturn(false)
       whenever(db.amenities).thenReturn(emptyList())
-      filterMerchantInteractor = DtlFilterMerchantInteractor(merchantInteractor, locationInteractor, locationDelegate, janet)
+      filterMerchantInteractor = DtlFilterMerchantInteractor(merchantInteractor, locationInteractor, locationDelegate,
+       SessionActionPipeCreator(janet))
    }
 
    it("should init filter") {

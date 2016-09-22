@@ -4,9 +4,10 @@ import com.nhaarman.mockito_kotlin.*
 import com.worldventures.dreamtrips.AssertUtil.assertActionSuccess
 import com.worldventures.dreamtrips.BaseSpec
 import com.worldventures.dreamtrips.api.dtl.merchants.model.Merchant
-import com.worldventures.dreamtrips.api.dtl.merchants.model.ThinAttribute
 import com.worldventures.dreamtrips.api.dtl.merchants.model.MerchantType
 import com.worldventures.dreamtrips.api.dtl.merchants.model.PartnerStatus
+import com.worldventures.dreamtrips.api.dtl.merchants.model.ThinAttribute
+import com.worldventures.dreamtrips.core.janet.SessionActionPipeCreator
 import com.worldventures.dreamtrips.core.repository.SnappyRepository
 import com.worldventures.dreamtrips.core.utils.tracksystem.AnalyticsInteractor
 import com.worldventures.dreamtrips.janet.StubServiceWrapper
@@ -52,14 +53,14 @@ abstract class DtlBaseMerchantSpec(spekBody: DescribeBody.() -> Unit) : BaseSpec
                .addService(httpStubWrapper.wrapCache())
                .build()
 
-         locationInteractor = DtlLocationInteractor(janet)
-         merchantInteractor = DtlMerchantInteractor(janet, janet, locationInteractor)
+         locationInteractor = DtlLocationInteractor(SessionActionPipeCreator(janet))
+         merchantInteractor = DtlMerchantInteractor(SessionActionPipeCreator(janet), locationInteractor)
          db = spy()
 
          commandDaggerService.registerProvider(Janet::class.java) { janet }
          commandDaggerService.registerProvider(DtlMerchantInteractor::class.java) { merchantInteractor }
          commandDaggerService.registerProvider(SnappyRepository::class.java) { db }
-         commandDaggerService.registerProvider(AnalyticsInteractor::class.java) { AnalyticsInteractor(janet) }
+         commandDaggerService.registerProvider(AnalyticsInteractor::class.java) { AnalyticsInteractor(SessionActionPipeCreator(janet)) }
 
          //mock merchant properties
          whenever(merchant.id()).thenReturn(MERCHANT_ID)

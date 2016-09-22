@@ -1,21 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.worldventures.dreamtrips.wallet.ui.wizard.success.WalletSuccessScreen style="@style/WalletTheme.Wizard.RootStyle"
-      xmlns:android="http://schemas.android.com/apk/res/android"
-      xmlns:app="http://schemas.android.com/apk/res-auto"
+<com.worldventures.dreamtrips.wallet.ui.wizard.success.WalletSuccessScreen xmlns:android="http://schemas.android.com/apk/res/android"
       xmlns:tools="http://schemas.android.com/tools"
-      android:theme="@style/WalletTheme.Wizard"
+      android:layout_width="match_parent"
+      android:layout_height="match_parent"
+      android:theme="@style/WalletTheme"
       >
 
    <android.support.v7.widget.Toolbar
          android:id="@+id/toolbar"
          android:layout_width="match_parent"
          android:layout_height="?attr/actionBarSize"
-         android:theme="@style/WalletTheme.Wizard.ToolbarTheme"
-         app:navigationIcon="@drawable/back_icon"
          />
 
    <RelativeLayout
-         style="@style/WalletTheme.Wizard.ContentContainerStyle"
+         style="@style/WalletTheme.ContentContainerStyle"
          android:layout_marginTop="?attr/actionBarSize"
          >
 
@@ -26,13 +24,15 @@
             android:layout_above="@+id/success_label_text_view"
             android:layout_centerHorizontal="true"
             android:layout_marginBottom="16dp"
-            android:src="@drawable/ic_wallet_success"
+            android:background="@drawable/ic_pin_is_set_circle"
+            android:padding="20dp"
+            android:src="@drawable/ic_pin_is_set_check"
             tools:ignore="ContentDescription"
             />
 
       <TextView
             android:id="@+id/success_label_text_view"
-            style="@style/WalletTheme.Wizard.HeaderTextStyle"
+            style="@style/WalletTheme.HeaderTextStyle"
             android:layout_centerVertical="true"
             android:textAppearance="?android:attr/textAppearanceLarge"
             tools:text="@string/wallet_wizard_pin_is_set"

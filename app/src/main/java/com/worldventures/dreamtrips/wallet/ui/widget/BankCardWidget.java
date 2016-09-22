@@ -70,7 +70,7 @@ public class BankCardWidget extends FrameLayout {
    }
 
    public void setAsDefault(boolean isDefault) {
-      defaultCardLabel.setVisibility(isDefault ? VISIBLE : GONE);
+      defaultCardLabel.setVisibility(isDefault ? VISIBLE : INVISIBLE);
    }
 
 }

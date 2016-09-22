@@ -5,7 +5,7 @@ import com.worldventures.dreamtrips.core.flow.path.MasterDetailPath;
 import com.worldventures.dreamtrips.core.flow.path.StyledPath;
 import com.worldventures.dreamtrips.core.flow.util.Layout;
 
-@Layout(R.layout.wallet_wizard_charging_screen)
+@Layout(R.layout.screen_wallet_wizard_charging)
 public class WizardChargingPath extends StyledPath {
 
    @Override

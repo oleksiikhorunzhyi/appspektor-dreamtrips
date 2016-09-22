@@ -34,7 +34,6 @@ public class CardStackHeaderCell extends AbstractDelegateCell<CardStackHeaderHol
    }
 
    private void setupToolbar() {
-      toolbar.setTitle(R.string.wallet);
       toolbar.setNavigationOnClickListener(it -> cellDelegate.onNavigateButtonClick());
    }
 

@@ -2,6 +2,8 @@ package com.worldventures.dreamtrips.wallet.ui.widget;
 
 import android.content.Context;
 import android.net.Uri;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -47,7 +49,7 @@ public class SmartCardWidget extends FrameLayout {
       setVisibility(INVISIBLE);
    }
 
-   public void bindCard(SmartCard smartCard, FirmwareInfo firmwareInfo) {
+   public void bindCard(@NonNull SmartCard smartCard, @Nullable FirmwareInfo firmwareInfo) {
       String url = smartCard.userPhoto();
       bankLabel.setText(smartCard.cardName());
       if (url != null) scAvatar.setImageURI(Uri.parse(url));
@@ -56,7 +58,7 @@ public class SmartCardWidget extends FrameLayout {
       bindLockStatus(smartCard.lock());
       bindConnectionStatus(smartCard.connectionStatus() == SmartCard.ConnectionStatus.CONNECTED);
       //// TODO: 21.09.16 temporary, until we know how to check it
-      if (firmwareInfo.byteSize() > 0) {
+      if (firmwareInfo != null && firmwareInfo.byteSize() > 0) {
          badgeView.setText("1"); // maybe we should show count of available firmware versions. Need contract with the server
          badgeView.show();
       } else {

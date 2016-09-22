@@ -43,10 +43,10 @@ public class WalletNewFirmwareAvailablePresenter extends WalletPresenter<WalletN
    }
 
    private void observeLatestAvailableFirmware() {
-      firmwareInteractor.firmwareInfoPipe().observeWithReplay()
+      firmwareInteractor.firmwareInfoPipe().observeSuccessWithReplay()
             .compose(bindViewIoToMainComposer())
-            .subscribe(commandActionState -> {
-               FirmwareInfo firmwareInfo = commandActionState.action.getResult();
+            .subscribe(command -> {
+               FirmwareInfo firmwareInfo = command.getResult();
                getView().availableFirmwareInfo(firmwareInfo);
                if (!firmwareInfo.isCompatible()) {
                   getView().requiredLatestDtAppVersion();

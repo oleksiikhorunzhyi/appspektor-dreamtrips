@@ -1,6 +1,8 @@
 package com.worldventures.dreamtrips.wallet.ui.dashboard.list;
 
 import android.content.Context;
+import android.os.Bundle;
+import android.os.Parcelable;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
@@ -34,6 +36,8 @@ import cn.pedant.SweetAlert.SweetAlertDialog;
 
 public class CardListScreen extends WalletFrameLayout<CardListPresenter.Screen, CardListPresenter, CardListPath> implements CardListPresenter.Screen {
 
+   private static final String KEY_SHOW_UPDATE_BUTTON_STATE = "CardListScreen#KEY_SHOW_UPDATE_BUTTON_STATE";
+
    @InjectView(R.id.bank_card_list) RecyclerView bankCardList;
    @InjectView(R.id.empty_card_view) View emptyCardListView;
    @InjectView(R.id.firmware_available) View firmwareAvailableView;
@@ -57,7 +61,6 @@ public class CardListScreen extends WalletFrameLayout<CardListPresenter.Screen, 
 
    @Override
    protected void onPostAttachToWindowView() {
-      firmwareAvailableView.setVisibility(GONE);
       toolbar.setNavigationOnClickListener(it -> presenter.navigationClick());
 
       setupCardStackList();
@@ -101,7 +104,22 @@ public class CardListScreen extends WalletFrameLayout<CardListPresenter.Screen, 
 
    @Override
    public void showFirmwareUpdateBtn() {
+      if (firmwareAvailableView.getVisibility() == VISIBLE) return;
       firmwareAvailableView.setVisibility(VISIBLE);
+   }
+
+   @Override
+   protected Parcelable onSaveInstanceState() {
+      Bundle state = (Bundle) super.onSaveInstanceState();
+      state.putInt(KEY_SHOW_UPDATE_BUTTON_STATE, firmwareAvailableView.getVisibility());
+      return state;
+   }
+
+   @Override
+   protected void onRestoreInstanceState(Parcelable state) {
+      //noinspection all
+      firmwareAvailableView.setVisibility(((Bundle) state).getInt(KEY_SHOW_UPDATE_BUTTON_STATE, GONE));
+      super.onRestoreInstanceState(state);
    }
 
    private void setupCardStackList() {

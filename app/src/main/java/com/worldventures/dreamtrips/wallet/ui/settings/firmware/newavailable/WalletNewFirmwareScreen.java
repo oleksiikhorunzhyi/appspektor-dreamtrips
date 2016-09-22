@@ -1,6 +1,7 @@
 package com.worldventures.dreamtrips.wallet.ui.settings.firmware.newavailable;
 
 import android.content.Context;
+import android.support.annotation.NonNull;
 import android.support.v7.widget.Toolbar;
 import android.util.AttributeSet;
 import android.widget.Button;
@@ -43,6 +44,7 @@ public class WalletNewFirmwareScreen
       toolbar.setNavigationOnClickListener(v -> getPresenter().goBack());
    }
 
+   @NonNull
    @Override
    public WalletNewFirmwareAvailablePresenter createPresenter() {
       return new WalletNewFirmwareAvailablePresenter(getContext(), getInjector());

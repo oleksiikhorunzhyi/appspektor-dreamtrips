@@ -4,17 +4,16 @@
       xmlns:app="http://schemas.android.com/apk/res-auto"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
-      android:background="@drawable/wallet_wizard_background"
       android:orientation="vertical"
       android:paddingBottom="@dimen/spacing_normal"
+      android:theme="@style/WalletTheme"
       >
 
    <android.support.v7.widget.Toolbar
          android:id="@+id/toolbar"
          android:layout_width="match_parent"
          android:layout_height="?attr/actionBarSize"
-         app:navigationIcon="@drawable/ic_menu_hamburger"
-         app:titleTextColor="@android:color/white"
+         app:title="@string/wallet_card_list_title"
          />
 
    <com.worldventures.dreamtrips.wallet.ui.widget.SmartCardWidget
@@ -22,6 +21,9 @@
          android:layout_width="wrap_content"
          android:layout_height="wrap_content"
          android:layout_gravity="center_horizontal"
+         android:layout_marginLeft="@dimen/wallet_card_margin"
+         android:layout_marginRight="@dimen/wallet_card_margin"
+         android:layout_marginTop="@dimen/spacing_large"
          />
 
 </LinearLayout>

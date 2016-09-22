@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.worldventures.dreamtrips.wallet.ui.wizard.welcome.WizardWelcomeScreen style="@style/WalletTheme.Wizard.RootStyle"
-      xmlns:android="http://schemas.android.com/apk/res/android"
+<com.worldventures.dreamtrips.wallet.ui.wizard.welcome.WizardWelcomeScreen xmlns:android="http://schemas.android.com/apk/res/android"
       xmlns:app="http://schemas.android.com/apk/res-auto"
       xmlns:tools="http://schemas.android.com/tools"
+      android:layout_width="match_parent"
+      android:layout_height="match_parent"
       android:gravity="center"
       android:orientation="vertical"
-      android:theme="@style/WalletTheme.Wizard"
+      android:theme="@style/WalletTheme"
       android:weightSum="4"
       >
 
@@ -13,8 +14,6 @@
          android:id="@+id/toolbar"
          android:layout_width="match_parent"
          android:layout_height="?attr/actionBarSize"
-         android:theme="@style/WalletTheme.Wizard.ToolbarTheme"
-         app:navigationIcon="@drawable/back_icon"
          app:title="@string/wallet_wizard_welcome_title"
          />
 
@@ -30,7 +29,7 @@
             android:id="@+id/greeting_label"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="25dp"
+            android:layout_marginTop="35dp"
             android:textAppearance="?android:attr/textAppearanceLarge"
             android:visibility="invisible"
             tools:text="Hi Shirley Temple!"
@@ -42,7 +41,6 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@+id/greeting_label"
-            android:layout_marginTop="25dp"
             android:gravity="center"
             android:paddingEnd="@dimen/spacing_normal"
             android:paddingStart="@dimen/spacing_large"
@@ -52,7 +50,7 @@
             tools:visibility="visible"
             />
 
-      <FrameLayout
+      <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="35dp"
@@ -60,26 +58,37 @@
 
          <ImageView
                android:id="@+id/smart_card"
-               android:layout_width="match_parent"
+               android:layout_width="250dp"
                android:layout_height="wrap_content"
+               android:layout_alignParentTop="true"
+               android:layout_centerHorizontal="true"
                android:scaleType="fitCenter"
-               android:src="@drawable/flyecard_front"
+               android:src="@drawable/flye_card_front_without_display"
                tools:ignore="ContentDescription"
                />
 
          <com.facebook.drawee.view.SimpleDraweeView
                android:id="@+id/user_photo"
-               android:layout_width="70dp"
-               android:layout_height="70dp"
-               android:layout_gravity="center"
-               android:layout_marginLeft="80dp"
+               android:layout_width="75dp"
+               android:layout_height="75dp"
+               android:layout_alignEnd="@+id/smart_card"
+               android:layout_centerVertical="true"
+               android:layout_marginRight="12dp"
                android:src="@drawable/ic_dt_launcher"
                app:failureImage="@drawable/ic_avatar_placeholder"
                app:placeholderImage="@drawable/ic_avatar_placeholder"
                />
 
-      </FrameLayout>
+         <ImageView
+               android:layout_width="wrap_content"
+               android:layout_height="wrap_content"
+               android:layout_alignLeft="@+id/user_photo"
+               android:layout_alignRight="@+id/user_photo"
+               android:src="@drawable/ic_flyecard_light"
+               android:layout_marginTop="20dp"
+               />
 
+      </RelativeLayout>
 
    </LinearLayout>
 

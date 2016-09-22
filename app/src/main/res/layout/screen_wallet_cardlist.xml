@@ -1,9 +1,9 @@
-<com.worldventures.dreamtrips.wallet.ui.dashboard.list.CardListScreen style="@style/WalletTheme.Wizard.RootStyle"
-      xmlns:android="http://schemas.android.com/apk/res/android"
+<com.worldventures.dreamtrips.wallet.ui.dashboard.list.CardListScreen xmlns:android="http://schemas.android.com/apk/res/android"
       xmlns:app="http://schemas.android.com/apk/res-auto"
       xmlns:tools="http://schemas.android.com/tools"
-      android:background="@color/white"
-      android:theme="@style/WalletTheme.Wizard"
+      android:layout_width="match_parent"
+      android:layout_height="match_parent"
+      android:theme="@style/WalletTheme"
       >
 
    <android.support.design.widget.CoordinatorLayout
@@ -28,12 +28,12 @@
             android:layout_height="wrap_content"
             android:layout_marginBottom="16dp"
             android:src="@drawable/ic_white_plus"
-            app:backgroundTint="@color/wallet_add_card_button_color"
-            app:rippleColor="@color/wallet_add_card_button_color"
+            app:backgroundTint="@color/add_card_button_selector"
             app:fab_size="normal"
             app:layout_anchor="@id/bank_card_list"
             app:layout_anchorGravity="bottom|center_horizontal"
             app:layout_behavior="com.worldventures.dreamtrips.wallet.ui.dashboard.list.util.ScrollFABBehavior"
+            app:rippleColor="@color/add_card_button_selector"
             />
 
    </android.support.design.widget.CoordinatorLayout>

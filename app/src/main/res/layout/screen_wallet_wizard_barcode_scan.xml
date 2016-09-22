@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.worldventures.dreamtrips.wallet.ui.wizard.barcode.WizardScanBarcodeScreen style="@style/WalletTheme.Wizard.RootStyle"
-      xmlns:android="http://schemas.android.com/apk/res/android"
+<com.worldventures.dreamtrips.wallet.ui.wizard.barcode.WizardScanBarcodeScreen xmlns:android="http://schemas.android.com/apk/res/android"
       xmlns:app="http://schemas.android.com/apk/res-auto"
-      android:theme="@style/WalletTheme.Wizard"
+      android:layout_width="match_parent"
+      android:layout_height="match_parent"
+      android:theme="@style/WalletTheme"
       >
 
    <com.worldventures.dreamtrips.wallet.ui.widget.WalletBarCodeScaner
@@ -15,8 +16,6 @@
          android:id="@+id/toolbar"
          android:layout_width="match_parent"
          android:layout_height="?attr/actionBarSize"
-         android:theme="@style/WalletTheme.Wizard.ToolbarTheme"
-         app:navigationIcon="@drawable/back_icon"
          app:title="@string/wallet_wizard_scan_title"
          />
 
@@ -26,12 +25,13 @@
          android:layout_gravity="top|center_horizontal"
          android:layout_marginTop="?attr/actionBarSize"
          android:gravity="center"
-         android:paddingLeft="@dimen/spacing_huge"
-         android:paddingTop="@dimen/spacing_large"
-         android:paddingRight="@dimen/spacing_huge"
          android:paddingBottom="@dimen/spacing_large"
+         android:paddingLeft="@dimen/spacing_huge"
+         android:paddingRight="@dimen/spacing_huge"
+         android:paddingTop="@dimen/spacing_large"
          android:text="@string/wallet_wizard_scan_barcode_header"
-         android:textAppearance="?android:attr/textAppearanceLarge"
+         android:textAppearance="?android:attr/textAppearanceMedium"
+         android:textColor="@android:color/white"
          />
 
    <LinearLayout
@@ -47,7 +47,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/wallet_wizard_scan_barcode_footer_title"
-            android:textAppearance="@style/WalletTheme.Wizard.TextAppearanceSmall"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:textColor="@android:color/white"
             />
 
       <TextView
@@ -56,7 +57,8 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="7dp"
             android:text="@string/wallet_wizard_scan_barcode_footer_btn"
-            android:textAppearance="@style/WalletTheme.Wizard.TextAppearanceMedium"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:textColor="@android:color/white"
             />
    </LinearLayout>
 </com.worldventures.dreamtrips.wallet.ui.wizard.barcode.WizardScanBarcodeScreen>

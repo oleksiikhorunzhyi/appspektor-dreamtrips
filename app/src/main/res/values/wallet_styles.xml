@@ -4,24 +4,12 @@
    <color name="wallet_color_primary">#005e92</color>
    <color name="wallet_text_color_primary">#222222</color>
 
-   <!--<color name="wallet_color_background_light">#008dbe</color>-->
-   <!--<color name="wallet_color_background_dark">#006699</color>-->
-   <!--<color name="wallet_color_primary">#00b3e3</color>-->
-   <!--<color name="wallet_color_primary_dark">#006699</color>-->
-   <!--<color name="wallet_color_inactive_controller">#999999</color>-->
+   <color name="wallet_color_primary_dark">#006699</color>
+   <color name="wallet_color_inactive_controller">#999999</color>
 
-   <!--<color name="wallet_color_background_dark_with_alpha">#CC006699</color>-->
-   <!--<color name="wallet_color_text_color_toolbar">#005e92</color>-->
-   <!--<color name="wallet_color_round_check_box_text">#666666</color>-->
-   <!--<color name="wallet_color_gray_hint_text_color">#9a9a9a</color>-->
-   <!--<color name="wallet_color_gray_textview_text_color">#999999</color>-->
-
+   <color name="wallet_color_text_color_toolbar">#005e92</color>
 
    <color name="wallet_color_white_text_with_alpha">#99FFFFFF</color>
-
-   <color name="wallet_wizard_button_enable">@color/wallet_color_primary</color>
-   <color name="wallet_wizard_button_disable">#666666</color>
-   <color name="wallet_wizard_button_pressed">#003e72</color>
 
    <color name="wallet_hint_color">#9a9a9a</color>
 
@@ -31,7 +19,7 @@
    <style name="WalletTheme" parent="Theme.AppCompat.Light.DarkActionBar">
       <item name="colorPrimary">@color/wallet_color_primary</item>
       <item name="colorPrimaryDark">@color/wallet_color_primary_dark</item>
-      <item name="android:textColorPrimary">@color/wallet_common_primary_text_color</item>
+      <item name="android:textColorPrimary">@color/wallet_text_color_primary</item>
 
       <item name="toolbarStyle">@style/WalletTheme.ToolbarStyle</item>
       <item name="android:textViewStyle">@style/WalletTheme.TextStyle</item>
@@ -53,7 +41,7 @@
 
    <style name="WalletTheme.ButtonStyle" parent="Widget.AppCompat.Button">
       <item name="android:textAppearance">?android:attr/textAppearanceLarge</item>
-      <item name="android:textColor">@color/wallet_wizard_button_text_color</item>
+      <item name="android:textColor">@color/wallet_button_text_colors</item>
       <item name="android:padding">@dimen/spacing_normal</item>
    </style>
 

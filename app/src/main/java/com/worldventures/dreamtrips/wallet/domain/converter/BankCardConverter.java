@@ -16,11 +16,11 @@ import io.techery.janet.smartcard.model.Record;
 
 public class BankCardConverter implements Converter<Record, BankCard> {
 
-   public final static String ADDRESS1_FIELD = "address1";
-   public final static String ADDRESS2_FIELD = "address2";
-   public final static String CITY_FIELD = "city";
-   public final static String STATE_FIELD = "state";
-   public final static String ZIP_FIELD = "zip";
+   private final static String ADDRESS1_FIELD = "address1";
+   private final static String ADDRESS2_FIELD = "address2";
+   private final static String CITY_FIELD = "city";
+   private final static String STATE_FIELD = "state";
+   private final static String ZIP_FIELD = "zip";
 
    private final static String TYPE_CARD_FIELD = "type_card";
    private final static String BANK_NAME_FIELD = "bank_name";

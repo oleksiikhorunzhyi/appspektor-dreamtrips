@@ -1,5 +1,6 @@
 package com.worldventures.dreamtrips.wallet.service.command;
 
+import com.innahema.collections.query.queriables.Queryable;
 import com.worldventures.dreamtrips.core.janet.dagger.InjectableAction;
 import com.worldventures.dreamtrips.wallet.domain.converter.BankCardConverter;
 import com.worldventures.dreamtrips.wallet.domain.entity.AddressInfo;
@@ -17,6 +18,7 @@ import io.techery.janet.Janet;
 import io.techery.janet.command.annotations.CommandAction;
 import io.techery.janet.smartcard.action.records.EditRecordMetadataAction;
 import rx.Observable;
+import rx.functions.FuncN;
 
 import static com.worldventures.dreamtrips.core.janet.JanetModule.JANET_WALLET;
 
@@ -24,6 +26,7 @@ import static com.worldventures.dreamtrips.core.janet.JanetModule.JANET_WALLET;
 public class UpdateCardDetailsDataCommand extends Command<BankCard> implements InjectableAction {
 
    @Inject @Named(JANET_WALLET) Janet janet;
+   private BankCardConverter bankCardConverter;
 
    private final BankCard bankCard;
    private final AddressInfo manualAddressInfo;
@@ -33,6 +36,7 @@ public class UpdateCardDetailsDataCommand extends Command<BankCard> implements I
    public UpdateCardDetailsDataCommand(BankCard bankCard, AddressInfo manualAddressInfo) {
       this.bankCard = bankCard;
       this.manualAddressInfo = manualAddressInfo;
+      bankCardConverter = new BankCardConverter();
    }
 
    @Override
@@ -40,15 +44,17 @@ public class UpdateCardDetailsDataCommand extends Command<BankCard> implements I
       checkCardData();
       editMetadataPipe = janet.createPipe(EditRecordMetadataAction.class);
 
-      Observable.zip(
-            actionFor(BankCardConverter.ADDRESS1_FIELD, manualAddressInfo.address1()),
-            actionFor(BankCardConverter.ADDRESS2_FIELD, manualAddressInfo.address2()),
-            actionFor(BankCardConverter.CITY_FIELD, manualAddressInfo.city()),
-            actionFor(BankCardConverter.STATE_FIELD, manualAddressInfo.state()),
-            actionFor(BankCardConverter.ZIP_FIELD, manualAddressInfo.zip()),
-            (addressAction, address2Action, cityAction, stateAction, zipAction) ->
-                  ImmutableBankCard.builder().from(bankCard).addressInfo(manualAddressInfo).build()
-      ).subscribe(callback::onSuccess, callback::onFail);
+      Observable.just(bankCardConverter.to(bankCard))
+            .flatMap(record ->
+                  Observable.zip(Queryable.from(record.metadata().entrySet())
+                              .map(element -> {
+                                 return actionFor(element.getKey(), element.getValue());
+                              }).toList(),
+                        (FuncN<BankCard>) args -> ImmutableBankCard.builder()
+                              .from(bankCard)
+                              .addressInfo(manualAddressInfo)
+                              .build()))
+            .subscribe(callback::onSuccess, callback::onFail);
    }
 
    public BankCard bankCard() {

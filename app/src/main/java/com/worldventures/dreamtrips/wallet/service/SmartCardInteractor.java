@@ -214,7 +214,11 @@ public final class SmartCardInteractor {
             .map(state -> state.status == ActionState.Status.SUCCESS ? DISCONNECTED : ERROR)
             .subscribe(connectionStatus -> updateSmartCardConnectionStatusPipe.send(new UpdateSmartCardConnectionStatus(connectionStatus)),
                   throwable -> Timber.e(throwable, "Error while updating status of active card"));
+      observeCardsChanges();
+   }
 
+   //TODO this way of syncing data between pipes is quite unobvious and should be reworked in future
+   private void observeCardsChanges() {
       Observable.merge(
             deleteCardPipe
                   .observeSuccess()
@@ -230,5 +234,6 @@ public final class SmartCardInteractor {
                   .onFail((cardListCommand, throwable) -> {
                      throw new IllegalStateException("Cannot perform operation onto card list cache", throwable);
                   }));
+
    }
 }

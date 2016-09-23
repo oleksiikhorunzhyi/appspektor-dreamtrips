@@ -1,19 +1,12 @@
 package com.worldventures.dreamtrips.wallet.service.command;
 
-import com.worldventures.dreamtrips.core.janet.cache.CacheOptions;
-import com.worldventures.dreamtrips.core.janet.cache.CachedAction;
-import com.worldventures.dreamtrips.core.janet.cache.ImmutableCacheOptions;
 import com.worldventures.dreamtrips.core.janet.dagger.InjectableAction;
 import com.worldventures.dreamtrips.wallet.domain.converter.BankCardConverter;
 import com.worldventures.dreamtrips.wallet.domain.entity.card.BankCard;
 
-import java.util.Collections;
-import java.util.List;
-
 import javax.inject.Inject;
 import javax.inject.Named;
 
-import io.techery.janet.ActionHolder;
 import io.techery.janet.Command;
 import io.techery.janet.Janet;
 import io.techery.janet.command.annotations.CommandAction;
@@ -26,7 +19,7 @@ import rx.schedulers.Schedulers;
 import static com.worldventures.dreamtrips.core.janet.JanetModule.JANET_WALLET;
 
 @CommandAction
-public class AttachCardCommand extends Command<Record> implements InjectableAction, CachedAction<List<BankCard>> {
+public class AttachCardCommand extends Command<Record> implements InjectableAction {
 
    @Inject @Named(JANET_WALLET) Janet janet;
 
@@ -47,7 +40,7 @@ public class AttachCardCommand extends Command<Record> implements InjectableActi
             .createObservable(new AddRecordAction(record))
             .compose(new ActionStateToActionTransformer<>())
             .map(it -> it.record)
-            .flatMap(addedRecord -> saveDefaultCard(addedRecord))
+            .flatMap(this::saveDefaultCard)
             .subscribe(addedRecord -> {
                card = converter.from(addedRecord);
                callback.onSuccess(addedRecord);
@@ -64,22 +57,5 @@ public class AttachCardCommand extends Command<Record> implements InjectableActi
 
    public BankCard bankCard() {
       return card;
-   }
-
-   @Override
-   public List<BankCard> getCacheData() {
-      return Collections.singletonList(card);
-   }
-
-   @Override
-   public void onRestore(ActionHolder holder, List<BankCard> cache) {
-   }
-
-   @Override
-   public CacheOptions getCacheOptions() {
-      return ImmutableCacheOptions.builder()
-            .restoreFromCache(false)
-            .saveToCache(true)
-            .build();
    }
 }

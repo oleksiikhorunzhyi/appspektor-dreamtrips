@@ -1,20 +1,26 @@
-package com.worldventures.dreamtrips.wallet.ui.settings;
+package com.worldventures.dreamtrips.wallet.ui.settings.general;
 
 import android.content.Context;
 import android.os.Parcelable;
 
 import com.techery.spares.module.Injector;
 import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.wallet.domain.entity.FirmwareInfo;
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCard;
+import com.worldventures.dreamtrips.wallet.domain.storage.TemporaryStorage;
+import com.worldventures.dreamtrips.wallet.service.FirmwareInteractor;
 import com.worldventures.dreamtrips.wallet.service.SmartCardInteractor;
 import com.worldventures.dreamtrips.wallet.service.command.ConnectSmartCardCommand;
 import com.worldventures.dreamtrips.wallet.service.command.SetLockStateCommand;
 import com.worldventures.dreamtrips.wallet.service.command.SetStealthModeCommand;
+import com.worldventures.dreamtrips.wallet.service.command.http.FetchFirmwareInfoCommand;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletPresenter;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.WalletScreen;
 import com.worldventures.dreamtrips.wallet.ui.common.helper.OperationSubscriberWrapper;
 import com.worldventures.dreamtrips.wallet.ui.common.navigation.Navigator;
 import com.worldventures.dreamtrips.wallet.ui.settings.disabledefaultcard.WalletDisableDefaultCardPath;
+import com.worldventures.dreamtrips.wallet.ui.settings.firmware.newavailable.WalletNewFirmwareAvailablePath;
+import com.worldventures.dreamtrips.wallet.ui.settings.firmware.uptodate.WalletUpToDateFirmwarePath;
 import com.worldventures.dreamtrips.wallet.ui.settings.removecards.WalletAutoClearCardsPath;
 import com.worldventures.dreamtrips.wallet.ui.wizard.pin.WizardPinSetupPath;
 import com.worldventures.dreamtrips.wallet.util.ThrowableHelper;
@@ -24,26 +30,50 @@ import javax.inject.Inject;
 import io.techery.janet.smartcard.action.support.DisconnectAction;
 import rx.Observable;
 
-public class WalletCardSettingsPresenter extends WalletPresenter<WalletCardSettingsPresenter.Screen, Parcelable> {
+public class WalletSettingsPresenter extends WalletPresenter<WalletSettingsPresenter.Screen, Parcelable> {
 
    @Inject Navigator navigator;
    @Inject SmartCardInteractor smartCardInteractor;
+   @Inject FirmwareInteractor firmwareInteractor;
    @Inject ThrowableHelper throwableHelper;
+   @Inject TemporaryStorage temporaryStorage;
 
    private SmartCard smartCard;
+   private FirmwareInfo firmware;
 
-   public WalletCardSettingsPresenter(Context context, Injector injector) {
+
+   public WalletSettingsPresenter(Context context, Injector injector) {
       super(context, injector);
    }
 
    @Override
    public void attachView(Screen view) {
       super.attachView(view);
+      view.testNewFirmwareAvailable(temporaryStorage.newFirmwareIsAvailable());
+      view.testFirmwareIsCompatible(temporaryStorage.firmwareIsCompatible());
+      view.testEnoughSpaceForFirmware(temporaryStorage.enoughSpaceForFirmware());
+
       observeSmartCardChanges();
 
       observeStealthModeController(view);
       observeLockController(view);
+      observeFirmwareAvailableController(view);
+      observeFirmwareCompatibleController(view);
+
+      observeEnoughSpace(view);
       observeConnectionController(view);
+      observeFirmwareUpdates();
+   }
+
+   private void observeFirmwareUpdates() {
+      firmwareInteractor.firmwareInfoPipe()
+            .observeSuccessWithReplay()
+            .compose(bindViewIoToMainComposer())
+            .subscribe(command -> {
+               firmware = command.getResult();
+               // this solution is not like iOS. After server was deploy, update this criteria
+               getView().firmwareUpdateCount(firmware.byteSize() > 0 ? 1 : 0);
+            });
    }
 
    private void observeSmartCardChanges() {
@@ -57,7 +87,8 @@ public class WalletCardSettingsPresenter extends WalletPresenter<WalletCardSetti
             .compose(bindViewIoToMainComposer())
             .subscribe(
                   OperationSubscriberWrapper.<SetStealthModeCommand>forView(getView().provideOperationDelegate())
-                        .onSuccess(action -> stealthModeChangedMessage(action.stealthModeEnabled), action -> {})
+                        .onSuccess(action -> stealthModeChangedMessage(action.stealthModeEnabled), action -> {
+                        })
                         .onFail(throwableHelper.provideMessageHolder(
                               command -> getView().stealthModeStatus(smartCard.stealthMode()))
                         )
@@ -68,7 +99,8 @@ public class WalletCardSettingsPresenter extends WalletPresenter<WalletCardSetti
             .observe()
             .compose(bindViewIoToMainComposer())
             .subscribe(OperationSubscriberWrapper.<SetLockStateCommand>forView(getView().provideOperationDelegate())
-                  .onSuccess(setLockStateCommand -> {})
+                  .onSuccess(setLockStateCommand -> {
+                  })
                   .onFail(getContext().getString(R.string.wallet_dashboard_unlock_error), a -> getView().lockStatus(smartCard
                         .lock()))
                   .wrap());
@@ -96,6 +128,30 @@ public class WalletCardSettingsPresenter extends WalletPresenter<WalletCardSetti
             .skip(1)
             .filter(connected -> (smartCard.connectionStatus() == SmartCard.ConnectionStatus.CONNECTED) != connected)
             .subscribe(this::manageConnection);
+   }
+
+   private void observeFirmwareAvailableController(Screen view) {
+      view.testNewFirmwareAvailable()
+            .compose(bindView())
+            .skip(1)
+            .filter(available -> temporaryStorage.newFirmwareIsAvailable() != available)
+            .subscribe(this::changeFirmwareUpdates);
+   }
+
+   private void observeFirmwareCompatibleController(Screen view) {
+      view.testFirmwareIsCompatible()
+            .compose(bindView())
+            .skip(1)
+            .filter(compatible -> temporaryStorage.firmwareIsCompatible() != compatible)
+            .subscribe(this::changeFirmwareIsCompatible);
+   }
+
+   private void observeEnoughSpace(Screen view) {
+      view.testEnoughSpaceForFirmware()
+            .compose(bindView())
+            .skip(1)
+            .filter(compatible -> temporaryStorage.enoughSpaceForFirmware() != compatible)
+            .subscribe(this::changeEnoughSpace);
    }
 
    private void manageConnection(boolean connected) {
@@ -137,20 +193,41 @@ public class WalletCardSettingsPresenter extends WalletPresenter<WalletCardSetti
       navigator.goBack();
    }
 
-   public void resetPin() {
+   void resetPin() {
       navigator.go(new WizardPinSetupPath(smartCard, WizardPinSetupPath.Action.RESET));
    }
 
-   public void disableDefaultCardTimer() {
+   void disableDefaultCardTimer() {
       navigator.go(new WalletDisableDefaultCardPath());
    }
 
-   public void autoClearSmartCardClick() {
+   void autoClearSmartCardClick() {
       navigator.go(new WalletAutoClearCardsPath());
    }
 
    private void stealthModeChanged(boolean isEnabled) {
       smartCardInteractor.stealthModePipe().send(new SetStealthModeCommand(isEnabled));
+   }
+
+   // for test and demo
+   private void changeFirmwareUpdates(boolean available) {
+      temporaryStorage.newFirmwareIsAvailable(available);
+      //for ui will updated
+      firmwareInteractor.firmwareInfoPipe().send(new FetchFirmwareInfoCommand());
+   }
+
+   // for test and demo
+   private void changeFirmwareIsCompatible(boolean compatible) {
+      temporaryStorage.firmwareIsCompatible(compatible);
+      //for ui will updated
+      firmwareInteractor.firmwareInfoPipe().send(new FetchFirmwareInfoCommand());
+   }
+
+   // for test and demo
+   private void changeEnoughSpace(boolean enoughSpace) {
+      temporaryStorage.enoughSpaceForFirmware(enoughSpace);
+      //for ui will updated
+      firmwareInteractor.firmwareInfoPipe().send(new FetchFirmwareInfoCommand());
    }
 
    private void lockStatusChanged(boolean lock) {
@@ -161,6 +238,16 @@ public class WalletCardSettingsPresenter extends WalletPresenter<WalletCardSetti
       return getContext().getString(
             isEnabled ? R.string.wallet_card_settings_stealth_mode_on : R.string.wallet_card_settings_stealth_mode_off
       );
+   }
+
+   void firmwareUpdatesClick() {
+      // TODO: 9/21/16 firmware.byteSize() > 0 is a temp criteria
+      if (firmware != null && firmware.byteSize() > 0) {
+         // // TODO: 9/21/16 open update screen
+         navigator.go(new WalletNewFirmwareAvailablePath());
+      } else {
+         navigator.go(new WalletUpToDateFirmwarePath());
+      }
    }
 
    public interface Screen extends WalletScreen {
@@ -175,10 +262,24 @@ public class WalletCardSettingsPresenter extends WalletPresenter<WalletCardSetti
 
       void autoClearSmartCardValue(long millis);
 
+      void firmwareUpdateCount(int count);
+
+      void testNewFirmwareAvailable(boolean available);
+
+      void testFirmwareIsCompatible(boolean compatible);
+
+      void testEnoughSpaceForFirmware(boolean compatible);
+
       Observable<Boolean> stealthModeStatus();
 
       Observable<Boolean> lockStatus();
 
       Observable<Boolean> testConnection();
+
+      Observable<Boolean> testNewFirmwareAvailable();
+
+      Observable<Boolean> testFirmwareIsCompatible();
+
+      Observable<Boolean> testEnoughSpaceForFirmware();
    }
 }

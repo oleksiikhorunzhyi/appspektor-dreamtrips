@@ -7,8 +7,10 @@ import com.techery.spares.module.Injector;
 import com.worldventures.dreamtrips.modules.navdrawer.NavigationDrawerPresenter;
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCard;
 import com.worldventures.dreamtrips.wallet.domain.entity.card.BankCard;
+import com.worldventures.dreamtrips.wallet.service.FirmwareInteractor;
 import com.worldventures.dreamtrips.wallet.service.SmartCardInteractor;
 import com.worldventures.dreamtrips.wallet.service.command.CardStacksCommand;
+import com.worldventures.dreamtrips.wallet.service.command.http.FetchFirmwareInfoCommand;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletPresenter;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.WalletScreen;
 import com.worldventures.dreamtrips.wallet.ui.common.navigation.Navigator;
@@ -16,7 +18,8 @@ import com.worldventures.dreamtrips.wallet.ui.dashboard.detail.CardDetailsPath;
 import com.worldventures.dreamtrips.wallet.ui.dashboard.list.util.CardStackHeaderHolder;
 import com.worldventures.dreamtrips.wallet.ui.dashboard.list.util.CardStackViewModel;
 import com.worldventures.dreamtrips.wallet.ui.dashboard.list.util.ImmutableCardStackHeaderHolder;
-import com.worldventures.dreamtrips.wallet.ui.settings.WalletCardSettingsPath;
+import com.worldventures.dreamtrips.wallet.ui.settings.firmware.newavailable.WalletNewFirmwareAvailablePath;
+import com.worldventures.dreamtrips.wallet.ui.settings.general.WalletSettingsPath;
 import com.worldventures.dreamtrips.wallet.ui.wizard.charging.WizardChargingPath;
 import com.worldventures.dreamtrips.wallet.util.CardListStackConverter;
 import com.worldventures.dreamtrips.wallet.util.CardUtils;
@@ -38,6 +41,7 @@ public class CardListPresenter extends WalletPresenter<CardListPresenter.Screen,
 
    @Inject Navigator navigator;
    @Inject SmartCardInteractor smartCardInteractor;
+   @Inject FirmwareInteractor firmwareInteractor;
    @Inject NavigationDrawerPresenter navigationDrawerPresenter;
 
    private final CardListStackConverter cardListStackConverter;
@@ -63,6 +67,25 @@ public class CardListPresenter extends WalletPresenter<CardListPresenter.Screen,
             .observeSuccessWithReplay()
             .compose(bindViewIoToMainComposer())
             .subscribe(it -> setSmartCard(it.getResult()));
+
+      firmwareInteractor.firmwareInfoPipe()
+            .createObservableResult(new FetchFirmwareInfoCommand())
+            .compose(bindViewIoToMainComposer())
+            .map(it -> it.getResult())
+            .subscribe(it -> {
+               this.cardStackHeaderHolder = ImmutableCardStackHeaderHolder.builder()
+                     .from(cardStackHeaderHolder)
+                     .firmwareInfo(it)
+                     .build();
+               getView().notifySmartCardChanged(cardStackHeaderHolder);
+               // TODO: 9/21/16 need contract between client and server
+               if (it.byteSize() > 0) {
+                  getView().showFirmwareUpdateBtn();
+               } else {
+                  getView().hideFirmwareUpdateBtn();
+               }
+            }, e -> {
+            });
    }
 
    private void setSmartCard(SmartCard smartCard) {
@@ -82,7 +105,7 @@ public class CardListPresenter extends WalletPresenter<CardListPresenter.Screen,
    }
 
    public void onSettingsChosen() {
-      navigator.go(new WalletCardSettingsPath());
+      navigator.go(new WalletSettingsPath());
    }
 
    public void addCardRequired() {
@@ -91,6 +114,10 @@ public class CardListPresenter extends WalletPresenter<CardListPresenter.Screen,
       } else {
          getView().showAddCardErrorDialog();
       }
+   }
+
+   void firmwareAvailable() {
+      navigator.go(new WalletNewFirmwareAvailablePath());
    }
 
    private void observeChanges() {
@@ -123,5 +150,9 @@ public class CardListPresenter extends WalletPresenter<CardListPresenter.Screen,
       void notifySmartCardChanged(CardStackHeaderHolder smartCard);
 
       void showAddCardErrorDialog();
+
+      void hideFirmwareUpdateBtn();
+
+      void showFirmwareUpdateBtn();
    }
 }

@@ -1,4 +1,4 @@
-package com.worldventures.dreamtrips.wallet.ui.settings;
+package com.worldventures.dreamtrips.wallet.ui.settings.general;
 
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.flow.path.MasterDetailPath;
@@ -6,9 +6,9 @@ import com.worldventures.dreamtrips.core.flow.path.StyledPath;
 import com.worldventures.dreamtrips.core.flow.util.Layout;
 
 @Layout(R.layout.screen_wallet_settings)
-public class WalletCardSettingsPath extends StyledPath {
+public class WalletSettingsPath extends StyledPath {
 
-   public WalletCardSettingsPath() {
+   public WalletSettingsPath() {
    }
 
    @Override

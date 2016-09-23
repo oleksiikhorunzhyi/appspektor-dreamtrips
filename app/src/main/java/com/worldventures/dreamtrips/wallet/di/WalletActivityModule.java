@@ -12,10 +12,12 @@ import com.worldventures.dreamtrips.wallet.ui.dashboard.list.CardListPresenter;
 import com.worldventures.dreamtrips.wallet.ui.dashboard.list.util.cell.BankCardCell;
 import com.worldventures.dreamtrips.wallet.ui.dashboard.list.util.cell.CardStackCell;
 import com.worldventures.dreamtrips.wallet.ui.dashboard.list.util.cell.CardStackHeaderCell;
-import com.worldventures.dreamtrips.wallet.ui.settings.WalletCardSettingsPresenter;
+import com.worldventures.dreamtrips.wallet.ui.settings.general.WalletSettingsPresenter;
 import com.worldventures.dreamtrips.wallet.ui.settings.common.cell.SectionDividerCell;
 import com.worldventures.dreamtrips.wallet.ui.settings.common.cell.SettingsRadioCell;
 import com.worldventures.dreamtrips.wallet.ui.settings.disabledefaultcard.WalletDisableDefaultCardPresenter;
+import com.worldventures.dreamtrips.wallet.ui.settings.firmware.newavailable.WalletNewFirmwareAvailablePresenter;
+import com.worldventures.dreamtrips.wallet.ui.settings.firmware.uptodate.WalletUpToDateFirmwarePresenter;
 import com.worldventures.dreamtrips.wallet.ui.settings.removecards.WalletAutoClearCardsPresenter;
 import com.worldventures.dreamtrips.wallet.ui.wizard.barcode.WizardScanBarcodePresenter;
 import com.worldventures.dreamtrips.wallet.ui.wizard.card_details.AddCardDetailsPresenter;
@@ -53,13 +55,15 @@ import dagger.Provides;
             WizardChargingPresenter.class,
             CardDetailsPresenter.class,
             CardListPresenter.class,
-            WalletCardSettingsPresenter.class,
+            WalletSettingsPresenter.class,
             WalletSuccessPresenter.class,
             AddCardDetailsPresenter.class,
             WizardPinSetupPresenter.class,
             WizardWelcomePresenter.class,
             WalletAutoClearCardsPresenter.class,
-            WalletDisableDefaultCardPresenter.class
+            WalletDisableDefaultCardPresenter.class,
+            WalletUpToDateFirmwarePresenter.class,
+            WalletNewFirmwareAvailablePresenter.class
       },
       complete = false, library = true
 )

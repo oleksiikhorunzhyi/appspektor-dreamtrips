@@ -17,9 +17,21 @@
          android:layout_width="wrap_content"
          android:layout_height="wrap_content"
          android:layout_alignParentEnd="true"
+         android:layout_marginEnd="8dp"
+         android:layout_marginTop="4dp"
          android:background="?attr/selectableItemBackgroundBorderless"
          android:src="@drawable/ic_wallet_settings"
          tools:ignore="ContentDescription"
+         />
+
+   <com.worldventures.dreamtrips.modules.common.view.custom.BadgeView
+         android:id="@+id/smartcard_badge"
+         android:layout_width="16dp"
+         android:layout_height="wrap_content"
+         android:layout_alignEnd="@+id/settings_button"
+         android:layout_marginEnd="-8dp"
+         android:textSize="@dimen/font_small"
+         tools:text="1"
          />
 
    <ImageView
@@ -27,7 +39,8 @@
          android:layout_height="wrap_content"
          android:layout_alignBottom="@+id/settings_button"
          android:layout_alignTop="@+id/settings_button"
-         android:layout_marginEnd="12dp"
+         android:layout_marginEnd="@dimen/spacing_medium"
+         android:layout_marginTop="6dp"
          android:layout_toStartOf="@+id/settings_button"
          android:src="@drawable/ic_wallet_green_dot"
          tools:ignore="ContentDescription"
@@ -83,21 +96,6 @@
    </LinearLayout>
 
    <TextView
-         android:id="@+id/bankLabel"
-         android:layout_width="wrap_content"
-         android:layout_height="wrap_content"
-         android:layout_above="@+id/connectedCardsCount"
-         android:layout_alignParentStart="true"
-         android:layout_marginEnd="10dp"
-         android:layout_toStartOf="@+id/cardListSCAvatar"
-         android:ellipsize="end"
-         android:singleLine="true"
-         android:textColor="@android:color/white"
-         android:textSize="@dimen/font_normal"
-         tools:text="Jhon's card"
-         />
-
-   <TextView
          android:id="@+id/connectedCardsCount"
          android:layout_width="match_parent"
          android:layout_height="wrap_content"
@@ -118,6 +116,19 @@
          app:placeholderImage="@drawable/avatar"
          app:placeholderImageScaleType="fitCenter"
          android:layout_marginBottom="10dp"
+         />
+
+   <TextView
+         android:id="@+id/bankLabel"
+         android:layout_width="wrap_content"
+         android:layout_height="wrap_content"
+         android:layout_above="@+id/connectedCardsCount"
+         android:layout_alignParentStart="true"
+         android:ellipsize="end"
+         android:singleLine="true"
+         android:textColor="@android:color/white"
+         android:textSize="@dimen/font_normal"
+         tools:text="Jhon's card"
          />
 
 </RelativeLayout>

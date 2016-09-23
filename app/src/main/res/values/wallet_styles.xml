@@ -2,19 +2,19 @@
 
 <resources>
    <color name="wallet_color_primary">#005e92</color>
+   <color name="wallet_color_primary_dark">#006699</color>
    <color name="wallet_text_color_primary">#222222</color>
-   <color name="wallet_color_white_text_with_alpha">#99FFFFFF</color>
 
-   <color name="wallet_wizard_button_enable">@color/wallet_color_primary</color>
-   <color name="wallet_wizard_button_disable">#666666</color>
-   <color name="wallet_wizard_button_pressed">#003e72</color>
+   <color name="wallet_button_color_disabled">#999999</color>
+   <color name="wallet_button_text_color_disabled">#99FFFFFF</color>
 
    <color name="wallet_hint_color">#9a9a9a</color>
-
    <color name="wallet_number_edit_text_text_color_hint">#999999</color>
    <color name="wallet_number_edit_text_pin_line_color">#666666</color>
 
    <style name="WalletTheme" parent="Theme.AppCompat.Light.DarkActionBar">
+      <item name="colorPrimary">@color/wallet_color_primary</item>
+      <item name="colorPrimaryDark">@color/wallet_color_primary_dark</item>
       <item name="android:textColorPrimary">@color/wallet_text_color_primary</item>
 
       <item name="toolbarStyle">@style/WalletTheme.ToolbarStyle</item>
@@ -26,17 +26,19 @@
       <item name="android:textAppearanceMedium">@style/WalletTheme.TextAppearanceMedium</item>
       <item name="android:textAppearanceSmall">@style/WalletTheme.TextAppearanceSmall</item>
 
+      <item name="colorAccent">@color/wallet_color_primary_dark</item>
+      <item name="colorButtonNormal">@color/wallet_button_colors</item>
+
       <!-- Inactive thumb color -->
-      <item name="colorSwitchThumbNormal">#888888</item>
+      <item name="colorSwitchThumbNormal">@color/wallet_button_color_disabled</item>
       <!-- Inactive track color(30% transparency) -->
       <item name="android:colorForeground">#42888888</item>
-      <item name="colorAccent">@color/wallet_color_primary</item>
    </style>
 
    <style name="WalletTheme.ButtonStyle" parent="Widget.AppCompat.Button">
-      <item name="android:background">@color/wallet_color_primary</item>
       <item name="android:textAppearance">?android:attr/textAppearanceLarge</item>
-      <item name="android:textColor">@color/wallet_wizard_button_text_color</item>
+      <item name="android:textColor">@color/wallet_button_text_colors</item>
+      <item name="android:padding">@dimen/spacing_normal</item>
    </style>
 
    <style name="WalletTheme.TextAppearanceLarge" parent="TextAppearance.AppCompat.Large">

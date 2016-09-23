@@ -1,7 +1,5 @@
 package com.worldventures.dreamtrips.wallet.ui.dashboard.list.util.cell;
 
-import android.support.v7.widget.Toolbar;
-import android.view.MenuItem;
 import android.view.View;
 
 import com.techery.spares.annotations.Layout;
@@ -17,7 +15,6 @@ import butterknife.InjectView;
 public class CardStackHeaderCell extends AbstractDelegateCell<CardStackHeaderHolder, CardStackHeaderCell.Delegate> {
 
    @InjectView(R.id.widget_dashboard_smart_card) SmartCardWidget smartCardWidget;
-   @InjectView(R.id.toolbar) Toolbar toolbar;
 
    public CardStackHeaderCell(View view) {
       super(view);
@@ -25,16 +22,11 @@ public class CardStackHeaderCell extends AbstractDelegateCell<CardStackHeaderHol
 
    @Override
    protected void syncUIStateWithModel() {
-      setupToolbar();
       if (getModelObject().smartCard() != null) {
-         smartCardWidget.bindCard(getModelObject().smartCard());
+         smartCardWidget.bindCard(getModelObject().smartCard(), getModelObject().firmwareInfo());
       }
       smartCardWidget.bindCount(getModelObject().cardCount());
       smartCardWidget.setOnSettingsClickListener(v -> cellDelegate.onSettingsChosen());
-   }
-
-   private void setupToolbar() {
-      toolbar.setNavigationOnClickListener(it -> cellDelegate.onNavigateButtonClick());
    }
 
    @Override
@@ -45,7 +37,5 @@ public class CardStackHeaderCell extends AbstractDelegateCell<CardStackHeaderHol
    public interface Delegate extends CellDelegate<CardStackHeaderHolder> {
 
       void onSettingsChosen();
-
-      void onNavigateButtonClick();
    }
 }

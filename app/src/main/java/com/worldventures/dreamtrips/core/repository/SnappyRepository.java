@@ -59,7 +59,6 @@ public interface SnappyRepository {
    String TRIPS_DETAILS = "TRIPS_DETAILS";
 
    String DTL_MERCHANTS = "DTL_MERCHANTS";
-   String DTL_THIN_MERCHANTS = "DTL_MERCHANTS";
    String DTL_SELECTED_LOCATION = "DTL_SELECTED_LOCATION";
    String DTL_TRANSACTION_PREFIX = "DTL_TRANSACTION_";
    String DTL_LAST_MAP_POSITION = "DTL_LAST_MAP_POSITION";
@@ -165,10 +164,6 @@ public interface SnappyRepository {
    void saveDtlMerhants(List<DtlMerchant> merchants);
 
    List<DtlMerchant> getDtlMerchants();
-
-   void saveThinMerchants(List<ThinMerchant> merchants);
-
-   List<ThinMerchant> getThinMerchants();
 
    void saveAmenities(Collection<DtlMerchantAttribute> amenities);
 

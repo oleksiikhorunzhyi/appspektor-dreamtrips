@@ -26,7 +26,7 @@ import io.techery.janet.command.annotations.CommandAction;
 import rx.schedulers.Schedulers;
 
 @CommandAction
-public class ThinMerchantsCommand extends CommandWithError<List<ThinMerchant>> implements CachedAction<List<ThinMerchant>>, InjectableAction {
+public class ThinMerchantsCommand extends CommandWithError<List<ThinMerchant>> implements InjectableAction {
 
    @Inject @Named(JanetModule.JANET_API_LIB) Janet janet;
 
@@ -60,30 +60,7 @@ public class ThinMerchantsCommand extends CommandWithError<List<ThinMerchant>> i
       return R.string.dtl_load_merchant_error;
    }
 
-   public boolean isFromApi() {
-      return coordinates != null;
-   }
-
    public static ThinMerchantsCommand load(Location location) {
       return new ThinMerchantsCommand(location);
-   }
-
-   public static ThinMerchantsCommand restore() {
-      return new ThinMerchantsCommand(null);
-   }
-
-   @Override
-   public List<ThinMerchant> getCacheData() {
-      return getResult();
-   }
-
-   @Override
-   public void onRestore(ActionHolder holder, List<ThinMerchant> cache) {
-      this.cache = cache;
-   }
-
-   @Override
-   public CacheOptions getCacheOptions() {
-      return ImmutableCacheOptions.builder().restoreFromCache(!isFromApi()).saveToCache(isFromApi()).build();
    }
 }

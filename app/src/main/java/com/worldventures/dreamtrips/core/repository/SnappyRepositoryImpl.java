@@ -496,17 +496,6 @@ public class SnappyRepositoryImpl implements SnappyRepository {
    }
 
    @Override
-   public void saveThinMerchants(List<ThinMerchant> merchants) {
-      clearAllForKey(DTL_THIN_MERCHANTS);
-      putList(DTL_THIN_MERCHANTS, merchants);
-   }
-
-   @Override
-   public List<ThinMerchant> getThinMerchants() {
-      return readList(DTL_THIN_MERCHANTS, ThinMerchant.class);
-   }
-
-   @Override
    public void saveAmenities(Collection<DtlMerchantAttribute> amenities) {
       clearAllForKey(DTL_AMENITIES);
       putList(DTL_AMENITIES, amenities);

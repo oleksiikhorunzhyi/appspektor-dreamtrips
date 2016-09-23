@@ -38,7 +38,7 @@ public class WalletNewFirmwareAvailablePresenter extends WalletPresenter<WalletN
       smartCardInteractor.activeSmartCardPipe().createObservableResult(new GetActiveSmartCardCommand())
             .compose(bindViewIoToMainComposer())
             .subscribe(commandActionState -> {
-               getView().currentFirmwareInfo(commandActionState.getResult().currentSdkVersion());
+               getView().currentFirmwareInfo(commandActionState.getResult().sdkVersion());
             });
    }
 

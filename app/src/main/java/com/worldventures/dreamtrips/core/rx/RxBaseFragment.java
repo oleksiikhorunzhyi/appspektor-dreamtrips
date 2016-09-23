@@ -20,6 +20,14 @@ public abstract class RxBaseFragment<PM extends Presenter> extends BaseFragment<
       return lifecycleSubject.asObservable();
    }
 
+   public <T> Observable.Transformer<T, T> bindViewComposer() {
+      return observable -> bindUntilDropView(observable);
+   }
+
+   public <T> Observable.Transformer<T, T> bindViewStoppedComposer() {
+      return observable -> bindUntilStop(observable);
+   }
+
    @Override
    public <T> Observable<T> bind(Observable<T> observable) {
       return bindUntilDropView(observable);

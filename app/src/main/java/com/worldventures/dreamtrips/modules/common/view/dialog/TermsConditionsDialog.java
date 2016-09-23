@@ -19,8 +19,14 @@ import android.widget.ImageButton;
 
 import com.techery.spares.annotations.Layout;
 import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.core.utils.HeaderProvider;
 import com.worldventures.dreamtrips.core.utils.IntentUtils;
 import com.worldventures.dreamtrips.modules.common.presenter.TermsConditionsDialogPresenter;
+
+import java.util.HashMap;
+import java.util.Map;
+
+import javax.inject.Inject;
 
 import butterknife.InjectView;
 
@@ -32,6 +38,8 @@ public class TermsConditionsDialog extends BaseDialogFragmentWithPresenter<Terms
    @InjectView(R.id.accept) Button btnAccept;
    @InjectView(R.id.reject) Button btnReject;
    @InjectView(R.id.btn_retry) ImageButton btnRetry;
+
+   @Inject HeaderProvider headerProvider;
 
    private String termsText;
    private boolean onErrorReceived;
@@ -160,7 +168,7 @@ public class TermsConditionsDialog extends BaseDialogFragmentWithPresenter<Terms
 
    @Override
    public void loadContent(String url) {
-      termsContent.loadUrl(url);
+      termsContent.loadUrl(url, headerProvider.getStandardWebViewHeaders());
    }
 
    @Override

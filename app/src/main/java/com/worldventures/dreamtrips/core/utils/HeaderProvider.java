@@ -9,7 +9,9 @@ import com.worldventures.dreamtrips.core.janet.api_lib.NewDreamTripsHttpService;
 import com.worldventures.dreamtrips.core.session.UserSession;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class HeaderProvider {
 
@@ -60,6 +62,15 @@ public class HeaderProvider {
    @NonNull
    public Header getAppVersionHeader() {
       return new Header("DT-App-Version", appVersionNameBuilder.getSemanticVersionName());
+   }
+
+   public Map<String, String> getStandardWebViewHeaders() {
+      Map<String, String> headers = new HashMap<>();
+      HeaderProvider.Header appPlatformHeader = getAppPlatformHeader();
+      headers.put(appPlatformHeader.getName(), appPlatformHeader.getValue());
+      HeaderProvider.Header appVersionHeader = getAppVersionHeader();
+      headers.put(appVersionHeader.getName(), appVersionHeader.getValue());
+      return headers;
    }
 
    public static class Header {

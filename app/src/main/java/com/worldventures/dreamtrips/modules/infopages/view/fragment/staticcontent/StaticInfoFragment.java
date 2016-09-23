@@ -45,7 +45,9 @@ import com.worldventures.dreamtrips.modules.infopages.presenter.WebViewFragmentP
 import com.worldventures.dreamtrips.modules.membership.bundle.UrlBundle;
 
 import java.lang.ref.WeakReference;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 
 import javax.inject.Inject;
@@ -355,7 +357,18 @@ public abstract class StaticInfoFragment<T extends WebViewFragmentPresenter, P e
 
    @Override
    public void load(String url) {
-      if (!isLoading && savedState == null) webView.loadUrl(url);
+      if (!isLoading && savedState == null) webView.loadUrl(url, getHeaders());
+   }
+
+   private Map<String, String> getHeaders() {
+      Map<String, String> headers = new HashMap<>();
+      headers.putAll(headerProvider.getStandardWebViewHeaders());
+      headers.putAll(getAdditionalHeaders());
+      return headers;
+   }
+
+   protected Map<String, String> getAdditionalHeaders() {
+      return Collections.emptyMap();
    }
 
    @Override
@@ -559,23 +572,6 @@ public abstract class StaticInfoFragment<T extends WebViewFragmentPresenter, P e
       }
 
       @Override
-      public void load(String url) {
-         if (!isLoading && savedState == null) {
-            webView.loadUrl(url, getHeaders());
-         }
-      }
-
-      @NonNull
-      private Map<String, String> getHeaders() {
-         Map<String, String> additionalHeaders = new HashMap<>();
-         HeaderProvider.Header appPlatformHeader = headerProvider.getAppPlatformHeader();
-         additionalHeaders.put(appPlatformHeader.getName(), appPlatformHeader.getValue());
-         HeaderProvider.Header appVersionHeader = headerProvider.getAppVersionHeader();
-         additionalHeaders.put(appVersionHeader.getName(), appVersionHeader.getValue());
-         return additionalHeaders;
-      }
-
-      @Override
       public void afterCreateView(View rootView) {
          super.afterCreateView(rootView);
          webView.getSettings().setLoadWithOverviewMode(true);
@@ -618,23 +614,6 @@ public abstract class StaticInfoFragment<T extends WebViewFragmentPresenter, P e
       }
 
       @Override
-      public void load(String url) {
-         if (!isLoading && savedState == null) {
-            webView.loadUrl(url, getHeaders());
-         }
-      }
-
-      @NonNull
-      private Map<String, String> getHeaders() {
-         Map<String, String> additionalHeaders = new HashMap<>();
-         HeaderProvider.Header appPlatformHeader = headerProvider.getAppPlatformHeader();
-         additionalHeaders.put(appPlatformHeader.getName(), appPlatformHeader.getValue());
-         HeaderProvider.Header appVersionHeader = headerProvider.getAppVersionHeader();
-         additionalHeaders.put(appVersionHeader.getName(), appVersionHeader.getValue());
-         return additionalHeaders;
-      }
-
-      @Override
       public void afterCreateView(View rootView) {
          super.afterCreateView(rootView);
          webView.getSettings().setLoadWithOverviewMode(true);
@@ -657,12 +636,10 @@ public abstract class StaticInfoFragment<T extends WebViewFragmentPresenter, P e
       }
 
       @Override
-      public void load(String url) {
-         if (!isLoading && savedState == null) {
-            Map<String, String> additionalHeaders = new HashMap<>();
-            additionalHeaders.put(AUTHORIZATION_HEADER_KEY, ((WebViewFragmentPresenter) getPresenter()).getAuthToken());
-            webView.loadUrl(url, additionalHeaders);
-         }
+      protected Map<String, String> getAdditionalHeaders() {
+         Map<String, String> additionalHeaders = new HashMap<>();
+         additionalHeaders.put(AUTHORIZATION_HEADER_KEY, ((WebViewFragmentPresenter) getPresenter()).getAuthToken());
+         return additionalHeaders;
       }
 
       @Override
@@ -691,13 +668,11 @@ public abstract class StaticInfoFragment<T extends WebViewFragmentPresenter, P e
       private static final String BOOK_IT_HEADER = "Android" + "-" + Build.VERSION.RELEASE + "-" + BuildConfig.versionMajor + "." + BuildConfig.versionMinor + "." + BuildConfig.versionPatch;
 
       @Override
-      public void load(String url) {
-         if (!isLoading && savedState == null) {
-            Map<String, String> additionalHeaders = new HashMap<>();
-            additionalHeaders.put(BOOK_IT_HEADER_KEY, BOOK_IT_HEADER);
-            additionalHeaders.put(AUTHORIZATION_HEADER_KEY, getPresenter().getAuthToken());
-            webView.loadUrl(url, additionalHeaders);
-         }
+      protected Map<String, String> getAdditionalHeaders() {
+         Map<String, String> additionalHeaders = new HashMap<>();
+         additionalHeaders.put(BOOK_IT_HEADER_KEY, BOOK_IT_HEADER);
+         additionalHeaders.put(AUTHORIZATION_HEADER_KEY, getPresenter().getAuthToken());
+         return additionalHeaders;
       }
 
       @Override

@@ -38,6 +38,7 @@ public class FetchFirmwareInfoCommand extends Command<FirmwareInfo> implements I
                .byteSize(10000)
                .releaseNotes("Amazing new update")
                .versionName("5.0.0")
+               .downloadUrl("http://uweziegenhagen.de/wp-content/uploads/2012/06/BRD.pdf")
                .build();
       } else {
          return ImmutableFirmwareInfo.builder()

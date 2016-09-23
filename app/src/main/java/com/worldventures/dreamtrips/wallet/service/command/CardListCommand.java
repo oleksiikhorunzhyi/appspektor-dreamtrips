@@ -48,6 +48,10 @@ public class CardListCommand extends Command<List<Card>> implements InjectableAc
       return new CardListCommand(new AddOperationFunc(card));
    }
 
+   public static CardListCommand edit(Card card) {
+      return new CardListCommand(new EditOperationFunc(card));
+   }
+
    private CardListCommand(Func1<List<Card>, Observable<List<Card>>> operationFunc) {
       this.operationFunc = operationFunc;
    }
@@ -112,6 +116,21 @@ public class CardListCommand extends Command<List<Card>> implements InjectableAc
       @Override
       public Observable<List<Card>> call(List<Card> cards) {
          cards.add(card);
+         return Observable.just(cards);
+      }
+   }
+
+   private static final class EditOperationFunc implements Func1<List<Card>, Observable<List<Card>>> {
+      private Card card;
+
+      public EditOperationFunc(Card card) {
+         this.card = card;
+      }
+
+      @Override
+      public Observable<List<Card>> call(List<Card> cards) {
+         cards.set(cards.indexOf(Queryable.from(cards)
+               .firstOrDefault(element -> element.id().equals(card.id()))), card);
          return Observable.just(cards);
       }
    }

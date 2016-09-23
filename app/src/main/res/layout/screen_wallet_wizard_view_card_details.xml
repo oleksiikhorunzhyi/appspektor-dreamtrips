@@ -36,20 +36,38 @@
             android:text="@string/wallet_add_card_details_option_set_as_default_card"
             />
 
-      <TextView
+      <LinearLayout
             android:id="@+id/billing_address_label"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_alignParentStart="true"
-            android:textAppearance="?android:attr/textAppearanceSmall"
             android:layout_below="@+id/default_payment_card_checkbox"
-            android:layout_marginTop="@dimen/wallet_details_screen_component_margin_top"
-            android:text="@string/wallet_card_details_label_billing_address"
-            />
+            android:orientation="horizontal"
+            >
+
+         <TextView
+               android:layout_width="0dp"
+               android:layout_height="wrap_content"
+               android:layout_weight="1"
+               android:textAppearance="?android:attr/textAppearanceSmall"
+               android:layout_marginTop="@dimen/wallet_details_screen_component_margin_top"
+               android:text="@string/wallet_card_details_label_billing_address"
+               />
+
+         <ImageView
+               android:id="@+id/edit_billing_address"
+               android:layout_width="wrap_content"
+               android:layout_height="wrap_content"
+               android:layout_gravity="bottom"
+               android:padding="@dimen/spacing_tiny"
+               android:src="@drawable/ic_wallet_pencil_gray"
+               />
+
+      </LinearLayout>
 
       <TextView
             android:id="@+id/address_textview"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_alignLeft="@+id/billing_address_label"
             android:layout_below="@+id/billing_address_label"

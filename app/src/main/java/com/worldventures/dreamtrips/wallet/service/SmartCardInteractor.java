@@ -17,9 +17,9 @@ import com.worldventures.dreamtrips.wallet.service.command.SetDisableDefaultCard
 import com.worldventures.dreamtrips.wallet.service.command.SetLockStateCommand;
 import com.worldventures.dreamtrips.wallet.service.command.SetStealthModeCommand;
 import com.worldventures.dreamtrips.wallet.service.command.SmartCardModifier;
-import com.worldventures.dreamtrips.wallet.service.command.http.FetchFirmwareInfoCommand;
-import com.worldventures.dreamtrips.wallet.service.command.http.FetchRecordIssuerInfoCommand;
+import com.worldventures.dreamtrips.wallet.service.command.UpdateCardDetailsDataCommand;
 import com.worldventures.dreamtrips.wallet.service.command.UpdateSmartCardConnectionStatus;
+import com.worldventures.dreamtrips.wallet.service.command.http.FetchRecordIssuerInfoCommand;
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -65,6 +65,7 @@ public final class SmartCardInteractor {
    private final ActionPipe<FetchDefaultCardCommand> fetchDefaultCardCommandPipe;
    private final ActionPipe<SetDefaultCardOnDeviceCommand> setDefaultCardOnDeviceCommandPipe;
    private final ActionPipe<DeleteRecordAction> deleteCardPipe;
+   private final ActionPipe<UpdateCardDetailsDataCommand> updateCardDetailsPipe;
    private final ActionPipe<DisconnectAction> disconnectPipe;
    private final ActionPipe<UpdateSmartCardConnectionStatus> updateSmartCardConnectionStatusPipe;
 
@@ -96,6 +97,7 @@ public final class SmartCardInteractor {
       fetchDefaultCardCommandPipe = janet.createPipe(FetchDefaultCardCommand.class, Schedulers.io());
       setDefaultCardOnDeviceCommandPipe = janet.createPipe(SetDefaultCardOnDeviceCommand.class, Schedulers.io());
       deleteCardPipe = janet.createPipe(DeleteRecordAction.class, Schedulers.io());
+      updateCardDetailsPipe = janet.createPipe(UpdateCardDetailsDataCommand.class, Schedulers.io());
 
       disconnectPipe = janet.createPipe(DisconnectAction.class, Schedulers.io());
       updateSmartCardConnectionStatusPipe = janet.createPipe(UpdateSmartCardConnectionStatus.class, Schedulers.io());
@@ -138,6 +140,10 @@ public final class SmartCardInteractor {
 
    public ActionPipe<DeleteRecordAction> deleteCardPipe() {
       return deleteCardPipe;
+   }
+
+   public ActionPipe<UpdateCardDetailsDataCommand> updatePipe() {
+      return updateCardDetailsPipe;
    }
 
    public ActionPipe<GetActiveSmartCardCommand> activeSmartCardPipe() {
@@ -215,10 +221,14 @@ public final class SmartCardInteractor {
                   .flatMap(deleteCommand -> cardsListPipe.createObservable(remove(valueOf(deleteCommand.recordId)))),
             addRecordPipe
                   .observeSuccess()
-                  .flatMap(attachCardCommand -> cardsListPipe.createObservable(add(attachCardCommand.bankCard()))))
-            .subscribe(new ActionStateSubscriber<CardListCommand>().onSuccess(cardListCommand -> cardStacksPipe.send(CardStacksCommand
-                  .get(false))).onFail((cardListCommand, throwable) -> {
-               throw new IllegalStateException("Cannot perform operation onto card list cache", throwable);
-            }));
+                  .flatMap(attachCardCommand -> cardsListPipe.createObservable(add(attachCardCommand.bankCard()))),
+            updateCardDetailsPipe
+                  .observeSuccess()
+                  .flatMap(editCardCommand -> cardsListPipe.createObservable(add(editCardCommand.bankCard()))))
+            .subscribe(new ActionStateSubscriber<CardListCommand>()
+                  .onSuccess(cardListCommand -> cardStacksPipe.send(CardStacksCommand.get(false)))
+                  .onFail((cardListCommand, throwable) -> {
+                     throw new IllegalStateException("Cannot perform operation onto card list cache", throwable);
+                  }));
    }
 }

@@ -76,6 +76,6 @@ public class EditCardDetailsScreen extends WalletFrameLayout<EditCardDetailsPres
             .zip(zipField.getText().toString().trim())
             .build();
 
-      getPresenter().onCardInfoConfirmed(addressInfo, true, true);
+      getPresenter().onCardAddressConfirmed(addressInfo);
    }
 }

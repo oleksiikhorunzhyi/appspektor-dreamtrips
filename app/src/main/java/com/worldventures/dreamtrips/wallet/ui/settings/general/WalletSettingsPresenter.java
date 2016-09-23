@@ -51,6 +51,7 @@ public class WalletSettingsPresenter extends WalletPresenter<WalletSettingsPrese
       super.attachView(view);
       view.testNewFirmwareAvailable(temporaryStorage.newFirmwareIsAvailable());
       view.testFirmwareIsCompatible(temporaryStorage.firmwareIsCompatible());
+      view.testEnoughSpaceForFirmware(temporaryStorage.enoughSpaceForFirmware());
 
       observeSmartCardChanges();
 
@@ -58,6 +59,8 @@ public class WalletSettingsPresenter extends WalletPresenter<WalletSettingsPrese
       observeLockController(view);
       observeFirmwareAvailableController(view);
       observeFirmwareCompatibleController(view);
+
+      observeEnoughSpace(view);
       observeConnectionController(view);
       observeFirmwareUpdates();
    }
@@ -84,7 +87,8 @@ public class WalletSettingsPresenter extends WalletPresenter<WalletSettingsPrese
             .compose(bindViewIoToMainComposer())
             .subscribe(
                   OperationSubscriberWrapper.<SetStealthModeCommand>forView(getView().provideOperationDelegate())
-                        .onSuccess(action -> stealthModeChangedMessage(action.stealthModeEnabled), action -> {})
+                        .onSuccess(action -> stealthModeChangedMessage(action.stealthModeEnabled), action -> {
+                        })
                         .onFail(throwableHelper.provideMessageHolder(
                               command -> getView().stealthModeStatus(smartCard.stealthMode()))
                         )
@@ -95,7 +99,8 @@ public class WalletSettingsPresenter extends WalletPresenter<WalletSettingsPrese
             .observe()
             .compose(bindViewIoToMainComposer())
             .subscribe(OperationSubscriberWrapper.<SetLockStateCommand>forView(getView().provideOperationDelegate())
-                  .onSuccess(setLockStateCommand -> {})
+                  .onSuccess(setLockStateCommand -> {
+                  })
                   .onFail(getContext().getString(R.string.wallet_dashboard_unlock_error), a -> getView().lockStatus(smartCard
                         .lock()))
                   .wrap());
@@ -139,6 +144,14 @@ public class WalletSettingsPresenter extends WalletPresenter<WalletSettingsPrese
             .skip(1)
             .filter(compatible -> temporaryStorage.firmwareIsCompatible() != compatible)
             .subscribe(this::changeFirmwareIsCompatible);
+   }
+
+   private void observeEnoughSpace(Screen view) {
+      view.testEnoughSpaceForFirmware()
+            .compose(bindView())
+            .skip(1)
+            .filter(compatible -> temporaryStorage.enoughSpaceForFirmware() != compatible)
+            .subscribe(this::changeEnoughSpace);
    }
 
    private void manageConnection(boolean connected) {
@@ -210,6 +223,13 @@ public class WalletSettingsPresenter extends WalletPresenter<WalletSettingsPrese
       firmwareInteractor.firmwareInfoPipe().send(new FetchFirmwareInfoCommand());
    }
 
+   // for test and demo
+   private void changeEnoughSpace(boolean enoughSpace) {
+      temporaryStorage.enoughSpaceForFirmware(enoughSpace);
+      //for ui will updated
+      firmwareInteractor.firmwareInfoPipe().send(new FetchFirmwareInfoCommand());
+   }
+
    private void lockStatusChanged(boolean lock) {
       smartCardInteractor.lockPipe().send(new SetLockStateCommand(lock));
    }
@@ -248,6 +268,8 @@ public class WalletSettingsPresenter extends WalletPresenter<WalletSettingsPrese
 
       void testFirmwareIsCompatible(boolean compatible);
 
+      void testEnoughSpaceForFirmware(boolean compatible);
+
       Observable<Boolean> stealthModeStatus();
 
       Observable<Boolean> lockStatus();
@@ -257,5 +279,7 @@ public class WalletSettingsPresenter extends WalletPresenter<WalletSettingsPrese
       Observable<Boolean> testNewFirmwareAvailable();
 
       Observable<Boolean> testFirmwareIsCompatible();
+
+      Observable<Boolean> testEnoughSpaceForFirmware();
    }
 }

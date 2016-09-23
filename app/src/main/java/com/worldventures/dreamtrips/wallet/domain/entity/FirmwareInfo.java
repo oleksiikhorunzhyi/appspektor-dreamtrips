@@ -18,4 +18,6 @@ public abstract class FirmwareInfo {
 
    @Nullable
    public abstract String releaseNotes();
+
+   public abstract String downloadUrl();
 }

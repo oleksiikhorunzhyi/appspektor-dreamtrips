@@ -2,6 +2,7 @@ package com.worldventures.dreamtrips.wallet.ui.settings.firmware.newavailable;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.Toolbar;
 import android.util.AttributeSet;
 import android.widget.Button;
@@ -12,6 +13,8 @@ import com.worldventures.dreamtrips.wallet.domain.entity.FirmwareInfo;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletFrameLayout;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.OperationScreen;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.delegate.DialogOperationScreen;
+
+import org.apache.commons.io.FileUtils;
 
 import butterknife.InjectView;
 import butterknife.OnClick;
@@ -62,7 +65,7 @@ public class WalletNewFirmwareScreen
 
    @OnClick(R.id.download_install_btn)
    protected void onAttachmentButtonClicked() {
-      getPresenter().downloadAndInstall();
+      getPresenter().downloadButtonClicked();
    }
 
    @Override
@@ -75,7 +78,8 @@ public class WalletNewFirmwareScreen
    @Override
    public void availableFirmwareInfo(FirmwareInfo firmwareInfo) {
       availableVersion.setText(getResources().getString(R.string.wallet_settings_version, firmwareInfo.versionName()));
-      availableVersionSize.setText(getResources().getString(R.string.wallet_settings_update_size, firmwareInfo.byteSize() / 1000)); // convert to KB
+      String size = FileUtils.byteCountToDisplaySize(firmwareInfo.byteSize());
+      availableVersionSize.setText(getResources().getString(R.string.wallet_settings_update_size, size)); // convert to KB
       newVersionDescription.setText(firmwareInfo.releaseNotes());
 
       latestVersion.setText(getResources().getString(R.string.wallet_settings_version_latest, firmwareInfo.versionName()));
@@ -84,5 +88,17 @@ public class WalletNewFirmwareScreen
    @Override
    public void currentFirmwareInfo(String version) {
       currentVersion.setText(getResources().getString(R.string.wallet_settings_version_current, version));
+   }
+
+   @Override
+   public void insufficientSpace(long missingByteSpace) {
+      String size = FileUtils.byteCountToDisplaySize(missingByteSpace);
+      new AlertDialog.Builder(getContext())
+            .setTitle(R.string.wallet_firmware_space_alert_title)
+            .setMessage(getContext().getString(R.string.wallet_firmware_space_alert_description, size))
+            .setPositiveButton(R.string.wallet_firmware_space_alert_settings_action, (dialogInterface, i) -> getPresenter()
+                  .openSettings())
+            .setNegativeButton(R.string.wallet_firmware_space_alert_cancel_action, null)
+            .show();
    }
 }

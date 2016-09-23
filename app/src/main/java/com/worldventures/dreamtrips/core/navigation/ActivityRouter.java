@@ -5,8 +5,8 @@ import android.content.ActivityNotFoundException;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.support.annotation.NonNull;
-import android.support.annotation.StringDef;
 import android.webkit.MimeTypeMap;
 
 import com.techery.spares.ui.routing.ActivityBoundRouter;
@@ -19,8 +19,6 @@ import com.worldventures.dreamtrips.modules.common.view.activity.Player360Activi
 import com.worldventures.dreamtrips.modules.player.PodcastPlayerActivity;
 
 import java.io.File;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
 
 public class ActivityRouter extends ActivityBoundRouter {
 
@@ -108,5 +106,11 @@ public class ActivityRouter extends ActivityBoundRouter {
       } catch (android.content.ActivityNotFoundException exception) {
          startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://play.google.com/store/apps/details?id=" + appPackageName)));
       }
+   }
+
+   public void openSettings() {
+      Intent intent = new Intent(Settings.ACTION_INTERNAL_STORAGE_SETTINGS);
+      intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+      startActivity(intent);
    }
 }

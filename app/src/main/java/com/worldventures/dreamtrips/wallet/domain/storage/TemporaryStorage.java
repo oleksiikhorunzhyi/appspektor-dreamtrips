@@ -8,8 +8,10 @@ public class TemporaryStorage {
 
    private boolean newFirmwareIsAvailable;
    private boolean firmwareIsCompatible = true;
+   private boolean enoughSpaceForFirmware = true;
 
-   @Inject TemporaryStorage() {
+   @Inject
+   TemporaryStorage() {
    }
 
    public boolean newFirmwareIsAvailable() {
@@ -26,5 +28,13 @@ public class TemporaryStorage {
 
    public void firmwareIsCompatible(boolean firmwareIsCompatible) {
       this.firmwareIsCompatible = firmwareIsCompatible;
+   }
+
+   public void enoughSpaceForFirmware(boolean notEnoughSpaceForFirmware) {
+      this.enoughSpaceForFirmware = notEnoughSpaceForFirmware;
+   }
+
+   public boolean enoughSpaceForFirmware() {
+      return enoughSpaceForFirmware;
    }
 }

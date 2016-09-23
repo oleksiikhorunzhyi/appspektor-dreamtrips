@@ -15,8 +15,8 @@ public class StaticPageProvider {
    //// URLS
    //////////////////////////////////////////
 
-   private static final String ENROLL_MEMBER_URL = ENDPOINT + "/gateway/enroll_member?userId=%user_id%";
-   private static final String ENROLL_REP_URL = ENDPOINT + "/gateway/enroll_rep?userId=%user_id%";
+   private static final String ENROLL_MEMBER_URL = ENDPOINT + "/gateway/enroll_member?username=%username%";
+   private static final String ENROLL_REP_URL = ENDPOINT + "/gateway/enroll_rep?username=%username%";
    private static final String BOOKING_PAGE_URL = ENDPOINT + "/gateway/booking_page/%trip_id%";
    private static final String OTA_PAGE_URL = ENDPOINT + "/gateway/ota_page";
    private static final String FAQ_URL = ENDPOINT + "/gateway/faq";
@@ -29,7 +29,7 @@ public class StaticPageProvider {
    //// Query params
    //////////////////////////////////////////
 
-   private static final String USER_ID = "%user_id%";
+   private static final String USER_NAME = "%username%";
    private static final String TRIP_ID = "%trip_id%";
 
    private SessionHolder<UserSession> appSessionHolder;
@@ -40,11 +40,11 @@ public class StaticPageProvider {
    }
 
    public String getEnrollMemberUrl() {
-      return ENROLL_MEMBER_URL.replace(USER_ID, String.valueOf(appSessionHolder.get().get().getUser().getId()));
+      return ENROLL_MEMBER_URL.replace(USER_NAME, String.valueOf(appSessionHolder.get().get().getUser().getUsername()));
    }
 
    public String getEnrollRepUrl() {
-      return ENROLL_REP_URL.replace(USER_ID, String.valueOf(appSessionHolder.get().get().getUser().getId()));
+      return ENROLL_REP_URL.replace(USER_NAME, String.valueOf(appSessionHolder.get().get().getUser().getUsername()));
    }
 
    public String getEnrollUpgradeUrl() {
@@ -81,15 +81,14 @@ public class StaticPageProvider {
 
    public String getEnrollMerchantUrl(MerchantIdBundle args) {
       StringBuilder builder = new StringBuilder(BuildConfig.DreamTripsApi);
+      UserSession userSession = appSessionHolder.get().get();
       builder.append("/gateway/dtl/enroll_merchant")
             .append("?username=")
-            .append(appSessionHolder.get()
-                  .get()
-                  .getUsername())
+            .append(userSession.getUser().getUsername())
             .append("&sso=")
-            .append(appSessionHolder.get().get().getLegacyApiToken())
+            .append(userSession.getLegacyApiToken())
             .append("&locale=")
-            .append(appSessionHolder.get().get().getLocale());
+            .append(userSession.getLocale());
       //
       if (args != null) {
          builder.append("&intent=suggestProspect").append("&prospectId=").append(args.getMerchantId());

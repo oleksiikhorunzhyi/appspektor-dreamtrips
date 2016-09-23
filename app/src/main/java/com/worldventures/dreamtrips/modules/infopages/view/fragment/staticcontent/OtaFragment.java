@@ -33,12 +33,10 @@ public class OtaFragment extends AuthorizedStaticInfoFragment<UrlBundle> {
    }
 
    @Override
-   public void load(String url) {
-      if (!isLoading && savedState == null) {
-         Map<String, String> additionalHeaders = new HashMap<>();
-         additionalHeaders.put(AUTHORIZATION_HEADER_KEY, getPresenter().getAuthToken());
-         webView.loadUrl(url, additionalHeaders);
-      }
+   protected Map<String, String> getAdditionalHeaders() {
+      Map<String, String> additionalHeaders = new HashMap<>();
+      additionalHeaders.put(AUTHORIZATION_HEADER_KEY, getPresenter().getAuthToken());
+      return additionalHeaders;
    }
 
    @Override

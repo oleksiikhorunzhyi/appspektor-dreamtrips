@@ -1,9 +1,12 @@
 package com.worldventures.dreamtrips.modules.common;
 
+import android.content.Context;
+
 import com.messenger.di.MessengerActivityModule;
 import com.messenger.ui.activity.MessengerActivity;
 import com.messenger.ui.presenter.ToolbarPresenter;
 import com.techery.spares.module.Injector;
+import com.techery.spares.module.qualifier.ForActivity;
 import com.techery.spares.module.qualifier.ForApplication;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.component.ComponentDescription;
@@ -15,6 +18,7 @@ import com.worldventures.dreamtrips.core.session.acl.Feature;
 import com.worldventures.dreamtrips.core.session.acl.FeatureManager;
 import com.worldventures.dreamtrips.core.ui.fragment.BaseImageFragment;
 import com.worldventures.dreamtrips.core.ui.fragment.BaseImagePresenter;
+import com.worldventures.dreamtrips.core.utils.ViewUtils;
 import com.worldventures.dreamtrips.modules.bucketlist.BucketListModule;
 import com.worldventures.dreamtrips.modules.common.api.CopyFileCommand;
 import com.worldventures.dreamtrips.modules.common.presenter.ActivityPresenter;
@@ -120,7 +124,7 @@ public class CommonModule {
    }
 
    @Provides
-   ComponentsConfig provideComponentsConfig(FeatureManager featureManager) {
+   ComponentsConfig provideComponentsConfig(FeatureManager featureManager, @ForActivity Context context) {
       List<String> activeComponents = new ArrayList<>();
 
       featureManager.with(Feature.SOCIAL, () -> activeComponents.add(FeedModule.FEED));
@@ -133,8 +137,11 @@ public class CommonModule {
       featureManager.with(Feature.BOOK_TRAVEL, () -> activeComponents.add(TripsModule.OTA));
       activeComponents.add(TripsImagesModule.TRIP_IMAGES);
       featureManager.with(Feature.MEMBERSHIP, () -> activeComponents.add(VideoModule.MEMBERSHIP));
+
+      if (!ViewUtils.isTablet(context))
+         featureManager.with(Feature.WALLET, () -> activeComponents.add(WalletActivityModule.WALLET));
+
       activeComponents.add(BucketListModule.BUCKETLIST);
-      activeComponents.add(WalletActivityModule.WALLET);
       activeComponents.add(ProfileModule.MY_PROFILE);
 
       featureManager.with(Feature.REP_TOOLS, () -> activeComponents.add(ReptoolsModule.REP_TOOLS));

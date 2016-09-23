@@ -1,6 +1,7 @@
 package com.worldventures.dreamtrips.modules.dtl_flow.parts.map;
 
 import com.google.android.gms.maps.model.LatLng;
+import com.worldventures.dreamtrips.modules.dtl.model.merchant.ThinMerchant;
 import com.worldventures.dreamtrips.modules.dtl_flow.DtlPresenter;
 import com.worldventures.dreamtrips.modules.dtl_flow.ViewState;
 
@@ -12,9 +13,13 @@ public interface DtlMapPresenter extends DtlPresenter<DtlMapScreen, ViewState.EM
 
    void locationChangeRequested();
 
-   void onMarkerClick(String merchantId);
+   void onMarkerClick(ThinMerchant merchant);
+
+   void onMarkerFocused();
 
    void onLoadMerchantsClick(LatLng cameraPosition);
 
    void onListClicked();
+
+   void retryLoadMerchant();
 }

@@ -2,18 +2,19 @@ package com.worldventures.dreamtrips.modules.dtl.event;
 
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchant;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.Merchant;
+import com.worldventures.dreamtrips.modules.dtl.model.merchant.ThinMerchant;
 
 public class ToggleMerchantSelectionEvent {
 
-   private DtlMerchant DtlMerchant;
+   private ThinMerchant thinMerchant;
    private Merchant merchant;
 
-   public ToggleMerchantSelectionEvent(DtlMerchant DtlMerchant) {
-      this.DtlMerchant = DtlMerchant;
+   public ToggleMerchantSelectionEvent(ThinMerchant merchant) {
+      this.thinMerchant = merchant;
    }
 
-   public DtlMerchant getDtlMerchant() {
-      return DtlMerchant;
+   public ThinMerchant getThinMerchant() {
+      return thinMerchant;
    }
 
    public ToggleMerchantSelectionEvent(Merchant merchant) {

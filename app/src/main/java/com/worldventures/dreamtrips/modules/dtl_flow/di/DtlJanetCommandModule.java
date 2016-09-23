@@ -11,6 +11,7 @@ import com.worldventures.dreamtrips.modules.dtl.service.action.DtlSearchLocation
 import com.worldventures.dreamtrips.modules.dtl.service.action.DtlTransactionAction;
 import com.worldventures.dreamtrips.modules.dtl.service.action.DtlUpdateAmenitiesAction;
 import com.worldventures.dreamtrips.modules.dtl.service.action.MerchantByIdCommand;
+import com.worldventures.dreamtrips.modules.dtl.service.action.ThinMerchantsCommand;
 
 import dagger.Module;
 
@@ -26,7 +27,8 @@ import dagger.Module;
             MerchantDetailsViewCommand.class,
             AttributesAction.class,
             DtlLocationCommand.class,
-            MerchantByIdCommand.class
+            MerchantByIdCommand.class,
+            ThinMerchantsCommand.class
       },
       complete = false, library = true)
 public class DtlJanetCommandModule {

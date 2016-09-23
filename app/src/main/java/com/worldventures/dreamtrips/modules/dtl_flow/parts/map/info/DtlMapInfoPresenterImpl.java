@@ -1,48 +1,39 @@
 package com.worldventures.dreamtrips.modules.dtl_flow.parts.map.info;
 
 import android.content.Context;
-import android.support.annotation.Nullable;
 import android.text.TextUtils;
 import android.util.Pair;
 
 import com.techery.spares.module.Injector;
-import com.worldventures.dreamtrips.api.dtl.merchants.MerchantByIdHttpAction;
-import com.worldventures.dreamtrips.core.rx.composer.IoToMainComposer;
 import com.worldventures.dreamtrips.modules.dtl.analytics.DtlAnalyticsCommand;
 import com.worldventures.dreamtrips.modules.dtl.analytics.MerchantFromSearchEvent;
-import com.worldventures.dreamtrips.modules.dtl.event.DtlMapInfoReadyEvent;
-import com.worldventures.dreamtrips.modules.dtl.event.DtlShowMapInfoEvent;
+import com.worldventures.dreamtrips.modules.dtl.event.MapInfoReadyAction;
+import com.worldventures.dreamtrips.modules.dtl.event.ShowMapInfoAction;
 import com.worldventures.dreamtrips.modules.dtl.event.ToggleMerchantSelectionEvent;
-import com.worldventures.dreamtrips.modules.dtl.model.mapping.MerchantMapper;
-import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchant;
-import com.worldventures.dreamtrips.modules.dtl.model.merchant.Merchant;
+import com.worldventures.dreamtrips.modules.dtl.model.merchant.ThinMerchant;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.filter.DtlFilterData;
-import com.worldventures.dreamtrips.modules.dtl.model.merchant.offer.Offer;
 import com.worldventures.dreamtrips.modules.dtl.service.DtlFilterMerchantInteractor;
 import com.worldventures.dreamtrips.modules.dtl.service.DtlLocationInteractor;
 import com.worldventures.dreamtrips.modules.dtl.service.DtlMerchantInteractor;
+import com.worldventures.dreamtrips.modules.dtl.service.PresentationInteractor;
 import com.worldventures.dreamtrips.modules.dtl.service.action.DtlFilterDataAction;
 import com.worldventures.dreamtrips.modules.dtl.service.action.DtlLocationCommand;
+import com.worldventures.dreamtrips.modules.dtl.service.action.MerchantByIdCommand;
 import com.worldventures.dreamtrips.modules.dtl_flow.DtlPresenterImpl;
-import com.worldventures.dreamtrips.modules.dtl_flow.FlowUtil;
 import com.worldventures.dreamtrips.modules.dtl_flow.ViewState;
-import com.worldventures.dreamtrips.modules.dtl_flow.parts.details.DtlMerchantDetailsPath;
 
 import javax.inject.Inject;
-
-import flow.Flow;
-import flow.History;
-import flow.path.Path;
 
 public class DtlMapInfoPresenterImpl extends DtlPresenterImpl<DtlMapInfoScreen, ViewState.EMPTY> implements DtlMapInfoPresenter {
 
    @Inject DtlMerchantInteractor merchantInteractor;
    @Inject DtlFilterMerchantInteractor filterInteractor;
    @Inject DtlLocationInteractor locationInteractor;
+   @Inject PresentationInteractor presentationInteractor;
    //
-   protected DtlMerchant merchant;
+   protected ThinMerchant merchant;
 
-   public DtlMapInfoPresenterImpl(Context context, Injector injector, DtlMerchant merchant) {
+   public DtlMapInfoPresenterImpl(Context context, Injector injector, ThinMerchant merchant) {
       super(context);
       injector.inject(this);
       this.merchant = merchant;
@@ -53,33 +44,19 @@ public class DtlMapInfoPresenterImpl extends DtlPresenterImpl<DtlMapInfoScreen, 
       super.onAttachedToWindow();
       //
       getView().setMerchant(merchant);
-   }
-
-   public void onEvent(DtlShowMapInfoEvent event) {
-      getView().visibleLayout(true);
+      //
+      presentationInteractor.showMapInfoPipe()
+            .observeSuccess()
+            .compose(bindView())
+            .subscribe(action -> getView().visibleLayout(true));
    }
 
    @Override
    public void onMarkerClick() {
       eventBus.post(new ToggleMerchantSelectionEvent(merchant));
       trackIfNeeded();
-      //loadFullMerchant();
-   }
-
-   // TODO :: load merchant and navigate to details screen
-   private void loadFullMerchant() {
-   }
-
-   private void navigateToDetails(Merchant merchant) {
-      Path path = new DtlMerchantDetailsPath(FlowUtil.currentMaster(getContext()), merchant, null);
-      if (Flow.get(getContext()).getHistory().size() < 2) {
-         Flow.get(getContext()).set(path);
-      } else {
-         History.Builder historyBuilder = Flow.get(getContext()).getHistory().buildUpon();
-         historyBuilder.pop();
-         historyBuilder.push(path);
-         Flow.get(getContext()).setHistory(historyBuilder.build(), Flow.Direction.FORWARD);
-      }
+      //
+      merchantInteractor.merchantByIdHttpPipe().send(MerchantByIdCommand.create(merchant.id()));
    }
 
    private void trackIfNeeded() {
@@ -101,6 +78,6 @@ public class DtlMapInfoPresenterImpl extends DtlPresenterImpl<DtlMapInfoScreen, 
 
    @Override
    public void onSizeReady(int height) {
-      eventBus.post(new DtlMapInfoReadyEvent(height));
+      presentationInteractor.mapPopupReadyPipe().send(MapInfoReadyAction.create(height));
    }
 }

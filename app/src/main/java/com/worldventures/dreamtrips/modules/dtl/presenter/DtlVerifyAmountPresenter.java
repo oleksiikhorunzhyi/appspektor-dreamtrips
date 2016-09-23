@@ -1,22 +1,16 @@
 package com.worldventures.dreamtrips.modules.dtl.presenter;
 
 import com.worldventures.dreamtrips.core.rx.RxView;
-import com.worldventures.dreamtrips.core.rx.composer.ImmediateComposer;
 import com.worldventures.dreamtrips.modules.common.presenter.JobPresenter;
-import com.worldventures.dreamtrips.modules.dtl.helper.MerchantHelper;
-import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchant;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.Merchant;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.offer.Currency;
 import com.worldventures.dreamtrips.modules.dtl.model.transaction.DtlTransaction;
 import com.worldventures.dreamtrips.modules.dtl.model.transaction.ImmutableDtlTransaction;
 import com.worldventures.dreamtrips.modules.dtl.service.DtlMerchantInteractor;
 import com.worldventures.dreamtrips.modules.dtl.service.DtlTransactionInteractor;
-import com.worldventures.dreamtrips.modules.dtl.service.action.DtlMerchantByIdAction;
 import com.worldventures.dreamtrips.modules.dtl.service.action.DtlTransactionAction;
 
 import javax.inject.Inject;
-
-import io.techery.janet.helper.ActionStateSubscriber;
 
 public class DtlVerifyAmountPresenter extends JobPresenter<DtlVerifyAmountPresenter.View> {
 
@@ -37,7 +31,7 @@ public class DtlVerifyAmountPresenter extends JobPresenter<DtlVerifyAmountPresen
             .map(DtlTransactionAction::getResult)
             .compose(bindViewIoToMainComposer())
             .subscribe(transaction -> {
-               view.attachTransaction(transaction, MerchantHelper.merchantDefaultCurrency(merchant));
+               view.attachTransaction(transaction, merchant.asMerchantAttributes().defaultCurrency());
                view.attachDtPoints(Double.valueOf(transaction.getPoints()).intValue());
             }, apiErrorPresenter::handleError);
 

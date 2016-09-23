@@ -2,18 +2,16 @@ package com.worldventures.dreamtrips.modules.map.model;
 
 import com.google.android.gms.maps.model.LatLng;
 import com.google.maps.android.clustering.ClusterItem;
-import com.worldventures.dreamtrips.modules.dtl.model.merchant.MerchantType;
+import com.worldventures.dreamtrips.modules.dtl.model.merchant.ThinMerchant;
 
 public class DtlClusterItem implements ClusterItem {
 
    private final LatLng latLng;
-   private final String id;
-   private MerchantType merchantType;
+   private final ThinMerchant merchant;
 
-   public DtlClusterItem(String id, LatLng latLng, MerchantType merchantType) {
-      this.id = id;
-      this.latLng = latLng;
-      this.merchantType = merchantType;
+   public DtlClusterItem(ThinMerchant merchant) {
+      this.merchant = merchant;
+      this.latLng = new LatLng(merchant.coordinates().lat(), merchant.coordinates().lng());
    }
 
    @Override
@@ -21,11 +19,7 @@ public class DtlClusterItem implements ClusterItem {
       return latLng;
    }
 
-   public String getId() {
-      return id;
-   }
-
-   public MerchantType getMerchantType() {
-      return merchantType;
+   public ThinMerchant getMerchant() {
+      return merchant;
    }
 }

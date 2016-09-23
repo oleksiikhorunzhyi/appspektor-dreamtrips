@@ -14,9 +14,9 @@ public class MerchantSingleImageDataInflater extends MerchantCommonDataInflater 
    @InjectView(R.id.merchant_details_cover) ImageryDraweeView cover;
 
    @Override
-   protected void onMerchantApply() {
-      super.onMerchantApply();
-      setImage(merchant.images());
+   protected void onMerchantAttributesApply() {
+      super.onMerchantAttributesApply();
+      setImage(merchantAttributes.images());
    }
 
    private void setImage(List<MerchantMedia> mediaList) {

@@ -6,7 +6,6 @@ import com.amazonaws.mobileconnectors.s3.transferutility.TransferObserver;
 import com.worldventures.dreamtrips.api.dtl.merchants.EstimationHttpAction;
 import com.worldventures.dreamtrips.api.dtl.merchants.requrest.ImmutableEstimationParams;
 import com.worldventures.dreamtrips.core.rx.RxView;
-import com.worldventures.dreamtrips.core.rx.composer.ImmediateComposer;
 import com.worldventures.dreamtrips.core.utils.DateTimeUtils;
 import com.worldventures.dreamtrips.core.utils.events.ImagePickRequestEvent;
 import com.worldventures.dreamtrips.core.utils.events.ImagePickedEvent;
@@ -17,15 +16,12 @@ import com.worldventures.dreamtrips.modules.common.view.ApiErrorView;
 import com.worldventures.dreamtrips.modules.dtl.analytics.CaptureReceiptEvent;
 import com.worldventures.dreamtrips.modules.dtl.analytics.DtlAnalyticsCommand;
 import com.worldventures.dreamtrips.modules.dtl.analytics.VerifyAmountEvent;
-import com.worldventures.dreamtrips.modules.dtl.helper.MerchantHelper;
-import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchant;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.Merchant;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.offer.Currency;
 import com.worldventures.dreamtrips.modules.dtl.model.transaction.DtlTransaction;
 import com.worldventures.dreamtrips.modules.dtl.model.transaction.ImmutableDtlTransaction;
 import com.worldventures.dreamtrips.modules.dtl.service.DtlMerchantInteractor;
 import com.worldventures.dreamtrips.modules.dtl.service.DtlTransactionInteractor;
-import com.worldventures.dreamtrips.modules.dtl.service.action.DtlMerchantByIdAction;
 import com.worldventures.dreamtrips.modules.dtl.service.action.DtlTransactionAction;
 import com.worldventures.dreamtrips.modules.tripsimages.view.custom.PickImageDelegate;
 
@@ -72,7 +68,7 @@ public class DtlScanReceiptPresenter extends JobPresenter<DtlScanReceiptPresente
             }, apiErrorPresenter::handleError);
       //
       //
-      view.showCurrency(MerchantHelper.merchantDefaultCurrency(merchant));
+      view.showCurrency(merchant.asMerchantAttributes().defaultCurrency());
       //
       bindApiJob();
    }
@@ -110,8 +106,7 @@ public class DtlScanReceiptPresenter extends JobPresenter<DtlScanReceiptPresente
 
    public void verify() {
       analyticsInteractor.dtlAnalyticsCommandPipe()
-            .send(DtlAnalyticsCommand.create(new VerifyAmountEvent(merchant, MerchantHelper.merchantDefaultCurrency(merchant)
-                  .code(), amount)));
+            .send(DtlAnalyticsCommand.create(new VerifyAmountEvent(merchant.asMerchantAttributes(), amount)));
       transactionInteractor.transactionActionPipe()
             .createObservableResult(DtlTransactionAction.update(merchant, transaction -> ImmutableDtlTransaction.copyOf(transaction)
                   .withBillTotal(amount)))
@@ -120,7 +115,7 @@ public class DtlScanReceiptPresenter extends JobPresenter<DtlScanReceiptPresente
                   .createObservableResult(new EstimationHttpAction(merchant.id(), ImmutableEstimationParams.builder()
                         .checkinTime(DateTimeUtils.currentUtcString())
                         .billTotal(transaction.getBillTotal())
-                        .currencyCode(MerchantHelper.merchantDefaultCurrency(merchant).code())
+                        .currencyCode(merchant.asMerchantAttributes().defaultCurrency().code())
                         .build())))
             .compose(bindViewIoToMainComposer())
             .subscribe(action -> {
@@ -163,7 +158,7 @@ public class DtlScanReceiptPresenter extends JobPresenter<DtlScanReceiptPresente
 
    private void attachPhoto(String filePath) {
       analyticsInteractor.dtlAnalyticsCommandPipe()
-            .send(DtlAnalyticsCommand.create(new CaptureReceiptEvent(merchant)));
+            .send(DtlAnalyticsCommand.create(new CaptureReceiptEvent(merchant.asMerchantAttributes())));
       view.attachReceipt(Uri.parse(filePath));
       //
       UploadTask uploadTask = new UploadTask();

@@ -4,6 +4,7 @@ import android.support.annotation.StringRes;
 
 import com.worldventures.dreamtrips.R;
 
+// TODO :: remove
 public enum MerchantType {
    OFFER(R.string.dtl_merchant_tab_offers),
    DINING(R.string.dtl_merchant_tab_dining);

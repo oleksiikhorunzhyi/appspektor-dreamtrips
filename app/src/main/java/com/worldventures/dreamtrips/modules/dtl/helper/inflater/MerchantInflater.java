@@ -9,7 +9,7 @@ public interface MerchantInflater {
 
    void setView(View rootView);
 
-   void applyMerchant(Merchant merchant);
+   void applyMerchantAttributes(MerchantAttributes merchant);
 
    void release();
 }

@@ -39,13 +39,13 @@ public class MerchantWorkingHoursInflater extends MerchantDataInflater {
    }
 
    @Override
-   protected void onMerchantApply() {
-      if (!MerchantHelper.merchantHasOperationDays(merchant)) {
+   protected void onMerchantAttributesApply() {
+      if (!merchantAttributes.hasOperationDays()) {
          ViewUtils.setViewVisibility(expandedView, View.GONE);
       } else {
-         adapter = new MerchantWorkingHoursAdapter(rootView.getContext(), merchant, injector);
+         adapter = new MerchantWorkingHoursAdapter(rootView.getContext(), merchantAttributes, injector);
          adapter.registerCell(ImmutableOperationDay.class, WorkingHoursCell.class);
-         adapter.setItems(merchant.operationDays());
+         adapter.setItems(merchantAttributes.operationDays());
          hoursRecyclerView.setAdapter(adapter);
       }
    }

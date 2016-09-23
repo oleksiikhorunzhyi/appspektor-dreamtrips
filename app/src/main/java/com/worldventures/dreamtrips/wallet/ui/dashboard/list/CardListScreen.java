@@ -12,6 +12,7 @@ import android.support.v7.widget.Toolbar;
 import android.util.AttributeSet;
 import android.view.View;
 
+import com.afollestad.materialdialogs.MaterialDialog;
 import com.eowise.recyclerview.stickyheaders.StickyHeadersBuilder;
 import com.eowise.recyclerview.stickyheaders.StickyHeadersItemDecoration;
 import com.innahema.collections.query.queriables.Queryable;
@@ -33,7 +34,6 @@ import java.util.List;
 
 import butterknife.InjectView;
 import butterknife.OnClick;
-import cn.pedant.SweetAlert.SweetAlertDialog;
 
 public class CardListScreen extends WalletFrameLayout<CardListPresenter.Screen, CardListPresenter, CardListPath> implements CardListPresenter.Screen {
 
@@ -97,11 +97,12 @@ public class CardListScreen extends WalletFrameLayout<CardListPresenter.Screen, 
 
    @Override
    public void showAddCardErrorDialog() {
-      SweetAlertDialog dialog = new SweetAlertDialog(getContext(), SweetAlertDialog.ERROR_TYPE)
-            .setTitleText("")
-            .setContentText(getString(R.string.wallet_wizard_full_card_list_error_message));
-      dialog.show();
-      dialog.showCancelButton(true);
+      new MaterialDialog.Builder(getContext())
+            .content(R.string.wallet_wizard_full_card_list_error_message)
+            .positiveText(R.string.ok)
+            .negativeText(R.string.cancel)
+            .build()
+            .show();
    }
 
    @Override
@@ -154,7 +155,6 @@ public class CardListScreen extends WalletFrameLayout<CardListPresenter.Screen, 
          public void onSettingsChosen() {
             presenter.onSettingsChosen();
          }
-
       });
 
       bankCardList.setAdapter(adapter);

@@ -31,6 +31,7 @@ import com.worldventures.dreamtrips.modules.dtl.service.DtlFilterMerchantInterac
 import com.worldventures.dreamtrips.modules.dtl.service.DtlLocationInteractor;
 import com.worldventures.dreamtrips.modules.dtl.service.DtlMerchantInteractor;
 import com.worldventures.dreamtrips.modules.dtl.service.DtlTransactionInteractor;
+import com.worldventures.dreamtrips.modules.dtl.service.PresentationInteractor;
 import com.worldventures.dreamtrips.modules.feed.manager.FeedEntityManager;
 import com.worldventures.dreamtrips.modules.membership.api.PhoneContactRequest;
 import com.worldventures.dreamtrips.modules.tripsimages.view.util.EditPhotoTagsCallback;
@@ -113,6 +114,12 @@ public class ManagerModule {
    @Provides
    AttributesInteractor provideDtlAttributesInteractor(SessionActionPipeCreator sessionActionPipeCreator) {
       return new AttributesInteractor(sessionActionPipeCreator);
+   }
+
+   @Singleton
+   @Provides
+   PresentationInteractor providePresentationInteractor(SessionActionPipeCreator sessionActionPipeCreator) {
+      return new PresentationInteractor(sessionActionPipeCreator);
    }
 
    @Singleton

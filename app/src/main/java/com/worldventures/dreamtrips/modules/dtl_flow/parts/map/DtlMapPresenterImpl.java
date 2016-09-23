@@ -10,7 +10,8 @@ import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.api.action.CommandWithError;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
-import com.worldventures.dreamtrips.modules.dtl.event.DtlMapInfoReadyEvent;
+import com.worldventures.dreamtrips.modules.dtl.event.MapInfoReadyAction;
+import com.worldventures.dreamtrips.modules.dtl.event.ShowMapInfoAction;
 import com.worldventures.dreamtrips.modules.dtl.helper.DtlLocationHelper;
 import com.worldventures.dreamtrips.modules.dtl.helper.holder.MerchantByIdParamsHolder;
 import com.worldventures.dreamtrips.modules.dtl.location.LocationDelegate;
@@ -25,9 +26,9 @@ import com.worldventures.dreamtrips.modules.dtl.service.DtlFilterMerchantInterac
 import com.worldventures.dreamtrips.modules.dtl.service.DtlLocationInteractor;
 import com.worldventures.dreamtrips.modules.dtl.service.DtlMerchantInteractor;
 import com.worldventures.dreamtrips.modules.dtl.service.DtlTransactionInteractor;
+import com.worldventures.dreamtrips.modules.dtl.service.PresentationInteractor;
 import com.worldventures.dreamtrips.modules.dtl.service.action.DtlFilterDataAction;
 import com.worldventures.dreamtrips.modules.dtl.service.action.DtlLocationCommand;
-import com.worldventures.dreamtrips.modules.dtl.service.action.DtlMerchantByIdAction;
 import com.worldventures.dreamtrips.modules.dtl.service.action.DtlMerchantsAction;
 import com.worldventures.dreamtrips.modules.dtl.service.action.MerchantByIdCommand;
 import com.worldventures.dreamtrips.modules.dtl.service.action.ThinMerchantsCommand;
@@ -69,11 +70,9 @@ public class DtlMapPresenterImpl extends DtlPresenterImpl<DtlMapScreen, ViewStat
    @Inject DtlFilterMerchantInteractor filterInteractor;
    @Inject DtlLocationInteractor locationInteractor;
    @Inject DtlTransactionInteractor pipesInteractor;
+   @Inject PresentationInteractor presentationInteractor;
    //
    @State MerchantByIdParamsHolder actionParamsHolder;
-   //
-   private boolean mapReady;
-   private DtlMapInfoReadyEvent pendingMapInfoEvent;
 
    public DtlMapPresenterImpl(Context context, Injector injector) {
       super(context);
@@ -142,6 +141,12 @@ public class DtlMapPresenterImpl extends DtlPresenterImpl<DtlMapScreen, ViewStat
                   .onSuccess(this::onSuccessMerchantLoad)
                   .onProgress(this::onProgressMerchantLoad)
                   .onFail(this::onFailMerchantLoad));
+      //
+      presentationInteractor.mapPopupReadyPipe()
+            .observeSuccess()
+            .compose(bindView())
+            .map(MapInfoReadyAction::getResult)
+            .subscribe(popupHeight -> getView().prepareInfoWindow(popupHeight));
    }
 
    @SuppressWarnings("unused")
@@ -271,21 +276,6 @@ public class DtlMapPresenterImpl extends DtlPresenterImpl<DtlMapScreen, ViewStat
       merchantInteractor.merchantByIdHttpPipe().send(MerchantByIdParamsHolder.toAction(actionParamsHolder));
    }
 
-   private void checkPendingMapInfo() {
-      if (pendingMapInfoEvent != null) {
-         getView().prepareInfoWindow(pendingMapInfoEvent.height);
-         pendingMapInfoEvent = null;
-      }
-   }
-
-   public void onEvent(DtlMapInfoReadyEvent event) {
-      if (!mapReady) pendingMapInfoEvent = event;
-      else {
-         pendingMapInfoEvent = null;
-         getView().prepareInfoWindow(event.height);
-      }
-   }
-
    private void showPins(List<ThinMerchant> merchants) {
       getView().clearMap();
       Queryable.from(merchants).forEachR(merchant -> getView().addPin(merchant));
@@ -294,8 +284,6 @@ public class DtlMapPresenterImpl extends DtlPresenterImpl<DtlMapScreen, ViewStat
 
    @Override
    public void onMapLoaded() {
-      mapReady = true;
-      //
       connectInteractors();
       //
       getFirstCenterLocation().compose(bindViewIoToMainComposer()).subscribe(getView()::centerIn);
@@ -306,7 +294,6 @@ public class DtlMapPresenterImpl extends DtlPresenterImpl<DtlMapScreen, ViewStat
             .compose(bindView())
             .subscribe(marker -> getView().markerClick(marker));
       //
-      checkPendingMapInfo();
       gpsLocationDelegate.getLastKnownLocation()
             .compose(bindViewIoToMainComposer())
             .subscribe(location -> tryHideMyLocationButton(false), throwable -> tryHideMyLocationButton(true));
@@ -327,6 +314,11 @@ public class DtlMapPresenterImpl extends DtlPresenterImpl<DtlMapScreen, ViewStat
    @Override
    public void onMarkerClick(ThinMerchant merchant) {
       getView().showPinInfo(merchant);
+   }
+
+   @Override
+   public void onMarkerFocused() {
+      presentationInteractor.showMapInfoPipe().send(ShowMapInfoAction.create());
    }
 
    @Override

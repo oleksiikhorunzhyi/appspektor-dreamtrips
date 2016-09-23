@@ -27,9 +27,8 @@ import com.innahema.collections.query.queriables.Queryable;
 import com.trello.rxlifecycle.RxLifecycle;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.flow.activity.FlowActivity;
-import com.worldventures.dreamtrips.modules.dtl.event.DtlShowMapInfoEvent;
+import com.worldventures.dreamtrips.modules.dtl.event.ShowMapInfoAction;
 import com.worldventures.dreamtrips.modules.dtl.model.location.DtlLocation;
-import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchant;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.ThinMerchant;
 import com.worldventures.dreamtrips.modules.dtl.view.dialog.DialogFactory;
 import com.worldventures.dreamtrips.modules.dtl_flow.DtlLayout;
@@ -336,7 +335,7 @@ public class DtlMapScreenImpl extends DtlLayout<DtlMapScreen, DtlMapPresenter, D
       googleMap.animateCamera(CameraUpdateFactory.newLatLng(offsetTarget), CAMERA_DURATION, new GoogleMap.CancelableCallback() {
          @Override
          public void onFinish() {
-            onMarkerFocused();
+            getPresenter().onMarkerFocused();
          }
 
          @Override
@@ -369,9 +368,5 @@ public class DtlMapScreenImpl extends DtlLayout<DtlMapScreen, DtlMapPresenter, D
 
    private void hideInfoIfShown() {
       infoContainer.removeAllViews();
-   }
-
-   protected void onMarkerFocused() {
-      EventBus.getDefault().post(new DtlShowMapInfoEvent());
    }
 }

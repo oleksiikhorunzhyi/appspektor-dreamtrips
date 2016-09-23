@@ -94,7 +94,7 @@ public class DtlDetailsScreenImpl extends DtlLayout<DtlDetailsScreen, DtlDetails
       //
       merchantHoursInflater = new MerchantWorkingHoursInflater(injector);
       merchantDataInflater = new MerchantOffersInflater(injector);
-      merchantInfoInflater = new MerchantInfoInflater();
+      merchantInfoInflater = new MerchantInfoInflater(injector);
       //
       merchantDataInflater.registerOfferClickListener(offer -> getPresenter().onOfferClick(offer));
       merchantDataInflater.setView(this);

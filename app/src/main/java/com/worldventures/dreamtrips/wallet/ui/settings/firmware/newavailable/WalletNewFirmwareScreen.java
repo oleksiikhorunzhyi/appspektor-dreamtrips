@@ -4,7 +4,9 @@ import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.Toolbar;
+import android.text.method.ScrollingMovementMethod;
 import android.util.AttributeSet;
+import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
@@ -24,8 +26,8 @@ public class WalletNewFirmwareScreen
       implements WalletNewFirmwareAvailablePresenter.Screen {
 
    @InjectView(R.id.toolbar) Toolbar toolbar;
-   @InjectView(R.id.new_dt_app_required) TextView newDtAppRequired;
-   @InjectView(R.id.btn_update_dt) Button updateDtApp;
+   @InjectView(R.id.new_dt_app_required) View newDtAppRequired;
+   @InjectView(R.id.update_dt_app) View updateDtApp;
    @InjectView(R.id.available_version) TextView availableVersion;
    @InjectView(R.id.available_version_size) TextView availableVersionSize;
    @InjectView(R.id.latest_version) TextView latestVersion;
@@ -44,6 +46,7 @@ public class WalletNewFirmwareScreen
    @Override
    protected void onFinishInflate() {
       super.onFinishInflate();
+      newVersionDescription.setMovementMethod(new ScrollingMovementMethod());
       toolbar.setNavigationOnClickListener(v -> getPresenter().goBack());
    }
 
@@ -58,7 +61,7 @@ public class WalletNewFirmwareScreen
       return new DialogOperationScreen(this);
    }
 
-   @OnClick(R.id.btn_update_dt)
+   @OnClick(R.id.update_dt_app)
    protected void updateDtApp() {
       getPresenter().openMarket();
    }

@@ -10,16 +10,9 @@ import io.techery.janet.smartcard.model.ImmutableRecord;
 import io.techery.janet.smartcard.model.Record;
 import io.techery.mappery.MapperyContext;
 
+import static com.worldventures.dreamtrips.wallet.domain.converter.Converter.*;
+
 public class BankCardToRecordConverter implements com.worldventures.dreamtrips.modules.mapping.converter.Converter<BankCard, Record> {
-   private final static String ADDRESS1_FIELD = "address1";
-   private final static String ADDRESS2_FIELD = "address2";
-   private final static String CITY_FIELD = "city";
-   private final static String STATE_FIELD = "state";
-   private final static String ZIP_FIELD = "zip";
-
-   private final static String TYPE_CARD_FIELD = "type_card";
-   private final static String BANK_NAME_FIELD = "bank_name";
-
    @Override
    public Class<BankCard> sourceClass() {
       return BankCard.class;

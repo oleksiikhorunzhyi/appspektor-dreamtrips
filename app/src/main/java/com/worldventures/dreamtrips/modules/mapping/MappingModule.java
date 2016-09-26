@@ -14,6 +14,8 @@ import com.worldventures.dreamtrips.modules.trips.model.converter.TripImageConve
 import com.worldventures.dreamtrips.modules.trips.model.converter.TripPinToPinConverter;
 import com.worldventures.dreamtrips.modules.trips.model.converter.TripWithDetailsToTripConverter;
 import com.worldventures.dreamtrips.modules.trips.model.converter.TripWithoutDetailsToTripConverter;
+import com.worldventures.dreamtrips.wallet.domain.converter.BankCardToRecordConverter;
+import com.worldventures.dreamtrips.wallet.domain.converter.RecordToBankCardConverter;
 
 import java.util.Set;
 
@@ -99,6 +101,18 @@ public class MappingModule {
    @Singleton
    Converter provideFeedbackTypeConverter() {
       return new FeedbackTypeConverter();
+   }
+
+   @Provides(type = Provides.Type.SET)
+   @Singleton
+   Converter provideBankCardToRecordConverter() {
+      return new BankCardToRecordConverter();
+   }
+
+   @Provides(type = Provides.Type.SET)
+   @Singleton
+   Converter provideRecordToBankCardConverter() {
+      return new RecordToBankCardConverter();
    }
 
    @Provides

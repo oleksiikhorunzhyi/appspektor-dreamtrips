@@ -5,7 +5,7 @@ import com.worldventures.dreamtrips.core.janet.cache.CacheOptions;
 import com.worldventures.dreamtrips.core.janet.cache.CachedAction;
 import com.worldventures.dreamtrips.core.janet.cache.ImmutableCacheOptions;
 import com.worldventures.dreamtrips.core.janet.dagger.InjectableAction;
-import com.worldventures.dreamtrips.wallet.domain.converter.BankCardConverter;
+import com.worldventures.dreamtrips.wallet.domain.entity.card.BankCard;
 import com.worldventures.dreamtrips.wallet.domain.entity.card.Card;
 
 import java.util.Collections;
@@ -19,6 +19,7 @@ import io.techery.janet.Command;
 import io.techery.janet.Janet;
 import io.techery.janet.command.annotations.CommandAction;
 import io.techery.janet.smartcard.action.records.GetMemberRecordsAction;
+import io.techery.mappery.MapperyContext;
 import rx.Observable;
 import rx.functions.Func1;
 
@@ -28,8 +29,7 @@ import static com.worldventures.dreamtrips.core.janet.JanetModule.JANET_WALLET;
 public class CardListCommand extends Command<List<Card>> implements InjectableAction, CachedAction<List<Card>> {
 
    @Inject @Named(JANET_WALLET) Janet janet;
-
-   private final BankCardConverter converter = new BankCardConverter();
+   @Inject MapperyContext mapperyContext;
 
    private Func1<List<Card>, Observable<List<Card>>> operationFunc;
    private boolean forceUpdate;
@@ -73,7 +73,7 @@ public class CardListCommand extends Command<List<Card>> implements InjectableAc
    private Observable<List<Card>> fetchFromDevice() {
       return janet.createPipe(GetMemberRecordsAction.class)
             .createObservableResult(new GetMemberRecordsAction())
-            .flatMap(action -> Observable.from(action.records).map(record -> (Card) converter.from(record)).toList());
+            .flatMap(action -> Observable.from(action.records).map(record -> (Card) mapperyContext.convert(record, BankCard.class)).toList());
    }
 
    @Override

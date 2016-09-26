@@ -24,6 +24,7 @@ import com.worldventures.dreamtrips.wallet.service.command.SetLockStateCommand;
 import com.worldventures.dreamtrips.wallet.service.command.SetStealthModeCommand;
 import com.worldventures.dreamtrips.wallet.service.command.SetupDefaultAddressCommand;
 import com.worldventures.dreamtrips.wallet.service.command.SetupUserDataCommand;
+import com.worldventures.dreamtrips.wallet.service.command.UpdateCardDetailsDataCommand;
 import com.worldventures.dreamtrips.wallet.service.command.http.AssociateCardUserCommand;
 import com.worldventures.dreamtrips.wallet.service.command.http.FetchFirmwareInfoCommand;
 import com.worldventures.dreamtrips.wallet.service.command.http.FetchRecordIssuerInfoCommand;
@@ -38,6 +39,7 @@ import dagger.Module;
             CompressImageForSmartCardCommand.class,
             CardListCommand.class,
             AttachCardCommand.class,
+            UpdateCardDetailsDataCommand.class,
             CardStacksCommand.class,
             LoadImageForSmartCardCommand.class,
             SetupUserDataCommand.class,

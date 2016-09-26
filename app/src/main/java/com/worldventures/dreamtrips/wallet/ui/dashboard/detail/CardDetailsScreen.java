@@ -61,6 +61,11 @@ public class CardDetailsScreen extends WalletFrameLayout<CardDetailsPresenter.Sc
       getPresenter().onDeleteCardClick();
    }
 
+   @OnClick(R.id.edit_billing_address)
+   public void onEditBillingAddress() {
+      getPresenter().editAddress();
+   }
+
    @Override
    public OperationScreen provideOperationDelegate() {
       return new DialogOperationScreen(this);

@@ -27,11 +27,14 @@ import com.worldventures.dreamtrips.modules.trips.storage.TripPinsStorage;
 import com.worldventures.dreamtrips.modules.trips.storage.TripsByUidsStorage;
 import com.worldventures.dreamtrips.modules.trips.storage.TripsDiskStorage;
 import com.worldventures.dreamtrips.modules.trips.storage.TripsStorage;
+import com.worldventures.dreamtrips.wallet.domain.entity.card.Card;
 import com.worldventures.dreamtrips.wallet.domain.storage.DefaultBankCardStorage;
 import com.worldventures.dreamtrips.wallet.domain.storage.SmartCardDetailsStorage;
 import com.worldventures.dreamtrips.wallet.domain.storage.SmartCardStorage;
 import com.worldventures.dreamtrips.wallet.domain.storage.TermsAndConditionsStorage;
 import com.worldventures.dreamtrips.wallet.domain.storage.WalletCardsDiskStorage;
+
+import java.util.List;
 
 import javax.inject.Singleton;
 
@@ -145,7 +148,7 @@ public class CacheActionStorageModule {
 
    @Singleton
    @Provides(type = Provides.Type.SET)
-   MultipleActionStorage provideWalletCardListStorage(SnappyRepository snappyRepository) {
+   ActionStorage provideWalletCardListStorage(SnappyRepository snappyRepository) {
       return new WalletCardsDiskStorage(snappyRepository);
    }
 

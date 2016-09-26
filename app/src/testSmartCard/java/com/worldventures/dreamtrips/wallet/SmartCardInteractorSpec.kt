@@ -234,7 +234,7 @@ class SmartCardInteractorSpec : BaseSpec({
       lateinit var mockedListOfCards: List<BankCard>
 
       val setOfMultiplyStorage: () -> Set<MultipleActionStorage<*>> = {
-         setOf(DefaultBankCardStorage(mockDb), WalletCardsDiskStorage(mockDb), SmartCardStorage(mockDb))
+         setOf(DefaultBankCardStorage(mockDb), SmartCardStorage(mockDb))
       }
 
       fun staticMockTextUtils() {
@@ -253,6 +253,7 @@ class SmartCardInteractorSpec : BaseSpec({
          val daggerCommandActionService = CommandActionService()
                .wrapCache()
                .bindMultiplyStorageSet(setOfMultiplyStorage())
+               .bindStorageSet(setOf(WalletCardsDiskStorage(mockDb)))
                .wrapDagger()
 
          janet = Janet.Builder()

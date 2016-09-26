@@ -19,6 +19,7 @@ import com.worldventures.dreamtrips.wallet.ui.common.base.WalletPresenter;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.WalletScreen;
 import com.worldventures.dreamtrips.wallet.ui.common.helper.OperationSubscriberWrapper;
 import com.worldventures.dreamtrips.wallet.ui.common.navigation.Navigator;
+import com.worldventures.dreamtrips.wallet.ui.wizard.edit_card.EditCardDetailsPath;
 import com.worldventures.dreamtrips.wallet.util.BankCardHelper;
 import com.worldventures.dreamtrips.wallet.util.CardUtils;
 
@@ -101,6 +102,10 @@ public class CardDetailsPresenter extends WalletPresenter<CardDetailsPresenter.S
 
    public void onDeleteCardClick() {
       getView().showDeleteCardDialog();
+   }
+
+   public void editAddress() {
+      navigator.go(new EditCardDetailsPath(bankCard));
    }
 
    public void onDeleteCardConfirmed() {

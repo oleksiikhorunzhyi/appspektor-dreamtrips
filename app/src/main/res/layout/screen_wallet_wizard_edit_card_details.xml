@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<com.worldventures.dreamtrips.wallet.ui.wizard.edit_card.EditCardDetailsScreen xmlns:android="http://schemas.android.com/apk/res/android"
+      xmlns:app="http://schemas.android.com/apk/res-auto"
+      android:layout_width="match_parent"
+      android:layout_height="match_parent"
+      android:theme="@style/WalletTheme"
+      >
+
+   <android.support.v7.widget.Toolbar
+         android:id="@+id/toolbar"
+         android:layout_width="match_parent"
+         android:layout_height="?attr/actionBarSize"
+         android:theme="@style/WalletTheme.ToolbarStyle"
+         app:title="@string/wallet_add_card_details_title"
+         />
+
+   <ScrollView
+         android:layout_width="match_parent"
+         android:layout_height="match_parent"
+         android:layout_marginTop="?attr/actionBarSize"
+         >
+
+      <LinearLayout
+            style="@style/WalletTheme.ContentContainerStyle"
+            android:orientation="vertical"
+            >
+
+         <include
+               android:id="@+id/address_info"
+               layout="@layout/include_wallet_address_info"
+               android:layout_width="match_parent"
+               android:layout_height="wrap_content"
+               />
+
+         <Button
+               android:id="@+id/confirm_button"
+               android:layout_width="match_parent"
+               android:layout_height="wrap_content"
+               android:layout_marginTop="@dimen/wallet_add_card_details_component_margin_top"
+               android:text="@string/wallet_add_card_details_button_confirm"
+               />
+      </LinearLayout>
+
+   </ScrollView>
+
+</com.worldventures.dreamtrips.wallet.ui.wizard.edit_card.EditCardDetailsScreen>

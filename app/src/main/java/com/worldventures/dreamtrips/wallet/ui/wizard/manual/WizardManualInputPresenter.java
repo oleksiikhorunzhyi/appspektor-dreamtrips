@@ -53,10 +53,7 @@ public class WizardManualInputPresenter extends WalletPresenter<WizardManualInpu
             .compose(bindViewIoToMainComposer())
             .compose(new ActionPipeCacheWiper<>(wizardInteractor.createAndConnectActionPipe()))
             .subscribe(OperationSubscriberWrapper.<CreateAndConnectToCardCommand>forView(getView().provideOperationDelegate())
-                  .onStart(getContext().getString(R.string.waller_wizard_scan_barcode_progress_label))
-                  .onSuccess(getContext().getString(R.string.wallet_got_it_label),
-                        command -> navigator.go(new WizardWelcomePath(command.getSmartCardId()))
-                  )
+                  .onSuccess(command -> navigator.go(new WizardWelcomePath(command.getSmartCardId())))
                   .onFail(throwable -> new OperationSubscriberWrapper.MessageActionHolder<>(getContext().getString(R.string.wallet_wizard_scid_validation_error),
                         command -> Timber.e("Could not connect to device")))
                   .wrap());

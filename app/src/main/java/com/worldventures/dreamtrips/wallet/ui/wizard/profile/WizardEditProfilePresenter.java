@@ -91,10 +91,8 @@ public class WizardEditProfilePresenter extends WalletPresenter<WizardEditProfil
             .observeWithReplay()
             .compose(bindViewIoToMainComposer())
             .compose(new ActionPipeCacheWiper<>(wizardInteractor.setupUserDataPipe()))
-            .subscribe(OperationSubscriberWrapper.<SetupUserDataCommand>forView(getView().provideOperationDelegate()).onStart(getContext()
-                  .getString(R.string.wallet_edit_profile_progress_dialog))
-                  .onSuccess(getContext().getString(R.string.wallet_edit_profile_success_dialog), setupUserDataCommand ->
-                        navigator.go(new WizardPinSetupPath(setupUserDataCommand.getResult())))
+            .subscribe(OperationSubscriberWrapper.<SetupUserDataCommand>forView(getView().provideOperationDelegate())
+                  .onSuccess(setupUserDataCommand -> navigator.go(new WizardPinSetupPath(setupUserDataCommand.getResult())))
                   .onFail(throwable -> createFailMessageActionHolder(throwable.getCause()))
                   .wrap());
    }

@@ -131,7 +131,6 @@ public class AddCardDetailsPresenter extends WalletPresenter<AddCardDetailsPrese
             .compose(bindViewIoToMainComposer())
             .compose(new ActionPipeCacheWiper<>(smartCardInteractor.saveCardDetailsDataPipe()))
             .subscribe(OperationSubscriberWrapper.<SaveCardDetailsDataCommand>forView(getView().provideOperationDelegate())
-                  .onStart("")
                   .onSuccess(saveCardDetailsDataCommand ->
                         navigator.single(new CardListPath(), Direction.REPLACE))
                   .onFail(throwable -> {

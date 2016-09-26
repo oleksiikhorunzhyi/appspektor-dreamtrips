@@ -87,8 +87,7 @@ public class WalletSettingsPresenter extends WalletPresenter<WalletSettingsPrese
             .compose(bindViewIoToMainComposer())
             .subscribe(
                   OperationSubscriberWrapper.<SetStealthModeCommand>forView(getView().provideOperationDelegate())
-                        .onSuccess(action -> stealthModeChangedMessage(action.stealthModeEnabled), action -> {
-                        })
+                        .onSuccess(action -> stealthModeChangedMessage(action.stealthModeEnabled))
                         .onFail(throwableHelper.provideMessageHolder(
                               command -> getView().stealthModeStatus(smartCard.stealthMode()))
                         )

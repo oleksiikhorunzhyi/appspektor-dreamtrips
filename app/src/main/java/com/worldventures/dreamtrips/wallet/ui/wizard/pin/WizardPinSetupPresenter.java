@@ -2,7 +2,6 @@ package com.worldventures.dreamtrips.wallet.ui.wizard.pin;
 
 import android.content.Context;
 import android.os.Parcelable;
-import android.support.annotation.Nullable;
 
 import com.techery.spares.module.Injector;
 import com.worldventures.dreamtrips.R;
@@ -61,8 +60,7 @@ public class WizardPinSetupPresenter extends WalletPresenter<WizardPinSetupPrese
             .compose(bindViewIoToMainComposer())
             .subscribe(new ActionStateSubscriber<StartPinSetupAction>().onFail((action1, throwable) -> getView().provideOperationDelegate()
                   .showError(getContext().getString(R.string.wallet_wizard_setup_error), null))
-                  .onStart(action -> getView().provideOperationDelegate()
-                        .showProgress(getContext().getString(R.string.wallet_wizard_setup_progress), null)));
+                  .onStart(action -> getView().provideOperationDelegate().showProgress()));
    }
 
    public void setupPIN() {

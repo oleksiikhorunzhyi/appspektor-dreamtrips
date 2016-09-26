@@ -7,6 +7,7 @@ import android.util.AttributeSet;
 import android.widget.CheckBox;
 import android.widget.TextView;
 
+import com.afollestad.materialdialogs.MaterialDialog;
 import com.jakewharton.rxbinding.widget.RxCompoundButton;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.wallet.domain.entity.AddressInfoWithLocale;
@@ -21,7 +22,6 @@ import com.worldventures.dreamtrips.wallet.util.BankCardHelper;
 
 import butterknife.InjectView;
 import butterknife.OnClick;
-import cn.pedant.SweetAlert.SweetAlertDialog;
 import rx.Observable;
 
 public class CardDetailsScreen extends WalletFrameLayout<CardDetailsPresenter.Screen, CardDetailsPresenter, CardDetailsPath> implements CardDetailsPresenter.Screen {
@@ -86,16 +86,14 @@ public class CardDetailsScreen extends WalletFrameLayout<CardDetailsPresenter.Sc
 
    @Override
    public void showDeleteCardDialog() {
-      Context context = getContext();
-      SweetAlertDialog sweetDialog = new SweetAlertDialog(context)
-            .setTitleText(context.getResources().getString(R.string.wallet_card_details_delete_card_dialog_title))
-            .setContentText(context.getResources().getString(R.string.wallet_card_details_delete_card_dialog_content))
-            .setConfirmClickListener(dialog -> {
-               dialog.dismissWithAnimation();
-               getPresenter().onDeleteCardConfirmed();
-            });
-      sweetDialog.show();
-      sweetDialog.showCancelButton(true);
+      new MaterialDialog.Builder(getContext())
+            .title(R.string.wallet_card_details_delete_card_dialog_title)
+            .content(R.string.wallet_card_details_delete_card_dialog_content)
+            .positiveText(R.string.ok)
+            .negativeText(R.string.cancel)
+            .onPositive((dialog, which) -> getPresenter().onDeleteCardConfirmed())
+            .build()
+            .show();
    }
 
    @Override

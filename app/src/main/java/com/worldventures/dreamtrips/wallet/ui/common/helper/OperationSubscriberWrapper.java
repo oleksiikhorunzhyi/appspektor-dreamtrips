@@ -17,37 +17,18 @@ public final class OperationSubscriberWrapper<T> {
 
    private OperationScreen view;
 
-   private MessageActionHolder<T> onStartHolder;
-   private MessageActionHolder<T> onSuccessHolder;
-
    private Func1<Throwable, MessageActionHolder<T>> onFailFactory;
    private Action2<T, Integer> onProgress;
+
+   private @Nullable Action1<T> onSuccesAction;
 
    private OperationSubscriberWrapper(OperationScreen view) {
       this.view = view;
    }
 
-   public OperationSubscriberWrapper<T> onStart(String message, @Nullable Action1<T> onStart) {
-      this.onStartHolder = new MessageActionHolder<>(message, onStart);
-      return this;
-   }
-
-   public OperationSubscriberWrapper<T> onStart(String message) {
-      return onStart(message, null);
-   }
-
-   public OperationSubscriberWrapper<T> onSuccess(String message, @Nullable Action1<T> onSuccess) {
-      this.onSuccessHolder = new MessageActionHolder<>(message, onSuccess);
-      return this;
-   }
-
-   public OperationSubscriberWrapper<T> onSuccess(MessageProvider<T> messageProvider, @Nullable Action1<T> onSuccess) {
-      this.onSuccessHolder = new MessageActionHolder<>(messageProvider, onSuccess);
-      return this;
-   }
-
    public OperationSubscriberWrapper<T> onSuccess(@Nullable Action1<T> onSuccess) {
-      return onSuccess(MessageProvider.NULL, onSuccess);
+      this.onSuccesAction = onSuccess;
+      return this;
    }
 
    public OperationSubscriberWrapper<T> onFail(String message, @Nullable Action1<T> onFail) {
@@ -71,31 +52,24 @@ public final class OperationSubscriberWrapper<T> {
    }
 
    public ActionStateSubscriber<T> wrap() {
-      return new ActionStateSubscriber<T>().onStart(t -> {
-         String message = hasActionMessage(onStartHolder) ? onStartHolder.message.provide(t) : view.context()
-               .getString(R.string.loading);
+      return new ActionStateSubscriber<T>().onStart(t -> view.showProgress())
+            .onSuccess(t -> {
+               view.hideProgress();
+               if (onSuccesAction != null) onSuccesAction.call(t);
+            })
+            .onFail((t, throwable) -> {
+               final MessageActionHolder<T> failHolder = onFailFactory != null ? onFailFactory.call(throwable) : null;
+               String message = hasActionMessage(failHolder) ? failHolder.message.provide(t) : view.context()
+                     .getString(R.string.error_something_went_wrong);
 
-         view.showProgress(message, o -> onStartHolder.action.call(t));
-      }).onSuccess(t -> {
-         String message = hasActionMessage(onSuccessHolder) ? onSuccessHolder.message.provide(t) : view.context()
-               .getString(R.string.ok);
-
-         view.hideProgress();
-         view.showSuccess(message, o -> {
-            if (onSuccessHolder != null && onSuccessHolder.action != null) onSuccessHolder.action.call(t);
-         });
-      }).onFail((t, throwable) -> {
-         final MessageActionHolder<T> failHolder = onFailFactory != null ? onFailFactory.call(throwable) : null;
-         String message = hasActionMessage(failHolder) ? failHolder.message.provide(t) : view.context()
-               .getString(R.string.error_something_went_wrong);
-
-         view.hideProgress();
-         view.showError(message, failHolder.action == null ? null : o -> failHolder.action.call(t));
-      }).onProgress((t, integer) -> {
-         if (onProgress != null) {
-            onProgress.call(t, integer);
-         }
-      });
+               view.hideProgress();
+               view.showError(message, failHolder.action == null ? null : o -> failHolder.action.call(t));
+            })
+            .onProgress((t, integer) -> {
+               if (onProgress != null) {
+                  onProgress.call(t, integer);
+               }
+            });
    }
 
    public static final class MessageActionHolder<T> {

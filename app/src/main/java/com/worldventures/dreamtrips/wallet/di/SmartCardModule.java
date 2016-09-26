@@ -4,6 +4,7 @@ import android.content.Context;
 
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.wallet.domain.storage.PersistentDeviceStorage;
+import com.worldventures.dreamtrips.wallet.service.FirmwareInteractor;
 import com.worldventures.dreamtrips.wallet.service.WizardInteractor;
 
 import javax.inject.Named;
@@ -51,5 +52,11 @@ public class SmartCardModule {
    @Provides
    WizardInteractor provideWizardInteractor(@Named(JANET_WALLET) Janet janet) {
       return new WizardInteractor(janet);
+   }
+
+   @Singleton
+   @Provides
+   FirmwareInteractor firmwareInteractor(@Named(JANET_WALLET) Janet janet) {
+      return new FirmwareInteractor(janet);
    }
 }

@@ -9,7 +9,9 @@ import com.worldventures.dreamtrips.modules.common.view.custom.tagview.viewgroup
 import com.worldventures.dreamtrips.modules.friends.api.GetFriendsQuery;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import icepick.State;
 import rx.functions.Action1;
@@ -22,10 +24,12 @@ public class EditPhotoTagsPresenter extends Presenter<EditPhotoTagsPresenter.Vie
    @State ArrayList<PhotoTag> locallyDeletedTags = new ArrayList<>();
 
    private long requestId;
+   private List<PhotoTag> suggestions;
    private List<PhotoTag> photoTags;
 
-   public EditPhotoTagsPresenter(long requestId, List<PhotoTag> photoTags) {
+   public EditPhotoTagsPresenter(long requestId, List<PhotoTag> suggestions, List<PhotoTag> photoTags) {
       this.requestId = requestId;
+      this.suggestions = suggestions;
       this.photoTags = photoTags;
    }
 
@@ -43,6 +47,16 @@ public class EditPhotoTagsPresenter extends Presenter<EditPhotoTagsPresenter.Vie
       return containsUserInLocallyAdded || (containsOnServer && !containUserInDeleted);
    }
 
+   public void onAddSuggestions() {
+      Set<PhotoTag> currentTags = new HashSet<>();
+      currentTags.addAll(photoTags);
+      currentTags.addAll(locallyAddedTags);
+      currentTags.removeAll(locallyDeletedTags);
+      List<PhotoTag> notIntersectingSuggestions =
+            PhotoTag.findSuggestionsNotIntersectingWithTags(suggestions, new ArrayList<>(currentTags));
+      view.addSuggestions(notIntersectingSuggestions);
+   }
+
    private boolean isContainUser(List<PhotoTag> tagList, User user) {
       return Queryable.from(tagList).map(tag -> tag.getUser() == null ? new User() : tag.getUser()).contains(user);
    }
@@ -55,6 +69,7 @@ public class EditPhotoTagsPresenter extends Presenter<EditPhotoTagsPresenter.Vie
    public void onTagDeleted(PhotoTag tag) {
       locallyDeletedTags.add(tag);
       locallyAddedTags.remove(tag);
+      onAddSuggestions();
    }
 
    public void onDone() {
@@ -68,5 +83,7 @@ public class EditPhotoTagsPresenter extends Presenter<EditPhotoTagsPresenter.Vie
    public interface View extends RxView {
 
       void notifyAboutTags(long requestId, ArrayList<PhotoTag> addedTags, ArrayList<PhotoTag> deletedTags);
+
+      void addSuggestions(List<PhotoTag> suggestions);
    }
 }

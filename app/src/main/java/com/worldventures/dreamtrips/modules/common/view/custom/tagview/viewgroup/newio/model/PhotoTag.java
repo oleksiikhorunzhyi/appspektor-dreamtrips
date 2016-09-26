@@ -60,7 +60,13 @@ public class PhotoTag implements Parcelable, Serializable, Cloneable {
       return targetUserId;
    }
 
-   public static boolean isIntersectedWithPhotoTags(List<PhotoTag> combinedTags, PhotoTag suggestion) {
+   public static List<PhotoTag> findSuggestionsNotIntersectingWithTags(List<PhotoTag> suggestions, List<PhotoTag> photoTags) {
+      return Queryable.from(suggestions)
+            .filter(element -> !PhotoTag.isIntersectedWithPhotoTags(photoTags, element))
+            .toList();
+   }
+
+   private static boolean isIntersectedWithPhotoTags(List<PhotoTag> combinedTags, PhotoTag suggestion) {
       return Queryable.from(combinedTags).any(element -> element.getProportionalPosition()
             .intersected(suggestion.getProportionalPosition()));
    }

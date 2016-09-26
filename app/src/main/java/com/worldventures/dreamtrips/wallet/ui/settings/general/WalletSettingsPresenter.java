@@ -72,7 +72,14 @@ public class WalletSettingsPresenter extends WalletPresenter<WalletSettingsPrese
             .subscribe(command -> {
                firmware = command.getResult();
                // this solution is not like iOS. After server was deploy, update this criteria
-               getView().firmwareUpdateCount(firmware.byteSize() > 0 ? 1 : 0);
+               boolean newFirmwareAvailable = firmware.byteSize() > 0;
+               if (newFirmwareAvailable) {
+                  getView().firmwareUpdateCount(1);
+                  getView().showFirmwareBadge();
+               } else {
+                  getView().firmwareUpdateCount(0);
+                  getView().showFirmwareVersion();
+               }
             });
    }
 
@@ -186,7 +193,7 @@ public class WalletSettingsPresenter extends WalletPresenter<WalletSettingsPrese
       view.lockStatus(smartCard.lock());
       view.disableDefaultPaymentValue(smartCard.disableCardDelay());
       view.autoClearSmartCardValue(smartCard.clearFlyeDelay());
-
+      view.firmwareVersion(smartCard.firmWareVersion());
    }
 
    public void goBack() {
@@ -264,6 +271,8 @@ public class WalletSettingsPresenter extends WalletPresenter<WalletSettingsPrese
 
       void firmwareUpdateCount(int count);
 
+      void firmwareVersion(String version);
+
       void testNewFirmwareAvailable(boolean available);
 
       void testFirmwareIsCompatible(boolean compatible);
@@ -281,5 +290,9 @@ public class WalletSettingsPresenter extends WalletPresenter<WalletSettingsPrese
       Observable<Boolean> testFirmwareIsCompatible();
 
       Observable<Boolean> testEnoughSpaceForFirmware();
+
+      void showFirmwareVersion();
+
+      void showFirmwareBadge();
    }
 }

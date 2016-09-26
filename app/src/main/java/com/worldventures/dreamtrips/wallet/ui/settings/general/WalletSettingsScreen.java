@@ -33,6 +33,7 @@ public class WalletSettingsScreen extends WalletFrameLayout<WalletSettingsPresen
    @InjectView(R.id.badgeFirmwareUpdates) BadgeView badgeFirmwareUpdates;
    @InjectView(R.id.disable_default_payment_card_label) TextView disableDefaultPaymentCardAfterLabel;
    @InjectView(R.id.auto_delete_cards_labels) TextView autoDeleteCardLabel;
+   @InjectView(R.id.firmware_version_label) TextView firmwareVersionLabel;
 
    private Observable<Boolean> stealthModeSwitcherObservable;
    private Observable<Boolean> lockSwitcherObservable;
@@ -123,11 +124,11 @@ public class WalletSettingsScreen extends WalletFrameLayout<WalletSettingsPresen
    @Override
    public void firmwareUpdateCount(int count) {
       badgeFirmwareUpdates.setText(String.valueOf(count));
-      if (count == 0) {
-         badgeFirmwareUpdates.hide();
-      } else {
-         badgeFirmwareUpdates.show();
-      }
+   }
+
+   @Override
+   public void firmwareVersion(String version) {
+      firmwareVersionLabel.setText(version);
    }
 
    @Override
@@ -173,6 +174,18 @@ public class WalletSettingsScreen extends WalletFrameLayout<WalletSettingsPresen
    @Override
    public Observable<Boolean> testEnoughSpaceForFirmware() {
       return testEnoughSpaceObservable;
+   }
+
+   @Override
+   public void showFirmwareVersion() {
+      badgeFirmwareUpdates.setVisibility(GONE);
+      firmwareVersionLabel.setVisibility(VISIBLE);
+   }
+
+   @Override
+   public void showFirmwareBadge() {
+      firmwareVersionLabel.setVisibility(GONE);
+      badgeFirmwareUpdates.setVisibility(VISIBLE);
    }
 
    @Override

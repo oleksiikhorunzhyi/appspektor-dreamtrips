@@ -11,6 +11,11 @@ public abstract class FirmwareInfo {
       return 0;
    }
 
+   @Value.Default
+   public String downloadUrl() {
+      return "";
+   }
+
    public abstract boolean isCompatible();
 
    @Nullable
@@ -18,6 +23,4 @@ public abstract class FirmwareInfo {
 
    @Nullable
    public abstract String releaseNotes();
-
-   public abstract String downloadUrl();
 }

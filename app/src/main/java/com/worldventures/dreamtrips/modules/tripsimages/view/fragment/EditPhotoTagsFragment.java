@@ -28,7 +28,6 @@ import com.worldventures.dreamtrips.modules.tripsimages.presenter.EditPhotoTagsP
 import com.worldventures.dreamtrips.modules.tripsimages.view.util.EditPhotoTagsCallback;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import javax.inject.Inject;
 
@@ -43,11 +42,10 @@ public class EditPhotoTagsFragment extends RxBaseFragmentWithArgs<EditPhotoTagsP
    @InjectView(R.id.iv_image) SimpleDraweeView ivImage;
    @InjectView(R.id.taggable_holder) PhotoTagHolder taggableImageHolder;
 
-   PhotoTagHolderManager photoTagHolderManager;
-
    @Override
    protected EditPhotoTagsPresenter createPresenter(Bundle savedInstanceState) {
-      return new EditPhotoTagsPresenter(getArgs().getRequestId(), getArgs().getSuggestions(), getArgs().getPhotoTags());
+      return new EditPhotoTagsPresenter(getArgs().getRequestId(), getArgs().getSuggestions(), getArgs().getPhotoTags(),
+            getArgs().getActiveSuggestion());
    }
 
    @Override
@@ -72,27 +70,6 @@ public class EditPhotoTagsFragment extends RxBaseFragmentWithArgs<EditPhotoTagsP
             ivImage.setController(createTaggableDraweeController());
          }
       });
-      //
-      photoTagHolderManager = new PhotoTagHolderManager(taggableImageHolder, getPresenter().getAccount(), getPresenter()
-            .getAccount());
-      photoTagHolderManager.setTagCreatedListener(photoTag -> getPresenter().onTagAdded(photoTag));
-      photoTagHolderManager.setTagDeletedListener(photoTag -> getPresenter().onTagDeleted(photoTag));
-      photoTagHolderManager.creationTagEnabled(true);
-      photoTagHolderManager.setFriendRequestProxy(getPresenter());
-   }
-
-   private void addTagsAndSuggestions() {
-      getPresenter().onAddSuggestions();
-      photoTagHolderManager.addExistsTagViews(getArgs().getPhotoTags());
-      if (getArgs().getActiveSuggestion() != null) {
-         photoTagHolderManager.addCreationTagBasedOnSuggestion(getArgs().getActiveSuggestion());
-      }
-   }
-
-   @Override
-   public void addSuggestions(List<PhotoTag> suggestions) {
-      photoTagHolderManager.addSuggestionTagViews(suggestions,
-            suggestion -> photoTagHolderManager.addCreationTagBasedOnSuggestion(suggestion));
    }
 
    @Override
@@ -130,12 +107,18 @@ public class EditPhotoTagsFragment extends RxBaseFragmentWithArgs<EditPhotoTagsP
       draweeController.addControllerListener(new BaseControllerListener<ImageInfo>() {
          @Override
          public void onFinalImageSet(String id, ImageInfo imageInfo, Animatable animatable) {
-            ivImage.post(() -> {
-               photoTagHolderManager.show(ivImage);
-               addTagsAndSuggestions();
-            });
+            ivImage.post(getPresenter()::onImageReady);
          }
       });
       return draweeController;
+   }
+
+   public void showImage(PhotoTagHolderManager manager) {
+      manager.show(ivImage);
+   }
+
+   @Override
+   public PhotoTagHolder getPhotoTagHolder() {
+      return taggableImageHolder;
    }
 }

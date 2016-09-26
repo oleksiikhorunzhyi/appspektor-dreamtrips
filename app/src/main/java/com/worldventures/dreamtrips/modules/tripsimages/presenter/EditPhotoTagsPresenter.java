@@ -4,6 +4,7 @@ import com.innahema.collections.query.queriables.Queryable;
 import com.worldventures.dreamtrips.core.rx.RxView;
 import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
+import com.worldventures.dreamtrips.modules.common.view.custom.tagview.viewgroup.newio.PhotoTagHolder;
 import com.worldventures.dreamtrips.modules.common.view.custom.tagview.viewgroup.newio.PhotoTagHolderManager;
 import com.worldventures.dreamtrips.modules.common.view.custom.tagview.viewgroup.newio.model.PhotoTag;
 import com.worldventures.dreamtrips.modules.friends.api.GetFriendsQuery;
@@ -20,17 +21,55 @@ public class EditPhotoTagsPresenter extends Presenter<EditPhotoTagsPresenter.Vie
 
    private static final int PAGE_SIZE = 100;
 
-   @State ArrayList<PhotoTag> locallyAddedTags = new ArrayList<>();
-   @State ArrayList<PhotoTag> locallyDeletedTags = new ArrayList<>();
-
    private long requestId;
+   private PhotoTag activeSuggestion;
    private List<PhotoTag> suggestions;
    private List<PhotoTag> photoTags;
 
-   public EditPhotoTagsPresenter(long requestId, List<PhotoTag> suggestions, List<PhotoTag> photoTags) {
+   @State ArrayList<PhotoTag> locallyAddedTags = new ArrayList<>();
+   @State ArrayList<PhotoTag> locallyDeletedTags = new ArrayList<>();
+
+   private PhotoTagHolderManager photoTagHolderManager;
+
+   public EditPhotoTagsPresenter(long requestId, List<PhotoTag> suggestions, List<PhotoTag> photoTags, PhotoTag activeSuggestion) {
       this.requestId = requestId;
       this.suggestions = suggestions;
       this.photoTags = photoTags;
+      this.activeSuggestion = activeSuggestion;
+   }
+
+   @Override
+   public void takeView(View view) {
+      super.takeView(view);
+      photoTagHolderManager = new PhotoTagHolderManager(view.getPhotoTagHolder(), getAccount(), getAccount());
+      photoTagHolderManager.setTagCreatedListener(this::onTagAdded);
+      photoTagHolderManager.setTagDeletedListener(this::onTagDeleted);
+      photoTagHolderManager.creationTagEnabled(true);
+      photoTagHolderManager.setFriendRequestProxy(this);
+   }
+
+   public void onImageReady() {
+      view.showImage(photoTagHolderManager);
+      addTagsAndSuggestions();
+   }
+
+   public void addTagsAndSuggestions() {
+      addSuggestions();
+      photoTagHolderManager.addExistsTagViews(photoTags);
+      if (activeSuggestion != null) {
+         photoTagHolderManager.addCreationTagBasedOnSuggestion(activeSuggestion);
+      }
+   }
+
+   public void addSuggestions() {
+      Set<PhotoTag> currentTags = new HashSet<>();
+      currentTags.addAll(photoTags);
+      currentTags.addAll(locallyAddedTags);
+      currentTags.removeAll(locallyDeletedTags);
+      List<PhotoTag> notIntersectingSuggestions =
+            PhotoTag.findSuggestionsNotIntersectingWithTags(suggestions, new ArrayList<>(currentTags));
+      photoTagHolderManager.addSuggestionTagViews(notIntersectingSuggestions,
+            suggestion -> photoTagHolderManager.addCreationTagBasedOnSuggestion(suggestion));
    }
 
    @Override
@@ -47,16 +86,6 @@ public class EditPhotoTagsPresenter extends Presenter<EditPhotoTagsPresenter.Vie
       return containsUserInLocallyAdded || (containsOnServer && !containUserInDeleted);
    }
 
-   public void onAddSuggestions() {
-      Set<PhotoTag> currentTags = new HashSet<>();
-      currentTags.addAll(photoTags);
-      currentTags.addAll(locallyAddedTags);
-      currentTags.removeAll(locallyDeletedTags);
-      List<PhotoTag> notIntersectingSuggestions =
-            PhotoTag.findSuggestionsNotIntersectingWithTags(suggestions, new ArrayList<>(currentTags));
-      view.addSuggestions(notIntersectingSuggestions);
-   }
-
    private boolean isContainUser(List<PhotoTag> tagList, User user) {
       return Queryable.from(tagList).map(tag -> tag.getUser() == null ? new User() : tag.getUser()).contains(user);
    }
@@ -69,7 +98,7 @@ public class EditPhotoTagsPresenter extends Presenter<EditPhotoTagsPresenter.Vie
    public void onTagDeleted(PhotoTag tag) {
       locallyDeletedTags.add(tag);
       locallyAddedTags.remove(tag);
-      onAddSuggestions();
+      addSuggestions();
    }
 
    public void onDone() {
@@ -84,6 +113,8 @@ public class EditPhotoTagsPresenter extends Presenter<EditPhotoTagsPresenter.Vie
 
       void notifyAboutTags(long requestId, ArrayList<PhotoTag> addedTags, ArrayList<PhotoTag> deletedTags);
 
-      void addSuggestions(List<PhotoTag> suggestions);
+      void showImage(PhotoTagHolderManager manager);
+
+      PhotoTagHolder getPhotoTagHolder();
    }
 }

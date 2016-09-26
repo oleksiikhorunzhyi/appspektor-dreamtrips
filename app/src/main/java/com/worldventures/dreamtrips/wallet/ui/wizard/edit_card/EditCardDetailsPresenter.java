@@ -5,7 +5,6 @@ import android.os.Parcelable;
 
 import com.techery.spares.module.Injector;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.core.janet.composer.ActionPipeCacheWiper;
 import com.worldventures.dreamtrips.core.utils.LocaleHelper;
 import com.worldventures.dreamtrips.wallet.domain.entity.AddressInfo;
 import com.worldventures.dreamtrips.wallet.domain.entity.AddressInfoWithLocale;
@@ -49,9 +48,8 @@ public class EditCardDetailsPresenter extends WalletPresenter<EditCardDetailsPre
 
    private void connectToUpdateCardDetailsPipe() {
       smartCardInteractor.updatePipe()
-            .observeWithReplay()
+            .observe()
             .compose(bindViewIoToMainComposer())
-            .compose(new ActionPipeCacheWiper<>(smartCardInteractor.updatePipe()))
             .subscribe(OperationSubscriberWrapper.<UpdateCardDetailsDataCommand>forView(getView().provideOperationDelegate())
                   .onSuccess(updateCardDetailsDataCommand -> navigator.single(new CardListPath(), Flow.Direction.REPLACE))
                   .onFail(throwable -> {

@@ -44,6 +44,7 @@ import static com.worldventures.dreamtrips.core.janet.JanetModule.JANET_WALLET;
 import static com.worldventures.dreamtrips.wallet.domain.entity.SmartCard.ConnectionStatus.DISCONNECTED;
 import static com.worldventures.dreamtrips.wallet.domain.entity.SmartCard.ConnectionStatus.ERROR;
 import static com.worldventures.dreamtrips.wallet.service.command.CardListCommand.add;
+import static com.worldventures.dreamtrips.wallet.service.command.CardListCommand.edit;
 import static com.worldventures.dreamtrips.wallet.service.command.CardListCommand.remove;
 import static java.lang.String.valueOf;
 
@@ -228,7 +229,7 @@ public final class SmartCardInteractor {
                   .flatMap(attachCardCommand -> cardsListPipe.createObservable(add(attachCardCommand.bankCard()))),
             updateCardDetailsPipe
                   .observeSuccess()
-                  .flatMap(editCardCommand -> cardsListPipe.createObservable(add(editCardCommand.bankCard()))))
+                  .flatMap(editCardCommand -> cardsListPipe.createObservable(edit(editCardCommand.getResult()))))
             .subscribe(new ActionStateSubscriber<CardListCommand>()
                   .onSuccess(cardListCommand -> cardStacksPipe.send(CardStacksCommand.get(false)))
                   .onFail((cardListCommand, throwable) -> {

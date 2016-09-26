@@ -18,7 +18,6 @@ import io.techery.janet.Janet;
 import io.techery.janet.command.annotations.CommandAction;
 import io.techery.janet.smartcard.action.records.EditRecordMetadataAction;
 import rx.Observable;
-import rx.functions.FuncN;
 
 import static com.worldventures.dreamtrips.core.janet.JanetModule.JANET_WALLET;
 
@@ -44,21 +43,17 @@ public class UpdateCardDetailsDataCommand extends Command<BankCard> implements I
       checkCardData();
       editMetadataPipe = janet.createPipe(EditRecordMetadataAction.class);
 
-      Observable.just(bankCardConverter.to(bankCard))
+      BankCard updatedCard = ImmutableBankCard.builder()
+            .from(bankCard)
+            .addressInfo(manualAddressInfo)
+            .build();
+      Observable.just(bankCardConverter.to(updatedCard))
             .flatMap(record ->
                   Observable.zip(Queryable.from(record.metadata().entrySet())
-                              .map(element -> {
-                                 return actionFor(element.getKey(), element.getValue());
-                              }).toList(),
-                        (FuncN<BankCard>) args -> ImmutableBankCard.builder()
-                              .from(bankCard)
-                              .addressInfo(manualAddressInfo)
-                              .build()))
+                        .map(element -> {
+                           return actionFor(element.getKey(), element.getValue());
+                        }).toList(), args -> updatedCard))
             .subscribe(callback::onSuccess, callback::onFail);
-   }
-
-   public BankCard bankCard() {
-      return bankCard;
    }
 
    private Observable<EditRecordMetadataAction> actionFor(String key, String value) {

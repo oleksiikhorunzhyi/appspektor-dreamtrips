@@ -148,7 +148,7 @@ public class CacheActionStorageModule {
 
    @Singleton
    @Provides(type = Provides.Type.SET)
-   ActionStorage<List<Card>> provideWalletCardListStorage(SnappyRepository snappyRepository) {
+   ActionStorage provideWalletCardListStorage(SnappyRepository snappyRepository) {
       return new WalletCardsDiskStorage(snappyRepository);
    }
 

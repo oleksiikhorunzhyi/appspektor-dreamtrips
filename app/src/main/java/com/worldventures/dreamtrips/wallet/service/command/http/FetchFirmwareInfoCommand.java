@@ -36,7 +36,37 @@ public class FetchFirmwareInfoCommand extends Command<FirmwareInfo> implements I
          return ImmutableFirmwareInfo.builder()
                .isCompatible(temporaryStorage.firmwareIsCompatible())
                .byteSize(10000)
-               .releaseNotes("Amazing new update")
+               // test vary big description
+               .releaseNotes("To make our SmartCard better for you, we have updates every 2 week. " +
+                     "Every update of our smart card includes improvements for speed and reliability. " +
+                     "As other new features become available, we’ll highlight those for you in the app. \n\n" +
+
+                     "Repeat 2: To make our SmartCard better for you, we have updates every 2 week. " +
+                     "Every update of our smart card includes improvements for speed and reliability. " +
+                     "As other new features become available, we’ll highlight those for you in the app. \n\n" +
+
+                     "Repeat 3: To make our SmartCard better for you, we have updates every 2 week. " +
+                     "Every update of our smart card includes improvements for speed and reliability. " +
+                     "As other new features become available, we’ll highlight those for you in the app. \n\n" +
+
+                     "Repeat 4: To make our SmartCard better for you, we have updates every 2 week. " +
+                     "Every update of our smart card includes improvements for speed and reliability. " +
+                     "As other new features become available, we’ll highlight those for you in the app. \n\n" +
+
+
+                     "Repeat 5: To make our SmartCard better for you, we have updates every 2 week. " +
+                     "Every update of our smart card includes improvements for speed and reliability. " +
+                     "As other new features become available, we’ll highlight those for you in the app. \n\n" +
+
+
+                     "Repeat 6: To make our SmartCard better for you, we have updates every 2 week. " +
+                     "Every update of our smart card includes improvements for speed and reliability. " +
+                     "As other new features become available, we’ll highlight those for you in the app. \n\n" +
+
+                     "Repeat 7: To make our SmartCard better for you, we have updates every 2 week. " +
+                     "Every update of our smart card includes improvements for speed and reliability. " +
+                     "As other new features become available, we’ll highlight those for you in the app."
+               )
                .versionName("5.0.0")
                .downloadUrl("http://uweziegenhagen.de/wp-content/uploads/2012/06/BRD.pdf")
                .build();

@@ -5,8 +5,8 @@
    <color name="wallet_color_primary_dark">#006699</color>
    <color name="wallet_text_color_primary">#222222</color>
 
-   <color name="wallet_button_color_disabled">#999999</color>
-   <color name="wallet_button_text_color_disabled">#99FFFFFF</color>
+   <color name="wallet_button_color_disabled">#8f8f8f</color>
+   <color name="wallet_button_text_color_disabled">#FFFFFF</color>
 
    <color name="wallet_hint_color">#9a9a9a</color>
    <color name="wallet_number_edit_text_text_color_hint">#999999</color>

@@ -11,6 +11,8 @@ import com.worldventures.dreamtrips.core.janet.cache.CacheResultWrapper
 import com.worldventures.dreamtrips.core.janet.cache.storage.ActionStorage
 import com.worldventures.dreamtrips.core.janet.cache.storage.MultipleActionStorage
 import com.worldventures.dreamtrips.core.repository.SnappyRepository
+import com.worldventures.dreamtrips.wallet.domain.converter.BankCardToRecordConverter
+import com.worldventures.dreamtrips.wallet.domain.converter.RecordToBankCardConverter
 import com.worldventures.dreamtrips.wallet.domain.entity.AddressInfo
 import com.worldventures.dreamtrips.wallet.domain.entity.RecordIssuerInfo
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCard
@@ -34,6 +36,8 @@ import io.techery.janet.smartcard.action.records.SetRecordAsDefaultAction
 import io.techery.janet.smartcard.action.support.ConnectAction
 import io.techery.janet.smartcard.mock.client.MockSmartCardClient
 import io.techery.janet.smartcard.model.Record
+import io.techery.mappery.Mappery
+import io.techery.mappery.MapperyContext
 import org.powermock.api.mockito.PowerMockito
 import rx.functions.Func1
 import rx.observers.TestSubscriber
@@ -44,6 +48,7 @@ class SmartCardInteractorSpec : BaseSpec({
          staticMockTextUtils()
 
          mockDb = createMockDb()
+         mappery = createMappery()
          janet = createJanet()
          smartCardInteractor = createInteractor(janet)
 
@@ -222,6 +227,7 @@ class SmartCardInteractorSpec : BaseSpec({
 
       lateinit var mockDb: SnappyRepository
       lateinit var janet: Janet
+      lateinit var mappery: MapperyContext
       lateinit var smartCardInteractor: SmartCardInteractor
 
       lateinit var mockedDebitCard: BankCard
@@ -264,6 +270,7 @@ class SmartCardInteractorSpec : BaseSpec({
 
          daggerCommandActionService.registerProvider(Janet::class.java) { janet }
          daggerCommandActionService.registerProvider(SnappyRepository::class.java) { mockDb }
+         daggerCommandActionService.registerProvider(MapperyContext::class.java) { mappery }
          daggerCommandActionService.registerProvider(Context::class.java, { MockContext() })
          daggerCommandActionService.registerProvider(SmartCardInteractor::class.java, { smartCardInteractor })
 
@@ -271,6 +278,11 @@ class SmartCardInteractorSpec : BaseSpec({
       }
 
       fun createMockDb(): SnappyRepository = spy()
+
+      fun createMappery(): MapperyContext = Mappery.Builder()
+            .map(BankCard::class.java).to(Record::class.java, BankCardToRecordConverter())
+            .map(Record::class.java).to(BankCard::class.java, RecordToBankCardConverter())
+            .build()
 
       fun loadDefaultCardId(force: Boolean = false): TestSubscriber<ActionState<FetchDefaultCardIdCommand>> {
          val testSubscriber = TestSubscriber<ActionState<FetchDefaultCardIdCommand>>()

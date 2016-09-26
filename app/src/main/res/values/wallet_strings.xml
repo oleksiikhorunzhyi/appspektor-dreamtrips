@@ -187,4 +187,8 @@
    <string name="wallet_firmware_space_alert_description">You need to free up %s in order to download the update. You can manage your storage in settings.</string>
    <string name="wallet_firmware_space_alert_cancel_action">Cancel</string>
    <string name="wallet_firmware_space_alert_settings_action">Settings</string>
+   <string name="wallet_firmware_download_header">flye SmartCard Update</string>
+   <string name="wallet_firmware_download_text">Downloading Update</string>
+   <string name="wallet_firmware_download_cancel_action">Cancel</string>
+
 </resources>

@@ -14,6 +14,7 @@ import com.worldventures.dreamtrips.wallet.service.command.GetActiveSmartCardCom
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletPresenter;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.WalletScreen;
 import com.worldventures.dreamtrips.wallet.ui.common.navigation.Navigator;
+import com.worldventures.dreamtrips.wallet.ui.settings.firmware.donwload.WalletDownloadFirmwarePath;
 
 import java.io.File;
 
@@ -84,7 +85,7 @@ public class WalletNewFirmwareAvailablePresenter extends WalletPresenter<WalletN
    }
 
    void downloadFile(String filePath) {
-      //todo
+      navigator.go(new WalletDownloadFirmwarePath(firmwareInfo,filePath));
    }
 
    private boolean checkStorageAvailability(File file) {

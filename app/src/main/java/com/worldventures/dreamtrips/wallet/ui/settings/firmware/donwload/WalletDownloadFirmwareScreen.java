@@ -2,6 +2,8 @@ package com.worldventures.dreamtrips.wallet.ui.settings.firmware.donwload;
 
 
 import android.content.Context;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
 import android.support.v7.widget.Toolbar;
@@ -37,11 +39,11 @@ public class WalletDownloadFirmwareScreen extends WalletFrameLayout<WalletDownlo
       return new WalletDownloadFirmwarePresenter(getContext(), getInjector(), getPath().firmwareInfo(), getPath().filePath());
    }
 
-
    @Override
    protected void onAttachedToWindow() {
       super.onAttachedToWindow();
-      toolbar.setNavigationIcon(null);
+      //set color transparent for add space without white back arrow
+      toolbar.setNavigationIcon(new ColorDrawable(Color.TRANSPARENT));
    }
 
    @OnClick(R.id.wallet_cancel_download)

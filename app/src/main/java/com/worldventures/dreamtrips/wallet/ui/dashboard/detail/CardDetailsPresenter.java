@@ -15,6 +15,8 @@ import com.worldventures.dreamtrips.wallet.domain.entity.card.Card;
 import com.worldventures.dreamtrips.wallet.service.SmartCardInteractor;
 import com.worldventures.dreamtrips.wallet.service.command.FetchDefaultCardCommand;
 import com.worldventures.dreamtrips.wallet.service.command.SetDefaultCardOnDeviceCommand;
+import com.worldventures.dreamtrips.wallet.service.command.UpdateBankCardCommand;
+import com.worldventures.dreamtrips.wallet.service.command.UpdateCardDetailsDataCommand;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletPresenter;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.WalletScreen;
 import com.worldventures.dreamtrips.wallet.ui.common.helper.OperationSubscriberWrapper;
@@ -25,6 +27,7 @@ import com.worldventures.dreamtrips.wallet.util.CardUtils;
 
 import javax.inject.Inject;
 
+import io.techery.janet.Command;
 import io.techery.janet.smartcard.action.records.DeleteRecordAction;
 import rx.Observable;
 
@@ -62,7 +65,7 @@ public class CardDetailsPresenter extends WalletPresenter<CardDetailsPresenter.S
    private void connectToDefaultCardPipe() {
       smartCardInteractor.fetchDefaultCardCommandPipe()
             .createObservableResult(new FetchDefaultCardCommand())
-            .map(command -> command.getResult())
+            .map(Command::getResult)
             .compose(bindViewIoToMainComposer())
             .subscribe(defaultBankCard -> {
                getView().setDefaultCardCondition(CardUtils.equals(defaultBankCard, bankCard));
@@ -144,6 +147,10 @@ public class CardDetailsPresenter extends WalletPresenter<CardDetailsPresenter.S
 
    public void goBack() {
       navigator.goBack();
+   }
+
+   void nicknameUpdated(String nickName) {
+      smartCardInteractor.updateBankCardPipe().send(UpdateBankCardCommand.updateNickName(bankCard, nickName));
    }
 
    public interface Screen extends WalletScreen {

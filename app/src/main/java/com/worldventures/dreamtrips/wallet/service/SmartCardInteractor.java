@@ -17,6 +17,7 @@ import com.worldventures.dreamtrips.wallet.service.command.SetDisableDefaultCard
 import com.worldventures.dreamtrips.wallet.service.command.SetLockStateCommand;
 import com.worldventures.dreamtrips.wallet.service.command.SetStealthModeCommand;
 import com.worldventures.dreamtrips.wallet.service.command.SmartCardModifier;
+import com.worldventures.dreamtrips.wallet.service.command.UpdateBankCardCommand;
 import com.worldventures.dreamtrips.wallet.service.command.UpdateCardDetailsDataCommand;
 import com.worldventures.dreamtrips.wallet.service.command.UpdateSmartCardConnectionStatus;
 import com.worldventures.dreamtrips.wallet.service.command.http.FetchRecordIssuerInfoCommand;
@@ -53,6 +54,7 @@ public final class SmartCardInteractor {
    private final ActionPipe<ConnectSmartCardCommand> connectionPipe;
    private final ActionPipe<CardListCommand> cardsListPipe;
    private final ActionPipe<AttachCardCommand> addRecordPipe;
+   private final ActionPipe<UpdateBankCardCommand> updateBankCardPipe;
    private final ActionPipe<CardStacksCommand> cardStacksPipe;
    private final ActionPipe<GetActiveSmartCardCommand> activeSmartCardPipe;
    private final ActionPipe<CardCountCommand> cardCountCommandPipe;
@@ -83,6 +85,7 @@ public final class SmartCardInteractor {
       connectionPipe = janet.createPipe(ConnectSmartCardCommand.class, Schedulers.io());
       cardsListPipe = janet.createPipe(CardListCommand.class, Schedulers.io());
       addRecordPipe = janet.createPipe(AttachCardCommand.class, Schedulers.io());
+      updateBankCardPipe = janet.createPipe(UpdateBankCardCommand.class, Schedulers.io());
       cardStacksPipe = janet.createPipe(CardStacksCommand.class, Schedulers.io());
       activeSmartCardPipe = janet.createPipe(GetActiveSmartCardCommand.class, Schedulers.io());
       stealthModePipe = janet.createPipe(SetStealthModeCommand.class, Schedulers.io());
@@ -125,6 +128,10 @@ public final class SmartCardInteractor {
 
    public WriteActionPipe<AttachCardCommand> addRecordPipe() {
       return addRecordPipe;
+   }
+
+   public WriteActionPipe<UpdateBankCardCommand> updateBankCardPipe() {
+      return updateBankCardPipe;
    }
 
    public ActionPipe<CardStacksCommand> cardStacksPipe() {
@@ -227,6 +234,9 @@ public final class SmartCardInteractor {
             addRecordPipe
                   .observeSuccess()
                   .flatMap(attachCardCommand -> cardsListPipe.createObservable(add(attachCardCommand.bankCard()))),
+            updateBankCardPipe
+                  .observeSuccess()
+                  .flatMap(updateBankCardCommand -> cardsListPipe.createObservable(edit(updateBankCardCommand.getResult()))),
             updateCardDetailsPipe
                   .observeSuccess()
                   .flatMap(editCardCommand -> cardsListPipe.createObservable(edit(editCardCommand.getResult()))))

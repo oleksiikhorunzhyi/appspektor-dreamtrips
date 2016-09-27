@@ -1,5 +1,6 @@
 package com.worldventures.dreamtrips.wallet.domain.converter;
 
+
 import android.text.TextUtils;
 
 import com.worldventures.dreamtrips.wallet.domain.entity.AddressInfo;
@@ -8,25 +9,26 @@ import com.worldventures.dreamtrips.wallet.domain.entity.ImmutableRecordIssuerIn
 import com.worldventures.dreamtrips.wallet.domain.entity.card.BankCard;
 import com.worldventures.dreamtrips.wallet.domain.entity.card.ImmutableBankCard;
 
-import java.util.HashMap;
 import java.util.Map;
 
-import io.techery.janet.smartcard.model.ImmutableRecord;
 import io.techery.janet.smartcard.model.Record;
+import io.techery.mappery.MapperyContext;
 
-public class BankCardConverter implements Converter<Record, BankCard> {
+import static com.worldventures.dreamtrips.wallet.domain.converter.Converter.*;
 
-   private final static String ADDRESS1_FIELD = "address1";
-   private final static String ADDRESS2_FIELD = "address2";
-   private final static String CITY_FIELD = "city";
-   private final static String STATE_FIELD = "state";
-   private final static String ZIP_FIELD = "zip";
-
-   private final static String TYPE_CARD_FIELD = "type_card";
-   private final static String BANK_NAME_FIELD = "bank_name";
+public class RecordToBankCardConverter implements com.worldventures.dreamtrips.modules.mapping.converter.Converter<Record, BankCard> {
+   @Override
+   public Class<BankCard> targetClass() {
+      return BankCard.class;
+   }
 
    @Override
-   public BankCard from(Record record) {
+   public Class<Record> sourceClass() {
+      return Record.class;
+   }
+
+   @Override
+   public BankCard convert(MapperyContext mapperyContext, Record record) {
       Map<String, String> metadata = record.metadata();
       AddressInfo addressInfo = null;
       if (record.metadata() != null && !TextUtils.isEmpty(record.metadata().get(CITY_FIELD))) {
@@ -52,35 +54,6 @@ public class BankCardConverter implements Converter<Record, BankCard> {
             .expiryMonth(record.expiryMonth())
             .expiryYear(record.expiryYear())
             .addressInfo(addressInfo)
-            .build();
-   }
-
-   @Override
-   public Record to(BankCard card) {
-      AddressInfo addressInfo = card.addressInfo();
-      HashMap<String, String> metadata = new HashMap<>(5);
-      metadata.put(ADDRESS1_FIELD, addressInfo.address1());
-      metadata.put(ADDRESS2_FIELD, addressInfo.address2());
-      metadata.put(CITY_FIELD, addressInfo.city());
-      metadata.put(STATE_FIELD, addressInfo.state());
-      metadata.put(ZIP_FIELD, addressInfo.zip());
-
-      metadata.put(TYPE_CARD_FIELD, card.issuerInfo().cardType().name());
-      metadata.put(BANK_NAME_FIELD, card.issuerInfo().bankName());
-
-      // TODO: use normal id
-      return ImmutableRecord.builder()
-            .id(Integer.parseInt(card.id()))
-            .title(card.title())
-            .cardNumber(String.valueOf(card.number()))
-            .cvv(String.valueOf(card.cvv()))
-            .expiryMonth(card.expiryMonth())
-            .expiryYear(card.expiryYear())
-            .financialService(card.issuerInfo().financialService())
-            .t1("")
-            .t2("")
-            .t3("")
-            .metadata(metadata)
             .build();
    }
 }

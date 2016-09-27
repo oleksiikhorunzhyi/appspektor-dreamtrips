@@ -6,91 +6,109 @@
       android:theme="@style/WalletTheme"
       >
 
+   <ScrollView
+         android:layout_width="match_parent"
+         android:layout_height="match_parent"
+         >
+
+      <RelativeLayout
+            style="@style/WalletTheme.ContentContainerStyle"
+            android:layout_marginTop="?attr/actionBarSize"
+            android:theme="@style/WalletTheme"
+            >
+
+         <com.worldventures.dreamtrips.wallet.ui.widget.BankCardWidget
+               android:id="@+id/card"
+               android:layout_width="match_parent"
+               android:layout_height="@dimen/wallet_card_height"
+               android:layout_alignParentTop="true"
+               android:layout_centerHorizontal="true"
+               />
+
+         <LinearLayout
+               android:id="@+id/billing_address_label"
+               android:layout_width="match_parent"
+               android:layout_height="wrap_content"
+               android:layout_alignParentStart="true"
+               android:layout_below="@+id/card"
+               android:orientation="horizontal"
+               >
+
+            <TextView
+                  android:layout_width="0dp"
+                  android:layout_height="wrap_content"
+                  android:layout_marginTop="@dimen/wallet_details_screen_component_margin_top"
+                  android:layout_weight="1"
+                  android:text="@string/wallet_card_details_label_billing_address"
+                  android:textAppearance="?android:attr/textAppearanceSmall"
+                  />
+
+            <ImageView
+                  android:id="@+id/edit_billing_address"
+                  android:layout_width="wrap_content"
+                  android:layout_height="wrap_content"
+                  android:layout_gravity="bottom"
+                  android:padding="@dimen/spacing_tiny"
+                  android:src="@drawable/ic_wallet_pencil_gray"
+                  />
+
+         </LinearLayout>
+
+         <TextView
+               android:id="@+id/address_textview"
+               android:layout_width="match_parent"
+               android:layout_height="wrap_content"
+               android:layout_alignLeft="@+id/billing_address_label"
+               android:layout_below="@+id/billing_address_label"
+               android:layout_marginTop="@dimen/wallet_details_screen_address_margin_top"
+               android:importantForAccessibility="no"
+               android:lineSpacingExtra="@dimen/wallet_details_screen_address_space_between_lines"
+               android:textAppearance="?android:attr/textAppearanceMedium"
+               android:textColor="@color/wallet_card_details_address_text_color"
+               android:textSize="@dimen/wallet_details_screen_address_text_size"
+               tools:text="12345 Lollipop Drive\nApt 123\nNew York, NY 10010\nUSA"
+               />
+
+         <android.support.v7.widget.SwitchCompat
+               android:id="@+id/default_payment_card_checkbox"
+               android:layout_width="match_parent"
+               android:layout_height="wrap_content"
+               android:layout_alignParentStart="true"
+               android:layout_below="@+id/address_textview"
+               android:layout_marginTop="@dimen/wallet_details_screen_component_margin_top"
+               android:text="@string/wallet_add_card_details_option_set_as_default_card"
+               />
+
+         <EditText
+               android:id="@+id/card_nickname"
+               android:layout_width="match_parent"
+               android:layout_height="wrap_content"
+               android:layout_below="@+id/default_payment_card_checkbox"
+               android:layout_marginTop="@dimen/wallet_details_screen_component_margin_top"
+               android:hint="@string/wallet_add_card_details_hint_nickname_card"
+               android:imeOptions="actionDone"
+               android:singleLine="true"
+               />
+
+         <Button
+               android:id="@+id/delete_button"
+               android:layout_width="match_parent"
+               android:layout_height="wrap_content"
+               android:layout_below="@+id/card_nickname"
+               android:layout_marginTop="@dimen/wallet_details_screen_component_margin_top"
+               android:background="@color/wallet_card_details_delete_card_button_color"
+               android:text="@string/wallet_card_details_button_delete_card"
+               android:textSize="@dimen/wallet_details_screen_delete_card_button_text_size"
+               />
+
+      </RelativeLayout>
+
+   </ScrollView>
+
    <android.support.v7.widget.Toolbar
          android:id="@+id/toolbar"
          android:layout_width="match_parent"
          android:layout_height="?attr/actionBarSize"
          />
-
-   <RelativeLayout
-         style="@style/WalletTheme.ContentContainerStyle"
-         android:layout_marginTop="?attr/actionBarSize"
-         android:theme="@style/WalletTheme"
-         >
-
-      <com.worldventures.dreamtrips.wallet.ui.widget.BankCardWidget
-            android:id="@+id/card"
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/wallet_card_height"
-            android:layout_alignParentTop="true"
-            android:layout_centerHorizontal="true"
-            />
-
-      <CheckBox
-            android:id="@+id/default_payment_card_checkbox"
-            style="@style/WalletTheme.RoundCheckBox"
-            android:layout_alignLeft="@+id/card"
-            android:layout_alignParentStart="true"
-            android:layout_below="@+id/card"
-            android:layout_marginTop="@dimen/wallet_details_screen_component_margin_top"
-            android:text="@string/wallet_add_card_details_option_set_as_default_card"
-            />
-
-      <LinearLayout
-            android:id="@+id/billing_address_label"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_alignParentStart="true"
-            android:layout_below="@+id/default_payment_card_checkbox"
-            android:orientation="horizontal"
-            >
-
-         <TextView
-               android:layout_width="0dp"
-               android:layout_height="wrap_content"
-               android:layout_weight="1"
-               android:textAppearance="?android:attr/textAppearanceSmall"
-               android:layout_marginTop="@dimen/wallet_details_screen_component_margin_top"
-               android:text="@string/wallet_card_details_label_billing_address"
-               />
-
-         <ImageView
-               android:id="@+id/edit_billing_address"
-               android:layout_width="wrap_content"
-               android:layout_height="wrap_content"
-               android:layout_gravity="bottom"
-               android:padding="@dimen/spacing_tiny"
-               android:src="@drawable/ic_wallet_pencil_gray"
-               />
-
-      </LinearLayout>
-
-      <TextView
-            android:id="@+id/address_textview"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_alignLeft="@+id/billing_address_label"
-            android:layout_below="@+id/billing_address_label"
-            android:layout_marginTop="@dimen/wallet_details_screen_address_margin_top"
-            android:lineSpacingExtra="@dimen/wallet_details_screen_address_space_between_lines"
-            android:textAppearance="?android:attr/textAppearanceMedium"
-            android:textColor="@color/wallet_card_details_address_text_color"
-            android:importantForAccessibility="no"
-            android:textSize="@dimen/wallet_details_screen_address_text_size"
-            tools:text="12345 Lollipop Drive\nApt 123\nNew York, NY 10010\nUSA"
-            />
-
-      <Button
-            android:id="@+id/delete_button"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
-            android:layout_marginTop="@dimen/wallet_details_screen_component_margin_top"
-            android:background="@color/wallet_card_details_delete_card_button_color"
-            android:text="@string/wallet_card_details_button_delete_card"
-            android:textSize="@dimen/wallet_details_screen_delete_card_button_text_size"
-            />
-
-   </RelativeLayout>
 
 </com.worldventures.dreamtrips.wallet.ui.dashboard.detail.CardDetailsScreen>

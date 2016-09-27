@@ -1,7 +1,6 @@
 package com.worldventures.dreamtrips.wallet.service.command;
 
 import com.worldventures.dreamtrips.core.janet.dagger.InjectableAction;
-import com.worldventures.dreamtrips.wallet.domain.converter.BankCardConverter;
 import com.worldventures.dreamtrips.wallet.domain.entity.card.BankCard;
 
 import javax.inject.Inject;
@@ -13,6 +12,7 @@ import io.techery.janet.command.annotations.CommandAction;
 import io.techery.janet.helper.ActionStateToActionTransformer;
 import io.techery.janet.smartcard.action.records.AddRecordAction;
 import io.techery.janet.smartcard.model.Record;
+import io.techery.mappery.MapperyContext;
 import rx.Observable;
 import rx.schedulers.Schedulers;
 
@@ -22,8 +22,7 @@ import static com.worldventures.dreamtrips.core.janet.JanetModule.JANET_WALLET;
 public class AttachCardCommand extends Command<Record> implements InjectableAction {
 
    @Inject @Named(JANET_WALLET) Janet janet;
-
-   private final BankCardConverter converter = new BankCardConverter();
+   @Inject MapperyContext mapperyContext;
 
    private BankCard card;
    private final boolean setAsDefaultCard;
@@ -35,14 +34,14 @@ public class AttachCardCommand extends Command<Record> implements InjectableActi
 
    @Override
    protected void run(CommandCallback<Record> callback) throws Throwable {
-      Record record = converter.to(card);
+      Record record = mapperyContext.convert(card, Record.class);
       janet.createPipe(AddRecordAction.class)
             .createObservable(new AddRecordAction(record))
             .compose(new ActionStateToActionTransformer<>())
             .map(it -> it.record)
             .flatMap(this::saveDefaultCard)
             .subscribe(addedRecord -> {
-               card = converter.from(addedRecord);
+               card = mapperyContext.convert(addedRecord, BankCard.class);
                callback.onSuccess(addedRecord);
             }, callback::onFail);
    }

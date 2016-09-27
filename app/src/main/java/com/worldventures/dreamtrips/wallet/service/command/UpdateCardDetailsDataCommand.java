@@ -2,7 +2,6 @@ package com.worldventures.dreamtrips.wallet.service.command;
 
 import com.innahema.collections.query.queriables.Queryable;
 import com.worldventures.dreamtrips.core.janet.dagger.InjectableAction;
-import com.worldventures.dreamtrips.wallet.domain.converter.BankCardConverter;
 import com.worldventures.dreamtrips.wallet.domain.entity.AddressInfo;
 import com.worldventures.dreamtrips.wallet.domain.entity.card.BankCard;
 import com.worldventures.dreamtrips.wallet.domain.entity.card.ImmutableBankCard;
@@ -17,6 +16,8 @@ import io.techery.janet.Command;
 import io.techery.janet.Janet;
 import io.techery.janet.command.annotations.CommandAction;
 import io.techery.janet.smartcard.action.records.EditRecordMetadataAction;
+import io.techery.janet.smartcard.model.Record;
+import io.techery.mappery.MapperyContext;
 import rx.Observable;
 
 import static com.worldventures.dreamtrips.core.janet.JanetModule.JANET_WALLET;
@@ -25,7 +26,7 @@ import static com.worldventures.dreamtrips.core.janet.JanetModule.JANET_WALLET;
 public class UpdateCardDetailsDataCommand extends Command<BankCard> implements InjectableAction {
 
    @Inject @Named(JANET_WALLET) Janet janet;
-   private BankCardConverter bankCardConverter;
+   @Inject MapperyContext mapperyContext;
 
    private final BankCard bankCard;
    private final AddressInfo manualAddressInfo;
@@ -35,7 +36,6 @@ public class UpdateCardDetailsDataCommand extends Command<BankCard> implements I
    public UpdateCardDetailsDataCommand(BankCard bankCard, AddressInfo manualAddressInfo) {
       this.bankCard = bankCard;
       this.manualAddressInfo = manualAddressInfo;
-      bankCardConverter = new BankCardConverter();
    }
 
    @Override
@@ -47,7 +47,7 @@ public class UpdateCardDetailsDataCommand extends Command<BankCard> implements I
             .from(bankCard)
             .addressInfo(manualAddressInfo)
             .build();
-      Observable.just(bankCardConverter.to(updatedCard))
+      Observable.just(mapperyContext.convert(updatedCard, Record.class))
             .flatMap(record ->
                   Observable.zip(Queryable.from(record.metadata().entrySet())
                         .map(element -> {

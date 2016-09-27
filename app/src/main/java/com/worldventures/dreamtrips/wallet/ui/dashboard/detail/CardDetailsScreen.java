@@ -2,9 +2,10 @@ package com.worldventures.dreamtrips.wallet.ui.dashboard.detail;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
+import android.support.v7.widget.SwitchCompat;
 import android.support.v7.widget.Toolbar;
 import android.util.AttributeSet;
-import android.widget.CheckBox;
+import android.widget.EditText;
 import android.widget.TextView;
 
 import com.afollestad.materialdialogs.MaterialDialog;
@@ -28,9 +29,9 @@ public class CardDetailsScreen extends WalletFrameLayout<CardDetailsPresenter.Sc
 
    @InjectView(R.id.toolbar) Toolbar toolbar;
 
-   @InjectView(R.id.default_payment_card_checkbox) CheckBox defaultPaymentCardCheckBox;
+   @InjectView(R.id.default_payment_card_checkbox) SwitchCompat defaultPaymentCardCheckBox;
    @InjectView(R.id.address_textview) TextView addressText;
-
+   @InjectView(R.id.card_nickname) EditText cardNickname;
    @InjectView(R.id.card) BankCardWidget bankCardWidget;
 
    private Observable<Boolean> setAsDefaultCardObservable;
@@ -52,8 +53,14 @@ public class CardDetailsScreen extends WalletFrameLayout<CardDetailsPresenter.Sc
    @Override
    protected void onFinishInflate() {
       super.onFinishInflate();
-      toolbar.setNavigationOnClickListener(v -> navigateButtonClick());
+      toolbar.setNavigationOnClickListener(v -> presenter.goBack());
       setAsDefaultCardObservable = RxCompoundButton.checkedChanges(defaultPaymentCardCheckBox).skip(1);
+   }
+
+   @Override
+   protected void onDetachedFromWindow() {
+      super.onDetachedFromWindow();
+      presenter.nicknameUpdated(cardNickname.getText().toString());
    }
 
    @OnClick(R.id.delete_button)
@@ -79,6 +86,7 @@ public class CardDetailsScreen extends WalletFrameLayout<CardDetailsPresenter.Sc
    @Override
    public void showCardBankInfo(BankCardHelper cardHelper, BankCard bankCard) {
       bankCardWidget.setBankCardInfo(cardHelper, bankCard);
+      cardNickname.setText(bankCard.title());
    }
 
    @Override
@@ -114,9 +122,5 @@ public class CardDetailsScreen extends WalletFrameLayout<CardDetailsPresenter.Sc
    @Override
    public void showDefaultAddress(AddressInfoWithLocale addressInfoWithLocale) {
       addressText.setText(AddressUtil.obtainAddressLabel(addressInfoWithLocale));
-   }
-
-   protected void navigateButtonClick() {
-      presenter.goBack();
    }
 }

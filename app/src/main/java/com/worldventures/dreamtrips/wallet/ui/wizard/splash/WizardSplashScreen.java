@@ -77,7 +77,7 @@ public class WizardSplashScreen extends WalletFrameLayout<WizardSplashPresenter.
          actionBtn.setText(R.string.wallet_wizard_scan_start_btn);
          actionBtn.setOnClickListener(view -> getPresenter().startScanCard());
          walletWizardSplashTitle.setText(R.string.wallet_wizard_scan_proposal);
-         cardImage.setImageResource(R.drawable.flyecard_front_with_display);
+         cardImage.setImageResource(R.drawable.flyecard_back);
       } else {
          walletWizardSplashSoarTitle.setAlpha(1);
 

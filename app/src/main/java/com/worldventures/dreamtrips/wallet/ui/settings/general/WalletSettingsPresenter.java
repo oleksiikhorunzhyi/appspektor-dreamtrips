@@ -77,7 +77,6 @@ public class WalletSettingsPresenter extends WalletPresenter<WalletSettingsPrese
                   getView().firmwareUpdateCount(1);
                   getView().showFirmwareBadge();
                } else {
-                  getView().firmwareUpdateCount(0);
                   getView().showFirmwareVersion();
                }
             });
@@ -193,6 +192,9 @@ public class WalletSettingsPresenter extends WalletPresenter<WalletSettingsPrese
       view.disableDefaultPaymentValue(smartCard.disableCardDelay());
       view.autoClearSmartCardValue(smartCard.clearFlyeDelay());
       view.firmwareVersion(smartCard.firmWareVersion());
+      if (firmware == null || firmware.byteSize() == 0) {
+         view.showFirmwareVersion();
+      }
    }
 
    public void goBack() {

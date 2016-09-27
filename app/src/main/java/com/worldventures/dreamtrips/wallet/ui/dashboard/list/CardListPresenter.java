@@ -1,10 +1,11 @@
 package com.worldventures.dreamtrips.wallet.ui.dashboard.list;
 
 import android.content.Context;
-import android.os.Parcelable;
+import android.os.Bundle;
 
 import com.techery.spares.module.Injector;
 import com.worldventures.dreamtrips.modules.navdrawer.NavigationDrawerPresenter;
+import com.worldventures.dreamtrips.wallet.domain.entity.FirmwareInfo;
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCard;
 import com.worldventures.dreamtrips.wallet.domain.entity.card.BankCard;
 import com.worldventures.dreamtrips.wallet.service.FirmwareInteractor;
@@ -35,7 +36,7 @@ import timber.log.Timber;
 
 import static com.worldventures.dreamtrips.wallet.service.command.CardStacksCommand.CardStackModel;
 
-public class CardListPresenter extends WalletPresenter<CardListPresenter.Screen, Parcelable> {
+public class CardListPresenter extends WalletPresenter<CardListPresenter.Screen, CardListViewState> {
 
    private static final int MAX_CARD_LIMIT = 10;
 
@@ -45,6 +46,8 @@ public class CardListPresenter extends WalletPresenter<CardListPresenter.Screen,
    @Inject NavigationDrawerPresenter navigationDrawerPresenter;
 
    private final CardListStackConverter cardListStackConverter;
+   private FirmwareInfo firmwareInfo;
+
    private int cardLoaded = 0;
 
    private CardStackHeaderHolder cardStackHeaderHolder = ImmutableCardStackHeaderHolder.builder().build();
@@ -53,6 +56,27 @@ public class CardListPresenter extends WalletPresenter<CardListPresenter.Screen,
       super(context, injector);
       cardListStackConverter = new CardListStackConverter(context);
    }
+
+   // BEGIN view state
+   @Override
+   public void applyViewState() {
+      this.firmwareInfo = state.firmwareInfo;
+      this.cardStackHeaderHolder = ImmutableCardStackHeaderHolder.builder()
+            .from(cardStackHeaderHolder).firmwareInfo(firmwareInfo).build();
+
+   }
+
+   @Override
+   public void onNewViewState() {
+      state = new CardListViewState();
+   }
+
+   @Override
+   public void onSaveInstanceState(Bundle bundle) {
+      state.firmwareInfo = firmwareInfo;
+      super.onSaveInstanceState(bundle);
+   }
+   // END view state
 
    @Override
    public void onAttachedToWindow() {
@@ -73,6 +97,7 @@ public class CardListPresenter extends WalletPresenter<CardListPresenter.Screen,
             .compose(bindViewIoToMainComposer())
             .map(it -> it.getResult())
             .subscribe(it -> {
+               this.firmwareInfo = it;
                this.cardStackHeaderHolder = ImmutableCardStackHeaderHolder.builder()
                      .from(cardStackHeaderHolder)
                      .firmwareInfo(it)

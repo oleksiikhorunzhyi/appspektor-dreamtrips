@@ -4,25 +4,24 @@ import com.worldventures.dreamtrips.core.janet.SessionActionPipeCreator;
 import com.worldventures.dreamtrips.modules.dtl.analytics.DtlAnalyticsCommand;
 
 import io.techery.janet.ActionPipe;
-import io.techery.janet.Janet;
 import io.techery.janet.WriteActionPipe;
 import rx.schedulers.Schedulers;
 
 public class AnalyticsInteractor {
 
-   private final ActionPipe<BaseAnalyticsAction> analyticEventPipe;
-   private final ActionPipe<DtlAnalyticsCommand> dtlAnalyticCommandPipe;
+   private final ActionPipe<BaseAnalyticsAction> analyticsActionPipe;
+   private final ActionPipe<DtlAnalyticsCommand> analyticsCommandPipe;
 
    public AnalyticsInteractor(SessionActionPipeCreator sessionActionPipeCreator) {
-      analyticEventPipe = sessionActionPipeCreator.createPipe(BaseAnalyticsAction.class, Schedulers.io());
-      dtlAnalyticCommandPipe = sessionActionPipeCreator.createPipe(DtlAnalyticsCommand.class, Schedulers.io());
+      analyticsActionPipe = sessionActionPipeCreator.createPipe(BaseAnalyticsAction.class, Schedulers.io());
+      analyticsCommandPipe = sessionActionPipeCreator.createPipe(DtlAnalyticsCommand.class, Schedulers.io());
    }
 
    public WriteActionPipe<BaseAnalyticsAction> analyticsActionPipe() {
-      return analyticEventPipe;
+      return analyticsActionPipe;
    }
 
    public WriteActionPipe<DtlAnalyticsCommand> dtlAnalyticsCommandPipe() {
-      return dtlAnalyticCommandPipe;
+      return analyticsCommandPipe;
    }
 }

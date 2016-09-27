@@ -12,10 +12,7 @@ import com.worldventures.dreamtrips.modules.dtl.model.DistanceType;
 import com.worldventures.dreamtrips.modules.dtl.model.location.DtlLocation;
 import com.worldventures.dreamtrips.modules.dtl.model.location.ImmutableDtlManualLocation;
 import com.worldventures.dreamtrips.modules.dtl.service.AttributesInteractor;
-import com.worldventures.dreamtrips.modules.dtl.service.DtlFilterMerchantInteractor;
 import com.worldventures.dreamtrips.modules.dtl.service.DtlLocationInteractor;
-import com.worldventures.dreamtrips.modules.dtl.service.DtlMerchantInteractor;
-import com.worldventures.dreamtrips.modules.dtl.service.action.AttributesAction;
 import com.worldventures.dreamtrips.modules.dtl.service.action.DtlLocationCommand;
 import com.worldventures.dreamtrips.modules.dtl_flow.DtlPresenterImpl;
 import com.worldventures.dreamtrips.modules.dtl_flow.ViewState;
@@ -34,8 +31,6 @@ public class DtlStartPresenterImpl extends DtlPresenterImpl<DtlStartScreen, View
 
    @Inject LocationDelegate gpsLocationDelegate;
    @Inject DtlLocationInteractor locationInteractor;
-   @Inject DtlMerchantInteractor merchantInteractor;
-   @Inject DtlFilterMerchantInteractor filterInteractor;
    @Inject AttributesInteractor attributesInteractor;
 
    public DtlStartPresenterImpl(Context context, Injector injector) {
@@ -80,32 +75,31 @@ public class DtlStartPresenterImpl extends DtlPresenterImpl<DtlStartScreen, View
                               .longName(context.getString(R.string.dtl_near_me_caption))
                               .coordinates(new com.worldventures.dreamtrips.modules.trips.model.Location(newGpsLocation))
                               .build();
-                        locationInteractor.locationPipe().send(DtlLocationCommand.change(dtlManualLocation));
+                        locationInteractor.change(dtlManualLocation);
                         navigatePath(DtlMerchantsPath.withAllowedRedirection());
                      }
                      break;
                   case NEAR_ME:
                      if (newGpsLocation == null) { // we had location before, but not now - and we need it
-                        locationInteractor.locationPipe().send(DtlLocationCommand.change(DtlLocation.UNDEFINED));
+                        locationInteractor.clear();
                         navigatePath(DtlLocationsPath.getDefault());
                         return;
                      }
                      if (!DtlLocationHelper.checkLocation(0.5, newGpsLocation, dtlLocation
                            .getCoordinates().asAndroidLocation(), DistanceType.MILES)) {
-                        locationInteractor.locationPipe()
-                              .send(DtlLocationCommand.change(ImmutableDtlManualLocation.builder()
-                                    .from(dtlLocation)
-                                    .coordinates(new com.worldventures.dreamtrips.modules.trips.model.Location(newGpsLocation))
-                                    .build()));
+                        locationInteractor.change(ImmutableDtlManualLocation.builder()
+                              .from(dtlLocation)
+                              .coordinates(new com.worldventures.dreamtrips.modules.trips.model.Location(newGpsLocation))
+                              .build());
                      }
                      navigatePath(DtlMerchantsPath.withAllowedRedirection());
                      break;
                   case FROM_MAP:
-                     requestAmenities();
+//                     attributesInteractor.requestAmenities(); // TODO :: 26.09.16 decide if needed for re-entering DTL
                      navigatePath(DtlMerchantsPath.getDefault());
                      break;
                   case EXTERNAL:
-                     requestAmenities();
+//                     attributesInteractor.requestAmenities(); // TODO :: 26.09.16 decide if needed for re-entering DTL
                      navigatePath(DtlMerchantsPath.getDefault());
                      break;
                }
@@ -115,10 +109,6 @@ public class DtlStartPresenterImpl extends DtlPresenterImpl<DtlStartScreen, View
    private void navigatePath(Path path) {
       History history = History.single(path);
       Flow.get(getContext()).setHistory(history, Flow.Direction.REPLACE);
-   }
-
-   private void requestAmenities() {
-      attributesInteractor.attributesPipe().send(new AttributesAction());
    }
 
    /**

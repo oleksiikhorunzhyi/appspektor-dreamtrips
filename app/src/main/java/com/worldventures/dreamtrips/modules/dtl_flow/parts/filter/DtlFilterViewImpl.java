@@ -3,6 +3,7 @@ package com.worldventures.dreamtrips.modules.dtl_flow.parts.filter;
 import android.content.Context;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.widget.AppCompatButton;
+import android.support.v7.widget.AppCompatTextView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
@@ -22,16 +23,16 @@ import com.trello.rxlifecycle.RxLifecycle;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.selectable.MultiSelectionManager;
 import com.worldventures.dreamtrips.modules.common.view.adapter.item.SelectableHeaderItem;
+import com.worldventures.dreamtrips.modules.dtl.helper.FilterHelper;
 import com.worldventures.dreamtrips.modules.dtl.model.DistanceType;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.Attribute;
-import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchantAttribute;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.ImmutableAttribute;
-import com.worldventures.dreamtrips.modules.dtl.model.merchant.filter.DtlFilterData;
-import com.worldventures.dreamtrips.modules.dtl.model.merchant.filter.DtlFilterParameters;
-import com.worldventures.dreamtrips.modules.dtl.model.merchant.filter.ImmutableDtlFilterParameters;
+import com.worldventures.dreamtrips.modules.dtl.model.merchant.filter.FilterData;
+import com.worldventures.dreamtrips.modules.dtl.model.merchant.filter.ImmutableFilterData;
 import com.worldventures.dreamtrips.modules.dtl.view.cell.DtlFilterAttributeCell;
 import com.worldventures.dreamtrips.modules.trips.view.cell.filter.DtlFilterAttributeHeaderCell;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
@@ -44,6 +45,8 @@ public class DtlFilterViewImpl extends MvpLinearLayout<FilterView, DtlFilterPres
    @InjectView(R.id.range_bar_distance) RangeBar rangeBarDistance;
    @InjectView(R.id.range_bar_price) RangeBar rangeBarPrice;
    @InjectView(R.id.distance_filter_caption) TextView distanceCaption;
+   @InjectView(R.id.filter_distance_left_value) AppCompatTextView distanceLeftValue;
+   @InjectView(R.id.filter_distance_right_value) AppCompatTextView distanceRightValue;
    @InjectView(R.id.recyclerViewFilters) RecyclerView recyclerView;
    @InjectView(R.id.amenities_progress) ViewGroup amenitiesProgress;
    @InjectView(R.id.amenities_error_view) ViewGroup amenitiesErrorView;
@@ -105,26 +108,7 @@ public class DtlFilterViewImpl extends MvpLinearLayout<FilterView, DtlFilterPres
 
    private void attachDrawerListener() {
       DrawerLayout drawer = ButterKnife.<DrawerLayout>findById(getRootView(), R.id.drawer);
-      if (drawer == null) return;
-      drawer.addDrawerListener(new DrawerLayout.DrawerListener() {
-         @Override
-         public void onDrawerSlide(View drawerView, float slideOffset) {
-         }
-
-         @Override
-         public void onDrawerOpened(View drawerView) {
-            getPresenter().onDrawerOpened();
-         }
-
-         @Override
-         public void onDrawerClosed(View drawerView) {
-            getPresenter().onDrawerClosed();
-         }
-
-         @Override
-         public void onDrawerStateChanged(int newState) {
-         }
-      });
+      if (drawer != null) drawer.addDrawerListener(drawerListener);
    }
 
    private void bindAmenitiesErrorButton() {
@@ -159,53 +143,74 @@ public class DtlFilterViewImpl extends MvpLinearLayout<FilterView, DtlFilterPres
    }
 
    @Override
-   public DtlFilterParameters getFilterParameters() {
-      return ImmutableDtlFilterParameters.builder()
-            .minPrice(Integer.valueOf(rangeBarPrice.getLeftValue()))
-            .maxPrice(Integer.valueOf(rangeBarPrice.getRightValue()))
-            .maxDistance(Integer.valueOf(rangeBarDistance.getRightValue()))
-            .selectedAmenities(obtainSelectedAmenities())
+   public FilterData getFilterData() {
+      List<Attribute> selectedAmenities = obtainSelectedAmenities();
+      return ImmutableFilterData.builder()
+            .budgetMin(Integer.valueOf(rangeBarPrice.getLeftValue()))
+            .budgetMax(Integer.valueOf(rangeBarPrice.getRightValue()))
+            .distanceMaxIndex(rangeBarDistance.getRightIndex())
+            .selectedAmenities(selectedAmenities)
             .build();
    }
 
    @Override
-   public void syncUi(DtlFilterData filterData) {
-      rangeBarDistance.setRangePinsByValue(10f, (float) filterData.getMaxDistance());
-      rangeBarPrice.setRangePinsByValue(filterData.getMinPrice(), filterData.getMaxPrice());
+   public void applyFilterState(FilterData filterData) {
+      rangeBarDistance.setTickEnd(FilterHelper.provideRightDistanceValue(filterData.distanceType()));
+      rangeBarDistance.setTickStart(FilterHelper.provideLeftDistanceValue(filterData.distanceType()));
+      rangeBarDistance.setTickInterval(FilterHelper.provideDistancePickerInterval(filterData.distanceType()));
+      rangeBarDistance.setSeekPinByIndex(filterData.distanceMaxIndex());
+      rangeBarPrice.setRangePinsByValue(filterData.budgetMin(), filterData.budgetMax());
       distanceCaption.setText(getContext().getString(R.string.dtl_distance,
-            getContext().getString(filterData.getDistanceType() == DistanceType.MILES ? R.string.mi : R.string.km)));
+            getContext().getString(filterData.distanceType() == DistanceType.MILES ? R.string.mi : R.string.km)));
+      distanceLeftValue.setText(FilterHelper.provideLeftDistanceValueCaption(filterData.distanceType()));
+      distanceRightValue.setText(FilterHelper.provideRightDistanceValueCaption(filterData.distanceType()));
+      updateSelection(filterData);
    }
 
-   private List<DtlMerchantAttribute> obtainSelectedAmenities() {
-      List<Integer> positions = selectionManager.getSelectedPositions(baseDelegateAdapter.getClassItemViewType(DtlMerchantAttribute.class));
+   private List<Attribute> obtainSelectedAmenities() {
+      List<Integer> selectedPositions =
+            selectionManager.getSelectedPositions(baseDelegateAdapter.getClassItemViewType(ImmutableAttribute.class));
+
+      if (selectedPositions.isEmpty() ||
+            (selectedPositions.size() == baseDelegateAdapter.getItemCount(ImmutableAttribute.class))) {
+         return Collections.emptyList(); // treat all selected as none
+      }
+
       return Queryable.from(baseDelegateAdapter.getItems())
-            .filter((element, index) -> positions.contains(index))
+            .filter((element, index) -> selectedPositions.contains(index))
             .toList();
    }
 
-   private void updateSelection(DtlFilterData filterData) {
-      // TODO :: 12.09.16 utilize once Filtering fully implemented
-      if (filterData.hasAmenities()) {
-         selectionManager.setSelectedPositions(Queryable.from(filterData.getSelectedAmenities())
-               .map(element -> baseDelegateAdapter.getItems().indexOf(element))
-               .toList());
+   private void updateSelection(FilterData filterData) {
+      if (baseDelegateAdapter.getItemCount() == 0) return;
+
+      if (filterData.selectedAmenities().isEmpty()) { // show none selected as all selected
+         selectionManager.setSelectionForAll(true);
+         return;
       }
+
+      List<Integer> selectedPositionsList = Queryable.from(filterData.selectedAmenities())
+            .map(element -> baseDelegateAdapter.getItems().indexOf(element))
+            .toList();
+      selectionManager.setSelectedPositions(selectedPositionsList);
+      drawHeaderSelection();
    }
 
    private void drawHeaderSelection() {
-      final int amenityViewTypeId = baseDelegateAdapter.getClassItemViewType(Attribute.class);
+      final int amenityViewTypeId = baseDelegateAdapter.getClassItemViewType(ImmutableAttribute.class);
       final boolean allSelected = selectionManager.isAllSelected(amenityViewTypeId);
       selectionManager.setSelection(0, allSelected);
    }
 
    @Override
-   public void showAmenitiesItems(List<Attribute> amenities) {
+   public void showAmenitiesItems(List<Attribute> amenities, FilterData filterData) {
       recyclerView.setVisibility(VISIBLE);
       amenitiesProgress.setVisibility(GONE);
       amenitiesErrorView.setVisibility(GONE);
       baseDelegateAdapter.clearAndUpdateItems(amenities);
       if (!amenities.isEmpty())
          baseDelegateAdapter.addItem(0, new SelectableHeaderItem(getContext().getString(R.string.dtl_amenities), true));
+      updateSelection(filterData);
    }
 
    @Override
@@ -221,4 +226,24 @@ public class DtlFilterViewImpl extends MvpLinearLayout<FilterView, DtlFilterPres
       amenitiesProgress.setVisibility(GONE);
       amenitiesErrorView.setVisibility(VISIBLE);
    }
+
+   private DrawerLayout.DrawerListener drawerListener = new DrawerLayout.DrawerListener() {
+      @Override
+      public void onDrawerSlide(View drawerView, float slideOffset) {
+      }
+
+      @Override
+      public void onDrawerOpened(View drawerView) {
+         getPresenter().onDrawerOpened();
+      }
+
+      @Override
+      public void onDrawerClosed(View drawerView) {
+         getPresenter().onDrawerClosed();
+      }
+
+      @Override
+      public void onDrawerStateChanged(int newState) {
+      }
+   };
 }

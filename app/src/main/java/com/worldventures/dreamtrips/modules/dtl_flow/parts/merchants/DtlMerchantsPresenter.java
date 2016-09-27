@@ -18,4 +18,6 @@ public interface DtlMerchantsPresenter extends DtlPresenter<DtlMerchantsScreen, 
    void retryLoadMerchant();
 
    void mapClicked();
+
+   void offersOnlySwitched(boolean isOffersOnly);
 }

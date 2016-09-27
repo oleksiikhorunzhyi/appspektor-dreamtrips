@@ -6,12 +6,11 @@ import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.api.dtl.merchants.ThinMerchantsHttpAction;
 import com.worldventures.dreamtrips.core.api.action.CommandWithError;
 import com.worldventures.dreamtrips.core.janet.JanetModule;
-import com.worldventures.dreamtrips.core.janet.cache.CacheOptions;
-import com.worldventures.dreamtrips.core.janet.cache.CachedAction;
-import com.worldventures.dreamtrips.core.janet.cache.ImmutableCacheOptions;
 import com.worldventures.dreamtrips.core.janet.dagger.InjectableAction;
+import com.worldventures.dreamtrips.modules.dtl.model.location.DtlLocation;
 import com.worldventures.dreamtrips.modules.dtl.model.mapping.ThinMerchantsTransformer;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.ThinMerchant;
+import com.worldventures.dreamtrips.modules.dtl.model.merchant.filter.FilterData;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,19 +19,29 @@ import java.util.Locale;
 import javax.inject.Inject;
 import javax.inject.Named;
 
-import io.techery.janet.ActionHolder;
 import io.techery.janet.Janet;
 import io.techery.janet.command.annotations.CommandAction;
 import rx.schedulers.Schedulers;
 
 @CommandAction
-public class ThinMerchantsCommand extends CommandWithError<List<ThinMerchant>> implements InjectableAction {
+public class ThinMerchantsCommand extends CommandWithError<List<ThinMerchant>>
+      implements InjectableAction, NewRelicTrackableAction {
+
+   private final long startTime = System.currentTimeMillis();
 
    @Inject @Named(JanetModule.JANET_API_LIB) Janet janet;
 
    private List<ThinMerchant> cache = new ArrayList<>();
 
    private final Location coordinates;
+
+   public static ThinMerchantsCommand create(FilterData filterData, DtlLocation dtlLocation) {
+      return create(dtlLocation); // TODO :: 26.09.16
+   }
+
+   public static ThinMerchantsCommand create(DtlLocation dtlLocation) {
+      return create(dtlLocation.getCoordinates().asAndroidLocation());
+   }
 
    public static ThinMerchantsCommand create(Location coordinates) {
       return new ThinMerchantsCommand(coordinates);
@@ -60,7 +69,8 @@ public class ThinMerchantsCommand extends CommandWithError<List<ThinMerchant>> i
       return R.string.dtl_load_merchant_error;
    }
 
-   public static ThinMerchantsCommand load(Location location) {
-      return new ThinMerchantsCommand(location);
+   @Override
+   public long getMetricStart() {
+      return startTime;
    }
 }

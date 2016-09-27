@@ -14,16 +14,15 @@ import com.worldventures.dreamtrips.modules.dtl.model.LocationSourceType;
 import com.worldventures.dreamtrips.modules.dtl.model.location.DtlExternalLocation;
 import com.worldventures.dreamtrips.modules.dtl.model.location.DtlLocation;
 import com.worldventures.dreamtrips.modules.dtl.model.location.ImmutableDtlManualLocation;
-import com.worldventures.dreamtrips.modules.dtl.model.merchant.filter.DtlFilterData;
-import com.worldventures.dreamtrips.modules.dtl.service.DtlFilterMerchantInteractor;
+import com.worldventures.dreamtrips.modules.dtl.model.merchant.filter.FilterData;
 import com.worldventures.dreamtrips.modules.dtl.service.DtlLocationInteractor;
 import com.worldventures.dreamtrips.modules.dtl.service.DtlMerchantInteractor;
 import com.worldventures.dreamtrips.modules.dtl.service.DtlTransactionInteractor;
-import com.worldventures.dreamtrips.modules.dtl.service.action.DtlFilterDataAction;
+import com.worldventures.dreamtrips.modules.dtl.service.FilterDataInteractor;
 import com.worldventures.dreamtrips.modules.dtl.service.action.DtlLocationCommand;
-import com.worldventures.dreamtrips.modules.dtl.service.action.DtlMerchantsAction;
 import com.worldventures.dreamtrips.modules.dtl.service.action.DtlNearbyLocationAction;
 import com.worldventures.dreamtrips.modules.dtl.service.action.DtlSearchLocationAction;
+import com.worldventures.dreamtrips.modules.dtl.service.action.FilterDataAction;
 import com.worldventures.dreamtrips.modules.dtl_flow.DtlPresenterImpl;
 import com.worldventures.dreamtrips.modules.dtl_flow.FlowUtil;
 import com.worldventures.dreamtrips.modules.dtl_flow.ViewState;
@@ -51,7 +50,7 @@ import rx.android.schedulers.AndroidSchedulers;
 public class DtlLocationChangePresenterImpl extends DtlPresenterImpl<DtlLocationChangeScreen, ViewState.EMPTY> implements DtlLocationChangePresenter {
 
    @Inject LocationDelegate gpsLocationDelegate;
-   @Inject DtlFilterMerchantInteractor filterInteractor;
+   @Inject FilterDataInteractor filterDataInteractor;
    @Inject DtlTransactionInteractor transactionInteractor;
    @Inject DtlLocationInteractor locationInteractor;
    @Inject DtlMerchantInteractor merchantInteractor;
@@ -119,11 +118,11 @@ public class DtlLocationChangePresenterImpl extends DtlPresenterImpl<DtlLocation
             .observeSuccessWithReplay()
             .map(DtlLocationCommand::getResult)
             .compose(bindViewIoToMainComposer());
-      Observable.combineLatest(locationObservable, filterInteractor.filterDataPipe()
+      Observable.combineLatest(locationObservable, filterDataInteractor.filterDataPipe()
             .observeSuccessWithReplay()
-            .first()
-            .map(DtlFilterDataAction::getResult)
-            .map(DtlFilterData::getSearchQuery), Pair::new).take(1).subscribe(pair -> {
+            .take(1)
+            .map(FilterDataAction::getResult)
+            .map(FilterData::searchQuery), Pair::new).take(1).subscribe(pair -> {
          getView().updateToolbarTitle(pair.first, pair.second);
          toolbarInitialized = true;
       });
@@ -150,8 +149,7 @@ public class DtlLocationChangePresenterImpl extends DtlPresenterImpl<DtlLocation
                   .longName(context.getString(R.string.dtl_near_me_caption))
                   .coordinates(new com.worldventures.dreamtrips.modules.trips.model.Location(location))
                   .build();
-            locationInteractor.locationPipe().send(DtlLocationCommand.change(dtlLocation));
-            filterInteractor.filterMerchantsActionPipe().clearReplays();
+            locationInteractor.change(dtlLocation);
             navigateToPath(DtlMerchantsPath.withAllowedRedirection());
             break;
          case SEARCH:
@@ -265,27 +263,21 @@ public class DtlLocationChangePresenterImpl extends DtlPresenterImpl<DtlLocation
       getView().setItems(locations, !locations.isEmpty());
    }
 
-   protected void connectEmptyMerchantsObservable() {
-      merchantInteractor.merchantsActionPipe()
-            .createObservableResult(DtlMerchantsAction.restore())
+   private void connectEmptyMerchantsObservable() {
+      merchantInteractor.thinMerchantsHttpPipe()
+            .observeSuccessWithReplay()
             .compose(bindViewIoToMainComposer())
-            .map(DtlMerchantsAction::getResult)
+            .map(Command::getResult)
             .map(List::isEmpty)
             .subscribe(noMerchants::set);
    }
 
    @Override
    public void locationSelected(DtlExternalLocation dtlExternalLocation) {
-      locationInteractor.locationPipe()
-            .createObservableResult(DtlLocationCommand.change(dtlExternalLocation))
-            .map(Command::getResult)
-            .cast(DtlExternalLocation.class)
-            .map(LocationSearchEvent::new)
-            .map(DtlAnalyticsCommand::create)
-            .subscribe(analyticsInteractor.dtlAnalyticsCommandPipe()::send);
-      filterInteractor.filterMerchantsActionPipe().clearReplays();
-      merchantInteractor.merchantsActionPipe().send(DtlMerchantsAction.load(dtlExternalLocation.getCoordinates()
-            .asAndroidLocation()));
+      locationInteractor.searchLocationPipe().clearReplays();
+      analyticsInteractor.dtlAnalyticsCommandPipe()
+            .send(DtlAnalyticsCommand.create(LocationSearchEvent.create(dtlExternalLocation)));
+      locationInteractor.change(dtlExternalLocation);
       navigateToPath(DtlMerchantsPath.getDefault());
    }
 

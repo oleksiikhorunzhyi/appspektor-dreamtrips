@@ -83,9 +83,6 @@
             custom:mrb_pinColor="#54B5FC"
             custom:mrb_rangeBar="false"
             custom:mrb_selectorColor="#54B5FC"
-            custom:mrb_tickEnd="50"
-            custom:mrb_tickInterval="10"
-            custom:mrb_tickStart="10"
             />
 
       <TextView
@@ -99,28 +96,28 @@
             android:textColor="@color/black"
             />
 
-      <TextView
+      <android.support.v7.widget.AppCompatTextView
+            android:id="@+id/filter_distance_left_value"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="bottom"
             android:paddingLeft="25dp"
             android:paddingTop="15dp"
-            android:text="10"
             android:textColor="@color/black"
             android:textSize="14sp"
-            tools:ignore="HardcodedText"
+            tools:text="10"
             />
 
-      <TextView
+      <android.support.v7.widget.AppCompatTextView
+            android:id="@+id/filter_distance_right_value"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="bottom|end"
             android:paddingRight="20dp"
             android:paddingTop="15dp"
-            android:text="50+"
             android:textColor="@color/black"
             android:textSize="14sp"
-            tools:ignore="HardcodedText"
+            tools:text="50"
             />
    </FrameLayout>
 

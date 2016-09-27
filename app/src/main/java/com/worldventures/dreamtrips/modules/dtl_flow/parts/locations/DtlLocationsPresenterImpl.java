@@ -13,9 +13,7 @@ import com.worldventures.dreamtrips.modules.dtl.model.LocationSourceType;
 import com.worldventures.dreamtrips.modules.dtl.model.location.DtlExternalLocation;
 import com.worldventures.dreamtrips.modules.dtl.model.location.DtlLocation;
 import com.worldventures.dreamtrips.modules.dtl.model.location.ImmutableDtlManualLocation;
-import com.worldventures.dreamtrips.modules.dtl.service.DtlFilterMerchantInteractor;
 import com.worldventures.dreamtrips.modules.dtl.service.DtlLocationInteractor;
-import com.worldventures.dreamtrips.modules.dtl.service.action.DtlLocationCommand;
 import com.worldventures.dreamtrips.modules.dtl.service.action.DtlNearbyLocationAction;
 import com.worldventures.dreamtrips.modules.dtl_flow.DtlPresenterImpl;
 import com.worldventures.dreamtrips.modules.dtl_flow.ViewState;
@@ -31,14 +29,12 @@ import javax.inject.Inject;
 import flow.Flow;
 import flow.History;
 import icepick.State;
-import io.techery.janet.Command;
 import io.techery.janet.helper.ActionStateSubscriber;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 
 public class DtlLocationsPresenterImpl extends DtlPresenterImpl<DtlLocationsScreen, ViewState.EMPTY> implements DtlLocationsPresenter {
 
-   @Inject DtlFilterMerchantInteractor filterInteractor;
    @Inject LocationDelegate gpsLocationDelegate;
    @Inject DtlLocationInteractor locationInteractor;
    //
@@ -87,10 +83,10 @@ public class DtlLocationsPresenterImpl extends DtlPresenterImpl<DtlLocationsScre
    @Override
    public void loadNearMeRequested() {
       screenMode = ScreenMode.AUTO_NEAR_ME;
-      //
+
       if (locationRequestNoFallback != null && !locationRequestNoFallback.isUnsubscribed())
          locationRequestNoFallback.unsubscribe();
-      //
+
       gpsLocationDelegate.requestLocationUpdate()
             .compose(bindViewIoToMainComposer())
             .doOnSubscribe(getView()::showProgress)
@@ -108,7 +104,7 @@ public class DtlLocationsPresenterImpl extends DtlPresenterImpl<DtlLocationsScre
                   .longName(context.getString(R.string.dtl_near_me_caption))
                   .coordinates(new com.worldventures.dreamtrips.modules.trips.model.Location(location))
                   .build();
-            locationInteractor.locationPipe().send(DtlLocationCommand.change(dtlLocation));
+            locationInteractor.change(dtlLocation);
             navigateToMerchants();
             break;
       }
@@ -159,14 +155,10 @@ public class DtlLocationsPresenterImpl extends DtlPresenterImpl<DtlLocationsScre
 
    @Override
    public void onLocationSelected(DtlExternalLocation location) {
-      locationInteractor.locationPipe()
-            .createObservableResult(DtlLocationCommand.change(location))
-            .map(Command::getResult)
-            .cast(DtlExternalLocation.class)
-            .map(LocationSearchEvent::new)
-            .map(DtlAnalyticsCommand::create)
-            .subscribe(analyticsInteractor.dtlAnalyticsCommandPipe()::send);
-      filterInteractor.filterMerchantsActionPipe().clearReplays();
+      locationInteractor.searchLocationPipe().clearReplays();
+      analyticsInteractor.dtlAnalyticsCommandPipe()
+            .send(DtlAnalyticsCommand.create(LocationSearchEvent.create(location)));
+      locationInteractor.change(location);
       navigateToMerchants();
    }
 

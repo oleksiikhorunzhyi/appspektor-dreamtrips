@@ -13,7 +13,6 @@ import com.worldventures.dreamtrips.modules.dtl.analytics.DtlAnalyticsCommand;
 import com.worldventures.dreamtrips.modules.dtl.analytics.PointsEstimatorCalculateEvent;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.Merchant;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.offer.Currency;
-import com.worldventures.dreamtrips.modules.dtl.service.DtlMerchantInteractor;
 import com.worldventures.dreamtrips.modules.dtl.service.DtlTransactionInteractor;
 
 import javax.inject.Inject;
@@ -28,7 +27,6 @@ public class DtlPointsEstimationPresenter extends JobPresenter<DtlPointsEstimati
    protected final Merchant merchant;
 
    @Inject DtlTransactionInteractor transactionInteractor;
-   @Inject DtlMerchantInteractor merchantInteractor;
 
    public DtlPointsEstimationPresenter(Merchant merchant) {
       this.merchant = merchant;

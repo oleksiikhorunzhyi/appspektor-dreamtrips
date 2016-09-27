@@ -24,6 +24,7 @@ import org.immutables.value.Value;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
+import java.util.Locale;
 
 @Value.Immutable
 public abstract class MerchantAttributes {
@@ -101,4 +102,12 @@ public abstract class MerchantAttributes {
       return TextUtils.join(", ", categories);
    }
 
+   @Value.Derived public String provideAnalyticsName() {
+      return String.format(Locale.US, "%s:%s:%s", adoptForAnalytics(city()), adoptForAnalytics(state()),
+            adoptForAnalytics(country()));
+   }
+
+   private static String adoptForAnalytics(String string) {
+      return TextUtils.isEmpty(string) ? "-" : string;
+   }
 }

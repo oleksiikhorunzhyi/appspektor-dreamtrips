@@ -176,7 +176,6 @@
 
    <style name="DtlToolbarInput">
       <item name="android:inputType">textCapWords</item>
-      <item name="android:imeOptions">actionDone</item>
       <item name="android:selectAllOnFocus">true</item>
       <item name="android:singleLine">true</item>
       <item name="android:textSize">@dimen/dtlt_input_text_size</item>

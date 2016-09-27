@@ -10,8 +10,6 @@ import com.worldventures.dreamtrips.modules.dtl_flow.DtlScreen;
 
 import java.util.List;
 
-import rx.Observable;
-
 public interface DtlMerchantsScreen extends DtlScreen {
 
    void updateToolbarLocationTitle(@Nullable DtlLocation dtlLocation);
@@ -28,15 +26,13 @@ public interface DtlMerchantsScreen extends DtlScreen {
 
    void toggleSelection(ThinMerchant merchant);
 
-   void toggleDiningFilterSwitch(boolean enabled);
+   void toggleOffersOnly(boolean enabled);
 
    boolean isToolbarCollapsed();
 
-   void setFilterButtonState(boolean enabled);
+   void setFilterButtonState(boolean isDefault);
 
    void showEmptyMerchantView(boolean show);
 
    DtlMerchantsPath getPath();
-
-   Observable<Boolean> getToggleObservable();
 }

@@ -1,9 +1,9 @@
 package com.worldventures.dreamtrips.modules.dtl_flow.parts.filter;
 
 import com.worldventures.dreamtrips.modules.dtl.service.AttributesInteractor;
-import com.worldventures.dreamtrips.modules.dtl.service.DtlFilterMerchantInteractor;
+import com.worldventures.dreamtrips.modules.dtl.service.FilterDataInteractor;
 import com.worldventures.dreamtrips.modules.dtl.service.action.AttributesAction;
-import com.worldventures.dreamtrips.modules.dtl.service.action.DtlFilterDataAction;
+import com.worldventures.dreamtrips.modules.dtl.service.action.FilterDataAction;
 
 import javax.inject.Inject;
 
@@ -14,7 +14,7 @@ import rx.subjects.PublishSubject;
 
 public class DtlFilterPresenterImpl implements DtlFilterPresenter {
 
-   @Inject DtlFilterMerchantInteractor filterInteractor;
+   @Inject FilterDataInteractor filterDataInteractor;
    @Inject AttributesInteractor attributesInteractor;
 
    private FilterView view;
@@ -29,7 +29,6 @@ public class DtlFilterPresenterImpl implements DtlFilterPresenter {
    public void attachView(FilterView view) {
       this.view = view;
       this.view.getInjector().inject(this);
-      updateFilterState();
       bindFilterUpdates();
       bindAmenitiesUpdate();
    }
@@ -52,13 +51,13 @@ public class DtlFilterPresenterImpl implements DtlFilterPresenter {
 
    @Override
    public void apply() {
-      filterInteractor.filterDataPipe().send(DtlFilterDataAction.applyParams(view.getFilterParameters()));
+      filterDataInteractor.mergeAndApply(view.getFilterData());
       closeDrawer();
    }
 
    @Override
    public void resetAll() {
-      filterInteractor.filterDataPipe().send(DtlFilterDataAction.reset());
+      filterDataInteractor.reset();
       closeDrawer();
    }
 
@@ -70,29 +69,20 @@ public class DtlFilterPresenterImpl implements DtlFilterPresenter {
             .takeUntil(hideStopper.asObservable())
             .takeUntil(detachStopper.asObservable())
             .subscribe(attributesActionActionState ->
-                  attributesInteractor.attributesPipe().send(new AttributesAction()));
+                  retryAmenities());
    }
 
    @Override
    public void retryAmenities() {
-      attributesInteractor.attributesPipe().send(new AttributesAction());
+      attributesInteractor.requestAmenities();
    }
 
    private void bindFilterUpdates() {
-      filterInteractor.filterDataPipe().observeSuccess()
-            .map(DtlFilterDataAction::getResult)
+      filterDataInteractor.filterDataPipe().observeSuccessWithReplay()
+            .map(FilterDataAction::getResult)
             .observeOn(AndroidSchedulers.mainThread())
             .takeUntil(detachStopper.asObservable())
-            .subscribe(view::syncUi);
-   }
-
-   private void updateFilterState() {
-      filterInteractor.filterDataPipe()
-            .observeSuccessWithReplay()
-            .first()
-            .map(DtlFilterDataAction::getResult)
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe(view::syncUi);
+            .subscribe(filterData -> view.applyFilterState(filterData));
    }
 
    private void bindAmenitiesUpdate() {
@@ -101,7 +91,15 @@ public class DtlFilterPresenterImpl implements DtlFilterPresenter {
             .observeOn(AndroidSchedulers.mainThread())
             .takeUntil(detachStopper.asObservable())
             .subscribe(new ActionStateSubscriber<AttributesAction>()
-                  .onSuccess(attributesAction -> view.showAmenitiesItems(attributesAction.getResult()))
+                  .onSuccess(attributesAction -> {
+                     filterDataInteractor.filterDataPipe().observeSuccessWithReplay()
+                           .take(1)
+                           .map(FilterDataAction::getResult)
+                           .observeOn(AndroidSchedulers.mainThread())
+                           .takeUntil(detachStopper.asObservable())
+                           .subscribe(filterData ->
+                                 view.showAmenitiesItems(attributesAction.getResult(), filterData));
+                  })
                   .onProgress((attributesAction, integer) -> view.showAmenitiesListProgress())
                   .onFail((attributesAction, throwable) -> view.showAmenitiesError()));
    }

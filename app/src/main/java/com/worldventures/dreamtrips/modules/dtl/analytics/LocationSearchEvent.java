@@ -10,7 +10,11 @@ public class LocationSearchEvent extends DtlAnalyticsAction {
 
    @Attribute("dtlcitysearch") final String locationName;
 
-   public LocationSearchEvent(DtlExternalLocation location) {
+   public static LocationSearchEvent create(DtlExternalLocation location) {
+      return new LocationSearchEvent(location);
+   }
+
+   private LocationSearchEvent(DtlExternalLocation location) {
       this.locationName = location.getAnalyticsName();
    }
 }

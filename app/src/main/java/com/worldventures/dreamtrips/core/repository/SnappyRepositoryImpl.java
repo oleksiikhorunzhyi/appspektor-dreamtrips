@@ -1,7 +1,6 @@
 package com.worldventures.dreamtrips.core.repository;
 
 import android.content.Context;
-import android.support.annotation.Nullable;
 
 import com.innahema.collections.query.queriables.Queryable;
 import com.snappydb.DB;
@@ -10,10 +9,6 @@ import com.snappydb.SnappydbException;
 import com.techery.spares.storage.complex_objects.Optional;
 import com.techery.spares.utils.ValidationUtils;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem;
-import com.worldventures.dreamtrips.modules.dtl.model.location.DtlLocation;
-import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchant;
-import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchantAttribute;
-import com.worldventures.dreamtrips.modules.dtl.model.merchant.ThinMerchant;
 import com.worldventures.dreamtrips.modules.dtl.model.transaction.DtlTransaction;
 import com.worldventures.dreamtrips.modules.dtl.model.transaction.ImmutableDtlTransaction;
 import com.worldventures.dreamtrips.modules.feed.model.BucketFeedItem;
@@ -463,55 +458,6 @@ public class SnappyRepositoryImpl implements SnappyRepository {
    ///////////////////////////////////////////////////////////////////////////
 
    @Override
-   public void saveDtlLocation(DtlLocation dtlLocation) {
-      // list below is a hack to allow manipulating DtlLocation class since it is an interface
-      List<DtlLocation> location = new ArrayList<>();
-      location.add(dtlLocation);
-      putList(DTL_SELECTED_LOCATION, location);
-   }
-
-   @Override
-   public void cleanDtlLocation() {
-      clearAllForKey(DTL_SELECTED_LOCATION);
-   }
-
-   @Override
-   @Nullable
-   public DtlLocation getDtlLocation() {
-      // list below is a hack to allow manipulating DtlLocation class since it is an interface
-      List<DtlLocation> location = readList(DTL_SELECTED_LOCATION, DtlLocation.class);
-      if (location.isEmpty()) return DtlLocation.UNDEFINED;
-      else return location.get(0);
-   }
-
-   @Override
-   public void saveDtlMerhants(List<DtlMerchant> merchants) {
-      clearAllForKey(DTL_MERCHANTS);
-      putList(DTL_MERCHANTS, merchants);
-   }
-
-   @Override
-   public List<DtlMerchant> getDtlMerchants() {
-      return readList(DTL_MERCHANTS, DtlMerchant.class);
-   }
-
-   @Override
-   public void saveAmenities(Collection<DtlMerchantAttribute> amenities) {
-      clearAllForKey(DTL_AMENITIES);
-      putList(DTL_AMENITIES, amenities);
-   }
-
-   @Override
-   public List<DtlMerchantAttribute> getAmenities() {
-      return readList(DTL_AMENITIES, DtlMerchantAttribute.class);
-   }
-
-   @Override
-   public void clearMerchantData() {
-      clearAllForKeys(DTL_MERCHANTS, DTL_AMENITIES, DTL_TRANSACTION_PREFIX);
-   }
-
-   @Override
    public void saveLastMapCameraPosition(Location location) {
       act(db -> db.put(DTL_LAST_MAP_POSITION, location));
    }
@@ -525,25 +471,6 @@ public class SnappyRepositoryImpl implements SnappyRepository {
    public void cleanLastMapCameraPosition() {
       clearAllForKey(DTL_LAST_MAP_POSITION);
    }
-
-   @Override
-   public void saveLastSelectedOffersOnlyToogle(boolean state) {
-      act(db -> db.putBoolean(DTL_SHOW_OFFERS_ONLY_TOGGLE, state));
-   }
-
-   @Override
-   public Boolean getLastSelectedOffersOnlyToggle() {
-      return actWithResult(db -> db.getBoolean(DTL_SHOW_OFFERS_ONLY_TOGGLE)).or(Boolean.FALSE);
-   }
-
-   @Override
-   public void cleanLastSelectedOffersOnlyToggle() {
-      clearAllForKey(DTL_SHOW_OFFERS_ONLY_TOGGLE);
-   }
-
-   ///////////////////////////////////////////////////////////////////////////
-   // DTL Transaction
-   ///////////////////////////////////////////////////////////////////////////
 
    @Override
    public DtlTransaction getDtlTransaction(String id) {

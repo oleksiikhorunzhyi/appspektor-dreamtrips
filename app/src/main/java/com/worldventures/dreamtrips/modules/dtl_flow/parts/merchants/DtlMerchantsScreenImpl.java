@@ -3,7 +3,6 @@ package com.worldventures.dreamtrips.modules.dtl_flow.parts.merchants;
 import android.content.Context;
 import android.support.annotation.Nullable;
 import android.support.v4.widget.SwipeRefreshLayout;
-import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.View;
 
@@ -36,7 +35,6 @@ import java.util.concurrent.TimeUnit;
 import butterknife.InjectView;
 import butterknife.Optional;
 import cn.pedant.SweetAlert.SweetAlertDialog;
-import rx.Observable;
 
 public class DtlMerchantsScreenImpl extends DtlLayout<DtlMerchantsScreen, DtlMerchantsPresenter, DtlMerchantsPath>
       implements DtlMerchantsScreen, DtlMerchantCellDelegate {
@@ -45,7 +43,7 @@ public class DtlMerchantsScreenImpl extends DtlLayout<DtlMerchantsScreen, DtlMer
    @InjectView(R.id.lv_items) EmptyRecyclerView recyclerView;
    @InjectView(R.id.swipe_container) SwipeRefreshLayout refreshLayout;
    @InjectView(R.id.emptyView) View emptyView;
-   //
+
    BaseDelegateAdapter baseDelegateAdapter;
    SelectionManager selectionManager;
    SweetAlertDialog errorDialog;
@@ -60,17 +58,17 @@ public class DtlMerchantsScreenImpl extends DtlLayout<DtlMerchantsScreen, DtlMer
    protected void onPostAttachToWindowView() {
       super.onPostAttachToWindowView();
       initDtlToolbar();
-      //
+
       baseDelegateAdapter = new ThinMerchantsAdapter(getActivity(), injector);
       baseDelegateAdapter.registerCell(ImmutableThinMerchant.class, DtlMerchantExpandableCell.class);
       baseDelegateAdapter.registerDelegate(ImmutableThinMerchant.class, this);
-      //
+
       selectionManager = new SingleSelectionManager(recyclerView);
       selectionManager.setEnabled(isTabletLandscape());
-      //
+
       recyclerView.setAdapter(baseDelegateAdapter);
       recyclerView.setEmptyView(emptyView);
-      //
+
       refreshLayout.setColorSchemeResources(R.color.theme_main_darker);
       refreshLayout.setEnabled(false);
    }
@@ -85,9 +83,7 @@ public class DtlMerchantsScreenImpl extends DtlLayout<DtlMerchantsScreen, DtlMer
             .throttleFirst(250L, TimeUnit.MILLISECONDS)
             .compose(RxLifecycle.bindView(this))
             .subscribe(aVoid -> getPresenter().mapClicked());
-      RxDtlToolbar.merchantSearchTextChanges(dtlToolbar)
-            .debounce(250L, TimeUnit.MILLISECONDS)
-            .skipWhile(TextUtils::isEmpty)
+      RxDtlToolbar.merchantSearchApplied(dtlToolbar)
             .filter(s -> !dtlToolbar.isCollapsed())
             .compose(RxLifecycle.bindView(this))
             .subscribe(getPresenter()::applySearch);
@@ -99,12 +95,15 @@ public class DtlMerchantsScreenImpl extends DtlLayout<DtlMerchantsScreen, DtlMer
       RxDtlToolbar.filterButtonClicks(dtlToolbar)
             .compose(RxLifecycle.bindView(this))
             .subscribe(aVoid -> ((FlowActivity) getActivity()).openRightDrawer());
+      RxDtlToolbar.offersOnlyToggleChanges(dtlToolbar)
+            .compose(RxLifecycle.bindView(this))
+            .subscribe(aBoolean -> getPresenter().offersOnlySwitched(aBoolean));
    }
 
    @Override
-   public void setFilterButtonState(boolean enabled) {
+   public void setFilterButtonState(boolean isDefault) {
       if (dtlToolbar == null) return;
-      dtlToolbar.setFilterEnabled(enabled);
+      dtlToolbar.setFilterEnabled(!isDefault);
    }
 
    @Override
@@ -142,14 +141,7 @@ public class DtlMerchantsScreenImpl extends DtlLayout<DtlMerchantsScreen, DtlMer
    @Override
    public void setItems(List<ThinMerchant> merchants) {
       hideProgress();
-      //
       baseDelegateAdapter.setItems(merchants);
-   }
-
-   @Override
-   public Observable<Boolean> getToggleObservable() {
-      if (dtlToolbar == null) return Observable.empty();
-      return RxDtlToolbar.diningFilterChanges(dtlToolbar).compose(RxLifecycle.bindView(this));
    }
 
    @Override
@@ -175,9 +167,9 @@ public class DtlMerchantsScreenImpl extends DtlLayout<DtlMerchantsScreen, DtlMer
    }
 
    @Override
-   public void toggleDiningFilterSwitch(boolean enabled) {
+   public void toggleOffersOnly(boolean enabled) {
       if (dtlToolbar == null) return;
-      dtlToolbar.toggleDiningFilterSwitch(enabled);
+      dtlToolbar.toggleOffersOnly(enabled);
    }
 
    @Override

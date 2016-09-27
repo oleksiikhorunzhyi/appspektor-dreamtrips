@@ -26,6 +26,8 @@ public class PrivateProfileConverter implements Converter<PrivateUserProfile, Us
    public User convert(MapperyContext mapperyContext, PrivateUserProfile apiProfile) {
       User user = new User();
 
+      user.setId(apiProfile.id());
+
       user.setUsername(apiProfile.username());
       user.setEmail(apiProfile.email());
       user.setCompany(apiProfile.company());

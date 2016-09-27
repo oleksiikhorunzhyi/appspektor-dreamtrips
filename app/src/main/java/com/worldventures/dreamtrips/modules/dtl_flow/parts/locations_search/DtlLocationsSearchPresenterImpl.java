@@ -10,9 +10,7 @@ import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.modules.dtl.analytics.DtlAnalyticsCommand;
 import com.worldventures.dreamtrips.modules.dtl.analytics.LocationSearchEvent;
 import com.worldventures.dreamtrips.modules.dtl.model.location.DtlExternalLocation;
-import com.worldventures.dreamtrips.modules.dtl.service.DtlFilterMerchantInteractor;
 import com.worldventures.dreamtrips.modules.dtl.service.DtlLocationInteractor;
-import com.worldventures.dreamtrips.modules.dtl.service.action.DtlLocationCommand;
 import com.worldventures.dreamtrips.modules.dtl.service.action.DtlSearchLocationAction;
 import com.worldventures.dreamtrips.modules.dtl_flow.DtlPresenterImpl;
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.merchants.DtlMerchantsPath;
@@ -23,12 +21,10 @@ import javax.inject.Inject;
 
 import flow.Flow;
 import flow.History;
-import io.techery.janet.Command;
 import io.techery.janet.helper.ActionStateSubscriber;
 
 public class DtlLocationsSearchPresenterImpl extends DtlPresenterImpl<DtlLocationsSearchScreen, DtlLocationsSearchViewState> implements DtlLocationsSearchPresenter {
 
-   @Inject DtlFilterMerchantInteractor filterInteractor;
    @Inject DtlLocationInteractor locationInteractor;
 
    public DtlLocationsSearchPresenterImpl(Context context, Injector injector) {
@@ -81,14 +77,14 @@ public class DtlLocationsSearchPresenterImpl extends DtlPresenterImpl<DtlLocatio
    @Override
    public void onLocationSelected(DtlExternalLocation location) {
       locationInteractor.searchLocationPipe().clearReplays();
-      locationInteractor.locationPipe()
-            .createObservableResult(DtlLocationCommand.change(location))
-            .map(Command::getResult)
-            .cast(DtlExternalLocation.class)
-            .map(LocationSearchEvent::new)
-            .map(DtlAnalyticsCommand::create)
-            .subscribe(analyticsInteractor.dtlAnalyticsCommandPipe()::send);
-      filterInteractor.filterMerchantsActionPipe().clearReplays();
+      analyticsInteractor.dtlAnalyticsCommandPipe()
+            .send(DtlAnalyticsCommand.create(LocationSearchEvent.create(location)));
+      locationInteractor.change(location);
+
+      navigateToMerchants();
+   }
+
+   private void navigateToMerchants() {
       History history = History.single(DtlMerchantsPath.getDefault());
       Flow.get(getContext()).setHistory(history, Flow.Direction.REPLACE);
    }

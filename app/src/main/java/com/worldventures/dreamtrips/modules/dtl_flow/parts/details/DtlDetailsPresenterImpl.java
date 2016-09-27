@@ -32,7 +32,6 @@ import com.worldventures.dreamtrips.modules.dtl.model.merchant.MerchantMedia;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.offer.Offer;
 import com.worldventures.dreamtrips.modules.dtl.model.transaction.DtlTransaction;
 import com.worldventures.dreamtrips.modules.dtl.model.transaction.ImmutableDtlTransaction;
-import com.worldventures.dreamtrips.modules.dtl.service.DtlMerchantInteractor;
 import com.worldventures.dreamtrips.modules.dtl.service.DtlTransactionInteractor;
 import com.worldventures.dreamtrips.modules.dtl.service.action.DtlTransactionAction;
 import com.worldventures.dreamtrips.modules.dtl_flow.DtlPresenterImpl;
@@ -52,12 +51,11 @@ public class DtlDetailsPresenterImpl extends DtlPresenterImpl<DtlDetailsScreen, 
 
    @Inject FeatureManager featureManager;
    @Inject LocationDelegate locationDelegate;
-   @Inject DtlMerchantInteractor merchantInteractor;
    @Inject DtlTransactionInteractor transactionInteractor;
-   @Inject protected PhotoUploadingManagerS3 photoUploadingManagerS3;
-   //
-   protected Merchant merchant;
-   protected List<String> preExpandOffers;
+   @Inject PhotoUploadingManagerS3 photoUploadingManagerS3;
+
+   private final Merchant merchant;
+   private final List<String> preExpandOffers;
 
    public DtlDetailsPresenterImpl(Context context, Injector injector, Merchant merchant, List<String> preExpandOffers) {
       super(context);
@@ -69,10 +67,9 @@ public class DtlDetailsPresenterImpl extends DtlPresenterImpl<DtlDetailsScreen, 
    @Override
    public void onAttachedToWindow() {
       super.onAttachedToWindow();
-      //
+
       analyticsInteractor.dtlAnalyticsCommandPipe()
             .send(new MerchantDetailsViewCommand(new MerchantDetailsViewEvent(merchant.asMerchantAttributes())));
-      //
       getView().setMerchant(merchant);
       preExpandOffers();
       tryHideSuggestMerchantButton();
@@ -121,7 +118,7 @@ public class DtlDetailsPresenterImpl extends DtlPresenterImpl<DtlDetailsScreen, 
    protected void preExpandOffers() {
       boolean isRestore = getViewState().getOffersIds() != null;
       final List<String> offers = isRestore ? getViewState().getOffersIds() : this.preExpandOffers;
-      //
+
       getView().expandOffers(offers);
    }
 

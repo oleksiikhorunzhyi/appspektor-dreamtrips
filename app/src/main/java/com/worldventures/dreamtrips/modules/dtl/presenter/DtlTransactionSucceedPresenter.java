@@ -15,7 +15,6 @@ import com.worldventures.dreamtrips.modules.dtl.analytics.TransactionSuccessEven
 import com.worldventures.dreamtrips.modules.dtl.location.LocationDelegate;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.Merchant;
 import com.worldventures.dreamtrips.modules.dtl.model.transaction.DtlTransactionResult;
-import com.worldventures.dreamtrips.modules.dtl.service.DtlMerchantInteractor;
 import com.worldventures.dreamtrips.modules.dtl.service.DtlTransactionInteractor;
 import com.worldventures.dreamtrips.modules.dtl.service.action.DtlTransactionAction;
 
@@ -26,7 +25,6 @@ import io.techery.janet.helper.ActionStateSubscriber;
 
 public class DtlTransactionSucceedPresenter extends JobPresenter<DtlTransactionSucceedPresenter.View> {
 
-   @Inject DtlMerchantInteractor merchantInteractor;
    @Inject DtlTransactionInteractor transactionInteractor;
    @Inject LocationDelegate locationDelegate;
    //

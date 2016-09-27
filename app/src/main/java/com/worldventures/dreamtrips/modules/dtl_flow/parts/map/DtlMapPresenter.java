@@ -22,4 +22,6 @@ public interface DtlMapPresenter extends DtlPresenter<DtlMapScreen, ViewState.EM
    void onListClicked();
 
    void retryLoadMerchant();
+
+   void offersOnlySwitched(boolean isOffersOnly);
 }

@@ -8,7 +8,6 @@ import com.worldventures.dreamtrips.modules.bucketlist.service.storage.BucketLis
 import com.worldventures.dreamtrips.modules.bucketlist.service.storage.BucketMemoryStorage;
 import com.worldventures.dreamtrips.modules.bucketlist.service.storage.RecentlyAddedBucketItemStorage;
 import com.worldventures.dreamtrips.modules.bucketlist.service.storage.UploadBucketPhotoInMemoryStorage;
-import com.worldventures.dreamtrips.modules.dtl.helper.cache.DtlMerchantsStorage;
 import com.worldventures.dreamtrips.modules.dtl.helper.cache.DtlSearchLocationStorage;
 import com.worldventures.dreamtrips.modules.feed.service.storage.NotificationMemoryStorage;
 import com.worldventures.dreamtrips.modules.feed.service.storage.NotificationsStorage;
@@ -32,12 +31,6 @@ import dagger.Provides;
 
 @Module(complete = false, library = true)
 public class CacheActionStorageModule {
-
-   @Singleton
-   @Provides(type = Provides.Type.SET)
-   ActionStorage provideDtlMerchantsStorage(SnappyRepository db) {
-      return new DtlMerchantsStorage(db);
-   }
 
    @Singleton
    @Provides(type = Provides.Type.SET)

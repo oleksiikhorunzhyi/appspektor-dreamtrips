@@ -20,7 +20,6 @@ import com.worldventures.dreamtrips.modules.dtl.model.merchant.Merchant;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.offer.Currency;
 import com.worldventures.dreamtrips.modules.dtl.model.transaction.DtlTransaction;
 import com.worldventures.dreamtrips.modules.dtl.model.transaction.ImmutableDtlTransaction;
-import com.worldventures.dreamtrips.modules.dtl.service.DtlMerchantInteractor;
 import com.worldventures.dreamtrips.modules.dtl.service.DtlTransactionInteractor;
 import com.worldventures.dreamtrips.modules.dtl.service.action.DtlTransactionAction;
 import com.worldventures.dreamtrips.modules.tripsimages.view.custom.PickImageDelegate;
@@ -35,7 +34,6 @@ public class DtlScanReceiptPresenter extends JobPresenter<DtlScanReceiptPresente
 
    public static final int REQUESTER_ID = -3;
 
-   @Inject DtlMerchantInteractor merchantInteractor;
    @Inject DtlTransactionInteractor transactionInteractor;
    //
    @State double amount;

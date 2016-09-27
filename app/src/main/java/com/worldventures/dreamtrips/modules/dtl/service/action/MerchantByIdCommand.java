@@ -5,7 +5,6 @@ import com.worldventures.dreamtrips.api.dtl.merchants.MerchantByIdHttpAction;
 import com.worldventures.dreamtrips.core.api.action.CommandWithError;
 import com.worldventures.dreamtrips.core.janet.JanetModule;
 import com.worldventures.dreamtrips.core.janet.dagger.InjectableAction;
-import com.worldventures.dreamtrips.core.rx.composer.IoToMainComposer;
 import com.worldventures.dreamtrips.modules.dtl.model.mapping.MerchantMapper;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.Merchant;
 
@@ -18,6 +17,7 @@ import rx.schedulers.Schedulers;
 
 @CommandAction
 public class MerchantByIdCommand extends CommandWithError<Merchant> implements InjectableAction {
+   // TODO :: 26.09.16 Rename to FullMerchantAction
 
    @Inject @Named(JanetModule.JANET_API_LIB) Janet janet;
 

@@ -116,7 +116,7 @@ public class DtlLocationsScreenImpl extends DtlLayout<DtlLocationsScreen, DtlLoc
    @Override
    public void setItems(List<DtlExternalLocation> dtlExternalLocations) {
       hideProgress();
-      //
+
       adapter.clear();
       adapter.addItems(dtlExternalLocations);
    }

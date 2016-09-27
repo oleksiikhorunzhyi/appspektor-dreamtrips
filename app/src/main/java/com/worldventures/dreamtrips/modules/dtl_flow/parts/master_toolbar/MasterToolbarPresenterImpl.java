@@ -14,15 +14,14 @@ import com.worldventures.dreamtrips.modules.dtl.model.LocationSourceType;
 import com.worldventures.dreamtrips.modules.dtl.model.location.DtlExternalLocation;
 import com.worldventures.dreamtrips.modules.dtl.model.location.DtlLocation;
 import com.worldventures.dreamtrips.modules.dtl.model.location.ImmutableDtlManualLocation;
-import com.worldventures.dreamtrips.modules.dtl.model.merchant.filter.DtlFilterData;
-import com.worldventures.dreamtrips.modules.dtl.service.DtlFilterMerchantInteractor;
+import com.worldventures.dreamtrips.modules.dtl.model.merchant.filter.FilterData;
 import com.worldventures.dreamtrips.modules.dtl.service.DtlLocationInteractor;
 import com.worldventures.dreamtrips.modules.dtl.service.DtlMerchantInteractor;
-import com.worldventures.dreamtrips.modules.dtl.service.action.DtlFilterDataAction;
+import com.worldventures.dreamtrips.modules.dtl.service.FilterDataInteractor;
 import com.worldventures.dreamtrips.modules.dtl.service.action.DtlLocationCommand;
-import com.worldventures.dreamtrips.modules.dtl.service.action.DtlMerchantsAction;
 import com.worldventures.dreamtrips.modules.dtl.service.action.DtlNearbyLocationAction;
 import com.worldventures.dreamtrips.modules.dtl.service.action.DtlSearchLocationAction;
+import com.worldventures.dreamtrips.modules.dtl.service.action.FilterDataAction;
 import com.worldventures.dreamtrips.modules.dtl_flow.DtlPresenterImpl;
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.location_change.DtlLocationChangePresenterImpl;
 
@@ -42,19 +41,18 @@ import rx.android.schedulers.AndroidSchedulers;
 
 public class MasterToolbarPresenterImpl extends DtlPresenterImpl<MasterToolbarScreen, MasterToolbarState> implements MasterToolbarPresenter {
 
-   @Inject DtlFilterMerchantInteractor filterInteractor;
    @Inject DtlLocationInteractor locationInteractor;
+   @Inject FilterDataInteractor filterDataInteractor;
    @Inject LocationDelegate gpsLocationDelegate;
    @Inject DtlMerchantInteractor merchantInteractor;
-   //
+
    @State DtlLocationChangePresenterImpl.ScreenMode screenMode = DtlLocationChangePresenterImpl.ScreenMode.NEARBY_LOCATIONS;
    @State ArrayList<DtlExternalLocation> dtlNearbyLocations = new ArrayList<>();
-   //
-   private Subscription locationRequestNoFallback;
-   //
+
    private AtomicBoolean showAutodetectButton = new AtomicBoolean(Boolean.FALSE);
    private AtomicBoolean noMerchants = new AtomicBoolean(Boolean.FALSE);
 
+   private Subscription locationRequestNoFallback;
 
    public MasterToolbarPresenterImpl(Context context, Injector injector) {
       super(context);
@@ -86,59 +84,60 @@ public class MasterToolbarPresenterImpl extends DtlPresenterImpl<MasterToolbarSc
    public void onAttachedToWindow() {
       super.onAttachedToWindow();
       apiErrorPresenter.setView(getView());
-      //
+
       bindToolbarLocationCaptionUpdates();
       connectFilterDataChanges();
-      //
+
       tryHideNearMeButton();
+
       // remember this observable - we will start listening to search below only after this fires
       updateToolbarTitles();
-      //
+
       connectNearbyLocations();
       connectLocationsSearch();
       connectMerchants();
       connectLocationDelegateNoFallback();
       connectToolbarLocationSearchInput();
-      //
+
       connectFilterToogle();
    }
 
    private void connectFilterToogle() {
-      filterInteractor.filterDataPipe()
+      filterDataInteractor.filterDataPipe()
             .observeSuccessWithReplay()
-            .first()
-            .map(DtlFilterDataAction::getResult)
-            .map(DtlFilterData::isOffersOnly)
-            .subscribe(getView()::toggleDiningFilterSwitch);
+            .take(1)
+            .compose(bindViewIoToMainComposer())
+            .map(FilterDataAction::getResult)
+            .map(FilterData::isOffersOnly)
+            .subscribe(getView()::toggleOffersOnly);
    }
 
    private void connectFilterDataChanges() {
-      filterInteractor.filterDataPipe()
+      filterDataInteractor.filterDataPipe()
             .observeSuccess()
-            .map(DtlFilterDataAction::getResult)
+            .map(FilterDataAction::getResult)
             .compose(bindViewIoToMainComposer())
-            .subscribe(dtlFilterData -> {
-               getView().setFilterButtonState(!dtlFilterData.isDefault());
-            });
+            .map(FilterData::isDefault)
+            .subscribe(getView()::setFilterButtonState);
    }
 
    private void connectMerchants() {
-      merchantInteractor.merchantsActionPipe()
-            .createObservableResult(DtlMerchantsAction.restore())
+      merchantInteractor.thinMerchantsHttpPipe()
+            .observeSuccessWithReplay()
             .compose(bindViewIoToMainComposer())
-            .map(DtlMerchantsAction::getResult)
+            .map(Command::getResult)
             .map(List::isEmpty)
             .subscribe(noMerchants::set);
    }
 
    @Override
-   public void applyOffersOnlyFilterState(boolean enabled) {
-      filterInteractor.filterDataPipe().send(DtlFilterDataAction.applyOffersOnly(enabled));
+   public void offersOnlySwitched(boolean isOffersOnly) {
+      filterDataInteractor.applyOffersOnly(isOffersOnly);
    }
 
    @Override
    public void applySearch(String query) {
-      filterInteractor.filterDataPipe().send(DtlFilterDataAction.applySearch(query));
+      filterDataInteractor.applySearch(query);
    }
 
    private void connectToolbarLocationSearchInput() {
@@ -156,12 +155,12 @@ public class MasterToolbarPresenterImpl extends DtlPresenterImpl<MasterToolbarSc
             .map(DtlLocationCommand::getResult)
             .compose(bindViewIoToMainComposer())
             .subscribe(getView()::updateToolbarLocationTitle);
-      filterInteractor.filterDataPipe()
+      filterDataInteractor.filterDataPipe()
             .observeSuccessWithReplay()
-            .first()
+            .take(1)
             .compose(bindViewIoToMainComposer())
-            .map(DtlFilterDataAction::getResult)
-            .map(DtlFilterData::getSearchQuery)
+            .map(FilterDataAction::getResult)
+            .map(FilterData::searchQuery)
             .subscribe(getView()::updateToolbarSearchCaption);
    }
 
@@ -184,6 +183,7 @@ public class MasterToolbarPresenterImpl extends DtlPresenterImpl<MasterToolbarSc
    }
 
    private void onLocationObtained(Location location) {
+      // TODO :: 26.09.16 think about moving to interactor
       switch (screenMode) {
          case NEARBY_LOCATIONS:
             locationInteractor.nearbyLocationPipe().send(new DtlNearbyLocationAction(location));
@@ -194,9 +194,7 @@ public class MasterToolbarPresenterImpl extends DtlPresenterImpl<MasterToolbarSc
                   .longName(context.getString(R.string.dtl_near_me_caption))
                   .coordinates(new com.worldventures.dreamtrips.modules.trips.model.Location(location))
                   .build();
-            locationInteractor.locationPipe().send(DtlLocationCommand.change(dtlLocation));
-            filterInteractor.filterMerchantsActionPipe().clearReplays();
-            merchantInteractor.merchantsActionPipe().send(DtlMerchantsAction.load(location));
+            locationInteractor.change(dtlLocation);
             break;
       }
    }
@@ -204,10 +202,10 @@ public class MasterToolbarPresenterImpl extends DtlPresenterImpl<MasterToolbarSc
    @Override
    public void loadNearMeRequested() {
       screenMode = DtlLocationChangePresenterImpl.ScreenMode.AUTO_NEAR_ME;
-      //
+
       if (locationRequestNoFallback != null && !locationRequestNoFallback.isUnsubscribed())
          locationRequestNoFallback.unsubscribe();
-      //
+
       gpsLocationDelegate.requestLocationUpdate()
             .compose(bindViewIoToMainComposer())
             .doOnSubscribe(getView()::showProgress)
@@ -246,9 +244,10 @@ public class MasterToolbarPresenterImpl extends DtlPresenterImpl<MasterToolbarSc
 
    @Override
    public void onLocationResolutionGranted() {
-      if (locationRequestNoFallback != null && !locationRequestNoFallback.isUnsubscribed())
+      if (locationRequestNoFallback != null && !locationRequestNoFallback.isUnsubscribed()) {
          locationRequestNoFallback.unsubscribe();
-      //
+      }
+
       gpsLocationDelegate.requestLocationUpdate()
             .compose(new IoToMainComposer<>())
             .subscribe(this::onLocationObtained, this::onLocationError);
@@ -261,9 +260,10 @@ public class MasterToolbarPresenterImpl extends DtlPresenterImpl<MasterToolbarSc
 
    @Override
    public void onShowToolbar() {
-      if (locationRequestNoFallback != null && !locationRequestNoFallback.isUnsubscribed())
+      if (locationRequestNoFallback != null && !locationRequestNoFallback.isUnsubscribed()) {
          locationRequestNoFallback.unsubscribe();
-      //
+      }
+
       gpsLocationDelegate.requestLocationUpdate()
             .compose(new IoToMainComposer<>())
             .map(DtlNearbyLocationAction::new)
@@ -304,16 +304,8 @@ public class MasterToolbarPresenterImpl extends DtlPresenterImpl<MasterToolbarSc
    @Override
    public void locationSelected(DtlExternalLocation dtlExternalLocation) {
       locationInteractor.searchLocationPipe().clearReplays();
-      locationInteractor.locationPipe()
-            .createObservableResult(DtlLocationCommand.change(dtlExternalLocation))
-            .map(Command::getResult)
-            .cast(DtlExternalLocation.class)
-            .map(LocationSearchEvent::new)
-            .map(DtlAnalyticsCommand::create)
-            .subscribe(analyticsInteractor.dtlAnalyticsCommandPipe()::send);
-      locationInteractor.locationPipe().send(DtlLocationCommand.change(dtlExternalLocation));
-      filterInteractor.filterMerchantsActionPipe().clearReplays();
-      merchantInteractor.merchantsActionPipe().send(DtlMerchantsAction.load(dtlExternalLocation.getCoordinates()
-            .asAndroidLocation()));
+      analyticsInteractor.dtlAnalyticsCommandPipe()
+            .send(DtlAnalyticsCommand.create(LocationSearchEvent.create(dtlExternalLocation)));
+      locationInteractor.change(dtlExternalLocation);
    }
 }

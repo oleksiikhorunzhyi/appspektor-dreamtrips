@@ -6,9 +6,7 @@ import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.core.rx.RxView;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
-import com.worldventures.dreamtrips.modules.common.view.ApiErrorView;
-import com.worldventures.dreamtrips.modules.dtl.service.DtlFilterMerchantInteractor;
-import com.worldventures.dreamtrips.modules.dtl.service.action.DtlFilterDataAction;
+import com.worldventures.dreamtrips.modules.dtl.service.FilterDataInteractor;
 import com.worldventures.dreamtrips.modules.settings.command.SettingsCommand;
 import com.worldventures.dreamtrips.modules.settings.model.Setting;
 import com.worldventures.dreamtrips.modules.settings.model.SettingsGroup;
@@ -29,7 +27,7 @@ import rx.android.schedulers.AndroidSchedulers;
 public class SettingsPresenter extends Presenter<SettingsPresenter.View> {
 
    @Inject SnappyRepository db;
-   @Inject DtlFilterMerchantInteractor dtlFilterMerchantInteractor;
+   @Inject FilterDataInteractor dtlFilterDataInteractor;
    @Inject SettingsInteractor settingsInteractor;
 
    @State ArrayList<Setting> settingsList;
@@ -79,12 +77,12 @@ public class SettingsPresenter extends Presenter<SettingsPresenter.View> {
       List<Setting> changes = getChanges();
       db.saveSettings(changes, false);
       immutableSettingsList = cloneList(settingsList);
-      //update state of DtlFilterMerchantStore
+      // reset DTL filtering since it depends on DistanceType setting
       Observable.from(changes)
             .filter((element) -> element.getName().equals(SettingsFactory.DISTANCE_UNITS))
             .take(1)
-            .subscribe(setting -> dtlFilterMerchantInteractor.filterDataPipe().send(DtlFilterDataAction.init()));
-      //
+            .compose(bindView())
+            .subscribe(setting -> dtlFilterDataInteractor.reset());
       view.hideLoading();
       view.onAppliedChanges();
    }

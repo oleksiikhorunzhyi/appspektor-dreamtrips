@@ -1,23 +1,13 @@
 package com.worldventures.dreamtrips.modules.dtl.service.action;
 
-import com.worldventures.dreamtrips.core.janet.dagger.InjectableAction;
+import com.worldventures.dreamtrips.core.api.action.ValueCommandAction;
 import com.worldventures.dreamtrips.modules.dtl.model.LocationSourceType;
 import com.worldventures.dreamtrips.modules.dtl.model.location.DtlLocation;
-import com.worldventures.dreamtrips.modules.dtl.service.AttributesInteractor;
-import com.worldventures.dreamtrips.modules.dtl.service.DtlFilterMerchantInteractor;
 
-import javax.inject.Inject;
-
-import io.techery.janet.Command;
 import io.techery.janet.command.annotations.CommandAction;
 
 @CommandAction
-public class DtlLocationCommand extends Command<DtlLocation> implements InjectableAction {
-
-   @Inject AttributesInteractor attributesInteractor;
-   @Inject DtlFilterMerchantInteractor filterMerchantInteractor;
-
-   private final DtlLocation dtlLocation;
+public class DtlLocationCommand extends ValueCommandAction<DtlLocation> {
 
    public static DtlLocationCommand change(DtlLocation location) {
       return new DtlLocationCommand(location);
@@ -28,15 +18,7 @@ public class DtlLocationCommand extends Command<DtlLocation> implements Injectab
    }
 
    private DtlLocationCommand(DtlLocation dtlLocation) {
-      this.dtlLocation = dtlLocation;
-   }
-
-   @Override
-   protected void run(CommandCallback<DtlLocation> callback) throws Throwable {
-      filterMerchantInteractor.filterMerchantsActionPipe().clearReplays();
-      attributesInteractor.attributesPipe().clearReplays();
-      callback.onSuccess(dtlLocation);
-      attributesInteractor.attributesPipe().send(new AttributesAction());
+      super(dtlLocation);
    }
 
    public boolean isResultDefined() {

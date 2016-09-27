@@ -1,5 +1,6 @@
 package com.worldventures.dreamtrips.modules.dtl.model.merchant.filter;
 
+import com.worldventures.dreamtrips.modules.dtl.model.DistanceType;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.Attribute;
 
 import org.immutables.value.Value;
@@ -10,9 +11,16 @@ import java.util.List;
 @Value.Immutable
 public abstract class FilterData {
 
+   public static final int PAGE_SIZE = 20;
+
    private static final int BUDGET_MIN = 1;
    private static final int BUDGET_MAX = 5;
-   private static final int DISTANCE_MAX_INDEX = 5;
+   private static final int DISTANCE_MAX_INDEX = 4;
+
+   @Value.Default
+   public int page() {
+      return 0;
+   }
 
    @Value.Default
    public String searchQuery() {
@@ -39,6 +47,9 @@ public abstract class FilterData {
       return false;
    }
 
+   @Value
+   public abstract DistanceType distanceType();
+
    @Value.Default
    public List<Attribute> selectedAmenities() {
       return Collections.emptyList();
@@ -49,7 +60,6 @@ public abstract class FilterData {
       return budgetMin() == BUDGET_MIN &&
             budgetMax() == BUDGET_MAX &&
             distanceMaxIndex() == DISTANCE_MAX_INDEX &&
-            !isOffersOnly() &&
             selectedAmenities().isEmpty();
    }
 }

@@ -27,7 +27,6 @@ import com.innahema.collections.query.queriables.Queryable;
 import com.trello.rxlifecycle.RxLifecycle;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.flow.activity.FlowActivity;
-import com.worldventures.dreamtrips.modules.dtl.event.ShowMapInfoAction;
 import com.worldventures.dreamtrips.modules.dtl.model.location.DtlLocation;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.ThinMerchant;
 import com.worldventures.dreamtrips.modules.dtl.view.dialog.DialogFactory;
@@ -50,15 +49,13 @@ import butterknife.InjectView;
 import butterknife.OnClick;
 import butterknife.Optional;
 import cn.pedant.SweetAlert.SweetAlertDialog;
-import de.greenrobot.event.EventBus;
 import flow.path.Path;
 import flow.path.PathContext;
 import icepick.State;
-import rx.Observable;
 
 public class DtlMapScreenImpl extends DtlLayout<DtlMapScreen, DtlMapPresenter, DtlMapPath> implements DtlMapScreen {
 
-   protected static final int CAMERA_DURATION = 1000;
+   private static final int CAMERA_DURATION = 1000;
 
    public static final String MAP_TAG = "MAP_TAG";
 
@@ -67,10 +64,10 @@ public class DtlMapScreenImpl extends DtlLayout<DtlMapScreen, DtlMapPresenter, D
    @InjectView(R.id.noGoogleContainer) FrameLayout noGoogleContainer;
    @Optional @InjectView(R.id.expandableDtlToolbar) ExpandableDtlToolbar dtlToolbar;
    @InjectView(R.id.redo_merchants) View loadMerchantsRoot;
-   //
-   LatLng selectedLocation;
+
    @State String lastQuery;
-   //
+
+   private LatLng selectedLocation;
    private ClusterManager<DtlClusterItem> clusterManager;
    private Marker locationPin;
    private GoogleMap googleMap;
@@ -123,12 +120,15 @@ public class DtlMapScreenImpl extends DtlLayout<DtlMapScreen, DtlMapPresenter, D
       RxDtlToolbar.filterButtonClicks(dtlToolbar)
             .compose(RxLifecycle.bindView(this))
             .subscribe(aVoid -> ((FlowActivity) getActivity()).openRightDrawer());
+      RxDtlToolbar.offersOnlyToggleChanges(dtlToolbar)
+            .compose(RxLifecycle.bindView(this))
+            .subscribe(getPresenter()::offersOnlySwitched);
    }
 
    @Override
-   public void setFilterButtonState(boolean enabled) {
+   public void setFilterButtonState(boolean isDefault) {
       if (dtlToolbar == null) return;
-      dtlToolbar.setFilterEnabled(enabled);
+      dtlToolbar.setFilterEnabled(!isDefault);
    }
 
    private void checkMapAvailable() {
@@ -141,18 +141,17 @@ public class DtlMapScreenImpl extends DtlLayout<DtlMapScreen, DtlMapPresenter, D
    @Override
    public void prepareMap() {
       releaseMapFragment();
-      //
+
       MapFragment mapFragment = MapFragment.newInstance();
       getActivity().getFragmentManager()
             .beginTransaction()
             .add(R.id.mapFragmentContainer, mapFragment, MAP_TAG)
             .commit();
-      //
+
       mapFragment.getMapAsync(map -> {
          googleMap = map;
          googleMap.clear();
          googleMap.setMyLocationEnabled(true);
-         //
          MapViewUtils.setLocationButtonGravity(mapFragment.getView(), 16, RelativeLayout.ALIGN_PARENT_END, RelativeLayout.ALIGN_PARENT_BOTTOM);
          onMapLoaded();
       });
@@ -174,14 +173,8 @@ public class DtlMapScreenImpl extends DtlLayout<DtlMapScreen, DtlMapPresenter, D
    private void releaseMapFragment() {
       android.app.Fragment fragment = getActivity().getFragmentManager().findFragmentByTag(MAP_TAG);
       if (fragment == null) return;
-      //
-      getActivity().getFragmentManager().beginTransaction().remove(fragment).commit();
-   }
 
-   @Override
-   public Observable<Boolean> getToggleObservable() {
-      if (dtlToolbar == null) return Observable.empty();
-      return RxDtlToolbar.diningFilterChanges(dtlToolbar).compose(RxLifecycle.bindView(this));
+      getActivity().getFragmentManager().beginTransaction().remove(fragment).commit();
    }
 
    @OnClick(R.id.redo_merchants_button)
@@ -193,10 +186,10 @@ public class DtlMapScreenImpl extends DtlLayout<DtlMapScreen, DtlMapPresenter, D
    public void showProgress(boolean show) {
       int textResId = show ? R.string.loading : R.string.dtl_load_merchants_here_button_caption;
       int visibility = show ? View.VISIBLE : View.GONE;
-      //
+
       Button loadMerchantsBtn = ButterKnife.<Button>findById(loadMerchantsRoot, R.id.redo_merchants_button);
       ButterKnife.findById(loadMerchantsRoot, R.id.redo_merchants_progress).setVisibility(visibility);
-      //
+
       loadMerchantsBtn.setText(textResId);
       loadMerchantsBtn.setEnabled(!show);
    }
@@ -249,9 +242,9 @@ public class DtlMapScreenImpl extends DtlLayout<DtlMapScreen, DtlMapPresenter, D
    }
 
    @Override
-   public void toggleDiningFilterSwitch(boolean enabled) {
+   public void toggleOffersOnly(boolean enabled) {
       if (dtlToolbar == null) return;
-      dtlToolbar.toggleDiningFilterSwitch(enabled);
+      dtlToolbar.toggleOffersOnly(enabled);
    }
 
    @Override
@@ -345,13 +338,13 @@ public class DtlMapScreenImpl extends DtlLayout<DtlMapScreen, DtlMapPresenter, D
    private void onMapLoaded() {
       clusterManager = new ClusterManager<>(getContext(), googleMap);
       clusterManager.setRenderer(new DtClusterRenderer(getContext().getApplicationContext(), googleMap, clusterManager));
-      //
+
       clusterManager.setOnClusterItemClickListener(dtlClusterItem -> {
          selectedLocation = dtlClusterItem.getPosition();
          getPresenter().onMarkerClick(dtlClusterItem.getMerchant());
          return true;
       });
-      //
+
       clusterManager.setOnClusterClickListener(cluster -> {
          if (googleMap.getCameraPosition().zoom >= 17.0f) {
             getPresenter().onMarkerClick(Queryable.from(cluster.getItems()).first().getMerchant());
@@ -360,7 +353,7 @@ public class DtlMapScreenImpl extends DtlLayout<DtlMapScreen, DtlMapPresenter, D
          }
          return true;
       });
-      //
+
       getPresenter().onMapLoaded();
    }
 

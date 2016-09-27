@@ -103,7 +103,7 @@ public class DtlToolbar extends LinearLayout {
       filtersButton.setFilterEnabled(enabled);
    }
 
-   public void toggleDiningFilterSwitch(boolean enabled) {
+   public void toggleOffersOnly(boolean enabled) {
       filterDiningsSwitch.setChecked(enabled);
    }
 

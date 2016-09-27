@@ -10,21 +10,17 @@ import com.crashlytics.android.Crashlytics;
 import com.octo.android.robospice.persistence.exception.SpiceException;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.rx.RxView;
-import com.worldventures.dreamtrips.core.rx.composer.ImmediateComposer;
 import com.worldventures.dreamtrips.modules.common.model.UploadTask;
 import com.worldventures.dreamtrips.modules.common.presenter.JobPresenter;
 import com.worldventures.dreamtrips.modules.common.view.ApiErrorView;
 import com.worldventures.dreamtrips.modules.dtl.analytics.DtlAnalyticsCommand;
 import com.worldventures.dreamtrips.modules.dtl.analytics.ScanMerchantEvent;
 import com.worldventures.dreamtrips.modules.dtl.event.DtlTransactionSucceedEvent;
-import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchant;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.Merchant;
 import com.worldventures.dreamtrips.modules.dtl.model.transaction.DtlTransaction;
 import com.worldventures.dreamtrips.modules.dtl.model.transaction.ImmutableDtlTransaction;
-import com.worldventures.dreamtrips.modules.dtl.service.DtlMerchantInteractor;
 import com.worldventures.dreamtrips.modules.dtl.service.DtlTransactionInteractor;
 import com.worldventures.dreamtrips.modules.dtl.service.action.DtlEarnPointsAction;
-import com.worldventures.dreamtrips.modules.dtl.service.action.DtlMerchantByIdAction;
 import com.worldventures.dreamtrips.modules.dtl.service.action.DtlTransactionAction;
 
 import javax.inject.Inject;
@@ -34,7 +30,6 @@ import io.techery.janet.helper.ActionStateSubscriber;
 
 public class DtlScanQrCodePresenter extends JobPresenter<DtlScanQrCodePresenter.View> implements TransferListener {
 
-   @Inject DtlMerchantInteractor merchantInteractor;
    @Inject DtlTransactionInteractor transactionInteractor;
    //
    private final Merchant merchant;

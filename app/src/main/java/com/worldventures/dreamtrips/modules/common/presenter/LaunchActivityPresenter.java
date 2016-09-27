@@ -1,7 +1,5 @@
 package com.worldventures.dreamtrips.modules.common.presenter;
 
-import android.os.Debug;
-
 import com.messenger.synchmechanism.MessengerConnector;
 import com.techery.spares.utils.ValidationUtils;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
@@ -13,16 +11,13 @@ import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.common.presenter.delegate.ClearDirectoryDelegate;
 import com.worldventures.dreamtrips.modules.common.view.ApiErrorView;
 import com.worldventures.dreamtrips.modules.common.view.util.DrawableUtil;
-import com.worldventures.dreamtrips.modules.dtl.model.location.DtlLocation;
 import com.worldventures.dreamtrips.modules.dtl.service.DtlLocationInteractor;
-import com.worldventures.dreamtrips.modules.dtl.service.action.DtlLocationCommand;
 
 import javax.inject.Inject;
 
 import icepick.State;
 import io.techery.janet.helper.ActionStateSubscriber;
 import rx.android.schedulers.AndroidSchedulers;
-import timber.log.Timber;
 
 import static com.worldventures.dreamtrips.util.ValidationUtils.isPasswordValid;
 import static com.worldventures.dreamtrips.util.ValidationUtils.isUsernameValid;
@@ -97,10 +92,8 @@ public class LaunchActivityPresenter extends ActivityPresenter<LaunchActivityPre
       return false;
    }
 
-   public void initDtl() {
-      db.cleanLastSelectedOffersOnlyToggle();
-      db.cleanLastMapCameraPosition();
-      dtlLocationInteractor.locationPipe().send(DtlLocationCommand.change(DtlLocation.UNDEFINED));
+   private void initDtl() {
+      db.cleanLastMapCameraPosition(); // TODO :: 26.09.16 move to PresetationInteractor
    }
 
    public void loginAction() {

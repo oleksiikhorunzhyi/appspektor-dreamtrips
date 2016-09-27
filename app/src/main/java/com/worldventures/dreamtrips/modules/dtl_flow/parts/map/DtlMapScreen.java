@@ -7,13 +7,9 @@ import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.worldventures.dreamtrips.modules.dtl.model.location.DtlLocation;
-import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchant;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.ThinMerchant;
-import com.worldventures.dreamtrips.modules.dtl.view.dialog.DialogFactory;
 import com.worldventures.dreamtrips.modules.dtl_flow.DtlScreen;
 import com.worldventures.dreamtrips.modules.trips.model.Location;
-
-import rx.Observable;
 
 public interface DtlMapScreen extends DtlScreen {
 
@@ -39,7 +35,7 @@ public interface DtlMapScreen extends DtlScreen {
 
    void renderPins();
 
-   void toggleDiningFilterSwitch(boolean enabled);
+   void toggleOffersOnly(boolean enabled);
 
    void cameraPositionChange(CameraPosition cameraPosition);
 
@@ -52,8 +48,6 @@ public interface DtlMapScreen extends DtlScreen {
    void tryHideMyLocationButton(boolean hide);
 
    void animateTo(LatLng coordinates, int offset);
-
-   Observable<Boolean> getToggleObservable();
 
    void showPinInfo(ThinMerchant merchant);
 

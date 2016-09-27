@@ -1,15 +1,8 @@
 package com.worldventures.dreamtrips.core.repository;
 
-import android.support.annotation.Nullable;
-
 import com.snappydb.DB;
 import com.snappydb.SnappydbException;
-import com.worldventures.dreamtrips.api.trip.model.Trip;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem;
-import com.worldventures.dreamtrips.modules.dtl.model.location.DtlLocation;
-import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchant;
-import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchantAttribute;
-import com.worldventures.dreamtrips.modules.dtl.model.merchant.ThinMerchant;
 import com.worldventures.dreamtrips.modules.dtl.model.transaction.DtlTransaction;
 import com.worldventures.dreamtrips.modules.feed.model.FeedItem;
 import com.worldventures.dreamtrips.modules.friends.model.Circle;
@@ -58,12 +51,9 @@ public interface SnappyRepository {
    String PINS = "PINS";
    String TRIPS_DETAILS = "TRIPS_DETAILS";
 
-   String DTL_MERCHANTS = "DTL_MERCHANTS";
-   String DTL_SELECTED_LOCATION = "DTL_SELECTED_LOCATION";
    String DTL_TRANSACTION_PREFIX = "DTL_TRANSACTION_";
    String DTL_LAST_MAP_POSITION = "DTL_LAST_MAP_POSITION";
-   String DTL_SHOW_OFFERS_ONLY_TOGGLE = "DTL_SHOW_OFFERS_ONLY_TOGGLE";
-   String DTL_AMENITIES = "DTL_AMENITIES";
+
    String FEEDBACK_TYPES = "FEEDBACK_TYPES";
    String SUGGESTED_PHOTOS_SYNC_TIME = "SUGGESTED_PHOTOS_SYNC_TIME";
 
@@ -154,34 +144,11 @@ public interface SnappyRepository {
 
    void setFeedbackTypes(ArrayList<FeedbackType> types);
 
-   void saveDtlLocation(DtlLocation dtlLocation);
-
-   void cleanDtlLocation();
-
-   @Nullable
-   DtlLocation getDtlLocation();
-
-   void saveDtlMerhants(List<DtlMerchant> merchants);
-
-   List<DtlMerchant> getDtlMerchants();
-
-   void saveAmenities(Collection<DtlMerchantAttribute> amenities);
-
-   List<DtlMerchantAttribute> getAmenities();
-
-   void clearMerchantData();
-
    void saveLastMapCameraPosition(Location location);
 
    Location getLastMapCameraPosition();
 
    void cleanLastMapCameraPosition();
-
-   void saveLastSelectedOffersOnlyToogle(boolean state);
-
-   Boolean getLastSelectedOffersOnlyToggle();
-
-   void cleanLastSelectedOffersOnlyToggle();
 
    DtlTransaction getDtlTransaction(String id);
 

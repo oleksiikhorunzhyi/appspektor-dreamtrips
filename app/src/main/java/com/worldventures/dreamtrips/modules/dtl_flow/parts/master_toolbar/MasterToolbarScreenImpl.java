@@ -47,7 +47,8 @@ import butterknife.InjectView;
 import rx.Observable;
 import timber.log.Timber;
 
-public class MasterToolbarScreenImpl extends DtlLayout<MasterToolbarScreen, MasterToolbarPresenter, MasterToolbarPath> implements MasterToolbarScreen, ActivityResultDelegate.ActivityResultListener {
+public class MasterToolbarScreenImpl extends DtlLayout<MasterToolbarScreen, MasterToolbarPresenter, MasterToolbarPath>
+      implements MasterToolbarScreen, ActivityResultDelegate.ActivityResultListener {
 
    @Inject ActivityResultDelegate activityResultDelegate;
    //
@@ -87,9 +88,9 @@ public class MasterToolbarScreenImpl extends DtlLayout<MasterToolbarScreen, Mast
       RxDtlToolbar.filterButtonClicks(toolbar)
             .compose(RxLifecycle.bindView(this))
             .subscribe(aVoid -> ((FlowActivity) getActivity()).openRightDrawer());
-      RxDtlToolbar.diningFilterChanges(toolbar)
+      RxDtlToolbar.offersOnlyToggleChanges(toolbar)
             .compose(RxLifecycle.bindView(this))
-            .subscribe(getPresenter()::applyOffersOnlyFilterState);
+            .subscribe(getPresenter()::offersOnlySwitched);
    }
 
    @Override
@@ -103,13 +104,13 @@ public class MasterToolbarScreenImpl extends DtlLayout<MasterToolbarScreen, Mast
    }
 
    @Override
-   public void toggleDiningFilterSwitch(boolean enabled) {
-      toolbar.toggleDiningFilterSwitch(enabled);
+   public void toggleOffersOnly(boolean enabled) {
+      toolbar.toggleOffersOnly(enabled);
    }
 
    @Override
-   public void setFilterButtonState(boolean enabled) {
-      toolbar.setFilterEnabled(enabled);
+   public void setFilterButtonState(boolean isDefault) {
+      toolbar.setFilterEnabled(!isDefault);
    }
 
    ///////////////////////////////////////////////////////////////////////////

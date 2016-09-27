@@ -222,7 +222,7 @@ public class RxDtlToolbar {
     */
    @CheckResult
    @NonNull
-   public static Observable<Boolean> diningFilterChanges(@NonNull DtlToolbar dtlToolbar) {
+   public static Observable<Boolean> offersOnlyToggleChanges(@NonNull DtlToolbar dtlToolbar) {
       checkNotNull(dtlToolbar, "dtlToolbar == null");
       checkNotNull(dtlToolbar.getLocationSearchView(), "view == null");
       return RxCompoundButton.checkedChanges(dtlToolbar.getDiningFilterToggle()).skip(1);

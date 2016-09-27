@@ -7,8 +7,6 @@ public interface MasterToolbarPresenter extends DtlPresenter<MasterToolbarScreen
 
    void applySearch(String query);
 
-   void applyOffersOnlyFilterState(boolean enabled);
-
    void loadNearMeRequested();
 
    void locationSelected(DtlExternalLocation location);
@@ -20,4 +18,6 @@ public interface MasterToolbarPresenter extends DtlPresenter<MasterToolbarScreen
    void onShowToolbar();
 
    boolean needShowAutodetectButton();
+
+   void offersOnlySwitched(boolean isOffersOnly);
 }

@@ -1,103 +1,101 @@
 package com.worldventures.dreamtrips.modules.dtl.service;
 
-import com.innahema.collections.query.queriables.Queryable;
 import com.newrelic.agent.android.NewRelic;
 import com.worldventures.dreamtrips.core.janet.SessionActionPipeCreator;
-import com.worldventures.dreamtrips.modules.dtl.helper.DtlLocationHelper;
 import com.worldventures.dreamtrips.modules.dtl.model.LocationSourceType;
 import com.worldventures.dreamtrips.modules.dtl.model.location.DtlLocation;
 import com.worldventures.dreamtrips.modules.dtl.model.location.DtlManualLocation;
 import com.worldventures.dreamtrips.modules.dtl.model.location.ImmutableDtlManualLocation;
-import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchant;
-import com.worldventures.dreamtrips.modules.dtl.service.action.DtlFilterDataAction;
+import com.worldventures.dreamtrips.modules.dtl.model.merchant.ThinMerchant;
+import com.worldventures.dreamtrips.modules.dtl.model.merchant.filter.FilterData;
 import com.worldventures.dreamtrips.modules.dtl.service.action.DtlLocationCommand;
-import com.worldventures.dreamtrips.modules.dtl.service.action.DtlMerchantByIdAction;
-import com.worldventures.dreamtrips.modules.dtl.service.action.DtlMerchantsAction;
-import com.worldventures.dreamtrips.modules.dtl.service.action.DtlUpdateAmenitiesAction;
-import com.worldventures.dreamtrips.modules.dtl.service.action.MerchantByIdCommand;
+import com.worldventures.dreamtrips.modules.dtl.service.action.FilterDataAction;
+import com.worldventures.dreamtrips.modules.dtl.service.action.NewRelicTrackableAction;
 import com.worldventures.dreamtrips.modules.dtl.service.action.ThinMerchantsCommand;
 
-import java.util.List;
-
 import io.techery.janet.ActionPipe;
-import io.techery.janet.WriteActionPipe;
+import io.techery.janet.ReadActionPipe;
+import rx.Observable;
 import rx.schedulers.Schedulers;
 
 public class DtlMerchantInteractor {
 
-   private final DtlLocationInteractor locationInteractor;
+   private final DtlLocationInteractor dtlLocationInteractor;
+   private final FilterDataInteractor filterDataInteractor;
 
-   private final ActionPipe<DtlUpdateAmenitiesAction> updateAmenitiesPipe;
-   private final ActionPipe<DtlMerchantsAction> merchantsPipe;
-   private final ActionPipe<DtlMerchantByIdAction> merchantByIdPipe;
-   private final ActionPipe<MerchantByIdCommand> merchantByIdHttpPipe;
    private final ActionPipe<ThinMerchantsCommand> thinMerchantsPipe;
 
-   private final WriteActionPipe<DtlFilterDataAction> filterDataActionPipe;
+   public DtlMerchantInteractor(SessionActionPipeCreator sessionActionPipeCreator,
+         DtlLocationInteractor dtlLocationInteractor, FilterDataInteractor filterDataInteractor) {
 
-   public DtlMerchantInteractor(SessionActionPipeCreator sessionActionPipeCreator, DtlLocationInteractor locationInteractor) {
-      this.locationInteractor = locationInteractor;
+      this.dtlLocationInteractor = dtlLocationInteractor;
+      this.filterDataInteractor = filterDataInteractor;
 
-      updateAmenitiesPipe = sessionActionPipeCreator.createPipe(DtlUpdateAmenitiesAction.class, Schedulers.io());
-      merchantsPipe = sessionActionPipeCreator.createPipe(DtlMerchantsAction.class, Schedulers.io());
-      merchantByIdPipe = sessionActionPipeCreator.createPipe(DtlMerchantByIdAction.class);
-      filterDataActionPipe = sessionActionPipeCreator.createPipe(DtlFilterDataAction.class, Schedulers.io());
-      merchantByIdHttpPipe = sessionActionPipeCreator.createPipe(MerchantByIdCommand.class, Schedulers.io());
       thinMerchantsPipe = sessionActionPipeCreator.createPipe(ThinMerchantsCommand.class, Schedulers.io());
 
-      connectMerchantsPipe();
-      connectUpdateAmenitiesPipe();
+      connectFilterData();
+      connectNewRelicTracking();
+      connectForLocationUpdates();
    }
 
-   private void connectMerchantsPipe() {
-      merchantsPipe.observeSuccess().filter(DtlMerchantsAction::isFromApi).subscribe(action -> {
-         NewRelic.recordMetric("GetMerchants", "Profiler", (double) System.currentTimeMillis() - action.getStartTime());
-         tryUpdateLocation(action.getResult());
-         updateAmenitiesPipe.send(new DtlUpdateAmenitiesAction(action.getResult()));
-      }, Throwable::printStackTrace);
-      merchantsPipe.send(DtlMerchantsAction.restore());
+   private void connectNewRelicTracking() {
+      thinMerchantsPipe.observeSuccessWithReplay()
+            .cast(NewRelicTrackableAction.class)
+            .map(NewRelicTrackableAction::getMetricStart)
+            .subscribe(startTime ->
+                  NewRelic.recordMetric("GetMerchants", "Profiler", System.currentTimeMillis() - startTime));
    }
 
-   private void connectUpdateAmenitiesPipe() {
-      updateAmenitiesPipe.observeSuccess()
-            .subscribe(action -> filterDataActionPipe.send(DtlFilterDataAction.amenitiesUpdate(action.getResult())));
+   private void connectForLocationUpdates() {
+      thinMerchantsPipe.observeSuccessWithReplay()
+            .map(ThinMerchantsCommand::getResult)
+            .filter(thinMerchants -> !thinMerchants.isEmpty())
+            .map(thinMerchants -> thinMerchants.get(0))
+            .subscribe(thinMerchant -> {
+               provideLastLocationObservable()
+                     .filter(dtlLocation -> dtlLocation.getLocationSourceType() == LocationSourceType.FROM_MAP ||
+                           dtlLocation.getLocationSourceType() == LocationSourceType.NEAR_ME)
+                     .subscribe(dtlLocation ->
+                           dtlLocationInteractor.change(buildManualLocation(thinMerchant, dtlLocation)));
+            });
    }
 
-   public ActionPipe<DtlMerchantsAction> merchantsActionPipe() {
-      return merchantsPipe;
+   private void connectFilterData() {
+      filterDataInteractor.filterDataPipe().observeSuccessWithReplay()
+            .subscribe(filterDataAction -> requestMerchants());
    }
 
-   public ActionPipe<DtlMerchantByIdAction> merchantByIdPipe() {
-      return merchantByIdPipe;
-   }
-
-   public ActionPipe<MerchantByIdCommand> merchantByIdHttpPipe() {
-      return merchantByIdHttpPipe;
-   }
-
-   public ActionPipe<ThinMerchantsCommand> thinMerchantsHttpPipe() {
+   public ReadActionPipe<ThinMerchantsCommand> thinMerchantsHttpPipe() {
       return thinMerchantsPipe;
    }
 
-   //TODO: move to action
-   private void tryUpdateLocation(List<DtlMerchant> dtlMerchants) {
-      locationInteractor.locationPipe().observeSuccessWithReplay()
-            .filter(command -> {
-               LocationSourceType sourceType = command.getResult().getLocationSourceType();
-               return (sourceType == LocationSourceType.FROM_MAP || sourceType == LocationSourceType.NEAR_ME) && !dtlMerchants
-                     .isEmpty();
-            })
-            .map(DtlLocationCommand::getResult).subscribe(location -> {
-         DtlMerchant nearestMerchant = Queryable.from(dtlMerchants).map(merchant -> {
-            merchant.setDistance(DtlLocationHelper.calculateDistance(location.getCoordinates()
-                  .asLatLng(), merchant.getCoordinates().asLatLng()));
-            return merchant;
-         }).sort(DtlMerchant.DISTANCE_COMPARATOR::compare).first();
-         DtlLocation updatedLocation = ImmutableDtlManualLocation.copyOf((DtlManualLocation) location)
-               .withLongName(location.getLocationSourceType() == LocationSourceType.FROM_MAP ? nearestMerchant.getCity() : location
-                     .getLongName())
-               .withAnalyticsName(nearestMerchant.getAnalyticsName());
-         locationInteractor.locationPipe().send(DtlLocationCommand.change(updatedLocation));
-      }, Throwable::printStackTrace);
+   private void requestMerchants() {
+      Observable.combineLatest(
+            provideFilterDataObservable(),
+            provideLastLocationObservable(),
+            ThinMerchantsCommand::create
+      )
+            .take(1)
+            .subscribe(thinMerchantsPipe::send);
+   }
+
+   private Observable<FilterData> provideFilterDataObservable() {
+      return filterDataInteractor.filterDataPipe().observeSuccessWithReplay()
+            .take(1)
+            .map(FilterDataAction::getResult);
+   }
+
+   private Observable<DtlLocation> provideLastLocationObservable() {
+      return dtlLocationInteractor.locationPipe().observeSuccessWithReplay()
+            .take(1)
+            .filter(DtlLocationCommand::isResultDefined)
+            .map(DtlLocationCommand::getResult);
+   }
+
+   private static DtlLocation buildManualLocation(ThinMerchant thinMerchant, DtlLocation dtlLocation) {
+      return ImmutableDtlManualLocation.copyOf((DtlManualLocation) dtlLocation)
+            .withLongName(dtlLocation.getLocationSourceType() == LocationSourceType.FROM_MAP ? thinMerchant.city() : dtlLocation
+                  .getLongName())
+            .withAnalyticsName(thinMerchant.asMerchantAttributes().provideAnalyticsName());
    }
 }

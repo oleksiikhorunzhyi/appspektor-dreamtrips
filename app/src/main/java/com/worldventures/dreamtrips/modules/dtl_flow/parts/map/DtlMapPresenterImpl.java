@@ -21,15 +21,15 @@ import com.worldventures.dreamtrips.modules.dtl.model.location.DtlLocation;
 import com.worldventures.dreamtrips.modules.dtl.model.location.ImmutableDtlManualLocation;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.Merchant;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.ThinMerchant;
-import com.worldventures.dreamtrips.modules.dtl.model.merchant.filter.DtlFilterData;
-import com.worldventures.dreamtrips.modules.dtl.service.DtlFilterMerchantInteractor;
+import com.worldventures.dreamtrips.modules.dtl.model.merchant.filter.FilterData;
 import com.worldventures.dreamtrips.modules.dtl.service.DtlLocationInteractor;
 import com.worldventures.dreamtrips.modules.dtl.service.DtlMerchantInteractor;
 import com.worldventures.dreamtrips.modules.dtl.service.DtlTransactionInteractor;
+import com.worldventures.dreamtrips.modules.dtl.service.FilterDataInteractor;
+import com.worldventures.dreamtrips.modules.dtl.service.FullMerchantInteractor;
 import com.worldventures.dreamtrips.modules.dtl.service.PresentationInteractor;
-import com.worldventures.dreamtrips.modules.dtl.service.action.DtlFilterDataAction;
 import com.worldventures.dreamtrips.modules.dtl.service.action.DtlLocationCommand;
-import com.worldventures.dreamtrips.modules.dtl.service.action.DtlMerchantsAction;
+import com.worldventures.dreamtrips.modules.dtl.service.action.FilterDataAction;
 import com.worldventures.dreamtrips.modules.dtl.service.action.MerchantByIdCommand;
 import com.worldventures.dreamtrips.modules.dtl.service.action.ThinMerchantsCommand;
 import com.worldventures.dreamtrips.modules.dtl_flow.DtlPresenterImpl;
@@ -50,7 +50,6 @@ import flow.Flow;
 import flow.History;
 import flow.path.Path;
 import icepick.State;
-import io.techery.janet.Janet;
 import io.techery.janet.helper.ActionStateSubscriber;
 import io.techery.janet.helper.ActionStateToActionTransformer;
 import rx.Observable;
@@ -65,11 +64,11 @@ public class DtlMapPresenterImpl extends DtlPresenterImpl<DtlMapScreen, ViewStat
    @Inject LocationDelegate gpsLocationDelegate;
    @Inject SnappyRepository db;
    @Inject Presenter.TabletAnalytic tabletAnalytic;
-   @Inject Janet janet;
    @Inject DtlMerchantInteractor merchantInteractor;
-   @Inject DtlFilterMerchantInteractor filterInteractor;
+   @Inject FilterDataInteractor filterDataInteractor;
+   @Inject FullMerchantInteractor fullMerchantInteractor;
    @Inject DtlLocationInteractor locationInteractor;
-   @Inject DtlTransactionInteractor pipesInteractor;
+   @Inject DtlTransactionInteractor transactionInteractor;
    @Inject PresentationInteractor presentationInteractor;
    //
    @State MerchantByIdParamsHolder actionParamsHolder;
@@ -82,19 +81,8 @@ public class DtlMapPresenterImpl extends DtlPresenterImpl<DtlMapScreen, ViewStat
    @Override
    public void onAttachedToWindow() {
       super.onAttachedToWindow();
-      //
-      filterInteractor.filterDataPipe()
-            .observeSuccessWithReplay()
-            .first()
-            .map(DtlFilterDataAction::getResult)
-            .map(DtlFilterData::isOffersOnly)
-            .subscribe(getView()::toggleDiningFilterSwitch);
-      getView().getToggleObservable().subscribe(offersOnly -> filterInteractor.filterDataPipe()
-            .send(DtlFilterDataAction.applyOffersOnly(offersOnly)));
-      //
       updateToolbarTitles();
       bindToolbarTitleUpdates();
-      updateFilterButtonState();
    }
 
    @Override
@@ -103,8 +91,7 @@ public class DtlMapPresenterImpl extends DtlPresenterImpl<DtlMapScreen, ViewStat
       if (visibility == View.VISIBLE) getView().prepareMap();
    }
 
-   protected void connectInteractors() {
-      // TODO :: temporary solutions
+   private void connectInteractors() {
       locationInteractor.locationPipe()
             .observeSuccess()
             .map(DtlLocationCommand::getResult)
@@ -127,21 +114,27 @@ public class DtlMapPresenterImpl extends DtlPresenterImpl<DtlMapScreen, ViewStat
                   .onSuccess(action -> onMerchantsLoaded(action.getResult()))
                   .onFail((action, throwable) -> {
                      getView().showProgress(false);
-                     apiErrorPresenter.handleActionError(action, throwable);}));
-      filterInteractor.filterDataPipe()
-            .observeSuccess()
-            .map(DtlFilterDataAction::getResult)
+                     apiErrorPresenter.handleActionError(action, throwable);
+                  }));
+      filterDataInteractor.filterDataPipe()
+            .observeSuccessWithReplay()
+            .map(FilterDataAction::getResult)
+            .map(FilterData::isDefault)
             .compose(bindViewIoToMainComposer())
-            .subscribe(dtlFilterData -> getView().setFilterButtonState(!dtlFilterData.isDefault()));
-      //
-      merchantInteractor.merchantByIdHttpPipe()
-            .observeWithReplay()
+            .subscribe(getView()::setFilterButtonState);
+      filterDataInteractor.filterDataPipe()
+            .observeSuccessWithReplay()
+            .take(1)
+            .compose(bindViewIoToMainComposer())
+            .map(FilterDataAction::getResult)
+            .map(FilterData::isOffersOnly)
+            .subscribe(getView()::toggleOffersOnly);
+      fullMerchantInteractor.fullMerchantPipe().observeWithReplay()
             .compose(bindViewIoToMainComposer())
             .subscribe(new ActionStateSubscriber<MerchantByIdCommand>()
                   .onSuccess(this::onSuccessMerchantLoad)
                   .onProgress(this::onProgressMerchantLoad)
                   .onFail(this::onFailMerchantLoad));
-      //
       presentationInteractor.mapPopupReadyPipe()
             .observeSuccess()
             .compose(bindView())
@@ -164,8 +157,6 @@ public class DtlMapPresenterImpl extends DtlPresenterImpl<DtlMapScreen, ViewStat
 
    @SuppressWarnings("unused")
    protected void onSuccessMerchantLoad(MerchantByIdCommand command) {
-      merchantInteractor.merchantByIdHttpPipe().clearReplays();
-      //
       getView().hideBlockingProgress();
       navigateToDetails(command.getResult());
    }
@@ -185,16 +176,16 @@ public class DtlMapPresenterImpl extends DtlPresenterImpl<DtlMapScreen, ViewStat
    private void updateToolbarTitles() {
       locationInteractor.locationPipe()
             .observeSuccessWithReplay()
-            .first()
+            .take(1)
             .map(DtlLocationCommand::getResult)
             .compose(bindViewIoToMainComposer())
             .subscribe(getView()::updateToolbarLocationTitle);
-      filterInteractor.filterDataPipe()
+      filterDataInteractor.filterDataPipe()
             .observeSuccessWithReplay()
-            .first()
+            .take(1)
             .compose(bindViewIoToMainComposer())
-            .map(DtlFilterDataAction::getResult)
-            .map(DtlFilterData::getSearchQuery)
+            .map(FilterDataAction::getResult)
+            .map(FilterData::searchQuery)
             .subscribe(getView()::updateToolbarSearchCaption);
    }
 
@@ -204,15 +195,6 @@ public class DtlMapPresenterImpl extends DtlPresenterImpl<DtlMapScreen, ViewStat
             .map(DtlLocationCommand::getResult)
             .compose(bindViewIoToMainComposer())
             .subscribe(getView()::updateToolbarLocationTitle);
-   }
-
-   private void updateFilterButtonState() {
-      filterInteractor.filterDataPipe()
-            .observeSuccessWithReplay()
-            .first()
-            .map(DtlFilterDataAction::getResult)
-            .compose(bindViewIoToMainComposer())
-            .subscribe(dtlFilterData -> getView().setFilterButtonState(!dtlFilterData.isDefault()));
    }
 
    protected void tryHideMyLocationButton(boolean hide) {
@@ -228,7 +210,7 @@ public class DtlMapPresenterImpl extends DtlPresenterImpl<DtlMapScreen, ViewStat
       });
    }
 
-   protected Observable<Boolean> showingLoadMerchantsButton() {
+   private Observable<Boolean> showingLoadMerchantsButton() {
       return MapObservableFactory.createCameraChangeObservable(getView().getMap())
             .doOnNext(position -> getView().cameraPositionChange(position))
             .doOnNext(position -> db.saveLastMapCameraPosition(new Location(position.target.latitude, position.target.longitude)))
@@ -245,11 +227,11 @@ public class DtlMapPresenterImpl extends DtlPresenterImpl<DtlMapScreen, ViewStat
             });
    }
 
-   protected void onMerchantsLoaded(List<ThinMerchant> merchants) {
+   private void onMerchantsLoaded(List<ThinMerchant> merchants) {
       getView().showProgress(false);
       getView().showButtonLoadMerchants(false);
       showPins(merchants);
-      //
+
       locationInteractor.locationPipe()
             .observeSuccessWithReplay()
             .map(DtlLocationCommand::getResult)
@@ -257,10 +239,15 @@ public class DtlMapPresenterImpl extends DtlPresenterImpl<DtlMapScreen, ViewStat
             .subscribe(location -> {
                if (location.getLocationSourceType() == LocationSourceType.FROM_MAP && getView().getMap()
                      .getCameraPosition().zoom < MapViewUtils.DEFAULT_ZOOM) getView().zoom(MapViewUtils.DEFAULT_ZOOM);
-               //
+
                if (location.getLocationSourceType() != LocationSourceType.NEAR_ME)
                   getView().addLocationMarker(location.getCoordinates().asLatLng());
             });
+   }
+
+   @Override
+   public void offersOnlySwitched(boolean isOffersOnly) {
+      filterDataInteractor.applyOffersOnly(isOffersOnly);
    }
 
    @Override
@@ -272,8 +259,8 @@ public class DtlMapPresenterImpl extends DtlPresenterImpl<DtlMapScreen, ViewStat
    @Override
    public void retryLoadMerchant() {
       if (actionParamsHolder == null) return;
-      //
-      merchantInteractor.merchantByIdHttpPipe().send(MerchantByIdParamsHolder.toAction(actionParamsHolder));
+
+      fullMerchantInteractor.load(MerchantByIdParamsHolder.toAction(actionParamsHolder));
    }
 
    private void showPins(List<ThinMerchant> merchants) {
@@ -285,24 +272,25 @@ public class DtlMapPresenterImpl extends DtlPresenterImpl<DtlMapScreen, ViewStat
    @Override
    public void onMapLoaded() {
       connectInteractors();
-      //
-      getFirstCenterLocation().compose(bindViewIoToMainComposer()).subscribe(getView()::centerIn);
-      //
-      showingLoadMerchantsButton().compose(bindView()).subscribe(show -> getView().showButtonLoadMerchants(show));
-      //
+
+      getFirstCenterLocation().compose(bindViewIoToMainComposer())
+            .subscribe(getView()::centerIn);
+
+      showingLoadMerchantsButton().compose(bindView())
+            .subscribe(show -> getView().showButtonLoadMerchants(show));
+
       MapObservableFactory.createMarkerClickObservable(getView().getMap())
             .compose(bindView())
             .subscribe(marker -> getView().markerClick(marker));
-      //
+
       gpsLocationDelegate.getLastKnownLocation()
             .compose(bindViewIoToMainComposer())
             .subscribe(location -> tryHideMyLocationButton(false), throwable -> tryHideMyLocationButton(true));
-
    }
 
    @Override
    public void applySearch(String query) {
-      filterInteractor.filterDataPipe().send(DtlFilterDataAction.applySearch(query));
+      filterDataInteractor.applySearch(query);
    }
 
    @Override
@@ -327,11 +315,6 @@ public class DtlMapPresenterImpl extends DtlPresenterImpl<DtlMapScreen, ViewStat
             .locationSourceType(LocationSourceType.FROM_MAP)
             .coordinates(new com.worldventures.dreamtrips.modules.trips.model.Location(latLng.latitude, latLng.longitude))
             .build();
-      locationInteractor.locationPipe().send(DtlLocationCommand.change(mapSelectedLocation));
-      //
-      android.location.Location location = new android.location.Location("");
-      location.setLatitude(latLng.latitude);
-      location.setLongitude(latLng.longitude);
-      merchantInteractor.merchantsActionPipe().send(DtlMerchantsAction.load(location));
+      locationInteractor.change(mapSelectedLocation);
    }
 }

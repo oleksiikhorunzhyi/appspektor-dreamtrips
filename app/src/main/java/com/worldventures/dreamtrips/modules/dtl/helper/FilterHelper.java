@@ -1,6 +1,10 @@
 package com.worldventures.dreamtrips.modules.dtl.helper;
 
+import com.innahema.collections.query.queriables.Queryable;
+import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.modules.dtl.model.DistanceType;
+import com.worldventures.dreamtrips.modules.settings.model.Setting;
+import com.worldventures.dreamtrips.modules.settings.util.SettingsFactory;
 
 import java.util.Locale;
 
@@ -34,5 +38,11 @@ public abstract class FilterHelper {
 
    public static float provideDistancePickerInterval(DistanceType distanceType) {
       return distanceType == DistanceType.KMS ? (float) 16.25 : 10;
+   }
+
+   public static DistanceType provideDistanceFromSettings(SnappyRepository snappyRepository) {
+      final Setting distanceTypeSetting = Queryable.from(snappyRepository.getSettings())
+            .filter(setting -> setting.getName().equals(SettingsFactory.DISTANCE_UNITS)).firstOrDefault();
+      return DistanceType.provideFromSetting(distanceTypeSetting);
    }
 }

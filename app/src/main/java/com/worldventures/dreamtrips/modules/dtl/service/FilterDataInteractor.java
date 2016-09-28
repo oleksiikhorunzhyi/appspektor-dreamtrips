@@ -50,7 +50,7 @@ public class FilterDataInteractor {
 
    public void reset() {
       send(ImmutableFilterData.builder()
-            .distanceType(provideDistanceType())
+            .distanceType(FilterHelper.provideDistanceFromSettings(snappyRepository))
             .build());
    }
 
@@ -96,13 +96,6 @@ public class FilterDataInteractor {
 
    private void send(FilterData filterData) {
       filterDataPipe.send(new FilterDataAction(filterData));
-   }
-
-   private DistanceType provideDistanceType() {
-      final Setting distanceTypeSetting =
-            Queryable.from(snappyRepository.getSettings()).filter(setting ->
-                  setting.getName().equals(SettingsFactory.DISTANCE_UNITS)).firstOrDefault();
-      return DistanceType.provideFromSetting(distanceTypeSetting);
    }
 
    private Observable<FilterData> getLastFilterObservable() {

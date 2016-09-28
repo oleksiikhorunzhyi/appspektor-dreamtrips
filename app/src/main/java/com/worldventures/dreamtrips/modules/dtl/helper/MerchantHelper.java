@@ -194,11 +194,4 @@ public class MerchantHelper {
       return id != null ? Collections.singletonList(id) : null;
    }
 
-   public static DistanceType getDistanceTypeFromSettings(SnappyRepository db) {
-      final Setting distanceTypeSetting = Queryable.from(db.getSettings())
-            .filter(setting -> setting.getName().equals(SettingsFactory.DISTANCE_UNITS))
-            .firstOrDefault();
-      return DistanceType.provideFromSetting(distanceTypeSetting);
-   }
-
 }

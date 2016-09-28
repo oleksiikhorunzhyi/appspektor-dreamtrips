@@ -27,7 +27,7 @@ import com.worldventures.dreamtrips.modules.common.model.FlagData;
 import com.worldventures.dreamtrips.modules.common.model.MediaAttachment;
 import com.worldventures.dreamtrips.modules.common.model.PhotoGalleryModel;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
-import com.worldventures.dreamtrips.modules.common.presenter.delegate.UidItemDelegate;
+import com.worldventures.dreamtrips.modules.common.presenter.delegate.FlagDelegate;
 import com.worldventures.dreamtrips.modules.common.view.ApiErrorView;
 import com.worldventures.dreamtrips.modules.common.view.BlockingProgressView;
 import com.worldventures.dreamtrips.modules.common.view.bundle.BucketBundle;
@@ -99,7 +99,7 @@ public class FeedPresenter extends Presenter<FeedPresenter.View> {
    @Inject FlagsInteractor flagsInteractor;
 
    private Circle filterCircle;
-   private UidItemDelegate uidItemDelegate;
+   private FlagDelegate flagDelegate;
    private SuggestedPhotoCellPresenterHelper suggestedPhotoHelper;
 
    @State ArrayList<FeedItem> feedItems;
@@ -109,7 +109,7 @@ public class FeedPresenter extends Presenter<FeedPresenter.View> {
    public void onInjected() {
       super.onInjected();
       entityManager.setRequestingPresenter(this);
-      uidItemDelegate = new UidItemDelegate(flagsInteractor);
+      flagDelegate = new FlagDelegate(flagsInteractor);
    }
 
    @Override
@@ -375,11 +375,11 @@ public class FeedPresenter extends Presenter<FeedPresenter.View> {
    }
 
    public void onEvent(LoadFlagEvent event) {
-      if (view.isVisibleOnScreen()) uidItemDelegate.loadFlags(event.getFlaggableView(), this::handleError);
+      if (view.isVisibleOnScreen()) flagDelegate.loadFlags(event.getFlaggableView(), this::handleError);
    }
 
    public void onEvent(ItemFlaggedEvent event) {
-      if (view.isVisibleOnScreen()) uidItemDelegate.flagItem(new FlagData(event.getEntity()
+      if (view.isVisibleOnScreen()) flagDelegate.flagItem(new FlagData(event.getEntity()
             .getUid(), event.getFlagReasonId(), event.getNameOfReason()), view, this::handleError);
    }
 
@@ -482,7 +482,7 @@ public class FeedPresenter extends Presenter<FeedPresenter.View> {
       }, throwable -> Timber.w("Can't get friends notifications count"));
    }
 
-   public interface View extends RxView, UidItemDelegate.View, TextualPostTranslationDelegate.View, ApiErrorView, BlockingProgressView {
+   public interface View extends RxView, FlagDelegate.View, TextualPostTranslationDelegate.View, ApiErrorView, BlockingProgressView {
 
       void setRequestsCount(int count);
 

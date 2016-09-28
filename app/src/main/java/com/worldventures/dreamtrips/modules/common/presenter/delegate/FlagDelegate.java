@@ -11,11 +11,11 @@ import io.techery.janet.helper.ActionStateSubscriber;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action2;
 
-public class UidItemDelegate {
+public class FlagDelegate {
 
    private FlagsInteractor flagsInteractor;
 
-   public UidItemDelegate(FlagsInteractor flagsInteractor) {
+   public FlagDelegate(FlagsInteractor flagsInteractor) {
       this.flagsInteractor = flagsInteractor;
    }
 

@@ -5,7 +5,6 @@ import com.worldventures.dreamtrips.modules.flags.command.FlagItemCommand;
 import com.worldventures.dreamtrips.modules.flags.command.GetFlagsCommand;
 
 import io.techery.janet.ActionPipe;
-import io.techery.janet.Janet;
 import rx.schedulers.Schedulers;
 
 public class FlagsInteractor {

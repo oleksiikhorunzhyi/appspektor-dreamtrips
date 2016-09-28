@@ -12,7 +12,7 @@ import com.worldventures.dreamtrips.modules.bucketlist.service.action.DeleteItem
 import com.worldventures.dreamtrips.modules.common.model.FlagData;
 import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
-import com.worldventures.dreamtrips.modules.common.presenter.delegate.UidItemDelegate;
+import com.worldventures.dreamtrips.modules.common.presenter.delegate.FlagDelegate;
 import com.worldventures.dreamtrips.modules.common.view.ApiErrorView;
 import com.worldventures.dreamtrips.modules.common.view.bundle.BucketBundle;
 import com.worldventures.dreamtrips.modules.feed.api.DeletePostCommand;
@@ -58,7 +58,7 @@ public class BaseCommentPresenter<T extends BaseCommentPresenter.View> extends P
    @Inject LocaleHelper localeHelper;
    @Inject FlagsInteractor flagsInteractor;
 
-   private UidItemDelegate uidItemDelegate;
+   private FlagDelegate flagDelegate;
 
    @State FeedEntity feedEntity;
    @State String draftComment;
@@ -75,7 +75,7 @@ public class BaseCommentPresenter<T extends BaseCommentPresenter.View> extends P
    public void onInjected() {
       super.onInjected();
       entityManager.setRequestingPresenter(this);
-      uidItemDelegate = new UidItemDelegate(flagsInteractor);
+      flagDelegate = new FlagDelegate(flagsInteractor);
    }
 
    @Override
@@ -158,11 +158,11 @@ public class BaseCommentPresenter<T extends BaseCommentPresenter.View> extends P
    }
 
    public void loadFlags(Flaggable flaggableView) {
-      uidItemDelegate.loadFlags(flaggableView, this::handleError);
+      flagDelegate.loadFlags(flaggableView, this::handleError);
    }
 
    public void flagItem(String uid, int reasonId, String reason) {
-      uidItemDelegate.flagItem(new FlagData(uid, reasonId, reason), view, this::handleError);
+      flagDelegate.flagItem(new FlagData(uid, reasonId, reason), view, this::handleError);
    }
 
    public void editComment(Comment comment) {
@@ -241,11 +241,11 @@ public class BaseCommentPresenter<T extends BaseCommentPresenter.View> extends P
    }
 
    public void onEvent(LoadFlagEvent event) {
-      if (view.isVisibleOnScreen()) uidItemDelegate.loadFlags(event.getFlaggableView(), this::handleError);
+      if (view.isVisibleOnScreen()) flagDelegate.loadFlags(event.getFlaggableView(), this::handleError);
    }
 
    public void onEvent(ItemFlaggedEvent event) {
-      if (view.isVisibleOnScreen()) uidItemDelegate.flagItem(new FlagData(event.getEntity()
+      if (view.isVisibleOnScreen()) flagDelegate.flagItem(new FlagData(event.getEntity()
             .getUid(), event.getFlagReasonId(), event.getNameOfReason()), view, this::handleError);
    }
 
@@ -296,7 +296,7 @@ public class BaseCommentPresenter<T extends BaseCommentPresenter.View> extends P
       if (commentIndex != -1) feedEntity.getComments().set(commentIndex, comment);
    }
 
-   public interface View extends RxView, UidItemDelegate.View, ApiErrorView {
+   public interface View extends RxView, FlagDelegate.View, ApiErrorView {
 
       void addComments(List<Comment> commentList);
 

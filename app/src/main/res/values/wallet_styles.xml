@@ -33,6 +33,7 @@
       <item name="colorSwitchThumbNormal">@color/wallet_button_color_disabled</item>
       <!-- Inactive track color(30% transparency) -->
       <item name="android:colorForeground">#42888888</item>
+      <item name="android:windowBackground">@android:color/white</item>
    </style>
 
    <style name="WalletTheme.ButtonStyle" parent="Widget.AppCompat.Button">

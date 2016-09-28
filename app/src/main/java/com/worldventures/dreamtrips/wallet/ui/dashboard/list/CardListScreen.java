@@ -77,7 +77,7 @@ public class CardListScreen extends WalletFrameLayout<CardListPresenter.Screen, 
    public void showRecordsInfo(List<CardStackViewModel> result) {
       adapter.clear();
       adapter.addItems(result);
-      emptyCardListView.setVisibility(adapter.getCount() == 1 ? VISIBLE : GONE);
+      emptyCardListView.setVisibility(adapter.getCount() <= 1 ? VISIBLE : GONE);
    }
 
    @Override

@@ -4,6 +4,7 @@ package com.worldventures.dreamtrips.wallet.ui.settings.firmware.donwload;
 import android.content.Context;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
 import android.support.v7.widget.Toolbar;
@@ -34,6 +35,7 @@ public class WalletDownloadFirmwareScreen extends WalletFrameLayout<WalletDownlo
       super(context, attrs);
    }
 
+   @NonNull
    @Override
    public WalletDownloadFirmwarePresenter createPresenter() {
       return new WalletDownloadFirmwarePresenter(getContext(), getInjector(), getPath().firmwareInfo(), getPath().filePath());
@@ -54,11 +56,6 @@ public class WalletDownloadFirmwareScreen extends WalletFrameLayout<WalletDownlo
    @Override
    public OperationScreen provideOperationDelegate() {
       return this;
-   }
-
-   @Override
-   public void informSuccess() {
-      Snackbar.make(this, "Download success, in feature you will see next screen", Snackbar.LENGTH_SHORT).show();
    }
 
    @Override

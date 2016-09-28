@@ -1,6 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
+   <color name="wallet_success_green">#FF81c435</color>
+   <color name="wallet_waring_red">#FFfa2d46</color>
+
    <color name="wallet_card_details_address_text_color">#666666</color>
    <color name="wallet_card_details_delete_card_button_color">#ea283b</color> <!--does not use like background, should be fixed -->
 

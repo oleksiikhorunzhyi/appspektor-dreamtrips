@@ -13,6 +13,7 @@ import com.worldventures.dreamtrips.wallet.ui.common.base.WalletPresenter;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.WalletScreen;
 import com.worldventures.dreamtrips.wallet.ui.common.helper.OperationSubscriberWrapper;
 import com.worldventures.dreamtrips.wallet.ui.common.navigation.Navigator;
+import com.worldventures.dreamtrips.wallet.ui.settings.firmware.preinstalletion.WalletFirmwareChecksPath;
 
 import java.io.File;
 import java.util.concurrent.TimeUnit;
@@ -47,9 +48,13 @@ public class WalletDownloadFirmwarePresenter extends WalletPresenter<WalletDownl
                   Observable.just(it).delay(4, TimeUnit.SECONDS))//todo remove it
             .compose(bindViewIoToMainComposer())
             .subscribe(OperationSubscriberWrapper.<DownloadFileCommand>forView(getView().provideOperationDelegate())
-                  .onSuccess(event -> getView().informSuccess())
+                  .onSuccess(event -> openPreInstallationChecks())
                   .onFail(getContext().getString(R.string.smth_went_wrong), it -> navigator.goBack()).wrap());
 
+   }
+
+   private void openPreInstallationChecks() {
+      navigator.withoutLast(new WalletFirmwareChecksPath());
    }
 
    void cancelDownload() {
@@ -60,8 +65,6 @@ public class WalletDownloadFirmwarePresenter extends WalletPresenter<WalletDownl
    }
 
    public interface Screen extends WalletScreen {
-
-      void informSuccess();
    }
 
 }

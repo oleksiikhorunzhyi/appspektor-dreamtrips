@@ -27,6 +27,7 @@ import com.worldventures.dreamtrips.wallet.service.command.SetupUserDataCommand;
 import com.worldventures.dreamtrips.wallet.service.command.UpdateBankCardCommand;
 import com.worldventures.dreamtrips.wallet.service.command.UpdateCardDetailsDataCommand;
 import com.worldventures.dreamtrips.wallet.service.command.UpdateSmartCardConnectionStatus;
+import com.worldventures.dreamtrips.wallet.service.command.firmware.PreInstallationCheckCommand;
 import com.worldventures.dreamtrips.wallet.service.command.http.AssociateCardUserCommand;
 import com.worldventures.dreamtrips.wallet.service.command.http.FetchFirmwareInfoCommand;
 import com.worldventures.dreamtrips.wallet.service.command.http.FetchRecordIssuerInfoCommand;
@@ -67,6 +68,7 @@ import dagger.Module;
             FetchRecordIssuerInfoCommand.class,
             AssociateCardUserCommand.class,
             FetchFirmwareInfoCommand.class,
+            PreInstallationCheckCommand.class,
             SetAutoClearSmartCardDelayCommand.class,
             SetDisableDefaultCardDelayCommand.class
       },

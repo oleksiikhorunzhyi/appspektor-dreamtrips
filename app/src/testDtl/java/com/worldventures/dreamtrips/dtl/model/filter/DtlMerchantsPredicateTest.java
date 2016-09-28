@@ -2,9 +2,7 @@ package com.worldventures.dreamtrips.dtl.model.filter;
 
 import com.worldventures.dreamtrips.api.dtl.merchants.model.OfferType;
 import com.worldventures.dreamtrips.dtl.constants.TestConstants;
-import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchant;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.MerchantType;
-import com.worldventures.dreamtrips.modules.dtl.model.merchant.filter.DtlMerchantTypePredicate;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.offer.ImmutableOffer;
 
 import org.junit.Test;

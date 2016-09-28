@@ -1,7 +1,5 @@
 package com.worldventures.dreamtrips.dtl.model;
 
-import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchant;
-
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.runners.MockitoJUnitRunner;

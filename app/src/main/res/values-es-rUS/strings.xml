@@ -656,4 +656,8 @@
    <string name="error_fail_to_load_filters">Lo sentimos, error al cargar los filtros</string>
    <string name="flag_content_message">El personal de WorldVentures recibirá una notificación para revisar este contenido por </string>
 
+   <!-- change this later after approval from WV -->
+   <string name="offline_warning_dialog_title">No hay conexión a internet</string>
+   <string name="offline_warning_dialog_message">Tu acceso será limitado</string>
+
 </resources>

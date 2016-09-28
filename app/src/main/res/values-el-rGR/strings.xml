@@ -651,9 +651,13 @@
 
    <string name="error_fail_to_translate_text">Αποτυχία να μεταφραστεί το κείμενο</string>
 
-   <string name="book_it_disabled">Πρέπει να είστε DreamTrips Μέλος για να κλείσετε ένα ταξίδι</string>
+   <string name="book_it_disabled">Πρέπει να είστε DreamTrips Μέλος για να κλείστε ένα ταξίδι</string>
 
    <string name="error_fail_to_load_filters">Λυπούμαστε, απέτυχε να φορτώσει τα φίλτρα</string>
    <string name="flag_content_message">To προσωπικό της WorldVentures θα ειδοποιηθεί να αναθεωρήσει αυτό το περιεχόμενο για ακατάλληλο περιεχόμενο. </string>
+
+   <!-- change this later after approval from WV -->
+   <string name="offline_warning_dialog_title">Δεν υπάρχει σύνδεση στο διαδίκτυο</string>
+   <string name="offline_warning_dialog_message">Η πρόσβασή σας θα είναι περιορισμένη</string>
 
 </resources>

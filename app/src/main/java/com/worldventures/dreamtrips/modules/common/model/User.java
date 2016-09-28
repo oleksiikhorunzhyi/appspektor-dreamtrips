@@ -458,6 +458,7 @@ public class User extends BaseEntity implements Parcelable {
       dest.writeByte(termsAccepted ? (byte) 1 : (byte) 0);
       dest.writeParcelable(this.mutualFriends, 0);
       dest.writeString(sponsorUsername);
+      dest.writeString(countryCode);
       dest.writeList(this.circles);
       dest.writeStringList(this.badges);
    }
@@ -486,6 +487,7 @@ public class User extends BaseEntity implements Parcelable {
       this.termsAccepted = in.readByte() != 0;
       this.mutualFriends = in.readParcelable(MutualFriends.class.getClassLoader());
       this.sponsorUsername = in.readString();
+      this.countryCode = in.readString();
       circles = new ArrayList<>();
       in.readList(circles, Circle.class.getClassLoader());
       badges = new ArrayList<>();

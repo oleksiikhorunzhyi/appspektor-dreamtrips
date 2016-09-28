@@ -62,7 +62,7 @@ public class FeedDetailsPresenter<V extends FeedDetailsPresenter.View> extends B
 
    @Override
    protected boolean isNeedCheckCommentsWhenStart() {
-      return false;
+      return isTrip();
    }
 
    private void loadFullEventInfo() {

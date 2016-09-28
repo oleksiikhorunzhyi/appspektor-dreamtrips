@@ -62,7 +62,12 @@ public abstract class FeedItemDetailsCell<I extends FeedItem, D extends CellDele
       }
    }
 
-   public void openItemDetails() {
+   public final void openItemDetails() {
+      onOpenItemDetails();
+      trackOpened();
+   }
+
+   protected void onOpenItemDetails() {
       Route detailsRoute = Route.FEED_ITEM_DETAILS;
       FeedItemDetailsBundle.Builder bundleBuilder = new FeedItemDetailsBundle.Builder().feedItem(getModelObject())
             .showAdditionalInfo(true);
@@ -70,7 +75,18 @@ public abstract class FeedItemDetailsCell<I extends FeedItem, D extends CellDele
          bundleBuilder.slave(true);
       }
       router.moveTo(detailsRoute, NavigationConfigBuilder.forActivity().data(bundleBuilder.build()).build());
-      //
+   }
+
+   public final void openEntityDetails() {
+      onOpenEntityDetails();
+      trackOpened();
+   }
+
+   protected void onOpenEntityDetails() {
+      // no implementation by default
+   }
+
+   private void trackOpened() {
       sendAnalyticEvent(TrackingHelper.ATTRIBUTE_VIEW);
    }
 

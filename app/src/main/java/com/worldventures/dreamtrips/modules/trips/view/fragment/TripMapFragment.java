@@ -27,7 +27,6 @@ import com.jakewharton.rxbinding.support.v7.widget.RxSearchView;
 import com.techery.spares.annotations.Layout;
 import com.techery.spares.annotations.MenuResource;
 import com.techery.spares.ui.fragment.FragmentHelper;
-import com.trello.rxlifecycle.RxLifecycle;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.navigation.BackStackDelegate;
 import com.worldventures.dreamtrips.core.navigation.Route;
@@ -135,6 +134,12 @@ public class TripMapFragment extends RxBaseFragment<TripMapPresenter> implements
       if (savedInstanceState != null) {
          getPresenter().removeInfoIfNeeded();
       }
+   }
+
+   @Override
+   public void onStart() {
+      super.onStart();
+      if (googleMap != null) subscribeToMapUpdates();
    }
 
    @Override
@@ -362,6 +367,10 @@ public class TripMapFragment extends RxBaseFragment<TripMapPresenter> implements
 
    protected void onMapLoaded() {
       getPresenter().onMapLoaded();
+      subscribeToMapUpdates();
+   }
+
+   private void subscribeToMapUpdates() {
       subscribeToCameraChanges();
       subscribeToMarkersClicks();
    }
@@ -370,7 +379,7 @@ public class TripMapFragment extends RxBaseFragment<TripMapPresenter> implements
       MapObservableFactory.createCameraChangeObservable(googleMap)
             .throttleLast(100, TimeUnit.MILLISECONDS)
             .observeOn(AndroidSchedulers.mainThread())
-            .compose(RxLifecycle.bindFragment(lifecycle()))
+            .compose(bindViewStoppedComposer())
             .subscribe(cameraPosition -> {
                clusterManager.onCameraChange(cameraPosition);
             }, error -> {
@@ -381,7 +390,7 @@ public class TripMapFragment extends RxBaseFragment<TripMapPresenter> implements
    private void subscribeToMarkersClicks() {
       MapObservableFactory.createMarkerClickObservable(googleMap)
             .observeOn(AndroidSchedulers.mainThread())
-            .compose(RxLifecycle.bindFragment(lifecycle()))
+            .compose(bindViewStoppedComposer())
             .subscribe(marker -> {
                clusterManager.onMarkerClick(marker);
             }, error -> {

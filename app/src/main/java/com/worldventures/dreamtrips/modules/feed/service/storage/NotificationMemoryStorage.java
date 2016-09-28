@@ -4,7 +4,6 @@ import android.support.annotation.Nullable;
 
 import com.worldventures.dreamtrips.core.janet.cache.CacheBundle;
 import com.worldventures.dreamtrips.core.janet.cache.storage.MemoryStorage;
-import com.worldventures.dreamtrips.modules.feed.model.FeedEntity;
 import com.worldventures.dreamtrips.modules.feed.model.FeedItem;
 
 import java.util.ArrayList;
@@ -14,11 +13,18 @@ public class NotificationMemoryStorage extends MemoryStorage<List<FeedItem>> {
 
    @Override
    public void save(@Nullable CacheBundle bundle, List<FeedItem> data) {
-      if (bundle.get(NotificationsStorage.REFRESH)) {
+      if (bundle != null && (Boolean) bundle.get(NotificationsStorage.REFRESH)) {
          super.save(bundle, data);
       } else {
-         List<FeedItem> newItems = new ArrayList<>();
-         newItems.addAll(get(bundle));
+         addNewItemsIfCacheIsValid(bundle, data);
+      }
+   }
+
+   private void addNewItemsIfCacheIsValid(@Nullable CacheBundle bundle, List<FeedItem> data) {
+      List<FeedItem> newItems = new ArrayList<>();
+      List<FeedItem> previousItems = get(bundle);
+      if (previousItems != null) {
+         newItems.addAll(previousItems);
          newItems.addAll(data);
          super.save(bundle, newItems);
       }

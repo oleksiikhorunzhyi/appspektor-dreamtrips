@@ -32,6 +32,7 @@
          android:required="true"
          />
    <uses-feature android:name="android.hardware.camera" />
+   <uses-feature android:name="android.hardware.location.gps" />
 
    <supports-screens
          android:anyDensity="true"

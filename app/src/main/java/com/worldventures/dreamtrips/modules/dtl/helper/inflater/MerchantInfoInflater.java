@@ -10,6 +10,7 @@ import com.trello.rxlifecycle.RxLifecycle;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.core.utils.ViewUtils;
+import com.worldventures.dreamtrips.modules.dtl.helper.FilterHelper;
 import com.worldventures.dreamtrips.modules.dtl.model.DistanceType;
 import com.worldventures.dreamtrips.modules.settings.model.Setting;
 import com.worldventures.dreamtrips.modules.settings.util.SettingsFactory;
@@ -49,8 +50,7 @@ public class MerchantInfoInflater extends MerchantDataInflater {
    private void setInfo() {
       pricing.setRating(merchantAttributes.budget());
       //
-      Setting distanceTypeSetting = Queryable.from(db.getSettings()).filter(setting -> setting.getName().equals(SettingsFactory.DISTANCE_UNITS)).firstOrDefault();
-      CharSequence distanceText = merchantAttributes.provideFormattedDistance(resources, DistanceType.provideFromSetting(distanceTypeSetting));
+      CharSequence distanceText = merchantAttributes.provideFormattedDistance(resources, FilterHelper.provideDistanceFromSettings(db));
       CharSequence categoriesText = merchantAttributes.provideFormattedCategories();
 
       ViewUtils.setTextOrHideView(distance, distanceText);

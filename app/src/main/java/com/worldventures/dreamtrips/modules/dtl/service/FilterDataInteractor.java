@@ -8,6 +8,7 @@ import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.core.utils.tracksystem.AnalyticsInteractor;
 import com.worldventures.dreamtrips.modules.dtl.analytics.DtlAnalyticsCommand;
 import com.worldventures.dreamtrips.modules.dtl.analytics.MerchantFilterAppliedEvent;
+import com.worldventures.dreamtrips.modules.dtl.helper.FilterHelper;
 import com.worldventures.dreamtrips.modules.dtl.model.DistanceType;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.filter.FilterData;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.filter.ImmutableFilterData;
@@ -50,7 +51,7 @@ public class FilterDataInteractor {
 
    public void reset() {
       send(ImmutableFilterData.builder()
-            .distanceType(provideDistanceType())
+            .distanceType(FilterHelper.provideDistanceFromSettings(snappyRepository))
             .build());
    }
 
@@ -76,6 +77,13 @@ public class FilterDataInteractor {
             .subscribe(this::send);
    }
 
+   public void loadNextPaginatedPage() {
+      getLastFilterObservable()
+            .map(filterData -> ImmutableFilterData.copyOf(filterData)
+                  .withPage(filterData.page() + 1))
+            .subscribe(this::send);
+   }
+
    public void applyOffersOnly(final boolean isOffersOnly) {
       getLastFilterObservable()
             .map(filterData -> ImmutableFilterData.copyOf(filterData)
@@ -96,13 +104,6 @@ public class FilterDataInteractor {
 
    private void send(FilterData filterData) {
       filterDataPipe.send(new FilterDataAction(filterData));
-   }
-
-   private DistanceType provideDistanceType() {
-      final Setting distanceTypeSetting =
-            Queryable.from(snappyRepository.getSettings()).filter(setting ->
-                  setting.getName().equals(SettingsFactory.DISTANCE_UNITS)).firstOrDefault();
-      return DistanceType.provideFromSetting(distanceTypeSetting);
    }
 
    private Observable<FilterData> getLastFilterObservable() {

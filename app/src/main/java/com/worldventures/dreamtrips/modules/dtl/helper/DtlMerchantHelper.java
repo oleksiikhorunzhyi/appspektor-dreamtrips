@@ -165,7 +165,7 @@ public class DtlMerchantHelper {
                .withTime(localTimeStart.getHourOfDay(), localTimeStart.getMinuteOfHour(), 0, 0);
          DateTime end = DateTime.now().withTime(localTimeEnd.getHourOfDay(), localTimeEnd.getMinuteOfHour(), 0, 0);
          //
-         return String.format("%s - %s", start.toString(OPERATION_TIME_FORMATTER), end.toString(OPERATION_TIME_FORMATTER));
+         return String.format(Locale.US, "%s - %s", start.toString(OPERATION_TIME_FORMATTER), end.toString(OPERATION_TIME_FORMATTER));
       } catch (Exception e) {
          return "";
       }

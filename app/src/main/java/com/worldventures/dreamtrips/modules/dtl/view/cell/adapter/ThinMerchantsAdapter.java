@@ -7,6 +7,7 @@ import com.techery.spares.adapter.BaseDelegateAdapter;
 import com.techery.spares.module.Injector;
 import com.techery.spares.ui.view.cell.AbstractCell;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
+import com.worldventures.dreamtrips.modules.dtl.helper.FilterHelper;
 import com.worldventures.dreamtrips.modules.dtl.helper.MerchantHelper;
 import com.worldventures.dreamtrips.modules.dtl.model.DistanceType;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.operational_hour.OperationDay;
@@ -21,7 +22,7 @@ public class ThinMerchantsAdapter extends BaseDelegateAdapter<OperationDay> {
 
    public ThinMerchantsAdapter(Context context, Injector injector) {
       super(context, injector);
-      this.distanceType = MerchantHelper.getDistanceTypeFromSettings(db);
+      this.distanceType = FilterHelper.provideDistanceFromSettings(db);
    }
 
    @Override

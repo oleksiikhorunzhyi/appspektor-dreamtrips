@@ -8,6 +8,7 @@ import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.core.utils.tracksystem.AnalyticsInteractor;
 import com.worldventures.dreamtrips.modules.dtl.analytics.DtlAnalyticsCommand;
 import com.worldventures.dreamtrips.modules.dtl.analytics.MerchantFilterAppliedEvent;
+import com.worldventures.dreamtrips.modules.dtl.helper.FilterHelper;
 import com.worldventures.dreamtrips.modules.dtl.model.DistanceType;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.filter.FilterData;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.filter.ImmutableFilterData;
@@ -73,6 +74,13 @@ public class FilterDataInteractor {
       getLastFilterObservable()
             .map(filterData -> ImmutableFilterData.copyOf(filterData)
                   .withSearchQuery(query))
+            .subscribe(this::send);
+   }
+
+   public void loadNextPaginatedPage() {
+      getLastFilterObservable()
+            .map(filterData -> ImmutableFilterData.copyOf(filterData)
+                  .withPage(filterData.page() + 1))
             .subscribe(this::send);
    }
 

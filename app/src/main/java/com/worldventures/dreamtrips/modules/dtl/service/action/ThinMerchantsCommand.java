@@ -1,16 +1,19 @@
 package com.worldventures.dreamtrips.modules.dtl.service.action;
 
-import android.location.Location;
-
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.api.dtl.merchants.ThinMerchantsHttpAction;
+import com.worldventures.dreamtrips.api.dtl.merchants.model.ImmutableThinMerchantsActionParams;
+import com.worldventures.dreamtrips.api.dtl.merchants.model.ThinMerchantsActionParams;
 import com.worldventures.dreamtrips.core.api.action.CommandWithError;
 import com.worldventures.dreamtrips.core.janet.JanetModule;
 import com.worldventures.dreamtrips.core.janet.dagger.InjectableAction;
+import com.worldventures.dreamtrips.modules.dtl.helper.FilterHelper;
 import com.worldventures.dreamtrips.modules.dtl.model.location.DtlLocation;
 import com.worldventures.dreamtrips.modules.dtl.model.mapping.ThinMerchantsTransformer;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.ThinMerchant;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.filter.FilterData;
+import com.worldventures.dreamtrips.modules.trips.model.Location;
+
 
 import java.util.ArrayList;
 import java.util.List;
@@ -33,36 +36,42 @@ public class ThinMerchantsCommand extends CommandWithError<List<ThinMerchant>>
 
    private List<ThinMerchant> cache = new ArrayList<>();
 
-   private final Location coordinates;
+   private final ThinMerchantsActionParams params;
 
    public static ThinMerchantsCommand create(FilterData filterData, DtlLocation dtlLocation) {
-      return create(dtlLocation); // TODO :: 26.09.16
+      final ThinMerchantsActionParams params = buildParams(filterData, dtlLocation);
+      return new ThinMerchantsCommand(params);
    }
 
-   public static ThinMerchantsCommand create(DtlLocation dtlLocation) {
-      return create(dtlLocation.getCoordinates().asAndroidLocation());
-   }
-
-   public static ThinMerchantsCommand create(Location coordinates) {
-      return new ThinMerchantsCommand(coordinates);
-   }
-
-   public ThinMerchantsCommand(Location coordinates) {
-      this.coordinates = coordinates;
+   public ThinMerchantsCommand (ThinMerchantsActionParams params) {
+      this.params = params;
    }
 
    @Override
    protected void run(CommandCallback<List<ThinMerchant>> callback) throws Throwable {
-      if (coordinates != null) {
-         callback.onProgress(0);
-         String ll = String.format(Locale.US, "%1$f,%2$f", coordinates.getLatitude(), coordinates.getLongitude());
          janet.createPipe(ThinMerchantsHttpAction.class, Schedulers.io())
-               .createObservableResult(new ThinMerchantsHttpAction(ll))
+               .createObservableResult(new ThinMerchantsHttpAction(params))
                .map(ThinMerchantsHttpAction::merchants)
                .compose(ThinMerchantsTransformer.INSTANCE)
                .subscribe(callback::onSuccess, callback::onFail);
-      } else callback.onSuccess(cache);
    }
+
+
+   private static String provideFormattedLocation(DtlLocation location) {
+      final Location coordinates = location.getCoordinates();
+      return String.format(Locale.US, "%1$f,%2$f", coordinates.getLat(), coordinates.getLng());
+   }
+
+   private static ThinMerchantsActionParams buildParams(FilterData filterData, DtlLocation dtlLocation) {
+      final String coordinates = provideFormattedLocation(dtlLocation);
+      return ImmutableThinMerchantsActionParams.builder()
+            .coordinates(coordinates)
+            .radius(FilterHelper.provideDistanceByIndex(filterData.distanceType(), filterData.distanceMaxIndex()))
+            .limit(FilterData.LIMIT)
+            .offset(filterData.page() * FilterData.LIMIT)
+            .build();
+   }
+
 
    @Override
    public int getFallbackErrorMessage() {

@@ -11,7 +11,7 @@ import java.util.List;
 @Value.Immutable
 public abstract class FilterData {
 
-   public static final int PAGE_SIZE = 20;
+   public static final int LIMIT = 20;
 
    private static final int BUDGET_MIN = 1;
    private static final int BUDGET_MAX = 5;

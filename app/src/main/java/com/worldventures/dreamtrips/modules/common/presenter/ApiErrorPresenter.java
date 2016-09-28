@@ -96,7 +96,7 @@ public class ApiErrorPresenter {
 
          if (getCauseByType(IOException.class, exception.getCause()) != null) {
             apiErrorView.informUser(R.string.no_connection);
-         } else if (errorResponse != null) {
+         } else if (errorResponse != null && errorResponse.getErrors() != null && !errorResponse.getErrors().isEmpty()) {
             logError(errorResponse);
             if (!apiErrorView.onApiError(errorResponse)) apiErrorView.informUser(errorResponse.getFirstMessage());
          } else {

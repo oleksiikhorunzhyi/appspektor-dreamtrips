@@ -12,6 +12,7 @@ import com.worldventures.dreamtrips.wallet.ui.dashboard.list.CardListPresenter;
 import com.worldventures.dreamtrips.wallet.ui.dashboard.list.util.cell.BankCardCell;
 import com.worldventures.dreamtrips.wallet.ui.dashboard.list.util.cell.CardStackCell;
 import com.worldventures.dreamtrips.wallet.ui.dashboard.list.util.cell.CardStackHeaderCell;
+import com.worldventures.dreamtrips.wallet.ui.settings.firmware.donwload.WalletDownloadFirmwarePresenter;
 import com.worldventures.dreamtrips.wallet.ui.settings.general.WalletSettingsPresenter;
 import com.worldventures.dreamtrips.wallet.ui.settings.common.cell.SectionDividerCell;
 import com.worldventures.dreamtrips.wallet.ui.settings.common.cell.SettingsRadioCell;
@@ -67,6 +68,7 @@ import dagger.Provides;
             WalletAutoClearCardsPresenter.class,
             WalletDisableDefaultCardPresenter.class,
             WalletUpToDateFirmwarePresenter.class,
+            WalletDownloadFirmwarePresenter.class,
             WalletNewFirmwareAvailablePresenter.class
       },
       complete = false, library = true

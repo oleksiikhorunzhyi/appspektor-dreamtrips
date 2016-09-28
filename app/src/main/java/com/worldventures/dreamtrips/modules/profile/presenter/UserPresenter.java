@@ -3,7 +3,7 @@ package com.worldventures.dreamtrips.modules.profile.presenter;
 import android.support.annotation.StringRes;
 
 import com.innahema.collections.query.functions.Action1;
-import com.messenger.delegate.FlagsInteractor;
+import com.worldventures.dreamtrips.modules.flags.service.FlagsInteractor;
 import com.messenger.delegate.StartChatDelegate;
 import com.messenger.ui.activity.MessengerActivity;
 import com.worldventures.dreamtrips.core.api.action.CommandWithError;

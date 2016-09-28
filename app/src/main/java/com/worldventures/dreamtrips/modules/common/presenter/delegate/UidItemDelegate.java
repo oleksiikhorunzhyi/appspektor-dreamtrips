@@ -1,6 +1,6 @@
 package com.worldventures.dreamtrips.modules.common.presenter.delegate;
 
-import com.messenger.delegate.FlagsInteractor;
+import com.worldventures.dreamtrips.modules.flags.service.FlagsInteractor;
 import com.worldventures.dreamtrips.modules.common.model.FlagData;
 import com.worldventures.dreamtrips.modules.common.presenter.RequestingPresenter;
 import com.worldventures.dreamtrips.modules.feed.api.FlagItemCommand;
@@ -10,7 +10,6 @@ import com.worldventures.dreamtrips.modules.flags.command.GetFlagsCommand;
 import io.techery.janet.Command;
 import io.techery.janet.helper.ActionStateSubscriber;
 import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Action1;
 import rx.functions.Action2;
 
 public class UidItemDelegate {

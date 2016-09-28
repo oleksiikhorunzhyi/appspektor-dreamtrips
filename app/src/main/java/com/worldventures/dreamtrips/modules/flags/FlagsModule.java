@@ -1,6 +1,6 @@
 package com.worldventures.dreamtrips.modules.flags;
 
-import com.messenger.delegate.FlagsInteractor;
+import com.worldventures.dreamtrips.modules.flags.service.FlagsInteractor;
 import com.worldventures.dreamtrips.core.janet.SessionActionPipeCreator;
 import com.worldventures.dreamtrips.modules.flags.command.GetFlagsCommand;
 

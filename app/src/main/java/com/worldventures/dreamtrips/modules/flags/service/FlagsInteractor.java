@@ -1,4 +1,4 @@
-package com.messenger.delegate;
+package com.worldventures.dreamtrips.modules.flags.service;
 
 import com.worldventures.dreamtrips.core.janet.SessionActionPipeCreator;
 import com.worldventures.dreamtrips.modules.flags.command.GetFlagsCommand;

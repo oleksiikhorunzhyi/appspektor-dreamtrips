@@ -14,11 +14,10 @@ public class AddressUtil {
       AddressInfo addressInfo = addressInfoWithLocale.addressInfo();
       Locale locale = addressInfoWithLocale.locale();
 
-      String address = TextUtils.isEmpty(addressInfo.address2()) ? addressInfo.address1() : String.format("%s\n%s", addressInfo
-            .address1(), addressInfo.address2());
+      String address = TextUtils.isEmpty(addressInfo.address2()) ? addressInfo.address1() : String.format(
+            locale, "%s\n%s", addressInfo.address1(), addressInfo.address2());
 
-      return String.format("%s\n%s, %s %s\n%s", address, addressInfo.city(), addressInfo.state(), addressInfo.zip(), locale
-            .getISO3Country());
+      return String.format("%s\n%s, %s %s", address, addressInfo.city(), addressInfo.state(), addressInfo.zip());
    }
 
 }

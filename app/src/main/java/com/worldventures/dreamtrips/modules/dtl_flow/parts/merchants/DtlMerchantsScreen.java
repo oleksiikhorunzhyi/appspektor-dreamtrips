@@ -3,8 +3,6 @@ package com.worldventures.dreamtrips.modules.dtl_flow.parts.merchants;
 import android.support.annotation.Nullable;
 
 import com.worldventures.dreamtrips.modules.dtl.model.location.DtlLocation;
-import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchant;
-import com.worldventures.dreamtrips.modules.dtl.model.merchant.Merchant;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.ThinMerchant;
 import com.worldventures.dreamtrips.modules.dtl_flow.DtlScreen;
 

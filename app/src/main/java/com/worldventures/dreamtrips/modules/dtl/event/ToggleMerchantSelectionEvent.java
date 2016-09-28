@@ -1,6 +1,5 @@
 package com.worldventures.dreamtrips.modules.dtl.event;
 
-import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchant;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.Merchant;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.ThinMerchant;
 

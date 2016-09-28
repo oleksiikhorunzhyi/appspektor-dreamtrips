@@ -23,7 +23,6 @@ import com.worldventures.dreamtrips.core.rx.RxBaseFragmentWithArgs;
 import com.worldventures.dreamtrips.modules.common.view.custom.ImageryDraweeView;
 import com.worldventures.dreamtrips.modules.dtl.bundle.MerchantBundle;
 import com.worldventures.dreamtrips.modules.dtl.helper.DtlEnrollWizard;
-import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchant;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.Merchant;
 import com.worldventures.dreamtrips.modules.dtl.model.transaction.DtlTransaction;
 import com.worldventures.dreamtrips.modules.dtl.presenter.DtlScanQrCodePresenter;

@@ -4,8 +4,6 @@ import com.worldventures.dreamtrips.core.utils.tracksystem.AdobeTracker;
 import com.worldventures.dreamtrips.core.utils.tracksystem.AnalyticsEvent;
 import com.worldventures.dreamtrips.core.utils.tracksystem.Attribute;
 import com.worldventures.dreamtrips.modules.dtl.helper.inflater.MerchantAttributes;
-import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchant;
-import com.worldventures.dreamtrips.modules.dtl.model.merchant.Merchant;
 
 import java.util.Locale;
 

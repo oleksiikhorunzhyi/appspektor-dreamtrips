@@ -78,11 +78,6 @@ public interface DreamTripsApi {
    @GET("/api/ysbh_photos")
    ArrayList<YSBHPhoto> getYouShouldBeHerePhotos(@Query("per_page") int perPage, @Query("page") int page);
 
-
-   @FormUrlEncoded
-   @POST("/api/photos/{id}/flags")
-   JsonObject flagPhoto(@Path("id") String photoId, @Field("reason") String nameOfReason);
-
    @DELETE("/api/photos/{id}")
    JsonObject deletePhoto(@Path("id") String photoId);
 

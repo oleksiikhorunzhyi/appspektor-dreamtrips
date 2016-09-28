@@ -75,7 +75,7 @@ public class BaseCommentPresenter<T extends BaseCommentPresenter.View> extends P
    public void onInjected() {
       super.onInjected();
       entityManager.setRequestingPresenter(this);
-      uidItemDelegate = new UidItemDelegate(this, flagsInteractor);
+      uidItemDelegate = new UidItemDelegate(flagsInteractor);
    }
 
    @Override
@@ -162,7 +162,7 @@ public class BaseCommentPresenter<T extends BaseCommentPresenter.View> extends P
    }
 
    public void flagItem(String uid, int reasonId, String reason) {
-      uidItemDelegate.flagItem(new FlagData(uid, reasonId, reason), view);
+      uidItemDelegate.flagItem(new FlagData(uid, reasonId, reason), view, this::handleError);
    }
 
    public void editComment(Comment comment) {
@@ -246,7 +246,7 @@ public class BaseCommentPresenter<T extends BaseCommentPresenter.View> extends P
 
    public void onEvent(ItemFlaggedEvent event) {
       if (view.isVisibleOnScreen()) uidItemDelegate.flagItem(new FlagData(event.getEntity()
-            .getUid(), event.getFlagReasonId(), event.getNameOfReason()), view);
+            .getUid(), event.getFlagReasonId(), event.getNameOfReason()), view, this::handleError);
    }
 
    protected void itemDeleted(FeedEntity model) {

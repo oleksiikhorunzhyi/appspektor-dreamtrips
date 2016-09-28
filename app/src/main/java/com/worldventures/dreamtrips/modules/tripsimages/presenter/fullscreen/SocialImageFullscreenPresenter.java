@@ -2,7 +2,6 @@ package com.worldventures.dreamtrips.modules.tripsimages.presenter.fullscreen;
 
 import android.support.v4.app.FragmentManager;
 
-import com.worldventures.dreamtrips.modules.flags.service.FlagsInteractor;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.navigation.router.Router;
@@ -21,6 +20,7 @@ import com.worldventures.dreamtrips.modules.feed.event.FeedEntityDeletedEvent;
 import com.worldventures.dreamtrips.modules.feed.manager.FeedEntityManager;
 import com.worldventures.dreamtrips.modules.feed.model.FeedEntity;
 import com.worldventures.dreamtrips.modules.feed.view.cell.Flaggable;
+import com.worldventures.dreamtrips.modules.flags.service.FlagsInteractor;
 import com.worldventures.dreamtrips.modules.tripsimages.api.DeletePhotoCommand;
 import com.worldventures.dreamtrips.modules.tripsimages.api.DeletePhotoTagsCommand;
 import com.worldventures.dreamtrips.modules.tripsimages.bundle.EditPhotoBundle;
@@ -57,7 +57,7 @@ public class SocialImageFullscreenPresenter extends SocialFullScreenPresenter<Ph
    public void onInjected() {
       super.onInjected();
       entityManager.setRequestingPresenter(this);
-      uidItemDelegate = new UidItemDelegate(this, flagsInteractor);
+      uidItemDelegate = new UidItemDelegate(flagsInteractor);
    }
 
    public void loadEntity() {
@@ -96,7 +96,7 @@ public class SocialImageFullscreenPresenter extends SocialFullScreenPresenter<Ph
 
    @Override
    public void sendFlagAction(int flagReasonId, String reason) {
-      uidItemDelegate.flagItem(new FlagData(photo.getUid(), flagReasonId, reason), view);
+      uidItemDelegate.flagItem(new FlagData(photo.getUid(), flagReasonId, reason), view, this::handleError);
    }
 
    @Override

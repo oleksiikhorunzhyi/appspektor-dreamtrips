@@ -215,10 +215,6 @@ public interface DreamTripsApi {
    @GET("/api/{uid}")
    FeedEntityHolder getFeedEntity(@Path("uid") String uid);
 
-   @FormUrlEncoded
-   @POST("/api/{uid}/flags")
-   Void flagItem(@Path("uid") String uid, @Field("flag_reason_id") int flagReasonId, @Field("reason") String nameOfReason);
-
    @GET("/api/social/friends/{userId}/mutual/")
    ArrayList<User> getMutualFriends(@Path("userId") int userId);
 

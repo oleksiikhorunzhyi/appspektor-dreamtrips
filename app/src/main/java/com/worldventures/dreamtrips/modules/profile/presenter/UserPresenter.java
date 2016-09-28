@@ -70,7 +70,7 @@ public class UserPresenter extends ProfilePresenter<UserPresenter.View, User> {
    public void onInjected() {
       super.onInjected();
       notificationDelegate.cancel(user.getId());
-      uidItemDelegate = new UidItemDelegate(this, flagsInteractor);
+      uidItemDelegate = new UidItemDelegate(flagsInteractor);
    }
 
    @Override
@@ -260,7 +260,7 @@ public class UserPresenter extends ProfilePresenter<UserPresenter.View, User> {
 
    public void onEvent(ItemFlaggedEvent event) {
       if (view.isVisibleOnScreen()) uidItemDelegate.flagItem(new FlagData(event.getEntity()
-            .getUid(), event.getFlagReasonId(), event.getNameOfReason()), view);
+            .getUid(), event.getFlagReasonId(), event.getNameOfReason()), view, this::handleError);
    }
 
    ///////////////////////////////////////////////////////////////////////////

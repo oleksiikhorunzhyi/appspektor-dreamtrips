@@ -236,6 +236,12 @@ public class PersistentDeviceStorage implements DeviceStorage {
    }
 
    @Override
+   public void updateUser(User user) {
+      memoryStorage.updateUser(user);
+      persistStorage();
+   }
+
+   @Override
    public void unAssignUser() {
       memoryStorage.unAssignUser();
       persistStorage();

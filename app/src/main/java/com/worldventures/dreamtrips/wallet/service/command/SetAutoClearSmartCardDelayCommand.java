@@ -8,6 +8,8 @@ import com.worldventures.dreamtrips.wallet.domain.entity.ImmutableSmartCard;
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCard;
 import com.worldventures.dreamtrips.wallet.service.SmartCardInteractor;
 
+import java.util.concurrent.TimeUnit;
+
 import javax.inject.Inject;
 import javax.inject.Named;
 
@@ -38,7 +40,7 @@ public class SetAutoClearSmartCardDelayCommand extends Command<SmartCard>
    @Override
    protected void run(CommandCallback<SmartCard> callback) throws Throwable {
       janet.createPipe(SetClearRecordsDelayAction.class)
-            .createObservableResult(new SetClearRecordsDelayAction(delay))
+            .createObservableResult(new SetClearRecordsDelayAction(TimeUnit.MILLISECONDS, delay))
             .flatMap(it -> fetchActiveSmartCard()
                   .map(smartCard -> ImmutableSmartCard.builder()
                         .from(smartCard)

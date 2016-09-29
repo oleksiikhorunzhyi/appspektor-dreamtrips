@@ -16,6 +16,7 @@ import io.techery.janet.Command;
 import io.techery.janet.Janet;
 import io.techery.janet.command.annotations.CommandAction;
 import io.techery.janet.smartcard.action.support.ConnectAction;
+import io.techery.janet.smartcard.model.ImmutableConnectionParams;
 import rx.Observable;
 import timber.log.Timber;
 
@@ -33,7 +34,7 @@ public class ConnectSmartCardCommand extends Command<SmartCard> implements Injec
    @Override
    protected void run(CommandCallback<SmartCard> callback) throws Throwable {
       janet.createPipe(ConnectAction.class)
-            .createObservableResult(new ConnectAction(activeSmartCard.deviceName(), activeSmartCard.deviceAddress()))
+            .createObservableResult(new ConnectAction(ImmutableConnectionParams.of(Integer.parseInt(activeSmartCard.smartCardId()))))
             .flatMap(action -> fetchTechnicalProperties())
             .doOnNext(smartCard -> activeSmartCard = smartCard)
             .subscribe(smartCard -> setStatusAndNotifyCallback(SmartCard.ConnectionStatus.CONNECTED, callback),

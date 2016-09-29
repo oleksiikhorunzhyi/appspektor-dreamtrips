@@ -35,6 +35,7 @@ import io.techery.janet.smartcard.action.records.DeleteRecordAction
 import io.techery.janet.smartcard.action.records.SetRecordAsDefaultAction
 import io.techery.janet.smartcard.action.support.ConnectAction
 import io.techery.janet.smartcard.mock.client.MockSmartCardClient
+import io.techery.janet.smartcard.model.ImmutableConnectionParams
 import io.techery.janet.smartcard.model.Record
 import io.techery.mappery.Mappery
 import io.techery.mappery.MapperyContext
@@ -355,7 +356,7 @@ class SmartCardInteractorSpec : BaseSpec({
       }
 
       fun Janet.connectToSmartCardSdk() {
-         this.createPipe(ConnectAction::class.java).createObservableResult(ConnectAction("any", "any")).subscribe()
+         this.createPipe(ConnectAction::class.java).createObservableResult(ConnectAction(ImmutableConnectionParams.of(1))).subscribe()
       }
 
       fun mockSmartCard(cardId: String): SmartCard {

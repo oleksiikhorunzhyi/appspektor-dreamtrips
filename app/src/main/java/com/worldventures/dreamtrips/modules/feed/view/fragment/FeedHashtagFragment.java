@@ -62,6 +62,7 @@ public class FeedHashtagFragment extends RxBaseFragmentWithArgs<FeedHashtagPrese
    private SearchView searchView;
    private EditText searchText;
    private MenuItem searchItem;
+   private int cursorPositionWhenTextChanged;
 
    @Override
    public void onCreate(Bundle savedInstanceState) {
@@ -113,7 +114,7 @@ public class FeedHashtagFragment extends RxBaseFragmentWithArgs<FeedHashtagPrese
    private void onSuggestionClicked(String suggestion) {
       if (searchText != null) {
          String descriptionText = searchText.getText().toString();
-         int endReplace = searchText.getSelectionStart();
+         int endReplace = cursorPositionWhenTextChanged;
 
          int startReplace = HashtagSuggestionUtil.calcStartPosBeforeReplace(descriptionText, endReplace);
          String newText = HashtagSuggestionUtil.generateText(descriptionText, suggestion, endReplace);
@@ -185,6 +186,7 @@ public class FeedHashtagFragment extends RxBaseFragmentWithArgs<FeedHashtagPrese
             getPresenter().setQuery(fullQueryText);
             clearSuggestions();
             getPresenter().searchSuggestions(fullQueryText, getTextFromCursor());
+            cursorPositionWhenTextChanged = searchText.getSelectionStart();
             return true;
          }
       });

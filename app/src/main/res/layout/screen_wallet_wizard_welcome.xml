@@ -45,7 +45,6 @@
             android:paddingEnd="@dimen/spacing_normal"
             android:paddingStart="@dimen/spacing_large"
             android:textAppearance="?android:attr/textAppearanceLarge"
-            android:visibility="invisible"
             tools:text="@string/wallet_wizard_welcome_platinum_user"
             tools:visibility="visible"
             />

@@ -47,7 +47,7 @@
    <string name="wallet_wizard_splash_title2">Next, you must agree to\nthe Terms and Conditions.</string>
    <string name="wallet_wizard_splash_review_btn">Terms and Conditions</string>
 
-   <string name="wallet_wizard_scan_proposal">Scan the back of your flye&#8482; smart card to set up</string>
+   <string name="wallet_wizard_scan_proposal">Scan the back of your\nflye&#8482; smart card to set up</string>
    <string name="wallet_wizard_scan_start_btn">Scan Card</string>
    <string name="wallet_wizard_scan_title">Scan flye SmartCard</string>
 

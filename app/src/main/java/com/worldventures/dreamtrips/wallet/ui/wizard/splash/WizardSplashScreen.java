@@ -84,8 +84,19 @@ public class WizardSplashScreen extends WalletFrameLayout<WizardSplashPresenter.
          actionBtn.setText(R.string.wallet_wizard_splash_review_btn);
          actionBtn.setOnClickListener(view -> getPresenter().openTerms());
          walletWizardSplashTitle.setText(R.string.wallet_wizard_splash_title2);
-         postDelayed(this::startSoarAnimation, SHOW_SOAR_TITLE_DELAY);
       }
+
+      setDefaultAlpha();
+
+      postDelayed(this::startSoarAnimation,
+            termsAccepted ? 0 : SHOW_SOAR_TITLE_DELAY
+      );
+   }
+
+   private void setDefaultAlpha() {
+      actionBtn.setAlpha(0f);
+      walletWizardSplashTitle.setAlpha(0f);
+      cardImage.setAlpha(0f);
    }
 
    private void startSoarAnimation() {

@@ -213,6 +213,10 @@ public class Photo extends BaseFeedEntity implements IFullScreenObject {
       return owner;
    }
 
+   public void setUser(User user) {
+      owner = user;
+   }
+
    public Location getLocation() {
       return location;
    }

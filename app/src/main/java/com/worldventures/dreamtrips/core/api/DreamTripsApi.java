@@ -63,9 +63,6 @@ public interface DreamTripsApi {
    @DELETE("/api/photos/{id}")
    JsonObject deletePhoto(@Path("id") String photoId);
 
-   @POST("/api/photos")
-   Photo uploadTripPhoto(@Body UploadTask uploadTask);
-
    @PUT("/api/photos/{uid}")
    Photo editTripPhoto(@Path("uid") String uid, @Body UploadTask uploadTask);
 
@@ -192,7 +189,4 @@ public interface DreamTripsApi {
 
    @DELETE_WITH_BODY("/api/photos/{uid}/tags")
    Void deletePhotoTags(@Path("uid") String photoId, @Body DeletePhotoTag deleteTag);
-
-   @GET("/api/photos/{uid}")
-   Photo getPhotoInfo(@Path("uid") String uid);
 }

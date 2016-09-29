@@ -23,13 +23,19 @@ import com.worldventures.dreamtrips.modules.mapping.converter.CircleConverter;
 import com.worldventures.dreamtrips.modules.mapping.converter.Converter;
 import com.worldventures.dreamtrips.modules.mapping.converter.FeedbackImageAttachmentConverter;
 import com.worldventures.dreamtrips.modules.mapping.converter.FlagConverter;
+import com.worldventures.dreamtrips.modules.mapping.converter.ImageConverter;
+import com.worldventures.dreamtrips.modules.mapping.converter.InspirationModelsConverter;
 import com.worldventures.dreamtrips.modules.mapping.converter.LocationConverter;
+import com.worldventures.dreamtrips.modules.mapping.converter.MemberImageConverter;
+import com.worldventures.dreamtrips.modules.mapping.converter.PhotoTagConverter;
 import com.worldventures.dreamtrips.modules.mapping.converter.PrivateProfileConverter;
 import com.worldventures.dreamtrips.modules.mapping.converter.PublicProfileConverter;
 import com.worldventures.dreamtrips.modules.mapping.converter.RelationshipConverter;
 import com.worldventures.dreamtrips.modules.mapping.converter.ReverseLocationConverter;
 import com.worldventures.dreamtrips.modules.mapping.converter.ShortProfilesConverter;
+import com.worldventures.dreamtrips.modules.mapping.converter.SimplePhotoConverter;
 import com.worldventures.dreamtrips.modules.mapping.converter.UserAvatarConverter;
+import com.worldventures.dreamtrips.modules.mapping.converter.YSBHPhotoConverter;
 import com.worldventures.dreamtrips.modules.mapping.mapper.PodcastsMapper;
 import com.worldventures.dreamtrips.modules.trips.model.converter.ActivityConverter;
 import com.worldventures.dreamtrips.modules.trips.model.converter.ContentItemConverter;
@@ -103,6 +109,12 @@ public class MappingModule {
    @Singleton
    Converter provideTripImageConverter() {
       return new TripImageConverter();
+   }
+
+   @Provides(type = Provides.Type.SET)
+   @Singleton
+   Converter provideMemberImageConverter() {
+      return new MemberImageConverter();
    }
 
    @Provides(type = Provides.Type.SET)
@@ -185,6 +197,12 @@ public class MappingModule {
    @Singleton
    Converter provideFeedbackBodyConverter() {
       return new FeedbackImageAttachmentConverter();
+   }
+
+   @Provides(type = Provides.Type.SET)
+   @Singleton
+   Converter provideInspirationModelsConverter() {
+      return new InspirationModelsConverter();
    }
 
    @Provides(type = Provides.Type.SET)
@@ -311,5 +329,29 @@ public class MappingModule {
    @Singleton
    BucketTagConverter provideBucketTagConverter() {
       return new BucketTagConverter();
+   }
+
+   @Provides(type = Provides.Type.SET)
+   @Singleton
+   Converter provideSimplePhotoConverter() {
+      return new SimplePhotoConverter();
+   }
+
+   @Provides(type = Provides.Type.SET)
+   @Singleton
+   Converter provideImageConverter() {
+      return new ImageConverter();
+   }
+
+   @Provides(type = Provides.Type.SET)
+   @Singleton
+   Converter providePhotoTagConverter() {
+      return new PhotoTagConverter();
+   }
+
+   @Provides(type = Provides.Type.SET)
+   @Singleton
+   Converter provideYSBHPhotoConverter() {
+      return new YSBHPhotoConverter();
    }
 }

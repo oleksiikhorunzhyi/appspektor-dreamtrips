@@ -1,27 +1,31 @@
 package com.worldventures.dreamtrips.modules.tripsimages.presenter;
 
-import com.octo.android.robospice.request.SpiceRequest;
-import com.worldventures.dreamtrips.modules.tripsimages.api.GetInspireMePhotosQuery;
-import com.worldventures.dreamtrips.modules.tripsimages.model.IFullScreenObject;
+import com.worldventures.dreamtrips.modules.tripsimages.command.GetInspireMePhotosCommand;
 import com.worldventures.dreamtrips.modules.tripsimages.model.TripImagesType;
 
-import java.util.ArrayList;
+import io.techery.janet.ActionPipe;
 
-public class InspireMePresenter extends TripImagesListPresenter<TripImagesListPresenter.View> {
+public class InspireMePresenter extends TripImagesListPresenter<TripImagesListPresenter.View, GetInspireMePhotosCommand> {
    protected double randomSeed;
 
    public InspireMePresenter(int userId) {
       super(TripImagesType.INSPIRE_ME, userId);
+      // generate seed in range from -1 to 1
+      randomSeed = Math.random() * 2 - 1;
    }
 
    @Override
-   public SpiceRequest<ArrayList<IFullScreenObject>> getReloadRequest() {
-      randomSeed = Math.random();
-      return new GetInspireMePhotosQuery(PER_PAGE, 1, randomSeed);
+   protected ActionPipe<GetInspireMePhotosCommand> getLoadingPipe() {
+      return tripImagesInteractor.getInspireMePhotosPipe();
    }
 
    @Override
-   public SpiceRequest<ArrayList<IFullScreenObject>> getNextPageRequest(int currentCount) {
-      return new GetInspireMePhotosQuery(PER_PAGE, currentCount / PER_PAGE + 1, randomSeed);
+   protected GetInspireMePhotosCommand getReloadCommand() {
+      return new GetInspireMePhotosCommand(randomSeed, 1, PER_PAGE);
+   }
+
+   @Override
+   protected GetInspireMePhotosCommand getLoadMoreCommand(int currentCount) {
+      return new GetInspireMePhotosCommand(randomSeed, currentCount / PER_PAGE + 1, PER_PAGE);
    }
 }

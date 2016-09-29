@@ -1,9 +1,9 @@
 package com.worldventures.dreamtrips.modules.tripsimages.presenter;
 
-import com.octo.android.robospice.request.SpiceRequest;
 import com.worldventures.dreamtrips.modules.feed.service.NotificationFeedInteractor;
 import com.worldventures.dreamtrips.modules.feed.service.command.MarkNotificationAsReadCommand;
 import com.worldventures.dreamtrips.modules.profile.bundle.UserBundle;
+import com.worldventures.dreamtrips.modules.tripsimages.command.TripImagesCommand;
 import com.worldventures.dreamtrips.modules.tripsimages.model.IFullScreenObject;
 import com.worldventures.dreamtrips.modules.tripsimages.model.TripImagesType;
 
@@ -11,7 +11,9 @@ import java.util.ArrayList;
 
 import javax.inject.Inject;
 
-public class FixedListPhotosFullScreenPresenter extends TripImagesListPresenter<TripImagesListPresenter.View> {
+import io.techery.janet.ActionPipe;
+
+public class FixedListPhotosFullScreenPresenter extends TripImagesListPresenter<TripImagesListPresenter.View, TripImagesCommand<? extends IFullScreenObject>> {
 
    private ArrayList<IFullScreenObject> photos;
    private int notificationId;
@@ -37,13 +39,17 @@ public class FixedListPhotosFullScreenPresenter extends TripImagesListPresenter<
    }
 
    @Override
-   protected SpiceRequest<ArrayList<IFullScreenObject>> getNextPageRequest(int currentCount) {
+   protected ActionPipe<TripImagesCommand<? extends IFullScreenObject>> getLoadingPipe() {
       return null;
    }
 
    @Override
-   protected SpiceRequest<ArrayList<IFullScreenObject>> getReloadRequest() {
+   protected TripImagesCommand<? extends IFullScreenObject> getReloadCommand() {
       return null;
    }
 
+   @Override
+   protected TripImagesCommand<? extends IFullScreenObject> getLoadMoreCommand(int currentCount) {
+      return null;
+   }
 }

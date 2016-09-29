@@ -77,7 +77,7 @@ import com.worldventures.dreamtrips.modules.tripsimages.view.fragment.AccountIma
 import com.worldventures.dreamtrips.modules.tripsimages.view.fragment.CreateTripImageFragment;
 import com.worldventures.dreamtrips.modules.tripsimages.view.fragment.EditPhotoTagsFragment;
 import com.worldventures.dreamtrips.modules.tripsimages.view.fragment.FullScreenPhotoWrapperFragment;
-import com.worldventures.dreamtrips.modules.tripsimages.view.fragment.MemberImagesListFragment;
+import com.worldventures.dreamtrips.modules.tripsimages.view.fragment.MembersImagesListFragment;
 import com.worldventures.dreamtrips.modules.tripsimages.view.fragment.TripImagePagerFragment;
 import com.worldventures.dreamtrips.modules.tripsimages.view.fragment.TripImagesListFragment;
 import com.worldventures.dreamtrips.modules.tripsimages.view.fragment.TripImagesTabsFragment;
@@ -116,7 +116,7 @@ public enum Route {
    TRIP_TAB_IMAGES(TripImagesTabsFragment.class, R.string.trip_images),
    TRIP_LIST_IMAGES(TripImagesListFragment.class, R.string.trip_images),
    ACCOUNT_IMAGES(AccountImagesListFragment.class, R.string.trip_images),
-   MEMBERS_IMAGES(MemberImagesListFragment.class),
+   MEMBERS_IMAGES(MembersImagesListFragment.class),
   
    MEMBERSHIP(MembershipFragment.class),
    TRAINING_VIDEOS(TrainingVideosFragment.class),

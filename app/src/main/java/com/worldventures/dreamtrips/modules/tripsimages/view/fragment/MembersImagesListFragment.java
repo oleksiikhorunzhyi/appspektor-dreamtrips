@@ -9,12 +9,13 @@ import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.common.model.MediaAttachment;
 import com.worldventures.dreamtrips.modules.common.view.bundle.PickerBundle;
 import com.worldventures.dreamtrips.modules.feed.bundle.CreateEntityBundle;
+import com.worldventures.dreamtrips.modules.tripsimages.presenter.fullscreen.MembersImagesBasePresenter;
 import com.worldventures.dreamtrips.modules.tripsimages.presenter.fullscreen.MembersImagesPresenter;
 
 import butterknife.OnClick;
 
 @Layout(R.layout.fragment_account_images_list)
-public class MemberImagesListFragment<P extends MembersImagesPresenter> extends TripImagesListFragment<P> implements MembersImagesPresenter.View {
+public class MembersImagesListFragment<P extends MembersImagesBasePresenter> extends TripImagesListFragment<P> implements MembersImagesPresenter.View {
 
    public static final int MEDIA_PICKER_ITEMS_COUNT = 15;
 

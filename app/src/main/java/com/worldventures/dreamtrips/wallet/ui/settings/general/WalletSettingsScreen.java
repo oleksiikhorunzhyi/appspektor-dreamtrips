@@ -29,6 +29,7 @@ public class WalletSettingsScreen extends WalletFrameLayout<WalletSettingsPresen
    @InjectView(R.id.test_new_firmware_available) SwitchCompat testNewFirmwareAvailableSwitcher;
    @InjectView(R.id.test_firmware_is_compatible) SwitchCompat testFirmwareIsCompatibleSwitcher;
    @InjectView(R.id.test_firmware_is_enough_space) SwitchCompat testEnoughSpaceForFirmwareSwitcher;
+   @InjectView(R.id.test_firmware_is_fail_install) SwitchCompat testFailInstallFirmwareSwitcher;
 
    @InjectView(R.id.badgeFirmwareUpdates) BadgeView badgeFirmwareUpdates;
    @InjectView(R.id.disable_default_payment_card_label) TextView disableDefaultPaymentCardAfterLabel;
@@ -41,6 +42,7 @@ public class WalletSettingsScreen extends WalletFrameLayout<WalletSettingsPresen
    private Observable<Boolean> testNewFirmwareAvailableObservable;
    private Observable<Boolean> testFirmwareIsCompatibleObservable;
    private Observable<Boolean> testEnoughSpaceObservable;
+   private Observable<Boolean> testFailInstallationObservable;
 
    private final AutoClearSmartCardItemProvider autoClearSmartCardItemProvider = new AutoClearSmartCardItemProvider();
    private final DisableDefaultCardItemProvider disableDefaultCardItemProvider = new DisableDefaultCardItemProvider();
@@ -64,6 +66,7 @@ public class WalletSettingsScreen extends WalletFrameLayout<WalletSettingsPresen
       testNewFirmwareAvailableObservable = RxCompoundButton.checkedChanges(testNewFirmwareAvailableSwitcher);
       testFirmwareIsCompatibleObservable = RxCompoundButton.checkedChanges(testFirmwareIsCompatibleSwitcher);
       testEnoughSpaceObservable = RxCompoundButton.checkedChanges(testEnoughSpaceForFirmwareSwitcher);
+      testFailInstallationObservable = RxCompoundButton.checkedChanges(testFailInstallFirmwareSwitcher);
    }
 
    @NonNull
@@ -152,6 +155,11 @@ public class WalletSettingsScreen extends WalletFrameLayout<WalletSettingsPresen
    }
 
    @Override
+   public void testFailInstallation(boolean failInstall) {
+      testFailInstallFirmwareSwitcher.setChecked(failInstall);
+   }
+
+   @Override
    public Observable<Boolean> stealthModeStatus() {
       return stealthModeSwitcherObservable;
    }
@@ -179,6 +187,11 @@ public class WalletSettingsScreen extends WalletFrameLayout<WalletSettingsPresen
    @Override
    public Observable<Boolean> testEnoughSpaceForFirmware() {
       return testEnoughSpaceObservable;
+   }
+
+   @Override
+   public Observable<Boolean> testFailInstallation() {
+      return testFailInstallationObservable;
    }
 
    @Override

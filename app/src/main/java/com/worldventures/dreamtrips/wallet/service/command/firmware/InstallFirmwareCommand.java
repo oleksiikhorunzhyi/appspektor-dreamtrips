@@ -3,6 +3,7 @@ package com.worldventures.dreamtrips.wallet.service.command.firmware;
 
 import com.worldventures.dreamtrips.core.janet.dagger.InjectableAction;
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCard;
+import com.worldventures.dreamtrips.wallet.domain.storage.TemporaryStorage;
 import com.worldventures.dreamtrips.wallet.service.SmartCardInteractor;
 import com.worldventures.dreamtrips.wallet.service.command.ConnectSmartCardCommand;
 import com.worldventures.dreamtrips.wallet.service.command.GetActiveSmartCardCommand;
@@ -29,11 +30,11 @@ import static rx.Observable.just;
 public class InstallFirmwareCommand extends Command<Void> implements InjectableAction {
 
    private static final int MAX_RETRIES = 3;
-   private static final int RETRY_DELAY_MILLIS = 10000;
+   private static final int RETRY_DELAY_MILLIS = 2000;
 
    @Inject @Named(JANET_WALLET) Janet janet;
    @Inject SmartCardInteractor smartCardInteractor;
-
+   @Inject TemporaryStorage temporaryStorage;
    private final File file;
 
    public InstallFirmwareCommand(File file) {
@@ -51,6 +52,7 @@ public class InstallFirmwareCommand extends Command<Void> implements InjectableA
             .flatMap(it -> activeSmartCard())
             .flatMap(it -> connectCard(it.getResult()))
             .map(it -> (Void) null)
+            .retryWhen(new RetryWithDelay(MAX_RETRIES, RETRY_DELAY_MILLIS))
             .subscribe(callback::onSuccess, callback::onFail);
    }
 
@@ -60,7 +62,9 @@ public class InstallFirmwareCommand extends Command<Void> implements InjectableA
 
    private Observable<UpgradeFirmwareAction> installFirmware(byte[] it) {
       return janet.createPipe(UpgradeFirmwareAction.class)
-            .createObservableResult(new UpgradeFirmwareAction(it));
+            .createObservableResult(new UpgradeFirmwareAction(it))
+            .flatMap(action ->//todo remove it when temporary storage will be useless
+                  temporaryStorage.failInstall() ? Observable.error(new RuntimeException()) : Observable.just(action));
    }
 
    private Observable<GetActiveSmartCardCommand> activeSmartCard() {
@@ -70,7 +74,6 @@ public class InstallFirmwareCommand extends Command<Void> implements InjectableA
 
    private Observable<ConnectSmartCardCommand> connectCard(SmartCard smartCard) {
       return smartCardInteractor.connectActionPipe()
-            .createObservableResult(new ConnectSmartCardCommand(smartCard))
-            .retryWhen(new RetryWithDelay(MAX_RETRIES, RETRY_DELAY_MILLIS));
+            .createObservableResult(new ConnectSmartCardCommand(smartCard));
    }
 }

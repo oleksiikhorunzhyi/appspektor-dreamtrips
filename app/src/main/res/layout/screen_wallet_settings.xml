@@ -308,6 +308,17 @@
                      tools:ignore="HardcodedText"
                      />
 
+               <android.support.v7.widget.SwitchCompat
+                     android:id="@+id/test_firmware_is_fail_install"
+                     android:layout_width="match_parent"
+                     android:layout_height="wrap_content"
+                     android:padding="@dimen/spacing_normal"
+                     android:text="Fail installation"
+                     android:textAppearance="?android:attr/textAppearanceMedium"
+                     tools:checked="true"
+                     tools:ignore="HardcodedText"
+                     />
+
             </LinearLayout>
          </android.support.v7.widget.CardView>
          <!--END test settings section-->

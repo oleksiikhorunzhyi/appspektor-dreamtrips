@@ -56,6 +56,7 @@ public class WalletSettingsPresenter extends WalletPresenter<WalletSettingsPrese
       view.testNewFirmwareAvailable(temporaryStorage.newFirmwareIsAvailable());
       view.testFirmwareIsCompatible(temporaryStorage.firmwareIsCompatible());
       view.testEnoughSpaceForFirmware(temporaryStorage.enoughSpaceForFirmware());
+      view.testFailInstallation(temporaryStorage.failInstall());
 
       observeSmartCardChanges();
 
@@ -65,6 +66,7 @@ public class WalletSettingsPresenter extends WalletPresenter<WalletSettingsPrese
       observeFirmwareCompatibleController(view);
 
       observeEnoughSpace(view);
+      observeFailInstallation(view);
       observeConnectionController(view);
       observeFirmwareUpdates();
    }
@@ -161,6 +163,14 @@ public class WalletSettingsPresenter extends WalletPresenter<WalletSettingsPrese
             .subscribe(this::changeEnoughSpace);
    }
 
+   private void observeFailInstallation(Screen view) {
+      view.testFailInstallation()
+            .compose(bindView())
+            .skip(1)
+            .filter(compatible -> temporaryStorage.failInstall() != compatible)
+            .subscribe(this::changeFailInstallation);
+   }
+
    private void manageConnection(boolean connected) {
       if (connected) {
          smartCardInteractor.connectActionPipe()
@@ -240,6 +250,11 @@ public class WalletSettingsPresenter extends WalletPresenter<WalletSettingsPrese
       firmwareInteractor.firmwareInfoPipe().send(new FetchFirmwareInfoCommand());
    }
 
+   // for test and demo
+   private void changeFailInstallation(boolean failInstallation) {
+      temporaryStorage.failInstall(failInstallation);
+   }
+
    private void lockStatusChanged(boolean lock) {
       smartCardInteractor.lockPipe().send(new SetLockStateCommand(lock));
    }
@@ -284,6 +299,8 @@ public class WalletSettingsPresenter extends WalletPresenter<WalletSettingsPrese
 
       void testEnoughSpaceForFirmware(boolean compatible);
 
+      void testFailInstallation(boolean failInstall);
+
       Observable<Boolean> stealthModeStatus();
 
       Observable<Boolean> lockStatus();
@@ -295,6 +312,8 @@ public class WalletSettingsPresenter extends WalletPresenter<WalletSettingsPrese
       Observable<Boolean> testFirmwareIsCompatible();
 
       Observable<Boolean> testEnoughSpaceForFirmware();
+
+      Observable<Boolean> testFailInstallation();
 
       void showFirmwareVersion();
 

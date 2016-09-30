@@ -44,6 +44,7 @@ public class WalletInstallFirmwarePresenter extends WalletPresenter<WalletInstal
       getView().onStart();
       firmwareInteractor.installFirmwarePipe()
             .createObservableResult(new InstallFirmwareCommand(new File(filePath)))
+            .compose(bindViewIoToMainComposer())
             .subscribe(it -> {/*We can't use  OperationDialog, cause we don't use ActionState here*/
                openSuccessScreen();
             }, throwable -> {

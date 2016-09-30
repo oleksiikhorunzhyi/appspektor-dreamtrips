@@ -4,7 +4,6 @@ import android.support.annotation.Nullable;
 
 import com.techery.spares.adapter.HeaderItem;
 import com.worldventures.dreamtrips.wallet.domain.entity.Firmware;
-import com.worldventures.dreamtrips.wallet.domain.entity.ImmutableFirmware;
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCard;
 
 import org.immutables.value.Value;
@@ -15,10 +14,8 @@ public abstract class CardStackHeaderHolder implements HeaderItem {
    @Nullable
    public abstract SmartCard smartCard();
 
-   @Value.Default
-   public Firmware firmware() {
-      return ImmutableFirmware.builder().updateAvailable(false).build();
-   }
+   @Nullable
+   public abstract Firmware firmware();
 
    @Value.Default
    public int cardCount() { return 0;}

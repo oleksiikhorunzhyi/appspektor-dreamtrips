@@ -17,6 +17,8 @@ import com.worldventures.dreamtrips.wallet.service.FirmwareInteractor;
 import com.worldventures.dreamtrips.wallet.service.SmartCardInteractor;
 import com.worldventures.dreamtrips.wallet.service.command.CardListCommand;
 import com.worldventures.dreamtrips.wallet.service.command.CardStacksCommand;
+import com.worldventures.dreamtrips.wallet.service.command.ConnectSmartCardCommand;
+import com.worldventures.dreamtrips.wallet.service.command.GetActiveSmartCardCommand;
 import com.worldventures.dreamtrips.wallet.service.command.http.FetchFirmwareInfoCommand;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletPresenter;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.WalletScreen;
@@ -186,6 +188,16 @@ public class CardListPresenter extends WalletPresenter<CardListPresenter.Screen,
       getView().notifySmartCardChanged(cardStackHeaderHolder);
       getView().showRecordsInfo(cards);
       getView().enableAddCardButton(cardLoaded != MAX_CARD_LIMIT);
+   }
+
+   private Observable<GetActiveSmartCardCommand> activeSmartCard() {
+      return smartCardInteractor.activeSmartCardPipe()
+            .createObservableResult(new GetActiveSmartCardCommand());
+   }
+
+   private Observable<ConnectSmartCardCommand> connectCard(SmartCard smartCard) {
+      return smartCardInteractor.connectActionPipe()
+            .createObservableResult(new ConnectSmartCardCommand(smartCard));
    }
 
    public interface Screen extends WalletScreen {

@@ -27,6 +27,7 @@ public abstract class FirmwareInfo implements Serializable {
    @Nullable
    public abstract String sdkVersion();
 
+   @Value.Default
    public int fileSize() { // bytes
       return 0;
    }

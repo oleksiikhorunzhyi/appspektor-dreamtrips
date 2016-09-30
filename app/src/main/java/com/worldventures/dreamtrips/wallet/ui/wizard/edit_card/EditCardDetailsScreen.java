@@ -4,6 +4,7 @@ import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.Toolbar;
 import android.util.AttributeSet;
+import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
 
 import com.worldventures.dreamtrips.R;
@@ -16,6 +17,7 @@ import com.worldventures.dreamtrips.wallet.ui.common.base.screen.delegate.Dialog
 
 import butterknife.InjectView;
 import butterknife.OnClick;
+import butterknife.OnEditorAction;
 
 public class EditCardDetailsScreen extends WalletFrameLayout<EditCardDetailsPresenter.Screen, EditCardDetailsPresenter, EditCardDetailsPath>
       implements EditCardDetailsPresenter.Screen {
@@ -64,6 +66,15 @@ public class EditCardDetailsScreen extends WalletFrameLayout<EditCardDetailsPres
    public OperationScreen provideOperationDelegate() {
       if (dialogOperationScreen == null) dialogOperationScreen = new DialogOperationScreen(this);
       return dialogOperationScreen;
+   }
+
+   @OnEditorAction({R.id.city, R.id.state, R.id.zip})
+   boolean interceptDoneButton(int actionId) {
+      if (actionId == EditorInfo.IME_ACTION_DONE) {
+         onConfirmButtonClicked();
+         return true;
+      }
+      return false;
    }
 
    @OnClick(R.id.confirm_button)

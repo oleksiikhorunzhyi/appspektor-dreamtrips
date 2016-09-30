@@ -13,7 +13,6 @@ import com.facebook.drawee.backends.pipeline.PipelineDraweeController;
 import com.facebook.drawee.controller.BaseControllerListener;
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.facebook.imagepipeline.image.ImageInfo;
-import com.innahema.collections.query.queriables.Queryable;
 import com.techery.spares.annotations.Layout;
 import com.techery.spares.utils.ui.OrientationUtil;
 import com.techery.spares.utils.ui.SoftInputUtil;
@@ -29,7 +28,6 @@ import com.worldventures.dreamtrips.modules.tripsimages.presenter.EditPhotoTagsP
 import com.worldventures.dreamtrips.modules.tripsimages.view.util.EditPhotoTagsCallback;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import javax.inject.Inject;
 
@@ -44,11 +42,10 @@ public class EditPhotoTagsFragment extends RxBaseFragmentWithArgs<EditPhotoTagsP
    @InjectView(R.id.iv_image) SimpleDraweeView ivImage;
    @InjectView(R.id.taggable_holder) PhotoTagHolder taggableImageHolder;
 
-   PhotoTagHolderManager photoTagHolderManager;
-
    @Override
    protected EditPhotoTagsPresenter createPresenter(Bundle savedInstanceState) {
-      return new EditPhotoTagsPresenter(getArgs().getRequestId(), getArgs().getPhotoTags());
+      return new EditPhotoTagsPresenter(getArgs().getRequestId(), getArgs().getSuggestions(), getArgs().getPhotoTags(),
+            getArgs().getActiveSuggestion());
    }
 
    @Override
@@ -73,26 +70,12 @@ public class EditPhotoTagsFragment extends RxBaseFragmentWithArgs<EditPhotoTagsP
             ivImage.setController(createTaggableDraweeController());
          }
       });
-      //
-      photoTagHolderManager = new PhotoTagHolderManager(taggableImageHolder, getPresenter().getAccount(), getPresenter()
-            .getAccount());
-      photoTagHolderManager.setTagCreatedListener(photoTag -> getPresenter().onTagAdded(photoTag));
-      photoTagHolderManager.setTagDeletedListener(photoTag -> getPresenter().onTagDeleted(photoTag));
-      photoTagHolderManager.creationTagEnabled(true);
-      photoTagHolderManager.setFriendRequestProxy(getPresenter());
    }
 
    @Override
    public void onViewCreated(View view, Bundle savedInstanceState) {
       super.onViewCreated(view, savedInstanceState);
       OrientationUtil.lockOrientation(getActivity());
-   }
-
-   protected void addSuggestions() {
-      List<PhotoTag> photoTags = Queryable.from(getArgs().getSuggestions())
-            .filter(element -> !PhotoTag.isIntersectedWithPhotoTags(getArgs().getPhotoTags(), element))
-            .toList();
-      photoTagHolderManager.addSuggestionTagView(photoTags, (suggestion) -> photoTagHolderManager.addCreationTagBasedOnSuggestion(suggestion));
    }
 
    protected boolean onToolBarMenuItemClicked(MenuItem item) {
@@ -124,16 +107,18 @@ public class EditPhotoTagsFragment extends RxBaseFragmentWithArgs<EditPhotoTagsP
       draweeController.addControllerListener(new BaseControllerListener<ImageInfo>() {
          @Override
          public void onFinalImageSet(String id, ImageInfo imageInfo, Animatable animatable) {
-            ivImage.post(() -> {
-               photoTagHolderManager.show(ivImage);
-               addSuggestions();
-               photoTagHolderManager.addExistsTagViews(getArgs().getPhotoTags());
-               if (getArgs().getActiveSuggestion() != null) {
-                  photoTagHolderManager.addCreationTagBasedOnSuggestion(getArgs().getActiveSuggestion());
-               }
-            });
+            ivImage.post(getPresenter()::onImageReady);
          }
       });
       return draweeController;
+   }
+
+   public void showImage(PhotoTagHolderManager manager) {
+      manager.show(ivImage);
+   }
+
+   @Override
+   public PhotoTagHolder getPhotoTagHolder() {
+      return taggableImageHolder;
    }
 }

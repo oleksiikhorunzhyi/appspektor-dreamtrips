@@ -8,7 +8,6 @@ import android.widget.TextView;
 
 import com.facebook.drawee.backends.pipeline.PipelineDraweeController;
 import com.facebook.drawee.view.SimpleDraweeView;
-import com.innahema.collections.query.queriables.Queryable;
 import com.techery.spares.annotations.Layout;
 import com.techery.spares.module.Injector;
 import com.techery.spares.module.qualifier.ForActivity;
@@ -25,7 +24,10 @@ import com.worldventures.dreamtrips.modules.common.view.util.TextWatcherAdapter;
 import com.worldventures.dreamtrips.modules.feed.model.PhotoCreationItem;
 import com.worldventures.dreamtrips.modules.feed.view.cell.delegate.PhotoPostCreationDelegate;
 
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import javax.inject.Inject;
 
@@ -148,17 +150,29 @@ public class PhotoPostCreationCell extends AbstractDelegateCell<PhotoCreationIte
          getModelObject().getCachedAddedPhotoTags().add(photoTag);
          invalidateTags();
       });
+
       photoTagHolderManager.setTagDeletedListener(photoTag -> {
          boolean removed = getModelObject().getCachedAddedPhotoTags().remove(photoTag);
          if (!removed) getModelObject().getCachedRemovedPhotoTags().add(photoTag);
+         addTagSuggestions(photoTagHolderManager);
          invalidateTags();
       });
       photoTagHolderManager.show(attachedPhoto);
-      List<PhotoTag> photoTags = Queryable.from(getModelObject().getSuggestions())
-            .filter((p) -> !PhotoTag.isIntersectedWithPhotoTags(getModelObject().getCombinedTags(), p))
-            .toList();
-      photoTagHolderManager.addSuggestionTagView(photoTags, (tag) -> cellDelegate.onSuggestionClicked(getModelObject(), tag));
+
+      addTagSuggestions(photoTagHolderManager);
       photoTagHolderManager.addExistsTagViews(getModelObject().getCombinedTags());
+   }
+
+   private void addTagSuggestions(PhotoTagHolderManager photoTagHolderManager) {
+      Set<PhotoTag> currentTags = new HashSet<>();
+      currentTags.addAll(getModelObject().getCombinedTags());
+      currentTags.addAll(getModelObject().getCachedAddedPhotoTags());
+      currentTags.removeAll(getModelObject().getCachedRemovedPhotoTags());
+      List<PhotoTag> notIntersectingSuggestions =
+            PhotoTag.findSuggestionsNotIntersectingWithTags(getModelObject().getSuggestions(),
+                  new ArrayList<>(currentTags));
+      photoTagHolderManager.addSuggestionTagViews(notIntersectingSuggestions,
+            tag -> cellDelegate.onSuggestionClicked(getModelObject(), tag));
    }
 
    private void showProgress() {

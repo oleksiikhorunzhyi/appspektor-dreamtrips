@@ -81,7 +81,7 @@ public class WalletNewFirmwareScreen
    @Override
    public void availableFirmwareInfo(FirmwareInfo firmwareInfo) {
       availableVersion.setText(getResources().getString(R.string.wallet_settings_version, firmwareInfo.versionName()));
-      String size = FileUtils.byteCountToDisplaySize(firmwareInfo.byteSize());
+      String size = FileUtils.byteCountToDisplaySize(firmwareInfo.fileSize());
       availableVersionSize.setText(getResources().getString(R.string.wallet_settings_update_size, size)); // convert to KB
       newVersionDescription.setText(firmwareInfo.releaseNotes());
 

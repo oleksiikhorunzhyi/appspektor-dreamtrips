@@ -23,7 +23,7 @@ public class CardStackHeaderCell extends AbstractDelegateCell<CardStackHeaderHol
    @Override
    protected void syncUIStateWithModel() {
       if (getModelObject().smartCard() != null) {
-         smartCardWidget.bindCard(getModelObject().smartCard(), getModelObject().firmwareInfo());
+         smartCardWidget.bindCard(getModelObject().smartCard(), getModelObject().firmware().updateAvailable());
       }
       smartCardWidget.bindCount(getModelObject().cardCount());
       smartCardWidget.setOnSettingsClickListener(v -> cellDelegate.onSettingsChosen());

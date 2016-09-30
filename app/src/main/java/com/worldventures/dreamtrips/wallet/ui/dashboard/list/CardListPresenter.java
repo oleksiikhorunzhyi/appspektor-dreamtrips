@@ -10,6 +10,7 @@ import com.worldventures.dreamtrips.wallet.analytics.AddPaymentCardAction;
 import com.worldventures.dreamtrips.wallet.analytics.WalletAnalyticsCommand;
 import com.worldventures.dreamtrips.wallet.analytics.WalletHomeAction;
 import com.worldventures.dreamtrips.wallet.domain.entity.FirmwareInfo;
+import com.worldventures.dreamtrips.wallet.domain.entity.Firmware;
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCard;
 import com.worldventures.dreamtrips.wallet.domain.entity.card.BankCard;
 import com.worldventures.dreamtrips.wallet.service.FirmwareInteractor;
@@ -52,7 +53,7 @@ public class CardListPresenter extends WalletPresenter<CardListPresenter.Screen,
    @Inject NavigationDrawerPresenter navigationDrawerPresenter;
 
    private final CardListStackConverter cardListStackConverter;
-   private FirmwareInfo firmwareInfo;
+   private Firmware firmware;
 
    private int cardLoaded = 0;
 
@@ -66,10 +67,9 @@ public class CardListPresenter extends WalletPresenter<CardListPresenter.Screen,
    // BEGIN view state
    @Override
    public void applyViewState() {
-      this.firmwareInfo = state.firmwareInfo;
+      this.firmware = state.firmware;
       this.cardStackHeaderHolder = ImmutableCardStackHeaderHolder.builder()
-            .from(cardStackHeaderHolder).firmwareInfo(firmwareInfo).build();
-
+            .from(cardStackHeaderHolder).firmware(firmware).build();
    }
 
    @Override
@@ -79,7 +79,7 @@ public class CardListPresenter extends WalletPresenter<CardListPresenter.Screen,
 
    @Override
    public void onSaveInstanceState(Bundle bundle) {
-      state.firmwareInfo = firmwareInfo;
+      state.firmware = firmware;
       super.onSaveInstanceState(bundle);
    }
    // END view state
@@ -105,15 +105,14 @@ public class CardListPresenter extends WalletPresenter<CardListPresenter.Screen,
             .compose(bindViewIoToMainComposer())
             .map(it -> it.getResult())
             .subscribe(it -> {
-               this.firmwareInfo = it;
-               this.cardStackHeaderHolder = ImmutableCardStackHeaderHolder.builder()
-                     .from(cardStackHeaderHolder)
-                     .firmwareInfo(it)
-                     .build();
-               getView().notifySmartCardChanged(cardStackHeaderHolder);
-               // TODO: 9/21/16 need contract between client and server
-               if (it.byteSize() > 0) {
+               this.firmware = it;
+               if (it.updateAvailable()) {
                   getView().showFirmwareUpdateBtn();
+                  this.cardStackHeaderHolder = ImmutableCardStackHeaderHolder.builder()
+                        .from(cardStackHeaderHolder)
+                        .firmware(it)
+                        .build();
+                  getView().notifySmartCardChanged(cardStackHeaderHolder);
                } else {
                   getView().hideFirmwareUpdateBtn();
                }

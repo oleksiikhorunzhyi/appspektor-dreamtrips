@@ -43,7 +43,7 @@ public class WalletDownloadFirmwarePresenter extends WalletPresenter<WalletDownl
    @Override
    public void onAttachedToWindow() {
       super.onAttachedToWindow();
-      action = new DownloadFileCommand(new File(firmwareFilePath), firmwareInfo.downloadUrl());
+      action = new DownloadFileCommand(new File(firmwareFilePath), firmwareInfo.url());
       fileInteractor.getDownloadFileCommandPipe()
             .createObservable(action)
             .flatMap(it -> it.status == ActionState.Status.START ? just(it) : just(it).delay(4, TimeUnit.SECONDS))//todo remove it

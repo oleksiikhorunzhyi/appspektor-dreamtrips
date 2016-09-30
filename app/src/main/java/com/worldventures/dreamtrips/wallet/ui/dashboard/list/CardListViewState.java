@@ -2,17 +2,17 @@ package com.worldventures.dreamtrips.wallet.ui.dashboard.list;
 
 import android.os.Parcel;
 
-import com.worldventures.dreamtrips.wallet.domain.entity.FirmwareInfo;
+import com.worldventures.dreamtrips.wallet.domain.entity.Firmware;
 import com.worldventures.dreamtrips.wallet.ui.common.viewstate.WalletViewState;
 
-public class CardListViewState extends WalletViewState<CardListPresenter.Screen> {
+class CardListViewState extends WalletViewState<CardListPresenter.Screen> {
 
-   public FirmwareInfo firmwareInfo;
+   public Firmware firmware;
 
-   public CardListViewState() {}
+   CardListViewState() {}
 
-   protected CardListViewState(Parcel in) {
-      this.firmwareInfo = (FirmwareInfo) in.readSerializable();
+   private CardListViewState(Parcel in) {
+      this.firmware = (Firmware) in.readSerializable();
    }
 
    @Override
@@ -20,7 +20,7 @@ public class CardListViewState extends WalletViewState<CardListPresenter.Screen>
 
    @Override
    public void writeToParcel(Parcel dest, int flags) {
-      dest.writeSerializable(this.firmwareInfo);
+      dest.writeSerializable(this.firmware);
    }
 
    public static final Creator<CardListViewState> CREATOR = new Creator<CardListViewState>() {

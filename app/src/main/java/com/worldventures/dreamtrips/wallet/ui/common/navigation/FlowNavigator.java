@@ -40,6 +40,16 @@ public class FlowNavigator implements Navigator {
    }
 
    @Override
+   public void setHistory(History history) {
+      setHistory(history, Flow.Direction.FORWARD);
+   }
+
+   @Override
+   public void setHistory(History history, Flow.Direction direction) {
+      flow.setHistory(history, direction);
+   }
+
+   @Override
    public void goBack() {
       if (!flow.goBack()) {
          // close keyboard or close activity

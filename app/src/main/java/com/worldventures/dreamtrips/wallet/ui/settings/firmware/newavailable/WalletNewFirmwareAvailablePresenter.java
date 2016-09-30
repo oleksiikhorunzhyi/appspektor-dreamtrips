@@ -85,7 +85,7 @@ public class WalletNewFirmwareAvailablePresenter extends WalletPresenter<WalletN
    }
 
    void downloadFile(String filePath) {
-      navigator.go(new WalletDownloadFirmwarePath(firmwareInfo,filePath));
+      navigator.go(new WalletDownloadFirmwarePath(firmwareInfo, filePath));
    }
 
    private boolean checkStorageAvailability(File file) {

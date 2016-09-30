@@ -9,13 +9,11 @@ import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
 import android.support.v7.widget.Toolbar;
 import android.util.AttributeSet;
-import android.view.View;
-import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
 
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletFrameLayout;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.OperationScreen;
+import com.worldventures.dreamtrips.wallet.ui.widget.WalletProgressWidget;
 
 import butterknife.InjectView;
 import butterknife.OnClick;
@@ -24,7 +22,7 @@ import rx.functions.Action1;
 public class WalletDownloadFirmwareScreen extends WalletFrameLayout<WalletDownloadFirmwarePresenter.Screen, WalletDownloadFirmwarePresenter, WalletDownloadFirmwarePath>
       implements WalletDownloadFirmwarePresenter.Screen, OperationScreen<Void> {
 
-   @InjectView(R.id.firmware_download_progress) View downloadProgress;
+   @InjectView(R.id.firmware_download_progress) WalletProgressWidget downloadProgress;
    @InjectView(R.id.toolbar) Toolbar toolbar;
 
    public WalletDownloadFirmwareScreen(Context context) {
@@ -60,9 +58,7 @@ public class WalletDownloadFirmwareScreen extends WalletFrameLayout<WalletDownlo
 
    @Override
    public void showProgress() {
-      Animation animation = AnimationUtils.loadAnimation(getContext(), R.anim.wallet_progress_anim);
-      animation.setDuration(getResources().getInteger(R.integer.wallet_custom_loafing_animation_duration));
-      downloadProgress.startAnimation(animation);
+      downloadProgress.start();
    }
 
    @Override

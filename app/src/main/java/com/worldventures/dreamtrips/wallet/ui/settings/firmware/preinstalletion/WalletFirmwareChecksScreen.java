@@ -34,7 +34,7 @@ public class WalletFirmwareChecksScreen extends WalletFrameLayout<WalletFirmware
    @NonNull
    @Override
    public WalletFirmwareChecksPresenter createPresenter() {
-      return new WalletFirmwareChecksPresenter(getContext(), getInjector());
+      return new WalletFirmwareChecksPresenter(getContext(), getInjector(), getPath().firmwareFilePath());
    }
 
    @Override

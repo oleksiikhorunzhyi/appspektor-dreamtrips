@@ -8,8 +8,18 @@ import com.worldventures.dreamtrips.core.flow.util.Layout;
 @Layout(R.layout.screen_wallet_preinstallation)
 public class WalletFirmwareChecksPath extends StyledPath {
 
+   private String firmwareFilePath;
+
+   public WalletFirmwareChecksPath(String firmwareFilePath) {
+      this.firmwareFilePath = firmwareFilePath;
+   }
+
    @Override
    public MasterDetailPath getMaster() {
       return this;
+   }
+
+   public String firmwareFilePath() {
+      return firmwareFilePath;
    }
 }

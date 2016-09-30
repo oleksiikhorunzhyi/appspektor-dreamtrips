@@ -6,6 +6,9 @@ import android.os.Parcelable;
 import com.techery.spares.module.Injector;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.janet.composer.ActionPipeCacheWiper;
+import com.worldventures.dreamtrips.core.utils.tracksystem.AnalyticsInteractor;
+import com.worldventures.dreamtrips.wallet.analytics.PinWasSetAction;
+import com.worldventures.dreamtrips.wallet.analytics.WalletAnalyticsCommand;
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCard;
 import com.worldventures.dreamtrips.wallet.service.WizardInteractor;
 import com.worldventures.dreamtrips.wallet.service.command.ActivateSmartCardCommand;
@@ -20,6 +23,7 @@ import javax.inject.Inject;
 public class WalletPinIsSetPresenter extends WalletPresenter<WalletPinIsSetPresenter.Screen, Parcelable> {
 
    @Inject WizardInteractor wizardInteractor;
+   @Inject AnalyticsInteractor analyticsInteractor;
    @Inject Navigator navigator;
 
    private final SmartCard smartCard;
@@ -51,6 +55,8 @@ public class WalletPinIsSetPresenter extends WalletPresenter<WalletPinIsSetPrese
    }
 
    private void navigateToDashboardScreen() {
+      analyticsInteractor.walletAnalyticsCommandPipe()
+            .send(new WalletAnalyticsCommand(new PinWasSetAction(smartCard.cardName())));
       navigator.single(new CardListPath());
    }
 

@@ -9,11 +9,17 @@ import com.techery.spares.module.Injector;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.janet.composer.ActionPipeCacheWiper;
 import com.worldventures.dreamtrips.core.utils.LocaleHelper;
+import com.worldventures.dreamtrips.core.utils.tracksystem.AnalyticsInteractor;
+import com.worldventures.dreamtrips.wallet.analytics.AddCardDetailsAction;
+import com.worldventures.dreamtrips.wallet.analytics.CardDetailsOptionsAction;
+import com.worldventures.dreamtrips.wallet.analytics.SetDefaultCardAction;
+import com.worldventures.dreamtrips.wallet.analytics.WalletAnalyticsCommand;
 import com.worldventures.dreamtrips.wallet.domain.entity.AddressInfo;
 import com.worldventures.dreamtrips.wallet.domain.entity.AddressInfoWithLocale;
 import com.worldventures.dreamtrips.wallet.domain.entity.ImmutableAddressInfoWithLocale;
 import com.worldventures.dreamtrips.wallet.domain.entity.ImmutableRecordIssuerInfo;
 import com.worldventures.dreamtrips.wallet.domain.entity.RecordIssuerInfo;
+import com.worldventures.dreamtrips.wallet.domain.entity.SmartCard;
 import com.worldventures.dreamtrips.wallet.domain.entity.card.BankCard;
 import com.worldventures.dreamtrips.wallet.domain.entity.card.ImmutableBankCard;
 import com.worldventures.dreamtrips.wallet.service.SmartCardInteractor;
@@ -45,6 +51,7 @@ public class AddCardDetailsPresenter extends WalletPresenter<AddCardDetailsPrese
    @Inject LocaleHelper localeHelper;
    @Inject BankCardHelper bankCardHelper;
    @Inject SmartCardInteractor smartCardInteractor;
+   @Inject AnalyticsInteractor analyticsInteractor;
    @Inject SmartCardInteractorHelper smartCardInteractorHelper;
 
    private final BankCard bankCard;
@@ -52,25 +59,35 @@ public class AddCardDetailsPresenter extends WalletPresenter<AddCardDetailsPrese
 
    public AddCardDetailsPresenter(Context context, Injector injector, BankCard bankCard) {
       super(context, injector);
-
       this.bankCard = bankCard;
    }
 
    @Override
    public void attachView(Screen view) {
       super.attachView(view);
-
       getView().cardBankInfo(bankCardHelper, bankCard);
    }
 
    @Override
    public void onAttachedToWindow() {
       super.onAttachedToWindow();
+      trackScreen();
       connectToDefaultCardPipe();
       connectToRecordIssuerInfoPipe();
       connectToDefaultAddressPipe();
       connectToSaveCardDetailsPipe();
       loadDataFromDevice();
+   }
+
+   private void trackScreen() {
+      smartCardInteractor.smartCardModifierPipe()
+            .observeSuccessWithReplay()
+            .take(1)
+            .subscribe(command -> {
+               analyticsInteractor.walletAnalyticsCommandPipe()
+                     .send(new WalletAnalyticsCommand(AddCardDetailsAction.forBankCard(bankCard,
+                           command.getResult().connectionStatus() == SmartCard.ConnectionStatus.CONNECTED)));
+            });
    }
 
    private void connectToDefaultCardPipe() {
@@ -131,8 +148,7 @@ public class AddCardDetailsPresenter extends WalletPresenter<AddCardDetailsPrese
             .compose(bindViewIoToMainComposer())
             .compose(new ActionPipeCacheWiper<>(smartCardInteractor.saveCardDetailsDataPipe()))
             .subscribe(OperationSubscriberWrapper.<SaveCardDetailsDataCommand>forView(getView().provideOperationDelegate())
-                  .onSuccess(saveCardDetailsDataCommand ->
-                        navigator.single(new CardListPath(), Direction.REPLACE))
+                  .onSuccess(this::onCardAdd)
                   .onFail(throwable -> {
                      Context context = getContext();
                      String msg = throwable.getCause() instanceof FormatException ? context.getString(R.string.wallet_add_card_details_error_message) : context
@@ -141,6 +157,22 @@ public class AddCardDetailsPresenter extends WalletPresenter<AddCardDetailsPrese
                      return new OperationSubscriberWrapper.MessageActionHolder<>(msg, null);
                   })
                   .wrap());
+   }
+
+   private void onCardAdd(SaveCardDetailsDataCommand command) {
+      if (command.setAsDefaultCard()) trackSetAsDefault(command.getResult());
+      trackAddedCard(bankCard, command.setAsDefaultCard());
+      navigator.single(new CardListPath(), Direction.REPLACE);
+   }
+
+   private void trackSetAsDefault(BankCard bankCard) {
+      analyticsInteractor.walletAnalyticsCommandPipe()
+            .send(new WalletAnalyticsCommand(SetDefaultCardAction.forBankCard(bankCard)));
+   }
+
+   private void trackAddedCard(BankCard bankCard, boolean setAsDefault) {
+      analyticsInteractor.walletAnalyticsCommandPipe()
+            .send(new WalletAnalyticsCommand(CardDetailsOptionsAction.forBankCard(bankCard, setAsDefault)));
    }
 
    private void loadDataFromDevice() {

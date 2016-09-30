@@ -5,6 +5,9 @@ import android.os.Parcelable;
 
 import com.techery.spares.module.Injector;
 import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.core.utils.tracksystem.AnalyticsInteractor;
+import com.worldventures.dreamtrips.wallet.analytics.SetPinAction;
+import com.worldventures.dreamtrips.wallet.analytics.WalletAnalyticsCommand;
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCard;
 import com.worldventures.dreamtrips.wallet.service.WizardInteractor;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletPresenter;
@@ -28,6 +31,7 @@ public class WizardPinSetupPresenter extends WalletPresenter<WizardPinSetupPrese
 
    @Inject Navigator navigator;
    @Inject WizardInteractor wizardInteractor;
+   @Inject AnalyticsInteractor analyticsInteractor;
 
    public WizardPinSetupPresenter(Context context, Injector injector, SmartCard smartCard, WizardPinSetupPath.Action mode) {
       super(context, injector);
@@ -37,6 +41,13 @@ public class WizardPinSetupPresenter extends WalletPresenter<WizardPinSetupPrese
 
    public void goToBack() {
       navigator.goBack();
+   }
+
+   @Override
+   public void onAttachedToWindow() {
+      super.onAttachedToWindow();
+      analyticsInteractor.walletAnalyticsCommandPipe()
+            .send(new WalletAnalyticsCommand(new SetPinAction(smartCard.cardName())));
    }
 
    @Override

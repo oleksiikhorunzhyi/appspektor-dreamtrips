@@ -4,12 +4,17 @@ import android.content.Context;
 import android.os.Bundle;
 
 import com.techery.spares.module.Injector;
+import com.worldventures.dreamtrips.core.utils.tracksystem.AnalyticsInteractor;
 import com.worldventures.dreamtrips.modules.navdrawer.NavigationDrawerPresenter;
+import com.worldventures.dreamtrips.wallet.analytics.AddPaymentCardAction;
+import com.worldventures.dreamtrips.wallet.analytics.WalletAnalyticsCommand;
+import com.worldventures.dreamtrips.wallet.analytics.WalletHomeAction;
 import com.worldventures.dreamtrips.wallet.domain.entity.FirmwareInfo;
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCard;
 import com.worldventures.dreamtrips.wallet.domain.entity.card.BankCard;
 import com.worldventures.dreamtrips.wallet.service.FirmwareInteractor;
 import com.worldventures.dreamtrips.wallet.service.SmartCardInteractor;
+import com.worldventures.dreamtrips.wallet.service.command.CardListCommand;
 import com.worldventures.dreamtrips.wallet.service.command.CardStacksCommand;
 import com.worldventures.dreamtrips.wallet.service.command.http.FetchFirmwareInfoCommand;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletPresenter;
@@ -43,6 +48,7 @@ public class CardListPresenter extends WalletPresenter<CardListPresenter.Screen,
    @Inject Navigator navigator;
    @Inject SmartCardInteractor smartCardInteractor;
    @Inject FirmwareInteractor firmwareInteractor;
+   @Inject AnalyticsInteractor analyticsInteractor;
    @Inject NavigationDrawerPresenter navigationDrawerPresenter;
 
    private final CardListStackConverter cardListStackConverter;
@@ -87,6 +93,8 @@ public class CardListPresenter extends WalletPresenter<CardListPresenter.Screen,
             .createObservable(CardStacksCommand.get(false)), smartCardInteractor.cardStacksPipe()
             .createObservable(CardStacksCommand.get(true))).debounce(100, TimeUnit.MILLISECONDS).subscribe();
 
+      trackScreen();
+
       smartCardInteractor.smartCardModifierPipe()
             .observeSuccessWithReplay()
             .compose(bindViewIoToMainComposer())
@@ -113,6 +121,15 @@ public class CardListPresenter extends WalletPresenter<CardListPresenter.Screen,
             });
    }
 
+   private void trackScreen() {
+      smartCardInteractor.cardsListPipe()
+            .createObservableResult(CardListCommand.get(false))
+            .take(1)
+            .subscribe(cardStacksCommand ->
+                  analyticsInteractor.walletAnalyticsCommandPipe()
+                        .send(new WalletAnalyticsCommand(new WalletHomeAction(cardStacksCommand.getResult().size()))));
+   }
+
    private void setSmartCard(SmartCard smartCard) {
       this.cardStackHeaderHolder = ImmutableCardStackHeaderHolder.builder()
             .from(cardStackHeaderHolder)
@@ -136,9 +153,14 @@ public class CardListPresenter extends WalletPresenter<CardListPresenter.Screen,
    public void addCardRequired() {
       if (cardLoaded < MAX_CARD_LIMIT) {
          navigator.go(new WizardChargingPath());
+         trackAddCard();
       } else {
          getView().showAddCardErrorDialog();
       }
+   }
+
+   private void trackAddCard() {
+      analyticsInteractor.walletAnalyticsCommandPipe().send(new WalletAnalyticsCommand(new AddPaymentCardAction()));
    }
 
    void firmwareAvailable() {

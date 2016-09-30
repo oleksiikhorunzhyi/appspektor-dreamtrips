@@ -6,6 +6,10 @@ import android.os.Parcelable;
 import com.techery.spares.module.Injector;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.utils.LocaleHelper;
+import com.worldventures.dreamtrips.core.utils.tracksystem.AnalyticsInteractor;
+import com.worldventures.dreamtrips.wallet.analytics.BillingAddressSavedAction;
+import com.worldventures.dreamtrips.wallet.analytics.EditBillingAddressAction;
+import com.worldventures.dreamtrips.wallet.analytics.PaycardAnalyticsCommand;
 import com.worldventures.dreamtrips.wallet.domain.entity.AddressInfo;
 import com.worldventures.dreamtrips.wallet.domain.entity.AddressInfoWithLocale;
 import com.worldventures.dreamtrips.wallet.domain.entity.ImmutableAddressInfoWithLocale;
@@ -28,6 +32,7 @@ public class EditCardDetailsPresenter extends WalletPresenter<EditCardDetailsPre
    @Inject Navigator navigator;
    @Inject LocaleHelper localeHelper;
    @Inject SmartCardInteractor smartCardInteractor;
+   @Inject AnalyticsInteractor analyticsInteractor;
 
    private final BankCard bankCard;
 
@@ -39,6 +44,7 @@ public class EditCardDetailsPresenter extends WalletPresenter<EditCardDetailsPre
    @Override
    public void onAttachedToWindow() {
       super.onAttachedToWindow();
+      trackScreen();
       connectToUpdateCardDetailsPipe();
       getView().address(ImmutableAddressInfoWithLocale.builder()
             .addressInfo(bankCard.addressInfo())
@@ -46,12 +52,17 @@ public class EditCardDetailsPresenter extends WalletPresenter<EditCardDetailsPre
             .build());
    }
 
+   private void trackScreen() {
+      analyticsInteractor.paycardAnalyticsCommandPipe()
+            .send(new PaycardAnalyticsCommand(new EditBillingAddressAction(), bankCard));
+   }
+
    private void connectToUpdateCardDetailsPipe() {
       smartCardInteractor.updatePipe()
             .observe()
             .compose(bindViewIoToMainComposer())
             .subscribe(OperationSubscriberWrapper.<UpdateCardDetailsDataCommand>forView(getView().provideOperationDelegate())
-                  .onSuccess(updateCardDetailsDataCommand -> navigator.single(new CardListPath(), Flow.Direction.REPLACE))
+                  .onSuccess(updateCardDetailsDataCommand -> addressChanged())
                   .onFail(throwable -> {
                      String msg = throwable.getCause() instanceof FormatException
                            ? getContext().getString(R.string.wallet_add_card_details_error_message)
@@ -59,6 +70,12 @@ public class EditCardDetailsPresenter extends WalletPresenter<EditCardDetailsPre
 
                      return new OperationSubscriberWrapper.MessageActionHolder<>(msg, null);
                   }).wrap());
+   }
+
+   private void addressChanged() {
+      navigator.single(new CardListPath(), Flow.Direction.REPLACE);
+      analyticsInteractor.paycardAnalyticsCommandPipe()
+            .send(new PaycardAnalyticsCommand(new BillingAddressSavedAction(), bankCard));
    }
 
    void onCardAddressConfirmed(AddressInfo addressInfo) {

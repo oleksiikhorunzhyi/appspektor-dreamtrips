@@ -122,6 +122,10 @@ public final class SmartCardInteractor {
       connect();
    }
 
+   public ActionPipe<CardListCommand> cardsListPipe() {
+      return cardsListPipe;
+   }
+
    public ReadActionPipe<SmartCardModifier> smartCardModifierPipe() {
       return smartCardModifierPipe;
    }

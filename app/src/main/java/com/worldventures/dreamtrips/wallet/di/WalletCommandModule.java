@@ -1,5 +1,7 @@
 package com.worldventures.dreamtrips.wallet.di;
 
+import com.worldventures.dreamtrips.wallet.analytics.PaycardAnalyticsCommand;
+import com.worldventures.dreamtrips.wallet.analytics.WalletAnalyticsCommand;
 import com.worldventures.dreamtrips.wallet.service.command.ActivateSmartCardCommand;
 import com.worldventures.dreamtrips.wallet.service.command.AttachCardCommand;
 import com.worldventures.dreamtrips.wallet.service.command.CardCountCommand;
@@ -71,6 +73,8 @@ import dagger.Module;
             FetchFirmwareInfoCommand.class,
             PreInstallationCheckCommand.class,
             SetAutoClearSmartCardDelayCommand.class,
+            WalletAnalyticsCommand.class,
+            PaycardAnalyticsCommand.class,
             SetDisableDefaultCardDelayCommand.class,
             RemoveSmartCardDataCommand.class,
             ResetSmartCardCommand.class

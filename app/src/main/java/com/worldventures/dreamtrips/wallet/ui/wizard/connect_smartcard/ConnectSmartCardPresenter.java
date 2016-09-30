@@ -59,13 +59,17 @@ public class ConnectSmartCardPresenter extends WalletPresenter<ConnectSmartCardP
             .compose(bindViewIoToMainComposer())
             .compose(new ActionPipeCacheWiper<>(wizardInteractor.createAndConnectActionPipe()))
             .subscribe(OperationSubscriberWrapper.<CreateAndConnectToCardCommand>forView(getView().provideOperationDelegate())
-                  .onSuccess(command -> navigator.withoutLast(new WizardWelcomePath(command.getSmartCardId())))
+                  .onSuccess(command -> smartCardCreated(command.getSmartCardId()))
                   .onFail(throwable -> new OperationSubscriberWrapper.MessageActionHolder<>(getContext().getString(R.string.wallet_wizard_scid_validation_error),
                         command -> {
                            navigator.goBack();
                            Timber.e("Could not connect to device");
                         })).wrap());
       wizardInteractor.associateCardUserCommandPipe().send(new AssociateCardUserCommand(barcode));
+   }
+
+   private void smartCardCreated(String smartCardId) {
+      navigator.withoutLast(new WizardWelcomePath(smartCardId));
    }
 
    interface Screen extends WalletScreen {

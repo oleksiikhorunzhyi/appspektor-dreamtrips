@@ -16,7 +16,7 @@ import io.techery.janet.command.annotations.CommandAction;
 import rx.Observable;
 
 @CommandAction
-public class SaveCardDetailsDataCommand extends Command<Void> implements InjectableAction {
+public class SaveCardDetailsDataCommand extends Command<BankCard> implements InjectableAction {
 
    @Inject SmartCardInteractor smartCardInteractor;
 
@@ -49,7 +49,7 @@ public class SaveCardDetailsDataCommand extends Command<Void> implements Injecta
    }
 
    @Override
-   protected void run(CommandCallback<Void> callback) throws Throwable {
+   protected void run(CommandCallback<BankCard> callback) throws Throwable {
       checkCardData();
 
       Observable.just(setAsDefaultAddress && !useDefaultAddress)
@@ -57,7 +57,11 @@ public class SaveCardDetailsDataCommand extends Command<Void> implements Injecta
             .flatMap(saveDefaultAddressCommand -> fetchCardWithAddressObservable())
             .flatMap(cardWithAddress -> smartCardInteractor.addRecordPipe()
                   .createObservableResult(new AttachCardCommand(cardWithAddress, setAsDefaultCard)))
-            .subscribe(attachCardCommand -> callback.onSuccess(null), callback::onFail);
+            .subscribe(attachCardCommand -> callback.onSuccess(attachCardCommand.bankCard()), callback::onFail);
+   }
+
+   public boolean setAsDefaultCard() {
+      return setAsDefaultCard;
    }
 
    private Observable<SaveDefaultAddressCommand> saveDefaultAddressObservable(boolean saveDefaultAddress) {

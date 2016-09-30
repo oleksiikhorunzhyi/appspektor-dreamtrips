@@ -13,7 +13,12 @@ import com.techery.spares.session.SessionHolder;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.janet.composer.ActionPipeCacheWiper;
 import com.worldventures.dreamtrips.core.session.UserSession;
+import com.worldventures.dreamtrips.core.utils.tracksystem.AnalyticsInteractor;
 import com.worldventures.dreamtrips.modules.common.model.User;
+import com.worldventures.dreamtrips.wallet.analytics.PhotoWasSetAction;
+import com.worldventures.dreamtrips.wallet.analytics.SetupUserAction;
+import com.worldventures.dreamtrips.wallet.analytics.WalletAnalyticsCommand;
+import com.worldventures.dreamtrips.wallet.domain.entity.SmartCard;
 import com.worldventures.dreamtrips.wallet.service.SmartCardAvatarInteractor;
 import com.worldventures.dreamtrips.wallet.service.WizardInteractor;
 import com.worldventures.dreamtrips.wallet.service.command.CompressImageForSmartCardCommand;
@@ -41,6 +46,7 @@ public class WizardEditProfilePresenter extends WalletPresenter<WizardEditProfil
    @Inject Navigator navigator;
    @Inject SmartCardAvatarInteractor smartCardAvatarInteractor;
    @Inject WizardInteractor wizardInteractor;
+   @Inject AnalyticsInteractor analyticsInteractor;
    @Inject SessionHolder<UserSession> appSessionHolder;
 
    @Nullable private File preparedPhotoFile;
@@ -50,6 +56,12 @@ public class WizardEditProfilePresenter extends WalletPresenter<WizardEditProfil
    public WizardEditProfilePresenter(Context context, Injector injector, String smartCardId) {
       super(context, injector);
       this.smartCardId = smartCardId;
+   }
+
+   @Override
+   public void onAttachedToWindow() {
+      super.onAttachedToWindow();
+      analyticsInteractor.walletAnalyticsCommandPipe().send(new WalletAnalyticsCommand(new SetupUserAction()));
    }
 
    @Override
@@ -92,9 +104,15 @@ public class WizardEditProfilePresenter extends WalletPresenter<WizardEditProfil
             .compose(bindViewIoToMainComposer())
             .compose(new ActionPipeCacheWiper<>(wizardInteractor.setupUserDataPipe()))
             .subscribe(OperationSubscriberWrapper.<SetupUserDataCommand>forView(getView().provideOperationDelegate())
-                  .onSuccess(setupUserDataCommand -> navigator.go(new WizardPinSetupPath(setupUserDataCommand.getResult())))
+                  .onSuccess(setupUserDataCommand -> onUserSetup(setupUserDataCommand.getResult()))
                   .onFail(throwable -> createFailMessageActionHolder(throwable.getCause()))
                   .wrap());
+   }
+
+   private void onUserSetup(SmartCard smartCard) {
+      navigator.go(new WizardPinSetupPath(smartCard));
+      analyticsInteractor.walletAnalyticsCommandPipe()
+            .send(new WalletAnalyticsCommand(new PhotoWasSetAction(smartCard.cardName(), smartCardId)));
    }
 
    private OperationSubscriberWrapper.MessageActionHolder createFailMessageActionHolder(Throwable throwable) {

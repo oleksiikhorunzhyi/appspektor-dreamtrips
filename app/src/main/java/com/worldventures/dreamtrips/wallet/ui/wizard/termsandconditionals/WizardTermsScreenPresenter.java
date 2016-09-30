@@ -1,10 +1,14 @@
 package com.worldventures.dreamtrips.wallet.ui.wizard.termsandconditionals;
 
-import android.app.Activity;
 import android.content.Context;
 import android.os.Parcelable;
 
 import com.techery.spares.module.Injector;
+import com.worldventures.dreamtrips.core.utils.tracksystem.AnalyticsInteractor;
+import com.worldventures.dreamtrips.wallet.analytics.AcceptTermsAction;
+import com.worldventures.dreamtrips.wallet.analytics.TermsAcceptedAction;
+import com.worldventures.dreamtrips.wallet.analytics.TermsAction;
+import com.worldventures.dreamtrips.wallet.analytics.WalletAnalyticsCommand;
 import com.worldventures.dreamtrips.wallet.service.command.http.FetchTermsAndConditionsCommand;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletPresenter;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.WalletScreen;
@@ -21,8 +25,8 @@ import static com.worldventures.dreamtrips.core.janet.JanetModule.JANET_WALLET;
 
 public class WizardTermsScreenPresenter extends WalletPresenter<WizardTermsScreenPresenter.Screen, Parcelable> {
 
-   @Inject Activity activity;
    @Inject Navigator navigator;
+   @Inject AnalyticsInteractor analyticsInteractor;
    @Inject @Named(JANET_WALLET) Janet janet;
 
    public WizardTermsScreenPresenter(Context context, Injector injector) {
@@ -33,9 +37,11 @@ public class WizardTermsScreenPresenter extends WalletPresenter<WizardTermsScree
    public void onAttachedToWindow() {
       super.onAttachedToWindow();
       loadTerms();
+      analyticsInteractor.walletAnalyticsCommandPipe().send(new WalletAnalyticsCommand(new TermsAction()));
    }
 
    public void acceptTermsPressed() {
+      analyticsInteractor.walletAnalyticsCommandPipe().send(new WalletAnalyticsCommand(new TermsAcceptedAction()));
       navigator.single(new WizardSplashPath(true), Direction.BACKWARD);
    }
 

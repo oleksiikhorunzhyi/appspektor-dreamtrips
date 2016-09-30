@@ -7,6 +7,10 @@ import com.techery.spares.module.Injector;
 import com.worldventures.dreamtrips.core.permission.PermissionConstants;
 import com.worldventures.dreamtrips.core.permission.PermissionDispatcher;
 import com.worldventures.dreamtrips.core.permission.PermissionSubscriber;
+import com.worldventures.dreamtrips.core.utils.tracksystem.AnalyticsInteractor;
+import com.worldventures.dreamtrips.wallet.analytics.ScanCardAction;
+import com.worldventures.dreamtrips.wallet.analytics.ScidEnteredAction;
+import com.worldventures.dreamtrips.wallet.analytics.WalletAnalyticsCommand;
 import com.worldventures.dreamtrips.wallet.service.WizardInteractor;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletPresenter;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.WalletScreen;
@@ -20,10 +24,17 @@ public class WizardScanBarcodePresenter extends WalletPresenter<WizardScanBarcod
 
    @Inject Navigator navigator;
    @Inject WizardInteractor wizardInteractor;
+   @Inject AnalyticsInteractor analyticsInteractor;
    @Inject PermissionDispatcher permissionDispatcher;
 
    public WizardScanBarcodePresenter(Context context, Injector injector) {
       super(context, injector);
+   }
+
+   @Override
+   public void onAttachedToWindow() {
+      super.onAttachedToWindow();
+      analyticsInteractor.walletAnalyticsCommandPipe().send(new WalletAnalyticsCommand(new ScanCardAction()));
    }
 
    public void requestCamera() {
@@ -35,13 +46,14 @@ public class WizardScanBarcodePresenter extends WalletPresenter<WizardScanBarcod
    }
 
    public void barcodeScanned(String barcode) {
+      analyticsInteractor.walletAnalyticsCommandPipe()
+            .send(new WalletAnalyticsCommand(ScidEnteredAction.forScan(barcode)));
       navigator.go(new ConnectSmartCardPath(barcode));
    }
 
    public void startManualInput() {
       navigator.go(new WizardManualInputPath());
    }
-
 
    public void goBack() {
       navigator.goBack();

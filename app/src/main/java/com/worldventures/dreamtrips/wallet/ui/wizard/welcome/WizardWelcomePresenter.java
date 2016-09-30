@@ -8,7 +8,10 @@ import com.techery.spares.module.Injector;
 import com.techery.spares.session.SessionHolder;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.session.UserSession;
+import com.worldventures.dreamtrips.core.utils.tracksystem.AnalyticsInteractor;
 import com.worldventures.dreamtrips.modules.common.model.User;
+import com.worldventures.dreamtrips.wallet.analytics.NewHeightsAction;
+import com.worldventures.dreamtrips.wallet.analytics.WalletAnalyticsCommand;
 import com.worldventures.dreamtrips.wallet.service.SmartCardAvatarInteractor;
 import com.worldventures.dreamtrips.wallet.service.command.LoadImageForSmartCardCommand;
 import com.worldventures.dreamtrips.wallet.service.command.SmartCardAvatarCommand;
@@ -28,6 +31,7 @@ public class WizardWelcomePresenter extends WalletPresenter<WizardWelcomePresent
 
    @Inject Navigator navigator;
    @Inject SessionHolder<UserSession> appSessionHolder;
+   @Inject AnalyticsInteractor analyticsInteractor;
    @Inject SmartCardAvatarInteractor smartCardAvatarInteractor;
 
    private final String smartCardId;
@@ -35,6 +39,12 @@ public class WizardWelcomePresenter extends WalletPresenter<WizardWelcomePresent
    public WizardWelcomePresenter(Context context, Injector injector, String smartCardId) {
       super(context, injector);
       this.smartCardId = smartCardId;
+   }
+
+   @Override
+   public void onAttachedToWindow() {
+      super.onAttachedToWindow();
+      analyticsInteractor.walletAnalyticsCommandPipe().send(new WalletAnalyticsCommand(new NewHeightsAction()));
    }
 
    @Override

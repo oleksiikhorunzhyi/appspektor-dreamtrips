@@ -8,6 +8,11 @@ import com.techery.spares.module.Injector;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.janet.composer.ActionPipeCacheWiper;
 import com.worldventures.dreamtrips.core.utils.LocaleHelper;
+import com.worldventures.dreamtrips.core.utils.tracksystem.AnalyticsInteractor;
+import com.worldventures.dreamtrips.wallet.analytics.CardDetailsAction;
+import com.worldventures.dreamtrips.wallet.analytics.ChangeDefaultCardAction;
+import com.worldventures.dreamtrips.wallet.analytics.PaycardAnalyticsCommand;
+import com.worldventures.dreamtrips.wallet.analytics.WalletAnalyticsCommand;
 import com.worldventures.dreamtrips.wallet.domain.entity.AddressInfoWithLocale;
 import com.worldventures.dreamtrips.wallet.domain.entity.ImmutableAddressInfoWithLocale;
 import com.worldventures.dreamtrips.wallet.domain.entity.card.BankCard;
@@ -16,7 +21,6 @@ import com.worldventures.dreamtrips.wallet.service.SmartCardInteractor;
 import com.worldventures.dreamtrips.wallet.service.command.FetchDefaultCardCommand;
 import com.worldventures.dreamtrips.wallet.service.command.SetDefaultCardOnDeviceCommand;
 import com.worldventures.dreamtrips.wallet.service.command.UpdateBankCardCommand;
-import com.worldventures.dreamtrips.wallet.service.command.UpdateCardDetailsDataCommand;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletPresenter;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.WalletScreen;
 import com.worldventures.dreamtrips.wallet.ui.common.helper.OperationSubscriberWrapper;
@@ -38,6 +42,7 @@ public class CardDetailsPresenter extends WalletPresenter<CardDetailsPresenter.S
    @Inject Navigator navigator;
    @Inject LocaleHelper localeHelper;
    @Inject SmartCardInteractor smartCardInteractor;
+   @Inject AnalyticsInteractor analyticsInteractor;
    @Inject BankCardHelper bankCardHelper;
 
    private final BankCard bankCard;
@@ -50,7 +55,7 @@ public class CardDetailsPresenter extends WalletPresenter<CardDetailsPresenter.S
    @Override
    public void onAttachedToWindow() {
       super.onAttachedToWindow();
-
+      trackScreen();
       Screen view = getView();
 
       view.setTitle(bankCardHelper.financialServiceWithCardNumber(bankCard));
@@ -60,6 +65,11 @@ public class CardDetailsPresenter extends WalletPresenter<CardDetailsPresenter.S
       connectToDefaultCardPipe();
       connectToDeleteCardPipe();
       connectToSetDefaultCardIdPipe();
+   }
+
+   private void trackScreen() {
+      analyticsInteractor.paycardAnalyticsCommandPipe()
+            .send(new PaycardAnalyticsCommand(new CardDetailsAction(), bankCard));
    }
 
    private void connectToDefaultCardPipe() {
@@ -119,12 +129,13 @@ public class CardDetailsPresenter extends WalletPresenter<CardDetailsPresenter.S
       smartCardInteractor.fetchDefaultCardCommandPipe()
             .createObservableResult(new FetchDefaultCardCommand())
             .compose(bindViewIoToMainComposer())
-            .map(command -> command.getResult())
+            .map(Command::getResult)
             .subscribe(defaultCard -> {
                if (setDefaultCard) {
                   if (CardUtils.isRealCard(defaultCard)) {
                      getView().showDefaultCardDialog(bankCardHelper.bankNameWithCardNumber(defaultCard));
                   } else {
+                     trackSetAsDefault();
                      smartCardInteractor.setDefaultCardOnDeviceCommandPipe()
                            .send(new SetDefaultCardOnDeviceCommand(bankCard.id()));
                   }
@@ -141,8 +152,14 @@ public class CardDetailsPresenter extends WalletPresenter<CardDetailsPresenter.S
       if (!confirmed) {
          getView().setDefaultCardCondition(false);
       } else {
+         trackSetAsDefault();
          smartCardInteractor.setDefaultCardOnDeviceCommandPipe().send(new SetDefaultCardOnDeviceCommand(bankCard.id()));
       }
+   }
+
+   private void trackSetAsDefault() {
+      analyticsInteractor.walletAnalyticsCommandPipe()
+            .send(new WalletAnalyticsCommand(ChangeDefaultCardAction.forBankCard(bankCard)));
    }
 
    public void goBack() {

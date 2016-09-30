@@ -60,9 +60,9 @@ public class WalletDownloadFirmwareScreen extends WalletFrameLayout<WalletDownlo
 
    @Override
    public void showProgress() {
-      Animation a = AnimationUtils.loadAnimation(getContext(), R.anim.wallet_progress_anim);
-      a.setDuration(1000);
-      downloadProgress.startAnimation(a);
+      Animation animation = AnimationUtils.loadAnimation(getContext(), R.anim.wallet_progress_anim);
+      animation.setDuration(getResources().getInteger(R.integer.wallet_custom_loafing_animation_duration));
+      downloadProgress.startAnimation(animation);
    }
 
    @Override

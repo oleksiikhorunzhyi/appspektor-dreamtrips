@@ -4,24 +4,17 @@ import android.content.Context;
 import android.os.Parcelable;
 
 import com.techery.spares.module.Injector;
-import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.core.janet.composer.ActionPipeCacheWiper;
 import com.worldventures.dreamtrips.core.permission.PermissionConstants;
 import com.worldventures.dreamtrips.core.permission.PermissionDispatcher;
 import com.worldventures.dreamtrips.core.permission.PermissionSubscriber;
 import com.worldventures.dreamtrips.wallet.service.WizardInteractor;
-import com.worldventures.dreamtrips.wallet.service.command.CreateAndConnectToCardCommand;
-import com.worldventures.dreamtrips.wallet.service.command.http.AssociateCardUserCommand;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletPresenter;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.WalletScreen;
-import com.worldventures.dreamtrips.wallet.ui.common.helper.OperationSubscriberWrapper;
 import com.worldventures.dreamtrips.wallet.ui.common.navigation.Navigator;
+import com.worldventures.dreamtrips.wallet.ui.wizard.connect_smartcard.ConnectSmartCardPath;
 import com.worldventures.dreamtrips.wallet.ui.wizard.manual.WizardManualInputPath;
-import com.worldventures.dreamtrips.wallet.ui.wizard.welcome.WizardWelcomePath;
 
 import javax.inject.Inject;
-
-import timber.log.Timber;
 
 public class WizardScanBarcodePresenter extends WalletPresenter<WizardScanBarcodePresenter.Screen, Parcelable> {
 
@@ -33,20 +26,6 @@ public class WizardScanBarcodePresenter extends WalletPresenter<WizardScanBarcod
       super(context, injector);
    }
 
-   @Override
-   public void attachView(Screen view) {
-      super.attachView(view);
-      wizardInteractor.createAndConnectActionPipe()
-            .observeWithReplay()
-            .compose(bindViewIoToMainComposer())
-            .compose(new ActionPipeCacheWiper<>(wizardInteractor.createAndConnectActionPipe()))
-            .subscribe(OperationSubscriberWrapper.<CreateAndConnectToCardCommand>forView(view.provideOperationDelegate())
-                  .onSuccess(command -> navigator.go(new WizardWelcomePath(command.getSmartCardId())))
-                  .onFail(throwable -> new OperationSubscriberWrapper.MessageActionHolder<>(getContext().getString(R.string.wallet_wizard_scid_validation_error),
-                        command -> Timber.e("Could not connect to device")))
-                  .wrap());
-   }
-
    public void requestCamera() {
       permissionDispatcher.requestPermission(PermissionConstants.CAMERA_PERMISSIONS)
             .compose(bindView())
@@ -56,7 +35,7 @@ public class WizardScanBarcodePresenter extends WalletPresenter<WizardScanBarcod
    }
 
    public void barcodeScanned(String barcode) {
-      wizardInteractor.associateCardUserCommandPipe().send(new AssociateCardUserCommand(barcode));
+      navigator.go(new ConnectSmartCardPath(barcode));
    }
 
    public void startManualInput() {

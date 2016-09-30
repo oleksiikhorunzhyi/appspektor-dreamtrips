@@ -14,6 +14,8 @@ import com.worldventures.dreamtrips.wallet.ui.common.base.screen.delegate.Dialog
 import butterknife.InjectView;
 import butterknife.OnClick;
 
+import static com.worldventures.dreamtrips.wallet.ui.wizard.pin.WizardPinSetupPath.Action.RESET;
+
 public class WizardPinSetupScreen extends WalletFrameLayout<WizardPinSetupPresenter.Screen, WizardPinSetupPresenter, WizardPinSetupPath> implements WizardPinSetupPresenter.Screen {
 
    @InjectView(R.id.toolbar) Toolbar toolbar;
@@ -40,9 +42,8 @@ public class WizardPinSetupScreen extends WalletFrameLayout<WizardPinSetupPresen
    }
 
    @Override
-   public void setPath(WizardPinSetupPath path) {
-      super.setPath(path);
-      if (path.action == WizardPinSetupPath.Action.RESET) {
+   public void showMode(WizardPinSetupPath.Action mode) {
+      if (mode == RESET) {
          headerTextView.setText(R.string.wallet_wizard_setup_new_pin_header);
          nextButton.setText(R.string.wallet_continue_label);
       } else {
@@ -54,7 +55,7 @@ public class WizardPinSetupScreen extends WalletFrameLayout<WizardPinSetupPresen
    @NonNull
    @Override
    public WizardPinSetupPresenter createPresenter() {
-      return new WizardPinSetupPresenter(getContext(), getInjector(), getPath().smartCard, getPath().action == WizardPinSetupPath.Action.RESET);
+      return new WizardPinSetupPresenter(getContext(), getInjector(), getPath().smartCard, getPath().action);
    }
 
    @OnClick(R.id.button_next)

@@ -293,6 +293,14 @@ public class SnappyRepositoryImpl implements SnappyRepository {
    }
 
    @Override
+   public void deleteWalletCardList() {
+      act(db -> {
+         db.del(WALLET_CARDS_LIST);
+         db.del(WALLET_DEFAULT_BANK_CARD);
+      });
+   }
+
+   @Override
    public void saveWalletDefaultCardId(String defaultCardid) {
       if (defaultCardid == null) return;
       act(db -> db.put(WALLET_DEFAULT_BANK_CARD, defaultCardid));
@@ -321,6 +329,11 @@ public class SnappyRepositoryImpl implements SnappyRepository {
    }
 
    @Override
+   public void deleteDefaultAddress() {
+      act(db -> db.del(WALLET_DEFAULT_ADDRESS));
+   }
+
+   @Override
    public void saveSmartCardDetails(SmartCardDetails smartCardDetails) {
       act(db -> db.put(WALLET_DETAILS_SMART_CARD + smartCardDetails.smartCardId(), smartCardDetails));
    }
@@ -329,6 +342,11 @@ public class SnappyRepositoryImpl implements SnappyRepository {
    public SmartCardDetails getSmartCardDetails(String smartCardId) {
       return actWithResult(db -> db.getObject(WALLET_DETAILS_SMART_CARD + smartCardId, ImmutableSmartCardDetails.class))
             .orNull();
+   }
+
+   @Override
+   public void deleteSmartCardDetails(String smartCardId) {
+      act(db -> db.del(WALLET_DETAILS_SMART_CARD + smartCardId));
    }
 
    @Override
@@ -363,6 +381,11 @@ public class SnappyRepositoryImpl implements SnappyRepository {
    }
 
    @Override
+   public void deleteTermsAndConditions() {
+      act(db -> db.del(WALLET_TERMS_AND_CONDITIONS));
+   }
+
+   @Override
    public SimpleDeviceStorage getWalletDeviceStorage() {
       return actWithResult(db -> db.get(WALLET_DEVICE_STORAGE, SimpleDeviceStorage.class)).orNull();
    }
@@ -380,6 +403,11 @@ public class SnappyRepositoryImpl implements SnappyRepository {
    @Override
    public SmartCard getSmartCard(String smartCardId) {
       return actWithResult(db -> db.getObject(WALLET_SMART_CARD + smartCardId, ImmutableSmartCard.class)).orNull();
+   }
+
+   @Override
+   public void deleteSmartCard(String smartCardId) {
+      act(db -> db.del(WALLET_SMART_CARD + smartCardId));
    }
 
    ///////////////////////////////////////////////////////////////////////////

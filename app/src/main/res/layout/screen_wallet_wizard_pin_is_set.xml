@@ -21,11 +21,11 @@
 
       <ImageView
             android:id="@+id/iv_success_icon"
-            android:layout_width="72dp"
-            android:layout_height="72dp"
+            android:layout_width="@dimen/wallet_round_icon_success_size"
+            android:layout_height="@dimen/wallet_round_icon_success_size"
             android:layout_centerHorizontal="true"
             android:background="@drawable/ic_pin_is_set_circle"
-            android:padding="20dp"
+            android:padding="@dimen/wallet_round_icon_success_padding"
             android:src="@drawable/ic_pin_is_set_check"
             tools:ignore="ContentDescription"
             />

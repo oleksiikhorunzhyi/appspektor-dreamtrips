@@ -96,6 +96,11 @@ public class WalletSettingsScreen extends WalletFrameLayout<WalletSettingsPresen
       presenter.firmwareUpdatesClick();
    }
 
+   @OnClick(R.id.item_factory_reset)
+   protected void onFactoryResetClick() {
+      presenter.factoryResetClick();
+   }
+
    @Override
    public void stealthModeStatus(boolean isEnabled) {
       stealthModeSwitcher.setChecked(isEnabled);

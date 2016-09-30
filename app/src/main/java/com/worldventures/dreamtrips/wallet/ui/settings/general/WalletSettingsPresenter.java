@@ -19,6 +19,7 @@ import com.worldventures.dreamtrips.wallet.ui.common.base.screen.WalletScreen;
 import com.worldventures.dreamtrips.wallet.ui.common.helper.OperationSubscriberWrapper;
 import com.worldventures.dreamtrips.wallet.ui.common.navigation.Navigator;
 import com.worldventures.dreamtrips.wallet.ui.settings.disabledefaultcard.WalletDisableDefaultCardPath;
+import com.worldventures.dreamtrips.wallet.ui.settings.factory_reset.FactoryResetPath;
 import com.worldventures.dreamtrips.wallet.ui.settings.firmware.newavailable.WalletNewFirmwareAvailablePath;
 import com.worldventures.dreamtrips.wallet.ui.settings.firmware.uptodate.WalletUpToDateFirmwarePath;
 import com.worldventures.dreamtrips.wallet.ui.settings.removecards.WalletAutoClearCardsPath;
@@ -29,6 +30,8 @@ import javax.inject.Inject;
 
 import io.techery.janet.smartcard.action.support.DisconnectAction;
 import rx.Observable;
+
+import static com.worldventures.dreamtrips.wallet.ui.wizard.pin.WizardPinSetupPath.Action.RESET;
 
 public class WalletSettingsPresenter extends WalletPresenter<WalletSettingsPresenter.Screen, Parcelable> {
 
@@ -202,7 +205,7 @@ public class WalletSettingsPresenter extends WalletPresenter<WalletSettingsPrese
    }
 
    void resetPin() {
-      navigator.go(new WizardPinSetupPath(smartCard, WizardPinSetupPath.Action.RESET));
+      navigator.go(new WizardPinSetupPath(smartCard, RESET));
    }
 
    void disableDefaultCardTimer() {
@@ -256,6 +259,10 @@ public class WalletSettingsPresenter extends WalletPresenter<WalletSettingsPrese
       } else {
          navigator.go(new WalletUpToDateFirmwarePath());
       }
+   }
+
+   void factoryResetClick() {
+      navigator.go(new FactoryResetPath());
    }
 
    public interface Screen extends WalletScreen {

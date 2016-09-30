@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.worldventures.dreamtrips.wallet.ui.wizard.pin.WizardPinSetupScreen xmlns:android="http://schemas.android.com/apk/res/android"
+<com.worldventures.dreamtrips.wallet.ui.settings.factory_reset.FactoryResetScreen xmlns:android="http://schemas.android.com/apk/res/android"
       xmlns:app="http://schemas.android.com/apk/res-auto"
-      xmlns:tools="http://schemas.android.com/tools"
       android:layout_width="match_parent"
       android:layout_height="match_parent"
       android:theme="@style/WalletTheme"
@@ -27,7 +26,7 @@
             android:layout_height="wrap_content"
             android:layout_above="@+id/flye_card_image"
             android:layout_marginBottom="56dp"
-            tools:text="@string/wallet_wizard_setup_pin_header"
+            android:text="@string/wallet_factory_reset_enter_pin_text"
             />
 
 
@@ -40,13 +39,5 @@
             android:src="@drawable/hands_pin"
             />
 
-      <Button
-            android:id="@+id/button_next"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
-            android:layout_margin="@dimen/spacing_large"
-            tools:text="@string/wallet_got_it_label"
-            />
    </RelativeLayout>
-</com.worldventures.dreamtrips.wallet.ui.wizard.pin.WizardPinSetupScreen>
+</com.worldventures.dreamtrips.wallet.ui.settings.factory_reset.FactoryResetScreen>

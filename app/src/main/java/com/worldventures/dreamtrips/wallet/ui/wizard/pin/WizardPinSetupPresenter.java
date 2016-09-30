@@ -10,9 +10,8 @@ import com.worldventures.dreamtrips.wallet.service.WizardInteractor;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletPresenter;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.WalletScreen;
 import com.worldventures.dreamtrips.wallet.ui.common.navigation.Navigator;
-import com.worldventures.dreamtrips.wallet.ui.settings.general.WalletSettingsPath;
 import com.worldventures.dreamtrips.wallet.ui.wizard.finish.WalletPinIsSetPath;
-import com.worldventures.dreamtrips.wallet.ui.wizard.success.WalletSuccessPath;
+import com.worldventures.dreamtrips.wallet.ui.wizard.pin_set_success.PinSetSuccessPath;
 
 import javax.inject.Inject;
 
@@ -20,18 +19,20 @@ import io.techery.janet.helper.ActionStateSubscriber;
 import io.techery.janet.smartcard.action.settings.StartPinSetupAction;
 import io.techery.janet.smartcard.event.PinSetupFinishedEvent;
 
+import static com.worldventures.dreamtrips.wallet.ui.wizard.pin.WizardPinSetupPath.Action.SETUP;
+
 public class WizardPinSetupPresenter extends WalletPresenter<WizardPinSetupPresenter.Screen, Parcelable> {
 
    private final SmartCard smartCard;
-   private final boolean isResetProcess;
+   private final WizardPinSetupPath.Action mode;
 
    @Inject Navigator navigator;
    @Inject WizardInteractor wizardInteractor;
 
-   public WizardPinSetupPresenter(Context context, Injector injector, SmartCard smartCard, boolean isResetProcess) {
+   public WizardPinSetupPresenter(Context context, Injector injector, SmartCard smartCard, WizardPinSetupPath.Action mode) {
       super(context, injector);
       this.smartCard = smartCard;
-      this.isResetProcess = isResetProcess;
+      this.mode = mode;
    }
 
    public void goToBack() {
@@ -41,6 +42,7 @@ public class WizardPinSetupPresenter extends WalletPresenter<WizardPinSetupPrese
    @Override
    public void attachView(Screen view) {
       super.attachView(view);
+      view.showMode(mode);
       observeSetupFinishedPipe();
    }
 
@@ -68,17 +70,15 @@ public class WizardPinSetupPresenter extends WalletPresenter<WizardPinSetupPrese
    }
 
    private void navigateToNextScreen() {
-      if (isResetProcess) {
-         navigator.go(new WalletSuccessPath(
-               getContext().getString(R.string.wallet_wizard_setup_pin_title),
-               getContext().getString(R.string.wallet_done_label),
-               getContext().getString(R.string.wallet_wizard_setup_new_pin_success),
-               new WalletSettingsPath()));
-      } else {
+      if (mode == SETUP) {
          navigator.single(new WalletPinIsSetPath(smartCard));
+      } else {
+         navigator.go(new PinSetSuccessPath());
       }
    }
 
    public interface Screen extends WalletScreen {
+
+      void showMode(WizardPinSetupPath.Action mode);
    }
 }

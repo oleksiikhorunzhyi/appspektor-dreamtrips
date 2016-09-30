@@ -15,6 +15,8 @@ import com.worldventures.dreamtrips.wallet.service.command.FetchSmartCardLockSta
 import com.worldventures.dreamtrips.wallet.service.command.GetActiveSmartCardCommand;
 import com.worldventures.dreamtrips.wallet.service.command.GetDefaultAddressCommand;
 import com.worldventures.dreamtrips.wallet.service.command.LoadImageForSmartCardCommand;
+import com.worldventures.dreamtrips.wallet.service.command.RemoveSmartCardDataCommand;
+import com.worldventures.dreamtrips.wallet.service.command.ResetSmartCardCommand;
 import com.worldventures.dreamtrips.wallet.service.command.SaveCardDetailsDataCommand;
 import com.worldventures.dreamtrips.wallet.service.command.SaveDefaultAddressCommand;
 import com.worldventures.dreamtrips.wallet.service.command.SetAutoClearSmartCardDelayCommand;
@@ -49,7 +51,6 @@ import dagger.Module;
             FetchDefaultCardIdCommand.class,
             ActivateSmartCardCommand.class,
             CreateAndConnectToCardCommand.class,
-            GetActiveSmartCardCommand.class,
             CardCountCommand.class,
             GetDefaultAddressCommand.class,
             SaveCardDetailsDataCommand.class,
@@ -70,7 +71,9 @@ import dagger.Module;
             FetchFirmwareInfoCommand.class,
             PreInstallationCheckCommand.class,
             SetAutoClearSmartCardDelayCommand.class,
-            SetDisableDefaultCardDelayCommand.class
+            SetDisableDefaultCardDelayCommand.class,
+            RemoveSmartCardDataCommand.class,
+            ResetSmartCardCommand.class
       },
       complete = false, library = true)
 public class WalletCommandModule {}

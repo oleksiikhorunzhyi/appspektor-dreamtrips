@@ -9,6 +9,7 @@ import com.worldventures.dreamtrips.wallet.service.command.FetchDefaultCardComma
 import com.worldventures.dreamtrips.wallet.service.command.FetchDefaultCardIdCommand;
 import com.worldventures.dreamtrips.wallet.service.command.GetActiveSmartCardCommand;
 import com.worldventures.dreamtrips.wallet.service.command.GetDefaultAddressCommand;
+import com.worldventures.dreamtrips.wallet.service.command.ResetSmartCardCommand;
 import com.worldventures.dreamtrips.wallet.service.command.SaveCardDetailsDataCommand;
 import com.worldventures.dreamtrips.wallet.service.command.SaveDefaultAddressCommand;
 import com.worldventures.dreamtrips.wallet.service.command.SetAutoClearSmartCardDelayCommand;
@@ -80,6 +81,8 @@ public final class SmartCardInteractor {
    private final ActionPipe<SetAutoClearSmartCardDelayCommand> autoClearDelayPipe;
    private final ActionPipe<SetDisableDefaultCardDelayCommand> disableDefaultCardPipe;
 
+   private final ActionPipe<ResetSmartCardCommand> resetSmartCardPipe;
+
    @Inject
    public SmartCardInteractor(@Named(JANET_WALLET) Janet janet) {
       connectionPipe = janet.createPipe(ConnectSmartCardCommand.class, Schedulers.io());
@@ -115,6 +118,7 @@ public final class SmartCardInteractor {
       autoClearDelayPipe = janet.createPipe(SetAutoClearSmartCardDelayCommand.class, Schedulers.io());
       disableDefaultCardPipe = janet.createPipe(SetDisableDefaultCardDelayCommand.class, Schedulers.io());
 
+      resetSmartCardPipe = janet.createPipe(ResetSmartCardCommand.class, Schedulers.io());
       connect();
    }
 
@@ -213,6 +217,10 @@ public final class SmartCardInteractor {
 
    public ActionPipe<SetDisableDefaultCardDelayCommand> disableDefaultCardPipe() {
       return disableDefaultCardPipe;
+   }
+
+   public ActionPipe<ResetSmartCardCommand> resetSmartCardPipe() {
+      return resetSmartCardPipe;
    }
 
    private void connect() {

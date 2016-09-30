@@ -1,4 +1,4 @@
-package com.worldventures.dreamtrips.wallet.ui.wizard.success;
+package com.worldventures.dreamtrips.wallet.ui.wizard.pin_set_success;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
@@ -14,25 +14,25 @@ import com.worldventures.dreamtrips.wallet.ui.common.base.screen.delegate.Dialog
 import butterknife.InjectView;
 import butterknife.OnClick;
 
-public class WalletSuccessScreen extends WalletFrameLayout<WalletSuccessPresenter.Screen, WalletSuccessPresenter, WalletSuccessPath>
-      implements WalletSuccessPresenter.Screen {
+public class PinSetSuccessScreen extends WalletFrameLayout<PinSetSuccessPresenter.Screen, PinSetSuccessPresenter, PinSetSuccessPath>
+      implements PinSetSuccessPresenter.Screen {
 
    @InjectView(R.id.toolbar) Toolbar toolbar;
    @InjectView(R.id.next_button) TextView nextButton;
    @InjectView(R.id.success_label_text_view) TextView successText;
 
-   public WalletSuccessScreen(Context context) {
+   public PinSetSuccessScreen(Context context) {
       super(context);
    }
 
-   public WalletSuccessScreen(Context context, AttributeSet attrs) {
+   public PinSetSuccessScreen(Context context, AttributeSet attrs) {
       super(context, attrs);
    }
 
    @NonNull
    @Override
-   public WalletSuccessPresenter createPresenter() {
-      return new WalletSuccessPresenter(getContext(), getInjector(), getPath());
+   public PinSetSuccessPresenter createPresenter() {
+      return new PinSetSuccessPresenter(getContext(), getInjector());
    }
 
    @Override
@@ -51,18 +51,4 @@ public class WalletSuccessScreen extends WalletFrameLayout<WalletSuccessPresente
       return new DialogOperationScreen(this);
    }
 
-   @Override
-   public void buttonText(String buttonText) {
-      nextButton.setText(buttonText);
-   }
-
-   @Override
-   public void text(String text) {
-      successText.setText(text);
-   }
-
-   @Override
-   public void title(String title) {
-      toolbar.setTitle(title);
-   }
 }

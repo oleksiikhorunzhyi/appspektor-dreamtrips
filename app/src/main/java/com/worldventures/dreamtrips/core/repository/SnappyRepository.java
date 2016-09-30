@@ -244,6 +244,8 @@ public interface SnappyRepository {
 
    List<Card> readWalletCardsList();
 
+   void deleteWalletCardList();
+
    void saveWalletDefaultCardId(String id);
 
    String readWalletDefaultCardId();
@@ -254,9 +256,13 @@ public interface SnappyRepository {
 
    AddressInfo readDefaultAddress();
 
+   void deleteDefaultAddress();
+
    void saveSmartCard(SmartCard smartCard);
 
    SmartCard getSmartCard(String smartCardId);
+
+   void deleteSmartCard(String smartCardId);
 
    List<SmartCard> getSmartCards();
 
@@ -268,7 +274,11 @@ public interface SnappyRepository {
 
    TermsAndConditions getWalletTermsAndConditions();
 
+   void deleteTermsAndConditions();
+
    void saveSmartCardDetails(SmartCardDetails details);
 
    SmartCardDetails getSmartCardDetails(String smartCardId);
+
+   void deleteSmartCardDetails(String smartCardId);
 }

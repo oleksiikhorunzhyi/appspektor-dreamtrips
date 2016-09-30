@@ -223,6 +223,17 @@
                         tools:text="Never"
                         />
                </RelativeLayout>
+
+               <View style="@style/SettingsItemDividerStyle" />
+
+               <TextView
+                     android:id="@+id/item_factory_reset"
+                     android:layout_width="match_parent"
+                     android:layout_height="wrap_content"
+                     android:padding="@dimen/spacing_normal"
+                     android:text="@string/wallet_card_settings_factory_reset"
+                     android:textAppearance="?android:attr/textAppearanceMedium"
+                     />
             </LinearLayout>
          </android.support.v7.widget.CardView>
          <!--END security settings section-->

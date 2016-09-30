@@ -2,10 +2,11 @@ package com.worldventures.dreamtrips.wallet.ui.settings.general;
 
 import android.content.Context;
 import android.os.Parcelable;
+import android.support.annotation.Nullable;
 
 import com.techery.spares.module.Injector;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.wallet.domain.entity.FirmwareInfo;
+import com.worldventures.dreamtrips.wallet.domain.entity.Firmware;
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCard;
 import com.worldventures.dreamtrips.wallet.domain.storage.TemporaryStorage;
 import com.worldventures.dreamtrips.wallet.service.FirmwareInteractor;
@@ -42,7 +43,7 @@ public class WalletSettingsPresenter extends WalletPresenter<WalletSettingsPrese
    @Inject TemporaryStorage temporaryStorage;
 
    private SmartCard smartCard;
-   private FirmwareInfo firmware;
+   @Nullable private Firmware firmware;
 
 
    public WalletSettingsPresenter(Context context, Injector injector) {
@@ -55,6 +56,7 @@ public class WalletSettingsPresenter extends WalletPresenter<WalletSettingsPrese
       view.testNewFirmwareAvailable(temporaryStorage.newFirmwareIsAvailable());
       view.testFirmwareIsCompatible(temporaryStorage.firmwareIsCompatible());
       view.testEnoughSpaceForFirmware(temporaryStorage.enoughSpaceForFirmware());
+      view.testFailInstallation(temporaryStorage.failInstall());
 
       observeSmartCardChanges();
 
@@ -64,6 +66,7 @@ public class WalletSettingsPresenter extends WalletPresenter<WalletSettingsPrese
       observeFirmwareCompatibleController(view);
 
       observeEnoughSpace(view);
+      observeFailInstallation(view);
       observeConnectionController(view);
       observeFirmwareUpdates();
    }
@@ -74,9 +77,7 @@ public class WalletSettingsPresenter extends WalletPresenter<WalletSettingsPrese
             .compose(bindViewIoToMainComposer())
             .subscribe(command -> {
                firmware = command.getResult();
-               // this solution is not like iOS. After server was deploy, update this criteria
-               boolean newFirmwareAvailable = firmware.byteSize() > 0;
-               if (newFirmwareAvailable) {
+               if (firmware.updateAvailable()) {
                   getView().firmwareUpdateCount(1);
                   getView().showFirmwareBadge();
                } else {
@@ -162,6 +163,14 @@ public class WalletSettingsPresenter extends WalletPresenter<WalletSettingsPrese
             .subscribe(this::changeEnoughSpace);
    }
 
+   private void observeFailInstallation(Screen view) {
+      view.testFailInstallation()
+            .compose(bindView())
+            .skip(1)
+            .filter(compatible -> temporaryStorage.failInstall() != compatible)
+            .subscribe(this::changeFailInstallation);
+   }
+
    private void manageConnection(boolean connected) {
       if (connected) {
          smartCardInteractor.connectActionPipe()
@@ -195,7 +204,7 @@ public class WalletSettingsPresenter extends WalletPresenter<WalletSettingsPrese
       view.disableDefaultPaymentValue(smartCard.disableCardDelay());
       view.autoClearSmartCardValue(smartCard.clearFlyeDelay());
       view.firmwareVersion(smartCard.firmWareVersion());
-      if (firmware == null || firmware.byteSize() == 0) {
+      if (firmware != null && firmware.updateAvailable()) {
          view.showFirmwareVersion();
       }
    }
@@ -241,6 +250,11 @@ public class WalletSettingsPresenter extends WalletPresenter<WalletSettingsPrese
       firmwareInteractor.firmwareInfoPipe().send(new FetchFirmwareInfoCommand());
    }
 
+   // for test and demo
+   private void changeFailInstallation(boolean failInstallation) {
+      temporaryStorage.failInstall(failInstallation);
+   }
+
    private void lockStatusChanged(boolean lock) {
       smartCardInteractor.lockPipe().send(new SetLockStateCommand(lock));
    }
@@ -252,9 +266,7 @@ public class WalletSettingsPresenter extends WalletPresenter<WalletSettingsPrese
    }
 
    void firmwareUpdatesClick() {
-      // TODO: 9/21/16 firmware.byteSize() > 0 is a temp criteria
-      if (firmware != null && firmware.byteSize() > 0) {
-         // // TODO: 9/21/16 open update screen
+      if (firmware != null && firmware.updateAvailable()) {
          navigator.go(new WalletNewFirmwareAvailablePath());
       } else {
          navigator.go(new WalletUpToDateFirmwarePath());
@@ -287,6 +299,8 @@ public class WalletSettingsPresenter extends WalletPresenter<WalletSettingsPrese
 
       void testEnoughSpaceForFirmware(boolean compatible);
 
+      void testFailInstallation(boolean failInstall);
+
       Observable<Boolean> stealthModeStatus();
 
       Observable<Boolean> lockStatus();
@@ -298,6 +312,8 @@ public class WalletSettingsPresenter extends WalletPresenter<WalletSettingsPrese
       Observable<Boolean> testFirmwareIsCompatible();
 
       Observable<Boolean> testEnoughSpaceForFirmware();
+
+      Observable<Boolean> testFailInstallation();
 
       void showFirmwareVersion();
 

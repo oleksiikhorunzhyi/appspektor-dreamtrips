@@ -12,6 +12,7 @@ import com.worldventures.dreamtrips.wallet.service.command.firmware.PreInstallat
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletPresenter;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.WalletScreen;
 import com.worldventures.dreamtrips.wallet.ui.common.navigation.Navigator;
+import com.worldventures.dreamtrips.wallet.ui.settings.firmware.install.WalletInstallFirmwarePath;
 
 import javax.inject.Inject;
 
@@ -19,11 +20,13 @@ public class WalletFirmwareChecksPresenter extends WalletPresenter<WalletFirmwar
 
    @Inject WalletBluetoothService bluetoothService;
    @Inject FirmwareInteractor firmwareInteractor;
-   @Inject SmartCardInteractor smartCardInteractor;
    @Inject Navigator navigator;
 
-   WalletFirmwareChecksPresenter(Context context, Injector injector) {
+   private final String firmwareFilePath;
+
+   WalletFirmwareChecksPresenter(Context context, Injector injector, String firmwareFilePath) {
       super(context, injector);
+      this.firmwareFilePath = firmwareFilePath;
    }
 
    @Override
@@ -52,8 +55,7 @@ public class WalletFirmwareChecksPresenter extends WalletPresenter<WalletFirmwar
    }
 
    void install() {
-      //// TODO: 9/28/16 need impl
-      Toast.makeText(getContext(), "Start firmware installation", Toast.LENGTH_SHORT).show();
+      navigator.withoutLast(new WalletInstallFirmwarePath(firmwareFilePath));
    }
 
    void goBack() {

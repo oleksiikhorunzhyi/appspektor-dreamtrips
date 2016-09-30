@@ -3,7 +3,7 @@ package com.worldventures.dreamtrips.wallet.ui.dashboard.list.util;
 import android.support.annotation.Nullable;
 
 import com.techery.spares.adapter.HeaderItem;
-import com.worldventures.dreamtrips.wallet.domain.entity.FirmwareInfo;
+import com.worldventures.dreamtrips.wallet.domain.entity.Firmware;
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCard;
 
 import org.immutables.value.Value;
@@ -15,7 +15,7 @@ public abstract class CardStackHeaderHolder implements HeaderItem {
    public abstract SmartCard smartCard();
 
    @Nullable
-   public abstract FirmwareInfo firmwareInfo();
+   public abstract Firmware firmware();
 
    @Value.Default
    public int cardCount() { return 0;}

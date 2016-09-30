@@ -14,6 +14,7 @@ import com.worldventures.dreamtrips.wallet.ui.common.base.screen.WalletScreen;
 import com.worldventures.dreamtrips.wallet.ui.common.helper.OperationSubscriberWrapper;
 import com.worldventures.dreamtrips.wallet.ui.common.navigation.Navigator;
 import com.worldventures.dreamtrips.wallet.ui.settings.firmware.preinstalletion.WalletFirmwareChecksPath;
+import com.worldventures.dreamtrips.wallet.ui.settings.firmware.install.WalletInstallFirmwarePath;
 
 import java.io.File;
 import java.util.concurrent.TimeUnit;
@@ -21,31 +22,31 @@ import java.util.concurrent.TimeUnit;
 import javax.inject.Inject;
 
 import io.techery.janet.ActionState;
-import rx.Observable;
+
+import static rx.Observable.just;
 
 public class WalletDownloadFirmwarePresenter extends WalletPresenter<WalletDownloadFirmwarePresenter.Screen, Parcelable> {
 
    private final FirmwareInfo firmwareInfo;
-   private final String filePath;
+   private final String firmwareFilePath;
 
    @Inject DownloadFileInteractor fileInteractor;
    @Inject Navigator navigator;
    private DownloadFileCommand action;
 
-   public WalletDownloadFirmwarePresenter(Context context, Injector injector, FirmwareInfo firmwareInfo, String filePath) {
+   public WalletDownloadFirmwarePresenter(Context context, Injector injector, FirmwareInfo firmwareInfo, String firmwareFilePath) {
       super(context, injector);
       this.firmwareInfo = firmwareInfo;
-      this.filePath = filePath;
+      this.firmwareFilePath = firmwareFilePath;
    }
 
    @Override
    public void onAttachedToWindow() {
       super.onAttachedToWindow();
-      action = new DownloadFileCommand(new File(filePath), firmwareInfo.downloadUrl());
+      action = new DownloadFileCommand(new File(firmwareFilePath), firmwareInfo.url());
       fileInteractor.getDownloadFileCommandPipe()
             .createObservable(action)
-            .flatMap(it -> it.status == ActionState.Status.START ? Observable.just(it) :
-                  Observable.just(it).delay(4, TimeUnit.SECONDS))//todo remove it
+            .flatMap(it -> it.status == ActionState.Status.START ? just(it) : just(it).delay(4, TimeUnit.SECONDS))//todo remove it
             .compose(bindViewIoToMainComposer())
             .subscribe(OperationSubscriberWrapper.<DownloadFileCommand>forView(getView().provideOperationDelegate())
                   .onSuccess(event -> openPreInstallationChecks())
@@ -54,7 +55,7 @@ public class WalletDownloadFirmwarePresenter extends WalletPresenter<WalletDownl
    }
 
    private void openPreInstallationChecks() {
-      navigator.withoutLast(new WalletFirmwareChecksPath());
+      navigator.withoutLast(new WalletFirmwareChecksPath(firmwareFilePath));
    }
 
    void cancelDownload() {

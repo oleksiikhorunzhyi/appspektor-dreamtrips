@@ -199,6 +199,21 @@
    <string name="wallet_firmware_download_text">Downloading Update</string>
    <string name="wallet_firmware_download_cancel_action">Cancel</string>
 
+   <!-- firmware install-->
+   <string name="wallet_firmware_install_header">flye SmartCard Update</string>
+   <string name="wallet_firmware_install_text">Installing Update</string>
+   <string name="wallet_firmware_install_sub_text">Do not turn off flye SmartCard</string>
+   <string name="wallet_firmware_install_error_text">Firmware is failed to install..</string>
+   <string name="wallet_firmware_install_error_sub_text">Would you like to try again?</string>
+   <string name="wallet_firmware_install_error_retry_action">Retry</string>
+   <string name="wallet_firmware_install_error_cancel_action">Not now</string>
+
+   <!-- firmware success install-->
+   <string name="wallet_firmware_install_success_header">flye SmartCard Update</string>
+   <string name="wallet_firmware_install_success_sub_title">flye SmartCard successfully updated to version %s</string>
+   <string name="wallet_firmware_install_success_title">Update Successful</string>
+   <string name="wallet_firmware_install_success_action_button">Done</string>
+
    <!--pre installation check-->
    <string name="wallet_firmware_pre_installation_title">flye SmartCard Update</string>
    <string name="wallet_firmware_pre_installation_header">To install the update\nPlease do the following:</string>

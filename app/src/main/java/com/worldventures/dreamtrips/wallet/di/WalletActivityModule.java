@@ -19,6 +19,8 @@ import com.worldventures.dreamtrips.wallet.ui.settings.common.cell.SectionDivide
 import com.worldventures.dreamtrips.wallet.ui.settings.common.cell.SettingsRadioCell;
 import com.worldventures.dreamtrips.wallet.ui.settings.disabledefaultcard.WalletDisableDefaultCardPresenter;
 import com.worldventures.dreamtrips.wallet.ui.settings.firmware.donwload.WalletDownloadFirmwarePresenter;
+import com.worldventures.dreamtrips.wallet.ui.settings.firmware.install.WalletInstallFirmwarePresenter;
+import com.worldventures.dreamtrips.wallet.ui.settings.firmware.installsuccess.WalletSuccessInstallFirmwarePresenter;
 import com.worldventures.dreamtrips.wallet.ui.settings.firmware.newavailable.WalletNewFirmwareAvailablePresenter;
 import com.worldventures.dreamtrips.wallet.ui.settings.firmware.preinstalletion.WalletFirmwareChecksPresenter;
 import com.worldventures.dreamtrips.wallet.ui.settings.firmware.uptodate.WalletUpToDateFirmwarePresenter;
@@ -72,12 +74,14 @@ import dagger.Provides;
             WalletAutoClearCardsPresenter.class,
             WalletDisableDefaultCardPresenter.class,
             WalletUpToDateFirmwarePresenter.class,
+            WalletSuccessInstallFirmwarePresenter.class,
             WalletFirmwareChecksPresenter.class,
             WalletDownloadFirmwarePresenter.class,
-            WalletNewFirmwareAvailablePresenter.class,
             FactoryResetPresenter.class,
             FactoryResetSuccessPresenter.class,
-            ConnectSmartCardPresenter.class
+            ConnectSmartCardPresenter.class,
+            WalletInstallFirmwarePresenter.class,
+            WalletNewFirmwareAvailablePresenter.class
       },
       complete = false, library = true
 )

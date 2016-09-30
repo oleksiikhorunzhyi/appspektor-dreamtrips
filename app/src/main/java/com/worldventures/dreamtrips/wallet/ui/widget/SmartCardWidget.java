@@ -49,7 +49,7 @@ public class SmartCardWidget extends FrameLayout {
       setVisibility(INVISIBLE);
    }
 
-   public void bindCard(@NonNull SmartCard smartCard, @Nullable FirmwareInfo firmwareInfo) {
+   public void bindCard(@NonNull SmartCard smartCard, boolean isFirmwareAvailable) {
       String url = smartCard.userPhoto();
       bankLabel.setText(smartCard.cardName());
       if (url != null) scAvatar.setImageURI(Uri.parse(url));
@@ -57,8 +57,7 @@ public class SmartCardWidget extends FrameLayout {
       stealthIndicator.setVisibility(smartCard.stealthMode() ? VISIBLE : GONE);
       bindLockStatus(smartCard.lock());
       bindConnectionStatus(smartCard.connectionStatus() == SmartCard.ConnectionStatus.CONNECTED);
-      //// TODO: 21.09.16 temporary, until we know how to check it
-      if (firmwareInfo != null && firmwareInfo.byteSize() > 0) {
+      if (isFirmwareAvailable) {
          badgeView.setText("1"); // maybe we should show count of available firmware versions. Need contract with the server
          badgeView.show();
       } else {

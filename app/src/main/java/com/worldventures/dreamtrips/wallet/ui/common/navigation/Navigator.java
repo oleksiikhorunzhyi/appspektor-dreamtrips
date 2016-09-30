@@ -1,6 +1,7 @@
 package com.worldventures.dreamtrips.wallet.ui.common.navigation;
 
 import flow.Flow.Direction;
+import flow.History;
 import flow.path.Path;
 
 public interface Navigator {
@@ -34,6 +35,10 @@ public interface Navigator {
     * @param path is screen descriptor
     */
    void withoutLast(Path path);
+
+   void setHistory(History history);
+
+   void setHistory(History history, Direction direction);
 
    void goBack();
 }

@@ -8,16 +8,6 @@ import java.io.Serializable;
 @Value.Immutable
 public abstract class FirmwareInfo implements Serializable {
 
-   @Value.Default
-   public long byteSize() {
-      return 0;
-   }
-
-   @Value.Default
-   public String downloadUrl() {
-      return "";
-   }
-
    public abstract boolean isCompatible();
 
    @Nullable
@@ -25,4 +15,22 @@ public abstract class FirmwareInfo implements Serializable {
 
    @Nullable
    public abstract String releaseNotes();
+
+   public abstract String id();
+
+   @Nullable
+   public abstract String firmwareName();
+
+   @Nullable
+   public abstract String firmwareVersion();
+
+   @Nullable
+   public abstract String sdkVersion();
+
+   @Value.Default
+   public int fileSize() { // bytes
+      return 0;
+   }
+
+   public abstract String url();
 }

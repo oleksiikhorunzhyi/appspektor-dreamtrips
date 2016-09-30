@@ -9,6 +9,7 @@ public class TemporaryStorage {
    private boolean newFirmwareIsAvailable;
    private boolean firmwareIsCompatible = true;
    private boolean enoughSpaceForFirmware = true;
+   private boolean failInstall = false;
 
    @Inject
    TemporaryStorage() {
@@ -36,5 +37,13 @@ public class TemporaryStorage {
 
    public boolean enoughSpaceForFirmware() {
       return enoughSpaceForFirmware;
+   }
+
+   public boolean failInstall() {
+      return failInstall;
+   }
+
+   public void failInstall(boolean failInstall) {
+      this.failInstall = failInstall;
    }
 }

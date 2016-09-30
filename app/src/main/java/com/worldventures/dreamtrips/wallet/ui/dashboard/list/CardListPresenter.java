@@ -10,12 +10,15 @@ import com.worldventures.dreamtrips.wallet.analytics.AddPaymentCardAction;
 import com.worldventures.dreamtrips.wallet.analytics.WalletAnalyticsCommand;
 import com.worldventures.dreamtrips.wallet.analytics.WalletHomeAction;
 import com.worldventures.dreamtrips.wallet.domain.entity.FirmwareInfo;
+import com.worldventures.dreamtrips.wallet.domain.entity.Firmware;
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCard;
 import com.worldventures.dreamtrips.wallet.domain.entity.card.BankCard;
 import com.worldventures.dreamtrips.wallet.service.FirmwareInteractor;
 import com.worldventures.dreamtrips.wallet.service.SmartCardInteractor;
 import com.worldventures.dreamtrips.wallet.service.command.CardListCommand;
 import com.worldventures.dreamtrips.wallet.service.command.CardStacksCommand;
+import com.worldventures.dreamtrips.wallet.service.command.ConnectSmartCardCommand;
+import com.worldventures.dreamtrips.wallet.service.command.GetActiveSmartCardCommand;
 import com.worldventures.dreamtrips.wallet.service.command.http.FetchFirmwareInfoCommand;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletPresenter;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.WalletScreen;
@@ -52,7 +55,7 @@ public class CardListPresenter extends WalletPresenter<CardListPresenter.Screen,
    @Inject NavigationDrawerPresenter navigationDrawerPresenter;
 
    private final CardListStackConverter cardListStackConverter;
-   private FirmwareInfo firmwareInfo;
+   private Firmware firmware;
 
    private int cardLoaded = 0;
 
@@ -66,10 +69,9 @@ public class CardListPresenter extends WalletPresenter<CardListPresenter.Screen,
    // BEGIN view state
    @Override
    public void applyViewState() {
-      this.firmwareInfo = state.firmwareInfo;
+      this.firmware = state.firmware;
       this.cardStackHeaderHolder = ImmutableCardStackHeaderHolder.builder()
-            .from(cardStackHeaderHolder).firmwareInfo(firmwareInfo).build();
-
+            .from(cardStackHeaderHolder).firmware(firmware).build();
    }
 
    @Override
@@ -79,7 +81,7 @@ public class CardListPresenter extends WalletPresenter<CardListPresenter.Screen,
 
    @Override
    public void onSaveInstanceState(Bundle bundle) {
-      state.firmwareInfo = firmwareInfo;
+      state.firmware = firmware;
       super.onSaveInstanceState(bundle);
    }
    // END view state
@@ -105,15 +107,14 @@ public class CardListPresenter extends WalletPresenter<CardListPresenter.Screen,
             .compose(bindViewIoToMainComposer())
             .map(it -> it.getResult())
             .subscribe(it -> {
-               this.firmwareInfo = it;
-               this.cardStackHeaderHolder = ImmutableCardStackHeaderHolder.builder()
-                     .from(cardStackHeaderHolder)
-                     .firmwareInfo(it)
-                     .build();
-               getView().notifySmartCardChanged(cardStackHeaderHolder);
-               // TODO: 9/21/16 need contract between client and server
-               if (it.byteSize() > 0) {
+               this.firmware = it;
+               if (it.updateAvailable()) {
                   getView().showFirmwareUpdateBtn();
+                  this.cardStackHeaderHolder = ImmutableCardStackHeaderHolder.builder()
+                        .from(cardStackHeaderHolder)
+                        .firmware(it)
+                        .build();
+                  getView().notifySmartCardChanged(cardStackHeaderHolder);
                } else {
                   getView().hideFirmwareUpdateBtn();
                }
@@ -187,6 +188,16 @@ public class CardListPresenter extends WalletPresenter<CardListPresenter.Screen,
       getView().notifySmartCardChanged(cardStackHeaderHolder);
       getView().showRecordsInfo(cards);
       getView().enableAddCardButton(cardLoaded != MAX_CARD_LIMIT);
+   }
+
+   private Observable<GetActiveSmartCardCommand> activeSmartCard() {
+      return smartCardInteractor.activeSmartCardPipe()
+            .createObservableResult(new GetActiveSmartCardCommand());
+   }
+
+   private Observable<ConnectSmartCardCommand> connectCard(SmartCard smartCard) {
+      return smartCardInteractor.connectActionPipe()
+            .createObservableResult(new ConnectSmartCardCommand(smartCard));
    }
 
    public interface Screen extends WalletScreen {

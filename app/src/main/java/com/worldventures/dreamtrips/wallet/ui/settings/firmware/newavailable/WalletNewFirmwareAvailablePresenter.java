@@ -57,7 +57,7 @@ public class WalletNewFirmwareAvailablePresenter extends WalletPresenter<WalletN
       firmwareInteractor.firmwareInfoPipe().observeSuccessWithReplay()
             .compose(bindViewIoToMainComposer())
             .subscribe(command -> {
-               firmwareInfo = command.getResult();
+               firmwareInfo = command.getResult().firmwareInfo();
                getView().availableFirmwareInfo(firmwareInfo);
                if (!firmwareInfo.isCompatible()) {
                   getView().requiredLatestDtAppVersion();
@@ -80,19 +80,19 @@ public class WalletNewFirmwareAvailablePresenter extends WalletPresenter<WalletN
    void downloadButtonClicked() {
       File mostAppropriateStorage = getMostAppropriateCacheStorage(getContext());
       if (checkStorageAvailability(mostAppropriateStorage)) {
-         downloadFile(getPathForFirmware(mostAppropriateStorage, firmwareInfo.downloadUrl()));
+         downloadFile(getPathForFirmware(mostAppropriateStorage, firmwareInfo.url()));
       }
    }
 
    void downloadFile(String filePath) {
-      navigator.go(new WalletDownloadFirmwarePath(firmwareInfo,filePath));
+      navigator.go(new WalletDownloadFirmwarePath(firmwareInfo, filePath));
    }
 
    private boolean checkStorageAvailability(File file) {
       long availableBytes = getAvailableBytes(file, temporaryStorage);
-      boolean enoughSpace = availableBytes > firmwareInfo.byteSize();
+      boolean enoughSpace = availableBytes > firmwareInfo.fileSize();
       if (!enoughSpace) {
-         getView().insufficientSpace(firmwareInfo.byteSize() - availableBytes);
+         getView().insufficientSpace(firmwareInfo.fileSize() - availableBytes);
       }
       return enoughSpace;
    }

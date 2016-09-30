@@ -34,7 +34,7 @@ public class MappingModule {
 
    @Provides(type = Provides.Type.SET)
    @Singleton
-   Converter provideFlagsMapper() {
+   Converter provideFlagsConverter() {
       return new FlagConverter();
    }
 

@@ -2,7 +2,6 @@ package com.worldventures.dreamtrips.modules.tripsimages.presenter.fullscreen;
 
 import android.support.v4.app.FragmentManager;
 
-import com.messenger.delegate.FlagsInteractor;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.navigation.router.Router;
@@ -11,7 +10,7 @@ import com.worldventures.dreamtrips.core.utils.events.EntityLikedEvent;
 import com.worldventures.dreamtrips.core.utils.events.PhotoDeletedEvent;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.common.model.FlagData;
-import com.worldventures.dreamtrips.modules.common.presenter.delegate.UidItemDelegate;
+import com.worldventures.dreamtrips.modules.common.presenter.delegate.FlagDelegate;
 import com.worldventures.dreamtrips.modules.common.view.custom.tagview.viewgroup.newio.model.PhotoTag;
 import com.worldventures.dreamtrips.modules.feed.api.GetFeedEntityQuery;
 import com.worldventures.dreamtrips.modules.feed.bundle.CommentsBundle;
@@ -21,6 +20,7 @@ import com.worldventures.dreamtrips.modules.feed.event.FeedEntityDeletedEvent;
 import com.worldventures.dreamtrips.modules.feed.manager.FeedEntityManager;
 import com.worldventures.dreamtrips.modules.feed.model.FeedEntity;
 import com.worldventures.dreamtrips.modules.feed.view.cell.Flaggable;
+import com.worldventures.dreamtrips.modules.flags.service.FlagsInteractor;
 import com.worldventures.dreamtrips.modules.tripsimages.api.DeletePhotoCommand;
 import com.worldventures.dreamtrips.modules.tripsimages.api.DeletePhotoTagsCommand;
 import com.worldventures.dreamtrips.modules.tripsimages.bundle.EditPhotoBundle;
@@ -36,7 +36,7 @@ public class SocialImageFullscreenPresenter extends SocialFullScreenPresenter<Ph
 
    @Inject FeedEntityManager entityManager;
 
-   private UidItemDelegate uidItemDelegate;
+   private FlagDelegate flagDelegate;
 
    public SocialImageFullscreenPresenter(Photo photo, TripImagesType type) {
       super(photo, type);
@@ -57,7 +57,7 @@ public class SocialImageFullscreenPresenter extends SocialFullScreenPresenter<Ph
    public void onInjected() {
       super.onInjected();
       entityManager.setRequestingPresenter(this);
-      uidItemDelegate = new UidItemDelegate(this, flagsInteractor);
+      flagDelegate = new FlagDelegate(flagsInteractor);
    }
 
    public void loadEntity() {
@@ -96,7 +96,7 @@ public class SocialImageFullscreenPresenter extends SocialFullScreenPresenter<Ph
 
    @Override
    public void sendFlagAction(int flagReasonId, String reason) {
-      uidItemDelegate.flagItem(new FlagData(photo.getUid(), flagReasonId, reason), view);
+      flagDelegate.flagItem(new FlagData(photo.getUid(), flagReasonId, reason), view, this::handleError);
    }
 
    @Override
@@ -133,7 +133,7 @@ public class SocialImageFullscreenPresenter extends SocialFullScreenPresenter<Ph
    @Override
    public void onFlagAction(Flaggable flaggable) {
       view.showProgress();
-      uidItemDelegate.loadFlags(flaggable, (command, throwable) -> {
+      flagDelegate.loadFlags(flaggable, (command, throwable) -> {
          view.hideProgress();
          handleError(command, throwable);
       });
@@ -161,7 +161,7 @@ public class SocialImageFullscreenPresenter extends SocialFullScreenPresenter<Ph
       return photo;
    }
 
-   public interface View extends SocialFullScreenPresenter.View, UidItemDelegate.View {
+   public interface View extends SocialFullScreenPresenter.View, FlagDelegate.View {
 
       void showProgress();
 

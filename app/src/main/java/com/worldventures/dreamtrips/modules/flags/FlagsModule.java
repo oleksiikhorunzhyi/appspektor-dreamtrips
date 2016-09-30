@@ -1,6 +1,7 @@
 package com.worldventures.dreamtrips.modules.flags;
 
-import com.messenger.delegate.FlagsInteractor;
+import com.worldventures.dreamtrips.modules.flags.command.FlagItemCommand;
+import com.worldventures.dreamtrips.modules.flags.service.FlagsInteractor;
 import com.worldventures.dreamtrips.core.janet.SessionActionPipeCreator;
 import com.worldventures.dreamtrips.modules.flags.command.GetFlagsCommand;
 
@@ -11,7 +12,8 @@ import dagger.Provides;
 
 @Module(
       injects = {
-            GetFlagsCommand.class
+            GetFlagsCommand.class,
+            FlagItemCommand.class
       },
       library = true, complete = false)
 public class FlagsModule {

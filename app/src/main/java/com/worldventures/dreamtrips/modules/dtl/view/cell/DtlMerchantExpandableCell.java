@@ -27,6 +27,7 @@ import com.worldventures.dreamtrips.modules.dtl.model.merchant.ImmutableThinMerc
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.MerchantMedia;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.offer.Offer;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.operational_hour.OperationDay;
+import com.worldventures.dreamtrips.modules.dtl.view.cell.delegates.MerchantCellDelegate;
 import com.worldventures.dreamtrips.modules.settings.model.Setting;
 import com.worldventures.dreamtrips.modules.settings.util.SettingsFactory;
 
@@ -41,7 +42,7 @@ import io.techery.properratingbar.ProperRatingBar;
 import rx.Observable;
 
 @Layout(R.layout.adapter_item_dtl_merchant_expandable)
-public class DtlMerchantExpandableCell extends AbstractDelegateCell<ImmutableThinMerchant, DtlMerchantCellDelegate> {
+public class DtlMerchantExpandableCell extends AbstractDelegateCell<ImmutableThinMerchant, MerchantCellDelegate> {
 
    @InjectView(R.id.merchantCoverImage) ImageryDraweeView merchantCoverImage;
    @InjectView(R.id.merchantPricing) ProperRatingBar pricing;
@@ -56,11 +57,11 @@ public class DtlMerchantExpandableCell extends AbstractDelegateCell<ImmutableThi
    @InjectView(R.id.perk_toggle_label) TextView perkToggleText;
    @InjectView(R.id.expandedContainer) ViewGroup expandedContainer;
 
-   @Inject AnalyticsInteractor analyticsInteractor;
    @Inject LocaleHelper localeHelper;
 
    private final LayoutInflater inflater;
    private DistanceType distanceType;
+   private boolean expanded;
 
    public DtlMerchantExpandableCell(View view) {
       super(view);
@@ -86,6 +87,10 @@ public class DtlMerchantExpandableCell extends AbstractDelegateCell<ImmutableThi
 
    public void setDistanceType(DistanceType distanceType) {
       this.distanceType = distanceType;
+   }
+
+   public void setExpanded(boolean expanded) {
+      this.expanded = expanded;
    }
 
    private void setImage(List<MerchantMedia> mediaList) {
@@ -135,10 +140,10 @@ public class DtlMerchantExpandableCell extends AbstractDelegateCell<ImmutableThi
    }
 
    private void setToggleView() {
-//      int toggleDrawable = getModelObject().isExpanded() ? R.drawable.ic_arrow_up_grey : R.drawable.ic_arrow_down_grey;
-//      perkToggleImage.setBackgroundResource(toggleDrawable);
-//      //
-//      ViewUtils.setViewVisibility(perkToggleText, getModelObject().isExpanded() ? View.VISIBLE : View.GONE);
+      int toggleDrawable = expanded ? R.drawable.ic_arrow_up_grey : R.drawable.ic_arrow_down_grey;
+      perkToggleImage.setBackgroundResource(toggleDrawable);
+      //
+      ViewUtils.setViewVisibility(perkToggleText, expanded ? View.VISIBLE : View.GONE);
    }
 
    /**
@@ -146,28 +151,21 @@ public class DtlMerchantExpandableCell extends AbstractDelegateCell<ImmutableThi
     * TODO :: 5/20/16
     */
    private void setExpandedArea() {
-//      if (getModelObject().isExpanded()) {
-//         expandedContainer.setVisibility(View.VISIBLE);
-//         expandedContainer.removeAllViews();
-//         Queryable.from(getModelObject().getOffers()).forEachR(offer -> {
-//            if (offer.type() == OfferType.PERK) bindPerkCell(offer, expandedContainer);
-//            else bindPointsCell(offer, expandedContainer);
-//         });
-//      } else {
-//         expandedContainer.setVisibility(View.GONE);
-//      }
+      if (expanded) {
+         expandedContainer.setVisibility(View.VISIBLE);
+         expandedContainer.removeAllViews();
+         Queryable.from(getModelObject().offers()).forEachR(offer -> {
+            if (offer.type() == OfferType.PERK) bindPerkCell(offer, expandedContainer);
+            else bindPointsCell(offer, expandedContainer);
+         });
+      } else {
+         expandedContainer.setVisibility(View.GONE);
+      }
    }
-
-   private View.OnClickListener offerClickedListener = v -> cellDelegate.onOfferClick(getModelObject(), (Offer) v.getTag());
 
    @OnClick(R.id.offers_container)
    void togglExpandClicked() {
-//      getModelObject().toggleExpanded();
-//      if (getModelObject().isExpanded()) {
-//         analyticsInteractor.dtlAnalyticsCommandPipe()
-//               .send(DtlAnalyticsCommand.create(new MerchantsListingExpandEvent(getModelObject())));
-//      }
-//      cellDelegate.onExpandedToggle(getAdapterPosition());
+      cellDelegate.onToggleExpanded(!expanded, getModelObject());
    }
 
    @OnClick(R.id.merchantCellBodyLayout)
@@ -178,14 +176,14 @@ public class DtlMerchantExpandableCell extends AbstractDelegateCell<ImmutableThi
    private void bindPointsCell(Offer offer, ViewGroup container) {
       View cellView = inflater.inflate(R.layout.adapter_item_offer_points, container, false);
       cellView.setTag(offer);
-      cellView.setOnClickListener(offerClickedListener);
+      cellView.setOnClickListener(v -> cellDelegate.onOfferClick(getModelObject(), (Offer) v.getTag()));
       container.addView(cellView);
    }
 
    private void bindPerkCell(Offer offer, ViewGroup container) {
       View cellView = inflater.inflate(R.layout.adapter_item_offer_perk, container, false);
       cellView.setTag(offer);
-      cellView.setOnClickListener(offerClickedListener);
+      cellView.setOnClickListener(v -> cellDelegate.onOfferClick(getModelObject(), (Offer) v.getTag()));
       ImageryDraweeView image = ButterKnife.<ImageryDraweeView>findById(cellView, R.id.perk_logo);
       TextView title = ButterKnife.<TextView>findById(cellView, R.id.perks_description);
       TextView operationDaysCaption = ButterKnife.<TextView>findById(cellView, R.id.perks_operation_days);

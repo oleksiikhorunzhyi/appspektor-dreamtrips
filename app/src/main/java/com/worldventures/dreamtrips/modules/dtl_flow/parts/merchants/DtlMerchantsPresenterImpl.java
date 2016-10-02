@@ -1,6 +1,7 @@
 package com.worldventures.dreamtrips.modules.dtl_flow.parts.merchants;
 
 import android.content.Context;
+import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
 
@@ -8,6 +9,7 @@ import com.techery.spares.module.Injector;
 import com.worldventures.dreamtrips.core.api.action.CommandWithError;
 import com.worldventures.dreamtrips.modules.dtl.analytics.DtlAnalyticsCommand;
 import com.worldventures.dreamtrips.modules.dtl.analytics.MerchantFromSearchEvent;
+import com.worldventures.dreamtrips.modules.dtl.analytics.MerchantsListingExpandEvent;
 import com.worldventures.dreamtrips.modules.dtl.analytics.MerchantsListingViewEvent;
 import com.worldventures.dreamtrips.modules.dtl.event.ToggleMerchantSelectionEvent;
 import com.worldventures.dreamtrips.modules.dtl.helper.MerchantHelper;
@@ -42,7 +44,7 @@ import icepick.State;
 import io.techery.janet.helper.ActionStateSubscriber;
 import io.techery.janet.helper.ActionStateToActionTransformer;
 
-public class DtlMerchantsPresenterImpl extends DtlPresenterImpl<DtlMerchantsScreen, ViewState.EMPTY>
+public class DtlMerchantsPresenterImpl extends DtlPresenterImpl<DtlMerchantsScreen, DtlMerchantsState>
       implements DtlMerchantsPresenter {
 
    @Inject FilterDataInteractor filterDataInteractor;
@@ -59,9 +61,27 @@ public class DtlMerchantsPresenterImpl extends DtlPresenterImpl<DtlMerchantsScre
    }
 
    @Override
+   public void onNewViewState() {
+      state = new DtlMerchantsState();
+   }
+
+   @Override
+   public void onSaveInstanceState(Bundle bundle) {
+      state.setExpandedMerchantIds(getView().getExpandedOffers());
+      super.onSaveInstanceState(bundle);
+   }
+
+   @Override
+   public void onRestoreInstanceState(Bundle instanceState) {
+      super.onRestoreInstanceState(instanceState);
+      getView().setExpandedOffers(state.getExpandedMerchantIds());
+   }
+
+   @Override
    public void onAttachedToWindow() {
       super.onAttachedToWindow();
       apiErrorPresenter.setView(getView());
+
       merchantInteractor.thinMerchantsHttpPipe()
             .observe()
             .compose(bindView())
@@ -165,6 +185,13 @@ public class DtlMerchantsPresenterImpl extends DtlPresenterImpl<DtlMerchantsScre
    @Override
    public void onOfferClick(ThinMerchant dtlMerchant, Offer offer) {
       loadMerchant(dtlMerchant, offer.id());
+   }
+
+   @Override
+   public void onToggleExpand(boolean expand, ThinMerchant merchant) {
+      if (!expand) return;
+      analyticsInteractor.dtlAnalyticsCommandPipe()
+            .send(DtlAnalyticsCommand.create(new MerchantsListingExpandEvent(merchant.asMerchantAttributes())));
    }
 
    @Override

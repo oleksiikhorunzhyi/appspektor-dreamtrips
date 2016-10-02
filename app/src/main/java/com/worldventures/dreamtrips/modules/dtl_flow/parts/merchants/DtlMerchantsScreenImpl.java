@@ -3,10 +3,10 @@ package com.worldventures.dreamtrips.modules.dtl_flow.parts.merchants;
 import android.content.Context;
 import android.support.annotation.Nullable;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
 import android.view.View;
 
-import com.techery.spares.adapter.BaseDelegateAdapter;
 import com.techery.spares.adapter.expandable.ExpandableLayoutManager;
 import com.trello.rxlifecycle.RxLifecycle;
 import com.worldventures.dreamtrips.R;
@@ -19,14 +19,15 @@ import com.worldventures.dreamtrips.modules.dtl.model.location.DtlLocation;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.ImmutableThinMerchant;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.ThinMerchant;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.offer.Offer;
-import com.worldventures.dreamtrips.modules.dtl.view.cell.DtlMerchantCellDelegate;
 import com.worldventures.dreamtrips.modules.dtl.view.cell.DtlMerchantExpandableCell;
 import com.worldventures.dreamtrips.modules.dtl.view.cell.adapter.ThinMerchantsAdapter;
+import com.worldventures.dreamtrips.modules.dtl.view.cell.delegates.MerchantCellDelegate;
 import com.worldventures.dreamtrips.modules.dtl.view.dialog.DialogFactory;
 import com.worldventures.dreamtrips.modules.dtl_flow.DtlLayout;
 import com.worldventures.dreamtrips.modules.dtl_flow.view.toolbar.DtlToolbarHelper;
 import com.worldventures.dreamtrips.modules.dtl_flow.view.toolbar.ExpandableDtlToolbar;
 import com.worldventures.dreamtrips.modules.dtl_flow.view.toolbar.RxDtlToolbar;
+import com.worldventures.dreamtrips.modules.feed.view.custom.StateRecyclerView;
 
 import java.util.Collections;
 import java.util.List;
@@ -37,14 +38,14 @@ import butterknife.Optional;
 import cn.pedant.SweetAlert.SweetAlertDialog;
 
 public class DtlMerchantsScreenImpl extends DtlLayout<DtlMerchantsScreen, DtlMerchantsPresenter, DtlMerchantsPath>
-      implements DtlMerchantsScreen, DtlMerchantCellDelegate {
+      implements DtlMerchantsScreen, MerchantCellDelegate {
 
    @Optional @InjectView(R.id.expandableDtlToolbar) ExpandableDtlToolbar dtlToolbar;
    @InjectView(R.id.lv_items) EmptyRecyclerView recyclerView;
    @InjectView(R.id.swipe_container) SwipeRefreshLayout refreshLayout;
    @InjectView(R.id.emptyView) View emptyView;
 
-   BaseDelegateAdapter baseDelegateAdapter;
+   ThinMerchantsAdapter adapter;
    SelectionManager selectionManager;
    SweetAlertDialog errorDialog;
 
@@ -59,14 +60,14 @@ public class DtlMerchantsScreenImpl extends DtlLayout<DtlMerchantsScreen, DtlMer
       super.onPostAttachToWindowView();
       initDtlToolbar();
 
-      baseDelegateAdapter = new ThinMerchantsAdapter(getActivity(), injector);
-      baseDelegateAdapter.registerCell(ImmutableThinMerchant.class, DtlMerchantExpandableCell.class);
-      baseDelegateAdapter.registerDelegate(ImmutableThinMerchant.class, this);
+      adapter = new ThinMerchantsAdapter(getActivity(), injector);
+      adapter.registerCell(ImmutableThinMerchant.class, DtlMerchantExpandableCell.class);
+      adapter.registerDelegate(ImmutableThinMerchant.class, this);
 
       selectionManager = new SingleSelectionManager(recyclerView);
       selectionManager.setEnabled(isTabletLandscape());
 
-      recyclerView.setAdapter(baseDelegateAdapter);
+      recyclerView.setAdapter(adapter);
       recyclerView.setEmptyView(emptyView);
 
       refreshLayout.setColorSchemeResources(R.color.theme_main_darker);
@@ -108,7 +109,17 @@ public class DtlMerchantsScreenImpl extends DtlLayout<DtlMerchantsScreen, DtlMer
 
    @Override
    public void showEmptyMerchantView(boolean show) {
-      baseDelegateAdapter.setItems(Collections.emptyList());
+      adapter.setItems(Collections.emptyList());
+   }
+
+   @Override
+   public void setExpandedOffers(List<String> expandedOffers) {
+      adapter.setExpandedMerchantIds(expandedOffers);
+   }
+
+   @Override
+   public List<String> getExpandedOffers() {
+      return adapter.getExpandedMerchantIds();
    }
 
    @Override
@@ -124,13 +135,14 @@ public class DtlMerchantsScreenImpl extends DtlLayout<DtlMerchantsScreen, DtlMer
    }
 
    @Override
-   public void onCellClicked(ImmutableThinMerchant merchant) {
-      getPresenter().merchantClicked(merchant);
+   public void onToggleExpanded(boolean expanded, ImmutableThinMerchant item) {
+      adapter.toogle(expanded, item);
+      getPresenter().onToggleExpand(expanded, item);
    }
 
    @Override
-   public void onExpandedToggle(int position) {
-      baseDelegateAdapter.notifyItemChanged(position);
+   public void onCellClicked(ImmutableThinMerchant merchant) {
+      getPresenter().merchantClicked(merchant);
    }
 
    @Override
@@ -141,7 +153,7 @@ public class DtlMerchantsScreenImpl extends DtlLayout<DtlMerchantsScreen, DtlMer
    @Override
    public void setItems(List<ThinMerchant> merchants) {
       hideProgress();
-      baseDelegateAdapter.setItems(merchants);
+      adapter.setItems(merchants);
    }
 
    @Override
@@ -174,7 +186,7 @@ public class DtlMerchantsScreenImpl extends DtlLayout<DtlMerchantsScreen, DtlMer
 
    @Override
    public void toggleSelection(ThinMerchant merchant) {
-      int index = baseDelegateAdapter.getItems().indexOf(merchant);
+      int index = adapter.getItems().indexOf(merchant);
       if (index != -1) selectionManager.toggleSelection(index);
    }
 

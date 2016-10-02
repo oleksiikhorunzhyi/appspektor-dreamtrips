@@ -32,5 +32,9 @@ public interface DtlMerchantsScreen extends DtlScreen {
 
    void showEmptyMerchantView(boolean show);
 
+   void setExpandedOffers(List<String> expandedOffers);
+
+   List<String> getExpandedOffers();
+
    DtlMerchantsPath getPath();
 }

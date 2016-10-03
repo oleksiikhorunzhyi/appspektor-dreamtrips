@@ -68,7 +68,7 @@ public class SendFeedbackCommand extends CommandWithError<Void> implements Injec
 
    private Feedback.SmartCardMetadata provideSmartCardMetadata(SmartCard smartCard) {
       return ImmutableSmartCardMetadata.builder()
-            .smartCardId(smartCard.smartCardId())
+            .smartCardId(Integer.parseInt(smartCard.smartCardId()))
             .smartCardSerialNumber(smartCard.serialNumber())
             .bleId(smartCard.deviceAddress())
             .firmwareVersion(smartCard.firmWareVersion())

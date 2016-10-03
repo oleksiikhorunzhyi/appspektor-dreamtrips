@@ -1,7 +1,7 @@
 package com.worldventures.dreamtrips.wallet.domain.converter;
 
+import com.worldventures.dreamtrips.api.smart_card.firmware.model.FirmwareResponse;
 import com.worldventures.dreamtrips.wallet.domain.entity.Firmware;
-import com.worldventures.dreamtrips.wallet.domain.entity.FirmwareResponse;
 import com.worldventures.dreamtrips.wallet.domain.entity.ImmutableFirmware;
 
 import io.techery.mappery.MapperyContext;

@@ -15,7 +15,6 @@ import com.facebook.drawee.view.SimpleDraweeView;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.utils.QuantityHelper;
 import com.worldventures.dreamtrips.modules.common.view.custom.BadgeView;
-import com.worldventures.dreamtrips.wallet.domain.entity.FirmwareInfo;
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCard;
 
 import butterknife.ButterKnife;

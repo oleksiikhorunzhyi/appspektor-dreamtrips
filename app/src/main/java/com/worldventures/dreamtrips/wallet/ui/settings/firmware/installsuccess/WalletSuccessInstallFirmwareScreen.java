@@ -4,6 +4,7 @@ import android.animation.AnimatorSet;
 import android.content.Context;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
+import android.support.annotation.NonNull;
 import android.support.v7.widget.Toolbar;
 import android.util.AttributeSet;
 import android.view.View;
@@ -65,6 +66,7 @@ public class WalletSuccessInstallFirmwareScreen
       );
    }
 
+   @NonNull
    @Override
    public WalletSuccessInstallFirmwarePresenter createPresenter() {
       return new WalletSuccessInstallFirmwarePresenter(getContext(), getInjector());

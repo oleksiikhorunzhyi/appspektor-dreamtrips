@@ -10,43 +10,43 @@ import rx.functions.Action1;
 import rx.functions.Action2;
 import rx.functions.Func1;
 
-public final class OperationSubscriberWrapper<T> {
-   public static <T> OperationSubscriberWrapper<T> forView(OperationScreen view) {
-      return new OperationSubscriberWrapper<>(view);
-   }
+public final class OperationActionStateSubscriberWrapper<T> {
 
    private OperationScreen view;
 
    private Func1<Throwable, MessageActionHolder<T>> onFailFactory;
    private Action2<T, Integer> onProgress;
+   private Action1<T> onSuccessAction;
 
-   private @Nullable Action1<T> onSuccesAction;
-
-   private OperationSubscriberWrapper(OperationScreen view) {
+   private OperationActionStateSubscriberWrapper(OperationScreen view) {
       this.view = view;
    }
 
-   public OperationSubscriberWrapper<T> onSuccess(@Nullable Action1<T> onSuccess) {
-      this.onSuccesAction = onSuccess;
+   public static <T> OperationActionStateSubscriberWrapper<T> forView(OperationScreen view) {
+      return new OperationActionStateSubscriberWrapper<>(view);
+   }
+
+   public OperationActionStateSubscriberWrapper<T> onSuccess(@Nullable Action1<T> onSuccess) {
+      this.onSuccessAction = onSuccess;
       return this;
    }
 
-   public OperationSubscriberWrapper<T> onFail(String message, @Nullable Action1<T> onFail) {
+   public OperationActionStateSubscriberWrapper<T> onFail(String message, @Nullable Action1<T> onFail) {
       this.onFailFactory = throwable -> new MessageActionHolder<>(message, onFail);
       return this;
    }
 
-   public OperationSubscriberWrapper<T> onFail(String message) {
+   public OperationActionStateSubscriberWrapper<T> onFail(String message) {
       return onFail(message, null);
    }
 
-   public OperationSubscriberWrapper<T> onFail(Func1<Throwable, MessageActionHolder<T>> factoryFailFunc) {
+   public OperationActionStateSubscriberWrapper<T> onFail(Func1<Throwable, MessageActionHolder<T>> factoryFailFunc) {
       this.onFailFactory = factoryFailFunc;
       return this;
    }
 
    @SuppressWarnings("unused")
-   public OperationSubscriberWrapper<T> onProgress(Action2<T, Integer> onProgress) {
+   public OperationActionStateSubscriberWrapper<T> onProgress(Action2<T, Integer> onProgress) {
       this.onProgress = onProgress;
       return this;
    }
@@ -55,7 +55,7 @@ public final class OperationSubscriberWrapper<T> {
       return new ActionStateSubscriber<T>().onStart(t -> view.showProgress())
             .onSuccess(t -> {
                view.hideProgress();
-               if (onSuccesAction != null) onSuccesAction.call(t);
+               if (onSuccessAction != null) onSuccessAction.call(t);
             })
             .onFail((t, throwable) -> {
                final MessageActionHolder<T> failHolder = onFailFactory != null ? onFailFactory.call(throwable) : null;
@@ -70,26 +70,6 @@ public final class OperationSubscriberWrapper<T> {
                   onProgress.call(t, integer);
                }
             });
-   }
-
-   public static final class MessageActionHolder<T> {
-      Action1<T> action;
-      MessageProvider<T> message;
-
-      public MessageActionHolder(String message, Action1<T> action) {
-         this(t -> message, action);
-      }
-
-      public MessageActionHolder(MessageProvider<T> message, Action1<T> action) {
-         this.message = message;
-         this.action = action;
-      }
-   }
-
-   public interface MessageProvider<T> {
-      MessageProvider NULL = action -> null;
-
-      String provide(T action);
    }
 
    private boolean hasActionMessage(MessageActionHolder<T> holder) {

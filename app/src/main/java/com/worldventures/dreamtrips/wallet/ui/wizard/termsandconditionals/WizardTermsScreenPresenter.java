@@ -12,6 +12,8 @@ import com.worldventures.dreamtrips.wallet.analytics.WalletAnalyticsCommand;
 import com.worldventures.dreamtrips.wallet.service.command.http.FetchTermsAndConditionsCommand;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletPresenter;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.WalletScreen;
+import com.worldventures.dreamtrips.wallet.ui.common.helper.ErrorHandler;
+import com.worldventures.dreamtrips.wallet.ui.common.helper.ErrorSubscriberWrapper;
 import com.worldventures.dreamtrips.wallet.ui.common.navigation.Navigator;
 import com.worldventures.dreamtrips.wallet.ui.wizard.splash.WizardSplashPath;
 
@@ -20,6 +22,7 @@ import javax.inject.Named;
 
 import flow.Flow.Direction;
 import io.techery.janet.Janet;
+import rx.functions.Action1;
 
 import static com.worldventures.dreamtrips.core.janet.JanetModule.JANET_WALLET;
 
@@ -49,8 +52,16 @@ public class WizardTermsScreenPresenter extends WalletPresenter<WizardTermsScree
       janet.createPipe(FetchTermsAndConditionsCommand.class)
             .createObservableResult(new FetchTermsAndConditionsCommand())
             .compose(bindViewIoToMainComposer())
-            .map(it -> it.getResult().url())
-            .subscribe(it -> getView().showTerms(it), throwable -> getView().failedToLoadTerms());
+            .subscribe(ErrorSubscriberWrapper.<FetchTermsAndConditionsCommand>forView(getView().provideOperationDelegate())
+                  .onNext(new Action1<FetchTermsAndConditionsCommand>() {
+                     @Override
+                     public void call(FetchTermsAndConditionsCommand command) {
+                        WizardTermsScreenPresenter.this.getView().showTerms(command.getResult().url());
+                     }
+                  })
+                  .onFail(ErrorHandler.create(getContext(), throwable -> getView().failedToLoadTerms()))
+                  .wrap()
+            );
    }
 
    public void onBack() {

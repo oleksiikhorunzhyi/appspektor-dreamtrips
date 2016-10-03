@@ -12,13 +12,14 @@ import com.worldventures.dreamtrips.wallet.domain.entity.SmartCard;
 import com.worldventures.dreamtrips.wallet.service.WizardInteractor;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletPresenter;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.WalletScreen;
+import com.worldventures.dreamtrips.wallet.ui.common.helper.ErrorActionStateSubscriberWrapper;
+import com.worldventures.dreamtrips.wallet.ui.common.helper.ErrorHandler;
 import com.worldventures.dreamtrips.wallet.ui.common.navigation.Navigator;
 import com.worldventures.dreamtrips.wallet.ui.wizard.finish.WalletPinIsSetPath;
 import com.worldventures.dreamtrips.wallet.ui.wizard.pin_set_success.PinSetSuccessPath;
 
 import javax.inject.Inject;
 
-import io.techery.janet.helper.ActionStateSubscriber;
 import io.techery.janet.smartcard.action.settings.StartPinSetupAction;
 import io.techery.janet.smartcard.event.PinSetupFinishedEvent;
 
@@ -61,19 +62,26 @@ public class WizardPinSetupPresenter extends WalletPresenter<WizardPinSetupPrese
       wizardInteractor.pinSetupFinishedPipe()
             .observeWithReplay()
             .compose(bindViewIoToMainComposer())
-            .subscribe(new ActionStateSubscriber<PinSetupFinishedEvent>().onSuccess(action -> {
-               getView().provideOperationDelegate().hideProgress();
-               navigateToNextScreen();
-            })
-                  .onFail((action, throwable) -> getView().provideOperationDelegate()
-                        .showError(getContext().getString(R.string.wallet_wizard_setup_error), null)));
+            .subscribe(ErrorActionStateSubscriberWrapper.<PinSetupFinishedEvent>forView(getView().provideOperationDelegate())
+                  .onSuccess(action -> {
+                     getView().provideOperationDelegate().hideProgress();
+                     navigateToNextScreen();
+                  })
+                  .onFail(ErrorHandler.<PinSetupFinishedEvent>builder(getContext())
+                        .defaultMessage(R.string.wallet_wizard_setup_error)
+                        .build())
+                  .wrap());
 
       wizardInteractor.startPinSetupPipe()
             .observeWithReplay()
             .compose(bindViewIoToMainComposer())
-            .subscribe(new ActionStateSubscriber<StartPinSetupAction>().onFail((action1, throwable) -> getView().provideOperationDelegate()
-                  .showError(getContext().getString(R.string.wallet_wizard_setup_error), null))
-                  .onStart(action -> getView().provideOperationDelegate().showProgress()));
+            .subscribe(ErrorActionStateSubscriberWrapper.<StartPinSetupAction>forView(getView().provideOperationDelegate())
+                  .onFail(ErrorHandler.<StartPinSetupAction>builder(getContext())
+                        .defaultMessage(R.string.wallet_wizard_setup_error)
+                        .build())
+                  .onStart(action -> getView().provideOperationDelegate().showProgress())
+                  .wrap()
+            );
    }
 
    public void setupPIN() {

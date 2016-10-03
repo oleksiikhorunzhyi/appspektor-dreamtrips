@@ -12,7 +12,9 @@ import com.worldventures.dreamtrips.wallet.service.command.CreateAndConnectToCar
 import com.worldventures.dreamtrips.wallet.service.command.http.AssociateCardUserCommand;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletPresenter;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.WalletScreen;
-import com.worldventures.dreamtrips.wallet.ui.common.helper.OperationSubscriberWrapper;
+import com.worldventures.dreamtrips.wallet.ui.common.helper.ErrorActionStateSubscriberWrapper;
+import com.worldventures.dreamtrips.wallet.ui.common.helper.ErrorHandler;
+import com.worldventures.dreamtrips.wallet.ui.common.helper.OperationActionStateSubscriberWrapper;
 import com.worldventures.dreamtrips.wallet.ui.common.navigation.Navigator;
 import com.worldventures.dreamtrips.wallet.ui.wizard.welcome.WizardWelcomePath;
 
@@ -58,13 +60,25 @@ public class ConnectSmartCardPresenter extends WalletPresenter<ConnectSmartCardP
             .observeWithReplay()
             .compose(bindViewIoToMainComposer())
             .compose(new ActionPipeCacheWiper<>(wizardInteractor.createAndConnectActionPipe()))
-            .subscribe(OperationSubscriberWrapper.<CreateAndConnectToCardCommand>forView(getView().provideOperationDelegate())
+            .subscribe(OperationActionStateSubscriberWrapper.<CreateAndConnectToCardCommand>forView(getView().provideOperationDelegate())
                   .onSuccess(command -> smartCardCreated(command.getSmartCardId()))
-                  .onFail(throwable -> new OperationSubscriberWrapper.MessageActionHolder<>(getContext().getString(R.string.wallet_wizard_scid_validation_error),
-                        command -> {
+                  .onFail(ErrorHandler.<CreateAndConnectToCardCommand>builder(getContext())
+                        .defaultMessage(R.string.wallet_wizard_scid_validation_error)
+                        .defaultAction(command ->  {
                            navigator.goBack();
                            Timber.e("Could not connect to device");
-                        })).wrap());
+                        })
+                        .build())
+                  .wrap());
+
+      wizardInteractor.associateCardUserCommandPipe()
+            .observe()
+            .compose(bindViewIoToMainComposer())
+            .subscribe(ErrorActionStateSubscriberWrapper.<AssociateCardUserCommand>forView(getView().provideOperationDelegate())
+                  .onFail(ErrorHandler.create(getContext(), command -> navigator.goBack()))
+                  .wrap()
+            );
+
       wizardInteractor.associateCardUserCommandPipe().send(new AssociateCardUserCommand(barcode));
    }
 

@@ -81,11 +81,6 @@ public class CardListScreen extends WalletLinearLayout<CardListPresenter.Screen,
    }
 
    @Override
-   public void enableAddCardButton(boolean enabled) {
-      addCardButton.setEnabled(enabled);
-   }
-
-   @Override
    public void notifySmartCardChanged(CardStackHeaderHolder cardStackHeaderHolder) {
       Object header = Queryable.from(adapter.getItems()).firstOrDefault(it -> it instanceof CardStackHeaderHolder);
       if (header != null) {
@@ -96,10 +91,24 @@ public class CardListScreen extends WalletLinearLayout<CardListPresenter.Screen,
    }
 
    @Override
-   public void showAddCardErrorDialog() {
-      new MaterialDialog.Builder(getContext())
-            .content(R.string.wallet_wizard_full_card_list_error_message)
-            .positiveText(R.string.ok)
+   public void showAddCardErrorDialog(@ErrorDialogType int errorDialogType) {
+      MaterialDialog.Builder builder = new MaterialDialog.Builder(getContext());
+
+      switch (errorDialogType) {
+         case ERROR_DIALOG_FULL_SMARTCARD:
+            builder.content(R.string.wallet_wizard_full_card_list_error_message);
+            break;
+         case ERROR_DIALOG_NO_INTERNET_CONNECTION:
+            builder.title(R.string.wallet_wizard_no_internet_connection_title);
+            builder.content(R.string.wallet_wizard_limited_access);
+            break;
+         case ERROR_DIALOG_NO_SMARTCARD_CONNECTION:
+            builder.title(R.string.wallet_wizard_no_connection_to_card_title);
+            builder.content(R.string.wallet_wizard_limited_access);
+            break;
+      }
+
+      builder.positiveText(R.string.ok)
             .negativeText(R.string.cancel)
             .build()
             .show();

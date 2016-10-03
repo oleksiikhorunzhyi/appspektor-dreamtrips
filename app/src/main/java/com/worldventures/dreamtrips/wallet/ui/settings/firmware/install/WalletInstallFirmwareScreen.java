@@ -3,6 +3,8 @@ package com.worldventures.dreamtrips.wallet.ui.settings.firmware.install;
 import android.content.Context;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v7.widget.Toolbar;
 import android.util.AttributeSet;
 
@@ -14,6 +16,7 @@ import com.worldventures.dreamtrips.wallet.ui.common.base.screen.delegate.Dialog
 import com.worldventures.dreamtrips.wallet.ui.widget.WalletProgressWidget;
 
 import butterknife.InjectView;
+import rx.functions.Action1;
 
 public class WalletInstallFirmwareScreen extends WalletLinearLayout<WalletInstallFirmwarePresenter.Screen, WalletInstallFirmwarePresenter, WalletInstallFirmwarePath>
       implements WalletInstallFirmwarePresenter.Screen {
@@ -29,6 +32,7 @@ public class WalletInstallFirmwareScreen extends WalletLinearLayout<WalletInstal
       super(context, attrs);
    }
 
+   @NonNull
    @Override
    public WalletInstallFirmwarePresenter createPresenter() {
       return new WalletInstallFirmwarePresenter(getContext(), getInjector(), getPath().filePath());
@@ -46,8 +50,23 @@ public class WalletInstallFirmwareScreen extends WalletLinearLayout<WalletInstal
    public OperationScreen provideOperationDelegate() { return new DialogOperationScreen(this); }
 
    @Override
-   public void showError() {
+   public void showProgress() {
+      installProgress.setVisibility(VISIBLE);
+   }
+
+   @Override
+   public void hideProgress() {
       installProgress.setVisibility(INVISIBLE);
+   }
+
+   @Override
+   public Context context() {
+      // redundant method from Operation Screen interface
+      return getContext();
+   }
+
+   @Override
+   public void showError(String msg, @Nullable Action1 action) {
       new MaterialDialog.Builder(getContext())
             .title(R.string.wallet_firmware_install_error_text)
             .content(R.string.wallet_firmware_install_error_sub_text)
@@ -57,11 +76,6 @@ public class WalletInstallFirmwareScreen extends WalletLinearLayout<WalletInstal
             .onNegative((dialog, which) -> getPresenter().goToDashboard())
             .cancelable(false)
             .show();
-   }
-
-   @Override
-   public void onStart() {
-      installProgress.setVisibility(VISIBLE);
    }
 
    @Override

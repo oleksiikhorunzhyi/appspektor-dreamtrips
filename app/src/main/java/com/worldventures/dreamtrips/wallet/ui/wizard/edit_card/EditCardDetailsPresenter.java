@@ -18,7 +18,8 @@ import com.worldventures.dreamtrips.wallet.service.SmartCardInteractor;
 import com.worldventures.dreamtrips.wallet.service.command.UpdateCardDetailsDataCommand;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletPresenter;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.WalletScreen;
-import com.worldventures.dreamtrips.wallet.ui.common.helper.OperationSubscriberWrapper;
+import com.worldventures.dreamtrips.wallet.ui.common.helper.ErrorHandler;
+import com.worldventures.dreamtrips.wallet.ui.common.helper.OperationActionStateSubscriberWrapper;
 import com.worldventures.dreamtrips.wallet.ui.common.navigation.Navigator;
 import com.worldventures.dreamtrips.wallet.ui.dashboard.list.CardListPath;
 import com.worldventures.dreamtrips.wallet.util.FormatException;
@@ -61,15 +62,12 @@ public class EditCardDetailsPresenter extends WalletPresenter<EditCardDetailsPre
       smartCardInteractor.updatePipe()
             .observe()
             .compose(bindViewIoToMainComposer())
-            .subscribe(OperationSubscriberWrapper.<UpdateCardDetailsDataCommand>forView(getView().provideOperationDelegate())
-                  .onSuccess(updateCardDetailsDataCommand -> addressChanged())
-                  .onFail(throwable -> {
-                     String msg = throwable.getCause() instanceof FormatException
-                           ? getContext().getString(R.string.wallet_add_card_details_error_message)
-                           : getContext().getString(R.string.error_something_went_wrong);
-
-                     return new OperationSubscriberWrapper.MessageActionHolder<>(msg, null);
-                  }).wrap());
+            .subscribe(OperationActionStateSubscriberWrapper.<UpdateCardDetailsDataCommand>forView(getView().provideOperationDelegate())
+                  .onSuccess(command -> addressChanged())
+                  .onFail(ErrorHandler.<UpdateCardDetailsDataCommand>builder(getContext())
+                        .handle(FormatException.class, R.string.wallet_add_card_details_error_message)
+                        .build())
+                  .wrap());
    }
 
    private void addressChanged() {

@@ -13,12 +13,16 @@ import com.worldventures.dreamtrips.wallet.service.SmartCardInteractor;
 import com.worldventures.dreamtrips.wallet.service.command.GetActiveSmartCardCommand;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletPresenter;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.WalletScreen;
+import com.worldventures.dreamtrips.wallet.ui.common.helper.ErrorHandler;
+import com.worldventures.dreamtrips.wallet.ui.common.helper.ErrorSubscriberWrapper;
 import com.worldventures.dreamtrips.wallet.ui.common.navigation.Navigator;
 import com.worldventures.dreamtrips.wallet.ui.settings.firmware.donwload.WalletDownloadFirmwarePath;
 
 import java.io.File;
 
 import javax.inject.Inject;
+
+import rx.functions.Action1;
 
 import static com.worldventures.dreamtrips.wallet.util.WalletFilesUtils.getAvailableBytes;
 import static com.worldventures.dreamtrips.wallet.util.WalletFilesUtils.getMostAppropriateCacheStorage;
@@ -46,11 +50,19 @@ public class WalletNewFirmwareAvailablePresenter extends WalletPresenter<WalletN
    }
 
    private void observeSmartCard() {
-      smartCardInteractor.activeSmartCardPipe().createObservableResult(new GetActiveSmartCardCommand())
+      smartCardInteractor.activeSmartCardPipe()
+            .createObservableResult(new GetActiveSmartCardCommand())
             .compose(bindViewIoToMainComposer())
-            .subscribe(commandActionState -> {
-               getView().currentFirmwareInfo(commandActionState.getResult().sdkVersion());
-            });
+            .subscribe(ErrorSubscriberWrapper.<GetActiveSmartCardCommand>forView(getView().provideOperationDelegate())
+                  .onNext(new Action1<GetActiveSmartCardCommand>() {
+                     @Override
+                     public void call(GetActiveSmartCardCommand command) {
+                        WalletNewFirmwareAvailablePresenter.this.getView()
+                              .currentFirmwareInfo(command.getResult().sdkVersion());
+                     }
+                  })
+                  .onFail(ErrorHandler.create(getContext()))
+                  .wrap());
    }
 
    private void observeLatestAvailableFirmware() {

@@ -49,6 +49,16 @@
                android:layout_alignParentTop="true"
                >
 
+
+            <android.support.v7.widget.RecyclerView
+                  android:id="@+id/bank_card_list"
+                  android:layout_width="match_parent"
+                  android:layout_height="match_parent"
+                  android:clipToPadding="false"
+                  android:paddingBottom="@dimen/spacing_large"
+                  tools:listitem="@layout/adapter_item_wallet_bankcard"
+                  />
+
             <android.support.design.widget.FloatingActionButton
                   android:id="@+id/add_card_button"
                   android:layout_width="wrap_content"
@@ -61,16 +71,6 @@
                   app:layout_behavior="com.worldventures.dreamtrips.wallet.ui.dashboard.list.util.ScrollFABBehavior"
                   app:rippleColor="@color/add_card_button_selector"
                   />
-
-            <android.support.v7.widget.RecyclerView
-                  android:id="@+id/bank_card_list"
-                  android:layout_width="match_parent"
-                  android:layout_height="match_parent"
-                  android:clipToPadding="false"
-                  android:paddingBottom="@dimen/spacing_large"
-                  tools:listitem="@layout/adapter_item_wallet_bankcard"
-                  />
-
          </android.support.design.widget.CoordinatorLayout>
 
          <TextView

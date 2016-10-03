@@ -5,12 +5,11 @@ import android.support.annotation.Nullable;
 
 import rx.functions.Action1;
 
-public interface OperationScreen<T> {
+public interface OperationScreen<T> extends ErrorScreen<T> {
+
    void showProgress();
 
    void hideProgress();
-
-   void showError(String msg, @Nullable Action1<T> action);
 
    Context context();
 }

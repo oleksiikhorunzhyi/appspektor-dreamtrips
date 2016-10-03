@@ -17,7 +17,8 @@ import com.worldventures.dreamtrips.wallet.service.command.SetStealthModeCommand
 import com.worldventures.dreamtrips.wallet.service.command.http.FetchFirmwareInfoCommand;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletPresenter;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.WalletScreen;
-import com.worldventures.dreamtrips.wallet.ui.common.helper.OperationSubscriberWrapper;
+import com.worldventures.dreamtrips.wallet.ui.common.helper.ErrorHandler;
+import com.worldventures.dreamtrips.wallet.ui.common.helper.OperationActionStateSubscriberWrapper;
 import com.worldventures.dreamtrips.wallet.ui.common.navigation.Navigator;
 import com.worldventures.dreamtrips.wallet.ui.settings.disabledefaultcard.WalletDisableDefaultCardPath;
 import com.worldventures.dreamtrips.wallet.ui.settings.factory_reset.FactoryResetPath;
@@ -25,7 +26,6 @@ import com.worldventures.dreamtrips.wallet.ui.settings.firmware.newavailable.Wal
 import com.worldventures.dreamtrips.wallet.ui.settings.firmware.uptodate.WalletUpToDateFirmwarePath;
 import com.worldventures.dreamtrips.wallet.ui.settings.removecards.WalletAutoClearCardsPath;
 import com.worldventures.dreamtrips.wallet.ui.wizard.pin.WizardPinSetupPath;
-import com.worldventures.dreamtrips.wallet.util.ThrowableHelper;
 
 import javax.inject.Inject;
 
@@ -39,7 +39,6 @@ public class WalletSettingsPresenter extends WalletPresenter<WalletSettingsPrese
    @Inject Navigator navigator;
    @Inject SmartCardInteractor smartCardInteractor;
    @Inject FirmwareInteractor firmwareInteractor;
-   @Inject ThrowableHelper throwableHelper;
    @Inject TemporaryStorage temporaryStorage;
 
    private SmartCard smartCard;
@@ -95,23 +94,24 @@ public class WalletSettingsPresenter extends WalletPresenter<WalletSettingsPrese
       smartCardInteractor.stealthModePipe()
             .observe()
             .compose(bindViewIoToMainComposer())
-            .subscribe(
-                  OperationSubscriberWrapper.<SetStealthModeCommand>forView(getView().provideOperationDelegate())
-                        .onSuccess(action -> stealthModeChangedMessage(action.stealthModeEnabled))
-                        .onFail(throwableHelper.provideMessageHolder(
-                              command -> getView().stealthModeStatus(smartCard.stealthMode()))
-                        )
-                        .wrap()
+            .subscribe(OperationActionStateSubscriberWrapper.<SetStealthModeCommand>forView(getView().provideOperationDelegate())
+                  .onSuccess(action -> stealthModeChangedMessage(action.stealthModeEnabled))
+                  .onFail(ErrorHandler.create(getContext(),
+                        command -> getView().stealthModeStatus(smartCard.stealthMode())))
+                  .wrap()
             );
 
       smartCardInteractor.lockPipe()
             .observe()
             .compose(bindViewIoToMainComposer())
-            .subscribe(OperationSubscriberWrapper.<SetLockStateCommand>forView(getView().provideOperationDelegate())
+            .subscribe(OperationActionStateSubscriberWrapper.<SetLockStateCommand>forView(getView().provideOperationDelegate())
                   .onSuccess(setLockStateCommand -> {
                   })
-                  .onFail(getContext().getString(R.string.wallet_dashboard_unlock_error), a -> getView().lockStatus(smartCard
-                        .lock()))
+                  .onFail(ErrorHandler.<SetLockStateCommand>builder(getContext())
+                        .handle(IllegalArgumentException.class, R.string.wallet_dashboard_unlock_error)
+                        .defaultAction(a -> getView().lockStatus(smartCard.lock()))
+                        .build()
+                  )
                   .wrap());
    }
 
@@ -176,8 +176,8 @@ public class WalletSettingsPresenter extends WalletPresenter<WalletSettingsPrese
          smartCardInteractor.connectActionPipe()
                .createObservable(new ConnectSmartCardCommand(smartCard))
                .compose(bindViewIoToMainComposer())
-               .subscribe(OperationSubscriberWrapper.<ConnectSmartCardCommand>forView(getView().provideOperationDelegate())
-                     .onFail(throwableHelper.provideMessageHolder(
+               .subscribe(OperationActionStateSubscriberWrapper.<ConnectSmartCardCommand>forView(getView().provideOperationDelegate())
+                     .onFail(ErrorHandler.create(getContext(),
                            action -> getView().testConnection(smartCard.connectionStatus() == SmartCard.ConnectionStatus.CONNECTED))
                      )
                      .wrap()
@@ -186,8 +186,8 @@ public class WalletSettingsPresenter extends WalletPresenter<WalletSettingsPrese
          smartCardInteractor.disconnectPipe()
                .createObservable(new DisconnectAction())
                .compose(bindViewIoToMainComposer())
-               .subscribe(OperationSubscriberWrapper.<DisconnectAction>forView(getView().provideOperationDelegate())
-                     .onFail(throwableHelper.provideMessageHolder(
+               .subscribe(OperationActionStateSubscriberWrapper.<DisconnectAction>forView(getView().provideOperationDelegate())
+                     .onFail(ErrorHandler.create(getContext(),
                            action -> getView().testConnection(smartCard.connectionStatus() == SmartCard.ConnectionStatus.CONNECTED))
                      )
                      .wrap()

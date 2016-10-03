@@ -12,8 +12,6 @@ import com.worldventures.dreamtrips.wallet.ui.common.navigation.Navigator;
 
 import javax.inject.Inject;
 
-import timber.log.Timber;
-
 public class WalletUpToDateFirmwarePresenter extends WalletPresenter<WalletUpToDateFirmwarePresenter.Screen, Parcelable> {
 
    @Inject Navigator navigator;
@@ -33,7 +31,7 @@ public class WalletUpToDateFirmwarePresenter extends WalletPresenter<WalletUpToD
       smartCardInteractor.smartCardModifierPipe()
             .observeSuccessWithReplay()
             .compose(bindViewIoToMainComposer())
-            .subscribe(command -> bindSmartCard(command.getResult()), throwable -> Timber.e(throwable, ""));
+            .subscribe(command -> bindSmartCard(command.getResult()));
    }
 
    private void bindSmartCard(SmartCard smartCard) {

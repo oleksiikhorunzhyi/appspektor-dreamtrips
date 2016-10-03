@@ -9,7 +9,9 @@ import com.worldventures.dreamtrips.wallet.service.SmartCardInteractor;
 import com.worldventures.dreamtrips.wallet.service.command.SetAutoClearSmartCardDelayCommand;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletPresenter;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.WalletScreen;
-import com.worldventures.dreamtrips.wallet.ui.common.helper.OperationSubscriberWrapper;
+import com.worldventures.dreamtrips.wallet.ui.common.helper.ErrorHandler;
+import com.worldventures.dreamtrips.wallet.ui.common.helper.MessageActionHolder;
+import com.worldventures.dreamtrips.wallet.ui.common.helper.OperationActionStateSubscriberWrapper;
 import com.worldventures.dreamtrips.wallet.ui.common.navigation.Navigator;
 
 import javax.inject.Inject;
@@ -52,13 +54,9 @@ public class WalletAutoClearCardsPresenter extends WalletPresenter<WalletAutoCle
       smartCardInteractor.autoClearDelayPipe()
             .observe()
             .compose(bindViewIoToMainComposer())
-            .subscribe(OperationSubscriberWrapper.<SetAutoClearSmartCardDelayCommand>forView(getView().provideOperationDelegate())
-                  .onSuccess(action -> {})
-                  .onFail(throwable -> {
-                     // TODO: 9/14/16 handle disconnect (depend on PR)
-                     String msg = getContext().getString(R.string.error_something_went_wrong);
-                     return new OperationSubscriberWrapper.MessageActionHolder<>(msg, null);
-                  }).wrap());
+            .subscribe(OperationActionStateSubscriberWrapper.<SetAutoClearSmartCardDelayCommand>forView(getView().provideOperationDelegate())
+                  .onFail(ErrorHandler.create(getContext()))
+                  .wrap());
    }
 
    public interface Screen extends WalletScreen {

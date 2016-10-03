@@ -4,12 +4,12 @@ import android.content.Context;
 import android.os.Parcelable;
 
 import com.techery.spares.module.Injector;
-import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.wallet.service.SmartCardInteractor;
 import com.worldventures.dreamtrips.wallet.service.command.SetDisableDefaultCardDelayCommand;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletPresenter;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.WalletScreen;
-import com.worldventures.dreamtrips.wallet.ui.common.helper.OperationSubscriberWrapper;
+import com.worldventures.dreamtrips.wallet.ui.common.helper.ErrorHandler;
+import com.worldventures.dreamtrips.wallet.ui.common.helper.OperationActionStateSubscriberWrapper;
 import com.worldventures.dreamtrips.wallet.ui.common.navigation.Navigator;
 
 import javax.inject.Inject;
@@ -52,14 +52,9 @@ public class WalletDisableDefaultCardPresenter extends WalletPresenter<WalletDis
       smartCardInteractor.disableDefaultCardPipe()
             .observe()
             .compose(bindViewIoToMainComposer())
-            .subscribe(OperationSubscriberWrapper.<SetDisableDefaultCardDelayCommand>forView(getView().provideOperationDelegate())
-                  .onSuccess(action -> {
-                  })
-                  .onFail(throwable -> {
-                     // TODO: 9/14/16 handle disconnect (depend on PR)
-                     String msg = getContext().getString(R.string.error_something_went_wrong);
-                     return new OperationSubscriberWrapper.MessageActionHolder<>(msg, null);
-                  }).wrap());
+            .subscribe(OperationActionStateSubscriberWrapper.<SetDisableDefaultCardDelayCommand>forView(getView().provideOperationDelegate())
+                  .onFail(ErrorHandler.create(getContext()))
+                  .wrap());
    }
 
    public interface Screen extends WalletScreen {

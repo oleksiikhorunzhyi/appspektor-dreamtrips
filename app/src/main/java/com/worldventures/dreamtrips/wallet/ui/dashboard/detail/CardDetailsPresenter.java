@@ -23,7 +23,7 @@ import com.worldventures.dreamtrips.wallet.service.command.SetDefaultCardOnDevic
 import com.worldventures.dreamtrips.wallet.service.command.UpdateBankCardCommand;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletPresenter;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.WalletScreen;
-import com.worldventures.dreamtrips.wallet.ui.common.helper.OperationSubscriberWrapper;
+import com.worldventures.dreamtrips.wallet.ui.common.helper.OperationActionStateSubscriberWrapper;
 import com.worldventures.dreamtrips.wallet.ui.common.navigation.Navigator;
 import com.worldventures.dreamtrips.wallet.ui.wizard.edit_card.EditCardDetailsPath;
 import com.worldventures.dreamtrips.wallet.util.BankCardHelper;
@@ -89,7 +89,7 @@ public class CardDetailsPresenter extends WalletPresenter<CardDetailsPresenter.S
             .filter(state -> valueOf(bankCard.id()).equals(state.action.recordId))
             .compose(bindViewIoToMainComposer())
             .compose(new ActionPipeCacheWiper<>(smartCardInteractor.deleteCardPipe()))
-            .subscribe(OperationSubscriberWrapper.<DeleteRecordAction>forView(getView().provideOperationDelegate())
+            .subscribe(OperationActionStateSubscriberWrapper.<DeleteRecordAction>forView(getView().provideOperationDelegate())
                   .onSuccess(deleteRecordAction -> navigator.goBack())
                   .onFail(getContext().getString(R.string.error_something_went_wrong))
                   .wrap());
@@ -101,7 +101,7 @@ public class CardDetailsPresenter extends WalletPresenter<CardDetailsPresenter.S
             .observeWithReplay()
             .compose(bindViewIoToMainComposer())
             .compose(new ActionPipeCacheWiper<>(smartCardInteractor.setDefaultCardOnDeviceCommandPipe()))
-            .subscribe(OperationSubscriberWrapper.<SetDefaultCardOnDeviceCommand>forView(getView().provideOperationDelegate())
+            .subscribe(OperationActionStateSubscriberWrapper.<SetDefaultCardOnDeviceCommand>forView(getView().provideOperationDelegate())
                   .onFail(getContext().getString(R.string.error_something_went_wrong))
                   .wrap());
    }

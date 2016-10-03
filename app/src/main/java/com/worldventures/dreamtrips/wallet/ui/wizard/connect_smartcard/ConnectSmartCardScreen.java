@@ -1,7 +1,11 @@
 package com.worldventures.dreamtrips.wallet.ui.wizard.connect_smartcard;
 
 import android.content.Context;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v7.widget.Toolbar;
 import android.util.AttributeSet;
 import android.view.View;
 import android.view.animation.Animation;
@@ -19,6 +23,7 @@ public class ConnectSmartCardScreen extends WalletLinearLayout<ConnectSmartCardP
       implements ConnectSmartCardPresenter.Screen, OperationScreen<Void> {
 
    @InjectView(R.id.connection_progress) View downloadProgress;
+   @InjectView(R.id.toolbar) Toolbar toolbar;
 
    private final OperationScreen operationScreen = new DialogOperationScreen(this);
 
@@ -30,6 +35,7 @@ public class ConnectSmartCardScreen extends WalletLinearLayout<ConnectSmartCardP
       super(context, attrs);
    }
 
+   @NonNull
    @Override
    protected void onFinishInflate() {
       super.onFinishInflate();
@@ -39,6 +45,13 @@ public class ConnectSmartCardScreen extends WalletLinearLayout<ConnectSmartCardP
    @Override
    public ConnectSmartCardPresenter createPresenter() {
       return new ConnectSmartCardPresenter(getContext(), getInjector(), getPath().barcode);
+   }
+
+   @Override
+   protected void onAttachedToWindow() {
+      super.onAttachedToWindow();
+      //set color transparent for add space without white back arrow
+      toolbar.setNavigationIcon(new ColorDrawable(Color.TRANSPARENT));
    }
 
    @Override

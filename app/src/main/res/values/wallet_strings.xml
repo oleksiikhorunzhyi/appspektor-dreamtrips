@@ -12,6 +12,7 @@
    <string name="wallet_input_data_is_incorrect">Input data is incorrect</string>
    <string name="wallet_bank_card_good_thru">GOOD THRU</string>
    <string name="wallet_smart_card_is_disconnected">Smart Card is disconnected</string>
+   <string name="wallet_no_internet_connection">No internet connection</string>
 
    <!--card alias-->
    <string name="wallet_wizard_card_alias_subtitle">Name your smart card</string>
@@ -93,7 +94,10 @@
    <string name="dashboard_default_card_stack_title">Default</string>
    <string name="wallet_wizard_default_card_label">DEFAULT</string>
    <string name="wallet_wizard_empty_card_list_label">Add credit and debit cards\nto your flye\u2122 SmartCard</string>
-   <string name="wallet_wizard_full_card_list_error_message">Your flye card is full.\nPlease delete one or more cards to proceed</string>
+   <string name="wallet_wizard_full_card_list_error_message">You’ve reached the 10 card maximum. Please delete one or more cards to proceed.</string>
+   <string name="wallet_wizard_no_internet_connection_title">@string/offline_warning_dialog_title</string>
+   <string name="wallet_wizard_no_connection_to_card_title">flye card not linked</string>
+   <string name="wallet_wizard_limited_access">@string/offline_warning_dialog_message</string>
 
    <!--add card details-->
    <string name="wallet_add_card_details_title">Card Details</string>

@@ -27,7 +27,8 @@ import com.worldventures.dreamtrips.wallet.service.command.SetupUserDataCommand;
 import com.worldventures.dreamtrips.wallet.service.command.SmartCardAvatarCommand;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletPresenter;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.WalletScreen;
-import com.worldventures.dreamtrips.wallet.ui.common.helper.OperationSubscriberWrapper;
+import com.worldventures.dreamtrips.wallet.ui.common.helper.ErrorHandler;
+import com.worldventures.dreamtrips.wallet.ui.common.helper.OperationActionStateSubscriberWrapper;
 import com.worldventures.dreamtrips.wallet.ui.common.navigation.Navigator;
 import com.worldventures.dreamtrips.wallet.ui.wizard.pin.WizardPinSetupPath;
 import com.worldventures.dreamtrips.wallet.util.FormatException;
@@ -94,7 +95,8 @@ public class WizardEditProfilePresenter extends WalletPresenter<WizardEditProfil
       smartCardAvatarInteractor.smartCardAvatarPipe()
             .observe()
             .compose(bindViewIoToMainComposer())
-            .subscribe(new ActionStateSubscriber<SmartCardAvatarCommand>().onFail((command, throwable) -> Timber.e("", throwable))
+            .subscribe(new ActionStateSubscriber<SmartCardAvatarCommand>()
+                  .onFail((command, throwable) -> Timber.e("", throwable))
                   .onSuccess(command -> photoPrepared(command.getResult())));
    }
 
@@ -103,9 +105,12 @@ public class WizardEditProfilePresenter extends WalletPresenter<WizardEditProfil
             .observeWithReplay()
             .compose(bindViewIoToMainComposer())
             .compose(new ActionPipeCacheWiper<>(wizardInteractor.setupUserDataPipe()))
-            .subscribe(OperationSubscriberWrapper.<SetupUserDataCommand>forView(getView().provideOperationDelegate())
+            .subscribe(OperationActionStateSubscriberWrapper.<SetupUserDataCommand>forView(getView().provideOperationDelegate())
                   .onSuccess(setupUserDataCommand -> onUserSetup(setupUserDataCommand.getResult()))
-                  .onFail(throwable -> createFailMessageActionHolder(throwable.getCause()))
+                  .onFail(ErrorHandler.<SetupUserDataCommand>builder(getContext())
+                        .handle(FormatException.class, R.string.wallet_edit_profile_name_format_detail)
+                        .handle(SetupUserDataCommand.MissedAvatarException.class, R.string.wallet_edit_profile_avatar_not_chosen)
+                        .build())
                   .wrap());
    }
 
@@ -113,19 +118,6 @@ public class WizardEditProfilePresenter extends WalletPresenter<WizardEditProfil
       navigator.go(new WizardPinSetupPath(smartCard));
       analyticsInteractor.walletAnalyticsCommandPipe()
             .send(new WalletAnalyticsCommand(new PhotoWasSetAction(smartCard.cardName(), smartCardId)));
-   }
-
-   private OperationSubscriberWrapper.MessageActionHolder createFailMessageActionHolder(Throwable throwable) {
-      Context context = getContext();
-      String msg;
-      if (throwable instanceof FormatException) {
-         msg = context.getString(R.string.wallet_edit_profile_name_format_detail);
-      } else if (throwable instanceof SetupUserDataCommand.MissedAvatarException) {
-         msg = context.getString(R.string.wallet_edit_profile_avatar_not_chosen);
-      } else {
-         msg = context.getString(R.string.error_something_went_wrong);
-      }
-      return new OperationSubscriberWrapper.MessageActionHolder<>(msg, null);
    }
 
    private void photoPrepared(File filePhoto) {

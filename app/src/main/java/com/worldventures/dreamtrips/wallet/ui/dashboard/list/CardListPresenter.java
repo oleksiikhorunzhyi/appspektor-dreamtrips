@@ -1,8 +1,12 @@
 package com.worldventures.dreamtrips.wallet.ui.dashboard.list;
 
 import android.content.Context;
+import android.net.NetworkInfo;
 import android.os.Bundle;
+import android.support.annotation.IntDef;
+import android.util.Pair;
 
+import com.github.pwittchen.reactivenetwork.library.ReactiveNetwork;
 import com.techery.spares.module.Injector;
 import com.worldventures.dreamtrips.core.utils.tracksystem.AnalyticsInteractor;
 import com.worldventures.dreamtrips.modules.navdrawer.NavigationDrawerPresenter;
@@ -16,11 +20,12 @@ import com.worldventures.dreamtrips.wallet.service.FirmwareInteractor;
 import com.worldventures.dreamtrips.wallet.service.SmartCardInteractor;
 import com.worldventures.dreamtrips.wallet.service.command.CardListCommand;
 import com.worldventures.dreamtrips.wallet.service.command.CardStacksCommand;
-import com.worldventures.dreamtrips.wallet.service.command.ConnectSmartCardCommand;
-import com.worldventures.dreamtrips.wallet.service.command.GetActiveSmartCardCommand;
 import com.worldventures.dreamtrips.wallet.service.command.http.FetchFirmwareInfoCommand;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletPresenter;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.WalletScreen;
+import com.worldventures.dreamtrips.wallet.ui.common.helper.ErrorActionStateSubscriberWrapper;
+import com.worldventures.dreamtrips.wallet.ui.common.helper.ErrorHandler;
+import com.worldventures.dreamtrips.wallet.ui.common.helper.ErrorSubscriberWrapper;
 import com.worldventures.dreamtrips.wallet.ui.common.navigation.Navigator;
 import com.worldventures.dreamtrips.wallet.ui.dashboard.detail.CardDetailsPath;
 import com.worldventures.dreamtrips.wallet.ui.dashboard.list.util.CardStackHeaderHolder;
@@ -37,7 +42,6 @@ import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
 
-import io.techery.janet.helper.ActionStateSubscriber;
 import rx.Observable;
 import timber.log.Timber;
 
@@ -104,9 +108,10 @@ public class CardListPresenter extends WalletPresenter<CardListPresenter.Screen,
       firmwareInteractor.firmwareInfoPipe()
             .createObservableResult(new FetchFirmwareInfoCommand())
             .compose(bindViewIoToMainComposer())
-            .subscribe(command -> firmwareLoaded(command.getResult()), e -> {
-               // TODO: 10/3/16 do we heed show error in this place?
-            });
+            .subscribe(ErrorSubscriberWrapper.<FetchFirmwareInfoCommand>forView(getView().provideOperationDelegate())
+                  .onNext(command -> firmwareLoaded(((FetchFirmwareInfoCommand) command).getResult()))
+                  .onFail(ErrorHandler.create(getContext()))
+                  .wrap());
    }
 
    private void firmwareLoaded(Firmware firmware) {
@@ -154,12 +159,27 @@ public class CardListPresenter extends WalletPresenter<CardListPresenter.Screen,
    }
 
    public void addCardRequired() {
-      if (cardLoaded < MAX_CARD_LIMIT) {
-         navigator.go(new WizardChargingPath());
-         trackAddCard();
-      } else {
-         getView().showAddCardErrorDialog();
+      if (cardLoaded >= MAX_CARD_LIMIT) {
+         getView().showAddCardErrorDialog(Screen.ERROR_DIALOG_FULL_SMARTCARD);
+         return;
       }
+
+      Observable.combineLatest(
+            ReactiveNetwork.observeNetworkConnectivity(getContext()).take(1),
+            smartCardInteractor.smartCardModifierPipe().observeSuccessWithReplay().take(1),
+            (connectivity, smartCardModifier) -> new Pair<>(connectivity.getState(), smartCardModifier.getResult()
+                  .connectionStatus()))
+            .compose(bindViewIoToMainComposer())
+            .subscribe(connectionStatusPair -> {
+               if (connectionStatusPair.first != NetworkInfo.State.CONNECTED) {
+                  getView().showAddCardErrorDialog(Screen.ERROR_DIALOG_NO_INTERNET_CONNECTION);
+               } else if (connectionStatusPair.second != SmartCard.ConnectionStatus.CONNECTED) {
+                  getView().showAddCardErrorDialog(Screen.ERROR_DIALOG_NO_SMARTCARD_CONNECTION);
+               } else {
+                  trackAddCard();
+                  navigator.go(new WizardChargingPath());
+               }
+            }, e -> Timber.e(e, "Could not subscribe to network and smartcard events"));
    }
 
    private void trackAddCard() {
@@ -174,9 +194,11 @@ public class CardListPresenter extends WalletPresenter<CardListPresenter.Screen,
       smartCardInteractor.cardStacksPipe()
             .observe()
             .compose(bindViewIoToMainComposer())
-            .subscribe(new ActionStateSubscriber<CardStacksCommand>() //TODO check for progress, f.e. swipe refresh
+            //TODO check for progress, f.e. swipe refresh
+            .subscribe(ErrorActionStateSubscriberWrapper.<CardStacksCommand>forView(getView().provideOperationDelegate())
                   .onSuccess(command -> cardsLoaded(command.getResult()))
-                  .onFail((command, throwable) -> Timber.e(throwable, "")));
+                  .onFail(ErrorHandler.create(getContext()))
+                  .wrap());
    }
 
    private void cardsLoaded(List<CardStackModel> loadedModels) {
@@ -189,20 +211,25 @@ public class CardListPresenter extends WalletPresenter<CardListPresenter.Screen,
 
       getView().notifySmartCardChanged(cardStackHeaderHolder);
       getView().showRecordsInfo(cards);
-      getView().enableAddCardButton(cardLoaded != MAX_CARD_LIMIT);
    }
 
    public interface Screen extends WalletScreen {
-      void enableAddCardButton(boolean enabled);
+
+      int ERROR_DIALOG_FULL_SMARTCARD = 1;
+      int ERROR_DIALOG_NO_INTERNET_CONNECTION = 2;
+      int ERROR_DIALOG_NO_SMARTCARD_CONNECTION = 3;
 
       void showRecordsInfo(List<CardStackViewModel> result);
 
       void notifySmartCardChanged(CardStackHeaderHolder smartCard);
 
-      void showAddCardErrorDialog();
+      void showAddCardErrorDialog(@ErrorDialogType int errorDialogType);
 
       void hideFirmwareUpdateBtn();
 
       void showFirmwareUpdateBtn();
+
+      @IntDef({ERROR_DIALOG_FULL_SMARTCARD, ERROR_DIALOG_NO_INTERNET_CONNECTION, ERROR_DIALOG_NO_SMARTCARD_CONNECTION})
+      @interface ErrorDialogType {}
    }
 }

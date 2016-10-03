@@ -1,6 +1,5 @@
 package com.worldventures.dreamtrips.wallet.ui.settings.firmware.install;
 
-
 import android.content.Context;
 import android.os.Parcelable;
 
@@ -9,7 +8,10 @@ import com.worldventures.dreamtrips.wallet.service.FirmwareInteractor;
 import com.worldventures.dreamtrips.wallet.service.SmartCardInteractor;
 import com.worldventures.dreamtrips.wallet.service.command.firmware.InstallFirmwareCommand;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletPresenter;
+import com.worldventures.dreamtrips.wallet.ui.common.base.screen.OperationScreen;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.WalletScreen;
+import com.worldventures.dreamtrips.wallet.ui.common.helper.ErrorHandler;
+import com.worldventures.dreamtrips.wallet.ui.common.helper.OperationActionStateSubscriberWrapper;
 import com.worldventures.dreamtrips.wallet.ui.common.navigation.Navigator;
 import com.worldventures.dreamtrips.wallet.ui.dashboard.list.CardListPath;
 import com.worldventures.dreamtrips.wallet.ui.settings.firmware.installsuccess.WalletSuccessInstallFirmwarePath;
@@ -41,16 +43,15 @@ public class WalletInstallFirmwarePresenter extends WalletPresenter<WalletInstal
    }
 
    protected void install() {
-      getView().onStart();
+      getView().showProgress();
       firmwareInteractor.installFirmwarePipe()
-            .createObservableResult(new InstallFirmwareCommand(new File(filePath)))
+            .createObservable(new InstallFirmwareCommand(new File(filePath)))
             .compose(bindViewIoToMainComposer())
-            .subscribe(it -> {/*We can't use  OperationDialog, cause we don't use ActionState here*/
-               openSuccessScreen();
-            }, throwable -> {
-               getView().showError();
-            });
-
+            .subscribe(OperationActionStateSubscriberWrapper.<InstallFirmwareCommand>forView(getView())
+                  .onSuccess(command -> openSuccessScreen())
+                  .onFail(ErrorHandler.create(getContext()))
+                  .wrap()
+            );
    }
 
    private void openSuccessScreen() {
@@ -68,10 +69,7 @@ public class WalletInstallFirmwarePresenter extends WalletPresenter<WalletInstal
       navigator.goBack();
    }
 
-   public interface Screen extends WalletScreen {
+   public interface Screen extends WalletScreen, OperationScreen {
 
-      void showError();
-
-      void onStart();
    }
 }

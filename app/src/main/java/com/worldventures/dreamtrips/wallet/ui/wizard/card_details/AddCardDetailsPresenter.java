@@ -29,7 +29,9 @@ import com.worldventures.dreamtrips.wallet.service.command.SaveCardDetailsDataCo
 import com.worldventures.dreamtrips.wallet.service.command.http.FetchRecordIssuerInfoCommand;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletPresenter;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.WalletScreen;
-import com.worldventures.dreamtrips.wallet.ui.common.helper.OperationSubscriberWrapper;
+import com.worldventures.dreamtrips.wallet.ui.common.helper.ErrorHandler;
+import com.worldventures.dreamtrips.wallet.ui.common.helper.ErrorSubscriberWrapper;
+import com.worldventures.dreamtrips.wallet.ui.common.helper.OperationActionStateSubscriberWrapper;
 import com.worldventures.dreamtrips.wallet.ui.common.navigation.Navigator;
 import com.worldventures.dreamtrips.wallet.ui.dashboard.list.CardListPath;
 import com.worldventures.dreamtrips.wallet.util.BankCardHelper;
@@ -40,10 +42,9 @@ import com.worldventures.dreamtrips.wallet.util.SmartCardInteractorHelper;
 import javax.inject.Inject;
 
 import flow.Flow.Direction;
-import io.techery.janet.Command;
 import io.techery.janet.helper.ActionStateToActionTransformer;
 import rx.Observable;
-import timber.log.Timber;
+import rx.functions.Action1;
 
 public class AddCardDetailsPresenter extends WalletPresenter<AddCardDetailsPresenter.Screen, Parcelable> {
 
@@ -102,19 +103,21 @@ public class AddCardDetailsPresenter extends WalletPresenter<AddCardDetailsPrese
       smartCardInteractor.recordIssuerInfoPipe()
             .createObservableResult(new FetchRecordIssuerInfoCommand(bankCardHelper.obtainIin(bankCard.number())))
             .compose(bindViewIoToMainComposer())
-            .map(Command::getResult)
-            .subscribe(it -> {
-               issuerInfo = it;
-               getView().cardBankInfo(bankCardHelper, ImmutableBankCard.copyOf(bankCard)
-                     .withIssuerInfo(ImmutableRecordIssuerInfo.builder()
-                           .bankName(it.bankName())
-                           .cardType(it.cardType())
-                           .financialService(it.financialService())
-                           .build())
-               );
-            }, throwable -> {
-               Timber.e("", throwable);
-            });
+            .subscribe(ErrorSubscriberWrapper.<FetchRecordIssuerInfoCommand>forView(getView().provideOperationDelegate())
+                  .onNext(command -> recordIssuerInfoLoaded(((FetchRecordIssuerInfoCommand) command).getResult()))
+                  .onFail(ErrorHandler.create(getContext()))
+                  .wrap());
+   }
+
+   private void recordIssuerInfoLoaded(RecordIssuerInfo recordIssuerInfo) {
+      issuerInfo = recordIssuerInfo;
+      getView()
+            .cardBankInfo(bankCardHelper, ImmutableBankCard.copyOf(bankCard)
+                  .withIssuerInfo(ImmutableRecordIssuerInfo.builder()
+                        .bankName(recordIssuerInfo.bankName())
+                        .cardType(recordIssuerInfo.cardType())
+                        .financialService(recordIssuerInfo.financialService())
+                        .build()));
    }
 
    private void connectToDefaultAddressPipe() {
@@ -131,10 +134,16 @@ public class AddCardDetailsPresenter extends WalletPresenter<AddCardDetailsPrese
                      .build();
             })
             .compose(bindViewIoToMainComposer())
-            .subscribe(this::setDefaultAddress, throwable -> {
-               Timber.e(throwable, "Fail to use GetDefaultAddressCommand");
-               // TODO: 8/24/16 add error handling
-            });
+            .subscribe(ErrorSubscriberWrapper.<AddressInfoWithLocale>forView(getView().provideOperationDelegate())
+                  .onNext(new Action1<AddressInfoWithLocale>() {
+                     @Override
+                     public void call(AddressInfoWithLocale defaultAddress) {
+                        setDefaultAddress(defaultAddress);
+                     }
+                  })
+                  .onFail(ErrorHandler.create(getContext()))
+                  .wrap()
+            );
    }
 
    private void setDefaultAddress(@Nullable AddressInfoWithLocale defaultAddress) {
@@ -147,15 +156,11 @@ public class AddCardDetailsPresenter extends WalletPresenter<AddCardDetailsPrese
             .observeWithReplay()
             .compose(bindViewIoToMainComposer())
             .compose(new ActionPipeCacheWiper<>(smartCardInteractor.saveCardDetailsDataPipe()))
-            .subscribe(OperationSubscriberWrapper.<SaveCardDetailsDataCommand>forView(getView().provideOperationDelegate())
+            .subscribe(OperationActionStateSubscriberWrapper.<SaveCardDetailsDataCommand>forView(getView().provideOperationDelegate())
                   .onSuccess(this::onCardAdd)
-                  .onFail(throwable -> {
-                     Context context = getContext();
-                     String msg = throwable.getCause() instanceof FormatException ? context.getString(R.string.wallet_add_card_details_error_message) : context
-                           .getString(R.string.error_something_went_wrong);
-
-                     return new OperationSubscriberWrapper.MessageActionHolder<>(msg, null);
-                  })
+                  .onFail(ErrorHandler.<SaveCardDetailsDataCommand>builder(getContext())
+                        .handle(FormatException.class, R.string.wallet_add_card_details_error_message)
+                        .build())
                   .wrap());
    }
 

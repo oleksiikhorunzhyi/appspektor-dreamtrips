@@ -5,13 +5,13 @@ import android.content.Context;
 import android.os.Parcelable;
 
 import com.techery.spares.module.Injector;
-import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.api.smart_card.firmware.model.FirmwareInfo;
 import com.worldventures.dreamtrips.modules.common.command.DownloadFileCommand;
 import com.worldventures.dreamtrips.modules.common.delegate.DownloadFileInteractor;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletPresenter;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.WalletScreen;
-import com.worldventures.dreamtrips.wallet.ui.common.helper.OperationSubscriberWrapper;
+import com.worldventures.dreamtrips.wallet.ui.common.helper.ErrorHandler;
+import com.worldventures.dreamtrips.wallet.ui.common.helper.OperationActionStateSubscriberWrapper;
 import com.worldventures.dreamtrips.wallet.ui.common.navigation.Navigator;
 import com.worldventures.dreamtrips.wallet.ui.settings.firmware.preinstalletion.WalletFirmwareChecksPath;
 
@@ -47,9 +47,10 @@ public class WalletDownloadFirmwarePresenter extends WalletPresenter<WalletDownl
             .createObservable(action)
             .flatMap(it -> it.status == ActionState.Status.START ? just(it) : just(it).delay(4, TimeUnit.SECONDS))//todo remove it
             .compose(bindViewIoToMainComposer())
-            .subscribe(OperationSubscriberWrapper.<DownloadFileCommand>forView(getView().provideOperationDelegate())
+            .subscribe(OperationActionStateSubscriberWrapper.<DownloadFileCommand>forView(getView().provideOperationDelegate())
                   .onSuccess(event -> openPreInstallationChecks())
-                  .onFail(getContext().getString(R.string.smth_went_wrong), it -> navigator.goBack()).wrap());
+                  .onFail(ErrorHandler.create(getContext(), it -> navigator.goBack()))
+                  .wrap());
 
    }
 

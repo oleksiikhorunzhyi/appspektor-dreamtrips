@@ -1,6 +1,5 @@
 package com.worldventures.dreamtrips.wallet.ui.settings.factory_reset;
 
-
 import android.content.Context;
 import android.os.Parcelable;
 
@@ -10,12 +9,12 @@ import com.worldventures.dreamtrips.wallet.service.SmartCardInteractor;
 import com.worldventures.dreamtrips.wallet.service.command.ResetSmartCardCommand;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletPresenter;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.WalletScreen;
+import com.worldventures.dreamtrips.wallet.ui.common.helper.ErrorHandler;
+import com.worldventures.dreamtrips.wallet.ui.common.helper.OperationActionStateSubscriberWrapper;
 import com.worldventures.dreamtrips.wallet.ui.common.navigation.Navigator;
 import com.worldventures.dreamtrips.wallet.ui.settings.factory_reset_success.FactoryResetSuccessPath;
 
 import javax.inject.Inject;
-
-import io.techery.janet.helper.ActionStateSubscriber;
 
 public class FactoryResetPresenter extends WalletPresenter<FactoryResetPresenter.Screen, Parcelable> {
 
@@ -29,18 +28,19 @@ public class FactoryResetPresenter extends WalletPresenter<FactoryResetPresenter
    @Override
    public void attachView(Screen view) {
       super.attachView(view);
-      startUnassignUser();
+      resetSmartCard();
    }
 
-   private void startUnassignUser() {
+   private void resetSmartCard() {
       smartCardInteractor.resetSmartCardPipe()
             .observe()
             .compose(bindViewIoToMainComposer())
-            .subscribe(new ActionStateSubscriber<ResetSmartCardCommand>()
-                  .onFail((action, throwable) -> getView().provideOperationDelegate()
-                        .showError(getContext().getString(R.string.wallet_wizard_setup_error), null))
-                  .onStart(action -> getView().provideOperationDelegate().showProgress())
-                  .onSuccess(resetSmartCardCommand -> navigator.single(new FactoryResetSuccessPath())));
+            .subscribe(OperationActionStateSubscriberWrapper.<ResetSmartCardCommand>forView(getView().provideOperationDelegate())
+                  .onSuccess(command -> navigator.single(new FactoryResetSuccessPath()))
+                  .onFail(ErrorHandler.<ResetSmartCardCommand>builder(getContext())
+                        .defaultMessage(R.string.wallet_wizard_setup_error)
+                  .build())
+                  .wrap());
 
       smartCardInteractor.resetSmartCardPipe().send(new ResetSmartCardCommand());
    }

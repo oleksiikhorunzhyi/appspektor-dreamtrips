@@ -22,7 +22,8 @@ public class WizardChargingScreen extends WalletLinearLayout<WizardChargingPrese
    @InjectView(R.id.smart_card) View smartCard;
    @InjectView(R.id.credit_card) View creditCard;
 
-   private ChargingSwipingAnimations swipingAnimations = new ChargingSwipingAnimations();
+   private final OperationScreen operationScreen = new DialogOperationScreen(this);
+   private final ChargingSwipingAnimations swipingAnimations = new ChargingSwipingAnimations();
 
    public WizardChargingScreen(Context context) {
       super(context);
@@ -54,7 +55,7 @@ public class WizardChargingScreen extends WalletLinearLayout<WizardChargingPrese
 
    @Override
    public OperationScreen provideOperationDelegate() {
-      return new DialogOperationScreen(this);
+      return operationScreen;
    }
 
    private void navigateClick() {

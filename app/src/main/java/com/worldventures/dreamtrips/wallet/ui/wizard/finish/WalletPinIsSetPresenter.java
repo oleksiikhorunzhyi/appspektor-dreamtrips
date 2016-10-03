@@ -14,7 +14,7 @@ import com.worldventures.dreamtrips.wallet.service.WizardInteractor;
 import com.worldventures.dreamtrips.wallet.service.command.ActivateSmartCardCommand;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletPresenter;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.WalletScreen;
-import com.worldventures.dreamtrips.wallet.ui.common.helper.OperationSubscriberWrapper;
+import com.worldventures.dreamtrips.wallet.ui.common.helper.OperationActionStateSubscriberWrapper;
 import com.worldventures.dreamtrips.wallet.ui.common.navigation.Navigator;
 import com.worldventures.dreamtrips.wallet.ui.dashboard.list.CardListPath;
 
@@ -40,7 +40,7 @@ public class WalletPinIsSetPresenter extends WalletPresenter<WalletPinIsSetPrese
             .observeWithReplay()
             .compose(new ActionPipeCacheWiper<>(wizardInteractor.activateSmartCardPipe()))
             .compose(bindViewIoToMainComposer())
-            .subscribe(OperationSubscriberWrapper.<ActivateSmartCardCommand>forView(view.provideOperationDelegate())
+            .subscribe(OperationActionStateSubscriberWrapper.<ActivateSmartCardCommand>forView(view.provideOperationDelegate())
                   .onSuccess(command -> navigateToDashboardScreen())
                   .onFail(getContext().getString(R.string.error_something_went_wrong))
                   .wrap());

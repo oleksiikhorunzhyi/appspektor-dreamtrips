@@ -2,11 +2,9 @@ package com.worldventures.dreamtrips.wallet.ui.settings.firmware.preinstalletion
 
 import android.content.Context;
 import android.os.Parcelable;
-import android.widget.Toast;
 
 import com.techery.spares.module.Injector;
 import com.worldventures.dreamtrips.wallet.service.FirmwareInteractor;
-import com.worldventures.dreamtrips.wallet.service.SmartCardInteractor;
 import com.worldventures.dreamtrips.wallet.service.WalletBluetoothService;
 import com.worldventures.dreamtrips.wallet.service.command.firmware.PreInstallationCheckCommand;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletPresenter;
@@ -55,7 +53,7 @@ public class WalletFirmwareChecksPresenter extends WalletPresenter<WalletFirmwar
    }
 
    void install() {
-      navigator.withoutLast(new WalletInstallFirmwarePath(firmwareFilePath));
+      navigator.go(new WalletInstallFirmwarePath(firmwareFilePath));
    }
 
    void goBack() {

@@ -64,6 +64,10 @@ public class WalletInstallFirmwarePresenter extends WalletPresenter<WalletInstal
       navigator.single(new CardListPath(), Flow.Direction.BACKWARD);
    }
 
+   void goToPreInstall() {
+      navigator.goBack();
+   }
+
    public interface Screen extends WalletScreen {
 
       void showError();

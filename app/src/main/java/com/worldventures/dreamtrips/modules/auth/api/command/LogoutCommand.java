@@ -22,6 +22,9 @@ import com.worldventures.dreamtrips.modules.common.api.janet.command.ClearStorag
 import com.worldventures.dreamtrips.modules.common.presenter.delegate.OfflineWarningDelegate;
 import com.worldventures.dreamtrips.modules.common.service.ClearStoragesInteractor;
 import com.worldventures.dreamtrips.modules.gcm.delegate.NotificationDelegate;
+import com.worldventures.dreamtrips.wallet.domain.storage.security.crypto.HybridAndroidCrypter;
+
+import java.security.KeyStoreException;
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -30,6 +33,7 @@ import de.greenrobot.event.EventBus;
 import io.techery.janet.Command;
 import io.techery.janet.Janet;
 import io.techery.janet.command.annotations.CommandAction;
+import timber.log.Timber;
 
 @CommandAction
 public class LogoutCommand extends Command implements InjectableAction {
@@ -48,6 +52,7 @@ public class LogoutCommand extends Command implements InjectableAction {
    @Inject ClearStoragesInteractor clearStoragesInteractor;
    @Inject SessionActionPipeCreator sessionActionPipeCreator;
    @Inject @Named(JanetModule.JANET_API_LIB) SessionActionPipeCreator sessionApoActionPipeCreator;
+   @Inject HybridAndroidCrypter crypter;
 
    @Override
    protected void run(CommandCallback callback) throws Throwable {
@@ -76,7 +81,17 @@ public class LogoutCommand extends Command implements InjectableAction {
       badgeUpdater.updateBadge(0);
       sessionActionPipeCreator.clearReplays();
       sessionApoActionPipeCreator.clearReplays();
-      FlowManager.getDatabase(MessengerDatabase.NAME).reset(context);
       offlineWarningDelegate.resetState();
+
+      try {
+         FlowManager.getDatabase(MessengerDatabase.NAME).reset(context);
+      } catch (Exception e) {
+         Timber.w(e, "DB is not cleared");
+      }
+      try {
+         crypter.deleteKeys();
+      } catch (KeyStoreException e) {
+         Timber.w(e, "Crypter keys are not cleared");
+      }
    }
 }

@@ -250,8 +250,6 @@ public interface SnappyRepository {
 
    String readWalletDefaultCardId();
 
-   Card readDefaultCard();
-
    void saveDefaultAddress(AddressInfo addressInfo);
 
    AddressInfo readDefaultAddress();

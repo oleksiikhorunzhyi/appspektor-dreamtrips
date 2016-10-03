@@ -1,8 +1,8 @@
 package com.worldventures.dreamtrips.core.repository;
 
 import android.content.Context;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.text.TextUtils;
 
 import com.esotericsoftware.kryo.Kryo;
 import com.esotericsoftware.kryo.io.Input;
@@ -14,7 +14,6 @@ import com.snappydb.DB;
 import com.snappydb.DBFactory;
 import com.snappydb.SnappydbException;
 import com.techery.spares.storage.complex_objects.Optional;
-import com.techery.spares.utils.ValidationUtils;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem;
 import com.worldventures.dreamtrips.modules.dtl.model.location.DtlLocation;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchant;
@@ -51,9 +50,12 @@ import com.worldventures.dreamtrips.wallet.domain.entity.SmartCard;
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCardDetails;
 import com.worldventures.dreamtrips.wallet.domain.entity.TermsAndConditions;
 import com.worldventures.dreamtrips.wallet.domain.entity.card.Card;
+import com.worldventures.dreamtrips.wallet.domain.storage.security.crypto.Crypter.CryptoData;
+import com.worldventures.dreamtrips.wallet.domain.storage.security.crypto.HybridAndroidCrypter;
 
 import org.objenesis.strategy.StdInstantiatorStrategy;
 
+import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -71,13 +73,15 @@ import io.techery.janet.smartcard.mock.device.SimpleDeviceStorage;
 import timber.log.Timber;
 
 public class SnappyRepositoryImpl implements SnappyRepository {
+
    private Context context;
    private ExecutorService executorService;
    private Kryo kryo;
+   private HybridAndroidCrypter crypter;
 
-   public SnappyRepositoryImpl(Context context) {
-      ValidationUtils.checkNotNull(context);
+   public SnappyRepositoryImpl(@NonNull Context context, @NonNull HybridAndroidCrypter crypter) {
       this.context = context;
+      this.crypter = crypter;
       this.executorService = Executors.newSingleThreadExecutor();
       //
       initCustomKryo();
@@ -163,6 +167,36 @@ public class SnappyRepositoryImpl implements SnappyRepository {
    ///////////////////////////////////////////////////////////////////////////
    // Public
    ///////////////////////////////////////////////////////////////////////////
+
+   private void putEncrypted(String key, Object obj) {
+      act(db -> {
+         Output output = new Output(new ByteArrayOutputStream());
+         kryo.writeClassAndObject(output, obj);
+         byte[] bytes = crypter.encrypt(new CryptoData(new ByteArrayInputStream(output.getBuffer()))).toByteArray();
+         db.put(key, bytes);
+      });
+   }
+
+   private <T> T getEncrypted(String key, Class<T> clazz) {
+      return actWithResult(db -> {
+         T result = null;
+         Input input = new Input();
+         try {
+            byte[] bytes = crypter.decrypt(new CryptoData(new ByteArrayInputStream(db.getBytes(key)))).toByteArray();
+            input.setBuffer(bytes);
+            result = (T) kryo.readClassAndObject(input);
+         } finally {
+            input.close();
+         }
+         return result;
+      }).orNull();
+   }
+
+   private <T> List<T> getEncryptedList(String key) {
+      List decrypted = getEncrypted(key, List.class);
+      if (decrypted == null) return Collections.emptyList();
+      else return (List<T>) decrypted;
+   }
 
    @Override
    public <T> void putList(String key, Collection<T> list) {
@@ -282,66 +316,41 @@ public class SnappyRepositoryImpl implements SnappyRepository {
       act(db -> db.put(LAST_SYNC_APP_VERSION, appVersion));
    }
 
+   ///////////////////////////////////////////////////////////////////////////
+   // Wallet
+   ///////////////////////////////////////////////////////////////////////////
+
    @Override
-   public void saveWalletCardsList(List<Card> items) {
-      putList(WALLET_CARDS_LIST, items);
+   public void saveSmartCard(SmartCard smartCard) {
+      putEncrypted(WALLET_SMART_CARD + smartCard.smartCardId(), smartCard);
    }
 
    @Override
-   public List<Card> readWalletCardsList() {
-      return readList(WALLET_CARDS_LIST, Card.class);
+   public SmartCard getSmartCard(String smartCardId) {
+      return getEncrypted(WALLET_SMART_CARD + smartCardId, ImmutableSmartCard.class);
    }
 
    @Override
-   public void deleteWalletCardList() {
-      act(db -> {
-         db.del(WALLET_CARDS_LIST);
-         db.del(WALLET_DEFAULT_BANK_CARD);
-      });
+   public List<SmartCard> getSmartCards() {
+      List<SmartCard> result = new ArrayList<>();
+      String[] keys = actWithResult(db -> db.findKeys(WALLET_SMART_CARD)).or(new String[0]);
+      for (String key : keys) result.add(getEncrypted(key, ImmutableSmartCard.class));
+      return result;
    }
 
    @Override
-   public void saveWalletDefaultCardId(String defaultCardid) {
-      if (defaultCardid == null) return;
-      act(db -> db.put(WALLET_DEFAULT_BANK_CARD, defaultCardid));
-   }
-
-   @Override
-   public String readWalletDefaultCardId() {
-      return actWithResult(db -> db.get(WALLET_DEFAULT_BANK_CARD)).orNull();
-   }
-
-   @Override
-   public Card readDefaultCard() {
-      String id = readWalletDefaultCardId();
-      List<Card> cards = readWalletCardsList();
-      return Queryable.from(cards).firstOrDefault(card -> TextUtils.equals(card.id(), id));
-   }
-
-   @Override
-   public void saveDefaultAddress(AddressInfo addressInfo) {
-      act(db -> db.put(WALLET_DEFAULT_ADDRESS, addressInfo));
-   }
-
-   @Override
-   public AddressInfo readDefaultAddress() {
-      return actWithResult(db -> db.getObject(WALLET_DEFAULT_ADDRESS, ImmutableAddressInfo.class)).orNull();
-   }
-
-   @Override
-   public void deleteDefaultAddress() {
-      act(db -> db.del(WALLET_DEFAULT_ADDRESS));
+   public void deleteSmartCard(String smartCardId) {
+      act(db -> db.del(WALLET_SMART_CARD + smartCardId));
    }
 
    @Override
    public void saveSmartCardDetails(SmartCardDetails smartCardDetails) {
-      act(db -> db.put(WALLET_DETAILS_SMART_CARD + smartCardDetails.smartCardId(), smartCardDetails));
+      putEncrypted(WALLET_DETAILS_SMART_CARD + smartCardDetails.smartCardId(), smartCardDetails);
    }
 
    @Override
    public SmartCardDetails getSmartCardDetails(String smartCardId) {
-      return actWithResult(db -> db.getObject(WALLET_DETAILS_SMART_CARD + smartCardId, ImmutableSmartCardDetails.class))
-            .orNull();
+      return getEncrypted(WALLET_DETAILS_SMART_CARD + smartCardId, ImmutableSmartCardDetails.class);
    }
 
    @Override
@@ -350,34 +359,66 @@ public class SnappyRepositoryImpl implements SnappyRepository {
    }
 
    @Override
-   public List<SmartCard> getSmartCards() {
-      return actWithResult(db -> {
-         List<SmartCard> result = new ArrayList<>();
-         String[] keys = db.findKeys(WALLET_SMART_CARD);
-
-         for (String key : keys) result.add(db.getObject(key, ImmutableSmartCard.class));
-         return result;
-      }).or(Collections.emptyList());
+   public void setActiveSmartCardId(String scid) {
+      putEncrypted(WALLET_ACTIVE_SMART_CARD_ID, scid);
    }
 
    @Override
    public String getActiveSmartCardId() {
-      return actWithResult(db -> db.get(WALLET_ACTIVE_SMART_CARD_ID)).orNull();
+      return getEncrypted(WALLET_ACTIVE_SMART_CARD_ID, String.class);
    }
 
    @Override
-   public void setActiveSmartCardId(String scid) {
-      act(db -> db.put(WALLET_ACTIVE_SMART_CARD_ID, scid));
+   public void saveWalletCardsList(List<Card> items) {
+      putEncrypted(WALLET_CARDS_LIST, items);
+   }
+
+   @Override
+   public List<Card> readWalletCardsList() {
+      return getEncryptedList(WALLET_CARDS_LIST);
+   }
+
+   public void deleteWalletCardList() {
+      act(db -> {
+         db.del(WALLET_CARDS_LIST);
+         db.del(WALLET_DEFAULT_BANK_CARD);
+      });
+   }
+
+   @Override
+   public void saveWalletDefaultCardId(String defaultCardId) {
+      if (defaultCardId == null) return;
+      putEncrypted(WALLET_DEFAULT_BANK_CARD, defaultCardId);
+   }
+
+   @Override
+   public String readWalletDefaultCardId() {
+      return getEncrypted(WALLET_DEFAULT_BANK_CARD, String.class);
+   }
+
+   @Override
+   public void saveDefaultAddress(AddressInfo addressInfo) {
+      putEncrypted(WALLET_DEFAULT_ADDRESS, addressInfo);
+   }
+
+   @Override
+   public AddressInfo readDefaultAddress() {
+      return getEncrypted(WALLET_DEFAULT_ADDRESS, ImmutableAddressInfo.class);
+   }
+
+   @Override
+   public void deleteDefaultAddress() {
+      act(db -> db.del(WALLET_DEFAULT_ADDRESS));
    }
 
    @Override
    public void saveWalletTermsAndConditions(TermsAndConditions data) {
-      act(db -> db.put(WALLET_TERMS_AND_CONDITIONS, data));
+      putEncrypted(WALLET_TERMS_AND_CONDITIONS, data);
    }
 
    @Override
    public TermsAndConditions getWalletTermsAndConditions() {
-      return actWithResult(db -> db.getObject(WALLET_TERMS_AND_CONDITIONS, ImmutableTermsAndConditions.class)).orNull();
+      return getEncrypted(WALLET_TERMS_AND_CONDITIONS, ImmutableTermsAndConditions.class);
    }
 
    @Override
@@ -386,28 +427,13 @@ public class SnappyRepositoryImpl implements SnappyRepository {
    }
 
    @Override
-   public SimpleDeviceStorage getWalletDeviceStorage() {
-      return actWithResult(db -> db.get(WALLET_DEVICE_STORAGE, SimpleDeviceStorage.class)).orNull();
-   }
-
-   @Override
    public void saveWalletDeviceStorage(SimpleDeviceStorage deviceStorage) {
-      act(db -> db.put(WALLET_DEVICE_STORAGE, deviceStorage));
+      putEncrypted(WALLET_DEVICE_STORAGE, deviceStorage);
    }
 
    @Override
-   public void saveSmartCard(SmartCard smartCard) {
-      act(db -> db.put(WALLET_SMART_CARD + smartCard.smartCardId(), smartCard));
-   }
-
-   @Override
-   public SmartCard getSmartCard(String smartCardId) {
-      return actWithResult(db -> db.getObject(WALLET_SMART_CARD + smartCardId, ImmutableSmartCard.class)).orNull();
-   }
-
-   @Override
-   public void deleteSmartCard(String smartCardId) {
-      act(db -> db.del(WALLET_SMART_CARD + smartCardId));
+   public SimpleDeviceStorage getWalletDeviceStorage() {
+      return getEncrypted(WALLET_DEVICE_STORAGE, SimpleDeviceStorage.class);
    }
 
    ///////////////////////////////////////////////////////////////////////////
@@ -833,4 +859,5 @@ public class SnappyRepositoryImpl implements SnappyRepository {
          return tripModels;
       }).or(new ArrayList<>());
    }
+
 }

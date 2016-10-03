@@ -396,11 +396,13 @@ public class MainActivity extends ActivityWithPresenter<MainActivityPresenter> i
       }
    }
 
-   public void attachRightDrawerListener(DrawerListener listener) {
-      rightDrawerListeners.add(listener);
-   }
-
-   public void detachRightDrawerListener(DrawerListener listener) {
-      rightDrawerListeners.remove(listener);
+   @Override
+   public void startActivityForResult(Intent intent, int requestCode) {
+      // workaround for Play Services bug
+      // https://fabric.io/techery3/android/apps/com.worldventures.dreamtrips/issues/57d833ba0aeb16625b32a442
+      // https://github.com/google/gcm/issues/209
+      if (intent != null) {
+         super.startActivityForResult(intent, requestCode);
+      }
    }
 }

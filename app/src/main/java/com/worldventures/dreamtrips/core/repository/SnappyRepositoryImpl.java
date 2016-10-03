@@ -51,7 +51,7 @@ import com.worldventures.dreamtrips.wallet.domain.entity.SmartCardDetails;
 import com.worldventures.dreamtrips.wallet.domain.entity.TermsAndConditions;
 import com.worldventures.dreamtrips.wallet.domain.entity.card.Card;
 import com.worldventures.dreamtrips.wallet.domain.storage.security.crypto.Crypter.CryptoData;
-import com.worldventures.dreamtrips.wallet.domain.storage.security.crypto.DreamTripsCrypter;
+import com.worldventures.dreamtrips.wallet.domain.storage.security.crypto.HybridAndroidCrypter;
 
 import org.objenesis.strategy.StdInstantiatorStrategy;
 
@@ -77,9 +77,9 @@ public class SnappyRepositoryImpl implements SnappyRepository {
    private Context context;
    private ExecutorService executorService;
    private Kryo kryo;
-   private DreamTripsCrypter crypter;
+   private HybridAndroidCrypter crypter;
 
-   public SnappyRepositoryImpl(@NonNull Context context, @NonNull DreamTripsCrypter crypter) {
+   public SnappyRepositoryImpl(@NonNull Context context, @NonNull HybridAndroidCrypter crypter) {
       this.context = context;
       this.crypter = crypter;
       this.executorService = Executors.newSingleThreadExecutor();

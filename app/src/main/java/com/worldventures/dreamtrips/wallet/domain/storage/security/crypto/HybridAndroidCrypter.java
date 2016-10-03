@@ -32,40 +32,49 @@ import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
 import javax.security.auth.x500.X500Principal;
 
-import timber.log.Timber;
-
-public class DreamTripsCrypter implements Crypter<ByteArrayInputStream, ByteArrayOutputStream> {
-
-   private static final String ASYMMETRIC_KEY_TYPE = "RSA/ECB/PKCS1Padding";
-   private static final String ASYMMETRIC_KEY_PROVIDER = "AndroidOpenSSL";
-   private static final String ASYMMETRIC_KEY_SUBJECT = "CN=DreamTrips, O=WorldVentures";
-   private static final String SYMMETRIC_KEY_TYPE = "AES";
-   private static final int SYMMETRIC_KEY_SIZE = 256;
+/**
+ * Encrypt/Decrypt utility for Android.
+ * Hybrid encryption is applied: data is x-crypted symmetrically and symmetric key is x-crypted asymmetrically.
+ * Asymmetric key is taken from Android KeyStore by alias. Symmetric key is stored locally in app's file cache.
+ */
+public class HybridAndroidCrypter implements Crypter<ByteArrayInputStream, ByteArrayOutputStream> {
 
    private final Context context;
    private final String keyAlias;
 
+   private final AsymmetricKeyParams asymmetricParams;
+   private final SymmetricKeyParams symmetricParams;
+
    private final KeyStore keyStore;
    private final Cipher asymmetricCipher;
    private final Cipher symmetricCipher;
-   private SecretKeySpec symmetricKeySpec;
+   private volatile SecretKeySpec symmetricKeySpec;
    private final File symmetricKeyFile;
-   private static final String SYMMETRIC_KEY_FILENAME = "security_key";
 
-   public DreamTripsCrypter(Context context, String alias) throws IllegalStateException {
+   public HybridAndroidCrypter(Context context, String alias, AsymmetricKeyParams asymmetricParams, SymmetricKeyParams symmetricParams) throws IllegalStateException {
+      this(context, alias, alias + "-key", asymmetricParams, symmetricParams);
+   }
+
+   public HybridAndroidCrypter(Context context, String alias, String keyFilename, AsymmetricKeyParams asymmetricParams, SymmetricKeyParams symmetricParams) throws IllegalStateException {
       this.context = context.getApplicationContext();
       this.keyAlias = alias;
+      this.asymmetricParams = asymmetricParams;
+      this.symmetricParams = symmetricParams;
 
       try {
          keyStore = KeyStore.getInstance("AndroidKeyStore");
          keyStore.load(null);
-         asymmetricCipher = Cipher.getInstance(ASYMMETRIC_KEY_TYPE);
-         symmetricCipher = Cipher.getInstance(SYMMETRIC_KEY_TYPE);
-         symmetricKeyFile = new File(context.getFilesDir(), SYMMETRIC_KEY_FILENAME);
+         asymmetricCipher = Cipher.getInstance(this.asymmetricParams.keyType);
+         symmetricCipher = Cipher.getInstance(this.symmetricParams.keyType);
+         symmetricKeyFile = new File(context.getFilesDir(), keyFilename);
       } catch (Exception e) {
          throw new IllegalStateException("Can't load keystore");
       }
    }
+
+   ///////////////////////////////////////////////////////////////////////////
+   // Data API
+   ///////////////////////////////////////////////////////////////////////////
 
    @Override
    public ByteArrayOutputStream encrypt(CryptoData<ByteArrayInputStream> cryptoData) {
@@ -79,11 +88,7 @@ public class DreamTripsCrypter implements Crypter<ByteArrayInputStream, ByteArra
 
    private ByteArrayOutputStream encrypt(ByteArrayInputStream is) throws IllegalStateException {
       if (is.available() == 0) return new ByteArrayOutputStream(0);
-      try {
-         initSymmetricKeyIfNeeded();
-      } catch (Exception e) {
-         throw new IllegalStateException("Can't init symmetric key", e);
-      }
+      initSymmetricKeyIfNeeded();
       try {
          symmetricCipher.init(Cipher.ENCRYPT_MODE, symmetricKeySpec);
 
@@ -99,11 +104,7 @@ public class DreamTripsCrypter implements Crypter<ByteArrayInputStream, ByteArra
 
    private ByteArrayOutputStream decrypt(ByteArrayInputStream is) throws IllegalStateException {
       if (is.available() == 0) return new ByteArrayOutputStream(0);
-      try {
-         initSymmetricKeyIfNeeded();
-      } catch (Exception e) {
-         throw new IllegalStateException("Can't init symmetric key", e);
-      }
+      initSymmetricKeyIfNeeded();
       try {
          symmetricCipher.init(Cipher.DECRYPT_MODE, symmetricKeySpec);
 
@@ -125,33 +126,9 @@ public class DreamTripsCrypter implements Crypter<ByteArrayInputStream, ByteArra
       }
    }
 
-   public void deleteKey(String alias) {
-      try {
-         keyStore.deleteEntry(alias);
-      } catch (KeyStoreException e) {
-         Timber.e(e, "Failed to delete key");
-      }
-   }
-
-   private synchronized void prepareKeystore() throws KeyStoreException, NoSuchProviderException, NoSuchAlgorithmException, InvalidAlgorithmParameterException {
-      if (keyStore.containsAlias(keyAlias)) return;
-      //
-      Calendar start = Calendar.getInstance();
-      Calendar end = Calendar.getInstance();
-      end.add(Calendar.YEAR, 5);
-      KeyPairGeneratorSpec spec = new KeyPairGeneratorSpec.Builder(context)
-            .setAlias(keyAlias)
-            .setKeySize(1024)
-            .setSubject(new X500Principal(ASYMMETRIC_KEY_SUBJECT))
-            .setSerialNumber(BigInteger.ONE)
-            .setStartDate(start.getTime())
-            .setEndDate(end.getTime())
-            .build();
-      KeyPairGenerator generator = KeyPairGenerator.getInstance("RSA", "AndroidKeyStore");
-
-      generator.initialize(spec);
-      generator.generateKeyPair();
-   }
+   ///////////////////////////////////////////////////////////////////////////
+   // Key manipulations
+   ///////////////////////////////////////////////////////////////////////////
 
    private synchronized void initSymmetricKeyIfNeeded() throws IllegalStateException {
       if (symmetricKeySpec != null) return;
@@ -169,25 +146,25 @@ public class DreamTripsCrypter implements Crypter<ByteArrayInputStream, ByteArra
    private SecretKeySpec loadSymmetricKey() throws NoSuchAlgorithmException, InvalidAlgorithmParameterException, NoSuchProviderException, KeyStoreException, UnrecoverableEntryException, InvalidKeyException, IOException {
       if (!symmetricKeyFile.exists()) return null;
       // load Asymmetric key
-      prepareKeystore();
+      prepareAsymmetricKey();
       KeyStore.PrivateKeyEntry privateKeyEntry = (KeyStore.PrivateKeyEntry) keyStore.getEntry(keyAlias, null);
       PrivateKey privateKey = privateKeyEntry.getPrivateKey();
       // read Symmetric key
       asymmetricCipher.init(Cipher.DECRYPT_MODE, privateKey);
-      byte[] symmetricKey = new byte[SYMMETRIC_KEY_SIZE / 8];
+      byte[] symmetricKey = new byte[symmetricParams.size / 8];
       CipherInputStream is = new CipherInputStream(new FileInputStream(symmetricKeyFile), asymmetricCipher);
       is.read(symmetricKey);
-      return new SecretKeySpec(symmetricKey, SYMMETRIC_KEY_TYPE);
+      return new SecretKeySpec(symmetricKey, symmetricParams.keyType);
    }
 
    private SecretKeySpec createAndSaveSymmetricKey() throws UnrecoverableEntryException, NoSuchAlgorithmException, KeyStoreException, NoSuchProviderException, InvalidAlgorithmParameterException, InvalidKeyException, IOException {
       // load Asymmetric key
-      prepareKeystore();
+      prepareAsymmetricKey();
       KeyStore.PrivateKeyEntry privateKeyEntry = (KeyStore.PrivateKeyEntry) keyStore.getEntry(keyAlias, null);
       RSAPublicKey publicKey = (RSAPublicKey) privateKeyEntry.getCertificate().getPublicKey();
       // create Symmetric key
-      KeyGenerator kgen = KeyGenerator.getInstance(SYMMETRIC_KEY_TYPE);
-      kgen.init(SYMMETRIC_KEY_SIZE);
+      KeyGenerator kgen = KeyGenerator.getInstance(symmetricParams.keyType);
+      kgen.init(symmetricParams.size);
       SecretKey aesKey = kgen.generateKey();
       // write Symmetric key
       asymmetricCipher.init(Cipher.ENCRYPT_MODE, publicKey);
@@ -195,7 +172,56 @@ public class DreamTripsCrypter implements Crypter<ByteArrayInputStream, ByteArra
       os.write(aesKey.getEncoded());
       os.close();
 
-      return new SecretKeySpec(aesKey.getEncoded(), SYMMETRIC_KEY_TYPE);
+      return new SecretKeySpec(aesKey.getEncoded(), symmetricParams.keyType);
+   }
+
+   private void prepareAsymmetricKey() throws KeyStoreException, NoSuchProviderException, NoSuchAlgorithmException, InvalidAlgorithmParameterException {
+      if (keyStore.containsAlias(keyAlias)) return;
+      //
+      Calendar start = Calendar.getInstance();
+      Calendar end = Calendar.getInstance();
+      end.add(Calendar.YEAR, 5);
+      KeyPairGeneratorSpec spec = new KeyPairGeneratorSpec.Builder(context)
+            .setAlias(keyAlias)
+            .setKeySize(asymmetricParams.size)
+            .setSubject(new X500Principal(asymmetricParams.subject))
+            .setSerialNumber(BigInteger.ONE)
+            .setStartDate(start.getTime())
+            .setEndDate(end.getTime())
+            .build();
+      KeyPairGenerator generator = KeyPairGenerator.getInstance(asymmetricParams.algorithm, "AndroidKeyStore");
+
+      generator.initialize(spec);
+      generator.generateKeyPair();
+   }
+
+   public void deleteKeys() throws KeyStoreException {
+      keyStore.deleteEntry(keyAlias);
+      if (symmetricKeyFile.exists()) symmetricKeyFile.delete();
+   }
+
+   public static class AsymmetricKeyParams {
+      public final String keyType;
+      public final String algorithm;
+      public final String subject;
+      private final int size;
+
+      public AsymmetricKeyParams(String keyType, String algorithm, String subject, int size) {
+         this.keyType = keyType;
+         this.algorithm = algorithm;
+         this.subject = subject;
+         this.size = size;
+      }
+   }
+
+   public static class SymmetricKeyParams {
+      public final String keyType;
+      public final int size;
+
+      public SymmetricKeyParams(String keyType, int size) {
+         this.keyType = keyType;
+         this.size = size;
+      }
    }
 
 }

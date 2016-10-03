@@ -1,4 +1,4 @@
-package com.worldventures.dreamtrips.modules.bucketlist.service.model;
+package com.worldventures.dreamtrips.modules.common.model;
 
 public final class EntityStateHolder<T> {
    private T entity;

@@ -6,6 +6,7 @@ import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.modules.infopages.presenter.AuthorizedStaticInfoPresenter;
 import com.worldventures.dreamtrips.modules.infopages.presenter.SendFeedbackPresenter;
 import com.worldventures.dreamtrips.modules.infopages.presenter.WebViewFragmentPresenter;
+import com.worldventures.dreamtrips.modules.infopages.view.custom.AttachmentImagesHorizontalView;
 import com.worldventures.dreamtrips.modules.infopages.view.fragment.HelpFragment;
 import com.worldventures.dreamtrips.modules.infopages.view.fragment.SendFeedbackFragment;
 import com.worldventures.dreamtrips.modules.infopages.view.fragment.TermsTabFragment;
@@ -35,7 +36,7 @@ import dagger.Provides;
 
             HelpFragment.class, TermsTabFragment.class, WebViewFragmentPresenter.class,
 
-            SendFeedbackFragment.class, SendFeedbackPresenter.class},
+            SendFeedbackFragment.class, SendFeedbackPresenter.class, AttachmentImagesHorizontalView.class},
       complete = false,
       library = true)
 public class InfoModule {

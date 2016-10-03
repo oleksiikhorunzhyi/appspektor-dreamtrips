@@ -10,9 +10,6 @@
    <dimen name="wallet_round_check_box_left_padding">10dp</dimen>
    <dimen name="wallet_round_check_box_text_size">16sp</dimen>
 
-   <dimen name="wallet_round_icon_success_size">60dp</dimen>
-   <dimen name="wallet_round_icon_success_padding">15dp</dimen>
-
    <dimen name="wallet_details_screen_component_margin_top">15dp</dimen>
    <dimen name="wallet_details_screen_address_margin_top">10dp</dimen>
    <dimen name="wallet_details_screen_address_text_size">16sp</dimen>

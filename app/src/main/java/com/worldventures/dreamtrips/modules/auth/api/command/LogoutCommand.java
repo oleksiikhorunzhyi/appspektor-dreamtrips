@@ -81,8 +81,13 @@ public class LogoutCommand extends Command implements InjectableAction {
       badgeUpdater.updateBadge(0);
       sessionActionPipeCreator.clearReplays();
       sessionApoActionPipeCreator.clearReplays();
-      FlowManager.getDatabase(MessengerDatabase.NAME).reset(context);
       offlineWarningDelegate.resetState();
+
+      try {
+         FlowManager.getDatabase(MessengerDatabase.NAME).reset(context);
+      } catch (Exception e) {
+         Timber.w(e, "DB is not cleared");
+      }
       try {
          crypter.deleteKeys();
       } catch (KeyStoreException e) {

@@ -15,10 +15,7 @@
          app:title="@string/wallet_wizard__welcom_screen_title"
          />
 
-   <RelativeLayout
-         style="@style/WalletTheme.ContentContainerStyle"
-         android:layout_marginTop="?attr/actionBarSize"
-         >
+   <RelativeLayout style="@style/WalletTheme.ContentContainerStyle">
 
       <TextView
             android:id="@+id/text_description"

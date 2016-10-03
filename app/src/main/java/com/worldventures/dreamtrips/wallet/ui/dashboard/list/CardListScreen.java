@@ -20,7 +20,7 @@ import com.techery.spares.adapter.BaseArrayListAdapter;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.modules.bucketlist.view.adapter.IgnoreFirstItemAdapter;
 import com.worldventures.dreamtrips.wallet.domain.entity.card.BankCard;
-import com.worldventures.dreamtrips.wallet.ui.common.base.WalletFrameLayout;
+import com.worldventures.dreamtrips.wallet.ui.common.base.WalletLinearLayout;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.OperationScreen;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.delegate.DialogOperationScreen;
 import com.worldventures.dreamtrips.wallet.ui.dashboard.list.util.CardListHeaderAdapter;
@@ -35,7 +35,7 @@ import java.util.List;
 import butterknife.InjectView;
 import butterknife.OnClick;
 
-public class CardListScreen extends WalletFrameLayout<CardListPresenter.Screen, CardListPresenter, CardListPath> implements CardListPresenter.Screen {
+public class CardListScreen extends WalletLinearLayout<CardListPresenter.Screen, CardListPresenter, CardListPath> implements CardListPresenter.Screen {
 
    private static final String KEY_SHOW_UPDATE_BUTTON_STATE = "CardListScreen#KEY_SHOW_UPDATE_BUTTON_STATE";
 
@@ -180,5 +180,10 @@ public class CardListScreen extends WalletFrameLayout<CardListPresenter.Screen, 
    @OnClick(R.id.firmware_available)
    protected void firmwareAvailableBtnClick() {
       getPresenter().firmwareAvailable();
+   }
+
+   @Override
+   protected boolean hasToolbar() {
+      return true;
    }
 }

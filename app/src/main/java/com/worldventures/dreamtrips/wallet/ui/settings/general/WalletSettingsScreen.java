@@ -10,7 +10,7 @@ import android.widget.TextView;
 import com.jakewharton.rxbinding.widget.RxCompoundButton;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.modules.common.view.custom.BadgeView;
-import com.worldventures.dreamtrips.wallet.ui.common.base.WalletFrameLayout;
+import com.worldventures.dreamtrips.wallet.ui.common.base.WalletLinearLayout;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.OperationScreen;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.delegate.DialogOperationScreen;
 import com.worldventures.dreamtrips.wallet.ui.settings.common.provider.AutoClearSmartCardItemProvider;
@@ -20,7 +20,7 @@ import butterknife.InjectView;
 import butterknife.OnClick;
 import rx.Observable;
 
-public class WalletSettingsScreen extends WalletFrameLayout<WalletSettingsPresenter.Screen, WalletSettingsPresenter, WalletSettingsPath> implements WalletSettingsPresenter.Screen {
+public class WalletSettingsScreen extends WalletLinearLayout<WalletSettingsPresenter.Screen, WalletSettingsPresenter, WalletSettingsPath> implements WalletSettingsPresenter.Screen {
 
    @InjectView(R.id.toolbar) Toolbar toolbar;
    @InjectView(R.id.stealth_mode_switcher) SwitchCompat stealthModeSwitcher;
@@ -209,5 +209,10 @@ public class WalletSettingsScreen extends WalletFrameLayout<WalletSettingsPresen
    @Override
    public OperationScreen provideOperationDelegate() {
       return new DialogOperationScreen(this);
+   }
+
+   @Override
+   protected boolean hasToolbar() {
+      return true;
    }
 }

@@ -10,7 +10,7 @@ import android.util.AttributeSet;
 import com.techery.spares.adapter.BaseDelegateAdapter;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.selectable.SingleSelectionManager;
-import com.worldventures.dreamtrips.wallet.ui.common.base.WalletFrameLayout;
+import com.worldventures.dreamtrips.wallet.ui.common.base.WalletLinearLayout;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.OperationScreen;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.delegate.DialogOperationScreen;
 import com.worldventures.dreamtrips.wallet.ui.settings.common.cell.SectionDividerCell;
@@ -22,7 +22,7 @@ import com.worldventures.dreamtrips.wallet.ui.settings.common.provider.DisableDe
 import butterknife.InjectView;
 
 public class WalletDisableDefaultCardScreen
-      extends WalletFrameLayout<WalletDisableDefaultCardPresenter.Screen, WalletDisableDefaultCardPresenter, WalletDisableDefaultCardPath>
+      extends WalletLinearLayout<WalletDisableDefaultCardPresenter.Screen, WalletDisableDefaultCardPresenter, WalletDisableDefaultCardPath>
       implements WalletDisableDefaultCardPresenter.Screen {
 
    @InjectView(R.id.toolbar) Toolbar toolbar;
@@ -90,5 +90,10 @@ public class WalletDisableDefaultCardScreen
       selectionManager = new SingleSelectionManager(recyclerView);
       recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
       recyclerView.setAdapter(selectionManager.provideWrappedAdapter(adapter));
+   }
+
+   @Override
+   protected boolean hasToolbar() {
+      return true;
    }
 }

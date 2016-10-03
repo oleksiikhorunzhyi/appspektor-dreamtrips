@@ -5,14 +5,14 @@ import android.support.annotation.NonNull;
 import android.util.AttributeSet;
 
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.wallet.ui.common.base.WalletFrameLayout;
+import com.worldventures.dreamtrips.wallet.ui.common.base.WalletLinearLayout;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.OperationScreen;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.delegate.DialogOperationScreen;
 
 import butterknife.OnClick;
 
 
-public class FactoryResetSuccessScreen extends WalletFrameLayout<FactoryResetSuccessPresenter.Screen, FactoryResetSuccessPresenter, FactoryResetSuccessPath>
+public class FactoryResetSuccessScreen extends WalletLinearLayout<FactoryResetSuccessPresenter.Screen, FactoryResetSuccessPresenter, FactoryResetSuccessPath>
       implements FactoryResetSuccessPresenter.Screen {
 
    public FactoryResetSuccessScreen(Context context) {
@@ -39,5 +39,8 @@ public class FactoryResetSuccessScreen extends WalletFrameLayout<FactoryResetSuc
       return new DialogOperationScreen(this);
    }
 
-
+   @Override
+   protected boolean hasToolbar() {
+      return true;
+   }
 }

@@ -7,7 +7,7 @@ import android.util.AttributeSet;
 import android.view.View;
 
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.wallet.ui.common.base.WalletFrameLayout;
+import com.worldventures.dreamtrips.wallet.ui.common.base.WalletLinearLayout;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.OperationScreen;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.delegate.DialogOperationScreen;
 import com.worldventures.dreamtrips.wallet.ui.wizard.charging.anim.ChargingSwipingAnimations;
@@ -16,7 +16,7 @@ import butterknife.InjectView;
 
 import static com.worldventures.dreamtrips.wallet.ui.wizard.charging.anim.ChargingSwipingAnimations.BANKCARD_ANIMATION_REPEAT_DEFAULT;
 
-public class WizardChargingScreen extends WalletFrameLayout<WizardChargingPresenter.Screen, WizardChargingPresenter, WizardChargingPath> implements WizardChargingPresenter.Screen {
+public class WizardChargingScreen extends WalletLinearLayout<WizardChargingPresenter.Screen, WizardChargingPresenter, WizardChargingPath> implements WizardChargingPresenter.Screen {
 
    @InjectView(R.id.toolbar) Toolbar toolbar;
    @InjectView(R.id.smart_card) View smartCard;
@@ -35,6 +35,7 @@ public class WizardChargingScreen extends WalletFrameLayout<WizardChargingPresen
    @Override
    protected void onFinishInflate() {
       super.onFinishInflate();
+      supportConnectionStatusLabel(false);
       toolbar.setNavigationOnClickListener(v -> navigateClick());
    }
 
@@ -60,5 +61,8 @@ public class WizardChargingScreen extends WalletFrameLayout<WizardChargingPresen
       presenter.goBack();
    }
 
-
+   @Override
+   protected boolean hasToolbar() {
+      return true;
+   }
 }

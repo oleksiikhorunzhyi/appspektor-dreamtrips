@@ -6,13 +6,13 @@ import android.support.v7.widget.Toolbar;
 import android.util.AttributeSet;
 
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.wallet.ui.common.base.WalletFrameLayout;
+import com.worldventures.dreamtrips.wallet.ui.common.base.WalletLinearLayout;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.OperationScreen;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.delegate.DialogOperationScreen;
 
 import butterknife.InjectView;
 
-public class FactoryResetScreen extends WalletFrameLayout<FactoryResetPresenter.Screen, FactoryResetPresenter, FactoryResetPath> implements FactoryResetPresenter.Screen {
+public class FactoryResetScreen extends WalletLinearLayout<FactoryResetPresenter.Screen, FactoryResetPresenter, FactoryResetPath> implements FactoryResetPresenter.Screen {
 
    @InjectView(R.id.toolbar) Toolbar toolbar;
 
@@ -44,4 +44,8 @@ public class FactoryResetScreen extends WalletFrameLayout<FactoryResetPresenter.
       return dialogOperationScreen;
    }
 
+   @Override
+   protected boolean hasToolbar() {
+      return true;
+   }
 }

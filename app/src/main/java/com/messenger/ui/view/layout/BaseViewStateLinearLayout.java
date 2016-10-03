@@ -6,20 +6,20 @@ import android.os.Parcelable;
 import android.util.AttributeSet;
 
 import com.hannesdorfmann.mosby.mvp.MvpView;
-import com.hannesdorfmann.mosby.mvp.layout.MvpFrameLayout;
+import com.hannesdorfmann.mosby.mvp.layout.MvpLinearLayout;
 import com.messenger.ui.presenter.ViewStateMvpPresenter;
 
-public abstract class BaseViewStateFrameLayout<V extends MvpView, P extends ViewStateMvpPresenter<V, ?>> extends MvpFrameLayout<V, P> {
+public abstract class BaseViewStateLinearLayout<V extends MvpView, P extends ViewStateMvpPresenter<V, ?>> extends MvpLinearLayout<V, P> {
 
    private static final String KEY_SUPER_INSTANCE_STATE = "superstate";
 
    private Bundle lastInstanceState;
 
-   public BaseViewStateFrameLayout(Context context) {
+   public BaseViewStateLinearLayout(Context context) {
       super(context);
    }
 
-   public BaseViewStateFrameLayout(Context context, AttributeSet attrs) {
+   public BaseViewStateLinearLayout(Context context, AttributeSet attrs) {
       super(context, attrs);
    }
 

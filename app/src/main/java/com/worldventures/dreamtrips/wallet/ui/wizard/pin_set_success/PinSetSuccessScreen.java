@@ -7,14 +7,14 @@ import android.util.AttributeSet;
 import android.widget.TextView;
 
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.wallet.ui.common.base.WalletFrameLayout;
+import com.worldventures.dreamtrips.wallet.ui.common.base.WalletLinearLayout;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.OperationScreen;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.delegate.DialogOperationScreen;
 
 import butterknife.InjectView;
 import butterknife.OnClick;
 
-public class PinSetSuccessScreen extends WalletFrameLayout<PinSetSuccessPresenter.Screen, PinSetSuccessPresenter, PinSetSuccessPath>
+public class PinSetSuccessScreen extends WalletLinearLayout<PinSetSuccessPresenter.Screen, PinSetSuccessPresenter, PinSetSuccessPath>
       implements PinSetSuccessPresenter.Screen {
 
    @InjectView(R.id.toolbar) Toolbar toolbar;
@@ -38,6 +38,7 @@ public class PinSetSuccessScreen extends WalletFrameLayout<PinSetSuccessPresente
    @Override
    protected void onFinishInflate() {
       super.onFinishInflate();
+      supportConnectionStatusLabel(false);
       toolbar.setNavigationOnClickListener(v -> presenter.goToBack());
    }
 
@@ -51,4 +52,8 @@ public class PinSetSuccessScreen extends WalletFrameLayout<PinSetSuccessPresente
       return new DialogOperationScreen(this);
    }
 
+   @Override
+   protected boolean hasToolbar() {
+      return true;
+   }
 }

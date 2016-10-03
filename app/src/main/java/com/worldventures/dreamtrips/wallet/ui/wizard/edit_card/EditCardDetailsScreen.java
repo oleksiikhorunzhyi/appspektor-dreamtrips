@@ -11,7 +11,7 @@ import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.wallet.domain.entity.AddressInfo;
 import com.worldventures.dreamtrips.wallet.domain.entity.AddressInfoWithLocale;
 import com.worldventures.dreamtrips.wallet.domain.entity.ImmutableAddressInfo;
-import com.worldventures.dreamtrips.wallet.ui.common.base.WalletFrameLayout;
+import com.worldventures.dreamtrips.wallet.ui.common.base.WalletLinearLayout;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.OperationScreen;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.delegate.DialogOperationScreen;
 
@@ -19,7 +19,7 @@ import butterknife.InjectView;
 import butterknife.OnClick;
 import butterknife.OnEditorAction;
 
-public class EditCardDetailsScreen extends WalletFrameLayout<EditCardDetailsPresenter.Screen, EditCardDetailsPresenter, EditCardDetailsPath>
+public class EditCardDetailsScreen extends WalletLinearLayout<EditCardDetailsPresenter.Screen, EditCardDetailsPresenter, EditCardDetailsPath>
       implements EditCardDetailsPresenter.Screen {
 
    @InjectView(R.id.toolbar) Toolbar toolbar;
@@ -88,5 +88,10 @@ public class EditCardDetailsScreen extends WalletFrameLayout<EditCardDetailsPres
             .build();
 
       getPresenter().onCardAddressConfirmed(addressInfo);
+   }
+
+   @Override
+   protected boolean hasToolbar() {
+      return true;
    }
 }

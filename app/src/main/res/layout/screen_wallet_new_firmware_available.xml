@@ -17,7 +17,6 @@
    <RelativeLayout
          android:layout_width="match_parent"
          android:layout_height="match_parent"
-         android:layout_marginTop="?attr/actionBarSize"
          >
 
       <TextView
@@ -140,8 +139,8 @@
             android:paddingEnd="@dimen/spacing_large"
             android:paddingStart="@dimen/spacing_large"
             android:paddingTop="@dimen/spacing_medium"
-            android:textColor="@color/wallet_settings_version"
             android:scrollbars="vertical"
+            android:textColor="@color/wallet_settings_version"
             android:textSize="11sp"
             tools:text="To make our SmartCard better for you, we have updates every 2 week. Every update of our smart card includes improvements for speed and reliability. As other new features become available, we\’ll highlight those for you in the app."
             />

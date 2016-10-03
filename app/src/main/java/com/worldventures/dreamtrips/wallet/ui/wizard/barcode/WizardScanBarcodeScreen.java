@@ -8,7 +8,7 @@ import android.util.AttributeSet;
 
 import com.google.zxing.Result;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.wallet.ui.common.base.WalletFrameLayout;
+import com.worldventures.dreamtrips.wallet.ui.common.base.WalletLinearLayout;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.OperationScreen;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.delegate.DialogOperationScreen;
 
@@ -16,7 +16,7 @@ import butterknife.InjectView;
 import butterknife.OnClick;
 import me.dm7.barcodescanner.zxing.ZXingScannerView;
 
-public class WizardScanBarcodeScreen extends WalletFrameLayout<WizardScanBarcodePresenter.Screen, WizardScanBarcodePresenter, WizardScanBarcodePath> implements WizardScanBarcodePresenter.Screen, ZXingScannerView.ResultHandler {
+public class WizardScanBarcodeScreen extends WalletLinearLayout<WizardScanBarcodePresenter.Screen, WizardScanBarcodePresenter, WizardScanBarcodePath> implements WizardScanBarcodePresenter.Screen, ZXingScannerView.ResultHandler {
 
    @InjectView(R.id.toolbar) Toolbar toolbar;
    @InjectView(R.id.scanner_view) ZXingScannerView scanner;
@@ -32,6 +32,7 @@ public class WizardScanBarcodeScreen extends WalletFrameLayout<WizardScanBarcode
    @Override
    protected void onFinishInflate() {
       super.onFinishInflate();
+      supportConnectionStatusLabel(false);
       toolbar.setNavigationOnClickListener(v -> presenter.goBack());
       scanner.setResultHandler(this);
    }
@@ -84,5 +85,10 @@ public class WizardScanBarcodeScreen extends WalletFrameLayout<WizardScanBarcode
    @OnClick(R.id.wallet_wizard_scan_barcode_manual_input)
    void onInputManuallyClicked() {
       getPresenter().startManualInput();
+   }
+
+   @Override
+   protected boolean hasToolbar() {
+      return true;
    }
 }

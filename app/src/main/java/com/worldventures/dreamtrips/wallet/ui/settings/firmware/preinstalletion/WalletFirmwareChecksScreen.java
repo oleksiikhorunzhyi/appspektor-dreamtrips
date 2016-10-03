@@ -7,7 +7,7 @@ import android.util.AttributeSet;
 import android.widget.Button;
 
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.wallet.ui.common.base.WalletFrameLayout;
+import com.worldventures.dreamtrips.wallet.ui.common.base.WalletLinearLayout;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.OperationScreen;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.delegate.DialogOperationScreen;
 import com.worldventures.dreamtrips.wallet.ui.widget.WalletCheckWidget;
@@ -15,7 +15,8 @@ import com.worldventures.dreamtrips.wallet.ui.widget.WalletCheckWidget;
 import butterknife.InjectView;
 import butterknife.OnClick;
 
-public class WalletFirmwareChecksScreen extends WalletFrameLayout<WalletFirmwareChecksPresenter.Screen, WalletFirmwareChecksPresenter, WalletFirmwareChecksPath> implements WalletFirmwareChecksPresenter.Screen {
+public class WalletFirmwareChecksScreen extends WalletLinearLayout<WalletFirmwareChecksPresenter.Screen, WalletFirmwareChecksPresenter, WalletFirmwareChecksPath>
+      implements WalletFirmwareChecksPresenter.Screen {
 
    @InjectView(R.id.toolbar) Toolbar toolbar;
    @InjectView(R.id.check_widget_charge) WalletCheckWidget checkWidgetCharge;
@@ -86,5 +87,10 @@ public class WalletFirmwareChecksScreen extends WalletFrameLayout<WalletFirmware
    @Override
    public void installButtonEnabled(boolean enabled) {
       installButton.setEnabled(enabled);
+   }
+
+   @Override
+   protected boolean hasToolbar() {
+      return true;
    }
 }

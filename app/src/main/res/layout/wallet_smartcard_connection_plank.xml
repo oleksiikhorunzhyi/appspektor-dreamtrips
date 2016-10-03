@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TextView xmlns:android="http://schemas.android.com/apk/res/android"
+      xmlns:tools="http://schemas.android.com/tools"
+      android:layout_width="match_parent"
+      android:layout_height="40dp"
+      android:gravity="center"
+      android:textAppearance="?android:textAppearanceMedium"
+      android:textColor="@color/wallet_smartcard_connection_plank_text_color"
+      tools:text="@string/wallet_smart_card_is_disconnected"
+      >
+
+</TextView>

@@ -222,4 +222,8 @@
    <string name="wallet_firmware_pre_installation_charging">Make sure your flye SmartCard is 50% charged</string>
    <string name="wallet_firmware_pre_installation_button">Install</string>
    <string name="wallet_firmware_pre_installation_install_later">Install Later</string>
+
+   <!--smart card connection-->
+   <string name="wallet_smartcard_connected_label">SmartCard is connected</string>
+   <string name="wallet_smartcard_disconnected_label">SmartCard is disconnected</string>
 </resources>

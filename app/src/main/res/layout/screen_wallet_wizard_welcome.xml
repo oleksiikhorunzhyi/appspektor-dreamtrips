@@ -4,10 +4,7 @@
       xmlns:tools="http://schemas.android.com/tools"
       android:layout_width="match_parent"
       android:layout_height="match_parent"
-      android:gravity="center"
-      android:orientation="vertical"
       android:theme="@style/WalletTheme"
-      android:weightSum="4"
       >
 
    <android.support.v7.widget.Toolbar
@@ -17,19 +14,18 @@
          app:title="@string/wallet_wizard_welcome_title"
          />
 
-   <LinearLayout
+   <RelativeLayout
          android:layout_width="match_parent"
-         android:layout_height="wrap_content"
-         android:layout_marginTop="?attr/actionBarSize"
-         android:gravity="center"
-         android:orientation="vertical"
+         android:layout_height="match_parent"
          >
 
       <TextView
             android:id="@+id/greeting_label"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
             android:layout_marginTop="35dp"
+            android:gravity="center"
             android:textAppearance="?android:attr/textAppearanceLarge"
             android:visibility="invisible"
             tools:text="Hi Shirley Temple!"
@@ -52,6 +48,7 @@
       <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_below="@+id/content_label"
             android:layout_marginTop="35dp"
             >
 
@@ -83,22 +80,22 @@
                android:layout_height="wrap_content"
                android:layout_alignLeft="@+id/user_photo"
                android:layout_alignRight="@+id/user_photo"
-               android:src="@drawable/ic_flyecard_light"
                android:layout_marginTop="20dp"
+               android:src="@drawable/ic_flyecard_light"
                />
 
       </RelativeLayout>
 
-   </LinearLayout>
+      <Button
+            android:id="@+id/setup_button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_margin="@dimen/spacing_large"
+            android:text="@string/wallet_wizard_welcome_button_text"
+            android:visibility="invisible"
+            />
 
-   <Button
-         android:id="@+id/setup_button"
-         android:layout_width="match_parent"
-         android:layout_height="wrap_content"
-         android:layout_gravity="bottom"
-         android:layout_margin="@dimen/spacing_large"
-         android:text="@string/wallet_wizard_welcome_button_text"
-         android:visibility="invisible"
-         />
+   </RelativeLayout>
 
 </com.worldventures.dreamtrips.wallet.ui.wizard.welcome.WizardWelcomeScreen>

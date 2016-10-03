@@ -6,6 +6,12 @@
       android:theme="@style/WalletTheme"
       >
 
+   <android.support.v7.widget.Toolbar
+         android:id="@+id/toolbar"
+         android:layout_width="match_parent"
+         android:layout_height="?attr/actionBarSize"
+         />
+
    <ScrollView
          android:layout_width="match_parent"
          android:layout_height="match_parent"
@@ -13,7 +19,6 @@
 
       <RelativeLayout
             style="@style/WalletTheme.ContentContainerStyle"
-            android:layout_marginTop="?attr/actionBarSize"
             android:theme="@style/WalletTheme"
             >
 
@@ -104,11 +109,5 @@
       </RelativeLayout>
 
    </ScrollView>
-
-   <android.support.v7.widget.Toolbar
-         android:id="@+id/toolbar"
-         android:layout_width="match_parent"
-         android:layout_height="?attr/actionBarSize"
-         />
 
 </com.worldventures.dreamtrips.wallet.ui.dashboard.detail.CardDetailsScreen>

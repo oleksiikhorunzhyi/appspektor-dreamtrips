@@ -11,7 +11,7 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.wallet.domain.entity.FirmwareInfo;
+import com.worldventures.dreamtrips.api.smart_card.firmware.model.FirmwareInfo;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletFrameLayout;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.OperationScreen;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.delegate.DialogOperationScreen;
@@ -80,12 +80,12 @@ public class WalletNewFirmwareScreen
 
    @Override
    public void availableFirmwareInfo(FirmwareInfo firmwareInfo) {
-      availableVersion.setText(getResources().getString(R.string.wallet_settings_version, firmwareInfo.versionName()));
+      availableVersion.setText(getResources().getString(R.string.wallet_settings_version, firmwareInfo.firmwareVersion()));
       String size = FileUtils.byteCountToDisplaySize(firmwareInfo.fileSize());
       availableVersionSize.setText(getResources().getString(R.string.wallet_settings_update_size, size)); // convert to KB
       newVersionDescription.setText(firmwareInfo.releaseNotes());
 
-      latestVersion.setText(getResources().getString(R.string.wallet_settings_version_latest, firmwareInfo.versionName()));
+      latestVersion.setText(getResources().getString(R.string.wallet_settings_version_latest, firmwareInfo.firmwareVersion()));
    }
 
    @Override

@@ -105,21 +105,24 @@ public class CardListPresenter extends WalletPresenter<CardListPresenter.Screen,
       firmwareInteractor.firmwareInfoPipe()
             .createObservableResult(new FetchFirmwareInfoCommand())
             .compose(bindViewIoToMainComposer())
-            .map(it -> it.getResult())
-            .subscribe(it -> {
-               this.firmware = it;
-               if (it.updateAvailable()) {
-                  getView().showFirmwareUpdateBtn();
-                  this.cardStackHeaderHolder = ImmutableCardStackHeaderHolder.builder()
-                        .from(cardStackHeaderHolder)
-                        .firmware(it)
-                        .build();
-                  getView().notifySmartCardChanged(cardStackHeaderHolder);
-               } else {
-                  getView().hideFirmwareUpdateBtn();
-               }
-            }, e -> {
+            .subscribe(command -> firmwareLoaded(command.getResult()), e -> {
+               // TODO: 10/3/16 do we heed show error in this place?
             });
+   }
+
+   private void firmwareLoaded(Firmware firmware) {
+      this.firmware = firmware;
+      this.cardStackHeaderHolder = ImmutableCardStackHeaderHolder.builder()
+            .from(cardStackHeaderHolder)
+            .firmware(firmware)
+            .build();
+      getView().notifySmartCardChanged(cardStackHeaderHolder);
+
+      if (firmware.updateAvailable()) {
+         getView().showFirmwareUpdateBtn();
+      } else {
+         getView().hideFirmwareUpdateBtn();
+      }
    }
 
    private void trackScreen() {
@@ -188,16 +191,6 @@ public class CardListPresenter extends WalletPresenter<CardListPresenter.Screen,
       getView().notifySmartCardChanged(cardStackHeaderHolder);
       getView().showRecordsInfo(cards);
       getView().enableAddCardButton(cardLoaded != MAX_CARD_LIMIT);
-   }
-
-   private Observable<GetActiveSmartCardCommand> activeSmartCard() {
-      return smartCardInteractor.activeSmartCardPipe()
-            .createObservableResult(new GetActiveSmartCardCommand());
-   }
-
-   private Observable<ConnectSmartCardCommand> connectCard(SmartCard smartCard) {
-      return smartCardInteractor.connectActionPipe()
-            .createObservableResult(new ConnectSmartCardCommand(smartCard));
    }
 
    public interface Screen extends WalletScreen {

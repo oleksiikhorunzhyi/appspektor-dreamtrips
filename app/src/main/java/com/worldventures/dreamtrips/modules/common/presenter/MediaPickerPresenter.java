@@ -9,7 +9,6 @@ import com.worldventures.dreamtrips.modules.common.model.PhotoGalleryModel;
 import com.worldventures.dreamtrips.modules.common.view.util.DrawableUtil;
 import com.worldventures.dreamtrips.modules.common.view.util.MediaPickerManager;
 import com.worldventures.dreamtrips.modules.common.view.util.Size;
-import com.worldventures.dreamtrips.modules.feed.event.PickerDoneEvent;
 import com.worldventures.dreamtrips.modules.tripsimages.vision.ImageUtils;
 
 import java.util.ArrayList;
@@ -65,7 +64,6 @@ public class MediaPickerPresenter extends Presenter<MediaPickerPresenter.View> {
                .observeOn(AndroidSchedulers.mainThread())
                .subscribe(photoGalleryModels -> {
                   mediaPickerManager.attach(new MediaAttachment(photoGalleryModels, event.getRequestType(), requestId));
-                  eventBus.post(new PickerDoneEvent(new MediaAttachment(photoGalleryModels, event.getRequestType(), requestId)));
                   // need to call back, because this event comes from camera and picker
                   // done method isn't called and picker won't close
                   if (view != null) view.back();
@@ -74,8 +72,6 @@ public class MediaPickerPresenter extends Presenter<MediaPickerPresenter.View> {
    }
 
    public void attachImages(List<BasePhotoPickerModel> pickedImages, int type) {
-      eventBus.post(new PickerDoneEvent());
-      //
       compositeSubscription.add(Observable.from(pickedImages)
             .map(element -> {
                Pair<String, Size> pair = ImageUtils.generateUri(drawableUtil, element.getOriginalPath());

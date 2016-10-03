@@ -10,7 +10,7 @@ import android.widget.EditText;
 
 import com.jakewharton.rxbinding.widget.RxTextView;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.wallet.ui.common.base.WalletFrameLayout;
+import com.worldventures.dreamtrips.wallet.ui.common.base.WalletLinearLayout;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.OperationScreen;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.delegate.DialogOperationScreen;
 
@@ -19,7 +19,7 @@ import butterknife.OnClick;
 import butterknife.OnEditorAction;
 import rx.Observable;
 
-public class WizardManualInputScreen extends WalletFrameLayout<WizardManualInputPresenter.Screen, WizardManualInputPresenter, WizardManualInputPath> implements WizardManualInputPresenter.Screen {
+public class WizardManualInputScreen extends WalletLinearLayout<WizardManualInputPresenter.Screen, WizardManualInputPresenter, WizardManualInputPath> implements WizardManualInputPresenter.Screen {
    @InjectView(R.id.toolbar) Toolbar toolbar;
 
    @InjectView(R.id.wallet_wizard_manual_input_scid) EditText scidNumberInput;
@@ -36,6 +36,7 @@ public class WizardManualInputScreen extends WalletFrameLayout<WizardManualInput
    @Override
    protected void onFinishInflate() {
       super.onFinishInflate();
+      supportConnectionStatusLabel(false);
       toolbar.setNavigationOnClickListener(v -> getPresenter().goBack());
    }
 
@@ -73,5 +74,10 @@ public class WizardManualInputScreen extends WalletFrameLayout<WizardManualInput
    @Override
    public Observable<CharSequence> scidInput() {
       return RxTextView.textChanges(scidNumberInput);
+   }
+
+   @Override
+   protected boolean hasToolbar() {
+      return true;
    }
 }

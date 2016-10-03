@@ -11,7 +11,7 @@ import android.widget.EditText;
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.wallet.ui.common.base.MediaPickerService;
-import com.worldventures.dreamtrips.wallet.ui.common.base.WalletFrameLayout;
+import com.worldventures.dreamtrips.wallet.ui.common.base.WalletLinearLayout;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.OperationScreen;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.delegate.DialogOperationScreen;
 
@@ -22,7 +22,7 @@ import butterknife.OnClick;
 import butterknife.OnEditorAction;
 import rx.Observable;
 
-public class WizardEditProfileScreen extends WalletFrameLayout<WizardEditProfilePresenter.Screen, WizardEditProfilePresenter, WizardEditProfilePath> implements WizardEditProfilePresenter.Screen {
+public class WizardEditProfileScreen extends WalletLinearLayout<WizardEditProfilePresenter.Screen, WizardEditProfilePresenter, WizardEditProfilePath> implements WizardEditProfilePresenter.Screen {
 
    @InjectView(R.id.toolbar) Toolbar toolbar;
    @InjectView(R.id.person_name) EditText personName;
@@ -47,6 +47,7 @@ public class WizardEditProfileScreen extends WalletFrameLayout<WizardEditProfile
    @Override
    protected void onFinishInflate() {
       super.onFinishInflate();
+      supportConnectionStatusLabel(false);
       if (isInEditMode()) return;
       //noinspection all
       mediaPickerService = (MediaPickerService) getContext().getSystemService(MediaPickerService.SERVICE_NAME);
@@ -119,5 +120,10 @@ public class WizardEditProfileScreen extends WalletFrameLayout<WizardEditProfile
    @Override
    public String getUserName() {
       return personName.getText().toString();
+   }
+
+   @Override
+   protected boolean hasToolbar() {
+      return true;
    }
 }

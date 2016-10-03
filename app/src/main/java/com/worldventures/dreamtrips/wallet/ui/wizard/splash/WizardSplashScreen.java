@@ -11,7 +11,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.wallet.ui.common.base.WalletFrameLayout;
+import com.worldventures.dreamtrips.wallet.ui.common.base.WalletLinearLayout;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.OperationScreen;
 
 import butterknife.InjectView;
@@ -20,7 +20,7 @@ import static android.animation.ObjectAnimator.ofFloat;
 import static butterknife.ButterKnife.apply;
 import static java.util.Arrays.asList;
 
-public class WizardSplashScreen extends WalletFrameLayout<WizardSplashPresenter.Screen, WizardSplashPresenter, WizardSplashPath> implements WizardSplashPresenter.Screen {
+public class WizardSplashScreen extends WalletLinearLayout<WizardSplashPresenter.Screen, WizardSplashPresenter, WizardSplashPath> implements WizardSplashPresenter.Screen {
 
    private static final int SHOW_SOAR_TITLE_DELAY = 1000;
    private static final int SOAR_FADE_OUT_DELAY = 400;
@@ -52,6 +52,7 @@ public class WizardSplashScreen extends WalletFrameLayout<WizardSplashPresenter.
    @Override
    protected void onFinishInflate() {
       super.onFinishInflate();
+      supportConnectionStatusLabel(false);
       toolbar.setNavigationOnClickListener(v -> presenter.onBack());
       hideAllView();
    }
@@ -113,5 +114,10 @@ public class WizardSplashScreen extends WalletFrameLayout<WizardSplashPresenter.
             .before(mainAnimation);
 
       animation.start();
+   }
+
+   @Override
+   protected boolean hasToolbar() {
+      return true;
    }
 }

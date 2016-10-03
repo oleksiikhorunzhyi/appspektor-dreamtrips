@@ -14,7 +14,7 @@ import android.widget.TextView;
 
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.wallet.ui.common.base.WalletFrameLayout;
+import com.worldventures.dreamtrips.wallet.ui.common.base.WalletLinearLayout;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.OperationScreen;
 
 import java.io.File;
@@ -22,7 +22,7 @@ import java.io.File;
 import butterknife.InjectView;
 import butterknife.OnClick;
 
-public class WizardWelcomeScreen extends WalletFrameLayout<WizardWelcomePresenter.Screen, WizardWelcomePresenter, WizardWelcomePath> implements WizardWelcomePresenter.Screen {
+public class WizardWelcomeScreen extends WalletLinearLayout<WizardWelcomePresenter.Screen, WizardWelcomePresenter, WizardWelcomePath> implements WizardWelcomePresenter.Screen {
 
    private static final long ANIMATION_DURATION = 1000;
    private static final long GREETING_ANIMATION_DELAY = 1000;
@@ -52,9 +52,9 @@ public class WizardWelcomeScreen extends WalletFrameLayout<WizardWelcomePresente
    @Override
    protected void onFinishInflate() {
       super.onFinishInflate();
+      supportConnectionStatusLabel(false);
       toolbar.setNavigationOnClickListener(v -> getPresenter().backButtonClicked());
    }
-
 
    @Override
    public void userName(String userName) {
@@ -99,5 +99,10 @@ public class WizardWelcomeScreen extends WalletFrameLayout<WizardWelcomePresente
    @Override
    public OperationScreen provideOperationDelegate() {
       return null;
+   }
+
+   @Override
+   protected boolean hasToolbar() {
+      return true;
    }
 }

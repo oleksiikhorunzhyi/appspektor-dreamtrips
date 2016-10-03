@@ -12,7 +12,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.wallet.ui.common.base.WalletFrameLayout;
+import com.worldventures.dreamtrips.wallet.ui.common.base.WalletLinearLayout;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.OperationScreen;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.delegate.DialogOperationScreen;
 
@@ -24,7 +24,7 @@ import static butterknife.ButterKnife.apply;
 import static java.util.Arrays.asList;
 
 public class WalletSuccessInstallFirmwareScreen
-      extends WalletFrameLayout<WalletSuccessInstallFirmwarePresenter.Screen, WalletSuccessInstallFirmwarePresenter, WalletSuccessInstallFirmwarePath>
+      extends WalletLinearLayout<WalletSuccessInstallFirmwarePresenter.Screen, WalletSuccessInstallFirmwarePresenter, WalletSuccessInstallFirmwarePath>
       implements WalletSuccessInstallFirmwarePresenter.Screen {
 
    private static final int ANIM_DURATION_MAIN_IMAGE = 300;
@@ -95,5 +95,10 @@ public class WalletSuccessInstallFirmwareScreen
             .with(ofFloat(subTitle, View.ALPHA, 1).setDuration(ANIM_DURATION_SUB_TITLE))
             .before(ofFloat(done, View.ALPHA, 1).setDuration(ANIM_DURATION_DONE_BTN));
       mainAnimation.start();
+   }
+
+   @Override
+   protected boolean hasToolbar() {
+      return true;
    }
 }

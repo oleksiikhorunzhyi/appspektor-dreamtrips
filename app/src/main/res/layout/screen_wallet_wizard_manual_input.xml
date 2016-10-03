@@ -16,7 +16,6 @@
 
    <RelativeLayout
          style="@style/WalletTheme.ContentContainerStyle"
-         android:layout_marginTop="?attr/actionBarSize"
          android:orientation="vertical"
          >
 
@@ -47,11 +46,11 @@
             android:layout_marginBottom="30dp"
             android:layout_marginTop="32dp"
             android:cursorVisible="false"
+            android:importantForAccessibility="no"
             android:inputType="numberSigned"
             android:maxLength="10"
             android:textColorHint="@color/wallet_number_edit_text_text_color_hint"
             android:textIsSelectable="false"
-            android:importantForAccessibility="no"
             app:pinCharacterSpacing="6dp"
             app:pinLineColors="@color/wallet_number_edit_text_pin_line_color"
             app:pinRepeatedHint="#"

@@ -8,14 +8,14 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.wallet.ui.common.base.WalletFrameLayout;
+import com.worldventures.dreamtrips.wallet.ui.common.base.WalletLinearLayout;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.OperationScreen;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.delegate.DialogOperationScreen;
 
 import butterknife.InjectView;
 import rx.functions.Action1;
 
-public class ConnectSmartCardScreen extends WalletFrameLayout<ConnectSmartCardPresenter.Screen, ConnectSmartCardPresenter, ConnectSmartCardPath>
+public class ConnectSmartCardScreen extends WalletLinearLayout<ConnectSmartCardPresenter.Screen, ConnectSmartCardPresenter, ConnectSmartCardPath>
       implements ConnectSmartCardPresenter.Screen, OperationScreen<Void> {
 
    @InjectView(R.id.connection_progress) View downloadProgress;
@@ -28,6 +28,12 @@ public class ConnectSmartCardScreen extends WalletFrameLayout<ConnectSmartCardPr
 
    public ConnectSmartCardScreen(Context context, AttributeSet attrs) {
       super(context, attrs);
+   }
+
+   @Override
+   protected void onFinishInflate() {
+      super.onFinishInflate();
+      supportConnectionStatusLabel(false);
    }
 
    @Override
@@ -60,5 +66,10 @@ public class ConnectSmartCardScreen extends WalletFrameLayout<ConnectSmartCardPr
    @Override
    public Context context() {
       return getContext();
+   }
+
+   @Override
+   protected boolean hasToolbar() {
+      return true;
    }
 }

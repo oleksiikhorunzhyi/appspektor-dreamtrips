@@ -8,14 +8,14 @@ import android.util.AttributeSet;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.wallet.ui.common.base.WalletFrameLayout;
+import com.worldventures.dreamtrips.wallet.ui.common.base.WalletLinearLayout;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.OperationScreen;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.delegate.DialogOperationScreen;
 import com.worldventures.dreamtrips.wallet.ui.widget.WalletProgressWidget;
 
 import butterknife.InjectView;
 
-public class WalletInstallFirmwareScreen extends WalletFrameLayout<WalletInstallFirmwarePresenter.Screen, WalletInstallFirmwarePresenter, WalletInstallFirmwarePath>
+public class WalletInstallFirmwareScreen extends WalletLinearLayout<WalletInstallFirmwarePresenter.Screen, WalletInstallFirmwarePresenter, WalletInstallFirmwarePath>
       implements WalletInstallFirmwarePresenter.Screen {
 
    @InjectView(R.id.firmware_install_progress) WalletProgressWidget installProgress;
@@ -39,6 +39,7 @@ public class WalletInstallFirmwareScreen extends WalletFrameLayout<WalletInstall
       super.onFinishInflate();
       toolbar.setNavigationIcon(new ColorDrawable(Color.TRANSPARENT));
       installProgress.start();
+      supportConnectionStatusLabel(false);
    }
 
    @Override
@@ -61,5 +62,10 @@ public class WalletInstallFirmwareScreen extends WalletFrameLayout<WalletInstall
    @Override
    public void onStart() {
       installProgress.setVisibility(VISIBLE);
+   }
+
+   @Override
+   protected boolean hasToolbar() {
+      return true;
    }
 }

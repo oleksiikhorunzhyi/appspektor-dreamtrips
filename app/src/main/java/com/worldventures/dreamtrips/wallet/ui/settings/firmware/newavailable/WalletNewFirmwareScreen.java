@@ -12,7 +12,7 @@ import android.widget.TextView;
 
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.api.smart_card.firmware.model.FirmwareInfo;
-import com.worldventures.dreamtrips.wallet.ui.common.base.WalletFrameLayout;
+import com.worldventures.dreamtrips.wallet.ui.common.base.WalletLinearLayout;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.OperationScreen;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.delegate.DialogOperationScreen;
 
@@ -22,7 +22,7 @@ import butterknife.InjectView;
 import butterknife.OnClick;
 
 public class WalletNewFirmwareScreen
-      extends WalletFrameLayout<WalletNewFirmwareAvailablePresenter.Screen, WalletNewFirmwareAvailablePresenter, WalletNewFirmwareAvailablePath>
+      extends WalletLinearLayout<WalletNewFirmwareAvailablePresenter.Screen, WalletNewFirmwareAvailablePresenter, WalletNewFirmwareAvailablePath>
       implements WalletNewFirmwareAvailablePresenter.Screen {
 
    @InjectView(R.id.toolbar) Toolbar toolbar;
@@ -103,5 +103,10 @@ public class WalletNewFirmwareScreen
                   .openSettings())
             .setNegativeButton(R.string.wallet_firmware_space_alert_cancel_action, null)
             .show();
+   }
+
+   @Override
+   protected boolean hasToolbar() {
+      return true;
    }
 }

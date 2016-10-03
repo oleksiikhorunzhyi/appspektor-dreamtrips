@@ -7,7 +7,7 @@ import android.util.AttributeSet;
 import android.widget.TextView;
 
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.wallet.ui.common.base.WalletFrameLayout;
+import com.worldventures.dreamtrips.wallet.ui.common.base.WalletLinearLayout;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.OperationScreen;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.delegate.DialogOperationScreen;
 
@@ -16,7 +16,7 @@ import butterknife.OnClick;
 
 import static com.worldventures.dreamtrips.wallet.ui.wizard.pin.WizardPinSetupPath.Action.RESET;
 
-public class WizardPinSetupScreen extends WalletFrameLayout<WizardPinSetupPresenter.Screen, WizardPinSetupPresenter, WizardPinSetupPath> implements WizardPinSetupPresenter.Screen {
+public class WizardPinSetupScreen extends WalletLinearLayout<WizardPinSetupPresenter.Screen, WizardPinSetupPresenter, WizardPinSetupPath> implements WizardPinSetupPresenter.Screen {
 
    @InjectView(R.id.toolbar) Toolbar toolbar;
    @InjectView(R.id.header_text_view) TextView headerTextView;
@@ -49,6 +49,7 @@ public class WizardPinSetupScreen extends WalletFrameLayout<WizardPinSetupPresen
       } else {
          headerTextView.setText(R.string.wallet_wizard_setup_pin_header);
          nextButton.setText(R.string.wallet_got_it_label);
+         supportConnectionStatusLabel(false);
       }
    }
 
@@ -69,4 +70,8 @@ public class WizardPinSetupScreen extends WalletFrameLayout<WizardPinSetupPresen
       return dialogOperationScreen;
    }
 
+   @Override
+   protected boolean hasToolbar() {
+      return true;
+   }
 }

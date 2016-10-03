@@ -14,7 +14,7 @@ import com.worldventures.dreamtrips.wallet.domain.entity.AddressInfo;
 import com.worldventures.dreamtrips.wallet.domain.entity.AddressInfoWithLocale;
 import com.worldventures.dreamtrips.wallet.domain.entity.ImmutableAddressInfo;
 import com.worldventures.dreamtrips.wallet.domain.entity.card.BankCard;
-import com.worldventures.dreamtrips.wallet.ui.common.base.WalletFrameLayout;
+import com.worldventures.dreamtrips.wallet.ui.common.base.WalletLinearLayout;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.OperationScreen;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.delegate.DialogOperationScreen;
 import com.worldventures.dreamtrips.wallet.ui.dialog.ChangeDefaultPaymentCardDialog;
@@ -26,7 +26,8 @@ import butterknife.OnClick;
 import butterknife.OnEditorAction;
 import rx.Observable;
 
-public class AddCardDetailsScreen extends WalletFrameLayout<AddCardDetailsPresenter.Screen, AddCardDetailsPresenter, AddCardDetailsPath> implements AddCardDetailsPresenter.Screen {
+public class AddCardDetailsScreen extends WalletLinearLayout<AddCardDetailsPresenter.Screen, AddCardDetailsPresenter, AddCardDetailsPath>
+      implements AddCardDetailsPresenter.Screen {
 
    @InjectView(R.id.toolbar) Toolbar toolbar;
    @InjectView(R.id.card) BankCardWidget bankCardWidget;
@@ -131,5 +132,10 @@ public class AddCardDetailsScreen extends WalletFrameLayout<AddCardDetailsPresen
             .build();
 
       getPresenter().onCardInfoConfirmed(addressInfo, cvv, nickname, true, true, setAsDefaultCard);
+   }
+
+   @Override
+   protected boolean hasToolbar() {
+      return true;
    }
 }

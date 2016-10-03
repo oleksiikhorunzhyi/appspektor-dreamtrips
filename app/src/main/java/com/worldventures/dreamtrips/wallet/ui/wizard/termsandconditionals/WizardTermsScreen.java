@@ -14,14 +14,14 @@ import android.webkit.WebViewClient;
 import android.widget.Button;
 
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.wallet.ui.common.base.WalletFrameLayout;
+import com.worldventures.dreamtrips.wallet.ui.common.base.WalletLinearLayout;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.OperationScreen;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.delegate.DialogOperationScreen;
 
 import butterknife.InjectView;
 import butterknife.OnClick;
 
-public class WizardTermsScreen extends WalletFrameLayout<WizardTermsScreenPresenter.Screen, WizardTermsScreenPresenter, WizardTermsPath> implements WizardTermsScreenPresenter.Screen {
+public class WizardTermsScreen extends WalletLinearLayout<WizardTermsScreenPresenter.Screen, WizardTermsScreenPresenter, WizardTermsPath> implements WizardTermsScreenPresenter.Screen {
 
    @InjectView(R.id.toolbar) Toolbar toolbar;
    @InjectView(R.id.termsView) WebView termsView;
@@ -48,6 +48,7 @@ public class WizardTermsScreen extends WalletFrameLayout<WizardTermsScreenPresen
    protected void onFinishInflate() {
       super.onFinishInflate();
 
+      supportConnectionStatusLabel(false);
       agreeBtn.setVisibility(GONE);
       pb.setVisibility(GONE);
 
@@ -112,5 +113,10 @@ public class WizardTermsScreen extends WalletFrameLayout<WizardTermsScreenPresen
    @OnClick(R.id.wallet_wizard_terms_and_conditions_agree_btn)
    void onAcceptClicked() {
       getPresenter().acceptTermsPressed();
+   }
+
+   @Override
+   protected boolean hasToolbar() {
+      return true;
    }
 }

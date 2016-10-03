@@ -13,7 +13,7 @@ import com.jakewharton.rxbinding.widget.RxCompoundButton;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.wallet.domain.entity.AddressInfoWithLocale;
 import com.worldventures.dreamtrips.wallet.domain.entity.card.BankCard;
-import com.worldventures.dreamtrips.wallet.ui.common.base.WalletFrameLayout;
+import com.worldventures.dreamtrips.wallet.ui.common.base.WalletLinearLayout;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.OperationScreen;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.delegate.DialogOperationScreen;
 import com.worldventures.dreamtrips.wallet.ui.dialog.ChangeDefaultPaymentCardDialog;
@@ -25,7 +25,8 @@ import butterknife.InjectView;
 import butterknife.OnClick;
 import rx.Observable;
 
-public class CardDetailsScreen extends WalletFrameLayout<CardDetailsPresenter.Screen, CardDetailsPresenter, CardDetailsPath> implements CardDetailsPresenter.Screen {
+public class CardDetailsScreen extends WalletLinearLayout<CardDetailsPresenter.Screen, CardDetailsPresenter, CardDetailsPath>
+      implements CardDetailsPresenter.Screen {
 
    @InjectView(R.id.toolbar) Toolbar toolbar;
 
@@ -122,5 +123,10 @@ public class CardDetailsScreen extends WalletFrameLayout<CardDetailsPresenter.Sc
    @Override
    public void showDefaultAddress(AddressInfoWithLocale addressInfoWithLocale) {
       addressText.setText(AddressUtil.obtainAddressLabel(addressInfoWithLocale));
+   }
+
+   @Override
+   protected boolean hasToolbar() {
+      return true;
    }
 }

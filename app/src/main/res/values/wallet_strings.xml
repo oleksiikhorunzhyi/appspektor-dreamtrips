@@ -203,8 +203,8 @@
    <string name="wallet_firmware_install_header">flye SmartCard Update</string>
    <string name="wallet_firmware_install_text">Installing Update</string>
    <string name="wallet_firmware_install_sub_text">Do not turn off flye SmartCard</string>
-   <string name="wallet_firmware_install_error_text">Firmware is failed to install..</string>
-   <string name="wallet_firmware_install_error_sub_text">Would you like to try again?</string>
+   <string name="wallet_firmware_install_error_text">Installation Error</string>
+   <string name="wallet_firmware_install_error_sub_text">Update failed to complete installation. Would you like to retry?</string>
    <string name="wallet_firmware_install_error_retry_action">Retry</string>
    <string name="wallet_firmware_install_error_cancel_action">Not now</string>
 

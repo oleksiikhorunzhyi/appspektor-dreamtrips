@@ -4,6 +4,7 @@
    <color name="wallet_color_primary">#005e92</color>
    <color name="wallet_color_primary_dark">#006699</color>
    <color name="wallet_text_color_primary">#222222</color>
+   <color name="wallet_text_color_medium">#dd222222</color>
 
    <color name="wallet_button_color_disabled">#8f8f8f</color>
    <color name="wallet_button_text_color_disabled">#FFFFFF</color>
@@ -47,7 +48,7 @@
    </style>
 
    <style name="WalletTheme.TextAppearanceMedium" parent="TextAppearance.AppCompat.Medium">
-      <item name="android:textColor">@color/wallet_text_color_primary</item>
+      <item name="android:textColor">@color/wallet_text_color_medium</item>
    </style>
 
    <style name="WalletTheme.TextAppearanceSmall" parent="TextAppearance.AppCompat.Small">

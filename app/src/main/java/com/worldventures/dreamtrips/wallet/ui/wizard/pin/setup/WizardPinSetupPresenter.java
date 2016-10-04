@@ -1,4 +1,4 @@
-package com.worldventures.dreamtrips.wallet.ui.wizard.pin;
+package com.worldventures.dreamtrips.wallet.ui.wizard.pin.setup;
 
 import android.content.Context;
 import android.os.Parcelable;
@@ -16,31 +16,34 @@ import com.worldventures.dreamtrips.wallet.ui.common.helper.ErrorActionStateSubs
 import com.worldventures.dreamtrips.wallet.ui.common.helper.ErrorHandler;
 import com.worldventures.dreamtrips.wallet.ui.common.navigation.Navigator;
 import com.worldventures.dreamtrips.wallet.ui.wizard.finish.WalletPinIsSetPath;
-import com.worldventures.dreamtrips.wallet.ui.wizard.pin_set_success.PinSetSuccessPath;
+import com.worldventures.dreamtrips.wallet.ui.wizard.pin.Action;
+import com.worldventures.dreamtrips.wallet.ui.wizard.pin.success.PinSetSuccessPath;
+
+import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
 
 import io.techery.janet.smartcard.action.settings.StartPinSetupAction;
 import io.techery.janet.smartcard.event.PinSetupFinishedEvent;
 
-import static com.worldventures.dreamtrips.wallet.ui.wizard.pin.WizardPinSetupPath.Action.SETUP;
+import static com.worldventures.dreamtrips.wallet.ui.wizard.pin.Action.SETUP;
 
 public class WizardPinSetupPresenter extends WalletPresenter<WizardPinSetupPresenter.Screen, Parcelable> {
 
    private final SmartCard smartCard;
-   private final WizardPinSetupPath.Action mode;
+   private final Action mode;
 
    @Inject Navigator navigator;
    @Inject WizardInteractor wizardInteractor;
    @Inject AnalyticsInteractor analyticsInteractor;
 
-   public WizardPinSetupPresenter(Context context, Injector injector, SmartCard smartCard, WizardPinSetupPath.Action mode) {
+   public WizardPinSetupPresenter(Context context, Injector injector, SmartCard smartCard, Action mode) {
       super(context, injector);
       this.smartCard = smartCard;
       this.mode = mode;
    }
 
-   public void goToBack() {
+   public void goBack() {
       navigator.goBack();
    }
 
@@ -60,7 +63,8 @@ public class WizardPinSetupPresenter extends WalletPresenter<WizardPinSetupPrese
 
    private void observeSetupFinishedPipe() {
       wizardInteractor.pinSetupFinishedPipe()
-            .observeWithReplay()
+            .observe()
+            .delay(2, TimeUnit.SECONDS) // // TODO: 10/4/16 remove before release, MOCK delay
             .compose(bindViewIoToMainComposer())
             .subscribe(ErrorActionStateSubscriberWrapper.<PinSetupFinishedEvent>forView(getView().provideOperationDelegate())
                   .onSuccess(action -> {
@@ -73,7 +77,7 @@ public class WizardPinSetupPresenter extends WalletPresenter<WizardPinSetupPrese
                   .wrap());
 
       wizardInteractor.startPinSetupPipe()
-            .observeWithReplay()
+            .observe()
             .compose(bindViewIoToMainComposer())
             .subscribe(ErrorActionStateSubscriberWrapper.<StartPinSetupAction>forView(getView().provideOperationDelegate())
                   .onFail(ErrorHandler.<StartPinSetupAction>builder(getContext())
@@ -84,7 +88,7 @@ public class WizardPinSetupPresenter extends WalletPresenter<WizardPinSetupPrese
             );
    }
 
-   public void setupPIN() {
+   void setupPIN() {
       wizardInteractor.startPinSetupPipe().send(new StartPinSetupAction());
    }
 
@@ -92,12 +96,12 @@ public class WizardPinSetupPresenter extends WalletPresenter<WizardPinSetupPrese
       if (mode == SETUP) {
          navigator.single(new WalletPinIsSetPath(smartCard));
       } else {
-         navigator.go(new PinSetSuccessPath());
+         navigator.withoutLast(new PinSetSuccessPath(mode));
       }
    }
 
    public interface Screen extends WalletScreen {
 
-      void showMode(WizardPinSetupPath.Action mode);
+      void showMode(Action mode);
    }
 }

@@ -1,4 +1,4 @@
-package com.worldventures.dreamtrips.wallet.ui.wizard.pin;
+package com.worldventures.dreamtrips.wallet.ui.wizard.pin.setup;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
@@ -10,11 +10,10 @@ import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletLinearLayout;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.OperationScreen;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.delegate.DialogOperationScreen;
+import com.worldventures.dreamtrips.wallet.ui.wizard.pin.Action;
 
 import butterknife.InjectView;
 import butterknife.OnClick;
-
-import static com.worldventures.dreamtrips.wallet.ui.wizard.pin.WizardPinSetupPath.Action.RESET;
 
 public class WizardPinSetupScreen extends WalletLinearLayout<WizardPinSetupPresenter.Screen, WizardPinSetupPresenter, WizardPinSetupPath> implements WizardPinSetupPresenter.Screen {
 
@@ -38,12 +37,12 @@ public class WizardPinSetupScreen extends WalletLinearLayout<WizardPinSetupPrese
    }
 
    private void onBackClick() {
-      presenter.goToBack();
+      presenter.goBack();
    }
 
    @Override
-   public void showMode(WizardPinSetupPath.Action mode) {
-      if (mode == RESET) {
+   public void showMode(Action mode) {
+      if (mode == Action.RESET) {
          headerTextView.setText(R.string.wallet_wizard_setup_new_pin_header);
          nextButton.setText(R.string.wallet_continue_label);
       } else {

@@ -25,14 +25,13 @@ import com.worldventures.dreamtrips.wallet.ui.settings.factory_reset.FactoryRese
 import com.worldventures.dreamtrips.wallet.ui.settings.firmware.newavailable.WalletNewFirmwareAvailablePath;
 import com.worldventures.dreamtrips.wallet.ui.settings.firmware.uptodate.WalletUpToDateFirmwarePath;
 import com.worldventures.dreamtrips.wallet.ui.settings.removecards.WalletAutoClearCardsPath;
-import com.worldventures.dreamtrips.wallet.ui.wizard.pin.WizardPinSetupPath;
+import com.worldventures.dreamtrips.wallet.ui.wizard.pin.Action;
+import com.worldventures.dreamtrips.wallet.ui.wizard.pin.setup.WizardPinSetupPath;
 
 import javax.inject.Inject;
 
 import io.techery.janet.smartcard.action.support.DisconnectAction;
 import rx.Observable;
-
-import static com.worldventures.dreamtrips.wallet.ui.wizard.pin.WizardPinSetupPath.Action.RESET;
 
 public class WalletSettingsPresenter extends WalletPresenter<WalletSettingsPresenter.Screen, Parcelable> {
 
@@ -214,7 +213,7 @@ public class WalletSettingsPresenter extends WalletPresenter<WalletSettingsPrese
    }
 
    void resetPin() {
-      navigator.go(new WizardPinSetupPath(smartCard, RESET));
+      navigator.go(new WizardPinSetupPath(smartCard, Action.RESET));
    }
 
    void disableDefaultCardTimer() {

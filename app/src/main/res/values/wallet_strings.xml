@@ -61,10 +61,10 @@
    <string name="wallet_add_debit_card">Add debit card</string>
    <string name="wallet_payment_cards_title">Payment cards</string>
 
-   <!--scid manual-->
+   <!--bar code manual-->
    <string name="wallet_wizard_manual_input_header">Enter the 10-digit number located below barcode</string>
    <string name="wallet_wizard_manual_input_title">flye SmartCard Number</string>
-   <string name="wallet_wizard_scid_validation_error">Wrong SCID Number</string>
+   <string name="wallet_wizard_bar_code_validation_error">Wrong barcode Number</string>
    <string name="wallet_bank_name_text_holder">Bank Name</string>
 
    <!--details-->

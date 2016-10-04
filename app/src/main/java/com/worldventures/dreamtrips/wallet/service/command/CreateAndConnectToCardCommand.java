@@ -9,7 +9,6 @@ import com.worldventures.dreamtrips.wallet.domain.entity.ImmutableSmartCard;
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCard;
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCardDetails;
 import com.worldventures.dreamtrips.wallet.service.SmartCardInteractor;
-import com.worldventures.dreamtrips.wallet.util.WalletValidateHelper;
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -40,7 +39,6 @@ public class CreateAndConnectToCardCommand extends Command<Void> implements Inje
 
    @Override
    protected void run(CommandCallback<Void> callback) throws Throwable {
-      WalletValidateHelper.validateSCIdOrThrow(smartCardId);
       Observable.just(createSmartCard())
             .flatMap(smartCard -> smartCardInteractor.connectActionPipe()
                   .createObservableResult(new ConnectSmartCardCommand(smartCard)))

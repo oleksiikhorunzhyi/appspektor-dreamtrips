@@ -38,7 +38,7 @@ public class WalletValidateHelper {
 
    public static void validateSCIdOrThrow(String scid) throws FormatException {
       if (!validateSCId(scid)) {
-         throw new FormatException();
+         throw new FormatException(String.format("Wrong scID: %s", scid));
       }
    }
 

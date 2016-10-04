@@ -12,6 +12,7 @@ import com.worldventures.dreamtrips.wallet.domain.entity.SmartCardDetails;
 import com.worldventures.dreamtrips.wallet.domain.entity.TermsAndConditions;
 import com.worldventures.dreamtrips.wallet.domain.entity.ImmutableSmartCardDetails;
 import com.worldventures.dreamtrips.wallet.util.SmartphoneUtils;
+import com.worldventures.dreamtrips.wallet.util.WalletValidateHelper;
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -29,16 +30,18 @@ public class AssociateCardUserCommand extends Command<SmartCardDetails> implemen
    @Inject @Named(JANET_API_LIB) Janet janet;
    @Inject SnappyRepository repository;
 
-   private final String smartCardId;
+   private final String barcode;
 
-   public AssociateCardUserCommand(String smartCardId) {
-      this.smartCardId = smartCardId;
+   public AssociateCardUserCommand(String barcode) {
+      this.barcode = barcode;
    }
 
    @Override
    protected void run(CommandCallback<SmartCardDetails> callback) throws Throwable {
+      WalletValidateHelper.validateSCIdOrThrow(barcode);
+
       AssociationCardUserData data = ImmutableAssociationCardUserData.builder()
-            .scid(Long.parseLong(smartCardId))
+            .scid(Long.parseLong(barcode))
             .deviceModel(SmartphoneUtils.getDeviceName())
             .deviceOsVersion(SmartphoneUtils.getOsVersion())
             .acceptedTermsAndConditionVersion(obtainTACVersion())
@@ -62,7 +65,7 @@ public class AssociateCardUserCommand extends Command<SmartCardDetails> implemen
    private SmartCardDetails convertResponse(com.worldventures.dreamtrips.api.smart_card.user_association.model.SmartCardDetails details) {
       return ImmutableSmartCardDetails.builder()
             //todo replace it in future. For now server returns stub values
-            .smartCardId(Long.parseLong(smartCardId))
+            .smartCardId(details.scID())
             .bleAddress("DA:30:55:CF:B4:9E") // dev board address
             .nxtOrderId(details.nxtOrderId())
             .orderDate(details.orderDate())

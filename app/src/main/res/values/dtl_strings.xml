@@ -93,8 +93,11 @@
    <string name="merchants_list_empty_text_additional">- or -</string>
    <string name="merchant_working_hours_caption">Hours</string>
    <string name="filter_amenities_error_caption">Amenities could not be loaded at this time</string>
-   <string name="dtl_load_merchant_error">Loading error</string>
    <string name="dtl_try_again">Try again</string>
+
+   <!-- Errors -->
+   <string name="dtl_load_error">Loading error</string>
+   <string name="dtl_load_merchant_error_caption">Results could not be loaded at this time.</string>
 
    <!-- DtlToolbar strings -->
    <string name="dtlt_search_hint">Food &amp; Drinks</string>

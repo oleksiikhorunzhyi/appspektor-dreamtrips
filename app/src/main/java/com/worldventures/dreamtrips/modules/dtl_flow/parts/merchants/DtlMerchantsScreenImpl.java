@@ -3,14 +3,12 @@ package com.worldventures.dreamtrips.modules.dtl_flow.parts.merchants;
 import android.content.Context;
 import android.support.annotation.Nullable;
 import android.support.v4.widget.SwipeRefreshLayout;
-import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
 import android.view.View;
 
 import com.techery.spares.adapter.expandable.ExpandableLayoutManager;
 import com.trello.rxlifecycle.RxLifecycle;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.core.api.error.ErrorResponse;
 import com.worldventures.dreamtrips.core.flow.activity.FlowActivity;
 import com.worldventures.dreamtrips.core.selectable.SelectionManager;
 import com.worldventures.dreamtrips.core.selectable.SingleSelectionManager;
@@ -19,21 +17,25 @@ import com.worldventures.dreamtrips.modules.dtl.model.location.DtlLocation;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.ImmutableThinMerchant;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.ThinMerchant;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.offer.Offer;
-import com.worldventures.dreamtrips.modules.dtl.view.cell.DtlMerchantExpandableCell;
+import com.worldventures.dreamtrips.modules.dtl.view.cell.MerchantsErrorCell;
+import com.worldventures.dreamtrips.modules.dtl.view.cell.ProgressCell;
 import com.worldventures.dreamtrips.modules.dtl.view.cell.adapter.ThinMerchantsAdapter;
 import com.worldventures.dreamtrips.modules.dtl.view.cell.delegates.MerchantCellDelegate;
+import com.worldventures.dreamtrips.modules.dtl.view.cell.delegates.MerchantsAdapterDelegate;
+import com.worldventures.dreamtrips.modules.dtl.view.cell.pagination.PaginationManager;
 import com.worldventures.dreamtrips.modules.dtl.view.dialog.DialogFactory;
 import com.worldventures.dreamtrips.modules.dtl_flow.DtlLayout;
 import com.worldventures.dreamtrips.modules.dtl_flow.view.toolbar.DtlToolbarHelper;
 import com.worldventures.dreamtrips.modules.dtl_flow.view.toolbar.ExpandableDtlToolbar;
 import com.worldventures.dreamtrips.modules.dtl_flow.view.toolbar.RxDtlToolbar;
-import com.worldventures.dreamtrips.modules.feed.view.custom.StateRecyclerView;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
+import javax.inject.Inject;
+
 import butterknife.InjectView;
+import butterknife.OnClick;
 import butterknife.Optional;
 import cn.pedant.SweetAlert.SweetAlertDialog;
 
@@ -44,10 +46,13 @@ public class DtlMerchantsScreenImpl extends DtlLayout<DtlMerchantsScreen, DtlMer
    @InjectView(R.id.lv_items) EmptyRecyclerView recyclerView;
    @InjectView(R.id.swipe_container) SwipeRefreshLayout refreshLayout;
    @InjectView(R.id.emptyView) View emptyView;
+   @InjectView(R.id.errorView) View errorView;
 
-   ThinMerchantsAdapter adapter;
+   @Inject MerchantsAdapterDelegate delegate;
+
    SelectionManager selectionManager;
    SweetAlertDialog errorDialog;
+   PaginationManager paginationManager;
 
    @Override
    protected void onFinishInflate() {
@@ -60,22 +65,28 @@ public class DtlMerchantsScreenImpl extends DtlLayout<DtlMerchantsScreen, DtlMer
       super.onPostAttachToWindowView();
       initDtlToolbar();
 
-      adapter = new ThinMerchantsAdapter(getActivity(), injector);
-      adapter.registerCell(ImmutableThinMerchant.class, DtlMerchantExpandableCell.class);
-      adapter.registerDelegate(ImmutableThinMerchant.class, this);
+      ThinMerchantsAdapter adapter = new ThinMerchantsAdapter(getActivity(), injector);
+      delegate.setup(adapter);
+      delegate.registerDelegate(ImmutableThinMerchant.class, this);
+      delegate.registerDelegate(MerchantsErrorCell.Model.class, model -> onRetryClick());
+
+      paginationManager = new PaginationManager();
+      paginationManager.setup(recyclerView);
+      paginationManager.setPaginationListener(() -> getPresenter().loadNext());
 
       selectionManager = new SingleSelectionManager(recyclerView);
       selectionManager.setEnabled(isTabletLandscape());
 
       recyclerView.setAdapter(adapter);
-      recyclerView.setEmptyView(emptyView);
 
       refreshLayout.setColorSchemeResources(R.color.theme_main_darker);
-      refreshLayout.setEnabled(false);
+      refreshLayout.setOnRefreshListener(() -> getPresenter().refresh());
+      refreshLayout.setEnabled(true);
    }
 
    private void initDtlToolbar() {
       if (dtlToolbar == null) return;
+
       RxDtlToolbar.actionViewClicks(dtlToolbar)
             .throttleFirst(250L, TimeUnit.MILLISECONDS)
             .compose(RxLifecycle.bindView(this))
@@ -103,23 +114,7 @@ public class DtlMerchantsScreenImpl extends DtlLayout<DtlMerchantsScreen, DtlMer
 
    @Override
    public void setFilterButtonState(boolean isDefault) {
-      if (dtlToolbar == null) return;
-      dtlToolbar.setFilterEnabled(!isDefault);
-   }
-
-   @Override
-   public void showEmptyMerchantView(boolean show) {
-      adapter.setItems(Collections.emptyList());
-   }
-
-   @Override
-   public void setExpandedOffers(List<String> expandedOffers) {
-      adapter.setExpandedMerchantIds(expandedOffers);
-   }
-
-   @Override
-   public List<String> getExpandedOffers() {
-      return adapter.getExpandedMerchantIds();
+      if (dtlToolbar != null) dtlToolbar.setFilterEnabled(!isDefault);
    }
 
    @Override
@@ -135,8 +130,76 @@ public class DtlMerchantsScreenImpl extends DtlLayout<DtlMerchantsScreen, DtlMer
    }
 
    @Override
+   public boolean isToolbarCollapsed() {
+      return dtlToolbar == null || dtlToolbar.isCollapsed();
+   }
+
+   @Override
+   public void setRefreshedItems(List<ThinMerchant> merchants) {
+      delegate.clearAndUpdateItems(merchants);
+   }
+
+   @Override
+   public void addItems(List<ThinMerchant> merchants) {
+      delegate.addItems(merchants);
+   }
+
+   @Override
+   public void refreshProgress(boolean isShow) {
+      refreshLayout.setRefreshing(isShow);
+   }
+
+   @Override
+   public void loadNextProgress(boolean isRefresh) {
+      if (isRefresh) delegate.addItem(ProgressCell.INSTANCE);
+      else delegate.removeItem(ProgressCell.INSTANCE);
+   }
+
+   @Override
+   public void showEmpty(boolean isShow) {
+      emptyView.setVisibility(isShow ? VISIBLE : GONE);
+   }
+
+   @Override
+   public void updateLoadingState(boolean isLoading) {
+      paginationManager.updateLoadingStatus(isLoading);
+   }
+
+   @Override
+   public void showError(String error) {
+      errorDialog = DialogFactory.createRetryDialog(getActivity(), error);
+      errorDialog.setConfirmClickListener(listener -> {
+         listener.dismissWithAnimation();
+         getPresenter().retryLoadMerchant();
+      });
+      errorDialog.show();
+   }
+
+   @Override
+   public void refreshMerchantsError(boolean isShow) {
+      errorView.setVisibility(isShow ? VISIBLE : GONE);
+   }
+
+   @Override
+   public void clearMerchants() {
+      delegate.clear();
+   }
+
+   @Override
+   public void loadNextMerchantsError(boolean show) {
+      if(show) delegate.addItem(MerchantsErrorCell.INSTANCE);
+      else delegate.removeItem(MerchantsErrorCell.INSTANCE);
+   }
+
+   @OnClick(R.id.retry)
+   protected void onRetryClick() {
+      if (delegate.isItemsPresent()) getPresenter().loadNext();
+      else getPresenter().refresh();
+   }
+
+   @Override
    public void onToggleExpanded(boolean expanded, ImmutableThinMerchant item) {
-      adapter.toogle(expanded, item);
+      delegate.toggleItem(expanded, item);
       getPresenter().onToggleExpand(expanded, item);
    }
 
@@ -151,34 +214,6 @@ public class DtlMerchantsScreenImpl extends DtlLayout<DtlMerchantsScreen, DtlMer
    }
 
    @Override
-   public void setItems(List<ThinMerchant> merchants) {
-      hideProgress();
-      adapter.setItems(merchants);
-   }
-
-   @Override
-   public void showProgress() {
-      refreshLayout.setRefreshing(true);
-      emptyView.setVisibility(GONE);
-   }
-
-   @Override
-   public void hideProgress() {
-      refreshLayout.setRefreshing(false);
-      emptyView.setVisibility(VISIBLE);
-   }
-
-   @Override
-   public void showError(String error) {
-      errorDialog = DialogFactory.createRetryDialog(getActivity(), error);
-      errorDialog.setConfirmClickListener(listener -> {
-         listener.dismissWithAnimation();
-         getPresenter().retryLoadMerchant();
-      });
-      errorDialog.show();
-   }
-
-   @Override
    public void toggleOffersOnly(boolean enabled) {
       if (dtlToolbar == null) return;
       dtlToolbar.toggleOffersOnly(enabled);
@@ -186,34 +221,26 @@ public class DtlMerchantsScreenImpl extends DtlLayout<DtlMerchantsScreen, DtlMer
 
    @Override
    public void toggleSelection(ThinMerchant merchant) {
-      int index = adapter.getItems().indexOf(merchant);
+      int index = delegate.getItems().indexOf(merchant);
       if (index != -1) selectionManager.toggleSelection(index);
-   }
-
-   @Override
-   public boolean isToolbarCollapsed() {
-      return dtlToolbar == null || dtlToolbar.isCollapsed();
    }
 
    @Override
    protected void onDetachedFromWindow() {
       selectionManager.release();
-      recyclerView.setAdapter(null);
       super.onDetachedFromWindow();
    }
 
    @Override
-   public void onApiCallFailed() {
-      super.onApiCallFailed();
-      hideProgress();
+   public void applyViewState(DtlMerchantsState state) {
+      if (state == null) return;
+      delegate.setExpandedMerchants(state.getExpandedMerchantIds());
+      delegate.setItems(state.getMerchants());
    }
 
    @Override
-   public boolean onApiError(ErrorResponse errorResponse) {
-      SweetAlertDialog alertDialog = DialogFactory.createErrorDialog(getActivity(), errorResponse.getFirstMessage());
-      alertDialog.setConfirmClickListener(SweetAlertDialog::dismissWithAnimation);
-      alertDialog.show();
-      return true;
+   public DtlMerchantsState provideViewState() {
+      return new DtlMerchantsState(delegate.getMerchants(), delegate.getExpandedMerchants());
    }
 
    ///////////////////////////////////////////////////////////////////////////

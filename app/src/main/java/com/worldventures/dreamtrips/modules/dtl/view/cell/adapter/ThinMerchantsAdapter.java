@@ -16,7 +16,7 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-public class ThinMerchantsAdapter extends BaseDelegateAdapter<ThinMerchant> {
+public class ThinMerchantsAdapter extends BaseDelegateAdapter {
 
    @Inject SnappyRepository db;
    private final DistanceType distanceType;
@@ -36,7 +36,7 @@ public class ThinMerchantsAdapter extends BaseDelegateAdapter<ThinMerchant> {
       this.distanceType = FilterHelper.provideDistanceFromSettings(db);
    }
 
-   public void toogle(boolean expand, ThinMerchant merchant) {
+   public void toggle(boolean expand, ThinMerchant merchant) {
       if (expand) expandedMerchantIds.add(merchant.id());
       else expandedMerchantIds.remove(merchant.id());
 
@@ -48,7 +48,7 @@ public class ThinMerchantsAdapter extends BaseDelegateAdapter<ThinMerchant> {
       if (cell instanceof DtlMerchantExpandableCell) {
          DtlMerchantExpandableCell holder = (DtlMerchantExpandableCell) cell;
          holder.setDistanceType(distanceType);
-         holder.setExpanded(expandedMerchantIds.contains(getItem(position).id()));
+         holder.setExpanded(expandedMerchantIds.contains(((ThinMerchant) getItem(position)).id()));
       }
       super.onBindViewHolder(cell, position);
    }

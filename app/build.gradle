@@ -30,13 +30,13 @@ configurations.all {
 
 android {
    compileSdkVersion 24
-   buildToolsVersion "24.0.1"
+   buildToolsVersion "24.0.2"
 
    // App version
    def versionMajor = 1
    def versionMinor = 14
-   def versionPatch = 0
-   def versionBuild = 12  // bump for dogfood builds, public betas, etc.
+   def versionPatch = 1
+   def versionBuild = 0  // bump for dogfood builds, public betas, etc.
    //
    // flavor codes
    String DEV_CODE = "dev"
@@ -324,7 +324,7 @@ android {
          def proConfigs = file('proguard-rules').listFiles().collect { it }
          proConfigs << getDefaultProguardFile('proguard-android-optimize.txt')
          proConfigs << file('dagger-proguard-keepnames.cfg')
-         proguardFiles proConfigs
+         setProguardFiles proConfigs
       }
    }
 

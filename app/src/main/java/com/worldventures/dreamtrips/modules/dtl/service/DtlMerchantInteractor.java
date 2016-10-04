@@ -10,8 +10,8 @@ import com.worldventures.dreamtrips.modules.dtl.model.merchant.ThinMerchant;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.filter.FilterData;
 import com.worldventures.dreamtrips.modules.dtl.service.action.DtlLocationCommand;
 import com.worldventures.dreamtrips.modules.dtl.service.action.FilterDataAction;
+import com.worldventures.dreamtrips.modules.dtl.service.action.MerchantsAction;
 import com.worldventures.dreamtrips.modules.dtl.service.action.NewRelicTrackableAction;
-import com.worldventures.dreamtrips.modules.dtl.service.action.ThinMerchantsCommand;
 
 import io.techery.janet.ActionPipe;
 import io.techery.janet.ReadActionPipe;
@@ -23,7 +23,7 @@ public class DtlMerchantInteractor {
    private final DtlLocationInteractor dtlLocationInteractor;
    private final FilterDataInteractor filterDataInteractor;
 
-   private final ActionPipe<ThinMerchantsCommand> thinMerchantsPipe;
+   private final ActionPipe<MerchantsAction> thinMerchantsPipe;
 
    public DtlMerchantInteractor(SessionActionPipeCreator sessionActionPipeCreator,
          DtlLocationInteractor dtlLocationInteractor, FilterDataInteractor filterDataInteractor) {
@@ -31,7 +31,7 @@ public class DtlMerchantInteractor {
       this.dtlLocationInteractor = dtlLocationInteractor;
       this.filterDataInteractor = filterDataInteractor;
 
-      thinMerchantsPipe = sessionActionPipeCreator.createPipe(ThinMerchantsCommand.class, Schedulers.io());
+      thinMerchantsPipe = sessionActionPipeCreator.createPipe(MerchantsAction.class, Schedulers.io());
 
       connectFilterData();
       connectNewRelicTracking();
@@ -48,7 +48,7 @@ public class DtlMerchantInteractor {
 
    private void connectForLocationUpdates() {
       thinMerchantsPipe.observeSuccessWithReplay()
-            .map(ThinMerchantsCommand::getResult)
+            .map(MerchantsAction::getResult)
             .filter(thinMerchants -> !thinMerchants.isEmpty())
             .map(thinMerchants -> thinMerchants.get(0))
             .subscribe(thinMerchant -> {
@@ -65,7 +65,7 @@ public class DtlMerchantInteractor {
             .subscribe(filterDataAction -> requestMerchants());
    }
 
-   public ReadActionPipe<ThinMerchantsCommand> thinMerchantsHttpPipe() {
+   public ReadActionPipe<MerchantsAction> thinMerchantsHttpPipe() {
       return thinMerchantsPipe;
    }
 
@@ -73,7 +73,7 @@ public class DtlMerchantInteractor {
       Observable.combineLatest(
             provideFilterDataObservable(),
             provideLastLocationObservable(),
-            ThinMerchantsCommand::create
+            MerchantsAction::create
       )
             .take(1)
             .subscribe(thinMerchantsPipe::send);

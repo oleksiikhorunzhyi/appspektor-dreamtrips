@@ -1,5 +1,7 @@
 package com.worldventures.dreamtrips.modules.dtl.analytics;
 
+import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.core.api.action.CommandWithError;
 import com.worldventures.dreamtrips.core.janet.dagger.InjectableAction;
 import com.worldventures.dreamtrips.core.utils.tracksystem.AnalyticsInteractor;
 import com.worldventures.dreamtrips.modules.dtl.model.LocationSourceType;
@@ -8,7 +10,7 @@ import com.worldventures.dreamtrips.modules.dtl.model.location.ImmutableDtlManua
 import com.worldventures.dreamtrips.modules.dtl.service.DtlLocationInteractor;
 import com.worldventures.dreamtrips.modules.dtl.service.DtlMerchantInteractor;
 import com.worldventures.dreamtrips.modules.dtl.service.action.DtlLocationCommand;
-import com.worldventures.dreamtrips.modules.dtl.service.action.ThinMerchantsCommand;
+import com.worldventures.dreamtrips.modules.dtl.service.action.MerchantsAction;
 
 import javax.inject.Inject;
 
@@ -43,14 +45,11 @@ public class DtlAnalyticsCommand extends Command<Void> implements InjectableActi
                } else {
                   merchantInteractor.thinMerchantsHttpPipe()
                         .observeSuccessWithReplay()
-                        .map(ThinMerchantsCommand::getResult)
+                        .map(MerchantsAction::getResult)
                         .map(merchants -> merchants.get(0))
-                        .map(dtlMerchant -> {
-                           return ImmutableDtlManualLocation.copyOf((DtlManualLocation) dtlLocation)
-                                 .withAnalyticsName(dtlMerchant.asMerchantAttributes().provideAnalyticsName());
-                        })
-                        .subscribe(dtlLocation1 -> action.setAnalyticsLocation(dtlLocation1), throwable -> {
-                        });
+                        .map(dtlMerchant -> ImmutableDtlManualLocation.copyOf((DtlManualLocation) dtlLocation)
+                              .withAnalyticsName(dtlMerchant.asMerchantAttributes().provideAnalyticsName()))
+                        .subscribe(action::setAnalyticsLocation, throwable -> {});
                }
                return action;
             })

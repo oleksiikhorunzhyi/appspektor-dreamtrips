@@ -185,8 +185,6 @@
             android:theme="@style/Theme.AppCompat.Light.NoActionBar"
             />
 
-      <activity android:name="nl.changer.polypicker.ImagePickerActivity" />
-
       <activity
             android:name="com.apptentive.android.sdk.ViewActivity"
             android:theme="@style/ApptentiveTheme.Transparent"

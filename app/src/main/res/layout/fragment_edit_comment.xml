@@ -84,7 +84,7 @@
                android:layout_width="wrap_content"
                android:layout_height="wrap_content"
                android:background="?android:attr/selectableItemBackground"
-               android:text="@string/cancel"
+               android:text="@string/action_cancel"
                android:textAllCaps="true"
                android:textColor="@color/grey"
                android:textSize="@dimen/font_normal"

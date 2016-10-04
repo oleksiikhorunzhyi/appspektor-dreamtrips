@@ -11,19 +11,18 @@ import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.core.rx.RxView;
 import com.worldventures.dreamtrips.core.utils.events.EntityLikedEvent;
 import com.worldventures.dreamtrips.core.utils.events.PhotoDeletedEvent;
-import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.common.model.UploadTask;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.feed.event.FeedEntityChangedEvent;
 import com.worldventures.dreamtrips.modules.feed.event.FeedItemAddedEvent;
 import com.worldventures.dreamtrips.modules.feed.model.TextualPost;
-import com.worldventures.dreamtrips.modules.trips.event.TripImageAnalyticEvent;
 import com.worldventures.dreamtrips.modules.tripsimages.bundle.FullScreenImagesBundle;
 import com.worldventures.dreamtrips.modules.tripsimages.model.IFullScreenObject;
 import com.worldventures.dreamtrips.modules.tripsimages.model.Photo;
 import com.worldventures.dreamtrips.modules.tripsimages.model.TripImagesType;
 import com.worldventures.dreamtrips.modules.tripsimages.presenter.fullscreen.AccountImagesPresenter;
 import com.worldventures.dreamtrips.modules.tripsimages.presenter.fullscreen.MembersImagesPresenter;
+import com.worldventures.dreamtrips.modules.tripsimages.service.TripImageViewAnalyticsEvent;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -177,7 +176,7 @@ public abstract class TripImagesListPresenter<VT extends TripImagesListPresenter
       if (position != -1) {
          if (this instanceof MembersImagesPresenter) {
             IFullScreenObject screenObject = photos.get(position);
-            eventBus.post(new TripImageAnalyticEvent(screenObject.getFSId(), TrackingHelper.ATTRIBUTE_VIEW));
+            analyticsInteractor.analyticsActionPipe().send(new TripImageViewAnalyticsEvent(screenObject.getFSId()));
          }
          int uploadTasksCount = Queryable.from(photos).count(item -> item instanceof UploadTask);
          view.openFullscreen(getFullscreenArgs(position - uploadTasksCount).build());

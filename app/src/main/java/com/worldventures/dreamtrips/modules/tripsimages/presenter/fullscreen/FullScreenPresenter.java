@@ -8,11 +8,11 @@ import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.feed.view.cell.Flaggable;
 import com.worldventures.dreamtrips.modules.profile.bundle.UserBundle;
-import com.worldventures.dreamtrips.modules.trips.event.TripImageAnalyticEvent;
 import com.worldventures.dreamtrips.modules.tripsimages.api.DownloadImageCommand;
 import com.worldventures.dreamtrips.modules.tripsimages.model.IFullScreenObject;
 import com.worldventures.dreamtrips.modules.tripsimages.model.Inspiration;
 import com.worldventures.dreamtrips.modules.tripsimages.model.TripImagesType;
+import com.worldventures.dreamtrips.modules.tripsimages.service.TripImageShareAnalyticsEvent;
 
 public abstract class FullScreenPresenter<T extends IFullScreenObject, PRESENTER_VIEW extends FullScreenPresenter.View> extends Presenter<PRESENTER_VIEW> {
 
@@ -68,7 +68,8 @@ public abstract class FullScreenPresenter<T extends IFullScreenObject, PRESENTER
          view.informUser(R.string.no_connection);
          return;
       }
-      eventBus.post(new TripImageAnalyticEvent(photo.getFSId(), TrackingHelper.ATTRIBUTE_SHARE_IMAGE));
+
+      analyticsInteractor.analyticsActionPipe().send(new TripImageShareAnalyticsEvent(photo.getFSId()));
       view.onShowShareOptions();
    }
 

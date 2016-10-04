@@ -1,7 +1,9 @@
 package com.worldventures.dreamtrips.wallet.ui.wizard.termsandconditionals;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
+import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
 import android.support.v7.widget.Toolbar;
@@ -76,6 +78,17 @@ public class WizardTermsScreen extends WalletLinearLayout<WizardTermsScreenPrese
             agreeBtn.setVisibility(View.GONE);
             pb.setVisibility(VISIBLE);
             view.setVisibility(VISIBLE);
+         }
+
+         @Override
+         public boolean shouldOverrideUrlLoading(WebView view, String url) {
+            if (url.startsWith("mailto:")) {
+               Intent emailIntent = new Intent(Intent.ACTION_SENDTO, Uri.parse(url));
+               getContext().startActivity(Intent.createChooser(emailIntent, getString(R.string.email_app_choose_dialog_title)));
+               view.reload();
+               return true;
+            }
+            return super.shouldOverrideUrlLoading(view, url);
          }
       });
    }

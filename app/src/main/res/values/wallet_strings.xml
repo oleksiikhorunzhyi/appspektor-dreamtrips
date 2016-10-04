@@ -6,7 +6,7 @@
    <string name="wallet_continue_label">Continue</string>
    <string name="wallet_got_it_label">Got it!</string>
 
-   <string name="wallet">Wallet</string>
+   <string name="wallet">flye SmartCard</string>
    <string name="wallet_dashboard_title">My flye SmartCard</string>
    <string name="wallet_wizard_title">flye SmartCard</string>
    <string name="wallet_input_data_is_incorrect">Input data is incorrect</string>

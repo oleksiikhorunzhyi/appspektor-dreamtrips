@@ -13,7 +13,7 @@ import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.dtl.event.MapInfoReadyAction;
 import com.worldventures.dreamtrips.modules.dtl.event.ShowMapInfoAction;
 import com.worldventures.dreamtrips.modules.dtl.helper.DtlLocationHelper;
-import com.worldventures.dreamtrips.modules.dtl.helper.holder.MerchantByIdParamsHolder;
+import com.worldventures.dreamtrips.modules.dtl.helper.holder.FullMerchantParamsHolder;
 import com.worldventures.dreamtrips.modules.dtl.location.LocationDelegate;
 import com.worldventures.dreamtrips.modules.dtl.model.DistanceType;
 import com.worldventures.dreamtrips.modules.dtl.model.LocationSourceType;
@@ -30,8 +30,8 @@ import com.worldventures.dreamtrips.modules.dtl.service.FullMerchantInteractor;
 import com.worldventures.dreamtrips.modules.dtl.service.PresentationInteractor;
 import com.worldventures.dreamtrips.modules.dtl.service.action.DtlLocationCommand;
 import com.worldventures.dreamtrips.modules.dtl.service.action.FilterDataAction;
-import com.worldventures.dreamtrips.modules.dtl.service.action.MerchantByIdCommand;
-import com.worldventures.dreamtrips.modules.dtl.service.action.ThinMerchantsCommand;
+import com.worldventures.dreamtrips.modules.dtl.service.action.FullMerchantAction;
+import com.worldventures.dreamtrips.modules.dtl.service.action.MerchantsAction;
 import com.worldventures.dreamtrips.modules.dtl_flow.DtlPresenterImpl;
 import com.worldventures.dreamtrips.modules.dtl_flow.FlowUtil;
 import com.worldventures.dreamtrips.modules.dtl_flow.ViewState;
@@ -71,7 +71,7 @@ public class DtlMapPresenterImpl extends DtlPresenterImpl<DtlMapScreen, ViewStat
    @Inject DtlTransactionInteractor transactionInteractor;
    @Inject PresentationInteractor presentationInteractor;
    //
-   @State MerchantByIdParamsHolder actionParamsHolder;
+   @State FullMerchantParamsHolder actionParamsHolder;
 
    public DtlMapPresenterImpl(Context context, Injector injector) {
       super(context);
@@ -109,7 +109,7 @@ public class DtlMapPresenterImpl extends DtlPresenterImpl<DtlMapScreen, ViewStat
       merchantInteractor.thinMerchantsHttpPipe()
             .observeWithReplay()
             .compose(bindViewIoToMainComposer())
-            .subscribe(new ActionStateSubscriber<ThinMerchantsCommand>()
+            .subscribe(new ActionStateSubscriber<MerchantsAction>()
                   .onStart(action -> getView().showProgress(true))
                   .onSuccess(action -> onMerchantsLoaded(action.getResult()))
                   .onFail((action, throwable) -> {
@@ -131,7 +131,7 @@ public class DtlMapPresenterImpl extends DtlPresenterImpl<DtlMapScreen, ViewStat
             .subscribe(getView()::toggleOffersOnly);
       fullMerchantInteractor.fullMerchantPipe().observeWithReplay()
             .compose(bindViewIoToMainComposer())
-            .subscribe(new ActionStateSubscriber<MerchantByIdCommand>()
+            .subscribe(new ActionStateSubscriber<FullMerchantAction>()
                   .onSuccess(this::onSuccessMerchantLoad)
                   .onProgress(this::onProgressMerchantLoad)
                   .onFail(this::onFailMerchantLoad));
@@ -148,15 +148,15 @@ public class DtlMapPresenterImpl extends DtlPresenterImpl<DtlMapScreen, ViewStat
    }
 
    @SuppressWarnings("unused")
-   protected void onFailMerchantLoad(MerchantByIdCommand command, Throwable throwable) {
-      actionParamsHolder = MerchantByIdParamsHolder.fromAction(command);
+   protected void onFailMerchantLoad(FullMerchantAction command, Throwable throwable) {
+      actionParamsHolder = FullMerchantParamsHolder.fromAction(command);
       //
       getView().hideBlockingProgress();
       getView().showError(command.getErrorMessage());
    }
 
    @SuppressWarnings("unused")
-   protected void onSuccessMerchantLoad(MerchantByIdCommand command) {
+   protected void onSuccessMerchantLoad(FullMerchantAction command) {
       getView().hideBlockingProgress();
       navigateToDetails(command.getResult());
    }
@@ -260,7 +260,7 @@ public class DtlMapPresenterImpl extends DtlPresenterImpl<DtlMapScreen, ViewStat
    public void retryLoadMerchant() {
       if (actionParamsHolder == null) return;
 
-      fullMerchantInteractor.load(MerchantByIdParamsHolder.toAction(actionParamsHolder));
+      fullMerchantInteractor.load(FullMerchantParamsHolder.toAction(actionParamsHolder));
    }
 
    private void showPins(List<ThinMerchant> merchants) {

@@ -16,7 +16,7 @@ import com.worldventures.dreamtrips.modules.dtl.service.FilterDataInteractor;
 import com.worldventures.dreamtrips.modules.dtl.service.FullMerchantInteractor;
 import com.worldventures.dreamtrips.modules.dtl.service.PresentationInteractor;
 import com.worldventures.dreamtrips.modules.dtl.service.action.FilterDataAction;
-import com.worldventures.dreamtrips.modules.dtl.service.action.MerchantByIdCommand;
+import com.worldventures.dreamtrips.modules.dtl.service.action.FullMerchantAction;
 import com.worldventures.dreamtrips.modules.dtl_flow.DtlPresenterImpl;
 import com.worldventures.dreamtrips.modules.dtl_flow.ViewState;
 
@@ -53,7 +53,7 @@ public class DtlMapInfoPresenterImpl extends DtlPresenterImpl<DtlMapInfoScreen, 
    public void onMarkerClick() {
       eventBus.post(new ToggleMerchantSelectionEvent(merchant));
       trackIfNeeded();
-      fullMerchantInteractor.load(MerchantByIdCommand.create(merchant.id()));
+      fullMerchantInteractor.load(FullMerchantAction.create(merchant.id()));
    }
 
    private void trackIfNeeded() {

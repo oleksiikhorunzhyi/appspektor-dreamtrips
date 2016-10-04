@@ -13,7 +13,7 @@ public class DialogFactory {
    private DialogFactory() {}
 
    public static SweetAlertDialog createRetryDialog(Activity activity, String content) {
-      return createDialog(activity, SweetAlertDialog.ERROR_TYPE, R.string.dtl_load_merchant_error, R.string.dtl_try_again, content, true);
+      return createDialog(activity, SweetAlertDialog.ERROR_TYPE, R.string.dtl_load_error, R.string.dtl_try_again, content, true);
    }
 
    public static SweetAlertDialog createErrorDialog(Activity activity, String content) {

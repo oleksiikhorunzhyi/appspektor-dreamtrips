@@ -14,13 +14,23 @@ public interface DtlMerchantsScreen extends DtlScreen {
 
    void updateToolbarSearchCaption(@Nullable String searchCaption);
 
-   void setItems(List<ThinMerchant> merchants);
+   void setRefreshedItems(List<ThinMerchant> merchants);
 
-   void showProgress();
+   void addItems(List<ThinMerchant> merchants);
 
-   void hideProgress();
+   void refreshProgress(boolean isShow);
+
+   void loadNextProgress(boolean isShow);
+
+   void updateLoadingState(boolean isLoading);
+
+   void clearMerchants();
 
    void showError(String error);
+
+   void refreshMerchantsError(boolean isShow);
+
+   void loadNextMerchantsError(boolean isShow);
 
    void toggleSelection(ThinMerchant merchant);
 
@@ -30,11 +40,12 @@ public interface DtlMerchantsScreen extends DtlScreen {
 
    void setFilterButtonState(boolean isDefault);
 
-   void showEmptyMerchantView(boolean show);
+   void showEmpty(boolean isShow);
 
-   void setExpandedOffers(List<String> expandedOffers);
-
-   List<String> getExpandedOffers();
+   void applyViewState(DtlMerchantsState state);
 
    DtlMerchantsPath getPath();
+
+   DtlMerchantsState provideViewState();
+
 }

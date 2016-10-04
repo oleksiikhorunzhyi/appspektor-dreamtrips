@@ -25,6 +25,7 @@ import com.worldventures.dreamtrips.modules.dtl.view.cell.DtlPointsCell;
 import com.worldventures.dreamtrips.modules.dtl.view.cell.WorkingHoursCell;
 import com.worldventures.dreamtrips.modules.dtl.view.cell.adapter.MerchantWorkingHoursAdapter;
 import com.worldventures.dreamtrips.modules.dtl.view.cell.adapter.ThinMerchantsAdapter;
+import com.worldventures.dreamtrips.modules.dtl.view.cell.delegates.MerchantsAdapterDelegate;
 import com.worldventures.dreamtrips.modules.dtl.view.dialog.DtlPointsEstimationFragment;
 import com.worldventures.dreamtrips.modules.dtl.view.fragment.DtlScanQrCodeFragment;
 import com.worldventures.dreamtrips.modules.dtl.view.fragment.DtlScanReceiptFragment;
@@ -115,5 +116,10 @@ public class DtlActivityModule {
    @Provides(type = Provides.Type.SET)
    ComponentDescription provideDtlComponent() {
       return new ComponentDescription(DTL, R.string.dtl, R.string.dtl, R.drawable.ic_dtl, true, null);
+   }
+
+   @Provides()
+   MerchantsAdapterDelegate provideMerchantsAdapterDelegate() {
+      return new MerchantsAdapterDelegate();
    }
 }

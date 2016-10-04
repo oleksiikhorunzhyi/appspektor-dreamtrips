@@ -14,8 +14,6 @@ import com.worldventures.dreamtrips.modules.dtl.model.merchant.ThinMerchant;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.filter.FilterData;
 import com.worldventures.dreamtrips.modules.trips.model.Location;
 
-
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
@@ -27,55 +25,58 @@ import io.techery.janet.command.annotations.CommandAction;
 import rx.schedulers.Schedulers;
 
 @CommandAction
-public class ThinMerchantsCommand extends CommandWithError<List<ThinMerchant>>
+public class MerchantsAction extends CommandWithError<List<ThinMerchant>>
       implements InjectableAction, NewRelicTrackableAction {
 
    private final long startTime = System.currentTimeMillis();
 
    @Inject @Named(JanetModule.JANET_API_LIB) Janet janet;
 
-   private List<ThinMerchant> cache = new ArrayList<>();
-
    private final ThinMerchantsActionParams params;
+   private final boolean isRefresh;
 
-   public static ThinMerchantsCommand create(FilterData filterData, DtlLocation dtlLocation) {
+   public static MerchantsAction create(FilterData filterData, DtlLocation dtlLocation) {
       final ThinMerchantsActionParams params = buildParams(filterData, dtlLocation);
-      return new ThinMerchantsCommand(params);
+      return new MerchantsAction(params);
    }
 
-   public ThinMerchantsCommand (ThinMerchantsActionParams params) {
+   public MerchantsAction(ThinMerchantsActionParams params) {
       this.params = params;
+      this.isRefresh = params.offset() == 0;
    }
 
    @Override
    protected void run(CommandCallback<List<ThinMerchant>> callback) throws Throwable {
-         janet.createPipe(ThinMerchantsHttpAction.class, Schedulers.io())
-               .createObservableResult(new ThinMerchantsHttpAction(params))
-               .map(ThinMerchantsHttpAction::merchants)
-               .compose(ThinMerchantsTransformer.INSTANCE)
-               .subscribe(callback::onSuccess, callback::onFail);
+      callback.onProgress(0);
+      janet.createPipe(ThinMerchantsHttpAction.class, Schedulers.io())
+            .createObservableResult(new ThinMerchantsHttpAction(params))
+            .map(ThinMerchantsHttpAction::merchants)
+            .compose(ThinMerchantsTransformer.INSTANCE)
+            .subscribe(callback::onSuccess, callback::onFail);
    }
 
+   private static ThinMerchantsActionParams buildParams(FilterData filterData, DtlLocation dtlLocation) {
+      final String coordinates = provideFormattedLocation(dtlLocation);
+      return ImmutableThinMerchantsActionParams.builder()
+            .radius(FilterHelper.provideDistanceByIndex(filterData.distanceType(), filterData.distanceMaxIndex()))
+            .coordinates(coordinates)
+            .limit(FilterData.LIMIT)
+            .offset(filterData.page() * FilterData.LIMIT)
+            .build();
+   }
 
    private static String provideFormattedLocation(DtlLocation location) {
       final Location coordinates = location.getCoordinates();
       return String.format(Locale.US, "%1$f,%2$f", coordinates.getLat(), coordinates.getLng());
    }
 
-   private static ThinMerchantsActionParams buildParams(FilterData filterData, DtlLocation dtlLocation) {
-      final String coordinates = provideFormattedLocation(dtlLocation);
-      return ImmutableThinMerchantsActionParams.builder()
-            .coordinates(coordinates)
-            .radius(FilterHelper.provideDistanceByIndex(filterData.distanceType(), filterData.distanceMaxIndex()))
-            .limit(FilterData.LIMIT)
-            .offset(filterData.page() * FilterData.LIMIT)
-            .build();
+   public boolean isRefresh() {
+      return isRefresh;
    }
-
 
    @Override
    public int getFallbackErrorMessage() {
-      return R.string.dtl_load_merchant_error;
+      return R.string.dtl_load_error;
    }
 
    @Override

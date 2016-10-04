@@ -16,23 +16,22 @@ import io.techery.janet.command.annotations.CommandAction;
 import rx.schedulers.Schedulers;
 
 @CommandAction
-public class MerchantByIdCommand extends CommandWithError<Merchant> implements InjectableAction {
-   // TODO :: 26.09.16 Rename to FullMerchantAction
+public class FullMerchantAction extends CommandWithError<Merchant> implements InjectableAction {
 
    @Inject @Named(JanetModule.JANET_API_LIB) Janet janet;
 
    private final String offerId;
    private final String merchantId;
 
-   public static MerchantByIdCommand create(String merchantId) {
+   public static FullMerchantAction create(String merchantId) {
       return create(merchantId, null);
    }
 
-   public static MerchantByIdCommand create(String merchantId, String offerId) {
-      return new MerchantByIdCommand(merchantId, offerId);
+   public static FullMerchantAction create(String merchantId, String offerId) {
+      return new FullMerchantAction(merchantId, offerId);
    }
 
-   public MerchantByIdCommand(String merchantId, String offerId) {
+   public FullMerchantAction(String merchantId, String offerId) {
       this.merchantId = merchantId;
       this.offerId = offerId;
    }
@@ -57,6 +56,6 @@ public class MerchantByIdCommand extends CommandWithError<Merchant> implements I
 
    @Override
    public int getFallbackErrorMessage() {
-      return R.string.dtl_load_merchant_error;
+      return R.string.dtl_load_error;
    }
 }

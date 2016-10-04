@@ -58,6 +58,7 @@ public class FilterDataInteractor {
    public void mergeAndApply(FilterData newFilterData) {
       getLastFilterObservable()
             .map(filterData -> ImmutableFilterData.copyOf(filterData)
+                  .withPage(newFilterData.page())
                   .withBudgetMin(newFilterData.budgetMin())
                   .withBudgetMax(newFilterData.budgetMax())
                   .withDistanceMaxIndex(newFilterData.distanceMaxIndex())
@@ -72,12 +73,19 @@ public class FilterDataInteractor {
 
    public void applySearch(@NonNull final String query) {
       getLastFilterObservable()
-            .map(filterData -> ImmutableFilterData.copyOf(filterData)
+            .map(filterData -> ImmutableFilterData.copyOf(filterData).withPage(0)
                   .withSearchQuery(query))
             .subscribe(this::send);
    }
 
-   public void loadNextPaginatedPage() {
+   public void applyRefreshPaginatedPage() {
+      getLastFilterObservable()
+            .map(filterData -> ImmutableFilterData.copyOf(filterData)
+                  .withPage(0))
+            .subscribe(this::send);
+   }
+
+   public void applyNextPaginatedPage() {
       getLastFilterObservable()
             .map(filterData -> ImmutableFilterData.copyOf(filterData)
                   .withPage(filterData.page() + 1))
@@ -87,6 +95,7 @@ public class FilterDataInteractor {
    public void applyOffersOnly(final boolean isOffersOnly) {
       getLastFilterObservable()
             .map(filterData -> ImmutableFilterData.copyOf(filterData)
+                  .withPage(0)
                   .withIsOffersOnly(isOffersOnly))
             .subscribe(this::send);
    }
@@ -98,6 +107,7 @@ public class FilterDataInteractor {
             .subscribe(dtlLocation ->
                   getLastFilterObservable()
                         .map(filterData -> ImmutableFilterData.copyOf(filterData)
+                              .withPage(0)
                               .withSelectedAmenities(Collections.emptyList()))
                         .subscribe(this::send));
    }

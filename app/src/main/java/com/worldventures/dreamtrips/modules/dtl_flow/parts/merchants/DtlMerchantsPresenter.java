@@ -7,6 +7,10 @@ import com.worldventures.dreamtrips.modules.dtl_flow.ViewState;
 
 public interface DtlMerchantsPresenter extends DtlPresenter<DtlMerchantsScreen, DtlMerchantsState> {
 
+   void refresh();
+
+   void loadNext();
+
    void locationChangeRequested();
 
    void applySearch(String query);

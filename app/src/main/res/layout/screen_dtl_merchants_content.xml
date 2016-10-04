@@ -25,12 +25,14 @@
 
    </android.support.v4.widget.SwipeRefreshLayout>
 
-   <FrameLayout
+   <LinearLayout
          android:id="@+id/emptyView"
+         android:orientation="vertical"
          android:layout_width="match_parent"
          android:layout_height="match_parent"
-         android:padding="@dimen/spacing_large"
-         android:visibility="gone"
+         android:padding="@dimen/spacing_huger"
+         android:gravity="center"
+         android:visibility="visible"
          >
 
       <TextView
@@ -38,10 +40,58 @@
             android:layout_height="wrap_content"
             android:gravity="center"
             android:layout_marginTop="100dp"
-            android:text="@string/dtl_location_no_merchants_caption"
+            android:layout_marginBottom="@dimen/spacing_normal"
+            android:text="@string/merchants_no_results"
+            android:textSize="@dimen/font_medium"
+            />
+
+      <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="@string/merchants_empty_caption"
+            android:textSize="@dimen/font_medium"
+            />
+
+   </LinearLayout>
+
+   <LinearLayout
+         android:id="@+id/errorView"
+         android:orientation="vertical"
+         android:layout_width="match_parent"
+         android:layout_height="match_parent"
+         android:padding="@dimen/spacing_large"
+         android:gravity="center"
+         android:visibility="gone"
+         >
+
+      <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/dtl_load_error"
+            android:gravity="center"
             android:textSize="@dimen/font_normal"
             />
-   </FrameLayout>
+
+      <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="@string/dtl_load_merchant_error_caption"
+            android:paddingTop="@dimen/spacing_medium"
+            android:paddingBottom="@dimen/spacing_normal"
+            android:textSize="@dimen/font_normal"
+            />
+
+      <android.support.v7.widget.AppCompatButton
+            android:id="@+id/retry"
+            android:theme="@style/WhiteButtonTheme"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:minWidth="160dp"
+            android:text="@string/try_again"
+            />
+   </LinearLayout>
 
 </FrameLayout>
 

@@ -23,7 +23,7 @@ public abstract class FilterHelper {
    }
 
    public static float provideLeftDistanceValue(DistanceType distanceType) {
-      return distanceType == DistanceType.KMS ? 15 : 10;
+      return distanceType == DistanceType.KMS ? 16 : 10;
    }
 
    public static float provideRightDistanceValue(DistanceType distanceType) {
@@ -37,7 +37,7 @@ public abstract class FilterHelper {
    }
 
    public static float provideDistancePickerInterval(DistanceType distanceType) {
-      return distanceType == DistanceType.KMS ? (float) 16.25 : 10;
+      return distanceType == DistanceType.KMS ? (float) 16 : 10;
    }
 
    public static DistanceType provideDistanceFromSettings(SnappyRepository snappyRepository) {

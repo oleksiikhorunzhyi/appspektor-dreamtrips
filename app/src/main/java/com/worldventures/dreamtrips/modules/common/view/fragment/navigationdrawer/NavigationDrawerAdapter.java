@@ -3,6 +3,7 @@ package com.worldventures.dreamtrips.modules.common.view.fragment.navigationdraw
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.text.SpannableString;
+import android.text.SpannableStringBuilder;
 import android.text.Spanned;
 import android.text.style.RelativeSizeSpan;
 import android.text.style.TypefaceSpan;
@@ -120,28 +121,25 @@ public class NavigationDrawerAdapter extends RecyclerView.Adapter<RecyclerView.V
    private void setupTitleWithBetaLabel(TextView tvTitle, int resIdNavMenuTitle) {
       Context context = tvTitle.getContext();
       String navMenuTitle = context.getString(resIdNavMenuTitle);
-      if (resIdNavMenuTitle == R.string.wallet_smart_card_title) {
+      if (resIdNavMenuTitle == R.string.wallet) {
          String betaLabel = context.getString(R.string.beta_label);
-         navMenuTitle = String.format(
-               "%s %s",
-               navMenuTitle,
-               betaLabel
-         );
-         int startIndex = navMenuTitle.indexOf(betaLabel);
-         int endIndex = navMenuTitle.length();
-         SpannableString spannedNavTitle = new SpannableString(navMenuTitle);
-         spannedNavTitle.setSpan(
+         SpannableString spannedBetaLabel = new SpannableString(betaLabel);
+         SpannableStringBuilder spannedNavTitleBuilder = new SpannableStringBuilder(navMenuTitle);
+         spannedNavTitleBuilder.append(" ");
+         spannedBetaLabel.setSpan(
                new RelativeSizeSpan(0.7f),
-               startIndex,
-               endIndex,
+               0,
+               betaLabel.length(),
                Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
          );
-         spannedNavTitle.setSpan(new TypefaceSpan("normal"),
-               startIndex,
-               endIndex,
+         spannedBetaLabel.setSpan(new TypefaceSpan("normal"),
+               0,
+               betaLabel.length(),
                Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
          );
-         tvTitle.setText(spannedNavTitle);
+         spannedNavTitleBuilder.append(spannedBetaLabel);
+
+         tvTitle.setText(spannedNavTitleBuilder);
       } else {
          tvTitle.setText(resIdNavMenuTitle);
       }

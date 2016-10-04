@@ -23,11 +23,12 @@ import com.worldventures.dreamtrips.modules.dtl.model.merchant.operational_hour.
 import org.immutables.value.Value;
 import org.jetbrains.annotations.Nullable;
 
+import java.io.Serializable;
 import java.util.List;
 import java.util.Locale;
 
 @Value.Immutable
-public abstract class MerchantAttributes {
+public abstract class MerchantAttributes implements Serializable {
 
    public abstract String id();
    public abstract MerchantType type();

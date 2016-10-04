@@ -3,6 +3,7 @@ package com.worldventures.dreamtrips.modules.mapping;
 import com.worldventures.dreamtrips.modules.feed.model.converter.FeedCommentConverter;
 import com.worldventures.dreamtrips.modules.mapping.converter.CircleConverter;
 import com.worldventures.dreamtrips.modules.mapping.converter.Converter;
+import com.worldventures.dreamtrips.modules.mapping.converter.FeedbackImageAttachmentConverter;
 import com.worldventures.dreamtrips.modules.mapping.converter.FlagConverter;
 import com.worldventures.dreamtrips.modules.mapping.converter.PrivateProfileConverter;
 import com.worldventures.dreamtrips.modules.mapping.converter.PublicProfileConverter;
@@ -136,5 +137,11 @@ public class MappingModule {
    @Singleton
    Converter provideRelationshipConverter() {
       return new RelationshipConverter();
+   }
+
+   @Provides(type = Provides.Type.SET)
+   @Singleton
+   Converter provideFeedbackBodyConverter() {
+      return new FeedbackImageAttachmentConverter();
    }
 }

@@ -1,7 +1,6 @@
 package com.worldventures.dreamtrips.modules.infopages.view.fragment;
 
 import android.os.Bundle;
-import android.text.Editable;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -11,19 +10,33 @@ import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.Spinner;
 
+import com.afollestad.materialdialogs.MaterialDialog;
+import com.jakewharton.rxbinding.widget.RxTextView;
 import com.techery.spares.annotations.Layout;
 import com.techery.spares.annotations.MenuResource;
 import com.techery.spares.utils.ui.SoftInputUtil;
 import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.core.navigation.Route;
+import com.worldventures.dreamtrips.core.navigation.router.NavigationConfigBuilder;
+import com.worldventures.dreamtrips.modules.common.model.EntityStateHolder;
+import com.worldventures.dreamtrips.modules.common.view.bundle.PickerBundle;
+import com.worldventures.dreamtrips.modules.common.view.custom.PhotoPickerLayout;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragment;
-import com.worldventures.dreamtrips.modules.common.view.util.TextWatcherAdapter;
+import com.worldventures.dreamtrips.modules.common.view.util.PhotoPickerDelegate;
+import com.worldventures.dreamtrips.modules.infopages.model.FeedbackImageAttachment;
 import com.worldventures.dreamtrips.modules.infopages.model.FeedbackType;
 import com.worldventures.dreamtrips.modules.infopages.presenter.SendFeedbackPresenter;
+import com.worldventures.dreamtrips.modules.infopages.view.custom.AttachmentImagesHorizontalView;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.inject.Inject;
+
 import butterknife.InjectView;
+import butterknife.OnClick;
+import rx.Observable;
+import rx.subjects.PublishSubject;
 
 @Layout(R.layout.fragment_send_feedback)
 @MenuResource(R.menu.menu_send_feedback)
@@ -32,8 +45,12 @@ public class SendFeedbackFragment extends BaseFragment<SendFeedbackPresenter> im
    @InjectView(R.id.spinner) Spinner spinner;
    @InjectView(R.id.tv_message) EditText message;
    @InjectView(R.id.progressBar) ProgressBar progressBar;
+   @InjectView(R.id.feedback_attachments) AttachmentImagesHorizontalView attachmentImagesHorizontalView;
+   @Inject PhotoPickerDelegate photoPickerDelegate;
 
-   MenuItem menuItemSend;
+   private MenuItem doneButtonMenuItem;
+   private Observable<CharSequence> messageObservable;
+   private PublishSubject<FeedbackType> feedbackTypeObservable = PublishSubject.create();
 
    @Override
    protected SendFeedbackPresenter createPresenter(Bundle savedInstanceState) {
@@ -43,19 +60,16 @@ public class SendFeedbackFragment extends BaseFragment<SendFeedbackPresenter> im
    @Override
    public void afterCreateView(View rootView) {
       super.afterCreateView(rootView);
+      inject(this);
       ArrayList<FeedbackType> feedbackTypes = new ArrayList<>();
       setupSpinner(feedbackTypes, false);
       spinner.setEnabled(false);
       progressBar.setVisibility(View.GONE);
-      message.addTextChangedListener(new TextWatcherAdapter() {
-         @Override
-         public void afterTextChanged(Editable s) {
-            validateSendButton();
-         }
-      });
+      messageObservable = RxTextView.textChanges(message);
+      initAttachments();
    }
 
-   protected void setupSpinner(List<FeedbackType> feedbackTypes, boolean isSpinnerEnabled) {
+   private void setupSpinner(List<FeedbackType> feedbackTypes, boolean isSpinnerEnabled) {
       feedbackTypes = new ArrayList<>(feedbackTypes); //for recreation link
       feedbackTypes.add(0, new FeedbackType(-1, getContext().getString(R.string.feedback_select_category)));
       ArrayAdapter<FeedbackType> adapter = new ArrayAdapter<>(getContext(), R.layout.adapter_item_feedback_type, android.R.id.text1, feedbackTypes);
@@ -64,7 +78,7 @@ public class SendFeedbackFragment extends BaseFragment<SendFeedbackPresenter> im
       spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
          @Override
          public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-            validateSendButton();
+            feedbackTypeObservable.onNext(adapter.getItem(position));
          }
 
          @Override
@@ -75,15 +89,11 @@ public class SendFeedbackFragment extends BaseFragment<SendFeedbackPresenter> im
       spinner.setEnabled(isSpinnerEnabled);
    }
 
-   protected void validateSendButton() {
-      if (menuItemSend != null) menuItemSend.setEnabled(!isMessageEmpty() && isReasonTypeSelected());
-   }
-
    @Override
    protected void onMenuInflated(Menu menu) {
       super.onMenuInflated(menu);
-      menuItemSend = menu.findItem(R.id.send);
-      menuItemSend.setEnabled(false);
+      doneButtonMenuItem = menu.findItem(R.id.send);
+      doneButtonMenuItem.setEnabled(false);
    }
 
    @Override
@@ -124,12 +134,99 @@ public class SendFeedbackFragment extends BaseFragment<SendFeedbackPresenter> im
       progressBar.setVisibility(View.GONE);
    }
 
-   protected boolean isMessageEmpty() {
+   private boolean isMessageEmpty() {
       return message.getText().toString().trim().isEmpty();
    }
 
-   protected boolean isReasonTypeSelected() {
-      Object selectedItem = spinner.getSelectedItem();
-      return selectedItem != null && !(((FeedbackType) selectedItem).getId() == -1);
+   @Override
+   public Observable<FeedbackType> getFeedbackTypeSelectedObservable() {
+      return feedbackTypeObservable;
+   }
+
+   @Override
+   public Observable<CharSequence> getMessageTextObservable() {
+      return messageObservable;
+   }
+
+   @Override
+   public void changeDoneButtonState(boolean enable) {
+      if (doneButtonMenuItem != null) doneButtonMenuItem.setEnabled(enable);
+   }
+
+   ///////////////////////////////////////////////////////////////////////////
+   // Attachments
+   ///////////////////////////////////////////////////////////////////////////
+
+   private void initAttachments() {
+      attachmentImagesHorizontalView.setPhotoCellDelegate(getPresenter()::onFeedbackAttachmentClicked);
+      attachmentImagesHorizontalView.init(this);
+
+      photoPickerDelegate.setPhotoPickerListener(new PhotoPickerLayout.PhotoPickerListener() {
+         boolean previousDoneButtonState;
+
+         @Override
+         public void onClosed() {
+            doneButtonMenuItem.setEnabled(previousDoneButtonState);
+         }
+
+         @Override
+         public void onOpened() {
+            previousDoneButtonState = doneButtonMenuItem.isEnabled();
+            doneButtonMenuItem.setEnabled(false);
+         }
+      });
+   }
+
+   @OnClick(R.id.feedback_add_photos)
+   void onAddPhotosClicked() {
+      getPresenter().onShowMediaPicker();
+   }
+
+   public void showMediaPicker(int requestId, int maxImages) {
+      router.moveTo(Route.MEDIA_PICKER, NavigationConfigBuilder.forFragment()
+            .backStackEnabled(false)
+            .fragmentManager(getChildFragmentManager())
+            .containerId(R.id.picker_container)
+            .data(new PickerBundle(requestId, maxImages, true))
+            .build());
+   }
+
+   @Override
+   public void setAttachments(List<EntityStateHolder<FeedbackImageAttachment>> attachments) {
+      attachmentImagesHorizontalView.setImages(attachments);
+      updateAttachmentsViewVisibility();
+   }
+
+   @Override
+   public void updateAttachment(EntityStateHolder<FeedbackImageAttachment> image) {
+      attachmentImagesHorizontalView.changeItemState(image);
+      updateAttachmentsViewVisibility();
+   }
+
+   @Override
+   public void removeAttachment(EntityStateHolder<FeedbackImageAttachment> image) {
+      attachmentImagesHorizontalView.removeItem(image);
+      updateAttachmentsViewVisibility();
+   }
+
+   private void updateAttachmentsViewVisibility() {
+      int itemsCount = attachmentImagesHorizontalView.getItemCount();
+      attachmentImagesHorizontalView.setVisibility(itemsCount > 0 ? View.VISIBLE : View.GONE);
+   }
+
+   @Override
+   public void showRetryUploadingUiForAttachment(EntityStateHolder<FeedbackImageAttachment> attachmentHolder) {
+      MaterialDialog.Builder builder = new MaterialDialog.Builder(getContext());
+      builder.items(R.array.dialog_action_feedback_failed_uploading_attachment)
+            .itemsCallback((dialog, v, which, text) -> {
+         switch (which) {
+            case 0:
+               getPresenter().onRetryUploadingAttachment(attachmentHolder);
+               break;
+            case 1:
+               getPresenter().onRemoveAttachment(attachmentHolder);
+               break;
+         }
+      }).show();
    }
 }

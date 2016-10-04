@@ -36,6 +36,8 @@ import com.worldventures.dreamtrips.modules.friends.janet.ActOnFriendRequestComm
 import com.worldventures.dreamtrips.modules.friends.janet.AddFriendCommand;
 import com.worldventures.dreamtrips.modules.friends.janet.DeleteFriendRequestCommand;
 import com.worldventures.dreamtrips.modules.friends.janet.RemoveFriendCommand;
+import com.worldventures.dreamtrips.modules.infopages.command.SendFeedbackCommand;
+import com.worldventures.dreamtrips.modules.infopages.command.UploadFeedbackAttachmentCommand;
 import com.worldventures.dreamtrips.modules.membership.command.GetPodcastsCommand;
 import com.worldventures.dreamtrips.modules.profile.command.GetPrivateProfileCommand;
 import com.worldventures.dreamtrips.modules.profile.command.GetPublicProfileCommand;
@@ -104,5 +106,7 @@ import dagger.Module;
       LogoutCommand.class,
       GetPrivateProfileCommand.class,
       GetPublicProfileCommand.class,
+      SendFeedbackCommand.class,
+      UploadFeedbackAttachmentCommand.class
 }, complete = false, library = true)
 public class SocialJanetCommandModule {}

@@ -18,7 +18,7 @@ import mbanje.kurt.fabbutton.CircleImageView;
 import mbanje.kurt.fabbutton.FabButton;
 
 @Layout(R.layout.adapter_item_bucket_photo_upload_cell)
-public class PhotoCell<Photo extends IFullScreenObject, Delegate extends CellDelegate<EntityStateHolder<Photo>>>
+public class StatefulPhotoCell<Photo extends IFullScreenObject, Delegate extends CellDelegate<EntityStateHolder<Photo>>>
       extends AbstractDelegateCell<EntityStateHolder<Photo>, Delegate> {
 
    @InjectView(R.id.imageViewPhoto) SimpleDraweeView ivPhoto;
@@ -27,7 +27,7 @@ public class PhotoCell<Photo extends IFullScreenObject, Delegate extends CellDel
 
    @InjectView(R.id.fabbutton_circle) CircleImageView circleView;
 
-   public PhotoCell(View view) {
+   public StatefulPhotoCell(View view) {
       super(view);
    }
 

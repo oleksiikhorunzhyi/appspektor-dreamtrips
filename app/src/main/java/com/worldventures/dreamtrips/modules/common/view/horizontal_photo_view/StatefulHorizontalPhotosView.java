@@ -12,7 +12,7 @@ import com.worldventures.dreamtrips.modules.bucketlist.model.BucketPhoto;
 import com.worldventures.dreamtrips.modules.common.model.EntityStateHolder;
 import com.worldventures.dreamtrips.modules.bucketlist.view.adapter.IgnoreFirstItemAdapter;
 import com.worldventures.dreamtrips.modules.common.view.horizontal_photo_view.cell.AddPhotoCell;
-import com.worldventures.dreamtrips.modules.common.view.horizontal_photo_view.cell.PhotoCell;
+import com.worldventures.dreamtrips.modules.common.view.horizontal_photo_view.cell.StatefulPhotoCell;
 import com.worldventures.dreamtrips.modules.tripsimages.model.AddPhotoModel;
 import com.worldventures.dreamtrips.modules.tripsimages.model.IFullScreenObject;
 
@@ -58,7 +58,7 @@ public class StatefulHorizontalPhotosView<T extends IFullScreenObject, D extends
    }
 
    protected Class<?> getPhotocellClass() {
-      return PhotoCell.class;
+      return StatefulPhotoCell.class;
    }
 
    public void addItemInProgressState(EntityStateHolder<T> photoStateHolder) {
@@ -90,6 +90,10 @@ public class StatefulHorizontalPhotosView<T extends IFullScreenObject, D extends
       imagesAdapter.clear();
       imagesAdapter.addItems(images);
       imagesAdapter.notifyDataSetChanged();
+   }
+
+   public int getItemCount() {
+      return imagesAdapter.getItemCount();
    }
 
    public void setPhotoCellDelegate(D delegate) {

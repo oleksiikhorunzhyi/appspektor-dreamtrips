@@ -38,7 +38,36 @@ import dagger.Module;
 import dagger.Provides;
 
 @Module(
-      injects = {BucketItemEditPresenter.class, BucketPopularTabsPresenter.class, BucketItemEditFragment.class, BucketTabsPresenter.class, BucketListPresenter.class, BucketPopularPresenter.class, BucketListPopularFragment.class, BucketTabsFragment.class, BucketPopularTabsFragment.class, BucketListFragment.class, BucketItemCell.class, BucketPopularCell.class, BucketDetailsFragment.class, BucketItemDetailsPresenter.class, AutoCompleteAdapter.class, BucketItemAdapter.class, IgnoreFirstItemAdapter.class, IgnoreFirstExpandedItemAdapter.class, AddPhotoCell.class, BucketPhotoCell.class, FixedListPhotosFullScreenPresenter.class, BucketHorizontalPhotosView.class, ForeignBucketItemDetailsPresenter.class, ForeignBucketDetailsFragment.class, ForeignBucketTabsFragment.class, ForeignBucketTabPresenter.class, ForeignBucketListFragment.class, BucketItemStaticCell.class, ForeignBucketListPresenter.class},
+      injects = {BucketItemEditPresenter.class,
+            BucketPopularTabsPresenter.class,
+            BucketItemEditFragment.class,
+            BucketTabsPresenter.class,
+            BucketListPresenter.class,
+            BucketPopularPresenter.class,
+            BucketListPopularFragment.class,
+            BucketTabsFragment.class,
+            BucketPopularTabsFragment.class,
+            BucketListFragment.class,
+            BucketItemCell.class,
+            BucketPopularCell.class,
+            BucketDetailsFragment.class,
+            BucketItemDetailsPresenter.class,
+            AutoCompleteAdapter.class,
+            BucketItemAdapter.class,
+            IgnoreFirstItemAdapter.class,
+            IgnoreFirstExpandedItemAdapter.class,
+            AddPhotoCell.class,
+            BucketPhotoCell.class,
+            FixedListPhotosFullScreenPresenter.class,
+            BucketHorizontalPhotosView.class,
+            ForeignBucketItemDetailsPresenter.class,
+            ForeignBucketDetailsFragment.class,
+            ForeignBucketTabsFragment.class,
+            ForeignBucketTabPresenter.class,
+            ForeignBucketListFragment.class,
+            BucketItemStaticCell.class,
+            ForeignBucketListPresenter.class
+      },
       complete = false,
       library = true)
 public class BucketListModule {

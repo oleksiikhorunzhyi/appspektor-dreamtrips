@@ -6,6 +6,7 @@ import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.modules.infopages.presenter.AuthorizedStaticInfoPresenter;
 import com.worldventures.dreamtrips.modules.infopages.presenter.SendFeedbackPresenter;
 import com.worldventures.dreamtrips.modules.infopages.presenter.WebViewFragmentPresenter;
+import com.worldventures.dreamtrips.modules.infopages.service.FeedbackAttachmentsManager;
 import com.worldventures.dreamtrips.modules.infopages.view.custom.AttachmentImagesHorizontalView;
 import com.worldventures.dreamtrips.modules.infopages.view.fragment.HelpFragment;
 import com.worldventures.dreamtrips.modules.infopages.view.fragment.SendFeedbackFragment;
@@ -21,6 +22,8 @@ import com.worldventures.dreamtrips.modules.video.presenter.PresentationVideosPr
 import com.worldventures.dreamtrips.modules.video.presenter.ThreeSixtyVideosPresenter;
 import com.worldventures.dreamtrips.modules.video.view.HelpVideosFragment;
 import com.worldventures.dreamtrips.modules.video.view.ThreeSixtyVideosFragment;
+
+import javax.inject.Singleton;
 
 import dagger.Module;
 import dagger.Provides;

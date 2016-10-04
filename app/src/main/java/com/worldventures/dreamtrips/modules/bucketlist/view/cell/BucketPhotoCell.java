@@ -8,13 +8,13 @@ import com.techery.spares.annotations.Layout;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketPhoto;
 import com.worldventures.dreamtrips.modules.bucketlist.view.cell.delegate.BucketPhotoUploadCellDelegate;
-import com.worldventures.dreamtrips.modules.common.view.horizontal_photo_view.cell.PhotoCell;
+import com.worldventures.dreamtrips.modules.common.view.horizontal_photo_view.cell.StatefulPhotoCell;
 
 import butterknife.OnLongClick;
 import timber.log.Timber;
 
 @Layout(R.layout.adapter_item_bucket_photo_upload_cell)
-public class BucketPhotoCell extends PhotoCell<BucketPhoto, BucketPhotoUploadCellDelegate> {
+public class BucketPhotoCell extends StatefulPhotoCell<BucketPhoto, BucketPhotoUploadCellDelegate> {
 
    public BucketPhotoCell(View view) {
       super(view);

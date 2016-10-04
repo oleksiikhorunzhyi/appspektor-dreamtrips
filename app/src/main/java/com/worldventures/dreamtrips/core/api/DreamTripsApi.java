@@ -44,8 +44,6 @@ import retrofit.http.Path;
 import retrofit.http.Query;
 import retrofit.mime.TypedFile;
 
-import static com.worldventures.dreamtrips.modules.infopages.api.SendFeedbackCommand.FeedbackBody;
-
 public interface DreamTripsApi {
 
    String TYPE_MEMBER = "DTAPP";
@@ -229,7 +227,4 @@ public interface DreamTripsApi {
 
    @GET("/api/feedbacks/reasons")
    ArrayList<FeedbackType> getFeedbackReasons();
-
-   @POST("/api/feedbacks")
-   Void sendFeedback(@Body FeedbackBody feedbackBody);
 }

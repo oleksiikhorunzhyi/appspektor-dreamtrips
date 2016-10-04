@@ -24,6 +24,7 @@ import com.worldventures.dreamtrips.modules.dtl.view.cell.ProgressCell;
 import com.worldventures.dreamtrips.modules.dtl.view.cell.adapter.ThinMerchantsAdapter;
 import com.worldventures.dreamtrips.modules.dtl.view.cell.delegates.MerchantCellDelegate;
 import com.worldventures.dreamtrips.modules.dtl.view.cell.delegates.MerchantsAdapterDelegate;
+import com.worldventures.dreamtrips.modules.dtl.view.cell.delegates.ScrollingManager;
 import com.worldventures.dreamtrips.modules.dtl.view.cell.pagination.PaginationManager;
 import com.worldventures.dreamtrips.modules.dtl.view.dialog.DialogFactory;
 import com.worldventures.dreamtrips.modules.dtl.view.util.LayoutManagerScrollPersister;
@@ -53,6 +54,7 @@ public class DtlMerchantsScreenImpl extends DtlLayout<DtlMerchantsScreen, DtlMer
 
    @Inject MerchantsAdapterDelegate delegate;
 
+   ScrollingManager scrollingManager;
    SelectionManager selectionManager;
    SweetAlertDialog errorDialog;
    PaginationManager paginationManager;
@@ -83,6 +85,9 @@ public class DtlMerchantsScreenImpl extends DtlLayout<DtlMerchantsScreen, DtlMer
       paginationManager = new PaginationManager();
       paginationManager.setup(recyclerView);
       paginationManager.setPaginationListener(() -> getPresenter().loadNext());
+
+      scrollingManager = new ScrollingManager();
+      scrollingManager.setup(recyclerView);
 
       selectionManager = new SingleSelectionManager(recyclerView);
       selectionManager.setEnabled(isTabletLandscape());
@@ -218,6 +223,7 @@ public class DtlMerchantsScreenImpl extends DtlLayout<DtlMerchantsScreen, DtlMer
    public void toggleSelection(ThinMerchant merchant) {
       int index = delegate.getItems().indexOf(merchant);
       if (index != -1) selectionManager.toggleSelection(index);
+      scrollingManager.scrollToPosition(index);
    }
 
    @Override

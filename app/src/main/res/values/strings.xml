@@ -660,4 +660,6 @@
    <string name="offline_warning_dialog_title">No Internet Connection</string>
    <string name="offline_warning_dialog_message">Your access will be limited</string>
 
+   <string name="beta_label">Beta</string>
+
 </resources>

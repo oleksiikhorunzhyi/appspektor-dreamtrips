@@ -1,6 +1,11 @@
 package com.worldventures.dreamtrips.modules.common.view.fragment.navigationdrawer;
 
+import android.content.Context;
 import android.support.v7.widget.RecyclerView;
+import android.text.SpannableString;
+import android.text.Spanned;
+import android.text.style.RelativeSizeSpan;
+import android.text.style.TypefaceSpan;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -89,7 +94,7 @@ public class NavigationDrawerAdapter extends RecyclerView.Adapter<RecyclerView.V
       holder.sectionIcon.setImageResource(item.getIcon());
       holder.sectionIcon.setContentDescription(item.getKey().toLowerCase());
       if (holder.itemName != null) {
-         holder.itemName.setText(item.getNavMenuTitle());
+         setupTitleWithBetaLabel(holder.itemName, item.getNavMenuTitle());
       }
 
       boolean isSelected = isComponentSelected(i);
@@ -109,6 +114,36 @@ public class NavigationDrawerAdapter extends RecyclerView.Adapter<RecyclerView.V
          holder.badgeView.setText(String.valueOf(notificationCount));
       } else {
          holder.badgeView.setVisibility(View.GONE);
+      }
+   }
+
+   private void setupTitleWithBetaLabel(TextView tvTitle, int resIdNavMenuTitle) {
+      Context context = tvTitle.getContext();
+      String navMenuTitle = context.getString(resIdNavMenuTitle);
+      if (resIdNavMenuTitle == R.string.wallet_smart_card_title) {
+         String betaLabel = context.getString(R.string.beta_label);
+         navMenuTitle = String.format(
+               "%s %s",
+               navMenuTitle,
+               betaLabel
+         );
+         int startIndex = navMenuTitle.indexOf(betaLabel);
+         int endIndex = navMenuTitle.length();
+         SpannableString spannedNavTitle = new SpannableString(navMenuTitle);
+         spannedNavTitle.setSpan(
+               new RelativeSizeSpan(0.7f),
+               startIndex,
+               endIndex,
+               Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
+         );
+         spannedNavTitle.setSpan(new TypefaceSpan("normal"),
+               startIndex,
+               endIndex,
+               Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
+         );
+         tvTitle.setText(spannedNavTitle);
+      } else {
+         tvTitle.setText(resIdNavMenuTitle);
       }
    }
 

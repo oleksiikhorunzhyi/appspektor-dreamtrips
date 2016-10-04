@@ -90,7 +90,14 @@ public class WalletActivityModule {
 
    @Provides(type = Provides.Type.SET)
    ComponentDescription provideWalletComponent() {
-      return new ComponentDescription(WALLET, R.string.wallet, R.string.wallet, R.drawable.ic_wallet, true, null);
+      return new ComponentDescription(
+            WALLET,
+            R.string.wallet_smart_card_title,
+            R.string.wallet_smart_card_title,
+            R.drawable.ic_wallet,
+            true,
+            null
+      );
    }
 
    @Singleton

@@ -9,10 +9,10 @@ import com.worldventures.dreamtrips.modules.facebook.model.FacebookPhoto;
 import com.worldventures.dreamtrips.modules.facebook.presenter.FacebookPhotoPresenter;
 import com.worldventures.dreamtrips.modules.facebook.view.cell.FacebookPhotoCell;
 import com.worldventures.dreamtrips.modules.feed.view.util.GridAutofitLayoutManager;
-import com.worldventures.dreamtrips.modules.tripsimages.view.custom.PickImageDelegate;
 
 public class FacebookPhotoFragment extends BasePickerFragment<FacebookPhotoPresenter> implements FacebookPhotoPresenter.View {
 
+   public static final int PHOTOS_TYPE_FACEBOOK = 346;
    public static final String BUNDLE_ALBUM_ID = "BUNDLE_ALBUM_ID";
 
    @Override
@@ -36,7 +36,7 @@ public class FacebookPhotoFragment extends BasePickerFragment<FacebookPhotoPrese
 
    @Override
    protected int getPhotosType() {
-      return PickImageDelegate.FACEBOOK;
+      return PHOTOS_TYPE_FACEBOOK;
    }
 
    @Override

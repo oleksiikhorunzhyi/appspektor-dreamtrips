@@ -60,7 +60,6 @@ import com.worldventures.dreamtrips.modules.feed.view.util.TextualPostTranslatio
 import com.worldventures.dreamtrips.modules.friends.model.Circle;
 import com.worldventures.dreamtrips.modules.tripsimages.api.DeletePhotoCommand;
 import com.worldventures.dreamtrips.modules.tripsimages.api.DownloadImageCommand;
-import com.worldventures.dreamtrips.modules.tripsimages.view.custom.PickImageDelegate;
 import com.worldventures.dreamtrips.modules.tripsimages.vision.ImageUtils;
 
 import java.util.ArrayList;
@@ -451,7 +450,7 @@ public class FeedPresenter extends Presenter<FeedPresenter.View> {
             .map(photoGalleryModel -> {
                ArrayList<PhotoGalleryModel> chosenImages = new ArrayList<>();
                chosenImages.add(photoGalleryModel);
-               return new MediaAttachment(chosenImages, PickImageDelegate.PICK_PICTURE, CreateFeedPostPresenter.REQUEST_ID);
+               return new MediaAttachment(chosenImages, 0, CreateFeedPostPresenter.REQUEST_ID);
             })
             .compose(new IoToMainComposer<>())
             .subscribe(mediaAttachment -> mediaPickerManager.attach(mediaAttachment), error -> Timber.e(error, ""));

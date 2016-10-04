@@ -9,6 +9,7 @@ import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.component.ComponentDescription;
 import com.worldventures.dreamtrips.core.component.ComponentsConfig;
 import com.worldventures.dreamtrips.core.component.RootComponentsProvider;
+import com.worldventures.dreamtrips.core.navigation.ActivityRouter;
 import com.worldventures.dreamtrips.core.navigation.BackStackDelegate;
 import com.worldventures.dreamtrips.core.navigation.DialogFragmentNavigator;
 import com.worldventures.dreamtrips.core.session.acl.Feature;
@@ -25,6 +26,7 @@ import com.worldventures.dreamtrips.modules.common.presenter.MediaPickerPresente
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.common.presenter.SharePresenter;
 import com.worldventures.dreamtrips.modules.common.presenter.TermsConditionsDialogPresenter;
+import com.worldventures.dreamtrips.modules.common.service.MediaInteractor;
 import com.worldventures.dreamtrips.modules.common.view.activity.ComponentActivity;
 import com.worldventures.dreamtrips.modules.common.view.activity.LaunchActivity;
 import com.worldventures.dreamtrips.modules.common.view.activity.MainActivity;
@@ -51,6 +53,7 @@ import com.worldventures.dreamtrips.modules.reptools.ReptoolsModule;
 import com.worldventures.dreamtrips.modules.settings.SettingsModule;
 import com.worldventures.dreamtrips.modules.trips.TripsModule;
 import com.worldventures.dreamtrips.modules.tripsimages.TripsImagesModule;
+import com.worldventures.dreamtrips.modules.tripsimages.view.custom.PickImageDelegate;
 import com.worldventures.dreamtrips.modules.video.VideoModule;
 import com.worldventures.dreamtrips.modules.video.presenter.PresentationVideosPresenter;
 
@@ -120,6 +123,12 @@ public class CommonModule {
       activeComponents.add(LOGOUT);
 
       return new ComponentsConfig(activeComponents);
+   }
+
+   @Provides
+   @Singleton
+   PickImageDelegate pickImageDelegate(ActivityRouter activityRouter, MediaInteractor mediaInteractor) {
+      return new PickImageDelegate(activityRouter, mediaInteractor);
    }
 
    @Provides

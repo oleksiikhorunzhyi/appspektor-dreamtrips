@@ -46,7 +46,6 @@ import com.worldventures.dreamtrips.modules.feed.view.util.StatePaginatedRecycle
 import com.worldventures.dreamtrips.modules.friends.bundle.FriendMainBundle;
 import com.worldventures.dreamtrips.modules.friends.model.Circle;
 import com.worldventures.dreamtrips.modules.profile.model.ReloadFeedModel;
-import com.worldventures.dreamtrips.modules.tripsimages.view.custom.PickImageDelegate;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -277,7 +276,7 @@ public class FeedFragment extends RxBaseFragmentWithArgs<FeedPresenter, FeedBund
    public void refreshFeedItems(List<FeedItem> feedItems, List<PhotoGalleryModel> suggestedPhotos) {
       if (isNeedAddSuggestions(suggestedPhotos.size(), feedItems.size())) {
          List listWithSuggestion = new ArrayList<>(feedItems.size() + 1);
-         listWithSuggestion.add(new MediaAttachment(suggestedPhotos, PickImageDelegate.PICK_PICTURE, -1));
+         listWithSuggestion.add(new MediaAttachment(suggestedPhotos, -1, -1));
          listWithSuggestion.addAll(feedItems);
          //
          fragmentWithFeedDelegate.clearItems();

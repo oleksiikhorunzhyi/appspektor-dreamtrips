@@ -42,7 +42,6 @@ import flow.History;
 import flow.path.Path;
 import icepick.State;
 import io.techery.janet.helper.ActionStateSubscriber;
-import io.techery.janet.helper.ActionStateToActionTransformer;
 
 public class DtlMerchantsPresenterImpl extends DtlPresenterImpl<DtlMerchantsScreen, DtlMerchantsState>
       implements DtlMerchantsPresenter {
@@ -143,10 +142,10 @@ public class DtlMerchantsPresenterImpl extends DtlPresenterImpl<DtlMerchantsScre
                   .onProgress(this::onProgressMerchantsLoad)
                   .onFail(this::onFailMerchantsLoad));
 
-//      merchantInteractor.thinMerchantsHttpPipe()
-//            .observeWithReplay()
-//            .compose(bindViewIoToMainComposer())
-//            .subscribe(new ActionStateSubscriber<MerchantsAction>().onSuccess(this::setItems));
+      merchantInteractor.thinMerchantsHttpPipe()
+            .observeWithReplay()
+            .compose(bindViewIoToMainComposer())
+            .subscribe(new ActionStateSubscriber<MerchantsAction>().onSuccess(this::setItems));
    }
 
    private void setItems(MerchantsAction action) {
@@ -157,7 +156,6 @@ public class DtlMerchantsPresenterImpl extends DtlPresenterImpl<DtlMerchantsScre
    protected void onSuccessMerchantsLoad(MerchantsAction action) {
       updateProgress(action.isRefresh(), false);
       if (action.isRefresh() && action.getResult().isEmpty()) showEmptyView();
-      setItems(action);
    }
 
    protected void onProgressMerchantsLoad(MerchantsAction action, Integer progress) {

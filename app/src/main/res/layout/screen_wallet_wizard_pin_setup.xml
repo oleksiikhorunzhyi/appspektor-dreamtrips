@@ -11,7 +11,7 @@
          android:id="@+id/toolbar"
          android:layout_width="match_parent"
          android:layout_height="?attr/actionBarSize"
-         app:title="@string/wallet_factory_reset_title"
+         app:title="@string/wallet_wizard_setup_pin_title"
          />
 
    <RelativeLayout
@@ -37,6 +37,7 @@
             android:layout_alignParentBottom="true"
             android:scaleType="fitXY"
             android:src="@drawable/hands_pin"
+            tools:ignore="ContentDescription"
             />
 
       <Button

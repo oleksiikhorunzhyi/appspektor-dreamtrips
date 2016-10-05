@@ -11,9 +11,8 @@ import com.worldventures.dreamtrips.wallet.analytics.ConnectFlyeToChargerAction;
 import com.worldventures.dreamtrips.wallet.analytics.FailedToAddCardAction;
 import com.worldventures.dreamtrips.wallet.analytics.WalletAnalyticsCommand;
 import com.worldventures.dreamtrips.wallet.domain.entity.card.BankCard;
-import com.worldventures.dreamtrips.wallet.domain.entity.card.Card;
-import com.worldventures.dreamtrips.wallet.domain.entity.card.ImmutableBankCard;
 import com.worldventures.dreamtrips.wallet.service.SmartCardInteractor;
+import com.worldventures.dreamtrips.wallet.service.command.http.CreateBankCardCommand;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletPresenter;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.WalletScreen;
 import com.worldventures.dreamtrips.wallet.ui.common.helper.ErrorActionStateSubscriberWrapper;
@@ -29,6 +28,7 @@ import javax.inject.Inject;
 import io.techery.janet.smartcard.action.charger.StartCardRecordingAction;
 import io.techery.janet.smartcard.action.charger.StopCardRecordingAction;
 import io.techery.janet.smartcard.event.CardChargedEvent;
+import io.techery.janet.smartcard.model.Card;
 
 public class WizardChargingPresenter extends WalletPresenter<WizardChargingPresenter.Screen, Parcelable> {
 
@@ -44,6 +44,11 @@ public class WizardChargingPresenter extends WalletPresenter<WizardChargingPrese
    public void onAttachedToWindow() {
       super.onAttachedToWindow();
       trackScreen();
+      observeCharger();
+      observeBankCardCreation();
+   }
+
+   private void observeCharger() {
       smartCardInteractor.startCardRecordingPipe()
             .createObservable(new StartCardRecordingAction())
             .compose(bindViewIoToMainComposer())
@@ -51,7 +56,7 @@ public class WizardChargingPresenter extends WalletPresenter<WizardChargingPrese
                   .onFail(ErrorHandler.create(getContext()))
                   .wrap());
 
-      //TODO implement chain with FetchRecordIssuerInfoCommand, and differ `no card connection` and `no internet connection` errors in analytics
+      //TODO implement chain with CreateBankCardCommand, and differ `no card connection` and `no internet connection` errors in analytics
       smartCardInteractor.chargedEventPipe()
             .observe()
             .delay(2, TimeUnit.SECONDS) // // TODO: 9/16/16 for demo mock device
@@ -63,7 +68,17 @@ public class WizardChargingPresenter extends WalletPresenter<WizardChargingPrese
                         .defaultMessage(R.string.wallet_wizard_charging_swipe_error)
                         .defaultAction(cardChargedEvent -> analyticsInteractor.walletAnalyticsCommandPipe()
                               .send(new WalletAnalyticsCommand(FailedToAddCardAction.noCardConnection()))
-                  ).build())
+                        ).build())
+                  .wrap());
+   }
+
+   private void observeBankCardCreation() {
+      smartCardInteractor.bankCardPipe()
+            .observe()
+            .compose(bindViewIoToMainComposer())
+            .subscribe(OperationActionStateSubscriberWrapper.<CreateBankCardCommand>forView(getView().provideOperationDelegate())
+                  .onFail(ErrorHandler.create(getContext()))
+                  .onSuccess(command -> bankCardCreated(command.getResult()))
                   .wrap());
    }
 
@@ -75,22 +90,18 @@ public class WizardChargingPresenter extends WalletPresenter<WizardChargingPrese
    @Override
    public void onDetachedFromWindow() {
       super.onDetachedFromWindow();
-      smartCardInteractor.stopCardRecordingPipe()
-            .send(new StopCardRecordingAction());
+      smartCardInteractor.stopCardRecordingPipe().send(new StopCardRecordingAction());
    }
 
    public void goBack() {
       navigator.goBack();
    }
 
-   public void cardSwiped(io.techery.janet.smartcard.model.Card card) {
-      //TODO: validate swipe data
-      BankCard bankCard = ImmutableBankCard.builder()
-            .id(Card.NO_ID)
-            .number(Long.parseLong(card.pan()))
-            .expiryYear(Integer.parseInt(card.exp().substring(0, 2)))
-            .expiryMonth(Integer.parseInt(card.exp().substring(2, 4)))
-            .build();
+   private void cardSwiped(Card card) {
+      smartCardInteractor.bankCardPipe().send(new CreateBankCardCommand(card));
+   }
+
+   private void bankCardCreated(BankCard bankCard) {
       navigator.withoutLast(new AddCardDetailsPath(bankCard));
    }
 

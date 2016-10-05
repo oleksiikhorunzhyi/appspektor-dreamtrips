@@ -35,7 +35,7 @@ import com.worldventures.dreamtrips.wallet.service.command.firmware.InstallFirmw
 import com.worldventures.dreamtrips.wallet.service.command.firmware.PreInstallationCheckCommand;
 import com.worldventures.dreamtrips.wallet.service.command.http.AssociateCardUserCommand;
 import com.worldventures.dreamtrips.wallet.service.command.http.FetchFirmwareInfoCommand;
-import com.worldventures.dreamtrips.wallet.service.command.http.FetchRecordIssuerInfoCommand;
+import com.worldventures.dreamtrips.wallet.service.command.http.CreateBankCardCommand;
 import com.worldventures.dreamtrips.wallet.service.command.http.FetchTermsAndConditionsCommand;
 
 import dagger.Module;
@@ -69,7 +69,7 @@ import dagger.Module;
             SaveDefaultAddressCommand.class,
             FetchDefaultCardCommand.class,
             FetchTermsAndConditionsCommand.class,
-            FetchRecordIssuerInfoCommand.class,
+            CreateBankCardCommand.class,
             AssociateCardUserCommand.class,
             FetchFirmwareInfoCommand.class,
             PreInstallationCheckCommand.class,

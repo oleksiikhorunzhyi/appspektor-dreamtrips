@@ -58,12 +58,6 @@ public class CardDetailsScreen extends WalletLinearLayout<CardDetailsPresenter.S
       setAsDefaultCardObservable = RxCompoundButton.checkedChanges(defaultPaymentCardCheckBox).skip(1);
    }
 
-   @Override
-   protected void onDetachedFromWindow() {
-      super.onDetachedFromWindow();
-      presenter.nicknameUpdated(cardNickname.getText().toString());
-   }
-
    @OnClick(R.id.delete_button)
    public void onDeleteCardClicked() {
       getPresenter().onDeleteCardClick();
@@ -123,6 +117,11 @@ public class CardDetailsScreen extends WalletLinearLayout<CardDetailsPresenter.S
    @Override
    public void showDefaultAddress(AddressInfoWithLocale addressInfoWithLocale) {
       addressText.setText(AddressUtil.obtainAddressLabel(addressInfoWithLocale));
+   }
+
+   @Override
+   public String getUpdateNickname() {
+      return cardNickname.getText().toString();
    }
 
    @Override

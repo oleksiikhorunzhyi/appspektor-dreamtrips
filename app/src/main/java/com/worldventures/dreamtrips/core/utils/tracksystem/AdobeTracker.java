@@ -19,6 +19,9 @@ public class AdobeTracker extends Tracker {
    private static final String CHANNEL_KEY = "channel";
    private static final String CHANNEL_VALUE = "App:Dreamtrips";
    private static final String ACTION = "action";
+   private static final String PREV_VIEW_STATE = "previouscreen";
+
+   private String lastTrackedViewState;
 
    @Override
    public String getKey() {
@@ -45,17 +48,23 @@ public class AdobeTracker extends Tracker {
    }
 
    @Override
-   public void trackEvent(String category, String action, Map<String, Object> data) {
+   public void trackEvent(String category, String viewState, Map<String, Object> data) {
       if (data == null) data = new HashMap<>();
       if (headerData != null) data.putAll(headerData);
 
-      data.put(CHANNEL_KEY, CHANNEL_VALUE);
-      data.put(ACTION, prepareAction(action));
+      String preparedViewState = prepareViewState(viewState);
 
-      Analytics.trackState(prepareAction(action), data);
+      data.put(CHANNEL_KEY, CHANNEL_VALUE);
+      data.put(PREV_VIEW_STATE, lastTrackedViewState);
+      data.put(ACTION, preparedViewState);
+
+      Analytics.trackState(preparedViewState, data);
+
+      lastTrackedViewState = preparedViewState;
    }
 
-   private String prepareAction(String action) {
-      return DEFAULT_PREFIX + action;
+
+   private String prepareViewState(String viewState) {
+      return DEFAULT_PREFIX + viewState;
    }
 }

@@ -7,7 +7,9 @@ import android.support.annotation.StringRes;
 import com.worldventures.dreamtrips.R;
 
 import java.net.UnknownHostException;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import io.techery.janet.command.exception.CommandServiceException;
@@ -23,6 +25,7 @@ public class ErrorHandler<T> implements Func1<Throwable, MessageActionHolder<T>>
 
    private final Map<Class<? extends Throwable>, String> throwableMessageMap;
    private final Map<Class<? extends Throwable>, Action1<T>> throwableActionMap;
+   private final List<Class<? extends Throwable>> ignoredThrowables;
    private final Action1<T> defaultErrorAction;
    private final String defaultErrorMessage;
    private final Context context;
@@ -30,6 +33,7 @@ public class ErrorHandler<T> implements Func1<Throwable, MessageActionHolder<T>>
    private ErrorHandler(Builder<T> builder) {
       throwableMessageMap = builder.throwableMessageMap;
       throwableActionMap = builder.throwableActionMap;
+      ignoredThrowables = builder.ignoredThrowables;
       defaultErrorAction = builder.defaultErrorAction;
       context = builder.context;
       defaultErrorMessage = builder.defaultErrorMessage;
@@ -47,6 +51,10 @@ public class ErrorHandler<T> implements Func1<Throwable, MessageActionHolder<T>>
    }
 
    private MessageActionHolder<T> tryCreateActionHolder(Throwable throwable, String message, Action1<T> action) {
+      if (ignoredThrowables.contains(throwable.getClass())){
+         return null;
+      }
+
       if (message != null && action != null) {
          // terminal branch
          return new MessageActionHolder<>(message, action);
@@ -94,6 +102,7 @@ public class ErrorHandler<T> implements Func1<Throwable, MessageActionHolder<T>>
 
       private final Map<Class<? extends Throwable>, String> throwableMessageMap = new HashMap<>();
       private final Map<Class<? extends Throwable>, Action1<T>> throwableActionMap = new HashMap<>();
+      private final List<Class<? extends Throwable>> ignoredThrowables = new ArrayList<>();
       private Action1<T> defaultErrorAction = t -> {}; // stub defaultErrorAction
       private String defaultErrorMessage;
       private final Context context;
@@ -114,6 +123,11 @@ public class ErrorHandler<T> implements Func1<Throwable, MessageActionHolder<T>>
 
       public Builder<T> handle(@NonNull Class<? extends Throwable> clazz, @NonNull Action1<T> action) {
          throwableActionMap.put(clazz, action);
+         return this;
+      }
+
+      public Builder<T> ignore(@NonNull Class<? extends Throwable> clazz) {
+         ignoredThrowables.add(clazz);
          return this;
       }
 

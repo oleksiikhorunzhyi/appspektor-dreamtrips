@@ -17,7 +17,7 @@ import com.worldventures.dreamtrips.modules.common.model.MediaAttachment;
 import com.worldventures.dreamtrips.modules.common.model.PhotoGalleryModel;
 import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.common.service.LogoutInteractor;
-import com.worldventures.dreamtrips.modules.common.view.util.MediaPickerManager;
+import com.worldventures.dreamtrips.modules.common.view.util.MediaPickerEventDelegate;
 import com.worldventures.dreamtrips.modules.feed.service.command.GetAccountTimelineCommand;
 import com.worldventures.dreamtrips.modules.profile.service.ProfileInteractor;
 import com.worldventures.dreamtrips.modules.profile.service.command.GetPrivateProfileCommand;
@@ -47,7 +47,7 @@ public class AccountPresenter extends ProfilePresenter<AccountPresenter.View, Us
 
    @Inject RootComponentsProvider rootComponentsProvider;
    @Inject LogoutInteractor logoutInteractor;
-   @Inject MediaPickerManager mediaPickerManager;
+   @Inject MediaPickerEventDelegate mediaPickerEventDelegate;
    @Inject SocialCropImageManager socialCropImageManager;
    @Inject AuthInteractor authInteractor;
    @Inject ProfileInteractor profileInteractor;
@@ -125,7 +125,7 @@ public class AccountPresenter extends ProfilePresenter<AccountPresenter.View, Us
    }
 
    private void subscribeToMediaPicker() {
-      mediaPickerManager.toObservable()
+      mediaPickerEventDelegate.getObservable()
             .filter(attachment -> attachment.chosenImages.size() > 0)
             .compose(bindView())
             .subscribe(mediaAttachment -> {

@@ -5,14 +5,14 @@ import android.os.Bundle;
 import com.techery.spares.annotations.Layout;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.navigation.Route;
-import com.worldventures.dreamtrips.modules.feed.presenter.CreateFeedPostPresenter;
+import com.worldventures.dreamtrips.modules.feed.presenter.CreateEntityPresenter;
 
 @Layout(R.layout.layout_post)
-public class CreateFeedPostFragment extends CreateEntityFragment<CreateFeedPostPresenter> implements CreateFeedPostPresenter.View {
+public class CreateFeedPostFragment extends CreateEntityFragment<CreateEntityPresenter> implements CreateEntityPresenter.View {
 
    @Override
-   protected CreateFeedPostPresenter createPresenter(Bundle savedInstanceState) {
-      return new CreateFeedPostPresenter();
+   protected CreateEntityPresenter createPresenter(Bundle savedInstanceState) {
+      return new CreateEntityPresenter();
    }
 
    @Override

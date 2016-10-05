@@ -7,7 +7,6 @@ import com.worldventures.dreamtrips.core.permission.PermissionGrantedComposer;
 import com.worldventures.dreamtrips.modules.common.model.BasePhotoPickerModel;
 import com.worldventures.dreamtrips.modules.common.service.MediaInteractor;
 import com.worldventures.dreamtrips.modules.common.view.custom.PhotoPickerLayoutDelegate;
-import com.worldventures.dreamtrips.modules.common.view.util.MediaPickerManager;
 
 import java.util.Collections;
 import java.util.List;

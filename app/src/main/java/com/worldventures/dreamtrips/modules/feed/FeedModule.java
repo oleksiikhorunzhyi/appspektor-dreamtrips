@@ -7,15 +7,12 @@ import com.worldventures.dreamtrips.core.component.ComponentDescription;
 import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.navigation.router.Router;
 import com.worldventures.dreamtrips.core.session.UserSession;
-import com.worldventures.dreamtrips.core.utils.tracksystem.AnalyticsInteractor;
 import com.worldventures.dreamtrips.modules.common.presenter.ComponentPresenter;
 import com.worldventures.dreamtrips.modules.common.presenter.GalleryPresenter;
-import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.common.view.fragment.DtGalleryFragment;
 import com.worldventures.dreamtrips.modules.feed.presenter.ActionEntityPresenter;
 import com.worldventures.dreamtrips.modules.feed.presenter.BaseCommentPresenter;
 import com.worldventures.dreamtrips.modules.feed.presenter.CreateEntityPresenter;
-import com.worldventures.dreamtrips.modules.feed.presenter.CreateFeedPostPresenter;
 import com.worldventures.dreamtrips.modules.feed.presenter.DescriptionCreatorPresenter;
 import com.worldventures.dreamtrips.modules.feed.presenter.EditCommentPresenter;
 import com.worldventures.dreamtrips.modules.feed.presenter.EditPhotoPresenter;
@@ -100,7 +97,7 @@ import de.greenrobot.event.EventBus;
 
             DtGalleryFragment.class, GalleryPresenter.class,
 
-            ActionEntityFragment.class, ActionEntityPresenter.class, CreateTripImageFragment.class, CreateFeedPostFragment.class, CreateFeedPostPresenter.class, CreateEntityFragment.class, CreateEntityPresenter.class,
+            ActionEntityFragment.class, ActionEntityPresenter.class, CreateTripImageFragment.class, CreateFeedPostFragment.class, CreateEntityFragment.class, CreateEntityPresenter.class,
 
             LocationFragment.class, LocationPresenter.class,
 

@@ -10,7 +10,6 @@ import com.techery.spares.session.SessionHolder;
 import com.worldventures.dreamtrips.core.api.DreamSpiceManager;
 import com.worldventures.dreamtrips.core.api.DreamSpiceService;
 import com.worldventures.dreamtrips.core.api.PhotoUploadingManagerS3;
-import com.worldventures.dreamtrips.core.api.SocialUploaderyManager;
 import com.worldventures.dreamtrips.core.api.VideoDownloadSpiceService;
 import com.worldventures.dreamtrips.core.janet.JanetModule;
 import com.worldventures.dreamtrips.core.janet.SessionActionPipeCreator;
@@ -24,7 +23,7 @@ import com.worldventures.dreamtrips.modules.common.delegate.DownloadFileInteract
 import com.worldventures.dreamtrips.modules.common.delegate.SocialCropImageManager;
 import com.worldventures.dreamtrips.modules.common.presenter.delegate.ClearDirectoryDelegate;
 import com.worldventures.dreamtrips.modules.common.presenter.delegate.OfflineWarningDelegate;
-import com.worldventures.dreamtrips.modules.common.view.util.MediaPickerManager;
+import com.worldventures.dreamtrips.modules.common.view.util.MediaPickerEventDelegate;
 import com.worldventures.dreamtrips.modules.common.view.util.PhotoPickerDelegate;
 import com.worldventures.dreamtrips.modules.dtl.location.LocationDelegate;
 import com.worldventures.dreamtrips.modules.dtl.location.LocationDelegateImpl;
@@ -53,7 +52,6 @@ import de.greenrobot.event.EventBus;
             DreamSpiceService.class,
             VideoDownloadSpiceService.class,
             PhotoUploadingManagerS3.class,
-            SocialUploaderyManager.class,
             PhoneContactRequest.class,
             DtlFilterMerchantInteractor.class,
             DtlMerchantInteractor.class,
@@ -71,12 +69,6 @@ public class ManagerModule {
    @Provides
    public CirclesInteractor provideQueryCirclesInteractor(SessionActionPipeCreator sessionActionPipeCreator) {
       return new CirclesInteractor(sessionActionPipeCreator);
-   }
-
-   @Provides
-   @Singleton
-   public SocialUploaderyManager provideSocialUploaderyManager(@ForApplication Injector injector) {
-      return new SocialUploaderyManager(injector);
    }
 
    @Provides
@@ -142,8 +134,8 @@ public class ManagerModule {
 
    @Provides
    @Singleton
-   MediaPickerManager provideMediaPickerManager() {
-      return new MediaPickerManager();
+   MediaPickerEventDelegate provideMediaPickerManager() {
+      return new MediaPickerEventDelegate();
    }
 
    @Provides

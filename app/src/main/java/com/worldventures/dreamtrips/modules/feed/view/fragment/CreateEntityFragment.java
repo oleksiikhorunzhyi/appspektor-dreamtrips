@@ -102,7 +102,7 @@ public abstract class CreateEntityFragment<PM extends CreateEntityPresenter> ext
             .backStackEnabled(false)
             .fragmentManager(getChildFragmentManager())
             .containerId(R.id.picker_container)
-            .data(new PickerBundle(getPresenter().getMediaRequestId(), getPresenter().getRemainingPhotosCount()))
+            .data(new PickerBundle(0, getPresenter().getRemainingPhotosCount()))
             .build());
    }
 

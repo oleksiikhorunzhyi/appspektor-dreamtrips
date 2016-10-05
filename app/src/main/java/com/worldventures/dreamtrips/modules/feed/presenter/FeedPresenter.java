@@ -7,6 +7,7 @@ import android.util.Pair;
 
 import com.innahema.collections.query.queriables.Queryable;
 import com.worldventures.dreamtrips.core.utils.tracksystem.AnalyticsInteractor;
+import com.worldventures.dreamtrips.modules.common.view.util.MediaPickerEventDelegate;
 import com.worldventures.dreamtrips.modules.feed.service.analytics.ViewFeedAction;
 import com.worldventures.dreamtrips.modules.flags.service.FlagsInteractor;
 import com.messenger.ui.activity.MessengerActivity;
@@ -34,7 +35,6 @@ import com.worldventures.dreamtrips.modules.common.view.ApiErrorView;
 import com.worldventures.dreamtrips.modules.common.view.BlockingProgressView;
 import com.worldventures.dreamtrips.modules.common.view.bundle.BucketBundle;
 import com.worldventures.dreamtrips.modules.common.view.util.DrawableUtil;
-import com.worldventures.dreamtrips.modules.common.view.util.MediaPickerManager;
 import com.worldventures.dreamtrips.modules.common.view.util.Size;
 import com.worldventures.dreamtrips.modules.feed.api.DeletePostCommand;
 import com.worldventures.dreamtrips.modules.feed.event.DeleteBucketEvent;
@@ -85,7 +85,7 @@ public class FeedPresenter extends Presenter<FeedPresenter.View> {
 
    @Inject FeedEntityManager entityManager;
    @Inject SnappyRepository db;
-   @Inject MediaPickerManager mediaPickerManager;
+   @Inject MediaPickerEventDelegate mediaPickerEventDelegate;
    @Inject TextualPostTranslationDelegate textualPostTranslationDelegate;
    @Inject DrawableUtil drawableUtil;
    @Inject UnreadConversationObservable unreadConversationObservable;
@@ -459,10 +459,10 @@ public class FeedPresenter extends Presenter<FeedPresenter.View> {
             .map(photoGalleryModel -> {
                ArrayList<PhotoGalleryModel> chosenImages = new ArrayList<>();
                chosenImages.add(photoGalleryModel);
-               return new MediaAttachment(chosenImages, 0, CreateFeedPostPresenter.REQUEST_ID);
+               return new MediaAttachment(chosenImages, MediaAttachment.Source.GALLERY);
             })
             .compose(new IoToMainComposer<>())
-            .subscribe(mediaAttachment -> mediaPickerManager.attach(mediaAttachment), error -> Timber.e(error, ""));
+            .subscribe(mediaAttachment -> mediaPickerEventDelegate.post(mediaAttachment), error -> Timber.e(error, ""));
    }
 
    public List<PhotoGalleryModel> getSelectedSuggestionPhotos() {

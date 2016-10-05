@@ -275,7 +275,7 @@ public class FeedFragment extends RxBaseFragmentWithArgs<FeedPresenter, FeedBund
    public void refreshFeedItems(List<FeedItem> feedItems, List<PhotoGalleryModel> suggestedPhotos) {
       if (isNeedAddSuggestions(suggestedPhotos.size(), feedItems.size())) {
          List listWithSuggestion = new ArrayList<>(feedItems.size() + 1);
-         listWithSuggestion.add(new MediaAttachment(suggestedPhotos, -1, -1));
+         listWithSuggestion.add(new MediaAttachment(suggestedPhotos, MediaAttachment.Source.GALLERY));
          listWithSuggestion.addAll(feedItems);
          //
          fragmentWithFeedDelegate.clearItems();

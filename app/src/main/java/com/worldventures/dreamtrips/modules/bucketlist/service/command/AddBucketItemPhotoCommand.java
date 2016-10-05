@@ -5,7 +5,7 @@ import android.support.v4.util.Pair;
 
 import com.techery.spares.module.qualifier.ForApplication;
 import com.worldventures.dreamtrips.core.api.uploadery.SimpleUploaderyCommand;
-import com.worldventures.dreamtrips.core.api.uploadery.UploaderyManager;
+import com.worldventures.dreamtrips.core.api.uploadery.UploaderyInteractor;
 import com.worldventures.dreamtrips.core.janet.dagger.InjectableAction;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketPhoto;
@@ -31,7 +31,7 @@ public class AddBucketItemPhotoCommand extends Command<Pair<BucketItem, BucketPh
 
    @Inject BucketInteractor bucketInteractor;
 
-   @Inject UploaderyManager uploaderyManager;
+   @Inject UploaderyInteractor uploaderyInteractor;
 
    private PublishSubject<Object> cancelSubject = PublishSubject.create();
 
@@ -49,7 +49,7 @@ public class AddBucketItemPhotoCommand extends Command<Pair<BucketItem, BucketPh
             .createObservableResult(new CopyFileCommand(context, photoEntityStateHolder.entity()
                   .getImagePath()))
             .map(Command::getResult)
-            .flatMap(path -> uploaderyManager.getUploadImagePipe()
+            .flatMap(path -> uploaderyInteractor.uploadImageActionPipe()
                   .createObservableResult(new SimpleUploaderyCommand(path, path.hashCode())))
             .cast(SimpleUploaderyCommand.class)
             .map(uploaderyCommand -> uploaderyCommand.getResult().getPhotoUploadResponse().getLocation())

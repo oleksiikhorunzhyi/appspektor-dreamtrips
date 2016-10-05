@@ -368,7 +368,6 @@ public class TrackingHelper {
    public static final String ACTION_SETTINGS = "Settings";
    public static final String ACTION_SETTINGS_GENERAL = "Settings:General";
    public static final String ACTION_SETTINGS_NOTIFICATIONS = "Settings:Notifications";
-   public static final String ACTION_PHOTO_UPLOAD = "photo_upload";
 
    public static final String ATTRIBUTE_LIST = "list";
    public static final String ATTRIBUTE_VIEW = "view";
@@ -642,12 +641,6 @@ public class TrackingHelper {
       Map data = new HashMap<>();
       data.put(actionTab, "1");
       trackers.get(KEY_ADOBE_TRACKER).trackEvent(null, ACTION_MEMBER_IMAGES, data);
-   }
-
-   public static void actionPhotosUploaded(int uploadedPhotosCount) {
-      Map data = new HashMap<>();
-      data.put(ATTRIBUTE_NUMBER_OF_UPLOADED_PHOTOS, uploadedPhotosCount);
-      trackers.get(KEY_ADOBE_TRACKER).trackEvent(null, ACTION_PHOTO_UPLOAD, data);
    }
 
    public static void sendFeedback(int reason) {

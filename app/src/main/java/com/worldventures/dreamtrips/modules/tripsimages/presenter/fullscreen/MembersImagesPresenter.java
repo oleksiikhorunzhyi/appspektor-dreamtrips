@@ -2,7 +2,7 @@ package com.worldventures.dreamtrips.modules.tripsimages.presenter.fullscreen;
 
 import com.octo.android.robospice.request.SpiceRequest;
 import com.worldventures.dreamtrips.modules.common.model.MediaAttachment;
-import com.worldventures.dreamtrips.modules.common.view.util.MediaPickerManager;
+import com.worldventures.dreamtrips.modules.common.view.util.MediaPickerEventDelegate;
 import com.worldventures.dreamtrips.modules.tripsimages.api.GetMemberPhotosQuery;
 import com.worldventures.dreamtrips.modules.tripsimages.model.IFullScreenObject;
 import com.worldventures.dreamtrips.modules.tripsimages.model.TripImagesType;
@@ -17,7 +17,7 @@ import javax.inject.Inject;
  */
 public class MembersImagesPresenter extends TripImagesListPresenter<MembersImagesPresenter.View> {
 
-   @Inject MediaPickerManager mediaPickerManager;
+   @Inject MediaPickerEventDelegate mediaPickerEventDelegate;
 
    public MembersImagesPresenter() {
       this(TripImagesType.MEMBERS_IMAGES, 0);
@@ -30,7 +30,7 @@ public class MembersImagesPresenter extends TripImagesListPresenter<MembersImage
    @Override
    public void takeView(View view) {
       super.takeView(view);
-      mediaPickerManager.toObservable()
+      mediaPickerEventDelegate.getObservable()
             .compose(bindViewToMainComposer())
             .subscribe(view::openCreatePhoto);
    }

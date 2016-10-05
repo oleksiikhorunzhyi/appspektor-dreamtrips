@@ -9,7 +9,6 @@ import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.common.model.MediaAttachment;
 import com.worldventures.dreamtrips.modules.common.view.bundle.PickerBundle;
 import com.worldventures.dreamtrips.modules.feed.bundle.CreateEntityBundle;
-import com.worldventures.dreamtrips.modules.tripsimages.presenter.CreateTripImagePresenter;
 import com.worldventures.dreamtrips.modules.tripsimages.presenter.fullscreen.MembersImagesPresenter;
 
 import butterknife.OnClick;
@@ -42,7 +41,7 @@ public class MemberImagesListFragment<P extends MembersImagesPresenter> extends 
             .backStackEnabled(false)
             .fragmentManager(getChildFragmentManager())
             .containerId(R.id.picker_container)
-            .data(new PickerBundle(CreateTripImagePresenter.REQUEST_ID, MEDIA_PICKER_ITEMS_COUNT))
+            .data(new PickerBundle(0, MEDIA_PICKER_ITEMS_COUNT))
             .build());
    }
 

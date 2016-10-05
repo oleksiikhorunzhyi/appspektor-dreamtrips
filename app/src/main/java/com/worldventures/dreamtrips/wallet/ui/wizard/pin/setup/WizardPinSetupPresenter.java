@@ -94,7 +94,7 @@ public class WizardPinSetupPresenter extends WalletPresenter<WizardPinSetupPrese
 
    private void navigateToNextScreen() {
       if (mode == SETUP) {
-         navigator.single(new WalletPinIsSetPath(smartCard));
+         navigator.withoutLast(new WalletPinIsSetPath(smartCard));
       } else {
          navigator.withoutLast(new PinSetSuccessPath(mode));
       }

@@ -231,4 +231,7 @@
    <string name="wallet_smartcard_connected_label">SmartCard is connected</string>
    <string name="wallet_smartcard_disconnected_label">SmartCard is disconnected</string>
    <string name="wallet_smartcard_connection_try_description">Connect SmartCard and try again.</string>
+
+   <!-- Power On -->
+   <string name="wallet_wizard_power_on_title2">Power on your flye SmartCard by\nswiping on the chip.</string>
 </resources>

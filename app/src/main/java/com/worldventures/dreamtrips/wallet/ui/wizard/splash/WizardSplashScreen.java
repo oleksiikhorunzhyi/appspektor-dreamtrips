@@ -33,7 +33,6 @@ public class WizardSplashScreen extends WalletLinearLayout<WizardSplashPresenter
    @InjectView(R.id.toolbar) Toolbar toolbar;
 
    @InjectView(R.id.wallet_wizard_splash_title) TextView walletWizardSplashTitle;
-   @InjectView(R.id.wallet_wizard_splash_soar_title) TextView walletWizardSplashSoarTitle;
    @InjectView(R.id.wallet_wizard_splash_btn) Button actionBtn;
 
    @InjectView(R.id.card_container) View cardContainer;
@@ -69,7 +68,7 @@ public class WizardSplashScreen extends WalletLinearLayout<WizardSplashPresenter
    private void hideAllView() {
       if (isInEditMode()) return;
       apply(
-            asList(walletWizardSplashTitle, walletWizardSplashSoarTitle, actionBtn, cardContainer),
+            asList(walletWizardSplashTitle, actionBtn, cardContainer),
             (view, index) -> view.setAlpha(0)
       );
    }
@@ -82,7 +81,7 @@ public class WizardSplashScreen extends WalletLinearLayout<WizardSplashPresenter
    @Override
    public void setup(boolean termsAccepted) {
       if (termsAccepted) {
-         apply(asList(walletWizardSplashTitle, actionBtn, cardContainer), (view, index) -> view.setAlpha(1));
+         apply(asList(actionBtn, cardContainer), (view, index) -> view.setAlpha(1));
 
          actionBtn.setText(R.string.wallet_wizard_scan_start_btn);
          actionBtn.setOnClickListener(view -> getPresenter().startScanCard());
@@ -91,8 +90,6 @@ public class WizardSplashScreen extends WalletLinearLayout<WizardSplashPresenter
          front.setImageResource(R.drawable.flyecard_front_with_display); //TODO: set front card
          flipAnim.flipCard(FLIP_ANIM_DELAY);
       } else {
-         walletWizardSplashSoarTitle.setAlpha(1);
-
          actionBtn.setText(R.string.wallet_wizard_splash_review_btn);
          actionBtn.setOnClickListener(view -> getPresenter().openTerms());
          walletWizardSplashTitle.setText(R.string.wallet_wizard_splash_title2);
@@ -100,9 +97,7 @@ public class WizardSplashScreen extends WalletLinearLayout<WizardSplashPresenter
 
       setDefaultAlpha();
 
-      postDelayed(this::startSoarAnimation,
-            termsAccepted ? 0 : SHOW_SOAR_TITLE_DELAY
-      );
+      startSoarAnimation();
    }
 
    private void setDefaultAlpha() {
@@ -112,19 +107,13 @@ public class WizardSplashScreen extends WalletLinearLayout<WizardSplashPresenter
    }
 
    private void startSoarAnimation() {
-      AnimatorSet animation = new AnimatorSet();
-
       AnimatorSet mainAnimation = new AnimatorSet();
       mainAnimation
             .play(ofFloat(actionBtn, View.ALPHA, 1).setDuration(COMMON_FADE_IN_DELAY))
             .with(ofFloat(walletWizardSplashTitle, View.ALPHA, 1).setDuration(COMMON_FADE_IN_DELAY))
             .after(ofFloat(cardContainer, View.ALPHA, 1).setDuration(CARD_FADE_IN_DELAY));
 
-      animation
-            .play(ofFloat(walletWizardSplashSoarTitle, View.ALPHA, 0).setDuration(SOAR_FADE_OUT_DELAY))
-            .before(mainAnimation);
-
-      animation.start();
+      mainAnimation.start();
    }
 
    @Override

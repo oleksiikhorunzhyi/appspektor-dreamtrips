@@ -169,25 +169,29 @@ public class CardDetailsPresenter extends WalletPresenter<CardDetailsPresenter.S
             .compose(bindViewIoToMainComposer())
             .subscribe(command -> {
                if (command.getResult().connectionStatus().isConnected()) {
-                  if (setDefaultCard) {
-                     if (CardUtils.isRealCard(defaultBankCard)) {
-                        getView().showDefaultCardDialog(bankCardHelper.bankNameWithCardNumber(defaultBankCard));
-                     } else {
-                        trackSetAsDefault();
-                        smartCardInteractor.setDefaultCardOnDeviceCommandPipe()
-                              .send(new SetDefaultCardOnDeviceCommand(bankCard.id()));
-                     }
-                  } else {
-                     if (CardUtils.equals(defaultBankCard, bankCard)) {
-                        smartCardInteractor.setDefaultCardOnDeviceCommandPipe()
-                              .send(new SetDefaultCardOnDeviceCommand(Card.NO_ID));
-                     }
-                  }
+                  executeSetDefaultCard(setDefaultCard);
                } else {
                   getView().setDefaultCardCondition(CardUtils.equals(defaultBankCard, bankCard));
                   getView().showConnectionErrorDialog();
                }
             });
+   }
+
+   private void executeSetDefaultCard(boolean setDefaultCard) {
+      if (setDefaultCard) {
+         if (CardUtils.isRealCard(defaultBankCard)) {
+            getView().showDefaultCardDialog(bankCardHelper.bankNameWithCardNumber(defaultBankCard));
+         } else {
+            trackSetAsDefault();
+            smartCardInteractor.setDefaultCardOnDeviceCommandPipe()
+                  .send(new SetDefaultCardOnDeviceCommand(bankCard.id()));
+         }
+      } else {
+         if (CardUtils.equals(defaultBankCard, bankCard)) {
+            smartCardInteractor.setDefaultCardOnDeviceCommandPipe()
+                  .send(new SetDefaultCardOnDeviceCommand(Card.NO_ID));
+         }
+      }
    }
 
    public void defaultCardDialogConfirmed(boolean confirmed) {

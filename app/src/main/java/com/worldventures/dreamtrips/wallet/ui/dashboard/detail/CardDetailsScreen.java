@@ -36,7 +36,7 @@ public class CardDetailsScreen extends WalletLinearLayout<CardDetailsPresenter.S
    @InjectView(R.id.card) BankCardWidget bankCardWidget;
 
    private Observable<Boolean> setAsDefaultCardObservable;
-   private MaterialDialog connectedErrorDialog = null;
+   private MaterialDialog connectedErrorDialog;
 
    public CardDetailsScreen(Context context) {
       super(context);
@@ -107,8 +107,7 @@ public class CardDetailsScreen extends WalletLinearLayout<CardDetailsPresenter.S
 
    @Override
    public void showConnectionErrorDialog() {
-      if (connectedErrorDialog == null
-            || connectedErrorDialog.isCancelled()) {
+      if (connectedErrorDialog == null || connectedErrorDialog.isCancelled()) {
          connectedErrorDialog = new MaterialDialog.Builder(getContext())
                .title(R.string.wallet_smartcard_disconnected_label)
                .content(R.string.wallet_smartcard_connection_try_description)
@@ -116,8 +115,7 @@ public class CardDetailsScreen extends WalletLinearLayout<CardDetailsPresenter.S
                .onPositive((dialog, which) -> {
                   dialog.cancel();
                   connectedErrorDialog = null;
-               })
-               .build();
+               }).build();
          connectedErrorDialog.show();
       }
    }

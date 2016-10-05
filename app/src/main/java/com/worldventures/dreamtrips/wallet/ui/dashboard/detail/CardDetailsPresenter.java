@@ -20,6 +20,7 @@ import com.worldventures.dreamtrips.wallet.domain.entity.card.BankCard;
 import com.worldventures.dreamtrips.wallet.domain.entity.card.Card;
 import com.worldventures.dreamtrips.wallet.service.SmartCardInteractor;
 import com.worldventures.dreamtrips.wallet.service.command.FetchDefaultCardCommand;
+import com.worldventures.dreamtrips.wallet.service.command.GetActiveSmartCardCommand;
 import com.worldventures.dreamtrips.wallet.service.command.SetDefaultCardOnDeviceCommand;
 import com.worldventures.dreamtrips.wallet.service.command.UpdateBankCardCommand;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletPresenter;
@@ -133,11 +134,11 @@ public class CardDetailsPresenter extends WalletPresenter<CardDetailsPresenter.S
    }
 
    public void onDeleteCardClick() {
-      smartCardInteractor.smartCardModifierPipe()
-            .observeSuccessWithReplay()
+      smartCardInteractor.activeSmartCardPipe()
+            .createObservable(new GetActiveSmartCardCommand())
             .compose(bindViewIoToMainComposer())
             .subscribe(command -> {
-               if(command.getResult().connectionStatus().isConnected()) {
+               if(command.action.getResult().connectionStatus().isConnected()) {
                   getView().showDeleteCardDialog();
                } else {
                   getView().showConnectionErrorDialog();
@@ -146,11 +147,11 @@ public class CardDetailsPresenter extends WalletPresenter<CardDetailsPresenter.S
    }
 
    public void editAddress() {
-      smartCardInteractor.smartCardModifierPipe()
-            .observeSuccessWithReplay()
+      smartCardInteractor.activeSmartCardPipe()
+            .createObservable(new GetActiveSmartCardCommand())
             .compose(bindViewIoToMainComposer())
             .subscribe(command -> {
-               if(command.getResult().connectionStatus().isConnected()) {
+               if(command.action.getResult().connectionStatus().isConnected()) {
                   navigator.go(new EditCardDetailsPath(bankCard));
                } else {
                   getView().showConnectionErrorDialog();
@@ -163,11 +164,11 @@ public class CardDetailsPresenter extends WalletPresenter<CardDetailsPresenter.S
    }
 
    public void onSetAsDefaultCard(boolean setDefaultCard) {
-      smartCardInteractor.smartCardModifierPipe()
-            .observeSuccessWithReplay()
+      smartCardInteractor.activeSmartCardPipe()
+            .createObservable(new GetActiveSmartCardCommand())
             .compose(bindViewIoToMainComposer())
             .subscribe(command -> {
-               if (command.getResult().connectionStatus().isConnected()) {
+               if (command.action.getResult().connectionStatus().isConnected()) {
                   if (setDefaultCard) {
                      if (CardUtils.isRealCard(defaultBankCard)) {
                         getView().showDefaultCardDialog(bankCardHelper.bankNameWithCardNumber(defaultBankCard));

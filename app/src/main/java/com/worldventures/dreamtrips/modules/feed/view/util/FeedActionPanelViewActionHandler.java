@@ -43,7 +43,8 @@ public class FeedActionPanelViewActionHandler {
 
          String id = feedItem.getItem().getUid();
          FeedEntityHolder.Type type = feedItem.getType();
-         if (type != FeedEntityHolder.Type.UNDEFINED) {
+         if (type != FeedEntityHolder.Type.UNDEFINED && !feedItem.getItem().isLiked()) {
+            //send this event only if user likes item, if dislikes - skip
             TrackingHelper.sendActionItemFeed(TrackingHelper.ATTRIBUTE_LIKE, id, type);
          }
       });

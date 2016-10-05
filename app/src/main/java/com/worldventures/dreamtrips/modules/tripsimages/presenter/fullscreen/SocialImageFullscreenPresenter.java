@@ -8,7 +8,6 @@ import com.worldventures.dreamtrips.core.navigation.router.Router;
 import com.worldventures.dreamtrips.core.navigation.wrapper.NavigationWrapperFactory;
 import com.worldventures.dreamtrips.core.utils.events.EntityLikedEvent;
 import com.worldventures.dreamtrips.core.utils.events.PhotoDeletedEvent;
-import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.common.model.FlagData;
 import com.worldventures.dreamtrips.modules.common.presenter.delegate.FlagDelegate;
 import com.worldventures.dreamtrips.modules.common.view.custom.tagview.viewgroup.newio.model.PhotoTag;
@@ -26,6 +25,10 @@ import com.worldventures.dreamtrips.modules.tripsimages.api.DeletePhotoTagsComma
 import com.worldventures.dreamtrips.modules.tripsimages.bundle.EditPhotoBundle;
 import com.worldventures.dreamtrips.modules.tripsimages.model.Photo;
 import com.worldventures.dreamtrips.modules.tripsimages.model.TripImagesType;
+import com.worldventures.dreamtrips.modules.tripsimages.service.TripImageDeleteAnalyticsEvent;
+import com.worldventures.dreamtrips.modules.tripsimages.service.TripImageEditAnalyticsEvent;
+import com.worldventures.dreamtrips.modules.tripsimages.service.TripImageFlagAnalyticsEvent;
+import com.worldventures.dreamtrips.modules.tripsimages.service.TripImageLikedAnalyticsEvent;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -111,7 +114,10 @@ public class SocialImageFullscreenPresenter extends SocialFullScreenPresenter<Ph
    public void onEvent(EntityLikedEvent event) {
       photo.syncLikeState(event.getFeedEntity());
       view.setContent(photo);
-      TrackingHelper.like(type, String.valueOf(photo.getFSId()), getAccountUserId());
+
+      if (event.getFeedEntity().isLiked()) {
+         analyticsInteractor.analyticsActionPipe().send(new TripImageLikedAnalyticsEvent(photo.getFSId()));
+      }
    }
 
    @Override
@@ -127,16 +133,24 @@ public class SocialImageFullscreenPresenter extends SocialFullScreenPresenter<Ph
 
    @Override
    public void onEdit() {
-      if (view != null) view.openEdit(new EditPhotoBundle(photo));
+      if (view != null) {
+         analyticsInteractor.analyticsActionPipe().send(new TripImageEditAnalyticsEvent(photo.getFSId()));
+         view.openEdit(new EditPhotoBundle(photo));
+      }
    }
 
    @Override
    public void onFlagAction(Flaggable flaggable) {
+      analyticsInteractor.analyticsActionPipe().send(new TripImageFlagAnalyticsEvent(photo.getFSId()));
       view.showProgress();
       flagDelegate.loadFlags(flaggable, (command, throwable) -> {
          view.hideProgress();
          handleError(command, throwable);
       });
+   }
+
+   public void onDelete() {
+      analyticsInteractor.analyticsActionPipe().send(new TripImageDeleteAnalyticsEvent(photo.getFSId()));
    }
 
    public void onEvent(FeedEntityChangedEvent event) {

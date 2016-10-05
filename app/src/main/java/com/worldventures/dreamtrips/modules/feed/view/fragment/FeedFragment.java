@@ -91,7 +91,6 @@ public class FeedFragment extends RxBaseFragmentWithArgs<FeedPresenter, FeedBund
    @Override
    public void onResume() {
       super.onResume();
-      TrackingHelper.viewActivityFeedScreen();
       getPresenter().refreshFeed();
    }
 

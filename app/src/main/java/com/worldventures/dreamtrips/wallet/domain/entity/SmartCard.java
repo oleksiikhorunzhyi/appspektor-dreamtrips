@@ -73,6 +73,10 @@ public abstract class SmartCard {
    }
 
    public enum ConnectionStatus {
-      CONNECTED, DISCONNECTED, ERROR
+      CONNECTED, DISCONNECTED, ERROR;
+
+      public boolean isConnected() {
+         return this == CONNECTED;
+      }
    }
 }

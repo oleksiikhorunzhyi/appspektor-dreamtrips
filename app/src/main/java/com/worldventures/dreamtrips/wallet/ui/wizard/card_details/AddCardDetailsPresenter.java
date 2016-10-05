@@ -17,16 +17,12 @@ import com.worldventures.dreamtrips.wallet.analytics.WalletAnalyticsCommand;
 import com.worldventures.dreamtrips.wallet.domain.entity.AddressInfo;
 import com.worldventures.dreamtrips.wallet.domain.entity.AddressInfoWithLocale;
 import com.worldventures.dreamtrips.wallet.domain.entity.ImmutableAddressInfoWithLocale;
-import com.worldventures.dreamtrips.wallet.domain.entity.ImmutableRecordIssuerInfo;
-import com.worldventures.dreamtrips.wallet.domain.entity.RecordIssuerInfo;
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCard;
 import com.worldventures.dreamtrips.wallet.domain.entity.card.BankCard;
-import com.worldventures.dreamtrips.wallet.domain.entity.card.ImmutableBankCard;
 import com.worldventures.dreamtrips.wallet.service.SmartCardInteractor;
 import com.worldventures.dreamtrips.wallet.service.command.FetchDefaultCardCommand;
 import com.worldventures.dreamtrips.wallet.service.command.GetDefaultAddressCommand;
 import com.worldventures.dreamtrips.wallet.service.command.SaveCardDetailsDataCommand;
-import com.worldventures.dreamtrips.wallet.service.command.http.FetchRecordIssuerInfoCommand;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletPresenter;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.WalletScreen;
 import com.worldventures.dreamtrips.wallet.ui.common.helper.ErrorHandler;
@@ -56,7 +52,6 @@ public class AddCardDetailsPresenter extends WalletPresenter<AddCardDetailsPrese
    @Inject SmartCardInteractorHelper smartCardInteractorHelper;
 
    private final BankCard bankCard;
-   private RecordIssuerInfo issuerInfo;
 
    public AddCardDetailsPresenter(Context context, Injector injector, BankCard bankCard) {
       super(context, injector);
@@ -74,7 +69,6 @@ public class AddCardDetailsPresenter extends WalletPresenter<AddCardDetailsPrese
       super.onAttachedToWindow();
       trackScreen();
       connectToDefaultCardPipe();
-      connectToRecordIssuerInfoPipe();
       connectToDefaultAddressPipe();
       connectToSaveCardDetailsPipe();
       loadDataFromDevice();
@@ -97,27 +91,6 @@ public class AddCardDetailsPresenter extends WalletPresenter<AddCardDetailsPrese
          getView().defaultPaymentCard(!CardUtils.isRealCard(bankCard));
          getView().setAsDefaultPaymentCardCondition().compose(bindView()).subscribe(this::onSetAsDefaultCard);
       }, bindViewIoToMainComposer());
-   }
-
-   private void connectToRecordIssuerInfoPipe() {
-      smartCardInteractor.recordIssuerInfoPipe()
-            .createObservableResult(new FetchRecordIssuerInfoCommand(bankCardHelper.obtainIin(bankCard.number())))
-            .compose(bindViewIoToMainComposer())
-            .subscribe(ErrorSubscriberWrapper.<FetchRecordIssuerInfoCommand>forView(getView().provideOperationDelegate())
-                  .onNext(command -> recordIssuerInfoLoaded(((FetchRecordIssuerInfoCommand) command).getResult()))
-                  .onFail(ErrorHandler.create(getContext()))
-                  .wrap());
-   }
-
-   private void recordIssuerInfoLoaded(RecordIssuerInfo recordIssuerInfo) {
-      issuerInfo = recordIssuerInfo;
-      getView()
-            .cardBankInfo(bankCardHelper, ImmutableBankCard.copyOf(bankCard)
-                  .withIssuerInfo(ImmutableRecordIssuerInfo.builder()
-                        .bankName(recordIssuerInfo.bankName())
-                        .cardType(recordIssuerInfo.cardType())
-                        .financialService(recordIssuerInfo.financialService())
-                        .build()));
    }
 
    private void connectToDefaultAddressPipe() {
@@ -191,7 +164,7 @@ public class AddCardDetailsPresenter extends WalletPresenter<AddCardDetailsPrese
                   .setManualAddressInfo(addressInfo)
                   .setNickName(nickname)
                   .setCvv(cvv)
-                  .setIssuerInfo(issuerInfo)
+                  .setIssuerInfo(bankCard.issuerInfo())
                   .setUseDefaultAddress(useDefaultAddress)
                   .setSetAsDefaultAddress(setAsDefaultAddress)
                   .setSetAsDefaultCard(setAsDefaultCard)

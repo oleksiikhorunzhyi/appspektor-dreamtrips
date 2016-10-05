@@ -21,7 +21,7 @@ import com.worldventures.dreamtrips.wallet.service.command.SmartCardModifier;
 import com.worldventures.dreamtrips.wallet.service.command.UpdateBankCardCommand;
 import com.worldventures.dreamtrips.wallet.service.command.UpdateCardDetailsDataCommand;
 import com.worldventures.dreamtrips.wallet.service.command.UpdateSmartCardConnectionStatus;
-import com.worldventures.dreamtrips.wallet.service.command.http.FetchRecordIssuerInfoCommand;
+import com.worldventures.dreamtrips.wallet.service.command.http.CreateBankCardCommand;
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -76,7 +76,7 @@ public final class SmartCardInteractor {
    private final ReadActionPipe<CardChargedEvent> chargedEventPipe;
    private final ActionPipe<StartCardRecordingAction> startCardRecordingPipe;
    private final ActionPipe<StopCardRecordingAction> stopCardRecordingPipe;
-   private final ActionPipe<FetchRecordIssuerInfoCommand> recordIssuerInfoPipe;
+   private final ActionPipe<CreateBankCardCommand> recordIssuerInfoPipe;
 
    private final ActionPipe<SetAutoClearSmartCardDelayCommand> autoClearDelayPipe;
    private final ActionPipe<SetDisableDefaultCardDelayCommand> disableDefaultCardPipe;
@@ -113,7 +113,7 @@ public final class SmartCardInteractor {
       startCardRecordingPipe = janet.createPipe(StartCardRecordingAction.class, Schedulers.io());
       stopCardRecordingPipe = janet.createPipe(StopCardRecordingAction.class, Schedulers.io());
 
-      recordIssuerInfoPipe = janet.createPipe(FetchRecordIssuerInfoCommand.class, Schedulers.io());
+      recordIssuerInfoPipe = janet.createPipe(CreateBankCardCommand.class, Schedulers.io());
 
       autoClearDelayPipe = janet.createPipe(SetAutoClearSmartCardDelayCommand.class, Schedulers.io());
       disableDefaultCardPipe = janet.createPipe(SetDisableDefaultCardDelayCommand.class, Schedulers.io());
@@ -207,7 +207,7 @@ public final class SmartCardInteractor {
    }
 
 
-   public ActionPipe<FetchRecordIssuerInfoCommand> recordIssuerInfoPipe() {
+   public ActionPipe<CreateBankCardCommand> bankCardPipe() {
       return recordIssuerInfoPipe;
    }
 

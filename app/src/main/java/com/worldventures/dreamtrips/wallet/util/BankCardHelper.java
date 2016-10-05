@@ -38,9 +38,8 @@ public class BankCardHelper {
       return number.substring(number.length() - 4);
    }
 
-   public static long obtainIin(long cardNumber) {
-      String number = Long.toString(cardNumber);
-      return Long.parseLong(number.substring(0, 6));
+   public static long obtainIin(String swipedCardPan) {
+      return Long.parseLong(swipedCardPan.substring(0, 6));
    }
 
    public String obtainFinancialServiceType(Record.FinancialService financialService) {

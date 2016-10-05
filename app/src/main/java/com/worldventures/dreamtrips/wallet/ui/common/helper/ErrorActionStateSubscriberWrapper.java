@@ -57,8 +57,8 @@ public class ErrorActionStateSubscriberWrapper<T> {
             })
             .onFail((t, throwable) -> {
                final MessageActionHolder<T> failHolder = onFailFactory != null ? onFailFactory.call(throwable) : null;
-               String message = failHolder != null ? failHolder.message.provide(t) : null;
-               view.showError(message, failHolder.action == null ? null : o -> failHolder.action.call(t));
+               if (failHolder == null) return;
+               view.showError(failHolder.message.provide(t), failHolder.action == null ? null : o -> failHolder.action.call(t));
             });
    }
 

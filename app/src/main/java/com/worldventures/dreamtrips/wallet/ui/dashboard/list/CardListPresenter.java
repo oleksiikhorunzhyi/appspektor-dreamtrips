@@ -42,6 +42,7 @@ import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
 
+import io.techery.janet.smartcard.exception.NotConnectedException;
 import rx.Observable;
 import timber.log.Timber;
 
@@ -191,13 +192,17 @@ public class CardListPresenter extends WalletPresenter<CardListPresenter.Screen,
    }
 
    private void observeChanges() {
+      ErrorHandler errorHandler = ErrorHandler.builder(getContext())
+            .ignore(NotConnectedException.class)
+            .build();
+
       smartCardInteractor.cardStacksPipe()
             .observe()
             .compose(bindViewIoToMainComposer())
             //TODO check for progress, f.e. swipe refresh
             .subscribe(ErrorActionStateSubscriberWrapper.<CardStacksCommand>forView(getView().provideOperationDelegate())
                   .onSuccess(command -> cardsLoaded(command.getResult()))
-                  .onFail(ErrorHandler.create(getContext()))
+                  .onFail(errorHandler)
                   .wrap());
    }
 

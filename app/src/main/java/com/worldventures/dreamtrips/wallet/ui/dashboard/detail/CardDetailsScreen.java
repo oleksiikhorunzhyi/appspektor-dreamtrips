@@ -105,6 +105,17 @@ public class CardDetailsScreen extends WalletLinearLayout<CardDetailsPresenter.S
    }
 
    @Override
+   public void showConnectionErrorDialog() {
+      new MaterialDialog.Builder(getContext())
+            .title(R.string.wallet_smartcard_disconnected_label)
+            .content(R.string.wallet_smartcard_connection_try_description)
+            .positiveText(R.string.ok)
+            .onPositive((dialog, which) -> dialog.cancel())
+            .build()
+            .show();
+   }
+
+   @Override
    public Observable<Boolean> setAsDefaultPaymentCardCondition() {
       return setAsDefaultCardObservable;
    }

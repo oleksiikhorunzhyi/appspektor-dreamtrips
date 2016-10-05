@@ -16,6 +16,7 @@ import com.worldventures.dreamtrips.wallet.analytics.PaycardAnalyticsCommand;
 import com.worldventures.dreamtrips.wallet.analytics.WalletAnalyticsCommand;
 import com.worldventures.dreamtrips.wallet.domain.entity.AddressInfoWithLocale;
 import com.worldventures.dreamtrips.wallet.domain.entity.ImmutableAddressInfoWithLocale;
+import com.worldventures.dreamtrips.wallet.domain.entity.SmartCard;
 import com.worldventures.dreamtrips.wallet.domain.entity.card.BankCard;
 import com.worldventures.dreamtrips.wallet.domain.entity.card.Card;
 import com.worldventures.dreamtrips.wallet.service.SmartCardInteractor;
@@ -129,11 +130,29 @@ public class CardDetailsPresenter extends WalletPresenter<CardDetailsPresenter.S
    }
 
    public void onDeleteCardClick() {
-      getView().showDeleteCardDialog();
+      smartCardInteractor.smartCardModifierPipe()
+            .observeSuccessWithReplay()
+            .compose(bindViewIoToMainComposer())
+            .subscribe(command -> {
+               if(command.getResult().connectionStatus() == SmartCard.ConnectionStatus.CONNECTED) {
+                  getView().showDeleteCardDialog();
+               } else {
+                  getView().showConnectionErrorDialog();
+               }
+            });
    }
 
    public void editAddress() {
-      navigator.go(new EditCardDetailsPath(bankCard));
+      smartCardInteractor.smartCardModifierPipe()
+            .observeSuccessWithReplay()
+            .compose(bindViewIoToMainComposer())
+            .subscribe(command -> {
+               if(command.getResult().connectionStatus() == SmartCard.ConnectionStatus.CONNECTED) {
+                  navigator.go(new EditCardDetailsPath(bankCard));
+               } else {
+                  getView().showConnectionErrorDialog();
+               }
+            });
    }
 
    public void onDeleteCardConfirmed() {
@@ -195,6 +214,8 @@ public class CardDetailsPresenter extends WalletPresenter<CardDetailsPresenter.S
       void showDefaultCardDialog(@NonNull String bankCardName);
 
       void showDeleteCardDialog();
+
+      void showConnectionErrorDialog();
 
       void setDefaultCardCondition(boolean defaultCard);
 

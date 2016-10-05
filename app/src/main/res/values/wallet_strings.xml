@@ -230,4 +230,5 @@
    <!--smart card connection-->
    <string name="wallet_smartcard_connected_label">SmartCard is connected</string>
    <string name="wallet_smartcard_disconnected_label">SmartCard is disconnected</string>
+   <string name="wallet_smartcard_connection_try_description">Connect SmartCard and try again.</string>
 </resources>

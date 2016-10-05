@@ -54,6 +54,7 @@ public class WizardWelcomeScreen extends WalletLinearLayout<WizardWelcomePresent
       super.onFinishInflate();
       supportConnectionStatusLabel(false);
       toolbar.setNavigationOnClickListener(v -> getPresenter().backButtonClicked());
+      content.setVisibility(INVISIBLE);
    }
 
    @Override

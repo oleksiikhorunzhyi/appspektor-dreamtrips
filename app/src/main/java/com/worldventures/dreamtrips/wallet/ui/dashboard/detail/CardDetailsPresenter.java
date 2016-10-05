@@ -135,10 +135,10 @@ public class CardDetailsPresenter extends WalletPresenter<CardDetailsPresenter.S
 
    public void onDeleteCardClick() {
       smartCardInteractor.activeSmartCardPipe()
-            .createObservable(new GetActiveSmartCardCommand())
+            .createObservableResult(new GetActiveSmartCardCommand())
             .compose(bindViewIoToMainComposer())
             .subscribe(command -> {
-               if(command.action.getResult().connectionStatus().isConnected()) {
+               if(command.getResult().connectionStatus().isConnected()) {
                   getView().showDeleteCardDialog();
                } else {
                   getView().showConnectionErrorDialog();
@@ -148,10 +148,10 @@ public class CardDetailsPresenter extends WalletPresenter<CardDetailsPresenter.S
 
    public void editAddress() {
       smartCardInteractor.activeSmartCardPipe()
-            .createObservable(new GetActiveSmartCardCommand())
+            .createObservableResult(new GetActiveSmartCardCommand())
             .compose(bindViewIoToMainComposer())
             .subscribe(command -> {
-               if(command.action.getResult().connectionStatus().isConnected()) {
+               if(command.getResult().connectionStatus().isConnected()) {
                   navigator.go(new EditCardDetailsPath(bankCard));
                } else {
                   getView().showConnectionErrorDialog();
@@ -165,10 +165,10 @@ public class CardDetailsPresenter extends WalletPresenter<CardDetailsPresenter.S
 
    public void onSetAsDefaultCard(boolean setDefaultCard) {
       smartCardInteractor.activeSmartCardPipe()
-            .createObservable(new GetActiveSmartCardCommand())
+            .createObservableResult(new GetActiveSmartCardCommand())
             .compose(bindViewIoToMainComposer())
             .subscribe(command -> {
-               if (command.action.getResult().connectionStatus().isConnected()) {
+               if (command.getResult().connectionStatus().isConnected()) {
                   if (setDefaultCard) {
                      if (CardUtils.isRealCard(defaultBankCard)) {
                         getView().showDefaultCardDialog(bankCardHelper.bankNameWithCardNumber(defaultBankCard));

@@ -3,6 +3,7 @@ package com.worldventures.dreamtrips.wallet.ui.dashboard.detail;
 import android.content.Context;
 import android.os.Parcelable;
 import android.support.annotation.NonNull;
+import android.text.TextUtils;
 
 import com.techery.spares.module.Injector;
 import com.worldventures.dreamtrips.R;
@@ -46,6 +47,7 @@ public class CardDetailsPresenter extends WalletPresenter<CardDetailsPresenter.S
    @Inject BankCardHelper bankCardHelper;
 
    private final BankCard bankCard;
+   private boolean cardDeleted = false;
 
    public CardDetailsPresenter(Context context, Injector injector, BankCard bankCard) {
       super(context, injector);
@@ -66,6 +68,16 @@ public class CardDetailsPresenter extends WalletPresenter<CardDetailsPresenter.S
       connectToDeleteCardPipe();
       connectToSetDefaultCardIdPipe();
    }
+
+   @Override
+   public void detachView(boolean retainInstance) {
+      if (!cardDeleted && !TextUtils.equals(getView().getUpdateNickname(), bankCard.title())) {
+         nicknameUpdated(getView().getUpdateNickname());
+      }
+
+      super.detachView(retainInstance);
+   }
+
 
    private void trackScreen() {
       analyticsInteractor.paycardAnalyticsCommandPipe()
@@ -90,7 +102,10 @@ public class CardDetailsPresenter extends WalletPresenter<CardDetailsPresenter.S
             .compose(bindViewIoToMainComposer())
             .compose(new ActionPipeCacheWiper<>(smartCardInteractor.deleteCardPipe()))
             .subscribe(OperationActionStateSubscriberWrapper.<DeleteRecordAction>forView(getView().provideOperationDelegate())
-                  .onSuccess(deleteRecordAction -> navigator.goBack())
+                  .onSuccess(deleteRecordAction -> {
+                     cardDeleted = true;
+                     navigator.goBack();
+                  })
                   .onFail(getContext().getString(R.string.error_something_went_wrong))
                   .wrap());
    }
@@ -184,6 +199,8 @@ public class CardDetailsPresenter extends WalletPresenter<CardDetailsPresenter.S
       void setDefaultCardCondition(boolean defaultCard);
 
       Observable<Boolean> setAsDefaultPaymentCardCondition();
+
+      String getUpdateNickname();
    }
 
 }

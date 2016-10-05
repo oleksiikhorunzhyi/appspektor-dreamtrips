@@ -129,8 +129,9 @@ public class CardListCommand extends Command<List<Card>> implements InjectableAc
 
       @Override
       public Observable<List<Card>> call(List<Card> cards) {
-         cards.set(cards.indexOf(Queryable.from(cards)
-               .firstOrDefault(element -> element.id().equals(card.id()))), card);
+         Card cardInStack = Queryable.from(cards).firstOrDefault(element -> element.id().equals(card.id()));
+         int position = cardInStack == null? -1 : cards.indexOf(cardInStack);
+         if (position != -1) cards.set(position, card);
          return Observable.just(cards);
       }
    }

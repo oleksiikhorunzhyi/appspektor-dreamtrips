@@ -5,9 +5,11 @@ import android.support.annotation.NonNull;
 import android.support.v7.widget.SwitchCompat;
 import android.support.v7.widget.Toolbar;
 import android.util.AttributeSet;
+import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.jakewharton.rxbinding.widget.RxCompoundButton;
+import com.worldventures.dreamtrips.BuildConfig;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.modules.common.view.custom.BadgeView;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletLinearLayout;
@@ -26,22 +28,17 @@ public class WalletSettingsScreen extends WalletLinearLayout<WalletSettingsPrese
    @InjectView(R.id.stealth_mode_switcher) SwitchCompat stealthModeSwitcher;
    @InjectView(R.id.lock_switcher) SwitchCompat lockSwitcher;
    @InjectView(R.id.test_connection_switcher) SwitchCompat testConnectionSwitcher;
-   @InjectView(R.id.test_new_firmware_available) SwitchCompat testNewFirmwareAvailableSwitcher;
-   @InjectView(R.id.test_firmware_is_compatible) SwitchCompat testFirmwareIsCompatibleSwitcher;
-   @InjectView(R.id.test_firmware_is_enough_space) SwitchCompat testEnoughSpaceForFirmwareSwitcher;
    @InjectView(R.id.test_firmware_is_fail_install) SwitchCompat testFailInstallFirmwareSwitcher;
 
    @InjectView(R.id.badgeFirmwareUpdates) BadgeView badgeFirmwareUpdates;
    @InjectView(R.id.disable_default_payment_card_label) TextView disableDefaultPaymentCardAfterLabel;
    @InjectView(R.id.auto_delete_cards_labels) TextView autoDeleteCardLabel;
    @InjectView(R.id.firmware_version_label) TextView firmwareVersionLabel;
+   @InjectView(R.id.settings_section) ViewGroup settingsSection;
 
    private Observable<Boolean> stealthModeSwitcherObservable;
    private Observable<Boolean> lockSwitcherObservable;
    private Observable<Boolean> testConnectionObservable;
-   private Observable<Boolean> testNewFirmwareAvailableObservable;
-   private Observable<Boolean> testFirmwareIsCompatibleObservable;
-   private Observable<Boolean> testEnoughSpaceObservable;
    private Observable<Boolean> testFailInstallationObservable;
 
    private final AutoClearSmartCardItemProvider autoClearSmartCardItemProvider = new AutoClearSmartCardItemProvider();
@@ -63,10 +60,8 @@ public class WalletSettingsScreen extends WalletLinearLayout<WalletSettingsPrese
       lockSwitcherObservable = RxCompoundButton.checkedChanges(lockSwitcher);
       stealthModeSwitcherObservable = RxCompoundButton.checkedChanges(stealthModeSwitcher);
       testConnectionObservable = RxCompoundButton.checkedChanges(testConnectionSwitcher);
-      testNewFirmwareAvailableObservable = RxCompoundButton.checkedChanges(testNewFirmwareAvailableSwitcher);
-      testFirmwareIsCompatibleObservable = RxCompoundButton.checkedChanges(testFirmwareIsCompatibleSwitcher);
-      testEnoughSpaceObservable = RxCompoundButton.checkedChanges(testEnoughSpaceForFirmwareSwitcher);
       testFailInstallationObservable = RxCompoundButton.checkedChanges(testFailInstallFirmwareSwitcher);
+      if (!BuildConfig.DEBUG) settingsSection.setVisibility(GONE);
    }
 
    @NonNull
@@ -140,21 +135,6 @@ public class WalletSettingsScreen extends WalletLinearLayout<WalletSettingsPrese
    }
 
    @Override
-   public void testNewFirmwareAvailable(boolean available) {
-      testNewFirmwareAvailableSwitcher.setChecked(available);
-   }
-
-   @Override
-   public void testFirmwareIsCompatible(boolean compatible) {
-      testFirmwareIsCompatibleSwitcher.setChecked(compatible);
-   }
-
-   @Override
-   public void testEnoughSpaceForFirmware(boolean compatible) {
-      testEnoughSpaceForFirmwareSwitcher.setChecked(compatible);
-   }
-
-   @Override
    public void testFailInstallation(boolean failInstall) {
       testFailInstallFirmwareSwitcher.setChecked(failInstall);
    }
@@ -172,21 +152,6 @@ public class WalletSettingsScreen extends WalletLinearLayout<WalletSettingsPrese
    @Override
    public Observable<Boolean> testConnection() {
       return testConnectionObservable;
-   }
-
-   @Override
-   public Observable<Boolean> testNewFirmwareAvailable() {
-      return testNewFirmwareAvailableObservable;
-   }
-
-   @Override
-   public Observable<Boolean> testFirmwareIsCompatible() {
-      return testFirmwareIsCompatibleObservable;
-   }
-
-   @Override
-   public Observable<Boolean> testEnoughSpaceForFirmware() {
-      return testEnoughSpaceObservable;
    }
 
    @Override

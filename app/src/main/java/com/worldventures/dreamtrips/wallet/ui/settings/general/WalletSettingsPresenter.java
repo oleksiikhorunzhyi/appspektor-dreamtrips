@@ -51,19 +51,13 @@ public class WalletSettingsPresenter extends WalletPresenter<WalletSettingsPrese
    @Override
    public void attachView(Screen view) {
       super.attachView(view);
-      view.testNewFirmwareAvailable(temporaryStorage.newFirmwareIsAvailable());
-      view.testFirmwareIsCompatible(temporaryStorage.firmwareIsCompatible());
-      view.testEnoughSpaceForFirmware(temporaryStorage.enoughSpaceForFirmware());
       view.testFailInstallation(temporaryStorage.failInstall());
 
       observeSmartCardChanges();
 
       observeStealthModeController(view);
       observeLockController(view);
-      observeFirmwareAvailableController(view);
-      observeFirmwareCompatibleController(view);
 
-      observeEnoughSpace(view);
       observeFailInstallation(view);
       observeConnectionController(view);
       observeFirmwareUpdates();
@@ -138,29 +132,6 @@ public class WalletSettingsPresenter extends WalletPresenter<WalletSettingsPrese
             .subscribe(this::manageConnection);
    }
 
-   private void observeFirmwareAvailableController(Screen view) {
-      view.testNewFirmwareAvailable()
-            .compose(bindView())
-            .skip(1)
-            .filter(available -> temporaryStorage.newFirmwareIsAvailable() != available)
-            .subscribe(this::changeFirmwareUpdates);
-   }
-
-   private void observeFirmwareCompatibleController(Screen view) {
-      view.testFirmwareIsCompatible()
-            .compose(bindView())
-            .skip(1)
-            .filter(compatible -> temporaryStorage.firmwareIsCompatible() != compatible)
-            .subscribe(this::changeFirmwareIsCompatible);
-   }
-
-   private void observeEnoughSpace(Screen view) {
-      view.testEnoughSpaceForFirmware()
-            .compose(bindView())
-            .skip(1)
-            .filter(compatible -> temporaryStorage.enoughSpaceForFirmware() != compatible)
-            .subscribe(this::changeEnoughSpace);
-   }
 
    private void observeFailInstallation(Screen view) {
       view.testFailInstallation()
@@ -229,27 +200,6 @@ public class WalletSettingsPresenter extends WalletPresenter<WalletSettingsPrese
    }
 
    // for test and demo
-   private void changeFirmwareUpdates(boolean available) {
-      temporaryStorage.newFirmwareIsAvailable(available);
-      //for ui will updated
-      firmwareInteractor.firmwareInfoPipe().send(new FetchFirmwareInfoCommand());
-   }
-
-   // for test and demo
-   private void changeFirmwareIsCompatible(boolean compatible) {
-      temporaryStorage.firmwareIsCompatible(compatible);
-      //for ui will updated
-      firmwareInteractor.firmwareInfoPipe().send(new FetchFirmwareInfoCommand());
-   }
-
-   // for test and demo
-   private void changeEnoughSpace(boolean enoughSpace) {
-      temporaryStorage.enoughSpaceForFirmware(enoughSpace);
-      //for ui will updated
-      firmwareInteractor.firmwareInfoPipe().send(new FetchFirmwareInfoCommand());
-   }
-
-   // for test and demo
    private void changeFailInstallation(boolean failInstallation) {
       temporaryStorage.failInstall(failInstallation);
    }
@@ -292,12 +242,6 @@ public class WalletSettingsPresenter extends WalletPresenter<WalletSettingsPrese
 
       void firmwareVersion(String version);
 
-      void testNewFirmwareAvailable(boolean available);
-
-      void testFirmwareIsCompatible(boolean compatible);
-
-      void testEnoughSpaceForFirmware(boolean compatible);
-
       void testFailInstallation(boolean failInstall);
 
       Observable<Boolean> stealthModeStatus();
@@ -305,12 +249,6 @@ public class WalletSettingsPresenter extends WalletPresenter<WalletSettingsPrese
       Observable<Boolean> lockStatus();
 
       Observable<Boolean> testConnection();
-
-      Observable<Boolean> testNewFirmwareAvailable();
-
-      Observable<Boolean> testFirmwareIsCompatible();
-
-      Observable<Boolean> testEnoughSpaceForFirmware();
 
       Observable<Boolean> testFailInstallation();
 

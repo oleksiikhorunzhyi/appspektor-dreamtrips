@@ -101,7 +101,7 @@ public class WalletNewFirmwareAvailablePresenter extends WalletPresenter<WalletN
    }
 
    private boolean checkStorageAvailability(File file) {
-      long availableBytes = getAvailableBytes(file, temporaryStorage);
+      long availableBytes = getAvailableBytes(file);
       boolean enoughSpace = availableBytes > firmwareInfo.fileSize();
       if (!enoughSpace) {
          getView().insufficientSpace(firmwareInfo.fileSize() - availableBytes);

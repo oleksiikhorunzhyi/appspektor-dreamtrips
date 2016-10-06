@@ -81,7 +81,7 @@ public class CardDetailsPresenter extends WalletPresenter<CardDetailsPresenter.S
 
    private void trackScreen() {
       analyticsInteractor.paycardAnalyticsCommandPipe()
-            .send(new PaycardAnalyticsCommand(new CardDetailsAction(), bankCard));
+            .send(new PaycardAnalyticsCommand(new CardDetailsAction(bankCard.title()), bankCard));
    }
 
    private void connectToDefaultCardPipe() {

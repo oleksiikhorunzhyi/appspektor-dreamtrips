@@ -37,8 +37,10 @@ import com.worldventures.dreamtrips.modules.friends.janet.AddFriendCommand;
 import com.worldventures.dreamtrips.modules.friends.janet.DeleteFriendRequestCommand;
 import com.worldventures.dreamtrips.modules.friends.janet.RemoveFriendCommand;
 import com.worldventures.dreamtrips.modules.membership.command.GetPodcastsCommand;
-import com.worldventures.dreamtrips.modules.profile.command.GetPrivateProfileCommand;
-import com.worldventures.dreamtrips.modules.profile.command.GetPublicProfileCommand;
+import com.worldventures.dreamtrips.modules.profile.service.command.GetPrivateProfileCommand;
+import com.worldventures.dreamtrips.modules.profile.service.command.GetPublicProfileCommand;
+import com.worldventures.dreamtrips.modules.profile.service.command.UploadAvatarCommand;
+import com.worldventures.dreamtrips.modules.profile.service.command.UploadBackgroundCommand;
 import com.worldventures.dreamtrips.modules.settings.command.SettingsCommand;
 import com.worldventures.dreamtrips.modules.trips.command.GetActivitiesCommand;
 import com.worldventures.dreamtrips.modules.trips.command.GetRegionsCommand;
@@ -103,6 +105,8 @@ import dagger.Module;
       ResetCachedEntitiesInProgressCommand.class,
       LogoutCommand.class,
       GetPrivateProfileCommand.class,
+      UploadAvatarCommand.class,
+      UploadBackgroundCommand.class,
       GetPublicProfileCommand.class,
 }, complete = false, library = true)
 public class SocialJanetCommandModule {}

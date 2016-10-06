@@ -36,13 +36,10 @@ import retrofit.http.DELETE;
 import retrofit.http.Field;
 import retrofit.http.FormUrlEncoded;
 import retrofit.http.GET;
-import retrofit.http.Multipart;
 import retrofit.http.POST;
 import retrofit.http.PUT;
-import retrofit.http.Part;
 import retrofit.http.Path;
 import retrofit.http.Query;
-import retrofit.mime.TypedFile;
 
 import static com.worldventures.dreamtrips.modules.infopages.api.SendFeedbackCommand.FeedbackBody;
 
@@ -52,16 +49,6 @@ public interface DreamTripsApi {
    String TYPE_MEMBER_360 = "DTAPP360";
    String TYPE_REP = "dtapprep";
    String TYPE_HELP = "DTAPPHELP";
-
-   @POST("/api/profile/avatar")
-   @Multipart
-   User uploadAvatar(@Part("avatar") TypedFile image);
-
-   @POST("/api/profile/background_photo")
-   @Multipart
-   User uploadBackgroundPhoto(@Part("background_photo") TypedFile image);
-
-    /* *** PHOTOS *****************************/
 
    /**
     * Photo of all members

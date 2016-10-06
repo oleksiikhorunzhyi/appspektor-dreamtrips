@@ -20,6 +20,7 @@ import com.worldventures.dreamtrips.wallet.domain.entity.card.BankCard;
 import com.worldventures.dreamtrips.wallet.domain.entity.card.Card;
 import com.worldventures.dreamtrips.wallet.service.SmartCardInteractor;
 import com.worldventures.dreamtrips.wallet.service.command.FetchDefaultCardCommand;
+import com.worldventures.dreamtrips.wallet.service.command.GetActiveSmartCardCommand;
 import com.worldventures.dreamtrips.wallet.service.command.SetDefaultCardOnDeviceCommand;
 import com.worldventures.dreamtrips.wallet.service.command.UpdateBankCardCommand;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletPresenter;
@@ -47,6 +48,7 @@ public class CardDetailsPresenter extends WalletPresenter<CardDetailsPresenter.S
    @Inject BankCardHelper bankCardHelper;
 
    private final BankCard bankCard;
+   private BankCard defaultBankCard;
    private boolean cardDeleted = false;
 
    public CardDetailsPresenter(Context context, Injector injector, BankCard bankCard) {
@@ -90,8 +92,11 @@ public class CardDetailsPresenter extends WalletPresenter<CardDetailsPresenter.S
             .map(Command::getResult)
             .compose(bindViewIoToMainComposer())
             .subscribe(defaultBankCard -> {
+               this.defaultBankCard = defaultBankCard;
                getView().setDefaultCardCondition(CardUtils.equals(defaultBankCard, bankCard));
-               getView().setAsDefaultPaymentCardCondition().compose(bindView()).subscribe(this::onSetAsDefaultCard);
+               getView().setAsDefaultPaymentCardCondition()
+                     .compose(bindView())
+                     .subscribe(this::onSetAsDefaultCard);
             });
    }
 
@@ -129,11 +134,29 @@ public class CardDetailsPresenter extends WalletPresenter<CardDetailsPresenter.S
    }
 
    public void onDeleteCardClick() {
-      getView().showDeleteCardDialog();
+      smartCardInteractor.activeSmartCardPipe()
+            .createObservableResult(new GetActiveSmartCardCommand())
+            .compose(bindViewIoToMainComposer())
+            .subscribe(command -> {
+               if(command.getResult().connectionStatus().isConnected()) {
+                  getView().showDeleteCardDialog();
+               } else {
+                  getView().showConnectionErrorDialog();
+               }
+            });
    }
 
    public void editAddress() {
-      navigator.go(new EditCardDetailsPath(bankCard));
+      smartCardInteractor.activeSmartCardPipe()
+            .createObservableResult(new GetActiveSmartCardCommand())
+            .compose(bindViewIoToMainComposer())
+            .subscribe(command -> {
+               if(command.getResult().connectionStatus().isConnected()) {
+                  navigator.go(new EditCardDetailsPath(bankCard));
+               } else {
+                  getView().showConnectionErrorDialog();
+               }
+            });
    }
 
    public void onDeleteCardConfirmed() {
@@ -141,26 +164,34 @@ public class CardDetailsPresenter extends WalletPresenter<CardDetailsPresenter.S
    }
 
    public void onSetAsDefaultCard(boolean setDefaultCard) {
-      smartCardInteractor.fetchDefaultCardCommandPipe()
-            .createObservableResult(new FetchDefaultCardCommand())
+      smartCardInteractor.activeSmartCardPipe()
+            .createObservableResult(new GetActiveSmartCardCommand())
             .compose(bindViewIoToMainComposer())
-            .map(Command::getResult)
-            .subscribe(defaultCard -> {
-               if (setDefaultCard) {
-                  if (CardUtils.isRealCard(defaultCard)) {
-                     getView().showDefaultCardDialog(bankCardHelper.bankNameWithCardNumber(defaultCard));
-                  } else {
-                     trackSetAsDefault();
-                     smartCardInteractor.setDefaultCardOnDeviceCommandPipe()
-                           .send(new SetDefaultCardOnDeviceCommand(bankCard.id()));
-                  }
+            .subscribe(command -> {
+               if (command.getResult().connectionStatus().isConnected()) {
+                  executeSetDefaultCard(setDefaultCard);
                } else {
-                  if (CardUtils.equals(defaultCard, bankCard)) {
-                     smartCardInteractor.setDefaultCardOnDeviceCommandPipe()
-                           .send(new SetDefaultCardOnDeviceCommand(Card.NO_ID));
-                  }
+                  getView().setDefaultCardCondition(CardUtils.equals(defaultBankCard, bankCard));
+                  getView().showConnectionErrorDialog();
                }
             });
+   }
+
+   private void executeSetDefaultCard(boolean setDefaultCard) {
+      if (setDefaultCard) {
+         if (CardUtils.isRealCard(defaultBankCard)) {
+            getView().showDefaultCardDialog(bankCardHelper.bankNameWithCardNumber(defaultBankCard));
+         } else {
+            trackSetAsDefault();
+            smartCardInteractor.setDefaultCardOnDeviceCommandPipe()
+                  .send(new SetDefaultCardOnDeviceCommand(bankCard.id()));
+         }
+      } else {
+         if (CardUtils.equals(defaultBankCard, bankCard)) {
+            smartCardInteractor.setDefaultCardOnDeviceCommandPipe()
+                  .send(new SetDefaultCardOnDeviceCommand(Card.NO_ID));
+         }
+      }
    }
 
    public void defaultCardDialogConfirmed(boolean confirmed) {
@@ -195,6 +226,8 @@ public class CardDetailsPresenter extends WalletPresenter<CardDetailsPresenter.S
       void showDefaultCardDialog(@NonNull String bankCardName);
 
       void showDeleteCardDialog();
+
+      void showConnectionErrorDialog();
 
       void setDefaultCardCondition(boolean defaultCard);
 

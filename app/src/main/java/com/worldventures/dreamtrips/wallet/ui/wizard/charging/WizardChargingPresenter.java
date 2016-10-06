@@ -21,6 +21,7 @@ import com.worldventures.dreamtrips.wallet.ui.common.helper.OperationActionState
 import com.worldventures.dreamtrips.wallet.ui.common.navigation.Navigator;
 import com.worldventures.dreamtrips.wallet.ui.wizard.card_details.AddCardDetailsPath;
 
+import java.net.UnknownHostException;
 import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
@@ -28,6 +29,7 @@ import javax.inject.Inject;
 import io.techery.janet.smartcard.action.charger.StartCardRecordingAction;
 import io.techery.janet.smartcard.action.charger.StopCardRecordingAction;
 import io.techery.janet.smartcard.event.CardChargedEvent;
+import io.techery.janet.smartcard.exception.NotConnectedException;
 import io.techery.janet.smartcard.model.Card;
 
 public class WizardChargingPresenter extends WalletPresenter<WizardChargingPresenter.Screen, Parcelable> {
@@ -49,14 +51,18 @@ public class WizardChargingPresenter extends WalletPresenter<WizardChargingPrese
    }
 
    private void observeCharger() {
+      ErrorHandler cardRecordingErrorHandler = addErrorHandling(ErrorHandler.<StartCardRecordingAction>builder(getContext()))
+            .build();
       smartCardInteractor.startCardRecordingPipe()
             .createObservable(new StartCardRecordingAction())
             .compose(bindViewIoToMainComposer())
             .subscribe(ErrorActionStateSubscriberWrapper.<StartCardRecordingAction>forView(getView().provideOperationDelegate())
-                  .onFail(ErrorHandler.create(getContext()))
+                  .onFail(cardRecordingErrorHandler::call)
                   .wrap());
 
-      //TODO implement chain with CreateBankCardCommand, and differ `no card connection` and `no internet connection` errors in analytics
+      ErrorHandler chargedEventErrorHandler = addErrorHandling(ErrorHandler.<CardChargedEvent>builder(getContext())
+            .defaultMessage(R.string.wallet_wizard_charging_swipe_error))
+            .build();
       smartCardInteractor.chargedEventPipe()
             .observe()
             .delay(2, TimeUnit.SECONDS) // // TODO: 9/16/16 for demo mock device
@@ -64,22 +70,31 @@ public class WizardChargingPresenter extends WalletPresenter<WizardChargingPrese
             .compose(new ActionPipeCacheWiper<>(smartCardInteractor.chargedEventPipe()))
             .subscribe(OperationActionStateSubscriberWrapper.<CardChargedEvent>forView(getView().provideOperationDelegate())
                   .onSuccess(event -> cardSwiped(event.card))
-                  .onFail(ErrorHandler.<CardChargedEvent>builder(getContext())
-                        .defaultMessage(R.string.wallet_wizard_charging_swipe_error)
-                        .defaultAction(cardChargedEvent -> analyticsInteractor.walletAnalyticsCommandPipe()
-                              .send(new WalletAnalyticsCommand(FailedToAddCardAction.noCardConnection()))
-                        ).build())
+                  .onFail(chargedEventErrorHandler::call)
                   .wrap());
    }
 
    private void observeBankCardCreation() {
+      ErrorHandler<CreateBankCardCommand> errorHandler = addErrorHandling(ErrorHandler.builder(getContext())).build();
       smartCardInteractor.bankCardPipe()
             .observe()
             .compose(bindViewIoToMainComposer())
             .subscribe(OperationActionStateSubscriberWrapper.<CreateBankCardCommand>forView(getView().provideOperationDelegate())
-                  .onFail(ErrorHandler.create(getContext()))
+                  .onFail(errorHandler::call)
                   .onSuccess(command -> bankCardCreated(command.getResult()))
                   .wrap());
+   }
+
+   private <T> ErrorHandler.Builder addErrorHandling(ErrorHandler.Builder<T> builder) {
+      builder.handle(NotConnectedException.class, t -> {
+         analyticsInteractor.walletAnalyticsCommandPipe()
+               .send(new WalletAnalyticsCommand(FailedToAddCardAction.noCardConnection()));
+      }).handle(UnknownHostException.class, t -> {
+         analyticsInteractor.walletAnalyticsCommandPipe()
+               .send(new WalletAnalyticsCommand(FailedToAddCardAction.noNetworkConnection()));
+      });
+
+      return builder;
    }
 
    private void trackScreen() {

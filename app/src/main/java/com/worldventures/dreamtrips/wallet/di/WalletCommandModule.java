@@ -37,6 +37,7 @@ import com.worldventures.dreamtrips.wallet.service.command.http.AssociateCardUse
 import com.worldventures.dreamtrips.wallet.service.command.http.FetchFirmwareInfoCommand;
 import com.worldventures.dreamtrips.wallet.service.command.http.CreateBankCardCommand;
 import com.worldventures.dreamtrips.wallet.service.command.http.FetchTermsAndConditionsCommand;
+import com.worldventures.dreamtrips.wallet.service.command.wizard.WizardCheckCommand;
 
 import dagger.Module;
 
@@ -55,6 +56,7 @@ import dagger.Module;
             ActivateSmartCardCommand.class,
             CreateAndConnectToCardCommand.class,
             CardCountCommand.class,
+            WizardCheckCommand.class,
             GetDefaultAddressCommand.class,
             SaveCardDetailsDataCommand.class,
             SetupDefaultAddressCommand.class,

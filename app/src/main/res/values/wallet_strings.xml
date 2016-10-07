@@ -218,6 +218,15 @@
    <string name="wallet_firmware_install_success_title">Update Successful</string>
    <string name="wallet_firmware_install_success_action_button">Done</string>
 
+   <!--wizard checks-->
+   <string name="wallet_wizard_checks_header">Welcome to flyeTM SmartCard set up! Before we begin, check if the following conditions are met:</string>
+   <string name="wallet_wizard_checks_title">flye SmartCard</string>
+   <string name="wallet_wizard_checks_bluetooth_is_not_supported">Bluetooth Low Energy is not supported on this device</string>
+   <string name="wallet_wizard_checks_bluetooth_not_enable">Bluetooth is not enabled</string>
+   <string name="wallet_wizard_checks_bluetooth_enable">Bluetooth is enabled</string>
+   <string name="wallet_wizard_checks_network_not_available">You are not connected to the Internet</string>
+   <string name="wallet_wizard_checks_network_available">You are connected to the Internet</string>
+
    <!--pre installation check-->
    <string name="wallet_firmware_pre_installation_title">flye SmartCard Update</string>
    <string name="wallet_firmware_pre_installation_header">To install the update\nPlease do the following:</string>

@@ -5,8 +5,10 @@ import android.content.Context;
 import com.techery.spares.module.qualifier.ForApplication;
 import com.worldventures.dreamtrips.wallet.service.FirmwareInteractor;
 import com.worldventures.dreamtrips.wallet.service.WalletBluetoothService;
+import com.worldventures.dreamtrips.wallet.service.WalletNetworkService;
 import com.worldventures.dreamtrips.wallet.service.WizardInteractor;
 import com.worldventures.dreamtrips.wallet.service.impl.AndroidBleService;
+import com.worldventures.dreamtrips.wallet.service.impl.AndroidNetworkManager;
 
 import javax.inject.Named;
 import javax.inject.Singleton;
@@ -24,6 +26,12 @@ public class WalletServiceModule {
    @Provides
    WalletBluetoothService walletBluetoothService(@ForApplication Context appContext) {
       return new AndroidBleService(appContext);
+   }
+
+   @Singleton
+   @Provides
+   WalletNetworkService walletNetworkService(@ForApplication Context appContext) {
+      return new AndroidNetworkManager(appContext);
    }
 
    @Singleton

@@ -5,8 +5,10 @@ import android.content.res.TypedArray;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffColorFilter;
 import android.graphics.drawable.Drawable;
+import android.os.Build;
 import android.support.annotation.DrawableRes;
 import android.support.annotation.Nullable;
+import android.support.annotation.StringRes;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.AppCompatDrawableManager;
 import android.util.AttributeSet;
@@ -76,13 +78,17 @@ public class WalletCheckWidget extends RelativeLayout {
       tvTitle.setText(title);
    }
 
+   public void setTitle(@StringRes int title) {
+      tvTitle.setText(title);
+   }
+
    public void setIconDrawable(@DrawableRes int resId) {
       setIconDrawable(appCompatDrawableManager.getDrawable(getContext(), resId));
    }
 
    public void setIconDrawable(Drawable drawable) {
       PorterDuffColorFilter colorFiler = checked ? checkedFilter : uncheckedFilter;
-      if (colorFiler == drawable.getColorFilter()) return;
+      if (Build.VERSION.SDK_INT == Build.VERSION_CODES.LOLLIPOP && colorFiler == drawable.getColorFilter()) return;
       drawable.clearColorFilter();
       drawable.setColorFilter(colorFiler);
       ivIcon.setImageDrawable(drawable);

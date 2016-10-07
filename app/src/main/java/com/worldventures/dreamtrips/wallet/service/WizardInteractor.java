@@ -4,6 +4,7 @@ import com.worldventures.dreamtrips.wallet.service.command.ActivateSmartCardComm
 import com.worldventures.dreamtrips.wallet.service.command.CreateAndConnectToCardCommand;
 import com.worldventures.dreamtrips.wallet.service.command.SetupUserDataCommand;
 import com.worldventures.dreamtrips.wallet.service.command.http.AssociateCardUserCommand;
+import com.worldventures.dreamtrips.wallet.service.command.wizard.WizardCheckCommand;
 
 import io.techery.janet.ActionPipe;
 import io.techery.janet.Janet;
@@ -20,6 +21,7 @@ public final class WizardInteractor {
    private final ReadActionPipe<PinSetupFinishedEvent> pinSetupFinishedPipe;
    private final ActionPipe<StartPinSetupAction> startPinSetupPipe;
    private final ActionPipe<ActivateSmartCardCommand> activateSmartCardPipe;
+   private final ActionPipe<WizardCheckCommand> checksPipe;
 
    public WizardInteractor(Janet janet) {
       associateCardUserCommandPipe = janet.createPipe(AssociateCardUserCommand.class, Schedulers.io());
@@ -29,6 +31,7 @@ public final class WizardInteractor {
 
       pinSetupFinishedPipe = janet.createPipe(PinSetupFinishedEvent.class, Schedulers.io());
       startPinSetupPipe = janet.createPipe(StartPinSetupAction.class, Schedulers.io());
+      checksPipe = janet.createPipe(WizardCheckCommand.class, Schedulers.io());
 
       connect();
    }
@@ -55,6 +58,10 @@ public final class WizardInteractor {
 
    public ActionPipe<AssociateCardUserCommand> associateCardUserCommandPipe() {
       return associateCardUserCommandPipe;
+   }
+
+   public ActionPipe<WizardCheckCommand> checksPipe() {
+      return checksPipe;
    }
 
    private void connect() {

@@ -7,6 +7,7 @@ import com.techery.spares.module.Injector;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletPresenter;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.WalletScreen;
 import com.worldventures.dreamtrips.wallet.ui.common.navigation.Navigator;
+import com.worldventures.dreamtrips.wallet.ui.wizard.checking.WizardCheckingPath;
 import com.worldventures.dreamtrips.wallet.ui.wizard.splash.WizardSplashPath;
 
 import javax.inject.Inject;
@@ -20,7 +21,7 @@ public class WizardPowerOnPresenter extends WalletPresenter<WizardPowerOnPresent
    }
 
    public void openWelcome() {
-      navigator.go(new WizardSplashPath());
+      navigator.single(new WizardCheckingPath());
    }
 
    public void onBack() {

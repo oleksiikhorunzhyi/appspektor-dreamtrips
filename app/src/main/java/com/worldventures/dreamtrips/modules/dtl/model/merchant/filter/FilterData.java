@@ -1,5 +1,7 @@
 package com.worldventures.dreamtrips.modules.dtl.model.merchant.filter;
 
+import android.support.annotation.Nullable;
+
 import com.worldventures.dreamtrips.modules.dtl.model.DistanceType;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.Attribute;
 
@@ -20,6 +22,11 @@ public abstract class FilterData {
    @Value.Default
    public int page() {
       return 0;
+   }
+
+   @Value.Default
+   public int offset() {
+      return LIMIT;
    }
 
    @Value.Default
@@ -47,7 +54,7 @@ public abstract class FilterData {
       return false;
    }
 
-   @Value
+   @Value @Nullable
    public abstract DistanceType distanceType();
 
    @Value.Default

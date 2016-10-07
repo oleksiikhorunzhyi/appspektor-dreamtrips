@@ -9,6 +9,8 @@ import com.worldventures.dreamtrips.modules.bucketlist.service.storage.BucketMem
 import com.worldventures.dreamtrips.modules.bucketlist.service.storage.RecentlyAddedBucketItemStorage;
 import com.worldventures.dreamtrips.modules.bucketlist.service.storage.UploadBucketPhotoInMemoryStorage;
 import com.worldventures.dreamtrips.modules.dtl.helper.cache.DtlSearchLocationStorage;
+import com.worldventures.dreamtrips.modules.dtl.model.merchant.ThinMerchant;
+import com.worldventures.dreamtrips.modules.dtl.service.storage.MerchantsStorage;
 import com.worldventures.dreamtrips.modules.feed.service.storage.NotificationMemoryStorage;
 import com.worldventures.dreamtrips.modules.feed.service.storage.NotificationsStorage;
 import com.worldventures.dreamtrips.modules.feed.service.storage.TranslationDiscStorage;
@@ -120,5 +122,11 @@ public class CacheActionStorageModule {
    @Provides(type = Provides.Type.SET)
    ActionStorage provideTripDetailsStorage(SnappyRepository snappyRepository) {
       return new TripDetailsStorage(snappyRepository);
+   }
+
+   @Singleton
+   @Provides(type = Provides.Type.SET)
+   ActionStorage provideMerchantsStorage() {
+      return new MerchantsStorage(new PaginatedMemoryStorage<>());
    }
 }

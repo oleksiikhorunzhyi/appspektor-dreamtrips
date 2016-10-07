@@ -119,6 +119,7 @@ public final class SmartCardInteractor {
       disableDefaultCardPipe = janet.createPipe(SetDisableDefaultCardDelayCommand.class, Schedulers.io());
 
       resetSmartCardPipe = janet.createPipe(ResetSmartCardCommand.class, Schedulers.io());
+
       connect();
    }
 

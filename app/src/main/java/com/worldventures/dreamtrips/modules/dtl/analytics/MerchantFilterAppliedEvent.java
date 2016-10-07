@@ -20,7 +20,8 @@ public class MerchantFilterAppliedEvent extends DtlAnalyticsAction {
 
    public MerchantFilterAppliedEvent(FilterData filterData) {
       price = String.format(Locale.US, "%d-%d", filterData.budgetMin(), filterData.budgetMax());
-      distance = String.format(Locale.US, "%.0f", filterData.distanceMaxIndex()); // TODO :: 21.09.16 proper distance filliing
+      //distance = String.format(Locale.US, "%.0f", filterData.distanceMaxIndex()); // TODO :: 21.09.16 proper distance filliing
+      distance = "0";
       if (filterData.selectedAmenities().isEmpty()) {
          amenities = "All";
       } else {

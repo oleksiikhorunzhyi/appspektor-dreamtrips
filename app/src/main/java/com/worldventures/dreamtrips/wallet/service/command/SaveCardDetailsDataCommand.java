@@ -84,7 +84,7 @@ public class SaveCardDetailsDataCommand extends Command<BankCard> implements Inj
 
    private void checkCardData() throws FormatException {
       boolean validInfo = (WalletValidateHelper.validateAddressInfo(manualAddressInfo)) &&
-            WalletValidateHelper.validateCardCvv(cvv);
+            WalletValidateHelper.validateCardCvv(cvv, bankCard.number());
 
       if (!validInfo) throw new FormatException();
    }

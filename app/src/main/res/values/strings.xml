@@ -492,6 +492,8 @@
    <string name="feedback_could_not_load_attachment">Could not load attachment</string>
    <string name="feedback_attachment_failed_item_retry">Retry</string>
    <string name="feedback_attachment_failed_item_remove">Remove</string>
+   <string name="feedback_fullscreen_attachments_format">%1$d of %2$d</string>
+   <string name="feedback_fullscreen_attachments_remove">Remove</string>
 
    <string name="years_ago">%d years ago</string>
    <string name="invitation_template">Select template</string>

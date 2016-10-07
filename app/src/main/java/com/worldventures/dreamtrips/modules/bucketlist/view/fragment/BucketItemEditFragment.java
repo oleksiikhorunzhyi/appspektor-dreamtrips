@@ -160,7 +160,7 @@ public class BucketItemEditFragment extends RxBaseFragmentWithArgs<BucketItemEdi
 
          @Override
          public void onCellClicked(EntityStateHolder<BucketPhoto> model) {
-            getPresenter().onUploadTaskClicked(model);
+            getPresenter().onPhotoCellClicked(model);
          }
       });
    }

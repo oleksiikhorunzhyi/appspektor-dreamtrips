@@ -29,6 +29,7 @@ public class StatefulPhotoCell<Photo extends IFullScreenObject, Delegate extends
 
    public StatefulPhotoCell(View view) {
       super(view);
+      view.setOnClickListener(v -> onProgressClicked());
    }
 
    @Override
@@ -66,7 +67,7 @@ public class StatefulPhotoCell<Photo extends IFullScreenObject, Delegate extends
    }
 
    @OnClick(R.id.fab_progress)
-   void onCellClick() {
+   void onProgressClicked() {
       cellDelegate.onCellClicked(getModelObject());
    }
 }

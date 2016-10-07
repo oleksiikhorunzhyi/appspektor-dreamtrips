@@ -7,6 +7,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.Spinner;
 
@@ -46,6 +47,8 @@ public class SendFeedbackFragment extends BaseFragment<SendFeedbackPresenter> im
    @InjectView(R.id.tv_message) EditText message;
    @InjectView(R.id.progressBar) ProgressBar progressBar;
    @InjectView(R.id.feedback_attachments) AttachmentImagesHorizontalView attachmentImagesHorizontalView;
+   @InjectView(R.id.feedback_add_photos) View addPhotosButton;
+   @InjectView(R.id.add_photos_image_view) ImageView addPhotosImageView;
    @Inject PhotoPickerDelegate photoPickerDelegate;
 
    private MenuItem doneButtonMenuItem;
@@ -151,6 +154,12 @@ public class SendFeedbackFragment extends BaseFragment<SendFeedbackPresenter> im
    @Override
    public void changeDoneButtonState(boolean enable) {
       if (doneButtonMenuItem != null) doneButtonMenuItem.setEnabled(enable);
+   }
+
+   @Override
+   public void changeAddPhotosButtonState(boolean enable) {
+      addPhotosButton.setAlpha(enable ? 1f : 0.5f);
+      addPhotosButton.setEnabled(enable);
    }
 
    ///////////////////////////////////////////////////////////////////////////

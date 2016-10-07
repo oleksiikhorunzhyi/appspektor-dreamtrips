@@ -30,7 +30,7 @@ public class FeedbackAttachmentsManager {
    }
 
    public List<EntityStateHolder<FeedbackImageAttachment>> getAttachments() {
-      return statefulImageAttachments;
+      return new ArrayList<>(statefulImageAttachments);
    }
 
    public int getFailedOrPendingAttachmentsCount() {

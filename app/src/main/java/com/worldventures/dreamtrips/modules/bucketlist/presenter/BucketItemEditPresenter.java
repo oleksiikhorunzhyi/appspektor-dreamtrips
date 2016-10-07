@@ -145,15 +145,15 @@ public class BucketItemEditPresenter extends BucketDetailsBasePresenter<BucketIt
    ////////////////////////////////////////
    /////// Photo picking
    ////////////////////////////////////////
-   public void onUploadTaskClicked(EntityStateHolder<BucketPhoto> photoStateHolder) {
-      view.deleteImage(photoStateHolder);
-
+   public void onPhotoCellClicked(EntityStateHolder<BucketPhoto> photoStateHolder) {
       EntityStateHolder.State state = photoStateHolder.state();
       switch (state) {
          case FAIL:
+            view.deleteImage(photoStateHolder);
             startUpload(photoStateHolder);
             break;
          case PROGRESS:
+            view.deleteImage(photoStateHolder);
             cancelUpload(photoStateHolder);
             break;
       }

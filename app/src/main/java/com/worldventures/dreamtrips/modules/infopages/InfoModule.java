@@ -4,10 +4,13 @@ import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.component.ComponentDescription;
 import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.modules.infopages.presenter.AuthorizedStaticInfoPresenter;
+import com.worldventures.dreamtrips.modules.infopages.presenter.FeedbackImageAttachmentFullscreenPresenter;
+import com.worldventures.dreamtrips.modules.infopages.presenter.FeedbackImageAttachmentsPresenter;
 import com.worldventures.dreamtrips.modules.infopages.presenter.SendFeedbackPresenter;
 import com.worldventures.dreamtrips.modules.infopages.presenter.WebViewFragmentPresenter;
-import com.worldventures.dreamtrips.modules.infopages.service.FeedbackAttachmentsManager;
 import com.worldventures.dreamtrips.modules.infopages.view.custom.AttachmentImagesHorizontalView;
+import com.worldventures.dreamtrips.modules.infopages.view.fragment.FeedbackImageAttachmentFullscreenFragment;
+import com.worldventures.dreamtrips.modules.infopages.view.fragment.FeedbackImageAttachmentsFragment;
 import com.worldventures.dreamtrips.modules.infopages.view.fragment.HelpFragment;
 import com.worldventures.dreamtrips.modules.infopages.view.fragment.SendFeedbackFragment;
 import com.worldventures.dreamtrips.modules.infopages.view.fragment.TermsTabFragment;
@@ -23,8 +26,6 @@ import com.worldventures.dreamtrips.modules.video.presenter.ThreeSixtyVideosPres
 import com.worldventures.dreamtrips.modules.video.view.HelpVideosFragment;
 import com.worldventures.dreamtrips.modules.video.view.ThreeSixtyVideosFragment;
 
-import javax.inject.Singleton;
-
 import dagger.Module;
 import dagger.Provides;
 
@@ -39,7 +40,11 @@ import dagger.Provides;
 
             HelpFragment.class, TermsTabFragment.class, WebViewFragmentPresenter.class,
 
-            SendFeedbackFragment.class, SendFeedbackPresenter.class, AttachmentImagesHorizontalView.class},
+            SendFeedbackFragment.class, SendFeedbackPresenter.class, AttachmentImagesHorizontalView.class,
+
+            FeedbackImageAttachmentFullscreenPresenter.class, FeedbackImageAttachmentsPresenter.class,
+
+            FeedbackImageAttachmentFullscreenFragment.class, FeedbackImageAttachmentsFragment.class},
       complete = false,
       library = true)
 public class InfoModule {

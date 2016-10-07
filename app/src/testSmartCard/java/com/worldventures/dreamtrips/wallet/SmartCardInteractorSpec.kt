@@ -194,7 +194,8 @@ class SmartCardInteractorSpec : BaseSpec({
 
          it("Card with valid data should be stored with default address and marked as default") {
             whenever(mockDb.readWalletDefaultCardId()).thenReturn(null)
-            assertActionSuccess(saveBankCardData(bankCard = mockedDebitCard, issuerInfo = mockedIssuerInfo, setAsDefaultAddress = true, setAsDefaultCard = true), { true })
+            assertActionSuccess(saveBankCardData(bankCard = mockedDebitCard, issuerInfo = mockedIssuerInfo, setAsDefaultAddress = true,
+                  setAsDefaultCard = true, cvv = "000"), { true })
 
             verify(mockDb, times(1)).saveDefaultAddress(any())
             verify(mockDb, times(2)).saveWalletDefaultCardId(any())
@@ -204,7 +205,8 @@ class SmartCardInteractorSpec : BaseSpec({
             val defaultCardId = "9"
             whenever(mockDb.readWalletDefaultCardId()).thenReturn(defaultCardId)
 
-            AssertUtil.assertActionSuccess(saveBankCardData(bankCard = mockedDebitCard, issuerInfo = mockedIssuerInfo, setAsDefaultCard = false), { true })
+            AssertUtil.assertActionSuccess(saveBankCardData(bankCard = mockedDebitCard, issuerInfo = mockedIssuerInfo, setAsDefaultCard = false,
+                  cvv = "000"), { true })
             verify(mockDb, times(0)).saveDefaultAddress(any())
             //method below shouldn't be called at all, but it's called because of
             // implementation CachedAction interface by FetchDefaultCardCommand

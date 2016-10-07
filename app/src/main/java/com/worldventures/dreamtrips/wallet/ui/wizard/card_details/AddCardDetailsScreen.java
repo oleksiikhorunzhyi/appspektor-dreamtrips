@@ -8,6 +8,7 @@ import android.view.inputmethod.EditorInfo;
 import android.widget.CompoundButton;
 import android.widget.EditText;
 
+import com.alimuzaffar.lib.pin.PinEntryEditText;
 import com.jakewharton.rxbinding.widget.RxCompoundButton;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.wallet.domain.entity.AddressInfo;
@@ -31,7 +32,7 @@ public class AddCardDetailsScreen extends WalletLinearLayout<AddCardDetailsPrese
 
    @InjectView(R.id.toolbar) Toolbar toolbar;
    @InjectView(R.id.card) BankCardWidget bankCardWidget;
-   @InjectView(R.id.card_cvv) EditText cardCvvField;
+   @InjectView(R.id.card_cvv) PinEntryEditText cardCvvField;
    @InjectView(R.id.address1) EditText address1Field;
    @InjectView(R.id.address2) EditText address2Field;
    @InjectView(R.id.city) EditText cityField;
@@ -69,6 +70,9 @@ public class AddCardDetailsScreen extends WalletLinearLayout<AddCardDetailsPrese
    @Override
    public void cardBankInfo(BankCardHelper cardHelper, BankCard bankCard) {
       bankCardWidget.setBankCardInfo(cardHelper, bankCard);
+
+      int cvvLength = BankCardHelper.obtainRequiredCvvLength(bankCard.number());
+      cardCvvField.setMaxLength(cvvLength);
    }
 
    @Override

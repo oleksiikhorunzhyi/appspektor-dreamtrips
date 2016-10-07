@@ -12,7 +12,6 @@ public class WalletValidateHelper {
 
    private static final Pattern CARD_NAME_PATTERN = Pattern.compile("[\\p{L} ]{2,31}");
    private static final Pattern FULL_NAME_PATTERN = Pattern.compile("[\\p{L}]{2,21}+");
-   private static final Pattern CVV_PATTERN = Pattern.compile("[0-9]{3,4}");
    private static final Pattern SCID_PATTERN = Pattern.compile("^\\d+$");
 
    public static boolean validateCardName(String cardName) {
@@ -49,8 +48,8 @@ public class WalletValidateHelper {
       return !infoInvalid;
    }
 
-   public static boolean validateCardCvv(String cvv) {
-      return CVV_PATTERN.matcher(cvv).matches();
+   public static boolean validateCardCvv(String cvv, long cardNumber) {
+      return cvv.length() == BankCardHelper.obtainRequiredCvvLength(cardNumber);
    }
 
    public static boolean validateSCId(String scid) {

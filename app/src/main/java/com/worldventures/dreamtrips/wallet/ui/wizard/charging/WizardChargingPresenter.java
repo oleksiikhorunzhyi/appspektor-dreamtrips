@@ -11,9 +11,8 @@ import com.worldventures.dreamtrips.wallet.analytics.ConnectFlyeToChargerAction;
 import com.worldventures.dreamtrips.wallet.analytics.FailedToAddCardAction;
 import com.worldventures.dreamtrips.wallet.analytics.WalletAnalyticsCommand;
 import com.worldventures.dreamtrips.wallet.domain.entity.card.BankCard;
-import com.worldventures.dreamtrips.wallet.domain.entity.card.Card;
-import com.worldventures.dreamtrips.wallet.domain.entity.card.ImmutableBankCard;
 import com.worldventures.dreamtrips.wallet.service.SmartCardInteractor;
+import com.worldventures.dreamtrips.wallet.service.command.http.CreateBankCardCommand;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletPresenter;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.WalletScreen;
 import com.worldventures.dreamtrips.wallet.ui.common.helper.ErrorActionStateSubscriberWrapper;
@@ -22,6 +21,7 @@ import com.worldventures.dreamtrips.wallet.ui.common.helper.OperationActionState
 import com.worldventures.dreamtrips.wallet.ui.common.navigation.Navigator;
 import com.worldventures.dreamtrips.wallet.ui.wizard.card_details.AddCardDetailsPath;
 
+import java.net.UnknownHostException;
 import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
@@ -29,6 +29,8 @@ import javax.inject.Inject;
 import io.techery.janet.smartcard.action.charger.StartCardRecordingAction;
 import io.techery.janet.smartcard.action.charger.StopCardRecordingAction;
 import io.techery.janet.smartcard.event.CardChargedEvent;
+import io.techery.janet.smartcard.exception.NotConnectedException;
+import io.techery.janet.smartcard.model.Card;
 
 public class WizardChargingPresenter extends WalletPresenter<WizardChargingPresenter.Screen, Parcelable> {
 
@@ -44,14 +46,23 @@ public class WizardChargingPresenter extends WalletPresenter<WizardChargingPrese
    public void onAttachedToWindow() {
       super.onAttachedToWindow();
       trackScreen();
+      observeCharger();
+      observeBankCardCreation();
+   }
+
+   private void observeCharger() {
+      ErrorHandler cardRecordingErrorHandler = addErrorHandling(ErrorHandler.<StartCardRecordingAction>builder(getContext()))
+            .build();
       smartCardInteractor.startCardRecordingPipe()
             .createObservable(new StartCardRecordingAction())
             .compose(bindViewIoToMainComposer())
             .subscribe(ErrorActionStateSubscriberWrapper.<StartCardRecordingAction>forView(getView().provideOperationDelegate())
-                  .onFail(ErrorHandler.create(getContext()))
+                  .onFail(cardRecordingErrorHandler::call)
                   .wrap());
 
-      //TODO implement chain with FetchRecordIssuerInfoCommand, and differ `no card connection` and `no internet connection` errors in analytics
+      ErrorHandler chargedEventErrorHandler = addErrorHandling(ErrorHandler.<CardChargedEvent>builder(getContext())
+            .defaultMessage(R.string.wallet_wizard_charging_swipe_error))
+            .build();
       smartCardInteractor.chargedEventPipe()
             .observe()
             .delay(2, TimeUnit.SECONDS) // // TODO: 9/16/16 for demo mock device
@@ -59,12 +70,31 @@ public class WizardChargingPresenter extends WalletPresenter<WizardChargingPrese
             .compose(new ActionPipeCacheWiper<>(smartCardInteractor.chargedEventPipe()))
             .subscribe(OperationActionStateSubscriberWrapper.<CardChargedEvent>forView(getView().provideOperationDelegate())
                   .onSuccess(event -> cardSwiped(event.card))
-                  .onFail(ErrorHandler.<CardChargedEvent>builder(getContext())
-                        .defaultMessage(R.string.wallet_wizard_charging_swipe_error)
-                        .defaultAction(cardChargedEvent -> analyticsInteractor.walletAnalyticsCommandPipe()
-                              .send(new WalletAnalyticsCommand(FailedToAddCardAction.noCardConnection()))
-                  ).build())
+                  .onFail(chargedEventErrorHandler::call)
                   .wrap());
+   }
+
+   private void observeBankCardCreation() {
+      ErrorHandler<CreateBankCardCommand> errorHandler = addErrorHandling(ErrorHandler.builder(getContext())).build();
+      smartCardInteractor.bankCardPipe()
+            .observe()
+            .compose(bindViewIoToMainComposer())
+            .subscribe(OperationActionStateSubscriberWrapper.<CreateBankCardCommand>forView(getView().provideOperationDelegate())
+                  .onFail(errorHandler::call)
+                  .onSuccess(command -> bankCardCreated(command.getResult()))
+                  .wrap());
+   }
+
+   private <T> ErrorHandler.Builder addErrorHandling(ErrorHandler.Builder<T> builder) {
+      builder.handle(NotConnectedException.class, t -> {
+         analyticsInteractor.walletAnalyticsCommandPipe()
+               .send(new WalletAnalyticsCommand(FailedToAddCardAction.noCardConnection()));
+      }).handle(UnknownHostException.class, t -> {
+         analyticsInteractor.walletAnalyticsCommandPipe()
+               .send(new WalletAnalyticsCommand(FailedToAddCardAction.noNetworkConnection()));
+      });
+
+      return builder;
    }
 
    private void trackScreen() {
@@ -75,22 +105,18 @@ public class WizardChargingPresenter extends WalletPresenter<WizardChargingPrese
    @Override
    public void onDetachedFromWindow() {
       super.onDetachedFromWindow();
-      smartCardInteractor.stopCardRecordingPipe()
-            .send(new StopCardRecordingAction());
+      smartCardInteractor.stopCardRecordingPipe().send(new StopCardRecordingAction());
    }
 
    public void goBack() {
       navigator.goBack();
    }
 
-   public void cardSwiped(io.techery.janet.smartcard.model.Card card) {
-      //TODO: validate swipe data
-      BankCard bankCard = ImmutableBankCard.builder()
-            .id(Card.NO_ID)
-            .number(Long.parseLong(card.pan()))
-            .expiryYear(Integer.parseInt(card.exp().substring(0, 2)))
-            .expiryMonth(Integer.parseInt(card.exp().substring(2, 4)))
-            .build();
+   private void cardSwiped(Card card) {
+      smartCardInteractor.bankCardPipe().send(new CreateBankCardCommand(card));
+   }
+
+   private void bankCardCreated(BankCard bankCard) {
       navigator.withoutLast(new AddCardDetailsPath(bankCard));
    }
 

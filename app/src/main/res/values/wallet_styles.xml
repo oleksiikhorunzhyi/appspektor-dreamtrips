@@ -21,6 +21,7 @@
       <item name="toolbarStyle">@style/WalletTheme.ToolbarStyle</item>
       <item name="android:textViewStyle">@style/WalletTheme.TextStyle</item>
       <item name="android:buttonStyle">@style/WalletTheme.ButtonStyle</item>
+      <item name="buttonStyle">@style/WalletTheme.ButtonStyle</item> <!--for support V7 -->
       <item name="switchStyle">@style/WalletTheme.SwitchStyle</item>
 
       <item name="android:textAppearanceLarge">@style/WalletTheme.TextAppearanceLarge</item>

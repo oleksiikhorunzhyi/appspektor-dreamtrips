@@ -29,10 +29,8 @@ public class WalletFilesUtils {
       return result;
    }
 
-   public static long getAvailableBytes(File directory, TemporaryStorage temporaryStorage) {
-      long availableBytes = new StatFs(directory.getPath()).getAvailableBytes();
-      if (!temporaryStorage.enoughSpaceForFirmware()) availableBytes = 0;
-      return availableBytes;
+   public static long getAvailableBytes(File directory) {
+      return new StatFs(directory.getPath()).getAvailableBytes();
    }
 
 }

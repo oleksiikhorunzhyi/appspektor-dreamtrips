@@ -1,4 +1,4 @@
-package com.worldventures.dreamtrips.wallet.ui.wizard.pin_set_success;
+package com.worldventures.dreamtrips.wallet.ui.wizard.pin.success;
 
 import android.content.Context;
 import android.os.Parcelable;
@@ -9,6 +9,7 @@ import com.worldventures.dreamtrips.wallet.ui.common.base.WalletPresenter;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.WalletScreen;
 import com.worldventures.dreamtrips.wallet.ui.common.navigation.Navigator;
 import com.worldventures.dreamtrips.wallet.ui.settings.general.WalletSettingsPath;
+import com.worldventures.dreamtrips.wallet.ui.wizard.pin.Action;
 
 import javax.inject.Inject;
 
@@ -17,18 +18,29 @@ public class PinSetSuccessPresenter extends WalletPresenter<PinSetSuccessPresent
 
    @Inject Navigator navigator;
 
-   public PinSetSuccessPresenter(Context context, Injector injector) {
+   private final Action action;
+
+   public PinSetSuccessPresenter(Context context, Injector injector, Action mode) {
       super(context, injector);
+      this.action = mode;
    }
 
-   public void goToBack() {
+   @Override
+   public void attachView(Screen view) {
+      super.attachView(view);
+      view.showMode(action);
+   }
+
+   void goToBack() {
       navigator.goBack();
    }
 
-   public void goToNext() {
+   void goToNext() {
       navigator.go(new WalletSettingsPath());
    }
 
    public interface Screen extends WalletScreen {
+
+      void showMode(Action mode);
    }
 }

@@ -6,7 +6,7 @@
    <string name="wallet_continue_label">Continue</string>
    <string name="wallet_got_it_label">Got it!</string>
 
-   <string name="wallet">Wallet</string>
+   <string name="wallet">flye SmartCard</string>
    <string name="wallet_dashboard_title">My flye SmartCard</string>
    <string name="wallet_wizard_title">flye SmartCard</string>
    <string name="wallet_input_data_is_incorrect">Input data is incorrect</string>
@@ -48,7 +48,7 @@
    <string name="wallet_wizard_splash_title2">Next, you must agree to\nthe Terms and Conditions.</string>
    <string name="wallet_wizard_splash_review_btn">Terms and Conditions</string>
 
-   <string name="wallet_wizard_scan_proposal">Scan the back of your\nflye&#8482; smart card to set up</string>
+   <string name="wallet_wizard_scan_proposal">Scan the back of your\nflye&#8482; SmartCard to set up</string>
    <string name="wallet_wizard_scan_start_btn">Scan Card</string>
    <string name="wallet_wizard_scan_title">Scan flye SmartCard</string>
 
@@ -61,10 +61,10 @@
    <string name="wallet_add_debit_card">Add debit card</string>
    <string name="wallet_payment_cards_title">Payment cards</string>
 
-   <!--scid manual-->
-   <string name="wallet_wizard_manual_input_header">Enter the 10-digit number located below barcode</string>
+   <!--bar code manual-->
+   <string name="wallet_wizard_manual_input_header">Enter the 10-digit number\nlocated below the barcode</string>
    <string name="wallet_wizard_manual_input_title">flye SmartCard Number</string>
-   <string name="wallet_wizard_scid_validation_error">Wrong SCID Number</string>
+   <string name="wallet_wizard_bar_code_validation_error">Wrong barcode Number</string>
    <string name="wallet_bank_name_text_holder">Bank Name</string>
 
    <!--details-->
@@ -138,7 +138,7 @@
    <string name="wallet_terms_and_conditions_accept_failed">Failed to accept terms and conditions</string>
 
    <!--set up smart card-->
-   <string name="wallet_wizard_welcome_title">Set Up Smart Card</string>
+   <string name="wallet_wizard_welcome_title">flye SmartCard</string>
    <string name="wallet_wizard_welcome_greeting">Hi %s!</string>
    <string name="wallet_wizard_welcome_platinum_user">Take your platinum membership to new heights with flye\u2122.</string>
    <string name="wallet_wizard_welcome_gold_user">Take your gold membership to new heights with flye\u2122.</string>
@@ -218,6 +218,15 @@
    <string name="wallet_firmware_install_success_title">Update Successful</string>
    <string name="wallet_firmware_install_success_action_button">Done</string>
 
+   <!--wizard checks-->
+   <string name="wallet_wizard_checks_header">Welcome to flyeTM SmartCard set up! Before we begin, check if the following conditions are met:</string>
+   <string name="wallet_wizard_checks_title">flye SmartCard</string>
+   <string name="wallet_wizard_checks_bluetooth_is_not_supported">Bluetooth Low Energy is not supported on this device</string>
+   <string name="wallet_wizard_checks_bluetooth_not_enable">Bluetooth is not enabled</string>
+   <string name="wallet_wizard_checks_bluetooth_enable">Bluetooth is enabled</string>
+   <string name="wallet_wizard_checks_network_not_available">You are not connected to the Internet</string>
+   <string name="wallet_wizard_checks_network_available">You are connected to the Internet</string>
+
    <!--pre installation check-->
    <string name="wallet_firmware_pre_installation_title">flye SmartCard Update</string>
    <string name="wallet_firmware_pre_installation_header">To install the update\nPlease do the following:</string>
@@ -230,4 +239,8 @@
    <!--smart card connection-->
    <string name="wallet_smartcard_connected_label">SmartCard is connected</string>
    <string name="wallet_smartcard_disconnected_label">SmartCard is disconnected</string>
+   <string name="wallet_smartcard_connection_try_description">Connect SmartCard and try again.</string>
+
+   <!-- Power On -->
+   <string name="wallet_wizard_power_on_title2">Power on your flye SmartCard by\nswiping on the chip.</string>
 </resources>

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.worldventures.dreamtrips.wallet.ui.wizard.pin_set_success.PinSetSuccessScreen xmlns:android="http://schemas.android.com/apk/res/android"
-      xmlns:tools="http://schemas.android.com/tools"
+<com.worldventures.dreamtrips.wallet.ui.wizard.pin.success.PinSetSuccessScreen xmlns:android="http://schemas.android.com/apk/res/android"
       xmlns:app="http://schemas.android.com/apk/res-auto"
+      xmlns:tools="http://schemas.android.com/tools"
       android:layout_width="match_parent"
       android:layout_height="match_parent"
       android:theme="@style/WalletTheme"
@@ -14,9 +14,7 @@
          app:title="@string/wallet_wizard_setup_pin_title"
          />
 
-   <RelativeLayout
-         style="@style/WalletTheme.ContentContainerStyle"
-         >
+   <RelativeLayout style="@style/WalletTheme.ContentContainerStyle">
 
       <ImageView
             android:id="@+id/iv_success_icon"
@@ -33,8 +31,8 @@
             android:id="@+id/success_label_text_view"
             style="@style/WalletTheme.HeaderTextStyle"
             android:layout_centerVertical="true"
-            android:textAppearance="?android:attr/textAppearanceLarge"
             android:text="@string/wallet_wizard_setup_new_pin_success"
+            android:textAppearance="?android:attr/textAppearanceLarge"
             />
 
       <Button
@@ -45,4 +43,4 @@
             tools:text="@string/wallet_done_label"
             />
    </RelativeLayout>
-</com.worldventures.dreamtrips.wallet.ui.wizard.pin_set_success.PinSetSuccessScreen>
+</com.worldventures.dreamtrips.wallet.ui.wizard.pin.success.PinSetSuccessScreen>

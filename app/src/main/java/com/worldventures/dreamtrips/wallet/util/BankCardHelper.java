@@ -38,9 +38,22 @@ public class BankCardHelper {
       return number.substring(number.length() - 4);
    }
 
-   public static long obtainIin(long cardNumber) {
-      String number = Long.toString(cardNumber);
-      return Long.parseLong(number.substring(0, 6));
+   public static long obtainIin(String swipedCardPan) {
+      return Long.parseLong(swipedCardPan.substring(0, 6));
+   }
+
+   public static int obtainRequiredCvvLength(long cardNumber) {
+      return isAmexBank(cardNumber) ? 4 : 3;
+   }
+
+   /*
+      If card number begins with 34 or 37 and is 15 digits in length
+      then it is an American express and should have 4 digits of cvv.
+    */
+   public static boolean isAmexBank(long cardNumber) {
+      String number = String.valueOf(cardNumber);
+      boolean amexPrefix = number.startsWith("34") || number.startsWith("37");
+      return number.length() == 15 && amexPrefix;
    }
 
    public String obtainFinancialServiceType(Record.FinancialService financialService) {

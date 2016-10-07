@@ -17,6 +17,7 @@ import com.worldventures.dreamtrips.wallet.ui.common.helper.ErrorHandler;
 import com.worldventures.dreamtrips.wallet.ui.common.helper.OperationActionStateSubscriberWrapper;
 import com.worldventures.dreamtrips.wallet.ui.common.navigation.Navigator;
 import com.worldventures.dreamtrips.wallet.ui.wizard.welcome.WizardWelcomePath;
+import com.worldventures.dreamtrips.wallet.util.FormatException;
 
 import javax.inject.Inject;
 
@@ -62,20 +63,21 @@ public class ConnectSmartCardPresenter extends WalletPresenter<ConnectSmartCardP
             .compose(new ActionPipeCacheWiper<>(wizardInteractor.createAndConnectActionPipe()))
             .subscribe(OperationActionStateSubscriberWrapper.<CreateAndConnectToCardCommand>forView(getView().provideOperationDelegate())
                   .onSuccess(command -> smartCardCreated(command.getSmartCardId()))
-                  .onFail(ErrorHandler.<CreateAndConnectToCardCommand>builder(getContext())
-                        .defaultMessage(R.string.wallet_wizard_scid_validation_error)
-                        .defaultAction(command ->  {
-                           navigator.goBack();
-                           Timber.e("Could not connect to device");
-                        })
-                        .build())
+                  .onFail(ErrorHandler.create(getContext(), command ->  {
+                     navigator.goBack();
+                     Timber.e("Could not connect to device");
+                  }))
                   .wrap());
 
       wizardInteractor.associateCardUserCommandPipe()
             .observe()
             .compose(bindViewIoToMainComposer())
             .subscribe(ErrorActionStateSubscriberWrapper.<AssociateCardUserCommand>forView(getView().provideOperationDelegate())
-                  .onFail(ErrorHandler.create(getContext(), command -> navigator.goBack()))
+                  .onFail(ErrorHandler.<AssociateCardUserCommand>builder(getContext())
+                        .handle(FormatException.class, R.string.wallet_wizard_bar_code_validation_error)
+                        .defaultAction(command -> navigator.goBack())
+                        .build()
+                  )
                   .wrap()
             );
 

@@ -36,6 +36,7 @@ public class CardDetailsScreen extends WalletLinearLayout<CardDetailsPresenter.S
    @InjectView(R.id.card) BankCardWidget bankCardWidget;
 
    private Observable<Boolean> setAsDefaultCardObservable;
+   private MaterialDialog connectedErrorDialog;
 
    public CardDetailsScreen(Context context) {
       super(context);
@@ -56,12 +57,6 @@ public class CardDetailsScreen extends WalletLinearLayout<CardDetailsPresenter.S
       super.onFinishInflate();
       toolbar.setNavigationOnClickListener(v -> presenter.goBack());
       setAsDefaultCardObservable = RxCompoundButton.checkedChanges(defaultPaymentCardCheckBox).skip(1);
-   }
-
-   @Override
-   protected void onDetachedFromWindow() {
-      super.onDetachedFromWindow();
-      presenter.nicknameUpdated(cardNickname.getText().toString());
    }
 
    @OnClick(R.id.delete_button)
@@ -111,6 +106,23 @@ public class CardDetailsScreen extends WalletLinearLayout<CardDetailsPresenter.S
    }
 
    @Override
+   public void showConnectionErrorDialog() {
+      if (connectedErrorDialog == null) {
+         connectedErrorDialog = new MaterialDialog.Builder(getContext())
+               .title(R.string.wallet_smartcard_disconnected_label)
+               .content(R.string.wallet_smartcard_connection_try_description)
+               .positiveText(R.string.ok)
+               .onPositive((dialog, which) -> {
+                  dialog.cancel();
+                  connectedErrorDialog = null;
+               })
+               .dismissListener((dialog) -> connectedErrorDialog = null)
+               .build();
+         connectedErrorDialog.show();
+      }
+   }
+
+   @Override
    public Observable<Boolean> setAsDefaultPaymentCardCondition() {
       return setAsDefaultCardObservable;
    }
@@ -123,6 +135,11 @@ public class CardDetailsScreen extends WalletLinearLayout<CardDetailsPresenter.S
    @Override
    public void showDefaultAddress(AddressInfoWithLocale addressInfoWithLocale) {
       addressText.setText(AddressUtil.obtainAddressLabel(addressInfoWithLocale));
+   }
+
+   @Override
+   public String getUpdateNickname() {
+      return cardNickname.getText().toString();
    }
 
    @Override

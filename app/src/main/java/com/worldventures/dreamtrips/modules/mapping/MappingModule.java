@@ -16,6 +16,7 @@ import com.worldventures.dreamtrips.modules.trips.model.converter.TripWithDetail
 import com.worldventures.dreamtrips.modules.trips.model.converter.TripWithoutDetailsToTripConverter;
 import com.worldventures.dreamtrips.wallet.domain.converter.BankCardToRecordConverter;
 import com.worldventures.dreamtrips.wallet.domain.converter.FirmwareResponseToFirmwareConverter;
+import com.worldventures.dreamtrips.wallet.domain.converter.ProfileAddressToUserAddressConverter;
 import com.worldventures.dreamtrips.wallet.domain.converter.RecordToBankCardConverter;
 
 import java.util.Set;
@@ -114,6 +115,12 @@ public class MappingModule {
    @Singleton
    Converter provideRecordToBankCardConverter() {
       return new RecordToBankCardConverter();
+   }
+
+   @Provides(type = Provides.Type.SET)
+   @Singleton
+   Converter provideProfileAddressToUserAddressConverter() {
+      return new ProfileAddressToUserAddressConverter();
    }
 
    @Provides(type = Provides.Type.SET)

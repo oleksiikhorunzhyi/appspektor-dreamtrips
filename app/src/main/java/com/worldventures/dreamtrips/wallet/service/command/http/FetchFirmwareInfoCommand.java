@@ -2,9 +2,6 @@ package com.worldventures.dreamtrips.wallet.service.command.http;
 
 
 import com.worldventures.dreamtrips.api.smart_card.firmware.GetFirmwareHttpAction;
-import com.worldventures.dreamtrips.api.smart_card.firmware.model.FirmwareResponse;
-import com.worldventures.dreamtrips.api.smart_card.firmware.model.ImmutableFirmwareInfo;
-import com.worldventures.dreamtrips.api.smart_card.firmware.model.ImmutableFirmwareResponse;
 import com.worldventures.dreamtrips.core.janet.dagger.InjectableAction;
 import com.worldventures.dreamtrips.core.utils.AppVersionNameBuilder;
 import com.worldventures.dreamtrips.wallet.domain.entity.Firmware;
@@ -39,51 +36,8 @@ public class FetchFirmwareInfoCommand extends Command<Firmware> implements Injec
             .flatMap(it -> janet.createPipe(GetFirmwareHttpAction.class)
                   .createObservableResult(new GetFirmwareHttpAction(it.getResult()
                         .sdkVersion(), appVersionNameBuilder.getReleaseSemanticVersionName())))
-            .map(it -> mapperyContext.convert(temporaryStorage.newFirmwareIsAvailable() ? getMockInfo() : it.response(), Firmware.class))
+            .map(it -> mapperyContext.convert(it.response(), Firmware.class))
             .subscribe(callback::onSuccess, callback::onFail);
    }
 
-   private FirmwareResponse getMockInfo() {
-      ImmutableFirmwareInfo firmwareInfo = ImmutableFirmwareInfo.builder()
-            .isCompatible(temporaryStorage.firmwareIsCompatible())
-            // test vary big description
-            .releaseNotes("To make our SmartCard better for you, we have updates every 2 week. " +
-                  "Every update of our smart card includes improvements for speed and reliability. " +
-                  "As other new features become available, we’ll highlight those for you in the app. \n\n" +
-
-                  "Repeat 2: To make our SmartCard better for you, we have updates every 2 week. " +
-                  "Every update of our smart card includes improvements for speed and reliability. " +
-                  "As other new features become available, we’ll highlight those for you in the app. \n\n" +
-
-                  "Repeat 3: To make our SmartCard better for you, we have updates every 2 week. " +
-                  "Every update of our smart card includes improvements for speed and reliability. " +
-                  "As other new features become available, we’ll highlight those for you in the app. \n\n" +
-
-                  "Repeat 4: To make our SmartCard better for you, we have updates every 2 week. " +
-                  "Every update of our smart card includes improvements for speed and reliability. " +
-                  "As other new features become available, we’ll highlight those for you in the app. \n\n" +
-
-
-                  "Repeat 5: To make our SmartCard better for you, we have updates every 2 week. " +
-                  "Every update of our smart card includes improvements for speed and reliability. " +
-                  "As other new features become available, we’ll highlight those for you in the app. \n\n" +
-
-
-                  "Repeat 6: To make our SmartCard better for you, we have updates every 2 week. " +
-                  "Every update of our smart card includes improvements for speed and reliability. " +
-                  "As other new features become available, we’ll highlight those for you in the app. \n\n" +
-
-                  "Repeat 7: To make our SmartCard better for you, we have updates every 2 week. " +
-                  "Every update of our smart card includes improvements for speed and reliability. " +
-                  "As other new features become available, we’ll highlight those for you in the app."
-            )
-            .firmwareVersion("5.0.0")
-            .firmwareName("5.0.0")
-            .sdkVersion("1.0.0")
-            .fileSize(5000)
-            .id("magic id")
-            .url("http://uweziegenhagen.de/wp-content/uploads/2012/06/BRD.pdf")
-            .build();
-      return ImmutableFirmwareResponse.builder().updateAvailable(true).firmwareInfo(firmwareInfo).build();
-   }
 }

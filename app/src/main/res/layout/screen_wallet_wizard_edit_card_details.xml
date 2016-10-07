@@ -15,11 +15,7 @@
          app:title="@string/wallet_add_card_details_title"
          />
 
-   <FrameLayout
-         style="@style/WalletTheme.ContentContainerStyle"
-         android:orientation="vertical"
-         android:layout_marginTop="?attr/actionBarSize"
-         >
+   <FrameLayout style="@style/WalletTheme.ContentContainerStyle">
 
       <include
             android:id="@+id/address_info"
@@ -33,9 +29,9 @@
             android:id="@+id/confirm_button"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_gravity="bottom"
             android:layout_marginTop="@dimen/wallet_add_card_details_component_margin_top"
             android:text="@string/wallet_add_card_details_button_confirm"
-            android:layout_gravity="bottom"
             />
    </FrameLayout>
 

@@ -42,7 +42,6 @@
             android:paddingStart="@dimen/spacing_large"
             android:textAppearance="?android:attr/textAppearanceLarge"
             tools:text="@string/wallet_wizard_welcome_platinum_user"
-            tools:visibility="visible"
             />
 
       <RelativeLayout

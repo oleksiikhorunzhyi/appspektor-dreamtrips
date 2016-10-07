@@ -34,9 +34,11 @@ import com.worldventures.dreamtrips.wallet.service.command.UpdateSmartCardConnec
 import com.worldventures.dreamtrips.wallet.service.command.firmware.InstallFirmwareCommand;
 import com.worldventures.dreamtrips.wallet.service.command.firmware.PreInstallationCheckCommand;
 import com.worldventures.dreamtrips.wallet.service.command.http.AssociateCardUserCommand;
+import com.worldventures.dreamtrips.wallet.service.command.http.FetchAndStoreDefaultAddressInfoCommand;
 import com.worldventures.dreamtrips.wallet.service.command.http.FetchFirmwareInfoCommand;
-import com.worldventures.dreamtrips.wallet.service.command.http.FetchRecordIssuerInfoCommand;
+import com.worldventures.dreamtrips.wallet.service.command.http.CreateBankCardCommand;
 import com.worldventures.dreamtrips.wallet.service.command.http.FetchTermsAndConditionsCommand;
+import com.worldventures.dreamtrips.wallet.service.command.wizard.WizardCheckCommand;
 
 import dagger.Module;
 
@@ -55,6 +57,7 @@ import dagger.Module;
             ActivateSmartCardCommand.class,
             CreateAndConnectToCardCommand.class,
             CardCountCommand.class,
+            WizardCheckCommand.class,
             GetDefaultAddressCommand.class,
             SaveCardDetailsDataCommand.class,
             SetupDefaultAddressCommand.class,
@@ -69,7 +72,7 @@ import dagger.Module;
             SaveDefaultAddressCommand.class,
             FetchDefaultCardCommand.class,
             FetchTermsAndConditionsCommand.class,
-            FetchRecordIssuerInfoCommand.class,
+            CreateBankCardCommand.class,
             AssociateCardUserCommand.class,
             FetchFirmwareInfoCommand.class,
             PreInstallationCheckCommand.class,
@@ -78,6 +81,7 @@ import dagger.Module;
             WalletAnalyticsCommand.class,
             PaycardAnalyticsCommand.class,
             SetDisableDefaultCardDelayCommand.class,
+            FetchAndStoreDefaultAddressInfoCommand.class,
             RemoveSmartCardDataCommand.class,
             ResetSmartCardCommand.class
       },

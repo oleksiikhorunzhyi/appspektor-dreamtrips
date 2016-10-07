@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.worldventures.dreamtrips.wallet.ui.wizard.pin.WizardPinSetupScreen xmlns:android="http://schemas.android.com/apk/res/android"
+<com.worldventures.dreamtrips.wallet.ui.wizard.pin.setup.WizardPinSetupScreen xmlns:android="http://schemas.android.com/apk/res/android"
       xmlns:app="http://schemas.android.com/apk/res-auto"
       xmlns:tools="http://schemas.android.com/tools"
       android:layout_width="match_parent"
@@ -11,7 +11,7 @@
          android:id="@+id/toolbar"
          android:layout_width="match_parent"
          android:layout_height="?attr/actionBarSize"
-         app:title="@string/wallet_factory_reset_title"
+         app:title="@string/wallet_wizard_setup_pin_title"
          />
 
    <RelativeLayout
@@ -37,6 +37,7 @@
             android:layout_alignParentBottom="true"
             android:scaleType="fitXY"
             android:src="@drawable/hands_pin"
+            tools:ignore="ContentDescription"
             />
 
       <Button
@@ -48,4 +49,4 @@
             tools:text="@string/wallet_got_it_label"
             />
    </RelativeLayout>
-</com.worldventures.dreamtrips.wallet.ui.wizard.pin.WizardPinSetupScreen>
+</com.worldventures.dreamtrips.wallet.ui.wizard.pin.setup.WizardPinSetupScreen>

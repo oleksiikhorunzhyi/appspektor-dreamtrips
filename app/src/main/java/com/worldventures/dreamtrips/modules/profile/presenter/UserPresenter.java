@@ -29,7 +29,7 @@ import com.worldventures.dreamtrips.modules.friends.janet.RemoveFriendCommand;
 import com.worldventures.dreamtrips.modules.friends.model.Circle;
 import com.worldventures.dreamtrips.modules.gcm.delegate.NotificationDelegate;
 import com.worldventures.dreamtrips.modules.profile.bundle.UserBundle;
-import com.worldventures.dreamtrips.modules.profile.command.GetPublicProfileCommand;
+import com.worldventures.dreamtrips.modules.profile.service.command.GetPublicProfileCommand;
 import com.worldventures.dreamtrips.modules.profile.event.FriendGroupRelationChangedEvent;
 import com.worldventures.dreamtrips.modules.profile.service.ProfileInteractor;
 import com.worldventures.dreamtrips.modules.tripsimages.bundle.TripsImagesBundle;

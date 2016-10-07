@@ -8,7 +8,7 @@ import com.worldventures.dreamtrips.modules.auth.api.command.UpdateUserCommand;
 import com.worldventures.dreamtrips.modules.auth.service.AuthInteractor;
 import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
-import com.worldventures.dreamtrips.modules.profile.command.GetPublicProfileCommand;
+import com.worldventures.dreamtrips.modules.profile.service.command.GetPublicProfileCommand;
 import com.worldventures.dreamtrips.modules.profile.service.ProfileInteractor;
 
 import javax.inject.Inject;

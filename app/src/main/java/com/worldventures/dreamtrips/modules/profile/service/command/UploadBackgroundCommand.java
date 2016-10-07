@@ -1,12 +1,14 @@
-package com.worldventures.dreamtrips.modules.profile.command;
+package com.worldventures.dreamtrips.modules.profile.service.command;
+
 
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.api.profile.GetPublicUserProfileHttpAction;
-import com.worldventures.dreamtrips.api.profile.model.PrivateUserProfile;
+import com.worldventures.dreamtrips.api.profile.UpdateProfileBackgroundPhotoHttpAction;
 import com.worldventures.dreamtrips.core.api.action.CommandWithError;
 import com.worldventures.dreamtrips.core.janet.JanetModule;
 import com.worldventures.dreamtrips.core.janet.dagger.InjectableAction;
 import com.worldventures.dreamtrips.modules.common.model.User;
+
+import java.io.File;
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -16,28 +18,29 @@ import io.techery.janet.command.annotations.CommandAction;
 import io.techery.mappery.MapperyContext;
 
 @CommandAction
-public class GetPublicProfileCommand extends CommandWithError<User> implements InjectableAction {
+public class UploadBackgroundCommand extends CommandWithError<User> implements InjectableAction {
 
    @Inject @Named(JanetModule.JANET_API_LIB) Janet janet;
    @Inject MapperyContext mappery;
 
-   private int userId;
+   private final File file;
 
-   public GetPublicProfileCommand(int userId) {
-      this.userId = userId;
+   public UploadBackgroundCommand(String fileLocation) {
+      this.file = new File(fileLocation);
    }
 
    @Override
-   protected void run(CommandCallback callback) throws Throwable {
-      janet.createPipe(GetPublicUserProfileHttpAction.class)
-            .createObservableResult(new GetPublicUserProfileHttpAction(userId))
-            .map(GetPublicUserProfileHttpAction::response)
+   protected void run(CommandCallback<User> callback) throws Throwable {
+      janet.createPipe(UpdateProfileBackgroundPhotoHttpAction.class)
+            .createObservableResult(new UpdateProfileBackgroundPhotoHttpAction(file))
+            .map(UpdateProfileBackgroundPhotoHttpAction::response)
             .map(user -> mappery.convert(user, User.class))
+            .doOnNext(user -> file.delete())
             .subscribe(callback::onSuccess, callback::onFail);
    }
 
    @Override
    public int getFallbackErrorMessage() {
-      return R.string.error_fail_to_load_profile_info;
+      return R.string.error_fail_to_update_cover_photo;
    }
 }

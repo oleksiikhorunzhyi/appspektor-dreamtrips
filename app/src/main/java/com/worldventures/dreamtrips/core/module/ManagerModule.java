@@ -6,6 +6,7 @@ import com.messenger.storage.dao.PhotoDAO;
 import com.techery.spares.module.Injector;
 import com.techery.spares.module.qualifier.ForApplication;
 import com.techery.spares.module.qualifier.Global;
+import com.techery.spares.session.SessionHolder;
 import com.worldventures.dreamtrips.core.api.DreamSpiceManager;
 import com.worldventures.dreamtrips.core.api.DreamSpiceService;
 import com.worldventures.dreamtrips.core.api.PhotoUploadingManagerS3;
@@ -14,6 +15,7 @@ import com.worldventures.dreamtrips.core.api.VideoDownloadSpiceService;
 import com.worldventures.dreamtrips.core.janet.JanetModule;
 import com.worldventures.dreamtrips.core.janet.SessionActionPipeCreator;
 import com.worldventures.dreamtrips.core.session.CirclesInteractor;
+import com.worldventures.dreamtrips.core.session.UserSession;
 import com.worldventures.dreamtrips.core.utils.DTCookieManager;
 import com.worldventures.dreamtrips.modules.bucketlist.service.BucketInteractor;
 import com.worldventures.dreamtrips.modules.common.delegate.CachedEntityDelegate;
@@ -192,7 +194,8 @@ public class ManagerModule {
 
    @Provides
    @Singleton
-   ProfileInteractor provideProfileInteractor(SessionActionPipeCreator sessionActionPipeCreator) {
-      return new ProfileInteractor(sessionActionPipeCreator);
+   ProfileInteractor provideProfileInteractor(SessionActionPipeCreator sessionActionPipeCreator,
+         SessionHolder<UserSession> sessionHolder) {
+      return new ProfileInteractor(sessionActionPipeCreator, sessionHolder);
    }
 }

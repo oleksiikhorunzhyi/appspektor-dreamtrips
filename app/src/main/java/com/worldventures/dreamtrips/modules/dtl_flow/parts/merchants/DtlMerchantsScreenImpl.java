@@ -1,12 +1,14 @@
 package com.worldventures.dreamtrips.modules.dtl_flow.parts.merchants;
 
 import android.content.Context;
+import android.os.Parcelable;
 import android.support.annotation.Nullable;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.widget.LinearLayoutManager;
 import android.util.AttributeSet;
 import android.view.View;
 
-import com.techery.spares.adapter.expandable.ExpandableLayoutManager;
+import com.messenger.util.ScrollStatePersister;
 import com.trello.rxlifecycle.RxLifecycle;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.flow.activity.FlowActivity;
@@ -24,6 +26,7 @@ import com.worldventures.dreamtrips.modules.dtl.view.cell.delegates.MerchantCell
 import com.worldventures.dreamtrips.modules.dtl.view.cell.delegates.MerchantsAdapterDelegate;
 import com.worldventures.dreamtrips.modules.dtl.view.cell.pagination.PaginationManager;
 import com.worldventures.dreamtrips.modules.dtl.view.dialog.DialogFactory;
+import com.worldventures.dreamtrips.modules.dtl.view.util.LayoutManagerScrollPersister;
 import com.worldventures.dreamtrips.modules.dtl_flow.DtlLayout;
 import com.worldventures.dreamtrips.modules.dtl_flow.view.toolbar.DtlToolbarHelper;
 import com.worldventures.dreamtrips.modules.dtl_flow.view.toolbar.ExpandableDtlToolbar;
@@ -53,11 +56,18 @@ public class DtlMerchantsScreenImpl extends DtlLayout<DtlMerchantsScreen, DtlMer
    SelectionManager selectionManager;
    SweetAlertDialog errorDialog;
    PaginationManager paginationManager;
+   LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
+   LayoutManagerScrollPersister scrollStatePersister = new LayoutManagerScrollPersister();
 
    @Override
    protected void onFinishInflate() {
       super.onFinishInflate();
-      recyclerView.setLayoutManager(new ExpandableLayoutManager(getActivity()));
+      recyclerView.setLayoutManager(layoutManager);
+   }
+
+   @Override
+   public Parcelable onSaveInstanceState() {
+      return scrollStatePersister.saveScrollState(super.onSaveInstanceState(), layoutManager);
    }
 
    @Override
@@ -136,12 +146,8 @@ public class DtlMerchantsScreenImpl extends DtlLayout<DtlMerchantsScreen, DtlMer
 
    @Override
    public void setRefreshedItems(List<ThinMerchant> merchants) {
-      delegate.clearAndUpdateItems(merchants);
-   }
-
-   @Override
-   public void addItems(List<ThinMerchant> merchants) {
-      delegate.addItems(merchants);
+      delegate.setItems(merchants);
+      scrollStatePersister.restoreInstanceStateIfNeeded(getLastRestoredInstanceState(), layoutManager);
    }
 
    @Override
@@ -150,8 +156,8 @@ public class DtlMerchantsScreenImpl extends DtlLayout<DtlMerchantsScreen, DtlMer
    }
 
    @Override
-   public void loadNextProgress(boolean isRefresh) {
-      if (isRefresh) delegate.addItem(ProgressCell.INSTANCE);
+   public void loadNextProgress(boolean isLoading) {
+      if (isLoading) delegate.addItem(ProgressCell.INSTANCE);
       else delegate.removeItem(ProgressCell.INSTANCE);
    }
 
@@ -163,16 +169,6 @@ public class DtlMerchantsScreenImpl extends DtlLayout<DtlMerchantsScreen, DtlMer
    @Override
    public void updateLoadingState(boolean isLoading) {
       paginationManager.updateLoadingStatus(isLoading);
-   }
-
-   @Override
-   public void showError(String error) {
-      errorDialog = DialogFactory.createRetryDialog(getActivity(), error);
-      errorDialog.setConfirmClickListener(listener -> {
-         listener.dismissWithAnimation();
-         getPresenter().retryLoadMerchant();
-      });
-      errorDialog.show();
    }
 
    @Override
@@ -193,8 +189,7 @@ public class DtlMerchantsScreenImpl extends DtlLayout<DtlMerchantsScreen, DtlMer
 
    @OnClick(R.id.retry)
    protected void onRetryClick() {
-      if (delegate.isItemsPresent()) getPresenter().loadNext();
-      else getPresenter().refresh();
+      getPresenter().onRetryMerchantsClick();
    }
 
    @Override
@@ -235,12 +230,21 @@ public class DtlMerchantsScreenImpl extends DtlLayout<DtlMerchantsScreen, DtlMer
    public void applyViewState(DtlMerchantsState state) {
       if (state == null) return;
       delegate.setExpandedMerchants(state.getExpandedMerchantIds());
-      delegate.setItems(state.getMerchants());
    }
 
    @Override
    public DtlMerchantsState provideViewState() {
-      return new DtlMerchantsState(delegate.getMerchants(), delegate.getExpandedMerchants());
+      return new DtlMerchantsState(delegate.getExpandedMerchants(), recyclerView.getLayoutManager().onSaveInstanceState());
+   }
+
+   @Override
+   public void showError(String error) {
+      errorDialog = DialogFactory.createRetryDialog(getActivity(), error);
+      errorDialog.setConfirmClickListener(listener -> {
+         listener.dismissWithAnimation();
+         getPresenter().onRetryMerchantClick();
+      });
+      errorDialog.show();
    }
 
    ///////////////////////////////////////////////////////////////////////////

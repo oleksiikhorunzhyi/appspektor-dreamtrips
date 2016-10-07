@@ -104,17 +104,17 @@ public class DtlMapPresenterImpl extends DtlPresenterImpl<DtlMapScreen, ViewStat
             .observe()
             .compose(bindViewIoToMainComposer())
             .compose(new ActionStateToActionTransformer<>())
-            .filter(action -> action.getResult().isEmpty())
+            .filter(action -> action.merchants().isEmpty())
             .subscribe(s -> getView().informUser(R.string.dtl_no_merchants_caption), throwable -> {});
       merchantInteractor.thinMerchantsHttpPipe()
             .observeWithReplay()
             .compose(bindViewIoToMainComposer())
             .subscribe(new ActionStateSubscriber<MerchantsAction>()
                   .onStart(action -> getView().showProgress(true))
-                  .onSuccess(action -> onMerchantsLoaded(action.getResult()))
+                  .onSuccess(action -> onMerchantsLoaded(action.merchants()))
                   .onFail((action, throwable) -> {
                      getView().showProgress(false);
-                     apiErrorPresenter.handleActionError(action, throwable);
+                     getView().informUser(action.getFallbackErrorMessage());
                   }));
       filterDataInteractor.filterDataPipe()
             .observeSuccessWithReplay()

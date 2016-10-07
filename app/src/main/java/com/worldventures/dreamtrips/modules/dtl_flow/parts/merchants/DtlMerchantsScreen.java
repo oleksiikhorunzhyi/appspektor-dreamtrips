@@ -16,8 +16,6 @@ public interface DtlMerchantsScreen extends DtlScreen {
 
    void setRefreshedItems(List<ThinMerchant> merchants);
 
-   void addItems(List<ThinMerchant> merchants);
-
    void refreshProgress(boolean isShow);
 
    void loadNextProgress(boolean isShow);

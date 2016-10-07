@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.worldventures.dreamtrips.wallet.ui.wizard.splash.WizardSplashScreen xmlns:android="http://schemas.android.com/apk/res/android"
+<com.worldventures.dreamtrips.wallet.ui.wizard.power_on.WizardPowerOnScreen xmlns:android="http://schemas.android.com/apk/res/android"
       xmlns:app="http://schemas.android.com/apk/res-auto"
       xmlns:tools="http://schemas.android.com/tools"
       android:layout_width="match_parent"
@@ -18,57 +18,59 @@
    <FrameLayout
          android:layout_width="match_parent"
          android:layout_height="match_parent"
+         android:background="@null"
          >
 
       <TextView
-            android:id="@+id/wallet_wizard_splash_title"
+            android:id="@+id/wallet_wizard_power_on_title"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginLeft="40dp"
             android:layout_marginRight="40dp"
             android:layout_marginTop="40dp"
             android:gravity="center"
-            android:text="@string/wallet_wizard_splash_title2"
+            android:text="@string/wallet_wizard_power_on_title2"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            />
+
+      <TextView
+            android:id="@+id/wallet_wizard_power_on_soar_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="100dp"
+            android:gravity="center"
+            android:text="@string/wallet_wizard_splash_title1"
             android:textAppearance="?android:attr/textAppearanceLarge"
             />
 
       <Button
-            android:id="@+id/wallet_wizard_splash_btn"
+            android:id="@+id/wallet_wizard_power_on_btn"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="bottom"
             android:layout_margin="@dimen/spacing_large"
-            android:text="@string/wallet_wizard_scan_start_btn"
+            android:text="@string/wallet_next_label"
             />
 
       <FrameLayout
             android:id="@+id/card_container"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:layout_marginTop="150dp"
             >
 
          <ImageView
-               android:id="@+id/wallet_wizard_smarcard_back"
-               android:layout_width="match_parent"
-               android:layout_height="wrap_content"
-               android:scaleType="fitCenter"
-               android:alpha="0"
-               android:src="@drawable/flyecard_back"
-               tools:ignore="ContentDescription"
-               />
-
-         <ImageView
                android:id="@+id/wallet_wizard_smarcard_front"
-               android:layout_width="wrap_content"
-               android:layout_height="wrap_content"
+               android:layout_width="match_parent"
+               android:layout_height="match_parent"
                android:layout_gravity="center_horizontal"
+               android:layout_marginBottom="-42dp"
                android:scaleType="fitCenter"
-               android:src="@drawable/flyecard_angle"
+               android:src="@drawable/hands_power_on"
                tools:ignore="ContentDescription"
                />
       </FrameLayout>
 
    </FrameLayout>
 
-</com.worldventures.dreamtrips.wallet.ui.wizard.splash.WizardSplashScreen>
+</com.worldventures.dreamtrips.wallet.ui.wizard.power_on.WizardPowerOnScreen>

@@ -123,6 +123,89 @@ public class DtlMerchantsScreenImpl extends DtlLayout<DtlMerchantsScreen, DtlMer
    }
 
    @Override
+   public void onRefreshSuccess() {
+      this.refreshProgress(false);
+      this.hideRefreshMerchantsError();
+      this.showEmpty(false);
+      this.updateLoadingState(false);
+   }
+
+   @Override
+   public void onRefreshProgress() {
+      this.refreshProgress(true);
+      this.hideRefreshMerchantsError();
+      this.showEmpty(false);
+      this.loadNextMerchantsError(false);
+      this.updateLoadingState(true);
+   }
+
+   @Override
+   public void onRefreshError(String error) {
+      this.loadNextMerchantsError(false);
+      this.refreshProgress(false);
+      this.showRefreshMerchantsError(error);
+      this.showEmpty(false);
+      this.updateLoadingState(false);
+   }
+
+   @Override
+   public void onLoadNextSuccess() {
+      this.loadNextProgress(false);
+      this.loadNextMerchantsError(false);
+      this.showEmpty(false);
+      this.updateLoadingState(false);
+   }
+
+   @Override
+   public void onLoadNextProgress() {
+      this.loadNextProgress(true);
+      this.loadNextMerchantsError(false);
+      this.showEmpty(false);
+      this.updateLoadingState(true);
+   }
+
+   @Override
+   public void onLoadNextError() {
+      this.loadNextProgress(false);
+      this.loadNextMerchantsError(true);
+      this.showEmpty(false);
+      this.updateLoadingState(true);
+   }
+
+   private void showRefreshMerchantsError(String error) {
+      if (!delegate.isItemsPresent()) errorView.setVisibility(VISIBLE);
+      else showLoadMerchantsError(error);
+   }
+
+   private void showLoadMerchantsError(String error) {
+      errorDialog = DialogFactory.createErrorDialog(getActivity(), error);
+      errorDialog.setConfirmClickListener(listener -> listener.dismissWithAnimation());
+      errorDialog.show();
+   }
+
+   private void hideRefreshMerchantsError() {
+      errorView.setVisibility(GONE);
+   }
+
+   private void updateLoadingState(boolean isLoading) {
+      paginationManager.updateLoadingStatus(isLoading);
+   }
+
+   private void loadNextMerchantsError(boolean show) {
+      if(show) delegate.addItem(MerchantsErrorCell.INSTANCE);
+      else delegate.removeItem(MerchantsErrorCell.INSTANCE);
+   }
+
+   private void refreshProgress(boolean isShow) {
+      refreshLayout.setRefreshing(isShow);
+   }
+
+   private void loadNextProgress(boolean isLoading) {
+      if (isLoading) delegate.addItem(ProgressCell.INSTANCE);
+      else delegate.removeItem(ProgressCell.INSTANCE);
+   }
+
+   @Override
    public void setFilterButtonState(boolean isDefault) {
       if (dtlToolbar != null) dtlToolbar.setFilterEnabled(!isDefault);
    }
@@ -151,40 +234,8 @@ public class DtlMerchantsScreenImpl extends DtlLayout<DtlMerchantsScreen, DtlMer
    }
 
    @Override
-   public void refreshProgress(boolean isShow) {
-      refreshLayout.setRefreshing(isShow);
-   }
-
-   @Override
-   public void loadNextProgress(boolean isLoading) {
-      if (isLoading) delegate.addItem(ProgressCell.INSTANCE);
-      else delegate.removeItem(ProgressCell.INSTANCE);
-   }
-
-   @Override
    public void showEmpty(boolean isShow) {
       emptyView.setVisibility(isShow ? VISIBLE : GONE);
-   }
-
-   @Override
-   public void updateLoadingState(boolean isLoading) {
-      paginationManager.updateLoadingStatus(isLoading);
-   }
-
-   @Override
-   public void refreshMerchantsError(boolean isShow) {
-      errorView.setVisibility(isShow ? VISIBLE : GONE);
-   }
-
-   @Override
-   public void clearMerchants() {
-      delegate.clear();
-   }
-
-   @Override
-   public void loadNextMerchantsError(boolean show) {
-      if(show) delegate.addItem(MerchantsErrorCell.INSTANCE);
-      else delegate.removeItem(MerchantsErrorCell.INSTANCE);
    }
 
    @OnClick(R.id.retry)
@@ -221,12 +272,6 @@ public class DtlMerchantsScreenImpl extends DtlLayout<DtlMerchantsScreen, DtlMer
    }
 
    @Override
-   protected void onDetachedFromWindow() {
-      selectionManager.release();
-      super.onDetachedFromWindow();
-   }
-
-   @Override
    public void applyViewState(DtlMerchantsState state) {
       if (state == null) return;
       delegate.setExpandedMerchants(state.getExpandedMerchantIds());
@@ -238,13 +283,19 @@ public class DtlMerchantsScreenImpl extends DtlLayout<DtlMerchantsScreen, DtlMer
    }
 
    @Override
-   public void showError(String error) {
+   public void showLoadMerchantError(String error) {
       errorDialog = DialogFactory.createRetryDialog(getActivity(), error);
       errorDialog.setConfirmClickListener(listener -> {
          listener.dismissWithAnimation();
          getPresenter().onRetryMerchantClick();
       });
       errorDialog.show();
+   }
+
+   @Override
+   protected void onDetachedFromWindow() {
+      selectionManager.release();
+      super.onDetachedFromWindow();
    }
 
    ///////////////////////////////////////////////////////////////////////////

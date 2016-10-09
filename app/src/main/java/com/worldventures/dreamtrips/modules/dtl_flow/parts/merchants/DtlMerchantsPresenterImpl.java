@@ -7,6 +7,7 @@ import android.support.annotation.StringRes;
 import android.text.TextUtils;
 
 import com.techery.spares.module.Injector;
+import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.api.action.CommandWithError;
 import com.worldventures.dreamtrips.modules.dtl.analytics.DtlAnalyticsAction;
 import com.worldventures.dreamtrips.modules.dtl.analytics.DtlAnalyticsCommand;
@@ -77,6 +78,8 @@ public class DtlMerchantsPresenterImpl extends DtlPresenterImpl<DtlMerchantsScre
       super.onAttachedToWindow();
 
       connectMerchants();
+      connectRefreshMerchants();
+      connectLoadNextMerchants();
       connectAnalytics();
       connectToolbarUpdates();
       connectFullMerchantLoading();
@@ -140,74 +143,32 @@ public class DtlMerchantsPresenterImpl extends DtlPresenterImpl<DtlMerchantsScre
             .compose(bindViewIoToMainComposer())
             .map(MerchantsAction::merchants)
             .subscribe(this::setItemsOrRedirect);
+   }
 
+   private void connectRefreshMerchants() {
       merchantInteractor.thinMerchantsHttpPipe()
             .observeWithReplay()
             .compose(bindViewIoToMainComposer())
             .filter(state -> state.action.isRefresh())
             .subscribe(new ActionStateSubscriber<MerchantsAction>()
-                  .onSuccess(action -> onRefreshSuccess())
-                  .onProgress(((action, progress) -> onRefreshProgress()))
-                  .onFail(((action, thr) -> onRefreshError())));
-
+                  .onSuccess(action -> getView().onRefreshSuccess())
+                  .onProgress(((action, progress) -> getView().onRefreshProgress()))
+                  .onFail(((action, thr) -> getView().onRefreshError(action.getErrorMessage()))));
+   }
+   private void connectLoadNextMerchants() {
       merchantInteractor.thinMerchantsHttpPipe()
             .observeWithReplay()
             .compose(bindViewIoToMainComposer())
             .filter(state -> !state.action.isRefresh())
             .subscribe(new ActionStateSubscriber<MerchantsAction>()
-                  .onSuccess(action -> onLoadNextSuccess())
-                  .onProgress(((action, progress) -> onLoadNextProgress()))
-                  .onFail(((action, thr) -> onLoadNextError())));
+                  .onSuccess(action -> getView().onLoadNextSuccess())
+                  .onFail(((action, thr) -> getView().onLoadNextError()))
+                  .onProgress(((action, progress) -> getView().onLoadNextProgress())));
    }
 
    private void setItemsOrRedirect(List<ThinMerchant> items) {
       if (items.isEmpty()) showEmptyOrRedirect();
       else getView().setRefreshedItems(items);
-   }
-
-   private void onRefreshSuccess() {
-      getView().refreshProgress(false);
-      getView().refreshMerchantsError(false);
-      getView().showEmpty(false);
-      getView().updateLoadingState(false);
-   }
-
-   private void onRefreshProgress() {
-      getView().refreshProgress(true);
-      getView().refreshMerchantsError(false);
-      getView().showEmpty(false);
-      getView().loadNextMerchantsError(false);
-      getView().updateLoadingState(true);
-   }
-
-   private void onRefreshError() {
-      getView().loadNextMerchantsError(true);
-      getView().clearMerchants();
-
-      getView().refreshProgress(false);
-      getView().refreshMerchantsError(true);
-      getView().showEmpty(false);
-   }
-
-   private void onLoadNextSuccess() {
-      getView().loadNextProgress(false);
-      getView().loadNextMerchantsError(false);
-      getView().showEmpty(false);
-      getView().updateLoadingState(false);
-   }
-
-   private void onLoadNextProgress() {
-      getView().loadNextProgress(true);
-      getView().loadNextMerchantsError(false);
-      getView().showEmpty(false);
-      getView().updateLoadingState(true);
-   }
-
-   private void onLoadNextError() {
-      getView().loadNextProgress(false);
-      getView().loadNextMerchantsError(true);
-      getView().showEmpty(false);
-      getView().updateLoadingState(true);
    }
 
    protected void onSuccessMerchantLoad(FullMerchantAction action) {
@@ -223,7 +184,7 @@ public class DtlMerchantsPresenterImpl extends DtlPresenterImpl<DtlMerchantsScre
       actionParamsHolder = FullMerchantParamsHolder.fromAction(action);
 
       getView().hideBlockingProgress();
-      getView().showError(action.getErrorMessage());
+      getView().showLoadMerchantError(action.getErrorMessage());
    }
 
    @Override

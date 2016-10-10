@@ -207,10 +207,12 @@
    <string name="wallet_firmware_install_header">flye SmartCard Update</string>
    <string name="wallet_firmware_install_text">Installing Update</string>
    <string name="wallet_firmware_install_sub_text">Do not turn off flye SmartCard</string>
-   <string name="wallet_firmware_install_error_text">Installation Error</string>
-   <string name="wallet_firmware_install_error_sub_text">Update failed to complete installation. Would you like to retry?</string>
+   <string name="wallet_firmware_install_error_alert_title">Installation Error</string>
+   <string name="wallet_firmware_install_error_alert_content">Update failed to complete installation. Would you like to retry?</string>
+   <string name="wallet_firmware_install_error_alert_content_customer_support">For assistance please contact Customer Support at</string>
+   <string name="wallet_firmware_install_customer_support_phone_number">(855) 999–3593</string>
    <string name="wallet_firmware_install_error_retry_action">Retry</string>
-   <string name="wallet_firmware_install_error_cancel_action">Not now</string>
+   <string name="wallet_firmware_install_error_cancel_action">Cancel</string>
 
    <!-- firmware success install-->
    <string name="wallet_firmware_install_success_header">flye SmartCard Update</string>

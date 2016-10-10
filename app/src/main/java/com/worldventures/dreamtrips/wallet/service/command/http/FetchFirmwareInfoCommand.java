@@ -1,11 +1,9 @@
 package com.worldventures.dreamtrips.wallet.service.command.http;
 
-
 import com.worldventures.dreamtrips.api.smart_card.firmware.GetFirmwareHttpAction;
 import com.worldventures.dreamtrips.core.janet.dagger.InjectableAction;
 import com.worldventures.dreamtrips.core.utils.AppVersionNameBuilder;
 import com.worldventures.dreamtrips.wallet.domain.entity.Firmware;
-import com.worldventures.dreamtrips.wallet.domain.storage.TemporaryStorage;
 import com.worldventures.dreamtrips.wallet.service.SmartCardInteractor;
 import com.worldventures.dreamtrips.wallet.service.command.GetActiveSmartCardCommand;
 
@@ -22,7 +20,6 @@ import static com.worldventures.dreamtrips.core.janet.JanetModule.JANET_API_LIB;
 @CommandAction
 public class FetchFirmwareInfoCommand extends Command<Firmware> implements InjectableAction {
 
-   @Inject TemporaryStorage temporaryStorage;
    @Inject MapperyContext mapperyContext;
    @Inject SmartCardInteractor smartCardInteractor;
    @Inject AppVersionNameBuilder appVersionNameBuilder;
@@ -30,7 +27,6 @@ public class FetchFirmwareInfoCommand extends Command<Firmware> implements Injec
 
    @Override
    protected void run(CommandCallback<Firmware> callback) throws Throwable {
-
       smartCardInteractor.activeSmartCardPipe()
             .createObservableResult(new GetActiveSmartCardCommand())
             .flatMap(it -> janet.createPipe(GetFirmwareHttpAction.class)

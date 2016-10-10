@@ -2,7 +2,7 @@ package com.worldventures.dreamtrips.modules.infopages.presenter;
 
 import com.worldventures.dreamtrips.core.navigation.BackStackDelegate;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
-import com.worldventures.dreamtrips.modules.infopages.command.AttachmentsRemovedCommand;
+import com.worldventures.dreamtrips.modules.infopages.service.command.AttachmentsRemovedCommand;
 import com.worldventures.dreamtrips.modules.infopages.model.FeedbackImageAttachment;
 import com.worldventures.dreamtrips.modules.infopages.service.FeedbackInteractor;
 
@@ -37,7 +37,7 @@ public class FeedbackImageAttachmentsPresenter extends Presenter<FeedbackImageAt
 
    public boolean handleBackPress() {
       if (!locallyDeletedAttachments.isEmpty()) {
-         feedbackInteractor.getAttachmentsRemovedPipe()
+         feedbackInteractor.attachmentsRemovedPipe()
                .send(new AttachmentsRemovedCommand(locallyDeletedAttachments));
       }
       return false;

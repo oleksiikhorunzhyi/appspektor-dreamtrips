@@ -13,10 +13,10 @@ import com.worldventures.dreamtrips.modules.common.model.EntityStateHolder;
 import com.worldventures.dreamtrips.modules.common.model.PhotoGalleryModel;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.common.view.util.MediaPickerManager;
-import com.worldventures.dreamtrips.modules.infopages.api.GetFeedbackReasonsQuery;
 import com.worldventures.dreamtrips.modules.infopages.bundle.FeedbackImageAttachmentsBundle;
-import com.worldventures.dreamtrips.modules.infopages.command.SendFeedbackCommand;
-import com.worldventures.dreamtrips.modules.infopages.command.UploadFeedbackAttachmentCommand;
+import com.worldventures.dreamtrips.modules.infopages.service.command.GetFeedbackCommand;
+import com.worldventures.dreamtrips.modules.infopages.service.command.SendFeedbackCommand;
+import com.worldventures.dreamtrips.modules.infopages.service.command.UploadFeedbackAttachmentCommand;
 import com.worldventures.dreamtrips.modules.infopages.model.FeedbackImageAttachment;
 import com.worldventures.dreamtrips.modules.infopages.model.FeedbackType;
 import com.worldventures.dreamtrips.modules.infopages.service.FeedbackAttachmentsManager;
@@ -67,26 +67,31 @@ public class SendFeedbackPresenter extends Presenter<SendFeedbackPresenter.View>
    ///////////////////////////////////////////////////////////////////////////
 
    private void getFeedbackReasons(View view) {
-      List<FeedbackType> cachedFeedbackTypes = db.getFeedbackTypes();
-      if (cachedFeedbackTypes == null || cachedFeedbackTypes.isEmpty()) {
-         view.showProgressBar();
-      } else {
-         view.setFeedbackTypes(cachedFeedbackTypes);
-      }
-      doRequest(new GetFeedbackReasonsQuery(), feedbackTypes -> {
-         db.setFeedbackTypes(feedbackTypes);
-         view.setFeedbackTypes(feedbackTypes);
-         view.hideProgressBar();
-      }, spiceException -> {
-         SendFeedbackPresenter.this.handleError(spiceException);
-         view.hideProgressBar();
-      });
+      feedbackInteractor.getFeedbackPipe()
+            .createObservable(new GetFeedbackCommand())
+            .compose(bindViewToMainComposer())
+            .subscribe(new ActionStateSubscriber<GetFeedbackCommand>()
+                  .onStart(action -> {
+                     List<FeedbackType> items = action.items();
+                     view.setFeedbackTypes(action.items());
+                     if (items == null || items.isEmpty()) {
+                        view.showProgressBar();
+                     }
+                  })
+                  .onSuccess(action -> {
+                     view.setFeedbackTypes(action.items());
+                     view.hideProgressBar();
+                  })
+                  .onFail((action, e) -> {
+                     super.handleError(action, e);
+                     view.hideProgressBar();
+                  }));
    }
 
    public void sendFeedback(int feedbackType, String text) {
       view.changeDoneButtonState(false);
 
-      feedbackInteractor.getSendFeedbackPipe()
+      feedbackInteractor.sendFeedbackPipe()
             .createObservable(new SendFeedbackCommand(feedbackType, text, getImageAttachments()))
             .compose(bindViewToMainComposer())
             .subscribe(new ActionStateSubscriber<SendFeedbackCommand>()
@@ -170,7 +175,7 @@ public class SendFeedbackPresenter extends Presenter<SendFeedbackPresenter.View>
 
    private void uploadImageAttachment(String path) {
       FeedbackImageAttachment attachment = new FeedbackImageAttachment(path);
-      feedbackInteractor.getUploadAttachmentPipe().send(new UploadFeedbackAttachmentCommand(attachment));
+      feedbackInteractor.uploadAttachmentPipe().send(new UploadFeedbackAttachmentCommand(attachment));
    }
 
    public void onRetryUploadingAttachment(EntityStateHolder<FeedbackImageAttachment> holder) {
@@ -197,11 +202,11 @@ public class SendFeedbackPresenter extends Presenter<SendFeedbackPresenter.View>
          view.changeAddPhotosButtonState(attachmentsCount < PICKER_MAX_IMAGES ? true : false);
       });
 
-      feedbackInteractor.getAttachmentsRemovedPipe()
+      feedbackInteractor.attachmentsRemovedPipe()
             .observeSuccessWithReplay()
             .compose(bindViewToMainComposer())
             .map(Command::getResult)
-            .doOnNext(result -> feedbackInteractor.getAttachmentsRemovedPipe().clearReplays())
+            .doOnNext(result -> feedbackInteractor.attachmentsRemovedPipe().clearReplays())
             .subscribe(removedAttachments -> {
                Queryable.from(attachmentsManager.getAttachments()).forEachR(holder -> {
                   if (removedAttachments.contains(holder.entity())) {
@@ -211,7 +216,7 @@ public class SendFeedbackPresenter extends Presenter<SendFeedbackPresenter.View>
                });
             });
 
-      feedbackInteractor.getUploadAttachmentPipe()
+      feedbackInteractor.uploadAttachmentPipe()
             .observe()
             .compose(bindViewToMainComposer())
             .subscribe(new ActionStateSubscriber<UploadFeedbackAttachmentCommand>()

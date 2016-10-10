@@ -1,6 +1,7 @@
 package com.worldventures.dreamtrips.modules.mapping;
 
 import com.worldventures.dreamtrips.modules.feed.model.converter.FeedCommentConverter;
+import com.worldventures.dreamtrips.modules.infopages.model.FeedbackTypeConverter;
 import com.worldventures.dreamtrips.modules.mapping.converter.CircleConverter;
 import com.worldventures.dreamtrips.modules.mapping.converter.Converter;
 import com.worldventures.dreamtrips.modules.mapping.converter.FeedbackImageAttachmentConverter;
@@ -143,5 +144,11 @@ public class MappingModule {
    @Singleton
    Converter provideFeedbackBodyConverter() {
       return new FeedbackImageAttachmentConverter();
+   }
+
+   @Provides(type = Provides.Type.SET)
+   @Singleton
+   Converter provideFeedbackTypeConverter() {
+      return new FeedbackTypeConverter();
    }
 }

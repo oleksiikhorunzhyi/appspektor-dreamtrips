@@ -1,4 +1,4 @@
-package com.worldventures.dreamtrips.modules.infopages.command;
+package com.worldventures.dreamtrips.modules.infopages.service.command;
 
 import android.content.Context;
 import android.os.Build;

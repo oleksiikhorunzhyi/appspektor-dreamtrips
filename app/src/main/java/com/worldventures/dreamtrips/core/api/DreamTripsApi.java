@@ -13,7 +13,6 @@ import com.worldventures.dreamtrips.modules.feed.model.CreatePhotoPostEntity;
 import com.worldventures.dreamtrips.modules.feed.model.FeedEntityHolder;
 import com.worldventures.dreamtrips.modules.feed.model.TextualPost;
 import com.worldventures.dreamtrips.modules.feed.model.comment.Comment;
-import com.worldventures.dreamtrips.modules.infopages.model.FeedbackType;
 import com.worldventures.dreamtrips.modules.membership.api.InviteBody;
 import com.worldventures.dreamtrips.modules.membership.model.History;
 import com.worldventures.dreamtrips.modules.membership.model.InviteTemplate;
@@ -224,7 +223,4 @@ public interface DreamTripsApi {
 
    @GET("/api/photos/{uid}")
    Photo getPhotoInfo(@Path("uid") String uid);
-
-   @GET("/api/feedbacks/reasons")
-   ArrayList<FeedbackType> getFeedbackReasons();
 }

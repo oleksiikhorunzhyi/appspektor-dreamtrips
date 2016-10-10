@@ -166,8 +166,8 @@ public abstract class BaseActivity extends InjectingActivity {
    }
 
    @Override
-   public void onSaveInstanceState(Bundle outState, PersistableBundle outPersistentState) {
-      super.onSaveInstanceState(outState, outPersistentState);
+   public void onSaveInstanceState(Bundle outState) {
+      super.onSaveInstanceState(outState);
       pickImageDelegate.saveInstanceState(outState);
    }
 

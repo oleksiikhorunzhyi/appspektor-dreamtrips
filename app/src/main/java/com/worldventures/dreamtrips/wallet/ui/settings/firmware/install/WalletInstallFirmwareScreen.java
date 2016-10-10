@@ -2,10 +2,17 @@ package com.worldventures.dreamtrips.wallet.ui.settings.firmware.install;
 
 import android.content.Context;
 import android.graphics.Color;
+import android.graphics.Typeface;
 import android.graphics.drawable.ColorDrawable;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.Toolbar;
+import android.text.SpannableString;
+import android.text.SpannableStringBuilder;
+import android.text.style.ForegroundColorSpan;
+import android.text.style.StyleSpan;
+import android.text.util.Linkify;
 import android.util.AttributeSet;
 
 import com.afollestad.materialdialogs.MaterialDialog;
@@ -68,14 +75,28 @@ public class WalletInstallFirmwareScreen extends WalletLinearLayout<WalletInstal
    @Override
    public void showError(String msg, @Nullable Action1 action) {
       new MaterialDialog.Builder(getContext())
-            .title(R.string.wallet_firmware_install_error_text)
-            .content(R.string.wallet_firmware_install_error_sub_text)
+            .title(R.string.wallet_firmware_install_error_alert_title)
+            .content(createDialogContentText())
             .positiveText(R.string.wallet_firmware_install_error_retry_action)
             .onPositive((dialog, which) -> getPresenter().goToPreInstall())
             .negativeText(R.string.wallet_firmware_install_error_cancel_action)
             .onNegative((dialog, which) -> getPresenter().goToDashboard())
             .cancelable(false)
             .show();
+   }
+
+   private CharSequence createDialogContentText() {
+      SpannableString supportPhoneNumber = new SpannableString(getString(R.string.wallet_firmware_install_customer_support_phone_number));
+      supportPhoneNumber.setSpan(new StyleSpan(Typeface.BOLD), 0, supportPhoneNumber.length(), 0);
+      supportPhoneNumber.setSpan(new ForegroundColorSpan(ContextCompat.getColor(getContext(), R.color.wallet_alert_phone_number_color)), 0, supportPhoneNumber.length(), 0);
+      Linkify.addLinks(supportPhoneNumber, Linkify.PHONE_NUMBERS);
+
+      return new SpannableStringBuilder()
+            .append(getString(R.string.wallet_firmware_install_error_alert_content))
+            .append("\n\n")
+            .append(getString(R.string.wallet_firmware_install_error_alert_content_customer_support))
+            .append("\n")
+            .append(supportPhoneNumber);
    }
 
    @Override

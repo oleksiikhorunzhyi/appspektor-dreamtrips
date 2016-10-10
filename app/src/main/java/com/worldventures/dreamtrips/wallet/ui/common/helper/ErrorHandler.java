@@ -14,6 +14,7 @@ import java.util.Map;
 
 import io.techery.janet.command.exception.CommandServiceException;
 import io.techery.janet.helper.JanetActionException;
+import io.techery.janet.http.exception.HttpException;
 import io.techery.janet.http.exception.HttpServiceException;
 import io.techery.janet.smartcard.exception.NotConnectedException;
 import io.techery.janet.smartcard.exception.SmartCardServiceException;
@@ -76,6 +77,9 @@ public class ErrorHandler<T> implements Func1<Throwable, MessageActionHolder<T>>
       }
       if (throwable instanceof UnknownHostException) {
          if (message == null) message = context.getString(R.string.wallet_no_internet_connection);
+      }
+      if (throwable instanceof HttpException) {
+         if (message == null) message = context.getString(R.string.error_internal_server);
       }
       if (throwable instanceof NotConnectedException) {
          if (message == null) message = context.getString(R.string.wallet_smart_card_is_disconnected);

@@ -70,7 +70,7 @@ public class DtlMapPresenterImpl extends DtlPresenterImpl<DtlMapScreen, ViewStat
    @Inject DtlLocationInteractor locationInteractor;
    @Inject DtlTransactionInteractor transactionInteractor;
    @Inject PresentationInteractor presentationInteractor;
-   //
+
    @State FullMerchantParamsHolder actionParamsHolder;
 
    public DtlMapPresenterImpl(Context context, Injector injector) {
@@ -129,8 +129,10 @@ public class DtlMapPresenterImpl extends DtlPresenterImpl<DtlMapScreen, ViewStat
             .map(FilterDataAction::getResult)
             .map(FilterData::isOffersOnly)
             .subscribe(getView()::toggleOffersOnly);
-      fullMerchantInteractor.fullMerchantPipe().observeWithReplay()
+      fullMerchantInteractor.fullMerchantPipe()
+            .observeWithReplay()
             .compose(bindViewIoToMainComposer())
+            .filter(actionState -> !getView().isTabletLandscape())
             .subscribe(new ActionStateSubscriber<FullMerchantAction>()
                   .onSuccess(this::onSuccessMerchantLoad)
                   .onProgress(this::onProgressMerchantLoad)
@@ -142,12 +144,10 @@ public class DtlMapPresenterImpl extends DtlPresenterImpl<DtlMapScreen, ViewStat
             .subscribe(popupHeight -> getView().prepareInfoWindow(popupHeight));
    }
 
-   @SuppressWarnings("unused")
    protected void onProgressMerchantLoad(CommandWithError<Merchant> action, Integer progress) {
       getView().showBlockingProgress();
    }
 
-   @SuppressWarnings("unused")
    protected void onFailMerchantLoad(FullMerchantAction command, Throwable throwable) {
       actionParamsHolder = FullMerchantParamsHolder.fromAction(command);
       //
@@ -155,7 +155,6 @@ public class DtlMapPresenterImpl extends DtlPresenterImpl<DtlMapScreen, ViewStat
       getView().showError(command.getErrorMessage());
    }
 
-   @SuppressWarnings("unused")
    protected void onSuccessMerchantLoad(FullMerchantAction command) {
       getView().hideBlockingProgress();
       navigateToDetails(command.getResult());

@@ -14,7 +14,6 @@ import com.worldventures.dreamtrips.modules.dtl.analytics.DtlAnalyticsCommand;
 import com.worldventures.dreamtrips.modules.dtl.analytics.MerchantFromSearchEvent;
 import com.worldventures.dreamtrips.modules.dtl.analytics.MerchantsListingExpandEvent;
 import com.worldventures.dreamtrips.modules.dtl.analytics.MerchantsListingViewEvent;
-import com.worldventures.dreamtrips.modules.dtl.event.ToggleMerchantSelectionEvent;
 import com.worldventures.dreamtrips.modules.dtl.helper.MerchantHelper;
 import com.worldventures.dreamtrips.modules.dtl.helper.holder.FullMerchantParamsHolder;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.Merchant;
@@ -284,9 +283,5 @@ public class DtlMerchantsPresenterImpl extends DtlPresenterImpl<DtlMerchantsScre
    protected void navigateToPath(Path path) {
       History history = History.single(path);
       Flow.get(getContext()).setHistory(history, Flow.Direction.REPLACE);
-   }
-
-   public void onEventMainThread(ToggleMerchantSelectionEvent event) {
-      //getView().toggleSelection(event.getDtlMerchant()); TODO :: toggle selection
    }
 }

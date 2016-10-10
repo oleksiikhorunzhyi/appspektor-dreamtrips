@@ -455,7 +455,6 @@ dependencies {
    compile 'com.github.afollestad.material-dialogs:core:0.8.6.2'
    compile 'com.github.afollestad.material-dialogs:commons:0.8.6.2'
    compile 'com.orhanobut:dialogplus:1.10@aar'
-   compile 'com.kbeanie:image-chooser-library:1.5.2@aar'
    compile 'com.github.techery:material-range-bar:db6fec9fdd'
    compile 'com.h6ah4i.android.widget.advrecyclerview:advrecyclerview:0.8.7'
    compile 'com.github.frankiesardo:linearlistview:1.0.1@aar'

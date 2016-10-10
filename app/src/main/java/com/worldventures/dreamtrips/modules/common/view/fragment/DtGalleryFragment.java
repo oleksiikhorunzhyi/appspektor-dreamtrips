@@ -3,6 +3,7 @@ package com.worldventures.dreamtrips.modules.common.view.fragment;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
 
+import com.techery.spares.ui.view.cell.CellDelegate;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.permission.PermissionConstants;
 import com.worldventures.dreamtrips.core.permission.PermissionDispatcher;
@@ -13,7 +14,6 @@ import com.worldventures.dreamtrips.modules.common.presenter.GalleryPresenter;
 import com.worldventures.dreamtrips.modules.feed.model.PickerIrregularPhotoModel;
 import com.worldventures.dreamtrips.modules.feed.view.cell.PhotoGalleryCell;
 import com.worldventures.dreamtrips.modules.feed.view.cell.PickerIrregularPhotoCell;
-import com.worldventures.dreamtrips.modules.tripsimages.view.custom.PickImageDelegate;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,6 +23,9 @@ import javax.inject.Inject;
 import rx.Subscription;
 
 public class DtGalleryFragment extends BasePickerFragment<GalleryPresenter> implements GalleryPresenter.View {
+
+   public static final int PICK_PICTURE_PHOTOS_TYPE = 291;
+
    @Inject PermissionDispatcher permissionDispatcher;
    private Subscription permissionSubscription;
 
@@ -30,11 +33,25 @@ public class DtGalleryFragment extends BasePickerFragment<GalleryPresenter> impl
    protected void registerCells() {
       adapter.registerCell(PhotoGalleryModel.class, PhotoGalleryCell.class);
       adapter.registerCell(PickerIrregularPhotoModel.class, PickerIrregularPhotoCell.class);
+
+      adapter.registerDelegate(PickerIrregularPhotoModel.class, new CellDelegate<PickerIrregularPhotoModel>() {
+         @Override
+         public void onCellClicked(PickerIrregularPhotoModel model) {
+            switch (model.getType()) {
+               case PickerIrregularPhotoModel.CAMERA:
+                  getPresenter().tryOpenCamera();
+                  break;
+               case PickerIrregularPhotoModel.FACEBOOK:
+                  getPresenter().openFacebook();
+                  break;
+            }
+         }
+      });
    }
 
    @Override
    protected int getPhotosType() {
-      return PickImageDelegate.PICK_PICTURE;
+      return PICK_PICTURE_PHOTOS_TYPE;
    }
 
    @Override

@@ -14,11 +14,9 @@ public abstract class LanguageHeaderStaticInfoFragment extends StaticInfoFragmen
    @Inject LocaleHelper localeHelper;
 
    @Override
-   public void load(String url) {
-      if (!isLoading && savedState == null) {
-         Map<String, String> additionalHeaders = new HashMap<>();
-         additionalHeaders.put(ACCEPT_LANGUAGE_HEADER_KEY, localeHelper.getDefaultLocaleFormatted());
-         webView.loadUrl(url, additionalHeaders);
-      }
+   protected Map<String, String> getAdditionalHeaders() {
+      Map<String, String> additionalHeaders = new HashMap<>();
+      additionalHeaders.put(ACCEPT_LANGUAGE_HEADER_KEY, localeHelper.getDefaultLocaleFormatted());
+      return additionalHeaders;
    }
 }

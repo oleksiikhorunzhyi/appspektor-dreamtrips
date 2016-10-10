@@ -10,6 +10,7 @@ import android.net.http.SslError;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Parcelable;
+import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
@@ -34,6 +35,7 @@ import com.worldventures.dreamtrips.BuildConfig;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.rx.RxBaseFragmentWithArgs;
+import com.worldventures.dreamtrips.core.utils.HeaderProvider;
 import com.worldventures.dreamtrips.core.utils.ViewUtils;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.common.view.dialog.MessageDialogFragment;
@@ -43,7 +45,9 @@ import com.worldventures.dreamtrips.modules.infopages.presenter.WebViewFragmentP
 import com.worldventures.dreamtrips.modules.membership.bundle.UrlBundle;
 
 import java.lang.ref.WeakReference;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 
 import javax.inject.Inject;
@@ -60,6 +64,7 @@ public abstract class StaticInfoFragment<T extends WebViewFragmentPresenter, P e
    protected static final String AUTHORIZATION_HEADER_KEY = "Authorization";
 
    @Inject protected StaticPageProvider provider;
+   @Inject protected HeaderProvider headerProvider;
    @Inject ScreenChangedEventDelegate screenChangedEventDelegate;
 
    @InjectView(R.id.web_view) protected VideoEnabledWebView webView;
@@ -352,7 +357,18 @@ public abstract class StaticInfoFragment<T extends WebViewFragmentPresenter, P e
 
    @Override
    public void load(String url) {
-      if (!isLoading && savedState == null) webView.loadUrl(url);
+      if (!isLoading && savedState == null) webView.loadUrl(url, getHeaders());
+   }
+
+   private Map<String, String> getHeaders() {
+      Map<String, String> headers = new HashMap<>();
+      headers.putAll(headerProvider.getStandardWebViewHeaders());
+      headers.putAll(getAdditionalHeaders());
+      return headers;
+   }
+
+   protected Map<String, String> getAdditionalHeaders() {
+      return Collections.emptyMap();
    }
 
    @Override
@@ -620,12 +636,10 @@ public abstract class StaticInfoFragment<T extends WebViewFragmentPresenter, P e
       }
 
       @Override
-      public void load(String url) {
-         if (!isLoading && savedState == null) {
-            Map<String, String> additionalHeaders = new HashMap<>();
-            additionalHeaders.put(AUTHORIZATION_HEADER_KEY, ((WebViewFragmentPresenter) getPresenter()).getAuthToken());
-            webView.loadUrl(url, additionalHeaders);
-         }
+      protected Map<String, String> getAdditionalHeaders() {
+         Map<String, String> additionalHeaders = new HashMap<>();
+         additionalHeaders.put(AUTHORIZATION_HEADER_KEY, ((WebViewFragmentPresenter) getPresenter()).getAuthToken());
+         return additionalHeaders;
       }
 
       @Override
@@ -654,13 +668,11 @@ public abstract class StaticInfoFragment<T extends WebViewFragmentPresenter, P e
       private static final String BOOK_IT_HEADER = "Android" + "-" + Build.VERSION.RELEASE + "-" + BuildConfig.versionMajor + "." + BuildConfig.versionMinor + "." + BuildConfig.versionPatch;
 
       @Override
-      public void load(String url) {
-         if (!isLoading && savedState == null) {
-            Map<String, String> additionalHeaders = new HashMap<>();
-            additionalHeaders.put(BOOK_IT_HEADER_KEY, BOOK_IT_HEADER);
-            additionalHeaders.put(AUTHORIZATION_HEADER_KEY, getPresenter().getAuthToken());
-            webView.loadUrl(url, additionalHeaders);
-         }
+      protected Map<String, String> getAdditionalHeaders() {
+         Map<String, String> additionalHeaders = new HashMap<>();
+         additionalHeaders.put(BOOK_IT_HEADER_KEY, BOOK_IT_HEADER);
+         additionalHeaders.put(AUTHORIZATION_HEADER_KEY, getPresenter().getAuthToken());
+         return additionalHeaders;
       }
 
       @Override

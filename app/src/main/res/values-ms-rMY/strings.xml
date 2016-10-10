@@ -656,4 +656,8 @@
    <string name="error_fail_to_load_filters">Maaf, gagal untuk muat penapis</string>
    <string name="flag_content_message">Kakitangan WorldVentures akan dimaklumkan untuk menyemak kandungan ini untuk  </string>
 
+   <!-- change this later after approval from WV -->
+   <string name="offline_warning_dialog_title">Tiada Sambungan Internet. </string>
+   <string name="offline_warning_dialog_message">Akses anda akan dihadkan</string>
+
 </resources>

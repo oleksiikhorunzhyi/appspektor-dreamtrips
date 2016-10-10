@@ -20,6 +20,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URISyntaxException;
+import java.util.Calendar;
 import java.util.List;
 
 import timber.log.Timber;
@@ -159,6 +160,19 @@ public class FileUtils {
       }
 
       return null;
+   }
+
+   public static String buildFilePathOriginal(String foldername, String extension) {
+      return getDirectory(foldername) + File.separator + Calendar.getInstance().getTimeInMillis() + "." + extension;
+
+   }
+
+   public static String getDirectory(String foldername) {
+      File directory;
+      directory = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + foldername);
+      if (!directory.exists()) directory.mkdirs();
+
+      return directory.getAbsolutePath();
    }
 
    /**

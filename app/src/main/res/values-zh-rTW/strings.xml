@@ -656,4 +656,8 @@
    <string name="error_fail_to_load_filters">很抱歉，無法加載篩選條件</string>
    <string name="flag_content_message">WorldVentures人員將被通知審查此內容 </string>
 
+   <!-- change this later after approval from WV -->
+   <string name="offline_warning_dialog_title">沒有網絡連接</string>
+   <string name="offline_warning_dialog_message">您的使用將受到限制</string>
+
 </resources>

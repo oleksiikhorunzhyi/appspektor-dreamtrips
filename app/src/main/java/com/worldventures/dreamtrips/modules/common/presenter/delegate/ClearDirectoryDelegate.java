@@ -29,7 +29,7 @@ public class ClearDirectoryDelegate {
       photoDAO.getErrorAttachments().take(1).subscribeOn(Schedulers.io()).subscribe(dataAttachments -> {
          List<String> exceptFilePaths = Queryable.from(dataAttachments).map(DataPhotoAttachment::getUrl).toList();
 
-         File directory = new File(com.kbeanie.imagechooser.api.FileUtils.getDirectory(PickImageDelegate.FOLDERNAME));
+         File directory = new File(FileUtils.getDirectory(PickImageDelegate.FOLDERNAME));
          if (!directory.exists()) return;
          try {
             FileUtils.cleanDirectory(context, directory, exceptFilePaths);

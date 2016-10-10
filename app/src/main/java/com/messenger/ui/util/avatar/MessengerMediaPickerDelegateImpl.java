@@ -1,14 +1,15 @@
 package com.messenger.ui.util.avatar;
 
 import com.innahema.collections.query.queriables.Queryable;
-import com.kbeanie.imagechooser.api.ChosenImage;
-import com.messenger.ui.helper.LegacyPhotoPickerDelegate;
 import com.worldventures.dreamtrips.core.permission.PermissionConstants;
 import com.worldventures.dreamtrips.core.permission.PermissionDispatcher;
 import com.worldventures.dreamtrips.core.permission.PermissionGrantedComposer;
 import com.worldventures.dreamtrips.modules.common.model.BasePhotoPickerModel;
+import com.worldventures.dreamtrips.modules.common.service.MediaInteractor;
 import com.worldventures.dreamtrips.modules.common.view.custom.PhotoPickerLayoutDelegate;
+import com.worldventures.dreamtrips.modules.common.view.util.MediaPickerManager;
 
+import java.util.Collections;
 import java.util.List;
 
 import rx.Observable;
@@ -19,15 +20,17 @@ public class MessengerMediaPickerDelegateImpl implements MessengerMediaPickerDel
 
    public static final int MESSENGER_MULTI_PICK_LIMIT = 15;
 
-   private LegacyPhotoPickerDelegate legacyPhotoPickerDelegate;
    private PhotoPickerLayoutDelegate photoPickerLayoutDelegate;
    private PermissionDispatcher permissionDispatcher;
+   private MediaInteractor mediaInteractor;
 
    private PublishSubject<String> imagesStream = PublishSubject.create();
    private Subscription cameraImagesStreamSubscription;
 
-   public MessengerMediaPickerDelegateImpl(LegacyPhotoPickerDelegate legacyPhotoPickerDelegate, PhotoPickerLayoutDelegate photoPickerLayoutDelegate, PermissionDispatcher permissionDispatcher) {
-      this.legacyPhotoPickerDelegate = legacyPhotoPickerDelegate;
+   public MessengerMediaPickerDelegateImpl(MediaInteractor mediaInteractor,
+         PhotoPickerLayoutDelegate photoPickerLayoutDelegate,
+         PermissionDispatcher permissionDispatcher) {
+      this.mediaInteractor = mediaInteractor;
       this.photoPickerLayoutDelegate = photoPickerLayoutDelegate;
       this.permissionDispatcher = permissionDispatcher;
       initPhotoPicker();
@@ -40,15 +43,15 @@ public class MessengerMediaPickerDelegateImpl implements MessengerMediaPickerDel
 
    @Override
    public void register() {
-      legacyPhotoPickerDelegate.register();
-      cameraImagesStreamSubscription = legacyPhotoPickerDelegate.watchChosenImages().subscribe(photos -> {
-         onImagesPicked(Queryable.from(photos).map(ChosenImage::getFilePathOriginal).toList());
-      });
+      cameraImagesStreamSubscription = mediaInteractor.imageCapturedPipe()
+            .observeSuccess()
+            .subscribe(imageCapturedCommand -> {
+               onImagesPicked(Collections.singletonList(imageCapturedCommand.getResult()));
+            });
    }
 
    @Override
    public void unregister() {
-      legacyPhotoPickerDelegate.unregister();
       cameraImagesStreamSubscription.unsubscribe();
    }
 

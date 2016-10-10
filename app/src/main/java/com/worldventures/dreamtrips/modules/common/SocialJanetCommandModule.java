@@ -37,6 +37,7 @@ import com.worldventures.dreamtrips.modules.friends.janet.AddFriendCommand;
 import com.worldventures.dreamtrips.modules.friends.janet.DeleteFriendRequestCommand;
 import com.worldventures.dreamtrips.modules.infopages.service.command.GetFeedbackCommand;
 import com.worldventures.dreamtrips.modules.infopages.service.command.SendFeedbackCommand;
+import com.worldventures.dreamtrips.modules.friends.janet.RemoveFriendCommand;
 import com.worldventures.dreamtrips.modules.membership.command.GetPodcastsCommand;
 import com.worldventures.dreamtrips.modules.settings.command.SettingsCommand;
 import com.worldventures.dreamtrips.modules.trips.command.GetActivitiesCommand;
@@ -90,6 +91,7 @@ import dagger.Module;
       DeleteFriendRequestCommand.class,
       AcceptAllFriendRequestsCommand.class,
       AddFriendCommand.class,
+      RemoveFriendCommand.class,
       DeleteFriendRequestCommand.class,
       ActOnFriendRequestCommand.Accept.class,
       ActOnFriendRequestCommand.Reject.class,

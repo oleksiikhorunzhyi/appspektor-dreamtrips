@@ -2,6 +2,7 @@ package com.worldventures.dreamtrips.modules.common.view.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.PersistableBundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -34,6 +35,7 @@ import com.worldventures.dreamtrips.modules.reptools.ReptoolsModule;
 import com.worldventures.dreamtrips.modules.settings.SettingsModule;
 import com.worldventures.dreamtrips.modules.trips.TripsModule;
 import com.worldventures.dreamtrips.modules.tripsimages.TripsImagesModule;
+import com.worldventures.dreamtrips.modules.tripsimages.view.custom.PickImageDelegate;
 import com.worldventures.dreamtrips.modules.video.VideoModule;
 import com.worldventures.dreamtrips.wallet.di.WalletActivityModule;
 
@@ -46,11 +48,12 @@ import rx.schedulers.Schedulers;
 public abstract class BaseActivity extends InjectingActivity {
 
    @Inject protected ActivityResultDelegate activityResultDelegate;
-   @Inject BackStackDelegate backStackDelegate;
-   @Inject AnalyticsInteractor analyticsInteractor;
+   @Inject protected BackStackDelegate backStackDelegate;
+   @Inject protected AnalyticsInteractor analyticsInteractor;
+   @Inject protected PickImageDelegate pickImageDelegate;
    @Inject protected PermissionDispatcher permissionDispatcher;
    @Inject protected Router router;
-   @Inject ActivityRouter activityRouter;
+   @Inject protected ActivityRouter activityRouter;
 
    @Override
    protected void onCreate(Bundle savedInstanceState) {
@@ -153,12 +156,25 @@ public abstract class BaseActivity extends InjectingActivity {
    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
       super.onActivityResult(requestCode, resultCode, data);
       activityResultDelegate.onActivityResult(requestCode, resultCode, data);
+      pickImageDelegate.onActivityResult(requestCode, resultCode, data);
    }
 
    @Override
    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
       super.onRequestPermissionsResult(requestCode, permissions, grantResults);
       permissionDispatcher.onRequestPermissionsResult(requestCode, permissions, grantResults);
+   }
+
+   @Override
+   public void onSaveInstanceState(Bundle outState, PersistableBundle outPersistentState) {
+      super.onSaveInstanceState(outState, outPersistentState);
+      pickImageDelegate.saveInstanceState(outState);
+   }
+
+   @Override
+   protected void onRestoreInstanceState(Bundle savedInstanceState) {
+      super.onRestoreInstanceState(savedInstanceState);
+      pickImageDelegate.restoreInstanceState(savedInstanceState);
    }
 
    @Override

@@ -12,6 +12,7 @@ import com.worldventures.dreamtrips.wallet.service.command.GetDefaultAddressComm
 import com.worldventures.dreamtrips.wallet.service.command.ResetSmartCardCommand;
 import com.worldventures.dreamtrips.wallet.service.command.SaveCardDetailsDataCommand;
 import com.worldventures.dreamtrips.wallet.service.command.SaveDefaultAddressCommand;
+import com.worldventures.dreamtrips.wallet.service.command.SaveLockStateCommand;
 import com.worldventures.dreamtrips.wallet.service.command.SetAutoClearSmartCardDelayCommand;
 import com.worldventures.dreamtrips.wallet.service.command.SetDefaultCardOnDeviceCommand;
 import com.worldventures.dreamtrips.wallet.service.command.SetDisableDefaultCardDelayCommand;
@@ -38,6 +39,7 @@ import io.techery.janet.smartcard.action.charger.StopCardRecordingAction;
 import io.techery.janet.smartcard.action.records.DeleteRecordAction;
 import io.techery.janet.smartcard.action.support.DisconnectAction;
 import io.techery.janet.smartcard.event.CardChargedEvent;
+import io.techery.janet.smartcard.event.LockDeviceChangedEvent;
 import rx.Observable;
 import rx.schedulers.Schedulers;
 import timber.log.Timber;
@@ -64,6 +66,7 @@ public final class SmartCardInteractor {
    private final ActionPipe<SaveCardDetailsDataCommand> saveCardDetailsDataCommandPipe;
    private final ActionPipe<SetStealthModeCommand> stealthModePipe;
    private final ActionPipe<SetLockStateCommand> setLockPipe;
+   private final ActionPipe<SaveLockStateCommand> saveLockStatePipe;
    private final ReadActionPipe<SmartCardModifier> smartCardModifierPipe;
    private final ActionPipe<FetchDefaultCardIdCommand> fetchDefaultCardIdCommandPipe;
    private final ActionPipe<FetchDefaultCardCommand> fetchDefaultCardCommandPipe;
@@ -95,6 +98,7 @@ public final class SmartCardInteractor {
 
       smartCardModifierPipe = janet.createPipe(SmartCardModifier.class, Schedulers.io());
       setLockPipe = janet.createPipe(SetLockStateCommand.class, Schedulers.io());
+      saveLockStatePipe = janet.createPipe(SaveLockStateCommand.class, Schedulers.io());
 
       cardCountCommandPipe = janet.createPipe(CardCountCommand.class, Schedulers.io());
       saveDefaultAddressPipe = janet.createPipe(SaveDefaultAddressCommand.class, Schedulers.io());
@@ -121,6 +125,7 @@ public final class SmartCardInteractor {
       resetSmartCardPipe = janet.createPipe(ResetSmartCardCommand.class, Schedulers.io());
 
       connect();
+      connectToLockEvent(janet);
    }
 
    public ActionPipe<CardListCommand> cardsListPipe() {
@@ -259,5 +264,13 @@ public final class SmartCardInteractor {
                      throw new IllegalStateException("Cannot perform operation onto card list cache", throwable);
                   }));
 
+   }
+
+   private void connectToLockEvent(Janet janet) {
+      janet.createPipe(LockDeviceChangedEvent.class)
+            .observeSuccess()
+            .subscribe(lockDeviceChangedEvent -> {
+               saveLockStatePipe.send(new SaveLockStateCommand(lockDeviceChangedEvent.locked));
+            });
    }
 }

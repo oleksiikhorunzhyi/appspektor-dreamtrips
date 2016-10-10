@@ -11,13 +11,12 @@ import com.worldventures.dreamtrips.wallet.domain.entity.SmartCard;
 import com.worldventures.dreamtrips.wallet.service.command.ActivateSmartCardCommand;
 import com.worldventures.dreamtrips.wallet.service.command.ConnectSmartCardCommand;
 import com.worldventures.dreamtrips.wallet.service.command.CreateAndConnectToCardCommand;
+import com.worldventures.dreamtrips.wallet.service.command.FetchSmartCardLockState;
 import com.worldventures.dreamtrips.wallet.service.command.SetAutoClearSmartCardDelayCommand;
 import com.worldventures.dreamtrips.wallet.service.command.SetDisableDefaultCardDelayCommand;
-import com.worldventures.dreamtrips.wallet.service.command.UpdateSmartCardConnectionStatus;
-import com.worldventures.dreamtrips.wallet.service.command.FetchSmartCardLockState;
-import com.worldventures.dreamtrips.wallet.service.command.SetLockStateCommand;
 import com.worldventures.dreamtrips.wallet.service.command.SetStealthModeCommand;
 import com.worldventures.dreamtrips.wallet.service.command.SetupUserDataCommand;
+import com.worldventures.dreamtrips.wallet.service.command.UpdateSmartCardConnectionStatus;
 
 import java.util.Arrays;
 import java.util.List;
@@ -60,7 +59,6 @@ public class SmartCardStorage implements MultipleActionStorage<SmartCard> {
             SetStealthModeCommand.class,
             SetAutoClearSmartCardDelayCommand.class,
             SetDisableDefaultCardDelayCommand.class,
-            SetLockStateCommand.class,
             SetupUserDataCommand.class);
    }
 }

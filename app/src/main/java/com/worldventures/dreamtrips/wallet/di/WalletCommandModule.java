@@ -21,6 +21,7 @@ import com.worldventures.dreamtrips.wallet.service.command.RemoveSmartCardDataCo
 import com.worldventures.dreamtrips.wallet.service.command.ResetSmartCardCommand;
 import com.worldventures.dreamtrips.wallet.service.command.SaveCardDetailsDataCommand;
 import com.worldventures.dreamtrips.wallet.service.command.SaveDefaultAddressCommand;
+import com.worldventures.dreamtrips.wallet.service.command.SaveLockStateCommand;
 import com.worldventures.dreamtrips.wallet.service.command.SetAutoClearSmartCardDelayCommand;
 import com.worldventures.dreamtrips.wallet.service.command.SetDefaultCardOnDeviceCommand;
 import com.worldventures.dreamtrips.wallet.service.command.SetDisableDefaultCardDelayCommand;
@@ -34,9 +35,9 @@ import com.worldventures.dreamtrips.wallet.service.command.UpdateSmartCardConnec
 import com.worldventures.dreamtrips.wallet.service.command.firmware.InstallFirmwareCommand;
 import com.worldventures.dreamtrips.wallet.service.command.firmware.PreInstallationCheckCommand;
 import com.worldventures.dreamtrips.wallet.service.command.http.AssociateCardUserCommand;
+import com.worldventures.dreamtrips.wallet.service.command.http.CreateBankCardCommand;
 import com.worldventures.dreamtrips.wallet.service.command.http.FetchAndStoreDefaultAddressInfoCommand;
 import com.worldventures.dreamtrips.wallet.service.command.http.FetchFirmwareInfoCommand;
-import com.worldventures.dreamtrips.wallet.service.command.http.CreateBankCardCommand;
 import com.worldventures.dreamtrips.wallet.service.command.http.FetchTermsAndConditionsCommand;
 import com.worldventures.dreamtrips.wallet.service.command.wizard.WizardCheckCommand;
 
@@ -83,7 +84,8 @@ import dagger.Module;
             SetDisableDefaultCardDelayCommand.class,
             FetchAndStoreDefaultAddressInfoCommand.class,
             RemoveSmartCardDataCommand.class,
-            ResetSmartCardCommand.class
+            ResetSmartCardCommand.class,
+            SaveLockStateCommand.class
       },
       complete = false, library = true)
 public class WalletCommandModule {}

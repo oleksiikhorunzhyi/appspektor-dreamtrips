@@ -36,6 +36,7 @@ import javax.inject.Inject;
 
 import butterknife.InjectView;
 import butterknife.OnClick;
+import icepick.State;
 import rx.Observable;
 import rx.subjects.PublishSubject;
 
@@ -55,6 +56,8 @@ public class SendFeedbackFragment extends BaseFragment<SendFeedbackPresenter> im
    private Observable<CharSequence> messageObservable;
    private PublishSubject<FeedbackType> feedbackTypeObservable = PublishSubject.create();
 
+   @State int lastFeedbackTypeSelectedPosition;
+
    @Override
    protected SendFeedbackPresenter createPresenter(Bundle savedInstanceState) {
       return new SendFeedbackPresenter();
@@ -72,16 +75,21 @@ public class SendFeedbackFragment extends BaseFragment<SendFeedbackPresenter> im
       initAttachments();
    }
 
-   private void setupSpinner(List<FeedbackType> feedbackTypes, boolean isSpinnerEnabled) {
-      feedbackTypes = new ArrayList<>(feedbackTypes); //for recreation link
+   private void setupSpinner(List<FeedbackType> apiFeedbackTypes, boolean isSpinnerEnabled) {
+      ArrayList<FeedbackType> feedbackTypes = new ArrayList<>(apiFeedbackTypes);
       feedbackTypes.add(0, new FeedbackType(-1, getContext().getString(R.string.feedback_select_category)));
       ArrayAdapter<FeedbackType> adapter = new ArrayAdapter<>(getContext(), R.layout.adapter_item_feedback_type, android.R.id.text1, feedbackTypes);
       adapter.setDropDownViewResource(R.layout.adapter_item_feedback_type);
       spinner.setAdapter(adapter);
+      if (apiFeedbackTypes == null || apiFeedbackTypes.isEmpty()) {
+         return;
+      }
+      spinner.setSelection(lastFeedbackTypeSelectedPosition);
       spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
          @Override
          public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
             feedbackTypeObservable.onNext(adapter.getItem(position));
+            lastFeedbackTypeSelectedPosition = position;
          }
 
          @Override
@@ -128,7 +136,7 @@ public class SendFeedbackFragment extends BaseFragment<SendFeedbackPresenter> im
    }
 
    @Override
-   public void showProgressDialog() {
+   public void showProgressBar() {
       progressBar.setVisibility(View.VISIBLE);
    }
 

@@ -67,16 +67,20 @@ public class SendFeedbackPresenter extends Presenter<SendFeedbackPresenter.View>
    ///////////////////////////////////////////////////////////////////////////
 
    private void getFeedbackReasons(View view) {
+      List<FeedbackType> cachedFeedbackTypes = db.getFeedbackTypes();
+      if (cachedFeedbackTypes == null || cachedFeedbackTypes.isEmpty()) {
+         view.showProgressBar();
+      } else {
+         view.setFeedbackTypes(cachedFeedbackTypes);
+      }
       doRequest(new GetFeedbackReasonsQuery(), feedbackTypes -> {
          db.setFeedbackTypes(feedbackTypes);
          view.setFeedbackTypes(feedbackTypes);
          view.hideProgressBar();
       }, spiceException -> {
          SendFeedbackPresenter.this.handleError(spiceException);
-         view.setFeedbackTypes(db.getFeedbackTypes());
          view.hideProgressBar();
       });
-      view.showProgressDialog();
    }
 
    public void sendFeedback(int feedbackType, String text) {
@@ -239,7 +243,7 @@ public class SendFeedbackPresenter extends Presenter<SendFeedbackPresenter.View>
 
       void feedbackSent();
 
-      void showProgressDialog();
+      void showProgressBar();
 
       void hideProgressBar();
 

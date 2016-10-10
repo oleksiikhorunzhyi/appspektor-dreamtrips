@@ -30,21 +30,36 @@ import dagger.Module;
 import dagger.Provides;
 
 @Module(
-      injects = {OtaFragment.class, AuthorizedStaticInfoFragment.class, AuthorizedStaticInfoPresenter.class, PresentationVideosPresenter.class, StaticInfoFragment.class, StaticInfoFragment.BookItFragment.class, StaticInfoFragment.BundleUrlFragment.class, StaticInfoFragment.TermsOfServiceFragment.class, StaticInfoFragment.PrivacyPolicyFragment.class, StaticInfoFragment.CookiePolicyFragment.class, StaticInfoFragment.FAQFragment.class, StaticInfoFragment.EnrollRepFragment.class, StaticInfoFragment.EnrollUpgradeFragment.class,
-
-            VideoCell.class, MediaHeaderLightCell.class, MediaHeaderCell.class,
-
-            ThreeSixtyVideosFragment.class, ThreeSixtyVideosPresenter.class,
-
-            HelpVideosFragment.class, HelpVideosPresenter.class,
-
-            HelpFragment.class, TermsTabFragment.class, WebViewFragmentPresenter.class,
-
-            SendFeedbackFragment.class, SendFeedbackPresenter.class, AttachmentImagesHorizontalView.class,
-
-            FeedbackImageAttachmentFullscreenPresenter.class, FeedbackImageAttachmentsPresenter.class,
-
-            FeedbackImageAttachmentFullscreenFragment.class, FeedbackImageAttachmentsFragment.class},
+      injects = {OtaFragment.class,
+            AuthorizedStaticInfoFragment.class,
+            AuthorizedStaticInfoPresenter.class,
+            PresentationVideosPresenter.class,
+            StaticInfoFragment.class,
+            StaticInfoFragment.BookItFragment.class,
+            StaticInfoFragment.BundleUrlFragment.class,
+            StaticInfoFragment.TermsOfServiceFragment.class,
+            StaticInfoFragment.PrivacyPolicyFragment.class,
+            StaticInfoFragment.CookiePolicyFragment.class,
+            StaticInfoFragment.FAQFragment.class,
+            StaticInfoFragment.EnrollRepFragment.class,
+            StaticInfoFragment.EnrollUpgradeFragment.class,
+            VideoCell.class,
+            MediaHeaderLightCell.class,
+            MediaHeaderCell.class,
+            ThreeSixtyVideosFragment.class,
+            ThreeSixtyVideosPresenter.class,
+            HelpVideosFragment.class,
+            HelpVideosPresenter.class,
+            HelpFragment.class,
+            TermsTabFragment.class,
+            WebViewFragmentPresenter.class,
+            SendFeedbackFragment.class,
+            SendFeedbackPresenter.class,
+            AttachmentImagesHorizontalView.class,
+            FeedbackImageAttachmentFullscreenPresenter.class,
+            FeedbackImageAttachmentsPresenter.class,
+            FeedbackImageAttachmentFullscreenFragment.class,
+            FeedbackImageAttachmentsFragment.class},
       complete = false,
       library = true)
 public class InfoModule {

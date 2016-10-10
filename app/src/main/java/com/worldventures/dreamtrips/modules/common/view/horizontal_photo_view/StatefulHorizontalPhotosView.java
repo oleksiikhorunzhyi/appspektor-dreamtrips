@@ -66,24 +66,33 @@ public class StatefulHorizontalPhotosView<T extends IFullScreenObject, D extends
       imagesAdapter.notifyDataSetChanged();
    }
 
-   public void changeItemState(EntityStateHolder<T> photoEntityStateHolder) {
-      removeItem(photoEntityStateHolder);
-      imagesAdapter.addItem(photoEntityStateHolder);
+   public void changeItemState(EntityStateHolder<T> photoStateHolder) {
+      EntityStateHolder<T> item = findItem(photoStateHolder);
+      if (item != null) {
+         item.setState(photoStateHolder.state());
+         item.setEntity(photoStateHolder.entity());
+      } else {
+         imagesAdapter.addItem(photoStateHolder);
+      }
       imagesAdapter.notifyDataSetChanged();
    }
 
    public void removeItem(EntityStateHolder<T> photoStateHolder) {
+      EntityStateHolder<T> item = findItem(photoStateHolder);
+      if (item != null) imagesAdapter.remove(item);
+   }
+
+   public EntityStateHolder findItem(EntityStateHolder<T> photoStateHolder) {
       for (int i = 0; i < imagesAdapter.getCount(); i++) {
          Object item = imagesAdapter.getItem(i);
          if (item instanceof EntityStateHolder) {
             EntityStateHolder<BucketPhoto> itemPhotoStateHolder = (EntityStateHolder<BucketPhoto>) item;
-            boolean equals = photoStateHolder.equals(itemPhotoStateHolder);
-            if (equals) {
-               imagesAdapter.remove(item);
-               break;
+            if (photoStateHolder.entity().equals(itemPhotoStateHolder.entity())) {
+               return itemPhotoStateHolder;
             }
          }
       }
+      return null;
    }
 
    public void setImages(List<EntityStateHolder<T>> images) {

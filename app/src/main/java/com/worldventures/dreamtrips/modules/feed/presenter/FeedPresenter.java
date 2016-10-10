@@ -453,7 +453,7 @@ public class FeedPresenter extends Presenter<FeedPresenter.View> {
    public void attachSelectedSuggestionPhotos() {
       Observable.from(getSelectedSuggestionPhotos())
             .map(element -> {
-               Pair<String, Size> pair = ImageUtils.generateUri(drawableUtil, element.getOriginalPath());
+               Pair<String, Size> pair = ImageUtils.generateUri(drawableUtil, element.getAbsolutePath());
                return new PhotoGalleryModel(pair.first, pair.second);
             })
             .map(photoGalleryModel -> {

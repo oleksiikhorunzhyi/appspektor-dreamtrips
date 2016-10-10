@@ -183,7 +183,7 @@ public class FacebookPhoto implements BasePhotoPickerModel, Serializable {
    }
 
    @Override
-   public String getThumbnailPath() {
+   public String getImageUri() {
       if (mImageSources.size() > 2) {
          return mImageSources.get(mImageSources.size() / 2 + 1).getSource();
       } else {
@@ -192,7 +192,7 @@ public class FacebookPhoto implements BasePhotoPickerModel, Serializable {
    }
 
    @Override
-   public String getOriginalPath() {
+   public String getAbsolutePath() {
       if (mImageSources.size() > 2) {
          return mImageSources.get(0).getSource();
       } else {

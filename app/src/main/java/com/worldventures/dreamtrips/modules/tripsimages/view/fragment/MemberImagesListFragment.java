@@ -28,7 +28,6 @@ public class MemberImagesListFragment<P extends MembersImagesPresenter> extends 
    @OnClick(R.id.fab_photo)
    public void actionPhoto() {
       showPhotoPicker();
-      //
       if (this instanceof AccountImagesListFragment) {
          TrackingHelper.uploadTripImagePhoto(TrackingHelper.ACTION_MY_IMAGES);
       } else {
@@ -55,14 +54,14 @@ public class MemberImagesListFragment<P extends MembersImagesPresenter> extends 
    }
 
    @Override
-   public void openCreatePhoto(MediaAttachment mediaAttachment) {
+   public void openCreatePhoto(MediaAttachment mediaAttachment, CreateEntityBundle.Origin photoOrigin) {
       if (isCreatePhotoAlreadyAttached()) return;
       //
       router.moveTo(Route.PHOTO_CREATE, NavigationConfigBuilder.forFragment()
             .backStackEnabled(false)
             .fragmentManager(getActivity().getSupportFragmentManager())
             .containerId(R.id.container_details_floating)
-            .data(new CreateEntityBundle(mediaAttachment))
+            .data(new CreateEntityBundle(mediaAttachment, photoOrigin))
             .build());
    }
 

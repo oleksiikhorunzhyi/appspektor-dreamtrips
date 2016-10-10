@@ -117,7 +117,7 @@ public enum Route {
    TRIP_TAB_IMAGES(TripImagesTabsFragment.class, R.string.trip_images),
    TRIP_LIST_IMAGES(TripImagesListFragment.class, R.string.trip_images),
    ACCOUNT_IMAGES(AccountImagesListFragment.class, R.string.trip_images),
-   USER_IMAGES(MemberImagesListFragment.class),
+   MEMBER_IMAGES(MemberImagesListFragment.class),
    BASE_IMAGES(BaseImageFragment.class),
 
    MEMBERSHIP(MembershipFragment.class),

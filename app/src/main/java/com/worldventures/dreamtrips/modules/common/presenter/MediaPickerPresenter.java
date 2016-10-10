@@ -65,7 +65,7 @@ public class MediaPickerPresenter extends Presenter<MediaPickerPresenter.View> {
    public void attachImages(List<BasePhotoPickerModel> pickedImages, int type) {
       Observable.from(pickedImages)
             .map(element -> {
-               Pair<String, Size> pair = ImageUtils.generateUri(drawableUtil, element.getOriginalPath());
+               Pair<String, Size> pair = ImageUtils.generateUri(drawableUtil, element.getAbsolutePath());
                return new PhotoGalleryModel(pair.first, pair.second);
             })
             .map(photoGalleryModel -> {

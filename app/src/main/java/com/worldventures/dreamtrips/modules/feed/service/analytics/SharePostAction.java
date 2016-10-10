@@ -27,7 +27,7 @@ public class SharePostAction extends BaseAnalyticsAction {
                .map(Hashtag::getName)
                .toArray());
       }
-      if (textualPost.getLocation() != null) {
+      if (textualPost.getLocation() != null && textualPost.getLocation().getName() != null) {
          sharePostAction.addLocation = "1";
       }
       return sharePostAction;

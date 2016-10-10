@@ -174,7 +174,7 @@ public class BucketItemEditPresenter extends BucketDetailsBasePresenter<BucketIt
       if (chosenImages.size() == 0) {
          return;
       }
-      Queryable.from(chosenImages).forEachR(choseImage -> imageSelected(Uri.parse(choseImage.getThumbnailPath())));
+      Queryable.from(chosenImages).forEachR(choseImage -> imageSelected(Uri.parse(choseImage.getImageUri())));
    }
 
    private void imageSelected(Uri uri) {

@@ -11,36 +11,34 @@ import java.io.Serializable;
 
 public class PhotoGalleryModel implements Parcelable, BasePhotoPickerModel, Serializable {
 
-   private String originalPath;
-   private String thumbnailPath;
+   private String absolutePath;
+   private String imageUri;
    private boolean checked;
    private long dateTaken;
    private Size size;
    private long pickedTime;
 
-   public PhotoGalleryModel(String originalPath) {
-      this(originalPath, 0);
+   public PhotoGalleryModel(String absolutePath) {
+      this(absolutePath, 0);
    }
 
-   public PhotoGalleryModel(String originalPath, Size size) {
-      this(originalPath);
+   public PhotoGalleryModel(String absolutePath, Size size) {
+      this(absolutePath);
       this.size = size;
    }
 
-   public PhotoGalleryModel(String originalPath, long dateTaken) {
-      this.originalPath = originalPath;
-      this.thumbnailPath = ValidationUtils.isUrl(originalPath) ? this.originalPath : "file://" + this.originalPath;
+   public PhotoGalleryModel(String absolutePath, long dateTaken) {
+      this.absolutePath = absolutePath;
+      this.imageUri = ValidationUtils.isUrl(absolutePath) ? this.absolutePath : "file://" + this.absolutePath;
       this.dateTaken = dateTaken;
    }
 
-   @Override
-   public String getOriginalPath() {
-      return originalPath;
+   public String getAbsolutePath() {
+      return absolutePath;
    }
 
-   @Override
-   public String getThumbnailPath() {
-      return thumbnailPath;
+   public String getImageUri() {
+      return imageUri;
    }
 
    @Override
@@ -78,12 +76,12 @@ public class PhotoGalleryModel implements Parcelable, BasePhotoPickerModel, Seri
 
       PhotoGalleryModel that = (PhotoGalleryModel) o;
 
-      return originalPath.equals(that.originalPath);
+      return absolutePath.equals(that.absolutePath);
    }
 
    @Override
    public int hashCode() {
-      return originalPath.hashCode();
+      return absolutePath.hashCode();
    }
 
    @Override
@@ -93,15 +91,15 @@ public class PhotoGalleryModel implements Parcelable, BasePhotoPickerModel, Seri
 
    @Override
    public void writeToParcel(Parcel dest, int flags) {
-      dest.writeString(this.originalPath);
-      dest.writeString(this.thumbnailPath);
+      dest.writeString(this.absolutePath);
+      dest.writeString(this.imageUri);
       dest.writeByte(checked ? (byte) 1 : (byte) 0);
       dest.writeLong(this.dateTaken);
    }
 
    protected PhotoGalleryModel(Parcel in) {
-      this.originalPath = in.readString();
-      this.thumbnailPath = in.readString();
+      this.absolutePath = in.readString();
+      this.imageUri = in.readString();
       this.checked = in.readByte() != 0;
       this.dateTaken = in.readLong();
    }

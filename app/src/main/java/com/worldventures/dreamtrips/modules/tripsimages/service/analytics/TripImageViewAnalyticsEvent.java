@@ -1,4 +1,4 @@
-package com.worldventures.dreamtrips.modules.tripsimages.service;
+package com.worldventures.dreamtrips.modules.tripsimages.service.analytics;
 
 
 import com.worldventures.dreamtrips.core.utils.tracksystem.AdobeTracker;
@@ -7,11 +7,11 @@ import com.worldventures.dreamtrips.core.utils.tracksystem.Attribute;
 
 @AnalyticsEvent(action = "member_images",
                 trackers = AdobeTracker.TRACKER_KEY)
-public class TripImageEditAnalyticsEvent extends TripImageAnalyticsEvent {
+public class TripImageViewAnalyticsEvent extends TripImageAnalyticsEvent {
 
-   @Attribute("edit_image") final String editImage = "1";
+   @Attribute("view") final String view = "1";
 
-   public TripImageEditAnalyticsEvent(String photoId) {
+   public TripImageViewAnalyticsEvent(String photoId) {
       super(photoId);
    }
 }

@@ -36,6 +36,7 @@ import com.worldventures.dreamtrips.modules.infopages.service.FeedbackAttachment
 import com.worldventures.dreamtrips.modules.infopages.service.FeedbackInteractor;
 import com.worldventures.dreamtrips.modules.membership.api.PhoneContactRequest;
 import com.worldventures.dreamtrips.modules.profile.service.ProfileInteractor;
+import com.worldventures.dreamtrips.modules.tripsimages.service.TripImagesInteractor;
 import com.worldventures.dreamtrips.modules.tripsimages.view.util.EditPhotoTagsCallback;
 import com.worldventures.dreamtrips.modules.tripsimages.view.util.PostLocationPickerCallback;
 
@@ -172,6 +173,12 @@ public class ManagerModule {
    @Singleton
    CachedEntityInteractor provideDownloadCachedEntityInteractor(SessionActionPipeCreator sessionActionPipeCreator) {
       return new CachedEntityInteractor(sessionActionPipeCreator);
+   }
+
+   @Provides
+   @Singleton
+   TripImagesInteractor provideTripImagesInteractor(SessionActionPipeCreator sessionActionPipeCreator) {
+      return new TripImagesInteractor(sessionActionPipeCreator);
    }
 
    @Provides

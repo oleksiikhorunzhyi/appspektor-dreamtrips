@@ -22,7 +22,7 @@ import com.worldventures.dreamtrips.modules.tripsimages.model.Photo;
 import com.worldventures.dreamtrips.modules.tripsimages.model.TripImagesType;
 import com.worldventures.dreamtrips.modules.tripsimages.presenter.fullscreen.AccountImagesPresenter;
 import com.worldventures.dreamtrips.modules.tripsimages.presenter.fullscreen.MembersImagesPresenter;
-import com.worldventures.dreamtrips.modules.tripsimages.service.TripImageViewAnalyticsEvent;
+import com.worldventures.dreamtrips.modules.tripsimages.service.analytics.TripImageViewAnalyticsEvent;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -63,6 +63,7 @@ public abstract class TripImagesListPresenter<VT extends TripImagesListPresenter
             presenter = new MembersImagesPresenter();
             break;
          case ACCOUNT_IMAGES:
+         case ACCOUNT_IMAGES_FROM_PROFILE:
             presenter = new AccountImagesPresenter(TripImagesType.ACCOUNT_IMAGES, userId);
             break;
          case YOU_SHOULD_BE_HERE:

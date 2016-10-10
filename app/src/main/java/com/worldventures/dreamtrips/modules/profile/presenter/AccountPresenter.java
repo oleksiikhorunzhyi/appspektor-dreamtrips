@@ -220,7 +220,7 @@ public class AccountPresenter extends ProfilePresenter<AccountPresenter.View, Us
 
    @Override
    public void openTripImages() {
-      view.openTripImages(Route.ACCOUNT_IMAGES, new TripsImagesBundle(TripImagesType.ACCOUNT_IMAGES, getAccount().getId()));
+      view.openTripImages(Route.ACCOUNT_IMAGES, new TripsImagesBundle(TripImagesType.ACCOUNT_IMAGES_FROM_PROFILE, getAccount().getId()));
    }
 
    public void photoClicked() {
@@ -277,7 +277,7 @@ public class AccountPresenter extends ProfilePresenter<AccountPresenter.View, Us
 
    private void onAvatarChosen(PhotoGalleryModel image) {
       if (image != null) {
-         String filePath = image.getOriginalPath();
+         String filePath = image.getAbsolutePath();
          if (ValidationUtils.isUrl(filePath)) {
             cacheFacebookImage(filePath, this::uploadAvatar);
          } else {
@@ -294,7 +294,7 @@ public class AccountPresenter extends ProfilePresenter<AccountPresenter.View, Us
    }
 
    private void onCoverChosen(PhotoGalleryModel image) {
-      view.cropImage(socialCropImageManager, image.getOriginalPath());
+      view.cropImage(socialCropImageManager, image.getAbsolutePath());
    }
 
    public boolean onActivityResult(int requestCode, int resultCode, Intent data) {

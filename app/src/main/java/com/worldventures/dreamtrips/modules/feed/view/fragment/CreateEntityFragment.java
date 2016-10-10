@@ -17,7 +17,8 @@ import butterknife.InjectView;
 import butterknife.OnClick;
 import icepick.State;
 
-public abstract class CreateEntityFragment<PM extends CreateEntityPresenter> extends ActionEntityFragment<PM, CreateEntityBundle> implements CreateEntityPresenter.View {
+public abstract class CreateEntityFragment extends ActionEntityFragment<CreateEntityPresenter, CreateEntityBundle>
+      implements CreateEntityPresenter.View {
 
    @State boolean pickerDisabled;
    @State boolean imageFromArgsAlreadyAttached;
@@ -40,6 +41,11 @@ public abstract class CreateEntityFragment<PM extends CreateEntityPresenter> ext
       });
       //
       attachImages();
+   }
+
+   @Override
+   protected CreateEntityPresenter createPresenter(Bundle savedInstanceState) {
+      return new CreateEntityPresenter(getArgs().getOrigin());
    }
 
    @Override

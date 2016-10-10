@@ -170,6 +170,7 @@ public class FeedListAdditionalInfoFragment extends FeedItemAdditionalInfoFragme
       router.moveTo(Route.POST_CREATE, NavigationConfigBuilder.forFragment()
             .backStackEnabled(false)
             .fragmentManager(getActivity().getSupportFragmentManager())
+            .data(new CreateEntityBundle(false, CreateEntityBundle.Origin.FEED))
             .containerId(R.id.container_details_floating)
             .build());
    }
@@ -183,7 +184,7 @@ public class FeedListAdditionalInfoFragment extends FeedItemAdditionalInfoFragme
             .backStackEnabled(false)
             .fragmentManager(getActivity().getSupportFragmentManager())
             .containerId(R.id.container_details_floating)
-            .data(new CreateEntityBundle(true))
+            .data(new CreateEntityBundle(true, CreateEntityBundle.Origin.FEED))
             .build());
 
    }

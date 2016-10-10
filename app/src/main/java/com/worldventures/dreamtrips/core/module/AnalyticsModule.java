@@ -5,20 +5,20 @@ import com.worldventures.dreamtrips.core.utils.tracksystem.AdobeTracker;
 import com.worldventures.dreamtrips.core.utils.tracksystem.AnalyticsInteractor;
 import com.worldventures.dreamtrips.core.utils.tracksystem.ApptentiveTracker;
 import com.worldventures.dreamtrips.core.utils.tracksystem.Tracker;
+import com.worldventures.dreamtrips.modules.common.delegate.ConnectionInfoProvider;
 
 import javax.inject.Singleton;
 
 import dagger.Module;
 import dagger.Provides;
-import io.techery.janet.Janet;
 
 @Module(library = true, complete = false)
 public class AnalyticsModule {
 
    @Singleton
    @Provides(type = Provides.Type.SET)
-   Tracker provideAdobeTracker() {
-      return new AdobeTracker();
+   Tracker provideAdobeTracker(ConnectionInfoProvider connectionInfoProvider) {
+      return new AdobeTracker(connectionInfoProvider);
    }
 
    @Singleton

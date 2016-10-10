@@ -6,6 +6,7 @@ import android.support.annotation.Nullable;
 import com.adobe.mobile.Analytics;
 import com.adobe.mobile.Config;
 import com.worldventures.dreamtrips.BuildConfig;
+import com.worldventures.dreamtrips.modules.common.delegate.ConnectionInfoProvider;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -13,15 +14,20 @@ import java.util.Map;
 public class AdobeTracker extends Tracker {
 
    public static final String TRACKER_KEY = "adobe_tracker";
-
    private static final String DEFAULT_PREFIX = "dta:";
-
    private static final String CHANNEL_KEY = "channel";
    private static final String CHANNEL_VALUE = "App:Dreamtrips";
    private static final String ACTION = "action";
    private static final String PREV_VIEW_STATE = "previouscreen";
+   private static final String WIFI_CONNECTED = "wifi";
 
    private String lastTrackedViewState;
+
+   private ConnectionInfoProvider connectionInfoProvider;
+
+   public AdobeTracker(ConnectionInfoProvider connectionInfoProvider) {
+      this.connectionInfoProvider = connectionInfoProvider;
+   }
 
    @Override
    public String getKey() {
@@ -57,12 +63,11 @@ public class AdobeTracker extends Tracker {
       data.put(CHANNEL_KEY, CHANNEL_VALUE);
       data.put(PREV_VIEW_STATE, lastTrackedViewState);
       data.put(ACTION, preparedViewState);
+      data.put(WIFI_CONNECTED, connectionInfoProvider.isWifi() ? "Yes" : "No");
 
       Analytics.trackState(preparedViewState, data);
-
       lastTrackedViewState = preparedViewState;
    }
-
 
    private String prepareViewState(String viewState) {
       return DEFAULT_PREFIX + viewState;

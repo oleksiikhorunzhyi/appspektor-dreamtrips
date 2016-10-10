@@ -22,6 +22,7 @@ import com.worldventures.dreamtrips.wallet.ui.settings.firmware.install.WalletIn
 import com.worldventures.dreamtrips.wallet.ui.settings.firmware.installsuccess.WalletSuccessInstallFirmwarePresenter;
 import com.worldventures.dreamtrips.wallet.ui.settings.firmware.newavailable.WalletNewFirmwareAvailablePresenter;
 import com.worldventures.dreamtrips.wallet.ui.settings.firmware.preinstalletion.WalletFirmwareChecksPresenter;
+import com.worldventures.dreamtrips.wallet.ui.settings.firmware.puck_connection.WalletPuckConnectionPresenter;
 import com.worldventures.dreamtrips.wallet.ui.settings.firmware.uptodate.WalletUpToDateFirmwarePresenter;
 import com.worldventures.dreamtrips.wallet.ui.settings.general.WalletSettingsPresenter;
 import com.worldventures.dreamtrips.wallet.ui.settings.removecards.WalletAutoClearCardsPresenter;
@@ -85,7 +86,8 @@ import dagger.Provides;
             ConnectSmartCardPresenter.class,
             WalletInstallFirmwarePresenter.class,
             WizardCheckingPresenter.class,
-            WalletNewFirmwareAvailablePresenter.class
+            WalletNewFirmwareAvailablePresenter.class,
+            WalletPuckConnectionPresenter.class
       },
       complete = false, library = true
 )

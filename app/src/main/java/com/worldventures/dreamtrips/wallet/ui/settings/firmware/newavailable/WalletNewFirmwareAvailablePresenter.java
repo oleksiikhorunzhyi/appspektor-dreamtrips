@@ -16,7 +16,7 @@ import com.worldventures.dreamtrips.wallet.ui.common.base.screen.WalletScreen;
 import com.worldventures.dreamtrips.wallet.ui.common.helper.ErrorHandler;
 import com.worldventures.dreamtrips.wallet.ui.common.helper.ErrorSubscriberWrapper;
 import com.worldventures.dreamtrips.wallet.ui.common.navigation.Navigator;
-import com.worldventures.dreamtrips.wallet.ui.settings.firmware.donwload.WalletDownloadFirmwarePath;
+import com.worldventures.dreamtrips.wallet.ui.settings.firmware.puck_connection.WalletPuckConnectionPath;
 
 import java.io.File;
 
@@ -97,7 +97,7 @@ public class WalletNewFirmwareAvailablePresenter extends WalletPresenter<WalletN
    }
 
    void downloadFile(String filePath) {
-      navigator.go(new WalletDownloadFirmwarePath(firmwareInfo, filePath));
+      navigator.go(new WalletPuckConnectionPath(firmwareInfo, filePath));
    }
 
    private boolean checkStorageAvailability(File file) {

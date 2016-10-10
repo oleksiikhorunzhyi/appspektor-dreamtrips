@@ -243,4 +243,8 @@
 
    <!-- Power On -->
    <string name="wallet_wizard_power_on_title2">Power on your flye SmartCard by\nswiping on the chip.</string>
+
+   <!--puck connection screen-->
+   <string name="wallet_puck_connection_title">Smart Card Update</string>
+   <string name="wallet_puck_connection_comment">Make sure your flye smart card is connected to the charger.</string>
 </resources>

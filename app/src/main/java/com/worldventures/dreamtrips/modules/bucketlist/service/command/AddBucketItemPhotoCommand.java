@@ -50,7 +50,7 @@ public class AddBucketItemPhotoCommand extends Command<Pair<BucketItem, BucketPh
                   .getImagePath()))
             .map(Command::getResult)
             .flatMap(path -> uploaderyInteractor.uploadImageActionPipe()
-                  .createObservableResult(new SimpleUploaderyCommand(path, path.hashCode())))
+                  .createObservableResult(new SimpleUploaderyCommand(path)))
             .cast(SimpleUploaderyCommand.class)
             .map(uploaderyCommand -> uploaderyCommand.getResult().getPhotoUploadResponse().getLocation())
             .map(location -> {

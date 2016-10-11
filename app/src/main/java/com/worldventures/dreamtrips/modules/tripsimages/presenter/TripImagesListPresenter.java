@@ -56,9 +56,6 @@ public abstract class TripImagesListPresenter<VT extends TripImagesListPresenter
    public static TripImagesListPresenter create(TripImagesType type, int userId, ArrayList<IFullScreenObject> photos, boolean fullScreenMode, int currentPhotosPosition, int notificationId) {
       TripImagesListPresenter presenter;
       switch (type) {
-         /**
-          * ALL MEMBERS PHOTOS
-          */
          case MEMBERS_IMAGES:
             presenter = new MembersImagesPresenter();
             break;

@@ -66,6 +66,6 @@ public class CreateEntityBundle implements Parcelable {
    };
 
    public enum Origin {
-      FEED, TRIP_IMAGES_PROFILE, TRIP_IMAGES_MY, TRIP_IMAGES_MEMBER
+      FEED, PROFILE_TRIP_IMAGES, MY_TRIP_IMAGES, MEMBER_TRIP_IMAGES
    }
 }

@@ -29,22 +29,23 @@ public class CreatePhotoCreationItemCommand extends Command<PhotoCreationItem> i
 
    public CreatePhotoCreationItemCommand(PhotoGalleryModel photoGalleryModel, MediaAttachment.Source source) {
       this.photoGalleryModel = photoGalleryModel;
+      this.source = source;
    }
 
    @Override
    protected void run(CommandCallback<PhotoCreationItem> callback) throws Throwable {
       ImageUtils.getBitmap(context, Uri.parse(photoGalleryModel.getImageUri()), 300, 300)
-            .compose(bitmapObservable -> Observable.zip(ImageUtils.getRecognizedFaces(context, bitmapObservable), bitmapObservable,
-                  (photoTags, bitmap) -> new Pair<>(bitmap, photoTags)))
+            .compose(bitmapObservable -> Observable.zip(ImageUtils.getRecognizedFaces(context, bitmapObservable),
+                  bitmapObservable, Pair::new))
             .map(pair -> {
                PhotoCreationItem item = new PhotoCreationItem();
                item.setFileUri(photoGalleryModel.getImageUri());
                item.setFilePath(photoGalleryModel.getAbsolutePath());
                item.setStatus(ActionState.Status.START);
                Size imageSize = photoGalleryModel.getSize();
-               item.setWidth(imageSize != null ? imageSize.getWidth() : pair.first.getWidth());
-               item.setHeight(imageSize != null ? imageSize.getHeight() : pair.first.getHeight());
-               item.setSuggestions(pair.second);
+               item.setWidth(imageSize != null ? imageSize.getWidth() : pair.second.getWidth());
+               item.setHeight(imageSize != null ? imageSize.getHeight() : pair.second.getHeight());
+               item.setSuggestions(pair.first);
                item.setSource(source);
                item.setCanDelete(true);
                item.setCanEdit(true);

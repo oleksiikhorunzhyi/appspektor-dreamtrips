@@ -24,7 +24,7 @@ import com.worldventures.dreamtrips.modules.feed.service.analytics.SharePostActi
 import com.worldventures.dreamtrips.modules.tripsimages.model.Photo;
 import com.worldventures.dreamtrips.modules.tripsimages.service.TripImagesInteractor;
 import com.worldventures.dreamtrips.modules.tripsimages.service.command.CreatePhotoCreationItemCommand;
-import com.worldventures.dreamtrips.modules.tripsimages.service.command.GrabLocationFromExifCommand;
+import com.worldventures.dreamtrips.modules.tripsimages.service.command.FetchLocationFromExifCommand;
 import com.worldventures.dreamtrips.util.ValidationUtils;
 
 import java.util.Calendar;
@@ -57,7 +57,7 @@ public class CreateEntityPresenter<V extends CreateEntityPresenter.View> extends
       uploaderyInteractor.uploadImageActionPipe().observe()
             .compose(bindViewToMainComposer())
             .subscribe(state -> {
-               PhotoCreationItem item = getPhotoCreationItemById(state.action.getFilePath());
+               PhotoCreationItem item = getPhotoCreationItemById(state.action.getFileUri());
                if (item != null) {
                   item.setStatus(state.status);
                   if (state.status == ActionState.Status.SUCCESS) {
@@ -84,9 +84,9 @@ public class CreateEntityPresenter<V extends CreateEntityPresenter.View> extends
             .subscribe(this::attachImages, error -> Timber.e(error, ""));
    }
 
-   private PhotoCreationItem getPhotoCreationItemById(String filePath) {
+   private PhotoCreationItem getPhotoCreationItemById(String fileUri) {
       return Queryable.from(cachedCreationItems).firstOrDefault(cachedTask -> cachedTask.getFileUri()
-            .equals(filePath));
+            .equals(fileUri));
    }
 
    @Override
@@ -138,8 +138,8 @@ public class CreateEntityPresenter<V extends CreateEntityPresenter.View> extends
       super.processPostSuccess(textualPost);
       if (cachedCreationItems.size() > 0) {
          Observable.from(cachedCreationItems)
-               .concatMap(item -> tripImagesInteractor.grabLocationFromExifPipe()
-                     .createObservableResult(new GrabLocationFromExifCommand(item.getFilePath()))
+               .concatMap(item -> tripImagesInteractor.fetchLocationFromExifPipe()
+                     .createObservableResult(new FetchLocationFromExifCommand(item.getFilePath()))
                      .map(command -> {
                         item.setLocationFromExif(command.getResult());
                         return item;

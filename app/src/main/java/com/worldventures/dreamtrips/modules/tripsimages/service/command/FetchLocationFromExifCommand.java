@@ -12,11 +12,11 @@ import io.techery.janet.command.annotations.CommandAction;
 import rx.Observable;
 
 @CommandAction
-public class GrabLocationFromExifCommand extends Command<Location> {
+public class FetchLocationFromExifCommand extends Command<Location> {
 
    private String filePath;
 
-   public GrabLocationFromExifCommand(String filePath) {
+   public FetchLocationFromExifCommand(String filePath) {
       this.filePath = filePath;
    }
 

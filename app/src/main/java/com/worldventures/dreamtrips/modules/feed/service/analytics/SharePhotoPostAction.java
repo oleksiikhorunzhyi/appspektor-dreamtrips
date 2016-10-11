@@ -93,13 +93,13 @@ public abstract class SharePhotoPostAction extends BaseAnalyticsAction {
    private static SharePhotoPostAction getSharePhotoPostAction(CreateEntityBundle.Origin origin) {
       SharePhotoPostAction sharePostAction;
       switch (origin) {
-         case TRIP_IMAGES_PROFILE:
+         case PROFILE_TRIP_IMAGES:
             sharePostAction = new SharePhotoPostFromProfileAction();
             break;
-         case TRIP_IMAGES_MY:
+         case MY_TRIP_IMAGES:
             sharePostAction = new SharePhotoPostFromMyImagesAction();
             break;
-         case TRIP_IMAGES_MEMBER:
+         case MEMBER_TRIP_IMAGES:
             sharePostAction = new SharePhotoPostFromMemberImagesAction();
             break;
          default:

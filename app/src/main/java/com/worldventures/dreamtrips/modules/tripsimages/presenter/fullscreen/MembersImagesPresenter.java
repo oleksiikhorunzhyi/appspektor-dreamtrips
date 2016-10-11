@@ -1,5 +1,7 @@
 package com.worldventures.dreamtrips.modules.tripsimages.presenter.fullscreen;
 
+import android.support.annotation.NonNull;
+
 import com.octo.android.robospice.request.SpiceRequest;
 import com.worldventures.dreamtrips.modules.common.model.MediaAttachment;
 import com.worldventures.dreamtrips.modules.common.view.util.MediaPickerEventDelegate;
@@ -34,20 +36,20 @@ public class MembersImagesPresenter extends TripImagesListPresenter<MembersImage
       mediaPickerEventDelegate.getObservable()
             .compose(bindViewToMainComposer())
             .subscribe(mediaAttachment -> {
-               CreateEntityBundle.Origin origin; //analytics requires track origin of routing
-               switch (type) {
-                  case ACCOUNT_IMAGES_FROM_PROFILE:
-                     origin = CreateEntityBundle.Origin.TRIP_IMAGES_PROFILE;
-                     break;
-                  case ACCOUNT_IMAGES:
-                     origin = CreateEntityBundle.Origin.TRIP_IMAGES_MY;
-                     break;
-                  default:
-                     origin = CreateEntityBundle.Origin.TRIP_IMAGES_MEMBER;
-                     break;
-               }
-               view.openCreatePhoto(mediaAttachment, origin);
+               view.openCreatePhoto(mediaAttachment, getRoutingOrigin());
             });
+   }
+
+   @NonNull
+   private CreateEntityBundle.Origin getRoutingOrigin() {
+      switch (type) {
+         case ACCOUNT_IMAGES_FROM_PROFILE:
+            return CreateEntityBundle.Origin.PROFILE_TRIP_IMAGES;
+         case ACCOUNT_IMAGES:
+            return CreateEntityBundle.Origin.MY_TRIP_IMAGES;
+         default:
+            return CreateEntityBundle.Origin.MEMBER_TRIP_IMAGES;
+      }
    }
 
    @Override

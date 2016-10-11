@@ -81,6 +81,16 @@
             android:src="@drawable/reader_top"
             />
 
+      <ImageView
+            android:id="@+id/reader_lights"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="-32dp"
+            android:layout_toEndOf="@+id/reader_top"
+            android:src="@drawable/reader_lights"
+            />
+
       <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

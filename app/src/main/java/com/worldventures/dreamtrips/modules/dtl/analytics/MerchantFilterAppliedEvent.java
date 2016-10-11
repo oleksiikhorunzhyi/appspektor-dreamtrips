@@ -3,6 +3,7 @@ package com.worldventures.dreamtrips.modules.dtl.analytics;
 import com.innahema.collections.query.queriables.Queryable;
 import com.worldventures.dreamtrips.core.utils.tracksystem.AdobeTracker;
 import com.worldventures.dreamtrips.core.utils.tracksystem.AnalyticsEvent;
+import com.worldventures.dreamtrips.modules.dtl.helper.FilterHelper;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.Attribute;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.filter.FilterData;
 
@@ -20,8 +21,10 @@ public class MerchantFilterAppliedEvent extends DtlAnalyticsAction {
 
    public MerchantFilterAppliedEvent(FilterData filterData) {
       price = String.format(Locale.US, "%d-%d", filterData.budgetMin(), filterData.budgetMax());
-      //distance = String.format(Locale.US, "%.0f", filterData.distanceMaxIndex()); // TODO :: 21.09.16 proper distance filliing
-      distance = "0";
+      distance = String.format(Locale.US, "%.0f-%.0f%s",
+            FilterHelper.provideLeftDistanceValue(filterData),
+            FilterHelper.provideDistanceByIndex(filterData),
+            filterData.distanceType().getTypeNameForAnalytics());
       if (filterData.selectedAmenities().isEmpty()) {
          amenities = "All";
       } else {

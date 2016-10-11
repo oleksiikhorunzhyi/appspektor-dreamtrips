@@ -23,7 +23,7 @@ import com.worldventures.dreamtrips.modules.dtl.model.merchant.Merchant;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.ThinMerchant;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.filter.FilterData;
 import com.worldventures.dreamtrips.modules.dtl.service.DtlLocationInteractor;
-import com.worldventures.dreamtrips.modules.dtl.service.DtlMerchantInteractor;
+import com.worldventures.dreamtrips.modules.dtl.service.MerchantsInteractor;
 import com.worldventures.dreamtrips.modules.dtl.service.DtlTransactionInteractor;
 import com.worldventures.dreamtrips.modules.dtl.service.FilterDataInteractor;
 import com.worldventures.dreamtrips.modules.dtl.service.FullMerchantInteractor;
@@ -64,7 +64,7 @@ public class DtlMapPresenterImpl extends DtlPresenterImpl<DtlMapScreen, ViewStat
    @Inject LocationDelegate gpsLocationDelegate;
    @Inject SnappyRepository db;
    @Inject Presenter.TabletAnalytic tabletAnalytic;
-   @Inject DtlMerchantInteractor merchantInteractor;
+   @Inject MerchantsInteractor merchantInteractor;
    @Inject FilterDataInteractor filterDataInteractor;
    @Inject FullMerchantInteractor fullMerchantInteractor;
    @Inject DtlLocationInteractor locationInteractor;
@@ -110,7 +110,7 @@ public class DtlMapPresenterImpl extends DtlPresenterImpl<DtlMapScreen, ViewStat
             .observeWithReplay()
             .compose(bindViewIoToMainComposer())
             .subscribe(new ActionStateSubscriber<MerchantsAction>()
-                  .onStart(action -> getView().showProgress(true))
+                  .onProgress((action, progress) -> getView().showProgress(true))
                   .onSuccess(action -> onMerchantsLoaded(action.merchants()))
                   .onFail((action, throwable) -> {
                      getView().showProgress(false);
@@ -124,7 +124,7 @@ public class DtlMapPresenterImpl extends DtlPresenterImpl<DtlMapScreen, ViewStat
             .subscribe(getView()::setFilterButtonState);
       filterDataInteractor.filterDataPipe()
             .observeSuccessWithReplay()
-            .take(1)
+            .first()
             .compose(bindViewIoToMainComposer())
             .map(FilterDataAction::getResult)
             .map(FilterData::isOffersOnly)
@@ -175,13 +175,13 @@ public class DtlMapPresenterImpl extends DtlPresenterImpl<DtlMapScreen, ViewStat
    private void updateToolbarTitles() {
       locationInteractor.locationPipe()
             .observeSuccessWithReplay()
-            .take(1)
+            .first()
             .map(DtlLocationCommand::getResult)
             .compose(bindViewIoToMainComposer())
             .subscribe(getView()::updateToolbarLocationTitle);
       filterDataInteractor.filterDataPipe()
             .observeSuccessWithReplay()
-            .take(1)
+            .first()
             .compose(bindViewIoToMainComposer())
             .map(FilterDataAction::getResult)
             .map(FilterData::searchQuery)
@@ -221,8 +221,7 @@ public class DtlMapPresenterImpl extends DtlPresenterImpl<DtlMapScreen, ViewStat
                      .observeSuccessWithReplay()
                      .compose(bindViewIoToMainComposer())
                      .map(command -> !DtlLocationHelper.checkLocation(MAX_DISTANCE, command.getResult()
-                           .getCoordinates()
-                           .asLatLng(), position.target, DistanceType.MILES));
+                           .getCoordinates().asLatLng(), position.target, DistanceType.MILES));
             });
    }
 
@@ -264,7 +263,7 @@ public class DtlMapPresenterImpl extends DtlPresenterImpl<DtlMapScreen, ViewStat
 
    private void showPins(List<ThinMerchant> merchants) {
       getView().clearMap();
-      Queryable.from(merchants).forEachR(merchant -> getView().addPin(merchant));
+      Queryable.from(merchants).forEachR(getView()::addPin);
       getView().renderPins();
    }
 

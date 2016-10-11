@@ -3,11 +3,9 @@ package com.worldventures.dreamtrips.modules.dtl_flow.parts.merchants;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.annotation.StringRes;
 import android.text.TextUtils;
 
 import com.techery.spares.module.Injector;
-import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.api.action.CommandWithError;
 import com.worldventures.dreamtrips.modules.dtl.analytics.DtlAnalyticsAction;
 import com.worldventures.dreamtrips.modules.dtl.analytics.DtlAnalyticsCommand;
@@ -21,7 +19,7 @@ import com.worldventures.dreamtrips.modules.dtl.model.merchant.ThinMerchant;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.filter.FilterData;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.offer.Offer;
 import com.worldventures.dreamtrips.modules.dtl.service.DtlLocationInteractor;
-import com.worldventures.dreamtrips.modules.dtl.service.DtlMerchantInteractor;
+import com.worldventures.dreamtrips.modules.dtl.service.MerchantsInteractor;
 import com.worldventures.dreamtrips.modules.dtl.service.FilterDataInteractor;
 import com.worldventures.dreamtrips.modules.dtl.service.FullMerchantInteractor;
 import com.worldventures.dreamtrips.modules.dtl.service.action.DtlLocationCommand;
@@ -48,7 +46,7 @@ public class DtlMerchantsPresenterImpl extends DtlPresenterImpl<DtlMerchantsScre
       implements DtlMerchantsPresenter {
 
    @Inject FilterDataInteractor filterDataInteractor;
-   @Inject DtlMerchantInteractor merchantInteractor;
+   @Inject MerchantsInteractor merchantInteractor;
    @Inject DtlLocationInteractor locationInteractor;
    @Inject FullMerchantInteractor fullMerchantInteractor;
 
@@ -95,20 +93,20 @@ public class DtlMerchantsPresenterImpl extends DtlPresenterImpl<DtlMerchantsScre
    private void connectToolbarUpdates() {
       locationInteractor.locationPipe()
             .observeSuccessWithReplay()
-            .take(1)
+            .first()
             .map(DtlLocationCommand::getResult)
             .compose(bindViewIoToMainComposer())
             .subscribe(getView()::updateToolbarLocationTitle);
       filterDataInteractor.filterDataPipe()
             .observeSuccessWithReplay()
-            .take(1)
+            .first()
             .compose(bindViewIoToMainComposer())
             .map(FilterDataAction::getResult)
             .map(FilterData::searchQuery)
             .subscribe(getView()::updateToolbarSearchCaption);
       filterDataInteractor.filterDataPipe()
             .observeSuccessWithReplay()
-            .take(1)
+            .first()
             .compose(bindViewIoToMainComposer())
             .map(FilterDataAction::getResult)
             .map(FilterData::isOffersOnly)
@@ -258,9 +256,8 @@ public class DtlMerchantsPresenterImpl extends DtlPresenterImpl<DtlMerchantsScre
    }
 
    private void showEmptyOrRedirect() {
-      if (!getView().isTabletLandscape() && getView().getPath().isAllowRedirect()) {
-         navigateToPath(new DtlLocationChangePath());
-      } else getView().showEmpty(true);
+      getView().showEmpty(true);
+      if (!getView().isTabletLandscape() && getView().getPath().isAllowRedirect()) navigateToPath(new DtlLocationChangePath());
    }
 
    public void navigateToDetails(Merchant merchant, String id) {

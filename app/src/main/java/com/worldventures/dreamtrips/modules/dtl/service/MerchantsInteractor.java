@@ -18,14 +18,14 @@ import io.techery.janet.ReadActionPipe;
 import rx.Observable;
 import rx.schedulers.Schedulers;
 
-public class DtlMerchantInteractor {
+public class MerchantsInteractor {
 
    private final DtlLocationInteractor dtlLocationInteractor;
    private final FilterDataInteractor filterDataInteractor;
 
    private final ActionPipe<MerchantsAction> thinMerchantsPipe;
 
-   public DtlMerchantInteractor(SessionActionPipeCreator sessionActionPipeCreator,
+   public MerchantsInteractor(SessionActionPipeCreator sessionActionPipeCreator,
          DtlLocationInteractor dtlLocationInteractor, FilterDataInteractor filterDataInteractor) {
 
       this.dtlLocationInteractor = dtlLocationInteractor;

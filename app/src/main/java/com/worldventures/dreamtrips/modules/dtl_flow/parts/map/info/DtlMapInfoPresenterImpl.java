@@ -11,7 +11,7 @@ import com.worldventures.dreamtrips.modules.dtl.event.ToggleMerchantSelectionEve
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.ThinMerchant;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.filter.FilterData;
 import com.worldventures.dreamtrips.modules.dtl.service.DtlLocationInteractor;
-import com.worldventures.dreamtrips.modules.dtl.service.DtlMerchantInteractor;
+import com.worldventures.dreamtrips.modules.dtl.service.MerchantsInteractor;
 import com.worldventures.dreamtrips.modules.dtl.service.FilterDataInteractor;
 import com.worldventures.dreamtrips.modules.dtl.service.FullMerchantInteractor;
 import com.worldventures.dreamtrips.modules.dtl.service.PresentationInteractor;
@@ -24,7 +24,7 @@ import javax.inject.Inject;
 
 public class DtlMapInfoPresenterImpl extends DtlPresenterImpl<DtlMapInfoScreen, ViewState.EMPTY> implements DtlMapInfoPresenter {
 
-   @Inject DtlMerchantInteractor merchantInteractor;
+   @Inject MerchantsInteractor merchantInteractor;
    @Inject FullMerchantInteractor fullMerchantInteractor;
    @Inject FilterDataInteractor filterDataInteractor;
    @Inject DtlLocationInteractor locationInteractor;

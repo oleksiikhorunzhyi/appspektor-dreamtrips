@@ -31,7 +31,7 @@ import com.worldventures.dreamtrips.modules.dtl.location.LocationDelegate;
 import com.worldventures.dreamtrips.modules.dtl.location.LocationDelegateImpl;
 import com.worldventures.dreamtrips.modules.dtl.service.AttributesInteractor;
 import com.worldventures.dreamtrips.modules.dtl.service.DtlLocationInteractor;
-import com.worldventures.dreamtrips.modules.dtl.service.DtlMerchantInteractor;
+import com.worldventures.dreamtrips.modules.dtl.service.MerchantsInteractor;
 import com.worldventures.dreamtrips.modules.dtl.service.DtlTransactionInteractor;
 import com.worldventures.dreamtrips.modules.dtl.service.FilterDataInteractor;
 import com.worldventures.dreamtrips.modules.dtl.service.FullMerchantInteractor;
@@ -91,9 +91,9 @@ public class ManagerModule {
 
    @Singleton
    @Provides
-   DtlMerchantInteractor provideDtlMerchantInteractor(SessionActionPipeCreator sessionActionPipeCreator,
+   MerchantsInteractor provideDtlMerchantInteractor(SessionActionPipeCreator sessionActionPipeCreator,
          DtlLocationInteractor locationInteractor, FilterDataInteractor filterDataInteractor) {
-      return new DtlMerchantInteractor(sessionActionPipeCreator, locationInteractor, filterDataInteractor);
+      return new MerchantsInteractor(sessionActionPipeCreator, locationInteractor, filterDataInteractor);
    }
 
    @Singleton

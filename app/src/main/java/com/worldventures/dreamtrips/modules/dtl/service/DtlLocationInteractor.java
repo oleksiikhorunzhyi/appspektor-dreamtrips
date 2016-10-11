@@ -48,8 +48,6 @@ public class DtlLocationInteractor {
    }
 
    private void connectSearchCancelLatest() {
-      searchLocationPipe.observe().subscribe(new ActionStateSubscriber<DtlSearchLocationAction>().onStart(action -> {
-         nearbyLocationPipe.cancelLatest();
-      }));
+      searchLocationPipe.observe().subscribe(new ActionStateSubscriber<DtlSearchLocationAction>().onStart(action -> nearbyLocationPipe.cancelLatest()));
    }
 }

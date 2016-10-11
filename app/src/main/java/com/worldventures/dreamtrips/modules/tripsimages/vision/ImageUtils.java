@@ -4,6 +4,7 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.ColorMatrix;
 import android.graphics.ColorMatrixColorFilter;
 import android.graphics.Paint;
@@ -218,16 +219,47 @@ public class ImageUtils {
    }
 
    public static Bitmap toMonochromeBitmap(Bitmap source) {
-      Bitmap bmpMonochrome = Bitmap.createBitmap(source.getWidth(), source.getHeight(), Bitmap.Config.ARGB_8888);
-
-      Canvas canvas = new Canvas(bmpMonochrome);
+      Bitmap bmp = Bitmap.createBitmap(source.getWidth(), source.getHeight(), Bitmap.Config.ARGB_8888);
+      Canvas canvas = new Canvas(bmp);
       ColorMatrix ma = new ColorMatrix();
       ma.setSaturation(0);
       Paint paint = new Paint();
       paint.setColorFilter(new ColorMatrixColorFilter(ma));
       canvas.drawBitmap(source, 0, 0, paint);
+      return floydSteinberg(bmp);
+   }
 
-      return bmpMonochrome;
+   public static Bitmap floydSteinberg(Bitmap src) {
+      Bitmap out = Bitmap.createBitmap(src.getWidth(), src.getHeight(), src.getConfig());
+      int alpha, red;
+      int pixel;
+      int gray;
+      int width = src.getWidth();
+      int height = src.getHeight();
+      int error;
+      int errors[][] = new int[width][height];
+      for (int y = 0; y < height - 1; y++) {
+         for (int x = 1; x < width - 1; x++) {
+            pixel = src.getPixel(x, y);
+            alpha = Color.alpha(pixel);
+            red = Color.red(pixel);
+            gray = red;
+            if (gray + errors[x][y] < 128) {
+               error = gray + errors[x][y];
+               gray = 0;
+            } else {
+               error = gray + errors[x][y] - 255;
+               gray = 255;
+            }
+            errors[x + 1][y] += (7 * error) / 16;
+            errors[x - 1][y + 1] += (3 * error) / 16;
+            errors[x][y + 1] += (5 * error) / 16;
+            errors[x + 1][y + 1] += (1 * error) / 16;
+
+            out.setPixel(x, y, Color.argb(alpha, gray, gray, gray));
+         }
+      }
+      return out;
    }
 
    private interface BitmapReceiverListener {

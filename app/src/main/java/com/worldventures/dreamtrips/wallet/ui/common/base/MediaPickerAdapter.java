@@ -35,7 +35,7 @@ public class MediaPickerAdapter implements MediaPickerService {
    public MediaPickerAdapter(MessengerMediaPickerDelegate messengerMediaPickerDelegate, CropImageDelegate cropImageDelegate) {
       this.messengerMediaPickerDelegate = messengerMediaPickerDelegate;
       this.cropImageDelegate = cropImageDelegate;
-      subscription = observePicker().subscribe(path -> paddingPath = path);
+      subscription = messengerMediaPickerDelegate.getImagePathsStream().subscribe(path -> paddingPath = path);
    }
 
    @Override
@@ -55,7 +55,6 @@ public class MediaPickerAdapter implements MediaPickerService {
       }
    }
 
-
    @Override
    public void pickPhoto() {
       paddingPath = null;
@@ -64,6 +63,7 @@ public class MediaPickerAdapter implements MediaPickerService {
 
    @Override
    public void crop(String filePath) {
+      paddingPath = null;
       cropImageDelegate.cropImage(filePath);
    }
 

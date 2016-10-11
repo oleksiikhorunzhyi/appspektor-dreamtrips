@@ -12,7 +12,6 @@ import com.worldventures.dreamtrips.modules.dtl.analytics.DtlAnalyticsCommand;
 import com.worldventures.dreamtrips.modules.dtl.analytics.MerchantFromSearchEvent;
 import com.worldventures.dreamtrips.modules.dtl.analytics.MerchantsListingExpandEvent;
 import com.worldventures.dreamtrips.modules.dtl.analytics.MerchantsListingViewEvent;
-import com.worldventures.dreamtrips.modules.dtl.event.ToggleMerchantSelectionEvent;
 import com.worldventures.dreamtrips.modules.dtl.helper.MerchantHelper;
 import com.worldventures.dreamtrips.modules.dtl.helper.holder.FullMerchantParamsHolder;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.Merchant;
@@ -20,7 +19,7 @@ import com.worldventures.dreamtrips.modules.dtl.model.merchant.ThinMerchant;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.filter.FilterData;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.offer.Offer;
 import com.worldventures.dreamtrips.modules.dtl.service.DtlLocationInteractor;
-import com.worldventures.dreamtrips.modules.dtl.service.DtlMerchantInteractor;
+import com.worldventures.dreamtrips.modules.dtl.service.MerchantsInteractor;
 import com.worldventures.dreamtrips.modules.dtl.service.FilterDataInteractor;
 import com.worldventures.dreamtrips.modules.dtl.service.FullMerchantInteractor;
 import com.worldventures.dreamtrips.modules.dtl.service.action.DtlLocationCommand;
@@ -47,7 +46,7 @@ public class DtlMerchantsPresenterImpl extends DtlPresenterImpl<DtlMerchantsScre
       implements DtlMerchantsPresenter {
 
    @Inject FilterDataInteractor filterDataInteractor;
-   @Inject DtlMerchantInteractor merchantInteractor;
+   @Inject MerchantsInteractor merchantInteractor;
    @Inject DtlLocationInteractor locationInteractor;
    @Inject FullMerchantInteractor fullMerchantInteractor;
 
@@ -76,6 +75,8 @@ public class DtlMerchantsPresenterImpl extends DtlPresenterImpl<DtlMerchantsScre
       super.onAttachedToWindow();
 
       connectMerchants();
+      connectRefreshMerchants();
+      connectLoadNextMerchants();
       connectAnalytics();
       connectToolbarUpdates();
       connectFullMerchantLoading();
@@ -92,20 +93,20 @@ public class DtlMerchantsPresenterImpl extends DtlPresenterImpl<DtlMerchantsScre
    private void connectToolbarUpdates() {
       locationInteractor.locationPipe()
             .observeSuccessWithReplay()
-            .take(1)
+            .first()
             .map(DtlLocationCommand::getResult)
             .compose(bindViewIoToMainComposer())
             .subscribe(getView()::updateToolbarLocationTitle);
       filterDataInteractor.filterDataPipe()
             .observeSuccessWithReplay()
-            .take(1)
+            .first()
             .compose(bindViewIoToMainComposer())
             .map(FilterDataAction::getResult)
             .map(FilterData::searchQuery)
             .subscribe(getView()::updateToolbarSearchCaption);
       filterDataInteractor.filterDataPipe()
             .observeSuccessWithReplay()
-            .take(1)
+            .first()
             .compose(bindViewIoToMainComposer())
             .map(FilterDataAction::getResult)
             .map(FilterData::isOffersOnly)
@@ -135,48 +136,36 @@ public class DtlMerchantsPresenterImpl extends DtlPresenterImpl<DtlMerchantsScre
 
    private void connectMerchants() {
       merchantInteractor.thinMerchantsHttpPipe()
-            .observeWithReplay()
+            .observeSuccessWithReplay()
             .compose(bindViewIoToMainComposer())
-            .subscribe(new ActionStateSubscriber<MerchantsAction>()
-                  .onSuccess(this::onSuccessMerchantsLoad)
-                  .onProgress(this::onProgressMerchantsLoad)
-                  .onFail(this::onFailMerchantsLoad));
+            .map(MerchantsAction::merchants)
+            .subscribe(this::setItemsOrRedirect);
+   }
 
+   private void connectRefreshMerchants() {
       merchantInteractor.thinMerchantsHttpPipe()
             .observeWithReplay()
             .compose(bindViewIoToMainComposer())
-            .subscribe(new ActionStateSubscriber<MerchantsAction>().onSuccess(this::setItems));
+            .filter(state -> state.action.isRefresh())
+            .subscribe(new ActionStateSubscriber<MerchantsAction>()
+                  .onSuccess(action -> getView().onRefreshSuccess())
+                  .onProgress(((action, progress) -> getView().onRefreshProgress()))
+                  .onFail(((action, thr) -> getView().onRefreshError(action.getErrorMessage()))));
+   }
+   private void connectLoadNextMerchants() {
+      merchantInteractor.thinMerchantsHttpPipe()
+            .observeWithReplay()
+            .compose(bindViewIoToMainComposer())
+            .filter(state -> !state.action.isRefresh())
+            .subscribe(new ActionStateSubscriber<MerchantsAction>()
+                  .onSuccess(action -> getView().onLoadNextSuccess())
+                  .onFail(((action, thr) -> getView().onLoadNextError()))
+                  .onProgress(((action, progress) -> getView().onLoadNextProgress())));
    }
 
-   private void setItems(MerchantsAction action) {
-      if (action.isRefresh()) getView().setRefreshedItems(action.getResult());
-      else getView().addItems(action.getResult());
-   }
-
-   protected void onSuccessMerchantsLoad(MerchantsAction action) {
-      updateProgress(action.isRefresh(), false);
-      if (action.isRefresh() && action.getResult().isEmpty()) showEmptyView();
-   }
-
-   protected void onProgressMerchantsLoad(MerchantsAction action, Integer progress) {
-      updateProgress(action.isRefresh(), true);
-      hideErrorView();
-      hideEmptyView();
-   }
-
-   protected void onFailMerchantsLoad(MerchantsAction action, Throwable throwable) {
-      if (action.isRefresh()) getView().clearMerchants();
-
-      updateProgress(action.isRefresh(), false);
-      showErrorView(action.isRefresh());
-      hideEmptyView();
-   }
-
-   protected void updateProgress(boolean isRefresh, boolean isLoading) {
-      if (!isRefresh) {
-         getView().loadNextProgress(isLoading);
-         getView().updateLoadingState(isLoading);
-      } else getView().refreshProgress(isLoading);
+   private void setItemsOrRedirect(List<ThinMerchant> items) {
+      if (items.isEmpty()) showEmptyOrRedirect();
+      else getView().setRefreshedItems(items);
    }
 
    protected void onSuccessMerchantLoad(FullMerchantAction action) {
@@ -192,7 +181,7 @@ public class DtlMerchantsPresenterImpl extends DtlPresenterImpl<DtlMerchantsScre
       actionParamsHolder = FullMerchantParamsHolder.fromAction(action);
 
       getView().hideBlockingProgress();
-      getView().showError(action.getErrorMessage());
+      getView().showLoadMerchantError(action.getErrorMessage());
    }
 
    @Override
@@ -213,6 +202,11 @@ public class DtlMerchantsPresenterImpl extends DtlPresenterImpl<DtlMerchantsScre
    @Override
    public void loadNext() {
       filterDataInteractor.applyNextPaginatedPage();
+   }
+
+   @Override
+   public void onRetryMerchantsClick() {
+      filterDataInteractor.applyRetryLoad();
    }
 
    @Override
@@ -237,7 +231,7 @@ public class DtlMerchantsPresenterImpl extends DtlPresenterImpl<DtlMerchantsScre
    }
 
    @Override
-   public void retryLoadMerchant() {
+   public void onRetryMerchantClick() {
       if (actionParamsHolder == null) return;
 
       fullMerchantInteractor.load(FullMerchantParamsHolder.toAction(actionParamsHolder));
@@ -261,25 +255,9 @@ public class DtlMerchantsPresenterImpl extends DtlPresenterImpl<DtlMerchantsScre
       fullMerchantInteractor.load(FullMerchantAction.create(merchant.id(), expandedOfferId));
    }
 
-   private void showEmptyView() {
-      if (!getView().isTabletLandscape() && getView().getPath().isAllowRedirect()) {
-         navigateToPath(new DtlLocationChangePath());
-      } else getView().showEmpty(true);
-   }
-
-   private void hideEmptyView() {
-      getView().showEmpty(false);
-   }
-
-   private void showErrorView(boolean isRefresh) {
-      hideErrorView();
-      if(isRefresh) getView().refreshMerchantsError(true);
-      else getView().loadNextMerchantsError(true);
-   }
-
-   private void hideErrorView() {
-      getView().refreshMerchantsError(false);
-      getView().loadNextMerchantsError(false);
+   private void showEmptyOrRedirect() {
+      getView().showEmpty(true);
+      if (!getView().isTabletLandscape() && getView().getPath().isAllowRedirect()) navigateToPath(new DtlLocationChangePath());
    }
 
    public void navigateToDetails(Merchant merchant, String id) {
@@ -302,9 +280,5 @@ public class DtlMerchantsPresenterImpl extends DtlPresenterImpl<DtlMerchantsScre
    protected void navigateToPath(Path path) {
       History history = History.single(path);
       Flow.get(getContext()).setHistory(history, Flow.Direction.REPLACE);
-   }
-
-   public void onEventMainThread(ToggleMerchantSelectionEvent event) {
-      //getView().toggleSelection(event.getDtlMerchant()); TODO :: toggle selection
    }
 }

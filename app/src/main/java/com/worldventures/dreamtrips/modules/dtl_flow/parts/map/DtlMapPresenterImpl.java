@@ -23,7 +23,7 @@ import com.worldventures.dreamtrips.modules.dtl.model.merchant.Merchant;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.ThinMerchant;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.filter.FilterData;
 import com.worldventures.dreamtrips.modules.dtl.service.DtlLocationInteractor;
-import com.worldventures.dreamtrips.modules.dtl.service.DtlMerchantInteractor;
+import com.worldventures.dreamtrips.modules.dtl.service.MerchantsInteractor;
 import com.worldventures.dreamtrips.modules.dtl.service.DtlTransactionInteractor;
 import com.worldventures.dreamtrips.modules.dtl.service.FilterDataInteractor;
 import com.worldventures.dreamtrips.modules.dtl.service.FullMerchantInteractor;
@@ -64,13 +64,13 @@ public class DtlMapPresenterImpl extends DtlPresenterImpl<DtlMapScreen, ViewStat
    @Inject LocationDelegate gpsLocationDelegate;
    @Inject SnappyRepository db;
    @Inject Presenter.TabletAnalytic tabletAnalytic;
-   @Inject DtlMerchantInteractor merchantInteractor;
+   @Inject MerchantsInteractor merchantInteractor;
    @Inject FilterDataInteractor filterDataInteractor;
    @Inject FullMerchantInteractor fullMerchantInteractor;
    @Inject DtlLocationInteractor locationInteractor;
    @Inject DtlTransactionInteractor transactionInteractor;
    @Inject PresentationInteractor presentationInteractor;
-   //
+
    @State FullMerchantParamsHolder actionParamsHolder;
 
    public DtlMapPresenterImpl(Context context, Injector injector) {
@@ -104,17 +104,17 @@ public class DtlMapPresenterImpl extends DtlPresenterImpl<DtlMapScreen, ViewStat
             .observe()
             .compose(bindViewIoToMainComposer())
             .compose(new ActionStateToActionTransformer<>())
-            .filter(action -> action.getResult().isEmpty())
+            .filter(action -> action.merchants().isEmpty())
             .subscribe(s -> getView().informUser(R.string.dtl_no_merchants_caption), throwable -> {});
       merchantInteractor.thinMerchantsHttpPipe()
             .observeWithReplay()
             .compose(bindViewIoToMainComposer())
             .subscribe(new ActionStateSubscriber<MerchantsAction>()
-                  .onStart(action -> getView().showProgress(true))
-                  .onSuccess(action -> onMerchantsLoaded(action.getResult()))
+                  .onProgress((action, progress) -> getView().showProgress(true))
+                  .onSuccess(action -> onMerchantsLoaded(action.merchants()))
                   .onFail((action, throwable) -> {
                      getView().showProgress(false);
-                     apiErrorPresenter.handleActionError(action, throwable);
+                     getView().informUser(action.getFallbackErrorMessage());
                   }));
       filterDataInteractor.filterDataPipe()
             .observeSuccessWithReplay()
@@ -124,13 +124,15 @@ public class DtlMapPresenterImpl extends DtlPresenterImpl<DtlMapScreen, ViewStat
             .subscribe(getView()::setFilterButtonState);
       filterDataInteractor.filterDataPipe()
             .observeSuccessWithReplay()
-            .take(1)
+            .first()
             .compose(bindViewIoToMainComposer())
             .map(FilterDataAction::getResult)
             .map(FilterData::isOffersOnly)
             .subscribe(getView()::toggleOffersOnly);
-      fullMerchantInteractor.fullMerchantPipe().observeWithReplay()
+      fullMerchantInteractor.fullMerchantPipe()
+            .observeWithReplay()
             .compose(bindViewIoToMainComposer())
+            .filter(actionState -> !getView().isTabletLandscape())
             .subscribe(new ActionStateSubscriber<FullMerchantAction>()
                   .onSuccess(this::onSuccessMerchantLoad)
                   .onProgress(this::onProgressMerchantLoad)
@@ -142,12 +144,10 @@ public class DtlMapPresenterImpl extends DtlPresenterImpl<DtlMapScreen, ViewStat
             .subscribe(popupHeight -> getView().prepareInfoWindow(popupHeight));
    }
 
-   @SuppressWarnings("unused")
    protected void onProgressMerchantLoad(CommandWithError<Merchant> action, Integer progress) {
       getView().showBlockingProgress();
    }
 
-   @SuppressWarnings("unused")
    protected void onFailMerchantLoad(FullMerchantAction command, Throwable throwable) {
       actionParamsHolder = FullMerchantParamsHolder.fromAction(command);
       //
@@ -155,7 +155,6 @@ public class DtlMapPresenterImpl extends DtlPresenterImpl<DtlMapScreen, ViewStat
       getView().showError(command.getErrorMessage());
    }
 
-   @SuppressWarnings("unused")
    protected void onSuccessMerchantLoad(FullMerchantAction command) {
       getView().hideBlockingProgress();
       navigateToDetails(command.getResult());
@@ -176,13 +175,13 @@ public class DtlMapPresenterImpl extends DtlPresenterImpl<DtlMapScreen, ViewStat
    private void updateToolbarTitles() {
       locationInteractor.locationPipe()
             .observeSuccessWithReplay()
-            .take(1)
+            .first()
             .map(DtlLocationCommand::getResult)
             .compose(bindViewIoToMainComposer())
             .subscribe(getView()::updateToolbarLocationTitle);
       filterDataInteractor.filterDataPipe()
             .observeSuccessWithReplay()
-            .take(1)
+            .first()
             .compose(bindViewIoToMainComposer())
             .map(FilterDataAction::getResult)
             .map(FilterData::searchQuery)
@@ -222,8 +221,7 @@ public class DtlMapPresenterImpl extends DtlPresenterImpl<DtlMapScreen, ViewStat
                      .observeSuccessWithReplay()
                      .compose(bindViewIoToMainComposer())
                      .map(command -> !DtlLocationHelper.checkLocation(MAX_DISTANCE, command.getResult()
-                           .getCoordinates()
-                           .asLatLng(), position.target, DistanceType.MILES));
+                           .getCoordinates().asLatLng(), position.target, DistanceType.MILES));
             });
    }
 
@@ -265,7 +263,7 @@ public class DtlMapPresenterImpl extends DtlPresenterImpl<DtlMapScreen, ViewStat
 
    private void showPins(List<ThinMerchant> merchants) {
       getView().clearMap();
-      Queryable.from(merchants).forEachR(merchant -> getView().addPin(merchant));
+      Queryable.from(merchants).forEachR(getView()::addPin);
       getView().renderPins();
    }
 

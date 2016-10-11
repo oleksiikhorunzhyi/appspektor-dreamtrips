@@ -1,6 +1,7 @@
 package com.worldventures.dreamtrips.modules.dtl_flow.parts.merchants;
 
 import android.support.annotation.Nullable;
+import android.support.annotation.StringRes;
 
 import com.worldventures.dreamtrips.modules.dtl.model.location.DtlLocation;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.ThinMerchant;
@@ -16,24 +17,6 @@ public interface DtlMerchantsScreen extends DtlScreen {
 
    void setRefreshedItems(List<ThinMerchant> merchants);
 
-   void addItems(List<ThinMerchant> merchants);
-
-   void refreshProgress(boolean isShow);
-
-   void loadNextProgress(boolean isShow);
-
-   void updateLoadingState(boolean isLoading);
-
-   void clearMerchants();
-
-   void showError(String error);
-
-   void refreshMerchantsError(boolean isShow);
-
-   void loadNextMerchantsError(boolean isShow);
-
-   void toggleSelection(ThinMerchant merchant);
-
    void toggleOffersOnly(boolean enabled);
 
    boolean isToolbarCollapsed();
@@ -44,8 +27,24 @@ public interface DtlMerchantsScreen extends DtlScreen {
 
    void applyViewState(DtlMerchantsState state);
 
+   void showLoadMerchantError(String error);
+
    DtlMerchantsPath getPath();
 
    DtlMerchantsState provideViewState();
+
+   void toggleSelection(ThinMerchant merchant);
+
+   void onRefreshSuccess();
+
+   void onRefreshProgress();
+
+   void onRefreshError(String error);
+
+   void onLoadNextSuccess();
+
+   void onLoadNextProgress();
+
+   void onLoadNextError();
 
 }

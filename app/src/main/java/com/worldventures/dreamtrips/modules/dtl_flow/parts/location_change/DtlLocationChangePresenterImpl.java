@@ -16,7 +16,7 @@ import com.worldventures.dreamtrips.modules.dtl.model.location.DtlLocation;
 import com.worldventures.dreamtrips.modules.dtl.model.location.ImmutableDtlManualLocation;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.filter.FilterData;
 import com.worldventures.dreamtrips.modules.dtl.service.DtlLocationInteractor;
-import com.worldventures.dreamtrips.modules.dtl.service.DtlMerchantInteractor;
+import com.worldventures.dreamtrips.modules.dtl.service.MerchantsInteractor;
 import com.worldventures.dreamtrips.modules.dtl.service.DtlTransactionInteractor;
 import com.worldventures.dreamtrips.modules.dtl.service.FilterDataInteractor;
 import com.worldventures.dreamtrips.modules.dtl.service.action.DtlLocationCommand;
@@ -53,7 +53,7 @@ public class DtlLocationChangePresenterImpl extends DtlPresenterImpl<DtlLocation
    @Inject FilterDataInteractor filterDataInteractor;
    @Inject DtlTransactionInteractor transactionInteractor;
    @Inject DtlLocationInteractor locationInteractor;
-   @Inject DtlMerchantInteractor merchantInteractor;
+   @Inject MerchantsInteractor merchantInteractor;
    //
    @State ScreenMode screenMode = ScreenMode.NEARBY_LOCATIONS;
    @State ArrayList<DtlExternalLocation> dtlNearbyLocations = new ArrayList<>();
@@ -275,8 +275,8 @@ public class DtlLocationChangePresenterImpl extends DtlPresenterImpl<DtlLocation
    @Override
    public void locationSelected(DtlExternalLocation dtlExternalLocation) {
       locationInteractor.searchLocationPipe().clearReplays();
-      analyticsInteractor.dtlAnalyticsCommandPipe()
-            .send(DtlAnalyticsCommand.create(LocationSearchEvent.create(dtlExternalLocation)));
+      merchantInteractor.thinMerchantsHttpPipe().clearReplays();
+      analyticsInteractor.dtlAnalyticsCommandPipe().send(DtlAnalyticsCommand.create(LocationSearchEvent.create(dtlExternalLocation)));
       locationInteractor.change(dtlExternalLocation);
       navigateToPath(DtlMerchantsPath.getDefault());
    }

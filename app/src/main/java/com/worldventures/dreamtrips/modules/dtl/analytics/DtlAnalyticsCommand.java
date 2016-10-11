@@ -1,14 +1,12 @@
 package com.worldventures.dreamtrips.modules.dtl.analytics;
 
-import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.core.api.action.CommandWithError;
 import com.worldventures.dreamtrips.core.janet.dagger.InjectableAction;
 import com.worldventures.dreamtrips.core.utils.tracksystem.AnalyticsInteractor;
 import com.worldventures.dreamtrips.modules.dtl.model.LocationSourceType;
 import com.worldventures.dreamtrips.modules.dtl.model.location.DtlManualLocation;
 import com.worldventures.dreamtrips.modules.dtl.model.location.ImmutableDtlManualLocation;
 import com.worldventures.dreamtrips.modules.dtl.service.DtlLocationInteractor;
-import com.worldventures.dreamtrips.modules.dtl.service.DtlMerchantInteractor;
+import com.worldventures.dreamtrips.modules.dtl.service.MerchantsInteractor;
 import com.worldventures.dreamtrips.modules.dtl.service.action.DtlLocationCommand;
 import com.worldventures.dreamtrips.modules.dtl.service.action.MerchantsAction;
 
@@ -22,7 +20,7 @@ public class DtlAnalyticsCommand extends Command<Void> implements InjectableActi
 
    @Inject protected AnalyticsInteractor analyticsInteractor;
    @Inject protected DtlLocationInteractor dtlLocationInteractor;
-   @Inject protected DtlMerchantInteractor merchantInteractor;
+   @Inject protected MerchantsInteractor merchantInteractor;
 
    protected final DtlAnalyticsAction action;
 

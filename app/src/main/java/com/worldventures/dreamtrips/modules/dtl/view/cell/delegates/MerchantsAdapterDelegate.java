@@ -1,6 +1,5 @@
 package com.worldventures.dreamtrips.modules.dtl.view.cell.delegates;
 
-import com.innahema.collections.query.queriables.Queryable;
 import com.techery.spares.ui.view.cell.CellDelegate;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.ImmutableThinMerchant;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.ThinMerchant;
@@ -47,28 +46,12 @@ public class MerchantsAdapterDelegate {
       adapter.remove(item);
    }
 
-   public void addItems(List<ThinMerchant> items) {
-      if (!containsList(items)) adapter.addItems(items);
-   }
-
    public List getItems() {
       return adapter.getItems();
    }
 
    public void clear() {
       adapter.clear();
-   }
-
-   public List<ThinMerchant> getMerchants() {
-      return Queryable.from(getItems()).filter(item -> item instanceof ThinMerchant).toList();
-   }
-
-   public void clearAndUpdateItems(List<ThinMerchant> items) {
-      adapter.clearAndUpdateItems(items);
-   }
-
-   private boolean containsList(List<ThinMerchant> items) {
-      return getItems().containsAll(items);
    }
 
    public boolean isItemsPresent() {

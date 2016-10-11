@@ -61,6 +61,7 @@ public class FilterDataInteractor {
                   .withPage(newFilterData.page())
                   .withBudgetMin(newFilterData.budgetMin())
                   .withBudgetMax(newFilterData.budgetMax())
+                  .withDistanceType(FilterHelper.provideDistanceFromSettings(snappyRepository))
                   .withDistanceMaxIndex(newFilterData.distanceMaxIndex())
                   .withSelectedAmenities(newFilterData.selectedAmenities()))
             .map(filterData -> {
@@ -90,6 +91,10 @@ public class FilterDataInteractor {
             .map(filterData -> ImmutableFilterData.copyOf(filterData)
                   .withPage(filterData.page() + 1))
             .subscribe(this::send);
+   }
+
+   public void applyRetryLoad() {
+      getLastFilterObservable().subscribe(this::send);
    }
 
    public void applyOffersOnly(final boolean isOffersOnly) {

@@ -11,6 +11,8 @@ public interface DtlMerchantsPresenter extends DtlPresenter<DtlMerchantsScreen, 
 
    void loadNext();
 
+   void onRetryMerchantsClick();
+
    void locationChangeRequested();
 
    void applySearch(String query);
@@ -21,7 +23,7 @@ public interface DtlMerchantsPresenter extends DtlPresenter<DtlMerchantsScreen, 
 
    void onToggleExpand(boolean expand, ThinMerchant merchant);
 
-   void retryLoadMerchant();
+   void onRetryMerchantClick();
 
    void mapClicked();
 

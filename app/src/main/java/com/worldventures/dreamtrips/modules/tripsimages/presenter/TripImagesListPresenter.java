@@ -53,7 +53,8 @@ public abstract class TripImagesListPresenter<VT extends TripImagesListPresenter
       this.userId = userId;
    }
 
-   public static TripImagesListPresenter create(TripImagesType type, int userId, ArrayList<IFullScreenObject> photos, boolean fullScreenMode, int currentPhotosPosition, int notificationId) {
+   public static TripImagesListPresenter create(TripImagesType type, int userId, ArrayList<IFullScreenObject> photos,
+         boolean fullScreenMode, int currentPhotosPosition, int notificationId) {
       TripImagesListPresenter presenter;
       switch (type) {
          case MEMBERS_IMAGES:
@@ -61,7 +62,7 @@ public abstract class TripImagesListPresenter<VT extends TripImagesListPresenter
             break;
          case ACCOUNT_IMAGES:
          case ACCOUNT_IMAGES_FROM_PROFILE:
-            presenter = new AccountImagesPresenter(TripImagesType.ACCOUNT_IMAGES, userId);
+            presenter = new AccountImagesPresenter(type, userId);
             break;
          case YOU_SHOULD_BE_HERE:
             presenter = new YSBHPresenter(userId);

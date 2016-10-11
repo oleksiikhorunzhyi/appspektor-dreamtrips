@@ -19,9 +19,11 @@ import com.worldventures.dreamtrips.core.utils.DTCookieManager;
 import com.worldventures.dreamtrips.modules.bucketlist.service.BucketInteractor;
 import com.worldventures.dreamtrips.modules.common.delegate.CachedEntityDelegate;
 import com.worldventures.dreamtrips.modules.common.delegate.CachedEntityInteractor;
-import com.worldventures.dreamtrips.modules.common.delegate.ConnectionInfoProvider;
+import com.worldventures.dreamtrips.modules.common.delegate.system.ConnectionInfoProvider;
 import com.worldventures.dreamtrips.modules.common.delegate.DownloadFileInteractor;
 import com.worldventures.dreamtrips.modules.common.delegate.SocialCropImageManager;
+import com.worldventures.dreamtrips.modules.common.delegate.system.DeviceInfoProvider;
+import com.worldventures.dreamtrips.modules.common.delegate.system.DeviceInfoProviderImpl;
 import com.worldventures.dreamtrips.modules.common.presenter.delegate.ClearDirectoryDelegate;
 import com.worldventures.dreamtrips.modules.common.presenter.delegate.OfflineWarningDelegate;
 import com.worldventures.dreamtrips.modules.common.view.util.MediaPickerEventDelegate;
@@ -210,5 +212,11 @@ public class ManagerModule {
    @Singleton
    ConnectionInfoProvider connectionInfoProvider(Context context) {
       return new ConnectionInfoProvider(context);
+   }
+
+   @Provides
+   @Singleton
+   DeviceInfoProvider provideProfileInteractor(Context context) {
+      return new DeviceInfoProviderImpl(context);
    }
 }

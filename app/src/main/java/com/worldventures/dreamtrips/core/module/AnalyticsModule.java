@@ -5,7 +5,8 @@ import com.worldventures.dreamtrips.core.utils.tracksystem.AdobeTracker;
 import com.worldventures.dreamtrips.core.utils.tracksystem.AnalyticsInteractor;
 import com.worldventures.dreamtrips.core.utils.tracksystem.ApptentiveTracker;
 import com.worldventures.dreamtrips.core.utils.tracksystem.Tracker;
-import com.worldventures.dreamtrips.modules.common.delegate.ConnectionInfoProvider;
+import com.worldventures.dreamtrips.modules.common.delegate.system.ConnectionInfoProvider;
+import com.worldventures.dreamtrips.modules.common.delegate.system.DeviceInfoProvider;
 
 import javax.inject.Singleton;
 
@@ -17,8 +18,8 @@ public class AnalyticsModule {
 
    @Singleton
    @Provides(type = Provides.Type.SET)
-   Tracker provideAdobeTracker(ConnectionInfoProvider connectionInfoProvider) {
-      return new AdobeTracker(connectionInfoProvider);
+   Tracker provideAdobeTracker(ConnectionInfoProvider connectionInfoProvider, DeviceInfoProvider deviceInfoProvider) {
+      return new AdobeTracker(deviceInfoProvider, connectionInfoProvider);
    }
 
    @Singleton

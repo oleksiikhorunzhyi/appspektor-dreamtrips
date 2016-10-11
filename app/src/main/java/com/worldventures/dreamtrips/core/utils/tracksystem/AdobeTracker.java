@@ -6,7 +6,8 @@ import android.support.annotation.Nullable;
 import com.adobe.mobile.Analytics;
 import com.adobe.mobile.Config;
 import com.worldventures.dreamtrips.BuildConfig;
-import com.worldventures.dreamtrips.modules.common.delegate.ConnectionInfoProvider;
+import com.worldventures.dreamtrips.modules.common.delegate.system.ConnectionInfoProvider;
+import com.worldventures.dreamtrips.modules.common.delegate.system.DeviceInfoProvider;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -19,14 +20,17 @@ public class AdobeTracker extends Tracker {
    private static final String CHANNEL_VALUE = "App:Dreamtrips";
    private static final String ACTION = "action";
    private static final String PREV_VIEW_STATE = "previouscreen";
+   private static final String DEVICE_ID = "deviceid";
    private static final String WIFI_CONNECTED = "wifi";
 
    private String lastTrackedViewState;
 
    private ConnectionInfoProvider connectionInfoProvider;
+   private DeviceInfoProvider deviceInfoProvider;
 
-   public AdobeTracker(ConnectionInfoProvider connectionInfoProvider) {
+   public AdobeTracker(DeviceInfoProvider deviceInfoProvider, ConnectionInfoProvider connectionInfoProvider) {
       this.connectionInfoProvider = connectionInfoProvider;
+      this.deviceInfoProvider = deviceInfoProvider;
    }
 
    @Override
@@ -64,6 +68,7 @@ public class AdobeTracker extends Tracker {
       data.put(PREV_VIEW_STATE, lastTrackedViewState);
       data.put(ACTION, preparedViewState);
       data.put(WIFI_CONNECTED, connectionInfoProvider.isWifi() ? "Yes" : "No");
+      data.put(DEVICE_ID, deviceInfoProvider.getUniqueIdentifier());
 
       Analytics.trackState(preparedViewState, data);
       lastTrackedViewState = preparedViewState;

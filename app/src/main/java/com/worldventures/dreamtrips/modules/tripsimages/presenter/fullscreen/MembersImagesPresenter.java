@@ -36,7 +36,8 @@ public class MembersImagesPresenter extends TripImagesListPresenter<MembersImage
       mediaPickerEventDelegate.getObservable()
             .compose(bindViewToMainComposer())
             .subscribe(mediaAttachment -> {
-               view.openCreatePhoto(mediaAttachment, getRoutingOrigin());
+               if (view.isVisibleOnScreen()) //cause neighbour tab also catches this event
+                  view.openCreatePhoto(mediaAttachment, getRoutingOrigin());
             });
    }
 

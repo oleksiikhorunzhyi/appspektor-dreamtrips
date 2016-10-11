@@ -80,13 +80,20 @@ public abstract class SharePhotoPostAction extends BaseAnalyticsAction {
          List<PhotoCreationItem> photoCreationItems, Photo photo, int idx) {
       // there is no option to match Photo and PhotoCreationItem, we're assuming that order is not changed
       Location locationFromExif = photoCreationItems.get(idx).getLocationFromExif();
-      String photoCoordinates = locationFromExif != null ? String.format(Locale.US, "%f,%f",
-            locationFromExif.getLat(), locationFromExif.getLng()) : "Not Available";
+      String photoCoordinates = isLocationValid(locationFromExif)
+            ? String.format(Locale.US, "%f,%f", locationFromExif.getLat(), locationFromExif.getLng())
+            : "Not Available";
       Location photoLocation = photo.getLocation();
-      String addedLocation = !TextUtils.isEmpty(photoLocation.getName()) ? photoLocation.getName() : "Not Available";
+      String addedLocation = !TextUtils.isEmpty(photoLocation.getName())
+            ? photoLocation.getName()
+            : "Not Available";
       sharePostAction.attributeMap.put("photocoordinates" + (idx + 1), photoCoordinates);
       sharePostAction.attributeMap.put("addedlocation" + (idx + 1), addedLocation);
       return photo.getPhotoTagsCount();
+   }
+
+   private static boolean isLocationValid(Location locationFromExif) {
+      return locationFromExif != null && locationFromExif.getLat() != 0.0f && locationFromExif.getLng() != 0.0f;
    }
 
    @NonNull

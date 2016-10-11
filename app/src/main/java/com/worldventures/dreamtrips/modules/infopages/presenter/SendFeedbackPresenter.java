@@ -112,6 +112,7 @@ public class SendFeedbackPresenter extends Presenter<SendFeedbackPresenter.View>
    public void subscribeToFormValidation() {
       Observable.combineLatest(view.getFeedbackTypeSelectedObservable(),
             view.getMessageTextObservable(),
+            view.getPhotoPickerVisibilityObservable(),
             attachmentsManager.getAttachmentsObservable().startWith(Observable.just(null)),
             this::validateForm)
       .compose(bindView())
@@ -119,12 +120,14 @@ public class SendFeedbackPresenter extends Presenter<SendFeedbackPresenter.View>
    }
 
    private boolean validateForm(FeedbackType feedbackType, CharSequence message,
-         EntityStateHolder<FeedbackImageAttachment> stateHolder) {
+         boolean photoPickerVisible, EntityStateHolder<FeedbackImageAttachment> stateHolder) {
       boolean feedbackTypeSelected = feedbackType.getId() > 0;
       if (!feedbackTypeSelected) return false;
 
       boolean messageIsEmpty = message.toString().trim().isEmpty();
       if (messageIsEmpty) return false;
+
+      if (photoPickerVisible) return false;
 
       if (attachmentsManager.getFailedOrPendingAttachmentsCount() > 0) return false;
 
@@ -265,6 +268,8 @@ public class SendFeedbackPresenter extends Presenter<SendFeedbackPresenter.View>
       Observable<CharSequence> getMessageTextObservable();
 
       Observable<FeedbackType> getFeedbackTypeSelectedObservable();
+
+      Observable<Boolean> getPhotoPickerVisibilityObservable();
 
       void changeDoneButtonState(boolean enable);
 

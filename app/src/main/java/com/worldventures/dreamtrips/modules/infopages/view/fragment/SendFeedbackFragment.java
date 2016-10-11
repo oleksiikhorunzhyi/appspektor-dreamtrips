@@ -38,6 +38,7 @@ import butterknife.InjectView;
 import butterknife.OnClick;
 import icepick.State;
 import rx.Observable;
+import rx.subjects.BehaviorSubject;
 import rx.subjects.PublishSubject;
 
 @Layout(R.layout.fragment_send_feedback)
@@ -55,6 +56,7 @@ public class SendFeedbackFragment extends BaseFragment<SendFeedbackPresenter> im
    private MenuItem doneButtonMenuItem;
    private Observable<CharSequence> messageObservable;
    private PublishSubject<FeedbackType> feedbackTypeObservable = PublishSubject.create();
+   private BehaviorSubject<Boolean> photoPickerVisibilityObservable = BehaviorSubject.create(false);
 
    @State int lastFeedbackTypeSelectedPosition;
 
@@ -160,6 +162,11 @@ public class SendFeedbackFragment extends BaseFragment<SendFeedbackPresenter> im
    }
 
    @Override
+   public Observable<Boolean> getPhotoPickerVisibilityObservable() {
+      return photoPickerVisibilityObservable;
+   }
+
+   @Override
    public void changeDoneButtonState(boolean enable) {
       if (doneButtonMenuItem != null) doneButtonMenuItem.setEnabled(enable);
    }
@@ -179,17 +186,15 @@ public class SendFeedbackFragment extends BaseFragment<SendFeedbackPresenter> im
       attachmentImagesHorizontalView.init(this);
 
       photoPickerDelegate.setPhotoPickerListener(new PhotoPickerLayout.PhotoPickerListener() {
-         boolean previousDoneButtonState;
 
          @Override
          public void onClosed() {
-            doneButtonMenuItem.setEnabled(previousDoneButtonState);
+            photoPickerVisibilityObservable.onNext(false);
          }
 
          @Override
          public void onOpened() {
-            previousDoneButtonState = doneButtonMenuItem.isEnabled();
-            doneButtonMenuItem.setEnabled(false);
+            photoPickerVisibilityObservable.onNext(true);
          }
       });
    }

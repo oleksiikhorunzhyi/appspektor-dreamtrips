@@ -12,7 +12,7 @@
          android:id="@+id/toolbar"
          android:layout_width="match_parent"
          android:layout_height="?attr/actionBarSize"
-         app:title="@string/wallet_wizard_title"
+         app:title="@string/wallet_wizard_power_on_title"
          />
 
    <FrameLayout
@@ -25,11 +25,11 @@
             android:id="@+id/wallet_wizard_power_on_title"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="40dp"
-            android:layout_marginRight="40dp"
-            android:layout_marginTop="40dp"
+            android:layout_marginStart="@dimen/spacing_normal"
+            android:layout_marginEnd="@dimen/spacing_normal"
+            android:layout_marginTop="@dimen/spacing_huge"
             android:gravity="center"
-            android:text="@string/wallet_wizard_power_on_title2"
+            android:text="@string/wallet_wizard_power_on_header"
             android:textAppearance="?android:attr/textAppearanceLarge"
             />
 

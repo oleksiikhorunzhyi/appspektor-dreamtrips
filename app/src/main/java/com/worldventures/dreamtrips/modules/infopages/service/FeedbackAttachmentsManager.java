@@ -39,15 +39,19 @@ public class FeedbackAttachmentsManager {
                   || attachment.state() == EntityStateHolder.State.FAIL);
    }
 
-   public void update(EntityStateHolder<FeedbackImageAttachment> updatedHolder) {
-      EntityStateHolder<FeedbackImageAttachment> oldHolder =
-            Queryable.from(statefulImageAttachments).filter(holder
-                  -> holder.entity().getId().equals(updatedHolder.entity().getId())).firstOrDefault();
-      if (oldHolder != null) {
-         statefulImageAttachments.remove(updatedHolder);
+   public void update(EntityStateHolder<FeedbackImageAttachment> newHolder) {
+      boolean existingHolderRefreshed = false;
+      for (int i = 0; i < statefulImageAttachments.size(); i++) {
+         EntityStateHolder<FeedbackImageAttachment> existingHolder = statefulImageAttachments.get(i);
+         if (existingHolder.entity().equals(newHolder.entity())) {
+            statefulImageAttachments.set(i, newHolder);
+            existingHolderRefreshed = true;
+            break;
+         }
       }
-      statefulImageAttachments.add(updatedHolder);
-      statefulAttachmentsObservable.onNext(updatedHolder);
+      if (!existingHolderRefreshed) statefulImageAttachments.add(newHolder);
+
+      statefulAttachmentsObservable.onNext(newHolder);
    }
 
    public void remove(EntityStateHolder<FeedbackImageAttachment> holder) {

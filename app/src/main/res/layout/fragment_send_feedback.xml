@@ -70,6 +70,8 @@
                   android:layout_marginTop="@dimen/spacing_normal"
                   android:background="@color/theme_main_darker"
                   android:padding="1dp"
+                  android:focusable="true"
+                  android:focusableInTouchMode="true"
                   >
 
                <EditText
@@ -78,7 +80,6 @@
                      android:layout_height="150dp"
                      android:layout_gravity="center_horizontal"
                      android:background="@android:color/white"
-                     android:enabled="true"
                      android:gravity="top"
                      android:hint="@string/feedback_message_hint"
                      android:inputType="textMultiLine|textCapSentences"

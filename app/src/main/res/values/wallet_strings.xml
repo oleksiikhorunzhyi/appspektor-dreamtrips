@@ -142,6 +142,7 @@
    <string name="wallet_wizard_welcome_greeting">Hi %s!</string>
    <string name="wallet_wizard_welcome_platinum_user">Take your platinum membership to new heights with flye\u2122.</string>
    <string name="wallet_wizard_welcome_gold_user">Take your gold membership to new heights with flye\u2122.</string>
+   <string name="wallet_wizard_welcome_simple_user">Take your membership to new heights with flye\u2122.</string>
    <string name="wallet_wizard_welcome_button_text">Set Up</string>
 
    <string name="wallet_record_type_credit">Credit</string>

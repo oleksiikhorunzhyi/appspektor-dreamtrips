@@ -74,7 +74,7 @@ public class WizardWelcomePresenter extends WalletPresenter<WizardWelcomePresent
    private String obtainMessage(User user) {
       if (user.isGold()) return getContext().getString(R.string.wallet_wizard_welcome_gold_user);
       if (user.isPlatinum()) return getContext().getString(R.string.wallet_wizard_welcome_platinum_user);
-      return "";
+      return getContext().getString(R.string.wallet_wizard_welcome_simple_user);
    }
 
    public void setupCardClicked() {

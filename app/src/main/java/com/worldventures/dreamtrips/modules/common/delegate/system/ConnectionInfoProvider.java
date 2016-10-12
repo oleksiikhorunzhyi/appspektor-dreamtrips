@@ -3,6 +3,7 @@ package com.worldventures.dreamtrips.modules.common.delegate.system;
 
 import android.content.Context;
 import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 
 public class ConnectionInfoProvider {
 
@@ -14,6 +15,7 @@ public class ConnectionInfoProvider {
 
    public boolean isWifi() {
       ConnectivityManager connectivityManager = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
-      return connectivityManager.getActiveNetworkInfo().getType() == ConnectivityManager.TYPE_WIFI;
+      NetworkInfo networkInfo = connectivityManager.getActiveNetworkInfo();
+      return networkInfo != null && networkInfo.getType() == ConnectivityManager.TYPE_WIFI;
    }
 }

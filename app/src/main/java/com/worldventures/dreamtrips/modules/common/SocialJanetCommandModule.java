@@ -52,6 +52,8 @@ import com.worldventures.dreamtrips.modules.trips.command.GetTripsByUidCommand;
 import com.worldventures.dreamtrips.modules.trips.command.GetTripsCommand;
 import com.worldventures.dreamtrips.modules.trips.command.GetTripsLocationsCommand;
 import com.worldventures.dreamtrips.modules.tripsimages.service.command.CreatePhotoCreationItemCommand;
+import com.worldventures.dreamtrips.modules.video.service.command.GetMemberVideosCommand;
+import com.worldventures.dreamtrips.modules.video.service.command.GetVideoLocalesCommand;
 
 import dagger.Module;
 
@@ -116,5 +118,7 @@ import dagger.Module;
       UploadFeedbackAttachmentCommand.class,
       GetFeedbackCommand.class,
       CreatePhotoCreationItemCommand.class,
+      GetMemberVideosCommand.class,
+      GetVideoLocalesCommand.class,
 }, complete = false, library = true)
 public class SocialJanetCommandModule {}

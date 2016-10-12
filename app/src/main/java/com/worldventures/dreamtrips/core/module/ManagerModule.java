@@ -41,6 +41,7 @@ import com.worldventures.dreamtrips.modules.profile.service.ProfileInteractor;
 import com.worldventures.dreamtrips.modules.tripsimages.service.TripImagesInteractor;
 import com.worldventures.dreamtrips.modules.tripsimages.view.util.EditPhotoTagsCallback;
 import com.worldventures.dreamtrips.modules.tripsimages.view.util.PostLocationPickerCallback;
+import com.worldventures.dreamtrips.modules.video.service.MemberVideosInteractor;
 
 import javax.inject.Named;
 import javax.inject.Singleton;
@@ -187,6 +188,12 @@ public class ManagerModule {
    @Singleton
    CachedEntityDelegate provideDownloadFileDelegate(CachedEntityInteractor cachedEntityInteractor) {
       return new CachedEntityDelegate(cachedEntityInteractor);
+   }
+
+   @Provides
+   @Singleton
+   MemberVideosInteractor provideMemberVideosInteractor(SessionActionPipeCreator sessionActionPipeCreator) {
+      return new MemberVideosInteractor(sessionActionPipeCreator);
    }
 
    @Provides

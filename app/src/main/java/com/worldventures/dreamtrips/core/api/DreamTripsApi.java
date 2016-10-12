@@ -17,13 +17,11 @@ import com.worldventures.dreamtrips.modules.membership.api.InviteBody;
 import com.worldventures.dreamtrips.modules.membership.model.History;
 import com.worldventures.dreamtrips.modules.membership.model.InviteTemplate;
 import com.worldventures.dreamtrips.modules.reptools.model.SuccessStory;
-import com.worldventures.dreamtrips.modules.reptools.model.VideoLocale;
 import com.worldventures.dreamtrips.modules.tripsimages.model.AddPhotoTag;
 import com.worldventures.dreamtrips.modules.tripsimages.model.DeletePhotoTag;
 import com.worldventures.dreamtrips.modules.tripsimages.model.Inspiration;
 import com.worldventures.dreamtrips.modules.tripsimages.model.Photo;
 import com.worldventures.dreamtrips.modules.tripsimages.model.YSBHPhoto;
-import com.worldventures.dreamtrips.modules.video.model.Category;
 
 import org.json.JSONObject;
 
@@ -133,16 +131,6 @@ public interface DreamTripsApi {
    @GET("/api/invitations/filled_templates/{id} ")
    InviteTemplate getFilledInviteTemplate(@Path("id") int id);
 
-   @GET("/api/member_videos/")
-   ArrayList<Category> getVideos(@Query("type") String type);
-
-   @GET("/api/member_videos/")
-   ArrayList<Category> getVideos(@Query("type") String type, @Query("locale") String locale);
-
-
-   @GET("/api/member_videos/locales")
-   ArrayList<VideoLocale> getTrainingVideosLocales();
-
    @GET("/api/social/friends")
    ArrayList<User> getFriends(@Query("circle_id") String circle_id, @Query("query") String query, @Query("page") int page, @Query("per_page") int perPage);
 
@@ -154,9 +142,6 @@ public interface DreamTripsApi {
 
    @GET("/api/social/friends/requests")
    ArrayList<User> getRequests();
-
-   @DELETE("/api/social/friends/{user_id}")
-   JSONObject unfriend(@Path("user_id") int userId);
 
    @FormUrlEncoded
    @POST("/api/social/comments")

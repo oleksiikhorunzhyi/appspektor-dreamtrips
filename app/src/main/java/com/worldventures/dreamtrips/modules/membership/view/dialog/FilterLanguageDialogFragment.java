@@ -18,13 +18,13 @@ import com.techery.spares.ui.view.cell.CellDelegate;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.modules.common.view.adapter.FilterableArrayListAdapter;
 import com.worldventures.dreamtrips.modules.membership.view.util.WrapContentLinearLayoutManager;
-import com.worldventures.dreamtrips.modules.reptools.model.VideoLanguage;
-import com.worldventures.dreamtrips.modules.reptools.model.VideoLocale;
 import com.worldventures.dreamtrips.modules.reptools.view.cell.VideoLanguageCell;
 import com.worldventures.dreamtrips.modules.reptools.view.cell.VideoLocaleCell;
+import com.worldventures.dreamtrips.modules.video.model.VideoLanguage;
+import com.worldventures.dreamtrips.modules.video.model.VideoLocale;
 
 import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.List;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
@@ -38,7 +38,7 @@ public class FilterLanguageDialogFragment extends InjectingDialogFragment {
    @InjectView(R.id.locale_search) SearchView search;
    @InjectView(R.id.filter_title) TextView title;
 
-   @State ArrayList<VideoLocale> locales;
+   @State ArrayList<VideoLocale> locales = new ArrayList<>();
 
    private FilterableArrayListAdapter adapter;
    private SelectionListener selectionListener;
@@ -98,8 +98,9 @@ public class FilterLanguageDialogFragment extends InjectingDialogFragment {
       Icepick.saveInstanceState(this, outState);
    }
 
-   public void setData(ArrayList<VideoLocale> locales) {
-      this.locales = locales;
+   public void setData(List<VideoLocale> locales) {
+      this.locales.clear();
+      this.locales.addAll(locales);
    }
 
    public void setSelectionListener(SelectionListener selectionListener) {
@@ -112,7 +113,7 @@ public class FilterLanguageDialogFragment extends InjectingDialogFragment {
       search.setVisibility(View.GONE);
       adapter.setFilter("");
       adapter.clear();
-      adapter.setItems(Arrays.asList(selectedLocale.getLanguage()));
+      adapter.setItems(selectedLocale.getLanguages());
    }
 
    public void onVideoLanguageSelected(VideoLanguage videoLanguage) {

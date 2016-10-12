@@ -20,7 +20,7 @@ import com.worldventures.dreamtrips.modules.bucketlist.service.action.MarkItemAs
 import com.worldventures.dreamtrips.modules.bucketlist.service.action.UpdateItemHttpAction
 import com.worldventures.dreamtrips.modules.bucketlist.service.command.*
 import com.worldventures.dreamtrips.modules.bucketlist.service.model.BucketBody
-import com.worldventures.dreamtrips.modules.bucketlist.service.model.EntityStateHolder
+import com.worldventures.dreamtrips.modules.common.model.EntityStateHolder
 import com.worldventures.dreamtrips.modules.bucketlist.service.model.ImmutableBucketBodyImpl
 import com.worldventures.dreamtrips.modules.bucketlist.service.model.ImmutableBucketPostBody
 import com.worldventures.dreamtrips.modules.bucketlist.service.storage.UploadBucketPhotoInMemoryStorage

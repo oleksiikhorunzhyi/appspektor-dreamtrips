@@ -16,13 +16,12 @@ import com.worldventures.dreamtrips.modules.bucketlist.presenter.ForeignBucketTa
 import com.worldventures.dreamtrips.modules.bucketlist.view.adapter.AutoCompleteAdapter;
 import com.worldventures.dreamtrips.modules.bucketlist.view.adapter.BucketItemAdapter;
 import com.worldventures.dreamtrips.modules.bucketlist.view.adapter.IgnoreFirstItemAdapter;
-import com.worldventures.dreamtrips.modules.bucketlist.view.cell.BucketAddPhotoCell;
+import com.worldventures.dreamtrips.modules.common.view.horizontal_photo_view.cell.AddPhotoCell;
 import com.worldventures.dreamtrips.modules.bucketlist.view.cell.BucketItemCell;
 import com.worldventures.dreamtrips.modules.bucketlist.view.cell.BucketItemStaticCell;
 import com.worldventures.dreamtrips.modules.bucketlist.view.cell.BucketPhotoCell;
-import com.worldventures.dreamtrips.modules.bucketlist.view.cell.BucketPhotoUploadCell;
 import com.worldventures.dreamtrips.modules.bucketlist.view.cell.BucketPopularCell;
-import com.worldventures.dreamtrips.modules.bucketlist.view.custom.BucketPhotosView;
+import com.worldventures.dreamtrips.modules.bucketlist.view.custom.BucketHorizontalPhotosView;
 import com.worldventures.dreamtrips.modules.bucketlist.view.fragment.BucketDetailsFragment;
 import com.worldventures.dreamtrips.modules.bucketlist.view.fragment.BucketItemEditFragment;
 import com.worldventures.dreamtrips.modules.bucketlist.view.fragment.BucketListFragment;
@@ -39,7 +38,36 @@ import dagger.Module;
 import dagger.Provides;
 
 @Module(
-      injects = {BucketItemEditPresenter.class, BucketPopularTabsPresenter.class, BucketItemEditFragment.class, BucketTabsPresenter.class, BucketListPresenter.class, BucketPopularPresenter.class, BucketListPopularFragment.class, BucketTabsFragment.class, BucketPopularTabsFragment.class, BucketListFragment.class, BucketItemCell.class, BucketPopularCell.class, BucketDetailsFragment.class, BucketItemDetailsPresenter.class, AutoCompleteAdapter.class, BucketItemAdapter.class, IgnoreFirstItemAdapter.class, IgnoreFirstExpandedItemAdapter.class, BucketAddPhotoCell.class, BucketPhotoUploadCell.class, BucketPhotoCell.class, FixedListPhotosFullScreenPresenter.class, BucketPhotosView.class, ForeignBucketItemDetailsPresenter.class, ForeignBucketDetailsFragment.class, ForeignBucketTabsFragment.class, ForeignBucketTabPresenter.class, ForeignBucketListFragment.class, BucketItemStaticCell.class, ForeignBucketListPresenter.class},
+      injects = {BucketItemEditPresenter.class,
+            BucketPopularTabsPresenter.class,
+            BucketItemEditFragment.class,
+            BucketTabsPresenter.class,
+            BucketListPresenter.class,
+            BucketPopularPresenter.class,
+            BucketListPopularFragment.class,
+            BucketTabsFragment.class,
+            BucketPopularTabsFragment.class,
+            BucketListFragment.class,
+            BucketItemCell.class,
+            BucketPopularCell.class,
+            BucketDetailsFragment.class,
+            BucketItemDetailsPresenter.class,
+            AutoCompleteAdapter.class,
+            BucketItemAdapter.class,
+            IgnoreFirstItemAdapter.class,
+            IgnoreFirstExpandedItemAdapter.class,
+            AddPhotoCell.class,
+            BucketPhotoCell.class,
+            FixedListPhotosFullScreenPresenter.class,
+            BucketHorizontalPhotosView.class,
+            ForeignBucketItemDetailsPresenter.class,
+            ForeignBucketDetailsFragment.class,
+            ForeignBucketTabsFragment.class,
+            ForeignBucketTabPresenter.class,
+            ForeignBucketListFragment.class,
+            BucketItemStaticCell.class,
+            ForeignBucketListPresenter.class
+      },
       complete = false,
       library = true)
 public class BucketListModule {

@@ -1,4 +1,4 @@
-package com.worldventures.dreamtrips.modules.bucketlist.view.cell;
+package com.worldventures.dreamtrips.modules.common.view.horizontal_photo_view.cell;
 
 import android.app.ActionBar;
 import android.view.View;
@@ -7,20 +7,20 @@ import android.widget.ImageView;
 
 import com.techery.spares.annotations.Layout;
 import com.techery.spares.ui.view.cell.AbstractDelegateCell;
+import com.techery.spares.ui.view.cell.CellDelegate;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.modules.bucketlist.view.cell.delegate.BucketAddPhotoCellDelegate;
-import com.worldventures.dreamtrips.modules.tripsimages.model.AddBucketPhotoModel;
+import com.worldventures.dreamtrips.modules.tripsimages.model.AddPhotoModel;
 
 import butterknife.InjectView;
 import butterknife.OnClick;
 
 
 @Layout(R.layout.adapter_item_bucket_photo_cell)
-public class BucketAddPhotoCell extends AbstractDelegateCell<AddBucketPhotoModel, BucketAddPhotoCellDelegate> {
+public class AddPhotoCell extends AbstractDelegateCell<AddPhotoModel, CellDelegate<AddPhotoModel>> {
 
    @InjectView(R.id.imageViewPhoto) protected ImageView ivPhoto;
 
-   public BucketAddPhotoCell(View view) {
+   public AddPhotoCell(View view) {
       super(view);
    }
 

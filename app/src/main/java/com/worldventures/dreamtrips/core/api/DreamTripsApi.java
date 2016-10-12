@@ -13,7 +13,6 @@ import com.worldventures.dreamtrips.modules.feed.model.CreatePhotoPostEntity;
 import com.worldventures.dreamtrips.modules.feed.model.FeedEntityHolder;
 import com.worldventures.dreamtrips.modules.feed.model.TextualPost;
 import com.worldventures.dreamtrips.modules.feed.model.comment.Comment;
-import com.worldventures.dreamtrips.modules.infopages.model.FeedbackType;
 import com.worldventures.dreamtrips.modules.membership.api.InviteBody;
 import com.worldventures.dreamtrips.modules.membership.model.History;
 import com.worldventures.dreamtrips.modules.membership.model.InviteTemplate;
@@ -40,8 +39,6 @@ import retrofit.http.POST;
 import retrofit.http.PUT;
 import retrofit.http.Path;
 import retrofit.http.Query;
-
-import static com.worldventures.dreamtrips.modules.infopages.api.SendFeedbackCommand.FeedbackBody;
 
 public interface DreamTripsApi {
 
@@ -213,10 +210,4 @@ public interface DreamTripsApi {
 
    @GET("/api/photos/{uid}")
    Photo getPhotoInfo(@Path("uid") String uid);
-
-   @GET("/api/feedbacks/reasons")
-   ArrayList<FeedbackType> getFeedbackReasons();
-
-   @POST("/api/feedbacks")
-   Void sendFeedback(@Body FeedbackBody feedbackBody);
 }

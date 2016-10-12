@@ -18,7 +18,7 @@ import com.worldventures.dreamtrips.modules.bucketlist.service.action.UpdateItem
 import com.worldventures.dreamtrips.modules.bucketlist.service.command.AddBucketItemPhotoCommand;
 import com.worldventures.dreamtrips.modules.bucketlist.service.command.DeleteItemPhotoCommand;
 import com.worldventures.dreamtrips.modules.bucketlist.service.command.MergeBucketItemPhotosWithStorageCommand;
-import com.worldventures.dreamtrips.modules.bucketlist.service.model.EntityStateHolder;
+import com.worldventures.dreamtrips.modules.common.model.EntityStateHolder;
 import com.worldventures.dreamtrips.modules.bucketlist.service.model.ImmutableBucketPostBody;
 import com.worldventures.dreamtrips.modules.common.model.PhotoGalleryModel;
 import com.worldventures.dreamtrips.modules.common.view.bundle.BucketBundle;
@@ -145,15 +145,15 @@ public class BucketItemEditPresenter extends BucketDetailsBasePresenter<BucketIt
    ////////////////////////////////////////
    /////// Photo picking
    ////////////////////////////////////////
-   public void onUploadTaskClicked(EntityStateHolder<BucketPhoto> photoStateHolder) {
-      view.deleteImage(photoStateHolder);
-
+   public void onPhotoCellClicked(EntityStateHolder<BucketPhoto> photoStateHolder) {
       EntityStateHolder.State state = photoStateHolder.state();
       switch (state) {
          case FAIL:
+            view.deleteImage(photoStateHolder);
             startUpload(photoStateHolder);
             break;
          case PROGRESS:
+            view.deleteImage(photoStateHolder);
             cancelUpload(photoStateHolder);
             break;
       }

@@ -1,6 +1,6 @@
 package com.worldventures.dreamtrips.modules.tripsimages.model;
 
-public class AddBucketPhotoModel {
+public class AddPhotoModel {
 
    private boolean visible;
 

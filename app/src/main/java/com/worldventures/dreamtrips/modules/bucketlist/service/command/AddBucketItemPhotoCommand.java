@@ -11,7 +11,7 @@ import com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketPhoto;
 import com.worldventures.dreamtrips.modules.bucketlist.service.BucketInteractor;
 import com.worldventures.dreamtrips.modules.bucketlist.service.action.UploadPhotoHttpAction;
-import com.worldventures.dreamtrips.modules.bucketlist.service.model.EntityStateHolder;
+import com.worldventures.dreamtrips.modules.common.model.EntityStateHolder;
 
 import javax.inject.Inject;
 
@@ -20,8 +20,8 @@ import io.techery.janet.Janet;
 import io.techery.janet.command.annotations.CommandAction;
 import rx.subjects.PublishSubject;
 
-import static com.worldventures.dreamtrips.modules.bucketlist.service.model.EntityStateHolder.State.DONE;
-import static com.worldventures.dreamtrips.modules.bucketlist.service.model.EntityStateHolder.State.FAIL;
+import static com.worldventures.dreamtrips.modules.common.model.EntityStateHolder.State.DONE;
+import static com.worldventures.dreamtrips.modules.common.model.EntityStateHolder.State.FAIL;
 
 @CommandAction
 public class AddBucketItemPhotoCommand extends Command<Pair<BucketItem, BucketPhoto>> implements InjectableAction {

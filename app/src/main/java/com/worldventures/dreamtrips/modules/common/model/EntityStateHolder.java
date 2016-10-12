@@ -1,6 +1,8 @@
-package com.worldventures.dreamtrips.modules.bucketlist.service.model;
+package com.worldventures.dreamtrips.modules.common.model;
 
-public final class EntityStateHolder<T> {
+import java.io.Serializable;
+
+public final class EntityStateHolder<T> implements Serializable {
    private T entity;
 
    private State state;

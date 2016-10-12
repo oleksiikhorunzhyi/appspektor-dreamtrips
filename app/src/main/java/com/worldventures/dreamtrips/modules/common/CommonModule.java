@@ -42,6 +42,7 @@ import com.worldventures.dreamtrips.modules.common.view.dialog.MessageDialogFrag
 import com.worldventures.dreamtrips.modules.common.view.dialog.ProgressDialogFragment;
 import com.worldventures.dreamtrips.modules.common.view.dialog.TermsConditionsDialog;
 import com.worldventures.dreamtrips.modules.common.view.fragment.MediaPickerFragment;
+import com.worldventures.dreamtrips.modules.common.view.horizontal_photo_view.cell.StatefulPhotoCell;
 import com.worldventures.dreamtrips.modules.dtl_flow.DtlActivity;
 import com.worldventures.dreamtrips.modules.dtl_flow.di.DtlActivityModule;
 import com.worldventures.dreamtrips.modules.feed.FeedModule;
@@ -75,7 +76,7 @@ import dagger.Provides;
             //
             ToolbarPresenter.class,
             //
-            MediaPickerFragment.class, MediaPickerPresenter.class,},
+            MediaPickerFragment.class, MediaPickerPresenter.class, StatefulPhotoCell.class},
       complete = false,
       library = true)
 public class CommonModule {

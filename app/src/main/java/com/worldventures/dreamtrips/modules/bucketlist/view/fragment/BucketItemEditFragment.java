@@ -26,9 +26,9 @@ import com.worldventures.dreamtrips.core.utils.DateTimeUtils;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketPhoto;
 import com.worldventures.dreamtrips.modules.bucketlist.model.CategoryItem;
 import com.worldventures.dreamtrips.modules.bucketlist.presenter.BucketItemEditPresenter;
-import com.worldventures.dreamtrips.modules.bucketlist.service.model.EntityStateHolder;
+import com.worldventures.dreamtrips.modules.common.model.EntityStateHolder;
 import com.worldventures.dreamtrips.modules.bucketlist.view.cell.delegate.BucketPhotoUploadCellDelegate;
-import com.worldventures.dreamtrips.modules.bucketlist.view.custom.BucketPhotosView;
+import com.worldventures.dreamtrips.modules.bucketlist.view.custom.BucketHorizontalPhotosView;
 import com.worldventures.dreamtrips.modules.common.view.bundle.BucketBundle;
 import com.worldventures.dreamtrips.modules.common.view.bundle.PickerBundle;
 import com.worldventures.dreamtrips.modules.tripsimages.bundle.FullScreenImagesBundle;
@@ -55,7 +55,7 @@ public class BucketItemEditFragment extends RxBaseFragmentWithArgs<BucketItemEdi
    @InjectView(R.id.editTextTime) AutoCompleteTextView autoCompleteTextViwDate;
    @InjectView(R.id.checkBoxDone) CheckBox checkBox;
    @InjectView(R.id.spinnerCategory) Spinner spinnerCategory;
-   @InjectView(R.id.lv_items) BucketPhotosView bucketPhotosView;
+   @InjectView(R.id.lv_items) BucketHorizontalPhotosView bucketPhotosView;
    @InjectView(R.id.loading_view) ViewGroup loadingView;
 
    private boolean categorySelected = false;
@@ -142,12 +142,12 @@ public class BucketItemEditFragment extends RxBaseFragmentWithArgs<BucketItemEdi
    }
 
    protected void setupPhotoCellCallbacks() {
-      bucketPhotosView.setBucketAddPhotoCellDelegate(model -> {
+      bucketPhotosView.enableAddPhotoCell(model -> {
          if (isVisibleOnScreen()) {
             showMediaPicker();
          }
       });
-      bucketPhotosView.setBucketPhotoUploadCellDelegate(new BucketPhotoUploadCellDelegate() {
+      bucketPhotosView.setPhotoCellDelegate(new BucketPhotoUploadCellDelegate() {
          @Override
          public void deletePhotoRequest(BucketPhoto photo) {
             getPresenter().deletePhotoRequest(photo);
@@ -160,7 +160,7 @@ public class BucketItemEditFragment extends RxBaseFragmentWithArgs<BucketItemEdi
 
          @Override
          public void onCellClicked(EntityStateHolder<BucketPhoto> model) {
-            getPresenter().onUploadTaskClicked(model);
+            getPresenter().onPhotoCellClicked(model);
          }
       });
    }

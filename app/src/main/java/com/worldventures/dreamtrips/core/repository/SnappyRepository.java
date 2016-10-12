@@ -151,7 +151,7 @@ public interface SnappyRepository {
 
    List<FeedbackType> getFeedbackTypes();
 
-   void setFeedbackTypes(ArrayList<FeedbackType> types);
+   void setFeedbackTypes(List<FeedbackType> types);
 
    void saveDtlLocation(DtlLocation dtlLocation);
 

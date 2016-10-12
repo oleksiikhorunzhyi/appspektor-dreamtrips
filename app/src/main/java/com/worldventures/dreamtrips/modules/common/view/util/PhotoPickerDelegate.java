@@ -14,6 +14,7 @@ public class PhotoPickerDelegate {
    //
    private SelectedPhotosProvider selectedPhotosProvider;
    private PhotoPickerLayout.OnDoneClickListener doneClickListener;
+   private PhotoPickerLayout.PhotoPickerListener photoPickerListener;
 
    public boolean isMultiPickEnabled() {
       return photoPickerLayout.isMultiPickEnabled();
@@ -47,6 +48,18 @@ public class PhotoPickerDelegate {
       if (doneClickListener != null && selectedPhotosProvider != null) {
          doneClickListener.onDone(selectedPhotosProvider.provideSelectedPhotos(), selectedPhotosProvider.getType());
       }
+   }
+
+   public void onOpened() {
+      if (photoPickerListener != null) photoPickerListener.onOpened();
+   }
+
+   public void onClosed() {
+      if (photoPickerListener != null) photoPickerListener.onClosed();
+   }
+
+   public void setPhotoPickerListener(PhotoPickerLayout.PhotoPickerListener photoPickerListener) {
+      this.photoPickerListener = photoPickerListener;
    }
 
    public void setDoneClickListener(PhotoPickerLayout.OnDoneClickListener doneClickListener) {

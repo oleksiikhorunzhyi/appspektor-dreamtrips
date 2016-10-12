@@ -197,12 +197,20 @@ public class SendFeedbackFragment extends BaseFragment<SendFeedbackPresenter> im
 
          @Override
          public void onClosed() {
+            message.setOnFocusChangeListener(null);
             photoPickerVisibilityObservable.onNext(false);
          }
 
          @Override
          public void onOpened() {
             clearMessageFocus();
+            message.setOnFocusChangeListener((v, hasFocus) -> {
+               if (hasFocus) {
+                  photoPickerVisibilityObservable.take(1).subscribe(photopickerVisible -> {
+                     if (photopickerVisible) router.back();
+                  });
+               }
+            });
             photoPickerVisibilityObservable.onNext(true);
          }
       });

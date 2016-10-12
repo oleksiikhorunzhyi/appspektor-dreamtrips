@@ -177,6 +177,14 @@ public class SendFeedbackFragment extends BaseFragment<SendFeedbackPresenter> im
       addPhotosButton.setEnabled(enable);
    }
 
+   private void clearMessageFocus() {
+      // because clearFocus() method does not work
+      message.setFocusable(false);
+      message.setFocusableInTouchMode(false);
+      message.setFocusable(true);
+      message.setFocusableInTouchMode(true);
+   }
+
    ///////////////////////////////////////////////////////////////////////////
    // Attachments
    ///////////////////////////////////////////////////////////////////////////
@@ -194,6 +202,7 @@ public class SendFeedbackFragment extends BaseFragment<SendFeedbackPresenter> im
 
          @Override
          public void onOpened() {
+            clearMessageFocus();
             photoPickerVisibilityObservable.onNext(true);
          }
       });

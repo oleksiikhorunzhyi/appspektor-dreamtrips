@@ -7,9 +7,6 @@ import com.worldventures.dreamtrips.wallet.domain.storage.TemporaryStorage;
 import com.worldventures.dreamtrips.wallet.service.SmartCardInteractor;
 import com.worldventures.dreamtrips.wallet.service.command.ConnectSmartCardCommand;
 import com.worldventures.dreamtrips.wallet.service.command.GetActiveSmartCardCommand;
-import com.worldventures.dreamtrips.wallet.util.RetryWithDelay;
-
-import org.apache.commons.io.FileUtils;
 
 import java.io.File;
 
@@ -29,8 +26,6 @@ import static rx.Observable.just;
 @CommandAction
 public class InstallFirmwareCommand extends Command<Void> implements InjectableAction {
 
-   private static final int MAX_RETRIES = 3;
-   private static final int RETRY_DELAY_MILLIS = 2000;
 
    @Inject @Named(JANET_WALLET) Janet janet;
    @Inject SmartCardInteractor smartCardInteractor;
@@ -47,24 +42,17 @@ public class InstallFirmwareCommand extends Command<Void> implements InjectableA
             .map(Command::getResult)
             .flatMap(it -> it.connectionStatus() == CONNECTED ? just(it) : connectCard(it))
             .flatMap(it -> Observable.just(file))
-            .flatMap(this::fileToBytes)
             .flatMap(this::installFirmware)
-            .flatMap(it -> activeSmartCard())
-            .flatMap(it -> connectCard(it.getResult()))
-            .map(it -> (Void) null)
-            .retryWhen(new RetryWithDelay(MAX_RETRIES, RETRY_DELAY_MILLIS))
             .subscribe(callback::onSuccess, callback::onFail);
    }
 
-   private Observable<? extends byte[]> fileToBytes(File file) {
-      return Observable.fromCallable(() -> FileUtils.readFileToByteArray(file));
-   }
-
-   private Observable<UpgradeFirmwareAction> installFirmware(byte[] it) {
+   private Observable<Void> installFirmware(File file) {
       return janet.createPipe(UpgradeFirmwareAction.class)
-            .createObservableResult(new UpgradeFirmwareAction(it))
+            .createObservableResult(new UpgradeFirmwareAction(file))
             .flatMap(action ->//todo remove it when temporary storage will be useless
-                  temporaryStorage.failInstall() ? Observable.error(new RuntimeException()) : Observable.just(action));
+                  temporaryStorage.failInstall() ? Observable.error(new RuntimeException()) : Observable.just(action))
+            .map(it -> (Void) null);
+
    }
 
    private Observable<GetActiveSmartCardCommand> activeSmartCard() {

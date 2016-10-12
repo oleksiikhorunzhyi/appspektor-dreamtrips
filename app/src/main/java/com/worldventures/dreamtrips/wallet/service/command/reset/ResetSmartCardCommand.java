@@ -1,19 +1,18 @@
-package com.worldventures.dreamtrips.wallet.service.command;
+package com.worldventures.dreamtrips.wallet.service.command.reset;
 
 
 import com.worldventures.dreamtrips.api.smart_card.user_association.DisassociateCardUserHttpAction;
 import com.worldventures.dreamtrips.core.janet.dagger.InjectableAction;
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCard;
 import com.worldventures.dreamtrips.wallet.service.SmartCardInteractor;
+import com.worldventures.dreamtrips.wallet.service.command.GetActiveSmartCardCommand;
 
 import javax.inject.Inject;
 import javax.inject.Named;
 
-import io.techery.janet.ActionPipe;
 import io.techery.janet.Command;
 import io.techery.janet.Janet;
 import io.techery.janet.command.annotations.CommandAction;
-import io.techery.janet.smartcard.action.lock.LockDeviceAction;
 import io.techery.janet.smartcard.action.user.UnAssignUserAction;
 import rx.Observable;
 
@@ -27,36 +26,24 @@ public class ResetSmartCardCommand extends Command<Void> implements InjectableAc
    @Inject @Named(JANET_WALLET) Janet janet;
    @Inject SmartCardInteractor smartCardInteractor;
 
-   private SmartCard smartCard;
-
    @Override
    protected void run(CommandCallback<Void> callback) throws Throwable {
       smartCardInteractor.activeSmartCardPipe()
             .createObservableResult(new GetActiveSmartCardCommand())
-            .doOnNext(cardCommand -> smartCard = cardCommand.getResult())
-            .flatMap(cardCommand -> lockUnlockSmartCard())
-            .flatMap(setLockStateCommand -> disassociateCardUserServer())
-            .flatMap(disassociateCardUserHttpAction -> disassociateCardUser())
-            .flatMap(unAssignUserAction -> removeSmartCardData())
-            .subscribe(removeSmartCardDataCommand -> callback.onSuccess(null), callback::onFail);
+            .flatMap(command -> reset(command.getResult()))
+            .subscribe(callback::onSuccess, callback::onFail);
    }
 
-   //before unassisign user, he should enter pin. For this purpose smartCard should be locked and unlocked,
-   // because unlock operation performs by entering pin.
-   private Observable<LockDeviceAction> lockUnlockSmartCard() {
-      ActionPipe<LockDeviceAction> lockDevicePipe = janet.createPipe(LockDeviceAction.class);
+   private Observable<Void> reset(SmartCard smartCard) {
+      if (smartCard.lock()) throw new IllegalStateException("Smart Card should be unlocked");
 
-      if (smartCard.lock()) {
-         return lockDevicePipe
-               .createObservableResult(new LockDeviceAction(false));
-      } else {
-         return lockDevicePipe
-               .createObservableResult(new LockDeviceAction(true))
-               .flatMap(setLockStateCommand -> lockDevicePipe.createObservableResult(new LockDeviceAction(false)));
-      }
+      return disassociateCardUserServer(smartCard)
+            .flatMap(action -> disassociateCardUser())
+            .flatMap(action -> removeSmartCardData(smartCard))
+            .map(action -> null);
    }
 
-   private Observable<DisassociateCardUserHttpAction> disassociateCardUserServer() {
+   private Observable<DisassociateCardUserHttpAction> disassociateCardUserServer(SmartCard smartCard) {
       long scId = Long.parseLong(smartCard.smartCardId());
       return apiLibJanet.createPipe(DisassociateCardUserHttpAction.class)
             .createObservableResult(new DisassociateCardUserHttpAction(scId));
@@ -67,7 +54,7 @@ public class ResetSmartCardCommand extends Command<Void> implements InjectableAc
             .createObservableResult(new UnAssignUserAction());
    }
 
-   private Observable<RemoveSmartCardDataCommand> removeSmartCardData() {
+   private Observable<RemoveSmartCardDataCommand> removeSmartCardData(SmartCard smartCard) {
       return janet.createPipe(RemoveSmartCardDataCommand.class)
             .createObservableResult(new RemoveSmartCardDataCommand(smartCard.smartCardId()));
    }

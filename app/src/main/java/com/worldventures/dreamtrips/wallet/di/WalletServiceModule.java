@@ -3,7 +3,9 @@ package com.worldventures.dreamtrips.wallet.di;
 import android.content.Context;
 
 import com.techery.spares.module.qualifier.ForApplication;
+import com.worldventures.dreamtrips.wallet.service.FactoryResetManager;
 import com.worldventures.dreamtrips.wallet.service.FirmwareInteractor;
+import com.worldventures.dreamtrips.wallet.service.SmartCardInteractor;
 import com.worldventures.dreamtrips.wallet.service.WalletBluetoothService;
 import com.worldventures.dreamtrips.wallet.service.WalletNetworkService;
 import com.worldventures.dreamtrips.wallet.service.WizardInteractor;
@@ -44,5 +46,11 @@ public class WalletServiceModule {
    @Provides
    FirmwareInteractor firmwareInteractor(@Named(JANET_WALLET) Janet janet) {
       return new FirmwareInteractor(janet);
+   }
+
+   @Singleton
+   @Provides
+   FactoryResetManager factoryResetManager(@Named(JANET_WALLET) Janet janet, SmartCardInteractor smartCardInteractor) {
+      return new FactoryResetManager(janet, smartCardInteractor);
    }
 }

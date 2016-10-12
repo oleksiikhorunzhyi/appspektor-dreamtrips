@@ -1,4 +1,4 @@
-package com.worldventures.dreamtrips.wallet.service.command;
+package com.worldventures.dreamtrips.wallet.service.command.reset;
 
 
 import com.worldventures.dreamtrips.core.janet.dagger.InjectableAction;

@@ -9,7 +9,6 @@ import com.worldventures.dreamtrips.wallet.service.command.FetchDefaultCardComma
 import com.worldventures.dreamtrips.wallet.service.command.FetchDefaultCardIdCommand;
 import com.worldventures.dreamtrips.wallet.service.command.GetActiveSmartCardCommand;
 import com.worldventures.dreamtrips.wallet.service.command.GetDefaultAddressCommand;
-import com.worldventures.dreamtrips.wallet.service.command.ResetSmartCardCommand;
 import com.worldventures.dreamtrips.wallet.service.command.SaveCardDetailsDataCommand;
 import com.worldventures.dreamtrips.wallet.service.command.SaveDefaultAddressCommand;
 import com.worldventures.dreamtrips.wallet.service.command.SaveLockStateCommand;
@@ -23,6 +22,7 @@ import com.worldventures.dreamtrips.wallet.service.command.UpdateBankCardCommand
 import com.worldventures.dreamtrips.wallet.service.command.UpdateCardDetailsDataCommand;
 import com.worldventures.dreamtrips.wallet.service.command.UpdateSmartCardConnectionStatus;
 import com.worldventures.dreamtrips.wallet.service.command.http.CreateBankCardCommand;
+import com.worldventures.dreamtrips.wallet.service.command.reset.ResetSmartCardCommand;
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -67,6 +67,7 @@ public final class SmartCardInteractor {
    private final ActionPipe<SetStealthModeCommand> stealthModePipe;
    private final ActionPipe<SetLockStateCommand> setLockPipe;
    private final ActionPipe<SaveLockStateCommand> saveLockStatePipe;
+   private final ReadActionPipe<LockDeviceChangedEvent> lockDeviceChangedEventPipe;
    private final ReadActionPipe<SmartCardModifier> smartCardModifierPipe;
    private final ActionPipe<FetchDefaultCardIdCommand> fetchDefaultCardIdCommandPipe;
    private final ActionPipe<FetchDefaultCardCommand> fetchDefaultCardCommandPipe;
@@ -84,8 +85,6 @@ public final class SmartCardInteractor {
    private final ActionPipe<SetAutoClearSmartCardDelayCommand> autoClearDelayPipe;
    private final ActionPipe<SetDisableDefaultCardDelayCommand> disableDefaultCardPipe;
 
-   private final ActionPipe<ResetSmartCardCommand> resetSmartCardPipe;
-
    @Inject
    public SmartCardInteractor(@Named(JANET_WALLET) Janet janet) {
       connectionPipe = janet.createPipe(ConnectSmartCardCommand.class, Schedulers.io());
@@ -97,6 +96,7 @@ public final class SmartCardInteractor {
       stealthModePipe = janet.createPipe(SetStealthModeCommand.class, Schedulers.io());
 
       smartCardModifierPipe = janet.createPipe(SmartCardModifier.class, Schedulers.io());
+      lockDeviceChangedEventPipe = janet.createPipe(LockDeviceChangedEvent.class);
       setLockPipe = janet.createPipe(SetLockStateCommand.class, Schedulers.io());
       saveLockStatePipe = janet.createPipe(SaveLockStateCommand.class, Schedulers.io());
 
@@ -122,10 +122,8 @@ public final class SmartCardInteractor {
       autoClearDelayPipe = janet.createPipe(SetAutoClearSmartCardDelayCommand.class, Schedulers.io());
       disableDefaultCardPipe = janet.createPipe(SetDisableDefaultCardDelayCommand.class, Schedulers.io());
 
-      resetSmartCardPipe = janet.createPipe(ResetSmartCardCommand.class, Schedulers.io());
-
       connect();
-      connectToLockEvent(janet);
+      connectToLockEvent();
    }
 
    public ActionPipe<CardListCommand> cardsListPipe() {
@@ -192,6 +190,10 @@ public final class SmartCardInteractor {
       return setLockPipe;
    }
 
+   public ReadActionPipe<LockDeviceChangedEvent> lockDeviceChangedEventPipe() {
+      return lockDeviceChangedEventPipe;
+   }
+
    public ActionPipe<SaveCardDetailsDataCommand> saveCardDetailsDataPipe() {
       return saveCardDetailsDataCommandPipe;
    }
@@ -229,10 +231,6 @@ public final class SmartCardInteractor {
       return disableDefaultCardPipe;
    }
 
-   public ActionPipe<ResetSmartCardCommand> resetSmartCardPipe() {
-      return resetSmartCardPipe;
-   }
-
    private void connect() {
       disconnectPipe
             .observe()
@@ -266,8 +264,8 @@ public final class SmartCardInteractor {
 
    }
 
-   private void connectToLockEvent(Janet janet) {
-      janet.createPipe(LockDeviceChangedEvent.class)
+   private void connectToLockEvent() {
+      lockDeviceChangedEventPipe
             .observeSuccess()
             .subscribe(lockDeviceChangedEvent -> {
                saveLockStatePipe.send(new SaveLockStateCommand(lockDeviceChangedEvent.locked));

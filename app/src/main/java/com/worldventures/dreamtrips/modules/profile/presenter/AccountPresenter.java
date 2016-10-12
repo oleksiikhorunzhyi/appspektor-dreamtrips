@@ -17,7 +17,7 @@ import com.worldventures.dreamtrips.modules.common.model.MediaAttachment;
 import com.worldventures.dreamtrips.modules.common.model.PhotoGalleryModel;
 import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.common.service.LogoutInteractor;
-import com.worldventures.dreamtrips.modules.common.view.util.MediaPickerManager;
+import com.worldventures.dreamtrips.modules.common.view.util.MediaPickerEventDelegate;
 import com.worldventures.dreamtrips.modules.feed.service.command.GetAccountTimelineCommand;
 import com.worldventures.dreamtrips.modules.profile.service.ProfileInteractor;
 import com.worldventures.dreamtrips.modules.profile.service.command.GetPrivateProfileCommand;
@@ -47,7 +47,7 @@ public class AccountPresenter extends ProfilePresenter<AccountPresenter.View, Us
 
    @Inject RootComponentsProvider rootComponentsProvider;
    @Inject LogoutInteractor logoutInteractor;
-   @Inject MediaPickerManager mediaPickerManager;
+   @Inject MediaPickerEventDelegate mediaPickerEventDelegate;
    @Inject SocialCropImageManager socialCropImageManager;
    @Inject AuthInteractor authInteractor;
    @Inject ProfileInteractor profileInteractor;
@@ -125,7 +125,7 @@ public class AccountPresenter extends ProfilePresenter<AccountPresenter.View, Us
    }
 
    private void subscribeToMediaPicker() {
-      mediaPickerManager.toObservable()
+      mediaPickerEventDelegate.getObservable()
             .filter(attachment -> attachment.chosenImages.size() > 0)
             .compose(bindView())
             .subscribe(mediaAttachment -> {
@@ -220,7 +220,7 @@ public class AccountPresenter extends ProfilePresenter<AccountPresenter.View, Us
 
    @Override
    public void openTripImages() {
-      view.openTripImages(Route.ACCOUNT_IMAGES, new TripsImagesBundle(TripImagesType.ACCOUNT_IMAGES, getAccount().getId()));
+      view.openTripImages(Route.ACCOUNT_IMAGES, new TripsImagesBundle(TripImagesType.ACCOUNT_IMAGES_FROM_PROFILE, getAccount().getId()));
    }
 
    public void photoClicked() {
@@ -277,7 +277,7 @@ public class AccountPresenter extends ProfilePresenter<AccountPresenter.View, Us
 
    private void onAvatarChosen(PhotoGalleryModel image) {
       if (image != null) {
-         String filePath = image.getOriginalPath();
+         String filePath = image.getAbsolutePath();
          if (ValidationUtils.isUrl(filePath)) {
             cacheFacebookImage(filePath, this::uploadAvatar);
          } else {
@@ -294,7 +294,7 @@ public class AccountPresenter extends ProfilePresenter<AccountPresenter.View, Us
    }
 
    private void onCoverChosen(PhotoGalleryModel image) {
-      view.cropImage(socialCropImageManager, image.getOriginalPath());
+      view.cropImage(socialCropImageManager, image.getAbsolutePath());
    }
 
    public boolean onActivityResult(int requestCode, int resultCode, Intent data) {

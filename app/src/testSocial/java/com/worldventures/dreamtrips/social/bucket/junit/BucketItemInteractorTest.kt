@@ -6,7 +6,7 @@ import com.google.gson.JsonObject
 import com.nhaarman.mockito_kotlin.doReturn
 import com.nhaarman.mockito_kotlin.whenever
 import com.worldventures.dreamtrips.AssertUtil.assertActionSuccess
-import com.worldventures.dreamtrips.core.api.uploadery.UploaderyManager
+import com.worldventures.dreamtrips.core.api.uploadery.UploaderyInteractor
 import com.worldventures.dreamtrips.core.janet.cache.storage.ActionStorage
 import com.worldventures.dreamtrips.core.utils.FileUtils
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem
@@ -95,7 +95,7 @@ class BucketItemInteractorTest : BucketInteractorBaseTest() {
          e.printStackTrace()
       }
 
-      daggerActionService.registerProvider(UploaderyManager::class.java) { UploaderyManager(janet) }
+      daggerActionService.registerProvider(UploaderyInteractor::class.java) { UploaderyInteractor(janet) }
       daggerActionService.registerProvider(Context::class.java, { MockContext() })
 
       doReturn(Lists.newArrayList<BucketItem>(testBucketItem, mock(BucketItem::class.java)))

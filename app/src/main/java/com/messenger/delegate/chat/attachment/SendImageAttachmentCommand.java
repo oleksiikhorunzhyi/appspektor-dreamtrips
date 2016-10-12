@@ -18,7 +18,7 @@ import com.messenger.storage.dao.PhotoDAO;
 import com.techery.spares.module.qualifier.ForApplication;
 import com.worldventures.dreamtrips.core.api.uploadery.SimpleUploaderyCommand;
 import com.worldventures.dreamtrips.core.api.uploadery.UploaderyImageCommand;
-import com.worldventures.dreamtrips.core.api.uploadery.UploaderyManager;
+import com.worldventures.dreamtrips.core.api.uploadery.UploaderyInteractor;
 import com.worldventures.dreamtrips.modules.tripsimages.uploader.UploadingFileManager;
 
 import java.util.Calendar;
@@ -39,7 +39,7 @@ public class SendImageAttachmentCommand extends BaseChatCommand<DataMessage> {
    private final DataAttachment attachment;
    private final DataPhotoAttachment photoAttachment;
 
-   @Inject UploaderyManager uploaderyManager;
+   @Inject UploaderyInteractor uploaderyInteractor;
    @Inject MessageDAO messageDAO;
    @Inject AttachmentDAO attachmentDAO;
    @Inject PhotoDAO photoDAO;
@@ -72,7 +72,7 @@ public class SendImageAttachmentCommand extends BaseChatCommand<DataMessage> {
 
    private Observable<String> getUploadingObservable() {
       return just(photoAttachment.getLocalPath()).map(localUri -> UploadingFileManager.copyFileIfNeed(localUri, context))
-            .flatMap(uri -> uploaderyManager.getUploadImagePipe().createObservable(new SimpleUploaderyCommand(uri)))
+            .flatMap(uri -> uploaderyInteractor.uploadImageActionPipe().createObservable(new SimpleUploaderyCommand(uri)))
             .doOnNext(this::handleUploadStatus)
             .compose(new ActionStateToActionTransformer<>())
             .map(action -> ((SimpleUploaderyCommand) action).getResult().getPhotoUploadResponse().getLocation());

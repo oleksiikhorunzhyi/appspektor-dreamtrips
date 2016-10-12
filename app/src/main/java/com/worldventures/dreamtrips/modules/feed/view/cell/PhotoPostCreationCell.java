@@ -99,7 +99,7 @@ public class PhotoPostCreationCell extends AbstractDelegateCell<PhotoCreationIte
          });
 
          PipelineDraweeController draweeController = GraphicUtils.provideFrescoResizingController(Uri.parse(getModelObject()
-               .getFilePath() == null ? getModelObject().getOriginUrl() : getModelObject().getFilePath()), attachedPhoto
+               .getFileUri() == null ? getModelObject().getOriginUrl() : getModelObject().getFileUri()), attachedPhoto
                .getController());
 
          attachedPhoto.setController(draweeController);

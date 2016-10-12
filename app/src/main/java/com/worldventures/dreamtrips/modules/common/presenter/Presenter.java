@@ -55,6 +55,7 @@ public class Presenter<VT extends Presenter.View> implements RequestingPresenter
    protected ApiErrorPresenter apiErrorPresenter;
 
    PublishSubject<Void> destroyViewStopper = PublishSubject.create();
+   PublishSubject<Void> pauseViewStopper = PublishSubject.create();
 
    public Presenter() {
       apiErrorPresenter = provideApiErrorPresenter();
@@ -108,6 +109,7 @@ public class Presenter<VT extends Presenter.View> implements RequestingPresenter
    }
 
    public void onPause() {
+      pauseViewStopper.onNext(null);
       if (connectivityEventsSubscription != null && !connectivityEventsSubscription.isUnsubscribed()) {
          connectivityEventsSubscription.unsubscribe();
       }
@@ -127,6 +129,10 @@ public class Presenter<VT extends Presenter.View> implements RequestingPresenter
 
    protected <T> Observable.Transformer<T, T> bindView() {
       return input -> input.takeUntil(destroyViewStopper);
+   }
+
+   protected <T> Observable.Transformer<T, T> bindUntilPause() {
+      return input -> input.takeUntil(pauseViewStopper);
    }
 
    protected <T> Observable.Transformer<T, T> bindViewToMainComposer() {

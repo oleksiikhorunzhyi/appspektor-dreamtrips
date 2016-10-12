@@ -22,7 +22,7 @@ import com.worldventures.dreamtrips.modules.tripsimages.model.Photo;
 import com.worldventures.dreamtrips.modules.tripsimages.model.TripImagesType;
 import com.worldventures.dreamtrips.modules.tripsimages.presenter.fullscreen.AccountImagesPresenter;
 import com.worldventures.dreamtrips.modules.tripsimages.presenter.fullscreen.MembersImagesPresenter;
-import com.worldventures.dreamtrips.modules.tripsimages.service.TripImageViewAnalyticsEvent;
+import com.worldventures.dreamtrips.modules.tripsimages.service.analytics.TripImageViewAnalyticsEvent;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -53,17 +53,16 @@ public abstract class TripImagesListPresenter<VT extends TripImagesListPresenter
       this.userId = userId;
    }
 
-   public static TripImagesListPresenter create(TripImagesType type, int userId, ArrayList<IFullScreenObject> photos, boolean fullScreenMode, int currentPhotosPosition, int notificationId) {
+   public static TripImagesListPresenter create(TripImagesType type, int userId, ArrayList<IFullScreenObject> photos,
+         boolean fullScreenMode, int currentPhotosPosition, int notificationId) {
       TripImagesListPresenter presenter;
       switch (type) {
-         /**
-          * ALL MEMBERS PHOTOS
-          */
          case MEMBERS_IMAGES:
             presenter = new MembersImagesPresenter();
             break;
          case ACCOUNT_IMAGES:
-            presenter = new AccountImagesPresenter(TripImagesType.ACCOUNT_IMAGES, userId);
+         case ACCOUNT_IMAGES_FROM_PROFILE:
+            presenter = new AccountImagesPresenter(type, userId);
             break;
          case YOU_SHOULD_BE_HERE:
             presenter = new YSBHPresenter(userId);

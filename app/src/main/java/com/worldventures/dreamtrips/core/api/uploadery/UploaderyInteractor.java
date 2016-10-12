@@ -8,15 +8,15 @@ import io.techery.janet.Janet;
 import rx.schedulers.Schedulers;
 
 @Singleton
-public class UploaderyManager {
+public class UploaderyInteractor {
    private final ActionPipe<UploaderyImageCommand> uploadImagePipe;
 
    @Inject
-   public UploaderyManager(Janet janet) {
+   public UploaderyInteractor(Janet janet) {
       this.uploadImagePipe = janet.createPipe(UploaderyImageCommand.class, Schedulers.io());
    }
 
-   public ActionPipe<UploaderyImageCommand> getUploadImagePipe() {
+   public ActionPipe<UploaderyImageCommand> uploadImageActionPipe() {
       return uploadImagePipe;
    }
 }

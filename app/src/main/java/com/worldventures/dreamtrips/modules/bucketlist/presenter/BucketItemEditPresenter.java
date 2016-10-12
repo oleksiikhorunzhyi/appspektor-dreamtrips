@@ -22,7 +22,7 @@ import com.worldventures.dreamtrips.modules.common.model.EntityStateHolder;
 import com.worldventures.dreamtrips.modules.bucketlist.service.model.ImmutableBucketPostBody;
 import com.worldventures.dreamtrips.modules.common.model.PhotoGalleryModel;
 import com.worldventures.dreamtrips.modules.common.view.bundle.BucketBundle;
-import com.worldventures.dreamtrips.modules.common.view.util.MediaPickerManager;
+import com.worldventures.dreamtrips.modules.common.view.util.MediaPickerEventDelegate;
 import com.worldventures.dreamtrips.modules.feed.event.FeedEntityChangedEvent;
 
 import java.util.Calendar;
@@ -44,7 +44,7 @@ public class BucketItemEditPresenter extends BucketDetailsBasePresenter<BucketIt
 
    public static final int BUCKET_MEDIA_REQUEST_ID = BucketItemEditPresenter.class.getSimpleName().hashCode();
 
-   @Inject MediaPickerManager mediaPickerManager;
+   @Inject MediaPickerEventDelegate mediaPickerEventDelegate;
 
    private Date selectedDate;
 
@@ -174,7 +174,7 @@ public class BucketItemEditPresenter extends BucketDetailsBasePresenter<BucketIt
       if (chosenImages.size() == 0) {
          return;
       }
-      Queryable.from(chosenImages).forEachR(choseImage -> imageSelected(Uri.parse(choseImage.getThumbnailPath())));
+      Queryable.from(chosenImages).forEachR(choseImage -> imageSelected(Uri.parse(choseImage.getImageUri())));
    }
 
    private void imageSelected(Uri uri) {
@@ -210,7 +210,7 @@ public class BucketItemEditPresenter extends BucketDetailsBasePresenter<BucketIt
                eventBus.post(new FeedEntityChangedEvent(bucketItem)); //TODO fix it when feed would be rewrote
             });
       //
-      view.bind(mediaPickerManager.toObservable().filter(attachment -> attachment.requestId == BUCKET_MEDIA_REQUEST_ID))
+      view.bind(mediaPickerEventDelegate.getObservable().filter(attachment -> attachment.requestId == BUCKET_MEDIA_REQUEST_ID))
             .subscribe(mediaAttachment -> attachImages(mediaAttachment.chosenImages));
    }
 

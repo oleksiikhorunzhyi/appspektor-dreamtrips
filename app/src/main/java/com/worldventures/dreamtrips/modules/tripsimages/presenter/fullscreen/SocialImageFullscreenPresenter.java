@@ -25,10 +25,10 @@ import com.worldventures.dreamtrips.modules.tripsimages.api.DeletePhotoTagsComma
 import com.worldventures.dreamtrips.modules.tripsimages.bundle.EditPhotoBundle;
 import com.worldventures.dreamtrips.modules.tripsimages.model.Photo;
 import com.worldventures.dreamtrips.modules.tripsimages.model.TripImagesType;
-import com.worldventures.dreamtrips.modules.tripsimages.service.TripImageDeleteAnalyticsEvent;
-import com.worldventures.dreamtrips.modules.tripsimages.service.TripImageEditAnalyticsEvent;
-import com.worldventures.dreamtrips.modules.tripsimages.service.TripImageFlagAnalyticsEvent;
-import com.worldventures.dreamtrips.modules.tripsimages.service.TripImageLikedAnalyticsEvent;
+import com.worldventures.dreamtrips.modules.tripsimages.service.analytics.TripImageDeleteAnalyticsEvent;
+import com.worldventures.dreamtrips.modules.tripsimages.service.analytics.TripImageEditAnalyticsEvent;
+import com.worldventures.dreamtrips.modules.tripsimages.service.analytics.TripImageFlagAnalyticsEvent;
+import com.worldventures.dreamtrips.modules.tripsimages.service.analytics.TripImageLikedAnalyticsEvent;
 
 import java.util.ArrayList;
 import java.util.List;

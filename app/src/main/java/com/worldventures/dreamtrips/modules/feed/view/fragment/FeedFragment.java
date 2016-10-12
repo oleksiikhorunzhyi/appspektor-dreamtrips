@@ -195,12 +195,14 @@ public class FeedFragment extends RxBaseFragmentWithArgs<FeedPresenter, FeedBund
    @Optional
    @OnClick(R.id.share_photo)
    protected void onSharePhotoClick() {
-      fragmentWithFeedDelegate.openSharePhoto(getActivity().getSupportFragmentManager(), new CreateEntityBundle(true));
+      fragmentWithFeedDelegate.openSharePhoto(getActivity().getSupportFragmentManager(),
+            new CreateEntityBundle(true, CreateEntityBundle.Origin.FEED));
    }
 
    @Override
    public void onAttachClicked() {
-      fragmentWithFeedDelegate.openSharePhoto(getActivity().getSupportFragmentManager(), null);
+      fragmentWithFeedDelegate.openSharePhoto(getActivity().getSupportFragmentManager(), new CreateEntityBundle(false,
+            CreateEntityBundle.Origin.FEED));
       getPresenter().attachSelectedSuggestionPhotos();
       getPresenter().removeSuggestedPhotos();
    }
@@ -275,7 +277,7 @@ public class FeedFragment extends RxBaseFragmentWithArgs<FeedPresenter, FeedBund
    public void refreshFeedItems(List<FeedItem> feedItems, List<PhotoGalleryModel> suggestedPhotos) {
       if (isNeedAddSuggestions(suggestedPhotos.size(), feedItems.size())) {
          List listWithSuggestion = new ArrayList<>(feedItems.size() + 1);
-         listWithSuggestion.add(new MediaAttachment(suggestedPhotos, -1, -1));
+         listWithSuggestion.add(new MediaAttachment(suggestedPhotos, MediaAttachment.Source.GALLERY));
          listWithSuggestion.addAll(feedItems);
          //
          fragmentWithFeedDelegate.clearItems();

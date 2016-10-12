@@ -251,7 +251,7 @@ public class UserPresenter extends ProfilePresenter<UserPresenter.View, User> {
 
    @Override
    public void openTripImages() {
-      view.openTripImages(Route.TRIP_LIST_IMAGES, new TripsImagesBundle(TripImagesType.ACCOUNT_IMAGES, user.getId()));
+      view.openTripImages(Route.TRIP_LIST_IMAGES, new TripsImagesBundle(TripImagesType.ACCOUNT_IMAGES_FROM_PROFILE, user.getId()));
    }
 
    public void onEvent(LoadFlagEvent event) {

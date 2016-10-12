@@ -12,15 +12,15 @@ import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.modules.common.model.EntityStateHolder;
 import com.worldventures.dreamtrips.modules.common.model.PhotoGalleryModel;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
-import com.worldventures.dreamtrips.modules.common.view.util.MediaPickerManager;
+import com.worldventures.dreamtrips.modules.common.view.util.MediaPickerEventDelegate;
 import com.worldventures.dreamtrips.modules.infopages.bundle.FeedbackImageAttachmentsBundle;
-import com.worldventures.dreamtrips.modules.infopages.service.command.GetFeedbackCommand;
-import com.worldventures.dreamtrips.modules.infopages.service.command.SendFeedbackCommand;
-import com.worldventures.dreamtrips.modules.infopages.service.command.UploadFeedbackAttachmentCommand;
 import com.worldventures.dreamtrips.modules.infopages.model.FeedbackImageAttachment;
 import com.worldventures.dreamtrips.modules.infopages.model.FeedbackType;
 import com.worldventures.dreamtrips.modules.infopages.service.FeedbackAttachmentsManager;
 import com.worldventures.dreamtrips.modules.infopages.service.FeedbackInteractor;
+import com.worldventures.dreamtrips.modules.infopages.service.command.GetFeedbackCommand;
+import com.worldventures.dreamtrips.modules.infopages.service.command.SendFeedbackCommand;
+import com.worldventures.dreamtrips.modules.infopages.service.command.UploadFeedbackAttachmentCommand;
 
 import java.util.List;
 
@@ -35,7 +35,7 @@ public class SendFeedbackPresenter extends Presenter<SendFeedbackPresenter.View>
    public static final int PICKER_REQUEST_ID = SendFeedbackPresenter.class.getSimpleName().hashCode();
    public static final int PICKER_MAX_IMAGES = 5;
 
-   @Inject MediaPickerManager mediaPickerManager;
+   @Inject MediaPickerEventDelegate mediaPickerEventDelegate;
    @Inject SnappyRepository db;
    @Inject FeedbackInteractor feedbackInteractor;
    @Inject Router router;
@@ -143,7 +143,7 @@ public class SendFeedbackPresenter extends Presenter<SendFeedbackPresenter.View>
    }
 
    private void subscribeToMediaPicker() {
-      mediaPickerManager.toObservable()
+      mediaPickerEventDelegate.getObservable()
             .filter(attachment -> attachment.requestId == PICKER_REQUEST_ID)
             .compose(bindView())
             .subscribe(mediaAttachment -> attachImages(mediaAttachment.chosenImages));
@@ -151,7 +151,7 @@ public class SendFeedbackPresenter extends Presenter<SendFeedbackPresenter.View>
 
    private void attachImages(List<PhotoGalleryModel> chosenImages) {
       if (chosenImages.size() == 0) return;
-      Queryable.from(chosenImages).forEachR(chosenImage -> uploadImageAttachment(chosenImage.getThumbnailPath()));
+      Queryable.from(chosenImages).forEachR(chosenImage -> uploadImageAttachment(chosenImage.getImageUri()));
    }
 
    ///////////////////////////////////////////////////////////////////////////

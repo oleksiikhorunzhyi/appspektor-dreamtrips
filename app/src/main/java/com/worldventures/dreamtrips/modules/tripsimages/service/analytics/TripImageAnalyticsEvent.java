@@ -1,4 +1,4 @@
-package com.worldventures.dreamtrips.modules.tripsimages.service;
+package com.worldventures.dreamtrips.modules.tripsimages.service.analytics;
 
 
 import com.worldventures.dreamtrips.core.utils.tracksystem.Attribute;

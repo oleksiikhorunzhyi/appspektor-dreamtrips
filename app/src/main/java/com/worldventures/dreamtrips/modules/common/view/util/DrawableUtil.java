@@ -88,11 +88,13 @@ public class DrawableUtil {
          List<Pair<String, String>> customParams = new ArrayList<>();
          customParams.add(new Pair<>(ExifInterface.TAG_ORIENTATION, String.valueOf(ExifInterface.ORIENTATION_NORMAL)));
 
-         ExifUtils.copyExif(originalFile.getAbsolutePath(), newFile.getAbsolutePath(), customParams);
+         try {
+            ExifUtils.copyExif(originalFile.getAbsolutePath(), newFile.getAbsolutePath(), customParams);
+         } catch (IOException e) {
+            Timber.e(e, "Failed to copy exif");
+         }
 
          return new Pair<>(newFile.getAbsolutePath(), new Size(bitmap.getWidth(), bitmap.getHeight()));
-      } catch (IOException e) {
-         return new Pair<>(fileImage, new Size(0, 0));
       } catch (Exception e) {
          return new Pair<>(fileImage, new Size(0, 0));
       } finally {

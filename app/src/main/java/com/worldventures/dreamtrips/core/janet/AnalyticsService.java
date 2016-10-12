@@ -8,6 +8,7 @@ import com.innahema.collections.query.queriables.Queryable;
 import com.worldventures.dreamtrips.BuildConfig;
 import com.worldventures.dreamtrips.core.utils.tracksystem.AnalyticsEvent;
 import com.worldventures.dreamtrips.core.utils.tracksystem.Attribute;
+import com.worldventures.dreamtrips.core.utils.tracksystem.AttributeMap;
 import com.worldventures.dreamtrips.core.utils.tracksystem.LifecycleEvent;
 import com.worldventures.dreamtrips.core.utils.tracksystem.Tracker;
 
@@ -117,19 +118,43 @@ public class AnalyticsService extends ActionService {
       List<FieldAttribute> result = new ArrayList<>();
       Field[] declaredFields = actionClass.getDeclaredFields();
       for (Field field : declaredFields) {
-         Attribute annotation = field.getAnnotation(Attribute.class);
-         if (annotation != null) {
-            field.setAccessible(true);
-            Object value = field.get(actionHolder.action());
-            if (value != null) {
-               result.add(new FieldAttribute(annotation.value(), String.valueOf(value)));
-            }
-         }
+         FieldAttribute fieldAttribute = getFieldAttribute(field, actionHolder.action());
+         if (fieldAttribute != null) result.add(fieldAttribute);
+         List<FieldAttribute> fieldAttributeList = getFieldAttributeList(field, actionHolder.action());
+         if (fieldAttributeList != null) result.addAll(fieldAttributeList);
       }
       if (actionClass.getSuperclass() != null) {
          result.addAll(getAttributeFields(actionClass.getSuperclass(), actionHolder));
       }
       return result;
+   }
+
+   @Nullable
+   private static FieldAttribute getFieldAttribute(Field field, Object action) throws IllegalAccessException {
+      Attribute annotation = field.getAnnotation(Attribute.class);
+      if (annotation != null) {
+         field.setAccessible(true);
+         Object value = field.get(action);
+         if (value != null) {
+            return new FieldAttribute(annotation.value(), String.valueOf(value));
+         }
+      }
+      return null;
+   }
+
+   @Nullable
+   private static List<FieldAttribute> getFieldAttributeList(Field field, Object action) throws IllegalAccessException {
+      AttributeMap annotation = field.getAnnotation(AttributeMap.class);
+      List<FieldAttribute> fieldAttributeList = new ArrayList<>();
+      if (annotation != null) {
+         field.setAccessible(true);
+         Map<String, String> map = (Map<String, String>) field.get(action);
+         if (map != null) {
+            for (Map.Entry<String, String> entry : map.entrySet())
+               fieldAttributeList.add(new FieldAttribute(entry.getKey(), entry.getValue()));
+         }
+      }
+      return fieldAttributeList;
    }
 
    private void tryLogEvent(@NonNull String type, String category, String action, Map<String, Object> data) {

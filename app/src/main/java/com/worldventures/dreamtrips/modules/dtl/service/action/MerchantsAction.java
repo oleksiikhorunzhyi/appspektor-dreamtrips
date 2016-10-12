@@ -18,7 +18,6 @@ import com.worldventures.dreamtrips.modules.dtl.model.location.DtlLocation;
 import com.worldventures.dreamtrips.modules.dtl.model.mapping.ThinMerchantsTransformer;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.ThinMerchant;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.filter.FilterData;
-import com.worldventures.dreamtrips.modules.membership.model.Podcast;
 import com.worldventures.dreamtrips.modules.trips.model.Location;
 
 import java.util.ArrayList;
@@ -74,7 +73,7 @@ public class MerchantsAction extends CommandWithError<List<ThinMerchant>>
    private static ThinMerchantsActionParams buildParams(FilterData filterData, DtlLocation dtlLocation) {
       final String coordinates = provideFormattedLocation(dtlLocation);
       return ImmutableThinMerchantsActionParams.builder()
-            .radius(FilterHelper.provideDistanceByIndex(filterData.distanceType(), filterData.distanceMaxIndex()))
+            .radius(FilterHelper.provideDistanceByIndex(filterData))
             .coordinates(coordinates)
             .limit(filterData.offset())
             .offset(filterData.page() * filterData.offset())

@@ -155,15 +155,15 @@ public class DtlFilterViewImpl extends MvpLinearLayout<FilterView, DtlFilterPres
 
    @Override
    public void applyFilterState(FilterData filterData) {
-      rangeBarDistance.setTickEnd(FilterHelper.provideRightDistanceValue(filterData.distanceType()));
-      rangeBarDistance.setTickStart(FilterHelper.provideLeftDistanceValue(filterData.distanceType()));
-      rangeBarDistance.setTickInterval(FilterHelper.provideDistancePickerInterval(filterData.distanceType()));
+      rangeBarDistance.setTickEnd(FilterHelper.provideRightDistanceValue(filterData));
+      rangeBarDistance.setTickStart(FilterHelper.provideLeftDistanceValue(filterData));
+      rangeBarDistance.setTickInterval(FilterHelper.provideDistancePickerInterval(filterData));
       rangeBarDistance.setSeekPinByIndex(filterData.distanceMaxIndex());
       rangeBarPrice.setRangePinsByValue(filterData.budgetMin(), filterData.budgetMax());
       distanceCaption.setText(getContext().getString(R.string.dtl_distance,
             getContext().getString(filterData.distanceType() == DistanceType.MILES ? R.string.mi : R.string.km)));
-      distanceLeftValue.setText(FilterHelper.provideLeftDistanceValueCaption(filterData.distanceType()));
-      distanceRightValue.setText(FilterHelper.provideRightDistanceValueCaption(filterData.distanceType()));
+      distanceLeftValue.setText(FilterHelper.provideLeftDistanceValueCaption(filterData));
+      distanceRightValue.setText(FilterHelper.provideRightDistanceValueCaption(filterData));
       updateSelection(filterData);
    }
 

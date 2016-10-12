@@ -27,6 +27,7 @@ import java.util.Map;
 public abstract class SharePhotoPostAction extends BaseAnalyticsAction {
    @Attribute("hashtagging") String hashTags;
    @Attribute("addlocation") String addLocation;
+   @Attribute("locationadded") String locationAdded;
    @Attribute("uploadamt") String uploadCount;
    @Attribute("photomethodgallery") String photoMethodGallery;
    @Attribute("photomethodcam") String photoMethodCam;
@@ -51,6 +52,7 @@ public abstract class SharePhotoPostAction extends BaseAnalyticsAction {
 
       if (textualPost.getLocation() != null && textualPost.getLocation().getName() != null) {
          sharePostAction.addLocation = "1";
+         sharePostAction.locationAdded = textualPost.getLocation().getName();
       }
 
       sharePostAction.uploadCount = String.valueOf(photoCreationItems.size());
@@ -116,7 +118,7 @@ public abstract class SharePhotoPostAction extends BaseAnalyticsAction {
       return sharePostAction;
    }
 
-   @AnalyticsEvent(action = "activity_feed:Post Added",
+   @AnalyticsEvent(action = "activity_feed:Photo(s) Added",
                    trackers = AdobeTracker.TRACKER_KEY)
    public static class SharePhotoPostFromFeedAction extends SharePhotoPostAction {
    }

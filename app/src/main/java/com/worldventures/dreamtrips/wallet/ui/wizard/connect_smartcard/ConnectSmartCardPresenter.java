@@ -63,7 +63,7 @@ public class ConnectSmartCardPresenter extends WalletPresenter<ConnectSmartCardP
             .compose(new ActionPipeCacheWiper<>(wizardInteractor.createAndConnectActionPipe()))
             .subscribe(OperationActionStateSubscriberWrapper.<CreateAndConnectToCardCommand>forView(getView().provideOperationDelegate())
                   .onSuccess(command -> smartCardCreated(command.getSmartCardId()))
-                  .onFail(ErrorHandler.create(getContext(), command ->  {
+                  .onFail(ErrorHandler.create(getContext(), command -> {
                      navigator.goBack();
                      Timber.e("Could not connect to device");
                   }))

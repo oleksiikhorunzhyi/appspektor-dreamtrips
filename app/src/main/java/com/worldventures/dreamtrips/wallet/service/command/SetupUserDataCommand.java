@@ -1,9 +1,5 @@
 package com.worldventures.dreamtrips.wallet.service.command;
 
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.Color;
-
 import com.techery.spares.session.SessionHolder;
 import com.worldventures.dreamtrips.core.janet.cache.CacheBundle;
 import com.worldventures.dreamtrips.core.janet.cache.CacheBundleImpl;
@@ -12,6 +8,7 @@ import com.worldventures.dreamtrips.core.janet.cache.CachedAction;
 import com.worldventures.dreamtrips.core.janet.cache.ImmutableCacheOptions;
 import com.worldventures.dreamtrips.core.janet.dagger.InjectableAction;
 import com.worldventures.dreamtrips.core.session.UserSession;
+import com.worldventures.dreamtrips.util.SmartCardAvatarHelper;
 import com.worldventures.dreamtrips.wallet.domain.entity.ImmutableSmartCard;
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCard;
 import com.worldventures.dreamtrips.wallet.domain.storage.SmartCardStorage;
@@ -41,6 +38,7 @@ public class SetupUserDataCommand extends Command<SmartCard> implements Injectab
 
    @Inject @Named(JANET_WALLET) Janet janet;
    @Inject SessionHolder<UserSession> userSessionHolder;
+   @Inject SmartCardAvatarHelper smartCardAvatarHelper;
 
    private final String fullName;
    private final File avatarFile;
@@ -113,49 +111,7 @@ public class SetupUserDataCommand extends Command<SmartCard> implements Injectab
    }
 
    private byte[] getAvatarAsByteArray() throws IOException {
-      return convertBytes(avatarFile);
-   }
-
-   private byte[] convertBytes(File file) {
-      Bitmap bitmap = BitmapFactory.decodeFile(file.getAbsolutePath());
-      int height = bitmap.getHeight();
-      int width = bitmap.getWidth();
-      byte[] bytes = new byte[(width * height)];
-      byte[] raw = new byte[(width * height) / 8];
-      int pixel;
-      int k = 0;
-      int b = 0, g = 0, r = 0;
-      int dataWidth = ((width + 31) / 32) * 4 * 8;
-      for (int x = 0; x < height; x++) {
-         for (int y = 0; y < width; y++, k++) {
-            pixel = bitmap.getPixel(y, x);
-            r = Color.red(pixel);
-            g = Color.green(pixel);
-            b = Color.blue(pixel);
-            r = g = b = (int) (0.299 * r + 0.587 * g + 0.114 * b);
-            if (r < 128) {
-               bytes[k] = 0;
-            } else {
-               bytes[k] = 1;
-            }
-         }
-         if (dataWidth > width) {
-            for (int p = width; p < dataWidth; p++, k++) {
-               bytes[k] = 1;
-            }
-         }
-      }
-      int length = 0;
-      for (int i = 0; i < bytes.length; i = i + 8) {
-         byte first = bytes[i];
-         for (int j = 0; j < 7; j++) {
-            byte second = (byte) ((first << 1) | bytes[i + j]);
-            first = second;
-         }
-         raw[length] = first;
-         length++;
-      }
-      return raw;
+      return smartCardAvatarHelper.convertBytesForUpload(avatarFile);
    }
 
    @Override

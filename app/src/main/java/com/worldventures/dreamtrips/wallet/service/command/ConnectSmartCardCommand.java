@@ -34,7 +34,7 @@ public class ConnectSmartCardCommand extends Command<SmartCard> implements Injec
    @Override
    protected void run(CommandCallback<SmartCard> callback) throws Throwable {
       janet.createPipe(ConnectAction.class)
-            .createObservableResult(new ConnectAction(ImmutableConnectionParams.of(Integer.parseInt(activeSmartCard.smartCardId()))))
+            .createObservableResult(new ConnectAction(ImmutableConnectionParams.of((int) Long.parseLong(activeSmartCard.smartCardId()))))
             .flatMap(action -> fetchTechnicalProperties())
             .doOnNext(smartCard -> activeSmartCard = smartCard)
             .subscribe(smartCard -> setStatusAndNotifyCallback(SmartCard.ConnectionStatus.CONNECTED, callback),

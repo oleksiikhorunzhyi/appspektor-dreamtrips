@@ -61,7 +61,11 @@ public abstract class WalletLinearLayout<V extends WalletScreen, P extends ViewS
             break;
          case DISCONNECTED:
             connectionLabel.setText(R.string.wallet_smartcard_disconnected_label);
-            addView(connectionLabel, hasToolbar() ? 1 : 0);
+            if (indexOfChild(connectionLabel) < 0) {
+               addView(connectionLabel, hasToolbar() ? 1 : 0);
+            } else {
+               getHandler().removeCallbacksAndMessages(null);
+            }
             break;
       }
    }

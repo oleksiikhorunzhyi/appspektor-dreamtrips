@@ -2,6 +2,7 @@ package com.worldventures.dreamtrips.core.api.error;
 
 import com.innahema.collections.query.queriables.Queryable;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 
@@ -16,6 +17,7 @@ public class ErrorResponse {
    }
 
    public List<FieldError> getErrors() {
+      if (errors == null) return Collections.emptyList();
       if (fieldErrors == null) {
          fieldErrors = Queryable.from(errors.entrySet()).map(FieldError::from).toList();
       }

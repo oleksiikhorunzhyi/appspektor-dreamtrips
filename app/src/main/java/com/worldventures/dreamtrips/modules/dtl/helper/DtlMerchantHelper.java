@@ -118,8 +118,7 @@ public class DtlMerchantHelper {
             }
 
             if (includeTime) {
-               stringBuilder.append(String.format("%s - %s", localTimeStart.toString(OPERATION_TIME_FORMATTER), localTimeEnd
-                     .toString(OPERATION_TIME_FORMATTER)));
+               stringBuilder.append(String.format("%s - %s", OPERATION_TIME_FORMATTER.withLocale(Locale.US).print(localTimeStart).toUpperCase(), OPERATION_TIME_FORMATTER.withLocale(Locale.US).print(localTimeEnd).toUpperCase()));
                stringBuilder.append(", ");
             }
          }
@@ -165,7 +164,8 @@ public class DtlMerchantHelper {
                .withTime(localTimeStart.getHourOfDay(), localTimeStart.getMinuteOfHour(), 0, 0);
          DateTime end = DateTime.now().withTime(localTimeEnd.getHourOfDay(), localTimeEnd.getMinuteOfHour(), 0, 0);
          //
-         return String.format("%s - %s", start.toString(OPERATION_TIME_FORMATTER), end.toString(OPERATION_TIME_FORMATTER));
+         String f = OPERATION_TIME_FORMATTER.withLocale(Locale.US).print(start).toUpperCase();
+         return String.format("%s - %s", OPERATION_TIME_FORMATTER.withLocale(Locale.US).print(start).toUpperCase(), OPERATION_TIME_FORMATTER.withLocale(Locale.US).print(end).toUpperCase());
       } catch (Exception e) {
          return "";
       }

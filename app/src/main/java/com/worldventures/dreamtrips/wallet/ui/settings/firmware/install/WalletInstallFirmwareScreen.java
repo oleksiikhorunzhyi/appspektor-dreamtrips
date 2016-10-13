@@ -78,7 +78,7 @@ public class WalletInstallFirmwareScreen extends WalletLinearLayout<WalletInstal
             .title(R.string.wallet_firmware_install_error_alert_title)
             .content(createDialogContentText())
             .positiveText(R.string.wallet_firmware_install_error_retry_action)
-            .onPositive((dialog, which) -> getPresenter().goToPreInstall())
+            .onPositive((dialog, which) -> getPresenter().retry())
             .negativeText(R.string.wallet_firmware_install_error_cancel_action)
             .onNegative((dialog, which) -> getPresenter().goToDashboard())
             .cancelable(false)

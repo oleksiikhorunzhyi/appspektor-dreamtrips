@@ -26,7 +26,6 @@ import flow.History;
 public class WalletInstallFirmwarePresenter extends WalletPresenter<WalletInstallFirmwarePresenter.Screen, Parcelable> {
 
    @Inject FirmwareInteractor firmwareInteractor;
-   @Inject SmartCardInteractor interactor;
    @Inject Navigator navigator;
 
    private final String filePath;
@@ -65,8 +64,8 @@ public class WalletInstallFirmwarePresenter extends WalletPresenter<WalletInstal
       navigator.single(new CardListPath(), Flow.Direction.BACKWARD);
    }
 
-   void goToPreInstall() {
-      navigator.goBack();
+   void retry() {
+      install();
    }
 
    public interface Screen extends WalletScreen, OperationScreen {

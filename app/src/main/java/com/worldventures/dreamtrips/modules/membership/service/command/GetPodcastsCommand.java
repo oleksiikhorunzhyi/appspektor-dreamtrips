@@ -1,4 +1,4 @@
-package com.worldventures.dreamtrips.modules.membership.command;
+package com.worldventures.dreamtrips.modules.membership.service.command;
 
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.api.podcasts.GetPodcastsHttpAction;

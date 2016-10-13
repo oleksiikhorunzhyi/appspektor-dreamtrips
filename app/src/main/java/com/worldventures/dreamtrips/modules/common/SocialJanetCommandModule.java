@@ -39,7 +39,13 @@ import com.worldventures.dreamtrips.modules.friends.janet.RemoveFriendCommand;
 import com.worldventures.dreamtrips.modules.infopages.service.command.GetFeedbackCommand;
 import com.worldventures.dreamtrips.modules.infopages.service.command.SendFeedbackCommand;
 import com.worldventures.dreamtrips.modules.infopages.service.command.UploadFeedbackAttachmentCommand;
-import com.worldventures.dreamtrips.modules.membership.command.GetPodcastsCommand;
+import com.worldventures.dreamtrips.modules.membership.service.command.CreateFilledInviteTemplateCommand;
+import com.worldventures.dreamtrips.modules.membership.service.command.GetFilledInviteTemplateCommand;
+import com.worldventures.dreamtrips.modules.membership.service.command.GetInviteTemplatesCommand;
+import com.worldventures.dreamtrips.modules.membership.service.command.GetPhoneContactsCommand;
+import com.worldventures.dreamtrips.modules.membership.service.command.GetPodcastsCommand;
+import com.worldventures.dreamtrips.modules.membership.service.command.GetSentInvitesCommand;
+import com.worldventures.dreamtrips.modules.membership.service.command.SendInvitesCommand;
 import com.worldventures.dreamtrips.modules.profile.service.command.GetPrivateProfileCommand;
 import com.worldventures.dreamtrips.modules.profile.service.command.GetPublicProfileCommand;
 import com.worldventures.dreamtrips.modules.profile.service.command.UploadAvatarCommand;
@@ -52,6 +58,7 @@ import com.worldventures.dreamtrips.modules.trips.command.GetTripsByUidCommand;
 import com.worldventures.dreamtrips.modules.trips.command.GetTripsCommand;
 import com.worldventures.dreamtrips.modules.trips.command.GetTripsLocationsCommand;
 import com.worldventures.dreamtrips.modules.tripsimages.service.command.AddPhotoTagsCommand;
+import com.worldventures.dreamtrips.modules.tripsimages.service.command.CreatePhotoCreationItemCommand;
 import com.worldventures.dreamtrips.modules.tripsimages.service.command.DeletePhotoCommand;
 import com.worldventures.dreamtrips.modules.tripsimages.service.command.DeletePhotoTagsCommand;
 import com.worldventures.dreamtrips.modules.tripsimages.service.command.DownloadImageCommand;
@@ -62,7 +69,6 @@ import com.worldventures.dreamtrips.modules.tripsimages.service.command.GetMembe
 import com.worldventures.dreamtrips.modules.tripsimages.service.command.GetUserPhotosCommand;
 import com.worldventures.dreamtrips.modules.tripsimages.service.command.GetYSBHPhotosCommand;
 import com.worldventures.dreamtrips.modules.tripsimages.service.command.TripImagesCommand;
-import com.worldventures.dreamtrips.modules.tripsimages.service.command.CreatePhotoCreationItemCommand;
 import com.worldventures.dreamtrips.modules.video.service.command.GetMemberVideosCommand;
 import com.worldventures.dreamtrips.modules.video.service.command.GetVideoLocalesCommand;
 
@@ -142,6 +148,12 @@ import dagger.Module;
       DownloadImageCommand.class,
       AddPhotoTagsCommand.class,
       EditPhotoCommand.class,
-      EditPhotoWithTagsCommand.class
+      EditPhotoWithTagsCommand.class,
+      GetInviteTemplatesCommand.class,
+      CreateFilledInviteTemplateCommand.class,
+      GetFilledInviteTemplateCommand.class,
+      GetPhoneContactsCommand.class,
+      GetSentInvitesCommand.class,
+      SendInvitesCommand.class,
 }, complete = false, library = true)
 public class SocialJanetCommandModule {}

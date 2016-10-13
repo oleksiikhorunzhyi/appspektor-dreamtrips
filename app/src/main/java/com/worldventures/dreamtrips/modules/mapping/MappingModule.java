@@ -41,6 +41,9 @@ import com.worldventures.dreamtrips.modules.mapping.converter.TaggedUserConverte
 import com.worldventures.dreamtrips.modules.mapping.converter.UserAvatarConverter;
 import com.worldventures.dreamtrips.modules.mapping.converter.YSBHPhotoConverter;
 import com.worldventures.dreamtrips.modules.mapping.mapper.PodcastsMapper;
+import com.worldventures.dreamtrips.modules.membership.model.converter.InviteTemplateConverter;
+import com.worldventures.dreamtrips.modules.membership.model.converter.InviteTemplateFromInvitationPreviewConverter;
+import com.worldventures.dreamtrips.modules.membership.model.converter.SentInviteConverter;
 import com.worldventures.dreamtrips.modules.trips.model.converter.ActivityConverter;
 import com.worldventures.dreamtrips.modules.trips.model.converter.ContentItemConverter;
 import com.worldventures.dreamtrips.modules.trips.model.converter.RegionConverter;
@@ -66,6 +69,16 @@ import io.techery.mappery.MapperyContext;
       injects = {},
       library = true, complete = false)
 public class MappingModule {
+
+   @Provides
+   @Singleton
+   MapperyContext provideMappery(Set<Converter> converters) {
+      Mappery.Builder builder = new Mappery.Builder();
+      for (Converter converter : converters) {
+         builder.map(converter.sourceClass()).to(converter.targetClass(), converter);
+      }
+      return builder.build();
+   }
 
    @Provides(type = Provides.Type.SET)
    @Singleton
@@ -125,16 +138,6 @@ public class MappingModule {
    @Singleton
    Converter provideContentItemConverter() {
       return new ContentItemConverter();
-   }
-
-   @Provides
-   @Singleton
-   MapperyContext provideMappery(Set<Converter> converters) {
-      Mappery.Builder builder = new Mappery.Builder();
-      for (Converter converter : converters) {
-         builder.map(converter.sourceClass()).to(converter.targetClass(), converter);
-      }
-      return builder.build();
    }
 
    @Provides
@@ -337,8 +340,20 @@ public class MappingModule {
 
    @Provides(type = Provides.Type.SET)
    @Singleton
+   Converter provideInviteTemplateConverter() {
+      return new InviteTemplateConverter();
+   }
+
+   @Provides(type = Provides.Type.SET)
+   @Singleton
    Converter provideSimplePhotoConverter() {
       return new SimplePhotoConverter();
+   }
+
+   @Provides(type = Provides.Type.SET)
+   @Singleton
+   Converter provideSentInviteConverter() {
+      return new SentInviteConverter();
    }
 
    @Provides(type = Provides.Type.SET)
@@ -381,5 +396,11 @@ public class MappingModule {
    @Singleton
    Converter providePhotoUpdateParamsConverter() {
       return new PhotoUpdateParamsConverter();
+   }
+
+   @Provides(type = Provides.Type.SET)
+   @Singleton
+   Converter provideInviteTemplateFromInvitationPreviewConverter() {
+      return new InviteTemplateFromInvitationPreviewConverter();
    }
 }

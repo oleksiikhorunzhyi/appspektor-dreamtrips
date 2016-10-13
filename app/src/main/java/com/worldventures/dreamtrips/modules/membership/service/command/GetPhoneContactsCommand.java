@@ -1,4 +1,6 @@
-package com.worldventures.dreamtrips.modules.membership.api;
+package com.worldventures.dreamtrips.modules.membership.service.command;
+
+
 
 import android.content.Context;
 import android.database.Cursor;
@@ -8,33 +10,37 @@ import android.telephony.PhoneNumberUtils;
 import android.text.TextUtils;
 
 import com.innahema.collections.query.queriables.Queryable;
-import com.octo.android.robospice.request.SpiceRequest;
-import com.worldventures.dreamtrips.core.repository.SnappyRepository;
+import com.worldventures.dreamtrips.core.janet.dagger.InjectableAction;
 import com.worldventures.dreamtrips.modules.membership.model.InviteTemplate;
 import com.worldventures.dreamtrips.modules.membership.model.Member;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import javax.inject.Inject;
 
-public class PhoneContactRequest extends SpiceRequest<ArrayList<Member>> {
+import io.techery.janet.Command;
+import io.techery.janet.command.annotations.CommandAction;
+import rx.Observable;
+
+@CommandAction
+public class GetPhoneContactsCommand extends Command<List<Member>> implements InjectableAction{
+
+   @Inject Context context;
 
    private InviteTemplate.Type type;
 
-   @Inject Context context;
-   @Inject SnappyRepository db;
-
-   public PhoneContactRequest(InviteTemplate.Type type) {
-      super((Class<ArrayList<Member>>) new ArrayList<Member>().getClass());
+   public GetPhoneContactsCommand(InviteTemplate.Type type) {
       this.type = type;
    }
 
    @Override
-   public ArrayList<Member> loadDataFromNetwork() {
-      return readContacts();
+   protected void run(CommandCallback<List<Member>> callback) throws Throwable {
+      Observable.just(readContacts())
+            .subscribe(callback::onSuccess, callback::onFail);
    }
 
-   public ArrayList<Member> readContacts() {
+   private List<Member> readContacts() {
       Uri contentURI = null;
       String[] projection = null;
       String selection = null;
@@ -52,7 +58,7 @@ public class PhoneContactRequest extends SpiceRequest<ArrayList<Member>> {
       }
       Cursor cur = context.getContentResolver().query(contentURI, projection, selection, selectionArgs, order);
 
-      ArrayList<Member> result = new ArrayList<>();
+      List<Member> result = new ArrayList<>();
       while (cur.moveToNext()) {
          Member member = new Member();
          String id = cur.getString(cur.getColumnIndex(ContactsContract.Contacts._ID));
@@ -83,9 +89,8 @@ public class PhoneContactRequest extends SpiceRequest<ArrayList<Member>> {
       }
       cur.close();
 
-      ArrayList<Member> resultList = new ArrayList<>();
-      resultList.addAll(Queryable.from(result).distinct().toList());
-      return resultList;
+      return Queryable.from(result).distinct().toList();
    }
 
 }
+

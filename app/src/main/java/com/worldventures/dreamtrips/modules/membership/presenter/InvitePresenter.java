@@ -2,7 +2,6 @@ package com.worldventures.dreamtrips.modules.membership.presenter;
 
 import android.accounts.AccountManager;
 import android.content.ContentProviderOperation;
-import android.os.Bundle;
 import android.provider.ContactsContract;
 import android.telephony.PhoneNumberUtils;
 import android.text.TextUtils;
@@ -10,19 +9,17 @@ import android.util.Patterns;
 
 import com.badoo.mobile.util.WeakHandler;
 import com.innahema.collections.query.queriables.Queryable;
-import com.octo.android.robospice.persistence.exception.SpiceException;
-import com.techery.spares.module.Injector;
-import com.techery.spares.module.qualifier.ForApplication;
 import com.techery.spares.utils.delegate.SearchFocusChangedDelegate;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
-import com.worldventures.dreamtrips.modules.membership.api.GetInvitationsQuery;
-import com.worldventures.dreamtrips.modules.membership.api.PhoneContactRequest;
 import com.worldventures.dreamtrips.modules.membership.event.MemberStickyEvent;
-import com.worldventures.dreamtrips.modules.membership.model.History;
 import com.worldventures.dreamtrips.modules.membership.model.InviteTemplate.Type;
 import com.worldventures.dreamtrips.modules.membership.model.Member;
+import com.worldventures.dreamtrips.modules.membership.model.SentInvite;
+import com.worldventures.dreamtrips.modules.membership.service.InviteShareInteractor;
+import com.worldventures.dreamtrips.modules.membership.service.command.GetPhoneContactsCommand;
+import com.worldventures.dreamtrips.modules.membership.service.command.GetSentInvitesCommand;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -32,72 +29,76 @@ import java.util.List;
 import javax.inject.Inject;
 
 import icepick.State;
+import io.techery.janet.helper.ActionStateSubscriber;
 import timber.log.Timber;
 
 public class InvitePresenter extends Presenter<InvitePresenter.View> {
 
-   @Inject SnappyRepository db;
-   @Inject @ForApplication Injector injector;
-   WeakHandler queryHandler = new WeakHandler();
+   @Inject InviteShareInteractor inviteShareInteractor;
    @Inject SearchFocusChangedDelegate searchFocusChangedDelegate;
 
    @State ArrayList<Member> members = new ArrayList<>();
 
-   @Override
-   public void handleError(SpiceException error) {
-      super.handleError(error);
-      view.finishLoading();
-   }
+   private WeakHandler queryHandler = new WeakHandler();
 
    @Override
    public void takeView(View view) {
       super.takeView(view);
-      if (members.isEmpty()) {
-         loadMembers();
-      } else {
-         handleResponse();
-      }
-      //
+      subscribeToContactLoading();
+      subscribeToSentInvitesLoading();
+      if (members.isEmpty()) loadMembers();
+      else contactsLoaded();
       view.setAdapterComparator(getSelectedComparator());
    }
 
-   @Override
-   public void restoreInstanceState(Bundle savedState) {
-      super.restoreInstanceState(savedState);
+   private void subscribeToContactLoading() {
+      inviteShareInteractor.getPhoneContactsPipe()
+            .observe()
+            .compose(bindViewToMainComposer())
+            .subscribe(new ActionStateSubscriber<GetPhoneContactsCommand>()
+                  .onStart(command -> view.startLoading())
+                  .onSuccess(command -> {
+                     members.clear();
+                     members.addAll(command.getResult());
+                     contactsLoaded();
+                  }));
+   }
+
+   private void subscribeToSentInvitesLoading() {
+      inviteShareInteractor.getSentInvitesPipe()
+            .observe()
+            .compose(bindViewToMainComposer())
+            .subscribe(new ActionStateSubscriber<GetSentInvitesCommand>()
+                  .onSuccess(this::sentInvitesLoaded));
+   }
+
+   private void sentInvitesLoaded(GetSentInvitesCommand command) {
+      view.finishLoading();
+      sortContacts();
+      sortSelected();
+      linkHistoryWithMembers(command.getResult());
+      setMembers();
+      openTemplateInView();
+      showContinueBtnIfNeed();
+      view.setSelectedCount(Queryable.from(members).count(Member::isChecked));
    }
 
    public void loadMembers() {
-      view.startLoading();
-      Type from = Type.from(view.getSelectedType());
-      PhoneContactRequest request = new PhoneContactRequest(from);
-      injector.inject(request);
-      doRequest(request, members -> {
-         InvitePresenter.this.members = members;
-         handleResponse();
-      });
+      Type type = Type.from(view.getSelectedType());
+      inviteShareInteractor.getPhoneContactsPipe().send(new GetPhoneContactsCommand(type));
    }
 
-   private void handleResponse() {
-      doRequest(new GetInvitationsQuery(), inviteTemplates -> {
-         view.finishLoading();
-         sortContacts();
-         sortSelected();
-         linkHistoryWithMembers(inviteTemplates);
-         setMembers();
-         openTemplateInView();
-         showContinueBtnIfNeed();
-         view.setSelectedCount(Queryable.from(members).count(Member::isChecked));
-      });
-
+   private void contactsLoaded() {
+      inviteShareInteractor.getSentInvitesPipe().send(new GetSentInvitesCommand());
       TrackingHelper.inviteShareContacts(getAccountUserId());
    }
 
-   private void linkHistoryWithMembers(ArrayList<History> inviteTemplates) {
-      for (History history : inviteTemplates) {
+   private void linkHistoryWithMembers(List<SentInvite> inviteTemplates) {
+      for (SentInvite sentInvite : inviteTemplates) {
          for (Member member : members) {
-            String contact = history.getContact();
+            String contact = sentInvite.getContact();
             if (contact.equals(member.getSubtitle())) {
-               member.setHistory(history);
+               member.setSentInvite(sentInvite);
             }
          }
       }
@@ -123,7 +124,7 @@ public class InvitePresenter extends Presenter<InvitePresenter.View> {
       }
    }
 
-   public void addToContactList(String name, String phone, String email) {
+   private void addToContactList(String name, String phone, String email) {
       int phoneType = ContactsContract.CommonDataKinds.Phone.TYPE_MOBILE;
       int emailType = ContactsContract.CommonDataKinds.Email.TYPE_MOBILE;
 
@@ -195,7 +196,7 @@ public class InvitePresenter extends Presenter<InvitePresenter.View> {
    }
 
    public void showContinueBtnIfNeed() {
-      int count = Queryable.from(members).count(element -> element.isChecked());
+      int count = Queryable.from(members).count(Member::isChecked);
       if (count > 0 && view != null) {
          view.setSelectedCount(count);
          view.showNextStepButtonVisibility(true);
@@ -206,12 +207,11 @@ public class InvitePresenter extends Presenter<InvitePresenter.View> {
       boolean isVisible = isVisible();
 
       eventBus.removeStickyEvent(MemberStickyEvent.class);
-      eventBus.postSticky(new MemberStickyEvent(Queryable.from(members).filter(element -> {
-         return element.isChecked();
-      }).toList()));
+      eventBus.postSticky(new MemberStickyEvent(Queryable.from(members)
+            .filter(Member::isChecked).toList()));
 
       view.showNextStepButtonVisibility(isVisible);
-      int count = Queryable.from(members).count(element -> element.isChecked());
+      int count = Queryable.from(members).count(Member::isChecked);
       view.setSelectedCount(count);
 
       int to = member.getOriginalPosition();
@@ -228,7 +228,7 @@ public class InvitePresenter extends Presenter<InvitePresenter.View> {
       view.continueAction2();
    }
 
-   public void openTemplateInView() {
+   private void openTemplateInView() {
       view.openTemplateView();
    }
 

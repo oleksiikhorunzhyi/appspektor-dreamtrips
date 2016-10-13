@@ -11,9 +11,6 @@ import com.worldventures.dreamtrips.modules.feed.model.CreatePhotoPostEntity;
 import com.worldventures.dreamtrips.modules.feed.model.FeedEntityHolder;
 import com.worldventures.dreamtrips.modules.feed.model.TextualPost;
 import com.worldventures.dreamtrips.modules.feed.model.comment.Comment;
-import com.worldventures.dreamtrips.modules.membership.api.InviteBody;
-import com.worldventures.dreamtrips.modules.membership.model.History;
-import com.worldventures.dreamtrips.modules.membership.model.InviteTemplate;
 import com.worldventures.dreamtrips.modules.reptools.model.SuccessStory;
 import com.worldventures.dreamtrips.modules.tripsimages.model.Photo;
 
@@ -34,17 +31,11 @@ import retrofit.http.Query;
 
 public interface DreamTripsApi {
 
-   String TYPE_MEMBER = "DTAPP";
-   String TYPE_MEMBER_360 = "DTAPP360";
-   String TYPE_REP = "dtapprep";
-   String TYPE_HELP = "DTAPPHELP";
-
    @POST("/api/photos")
    ArrayList<Photo> uploadPhotos(@Body CreatePhotoEntity entity);
 
    @POST("/api/social/posts")
    TextualPost createPhotoPost(@Body CreatePhotoPostEntity createPhotoPostEntity);
-    /* *** END PHOTOS *****************************/
 
    @GET("/api/success_stories")
    ArrayList<SuccessStory> getSuccessStores();
@@ -84,22 +75,6 @@ public interface DreamTripsApi {
 
    @GET("/api/dining_suggestions/popular")
    ArrayList<PopularBucketItem> getDiningPopularSuggestions(@Query("name") String name);
-
-   @GET("/api/invitations/templates")
-   ArrayList<InviteTemplate> getInviteTemplates();
-
-   @GET("/api/invitations")
-   ArrayList<History> getInvitations();
-
-   @POST("/api/invitations")
-   JSONObject sendInvitations(@Body InviteBody body);
-
-   @FormUrlEncoded
-   @POST("/api/invitations/filled_templates")
-   InviteTemplate createInviteTemplate(@Field("template_id") int id, @Field("message") String message, @Field("cover_photo_url") String photoUrl);
-
-   @GET("/api/invitations/filled_templates/{id} ")
-   InviteTemplate getFilledInviteTemplate(@Path("id") int id);
 
    @GET("/api/social/friends")
    ArrayList<User> getFriends(@Query("circle_id") String circle_id, @Query("query") String query, @Query("page") int page, @Query("per_page") int perPage);

@@ -49,9 +49,9 @@ public class MemberCell extends AbstractDelegateCell<Member, CellDelegate<Member
       }
       tvSubtitle.setText(subtitle);
       ivPhone.setVisibility(View.GONE);
-      if (getModelObject().getHistory() != null) {
+      if (getModelObject().getSentInvite() != null) {
          llResend.setVisibility(View.VISIBLE);
-         tvDate.setText(DateTimeUtils.convertDateToString(getModelObject().getHistory()
+         tvDate.setText(DateTimeUtils.convertDateToString(getModelObject().getSentInvite()
                .getDate(), DateTimeUtils.MEMBER_FORMAT));
       } else {
          tvDate.setText("");

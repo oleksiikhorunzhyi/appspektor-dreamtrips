@@ -12,6 +12,7 @@ import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.dtl.event.MapInfoReadyAction;
 import com.worldventures.dreamtrips.modules.dtl.event.ShowMapInfoAction;
+import com.worldventures.dreamtrips.modules.dtl.event.ToggleMerchantSelectionAction;
 import com.worldventures.dreamtrips.modules.dtl.helper.DtlLocationHelper;
 import com.worldventures.dreamtrips.modules.dtl.helper.holder.FullMerchantParamsHolder;
 import com.worldventures.dreamtrips.modules.dtl.location.LocationDelegate;
@@ -294,6 +295,12 @@ public class DtlMapPresenterImpl extends DtlPresenterImpl<DtlMapScreen, ViewStat
    @Override
    public void onMarkerClick(ThinMerchant merchant) {
       getView().showPinInfo(merchant);
+      presentationInteractor.toggleSelectionPipe().send(ToggleMerchantSelectionAction.select(merchant));
+   }
+
+   @Override
+   public void onMarkerPopupDismiss() {
+      presentationInteractor.toggleSelectionPipe().send(ToggleMerchantSelectionAction.clear());
    }
 
    @Override

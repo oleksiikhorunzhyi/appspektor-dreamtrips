@@ -55,7 +55,7 @@ public class DtlMerchantsScreenImpl extends DtlLayout<DtlMerchantsScreen, DtlMer
    @Inject MerchantsAdapterDelegate delegate;
 
    ScrollingManager scrollingManager;
-   SelectionManager selectionManager;
+   SingleSelectionManager selectionManager;
    SweetAlertDialog errorDialog;
    PaginationManager paginationManager;
    LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
@@ -92,7 +92,7 @@ public class DtlMerchantsScreenImpl extends DtlLayout<DtlMerchantsScreen, DtlMer
       selectionManager = new SingleSelectionManager(recyclerView);
       selectionManager.setEnabled(isTabletLandscape());
 
-      recyclerView.setAdapter(adapter);
+      recyclerView.setAdapter(selectionManager.provideWrappedAdapter(adapter));
 
       refreshLayout.setColorSchemeResources(R.color.theme_main_darker);
       refreshLayout.setOnRefreshListener(() -> getPresenter().refresh());
@@ -275,6 +275,11 @@ public class DtlMerchantsScreenImpl extends DtlLayout<DtlMerchantsScreen, DtlMer
       int index = delegate.getItems().indexOf(merchant);
       if (index != -1) selectionManager.toggleSelection(index);
       scrollingManager.scrollToPosition(index);
+   }
+
+   @Override
+   public void clearSelection() {
+      selectionManager.clearSelections();
    }
 
    @Override

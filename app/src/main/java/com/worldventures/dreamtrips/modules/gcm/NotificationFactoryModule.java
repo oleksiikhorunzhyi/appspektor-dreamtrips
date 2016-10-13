@@ -7,6 +7,7 @@ import com.techery.spares.module.qualifier.ForApplication;
 import com.worldventures.dreamtrips.core.module.RouteCreatorModule;
 import com.worldventures.dreamtrips.core.navigation.creator.RouteCreator;
 import com.worldventures.dreamtrips.modules.friends.notification.FriendNotificationFactory;
+import com.worldventures.dreamtrips.modules.gcm.delegate.MerchantNotficationFactory;
 import com.worldventures.dreamtrips.modules.gcm.delegate.NotificationFactoryHolder;
 import com.worldventures.dreamtrips.modules.gcm.delegate.PhotoNotificationFactory;
 
@@ -21,8 +22,10 @@ import dagger.Provides;
 public class NotificationFactoryModule {
 
    @Provides
-   NotificationFactoryHolder provideNotificationFactoryHolder(FriendNotificationFactory friendNotificationFactory, PhotoNotificationFactory photoNotificationFactory, MessengerNotificationFactory messengerNotificationFactory) {
-      return new NotificationFactoryHolder(friendNotificationFactory, photoNotificationFactory, messengerNotificationFactory);
+   NotificationFactoryHolder provideNotificationFactoryHolder(FriendNotificationFactory friendNotificationFactory,
+         PhotoNotificationFactory photoNotificationFactory, MessengerNotificationFactory messengerNotificationFactory,
+         MerchantNotficationFactory merchantNotficationFactory) {
+      return new NotificationFactoryHolder(friendNotificationFactory, photoNotificationFactory, messengerNotificationFactory, merchantNotficationFactory);
    }
 
    @Provides
@@ -33,6 +36,11 @@ public class NotificationFactoryModule {
    @Provides
    PhotoNotificationFactory providePhotoNotificationFactory(@ForApplication Context context) {
       return new PhotoNotificationFactory(context);
+   }
+
+   @Provides
+   MerchantNotficationFactory provideMerchantNotficationFactory(@ForApplication Context context) {
+      return new MerchantNotficationFactory(context);
    }
 
    @Provides

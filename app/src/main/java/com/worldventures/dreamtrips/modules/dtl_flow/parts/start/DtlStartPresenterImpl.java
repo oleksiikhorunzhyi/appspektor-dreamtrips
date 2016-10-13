@@ -13,7 +13,7 @@ import com.worldventures.dreamtrips.modules.dtl.model.location.DtlLocation;
 import com.worldventures.dreamtrips.modules.dtl.model.location.ImmutableDtlManualLocation;
 import com.worldventures.dreamtrips.modules.dtl.service.AttributesInteractor;
 import com.worldventures.dreamtrips.modules.dtl.service.DtlLocationInteractor;
-import com.worldventures.dreamtrips.modules.dtl.service.action.DtlLocationCommand;
+import com.worldventures.dreamtrips.modules.dtl.service.action.DtlLocationFacadeCommand;
 import com.worldventures.dreamtrips.modules.dtl_flow.DtlPresenterImpl;
 import com.worldventures.dreamtrips.modules.dtl_flow.ViewState;
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.locations.DtlLocationsPath;
@@ -61,10 +61,11 @@ public class DtlStartPresenterImpl extends DtlPresenterImpl<DtlStartScreen, View
    }
 
    private void proceedNavigation(@Nullable Location newGpsLocation) {
-      locationInteractor.locationPipe()
+      locationInteractor.locationFacadePipe()
             .observeSuccessWithReplay()
+            .take(1)
             .compose(bindViewIoToMainComposer())
-            .map(DtlLocationCommand::getResult)
+            .map(DtlLocationFacadeCommand::getResult)
             .subscribe(dtlLocation -> {
                switch (dtlLocation.getLocationSourceType()) {
                   case UNDEFINED:
@@ -75,7 +76,7 @@ public class DtlStartPresenterImpl extends DtlPresenterImpl<DtlStartScreen, View
                               .longName(context.getString(R.string.dtl_near_me_caption))
                               .coordinates(new com.worldventures.dreamtrips.modules.trips.model.Location(newGpsLocation))
                               .build();
-                        locationInteractor.change(dtlManualLocation);
+                        locationInteractor.changeSourceLocation(dtlManualLocation);
                         navigatePath(DtlMerchantsPath.withAllowedRedirection());
                      }
                      break;
@@ -87,7 +88,7 @@ public class DtlStartPresenterImpl extends DtlPresenterImpl<DtlStartScreen, View
                      }
                      if (!DtlLocationHelper.checkLocation(0.5, newGpsLocation, dtlLocation
                            .getCoordinates().asAndroidLocation(), DistanceType.MILES)) {
-                        locationInteractor.change(ImmutableDtlManualLocation.builder()
+                        locationInteractor.changeSourceLocation(ImmutableDtlManualLocation.builder()
                               .from(dtlLocation)
                               .coordinates(new com.worldventures.dreamtrips.modules.trips.model.Location(newGpsLocation))
                               .build());
@@ -95,11 +96,7 @@ public class DtlStartPresenterImpl extends DtlPresenterImpl<DtlStartScreen, View
                      navigatePath(DtlMerchantsPath.withAllowedRedirection());
                      break;
                   case FROM_MAP:
-//                     attributesInteractor.requestAmenities(); // TODO :: 26.09.16 decide if needed for re-entering DTL
-                     navigatePath(DtlMerchantsPath.getDefault());
-                     break;
                   case EXTERNAL:
-//                     attributesInteractor.requestAmenities(); // TODO :: 26.09.16 decide if needed for re-entering DTL
                      navigatePath(DtlMerchantsPath.getDefault());
                      break;
                }
@@ -117,9 +114,10 @@ public class DtlStartPresenterImpl extends DtlPresenterImpl<DtlStartScreen, View
     * @param e exception that {@link LocationDelegate} subscription returned
     */
    private void onLocationError(Throwable e) {
-      locationInteractor.locationPipe()
+      locationInteractor.locationFacadePipe()
             .observeSuccessWithReplay()
-            .map(DtlLocationCommand::getResult)
+            .take(1)
+            .map(DtlLocationFacadeCommand::getResult)
             .compose(bindViewIoToMainComposer())
             .subscribe(location -> {
                // Determines whether we can proceed without locating device by GPS.

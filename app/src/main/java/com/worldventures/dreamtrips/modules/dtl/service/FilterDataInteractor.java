@@ -2,20 +2,16 @@ package com.worldventures.dreamtrips.modules.dtl.service;
 
 import android.support.annotation.NonNull;
 
-import com.innahema.collections.query.queriables.Queryable;
 import com.worldventures.dreamtrips.core.janet.SessionActionPipeCreator;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.core.utils.tracksystem.AnalyticsInteractor;
 import com.worldventures.dreamtrips.modules.dtl.analytics.DtlAnalyticsCommand;
 import com.worldventures.dreamtrips.modules.dtl.analytics.MerchantFilterAppliedEvent;
 import com.worldventures.dreamtrips.modules.dtl.helper.FilterHelper;
-import com.worldventures.dreamtrips.modules.dtl.model.DistanceType;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.filter.FilterData;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.filter.ImmutableFilterData;
 import com.worldventures.dreamtrips.modules.dtl.service.action.DtlLocationCommand;
 import com.worldventures.dreamtrips.modules.dtl.service.action.FilterDataAction;
-import com.worldventures.dreamtrips.modules.settings.model.Setting;
-import com.worldventures.dreamtrips.modules.settings.util.SettingsFactory;
 
 import java.util.Collections;
 
@@ -106,7 +102,7 @@ public class FilterDataInteractor {
    }
 
    private void connectLocationChange() {
-      dtlLocationInteractor.locationPipe().observeSuccessWithReplay()
+      dtlLocationInteractor.locationSourcePipe().observeSuccessWithReplay()
             .filter(DtlLocationCommand::isResultDefined)
             .map(DtlLocationCommand::getResult)
             .subscribe(dtlLocation ->

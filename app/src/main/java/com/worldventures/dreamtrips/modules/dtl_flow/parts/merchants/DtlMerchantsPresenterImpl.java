@@ -19,10 +19,10 @@ import com.worldventures.dreamtrips.modules.dtl.model.merchant.ThinMerchant;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.filter.FilterData;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.offer.Offer;
 import com.worldventures.dreamtrips.modules.dtl.service.DtlLocationInteractor;
-import com.worldventures.dreamtrips.modules.dtl.service.MerchantsInteractor;
 import com.worldventures.dreamtrips.modules.dtl.service.FilterDataInteractor;
 import com.worldventures.dreamtrips.modules.dtl.service.FullMerchantInteractor;
-import com.worldventures.dreamtrips.modules.dtl.service.action.DtlLocationCommand;
+import com.worldventures.dreamtrips.modules.dtl.service.MerchantsInteractor;
+import com.worldventures.dreamtrips.modules.dtl.service.action.DtlLocationFacadeCommand;
 import com.worldventures.dreamtrips.modules.dtl.service.action.FilterDataAction;
 import com.worldventures.dreamtrips.modules.dtl.service.action.FullMerchantAction;
 import com.worldventures.dreamtrips.modules.dtl.service.action.MerchantsAction;
@@ -91,22 +91,21 @@ public class DtlMerchantsPresenterImpl extends DtlPresenterImpl<DtlMerchantsScre
    }
 
    private void connectToolbarUpdates() {
-      locationInteractor.locationPipe()
+      locationInteractor.locationFacadePipe()
             .observeSuccessWithReplay()
-            .first()
-            .map(DtlLocationCommand::getResult)
+            .map(DtlLocationFacadeCommand::getResult)
             .compose(bindViewIoToMainComposer())
             .subscribe(getView()::updateToolbarLocationTitle);
       filterDataInteractor.filterDataPipe()
             .observeSuccessWithReplay()
-            .first()
+            .take(1)
             .compose(bindViewIoToMainComposer())
             .map(FilterDataAction::getResult)
             .map(FilterData::searchQuery)
             .subscribe(getView()::updateToolbarSearchCaption);
       filterDataInteractor.filterDataPipe()
             .observeSuccessWithReplay()
-            .first()
+            .take(1)
             .compose(bindViewIoToMainComposer())
             .map(FilterDataAction::getResult)
             .map(FilterData::isOffersOnly)
@@ -117,11 +116,6 @@ public class DtlMerchantsPresenterImpl extends DtlPresenterImpl<DtlMerchantsScre
             .map(FilterData::isDefault)
             .compose(bindViewIoToMainComposer())
             .subscribe(getView()::setFilterButtonState);
-      locationInteractor.locationPipe()
-            .observeSuccess()
-            .map(DtlLocationCommand::getResult)
-            .compose(bindViewIoToMainComposer())
-            .subscribe(getView()::updateToolbarLocationTitle);
    }
 
    private void connectFullMerchantLoading() {

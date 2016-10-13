@@ -79,7 +79,7 @@ public class DtlLocationsSearchPresenterImpl extends DtlPresenterImpl<DtlLocatio
       locationInteractor.searchLocationPipe().clearReplays();
       analyticsInteractor.dtlAnalyticsCommandPipe()
             .send(DtlAnalyticsCommand.create(LocationSearchEvent.create(location)));
-      locationInteractor.change(location);
+      locationInteractor.changeSourceLocation(location);
 
       navigateToMerchants();
    }

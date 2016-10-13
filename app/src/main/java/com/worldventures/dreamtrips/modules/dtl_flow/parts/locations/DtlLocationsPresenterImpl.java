@@ -14,6 +14,7 @@ import com.worldventures.dreamtrips.modules.dtl.model.location.DtlExternalLocati
 import com.worldventures.dreamtrips.modules.dtl.model.location.DtlLocation;
 import com.worldventures.dreamtrips.modules.dtl.model.location.ImmutableDtlManualLocation;
 import com.worldventures.dreamtrips.modules.dtl.service.DtlLocationInteractor;
+import com.worldventures.dreamtrips.modules.dtl.service.action.DtlLocationCommand;
 import com.worldventures.dreamtrips.modules.dtl.service.action.DtlNearbyLocationAction;
 import com.worldventures.dreamtrips.modules.dtl_flow.DtlPresenterImpl;
 import com.worldventures.dreamtrips.modules.dtl_flow.ViewState;
@@ -104,16 +105,19 @@ public class DtlLocationsPresenterImpl extends DtlPresenterImpl<DtlLocationsScre
                   .longName(context.getString(R.string.dtl_near_me_caption))
                   .coordinates(new com.worldventures.dreamtrips.modules.trips.model.Location(location))
                   .build();
-            locationInteractor.change(dtlLocation);
+            locationInteractor.changeSourceLocation(dtlLocation);
             navigateToMerchants();
             break;
       }
    }
 
    private void tryHideNearMeButton() {
-      locationInteractor.locationPipe()
+      locationInteractor.locationSourcePipe()
             .observeSuccessWithReplay()
-            .filter(command -> command.getResult().getLocationSourceType() == LocationSourceType.NEAR_ME)
+            .take(1)
+            .map(DtlLocationCommand::getResult)
+            .map(dtlLocation -> dtlLocation.getLocationSourceType())
+            .filter(locationSourceType -> locationSourceType == LocationSourceType.NEAR_ME)
             .compose(bindViewIoToMainComposer())
             .subscribe(command -> getView().hideNearMeButton());
    }
@@ -158,7 +162,7 @@ public class DtlLocationsPresenterImpl extends DtlPresenterImpl<DtlLocationsScre
       locationInteractor.searchLocationPipe().clearReplays();
       analyticsInteractor.dtlAnalyticsCommandPipe()
             .send(DtlAnalyticsCommand.create(LocationSearchEvent.create(location)));
-      locationInteractor.change(location);
+      locationInteractor.changeSourceLocation(location);
       navigateToMerchants();
    }
 

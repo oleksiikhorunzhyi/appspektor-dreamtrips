@@ -31,7 +31,7 @@ public class AttributesInteractor {
 
    public void requestAmenities() {
       Observable.combineLatest(
-            dtlLocationInteractor.locationPipe()
+            dtlLocationInteractor.locationSourcePipe()
                   .observeSuccessWithReplay()
                   .take(1)
                   .map(dtlLocationCommand -> dtlLocationCommand.getResult().getCoordinates()),
@@ -52,7 +52,7 @@ public class AttributesInteractor {
    }
 
    private void connectLocationChange() {
-      dtlLocationInteractor.locationPipe().observeSuccessWithReplay()
+      dtlLocationInteractor.locationSourcePipe().observeSuccessWithReplay()
             .filter(DtlLocationCommand::isResultDefined)
             .map(DtlLocationCommand::getResult)
             .subscribe(dtlLocation -> requestAmenities());

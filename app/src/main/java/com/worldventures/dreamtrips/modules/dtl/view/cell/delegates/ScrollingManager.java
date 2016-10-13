@@ -21,6 +21,6 @@ public class ScrollingManager {
    private boolean isListItemInvisible(int position) {
       int firstVisible = layoutManager.findFirstVisibleItemPosition();
       int lastVisible = layoutManager.findLastVisibleItemPosition();
-      return position < firstVisible && position > lastVisible;
+      return position < firstVisible || position > lastVisible;
    }
 }

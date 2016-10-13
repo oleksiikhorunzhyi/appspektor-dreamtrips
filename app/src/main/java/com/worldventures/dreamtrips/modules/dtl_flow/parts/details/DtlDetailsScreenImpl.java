@@ -88,7 +88,10 @@ public class DtlDetailsScreenImpl extends DtlLayout<DtlDetailsScreen, DtlDetails
       inflateToolbarMenu(toolbar);
       //
       toolbar.setNavigationIcon(R.drawable.back_icon);
-      toolbar.setNavigationOnClickListener(view -> getActivity().onBackPressed());
+      toolbar.setNavigationOnClickListener(view -> {
+         getPresenter().onBackPressed();
+         getActivity().onBackPressed();
+      });
       //
       activityResultDelegate.addListener(this);
       //

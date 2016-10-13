@@ -1,6 +1,7 @@
 package com.worldventures.dreamtrips.modules.dtl_flow.parts.merchants;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.os.Parcelable;
 import android.support.annotation.Nullable;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -55,7 +56,7 @@ public class DtlMerchantsScreenImpl extends DtlLayout<DtlMerchantsScreen, DtlMer
    @Inject MerchantsAdapterDelegate delegate;
 
    ScrollingManager scrollingManager;
-   SelectionManager selectionManager;
+   SingleSelectionManager selectionManager;
    SweetAlertDialog errorDialog;
    PaginationManager paginationManager;
    LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
@@ -92,7 +93,7 @@ public class DtlMerchantsScreenImpl extends DtlLayout<DtlMerchantsScreen, DtlMer
       selectionManager = new SingleSelectionManager(recyclerView);
       selectionManager.setEnabled(isTabletLandscape());
 
-      recyclerView.setAdapter(adapter);
+      recyclerView.setAdapter(selectionManager.provideWrappedAdapter(adapter));
 
       refreshLayout.setColorSchemeResources(R.color.theme_main_darker);
       refreshLayout.setOnRefreshListener(() -> getPresenter().refresh());
@@ -278,6 +279,11 @@ public class DtlMerchantsScreenImpl extends DtlLayout<DtlMerchantsScreen, DtlMer
    }
 
    @Override
+   public void clearSelection() {
+      selectionManager.clearSelections();
+   }
+
+   @Override
    public void applyViewState(DtlMerchantsState state) {
       if (state == null) return;
       delegate.setExpandedMerchants(state.getExpandedMerchantIds());
@@ -295,6 +301,7 @@ public class DtlMerchantsScreenImpl extends DtlLayout<DtlMerchantsScreen, DtlMer
          listener.dismissWithAnimation();
          getPresenter().onRetryMerchantClick();
       });
+      errorDialog.setOnDismissListener(dialog -> getPresenter().onRetryDialogDismiss());
       errorDialog.show();
    }
 

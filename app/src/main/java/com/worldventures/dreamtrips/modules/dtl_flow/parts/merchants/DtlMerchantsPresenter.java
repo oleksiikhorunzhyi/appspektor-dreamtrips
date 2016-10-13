@@ -13,6 +13,8 @@ public interface DtlMerchantsPresenter extends DtlPresenter<DtlMerchantsScreen, 
 
    void onRetryMerchantsClick();
 
+   void onRetryDialogDismiss();
+
    void locationChangeRequested();
 
    void applySearch(String query);

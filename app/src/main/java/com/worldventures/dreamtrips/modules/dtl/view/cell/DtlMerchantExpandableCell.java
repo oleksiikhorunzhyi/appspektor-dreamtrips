@@ -2,6 +2,7 @@ package com.worldventures.dreamtrips.modules.dtl.view.cell;
 
 import android.content.Context;
 import android.content.res.Resources;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.AppCompatTextView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -16,6 +17,8 @@ import com.trello.rxlifecycle.RxLifecycle;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.api.dtl.merchants.model.OfferType;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
+import com.worldventures.dreamtrips.core.selectable.SelectableCell;
+import com.worldventures.dreamtrips.core.selectable.SelectableDelegate;
 import com.worldventures.dreamtrips.core.utils.DateTimeUtils;
 import com.worldventures.dreamtrips.core.utils.LocaleHelper;
 import com.worldventures.dreamtrips.core.utils.ViewUtils;
@@ -42,7 +45,7 @@ import io.techery.properratingbar.ProperRatingBar;
 import rx.Observable;
 
 @Layout(R.layout.adapter_item_dtl_merchant_expandable)
-public class DtlMerchantExpandableCell extends AbstractDelegateCell<ImmutableThinMerchant, MerchantCellDelegate> {
+public class DtlMerchantExpandableCell extends AbstractDelegateCell<ImmutableThinMerchant, MerchantCellDelegate> implements SelectableCell {
 
    @InjectView(R.id.merchantCoverImage) ImageryDraweeView merchantCoverImage;
    @InjectView(R.id.merchantPricing) ProperRatingBar pricing;
@@ -59,13 +62,12 @@ public class DtlMerchantExpandableCell extends AbstractDelegateCell<ImmutableThi
 
    @Inject LocaleHelper localeHelper;
 
-   private final LayoutInflater inflater;
+   private SelectableDelegate selectableDelegate;
    private DistanceType distanceType;
    private boolean expanded;
 
    public DtlMerchantExpandableCell(View view) {
       super(view);
-      inflater = (LayoutInflater) view.getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
    }
 
    @Override
@@ -79,10 +81,16 @@ public class DtlMerchantExpandableCell extends AbstractDelegateCell<ImmutableThi
       setOperationalStatus();
       setOffersSection();
       setToggleView();
+      setSelection(itemView);
       // TODO :: 5/20/16 Below is a dirtiest hack of all. If this is not re-done to proper
       // TODO :: expandable implementation until release or at most latest - until next release
       // TODO :: please tear off my hands
       setExpandedArea();
+   }
+
+   private void setSelection(View view) {
+      int colorResId = selectableDelegate.isSelected(getAdapterPosition()) ? R.color.dtl_selection_color : R.color.white;
+      view.setBackgroundColor(ContextCompat.getColor(itemView.getContext(), colorResId));
    }
 
    public void setDistanceType(DistanceType distanceType) {
@@ -174,14 +182,15 @@ public class DtlMerchantExpandableCell extends AbstractDelegateCell<ImmutableThi
    }
 
    private void bindPointsCell(Offer offer, ViewGroup container) {
-      View cellView = inflater.inflate(R.layout.adapter_item_offer_points, container, false);
+      View cellView = LayoutInflater.from(itemView.getContext()).inflate(R.layout.adapter_item_offer_points, container, false);
       cellView.setTag(offer);
       cellView.setOnClickListener(v -> cellDelegate.onOfferClick(getModelObject(), (Offer) v.getTag()));
+      setSelection(cellView);
       container.addView(cellView);
    }
 
    private void bindPerkCell(Offer offer, ViewGroup container) {
-      View cellView = inflater.inflate(R.layout.adapter_item_offer_perk, container, false);
+      View cellView = LayoutInflater.from(itemView.getContext()).inflate(R.layout.adapter_item_offer_perk, container, false);
       cellView.setTag(offer);
       cellView.setOnClickListener(v -> cellDelegate.onOfferClick(getModelObject(), (Offer) v.getTag()));
       ImageryDraweeView image = ButterKnife.<ImageryDraweeView>findById(cellView, R.id.perk_logo);
@@ -206,10 +215,12 @@ public class DtlMerchantExpandableCell extends AbstractDelegateCell<ImmutableThi
       String concatDays = DateTimeUtils.concatOperationDays(itemView.getResources(), operationDays);
       operationDaysCaption.setText(concatDays);
       //
+      setSelection(cellView);
       container.addView(cellView);
    }
 
    @Override
-   public void prepareForReuse() {
+   public void setSelectableDelegate(SelectableDelegate selectableDelegate) {
+      this.selectableDelegate = selectableDelegate;
    }
 }

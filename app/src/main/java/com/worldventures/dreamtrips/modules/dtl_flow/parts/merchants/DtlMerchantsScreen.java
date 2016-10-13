@@ -35,6 +35,8 @@ public interface DtlMerchantsScreen extends DtlScreen {
 
    void toggleSelection(ThinMerchant merchant);
 
+   void clearSelection();
+
    void onRefreshSuccess();
 
    void onRefreshProgress();

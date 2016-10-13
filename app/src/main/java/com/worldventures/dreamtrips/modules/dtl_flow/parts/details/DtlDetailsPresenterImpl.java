@@ -26,6 +26,7 @@ import com.worldventures.dreamtrips.modules.dtl.analytics.SuggestMerchantEvent;
 import com.worldventures.dreamtrips.modules.dtl.bundle.MerchantIdBundle;
 import com.worldventures.dreamtrips.modules.dtl.bundle.PointsEstimationDialogBundle;
 import com.worldventures.dreamtrips.modules.dtl.event.DtlTransactionSucceedEvent;
+import com.worldventures.dreamtrips.modules.dtl.event.ToggleMerchantSelectionAction;
 import com.worldventures.dreamtrips.modules.dtl.location.LocationDelegate;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.Merchant;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.MerchantMedia;
@@ -33,6 +34,7 @@ import com.worldventures.dreamtrips.modules.dtl.model.merchant.offer.Offer;
 import com.worldventures.dreamtrips.modules.dtl.model.transaction.DtlTransaction;
 import com.worldventures.dreamtrips.modules.dtl.model.transaction.ImmutableDtlTransaction;
 import com.worldventures.dreamtrips.modules.dtl.service.DtlTransactionInteractor;
+import com.worldventures.dreamtrips.modules.dtl.service.PresentationInteractor;
 import com.worldventures.dreamtrips.modules.dtl.service.action.DtlTransactionAction;
 import com.worldventures.dreamtrips.modules.dtl_flow.DtlPresenterImpl;
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.fullscreen_image.DtlFullscreenImagePath;
@@ -53,6 +55,7 @@ public class DtlDetailsPresenterImpl extends DtlPresenterImpl<DtlDetailsScreen, 
    @Inject LocationDelegate locationDelegate;
    @Inject DtlTransactionInteractor transactionInteractor;
    @Inject PhotoUploadingManagerS3 photoUploadingManagerS3;
+   @Inject PresentationInteractor presentationInteractor;
 
    private final Merchant merchant;
    private final List<String> preExpandOffers;
@@ -238,6 +241,11 @@ public class DtlDetailsPresenterImpl extends DtlPresenterImpl<DtlDetailsScreen, 
       MerchantMedia imageUrl = Queryable.from(offer.images()).firstOrDefault();
       if (imageUrl == null) return;
       Flow.get(getContext()).set(new DtlFullscreenImagePath(imageUrl.getImagePath()));
+   }
+
+   @Override
+   public void onBackPressed() {
+      presentationInteractor.toggleSelectionPipe().send(ToggleMerchantSelectionAction.clear());
    }
 
    public void onShareClick() {

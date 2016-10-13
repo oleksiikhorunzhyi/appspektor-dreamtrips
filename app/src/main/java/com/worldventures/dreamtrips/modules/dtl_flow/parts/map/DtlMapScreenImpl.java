@@ -358,6 +358,9 @@ public class DtlMapScreenImpl extends DtlLayout<DtlMapScreen, DtlMapPresenter, D
    }
 
    private void hideInfoIfShown() {
-      infoContainer.removeAllViews();
+      if(infoContainer.getChildCount() > 0) {
+         infoContainer.removeAllViews();
+         getPresenter().onMarkerPopupDismiss();
+      }
    }
 }

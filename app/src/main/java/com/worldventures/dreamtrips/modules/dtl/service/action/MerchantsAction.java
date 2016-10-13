@@ -67,7 +67,7 @@ public class MerchantsAction extends CommandWithError<List<ThinMerchant>>
             .compose(ThinMerchantsTransformer.INSTANCE)
             .subscribe(callback::onSuccess, callback::onFail);
    }
-   
+
    @Override
    public int getFallbackErrorMessage() {
       return R.string.dtl_load_error;

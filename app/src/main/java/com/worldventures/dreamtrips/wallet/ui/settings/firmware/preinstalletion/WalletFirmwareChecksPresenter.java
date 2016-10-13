@@ -5,6 +5,7 @@ import android.os.Parcelable;
 
 import com.techery.spares.module.Injector;
 import com.worldventures.dreamtrips.wallet.service.FirmwareInteractor;
+import com.worldventures.dreamtrips.wallet.service.SmartCardInteractor;
 import com.worldventures.dreamtrips.wallet.service.WalletBluetoothService;
 import com.worldventures.dreamtrips.wallet.service.command.firmware.PreInstallationCheckCommand;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletPresenter;
@@ -14,10 +15,13 @@ import com.worldventures.dreamtrips.wallet.ui.settings.firmware.install.WalletIn
 
 import javax.inject.Inject;
 
+import rx.Observable;
+
 public class WalletFirmwareChecksPresenter extends WalletPresenter<WalletFirmwareChecksPresenter.Screen, Parcelable> {
 
    @Inject WalletBluetoothService bluetoothService;
    @Inject FirmwareInteractor firmwareInteractor;
+   @Inject SmartCardInteractor smartCardInteractor;
    @Inject Navigator navigator;
 
    private final String firmwareFilePath;
@@ -39,12 +43,13 @@ public class WalletFirmwareChecksPresenter extends WalletPresenter<WalletFirmwar
             .compose(bindViewIoToMainComposer())
             .subscribe(command -> bind(command.getResult()));
 
-      firmwareInteractor
-            .preInstallationCheckPipe().send(new PreInstallationCheckCommand());
-
-      bluetoothService.observeEnablesState()
+      Observable.concat(
+            smartCardInteractor.smartCardModifierPipe()
+                  .observeSuccessWithReplay().map(command -> (Void) null),
+            bluetoothService.observeEnablesState().map(value -> (Void) null)
+      )
             .compose(bindView())
-            .subscribe(enable -> firmwareInteractor
+            .subscribe(aVoid -> firmwareInteractor
                   .preInstallationCheckPipe().send(new PreInstallationCheckCommand()));
    }
 

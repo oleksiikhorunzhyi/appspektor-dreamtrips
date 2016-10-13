@@ -5,6 +5,7 @@ import com.worldventures.dreamtrips.wallet.service.command.CardCountCommand;
 import com.worldventures.dreamtrips.wallet.service.command.CardListCommand;
 import com.worldventures.dreamtrips.wallet.service.command.CardStacksCommand;
 import com.worldventures.dreamtrips.wallet.service.command.ConnectSmartCardCommand;
+import com.worldventures.dreamtrips.wallet.service.command.FetchBatteryLevelCommand;
 import com.worldventures.dreamtrips.wallet.service.command.FetchDefaultCardCommand;
 import com.worldventures.dreamtrips.wallet.service.command.FetchDefaultCardIdCommand;
 import com.worldventures.dreamtrips.wallet.service.command.GetActiveSmartCardCommand;
@@ -22,7 +23,8 @@ import com.worldventures.dreamtrips.wallet.service.command.UpdateBankCardCommand
 import com.worldventures.dreamtrips.wallet.service.command.UpdateCardDetailsDataCommand;
 import com.worldventures.dreamtrips.wallet.service.command.UpdateSmartCardConnectionStatus;
 import com.worldventures.dreamtrips.wallet.service.command.http.CreateBankCardCommand;
-import com.worldventures.dreamtrips.wallet.service.command.reset.ResetSmartCardCommand;
+
+import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -37,6 +39,7 @@ import io.techery.janet.helper.ActionStateSubscriber;
 import io.techery.janet.smartcard.action.charger.StartCardRecordingAction;
 import io.techery.janet.smartcard.action.charger.StopCardRecordingAction;
 import io.techery.janet.smartcard.action.records.DeleteRecordAction;
+import io.techery.janet.smartcard.action.support.ConnectAction;
 import io.techery.janet.smartcard.action.support.DisconnectAction;
 import io.techery.janet.smartcard.event.CardChargedEvent;
 import io.techery.janet.smartcard.event.LockDeviceChangedEvent;
@@ -71,6 +74,7 @@ public final class SmartCardInteractor {
    private final ReadActionPipe<SmartCardModifier> smartCardModifierPipe;
    private final ActionPipe<FetchDefaultCardIdCommand> fetchDefaultCardIdCommandPipe;
    private final ActionPipe<FetchDefaultCardCommand> fetchDefaultCardCommandPipe;
+   private final WriteActionPipe<FetchBatteryLevelCommand> fetchBatteryLevelPipe;
    private final ActionPipe<SetDefaultCardOnDeviceCommand> setDefaultCardOnDeviceCommandPipe;
    private final ActionPipe<DeleteRecordAction> deleteCardPipe;
    private final ActionPipe<UpdateCardDetailsDataCommand> updateCardDetailsPipe;
@@ -106,6 +110,7 @@ public final class SmartCardInteractor {
       saveCardDetailsDataCommandPipe = janet.createPipe(SaveCardDetailsDataCommand.class, Schedulers.io());
       fetchDefaultCardIdCommandPipe = janet.createPipe(FetchDefaultCardIdCommand.class, Schedulers.io());
       fetchDefaultCardCommandPipe = janet.createPipe(FetchDefaultCardCommand.class, Schedulers.io());
+      fetchBatteryLevelPipe = janet.createPipe(FetchBatteryLevelCommand.class, Schedulers.io());
       setDefaultCardOnDeviceCommandPipe = janet.createPipe(SetDefaultCardOnDeviceCommand.class, Schedulers.io());
       deleteCardPipe = janet.createPipe(DeleteRecordAction.class, Schedulers.io());
       updateCardDetailsPipe = janet.createPipe(UpdateCardDetailsDataCommand.class, Schedulers.io());
@@ -124,6 +129,7 @@ public final class SmartCardInteractor {
 
       connect();
       connectToLockEvent();
+      observeBatteryLevel(janet);
    }
 
    public ActionPipe<CardListCommand> cardsListPipe() {
@@ -270,5 +276,18 @@ public final class SmartCardInteractor {
             .subscribe(lockDeviceChangedEvent -> {
                saveLockStatePipe.send(new SaveLockStateCommand(lockDeviceChangedEvent.locked));
             });
+   }
+
+   private void observeBatteryLevel(Janet janet) {
+      janet.createPipe(ConnectAction.class)
+            .observeSuccess()
+            .subscribe(action -> createBatteryObservable());
+   }
+
+   private void createBatteryObservable() {
+      Observable.interval(0, 15, TimeUnit.SECONDS) // 0 -- emit first event immediately, 15 -- repeat after
+            .takeUntil(disconnectPipe.observeSuccess())
+            .doOnNext(number -> fetchBatteryLevelPipe.send(new FetchBatteryLevelCommand()))
+            .subscribe();
    }
 }

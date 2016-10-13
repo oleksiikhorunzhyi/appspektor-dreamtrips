@@ -250,8 +250,18 @@ public class DtlMerchantsPresenterImpl extends DtlPresenterImpl<DtlMerchantsScre
    }
 
    private void showEmptyOrRedirect() {
-      getView().showEmpty(true);
-      if (!getView().isTabletLandscape() && getView().getPath().isAllowRedirect()) navigateToPath(new DtlLocationChangePath());
+      filterDataInteractor.filterDataPipe().observeSuccessWithReplay().first()
+            .map(FilterDataAction::getResult)
+            .map(FilterData::isDefault)
+            .map(this::isAllowRedirect)
+            .subscribe(isRedirect -> {
+               if(isRedirect) navigateToPath(new DtlLocationChangePath());
+               else getView().showEmpty(true);
+            });
+   }
+
+   private boolean isAllowRedirect(boolean isFilterDefault) {
+      return getView().getPath().isAllowRedirect() && !getView().isTabletLandscape() && isFilterDefault;
    }
 
    public void navigateToDetails(Merchant merchant, String id) {

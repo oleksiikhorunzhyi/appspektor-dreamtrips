@@ -16,6 +16,7 @@ import com.worldventures.dreamtrips.modules.dtl.service.action.NewRelicTrackable
 
 import io.techery.janet.ActionPipe;
 import io.techery.janet.ReadActionPipe;
+import io.techery.janet.helper.ActionStateSubscriber;
 import rx.Observable;
 import rx.schedulers.Schedulers;
 
@@ -23,24 +24,33 @@ public class MerchantsInteractor {
 
    private final DtlLocationInteractor dtlLocationInteractor;
    private final FilterDataInteractor filterDataInteractor;
+   private final ClearMemoryInteractor clearMemoryInteractor;
 
    private final ActionPipe<MerchantsAction> thinMerchantsPipe;
 
-   public MerchantsInteractor(SessionActionPipeCreator sessionActionPipeCreator,
-         DtlLocationInteractor dtlLocationInteractor, FilterDataInteractor filterDataInteractor) {
+   public MerchantsInteractor(SessionActionPipeCreator sessionActionPipeCreator, DtlLocationInteractor dtlLocationInteractor,
+         FilterDataInteractor filterDataInteractor, ClearMemoryInteractor clearMemoryInteractor) {
 
       this.dtlLocationInteractor = dtlLocationInteractor;
       this.filterDataInteractor = filterDataInteractor;
+      this.clearMemoryInteractor = clearMemoryInteractor;
 
       thinMerchantsPipe = sessionActionPipeCreator.createPipe(MerchantsAction.class, Schedulers.io());
 
       connectFilterData();
       connectNewRelicTracking();
       connectForLocationUpdates();
+      connectMemoryClear();
+   }
+
+   private void connectMemoryClear() {
+      dtlLocationInteractor.locationPipe().observe()
+            .subscribe(new ActionStateSubscriber<DtlLocationCommand>()
+                  .onStart(action -> clearMemoryInteractor.clearMerchantsMemoryCache()));
    }
 
    private void connectNewRelicTracking() {
-      thinMerchantsPipe.observeSuccessWithReplay()
+      thinMerchantsPipe.observeSuccess()
             .cast(NewRelicTrackableAction.class)
             .map(NewRelicTrackableAction::getMetricStart)
             .subscribe(startTime ->
@@ -48,7 +58,7 @@ public class MerchantsInteractor {
    }
 
    private void connectForLocationUpdates() {
-      thinMerchantsPipe.observeSuccessWithReplay()
+      thinMerchantsPipe.observeSuccess()
             .map(MerchantsAction::getResult)
             .filter(thinMerchants -> !thinMerchants.isEmpty())
             .map(thinMerchants -> thinMerchants.get(0))

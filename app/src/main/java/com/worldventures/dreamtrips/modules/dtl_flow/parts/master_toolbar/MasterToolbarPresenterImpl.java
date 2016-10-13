@@ -304,7 +304,6 @@ public class MasterToolbarPresenterImpl extends DtlPresenterImpl<MasterToolbarSc
    @Override
    public void locationSelected(DtlExternalLocation dtlExternalLocation) {
       locationInteractor.searchLocationPipe().clearReplays();
-      merchantInteractor.thinMerchantsHttpPipe().clearReplays();
       analyticsInteractor.dtlAnalyticsCommandPipe()
             .send(DtlAnalyticsCommand.create(LocationSearchEvent.create(dtlExternalLocation)));
       locationInteractor.changeSourceLocation(dtlExternalLocation);

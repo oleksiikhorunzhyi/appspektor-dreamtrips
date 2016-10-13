@@ -30,6 +30,7 @@ import com.worldventures.dreamtrips.modules.common.view.util.PhotoPickerDelegate
 import com.worldventures.dreamtrips.modules.dtl.location.LocationDelegate;
 import com.worldventures.dreamtrips.modules.dtl.location.LocationDelegateImpl;
 import com.worldventures.dreamtrips.modules.dtl.service.AttributesInteractor;
+import com.worldventures.dreamtrips.modules.dtl.service.ClearMemoryInteractor;
 import com.worldventures.dreamtrips.modules.dtl.service.DtlLocationInteractor;
 import com.worldventures.dreamtrips.modules.dtl.service.MerchantsInteractor;
 import com.worldventures.dreamtrips.modules.dtl.service.DtlTransactionInteractor;
@@ -85,15 +86,21 @@ public class ManagerModule {
 
    @Singleton
    @Provides
+   ClearMemoryInteractor provideClearMemoryInteractor(SessionActionPipeCreator sessionActionPipeCreator) {
+      return new ClearMemoryInteractor(sessionActionPipeCreator);
+   }
+
+   @Singleton
+   @Provides
    DtlLocationInteractor provideDtlLocationInteractor(SessionActionPipeCreator sessionActionPipeCreator) {
       return new DtlLocationInteractor(sessionActionPipeCreator);
    }
 
    @Singleton
    @Provides
-   MerchantsInteractor provideDtlMerchantInteractor(SessionActionPipeCreator sessionActionPipeCreator,
-         DtlLocationInteractor locationInteractor, FilterDataInteractor filterDataInteractor) {
-      return new MerchantsInteractor(sessionActionPipeCreator, locationInteractor, filterDataInteractor);
+   MerchantsInteractor provideMerchantsInteractor(SessionActionPipeCreator sessionActionPipeCreator,
+         DtlLocationInteractor locationInteractor, FilterDataInteractor filterDataInteractor, ClearMemoryInteractor clearMemoryInteractor) {
+      return new MerchantsInteractor(sessionActionPipeCreator, locationInteractor, filterDataInteractor, clearMemoryInteractor);
    }
 
    @Singleton
@@ -120,7 +127,7 @@ public class ManagerModule {
 
    @Singleton
    @Provides
-   AttributesInteractor provideDtlAttributesInteractor(SessionActionPipeCreator sessionActionPipeCreator,
+   AttributesInteractor provideAttributesInteractor(SessionActionPipeCreator sessionActionPipeCreator,
          FilterDataInteractor filterDataInteractor, DtlLocationInteractor dtlLocationInteractor) {
       return new AttributesInteractor(sessionActionPipeCreator, filterDataInteractor, dtlLocationInteractor);
    }

@@ -127,6 +127,6 @@ public class CacheActionStorageModule {
    @Singleton
    @Provides(type = Provides.Type.SET)
    ActionStorage provideMerchantsStorage() {
-      return new MerchantsStorage(new PaginatedMemoryStorage<>());
+      return new MerchantsStorage();
    }
 }

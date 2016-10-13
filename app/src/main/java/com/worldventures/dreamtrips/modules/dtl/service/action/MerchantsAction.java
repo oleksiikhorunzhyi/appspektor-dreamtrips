@@ -40,54 +40,32 @@ public class MerchantsAction extends CommandWithError<List<ThinMerchant>>
 
    @Inject @Named(JanetModule.JANET_API_LIB) Janet janet;
 
-   private final ThinMerchantsActionParams params;
    private final boolean isRefresh;
+
+   private final FilterData filterData;
+   private final DtlLocation location;
 
    private List<ThinMerchant> cache = new ArrayList<>();
 
    public static MerchantsAction create(FilterData filterData, DtlLocation dtlLocation) {
-      final ThinMerchantsActionParams params = buildParams(filterData, dtlLocation);
-      return new MerchantsAction(params);
+      return new MerchantsAction(filterData, dtlLocation);
    }
 
-   public MerchantsAction(ThinMerchantsActionParams params) {
-      this.params = params;
-      this.isRefresh = params.offset() == 0;
+   public MerchantsAction(FilterData filterData, DtlLocation dtlLocation) {
+      this.filterData = filterData;
+      this.location = dtlLocation;
+      this.isRefresh = HttpActionsCreator.calculateOffsetPagination(filterData) == 0;
    }
 
    @Override
    protected void run(CommandCallback<List<ThinMerchant>> callback) throws Throwable {
       callback.onProgress(0);
       janet.createPipe(ThinMerchantsHttpAction.class, Schedulers.io())
-            .createObservableResult(new ThinMerchantsHttpAction(params))
+            .createObservableResult(HttpActionsCreator.provideMerchantsAction(filterData, location))
             .map(ThinMerchantsHttpAction::merchants)
             .doOnNext(action -> clearCacheIfNeeded())
             .compose(ThinMerchantsTransformer.INSTANCE)
             .subscribe(callback::onSuccess, callback::onFail);
-   }
-
-   private void clearCacheIfNeeded() {
-      if(isRefresh()) cache = null;
-   }
-
-   private static ThinMerchantsActionParams buildParams(FilterData filterData, DtlLocation dtlLocation) {
-      final String coordinates = provideFormattedLocation(dtlLocation);
-      return ImmutableThinMerchantsActionParams.builder()
-            .radius(FilterHelper.provideDistanceByIndex(filterData))
-            .coordinates(coordinates)
-            .limit(filterData.offset())
-            .offset(filterData.page() * filterData.offset())
-            .search(filterData.searchQuery())
-            .build();
-   }
-
-   private static String provideFormattedLocation(DtlLocation location) {
-      final Location coordinates = location.getCoordinates();
-      return String.format(Locale.US, "%1$f,%2$f", coordinates.getLat(), coordinates.getLng());
-   }
-
-   public boolean isRefresh() {
-      return isRefresh;
    }
 
    @Override
@@ -105,13 +83,6 @@ public class MerchantsAction extends CommandWithError<List<ThinMerchant>>
       return new ArrayList<>(getResult());
    }
 
-   public List<ThinMerchant> merchants() {
-      List<ThinMerchant> merchants = new ArrayList<>();
-      if (cache != null) merchants.addAll(cache);
-      if (getResult() != null) merchants.addAll(getResult());
-      return merchants;
-   }
-
    @Override
    public void onRestore(ActionHolder holder, List<ThinMerchant> cache) {
       this.cache = new ArrayList<>(cache);
@@ -122,5 +93,20 @@ public class MerchantsAction extends CommandWithError<List<ThinMerchant>>
       CacheBundle cacheBundle = new CacheBundleImpl();
       cacheBundle.put(PaginatedStorage.BUNDLE_REFRESH, isRefresh);
       return ImmutableCacheOptions.builder().params(cacheBundle).build();
+   }
+
+   private void clearCacheIfNeeded() {
+      if(isRefresh()) cache = null;
+   }
+
+   public boolean isRefresh() {
+      return isRefresh;
+   }
+
+   public List<ThinMerchant> merchants() {
+      List<ThinMerchant> merchants = new ArrayList<>();
+      if (cache != null) merchants.addAll(cache);
+      if (getResult() != null) merchants.addAll(getResult());
+      return merchants;
    }
 }

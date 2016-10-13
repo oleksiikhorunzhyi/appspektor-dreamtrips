@@ -226,6 +226,7 @@ public class CreateEntityPresenter<V extends CreateEntityPresenter.View> extends
    }
 
    public void startUpload(PhotoCreationItem item) {
+      item.setId(item.getFileUri().hashCode());
       uploaderyInteractor.uploadImageActionPipe().send(new SimpleUploaderyCommand(item.getFileUri()));
    }
 

@@ -9,8 +9,19 @@ public class SingleSelectionManager extends SimpleSelectionManager {
    }
 
    @Override
+   protected void setSelectionImpl(int pos, boolean isSelection) {
+      selectableWrapperAdapter.setSelection(pos, isSelection);
+      selectableWrapperAdapter.notifyItemChanged(pos);
+   }
+
+   @Override
    protected void toggleSelectionImpl(int position) {
+      selectableWrapperAdapter.toggleSelection(position);
+      selectableWrapperAdapter.notifyItemChanged(position);
+   }
+
+   public void clearSelections() {
       selectableWrapperAdapter.clearSelections();
-      super.toggleSelectionImpl(position);
+      selectableWrapperAdapter.notifyDataSetChanged();
    }
 }

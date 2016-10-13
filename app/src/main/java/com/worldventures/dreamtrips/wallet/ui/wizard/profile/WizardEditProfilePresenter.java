@@ -20,8 +20,8 @@ import com.worldventures.dreamtrips.wallet.analytics.SetupUserAction;
 import com.worldventures.dreamtrips.wallet.analytics.WalletAnalyticsCommand;
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCard;
 import com.worldventures.dreamtrips.wallet.service.SmartCardAvatarInteractor;
-import com.worldventures.dreamtrips.wallet.service.SmartCardInteractor;
 import com.worldventures.dreamtrips.wallet.service.WizardInteractor;
+import com.worldventures.dreamtrips.wallet.service.command.ActivateSmartCardCommand;
 import com.worldventures.dreamtrips.wallet.service.command.CompressImageForSmartCardCommand;
 import com.worldventures.dreamtrips.wallet.service.command.LoadImageForSmartCardCommand;
 import com.worldventures.dreamtrips.wallet.service.command.SetupUserDataCommand;
@@ -32,8 +32,7 @@ import com.worldventures.dreamtrips.wallet.ui.common.base.screen.WalletScreen;
 import com.worldventures.dreamtrips.wallet.ui.common.helper.ErrorHandler;
 import com.worldventures.dreamtrips.wallet.ui.common.helper.OperationActionStateSubscriberWrapper;
 import com.worldventures.dreamtrips.wallet.ui.common.navigation.Navigator;
-import com.worldventures.dreamtrips.wallet.ui.wizard.pin.Action;
-import com.worldventures.dreamtrips.wallet.ui.wizard.pin.setup.WizardPinSetupPath;
+import com.worldventures.dreamtrips.wallet.ui.dashboard.list.CardListPath;
 import com.worldventures.dreamtrips.wallet.util.FormatException;
 
 import java.io.File;
@@ -80,6 +79,9 @@ public class WizardEditProfilePresenter extends WalletPresenter<WizardEditProfil
       subscribeSetupUserCommand();
       fetchAndStoreDefaultAddress();
 
+      // TODO: 10/13/16 for remove pin setup screen
+      observeActivation();
+
       User userProfile = appSessionHolder.get().get().getUser();
       view.setUserFullName(userProfile.getFullName());
       String defaultUserAvatar = userProfile.getAvatar().getThumb();
@@ -117,8 +119,25 @@ public class WizardEditProfilePresenter extends WalletPresenter<WizardEditProfil
                   .wrap());
    }
 
+   private void observeActivation() {
+      wizardInteractor.activateSmartCardPipe()
+            .observeWithReplay()
+            .compose(new ActionPipeCacheWiper<>(wizardInteractor.activateSmartCardPipe()))
+            .compose(bindViewIoToMainComposer())
+            .subscribe(OperationActionStateSubscriberWrapper.<ActivateSmartCardCommand>forView(getView().provideOperationDelegate())
+                  .onSuccess(command -> navigateToDashboardScreen())
+                  .onFail(getContext().getString(R.string.error_something_went_wrong))
+                  .wrap());
+   }
+
+   private void navigateToDashboardScreen() {
+      navigator.single(new CardListPath());
+   }
+
    private void onUserSetup(SmartCard smartCard) {
-      navigator.go(new WizardPinSetupPath(smartCard, Action.SETUP));
+      // TODO: 10/13/16 for remove pis setup screen
+      wizardInteractor.activateSmartCardPipe().send(new ActivateSmartCardCommand(smartCard));
+      //      navigator.go(new WizardPinSetupPath(smartCard, Action.SETUP));
       analyticsInteractor.walletAnalyticsCommandPipe()
             .send(new WalletAnalyticsCommand(new PhotoWasSetAction(smartCard.cardName(), smartCardId)));
    }

@@ -75,6 +75,7 @@
                      android:padding="@dimen/spacing_normal"
                      android:text="@string/wallet_card_settings_lock"
                      android:textAppearance="?android:attr/textAppearanceMedium"
+                     android:visibility="gone"
 
                      />
 
@@ -86,6 +87,7 @@
                android:layout_width="match_parent"
                android:layout_height="48dp"
                android:gravity="center"
+               android:visibility="gone"
                />
 
          <!--BEGIN firmware settings section-->

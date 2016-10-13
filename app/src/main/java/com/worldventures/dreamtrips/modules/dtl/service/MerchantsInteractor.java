@@ -9,6 +9,7 @@ import com.worldventures.dreamtrips.modules.dtl.model.location.ImmutableDtlManua
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.ThinMerchant;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.filter.FilterData;
 import com.worldventures.dreamtrips.modules.dtl.service.action.DtlLocationCommand;
+import com.worldventures.dreamtrips.modules.dtl.service.action.DtlLocationFacadeCommand;
 import com.worldventures.dreamtrips.modules.dtl.service.action.FilterDataAction;
 import com.worldventures.dreamtrips.modules.dtl.service.action.MerchantsAction;
 import com.worldventures.dreamtrips.modules.dtl.service.action.NewRelicTrackableAction;
@@ -52,11 +53,15 @@ public class MerchantsInteractor {
             .filter(thinMerchants -> !thinMerchants.isEmpty())
             .map(thinMerchants -> thinMerchants.get(0))
             .subscribe(thinMerchant -> {
-               provideLastLocationObservable()
+               dtlLocationInteractor.locationSourcePipe().observeSuccessWithReplay()
+                     .take(1)
+                     .filter(DtlLocationCommand::isResultDefined)
+                     .map(DtlLocationCommand::getResult)
                      .filter(dtlLocation -> dtlLocation.getLocationSourceType() == LocationSourceType.FROM_MAP ||
                            dtlLocation.getLocationSourceType() == LocationSourceType.NEAR_ME)
                      .subscribe(dtlLocation ->
-                           dtlLocationInteractor.change(buildManualLocation(thinMerchant, dtlLocation)));
+                           dtlLocationInteractor.changeFacadeLocation(buildManualLocation(thinMerchant, dtlLocation))
+                     );
             });
    }
 
@@ -72,7 +77,7 @@ public class MerchantsInteractor {
    private void requestMerchants() {
       Observable.combineLatest(
             provideFilterDataObservable(),
-            provideLastLocationObservable(),
+            provideLastFacadeLocationObservable(),
             MerchantsAction::create
       )
             .take(1)
@@ -85,11 +90,11 @@ public class MerchantsInteractor {
             .map(FilterDataAction::getResult);
    }
 
-   private Observable<DtlLocation> provideLastLocationObservable() {
-      return dtlLocationInteractor.locationPipe().observeSuccessWithReplay()
+   private Observable<DtlLocation> provideLastFacadeLocationObservable() {
+      return dtlLocationInteractor.locationFacadePipe().observeSuccessWithReplay()
             .take(1)
-            .filter(DtlLocationCommand::isResultDefined)
-            .map(DtlLocationCommand::getResult);
+            .filter(DtlLocationFacadeCommand::isResultDefined)
+            .map(DtlLocationFacadeCommand::getResult);
    }
 
    private static DtlLocation buildManualLocation(ThinMerchant thinMerchant, DtlLocation dtlLocation) {

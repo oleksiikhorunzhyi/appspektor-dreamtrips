@@ -7,7 +7,7 @@ import com.worldventures.dreamtrips.modules.dtl.model.location.DtlManualLocation
 import com.worldventures.dreamtrips.modules.dtl.model.location.ImmutableDtlManualLocation;
 import com.worldventures.dreamtrips.modules.dtl.service.DtlLocationInteractor;
 import com.worldventures.dreamtrips.modules.dtl.service.MerchantsInteractor;
-import com.worldventures.dreamtrips.modules.dtl.service.action.DtlLocationCommand;
+import com.worldventures.dreamtrips.modules.dtl.service.action.DtlLocationFacadeCommand;
 import com.worldventures.dreamtrips.modules.dtl.service.action.MerchantsAction;
 
 import javax.inject.Inject;
@@ -34,9 +34,9 @@ public class DtlAnalyticsCommand extends Command<Void> implements InjectableActi
 
    @Override
    protected void run(CommandCallback<Void> callback) throws Throwable {
-      dtlLocationInteractor.locationPipe()
+      dtlLocationInteractor.locationFacadePipe()
             .observeSuccessWithReplay()
-            .map(DtlLocationCommand::getResult)
+            .map(DtlLocationFacadeCommand::getResult)
             .map(dtlLocation -> {
                if (dtlLocation.getLocationSourceType() == LocationSourceType.EXTERNAL) {
                   action.setAnalyticsLocation(dtlLocation);

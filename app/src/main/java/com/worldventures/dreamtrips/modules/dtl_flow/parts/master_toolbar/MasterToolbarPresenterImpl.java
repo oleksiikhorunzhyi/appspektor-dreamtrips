@@ -16,9 +16,9 @@ import com.worldventures.dreamtrips.modules.dtl.model.location.DtlLocation;
 import com.worldventures.dreamtrips.modules.dtl.model.location.ImmutableDtlManualLocation;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.filter.FilterData;
 import com.worldventures.dreamtrips.modules.dtl.service.DtlLocationInteractor;
-import com.worldventures.dreamtrips.modules.dtl.service.MerchantsInteractor;
 import com.worldventures.dreamtrips.modules.dtl.service.FilterDataInteractor;
-import com.worldventures.dreamtrips.modules.dtl.service.action.DtlLocationCommand;
+import com.worldventures.dreamtrips.modules.dtl.service.MerchantsInteractor;
+import com.worldventures.dreamtrips.modules.dtl.service.action.DtlLocationFacadeCommand;
 import com.worldventures.dreamtrips.modules.dtl.service.action.DtlNearbyLocationAction;
 import com.worldventures.dreamtrips.modules.dtl.service.action.DtlSearchLocationAction;
 import com.worldventures.dreamtrips.modules.dtl.service.action.FilterDataAction;
@@ -149,10 +149,10 @@ public class MasterToolbarPresenterImpl extends DtlPresenterImpl<MasterToolbarSc
    }
 
    private void updateToolbarTitles() {
-      locationInteractor.locationPipe()
+      locationInteractor.locationFacadePipe()
             .observeSuccessWithReplay()
-            .first()
-            .map(DtlLocationCommand::getResult)
+            .take(1)
+            .map(DtlLocationFacadeCommand::getResult)
             .compose(bindViewIoToMainComposer())
             .subscribe(getView()::updateToolbarLocationTitle);
       filterDataInteractor.filterDataPipe()
@@ -165,10 +165,10 @@ public class MasterToolbarPresenterImpl extends DtlPresenterImpl<MasterToolbarSc
    }
 
    private void bindToolbarLocationCaptionUpdates() {
-      locationInteractor.locationPipe()
+      locationInteractor.locationFacadePipe()
             .observeSuccess()
             .filter(dtlLocationCommand -> !getView().isSearchPopupShowing())
-            .map(DtlLocationCommand::getResult)
+            .map(DtlLocationFacadeCommand::getResult)
             .compose(bindViewIoToMainComposer())
             .subscribe(getView()::updateToolbarLocationTitle);
    }
@@ -194,7 +194,7 @@ public class MasterToolbarPresenterImpl extends DtlPresenterImpl<MasterToolbarSc
                   .longName(context.getString(R.string.dtl_near_me_caption))
                   .coordinates(new com.worldventures.dreamtrips.modules.trips.model.Location(location))
                   .build();
-            locationInteractor.change(dtlLocation);
+            locationInteractor.changeSourceLocation(dtlLocation);
             break;
       }
    }
@@ -213,11 +213,11 @@ public class MasterToolbarPresenterImpl extends DtlPresenterImpl<MasterToolbarSc
    }
 
    private void tryHideNearMeButton() {
-      locationInteractor.locationPipe()
+      locationInteractor.locationSourcePipe()
             .observeSuccess()
             .compose(bindViewIoToMainComposer())
-            .distinctUntilChanged(Command::getResult)
             .map(Command::getResult)
+            .distinctUntilChanged()
             .map(DtlLocation::getLocationSourceType)
             .map(mode -> mode != LocationSourceType.NEAR_ME)
             .subscribe(showAutodetectButton::set);
@@ -307,6 +307,6 @@ public class MasterToolbarPresenterImpl extends DtlPresenterImpl<MasterToolbarSc
       merchantInteractor.thinMerchantsHttpPipe().clearReplays();
       analyticsInteractor.dtlAnalyticsCommandPipe()
             .send(DtlAnalyticsCommand.create(LocationSearchEvent.create(dtlExternalLocation)));
-      locationInteractor.change(dtlExternalLocation);
+      locationInteractor.changeSourceLocation(dtlExternalLocation);
    }
 }

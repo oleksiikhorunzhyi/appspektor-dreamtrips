@@ -16,10 +16,11 @@ import com.worldventures.dreamtrips.modules.dtl.model.location.DtlLocation;
 import com.worldventures.dreamtrips.modules.dtl.model.location.ImmutableDtlManualLocation;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.filter.FilterData;
 import com.worldventures.dreamtrips.modules.dtl.service.DtlLocationInteractor;
-import com.worldventures.dreamtrips.modules.dtl.service.MerchantsInteractor;
 import com.worldventures.dreamtrips.modules.dtl.service.DtlTransactionInteractor;
 import com.worldventures.dreamtrips.modules.dtl.service.FilterDataInteractor;
+import com.worldventures.dreamtrips.modules.dtl.service.MerchantsInteractor;
 import com.worldventures.dreamtrips.modules.dtl.service.action.DtlLocationCommand;
+import com.worldventures.dreamtrips.modules.dtl.service.action.DtlLocationFacadeCommand;
 import com.worldventures.dreamtrips.modules.dtl.service.action.DtlNearbyLocationAction;
 import com.worldventures.dreamtrips.modules.dtl.service.action.DtlSearchLocationAction;
 import com.worldventures.dreamtrips.modules.dtl.service.action.FilterDataAction;
@@ -114,9 +115,9 @@ public class DtlLocationChangePresenterImpl extends DtlPresenterImpl<DtlLocation
    }
 
    private Observable<DtlLocation> connectDtlLocationUpdate() {
-      Observable<DtlLocation> locationObservable = locationInteractor.locationPipe()
+      Observable<DtlLocation> locationObservable = locationInteractor.locationFacadePipe()
             .observeSuccessWithReplay()
-            .map(DtlLocationCommand::getResult)
+            .map(DtlLocationFacadeCommand::getResult)
             .compose(bindViewIoToMainComposer());
       Observable.combineLatest(locationObservable, filterDataInteractor.filterDataPipe()
             .observeSuccessWithReplay()
@@ -149,7 +150,7 @@ public class DtlLocationChangePresenterImpl extends DtlPresenterImpl<DtlLocation
                   .longName(context.getString(R.string.dtl_near_me_caption))
                   .coordinates(new com.worldventures.dreamtrips.modules.trips.model.Location(location))
                   .build();
-            locationInteractor.change(dtlLocation);
+            locationInteractor.changeSourceLocation(dtlLocation);
             navigateToPath(DtlMerchantsPath.withAllowedRedirection());
             break;
          case SEARCH:
@@ -171,9 +172,12 @@ public class DtlLocationChangePresenterImpl extends DtlPresenterImpl<DtlLocation
    }
 
    private void tryHideNearMeButton() {
-      locationInteractor.locationPipe()
+      locationInteractor.locationSourcePipe()
             .observeSuccessWithReplay()
-            .filter(command -> command.getResult().getLocationSourceType() == LocationSourceType.NEAR_ME)
+            .take(1)
+            .map(DtlLocationCommand::getResult)
+            .map(dtlLocation -> dtlLocation.getLocationSourceType())
+            .filter(locationSourceType -> locationSourceType == LocationSourceType.NEAR_ME)
             .compose(bindViewIoToMainComposer())
             .subscribe(command -> getView().hideNearMeButton());
    }
@@ -277,7 +281,7 @@ public class DtlLocationChangePresenterImpl extends DtlPresenterImpl<DtlLocation
       locationInteractor.searchLocationPipe().clearReplays();
       merchantInteractor.thinMerchantsHttpPipe().clearReplays();
       analyticsInteractor.dtlAnalyticsCommandPipe().send(DtlAnalyticsCommand.create(LocationSearchEvent.create(dtlExternalLocation)));
-      locationInteractor.change(dtlExternalLocation);
+      locationInteractor.changeSourceLocation(dtlExternalLocation);
       navigateToPath(DtlMerchantsPath.getDefault());
    }
 

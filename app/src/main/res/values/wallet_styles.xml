@@ -70,11 +70,6 @@
    </style>
 
    <!--settings-->
-   <style name="SettingsSectionDividerStyle">
-      <item name="android:background">#226D6D72</item>
-      <item name="android:gravity">center</item>
-   </style>
-
    <style name="SettingsItemDividerStyle">
       <item name="android:layout_width">match_parent</item>
       <item name="android:layout_height">0.5dp</item>

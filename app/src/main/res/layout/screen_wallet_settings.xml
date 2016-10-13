@@ -18,18 +18,20 @@
    <android.support.v4.widget.NestedScrollView
          android:layout_width="match_parent"
          android:layout_height="match_parent"
+         android:background="#226D6D72"
          >
 
       <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:background="@null"
             android:orientation="vertical"
             >
 
          <TextView
-               style="@style/SettingsSectionDividerStyle"
                android:layout_width="match_parent"
                android:layout_height="wrap_content"
+               android:gravity="center"
                android:paddingBottom="@dimen/spacing_normal"
                android:paddingEnd="36dp"
                android:paddingStart="36dp"
@@ -57,10 +59,14 @@
                      android:padding="@dimen/spacing_normal"
                      android:text="@string/wallet_card_settings_stealth_mode"
                      android:textAppearance="?android:attr/textAppearanceMedium"
+                     android:visibility="gone"
                      tools:checked="true"
                      />
 
-               <View style="@style/SettingsItemDividerStyle" />
+               <View
+                     style="@style/SettingsItemDividerStyle"
+                     android:visibility="gone"
+                     />
 
                <android.support.v7.widget.SwitchCompat
                      android:id="@+id/lock_switcher"
@@ -77,9 +83,9 @@
          <!--END hardware settings section-->
 
          <View
-               style="@style/SettingsSectionDividerStyle"
                android:layout_width="match_parent"
                android:layout_height="48dp"
+               android:gravity="center"
                />
 
          <!--BEGIN firmware settings section-->
@@ -93,6 +99,7 @@
                   android:layout_width="match_parent"
                   android:layout_height="wrap_content"
                   android:animateLayoutChanges="true"
+                  android:background="@null"
                   android:padding="@dimen/spacing_normal"
                   >
 
@@ -137,9 +144,9 @@
          <!--BEGIN test settings section-->
 
          <View
-               style="@style/SettingsSectionDividerStyle"
                android:layout_width="match_parent"
                android:layout_height="48dp"
+               android:gravity="center"
                />
 
          <!--BEGIN security settings section-->
@@ -151,6 +158,7 @@
             <LinearLayout
                   android:layout_width="match_parent"
                   android:layout_height="wrap_content"
+                  android:background="@null"
                   android:orientation="vertical"
                   >
 
@@ -170,6 +178,7 @@
                      android:layout_width="match_parent"
                      android:layout_height="wrap_content"
                      android:padding="@dimen/spacing_normal"
+                     android:visibility="gone"
                      >
 
                   <TextView
@@ -193,13 +202,18 @@
                         />
                </RelativeLayout>
 
-               <View style="@style/SettingsItemDividerStyle" />
+               <View
+                     style="@style/SettingsItemDividerStyle"
+                     android:visibility="gone"
+                     />
 
                <RelativeLayout
                      android:id="@+id/item_auto_delete_cards"
                      android:layout_width="match_parent"
                      android:layout_height="wrap_content"
+                     android:background="@null"
                      android:padding="@dimen/spacing_normal"
+                     android:visibility="gone"
                      >
 
                   <TextView
@@ -243,13 +257,15 @@
                android:id="@+id/settings_section"
                android:layout_width="match_parent"
                android:layout_height="wrap_content"
+               android:background="@null"
                android:orientation="vertical"
                >
 
             <TextView
-                  style="@style/SettingsSectionDividerStyle"
+                  android:id="@+id/textView3"
                   android:layout_width="match_parent"
                   android:layout_height="wrap_content"
+                  android:gravity="center"
                   android:paddingBottom="@dimen/spacing_normal"
                   android:paddingEnd="@dimen/spacing_normal"
                   android:paddingStart="@dimen/spacing_normal"
@@ -267,6 +283,7 @@
                <LinearLayout
                      android:layout_width="match_parent"
                      android:layout_height="wrap_content"
+                     android:background="@null"
                      android:orientation="vertical"
                      >
 

@@ -7,7 +7,7 @@
    <color name="wallet_card_details_address_text_color">#666666</color>
    <color name="wallet_card_details_delete_card_button_color">#ea283b</color> <!--does not use like background, should be fixed -->
 
-   <color name="wallet_card_list_empty_list_label_color">#333333</color>
+   <color name="wallet_card_list_empty_list_label_color">#8f8f8f</color>
    <color name="wallet_add_card_button_color">#81c435</color>
 
    <color name="wallet_charging_swiping_screen_text_color">#222222</color>

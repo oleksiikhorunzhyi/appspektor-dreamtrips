@@ -64,6 +64,7 @@ public class CardListScreen extends WalletLinearLayout<CardListPresenter.Screen,
    @Override
    protected void onPostAttachToWindowView() {
       toolbar.setNavigationOnClickListener(it -> presenter.navigationClick());
+      addCardButton.setVisibility(GONE);
 
       setupCardStackList();
    }
@@ -77,7 +78,8 @@ public class CardListScreen extends WalletLinearLayout<CardListPresenter.Screen,
    public void showRecordsInfo(List<CardStackViewModel> result) {
       adapter.clear();
       adapter.addItems(result);
-      emptyCardListView.setVisibility(adapter.getCount() <= 1 ? VISIBLE : GONE);
+      //TODO: disable by task SMARTCARD-920
+      //emptyCardListView.setVisibility(adapter.getCount() <= 1 ? VISIBLE : GONE);
    }
 
    @Override

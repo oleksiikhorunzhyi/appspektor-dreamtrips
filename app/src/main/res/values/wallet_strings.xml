@@ -94,6 +94,7 @@
    <string name="dashboard_default_card_stack_title">Default</string>
    <string name="wallet_wizard_default_card_label">DEFAULT</string>
    <string name="wallet_wizard_empty_card_list_label">Add credit and debit cards\nto your flye\u2122 SmartCard</string>
+   <string name="wallet_wizard_empty_card_list_add_card_coming_soon">Add payment cards – coming soon</string>
    <string name="wallet_wizard_full_card_list_error_message">You’ve reached the 10 card maximum. Please delete one or more cards to proceed.</string>
    <string name="wallet_wizard_no_internet_connection_title">@string/offline_warning_dialog_title</string>
    <string name="wallet_wizard_no_connection_to_card_title">flye card not linked</string>

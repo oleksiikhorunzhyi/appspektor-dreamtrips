@@ -212,6 +212,11 @@ public class DtlMerchantsPresenterImpl extends DtlPresenterImpl<DtlMerchantsScre
    }
 
    @Override
+   public void onRetryDialogDismiss() {
+      presentationInteractor.toggleSelectionPipe().send(ToggleMerchantSelectionAction.clear());
+   }
+
+   @Override
    public void locationChangeRequested() {
       navigateToPath(new DtlLocationChangePath());
    }

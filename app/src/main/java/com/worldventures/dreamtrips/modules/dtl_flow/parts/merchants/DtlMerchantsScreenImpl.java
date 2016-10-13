@@ -1,6 +1,7 @@
 package com.worldventures.dreamtrips.modules.dtl_flow.parts.merchants;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.os.Parcelable;
 import android.support.annotation.Nullable;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -300,6 +301,7 @@ public class DtlMerchantsScreenImpl extends DtlLayout<DtlMerchantsScreen, DtlMer
          listener.dismissWithAnimation();
          getPresenter().onRetryMerchantClick();
       });
+      errorDialog.setOnDismissListener(dialog -> getPresenter().onRetryDialogDismiss());
       errorDialog.show();
    }
 

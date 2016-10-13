@@ -77,6 +77,12 @@ public class SendFeedbackFragment extends BaseFragment<SendFeedbackPresenter> im
       initAttachments();
    }
 
+   @Override
+   public void onDestroyView() {
+      super.onDestroyView();
+      photoPickerDelegate.setPhotoPickerListener(null);
+   }
+
    private void setupSpinner(List<FeedbackType> apiFeedbackTypes, boolean isSpinnerEnabled) {
       ArrayList<FeedbackType> feedbackTypes = new ArrayList<>(apiFeedbackTypes);
       feedbackTypes.add(0, new FeedbackType(-1, getContext().getString(R.string.feedback_select_category)));

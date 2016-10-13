@@ -428,12 +428,12 @@ public class SnappyRepositoryImpl implements SnappyRepository {
 
    @Override
    public void saveWalletDeviceStorage(SimpleDeviceStorage deviceStorage) {
-      putEncrypted(WALLET_DEVICE_STORAGE, deviceStorage);
+      act(db -> db.put(WALLET_DEVICE_STORAGE, deviceStorage));
    }
 
    @Override
    public SimpleDeviceStorage getWalletDeviceStorage() {
-      return getEncrypted(WALLET_DEVICE_STORAGE, SimpleDeviceStorage.class);
+      return actWithResult(db -> db.get(WALLET_DEVICE_STORAGE, SimpleDeviceStorage.class)).orNull();
    }
 
    ///////////////////////////////////////////////////////////////////////////

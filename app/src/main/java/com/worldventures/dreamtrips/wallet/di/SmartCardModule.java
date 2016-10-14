@@ -2,46 +2,42 @@ package com.worldventures.dreamtrips.wallet.di;
 
 import android.content.Context;
 
+import com.techery.spares.module.qualifier.ForApplication;
+import com.worldventures.dreamtrips.BuildConfig;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.wallet.domain.storage.PersistentDeviceStorage;
 
-import javax.inject.Named;
+import javax.inject.Provider;
 import javax.inject.Singleton;
 
 import dagger.Module;
 import dagger.Provides;
-import io.techery.janet.smartcard.DefaultActionReceiverRoster;
-import io.techery.janet.smartcard.DefaultActionSenderRoster;
 import io.techery.janet.smartcard.client.NxtSmartCardClient;
 import io.techery.janet.smartcard.client.SmartCardClient;
-import io.techery.janet.smartcard.event.receiver.ActionReceiverRoster;
 import io.techery.janet.smartcard.mock.client.MockSmartCardClient;
-import io.techery.janet.smartcard.sender.ActionSenderRoster;
 
-@Module(includes = {
-      WalletServiceModule.class
-}, complete = false, library = true)
+@Module(
+      includes = {
+            WalletServiceModule.class
+      },
+      complete = false, library = true
+)
 public class SmartCardModule {
-   @Singleton
+
    @Provides
-   SmartCardClient provideSmartCardClient(Context context) {
+   NxtSmartCardClient provideNxtSmartCardClient(@ForApplication Context context) {
       return new NxtSmartCardClient(context);
    }
 
-   @Singleton
    @Provides
-   @Named("MockSmartCardClient")
-   SmartCardClient provideMockSmartCardClient(SnappyRepository db) {
+   MockSmartCardClient provideMockSmartCardClient(SnappyRepository db) {
       return new MockSmartCardClient(() -> PersistentDeviceStorage.load(db));
    }
 
    @Singleton
-   ActionSenderRoster provideActionSenderRoster() {
-      return new DefaultActionSenderRoster();
+   @Provides
+   SmartCardClient provideSmartCardClient(Provider<NxtSmartCardClient> nxtProvider, Provider<MockSmartCardClient> mockProvider) {
+      return BuildConfig.SMART_CARD_SDK_CLIENT.equals("nxtid") ? nxtProvider.get() : mockProvider.get();
    }
 
-   @Singleton
-   ActionReceiverRoster provideActionReceiverRoster() {
-      return new DefaultActionReceiverRoster();
-   }
 }

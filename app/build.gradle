@@ -29,7 +29,7 @@ configurations.all {
 
 android {
    compileSdkVersion 24
-   buildToolsVersion "24.0.2"
+   buildToolsVersion "24.0.3"
 
    // App version
    def versionMajor = 1
@@ -47,8 +47,10 @@ android {
    String MESSENGER_CODE = "messenger"
    String SOCIAL_CODE = "social"
    String SMARTCARD_CODE = "smartcard"
+   String SMARTCARD_CODE_MOCK = "smartcardmock"
+   String SMARTCARD_CODE_NXTID = "smartcardnxtid"
    String STABLE_CODE = "stable"
-   String[] STREAM_CODES = [DTL_CODE, MESSENGER_CODE, SOCIAL_CODE, SMARTCARD_CODE, STABLE_CODE]
+   String[] STREAM_CODES = [DTL_CODE, MESSENGER_CODE, SOCIAL_CODE, SMARTCARD_CODE_MOCK, SMARTCARD_CODE_NXTID, STABLE_CODE]
    //
    String STAGE_CODE = "stage"
    String PREPROD_CODE = "preprod"
@@ -67,6 +69,7 @@ android {
          'MESSENGER_API_URL': '"dtmsgapp-dev.worldventures.biz"',
          'NEWRELIC_API_KEY' : '"AA02bc55e3bfb4886360f8be57d75b526bea2b1bcf"',
          'UPLOADERY_API_URL' : '"http://techery-dt-staging-uploadery.techery.io"',
+         'SMART_CARD_SDK_CLIENT' : '"nxtid"'
    ]
    def CONFIG_MAP_EXTERNAL = [
          'NEWRELIC_API_KEY': '"AAd06d4d4d218e74f8d48a7e0bf8d7de4623cb1662"',
@@ -76,10 +79,6 @@ android {
          'S3Api'            : '"https://s3-us-west-2.amazonaws.com/techery-worldventures/config/preprod"',
          'MESSENGER_API_URL': '"dtmsgapp-qa.worldventures.biz"',
          'UPLOADERY_API_URL' : '"http://techery-dt-preprod-uploadery.techery.io"',
-   ]
-   def CONFIG_MAP_DTL = [
-         'DreamTripsApi': '"http://techery--dt--dtl-techery-io-b8ctgyaku6eu.runscope.net/"',
-         'UPLOADERY_API_URL' : '"http://techery-dt-dtl-uploadery.techery.io"',
    ]
    def CONFIG_MAP_PERF = [
          'DreamTripsApi'    : '"http://dtapp-perf.worldventures.biz"',
@@ -93,13 +92,25 @@ android {
          'NEWRELIC_API_KEY' : '"AAb8d55ede8fd2f0aeaaf66b18b8b53af90e48b371"',
          'UPLOADERY_API_URL': '"http://dtappuploads.wvholdings.com"',
    ]
+   def CONFIG_MAP_DTL = [
+         'DreamTripsApi': '"http://techery--dt--dtl-techery-io-b8ctgyaku6eu.runscope.net/"',
+         'UPLOADERY_API_URL' : '"http://techery-dt-dtl-uploadery.techery.io"',
+   ]
+   def CONFIG_MAP_SMARTCARD_MOCK = [
+         'SMART_CARD_SDK_CLIENT' : '"mock"'
+   ]
+   def CONFIG_MAP_SMARTCARD_NXTID = [
+         'SMART_CARD_SDK_CLIENT' : '"nxtid"'
+   ]
    //
    def CONFIG_MAPS = [
          "external": CONFIG_MAP_EXTERNAL,
-         "dtl"     : CONFIG_MAP_DTL,
          "preprod" : CONFIG_MAP_PREPROD,
          "perf"    : CONFIG_MAP_PERF,
          "prod"    : CONFIG_MAP_PROD,
+         "dtl"     : CONFIG_MAP_DTL,
+         "smartcardmock"   : CONFIG_MAP_SMARTCARD_MOCK,
+         "smartcardnxtid"  : CONFIG_MAP_SMARTCARD_NXTID,
    ]
 
    defaultConfig {
@@ -185,7 +196,11 @@ android {
          dimension "stream"
          applicationIdSuffix = SOCIAL_CODE
       }
-      smartcard {
+      smartcardmock {
+         dimension "stream"
+         applicationIdSuffix = SMARTCARD_CODE
+      }
+      smartcardnxtid {
          dimension "stream"
          applicationIdSuffix = SMARTCARD_CODE
       }

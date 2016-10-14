@@ -178,7 +178,7 @@ public class JanetModule {
    @Singleton
    @Provides(type = Provides.Type.SET)
    @Named(JANET_WALLET)
-   ActionService provideSmartCardService(@Named("MockSmartCardClient") SmartCardClient client) {
+   ActionService provideSmartCardService(SmartCardClient client) {
       return SmartCardActionService.createDefault(client);
    }
 

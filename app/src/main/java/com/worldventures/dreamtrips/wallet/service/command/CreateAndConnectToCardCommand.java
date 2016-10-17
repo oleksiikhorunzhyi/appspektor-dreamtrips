@@ -20,7 +20,7 @@ import io.techery.janet.command.annotations.CommandAction;
 import rx.Observable;
 
 @CommandAction
-public class CreateAndConnectToCardCommand extends Command<Void> implements InjectableAction, CachedAction<SmartCard> {
+public class CreateAndConnectToCardCommand extends Command<SmartCard> implements InjectableAction, CachedAction<SmartCard> {
 
    @Inject @Named(JanetModule.JANET_WALLET) Janet janet;
    @Inject SmartCardInteractor smartCardInteractor;
@@ -38,12 +38,12 @@ public class CreateAndConnectToCardCommand extends Command<Void> implements Inje
    }
 
    @Override
-   protected void run(CommandCallback<Void> callback) throws Throwable {
+   protected void run(CommandCallback<SmartCard> callback) throws Throwable {
       Observable.just(createSmartCard())
             .flatMap(smartCard -> smartCardInteractor.connectActionPipe()
                   .createObservableResult(new ConnectSmartCardCommand(smartCard)))
             .doOnNext(command -> this.smartCard = command.getResult())
-            .subscribe(connectCommand -> callback.onSuccess(null), callback::onFail);
+            .subscribe(connectCommand -> callback.onSuccess(smartCard), callback::onFail);
    }
 
    private SmartCard createSmartCard() {

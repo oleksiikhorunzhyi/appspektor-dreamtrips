@@ -7,6 +7,7 @@ import com.techery.spares.module.Injector;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.janet.composer.ActionPipeCacheWiper;
 import com.worldventures.dreamtrips.core.navigation.BackStackDelegate;
+import com.worldventures.dreamtrips.wallet.domain.entity.SmartCard;
 import com.worldventures.dreamtrips.wallet.service.WizardInteractor;
 import com.worldventures.dreamtrips.wallet.service.command.CreateAndConnectToCardCommand;
 import com.worldventures.dreamtrips.wallet.service.command.http.AssociateCardUserCommand;
@@ -62,9 +63,9 @@ public class ConnectSmartCardPresenter extends WalletPresenter<ConnectSmartCardP
             .compose(bindViewIoToMainComposer())
             .compose(new ActionPipeCacheWiper<>(wizardInteractor.createAndConnectActionPipe()))
             .subscribe(OperationActionStateSubscriberWrapper.<CreateAndConnectToCardCommand>forView(getView().provideOperationDelegate())
-                  .onSuccess(command -> smartCardCreated(command.getSmartCardId()))
+                  .onSuccess(command -> smartCardCreated(command.getResult()))
                   .onFail(ErrorHandler.create(getContext(), command -> {
-                     navigator.goBack();
+                     getView().showPairingErrorDialog();
                      Timber.e("Could not connect to device");
                   }))
                   .wrap());
@@ -84,11 +85,24 @@ public class ConnectSmartCardPresenter extends WalletPresenter<ConnectSmartCardP
       wizardInteractor.associateCardUserCommandPipe().send(new AssociateCardUserCommand(barcode));
    }
 
-   private void smartCardCreated(String smartCardId) {
+   private void smartCardCreated(SmartCard smartCard) {
+      if (smartCard.connectionStatus().isConnected()) {
+         smartCardConnected(smartCard.smartCardId());
+      } else {
+         getView().showPairingErrorDialog();
+      }
+   }
+
+   private void smartCardConnected(String smartCardId) {
       navigator.withoutLast(new WizardWelcomePath(smartCardId));
    }
 
-   interface Screen extends WalletScreen {
+   public void goBack() {
+      navigator.goBack();
    }
 
+   interface Screen extends WalletScreen {
+
+      void showPairingErrorDialog();
+   }
 }

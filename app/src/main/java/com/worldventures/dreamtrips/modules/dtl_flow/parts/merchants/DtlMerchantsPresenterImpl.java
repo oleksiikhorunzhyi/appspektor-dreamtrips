@@ -271,6 +271,7 @@ public class DtlMerchantsPresenterImpl extends DtlPresenterImpl<DtlMerchantsScre
             .subscribe(isRedirect -> {
                if(isRedirect) navigateToPath(new DtlLocationChangePath());
                else getView().showEmpty(true);
+               getView().clearMerchants();
             });
    }
 

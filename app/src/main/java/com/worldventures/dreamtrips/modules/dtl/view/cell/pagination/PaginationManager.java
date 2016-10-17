@@ -17,7 +17,7 @@ public class PaginationManager {
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
                int itemCount = recyclerView.getLayoutManager().getItemCount();
                int lastVisibleItemPosition = ((LinearLayoutManager) recyclerView.getLayoutManager()).findLastVisibleItemPosition();
-               if (!loading && lastVisibleItemPosition == itemCount - 1) {
+               if (!loading && isRecyclerScrollable(recyclerView) && lastVisibleItemPosition == itemCount - 1 ) {
                   loading = true;
                   if (paginationListener != null) paginationListener.loadNextPage();
                }
@@ -32,5 +32,11 @@ public class PaginationManager {
 
    public void setPaginationListener(PaginationListener paginationListener) {
       this.paginationListener = paginationListener;
+   }
+
+   public boolean isRecyclerScrollable(RecyclerView recyclerView) {
+      LinearLayoutManager layoutManager = (LinearLayoutManager) recyclerView.getLayoutManager();
+      RecyclerView.Adapter adapter = recyclerView.getAdapter();
+      return layoutManager.findLastCompletelyVisibleItemPosition() < adapter.getItemCount() - 1;
    }
 }

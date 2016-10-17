@@ -25,6 +25,8 @@ public interface DtlMerchantsScreen extends DtlScreen {
 
    void showEmpty(boolean isShow);
 
+   void clearMerchants();
+
    void applyViewState(DtlMerchantsState state);
 
    void showLoadMerchantError(String error);

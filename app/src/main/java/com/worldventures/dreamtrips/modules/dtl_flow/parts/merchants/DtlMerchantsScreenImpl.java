@@ -244,6 +244,11 @@ public class DtlMerchantsScreenImpl extends DtlLayout<DtlMerchantsScreen, DtlMer
       emptyView.setVisibility(isShow ? VISIBLE : GONE);
    }
 
+   @Override
+   public void clearMerchants() {
+      delegate.clear();
+   }
+
    @OnClick(R.id.retry)
    protected void onRetryClick() {
       getPresenter().onRetryMerchantsClick();

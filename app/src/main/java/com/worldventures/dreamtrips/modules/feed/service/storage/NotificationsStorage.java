@@ -37,7 +37,8 @@ public class NotificationsStorage implements ActionStorage<List<FeedItem>>, Clea
          snappyRepository.saveNotifications(data);
       } else {
          List<FeedItem> notifications = new ArrayList<>();
-         notifications.addAll(0, memoryStorage.get(params));
+         notifications.addAll(snappyRepository.getNotifications());
+         notifications.addAll(data);
          snappyRepository.saveNotifications(notifications);
       }
    }
@@ -47,6 +48,7 @@ public class NotificationsStorage implements ActionStorage<List<FeedItem>>, Clea
       List<FeedItem> items = memoryStorage.get(params);
       if (items == null) {
          items = snappyRepository.getNotifications();
+         memoryStorage.save(null, items);
       }
       return items;
    }

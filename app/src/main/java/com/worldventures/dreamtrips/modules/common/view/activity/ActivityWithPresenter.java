@@ -7,19 +7,14 @@ import android.view.Menu;
 import android.widget.Toast;
 
 import com.afollestad.materialdialogs.MaterialDialog;
-import com.badoo.mobile.util.WeakHandler;
 import com.facebook.Session;
-import com.kbeanie.imagechooser.api.ChosenImage;
 import com.trello.rxlifecycle.ActivityEvent;
 import com.trello.rxlifecycle.RxLifecycle;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.utils.ViewUtils;
-import com.worldventures.dreamtrips.core.utils.events.ImagePickRequestEvent;
-import com.worldventures.dreamtrips.core.utils.events.ImagePickedEvent;
 import com.worldventures.dreamtrips.modules.common.presenter.ActivityPresenter;
 import com.worldventures.dreamtrips.modules.common.presenter.delegate.OfflineWarningDelegate;
 import com.worldventures.dreamtrips.modules.common.view.dialog.TermsConditionsDialog;
-import com.worldventures.dreamtrips.modules.tripsimages.view.custom.PickImageDelegate;
 
 import javax.inject.Inject;
 
@@ -30,8 +25,6 @@ import rx.subjects.PublishSubject;
 public abstract class ActivityWithPresenter<PM extends ActivityPresenter> extends BaseActivity implements ActivityPresenter.View {
 
    private PM presenter;
-   private PickImageDelegate pickImageDelegate;
-   private WeakHandler handler = new WeakHandler();
    private final PublishSubject<ActivityEvent> lifecycleSubject = PublishSubject.create();
    private boolean isPaused;
    @Inject OfflineWarningDelegate offlineWarningDelegate;
@@ -56,15 +49,12 @@ public abstract class ActivityWithPresenter<PM extends ActivityPresenter> extend
       super.onSaveInstanceState(outState);
       Icepick.saveInstanceState(this, outState);
       if (presenter != null) this.presenter.saveInstanceState(outState);
-      pickImageDelegate.saveInstanceState(outState);
    }
 
 
    @Override
    protected void afterCreateView(Bundle savedInstanceState) {
       super.afterCreateView(savedInstanceState);
-      pickImageDelegate = new PickImageDelegate(this);
-      pickImageDelegate.restoreInstanceState(savedInstanceState);
       this.presenter.takeView(this);
    }
 
@@ -159,11 +149,6 @@ public abstract class ActivityWithPresenter<PM extends ActivityPresenter> extend
    @Override
    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
       super.onActivityResult(requestCode, resultCode, data);
-      if (pickImageDelegate != null) {
-         pickImageDelegate.setImageCallback(this::imagePicked);
-         pickImageDelegate.onActivityResult(requestCode, resultCode, data);
-      }
-
       if (Session.getActiveSession() != null && requestCode == Session.DEFAULT_AUTHORIZE_ACTIVITY_CODE)
          Session.getActiveSession().onActivityResult(this, requestCode, resultCode, data);
    }
@@ -172,23 +157,6 @@ public abstract class ActivityWithPresenter<PM extends ActivityPresenter> extend
    public void onConfigurationChanged(Configuration newConfig) {
       super.onConfigurationChanged(newConfig);
       presenter.onConfigurationChanged(newConfig);
-   }
-
-   public void onEvent(ImagePickRequestEvent event) {
-      pickImage(event.getRequestType(), event.getRequesterID());
-   }
-
-   private void pickImage(int requestType, int requesterId) {
-      pickImageDelegate.setRequesterId(requesterId);
-      pickImageDelegate.setRequestType(requestType);
-      pickImageDelegate.show();
-   }
-
-   private void imagePicked(ChosenImage... chosenImages) {
-      handler.postDelayed(() -> {
-         eventBus.removeStickyEvent(ImagePickedEvent.class);
-         eventBus.postSticky(new ImagePickedEvent(pickImageDelegate.getRequestType(), pickImageDelegate.getRequesterId(), chosenImages));
-      }, 400);
    }
 
    @Override

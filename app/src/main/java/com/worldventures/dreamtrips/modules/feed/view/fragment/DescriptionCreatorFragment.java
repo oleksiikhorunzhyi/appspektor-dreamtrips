@@ -47,6 +47,8 @@ public class DescriptionCreatorFragment extends RxBaseFragmentWithArgs<Descripti
    @InjectView(R.id.suggestions) ProgressEmptyRecyclerView suggestions;
    @InjectView(R.id.suggestionProgress) View suggestionsProgressView;
 
+   private int cursorPositionWhenTextChanged;
+
    public void onCreate(Bundle savedInstanceState) {
       super.onCreate(savedInstanceState);
       stateDelegate = new RecyclerViewStateDelegate();
@@ -99,7 +101,8 @@ public class DescriptionCreatorFragment extends RxBaseFragmentWithArgs<Descripti
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe(event -> {
                String fullQueryText = event.editable().toString();
-               getPresenter().query(fullQueryText, description.getSelectionStart());
+               cursorPositionWhenTextChanged = description.getSelectionStart();
+               getPresenter().query(fullQueryText, cursorPositionWhenTextChanged);
             }, throwable -> {
                Timber.e(throwable, "");
             });
@@ -108,7 +111,7 @@ public class DescriptionCreatorFragment extends RxBaseFragmentWithArgs<Descripti
 
    private void onSuggestionClicked(String suggestion) {
       String descriptionText = description.getText().toString();
-      int endReplace = description.getSelectionStart();
+      int endReplace = cursorPositionWhenTextChanged;
 
       int startReplace = HashtagSuggestionUtil.calcStartPosBeforeReplace(descriptionText, endReplace);
       String newText = HashtagSuggestionUtil.generateText(descriptionText, suggestion, endReplace);

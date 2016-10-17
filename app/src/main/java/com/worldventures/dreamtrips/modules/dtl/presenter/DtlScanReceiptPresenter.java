@@ -7,11 +7,10 @@ import com.worldventures.dreamtrips.api.dtl.merchants.EstimationHttpAction;
 import com.worldventures.dreamtrips.api.dtl.merchants.requrest.ImmutableEstimationParams;
 import com.worldventures.dreamtrips.core.rx.RxView;
 import com.worldventures.dreamtrips.core.utils.DateTimeUtils;
-import com.worldventures.dreamtrips.core.utils.events.ImagePickRequestEvent;
-import com.worldventures.dreamtrips.core.utils.events.ImagePickedEvent;
 import com.worldventures.dreamtrips.modules.common.api.CopyFileCommand;
 import com.worldventures.dreamtrips.modules.common.model.UploadTask;
 import com.worldventures.dreamtrips.modules.common.presenter.JobPresenter;
+import com.worldventures.dreamtrips.modules.common.service.MediaInteractor;
 import com.worldventures.dreamtrips.modules.common.view.ApiErrorView;
 import com.worldventures.dreamtrips.modules.dtl.analytics.CaptureReceiptEvent;
 import com.worldventures.dreamtrips.modules.dtl.analytics.DtlAnalyticsCommand;
@@ -28,13 +27,14 @@ import javax.inject.Inject;
 
 import icepick.State;
 import io.techery.janet.ActionState;
+import io.techery.janet.Command;
 import io.techery.janet.helper.ActionStateSubscriber;
 
 public class DtlScanReceiptPresenter extends JobPresenter<DtlScanReceiptPresenter.View> {
 
-   public static final int REQUESTER_ID = -3;
-
    @Inject DtlTransactionInteractor transactionInteractor;
+   @Inject PickImageDelegate pickImageDelegate;
+   @Inject MediaInteractor mediaInteractor;
    //
    @State double amount;
    //
@@ -47,6 +47,12 @@ public class DtlScanReceiptPresenter extends JobPresenter<DtlScanReceiptPresente
    @Override
    public void takeView(View view) {
       super.takeView(view);
+      mediaInteractor
+            .imageCapturedPipe().observeSuccess()
+            .map(Command::getResult)
+            .compose(bindViewToMainComposer())
+            .subscribe(this::receiptScanned);
+
       apiErrorPresenter.setView(view);
       transactionInteractor.transactionActionPipe()
             .createObservableResult(DtlTransactionAction.get(merchant))
@@ -64,10 +70,9 @@ public class DtlScanReceiptPresenter extends JobPresenter<DtlScanReceiptPresente
                }
                checkVerification(transaction);
             }, apiErrorPresenter::handleError);
-      //
-      //
+
       view.showCurrency(merchant.asMerchantAttributes().defaultCurrency());
-      //
+
       bindApiJob();
    }
 
@@ -134,16 +139,13 @@ public class DtlScanReceiptPresenter extends JobPresenter<DtlScanReceiptPresente
    ///////////////////////////////////////////////////////////////////////////
 
    public void scanReceipt() {
-      eventBus.post(new ImagePickRequestEvent(PickImageDelegate.CAPTURE_PICTURE, REQUESTER_ID));
+      pickImageDelegate.takePicture();
    }
 
-   public void onEvent(ImagePickedEvent event) {
-      if (event.getRequesterID() == REQUESTER_ID) {
-         view.hideScanButton();
-         eventBus.removeStickyEvent(event);
-         String fileThumbnail = event.getImages()[0].getFileThumbnail();
-         imageSelected(Uri.parse(fileThumbnail).toString());
-      }
+   private void receiptScanned(String filePath) {
+      view.hideScanButton();
+      String fileThumbnail = "file://" + filePath;
+      imageSelected(Uri.parse(fileThumbnail).toString());
    }
 
    private void imageSelected(String filePath) {

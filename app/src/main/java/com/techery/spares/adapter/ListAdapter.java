@@ -2,7 +2,7 @@ package com.techery.spares.adapter;
 
 import java.util.List;
 
-public interface IRoboSpiceAdapter<T> {
+public interface ListAdapter<T> {
 
    int getCount();
 

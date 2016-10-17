@@ -8,7 +8,6 @@ import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.component.ComponentDescription;
 import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.modules.common.view.util.DrawableUtil;
-import com.worldventures.dreamtrips.modules.tripsimages.api.GetUserPhotosQuery;
 import com.worldventures.dreamtrips.modules.tripsimages.presenter.EditPhotoTagsPresenter;
 import com.worldventures.dreamtrips.modules.tripsimages.presenter.InspireMePresenter;
 import com.worldventures.dreamtrips.modules.tripsimages.presenter.TripImagePresenter;
@@ -65,7 +64,6 @@ import dagger.Provides;
             PhotoCell.class,
             PhotoUploadCell.class,
             FullScreenPhotoWrapperFragment.class,
-            GetUserPhotosQuery.class,
             AccountImagesListFragment.class,
             MembersImagesListFragment.class,
             InspirePhotoFullscreenFragment.class,

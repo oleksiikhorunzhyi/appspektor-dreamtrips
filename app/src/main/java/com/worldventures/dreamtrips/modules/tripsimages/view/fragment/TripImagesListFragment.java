@@ -10,7 +10,7 @@ import android.view.View;
 
 import com.badoo.mobile.util.WeakHandler;
 import com.techery.spares.adapter.BaseArrayListAdapter;
-import com.techery.spares.adapter.IRoboSpiceAdapter;
+import com.techery.spares.adapter.ListAdapter;
 import com.techery.spares.annotations.Layout;
 import com.techery.spares.ui.recycler.RecyclerViewStateDelegate;
 import com.worldventures.dreamtrips.R;
@@ -155,7 +155,7 @@ public class TripImagesListFragment<T extends TripImagesListPresenter> extends R
    }
 
    @Override
-   public IRoboSpiceAdapter getAdapter() {
+   public ListAdapter getAdapter() {
       return arrayListAdapter;
    }
 

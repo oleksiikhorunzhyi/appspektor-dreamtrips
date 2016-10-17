@@ -4,7 +4,7 @@ import android.support.annotation.NonNull;
 
 import com.innahema.collections.query.queriables.Queryable;
 import com.octo.android.robospice.persistence.exception.SpiceException;
-import com.techery.spares.adapter.IRoboSpiceAdapter;
+import com.techery.spares.adapter.ListAdapter;
 import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.core.rx.RxView;
@@ -283,7 +283,7 @@ public abstract class TripImagesListPresenter<VT extends TripImagesListPresenter
 
       void fillWithItems(List<IFullScreenObject> items);
 
-      IRoboSpiceAdapter getAdapter();
+      ListAdapter getAdapter();
 
       void openFullscreen(FullScreenImagesBundle data);
 

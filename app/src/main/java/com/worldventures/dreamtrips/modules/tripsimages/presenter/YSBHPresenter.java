@@ -1,13 +1,7 @@
 package com.worldventures.dreamtrips.modules.tripsimages.presenter;
 
-import com.octo.android.robospice.request.SpiceRequest;
-import com.worldventures.dreamtrips.modules.tripsimages.api.GetYSBHPhotosQuery;
 import com.worldventures.dreamtrips.modules.tripsimages.command.GetYSBHPhotosCommand;
-import com.worldventures.dreamtrips.modules.tripsimages.command.TripImagesCommand;
-import com.worldventures.dreamtrips.modules.tripsimages.model.IFullScreenObject;
 import com.worldventures.dreamtrips.modules.tripsimages.model.TripImagesType;
-
-import java.util.ArrayList;
 
 import io.techery.janet.ActionPipe;
 

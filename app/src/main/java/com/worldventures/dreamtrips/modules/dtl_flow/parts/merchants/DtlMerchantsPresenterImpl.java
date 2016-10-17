@@ -264,7 +264,7 @@ public class DtlMerchantsPresenterImpl extends DtlPresenterImpl<DtlMerchantsScre
    }
 
    private void showEmptyOrRedirect() {
-      filterDataInteractor.filterDataPipe().observeSuccessWithReplay().first()
+      filterDataInteractor.filterDataPipe().observeSuccessWithReplay().take(1)
             .map(FilterDataAction::getResult)
             .map(FilterData::isDefault)
             .map(this::isAllowRedirect)

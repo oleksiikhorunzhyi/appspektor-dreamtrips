@@ -9,7 +9,6 @@ import com.worldventures.dreamtrips.modules.dtl.model.location.ImmutableDtlManua
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.ThinMerchant;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.filter.FilterData;
 import com.worldventures.dreamtrips.modules.dtl.service.action.DtlLocationCommand;
-import com.worldventures.dreamtrips.modules.dtl.service.action.DtlLocationFacadeCommand;
 import com.worldventures.dreamtrips.modules.dtl.service.action.FilterDataAction;
 import com.worldventures.dreamtrips.modules.dtl.service.action.MerchantsAction;
 import com.worldventures.dreamtrips.modules.dtl.service.action.NewRelicTrackableAction;
@@ -44,7 +43,7 @@ public class MerchantsInteractor {
    }
 
    private void connectMemoryClear() {
-      dtlLocationInteractor.locationPipe().observe()
+      dtlLocationInteractor.locationSourcePipe().observe()
             .subscribe(new ActionStateSubscriber<DtlLocationCommand>()
                   .onStart(action -> clearMemoryInteractor.clearMerchantsMemoryCache()));
    }
@@ -101,10 +100,10 @@ public class MerchantsInteractor {
    }
 
    private Observable<DtlLocation> provideLastFacadeLocationObservable() {
-      return dtlLocationInteractor.locationFacadePipe().observeSuccessWithReplay()
+      return dtlLocationInteractor.locationSourcePipe().observeSuccessWithReplay()
             .take(1)
-            .filter(DtlLocationFacadeCommand::isResultDefined)
-            .map(DtlLocationFacadeCommand::getResult);
+            .filter(DtlLocationCommand::isResultDefined)
+            .map(DtlLocationCommand::getResult);
    }
 
    private static DtlLocation buildManualLocation(ThinMerchant thinMerchant, DtlLocation dtlLocation) {

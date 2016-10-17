@@ -33,7 +33,7 @@ public abstract class FilterHelper {
       return filterData.distanceType() == DistanceType.KMS ? 80 : 50;
    }
 
-   public static double provideDistanceByIndex(FilterData filterData) {
+   public static double provideMaxDistance(FilterData filterData) {
       double value = MILES_VALUES[filterData.distanceMaxIndex()];
       if (filterData.distanceType() == DistanceType.KMS) value = value * MILES_MULTIPLIER;
       return new BigDecimal(value).setScale(1, RoundingMode.DOWN).doubleValue();

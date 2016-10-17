@@ -23,7 +23,7 @@ public class MerchantFilterAppliedEvent extends DtlAnalyticsAction {
       price = String.format(Locale.US, "%d-%d", filterData.budgetMin(), filterData.budgetMax());
       distance = String.format(Locale.US, "%.0f-%.0f%s",
             FilterHelper.provideLeftDistanceValue(filterData),
-            FilterHelper.provideDistanceByIndex(filterData),
+            FilterHelper.provideMaxDistance(filterData),
             filterData.distanceType().getTypeNameForAnalytics());
       if (filterData.selectedAmenities().isEmpty()) {
          amenities = "All";

@@ -38,7 +38,7 @@ public class FilterDataInteractor {
       filterDataPipe = sessionActionPipeCreator.createPipe(FilterDataAction.class, Schedulers.io());
 
       connectLocationChange();
-      reset();
+      init();
    }
 
    public ReadActionPipe<FilterDataAction> filterDataPipe() {
@@ -46,9 +46,12 @@ public class FilterDataInteractor {
    }
 
    public void reset() {
-      send(ImmutableFilterData.builder()
-            .distanceType(FilterHelper.provideDistanceFromSettings(snappyRepository))
-            .build());
+      getLastFilterObservable()
+            .map(filterData -> ImmutableFilterData.builder()
+                  .distanceType(FilterHelper.provideDistanceFromSettings(snappyRepository))
+                  .isOffersOnly(filterData.isOffersOnly())
+                  .build())
+            .subscribe(this::send);
    }
 
    public void mergeAndApply(FilterData newFilterData) {
@@ -121,5 +124,11 @@ public class FilterDataInteractor {
       return filterDataPipe.observeSuccessWithReplay()
             .take(1)
             .map(FilterDataAction::getResult);
+   }
+
+   private void init() {
+      send(ImmutableFilterData.builder()
+            .distanceType(FilterHelper.provideDistanceFromSettings(snappyRepository))
+            .build());
    }
 }

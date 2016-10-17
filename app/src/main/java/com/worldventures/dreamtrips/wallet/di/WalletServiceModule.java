@@ -5,7 +5,6 @@ import android.content.Context;
 import com.techery.spares.module.qualifier.ForApplication;
 import com.worldventures.dreamtrips.wallet.service.FactoryResetManager;
 import com.worldventures.dreamtrips.wallet.service.FirmwareInteractor;
-import com.worldventures.dreamtrips.wallet.service.SmartCardInteractor;
 import com.worldventures.dreamtrips.wallet.service.WalletBluetoothService;
 import com.worldventures.dreamtrips.wallet.service.WalletNetworkService;
 import com.worldventures.dreamtrips.wallet.service.WizardInteractor;
@@ -50,7 +49,7 @@ public class WalletServiceModule {
 
    @Singleton
    @Provides
-   FactoryResetManager factoryResetManager(@Named(JANET_WALLET) Janet janet, SmartCardInteractor smartCardInteractor) {
-      return new FactoryResetManager(janet, smartCardInteractor);
+   FactoryResetManager factoryResetManager(@Named(JANET_WALLET) Janet janet) {
+      return new FactoryResetManager(janet);
    }
 }

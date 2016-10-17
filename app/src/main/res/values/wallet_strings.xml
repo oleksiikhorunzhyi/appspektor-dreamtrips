@@ -45,8 +45,8 @@
 
    <!--splash-->
    <string name="wallet_wizard_splash_title1">Get ready to soar</string>
-   <string name="wallet_wizard_splash_title2">Next, you must agree to\nthe Terms and Conditions.</string>
-   <string name="wallet_wizard_splash_review_btn">Terms and Conditions</string>
+   <string name="wallet_wizard_splash_title2">Next, you must accept to\nthe User Agreement</string>
+   <string name="wallet_wizard_splash_review_btn">User Agreement</string>
 
    <string name="wallet_wizard_scan_proposal">Scan the back of your\nflye&#8482; smart card to set up</string>
    <string name="wallet_wizard_scan_start_btn">Scan Card</string>
@@ -132,11 +132,11 @@
    <string name="wallet_charging_swiping_screen_instruction">Plug flye\u2122 into the charger and swipe credit or debit cards.</string>
    <string name="wallet_charging_swiping_screen_notes">Be sure your flye\u2122 card is turned on and the 2 charger LEDs are on.</string>
    <string name="wallet_wizard_charging_swipe_error">Incorrect card reading. Try again</string>
-   <string name="wallet_terms_and_conditions_header">Terms And Conditions</string>
-   <string name="wallet_wizard_terms_and_conditions_agree_btn">Agree</string>
+   <string name="wallet_terms_and_conditions_header">User Agreement</string>
+   <string name="wallet_wizard_terms_and_conditions_agree_btn">Accept</string>
    <string name="wallet_terms_and_conditions_try_again">Try Again</string>
-   <string name="wallet_terms_and_conditions_load_failed">Failed to retrieve terms and conditions</string>
-   <string name="wallet_terms_and_conditions_accept_failed">Failed to accept terms and conditions</string>
+   <string name="wallet_terms_and_conditions_load_failed">Failed to retrieve user agreement</string>
+   <string name="wallet_terms_and_conditions_accept_failed">Failed to accept user agreement</string>
 
    <!--set up smart card-->
    <string name="wallet_wizard_welcome_title">flye smart card</string>

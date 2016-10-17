@@ -87,7 +87,7 @@ public class WizardSplashScreen extends WalletLinearLayout<WizardSplashPresenter
          actionBtn.setOnClickListener(view -> getPresenter().startScanCard());
          walletWizardSplashTitle.setText(R.string.wallet_wizard_scan_proposal);
 
-         front.setImageResource(R.drawable.flyecard_front_with_display); //TODO: set front card
+         front.setImageResource(R.drawable.flyecard_front);
          flipAnim.flipCard(FLIP_ANIM_DELAY);
       } else {
          actionBtn.setText(R.string.wallet_wizard_splash_review_btn);

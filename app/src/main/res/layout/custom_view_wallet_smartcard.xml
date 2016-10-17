@@ -5,7 +5,7 @@
       android:layout_width="match_parent"
       android:layout_height="@dimen/wallet_card_height"
       android:animateLayoutChanges="true"
-      android:background="@drawable/flye_card_front_with_emv"
+      android:background="@drawable/flyecard_front_with_emv"
       android:paddingBottom="@dimen/spacing_small"
       android:paddingEnd="@dimen/spacing_normal"
       android:paddingStart="@dimen/spacing_normal"

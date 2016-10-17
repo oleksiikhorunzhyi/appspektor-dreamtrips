@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
+
 <com.worldventures.dreamtrips.wallet.ui.wizard.welcome.WizardWelcomeScreen xmlns:android="http://schemas.android.com/apk/res/android"
       xmlns:app="http://schemas.android.com/apk/res-auto"
       xmlns:tools="http://schemas.android.com/tools"
@@ -58,7 +59,7 @@
                android:layout_alignParentTop="true"
                android:layout_centerHorizontal="true"
                android:scaleType="fitCenter"
-               android:src="@drawable/flye_card_front_without_display"
+               android:src="@drawable/flyecard_front_with_emv"
                tools:ignore="ContentDescription"
                />
 
@@ -68,7 +69,7 @@
                android:layout_height="75dp"
                android:layout_alignEnd="@+id/smart_card"
                android:layout_centerVertical="true"
-               android:layout_marginRight="12dp"
+               android:layout_marginEnd="12dp"
                android:src="@drawable/ic_dt_launcher"
                app:failureImage="@drawable/ic_avatar_placeholder"
                app:placeholderImage="@drawable/ic_avatar_placeholder"
@@ -77,10 +78,11 @@
          <ImageView
                android:layout_width="wrap_content"
                android:layout_height="wrap_content"
-               android:layout_alignLeft="@+id/user_photo"
-               android:layout_alignRight="@+id/user_photo"
-               android:layout_marginTop="20dp"
+               android:layout_alignEnd="@+id/user_photo"
+               android:layout_alignStart="@+id/user_photo"
+               android:layout_marginTop="45dp"
                android:src="@drawable/ic_flyecard_light"
+               tools:ignore="ContentDescription"
                />
 
       </RelativeLayout>

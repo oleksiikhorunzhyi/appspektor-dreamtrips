@@ -57,4 +57,8 @@ public class FlowNavigator implements Navigator {
       }
    }
 
+   @Override
+   public void finish() {
+      activity.finish();
+   }
 }

@@ -41,4 +41,10 @@ public interface Navigator {
    void setHistory(History history, Direction direction);
 
    void goBack();
+
+   /**
+    * Go UP by current flow,
+    * close activity
+    */
+   void finish();
 }

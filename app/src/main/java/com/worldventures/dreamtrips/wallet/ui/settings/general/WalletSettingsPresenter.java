@@ -9,18 +9,19 @@ import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.wallet.domain.entity.Firmware;
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCard;
 import com.worldventures.dreamtrips.wallet.domain.storage.TemporaryStorage;
+import com.worldventures.dreamtrips.wallet.service.FactoryResetManager;
 import com.worldventures.dreamtrips.wallet.service.FirmwareInteractor;
 import com.worldventures.dreamtrips.wallet.service.SmartCardInteractor;
 import com.worldventures.dreamtrips.wallet.service.command.ConnectSmartCardCommand;
 import com.worldventures.dreamtrips.wallet.service.command.SetLockStateCommand;
 import com.worldventures.dreamtrips.wallet.service.command.SetStealthModeCommand;
+import com.worldventures.dreamtrips.wallet.service.command.reset.ResetSmartCardCommand;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletPresenter;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.WalletScreen;
 import com.worldventures.dreamtrips.wallet.ui.common.helper.ErrorHandler;
 import com.worldventures.dreamtrips.wallet.ui.common.helper.OperationActionStateSubscriberWrapper;
 import com.worldventures.dreamtrips.wallet.ui.common.navigation.Navigator;
 import com.worldventures.dreamtrips.wallet.ui.settings.disabledefaultcard.WalletDisableDefaultCardPath;
-import com.worldventures.dreamtrips.wallet.ui.settings.factory_reset.FactoryResetPath;
 import com.worldventures.dreamtrips.wallet.ui.settings.firmware.newavailable.WalletNewFirmwareAvailablePath;
 import com.worldventures.dreamtrips.wallet.ui.settings.firmware.uptodate.WalletUpToDateFirmwarePath;
 import com.worldventures.dreamtrips.wallet.ui.settings.removecards.WalletAutoClearCardsPath;
@@ -38,6 +39,7 @@ public class WalletSettingsPresenter extends WalletPresenter<WalletSettingsPrese
    @Inject SmartCardInteractor smartCardInteractor;
    @Inject FirmwareInteractor firmwareInteractor;
    @Inject TemporaryStorage temporaryStorage;
+   @Inject FactoryResetManager factoryResetManager;
 
    private SmartCard smartCard;
    @Nullable private Firmware firmware;
@@ -127,7 +129,7 @@ public class WalletSettingsPresenter extends WalletPresenter<WalletSettingsPrese
       view.testConnection()
             .compose(bindView())
             .skip(1)
-            .filter(connected -> (smartCard.connectionStatus() == SmartCard.ConnectionStatus.CONNECTED) != connected)
+            .filter(connected -> (smartCard.connectionStatus().isConnected()) != connected)
             .subscribe(this::manageConnection);
    }
 
@@ -147,7 +149,7 @@ public class WalletSettingsPresenter extends WalletPresenter<WalletSettingsPrese
                .compose(bindViewIoToMainComposer())
                .subscribe(OperationActionStateSubscriberWrapper.<ConnectSmartCardCommand>forView(getView().provideOperationDelegate())
                      .onFail(ErrorHandler.create(getContext(),
-                           action -> getView().testConnection(smartCard.connectionStatus() == SmartCard.ConnectionStatus.CONNECTED))
+                           action -> getView().testConnection(smartCard.connectionStatus().isConnected()))
                      )
                      .wrap()
                );
@@ -157,7 +159,7 @@ public class WalletSettingsPresenter extends WalletPresenter<WalletSettingsPrese
                .compose(bindViewIoToMainComposer())
                .subscribe(OperationActionStateSubscriberWrapper.<DisconnectAction>forView(getView().provideOperationDelegate())
                      .onFail(ErrorHandler.create(getContext(),
-                           action -> getView().testConnection(smartCard.connectionStatus() == SmartCard.ConnectionStatus.CONNECTED))
+                           action -> getView().testConnection(smartCard.connectionStatus().isConnected()))
                      )
                      .wrap()
                );
@@ -167,7 +169,7 @@ public class WalletSettingsPresenter extends WalletPresenter<WalletSettingsPrese
    private void bindSmartCard(SmartCard smartCard) {
       Screen view = getView();
       //noinspection all
-      view.testConnection(smartCard.connectionStatus() == SmartCard.ConnectionStatus.CONNECTED);
+      view.testConnection(smartCard.connectionStatus().isConnected());
       view.stealthModeStatus(smartCard.stealthMode());
       view.lockStatus(smartCard.lock());
       view.disableDefaultPaymentValue(smartCard.disableCardDelay());
@@ -222,7 +224,20 @@ public class WalletSettingsPresenter extends WalletPresenter<WalletSettingsPrese
    }
 
    void factoryResetClick() {
-      navigator.go(new FactoryResetPath());
+      getView().showConfirmFactoryResetDialog();
+   }
+
+   void executeFactoryReset() {
+      factoryResetManager.observeFactoryResetPipe()
+            .compose(bindViewIoToMainComposer())
+            .subscribe(OperationActionStateSubscriberWrapper.<ResetSmartCardCommand>forView(getView().provideOperationDelegate())
+                  .onSuccess(command -> navigator.finish())
+                  .onFail(ErrorHandler.<ResetSmartCardCommand>builder(getContext())
+                        .defaultMessage(R.string.wallet_wizard_setup_error)
+                        .build())
+                  .wrap());
+
+      factoryResetManager.factoryReset();
    }
 
    public interface Screen extends WalletScreen {
@@ -254,5 +269,7 @@ public class WalletSettingsPresenter extends WalletPresenter<WalletSettingsPrese
       void showFirmwareVersion();
 
       void showFirmwareBadge();
+
+      void showConfirmFactoryResetDialog();
    }
 }

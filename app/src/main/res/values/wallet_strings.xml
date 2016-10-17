@@ -199,6 +199,8 @@
    <string name="wallet_factory_reset_title">Factory Reset flye smart card</string>
    <string name="wallet_factory_reset_enter_pin_text">Enter your PIN on the flye\u2122 smart card to factory reset.</string>
    <string name="wallet_factory_reset_card_reset_text">Your flye\u2122 smart card has been factory reset.</string>
+   <string name="wallet_confirm_factory_reset_message">This will erase all content on your flye smart card and return all settings to factory default.</string>
+   <string name="wallet_factory_reset">Factory Reset</string>
 
    <!--firmware download-->
    <string name="wallet_firmware_download_header">flye smart card Update</string>

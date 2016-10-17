@@ -1,6 +1,5 @@
 package com.worldventures.dreamtrips.wallet.service;
 
-import com.worldventures.dreamtrips.wallet.service.command.reset.ConfirmResetCommand;
 import com.worldventures.dreamtrips.wallet.service.command.reset.ResetSmartCardCommand;
 
 import io.techery.janet.ActionPipe;
@@ -12,25 +11,17 @@ import rx.schedulers.Schedulers;
 public class FactoryResetManager {
 
    private final ActionPipe<ResetSmartCardCommand> resetSmartCardPipe;
-   private final ActionPipe<ConfirmResetCommand> confirmResetPipe;
-   private final SmartCardInteractor smartCardInteractor;
 
-   public FactoryResetManager(Janet walletJanetInstance, SmartCardInteractor smartCardInteractor) {
-      this.smartCardInteractor = smartCardInteractor;
-
+   public FactoryResetManager(Janet walletJanetInstance) {
       resetSmartCardPipe = walletJanetInstance.createPipe(ResetSmartCardCommand.class, Schedulers.io());
-      confirmResetPipe = walletJanetInstance.createPipe(ConfirmResetCommand.class, Schedulers.io());
    }
 
    public void factoryReset() {
-      confirmResetPipe.send(new ConfirmResetCommand());
+      //todo: remove for not use lock/unlock for current logic
+      resetSmartCardPipe.send(new ResetSmartCardCommand());
    }
 
    public Observable<ActionState<ResetSmartCardCommand>> observeFactoryResetPipe() {
-      return smartCardInteractor.lockDeviceChangedEventPipe()
-            .observeSuccess()
-            .filter(event -> !event.locked)
-            .flatMap(event -> resetSmartCardPipe.createObservable(new ResetSmartCardCommand()));
+      return resetSmartCardPipe.createObservable(new ResetSmartCardCommand());
    }
-
 }

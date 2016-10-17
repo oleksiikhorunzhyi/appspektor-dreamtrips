@@ -48,14 +48,15 @@ public class HttpActionsCreator {
    }
 
    private static String providePartnerStatusParameter(boolean isOffersOnly) {
-      return isOffersOnly ? PartnerStatus.PARTICIPANT + "," + PartnerStatus.PENDING : null;
+      return isOffersOnly ? PartnerStatus.PARTICIPANT.toString().toLowerCase(Locale.US) + ","
+            + PartnerStatus.PENDING.toString().toLowerCase(Locale.US) : null;
    }
 
    private static List<String> provideAmenitiesParameter(FilterData filterData) {
       if (filterData.selectedAmenities() == null || filterData.selectedAmenities().isEmpty()) return null;
 
-      final String parameter = "AMENITY:" +
-            Queryable.from(filterData.selectedAmenities()).map(Attribute::id).joinStrings(",");
+      final String parameter = "amenity:" +
+            Queryable.from(filterData.selectedAmenities()).map(Attribute::id).joinStrings(";");
       return new ArrayList<>(Arrays.asList(parameter));
    }
 }

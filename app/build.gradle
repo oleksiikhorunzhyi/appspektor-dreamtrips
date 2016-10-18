@@ -530,7 +530,7 @@ dependencies {
    compile 'org.igniterealtime.smack:smack-android-extensions:4.1.6'
    compile 'org.igniterealtime.smack:smack-tcp:4.1.6'
 
-   compile(group: 'io.techery.janet', name: 'smartcard', version: '0.7.1-SNAPSHOT', changing: true)
+   compile(group: 'io.techery.janet', name: 'smartcard', version: '0.8.0-SNAPSHOT', changing: true)
    compile(group: 'io.techery.janet.magstripe-reader', name: 'service', version: '0.1.0-SNAPSHOT', changing: true)
    compile(group: 'io.techery.janet.magstripe-reader', name: 'client-mock', version: '0.1.0-SNAPSHOT', changing: true)
    compile(group: 'io.techery.janet.magstripe-reader', name: 'client-rhombus', version: '0.1.0-SNAPSHOT', changing: true)

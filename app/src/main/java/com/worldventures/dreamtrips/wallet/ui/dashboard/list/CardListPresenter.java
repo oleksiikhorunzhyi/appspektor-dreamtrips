@@ -109,10 +109,7 @@ public class CardListPresenter extends WalletPresenter<CardListPresenter.Screen,
       firmwareInteractor.firmwareInfoPipe()
             .createObservableResult(new FetchFirmwareInfoCommand())
             .compose(bindViewIoToMainComposer())
-            .subscribe(ErrorSubscriberWrapper.<FetchFirmwareInfoCommand>forView(getView().provideOperationDelegate())
-                  .onNext(command -> firmwareLoaded(((FetchFirmwareInfoCommand) command).getResult()))
-                  .onFail(ErrorHandler.create(getContext()))
-                  .wrap());
+            .subscribe(command -> firmwareLoaded(command.getResult()), throwable -> Timber.e(throwable, "Error while fetching firmware"));
    }
 
    private void firmwareLoaded(Firmware firmware) {

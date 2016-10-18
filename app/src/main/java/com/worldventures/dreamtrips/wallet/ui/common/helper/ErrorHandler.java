@@ -2,9 +2,12 @@ package com.worldventures.dreamtrips.wallet.ui.common.helper;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.annotation.StringRes;
 
 import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.api.api_common.BaseHttpAction;
+import com.worldventures.dreamtrips.util.JanetHttpErrorHandlingUtils;
 
 import java.net.UnknownHostException;
 import java.util.ArrayList;
@@ -23,6 +26,8 @@ import rx.functions.Func1;
 import timber.log.Timber;
 
 public class ErrorHandler<T> implements Func1<Throwable, MessageActionHolder<T>> {
+
+   private static final int IGNORE_HTTP_STATUS_CODE = 500;
 
    private final Map<Class<? extends Throwable>, String> throwableMessageMap;
    private final Map<Class<? extends Throwable>, Action1<T>> throwableActionMap;
@@ -52,7 +57,7 @@ public class ErrorHandler<T> implements Func1<Throwable, MessageActionHolder<T>>
    }
 
    private MessageActionHolder<T> tryCreateActionHolder(Throwable throwable, String message, Action1<T> action) {
-      if (ignoredThrowables.contains(throwable.getClass())){
+      if (ignoredThrowables.contains(throwable.getClass())) {
          return null;
       }
 
@@ -67,6 +72,7 @@ public class ErrorHandler<T> implements Func1<Throwable, MessageActionHolder<T>>
          return tryCreateActionHolder(throwable.getCause(), message, action);
       }
       if (throwable instanceof JanetActionException) { // JanetActionException is wrapper
+         message = message != null ? message : obtainServerError((JanetActionException) throwable);
          return tryCreateActionHolder(throwable.getCause(), message, action);
       }
       if (throwable instanceof SmartCardServiceException) { // SmartCardServiceException is wrapper
@@ -88,6 +94,15 @@ public class ErrorHandler<T> implements Func1<Throwable, MessageActionHolder<T>>
       if (message == null) message = defaultErrorMessage;
       if (action == null) action = defaultErrorAction;
       return tryCreateActionHolder(throwable, message, action);
+   }
+
+   @Nullable
+   private String obtainServerError(JanetActionException throwable) {
+      if (!(throwable.getAction() instanceof BaseHttpAction)) return null;
+
+      BaseHttpAction httpAction = (BaseHttpAction) throwable.getAction();
+      return httpAction.statusCode() == IGNORE_HTTP_STATUS_CODE ?
+            null : JanetHttpErrorHandlingUtils.handleJanetHttpError(context, httpAction, throwable, null);
    }
 
    public static <T> ErrorHandler.Builder<T> builder(Context context) {

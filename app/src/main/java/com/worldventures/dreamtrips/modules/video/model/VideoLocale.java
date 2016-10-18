@@ -1,14 +1,22 @@
-package com.worldventures.dreamtrips.modules.reptools.model;
+package com.worldventures.dreamtrips.modules.video.model;
 
 import com.worldventures.dreamtrips.modules.common.view.util.Filterable;
 
 import java.io.Serializable;
+import java.util.List;
 
 public class VideoLocale implements Serializable, Filterable {
-   String title;
-   String country;
-   String icon;
-   VideoLanguage[] language;
+   private String title;
+   private String country;
+   private String icon;
+   private List<VideoLanguage> languages;
+
+   public VideoLocale(String title, String country, String icon, List<VideoLanguage> languages) {
+      this.title = title;
+      this.country = country;
+      this.icon = icon;
+      this.languages = languages;
+   }
 
    public String getTitle() {
       return title;
@@ -18,29 +26,13 @@ public class VideoLocale implements Serializable, Filterable {
       return country;
    }
 
-   @Override
-   public String toString() {
-      return title;
-   }
-
    public String getImage() {
       return icon;
    }
 
-   public void setTitle(String title) {
-      this.title = title;
-   }
-
-   public void setCountry(String country) {
-      this.country = country;
-   }
-
-   public void setImage(String image) {
-      this.icon = image;
-   }
-
-   public void setLanguage(VideoLanguage[] language) {
-      this.language = language;
+   @Override
+   public String toString() {
+      return title;
    }
 
    @Override
@@ -52,7 +44,6 @@ public class VideoLocale implements Serializable, Filterable {
 
       if (title != null ? !title.equals(that.title) : that.title != null) return false;
       return !(country != null ? !country.equals(that.country) : that.country != null);
-
    }
 
    @Override
@@ -62,8 +53,8 @@ public class VideoLocale implements Serializable, Filterable {
       return result;
    }
 
-   public VideoLanguage[] getLanguage() {
-      return language;
+   public List<VideoLanguage> getLanguages() {
+      return languages;
    }
 
    @Override

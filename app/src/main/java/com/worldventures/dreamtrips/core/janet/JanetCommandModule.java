@@ -8,4 +8,4 @@ import dagger.Module;
 
 @Module(includes = {MessengerJanetCommandModule.class, DtlJanetActionsModule.class, SocialJanetCommandModule.class},
         complete = false, library = true)
-public class JanetCommandModule {}
+class JanetCommandModule {}

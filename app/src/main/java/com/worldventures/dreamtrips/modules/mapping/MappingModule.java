@@ -19,6 +19,10 @@ import com.worldventures.dreamtrips.modules.trips.model.converter.TripImageConve
 import com.worldventures.dreamtrips.modules.trips.model.converter.TripPinToPinConverter;
 import com.worldventures.dreamtrips.modules.trips.model.converter.TripWithDetailsToTripConverter;
 import com.worldventures.dreamtrips.modules.trips.model.converter.TripWithoutDetailsToTripConverter;
+import com.worldventures.dreamtrips.modules.video.model.converter.CategoryConverter;
+import com.worldventures.dreamtrips.modules.video.model.converter.VideoConverter;
+import com.worldventures.dreamtrips.modules.video.model.converter.VideoLanguageConverter;
+import com.worldventures.dreamtrips.modules.video.model.converter.VideoLocaleConverter;
 
 import java.util.Set;
 
@@ -136,8 +140,26 @@ public class MappingModule {
 
    @Provides(type = Provides.Type.SET)
    @Singleton
-   Converter provideRelationshipConverter() {
-      return new RelationshipConverter();
+   Converter provideVideoCategoryConverter() {
+      return new CategoryConverter();
+   }
+
+   @Provides(type = Provides.Type.SET)
+   @Singleton
+   Converter provideVideoConverter() {
+      return new VideoConverter();
+   }
+
+   @Provides(type = Provides.Type.SET)
+   @Singleton
+   Converter provideVideoLanguageConverter() {
+      return new VideoLanguageConverter();
+   }
+
+   @Provides(type = Provides.Type.SET)
+   @Singleton
+   Converter provideVideoLocaleConverter() {
+      return new VideoLocaleConverter();
    }
 
    @Provides(type = Provides.Type.SET)

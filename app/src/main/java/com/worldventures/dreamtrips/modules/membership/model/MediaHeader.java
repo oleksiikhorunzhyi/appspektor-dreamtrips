@@ -1,7 +1,7 @@
 package com.worldventures.dreamtrips.modules.membership.model;
 
-import com.worldventures.dreamtrips.modules.reptools.model.VideoLanguage;
-import com.worldventures.dreamtrips.modules.reptools.model.VideoLocale;
+import com.worldventures.dreamtrips.modules.video.model.VideoLanguage;
+import com.worldventures.dreamtrips.modules.video.model.VideoLocale;
 
 public class MediaHeader {
 

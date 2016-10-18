@@ -5,9 +5,7 @@ import com.worldventures.dreamtrips.modules.bucketlist.model.CategoryItem;
 import com.worldventures.dreamtrips.modules.bucketlist.model.PopularBucketItem;
 import com.worldventures.dreamtrips.modules.bucketlist.model.Suggestion;
 import com.worldventures.dreamtrips.modules.common.model.DELETE_WITH_BODY;
-import com.worldventures.dreamtrips.modules.common.model.UploadTask;
 import com.worldventures.dreamtrips.modules.common.model.User;
-import com.worldventures.dreamtrips.modules.common.view.custom.tagview.viewgroup.newio.model.PhotoTag;
 import com.worldventures.dreamtrips.modules.feed.model.CreatePhotoEntity;
 import com.worldventures.dreamtrips.modules.feed.model.CreatePhotoPostEntity;
 import com.worldventures.dreamtrips.modules.feed.model.FeedEntityHolder;
@@ -17,11 +15,7 @@ import com.worldventures.dreamtrips.modules.membership.api.InviteBody;
 import com.worldventures.dreamtrips.modules.membership.model.History;
 import com.worldventures.dreamtrips.modules.membership.model.InviteTemplate;
 import com.worldventures.dreamtrips.modules.reptools.model.SuccessStory;
-import com.worldventures.dreamtrips.modules.tripsimages.model.AddPhotoTag;
-import com.worldventures.dreamtrips.modules.tripsimages.model.DeletePhotoTag;
-import com.worldventures.dreamtrips.modules.tripsimages.model.Inspiration;
 import com.worldventures.dreamtrips.modules.tripsimages.model.Photo;
-import com.worldventures.dreamtrips.modules.tripsimages.model.YSBHPhoto;
 
 import org.json.JSONObject;
 
@@ -44,27 +38,6 @@ public interface DreamTripsApi {
    String TYPE_MEMBER_360 = "DTAPP360";
    String TYPE_REP = "dtapprep";
    String TYPE_HELP = "DTAPPHELP";
-
-   /**
-    * Photo of all members
-    */
-   @GET("/api/photos")
-   ArrayList<Photo> getMembersPhotos(@Query("per_page") int perPage, @Query("page") int page);
-
-   @GET("/api/users/{user_id}/photos")
-   ArrayList<Photo> getUserPhotos(@Path("user_id") int userId, @Query("per_page") int query, @Query("page") int page);
-
-   @GET("/api/inspirations?random_seed=1")
-   ArrayList<Inspiration> getInspirationsPhotos(@Query("per_page") int perPage, @Query("page") int page, @Query("random_seed") double randomSeed);
-
-   @GET("/api/ysbh_photos")
-   ArrayList<YSBHPhoto> getYouShouldBeHerePhotos(@Query("per_page") int perPage, @Query("page") int page);
-
-   @DELETE("/api/photos/{id}")
-   JsonObject deletePhoto(@Path("id") String photoId);
-
-   @PUT("/api/photos/{uid}")
-   Photo editTripPhoto(@Path("uid") String uid, @Body UploadTask uploadTask);
 
    @POST("/api/photos")
    ArrayList<Photo> uploadPhotos(@Body CreatePhotoEntity entity);
@@ -183,10 +156,4 @@ public interface DreamTripsApi {
 
    @GET("/api/social/friends/{userId}/mutual/")
    ArrayList<User> getMutualFriends(@Path("userId") int userId);
-
-   @POST("/api/photos/{uid}/tags")
-   ArrayList<PhotoTag> addPhotoTags(@Path("uid") String photoId, @Body AddPhotoTag addTag);
-
-   @DELETE_WITH_BODY("/api/photos/{uid}/tags")
-   Void deletePhotoTags(@Path("uid") String photoId, @Body DeletePhotoTag deleteTag);
 }

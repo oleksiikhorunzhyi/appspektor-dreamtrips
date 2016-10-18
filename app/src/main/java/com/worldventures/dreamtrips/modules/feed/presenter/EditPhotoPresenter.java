@@ -7,12 +7,16 @@ import com.worldventures.dreamtrips.core.rx.composer.IoToMainComposer;
 import com.worldventures.dreamtrips.modules.common.model.UploadTask;
 import com.worldventures.dreamtrips.modules.feed.event.FeedEntityChangedEvent;
 import com.worldventures.dreamtrips.modules.feed.model.PhotoCreationItem;
-import com.worldventures.dreamtrips.modules.tripsimages.api.EditPhotoCommand;
 import com.worldventures.dreamtrips.modules.tripsimages.model.Photo;
+import com.worldventures.dreamtrips.modules.tripsimages.service.TripImagesInteractor;
+import com.worldventures.dreamtrips.modules.tripsimages.service.command.EditPhotoWithTagsCommand;
 import com.worldventures.dreamtrips.modules.tripsimages.vision.ImageUtils;
 
 import java.util.ArrayList;
 
+import javax.inject.Inject;
+
+import io.techery.janet.helper.ActionStateSubscriber;
 import rx.Observable;
 import rx.Subscription;
 import timber.log.Timber;
@@ -21,6 +25,7 @@ public class EditPhotoPresenter extends ActionEntityPresenter<EditPhotoPresenter
 
    private Photo photo;
    private Subscription faceSuggestionSubscription;
+   @Inject TripImagesInteractor tripImagesInteractor;
 
    public EditPhotoPresenter(Photo photo) {
       this.photo = photo;
@@ -107,13 +112,19 @@ public class EditPhotoPresenter extends ActionEntityPresenter<EditPhotoPresenter
       uploadTask.setLatitude((float) location.getLat());
       uploadTask.setLongitude((float) location.getLng());
       uploadTask.setShotAt(photo.getShotAt());
-      doRequest(new EditPhotoCommand(photo.getUid(), uploadTask, creationItem.getCachedAddedPhotoTags(), creationItem.getCachedRemovedPhotoTags()), entity -> {
-         eventBus.post(new FeedEntityChangedEvent(entity));
-         view.cancel();
-      }, spiceException -> {
-         handleError(spiceException);
-         view.onPostError();
-      });
+      tripImagesInteractor.editPhotoWithTagsCommandActionPipe()
+            .createObservable(new EditPhotoWithTagsCommand(photo.getUid(), uploadTask,
+                  creationItem.getCachedAddedPhotoTags(), creationItem.getCachedRemovedPhotoTags()))
+            .compose(new IoToMainComposer<>())
+            .subscribe(new ActionStateSubscriber<EditPhotoWithTagsCommand>()
+               .onSuccess(command -> {
+                  eventBus.post(new FeedEntityChangedEvent(command.getResult()));
+                  view.cancel();
+               })
+            .onFail((editPhotoWithTagsCommand, throwable) -> {
+               handleError(editPhotoWithTagsCommand, throwable);
+               view.onPostError();
+            }));
    }
 
    public interface View extends ActionEntityPresenter.View {

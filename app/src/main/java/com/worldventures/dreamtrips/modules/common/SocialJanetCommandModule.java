@@ -51,6 +51,12 @@ import com.worldventures.dreamtrips.modules.trips.command.GetTripDetailsCommand;
 import com.worldventures.dreamtrips.modules.trips.command.GetTripsByUidCommand;
 import com.worldventures.dreamtrips.modules.trips.command.GetTripsCommand;
 import com.worldventures.dreamtrips.modules.trips.command.GetTripsLocationsCommand;
+import com.worldventures.dreamtrips.modules.tripsimages.service.command.AddPhotoTagsCommand;
+import com.worldventures.dreamtrips.modules.tripsimages.service.command.DeletePhotoCommand;
+import com.worldventures.dreamtrips.modules.tripsimages.service.command.DeletePhotoTagsCommand;
+import com.worldventures.dreamtrips.modules.tripsimages.service.command.DownloadImageCommand;
+import com.worldventures.dreamtrips.modules.tripsimages.service.command.EditPhotoCommand;
+import com.worldventures.dreamtrips.modules.tripsimages.service.command.EditPhotoWithTagsCommand;
 import com.worldventures.dreamtrips.modules.tripsimages.service.command.GetInspireMePhotosCommand;
 import com.worldventures.dreamtrips.modules.tripsimages.service.command.GetMembersPhotosCommand;
 import com.worldventures.dreamtrips.modules.tripsimages.service.command.GetUserPhotosCommand;
@@ -129,6 +135,13 @@ import dagger.Module;
       GetMembersPhotosCommand.class,
       GetUserPhotosCommand.class,
       GetYSBHPhotosCommand.class,
-      TripImagesCommand.class
+      TripImagesCommand.class,
+      DeletePhotoCommand.class,
+      DeletePhotoTagsCommand.class,
+      SocialJanetCommandModule.class,
+      DownloadImageCommand.class,
+      AddPhotoTagsCommand.class,
+      EditPhotoCommand.class,
+      EditPhotoWithTagsCommand.class
 }, complete = false, library = true)
 public class SocialJanetCommandModule {}

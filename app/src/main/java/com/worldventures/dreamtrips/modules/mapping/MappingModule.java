@@ -29,6 +29,8 @@ import com.worldventures.dreamtrips.modules.mapping.converter.LocationConverter;
 import com.worldventures.dreamtrips.modules.mapping.converter.MemberImageConverter;
 import com.worldventures.dreamtrips.modules.mapping.converter.PhotoAuthorConverter;
 import com.worldventures.dreamtrips.modules.mapping.converter.PhotoTagConverter;
+import com.worldventures.dreamtrips.modules.mapping.converter.PhotoTagsParamsConverter;
+import com.worldventures.dreamtrips.modules.mapping.converter.PhotoUpdateParamsConverter;
 import com.worldventures.dreamtrips.modules.mapping.converter.PrivateProfileConverter;
 import com.worldventures.dreamtrips.modules.mapping.converter.PublicProfileConverter;
 import com.worldventures.dreamtrips.modules.mapping.converter.RelationshipConverter;
@@ -367,5 +369,17 @@ public class MappingModule {
    @Singleton
    Converter providePhotoAuthorConverter() {
       return new PhotoAuthorConverter();
+   }
+
+   @Provides(type = Provides.Type.SET)
+   @Singleton
+   Converter providePhotoTagsParamsConverter() {
+      return new PhotoTagsParamsConverter();
+   }
+
+   @Provides(type = Provides.Type.SET)
+   @Singleton
+   Converter providePhotoUpdateParamsConverter() {
+      return new PhotoUpdateParamsConverter();
    }
 }

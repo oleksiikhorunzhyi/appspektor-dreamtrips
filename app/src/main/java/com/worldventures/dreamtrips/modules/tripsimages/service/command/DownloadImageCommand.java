@@ -1,4 +1,4 @@
-package com.worldventures.dreamtrips.modules.tripsimages.api;
+package com.worldventures.dreamtrips.modules.tripsimages.service.command;
 
 import android.content.ContentResolver;
 import android.content.ContentUris;
@@ -10,7 +10,9 @@ import android.graphics.Matrix;
 import android.net.Uri;
 import android.provider.MediaStore;
 
-import com.worldventures.dreamtrips.core.api.request.Command;
+import com.techery.spares.module.qualifier.ForApplication;
+import com.worldventures.dreamtrips.core.api.action.CommandWithError;
+import com.worldventures.dreamtrips.core.janet.dagger.InjectableAction;
 import com.worldventures.dreamtrips.modules.video.model.CachedEntity;
 
 import java.io.FileNotFoundException;
@@ -18,31 +20,31 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.net.URL;
 
+import javax.inject.Inject;
+
+import io.techery.janet.Command;
+import io.techery.janet.command.annotations.CommandAction;
 import timber.log.Timber;
 
-public class DownloadImageCommand extends Command<String> {
+@CommandAction
+public class DownloadImageCommand extends Command<String> implements InjectableAction {
+
+   @Inject @ForApplication Context context;
 
    private String url;
-   private Context context;
 
-   public DownloadImageCommand(Context context, String url) {
-      super(String.class);
-      this.context = context;
+   public DownloadImageCommand(String url) {
       this.url = url;
    }
 
    @Override
-   public String loadDataFromNetwork() throws Exception {
-      return cacheBitmap();
+   protected void run(CommandCallback callback) throws Throwable {
+      callback.onSuccess(cacheBitmap());
    }
 
-   private String cacheBitmap() {
-      try {
-         Bitmap bitmap = BitmapFactory.decodeStream(new URL(url).openStream());
-         return insertImage(bitmap, CachedEntity.getFileName(url));
-      } catch (IOException e) {
-         return null;
-      }
+   private String cacheBitmap() throws Exception {
+      Bitmap bitmap = BitmapFactory.decodeStream(new URL(url).openStream());
+      return insertImage(bitmap, CachedEntity.getFileName(url));
    }
 
    /**

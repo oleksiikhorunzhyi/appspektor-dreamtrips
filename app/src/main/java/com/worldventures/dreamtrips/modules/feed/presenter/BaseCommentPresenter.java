@@ -38,8 +38,9 @@ import com.worldventures.dreamtrips.modules.feed.service.command.GetCommentsComm
 import com.worldventures.dreamtrips.modules.feed.service.command.TranslateUidItemCommand;
 import com.worldventures.dreamtrips.modules.feed.view.cell.Flaggable;
 import com.worldventures.dreamtrips.modules.trips.model.TripModel;
-import com.worldventures.dreamtrips.modules.tripsimages.api.DeletePhotoCommand;
+import com.worldventures.dreamtrips.modules.tripsimages.service.command.DeletePhotoCommand;
 import com.worldventures.dreamtrips.modules.tripsimages.model.Photo;
+import com.worldventures.dreamtrips.modules.tripsimages.service.TripImagesInteractor;
 
 import java.util.List;
 
@@ -57,6 +58,7 @@ public class BaseCommentPresenter<T extends BaseCommentPresenter.View> extends P
    @Inject CommentsInteractor commentsInteractor;
    @Inject LocaleHelper localeHelper;
    @Inject FlagsInteractor flagsInteractor;
+   @Inject TripImagesInteractor tripImagesInteractor;
 
    private FlagDelegate flagDelegate;
 
@@ -221,8 +223,14 @@ public class BaseCommentPresenter<T extends BaseCommentPresenter.View> extends P
    }
 
    public void onEvent(DeletePhotoEvent event) {
-      if (view.isVisibleOnScreen()) doRequest(new DeletePhotoCommand(event.getEntity()
-            .getUid()), aVoid -> itemDeleted(event.getEntity()));
+      if (view.isVisibleOnScreen()) {
+         tripImagesInteractor.deletePhotoPipe()
+               .createObservable(new DeletePhotoCommand(event.getEntity().getUid()))
+               .compose(bindViewToMainComposer())
+               .subscribe(new ActionStateSubscriber<DeletePhotoCommand>()
+                  .onSuccess(deletePhotoCommand -> itemDeleted(event.getEntity()))
+                  .onFail(this::handleError));
+      }
    }
 
    public void onEvent(DeleteBucketEvent event) {

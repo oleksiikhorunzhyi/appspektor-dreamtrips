@@ -36,8 +36,9 @@ import com.worldventures.dreamtrips.modules.feed.model.FeedItem;
 import com.worldventures.dreamtrips.modules.feed.service.FeedInteractor;
 import com.worldventures.dreamtrips.modules.feed.service.command.BaseGetFeedCommand;
 import com.worldventures.dreamtrips.modules.feed.view.util.TextualPostTranslationDelegate;
-import com.worldventures.dreamtrips.modules.tripsimages.api.DeletePhotoCommand;
-import com.worldventures.dreamtrips.modules.tripsimages.api.DownloadImageCommand;
+import com.worldventures.dreamtrips.modules.tripsimages.service.TripImagesInteractor;
+import com.worldventures.dreamtrips.modules.tripsimages.service.command.DeletePhotoCommand;
+import com.worldventures.dreamtrips.modules.tripsimages.service.command.DownloadImageCommand;
 import com.worldventures.dreamtrips.modules.tripsimages.bundle.TripsImagesBundle;
 
 import java.util.ArrayList;
@@ -63,6 +64,7 @@ public abstract class ProfilePresenter<T extends ProfilePresenter.View, U extend
    @Inject TextualPostTranslationDelegate textualPostTranslationDelegate;
    @Inject BucketInteractor bucketInteractor;
    @Inject FeedInteractor feedInteractor;
+   @Inject TripImagesInteractor tripImagesInteractor;
 
    public ProfilePresenter() {
    }
@@ -144,7 +146,13 @@ public abstract class ProfilePresenter<T extends ProfilePresenter.View, U extend
    }
 
    public void onEvent(DownloadPhotoEvent event) {
-      if (view.isVisibleOnScreen()) doRequest(new DownloadImageCommand(context, event.url));
+      if (view.isVisibleOnScreen()) {
+         tripImagesInteractor.downloadImageActionPipe()
+               .createObservable(new DownloadImageCommand(event.url))
+               .compose(bindViewToMainComposer())
+               .subscribe(new ActionStateSubscriber<DownloadImageCommand>()
+                     .onFail(this::handleError));
+      }
    }
 
    public void onEvent(EditBucketEvent event) {
@@ -239,9 +247,14 @@ public abstract class ProfilePresenter<T extends ProfilePresenter.View, U extend
    }
 
    public void onEvent(DeletePhotoEvent event) {
-      if (view.isVisibleOnScreen()) doRequest(new DeletePhotoCommand(event.getEntity()
-            .getUid()), aVoid -> itemDeleted(event.getEntity()));
-
+      if (view.isVisibleOnScreen()) {
+         tripImagesInteractor.deletePhotoPipe()
+               .createObservable(new DeletePhotoCommand(event.getEntity().getUid()))
+               .compose(bindViewToMainComposer())
+               .subscribe(new ActionStateSubscriber<DeletePhotoCommand>()
+                     .onSuccess(deletePhotoCommand -> itemDeleted(event.getEntity()))
+                     .onFail(this::handleError));
+      }
    }
 
    private void itemLiked(FeedEntity feedEntity) {

@@ -17,10 +17,9 @@ public interface Card {
 
    int expiryYear();
 
-   @Nullable
    Category category();
 
    enum Category {
-      BANK, DISCOUNT
+      BANK, DISCOUNT, SAMPLE
    }
 }

@@ -19,7 +19,6 @@ public abstract class BankCard implements Card {
    public abstract AddressInfo addressInfo();
 
    @Value.Default
-   @NotNull
    public RecordIssuerInfo issuerInfo(){
       return ImmutableRecordIssuerInfo.builder().build();
    }
@@ -27,6 +26,12 @@ public abstract class BankCard implements Card {
    @Value.Default
    public int cvv() {
       return 0;
+   }
+
+   @Value.Default
+   @Override
+   public Category category() {
+      return Category.BANK;
    }
 
    public enum CardType {

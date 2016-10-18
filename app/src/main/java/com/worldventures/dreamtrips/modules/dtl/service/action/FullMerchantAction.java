@@ -5,8 +5,6 @@ import com.worldventures.dreamtrips.api.dtl.merchants.MerchantByIdHttpAction;
 import com.worldventures.dreamtrips.core.api.action.CommandWithError;
 import com.worldventures.dreamtrips.core.janet.JanetModule;
 import com.worldventures.dreamtrips.core.janet.dagger.InjectableAction;
-import com.worldventures.dreamtrips.modules.dtl.model.location.DtlLocation;
-import com.worldventures.dreamtrips.modules.dtl.model.mapping.MerchantDistancePatcher;
 import com.worldventures.dreamtrips.modules.dtl.model.mapping.MerchantMapper;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.Merchant;
 
@@ -18,13 +16,18 @@ import io.techery.janet.command.annotations.CommandAction;
 import rx.schedulers.Schedulers;
 
 @CommandAction
-public class FullMerchantAction extends CommandWithError<Merchant> implements InjectableAction {
+public class FullMerchantAction extends CommandWithError<Merchant> implements InjectableAction, CachedAction<Merchant> {
 
    @Inject @Named(JanetModule.JANET_API_LIB) Janet janet;
 
    private final String offerId;
    private final String merchantId;
    private final DtlLocation dtlLocation;
+
+   private Merchant cache;
+
+   public static FullMerchantAction create(String merchantId) {
+      return create(merchantId, null);
 
    public static FullMerchantAction create(String merchantId, DtlLocation dtlLocation) {
       return create(merchantId, null, dtlLocation);
@@ -42,13 +45,15 @@ public class FullMerchantAction extends CommandWithError<Merchant> implements In
 
    @Override
    protected void run(CommandCallback<Merchant> callback) throws Throwable {
-      callback.onProgress(0);
-      janet.createPipe(MerchantByIdHttpAction.class, Schedulers.io())
-            .createObservableResult(new MerchantByIdHttpAction(merchantId))
-            .map(MerchantByIdHttpAction::merchant)
-            .map(MerchantMapper.INSTANCE::convert)
-            .map(MerchantDistancePatcher.create(dtlLocation))
-            .subscribe(callback::onSuccess, callback::onFail);
+      if (cache == null) {
+         callback.onProgress(0);
+         janet.createPipe(MerchantByIdHttpAction.class, Schedulers.io())
+               .createObservableResult(new MerchantByIdHttpAction(merchantId))
+               .map(MerchantByIdHttpAction::merchant)
+               .map(MerchantMapper.INSTANCE::convert)
+               .map(MerchantDistancePatcher.create(dtlLocation))
+               .subscribe(callback::onSuccess, callback::onFail);
+      } else callback.onSuccess(cache);
    }
 
    public String getOfferId() {
@@ -62,5 +67,22 @@ public class FullMerchantAction extends CommandWithError<Merchant> implements In
    @Override
    public int getFallbackErrorMessage() {
       return R.string.dtl_load_error;
+   }
+
+   @Override
+   public Merchant getCacheData() {
+      return getResult();
+   }
+
+   @Override
+   public void onRestore(ActionHolder holder, Merchant cache) {
+      this.cache = cache;
+   }
+
+   @Override
+   public CacheOptions getCacheOptions() {
+      CacheBundle bundle = new CacheBundleImpl();
+      bundle.put(MerchantStorage.BUNDLE_MERCHANT_ID, merchantId);
+      return ImmutableCacheOptions.builder().sendAfterRestore(cache == null).params(bundle).build();
    }
 }

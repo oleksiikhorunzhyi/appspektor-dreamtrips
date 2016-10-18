@@ -4,6 +4,7 @@ import com.worldventures.dreamtrips.wallet.service.command.ActivateSmartCardComm
 import com.worldventures.dreamtrips.wallet.service.command.CreateAndConnectToCardCommand;
 import com.worldventures.dreamtrips.wallet.service.command.SetupUserDataCommand;
 import com.worldventures.dreamtrips.wallet.service.command.http.AssociateCardUserCommand;
+import com.worldventures.dreamtrips.wallet.service.command.http.DisassociateCardUserCommand;
 import com.worldventures.dreamtrips.wallet.service.command.http.FetchAndStoreDefaultAddressInfoCommand;
 import com.worldventures.dreamtrips.wallet.service.command.wizard.WizardCheckCommand;
 
@@ -16,6 +17,7 @@ import rx.schedulers.Schedulers;
 
 public final class WizardInteractor {
    private final ActionPipe<AssociateCardUserCommand> associateCardUserCommandPipe;
+   private final ActionPipe<DisassociateCardUserCommand> disassociateCardUserCommandPipe;
    private final ActionPipe<CreateAndConnectToCardCommand> createAndConnectPipe;
    private final ActionPipe<SetupUserDataCommand> setupUserDataPipe;
 
@@ -28,6 +30,7 @@ public final class WizardInteractor {
 
    public WizardInteractor(Janet janet) {
       associateCardUserCommandPipe = janet.createPipe(AssociateCardUserCommand.class, Schedulers.io());
+      disassociateCardUserCommandPipe = janet.createPipe(DisassociateCardUserCommand.class, Schedulers.io());
       createAndConnectPipe = janet.createPipe(CreateAndConnectToCardCommand.class, Schedulers.io());
       setupUserDataPipe = janet.createPipe(SetupUserDataCommand.class, Schedulers.io());
       activateSmartCardPipe = janet.createPipe(ActivateSmartCardCommand.class, Schedulers.io());
@@ -63,6 +66,10 @@ public final class WizardInteractor {
 
    public ActionPipe<AssociateCardUserCommand> associateCardUserCommandPipe() {
       return associateCardUserCommandPipe;
+   }
+
+   public ActionPipe<DisassociateCardUserCommand> disassociateCardUserCommandPipe() {
+      return disassociateCardUserCommandPipe;
    }
 
    public ActionPipe<WizardCheckCommand> checksPipe() {

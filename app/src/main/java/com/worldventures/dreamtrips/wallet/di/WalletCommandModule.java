@@ -18,9 +18,6 @@ import com.worldventures.dreamtrips.wallet.service.command.FetchSmartCardLockSta
 import com.worldventures.dreamtrips.wallet.service.command.GetActiveSmartCardCommand;
 import com.worldventures.dreamtrips.wallet.service.command.GetDefaultAddressCommand;
 import com.worldventures.dreamtrips.wallet.service.command.LoadImageForSmartCardCommand;
-import com.worldventures.dreamtrips.wallet.service.command.reset.RemoveSmartCardDataCommand;
-import com.worldventures.dreamtrips.wallet.service.command.reset.ConfirmResetCommand;
-import com.worldventures.dreamtrips.wallet.service.command.reset.ResetSmartCardCommand;
 import com.worldventures.dreamtrips.wallet.service.command.SaveCardDetailsDataCommand;
 import com.worldventures.dreamtrips.wallet.service.command.SaveDefaultAddressCommand;
 import com.worldventures.dreamtrips.wallet.service.command.SaveLockStateCommand;
@@ -38,9 +35,13 @@ import com.worldventures.dreamtrips.wallet.service.command.firmware.InstallFirmw
 import com.worldventures.dreamtrips.wallet.service.command.firmware.PreInstallationCheckCommand;
 import com.worldventures.dreamtrips.wallet.service.command.http.AssociateCardUserCommand;
 import com.worldventures.dreamtrips.wallet.service.command.http.CreateBankCardCommand;
+import com.worldventures.dreamtrips.wallet.service.command.http.DisassociateCardUserCommand;
 import com.worldventures.dreamtrips.wallet.service.command.http.FetchAndStoreDefaultAddressInfoCommand;
 import com.worldventures.dreamtrips.wallet.service.command.http.FetchFirmwareInfoCommand;
 import com.worldventures.dreamtrips.wallet.service.command.http.FetchTermsAndConditionsCommand;
+import com.worldventures.dreamtrips.wallet.service.command.reset.ConfirmResetCommand;
+import com.worldventures.dreamtrips.wallet.service.command.reset.RemoveSmartCardDataCommand;
+import com.worldventures.dreamtrips.wallet.service.command.reset.ResetSmartCardCommand;
 import com.worldventures.dreamtrips.wallet.service.command.wizard.WizardCheckCommand;
 
 import dagger.Module;
@@ -89,7 +90,8 @@ import dagger.Module;
             ResetSmartCardCommand.class,
             ConfirmResetCommand.class,
             FetchBatteryLevelCommand.class,
-            SaveLockStateCommand.class
+            SaveLockStateCommand.class,
+            DisassociateCardUserCommand.class
       },
       complete = false, library = true)
 public class WalletCommandModule {}

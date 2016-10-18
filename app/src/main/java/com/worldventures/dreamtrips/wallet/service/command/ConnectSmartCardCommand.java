@@ -16,6 +16,7 @@ import io.techery.janet.Command;
 import io.techery.janet.Janet;
 import io.techery.janet.command.annotations.CommandAction;
 import io.techery.janet.smartcard.action.support.ConnectAction;
+import io.techery.janet.smartcard.model.ConnectionType;
 import io.techery.janet.smartcard.model.ImmutableConnectionParams;
 import rx.Observable;
 import timber.log.Timber;
@@ -35,18 +36,27 @@ public class ConnectSmartCardCommand extends Command<SmartCard> implements Injec
    protected void run(CommandCallback<SmartCard> callback) throws Throwable {
       janet.createPipe(ConnectAction.class)
             .createObservableResult(new ConnectAction(ImmutableConnectionParams.of((int) Long.parseLong(activeSmartCard.smartCardId()))))
+            .doOnNext(action -> {
+               SmartCard.ConnectionStatus status = SmartCard.ConnectionStatus.CONNECTED;
+               if (action.type == ConnectionType.DFU) {
+                  status = SmartCard.ConnectionStatus.DFU;
+               }
+               activeSmartCard = smartCardWithStatus(status);
+            })
             .flatMap(action -> fetchTechnicalProperties())
             .doOnNext(smartCard -> activeSmartCard = smartCard)
-            .subscribe(smartCard -> setStatusAndNotifyCallback(SmartCard.ConnectionStatus.CONNECTED, callback),
+            .subscribe(smartCard -> {
+                     callback.onSuccess(activeSmartCard);
+                  },
                   throwable -> {
                      Timber.e(throwable, "Error while connecting to smart card");
-                     setStatusAndNotifyCallback(SmartCard.ConnectionStatus.ERROR, callback);
-                  });
+                     callback.onSuccess(smartCardWithStatus(SmartCard.ConnectionStatus.ERROR));
+                  }
+            );
    }
 
-   private void setStatusAndNotifyCallback(SmartCard.ConnectionStatus connectionStatus, CommandCallback<SmartCard> callback) {
-      activeSmartCard = ImmutableSmartCard.copyOf(activeSmartCard).withConnectionStatus(connectionStatus);
-      callback.onSuccess(activeSmartCard);
+   private SmartCard smartCardWithStatus(SmartCard.ConnectionStatus connectionStatus) {
+      return ImmutableSmartCard.copyOf(activeSmartCard).withConnectionStatus(connectionStatus);
    }
 
    private Observable<SmartCard> fetchTechnicalProperties() {

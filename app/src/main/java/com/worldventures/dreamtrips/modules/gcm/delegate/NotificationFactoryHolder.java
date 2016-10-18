@@ -8,23 +8,31 @@ public class NotificationFactoryHolder {
    private FriendNotificationFactory friendNotificationFactory;
    private PhotoNotificationFactory photoNotificationFactory;
    private MessengerNotificationFactory messengerNotificationFactory;
+   private MerchantNotficationFactory merchantNotficationFactory;
 
-   public NotificationFactoryHolder(FriendNotificationFactory friendNotificationFactory, PhotoNotificationFactory photoNotificationFactory, MessengerNotificationFactory messengerNotificationFactory) {
+   public NotificationFactoryHolder(FriendNotificationFactory friendNotificationFactory,
+         PhotoNotificationFactory photoNotificationFactory, MessengerNotificationFactory messengerNotificationFactory,
+         MerchantNotficationFactory merchantNotficationFactory) {
       this.friendNotificationFactory = friendNotificationFactory;
       this.photoNotificationFactory = photoNotificationFactory;
       this.messengerNotificationFactory = messengerNotificationFactory;
+      this.merchantNotficationFactory = merchantNotficationFactory;
 
    }
 
-   public FriendNotificationFactory getFriendNotificationFactory() {
+   FriendNotificationFactory getFriendNotificationFactory() {
       return friendNotificationFactory;
    }
 
-   public PhotoNotificationFactory getPhotoNotificationFactory() {
+   PhotoNotificationFactory getPhotoNotificationFactory() {
       return photoNotificationFactory;
    }
 
-   public MessengerNotificationFactory getMessengerNotificationFactory() {
+   MessengerNotificationFactory getMessengerNotificationFactory() {
       return messengerNotificationFactory;
+   }
+
+   MerchantNotficationFactory getMerchantNotifcationFactory() {
+      return merchantNotficationFactory;
    }
 }

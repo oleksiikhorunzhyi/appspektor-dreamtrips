@@ -233,6 +233,7 @@
    <string name="wallet_wizard_checks_bluetooth_enable">Bluetooth is enabled</string>
    <string name="wallet_wizard_checks_network_not_available">You are not connected to the Internet</string>
    <string name="wallet_wizard_checks_network_available">You are connected to the Internet</string>
+   <string name="wallet_card_not_paired">Card is not paired with device</string>
 
    <!--pre installation check-->
    <string name="wallet_firmware_pre_installation_title">flye smart card Update</string>

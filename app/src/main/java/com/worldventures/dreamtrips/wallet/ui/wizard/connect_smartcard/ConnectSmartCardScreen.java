@@ -11,6 +11,7 @@ import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 
+import com.afollestad.materialdialogs.MaterialDialog;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletLinearLayout;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.OperationScreen;
@@ -84,5 +85,14 @@ public class ConnectSmartCardScreen extends WalletLinearLayout<ConnectSmartCardP
    @Override
    protected boolean hasToolbar() {
       return true;
+   }
+
+   @Override
+   public void showPairingErrorDialog() {
+      new MaterialDialog.Builder(getContext())
+            .content(R.string.wallet_card_not_paired)
+            .positiveText(R.string.ok)
+            .onPositive(((dialog, which) -> presenter.goBack()))
+            .show();
    }
 }

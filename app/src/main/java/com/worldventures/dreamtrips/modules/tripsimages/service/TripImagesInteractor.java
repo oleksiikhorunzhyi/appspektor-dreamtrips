@@ -1,10 +1,10 @@
 package com.worldventures.dreamtrips.modules.tripsimages.service;
 
 import com.worldventures.dreamtrips.core.janet.SessionActionPipeCreator;
-import com.worldventures.dreamtrips.modules.tripsimages.command.GetInspireMePhotosCommand;
-import com.worldventures.dreamtrips.modules.tripsimages.command.GetMembersPhotosCommand;
-import com.worldventures.dreamtrips.modules.tripsimages.command.GetUserPhotosCommand;
-import com.worldventures.dreamtrips.modules.tripsimages.command.GetYSBHPhotosCommand;
+import com.worldventures.dreamtrips.modules.tripsimages.service.command.GetInspireMePhotosCommand;
+import com.worldventures.dreamtrips.modules.tripsimages.service.command.GetMembersPhotosCommand;
+import com.worldventures.dreamtrips.modules.tripsimages.service.command.GetUserPhotosCommand;
+import com.worldventures.dreamtrips.modules.tripsimages.service.command.GetYSBHPhotosCommand;
 import com.worldventures.dreamtrips.modules.tripsimages.service.command.CreatePhotoCreationItemCommand;
 import com.worldventures.dreamtrips.modules.tripsimages.service.command.FetchLocationFromExifCommand;
 

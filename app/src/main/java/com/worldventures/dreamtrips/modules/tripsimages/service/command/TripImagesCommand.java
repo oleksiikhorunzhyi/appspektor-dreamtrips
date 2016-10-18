@@ -1,4 +1,4 @@
-package com.worldventures.dreamtrips.modules.tripsimages.command;
+package com.worldventures.dreamtrips.modules.tripsimages.service.command;
 
 import com.worldventures.dreamtrips.core.api.action.CommandWithError;
 import com.worldventures.dreamtrips.core.janet.JanetModule;

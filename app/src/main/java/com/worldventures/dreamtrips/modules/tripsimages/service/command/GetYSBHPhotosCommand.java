@@ -1,10 +1,9 @@
-package com.worldventures.dreamtrips.modules.tripsimages.command;
+package com.worldventures.dreamtrips.modules.tripsimages.service.command;
 
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.api.photos.GetPhotosOfUserHttpAction;
 import com.worldventures.dreamtrips.api.ysbh.GetYSBHPhotosHttpAction;
-import com.worldventures.dreamtrips.modules.tripsimages.model.Photo;
 import com.worldventures.dreamtrips.modules.tripsimages.model.YSBHPhoto;
+import com.worldventures.dreamtrips.modules.tripsimages.service.command.TripImagesCommand;
 
 import io.techery.janet.command.annotations.CommandAction;
 

@@ -3,7 +3,7 @@ package com.worldventures.dreamtrips.modules.tripsimages.presenter;
 import com.worldventures.dreamtrips.modules.feed.service.NotificationFeedInteractor;
 import com.worldventures.dreamtrips.modules.feed.service.command.MarkNotificationAsReadCommand;
 import com.worldventures.dreamtrips.modules.profile.bundle.UserBundle;
-import com.worldventures.dreamtrips.modules.tripsimages.command.TripImagesCommand;
+import com.worldventures.dreamtrips.modules.tripsimages.service.command.TripImagesCommand;
 import com.worldventures.dreamtrips.modules.tripsimages.model.IFullScreenObject;
 import com.worldventures.dreamtrips.modules.tripsimages.model.TripImagesType;
 

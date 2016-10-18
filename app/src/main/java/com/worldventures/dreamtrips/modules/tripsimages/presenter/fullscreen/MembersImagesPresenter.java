@@ -1,7 +1,7 @@
 package com.worldventures.dreamtrips.modules.tripsimages.presenter.fullscreen;
 
 import com.worldventures.dreamtrips.modules.common.view.util.MediaPickerEventDelegate;
-import com.worldventures.dreamtrips.modules.tripsimages.command.GetMembersPhotosCommand;
+import com.worldventures.dreamtrips.modules.tripsimages.service.command.GetMembersPhotosCommand;
 import com.worldventures.dreamtrips.modules.tripsimages.model.TripImagesType;
 
 import javax.inject.Inject;

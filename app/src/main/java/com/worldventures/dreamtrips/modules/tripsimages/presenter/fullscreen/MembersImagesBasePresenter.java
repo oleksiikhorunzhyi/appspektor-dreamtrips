@@ -5,16 +5,13 @@ import android.support.annotation.NonNull;
 import com.worldventures.dreamtrips.modules.common.model.MediaAttachment;
 import com.worldventures.dreamtrips.modules.common.view.util.MediaPickerEventDelegate;
 import com.worldventures.dreamtrips.modules.feed.bundle.CreateEntityBundle;
-import com.worldventures.dreamtrips.modules.tripsimages.command.TripImagesCommand;
+import com.worldventures.dreamtrips.modules.tripsimages.service.command.TripImagesCommand;
 import com.worldventures.dreamtrips.modules.tripsimages.model.IFullScreenObject;
 import com.worldventures.dreamtrips.modules.tripsimages.model.TripImagesType;
 import com.worldventures.dreamtrips.modules.tripsimages.presenter.TripImagesListPresenter;
 
 import javax.inject.Inject;
 
-/**
- * ALL MEMBERS PHOTOS. 1 TAB in Trip Images page.
- */
 public abstract class MembersImagesBasePresenter<C extends TripImagesCommand<? extends IFullScreenObject>> extends TripImagesListPresenter<MembersImagesBasePresenter.View, C> {
 
    @Inject MediaPickerEventDelegate mediaPickerEventDelegate;

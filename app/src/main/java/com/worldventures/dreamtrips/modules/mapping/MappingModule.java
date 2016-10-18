@@ -27,6 +27,7 @@ import com.worldventures.dreamtrips.modules.mapping.converter.ImageConverter;
 import com.worldventures.dreamtrips.modules.mapping.converter.InspirationModelsConverter;
 import com.worldventures.dreamtrips.modules.mapping.converter.LocationConverter;
 import com.worldventures.dreamtrips.modules.mapping.converter.MemberImageConverter;
+import com.worldventures.dreamtrips.modules.mapping.converter.PhotoAuthorConverter;
 import com.worldventures.dreamtrips.modules.mapping.converter.PhotoTagConverter;
 import com.worldventures.dreamtrips.modules.mapping.converter.PrivateProfileConverter;
 import com.worldventures.dreamtrips.modules.mapping.converter.PublicProfileConverter;
@@ -34,6 +35,7 @@ import com.worldventures.dreamtrips.modules.mapping.converter.RelationshipConver
 import com.worldventures.dreamtrips.modules.mapping.converter.ReverseLocationConverter;
 import com.worldventures.dreamtrips.modules.mapping.converter.ShortProfilesConverter;
 import com.worldventures.dreamtrips.modules.mapping.converter.SimplePhotoConverter;
+import com.worldventures.dreamtrips.modules.mapping.converter.TaggedUserConverter;
 import com.worldventures.dreamtrips.modules.mapping.converter.UserAvatarConverter;
 import com.worldventures.dreamtrips.modules.mapping.converter.YSBHPhotoConverter;
 import com.worldventures.dreamtrips.modules.mapping.mapper.PodcastsMapper;
@@ -353,5 +355,17 @@ public class MappingModule {
    @Singleton
    Converter provideYSBHPhotoConverter() {
       return new YSBHPhotoConverter();
+   }
+
+   @Provides(type = Provides.Type.SET)
+   @Singleton
+   Converter provideTaggedUserConverter() {
+      return new TaggedUserConverter();
+   }
+
+   @Provides(type = Provides.Type.SET)
+   @Singleton
+   Converter providePhotoAuthorConverter() {
+      return new PhotoAuthorConverter();
    }
 }

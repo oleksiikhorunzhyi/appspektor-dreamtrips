@@ -1,6 +1,6 @@
 package com.worldventures.dreamtrips.modules.tripsimages.presenter.fullscreen;
 
-import com.worldventures.dreamtrips.modules.tripsimages.command.GetUserPhotosCommand;
+import com.worldventures.dreamtrips.modules.tripsimages.service.command.GetUserPhotosCommand;
 import com.worldventures.dreamtrips.modules.tripsimages.model.TripImagesType;
 
 import io.techery.janet.ActionPipe;

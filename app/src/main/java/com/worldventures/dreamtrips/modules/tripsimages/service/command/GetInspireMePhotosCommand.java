@@ -1,9 +1,10 @@
-package com.worldventures.dreamtrips.modules.tripsimages.command;
+package com.worldventures.dreamtrips.modules.tripsimages.service.command;
 
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.api.inspirations.GetInspireMePhotosHttpAction;
 import com.worldventures.dreamtrips.core.janet.JanetModule;
 import com.worldventures.dreamtrips.modules.tripsimages.model.Inspiration;
+import com.worldventures.dreamtrips.modules.tripsimages.service.command.TripImagesCommand;
 
 import java.util.List;
 

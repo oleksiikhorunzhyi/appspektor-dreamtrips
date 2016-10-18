@@ -16,7 +16,7 @@ import com.worldventures.dreamtrips.modules.feed.event.FeedEntityChangedEvent;
 import com.worldventures.dreamtrips.modules.feed.event.FeedItemAddedEvent;
 import com.worldventures.dreamtrips.modules.feed.model.TextualPost;
 import com.worldventures.dreamtrips.modules.tripsimages.bundle.FullScreenImagesBundle;
-import com.worldventures.dreamtrips.modules.tripsimages.command.TripImagesCommand;
+import com.worldventures.dreamtrips.modules.tripsimages.service.command.TripImagesCommand;
 import com.worldventures.dreamtrips.modules.tripsimages.model.IFullScreenObject;
 import com.worldventures.dreamtrips.modules.tripsimages.model.Photo;
 import com.worldventures.dreamtrips.modules.tripsimages.model.TripImagesType;

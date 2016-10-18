@@ -1,6 +1,6 @@
 package com.worldventures.dreamtrips.modules.tripsimages.presenter;
 
-import com.worldventures.dreamtrips.modules.tripsimages.command.GetYSBHPhotosCommand;
+import com.worldventures.dreamtrips.modules.tripsimages.service.command.GetYSBHPhotosCommand;
 import com.worldventures.dreamtrips.modules.tripsimages.model.TripImagesType;
 
 import io.techery.janet.ActionPipe;

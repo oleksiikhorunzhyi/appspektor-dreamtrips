@@ -32,17 +32,7 @@ public class SimplePhotoConverter implements Converter<PhotoSimple, Photo> {
       photo.setPhotoTagsCount(apiPhoto.photoTagsCount());
       photo.setPhotoTags(mapperyContext.convert(apiPhoto.photoTags(), PhotoTag.class));
 
-      User user = new User();
-      PhotoAuthor photoAuthor = apiPhoto.author();
-      user.setId(photoAuthor.id());
-      user.setFirstName(photoAuthor.firstName());
-      user.setLastName(photoAuthor.lastName());
-      user.setUsername(photoAuthor.username());
-      user.setAvatar(mapperyContext.convert(photoAuthor.avatar(), User.Avatar.class));
-      user.setLocation(photoAuthor.location());
-      user.setCompany(photoAuthor.company());
-
-      photo.setUser(user);
+      photo.setUser(mapperyContext.convert(apiPhoto.author(), User.class));
 
       return photo;
    }

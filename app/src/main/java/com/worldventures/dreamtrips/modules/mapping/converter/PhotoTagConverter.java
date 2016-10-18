@@ -26,17 +26,7 @@ public class PhotoTagConverter implements Converter<com.worldventures.dreamtrips
       TagPosition tagPosition = new TagPosition(topLeft, bottomRight);
       tag.setTagPosition(tagPosition);
 
-      User user = new User();
-      TaggedUser apiUser = apiTag.user();
-      user.setId(apiTag.id());
-      user.setFirstName(apiUser.firstName());
-      user.setLastName(apiUser.lastName());
-      user.setUsername(apiUser.username());
-      user.setAvatar(mapperyContext.convert(apiUser.avatar(), User.Avatar.class));
-      user.setBadges(apiUser.badges());
-      user.setLocation(apiUser.location());
-      user.setCompany(apiUser.company());
-      tag.setUser(user);
+      tag.setUser(mapperyContext.convert(apiTag.user(), User.class));
 
       return tag;
    }

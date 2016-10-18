@@ -11,6 +11,7 @@ import com.worldventures.dreamtrips.wallet.domain.entity.SmartCard;
 import com.worldventures.dreamtrips.wallet.service.WizardInteractor;
 import com.worldventures.dreamtrips.wallet.service.command.CreateAndConnectToCardCommand;
 import com.worldventures.dreamtrips.wallet.service.command.http.AssociateCardUserCommand;
+import com.worldventures.dreamtrips.wallet.service.command.http.DisassociateCardUserCommand;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletPresenter;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.WalletScreen;
 import com.worldventures.dreamtrips.wallet.ui.common.helper.ErrorActionStateSubscriberWrapper;
@@ -73,16 +74,31 @@ public class ConnectSmartCardPresenter extends WalletPresenter<ConnectSmartCardP
       wizardInteractor.associateCardUserCommandPipe()
             .observe()
             .compose(bindViewIoToMainComposer())
-            .subscribe(ErrorActionStateSubscriberWrapper.<AssociateCardUserCommand>forView(getView().provideOperationDelegate())
+            .subscribe(ErrorActionStateSubscriberWrapper.<AssociateCardUserCommand>forView(getView()
+                  .provideOperationDelegate())
                   .onFail(ErrorHandler.<AssociateCardUserCommand>builder(getContext())
                         .handle(FormatException.class, R.string.wallet_wizard_bar_code_validation_error)
-                        .defaultAction(command -> navigator.goBack())
-                        .build()
-                  )
+                        .defaultAction(command -> startDisassociate())
+                        .build())
                   .wrap()
             );
 
       wizardInteractor.associateCardUserCommandPipe().send(new AssociateCardUserCommand(barcode));
+   }
+
+   private void startDisassociate() {
+      wizardInteractor.disassociateCardUserCommandPipe()
+            .observe()
+            .compose(bindViewIoToMainComposer())
+            .subscribe(ErrorActionStateSubscriberWrapper.<DisassociateCardUserCommand>forView(getView()
+                  .provideOperationDelegate())
+                  .onFail(ErrorHandler.<DisassociateCardUserCommand>builder(getContext())
+                        .defaultMessage(R.string.wallet_fail_disassociate)
+                        .build())
+                  .onSuccess(commandDisassociate -> goBack())
+                  .wrap());
+
+      wizardInteractor.disassociateCardUserCommandPipe().send(new DisassociateCardUserCommand(barcode));
    }
 
    private void smartCardCreated(SmartCard smartCard) {

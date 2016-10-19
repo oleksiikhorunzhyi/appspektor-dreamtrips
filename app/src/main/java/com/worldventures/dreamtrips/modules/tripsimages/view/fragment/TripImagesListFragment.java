@@ -136,7 +136,7 @@ public class TripImagesListFragment<T extends TripImagesListPresenter> extends R
    protected T createPresenter(Bundle savedInstanceState) {
       TripImagesType type = getArgs().getType();
       int userId = getArgs().getUserId();
-      return (T) TripImagesListPresenter.create(type, userId, null, false, 0, NO_NOTIFICATION);
+      return (T) TripImagesListPresenter.create(type, userId, null, 0, NO_NOTIFICATION);
    }
 
    @Override

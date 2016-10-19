@@ -15,7 +15,6 @@ import io.techery.janet.ActionPipe;
 
 public class FixedListPhotosPresenter extends TripImagesListPresenter<TripImagesListPresenter.View, TripImagesCommand<? extends IFullScreenObject>> {
 
-   private ArrayList<IFullScreenObject> photos;
    private int notificationId;
 
    @Inject NotificationFeedInteractor notificationFeedInteractor;
@@ -34,8 +33,11 @@ public class FixedListPhotosPresenter extends TripImagesListPresenter<TripImages
    }
 
    @Override
-   protected void syncPhotosAndUpdatePosition() {
-      super.photos.addAll(photos);
+   public void reload() {
+   }
+
+   @Override
+   public void loadNext() {
    }
 
    @Override

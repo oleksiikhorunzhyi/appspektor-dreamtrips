@@ -42,7 +42,6 @@ public abstract class TripImagesListPresenter<VT extends TripImagesListPresenter
    @Inject protected TripImagesInteractor tripImagesInteractor;
 
    protected TripImagesType type;
-   protected boolean fullscreenMode;
 
    private int previousTotal = 0;
    private boolean loading = true;
@@ -58,7 +57,7 @@ public abstract class TripImagesListPresenter<VT extends TripImagesListPresenter
    }
 
    public static TripImagesListPresenter create(TripImagesType type, int userId, ArrayList<IFullScreenObject> photos,
-         boolean fullScreenMode, int currentPhotosPosition, int notificationId) {
+         int currentPhotosPosition, int notificationId) {
       TripImagesListPresenter presenter;
       switch (type) {
          case MEMBERS_IMAGES:
@@ -81,7 +80,6 @@ public abstract class TripImagesListPresenter<VT extends TripImagesListPresenter
             throw new RuntimeException("Trip image type is not found");
       }
 
-      presenter.setFullscreenMode(fullScreenMode);
       presenter.setCurrentPhotoPosition(currentPhotosPosition);
       return presenter;
    }
@@ -90,27 +88,14 @@ public abstract class TripImagesListPresenter<VT extends TripImagesListPresenter
    public void takeView(VT view) {
       super.takeView(view);
       view.clear();
-      syncPhotosAndUpdatePosition();
+      fillWithItems();
+      reload();
+   }
+
+   protected void fillWithItems() {
+      photos.addAll(db.readPhotoEntityList(type, userId));
       view.fillWithItems(photos);
       view.setSelection(currentPhotoPosition);
-
-      if (!fullscreenMode) {
-         reload();
-      }
-   }
-
-   protected void syncPhotosAndUpdatePosition() {
-      photos.addAll(db.readPhotoEntityList(type, userId));
-
-      if (fullscreenMode) {
-         int prevPhotosCount = photos.size();
-         photos = Queryable.from(photos).filter(element -> !(element instanceof UploadTask)).toList();
-         currentPhotoPosition -= prevPhotosCount - photos.size();
-      }
-   }
-
-   public void setFullscreenMode(boolean isFullscreen) {
-      this.fullscreenMode = isFullscreen;
    }
 
    public void scrolled(int visibleItemCount, int totalItemCount, int firstVisibleItem) {
@@ -143,9 +128,7 @@ public abstract class TripImagesListPresenter<VT extends TripImagesListPresenter
       getLoadingPipe().createObservable(command)
             .compose(bindViewToMainComposer())
             .subscribe(new ActionStateSubscriber<C>()
-               .onSuccess(c -> {
-                  successAction.call((List<IFullScreenObject>) c.getResult());
-               })
+               .onSuccess(c -> successAction.call((List<IFullScreenObject>) c.getResult()))
             .onFail(this::handleError));
    }
 
@@ -185,17 +168,10 @@ public abstract class TripImagesListPresenter<VT extends TripImagesListPresenter
    }
 
    public void onItemClick(int position) {
-      if (position != -1) {
-         if (this instanceof MembersImagesBasePresenter) {
-            IFullScreenObject screenObject = photos.get(position);
-            analyticsInteractor.analyticsActionPipe().send(new TripImageViewAnalyticsEvent(screenObject.getFSId()));
-         }
-         view.openFullscreen(getFullscreenArgs(position).build());
-      }
+      view.openFullscreen(getFullscreenArgs(position).build());
    }
 
-   @NonNull
-   protected FullScreenImagesBundle.Builder getFullscreenArgs(int position) {
+   private FullScreenImagesBundle.Builder getFullscreenArgs(int position) {
       return new FullScreenImagesBundle.Builder().position(position)
             .userId(userId)
             .route(getRouteByType(type))

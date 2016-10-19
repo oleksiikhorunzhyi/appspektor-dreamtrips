@@ -5,6 +5,7 @@ import android.support.annotation.NonNull;
 import com.worldventures.dreamtrips.modules.common.model.MediaAttachment;
 import com.worldventures.dreamtrips.modules.common.view.util.MediaPickerEventDelegate;
 import com.worldventures.dreamtrips.modules.feed.bundle.CreateEntityBundle;
+import com.worldventures.dreamtrips.modules.tripsimages.service.analytics.TripImageViewAnalyticsEvent;
 import com.worldventures.dreamtrips.modules.tripsimages.service.command.TripImagesCommand;
 import com.worldventures.dreamtrips.modules.tripsimages.model.IFullScreenObject;
 import com.worldventures.dreamtrips.modules.tripsimages.model.TripImagesType;
@@ -44,6 +45,13 @@ public abstract class MembersImagesBasePresenter<C extends TripImagesCommand<? e
          default:
             return CreateEntityBundle.Origin.MEMBER_TRIP_IMAGES;
       }
+   }
+
+   @Override
+   public void onItemClick(int position) {
+      super.onItemClick(position);
+      IFullScreenObject screenObject = photos.get(position);
+      analyticsInteractor.analyticsActionPipe().send(new TripImageViewAnalyticsEvent(screenObject.getFSId()));
    }
 
    public interface View extends TripImagesListPresenter.View {

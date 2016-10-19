@@ -54,7 +54,7 @@ public class FullScreenPhotoWrapperFragment extends RxBaseFragmentWithArgs<TripI
       int notificationId = getArgs().getNotificationId();
       this.route = getArgs().getRoute();
       ArrayList<IFullScreenObject> fixedList = getArgs().getFixedList();
-      return TripImagesListPresenter.create(type, userId, fixedList, true, position, notificationId);
+      return TripImagesListPresenter.create(type, userId, fixedList, position, notificationId);
    }
 
    @Override

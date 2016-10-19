@@ -18,6 +18,7 @@ import com.worldventures.dreamtrips.wallet.domain.entity.RecordIssuerInfo
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCard
 import com.worldventures.dreamtrips.wallet.domain.entity.card.BankCard
 import com.worldventures.dreamtrips.wallet.domain.entity.card.BankCard.CardType
+import com.worldventures.dreamtrips.wallet.domain.entity.card.Card
 import com.worldventures.dreamtrips.wallet.domain.storage.DefaultBankCardStorage
 import com.worldventures.dreamtrips.wallet.domain.storage.SmartCardStorage
 import com.worldventures.dreamtrips.wallet.domain.storage.WalletCardsDiskStorage
@@ -378,7 +379,6 @@ class SmartCardInteractorSpec : BaseSpec({
 
       private fun prepareCardsAndAddressMock() {
 
-
          whenever(mockedIssuerInfo.financialService()).thenReturn(Record.FinancialService.MASTERCARD)
          whenever(mockedIssuerInfo.cardType()).thenReturn(CardType.DEBIT)
          whenever(mockedIssuerInfo.bankName()).thenReturn("Bank Name")
@@ -398,6 +398,7 @@ class SmartCardInteractorSpec : BaseSpec({
          whenever(mockedDebitCard.addressInfo()).thenReturn(mockedAddressInfo)
          whenever(mockedDebitCard.expiryMonth()).thenReturn(12)
          whenever(mockedDebitCard.expiryYear()).thenReturn(34)
+         whenever(mockedDebitCard.category()).thenReturn(Card.Category.BANK)
          whenever(mockedDebitCard.issuerInfo()).thenReturn(mockedIssuerInfo)
 
       }

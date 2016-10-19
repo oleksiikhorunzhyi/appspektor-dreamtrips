@@ -13,14 +13,14 @@ import javax.inject.Inject;
 
 import io.techery.janet.ActionPipe;
 
-public class FixedListPhotosFullScreenPresenter extends TripImagesListPresenter<TripImagesListPresenter.View, TripImagesCommand<? extends IFullScreenObject>> {
+public class FixedListPhotosPresenter extends TripImagesListPresenter<TripImagesListPresenter.View, TripImagesCommand<? extends IFullScreenObject>> {
 
    private ArrayList<IFullScreenObject> photos;
    private int notificationId;
 
    @Inject NotificationFeedInteractor notificationFeedInteractor;
 
-   public FixedListPhotosFullScreenPresenter(ArrayList<IFullScreenObject> photos, int userId, int notificationId) {
+   public FixedListPhotosPresenter(ArrayList<IFullScreenObject> photos, int userId, int notificationId) {
       super(TripImagesType.FIXED, userId);
       this.photos = photos;
       this.notificationId = notificationId;

@@ -1,4 +1,4 @@
-package com.worldventures.dreamtrips.modules.tripsimages.presenter.fullscreen;
+package com.worldventures.dreamtrips.modules.tripsimages.presenter;
 
 import android.support.annotation.NonNull;
 
@@ -8,7 +8,6 @@ import com.worldventures.dreamtrips.modules.feed.bundle.CreateEntityBundle;
 import com.worldventures.dreamtrips.modules.tripsimages.service.command.TripImagesCommand;
 import com.worldventures.dreamtrips.modules.tripsimages.model.IFullScreenObject;
 import com.worldventures.dreamtrips.modules.tripsimages.model.TripImagesType;
-import com.worldventures.dreamtrips.modules.tripsimages.presenter.TripImagesListPresenter;
 
 import javax.inject.Inject;
 

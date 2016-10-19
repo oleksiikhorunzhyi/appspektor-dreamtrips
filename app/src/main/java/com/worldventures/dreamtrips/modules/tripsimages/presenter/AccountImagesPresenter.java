@@ -1,4 +1,4 @@
-package com.worldventures.dreamtrips.modules.tripsimages.presenter.fullscreen;
+package com.worldventures.dreamtrips.modules.tripsimages.presenter;
 
 import com.worldventures.dreamtrips.modules.tripsimages.service.command.GetUserPhotosCommand;
 import com.worldventures.dreamtrips.modules.tripsimages.model.TripImagesType;

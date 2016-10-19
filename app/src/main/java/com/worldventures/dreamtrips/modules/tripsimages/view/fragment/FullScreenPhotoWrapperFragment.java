@@ -27,7 +27,7 @@ import com.worldventures.dreamtrips.modules.tripsimages.model.IFullScreenObject;
 import com.worldventures.dreamtrips.modules.tripsimages.model.SocialViewPagerState;
 import com.worldventures.dreamtrips.modules.tripsimages.model.TripImagesType;
 import com.worldventures.dreamtrips.modules.tripsimages.presenter.TripImagesListPresenter;
-import com.worldventures.dreamtrips.modules.tripsimages.presenter.fullscreen.MembersImagesPresenter;
+import com.worldventures.dreamtrips.modules.tripsimages.presenter.MembersImagesPresenter;
 
 import java.util.ArrayList;
 import java.util.List;

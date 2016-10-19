@@ -1,6 +1,7 @@
-package com.worldventures.dreamtrips.modules.tripsimages.presenter.fullscreen;
+package com.worldventures.dreamtrips.modules.tripsimages.presenter;
 
 import com.worldventures.dreamtrips.modules.common.view.util.MediaPickerEventDelegate;
+import com.worldventures.dreamtrips.modules.tripsimages.presenter.MembersImagesBasePresenter;
 import com.worldventures.dreamtrips.modules.tripsimages.service.command.GetMembersPhotosCommand;
 import com.worldventures.dreamtrips.modules.tripsimages.model.TripImagesType;
 

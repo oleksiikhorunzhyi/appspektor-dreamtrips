@@ -20,9 +20,6 @@ import com.worldventures.dreamtrips.modules.tripsimages.service.command.TripImag
 import com.worldventures.dreamtrips.modules.tripsimages.model.IFullScreenObject;
 import com.worldventures.dreamtrips.modules.tripsimages.model.Photo;
 import com.worldventures.dreamtrips.modules.tripsimages.model.TripImagesType;
-import com.worldventures.dreamtrips.modules.tripsimages.presenter.fullscreen.AccountImagesPresenter;
-import com.worldventures.dreamtrips.modules.tripsimages.presenter.fullscreen.MembersImagesBasePresenter;
-import com.worldventures.dreamtrips.modules.tripsimages.presenter.fullscreen.MembersImagesPresenter;
 import com.worldventures.dreamtrips.modules.tripsimages.service.TripImagesInteractor;
 import com.worldventures.dreamtrips.modules.tripsimages.service.analytics.TripImageViewAnalyticsEvent;
 
@@ -78,7 +75,7 @@ public abstract class TripImagesListPresenter<VT extends TripImagesListPresenter
             presenter = new InspireMePresenter(userId);
             break;
          case FIXED:
-            presenter = new FixedListPhotosFullScreenPresenter(photos, userId, notificationId);
+            presenter = new FixedListPhotosPresenter(photos, userId, notificationId);
             break;
          default:
             throw new RuntimeException("Trip image type is not found");

@@ -33,7 +33,7 @@ import com.worldventures.dreamtrips.modules.tripsimages.model.Photo;
 import com.worldventures.dreamtrips.modules.tripsimages.model.TripImagesType;
 import com.worldventures.dreamtrips.modules.tripsimages.model.YSBHPhoto;
 import com.worldventures.dreamtrips.modules.tripsimages.presenter.TripImagesListPresenter;
-import com.worldventures.dreamtrips.modules.tripsimages.presenter.fullscreen.MembersImagesPresenter;
+import com.worldventures.dreamtrips.modules.tripsimages.presenter.MembersImagesPresenter;
 import com.worldventures.dreamtrips.modules.tripsimages.view.cell.PhotoCell;
 import com.worldventures.dreamtrips.modules.tripsimages.view.cell.PhotoUploadCell;
 

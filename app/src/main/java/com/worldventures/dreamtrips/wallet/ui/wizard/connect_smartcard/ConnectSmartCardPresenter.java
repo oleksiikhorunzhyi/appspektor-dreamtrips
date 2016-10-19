@@ -66,6 +66,7 @@ public class ConnectSmartCardPresenter extends WalletPresenter<ConnectSmartCardP
             .subscribe(OperationActionStateSubscriberWrapper.<CreateAndConnectToCardCommand>forView(getView().provideOperationDelegate())
                   .onSuccess(command -> smartCardCreated(command.getResult()))
                   .onFail(ErrorHandler.create(getContext(), command -> {
+                     startDisassociate(command.getResult().smartCardId());
                      getView().showPairingErrorDialog();
                      Timber.e("Could not connect to device");
                   }))
@@ -78,7 +79,6 @@ public class ConnectSmartCardPresenter extends WalletPresenter<ConnectSmartCardP
                   .provideOperationDelegate())
                   .onFail(ErrorHandler.<AssociateCardUserCommand>builder(getContext())
                         .handle(FormatException.class, R.string.wallet_wizard_bar_code_validation_error)
-                        .defaultAction(command -> startDisassociate())
                         .build())
                   .wrap()
             );
@@ -86,19 +86,8 @@ public class ConnectSmartCardPresenter extends WalletPresenter<ConnectSmartCardP
       wizardInteractor.associateCardUserCommandPipe().send(new AssociateCardUserCommand(barcode));
    }
 
-   private void startDisassociate() {
-      wizardInteractor.disassociateCardUserCommandPipe()
-            .observe()
-            .compose(bindViewIoToMainComposer())
-            .subscribe(ErrorActionStateSubscriberWrapper.<DisassociateCardUserCommand>forView(getView()
-                  .provideOperationDelegate())
-                  .onFail(ErrorHandler.<DisassociateCardUserCommand>builder(getContext())
-                        .defaultMessage(R.string.wallet_fail_disassociate)
-                        .build())
-                  .onSuccess(commandDisassociate -> goBack())
-                  .wrap());
-
-      wizardInteractor.disassociateCardUserCommandPipe().send(new DisassociateCardUserCommand(barcode));
+   private void startDisassociate(String smartCardId) {
+      wizardInteractor.disassociateCardUserCommandPipe().send(new DisassociateCardUserCommand(smartCardId));
    }
 
    private void smartCardCreated(SmartCard smartCard) {

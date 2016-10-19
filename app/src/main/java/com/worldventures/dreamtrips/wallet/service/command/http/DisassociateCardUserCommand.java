@@ -19,8 +19,8 @@ public class DisassociateCardUserCommand extends Command<Void> implements Inject
 
    private final String smartCardId;
 
-   public DisassociateCardUserCommand(String barcode) {
-      this.smartCardId = barcode;
+   public DisassociateCardUserCommand(String smartCardId) {
+      this.smartCardId = smartCardId;
    }
 
    @Override

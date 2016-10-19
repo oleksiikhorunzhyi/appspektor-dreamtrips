@@ -12,7 +12,6 @@ import javax.inject.Inject;
 
 import io.techery.janet.Command;
 import io.techery.janet.command.annotations.CommandAction;
-import io.techery.janet.helper.ActionStateToActionTransformer;
 
 @CommandAction
 public class PreInstallationCheckCommand extends Command<PreInstallationCheckCommand.Checks> implements InjectableAction {
@@ -32,7 +31,8 @@ public class PreInstallationCheckCommand extends Command<PreInstallationCheckCom
 
    private Checks check(SmartCard smartCard) {
       boolean bluetoothEnabled = bluetoothService.isEnable();
-      boolean smartCardConnected = bluetoothEnabled && smartCard.connectionStatus() == SmartCard.ConnectionStatus.CONNECTED;
+      boolean smartCardConnected = bluetoothEnabled &&
+            (smartCard.connectionStatus() == SmartCard.ConnectionStatus.CONNECTED || smartCard.connectionStatus() == SmartCard.ConnectionStatus.DFU);
       boolean smartCardCharged = smartCardConnected && smartCard.batteryLevel() >= MIN_BATTERY_LEVEL;
       return ImmutableChecks.builder()
             .bluetoothIsEnabled(bluetoothEnabled)

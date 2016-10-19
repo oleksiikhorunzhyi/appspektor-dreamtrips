@@ -21,6 +21,7 @@ import rx.Observable;
 
 import static com.worldventures.dreamtrips.core.janet.JanetModule.JANET_WALLET;
 import static com.worldventures.dreamtrips.wallet.domain.entity.SmartCard.ConnectionStatus.CONNECTED;
+import static com.worldventures.dreamtrips.wallet.domain.entity.SmartCard.ConnectionStatus.DFU;
 import static rx.Observable.just;
 
 @CommandAction
@@ -40,7 +41,7 @@ public class InstallFirmwareCommand extends Command<Void> implements InjectableA
    protected void run(CommandCallback<Void> callback) throws Throwable {
       activeSmartCard()
             .map(Command::getResult)
-            .flatMap(it -> it.connectionStatus() == CONNECTED ? just(it) : connectCard(it))
+            .flatMap(it -> it.connectionStatus() == CONNECTED || it.connectionStatus() == DFU ? just(it) : connectCard(it))
             .flatMap(it -> Observable.just(file))
             .flatMap(this::installFirmware)
             .subscribe(callback::onSuccess, callback::onFail);

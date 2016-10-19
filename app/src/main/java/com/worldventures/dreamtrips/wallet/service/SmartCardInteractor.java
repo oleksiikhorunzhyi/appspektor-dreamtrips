@@ -1,5 +1,6 @@
 package com.worldventures.dreamtrips.wallet.service;
 
+import com.worldventures.dreamtrips.wallet.domain.entity.SmartCard;
 import com.worldventures.dreamtrips.wallet.service.command.AttachCardCommand;
 import com.worldventures.dreamtrips.wallet.service.command.CardCountCommand;
 import com.worldventures.dreamtrips.wallet.service.command.CardListCommand;
@@ -43,11 +44,14 @@ import io.techery.janet.smartcard.action.support.ConnectAction;
 import io.techery.janet.smartcard.action.support.DisconnectAction;
 import io.techery.janet.smartcard.event.CardChargedEvent;
 import io.techery.janet.smartcard.event.LockDeviceChangedEvent;
+import io.techery.janet.smartcard.model.ConnectionType;
 import rx.Observable;
 import rx.schedulers.Schedulers;
 import timber.log.Timber;
 
 import static com.worldventures.dreamtrips.core.janet.JanetModule.JANET_WALLET;
+import static com.worldventures.dreamtrips.wallet.domain.entity.SmartCard.ConnectionStatus.CONNECTED;
+import static com.worldventures.dreamtrips.wallet.domain.entity.SmartCard.ConnectionStatus.DFU;
 import static com.worldventures.dreamtrips.wallet.domain.entity.SmartCard.ConnectionStatus.DISCONNECTED;
 import static com.worldventures.dreamtrips.wallet.domain.entity.SmartCard.ConnectionStatus.ERROR;
 import static com.worldventures.dreamtrips.wallet.service.command.CardListCommand.add;
@@ -127,7 +131,7 @@ public final class SmartCardInteractor {
       autoClearDelayPipe = janet.createPipe(SetAutoClearSmartCardDelayCommand.class, Schedulers.io());
       disableDefaultCardPipe = janet.createPipe(SetDisableDefaultCardDelayCommand.class, Schedulers.io());
 
-      connect();
+      connect(janet);
       connectToLockEvent();
       observeBatteryLevel(janet);
    }
@@ -237,13 +241,24 @@ public final class SmartCardInteractor {
       return disableDefaultCardPipe;
    }
 
-   private void connect() {
+   private void connect(Janet janet) {
       disconnectPipe
             .observe()
             .filter(state -> state.status == ActionState.Status.SUCCESS || state.status == ActionState.Status.FAIL)
             .map(state -> state.status == ActionState.Status.SUCCESS ? DISCONNECTED : ERROR)
             .subscribe(connectionStatus -> updateSmartCardConnectionStatusPipe.send(new UpdateSmartCardConnectionStatus(connectionStatus)),
                   throwable -> Timber.e(throwable, "Error while updating status of active card"));
+
+      janet.createPipe(ConnectAction.class)
+            .observeSuccess()
+            .subscribe(action -> {
+               SmartCard.ConnectionStatus status = CONNECTED;
+               if (action.type == ConnectionType.DFU) {
+                  status = DFU;
+               }
+               updateSmartCardConnectionStatusPipe.send(new UpdateSmartCardConnectionStatus(status));
+            }, throwable -> Timber.e(throwable, "Error with handling connection event"));
+
       observeCardsChanges();
    }
 
@@ -281,12 +296,16 @@ public final class SmartCardInteractor {
    private void observeBatteryLevel(Janet janet) {
       janet.createPipe(ConnectAction.class)
             .observeSuccess()
-            .subscribe(action -> createBatteryObservable());
+            .filter(action -> action.type == ConnectionType.APP)
+            .subscribe(action -> createBatteryObservable(janet));
    }
 
-   private void createBatteryObservable() {
+   private void createBatteryObservable(Janet janet) {
       Observable.interval(0, 15, TimeUnit.SECONDS) // 0 -- emit first event immediately, 15 -- repeat after
             .takeUntil(disconnectPipe.observeSuccess())
+            .takeUntil(janet.createPipe(ConnectAction.class)
+                  .observeSuccess()
+                  .filter(action -> action.type == ConnectionType.DFU))
             .doOnNext(number -> fetchBatteryLevelPipe.send(new FetchBatteryLevelCommand()))
             .subscribe();
    }

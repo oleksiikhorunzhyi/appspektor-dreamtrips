@@ -9,8 +9,6 @@ import android.graphics.drawable.Drawable;
 import android.media.ExifInterface;
 import android.util.Pair;
 
-import com.kbeanie.imagechooser.helpers.StreamHelper;
-
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -100,8 +98,8 @@ public class DrawableUtil {
       } finally {
          try {
             if (bitmap != null) bitmap.recycle();
-            StreamHelper.flush(stream);
-            StreamHelper.close(stream);
+            stream.flush();
+            stream.close();
          } catch (Exception e) {
             Timber.e(e.getMessage());
          }

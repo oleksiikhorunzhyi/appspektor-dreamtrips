@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.worldventures.dreamtrips.wallet.ui.wizard.manual.WizardManualInputScreen xmlns:android="http://schemas.android.com/apk/res/android"
+      xmlns:app="http://schemas.android.com/apk/res-auto"
+      xmlns:tools="http://schemas.android.com/tools"
+      android:layout_width="match_parent"
+      android:layout_height="match_parent"
+      android:theme="@style/WalletTheme"
+      >
+
+   <android.support.v7.widget.Toolbar
+         android:id="@+id/toolbar"
+         android:layout_width="match_parent"
+         android:layout_height="?attr/actionBarSize"
+         app:title="@string/wallet_wizard_manual_input_title"
+         />
+
+   <RelativeLayout
+         style="@style/WalletTheme.ContentContainerStyle"
+         android:orientation="vertical"
+         >
+
+      <TextView
+            android:id="@+id/wizard_manual_text"
+            style="@style/WalletTheme.HeaderTextStyle"
+            android:layout_gravity="top"
+            android:layout_marginTop="32dp"
+            android:text="@string/wallet_wizard_manual_input_header"
+            />
+
+      <ImageView
+            android:id="@+id/img"
+            android:layout_width="300dp"
+            android:layout_height="192dp"
+            android:layout_below="@+id/wizard_manual_text"
+            android:layout_marginTop="50dp"
+            android:layout_centerHorizontal="true"
+            android:src="@drawable/flyecard_scid"
+            tools:ignore="ContentDescription"
+            />
+
+      <!--we cannot use `android:maxLength="@integer/wallet_smart_card_id_length" because library has a bug (see 163 line in PinEntryEditText)`-->
+      <com.alimuzaffar.lib.pin.PinEntryEditText
+            android:id="@+id/wallet_wizard_manual_input_scid"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_above="@+id/wallet_wizard_manual_input_next_btn"
+            android:layout_marginBottom="30dp"
+            android:layout_marginTop="32dp"
+            android:cursorVisible="false"
+            android:importantForAccessibility="no"
+            android:inputType="numberSigned"
+            android:maxLength="10"
+            android:textColorHint="@color/wallet_number_edit_text_text_color_hint"
+            android:textIsSelectable="false"
+            app:pinCharacterSpacing="6dp"
+            app:pinLineColors="@color/wallet_number_edit_text_pin_line_color"
+            app:pinRepeatedHint="#"
+            >
+
+         <requestFocus />
+      </com.alimuzaffar.lib.pin.PinEntryEditText>
+
+      <Button
+            android:id="@+id/wallet_wizard_manual_input_next_btn"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:text="@string/wallet_next_label"
+            />
+
+   </RelativeLayout>
+</com.worldventures.dreamtrips.wallet.ui.wizard.manual.WizardManualInputScreen>

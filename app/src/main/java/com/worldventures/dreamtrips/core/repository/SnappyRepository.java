@@ -4,7 +4,6 @@ import android.support.annotation.Nullable;
 
 import com.snappydb.DB;
 import com.snappydb.SnappydbException;
-import com.worldventures.dreamtrips.api.trip.model.Trip;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem;
 import com.worldventures.dreamtrips.modules.dtl.model.location.DtlLocation;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchant;
@@ -24,10 +23,16 @@ import com.worldventures.dreamtrips.modules.tripsimages.model.IFullScreenObject;
 import com.worldventures.dreamtrips.modules.tripsimages.model.SocialViewPagerState;
 import com.worldventures.dreamtrips.modules.tripsimages.model.TripImagesType;
 import com.worldventures.dreamtrips.modules.video.model.CachedEntity;
+import com.worldventures.dreamtrips.wallet.domain.entity.AddressInfo;
+import com.worldventures.dreamtrips.wallet.domain.entity.SmartCard;
+import com.worldventures.dreamtrips.wallet.domain.entity.SmartCardDetails;
+import com.worldventures.dreamtrips.wallet.domain.entity.TermsAndConditions;
+import com.worldventures.dreamtrips.wallet.domain.entity.card.Card;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+
+import io.techery.janet.smartcard.mock.device.SimpleDeviceStorage;
 
 public interface SnappyRepository {
 
@@ -72,6 +77,15 @@ public interface SnappyRepository {
    String POST_FEED_ITEM = "post";
    String TRIP_FEED_ITEM = "trip";
    String BUCKET_FEED_ITEM = "bucket";
+
+   String WALLET_CARDS_LIST = "WALLET_CARDS_LIST";
+   String WALLET_SMART_CARD = "WALLET_SMART_CARD";
+   String WALLET_DETAILS_SMART_CARD = "WALLET_DETAILS_SMART_CARD";
+   String WALLET_ACTIVE_SMART_CARD_ID = "WALLET_ACTIVE_SMART_CARD_ID";
+   String WALLET_DEVICE_STORAGE = "WALLET_DEVICE_STORAGE";
+   String WALLET_DEFAULT_BANK_CARD = "WALLET_DEFAULT_BANK_CARD";
+   String WALLET_DEFAULT_ADDRESS = "WALLET_DEFAULT_ADDRESS";
+   String WALLET_TERMS_AND_CONDITIONS = "WALLET_TERMS_AND_CONDITIONS";
 
    void clearAll();
 
@@ -151,7 +165,7 @@ public interface SnappyRepository {
 
    List<FeedbackType> getFeedbackTypes();
 
-   void setFeedbackTypes(ArrayList<FeedbackType> types);
+   void setFeedbackTypes(List<FeedbackType> types);
 
    void saveDtlLocation(DtlLocation dtlLocation);
 
@@ -221,4 +235,48 @@ public interface SnappyRepository {
    List<TripModel> getTripsDetailsForUids(List<String> uids);
 
    TripModel getTripDetail(String uid);
+
+   SimpleDeviceStorage getWalletDeviceStorage();
+
+   void saveWalletDeviceStorage(SimpleDeviceStorage deviceStorage);
+
+   void saveWalletCardsList(List<Card> items);
+
+   List<Card> readWalletCardsList();
+
+   void deleteWalletCardList();
+
+   void saveWalletDefaultCardId(String id);
+
+   String readWalletDefaultCardId();
+
+   void saveDefaultAddress(AddressInfo addressInfo);
+
+   AddressInfo readDefaultAddress();
+
+   void deleteDefaultAddress();
+
+   void saveSmartCard(SmartCard smartCard);
+
+   SmartCard getSmartCard(String smartCardId);
+
+   void deleteSmartCard(String smartCardId);
+
+   List<SmartCard> getSmartCards();
+
+   String getActiveSmartCardId();
+
+   void setActiveSmartCardId(String scid);
+
+   void saveWalletTermsAndConditions(TermsAndConditions data);
+
+   TermsAndConditions getWalletTermsAndConditions();
+
+   void deleteTermsAndConditions();
+
+   void saveSmartCardDetails(SmartCardDetails details);
+
+   SmartCardDetails getSmartCardDetails(String smartCardId);
+
+   void deleteSmartCardDetails(String smartCardId);
 }

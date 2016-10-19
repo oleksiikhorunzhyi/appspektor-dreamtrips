@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+   <color name="wallet_success_green">#FF81c435</color>
+   <color name="wallet_waring_red">#FFfa2d46</color>
+
+   <color name="wallet_card_details_address_text_color">#666666</color>
+   <color name="wallet_card_details_delete_card_button_color">#ea283b</color> <!--does not use like background, should be fixed -->
+
+   <color name="wallet_card_list_empty_list_label_color">#8f8f8f</color>
+   <color name="wallet_add_card_button_color">#81c435</color>
+
+   <color name="wallet_charging_swiping_screen_text_color">#222222</color>
+
+   <color name="wallet_card_list_header_text">#90979a</color>
+
+   <color name="wallet_color_background_with_alpha">#BF22262D</color>
+   <color name="wallet_bar_code_scanner_border">@android:color/white</color>
+
+   <color name="wallet_add_cards_inactive_color">#8F8F8F</color>
+
+   <color name="wallet_settings_new_dt_version">#fa2d46</color>
+   <color name="wallet_settings_version">#8e8e93</color>
+
+   <color name="wallet_smartcard_connection_plank_text_color">#666666</color>
+
+   <color name="wallet_alert_phone_number_color">#76b2fe</color>
+</resources>

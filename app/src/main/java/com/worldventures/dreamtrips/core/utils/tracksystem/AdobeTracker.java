@@ -6,17 +6,22 @@ import android.support.annotation.Nullable;
 import com.adobe.mobile.Analytics;
 import com.adobe.mobile.Config;
 import com.worldventures.dreamtrips.BuildConfig;
+import com.worldventures.dreamtrips.core.utils.DateTimeUtils;
 
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
 public class AdobeTracker extends Tracker {
+
+   public static final String TIME_FORMAT_ANALYTICS = "HH:mm:ss";
 
    public static final String TRACKER_KEY = "adobe_tracker";
 
    private static final String DEFAULT_PREFIX = "dta:";
 
    private static final String CHANNEL_KEY = "channel";
+   private static final String TIME_PARTING = "timeparting";
    private static final String CHANNEL_VALUE = "App:Dreamtrips";
    private static final String ACTION = "action";
 
@@ -51,6 +56,7 @@ public class AdobeTracker extends Tracker {
 
       data.put(CHANNEL_KEY, CHANNEL_VALUE);
       data.put(ACTION, prepareAction(action));
+      data.put(TIME_PARTING, DateTimeUtils.convertDateToString(new Date(), TIME_FORMAT_ANALYTICS));
 
       Analytics.trackState(prepareAction(action), data);
    }

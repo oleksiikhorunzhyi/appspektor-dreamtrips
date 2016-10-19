@@ -10,7 +10,6 @@ apply from: 'helper-methods.gradle'
 
 repositories {
    jcenter()
-   mavenCentral()
    maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
    maven { url 'http://dl.bintray.com/techery/android' }
    maven { url 'https://maven.fabric.io/public' }
@@ -30,13 +29,13 @@ configurations.all {
 
 android {
    compileSdkVersion 24
-   buildToolsVersion "24.0.2"
+   buildToolsVersion "24.0.3"
 
    // App version
    def versionMajor = 1
    def versionMinor = 15
-   def versionPatch = 0
-   def versionBuild = 2  // bump for dogfood builds, public betas, etc.
+   def versionPatch = 1
+   def versionBuild = 4  // bump for dogfood builds, public betas, etc.
    //
    // flavor codes
    String DEV_CODE = "dev"
@@ -48,8 +47,10 @@ android {
    String MESSENGER_CODE = "messenger"
    String SOCIAL_CODE = "social"
    String SMARTCARD_CODE = "smartcard"
+   String SMARTCARD_CODE_MOCK = "smartcardmock"
+   String SMARTCARD_CODE_NXTID = "smartcardnxtid"
    String STABLE_CODE = "stable"
-   String[] STREAM_CODES = [DTL_CODE, MESSENGER_CODE, SOCIAL_CODE, SMARTCARD_CODE, STABLE_CODE]
+   String[] STREAM_CODES = [DTL_CODE, MESSENGER_CODE, SOCIAL_CODE, SMARTCARD_CODE_MOCK, SMARTCARD_CODE_NXTID, STABLE_CODE]
    //
    String STAGE_CODE = "stage"
    String PREPROD_CODE = "preprod"
@@ -63,24 +64,21 @@ android {
    def BUILD_LOG_TAG = "BUILD_LOG"
    //
    def CONFIG_MAP_DEFAULT = [
-         'DreamTripsApi'    : '"http://techery-dt-staging.techery.io/"',
+         'DreamTripsApi'    : '"http://techery--dt--staging-techery-io-txbe74ea4jwh.runscope.net/"',
          'S3Api'            : '"https://s3-us-west-2.amazonaws.com/techery-worldventures/config/staging"',
          'MESSENGER_API_URL': '"dtmsgapp-dev.worldventures.biz"',
          'NEWRELIC_API_KEY' : '"AA02bc55e3bfb4886360f8be57d75b526bea2b1bcf"',
-         'UPLOADERY_API_URL': '"http://techery-dt-staging-uploadery.techery.io"',
+         'UPLOADERY_API_URL' : '"http://techery-dt-staging-uploadery.techery.io"',
+         'SMART_CARD_SDK_CLIENT' : '"nxtid"'
    ]
    def CONFIG_MAP_EXTERNAL = [
          'NEWRELIC_API_KEY': '"AAd06d4d4d218e74f8d48a7e0bf8d7de4623cb1662"',
    ]
    def CONFIG_MAP_PREPROD = [
-         'DreamTripsApi'    : '"http://techery-dt-preprod.techery.io/"',
+         'DreamTripsApi'    : '"http://techery--dt--preprod-techery-io-kkdni8u7u523.runscope.net/"',
          'S3Api'            : '"https://s3-us-west-2.amazonaws.com/techery-worldventures/config/preprod"',
          'MESSENGER_API_URL': '"dtmsgapp-qa.worldventures.biz"',
-         'UPLOADERY_API_URL': '"http://techery-dt-preprod-uploadery.techery.io"',
-   ]
-   def CONFIG_MAP_DTL = [
-         'DreamTripsApi'    : '"http://techery--dt--dtl-techery-io-b8ctgyaku6eu.runscope.net/"',
-         'UPLOADERY_API_URL': '"http://techery-dt-dtl-uploadery.techery.io"',
+         'UPLOADERY_API_URL' : '"http://techery-dt-preprod-uploadery.techery.io"',
    ]
    def CONFIG_MAP_PERF = [
          'DreamTripsApi'    : '"http://dtapp-perf.worldventures.biz"',
@@ -94,12 +92,25 @@ android {
          'NEWRELIC_API_KEY' : '"AAb8d55ede8fd2f0aeaaf66b18b8b53af90e48b371"',
          'UPLOADERY_API_URL': '"http://dtappuploads.wvholdings.com"',
    ]
+   def CONFIG_MAP_DTL = [
+         'DreamTripsApi': '"http://techery--dt--dtl-techery-io-b8ctgyaku6eu.runscope.net/"',
+         'UPLOADERY_API_URL' : '"http://techery-dt-dtl-uploadery.techery.io"',
+   ]
+   def CONFIG_MAP_SMARTCARD_MOCK = [
+         'SMART_CARD_SDK_CLIENT' : '"mock"'
+   ]
+   def CONFIG_MAP_SMARTCARD_NXTID = [
+         'SMART_CARD_SDK_CLIENT' : '"nxtid"'
+   ]
    //
    def CONFIG_MAPS = [
          "external": CONFIG_MAP_EXTERNAL,
          "preprod" : CONFIG_MAP_PREPROD,
          "perf"    : CONFIG_MAP_PERF,
          "prod"    : CONFIG_MAP_PROD,
+         "dtl"     : CONFIG_MAP_DTL,
+         "smartcardmock"   : CONFIG_MAP_SMARTCARD_MOCK,
+         "smartcardnxtid"  : CONFIG_MAP_SMARTCARD_NXTID,
    ]
 
    defaultConfig {
@@ -109,7 +120,7 @@ android {
       versionCode versionMajor * 100000 + versionMinor * 1000 + versionPatch * 100 + versionBuild
       versionName APP_VERSION_NAME_BASE
       //
-      minSdkVersion 15
+      minSdkVersion 18
       targetSdkVersion 22
       //
       multiDexEnabled true
@@ -185,7 +196,11 @@ android {
          dimension "stream"
          applicationIdSuffix = SOCIAL_CODE
       }
-      smartcard {
+      smartcardmock {
+         dimension "stream"
+         applicationIdSuffix = SMARTCARD_CODE
+      }
+      smartcardnxtid {
          dimension "stream"
          applicationIdSuffix = SMARTCARD_CODE
       }
@@ -354,7 +369,27 @@ android {
    }
 }
 
-def googleLibrariesVersion = '24.1.1'
+// TODO: Remove on 2.2.x android plugin – it's a hack for multidex on 2.1.x android plugin
+afterEvaluate {
+   project.tasks.each { task ->
+      if (task.name.startsWith('collect') && task.name.endsWith('MultiDexComponents')) {
+         println "main-dex-filter: found task $task.name"
+         task.filter { name, attrs ->
+            def componentName = attrs.get('android:name')
+            if ('activity'.equals(name)) {
+               println "main-dex-filter: skipping, detected activity [$componentName]"
+               return false
+            } else {
+               println "main-dex-filter: keeping, detected $name [$componentName]"
+               return true
+            }
+         }
+      }
+   }
+}
+
+
+def googleLibrariesVersion = '24.2.0'
 def googlePlayServicesVersion = '9.2.1'
 def leakCanaryVersion = '1.3.1'
 def roboelectricVersion = '3.1.2'
@@ -380,7 +415,7 @@ dependencies {
    compile 'com.snappydb:snappydb-lib:0.5.2'
    compile 'com.esotericsoftware.kryo:kryo:2.24.0'
    // Networking
-   compile(group: 'com.worldventures.dreamtrips', name: 'api', version: '2.1.0-STAGE-SNAPSHOT', changing: true) {
+   compile(group: 'com.worldventures.dreamtrips', name: 'api', version: '2.4.0-STAGE-SNAPSHOT', changing: true) {
       exclude group: "joda-time"
    }
    compile 'com.octo.android.robospice:robospice:1.4.14'
@@ -435,7 +470,6 @@ dependencies {
    compile 'com.github.afollestad.material-dialogs:core:0.8.6.2'
    compile 'com.github.afollestad.material-dialogs:commons:0.8.6.2'
    compile 'com.orhanobut:dialogplus:1.10@aar'
-   compile 'com.kbeanie:image-chooser-library:1.5.2@aar'
    compile 'com.github.techery:material-range-bar:db6fec9fdd'
    compile 'com.h6ah4i.android.widget.advrecyclerview:advrecyclerview:0.8.7'
    compile 'com.github.frankiesardo:linearlistview:1.0.1@aar'
@@ -445,12 +479,13 @@ dependencies {
    compile 'com.eowise:recyclerview-stickyheaders:0.5.2@aar'
    compile 'mbanje.kurt:fabbutton:1.2.1'
    compile 'com.github.man4ik:poly-picker:fce2e41f009b2c9b1287ee1000431710939e22e6'
-   compile 'com.yalantis:ucrop:1.2.+'
+   compile 'com.yalantis:ucrop:1.2.4'
    compile 'com.github.dmytrodanylyk.shadow-layout:library:1.0.3'
    compile 'me.leolin:ShortcutBadger:1.1.3@aar'
    compile 'com.github.techery:properratingbar:0.0.5'
    compile 'com.sothree.slidinguppanel:library:3.2.1'
    compile 'com.amulyakhare:com.amulyakhare.textdrawable:1.0.1'
+   compile 'com.github.techery:PinEntryEditText:-SNAPSHOT'
    // Util
    retrolambdaConfig 'net.orfjackal.retrolambda:retrolambda:2.3.0'
    compile 'com.google.maps.android:android-maps-utils:0.4'
@@ -494,6 +529,11 @@ dependencies {
 
    compile 'org.igniterealtime.smack:smack-android-extensions:4.1.6'
    compile 'org.igniterealtime.smack:smack-tcp:4.1.6'
+
+   compile(group: 'io.techery.janet', name: 'smartcard', version: '0.8.0-SNAPSHOT', changing: true)
+   compile(group: 'io.techery.janet.magstripe-reader', name: 'service', version: '0.1.0-SNAPSHOT', changing: true)
+   compile(group: 'io.techery.janet.magstripe-reader', name: 'client-mock', version: '0.1.0-SNAPSHOT', changing: true)
+   compile(group: 'io.techery.janet.magstripe-reader', name: 'client-rhombus', version: '0.1.0-SNAPSHOT', changing: true)
 
    // Testing
    testCompile 'junit:junit:4.12'

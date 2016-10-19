@@ -661,4 +661,6 @@
    <string name="offline_warning_dialog_message">Your access will be limited</string>
 
    <string name="merchant_message_text" formatted="false">Congratulations! You earned %s DreamTrips points @%s, %s</string>
+
+   <string name="beta_label">Beta</string>
 </resources>

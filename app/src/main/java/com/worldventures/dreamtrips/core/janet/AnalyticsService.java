@@ -122,7 +122,10 @@ public class AnalyticsService extends ActionService {
             field.setAccessible(true);
             Object value = field.get(actionHolder.action());
             if (value != null) {
-               result.add(new FieldAttribute(annotation.value(), String.valueOf(value)));
+               String stringValue = String.valueOf(value);
+               //skip empty values
+               if (!TextUtils.isEmpty(stringValue))
+                  result.add(new FieldAttribute(annotation.value(), stringValue));
             }
          }
       }

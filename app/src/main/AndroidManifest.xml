@@ -17,6 +17,8 @@
    <uses-permission android:name="android.permission.GET_ACCOUNTS" />
    <uses-permission android:name="android.permission.READ_CONTACTS" />
    <uses-permission android:name="android.permission.WRITE_CONTACTS" />
+   <uses-permission android:name="android.permission.BLUETOOTH" />
+   <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
 
    <uses-permission android:name="android.permission.WAKE_LOCK" />
    <uses-permission android:name="com.google.android.c2dm.permission.RECEIVE" />
@@ -30,6 +32,10 @@
    <uses-feature
          android:glEsVersion="0x00020000"
          android:required="true"
+         />
+   <uses-feature
+         android:name="android.hardware.bluetooth_le"
+         android:required="false"
          />
    <uses-feature android:name="android.hardware.camera" />
    <uses-feature android:name="android.hardware.location.gps" />
@@ -156,6 +162,18 @@
                />
       </activity>
 
+      <!-- Wallet activities -->
+      <activity
+            android:name=".wallet.ui.WalletActivity"
+            android:launchMode="singleTop"
+            android:screenOrientation="portrait"
+            >
+         <meta-data
+               android:name="android.support.PARENT_ACTIVITY"
+               android:value="com.worldventures.dreamtrips.modules.common.view.activity.MainActivity"
+               />
+      </activity>
+
       <!--For result activities-->
 
       <receiver android:name=".modules.friends.notification.FriendRejectActionReceiver" />
@@ -184,8 +202,6 @@
             android:screenOrientation="portrait"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar"
             />
-
-      <activity android:name="nl.changer.polypicker.ImagePickerActivity" />
 
       <activity
             android:name="com.apptentive.android.sdk.ViewActivity"

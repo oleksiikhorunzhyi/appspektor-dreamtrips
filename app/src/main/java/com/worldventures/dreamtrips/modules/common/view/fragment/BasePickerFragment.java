@@ -7,6 +7,7 @@ import android.widget.ProgressBar;
 
 import com.innahema.collections.query.queriables.Queryable;
 import com.techery.spares.adapter.BaseArrayListAdapter;
+import com.techery.spares.adapter.BaseDelegateAdapter;
 import com.techery.spares.annotations.Layout;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.utils.ViewUtils;
@@ -29,13 +30,13 @@ public abstract class BasePickerFragment<T extends BasePickerPresenter> extends 
 
    @Inject protected PhotoPickerDelegate photoPickerDelegate;
 
-   protected BaseArrayListAdapter adapter;
+   protected BaseDelegateAdapter adapter;
 
    @Override
    public void afterCreateView(View rootView) {
       super.afterCreateView(rootView);
       progressBar.setVisibility(View.VISIBLE);
-      adapter = new BaseArrayListAdapter<>(getContext(), this);
+      adapter = new BaseDelegateAdapter<>(getContext(), this);
       registerCells();
 
       picker.setLayoutManager(new GridAutofitLayoutManager(getContext(), getContext().getResources()

@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.worldventures.dreamtrips.wallet.ui.settings.firmware.donwload.WalletDownloadFirmwareScreen xmlns:android="http://schemas.android.com/apk/res/android"
+      xmlns:app="http://schemas.android.com/apk/res-auto"
+      android:layout_width="match_parent"
+      android:layout_height="match_parent"
+      android:orientation="vertical"
+      android:theme="@style/WalletTheme"
+      >
+
+   <LinearLayout
+         android:layout_width="match_parent"
+         android:layout_height="match_parent"
+         android:orientation="vertical"
+         >
+
+      <android.support.v7.widget.Toolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            app:title="@string/wallet_firmware_download_header"
+            />
+
+      <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:paddingTop="60dp"
+            android:text="@string/wallet_firmware_download_text"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            />
+
+      <FrameLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="44dp"
+            >
+
+         <com.worldventures.dreamtrips.wallet.ui.widget.WalletProgressWidget
+               android:id="@+id/firmware_download_progress"
+               android:layout_width="wrap_content"
+               android:layout_height="wrap_content"
+               android:layout_gravity="center_horizontal"
+               android:src="@drawable/wallet_download_progress"
+               />
+
+         <TextView
+               android:id="@+id/wallet_cancel_download"
+               android:layout_width="wrap_content"
+               android:layout_height="wrap_content"
+               android:layout_gravity="center"
+               android:text="@string/wallet_firmware_download_cancel_action"
+               android:textAppearance="?android:attr/textAppearanceLarge"
+               android:textColor="@color/accent"
+               />
+
+      </FrameLayout>
+
+   </LinearLayout>
+</com.worldventures.dreamtrips.wallet.ui.settings.firmware.donwload.WalletDownloadFirmwareScreen>

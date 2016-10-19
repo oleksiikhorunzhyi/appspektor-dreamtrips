@@ -1,6 +1,7 @@
 package com.worldventures.dreamtrips.modules.mapping;
 
 import com.worldventures.dreamtrips.modules.feed.model.converter.FeedCommentConverter;
+import com.worldventures.dreamtrips.modules.infopages.model.FeedbackTypeConverter;
 import com.worldventures.dreamtrips.modules.mapping.converter.Converter;
 import com.worldventures.dreamtrips.modules.mapping.converter.FlagConverter;
 import com.worldventures.dreamtrips.modules.mapping.converter.ShortProfilesConverter;
@@ -13,6 +14,10 @@ import com.worldventures.dreamtrips.modules.trips.model.converter.TripImageConve
 import com.worldventures.dreamtrips.modules.trips.model.converter.TripPinToPinConverter;
 import com.worldventures.dreamtrips.modules.trips.model.converter.TripWithDetailsToTripConverter;
 import com.worldventures.dreamtrips.modules.trips.model.converter.TripWithoutDetailsToTripConverter;
+import com.worldventures.dreamtrips.wallet.domain.converter.BankCardToRecordConverter;
+import com.worldventures.dreamtrips.wallet.domain.converter.FirmwareResponseToFirmwareConverter;
+import com.worldventures.dreamtrips.wallet.domain.converter.ProfileAddressToUserAddressConverter;
+import com.worldventures.dreamtrips.wallet.domain.converter.RecordToBankCardConverter;
 
 import java.util.Set;
 
@@ -92,6 +97,36 @@ public class MappingModule {
    @Singleton
    Converter provideContentItemConverter() {
       return new ContentItemConverter();
+   }
+
+   @Provides(type = Provides.Type.SET)
+   @Singleton
+   Converter provideFeedbackTypeConverter() {
+      return new FeedbackTypeConverter();
+   }
+
+   @Provides(type = Provides.Type.SET)
+   @Singleton
+   Converter provideBankCardToRecordConverter() {
+      return new BankCardToRecordConverter();
+   }
+
+   @Provides(type = Provides.Type.SET)
+   @Singleton
+   Converter provideRecordToBankCardConverter() {
+      return new RecordToBankCardConverter();
+   }
+
+   @Provides(type = Provides.Type.SET)
+   @Singleton
+   Converter provideProfileAddressToUserAddressConverter() {
+      return new ProfileAddressToUserAddressConverter();
+   }
+
+   @Provides(type = Provides.Type.SET)
+   @Singleton
+   Converter provideFirmwareRepsonseToFirmwareConverter() {
+      return new FirmwareResponseToFirmwareConverter();
    }
 
    @Provides

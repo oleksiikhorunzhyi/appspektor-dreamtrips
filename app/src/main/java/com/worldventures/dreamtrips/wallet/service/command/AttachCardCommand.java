@@ -36,8 +36,7 @@ public class AttachCardCommand extends Command<Record> implements InjectableActi
    protected void run(CommandCallback<Record> callback) throws Throwable {
       Record record = mapperyContext.convert(card, Record.class);
       janet.createPipe(AddRecordAction.class)
-            .createObservable(new AddRecordAction(record))
-            .compose(new ActionStateToActionTransformer<>())
+            .createObservableResult(new AddRecordAction(record))
             .map(it -> it.record)
             .flatMap(this::saveDefaultCard)
             .subscribe(addedRecord -> {

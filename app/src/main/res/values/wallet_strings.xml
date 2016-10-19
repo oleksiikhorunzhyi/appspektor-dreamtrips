@@ -100,6 +100,8 @@
    <string name="wallet_wizard_no_internet_connection_title">@string/offline_warning_dialog_title</string>
    <string name="wallet_wizard_no_connection_to_card_title">flye card not linked</string>
    <string name="wallet_wizard_limited_access">@string/offline_warning_dialog_message</string>
+   <string name="wallet_wizard_card_list_add_card_coming_soon_title">Coming Soon</string>
+   <string name="wallet_wizard_card_list_add_card_coming_soon_text">Ability to add cards is coming soon.</string>
 
    <!--add card details-->
    <string name="wallet_add_card_details_title">Card Details</string>

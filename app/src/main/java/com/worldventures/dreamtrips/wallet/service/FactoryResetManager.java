@@ -22,6 +22,6 @@ public class FactoryResetManager {
    }
 
    public Observable<ActionState<ResetSmartCardCommand>> observeFactoryResetPipe() {
-      return resetSmartCardPipe.createObservable(new ResetSmartCardCommand());
+      return resetSmartCardPipe.observe();
    }
 }

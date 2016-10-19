@@ -9,8 +9,10 @@ public interface Converter<T, R> {
 
    String TYPE_CARD_FIELD = "type_card";
    String BANK_NAME_FIELD = "bank_name";
+   String BANK_CARD_CATEGORY = "bank_card_category";
 
    R from(T object);
 
    T to(R object);
 }
+

@@ -11,6 +11,13 @@ import io.techery.janet.smartcard.model.Record;
 import io.techery.mappery.MapperyContext;
 
 import static com.worldventures.dreamtrips.wallet.domain.converter.Converter.*;
+import static com.worldventures.dreamtrips.wallet.domain.converter.Converter.ADDRESS1_FIELD;
+import static com.worldventures.dreamtrips.wallet.domain.converter.Converter.ADDRESS2_FIELD;
+import static com.worldventures.dreamtrips.wallet.domain.converter.Converter.BANK_NAME_FIELD;
+import static com.worldventures.dreamtrips.wallet.domain.converter.Converter.CITY_FIELD;
+import static com.worldventures.dreamtrips.wallet.domain.converter.Converter.STATE_FIELD;
+import static com.worldventures.dreamtrips.wallet.domain.converter.Converter.TYPE_CARD_FIELD;
+import static com.worldventures.dreamtrips.wallet.domain.converter.Converter.ZIP_FIELD;
 
 public class BankCardToRecordConverter implements com.worldventures.dreamtrips.modules.mapping.converter.Converter<BankCard, Record> {
    @Override
@@ -27,14 +34,16 @@ public class BankCardToRecordConverter implements com.worldventures.dreamtrips.m
    public Record convert(MapperyContext mapperyContext, BankCard card) {
       AddressInfo addressInfo = card.addressInfo();
       HashMap<String, String> metadata = new HashMap<>(5);
-      metadata.put(ADDRESS1_FIELD, addressInfo.address1());
-      metadata.put(ADDRESS2_FIELD, addressInfo.address2());
-      metadata.put(CITY_FIELD, addressInfo.city());
-      metadata.put(STATE_FIELD, addressInfo.state());
-      metadata.put(ZIP_FIELD, addressInfo.zip());
-
+      if (addressInfo != null) {
+         metadata.put(ADDRESS1_FIELD, addressInfo.address1());
+         metadata.put(ADDRESS2_FIELD, addressInfo.address2());
+         metadata.put(CITY_FIELD, addressInfo.city());
+         metadata.put(STATE_FIELD, addressInfo.state());
+         metadata.put(ZIP_FIELD, addressInfo.zip());
+      }
       metadata.put(TYPE_CARD_FIELD, card.issuerInfo().cardType().name());
       metadata.put(BANK_NAME_FIELD, card.issuerInfo().bankName());
+      metadata.put(BANK_CARD_CATEGORY, card.category().name());
 
       // TODO: use normal id
       return ImmutableRecord.builder()
@@ -49,5 +58,6 @@ public class BankCardToRecordConverter implements com.worldventures.dreamtrips.m
             .t2("")
             .t3("")
             .metadata(metadata)
-            .build();   }
+            .build();
+   }
 }

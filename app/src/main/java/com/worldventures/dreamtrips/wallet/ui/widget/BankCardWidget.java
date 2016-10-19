@@ -11,6 +11,7 @@ import android.widget.TextView;
 
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.wallet.domain.entity.card.BankCard;
+import com.worldventures.dreamtrips.wallet.domain.entity.card.Card;
 import com.worldventures.dreamtrips.wallet.util.BankCardHelper;
 
 import butterknife.ButterKnife;
@@ -25,6 +26,7 @@ public class BankCardWidget extends FrameLayout {
    @InjectView(R.id.typeIcon) ImageView cardTypeIcon;
    @InjectView(R.id.expireDate) TextView expireDate;
    @InjectView(R.id.cardType) TextView cardType;
+   @InjectView(R.id.wallet_sample_holder) View sampleCardHolder;
 
    private View bankCardHolder;
 
@@ -61,8 +63,16 @@ public class BankCardWidget extends FrameLayout {
       cardNumber.setText(String.format("•••• •••• •••• %04d", bankCard.number() % 10000));
       expireDate.setText(String.format("%02d/%02d", bankCard.expiryMonth(), bankCard.expiryYear()));
       tvBankLabel.setText(bankLabel);
-      cardTypeIcon.setImageResource(bankCardHelper.obtainFinancialServiceImageRes(bankCard.issuerInfo().financialService()));
+      cardTypeIcon.setImageResource(bankCardHelper.obtainFinancialServiceImageRes(bankCard.issuerInfo()
+            .financialService()));
       cardType.setText(bankCardHelper.obtainCardType(bankCard.issuerInfo().cardType()));
+      if (bankCard.category() == Card.Category.SAMPLE) {
+         cardTypeIcon.setVisibility(INVISIBLE);
+         sampleCardHolder.setVisibility(VISIBLE);
+      } else {
+         cardTypeIcon.setVisibility(INVISIBLE);
+         sampleCardHolder.setVisibility(GONE);
+      }
    }
 
    public void setBankCardHolder(@DrawableRes int resource) {

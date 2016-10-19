@@ -3,16 +3,31 @@ package com.worldventures.dreamtrips.wallet.domain.entity;
 import org.immutables.value.Value;
 
 @Value.Immutable
-public interface AddressInfo {
+public abstract class AddressInfo {
 
-   String address1();
+   @Value.Default
+   public String address1() {
+      return "";
+   }
 
-   String address2();
+   @Value.Default
+   public String address2() {
+      return "";
+   }
 
-   String city();
+   @Value.Default
+   public String city() {
+      return "";
 
-   String state();
+   }
 
-   String zip();
+   @Value.Default
+   public String state() {
+      return "";
+   }
 
+   @Value.Default
+   public String zip() {
+      return "";
+   }
 }

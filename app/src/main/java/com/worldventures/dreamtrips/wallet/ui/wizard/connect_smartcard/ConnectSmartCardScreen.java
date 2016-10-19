@@ -74,7 +74,7 @@ public class ConnectSmartCardScreen extends WalletLinearLayout<ConnectSmartCardP
 
    @Override
    public void showError(String msg, @Nullable Action1<Void> action) {
-      operationScreen.showError(msg, action);
+      showErrorDialogAndGoBack(msg);
    }
 
    @Override
@@ -89,8 +89,12 @@ public class ConnectSmartCardScreen extends WalletLinearLayout<ConnectSmartCardP
 
    @Override
    public void showPairingErrorDialog() {
+      showErrorDialogAndGoBack(getString(R.string.wallet_card_not_paired));
+   }
+
+   private void showErrorDialogAndGoBack(String message) {
       new MaterialDialog.Builder(getContext())
-            .content(R.string.wallet_card_not_paired)
+            .content(message)
             .positiveText(R.string.ok)
             .onPositive(((dialog, which) -> presenter.goBack()))
             .show();

@@ -135,9 +135,9 @@ public class JanetModule {
    @Singleton
    @Provides
    @Named(JANET_API_LIB)
-   ActionService provideApiLibHttpService(@ForApplication Context appContext, HttpClient httpClient) {
+   ActionService provideApiLibHttpService(@ForApplication Context appContext, HttpClient httpClient, Gson gson) {
       return new NewDreamTripsHttpService(appContext, BuildConfig.DreamTripsApi, httpClient, new GsonConverter(new GsonProvider()
-            .provideGson()));
+            .provideGson()), new GsonConverter(gson));
    }
 
    @Singleton

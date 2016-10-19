@@ -45,10 +45,12 @@ public class NewDreamTripsHttpService extends ActionServiceWrapper {
    private final Set<Object> retriedActions = new CopyOnWriteArraySet<>();
    private final AuthRetryPolicy retryPolicy;
 
-   public NewDreamTripsHttpService(Context appContext, String baseUrl, HttpClient client, Converter converter) {
+   //TODO oldConverter should be removed when loginAction will be performed via api lib
+   public NewDreamTripsHttpService(Context appContext, String baseUrl, HttpClient client, Converter converter,
+         Converter oldConverter) {
       super(new HttpActionService(baseUrl, client, converter));
       ((Injector) appContext).inject(this);
-      loginActionPipe = new Janet.Builder().addService(new HttpActionService(baseUrl, client, converter))
+      loginActionPipe = new Janet.Builder().addService(new HttpActionService(baseUrl, client, oldConverter))
             .build()
             .createPipe(LoginAction.class);
       retryPolicy = new AuthRetryPolicy(appSessionHolder);

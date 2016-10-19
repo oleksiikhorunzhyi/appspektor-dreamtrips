@@ -59,7 +59,6 @@ import static com.worldventures.dreamtrips.wallet.service.command.CardListComman
 import static com.worldventures.dreamtrips.wallet.service.command.CardListCommand.remove;
 import static java.lang.String.valueOf;
 
-@Singleton
 public final class SmartCardInteractor {
    private final ActionPipe<ConnectSmartCardCommand> connectionPipe;
    private final ActionPipe<CardListCommand> cardsListPipe;
@@ -93,7 +92,6 @@ public final class SmartCardInteractor {
    private final ActionPipe<SetAutoClearSmartCardDelayCommand> autoClearDelayPipe;
    private final ActionPipe<SetDisableDefaultCardDelayCommand> disableDefaultCardPipe;
 
-   @Inject
    public SmartCardInteractor(@Named(JANET_WALLET) Janet janet) {
       connectionPipe = janet.createPipe(ConnectSmartCardCommand.class, Schedulers.io());
       cardsListPipe = janet.createPipe(CardListCommand.class, Schedulers.io());

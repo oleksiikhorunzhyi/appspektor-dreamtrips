@@ -8,7 +8,6 @@ import com.worldventures.dreamtrips.core.janet.dagger.InjectableAction;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.wallet.domain.entity.ImmutableSmartCard;
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCard;
-import com.worldventures.dreamtrips.wallet.service.WizardInteractor;
 import com.worldventures.dreamtrips.wallet.service.command.wizard.AddDummyCardCommand;
 
 import javax.inject.Inject;
@@ -18,7 +17,7 @@ import io.techery.janet.ActionHolder;
 import io.techery.janet.Command;
 import io.techery.janet.Janet;
 import io.techery.janet.command.annotations.CommandAction;
-import rx.schedulers.Schedulers;
+import timber.log.Timber;
 
 @CommandAction
 public class ActivateSmartCardCommand extends Command<SmartCard> implements InjectableAction, SmartCardModifier, CachedAction<SmartCard> {
@@ -44,7 +43,7 @@ public class ActivateSmartCardCommand extends Command<SmartCard> implements Inje
       janet.createPipe(AddDummyCardCommand.class)
             .createObservableResult(new AddDummyCardCommand())
             .map(Command::getResult)
-            .onErrorReturn(throwable -> (Void) null)
+            .onErrorReturn(throwable -> null)
             .subscribe(aVoid -> callback.onSuccess(smartCard));
    }
 

@@ -40,7 +40,6 @@ public class CardListScreen extends WalletLinearLayout<CardListPresenter.Screen,
    private static final String KEY_SHOW_UPDATE_BUTTON_STATE = "CardListScreen#KEY_SHOW_UPDATE_BUTTON_STATE";
 
    @InjectView(R.id.bank_card_list) RecyclerView bankCardList;
-   @InjectView(R.id.empty_card_view) View emptyCardListView;
    @InjectView(R.id.add_card_button) FloatingActionButton addCardButton;
    @InjectView(R.id.firmware_available) View firmwareAvailableView;
    @InjectView(R.id.toolbar) Toolbar toolbar;
@@ -64,7 +63,6 @@ public class CardListScreen extends WalletLinearLayout<CardListPresenter.Screen,
    @Override
    protected void onPostAttachToWindowView() {
       toolbar.setNavigationOnClickListener(it -> presenter.navigationClick());
-      addCardButton.setVisibility(GONE);
 
       setupCardStackList();
    }
@@ -147,7 +145,7 @@ public class CardListScreen extends WalletLinearLayout<CardListPresenter.Screen,
       adapter.registerDelegate(CardStackViewModel.class, new CardStackCell.Delegate() {
          @Override
          public void onCardClicked(BankCard bankCard) {
-            getPresenter().showBankCardDetails(bankCard);
+            getPresenter().cardClicked(bankCard);
          }
       });
       adapter.registerIdDelegate(CardStackViewModel.class, model -> {
@@ -185,7 +183,11 @@ public class CardListScreen extends WalletLinearLayout<CardListPresenter.Screen,
 
    @OnClick(R.id.add_card_button)
    protected void addCardButtonClick() {
-      getPresenter().addCardRequired();
+      new MaterialDialog.Builder(getContext())
+            .title(R.string.wallet_wizard_card_list_add_card_coming_soon_title)
+            .content(R.string.wallet_wizard_card_list_add_card_coming_soon_text)
+            .positiveText(R.string.ok)
+            .show();
    }
 
    @OnClick(R.id.firmware_available)

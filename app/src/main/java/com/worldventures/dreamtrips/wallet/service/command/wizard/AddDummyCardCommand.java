@@ -20,7 +20,7 @@ public class AddDummyCardCommand extends Command<Void> implements InjectableActi
    @Inject SmartCardInteractor smartCardInteractor;
 
    private final BankCard dummyCard1 = ImmutableBankCard.builder()
-         .id("sample1")
+         .id("101")
          .number(9999_9999_9999_4984L)
          .expiryMonth(2)
          .expiryYear(19)
@@ -32,7 +32,7 @@ public class AddDummyCardCommand extends Command<Void> implements InjectableActi
          .build();
 
    private final BankCard dummyCard2 = ImmutableBankCard.builder()
-         .id("sample2")
+         .id("102")
          .number(9999_9999_9999_9274L)
          .expiryMonth(2)
          .expiryYear(19)
@@ -45,10 +45,16 @@ public class AddDummyCardCommand extends Command<Void> implements InjectableActi
 
    @Override
    protected void run(CommandCallback<Void> callback) throws Throwable {
-      Observable.zip(
-            smartCardInteractor.addRecordPipe().createObservableResult(new AttachCardCommand(dummyCard1, true)), // first card should be default
-            smartCardInteractor.addRecordPipe().createObservableResult(new AttachCardCommand(dummyCard2, false)),
-            (attachCardCommand, attachCardCommand2) -> (Void) null)
+      // first card should be default
+
+      addDummyCard(dummyCard1, true)
+            .flatMap(it -> addDummyCard(dummyCard2, false))
+            .map(it -> (Void) null)
             .subscribe(callback::onSuccess, callback::onFail);
+   }
+
+   private Observable<AttachCardCommand> addDummyCard(BankCard dummyCard, boolean isDefault) {
+      return smartCardInteractor.addRecordPipe()
+            .createObservableResult(new AttachCardCommand(dummyCard, isDefault));
    }
 }

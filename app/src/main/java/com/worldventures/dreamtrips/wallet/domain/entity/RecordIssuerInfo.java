@@ -4,19 +4,25 @@ package com.worldventures.dreamtrips.wallet.domain.entity;
 import com.worldventures.dreamtrips.wallet.domain.entity.card.BankCard;
 
 import org.immutables.value.Value;
-import org.jetbrains.annotations.Nullable;
 
 import io.techery.janet.smartcard.model.Record;
 
 @Value.Immutable
-public interface RecordIssuerInfo {
+public abstract class RecordIssuerInfo {
 
-   @Nullable
-   String bankName();
+   @Value.Default
+   public String bankName() {
+      return "";
+   }
 
-   @Nullable
-   Record.FinancialService financialService();
+   //TODO: financialService should be null
+   @Value.Default
+   public Record.FinancialService financialService() {
+      return Record.FinancialService.MASTERCARD;
+   }
 
-   @Nullable
-   BankCard.CardType cardType();
+   @Value.Default
+   public BankCard.CardType cardType() {
+      return BankCard.CardType.UNKNOWN;
+   }
 }

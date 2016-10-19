@@ -103,8 +103,9 @@ public class BankCardHelper {
          case CREDIT:
             return context.getString(R.string.wallet_record_type_credit);
          case DEBIT:
-         default:
             return context.getString(R.string.wallet_record_type_debit);
+         default:
+            return context.getString(R.string.empty);
       }
    }
 

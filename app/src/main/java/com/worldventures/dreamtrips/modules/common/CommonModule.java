@@ -134,14 +134,14 @@ public class CommonModule {
 
       featureManager.with(Feature.TRIPS, () -> activeComponents.add(TripsModule.TRIPS));
 
+      if (!ViewUtils.isTablet(context)) {
+         featureManager.with(Feature.WALLET, () -> activeComponents.add(WalletActivityModule.WALLET));
+      }
+
       featureManager.with(Feature.SOCIAL, () -> activeComponents.add(FeedModule.NOTIFICATIONS));
       featureManager.with(Feature.SOCIAL, () -> activeComponents.add(MessengerActivityModule.MESSENGER));
       featureManager.with(Feature.DTL, () -> activeComponents.add(DtlActivityModule.DTL));
       featureManager.with(Feature.BOOK_TRAVEL, () -> activeComponents.add(TripsModule.OTA));
-
-      if (!ViewUtils.isTablet(context)) {
-         featureManager.with(Feature.WALLET, () -> activeComponents.add(WalletActivityModule.WALLET));
-      }
 
       activeComponents.add(TripsImagesModule.TRIP_IMAGES);
       featureManager.with(Feature.MEMBERSHIP, () -> activeComponents.add(VideoModule.MEMBERSHIP));

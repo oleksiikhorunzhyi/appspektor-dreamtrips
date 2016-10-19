@@ -45,7 +45,7 @@ import static com.worldventures.dreamtrips.modules.tripsimages.bundle.FullScreen
 
 @Layout(R.layout.fragment_trip_list_images)
 public class TripImagesListFragment<T extends TripImagesListPresenter> extends RxBaseFragmentWithArgs<T, TripsImagesBundle>
-      implements TripImagesListPresenter.View, SwipeRefreshLayout.OnRefreshListener, MembersImagesPresenter.View {
+      implements TripImagesListPresenter.View, SwipeRefreshLayout.OnRefreshListener {
 
    @InjectView(R.id.lv_items) protected EmptyRecyclerView recyclerView;
 
@@ -210,10 +210,5 @@ public class TripImagesListFragment<T extends TripImagesListPresenter> extends R
    public void remove(int index) {
       arrayListAdapter.remove(index);
       arrayListAdapter.notifyItemRemoved(index);
-   }
-
-   @Override
-   public void openCreatePhoto(MediaAttachment mediaAttachment, CreateEntityBundle.Origin photoOrigin) {
-      //TODO temp solution will be removed after refactoring
    }
 }

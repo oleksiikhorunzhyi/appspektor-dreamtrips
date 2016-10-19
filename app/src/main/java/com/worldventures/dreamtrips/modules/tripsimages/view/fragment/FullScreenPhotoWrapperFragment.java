@@ -37,7 +37,8 @@ import javax.inject.Inject;
 import butterknife.InjectView;
 
 @Layout(R.layout.fragment_full_screen_photo_wrapper)
-public class FullScreenPhotoWrapperFragment extends RxBaseFragmentWithArgs<TripImagesListPresenter, FullScreenImagesBundle> implements MembersImagesPresenter.View {
+public class FullScreenPhotoWrapperFragment extends RxBaseFragmentWithArgs<TripImagesListPresenter, FullScreenImagesBundle>
+      implements TripImagesListPresenter.View {
 
    @InjectView(R.id.pager) protected ViewPager pager;
    @InjectView(R.id.toolbar_actionbar) protected Toolbar toolbar;
@@ -207,10 +208,5 @@ public class FullScreenPhotoWrapperFragment extends RxBaseFragmentWithArgs<TripI
          pager.setAdapter(adapter);
          pager.setCurrentItem(Math.min(currentItem, adapter.getCount() - 1));
       }
-   }
-
-   @Override
-   public void openCreatePhoto(MediaAttachment mediaAttachment, CreateEntityBundle.Origin photoOrigin) {
-      //TODO Temporary. Need to refactor. Need to create own presenter for {@link FullScreenPhotoWrapperFragment}
    }
 }

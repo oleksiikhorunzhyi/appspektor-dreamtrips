@@ -57,5 +57,4 @@ public class MerchantAttributesFactory {
             .categories(merchant.categories())
             .build();
    }
-
 }

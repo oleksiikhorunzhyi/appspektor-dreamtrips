@@ -4,16 +4,12 @@ import android.content.res.Resources;
 import android.view.View;
 import android.widget.TextView;
 
-import com.innahema.collections.query.queriables.Queryable;
 import com.techery.spares.module.Injector;
 import com.trello.rxlifecycle.RxLifecycle;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.core.utils.ViewUtils;
 import com.worldventures.dreamtrips.modules.dtl.helper.FilterHelper;
-import com.worldventures.dreamtrips.modules.dtl.model.DistanceType;
-import com.worldventures.dreamtrips.modules.settings.model.Setting;
-import com.worldventures.dreamtrips.modules.settings.util.SettingsFactory;
 
 import javax.inject.Inject;
 
@@ -49,8 +45,9 @@ public class MerchantInfoInflater extends MerchantDataInflater {
 
    private void setInfo() {
       pricing.setRating(merchantAttributes.budget());
-      //
-      CharSequence distanceText = merchantAttributes.provideFormattedDistance(resources, FilterHelper.provideDistanceFromSettings(db));
+
+      CharSequence distanceText = merchantAttributes.provideFormattedDistance(resources,
+            FilterHelper.provideDistanceFromSettings(db));
       CharSequence categoriesText = merchantAttributes.provideFormattedCategories();
 
       ViewUtils.setTextOrHideView(distance, distanceText);
@@ -63,5 +60,4 @@ public class MerchantInfoInflater extends MerchantDataInflater {
       } else ViewUtils.setViewVisibility(operationalTime, View.GONE);
 
    }
-
 }

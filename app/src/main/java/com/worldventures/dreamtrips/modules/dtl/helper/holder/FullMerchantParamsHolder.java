@@ -17,10 +17,6 @@ public class FullMerchantParamsHolder implements Serializable {
       return create(command.getMerchantId(), command.getOfferId());
    }
 
-   public static FullMerchantAction toAction(FullMerchantParamsHolder state) {
-      return FullMerchantAction.create(state.getMerchantId(), state.getOfferId());
-   }
-
    public static FullMerchantParamsHolder create(String merchantId, String offerId) {
       return new FullMerchantParamsHolder(merchantId, offerId);
    }

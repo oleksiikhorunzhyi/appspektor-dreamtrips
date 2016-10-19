@@ -253,7 +253,7 @@ public class DtlMapPresenterImpl extends DtlPresenterImpl<DtlMapScreen, ViewStat
    public void retryLoadMerchant() {
       if (actionParamsHolder == null) return;
 
-      fullMerchantInteractor.load(FullMerchantParamsHolder.toAction(actionParamsHolder));
+      fullMerchantInteractor.load(actionParamsHolder);
    }
 
    private void showPins(List<ThinMerchant> merchants) {

@@ -53,7 +53,7 @@ public class HttpActionsCreator {
    }
 
    private static List<String> provideAmenitiesParameter(FilterData filterData) {
-      if (filterData.selectedAmenities() == null || filterData.selectedAmenities().isEmpty()) return null;
+      if (filterData.selectedAmenities().isEmpty()) return null;
 
       final String parameter = "amenity:" +
             Queryable.from(filterData.selectedAmenities()).map(Attribute::id).joinStrings(";");

@@ -23,8 +23,8 @@ import com.worldventures.dreamtrips.modules.dtl.service.DtlLocationInteractor;
 import com.worldventures.dreamtrips.modules.dtl.service.FilterDataInteractor;
 import com.worldventures.dreamtrips.modules.dtl.service.FullMerchantInteractor;
 import com.worldventures.dreamtrips.modules.dtl.service.MerchantsInteractor;
-import com.worldventures.dreamtrips.modules.dtl.service.action.DtlLocationFacadeCommand;
 import com.worldventures.dreamtrips.modules.dtl.service.PresentationInteractor;
+import com.worldventures.dreamtrips.modules.dtl.service.action.DtlLocationFacadeCommand;
 import com.worldventures.dreamtrips.modules.dtl.service.action.FilterDataAction;
 import com.worldventures.dreamtrips.modules.dtl.service.action.FullMerchantAction;
 import com.worldventures.dreamtrips.modules.dtl.service.action.MerchantsAction;
@@ -241,7 +241,7 @@ public class DtlMerchantsPresenterImpl extends DtlPresenterImpl<DtlMerchantsScre
    public void onRetryMerchantClick() {
       if (actionParamsHolder == null) return;
 
-      fullMerchantInteractor.load(FullMerchantParamsHolder.toAction(actionParamsHolder));
+      fullMerchantInteractor.load(actionParamsHolder);
    }
 
    @Override
@@ -260,7 +260,7 @@ public class DtlMerchantsPresenterImpl extends DtlPresenterImpl<DtlMerchantsScre
 
    private void loadMerchant(ThinMerchant merchant, @Nullable String expandedOfferId) {
       presentationInteractor.toggleSelectionPipe().send(ToggleMerchantSelectionAction.select(merchant));
-      fullMerchantInteractor.load(FullMerchantAction.create(merchant.id(), expandedOfferId));
+      fullMerchantInteractor.load(merchant.id(), expandedOfferId);
    }
 
    private void showEmptyOrRedirect() {

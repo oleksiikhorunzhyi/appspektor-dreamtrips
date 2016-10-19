@@ -5,6 +5,8 @@ import com.worldventures.dreamtrips.api.dtl.merchants.MerchantByIdHttpAction;
 import com.worldventures.dreamtrips.core.api.action.CommandWithError;
 import com.worldventures.dreamtrips.core.janet.JanetModule;
 import com.worldventures.dreamtrips.core.janet.dagger.InjectableAction;
+import com.worldventures.dreamtrips.modules.dtl.model.location.DtlLocation;
+import com.worldventures.dreamtrips.modules.dtl.model.mapping.MerchantDistancePatcher;
 import com.worldventures.dreamtrips.modules.dtl.model.mapping.MerchantMapper;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.Merchant;
 
@@ -22,18 +24,20 @@ public class FullMerchantAction extends CommandWithError<Merchant> implements In
 
    private final String offerId;
    private final String merchantId;
+   private final DtlLocation dtlLocation;
 
-   public static FullMerchantAction create(String merchantId) {
-      return create(merchantId, null);
+   public static FullMerchantAction create(String merchantId, DtlLocation dtlLocation) {
+      return create(merchantId, null, dtlLocation);
    }
 
-   public static FullMerchantAction create(String merchantId, String offerId) {
-      return new FullMerchantAction(merchantId, offerId);
+   public static FullMerchantAction create(String merchantId, String offerId, DtlLocation dtlLocation) {
+      return new FullMerchantAction(merchantId, offerId, dtlLocation);
    }
 
-   public FullMerchantAction(String merchantId, String offerId) {
+   public FullMerchantAction(String merchantId, String offerId, DtlLocation dtlLocation) {
       this.merchantId = merchantId;
       this.offerId = offerId;
+      this.dtlLocation = dtlLocation;
    }
 
    @Override
@@ -43,6 +47,7 @@ public class FullMerchantAction extends CommandWithError<Merchant> implements In
             .createObservableResult(new MerchantByIdHttpAction(merchantId))
             .map(MerchantByIdHttpAction::merchant)
             .map(MerchantMapper.INSTANCE::convert)
+            .map(MerchantDistancePatcher.create(dtlLocation))
             .subscribe(callback::onSuccess, callback::onFail);
    }
 

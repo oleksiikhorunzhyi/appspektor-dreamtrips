@@ -27,9 +27,7 @@ import com.worldventures.dreamtrips.wallet.service.command.http.CreateBankCardCo
 
 import java.util.concurrent.TimeUnit;
 
-import javax.inject.Inject;
 import javax.inject.Named;
-import javax.inject.Singleton;
 
 import io.techery.janet.ActionPipe;
 import io.techery.janet.ActionState;
@@ -292,9 +290,9 @@ public final class SmartCardInteractor {
    }
 
    private void observeBatteryLevel(Janet janet) {
-      janet.createPipe(ConnectAction.class)
+      janet.createPipe(ConnectSmartCardCommand.class)
             .observeSuccess()
-            .filter(action -> action.type == ConnectionType.APP)
+            .filter(action -> action.getResult().connectionStatus() == CONNECTED)
             .subscribe(action -> createBatteryObservable(janet));
    }
 

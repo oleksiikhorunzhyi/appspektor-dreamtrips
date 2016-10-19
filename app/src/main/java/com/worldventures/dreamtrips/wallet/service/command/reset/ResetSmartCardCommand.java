@@ -13,6 +13,7 @@ import javax.inject.Named;
 import io.techery.janet.Command;
 import io.techery.janet.Janet;
 import io.techery.janet.command.annotations.CommandAction;
+import io.techery.janet.smartcard.action.support.DisconnectAction;
 import io.techery.janet.smartcard.action.user.UnAssignUserAction;
 import rx.Observable;
 
@@ -39,8 +40,14 @@ public class ResetSmartCardCommand extends Command<Void> implements InjectableAc
 
       return disassociateCardUserServer(smartCard)
             .flatMap(action -> disassociateCardUser())
+            .flatMap(action -> disconnect())
             .flatMap(action -> removeSmartCardData(smartCard))
             .map(action -> null);
+   }
+
+   private Observable<DisconnectAction> disconnect() {
+      return janet.createPipe(DisconnectAction.class)
+            .createObservableResult(new DisconnectAction());
    }
 
    private Observable<DisassociateCardUserHttpAction> disassociateCardUserServer(SmartCard smartCard) {

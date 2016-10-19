@@ -62,12 +62,17 @@ public class CardListCommand extends Command<List<Card>> implements InjectableAc
 
    @Override
    protected void run(CommandCallback<List<Card>> callback) throws Throwable {
-      Observable<List<Card>> listObservable = !isCachePresent() || forceUpdate ? fetchFromDevice() : Observable.just(cachedItems);
+      Observable<List<Card>> listObservable =
+            ((!isAddOperation()) && (!isCachePresent())) || forceUpdate ? fetchFromDevice() : Observable.just(cachedItems);
 
       if (operationFunc != null) {
          listObservable = listObservable.flatMap(operationFunc);
       }
       listObservable.subscribe(callback::onSuccess, callback::onFail);
+   }
+
+   private boolean isAddOperation() {
+      return operationFunc != null && operationFunc.getClass() == AddOperationFunc.class;
    }
 
    private Observable<List<Card>> fetchFromDevice() {

@@ -43,7 +43,13 @@ public class CreateAndConnectToCardCommand extends Command<SmartCard> implements
             .flatMap(smartCard -> smartCardInteractor.connectActionPipe()
                   .createObservableResult(new ConnectSmartCardCommand(smartCard)))
             .doOnNext(command -> this.smartCard = command.getResult())
-            .subscribe(connectCommand -> callback.onSuccess(smartCard), callback::onFail);
+            .subscribe(connectCommand -> {
+               if (smartCard.connectionStatus() == SmartCard.ConnectionStatus.CONNECTED) {
+                  callback.onSuccess(smartCard);
+               } else {
+                  callback.onFail(new Throwable("Could not connect to the device"));
+               }
+            }, callback::onFail);
    }
 
    private SmartCard createSmartCard() {

@@ -5,6 +5,7 @@ import android.content.Context;
 import com.techery.spares.module.qualifier.ForApplication;
 import com.worldventures.dreamtrips.wallet.service.FactoryResetManager;
 import com.worldventures.dreamtrips.wallet.service.FirmwareInteractor;
+import com.worldventures.dreamtrips.wallet.service.SmartCardInteractor;
 import com.worldventures.dreamtrips.wallet.service.WalletBluetoothService;
 import com.worldventures.dreamtrips.wallet.service.WalletNetworkService;
 import com.worldventures.dreamtrips.wallet.service.WizardInteractor;
@@ -39,6 +40,12 @@ public class WalletServiceModule {
    @Provides
    WizardInteractor provideWizardInteractor(@Named(JANET_WALLET) Janet janet) {
       return new WizardInteractor(janet);
+   }
+
+   @Singleton
+   @Provides
+   SmartCardInteractor provideSmartCardInteractor(@Named(JANET_WALLET) Janet janet) {
+      return new SmartCardInteractor(janet);
    }
 
    @Singleton

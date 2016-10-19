@@ -36,11 +36,10 @@ public class CardStacksCommand extends Command<List<CardStacksCommand.CardStackM
    @Override
    protected void run(CommandCallback<List<CardStackModel>> callback) throws Throwable {
       Observable.combineLatest(janet.createPipe(CardListCommand.class)
-            .createObservable(CardListCommand.get(forceUpdate))
-            .compose(new ActionStateToActionTransformer<>()), janet.createPipe(FetchDefaultCardIdCommand.class)
-            .createObservable(FetchDefaultCardIdCommand.fetch(forceUpdate))
-            .compose(new ActionStateToActionTransformer<>()), (cardListCommand, fetchDefaultCardCommand) -> convert(cardListCommand
-            .getResult(), fetchDefaultCardCommand.getResult())).subscribe(callback::onSuccess, callback::onFail);
+            .createObservableResult(CardListCommand.get(forceUpdate)), janet.createPipe(FetchDefaultCardIdCommand.class)
+            .createObservableResult(FetchDefaultCardIdCommand.fetch(forceUpdate)),
+            (cardListCommand, fetchDefaultCardCommand) -> convert(cardListCommand.getResult(),
+                  fetchDefaultCardCommand.getResult())).subscribe(callback::onSuccess, callback::onFail);
    }
 
    private List<CardStackModel> convert(List<Card> cardList, String defaultCardId) {

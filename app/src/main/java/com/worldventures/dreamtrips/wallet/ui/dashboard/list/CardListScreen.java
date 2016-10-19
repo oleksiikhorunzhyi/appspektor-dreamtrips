@@ -29,6 +29,7 @@ import com.worldventures.dreamtrips.wallet.ui.dashboard.list.util.CardStackViewM
 import com.worldventures.dreamtrips.wallet.ui.dashboard.list.util.ImmutableCardStackHeaderHolder;
 import com.worldventures.dreamtrips.wallet.ui.dashboard.list.util.cell.CardStackCell;
 import com.worldventures.dreamtrips.wallet.ui.dashboard.list.util.cell.CardStackHeaderCell;
+import com.worldventures.dreamtrips.wallet.ui.dialog.InstallFirmwareErrorDialog;
 
 import java.util.List;
 
@@ -45,6 +46,7 @@ public class CardListScreen extends WalletLinearLayout<CardListPresenter.Screen,
    @InjectView(R.id.toolbar) Toolbar toolbar;
 
    private IgnoreFirstItemAdapter adapter;
+   private InstallFirmwareErrorDialog installFirmwareErrorDialog;
 
    public CardListScreen(Context context) {
       super(context);
@@ -123,6 +125,18 @@ public class CardListScreen extends WalletLinearLayout<CardListPresenter.Screen,
    public void showFirmwareUpdateBtn() {
       if (firmwareAvailableView.getVisibility() == VISIBLE) return;
       firmwareAvailableView.setVisibility(VISIBLE);
+   }
+
+   @Override
+   public void showFirmwareUpdateError() {
+      if (installFirmwareErrorDialog == null) {
+         installFirmwareErrorDialog = new InstallFirmwareErrorDialog(getContext())
+               .setOnRetryction(() -> presenter.navigateToInstallFirmware())
+               .setOnCancelAction(() -> presenter.navigateBack());
+      }
+      if (!installFirmwareErrorDialog.isShowing()) {
+         installFirmwareErrorDialog.show();
+      }
    }
 
    @Override

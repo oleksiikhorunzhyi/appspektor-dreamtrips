@@ -26,18 +26,19 @@ import com.worldventures.dreamtrips.wallet.ui.common.base.WalletPresenter;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.WalletScreen;
 import com.worldventures.dreamtrips.wallet.ui.common.helper.ErrorActionStateSubscriberWrapper;
 import com.worldventures.dreamtrips.wallet.ui.common.helper.ErrorHandler;
-import com.worldventures.dreamtrips.wallet.ui.common.helper.ErrorSubscriberWrapper;
 import com.worldventures.dreamtrips.wallet.ui.common.navigation.Navigator;
 import com.worldventures.dreamtrips.wallet.ui.dashboard.detail.CardDetailsPath;
 import com.worldventures.dreamtrips.wallet.ui.dashboard.list.util.CardStackHeaderHolder;
 import com.worldventures.dreamtrips.wallet.ui.dashboard.list.util.CardStackViewModel;
 import com.worldventures.dreamtrips.wallet.ui.dashboard.list.util.ImmutableCardStackHeaderHolder;
+import com.worldventures.dreamtrips.wallet.ui.settings.firmware.install.WalletInstallFirmwarePath;
 import com.worldventures.dreamtrips.wallet.ui.settings.firmware.newavailable.WalletNewFirmwareAvailablePath;
 import com.worldventures.dreamtrips.wallet.ui.settings.general.WalletSettingsPath;
 import com.worldventures.dreamtrips.wallet.ui.wizard.charging.WizardChargingPath;
 import com.worldventures.dreamtrips.wallet.util.CardListStackConverter;
 import com.worldventures.dreamtrips.wallet.util.CardUtils;
 
+import java.io.File;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -47,6 +48,7 @@ import rx.Observable;
 import timber.log.Timber;
 
 import static com.worldventures.dreamtrips.wallet.service.command.CardStacksCommand.CardStackModel;
+import static com.worldventures.dreamtrips.wallet.util.WalletFilesUtils.getAppropriateFirmwareFile;
 
 public class CardListPresenter extends WalletPresenter<CardListPresenter.Screen, CardListViewState> {
 
@@ -139,23 +141,38 @@ public class CardListPresenter extends WalletPresenter<CardListPresenter.Screen,
             .smartCard(smartCard)
             .build();
       getView().notifySmartCardChanged(cardStackHeaderHolder);
+      if (smartCard.connectionStatus() == SmartCard.ConnectionStatus.DFU) {
+         File firmwareFile = getAppropriateFirmwareFile(getContext());
+         if (firmwareFile.exists()) {
+            getView().showFirmwareUpdateError();
+         }
+      }
    }
 
-   public void cardClicked(BankCard bankCard) {
+   void cardClicked(BankCard bankCard) {
       if (bankCard.category() != Card.Category.SAMPLE) {
          navigator.go(new CardDetailsPath(bankCard));
       }
    }
 
-   public void navigationClick() {
+   void navigationClick() {
       navigationDrawerPresenter.openDrawer();
    }
 
-   public void onSettingsChosen() {
+   void onSettingsChosen() {
       navigator.go(new WalletSettingsPath());
    }
 
-   public void addCardRequired() {
+   void navigateToInstallFirmware() {
+      File firmwareFile = getAppropriateFirmwareFile(getContext());
+      navigator.go(new WalletInstallFirmwarePath(firmwareFile.getAbsolutePath()));
+   }
+
+   void navigateBack() {
+      navigator.goBack();
+   }
+
+   void addCardRequired() {
       if (cardLoaded >= MAX_CARD_LIMIT) {
          getView().showAddCardErrorDialog(Screen.ERROR_DIALOG_FULL_SMARTCARD);
          return;
@@ -229,6 +246,8 @@ public class CardListPresenter extends WalletPresenter<CardListPresenter.Screen,
       void hideFirmwareUpdateBtn();
 
       void showFirmwareUpdateBtn();
+
+      void showFirmwareUpdateError();
 
       @IntDef({ERROR_DIALOG_FULL_SMARTCARD, ERROR_DIALOG_NO_INTERNET_CONNECTION, ERROR_DIALOG_NO_SMARTCARD_CONNECTION})
       @interface ErrorDialogType {}

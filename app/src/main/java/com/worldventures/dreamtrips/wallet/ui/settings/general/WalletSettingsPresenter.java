@@ -27,6 +27,7 @@ import com.worldventures.dreamtrips.wallet.ui.settings.firmware.uptodate.WalletU
 import com.worldventures.dreamtrips.wallet.ui.settings.removecards.WalletAutoClearCardsPath;
 import com.worldventures.dreamtrips.wallet.ui.wizard.pin.Action;
 import com.worldventures.dreamtrips.wallet.ui.wizard.pin.setup.WizardPinSetupPath;
+import com.worldventures.dreamtrips.wallet.util.SmartCardFlavorUtil;
 
 import javax.inject.Inject;
 
@@ -52,6 +53,7 @@ public class WalletSettingsPresenter extends WalletPresenter<WalletSettingsPrese
    @Override
    public void attachView(Screen view) {
       super.attachView(view);
+      view.testSectionEnabled(SmartCardFlavorUtil.isSmartCardDevMockFlavor());
       view.testFailInstallation(temporaryStorage.failInstall());
 
       observeSmartCardChanges();
@@ -271,5 +273,7 @@ public class WalletSettingsPresenter extends WalletPresenter<WalletSettingsPrese
       void showFirmwareBadge();
 
       void showConfirmFactoryResetDialog();
+
+      void testSectionEnabled(boolean enabled);
    }
 }

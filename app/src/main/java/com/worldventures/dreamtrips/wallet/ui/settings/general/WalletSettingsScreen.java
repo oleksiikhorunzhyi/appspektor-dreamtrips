@@ -62,7 +62,6 @@ public class WalletSettingsScreen extends WalletLinearLayout<WalletSettingsPrese
       stealthModeSwitcherObservable = RxCompoundButton.checkedChanges(stealthModeSwitcher);
       testConnectionObservable = RxCompoundButton.checkedChanges(testConnectionSwitcher);
       testFailInstallationObservable = RxCompoundButton.checkedChanges(testFailInstallFirmwareSwitcher);
-      if (!BuildConfig.DEBUG) settingsSection.setVisibility(GONE);
    }
 
    @NonNull
@@ -191,5 +190,10 @@ public class WalletSettingsScreen extends WalletLinearLayout<WalletSettingsPrese
    @Override
    protected boolean hasToolbar() {
       return true;
+   }
+
+   @Override
+   public void testSectionEnabled(boolean enabled) {
+      settingsSection.setVisibility(enabled ? VISIBLE : GONE);
    }
 }

@@ -5,7 +5,6 @@ import android.os.Parcelable;
 
 import com.techery.spares.module.Injector;
 import com.worldventures.dreamtrips.core.navigation.ActivityRouter;
-import com.worldventures.dreamtrips.modules.video.model.CachedEntity;
 import com.worldventures.dreamtrips.wallet.domain.entity.FirmwareInfo;
 import com.worldventures.dreamtrips.wallet.domain.storage.TemporaryStorage;
 import com.worldventures.dreamtrips.wallet.service.FirmwareInteractor;
@@ -17,6 +16,7 @@ import com.worldventures.dreamtrips.wallet.ui.common.helper.ErrorHandler;
 import com.worldventures.dreamtrips.wallet.ui.common.helper.ErrorSubscriberWrapper;
 import com.worldventures.dreamtrips.wallet.ui.common.navigation.Navigator;
 import com.worldventures.dreamtrips.wallet.ui.settings.firmware.puck_connection.WalletPuckConnectionPath;
+import com.worldventures.dreamtrips.wallet.util.WalletFilesUtils;
 
 import java.io.File;
 
@@ -24,8 +24,8 @@ import javax.inject.Inject;
 
 import rx.functions.Action1;
 
-import static com.worldventures.dreamtrips.wallet.util.WalletFilesUtils.getAvailableBytes;
-import static com.worldventures.dreamtrips.wallet.util.WalletFilesUtils.getMostAppropriateCacheStorage;
+import static com.worldventures.dreamtrips.wallet.util.WalletFilesUtils.checkStorageAvailability;
+import static com.worldventures.dreamtrips.wallet.util.WalletFilesUtils.getAppropriateFirmwareFile;
 
 public class WalletNewFirmwareAvailablePresenter extends WalletPresenter<WalletNewFirmwareAvailablePresenter.Screen, Parcelable> {
 
@@ -90,27 +90,17 @@ public class WalletNewFirmwareAvailablePresenter extends WalletPresenter<WalletN
    }
 
    void downloadButtonClicked() {
-      File mostAppropriateStorage = getMostAppropriateCacheStorage(getContext());
-      if (checkStorageAvailability(mostAppropriateStorage)) {
-         downloadFile(getPathForFirmware(mostAppropriateStorage, firmwareInfo.url()));
+      try {
+         checkStorageAvailability(getContext(), firmwareInfo);
+         File file = getAppropriateFirmwareFile(getContext());
+         downloadFile(file.getAbsolutePath());
+      } catch (WalletFilesUtils.NotEnoughSpaceException e) {
+         getView().insufficientSpace(e.getMissingByteSpace());
       }
    }
 
    void downloadFile(String filePath) {
       navigator.go(new WalletPuckConnectionPath(firmwareInfo, filePath));
-   }
-
-   private boolean checkStorageAvailability(File file) {
-      long availableBytes = getAvailableBytes(file);
-      boolean enoughSpace = availableBytes > firmwareInfo.fileSize();
-      if (!enoughSpace) {
-         getView().insufficientSpace(firmwareInfo.fileSize() - availableBytes);
-      }
-      return enoughSpace;
-   }
-
-   private String getPathForFirmware(File filePath, String url) {
-      return filePath.getAbsolutePath() + File.separator + CachedEntity.getFileName(url);
    }
 
    public interface Screen extends WalletScreen {

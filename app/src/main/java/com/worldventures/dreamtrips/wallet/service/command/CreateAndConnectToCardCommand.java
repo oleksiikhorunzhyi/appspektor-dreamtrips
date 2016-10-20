@@ -9,6 +9,7 @@ import com.worldventures.dreamtrips.wallet.domain.entity.ImmutableSmartCard;
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCard;
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCardDetails;
 import com.worldventures.dreamtrips.wallet.service.SmartCardInteractor;
+import com.worldventures.dreamtrips.wallet.util.SmartCardConnectException;
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -47,7 +48,7 @@ public class CreateAndConnectToCardCommand extends Command<SmartCard> implements
                if (smartCard.connectionStatus() == SmartCard.ConnectionStatus.CONNECTED) {
                   callback.onSuccess(smartCard);
                } else {
-                  callback.onFail(new Throwable("Could not connect to the device"));
+                  callback.onFail(new SmartCardConnectException("Could not connect to the device"));
                }
             }, callback::onFail);
    }

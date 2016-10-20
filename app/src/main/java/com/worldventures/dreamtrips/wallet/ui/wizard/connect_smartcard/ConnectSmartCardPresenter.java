@@ -20,6 +20,7 @@ import com.worldventures.dreamtrips.wallet.ui.common.helper.OperationActionState
 import com.worldventures.dreamtrips.wallet.ui.common.navigation.Navigator;
 import com.worldventures.dreamtrips.wallet.ui.wizard.welcome.WizardWelcomePath;
 import com.worldventures.dreamtrips.wallet.util.FormatException;
+import com.worldventures.dreamtrips.wallet.util.SmartCardConnectException;
 
 import javax.inject.Inject;
 
@@ -65,11 +66,14 @@ public class ConnectSmartCardPresenter extends WalletPresenter<ConnectSmartCardP
             .compose(new ActionPipeCacheWiper<>(wizardInteractor.createAndConnectActionPipe()))
             .subscribe(OperationActionStateSubscriberWrapper.<CreateAndConnectToCardCommand>forView(getView().provideOperationDelegate())
                   .onSuccess(command -> smartCardCreated(command.getResult()))
-                  .onFail(ErrorHandler.create(getContext(), command -> {
-                     startDisassociate(command.getResult().smartCardId());
-                     getView().showPairingErrorDialog();
-                     Timber.e("Could not connect to device");
-                  }))
+                  .onFail(ErrorHandler.<CreateAndConnectToCardCommand>builder(getContext())
+                        .handle(SmartCardConnectException.class, R.string.wallet_smartcard_connection_error)
+                        .defaultAction(command -> {
+                           startDisassociate(command.getResult().smartCardId());
+                           getView().showPairingErrorDialog();
+                           Timber.e("Could not connect to device");
+                        })
+                        .build())
                   .wrap());
 
       wizardInteractor.associateCardUserCommandPipe()

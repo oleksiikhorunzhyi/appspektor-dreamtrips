@@ -48,20 +48,20 @@ import rx.Observable;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 
-public class DtlLocationChangePresenterImpl extends DtlPresenterImpl<DtlLocationChangeScreen, ViewState.EMPTY> implements DtlLocationChangePresenter {
+public class DtlLocationChangePresenterImpl extends DtlPresenterImpl<DtlLocationChangeScreen, ViewState.EMPTY>
+      implements DtlLocationChangePresenter {
 
    @Inject LocationDelegate gpsLocationDelegate;
    @Inject FilterDataInteractor filterDataInteractor;
    @Inject DtlTransactionInteractor transactionInteractor;
    @Inject DtlLocationInteractor locationInteractor;
    @Inject MerchantsInteractor merchantInteractor;
-   //
+
    @State ScreenMode screenMode = ScreenMode.NEARBY_LOCATIONS;
    @State ArrayList<DtlExternalLocation> dtlNearbyLocations = new ArrayList<>();
    @State boolean toolbarInitialized;
-   //
+
    private Subscription locationRequestNoFallback;
-   //
    private AtomicBoolean noMerchants = new AtomicBoolean(Boolean.FALSE);
 
    public DtlLocationChangePresenterImpl(Context context, Injector injector) {
@@ -78,11 +78,11 @@ public class DtlLocationChangePresenterImpl extends DtlPresenterImpl<DtlLocation
          return;
       }
       apiErrorPresenter.setView(getView());
-      //
+
       tryHideNearMeButton();
       // remember this observable - we will start listening to search below only after this fires
       Observable<DtlLocation> locationObservable = connectDtlLocationUpdate();
-      //
+
       connectNearbyLocations();
       connectEmptyMerchantsObservable();
       connectLocationsSearch();
@@ -161,10 +161,10 @@ public class DtlLocationChangePresenterImpl extends DtlPresenterImpl<DtlLocation
    @Override
    public void loadNearMeRequested() {
       screenMode = ScreenMode.AUTO_NEAR_ME;
-      //
+
       if (locationRequestNoFallback != null && !locationRequestNoFallback.isUnsubscribed())
          locationRequestNoFallback.unsubscribe();
-      //
+
       gpsLocationDelegate.requestLocationUpdate()
             .compose(bindViewIoToMainComposer())
             .doOnSubscribe(getView()::showProgress)
@@ -202,7 +202,7 @@ public class DtlLocationChangePresenterImpl extends DtlPresenterImpl<DtlLocation
 
    private void navigateToPath(Path path) {
       clearCacheBeforeCloseScreen();
-      //
+
       History history = History.single(path);
       Flow.get(getContext()).setHistory(history, Flow.Direction.REPLACE);
    }
@@ -222,7 +222,7 @@ public class DtlLocationChangePresenterImpl extends DtlPresenterImpl<DtlLocation
    public void onLocationResolutionGranted() {
       if (locationRequestNoFallback != null && !locationRequestNoFallback.isUnsubscribed())
          locationRequestNoFallback.unsubscribe();
-      //
+
       gpsLocationDelegate.requestLocationUpdate()
             .compose(new IoToMainComposer<>())
             .subscribe(this::onLocationObtained, this::onLocationError);

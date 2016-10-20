@@ -44,7 +44,7 @@ public class DtlLocationChangeScreenImpl extends DtlLayout<DtlLocationChangeScre
 
    @Inject @ForActivity Provider<Injector> injectorProvider;
    @Inject ActivityResultDelegate activityResultDelegate;
-   //
+
    @InjectView(R.id.expandableDtlToolbar) ExpandableDtlToolbar dtlToolbar;
    @InjectView(R.id.autoDetectNearMe) Button autoDetectNearMe;
    @InjectView(R.id.emptyMerchantsCaption) View emptyMerchantsCaption;
@@ -52,15 +52,15 @@ public class DtlLocationChangeScreenImpl extends DtlLayout<DtlLocationChangeScre
    @InjectView(R.id.selectFromNearbyCitiesCaption) View selectFromNearbyCitiesCaption;
    @InjectView(R.id.locationsList) RecyclerView recyclerView;
    @InjectView(R.id.progress) View progressView;
-   //
+
    BaseDelegateAdapter adapter;
 
    @Override
    protected void onPostAttachToWindowView() {
       super.onPostAttachToWindowView();
-      //
+
       activityResultDelegate.addListener(this);
-      //
+
       setupRecyclerView();
       bindNearMeButton();
    }
@@ -78,11 +78,11 @@ public class DtlLocationChangeScreenImpl extends DtlLayout<DtlLocationChangeScre
    private void setupRecyclerView() {
       recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
       recyclerView.addItemDecoration(new SimpleListDividerDecorator(getResources().getDrawable(R.drawable.dtl_location_change_list_divider), true));
-      //
+
       adapter = new BaseDelegateAdapter<DtlExternalLocation>(getActivity(), injectorProvider.get());
       adapter.registerCell(DtlExternalLocation.class, DtlLocationChangeCell.class);
       adapter.registerDelegate(DtlExternalLocation.class, this);
-      //
+
       recyclerView.setAdapter(adapter);
    }
 
@@ -204,7 +204,7 @@ public class DtlLocationChangeScreenImpl extends DtlLayout<DtlLocationChangeScre
    @Override
    public void setItems(List<DtlExternalLocation> locations, boolean showLocationHeader) {
       hideProgress();
-      //
+
       selectFromNearbyCitiesCaption.setVisibility(showLocationHeader ? VISIBLE : GONE);
       adapter.clearAndUpdateItems(locations);
    }

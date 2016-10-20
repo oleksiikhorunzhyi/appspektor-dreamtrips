@@ -251,6 +251,7 @@
    <string name="wallet_smartcard_connected_label">smart card is connected</string>
    <string name="wallet_smartcard_disconnected_label">smart card is disconnected</string>
    <string name="wallet_smartcard_connection_try_description">Connect smart card and try again.</string>
+   <string name="wallet_smartcard_connection_error">Could not connect to the smart card.\nPlease ensure that the smart card is turned on and unlocked.</string>
 
    <!-- Power On -->
    <string name="wallet_wizard_power_on_title">flye smart card</string>

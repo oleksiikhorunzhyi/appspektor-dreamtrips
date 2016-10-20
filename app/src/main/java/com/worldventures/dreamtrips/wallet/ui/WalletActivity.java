@@ -17,8 +17,7 @@ import com.worldventures.dreamtrips.wallet.di.WalletActivityModule;
 import com.worldventures.dreamtrips.wallet.ui.common.base.MediaPickerAdapter;
 import com.worldventures.dreamtrips.wallet.ui.common.base.MediaPickerService;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletActivityPresenter;
-import com.worldventures.dreamtrips.wallet.ui.dashboard.list.CardListPath;
-import com.worldventures.dreamtrips.wallet.ui.wizard.power_on.WizardPowerOnPath;
+import com.worldventures.dreamtrips.wallet.ui.start.WalletStartPath;
 
 import javax.inject.Inject;
 
@@ -75,7 +74,7 @@ public class WalletActivity extends FlowActivity<WalletActivityPresenter> {
 
    @Override
    protected History provideDefaultHistory() {
-      return History.single(getPresentationModel().hasSmartCard() ? new CardListPath() : new WizardPowerOnPath());
+      return History.single(new WalletStartPath());
    }
 
    @Override

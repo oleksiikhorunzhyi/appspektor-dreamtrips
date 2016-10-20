@@ -10,6 +10,8 @@ import com.worldventures.dreamtrips.core.janet.cache.CacheOptions;
 import com.worldventures.dreamtrips.core.janet.cache.CachedAction;
 import com.worldventures.dreamtrips.core.janet.cache.ImmutableCacheOptions;
 import com.worldventures.dreamtrips.core.janet.dagger.InjectableAction;
+import com.worldventures.dreamtrips.modules.dtl.model.location.DtlLocation;
+import com.worldventures.dreamtrips.modules.dtl.model.mapping.MerchantDistancePatcher;
 import com.worldventures.dreamtrips.modules.dtl.model.mapping.MerchantMapper;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.Merchant;
 import com.worldventures.dreamtrips.modules.dtl.service.storage.FullMerchantStorage;
@@ -35,6 +37,7 @@ public class FullMerchantAction extends CommandWithError<Merchant> implements In
 
    public static FullMerchantAction create(String merchantId) {
       return create(merchantId, null);
+   }
 
    public static FullMerchantAction create(String merchantId, DtlLocation dtlLocation) {
       return create(merchantId, null, dtlLocation);

@@ -72,13 +72,17 @@ public class WalletSettingsPresenter extends WalletPresenter<WalletSettingsPrese
             .compose(bindViewIoToMainComposer())
             .subscribe(command -> {
                firmware = command.getResult();
-               if (firmware.updateAvailable()) {
-                  getView().firmwareUpdateCount(1);
-                  getView().showFirmwareBadge();
-               } else {
-                  getView().showFirmwareVersion();
-               }
+               toggleFirmwareBargeOrVersion(firmware.updateAvailable());
             });
+   }
+
+   private void toggleFirmwareBargeOrVersion(boolean updateAvailable) {
+      if (updateAvailable) {
+         getView().firmwareUpdateCount(1);
+         getView().showFirmwareBadge();
+      } else {
+         getView().showFirmwareVersion();
+      }
    }
 
    private void observeSmartCardChanges() {
@@ -177,9 +181,7 @@ public class WalletSettingsPresenter extends WalletPresenter<WalletSettingsPrese
       view.disableDefaultPaymentValue(smartCard.disableCardDelay());
       view.autoClearSmartCardValue(smartCard.clearFlyeDelay());
       view.firmwareVersion(smartCard.firmWareVersion());
-      if (firmware != null && firmware.updateAvailable()) {
-         view.showFirmwareVersion();
-      }
+      toggleFirmwareBargeOrVersion(firmware != null && firmware.updateAvailable());
    }
 
    public void goBack() {

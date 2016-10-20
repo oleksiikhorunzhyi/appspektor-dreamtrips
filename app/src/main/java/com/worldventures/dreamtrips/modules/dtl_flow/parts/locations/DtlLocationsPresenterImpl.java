@@ -15,7 +15,7 @@ import com.worldventures.dreamtrips.modules.dtl.model.location.DtlLocation;
 import com.worldventures.dreamtrips.modules.dtl.model.location.ImmutableDtlManualLocation;
 import com.worldventures.dreamtrips.modules.dtl.service.DtlLocationInteractor;
 import com.worldventures.dreamtrips.modules.dtl.service.action.DtlLocationCommand;
-import com.worldventures.dreamtrips.modules.dtl.service.action.DtlNearbyLocationAction;
+import com.worldventures.dreamtrips.modules.dtl.service.action.DtlNearbyLocationHttpAction;
 import com.worldventures.dreamtrips.modules.dtl_flow.DtlPresenterImpl;
 import com.worldventures.dreamtrips.modules.dtl_flow.ViewState;
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.merchants.DtlMerchantsPath;
@@ -97,7 +97,7 @@ public class DtlLocationsPresenterImpl extends DtlPresenterImpl<DtlLocationsScre
    private void onLocationObtained(Location location) {
       switch (screenMode) {
          case NEARBY_LOCATIONS:
-            locationInteractor.nearbyLocationPipe().send(new DtlNearbyLocationAction(location));
+            locationInteractor.nearbyLocationPipe().send(new DtlNearbyLocationHttpAction(location));
             break;
          case AUTO_NEAR_ME:
             DtlLocation dtlLocation = ImmutableDtlManualLocation.builder()
@@ -141,12 +141,12 @@ public class DtlLocationsPresenterImpl extends DtlPresenterImpl<DtlLocationsScre
       locationInteractor.nearbyLocationPipe()
             .observeWithReplay()
             .compose(bindViewIoToMainComposer())
-            .subscribe(new ActionStateSubscriber<DtlNearbyLocationAction>().onStart(command -> getView().showProgress())
+            .subscribe(new ActionStateSubscriber<DtlNearbyLocationHttpAction>().onStart(command -> getView().showProgress())
                   .onFail(apiErrorPresenter::handleActionError)
                   .onSuccess(this::onLocationsLoaded));
    }
 
-   private void onLocationsLoaded(DtlNearbyLocationAction action) {
+   private void onLocationsLoaded(DtlNearbyLocationHttpAction action) {
       getView().hideProgress();
       showLoadedLocations(action.getResult());
    }

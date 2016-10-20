@@ -21,7 +21,7 @@ import com.worldventures.dreamtrips.modules.dtl.service.FilterDataInteractor;
 import com.worldventures.dreamtrips.modules.dtl.service.MerchantsInteractor;
 import com.worldventures.dreamtrips.modules.dtl.service.action.DtlLocationCommand;
 import com.worldventures.dreamtrips.modules.dtl.service.action.DtlLocationFacadeCommand;
-import com.worldventures.dreamtrips.modules.dtl.service.action.DtlNearbyLocationAction;
+import com.worldventures.dreamtrips.modules.dtl.service.action.DtlNearbyLocationHttpAction;
 import com.worldventures.dreamtrips.modules.dtl.service.action.DtlSearchLocationAction;
 import com.worldventures.dreamtrips.modules.dtl.service.action.FilterDataAction;
 import com.worldventures.dreamtrips.modules.dtl_flow.DtlPresenterImpl;
@@ -142,7 +142,7 @@ public class DtlLocationChangePresenterImpl extends DtlPresenterImpl<DtlLocation
    private void onLocationObtained(Location location) {
       switch (screenMode) {
          case NEARBY_LOCATIONS:
-            locationInteractor.nearbyLocationPipe().send(new DtlNearbyLocationAction(location));
+            locationInteractor.nearbyLocationPipe().send(new DtlNearbyLocationHttpAction(location));
             break;
          case AUTO_NEAR_ME:
             DtlLocation dtlLocation = ImmutableDtlManualLocation.builder()
@@ -249,12 +249,12 @@ public class DtlLocationChangePresenterImpl extends DtlPresenterImpl<DtlLocation
       locationInteractor.nearbyLocationPipe()
             .observeWithReplay()
             .compose(bindViewIoToMainComposer())
-            .subscribe(new ActionStateSubscriber<DtlNearbyLocationAction>().onStart(command -> getView().showProgress())
+            .subscribe(new ActionStateSubscriber<DtlNearbyLocationHttpAction>().onStart(command -> getView().showProgress())
                   .onFail(apiErrorPresenter::handleActionError)
                   .onSuccess(this::onLocationsLoaded));
    }
 
-   private void onLocationsLoaded(DtlNearbyLocationAction action) {
+   private void onLocationsLoaded(DtlNearbyLocationHttpAction action) {
       getView().hideProgress();
       showLoadedLocations(action.getResult());
    }

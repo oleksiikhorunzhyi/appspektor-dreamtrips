@@ -12,13 +12,13 @@ import io.techery.janet.http.annotations.Query;
 import io.techery.janet.http.annotations.Response;
 
 @HttpAction("/api/dtl/v2/locations")
-public class DtlNearbyLocationAction extends AuthorizedHttpAction {
+public class DtlNearbyLocationHttpAction extends AuthorizedHttpAction {
 
    @Query("ll") String latLng;
 
    @Response List<DtlExternalLocation> response;
 
-   public DtlNearbyLocationAction(Location location) {
+   public DtlNearbyLocationHttpAction(Location location) {
       this.latLng = location.getLatitude() + "," + location.getLongitude();
    }
 

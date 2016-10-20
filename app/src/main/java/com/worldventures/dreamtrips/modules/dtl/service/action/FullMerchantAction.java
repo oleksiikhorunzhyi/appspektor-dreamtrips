@@ -4,13 +4,20 @@ import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.api.dtl.merchants.MerchantByIdHttpAction;
 import com.worldventures.dreamtrips.core.api.action.CommandWithError;
 import com.worldventures.dreamtrips.core.janet.JanetModule;
+import com.worldventures.dreamtrips.core.janet.cache.CacheBundle;
+import com.worldventures.dreamtrips.core.janet.cache.CacheBundleImpl;
+import com.worldventures.dreamtrips.core.janet.cache.CacheOptions;
+import com.worldventures.dreamtrips.core.janet.cache.CachedAction;
+import com.worldventures.dreamtrips.core.janet.cache.ImmutableCacheOptions;
 import com.worldventures.dreamtrips.core.janet.dagger.InjectableAction;
 import com.worldventures.dreamtrips.modules.dtl.model.mapping.MerchantMapper;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.Merchant;
+import com.worldventures.dreamtrips.modules.dtl.service.storage.FullMerchantStorage;
 
 import javax.inject.Inject;
 import javax.inject.Named;
 
+import io.techery.janet.ActionHolder;
 import io.techery.janet.Janet;
 import io.techery.janet.command.annotations.CommandAction;
 import rx.schedulers.Schedulers;
@@ -82,7 +89,7 @@ public class FullMerchantAction extends CommandWithError<Merchant> implements In
    @Override
    public CacheOptions getCacheOptions() {
       CacheBundle bundle = new CacheBundleImpl();
-      bundle.put(MerchantStorage.BUNDLE_MERCHANT_ID, merchantId);
+      bundle.put(FullMerchantStorage.BUNDLE_MERCHANT_ID, merchantId);
       return ImmutableCacheOptions.builder().sendAfterRestore(cache == null).params(bundle).build();
    }
 }

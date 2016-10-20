@@ -15,13 +15,13 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import javax.inject.Inject;
 
-public class MerchantStorage implements Storage<Merchant>, ActionStorage<Merchant>, ClearableStorage {
+public class FullMerchantStorage implements Storage<Merchant>, ActionStorage<Merchant>, ClearableStorage {
 
    public static final String BUNDLE_MERCHANT_ID = "BUNDLE_MERCHANT_ID";
 
    private Map<String, Merchant> cache = new ConcurrentHashMap<>();
 
-   @Inject public MerchantStorage() {}
+   @Inject public FullMerchantStorage() {}
 
    @Override
    public synchronized void save(@Nullable CacheBundle params, Merchant merchant) {

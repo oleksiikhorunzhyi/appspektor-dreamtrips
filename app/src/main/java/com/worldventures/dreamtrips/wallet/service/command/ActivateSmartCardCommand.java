@@ -17,7 +17,6 @@ import io.techery.janet.ActionHolder;
 import io.techery.janet.Command;
 import io.techery.janet.Janet;
 import io.techery.janet.command.annotations.CommandAction;
-import timber.log.Timber;
 
 @CommandAction
 public class ActivateSmartCardCommand extends Command<SmartCard> implements InjectableAction, SmartCardModifier, CachedAction<SmartCard> {
@@ -41,7 +40,7 @@ public class ActivateSmartCardCommand extends Command<SmartCard> implements Inje
 
       //TODO: for beta release
       janet.createPipe(AddDummyCardCommand.class)
-            .createObservableResult(new AddDummyCardCommand())
+            .createObservableResult(new AddDummyCardCommand(smartCard.cardName()))
             .map(Command::getResult)
             .onErrorReturn(throwable -> null)
             .subscribe(aVoid -> callback.onSuccess(smartCard));

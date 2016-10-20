@@ -135,28 +135,31 @@ public class DtlMerchantsPresenterImpl extends DtlPresenterImpl<DtlMerchantsScre
             .observeWithReplay()
             .compose(bindViewIoToMainComposer())
             .subscribe(new ActionStateSubscriber<MerchantsAction>()
+                  .onStart(this::onStartMerchantsLoad)
                   .onSuccess(this::onMerchantsLoaded)
                   .onProgress(this::onMerchantsLoading)
                   .onFail(this::onMerchantsLoadingError));
    }
 
+   private void onStartMerchantsLoad(MerchantsAction action) {
+      if (action.isRefresh()) getView().clearMerchants();
+   }
+
    private void onMerchantsLoaded(MerchantsAction action) {
-      if(action.isRefresh()) getView().onRefreshSuccess();
+      if (action.isRefresh()) getView().onRefreshSuccess();
       else getView().onLoadNextSuccess();
 
       setItemsOrRedirect(action.merchants());
    }
 
    private void onMerchantsLoading(MerchantsAction action, Integer progress) {
-      if(action.isRefresh()) getView().onRefreshProgress();
+      if (action.isRefresh()) getView().onRefreshProgress();
       else getView().onLoadNextProgress();
    }
 
    private void onMerchantsLoadingError(MerchantsAction action, Throwable throwable) {
-      if(action.isRefresh()) {
-         getView().setRefreshedItems(action.merchants());
-         getView().onRefreshError(action.getErrorMessage());
-      }
+      if (!action.isRefresh()) getView().setRefreshedItems(action.merchants());
+      if (action.isRefresh()) getView().onRefreshError(action.getErrorMessage());
       else getView().onLoadNextError();
    }
 
@@ -269,7 +272,7 @@ public class DtlMerchantsPresenterImpl extends DtlPresenterImpl<DtlMerchantsScre
             .map(FilterData::isDefault)
             .map(this::isAllowRedirect)
             .subscribe(isRedirect -> {
-               if(isRedirect) navigateToPath(new DtlLocationChangePath());
+               if (isRedirect) navigateToPath(new DtlLocationChangePath());
                else getView().showEmpty(true);
                getView().clearMerchants();
             });

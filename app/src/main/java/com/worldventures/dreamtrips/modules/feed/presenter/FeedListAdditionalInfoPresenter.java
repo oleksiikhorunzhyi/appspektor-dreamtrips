@@ -1,17 +1,16 @@
 package com.worldventures.dreamtrips.modules.feed.presenter;
 
 import android.support.annotation.NonNull;
-import android.support.annotation.StringRes;
 
-import com.octo.android.robospice.persistence.exception.SpiceException;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.core.session.CirclesInteractor;
 import com.worldventures.dreamtrips.modules.common.api.janet.command.CirclesCommand;
 import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.common.view.BlockingProgressView;
-import com.worldventures.dreamtrips.modules.friends.api.GetFriendsQuery;
 import com.worldventures.dreamtrips.modules.friends.model.Circle;
+import com.worldventures.dreamtrips.modules.friends.service.FriendsInteractor;
+import com.worldventures.dreamtrips.modules.friends.service.command.GetFriendsCommand;
 import com.worldventures.dreamtrips.modules.profile.bundle.UserBundle;
 
 import java.util.Collections;
@@ -27,6 +26,7 @@ public class FeedListAdditionalInfoPresenter extends FeedItemAdditionalInfoPrese
 
    @Inject SnappyRepository db;
    @Inject CirclesInteractor circlesInteractor;
+   @Inject FriendsInteractor friendsInteractor;
 
    private int nextPage = 1;
    private int prevTotalItemCount = 0;
@@ -71,7 +71,7 @@ public class FeedListAdditionalInfoPresenter extends FeedItemAdditionalInfoPrese
       view.showBlockingProgress();
    }
 
-   private void onCirclesError(@StringRes String messageId) {
+   private void onCirclesError(String messageId) {
       view.hideBlockingProgress();
       view.informUser(messageId);
    }
@@ -97,30 +97,35 @@ public class FeedListAdditionalInfoPresenter extends FeedItemAdditionalInfoPrese
    // Friends loading
    ///////////////////////////////////////////////////////////////////////////
 
-   public void loadFriends() {
-      loading = true;
-      view.startLoading();
-      doRequest(new GetFriendsQuery(getFilterCircle(), null, nextPage, getPageSize()), users -> {
-         if (nextPage == 1) view.setFriends(users);
-         else view.addFriends(users);
-         canLoadMore = users.size() > 0;
-         nextPage++;
-         loading = false;
-         view.finishLoading();
-      });
+   private void loadFriends() {
+      friendsInteractor.getFriendsPipe()
+            .createObservable(new GetFriendsCommand(getFilterCircle(), nextPage, getPageSize()))
+            .compose(bindViewToMainComposer())
+            .subscribe(new ActionStateSubscriber<GetFriendsCommand>()
+                  .onStart(getFriendsCommand -> {
+                     loading = true;
+                     view.startLoading();
+                  })
+                  .onSuccess(getFriendsCommand -> {
+                     if (nextPage == 1) view.setFriends(getFriendsCommand.getResult());
+                     else view.addFriends(getFriendsCommand.getResult());
+                     canLoadMore = getFriendsCommand.getResult().size() > 0;
+                     nextPage++;
+                     loading = false;
+                     view.finishLoading();
+                  })
+                  .onFail((getFriendsCommand, throwable) -> {
+                     loading = false;
+                     view.finishLoading();
+                     view.informUser(getFriendsCommand.getErrorMessage());
+                  })
+            );
    }
 
    public void reload() {
       nextPage = 1;
       prevTotalItemCount = 0;
       loadFriends();
-   }
-
-   @Override
-   public void handleError(SpiceException error) {
-      super.handleError(error);
-      loading = false;
-      view.finishLoading();
    }
 
    public void onScrolled(int totalItemCount, int lastVisible) {
@@ -132,7 +137,7 @@ public class FeedListAdditionalInfoPresenter extends FeedItemAdditionalInfoPrese
       }
    }
 
-   public int getPageSize() {
+   private int getPageSize() {
       return 100;
    }
 

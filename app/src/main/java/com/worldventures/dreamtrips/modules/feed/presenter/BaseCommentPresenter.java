@@ -1,7 +1,6 @@
 package com.worldventures.dreamtrips.modules.feed.presenter;
 
 import com.innahema.collections.query.queriables.Queryable;
-import com.worldventures.dreamtrips.modules.flags.service.FlagsInteractor;
 import com.worldventures.dreamtrips.core.rx.RxView;
 import com.worldventures.dreamtrips.core.rx.composer.IoToMainComposer;
 import com.worldventures.dreamtrips.core.utils.LocaleHelper;
@@ -16,7 +15,6 @@ import com.worldventures.dreamtrips.modules.common.presenter.delegate.FlagDelega
 import com.worldventures.dreamtrips.modules.common.view.ApiErrorView;
 import com.worldventures.dreamtrips.modules.common.view.bundle.BucketBundle;
 import com.worldventures.dreamtrips.modules.feed.api.DeletePostCommand;
-import com.worldventures.dreamtrips.modules.feed.api.GetUsersLikedEntityQuery;
 import com.worldventures.dreamtrips.modules.feed.event.DeleteBucketEvent;
 import com.worldventures.dreamtrips.modules.feed.event.DeletePhotoEvent;
 import com.worldventures.dreamtrips.modules.feed.event.DeletePostEvent;
@@ -37,10 +35,13 @@ import com.worldventures.dreamtrips.modules.feed.service.TranslationFeedInteract
 import com.worldventures.dreamtrips.modules.feed.service.command.GetCommentsCommand;
 import com.worldventures.dreamtrips.modules.feed.service.command.TranslateUidItemCommand;
 import com.worldventures.dreamtrips.modules.feed.view.cell.Flaggable;
+import com.worldventures.dreamtrips.modules.flags.service.FlagsInteractor;
+import com.worldventures.dreamtrips.modules.friends.service.FriendsInteractor;
+import com.worldventures.dreamtrips.modules.friends.service.command.GetLikersCommand;
 import com.worldventures.dreamtrips.modules.trips.model.TripModel;
-import com.worldventures.dreamtrips.modules.tripsimages.service.command.DeletePhotoCommand;
 import com.worldventures.dreamtrips.modules.tripsimages.model.Photo;
 import com.worldventures.dreamtrips.modules.tripsimages.service.TripImagesInteractor;
+import com.worldventures.dreamtrips.modules.tripsimages.service.command.DeletePhotoCommand;
 
 import java.util.List;
 
@@ -59,6 +60,7 @@ public class BaseCommentPresenter<T extends BaseCommentPresenter.View> extends P
    @Inject LocaleHelper localeHelper;
    @Inject FlagsInteractor flagsInteractor;
    @Inject TripImagesInteractor tripImagesInteractor;
+   @Inject FriendsInteractor friendsInteractor;
 
    private FlagDelegate flagDelegate;
 
@@ -148,7 +150,12 @@ public class BaseCommentPresenter<T extends BaseCommentPresenter.View> extends P
    }
 
    private void loadLikes() {
-      doRequest(new GetUsersLikedEntityQuery(feedEntity.getUid(), 1, 2), this::onLikersLoaded);
+      friendsInteractor.getLikersPipe()
+            .createObservable(new GetLikersCommand(feedEntity.getUid(), 1, 2))
+            .compose(bindViewToMainComposer())
+            .subscribe(new ActionStateSubscriber<GetLikersCommand>()
+                  .onSuccess(likersCommand -> onLikersLoaded(likersCommand.getResult()))
+                  .onFail((likersCommand, throwable) -> view.informUser(likersCommand.getErrorMessage())));
    }
 
    public void setDraftComment(String comment) {
@@ -228,8 +235,8 @@ public class BaseCommentPresenter<T extends BaseCommentPresenter.View> extends P
                .createObservable(new DeletePhotoCommand(event.getEntity().getUid()))
                .compose(bindViewToMainComposer())
                .subscribe(new ActionStateSubscriber<DeletePhotoCommand>()
-                  .onSuccess(deletePhotoCommand -> itemDeleted(event.getEntity()))
-                  .onFail(this::handleError));
+                     .onSuccess(deletePhotoCommand -> itemDeleted(event.getEntity()))
+                     .onFail(this::handleError));
       }
    }
 

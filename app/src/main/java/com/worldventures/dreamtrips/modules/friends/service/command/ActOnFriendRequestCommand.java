@@ -1,4 +1,4 @@
-package com.worldventures.dreamtrips.modules.friends.janet;
+package com.worldventures.dreamtrips.modules.friends.service.command;
 
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.api.friends.AnswerFriendRequestsHttpAction;

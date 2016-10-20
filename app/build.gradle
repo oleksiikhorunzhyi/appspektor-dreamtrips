@@ -468,7 +468,7 @@ dependencies {
    devCompile "com.squareup.leakcanary:leakcanary-android:${leakCanaryVersion}"
    devpremarshmallowCompile "com.squareup.leakcanary:leakcanary-android:${leakCanaryVersion}"
    externalCompile "com.squareup.leakcanary:leakcanary-android-no-op:${leakCanaryVersion}"
-   compile ("com.github.pwittchen:reactivenetwork:0.5.2") {
+   compile("com.github.pwittchen:reactivenetwork:0.5.2") {
       // we should update RxJava to 1.1.9, for now exclude conflicting version
       exclude group: 'io.reactivex', module: 'rxjava'
    }

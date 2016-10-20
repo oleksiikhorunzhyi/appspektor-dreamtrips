@@ -1,23 +1,20 @@
 package com.worldventures.dreamtrips.modules.friends.presenter;
 
-import android.support.annotation.StringRes;
-
 import com.innahema.collections.query.functions.Action1;
 import com.messenger.delegate.StartChatDelegate;
 import com.messenger.ui.activity.MessengerActivity;
-import com.octo.android.robospice.persistence.exception.SpiceException;
 import com.worldventures.dreamtrips.core.api.action.CommandWithError;
-import com.worldventures.dreamtrips.core.api.request.Query;
 import com.worldventures.dreamtrips.core.session.CirclesInteractor;
 import com.worldventures.dreamtrips.modules.common.api.janet.command.CirclesCommand;
 import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.common.view.BlockingProgressView;
-import com.worldventures.dreamtrips.modules.friends.janet.ActOnFriendRequestCommand;
-import com.worldventures.dreamtrips.modules.friends.janet.AddFriendCommand;
-import com.worldventures.dreamtrips.modules.friends.janet.FriendsInteractor;
-import com.worldventures.dreamtrips.modules.friends.janet.RemoveFriendCommand;
 import com.worldventures.dreamtrips.modules.friends.model.Circle;
+import com.worldventures.dreamtrips.modules.friends.service.FriendsInteractor;
+import com.worldventures.dreamtrips.modules.friends.service.command.ActOnFriendRequestCommand;
+import com.worldventures.dreamtrips.modules.friends.service.command.AddFriendCommand;
+import com.worldventures.dreamtrips.modules.friends.service.command.GetUsersCommand;
+import com.worldventures.dreamtrips.modules.friends.service.command.RemoveFriendCommand;
 import com.worldventures.dreamtrips.modules.profile.bundle.UserBundle;
 import com.worldventures.dreamtrips.modules.profile.event.FriendGroupRelationChangedEvent;
 
@@ -73,7 +70,7 @@ public abstract class BaseUserListPresenter<T extends BaseUserListPresenter.View
       view.hideBlockingProgress();
    }
 
-   protected void onCirclesError(@StringRes String messageId) {
+   protected void onCirclesError(String messageId) {
       view.hideBlockingProgress();
       view.informUser(messageId);
    }
@@ -87,10 +84,10 @@ public abstract class BaseUserListPresenter<T extends BaseUserListPresenter.View
       nextPage = 1;
       resetLazyLoadFields();
       view.startLoading();
-      doRequest(getUserListQuery(nextPage), this::onUsersLoaded);
+      loadUsers(nextPage, this::onUsersLoaded);
    }
 
-   protected void onUsersLoaded(ArrayList<User> freshUsers) {
+   protected void onUsersLoaded(List<User> freshUsers) {
       loadUsersRequestLocked = false;
       nextPage++;
       users.clear();
@@ -99,7 +96,7 @@ public abstract class BaseUserListPresenter<T extends BaseUserListPresenter.View
       view.refreshUsers(users);
    }
 
-   protected void onUsersAdded(ArrayList<User> freshUsers) {
+   protected void onUsersAdded(List<User> freshUsers) {
       loadUsersRequestLocked = false;
       nextPage++;
       users.addAll(freshUsers);
@@ -107,15 +104,14 @@ public abstract class BaseUserListPresenter<T extends BaseUserListPresenter.View
       view.finishLoading();
    }
 
-   @Override
-   public void handleError(SpiceException error) {
-      super.handleError(error);
-      if (view != null) view.finishLoading();
+   protected void onError(GetUsersCommand getUsersCommand) {
+      view.finishLoading();
+      view.informUser(getUsersCommand.getErrorMessage());
       loadUsersRequestLocked = false;
       loading = false;
    }
 
-   protected abstract Query<ArrayList<User>> getUserListQuery(int page);
+   protected abstract void loadUsers(int page, rx.functions.Action1<List<User>> onSuccessAction);
 
    public void scrolled(int totalItemCount, int lastVisible) {
       if (totalItemCount > previousTotal) {
@@ -126,7 +122,8 @@ public abstract class BaseUserListPresenter<T extends BaseUserListPresenter.View
          view.startLoading();
          loading = true;
          loadUsersRequestLocked = true;
-         doRequest(getUserListQuery(nextPage), this::onUsersAdded);
+
+         loadUsers(nextPage, this::onUsersAdded);
       }
    }
 

@@ -35,12 +35,15 @@ import com.worldventures.dreamtrips.modules.feed.service.command.MarkNotificatio
 import com.worldventures.dreamtrips.modules.feed.service.command.SuggestedPhotoCommand;
 import com.worldventures.dreamtrips.modules.feed.service.command.TranslateTextCachedCommand;
 import com.worldventures.dreamtrips.modules.feed.service.command.TranslateUidItemCommand;
-import com.worldventures.dreamtrips.modules.feed.service.command.UnlikeEntityCommand;
-import com.worldventures.dreamtrips.modules.friends.janet.AcceptAllFriendRequestsCommand;
-import com.worldventures.dreamtrips.modules.friends.janet.ActOnFriendRequestCommand;
-import com.worldventures.dreamtrips.modules.friends.janet.AddFriendCommand;
-import com.worldventures.dreamtrips.modules.friends.janet.DeleteFriendRequestCommand;
-import com.worldventures.dreamtrips.modules.friends.janet.RemoveFriendCommand;
+import com.worldventures.dreamtrips.modules.friends.service.command.AcceptAllFriendRequestsCommand;
+import com.worldventures.dreamtrips.modules.friends.service.command.ActOnFriendRequestCommand;
+import com.worldventures.dreamtrips.modules.friends.service.command.AddFriendCommand;
+import com.worldventures.dreamtrips.modules.friends.service.command.DeleteFriendRequestCommand;
+import com.worldventures.dreamtrips.modules.friends.service.command.GetFriendsCommand;
+import com.worldventures.dreamtrips.modules.friends.service.command.GetLikersCommand;
+import com.worldventures.dreamtrips.modules.friends.service.command.GetMutualFriendsCommand;
+import com.worldventures.dreamtrips.modules.friends.service.command.GetSearchUsersCommand;
+import com.worldventures.dreamtrips.modules.friends.service.command.RemoveFriendCommand;
 import com.worldventures.dreamtrips.modules.infopages.service.command.GetFeedbackCommand;
 import com.worldventures.dreamtrips.modules.infopages.service.command.SendFeedbackCommand;
 import com.worldventures.dreamtrips.modules.infopages.service.command.UploadFeedbackAttachmentCommand;
@@ -122,12 +125,12 @@ import dagger.Module;
       HashtagSuggestionCommand.class,
       SubscribeToPushNotificationsCommand.class,
       HashtagSuggestionCommand.class,
-      ClearStoragesCommand.class, SubscribeToPushNotificationsCommand.class,
+      ClearStoragesCommand.class,
+      SubscribeToPushNotificationsCommand.class,
       SettingsCommand.class,
       CreateCommentCommand.class,
       EditCommentCommand.class,
       LikeEntityCommand.class,
-      UnlikeEntityCommand.class,
       DeleteCommentCommand.class,
       DeleteFriendRequestCommand.class,
       AcceptAllFriendRequestsCommand.class,
@@ -170,6 +173,10 @@ import dagger.Module;
       GetFilledInviteTemplateCommand.class,
       GetPhoneContactsCommand.class,
       GetSentInvitesCommand.class,
+      GetFriendsCommand.class,
+      GetLikersCommand.class,
+      GetMutualFriendsCommand.class,
+      GetSearchUsersCommand.class,
       SendInvitesCommand.class,
 }, complete = false, library = true)
 public class SocialJanetCommandModule {}

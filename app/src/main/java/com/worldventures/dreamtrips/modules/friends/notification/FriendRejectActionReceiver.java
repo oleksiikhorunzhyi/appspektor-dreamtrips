@@ -6,8 +6,8 @@ import android.content.Intent;
 
 import com.techery.spares.module.Injector;
 import com.worldventures.dreamtrips.modules.common.presenter.ComponentPresenter;
-import com.worldventures.dreamtrips.modules.friends.janet.ActOnFriendRequestCommand;
-import com.worldventures.dreamtrips.modules.friends.janet.FriendsInteractor;
+import com.worldventures.dreamtrips.modules.friends.service.command.ActOnFriendRequestCommand;
+import com.worldventures.dreamtrips.modules.friends.service.FriendsInteractor;
 import com.worldventures.dreamtrips.modules.gcm.delegate.NotificationDelegate;
 import com.worldventures.dreamtrips.modules.profile.bundle.UserBundle;
 

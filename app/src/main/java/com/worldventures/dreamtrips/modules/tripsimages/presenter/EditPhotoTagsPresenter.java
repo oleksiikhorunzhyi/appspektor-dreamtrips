@@ -7,14 +7,18 @@ import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.common.view.custom.tagview.viewgroup.newio.PhotoTagHolder;
 import com.worldventures.dreamtrips.modules.common.view.custom.tagview.viewgroup.newio.PhotoTagHolderManager;
 import com.worldventures.dreamtrips.modules.common.view.custom.tagview.viewgroup.newio.model.PhotoTag;
-import com.worldventures.dreamtrips.modules.friends.api.GetFriendsQuery;
+import com.worldventures.dreamtrips.modules.friends.service.FriendsInteractor;
+import com.worldventures.dreamtrips.modules.friends.service.command.GetFriendsCommand;
 
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import javax.inject.Inject;
+
 import icepick.State;
+import io.techery.janet.helper.ActionStateSubscriber;
 import rx.functions.Action1;
 
 public class EditPhotoTagsPresenter extends Presenter<EditPhotoTagsPresenter.View> implements PhotoTagHolderManager.FriendRequestProxy {
@@ -25,6 +29,8 @@ public class EditPhotoTagsPresenter extends Presenter<EditPhotoTagsPresenter.Vie
    private PhotoTag activeSuggestion;
    private List<PhotoTag> suggestions;
    private List<PhotoTag> photoTags;
+
+   @Inject FriendsInteractor friendsInteractor;
 
    @State ArrayList<PhotoTag> locallyAddedTags = new ArrayList<>();
    @State ArrayList<PhotoTag> locallyDeletedTags = new ArrayList<>();
@@ -74,9 +80,14 @@ public class EditPhotoTagsPresenter extends Presenter<EditPhotoTagsPresenter.Vie
 
    @Override
    public void requestFriends(String query, int page, Action1<List<User>> act) {
-      doRequest(new GetFriendsQuery(null, query, page, PAGE_SIZE), friends -> act.call(Queryable.from(friends)
-            .filter(user -> !isUserExists(user))
-            .toList()));
+      friendsInteractor.getFriendsPipe()
+            .createObservable(new GetFriendsCommand(query, page, PAGE_SIZE))
+            .compose(bindViewToMainComposer())
+            .subscribe(new ActionStateSubscriber<GetFriendsCommand>()
+                  .onSuccess(getFriendsCommand ->
+                        act.call(Queryable.from(getFriendsCommand.getResult())
+                              .filter(user -> !isUserExists(user)).toList()))
+                  .onFail(((getFriendsCommand, throwable) -> view.informUser(getFriendsCommand.getErrorMessage()))));
    }
 
    private boolean isUserExists(User user) {

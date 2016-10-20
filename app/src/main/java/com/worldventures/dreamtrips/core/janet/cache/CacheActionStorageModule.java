@@ -15,7 +15,7 @@ import com.worldventures.dreamtrips.modules.feed.service.storage.NotificationMem
 import com.worldventures.dreamtrips.modules.feed.service.storage.NotificationsStorage;
 import com.worldventures.dreamtrips.modules.feed.service.storage.TranslationDiscStorage;
 import com.worldventures.dreamtrips.modules.flags.storage.FlagsStorage;
-import com.worldventures.dreamtrips.modules.friends.service.CirclesStorage;
+import com.worldventures.dreamtrips.modules.friends.storage.CirclesStorage;
 import com.worldventures.dreamtrips.modules.infopages.service.storage.FeedbackTypeStorage;
 import com.worldventures.dreamtrips.modules.membership.storage.PodcastsDiskStorage;
 import com.worldventures.dreamtrips.modules.membership.storage.PodcastsStorage;

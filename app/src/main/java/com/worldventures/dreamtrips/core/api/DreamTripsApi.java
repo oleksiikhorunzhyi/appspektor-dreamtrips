@@ -62,15 +62,6 @@ public interface DreamTripsApi {
    @GET("/api/dining_suggestions/popular")
    ArrayList<PopularBucketItem> getDiningPopularSuggestions(@Query("name") String name);
 
-   @GET("/api/social/friends")
-   ArrayList<User> getFriends(@Query("circle_id") String circle_id, @Query("query") String query, @Query("page") int page, @Query("per_page") int perPage);
-
-   @GET("/api/social/friends")
-   ArrayList<User> getAllFriends(@Query("query") String query, @Query("page") int page, @Query("per_page") int perPage);
-
-   @GET("/api/social/users")
-   ArrayList<User> searchUsers(@Query("query") String query, @Query("page") int page, @Query("per_page") int perPage);
-
    @GET("/api/social/friends/requests")
    ArrayList<User> getRequests();
 
@@ -92,12 +83,6 @@ public interface DreamTripsApi {
    @DELETE_WITH_BODY("/api/social/circles/{circle_id}/users")
    Void deleteFromGroup(@Path("circle_id") String groupId, @Field("user_ids[]") List<String> userIds);
 
-   @GET("/api/{uid}/likes")
-   ArrayList<User> getUsersWhoLikedEntity(@Path("uid") String uid, @Query("page") int page, @Query("per_page") int perPage);
-
-   @GET("/api/{uid}")
+  @GET("/api/{uid}")
    FeedEntityHolder getFeedEntity(@Path("uid") String uid);
-
-   @GET("/api/social/friends/{userId}/mutual/")
-   ArrayList<User> getMutualFriends(@Path("userId") int userId);
 }

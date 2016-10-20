@@ -18,6 +18,10 @@ import com.worldventures.dreamtrips.modules.feed.converter.PostSocializedConvert
 import com.worldventures.dreamtrips.modules.feed.converter.ReversePostAttachmentsConverter;
 import com.worldventures.dreamtrips.modules.feed.converter.ReversePostDataConverter;
 import com.worldventures.dreamtrips.modules.feed.converter.SimplePostConverter;
+import com.worldventures.dreamtrips.modules.friends.model.converter.ApiUserToUserConverter;
+import com.worldventures.dreamtrips.modules.friends.model.converter.FriendProfileToUserConverter;
+import com.worldventures.dreamtrips.modules.friends.model.converter.FriendСandidateToUserConverter;
+import com.worldventures.dreamtrips.modules.friends.model.converter.MutualsConverter;
 import com.worldventures.dreamtrips.modules.infopages.model.FeedbackTypeConverter;
 import com.worldventures.dreamtrips.modules.mapping.converter.CircleConverter;
 import com.worldventures.dreamtrips.modules.mapping.converter.Converter;
@@ -409,5 +413,29 @@ public class MappingModule {
    @Singleton
    Converter provideInviteTemplateFromInvitationPreviewConverter() {
       return new InviteTemplateFromInvitationPreviewConverter();
+   }
+
+   @Provides(type = Provides.Type.SET)
+   @Singleton
+   Converter provideApiUserToUserConverter() {
+      return new ApiUserToUserConverter();
+   }
+
+   @Provides(type = Provides.Type.SET)
+   @Singleton
+   Converter provideFriendСandidateToUserConverter() {
+      return new FriendСandidateToUserConverter();
+   }
+
+   @Provides(type = Provides.Type.SET)
+   @Singleton
+   Converter provideFriendProfileToUserConverter() {
+      return new FriendProfileToUserConverter();
+   }
+
+   @Provides(type = Provides.Type.SET)
+   @Singleton
+   Converter provideMutualsConverter() {
+      return new MutualsConverter();
    }
 }

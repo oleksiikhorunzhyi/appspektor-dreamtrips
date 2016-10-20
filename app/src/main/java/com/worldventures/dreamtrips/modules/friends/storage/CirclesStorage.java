@@ -1,4 +1,4 @@
-package com.worldventures.dreamtrips.modules.friends.service;
+package com.worldventures.dreamtrips.modules.friends.storage;
 
 import android.support.annotation.Nullable;
 

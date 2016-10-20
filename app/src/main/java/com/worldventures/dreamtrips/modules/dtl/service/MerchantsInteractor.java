@@ -34,7 +34,7 @@ public class MerchantsInteractor {
       this.filterDataInteractor = filterDataInteractor;
       this.clearMemoryInteractor = clearMemoryInteractor;
 
-      thinMerchantsPipe = sessionActionPipeCreator.createPipe(MerchantsAction.class, Schedulers.io());
+      this.thinMerchantsPipe = sessionActionPipeCreator.createPipe(MerchantsAction.class, Schedulers.io());
 
       connectFilterData();
       connectNewRelicTracking();
@@ -86,7 +86,7 @@ public class MerchantsInteractor {
    private void requestMerchants() {
       Observable.combineLatest(
             provideFilterDataObservable(),
-            provideLastFacadeLocationObservable(),
+            provideLastSourceLocationObservable(),
             MerchantsAction::create
       )
             .take(1)
@@ -99,7 +99,7 @@ public class MerchantsInteractor {
             .map(FilterDataAction::getResult);
    }
 
-   private Observable<DtlLocation> provideLastFacadeLocationObservable() {
+   private Observable<DtlLocation> provideLastSourceLocationObservable() {
       return dtlLocationInteractor.locationSourcePipe().observeSuccessWithReplay()
             .take(1)
             .filter(DtlLocationCommand::isResultDefined)

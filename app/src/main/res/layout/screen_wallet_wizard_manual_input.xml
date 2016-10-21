@@ -39,7 +39,7 @@
             />
 
       <!--we cannot use `android:maxLength="@integer/wallet_smart_card_id_length" because library has a bug (see 163 line in PinEntryEditText)`-->
-      <com.alimuzaffar.lib.pin.PinEntryEditText
+      <com.worldventures.dreamtrips.wallet.ui.widget.PinEntryEditText
             android:id="@+id/wallet_wizard_manual_input_scid"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -58,7 +58,7 @@
             >
 
          <requestFocus />
-      </com.alimuzaffar.lib.pin.PinEntryEditText>
+      </com.worldventures.dreamtrips.wallet.ui.widget.PinEntryEditText>
 
       <Button
             android:id="@+id/wallet_wizard_manual_input_next_btn"

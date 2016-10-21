@@ -485,7 +485,6 @@ dependencies {
    compile 'com.github.techery:properratingbar:0.0.5'
    compile 'com.sothree.slidinguppanel:library:3.2.1'
    compile 'com.amulyakhare:com.amulyakhare.textdrawable:1.0.1'
-   compile 'com.github.almozavr:PinEntryEditText:-SNAPSHOT'
    // Util
    retrolambdaConfig 'net.orfjackal.retrolambda:retrolambda:2.3.0'
    compile 'com.google.maps.android:android-maps-utils:0.4'

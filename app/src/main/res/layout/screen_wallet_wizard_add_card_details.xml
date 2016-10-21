@@ -42,7 +42,7 @@
                android:textAppearance="?android:attr/textAppearanceSmall"
                />
 
-         <com.alimuzaffar.lib.pin.PinEntryEditText
+         <com.worldventures.dreamtrips.wallet.ui.widget.PinEntryEditText
                android:id="@+id/card_cvv"
                android:layout_width="wrap_content"
                android:layout_height="wrap_content"

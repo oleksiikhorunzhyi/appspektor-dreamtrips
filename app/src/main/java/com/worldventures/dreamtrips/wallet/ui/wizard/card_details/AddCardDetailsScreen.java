@@ -8,7 +8,6 @@ import android.view.inputmethod.EditorInfo;
 import android.widget.CompoundButton;
 import android.widget.EditText;
 
-import com.alimuzaffar.lib.pin.PinEntryEditText;
 import com.jakewharton.rxbinding.widget.RxCompoundButton;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.wallet.domain.entity.AddressInfo;
@@ -20,6 +19,7 @@ import com.worldventures.dreamtrips.wallet.ui.common.base.screen.OperationScreen
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.delegate.DialogOperationScreen;
 import com.worldventures.dreamtrips.wallet.ui.dialog.ChangeDefaultPaymentCardDialog;
 import com.worldventures.dreamtrips.wallet.ui.widget.BankCardWidget;
+import com.worldventures.dreamtrips.wallet.ui.widget.PinEntryEditText;
 import com.worldventures.dreamtrips.wallet.util.BankCardHelper;
 
 import butterknife.InjectView;

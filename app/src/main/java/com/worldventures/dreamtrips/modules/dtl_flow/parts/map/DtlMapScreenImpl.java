@@ -39,7 +39,7 @@ import com.worldventures.dreamtrips.modules.dtl_flow.view.toolbar.DtlToolbarHelp
 import com.worldventures.dreamtrips.modules.dtl_flow.view.toolbar.ExpandableDtlToolbar;
 import com.worldventures.dreamtrips.modules.dtl_flow.view.toolbar.RxDtlToolbar;
 import com.worldventures.dreamtrips.modules.map.model.DtlClusterItem;
-import com.worldventures.dreamtrips.modules.map.renderer.DtClusterRenderer;
+import com.worldventures.dreamtrips.modules.map.renderer.ClusterRenderer;
 import com.worldventures.dreamtrips.modules.map.view.MapViewUtils;
 import com.worldventures.dreamtrips.modules.trips.model.Location;
 
@@ -328,7 +328,7 @@ public class DtlMapScreenImpl extends DtlLayout<DtlMapScreen, DtlMapPresenter, D
    private void onMapLoaded() {
       clusterManager = new ClusterManager<>(getContext(), googleMap);
       clusterManager.setAlgorithm(new GridBasedAlgorithm<>());
-      clusterManager.setRenderer(new DtClusterRenderer(getContext().getApplicationContext(), googleMap, clusterManager));
+      clusterManager.setRenderer(new ClusterRenderer(getContext().getApplicationContext(), googleMap, clusterManager));
 
       clusterManager.setOnClusterItemClickListener(dtlClusterItem -> {
          selectedLocation = dtlClusterItem.getPosition();

@@ -169,7 +169,7 @@ public class DtlMerchantsPresenterImpl extends DtlPresenterImpl<DtlMerchantsScre
    }
 
    private void setItemsOrRedirect(List<ThinMerchant> items) {
-      if (items.isEmpty()) showEmptyOrRedirect();
+      if (items.isEmpty()) onEmptyMerchantsLoaded();
       else getView().setRefreshedItems(items);
    }
 
@@ -266,20 +266,23 @@ public class DtlMerchantsPresenterImpl extends DtlPresenterImpl<DtlMerchantsScre
       fullMerchantInteractor.load(merchant.id(), expandedOfferId);
    }
 
-   private void showEmptyOrRedirect() {
+   private void onEmptyMerchantsLoaded() {
       filterDataInteractor.filterDataPipe().observeSuccessWithReplay().take(1)
             .map(FilterDataAction::getResult)
             .map(FilterData::isDefault)
-            .map(this::isAllowRedirect)
-            .subscribe(isRedirect -> {
-               if (isRedirect) navigateToPath(new DtlLocationChangePath());
-               else getView().showEmpty(true);
-               getView().clearMerchants();
-            });
+            .subscribe(this::showEmptyOrRedirect);
    }
 
-   private boolean isAllowRedirect(boolean isFilterDefault) {
-      return getView().getPath().isAllowRedirect() && !getView().isTabletLandscape() && isFilterDefault;
+   private void showEmptyOrRedirect(boolean isFilterDefault) {
+      if (!isAllowRedirect() && !isFilterDefault) {
+         getView().clearMerchants();
+         getView().showEmpty(true);
+         getView().showNoMerchantsCaption(isFilterDefault);
+      } else navigateToPath(new DtlLocationChangePath());
+   }
+
+   private boolean isAllowRedirect() {
+      return getView().getPath().isAllowRedirect() && !getView().isTabletLandscape();
    }
 
    public void navigateToDetails(Merchant merchant, String id) {

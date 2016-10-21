@@ -93,8 +93,7 @@
    <string name="merchants_list_empty_text_additional">- or -</string>
    <string name="merchant_working_hours_caption">Hours</string>
    <string name="filter_amenities_error_caption">Amenities could not be loaded at this time</string>
-   <string name="merchants_no_results">No results found</string>
-   <string name="merchants_empty_caption">Try adjusting your filters or enter a new location.</string>
+   <string name="merchants_no_results">No results found \n Try adjusting your filters or enter a new location.</string>
    <string name="dtl_try_again">Try again</string>
 
    <!-- Errors -->

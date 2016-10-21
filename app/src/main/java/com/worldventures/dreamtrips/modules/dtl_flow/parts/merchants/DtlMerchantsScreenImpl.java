@@ -4,10 +4,12 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Parcelable;
 import android.support.annotation.Nullable;
+import android.support.annotation.StringRes;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.util.AttributeSet;
 import android.view.View;
+import android.widget.TextView;
 
 import com.messenger.util.ScrollStatePersister;
 import com.trello.rxlifecycle.RxLifecycle;
@@ -15,6 +17,7 @@ import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.flow.activity.FlowActivity;
 import com.worldventures.dreamtrips.core.selectable.SelectionManager;
 import com.worldventures.dreamtrips.core.selectable.SingleSelectionManager;
+import com.worldventures.dreamtrips.core.utils.ViewUtils;
 import com.worldventures.dreamtrips.modules.common.view.custom.EmptyRecyclerView;
 import com.worldventures.dreamtrips.modules.dtl.model.location.DtlLocation;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.ImmutableThinMerchant;
@@ -52,6 +55,7 @@ public class DtlMerchantsScreenImpl extends DtlLayout<DtlMerchantsScreen, DtlMer
    @InjectView(R.id.swipe_container) SwipeRefreshLayout refreshLayout;
    @InjectView(R.id.emptyView) View emptyView;
    @InjectView(R.id.errorView) View errorView;
+   @InjectView(R.id.captionNoMerchants) TextView noMerchantsCaption;
 
    @Inject MerchantsAdapterDelegate delegate;
 
@@ -236,6 +240,12 @@ public class DtlMerchantsScreenImpl extends DtlLayout<DtlMerchantsScreen, DtlMer
    @Override
    public void showEmpty(boolean isShow) {
       emptyView.setVisibility(isShow ? VISIBLE : GONE);
+   }
+
+   @Override
+   public void showNoMerchantsCaption(boolean isFilterDefault) {
+      @StringRes int captionId = isFilterDefault ? R.string.dtl_location_no_merchants_caption : R.string.merchants_no_results;
+      noMerchantsCaption.setText(captionId);
    }
 
    @Override

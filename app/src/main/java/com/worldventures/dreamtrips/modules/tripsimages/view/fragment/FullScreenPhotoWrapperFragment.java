@@ -26,6 +26,7 @@ import com.worldventures.dreamtrips.modules.tripsimages.model.FragmentItemWithOb
 import com.worldventures.dreamtrips.modules.tripsimages.model.IFullScreenObject;
 import com.worldventures.dreamtrips.modules.tripsimages.model.SocialViewPagerState;
 import com.worldventures.dreamtrips.modules.tripsimages.model.TripImagesType;
+import com.worldventures.dreamtrips.modules.tripsimages.presenter.MembersImagesBasePresenter;
 import com.worldventures.dreamtrips.modules.tripsimages.presenter.TripImagesListPresenter;
 import com.worldventures.dreamtrips.modules.tripsimages.presenter.MembersImagesPresenter;
 
@@ -38,7 +39,7 @@ import butterknife.InjectView;
 
 @Layout(R.layout.fragment_full_screen_photo_wrapper)
 public class FullScreenPhotoWrapperFragment extends RxBaseFragmentWithArgs<TripImagesListPresenter, FullScreenImagesBundle>
-      implements TripImagesListPresenter.View {
+      implements MembersImagesBasePresenter.View {
 
    @InjectView(R.id.pager) protected ViewPager pager;
    @InjectView(R.id.toolbar_actionbar) protected Toolbar toolbar;
@@ -208,5 +209,10 @@ public class FullScreenPhotoWrapperFragment extends RxBaseFragmentWithArgs<TripI
          pager.setAdapter(adapter);
          pager.setCurrentItem(Math.min(currentItem, adapter.getCount() - 1));
       }
+   }
+
+   @Override
+   public void openCreatePhoto(MediaAttachment mediaAttachment, CreateEntityBundle.Origin photoOrigin) {
+      //TODO Temporary. Need to refactor. Need to create own presenter for {@link FullScreenPhotoWrapperFragment}
    }
 }

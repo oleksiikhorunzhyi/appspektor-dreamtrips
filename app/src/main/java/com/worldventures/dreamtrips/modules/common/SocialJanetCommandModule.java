@@ -42,6 +42,7 @@ import com.worldventures.dreamtrips.modules.friends.service.command.DeleteFriend
 import com.worldventures.dreamtrips.modules.friends.service.command.GetFriendsCommand;
 import com.worldventures.dreamtrips.modules.friends.service.command.GetLikersCommand;
 import com.worldventures.dreamtrips.modules.friends.service.command.GetMutualFriendsCommand;
+import com.worldventures.dreamtrips.modules.friends.service.command.GetRequestsCommand;
 import com.worldventures.dreamtrips.modules.friends.service.command.GetSearchUsersCommand;
 import com.worldventures.dreamtrips.modules.friends.service.command.RemoveFriendCommand;
 import com.worldventures.dreamtrips.modules.infopages.service.command.GetFeedbackCommand;
@@ -177,6 +178,7 @@ import dagger.Module;
       GetLikersCommand.class,
       GetMutualFriendsCommand.class,
       GetSearchUsersCommand.class,
+      GetRequestsCommand.class,
       SendInvitesCommand.class,
 }, complete = false, library = true)
 public class SocialJanetCommandModule {}

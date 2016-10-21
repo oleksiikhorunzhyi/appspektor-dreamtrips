@@ -8,6 +8,7 @@ import com.worldventures.dreamtrips.modules.friends.service.command.DeleteFriend
 import com.worldventures.dreamtrips.modules.friends.service.command.GetFriendsCommand;
 import com.worldventures.dreamtrips.modules.friends.service.command.GetLikersCommand;
 import com.worldventures.dreamtrips.modules.friends.service.command.GetMutualFriendsCommand;
+import com.worldventures.dreamtrips.modules.friends.service.command.GetRequestsCommand;
 import com.worldventures.dreamtrips.modules.friends.service.command.GetSearchUsersCommand;
 import com.worldventures.dreamtrips.modules.friends.service.command.RemoveFriendCommand;
 
@@ -30,12 +31,13 @@ public class FriendsInteractor {
    private ActionPipe<GetLikersCommand> getLikersPipe;
    private ActionPipe<GetMutualFriendsCommand> getMutualFriendsPipe;
    private ActionPipe<GetSearchUsersCommand> getSearchUsersPipe;
+   private ActionPipe<GetRequestsCommand> getRequestsPipe;
 
    @Inject
    public FriendsInteractor(SessionActionPipeCreator sessionActionPipeCreator) {
       deleteRequestPipe = sessionActionPipeCreator.createPipe(DeleteFriendRequestCommand.class, Schedulers.io());
-      acceptRequestPipe= sessionActionPipeCreator.createPipe(ActOnFriendRequestCommand.Accept.class, Schedulers.io());
-      rejectRequestPipe= sessionActionPipeCreator.createPipe(ActOnFriendRequestCommand.Reject.class, Schedulers.io());
+      acceptRequestPipe = sessionActionPipeCreator.createPipe(ActOnFriendRequestCommand.Accept.class, Schedulers.io());
+      rejectRequestPipe = sessionActionPipeCreator.createPipe(ActOnFriendRequestCommand.Reject.class, Schedulers.io());
       acceptAllPipe = sessionActionPipeCreator.createPipe(AcceptAllFriendRequestsCommand.class, Schedulers.io());
       addFriendPipe = sessionActionPipeCreator.createPipe(AddFriendCommand.class, Schedulers.io());
       removeFriendPipe = sessionActionPipeCreator.createPipe(RemoveFriendCommand.class, Schedulers.io());
@@ -43,6 +45,7 @@ public class FriendsInteractor {
       getLikersPipe = sessionActionPipeCreator.createPipe(GetLikersCommand.class);
       getMutualFriendsPipe = sessionActionPipeCreator.createPipe(GetMutualFriendsCommand.class);
       getSearchUsersPipe = sessionActionPipeCreator.createPipe(GetSearchUsersCommand.class);
+      getRequestsPipe = sessionActionPipeCreator.createPipe(GetRequestsCommand.class);
    }
 
    public ActionPipe<DeleteFriendRequestCommand> deleteRequestPipe() {
@@ -83,5 +86,9 @@ public class FriendsInteractor {
 
    public ActionPipe<GetSearchUsersCommand> getSearchUsersPipe() {
       return getSearchUsersPipe;
+   }
+
+   public ActionPipe<GetRequestsCommand> getRequestsPipe() {
+      return getRequestsPipe;
    }
 }

@@ -53,6 +53,9 @@ import rx.android.schedulers.AndroidSchedulers;
 
 public class BaseCommentPresenter<T extends BaseCommentPresenter.View> extends Presenter<T> {
 
+   private static final int PAGE = 1;
+   private static final int PER_PAGE = 2;
+
    @Inject FeedEntityManager entityManager;
    @Inject BucketInteractor bucketInteractor;
    @Inject TranslationFeedInteractor translationFeedInteractor;
@@ -95,6 +98,13 @@ public class BaseCommentPresenter<T extends BaseCommentPresenter.View> extends P
       subscribeToCommentTranslation();
    }
 
+   private void subscribeToCommentsLoading() {
+      view.bindUntilDropView(commentsInteractor.commentsPipe().observe().compose(new IoToMainComposer<>()))
+            .subscribe(new ActionStateSubscriber<GetCommentsCommand>()
+                  .onSuccess(getCommentsCommand -> onCommentsLoaded(getCommentsCommand.getResult()))
+                  .onFail((getCommentsCommand, throwable) -> view.informUser(getCommentsCommand.getErrorMessage())));
+   }
+
    private void subscribeToCommentTranslation() {
       view.bindUntilDropView(translationFeedInteractor.translateCommentPipe()
             .observe()
@@ -113,7 +123,7 @@ public class BaseCommentPresenter<T extends BaseCommentPresenter.View> extends P
       //
       loadComments();
       loadInitiated = true;
-      loadLikes();
+      loadFirstLikers();
    }
 
    protected boolean isNeedCheckCommentsWhenStart() {
@@ -123,13 +133,6 @@ public class BaseCommentPresenter<T extends BaseCommentPresenter.View> extends P
    private void loadComments() {
       view.setLoading(true);
       commentsInteractor.commentsPipe().send(new GetCommentsCommand(feedEntity.getUid(), page));
-   }
-
-   private void subscribeToCommentsLoading() {
-      view.bindUntilDropView(commentsInteractor.commentsPipe().observe().compose(new IoToMainComposer<>()))
-            .subscribe(new ActionStateSubscriber<GetCommentsCommand>()
-                  .onSuccess(getCommentsCommand -> onCommentsLoaded(getCommentsCommand.getResult()))
-                  .onFail((getCommentsCommand, throwable) -> view.informUser(getCommentsCommand.getErrorMessage())));
    }
 
    private void onCommentsLoaded(List<Comment> comments) {
@@ -149,13 +152,13 @@ public class BaseCommentPresenter<T extends BaseCommentPresenter.View> extends P
       }
    }
 
-   private void loadLikes() {
+   private void loadFirstLikers() {
       friendsInteractor.getLikersPipe()
-            .createObservable(new GetLikersCommand(feedEntity.getUid(), 1, 2))
+            .createObservable(new GetLikersCommand(feedEntity.getUid(), PAGE, PER_PAGE))
             .compose(bindViewToMainComposer())
             .subscribe(new ActionStateSubscriber<GetLikersCommand>()
                   .onSuccess(likersCommand -> onLikersLoaded(likersCommand.getResult()))
-                  .onFail((likersCommand, throwable) -> view.informUser(likersCommand.getErrorMessage())));
+                  .onFail(this::handleError));
    }
 
    public void setDraftComment(String comment) {

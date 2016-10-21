@@ -4,7 +4,6 @@ import com.worldventures.dreamtrips.modules.bucketlist.model.CategoryItem;
 import com.worldventures.dreamtrips.modules.bucketlist.model.PopularBucketItem;
 import com.worldventures.dreamtrips.modules.bucketlist.model.Suggestion;
 import com.worldventures.dreamtrips.modules.common.model.DELETE_WITH_BODY;
-import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.feed.model.CreatePhotoEntity;
 import com.worldventures.dreamtrips.modules.feed.model.CreatePhotoPostEntity;
 import com.worldventures.dreamtrips.modules.feed.model.FeedEntityHolder;
@@ -62,9 +61,6 @@ public interface DreamTripsApi {
    @GET("/api/dining_suggestions/popular")
    ArrayList<PopularBucketItem> getDiningPopularSuggestions(@Query("name") String name);
 
-   @GET("/api/social/friends/requests")
-   ArrayList<User> getRequests();
-
    @FormUrlEncoded
    @POST("/api/social/posts")
    TextualPost post(@Field("description") String description);
@@ -83,6 +79,6 @@ public interface DreamTripsApi {
    @DELETE_WITH_BODY("/api/social/circles/{circle_id}/users")
    Void deleteFromGroup(@Path("circle_id") String groupId, @Field("user_ids[]") List<String> userIds);
 
-  @GET("/api/{uid}")
+   @GET("/api/{uid}")
    FeedEntityHolder getFeedEntity(@Path("uid") String uid);
 }

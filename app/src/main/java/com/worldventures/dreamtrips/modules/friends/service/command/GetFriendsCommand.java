@@ -5,22 +5,15 @@ import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.api.friends.GetFriendsHttpAction;
 import com.worldventures.dreamtrips.api.friends.model.FriendsParams;
 import com.worldventures.dreamtrips.api.friends.model.ImmutableFriendsParams;
-import com.worldventures.dreamtrips.core.janet.JanetModule;
 import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.friends.model.Circle;
 
 import java.util.List;
 
-import javax.inject.Inject;
-import javax.inject.Named;
-
-import io.techery.janet.Janet;
 import io.techery.janet.command.annotations.CommandAction;
 
 @CommandAction
 public class GetFriendsCommand extends GetUsersCommand {
-
-   @Inject @Named(JanetModule.JANET_API_LIB) Janet janet;
 
    private Circle circle;
    private String query;

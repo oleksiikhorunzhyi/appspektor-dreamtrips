@@ -24,6 +24,8 @@ import rx.schedulers.Schedulers;
 
 public class FeedListAdditionalInfoPresenter extends FeedItemAdditionalInfoPresenter<FeedListAdditionalInfoPresenter.View> {
 
+   private static final int PAGE_SIZE = 100;
+
    @Inject SnappyRepository db;
    @Inject CirclesInteractor circlesInteractor;
    @Inject FriendsInteractor friendsInteractor;
@@ -99,7 +101,7 @@ public class FeedListAdditionalInfoPresenter extends FeedItemAdditionalInfoPrese
 
    private void loadFriends() {
       friendsInteractor.getFriendsPipe()
-            .createObservable(new GetFriendsCommand(getFilterCircle(), nextPage, getPageSize()))
+            .createObservable(new GetFriendsCommand(getFilterCircle(), nextPage, PAGE_SIZE))
             .compose(bindViewToMainComposer())
             .subscribe(new ActionStateSubscriber<GetFriendsCommand>()
                   .onStart(getFriendsCommand -> {
@@ -117,7 +119,7 @@ public class FeedListAdditionalInfoPresenter extends FeedItemAdditionalInfoPrese
                   .onFail((getFriendsCommand, throwable) -> {
                      loading = false;
                      view.finishLoading();
-                     view.informUser(getFriendsCommand.getErrorMessage());
+                     handleError(getFriendsCommand, throwable);
                   })
             );
    }
@@ -135,10 +137,6 @@ public class FeedListAdditionalInfoPresenter extends FeedItemAdditionalInfoPrese
       if (!loading && canLoadMore && lastVisible >= totalItemCount - 1) {
          loadFriends();
       }
-   }
-
-   private int getPageSize() {
-      return 100;
    }
 
    ///////////////////////////////////////////////////////////////////////////

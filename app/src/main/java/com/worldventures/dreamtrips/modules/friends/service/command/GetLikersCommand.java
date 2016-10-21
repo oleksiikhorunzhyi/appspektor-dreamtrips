@@ -3,21 +3,14 @@ package com.worldventures.dreamtrips.modules.friends.service.command;
 
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.api.likes.GetLikersHttpAction;
-import com.worldventures.dreamtrips.core.janet.JanetModule;
 import com.worldventures.dreamtrips.modules.common.model.User;
 
 import java.util.List;
 
-import javax.inject.Inject;
-import javax.inject.Named;
-
-import io.techery.janet.Janet;
 import io.techery.janet.command.annotations.CommandAction;
 
 @CommandAction
 public class GetLikersCommand extends GetUsersCommand {
-
-   @Inject @Named(JanetModule.JANET_API_LIB) Janet janet;
 
    private String uid;
    private int page;

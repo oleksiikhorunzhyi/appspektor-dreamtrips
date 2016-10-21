@@ -87,7 +87,7 @@ public class EditPhotoTagsPresenter extends Presenter<EditPhotoTagsPresenter.Vie
                   .onSuccess(getFriendsCommand ->
                         act.call(Queryable.from(getFriendsCommand.getResult())
                               .filter(user -> !isUserExists(user)).toList()))
-                  .onFail(((getFriendsCommand, throwable) -> view.informUser(getFriendsCommand.getErrorMessage()))));
+                  .onFail(this::handleError));
    }
 
    private boolean isUserExists(User user) {

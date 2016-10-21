@@ -19,7 +19,7 @@ import com.worldventures.dreamtrips.modules.dtl.service.DtlLocationInteractor;
 import com.worldventures.dreamtrips.modules.dtl.service.FilterDataInteractor;
 import com.worldventures.dreamtrips.modules.dtl.service.MerchantsInteractor;
 import com.worldventures.dreamtrips.modules.dtl.service.action.DtlLocationFacadeCommand;
-import com.worldventures.dreamtrips.modules.dtl.service.action.DtlNearbyLocationHttpAction;
+import com.worldventures.dreamtrips.modules.dtl.service.action.DtlNearbyLocationAction;
 import com.worldventures.dreamtrips.modules.dtl.service.action.DtlSearchLocationAction;
 import com.worldventures.dreamtrips.modules.dtl.service.action.FilterDataAction;
 import com.worldventures.dreamtrips.modules.dtl_flow.DtlPresenterImpl;
@@ -48,7 +48,7 @@ public class MasterToolbarPresenterImpl extends DtlPresenterImpl<MasterToolbarSc
    @State DtlLocationChangePresenterImpl.ScreenMode screenMode = DtlLocationChangePresenterImpl.ScreenMode.NEARBY_LOCATIONS;
    @State ArrayList<DtlExternalLocation> dtlNearbyLocations = new ArrayList<>();
 
-   private AtomicBoolean showAutodetectButton = new AtomicBoolean(Boolean.FALSE);
+   private AtomicBoolean showAutodetectButton = new AtomicBoolean(Boolean.TRUE);
    private AtomicBoolean noMerchants = new AtomicBoolean(Boolean.FALSE);
 
    private Subscription locationRequestNoFallback;
@@ -184,7 +184,7 @@ public class MasterToolbarPresenterImpl extends DtlPresenterImpl<MasterToolbarSc
       // TODO :: 26.09.16 think about moving to interactor
       switch (screenMode) {
          case NEARBY_LOCATIONS:
-            locationInteractor.nearbyLocationPipe().send(new DtlNearbyLocationHttpAction(location));
+            locationInteractor.requestNearbyLocations(location);
             break;
          case AUTO_NEAR_ME:
             DtlLocation dtlLocation = ImmutableDtlManualLocation.builder()
@@ -212,7 +212,7 @@ public class MasterToolbarPresenterImpl extends DtlPresenterImpl<MasterToolbarSc
 
    private void tryHideNearMeButton() {
       locationInteractor.locationSourcePipe()
-            .observeSuccess()
+            .observeSuccessWithReplay()
             .compose(bindViewIoToMainComposer())
             .map(Command::getResult)
             .map(DtlLocation::getLocationSourceType)
@@ -263,8 +263,7 @@ public class MasterToolbarPresenterImpl extends DtlPresenterImpl<MasterToolbarSc
 
       gpsLocationDelegate.requestLocationUpdate()
             .compose(new IoToMainComposer<>())
-            .map(DtlNearbyLocationHttpAction::new)
-            .subscribe(locationInteractor.nearbyLocationPipe()::send, throwable -> getView().hideProgress());
+            .subscribe(locationInteractor::requestNearbyLocations, throwable -> getView().hideProgress());
    }
 
    @Override
@@ -282,13 +281,16 @@ public class MasterToolbarPresenterImpl extends DtlPresenterImpl<MasterToolbarSc
       locationInteractor.nearbyLocationPipe()
             .observeWithReplay()
             .compose(bindViewIoToMainComposer())
-            .subscribe(new ActionStateSubscriber<DtlNearbyLocationHttpAction>()
+            .subscribe(new ActionStateSubscriber<DtlNearbyLocationAction>()
                   .onProgress((action, progress) -> getView().showProgress())
-                  .onFail(apiErrorPresenter::handleActionError)
+                  .onFail((action, throwable) -> {
+                     getView().informUser(action.getFallbackErrorMessage());
+                     getView().hideProgress();
+                  })
                   .onSuccess(this::onLocationsLoaded));
    }
 
-   private void onLocationsLoaded(DtlNearbyLocationHttpAction action) {
+   private void onLocationsLoaded(DtlNearbyLocationAction action) {
       getView().hideProgress();
       showLoadedLocations(action.getResult());
    }

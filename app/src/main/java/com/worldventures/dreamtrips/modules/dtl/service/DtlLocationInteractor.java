@@ -1,10 +1,12 @@
 package com.worldventures.dreamtrips.modules.dtl.service;
 
+import android.location.Location;
+
 import com.worldventures.dreamtrips.core.janet.SessionActionPipeCreator;
 import com.worldventures.dreamtrips.modules.dtl.model.location.DtlLocation;
 import com.worldventures.dreamtrips.modules.dtl.service.action.DtlLocationCommand;
 import com.worldventures.dreamtrips.modules.dtl.service.action.DtlLocationFacadeCommand;
-import com.worldventures.dreamtrips.modules.dtl.service.action.DtlNearbyLocationHttpAction;
+import com.worldventures.dreamtrips.modules.dtl.service.action.DtlNearbyLocationAction;
 import com.worldventures.dreamtrips.modules.dtl.service.action.DtlSearchLocationAction;
 
 import io.techery.janet.ActionPipe;
@@ -16,14 +18,14 @@ public class DtlLocationInteractor {
 
    private final ActionPipe<DtlLocationCommand> locationSourcePipe;
    private final ActionPipe<DtlLocationFacadeCommand> locationFacadePipe;
-   private final ActionPipe<DtlNearbyLocationHttpAction> nearbyLocationPipe;
+   private final ActionPipe<DtlNearbyLocationAction> nearbyLocationPipe;
    private final ActionPipe<DtlSearchLocationAction> searchLocationPipe;
 
    public DtlLocationInteractor(SessionActionPipeCreator sessionActionPipeCreator) {
 
       locationSourcePipe = sessionActionPipeCreator.createPipe(DtlLocationCommand.class, Schedulers.io());
       locationFacadePipe = sessionActionPipeCreator.createPipe(DtlLocationFacadeCommand.class, Schedulers.io());
-      nearbyLocationPipe = sessionActionPipeCreator.createPipe(DtlNearbyLocationHttpAction.class, Schedulers.io());
+      nearbyLocationPipe = sessionActionPipeCreator.createPipe(DtlNearbyLocationAction.class, Schedulers.io());
       searchLocationPipe = sessionActionPipeCreator.createPipe(DtlSearchLocationAction.class, Schedulers.io());
 
       connectLocationPipes();
@@ -39,7 +41,7 @@ public class DtlLocationInteractor {
       return locationFacadePipe;
    }
 
-   public ActionPipe<DtlNearbyLocationHttpAction> nearbyLocationPipe() {
+   public ReadActionPipe<DtlNearbyLocationAction> nearbyLocationPipe() {
       return nearbyLocationPipe;
    }
 
@@ -57,6 +59,10 @@ public class DtlLocationInteractor {
 
    public void changeFacadeLocation(DtlLocation dtlLocation) {
       locationFacadePipe.send(DtlLocationFacadeCommand.change(dtlLocation));
+   }
+
+   public void requestNearbyLocations(Location location) {
+      nearbyLocationPipe.send(new DtlNearbyLocationAction(location));
    }
 
    private void connectSearchCancelLatest() {

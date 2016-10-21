@@ -21,7 +21,7 @@ import com.worldventures.dreamtrips.modules.dtl.service.FilterDataInteractor;
 import com.worldventures.dreamtrips.modules.dtl.service.MerchantsInteractor;
 import com.worldventures.dreamtrips.modules.dtl.service.action.DtlLocationCommand;
 import com.worldventures.dreamtrips.modules.dtl.service.action.DtlLocationFacadeCommand;
-import com.worldventures.dreamtrips.modules.dtl.service.action.DtlNearbyLocationHttpAction;
+import com.worldventures.dreamtrips.modules.dtl.service.action.DtlNearbyLocationAction;
 import com.worldventures.dreamtrips.modules.dtl.service.action.DtlSearchLocationAction;
 import com.worldventures.dreamtrips.modules.dtl.service.action.FilterDataAction;
 import com.worldventures.dreamtrips.modules.dtl_flow.DtlPresenterImpl;
@@ -142,7 +142,7 @@ public class DtlLocationChangePresenterImpl extends DtlPresenterImpl<DtlLocation
    private void onLocationObtained(Location location) {
       switch (screenMode) {
          case NEARBY_LOCATIONS:
-            locationInteractor.nearbyLocationPipe().send(new DtlNearbyLocationHttpAction(location));
+            locationInteractor.requestNearbyLocations(location);
             break;
          case AUTO_NEAR_ME:
             DtlLocation dtlLocation = ImmutableDtlManualLocation.builder()
@@ -249,12 +249,16 @@ public class DtlLocationChangePresenterImpl extends DtlPresenterImpl<DtlLocation
       locationInteractor.nearbyLocationPipe()
             .observeWithReplay()
             .compose(bindViewIoToMainComposer())
-            .subscribe(new ActionStateSubscriber<DtlNearbyLocationHttpAction>().onStart(command -> getView().showProgress())
-                  .onFail(apiErrorPresenter::handleActionError)
+            .subscribe(new ActionStateSubscriber<DtlNearbyLocationAction>()
+                  .onProgress((command, progress) -> getView().showProgress())
+                  .onFail((action, throwable) -> {
+                     getView().informUser(action.getFallbackErrorMessage());
+                     getView().hideProgress();
+                  })
                   .onSuccess(this::onLocationsLoaded));
    }
 
-   private void onLocationsLoaded(DtlNearbyLocationHttpAction action) {
+   private void onLocationsLoaded(DtlNearbyLocationAction action) {
       getView().hideProgress();
       showLoadedLocations(action.getResult());
    }

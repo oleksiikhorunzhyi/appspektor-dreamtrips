@@ -1,5 +1,6 @@
 package com.worldventures.dreamtrips.modules.dtl.view.cell;
 
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.CheckBox;
 import android.widget.TextView;
@@ -30,7 +31,8 @@ public class DtlFilterAttributeCell
 
    @Override
    protected void syncUIStateWithModel() {
-      textViewName.setText(getModelObject().name());
+      textViewName.setText(TextUtils.isEmpty(getModelObject().displayName()) ?
+            getModelObject().name() : getModelObject().displayName());
       checkBox.setChecked(selectableDelegate.isSelected(getAdapterPosition()));
    }
 

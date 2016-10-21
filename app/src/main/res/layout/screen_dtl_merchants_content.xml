@@ -30,25 +30,18 @@
          android:orientation="vertical"
          android:layout_width="match_parent"
          android:layout_height="match_parent"
-         android:padding="@dimen/spacing_huger"
-         android:visibility="visible"
+         android:padding="@dimen/spacing_large"
+         android:visibility="gone"
+         android:gravity="center"
          >
 
       <TextView
+            android:id="@+id/captionNoMerchants"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:visibility="visible"
             android:gravity="center"
-            android:layout_marginTop="@dimen/spacing_large"
-            android:layout_marginBottom="@dimen/spacing_normal"
             android:text="@string/merchants_no_results"
-            android:textSize="@dimen/font_medium"
-            />
-
-      <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="center"
-            android:text="@string/merchants_empty_caption"
             android:textSize="@dimen/font_medium"
             />
 

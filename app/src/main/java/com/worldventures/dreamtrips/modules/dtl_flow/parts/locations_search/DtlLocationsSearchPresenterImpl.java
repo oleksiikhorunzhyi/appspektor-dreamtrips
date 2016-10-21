@@ -36,7 +36,7 @@ public class DtlLocationsSearchPresenterImpl extends DtlPresenterImpl<DtlLocatio
    public void onAttachedToWindow() {
       super.onAttachedToWindow();
       getView().toggleDefaultCaptionVisibility(true);
-      //
+
       connectLocationsSearch();
       apiErrorPresenter.setView(getView());
    }

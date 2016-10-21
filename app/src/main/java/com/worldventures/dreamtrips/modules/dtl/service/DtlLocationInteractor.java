@@ -1,5 +1,7 @@
 package com.worldventures.dreamtrips.modules.dtl.service;
 
+import android.location.Location;
+
 import com.worldventures.dreamtrips.core.janet.SessionActionPipeCreator;
 import com.worldventures.dreamtrips.modules.dtl.model.location.DtlLocation;
 import com.worldventures.dreamtrips.modules.dtl.service.action.DtlLocationCommand;
@@ -39,7 +41,7 @@ public class DtlLocationInteractor {
       return locationFacadePipe;
    }
 
-   public ActionPipe<DtlNearbyLocationAction> nearbyLocationPipe() {
+   public ReadActionPipe<DtlNearbyLocationAction> nearbyLocationPipe() {
       return nearbyLocationPipe;
    }
 
@@ -57,6 +59,10 @@ public class DtlLocationInteractor {
 
    public void changeFacadeLocation(DtlLocation dtlLocation) {
       locationFacadePipe.send(DtlLocationFacadeCommand.change(dtlLocation));
+   }
+
+   public void requestNearbyLocations(Location location) {
+      nearbyLocationPipe.send(new DtlNearbyLocationAction(location));
    }
 
    private void connectSearchCancelLatest() {

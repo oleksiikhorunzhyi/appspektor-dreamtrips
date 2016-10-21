@@ -97,7 +97,7 @@ public class DtlLocationsPresenterImpl extends DtlPresenterImpl<DtlLocationsScre
    private void onLocationObtained(Location location) {
       switch (screenMode) {
          case NEARBY_LOCATIONS:
-            locationInteractor.nearbyLocationPipe().send(new DtlNearbyLocationAction(location));
+            locationInteractor.requestNearbyLocations(location);
             break;
          case AUTO_NEAR_ME:
             DtlLocation dtlLocation = ImmutableDtlManualLocation.builder()
@@ -141,8 +141,12 @@ public class DtlLocationsPresenterImpl extends DtlPresenterImpl<DtlLocationsScre
       locationInteractor.nearbyLocationPipe()
             .observeWithReplay()
             .compose(bindViewIoToMainComposer())
-            .subscribe(new ActionStateSubscriber<DtlNearbyLocationAction>().onStart(command -> getView().showProgress())
-                  .onFail(apiErrorPresenter::handleActionError)
+            .subscribe(new ActionStateSubscriber<DtlNearbyLocationAction>()
+                  .onProgress((command, progress) -> getView().showProgress())
+                  .onFail((action, throwable) -> {
+                     getView().informUser(action.getFallbackErrorMessage());
+                     getView().hideProgress();
+                  })
                   .onSuccess(this::onLocationsLoaded));
    }
 

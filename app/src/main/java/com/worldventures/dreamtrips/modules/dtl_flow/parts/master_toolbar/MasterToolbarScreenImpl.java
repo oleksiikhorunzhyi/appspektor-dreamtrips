@@ -51,26 +51,24 @@ public class MasterToolbarScreenImpl extends DtlLayout<MasterToolbarScreen, Mast
       implements MasterToolbarScreen, ActivityResultDelegate.ActivityResultListener {
 
    @Inject ActivityResultDelegate activityResultDelegate;
-   //
+
    @InjectView(R.id.dtlToolbar) DtlToolbar toolbar;
-   //
-   View searchContentView, autoDetectNearMe, progress;
-   RecyclerView recyclerView;
-   //
-   BaseDelegateAdapter adapter;
-   //
-   PopupWindow popupWindow;
+
+   private View searchContentView, autoDetectNearMe, progress;
+   private RecyclerView recyclerView;
+   private BaseDelegateAdapter adapter;
+   private PopupWindow popupWindow;
 
    @Override
    protected void onPostAttachToWindowView() {
       super.onPostAttachToWindowView();
       injector.inject(this);
       initDtlToolbar();
-      //
+
       prepareViews();
       setupPopup();
       setupRecyclerView();
-      //
+
       activityResultDelegate.addListener(this);
    }
 
@@ -120,13 +118,13 @@ public class MasterToolbarScreenImpl extends DtlLayout<MasterToolbarScreen, Mast
    private void prepareViews() {
       searchContentView = LayoutInflater.from(getContext()).inflate(R.layout.view_dtl_location_search, null);
       searchContentView.measure(MeasureSpec.UNSPECIFIED, MeasureSpec.UNSPECIFIED);
-      //
+
       popupWindow = new PopupWindow(searchContentView, searchContentView.getMeasuredWidth(), WindowManager.LayoutParams.WRAP_CONTENT);
       popupWindow.setInputMethodMode(PopupWindow.INPUT_METHOD_NEEDED);
       popupWindow.setBackgroundDrawable(new ColorDrawable());
       popupWindow.setOutsideTouchable(true);
       popupWindow.setOnDismissListener(() -> SoftInputUtil.hideSoftInputMethod(this));
-      //
+
       this.progress = ButterKnife.findById(searchContentView, R.id.progress);
       this.recyclerView = ButterKnife.<RecyclerView>findById(searchContentView, R.id.locationsList);
       this.autoDetectNearMe = ButterKnife.findById(searchContentView, R.id.autoDetectNearMe);
@@ -150,6 +148,7 @@ public class MasterToolbarScreenImpl extends DtlLayout<MasterToolbarScreen, Mast
          adapter.clear();
          popupWindow.showAsDropDown(toolbar.getLocationSearchInput());
          getPresenter().onShowToolbar();
+         autoDetectNearMe.setVisibility(getPresenter().needShowAutodetectButton() ? VISIBLE : GONE);
       } else {
          popupWindow.dismiss();
       }
@@ -160,12 +159,12 @@ public class MasterToolbarScreenImpl extends DtlLayout<MasterToolbarScreen, Mast
       adapter.registerCell(DtlExternalLocation.class, DtlLocationSearchCell.class);
       adapter.registerCell(DtlLocationSearchHeaderCell.HeaderModel.class, DtlLocationSearchHeaderCell.class);
       adapter.registerCell(DtlNearbyHeaderCell.NearbyHeaderModel.class, DtlNearbyHeaderCell.class);
-      //
+
       adapter.registerDelegate(DtlExternalLocation.class, location -> onLocationClicked((DtlExternalLocation) location));
-      //
+
       recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
       recyclerView.addItemDecoration(new SimpleListDividerDecorator(ContextCompat.getDrawable(getContext(), R.drawable.dtl_location_change_list_divider), false));
-      //
+
       recyclerView.setAdapter(adapter);
    }
 
@@ -200,7 +199,6 @@ public class MasterToolbarScreenImpl extends DtlLayout<MasterToolbarScreen, Mast
    public void showProgress() {
       ViewUtils.setViewVisibility(VISIBLE, progress);
       ViewUtils.setViewVisibility(GONE, recyclerView);
-      ViewUtils.setViewVisibility(GONE, autoDetectNearMe);
    }
 
    @Override
@@ -254,13 +252,12 @@ public class MasterToolbarScreenImpl extends DtlLayout<MasterToolbarScreen, Mast
    @Override
    public void setItems(List<DtlExternalLocation> items, boolean showNearbyHeader) {
       hideProgress();
-      //
+
       List<Object> locations = prepareHeader(showNearbyHeader);
       locations.addAll(items);
       adapter.clearAndUpdateItems(locations);
       autoDetectNearMe.setVisibility(getPresenter().needShowAutodetectButton() ? VISIBLE : GONE);
    }
-
 
    ///////////////////////////////////////////////////////////////////////////
    // Boilerplate stuff

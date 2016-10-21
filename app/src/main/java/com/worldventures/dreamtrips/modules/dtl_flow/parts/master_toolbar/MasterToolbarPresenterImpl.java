@@ -28,7 +28,6 @@ import com.worldventures.dreamtrips.modules.dtl_flow.parts.location_change.DtlLo
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import javax.inject.Inject;
@@ -49,7 +48,7 @@ public class MasterToolbarPresenterImpl extends DtlPresenterImpl<MasterToolbarSc
    @State DtlLocationChangePresenterImpl.ScreenMode screenMode = DtlLocationChangePresenterImpl.ScreenMode.NEARBY_LOCATIONS;
    @State ArrayList<DtlExternalLocation> dtlNearbyLocations = new ArrayList<>();
 
-   private AtomicBoolean showAutodetectButton = new AtomicBoolean(Boolean.FALSE);
+   private AtomicBoolean showAutodetectButton = new AtomicBoolean(Boolean.TRUE);
    private AtomicBoolean noMerchants = new AtomicBoolean(Boolean.FALSE);
 
    private Subscription locationRequestNoFallback;
@@ -85,13 +84,12 @@ public class MasterToolbarPresenterImpl extends DtlPresenterImpl<MasterToolbarSc
       super.onAttachedToWindow();
       apiErrorPresenter.setView(getView());
 
+      updateToolbarTitles();
+
       bindToolbarLocationCaptionUpdates();
       connectFilterDataChanges();
 
       tryHideNearMeButton();
-
-      // remember this observable - we will start listening to search below only after this fires
-      updateToolbarTitles();
 
       connectNearbyLocations();
       connectLocationsSearch();
@@ -99,10 +97,10 @@ public class MasterToolbarPresenterImpl extends DtlPresenterImpl<MasterToolbarSc
       connectLocationDelegateNoFallback();
       connectToolbarLocationSearchInput();
 
-      connectFilterToogle();
+      connectFilterToggle();
    }
 
-   private void connectFilterToogle() {
+   private void connectFilterToggle() {
       filterDataInteractor.filterDataPipe()
             .observeSuccessWithReplay()
             .take(1)
@@ -178,7 +176,7 @@ public class MasterToolbarPresenterImpl extends DtlPresenterImpl<MasterToolbarSc
             .compose(bindViewIoToMainComposer())
             .timeout(10L, TimeUnit.SECONDS, AndroidSchedulers.mainThread())
             .subscribe(this::onLocationObtained, throwable -> {
-               if (throwable instanceof TimeoutException) getView().hideProgress();
+               getView().hideProgress();
             });
    }
 
@@ -186,7 +184,7 @@ public class MasterToolbarPresenterImpl extends DtlPresenterImpl<MasterToolbarSc
       // TODO :: 26.09.16 think about moving to interactor
       switch (screenMode) {
          case NEARBY_LOCATIONS:
-            locationInteractor.nearbyLocationPipe().send(new DtlNearbyLocationAction(location));
+            locationInteractor.requestNearbyLocations(location);
             break;
          case AUTO_NEAR_ME:
             DtlLocation dtlLocation = ImmutableDtlManualLocation.builder()
@@ -214,10 +212,9 @@ public class MasterToolbarPresenterImpl extends DtlPresenterImpl<MasterToolbarSc
 
    private void tryHideNearMeButton() {
       locationInteractor.locationSourcePipe()
-            .observeSuccess()
+            .observeSuccessWithReplay()
             .compose(bindViewIoToMainComposer())
             .map(Command::getResult)
-            .distinctUntilChanged()
             .map(DtlLocation::getLocationSourceType)
             .map(mode -> mode != LocationSourceType.NEAR_ME)
             .subscribe(showAutodetectButton::set);
@@ -248,7 +245,7 @@ public class MasterToolbarPresenterImpl extends DtlPresenterImpl<MasterToolbarSc
          locationRequestNoFallback.unsubscribe();
       }
 
-      gpsLocationDelegate.requestLocationUpdate()
+      gpsLocationDelegate.getLastKnownLocation()
             .compose(new IoToMainComposer<>())
             .subscribe(this::onLocationObtained, this::onLocationError);
    }
@@ -266,8 +263,7 @@ public class MasterToolbarPresenterImpl extends DtlPresenterImpl<MasterToolbarSc
 
       gpsLocationDelegate.requestLocationUpdate()
             .compose(new IoToMainComposer<>())
-            .map(DtlNearbyLocationAction::new)
-            .subscribe(locationInteractor.nearbyLocationPipe()::send, this::onLocationError);
+            .subscribe(locationInteractor::requestNearbyLocations, throwable -> getView().hideProgress());
    }
 
    @Override
@@ -285,8 +281,12 @@ public class MasterToolbarPresenterImpl extends DtlPresenterImpl<MasterToolbarSc
       locationInteractor.nearbyLocationPipe()
             .observeWithReplay()
             .compose(bindViewIoToMainComposer())
-            .subscribe(new ActionStateSubscriber<DtlNearbyLocationAction>().onStart(command -> getView().showProgress())
-                  .onFail(apiErrorPresenter::handleActionError)
+            .subscribe(new ActionStateSubscriber<DtlNearbyLocationAction>()
+                  .onProgress((action, progress) -> getView().showProgress())
+                  .onFail((action, throwable) -> {
+                     getView().informUser(action.getFallbackErrorMessage());
+                     getView().hideProgress();
+                  })
                   .onSuccess(this::onLocationsLoaded));
    }
 

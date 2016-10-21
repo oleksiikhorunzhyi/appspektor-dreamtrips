@@ -40,6 +40,7 @@ import io.techery.janet.smartcard.action.charger.StopCardRecordingAction;
 import io.techery.janet.smartcard.action.records.DeleteRecordAction;
 import io.techery.janet.smartcard.action.support.ConnectAction;
 import io.techery.janet.smartcard.action.support.DisconnectAction;
+import io.techery.janet.smartcard.action.user.UnAssignUserAction;
 import io.techery.janet.smartcard.event.CardChargedEvent;
 import io.techery.janet.smartcard.event.LockDeviceChangedEvent;
 import io.techery.janet.smartcard.model.ConnectionType;
@@ -293,16 +294,18 @@ public final class SmartCardInteractor {
       janet.createPipe(ConnectSmartCardCommand.class)
             .observeSuccess()
             .filter(action -> action.getResult().connectionStatus() == CONNECTED)
+            .flatMap(action -> activeSmartCardPipe.observeSuccessWithReplay().first())
             .subscribe(action -> createBatteryObservable(janet));
    }
 
    private void createBatteryObservable(Janet janet) {
-      Observable.interval(0, 15, TimeUnit.SECONDS) // 0 -- emit first event immediately, 15 -- repeat after
+      Observable.interval(0, 1, TimeUnit.MINUTES)
+            .takeUntil(janet.createPipe(UnAssignUserAction.class).observe().first())
             .takeUntil(disconnectPipe.observeSuccess())
             .takeUntil(janet.createPipe(ConnectAction.class)
                   .observeSuccess()
                   .filter(action -> action.type == ConnectionType.DFU))
-            .doOnNext(number -> fetchBatteryLevelPipe.send(new FetchBatteryLevelCommand()))
+            .doOnNext(o -> fetchBatteryLevelPipe.send(new FetchBatteryLevelCommand()))
             .subscribe();
    }
 }

@@ -369,6 +369,11 @@ public class SnappyRepositoryImpl implements SnappyRepository {
    }
 
    @Override
+   public void deleteActiveSmartCardId() {
+      act(db -> db.del(WALLET_ACTIVE_SMART_CARD_ID));
+   }
+
+   @Override
    public void saveWalletCardsList(List<Card> items) {
       putEncrypted(WALLET_CARDS_LIST, items);
    }

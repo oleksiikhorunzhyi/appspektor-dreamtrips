@@ -8,6 +8,7 @@ import com.worldventures.dreamtrips.core.janet.dagger.InjectableAction;
 import com.worldventures.dreamtrips.wallet.domain.entity.card.BankCard;
 import com.worldventures.dreamtrips.wallet.domain.entity.card.Card;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -66,7 +67,9 @@ public class CardListCommand extends Command<List<Card>> implements InjectableAc
             ((!isAddOperation()) && (!isCachePresent())) || forceUpdate ? fetchFromDevice() : Observable.just(cachedItems);
 
       if (operationFunc != null) {
-         listObservable = listObservable.flatMap(operationFunc);
+         listObservable = listObservable
+               .map(list -> new ArrayList<>(cachedItems))
+               .flatMap(operationFunc);
       }
       listObservable.subscribe(callback::onSuccess, callback::onFail);
    }
@@ -78,7 +81,9 @@ public class CardListCommand extends Command<List<Card>> implements InjectableAc
    private Observable<List<Card>> fetchFromDevice() {
       return janet.createPipe(GetMemberRecordsAction.class)
             .createObservableResult(new GetMemberRecordsAction())
-            .flatMap(action -> Observable.from(action.records).map(record -> (Card) mapperyContext.convert(record, BankCard.class)).toList());
+            .flatMap(action -> Observable.from(action.records)
+                  .map(record -> (Card) mapperyContext.convert(record, BankCard.class))
+                  .toList());
    }
 
    @Override
@@ -135,7 +140,7 @@ public class CardListCommand extends Command<List<Card>> implements InjectableAc
       @Override
       public Observable<List<Card>> call(List<Card> cards) {
          Card cardInStack = Queryable.from(cards).firstOrDefault(element -> element.id().equals(card.id()));
-         int position = cardInStack == null? -1 : cards.indexOf(cardInStack);
+         int position = cardInStack == null ? -1 : cards.indexOf(cardInStack);
          if (position != -1) cards.set(position, card);
          return Observable.just(cards);
       }

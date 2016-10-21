@@ -268,6 +268,8 @@ public interface SnappyRepository {
 
    void setActiveSmartCardId(String scid);
 
+   void deleteActiveSmartCardId();
+
    void saveWalletTermsAndConditions(TermsAndConditions data);
 
    TermsAndConditions getWalletTermsAndConditions();

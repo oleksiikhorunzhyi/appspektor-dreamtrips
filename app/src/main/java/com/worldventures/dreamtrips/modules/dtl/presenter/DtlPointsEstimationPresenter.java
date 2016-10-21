@@ -51,10 +51,10 @@ public class DtlPointsEstimationPresenter extends JobPresenter<DtlPointsEstimati
 
    public void onCalculateClicked(String userInput) {
       if (!validateInput(userInput)) return;
-      //
+
       analyticsInteractor.dtlAnalyticsCommandPipe()
             .send(DtlAnalyticsCommand.create(new PointsEstimatorCalculateEvent(merchant.asMerchantAttributes())));
-      //
+
       transactionInteractor.estimatePointsActionPipe()
             .send(new EstimationHttpAction(merchant.id(), ImmutableEstimationParams.builder()
                   .billTotal(Double.valueOf(userInput))

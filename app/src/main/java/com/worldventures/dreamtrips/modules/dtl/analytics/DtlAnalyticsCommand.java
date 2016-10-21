@@ -36,6 +36,7 @@ public class DtlAnalyticsCommand extends Command<Void> implements InjectableActi
    protected void run(CommandCallback<Void> callback) throws Throwable {
       dtlLocationInteractor.locationFacadePipe()
             .observeSuccessWithReplay()
+            .take(1)
             .map(DtlLocationFacadeCommand::getResult)
             .map(dtlLocation -> {
                if (dtlLocation.getLocationSourceType() == LocationSourceType.EXTERNAL) {
@@ -43,11 +44,12 @@ public class DtlAnalyticsCommand extends Command<Void> implements InjectableActi
                } else {
                   merchantInteractor.thinMerchantsHttpPipe()
                         .observeSuccessWithReplay()
+                        .take(1)
                         .map(MerchantsAction::getResult)
                         .map(merchants -> merchants.get(0))
                         .map(dtlMerchant -> ImmutableDtlManualLocation.copyOf((DtlManualLocation) dtlLocation)
                               .withAnalyticsName(dtlMerchant.asMerchantAttributes().provideAnalyticsName()))
-                        .subscribe(action::setAnalyticsLocation, throwable -> {});
+                        .subscribe(action::setAnalyticsLocation, callback::onFail);
                }
                return action;
             })

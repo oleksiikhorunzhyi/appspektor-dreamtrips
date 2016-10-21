@@ -283,7 +283,8 @@ public class DtlLocationChangePresenterImpl extends DtlPresenterImpl<DtlLocation
    @Override
    public void locationSelected(DtlExternalLocation dtlExternalLocation) {
       locationInteractor.searchLocationPipe().clearReplays();
-      analyticsInteractor.dtlAnalyticsCommandPipe().send(DtlAnalyticsCommand.create(LocationSearchEvent.create(dtlExternalLocation)));
+      analyticsInteractor.dtlAnalyticsCommandPipe()
+            .send(DtlAnalyticsCommand.create(LocationSearchEvent.create(dtlExternalLocation)));
       locationInteractor.changeSourceLocation(dtlExternalLocation);
       navigateToPath(DtlMerchantsPath.getDefault());
    }

@@ -129,7 +129,10 @@ public abstract class TripImagesListPresenter<VT extends TripImagesListPresenter
             .compose(bindViewToMainComposer())
             .subscribe(new ActionStateSubscriber<C>()
                .onSuccess(c -> successAction.call((List<IFullScreenObject>) c.getResult()))
-            .onFail(this::handleError));
+            .onFail((failedCommand, throwable) -> {
+               view.finishLoading();
+               super.handleError(failedCommand, throwable);
+            }));
    }
 
    private void onFullDataLoaded(List<IFullScreenObject> items) {

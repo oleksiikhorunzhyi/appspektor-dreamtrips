@@ -9,9 +9,6 @@ import javax.inject.Inject;
 
 import io.techery.janet.ActionPipe;
 
-/**
- * ALL MEMBERS PHOTOS. 1 TAB in Trip Images page.
- */
 public class MembersImagesPresenter extends MembersImagesBasePresenter<GetMembersPhotosCommand> {
 
    @Inject MediaPickerEventDelegate mediaPickerEventDelegate;

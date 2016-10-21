@@ -11,6 +11,8 @@ import com.worldventures.dreamtrips.modules.dtl.model.merchant.ThinMerchant;
 import com.worldventures.dreamtrips.modules.dtl_flow.DtlScreen;
 import com.worldventures.dreamtrips.modules.trips.model.Location;
 
+import java.util.List;
+
 public interface DtlMapScreen extends DtlScreen {
 
    void updateToolbarLocationTitle(@Nullable DtlLocation dtlLocation);
@@ -25,15 +27,13 @@ public interface DtlMapScreen extends DtlScreen {
 
    void addLocationMarker(LatLng location);
 
-   void addPin(ThinMerchant merchant);
+   void showItems(List<ThinMerchant> merchant);
 
    void clearMap();
 
    void prepareInfoWindow(int height);
 
    void centerIn(Location location);
-
-   void renderPins();
 
    void toggleOffersOnly(boolean enabled);
 
@@ -52,10 +52,6 @@ public interface DtlMapScreen extends DtlScreen {
    void showPinInfo(ThinMerchant merchant);
 
    void showError(String error);
-
-   void openFilter();
-
-   boolean isToolbarCollapsed();
 
    void setFilterButtonState(boolean enabled);
 }

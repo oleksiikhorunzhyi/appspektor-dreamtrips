@@ -149,7 +149,7 @@ public class DtlMerchantsScreenImpl extends DtlLayout<DtlMerchantsScreen, DtlMer
    public void onRefreshError(String error) {
       this.loadNextMerchantsError(false);
       this.refreshProgress(false);
-      this.showRefreshMerchantsError(error);
+      this.showhMerchantsError();
       this.showEmpty(false);
       this.updateLoadingState(false);
    }
@@ -173,20 +173,14 @@ public class DtlMerchantsScreenImpl extends DtlLayout<DtlMerchantsScreen, DtlMer
    @Override
    public void onLoadNextError() {
       this.loadNextProgress(false);
-      this.loadNextMerchantsError(true);
+      this.showhMerchantsError();
       this.showEmpty(false);
       this.updateLoadingState(true);
    }
 
-   private void showRefreshMerchantsError(String error) {
+   private void showhMerchantsError() {
       if (!delegate.isItemsPresent()) errorView.setVisibility(VISIBLE);
-      else showLoadMerchantsError(error);
-   }
-
-   private void showLoadMerchantsError(String error) {
-      errorDialog = DialogFactory.createErrorDialog(getActivity(), error);
-      errorDialog.setConfirmClickListener(listener -> listener.dismissWithAnimation());
-      errorDialog.show();
+      else loadNextMerchantsError(true);
    }
 
    private void hideRefreshMerchantsError() {

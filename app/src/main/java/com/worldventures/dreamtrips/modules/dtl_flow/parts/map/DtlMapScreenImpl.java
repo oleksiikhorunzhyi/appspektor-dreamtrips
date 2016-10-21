@@ -23,6 +23,7 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.maps.android.clustering.ClusterManager;
+import com.google.maps.android.clustering.algo.GridBasedAlgorithm;
 import com.innahema.collections.query.queriables.Queryable;
 import com.trello.rxlifecycle.RxLifecycle;
 import com.worldventures.dreamtrips.R;
@@ -42,6 +43,7 @@ import com.worldventures.dreamtrips.modules.map.renderer.DtClusterRenderer;
 import com.worldventures.dreamtrips.modules.map.view.MapViewUtils;
 import com.worldventures.dreamtrips.modules.trips.model.Location;
 
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import butterknife.ButterKnife;
@@ -195,12 +197,6 @@ public class DtlMapScreenImpl extends DtlLayout<DtlMapScreen, DtlMapPresenter, D
    }
 
    @Override
-   public boolean isToolbarCollapsed() {
-      if (dtlToolbar == null) return true;
-      return dtlToolbar.isCollapsed();
-   }
-
-   @Override
    public void addLocationMarker(LatLng location) {
       if (locationPin != null) locationPin.remove();
       locationPin = googleMap.addMarker(new MarkerOptions().icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_red_pin))
@@ -208,13 +204,17 @@ public class DtlMapScreenImpl extends DtlLayout<DtlMapScreen, DtlMapPresenter, D
    }
 
    @Override
-   public void addPin(ThinMerchant merchant) {
-      clusterManager.addItem(new DtlClusterItem(merchant));
+   public void showItems(List<ThinMerchant> merchants) {
+      clearMap();
+
+      clusterManager.addItems(Queryable.from(merchants).map(DtlClusterItem::new).toList());
+      clusterManager.cluster();
    }
 
    @Override
    public void clearMap() {
       clusterManager.clearItems();
+      googleMap.clear();
    }
 
    @Override
@@ -234,11 +234,6 @@ public class DtlMapScreenImpl extends DtlLayout<DtlMapScreen, DtlMapPresenter, D
    @Override
    public void centerIn(Location location) {
       googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(location.asLatLng(), MapViewUtils.DEFAULT_ZOOM));
-   }
-
-   @Override
-   public void renderPins() {
-      clusterManager.cluster();
    }
 
    @Override
@@ -283,11 +278,6 @@ public class DtlMapScreenImpl extends DtlLayout<DtlMapScreen, DtlMapPresenter, D
          getPresenter().retryLoadMerchant();
       });
       errorDialog.show();
-   }
-
-   @Override
-   public void openFilter() {
-      ((FlowActivity) getActivity()).openRightDrawer();
    }
 
    @Override
@@ -337,6 +327,7 @@ public class DtlMapScreenImpl extends DtlLayout<DtlMapScreen, DtlMapPresenter, D
 
    private void onMapLoaded() {
       clusterManager = new ClusterManager<>(getContext(), googleMap);
+      clusterManager.setAlgorithm(new GridBasedAlgorithm<>());
       clusterManager.setRenderer(new DtClusterRenderer(getContext().getApplicationContext(), googleMap, clusterManager));
 
       clusterManager.setOnClusterItemClickListener(dtlClusterItem -> {

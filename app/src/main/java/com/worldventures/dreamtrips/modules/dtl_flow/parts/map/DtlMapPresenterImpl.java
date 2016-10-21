@@ -4,7 +4,6 @@ import android.content.Context;
 import android.view.View;
 
 import com.google.android.gms.maps.model.LatLng;
-import com.innahema.collections.query.queriables.Queryable;
 import com.techery.spares.module.Injector;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.api.action.CommandWithError;
@@ -53,7 +52,6 @@ import flow.History;
 import flow.path.Path;
 import icepick.State;
 import io.techery.janet.helper.ActionStateSubscriber;
-import io.techery.janet.helper.ActionStateToActionTransformer;
 import rx.Observable;
 
 import static rx.Observable.just;
@@ -102,15 +100,16 @@ public class DtlMapPresenterImpl extends DtlPresenterImpl<DtlMapScreen, ViewStat
             .compose(bindViewIoToMainComposer())
             .subscribe(coordinates -> getView().animateTo(coordinates, 0));
       merchantInteractor.thinMerchantsHttpPipe()
-            .observe()
+            .observeSuccess()
             .compose(bindViewIoToMainComposer())
-            .compose(new ActionStateToActionTransformer<>())
             .filter(action -> action.merchants().isEmpty())
-            .subscribe(s -> getView().informUser(R.string.dtl_no_merchants_caption), throwable -> {});
+            .subscribe(s -> getView().informUser(R.string.dtl_no_merchants_caption), throwable -> {
+            });
       merchantInteractor.thinMerchantsHttpPipe()
             .observeWithReplay()
             .compose(bindViewIoToMainComposer())
             .subscribe(new ActionStateSubscriber<MerchantsAction>()
+                  .onStart(this::onStartMerchantsLoad)
                   .onProgress((action, progress) -> getView().showProgress(true))
                   .onSuccess(action -> onMerchantsLoaded(action.merchants()))
                   .onFail((action, throwable) -> {
@@ -143,6 +142,10 @@ public class DtlMapPresenterImpl extends DtlPresenterImpl<DtlMapScreen, ViewStat
             .compose(bindView())
             .map(MapInfoReadyAction::getResult)
             .subscribe(popupHeight -> getView().prepareInfoWindow(popupHeight));
+   }
+
+   private void onStartMerchantsLoad(MerchantsAction action) {
+      if (action.isRefresh()) getView().clearMap();
    }
 
    private void onProgressMerchantLoad(CommandWithError<Merchant> action, Integer progress) {
@@ -226,16 +229,10 @@ public class DtlMapPresenterImpl extends DtlPresenterImpl<DtlMapScreen, ViewStat
       showPins(merchants);
 
       locationInteractor.locationSourcePipe()
-            .observeSuccessWithReplay()
+            .observeSuccessWithReplay().take(1)
             .map(DtlLocationCommand::getResult)
             .compose(bindViewIoToMainComposer())
-            .subscribe(location -> {
-               if (location.getLocationSourceType() == LocationSourceType.FROM_MAP && getView().getMap()
-                     .getCameraPosition().zoom < MapViewUtils.DEFAULT_ZOOM) getView().zoom(MapViewUtils.DEFAULT_ZOOM);
-
-               if (location.getLocationSourceType() != LocationSourceType.NEAR_ME)
-                  getView().addLocationMarker(location.getCoordinates().asLatLng());
-            });
+            .subscribe(this::updateMap);
    }
 
    @Override
@@ -257,9 +254,15 @@ public class DtlMapPresenterImpl extends DtlPresenterImpl<DtlMapScreen, ViewStat
    }
 
    private void showPins(List<ThinMerchant> merchants) {
-      getView().clearMap();
-      Queryable.from(merchants).forEachR(getView()::addPin);
-      getView().renderPins();
+      getView().showItems(merchants);
+   }
+
+   private void updateMap(DtlLocation location) {
+      if (location.getLocationSourceType() == LocationSourceType.FROM_MAP && getView().getMap()
+            .getCameraPosition().zoom < MapViewUtils.DEFAULT_ZOOM) getView().zoom(MapViewUtils.DEFAULT_ZOOM);
+
+      if (location.getLocationSourceType() != LocationSourceType.NEAR_ME)
+         getView().addLocationMarker(location.getCoordinates().asLatLng());
    }
 
    @Override

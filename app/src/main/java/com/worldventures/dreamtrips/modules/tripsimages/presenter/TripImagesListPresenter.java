@@ -149,8 +149,8 @@ public abstract class TripImagesListPresenter<VT extends TripImagesListPresenter
    }
 
    private void savePhotosAndUpdateView(List<IFullScreenObject> list) {
-      db.savePhotoEntityList(type, userId, list);
       photos.addAll(list);
+      db.savePhotoEntityList(type, userId, photos);
       view.getAdapter().addItems(list);
       view.getAdapter().notifyDataSetChanged();
    }

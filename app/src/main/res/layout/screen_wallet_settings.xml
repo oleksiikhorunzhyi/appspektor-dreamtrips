@@ -26,6 +26,10 @@
             android:layout_height="match_parent"
             android:orientation="vertical"
             >
+         <View
+               android:layout_width="match_parent"
+               android:layout_height="48dp"
+               />
 
          <TextView
                android:layout_width="match_parent"
@@ -37,13 +41,14 @@
                android:paddingTop="@dimen/spacing_small"
                android:text="@string/wallet_card_settings_device_section_header"
                android:textAppearance="?android:attr/textAppearanceSmall"
-               android:visibility="invisible"
+               android:visibility="gone"
                />
 
          <!--BEGIN device settings section-->
          <android.support.v7.widget.CardView
                android:layout_width="match_parent"
                android:layout_height="wrap_content"
+               android:visibility="gone"
                >
 
             <LinearLayout
@@ -59,7 +64,6 @@
                      android:padding="@dimen/spacing_normal"
                      android:text="@string/wallet_card_settings_stealth_mode"
                      android:textAppearance="?android:attr/textAppearanceMedium"
-                     android:visibility="gone"
                      tools:checked="true"
                      />
 
@@ -75,8 +79,6 @@
                      android:padding="@dimen/spacing_normal"
                      android:text="@string/wallet_card_settings_lock"
                      android:textAppearance="?android:attr/textAppearanceMedium"
-                     android:visibility="gone"
-
                      />
 
             </LinearLayout>

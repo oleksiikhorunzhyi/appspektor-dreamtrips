@@ -291,11 +291,16 @@ public final class SmartCardInteractor {
    }
 
    private void observeBatteryLevel(Janet janet) {
-      janet.createPipe(ConnectSmartCardCommand.class)
-            .observeSuccess()
-            .filter(action -> action.getResult().connectionStatus() == CONNECTED)
-            .flatMap(action -> activeSmartCardPipe.observeSuccessWithReplay().first())
-            .subscribe(action -> createBatteryObservable(janet));
+      Observable.combineLatest(
+            janet.createPipe(ConnectSmartCardCommand.class)
+                  .observeSuccess()
+                  .filter(action -> action.getResult().connectionStatus() == CONNECTED),
+            activeSmartCardPipe.createObservableResult(new GetActiveSmartCardCommand())
+                  .onErrorResumeNext(activeSmartCardPipe.observeSuccessWithReplay().first()),
+            (connectCommand, activeCommand) -> connectCommand)
+            .subscribe(action -> createBatteryObservable(janet),
+                  throwable -> Timber.e(throwable, "Could not schedule battery level requests"));
+
    }
 
    private void createBatteryObservable(Janet janet) {

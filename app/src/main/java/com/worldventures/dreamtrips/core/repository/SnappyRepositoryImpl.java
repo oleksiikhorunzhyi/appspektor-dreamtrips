@@ -58,6 +58,7 @@ import org.objenesis.strategy.StdInstantiatorStrategy;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
@@ -200,26 +201,13 @@ public class SnappyRepositoryImpl implements SnappyRepository {
 
    @Override
    public <T> void putList(String key, Collection<T> list) {
-      act(db -> {
-         Output output = new Output(new ByteArrayOutputStream());
-         kryo.writeClassAndObject(output, list);
-         db.put(key, output.getBuffer());
-      });
+      act(db -> db.put(key, list.toArray()));
    }
 
    @Override
    public <T> List<T> readList(String key, Class<T> clazz) {
-      return actWithResult(db -> {
-         Collection<T> result;
-         Input input = new Input();
-         try {
-            input.setBuffer(db.getBytes(key));
-            result = (Collection<T>) kryo.readClassAndObject(input);
-         } finally {
-            input.close();
-         }
-         return new ArrayList(result);
-      }).or(new ArrayList<>());
+      return actWithResult(db -> new ArrayList<>(Arrays.asList(db.getObjectArray(key, clazz))))
+            .or(new ArrayList<>());
    }
 
    /**

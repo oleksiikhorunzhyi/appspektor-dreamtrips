@@ -327,7 +327,6 @@ public class DtlMapScreenImpl extends DtlLayout<DtlMapScreen, DtlMapPresenter, D
 
    private void onMapLoaded() {
       clusterManager = new ClusterManager<>(getContext(), googleMap);
-      clusterManager.setAlgorithm(new GridBasedAlgorithm<>());
       clusterManager.setRenderer(new ClusterRenderer(getContext().getApplicationContext(), googleMap, clusterManager));
 
       clusterManager.setOnClusterItemClickListener(dtlClusterItem -> {

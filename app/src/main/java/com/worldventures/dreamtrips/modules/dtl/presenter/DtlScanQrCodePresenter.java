@@ -56,7 +56,7 @@ public class DtlScanQrCodePresenter extends JobPresenter<DtlScanQrCodePresenter.
                         checkReceiptUploading(transaction);
                      }
                   }));
-      //
+
       bindApiJob();
    }
 
@@ -64,7 +64,8 @@ public class DtlScanQrCodePresenter extends JobPresenter<DtlScanQrCodePresenter.
       transactionInteractor.earnPointsActionPipe()
             .observeWithReplay()
             .compose(bindViewIoToMainComposer())
-            .subscribe(new ActionStateSubscriber<DtlEarnPointsAction>().onStart(action -> view.showProgress(R.string.dtl_wait_for_earn))
+            .subscribe(new ActionStateSubscriber<DtlEarnPointsAction>()
+                  .onStart(action -> view.showProgress(R.string.dtl_wait_for_earn))
                   .onFail(this::onEarnError)
                   .onSuccess(this::processTransactionResult));
    }
@@ -137,15 +138,15 @@ public class DtlScanQrCodePresenter extends JobPresenter<DtlScanQrCodePresenter.
 
    private void processTransactionResult(DtlEarnPointsAction action) {
       analyticsInteractor.dtlAnalyticsCommandPipe()
-            .send(DtlAnalyticsCommand.create(new ScanMerchantEvent(merchant.asMerchantAttributes(), action.getTransaction()
-                  .getMerchantToken())));
+            .send(DtlAnalyticsCommand.create(new ScanMerchantEvent(merchant.asMerchantAttributes(),
+                  action.getTransaction().getMerchantToken())));
       view.hideProgress();
-      //
+
       transactionInteractor.transactionActionPipe()
             .send(DtlTransactionAction.save(action.getMerchant(), ImmutableDtlTransaction.copyOf(action.getTransaction())
                   .withDtlTransactionResult(action.getResult())));
       ;
-      //
+
       eventBus.postSticky(new DtlTransactionSucceedEvent(action.getTransaction()));
       view.finish();
       transactionInteractor.earnPointsActionPipe().clearReplays();

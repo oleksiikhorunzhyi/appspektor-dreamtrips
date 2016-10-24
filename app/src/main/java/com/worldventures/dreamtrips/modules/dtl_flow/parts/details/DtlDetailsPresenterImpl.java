@@ -211,15 +211,15 @@ public class DtlDetailsPresenterImpl extends DtlPresenterImpl<DtlDetailsScreen, 
 
    private void onLocationObtained(Location location) {
       getView().enableCheckinButton();
-      //
+
       DtlTransaction dtlTransaction = ImmutableDtlTransaction.builder()
             .lat(location.getLatitude())
             .lng(location.getLongitude())
             .build();
       transactionInteractor.transactionActionPipe().send(DtlTransactionAction.save(merchant, dtlTransaction));
-      //
+
       getView().setTransaction(dtlTransaction);
-      //
+
       analyticsInteractor.dtlAnalyticsCommandPipe()
             .send(DtlAnalyticsCommand.create(new CheckinEvent(merchant.asMerchantAttributes(), location)));
    }
@@ -255,7 +255,8 @@ public class DtlDetailsPresenterImpl extends DtlPresenterImpl<DtlDetailsScreen, 
    @Override
    public void trackSharing(@ShareType String type) {
       analyticsInteractor.dtlAnalyticsCommandPipe()
-            .send(DtlAnalyticsCommand.create(ShareEventProvider.provideMerchantShareEvent(merchant.asMerchantAttributes(), type)));
+            .send(DtlAnalyticsCommand.create(
+                  ShareEventProvider.provideMerchantShareEvent(merchant.asMerchantAttributes(), type)));
    }
 
    @Override

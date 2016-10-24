@@ -160,12 +160,12 @@ public class DtlScanReceiptPresenter extends JobPresenter<DtlScanReceiptPresente
       analyticsInteractor.dtlAnalyticsCommandPipe()
             .send(DtlAnalyticsCommand.create(new CaptureReceiptEvent(merchant.asMerchantAttributes())));
       view.attachReceipt(Uri.parse(filePath));
-      //
+
       UploadTask uploadTask = new UploadTask();
       uploadTask.setFilePath(filePath);
       TransferObserver transferObserver = photoUploadingManagerS3.upload(uploadTask);
       uploadTask.setAmazonTaskId(String.valueOf(transferObserver.getId()));
-      //
+
       transactionInteractor.transactionActionPipe()
             .createObservable(DtlTransactionAction.update(merchant, transaction -> ImmutableDtlTransaction.copyOf(transaction)
                   .withUploadTask(uploadTask)))

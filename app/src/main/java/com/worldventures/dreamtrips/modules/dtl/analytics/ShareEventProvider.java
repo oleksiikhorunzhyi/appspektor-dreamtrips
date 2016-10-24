@@ -21,29 +21,29 @@ public final class ShareEventProvider {
 
    @AnalyticsEvent(action = "local:Restaurant-Listings:Merchant View:Congratulations:Share",
                    trackers = AdobeTracker.TRACKER_KEY)
-   public static class TransactionSuccessShareEvent extends BaseDtlShareEvent {
+   private static class TransactionSuccessShareEvent extends BaseDtlShareEvent {
 
-      public TransactionSuccessShareEvent(MerchantAttributes merchantAttributes, @ShareType String sharingType) {
+      TransactionSuccessShareEvent(MerchantAttributes merchantAttributes, @ShareType String sharingType) {
          super(merchantAttributes, sharingType);
       }
    }
 
    @AnalyticsEvent(action = "local:Restaurant-Listings:Merchant View:Share",
                    trackers = AdobeTracker.TRACKER_KEY)
-   public static class MerchantShareEvent extends BaseDtlShareEvent {
+   private static class MerchantShareEvent extends BaseDtlShareEvent {
 
-      public MerchantShareEvent(MerchantAttributes merchantAttributes, @ShareType String sharingType) {
+      MerchantShareEvent(MerchantAttributes merchantAttributes, @ShareType String sharingType) {
          super(merchantAttributes, sharingType);
       }
    }
 
-   public static class BaseDtlShareEvent extends MerchantAnalyticsAction {
+   private static abstract class BaseDtlShareEvent extends MerchantAnalyticsAction {
 
       @Attribute("share") final String attribute = "1";
 
       @Attribute("share_id") final String sharingType;
 
-      public BaseDtlShareEvent(MerchantAttributes merchantAttributes, @ShareType String sharingType) {
+      BaseDtlShareEvent(MerchantAttributes merchantAttributes, @ShareType String sharingType) {
          super(merchantAttributes);
          this.sharingType = sharingType;
       }

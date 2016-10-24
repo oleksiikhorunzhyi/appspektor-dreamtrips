@@ -89,7 +89,7 @@ public class DtlMerchantsPresenterImpl extends DtlPresenterImpl<DtlMerchantsScre
             .observeSuccess()
             .compose(bindView())
             .map(s -> new MerchantsListingViewEvent())
-            .subscribe(this::sendAnaliticsAction);
+            .subscribe(this::sendAnalyticsAction);
    }
 
    private void connectToolbarUpdates() {
@@ -165,7 +165,9 @@ public class DtlMerchantsPresenterImpl extends DtlPresenterImpl<DtlMerchantsScre
 
    private void connectSelections() {
       presentationInteractor.toggleSelectionPipe()
-            .observeSuccess().subscribe(this::onToggleSelection);
+            .observeSuccess()
+            .compose(bindView())
+            .subscribe(this::onToggleSelection);
    }
 
    private void setItemsOrRedirect(List<ThinMerchant> items) {
@@ -237,7 +239,7 @@ public class DtlMerchantsPresenterImpl extends DtlPresenterImpl<DtlMerchantsScre
    @Override
    public void onToggleExpand(boolean expand, ThinMerchant merchant) {
       if (!expand) return;
-      sendAnaliticsAction(new MerchantsListingExpandEvent(merchant.asMerchantAttributes()));
+      sendAnalyticsAction(new MerchantsListingExpandEvent(merchant.asMerchantAttributes()));
    }
 
    @Override
@@ -256,7 +258,7 @@ public class DtlMerchantsPresenterImpl extends DtlPresenterImpl<DtlMerchantsScre
             .map(FilterData::searchQuery)
             .filter(query -> !TextUtils.isEmpty(query))
             .map(MerchantFromSearchEvent::new)
-            .subscribe(this::sendAnaliticsAction);
+            .subscribe(this::sendAnalyticsAction);
 
       loadMerchant(merchant, null);
    }
@@ -267,7 +269,9 @@ public class DtlMerchantsPresenterImpl extends DtlPresenterImpl<DtlMerchantsScre
    }
 
    private void onEmptyMerchantsLoaded() {
-      filterDataInteractor.filterDataPipe().observeSuccessWithReplay().take(1)
+      filterDataInteractor.filterDataPipe()
+            .observeSuccessWithReplay()
+            .take(1)
             .map(FilterDataAction::getResult)
             .map(FilterData::isDefault)
             .subscribe(this::showEmptyOrRedirect);
@@ -298,7 +302,7 @@ public class DtlMerchantsPresenterImpl extends DtlPresenterImpl<DtlMerchantsScre
       }
    }
 
-   protected void sendAnaliticsAction(DtlAnalyticsAction action) {
+   protected void sendAnalyticsAction(DtlAnalyticsAction action) {
       analyticsInteractor.dtlAnalyticsCommandPipe().send(DtlAnalyticsCommand.create(action));
    }
 

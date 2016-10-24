@@ -81,7 +81,8 @@ public class DtlTransactionSucceedPresenter extends JobPresenter<DtlTransactionS
                      .onErrorReturn(throwable -> new Location(""))
                      .subscribe(location -> {
                         analyticsInteractor.dtlAnalyticsCommandPipe()
-                              .send(DtlAnalyticsCommand.create(new TransactionSuccessEvent(merchant.asMerchantAttributes(), transaction, location)));
+                              .send(DtlAnalyticsCommand.create(new TransactionSuccessEvent(
+                                    merchant.asMerchantAttributes(), transaction, location)));
                      }, e -> {});
             }, apiErrorPresenter::handleError);
       bindApiPipe();
@@ -95,7 +96,8 @@ public class DtlTransactionSucceedPresenter extends JobPresenter<DtlTransactionS
 
    public void trackSharing(@ShareType String type) {
       analyticsInteractor.dtlAnalyticsCommandPipe()
-            .send(DtlAnalyticsCommand.create(ShareEventProvider.provideTransactionSuccessShareEvent(merchant.asMerchantAttributes(), type)));
+            .send(DtlAnalyticsCommand.create(
+                  ShareEventProvider.provideTransactionSuccessShareEvent(merchant.asMerchantAttributes(), type)));
    }
 
    public interface View extends ApiErrorView, RxView {

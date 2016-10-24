@@ -7,7 +7,6 @@ import com.techery.spares.module.Injector;
 import com.worldventures.dreamtrips.core.utils.tracksystem.AnalyticsInteractor;
 import com.worldventures.dreamtrips.wallet.analytics.AcceptTermsAction;
 import com.worldventures.dreamtrips.wallet.analytics.TermsAcceptedAction;
-import com.worldventures.dreamtrips.wallet.analytics.TermsAction;
 import com.worldventures.dreamtrips.wallet.analytics.WalletAnalyticsCommand;
 import com.worldventures.dreamtrips.wallet.service.command.http.FetchTermsAndConditionsCommand;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletPresenter;
@@ -40,7 +39,7 @@ public class WizardTermsScreenPresenter extends WalletPresenter<WizardTermsScree
    public void onAttachedToWindow() {
       super.onAttachedToWindow();
       loadTerms();
-      analyticsInteractor.walletAnalyticsCommandPipe().send(new WalletAnalyticsCommand(new TermsAction()));
+      analyticsInteractor.walletAnalyticsCommandPipe().send(new WalletAnalyticsCommand(new AcceptTermsAction()));
    }
 
    public void acceptTermsPressed() {

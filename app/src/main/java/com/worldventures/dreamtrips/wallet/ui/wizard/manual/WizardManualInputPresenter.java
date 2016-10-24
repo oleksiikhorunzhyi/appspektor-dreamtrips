@@ -10,7 +10,6 @@ import com.techery.spares.module.Injector;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.utils.tracksystem.AnalyticsInteractor;
 import com.worldventures.dreamtrips.wallet.analytics.ManualCardInputAction;
-import com.worldventures.dreamtrips.wallet.analytics.ScidEnteredAction;
 import com.worldventures.dreamtrips.wallet.analytics.WalletAnalyticsCommand;
 import com.worldventures.dreamtrips.wallet.service.WizardInteractor;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletPresenter;
@@ -59,9 +58,7 @@ public class WizardManualInputPresenter extends WalletPresenter<WizardManualInpu
    }
 
    public void checkBarcode(String barcode) {
-      analyticsInteractor.walletAnalyticsCommandPipe()
-            .send(new WalletAnalyticsCommand(ScidEnteredAction.forManual(barcode)));
-      navigator.go(new ConnectSmartCardPath(barcode));
+      navigator.go(new ConnectSmartCardPath(ConnectSmartCardPath.BarcodeOrigin.MANUAL, barcode));
    }
 
    public void goBack() {

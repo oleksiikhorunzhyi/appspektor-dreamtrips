@@ -5,7 +5,8 @@ import android.os.Parcelable;
 
 import com.techery.spares.module.Injector;
 import com.worldventures.dreamtrips.core.utils.tracksystem.AnalyticsInteractor;
-import com.worldventures.dreamtrips.wallet.analytics.AcceptTermsAction;
+import com.worldventures.dreamtrips.wallet.analytics.ScanCardAction;
+import com.worldventures.dreamtrips.wallet.analytics.TermsAction;
 import com.worldventures.dreamtrips.wallet.analytics.WalletAnalyticsCommand;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletPresenter;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.WalletScreen;
@@ -36,7 +37,9 @@ public class WizardSplashPresenter extends WalletPresenter<WizardSplashPresenter
 
    private void trackScreen() {
       if (!termsAccepted) {
-         analyticsInteractor.walletAnalyticsCommandPipe().send(new WalletAnalyticsCommand(new AcceptTermsAction()));
+         analyticsInteractor.walletAnalyticsCommandPipe().send(new WalletAnalyticsCommand(new TermsAction()));
+      } else {
+         analyticsInteractor.walletAnalyticsCommandPipe().send(new WalletAnalyticsCommand(new ScanCardAction()));
       }
    }
 

@@ -1,4 +1,4 @@
-package com.worldventures.dreamtrips.wallet.ui.wizard.connect_smartcard;
+package com.worldventures.dreamtrips.wallet.ui.wizard.associate;
 
 import android.content.Context;
 import android.os.Parcelable;
@@ -24,7 +24,7 @@ import com.worldventures.dreamtrips.wallet.util.SmartCardConnectException;
 
 import javax.inject.Inject;
 
-import timber.log.Timber;
+import io.techery.janet.helper.ActionStateSubscriber;
 
 public class ConnectSmartCardPresenter extends WalletPresenter<ConnectSmartCardPresenter.Screen, Parcelable> {
 
@@ -56,23 +56,22 @@ public class ConnectSmartCardPresenter extends WalletPresenter<ConnectSmartCardP
    @Override
    public void onAttachedToWindow() {
       super.onAttachedToWindow();
-      startAssignUser();
+      observeConnectionError();
+      observeAssociation();
+
+      wizardInteractor.associateCardUserCommandPipe().send(new AssociateCardUserCommand(barcode));
    }
 
-   private void startAssignUser() {
+   private void observeAssociation() {
       wizardInteractor.createAndConnectActionPipe()
             .observeWithReplay()
             .compose(bindViewIoToMainComposer())
             .compose(new ActionPipeCacheWiper<>(wizardInteractor.createAndConnectActionPipe()))
             .subscribe(OperationActionStateSubscriberWrapper.<CreateAndConnectToCardCommand>forView(getView().provideOperationDelegate())
-                  .onSuccess(command -> smartCardCreated(command.getResult()))
+                  .onSuccess(command -> smartCardConnected(command.getResult()))
                   .onFail(ErrorHandler.<CreateAndConnectToCardCommand>builder(getContext())
                         .handle(SmartCardConnectException.class, R.string.wallet_smartcard_connection_error)
-                        .defaultAction(command -> {
-                           startDisassociate(command.getResult().smartCardId());
-                           getView().showPairingErrorDialog();
-                           Timber.e("Could not connect to device");
-                        })
+                        .defaultAction(command -> goBack())
                         .build())
                   .wrap());
 
@@ -83,35 +82,33 @@ public class ConnectSmartCardPresenter extends WalletPresenter<ConnectSmartCardP
                   .provideOperationDelegate())
                   .onFail(ErrorHandler.<AssociateCardUserCommand>builder(getContext())
                         .handle(FormatException.class, R.string.wallet_wizard_bar_code_validation_error)
+                        .defaultAction(command -> goBack())
                         .build())
                   .wrap()
             );
+   }
 
-      wizardInteractor.associateCardUserCommandPipe().send(new AssociateCardUserCommand(barcode));
+   private void observeConnectionError() {
+      //un-assign immediately after failed connection
+      wizardInteractor.createAndConnectActionPipe()
+            .observeWithReplay()
+            .compose(bindView())
+            .subscribe(new ActionStateSubscriber<CreateAndConnectToCardCommand>()
+                  .onFail((command, throwable) -> startDisassociate(command.getSmartCardId())));
    }
 
    private void startDisassociate(String smartCardId) {
-      wizardInteractor.disassociateCardUserCommandPipe().send(new DisassociateCardUserCommand(smartCardId));
+      wizardInteractor.disassociatePipe().send(new DisassociateCardUserCommand(smartCardId));
    }
 
-   private void smartCardCreated(SmartCard smartCard) {
-      if (smartCard.connectionStatus().isConnected()) {
-         smartCardConnected(smartCard.smartCardId());
-      } else {
-         getView().showPairingErrorDialog();
-      }
+   private void smartCardConnected(SmartCard smartCard) {
+      navigator.withoutLast(new WizardWelcomePath(smartCard.smartCardId()));
    }
 
-   private void smartCardConnected(String smartCardId) {
-      navigator.withoutLast(new WizardWelcomePath(smartCardId));
-   }
-
-   public void goBack() {
+   private void goBack() {
       navigator.goBack();
    }
 
    interface Screen extends WalletScreen {
-
-      void showPairingErrorDialog();
    }
 }

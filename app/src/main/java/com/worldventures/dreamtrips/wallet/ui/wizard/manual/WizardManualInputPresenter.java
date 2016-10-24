@@ -8,7 +8,6 @@ import android.view.WindowManager;
 
 import com.techery.spares.module.Injector;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.core.janet.composer.ActionPipeCacheWiper;
 import com.worldventures.dreamtrips.core.utils.tracksystem.AnalyticsInteractor;
 import com.worldventures.dreamtrips.wallet.analytics.ManualCardInputAction;
 import com.worldventures.dreamtrips.wallet.analytics.ScidEnteredAction;
@@ -17,7 +16,7 @@ import com.worldventures.dreamtrips.wallet.service.WizardInteractor;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletPresenter;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.WalletScreen;
 import com.worldventures.dreamtrips.wallet.ui.common.navigation.Navigator;
-import com.worldventures.dreamtrips.wallet.ui.wizard.connect_smartcard.ConnectSmartCardPath;
+import com.worldventures.dreamtrips.wallet.ui.wizard.associate.ConnectSmartCardPath;
 
 import javax.inject.Inject;
 

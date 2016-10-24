@@ -78,7 +78,7 @@ public class WizardWelcomePresenter extends WalletPresenter<WizardWelcomePresent
    }
 
    public void setupCardClicked() {
-      navigator.go(new WizardEditProfilePath(smartCardId));
+      navigator.withoutLast(new WizardEditProfilePath(smartCardId));
    }
 
    public void backButtonClicked() {

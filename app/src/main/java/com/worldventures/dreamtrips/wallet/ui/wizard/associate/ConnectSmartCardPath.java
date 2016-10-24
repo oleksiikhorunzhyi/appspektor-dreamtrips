@@ -1,4 +1,4 @@
-package com.worldventures.dreamtrips.wallet.ui.wizard.connect_smartcard;
+package com.worldventures.dreamtrips.wallet.ui.wizard.associate;
 
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.flow.path.MasterDetailPath;

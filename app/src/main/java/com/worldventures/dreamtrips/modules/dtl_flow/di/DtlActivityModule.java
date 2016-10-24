@@ -115,7 +115,7 @@ public class DtlActivityModule {
 
    @Provides(type = Provides.Type.SET)
    ComponentDescription provideDtlComponent() {
-      return new ComponentDescription(DTL, R.string.dtl, R.string.dtl, R.drawable.ic_dtl, true, null);
+      return new ComponentDescription(DTL, R.string.dtl_local, R.string.dtl_local, R.drawable.ic_dtl, true, null);
    }
 
    @Provides()

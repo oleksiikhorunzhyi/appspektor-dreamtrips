@@ -16,7 +16,7 @@
    <item
          android:id="@+id/action_list"
          android:icon="@drawable/ic_menu_trip_list"
-         android:title="@string/dtl"
+         android:title="@string/dtl_local"
          app:showAsAction="ifRoom" />
 
 </menu>

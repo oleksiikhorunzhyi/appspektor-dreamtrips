@@ -124,6 +124,7 @@
    <string name="wallet_card_financial_service_visa">Visa</string>
    <string name="wallet_card_financial_service_discover">Discover</string>
    <string name="wallet_card_financial_service_amex">Amex</string>
+   <string name="wallet_card_financial_service_sample">Sample</string>
 
    <string name="wallet_card_list_records_connected">%d cards loaded</string>
    <string name="wallet_card_list_record_connected">%d card loaded</string>

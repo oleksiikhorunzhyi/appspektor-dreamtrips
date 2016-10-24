@@ -12,6 +12,7 @@ import javax.inject.Inject;
 
 import io.techery.janet.Command;
 import io.techery.janet.command.annotations.CommandAction;
+import io.techery.janet.smartcard.model.Record;
 import rx.Observable;
 
 @CommandAction
@@ -31,6 +32,7 @@ public class AddDummyCardCommand extends Command<Void> implements InjectableActi
             .title(userName)
             .issuerInfo(ImmutableRecordIssuerInfo.builder()
                   .bankName("Credit Card")
+                  .financialService(Record.FinancialService.SAMPLE)
                   .build())
             .build();
       dummyCard2 = ImmutableBankCard.builder()
@@ -42,6 +44,7 @@ public class AddDummyCardCommand extends Command<Void> implements InjectableActi
             .title(userName)
             .issuerInfo(ImmutableRecordIssuerInfo.builder()
                   .bankName("Credit Card")
+                  .financialService(Record.FinancialService.SAMPLE)
                   .build())
             .build();
    }

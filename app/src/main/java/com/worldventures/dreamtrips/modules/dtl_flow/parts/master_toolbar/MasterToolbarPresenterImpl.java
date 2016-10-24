@@ -181,7 +181,6 @@ public class MasterToolbarPresenterImpl extends DtlPresenterImpl<MasterToolbarSc
    }
 
    private void onLocationObtained(Location location) {
-      // TODO :: 26.09.16 think about moving to interactor
       switch (screenMode) {
          case NEARBY_LOCATIONS:
             locationInteractor.requestNearbyLocations(location);

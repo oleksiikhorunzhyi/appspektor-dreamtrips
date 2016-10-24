@@ -42,7 +42,7 @@ public class ConnectSmartCardScreen extends WalletLinearLayout<ConnectSmartCardP
    @NonNull
    @Override
    public ConnectSmartCardPresenter createPresenter() {
-      return new ConnectSmartCardPresenter(getContext(), getInjector(), getPath().barcode);
+      return new ConnectSmartCardPresenter(getContext(), getInjector(), getPath().barcode, getPath().barcodeOrigin);
    }
 
    @Override

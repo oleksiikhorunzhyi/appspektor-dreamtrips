@@ -28,11 +28,14 @@ public class WalletAnalyticsCommand extends Command<Void> implements InjectableA
       smartCardInteractor.activeSmartCardPipe()
             .createObservableResult(new GetActiveSmartCardCommand())
             .take(1)
-            .flatMap(command -> {
-               walletAnalyticsAction.setSmartCardAction(command.getResult());
-               return analyticsInteractor.analyticsActionPipe().createObservableResult(walletAnalyticsAction);
-            })
-            .map(baseAnalyticsAction -> (Void) null)
-            .subscribe(callback::onSuccess, callback::onFail);
+            .map(Command::getResult)
+            .subscribe(smartCard -> {
+               walletAnalyticsAction.setSmartCardAction(smartCard);
+               analyticsInteractor.analyticsActionPipe().send(walletAnalyticsAction);
+               callback.onSuccess(null);
+            }, e -> {
+               analyticsInteractor.analyticsActionPipe().send(walletAnalyticsAction);
+               callback.onFail(e);
+            });
    }
 }

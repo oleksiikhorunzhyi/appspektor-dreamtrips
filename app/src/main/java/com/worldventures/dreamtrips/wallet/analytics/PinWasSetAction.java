@@ -4,7 +4,7 @@ import com.worldventures.dreamtrips.core.utils.tracksystem.AdobeTracker;
 import com.worldventures.dreamtrips.core.utils.tracksystem.AnalyticsEvent;
 import com.worldventures.dreamtrips.core.utils.tracksystem.Attribute;
 
-@AnalyticsEvent(action = "wallet:setup:Step 5:Your PIN is set",
+@AnalyticsEvent(action = "wallet:setup:Step 3:Your PIN is set",
                 trackers = AdobeTracker.TRACKER_KEY)
 public class PinWasSetAction extends WalletAnalyticsAction {
 

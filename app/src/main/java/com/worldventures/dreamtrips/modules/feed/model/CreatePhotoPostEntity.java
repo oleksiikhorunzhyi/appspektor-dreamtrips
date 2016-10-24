@@ -19,12 +19,24 @@ public class CreatePhotoPostEntity {
       this.description = description;
    }
 
+   public String getDescription() {
+      return description;
+   }
+
    public void setLocation(Location location) {
       this.location = location;
    }
 
+   public Location getLocation() {
+      return location;
+   }
+
    public void addAttachment(Attachment attachment) {
       attachments.add(attachment);
+   }
+
+   public List<Attachment> getAttachments() {
+      return attachments;
    }
 
    public static class Attachment {
@@ -33,6 +45,10 @@ public class CreatePhotoPostEntity {
 
       public Attachment(String uid) {
          this.uid = uid;
+      }
+
+      public String getUid() {
+         return uid;
       }
    }
 }

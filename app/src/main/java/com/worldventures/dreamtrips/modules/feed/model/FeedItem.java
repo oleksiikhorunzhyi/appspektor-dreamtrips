@@ -88,6 +88,10 @@ public class FeedItem<T extends FeedEntity> extends BaseEntity implements FeedEn
       return action;
    }
 
+   public void setAction(Action action) {
+      this.action = action;
+   }
+
    @Override
    public T getItem() {
       return item;
@@ -99,6 +103,10 @@ public class FeedItem<T extends FeedEntity> extends BaseEntity implements FeedEn
 
    public Links getLinks() {
       return links;
+   }
+
+   public void setLinks(Links links) {
+      this.links = links;
    }
 
    public Date getCreatedAt() {

@@ -98,7 +98,7 @@ public class ConnectSmartCardPresenter extends WalletPresenter<ConnectSmartCardP
    }
 
    private void startDisassociate(String smartCardId) {
-      wizardInteractor.disassociateCardUserCommandPipe().send(new DisassociateCardUserCommand(smartCardId));
+      wizardInteractor.disassociatePipe().send(new DisassociateCardUserCommand(smartCardId));
    }
 
    private void smartCardConnected(SmartCard smartCard) {

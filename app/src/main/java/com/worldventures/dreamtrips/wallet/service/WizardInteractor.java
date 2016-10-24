@@ -68,7 +68,7 @@ public final class WizardInteractor {
       return associateCardUserCommandPipe;
    }
 
-   public ActionPipe<DisassociateCardUserCommand> disassociateCardUserCommandPipe() {
+   public ActionPipe<DisassociateCardUserCommand> disassociatePipe() {
       return disassociateCardUserCommandPipe;
    }
 

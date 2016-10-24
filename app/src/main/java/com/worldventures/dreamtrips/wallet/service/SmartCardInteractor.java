@@ -25,6 +25,8 @@ import com.worldventures.dreamtrips.wallet.service.command.UpdateCardDetailsData
 import com.worldventures.dreamtrips.wallet.service.command.UpdateSmartCardConnectionStatus;
 import com.worldventures.dreamtrips.wallet.service.command.http.CreateBankCardCommand;
 
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
 import javax.inject.Named;
@@ -93,7 +95,7 @@ public final class SmartCardInteractor {
 
    public SmartCardInteractor(@Named(JANET_WALLET) Janet janet) {
       connectionPipe = janet.createPipe(ConnectSmartCardCommand.class, Schedulers.io());
-      cardsListPipe = janet.createPipe(CardListCommand.class, Schedulers.io());
+      cardsListPipe = janet.createPipe(CardListCommand.class, Schedulers.from(Executors.newSingleThreadExecutor()));
       addRecordPipe = janet.createPipe(AttachCardCommand.class, Schedulers.io());
       updateBankCardPipe = janet.createPipe(UpdateBankCardCommand.class, Schedulers.io());
       cardStacksPipe = janet.createPipe(CardStacksCommand.class, Schedulers.io());

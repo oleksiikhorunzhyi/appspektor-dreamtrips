@@ -11,6 +11,7 @@ import com.worldventures.dreamtrips.modules.dtl.analytics.DtlAnalyticsAction;
 import com.worldventures.dreamtrips.modules.dtl.analytics.DtlAnalyticsCommand;
 import com.worldventures.dreamtrips.modules.dtl.analytics.MerchantFromSearchEvent;
 import com.worldventures.dreamtrips.modules.dtl.analytics.MerchantsListingExpandEvent;
+import com.worldventures.dreamtrips.modules.dtl.analytics.MerchantsListingLoadmoreEvent;
 import com.worldventures.dreamtrips.modules.dtl.analytics.MerchantsListingViewEvent;
 import com.worldventures.dreamtrips.modules.dtl.event.ToggleMerchantSelectionAction;
 import com.worldventures.dreamtrips.modules.dtl.helper.MerchantHelper;
@@ -42,6 +43,7 @@ import flow.Flow;
 import flow.History;
 import flow.path.Path;
 import icepick.State;
+import io.techery.janet.Command;
 import io.techery.janet.helper.ActionStateSubscriber;
 
 public class DtlMerchantsPresenterImpl extends DtlPresenterImpl<DtlMerchantsScreen, DtlMerchantsState>
@@ -88,7 +90,14 @@ public class DtlMerchantsPresenterImpl extends DtlPresenterImpl<DtlMerchantsScre
       merchantInteractor.thinMerchantsHttpPipe()
             .observeSuccess()
             .compose(bindView())
-            .map(s -> new MerchantsListingViewEvent())
+            .flatMap(merchantsAction ->
+                  filterDataInteractor.filterDataPipe().observeSuccessWithReplay()
+                        .take(1)
+                        .map(Command::getResult)
+                        .map(FilterData::page)
+            )
+            .map(page -> page == 0)
+            .map(isFirstPage -> isFirstPage ? new MerchantsListingViewEvent() : new MerchantsListingLoadmoreEvent())
             .subscribe(this::sendAnalyticsAction);
    }
 

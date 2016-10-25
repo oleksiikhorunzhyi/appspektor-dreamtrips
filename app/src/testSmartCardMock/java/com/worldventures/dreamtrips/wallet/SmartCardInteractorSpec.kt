@@ -138,6 +138,18 @@ class SmartCardInteractorSpec : BaseSpec({
                      it.result[0].stackStackType === StackType.PAYMENT
             }
          }
+
+         it("Add several card to smartCard, check size after one by one options add") {
+            smartCardInteractor.addRecordPipe()
+                  .send(AttachCardCommand(mockedDebitCard, true))
+            smartCardInteractor.addRecordPipe()
+                  .send(AttachCardCommand(mockedDebitCard, false))
+
+            fetchCardStackListOfCard(true) {
+               it.result.size == 1 &&
+                     it.result[0].bankCards.size == 2
+            }
+         }
       }
 
       context("Delete card") {
@@ -378,7 +390,6 @@ class SmartCardInteractorSpec : BaseSpec({
       }
 
       private fun prepareCardsAndAddressMock() {
-
          whenever(mockedIssuerInfo.financialService()).thenReturn(Record.FinancialService.MASTERCARD)
          whenever(mockedIssuerInfo.cardType()).thenReturn(CardType.DEBIT)
          whenever(mockedIssuerInfo.bankName()).thenReturn("Bank Name")

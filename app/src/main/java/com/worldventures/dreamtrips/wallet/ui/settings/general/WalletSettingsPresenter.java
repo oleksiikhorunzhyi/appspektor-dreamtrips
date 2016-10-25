@@ -45,7 +45,6 @@ public class WalletSettingsPresenter extends WalletPresenter<WalletSettingsPrese
    private SmartCard smartCard;
    @Nullable private Firmware firmware;
 
-
    public WalletSettingsPresenter(Context context, Injector injector) {
       super(context, injector);
    }
@@ -57,6 +56,7 @@ public class WalletSettingsPresenter extends WalletPresenter<WalletSettingsPrese
       view.testFailInstallation(temporaryStorage.failInstall());
 
       observeSmartCardChanges();
+      observeFactoryReset();
 
       observeStealthModeController(view);
       observeLockController(view);
@@ -232,6 +232,10 @@ public class WalletSettingsPresenter extends WalletPresenter<WalletSettingsPrese
    }
 
    void executeFactoryReset() {
+      factoryResetManager.factoryReset();
+   }
+
+   private void observeFactoryReset() {
       factoryResetManager.observeFactoryResetPipe()
             .compose(bindViewIoToMainComposer())
             .subscribe(OperationActionStateSubscriberWrapper.<ResetSmartCardCommand>forView(getView().provideOperationDelegate())
@@ -240,8 +244,6 @@ public class WalletSettingsPresenter extends WalletPresenter<WalletSettingsPrese
                         .defaultMessage(R.string.wallet_wizard_setup_error)
                         .build())
                   .wrap());
-
-      factoryResetManager.factoryReset();
    }
 
    public interface Screen extends WalletScreen {

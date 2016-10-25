@@ -1,6 +1,5 @@
 package com.worldventures.dreamtrips.wallet.ui.settings.factory_reset;
 
-
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.flow.path.MasterDetailPath;
 import com.worldventures.dreamtrips.core.flow.path.StyledPath;

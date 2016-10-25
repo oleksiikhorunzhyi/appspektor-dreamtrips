@@ -1,6 +1,5 @@
 package com.worldventures.dreamtrips.wallet.service.command.reset;
 
-
 import com.worldventures.dreamtrips.api.smart_card.user_association.DisassociateCardUserHttpAction;
 import com.worldventures.dreamtrips.core.janet.dagger.InjectableAction;
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCard;
@@ -15,6 +14,7 @@ import io.techery.janet.Janet;
 import io.techery.janet.command.annotations.CommandAction;
 import io.techery.janet.smartcard.action.support.DisconnectAction;
 import io.techery.janet.smartcard.action.user.UnAssignUserAction;
+import io.techery.janet.smartcard.exception.NotConnectedException;
 import rx.Observable;
 
 import static com.worldventures.dreamtrips.core.janet.JanetModule.JANET_API_LIB;
@@ -36,7 +36,8 @@ public class ResetSmartCardCommand extends Command<Void> implements InjectableAc
    }
 
    private Observable<Void> reset(SmartCard smartCard) {
-      if (smartCard.lock()) throw new IllegalStateException("Smart Card should be unlocked");
+      if (smartCard.connectionStatus().isConnected()) return Observable.error(new NotConnectedException());
+      if (smartCard.lock()) return Observable.error(new IllegalStateException("Smart Card should be unlocked"));
 
       return disassociateCardUserServer(smartCard)
             .flatMap(action -> disassociateCardUser())

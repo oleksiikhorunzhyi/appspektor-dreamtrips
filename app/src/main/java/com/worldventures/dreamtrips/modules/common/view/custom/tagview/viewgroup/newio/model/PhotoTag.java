@@ -11,7 +11,7 @@ import java.util.List;
 
 import timber.log.Timber;
 
-public class PhotoTag implements Parcelable, Serializable, Cloneable {
+public class PhotoTag implements Parcelable, Serializable, Cloneable, Comparable<PhotoTag> {
 
    private int targetUserId;
    private TagPosition position;
@@ -129,4 +129,15 @@ public class PhotoTag implements Parcelable, Serializable, Cloneable {
          return new PhotoTag[size];
       }
    };
+
+   @Override
+   public int compareTo(PhotoTag photoTag) {
+      float thisX = position.getTopLeft().getX();
+      float compareX = photoTag.getProportionalPosition().getTopLeft().getX();
+      if (thisX != compareX) {
+         return Float.compare(thisX, compareX);
+      } else {
+         return Float.compare(position.getTopLeft().getY(), photoTag.getProportionalPosition().getTopLeft().getY());
+      }
+   }
 }

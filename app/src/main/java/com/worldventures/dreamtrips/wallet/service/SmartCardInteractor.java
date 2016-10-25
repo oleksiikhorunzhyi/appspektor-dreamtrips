@@ -25,7 +25,6 @@ import com.worldventures.dreamtrips.wallet.service.command.UpdateCardDetailsData
 import com.worldventures.dreamtrips.wallet.service.command.UpdateSmartCardConnectionStatus;
 import com.worldventures.dreamtrips.wallet.service.command.http.CreateBankCardCommand;
 
-import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
@@ -40,6 +39,7 @@ import io.techery.janet.helper.ActionStateSubscriber;
 import io.techery.janet.smartcard.action.charger.StartCardRecordingAction;
 import io.techery.janet.smartcard.action.charger.StopCardRecordingAction;
 import io.techery.janet.smartcard.action.records.DeleteRecordAction;
+import io.techery.janet.smartcard.action.settings.EnableLockUnlockDeviceAction;
 import io.techery.janet.smartcard.action.support.ConnectAction;
 import io.techery.janet.smartcard.action.support.DisconnectAction;
 import io.techery.janet.smartcard.action.user.UnAssignUserAction;
@@ -93,6 +93,8 @@ public final class SmartCardInteractor {
    private final ActionPipe<SetAutoClearSmartCardDelayCommand> autoClearDelayPipe;
    private final ActionPipe<SetDisableDefaultCardDelayCommand> disableDefaultCardPipe;
 
+   private final ActionPipe<EnableLockUnlockDeviceAction> enableLockUnlockDeviceActionPipe;
+
    public SmartCardInteractor(@Named(JANET_WALLET) Janet janet) {
       connectionPipe = janet.createPipe(ConnectSmartCardCommand.class, Schedulers.io());
       cardsListPipe = janet.createPipe(CardListCommand.class, Schedulers.from(Executors.newSingleThreadExecutor()));
@@ -129,6 +131,8 @@ public final class SmartCardInteractor {
 
       autoClearDelayPipe = janet.createPipe(SetAutoClearSmartCardDelayCommand.class, Schedulers.io());
       disableDefaultCardPipe = janet.createPipe(SetDisableDefaultCardDelayCommand.class, Schedulers.io());
+
+      enableLockUnlockDeviceActionPipe = janet.createPipe(EnableLockUnlockDeviceAction.class, Schedulers.io());
 
       connect(janet);
       connectToLockEvent();
@@ -238,6 +242,10 @@ public final class SmartCardInteractor {
 
    public ActionPipe<SetDisableDefaultCardDelayCommand> disableDefaultCardPipe() {
       return disableDefaultCardPipe;
+   }
+
+   public ActionPipe<EnableLockUnlockDeviceAction> enableLockUnlockDeviceActionPipe() {
+      return enableLockUnlockDeviceActionPipe;
    }
 
    private void connect(Janet janet) {

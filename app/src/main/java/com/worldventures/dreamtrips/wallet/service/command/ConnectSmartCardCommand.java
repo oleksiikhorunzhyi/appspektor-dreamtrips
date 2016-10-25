@@ -7,6 +7,7 @@ import com.worldventures.dreamtrips.core.janet.cache.ImmutableCacheOptions;
 import com.worldventures.dreamtrips.core.janet.dagger.InjectableAction;
 import com.worldventures.dreamtrips.wallet.domain.entity.ImmutableSmartCard;
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCard;
+import com.worldventures.dreamtrips.wallet.service.SmartCardInteractor;
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -15,6 +16,7 @@ import io.techery.janet.ActionHolder;
 import io.techery.janet.Command;
 import io.techery.janet.Janet;
 import io.techery.janet.command.annotations.CommandAction;
+import io.techery.janet.smartcard.action.settings.EnableLockUnlockDeviceAction;
 import io.techery.janet.smartcard.action.support.ConnectAction;
 import io.techery.janet.smartcard.model.ConnectionType;
 import io.techery.janet.smartcard.model.ImmutableConnectionParams;
@@ -25,11 +27,18 @@ import timber.log.Timber;
 public class ConnectSmartCardCommand extends Command<SmartCard> implements InjectableAction, SmartCardModifier, CachedAction<SmartCard> {
 
    @Inject @Named(JanetModule.JANET_WALLET) Janet janet;
+   @Inject SmartCardInteractor smartCardInteractor;
 
    private SmartCard activeSmartCard;
+   public final boolean stayAwake;
 
    public ConnectSmartCardCommand(SmartCard activeSmartCard) {
+      this(activeSmartCard, false);
+   }
+
+   public ConnectSmartCardCommand(SmartCard activeSmartCard, boolean stayAwake) {
       this.activeSmartCard = activeSmartCard;
+      this.stayAwake = stayAwake;
    }
 
    @Override
@@ -42,6 +51,14 @@ public class ConnectSmartCardCommand extends Command<SmartCard> implements Injec
                   status = SmartCard.ConnectionStatus.DFU;
                }
                activeSmartCard = smartCardWithStatus(status);
+            })
+            .flatMap(action -> {
+               if (stayAwake) {
+                  return smartCardInteractor.enableLockUnlockDeviceActionPipe()
+                        .createObservableResult(new EnableLockUnlockDeviceAction(false));
+               } else {
+                  return Observable.just(action);
+               }
             })
             .flatMap(action -> fetchTechnicalProperties())
             .doOnNext(smartCard -> activeSmartCard = smartCard)

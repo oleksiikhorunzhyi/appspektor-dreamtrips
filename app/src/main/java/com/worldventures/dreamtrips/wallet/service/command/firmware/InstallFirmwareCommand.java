@@ -16,6 +16,7 @@ import javax.inject.Named;
 import io.techery.janet.Command;
 import io.techery.janet.Janet;
 import io.techery.janet.command.annotations.CommandAction;
+import io.techery.janet.smartcard.action.settings.EnableLockUnlockDeviceAction;
 import io.techery.janet.smartcard.action.support.UpgradeFirmwareAction;
 import rx.Observable;
 
@@ -42,9 +43,17 @@ public class InstallFirmwareCommand extends Command<Void> implements InjectableA
       activeSmartCard()
             .map(Command::getResult)
             .flatMap(it -> it.connectionStatus() == CONNECTED || it.connectionStatus() == DFU ? just(it) : connectCard(it))
+            .flatMap(it -> enableLockUnlockDevice(false))
             .flatMap(it -> Observable.just(file))
             .flatMap(this::installFirmware)
+            .doOnNext(it -> enableLockUnlockDevice(true))
             .subscribe(callback::onSuccess, callback::onFail);
+   }
+
+   private Observable<Void> enableLockUnlockDevice(boolean enable) {
+      return smartCardInteractor.enableLockUnlockDeviceActionPipe()
+            .createObservableResult(new EnableLockUnlockDeviceAction(enable))
+            .map(action -> (Void) null);
    }
 
    private Observable<Void> installFirmware(File file) {

@@ -9,6 +9,8 @@ import javax.inject.Named;
 import io.techery.janet.Command;
 import io.techery.janet.Janet;
 import io.techery.janet.command.annotations.CommandAction;
+import io.techery.janet.smartcard.action.support.DisconnectAction;
+import rx.Observable;
 
 import static com.worldventures.dreamtrips.core.janet.JanetModule.JANET_API_LIB;
 
@@ -25,8 +27,15 @@ public class DisassociateCardUserCommand extends Command<Void> implements Inject
 
    @Override
    protected void run(CommandCallback<Void> callback) throws Throwable {
-      janet.createPipe(DisassociateCardUserHttpAction.class)
-            .createObservableResult(new DisassociateCardUserHttpAction(Long.parseLong(smartCardId)))
-            .subscribe(action -> callback.onSuccess(null), callback::onFail);
+      Observable.<Object>concat(
+            janet.createPipe(DisconnectAction.class)
+                  .createObservableResult(new DisconnectAction())
+                  .onErrorResumeNext(Observable.empty()),
+            janet.createPipe(DisassociateCardUserHttpAction.class)
+                  .createObservableResult(new DisassociateCardUserHttpAction(Long.parseLong(smartCardId)))
+                  .onErrorResumeNext(Observable.empty())
+      ).subscribe((result) -> {
+         callback.onSuccess(null);
+      }, callback::onFail);
    }
 }

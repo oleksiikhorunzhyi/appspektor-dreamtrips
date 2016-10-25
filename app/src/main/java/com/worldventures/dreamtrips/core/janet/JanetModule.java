@@ -179,7 +179,10 @@ public class JanetModule {
    @Provides(type = Provides.Type.SET)
    @Named(JANET_WALLET)
    ActionService provideSmartCardService(SmartCardClient client) {
-      return SmartCardActionService.createDefault(client);
+      return new SmartCardActionService.Builder(client)
+            .addDefaults()
+            .setResponseTimeout(TimeUnit.MINUTES.toMillis(2L))
+            .build();
    }
 
    @Singleton

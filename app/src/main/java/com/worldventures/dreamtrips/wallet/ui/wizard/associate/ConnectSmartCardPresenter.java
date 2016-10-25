@@ -99,6 +99,7 @@ public class ConnectSmartCardPresenter extends WalletPresenter<ConnectSmartCardP
       wizardInteractor.createAndConnectActionPipe()
             .observeWithReplay()
             .compose(bindView())
+            .compose(new ActionPipeCacheWiper(wizardInteractor.createAndConnectActionPipe()))
             .subscribe(new ActionStateSubscriber<CreateAndConnectToCardCommand>()
                   .onFail((command, throwable) -> startDisassociate(command.getSmartCardId())));
    }

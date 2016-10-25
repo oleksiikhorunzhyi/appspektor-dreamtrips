@@ -268,4 +268,15 @@ public class PersistentDeviceStorage implements DeviceStorage {
       memoryStorage.setCardRecording(recording);
       persistStorage();
    }
+
+   @Override
+   public void enableLockUnlockCard(boolean enable) {
+      memoryStorage.enableLockUnlockCard(enable);
+      persistStorage();
+   }
+
+   @Override
+   public boolean isLockUnlockCardEnabled() {
+      return memoryStorage.isLockUnlockCardEnabled();
+   }
 }

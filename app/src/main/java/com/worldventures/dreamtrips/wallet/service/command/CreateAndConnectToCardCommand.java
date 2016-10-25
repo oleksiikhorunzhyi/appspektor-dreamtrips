@@ -42,7 +42,8 @@ public class CreateAndConnectToCardCommand extends Command<SmartCard> implements
    protected void run(CommandCallback<SmartCard> callback) throws Throwable {
       Observable.just(createSmartCard())
             .flatMap(smartCard -> smartCardInteractor.connectActionPipe()
-                  .createObservableResult(new ConnectSmartCardCommand(smartCard)))
+                  .createObservableResult(new ConnectSmartCardCommand(smartCard, true))
+            )
             .doOnNext(command -> this.smartCard = command.getResult())
             .subscribe(connectCommand -> {
                if (smartCard.connectionStatus() == SmartCard.ConnectionStatus.CONNECTED) {

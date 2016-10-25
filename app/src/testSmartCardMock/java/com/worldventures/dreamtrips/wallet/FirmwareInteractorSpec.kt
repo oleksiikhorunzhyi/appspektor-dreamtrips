@@ -5,6 +5,7 @@ import com.nhaarman.mockito_kotlin.spy
 import com.nhaarman.mockito_kotlin.whenever
 import com.worldventures.dreamtrips.AssertUtil
 import com.worldventures.dreamtrips.BaseSpec
+import com.worldventures.dreamtrips.core.janet.SessionActionPipeCreator
 import com.worldventures.dreamtrips.core.repository.SnappyRepository
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCard
 import com.worldventures.dreamtrips.wallet.service.SmartCardInteractor
@@ -78,7 +79,7 @@ class FirmwareInteractorSpec : BaseSpec({
 
       fun createMockDb(): SnappyRepository = spy()
 
-      fun createInteractor(janet: Janet) = SmartCardInteractor(janet)
+      fun createInteractor(janet: Janet) = SmartCardInteractor(janet, SessionActionPipeCreator(janet))
 
       fun createJanet(): Janet {
          val daggerCommandActionService = CommandActionService()

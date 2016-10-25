@@ -41,33 +41,51 @@
             android:text="@string/wallet_wizard_scan_start_btn"
             />
 
-      <FrameLayout
-            android:id="@+id/card_container"
+      <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="150dp"
+            android:layout_height="match_parent"
+            android:background="@null"
             >
 
-         <ImageView
-               android:id="@+id/wallet_wizard_smarcard_back"
+         <FrameLayout
+               android:id="@+id/card_container"
                android:layout_width="match_parent"
                android:layout_height="wrap_content"
-               android:scaleType="fitCenter"
-               android:alpha="0"
-               android:src="@drawable/flyecard_back"
-               tools:ignore="ContentDescription"
-               />
+               android:layout_marginTop="150dp"
+               >
 
-         <ImageView
-               android:id="@+id/wallet_wizard_smarcard_front"
-               android:layout_width="wrap_content"
+            <ImageView
+                  android:id="@+id/wallet_wizard_smarcard_back"
+                  android:layout_width="match_parent"
+                  android:layout_height="wrap_content"
+                  android:alpha="0"
+                  android:scaleType="fitCenter"
+                  android:src="@drawable/flyecard_back"
+                  tools:ignore="ContentDescription"
+                  />
+
+            <ImageView
+                  android:id="@+id/wallet_wizard_smarcard_front"
+                  android:layout_width="wrap_content"
+                  android:layout_height="wrap_content"
+                  android:layout_gravity="center_horizontal"
+                  android:scaleType="fitCenter"
+                  android:src="@drawable/flyecard_angle"
+                  tools:ignore="ContentDescription"
+                  />
+         </FrameLayout>
+
+         <TextView
+               android:id="@+id/wallet_textview_info_power_on"
+               android:layout_width="match_parent"
                android:layout_height="wrap_content"
-               android:layout_gravity="center_horizontal"
-               android:scaleType="fitCenter"
-               android:src="@drawable/flyecard_angle"
-               tools:ignore="ContentDescription"
+               android:layout_alignParentStart="true"
+               android:layout_below="@+id/card_container"
+               android:layout_marginTop="16dp"
+               android:gravity="center"
+               android:text="@string/wallet_wizard_scan_help_if_power_off"
                />
-      </FrameLayout>
+      </RelativeLayout>
 
    </FrameLayout>
 

@@ -3,6 +3,7 @@ package com.worldventures.dreamtrips.wallet.di;
 import android.content.Context;
 
 import com.techery.spares.module.qualifier.ForApplication;
+import com.worldventures.dreamtrips.core.janet.SessionActionPipeCreator;
 import com.worldventures.dreamtrips.wallet.service.FactoryResetManager;
 import com.worldventures.dreamtrips.wallet.service.FirmwareInteractor;
 import com.worldventures.dreamtrips.wallet.service.SmartCardInteractor;
@@ -24,6 +25,13 @@ import static com.worldventures.dreamtrips.core.janet.JanetModule.JANET_WALLET;
 @Module(complete = false, library = true)
 public class WalletServiceModule {
 
+   @Named(JANET_WALLET)
+   @Singleton
+   @Provides
+   SessionActionPipeCreator pipeCreator(@Named(JANET_WALLET) Janet janet) {
+      return new SessionActionPipeCreator(janet);
+   }
+
    @Singleton
    @Provides
    WalletBluetoothService walletBluetoothService(@ForApplication Context appContext) {
@@ -38,14 +46,14 @@ public class WalletServiceModule {
 
    @Singleton
    @Provides
-   WizardInteractor provideWizardInteractor(@Named(JANET_WALLET) Janet janet) {
-      return new WizardInteractor(janet);
+   WizardInteractor provideWizardInteractor(@Named(JANET_WALLET) Janet janet, @Named(JANET_WALLET) SessionActionPipeCreator sessionActionPipeCreator) {
+      return new WizardInteractor(janet, sessionActionPipeCreator);
    }
 
    @Singleton
    @Provides
-   SmartCardInteractor provideSmartCardInteractor(@Named(JANET_WALLET) Janet janet) {
-      return new SmartCardInteractor(janet);
+   SmartCardInteractor provideSmartCardInteractor(@Named(JANET_WALLET) Janet janet, @Named(JANET_WALLET) SessionActionPipeCreator sessionActionPipeCreator) {
+      return new SmartCardInteractor(janet, sessionActionPipeCreator);
    }
 
    @Singleton

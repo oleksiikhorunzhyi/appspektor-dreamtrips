@@ -1,5 +1,6 @@
 package com.worldventures.dreamtrips.wallet.service;
 
+import com.worldventures.dreamtrips.core.janet.SessionActionPipeCreator;
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCard;
 import com.worldventures.dreamtrips.wallet.service.command.AttachCardCommand;
 import com.worldventures.dreamtrips.wallet.service.command.CardCountCommand;
@@ -24,6 +25,7 @@ import com.worldventures.dreamtrips.wallet.service.command.UpdateBankCardCommand
 import com.worldventures.dreamtrips.wallet.service.command.UpdateCardDetailsDataCommand;
 import com.worldventures.dreamtrips.wallet.service.command.UpdateSmartCardConnectionStatus;
 import com.worldventures.dreamtrips.wallet.service.command.http.CreateBankCardCommand;
+import com.worldventures.dreamtrips.wallet.service.command.http.DisassociateActiveCardUserCommand;
 
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
@@ -95,44 +97,48 @@ public final class SmartCardInteractor {
 
    private final ActionPipe<EnableLockUnlockDeviceAction> enableLockUnlockDeviceActionPipe;
 
-   public SmartCardInteractor(@Named(JANET_WALLET) Janet janet) {
-      connectionPipe = janet.createPipe(ConnectSmartCardCommand.class, Schedulers.io());
-      cardsListPipe = janet.createPipe(CardListCommand.class, Schedulers.from(Executors.newSingleThreadExecutor()));
-      addRecordPipe = janet.createPipe(AttachCardCommand.class, Schedulers.io());
-      updateBankCardPipe = janet.createPipe(UpdateBankCardCommand.class, Schedulers.io());
-      cardStacksPipe = janet.createPipe(CardStacksCommand.class, Schedulers.io());
-      activeSmartCardPipe = janet.createPipe(GetActiveSmartCardCommand.class, Schedulers.io());
-      stealthModePipe = janet.createPipe(SetStealthModeCommand.class, Schedulers.io());
+   private final ActionPipe<DisassociateActiveCardUserCommand> disassociateActiveCardActionPipe;
 
-      smartCardModifierPipe = janet.createPipe(SmartCardModifier.class, Schedulers.io());
-      lockDeviceChangedEventPipe = janet.createPipe(LockDeviceChangedEvent.class);
-      setLockPipe = janet.createPipe(SetLockStateCommand.class, Schedulers.io());
-      saveLockStatePipe = janet.createPipe(SaveLockStateCommand.class, Schedulers.io());
+   public SmartCardInteractor(@Named(JANET_WALLET) Janet janet, SessionActionPipeCreator sessionActionPipeCreator) {
+      connectionPipe = sessionActionPipeCreator.createPipe(ConnectSmartCardCommand.class, Schedulers.io());
+      cardsListPipe = sessionActionPipeCreator.createPipe(CardListCommand.class, Schedulers.from(Executors.newSingleThreadExecutor()));
+      addRecordPipe = sessionActionPipeCreator.createPipe(AttachCardCommand.class, Schedulers.io());
+      updateBankCardPipe = sessionActionPipeCreator.createPipe(UpdateBankCardCommand.class, Schedulers.io());
+      cardStacksPipe = sessionActionPipeCreator.createPipe(CardStacksCommand.class, Schedulers.io());
+      activeSmartCardPipe = sessionActionPipeCreator.createPipe(GetActiveSmartCardCommand.class, Schedulers.io());
+      stealthModePipe = sessionActionPipeCreator.createPipe(SetStealthModeCommand.class, Schedulers.io());
 
-      cardCountCommandPipe = janet.createPipe(CardCountCommand.class, Schedulers.io());
-      saveDefaultAddressPipe = janet.createPipe(SaveDefaultAddressCommand.class, Schedulers.io());
-      getDefaultAddressCommandPipe = janet.createPipe(GetDefaultAddressCommand.class, Schedulers.io());
-      saveCardDetailsDataCommandPipe = janet.createPipe(SaveCardDetailsDataCommand.class, Schedulers.io());
-      fetchDefaultCardIdCommandPipe = janet.createPipe(FetchDefaultCardIdCommand.class, Schedulers.io());
-      fetchDefaultCardCommandPipe = janet.createPipe(FetchDefaultCardCommand.class, Schedulers.io());
-      fetchBatteryLevelPipe = janet.createPipe(FetchBatteryLevelCommand.class, Schedulers.io());
-      setDefaultCardOnDeviceCommandPipe = janet.createPipe(SetDefaultCardOnDeviceCommand.class, Schedulers.io());
-      deleteCardPipe = janet.createPipe(DeleteRecordAction.class, Schedulers.io());
-      updateCardDetailsPipe = janet.createPipe(UpdateCardDetailsDataCommand.class, Schedulers.io());
+      smartCardModifierPipe = sessionActionPipeCreator.createPipe(SmartCardModifier.class, Schedulers.io());
+      lockDeviceChangedEventPipe = sessionActionPipeCreator.createPipe(LockDeviceChangedEvent.class, Schedulers.io());
+      setLockPipe = sessionActionPipeCreator.createPipe(SetLockStateCommand.class, Schedulers.io());
+      saveLockStatePipe = sessionActionPipeCreator.createPipe(SaveLockStateCommand.class, Schedulers.io());
 
-      disconnectPipe = janet.createPipe(DisconnectAction.class, Schedulers.io());
-      updateSmartCardConnectionStatusPipe = janet.createPipe(UpdateSmartCardConnectionStatus.class, Schedulers.io());
+      cardCountCommandPipe = sessionActionPipeCreator.createPipe(CardCountCommand.class, Schedulers.io());
+      saveDefaultAddressPipe = sessionActionPipeCreator.createPipe(SaveDefaultAddressCommand.class, Schedulers.io());
+      getDefaultAddressCommandPipe = sessionActionPipeCreator.createPipe(GetDefaultAddressCommand.class, Schedulers.io());
+      saveCardDetailsDataCommandPipe = sessionActionPipeCreator.createPipe(SaveCardDetailsDataCommand.class, Schedulers.io());
+      fetchDefaultCardIdCommandPipe = sessionActionPipeCreator.createPipe(FetchDefaultCardIdCommand.class, Schedulers.io());
+      fetchDefaultCardCommandPipe = sessionActionPipeCreator.createPipe(FetchDefaultCardCommand.class, Schedulers.io());
+      fetchBatteryLevelPipe = sessionActionPipeCreator.createPipe(FetchBatteryLevelCommand.class, Schedulers.io());
+      setDefaultCardOnDeviceCommandPipe = sessionActionPipeCreator.createPipe(SetDefaultCardOnDeviceCommand.class, Schedulers.io());
+      deleteCardPipe = sessionActionPipeCreator.createPipe(DeleteRecordAction.class, Schedulers.io());
+      updateCardDetailsPipe = sessionActionPipeCreator.createPipe(UpdateCardDetailsDataCommand.class, Schedulers.io());
 
-      chargedEventPipe = janet.createPipe(CardChargedEvent.class, Schedulers.io());
-      startCardRecordingPipe = janet.createPipe(StartCardRecordingAction.class, Schedulers.io());
-      stopCardRecordingPipe = janet.createPipe(StopCardRecordingAction.class, Schedulers.io());
+      disconnectPipe = sessionActionPipeCreator.createPipe(DisconnectAction.class, Schedulers.io());
+      updateSmartCardConnectionStatusPipe = sessionActionPipeCreator.createPipe(UpdateSmartCardConnectionStatus.class, Schedulers.io());
 
-      recordIssuerInfoPipe = janet.createPipe(CreateBankCardCommand.class, Schedulers.io());
+      chargedEventPipe = sessionActionPipeCreator.createPipe(CardChargedEvent.class, Schedulers.io());
+      startCardRecordingPipe = sessionActionPipeCreator.createPipe(StartCardRecordingAction.class, Schedulers.io());
+      stopCardRecordingPipe = sessionActionPipeCreator.createPipe(StopCardRecordingAction.class, Schedulers.io());
 
-      autoClearDelayPipe = janet.createPipe(SetAutoClearSmartCardDelayCommand.class, Schedulers.io());
-      disableDefaultCardPipe = janet.createPipe(SetDisableDefaultCardDelayCommand.class, Schedulers.io());
+      recordIssuerInfoPipe = sessionActionPipeCreator.createPipe(CreateBankCardCommand.class, Schedulers.io());
 
-      enableLockUnlockDeviceActionPipe = janet.createPipe(EnableLockUnlockDeviceAction.class, Schedulers.io());
+      autoClearDelayPipe = sessionActionPipeCreator.createPipe(SetAutoClearSmartCardDelayCommand.class, Schedulers.io());
+      disableDefaultCardPipe = sessionActionPipeCreator.createPipe(SetDisableDefaultCardDelayCommand.class, Schedulers.io());
+
+      enableLockUnlockDeviceActionPipe = sessionActionPipeCreator.createPipe(EnableLockUnlockDeviceAction.class, Schedulers.io());
+
+      disassociateActiveCardActionPipe = sessionActionPipeCreator.createPipe(DisassociateActiveCardUserCommand.class, Schedulers.io());
 
       connect(janet);
       connectToLockEvent();
@@ -246,6 +252,10 @@ public final class SmartCardInteractor {
 
    public ActionPipe<EnableLockUnlockDeviceAction> enableLockUnlockDeviceActionPipe() {
       return enableLockUnlockDeviceActionPipe;
+   }
+
+   public ActionPipe<DisassociateActiveCardUserCommand> disassociateActiveCardActionPipe() {
+      return disassociateActiveCardActionPipe;
    }
 
    private void connect(Janet janet) {

@@ -37,6 +37,7 @@ import static com.worldventures.dreamtrips.modules.common.view.util.CoordinatesT
 public class PhotoTagHolder extends RelativeLayout {
 
    private static final int MAX_WIDTH = 1;
+   private static int index;
 
    @State boolean isShown;
    @State RectF imageBounds = new RectF();
@@ -101,7 +102,6 @@ public class PhotoTagHolder extends RelativeLayout {
       SuggestionTagView view = new SuggestionTagView(getContext());
       view.setTagListener(tagSuggestionActionListener);
       addTagView(view, photoTag, 0);
-      //
       if (!isSuggestionHelpExists()) addSuggestionHelp(photoTag);
    }
 
@@ -119,6 +119,7 @@ public class PhotoTagHolder extends RelativeLayout {
 
    private CreationTagView addCreationTag(float x, float y) {
       removeUncompletedViews();
+      removeSuggestionHelp();
       CreationTagView view = new CreationTagView(getContext());
       view.setTagListener(new TagCreationActionsListener() {
          @Override
@@ -175,11 +176,6 @@ public class PhotoTagHolder extends RelativeLayout {
       addView(view, viewPos, layoutParams);
    }
 
-   protected void addSuggestionHelp(PhotoTag photoTag) {
-      SuggestionHelpView helpView = new SuggestionHelpView(getContext());
-      addTagView(helpView, photoTag, 0);
-   }
-
    @NonNull
    private LayoutParams calculatePosition(TagView view) {
       LayoutParams layoutParams = new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
@@ -205,6 +201,15 @@ public class PhotoTagHolder extends RelativeLayout {
       layoutParams.leftMargin = photoTagXPos;
       layoutParams.topMargin = photoTagYPos;
       return layoutParams;
+   }
+
+   private void addSuggestionHelp(PhotoTag photoTag) {
+      SuggestionHelpView helpView = new SuggestionHelpView(getContext());
+      addTagView(helpView, photoTag, 0);
+   }
+
+   private void removeSuggestionHelp() {
+      removeView(findTagView(null, SuggestionHelpView.class));
    }
 
    private boolean isSuggestionHelpExists() {
@@ -313,6 +318,4 @@ public class PhotoTagHolder extends RelativeLayout {
          return findNextSuggestion(tagPosition);
       }
    }
-
-   private static int index = 0;
 }

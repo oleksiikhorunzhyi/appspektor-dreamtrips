@@ -33,6 +33,7 @@ import com.worldventures.dreamtrips.modules.common.view.util.Size;
 import com.worldventures.dreamtrips.util.ValidationUtils;
 
 import java.util.ArrayList;
+import java.util.Collections;
 
 import rx.Observable;
 import rx.Subscriber;
@@ -143,6 +144,7 @@ public class ImageUtils {
                   proportional = new TagPosition(proportional.getTopLeft(), new Position(bottomXProportional, bottomYProportional));
                   result.add(new PhotoTag(proportional, 0));
                }
+               Collections.sort(result);
                return result;
             })
             .doOnUnsubscribe(() -> detector.release())

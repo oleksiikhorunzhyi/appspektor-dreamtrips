@@ -7,6 +7,7 @@ import com.nhaarman.mockito_kotlin.*
 import com.worldventures.dreamtrips.AssertUtil
 import com.worldventures.dreamtrips.AssertUtil.assertActionSuccess
 import com.worldventures.dreamtrips.BaseSpec
+import com.worldventures.dreamtrips.core.janet.SessionActionPipeCreator
 import com.worldventures.dreamtrips.core.janet.cache.CacheResultWrapper
 import com.worldventures.dreamtrips.core.janet.cache.storage.ActionStorage
 import com.worldventures.dreamtrips.core.janet.cache.storage.MultipleActionStorage
@@ -269,7 +270,7 @@ class SmartCardInteractorSpec : BaseSpec({
          TextUtils.`equals`(anyString(), anyString())
       }
 
-      fun createInteractor(janet: Janet) = SmartCardInteractor(janet)
+      fun createInteractor(janet: Janet) = SmartCardInteractor(janet, SessionActionPipeCreator(janet))
 
       fun createJanet(): Janet {
          val daggerCommandActionService = CommandActionService()

@@ -7,6 +7,7 @@ import com.nhaarman.mockito_kotlin.mock
 import com.nhaarman.mockito_kotlin.spy
 import com.nhaarman.mockito_kotlin.whenever
 import com.worldventures.dreamtrips.BaseSpec
+import com.worldventures.dreamtrips.core.janet.SessionActionPipeCreator
 import com.worldventures.dreamtrips.core.janet.cache.CacheResultWrapper
 import com.worldventures.dreamtrips.core.janet.cache.storage.ActionStorage
 import com.worldventures.dreamtrips.core.janet.cache.storage.MultipleActionStorage
@@ -36,6 +37,7 @@ import io.techery.janet.smartcard.model.Record
 import io.techery.mappery.Mappery
 import io.techery.mappery.MapperyContext
 import org.powermock.api.mockito.PowerMockito
+import rx.functions.Func1
 import rx.observers.TestSubscriber
 import java.util.*
 
@@ -117,7 +119,7 @@ class WizardInteractorSpec : BaseSpec({
          TextUtils.`equals`(anyString(), anyString())
       }
 
-      fun createInteractor(janet: Janet) = WizardInteractor(janet)
+      fun createInteractor(janet: Janet) = WizardInteractor(janet, SessionActionPipeCreator(janet))
 
       fun createJanet(): Janet {
          val daggerCommandActionService = CommandActionService()
@@ -149,7 +151,11 @@ class WizardInteractorSpec : BaseSpec({
             .build()
 
       fun mockHttpService(): MockHttpActionService {
-         return MockHttpActionService.Builder().build()
+         return MockHttpActionService.Builder()
+               .bind(MockHttpActionService.Response(204), Func1 { request ->
+                  request.url.contains("api/smartcard/provisioning/card_user/") && request.method.equals("delete", true)
+               })
+               .build()
       }
 
       fun CacheResultWrapper.bindStorageSet(storageSet: Set<ActionStorage<*>>): CacheResultWrapper {

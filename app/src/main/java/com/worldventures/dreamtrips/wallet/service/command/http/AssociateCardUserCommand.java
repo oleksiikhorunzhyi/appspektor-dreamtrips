@@ -10,7 +10,6 @@ import com.worldventures.dreamtrips.core.janet.dagger.InjectableAction;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCardDetails;
 import com.worldventures.dreamtrips.wallet.domain.entity.TermsAndConditions;
-import com.worldventures.dreamtrips.wallet.domain.entity.ImmutableSmartCardDetails;
 import com.worldventures.dreamtrips.wallet.util.SmartphoneUtils;
 import com.worldventures.dreamtrips.wallet.util.WalletValidateHelper;
 
@@ -21,6 +20,7 @@ import io.techery.janet.ActionHolder;
 import io.techery.janet.Command;
 import io.techery.janet.Janet;
 import io.techery.janet.command.annotations.CommandAction;
+import io.techery.mappery.MapperyContext;
 
 import static com.worldventures.dreamtrips.core.janet.JanetModule.JANET_API_LIB;
 
@@ -29,6 +29,7 @@ public class AssociateCardUserCommand extends Command<SmartCardDetails> implemen
 
    @Inject @Named(JANET_API_LIB) Janet janet;
    @Inject SnappyRepository repository;
+   @Inject MapperyContext mapperyContext;
 
    private final String barcode;
 
@@ -49,7 +50,7 @@ public class AssociateCardUserCommand extends Command<SmartCardDetails> implemen
 
       janet.createPipe(AssociateCardUserHttpAction.class)
             .createObservableResult(new AssociateCardUserHttpAction(data))
-            .map(action -> convertResponse(action.response()))
+            .map(action -> mapperyContext.convert(action.response(), SmartCardDetails.class))
             .subscribe(callback::onSuccess, callback::onFail);
    }
 
@@ -62,19 +63,6 @@ public class AssociateCardUserCommand extends Command<SmartCardDetails> implemen
       return Integer.parseInt(termsAndConditions.tacVersion());
    }
 
-   private SmartCardDetails convertResponse(com.worldventures.dreamtrips.api.smart_card.user_association.model.SmartCardDetails details) {
-      return ImmutableSmartCardDetails.builder()
-            //todo replace it in future. For now server returns stub values
-            .smartCardId(details.scID())
-            .bleAddress("DA:30:55:CF:B4:9E") // dev board address
-            .nxtOrderId(details.nxtOrderId())
-            .orderDate(details.orderDate())
-            .wvOrderId(details.wvOrderId())
-            .serialNumber(details.serialNumber())
-            .revVersion(details.revVersion())
-            .build();
-   }
-
    @Override
    public SmartCardDetails getCacheData() {
       return getResult();
@@ -82,7 +70,6 @@ public class AssociateCardUserCommand extends Command<SmartCardDetails> implemen
 
    @Override
    public void onRestore(ActionHolder holder, SmartCardDetails cache) {
-
    }
 
    @Override

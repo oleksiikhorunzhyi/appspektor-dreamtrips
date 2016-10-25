@@ -44,6 +44,7 @@ import com.worldventures.dreamtrips.modules.mapping.mapper.PodcastsMapper;
 import com.worldventures.dreamtrips.modules.membership.model.converter.InviteTemplateConverter;
 import com.worldventures.dreamtrips.modules.membership.model.converter.InviteTemplateFromInvitationPreviewConverter;
 import com.worldventures.dreamtrips.modules.membership.model.converter.SentInviteConverter;
+import com.worldventures.dreamtrips.modules.reptools.model.converter.SuccessStoryConverter;
 import com.worldventures.dreamtrips.modules.trips.model.converter.ActivityConverter;
 import com.worldventures.dreamtrips.modules.trips.model.converter.ContentItemConverter;
 import com.worldventures.dreamtrips.modules.trips.model.converter.RegionConverter;
@@ -354,6 +355,12 @@ public class MappingModule {
    @Singleton
    Converter provideSentInviteConverter() {
       return new SentInviteConverter();
+   }
+
+   @Provides(type = Provides.Type.SET)
+   @Singleton
+   Converter provideSuccessStoryConverter() {
+      return new SuccessStoryConverter();
    }
 
    @Provides(type = Provides.Type.SET)

@@ -1,6 +1,5 @@
 package com.worldventures.dreamtrips.core.api;
 
-import com.google.gson.JsonObject;
 import com.worldventures.dreamtrips.modules.bucketlist.model.CategoryItem;
 import com.worldventures.dreamtrips.modules.bucketlist.model.PopularBucketItem;
 import com.worldventures.dreamtrips.modules.bucketlist.model.Suggestion;
@@ -10,7 +9,6 @@ import com.worldventures.dreamtrips.modules.feed.model.CreatePhotoEntity;
 import com.worldventures.dreamtrips.modules.feed.model.CreatePhotoPostEntity;
 import com.worldventures.dreamtrips.modules.feed.model.FeedEntityHolder;
 import com.worldventures.dreamtrips.modules.feed.model.TextualPost;
-import com.worldventures.dreamtrips.modules.reptools.model.SuccessStory;
 import com.worldventures.dreamtrips.modules.tripsimages.model.Photo;
 
 import java.util.ArrayList;
@@ -33,15 +31,6 @@ public interface DreamTripsApi {
 
    @POST("/api/social/posts")
    TextualPost createPhotoPost(@Body CreatePhotoPostEntity createPhotoPostEntity);
-
-   @GET("/api/success_stories")
-   ArrayList<SuccessStory> getSuccessStores();
-
-   @POST("/api/success_stories/{id}/like")
-   JsonObject likeSS(@Path("id") int photoId);
-
-   @DELETE("/api/success_stories/{id}/like")
-   JsonObject unlikeSS(@Path("id") int photoId);
 
    @GET("/api/bucket_list/locations")
    ArrayList<PopularBucketItem> getPopularLocations();

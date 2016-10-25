@@ -9,8 +9,9 @@ import com.techery.spares.utils.delegate.StoryLikedEventDelegate;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.common.view.adapter.FilterableArrayListAdapter;
-import com.worldventures.dreamtrips.modules.reptools.api.successstories.GetSuccessStoriesQuery;
 import com.worldventures.dreamtrips.modules.reptools.model.SuccessStory;
+import com.worldventures.dreamtrips.modules.reptools.service.SuccessStoriesInteractor;
+import com.worldventures.dreamtrips.modules.reptools.service.command.GetSuccessStoriesCommand;
 import com.worldventures.dreamtrips.modules.reptools.view.fragment.SuccessStoryDetailsFragment;
 
 import java.util.ArrayList;
@@ -19,12 +20,15 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import io.techery.janet.helper.ActionStateSubscriber;
+
 public class SuccessStoryListPresenter extends Presenter<SuccessStoryListPresenter.View> {
 
    private boolean onlyFavorites = false;
    private int lastSelectedPosition = -1;
 
    @Inject StoryLikedEventDelegate storyLikedEventDelegate;
+   @Inject SuccessStoriesInteractor successStoriesInteractor;
 
    @Override
    public void takeView(View view) {
@@ -39,13 +43,21 @@ public class SuccessStoryListPresenter extends Presenter<SuccessStoryListPresent
 
    public void reload() {
       view.startLoading();
-      doRequest(new GetSuccessStoriesQuery(), items -> {
-         view.finishLoading();
-         //
-         view.getAdapter().clear();
-         view.getAdapter().addItems(performFiltering(items));
-         view.getAdapter().notifyDataSetChanged();
-      });
+      successStoriesInteractor.getSuccessStoriesPipe()
+            .createObservable(new GetSuccessStoriesCommand())
+            .compose(bindViewToMainComposer())
+            .subscribe(new ActionStateSubscriber<GetSuccessStoriesCommand>()
+               .onSuccess(command -> {
+                  view.finishLoading();
+                  //
+                  view.getAdapter().clear();
+                  view.getAdapter().addItems(performFiltering(command.getResult()));
+                  view.getAdapter().notifyDataSetChanged();
+               })
+               .onFail((command, throwable) -> {
+                  view.finishLoading();
+                  handleError(command, throwable);
+               }));
    }
 
    @Override
@@ -96,7 +108,7 @@ public class SuccessStoryListPresenter extends Presenter<SuccessStoryListPresent
       view.openStory(bundle);
    }
 
-   private ArrayList<SuccessStory> performFiltering(ArrayList<SuccessStory> successStories) {
+   private ArrayList<SuccessStory> performFiltering(List<SuccessStory> successStories) {
       ArrayList<SuccessStory> result = new ArrayList<>();
       if (isFilterFavorites()) {
          for (SuccessStory successStory : successStories) {

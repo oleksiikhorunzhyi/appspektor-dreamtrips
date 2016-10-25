@@ -55,6 +55,9 @@ import com.worldventures.dreamtrips.modules.profile.service.command.GetPrivatePr
 import com.worldventures.dreamtrips.modules.profile.service.command.GetPublicProfileCommand;
 import com.worldventures.dreamtrips.modules.profile.service.command.UploadAvatarCommand;
 import com.worldventures.dreamtrips.modules.profile.service.command.UploadBackgroundCommand;
+import com.worldventures.dreamtrips.modules.reptools.service.command.GetSuccessStoriesCommand;
+import com.worldventures.dreamtrips.modules.reptools.service.command.LikeSuccessStoryCommand;
+import com.worldventures.dreamtrips.modules.reptools.service.command.UnlikeSuccessStoryCommand;
 import com.worldventures.dreamtrips.modules.settings.command.SettingsCommand;
 import com.worldventures.dreamtrips.modules.trips.command.GetActivitiesCommand;
 import com.worldventures.dreamtrips.modules.trips.command.GetRegionsCommand;
@@ -106,6 +109,9 @@ import dagger.Module;
       TranslateUidItemCommand.TranslatePostCommand.class,
       TranslateTextCachedCommand.class,
       AcceptTermsCommand.class,
+      GetSuccessStoriesCommand.class,
+      LikeSuccessStoryCommand.class,
+      UnlikeSuccessStoryCommand.class,
       UnsubribeFromPushCommand.class,
       GetTripDetailsCommand.class,
       GetActivitiesCommand.class,

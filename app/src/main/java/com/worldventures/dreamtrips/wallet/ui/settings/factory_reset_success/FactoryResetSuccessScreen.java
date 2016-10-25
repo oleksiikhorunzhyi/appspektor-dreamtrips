@@ -11,7 +11,6 @@ import com.worldventures.dreamtrips.wallet.ui.common.base.screen.delegate.Dialog
 
 import butterknife.OnClick;
 
-
 public class FactoryResetSuccessScreen extends WalletLinearLayout<FactoryResetSuccessPresenter.Screen, FactoryResetSuccessPresenter, FactoryResetSuccessPath>
       implements FactoryResetSuccessPresenter.Screen {
 

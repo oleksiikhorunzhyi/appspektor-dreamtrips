@@ -36,7 +36,7 @@ public class ResetSmartCardCommand extends Command<Void> implements InjectableAc
    }
 
    private Observable<Void> reset(SmartCard smartCard) {
-      if (smartCard.connectionStatus().isConnected()) return Observable.error(new NotConnectedException());
+      if (!smartCard.connectionStatus().isConnected()) return Observable.error(new NotConnectedException());
       if (smartCard.lock()) return Observable.error(new IllegalStateException("Smart Card should be unlocked"));
 
       return disassociateCardUserServer(smartCard)

@@ -46,7 +46,7 @@ public class FeedDetailsPresenter<V extends FeedDetailsPresenter.View> extends B
    @Override
    public void onInjected() {
       super.onInjected();
-      entityManager.setRequestingPresenter(this);
+      entityManager.setFeedEntityManagerListener(this);
    }
 
    @Override

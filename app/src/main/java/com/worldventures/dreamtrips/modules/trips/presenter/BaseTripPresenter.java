@@ -27,7 +27,7 @@ public class BaseTripPresenter<V extends BaseTripPresenter.View> extends Present
 
    public void onInjected() {
       super.onInjected();
-      feedEntityManager.setRequestingPresenter(this);
+      feedEntityManager.setFeedEntityManagerListener(this);
    }
 
    @Override

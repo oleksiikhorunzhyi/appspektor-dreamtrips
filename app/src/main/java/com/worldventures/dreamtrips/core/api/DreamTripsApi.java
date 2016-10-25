@@ -10,11 +10,8 @@ import com.worldventures.dreamtrips.modules.feed.model.CreatePhotoEntity;
 import com.worldventures.dreamtrips.modules.feed.model.CreatePhotoPostEntity;
 import com.worldventures.dreamtrips.modules.feed.model.FeedEntityHolder;
 import com.worldventures.dreamtrips.modules.feed.model.TextualPost;
-import com.worldventures.dreamtrips.modules.feed.model.comment.Comment;
 import com.worldventures.dreamtrips.modules.reptools.model.SuccessStory;
 import com.worldventures.dreamtrips.modules.tripsimages.model.Photo;
-
-import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -89,10 +86,6 @@ public interface DreamTripsApi {
    ArrayList<User> getRequests();
 
    @FormUrlEncoded
-   @POST("/api/social/comments")
-   Comment createComment(@Field("origin_id") String objectId, @Field("text") String text);
-
-   @FormUrlEncoded
    @POST("/api/social/posts")
    TextualPost post(@Field("description") String description);
 
@@ -102,13 +95,6 @@ public interface DreamTripsApi {
    @DELETE("/api/social/posts/{uid}")
    Void deletePost(@Path("uid") String uid);
 
-   @DELETE("/api/social/comments/{id}")
-   JSONObject deleteComment(@Path("id") String commentId);
-
-   @FormUrlEncoded
-   @PUT("/api/social/comments/{id}")
-   Comment editComment(@Path("id") String commentId, @Field("text") String text);
-
    @FormUrlEncoded
    @POST("/api/social/circles/{circle_id}/users")
    Void addToGroup(@Path("circle_id") String groupId, @Field("user_ids[]") List<String> userIds);
@@ -116,12 +102,6 @@ public interface DreamTripsApi {
    @FormUrlEncoded
    @DELETE_WITH_BODY("/api/social/circles/{circle_id}/users")
    Void deleteFromGroup(@Path("circle_id") String groupId, @Field("user_ids[]") List<String> userIds);
-
-   @POST("/api/{uid}/likes")
-   Void likeEntity(@Path("uid") String uid);
-
-   @DELETE("/api/{uid}/likes")
-   Void dislikeEntity(@Path("uid") String uid);
 
    @GET("/api/{uid}/likes")
    ArrayList<User> getUsersWhoLikedEntity(@Path("uid") String uid, @Query("page") int page, @Query("per_page") int perPage);

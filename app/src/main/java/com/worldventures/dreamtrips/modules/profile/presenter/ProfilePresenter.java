@@ -82,7 +82,7 @@ public abstract class ProfilePresenter<T extends ProfilePresenter.View, U extend
    @Override
    public void onInjected() {
       super.onInjected();
-      entityManager.setRequestingPresenter(this);
+      entityManager.setFeedEntityManagerListener(this);
    }
 
    @Override

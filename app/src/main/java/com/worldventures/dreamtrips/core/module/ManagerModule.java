@@ -35,6 +35,8 @@ import com.worldventures.dreamtrips.modules.dtl.service.DtlLocationInteractor;
 import com.worldventures.dreamtrips.modules.dtl.service.DtlMerchantInteractor;
 import com.worldventures.dreamtrips.modules.dtl.service.DtlTransactionInteractor;
 import com.worldventures.dreamtrips.modules.feed.manager.FeedEntityManager;
+import com.worldventures.dreamtrips.modules.feed.service.CommentsInteractor;
+import com.worldventures.dreamtrips.modules.feed.service.LikesInteractor;
 import com.worldventures.dreamtrips.modules.infopages.service.FeedbackInteractor;
 import com.worldventures.dreamtrips.modules.profile.service.ProfileInteractor;
 import com.worldventures.dreamtrips.modules.tripsimages.service.TripImagesInteractor;
@@ -71,6 +73,18 @@ public class ManagerModule {
    @Provides
    public CirclesInteractor provideQueryCirclesInteractor(SessionActionPipeCreator sessionActionPipeCreator) {
       return new CirclesInteractor(sessionActionPipeCreator);
+   }
+
+   @Singleton
+   @Provides
+   public LikesInteractor provideLikesInteractor(SessionActionPipeCreator sessionActionPipeCreator) {
+      return new LikesInteractor(sessionActionPipeCreator);
+   }
+
+   @Singleton
+   @Provides
+   public CommentsInteractor provideCommentsInteractor(SessionActionPipeCreator sessionActionPipeCreator) {
+      return new CommentsInteractor(sessionActionPipeCreator);
    }
 
    @Provides
@@ -112,8 +126,9 @@ public class ManagerModule {
    }
 
    @Provides
-   FeedEntityManager provideBaseFeedEntityManager(@Global EventBus eventBus) {
-      return new FeedEntityManager(eventBus);
+   FeedEntityManager provideBaseFeedEntityManager(@Global EventBus eventBus, LikesInteractor likesInteractor,
+         CommentsInteractor commentsInteractor) {
+      return new FeedEntityManager(eventBus, likesInteractor, commentsInteractor);
    }
 
    @Provides

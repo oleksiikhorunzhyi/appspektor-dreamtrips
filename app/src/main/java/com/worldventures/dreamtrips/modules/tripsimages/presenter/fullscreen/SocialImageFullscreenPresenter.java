@@ -61,7 +61,7 @@ public class SocialImageFullscreenPresenter extends SocialFullScreenPresenter<Ph
    @Override
    public void onInjected() {
       super.onInjected();
-      entityManager.setRequestingPresenter(this);
+      entityManager.setFeedEntityManagerListener(this);
       flagDelegate = new FlagDelegate(flagsInteractor);
    }
 

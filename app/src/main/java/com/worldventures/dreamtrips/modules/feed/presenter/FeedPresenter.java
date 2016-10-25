@@ -112,7 +112,7 @@ public class FeedPresenter extends Presenter<FeedPresenter.View> {
    @Override
    public void onInjected() {
       super.onInjected();
-      entityManager.setRequestingPresenter(this);
+      entityManager.setFeedEntityManagerListener(this);
       flagDelegate = new FlagDelegate(flagsInteractor);
    }
 

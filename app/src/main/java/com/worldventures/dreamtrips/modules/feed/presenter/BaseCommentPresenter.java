@@ -76,7 +76,7 @@ public class BaseCommentPresenter<T extends BaseCommentPresenter.View> extends P
    @Override
    public void onInjected() {
       super.onInjected();
-      entityManager.setRequestingPresenter(this);
+      entityManager.setFeedEntityManagerListener(this);
       flagDelegate = new FlagDelegate(flagsInteractor);
    }
 
@@ -184,12 +184,12 @@ public class BaseCommentPresenter<T extends BaseCommentPresenter.View> extends P
    public void onEvent(FeedEntityManager.CommentEvent event) {
       switch (event.getType()) {
          case ADDED:
-            if (event.getSpiceException() == null) {
+            if (event.getException() == null) {
                view.addComment(event.getComment());
                sendAnalytic(TrackingHelper.ATTRIBUTE_COMMENT);
             } else {
                view.onPostError();
-               handleError(event.getSpiceException());
+               handleError(event.getException());
             }
             break;
          case REMOVED:

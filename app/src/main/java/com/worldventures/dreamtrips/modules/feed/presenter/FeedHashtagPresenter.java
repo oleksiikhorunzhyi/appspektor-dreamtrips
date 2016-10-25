@@ -98,7 +98,7 @@ public class FeedHashtagPresenter<T extends FeedHashtagPresenter.View> extends J
    @Override
    public void onInjected() {
       super.onInjected();
-      entityManager.setRequestingPresenter(this);
+      entityManager.setFeedEntityManagerListener(this);
       flagDelegate = new FlagDelegate(flagsInteractor);
    }
 

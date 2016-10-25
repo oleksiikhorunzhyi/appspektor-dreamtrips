@@ -20,6 +20,7 @@ import com.worldventures.dreamtrips.core.session.UserSession;
 import com.worldventures.dreamtrips.core.session.acl.FeatureManager;
 import com.worldventures.dreamtrips.core.utils.tracksystem.AnalyticsInteractor;
 import com.worldventures.dreamtrips.modules.common.model.User;
+import com.worldventures.dreamtrips.modules.common.presenter.delegate.FeedEntityManagerListener;
 import com.worldventures.dreamtrips.modules.common.presenter.delegate.OfflineWarningDelegate;
 import com.worldventures.dreamtrips.util.JanetHttpErrorHandlingUtils;
 
@@ -34,7 +35,7 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.subjects.PublishSubject;
 import timber.log.Timber;
 
-public class Presenter<VT extends Presenter.View> implements RequestingPresenter, DreamSpiceManager.FailureListener {
+public class Presenter<VT extends Presenter.View> implements FeedEntityManagerListener, DreamSpiceManager.FailureListener {
 
    protected VT view;
 
@@ -155,18 +156,15 @@ public class Presenter<VT extends Presenter.View> implements RequestingPresenter
       }
    }
 
-   @Override
    public <T> void doRequest(SpiceRequest<T> request) {
       dreamSpiceManager.execute(request, r -> {
       }, this);
    }
 
-   @Override
    public <T> void doRequest(SpiceRequest<T> request, DreamSpiceManager.SuccessListener<T> successListener) {
       dreamSpiceManager.execute(request, successListener, this);
    }
 
-   @Override
    @Deprecated
    public <T> void doRequest(SpiceRequest<T> request, DreamSpiceManager.SuccessListener<T> successListener, DreamSpiceManager.FailureListener failureListener) {
       dreamSpiceManager.execute(request, successListener, failureListener);
@@ -202,7 +200,9 @@ public class Presenter<VT extends Presenter.View> implements RequestingPresenter
       }
    }
 
-   protected void handleError(Object action, Throwable error) {
+   public void handleError(Object action, Throwable error) {
+      // null view callback scenario is possible from FeedEntityManager
+      if (view == null) return;
       if (error instanceof CancelException) return;
       if (action instanceof CommandWithError) {
          view.informUser(((CommandWithError) action).getErrorMessage());

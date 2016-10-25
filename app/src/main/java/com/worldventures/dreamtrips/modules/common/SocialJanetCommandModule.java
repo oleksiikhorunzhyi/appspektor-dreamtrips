@@ -19,6 +19,9 @@ import com.worldventures.dreamtrips.modules.common.api.janet.command.TripsFilter
 import com.worldventures.dreamtrips.modules.common.command.DeleteCachedEntityCommand;
 import com.worldventures.dreamtrips.modules.common.command.DownloadCachedEntityCommand;
 import com.worldventures.dreamtrips.modules.common.command.ResetCachedEntitiesInProgressCommand;
+import com.worldventures.dreamtrips.modules.feed.service.command.CreateCommentCommand;
+import com.worldventures.dreamtrips.modules.feed.service.command.DeleteCommentCommand;
+import com.worldventures.dreamtrips.modules.feed.service.command.EditCommentCommand;
 import com.worldventures.dreamtrips.modules.feed.service.command.FeedByHashtagCommand;
 import com.worldventures.dreamtrips.modules.feed.service.command.GetAccountFeedCommand;
 import com.worldventures.dreamtrips.modules.feed.service.command.GetAccountTimelineCommand;
@@ -26,11 +29,13 @@ import com.worldventures.dreamtrips.modules.feed.service.command.GetCommentsComm
 import com.worldventures.dreamtrips.modules.feed.service.command.GetNotificationsCommand;
 import com.worldventures.dreamtrips.modules.feed.service.command.GetUserTimelineCommand;
 import com.worldventures.dreamtrips.modules.feed.service.command.HashtagSuggestionCommand;
+import com.worldventures.dreamtrips.modules.feed.service.command.LikeEntityCommand;
 import com.worldventures.dreamtrips.modules.feed.service.command.MarkNotificationAsReadCommand;
 import com.worldventures.dreamtrips.modules.feed.service.command.MarkNotificationsAsReadCommand;
 import com.worldventures.dreamtrips.modules.feed.service.command.SuggestedPhotoCommand;
 import com.worldventures.dreamtrips.modules.feed.service.command.TranslateTextCachedCommand;
 import com.worldventures.dreamtrips.modules.feed.service.command.TranslateUidItemCommand;
+import com.worldventures.dreamtrips.modules.feed.service.command.UnlikeEntityCommand;
 import com.worldventures.dreamtrips.modules.friends.janet.AcceptAllFriendRequestsCommand;
 import com.worldventures.dreamtrips.modules.friends.janet.ActOnFriendRequestCommand;
 import com.worldventures.dreamtrips.modules.friends.janet.AddFriendCommand;
@@ -113,6 +118,11 @@ import dagger.Module;
       HashtagSuggestionCommand.class,
       ClearStoragesCommand.class, SubscribeToPushNotificationsCommand.class,
       SettingsCommand.class,
+      CreateCommentCommand.class,
+      EditCommentCommand.class,
+      LikeEntityCommand.class,
+      UnlikeEntityCommand.class,
+      DeleteCommentCommand.class,
       DeleteFriendRequestCommand.class,
       AcceptAllFriendRequestsCommand.class,
       AddFriendCommand.class,

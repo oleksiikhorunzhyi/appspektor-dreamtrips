@@ -35,7 +35,7 @@ public class EditCommentPresenter extends Presenter<EditCommentPresenter.View> {
    @Override
    public void onInjected() {
       super.onInjected();
-      entityManager.setRequestingPresenter(this);
+      entityManager.setFeedEntityManagerListener(this);
    }
 
    public void onSave() {
@@ -47,10 +47,10 @@ public class EditCommentPresenter extends Presenter<EditCommentPresenter.View> {
 
    public void onEvent(FeedEntityManager.CommentEvent event) {
       if (event.getType() == FeedEntityManager.CommentEvent.Type.EDITED) {
-         if (event.getSpiceException() == null) {
+         if (event.getException() == null) {
             view.close();
          } else {
-            handleError(event.getSpiceException());
+            handleError(event.getException());
             view.enableSaveButton();
          }
       }

@@ -47,7 +47,7 @@ public class TripListPresenter extends Presenter<TripListPresenter.View> {
 
    @Override
    public void onInjected() {
-      entityManager.setRequestingPresenter(this);
+      entityManager.setFeedEntityManagerListener(this);
    }
 
    public void takeView(View view) {

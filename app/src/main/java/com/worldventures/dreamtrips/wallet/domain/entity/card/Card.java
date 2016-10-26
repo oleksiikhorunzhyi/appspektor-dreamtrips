@@ -1,9 +1,10 @@
 package com.worldventures.dreamtrips.wallet.domain.entity.card;
 
+import android.support.annotation.Nullable;
+
 public interface Card {
 
-   String NO_ID = "0";
-
+   @Nullable
    String id();
 
    long number();

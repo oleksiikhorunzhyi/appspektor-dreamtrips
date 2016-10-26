@@ -13,6 +13,7 @@ import io.techery.janet.Command;
 import io.techery.janet.Janet;
 import io.techery.janet.command.annotations.CommandAction;
 import io.techery.janet.smartcard.action.records.SetRecordAsDefaultAction;
+import io.techery.janet.smartcard.action.records.UnsetDefaultRecordAction;
 import rx.schedulers.Schedulers;
 
 import static com.worldventures.dreamtrips.core.janet.JanetModule.JANET_WALLET;
@@ -24,15 +25,29 @@ public class SetDefaultCardOnDeviceCommand extends Command<String> implements In
 
    final String cardId;
 
-   public SetDefaultCardOnDeviceCommand(String cardId) {
+   private SetDefaultCardOnDeviceCommand(String cardId) {
       this.cardId = cardId;
+   }
+
+   public static SetDefaultCardOnDeviceCommand setAsDefault(String cardId) {
+      return new SetDefaultCardOnDeviceCommand(cardId);
+   }
+
+   public static SetDefaultCardOnDeviceCommand unsetDefaultCard() {
+      return new SetDefaultCardOnDeviceCommand(null);
    }
 
    @Override
    protected void run(CommandCallback<String> callback) throws Throwable {
-      janet.createPipe(SetRecordAsDefaultAction.class, Schedulers.io())
-            .createObservableResult(new SetRecordAsDefaultAction(Integer.parseInt(cardId)))
-            .subscribe(action -> callback.onSuccess(String.valueOf(action.recordId)), callback::onFail);
+      if (cardId != null) {
+         janet.createPipe(SetRecordAsDefaultAction.class, Schedulers.io())
+               .createObservableResult(new SetRecordAsDefaultAction(Integer.parseInt(cardId)))
+               .subscribe(action -> callback.onSuccess(String.valueOf(action.recordId)), callback::onFail);
+      } else {
+         janet.createPipe(UnsetDefaultRecordAction.class)
+               .createObservableResult(new UnsetDefaultRecordAction())
+               .subscribe(action -> callback.onSuccess(cardId), callback::onFail);
+      }
    }
 
    @Override

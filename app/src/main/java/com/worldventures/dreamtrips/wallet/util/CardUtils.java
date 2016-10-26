@@ -26,7 +26,7 @@ public class CardUtils {
    }
 
    public static boolean isRealCardId(@Nullable String cardId) {
-      return !TextUtils.equals(cardId, Card.NO_ID);
+      return cardId != null;
    }
 
    public static boolean equals(@Nullable Card card1, @Nullable Card card2) {

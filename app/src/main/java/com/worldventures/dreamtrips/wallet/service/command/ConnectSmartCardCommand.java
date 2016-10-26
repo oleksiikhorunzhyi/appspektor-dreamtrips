@@ -9,6 +9,8 @@ import com.worldventures.dreamtrips.wallet.domain.entity.ImmutableSmartCard;
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCard;
 import com.worldventures.dreamtrips.wallet.service.SmartCardInteractor;
 
+import java.util.concurrent.TimeUnit;
+
 import javax.inject.Inject;
 import javax.inject.Named;
 
@@ -30,15 +32,19 @@ public class ConnectSmartCardCommand extends Command<SmartCard> implements Injec
    @Inject SmartCardInteractor smartCardInteractor;
 
    private SmartCard activeSmartCard;
-   public final boolean stayAwake;
+   private final boolean stayAwake;
+   private long delayBeforeFetchingSec = 0L;
 
-   public ConnectSmartCardCommand(SmartCard activeSmartCard) {
-      this(activeSmartCard, false);
+   public ConnectSmartCardCommand(SmartCard activeSmartCard, boolean waitForParing) {
+      this(activeSmartCard, waitForParing, false);
    }
 
-   public ConnectSmartCardCommand(SmartCard activeSmartCard, boolean stayAwake) {
+   public ConnectSmartCardCommand(SmartCard activeSmartCard, boolean waitForParing, boolean stayAwake) {
       this.activeSmartCard = activeSmartCard;
       this.stayAwake = stayAwake;
+      if (waitForParing) {
+         delayBeforeFetchingSec = 20;
+      }
    }
 
    @Override
@@ -60,6 +66,7 @@ public class ConnectSmartCardCommand extends Command<SmartCard> implements Injec
                   return Observable.just(action);
                }
             })
+            .delay(delayBeforeFetchingSec, TimeUnit.SECONDS) //TODO: Hard code for waiting typing PIN
             .flatMap(action -> fetchTechnicalProperties())
             .doOnNext(smartCard -> activeSmartCard = smartCard)
             .subscribe(smartCard -> {

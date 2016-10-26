@@ -9,6 +9,7 @@ import com.worldventures.dreamtrips.wallet.service.command.GetActiveSmartCardCom
 
 import javax.inject.Inject;
 
+import io.techery.janet.smartcard.action.support.DisconnectAction;
 import timber.log.Timber;
 
 public class WalletActivityPresenter extends ActivityPresenter<ActivityPresenter.View> {
@@ -22,8 +23,14 @@ public class WalletActivityPresenter extends ActivityPresenter<ActivityPresenter
       interactor.activeSmartCardPipe()
             .createObservableResult(new GetActiveSmartCardCommand())
             .flatMap(command -> interactor.connectActionPipe()
-                  .createObservable(new ConnectSmartCardCommand(command.getResult())))
+                  .createObservable(new ConnectSmartCardCommand(command.getResult(), false)))
             .subscribe(connectAction -> Timber.i("Success connection to smart card"), throwable -> {
             });
+   }
+
+   @Override
+   public void dropView() {
+      super.dropView();
+      interactor.disconnectPipe().send(new DisconnectAction());
    }
 }

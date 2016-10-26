@@ -151,7 +151,7 @@ public class WalletSettingsPresenter extends WalletPresenter<WalletSettingsPrese
    private void manageConnection(boolean connected) {
       if (connected) {
          smartCardInteractor.connectActionPipe()
-               .createObservable(new ConnectSmartCardCommand(smartCard))
+               .createObservable(new ConnectSmartCardCommand(smartCard, false))
                .compose(bindViewIoToMainComposer())
                .subscribe(OperationActionStateSubscriberWrapper.<ConnectSmartCardCommand>forView(getView().provideOperationDelegate())
                      .onFail(ErrorHandler.create(getContext(),

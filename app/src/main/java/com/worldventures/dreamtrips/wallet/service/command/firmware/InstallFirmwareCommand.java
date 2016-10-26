@@ -72,6 +72,6 @@ public class InstallFirmwareCommand extends Command<Void> implements InjectableA
 
    private Observable<ConnectSmartCardCommand> connectCard(SmartCard smartCard) {
       return smartCardInteractor.connectActionPipe()
-            .createObservableResult(new ConnectSmartCardCommand(smartCard));
+            .createObservableResult(new ConnectSmartCardCommand(smartCard, false, true));
    }
 }

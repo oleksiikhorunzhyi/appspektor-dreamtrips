@@ -76,7 +76,7 @@ class SmartCardInteractorSpec : BaseSpec({
 
             val testSubscriber: TestSubscriber<ActionState<ConnectSmartCardCommand>> = TestSubscriber()
             janet.createPipe(ConnectSmartCardCommand::class.java)
-                  .createObservable(ConnectSmartCardCommand(smartcard))
+                  .createObservable(ConnectSmartCardCommand(smartcard, false))
                   .subscribe(testSubscriber)
 
             assertActionSuccess(testSubscriber, { it.result.connectionStatus() === SmartCard.ConnectionStatus.CONNECTED })

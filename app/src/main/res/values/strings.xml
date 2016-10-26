@@ -172,7 +172,9 @@
    <string name="training_videos">Training Videos</string>
    <string name="error_while_sync">Something went wrong</string>
    <string name="can_not_like_photo">Can\'t like photo</string>
+   <string name="like">%d Like</string>
    <string name="likes">%d Likes</string>
+   <string name="comment_single">%d Comment</string>
    <string name="comments">%d Comments</string>
    <string name="wrong_image">Wrong image</string>
    <string name="could_not_load">Could not load </string>

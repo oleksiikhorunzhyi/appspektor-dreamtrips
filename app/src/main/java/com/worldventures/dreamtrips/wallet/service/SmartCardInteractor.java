@@ -13,7 +13,6 @@ import com.worldventures.dreamtrips.wallet.service.command.FetchDefaultCardIdCom
 import com.worldventures.dreamtrips.wallet.service.command.GetActiveSmartCardCommand;
 import com.worldventures.dreamtrips.wallet.service.command.GetDefaultAddressCommand;
 import com.worldventures.dreamtrips.wallet.service.command.SaveCardDetailsDataCommand;
-import com.worldventures.dreamtrips.wallet.service.command.SaveDefaultAddressCommand;
 import com.worldventures.dreamtrips.wallet.service.command.SaveLockStateCommand;
 import com.worldventures.dreamtrips.wallet.service.command.SetAutoClearSmartCardDelayCommand;
 import com.worldventures.dreamtrips.wallet.service.command.SetDefaultCardOnDeviceCommand;
@@ -70,7 +69,6 @@ public final class SmartCardInteractor {
    private final ActionPipe<CardStacksCommand> cardStacksPipe;
    private final ActionPipe<GetActiveSmartCardCommand> activeSmartCardPipe;
    private final ActionPipe<CardCountCommand> cardCountCommandPipe;
-   private final ActionPipe<SaveDefaultAddressCommand> saveDefaultAddressPipe;
    private final ActionPipe<GetDefaultAddressCommand> getDefaultAddressCommandPipe;
    private final ActionPipe<SaveCardDetailsDataCommand> saveCardDetailsDataCommandPipe;
    private final ActionPipe<SetStealthModeCommand> stealthModePipe;
@@ -114,7 +112,6 @@ public final class SmartCardInteractor {
       saveLockStatePipe = sessionActionPipeCreator.createPipe(SaveLockStateCommand.class, Schedulers.io());
 
       cardCountCommandPipe = sessionActionPipeCreator.createPipe(CardCountCommand.class, Schedulers.io());
-      saveDefaultAddressPipe = sessionActionPipeCreator.createPipe(SaveDefaultAddressCommand.class, Schedulers.io());
       getDefaultAddressCommandPipe = sessionActionPipeCreator.createPipe(GetDefaultAddressCommand.class, Schedulers.io());
       saveCardDetailsDataCommandPipe = sessionActionPipeCreator.createPipe(SaveCardDetailsDataCommand.class, Schedulers.io());
       fetchDefaultCardIdCommandPipe = sessionActionPipeCreator.createPipe(FetchDefaultCardIdCommand.class, Schedulers.io());
@@ -191,10 +188,6 @@ public final class SmartCardInteractor {
 
    public ActionPipe<CardCountCommand> cardCountCommandPipe() {
       return cardCountCommandPipe;
-   }
-
-   public ActionPipe<SaveDefaultAddressCommand> saveDefaultAddressPipe() {
-      return saveDefaultAddressPipe;
    }
 
    public ActionPipe<GetDefaultAddressCommand> getDefaultAddressCommandPipe() {

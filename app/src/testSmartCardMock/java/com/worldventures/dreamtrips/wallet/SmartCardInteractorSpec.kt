@@ -4,7 +4,7 @@ import android.content.Context
 import android.test.mock.MockContext
 import android.text.TextUtils
 import com.nhaarman.mockito_kotlin.*
-import com.worldventures.dreamtrips.AssertUtil
+import com.worldventures.dreamtrips.AssertUtil.assertActionFail
 import com.worldventures.dreamtrips.AssertUtil.assertActionSuccess
 import com.worldventures.dreamtrips.BaseSpec
 import com.worldventures.dreamtrips.core.janet.SessionActionPipeCreator
@@ -42,7 +42,6 @@ import io.techery.janet.smartcard.model.Record
 import io.techery.mappery.Mappery
 import io.techery.mappery.MapperyContext
 import org.powermock.api.mockito.PowerMockito
-import rx.functions.Func1
 import rx.observers.TestSubscriber
 
 class SmartCardInteractorSpec : BaseSpec({
@@ -155,6 +154,10 @@ class SmartCardInteractorSpec : BaseSpec({
 
       context("Delete card") {
          beforeEach {
+            val smartCardId = "111"
+            val smartCard = mockSmartCard(smartCardId)
+            whenever(mockDb.activeSmartCardId).thenReturn(smartCardId)
+            whenever(mockDb.getSmartCard(smartCardId)).thenReturn(smartCard)
             whenever(mockDb.readWalletCardsList()).thenReturn(mockedListOfCards)
          }
 
@@ -187,13 +190,6 @@ class SmartCardInteractorSpec : BaseSpec({
          }
       }
 
-      context("Save default address") {
-         it("should save default address only in cache") {
-            assertActionSuccess(saveDefaultAddress(mockedAddressInfo), { true })
-            verify(mockDb, times(1)).saveDefaultAddress(mockedAddressInfo)
-         }
-      }
-
       context("Fetch default address") {
          beforeEach {
             whenever(mockDb.readDefaultAddress()).thenReturn(mockedAddressInfo)
@@ -206,30 +202,36 @@ class SmartCardInteractorSpec : BaseSpec({
 
       context("Save bank card details data") {
 
+         beforeEach {
+            val smartCardId = "111"
+            val smartCard = mockSmartCard(smartCardId)
+            whenever(mockDb.activeSmartCardId).thenReturn(smartCardId)
+            whenever(mockDb.getSmartCard(smartCardId)).thenReturn(smartCard)
+         }
+
          it("Card with valid data should be stored with default address and marked as default") {
             whenever(mockDb.readWalletDefaultCardId()).thenReturn(null)
-            assertActionSuccess(saveBankCardData(bankCard = mockedDebitCard, issuerInfo = mockedIssuerInfo, setAsDefaultAddress = true,
-                  setAsDefaultCard = true, cvv = "000"), { true })
+            val subscriber = saveBankCardData(setAsDefaultCard = true, setAsDefaultAddress = true)
+            assertActionSuccess(subscriber, { true })
 
             verify(mockDb, times(1)).saveDefaultAddress(any())
-            verify(mockDb, times(2)).saveWalletDefaultCardId(any())
+            verify(mockDb, times(1)).saveWalletDefaultCardId(any())
          }
 
          it("Card with valid data should be stored without default address and not marked as default") {
             val defaultCardId = "9"
             whenever(mockDb.readWalletDefaultCardId()).thenReturn(defaultCardId)
 
-            AssertUtil.assertActionSuccess(saveBankCardData(bankCard = mockedDebitCard, issuerInfo = mockedIssuerInfo, setAsDefaultCard = false,
-                  cvv = "000"), { true })
+            val subscriber = saveBankCardData(setAsDefaultCard = false, setAsDefaultAddress = false)
+            assertActionSuccess(subscriber, { true })
             verify(mockDb, times(0)).saveDefaultAddress(any())
-            //method below shouldn't be called at all, but it's called because of
-            // implementation CachedAction interface by FetchDefaultCardCommand
-            verify(mockDb, times(1)).saveWalletDefaultCardId(any())
-            verify(mockDb, times(1)).saveWalletDefaultCardId(defaultCardId)
+            verify(mockDb, times(0)).saveWalletDefaultCardId(any())
+            verify(mockDb, times(0)).saveWalletDefaultCardId(defaultCardId)
          }
 
          it("Card with invalid data shouldn't be stored") {
-            AssertUtil.assertActionFail(saveBankCardData(bankCard = mockedDebitCard, cvv = "pp", issuerInfo = mockedIssuerInfo), { it.cause is FormatException })
+            val subscriber = saveBankCardData(cvv = "pp", setAsDefaultCard = true, setAsDefaultAddress = true)
+            assertActionFail(subscriber, { it.cause is FormatException })
 
             verify(mockDb, times(0)).saveDefaultAddress(any())
             verify(mockDb, times(0)).saveWalletDefaultCardId(any())
@@ -316,7 +318,7 @@ class SmartCardInteractorSpec : BaseSpec({
          janet.createPipe(CardStacksCommand::class.java)
                .createObservable(CardStacksCommand.get(force))
                .subscribe(testSubscriber)
-         assertActionSuccess(testSubscriber, Func1 { predicate(it) })
+         assertActionSuccess(testSubscriber, { predicate(it) })
       }
 
       fun loadDefaultAddress(): TestSubscriber<ActionState<GetDefaultAddressCommand>> {
@@ -328,18 +330,15 @@ class SmartCardInteractorSpec : BaseSpec({
          return testSubscriber
       }
 
-      fun saveDefaultAddress(defaultAddress: AddressInfo): TestSubscriber<ActionState<SaveDefaultAddressCommand>> {
-         val testSubscriber = TestSubscriber<ActionState<SaveDefaultAddressCommand>>()
-
-         smartCardInteractor.saveDefaultAddressPipe()
-               .createObservable(SaveDefaultAddressCommand(defaultAddress))
-               .subscribe(testSubscriber)
-         return testSubscriber
-      }
-
-      fun saveBankCardData(bankCard: BankCard, manualAddressInfo: AddressInfo = mockedAddressInfo,
-                           nickName: String = "Card1", cvv: String = "0000", issuerInfo: RecordIssuerInfo,
-                           useDefaultAddress: Boolean = false, setAsDefaultAddress: Boolean = false, setAsDefaultCard: Boolean = true): TestSubscriber<ActionState<SaveCardDetailsDataCommand>> {
+      fun saveBankCardData(setAsDefaultAddress: Boolean,
+                           setAsDefaultCard: Boolean,
+                           useDefaultAddress: Boolean = false,
+                           bankCard: BankCard = mockedDebitCard,
+                           issuerInfo: RecordIssuerInfo = mockedIssuerInfo,
+                           manualAddressInfo: AddressInfo = mockedAddressInfo,
+                           nickName: String = "Card1",
+                           cvv: String = "000"): TestSubscriber<ActionState<SaveCardDetailsDataCommand>> {
+         // by default, mock payment card number is 123456789. It mean then cvv should be contain only 3 digit.
          val testSubscriber = TestSubscriber<ActionState<SaveCardDetailsDataCommand>>()
          val cmd = SaveCardDetailsDataCommand.Builder()
                .setBankCard(bankCard)

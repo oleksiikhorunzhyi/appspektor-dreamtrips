@@ -23,7 +23,7 @@ public class SetDefaultCardOnDeviceCommand extends Command<String> implements In
 
    @Inject @Named(JANET_WALLET) Janet janet;
 
-   final String cardId;
+   private final String cardId;
 
    private SetDefaultCardOnDeviceCommand(String cardId) {
       this.cardId = cardId;

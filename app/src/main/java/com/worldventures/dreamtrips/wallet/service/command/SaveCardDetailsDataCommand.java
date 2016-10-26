@@ -1,6 +1,7 @@
 package com.worldventures.dreamtrips.wallet.service.command;
 
 import com.worldventures.dreamtrips.core.janet.dagger.InjectableAction;
+import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.wallet.domain.entity.AddressInfo;
 import com.worldventures.dreamtrips.wallet.domain.entity.RecordIssuerInfo;
 import com.worldventures.dreamtrips.wallet.domain.entity.card.BankCard;
@@ -14,11 +15,13 @@ import javax.inject.Inject;
 import io.techery.janet.Command;
 import io.techery.janet.command.annotations.CommandAction;
 import rx.Observable;
+import timber.log.Timber;
 
 @CommandAction
 public class SaveCardDetailsDataCommand extends Command<BankCard> implements InjectableAction {
 
    @Inject SmartCardInteractor smartCardInteractor;
+   @Inject SnappyRepository snappyRepository;
 
    private final BankCard bankCard;
    private final AddressInfo manualAddressInfo;
@@ -52,34 +55,50 @@ public class SaveCardDetailsDataCommand extends Command<BankCard> implements Inj
    protected void run(CommandCallback<BankCard> callback) throws Throwable {
       checkCardData();
 
-      Observable.just(setAsDefaultAddress && !useDefaultAddress)
-            .flatMap(this::saveDefaultAddressObservable)
-            .flatMap(saveDefaultAddressCommand -> fetchCardWithAddressObservable())
-            .flatMap(cardWithAddress -> smartCardInteractor.addRecordPipe()
-                  .createObservableResult(new AttachCardCommand(cardWithAddress, setAsDefaultCard)))
-            .subscribe(attachCardCommand -> callback.onSuccess(attachCardCommand.bankCard()), callback::onFail);
+      createCardWithAddress()
+            .flatMap(this::pushBankCard)
+            .subscribe(bankCard -> {
+               saveDefaultAddressIfNeed();
+               Timber.d("Card was added successfully");
+               callback.onSuccess(bankCard);
+            }, throwable -> {
+               Timber.e(throwable, "Card was not added");
+               callback.onFail(throwable);
+            });
    }
 
    public boolean setAsDefaultCard() {
       return setAsDefaultCard;
    }
 
-   private Observable<SaveDefaultAddressCommand> saveDefaultAddressObservable(boolean saveDefaultAddress) {
-      return !setAsDefaultAddress ? Observable.just(null) :
-            smartCardInteractor.saveDefaultAddressPipe()
-                  .createObservableResult(new SaveDefaultAddressCommand(manualAddressInfo));
+   private void saveDefaultAddressIfNeed() {
+      if (setAsDefaultAddress) {
+         snappyRepository.saveDefaultAddress(manualAddressInfo);
+      }
    }
 
-   private Observable<BankCard> fetchCardWithAddressObservable() {
-      return smartCardInteractor.getDefaultAddressCommandPipe().createObservableResult(new GetDefaultAddressCommand())
-            .map(addressInfoAction -> {
-               AddressInfo address = useDefaultAddress ? addressInfoAction.getResult() : manualAddressInfo;
-               return ImmutableBankCard.copyOf(bankCard)
-                     .withCvv(Integer.parseInt(cvv))
-                     .withTitle(nickName)
-                     .withIssuerInfo(issuerInfo)
-                     .withAddressInfo(address);
-            });
+   private Observable<BankCard> createCardWithAddress() {
+      if (useDefaultAddress) {
+         return smartCardInteractor.getDefaultAddressCommandPipe()
+               .createObservableResult(new GetDefaultAddressCommand())
+               .map(defaultAddressAction -> createBankCard(defaultAddressAction.getResult()));
+      } else {
+         return Observable.just(createBankCard(manualAddressInfo));
+      }
+   }
+
+   private Observable<BankCard> pushBankCard(BankCard bankCard) {
+      return smartCardInteractor.addRecordPipe()
+            .createObservableResult(new AttachCardCommand(bankCard, setAsDefaultCard))
+            .map(command -> bankCard);
+   }
+
+   private BankCard createBankCard(AddressInfo address) {
+      return ImmutableBankCard.copyOf(bankCard)
+            .withCvv(Integer.parseInt(cvv))
+            .withTitle(nickName)
+            .withIssuerInfo(issuerInfo)
+            .withAddressInfo(address);
    }
 
    private void checkCardData() throws FormatException {

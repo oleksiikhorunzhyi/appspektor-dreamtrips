@@ -8,6 +8,8 @@ import com.raizlabs.android.dbflow.config.FlowManager;
 import com.techery.spares.module.qualifier.ForApplication;
 import com.techery.spares.module.qualifier.Global;
 import com.techery.spares.session.SessionHolder;
+import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.api.api_common.AuthorizedHttpAction;
 import com.worldventures.dreamtrips.api.session.LogoutHttpAction;
 import com.worldventures.dreamtrips.core.janet.JanetModule;
 import com.worldventures.dreamtrips.core.janet.SessionActionPipeCreator;
@@ -26,6 +28,7 @@ import com.worldventures.dreamtrips.wallet.service.SmartCardInteractor;
 import com.worldventures.dreamtrips.wallet.service.command.http.DisassociateActiveCardUserCommand;
 
 import java.security.KeyStoreException;
+import java.util.Arrays;
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -35,6 +38,7 @@ import io.techery.janet.Command;
 import io.techery.janet.Janet;
 import io.techery.janet.command.annotations.CommandAction;
 import rx.Observable;
+import rx.functions.FuncN;
 import timber.log.Timber;
 
 @CommandAction
@@ -60,17 +64,22 @@ public class LogoutCommand extends Command<Void> implements InjectableAction {
 
    @Override
    protected void run(CommandCallback<Void> callback) throws Throwable {
-      Observable.zip(clearWallet(), clearMessenger(), (o1, o2) -> null)
+      Observable.zip(clearSessionDependants(), args -> null)
             .flatMap(o -> clearSession())
             .flatMap(o -> clearUserData())
-            .subscribe();
-      callback.onSuccess(null);
+            .subscribe(o -> callback.onSuccess(null));
+   }
+
+   private Iterable<Observable<Void>> clearSessionDependants() {
+      return Arrays.asList(clearWallet(), clearMessenger());
    }
 
    private Observable clearWallet() {
       return smartCardInteractor.disassociateActiveCardActionPipe()
             .createObservableResult(new DisassociateActiveCardUserCommand())
-            .onErrorResumeNext(Observable.empty())
+            .onErrorResumeNext(t -> {
+               return Observable.just(null);
+            })
             .doOnCompleted(() -> sessionWalletActionPipeCreator.clearReplays());
    }
 
@@ -79,7 +88,7 @@ public class LogoutCommand extends Command<Void> implements InjectableAction {
          messengerConnector.disconnect();
          try {
             FlowManager.getDatabase(MessengerDatabase.NAME).reset(context);
-         } catch (Exception e) {
+         } catch (Throwable e) {
             Timber.w(e, "Messenger DB is not cleared");
          }
          subscriber.onNext(null);
@@ -88,22 +97,27 @@ public class LogoutCommand extends Command<Void> implements InjectableAction {
    }
 
    private Observable clearSession() {
-      return janet.createPipe(LogoutHttpAction.class).createObservableResult(new LogoutHttpAction())
-            .onErrorResumeNext(n -> null)
-            .flatMap(o -> {
-               String apiToken = appSessionHolder.get().get().getApiToken();
-               String pushToken = snappyRepository.getGcmRegToken();
-               return authInteractor.unsubribeFromPushPipe()
-                     .createObservableResult(new UnsubribeFromPushCommand(apiToken, pushToken))
-                     .onErrorResumeNext(Observable.empty());
-            })
-            .doOnCompleted(() -> {
-               cookieManager.clearCookies();
-               appSessionHolder.destroy();
-               eventBus.post(new SessionHolder.Events.SessionDestroyed());
-               sessionActionPipeCreator.clearReplays();
-               sessionApiActionPipeCreator.clearReplays();
-            });
+      String apiToken = appSessionHolder.get().get().getApiToken();
+      String pushToken = snappyRepository.getGcmRegToken();
+      //
+      return Observable.create(subscriber -> {
+         cookieManager.clearCookies();
+         appSessionHolder.destroy();
+         eventBus.post(new SessionHolder.Events.SessionDestroyed());
+         sessionActionPipeCreator.clearReplays();
+         sessionApiActionPipeCreator.clearReplays();
+         //
+         subscriber.onNext(null);
+         subscriber.onCompleted();
+      }).flatMap(o -> {
+         return janet.createPipe(LogoutHttpAction.class)
+               .createObservableResult(authorize(new LogoutHttpAction(), apiToken))
+               .onErrorResumeNext(Observable.just(null));
+      }).flatMap(o -> {
+         return authInteractor.unsubribeFromPushPipe()
+               .createObservableResult(new UnsubribeFromPushCommand(apiToken, pushToken))
+               .onErrorResumeNext(Observable.just(null));
+      });
    }
 
    private Observable clearUserData() {
@@ -122,5 +136,10 @@ public class LogoutCommand extends Command<Void> implements InjectableAction {
          subscriber.onNext(null);
          subscriber.onCompleted();
       });
+   }
+
+   static <T extends AuthorizedHttpAction> T authorize(T action, String token) {
+      action.setAuthorizationHeader(token);
+      return action;
    }
 }

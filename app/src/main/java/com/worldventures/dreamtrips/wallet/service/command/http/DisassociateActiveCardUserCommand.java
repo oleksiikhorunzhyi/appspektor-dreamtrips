@@ -3,6 +3,7 @@ package com.worldventures.dreamtrips.wallet.service.command.http;
 import com.worldventures.dreamtrips.core.janet.dagger.InjectableAction;
 import com.worldventures.dreamtrips.wallet.service.SmartCardInteractor;
 import com.worldventures.dreamtrips.wallet.service.WizardInteractor;
+import com.worldventures.dreamtrips.wallet.service.command.GetActiveSmartCardCommand;
 
 import javax.inject.Inject;
 
@@ -18,8 +19,7 @@ public class DisassociateActiveCardUserCommand extends Command<Void> implements 
 
    @Override
    protected void run(CommandCallback<Void> callback) throws Throwable {
-      smartCardInteractor.activeSmartCardPipe().observeSuccessWithReplay().first().flatMap(action -> {
-         if (action.getResult() == null) return Observable.empty();
+      smartCardInteractor.activeSmartCardPipe().createObservableResult(new GetActiveSmartCardCommand()).flatMap(action -> {
          return wizardInteractor.disassociatePipe()
                .createObservableResult(new DisassociateCardUserCommand(action.getResult().smartCardId()));
       }).subscribe(o -> callback.onSuccess(null), t -> callback.onFail(t));

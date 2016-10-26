@@ -47,9 +47,9 @@ public class ActivateSmartCardCommand extends Command<SmartCard> implements Inje
                   //TODO: for beta release
                   janet.createPipe(AddDummyCardCommand.class)
                         .createObservableResult(new AddDummyCardCommand(smartCard.cardName()))
-                        .map(Command::getResult)
+                        .map(c -> c.getResult())
                         .onErrorReturn(throwable -> null)
-                        .subscribe(aVoid -> callback.onSuccess(smartCard)), callback::onFail);
+                        .subscribe(aVoid -> callback.onSuccess(smartCard)), t -> callback.onFail(t));
 
    }
 

@@ -55,6 +55,8 @@ import com.worldventures.dreamtrips.modules.membership.service.command.GetPhoneC
 import com.worldventures.dreamtrips.modules.membership.service.command.GetPodcastsCommand;
 import com.worldventures.dreamtrips.modules.membership.service.command.GetSentInvitesCommand;
 import com.worldventures.dreamtrips.modules.membership.service.command.SendInvitesCommand;
+import com.worldventures.dreamtrips.modules.profile.service.command.AddFriendToCircleCommand;
+import com.worldventures.dreamtrips.modules.profile.service.command.RemoveFriendFromCircleCommand;
 import com.worldventures.dreamtrips.modules.profile.service.command.GetPrivateProfileCommand;
 import com.worldventures.dreamtrips.modules.profile.service.command.GetPublicProfileCommand;
 import com.worldventures.dreamtrips.modules.profile.service.command.UploadAvatarCommand;
@@ -180,5 +182,7 @@ import dagger.Module;
       GetSearchUsersCommand.class,
       GetRequestsCommand.class,
       SendInvitesCommand.class,
+      AddFriendToCircleCommand.class,
+      RemoveFriendFromCircleCommand.class,
 }, complete = false, library = true)
 public class SocialJanetCommandModule {}

@@ -7,9 +7,7 @@ import javax.inject.Inject;
 import javax.inject.Named;
 
 import io.techery.janet.Janet;
-import io.techery.janet.command.annotations.CommandAction;
 
-@CommandAction
 public abstract class BaseApiActionCommand<HttpAction extends com.worldventures.dreamtrips.api.api_common.BaseHttpAction, T, R>
       extends CommandWithError<T> implements InjectableAction {
 

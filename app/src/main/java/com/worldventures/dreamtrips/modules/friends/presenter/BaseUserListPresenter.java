@@ -16,7 +16,7 @@ import com.worldventures.dreamtrips.modules.friends.service.command.AddFriendCom
 import com.worldventures.dreamtrips.modules.friends.service.command.GetUsersCommand;
 import com.worldventures.dreamtrips.modules.friends.service.command.RemoveFriendCommand;
 import com.worldventures.dreamtrips.modules.profile.bundle.UserBundle;
-import com.worldventures.dreamtrips.modules.profile.event.FriendGroupRelationChangedEvent;
+import com.worldventures.dreamtrips.modules.profile.service.ProfileInteractor;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -40,10 +40,17 @@ public abstract class BaseUserListPresenter<T extends BaseUserListPresenter.View
    @Inject StartChatDelegate startChatDelegate;
    @Inject CirclesInteractor circlesInteractor;
    @Inject FriendsInteractor friendsInteractor;
+   @Inject ProfileInteractor profileInteractor;
 
    @Override
    public void takeView(T view) {
       super.takeView(view);
+      subscribeToChangingCircles();
+      subscribeToRemovedFriends();
+      if (isNeedPreload()) reload();
+   }
+
+   private void subscribeToRemovedFriends() {
       friendsInteractor.removeFriendPipe()
             .observeSuccess()
             .compose(bindView())
@@ -51,7 +58,6 @@ public abstract class BaseUserListPresenter<T extends BaseUserListPresenter.View
             .subscribe(action -> {
                userStateChanged(action.getResult());
             });
-      if (isNeedPreload()) reload();
    }
 
    protected Observable<ActionState<CirclesCommand>> getCirclesObservable() {
@@ -177,21 +183,29 @@ public abstract class BaseUserListPresenter<T extends BaseUserListPresenter.View
             .getContext(), conversation.getId()));
    }
 
-   public void onEvent(FriendGroupRelationChangedEvent event) {
-      for (User friend : users) {
-         if (friend.getId() == event.getFriend().getId()) {
-            switch (event.getState()) {
-               case REMOVED:
-                  friend.getCircles().remove(event.getCircle());
-                  break;
-               case ADDED:
-                  friend.getCircles().add(event.getCircle());
-                  break;
-            }
-            view.refreshUsers(users);
-            break;
-         }
-      }
+   private void subscribeToChangingCircles() {
+      profileInteractor.addFriendToCirclesPipe().observeSuccess()
+            .compose(bindViewToMainComposer())
+            .subscribe(command -> {
+               for (User friend : users) {
+                  if (friend.getId() == command.getUserId()) {
+                     friend.getCircles().add(command.getCircle());
+                     break;
+                  }
+               }
+               view.refreshUsers(users);
+            });
+      profileInteractor.removeFriendFromCirclesPipe().observeSuccess()
+            .compose(bindViewToMainComposer())
+            .subscribe(command -> {
+               for (User friend : users) {
+                  if (friend.getId() == command.getUserId()) {
+                     friend.getCircles().remove(command.getCircle());
+                     break;
+                  }
+               }
+               view.refreshUsers(users);
+            });
    }
 
    private void userActionSucceed(User user) {

@@ -3,7 +3,6 @@ package com.worldventures.dreamtrips.modules.profile.presenter;
 import android.support.annotation.StringRes;
 
 import com.innahema.collections.query.functions.Action1;
-import com.worldventures.dreamtrips.modules.flags.service.FlagsInteractor;
 import com.messenger.delegate.StartChatDelegate;
 import com.messenger.ui.activity.MessengerActivity;
 import com.worldventures.dreamtrips.core.api.action.CommandWithError;
@@ -22,16 +21,16 @@ import com.worldventures.dreamtrips.modules.feed.event.LoadFlagEvent;
 import com.worldventures.dreamtrips.modules.feed.service.NotificationFeedInteractor;
 import com.worldventures.dreamtrips.modules.feed.service.command.GetUserTimelineCommand;
 import com.worldventures.dreamtrips.modules.feed.service.command.MarkNotificationAsReadCommand;
+import com.worldventures.dreamtrips.modules.flags.service.FlagsInteractor;
+import com.worldventures.dreamtrips.modules.friends.model.Circle;
+import com.worldventures.dreamtrips.modules.friends.service.FriendsInteractor;
 import com.worldventures.dreamtrips.modules.friends.service.command.ActOnFriendRequestCommand;
 import com.worldventures.dreamtrips.modules.friends.service.command.AddFriendCommand;
-import com.worldventures.dreamtrips.modules.friends.service.FriendsInteractor;
 import com.worldventures.dreamtrips.modules.friends.service.command.RemoveFriendCommand;
-import com.worldventures.dreamtrips.modules.friends.model.Circle;
 import com.worldventures.dreamtrips.modules.gcm.delegate.NotificationDelegate;
 import com.worldventures.dreamtrips.modules.profile.bundle.UserBundle;
-import com.worldventures.dreamtrips.modules.profile.service.command.GetPublicProfileCommand;
-import com.worldventures.dreamtrips.modules.profile.event.FriendGroupRelationChangedEvent;
 import com.worldventures.dreamtrips.modules.profile.service.ProfileInteractor;
+import com.worldventures.dreamtrips.modules.profile.service.command.GetPublicProfileCommand;
 import com.worldventures.dreamtrips.modules.tripsimages.bundle.TripsImagesBundle;
 import com.worldventures.dreamtrips.modules.tripsimages.model.TripImagesType;
 
@@ -79,6 +78,7 @@ public class UserPresenter extends ProfilePresenter<UserPresenter.View, User> {
       apiErrorPresenter.setView(view);
       subscribeLoadNextFeeds();
       subscribeRefreshFeeds();
+      subscribeToChangingCircles();
    }
 
    @Override
@@ -230,18 +230,23 @@ public class UserPresenter extends ProfilePresenter<UserPresenter.View, User> {
       view.informUser(commandWithError.getErrorMessage());
    }
 
-   public void onEvent(FriendGroupRelationChangedEvent event) {
-      if (user.getId() == event.getFriend().getId()) {
-         switch (event.getState()) {
-            case REMOVED:
-               user.getCircles().remove(event.getCircle());
-               break;
-            case ADDED:
-               user.getCircles().add(event.getCircle());
-               break;
-         }
-         view.notifyUserChanged();
-      }
+   private void subscribeToChangingCircles() {
+      profileInteractor.addFriendToCirclesPipe().observeSuccess()
+            .compose(bindViewToMainComposer())
+            .subscribe(command -> {
+               if (user.getId() == command.getUserId()) {
+                  user.getCircles().add(command.getCircle());
+                  view.notifyUserChanged();
+               }
+            });
+      profileInteractor.removeFriendFromCirclesPipe().observeSuccess()
+            .compose(bindViewToMainComposer())
+            .subscribe(command -> {
+               if (user.getId() == command.getUserId()) {
+                  user.getCircles().remove(command.getCircle());
+                  view.notifyUserChanged();
+               }
+            });
    }
 
    @Override

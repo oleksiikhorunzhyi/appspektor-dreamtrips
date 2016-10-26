@@ -13,6 +13,7 @@ import com.worldventures.dreamtrips.api.api_common.AuthorizedHttpAction;
 import com.worldventures.dreamtrips.api.session.LogoutHttpAction;
 import com.worldventures.dreamtrips.core.janet.JanetModule;
 import com.worldventures.dreamtrips.core.janet.SessionActionPipeCreator;
+import com.worldventures.dreamtrips.core.janet.api_lib.NewDreamTripsHttpService;
 import com.worldventures.dreamtrips.core.janet.dagger.InjectableAction;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.core.session.UserSession;
@@ -110,12 +111,12 @@ public class LogoutCommand extends Command<Void> implements InjectableAction {
          subscriber.onNext(null);
          subscriber.onCompleted();
       }).flatMap(o -> {
-         return janet.createPipe(LogoutHttpAction.class)
-               .createObservableResult(authorize(new LogoutHttpAction(), apiToken))
-               .onErrorResumeNext(Observable.just(null));
-      }).flatMap(o -> {
          return authInteractor.unsubribeFromPushPipe()
                .createObservableResult(new UnsubribeFromPushCommand(apiToken, pushToken))
+               .onErrorResumeNext(Observable.just(null));
+      }).flatMap(o -> {
+         return janet.createPipe(LogoutHttpAction.class)
+               .createObservableResult(authorize(new LogoutHttpAction(), apiToken))
                .onErrorResumeNext(Observable.just(null));
       });
    }
@@ -139,7 +140,7 @@ public class LogoutCommand extends Command<Void> implements InjectableAction {
    }
 
    static <T extends AuthorizedHttpAction> T authorize(T action, String token) {
-      action.setAuthorizationHeader(token);
+      action.setAuthorizationHeader(NewDreamTripsHttpService.getAuthorizationHeader(token));
       return action;
    }
 }

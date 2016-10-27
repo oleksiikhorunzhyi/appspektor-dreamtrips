@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <resources>
+   <string name="dtl_local">Tempatan</string>
    <string name="dtl_locations_title">Pilih lokasi</string>
    <string name="dtl_locations_try_search">Kami tidak dapat mengesan Bandar terdekat kepada anda.\nCuba carian bandar kami</string>
    <string name="dtl_merchant_tab_offers">Tawaran</string>

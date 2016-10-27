@@ -25,6 +25,8 @@ import io.techery.janet.smartcard.model.ImmutableConnectionParams;
 import rx.Observable;
 import timber.log.Timber;
 
+import static com.worldventures.dreamtrips.wallet.domain.entity.SmartCard.ConnectionStatus.CONNECTED;
+
 @CommandAction
 public class ConnectSmartCardCommand extends Command<SmartCard> implements InjectableAction, SmartCardModifier, CachedAction<SmartCard> {
 
@@ -50,7 +52,7 @@ public class ConnectSmartCardCommand extends Command<SmartCard> implements Injec
       Observable<Object> observable = janet.createPipe(ConnectAction.class)
             .createObservableResult(new ConnectAction(ImmutableConnectionParams.of((int) Long.parseLong(activeSmartCard.smartCardId()))))
             .doOnNext(action -> {
-               SmartCard.ConnectionStatus status = SmartCard.ConnectionStatus.CONNECTED;
+               SmartCard.ConnectionStatus status = CONNECTED;
                if (action.type == ConnectionType.DFU) {
                   status = SmartCard.ConnectionStatus.DFU;
                }
@@ -70,7 +72,10 @@ public class ConnectSmartCardCommand extends Command<SmartCard> implements Injec
          observable = observable.delay(20L, TimeUnit.SECONDS); //TODO: Hard code for waiting typing PIN
       }
 
-      observable.flatMap(action -> fetchTechnicalProperties())
+      observable.flatMap(action -> {
+         if (activeSmartCard.connectionStatus() == CONNECTED) return fetchTechnicalProperties();
+         else return Observable.just(activeSmartCard);
+      })
             .doOnNext(smartCard -> activeSmartCard = smartCard)
             .subscribe(smartCard -> {
                      callback.onSuccess(activeSmartCard);

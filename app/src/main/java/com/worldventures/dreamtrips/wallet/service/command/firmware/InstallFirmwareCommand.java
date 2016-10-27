@@ -43,7 +43,11 @@ public class InstallFirmwareCommand extends Command<Void> implements InjectableA
       activeSmartCard()
             .map(Command::getResult)
             .flatMap(it -> it.connectionStatus() == CONNECTED || it.connectionStatus() == DFU ? just(it) : connectCard(it))
-            .flatMap(it -> enableLockUnlockDevice(false))
+            .flatMap(it -> {
+               if (it.connectionStatus() == CONNECTED) return enableLockUnlockDevice(false);
+               else if (it.connectionStatus() == DFU) return just(it);
+               else return Observable.error(new IllegalStateException("Can't connect to card on firmware upgrade"));
+            })
             .flatMap(it -> Observable.just(file))
             .flatMap(this::installFirmware)
             .doOnNext(it -> enableLockUnlockDevice(true))
@@ -71,8 +75,9 @@ public class InstallFirmwareCommand extends Command<Void> implements InjectableA
             .createObservableResult(new GetActiveSmartCardCommand());
    }
 
-   private Observable<ConnectSmartCardCommand> connectCard(SmartCard smartCard) {
+   private Observable<SmartCard> connectCard(SmartCard smartCard) {
       return smartCardInteractor.connectActionPipe()
-            .createObservableResult(new ConnectSmartCardCommand(smartCard, false, true));
+            .createObservableResult(new ConnectSmartCardCommand(smartCard, false, true))
+            .map(action -> action.getResult());
    }
 }

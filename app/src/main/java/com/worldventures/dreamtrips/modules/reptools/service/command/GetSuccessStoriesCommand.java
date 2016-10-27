@@ -10,7 +10,8 @@ import java.util.List;
 import io.techery.janet.command.annotations.CommandAction;
 
 @CommandAction
-public class GetSuccessStoriesCommand extends MappableBaseApiActionCommand<GetSuccessStoriesHttpAction, List<SuccessStory>, SuccessStory> {
+public class GetSuccessStoriesCommand extends MappableBaseApiActionCommand<GetSuccessStoriesHttpAction,
+      List<SuccessStory>, SuccessStory> {
 
    @Override
    protected GetSuccessStoriesHttpAction getHttpAction() {

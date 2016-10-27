@@ -9,15 +9,10 @@ import io.techery.janet.command.annotations.CommandAction;
 @CommandAction
 public class LikeSuccessStoryCommand extends ApiActionCommand<LikeSuccessStoryHttpAction, Void> {
 
-   int id;
+   private int id;
 
    public LikeSuccessStoryCommand(int id) {
       this.id = id;
-   }
-
-   @Override
-   protected Void mapHttpActionResult(LikeSuccessStoryHttpAction httpAction) {
-      return null;
    }
 
    @Override

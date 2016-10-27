@@ -83,8 +83,6 @@ public class CardListScreen extends WalletLinearLayout<CardListPresenter.Screen,
    public void showRecordsInfo(List<CardStackViewModel> result) {
       adapter.clear();
       adapter.addItems(result);
-      //TODO: disable by task SMARTCARD-920
-      //emptyCardListView.setVisibility(adapter.getCount() <= 1 ? VISIBLE : GONE);
    }
 
    @Override

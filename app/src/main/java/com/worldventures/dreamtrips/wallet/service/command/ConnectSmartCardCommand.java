@@ -32,8 +32,8 @@ public class ConnectSmartCardCommand extends Command<SmartCard> implements Injec
    @Inject SmartCardInteractor smartCardInteractor;
 
    private SmartCard activeSmartCard;
+   private final boolean waitForParing;
    private final boolean stayAwake;
-   private long delayBeforeFetchingSec = 0L;
 
    public ConnectSmartCardCommand(SmartCard activeSmartCard, boolean waitForParing) {
       this(activeSmartCard, waitForParing, false);
@@ -41,15 +41,13 @@ public class ConnectSmartCardCommand extends Command<SmartCard> implements Injec
 
    public ConnectSmartCardCommand(SmartCard activeSmartCard, boolean waitForParing, boolean stayAwake) {
       this.activeSmartCard = activeSmartCard;
+      this.waitForParing = waitForParing;
       this.stayAwake = stayAwake;
-      if (waitForParing) {
-         delayBeforeFetchingSec = 20;
-      }
    }
 
    @Override
    protected void run(CommandCallback<SmartCard> callback) throws Throwable {
-      janet.createPipe(ConnectAction.class)
+      Observable<Object> observable = janet.createPipe(ConnectAction.class)
             .createObservableResult(new ConnectAction(ImmutableConnectionParams.of((int) Long.parseLong(activeSmartCard.smartCardId()))))
             .doOnNext(action -> {
                SmartCard.ConnectionStatus status = SmartCard.ConnectionStatus.CONNECTED;
@@ -65,9 +63,13 @@ public class ConnectSmartCardCommand extends Command<SmartCard> implements Injec
                } else {
                   return Observable.just(action);
                }
-            })
-            .delay(delayBeforeFetchingSec, TimeUnit.SECONDS) //TODO: Hard code for waiting typing PIN
-            .flatMap(action -> fetchTechnicalProperties())
+            });
+
+      if (waitForParing) {
+         observable = observable.delay(20L, TimeUnit.SECONDS); //TODO: Hard code for waiting typing PIN
+      }
+
+      observable.flatMap(action -> fetchTechnicalProperties())
             .doOnNext(smartCard -> activeSmartCard = smartCard)
             .subscribe(smartCard -> {
                      callback.onSuccess(activeSmartCard);

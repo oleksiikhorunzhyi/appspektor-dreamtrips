@@ -3,7 +3,6 @@ package com.worldventures.dreamtrips.wallet.service;
 import com.worldventures.dreamtrips.core.janet.SessionActionPipeCreator;
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCard;
 import com.worldventures.dreamtrips.wallet.service.command.AttachCardCommand;
-import com.worldventures.dreamtrips.wallet.service.command.CardCountCommand;
 import com.worldventures.dreamtrips.wallet.service.command.CardListCommand;
 import com.worldventures.dreamtrips.wallet.service.command.CardStacksCommand;
 import com.worldventures.dreamtrips.wallet.service.command.ConnectSmartCardCommand;
@@ -13,7 +12,6 @@ import com.worldventures.dreamtrips.wallet.service.command.FetchDefaultCardIdCom
 import com.worldventures.dreamtrips.wallet.service.command.GetActiveSmartCardCommand;
 import com.worldventures.dreamtrips.wallet.service.command.GetDefaultAddressCommand;
 import com.worldventures.dreamtrips.wallet.service.command.SaveCardDetailsDataCommand;
-import com.worldventures.dreamtrips.wallet.service.command.SaveDefaultAddressCommand;
 import com.worldventures.dreamtrips.wallet.service.command.SaveLockStateCommand;
 import com.worldventures.dreamtrips.wallet.service.command.SetAutoClearSmartCardDelayCommand;
 import com.worldventures.dreamtrips.wallet.service.command.SetDefaultCardOnDeviceCommand;
@@ -65,12 +63,11 @@ import static java.lang.String.valueOf;
 public final class SmartCardInteractor {
    private final ActionPipe<ConnectSmartCardCommand> connectionPipe;
    private final ActionPipe<CardListCommand> cardsListPipe;
+   private final WriteActionPipe<CardListCommand> cardsListInnerPipe; // hotfix, see constructor
    private final ActionPipe<AttachCardCommand> addRecordPipe;
    private final ActionPipe<UpdateBankCardCommand> updateBankCardPipe;
    private final ActionPipe<CardStacksCommand> cardStacksPipe;
    private final ActionPipe<GetActiveSmartCardCommand> activeSmartCardPipe;
-   private final ActionPipe<CardCountCommand> cardCountCommandPipe;
-   private final ActionPipe<SaveDefaultAddressCommand> saveDefaultAddressPipe;
    private final ActionPipe<GetDefaultAddressCommand> getDefaultAddressCommandPipe;
    private final ActionPipe<SaveCardDetailsDataCommand> saveCardDetailsDataCommandPipe;
    private final ActionPipe<SetStealthModeCommand> stealthModePipe;
@@ -102,6 +99,7 @@ public final class SmartCardInteractor {
    public SmartCardInteractor(@Named(JANET_WALLET) Janet janet, SessionActionPipeCreator sessionActionPipeCreator) {
       connectionPipe = sessionActionPipeCreator.createPipe(ConnectSmartCardCommand.class, Schedulers.io());
       cardsListPipe = sessionActionPipeCreator.createPipe(CardListCommand.class, Schedulers.from(Executors.newSingleThreadExecutor()));
+      cardsListInnerPipe = janet.createPipe(CardListCommand.class); //todo: hotfix: code in `observeCardsChanges` should be synchronous
       addRecordPipe = sessionActionPipeCreator.createPipe(AttachCardCommand.class, Schedulers.io());
       updateBankCardPipe = sessionActionPipeCreator.createPipe(UpdateBankCardCommand.class, Schedulers.io());
       cardStacksPipe = sessionActionPipeCreator.createPipe(CardStacksCommand.class, Schedulers.io());
@@ -113,8 +111,6 @@ public final class SmartCardInteractor {
       setLockPipe = sessionActionPipeCreator.createPipe(SetLockStateCommand.class, Schedulers.io());
       saveLockStatePipe = sessionActionPipeCreator.createPipe(SaveLockStateCommand.class, Schedulers.io());
 
-      cardCountCommandPipe = sessionActionPipeCreator.createPipe(CardCountCommand.class, Schedulers.io());
-      saveDefaultAddressPipe = sessionActionPipeCreator.createPipe(SaveDefaultAddressCommand.class, Schedulers.io());
       getDefaultAddressCommandPipe = sessionActionPipeCreator.createPipe(GetDefaultAddressCommand.class, Schedulers.io());
       saveCardDetailsDataCommandPipe = sessionActionPipeCreator.createPipe(SaveCardDetailsDataCommand.class, Schedulers.io());
       fetchDefaultCardIdCommandPipe = sessionActionPipeCreator.createPipe(FetchDefaultCardIdCommand.class, Schedulers.io());
@@ -187,14 +183,6 @@ public final class SmartCardInteractor {
 
    public ActionPipe<GetActiveSmartCardCommand> activeSmartCardPipe() {
       return activeSmartCardPipe;
-   }
-
-   public ActionPipe<CardCountCommand> cardCountCommandPipe() {
-      return cardCountCommandPipe;
-   }
-
-   public ActionPipe<SaveDefaultAddressCommand> saveDefaultAddressPipe() {
-      return saveDefaultAddressPipe;
    }
 
    public ActionPipe<GetDefaultAddressCommand> getDefaultAddressCommandPipe() {
@@ -284,18 +272,18 @@ public final class SmartCardInteractor {
       Observable.merge(
             deleteCardPipe
                   .observeSuccess()
-                  .flatMap(deleteCommand -> cardsListPipe.createObservable(remove(valueOf(deleteCommand.recordId)))),
+                  .flatMap(deleteCommand -> cardsListInnerPipe.createObservable(remove(valueOf(deleteCommand.recordId)))),
             addRecordPipe
                   .observeSuccess()
-                  .flatMap(attachCardCommand -> cardsListPipe.createObservable(add(attachCardCommand.bankCard()))),
+                  .flatMap(attachCardCommand -> cardsListInnerPipe.createObservable(add(attachCardCommand.bankCard()))),
             updateBankCardPipe
                   .observeSuccess()
-                  .flatMap(updateBankCardCommand -> cardsListPipe.createObservable(edit(updateBankCardCommand.getResult()))),
+                  .flatMap(updateBankCardCommand -> cardsListInnerPipe.createObservable(edit(updateBankCardCommand.getResult()))),
             updateCardDetailsPipe
                   .observeSuccess()
-                  .flatMap(editCardCommand -> cardsListPipe.createObservable(edit(editCardCommand.getResult()))))
+                  .flatMap(editCardCommand -> cardsListInnerPipe.createObservable(edit(editCardCommand.getResult()))))
             .subscribe(new ActionStateSubscriber<CardListCommand>()
-                  .onSuccess(cardListCommand -> cardStacksPipe.send(CardStacksCommand.get(false)))
+                  .onSuccess(cardListCommand -> cardStacksPipe.send(CardStacksCommand.get(false), Schedulers.immediate()))
                   .onFail((cardListCommand, throwable) -> {
                      throw new IllegalStateException("Cannot perform operation onto card list cache", throwable);
                   }));

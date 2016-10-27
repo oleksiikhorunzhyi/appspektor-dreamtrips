@@ -30,10 +30,10 @@ public class DisassociateCardUserCommand extends Command<Void> implements Inject
       Observable.zip(
             walletJanet.createPipe(DisconnectAction.class)
                   .createObservableResult(new DisconnectAction())
-                  .onErrorResumeNext(Observable.empty()),
+                  .onErrorResumeNext(Observable.just(null)),
             apiJanet.createPipe(DisassociateCardUserHttpAction.class)
                   .createObservableResult(new DisassociateCardUserHttpAction(Long.parseLong(smartCardId)))
-                  .onErrorResumeNext(Observable.empty()),
+                  .onErrorResumeNext(Observable.just(null)),
             (o1, o2) -> null
       ).subscribe((result) -> {
          callback.onSuccess(null);

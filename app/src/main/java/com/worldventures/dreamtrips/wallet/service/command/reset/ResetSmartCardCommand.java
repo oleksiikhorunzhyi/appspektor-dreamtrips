@@ -17,6 +17,7 @@ import io.techery.janet.smartcard.action.support.DisconnectAction;
 import io.techery.janet.smartcard.action.user.UnAssignUserAction;
 import io.techery.janet.smartcard.exception.NotConnectedException;
 import rx.Observable;
+import rx.schedulers.Schedulers;
 
 import static com.worldventures.dreamtrips.core.janet.JanetModule.JANET_API_LIB;
 import static com.worldventures.dreamtrips.core.janet.JanetModule.JANET_WALLET;
@@ -61,7 +62,7 @@ public class ResetSmartCardCommand extends Command<Void> implements InjectableAc
 
    private Observable<DisassociateCardUserHttpAction> disassociateCardUserServer(SmartCard smartCard) {
       long scId = Long.parseLong(smartCard.smartCardId());
-      return apiLibJanet.createPipe(DisassociateCardUserHttpAction.class)
+      return apiLibJanet.createPipe(DisassociateCardUserHttpAction.class, Schedulers.io())
             .createObservableResult(new DisassociateCardUserHttpAction(scId));
    }
 

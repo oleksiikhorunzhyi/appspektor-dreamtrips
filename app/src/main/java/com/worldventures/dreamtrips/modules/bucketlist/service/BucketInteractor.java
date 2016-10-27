@@ -11,6 +11,7 @@ import com.worldventures.dreamtrips.modules.bucketlist.service.command.AddBucket
 import com.worldventures.dreamtrips.modules.bucketlist.service.command.BucketListCommand;
 import com.worldventures.dreamtrips.modules.bucketlist.service.command.DeleteItemPhotoCommand;
 import com.worldventures.dreamtrips.modules.bucketlist.service.command.FindBucketItemByPhotoCommand;
+import com.worldventures.dreamtrips.modules.bucketlist.service.command.GetCategoriesCommand;
 import com.worldventures.dreamtrips.modules.bucketlist.service.command.MergeBucketItemPhotosWithStorageCommand;
 import com.worldventures.dreamtrips.modules.bucketlist.service.command.RecentlyAddedBucketsFromPopularCommand;
 import com.worldventures.dreamtrips.modules.bucketlist.service.command.UploadPhotoControllerCommand;
@@ -31,6 +32,7 @@ public final class BucketInteractor {
    private final ActionPipe<DeleteItemHttpAction> deleteItemPipe;
    private final ActionPipe<DeleteItemPhotoCommand> deleteItemPhotoPipe;
    private final ActionPipe<AddBucketItemPhotoCommand> addBucketItemPhotoPipe;
+   private final ActionPipe<GetCategoriesCommand> getCategoriesPipe;
 
    private final ActionPipe<BucketListCommand> bucketListActionPipe;
    private final ActionPipe<FindBucketItemByPhotoCommand> findBucketItemByPhotoActionPipe;
@@ -47,6 +49,7 @@ public final class BucketInteractor {
       deleteItemPipe = sessionActionPipeCreator.createPipe(DeleteItemHttpAction.class, Schedulers.io());
       deleteItemPhotoPipe = sessionActionPipeCreator.createPipe(DeleteItemPhotoCommand.class, Schedulers.io());
       addBucketItemPhotoPipe = sessionActionPipeCreator.createPipe(AddBucketItemPhotoCommand.class, Schedulers.io());
+      getCategoriesPipe = sessionActionPipeCreator.createPipe(GetCategoriesCommand.class, Schedulers.io());
 
       bucketListActionPipe = sessionActionPipeCreator.createPipe(BucketListCommand.class, Schedulers.io());
       findBucketItemByPhotoActionPipe = sessionActionPipeCreator.createPipe(FindBucketItemByPhotoCommand.class, Schedulers.immediate());
@@ -89,6 +92,10 @@ public final class BucketInteractor {
 
    public ActionPipe<AddBucketItemPhotoCommand> addBucketItemPhotoPipe() {
       return addBucketItemPhotoPipe;
+   }
+
+   public ActionPipe<GetCategoriesCommand> getCategoriesPipe() {
+      return getCategoriesPipe;
    }
 
    public ActionPipe<BucketListCommand> bucketListActionPipe() {

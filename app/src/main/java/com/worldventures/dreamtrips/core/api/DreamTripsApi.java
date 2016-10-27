@@ -1,6 +1,5 @@
 package com.worldventures.dreamtrips.core.api;
 
-import com.worldventures.dreamtrips.modules.bucketlist.model.CategoryItem;
 import com.worldventures.dreamtrips.modules.bucketlist.model.PopularBucketItem;
 import com.worldventures.dreamtrips.modules.bucketlist.model.Suggestion;
 import com.worldventures.dreamtrips.modules.feed.model.CreatePhotoEntity;
@@ -35,9 +34,6 @@ public interface DreamTripsApi {
 
    @GET("/api/bucket_list/dinings")
    ArrayList<PopularBucketItem> getPopularDining();
-
-   @GET("/api/categories")
-   ArrayList<CategoryItem> getCategories();
 
    @GET("/api/location_suggestions")
    ArrayList<Suggestion> getLocationSuggestions(@Query("name") String name);

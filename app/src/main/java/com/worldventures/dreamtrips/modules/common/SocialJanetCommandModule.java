@@ -10,6 +10,7 @@ import com.worldventures.dreamtrips.modules.bucketlist.service.command.AddBucket
 import com.worldventures.dreamtrips.modules.bucketlist.service.command.BucketListCommand;
 import com.worldventures.dreamtrips.modules.bucketlist.service.command.DeleteItemPhotoCommand;
 import com.worldventures.dreamtrips.modules.bucketlist.service.command.FindBucketItemByPhotoCommand;
+import com.worldventures.dreamtrips.modules.bucketlist.service.command.GetCategoriesCommand;
 import com.worldventures.dreamtrips.modules.bucketlist.service.command.MergeBucketItemPhotosWithStorageCommand;
 import com.worldventures.dreamtrips.modules.common.api.janet.command.AcceptTermsCommand;
 import com.worldventures.dreamtrips.modules.common.api.janet.command.CirclesCommand;
@@ -56,9 +57,9 @@ import com.worldventures.dreamtrips.modules.membership.service.command.GetPodcas
 import com.worldventures.dreamtrips.modules.membership.service.command.GetSentInvitesCommand;
 import com.worldventures.dreamtrips.modules.membership.service.command.SendInvitesCommand;
 import com.worldventures.dreamtrips.modules.profile.service.command.AddFriendToCircleCommand;
-import com.worldventures.dreamtrips.modules.profile.service.command.RemoveFriendFromCircleCommand;
 import com.worldventures.dreamtrips.modules.profile.service.command.GetPrivateProfileCommand;
 import com.worldventures.dreamtrips.modules.profile.service.command.GetPublicProfileCommand;
+import com.worldventures.dreamtrips.modules.profile.service.command.RemoveFriendFromCircleCommand;
 import com.worldventures.dreamtrips.modules.profile.service.command.UploadAvatarCommand;
 import com.worldventures.dreamtrips.modules.profile.service.command.UploadBackgroundCommand;
 import com.worldventures.dreamtrips.modules.reptools.service.command.GetSuccessStoriesCommand;
@@ -184,5 +185,6 @@ import dagger.Module;
       SendInvitesCommand.class,
       AddFriendToCircleCommand.class,
       RemoveFriendFromCircleCommand.class,
+      GetCategoriesCommand.class,
 }, complete = false, library = true)
 public class SocialJanetCommandModule {}

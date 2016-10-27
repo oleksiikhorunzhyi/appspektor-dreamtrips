@@ -212,7 +212,6 @@ public class CardListPresenter extends WalletPresenter<CardListPresenter.Screen,
       smartCardInteractor.cardStacksPipe()
             .observe()
             .compose(bindViewIoToMainComposer())
-            //TODO check for progress, f.e. swipe refresh
             .subscribe(ErrorActionStateSubscriberWrapper.<CardStacksCommand>forView(getView().provideOperationDelegate())
                   .onSuccess(command -> cardsLoaded(command.getResult()))
                   .onFail(errorHandler)

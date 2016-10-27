@@ -16,13 +16,8 @@ import com.worldventures.dreamtrips.wallet.ui.common.navigation.Navigator;
 import com.worldventures.dreamtrips.wallet.ui.settings.firmware.preinstalletion.WalletFirmwareChecksPath;
 
 import java.io.File;
-import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
-
-import io.techery.janet.ActionState;
-
-import static rx.Observable.just;
 
 public class WalletDownloadFirmwarePresenter extends WalletPresenter<WalletDownloadFirmwarePresenter.Screen, Parcelable> {
 
@@ -45,7 +40,6 @@ public class WalletDownloadFirmwarePresenter extends WalletPresenter<WalletDownl
       action = new DownloadFileCommand(new File(firmwareFilePath), firmwareInfo.url());
       fileInteractor.getDownloadFileCommandPipe()
             .createObservable(action)
-            .flatMap(it -> it.status == ActionState.Status.START ? just(it) : just(it).delay(4, TimeUnit.SECONDS))//todo remove it
             .compose(bindViewIoToMainComposer())
             .subscribe(OperationActionStateSubscriberWrapper.<DownloadFileCommand>forView(getView().provideOperationDelegate())
                   .onSuccess(event -> openPreInstallationChecks())

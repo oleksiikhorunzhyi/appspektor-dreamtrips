@@ -2,24 +2,32 @@ package com.worldventures.dreamtrips.modules.reptools.service.command;
 
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.api.success_stories.LikeSuccessStoryHttpAction;
+import com.worldventures.dreamtrips.core.api.action.ApiActionCommand;
 
 import io.techery.janet.command.annotations.CommandAction;
 
 @CommandAction
-public class LikeSuccessStoryCommand extends BaseLikeActionCommand<LikeSuccessStoryHttpAction> {
+public class LikeSuccessStoryCommand extends ApiActionCommand<LikeSuccessStoryHttpAction, Void> {
+
+   int id;
 
    public LikeSuccessStoryCommand(int id) {
-      super(id);
+      this.id = id;
    }
 
    @Override
-   Class<LikeSuccessStoryHttpAction> getActionClass() {
-      return LikeSuccessStoryHttpAction.class;
+   protected Void mapHttpActionResult(LikeSuccessStoryHttpAction httpAction) {
+      return null;
    }
 
    @Override
-   LikeSuccessStoryHttpAction getAction() {
+   protected LikeSuccessStoryHttpAction getHttpAction() {
       return new LikeSuccessStoryHttpAction(id);
+   }
+
+   @Override
+   protected Class<LikeSuccessStoryHttpAction> getHttpActionClass() {
+      return LikeSuccessStoryHttpAction.class;
    }
 
    @Override

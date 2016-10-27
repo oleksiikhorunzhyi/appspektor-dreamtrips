@@ -112,7 +112,7 @@ public class CardListCommand extends Command<List<Card>> implements InjectableAc
    private static final class RemoveOperationFunc implements Func1<List<Card>, Observable<List<Card>>> {
       private String cardId;
 
-      public RemoveOperationFunc(String cardId) {
+      RemoveOperationFunc(String cardId) {
          this.cardId = cardId;
       }
 
@@ -126,7 +126,7 @@ public class CardListCommand extends Command<List<Card>> implements InjectableAc
    private static final class AddOperationFunc implements Func1<List<Card>, Observable<List<Card>>> {
       private Card card;
 
-      public AddOperationFunc(Card card) {
+      AddOperationFunc(Card card) {
          this.card = card;
       }
 
@@ -140,7 +140,7 @@ public class CardListCommand extends Command<List<Card>> implements InjectableAc
    private static final class EditOperationFunc implements Func1<List<Card>, Observable<List<Card>>> {
       private Card card;
 
-      public EditOperationFunc(Card card) {
+      EditOperationFunc(Card card) {
          this.card = card;
       }
 

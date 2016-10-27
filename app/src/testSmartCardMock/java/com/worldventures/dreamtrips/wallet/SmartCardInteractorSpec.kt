@@ -85,7 +85,7 @@ class SmartCardInteractorSpec : BaseSpec({
          it("set disconnect status if the event is thrown") {
             val activeSmartCardId = "4"
             val smartcard: SmartCard = mockSmartCard(activeSmartCardId)
-            whenever(mockDb.getActiveSmartCardId()).thenReturn(activeSmartCardId)
+            whenever(mockDb.activeSmartCardId).thenReturn(activeSmartCardId)
             whenever(mockDb.getSmartCard(activeSmartCardId)).thenReturn(smartcard)
 
             val testSubscriber: TestSubscriber<ActionState<UpdateSmartCardConnectionStatus>> = TestSubscriber()
@@ -154,11 +154,19 @@ class SmartCardInteractorSpec : BaseSpec({
 
       context("Delete card") {
          beforeEach {
+            // mock active smart card
             val smartCardId = "111"
             val smartCard = mockSmartCard(smartCardId)
             whenever(mockDb.activeSmartCardId).thenReturn(smartCardId)
             whenever(mockDb.getSmartCard(smartCardId)).thenReturn(smartCard)
-            whenever(mockDb.readWalletCardsList()).thenReturn(mockedListOfCards)
+
+            // mock saving result after delete
+            var list = mockedListOfCards
+            whenever(mockDb.readWalletCardsList()).thenAnswer { return@thenAnswer list }
+            whenever(mockDb.saveWalletCardsList(anyList())).thenAnswer { invocation ->
+               list = invocation.arguments[0] as List<BankCard>
+               return@thenAnswer null
+            }
          }
 
          it("should delete item from cache of card list") {
@@ -167,11 +175,14 @@ class SmartCardInteractorSpec : BaseSpec({
             smartCardInteractor.cardStacksPipe()
                   .observe()
                   .subscribe(testSubscriber)
+
             smartCardInteractor.deleteCardPipe()
                   .createObservable(DeleteRecordAction(TEST_CARD_ID))
                   .subscribe()
 
-            assertActionSuccess(testSubscriber, { it.result.flatMap { it.bankCards }.find { it.id() == TEST_CARD_ID.toString() } == null })
+            assertActionSuccess(testSubscriber, {
+               it.result.flatMap { it.bankCards }.find { it.id() == TEST_CARD_ID.toString() } == null
+            })
          }
       }
 
@@ -266,7 +277,7 @@ class SmartCardInteractorSpec : BaseSpec({
          PowerMockito.`mockStatic`(TextUtils::class.java)
          PowerMockito.`doAnswer`({ invocation ->
             val arg1: String = invocation.getArgumentAt(0, String::class.java)
-            var arg2: String = invocation.getArgumentAt(1, String::class.java)
+            val arg2: String = invocation.getArgumentAt(1, String::class.java)
             arg1 == arg2
          }).`when`(TextUtils::class.java)
          TextUtils.`equals`(anyString(), anyString())
@@ -324,7 +335,7 @@ class SmartCardInteractorSpec : BaseSpec({
       fun loadDefaultAddress(): TestSubscriber<ActionState<GetDefaultAddressCommand>> {
          val testSubscriber = TestSubscriber<ActionState<GetDefaultAddressCommand>>()
 
-         smartCardInteractor.getDefaultAddressCommandPipe()
+         smartCardInteractor.defaultAddressCommandPipe
                .createObservable(GetDefaultAddressCommand())
                .subscribe(testSubscriber)
          return testSubscriber
@@ -375,7 +386,7 @@ class SmartCardInteractorSpec : BaseSpec({
       }
 
       fun mockSmartCard(cardId: String): SmartCard {
-         var mockedSmartCard: SmartCard = mock()
+         val mockedSmartCard: SmartCard = mock()
          whenever(mockedSmartCard.smartCardId()).thenReturn(cardId)
          whenever(mockedSmartCard.cardStatus()).thenReturn(SmartCard.CardStatus.ACTIVE)
          whenever(mockedSmartCard.connectionStatus()).thenReturn(SmartCard.ConnectionStatus.DISCONNECTED)

@@ -14,7 +14,7 @@ public abstract class PostConverter<T extends Post> implements Converter<T, Text
 
    @Override
    public Class<TextualPost> targetClass() {
-      return null;
+      return TextualPost.class;
    }
 
    @Override

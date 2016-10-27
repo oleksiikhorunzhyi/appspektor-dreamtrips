@@ -255,91 +255,91 @@ public class MappingModule {
 
    @Provides(type = Provides.Type.SET)
    @Singleton
-   ReversePostAttachmentsConverter provideReversePostAttachmentsConverter() {
+   Converter provideReversePostAttachmentsConverter() {
       return new ReversePostAttachmentsConverter();
    }
 
    @Provides(type = Provides.Type.SET)
    @Singleton
-   ReversePostDataConverter provideReversePostConverter() {
+   Converter provideReversePostConverter() {
       return new ReversePostDataConverter();
    }
 
    @Provides(type = Provides.Type.SET)
    @Singleton
-   SimplePostConverter provideSimplePostConverter() {
+   Converter provideSimplePostConverter() {
       return new SimplePostConverter();
    }
 
    @Provides(type = Provides.Type.SET)
    @Singleton
-   PostSocializedConverter provideSocializedPostConverter() {
+   Converter provideSocializedPostConverter() {
       return new PostSocializedConverter();
    }
 
    @Provides(type = Provides.Type.SET)
    @Singleton
-   PhotoSocializedConverter provideSocializedPhotoConverter() {
+   Converter provideSocializedPhotoConverter() {
       return new PhotoSocializedConverter();
    }
 
    @Provides(type = Provides.Type.SET)
    @Singleton
-   HashtagSimpleConverter provideHashTagSimpleConverter() {
+   Converter provideHashTagSimpleConverter() {
       return new HashtagSimpleConverter();
    }
 
    @Provides(type = Provides.Type.SET)
    @Singleton
-   HashtagSuggestionConverter provideHashtagSuggestionConverter() {
+   Converter provideHashtagSuggestionConverter() {
       return new HashtagSuggestionConverter();
    }
 
    @Provides(type = Provides.Type.SET)
    @Singleton
-   BucketItemSocializedConverter provideBucketSocializedConverter() {
+   Converter provideBucketSocializedConverter() {
       return new BucketItemSocializedConverter();
    }
 
    @Provides(type = Provides.Type.SET)
    @Singleton
-   BucketItemSimpleConverter provideBucketSimpleConverter() {
+   Converter provideBucketSimpleConverter() {
       return new BucketItemSimpleConverter();
    }
 
    @Provides(type = Provides.Type.SET)
    @Singleton
-   BucketCategoryConverter provideBucketCategoryConverter() {
+   Converter provideBucketCategoryConverter() {
       return new BucketCategoryConverter();
    }
 
    @Provides(type = Provides.Type.SET)
    @Singleton
-   BucketTypeConverter provideBucketTypeConverter() {
+   Converter provideBucketTypeConverter() {
       return new BucketTypeConverter();
    }
 
    @Provides(type = Provides.Type.SET)
    @Singleton
-   BucketLocationConverter provideBucketLocationConverter() {
+   Converter provideBucketLocationConverter() {
       return new BucketLocationConverter();
    }
 
    @Provides(type = Provides.Type.SET)
    @Singleton
-   BucketCoverPhotoConverter provideBucketCoverPhotoConverter() {
+   Converter provideBucketCoverPhotoConverter() {
       return new BucketCoverPhotoConverter();
    }
 
    @Provides(type = Provides.Type.SET)
    @Singleton
-   BucketPhotoConverter provideBucketPhotoConverter() {
+   Converter provideBucketPhotoConverter() {
       return new BucketPhotoConverter();
    }
 
    @Provides(type = Provides.Type.SET)
    @Singleton
-   BucketTagConverter provideBucketTagConverter() {
+   Converter provideBucketTagConverter() {
       return new BucketTagConverter();
    }
 

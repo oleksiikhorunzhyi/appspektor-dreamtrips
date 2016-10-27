@@ -4,7 +4,7 @@ import javax.inject.Inject;
 
 import io.techery.mappery.MapperyContext;
 
-public abstract class MappableBaseApiActionCommand<Action extends com.worldventures.dreamtrips.api.api_common.BaseHttpAction, T, M>
+public abstract class MappableApiActionCommand<Action extends com.worldventures.dreamtrips.api.api_common.BaseHttpAction, T, M>
       extends BaseApiActionCommand<Action, T, Object> {
 
    @Inject protected MapperyContext mapperyContext;

@@ -2,7 +2,7 @@ package com.worldventures.dreamtrips.modules.reptools.service.command;
 
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.api.success_stories.GetSuccessStoriesHttpAction;
-import com.worldventures.dreamtrips.core.api.action.MappableBaseApiActionCommand;
+import com.worldventures.dreamtrips.core.api.action.MappableApiActionCommand;
 import com.worldventures.dreamtrips.modules.reptools.model.SuccessStory;
 
 import java.util.List;
@@ -10,7 +10,7 @@ import java.util.List;
 import io.techery.janet.command.annotations.CommandAction;
 
 @CommandAction
-public class GetSuccessStoriesCommand extends MappableBaseApiActionCommand<GetSuccessStoriesHttpAction,
+public class GetSuccessStoriesCommand extends MappableApiActionCommand<GetSuccessStoriesHttpAction,
       List<SuccessStory>, SuccessStory> {
 
    @Override

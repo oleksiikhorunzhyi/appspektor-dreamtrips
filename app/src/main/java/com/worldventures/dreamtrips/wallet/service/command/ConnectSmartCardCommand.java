@@ -59,7 +59,8 @@ public class ConnectSmartCardCommand extends Command<SmartCard> implements Injec
             .flatMap(action -> {
                if (stayAwake) {
                   return smartCardInteractor.enableLockUnlockDeviceActionPipe()
-                        .createObservableResult(new EnableLockUnlockDeviceAction(false));
+                        .createObservableResult(new EnableLockUnlockDeviceAction(false))
+                        .onErrorResumeNext(Observable.just(null));
                } else {
                   return Observable.just(action);
                }

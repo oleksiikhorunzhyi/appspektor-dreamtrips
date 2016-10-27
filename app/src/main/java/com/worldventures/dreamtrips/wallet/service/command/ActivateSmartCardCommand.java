@@ -19,6 +19,7 @@ import io.techery.janet.Command;
 import io.techery.janet.Janet;
 import io.techery.janet.command.annotations.CommandAction;
 import io.techery.janet.smartcard.action.settings.EnableLockUnlockDeviceAction;
+import rx.Observable;
 
 @CommandAction
 public class ActivateSmartCardCommand extends Command<SmartCard> implements InjectableAction, SmartCardModifier, CachedAction<SmartCard> {
@@ -43,6 +44,7 @@ public class ActivateSmartCardCommand extends Command<SmartCard> implements Inje
 
       smartCardInteractor.enableLockUnlockDeviceActionPipe()
             .createObservableResult(new EnableLockUnlockDeviceAction(true))
+            .onErrorResumeNext(Observable.just(null))
             .subscribe(action ->
                   //TODO: for beta release
                   janet.createPipe(AddDummyCardCommand.class)

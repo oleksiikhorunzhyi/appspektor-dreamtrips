@@ -53,6 +53,7 @@ public class InstallFirmwareCommand extends Command<Void> implements InjectableA
    private Observable<Void> enableLockUnlockDevice(boolean enable) {
       return smartCardInteractor.enableLockUnlockDeviceActionPipe()
             .createObservableResult(new EnableLockUnlockDeviceAction(enable))
+            .onErrorResumeNext(Observable.just(null))
             .map(action -> (Void) null);
    }
 

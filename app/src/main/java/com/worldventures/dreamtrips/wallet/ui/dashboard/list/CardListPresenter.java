@@ -96,17 +96,21 @@ public class CardListPresenter extends WalletPresenter<CardListPresenter.Screen,
    public void onAttachedToWindow() {
       super.onAttachedToWindow();
       observeChanges();
+      observeFirmwareInfo();
+
       //TODO For first release we should get info from cache cause SC device does't support operation
-      smartCardInteractor.cardStacksPipe().createObservable(CardStacksCommand.get(false)).subscribe();
+      smartCardInteractor.cardStacksPipe().send(CardStacksCommand.get(false));
       trackScreen();
 
       smartCardInteractor.smartCardModifierPipe()
             .observeSuccessWithReplay()
             .compose(bindViewIoToMainComposer())
             .subscribe(it -> setSmartCard(it.getResult()));
+   }
 
+   private void observeFirmwareInfo() {
       firmwareInteractor.firmwareInfoPipe()
-            .createObservableResult(new FetchFirmwareInfoCommand())
+            .observeSuccessWithReplay()
             .compose(bindViewIoToMainComposer())
             .subscribe(command -> firmwareLoaded(command.getResult()), throwable -> Timber.e(throwable, "Error while fetching firmware"));
    }

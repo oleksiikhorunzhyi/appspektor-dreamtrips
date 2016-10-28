@@ -7,6 +7,7 @@ import com.worldventures.dreamtrips.wallet.service.command.CardListCommand;
 import com.worldventures.dreamtrips.wallet.service.command.CardStacksCommand;
 import com.worldventures.dreamtrips.wallet.service.command.ConnectSmartCardCommand;
 import com.worldventures.dreamtrips.wallet.service.command.FetchBatteryLevelCommand;
+import com.worldventures.dreamtrips.wallet.service.command.FetchCardPropertiesCommand;
 import com.worldventures.dreamtrips.wallet.service.command.FetchDefaultCardCommand;
 import com.worldventures.dreamtrips.wallet.service.command.FetchDefaultCardIdCommand;
 import com.worldventures.dreamtrips.wallet.service.command.GetActiveSmartCardCommand;
@@ -24,6 +25,7 @@ import com.worldventures.dreamtrips.wallet.service.command.UpdateCardDetailsData
 import com.worldventures.dreamtrips.wallet.service.command.UpdateSmartCardConnectionStatus;
 import com.worldventures.dreamtrips.wallet.service.command.http.CreateBankCardCommand;
 import com.worldventures.dreamtrips.wallet.service.command.http.DisassociateActiveCardUserCommand;
+import com.worldventures.dreamtrips.wallet.service.command.http.FetchFirmwareInfoCommand;
 
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
@@ -116,12 +118,14 @@ public final class SmartCardInteractor {
       fetchDefaultCardIdCommandPipe = sessionActionPipeCreator.createPipe(FetchDefaultCardIdCommand.class, Schedulers.io());
       fetchDefaultCardCommandPipe = sessionActionPipeCreator.createPipe(FetchDefaultCardCommand.class, Schedulers.io());
       fetchBatteryLevelPipe = sessionActionPipeCreator.createPipe(FetchBatteryLevelCommand.class, Schedulers.io());
-      setDefaultCardOnDeviceCommandPipe = sessionActionPipeCreator.createPipe(SetDefaultCardOnDeviceCommand.class, Schedulers.io());
+      setDefaultCardOnDeviceCommandPipe = sessionActionPipeCreator.createPipe(SetDefaultCardOnDeviceCommand.class, Schedulers
+            .io());
       deleteCardPipe = sessionActionPipeCreator.createPipe(DeleteRecordAction.class, Schedulers.io());
       updateCardDetailsPipe = sessionActionPipeCreator.createPipe(UpdateCardDetailsDataCommand.class, Schedulers.io());
 
       disconnectPipe = sessionActionPipeCreator.createPipe(DisconnectAction.class, Schedulers.io());
-      updateSmartCardConnectionStatusPipe = sessionActionPipeCreator.createPipe(UpdateSmartCardConnectionStatus.class, Schedulers.io());
+      updateSmartCardConnectionStatusPipe = sessionActionPipeCreator.createPipe(UpdateSmartCardConnectionStatus.class, Schedulers
+            .io());
 
       chargedEventPipe = sessionActionPipeCreator.createPipe(CardChargedEvent.class, Schedulers.io());
       startCardRecordingPipe = sessionActionPipeCreator.createPipe(StartCardRecordingAction.class, Schedulers.io());
@@ -132,13 +136,24 @@ public final class SmartCardInteractor {
       autoClearDelayPipe = sessionActionPipeCreator.createPipe(SetAutoClearSmartCardDelayCommand.class, Schedulers.io());
       disableDefaultCardPipe = sessionActionPipeCreator.createPipe(SetDisableDefaultCardDelayCommand.class, Schedulers.io());
 
-      enableLockUnlockDeviceActionPipe = sessionActionPipeCreator.createPipe(EnableLockUnlockDeviceAction.class, Schedulers.io());
+      enableLockUnlockDeviceActionPipe = sessionActionPipeCreator.createPipe(EnableLockUnlockDeviceAction.class, Schedulers
+            .io());
 
-      disassociateActiveCardActionPipe = sessionActionPipeCreator.createPipe(DisassociateActiveCardUserCommand.class, Schedulers.io());
+      disassociateActiveCardActionPipe = sessionActionPipeCreator.createPipe(DisassociateActiveCardUserCommand.class, Schedulers
+            .io());
 
       connect(janet);
       connectToLockEvent();
       observeBatteryLevel(janet);
+      observeSCFirmwareAndCheckUpdates(janet);
+   }
+
+   private void observeSCFirmwareAndCheckUpdates(Janet janet) {
+      janet.createPipe(FetchCardPropertiesCommand.class)
+            .observeSuccess()
+            .subscribe(commend ->
+                  janet.createPipe(FetchFirmwareInfoCommand.class, Schedulers.io())
+                        .send(new FetchFirmwareInfoCommand()));
    }
 
    public ActionPipe<CardListCommand> cardsListPipe() {

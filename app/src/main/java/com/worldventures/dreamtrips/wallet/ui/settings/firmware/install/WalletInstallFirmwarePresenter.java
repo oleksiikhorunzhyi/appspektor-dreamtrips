@@ -3,6 +3,8 @@ package com.worldventures.dreamtrips.wallet.ui.settings.firmware.install;
 import android.content.Context;
 
 import com.techery.spares.module.Injector;
+import com.worldventures.dreamtrips.wallet.domain.entity.FirmwareInfo;
+import com.worldventures.dreamtrips.wallet.domain.entity.ImmutableFirmwareDescriptor;
 import com.worldventures.dreamtrips.wallet.service.FirmwareInteractor;
 import com.worldventures.dreamtrips.wallet.service.command.firmware.InstallFirmwareCommand;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletPresenter;
@@ -27,10 +29,12 @@ public class WalletInstallFirmwarePresenter extends WalletPresenter<WalletInstal
    @Inject Navigator navigator;
 
    private final String filePath;
+   private final FirmwareInfo firmwareInfo;
 
-   public WalletInstallFirmwarePresenter(Context context, Injector injector, String filePath) {
+   public WalletInstallFirmwarePresenter(Context context, Injector injector, String filePath, FirmwareInfo firmwareInfo) {
       super(context, injector);
       this.filePath = filePath;
+      this.firmwareInfo = firmwareInfo;
    }
 
    @Override
@@ -57,7 +61,15 @@ public class WalletInstallFirmwarePresenter extends WalletPresenter<WalletInstal
 
    protected void install() {
       getView().showProgress();
-      firmwareInteractor.installFirmwarePipe().send(new InstallFirmwareCommand(new File(filePath)));
+      firmwareInteractor.installFirmwarePipe().send(
+            new InstallFirmwareCommand(
+                  ImmutableFirmwareDescriptor
+                        .builder()
+                        .firmwareFile(new File(filePath))
+                        .sdkVersion(firmwareInfo.sdkVersion())
+                        .firmwareVersion(firmwareInfo.firmwareVersion())
+                        .build()
+            ));
    }
 
    private void openSuccess() {

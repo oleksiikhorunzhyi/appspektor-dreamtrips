@@ -4,6 +4,7 @@ import android.content.Context;
 import android.os.Parcelable;
 
 import com.techery.spares.module.Injector;
+import com.worldventures.dreamtrips.wallet.domain.entity.FirmwareInfo;
 import com.worldventures.dreamtrips.wallet.service.FirmwareInteractor;
 import com.worldventures.dreamtrips.wallet.service.SmartCardInteractor;
 import com.worldventures.dreamtrips.wallet.service.WalletBluetoothService;
@@ -25,10 +26,12 @@ public class WalletFirmwareChecksPresenter extends WalletPresenter<WalletFirmwar
    @Inject Navigator navigator;
 
    private final String firmwareFilePath;
+   private final FirmwareInfo firmwareInfo;
 
-   WalletFirmwareChecksPresenter(Context context, Injector injector, String firmwareFilePath) {
+   WalletFirmwareChecksPresenter(Context context, Injector injector, String firmwareFilePath, FirmwareInfo firmwareInfo) {
       super(context, injector);
       this.firmwareFilePath = firmwareFilePath;
+      this.firmwareInfo = firmwareInfo;
    }
 
    @Override
@@ -58,7 +61,7 @@ public class WalletFirmwareChecksPresenter extends WalletPresenter<WalletFirmwar
    }
 
    void install() {
-      navigator.go(new WalletInstallFirmwarePath(firmwareFilePath));
+      navigator.go(new WalletInstallFirmwarePath(firmwareFilePath, firmwareInfo));
    }
 
    void goBack() {

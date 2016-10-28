@@ -7,6 +7,7 @@ import com.worldventures.dreamtrips.wallet.service.command.http.FetchFirmwareInf
 import io.techery.janet.ActionPipe;
 import io.techery.janet.Janet;
 import io.techery.janet.ReadActionPipe;
+import io.techery.janet.WriteActionPipe;
 import rx.schedulers.Schedulers;
 
 public class FirmwareInteractor {
@@ -21,7 +22,7 @@ public class FirmwareInteractor {
       preInstallationCheckPipe = walletJanet.createPipe(PreInstallationCheckCommand.class, Schedulers.io());
    }
 
-   public ReadActionPipe<FetchFirmwareInfoCommand> firmwareInfoPipe() {
+   public ActionPipe<FetchFirmwareInfoCommand> firmwareInfoPipe() {
       return firmwareInfo;
    }
 

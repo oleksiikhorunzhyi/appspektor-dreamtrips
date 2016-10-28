@@ -4,8 +4,6 @@ import com.worldventures.dreamtrips.api.smart_card.firmware.GetFirmwareHttpActio
 import com.worldventures.dreamtrips.core.janet.dagger.InjectableAction;
 import com.worldventures.dreamtrips.wallet.domain.entity.Firmware;
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCard;
-import com.worldventures.dreamtrips.wallet.service.SmartCardInteractor;
-import com.worldventures.dreamtrips.wallet.service.command.GetActiveSmartCardCommand;
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -22,20 +20,29 @@ import static com.worldventures.dreamtrips.core.janet.JanetModule.JANET_API_LIB;
 public class FetchFirmwareInfoCommand extends Command<Firmware> implements InjectableAction {
 
    @Inject MapperyContext mapperyContext;
-   @Inject SmartCardInteractor smartCardInteractor;
    @Inject @Named(JANET_API_LIB) Janet janet;
+
+   private final String sdkVersion;
+   private final String firmwareVersion;
+
+   public FetchFirmwareInfoCommand(SmartCard smartCard) {
+      this(smartCard.sdkVersion(), smartCard.firmWareVersion());
+   }
+
+   public FetchFirmwareInfoCommand(String sdkVersion, String firmwareVersion) {
+      this.sdkVersion = sdkVersion;
+      this.firmwareVersion = firmwareVersion;
+   }
 
    @Override
    protected void run(CommandCallback<Firmware> callback) throws Throwable {
-      smartCardInteractor.activeSmartCardPipe()
-            .createObservableResult(new GetActiveSmartCardCommand())
-            .flatMap(command -> fetchFirmwareInfo(command.getResult()))
+      fetchFirmwareInfo()
             .subscribe(callback::onSuccess, callback::onFail);
    }
 
-   private Observable<Firmware> fetchFirmwareInfo(SmartCard smartCard) {
+   private Observable<Firmware> fetchFirmwareInfo() {
       return janet.createPipe(GetFirmwareHttpAction.class)
-            .createObservableResult(new GetFirmwareHttpAction(smartCard.firmWareVersion(), smartCard.sdkVersion()))
+            .createObservableResult(new GetFirmwareHttpAction(firmwareVersion, sdkVersion))
             .map(it -> mapperyContext.convert(it.response(), Firmware.class));
    }
 }

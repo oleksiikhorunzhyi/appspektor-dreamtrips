@@ -21,7 +21,6 @@ import com.worldventures.dreamtrips.wallet.service.FirmwareInteractor;
 import com.worldventures.dreamtrips.wallet.service.SmartCardInteractor;
 import com.worldventures.dreamtrips.wallet.service.command.CardListCommand;
 import com.worldventures.dreamtrips.wallet.service.command.CardStacksCommand;
-import com.worldventures.dreamtrips.wallet.service.command.http.FetchFirmwareInfoCommand;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletPresenter;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.WalletScreen;
 import com.worldventures.dreamtrips.wallet.ui.common.helper.ErrorActionStateSubscriberWrapper;
@@ -169,7 +168,7 @@ public class CardListPresenter extends WalletPresenter<CardListPresenter.Screen,
 
    void navigateToInstallFirmware() {
       File firmwareFile = getAppropriateFirmwareFile(getContext());
-      navigator.go(new WalletInstallFirmwarePath(firmwareFile.getAbsolutePath()));
+      navigator.go(new WalletInstallFirmwarePath(firmwareFile.getAbsolutePath(), firmware.firmwareInfo()));
    }
 
    void navigateBack() {

@@ -73,9 +73,9 @@ public class ConnectSmartCardScreen extends WalletLinearLayout<ConnectSmartCardP
       new MaterialDialog.Builder(getContext())
             .content(message)
             .positiveText(R.string.ok)
-            .onPositive(((dialog, which) -> {
+            .dismissListener(dialog -> {
                if (action != null) action.call(null);
-            }))
+            })
             .show();
    }
 

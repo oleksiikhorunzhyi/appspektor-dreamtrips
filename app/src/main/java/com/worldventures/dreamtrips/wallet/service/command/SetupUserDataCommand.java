@@ -82,7 +82,7 @@ public class SetupUserDataCommand extends Command<SmartCard> implements Injectab
 
       String[] nameParts = fullName.split(" ");
       String firstName, lastName, middleName = null;
-      if (nameParts.length < 2) throw new FormatException();
+      if (nameParts.length < 2 || nameParts.length > 3) throw new FormatException();
       if (nameParts.length == 2) {
          firstName = nameParts[0];
          lastName = nameParts[1];

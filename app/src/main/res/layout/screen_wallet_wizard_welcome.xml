@@ -49,12 +49,14 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@+id/content_label"
-            android:layout_marginTop="35dp"
+            android:layout_marginTop="@dimen/spacing_huge"
+            android:paddingEnd="32dp"
+            android:paddingStart="32dp"
             >
 
          <ImageView
                android:id="@+id/smart_card"
-               android:layout_width="250dp"
+               android:layout_width="wrap_content"
                android:layout_height="wrap_content"
                android:layout_alignParentTop="true"
                android:layout_centerHorizontal="true"
@@ -69,7 +71,7 @@
                android:layout_height="75dp"
                android:layout_alignEnd="@+id/smart_card"
                android:layout_centerVertical="true"
-               android:layout_marginEnd="12dp"
+               android:layout_marginEnd="@dimen/spacing_large"
                android:src="@drawable/ic_dt_launcher"
                app:failureImage="@drawable/ic_avatar_placeholder"
                app:placeholderImage="@drawable/ic_avatar_placeholder"
@@ -80,7 +82,7 @@
                android:layout_height="wrap_content"
                android:layout_alignEnd="@+id/user_photo"
                android:layout_alignStart="@+id/user_photo"
-               android:layout_marginTop="45dp"
+               android:layout_marginTop="32dp"
                android:src="@drawable/ic_flyecard_light"
                tools:ignore="ContentDescription"
                />

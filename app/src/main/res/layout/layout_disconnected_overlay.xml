@@ -2,13 +2,13 @@
 <android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
       android:orientation="horizontal"
       android:layout_width="match_parent"
-      android:layout_height="@dimen/messenger_connection_overlay_height"
+      android:layout_height="@dimen/disconnected_overlay_height"
       android:layout_gravity="top"
       android:background="@color/white"
       >
 
    <FrameLayout
-         android:id="@+id/messenger_connection_overlay_disconnected_view"
+         android:id="@+id/disconnected_overlay_disconnected_view"
          android:layout_width="match_parent"
          android:layout_height="match_parent"
          >
@@ -18,46 +18,46 @@
             android:layout_height="match_parent"
             android:layout_gravity="center_vertical"
             android:text="@string/disconnected_overlay_disconnected_message"
-            android:textSize="@dimen/messenger_connection_overlay_message_text_size"
+            android:textSize="@dimen/disconnected_overlay_message_text_size"
             android:textColor="@color/disconnected_overlay_text_color"
             android:gravity="center"
             />
 
       <ImageButton
-            android:id="@+id/messenger_reconnect_button"
+            android:id="@+id/disconnected_overlay_reconnect_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical|right"
             android:src="@drawable/connection_lost"
-            android:padding="@dimen/messenger_connection_overlay_message_text_size"
+            android:padding="@dimen/disconnected_overlay_message_text_size"
             android:background="@null"
             />
    </FrameLayout>
 
    <RelativeLayout
-         android:id="@+id/messenger_connection_overlay_connecting_view"
+         android:id="@+id/disconnected_overlay_connecting_view"
          android:layout_width="match_parent"
          android:layout_height="match_parent"
          >
 
       <ProgressBar
-            android:id="@+id/messenger_connection_connecting_progress_bar"
+            android:id="@+id/disconnected_overlay_connecting_progress_bar"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
             style="?android:attr/android:progressBarStyleSmall"
-            android:layout_toLeftOf="@+id/messenger_connection_connecting_textview"
-            android:layout_marginRight="@dimen/messenger_connection_overlay_progress_bar_right_margin"
+            android:layout_toLeftOf="@+id/disconnected_overlay_connecting_textview"
+            android:layout_marginRight="@dimen/disconnected_overlay_progress_bar_right_margin"
             />
 
       <TextView
-            android:id="@+id/messenger_connection_connecting_textview"
+            android:id="@+id/disconnected_overlay_connecting_textview"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerHorizontal="true"
             android:layout_centerVertical="true"
             android:text="@string/disconnected_overlay_connecting_message"
-            android:textSize="@dimen/messenger_connection_overlay_message_text_size"
+            android:textSize="@dimen/disconnected_overlay_message_text_size"
             android:textColor="@color/connecting_overlay_text_color"
             android:gravity="center"
             />

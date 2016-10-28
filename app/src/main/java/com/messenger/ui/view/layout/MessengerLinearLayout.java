@@ -7,14 +7,12 @@ import android.os.Message;
 import android.os.Parcelable;
 import android.support.v7.widget.Toolbar;
 import android.util.AttributeSet;
-import android.view.LayoutInflater;
-import android.view.View;
 import android.view.ViewGroup;
 
 import com.messenger.synchmechanism.SyncStatus;
 import com.messenger.ui.presenter.MessengerPresenter;
-import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.flow.layout.BaseViewStateLinearLayout;
+import com.worldventures.dreamtrips.modules.common.view.custom.DisconnectedOverlay;
 
 import icepick.Icepick;
 
@@ -47,47 +45,31 @@ public abstract class MessengerLinearLayout<V extends MessengerScreen, P extends
 
       private static final int SHOW_CONNECTING_VIEW_MIN_DURATION = 1000;
 
-      private View overlay;
-      private View disconnectedView;
-      private View connectingView;
+      private DisconnectedOverlay disconnectedOverlay;
 
       private SyncStatus lastSyncStatus;
       private boolean delayedStatusPending;
 
-      private void attachDisconnectedOverlayIfNeeded() {
-         if (overlay != null) {
-            return;
-         }
-         overlay = LayoutInflater.from(getContext())
-               .inflate(R.layout.layout_disconnected_overlay, getContentView(), false);
-         overlay.findViewById(R.id.messenger_reconnect_button)
-               .setOnClickListener(v -> getPresenter().onDisconnectedOverlayClicked());
-         disconnectedView = overlay.findViewById(R.id.messenger_connection_overlay_disconnected_view);
-         connectingView = overlay.findViewById(R.id.messenger_connection_overlay_connecting_view);
-         getContentView().addView(overlay);
-         overlay.setVisibility(GONE);
-      }
-
       @Override
       public void handleMessage(Message msg) {
-         attachDisconnectedOverlayIfNeeded();
+         if (disconnectedOverlay == null) {
+            disconnectedOverlay = new DisconnectedOverlay(getContext(), getContentView());
+            disconnectedOverlay.getClickObservable().subscribe(o -> getPresenter().onDisconnectedOverlayClicked());
+         }
          SyncStatus status = SyncStatus.values()[msg.what];
          switch (status) {
             case CONNECTED:
-               overlay.setVisibility(GONE);
+               disconnectedOverlay.hide();
                break;
             case SYNC_DATA:
             case CONNECTING:
-               overlay.setVisibility(VISIBLE);
-               connectingView.setVisibility(VISIBLE);
-               disconnectedView.setVisibility(GONE);
+               disconnectedOverlay.showConnecting();
                break;
             case ERROR:
             case DISCONNECTED:
+               disconnectedOverlay.showDisconnected();
+               break;
             default:
-               overlay.setVisibility(VISIBLE);
-               disconnectedView.setVisibility(VISIBLE);
-               connectingView.setVisibility(GONE);
                break;
          }
          // delay to message set as arg1

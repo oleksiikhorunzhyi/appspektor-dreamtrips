@@ -42,7 +42,7 @@ public class WalletInstallFirmwareScreen extends WalletLinearLayout<WalletInstal
    @NonNull
    @Override
    public WalletInstallFirmwarePresenter createPresenter() {
-      return new WalletInstallFirmwarePresenter(getContext(), getInjector(), getPath().filePath());
+      return new WalletInstallFirmwarePresenter(getContext(), getInjector(), getPath().filePath, getPath().firmwareInfo);
    }
 
    @Override

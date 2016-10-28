@@ -7,7 +7,6 @@ import com.worldventures.dreamtrips.wallet.service.command.CardListCommand;
 import com.worldventures.dreamtrips.wallet.service.command.CardStacksCommand;
 import com.worldventures.dreamtrips.wallet.service.command.ConnectSmartCardCommand;
 import com.worldventures.dreamtrips.wallet.service.command.FetchBatteryLevelCommand;
-import com.worldventures.dreamtrips.wallet.service.command.FetchCardPropertiesCommand;
 import com.worldventures.dreamtrips.wallet.service.command.FetchDefaultCardCommand;
 import com.worldventures.dreamtrips.wallet.service.command.FetchDefaultCardIdCommand;
 import com.worldventures.dreamtrips.wallet.service.command.GetActiveSmartCardCommand;
@@ -23,6 +22,7 @@ import com.worldventures.dreamtrips.wallet.service.command.SmartCardModifier;
 import com.worldventures.dreamtrips.wallet.service.command.UpdateBankCardCommand;
 import com.worldventures.dreamtrips.wallet.service.command.UpdateCardDetailsDataCommand;
 import com.worldventures.dreamtrips.wallet.service.command.UpdateSmartCardConnectionStatus;
+import com.worldventures.dreamtrips.wallet.service.command.firmware.FirmwareVersionCacheCommand;
 import com.worldventures.dreamtrips.wallet.service.command.http.CreateBankCardCommand;
 import com.worldventures.dreamtrips.wallet.service.command.http.DisassociateActiveCardUserCommand;
 import com.worldventures.dreamtrips.wallet.service.command.http.FetchFirmwareInfoCommand;
@@ -98,7 +98,9 @@ public final class SmartCardInteractor {
 
    private final ActionPipe<DisassociateActiveCardUserCommand> disassociateActiveCardActionPipe;
 
-   public SmartCardInteractor(@Named(JANET_WALLET) Janet janet, SessionActionPipeCreator sessionActionPipeCreator) {
+   private final FirmwareInteractor firmwareInteractor;
+
+   public SmartCardInteractor(@Named(JANET_WALLET) Janet janet, SessionActionPipeCreator sessionActionPipeCreator, FirmwareInteractor firmwareInteractor) {
       connectionPipe = sessionActionPipeCreator.createPipe(ConnectSmartCardCommand.class, Schedulers.io());
       cardsListPipe = sessionActionPipeCreator.createPipe(CardListCommand.class, Schedulers.from(Executors.newSingleThreadExecutor()));
       cardsListInnerPipe = janet.createPipe(CardListCommand.class); //todo: hotfix: code in `observeCardsChanges` should be synchronous
@@ -141,6 +143,7 @@ public final class SmartCardInteractor {
 
       disassociateActiveCardActionPipe = sessionActionPipeCreator.createPipe(DisassociateActiveCardUserCommand.class, Schedulers
             .io());
+      this.firmwareInteractor = firmwareInteractor;
 
       connect(janet);
       connectToLockEvent();
@@ -149,11 +152,11 @@ public final class SmartCardInteractor {
    }
 
    private void observeSCFirmwareAndCheckUpdates(Janet janet) {
-      janet.createPipe(FetchCardPropertiesCommand.class)
+      janet.createPipe(FirmwareVersionCacheCommand.class)
             .observeSuccess()
-            .subscribe(commend ->
-                  janet.createPipe(FetchFirmwareInfoCommand.class, Schedulers.io())
-                        .send(new FetchFirmwareInfoCommand()));
+            .subscribe(cache ->
+                  firmwareInteractor.firmwareInfoPipe()
+                        .send(new FetchFirmwareInfoCommand(cache.sdkVersion(), cache.firmwareVersion())));
    }
 
    public ActionPipe<CardListCommand> cardsListPipe() {

@@ -1,6 +1,5 @@
 package com.worldventures.dreamtrips.wallet.ui.settings.firmware.donwload;
 
-
 import android.content.Context;
 import android.os.Parcelable;
 
@@ -45,11 +44,10 @@ public class WalletDownloadFirmwarePresenter extends WalletPresenter<WalletDownl
                   .onSuccess(event -> openPreInstallationChecks())
                   .onFail(ErrorHandler.create(getContext(), it -> navigator.goBack()))
                   .wrap());
-
    }
 
    private void openPreInstallationChecks() {
-      navigator.withoutLast(new WalletFirmwareChecksPath(firmwareFilePath));
+      navigator.withoutLast(new WalletFirmwareChecksPath(firmwareFilePath, firmwareInfo));
    }
 
    void cancelDownload() {

@@ -1,6 +1,7 @@
 package com.worldventures.dreamtrips.modules.mapping.converter;
 
 import com.worldventures.dreamtrips.api.profile.model.PublicUserProfile;
+import com.worldventures.dreamtrips.api.session.model.Subscription;
 import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.friends.model.Circle;
 
@@ -57,9 +58,9 @@ public class PublicProfileConverter implements Converter<PublicUserProfile, User
 
       user.setBackgroundPhotoUrl(apiProfile.backgroundPhotoUrl());
 
-      List<String> apiSubscriptions = apiProfile.subscriptions();
+      List<Subscription> apiSubscriptions = apiProfile.subscriptions();
       List<String> subscriptions = new ArrayList<>();
-      for (String subscription : apiSubscriptions) {
+      for (Subscription subscription : apiSubscriptions) {
          subscriptions.add(subscription.toString());
       }
       user.setSubscriptions(subscriptions);

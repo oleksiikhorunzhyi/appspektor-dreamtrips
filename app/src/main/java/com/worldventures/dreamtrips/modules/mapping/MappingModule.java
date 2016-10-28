@@ -31,7 +31,6 @@ import com.worldventures.dreamtrips.modules.mapping.converter.ImageConverter;
 import com.worldventures.dreamtrips.modules.mapping.converter.InspirationModelsConverter;
 import com.worldventures.dreamtrips.modules.mapping.converter.LocationConverter;
 import com.worldventures.dreamtrips.modules.mapping.converter.MemberImageConverter;
-import com.worldventures.dreamtrips.modules.mapping.converter.PhotoAuthorConverter;
 import com.worldventures.dreamtrips.modules.mapping.converter.PhotoTagConverter;
 import com.worldventures.dreamtrips.modules.mapping.converter.PhotoTagsParamsConverter;
 import com.worldventures.dreamtrips.modules.mapping.converter.PhotoUpdateParamsConverter;
@@ -389,12 +388,6 @@ public class MappingModule {
    @Singleton
    Converter provideTaggedUserConverter() {
       return new TaggedUserConverter();
-   }
-
-   @Provides(type = Provides.Type.SET)
-   @Singleton
-   Converter providePhotoAuthorConverter() {
-      return new PhotoAuthorConverter();
    }
 
    @Provides(type = Provides.Type.SET)

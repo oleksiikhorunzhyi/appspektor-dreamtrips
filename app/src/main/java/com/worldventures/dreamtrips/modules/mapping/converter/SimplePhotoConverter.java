@@ -1,6 +1,5 @@
 package com.worldventures.dreamtrips.modules.mapping.converter;
 
-import com.worldventures.dreamtrips.api.photos.model.PhotoAuthor;
 import com.worldventures.dreamtrips.api.photos.model.PhotoSimple;
 import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.common.view.custom.tagview.viewgroup.newio.model.PhotoTag;
@@ -9,7 +8,6 @@ import com.worldventures.dreamtrips.modules.tripsimages.model.Image;
 import com.worldventures.dreamtrips.modules.tripsimages.model.Photo;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import io.techery.mappery.MapperyContext;
 

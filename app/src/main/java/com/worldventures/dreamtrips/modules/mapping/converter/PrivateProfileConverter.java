@@ -3,7 +3,6 @@ package com.worldventures.dreamtrips.modules.mapping.converter;
 import com.worldventures.dreamtrips.api.profile.model.PrivateUserProfile;
 import com.worldventures.dreamtrips.api.session.model.Subscription;
 import com.worldventures.dreamtrips.modules.common.model.User;
-import com.worldventures.dreamtrips.modules.friends.model.Circle;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -55,10 +54,6 @@ public class PrivateProfileConverter implements Converter<PrivateUserProfile, Us
       user.setFriendsCount(apiProfile.friendsCount());
       user.setTermsAccepted(apiProfile.termsAccepted());
 
-      if (apiProfile.relationship() != null) {
-         user.setRelationship(mapperyContext.convert(apiProfile.relationship(), User.Relationship.class));
-      }
-
       user.setBackgroundPhotoUrl(apiProfile.backgroundPhotoUrl());
 
       List<Subscription> apiSubscriptions = apiProfile.subscriptions();
@@ -69,14 +64,6 @@ public class PrivateProfileConverter implements Converter<PrivateUserProfile, Us
          }
       }
       user.setSubscriptions(subscriptions);
-
-      if (apiProfile.circles() != null) {
-         user.setCircles(mapperyContext.convert(apiProfile.circles(), Circle.class));
-      }
-
-      if (apiProfile.mutualFriends() != null) {
-         user.setMutualFriends(new User.MutualFriends(apiProfile.mutualFriends().count()));
-      }
 
       return user;
    }

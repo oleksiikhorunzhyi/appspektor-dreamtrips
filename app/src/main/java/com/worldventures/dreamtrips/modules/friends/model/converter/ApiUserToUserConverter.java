@@ -27,7 +27,8 @@ public class ApiUserToUserConverter implements Converter<com.worldventures.dream
       user.setBadges(apiUser.badges());
       user.setLocation(apiUser.location());
       user.setCompany(apiUser.company());
-      user.setMutualFriends(mapperyContext.convert(apiUser.mutuals(), User.MutualFriends.class));
+      if (apiUser.mutuals() != null)
+         user.setMutualFriends(mapperyContext.convert(apiUser.mutuals(), User.MutualFriends.class));
       user.setRelationship(mapperyContext.convert(apiUser.relationship(), User.Relationship.class));
       return user;
    }

@@ -23,6 +23,7 @@ import com.worldventures.dreamtrips.wallet.domain.entity.card.Card
 import com.worldventures.dreamtrips.wallet.domain.storage.DefaultBankCardStorage
 import com.worldventures.dreamtrips.wallet.domain.storage.SmartCardStorage
 import com.worldventures.dreamtrips.wallet.domain.storage.WalletCardsDiskStorage
+import com.worldventures.dreamtrips.wallet.service.FirmwareInteractor
 import com.worldventures.dreamtrips.wallet.service.SmartCardInteractor
 import com.worldventures.dreamtrips.wallet.service.command.*
 import com.worldventures.dreamtrips.wallet.service.command.CardStacksCommand.CardStackModel.StackType
@@ -52,7 +53,7 @@ class SmartCardInteractorSpec : BaseSpec({
          mockDb = createMockDb()
          mappery = createMappery()
          janet = createJanet()
-         smartCardInteractor = createInteractor(janet)
+         smartCardInteractor = createSmartCardInteractor(janet)
 
          janet.connectToSmartCardSdk()
 
@@ -283,7 +284,9 @@ class SmartCardInteractorSpec : BaseSpec({
          TextUtils.`equals`(anyString(), anyString())
       }
 
-      fun createInteractor(janet: Janet) = SmartCardInteractor(janet, SessionActionPipeCreator(janet))
+      fun createSmartCardInteractor(janet: Janet) = SmartCardInteractor(janet, SessionActionPipeCreator(janet), createFirmwareInteractor(janet))
+
+      fun createFirmwareInteractor(janet: Janet) = FirmwareInteractor(janet)
 
       fun createJanet(): Janet {
          val daggerCommandActionService = CommandActionService()

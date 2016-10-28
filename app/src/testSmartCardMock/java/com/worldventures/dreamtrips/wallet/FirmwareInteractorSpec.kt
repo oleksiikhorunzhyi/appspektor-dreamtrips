@@ -8,6 +8,7 @@ import com.worldventures.dreamtrips.BaseSpec
 import com.worldventures.dreamtrips.core.janet.SessionActionPipeCreator
 import com.worldventures.dreamtrips.core.repository.SnappyRepository
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCard
+import com.worldventures.dreamtrips.wallet.service.FirmwareInteractor
 import com.worldventures.dreamtrips.wallet.service.SmartCardInteractor
 import com.worldventures.dreamtrips.wallet.service.WalletBluetoothService
 import com.worldventures.dreamtrips.wallet.service.command.firmware.PreInstallationCheckCommand
@@ -79,7 +80,9 @@ class FirmwareInteractorSpec : BaseSpec({
 
       fun createMockDb(): SnappyRepository = spy()
 
-      fun createInteractor(janet: Janet) = SmartCardInteractor(janet, SessionActionPipeCreator(janet))
+      fun createInteractor(janet: Janet) = SmartCardInteractor(janet, SessionActionPipeCreator(janet), createFirmwareInteractor(janet))
+
+      fun createFirmwareInteractor(janet: Janet) = FirmwareInteractor(janet)
 
       fun createJanet(): Janet {
          val daggerCommandActionService = CommandActionService()
@@ -102,9 +105,9 @@ class FirmwareInteractorSpec : BaseSpec({
          return janet
       }
 
-      fun createBluetoothService(enable: Boolean = true, supported: Boolean = true) : WalletBluetoothService {
-         return object: WalletBluetoothService {
-            override fun isSupported(): Boolean =  supported
+      fun createBluetoothService(enable: Boolean = true, supported: Boolean = true): WalletBluetoothService {
+         return object : WalletBluetoothService {
+            override fun isSupported(): Boolean = supported
 
             override fun isEnable(): Boolean = enable and supported
 

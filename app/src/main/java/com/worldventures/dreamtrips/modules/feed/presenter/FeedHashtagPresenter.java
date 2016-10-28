@@ -5,6 +5,8 @@ import android.support.annotation.Nullable;
 import android.text.TextUtils;
 
 import com.innahema.collections.query.queriables.Queryable;
+import com.worldventures.dreamtrips.modules.feed.service.PostsInteractor;
+import com.worldventures.dreamtrips.modules.feed.service.command.DeletePostCommand;
 import com.worldventures.dreamtrips.modules.flags.service.FlagsInteractor;
 import com.worldventures.dreamtrips.core.rx.RxView;
 import com.worldventures.dreamtrips.core.rx.composer.IoToMainComposer;
@@ -18,7 +20,6 @@ import com.worldventures.dreamtrips.modules.common.presenter.JobPresenter;
 import com.worldventures.dreamtrips.modules.common.presenter.delegate.FlagDelegate;
 import com.worldventures.dreamtrips.modules.common.view.ApiErrorView;
 import com.worldventures.dreamtrips.modules.common.view.bundle.BucketBundle;
-import com.worldventures.dreamtrips.modules.feed.api.DeletePostCommand;
 import com.worldventures.dreamtrips.modules.feed.event.DeleteBucketEvent;
 import com.worldventures.dreamtrips.modules.feed.event.DeletePhotoEvent;
 import com.worldventures.dreamtrips.modules.feed.event.DeletePostEvent;
@@ -71,6 +72,7 @@ public class FeedHashtagPresenter<T extends FeedHashtagPresenter.View> extends J
    @Inject BucketInteractor bucketInteractor;
    @Inject FlagsInteractor flagsInteractor;
    @Inject TripImagesInteractor tripImagesInteractor;
+   @Inject PostsInteractor postsInteractor;
 
    private FlagDelegate flagDelegate;
 
@@ -301,8 +303,13 @@ public class FeedHashtagPresenter<T extends FeedHashtagPresenter.View> extends J
    }
 
    public void onEvent(DeletePostEvent event) {
-      if (view.isVisibleOnScreen()) doRequest(new DeletePostCommand(event.getEntity()
-            .getUid()), aVoid -> itemDeleted(event.getEntity()));
+      if (!view.isVisibleOnScreen()) return;
+      postsInteractor.deletePostPipe()
+            .createObservable(new DeletePostCommand(event.getEntity().getUid()))
+            .compose(bindViewToMainComposer())
+            .subscribe(new ActionStateSubscriber<DeletePostCommand>()
+                  .onSuccess(deletePostCommand -> itemDeleted(event.getEntity()))
+                  .onFail(this::handleError));
    }
 
    public void onEvent(TranslatePostEvent event) {

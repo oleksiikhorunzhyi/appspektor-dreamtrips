@@ -14,7 +14,6 @@ import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.common.presenter.delegate.FlagDelegate;
 import com.worldventures.dreamtrips.modules.common.view.ApiErrorView;
 import com.worldventures.dreamtrips.modules.common.view.bundle.BucketBundle;
-import com.worldventures.dreamtrips.modules.feed.api.DeletePostCommand;
 import com.worldventures.dreamtrips.modules.feed.event.DeleteBucketEvent;
 import com.worldventures.dreamtrips.modules.feed.event.DeletePhotoEvent;
 import com.worldventures.dreamtrips.modules.feed.event.DeletePostEvent;
@@ -31,7 +30,9 @@ import com.worldventures.dreamtrips.modules.feed.model.FeedEntityHolder;
 import com.worldventures.dreamtrips.modules.feed.model.TextualPost;
 import com.worldventures.dreamtrips.modules.feed.model.comment.Comment;
 import com.worldventures.dreamtrips.modules.feed.service.CommentsInteractor;
+import com.worldventures.dreamtrips.modules.feed.service.PostsInteractor;
 import com.worldventures.dreamtrips.modules.feed.service.TranslationFeedInteractor;
+import com.worldventures.dreamtrips.modules.feed.service.command.DeletePostCommand;
 import com.worldventures.dreamtrips.modules.feed.service.command.GetCommentsCommand;
 import com.worldventures.dreamtrips.modules.feed.service.command.TranslateUidItemCommand;
 import com.worldventures.dreamtrips.modules.feed.view.cell.Flaggable;
@@ -64,6 +65,7 @@ public class BaseCommentPresenter<T extends BaseCommentPresenter.View> extends P
    @Inject FlagsInteractor flagsInteractor;
    @Inject TripImagesInteractor tripImagesInteractor;
    @Inject FriendsInteractor friendsInteractor;
+   @Inject PostsInteractor postsInteractor;
 
    private FlagDelegate flagDelegate;
 
@@ -228,8 +230,13 @@ public class BaseCommentPresenter<T extends BaseCommentPresenter.View> extends P
    }
 
    public void onEvent(DeletePostEvent event) {
-      if (view.isVisibleOnScreen()) doRequest(new DeletePostCommand(event.getEntity()
-            .getUid()), aVoid -> itemDeleted(event.getEntity()));
+      if (!view.isVisibleOnScreen()) return;
+      postsInteractor.deletePostPipe()
+            .createObservable(new DeletePostCommand(event.getEntity().getUid()))
+            .compose(bindViewToMainComposer())
+            .subscribe(new ActionStateSubscriber<DeletePostCommand>()
+                  .onSuccess(deletePostCommand -> itemDeleted(event.getEntity()))
+                  .onFail(this::handleError));
    }
 
    public void onEvent(DeletePhotoEvent event) {

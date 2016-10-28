@@ -76,7 +76,7 @@ public class WizardEditProfilePresenter extends WalletPresenter<WizardEditProfil
       super.attachView(view);
       // TODO: 9/1/16 investigate and fix this problem (photo piker brake SoftInputMode too)
       // hotfix, web view brake SoftInputMode (set ADJUST_RESIZE)
-      activity.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
+      setupInputMode();
 
       observePickerAndCropper(view);
       subscribePreparingAvatarCommand();
@@ -92,6 +92,10 @@ public class WizardEditProfilePresenter extends WalletPresenter<WizardEditProfil
       if (!TextUtils.isEmpty(defaultUserAvatar)) {
          smartCardAvatarInteractor.smartCardAvatarPipe().send(new LoadImageForSmartCardCommand(defaultUserAvatar));
       }
+   }
+
+   public void setupInputMode() {
+      activity.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
    }
 
    private void observePickerAndCropper(Screen view) {

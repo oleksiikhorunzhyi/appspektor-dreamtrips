@@ -4,6 +4,7 @@ import android.os.Bundle;
 
 import com.messenger.delegate.CropImageDelegate;
 import com.messenger.ui.util.avatar.MessengerMediaPickerDelegate;
+import com.worldventures.dreamtrips.modules.common.view.custom.PhotoPickerLayout;
 
 import java.io.File;
 import java.util.concurrent.Callable;
@@ -53,6 +54,11 @@ public class MediaPickerAdapter implements MediaPickerService {
       if (subscription != null && !subscription.isUnsubscribed()) {
          subscription.unsubscribe();
       }
+   }
+
+   @Override
+   public void setPhotoPickerListener(PhotoPickerLayout.PhotoPickerListener photoPickerListener) {
+      messengerMediaPickerDelegate.setPhotoPickerListener(photoPickerListener);
    }
 
    @Override

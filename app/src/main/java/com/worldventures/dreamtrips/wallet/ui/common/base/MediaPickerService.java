@@ -2,6 +2,8 @@ package com.worldventures.dreamtrips.wallet.ui.common.base;
 
 import android.os.Bundle;
 
+import com.worldventures.dreamtrips.modules.common.view.custom.PhotoPickerLayout;
+
 import java.io.File;
 
 import rx.Observable;
@@ -24,4 +26,6 @@ public interface MediaPickerService {
    void onRestoreInstanceState(Bundle savedInstanceState);
 
    void destroy();
+
+   void setPhotoPickerListener(PhotoPickerLayout.PhotoPickerListener photoPickerListener);
 }

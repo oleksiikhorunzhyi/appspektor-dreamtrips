@@ -1,4 +1,4 @@
-package com.worldventures.dreamtrips.modules.common.view.custom;
+package com.worldventures.dreamtrips.modules.common.view.connection_overlay.view;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -6,16 +6,12 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.modules.common.view.connection_overlay.ConnectionState;
 
 import rx.Observable;
 import rx.subjects.PublishSubject;
 
-public class DisconnectedOverlay {
-
-   enum State {
-      CONNECTING,
-      DISCONNECTED
-   }
+public class MessengerConnectionOverlayView implements ConnectionOverlayView {
 
    private Context context;
 
@@ -26,7 +22,7 @@ public class DisconnectedOverlay {
 
    private PublishSubject clickObservable = PublishSubject.create();
 
-   public DisconnectedOverlay(Context context, ViewGroup contentView) {
+   public MessengerConnectionOverlayView(Context context, ViewGroup contentView) {
       this.context = context;
       this.parentView = contentView;
    }
@@ -35,18 +31,14 @@ public class DisconnectedOverlay {
       return clickObservable;
    }
 
-   public void showConnecting() {
-      show(State.CONNECTING);
-   }
+   @Override
+   public void setConnectionState(ConnectionState connectionState) {
+      attachOverlayViewIfNeeded();
 
-   public void showDisconnected() {
-      show(State.DISCONNECTED);
-   }
-
-   private void show(State state) {
-      attachDisconnectedOverlayIfNeeded();
-
-      switch (state) {
+      switch (connectionState) {
+         case CONNECTED:
+            overlayView.setVisibility(View.GONE);
+            break;
          case CONNECTING:
             overlayView.setVisibility(View.VISIBLE);
             connectingView.setVisibility(View.VISIBLE);
@@ -60,21 +52,17 @@ public class DisconnectedOverlay {
       }
    }
 
-   private void attachDisconnectedOverlayIfNeeded() {
+   private void attachOverlayViewIfNeeded() {
       if (overlayView != null) {
          return;
       }
       overlayView = LayoutInflater.from(context)
-            .inflate(R.layout.layout_disconnected_overlay, parentView, false);
-      overlayView.findViewById(R.id.disconnected_overlay_reconnect_button)
+            .inflate(R.layout.layout_connection_overlay, parentView, false);
+      overlayView.findViewById(R.id.connection_overlay_reconnect_button)
             .setOnClickListener(v -> clickObservable.onNext(null));
-      disconnectedView = overlayView.findViewById(R.id.disconnected_overlay_disconnected_view);
-      connectingView = overlayView.findViewById(R.id.disconnected_overlay_connecting_view);
+      disconnectedView = overlayView.findViewById(R.id.connection_overlay_disconnected_view);
+      connectingView = overlayView.findViewById(R.id.connection_overlay_connecting_view);
       parentView.addView(overlayView);
-      overlayView.setVisibility(View.GONE);
-   }
-
-   public void hide() {
       overlayView.setVisibility(View.GONE);
    }
 }

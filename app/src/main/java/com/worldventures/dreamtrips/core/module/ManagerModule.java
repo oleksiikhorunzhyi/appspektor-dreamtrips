@@ -22,6 +22,7 @@ import com.worldventures.dreamtrips.modules.common.delegate.system.DeviceInfoPro
 import com.worldventures.dreamtrips.modules.common.delegate.system.DeviceInfoProviderImpl;
 import com.worldventures.dreamtrips.modules.common.presenter.delegate.ClearDirectoryDelegate;
 import com.worldventures.dreamtrips.modules.common.presenter.delegate.OfflineWarningDelegate;
+import com.worldventures.dreamtrips.modules.common.view.connection_overlay.provider.ReactiveNetworkConnectionStateProvider;
 import com.worldventures.dreamtrips.modules.common.view.util.MediaPickerEventDelegate;
 import com.worldventures.dreamtrips.modules.common.view.util.PhotoPickerDelegate;
 import com.worldventures.dreamtrips.modules.dtl.location.LocationDelegate;
@@ -232,5 +233,11 @@ public class ManagerModule {
    @Singleton
    PostsInteractor providePostsInteractor(SessionActionPipeCreator sessionActionPipeCreator) {
       return new PostsInteractor(sessionActionPipeCreator);
+   }
+
+   @Provides
+   @Singleton
+   ReactiveNetworkConnectionStateProvider provideReactiveNetworkConnectionStateProvider(Context context) {
+      return new ReactiveNetworkConnectionStateProvider(context);
    }
 }

@@ -157,8 +157,8 @@
    <string name="sent_location">lokasi yang dihantar</string>
    <string name="unread_conversation">Perbualan</string>
 
-   <string name="disconnected_overlay_disconnected_message">Sambungan terputus</string>
-   <string name="disconnected_overlay_connecting_message">Menyambung…</string>
+   <string name="connection_overlay_disconnected_message">Sambungan terputus</string>
+   <string name="connection_overlay_connecting_message">Menyambung…</string>
 
    <string name="warning_no_internet_connection">Tidak terdapat sambungan internet </string>
 

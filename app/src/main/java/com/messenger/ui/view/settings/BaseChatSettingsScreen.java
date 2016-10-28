@@ -30,9 +30,10 @@ import butterknife.OnClick;
 
 public abstract class BaseChatSettingsScreen<Screen extends ChatSettingsScreen, Presenter extends ChatSettingsScreenPresenter<Screen>, Path extends StyledPath> extends MessengerPathLayout<Screen, Presenter, Path> implements ChatSettingsScreen {
 
-   @InjectView(R.id.chat_settings_content_view) ViewGroup contentView;
+   @InjectView(R.id.content_layout) ViewGroup contentView;
    @InjectView(R.id.chat_settings_loading_view) View loadingView;
    @InjectView(R.id.chat_settings_error_view) View errorView;
+
    @InjectView(R.id.chat_settings_group_avatars_view) GroupAvatarsView groupAvatarsView;
    @InjectView(R.id.chat_settings_single_chat_avatar_view) AvatarView singleChatAvatarView;
    @InjectView(R.id.chat_settings_chat_name_text_view) TextView chatNameTextView;
@@ -109,10 +110,6 @@ public abstract class BaseChatSettingsScreen<Screen extends ChatSettingsScreen, 
       contentView.setVisibility(View.GONE);
       loadingView.setVisibility(View.GONE);
       errorView.setVisibility(View.VISIBLE);
-   }
-
-   public ViewGroup getContentView() {
-      return contentView;
    }
 
    @Override

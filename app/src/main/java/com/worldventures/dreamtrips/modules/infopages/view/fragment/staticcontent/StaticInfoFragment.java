@@ -398,12 +398,14 @@ public abstract class StaticInfoFragment<T extends WebViewFragmentPresenter, P e
          case WebViewClient.ERROR_HOST_LOOKUP:
          case WebViewClient.ERROR_AUTHENTICATION:
             errorText = R.string.error_webview_no_internet;
+            showOfflineOverlay();
             break;
          case SECURE_CONNECTION_ERROR:
             errorText = R.string.error_webview_secure_connection;
             break;
          default:
             errorText = R.string.error_webview_default;
+            showOfflineOverlay();
             break;
       }
       errorFragment = MessageDialogFragment.create(errorText);

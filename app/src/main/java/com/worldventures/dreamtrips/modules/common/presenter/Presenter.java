@@ -18,7 +18,8 @@ import com.worldventures.dreamtrips.core.utils.tracksystem.AnalyticsInteractor;
 import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.common.presenter.delegate.OfflineWarningDelegate;
 import com.worldventures.dreamtrips.util.JanetHttpErrorHandlingUtils;
-import com.worldventures.dreamtrips.util.ThrowableUtils;
+
+import java.io.IOException;
 
 import javax.inject.Inject;
 
@@ -30,6 +31,8 @@ import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.subjects.PublishSubject;
 import timber.log.Timber;
+
+import static com.worldventures.dreamtrips.util.ThrowableUtils.getCauseByType;
 
 public class Presenter<VT extends Presenter.View> {
 
@@ -152,7 +155,11 @@ public class Presenter<VT extends Presenter.View> {
    public void handleError(Object action, Throwable error) {
       // null view callback scenario is possible from FeedEntityManager
       if (view == null) return;
-      if (ThrowableUtils.getCauseByType(CancelException.class, error) != null) return;
+      if (getCauseByType(CancelException.class, error) != null) return;
+      if (getCauseByType(IOException.class, error.getCause()) != null) {
+         view.showOfflineOverlay();
+         return;
+      }
       if (action instanceof CommandWithError) {
          view.informUser(((CommandWithError) action).getErrorMessage());
          return;
@@ -200,6 +207,8 @@ public class Presenter<VT extends Presenter.View> {
       boolean isVisibleOnScreen();
 
       void showOfflineAlert();
+
+      void showOfflineOverlay();
    }
 
    public interface TabletAnalytic {

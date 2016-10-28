@@ -2,23 +2,27 @@ package com.messenger.ui.view.layout;
 
 import android.content.Context;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Message;
 import android.os.Parcelable;
 import android.support.v7.widget.Toolbar;
 import android.util.AttributeSet;
-import android.view.ViewGroup;
 
 import com.messenger.synchmechanism.SyncStatus;
 import com.messenger.ui.presenter.MessengerPresenter;
 import com.worldventures.dreamtrips.core.flow.layout.BaseViewStateLinearLayout;
-import com.worldventures.dreamtrips.modules.common.view.custom.DisconnectedOverlay;
+import com.worldventures.dreamtrips.core.rx.composer.IoToMainComposer;
+import com.worldventures.dreamtrips.modules.common.view.connection_overlay.core.MessengerConnectionOverlay;
 
 import icepick.Icepick;
+import rx.Observable;
+import rx.subjects.PublishSubject;
 
 public abstract class MessengerLinearLayout<V extends MessengerScreen, P extends MessengerPresenter<V, ?>> extends BaseViewStateLinearLayout<V, P> implements MessengerScreen {
 
-   private OverlayHandler overlayHandler = new OverlayHandler();
+   private MessengerConnectionOverlay messengerConnectionOverlay;
+
+   private PublishSubject detachStopper = PublishSubject.create();
+
+   private Bundle lastRestoredInstanceState;
 
    public MessengerLinearLayout(Context context) {
       super(context);
@@ -28,72 +32,45 @@ public abstract class MessengerLinearLayout<V extends MessengerScreen, P extends
       super(context, attrs);
    }
 
-   private Bundle lastRestoredInstanceState;
+   @Override
+   protected void onAttachedToWindow() {
+      super.onAttachedToWindow();
+      initConnectionOverlay();
+   }
 
    @Override
    protected void onDetachedFromWindow() {
       super.onDetachedFromWindow();
-      overlayHandler.removeCallbacksAndMessages(null);
+      detachStopper.onNext(null);
    }
+
+   ///////////////////////////////////////////////////////////////////////////
+   // Connection overlay
+   ///////////////////////////////////////////////////////////////////////////
 
    @Override
    public void onConnectionChanged(SyncStatus syncStatus) {
-      overlayHandler.processOverlayConnectionStatus(syncStatus);
+      messengerConnectionOverlay.reportConnectionState(syncStatus);
    }
 
-   private class OverlayHandler extends Handler {
+   private void initConnectionOverlay() {
+      messengerConnectionOverlay = new MessengerConnectionOverlay(getContext(), this);
+      messengerConnectionOverlay.getClickObservable()
+            .compose(bindView())
+            .subscribe(click -> getPresenter().onDisconnectedOverlayClicked());
+      messengerConnectionOverlay.startProcessingState(detachStopper);
+   }
 
-      private static final int SHOW_CONNECTING_VIEW_MIN_DURATION = 1000;
+   ///////////////////////////////////////////////////////////////////////////
+   // Lifecycle and helpers
+   ///////////////////////////////////////////////////////////////////////////
 
-      private DisconnectedOverlay disconnectedOverlay;
+   protected <T> Observable.Transformer<T, T> bindView() {
+      return input -> input.takeUntil(detachStopper);
+   }
 
-      private SyncStatus lastSyncStatus;
-      private boolean delayedStatusPending;
-
-      @Override
-      public void handleMessage(Message msg) {
-         if (disconnectedOverlay == null) {
-            disconnectedOverlay = new DisconnectedOverlay(getContext(), getContentView());
-            disconnectedOverlay.getClickObservable().subscribe(o -> getPresenter().onDisconnectedOverlayClicked());
-         }
-         SyncStatus status = SyncStatus.values()[msg.what];
-         switch (status) {
-            case CONNECTED:
-               disconnectedOverlay.hide();
-               break;
-            case SYNC_DATA:
-            case CONNECTING:
-               disconnectedOverlay.showConnecting();
-               break;
-            case ERROR:
-            case DISCONNECTED:
-               disconnectedOverlay.showDisconnected();
-               break;
-            default:
-               break;
-         }
-         // delay to message set as arg1
-         if (msg.arg1 > 0) {
-            delayedStatusPending = false;
-            processOverlayConnectionStatus(lastSyncStatus);
-         }
-      }
-
-      public void processOverlayConnectionStatus(SyncStatus syncStatus) {
-         // apply delayed state first, then the last state
-         if (!delayedStatusPending) {
-            int delay = 0;
-            if (lastSyncStatus != null && lastSyncStatus == SyncStatus.CONNECTING && syncStatus != SyncStatus.CONNECTING) {
-               delay = SHOW_CONNECTING_VIEW_MIN_DURATION;
-               delayedStatusPending = true;
-            }
-            Message message = new Message();
-            message.what = syncStatus.ordinal();
-            message.arg1 = delay;
-            sendMessageDelayed(message, delay);
-         }
-         this.lastSyncStatus = syncStatus;
-      }
+   protected <T> Observable.Transformer<T, T> bindViewIoToMainComposer() {
+      return input -> input.compose(new IoToMainComposer<>()).compose(bindView());
    }
 
    protected boolean inflateToolbarMenu(Toolbar toolbar) {
@@ -123,6 +100,4 @@ public abstract class MessengerLinearLayout<V extends MessengerScreen, P extends
    public Bundle getLastRestoredInstanceState() {
       return lastRestoredInstanceState;
    }
-
-   protected abstract ViewGroup getContentView();
 }

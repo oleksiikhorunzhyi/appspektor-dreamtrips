@@ -79,6 +79,11 @@ public abstract class ActivityWithPresenter<PM extends ActivityPresenter> extend
    }
 
    @Override
+   public void showOfflineOverlay() {
+
+   }
+
+   @Override
    public boolean isTabletLandscape() {
       return ViewUtils.isTablet(this) && ViewUtils.isLandscapeOrientation(this);
    }

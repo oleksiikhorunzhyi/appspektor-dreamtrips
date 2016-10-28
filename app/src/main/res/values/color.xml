@@ -170,7 +170,7 @@
    <color name="chat_edit_members_delete_button_bg">#FA6D6D</color>
    <color name="chat_edit_members_delete_button_text_color">@color/white</color>
 
-   <color name="disconnected_overlay_text_color">#fa2d46</color>
+   <color name="connection_overlay_text_color">#fa2d46</color>
    <color name="connecting_overlay_text_color">#7f7f7f</color>
 
    <color name="in_app_notification_title_text_color">#dd000000</color>

@@ -157,8 +157,8 @@
    <string name="sent_location">skickad plats</string>
    <string name="unread_conversation">Konversationer</string>
 
-   <string name="disconnected_overlay_disconnected_message"> Anslutning bruten </string>
-   <string name="disconnected_overlay_connecting_message">Ansluter…</string>
+   <string name="connection_overlay_disconnected_message"> Anslutning bruten </string>
+   <string name="connection_overlay_connecting_message">Ansluter…</string>
 
    <string name="warning_no_internet_connection">Internetanslutningen fungerar inte</string>
 

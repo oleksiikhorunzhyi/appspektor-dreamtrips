@@ -120,9 +120,8 @@ public class TripListPresenter extends Presenter<TripListPresenter.View> {
                      view.itemsChanged(getTripsCommand.getItems());
                   })
                   .onFail((getTripsCommand, throwable) -> {
-                     if (throwable instanceof CancelException) return;
+                     this.handleError(getTripsCommand, throwable);
                      view.finishLoading();
-                     view.informUser(getTripsCommand.getErrorMessage());
                   }));
    }
 

@@ -52,6 +52,7 @@ import com.worldventures.dreamtrips.modules.feed.service.FeedInteractor;
 import com.worldventures.dreamtrips.modules.feed.service.PostsInteractor;
 import com.worldventures.dreamtrips.modules.feed.service.SuggestedPhotoInteractor;
 import com.worldventures.dreamtrips.modules.feed.service.analytics.ViewFeedAction;
+import com.worldventures.dreamtrips.modules.feed.service.command.BaseGetFeedCommand;
 import com.worldventures.dreamtrips.modules.feed.service.command.ChangeFeedEntityLikedStatusCommand;
 import com.worldventures.dreamtrips.modules.feed.service.command.DeletePostCommand;
 import com.worldventures.dreamtrips.modules.feed.service.command.GetAccountFeedCommand;
@@ -232,8 +233,8 @@ public class FeedPresenter extends Presenter<FeedPresenter.View> {
       suggestedPhotoInteractor.getSuggestedPhotoCommandActionPipe().send(new SuggestedPhotoCommand());
    }
 
-   private void refreshFeedError(CommandWithError action, Throwable throwable) {
-      view.informUser(action.getErrorMessage());
+   private void refreshFeedError(BaseGetFeedCommand action, Throwable throwable) {
+      handleError(action, throwable);
       view.updateLoadingStatus(false, false);
       view.finishLoading();
       view.refreshFeedItems(feedItems);

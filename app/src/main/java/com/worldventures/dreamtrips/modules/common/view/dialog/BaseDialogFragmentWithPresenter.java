@@ -121,6 +121,11 @@ public abstract class BaseDialogFragmentWithPresenter<T extends Presenter> exten
    }
 
    @Override
+   public void showOfflineOverlay() {
+
+   }
+
+   @Override
    public boolean isTabletLandscape() {
       return ViewUtils.isTablet(getActivity()) && ViewUtils.isLandscapeOrientation(getActivity());
    }

@@ -39,7 +39,7 @@ import rx.Observable;
 
 public abstract class ChatMembersScreenImpl<P extends StyledPath> extends MessengerPathLayout<ChatMembersScreen, ChatMembersScreenPresenter, P> implements ChatMembersScreen {
 
-   @InjectView(R.id.new_chat_content_view) ViewGroup contentView;
+   @InjectView(R.id.content_layout) ViewGroup contentView;
    @InjectView(R.id.new_chat_loading_view) View loadingView;
    @InjectView(R.id.new_chat_error_view) View errorView;
 
@@ -138,11 +138,6 @@ public abstract class ChatMembersScreenImpl<P extends StyledPath> extends Messen
       contentView.setVisibility(View.GONE);
       loadingView.setVisibility(View.GONE);
       errorView.setVisibility(View.VISIBLE);
-   }
-
-   @Override
-   public ViewGroup getContentView() {
-      return contentView;
    }
 
    @Override

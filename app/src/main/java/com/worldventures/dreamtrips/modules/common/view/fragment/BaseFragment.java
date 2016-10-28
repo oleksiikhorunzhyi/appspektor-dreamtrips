@@ -13,12 +13,14 @@ import com.afollestad.materialdialogs.MaterialDialog;
 import com.techery.spares.annotations.Layout;
 import com.techery.spares.ui.fragment.InjectingFragment;
 import com.techery.spares.utils.ui.SoftInputUtil;
+import com.trello.rxlifecycle.FragmentEvent;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.navigation.router.Router;
 import com.worldventures.dreamtrips.core.utils.ViewUtils;
 import com.worldventures.dreamtrips.core.utils.tracksystem.MonitoringHelper;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.common.presenter.delegate.OfflineWarningDelegate;
+import com.worldventures.dreamtrips.modules.common.view.connection_overlay.core.SocialConnectionOverlay;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -28,15 +30,21 @@ import javax.inject.Inject;
 import butterknife.ButterKnife;
 import dagger.ObjectGraph;
 import icepick.Icepick;
+import rx.Observable;
+import rx.subjects.PublishSubject;
 import timber.log.Timber;
 
 public abstract class BaseFragment<PM extends Presenter> extends InjectingFragment implements Presenter.View {
+
+   private final PublishSubject stopper = PublishSubject.create();
 
    private PM presenter;
 
    @Inject protected Router router;
    @Inject protected Presenter.TabletAnalytic tabletAnalytic;
+
    @Inject OfflineWarningDelegate offlineWarningDelegate;
+   protected SocialConnectionOverlay connectionOverlay;
 
    public PM getPresenter() {
       return presenter;
@@ -90,6 +98,19 @@ public abstract class BaseFragment<PM extends Presenter> extends InjectingFragme
    public void afterCreateView(View rootView) {
       super.afterCreateView(rootView);
       if (userVisibleHints.contains(true)) track();
+      initConnectionOverlay(rootView);
+   }
+
+   private void initConnectionOverlay(View view) {
+      if (connectionOverlay != null) return;
+      connectionOverlay = new SocialConnectionOverlay(getContext(), view);
+      connectionOverlay.startProcessingState(stopper);
+   }
+
+   @Override
+   public void onDetach() {
+      super.onDetach();
+      stopper.onNext(null);
    }
 
    @Override
@@ -205,6 +226,11 @@ public abstract class BaseFragment<PM extends Presenter> extends InjectingFragme
    @Override
    public void showOfflineAlert() {
       offlineWarningDelegate.showOfflineWarning(getActivity());
+   }
+
+   @Override
+   public void showOfflineOverlay() {
+      connectionOverlay.show();
    }
 
    protected void track() {

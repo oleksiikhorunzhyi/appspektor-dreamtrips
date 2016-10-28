@@ -113,4 +113,9 @@ public class MessengerActivity extends FlowActivity<MessengerActivityPresenter> 
          photoPickerLayoutDelegate.hidePicker();
       }
    }
+
+   @Override
+   public void showOfflineOverlay() {
+      // no need for implementation as messenger has its own overlay
+   }
 }

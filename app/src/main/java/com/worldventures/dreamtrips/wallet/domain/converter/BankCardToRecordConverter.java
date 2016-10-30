@@ -54,8 +54,8 @@ public class BankCardToRecordConverter implements com.worldventures.dreamtrips.m
             .expiryMonth(card.expiryMonth())
             .expiryYear(card.expiryYear())
             .financialService(card.issuerInfo().financialService())
-            .t1("")
-            .t2("")
+            .t1(card.track1() != null ? card.track1() : "")
+            .t2(card.track2() != null ? card.track2() : "")
             .t3("")
             .metadata(metadata)
             .build();

@@ -6,6 +6,7 @@ import com.worldventures.dreamtrips.wallet.domain.entity.ImmutableRecordIssuerIn
 import com.worldventures.dreamtrips.wallet.domain.entity.RecordIssuerInfo;
 
 import org.immutables.value.Value;
+import org.jetbrains.annotations.Nullable;
 
 @Value.Immutable
 public abstract class BankCard implements Card {
@@ -29,6 +30,12 @@ public abstract class BankCard implements Card {
    public int cvv() {
       return 0;
    }
+
+   @Nullable
+   public abstract String track1();
+
+   @Nullable
+   public abstract String track2();
 
    @Value.Default
    @Override

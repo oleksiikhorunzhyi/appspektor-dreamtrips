@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.worldventures.dreamtrips.modules.bucketlist.view.custom.CollapsibleAutoCompleteTextView xmlns:android="http://schemas.android.com/apk/res/android"
-      android:id="@+id/editTextQuickInput"
+<com.worldventures.dreamtrips.modules.bucketlist.view.custom.CollapsibleAutoCompleteTextView android:id="@+id/editTextQuickInput"
+      xmlns:android="http://schemas.android.com/apk/res/android"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
       android:layout_centerInParent="true"

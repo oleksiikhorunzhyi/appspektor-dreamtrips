@@ -116,7 +116,7 @@ public abstract class TripImagesListPresenter<VT extends TripImagesListPresenter
          loading = false;
          previousTotal = totalItemCount;
       }
-      if (!loading && (totalItemCount - visibleItemCount) <= (firstVisibleItem + VISIBLE_TRESHOLD) && totalItemCount % PER_PAGE == 0) {
+      if (!loading && (totalItemCount - visibleItemCount) <= (firstVisibleItem + VISIBLE_TRESHOLD)) {
          loadNext();
          loading = true;
       }
@@ -126,7 +126,12 @@ public abstract class TripImagesListPresenter<VT extends TripImagesListPresenter
       if (dreamSpiceManager == null || getNextPageRequest(view.getAdapter().getCount()) == null) return;
       //
       doRequest(getNextPageRequest(view.getAdapter().getCount()), list -> {
-         photos.addAll(list);
+         for (int i = 0; i < list.size(); i++) {
+            IFullScreenObject photo = list.get(i);
+            if (!photos.contains(photo)) {
+               photos.add(photo);
+            }
+         }
          db.savePhotoEntityList(type, userId, Queryable.from(photos)
                .filter(item -> !(item instanceof UploadTask))
                .toList());

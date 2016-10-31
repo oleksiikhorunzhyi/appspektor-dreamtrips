@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.support.annotation.NonNull;
 
 import com.techery.spares.ui.routing.ActivityBoundRouter;
@@ -73,5 +74,20 @@ public class ActivityRouter extends ActivityBoundRouter {
       Intent intent = new Intent(getContext(), PodcastPlayerActivity.class);
       intent.setData(Uri.parse(url));
       startActivityIntent(intent);
+   }
+
+   public void openMarket() {
+      String appPackageName = "com.worldventures.dreamtrips";
+      try {
+         startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=" + appPackageName)));
+      } catch (android.content.ActivityNotFoundException exception) {
+         startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://play.google.com/store/apps/details?id=" + appPackageName)));
+      }
+   }
+
+   public void openSettings() {
+      Intent intent = new Intent(Settings.ACTION_INTERNAL_STORAGE_SETTINGS);
+      intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+      startActivity(intent);
    }
 }

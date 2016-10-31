@@ -1,0 +1,78 @@
+<com.worldventures.dreamtrips.wallet.ui.dashboard.list.CardListScreen android:id="@+id/screen_root"
+      xmlns:android="http://schemas.android.com/apk/res/android"
+      xmlns:app="http://schemas.android.com/apk/res-auto"
+      xmlns:tools="http://schemas.android.com/tools"
+      android:layout_width="match_parent"
+      android:layout_height="match_parent"
+      android:background="@android:color/white"
+      android:theme="@style/WalletTheme"
+      >
+
+   <android.support.v7.widget.Toolbar
+         android:id="@+id/toolbar"
+         android:layout_width="match_parent"
+         android:layout_height="?attr/actionBarSize"
+         android:layout_gravity="center_horizontal"
+         app:navigationIcon="@drawable/ic_menu_hamburger"
+         app:title="@string/wallet_dashboard_title"
+         />
+
+   <LinearLayout
+         android:layout_width="match_parent"
+         android:layout_height="match_parent"
+         android:animateLayoutChanges="true"
+         android:orientation="vertical"
+         >
+
+      <Button
+            android:id="@+id/firmware_available"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="@dimen/spacing_large"
+            android:layout_marginStart="@dimen/spacing_large"
+            android:layout_marginTop="@dimen/spacing_normal"
+            android:text="@string/wallet_dashboard_flye_firmware_update"
+            android:visibility="gone"
+            tools:visibility="visible"
+            />
+
+      <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@null"
+            >
+
+         <android.support.design.widget.CoordinatorLayout
+               android:id="@+id/main_content"
+               android:layout_width="match_parent"
+               android:layout_height="match_parent"
+               android:layout_alignParentTop="true"
+               >
+
+
+            <android.support.v7.widget.RecyclerView
+                  android:id="@+id/bank_card_list"
+                  android:layout_width="match_parent"
+                  android:layout_height="match_parent"
+                  android:clipToPadding="false"
+                  android:paddingBottom="@dimen/spacing_large"
+                  tools:listitem="@layout/adapter_item_wallet_bankcard"
+                  />
+
+            <android.support.design.widget.FloatingActionButton
+                  android:id="@+id/add_card_button"
+                  android:layout_width="wrap_content"
+                  android:layout_height="wrap_content"
+                  android:layout_gravity="bottom|center_horizontal"
+                  android:layout_marginBottom="16dp"
+                  android:src="@drawable/ic_white_plus"
+                  app:backgroundTint="@color/wallet_add_cards_inactive_color"
+                  app:fab_size="normal"
+                  app:layout_behavior="com.worldventures.dreamtrips.wallet.ui.dashboard.list.util.ScrollFABBehavior"
+                  app:rippleColor="@color/wallet_add_cards_inactive_color"
+                  />
+         </android.support.design.widget.CoordinatorLayout>
+
+      </RelativeLayout>
+   </LinearLayout>
+</com.worldventures.dreamtrips.wallet.ui.dashboard.list.CardListScreen>

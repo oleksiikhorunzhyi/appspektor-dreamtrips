@@ -14,7 +14,7 @@ public class Feature {
    }
 
    @Retention(SOURCE)
-   @StringDef({TRIPS, REP_TOOLS, SOCIAL, DTL, REP_SUGGEST_MERCHANT, BOOK_TRAVEL, BOOK_TRIP, MEMBERSHIP})
+   @StringDef({TRIPS, REP_TOOLS, SOCIAL, DTL, REP_SUGGEST_MERCHANT, BOOK_TRAVEL, BOOK_TRIP, MEMBERSHIP, WALLET})
    public @interface FeatureName {}
 
    public static final String TRIPS = "trips";
@@ -25,5 +25,6 @@ public class Feature {
    public static final String BOOK_TRAVEL = "bookTravel";
    public static final String BOOK_TRIP = "bookTrip";
    public static final String MEMBERSHIP = "membership";
+   public static final String WALLET = "wallet";
 
 }

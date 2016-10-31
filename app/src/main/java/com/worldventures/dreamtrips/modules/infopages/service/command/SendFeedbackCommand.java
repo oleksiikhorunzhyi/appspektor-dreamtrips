@@ -25,9 +25,9 @@ import java.util.List;
 import javax.inject.Inject;
 import javax.inject.Named;
 
-import io.techery.janet.Command;
 import io.techery.janet.Janet;
 import io.techery.janet.command.annotations.CommandAction;
+import io.techery.janet.helper.ActionStateSubscriber;
 import io.techery.mappery.MapperyContext;
 
 @CommandAction
@@ -52,10 +52,15 @@ public class SendFeedbackCommand extends CommandWithError implements InjectableA
    @Override
    protected void run(CommandCallback callback) throws Throwable {
       smartCardInteractor.activeSmartCardPipe()
-            .createObservableResult(new GetActiveSmartCardCommand())
-            .map(Command::getResult)
-            .flatMap(smartCard -> janet.createPipe(SendFeedbackHttpAction.class)
-                  .createObservableResult(new SendFeedbackHttpAction(provideFeedbackBody(smartCard))))
+            .createObservable(new GetActiveSmartCardCommand())
+            .subscribe(new ActionStateSubscriber<GetActiveSmartCardCommand>()
+                  .onSuccess(command -> sendFeedback(callback, command.getResult()))
+                  .onFail((command, throwable) -> sendFeedback(callback, command.getResult())));
+   }
+
+   private void sendFeedback(CommandCallback callback, SmartCard smartCard) {
+      janet.createPipe(SendFeedbackHttpAction.class)
+            .createObservableResult(new SendFeedbackHttpAction(provideFeedbackBody(smartCard)))
             .subscribe(action -> callback.onSuccess(null), callback::onFail);
    }
 

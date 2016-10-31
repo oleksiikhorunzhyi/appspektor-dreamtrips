@@ -25,7 +25,6 @@ import javax.inject.Inject;
 
 import icepick.State;
 import io.techery.janet.ActionState;
-import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import timber.log.Timber;
 
@@ -39,26 +38,18 @@ public abstract class ActionEntityPresenter<V extends ActionEntityPresenter.View
    @Inject PostLocationPickerCallback postLocationPickerCallback;
    @Inject HashtagInteractor hashtagInteractor;
    @Inject CreatePostBodyInteractor createPostBodyInteractor;
-   private Subscription editTagsSubscription;
-   private Subscription locationPickerSubscription;
-   private Subscription postDescriptionSubscription;
 
    @Override
    public void takeView(V view) {
       super.takeView(view);
       updateUi();
-      //
-      editTagsSubscription = editPhotoTagsCallback.toObservable().subscribe(bundle -> {
-         onTagSelected(bundle.requestId, bundle.addedTags, bundle.removedTags);
-      }, error -> {
-         Timber.e(error, "");
-      });
-
-      locationPickerSubscription = postLocationPickerCallback.toObservable().subscribe((loc) -> {
-         updateLocation(loc);
-      }, error -> {
-         Timber.e(error, "");
-      });
+      editPhotoTagsCallback.toObservable()
+            .compose(bindView())
+            .subscribe(bundle -> onTagSelected(bundle.requestId, bundle.addedTags, bundle.removedTags),
+                  error -> Timber.e(error, ""));
+      postLocationPickerCallback.toObservable()
+            .compose(bindView())
+            .subscribe(this::updateLocation, error -> Timber.e(error, ""));
    }
 
    @Override
@@ -66,10 +57,10 @@ public abstract class ActionEntityPresenter<V extends ActionEntityPresenter.View
       super.onResume();
       // we must have this subscription in onResume as during rotation
       // view of the old fragment is dropped after view for new one was created
-      postDescriptionSubscription = createPostBodyInteractor.getPostDescriptionPipe()
+      createPostBodyInteractor.getPostDescriptionPipe()
             .observeSuccessWithReplay()
             .observeOn(AndroidSchedulers.mainThread())
-            .compose(bindView())
+            .compose(bindUntilPause())
             .subscribe(action -> {
                cachedText = action.getResult();
                if (view != null) {
@@ -82,24 +73,6 @@ public abstract class ActionEntityPresenter<V extends ActionEntityPresenter.View
             });
    }
 
-   @Override
-   public void onPause() {
-      super.onPause();
-      if (postDescriptionSubscription != null && !postDescriptionSubscription.isUnsubscribed()) {
-         postDescriptionSubscription.unsubscribe();
-      }
-   }
-
-   @Override
-   public void dropView() {
-      super.dropView();
-      //
-      if (editTagsSubscription != null && !editTagsSubscription.isUnsubscribed()) editTagsSubscription.unsubscribe();
-
-      if (locationPickerSubscription != null && !locationPickerSubscription.isUnsubscribed())
-         locationPickerSubscription.unsubscribe();
-   }
-
    protected void updateUi() {
       view.setName(getAccount().getFullName());
       view.setAvatar(getAccount());
@@ -107,28 +80,20 @@ public abstract class ActionEntityPresenter<V extends ActionEntityPresenter.View
    }
 
    public void cancelClicked() {
-      if (view != null) {
-         if (isChanged()) {
-            view.showCancelationDialog();
-         } else {
-            view.cancel();
-         }
-      }
+      if (isChanged()) view.showCancelationDialog();
+      else view.cancel();
    }
 
    protected abstract boolean isChanged();
 
    public void invalidateDynamicViews() {
-      if (isChanged()) {
-         view.enableButton();
-      } else {
-         view.disableButton();
-      }
+      if (isChanged()) view.enableButton();
+      else view.disableButton();
    }
 
    public abstract void post();
 
-   public void onTagSelected(long requestId, ArrayList<PhotoTag> photoTags, ArrayList<PhotoTag> removedTags) {
+   private void onTagSelected(long requestId, ArrayList<PhotoTag> photoTags, ArrayList<PhotoTag> removedTags) {
       PhotoCreationItem item = Queryable.from(cachedCreationItems)
             .firstOrDefault(element -> element.getId() == requestId);
       //
@@ -160,13 +125,13 @@ public abstract class ActionEntityPresenter<V extends ActionEntityPresenter.View
       return location;
    }
 
-   protected void updateLocation(Location location) {
+   void updateLocation(Location location) {
       this.location = location;
       invalidateDynamicViews();
       view.updateLocationButtonState();
    }
 
-   protected boolean isCachedTextEmpty() {
+   boolean isCachedTextEmpty() {
       return TextUtils.isEmpty(cachedText);
    }
 

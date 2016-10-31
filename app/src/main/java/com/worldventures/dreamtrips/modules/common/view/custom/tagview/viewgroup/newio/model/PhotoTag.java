@@ -11,7 +11,7 @@ import java.util.List;
 
 import timber.log.Timber;
 
-public class PhotoTag implements Parcelable, Serializable, Cloneable {
+public class PhotoTag implements Parcelable, Serializable, Cloneable, Comparable<PhotoTag> {
 
    private int targetUserId;
    private TagPosition position;
@@ -60,7 +60,13 @@ public class PhotoTag implements Parcelable, Serializable, Cloneable {
       return targetUserId;
    }
 
-   public static boolean isIntersectedWithPhotoTags(List<PhotoTag> combinedTags, PhotoTag suggestion) {
+   public static List<PhotoTag> findSuggestionsNotIntersectingWithTags(List<PhotoTag> suggestions, List<PhotoTag> photoTags) {
+      return Queryable.from(suggestions)
+            .filter(element -> !PhotoTag.isIntersectedWithPhotoTags(photoTags, element))
+            .toList();
+   }
+
+   private static boolean isIntersectedWithPhotoTags(List<PhotoTag> combinedTags, PhotoTag suggestion) {
       return Queryable.from(combinedTags).any(element -> element.getProportionalPosition()
             .intersected(suggestion.getProportionalPosition()));
    }
@@ -123,4 +129,15 @@ public class PhotoTag implements Parcelable, Serializable, Cloneable {
          return new PhotoTag[size];
       }
    };
+
+   @Override
+   public int compareTo(PhotoTag photoTag) {
+      float thisX = position.getTopLeft().getX();
+      float compareX = photoTag.getProportionalPosition().getTopLeft().getX();
+      if (thisX != compareX) {
+         return Float.compare(thisX, compareX);
+      } else {
+         return Float.compare(position.getTopLeft().getY(), photoTag.getProportionalPosition().getTopLeft().getY());
+      }
+   }
 }

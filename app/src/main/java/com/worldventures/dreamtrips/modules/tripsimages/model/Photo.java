@@ -217,6 +217,10 @@ public class Photo extends BaseFeedEntity implements IFullScreenObject {
       return location;
    }
 
+   public void setLocation(Location location) {
+      this.location = location;
+   }
+
    ///////////////////////////////////////////////////////////////////////////
    // Parcelable
    ///////////////////////////////////////////////////////////////////////////

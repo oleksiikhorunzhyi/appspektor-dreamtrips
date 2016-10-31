@@ -1,42 +1,56 @@
 package com.worldventures.dreamtrips.modules.video.presenter;
 
 import com.innahema.collections.query.queriables.Queryable;
-import com.worldventures.dreamtrips.core.api.DreamTripsApi;
+import com.worldventures.dreamtrips.core.api.action.CommandWithError;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.common.delegate.CachedEntityDelegate;
 import com.worldventures.dreamtrips.modules.common.delegate.CachedEntityInteractor;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.membership.model.MediaHeader;
-import com.worldventures.dreamtrips.modules.video.api.MemberVideosRequest;
 import com.worldventures.dreamtrips.modules.video.model.CachedEntity;
-import com.worldventures.dreamtrips.modules.video.model.Category;
 import com.worldventures.dreamtrips.modules.video.model.Video;
+import com.worldventures.dreamtrips.modules.video.model.VideoCategory;
+import com.worldventures.dreamtrips.modules.video.service.MemberVideosInteractor;
+import com.worldventures.dreamtrips.modules.video.service.command.GetMemberVideosCommand;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
 
+import io.techery.janet.helper.ActionStateSubscriber;
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
 
 public class PresentationVideosPresenter<T extends PresentationVideosPresenter.View> extends Presenter<T> {
 
-   @Inject protected SnappyRepository db;
    @Inject CachedEntityInteractor cachedEntityInteractor;
    @Inject CachedEntityDelegate cachedEntityDelegate;
+   @Inject protected SnappyRepository db;
+   @Inject protected MemberVideosInteractor memberVideosInteractor;
 
    protected List<Object> currentItems;
 
-   protected MemberVideosRequest getMemberVideosRequest() {
-      return new MemberVideosRequest(DreamTripsApi.TYPE_MEMBER);
+   protected GetMemberVideosCommand getMemberVideosRequest() {
+      return GetMemberVideosCommand.forMemberVideos();
+   }
+
+   @Override
+   public void takeView(T view) {
+      super.takeView(view);
+      memberVideosInteractor.getMemberVideosPipe()
+            .observe()
+            .compose(bindViewToMainComposer())
+            .subscribe(new ActionStateSubscriber<GetMemberVideosCommand>()
+                  .onStart(getMemberVideosCommand -> view.startLoading())
+                  .onSuccess(getMemberVideosCommand -> onVideosLoaded(getMemberVideosCommand.getResult()))
+                  .onFail(this::onFail));
    }
 
    @Override
    public void onResume() {
       super.onResume();
-      view.startLoading();
       loadOnStart();
    }
 
@@ -49,18 +63,23 @@ public class PresentationVideosPresenter<T extends PresentationVideosPresenter.V
    }
 
    protected void loadVideos() {
-      doRequest(getMemberVideosRequest(), categories -> {
-         view.finishLoading();
-         attachCacheToVideos(categories);
-         addCategories(categories);
-         subscribeToCachingStatusUpdates();
-      }, spiceException -> {
-         super.handleError(spiceException);
-         view.finishLoading();
-      });
+      memberVideosInteractor.getMemberVideosPipe()
+            .send(getMemberVideosRequest());
    }
 
-   private void attachCacheToVideos(List<Category> categories) {
+   protected void onFail(CommandWithError commandWithError, Throwable e) {
+      view.finishLoading();
+      handleError(commandWithError, e);
+   }
+
+   private void onVideosLoaded(List<VideoCategory> categories) {
+      view.finishLoading();
+      attachCacheToVideos(categories);
+      addCategories(categories);
+      subscribeToCachingStatusUpdates();
+   }
+
+   private void attachCacheToVideos(List<VideoCategory> categories) {
       Queryable.from(categories).forEachR(cat -> Queryable.from(cat.getVideos()).forEachR(video -> {
          CachedEntity e = db.getDownloadMediaEntity(video.getUid());
          video.setCacheEntity(e);
@@ -88,7 +107,7 @@ public class PresentationVideosPresenter<T extends PresentationVideosPresenter.V
             });
    }
 
-   protected void addCategories(List<Category> categories) {
+   protected void addCategories(List<VideoCategory> categories) {
       currentItems = new ArrayList<>();
       Queryable.from(categories)
             .forEachR(category -> addCategoryHeader(category.getCategory(), category.getVideos(), categories.indexOf(category)));
@@ -126,7 +145,7 @@ public class PresentationVideosPresenter<T extends PresentationVideosPresenter.V
             .getName());
    }
 
-   public String getPathForCache(CachedEntity entity) {
+   private String getPathForCache(CachedEntity entity) {
       return CachedEntity.getFilePath(context, entity.getUrl());
    }
 
@@ -139,7 +158,6 @@ public class PresentationVideosPresenter<T extends PresentationVideosPresenter.V
    }
 
    public interface View extends Presenter.View {
-
       void startLoading();
 
       void finishLoading();

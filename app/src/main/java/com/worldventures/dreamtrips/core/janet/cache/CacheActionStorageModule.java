@@ -178,5 +178,4 @@ public class CacheActionStorageModule {
    ActionStorage provideFeedbackStorage(SnappyRepository db) {
       return new FeedbackTypeStorage(db);
    }
-
 }

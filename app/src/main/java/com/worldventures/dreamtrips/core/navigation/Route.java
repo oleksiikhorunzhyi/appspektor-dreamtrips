@@ -6,7 +6,6 @@ import android.support.v4.app.Fragment;
 import com.innahema.collections.query.queriables.Queryable;
 import com.messenger.ui.fragment.MessageImageFullscreenFragment;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.core.ui.fragment.BaseImageFragment;
 import com.worldventures.dreamtrips.modules.bucketlist.view.fragment.BucketDetailsFragment;
 import com.worldventures.dreamtrips.modules.bucketlist.view.fragment.BucketItemEditFragment;
 import com.worldventures.dreamtrips.modules.bucketlist.view.fragment.BucketListFragment;
@@ -47,6 +46,8 @@ import com.worldventures.dreamtrips.modules.friends.view.fragment.FriendsMainFra
 import com.worldventures.dreamtrips.modules.friends.view.fragment.MutualFriendsFragment;
 import com.worldventures.dreamtrips.modules.friends.view.fragment.RequestsFragment;
 import com.worldventures.dreamtrips.modules.friends.view.fragment.UsersLikedItemFragment;
+import com.worldventures.dreamtrips.modules.infopages.view.fragment.FeedbackImageAttachmentFullscreenFragment;
+import com.worldventures.dreamtrips.modules.infopages.view.fragment.FeedbackImageAttachmentsFragment;
 import com.worldventures.dreamtrips.modules.infopages.view.fragment.HelpFragment;
 import com.worldventures.dreamtrips.modules.infopages.view.fragment.SendFeedbackFragment;
 import com.worldventures.dreamtrips.modules.infopages.view.fragment.TermsTabFragment;
@@ -115,9 +116,8 @@ public enum Route {
    TRIP_TAB_IMAGES(TripImagesTabsFragment.class, R.string.trip_images),
    TRIP_LIST_IMAGES(TripImagesListFragment.class, R.string.trip_images),
    ACCOUNT_IMAGES(AccountImagesListFragment.class, R.string.trip_images),
-   USER_IMAGES(MemberImagesListFragment.class),
-   BASE_IMAGES(BaseImageFragment.class),
-
+   MEMBERS_IMAGES(MemberImagesListFragment.class),
+  
    MEMBERSHIP(MembershipFragment.class),
    TRAINING_VIDEOS(TrainingVideosFragment.class),
    ENROLL_MEMBER(StaticInfoFragment.EnrollMemberFragment.class, R.string.enroll_member),
@@ -160,6 +160,8 @@ public enum Route {
    USERS_LIKED_CONTENT(UsersLikedItemFragment.class, R.string.users_who_liked_title),
    FULLSCREEN_PHOTO_LIST(FullScreenPhotoWrapperFragment.class, R.string.empty),
    FEED_HASHTAG(FeedHashtagFragment.class, R.string.empty),
+   FEEDBACK_IMAGE_ATTACHMENTS(FeedbackImageAttachmentsFragment.class, R.string.empty),
+   FEEDBACK_FULLSCREEN_IMAGE_ATTACHMENT(FeedbackImageAttachmentFullscreenFragment.class, R.string.empty),
 
    FEED_ITEM_DETAILS(FeedItemDetailsFragment.class, R.string.empty),
    FEED_ENTITY_DETAILS(FeedEntityDetailsFragment.class, R.string.empty),

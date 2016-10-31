@@ -8,7 +8,7 @@ import com.nhaarman.mockito_kotlin.whenever
 import com.techery.spares.session.SessionHolder
 import com.techery.spares.storage.complex_objects.Optional
 import com.worldventures.dreamtrips.BaseSpec
-import com.worldventures.dreamtrips.core.api.uploadery.UploaderyManager
+import com.worldventures.dreamtrips.core.api.uploadery.UploaderyInteractor
 import com.worldventures.dreamtrips.core.janet.SessionActionPipeCreator
 import com.worldventures.dreamtrips.core.janet.cache.storage.ActionStorage
 import com.worldventures.dreamtrips.core.repository.SnappyRepository
@@ -49,7 +49,7 @@ abstract class BucketInteractorBaseSpec(speckBody: DescribeBody.() -> Unit) : Ba
          daggerCommandActionService.registerProvider(SnappyRepository::class.java) { mockDb }
          daggerCommandActionService.registerProvider(SessionHolder::class.java) { mockSessionHolder }
          daggerCommandActionService.registerProvider(BucketInteractor::class.java) { bucketInteractor }
-         daggerCommandActionService.registerProvider(UploaderyManager::class.java) { UploaderyManager(janet) }
+         daggerCommandActionService.registerProvider(UploaderyInteractor::class.java) { UploaderyInteractor(janet) }
          daggerCommandActionService.registerProvider(Context::class.java, { MockContext() })
          daggerCommandActionService.registerProvider(StaticPageProvider::class.java, { staticPageProvider })
 

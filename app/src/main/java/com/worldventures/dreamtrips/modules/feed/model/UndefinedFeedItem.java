@@ -10,6 +10,7 @@ import com.worldventures.dreamtrips.modules.trips.model.TripModel;
 public class UndefinedFeedItem extends FeedItem<TripModel> {
 
    public UndefinedFeedItem() {
+      type = Type.UNDEFINED;
    }
 
    public UndefinedFeedItem(Parcel in) {

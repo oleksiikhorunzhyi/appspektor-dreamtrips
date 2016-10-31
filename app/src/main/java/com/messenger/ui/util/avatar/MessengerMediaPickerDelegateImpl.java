@@ -97,7 +97,7 @@ public class MessengerMediaPickerDelegateImpl implements MessengerMediaPickerDel
 
    private void initPhotoPicker() {
       photoPickerLayoutDelegate.setOnDoneClickListener((chosenImages, type) -> onImagesPicked(Queryable.from(chosenImages)
-            .map(BasePhotoPickerModel::getOriginalPath)
+            .map(BasePhotoPickerModel::getAbsolutePath)
             .toList()));
    }
 

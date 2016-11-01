@@ -4,7 +4,6 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 import com.worldventures.dreamtrips.modules.common.model.MediaAttachment;
-import com.worldventures.dreamtrips.modules.common.model.UploadTask;
 import com.worldventures.dreamtrips.modules.common.view.custom.tagview.viewgroup.newio.model.PhotoTag;
 import com.worldventures.dreamtrips.modules.trips.model.Location;
 
@@ -184,7 +183,7 @@ public class PhotoCreationItem implements Parcelable {
       dest.writeTypedList(suggestions);
       dest.writeString(title);
       dest.writeParcelable(locationFromExif, flags);
-      dest.writeInt(source.ordinal());
+      dest.writeInt(source != null ? source.ordinal() : MediaAttachment.Source.UNKNOWN.ordinal());
    }
 
    protected PhotoCreationItem(Parcel in) {

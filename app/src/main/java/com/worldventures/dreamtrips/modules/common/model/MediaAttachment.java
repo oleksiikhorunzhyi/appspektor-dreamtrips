@@ -52,6 +52,6 @@ public class MediaAttachment implements Parcelable {
    };
 
    public enum Source {
-      CAMERA, GALLERY, FACEBOOK
+      CAMERA, GALLERY, FACEBOOK, UNKNOWN
    }
 }

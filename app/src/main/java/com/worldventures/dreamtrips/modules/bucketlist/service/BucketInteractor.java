@@ -12,6 +12,8 @@ import com.worldventures.dreamtrips.modules.bucketlist.service.command.BucketLis
 import com.worldventures.dreamtrips.modules.bucketlist.service.command.DeleteItemPhotoCommand;
 import com.worldventures.dreamtrips.modules.bucketlist.service.command.FindBucketItemByPhotoCommand;
 import com.worldventures.dreamtrips.modules.bucketlist.service.command.GetCategoriesCommand;
+import com.worldventures.dreamtrips.modules.bucketlist.service.command.GetPopularBucketItemSuggestionsCommand;
+import com.worldventures.dreamtrips.modules.bucketlist.service.command.GetPopularBucketItemsCommand;
 import com.worldventures.dreamtrips.modules.bucketlist.service.command.MergeBucketItemPhotosWithStorageCommand;
 import com.worldventures.dreamtrips.modules.bucketlist.service.command.RecentlyAddedBucketsFromPopularCommand;
 import com.worldventures.dreamtrips.modules.bucketlist.service.command.UploadPhotoControllerCommand;
@@ -33,6 +35,8 @@ public final class BucketInteractor {
    private final ActionPipe<DeleteItemPhotoCommand> deleteItemPhotoPipe;
    private final ActionPipe<AddBucketItemPhotoCommand> addBucketItemPhotoPipe;
    private final ActionPipe<GetCategoriesCommand> getCategoriesPipe;
+   private final ActionPipe<GetPopularBucketItemSuggestionsCommand> getPopularBucketItemSuggestionsPipe;
+   private final ActionPipe<GetPopularBucketItemsCommand> getPopularBucketItemsPipe;
 
    private final ActionPipe<BucketListCommand> bucketListActionPipe;
    private final ActionPipe<FindBucketItemByPhotoCommand> findBucketItemByPhotoActionPipe;
@@ -50,7 +54,8 @@ public final class BucketInteractor {
       deleteItemPhotoPipe = sessionActionPipeCreator.createPipe(DeleteItemPhotoCommand.class, Schedulers.io());
       addBucketItemPhotoPipe = sessionActionPipeCreator.createPipe(AddBucketItemPhotoCommand.class, Schedulers.io());
       getCategoriesPipe = sessionActionPipeCreator.createPipe(GetCategoriesCommand.class, Schedulers.io());
-
+      getPopularBucketItemSuggestionsPipe = sessionActionPipeCreator.createPipe(GetPopularBucketItemSuggestionsCommand.class, Schedulers.io());
+      getPopularBucketItemsPipe = sessionActionPipeCreator.createPipe(GetPopularBucketItemsCommand.class, Schedulers.io());
       bucketListActionPipe = sessionActionPipeCreator.createPipe(BucketListCommand.class, Schedulers.io());
       findBucketItemByPhotoActionPipe = sessionActionPipeCreator.createPipe(FindBucketItemByPhotoCommand.class, Schedulers.immediate());
       uploadPhotoControllerCommandPipe = sessionActionPipeCreator.createPipe(UploadPhotoControllerCommand.class, Schedulers.immediate());
@@ -96,6 +101,14 @@ public final class BucketInteractor {
 
    public ActionPipe<GetCategoriesCommand> getCategoriesPipe() {
       return getCategoriesPipe;
+   }
+
+   public ActionPipe<GetPopularBucketItemSuggestionsCommand> getPopularBucketItemSuggestionsPipe() {
+      return getPopularBucketItemSuggestionsPipe;
+   }
+
+   public ActionPipe<GetPopularBucketItemsCommand> getPopularBucketItemsPipe() {
+      return getPopularBucketItemsPipe;
    }
 
    public ActionPipe<BucketListCommand> bucketListActionPipe() {

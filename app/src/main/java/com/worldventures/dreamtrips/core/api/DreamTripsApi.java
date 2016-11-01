@@ -1,6 +1,5 @@
 package com.worldventures.dreamtrips.core.api;
 
-import com.worldventures.dreamtrips.modules.bucketlist.model.PopularBucketItem;
 import com.worldventures.dreamtrips.modules.bucketlist.model.Suggestion;
 import com.worldventures.dreamtrips.modules.feed.model.CreatePhotoEntity;
 import com.worldventures.dreamtrips.modules.feed.model.CreatePhotoPostEntity;
@@ -26,16 +25,7 @@ public interface DreamTripsApi {
    @POST("/api/social/posts")
    TextualPost createPhotoPost(@Body CreatePhotoPostEntity createPhotoPostEntity);
 
-   @GET("/api/bucket_list/locations")
-   ArrayList<PopularBucketItem> getPopularLocations();
-
-   @GET("/api/bucket_list/activities")
-   ArrayList<PopularBucketItem> getPopularActivities();
-
-   @GET("/api/bucket_list/dinings")
-   ArrayList<PopularBucketItem> getPopularDining();
-
-   @GET("/api/location_suggestions")
+  @GET("/api/location_suggestions")
    ArrayList<Suggestion> getLocationSuggestions(@Query("name") String name);
 
    @GET("/api/activity_suggestions")
@@ -43,15 +33,6 @@ public interface DreamTripsApi {
 
    @GET("/api/dining_suggestions")
    ArrayList<Suggestion> getDiningSuggestions(@Query("name") String name);
-
-   @GET("/api/location_suggestions/popular")
-   ArrayList<PopularBucketItem> getLocationPopularSuggestions(@Query("name") String name);
-
-   @GET("/api/activity_suggestions/popular")
-   ArrayList<PopularBucketItem> getActivityPopularSuggestions(@Query("name") String name);
-
-   @GET("/api/dining_suggestions/popular")
-   ArrayList<PopularBucketItem> getDiningPopularSuggestions(@Query("name") String name);
 
    @PUT("/api/social/posts/{uid}")
    TextualPost editPost(@Path("uid") String uid, @Body CreatePhotoPostEntity createPhotoPostEntity);

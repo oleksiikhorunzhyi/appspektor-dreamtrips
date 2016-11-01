@@ -1,14 +1,12 @@
 package com.worldventures.dreamtrips.modules.bucketlist.presenter;
 
-import com.amazonaws.services.s3.model.Bucket;
-import com.octo.android.robospice.persistence.exception.SpiceException;
 import com.worldventures.dreamtrips.core.rx.RxView;
-import com.worldventures.dreamtrips.modules.bucketlist.api.GetPopularLocation;
-import com.worldventures.dreamtrips.modules.bucketlist.api.GetPopularLocationQuery;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem;
 import com.worldventures.dreamtrips.modules.bucketlist.model.PopularBucketItem;
 import com.worldventures.dreamtrips.modules.bucketlist.service.BucketInteractor;
 import com.worldventures.dreamtrips.modules.bucketlist.service.action.CreateBucketItemHttpAction;
+import com.worldventures.dreamtrips.modules.bucketlist.service.command.GetPopularBucketItemSuggestionsCommand;
+import com.worldventures.dreamtrips.modules.bucketlist.service.command.GetPopularBucketItemsCommand;
 import com.worldventures.dreamtrips.modules.bucketlist.service.command.RecentlyAddedBucketsFromPopularCommand;
 import com.worldventures.dreamtrips.modules.bucketlist.service.model.ImmutableBucketBodyImpl;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
@@ -25,6 +23,7 @@ import static com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem.C
 import static com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem.NEW;
 
 public class BucketPopularPresenter extends Presenter<BucketPopularPresenter.View> {
+
    @Inject BucketInteractor bucketInteractor;
 
    private BucketItem.BucketType type;
@@ -40,14 +39,19 @@ public class BucketPopularPresenter extends Presenter<BucketPopularPresenter.Vie
       if (view.getAdapter().getCount() == 0) reload();
    }
 
-   public void onSearch(String constraint) {
-      if (constraint.length() > 2) {
-         view.startLoading();
-         doRequest(new GetPopularLocationQuery(type, constraint), this::onSearchSucceed);
+   public void onSearch(String query) {
+      if (query.length() > 2) {
+         bucketInteractor.getPopularBucketItemSuggestionsPipe()
+               .createObservable(new GetPopularBucketItemSuggestionsCommand(type, query))
+               .compose(bindViewToMainComposer())
+               .subscribe(new ActionStateSubscriber<GetPopularBucketItemSuggestionsCommand>()
+                     .onStart(command -> view.startLoading())
+                     .onFail(this::handleError)
+                     .onSuccess(command -> onSearchSucceed(command.getResult())));
       }
    }
 
-   public void onSearchSucceed(List<PopularBucketItem> items) {
+   private void onSearchSucceed(List<PopularBucketItem> items) {
       if (view != null) {
          view.finishLoading();
          view.getAdapter().setFilteredItems(items);
@@ -58,28 +62,28 @@ public class BucketPopularPresenter extends Presenter<BucketPopularPresenter.Vie
       view.getAdapter().flushFilter();
    }
 
-   public void onAdd(PopularBucketItem popularBucketItem, int position) {
-      add(popularBucketItem, false, position);
+   public void onAdd(PopularBucketItem popularBucketItem) {
+      add(popularBucketItem, false);
    }
 
-   public void onDone(PopularBucketItem popularBucketItem, int position) {
-      add(popularBucketItem, true, position);
+   public void onDone(PopularBucketItem popularBucketItem) {
+      add(popularBucketItem, true);
    }
 
-   private void add(PopularBucketItem popularBucketItem, boolean done, int position) {
-      view.bind(bucketInteractor.createPipe()
+   private void add(PopularBucketItem popularBucketItem, boolean done) {
+      bucketInteractor.createPipe()
             .createObservable(new CreateBucketItemHttpAction(ImmutableBucketBodyImpl.builder()
                   .type(type.getName())
                   .id(String.valueOf(popularBucketItem.getId()))
                   .status(done ? COMPLETED : NEW)
                   .build()))
-            .observeOn(AndroidSchedulers.mainThread()))
+            .observeOn(AndroidSchedulers.mainThread())
+            .compose(bindView())
             .subscribe(new ActionStateSubscriber<CreateBucketItemHttpAction>()
                   .onSuccess(createBucketItemHttpAction -> {
                      BucketItem bucketItem = createBucketItemHttpAction.getResponse();
                      bucketInteractor.recentlyAddedBucketsFromPopularCommandPipe()
                            .send(RecentlyAddedBucketsFromPopularCommand.add(bucketItem));
-
                      view.notifyItemWasAddedToBucketList(bucketItem);
                      view.getAdapter().remove(popularBucketItem);
                   }).onFail((failedAction, throwable) -> {
@@ -90,20 +94,24 @@ public class BucketPopularPresenter extends Presenter<BucketPopularPresenter.Vie
    }
 
    public void reload() {
-      view.startLoading();
-      doRequest(new GetPopularLocation(type), items -> {
-         view.finishLoading();
-         //
-         view.getAdapter().clear();
-         view.getAdapter().addItems(items);
-         view.getAdapter().notifyDataSetChanged();
-      });
+      bucketInteractor.getPopularBucketItemsPipe()
+            .createObservable(new GetPopularBucketItemsCommand(type))
+            .compose(bindViewToMainComposer())
+            .subscribe(new ActionStateSubscriber<GetPopularBucketItemsCommand>()
+                  .onStart(command -> view.startLoading())
+                  .onFail(this::handleError)
+                  .onSuccess(command -> {
+                     view.finishLoading();
+                     view.getAdapter().clear();
+                     view.getAdapter().addItems(command.getResult());
+                     view.getAdapter().notifyDataSetChanged();
+                  }));
    }
 
    @Override
-   public void handleError(SpiceException error) {
+   public void handleError(Object action, Throwable error) {
+      super.handleError(action, error);
       view.finishLoading();
-      super.handleError(error);
    }
 
    public interface View extends RxView {

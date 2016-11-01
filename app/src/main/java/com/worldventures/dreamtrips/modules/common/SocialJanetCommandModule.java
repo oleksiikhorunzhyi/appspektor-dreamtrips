@@ -11,6 +11,8 @@ import com.worldventures.dreamtrips.modules.bucketlist.service.command.BucketLis
 import com.worldventures.dreamtrips.modules.bucketlist.service.command.DeleteItemPhotoCommand;
 import com.worldventures.dreamtrips.modules.bucketlist.service.command.FindBucketItemByPhotoCommand;
 import com.worldventures.dreamtrips.modules.bucketlist.service.command.GetCategoriesCommand;
+import com.worldventures.dreamtrips.modules.bucketlist.service.command.GetPopularBucketItemSuggestionsCommand;
+import com.worldventures.dreamtrips.modules.bucketlist.service.command.GetPopularBucketItemsCommand;
 import com.worldventures.dreamtrips.modules.bucketlist.service.command.MergeBucketItemPhotosWithStorageCommand;
 import com.worldventures.dreamtrips.modules.common.api.janet.command.AcceptTermsCommand;
 import com.worldventures.dreamtrips.modules.common.api.janet.command.CirclesCommand;
@@ -186,5 +188,7 @@ import dagger.Module;
       AddFriendToCircleCommand.class,
       RemoveFriendFromCircleCommand.class,
       GetCategoriesCommand.class,
+      GetPopularBucketItemSuggestionsCommand.class,
+      GetPopularBucketItemsCommand.class,
 }, complete = false, library = true)
 public class SocialJanetCommandModule {}

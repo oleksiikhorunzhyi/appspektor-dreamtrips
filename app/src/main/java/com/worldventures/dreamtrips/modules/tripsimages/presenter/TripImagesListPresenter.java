@@ -121,10 +121,15 @@ public abstract class TripImagesListPresenter<VT extends TripImagesListPresenter
    }
 
    private void loadNext() {
-      if (dreamSpiceManager == null || getNextPageRequest(view.getAdapter().getCount()) == null
-            || view.getAdapter().getCount() < PER_PAGE) return;
-      //
-      doRequest(getNextPageRequest(view.getAdapter().getCount()), list -> {
+      int adapterCount = view.getAdapter().getCount();
+      //TODO this is hack, and it will be removed in 1.17,
+      // first image returned is same as last image and filtered from models but was shown in UI, it causes strange behaviour
+      // in selecting images, fix for it breaks pagination logic, cause it relies on image count in UI
+      if (adapterCount > PER_PAGE) adapterCount += 1;
+
+      SpiceRequest<ArrayList<IFullScreenObject>> nextPageRequest = getNextPageRequest(adapterCount);
+      if (dreamSpiceManager == null || nextPageRequest == null || adapterCount < PER_PAGE) return;
+      doRequest(nextPageRequest, list -> {
          for (int i = 0; i < list.size(); i++) {
             IFullScreenObject photo = list.get(i);
             if (!photos.contains(photo)) {
@@ -134,9 +139,7 @@ public abstract class TripImagesListPresenter<VT extends TripImagesListPresenter
          db.savePhotoEntityList(type, userId, Queryable.from(photos)
                .filter(item -> !(item instanceof UploadTask))
                .toList());
-         //
-         view.getAdapter().addItems((ArrayList) list);
-         view.getAdapter().notifyDataSetChanged();
+         itemsAdded(photos);
       });
    }
 
@@ -151,11 +154,14 @@ public abstract class TripImagesListPresenter<VT extends TripImagesListPresenter
          db.savePhotoEntityList(type, userId, Queryable.from(photos)
                .filter(item -> !(item instanceof UploadTask))
                .toList());
-         //
-         view.getAdapter().clear();
-         view.getAdapter().addItems((ArrayList) photos);
-         view.getAdapter().notifyDataSetChanged();
+         itemsAdded(photos);
       });
+   }
+
+   private void itemsAdded(List<IFullScreenObject> photos) {
+      view.getAdapter().clear();
+      view.getAdapter().addItems(photos);
+      view.getAdapter().notifyDataSetChanged();
    }
 
    @Override

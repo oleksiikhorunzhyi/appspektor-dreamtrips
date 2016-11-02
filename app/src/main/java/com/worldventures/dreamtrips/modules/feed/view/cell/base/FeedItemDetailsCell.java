@@ -29,6 +29,7 @@ import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
 import butterknife.Optional;
+import timber.log.Timber;
 
 public abstract class FeedItemDetailsCell<I extends FeedItem, D extends CellDelegate<I>> extends BaseFeedCell<I, D> {
 
@@ -49,6 +50,10 @@ public abstract class FeedItemDetailsCell<I extends FeedItem, D extends CellDele
    @Override
    protected void syncUIStateWithModel() {
       super.syncUIStateWithModel();
+      if (!sessionHolder.get().isPresent()) {
+         Timber.e("Something went wrong! Session is absent, but feed item is trying to render");
+         return;
+      }
       feedItemCommonDataHelper.set(getModelObject(), sessionHolder.get()
             .get()
             .getUser()

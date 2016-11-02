@@ -16,8 +16,8 @@
          style="@style/ToolBarStyle"
          android:layout_alignParentLeft="true"
          android:layout_alignParentTop="true"
-         android:layout_marginLeft="@dimen/spacing_tiny"
-         android:layout_marginTop="@dimen/spacing_tiny"
+         android:paddingLeft="@dimen/spacing_tiny"
+         android:paddingTop="@dimen/spacing_tiny"
          android:layout_width="match_parent"
          android:background="@color/black"
          >

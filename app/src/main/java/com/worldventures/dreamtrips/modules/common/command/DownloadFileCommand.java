@@ -14,8 +14,8 @@ import io.techery.janet.command.annotations.CommandAction;
 @CommandAction
 public class DownloadFileCommand extends Command<File> {
 
-   private String urlLink;
    private File file;
+   private String urlLink;
 
    public DownloadFileCommand(File file, String urlLink) {
       this.file = file;
@@ -89,4 +89,5 @@ public class DownloadFileCommand extends Command<File> {
    protected void cancel() {
       setCanceled(true);
    }
+
 }

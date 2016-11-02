@@ -6,7 +6,7 @@ import android.support.annotation.Nullable;
 
 import com.techery.spares.module.Injector;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.wallet.domain.entity.Firmware;
+import com.worldventures.dreamtrips.wallet.domain.entity.FirmwareUpdateData;
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCard;
 import com.worldventures.dreamtrips.wallet.domain.storage.TemporaryStorage;
 import com.worldventures.dreamtrips.wallet.service.FactoryResetManager;
@@ -43,7 +43,7 @@ public class WalletSettingsPresenter extends WalletPresenter<WalletSettingsPrese
    @Inject FactoryResetManager factoryResetManager;
 
    private SmartCard smartCard;
-   @Nullable private Firmware firmware;
+   @Nullable private FirmwareUpdateData firmwareUpdateData;
 
    public WalletSettingsPresenter(Context context, Injector injector) {
       super(context, injector);
@@ -71,8 +71,8 @@ public class WalletSettingsPresenter extends WalletPresenter<WalletSettingsPrese
             .observeSuccessWithReplay()
             .compose(bindViewIoToMainComposer())
             .subscribe(command -> {
-               firmware = command.getResult();
-               toggleFirmwareBargeOrVersion(firmware.updateAvailable());
+               firmwareUpdateData = command.getResult();
+               toggleFirmwareBargeOrVersion(firmwareUpdateData.updateAvailable());
             });
    }
 
@@ -181,7 +181,7 @@ public class WalletSettingsPresenter extends WalletPresenter<WalletSettingsPrese
       view.disableDefaultPaymentValue(smartCard.disableCardDelay());
       view.autoClearSmartCardValue(smartCard.clearFlyeDelay());
       view.firmwareVersion(smartCard.firmWareVersion());
-      toggleFirmwareBargeOrVersion(firmware != null && firmware.updateAvailable());
+      toggleFirmwareBargeOrVersion(firmwareUpdateData != null && firmwareUpdateData.updateAvailable());
    }
 
    public void goBack() {
@@ -220,7 +220,7 @@ public class WalletSettingsPresenter extends WalletPresenter<WalletSettingsPrese
    }
 
    void firmwareUpdatesClick() {
-      if (firmware != null && firmware.updateAvailable()) {
+      if (firmwareUpdateData != null && firmwareUpdateData.updateAvailable()) {
          navigator.go(new WalletNewFirmwareAvailablePath());
       } else {
          navigator.go(new WalletUpToDateFirmwarePath());

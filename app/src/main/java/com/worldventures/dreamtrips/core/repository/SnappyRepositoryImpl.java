@@ -42,7 +42,9 @@ import com.worldventures.dreamtrips.modules.tripsimages.model.SocialViewPagerSta
 import com.worldventures.dreamtrips.modules.tripsimages.model.TripImagesType;
 import com.worldventures.dreamtrips.modules.video.model.CachedEntity;
 import com.worldventures.dreamtrips.wallet.domain.entity.AddressInfo;
+import com.worldventures.dreamtrips.wallet.domain.entity.FirmwareUpdateData;
 import com.worldventures.dreamtrips.wallet.domain.entity.ImmutableAddressInfo;
+import com.worldventures.dreamtrips.wallet.domain.entity.ImmutableFirmwareUpdateData;
 import com.worldventures.dreamtrips.wallet.domain.entity.ImmutableSmartCard;
 import com.worldventures.dreamtrips.wallet.domain.entity.ImmutableSmartCardDetails;
 import com.worldventures.dreamtrips.wallet.domain.entity.ImmutableTermsAndConditions;
@@ -417,6 +419,21 @@ public class SnappyRepositoryImpl implements SnappyRepository {
    @Override
    public void deleteTermsAndConditions() {
       act(db -> db.del(WALLET_TERMS_AND_CONDITIONS));
+   }
+
+   @Override
+   public void saveFirmwareUpdateData(FirmwareUpdateData firmwareUpdateData) {
+      putEncrypted(WALLET_FIRMWARE, firmwareUpdateData);
+   }
+
+   @Override
+   public FirmwareUpdateData getFirmwareUpdateData() {
+      return getEncrypted(WALLET_FIRMWARE, ImmutableFirmwareUpdateData.class);
+   }
+
+   @Override
+   public void deleteFirmwareUpdateData() {
+      act(db -> db.del(WALLET_FIRMWARE));
    }
 
    @Override

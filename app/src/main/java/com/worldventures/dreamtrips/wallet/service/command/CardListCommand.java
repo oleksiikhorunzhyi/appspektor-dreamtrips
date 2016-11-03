@@ -69,11 +69,11 @@ public class CardListCommand extends Command<List<Card>> implements InjectableAc
    @Override
    protected void run(CommandCallback<List<Card>> callback) throws Throwable {
       Observable<List<Card>> listObservable =
-            ((!isAddOperation()) && (!isCachePresent())) || forceUpdate ? fetchFromDevice() : Observable.just(cachedItems);
+            ((!isAddOperation()) && (!isCachePresent())) || forceUpdate ? fetchFakeFromDevice() : Observable.just(cachedItems);
 
       if (operationFunc != null) {
          listObservable = listObservable
-               .map(list -> new ArrayList<>(cachedItems))
+               .map(list -> new ArrayList<>(list))
                .flatMap(operationFunc);
       }
       listObservable.subscribe(callback::onSuccess, callback::onFail);
@@ -89,6 +89,10 @@ public class CardListCommand extends Command<List<Card>> implements InjectableAc
             .flatMap(action -> Observable.from(action.records)
                   .map(record -> (Card) mapperyContext.convert(record, BankCard.class))
                   .toList());
+   }
+
+   private Observable<List<Card>> fetchFakeFromDevice() {
+      return Observable.just(Collections.emptyList());
    }
 
    @Override

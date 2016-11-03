@@ -93,16 +93,18 @@ public class WizardTermsScreen extends WalletLinearLayout<WizardTermsScreenPrese
       });
    }
 
-   private void showLoadTermsError() {
-      snackbar = Snackbar.make(termsView, R.string.wallet_terms_and_conditions_load_failed, Snackbar.LENGTH_INDEFINITE)
-            .setAction(R.string.wallet_terms_and_conditions_try_again, view -> termsView.reload());
-      snackbar.show();
+   public void showLoadTermsError() {
+      showErrorSnackbar(it -> termsView.reload());
    }
 
    @Override
    protected void onDetachedFromWindow() {
+      if (snackbar != null) {
+         snackbar.dismiss();
+         snackbar = null;
+      }
+
       super.onDetachedFromWindow();
-      if (snackbar != null) snackbar.dismiss();
    }
 
    @Override
@@ -113,9 +115,15 @@ public class WizardTermsScreen extends WalletLinearLayout<WizardTermsScreenPrese
 
    @Override
    public void failedToLoadTerms() {
-      Snackbar.make(termsView, R.string.wallet_terms_and_conditions_load_failed, Snackbar.LENGTH_INDEFINITE)
-            .setAction(R.string.wallet_terms_and_conditions_try_again, it -> getPresenter().loadTerms())
-            .show();
+      showErrorSnackbar(it -> getPresenter().loadTerms());
+   }
+
+   private void showErrorSnackbar(View.OnClickListener retryAction){
+      snackbar = Snackbar.make(termsView, R.string.wallet_terms_and_conditions_load_failed, Snackbar.LENGTH_INDEFINITE)
+            .setAction(R.string.wallet_terms_and_conditions_try_again, it -> {
+               if (snackbar != null) retryAction.onClick(it);
+            });
+      snackbar.show();
    }
 
    @Override

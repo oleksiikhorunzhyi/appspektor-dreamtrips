@@ -28,8 +28,6 @@ public abstract class WalletLinearLayout<V extends WalletScreen, P extends ViewS
    private TextView connectionLabel;
    private boolean visibleConnectionLabel = true;
 
-   private @StringRes int resIdLabelStatusDisconnected = R.string.wallet_smartcard_disconnected_label;
-
    public WalletLinearLayout(Context context) {
       this(context, null);
    }
@@ -58,11 +56,10 @@ public abstract class WalletLinearLayout<V extends WalletScreen, P extends ViewS
 
       switch (connectionStatus) {
          case CONNECTED:
-            connectionLabel.setText(R.string.wallet_smartcard_connected_label);
             postDelayed(() -> removeView(connectionLabel), HIDE_ANIMATION_DELAY);
             break;
          case DISCONNECTED:
-            connectionLabel.setText(resIdLabelStatusDisconnected);
+            connectionLabel.setText(R.string.wallet_smart_card_locked_disconnected_status);
             if (indexOfChild(connectionLabel) < 0) {
                addView(connectionLabel, hasToolbar() ? 1 : 0);
             } else {
@@ -70,11 +67,6 @@ public abstract class WalletLinearLayout<V extends WalletScreen, P extends ViewS
             }
             break;
       }
-   }
-
-   public void setResIdLabelStatusDisconnected(@StringRes int resIdLabel) {
-      this.resIdLabelStatusDisconnected = resIdLabel;
-      connectionLabel.setText(resIdLabel);
    }
 
    protected abstract boolean hasToolbar();

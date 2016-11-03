@@ -4,6 +4,7 @@ import com.innahema.collections.query.queriables.Queryable;
 import com.techery.spares.adapter.BaseArrayListAdapter;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.api.DreamTripsApi;
+import com.worldventures.dreamtrips.core.janet.JanetModule;
 import com.worldventures.dreamtrips.core.rx.RxView;
 import com.worldventures.dreamtrips.core.utils.events.MarkBucketItemDoneEvent;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
@@ -26,8 +27,10 @@ import java.util.Collection;
 import java.util.List;
 
 import javax.inject.Inject;
+import javax.inject.Named;
 
 import icepick.State;
+import io.techery.janet.Janet;
 import io.techery.janet.helper.ActionStateSubscriber;
 import rx.android.schedulers.AndroidSchedulers;
 import timber.log.Timber;
@@ -37,7 +40,7 @@ import static com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem.N
 
 public class BucketListPresenter extends Presenter<BucketListPresenter.View> {
 
-   @Inject DreamTripsApi api;
+   @Inject @Named(JanetModule.JANET_API_LIB) Janet janetApi;
    @Inject BucketInteractor bucketInteractor;
    @Inject LoginInteractor loginInteractor;
 
@@ -227,7 +230,7 @@ public class BucketListPresenter extends Presenter<BucketListPresenter.View> {
    }
 
    public AutoCompleteAdapter.Loader getSuggestionLoader() {
-      return new SuggestionLoader(type, api, loginInteractor);
+      return new SuggestionLoader(type, janetApi);
    }
 
    private int getOriginalPosition(int filteredPosition) {

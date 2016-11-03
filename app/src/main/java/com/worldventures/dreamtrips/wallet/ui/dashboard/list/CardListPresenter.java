@@ -93,7 +93,7 @@ public class CardListPresenter extends WalletPresenter<CardListPresenter.Screen,
       firmwareInteractor.firmwareInfoPipe()
             .observeSuccessWithReplay()
             .compose(bindViewIoToMainComposer())
-            .subscribe(command -> firmwareLoaded(command.getResult()), throwable -> Timber.e(throwable, "Error while fetching firmwareUpdateData"));
+            .subscribe(command -> firmwareLoaded(command.getResult()));
    }
 
    private void firmwareLoaded(FirmwareUpdateData firmwareUpdateData) {
@@ -114,9 +114,10 @@ public class CardListPresenter extends WalletPresenter<CardListPresenter.Screen,
       smartCardInteractor.cardsListPipe()
             .createObservableResult(CardListCommand.get(false))
             .take(1)
-            .subscribe(cardStacksCommand ->
-                  analyticsInteractor.walletAnalyticsCommandPipe()
-                        .send(new WalletAnalyticsCommand(new WalletHomeAction(cardStacksCommand.getResult().size()))));
+            .subscribe(cardStacksCommand -> analyticsInteractor.walletAnalyticsCommandPipe()
+                        .send(new WalletAnalyticsCommand(new WalletHomeAction(cardStacksCommand.getResult().size()))),
+                  throwable -> Timber.e(throwable, ""));
+
    }
 
    private void setSmartCard(SmartCard smartCard) {

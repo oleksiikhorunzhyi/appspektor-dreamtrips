@@ -35,6 +35,7 @@ import javax.inject.Inject;
 import io.techery.janet.Command;
 import io.techery.janet.smartcard.action.records.DeleteRecordAction;
 import rx.Observable;
+import timber.log.Timber;
 
 import static java.lang.Integer.valueOf;
 
@@ -96,7 +97,7 @@ public class CardDetailsPresenter extends WalletPresenter<CardDetailsPresenter.S
                getView().setAsDefaultPaymentCardCondition()
                      .compose(bindView())
                      .subscribe(this::onSetAsDefaultCard);
-            });
+            }, throwable -> Timber.e(throwable, ""));
    }
 
    private void connectToDeleteCardPipe() {
@@ -142,7 +143,7 @@ public class CardDetailsPresenter extends WalletPresenter<CardDetailsPresenter.S
                } else {
                   getView().showConnectionErrorDialog();
                }
-            });
+            }, throwable -> Timber.e(throwable, ""));
    }
 
    public void editAddress() {
@@ -155,7 +156,7 @@ public class CardDetailsPresenter extends WalletPresenter<CardDetailsPresenter.S
                } else {
                   getView().showConnectionErrorDialog();
                }
-            });
+            }, throwable -> Timber.e(throwable, ""));
    }
 
    public void onDeleteCardConfirmed() {
@@ -173,7 +174,7 @@ public class CardDetailsPresenter extends WalletPresenter<CardDetailsPresenter.S
                   getView().setDefaultCardCondition(CardUtils.equals(defaultBankCard, bankCard));
                   getView().showConnectionErrorDialog();
                }
-            });
+            }, throwable -> Timber.e(throwable, ""));
    }
 
    private void executeSetDefaultCard(boolean setDefaultCard) {

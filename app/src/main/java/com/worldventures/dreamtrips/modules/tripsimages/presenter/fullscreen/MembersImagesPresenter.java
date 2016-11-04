@@ -54,8 +54,8 @@ public class MembersImagesPresenter extends TripImagesListPresenter<MembersImage
    }
 
    @Override
-   protected SpiceRequest<ArrayList<IFullScreenObject>> getNextPageRequest(int currentCount) {
-      return new GetMemberPhotosQuery(PER_PAGE, currentCount / PER_PAGE + 1);
+   protected SpiceRequest<ArrayList<IFullScreenObject>> getNextPageRequest(int currentPage) {
+      return new GetMemberPhotosQuery(PER_PAGE, currentPage);
    }
 
    @Override

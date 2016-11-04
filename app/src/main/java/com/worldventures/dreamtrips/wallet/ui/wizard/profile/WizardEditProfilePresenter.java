@@ -5,6 +5,7 @@ import android.content.Context;
 import android.os.Parcelable;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.annotation.StringRes;
 import android.text.TextUtils;
 import android.view.WindowManager;
 
@@ -119,6 +120,7 @@ public class WizardEditProfilePresenter extends WalletPresenter<WizardEditProfil
             .compose(bindViewIoToMainComposer())
             .compose(new ActionPipeCacheWiper<>(wizardInteractor.setupUserDataPipe()))
             .subscribe(OperationActionStateSubscriberWrapper.<SetupUserDataCommand>forView(getView().provideOperationDelegate())
+                  .onStart(getContext().getString(R.string.wallet_long_operation_hint))
                   .onSuccess(setupUserDataCommand -> onUserSetupSuccess(setupUserDataCommand.getResult()))
                   .onFail(ErrorHandler.<SetupUserDataCommand>builder(getContext())
                         .handle(FormatException.class, R.string.wallet_edit_profile_name_format_detail)

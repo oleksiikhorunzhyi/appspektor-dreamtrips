@@ -58,7 +58,7 @@ public class ConnectSmartCardScreen extends WalletLinearLayout<ConnectSmartCardP
    }
 
    @Override
-   public void showProgress() {
+   public void showProgress(@Nullable String text) {
       Animation animation = AnimationUtils.loadAnimation(getContext(), R.anim.wallet_progress_anim);
       animation.setDuration(getResources().getInteger(R.integer.wallet_custom_loafing_animation_duration));
       downloadProgress.startAnimation(animation);

@@ -15,6 +15,7 @@
    <string name="wallet_no_internet_connection">No internet connection</string>
    <string name="wallet_fail_disassociate">Fail of disassociate</string>
    <string name="wallet_smart_card_locked_disconnected_status">Smart card is locked. Swipe the chip twice to unlock</string>
+   <string name="wallet_long_operation_hint">This could take a few minutes…</string>
 
    <!--card alias-->
    <string name="wallet_wizard_card_alias_subtitle">Name your smart card</string>

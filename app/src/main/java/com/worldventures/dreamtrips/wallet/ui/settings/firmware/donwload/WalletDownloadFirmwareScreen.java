@@ -57,7 +57,7 @@ public class WalletDownloadFirmwareScreen extends WalletLinearLayout<WalletDownl
    }
 
    @Override
-   public void showProgress() {
+   public void showProgress(@Nullable String text) {
       downloadProgress.start();
    }
 

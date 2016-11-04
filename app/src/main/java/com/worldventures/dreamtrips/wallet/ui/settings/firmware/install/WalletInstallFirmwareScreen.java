@@ -57,7 +57,7 @@ public class WalletInstallFirmwareScreen extends WalletLinearLayout<WalletInstal
    public OperationScreen provideOperationDelegate() { return new DialogOperationScreen(this); }
 
    @Override
-   public void showProgress() {
+   public void showProgress(@Nullable String text) {
       installProgress.setVisibility(VISIBLE);
    }
 

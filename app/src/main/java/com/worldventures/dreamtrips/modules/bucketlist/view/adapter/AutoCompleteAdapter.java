@@ -37,13 +37,10 @@ public class AutoCompleteAdapter<T> extends ArrayAdapter<T> implements Filterabl
          try {
             return request(query);
          } catch (Exception e) {
-            handleError(e);
             return Collections.emptyList();
          }
       }
 
       protected abstract List<T> request(String query);
-
-      public abstract void handleError(Exception e);
    }
 }

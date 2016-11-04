@@ -8,6 +8,9 @@ import com.worldventures.dreamtrips.modules.bucketlist.model.converter.BucketLoc
 import com.worldventures.dreamtrips.modules.bucketlist.model.converter.BucketPhotoConverter;
 import com.worldventures.dreamtrips.modules.bucketlist.model.converter.BucketTagConverter;
 import com.worldventures.dreamtrips.modules.bucketlist.model.converter.BucketTypeConverter;
+import com.worldventures.dreamtrips.modules.bucketlist.model.converter.PopularBucketItemFromActivityConverter;
+import com.worldventures.dreamtrips.modules.bucketlist.model.converter.PopularBucketItemFromDinningConverter;
+import com.worldventures.dreamtrips.modules.bucketlist.model.converter.PopularBucketItemFromLocationConverter;
 import com.worldventures.dreamtrips.modules.feed.converter.CommentConverter;
 import com.worldventures.dreamtrips.modules.feed.converter.FeedItemConverter;
 import com.worldventures.dreamtrips.modules.feed.converter.HashtagSimpleConverter;
@@ -430,5 +433,23 @@ public class MappingModule {
    @Singleton
    Converter provideMutualsConverter() {
       return new MutualsConverter();
+   }
+
+   @Provides(type = Provides.Type.SET)
+   @Singleton
+   Converter providePopularBucketItemFromActivityConverter() {
+      return new PopularBucketItemFromActivityConverter();
+   }
+
+   @Provides(type = Provides.Type.SET)
+   @Singleton
+   Converter providePopularBucketItemFromDinningConverter() {
+      return new PopularBucketItemFromDinningConverter();
+   }
+
+   @Provides(type = Provides.Type.SET)
+   @Singleton
+   Converter providePopularBucketItemFromLocationConverter() {
+      return new PopularBucketItemFromLocationConverter();
    }
 }

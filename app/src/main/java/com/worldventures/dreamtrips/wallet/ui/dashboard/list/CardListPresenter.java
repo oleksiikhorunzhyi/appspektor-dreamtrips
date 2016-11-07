@@ -19,7 +19,6 @@ import com.worldventures.dreamtrips.wallet.domain.entity.card.BankCard;
 import com.worldventures.dreamtrips.wallet.domain.entity.card.Card;
 import com.worldventures.dreamtrips.wallet.service.FirmwareInteractor;
 import com.worldventures.dreamtrips.wallet.service.SmartCardInteractor;
-import com.worldventures.dreamtrips.wallet.service.command.CardListCommand;
 import com.worldventures.dreamtrips.wallet.service.command.CardStacksCommand;
 import com.worldventures.dreamtrips.wallet.service.command.firmware.FirmwareUpdateCacheCommand;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletPresenter;
@@ -47,6 +46,7 @@ import io.techery.janet.smartcard.exception.NotConnectedException;
 import rx.Observable;
 import timber.log.Timber;
 
+import static com.worldventures.dreamtrips.wallet.domain.entity.SmartCard.ConnectionStatus.CONNECTED;
 import static com.worldventures.dreamtrips.wallet.service.command.CardStacksCommand.CardStackModel;
 import static com.worldventures.dreamtrips.wallet.util.WalletFilesUtils.getAppropriateFirmwareFile;
 import static io.techery.janet.ActionState.Status.SUCCESS;
@@ -79,14 +79,23 @@ public class CardListPresenter extends WalletPresenter<CardListPresenter.Screen,
       observeChanges();
       observeFirmwareInfo();
 
-      //TODO For first release we should get info from cache cause SC device does't support operation
-      smartCardInteractor.cardStacksPipe().send(CardStacksCommand.get(false));
+      fetchCardsOnConnection();
       trackScreen();
 
       smartCardInteractor.smartCardModifierPipe()
             .observeSuccessWithReplay()
             .compose(bindViewIoToMainComposer())
             .subscribe(it -> setSmartCard(it.getResult()));
+   }
+
+   private void fetchCardsOnConnection() {
+      smartCardInteractor.connectActionPipe().observeSuccess()
+            .filter(c -> c.getResult().connectionStatus() == CONNECTED)
+            .compose(bindViewIoToMainComposer())
+            .subscribe(c -> {
+               //TODO For first release we should get info from cache cause SC device does't support operation
+               smartCardInteractor.cardStacksPipe().send(CardStacksCommand.get(false));
+            });
    }
 
    private void observeFirmwareInfo() {
@@ -112,12 +121,15 @@ public class CardListPresenter extends WalletPresenter<CardListPresenter.Screen,
 
    private void trackScreen() {
       smartCardInteractor.cardsListPipe()
-            .createObservableResult(CardListCommand.get(false))
+            .observeSuccessWithReplay()
             .take(1)
-            .subscribe(cardStacksCommand -> analyticsInteractor.walletAnalyticsCommandPipe()
-                        .send(new WalletAnalyticsCommand(new WalletHomeAction(cardStacksCommand.getResult().size()))),
-                  throwable -> Timber.e(throwable, ""));
-
+            .map(c -> c.getResult().size())
+            .subscribe(
+                  cards -> {
+                     WalletAnalyticsCommand analyticsCommand = new WalletAnalyticsCommand(new WalletHomeAction(cards));
+                     analyticsInteractor.walletAnalyticsCommandPipe().send(analyticsCommand);
+                  }, throwable -> Timber.e(throwable, "")
+            );
    }
 
    private void setSmartCard(SmartCard smartCard) {
@@ -182,7 +194,7 @@ public class CardListPresenter extends WalletPresenter<CardListPresenter.Screen,
             .subscribe(connectionStatusPair -> {
                if (connectionStatusPair.first != NetworkInfo.State.CONNECTED) {
                   getView().showAddCardErrorDialog(Screen.ERROR_DIALOG_NO_INTERNET_CONNECTION);
-               } else if (connectionStatusPair.second != SmartCard.ConnectionStatus.CONNECTED) {
+               } else if (connectionStatusPair.second != CONNECTED) {
                   getView().showAddCardErrorDialog(Screen.ERROR_DIALOG_NO_SMARTCARD_CONNECTION);
                } else {
                   trackAddCard();

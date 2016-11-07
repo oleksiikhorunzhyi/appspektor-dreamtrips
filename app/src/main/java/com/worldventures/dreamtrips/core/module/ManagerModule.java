@@ -37,6 +37,7 @@ import com.worldventures.dreamtrips.modules.dtl.service.DtlTransactionInteractor
 import com.worldventures.dreamtrips.modules.feed.manager.FeedEntityManager;
 import com.worldventures.dreamtrips.modules.feed.service.CommentsInteractor;
 import com.worldventures.dreamtrips.modules.feed.service.LikesInteractor;
+import com.worldventures.dreamtrips.modules.feed.service.PostsInteractor;
 import com.worldventures.dreamtrips.modules.infopages.service.FeedbackInteractor;
 import com.worldventures.dreamtrips.modules.profile.service.ProfileInteractor;
 import com.worldventures.dreamtrips.modules.reptools.service.SuccessStoriesInteractor;
@@ -245,5 +246,11 @@ public class ManagerModule {
    @Singleton
    DeviceInfoProvider provideProfileInteractor(Context context) {
       return new DeviceInfoProviderImpl(context);
+   }
+
+   @Provides
+   @Singleton
+   PostsInteractor providePostsInteractor(SessionActionPipeCreator sessionActionPipeCreator) {
+      return new PostsInteractor(sessionActionPipeCreator);
    }
 }

@@ -8,7 +8,9 @@ import android.util.Pair;
 import com.innahema.collections.query.queriables.Queryable;
 import com.worldventures.dreamtrips.core.utils.tracksystem.AnalyticsInteractor;
 import com.worldventures.dreamtrips.modules.common.view.util.MediaPickerEventDelegate;
+import com.worldventures.dreamtrips.modules.feed.service.PostsInteractor;
 import com.worldventures.dreamtrips.modules.feed.service.analytics.ViewFeedAction;
+import com.worldventures.dreamtrips.modules.feed.service.command.DeletePostCommand;
 import com.worldventures.dreamtrips.modules.flags.service.FlagsInteractor;
 import com.messenger.ui.activity.MessengerActivity;
 import com.messenger.util.UnreadConversationObservable;
@@ -36,7 +38,6 @@ import com.worldventures.dreamtrips.modules.common.view.BlockingProgressView;
 import com.worldventures.dreamtrips.modules.common.view.bundle.BucketBundle;
 import com.worldventures.dreamtrips.modules.common.view.util.DrawableUtil;
 import com.worldventures.dreamtrips.modules.common.view.util.Size;
-import com.worldventures.dreamtrips.modules.feed.api.DeletePostCommand;
 import com.worldventures.dreamtrips.modules.feed.event.DeleteBucketEvent;
 import com.worldventures.dreamtrips.modules.feed.event.DeletePhotoEvent;
 import com.worldventures.dreamtrips.modules.feed.event.DeletePostEvent;
@@ -101,6 +102,7 @@ public class FeedPresenter extends Presenter<FeedPresenter.View> {
    @Inject CirclesInteractor circlesInteractor;
    @Inject FlagsInteractor flagsInteractor;
    @Inject TripImagesInteractor tripImagesInteractor;
+   @Inject PostsInteractor postsInteractor;
 
    private Circle filterCircle;
    private FlagDelegate flagDelegate;
@@ -375,8 +377,13 @@ public class FeedPresenter extends Presenter<FeedPresenter.View> {
    }
 
    public void onEvent(DeletePostEvent event) {
-      if (view.isVisibleOnScreen()) doRequest(new DeletePostCommand(event.getEntity()
-            .getUid()), aVoid -> itemDeleted(event.getEntity()));
+      if (!view.isVisibleOnScreen()) return;
+      postsInteractor.deletePostPipe()
+            .createObservable(new DeletePostCommand(event.getEntity().getUid()))
+            .compose(bindViewToMainComposer())
+            .subscribe(new ActionStateSubscriber<DeletePostCommand>()
+                  .onSuccess(deletePostCommand -> itemDeleted(event.getEntity()))
+                  .onFail(this::handleError));
    }
 
    public void onEvent(TranslatePostEvent event) {

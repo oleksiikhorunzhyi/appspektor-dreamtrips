@@ -47,6 +47,8 @@ public abstract class TripImagesListPresenter<VT extends TripImagesListPresenter
    protected List<IFullScreenObject> photos = new ArrayList<>();
    protected int userId;
 
+   private int currentPage;
+
    protected TripImagesListPresenter(TripImagesType type, int userId) {
       super();
       this.type = type;
@@ -105,7 +107,7 @@ public abstract class TripImagesListPresenter<VT extends TripImagesListPresenter
       }
    }
 
-   public void setFullscreenMode(boolean isFullscreen) {
+   private void setFullscreenMode(boolean isFullscreen) {
       this.fullscreenMode = isFullscreen;
    }
 
@@ -121,30 +123,28 @@ public abstract class TripImagesListPresenter<VT extends TripImagesListPresenter
    }
 
    private void loadNext() {
-      int adapterCount = view.getAdapter().getCount();
-      //TODO this is hack, and it will be removed in 1.17,
-      // first image returned is same as last image and filtered from models but was shown in UI, it causes strange behaviour
-      // in selecting images, fix for it breaks pagination logic, cause it relies on image count in UI
-      if (adapterCount > PER_PAGE) adapterCount += 1;
+      if (dreamSpiceManager == null || getNextPageRequest(currentPage) == null
+            || view.getAdapter().getCount() < PER_PAGE) return;
 
-      SpiceRequest<ArrayList<IFullScreenObject>> nextPageRequest = getNextPageRequest(adapterCount);
-      if (dreamSpiceManager == null || nextPageRequest == null || adapterCount < PER_PAGE) return;
-      doRequest(nextPageRequest, list -> {
+      currentPage++;
+      doRequest(getNextPageRequest(currentPage), list -> {
          for (int i = 0; i < list.size(); i++) {
             IFullScreenObject photo = list.get(i);
-            if (!photos.contains(photo)) {
-               photos.add(photo);
-            }
+            if (!photos.contains(photo)) photos.add(photo);
          }
          db.savePhotoEntityList(type, userId, Queryable.from(photos)
                .filter(item -> !(item instanceof UploadTask))
                .toList());
          itemsAdded(photos);
+      }, spiceException -> {
+         currentPage--;
+         handleError(spiceException);
       });
    }
 
    public void reload() {
       view.startLoading();
+      currentPage = 1;
       doRequest(getReloadRequest(), items -> {
          view.finishLoading();
          //
@@ -171,7 +171,7 @@ public abstract class TripImagesListPresenter<VT extends TripImagesListPresenter
       super.handleError(error);
    }
 
-   protected abstract SpiceRequest<ArrayList<IFullScreenObject>> getNextPageRequest(int currentCount);
+   protected abstract SpiceRequest<ArrayList<IFullScreenObject>> getNextPageRequest(int currentPage);
 
    protected abstract SpiceRequest<ArrayList<IFullScreenObject>> getReloadRequest();
 

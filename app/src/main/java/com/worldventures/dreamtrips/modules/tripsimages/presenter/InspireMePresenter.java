@@ -21,7 +21,7 @@ public class InspireMePresenter extends TripImagesListPresenter<TripImagesListPr
    }
 
    @Override
-   public SpiceRequest<ArrayList<IFullScreenObject>> getNextPageRequest(int currentCount) {
-      return new GetInspireMePhotosQuery(PER_PAGE, currentCount / PER_PAGE + 1, randomSeed);
+   public SpiceRequest<ArrayList<IFullScreenObject>> getNextPageRequest(int currentPage) {
+      return new GetInspireMePhotosQuery(PER_PAGE, currentPage, randomSeed);
    }
 }

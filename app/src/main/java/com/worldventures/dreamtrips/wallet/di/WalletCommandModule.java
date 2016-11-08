@@ -4,7 +4,6 @@ import com.worldventures.dreamtrips.wallet.analytics.PaycardAnalyticsCommand;
 import com.worldventures.dreamtrips.wallet.analytics.WalletAnalyticsCommand;
 import com.worldventures.dreamtrips.wallet.service.command.ActivateSmartCardCommand;
 import com.worldventures.dreamtrips.wallet.service.command.AttachCardCommand;
-import com.worldventures.dreamtrips.wallet.service.command.CardCountCommand;
 import com.worldventures.dreamtrips.wallet.service.command.CardListCommand;
 import com.worldventures.dreamtrips.wallet.service.command.CardStacksCommand;
 import com.worldventures.dreamtrips.wallet.service.command.CompressImageForSmartCardCommand;
@@ -19,7 +18,6 @@ import com.worldventures.dreamtrips.wallet.service.command.GetActiveSmartCardCom
 import com.worldventures.dreamtrips.wallet.service.command.GetDefaultAddressCommand;
 import com.worldventures.dreamtrips.wallet.service.command.LoadImageForSmartCardCommand;
 import com.worldventures.dreamtrips.wallet.service.command.SaveCardDetailsDataCommand;
-import com.worldventures.dreamtrips.wallet.service.command.SaveDefaultAddressCommand;
 import com.worldventures.dreamtrips.wallet.service.command.SaveLockStateCommand;
 import com.worldventures.dreamtrips.wallet.service.command.SetAutoClearSmartCardDelayCommand;
 import com.worldventures.dreamtrips.wallet.service.command.SetDefaultCardOnDeviceCommand;
@@ -35,6 +33,7 @@ import com.worldventures.dreamtrips.wallet.service.command.firmware.InstallFirmw
 import com.worldventures.dreamtrips.wallet.service.command.firmware.PreInstallationCheckCommand;
 import com.worldventures.dreamtrips.wallet.service.command.http.AssociateCardUserCommand;
 import com.worldventures.dreamtrips.wallet.service.command.http.CreateBankCardCommand;
+import com.worldventures.dreamtrips.wallet.service.command.http.DisassociateActiveCardUserCommand;
 import com.worldventures.dreamtrips.wallet.service.command.http.DisassociateCardUserCommand;
 import com.worldventures.dreamtrips.wallet.service.command.http.FetchAndStoreDefaultAddressInfoCommand;
 import com.worldventures.dreamtrips.wallet.service.command.http.FetchFirmwareInfoCommand;
@@ -61,7 +60,6 @@ import dagger.Module;
             FetchDefaultCardIdCommand.class,
             ActivateSmartCardCommand.class,
             CreateAndConnectToCardCommand.class,
-            CardCountCommand.class,
             WizardCheckCommand.class,
             GetDefaultAddressCommand.class,
             SaveCardDetailsDataCommand.class,
@@ -74,7 +72,6 @@ import dagger.Module;
             ConnectSmartCardCommand.class,
             FetchCardPropertiesCommand.class,
             SetLockStateCommand.class,
-            SaveDefaultAddressCommand.class,
             FetchDefaultCardCommand.class,
             FetchTermsAndConditionsCommand.class,
             CreateBankCardCommand.class,
@@ -93,6 +90,7 @@ import dagger.Module;
             FetchBatteryLevelCommand.class,
             AddDummyCardCommand.class,
             DisassociateCardUserCommand.class,
+            DisassociateActiveCardUserCommand.class,
             AddDummyCardCommand.class,
             SaveLockStateCommand.class
       },

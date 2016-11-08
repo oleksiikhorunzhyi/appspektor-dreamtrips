@@ -8,6 +8,8 @@ import com.raizlabs.android.dbflow.config.FlowManager;
 import com.techery.spares.module.qualifier.ForApplication;
 import com.techery.spares.module.qualifier.Global;
 import com.techery.spares.session.SessionHolder;
+import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.api.api_common.AuthorizedHttpAction;
 import com.worldventures.dreamtrips.api.session.LogoutHttpAction;
 import com.worldventures.dreamtrips.core.janet.JanetModule;
 import com.worldventures.dreamtrips.core.janet.SessionActionPipeCreator;
@@ -23,8 +25,11 @@ import com.worldventures.dreamtrips.modules.common.presenter.delegate.OfflineWar
 import com.worldventures.dreamtrips.modules.common.service.ClearStoragesInteractor;
 import com.worldventures.dreamtrips.modules.gcm.delegate.NotificationDelegate;
 import com.worldventures.dreamtrips.wallet.domain.storage.security.crypto.HybridAndroidCrypter;
+import com.worldventures.dreamtrips.wallet.service.SmartCardInteractor;
+import com.worldventures.dreamtrips.wallet.service.command.http.DisassociateActiveCardUserCommand;
 
 import java.security.KeyStoreException;
+import java.util.Arrays;
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -33,10 +38,12 @@ import de.greenrobot.event.EventBus;
 import io.techery.janet.Command;
 import io.techery.janet.Janet;
 import io.techery.janet.command.annotations.CommandAction;
+import rx.Observable;
+import rx.functions.FuncN;
 import timber.log.Timber;
 
 @CommandAction
-public class LogoutCommand extends Command implements InjectableAction {
+public class LogoutCommand extends Command<Void> implements InjectableAction {
 
    @Inject @Named(JanetModule.JANET_API_LIB) Janet janet;
    @Inject @ForApplication Context context;
@@ -51,47 +58,89 @@ public class LogoutCommand extends Command implements InjectableAction {
    @Inject OfflineWarningDelegate offlineWarningDelegate;
    @Inject ClearStoragesInteractor clearStoragesInteractor;
    @Inject SessionActionPipeCreator sessionActionPipeCreator;
-   @Inject @Named(JanetModule.JANET_API_LIB) SessionActionPipeCreator sessionApoActionPipeCreator;
+   @Inject @Named(JanetModule.JANET_API_LIB) SessionActionPipeCreator sessionApiActionPipeCreator;
+   @Inject @Named(JanetModule.JANET_WALLET) SessionActionPipeCreator sessionWalletActionPipeCreator;
    @Inject HybridAndroidCrypter crypter;
+   @Inject SmartCardInteractor smartCardInteractor;
 
    @Override
-   protected void run(CommandCallback callback) throws Throwable {
+   protected void run(CommandCallback<Void> callback) throws Throwable {
+      Observable.zip(clearSessionDependants(), args -> null)
+            .flatMap(o -> clearSession())
+            .flatMap(o -> clearUserData())
+            .subscribe(o -> callback.onSuccess(null));
+   }
+
+   private Iterable<Observable<Void>> clearSessionDependants() {
+      return Arrays.asList(clearWallet(), clearMessenger());
+   }
+
+   private Observable clearWallet() {
+      return smartCardInteractor.disassociateActiveCardActionPipe()
+            .createObservableResult(new DisassociateActiveCardUserCommand())
+            .onErrorResumeNext(t -> {
+               return Observable.just(null);
+            })
+            .doOnCompleted(() -> sessionWalletActionPipeCreator.clearReplays());
+   }
+
+   private Observable clearMessenger() {
+      return Observable.create(subscriber -> {
+         messengerConnector.disconnect();
+         try {
+            FlowManager.getDatabase(MessengerDatabase.NAME).reset(context);
+         } catch (Throwable e) {
+            Timber.w(e, "Messenger DB is not cleared");
+         }
+         subscriber.onNext(null);
+         subscriber.onCompleted();
+      });
+   }
+
+   private Observable clearSession() {
       String apiToken = appSessionHolder.get().get().getApiToken();
       String pushToken = snappyRepository.getGcmRegToken();
-      clearUserData();
       //
-      messengerConnector.disconnect();
-      authInteractor.unsubribeFromPushPipe().send(new UnsubribeFromPushCommand(apiToken, pushToken));
-      logout(apiToken);
+      return Observable.create(subscriber -> {
+         cookieManager.clearCookies();
+         appSessionHolder.destroy();
+         eventBus.post(new SessionHolder.Events.SessionDestroyed());
+         sessionActionPipeCreator.clearReplays();
+         sessionApiActionPipeCreator.clearReplays();
+         //
+         subscriber.onNext(null);
+         subscriber.onCompleted();
+      }).flatMap(o -> {
+         return authInteractor.unsubribeFromPushPipe()
+               .createObservableResult(new UnsubribeFromPushCommand(apiToken, pushToken))
+               .onErrorResumeNext(Observable.just(null));
+      }).flatMap(o -> {
+         return janet.createPipe(LogoutHttpAction.class)
+               .createObservableResult(authorize(new LogoutHttpAction(), apiToken))
+               .onErrorResumeNext(Observable.just(null));
+      });
    }
 
-   private void logout(String token) {
-      LogoutHttpAction logoutHttpAction = new LogoutHttpAction();
-      logoutHttpAction.setAuthorizationHeader(NewDreamTripsHttpService.getAuthorizationHeader(token));
-      janet.createPipe(LogoutHttpAction.class).send(logoutHttpAction);
+   private Observable clearUserData() {
+      return Observable.create(subscriber -> {
+         clearStoragesInteractor.clearMemoryStorageActionPipe().send(new ClearStoragesCommand());
+         notificationDelegate.cancelAll();
+         badgeUpdater.updateBadge(0);
+         offlineWarningDelegate.resetState();
+         snappyRepository.clearAll();
+
+         try {
+            crypter.deleteKeys();
+         } catch (KeyStoreException e) {
+            Timber.w(e, "Crypter keys are not cleared");
+         }
+         subscriber.onNext(null);
+         subscriber.onCompleted();
+      });
    }
 
-   private void clearUserData() {
-      appSessionHolder.destroy();
-      eventBus.post(new SessionHolder.Events.SessionDestroyed());
-      clearStoragesInteractor.clearMemoryStorageActionPipe().send(new ClearStoragesCommand());
-      cookieManager.clearCookies();
-      snappyRepository.clearAll();
-      notificationDelegate.cancelAll();
-      badgeUpdater.updateBadge(0);
-      sessionActionPipeCreator.clearReplays();
-      sessionApoActionPipeCreator.clearReplays();
-      offlineWarningDelegate.resetState();
-
-      try {
-         FlowManager.getDatabase(MessengerDatabase.NAME).reset(context);
-      } catch (Exception e) {
-         Timber.w(e, "DB is not cleared");
-      }
-      try {
-         crypter.deleteKeys();
-      } catch (KeyStoreException e) {
-         Timber.w(e, "Crypter keys are not cleared");
-      }
+   static <T extends AuthorizedHttpAction> T authorize(T action, String token) {
+      action.setAuthorizationHeader(NewDreamTripsHttpService.getAuthorizationHeader(token));
+      return action;
    }
 }

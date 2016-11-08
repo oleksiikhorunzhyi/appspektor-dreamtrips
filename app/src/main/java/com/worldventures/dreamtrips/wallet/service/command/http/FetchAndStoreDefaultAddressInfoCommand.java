@@ -8,9 +8,8 @@ import com.worldventures.dreamtrips.api.profile.GetCurrentUserAddressHttpAction;
 import com.worldventures.dreamtrips.api.profile.model.AddressType;
 import com.worldventures.dreamtrips.api.profile.model.ProfileAddress;
 import com.worldventures.dreamtrips.core.janet.dagger.InjectableAction;
+import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.wallet.domain.entity.AddressInfo;
-import com.worldventures.dreamtrips.wallet.service.SmartCardInteractor;
-import com.worldventures.dreamtrips.wallet.service.command.SaveDefaultAddressCommand;
 
 import java.util.List;
 
@@ -21,7 +20,6 @@ import io.techery.janet.Command;
 import io.techery.janet.Janet;
 import io.techery.janet.command.annotations.CommandAction;
 import io.techery.mappery.MapperyContext;
-import rx.Observable;
 
 import static com.worldventures.dreamtrips.core.janet.JanetModule.JANET_API_LIB;
 
@@ -29,22 +27,17 @@ import static com.worldventures.dreamtrips.core.janet.JanetModule.JANET_API_LIB;
 public class FetchAndStoreDefaultAddressInfoCommand extends Command<Void> implements InjectableAction {
 
    @Inject @Named(JANET_API_LIB) Janet janet;
-   @Inject SmartCardInteractor smartCardInteractor;
    @Inject MapperyContext mapperyContext;
+   @Inject SnappyRepository snappyRepository;
 
    @Override
    protected void run(CommandCallback<Void> callback) throws Throwable {
       janet.createPipe(GetCurrentUserAddressHttpAction.class)
             .createObservableResult(new GetCurrentUserAddressHttpAction())
             .map(this::parse)
-            .flatMap(this::saveDefaultAddress)
+            .doOnNext(addressInfo -> snappyRepository.saveDefaultAddress(addressInfo))
             .map(it -> (Void) null)
             .subscribe(callback::onSuccess, callback::onFail);
-   }
-
-   private Observable<SaveDefaultAddressCommand> saveDefaultAddress(AddressInfo it) {
-      return smartCardInteractor.saveDefaultAddressPipe()
-            .createObservableResult(new SaveDefaultAddressCommand(it));
    }
 
    @Nullable

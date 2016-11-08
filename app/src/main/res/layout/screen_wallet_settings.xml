@@ -5,6 +5,7 @@
       xmlns:tools="http://schemas.android.com/tools"
       android:layout_width="match_parent"
       android:layout_height="match_parent"
+      android:background="@color/wallet_gray_background"
       android:theme="@style/WalletTheme"
       >
 
@@ -18,32 +19,36 @@
    <android.support.v4.widget.NestedScrollView
          android:layout_width="match_parent"
          android:layout_height="match_parent"
-         android:background="#226D6D72"
          >
 
       <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="@null"
             android:orientation="vertical"
             >
+         <View
+               android:layout_width="match_parent"
+               android:layout_height="48dp"
+               />
 
          <TextView
                android:layout_width="match_parent"
                android:layout_height="wrap_content"
                android:gravity="center"
-               android:paddingBottom="@dimen/spacing_normal"
+               android:paddingBottom="@dimen/spacing_small"
                android:paddingEnd="36dp"
                android:paddingStart="36dp"
-               android:paddingTop="@dimen/spacing_normal"
+               android:paddingTop="@dimen/spacing_small"
                android:text="@string/wallet_card_settings_device_section_header"
                android:textAppearance="?android:attr/textAppearanceSmall"
+               android:visibility="gone"
                />
 
          <!--BEGIN device settings section-->
          <android.support.v7.widget.CardView
                android:layout_width="match_parent"
                android:layout_height="wrap_content"
+               android:visibility="gone"
                >
 
             <LinearLayout
@@ -59,7 +64,6 @@
                      android:padding="@dimen/spacing_normal"
                      android:text="@string/wallet_card_settings_stealth_mode"
                      android:textAppearance="?android:attr/textAppearanceMedium"
-                     android:visibility="gone"
                      tools:checked="true"
                      />
 
@@ -75,8 +79,6 @@
                      android:padding="@dimen/spacing_normal"
                      android:text="@string/wallet_card_settings_lock"
                      android:textAppearance="?android:attr/textAppearanceMedium"
-                     android:visibility="gone"
-
                      />
 
             </LinearLayout>
@@ -101,7 +103,6 @@
                   android:layout_width="match_parent"
                   android:layout_height="wrap_content"
                   android:animateLayoutChanges="true"
-                  android:background="@null"
                   android:padding="@dimen/spacing_normal"
                   >
 
@@ -160,7 +161,6 @@
             <LinearLayout
                   android:layout_width="match_parent"
                   android:layout_height="wrap_content"
-                  android:background="@null"
                   android:orientation="vertical"
                   >
 
@@ -171,9 +171,13 @@
                      android:padding="@dimen/spacing_normal"
                      android:text="@string/wallet_card_settings_reset_pin"
                      android:textAppearance="?android:attr/textAppearanceMedium"
+                     android:visibility="gone"
                      />
 
-               <View style="@style/SettingsItemDividerStyle" />
+               <View
+                     style="@style/SettingsItemDividerStyle"
+                     android:visibility="gone"
+                     />
 
                <RelativeLayout
                      android:id="@+id/item_disable_default_payment_card"
@@ -213,7 +217,6 @@
                      android:id="@+id/item_auto_delete_cards"
                      android:layout_width="match_parent"
                      android:layout_height="wrap_content"
-                     android:background="@null"
                      android:padding="@dimen/spacing_normal"
                      android:visibility="gone"
                      >
@@ -259,7 +262,6 @@
                android:id="@+id/settings_section"
                android:layout_width="match_parent"
                android:layout_height="wrap_content"
-               android:background="@null"
                android:orientation="vertical"
                >
 
@@ -285,7 +287,6 @@
                <LinearLayout
                      android:layout_width="match_parent"
                      android:layout_height="wrap_content"
-                     android:background="@null"
                      android:orientation="vertical"
                      >
 

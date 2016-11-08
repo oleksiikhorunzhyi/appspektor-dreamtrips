@@ -24,6 +24,7 @@ import com.worldventures.dreamtrips.modules.tripsimages.model.SocialViewPagerSta
 import com.worldventures.dreamtrips.modules.tripsimages.model.TripImagesType;
 import com.worldventures.dreamtrips.modules.video.model.CachedEntity;
 import com.worldventures.dreamtrips.wallet.domain.entity.AddressInfo;
+import com.worldventures.dreamtrips.wallet.domain.entity.FirmwareUpdateData;
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCard;
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCardDetails;
 import com.worldventures.dreamtrips.wallet.domain.entity.TermsAndConditions;
@@ -86,6 +87,8 @@ public interface SnappyRepository {
    String WALLET_DEFAULT_BANK_CARD = "WALLET_DEFAULT_BANK_CARD";
    String WALLET_DEFAULT_ADDRESS = "WALLET_DEFAULT_ADDRESS";
    String WALLET_TERMS_AND_CONDITIONS = "WALLET_TERMS_AND_CONDITIONS";
+   String WALLET_FIRMWARE = "WALLET_FIRMWARE";
+
 
    void clearAll();
 
@@ -268,6 +271,8 @@ public interface SnappyRepository {
 
    void setActiveSmartCardId(String scid);
 
+   void deleteActiveSmartCardId();
+
    void saveWalletTermsAndConditions(TermsAndConditions data);
 
    TermsAndConditions getWalletTermsAndConditions();
@@ -279,4 +284,10 @@ public interface SnappyRepository {
    SmartCardDetails getSmartCardDetails(String smartCardId);
 
    void deleteSmartCardDetails(String smartCardId);
+
+   void saveFirmwareUpdateData(FirmwareUpdateData firmwareUpdateData);
+
+   FirmwareUpdateData getFirmwareUpdateData();
+
+   void deleteFirmwareUpdateData();
 }

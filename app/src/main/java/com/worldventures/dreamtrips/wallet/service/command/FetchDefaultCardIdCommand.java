@@ -47,11 +47,14 @@ public class FetchDefaultCardIdCommand extends Command<String> implements Inject
    @Override
    public void onRestore(ActionHolder holder, String cachedCardId) {
       defaultCardId = cachedCardId;
+      force = (defaultCardId == null || force);
    }
 
    @Override
    public CacheOptions getCacheOptions() {
-      return ImmutableCacheOptions.builder().build();
+      return ImmutableCacheOptions.builder()
+            .saveToCache(force)
+            .build();
    }
 
    private Observable<String> deviceDefaultCard() {

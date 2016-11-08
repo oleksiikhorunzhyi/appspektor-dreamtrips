@@ -10,6 +10,7 @@ import android.widget.EditText;
 
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.modules.common.view.custom.PhotoPickerLayout;
 import com.worldventures.dreamtrips.wallet.ui.common.base.MediaPickerService;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletLinearLayout;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.OperationScreen;
@@ -52,7 +53,20 @@ public class WizardEditProfileScreen extends WalletLinearLayout<WizardEditProfil
       //noinspection all
       mediaPickerService = (MediaPickerService) getContext().getSystemService(MediaPickerService.SERVICE_NAME);
       toolbar.setNavigationOnClickListener(v -> navigateButtonClick());
+      mediaPickerService.setPhotoPickerListener(photoPickerListener);
    }
+
+   private PhotoPickerLayout.PhotoPickerListener photoPickerListener = new PhotoPickerLayout.PhotoPickerListener() {
+      @Override
+      public void onClosed() {
+         presenter.setupInputMode();
+      }
+
+      @Override
+      public void onOpened() {
+
+      }
+   };
 
    protected void navigateButtonClick() {
       presenter.goToBack();

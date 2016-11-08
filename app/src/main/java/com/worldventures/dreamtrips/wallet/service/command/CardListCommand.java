@@ -8,6 +8,7 @@ import com.worldventures.dreamtrips.core.janet.dagger.InjectableAction;
 import com.worldventures.dreamtrips.wallet.domain.entity.card.BankCard;
 import com.worldventures.dreamtrips.wallet.domain.entity.card.Card;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -31,8 +32,9 @@ public class CardListCommand extends Command<List<Card>> implements InjectableAc
    @Inject @Named(JANET_WALLET) Janet janet;
    @Inject MapperyContext mapperyContext;
 
-   private Func1<List<Card>, Observable<List<Card>>> operationFunc;
-   private boolean forceUpdate;
+   private final Func1<List<Card>, Observable<List<Card>>> operationFunc;
+   private final boolean shouldBeCached;
+   private final boolean forceUpdate;
 
    private volatile List<Card> cachedItems;
 
@@ -54,10 +56,14 @@ public class CardListCommand extends Command<List<Card>> implements InjectableAc
 
    private CardListCommand(Func1<List<Card>, Observable<List<Card>>> operationFunc) {
       this.operationFunc = operationFunc;
+      this.shouldBeCached = true;
+      this.forceUpdate = false;
    }
 
    private CardListCommand(boolean forceUpdate) {
       this.forceUpdate = forceUpdate;
+      this.operationFunc = null;
+      this.shouldBeCached = false;
    }
 
    @Override
@@ -66,7 +72,9 @@ public class CardListCommand extends Command<List<Card>> implements InjectableAc
             ((!isAddOperation()) && (!isCachePresent())) || forceUpdate ? fetchFromDevice() : Observable.just(cachedItems);
 
       if (operationFunc != null) {
-         listObservable = listObservable.flatMap(operationFunc);
+         listObservable = listObservable
+               .map(list -> new ArrayList<>(list))
+               .flatMap(operationFunc);
       }
       listObservable.subscribe(callback::onSuccess, callback::onFail);
    }
@@ -78,7 +86,9 @@ public class CardListCommand extends Command<List<Card>> implements InjectableAc
    private Observable<List<Card>> fetchFromDevice() {
       return janet.createPipe(GetMemberRecordsAction.class)
             .createObservableResult(new GetMemberRecordsAction())
-            .flatMap(action -> Observable.from(action.records).map(record -> (Card) mapperyContext.convert(record, BankCard.class)).toList());
+            .flatMap(action -> Observable.from(action.records)
+                  .map(record -> (Card) mapperyContext.convert(record, BankCard.class))
+                  .toList());
    }
 
    @Override
@@ -94,13 +104,15 @@ public class CardListCommand extends Command<List<Card>> implements InjectableAc
 
    @Override
    public CacheOptions getCacheOptions() {
-      return ImmutableCacheOptions.builder().build();
+      return ImmutableCacheOptions.builder()
+            .saveToCache(shouldBeCached)
+            .build();
    }
 
    private static final class RemoveOperationFunc implements Func1<List<Card>, Observable<List<Card>>> {
       private String cardId;
 
-      public RemoveOperationFunc(String cardId) {
+      RemoveOperationFunc(String cardId) {
          this.cardId = cardId;
       }
 
@@ -114,7 +126,7 @@ public class CardListCommand extends Command<List<Card>> implements InjectableAc
    private static final class AddOperationFunc implements Func1<List<Card>, Observable<List<Card>>> {
       private Card card;
 
-      public AddOperationFunc(Card card) {
+      AddOperationFunc(Card card) {
          this.card = card;
       }
 
@@ -128,14 +140,14 @@ public class CardListCommand extends Command<List<Card>> implements InjectableAc
    private static final class EditOperationFunc implements Func1<List<Card>, Observable<List<Card>>> {
       private Card card;
 
-      public EditOperationFunc(Card card) {
+      EditOperationFunc(Card card) {
          this.card = card;
       }
 
       @Override
       public Observable<List<Card>> call(List<Card> cards) {
          Card cardInStack = Queryable.from(cards).firstOrDefault(element -> element.id().equals(card.id()));
-         int position = cardInStack == null? -1 : cards.indexOf(cardInStack);
+         int position = cardInStack == null ? -1 : cards.indexOf(cardInStack);
          if (position != -1) cards.set(position, card);
          return Observable.just(cards);
       }

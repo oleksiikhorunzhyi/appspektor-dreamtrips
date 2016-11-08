@@ -7,6 +7,7 @@ import android.content.Context;
 import com.messenger.notification.MessengerNotificationFactory;
 import com.techery.spares.utils.delegate.NotificationCountEventDelegate;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
+import com.worldventures.dreamtrips.modules.gcm.model.MerchantPushMessage;
 import com.worldventures.dreamtrips.modules.gcm.model.NewImagePushMessage;
 import com.worldventures.dreamtrips.modules.gcm.model.NewLocationPushMessage;
 import com.worldventures.dreamtrips.modules.gcm.model.NewMessagePushMessage;
@@ -75,6 +76,12 @@ public class NotificationDelegate {
       Notification notification = notificationFactoryHolder.getMessengerNotificationFactory()
             .createNewLocationMessage(message);
       notificationManager.notify(MessengerNotificationFactory.MESSENGER_TAG, MessengerNotificationFactory.MESSAGE_NOTIFICATION_ID, notification);
+   }
+
+   public void notifyMerchantMessageReceived(MerchantPushMessage message) {
+      Notification notification = notificationFactoryHolder.getMerchantNotifcationFactory()
+            .createMerchantNotification(message);
+      notificationManager.notify(message.getMerchantName().hashCode(), notification);
    }
 
    public void notifyUnsupportedMessageReceived(NewUnsupportedMessage newUnsupportedMessage) {

@@ -12,6 +12,7 @@ import com.worldventures.dreamtrips.wallet.ui.dashboard.list.CardListPresenter;
 import com.worldventures.dreamtrips.wallet.ui.dashboard.list.util.cell.BankCardCell;
 import com.worldventures.dreamtrips.wallet.ui.dashboard.list.util.cell.CardStackCell;
 import com.worldventures.dreamtrips.wallet.ui.dashboard.list.util.cell.CardStackHeaderCell;
+import com.worldventures.dreamtrips.wallet.ui.start.WalletStartPresenter;
 import com.worldventures.dreamtrips.wallet.ui.settings.common.cell.SectionDividerCell;
 import com.worldventures.dreamtrips.wallet.ui.settings.common.cell.SettingsRadioCell;
 import com.worldventures.dreamtrips.wallet.ui.settings.disabledefaultcard.WalletDisableDefaultCardPresenter;
@@ -30,7 +31,7 @@ import com.worldventures.dreamtrips.wallet.ui.wizard.barcode.WizardScanBarcodePr
 import com.worldventures.dreamtrips.wallet.ui.wizard.card_details.AddCardDetailsPresenter;
 import com.worldventures.dreamtrips.wallet.ui.wizard.charging.WizardChargingPresenter;
 import com.worldventures.dreamtrips.wallet.ui.wizard.checking.WizardCheckingPresenter;
-import com.worldventures.dreamtrips.wallet.ui.wizard.connect_smartcard.ConnectSmartCardPresenter;
+import com.worldventures.dreamtrips.wallet.ui.wizard.associate.ConnectSmartCardPresenter;
 import com.worldventures.dreamtrips.wallet.ui.wizard.edit_card.EditCardDetailsPresenter;
 import com.worldventures.dreamtrips.wallet.ui.wizard.edit_card.EditCardDetailsScreen;
 import com.worldventures.dreamtrips.wallet.ui.wizard.finish.WalletPinIsSetPresenter;
@@ -53,6 +54,7 @@ import dagger.Provides;
       },
       injects = {
             WalletActivityPresenter.class,
+            WalletStartPresenter.class,
             BankCardCell.class,
             CardStackCell.class,
             CardStackHeaderCell.class,

@@ -46,7 +46,6 @@ public class CreateBankCardCommand extends Command<BankCard> implements Injectab
       }
 
       return ImmutableBankCard.builder()
-            .id(BankCard.NO_ID)
             .issuerInfo(recordIssuerInfo)
             .number(Long.parseLong(swipedCard.pan()))
             .expiryYear(Integer.parseInt(swipedCard.exp().substring(0, 2)))

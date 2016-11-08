@@ -71,17 +71,6 @@ public class TripsFilterData implements Serializable {
    }
 
    @Nullable
-   public String getAcceptedRegionsIds() {
-      if (Queryable.from(allRegions).firstOrDefault(region -> !region.isChecked()) == null) {
-         return null;
-      }
-      return TextUtils.join(",", Queryable.from(allRegions)
-            .filter(RegionModel::isChecked)
-            .map(BaseEntity::getId)
-            .toList());
-   }
-
-   @Nullable
    public List<Integer> getAcceptedRegions() {
       if (Queryable.from(allRegions).firstOrDefault(region -> !region.isChecked()) == null) {
          return null;
@@ -90,17 +79,6 @@ public class TripsFilterData implements Serializable {
             .filter(RegionModel::isChecked)
             .map(BaseEntity::getId)
             .toList();
-   }
-
-   @Nullable
-   public String getAcceptedActivitiesIds() {
-      if (Queryable.from(allParentActivities).firstOrDefault(activity -> !activity.isChecked()) == null) {
-         return null;
-      }
-      return TextUtils.join(",", Queryable.from(allParentActivities)
-            .filter(ActivityModel::isChecked)
-            .map(BaseEntity::getId)
-            .toList());
    }
 
    @Nullable

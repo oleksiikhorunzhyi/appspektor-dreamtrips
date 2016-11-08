@@ -50,4 +50,13 @@
 
       </FrameLayout>
 
+      <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="60dp"
+            android:text="@string/wallet_long_operation_hint"
+            android:id="@+id/textView4"
+            />
+
 </com.worldventures.dreamtrips.wallet.ui.settings.firmware.install.WalletInstallFirmwareScreen>

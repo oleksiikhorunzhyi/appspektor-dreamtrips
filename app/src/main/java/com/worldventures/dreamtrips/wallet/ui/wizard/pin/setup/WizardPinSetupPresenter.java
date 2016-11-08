@@ -83,7 +83,7 @@ public class WizardPinSetupPresenter extends WalletPresenter<WizardPinSetupPrese
                   .onFail(ErrorHandler.<StartPinSetupAction>builder(getContext())
                         .defaultMessage(R.string.wallet_wizard_setup_error)
                         .build())
-                  .onStart(action -> getView().provideOperationDelegate().showProgress())
+                  .onStart(action -> getView().provideOperationDelegate().showProgress(null))
                   .wrap()
             );
    }

@@ -15,9 +15,10 @@ import com.worldventures.dreamtrips.modules.trips.model.converter.TripPinToPinCo
 import com.worldventures.dreamtrips.modules.trips.model.converter.TripWithDetailsToTripConverter;
 import com.worldventures.dreamtrips.modules.trips.model.converter.TripWithoutDetailsToTripConverter;
 import com.worldventures.dreamtrips.wallet.domain.converter.BankCardToRecordConverter;
-import com.worldventures.dreamtrips.wallet.domain.converter.FirmwareResponseToFirmwareConverter;
+import com.worldventures.dreamtrips.wallet.domain.converter.FirmwareResponseToFirmwareDataConverter;
 import com.worldventures.dreamtrips.wallet.domain.converter.ProfileAddressToUserAddressConverter;
 import com.worldventures.dreamtrips.wallet.domain.converter.RecordToBankCardConverter;
+import com.worldventures.dreamtrips.wallet.domain.converter.SmartCardDetailsConverter;
 
 import java.util.Set;
 
@@ -113,6 +114,12 @@ public class MappingModule {
 
    @Provides(type = Provides.Type.SET)
    @Singleton
+   Converter provideSmartCardDetailsConverter() {
+      return new SmartCardDetailsConverter();
+   }
+
+   @Provides(type = Provides.Type.SET)
+   @Singleton
    Converter provideRecordToBankCardConverter() {
       return new RecordToBankCardConverter();
    }
@@ -126,7 +133,7 @@ public class MappingModule {
    @Provides(type = Provides.Type.SET)
    @Singleton
    Converter provideFirmwareRepsonseToFirmwareConverter() {
-      return new FirmwareResponseToFirmwareConverter();
+      return new FirmwareResponseToFirmwareDataConverter();
    }
 
    @Provides

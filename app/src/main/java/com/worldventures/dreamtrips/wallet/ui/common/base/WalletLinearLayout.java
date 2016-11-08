@@ -56,11 +56,10 @@ public abstract class WalletLinearLayout<V extends WalletScreen, P extends ViewS
 
       switch (connectionStatus) {
          case CONNECTED:
-            connectionLabel.setText(R.string.wallet_smartcard_connected_label);
             postDelayed(() -> removeView(connectionLabel), HIDE_ANIMATION_DELAY);
             break;
          case DISCONNECTED:
-            connectionLabel.setText(R.string.wallet_smartcard_disconnected_label);
+            connectionLabel.setText(R.string.wallet_smart_card_locked_disconnected_status);
             if (indexOfChild(connectionLabel) < 0) {
                addView(connectionLabel, hasToolbar() ? 1 : 0);
             } else {

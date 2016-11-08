@@ -14,6 +14,8 @@
    <string name="wallet_smart_card_is_disconnected">Smart Card is disconnected</string>
    <string name="wallet_no_internet_connection">No internet connection</string>
    <string name="wallet_fail_disassociate">Fail of disassociate</string>
+   <string name="wallet_smart_card_locked_disconnected_status">Smart card is locked. Swipe the chip twice to unlock</string>
+   <string name="wallet_long_operation_hint">This could take a few minutes…</string>
 
    <!--card alias-->
    <string name="wallet_wizard_card_alias_subtitle">Name your smart card</string>
@@ -52,6 +54,7 @@
    <string name="wallet_wizard_scan_proposal">Scan the back of your\nflye&#8482; smart card to set up</string>
    <string name="wallet_wizard_scan_start_btn">Scan Card</string>
    <string name="wallet_wizard_scan_title">Scan flye smart card</string>
+   <string name="wallet_wizard_scan_help_if_power_off">Make sure the card is powered on by swiping twice on the chip from the bottom to the top.</string>
 
    <string name="wallet_wizard_scan_barcode_header">Position the flye™ smart card barcode in the viewfinder box.</string>
    <string name="wallet_wizard_scan_barcode_footer_title">Not scanning?</string>
@@ -124,6 +127,7 @@
    <string name="wallet_card_financial_service_visa">Visa</string>
    <string name="wallet_card_financial_service_discover">Discover</string>
    <string name="wallet_card_financial_service_amex">Amex</string>
+   <string name="wallet_card_financial_service_sample">Sample</string>
 
    <string name="wallet_card_list_records_connected">%d cards loaded</string>
    <string name="wallet_card_list_record_connected">%d card loaded</string>
@@ -202,7 +206,7 @@
    <string name="wallet_factory_reset_title">Factory Reset flye smart card</string>
    <string name="wallet_factory_reset_enter_pin_text">Enter your PIN on the flye\u2122 smart card to factory reset.</string>
    <string name="wallet_factory_reset_card_reset_text">Your flye\u2122 smart card has been factory reset.</string>
-   <string name="wallet_confirm_factory_reset_message">This will erase all content on your flye smart card and return all settings to factory default.</string>
+   <string name="wallet_confirm_factory_reset_message">This will erase all smart card related content in the app as well as the flye\u2122 smart card and return all smart card settings to factory default.</string>
    <string name="wallet_factory_reset">Factory Reset</string>
 
    <!--firmware download-->
@@ -251,10 +255,11 @@
    <string name="wallet_smartcard_connected_label">smart card is connected</string>
    <string name="wallet_smartcard_disconnected_label">smart card is disconnected</string>
    <string name="wallet_smartcard_connection_try_description">Connect smart card and try again.</string>
+   <string name="wallet_smartcard_connection_error">Could not connect to the smart card.\nPlease ensure that the smart card is turned on and unlocked.</string>
 
    <!-- Power On -->
    <string name="wallet_wizard_power_on_title">flye smart card</string>
-   <string name="wallet_wizard_power_on_header">Power on your flye\u2122 smart card by swiping on the chip.</string>
+   <string name="wallet_wizard_power_on_header">Power on your flye\u2122 smart card by swiping twice on the chip from the bottom to the top.</string>
 
    <!--puck connection screen-->
    <string name="wallet_puck_connection_title">Smart Card Update</string>

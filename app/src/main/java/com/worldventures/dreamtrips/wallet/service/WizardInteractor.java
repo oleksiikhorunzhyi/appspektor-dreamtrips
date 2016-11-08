@@ -1,5 +1,6 @@
 package com.worldventures.dreamtrips.wallet.service;
 
+import com.worldventures.dreamtrips.core.janet.SessionActionPipeCreator;
 import com.worldventures.dreamtrips.wallet.service.command.ActivateSmartCardCommand;
 import com.worldventures.dreamtrips.wallet.service.command.CreateAndConnectToCardCommand;
 import com.worldventures.dreamtrips.wallet.service.command.SetupUserDataCommand;
@@ -28,18 +29,18 @@ public final class WizardInteractor {
 
    private final ActionPipe<FetchAndStoreDefaultAddressInfoCommand> fetchAndStoreDefaultAddressInfoPipe;
 
-   public WizardInteractor(Janet janet) {
-      associateCardUserCommandPipe = janet.createPipe(AssociateCardUserCommand.class, Schedulers.io());
-      disassociateCardUserCommandPipe = janet.createPipe(DisassociateCardUserCommand.class, Schedulers.io());
-      createAndConnectPipe = janet.createPipe(CreateAndConnectToCardCommand.class, Schedulers.io());
-      setupUserDataPipe = janet.createPipe(SetupUserDataCommand.class, Schedulers.io());
-      activateSmartCardPipe = janet.createPipe(ActivateSmartCardCommand.class, Schedulers.io());
+   public WizardInteractor(Janet janet, SessionActionPipeCreator sessionActionPipeCreator) {
+      associateCardUserCommandPipe = sessionActionPipeCreator.createPipe(AssociateCardUserCommand.class, Schedulers.io());
+      disassociateCardUserCommandPipe = sessionActionPipeCreator.createPipe(DisassociateCardUserCommand.class, Schedulers.io());
+      createAndConnectPipe = sessionActionPipeCreator.createPipe(CreateAndConnectToCardCommand.class, Schedulers.io());
+      setupUserDataPipe = sessionActionPipeCreator.createPipe(SetupUserDataCommand.class, Schedulers.io());
+      activateSmartCardPipe = sessionActionPipeCreator.createPipe(ActivateSmartCardCommand.class, Schedulers.io());
 
-      pinSetupFinishedPipe = janet.createPipe(PinSetupFinishedEvent.class, Schedulers.io());
-      startPinSetupPipe = janet.createPipe(StartPinSetupAction.class, Schedulers.io());
-      checksPipe = janet.createPipe(WizardCheckCommand.class, Schedulers.io());
+      pinSetupFinishedPipe = sessionActionPipeCreator.createPipe(PinSetupFinishedEvent.class, Schedulers.io());
+      startPinSetupPipe = sessionActionPipeCreator.createPipe(StartPinSetupAction.class, Schedulers.io());
+      checksPipe = sessionActionPipeCreator.createPipe(WizardCheckCommand.class, Schedulers.io());
 
-      fetchAndStoreDefaultAddressInfoPipe = janet.createPipe(FetchAndStoreDefaultAddressInfoCommand.class, Schedulers.io());
+      fetchAndStoreDefaultAddressInfoPipe = sessionActionPipeCreator.createPipe(FetchAndStoreDefaultAddressInfoCommand.class, Schedulers.io());
 
       connect();
    }
@@ -68,7 +69,7 @@ public final class WizardInteractor {
       return associateCardUserCommandPipe;
    }
 
-   public ActionPipe<DisassociateCardUserCommand> disassociateCardUserCommandPipe() {
+   public ActionPipe<DisassociateCardUserCommand> disassociatePipe() {
       return disassociateCardUserCommandPipe;
    }
 

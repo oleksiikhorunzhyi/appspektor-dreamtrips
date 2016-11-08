@@ -135,9 +135,9 @@ public class JanetModule {
    @Singleton
    @Provides
    @Named(JANET_API_LIB)
-   ActionService provideApiLibHttpService(@ForApplication Context appContext, HttpClient httpClient) {
+   ActionService provideApiLibHttpService(@ForApplication Context appContext, HttpClient httpClient, Gson gson) {
       return new NewDreamTripsHttpService(appContext, BuildConfig.DreamTripsApi, httpClient, new GsonConverter(new GsonProvider()
-            .provideGson()));
+            .provideGson()), new GsonConverter(gson));
    }
 
    @Singleton
@@ -179,7 +179,10 @@ public class JanetModule {
    @Provides(type = Provides.Type.SET)
    @Named(JANET_WALLET)
    ActionService provideSmartCardService(SmartCardClient client) {
-      return SmartCardActionService.createDefault(client);
+      return new SmartCardActionService.Builder(client)
+            .addDefaults()
+            .setResponseTimeout(TimeUnit.MINUTES.toMillis(2L))
+            .build();
    }
 
    @Singleton

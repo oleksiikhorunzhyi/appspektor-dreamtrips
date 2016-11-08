@@ -1,13 +1,12 @@
 package com.worldventures.dreamtrips.wallet.ui.settings.firmware.donwload;
 
-
 import android.content.Context;
 import android.os.Parcelable;
 
 import com.techery.spares.module.Injector;
+import com.worldventures.dreamtrips.api.smart_card.firmware.model.FirmwareInfo;
 import com.worldventures.dreamtrips.modules.common.command.DownloadFileCommand;
 import com.worldventures.dreamtrips.modules.common.delegate.DownloadFileInteractor;
-import com.worldventures.dreamtrips.wallet.domain.entity.FirmwareInfo;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletPresenter;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.WalletScreen;
 import com.worldventures.dreamtrips.wallet.ui.common.helper.ErrorHandler;
@@ -16,13 +15,8 @@ import com.worldventures.dreamtrips.wallet.ui.common.navigation.Navigator;
 import com.worldventures.dreamtrips.wallet.ui.settings.firmware.preinstalletion.WalletFirmwareChecksPath;
 
 import java.io.File;
-import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
-
-import io.techery.janet.ActionState;
-
-import static rx.Observable.just;
 
 public class WalletDownloadFirmwarePresenter extends WalletPresenter<WalletDownloadFirmwarePresenter.Screen, Parcelable> {
 
@@ -45,17 +39,15 @@ public class WalletDownloadFirmwarePresenter extends WalletPresenter<WalletDownl
       action = new DownloadFileCommand(new File(firmwareFilePath), firmwareInfo.url());
       fileInteractor.getDownloadFileCommandPipe()
             .createObservable(action)
-            .flatMap(it -> it.status == ActionState.Status.START ? just(it) : just(it).delay(4, TimeUnit.SECONDS))//todo remove it
             .compose(bindViewIoToMainComposer())
             .subscribe(OperationActionStateSubscriberWrapper.<DownloadFileCommand>forView(getView().provideOperationDelegate())
                   .onSuccess(event -> openPreInstallationChecks())
                   .onFail(ErrorHandler.create(getContext(), it -> navigator.goBack()))
                   .wrap());
-
    }
 
    private void openPreInstallationChecks() {
-      navigator.withoutLast(new WalletFirmwareChecksPath(firmwareFilePath));
+      navigator.withoutLast(new WalletFirmwareChecksPath(firmwareFilePath, firmwareInfo));
    }
 
    void cancelDownload() {

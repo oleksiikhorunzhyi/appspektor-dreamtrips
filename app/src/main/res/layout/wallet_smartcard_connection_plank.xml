@@ -2,11 +2,12 @@
 <TextView xmlns:android="http://schemas.android.com/apk/res/android"
       xmlns:tools="http://schemas.android.com/tools"
       android:layout_width="match_parent"
-      android:layout_height="40dp"
+      android:layout_height="wrap_content"
       android:gravity="center"
+      android:maxLines="1"
+      android:minHeight="40dp"
       android:textAppearance="?android:textAppearanceMedium"
       android:textColor="@color/wallet_smartcard_connection_plank_text_color"
+      android:textSize="@dimen/apptentive_text_small"
       tools:text="@string/wallet_smart_card_is_disconnected"
-      >
-
-</TextView>
+      />

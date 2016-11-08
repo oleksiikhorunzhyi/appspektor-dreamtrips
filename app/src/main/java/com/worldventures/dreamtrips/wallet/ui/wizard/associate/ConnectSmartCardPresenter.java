@@ -1,4 +1,4 @@
-package com.worldventures.dreamtrips.wallet.ui.wizard.connect_smartcard;
+package com.worldventures.dreamtrips.wallet.ui.wizard.associate;
 
 import android.content.Context;
 import android.os.Parcelable;
@@ -7,6 +7,9 @@ import com.techery.spares.module.Injector;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.janet.composer.ActionPipeCacheWiper;
 import com.worldventures.dreamtrips.core.navigation.BackStackDelegate;
+import com.worldventures.dreamtrips.core.utils.tracksystem.AnalyticsInteractor;
+import com.worldventures.dreamtrips.wallet.analytics.ScidEnteredAction;
+import com.worldventures.dreamtrips.wallet.analytics.WalletAnalyticsCommand;
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCard;
 import com.worldventures.dreamtrips.wallet.service.WizardInteractor;
 import com.worldventures.dreamtrips.wallet.service.command.CreateAndConnectToCardCommand;
@@ -20,29 +23,34 @@ import com.worldventures.dreamtrips.wallet.ui.common.helper.OperationActionState
 import com.worldventures.dreamtrips.wallet.ui.common.navigation.Navigator;
 import com.worldventures.dreamtrips.wallet.ui.wizard.welcome.WizardWelcomePath;
 import com.worldventures.dreamtrips.wallet.util.FormatException;
+import com.worldventures.dreamtrips.wallet.util.SmartCardConnectException;
 
 import javax.inject.Inject;
 
-import timber.log.Timber;
+import io.techery.janet.helper.ActionStateSubscriber;
 
 public class ConnectSmartCardPresenter extends WalletPresenter<ConnectSmartCardPresenter.Screen, Parcelable> {
 
    @Inject WizardInteractor wizardInteractor;
    @Inject Navigator navigator;
    @Inject BackStackDelegate backStackDelegate;
+   @Inject AnalyticsInteractor analyticsInteractor;
 
    private final String barcode;
+   private final ConnectSmartCardPath.BarcodeOrigin barcodeOrigin;
 
-   public ConnectSmartCardPresenter(Context context, Injector injector, String barcode) {
+   public ConnectSmartCardPresenter(Context context, Injector injector, String barcode,
+         ConnectSmartCardPath.BarcodeOrigin barcodeOrigin) {
       super(context, injector);
       this.barcode = barcode;
+      this.barcodeOrigin = barcodeOrigin;
    }
 
    @Override
    public void attachView(Screen view) {
       super.attachView(view);
 
-      view.provideOperationDelegate().showProgress();
+      view.provideOperationDelegate().showProgress(null);
       backStackDelegate.setListener(() -> true);
    }
 
@@ -55,59 +63,70 @@ public class ConnectSmartCardPresenter extends WalletPresenter<ConnectSmartCardP
    @Override
    public void onAttachedToWindow() {
       super.onAttachedToWindow();
-      startAssignUser();
+      observeConnectionError();
+      observeAssociation();
+
+      wizardInteractor.associateCardUserCommandPipe().send(new AssociateCardUserCommand(barcode));
    }
 
-   private void startAssignUser() {
+   private void observeAssociation() {
       wizardInteractor.createAndConnectActionPipe()
             .observeWithReplay()
             .compose(bindViewIoToMainComposer())
             .compose(new ActionPipeCacheWiper<>(wizardInteractor.createAndConnectActionPipe()))
             .subscribe(OperationActionStateSubscriberWrapper.<CreateAndConnectToCardCommand>forView(getView().provideOperationDelegate())
-                  .onSuccess(command -> smartCardCreated(command.getResult()))
-                  .onFail(ErrorHandler.create(getContext(), command -> {
-                     startDisassociate(command.getResult().smartCardId());
-                     getView().showPairingErrorDialog();
-                     Timber.e("Could not connect to device");
-                  }))
+                  .onSuccess(command -> smartCardConnected(command.getResult()))
+                  .onFail(ErrorHandler.<CreateAndConnectToCardCommand>builder(getContext())
+                        .handle(SmartCardConnectException.class, R.string.wallet_smartcard_connection_error)
+                        .defaultAction(command -> goBack())
+                        .build())
                   .wrap());
 
       wizardInteractor.associateCardUserCommandPipe()
             .observe()
             .compose(bindViewIoToMainComposer())
-            .subscribe(ErrorActionStateSubscriberWrapper.<AssociateCardUserCommand>forView(getView()
-                  .provideOperationDelegate())
+            .subscribe(ErrorActionStateSubscriberWrapper.<AssociateCardUserCommand>forView(getView().provideOperationDelegate())
                   .onFail(ErrorHandler.<AssociateCardUserCommand>builder(getContext())
                         .handle(FormatException.class, R.string.wallet_wizard_bar_code_validation_error)
+                        .defaultAction(command -> goBack())
                         .build())
                   .wrap()
             );
+   }
 
-      wizardInteractor.associateCardUserCommandPipe().send(new AssociateCardUserCommand(barcode));
+   private void observeConnectionError() {
+      //un-assign immediately after failed connection
+      wizardInteractor.createAndConnectActionPipe()
+            .observeWithReplay()
+            .compose(bindView())
+            .compose(new ActionPipeCacheWiper(wizardInteractor.createAndConnectActionPipe()))
+            .subscribe(new ActionStateSubscriber<CreateAndConnectToCardCommand>()
+                  .onFail((command, throwable) -> startDisassociate(command.getSmartCardId())));
    }
 
    private void startDisassociate(String smartCardId) {
-      wizardInteractor.disassociateCardUserCommandPipe().send(new DisassociateCardUserCommand(smartCardId));
+      wizardInteractor.disassociatePipe().send(new DisassociateCardUserCommand(smartCardId));
    }
 
-   private void smartCardCreated(SmartCard smartCard) {
-      if (smartCard.connectionStatus().isConnected()) {
-         smartCardConnected(smartCard.smartCardId());
-      } else {
-         getView().showPairingErrorDialog();
+   private void smartCardConnected(SmartCard smartCard) {
+      navigator.withoutLast(new WizardWelcomePath(smartCard.smartCardId()));
+      trackCardAdded(smartCard.smartCardId());
+   }
+
+   private void trackCardAdded(String cid) {
+      if (barcodeOrigin == ConnectSmartCardPath.BarcodeOrigin.SCAN) {
+         analyticsInteractor.walletAnalyticsCommandPipe()
+               .send(new WalletAnalyticsCommand(ScidEnteredAction.forScan(cid)));
+      } else if (barcodeOrigin == ConnectSmartCardPath.BarcodeOrigin.MANUAL) {
+         analyticsInteractor.walletAnalyticsCommandPipe()
+               .send(new WalletAnalyticsCommand(ScidEnteredAction.forManual(cid)));
       }
    }
 
-   private void smartCardConnected(String smartCardId) {
-      navigator.withoutLast(new WizardWelcomePath(smartCardId));
-   }
-
-   public void goBack() {
+   private void goBack() {
       navigator.goBack();
    }
 
    interface Screen extends WalletScreen {
-
-      void showPairingErrorDialog();
    }
 }

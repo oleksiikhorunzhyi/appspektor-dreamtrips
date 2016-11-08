@@ -6,7 +6,7 @@ import android.support.annotation.Nullable;
 
 import com.techery.spares.module.Injector;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.wallet.domain.entity.Firmware;
+import com.worldventures.dreamtrips.wallet.domain.entity.FirmwareUpdateData;
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCard;
 import com.worldventures.dreamtrips.wallet.domain.storage.TemporaryStorage;
 import com.worldventures.dreamtrips.wallet.service.FactoryResetManager;
@@ -27,6 +27,7 @@ import com.worldventures.dreamtrips.wallet.ui.settings.firmware.uptodate.WalletU
 import com.worldventures.dreamtrips.wallet.ui.settings.removecards.WalletAutoClearCardsPath;
 import com.worldventures.dreamtrips.wallet.ui.wizard.pin.Action;
 import com.worldventures.dreamtrips.wallet.ui.wizard.pin.setup.WizardPinSetupPath;
+import com.worldventures.dreamtrips.wallet.util.SmartCardFlavorUtil;
 
 import javax.inject.Inject;
 
@@ -42,8 +43,7 @@ public class WalletSettingsPresenter extends WalletPresenter<WalletSettingsPrese
    @Inject FactoryResetManager factoryResetManager;
 
    private SmartCard smartCard;
-   @Nullable private Firmware firmware;
-
+   @Nullable private FirmwareUpdateData firmwareUpdateData;
 
    public WalletSettingsPresenter(Context context, Injector injector) {
       super(context, injector);
@@ -52,9 +52,11 @@ public class WalletSettingsPresenter extends WalletPresenter<WalletSettingsPrese
    @Override
    public void attachView(Screen view) {
       super.attachView(view);
+      view.testSectionEnabled(SmartCardFlavorUtil.isSmartCardDevMockFlavor());
       view.testFailInstallation(temporaryStorage.failInstall());
 
       observeSmartCardChanges();
+      observeFactoryReset();
 
       observeStealthModeController(view);
       observeLockController(view);
@@ -69,14 +71,18 @@ public class WalletSettingsPresenter extends WalletPresenter<WalletSettingsPrese
             .observeSuccessWithReplay()
             .compose(bindViewIoToMainComposer())
             .subscribe(command -> {
-               firmware = command.getResult();
-               if (firmware.updateAvailable()) {
-                  getView().firmwareUpdateCount(1);
-                  getView().showFirmwareBadge();
-               } else {
-                  getView().showFirmwareVersion();
-               }
+               firmwareUpdateData = command.getResult();
+               toggleFirmwareBargeOrVersion(firmwareUpdateData.updateAvailable());
             });
+   }
+
+   private void toggleFirmwareBargeOrVersion(boolean updateAvailable) {
+      if (updateAvailable) {
+         getView().firmwareUpdateCount(1);
+         getView().showFirmwareBadge();
+      } else {
+         getView().showFirmwareVersion();
+      }
    }
 
    private void observeSmartCardChanges() {
@@ -145,7 +151,7 @@ public class WalletSettingsPresenter extends WalletPresenter<WalletSettingsPrese
    private void manageConnection(boolean connected) {
       if (connected) {
          smartCardInteractor.connectActionPipe()
-               .createObservable(new ConnectSmartCardCommand(smartCard))
+               .createObservable(new ConnectSmartCardCommand(smartCard, false))
                .compose(bindViewIoToMainComposer())
                .subscribe(OperationActionStateSubscriberWrapper.<ConnectSmartCardCommand>forView(getView().provideOperationDelegate())
                      .onFail(ErrorHandler.create(getContext(),
@@ -175,9 +181,7 @@ public class WalletSettingsPresenter extends WalletPresenter<WalletSettingsPrese
       view.disableDefaultPaymentValue(smartCard.disableCardDelay());
       view.autoClearSmartCardValue(smartCard.clearFlyeDelay());
       view.firmwareVersion(smartCard.firmWareVersion());
-      if (firmware != null && firmware.updateAvailable()) {
-         view.showFirmwareVersion();
-      }
+      toggleFirmwareBargeOrVersion(firmwareUpdateData != null && firmwareUpdateData.updateAvailable());
    }
 
    public void goBack() {
@@ -216,7 +220,7 @@ public class WalletSettingsPresenter extends WalletPresenter<WalletSettingsPrese
    }
 
    void firmwareUpdatesClick() {
-      if (firmware != null && firmware.updateAvailable()) {
+      if (firmwareUpdateData != null && firmwareUpdateData.updateAvailable()) {
          navigator.go(new WalletNewFirmwareAvailablePath());
       } else {
          navigator.go(new WalletUpToDateFirmwarePath());
@@ -228,6 +232,10 @@ public class WalletSettingsPresenter extends WalletPresenter<WalletSettingsPrese
    }
 
    void executeFactoryReset() {
+      factoryResetManager.factoryReset();
+   }
+
+   private void observeFactoryReset() {
       factoryResetManager.observeFactoryResetPipe()
             .compose(bindViewIoToMainComposer())
             .subscribe(OperationActionStateSubscriberWrapper.<ResetSmartCardCommand>forView(getView().provideOperationDelegate())
@@ -236,8 +244,6 @@ public class WalletSettingsPresenter extends WalletPresenter<WalletSettingsPrese
                         .defaultMessage(R.string.wallet_wizard_setup_error)
                         .build())
                   .wrap());
-
-      factoryResetManager.factoryReset();
    }
 
    public interface Screen extends WalletScreen {
@@ -271,5 +277,7 @@ public class WalletSettingsPresenter extends WalletPresenter<WalletSettingsPrese
       void showFirmwareBadge();
 
       void showConfirmFactoryResetDialog();
+
+      void testSectionEnabled(boolean enabled);
    }
 }

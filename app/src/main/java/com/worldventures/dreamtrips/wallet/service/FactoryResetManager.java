@@ -17,7 +17,6 @@ public class FactoryResetManager {
    }
 
    public void factoryReset() {
-      //todo: remove for not use lock/unlock for current logic
       resetSmartCardPipe.send(new ResetSmartCardCommand());
    }
 

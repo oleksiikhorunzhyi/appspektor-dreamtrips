@@ -9,6 +9,7 @@ import com.worldventures.dreamtrips.wallet.domain.entity.ImmutableSmartCard;
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCard;
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCardDetails;
 import com.worldventures.dreamtrips.wallet.service.SmartCardInteractor;
+import com.worldventures.dreamtrips.wallet.util.SmartCardConnectException;
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -41,13 +42,14 @@ public class CreateAndConnectToCardCommand extends Command<SmartCard> implements
    protected void run(CommandCallback<SmartCard> callback) throws Throwable {
       Observable.just(createSmartCard())
             .flatMap(smartCard -> smartCardInteractor.connectActionPipe()
-                  .createObservableResult(new ConnectSmartCardCommand(smartCard)))
+                  .createObservableResult(new ConnectSmartCardCommand(smartCard, true, true))
+            )
             .doOnNext(command -> this.smartCard = command.getResult())
             .subscribe(connectCommand -> {
                if (smartCard.connectionStatus() == SmartCard.ConnectionStatus.CONNECTED) {
                   callback.onSuccess(smartCard);
                } else {
-                  callback.onFail(new Throwable("Could not connect to the device"));
+                  callback.onFail(new SmartCardConnectException("Could not connect to the device"));
                }
             }, callback::onFail);
    }

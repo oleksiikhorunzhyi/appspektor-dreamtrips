@@ -5,6 +5,7 @@ import android.content.Context;
 import android.os.Parcelable;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.annotation.StringRes;
 import android.text.TextUtils;
 import android.view.WindowManager;
 
@@ -20,12 +21,14 @@ import com.worldventures.dreamtrips.wallet.analytics.SetupUserAction;
 import com.worldventures.dreamtrips.wallet.analytics.WalletAnalyticsCommand;
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCard;
 import com.worldventures.dreamtrips.wallet.service.SmartCardAvatarInteractor;
+import com.worldventures.dreamtrips.wallet.service.SmartCardInteractor;
 import com.worldventures.dreamtrips.wallet.service.WizardInteractor;
 import com.worldventures.dreamtrips.wallet.service.command.ActivateSmartCardCommand;
 import com.worldventures.dreamtrips.wallet.service.command.CompressImageForSmartCardCommand;
 import com.worldventures.dreamtrips.wallet.service.command.LoadImageForSmartCardCommand;
 import com.worldventures.dreamtrips.wallet.service.command.SetupUserDataCommand;
 import com.worldventures.dreamtrips.wallet.service.command.SmartCardAvatarCommand;
+import com.worldventures.dreamtrips.wallet.service.command.http.DisassociateCardUserCommand;
 import com.worldventures.dreamtrips.wallet.service.command.http.FetchAndStoreDefaultAddressInfoCommand;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletPresenter;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.WalletScreen;
@@ -40,6 +43,7 @@ import java.io.File;
 import javax.inject.Inject;
 
 import io.techery.janet.helper.ActionStateSubscriber;
+import io.techery.janet.smartcard.exception.SmartCardServiceException;
 import rx.Observable;
 import timber.log.Timber;
 
@@ -49,6 +53,7 @@ public class WizardEditProfilePresenter extends WalletPresenter<WizardEditProfil
    @Inject Navigator navigator;
    @Inject SmartCardAvatarInteractor smartCardAvatarInteractor;
    @Inject WizardInteractor wizardInteractor;
+   @Inject SmartCardInteractor smartCardInteractor;
    @Inject AnalyticsInteractor analyticsInteractor;
    @Inject SessionHolder<UserSession> appSessionHolder;
 
@@ -72,7 +77,7 @@ public class WizardEditProfilePresenter extends WalletPresenter<WizardEditProfil
       super.attachView(view);
       // TODO: 9/1/16 investigate and fix this problem (photo piker brake SoftInputMode too)
       // hotfix, web view brake SoftInputMode (set ADJUST_RESIZE)
-      activity.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
+      setupInputMode();
 
       observePickerAndCropper(view);
       subscribePreparingAvatarCommand();
@@ -90,13 +95,17 @@ public class WizardEditProfilePresenter extends WalletPresenter<WizardEditProfil
       }
    }
 
+   public void setupInputMode() {
+      activity.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
+   }
+
    private void observePickerAndCropper(Screen view) {
       view.observePickPhoto().compose(bindView()).subscribe(view::cropPhoto);
 
       view.observeCropper().compose(bindView()).subscribe(this::prepareImage);
    }
 
-   public void subscribePreparingAvatarCommand() {
+   private void subscribePreparingAvatarCommand() {
       smartCardAvatarInteractor.smartCardAvatarPipe()
             .observe()
             .compose(bindViewIoToMainComposer())
@@ -105,16 +114,18 @@ public class WizardEditProfilePresenter extends WalletPresenter<WizardEditProfil
                   .onSuccess(command -> photoPrepared(command.getResult())));
    }
 
-   public void subscribeSetupUserCommand() {
+   private void subscribeSetupUserCommand() {
       wizardInteractor.setupUserDataPipe()
             .observeWithReplay()
             .compose(bindViewIoToMainComposer())
             .compose(new ActionPipeCacheWiper<>(wizardInteractor.setupUserDataPipe()))
             .subscribe(OperationActionStateSubscriberWrapper.<SetupUserDataCommand>forView(getView().provideOperationDelegate())
-                  .onSuccess(setupUserDataCommand -> onUserSetup(setupUserDataCommand.getResult()))
+                  .onStart(getContext().getString(R.string.wallet_long_operation_hint))
+                  .onSuccess(setupUserDataCommand -> onUserSetupSuccess(setupUserDataCommand.getResult()))
                   .onFail(ErrorHandler.<SetupUserDataCommand>builder(getContext())
                         .handle(FormatException.class, R.string.wallet_edit_profile_name_format_detail)
                         .handle(SetupUserDataCommand.MissedAvatarException.class, R.string.wallet_edit_profile_avatar_not_chosen)
+                        .handle(SmartCardServiceException.class, command -> smartCardError(smartCardId))
                         .build())
                   .wrap());
    }
@@ -134,12 +145,17 @@ public class WizardEditProfilePresenter extends WalletPresenter<WizardEditProfil
       navigator.single(new CardListPath());
    }
 
-   private void onUserSetup(SmartCard smartCard) {
+   private void onUserSetupSuccess(SmartCard smartCard) {
       // TODO: 10/13/16 for remove pis setup screen
       wizardInteractor.activateSmartCardPipe().send(new ActivateSmartCardCommand(smartCard));
       //      navigator.go(new WizardPinSetupPath(smartCard, Action.SETUP));
       analyticsInteractor.walletAnalyticsCommandPipe()
             .send(new WalletAnalyticsCommand(new PhotoWasSetAction(smartCard.cardName(), smartCardId)));
+   }
+
+   private void smartCardError(String smartCardId) {
+      navigator.goBack();
+      wizardInteractor.disassociatePipe().send(new DisassociateCardUserCommand(smartCardId));
    }
 
    private void photoPrepared(File filePhoto) {

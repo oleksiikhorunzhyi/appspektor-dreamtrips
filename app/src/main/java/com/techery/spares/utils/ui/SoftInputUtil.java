@@ -12,10 +12,10 @@ public class SoftInputUtil {
    public static void showSoftInputMethod(View view) {
       if (view == null) return;
       //
+      view.requestFocus();
       InputMethodManager inputManager = (InputMethodManager) view.getContext()
             .getSystemService(Context.INPUT_METHOD_SERVICE);
       inputManager.showSoftInput(view, 0);
-      view.requestFocus();
    }
 
    /** Show soft keyboard explicitly */

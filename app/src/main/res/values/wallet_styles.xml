@@ -8,7 +8,7 @@
 
    <color name="wallet_button_color_disabled">#8f8f8f</color>
    <color name="wallet_button_text_color_disabled">#FFFFFF</color>
-
+   <color name="wallet_gray_background">#226D6D72</color>
    <color name="wallet_hint_color">#9a9a9a</color>
    <color name="wallet_number_edit_text_text_color_hint">#999999</color>
    <color name="wallet_number_edit_text_pin_line_color">#666666</color>

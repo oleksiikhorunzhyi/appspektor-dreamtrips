@@ -25,4 +25,6 @@
    <color name="wallet_smartcard_connection_plank_text_color">#666666</color>
 
    <color name="wallet_alert_phone_number_color">#76b2fe</color>
+
+   <color name="pin_normal">#6B767E</color>
 </resources>

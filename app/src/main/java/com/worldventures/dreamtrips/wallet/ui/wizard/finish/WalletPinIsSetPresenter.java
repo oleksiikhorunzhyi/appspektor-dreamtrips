@@ -36,6 +36,8 @@ public class WalletPinIsSetPresenter extends WalletPresenter<WalletPinIsSetPrese
    @Override
    public void attachView(Screen view) {
       super.attachView(view);
+      analyticsInteractor.walletAnalyticsCommandPipe()
+            .send(new WalletAnalyticsCommand(new PinWasSetAction(smartCard.cardName())));
       wizardInteractor.activateSmartCardPipe()
             .observeWithReplay()
             .compose(new ActionPipeCacheWiper<>(wizardInteractor.activateSmartCardPipe()))
@@ -55,8 +57,6 @@ public class WalletPinIsSetPresenter extends WalletPresenter<WalletPinIsSetPrese
    }
 
    private void navigateToDashboardScreen() {
-      analyticsInteractor.walletAnalyticsCommandPipe()
-            .send(new WalletAnalyticsCommand(new PinWasSetAction(smartCard.cardName())));
       navigator.single(new CardListPath());
    }
 

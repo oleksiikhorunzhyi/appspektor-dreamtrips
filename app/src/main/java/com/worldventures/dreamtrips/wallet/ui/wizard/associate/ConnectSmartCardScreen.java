@@ -1,4 +1,4 @@
-package com.worldventures.dreamtrips.wallet.ui.wizard.connect_smartcard;
+package com.worldventures.dreamtrips.wallet.ui.wizard.associate;
 
 import android.content.Context;
 import android.graphics.Color;
@@ -15,7 +15,6 @@ import com.afollestad.materialdialogs.MaterialDialog;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletLinearLayout;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.OperationScreen;
-import com.worldventures.dreamtrips.wallet.ui.common.base.screen.delegate.DialogOperationScreen;
 
 import butterknife.InjectView;
 import rx.functions.Action1;
@@ -26,8 +25,6 @@ public class ConnectSmartCardScreen extends WalletLinearLayout<ConnectSmartCardP
    @InjectView(R.id.connection_progress) View downloadProgress;
    @InjectView(R.id.toolbar) Toolbar toolbar;
 
-   private final OperationScreen operationScreen = new DialogOperationScreen(this);
-
    public ConnectSmartCardScreen(Context context) {
       super(context);
    }
@@ -36,16 +33,16 @@ public class ConnectSmartCardScreen extends WalletLinearLayout<ConnectSmartCardP
       super(context, attrs);
    }
 
-   @NonNull
    @Override
    protected void onFinishInflate() {
       super.onFinishInflate();
       supportConnectionStatusLabel(false);
    }
 
+   @NonNull
    @Override
    public ConnectSmartCardPresenter createPresenter() {
-      return new ConnectSmartCardPresenter(getContext(), getInjector(), getPath().barcode);
+      return new ConnectSmartCardPresenter(getContext(), getInjector(), getPath().barcode, getPath().barcodeOrigin);
    }
 
    @Override
@@ -61,7 +58,7 @@ public class ConnectSmartCardScreen extends WalletLinearLayout<ConnectSmartCardP
    }
 
    @Override
-   public void showProgress() {
+   public void showProgress(@Nullable String text) {
       Animation animation = AnimationUtils.loadAnimation(getContext(), R.anim.wallet_progress_anim);
       animation.setDuration(getResources().getInteger(R.integer.wallet_custom_loafing_animation_duration));
       downloadProgress.startAnimation(animation);
@@ -69,12 +66,17 @@ public class ConnectSmartCardScreen extends WalletLinearLayout<ConnectSmartCardP
 
    @Override
    public void hideProgress() {
-
    }
 
    @Override
-   public void showError(String msg, @Nullable Action1<Void> action) {
-      showErrorDialogAndGoBack(msg);
+   public void showError(String message, @Nullable Action1<Void> action) {
+      new MaterialDialog.Builder(getContext())
+            .content(message)
+            .positiveText(R.string.ok)
+            .dismissListener(dialog -> {
+               if (action != null) action.call(null);
+            })
+            .show();
    }
 
    @Override
@@ -85,18 +87,5 @@ public class ConnectSmartCardScreen extends WalletLinearLayout<ConnectSmartCardP
    @Override
    protected boolean hasToolbar() {
       return true;
-   }
-
-   @Override
-   public void showPairingErrorDialog() {
-      showErrorDialogAndGoBack(getString(R.string.wallet_card_not_paired));
-   }
-
-   private void showErrorDialogAndGoBack(String message) {
-      new MaterialDialog.Builder(getContext())
-            .content(message)
-            .positiveText(R.string.ok)
-            .onPositive(((dialog, which) -> presenter.goBack()))
-            .show();
    }
 }

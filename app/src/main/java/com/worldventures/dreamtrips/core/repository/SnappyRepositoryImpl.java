@@ -42,7 +42,9 @@ import com.worldventures.dreamtrips.modules.tripsimages.model.SocialViewPagerSta
 import com.worldventures.dreamtrips.modules.tripsimages.model.TripImagesType;
 import com.worldventures.dreamtrips.modules.video.model.CachedEntity;
 import com.worldventures.dreamtrips.wallet.domain.entity.AddressInfo;
+import com.worldventures.dreamtrips.wallet.domain.entity.FirmwareUpdateData;
 import com.worldventures.dreamtrips.wallet.domain.entity.ImmutableAddressInfo;
+import com.worldventures.dreamtrips.wallet.domain.entity.ImmutableFirmwareUpdateData;
 import com.worldventures.dreamtrips.wallet.domain.entity.ImmutableSmartCard;
 import com.worldventures.dreamtrips.wallet.domain.entity.ImmutableSmartCardDetails;
 import com.worldventures.dreamtrips.wallet.domain.entity.ImmutableTermsAndConditions;
@@ -58,6 +60,7 @@ import org.objenesis.strategy.StdInstantiatorStrategy;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
@@ -200,26 +203,13 @@ public class SnappyRepositoryImpl implements SnappyRepository {
 
    @Override
    public <T> void putList(String key, Collection<T> list) {
-      act(db -> {
-         Output output = new Output(new ByteArrayOutputStream());
-         kryo.writeClassAndObject(output, list);
-         db.put(key, output.getBuffer());
-      });
+      act(db -> db.put(key, list.toArray()));
    }
 
    @Override
    public <T> List<T> readList(String key, Class<T> clazz) {
-      return actWithResult(db -> {
-         Collection<T> result;
-         Input input = new Input();
-         try {
-            input.setBuffer(db.getBytes(key));
-            result = (Collection<T>) kryo.readClassAndObject(input);
-         } finally {
-            input.close();
-         }
-         return new ArrayList(result);
-      }).or(new ArrayList<>());
+      return actWithResult(db -> new ArrayList<>(Arrays.asList(db.getObjectArray(key, clazz))))
+            .or(new ArrayList<>());
    }
 
    /**
@@ -369,6 +359,11 @@ public class SnappyRepositoryImpl implements SnappyRepository {
    }
 
    @Override
+   public void deleteActiveSmartCardId() {
+      act(db -> db.del(WALLET_ACTIVE_SMART_CARD_ID));
+   }
+
+   @Override
    public void saveWalletCardsList(List<Card> items) {
       putEncrypted(WALLET_CARDS_LIST, items);
    }
@@ -424,6 +419,21 @@ public class SnappyRepositoryImpl implements SnappyRepository {
    @Override
    public void deleteTermsAndConditions() {
       act(db -> db.del(WALLET_TERMS_AND_CONDITIONS));
+   }
+
+   @Override
+   public void saveFirmwareUpdateData(FirmwareUpdateData firmwareUpdateData) {
+      putEncrypted(WALLET_FIRMWARE, firmwareUpdateData);
+   }
+
+   @Override
+   public FirmwareUpdateData getFirmwareUpdateData() {
+      return getEncrypted(WALLET_FIRMWARE, ImmutableFirmwareUpdateData.class);
+   }
+
+   @Override
+   public void deleteFirmwareUpdateData() {
+      act(db -> db.del(WALLET_FIRMWARE));
    }
 
    @Override

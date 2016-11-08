@@ -115,10 +115,6 @@ public class BucketItemDetailsPresenter extends BucketDetailsBasePresenter<Bucke
       if (bucketItem.getOwner() == null) {
          bucketItem.setOwner(tempItem.getOwner());
       }
-
-      //TODO: check it, its not suitable fro current approach
-      //        getBucketChangePipe().send(BucketActionCreator.save(bucketItem));
-      //        bucketItemManager.saveSingleBucketItem(bucketItem);
    }
 
    @NonNull

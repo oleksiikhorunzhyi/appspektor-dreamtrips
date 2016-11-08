@@ -25,6 +25,7 @@ public class TagFriendAdapter extends ArrayAdapter<User> {
    private OnFriendRequestListener onFriendRequestListener;
    private List<User> friendList = new ArrayList<>();
    private Set<User> cachedFriendList = new HashSet<>();
+   private String lastApplyiedFilter = "";
 
    public TagFriendAdapter(Context context, OnFriendRequestListener onFriendRequestListener) {
       super(context, 0, 0, new ArrayList<>());
@@ -33,12 +34,20 @@ public class TagFriendAdapter extends ArrayAdapter<User> {
    }
 
    public void addFriends(List<User> friendList) {
-      boolean isNewList = !this.friendList.containsAll(friendList) || !friendList.containsAll(this.friendList);
-      if (isNewList) {
-         this.friendList.addAll(friendList);
-         this.cachedFriendList.addAll(friendList);
-         notifyDataSetChanged();
-      }
+      List uniqueElements = new ArrayList(friendList);
+      uniqueElements.removeAll(cachedFriendList);
+
+      this.friendList.addAll(uniqueElements);
+      this.cachedFriendList.addAll(uniqueElements);
+
+      notifyDataSetChanged();
+
+   }
+
+   private void applyFilter() {
+      friendList = Queryable.from(cachedFriendList).filter(element -> {
+         return element.getFullName().toLowerCase().contains(lastApplyiedFilter);
+      }).toList();
    }
 
    @Override
@@ -82,19 +91,17 @@ public class TagFriendAdapter extends ArrayAdapter<User> {
 
          @Override
          protected FilterResults performFiltering(CharSequence constraint) {
+            lastApplyiedFilter = constraint != null ? constraint.toString().trim().toLowerCase() : "";
+            applyFilter();
+            notifyDataSetChanged();
+
             return new FilterResults();
          }
 
          @Override
          protected void publishResults(CharSequence constraint, FilterResults results) {
-            String trim = constraint != null ? constraint.toString().trim().toLowerCase() : "";
-            if (trim.length() > 2 && onFriendRequestListener != null) {
-               onFriendRequestListener.requestFriends(trim);
-            } else {
-               friendList = Queryable.from(cachedFriendList).filter(element -> {
-                  return element.getFullName().toLowerCase().contains(trim);
-               }).toList();
-               notifyDataSetChanged();
+            if (lastApplyiedFilter.length() > 2 && onFriendRequestListener != null) {
+               onFriendRequestListener.requestFriends(lastApplyiedFilter);
             }
          }
       };

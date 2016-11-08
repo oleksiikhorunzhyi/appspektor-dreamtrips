@@ -17,7 +17,6 @@ import com.worldventures.dreamtrips.wallet.analytics.WalletAnalyticsCommand;
 import com.worldventures.dreamtrips.wallet.domain.entity.AddressInfoWithLocale;
 import com.worldventures.dreamtrips.wallet.domain.entity.ImmutableAddressInfoWithLocale;
 import com.worldventures.dreamtrips.wallet.domain.entity.card.BankCard;
-import com.worldventures.dreamtrips.wallet.domain.entity.card.Card;
 import com.worldventures.dreamtrips.wallet.service.SmartCardInteractor;
 import com.worldventures.dreamtrips.wallet.service.command.FetchDefaultCardCommand;
 import com.worldventures.dreamtrips.wallet.service.command.GetActiveSmartCardCommand;
@@ -36,6 +35,7 @@ import javax.inject.Inject;
 import io.techery.janet.Command;
 import io.techery.janet.smartcard.action.records.DeleteRecordAction;
 import rx.Observable;
+import timber.log.Timber;
 
 import static java.lang.Integer.valueOf;
 
@@ -97,7 +97,7 @@ public class CardDetailsPresenter extends WalletPresenter<CardDetailsPresenter.S
                getView().setAsDefaultPaymentCardCondition()
                      .compose(bindView())
                      .subscribe(this::onSetAsDefaultCard);
-            });
+            }, throwable -> Timber.e(throwable, ""));
    }
 
    private void connectToDeleteCardPipe() {
@@ -138,12 +138,12 @@ public class CardDetailsPresenter extends WalletPresenter<CardDetailsPresenter.S
             .createObservableResult(new GetActiveSmartCardCommand())
             .compose(bindViewIoToMainComposer())
             .subscribe(command -> {
-               if(command.getResult().connectionStatus().isConnected()) {
+               if (command.getResult().connectionStatus().isConnected()) {
                   getView().showDeleteCardDialog();
                } else {
                   getView().showConnectionErrorDialog();
                }
-            });
+            }, throwable -> Timber.e(throwable, ""));
    }
 
    public void editAddress() {
@@ -151,12 +151,12 @@ public class CardDetailsPresenter extends WalletPresenter<CardDetailsPresenter.S
             .createObservableResult(new GetActiveSmartCardCommand())
             .compose(bindViewIoToMainComposer())
             .subscribe(command -> {
-               if(command.getResult().connectionStatus().isConnected()) {
+               if (command.getResult().connectionStatus().isConnected()) {
                   navigator.go(new EditCardDetailsPath(bankCard));
                } else {
                   getView().showConnectionErrorDialog();
                }
-            });
+            }, throwable -> Timber.e(throwable, ""));
    }
 
    public void onDeleteCardConfirmed() {
@@ -174,7 +174,7 @@ public class CardDetailsPresenter extends WalletPresenter<CardDetailsPresenter.S
                   getView().setDefaultCardCondition(CardUtils.equals(defaultBankCard, bankCard));
                   getView().showConnectionErrorDialog();
                }
-            });
+            }, throwable -> Timber.e(throwable, ""));
    }
 
    private void executeSetDefaultCard(boolean setDefaultCard) {
@@ -184,12 +184,12 @@ public class CardDetailsPresenter extends WalletPresenter<CardDetailsPresenter.S
          } else {
             trackSetAsDefault();
             smartCardInteractor.setDefaultCardOnDeviceCommandPipe()
-                  .send(new SetDefaultCardOnDeviceCommand(bankCard.id()));
+                  .send(SetDefaultCardOnDeviceCommand.setAsDefault(bankCard.id()));
          }
       } else {
          if (CardUtils.equals(defaultBankCard, bankCard)) {
             smartCardInteractor.setDefaultCardOnDeviceCommandPipe()
-                  .send(new SetDefaultCardOnDeviceCommand(Card.NO_ID));
+                  .send(SetDefaultCardOnDeviceCommand.unsetDefaultCard());
          }
       }
    }
@@ -199,7 +199,8 @@ public class CardDetailsPresenter extends WalletPresenter<CardDetailsPresenter.S
          getView().setDefaultCardCondition(false);
       } else {
          trackSetAsDefault();
-         smartCardInteractor.setDefaultCardOnDeviceCommandPipe().send(new SetDefaultCardOnDeviceCommand(bankCard.id()));
+         smartCardInteractor.setDefaultCardOnDeviceCommandPipe()
+               .send(SetDefaultCardOnDeviceCommand.setAsDefault(bankCard.id()));
       }
    }
 

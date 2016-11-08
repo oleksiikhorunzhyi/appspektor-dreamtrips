@@ -13,7 +13,7 @@ import android.util.AttributeSet;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.crashlytics.android.Crashlytics;
-import com.messenger.ui.view.layout.BaseViewStateLinearLayout;
+import com.worldventures.dreamtrips.core.flow.layout.BaseViewStateLinearLayout;
 import com.techery.spares.module.Injector;
 import com.techery.spares.utils.ui.SoftInputUtil;
 import com.worldventures.dreamtrips.R;

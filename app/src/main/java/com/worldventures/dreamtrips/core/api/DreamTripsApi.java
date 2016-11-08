@@ -13,18 +13,15 @@ import com.worldventures.dreamtrips.modules.feed.model.CreatePhotoPostEntity;
 import com.worldventures.dreamtrips.modules.feed.model.FeedEntityHolder;
 import com.worldventures.dreamtrips.modules.feed.model.TextualPost;
 import com.worldventures.dreamtrips.modules.feed.model.comment.Comment;
-import com.worldventures.dreamtrips.modules.infopages.model.FeedbackType;
 import com.worldventures.dreamtrips.modules.membership.api.InviteBody;
 import com.worldventures.dreamtrips.modules.membership.model.History;
 import com.worldventures.dreamtrips.modules.membership.model.InviteTemplate;
 import com.worldventures.dreamtrips.modules.reptools.model.SuccessStory;
-import com.worldventures.dreamtrips.modules.reptools.model.VideoLocale;
 import com.worldventures.dreamtrips.modules.tripsimages.model.AddPhotoTag;
 import com.worldventures.dreamtrips.modules.tripsimages.model.DeletePhotoTag;
 import com.worldventures.dreamtrips.modules.tripsimages.model.Inspiration;
 import com.worldventures.dreamtrips.modules.tripsimages.model.Photo;
 import com.worldventures.dreamtrips.modules.tripsimages.model.YSBHPhoto;
-import com.worldventures.dreamtrips.modules.video.model.Category;
 
 import org.json.JSONObject;
 
@@ -36,15 +33,10 @@ import retrofit.http.DELETE;
 import retrofit.http.Field;
 import retrofit.http.FormUrlEncoded;
 import retrofit.http.GET;
-import retrofit.http.Multipart;
 import retrofit.http.POST;
 import retrofit.http.PUT;
-import retrofit.http.Part;
 import retrofit.http.Path;
 import retrofit.http.Query;
-import retrofit.mime.TypedFile;
-
-import static com.worldventures.dreamtrips.modules.infopages.api.SendFeedbackCommand.FeedbackBody;
 
 public interface DreamTripsApi {
 
@@ -52,22 +44,6 @@ public interface DreamTripsApi {
    String TYPE_MEMBER_360 = "DTAPP360";
    String TYPE_REP = "dtapprep";
    String TYPE_HELP = "DTAPPHELP";
-
-   @POST("/api/profile/avatar")
-   @Multipart
-   User uploadAvatar(@Part("avatar") TypedFile image);
-
-   @POST("/api/profile/background_photo")
-   @Multipart
-   User uploadBackgroundPhoto(@Part("background_photo") TypedFile image);
-
-   @GET("/api/profile")
-   User getProfile();
-
-   @GET("/api/profiles/{id}")
-   User getPublicProfile(@Path("id") int id);
-
-    /* *** PHOTOS *****************************/
 
    /**
     * Photo of all members
@@ -83,11 +59,6 @@ public interface DreamTripsApi {
 
    @GET("/api/ysbh_photos")
    ArrayList<YSBHPhoto> getYouShouldBeHerePhotos(@Query("per_page") int perPage, @Query("page") int page);
-
-
-   @FormUrlEncoded
-   @POST("/api/photos/{id}/flags")
-   JsonObject flagPhoto(@Path("id") String photoId, @Field("reason") String nameOfReason);
 
    @DELETE("/api/photos/{id}")
    JsonObject deletePhoto(@Path("id") String photoId);
@@ -160,16 +131,6 @@ public interface DreamTripsApi {
    @GET("/api/invitations/filled_templates/{id} ")
    InviteTemplate getFilledInviteTemplate(@Path("id") int id);
 
-   @GET("/api/member_videos/")
-   ArrayList<Category> getVideos(@Query("type") String type);
-
-   @GET("/api/member_videos/")
-   ArrayList<Category> getVideos(@Query("type") String type, @Query("locale") String locale);
-
-
-   @GET("/api/member_videos/locales")
-   ArrayList<VideoLocale> getTrainingVideosLocales();
-
    @GET("/api/social/friends")
    ArrayList<User> getFriends(@Query("circle_id") String circle_id, @Query("query") String query, @Query("page") int page, @Query("per_page") int perPage);
 
@@ -181,9 +142,6 @@ public interface DreamTripsApi {
 
    @GET("/api/social/friends/requests")
    ArrayList<User> getRequests();
-
-   @DELETE("/api/social/friends/{user_id}")
-   JSONObject unfriend(@Path("user_id") int userId);
 
    @FormUrlEncoded
    @POST("/api/social/comments")
@@ -218,17 +176,13 @@ public interface DreamTripsApi {
    Void likeEntity(@Path("uid") String uid);
 
    @DELETE("/api/{uid}/likes")
-   Void dislikeEntity(@Path("uid") String uid);
+   Void dislikeEntity(@Path("uid") String uid );
 
    @GET("/api/{uid}/likes")
    ArrayList<User> getUsersWhoLikedEntity(@Path("uid") String uid, @Query("page") int page, @Query("per_page") int perPage);
 
    @GET("/api/{uid}")
    FeedEntityHolder getFeedEntity(@Path("uid") String uid);
-
-   @FormUrlEncoded
-   @POST("/api/{uid}/flags")
-   Void flagItem(@Path("uid") String uid, @Field("flag_reason_id") int flagReasonId, @Field("reason") String nameOfReason);
 
    @GET("/api/social/friends/{userId}/mutual/")
    ArrayList<User> getMutualFriends(@Path("userId") int userId);
@@ -241,10 +195,4 @@ public interface DreamTripsApi {
 
    @GET("/api/photos/{uid}")
    Photo getPhotoInfo(@Path("uid") String uid);
-
-   @GET("/api/feedbacks/reasons")
-   ArrayList<FeedbackType> getFeedbackReasons();
-
-   @POST("/api/feedbacks")
-   Void sendFeedback(@Body FeedbackBody feedbackBody);
 }

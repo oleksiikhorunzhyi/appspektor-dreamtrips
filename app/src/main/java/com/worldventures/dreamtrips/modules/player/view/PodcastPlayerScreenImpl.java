@@ -7,10 +7,10 @@ import android.util.AttributeSet;
 import android.widget.FrameLayout;
 import android.widget.ProgressBar;
 
-import com.messenger.ui.view.layout.BaseViewStateLinearLayout;
 import com.techery.spares.module.Injector;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.api.error.ErrorResponse;
+import com.worldventures.dreamtrips.core.flow.layout.BaseViewStateLinearLayout;
 import com.worldventures.dreamtrips.modules.player.presenter.PodcastPresenter;
 import com.worldventures.dreamtrips.modules.player.presenter.PodcastPresenterImpl;
 import com.worldventures.dreamtrips.modules.player.view.custom.DtMediaController;

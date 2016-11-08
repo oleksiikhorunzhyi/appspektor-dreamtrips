@@ -84,8 +84,8 @@ public class GetTripsCommand extends CommandWithError<List<TripModel>> implement
                .priceMax(tripsFilterData.getMaxPrice())
                .startDate(tripsFilterData.getStartDate())
                .endDate(tripsFilterData.getEndDate())
-               .regions(tripsFilterData.getAcceptedActivities())
-               .activities(tripsFilterData.getAcceptedRegions())
+               .regions(tripsFilterData.getAcceptedRegions())
+               .activities(tripsFilterData.getAcceptedActivities())
                .soldOut(tripsFilterData.isShowSoldOut())
                .recentFirst(tripsFilterData.isShowRecentlyAdded())
                .liked(tripsFilterData.isShowFavorites());

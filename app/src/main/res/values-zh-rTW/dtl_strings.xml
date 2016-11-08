@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <resources>
+   <string name="dtl_local">在地</string>
    <string name="dtl_locations_title">選擇位置</string>
    <string name="dtl_locations_try_search">我們無法找到離您近的城市。\n試試我們的城市搜索</string>
    <string name="dtl_merchant_tab_offers">報價</string>

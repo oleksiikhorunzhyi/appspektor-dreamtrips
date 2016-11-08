@@ -19,6 +19,7 @@ import com.worldventures.dreamtrips.core.rx.RxBaseFragmentWithArgs;
 import com.worldventures.dreamtrips.modules.common.model.MediaAttachment;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragmentWithArgs;
 import com.worldventures.dreamtrips.modules.common.view.viewpager.BaseStatePagerAdapter;
+import com.worldventures.dreamtrips.modules.feed.bundle.CreateEntityBundle;
 import com.worldventures.dreamtrips.modules.tripsimages.bundle.FullScreenImagesBundle;
 import com.worldventures.dreamtrips.modules.tripsimages.bundle.FullScreenPhotoBundle;
 import com.worldventures.dreamtrips.modules.tripsimages.model.FragmentItemWithObject;
@@ -209,9 +210,7 @@ public class FullScreenPhotoWrapperFragment extends RxBaseFragmentWithArgs<TripI
    }
 
    @Override
-   public void openCreatePhoto(MediaAttachment mediaAttachment) {
-      /**
-       * Temporary. Need to refactor. Need to create own presenter for {@link FullScreenPhotoWrapperFragment}
-       */
+   public void openCreatePhoto(MediaAttachment mediaAttachment, CreateEntityBundle.Origin photoOrigin) {
+      //TODO Temporary. Need to refactor. Need to create own presenter for {@link FullScreenPhotoWrapperFragment}
    }
 }

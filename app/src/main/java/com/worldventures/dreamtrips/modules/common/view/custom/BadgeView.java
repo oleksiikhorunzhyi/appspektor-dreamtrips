@@ -2,13 +2,15 @@ package com.worldventures.dreamtrips.modules.common.view.custom;
 
 import android.content.Context;
 import android.content.res.Resources;
+import android.content.res.TypedArray;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.graphics.drawable.ShapeDrawable;
 import android.graphics.drawable.shapes.RoundRectShape;
+import android.os.Build;
+import android.support.annotation.Nullable;
 import android.util.AttributeSet;
 import android.util.TypedValue;
-import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewGroup.LayoutParams;
@@ -21,6 +23,8 @@ import android.widget.FrameLayout;
 import android.widget.TabWidget;
 import android.widget.TextView;
 
+import com.worldventures.dreamtrips.R;
+
 /**
  * A simple text label view that can be applied as a "badge" to any given {@link android.view.View}.
  * This class is intended to be instantiated at runtime rather than included in XML layouts.
@@ -29,16 +33,9 @@ import android.widget.TextView;
  */
 public class BadgeView extends TextView {
 
-   public static final int POSITION_TOP_LEFT = 1;
-   public static final int POSITION_TOP_RIGHT = 2;
-   public static final int POSITION_BOTTOM_LEFT = 3;
-   public static final int POSITION_BOTTOM_RIGHT = 4;
-   public static final int POSITION_CENTER = 5;
-
    private static final int DEFAULT_MARGIN_DIP = 5;
    private static final int DEFAULT_LR_PADDING_DIP = 5;
    private static final int DEFAULT_CORNER_RADIUS_DIP = 8;
-   private static final int DEFAULT_POSITION = POSITION_TOP_RIGHT;
    private static final int DEFAULT_BADGE_COLOR = Color.parseColor("#CCFF0000"); //Color.RED;
    private static final int DEFAULT_TEXT_COLOR = Color.WHITE;
 
@@ -99,20 +96,27 @@ public class BadgeView extends TextView {
 
    public BadgeView(Context context, AttributeSet attrs, int defStyle, View target, int tabIndex) {
       super(context, attrs, defStyle);
-      init(context, target, tabIndex);
+      init(context, attrs, target, tabIndex);
    }
 
-   private void init(Context context, View target, int tabIndex) {
+   private void init(Context context, @Nullable AttributeSet attrs, View target, int tabIndex) {
 
       this.context = context;
       this.target = target;
       this.targetTabIndex = tabIndex;
 
       // apply defaults
-      badgePosition = DEFAULT_POSITION;
       badgeMarginH = dipToPixels(DEFAULT_MARGIN_DIP);
       badgeMarginV = badgeMarginH;
-      badgeColor = DEFAULT_BADGE_COLOR;
+
+
+      if (attrs != null) {
+         TypedArray arr = getContext().obtainStyledAttributes(attrs, R.styleable.BadgeView);
+         badgeColor = arr.getColor(R.styleable.BadgeView_background_color, DEFAULT_BADGE_COLOR);
+         arr.recycle();
+      } else {
+         badgeColor = DEFAULT_BADGE_COLOR;
+      }
 
       setTypeface(Typeface.DEFAULT_BOLD);
       int paddingPixels = dipToPixels(DEFAULT_LR_PADDING_DIP);
@@ -149,7 +153,7 @@ public class BadgeView extends TextView {
          target = ((TabWidget) target).getChildTabViewAt(targetTabIndex);
          this.target = target;
 
-         ((ViewGroup) target).addView(container, new LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.FILL_PARENT));
+         ((ViewGroup) target).addView(container, new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT));
 
          this.setVisibility(View.GONE);
          container.addView(this);
@@ -255,9 +259,14 @@ public class BadgeView extends TextView {
          if (badgeBg == null) {
             badgeBg = getDefaultBackground();
          }
-         setBackgroundDrawable(badgeBg);
+         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
+            //noinspection all
+            setBackgroundDrawable(badgeBg);
+         } else {
+            //noinspection all
+            setBackground(badgeBg);
+         }
       }
-      applyLayoutParams();
 
       if (animate) {
          this.startAnimation(anim);
@@ -325,39 +334,6 @@ public class BadgeView extends TextView {
       drawable.getPaint().setColor(badgeColor);
 
       return drawable;
-
-   }
-
-   private void applyLayoutParams() {
-
-      FrameLayout.LayoutParams lp = new FrameLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
-
-      switch (badgePosition) {
-         case POSITION_TOP_LEFT:
-            lp.gravity = Gravity.LEFT | Gravity.TOP;
-            lp.setMargins(badgeMarginH, badgeMarginV, 0, 0);
-            break;
-         case POSITION_TOP_RIGHT:
-            lp.gravity = Gravity.RIGHT | Gravity.TOP;
-            lp.setMargins(0, badgeMarginV, badgeMarginH, 0);
-            break;
-         case POSITION_BOTTOM_LEFT:
-            lp.gravity = Gravity.LEFT | Gravity.BOTTOM;
-            lp.setMargins(badgeMarginH, 0, 0, badgeMarginV);
-            break;
-         case POSITION_BOTTOM_RIGHT:
-            lp.gravity = Gravity.RIGHT | Gravity.BOTTOM;
-            lp.setMargins(0, 0, badgeMarginH, badgeMarginV);
-            break;
-         case POSITION_CENTER:
-            lp.gravity = Gravity.CENTER;
-            lp.setMargins(0, 0, 0, 0);
-            break;
-         default:
-            break;
-      }
-
-      setLayoutParams(lp);
 
    }
 

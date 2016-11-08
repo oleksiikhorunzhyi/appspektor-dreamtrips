@@ -45,7 +45,7 @@ public class TripImagesTabsFragment extends BaseFragment<TripImagesTabsPresenter
             }
          };
 
-         this.adapter.add(new FragmentItem(Route.USER_IMAGES, getString(R.string.member_images)));
+         this.adapter.add(new FragmentItem(Route.MEMBERS_IMAGES, getString(R.string.member_images)));
          this.adapter.add(new FragmentItem(Route.ACCOUNT_IMAGES, getString(R.string.my_images)));
          this.adapter.add(new FragmentItem(Route.THREE_SIXTY_VIDEOS, getString(R.string.three_sixty)));
          this.adapter.add(new FragmentItem(Route.TRIP_LIST_IMAGES, getString(R.string.inspire_me)));

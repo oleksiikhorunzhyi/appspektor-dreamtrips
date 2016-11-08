@@ -1,0 +1,161 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.worldventures.dreamtrips.wallet.ui.settings.firmware.newavailable.WalletNewFirmwareScreen xmlns:android="http://schemas.android.com/apk/res/android"
+      xmlns:app="http://schemas.android.com/apk/res-auto"
+      xmlns:tools="http://schemas.android.com/tools"
+      android:layout_width="match_parent"
+      android:layout_height="match_parent"
+      android:theme="@style/WalletTheme"
+      >
+
+   <android.support.v7.widget.Toolbar
+         android:id="@+id/toolbar"
+         android:layout_width="match_parent"
+         android:layout_height="?attr/actionBarSize"
+         app:title="@string/wallet_settings_last_version_title"
+         />
+
+   <RelativeLayout
+         android:layout_width="match_parent"
+         android:layout_height="match_parent"
+         >
+
+      <TextView
+            android:id="@+id/new_dt_app_required"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/spacing_normal"
+            android:gravity="center"
+            android:paddingLeft="@dimen/spacing_huge"
+            android:paddingRight="@dimen/spacing_huge"
+            android:text="@string/wallet_settings_latest_dt_version_required"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:textColor="@color/wallet_settings_new_dt_version"
+            android:textSize="15sp"
+            android:visibility="gone"
+            tools:visibility="visible"
+            />
+
+      <TextView
+            android:id="@+id/update_dt_app"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/new_dt_app_required"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="@dimen/spacing_normal"
+            android:text="@string/wallet_settings_update_dt_app"
+            android:textColor="?attr/colorPrimary"
+            android:textSize="16sp"
+            android:visibility="gone"
+            tools:visibility="visible"
+            />
+
+      <RelativeLayout
+            android:id="@+id/version_container"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/update_dt_app"
+            android:layout_marginTop="@dimen/spacing_medium"
+            android:paddingLeft="@dimen/spacing_normal"
+            android:paddingRight="@dimen/spacing_normal"
+            >
+
+         <ImageView
+               android:id="@+id/settings_gear_icon"
+               android:layout_width="wrap_content"
+               android:layout_height="wrap_content"
+               android:layout_alignParentStart="true"
+               android:layout_alignParentTop="true"
+               android:src="@drawable/settings_gear_layer"
+               tools:ignore="ContentDescription"
+               />
+
+         <TextView
+               android:id="@+id/current_version"
+               android:layout_width="wrap_content"
+               android:layout_height="wrap_content"
+               android:layout_below="@+id/latest_version"
+               android:layout_marginStart="@dimen/spacing_medium"
+               android:layout_toEndOf="@+id/settings_gear_icon"
+               android:textAppearance="?android:attr/textAppearanceSmall"
+               android:textColor="@color/wallet_settings_version"
+               tools:text="@string/wallet_settings_version_current"
+               />
+
+         <TextView
+               android:id="@+id/available_version_size"
+               android:layout_width="wrap_content"
+               android:layout_height="wrap_content"
+               android:layout_alignBaseline="@+id/available_version"
+               android:layout_marginStart="@dimen/spacing_medium"
+               android:layout_toEndOf="@+id/available_version"
+               android:textAppearance="?android:attr/textAppearanceSmall"
+               android:textColor="@color/wallet_settings_version"
+               tools:text="@string/wallet_settings_update_size"
+               />
+
+         <TextView
+               android:id="@+id/latest_version"
+               android:layout_width="wrap_content"
+               android:layout_height="wrap_content"
+               android:layout_alignStart="@+id/current_version"
+               android:layout_below="@+id/available_version"
+               android:textAppearance="?android:attr/textAppearanceSmall"
+               android:textColor="@color/wallet_settings_version"
+               tools:text="@string/wallet_settings_version_latest"
+               />
+
+         <TextView
+               android:id="@+id/available_version"
+               android:layout_width="wrap_content"
+               android:layout_height="wrap_content"
+               android:layout_alignParentTop="true"
+               android:layout_alignStart="@+id/latest_version"
+               android:textAppearance="?android:attr/textAppearanceLarge"
+               android:textStyle="bold"
+               tools:text="@string/wallet_settings_version"
+               />
+
+      </RelativeLayout>
+
+      <TextView
+            android:id="@+id/what_is_new"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/version_container"
+            android:layout_gravity="start"
+            android:layout_marginStart="@dimen/spacing_large"
+            android:layout_marginTop="@dimen/spacing_normal"
+            android:text="@string/wallet_settings_version_whats_new"
+            />
+
+      <TextView
+            android:id="@+id/new_version_description"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_above="@+id/download_install_btn"
+            android:layout_alignParentStart="true"
+            android:layout_below="@+id/what_is_new"
+            android:paddingBottom="@dimen/spacing_small"
+            android:paddingEnd="@dimen/spacing_large"
+            android:paddingStart="@dimen/spacing_large"
+            android:paddingTop="@dimen/spacing_medium"
+            android:scrollbars="vertical"
+            android:textColor="@color/wallet_settings_version"
+            android:textSize="11sp"
+            tools:text="To make our SmartCard better for you, we have updates every 2 week. Every update of our smart card includes improvements for speed and reliability. As other new features become available, we\’ll highlight those for you in the app."
+            />
+
+      <Button
+            android:id="@+id/download_install_btn"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_marginBottom="@dimen/spacing_large"
+            android:layout_marginEnd="@dimen/spacing_large"
+            android:layout_marginStart="@dimen/spacing_large"
+            android:text="@string/wallet_settings_download_install"
+            />
+
+   </RelativeLayout>
+
+</com.worldventures.dreamtrips.wallet.ui.settings.firmware.newavailable.WalletNewFirmwareScreen>

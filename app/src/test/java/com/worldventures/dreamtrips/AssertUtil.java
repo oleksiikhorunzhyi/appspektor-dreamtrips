@@ -2,6 +2,8 @@ package com.worldventures.dreamtrips;
 
 import org.junit.Assert;
 
+import java.util.List;
+
 import io.techery.janet.ActionState;
 import io.techery.janet.CancelException;
 import io.techery.janet.JanetException;
@@ -23,6 +25,21 @@ public final class AssertUtil {
       assertStatusCount(subscriber, ActionState.Status.SUCCESS, 1);
       Assert.assertTrue(assertPredicate.call(subscriber.getOnNextEvents()
             .get(subscriber.getOnNextEvents().size() - 1).action));
+   }
+
+   public static <T> void assertSingleProgressAction(TestSubscriber<ActionState<T>> subscriber, Func1<T, Boolean> assertPredicate) {
+      subscriber.unsubscribe();
+      subscriber.assertNoErrors();
+      subscriber.assertUnsubscribed();
+      assertStatusCount(subscriber, ActionState.Status.START, 1);
+      assertStatusCount(subscriber, ActionState.Status.PROGRESS, 1);
+      List<ActionState<T>> onNextEvents = subscriber.getOnNextEvents();
+      for (ActionState<T> onNextEvent : onNextEvents) {
+         if (onNextEvent.status == ActionState.Status.PROGRESS) {
+            Assert.assertTrue(assertPredicate.call(onNextEvent.action));
+            break;
+         }
+      }
    }
 
    public static <T> void assertSubscriberWithSingleValue(TestSubscriber<T> subscriber) {

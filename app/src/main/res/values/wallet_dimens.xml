@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+   <dimen name="wallet_photo_rounded_corner_radius">10dp</dimen>
+   <dimen name="wallet_common_screen_padding">24dp</dimen>
+   <dimen name="wallet_bank_card_default_bank_info_container_height">45dp</dimen>
+
+   <dimen name="wallet_card_height">200dp</dimen>
+   <dimen name="wallet_card_margin">20dp</dimen>
+
+   <dimen name="wallet_round_check_box_left_padding">10dp</dimen>
+   <dimen name="wallet_round_check_box_text_size">16sp</dimen>
+
+   <dimen name="wallet_details_screen_component_margin_top">15dp</dimen>
+   <dimen name="wallet_details_screen_address_margin_top">10dp</dimen>
+   <dimen name="wallet_details_screen_address_text_size">16sp</dimen>
+   <dimen name="wallet_details_screen_address_space_between_lines">5dp</dimen>
+   <dimen name="wallet_details_screen_billing_address_text_size">12sp</dimen>
+   <dimen name="wallet_details_screen_edit_address_button_text_size">16sp</dimen>
+   <dimen name="wallet_details_screen_delete_card_button_text_size">20sp</dimen>
+
+   <dimen name="wallet_gray_edit_text_text_size">18sp</dimen>
+   <dimen name="wallet_gray_text_view_text_size">14sp</dimen>
+
+   <dimen name="wallet_add_card_details_component_text_margin_left">8dp</dimen>
+   <dimen name="wallet_add_card_details_component_margin_top">10dp</dimen>
+   <dimen name="wallet_add_card_details_edittext_margin_top">3dp</dimen>
+
+   <dimen name="wallet_wizard_avatar_size">192dp</dimen>
+   <dimen name="wallet_wizard_bar_code_border_stroke_width">3dp</dimen>
+   <dimen name="wallet_wizard_bar_code_border_radius">8dp</dimen>
+   <dimen name="wallet_wizard_bar_code_view_left">18dp</dimen>
+   <dimen name="wallet_wizard_bar_code_view_top">170dp</dimen>
+   <dimen name="wallet_wizard_bar_code_view_right">18dp</dimen>
+   <dimen name="wallet_wizard_bar_code_view_bottom">150dp</dimen>
+
+   <dimen name="wallet_common_item_padding">16dp</dimen>
+   <dimen name="wallet_common_item_icon_size">24dp</dimen>
+
+   <dimen name="wallet_smartcard_connection_label_height">40dp</dimen>
+</resources>

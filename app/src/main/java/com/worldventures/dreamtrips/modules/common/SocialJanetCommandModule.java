@@ -36,7 +36,14 @@ import com.worldventures.dreamtrips.modules.friends.janet.ActOnFriendRequestComm
 import com.worldventures.dreamtrips.modules.friends.janet.AddFriendCommand;
 import com.worldventures.dreamtrips.modules.friends.janet.DeleteFriendRequestCommand;
 import com.worldventures.dreamtrips.modules.friends.janet.RemoveFriendCommand;
+import com.worldventures.dreamtrips.modules.infopages.service.command.GetFeedbackCommand;
+import com.worldventures.dreamtrips.modules.infopages.service.command.SendFeedbackCommand;
+import com.worldventures.dreamtrips.modules.infopages.service.command.UploadFeedbackAttachmentCommand;
 import com.worldventures.dreamtrips.modules.membership.command.GetPodcastsCommand;
+import com.worldventures.dreamtrips.modules.profile.service.command.GetPrivateProfileCommand;
+import com.worldventures.dreamtrips.modules.profile.service.command.GetPublicProfileCommand;
+import com.worldventures.dreamtrips.modules.profile.service.command.UploadAvatarCommand;
+import com.worldventures.dreamtrips.modules.profile.service.command.UploadBackgroundCommand;
 import com.worldventures.dreamtrips.modules.settings.command.SettingsCommand;
 import com.worldventures.dreamtrips.modules.trips.command.GetActivitiesCommand;
 import com.worldventures.dreamtrips.modules.trips.command.GetRegionsCommand;
@@ -44,6 +51,9 @@ import com.worldventures.dreamtrips.modules.trips.command.GetTripDetailsCommand;
 import com.worldventures.dreamtrips.modules.trips.command.GetTripsByUidCommand;
 import com.worldventures.dreamtrips.modules.trips.command.GetTripsCommand;
 import com.worldventures.dreamtrips.modules.trips.command.GetTripsLocationsCommand;
+import com.worldventures.dreamtrips.modules.tripsimages.service.command.CreatePhotoCreationItemCommand;
+import com.worldventures.dreamtrips.modules.video.service.command.GetMemberVideosCommand;
+import com.worldventures.dreamtrips.modules.video.service.command.GetVideoLocalesCommand;
 
 import dagger.Module;
 
@@ -100,5 +110,15 @@ import dagger.Module;
       DownloadCachedEntityCommand.class,
       ResetCachedEntitiesInProgressCommand.class,
       LogoutCommand.class,
+      GetPrivateProfileCommand.class,
+      UploadAvatarCommand.class,
+      UploadBackgroundCommand.class,
+      GetPublicProfileCommand.class,
+      SendFeedbackCommand.class,
+      GetFeedbackCommand.class,
+      UploadFeedbackAttachmentCommand.class,
+      CreatePhotoCreationItemCommand.class,
+      GetMemberVideosCommand.class,
+      GetVideoLocalesCommand.class,
 }, complete = false, library = true)
 public class SocialJanetCommandModule {}

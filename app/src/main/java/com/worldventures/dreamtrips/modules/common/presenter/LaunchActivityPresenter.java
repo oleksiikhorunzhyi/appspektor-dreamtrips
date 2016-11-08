@@ -3,11 +3,13 @@ package com.worldventures.dreamtrips.modules.common.presenter;
 import com.messenger.synchmechanism.MessengerConnector;
 import com.techery.spares.utils.ValidationUtils;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
+import com.worldventures.dreamtrips.core.utils.tracksystem.AnalyticsInteractor;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.auth.api.command.LoginCommand;
 import com.worldventures.dreamtrips.modules.auth.service.LoginInteractor;
+import com.worldventures.dreamtrips.modules.auth.service.analytics.LoginAction;
+import com.worldventures.dreamtrips.modules.auth.service.analytics.LoginErrorAction;
 import com.worldventures.dreamtrips.modules.auth.util.SessionUtil;
-import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.common.presenter.delegate.ClearDirectoryDelegate;
 import com.worldventures.dreamtrips.modules.common.view.ApiErrorView;
 import com.worldventures.dreamtrips.modules.common.view.util.DrawableUtil;
@@ -27,6 +29,7 @@ public class LaunchActivityPresenter extends ActivityPresenter<LaunchActivityPre
    @Inject ClearDirectoryDelegate clearTemporaryDirectoryDelegate;
    @Inject DrawableUtil drawableUtil;
    @Inject SnappyRepository db;
+   @Inject AnalyticsInteractor analyticsInteractor;
    @Inject DtlLocationInteractor dtlLocationInteractor;
    @Inject LoginInteractor loginInteractor;
    @Inject MessengerConnector messengerConnector;
@@ -52,13 +55,11 @@ public class LaunchActivityPresenter extends ActivityPresenter<LaunchActivityPre
                   .onStart(loginCommand -> view.showLoginProgress())
                   .onSuccess(loginCommand -> {
                      loginInteractor.loginActionPipe().clearReplays();
-                     User user = loginCommand.getResult().getUser();
-                     TrackingHelper.login(user.getEmail());
                      launchModeBasedOnExistingSession();
                   })
                   .onFail((loginCommand, throwable) -> {
                      loginInteractor.loginActionPipe().clearReplays();
-                     TrackingHelper.loginError();
+                     analyticsInteractor.analyticsActionPipe().send(new LoginErrorAction());
                      view.alertLogin(loginCommand.getErrorMessage());
                   }));
    }
@@ -112,6 +113,8 @@ public class LaunchActivityPresenter extends ActivityPresenter<LaunchActivityPre
    }
 
    private void onAuthSuccess() {
+      analyticsInteractor.analyticsActionPipe().send(new LoginAction(appSessionHolder.get()
+            .get().getUser().getUsername()));
       TrackingHelper.setUserId(getAccount().getUsername(), Integer.toString(getAccount().getId()));
       messengerConnector.connect();
       view.openMain();

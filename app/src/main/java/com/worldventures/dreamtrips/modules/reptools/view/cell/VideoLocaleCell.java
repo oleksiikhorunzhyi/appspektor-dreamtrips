@@ -9,7 +9,7 @@ import com.techery.spares.annotations.Layout;
 import com.techery.spares.ui.view.cell.AbstractDelegateCell;
 import com.techery.spares.ui.view.cell.CellDelegate;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.modules.reptools.model.VideoLocale;
+import com.worldventures.dreamtrips.modules.video.model.VideoLocale;
 
 import butterknife.InjectView;
 

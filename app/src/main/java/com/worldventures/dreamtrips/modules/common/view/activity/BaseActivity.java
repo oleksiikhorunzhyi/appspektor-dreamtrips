@@ -36,6 +36,7 @@ import com.worldventures.dreamtrips.modules.trips.TripsModule;
 import com.worldventures.dreamtrips.modules.tripsimages.TripsImagesModule;
 import com.worldventures.dreamtrips.modules.tripsimages.view.custom.PickImageDelegate;
 import com.worldventures.dreamtrips.modules.video.VideoModule;
+import com.worldventures.dreamtrips.wallet.di.WalletActivityModule;
 
 import java.util.List;
 
@@ -142,6 +143,7 @@ public abstract class BaseActivity extends InjectingActivity {
       modules.add(new DtlActivityModule());
       modules.add(new LocationPickerModule());
       modules.add(new PodcastModule());
+      modules.add(new WalletActivityModule());
       return modules;
    }
 

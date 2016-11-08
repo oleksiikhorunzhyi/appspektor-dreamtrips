@@ -24,6 +24,10 @@ public class Links implements Serializable, Parcelable {
       return users != null && users.size() > 0;
    }
 
+   public void setUsers(List<User> users) {
+      this.users = users;
+   }
+
    public static Links forUser(User user) {
       Links links = new Links();
       links.users = new ArrayList<>();

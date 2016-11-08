@@ -1,13 +1,18 @@
 package com.worldventures.dreamtrips.core.repository;
 
 import android.content.Context;
+import android.support.annotation.NonNull;
 
+import com.esotericsoftware.kryo.Kryo;
+import com.esotericsoftware.kryo.io.Input;
+import com.esotericsoftware.kryo.io.Output;
+import com.esotericsoftware.kryo.serializers.CompatibleFieldSerializer;
+import com.esotericsoftware.kryo.serializers.DefaultSerializers;
 import com.innahema.collections.query.queriables.Queryable;
 import com.snappydb.DB;
 import com.snappydb.DBFactory;
 import com.snappydb.SnappydbException;
 import com.techery.spares.storage.complex_objects.Optional;
-import com.techery.spares.utils.ValidationUtils;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem;
 import com.worldventures.dreamtrips.modules.dtl.model.transaction.DtlTransaction;
 import com.worldventures.dreamtrips.modules.dtl.model.transaction.ImmutableDtlTransaction;
@@ -20,8 +25,6 @@ import com.worldventures.dreamtrips.modules.feed.model.UndefinedFeedItem;
 import com.worldventures.dreamtrips.modules.friends.model.Circle;
 import com.worldventures.dreamtrips.modules.infopages.model.FeedbackType;
 import com.worldventures.dreamtrips.modules.membership.model.Podcast;
-import com.worldventures.dreamtrips.modules.reptools.model.VideoLanguage;
-import com.worldventures.dreamtrips.modules.reptools.model.VideoLocale;
 import com.worldventures.dreamtrips.modules.settings.model.FlagSetting;
 import com.worldventures.dreamtrips.modules.settings.model.SelectSetting;
 import com.worldventures.dreamtrips.modules.settings.model.Setting;
@@ -32,11 +35,31 @@ import com.worldventures.dreamtrips.modules.tripsimages.model.IFullScreenObject;
 import com.worldventures.dreamtrips.modules.tripsimages.model.SocialViewPagerState;
 import com.worldventures.dreamtrips.modules.tripsimages.model.TripImagesType;
 import com.worldventures.dreamtrips.modules.video.model.CachedEntity;
+import com.worldventures.dreamtrips.modules.video.model.VideoLanguage;
+import com.worldventures.dreamtrips.modules.video.model.VideoLocale;
+import com.worldventures.dreamtrips.wallet.domain.entity.AddressInfo;
+import com.worldventures.dreamtrips.wallet.domain.entity.FirmwareUpdateData;
+import com.worldventures.dreamtrips.wallet.domain.entity.ImmutableAddressInfo;
+import com.worldventures.dreamtrips.wallet.domain.entity.ImmutableFirmwareUpdateData;
+import com.worldventures.dreamtrips.wallet.domain.entity.ImmutableSmartCard;
+import com.worldventures.dreamtrips.wallet.domain.entity.ImmutableSmartCardDetails;
+import com.worldventures.dreamtrips.wallet.domain.entity.ImmutableTermsAndConditions;
+import com.worldventures.dreamtrips.wallet.domain.entity.SmartCard;
+import com.worldventures.dreamtrips.wallet.domain.entity.SmartCardDetails;
+import com.worldventures.dreamtrips.wallet.domain.entity.TermsAndConditions;
+import com.worldventures.dreamtrips.wallet.domain.entity.card.Card;
+import com.worldventures.dreamtrips.wallet.domain.storage.security.crypto.Crypter.CryptoData;
+import com.worldventures.dreamtrips.wallet.domain.storage.security.crypto.HybridAndroidCrypter;
 
+import org.objenesis.strategy.StdInstantiatorStrategy;
+
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -45,17 +68,31 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 
+import io.techery.janet.smartcard.mock.device.SimpleDeviceStorage;
 import timber.log.Timber;
 
 public class SnappyRepositoryImpl implements SnappyRepository {
 
    private Context context;
    private ExecutorService executorService;
+   private Kryo kryo;
+   private HybridAndroidCrypter crypter;
 
-   public SnappyRepositoryImpl(Context context) {
-      ValidationUtils.checkNotNull(context);
+   public SnappyRepositoryImpl(@NonNull Context context, @NonNull HybridAndroidCrypter crypter) {
       this.context = context;
+      this.crypter = crypter;
       this.executorService = Executors.newSingleThreadExecutor();
+      //
+      initCustomKryo();
+   }
+
+   private void initCustomKryo() {
+      this.kryo = new Kryo();
+      this.kryo.register(Date.class, new DefaultSerializers.DateSerializer());
+      this.kryo.setDefaultSerializer(CompatibleFieldSerializer.class);
+      Kryo.DefaultInstantiatorStrategy strategy = new Kryo.DefaultInstantiatorStrategy();
+      strategy.setFallbackInstantiatorStrategy(new StdInstantiatorStrategy());
+      this.kryo.setInstantiatorStrategy(strategy);
    }
 
    ///////////////////////////////////////////////////////////////////////////
@@ -130,6 +167,36 @@ public class SnappyRepositoryImpl implements SnappyRepository {
    // Public
    ///////////////////////////////////////////////////////////////////////////
 
+   private void putEncrypted(String key, Object obj) {
+      act(db -> {
+         Output output = new Output(new ByteArrayOutputStream());
+         kryo.writeClassAndObject(output, obj);
+         byte[] bytes = crypter.encrypt(new CryptoData(new ByteArrayInputStream(output.getBuffer()))).toByteArray();
+         db.put(key, bytes);
+      });
+   }
+
+   private <T> T getEncrypted(String key, Class<T> clazz) {
+      return actWithResult(db -> {
+         T result = null;
+         Input input = new Input();
+         try {
+            byte[] bytes = crypter.decrypt(new CryptoData(new ByteArrayInputStream(db.getBytes(key)))).toByteArray();
+            input.setBuffer(bytes);
+            result = (T) kryo.readClassAndObject(input);
+         } finally {
+            input.close();
+         }
+         return result;
+      }).orNull();
+   }
+
+   private <T> List<T> getEncryptedList(String key) {
+      List decrypted = getEncrypted(key, List.class);
+      if (decrypted == null) return Collections.emptyList();
+      else return (List<T>) decrypted;
+   }
+
    @Override
    public <T> void putList(String key, Collection<T> list) {
       act(db -> db.put(key, list.toArray()));
@@ -137,7 +204,8 @@ public class SnappyRepositoryImpl implements SnappyRepository {
 
    @Override
    public <T> List<T> readList(String key, Class<T> clazz) {
-      return actWithResult(db -> new ArrayList<>(Arrays.asList(db.getObjectArray(key, clazz)))).or(new ArrayList<>());
+      return actWithResult(db -> new ArrayList<>(Arrays.asList(db.getObjectArray(key, clazz))))
+            .or(new ArrayList<>());
    }
 
    /**
@@ -232,6 +300,146 @@ public class SnappyRepositoryImpl implements SnappyRepository {
    @Override
    public void setLastSyncAppVersion(String appVersion) {
       act(db -> db.put(LAST_SYNC_APP_VERSION, appVersion));
+   }
+
+   ///////////////////////////////////////////////////////////////////////////
+   // Wallet
+   ///////////////////////////////////////////////////////////////////////////
+
+   @Override
+   public void saveSmartCard(SmartCard smartCard) {
+      putEncrypted(WALLET_SMART_CARD + smartCard.smartCardId(), smartCard);
+   }
+
+   @Override
+   public SmartCard getSmartCard(String smartCardId) {
+      return getEncrypted(WALLET_SMART_CARD + smartCardId, ImmutableSmartCard.class);
+   }
+
+   @Override
+   public List<SmartCard> getSmartCards() {
+      List<SmartCard> result = new ArrayList<>();
+      String[] keys = actWithResult(db -> db.findKeys(WALLET_SMART_CARD)).or(new String[0]);
+      for (String key : keys) result.add(getEncrypted(key, ImmutableSmartCard.class));
+      return result;
+   }
+
+   @Override
+   public void deleteSmartCard(String smartCardId) {
+      act(db -> db.del(WALLET_SMART_CARD + smartCardId));
+   }
+
+   @Override
+   public void saveSmartCardDetails(SmartCardDetails smartCardDetails) {
+      putEncrypted(WALLET_DETAILS_SMART_CARD + smartCardDetails.smartCardId(), smartCardDetails);
+   }
+
+   @Override
+   public SmartCardDetails getSmartCardDetails(String smartCardId) {
+      return getEncrypted(WALLET_DETAILS_SMART_CARD + smartCardId, ImmutableSmartCardDetails.class);
+   }
+
+   @Override
+   public void deleteSmartCardDetails(String smartCardId) {
+      act(db -> db.del(WALLET_DETAILS_SMART_CARD + smartCardId));
+   }
+
+   @Override
+   public void setActiveSmartCardId(String scid) {
+      putEncrypted(WALLET_ACTIVE_SMART_CARD_ID, scid);
+   }
+
+   @Override
+   public String getActiveSmartCardId() {
+      return getEncrypted(WALLET_ACTIVE_SMART_CARD_ID, String.class);
+   }
+
+   @Override
+   public void deleteActiveSmartCardId() {
+      act(db -> db.del(WALLET_ACTIVE_SMART_CARD_ID));
+   }
+
+   @Override
+   public void saveWalletCardsList(List<Card> items) {
+      putEncrypted(WALLET_CARDS_LIST, items);
+   }
+
+   @Override
+   public List<Card> readWalletCardsList() {
+      return getEncryptedList(WALLET_CARDS_LIST);
+   }
+
+   public void deleteWalletCardList() {
+      act(db -> {
+         db.del(WALLET_CARDS_LIST);
+         db.del(WALLET_DEFAULT_BANK_CARD);
+      });
+   }
+
+   @Override
+   public void saveWalletDefaultCardId(String defaultCardId) {
+      if (defaultCardId == null) return;
+      putEncrypted(WALLET_DEFAULT_BANK_CARD, defaultCardId);
+   }
+
+   @Override
+   public String readWalletDefaultCardId() {
+      return getEncrypted(WALLET_DEFAULT_BANK_CARD, String.class);
+   }
+
+   @Override
+   public void saveDefaultAddress(AddressInfo addressInfo) {
+      putEncrypted(WALLET_DEFAULT_ADDRESS, addressInfo);
+   }
+
+   @Override
+   public AddressInfo readDefaultAddress() {
+      return getEncrypted(WALLET_DEFAULT_ADDRESS, ImmutableAddressInfo.class);
+   }
+
+   @Override
+   public void deleteDefaultAddress() {
+      act(db -> db.del(WALLET_DEFAULT_ADDRESS));
+   }
+
+   @Override
+   public void saveWalletTermsAndConditions(TermsAndConditions data) {
+      putEncrypted(WALLET_TERMS_AND_CONDITIONS, data);
+   }
+
+   @Override
+   public TermsAndConditions getWalletTermsAndConditions() {
+      return getEncrypted(WALLET_TERMS_AND_CONDITIONS, ImmutableTermsAndConditions.class);
+   }
+
+   @Override
+   public void deleteTermsAndConditions() {
+      act(db -> db.del(WALLET_TERMS_AND_CONDITIONS));
+   }
+
+   @Override
+   public void saveFirmwareUpdateData(FirmwareUpdateData firmwareUpdateData) {
+      putEncrypted(WALLET_FIRMWARE, firmwareUpdateData);
+   }
+
+   @Override
+   public FirmwareUpdateData getFirmwareUpdateData() {
+      return getEncrypted(WALLET_FIRMWARE, ImmutableFirmwareUpdateData.class);
+   }
+
+   @Override
+   public void deleteFirmwareUpdateData() {
+      act(db -> db.del(WALLET_FIRMWARE));
+   }
+
+   @Override
+   public void saveWalletDeviceStorage(SimpleDeviceStorage deviceStorage) {
+      act(db -> db.put(WALLET_DEVICE_STORAGE, deviceStorage));
+   }
+
+   @Override
+   public SimpleDeviceStorage getWalletDeviceStorage() {
+      return actWithResult(db -> db.get(WALLET_DEVICE_STORAGE, SimpleDeviceStorage.class)).orNull();
    }
 
    ///////////////////////////////////////////////////////////////////////////
@@ -435,7 +643,7 @@ public class SnappyRepositoryImpl implements SnappyRepository {
    }
 
    @Override
-   public void setFeedbackTypes(ArrayList<FeedbackType> types) {
+   public void setFeedbackTypes(List<FeedbackType> types) {
       clearAllForKey(FEEDBACK_TYPES);
       putList(FEEDBACK_TYPES, types);
    }
@@ -589,4 +797,5 @@ public class SnappyRepositoryImpl implements SnappyRepository {
          return tripModels;
       }).or(new ArrayList<>());
    }
+
 }

@@ -38,11 +38,15 @@ public class WalletPinIsSetPresenter extends WalletPresenter<WalletPinIsSetPrese
       super.attachView(view);
       analyticsInteractor.walletAnalyticsCommandPipe()
             .send(new WalletAnalyticsCommand(new PinWasSetAction(smartCard.cardName())));
+      observeActivation();
+   }
+
+   private void observeActivation() {
       wizardInteractor.activateSmartCardPipe()
             .observeWithReplay()
             .compose(new ActionPipeCacheWiper<>(wizardInteractor.activateSmartCardPipe()))
             .compose(bindViewIoToMainComposer())
-            .subscribe(OperationActionStateSubscriberWrapper.<ActivateSmartCardCommand>forView(view.provideOperationDelegate())
+            .subscribe(OperationActionStateSubscriberWrapper.<ActivateSmartCardCommand>forView(getView().provideOperationDelegate())
                   .onSuccess(command -> navigateToDashboardScreen())
                   .onFail(getContext().getString(R.string.error_something_went_wrong))
                   .wrap());

@@ -1,6 +1,7 @@
 package com.worldventures.dreamtrips.modules.feed.converter;
 
 import com.worldventures.dreamtrips.api.bucketlist.model.BucketItem;
+import com.worldventures.dreamtrips.api.entity.model.EntityHolder;
 import com.worldventures.dreamtrips.api.feed.model.FeedItem;
 import com.worldventures.dreamtrips.api.photos.model.Photo;
 import com.worldventures.dreamtrips.api.post.model.response.Post;
@@ -15,28 +16,33 @@ import com.worldventures.dreamtrips.modules.trips.model.TripModel;
 
 import io.techery.mappery.MapperyContext;
 
-public class FeedItemConverter implements Converter<FeedItem, com.worldventures.dreamtrips.modules.feed.model.FeedItem> {
+public class FeedItemConverter implements Converter<EntityHolder, FeedEntityHolder> {
 
    @Override
-   public Class<FeedItem> sourceClass() {
-      return FeedItem.class;
+   public Class<EntityHolder> sourceClass() {
+      return EntityHolder.class;
    }
 
    @Override
-   public Class<com.worldventures.dreamtrips.modules.feed.model.FeedItem> targetClass() {
-      return com.worldventures.dreamtrips.modules.feed.model.FeedItem.class;
+   public Class<FeedEntityHolder> targetClass() {
+      return FeedEntityHolder.class;
    }
 
    @Override
-   public com.worldventures.dreamtrips.modules.feed.model.FeedItem convert(MapperyContext mapperyContext, FeedItem apiFeedItem) {
+   public com.worldventures.dreamtrips.modules.feed.model.FeedItem convert(MapperyContext mapperyContext, EntityHolder entityHolder) {
       com.worldventures.dreamtrips.modules.feed.model.FeedItem feedItem = new com.worldventures.dreamtrips.modules.feed.model.FeedItem();
-      feedItem.setCreatedAt(apiFeedItem.createdAt());
-      feedItem.setLinks(mapperyContext.convert(apiFeedItem.links(), Links.class));
-      feedItem.setAction(mapAction(apiFeedItem.action()));
-      TargetClassInfo targetClassInfo = getTargetClassInfo(apiFeedItem.entity());
+      if (entityHolder instanceof FeedItem) {
+         FeedItem apiFeedItem = (FeedItem) entityHolder;
+         feedItem.setReadAt(apiFeedItem.readAt());
+         if (apiFeedItem.id() != null) feedItem.setId(apiFeedItem.id());
+         feedItem.setCreatedAt(apiFeedItem.createdAt());
+         feedItem.setLinks(mapperyContext.convert(apiFeedItem.links(), Links.class));
+         feedItem.setAction(mapAction(apiFeedItem.action()));
+      }
+      TargetClassInfo targetClassInfo = getTargetClassInfo(entityHolder.entity());
       try {
          feedItem.setType(targetClassInfo.type);
-         feedItem.setItem(mapperyContext.convert(apiFeedItem.entity(), targetClassInfo.targetClass));
+         feedItem.setItem(mapperyContext.convert(entityHolder.entity(), targetClassInfo.targetClass));
       } catch (IllegalArgumentException ex) {
          return new UndefinedFeedItem();
       }

@@ -20,7 +20,7 @@ import java.util.Date;
 
 public class FeedItem<T extends FeedEntity> extends BaseEntity implements FeedEntityHolder, TranslatableItem {
 
-   @SerializedName("notification_id") protected int notificationId;
+   protected int notificationId;
    protected FeedItem.Type type = Type.UNDEFINED;
    protected FeedItem.Action action;
    protected T item;
@@ -119,6 +119,10 @@ public class FeedItem<T extends FeedEntity> extends BaseEntity implements FeedEn
 
    public Date getReadAt() {
       return readAt;
+   }
+
+   public void setReadAt(Date readAt) {
+      this.readAt = readAt;
    }
 
    public MetaData getMetaData() {

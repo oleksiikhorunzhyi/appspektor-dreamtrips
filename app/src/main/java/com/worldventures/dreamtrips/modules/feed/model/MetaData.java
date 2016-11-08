@@ -25,6 +25,10 @@ public class MetaData implements Parcelable {
       return hashtags;
    }
 
+   public void setHashtags(ArrayList<Hashtag> hashtags) {
+      this.hashtags = hashtags;
+   }
+
    public static final Creator<MetaData> CREATOR = new Creator<MetaData>() {
       @Override
       public MetaData createFromParcel(Parcel in) {

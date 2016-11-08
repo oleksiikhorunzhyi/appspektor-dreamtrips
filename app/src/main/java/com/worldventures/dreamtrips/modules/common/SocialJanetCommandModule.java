@@ -32,6 +32,7 @@ import com.worldventures.dreamtrips.modules.feed.service.command.FeedByHashtagCo
 import com.worldventures.dreamtrips.modules.feed.service.command.GetAccountFeedCommand;
 import com.worldventures.dreamtrips.modules.feed.service.command.GetAccountTimelineCommand;
 import com.worldventures.dreamtrips.modules.feed.service.command.GetCommentsCommand;
+import com.worldventures.dreamtrips.modules.feed.service.command.GetFeedEntityCommand;
 import com.worldventures.dreamtrips.modules.feed.service.command.GetNotificationsCommand;
 import com.worldventures.dreamtrips.modules.feed.service.command.GetUserTimelineCommand;
 import com.worldventures.dreamtrips.modules.feed.service.command.HashtagSuggestionCommand;
@@ -196,5 +197,6 @@ import dagger.Module;
       GetCategoriesCommand.class,
       GetPopularBucketItemSuggestionsCommand.class,
       GetPopularBucketItemsCommand.class,
+      GetFeedEntityCommand.class,
 }, complete = false, library = true)
 public class SocialJanetCommandModule {}

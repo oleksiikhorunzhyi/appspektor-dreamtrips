@@ -17,7 +17,6 @@ import com.worldventures.dreamtrips.core.session.acl.FeatureManager;
 import com.worldventures.dreamtrips.core.ui.fragment.BaseImageFragment;
 import com.worldventures.dreamtrips.core.ui.fragment.BaseImagePresenter;
 import com.worldventures.dreamtrips.modules.bucketlist.BucketListModule;
-import com.worldventures.dreamtrips.modules.common.api.CopyFileCommand;
 import com.worldventures.dreamtrips.modules.common.presenter.ActivityPresenter;
 import com.worldventures.dreamtrips.modules.common.presenter.ComponentPresenter;
 import com.worldventures.dreamtrips.modules.common.presenter.LaunchActivityPresenter;
@@ -70,7 +69,7 @@ import dagger.Provides;
 @Module(
       injects = {ActivityPresenter.class, LaunchActivityPresenter.class, MainActivityPresenter.class, Presenter.class, SharePresenter.class, TermsConditionsDialogPresenter.class, TermsConditionsDialog.class,
 
-            LaunchActivity.class, MainActivity.class, PlayerActivity.class, ShareFragment.class, Player360Activity.class, FilterableArrayListAdapter.class, DraggableArrayListAdapter.class, PresentationVideosPresenter.class, MessengerActivity.class, PodcastPlayerActivity.class, DtlActivity.class, ComponentActivity.class, ComponentPresenter.class, CopyFileCommand.class, ProgressDialogFragment.class, MessageDialogFragment.class, PhotoPickerLayout.class,
+            LaunchActivity.class, MainActivity.class, PlayerActivity.class, ShareFragment.class, Player360Activity.class, FilterableArrayListAdapter.class, DraggableArrayListAdapter.class, PresentationVideosPresenter.class, MessengerActivity.class, PodcastPlayerActivity.class, DtlActivity.class, ComponentActivity.class, ComponentPresenter.class, ProgressDialogFragment.class, MessageDialogFragment.class, PhotoPickerLayout.class,
 
             DialogFragmentNavigator.NavigationDialogFragment.class, BaseImageFragment.class, BaseImagePresenter.class, BaseDialogFragmentWithPresenter.class,
             //

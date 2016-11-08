@@ -4,10 +4,11 @@ import com.innahema.collections.query.queriables.Queryable;
 import com.worldventures.dreamtrips.core.api.uploadery.SimpleUploaderyCommand;
 import com.worldventures.dreamtrips.core.api.uploadery.UploaderyInteractor;
 import com.worldventures.dreamtrips.core.rx.composer.IoToMainComposer;
-import com.worldventures.dreamtrips.modules.common.api.CopyFileCommand;
+import com.worldventures.dreamtrips.modules.common.command.CopyFileCommand;
 import com.worldventures.dreamtrips.modules.common.model.Coordinates;
 import com.worldventures.dreamtrips.modules.common.model.MediaAttachment;
 import com.worldventures.dreamtrips.modules.common.model.PhotoGalleryModel;
+import com.worldventures.dreamtrips.modules.common.service.MediaInteractor;
 import com.worldventures.dreamtrips.modules.common.view.util.MediaPickerEventDelegate;
 import com.worldventures.dreamtrips.modules.feed.api.UploadPhotosCommand;
 import com.worldventures.dreamtrips.modules.feed.bundle.CreateEntityBundle;
@@ -46,6 +47,7 @@ public class CreateEntityPresenter<V extends CreateEntityPresenter.View> extends
    private CreateEntityBundle.Origin origin;
 
    @Inject MediaPickerEventDelegate mediaPickerEventDelegate;
+   @Inject MediaInteractor mediaInteractor;
    @Inject UploaderyInteractor uploaderyInteractor;
    @Inject TripImagesInteractor tripImagesInteractor;
    @Inject PostsInteractor postsInteractor;
@@ -137,8 +139,8 @@ public class CreateEntityPresenter<V extends CreateEntityPresenter.View> extends
             .createObservable(new CreatePostCommand(createPhotoPostEntity))
             .compose(bindViewToMainComposer())
             .subscribe(new ActionStateSubscriber<CreatePostCommand>()
-               .onSuccess(createPostCommand -> processPostSuccess(createPostCommand.getResult()))
-               .onFail(this::handleError));
+                  .onSuccess(createPostCommand -> processPostSuccess(createPostCommand.getResult()))
+                  .onFail(this::handleError));
    }
 
    @Override
@@ -193,10 +195,13 @@ public class CreateEntityPresenter<V extends CreateEntityPresenter.View> extends
                if (view != null) {
                   view.attachPhoto(newImage);
                   if (ValidationUtils.isUrl(newImage.getFileUri())) {
-                     doRequest(new CopyFileCommand(context, newImage.getFileUri()), s -> {
-                        newImage.setFileUri(s);
-                        startUpload(newImage);
-                     });
+                     mediaInteractor.copyFilePipe()
+                           .createObservableResult(new CopyFileCommand(context, newImage.getFileUri()))
+                           .compose(bindViewToMainComposer())
+                           .subscribe(command -> {
+                              newImage.setFileUri(command.getResult());
+                              startUpload(newImage);
+                           }, e -> Timber.e(e, "Failed to copy file"));
                   } else {
                      startUpload(newImage);
                   }

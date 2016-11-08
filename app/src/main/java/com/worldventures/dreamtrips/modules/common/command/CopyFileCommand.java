@@ -1,4 +1,4 @@
-package com.worldventures.dreamtrips.modules.bucketlist.service.command;
+package com.worldventures.dreamtrips.modules.common.command;
 
 import android.content.Context;
 

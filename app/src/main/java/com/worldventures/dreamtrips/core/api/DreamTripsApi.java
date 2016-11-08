@@ -13,7 +13,6 @@ import com.worldventures.dreamtrips.modules.feed.model.CreatePhotoPostEntity;
 import com.worldventures.dreamtrips.modules.feed.model.FeedEntityHolder;
 import com.worldventures.dreamtrips.modules.feed.model.TextualPost;
 import com.worldventures.dreamtrips.modules.feed.model.comment.Comment;
-import com.worldventures.dreamtrips.modules.infopages.model.FeedbackType;
 import com.worldventures.dreamtrips.modules.membership.api.InviteBody;
 import com.worldventures.dreamtrips.modules.membership.model.History;
 import com.worldventures.dreamtrips.modules.membership.model.InviteTemplate;
@@ -43,8 +42,6 @@ import retrofit.http.Part;
 import retrofit.http.Path;
 import retrofit.http.Query;
 import retrofit.mime.TypedFile;
-
-import static com.worldventures.dreamtrips.modules.infopages.api.SendFeedbackCommand.FeedbackBody;
 
 public interface DreamTripsApi {
 
@@ -218,7 +215,7 @@ public interface DreamTripsApi {
    Void likeEntity(@Path("uid") String uid);
 
    @DELETE("/api/{uid}/likes")
-   Void dislikeEntity(@Path("uid") String uid);
+   Void dislikeEntity(@Path("uid") String uid );
 
    @GET("/api/{uid}/likes")
    ArrayList<User> getUsersWhoLikedEntity(@Path("uid") String uid, @Query("page") int page, @Query("per_page") int perPage);
@@ -241,10 +238,4 @@ public interface DreamTripsApi {
 
    @GET("/api/photos/{uid}")
    Photo getPhotoInfo(@Path("uid") String uid);
-
-   @GET("/api/feedbacks/reasons")
-   ArrayList<FeedbackType> getFeedbackReasons();
-
-   @POST("/api/feedbacks")
-   Void sendFeedback(@Body FeedbackBody feedbackBody);
 }

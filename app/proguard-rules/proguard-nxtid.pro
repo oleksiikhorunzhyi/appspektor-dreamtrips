@@ -1,0 +1,2 @@
+-keep class com.nxtid.** { *; }
+-keep class no.nordicsemi.** { *; }

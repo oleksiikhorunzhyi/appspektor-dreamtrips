@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.worldventures.dreamtrips.wallet.ui.settings.firmware.installsuccess.WalletSuccessInstallFirmwareScreen xmlns:android="http://schemas.android.com/apk/res/android"
+      xmlns:app="http://schemas.android.com/apk/res-auto"
+      xmlns:tools="http://schemas.android.com/tools"
+      android:layout_width="match_parent"
+      android:layout_height="match_parent"
+      android:theme="@style/WalletTheme"
+      >
+
+   <android.support.v7.widget.Toolbar
+         android:id="@+id/toolbar"
+         android:layout_width="match_parent"
+         android:layout_height="?attr/actionBarSize"
+         app:navigationIcon="@null"
+         app:title="@string/wallet_settings_last_version_title"
+         />
+
+   <RelativeLayout
+         android:layout_width="match_parent"
+         android:layout_height="match_parent"
+         >
+
+      <ImageView
+            android:id="@+id/success_firmware_install_image"
+            android:layout_width="176dp"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:src="@drawable/flyecard_angle"
+            tools:ignore="ContentDescription"
+            />
+
+      <ImageView
+            android:id="@+id/success_firmware_install_sub_image"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBottom="@+id/success_firmware_install_image"
+            android:layout_centerHorizontal="true"
+            android:layout_marginBottom="-8dp"
+            android:src="@drawable/ic_wallet_success"
+            tools:ignore="ContentDescription"
+            />
+
+      <TextView
+            android:id="@+id/success_firmware_install_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/success_firmware_install_image"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="@dimen/spacing_large"
+            android:text="@string/wallet_firmware_install_success_title"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            />
+
+      <TextView
+            android:id="@+id/success_firmware_install_sub_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/success_firmware_install_title"
+            android:layout_centerHorizontal="true"
+            android:layout_marginLeft="50dp"
+            android:layout_marginRight="50dp"
+            android:layout_marginTop="@dimen/spacing_medium"
+            android:gravity="center"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            tools:text="@string/wallet_firmware_install_success_sub_title"
+            />
+
+      <Button
+            android:id="@+id/success_firmware_install_done"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_margin="@dimen/spacing_normal"
+            android:text="@string/wallet_firmware_install_success_action_button"
+            />
+
+   </RelativeLayout>
+
+</com.worldventures.dreamtrips.wallet.ui.settings.firmware.installsuccess.WalletSuccessInstallFirmwareScreen>

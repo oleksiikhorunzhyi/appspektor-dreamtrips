@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+   <integer name="wallet_wizard_card_alias_length">31</integer>
+
+   <integer name="wallet_wizard_user_full_name_length">43</integer>
+
+   <integer name="wallet_gray_edit_text_text_length">256</integer>
+
+   <integer name="wallet_wizard_add_card_details_cvv_length">3</integer>
+
+   <integer name="smart_card_flip_time_full">1000</integer>
+   <integer name="smart_card_flip_time_half">500</integer>
+
+   <integer name="wallet_smart_card_id_length">10</integer>
+
+   <integer name="wallet_custom_loafing_animation_duration">1000</integer>
+</resources>

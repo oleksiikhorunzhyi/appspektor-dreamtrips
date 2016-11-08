@@ -1,9 +1,12 @@
 package com.worldventures.dreamtrips.modules.common;
 
+import android.content.Context;
+
 import com.messenger.di.MessengerActivityModule;
 import com.messenger.ui.activity.MessengerActivity;
 import com.messenger.ui.presenter.ToolbarPresenter;
 import com.techery.spares.module.Injector;
+import com.techery.spares.module.qualifier.ForActivity;
 import com.techery.spares.module.qualifier.ForApplication;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.component.ComponentDescription;
@@ -16,6 +19,7 @@ import com.worldventures.dreamtrips.core.session.acl.Feature;
 import com.worldventures.dreamtrips.core.session.acl.FeatureManager;
 import com.worldventures.dreamtrips.core.ui.fragment.BaseImageFragment;
 import com.worldventures.dreamtrips.core.ui.fragment.BaseImagePresenter;
+import com.worldventures.dreamtrips.core.utils.ViewUtils;
 import com.worldventures.dreamtrips.modules.bucketlist.BucketListModule;
 import com.worldventures.dreamtrips.modules.common.api.CopyFileCommand;
 import com.worldventures.dreamtrips.modules.common.presenter.ActivityPresenter;
@@ -56,6 +60,8 @@ import com.worldventures.dreamtrips.modules.tripsimages.TripsImagesModule;
 import com.worldventures.dreamtrips.modules.tripsimages.view.custom.PickImageDelegate;
 import com.worldventures.dreamtrips.modules.video.VideoModule;
 import com.worldventures.dreamtrips.modules.video.presenter.PresentationVideosPresenter;
+import com.worldventures.dreamtrips.wallet.di.WalletActivityModule;
+import com.worldventures.dreamtrips.wallet.ui.WalletActivity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -67,15 +73,43 @@ import dagger.Module;
 import dagger.Provides;
 
 @Module(
-      injects = {ActivityPresenter.class, LaunchActivityPresenter.class, MainActivityPresenter.class, Presenter.class, SharePresenter.class, TermsConditionsDialogPresenter.class, TermsConditionsDialog.class,
+      injects = {
+            ActivityPresenter.class,
+            LaunchActivityPresenter.class,
+            MainActivityPresenter.class,
+            Presenter.class, SharePresenter.class,
+            TermsConditionsDialogPresenter.class,
+            TermsConditionsDialog.class,
 
-            LaunchActivity.class, MainActivity.class, PlayerActivity.class, ShareFragment.class, Player360Activity.class, FilterableArrayListAdapter.class, DraggableArrayListAdapter.class, PresentationVideosPresenter.class, MessengerActivity.class, PodcastPlayerActivity.class, DtlActivity.class, ComponentActivity.class, ComponentPresenter.class, CopyFileCommand.class, ProgressDialogFragment.class, MessageDialogFragment.class, PhotoPickerLayout.class,
+            LaunchActivity.class,
+            MainActivity.class,
+            PlayerActivity.class,
+            ShareFragment.class,
+            Player360Activity.class,
+            FilterableArrayListAdapter.class,
+            DraggableArrayListAdapter.class,
+            PresentationVideosPresenter.class,
+            MessengerActivity.class,
+            PodcastPlayerActivity.class,
+            DtlActivity.class,
+            ComponentActivity.class,
+            ComponentPresenter.class,
+            CopyFileCommand.class,
+            ProgressDialogFragment.class,
+            MessageDialogFragment.class,
+            PhotoPickerLayout.class,
+            WalletActivity.class,
 
-            DialogFragmentNavigator.NavigationDialogFragment.class, BaseImageFragment.class, BaseImagePresenter.class, BaseDialogFragmentWithPresenter.class,
+            DialogFragmentNavigator.NavigationDialogFragment.class,
+            BaseImageFragment.class,
+            BaseImagePresenter.class,
+            BaseDialogFragmentWithPresenter.class,
             //
             ToolbarPresenter.class,
             //
-            MediaPickerFragment.class, MediaPickerPresenter.class,},
+            MediaPickerFragment.class,
+            MediaPickerPresenter.class
+      },
       complete = false,
       library = true)
 public class CommonModule {
@@ -93,19 +127,25 @@ public class CommonModule {
    }
 
    @Provides
-   ComponentsConfig provideComponentsConfig(FeatureManager featureManager) {
+   ComponentsConfig provideComponentsConfig(FeatureManager featureManager, @ForActivity Context context) {
       List<String> activeComponents = new ArrayList<>();
 
       featureManager.with(Feature.SOCIAL, () -> activeComponents.add(FeedModule.FEED));
 
       featureManager.with(Feature.TRIPS, () -> activeComponents.add(TripsModule.TRIPS));
 
+      if (!ViewUtils.isTablet(context)) {
+         featureManager.with(Feature.WALLET, () -> activeComponents.add(WalletActivityModule.WALLET));
+      }
+
       featureManager.with(Feature.SOCIAL, () -> activeComponents.add(FeedModule.NOTIFICATIONS));
       featureManager.with(Feature.SOCIAL, () -> activeComponents.add(MessengerActivityModule.MESSENGER));
       featureManager.with(Feature.DTL, () -> activeComponents.add(DtlActivityModule.DTL));
       featureManager.with(Feature.BOOK_TRAVEL, () -> activeComponents.add(TripsModule.OTA));
+
       activeComponents.add(TripsImagesModule.TRIP_IMAGES);
       featureManager.with(Feature.MEMBERSHIP, () -> activeComponents.add(VideoModule.MEMBERSHIP));
+
       activeComponents.add(BucketListModule.BUCKETLIST);
       activeComponents.add(ProfileModule.MY_PROFILE);
 

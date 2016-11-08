@@ -6,8 +6,10 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.support.annotation.NonNull;
+import android.webkit.MimeTypeMap;
 
 import com.techery.spares.ui.routing.ActivityBoundRouter;
+import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.utils.FileUtils;
 import com.worldventures.dreamtrips.modules.common.presenter.ComponentPresenter;
 import com.worldventures.dreamtrips.modules.common.view.activity.ComponentActivity;

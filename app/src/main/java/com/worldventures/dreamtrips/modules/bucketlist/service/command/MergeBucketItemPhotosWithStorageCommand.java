@@ -3,7 +3,7 @@ package com.worldventures.dreamtrips.modules.bucketlist.service.command;
 import com.worldventures.dreamtrips.core.janet.dagger.InjectableAction;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketPhoto;
 import com.worldventures.dreamtrips.modules.bucketlist.service.BucketInteractor;
-import com.worldventures.dreamtrips.modules.bucketlist.service.model.EntityStateHolder;
+import com.worldventures.dreamtrips.modules.common.model.EntityStateHolder;
 
 import java.util.ArrayList;
 import java.util.List;

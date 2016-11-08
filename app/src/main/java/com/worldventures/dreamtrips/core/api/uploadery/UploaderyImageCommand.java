@@ -19,33 +19,27 @@ import rx.schedulers.Schedulers;
 
 @CommandAction
 public abstract class UploaderyImageCommand<T> extends BaseUploadImageCommand<T> implements InjectableAction {
-   private final int commandId;
 
    @ForApplication @Inject Context context;
    @Inject Janet janet;
    @Inject StaticPageProvider staticPageProvider;
 
-   private final String filePath;
+   private final String fileUri;
 
-   public UploaderyImageCommand(String filePath, int commandId) {
-      this.commandId = commandId;
-      this.filePath = filePath;
+   public UploaderyImageCommand(String fileUri) {
+      this.fileUri = fileUri;
    }
 
    @Override
    protected void run(CommandCallback<T> callback) {
-      getFileObservable(context, filePath).flatMap(this::upload)
+      getFileObservable(context, fileUri).flatMap(this::upload)
             .compose(nextAction())
             .subscribe(callback::onSuccess, callback::onFail);
 
    }
 
-   public int getCommandId() {
-      return commandId;
-   }
-
-   public String getFilePath() {
-      return filePath;
+   public String getFileUri() {
+      return fileUri;
    }
 
    protected Observable<ActionState<UploadImageAction>> upload(File file) {

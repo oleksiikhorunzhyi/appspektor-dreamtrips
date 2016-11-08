@@ -56,7 +56,7 @@ public class VideoCell extends AbstractDelegateCell<Video, VideoCellDelegate> {
    public void onPlayClick() {
       Video video = getModelObject();
       CachedEntity videoEntity = video.getCacheEntity();
-      Uri parse = Uri.parse(getModelObject().getMp4Url());
+      Uri parse = Uri.parse(getModelObject().getVideoUrl());
       if (videoEntity.isCached(context)) {
          parse = Uri.parse(CachedEntity.getFilePath(context, videoEntity.getUrl()));
       }

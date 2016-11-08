@@ -19,7 +19,7 @@ public class AccountImagesPresenter extends MembersImagesPresenter {
    }
 
    @Override
-   public SpiceRequest<ArrayList<IFullScreenObject>> getNextPageRequest(int currentCount) {
-      return new GetUserPhotosQuery(userId, PER_PAGE, currentCount / PER_PAGE + 1);
+   public SpiceRequest<ArrayList<IFullScreenObject>> getNextPageRequest(int currentPage) {
+      return new GetUserPhotosQuery(userId, PER_PAGE, currentPage);
    }
 }

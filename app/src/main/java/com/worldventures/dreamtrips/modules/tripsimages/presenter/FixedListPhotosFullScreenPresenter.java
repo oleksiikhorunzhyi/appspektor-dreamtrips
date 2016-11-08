@@ -37,7 +37,7 @@ public class FixedListPhotosFullScreenPresenter extends TripImagesListPresenter<
    }
 
    @Override
-   protected SpiceRequest<ArrayList<IFullScreenObject>> getNextPageRequest(int currentCount) {
+   protected SpiceRequest<ArrayList<IFullScreenObject>> getNextPageRequest(int currentPage) {
       return null;
    }
 

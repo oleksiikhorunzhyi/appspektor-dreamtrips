@@ -14,14 +14,11 @@ import com.worldventures.dreamtrips.core.api.error.ErrorResponse;
 import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.navigation.router.NavigationConfigBuilder;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
-import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
-import com.worldventures.dreamtrips.modules.common.view.ApiErrorView;
 import com.worldventures.dreamtrips.modules.common.view.custom.FlagView;
 import com.worldventures.dreamtrips.modules.common.view.custom.tagview.viewgroup.newio.PhotoTagHolder;
 import com.worldventures.dreamtrips.modules.common.view.custom.tagview.viewgroup.newio.PhotoTagHolderManager;
 import com.worldventures.dreamtrips.modules.feed.view.cell.Flaggable;
 import com.worldventures.dreamtrips.modules.feed.view.popup.FeedItemMenuBuilder;
-import com.worldventures.dreamtrips.modules.trips.event.TripImageAnalyticEvent;
 import com.worldventures.dreamtrips.modules.tripsimages.bundle.EditPhotoBundle;
 import com.worldventures.dreamtrips.modules.tripsimages.events.SocialViewPagerStateChangedEvent;
 import com.worldventures.dreamtrips.modules.tripsimages.model.Flag;
@@ -146,7 +143,6 @@ public class SocialImageFullscreenFragment extends FullScreenPhotoFragment<Socia
 
    @OnClick(R.id.iv_like)
    public void actionLike() {
-      eventBus.post(new TripImageAnalyticEvent(getArgs().getPhoto().getFSId(), TrackingHelper.ATTRIBUTE_LIKE_IMAGE));
       getPresenter().onLikeAction();
    }
 
@@ -157,8 +153,6 @@ public class SocialImageFullscreenFragment extends FullScreenPhotoFragment<Socia
             .onDelete(this::deletePhoto)
             .onEdit(() -> {
                if (isVisibleOnScreen()) {
-                  eventBus.post(new TripImageAnalyticEvent(getArgs().getPhoto()
-                        .getFSId(), TrackingHelper.ATTRIBUTE_EDIT_IMAGE));
                   getPresenter().onEdit();
                }
             })
@@ -173,7 +167,6 @@ public class SocialImageFullscreenFragment extends FullScreenPhotoFragment<Socia
 
    @OnClick(R.id.flag)
    public void actionFlag() {
-      eventBus.post(new TripImageAnalyticEvent(getArgs().getPhoto().getFSId(), TrackingHelper.ATTRIBUTE_FLAG_IMAGE));
       getPresenter().onFlagAction(this);
    }
 
@@ -197,7 +190,7 @@ public class SocialImageFullscreenFragment extends FullScreenPhotoFragment<Socia
    }
 
    private void deletePhoto() {
-      eventBus.post(new TripImageAnalyticEvent(getArgs().getPhoto().getFSId(), TrackingHelper.ATTRIBUTE_DELETE_IMAGE));
+      getPresenter().onDelete();
       Dialog dialog = new SweetAlertDialog(getContext(), SweetAlertDialog.WARNING_TYPE).setTitleText(getResources().getString(R.string.photo_delete))
             .setContentText(getResources().getString(R.string.photo_delete_caption))
             .setConfirmText(getResources().getString(R.string.post_delete_confirm))

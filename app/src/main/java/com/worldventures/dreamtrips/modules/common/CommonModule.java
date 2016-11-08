@@ -46,6 +46,7 @@ import com.worldventures.dreamtrips.modules.common.view.dialog.MessageDialogFrag
 import com.worldventures.dreamtrips.modules.common.view.dialog.ProgressDialogFragment;
 import com.worldventures.dreamtrips.modules.common.view.dialog.TermsConditionsDialog;
 import com.worldventures.dreamtrips.modules.common.view.fragment.MediaPickerFragment;
+import com.worldventures.dreamtrips.modules.common.view.horizontal_photo_view.cell.StatefulPhotoCell;
 import com.worldventures.dreamtrips.modules.dtl_flow.DtlActivity;
 import com.worldventures.dreamtrips.modules.dtl_flow.di.DtlActivityModule;
 import com.worldventures.dreamtrips.modules.feed.FeedModule;
@@ -80,7 +81,6 @@ import dagger.Provides;
             Presenter.class, SharePresenter.class,
             TermsConditionsDialogPresenter.class,
             TermsConditionsDialog.class,
-
             LaunchActivity.class,
             MainActivity.class,
             PlayerActivity.class,
@@ -99,16 +99,14 @@ import dagger.Provides;
             MessageDialogFragment.class,
             PhotoPickerLayout.class,
             WalletActivity.class,
-
             DialogFragmentNavigator.NavigationDialogFragment.class,
             BaseImageFragment.class,
             BaseImagePresenter.class,
             BaseDialogFragmentWithPresenter.class,
-            //
             ToolbarPresenter.class,
-            //
             MediaPickerFragment.class,
-            MediaPickerPresenter.class
+            MediaPickerPresenter.class,
+            StatefulPhotoCell.class
       },
       complete = false,
       library = true)

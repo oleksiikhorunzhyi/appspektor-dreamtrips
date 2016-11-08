@@ -26,6 +26,18 @@ public class Circle implements Serializable, Comparable<Circle> {
       return predefined;
    }
 
+   public void setId(String id) {
+      this.id = id;
+   }
+
+   public void setName(String name) {
+      this.name = name;
+   }
+
+   public void setPredefined(boolean predefined) {
+      this.predefined = predefined;
+   }
+
    @Override
    public String toString() {
       return name;

@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <resources>
+   <string name="dtl_local">Τοπικά</string>
    <string name="dtl_locations_title">Επιλέξτε την τοποθεσία</string>
    <string name="dtl_locations_try_search">Δεν μπορέσαμε να εντοπίσουμε Πόλη σε κοντινή απόσταση.\nΔοκιμάστε την αναζήτηση πόλεων</string>
    <string name="dtl_merchant_tab_offers">Προσφορές</string>

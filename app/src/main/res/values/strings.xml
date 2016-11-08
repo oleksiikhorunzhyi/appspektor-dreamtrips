@@ -172,7 +172,9 @@
    <string name="training_videos">Training Videos</string>
    <string name="error_while_sync">Something went wrong</string>
    <string name="can_not_like_photo">Can\'t like photo</string>
+   <string name="like">%d Like</string>
    <string name="likes">%d Likes</string>
+   <string name="comment_single">%d Comment</string>
    <string name="comments">%d Comments</string>
    <string name="wrong_image">Wrong image</string>
    <string name="could_not_load">Could not load </string>
@@ -488,6 +490,12 @@
    <string name="feedback_has_been_sent">Your feedback is sent. Thank you</string>
    <string name="feedback_send_btn">Send</string>
    <string name="feedback_select_category">Choose Category</string>
+   <string name="feedback_add_photos">Add Photos</string>
+   <string name="feedback_could_not_load_attachment">Could not load attachment</string>
+   <string name="feedback_attachment_failed_item_retry">Retry</string>
+   <string name="feedback_attachment_failed_item_remove">Remove</string>
+   <string name="feedback_fullscreen_attachments_format">%1$d of %2$d</string>
+   <string name="feedback_fullscreen_attachments_remove">Remove</string>
 
    <string name="years_ago">%d years ago</string>
    <string name="invitation_template">Select template</string>

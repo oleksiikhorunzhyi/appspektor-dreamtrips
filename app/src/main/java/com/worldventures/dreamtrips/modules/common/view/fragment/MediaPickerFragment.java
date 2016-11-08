@@ -93,6 +93,7 @@ public class MediaPickerFragment extends BaseFragmentWithArgs<MediaPickerPresent
 
    @Override
    public boolean back() {
+      photoPickerLayout.hidePanel();
       @IdRes int containerId = (getView() != null && getView().getParent() != null) ? ((View) getView().getParent()).getId() : DEFAULT_CONTAINER_ID;
       router.moveTo(Route.MEDIA_PICKER, NavigationConfigBuilder.forRemoval()
             .containerId(containerId)

@@ -1,27 +1,18 @@
 package com.worldventures.dreamtrips.modules.video.presenter;
 
-import com.worldventures.dreamtrips.core.api.DreamTripsApi;
 import com.worldventures.dreamtrips.modules.reptools.presenter.TrainingVideosPresenter;
-import com.worldventures.dreamtrips.modules.video.api.MemberVideosRequest;
+import com.worldventures.dreamtrips.modules.video.service.command.GetMemberVideosCommand;
 
 public class HelpVideosPresenter extends TrainingVideosPresenter {
 
-   // TODO :: change endpoint after middleware implementation
    @Override
-   protected MemberVideosRequest getMemberVideosRequest() {
-      if (videoLocale != null && videoLanguage != null)
-         return new MemberVideosRequest(DreamTripsApi.TYPE_HELP, videoLanguage.getLocaleName());
-      else return new MemberVideosRequest(DreamTripsApi.TYPE_HELP);
+   protected GetMemberVideosCommand getMemberVideosRequest() {
+      return GetMemberVideosCommand.forHelpVideos(videoLanguage);
    }
 
    @Override
    protected boolean isNeedToSendAnalytics() {
       return false;
-   }
-
-   @Override
-   protected void trackAnalyticsOnPostResume() {
-      // Add analytics if needed when fragment resumed
    }
 
    @Override

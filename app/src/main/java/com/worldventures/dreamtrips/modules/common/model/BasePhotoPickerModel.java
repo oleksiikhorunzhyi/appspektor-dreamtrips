@@ -6,9 +6,9 @@ public interface BasePhotoPickerModel {
 
    void setChecked(boolean checked);
 
-   String getThumbnailPath();
+   String getImageUri();
 
-   String getOriginalPath();
+   String getAbsolutePath();
 
    long getPickedTime();
 }

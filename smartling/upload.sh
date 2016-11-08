@@ -5,6 +5,7 @@ string=""
 stringsPathSocial="../app/src/main/res/values/strings.xml"
 stringsPathDtl="../app/src/main/res/values/dtl_strings.xml"
 stringsPathMessenger="../app/src/main/res/values/messenger_strings.xml"
+stringsPathWallet="../app/src/main/res/values/wallet_strings.xml"
 
 if [[ $* == *"social"* ]];
 then
@@ -19,6 +20,11 @@ fi
 if [[ $* == *"messenger"* ]]
 then
     string+=" "$stringsPathMessenger
+fi
+
+if [[ $* == *"wallet"* ]]
+then
+    string+=" "$stringsPathWallet
 fi
 
 if [[ -z "$string" ]];

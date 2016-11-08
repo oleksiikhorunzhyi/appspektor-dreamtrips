@@ -120,8 +120,7 @@ public class AnalyticsService extends ActionService {
       for (Field field : declaredFields) {
          FieldAttribute fieldAttribute = getFieldAttribute(field, actionHolder.action());
          if (fieldAttribute != null) result.add(fieldAttribute);
-         List<FieldAttribute> fieldAttributeList = getFieldAttributeList(field, actionHolder.action());
-         if (fieldAttributeList != null) result.addAll(fieldAttributeList);
+         result.addAll(getFieldAttributeList(field, actionHolder.action()));
       }
       if (actionClass.getSuperclass() != null) {
          result.addAll(getAttributeFields(actionClass.getSuperclass(), actionHolder));
@@ -136,13 +135,15 @@ public class AnalyticsService extends ActionService {
          field.setAccessible(true);
          Object value = field.get(action);
          if (value != null) {
-            return new FieldAttribute(annotation.value(), String.valueOf(value));
+            String stringValue = String.valueOf(value);
+            //skip empty values
+            if (!TextUtils.isEmpty(stringValue))
+               return new FieldAttribute(annotation.value(), stringValue);
          }
       }
       return null;
    }
 
-   @Nullable
    private static List<FieldAttribute> getFieldAttributeList(Field field, Object action) throws IllegalAccessException {
       AttributeMap annotation = field.getAnnotation(AttributeMap.class);
       List<FieldAttribute> fieldAttributeList = new ArrayList<>();

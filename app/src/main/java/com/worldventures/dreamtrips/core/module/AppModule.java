@@ -50,7 +50,10 @@ import dagger.Provides;
             //
             JanetModule.class, AnalyticsModule.class, SessionProcessingModule.class,
             //
-            FlagsModule.class, PodcastAppModule.class, MappingModule.class},
+            FlagsModule.class, PodcastAppModule.class, MappingModule.class,
+            //
+            SecurityModule.class
+      },
       library = true,
       complete = false,
       overrides = true)

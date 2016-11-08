@@ -3,9 +3,9 @@ package com.worldventures.dreamtrips.modules.tripsimages.presenter;
 import com.worldventures.dreamtrips.modules.feed.service.NotificationFeedInteractor;
 import com.worldventures.dreamtrips.modules.feed.service.command.MarkNotificationAsReadCommand;
 import com.worldventures.dreamtrips.modules.profile.bundle.UserBundle;
-import com.worldventures.dreamtrips.modules.tripsimages.service.command.TripImagesCommand;
 import com.worldventures.dreamtrips.modules.tripsimages.model.IFullScreenObject;
 import com.worldventures.dreamtrips.modules.tripsimages.model.TripImagesType;
+import com.worldventures.dreamtrips.modules.tripsimages.service.command.TripImagesCommand;
 
 import java.util.ArrayList;
 
@@ -51,7 +51,7 @@ public class FixedListPhotosPresenter extends TripImagesListPresenter<TripImages
    }
 
    @Override
-   protected TripImagesCommand<? extends IFullScreenObject> getLoadMoreCommand(int currentCount) {
+   protected TripImagesCommand<? extends IFullScreenObject> getLoadMoreCommand(int currentPage) {
       return null;
    }
 }

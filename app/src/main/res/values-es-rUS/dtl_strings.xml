@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <resources>
+   <string name="dtl_local">Local</string>
    <string name="dtl_locations_title">Elegir ubicación</string>
    <string name="dtl_locations_try_search">No pudimos encontrar una ciudad cercana.\nPrueba nuestra búsqueda de ciudades</string>
    <string name="dtl_merchant_tab_offers">Ofertas</string>

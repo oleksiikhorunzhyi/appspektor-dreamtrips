@@ -2,6 +2,7 @@ package com.worldventures.dreamtrips.core.janet.cache;
 
 import com.worldventures.dreamtrips.core.janet.cache.storage.ActionStorage;
 import com.worldventures.dreamtrips.core.janet.cache.storage.MemoryStorage;
+import com.worldventures.dreamtrips.core.janet.cache.storage.MultipleActionStorage;
 import com.worldventures.dreamtrips.core.janet.cache.storage.PaginatedMemoryStorage;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.modules.bucketlist.service.storage.BucketListDiskStorage;
@@ -26,6 +27,12 @@ import com.worldventures.dreamtrips.modules.trips.storage.TripPinsStorage;
 import com.worldventures.dreamtrips.modules.trips.storage.TripsByUidsStorage;
 import com.worldventures.dreamtrips.modules.trips.storage.TripsDiskStorage;
 import com.worldventures.dreamtrips.modules.trips.storage.TripsStorage;
+import com.worldventures.dreamtrips.wallet.domain.storage.DefaultBankCardStorage;
+import com.worldventures.dreamtrips.wallet.domain.storage.FirmwareStorage;
+import com.worldventures.dreamtrips.wallet.domain.storage.SmartCardDetailsStorage;
+import com.worldventures.dreamtrips.wallet.domain.storage.SmartCardStorage;
+import com.worldventures.dreamtrips.wallet.domain.storage.TermsAndConditionsStorage;
+import com.worldventures.dreamtrips.wallet.domain.storage.WalletCardsDiskStorage;
 
 import javax.inject.Singleton;
 
@@ -139,7 +146,43 @@ public class CacheActionStorageModule {
 
    @Singleton
    @Provides(type = Provides.Type.SET)
+   ActionStorage provideWalletCardListStorage(SnappyRepository snappyRepository) {
+      return new WalletCardsDiskStorage(snappyRepository);
+   }
+
+   @Singleton
+   @Provides(type = Provides.Type.SET)
+   MultipleActionStorage provideDefaultBankCardStorage(SnappyRepository snappyRepository) {
+      return new DefaultBankCardStorage(snappyRepository);
+   }
+
+   @Singleton
+   @Provides(type = Provides.Type.SET)
+   MultipleActionStorage provideSmartCardStorage(SnappyRepository snappyRepository) {
+      return new SmartCardStorage(snappyRepository);
+   }
+
+   @Singleton
+   @Provides(type = Provides.Type.SET)
+   ActionStorage provideSmartCardDetailsStorage(SnappyRepository snappyRepository) {
+      return new SmartCardDetailsStorage(snappyRepository);
+   }
+
+   @Singleton
+   @Provides(type = Provides.Type.SET)
+   ActionStorage provideTermsAndConditionsStorage(SnappyRepository snappyRepository) {
+      return new TermsAndConditionsStorage(snappyRepository);
+   }
+
+   @Singleton
+   @Provides(type = Provides.Type.SET)
    ActionStorage provideFeedbackStorage(SnappyRepository db) {
       return new FeedbackTypeStorage(db);
+   }
+
+   @Singleton
+   @Provides(type = Provides.Type.SET)
+   MultipleActionStorage provideFirmwareStorage(SnappyRepository db) {
+      return new FirmwareStorage(db);
    }
 }

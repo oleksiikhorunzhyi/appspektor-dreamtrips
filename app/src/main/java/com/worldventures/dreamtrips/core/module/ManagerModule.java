@@ -225,15 +225,15 @@ public class ManagerModule {
 
    @Provides
    @Singleton
-   ProfileInteractor provideProfileInteractor(SessionActionPipeCreator sessionActionPipeCreator,
-         SessionHolder<UserSession> sessionHolder) {
-      return new ProfileInteractor(sessionActionPipeCreator, sessionHolder);
+   FeedbackInteractor provideFeedbackInteractor(SessionActionPipeCreator sessionActionPipeCreator) {
+      return new FeedbackInteractor(sessionActionPipeCreator);
    }
 
    @Provides
    @Singleton
-   FeedbackInteractor provideFeedbackInteractor(SessionActionPipeCreator sessionActionPipeCreator) {
-      return new FeedbackInteractor(sessionActionPipeCreator);
+   ProfileInteractor provideProfileInteractor(SessionActionPipeCreator sessionActionPipeCreator,
+         SessionHolder<UserSession> sessionHolder) {
+      return new ProfileInteractor(sessionActionPipeCreator, sessionHolder);
    }
 
    @Provides

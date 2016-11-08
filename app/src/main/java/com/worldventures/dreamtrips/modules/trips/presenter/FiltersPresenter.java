@@ -11,15 +11,15 @@ import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.trips.delegate.ResetFilterEventDelegate;
 import com.worldventures.dreamtrips.modules.trips.delegate.TripFilterEventDelegate;
 import com.worldventures.dreamtrips.modules.trips.model.ActivityModel;
+import com.worldventures.dreamtrips.modules.trips.model.RegionModel;
+import com.worldventures.dreamtrips.modules.trips.model.TripsFilterDataAnalyticsWrapper;
 import com.worldventures.dreamtrips.modules.trips.model.filter.DateFilterItem;
 import com.worldventures.dreamtrips.modules.trips.model.filter.FilterFavoriteModel;
 import com.worldventures.dreamtrips.modules.trips.model.filter.FilterModel;
 import com.worldventures.dreamtrips.modules.trips.model.filter.FilterRecentlyAddedModel;
 import com.worldventures.dreamtrips.modules.trips.model.filter.FilterSoldOutModel;
 import com.worldventures.dreamtrips.modules.trips.model.filter.RegionHeaderModel;
-import com.worldventures.dreamtrips.modules.trips.model.RegionModel;
 import com.worldventures.dreamtrips.modules.trips.model.filter.ThemeHeaderModel;
-import com.worldventures.dreamtrips.modules.trips.model.TripsFilterDataAnalyticsWrapper;
 import com.worldventures.dreamtrips.util.TripsFilterData;
 
 import java.util.ArrayList;
@@ -80,7 +80,9 @@ public class FiltersPresenter extends Presenter<FiltersPresenter.View> {
             .compose(bindViewToMainComposer())
             .subscribe(new ActionStateSubscriber<TripsFilterDataCommand>().onSuccess(tripsFilterDataCommand -> {
                view.hideProgress();
+               parentActivities.clear();
                parentActivities.addAll(getParentActivities(tripsFilterDataCommand.getResult().first));
+               regions.clear();
                regions.addAll(tripsFilterDataCommand.getResult().second);
                fillData();
             }).onFail((tripsFilterDataCommand, throwable) -> {

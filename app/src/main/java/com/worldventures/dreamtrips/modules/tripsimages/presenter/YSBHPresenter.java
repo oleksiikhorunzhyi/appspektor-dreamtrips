@@ -1,7 +1,7 @@
 package com.worldventures.dreamtrips.modules.tripsimages.presenter;
 
-import com.worldventures.dreamtrips.modules.tripsimages.service.command.GetYSBHPhotosCommand;
 import com.worldventures.dreamtrips.modules.tripsimages.model.TripImagesType;
+import com.worldventures.dreamtrips.modules.tripsimages.service.command.GetYSBHPhotosCommand;
 
 import io.techery.janet.ActionPipe;
 
@@ -21,7 +21,7 @@ public class YSBHPresenter extends TripImagesListPresenter<TripImagesListPresent
    }
 
    @Override
-   protected GetYSBHPhotosCommand getLoadMoreCommand(int currentCount) {
-      return new GetYSBHPhotosCommand(currentCount / PER_PAGE + 1, PER_PAGE);
+   protected GetYSBHPhotosCommand getLoadMoreCommand(int currentPage) {
+      return new GetYSBHPhotosCommand(PER_PAGE, currentPage);
    }
 }

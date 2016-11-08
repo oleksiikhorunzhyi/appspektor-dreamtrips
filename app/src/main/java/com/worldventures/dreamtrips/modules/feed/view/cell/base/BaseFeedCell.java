@@ -56,7 +56,7 @@ public abstract class BaseFeedCell<ITEM extends FeedItem, DELEGATE extends CellD
    protected void syncUIStateWithModel() {
       syncUIStateWithModelWasCalled = true;
       //
-      actionView.setState(getModelObject(), isForeignItem(getModelObject()));
+      actionView.setState(getModelObject(), isMineItem(getModelObject()));
       actionView.setOnMoreClickListener(feedItem -> onMore());
       actionView.setOnDeleteClickListener(feedItem -> onDelete());
       actionView.setOnEditClickListener(feedItem -> onEdit());
@@ -70,11 +70,13 @@ public abstract class BaseFeedCell<ITEM extends FeedItem, DELEGATE extends CellD
       }
    }
 
-   private boolean isForeignItem(FeedItem feedItem) {
+   private boolean isMineItem(FeedItem feedItem) {
       Optional<UserSession> userSessionOptional = sessionHolder.get();
-      return feedItem.getItem().getOwner() == null || !userSessionOptional.isPresent() || userSessionOptional.get()
-            .getUser()
-            .getId() == (feedItem.getItem().getOwner().getId());
+      if (feedItem.getItem().getOwner() == null || !userSessionOptional.isPresent()) return false;
+
+      int accountId = userSessionOptional.get().getUser().getId();
+      int ownerId = feedItem.getItem().getOwner().getId();
+      return accountId == ownerId;
    }
 
    @Override

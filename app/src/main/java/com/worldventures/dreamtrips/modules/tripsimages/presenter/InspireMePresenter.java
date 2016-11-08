@@ -1,7 +1,7 @@
 package com.worldventures.dreamtrips.modules.tripsimages.presenter;
 
-import com.worldventures.dreamtrips.modules.tripsimages.service.command.GetInspireMePhotosCommand;
 import com.worldventures.dreamtrips.modules.tripsimages.model.TripImagesType;
+import com.worldventures.dreamtrips.modules.tripsimages.service.command.GetInspireMePhotosCommand;
 
 import io.techery.janet.ActionPipe;
 
@@ -25,7 +25,7 @@ public class InspireMePresenter extends TripImagesListPresenter<TripImagesListPr
    }
 
    @Override
-   protected GetInspireMePhotosCommand getLoadMoreCommand(int currentCount) {
-      return new GetInspireMePhotosCommand(randomSeed, currentCount / PER_PAGE + 1, PER_PAGE);
+   protected GetInspireMePhotosCommand getLoadMoreCommand(int currentPage) {
+      return new GetInspireMePhotosCommand(randomSeed, currentPage, PER_PAGE);
    }
 }

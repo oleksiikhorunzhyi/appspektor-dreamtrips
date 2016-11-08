@@ -5,10 +5,10 @@ import android.support.annotation.NonNull;
 import com.worldventures.dreamtrips.modules.common.model.MediaAttachment;
 import com.worldventures.dreamtrips.modules.common.view.util.MediaPickerEventDelegate;
 import com.worldventures.dreamtrips.modules.feed.bundle.CreateEntityBundle;
-import com.worldventures.dreamtrips.modules.tripsimages.service.analytics.TripImageViewAnalyticsEvent;
-import com.worldventures.dreamtrips.modules.tripsimages.service.command.TripImagesCommand;
 import com.worldventures.dreamtrips.modules.tripsimages.model.IFullScreenObject;
 import com.worldventures.dreamtrips.modules.tripsimages.model.TripImagesType;
+import com.worldventures.dreamtrips.modules.tripsimages.service.analytics.TripImageViewAnalyticsEvent;
+import com.worldventures.dreamtrips.modules.tripsimages.service.command.TripImagesCommand;
 
 import javax.inject.Inject;
 
@@ -55,7 +55,6 @@ public abstract class MembersImagesBasePresenter<C extends TripImagesCommand<? e
    }
 
    public interface View extends TripImagesListPresenter.View {
-
       void openCreatePhoto(MediaAttachment mediaAttachment, CreateEntityBundle.Origin photoOrigin);
    }
 }

@@ -1,27 +1,22 @@
 package com.worldventures.dreamtrips.modules.tripsimages.presenter;
 
-import android.support.annotation.NonNull;
-
 import com.innahema.collections.query.queriables.Queryable;
-import com.octo.android.robospice.persistence.exception.SpiceException;
 import com.techery.spares.adapter.ListAdapter;
 import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.core.rx.RxView;
 import com.worldventures.dreamtrips.core.utils.events.EntityLikedEvent;
 import com.worldventures.dreamtrips.core.utils.events.PhotoDeletedEvent;
-import com.worldventures.dreamtrips.modules.common.model.UploadTask;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.feed.event.FeedEntityChangedEvent;
 import com.worldventures.dreamtrips.modules.feed.event.FeedItemAddedEvent;
 import com.worldventures.dreamtrips.modules.feed.model.TextualPost;
 import com.worldventures.dreamtrips.modules.tripsimages.bundle.FullScreenImagesBundle;
-import com.worldventures.dreamtrips.modules.tripsimages.service.command.TripImagesCommand;
 import com.worldventures.dreamtrips.modules.tripsimages.model.IFullScreenObject;
 import com.worldventures.dreamtrips.modules.tripsimages.model.Photo;
 import com.worldventures.dreamtrips.modules.tripsimages.model.TripImagesType;
 import com.worldventures.dreamtrips.modules.tripsimages.service.TripImagesInteractor;
-import com.worldventures.dreamtrips.modules.tripsimages.service.analytics.TripImageViewAnalyticsEvent;
+import com.worldventures.dreamtrips.modules.tripsimages.service.command.TripImagesCommand;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -49,6 +44,8 @@ public abstract class TripImagesListPresenter<VT extends TripImagesListPresenter
 
    protected List<IFullScreenObject> photos = new ArrayList<>();
    protected int userId;
+
+   private int currentPage;
 
    protected TripImagesListPresenter(TripImagesType type, int userId) {
       super();
@@ -92,7 +89,7 @@ public abstract class TripImagesListPresenter<VT extends TripImagesListPresenter
       reload();
    }
 
-   protected void fillWithItems() {
+   private void fillWithItems() {
       photos.addAll(db.readPhotoEntityList(type, userId));
       view.fillWithItems(photos);
       view.setSelection(currentPhotoPosition);
@@ -103,7 +100,7 @@ public abstract class TripImagesListPresenter<VT extends TripImagesListPresenter
          loading = false;
          previousTotal = totalItemCount;
       }
-      if (!loading && (totalItemCount - visibleItemCount) <= (firstVisibleItem + VISIBLE_TRESHOLD) && totalItemCount % PER_PAGE == 0) {
+      if (!loading && (totalItemCount - visibleItemCount) <= (firstVisibleItem + VISIBLE_TRESHOLD)) {
          loadNext();
          loading = true;
       }
@@ -117,10 +114,12 @@ public abstract class TripImagesListPresenter<VT extends TripImagesListPresenter
 
    public void reload() {
       view.startLoading();
+      currentPage = 1;
       load(getReloadCommand(), this::onFullDataLoaded);
    }
 
    public void loadNext() {
+      currentPage++;
       load(getLoadMoreCommand(view.getAdapter().getCount()), this::savePhotosAndUpdateView);
    }
 
@@ -128,11 +127,12 @@ public abstract class TripImagesListPresenter<VT extends TripImagesListPresenter
       getLoadingPipe().createObservable(command)
             .compose(bindViewToMainComposer())
             .subscribe(new ActionStateSubscriber<C>()
-               .onSuccess(c -> successAction.call((List<IFullScreenObject>) c.getResult()))
-            .onFail((failedCommand, throwable) -> {
-               view.finishLoading();
-               super.handleError(failedCommand, throwable);
-            }));
+                  .onSuccess(c -> successAction.call((List<IFullScreenObject>) c.getResult()))
+                  .onFail((failedCommand, throwable) -> {
+                     view.finishLoading();
+                     if (currentPage != 1) currentPage--;
+                     super.handleError(failedCommand, throwable);
+                  }));
    }
 
    private void onFullDataLoaded(List<IFullScreenObject> items) {
@@ -153,13 +153,7 @@ public abstract class TripImagesListPresenter<VT extends TripImagesListPresenter
       db.savePhotoEntityList(type, userId, photos);
       view.getAdapter().addItems(list);
       view.getAdapter().notifyDataSetChanged();
-   }
 
-   @Override
-   public void handleError(SpiceException error) {
-      view.finishLoading();
-      loading = false;
-      super.handleError(error);
    }
 
    public IFullScreenObject getPhoto(int position) {

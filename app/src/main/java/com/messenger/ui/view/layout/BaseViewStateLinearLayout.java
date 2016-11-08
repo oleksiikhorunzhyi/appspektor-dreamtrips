@@ -25,16 +25,18 @@ public abstract class BaseViewStateLinearLayout<V extends MvpView, P extends Vie
 
    @Override
    protected void onAttachedToWindow() {
-      super.onAttachedToWindow();
-      onPostAttachToWindowView();
-      // TODO extract to delegate for reuse in other views
-      if (lastInstanceState == null) {
-         presenter.onNewViewState();
-      } else {
-         presenter.onRestoreInstanceState(lastInstanceState);
-      }
+      if (!isInEditMode()) {
+         super.onAttachedToWindow();
+         onPostAttachToWindowView();
+         // TODO extract to delegate for reuse in other views
+         if (lastInstanceState == null) {
+            presenter.onNewViewState();
+         } else {
+            presenter.onRestoreInstanceState(lastInstanceState);
+         }
 
-      presenter.onAttachedToWindow();
+         presenter.onAttachedToWindow();
+      }
    }
 
    protected void onPostAttachToWindowView() {
@@ -42,14 +44,18 @@ public abstract class BaseViewStateLinearLayout<V extends MvpView, P extends Vie
 
    @Override
    protected void onDetachedFromWindow() {
-      super.onDetachedFromWindow();
-      presenter.onDetachedFromWindow();
+      if (!isInEditMode()) {
+         super.onDetachedFromWindow();
+         presenter.onDetachedFromWindow();
+      }
    }
 
    @Override
    protected void onWindowVisibilityChanged(int visibility) {
       super.onWindowVisibilityChanged(visibility);
-      presenter.onVisibilityChanged(visibility);
+      if (!isInEditMode()) {
+         presenter.onVisibilityChanged(visibility);
+      }
    }
 
    @Override

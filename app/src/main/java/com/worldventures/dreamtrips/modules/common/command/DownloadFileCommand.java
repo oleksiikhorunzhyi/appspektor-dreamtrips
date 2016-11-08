@@ -14,8 +14,8 @@ import io.techery.janet.command.annotations.CommandAction;
 @CommandAction
 public class DownloadFileCommand extends Command<File> {
 
-   private String urlLink;
    private File file;
+   private String urlLink;
 
    public DownloadFileCommand(File file, String urlLink) {
       this.file = file;
@@ -47,6 +47,7 @@ public class DownloadFileCommand extends Command<File> {
          byte data[] = new byte[4096];
          long total = 0;
          int count;
+         int reportedProgress = 0;
          while ((count = input.read(data)) != -1) {
             if (isCanceled()) {
                input.close();
@@ -55,7 +56,11 @@ public class DownloadFileCommand extends Command<File> {
             }
             total += count;
             if (fileLength > 0) {
-               callback.onProgress((int) (total * 100 / fileLength));
+               int progress = (int) (total * 1f / fileLength * 100);
+               if (progress - reportedProgress > 5) {
+                  reportedProgress = progress;
+                  callback.onProgress(reportedProgress);
+               }
             }
             output.write(data, 0, count);
          }
@@ -89,4 +94,5 @@ public class DownloadFileCommand extends Command<File> {
    protected void cancel() {
       setCanceled(true);
    }
+
 }

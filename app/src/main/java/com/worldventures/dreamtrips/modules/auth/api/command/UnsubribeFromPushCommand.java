@@ -40,10 +40,10 @@ public class UnsubribeFromPushCommand extends Command<Void> implements Injectabl
    protected void run(CommandCallback<Void> callback) throws Throwable {
       if (TextUtils.isEmpty(pushToken)) callback.onSuccess(null);
       else {
-         UnsubscribeFromPushNotificationsHttpAction unsubscribeFromPushAction = new UnsubscribeFromPushNotificationsHttpAction(sessionToken);
+         UnsubscribeFromPushNotificationsHttpAction unsubscribeFromPushAction = new UnsubscribeFromPushNotificationsHttpAction(pushToken);
          unsubscribeFromPushAction.setAuthorizationHeader(NewDreamTripsHttpService.getAuthorizationHeader(sessionToken));
          janet.createPipe(UnsubscribeFromPushNotificationsHttpAction.class, Schedulers.io())
-               .createObservableResult(new UnsubscribeFromPushNotificationsHttpAction(pushToken))
+               .createObservableResult(unsubscribeFromPushAction)
                .doOnNext(action -> {
                   try {
                      InstanceID.getInstance(context).deleteInstanceID();

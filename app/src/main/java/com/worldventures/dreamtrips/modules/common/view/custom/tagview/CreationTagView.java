@@ -56,7 +56,10 @@ public class CreationTagView extends TagView<TagCreationActionsListener> {
    protected void initialize() {
       LayoutInflater.from(getContext()).inflate(getLayout(), this, true);
       ButterKnife.inject(this);
-      adapter = new TagFriendAdapter(getContext(), constraint -> tagListener.requestFriendList(constraint, page));
+      adapter = new TagFriendAdapter(getContext(), constraint -> {
+         page = 1;
+         tagListener.requestFriendList(constraint, page);
+      });
       if (pointerTop != null) {
          pointerTop.requestFocus();
       }

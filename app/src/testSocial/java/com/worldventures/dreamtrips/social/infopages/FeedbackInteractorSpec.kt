@@ -1,14 +1,11 @@
-package com.worldventures.dreamtrips.social.membership
+package com.worldventures.dreamtrips.social.infopages
 
-import com.nhaarman.mockito_kotlin.mock
-import com.nhaarman.mockito_kotlin.spy
-import com.nhaarman.mockito_kotlin.verify
+import com.nhaarman.mockito_kotlin.*
 import com.worldventures.dreamtrips.AssertUtil.assertActionSuccess
 import com.worldventures.dreamtrips.BaseSpec
 import com.worldventures.dreamtrips.api.feedback.model.FeedbackAttachment
 import com.worldventures.dreamtrips.api.feedback.model.FeedbackReason
 import com.worldventures.dreamtrips.api.feedback.model.ImmutableFeedbackReason
-import com.worldventures.dreamtrips.api.post.model.request.Attachment
 import com.worldventures.dreamtrips.core.janet.SessionActionPipeCreator
 import com.worldventures.dreamtrips.core.repository.SnappyRepository
 import com.worldventures.dreamtrips.core.utils.AppVersionNameBuilder
@@ -22,6 +19,10 @@ import com.worldventures.dreamtrips.modules.infopages.service.command.SendFeedba
 import com.worldventures.dreamtrips.modules.infopages.service.storage.FeedbackTypeStorage
 import com.worldventures.dreamtrips.modules.mapping.converter.Converter
 import com.worldventures.dreamtrips.modules.mapping.converter.FeedbackImageAttachmentConverter
+import com.worldventures.dreamtrips.wallet.domain.entity.ImmutableSmartCard
+import com.worldventures.dreamtrips.wallet.domain.entity.SmartCard
+import com.worldventures.dreamtrips.wallet.service.FirmwareInteractor
+import com.worldventures.dreamtrips.wallet.service.SmartCardInteractor
 import io.techery.janet.ActionService
 import io.techery.janet.ActionState
 import io.techery.janet.CommandActionService
@@ -44,7 +45,7 @@ class FeedbackInteractorSpec : BaseSpec({
       context("Should get correct feedback reasons") {
          val testSub = TestSubscriber<ActionState<GetFeedbackCommand>>()
          feedbackInteractor.feedbackPipe.createObservable(GetFeedbackCommand()).subscribe(testSub)
-         assertActionSuccess(testSub) { checkIfFeedbackReasonsAreValid(it.result)}
+         assertActionSuccess(testSub) { checkIfFeedbackReasonsAreValid(it.result) }
       }
 
       context("Should restore feedback reasons from DB") {
@@ -55,9 +56,15 @@ class FeedbackInteractorSpec : BaseSpec({
    describe("Send feedback command") {
       setup(makeSendFeedbackHttpService())
 
+      beforeEach {
+         doReturn(smartCardId).whenever(mockDb).activeSmartCardId
+         doReturn(smartCard).whenever(mockDb).getSmartCard(any())
+         doReturn("1.16").whenever(appVersionNameBuilder).semanticVersionName
+      }
+
       context("Should finish successfully") {
          val testSub = TestSubscriber<ActionState<SendFeedbackCommand>>()
-         val command = SendFeedbackCommand(1, "text", emptyList());
+         val command = SendFeedbackCommand(1, "text", emptyList())
          feedbackInteractor.sendFeedbackPipe().createObservable(command).subscribe(testSub)
          assertActionSuccess(testSub) { true }
       }
@@ -77,10 +84,15 @@ class FeedbackInteractorSpec : BaseSpec({
    companion object BaseCompanion {
       val mockDb: SnappyRepository = spy()
       val deviceInfoProvider: DeviceInfoProvider = mock()
+      val appVersionNameBuilder: AppVersionNameBuilder = mock()
 
+      val smartCardId = "1234123421"
+      val smartCard = createDummySmartCard()
       var stubFeedbackReasons: List<FeedbackReason> = makeStubFeedbackReasons()
 
+
       lateinit var feedbackInteractor: FeedbackInteractor
+      lateinit var smartCardInteractor: SmartCardInteractor
 
       fun setup(httpService: ActionService) {
          val daggerCommandActionService = CommandActionService()
@@ -97,8 +109,10 @@ class FeedbackInteractorSpec : BaseSpec({
          daggerCommandActionService.registerProvider(SnappyRepository::class.java) { mockDb }
          daggerCommandActionService.registerProvider(AppVersionNameBuilder::class.java) { AppVersionNameBuilder() }
          daggerCommandActionService.registerProvider(DeviceInfoProvider::class.java) { deviceInfoProvider }
+         daggerCommandActionService.registerProvider(SmartCardInteractor::class.java) { smartCardInteractor }
 
          feedbackInteractor = FeedbackInteractor(SessionActionPipeCreator(janet))
+         smartCardInteractor = SmartCardInteractor(janet, SessionActionPipeCreator(janet), FirmwareInteractor(janet))
       }
 
       // getting feedback reasons specific
@@ -113,7 +127,7 @@ class FeedbackInteractorSpec : BaseSpec({
       fun makeStubFeedbackReasons(): List<FeedbackReason> {
          val feedbackReasons = ArrayList<FeedbackReason>()
          for (i in 1..2) {
-            var reason = ImmutableFeedbackReason.builder()
+            val reason = ImmutableFeedbackReason.builder()
                   .id(i)
                   .text("Title $i")
                   .build()
@@ -155,6 +169,13 @@ class FeedbackInteractorSpec : BaseSpec({
       }
 
       // sending feedback specific
+
+      fun createDummySmartCard() = ImmutableSmartCard.builder()
+            .smartCardId(smartCardId)
+            .cardStatus(SmartCard.CardStatus.ACTIVE)
+            .deviceName("fsadf")
+            .deviceAddress("fsadfsa")
+            .build()
 
       fun makeSendFeedbackHttpService(): MockHttpActionService {
          return MockHttpActionService.Builder()

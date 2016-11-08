@@ -171,7 +171,7 @@ public class CreateEntityPresenter<V extends CreateEntityPresenter.View> extends
 
    public void attachImages(MediaAttachment mediaAttachment) {
       if (view == null || mediaAttachment.chosenImages == null || mediaAttachment.chosenImages.isEmpty()) return;
-
+     
       view.disableImagePicker();
       imageSelected(mediaAttachment);
    }

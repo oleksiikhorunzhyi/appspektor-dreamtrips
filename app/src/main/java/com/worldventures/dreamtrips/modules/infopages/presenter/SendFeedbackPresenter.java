@@ -9,6 +9,7 @@ import com.worldventures.dreamtrips.core.navigation.router.NavigationConfig;
 import com.worldventures.dreamtrips.core.navigation.router.NavigationConfigBuilder;
 import com.worldventures.dreamtrips.core.navigation.router.Router;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
+import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.common.model.EntityStateHolder;
 import com.worldventures.dreamtrips.modules.common.model.PhotoGalleryModel;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
@@ -83,26 +84,28 @@ public class SendFeedbackPresenter extends Presenter<SendFeedbackPresenter.View>
                      view.hideProgressBar();
                   })
                   .onFail((action, e) -> {
-                     super.handleError(action, e);
+                     view.informUser(action.getErrorMessage());
+                     view.setFeedbackTypes(action.items());
                      view.hideProgressBar();
                   }));
    }
 
    public void sendFeedback(int feedbackType, String text) {
+      TrackingHelper.sendFeedback(feedbackType);
       view.changeDoneButtonState(false);
 
       feedbackInteractor.sendFeedbackPipe()
             .createObservable(new SendFeedbackCommand(feedbackType, text, getImageAttachments()))
             .compose(bindViewToMainComposer())
             .subscribe(new ActionStateSubscriber<SendFeedbackCommand>()
-               .onSuccess(sendFeedbackCommand -> {
-                  attachmentsManager.removeAll();
-                  view.feedbackSent();
-               })
-               .onFail((sendFeedbackCommand, throwable) -> {
-                  view.changeDoneButtonState(true);
-                  super.handleError(sendFeedbackCommand, throwable);
-               }));
+                  .onSuccess(sendFeedbackCommand -> {
+                     attachmentsManager.removeAll();
+                     view.feedbackSent();
+                  })
+                  .onFail((sendFeedbackCommand, throwable) -> {
+                     view.changeDoneButtonState(true);
+                     super.handleError(sendFeedbackCommand, throwable);
+                  }));
    }
 
    ///////////////////////////////////////////////////////////////////////////
@@ -115,8 +118,8 @@ public class SendFeedbackPresenter extends Presenter<SendFeedbackPresenter.View>
             view.getPhotoPickerVisibilityObservable(),
             attachmentsManager.getAttachmentsObservable().startWith(Observable.just(null)),
             this::validateForm)
-      .compose(bindView())
-      .subscribe(view::changeDoneButtonState);
+            .compose(bindView())
+            .subscribe(view::changeDoneButtonState);
    }
 
    private boolean validateForm(FeedbackType feedbackType, CharSequence message,
@@ -201,9 +204,9 @@ public class SendFeedbackPresenter extends Presenter<SendFeedbackPresenter.View>
       attachmentsManager.getAttachmentsObservable()
             .compose(bindView())
             .subscribe(holder -> {
-         int attachmentsCount = attachmentsManager.getAttachments().size();
-         view.changeAddPhotosButtonState(attachmentsCount < PICKER_MAX_IMAGES ? true : false);
-      });
+               int attachmentsCount = attachmentsManager.getAttachments().size();
+               view.changeAddPhotosButtonState(attachmentsCount < PICKER_MAX_IMAGES ? true : false);
+            });
 
       feedbackInteractor.attachmentsRemovedPipe()
             .observeSuccessWithReplay()
@@ -223,12 +226,12 @@ public class SendFeedbackPresenter extends Presenter<SendFeedbackPresenter.View>
             .observe()
             .compose(bindViewToMainComposer())
             .subscribe(new ActionStateSubscriber<UploadFeedbackAttachmentCommand>()
-               .onProgress((commandInProgress, progress) -> updateImageAttachment(commandInProgress))
-               .onSuccess(successCommand -> updateImageAttachment(successCommand))
-               .onFail((failedCommand, throwable) -> {
-                  updateImageAttachment(failedCommand);
-                  this.handleError(failedCommand, throwable);
-               })
+                  .onProgress((commandInProgress, progress) -> updateImageAttachment(commandInProgress))
+                  .onSuccess(successCommand -> updateImageAttachment(successCommand))
+                  .onFail((failedCommand, throwable) -> {
+                     updateImageAttachment(failedCommand);
+                     this.handleError(failedCommand, throwable);
+                  })
             );
    }
 

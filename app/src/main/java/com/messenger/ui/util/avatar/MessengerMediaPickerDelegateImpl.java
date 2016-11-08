@@ -6,6 +6,7 @@ import com.worldventures.dreamtrips.core.permission.PermissionDispatcher;
 import com.worldventures.dreamtrips.core.permission.PermissionGrantedComposer;
 import com.worldventures.dreamtrips.modules.common.model.BasePhotoPickerModel;
 import com.worldventures.dreamtrips.modules.common.service.MediaInteractor;
+import com.worldventures.dreamtrips.modules.common.view.custom.PhotoPickerLayout;
 import com.worldventures.dreamtrips.modules.common.view.custom.PhotoPickerLayoutDelegate;
 
 import java.util.Collections;
@@ -32,6 +33,11 @@ public class MessengerMediaPickerDelegateImpl implements MessengerMediaPickerDel
       this.mediaInteractor = mediaInteractor;
       this.photoPickerLayoutDelegate = photoPickerLayoutDelegate;
       this.permissionDispatcher = permissionDispatcher;
+      initPhotoPicker();
+   }
+
+   @Override
+   public void resetPhotoPicker() {
       initPhotoPicker();
    }
 
@@ -77,6 +83,11 @@ public class MessengerMediaPickerDelegateImpl implements MessengerMediaPickerDel
    @Override
    public void hidePhotoPicker() {
       photoPickerLayoutDelegate.hidePicker();
+   }
+
+   @Override
+   public void setPhotoPickerListener(PhotoPickerLayout.PhotoPickerListener photoPickerListener) {
+      photoPickerLayoutDelegate.setPhotoPickerListener(photoPickerListener);
    }
 
    @Override

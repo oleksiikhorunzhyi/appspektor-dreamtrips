@@ -47,6 +47,8 @@ public abstract class TripImagesListPresenter<VT extends TripImagesListPresenter
    protected List<IFullScreenObject> photos = new ArrayList<>();
    protected int userId;
 
+   private int currentPage;
+
    protected TripImagesListPresenter(TripImagesType type, int userId) {
       super();
       this.type = type;
@@ -105,7 +107,7 @@ public abstract class TripImagesListPresenter<VT extends TripImagesListPresenter
       }
    }
 
-   public void setFullscreenMode(boolean isFullscreen) {
+   private void setFullscreenMode(boolean isFullscreen) {
       this.fullscreenMode = isFullscreen;
    }
 
@@ -114,28 +116,35 @@ public abstract class TripImagesListPresenter<VT extends TripImagesListPresenter
          loading = false;
          previousTotal = totalItemCount;
       }
-      if (!loading && (totalItemCount - visibleItemCount) <= (firstVisibleItem + VISIBLE_TRESHOLD) && totalItemCount % PER_PAGE == 0) {
+      if (!loading && (totalItemCount - visibleItemCount) <= (firstVisibleItem + VISIBLE_TRESHOLD)) {
          loadNext();
          loading = true;
       }
    }
 
    private void loadNext() {
-      if (dreamSpiceManager == null || getNextPageRequest(view.getAdapter().getCount()) == null) return;
-      //
-      doRequest(getNextPageRequest(view.getAdapter().getCount()), list -> {
-         photos.addAll(list);
+      if (dreamSpiceManager == null || getNextPageRequest(currentPage) == null
+            || view.getAdapter().getCount() < PER_PAGE) return;
+
+      currentPage++;
+      doRequest(getNextPageRequest(currentPage), list -> {
+         for (int i = 0; i < list.size(); i++) {
+            IFullScreenObject photo = list.get(i);
+            if (!photos.contains(photo)) photos.add(photo);
+         }
          db.savePhotoEntityList(type, userId, Queryable.from(photos)
                .filter(item -> !(item instanceof UploadTask))
                .toList());
-         //
-         view.getAdapter().addItems((ArrayList) list);
-         view.getAdapter().notifyDataSetChanged();
+         itemsAdded(photos);
+      }, spiceException -> {
+         currentPage--;
+         handleError(spiceException);
       });
    }
 
    public void reload() {
       view.startLoading();
+      currentPage = 1;
       doRequest(getReloadRequest(), items -> {
          view.finishLoading();
          //
@@ -145,11 +154,14 @@ public abstract class TripImagesListPresenter<VT extends TripImagesListPresenter
          db.savePhotoEntityList(type, userId, Queryable.from(photos)
                .filter(item -> !(item instanceof UploadTask))
                .toList());
-         //
-         view.getAdapter().clear();
-         view.getAdapter().addItems((ArrayList) photos);
-         view.getAdapter().notifyDataSetChanged();
+         itemsAdded(photos);
       });
+   }
+
+   private void itemsAdded(List<IFullScreenObject> photos) {
+      view.getAdapter().clear();
+      view.getAdapter().addItems(photos);
+      view.getAdapter().notifyDataSetChanged();
    }
 
    @Override
@@ -159,7 +171,7 @@ public abstract class TripImagesListPresenter<VT extends TripImagesListPresenter
       super.handleError(error);
    }
 
-   protected abstract SpiceRequest<ArrayList<IFullScreenObject>> getNextPageRequest(int currentCount);
+   protected abstract SpiceRequest<ArrayList<IFullScreenObject>> getNextPageRequest(int currentPage);
 
    protected abstract SpiceRequest<ArrayList<IFullScreenObject>> getReloadRequest();
 

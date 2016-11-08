@@ -14,6 +14,7 @@ import android.view.ViewGroup;
 import com.messenger.synchmechanism.SyncStatus;
 import com.messenger.ui.presenter.MessengerPresenter;
 import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.core.flow.layout.BaseViewStateLinearLayout;
 
 import icepick.Icepick;
 

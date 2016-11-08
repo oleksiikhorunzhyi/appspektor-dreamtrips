@@ -5,19 +5,21 @@
 # then script would stop fire exceptions
 
 # ./replace.sh - replace all translations
-# ./replace.sh [social dtl messenger] single or plenty - replace chosen translations
+# ./replace.sh [social dtl messenger wallet] single or plenty - replace chosen translations
 
 # ATTENTION! strings (1).xml would be replaced too. Just delete it
 
 readonly socialFile="strings.xml"
 readonly dtlFile="dtl_strings.xml"
 readonly messengerFile="messenger_strings.xml"
+readonly walletFile="wallet_strings.xml"
 
 readonly socialExclude=" --exclude=$socialFile"
 readonly dtlExclude=" --exclude=$dtlFile"
 readonly messengerExclude=" --exclude=$messengerFile"
+readonly walletExclude=" --exclude=$walletFile"
 
-readonly fullExcludeParams=" $socialExclude $dtlExclude $messengerExclude"
+readonly fullExcludeParams=" $socialExclude $dtlExclude $messengerExclude $walletExclude"
 
 excludeParams=" $socialExclude $dtlExclude $messengerExclude"
 
@@ -36,10 +38,15 @@ then
     excludeParams=${excludeParams/$messengerExclude/""}
 fi
 
+if [[ $* == *" wallet"* ]]
+then
+    excludeParams=${excludeParams/$walletExclude/""}
+fi
+
 if [ "$fullExcludeParams" == "$excludeParams" ];
 then
     excludeParams=""
-    printf $*"\nThere are no inputted suitable params. Available params are: social, dtl, messenger. All translations would be replaced.\n\n"
+    printf $*"\nThere are no inputted suitable params. Available params are: social, dtl, messenger, wallet. All translations would be replaced.\n\n"
 fi
 
 echo "Start replacing translations:"

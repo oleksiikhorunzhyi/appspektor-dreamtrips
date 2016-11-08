@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout
+      xmlns:android="http://schemas.android.com/apk/res/android"
+      xmlns:tools="http://schemas.android.com/tools"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content">
+
+   <CheckBox android:id="@+id/checkbox"
+         android:layout_width="match_parent"
+         android:layout_height="wrap_content"
+         android:background="@android:color/white"
+         android:button="@null"
+         android:drawableRight="?android:attr/listChoiceIndicatorSingle"
+         android:padding="@dimen/spacing_normal"
+         android:textAppearance="?android:attr/textAppearanceMedium"
+         tools:text="@string/wallet_settings_disable_default_card_4_hours"
+         />
+
+   <View
+         android:id="@+id/divider"
+         style="@style/SettingsItemDividerStyle"
+         android:layout_gravity="bottom"
+         />
+
+</FrameLayout>

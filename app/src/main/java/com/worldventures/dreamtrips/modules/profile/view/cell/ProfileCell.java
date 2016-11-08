@@ -262,7 +262,7 @@ public class ProfileCell extends AbstractDelegateCell<User, ProfileCellDelegate>
    }
 
    private void setFriendsCount(int count) {
-      int stringResource = QuantityHelper.chooseResource(count, R.string.empty, R.string.profile_friend_formatter, R.string.profile_friends_formatter);
+      int stringResource = QuantityHelper.chooseResource(count,  R.string.profile_friends_formatter, R.string.profile_friend_formatter, R.string.profile_friends_formatter);
       friends.setText(String.format(context.getString(stringResource), count));
    }
 

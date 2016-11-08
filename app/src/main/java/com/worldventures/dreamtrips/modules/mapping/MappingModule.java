@@ -42,6 +42,11 @@ import com.worldventures.dreamtrips.modules.video.model.converter.CategoryConver
 import com.worldventures.dreamtrips.modules.video.model.converter.VideoConverter;
 import com.worldventures.dreamtrips.modules.video.model.converter.VideoLanguageConverter;
 import com.worldventures.dreamtrips.modules.video.model.converter.VideoLocaleConverter;
+import com.worldventures.dreamtrips.wallet.domain.converter.BankCardToRecordConverter;
+import com.worldventures.dreamtrips.wallet.domain.converter.FirmwareResponseToFirmwareDataConverter;
+import com.worldventures.dreamtrips.wallet.domain.converter.ProfileAddressToUserAddressConverter;
+import com.worldventures.dreamtrips.wallet.domain.converter.RecordToBankCardConverter;
+import com.worldventures.dreamtrips.wallet.domain.converter.SmartCardDetailsConverter;
 
 import java.util.Set;
 
@@ -51,11 +56,27 @@ import dagger.Module;
 import dagger.Provides;
 import io.techery.mappery.Mappery;
 import io.techery.mappery.MapperyContext;
+import timber.log.Timber;
 
 @Module(
       injects = {},
       library = true, complete = false)
 public class MappingModule {
+
+   @Provides
+   @Singleton
+   MapperyContext provideMappery(Set<Converter> converters) {
+      Mappery.Builder builder = new Mappery.Builder();
+      for (Converter converter : converters) {
+         if (converter.sourceClass() != null && converter.targetClass() != null) {
+            builder.map(converter.sourceClass()).to(converter.targetClass(), converter);
+         } else {
+            Timber.w("sourceClass or targetClass is null, converter %s will be ignored",
+                  converter.getClass().getName());
+         }
+      }
+      return builder.build();
+   }
 
    @Provides(type = Provides.Type.SET)
    @Singleton
@@ -111,14 +132,40 @@ public class MappingModule {
       return new ContentItemConverter();
    }
 
-   @Provides
+   @Provides(type = Provides.Type.SET)
    @Singleton
-   MapperyContext provideMappery(Set<Converter> converters) {
-      Mappery.Builder builder = new Mappery.Builder();
-      for (Converter converter : converters) {
-         builder.map(converter.sourceClass()).to(converter.targetClass(), converter);
-      }
-      return builder.build();
+   Converter provideFeedbackTypeConverter() {
+      return new FeedbackTypeConverter();
+   }
+
+   @Provides(type = Provides.Type.SET)
+   @Singleton
+   Converter provideBankCardToRecordConverter() {
+      return new BankCardToRecordConverter();
+   }
+
+   @Provides(type = Provides.Type.SET)
+   @Singleton
+   Converter provideSmartCardDetailsConverter() {
+      return new SmartCardDetailsConverter();
+   }
+
+   @Provides(type = Provides.Type.SET)
+   @Singleton
+   Converter provideRecordToBankCardConverter() {
+      return new RecordToBankCardConverter();
+   }
+
+   @Provides(type = Provides.Type.SET)
+   @Singleton
+   Converter provideProfileAddressToUserAddressConverter() {
+      return new ProfileAddressToUserAddressConverter();
+   }
+
+   @Provides(type = Provides.Type.SET)
+   @Singleton
+   Converter provideFirmwareRepsonseToFirmwareConverter() {
+      return new FirmwareResponseToFirmwareDataConverter();
    }
 
    @Provides
@@ -189,12 +236,6 @@ public class MappingModule {
 
    @Provides(type = Provides.Type.SET)
    @Singleton
-   Converter provideFeedbackTypeConverter() {
-      return new FeedbackTypeConverter();
-   }
-
-   @Provides(type = Provides.Type.SET)
-   @Singleton
    Converter provideReverseLocationConverter() {
       return new ReverseLocationConverter();
    }
@@ -225,91 +266,91 @@ public class MappingModule {
 
    @Provides(type = Provides.Type.SET)
    @Singleton
-   ReversePostAttachmentsConverter provideReversePostAttachmentsConverter() {
+   Converter provideReversePostAttachmentsConverter() {
       return new ReversePostAttachmentsConverter();
    }
 
    @Provides(type = Provides.Type.SET)
    @Singleton
-   ReversePostDataConverter provideReversePostConverter() {
+   Converter provideReversePostConverter() {
       return new ReversePostDataConverter();
    }
 
    @Provides(type = Provides.Type.SET)
    @Singleton
-   SimplePostConverter provideSimplePostConverter() {
+   Converter provideSimplePostConverter() {
       return new SimplePostConverter();
    }
 
    @Provides(type = Provides.Type.SET)
    @Singleton
-   PostSocializedConverter provideSocializedPostConverter() {
+   Converter provideSocializedPostConverter() {
       return new PostSocializedConverter();
    }
 
    @Provides(type = Provides.Type.SET)
    @Singleton
-   PhotoSocializedConverter provideSocializedPhotoConverter() {
+   Converter provideSocializedPhotoConverter() {
       return new PhotoSocializedConverter();
    }
 
    @Provides(type = Provides.Type.SET)
    @Singleton
-   HashtagSimpleConverter provideHashTagSimpleConverter() {
+   Converter provideHashTagSimpleConverter() {
       return new HashtagSimpleConverter();
    }
 
    @Provides(type = Provides.Type.SET)
    @Singleton
-   HashtagSuggestionConverter provideHashtagSuggestionConverter() {
+   Converter provideHashtagSuggestionConverter() {
       return new HashtagSuggestionConverter();
    }
 
    @Provides(type = Provides.Type.SET)
    @Singleton
-   BucketItemSocializedConverter provideBucketSocializedConverter() {
+   Converter provideBucketSocializedConverter() {
       return new BucketItemSocializedConverter();
    }
 
    @Provides(type = Provides.Type.SET)
    @Singleton
-   BucketItemSimpleConverter provideBucketSimpleConverter() {
+   Converter provideBucketSimpleConverter() {
       return new BucketItemSimpleConverter();
    }
 
    @Provides(type = Provides.Type.SET)
    @Singleton
-   BucketCategoryConverter provideBucketCategoryConverter() {
+   Converter provideBucketCategoryConverter() {
       return new BucketCategoryConverter();
    }
 
    @Provides(type = Provides.Type.SET)
    @Singleton
-   BucketTypeConverter provideBucketTypeConverter() {
+   Converter provideBucketTypeConverter() {
       return new BucketTypeConverter();
    }
 
    @Provides(type = Provides.Type.SET)
    @Singleton
-   BucketLocationConverter provideBucketLocationConverter() {
+   Converter provideBucketLocationConverter() {
       return new BucketLocationConverter();
    }
 
    @Provides(type = Provides.Type.SET)
    @Singleton
-   BucketCoverPhotoConverter provideBucketCoverPhotoConverter() {
+   Converter provideBucketCoverPhotoConverter() {
       return new BucketCoverPhotoConverter();
    }
 
    @Provides(type = Provides.Type.SET)
    @Singleton
-   BucketPhotoConverter provideBucketPhotoConverter() {
+   Converter provideBucketPhotoConverter() {
       return new BucketPhotoConverter();
    }
 
    @Provides(type = Provides.Type.SET)
    @Singleton
-   BucketTagConverter provideBucketTagConverter() {
+   Converter provideBucketTagConverter() {
       return new BucketTagConverter();
    }
 }

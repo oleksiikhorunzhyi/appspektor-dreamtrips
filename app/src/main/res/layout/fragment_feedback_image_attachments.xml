@@ -11,19 +11,13 @@
          android:background="@android:color/black"
          />
 
-   <View
-         android:layout_width="match_parent"
-         android:layout_height="?actionBarSize"
-         android:background="@drawable/trip_item_shadow"
-         />
-
    <android.support.v7.widget.Toolbar
          android:id="@+id/feedback_toolbar_actionbar"
          style="@style/ToolBarStyle"
          android:layout_alignParentLeft="true"
          android:layout_alignParentTop="true"
-         android:layout_marginLeft="4dp"
-         android:layout_marginTop="4dp"
+         android:paddingLeft="@dimen/spacing_tiny"
+         android:paddingTop="@dimen/spacing_tiny"
          android:layout_width="match_parent"
          android:background="@color/black"
          >

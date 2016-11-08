@@ -2,10 +2,17 @@ package com.worldventures.dreamtrips.modules.tripsimages.vision;
 
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.ColorMatrix;
+import android.graphics.ColorMatrixColorFilter;
+import android.graphics.Paint;
 import android.graphics.PointF;
 import android.graphics.RectF;
 import android.net.Uri;
 import android.os.AsyncTask;
+import android.support.annotation.Nullable;
 import android.util.Pair;
 import android.util.SparseArray;
 
@@ -32,6 +39,9 @@ import com.worldventures.dreamtrips.modules.common.view.util.DrawableUtil;
 import com.worldventures.dreamtrips.modules.common.view.util.Size;
 import com.worldventures.dreamtrips.util.ValidationUtils;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 
@@ -73,7 +83,7 @@ public class ImageUtils {
          @Override
          protected void onFailureImpl(DataSource<CloseableReference<CloseableBitmap>> dataSource) {
             if (errorReceiverListener != null) {
-               errorReceiverListener.onError();
+               errorReceiverListener.onError(dataSource.getFailureCause());
             }
          }
       };
@@ -101,8 +111,8 @@ public class ImageUtils {
                   subscriber.onNext(bitmap);
                   subscriber.onCompleted();
                }
-            }, () -> {
-               subscriber.onError(new RuntimeException());
+            }, t -> {
+               subscriber.onError(t);
                if (!subscriber.isUnsubscribed()) {
                   subscriber.unsubscribe();
                }
@@ -136,8 +146,11 @@ public class ImageUtils {
                   PointF position = face.getPosition();
                   float absoluteX = Math.max(position.x, 0.0f);
                   float absoluteY = Math.max(position.y, 0.0f);
-                  TagPosition absolute = new TagPosition((int) absoluteX, (int) absoluteY, (int) absoluteX + (int) face.getWidth(), (int) absoluteY + (int) face
-                        .getHeight());
+                  TagPosition absolute = new TagPosition(
+                        (int) absoluteX,
+                        (int) absoluteY,
+                        (int) absoluteX + (int) face.getWidth(),
+                        (int) absoluteY + (int) face.getHeight());
                   TagPosition proportional = CoordinatesTransformer.convertToProportional(absolute, pair.second);
                   float bottomXProportional = Math.min(0.95f, proportional.getBottomRight().getX());
                   float bottomYProportional = Math.min(0.95f, proportional.getBottomRight().getY());
@@ -169,12 +182,94 @@ public class ImageUtils {
       return path.substring(index);
    }
 
+   public static Bitmap fromFile(String filePath) {
+      BitmapFactory.Options options = new BitmapFactory.Options();
+      options.inPreferredConfig = Bitmap.Config.ARGB_8888;
+      return BitmapFactory.decodeFile(filePath, options);
+   }
+
+   public static File saveToFile(Context context, Bitmap bitmap) throws IOException {
+      FileOutputStream out = null;
+      File file = createFile(context);
+      if (file == null) throw new IOException("Bitmap cannot be saved");
+      try {
+         out = new FileOutputStream(file);
+         bitmap.compress(Bitmap.CompressFormat.PNG, 100, out); // bmp is your Bitmap instance
+         // PNG is a lossless format, the compression factor (100) is ignored
+      } finally {
+         if (out != null) {
+            out.close();
+         }
+      }
+      return file;
+   }
+
+   @Nullable
+   private static File createFile(Context context) {
+      long time = System.currentTimeMillis();
+      String filePath = context.getCacheDir()
+            .getAbsolutePath() + File.separator + "bitmaps" + File.separator + time + ".png";
+      File file = new File(filePath);
+      if (file.getParentFile().exists() || file.getParentFile().mkdirs()) {
+         return file;
+      }
+      return null;
+   }
+
+   public static Bitmap scaleBitmap(Bitmap source, int imageSize) {
+      return Bitmap.createScaledBitmap(source, imageSize, imageSize, true);
+   }
+
+   public static Bitmap toMonochromeBitmap(Bitmap source) {
+      Bitmap bmp = Bitmap.createBitmap(source.getWidth(), source.getHeight(), Bitmap.Config.ARGB_8888);
+      Canvas canvas = new Canvas(bmp);
+      ColorMatrix ma = new ColorMatrix();
+      ma.setSaturation(0);
+      Paint paint = new Paint();
+      paint.setColorFilter(new ColorMatrixColorFilter(ma));
+      canvas.drawBitmap(source, 0, 0, paint);
+      return floydSteinberg(bmp);
+   }
+
+   public static Bitmap floydSteinberg(Bitmap src) {
+      Bitmap out = Bitmap.createBitmap(src.getWidth(), src.getHeight(), src.getConfig());
+      int alpha, red;
+      int pixel;
+      int gray;
+      int width = src.getWidth();
+      int height = src.getHeight();
+      int error;
+      int errors[][] = new int[width][height];
+      for (int y = 0; y < height - 1; y++) {
+         for (int x = 1; x < width - 1; x++) {
+            pixel = src.getPixel(x, y);
+            alpha = Color.alpha(pixel);
+            red = Color.red(pixel);
+            gray = red;
+            if (gray + errors[x][y] < 128) {
+               error = gray + errors[x][y];
+               gray = 0;
+            } else {
+               error = gray + errors[x][y] - 255;
+               gray = 255;
+            }
+            errors[x + 1][y] += (7 * error) / 16;
+            errors[x - 1][y + 1] += (3 * error) / 16;
+            errors[x][y + 1] += (5 * error) / 16;
+            errors[x + 1][y + 1] += (1 * error) / 16;
+
+            out.setPixel(x, y, Color.argb(alpha, gray, gray, gray));
+         }
+      }
+      return out;
+   }
+
    private interface BitmapReceiverListener {
       void onBitmapReceived(Bitmap bitmap);
    }
 
    private interface BitmapErrorReceiverListener {
-      void onError();
+      void onError(Throwable t);
    }
 
    public static String getParametrizedUrl(String url, int width, int height) {

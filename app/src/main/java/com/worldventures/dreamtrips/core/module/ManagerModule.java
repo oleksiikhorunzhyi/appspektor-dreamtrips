@@ -19,9 +19,9 @@ import com.worldventures.dreamtrips.core.utils.DTCookieManager;
 import com.worldventures.dreamtrips.modules.bucketlist.service.BucketInteractor;
 import com.worldventures.dreamtrips.modules.common.delegate.CachedEntityDelegate;
 import com.worldventures.dreamtrips.modules.common.delegate.CachedEntityInteractor;
-import com.worldventures.dreamtrips.modules.common.delegate.system.ConnectionInfoProvider;
 import com.worldventures.dreamtrips.modules.common.delegate.DownloadFileInteractor;
 import com.worldventures.dreamtrips.modules.common.delegate.SocialCropImageManager;
+import com.worldventures.dreamtrips.modules.common.delegate.system.ConnectionInfoProvider;
 import com.worldventures.dreamtrips.modules.common.delegate.system.DeviceInfoProvider;
 import com.worldventures.dreamtrips.modules.common.delegate.system.DeviceInfoProviderImpl;
 import com.worldventures.dreamtrips.modules.common.presenter.delegate.ClearDirectoryDelegate;
@@ -204,15 +204,15 @@ public class ManagerModule {
 
    @Provides
    @Singleton
-   ProfileInteractor provideProfileInteractor(SessionActionPipeCreator sessionActionPipeCreator,
-         SessionHolder<UserSession> sessionHolder) {
-      return new ProfileInteractor(sessionActionPipeCreator, sessionHolder);
+   FeedbackInteractor provideFeedbackInteractor(SessionActionPipeCreator sessionActionPipeCreator) {
+      return new FeedbackInteractor(sessionActionPipeCreator);
    }
 
    @Provides
    @Singleton
-   FeedbackInteractor provideFeedbackInteractor(SessionActionPipeCreator sessionActionPipeCreator) {
-      return new FeedbackInteractor(sessionActionPipeCreator);
+   ProfileInteractor provideProfileInteractor(SessionActionPipeCreator sessionActionPipeCreator,
+         SessionHolder<UserSession> sessionHolder) {
+      return new ProfileInteractor(sessionActionPipeCreator, sessionHolder);
    }
 
    @Provides

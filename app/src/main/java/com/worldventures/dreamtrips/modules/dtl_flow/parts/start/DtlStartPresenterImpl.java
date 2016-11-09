@@ -13,6 +13,7 @@ import com.worldventures.dreamtrips.modules.dtl.model.location.DtlLocation;
 import com.worldventures.dreamtrips.modules.dtl.model.location.ImmutableDtlManualLocation;
 import com.worldventures.dreamtrips.modules.dtl.service.AttributesInteractor;
 import com.worldventures.dreamtrips.modules.dtl.service.DtlLocationInteractor;
+import com.worldventures.dreamtrips.modules.dtl.service.MerchantsFacadeInteractor;
 import com.worldventures.dreamtrips.modules.dtl.service.action.DtlLocationFacadeCommand;
 import com.worldventures.dreamtrips.modules.dtl_flow.DtlPresenterImpl;
 import com.worldventures.dreamtrips.modules.dtl_flow.ViewState;
@@ -32,6 +33,7 @@ public class DtlStartPresenterImpl extends DtlPresenterImpl<DtlStartScreen, View
    @Inject LocationDelegate gpsLocationDelegate;
    @Inject DtlLocationInteractor locationInteractor;
    @Inject AttributesInteractor attributesInteractor;
+   @Inject MerchantsFacadeInteractor interactor;
 
    public DtlStartPresenterImpl(Context context, Injector injector) {
       super(context);

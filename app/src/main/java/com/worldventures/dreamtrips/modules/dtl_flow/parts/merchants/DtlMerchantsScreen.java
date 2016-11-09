@@ -19,8 +19,6 @@ public interface DtlMerchantsScreen extends DtlScreen {
 
    void toggleOffersOnly(boolean enabled);
 
-   boolean isToolbarCollapsed();
-
    void setFilterButtonState(boolean isDefault);
 
    void showEmpty(boolean isShow);

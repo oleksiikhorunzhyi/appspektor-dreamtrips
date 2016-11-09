@@ -14,16 +14,8 @@ import flow.path.Path;
 @Layout(R.layout.screen_dtl_map)
 public class DtlMapPath extends DtlDetailPath {
 
-   private final boolean toolbarCollapsed;
-
-   public DtlMapPath(MasterDetailPath master, boolean toolbarCollapsed) {
-      super(master);
-      this.toolbarCollapsed = toolbarCollapsed;
-   }
-
    public DtlMapPath(MasterDetailPath master) {
       super(master);
-      this.toolbarCollapsed = true;
    }
 
    @Override

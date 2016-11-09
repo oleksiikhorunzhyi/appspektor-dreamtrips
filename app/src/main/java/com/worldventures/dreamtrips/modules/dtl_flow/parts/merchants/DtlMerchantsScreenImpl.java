@@ -227,11 +227,6 @@ public class DtlMerchantsScreenImpl extends DtlLayout<DtlMerchantsScreen, DtlMer
    }
 
    @Override
-   public boolean isToolbarCollapsed() {
-      return dtlToolbar == null || dtlToolbar.isCollapsed();
-   }
-
-   @Override
    public void setRefreshedItems(List<ThinMerchant> merchants) {
       delegate.setItems(merchants);
       scrollStatePersister.restoreInstanceStateIfNeeded(getLastRestoredInstanceState(), layoutManager);

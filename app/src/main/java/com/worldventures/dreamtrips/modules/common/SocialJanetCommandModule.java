@@ -23,6 +23,7 @@ import com.worldventures.dreamtrips.modules.common.command.DeleteCachedEntityCom
 import com.worldventures.dreamtrips.modules.common.command.DownloadCachedEntityCommand;
 import com.worldventures.dreamtrips.modules.common.command.ResetCachedEntitiesInProgressCommand;
 import com.worldventures.dreamtrips.modules.feed.service.command.CreateCommentCommand;
+import com.worldventures.dreamtrips.modules.feed.service.command.CreatePhotosCommand;
 import com.worldventures.dreamtrips.modules.feed.service.command.CreatePostCommand;
 import com.worldventures.dreamtrips.modules.feed.service.command.DeleteCommentCommand;
 import com.worldventures.dreamtrips.modules.feed.service.command.DeletePostCommand;
@@ -198,5 +199,6 @@ import dagger.Module;
       GetPopularBucketItemSuggestionsCommand.class,
       GetPopularBucketItemsCommand.class,
       GetFeedEntityCommand.class,
+      CreatePhotosCommand.class,
 }, complete = false, library = true)
 public class SocialJanetCommandModule {}

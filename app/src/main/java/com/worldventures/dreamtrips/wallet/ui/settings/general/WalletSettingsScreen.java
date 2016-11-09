@@ -8,9 +8,7 @@ import android.util.AttributeSet;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.afollestad.materialdialogs.MaterialDialog;
 import com.jakewharton.rxbinding.widget.RxCompoundButton;
-import com.worldventures.dreamtrips.BuildConfig;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.modules.common.view.custom.BadgeView;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletLinearLayout;
@@ -169,17 +167,6 @@ public class WalletSettingsScreen extends WalletLinearLayout<WalletSettingsPrese
    public void showFirmwareBadge() {
       firmwareVersionLabel.setVisibility(GONE);
       badgeFirmwareUpdates.setVisibility(VISIBLE);
-   }
-
-   @Override
-   public void showConfirmFactoryResetDialog() {
-      new MaterialDialog.Builder(getContext())
-            .content(R.string.wallet_confirm_factory_reset_message)
-            .positiveText(R.string.wallet_factory_reset)
-            .negativeText(R.string.cancel)
-            .onPositive((dialog, which) -> presenter.executeFactoryReset())
-            .onNegative((dialog, which) -> dialog.dismiss())
-            .show();
    }
 
    @Override

@@ -8,10 +8,12 @@ import com.worldventures.dreamtrips.core.utils.tracksystem.AnalyticsInteractor;
 import com.worldventures.dreamtrips.modules.dtl.analytics.DtlAnalyticsCommand;
 import com.worldventures.dreamtrips.modules.dtl.analytics.MerchantFilterAppliedEvent;
 import com.worldventures.dreamtrips.modules.dtl.helper.FilterHelper;
+import com.worldventures.dreamtrips.modules.dtl.model.RequestSourceType;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.filter.FilterData;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.filter.ImmutableFilterData;
 import com.worldventures.dreamtrips.modules.dtl.service.action.DtlLocationCommand;
 import com.worldventures.dreamtrips.modules.dtl.service.action.FilterDataAction;
+import com.worldventures.dreamtrips.modules.dtl.service.action.RequestSourceTypeAction;
 
 import java.util.Collections;
 
@@ -25,14 +27,16 @@ public class FilterDataInteractor {
    private final AnalyticsInteractor analyticsInteractor;
    private final DtlLocationInteractor dtlLocationInteractor;
    private final SnappyRepository snappyRepository;
+   private final MerchantsRequestSourceInteractor merchantsRequestSourceInteractor;
    private final ActionPipe<FilterDataAction> filterDataPipe;
 
    public FilterDataInteractor(SessionActionPipeCreator sessionActionPipeCreator,
-         AnalyticsInteractor analyticsInteractor, DtlLocationInteractor dtlLocationInteractor,
+         AnalyticsInteractor analyticsInteractor, DtlLocationInteractor dtlLocationInteractor, MerchantsRequestSourceInteractor merchantsRequestSourceInteractor,
          SnappyRepository snappyRepository) {
 
       this.analyticsInteractor = analyticsInteractor;
       this.dtlLocationInteractor = dtlLocationInteractor;
+      this.merchantsRequestSourceInteractor = merchantsRequestSourceInteractor;
       this.snappyRepository = snappyRepository;
 
       filterDataPipe = sessionActionPipeCreator.createPipe(FilterDataAction.class, Schedulers.io());

@@ -7,36 +7,29 @@ import com.worldventures.dreamtrips.modules.dtl.model.location.DtlLocation;
 import com.worldventures.dreamtrips.modules.dtl.model.location.DtlManualLocation;
 import com.worldventures.dreamtrips.modules.dtl.model.location.ImmutableDtlManualLocation;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.ThinMerchant;
-import com.worldventures.dreamtrips.modules.dtl.model.merchant.filter.FilterData;
 import com.worldventures.dreamtrips.modules.dtl.service.action.DtlLocationCommand;
-import com.worldventures.dreamtrips.modules.dtl.service.action.FilterDataAction;
 import com.worldventures.dreamtrips.modules.dtl.service.action.MerchantsAction;
 import com.worldventures.dreamtrips.modules.dtl.service.action.NewRelicTrackableAction;
 
 import io.techery.janet.ActionPipe;
-import io.techery.janet.ReadActionPipe;
 import io.techery.janet.helper.ActionStateSubscriber;
-import rx.Observable;
 import rx.schedulers.Schedulers;
 
 public class MerchantsInteractor {
 
    private final DtlLocationInteractor dtlLocationInteractor;
-   private final FilterDataInteractor filterDataInteractor;
    private final ClearMemoryInteractor clearMemoryInteractor;
 
    private final ActionPipe<MerchantsAction> thinMerchantsPipe;
 
    public MerchantsInteractor(SessionActionPipeCreator sessionActionPipeCreator, DtlLocationInteractor dtlLocationInteractor,
-         FilterDataInteractor filterDataInteractor, ClearMemoryInteractor clearMemoryInteractor) {
+         ClearMemoryInteractor clearMemoryInteractor) {
 
       this.dtlLocationInteractor = dtlLocationInteractor;
-      this.filterDataInteractor = filterDataInteractor;
       this.clearMemoryInteractor = clearMemoryInteractor;
 
       this.thinMerchantsPipe = sessionActionPipeCreator.createPipe(MerchantsAction.class, Schedulers.io());
 
-      connectFilterData();
       connectNewRelicTracking();
       connectForLocationUpdates();
       connectMemoryClear();
@@ -74,36 +67,8 @@ public class MerchantsInteractor {
             });
    }
 
-   private void connectFilterData() {
-      filterDataInteractor.filterDataPipe().observeSuccessWithReplay()
-            .subscribe(filterDataAction -> requestMerchants());
-   }
-
-   public ReadActionPipe<MerchantsAction> thinMerchantsHttpPipe() {
+   public ActionPipe<MerchantsAction> thinMerchantsHttpPipe() {
       return thinMerchantsPipe;
-   }
-
-   private void requestMerchants() {
-      Observable.combineLatest(
-            provideFilterDataObservable(),
-            provideLastSourceLocationObservable(),
-            MerchantsAction::create
-      )
-            .take(1)
-            .subscribe(thinMerchantsPipe::send);
-   }
-
-   private Observable<FilterData> provideFilterDataObservable() {
-      return filterDataInteractor.filterDataPipe().observeSuccessWithReplay()
-            .take(1)
-            .map(FilterDataAction::getResult);
-   }
-
-   private Observable<DtlLocation> provideLastSourceLocationObservable() {
-      return dtlLocationInteractor.locationSourcePipe().observeSuccessWithReplay()
-            .take(1)
-            .filter(DtlLocationCommand::isResultDefined)
-            .map(DtlLocationCommand::getResult);
    }
 
    private static DtlLocation buildManualLocation(ThinMerchant thinMerchant, DtlLocation dtlLocation) {

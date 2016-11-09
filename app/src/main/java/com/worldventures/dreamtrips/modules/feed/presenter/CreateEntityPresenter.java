@@ -5,16 +5,12 @@ import com.worldventures.dreamtrips.core.api.uploadery.SimpleUploaderyCommand;
 import com.worldventures.dreamtrips.core.api.uploadery.UploaderyInteractor;
 import com.worldventures.dreamtrips.core.rx.composer.IoToMainComposer;
 import com.worldventures.dreamtrips.modules.common.command.CopyFileCommand;
-import com.worldventures.dreamtrips.modules.common.model.Coordinates;
 import com.worldventures.dreamtrips.modules.common.model.MediaAttachment;
 import com.worldventures.dreamtrips.modules.common.model.PhotoGalleryModel;
 import com.worldventures.dreamtrips.modules.common.service.MediaInteractor;
 import com.worldventures.dreamtrips.modules.common.view.util.MediaPickerEventDelegate;
-import com.worldventures.dreamtrips.modules.feed.api.UploadPhotosCommand;
 import com.worldventures.dreamtrips.modules.feed.bundle.CreateEntityBundle;
 import com.worldventures.dreamtrips.modules.feed.event.FeedItemAddedEvent;
-import com.worldventures.dreamtrips.modules.feed.model.CreatePhotoEntity;
-import com.worldventures.dreamtrips.modules.feed.model.CreatePhotoPostEntity;
 import com.worldventures.dreamtrips.modules.feed.model.FeedEntity;
 import com.worldventures.dreamtrips.modules.feed.model.FeedItem;
 import com.worldventures.dreamtrips.modules.feed.model.PhotoCreationItem;
@@ -22,6 +18,7 @@ import com.worldventures.dreamtrips.modules.feed.model.TextualPost;
 import com.worldventures.dreamtrips.modules.feed.service.PostsInteractor;
 import com.worldventures.dreamtrips.modules.feed.service.analytics.SharePhotoPostAction;
 import com.worldventures.dreamtrips.modules.feed.service.analytics.SharePostAction;
+import com.worldventures.dreamtrips.modules.feed.service.command.CreatePhotosCommand;
 import com.worldventures.dreamtrips.modules.feed.service.command.CreatePostCommand;
 import com.worldventures.dreamtrips.modules.tripsimages.model.Photo;
 import com.worldventures.dreamtrips.modules.tripsimages.service.TripImagesInteractor;
@@ -29,7 +26,6 @@ import com.worldventures.dreamtrips.modules.tripsimages.service.command.CreatePh
 import com.worldventures.dreamtrips.modules.tripsimages.service.command.FetchLocationFromExifCommand;
 import com.worldventures.dreamtrips.util.ValidationUtils;
 
-import java.util.Calendar;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -111,32 +107,18 @@ public class CreateEntityPresenter<V extends CreateEntityPresenter.View> extends
       if (!isCachedTextEmpty() && isCachedUploadTaskEmpty()) {
          createPost(null);
       } else {
-         CreatePhotoEntity createPhotoEntity = new CreatePhotoEntity();
-         Queryable.from(cachedCreationItems)
-               .forEachR(item -> createPhotoEntity
-                     .addPhoto(new CreatePhotoEntity.PhotoEntity.Builder().originUrl(item.getOriginUrl())
-                           .title(item.getTitle())
-                           .width(item.getWidth())
-                           .height(item.getHeight())
-                           .date(Calendar.getInstance().getTime())
-                           .coordinates(location != null ? new Coordinates(location.getLat(), location.getLng()) : null)
-                           .locationName(location != null ? location.getName() : null)
-                           .photoTags(item.getCachedAddedPhotoTags())
-                           .build()));
-         if (!createPhotoEntity.isEmpty()) {
-            doRequest(new UploadPhotosCommand(createPhotoEntity), this::createPost);
-         }
+         postsInteractor.createPhotosPipe()
+               .createObservable(new CreatePhotosCommand(cachedCreationItems, location))
+               .compose(bindViewToMainComposer())
+               .subscribe(new ActionStateSubscriber<CreatePhotosCommand>()
+                     .onSuccess(createPhotosCommand -> createPost(createPhotosCommand.getResult()))
+                     .onFail(this::handleError));
       }
    }
 
    private void createPost(List<Photo> photos) {
-      CreatePhotoPostEntity createPhotoPostEntity = new CreatePhotoPostEntity();
-      createPhotoPostEntity.setDescription(cachedText);
-      createPhotoPostEntity.setLocation(location);
-      if (photos != null) Queryable.from(photos)
-            .forEachR(photo -> createPhotoPostEntity.addAttachment(new CreatePhotoPostEntity.Attachment(photo.getUid())));
       postsInteractor.createPostPipe()
-            .createObservable(new CreatePostCommand(createPhotoPostEntity))
+            .createObservable(new CreatePostCommand(cachedText, location, photos))
             .compose(bindViewToMainComposer())
             .subscribe(new ActionStateSubscriber<CreatePostCommand>()
                   .onSuccess(createPostCommand -> processPostSuccess(createPostCommand.getResult()))
@@ -181,7 +163,7 @@ public class CreateEntityPresenter<V extends CreateEntityPresenter.View> extends
 
    public void attachImages(MediaAttachment mediaAttachment) {
       if (view == null || mediaAttachment.chosenImages == null || mediaAttachment.chosenImages.isEmpty()) return;
-     
+
       view.disableImagePicker();
       imageSelected(mediaAttachment);
    }

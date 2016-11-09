@@ -9,13 +9,6 @@
       android:theme="@style/WalletTheme"
       >
 
-   <android.support.v7.widget.Toolbar
-         android:id="@+id/toolbar"
-         android:layout_width="match_parent"
-         android:layout_height="?attr/actionBarSize"
-         app:title="@string/wallet_card_settings_title"
-         />
-
    <android.support.v4.widget.NestedScrollView
          android:layout_width="match_parent"
          android:layout_height="match_parent"
@@ -26,6 +19,7 @@
             android:layout_height="match_parent"
             android:orientation="vertical"
             >
+
          <View
                android:layout_width="match_parent"
                android:layout_height="48dp"
@@ -66,10 +60,7 @@
                      tools:checked="true"
                      />
 
-               <View
-                     style="@style/SettingsItemDividerStyle"
-                     android:visibility="gone"
-                     />
+               <View style="@style/SettingsItemDividerStyle" />
 
                <android.support.v7.widget.SwitchCompat
                      android:id="@+id/lock_switcher"
@@ -162,20 +153,7 @@
                   android:orientation="vertical"
                   >
 
-               <TextView
-                     android:id="@+id/item_reset_pin"
-                     android:layout_width="match_parent"
-                     android:layout_height="wrap_content"
-                     android:padding="@dimen/spacing_normal"
-                     android:text="@string/wallet_card_settings_reset_pin"
-                     android:textAppearance="?android:attr/textAppearanceMedium"
-                     android:visibility="gone"
-                     />
-
-               <View
-                     style="@style/SettingsItemDividerStyle"
-                     android:visibility="gone"
-                     />
+               <View style="@style/SettingsItemDividerStyle" />
 
                <RelativeLayout
                      android:id="@+id/item_disable_default_payment_card"
@@ -239,6 +217,15 @@
                         tools:text="Never"
                         />
                </RelativeLayout>
+
+               <TextView
+                     android:id="@+id/item_reset_pin"
+                     android:layout_width="match_parent"
+                     android:layout_height="wrap_content"
+                     android:padding="@dimen/spacing_normal"
+                     android:text="@string/wallet_card_settings_reset_pin"
+                     android:textAppearance="?android:attr/textAppearanceMedium"
+                     />
 
                <View style="@style/SettingsItemDividerStyle" />
 
@@ -322,4 +309,11 @@
                />
       </LinearLayout>
    </android.support.v4.widget.NestedScrollView>
+   <android.support.v7.widget.Toolbar
+         android:id="@+id/toolbar"
+         android:layout_width="match_parent"
+         android:layout_height="?attr/actionBarSize"
+         app:title="@string/wallet_card_settings_title"
+         />
+
 </com.worldventures.dreamtrips.wallet.ui.settings.general.WalletSettingsScreen>

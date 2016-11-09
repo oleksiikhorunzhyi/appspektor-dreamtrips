@@ -24,6 +24,7 @@ public class ActivityConverter implements Converter<TripActivity, ActivityModel>
       activityModel.setParentId(tripActivity.parentId());
       activityModel.setPosition(tripActivity.position());
       activityModel.setIcon(tripActivity.icon());
+      activityModel.setName(tripActivity.name());
       return activityModel;
    }
 }

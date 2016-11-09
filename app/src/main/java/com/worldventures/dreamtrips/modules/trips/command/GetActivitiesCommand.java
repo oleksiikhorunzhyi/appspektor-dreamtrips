@@ -1,26 +1,30 @@
 package com.worldventures.dreamtrips.modules.trips.command;
 
+import com.worldventures.dreamtrips.api.trip.GetTripActivitiesHttpAction;
+import com.worldventures.dreamtrips.core.janet.JanetModule;
 import com.worldventures.dreamtrips.core.janet.cache.CacheOptions;
 import com.worldventures.dreamtrips.core.janet.cache.CachedAction;
 import com.worldventures.dreamtrips.core.janet.cache.ImmutableCacheOptions;
 import com.worldventures.dreamtrips.core.janet.dagger.InjectableAction;
-import com.worldventures.dreamtrips.modules.common.api.janet.GetActivitiesHttpAction;
 import com.worldventures.dreamtrips.modules.trips.model.ActivityModel;
 
 import java.util.List;
 
 import javax.inject.Inject;
+import javax.inject.Named;
 
 import io.techery.janet.ActionHolder;
 import io.techery.janet.Command;
 import io.techery.janet.Janet;
 import io.techery.janet.command.annotations.CommandAction;
+import io.techery.mappery.MapperyContext;
 import rx.schedulers.Schedulers;
 
 @CommandAction
 public class GetActivitiesCommand extends Command<List<ActivityModel>> implements InjectableAction, CachedAction<List<ActivityModel>> {
 
-   @Inject Janet janet;
+   @Inject @Named(JanetModule.JANET_API_LIB) Janet janet;
+   @Inject MapperyContext mapperyContext;
 
    List<ActivityModel> cachedResult;
 
@@ -42,9 +46,9 @@ public class GetActivitiesCommand extends Command<List<ActivityModel>> implement
    @Override
    protected void run(CommandCallback<List<ActivityModel>> callback) throws Throwable {
       if (cachedResult == null || cachedResult.size() == 0) {
-         janet.createPipe(GetActivitiesHttpAction.class, Schedulers.io())
-               .createObservableResult(new GetActivitiesHttpAction())
-               .map(GetActivitiesHttpAction::getActivityModels)
+         janet.createPipe(GetTripActivitiesHttpAction.class, Schedulers.io())
+               .createObservableResult(new GetTripActivitiesHttpAction())
+               .map(action -> mapperyContext.convert(action.response(), ActivityModel.class))
                .subscribe(callback::onSuccess, callback::onFail);
       } else {
          callback.onSuccess(cachedResult);

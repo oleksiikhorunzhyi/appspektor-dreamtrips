@@ -89,11 +89,25 @@ public class FilterDataInteractor {
             .subscribe(this::send);
    }
 
+   public void applyNextPaginatedPageFromMap() {
+      changeRequestSourceToMap();
+      applyNextPage();
+   }
+
    public void applyNextPaginatedPage() {
+      applyNextPage();
+   }
+
+   private void applyNextPage() {
       getLastFilterObservable()
             .map(filterData -> ImmutableFilterData.copyOf(filterData)
                   .withPage(filterData.page() + 1))
             .subscribe(this::send);
+   }
+
+   public void applyRetryLoadFromMap() {
+      changeRequestSourceToMap();
+      getLastFilterObservable().subscribe(this::send);
    }
 
    public void applyRetryLoad() {
@@ -106,6 +120,10 @@ public class FilterDataInteractor {
                   .withPage(0)
                   .withIsOffersOnly(isOffersOnly))
             .subscribe(this::send);
+   }
+
+   private void changeRequestSourceToMap() {
+      merchantsRequestSourceInteractor.requestSourceActionPipe().send(RequestSourceTypeAction.map());
    }
 
    private void connectLocationChange() {

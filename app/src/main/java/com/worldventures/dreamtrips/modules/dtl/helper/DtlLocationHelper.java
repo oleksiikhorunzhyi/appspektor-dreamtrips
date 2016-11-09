@@ -9,6 +9,8 @@ import com.worldventures.dreamtrips.modules.dtl.model.location.DtlLocation;
 
 public class DtlLocationHelper {
 
+   public static final double MAX_DISTANCE = 50;
+
    /**
     * Check if deviceLocation in near enough to city center
     * <p>
@@ -30,10 +32,14 @@ public class DtlLocationHelper {
       //
       LatLng deviceLatLng = new LatLng(deviceLocation.getLatitude(), deviceLocation.getLongitude());
       LatLng cityLatLng = dtlLocation.getCoordinates().asLatLng();
-      return checkLocation(50, deviceLatLng, cityLatLng, DistanceType.MILES) ? deviceLatLng : cityLatLng;
+      return checkLocation(deviceLatLng, cityLatLng, MAX_DISTANCE, DistanceType.MILES) ? deviceLatLng : cityLatLng;
    }
 
-   public static boolean checkLocation(double maxDistance, LatLng currentLocation, LatLng targetLatLng, DistanceType distanceType) {
+   public static boolean checkMaxDistance(LatLng currentLocation, LatLng targetLatLng) {
+      return checkLocation(currentLocation, targetLatLng, MAX_DISTANCE, DistanceType.MILES);
+   }
+
+   public static boolean checkLocation(LatLng currentLocation, LatLng targetLatLng, double maxDistance, DistanceType distanceType) {
       double distance = distanceType == DistanceType.KMS ? distanceInKms(currentLocation, targetLatLng) : distanceInMiles(currentLocation, targetLatLng);
       return distance < maxDistance;
    }
@@ -42,7 +48,7 @@ public class DtlLocationHelper {
       LatLng current = new LatLng(currentLocation.getLatitude(), currentLocation.getLongitude());
       LatLng target = new LatLng(targetLatLng.getLatitude(), targetLatLng.getLongitude());
       //
-      return checkLocation(maxDistance, current, target, distanceType);
+      return checkLocation(current, target, maxDistance, distanceType);
    }
 
    public static double calculateDistance(LatLng currentLatLng, LatLng targetLatLng) {

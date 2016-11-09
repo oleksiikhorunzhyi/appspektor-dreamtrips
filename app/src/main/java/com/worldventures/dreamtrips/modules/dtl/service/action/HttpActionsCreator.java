@@ -11,6 +11,7 @@ import com.worldventures.dreamtrips.modules.dtl.helper.FilterHelper;
 import com.worldventures.dreamtrips.modules.dtl.model.location.DtlLocation;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.Attribute;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.filter.FilterData;
+import com.worldventures.dreamtrips.modules.dtl.service.action.bundle.MerchantsParamsBundle;
 import com.worldventures.dreamtrips.modules.trips.model.Location;
 
 import java.util.ArrayList;
@@ -20,13 +21,15 @@ import java.util.Locale;
 
 public class HttpActionsCreator {
 
-   public static ThinMerchantsHttpAction provideMerchantsAction(FilterData filterData, DtlLocation location) {
-      return new ThinMerchantsHttpAction(provideMerchantsActionParams(filterData, location));
+   public static ThinMerchantsHttpAction provideMerchantsAction(MerchantsParamsBundle bundle) {
+      return new ThinMerchantsHttpAction(provideMerchantsActionParams(bundle));
    }
 
-   private static ThinMerchantsActionParams provideMerchantsActionParams(FilterData filterData, DtlLocation dtlLocation) {
+   private static ThinMerchantsActionParams provideMerchantsActionParams(MerchantsParamsBundle bundle) {
+      final FilterData filterData = bundle.filterData();
+      final DtlLocation location = bundle.location();
       return ImmutableThinMerchantsActionParams.builder()
-            .coordinates(provideFormattedLocation(dtlLocation))
+            .coordinates(provideFormattedLocation(location))
             .radius(FilterHelper.provideMaxDistance(filterData))
             .search(TextUtils.isEmpty(filterData.searchQuery()) ? null : filterData.searchQuery())
             .partnerStatuses(providePartnerStatusParameter(filterData.isOffersOnly()))

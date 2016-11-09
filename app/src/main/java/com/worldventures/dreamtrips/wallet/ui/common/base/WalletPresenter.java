@@ -7,6 +7,7 @@ import com.messenger.ui.presenter.BaseViewStateMvpPresenter;
 import com.messenger.ui.presenter.ViewStateMvpPresenter;
 import com.techery.spares.module.Injector;
 import com.worldventures.dreamtrips.wallet.service.SmartCardInteractor;
+import com.worldventures.dreamtrips.wallet.service.command.GetActiveSmartCardCommand;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.WalletScreen;
 
 import javax.inject.Inject;
@@ -30,11 +31,15 @@ public abstract class WalletPresenter<V extends WalletScreen, S extends Parcelab
       observeSmartCardModifierPipe();
    }
 
-   private void observeSmartCardModifierPipe(){
+   private void observeSmartCardModifierPipe() {
       smartCardInteractor.smartCardModifierPipe()
             .observeSuccessWithReplay()
             .filter(command -> command.getResult() != null)
             .map(command -> command.getResult().connectionStatus())
+            .startWith(smartCardInteractor.activeSmartCardPipe()
+                  .createObservableResult(new GetActiveSmartCardCommand())
+                  .map(it -> it.getResult().connectionStatus())
+            )
             .compose(bindViewIoToMainComposer())
             .subscribe(getView()::showConnectionStatus);
    }

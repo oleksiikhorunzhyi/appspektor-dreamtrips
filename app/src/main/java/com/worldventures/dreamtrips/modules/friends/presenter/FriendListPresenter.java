@@ -1,7 +1,7 @@
 package com.worldventures.dreamtrips.modules.friends.presenter;
 
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.modules.common.api.janet.command.CirclesCommand;
+import com.worldventures.dreamtrips.modules.common.api.janet.command.GetCirclesCommand;
 import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.friends.model.Circle;
 import com.worldventures.dreamtrips.modules.friends.service.command.GetFriendsCommand;
@@ -37,7 +37,7 @@ public class FriendListPresenter extends BaseUserListPresenter<FriendListPresent
    }
 
    public void onFilterClicked() {
-      getCirclesObservable().subscribe(new ActionStateSubscriber<CirclesCommand>().onStart(circlesCommand -> onCirclesStart())
+      getCirclesObservable().subscribe(new ActionStateSubscriber<GetCirclesCommand>().onStart(circlesCommand -> onCirclesStart())
             .onSuccess(circlesCommand -> onCirclesFilterSuccess(circlesCommand.getResult()))
             .onFail((circlesCommand, throwable) -> onCirclesError(circlesCommand.getErrorMessage())));
    }

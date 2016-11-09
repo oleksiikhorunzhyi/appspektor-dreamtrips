@@ -2,7 +2,7 @@ package com.worldventures.dreamtrips.modules.friends.presenter;
 
 import com.innahema.collections.query.queriables.Queryable;
 import com.worldventures.dreamtrips.core.session.CirclesInteractor;
-import com.worldventures.dreamtrips.modules.common.api.janet.command.CirclesCommand;
+import com.worldventures.dreamtrips.modules.common.api.janet.command.GetCirclesCommand;
 import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.common.view.BlockingProgressView;
@@ -40,7 +40,7 @@ public class FriendPreferencesPresenter extends Presenter<FriendPreferencesPrese
    }
 
    private void updateCircles() {
-      circlesInteractor.pipe().send(new CirclesCommand());
+      circlesInteractor.pipe().send(new GetCirclesCommand());
    }
 
    private void subscribeCircles() {
@@ -48,7 +48,7 @@ public class FriendPreferencesPresenter extends Presenter<FriendPreferencesPrese
             .observe()
             .observeOn(AndroidSchedulers.mainThread())
             .compose(bindView())
-            .subscribe(new ActionStateSubscriber<CirclesCommand>().onStart(circlesCommand -> onCirclesStart())
+            .subscribe(new ActionStateSubscriber<GetCirclesCommand>().onStart(circlesCommand -> onCirclesStart())
                   .onSuccess(circlesCommand -> onCirclesSuccess(circlesCommand.getResult()))
                   .onFail((circlesCommand, throwable) -> onCirclesError(circlesCommand.getErrorMessage())));
    }

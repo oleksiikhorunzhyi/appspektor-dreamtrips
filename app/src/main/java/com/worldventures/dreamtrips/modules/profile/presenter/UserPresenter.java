@@ -10,7 +10,7 @@ import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.rx.composer.IoToMainComposer;
 import com.worldventures.dreamtrips.core.session.CirclesInteractor;
 import com.worldventures.dreamtrips.modules.bucketlist.bundle.ForeignBucketTabsBundle;
-import com.worldventures.dreamtrips.modules.common.api.janet.command.CirclesCommand;
+import com.worldventures.dreamtrips.modules.common.api.janet.command.GetCirclesCommand;
 import com.worldventures.dreamtrips.modules.common.model.FlagData;
 import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.common.presenter.delegate.FlagDelegate;
@@ -274,11 +274,11 @@ public class UserPresenter extends ProfilePresenter<UserPresenter.View, User> {
 
    private void showAddFriendDialog(Action1<Circle> actionCircle) {
       circlesInteractor.pipe()
-            .createObservable(new CirclesCommand())
+            .createObservable(new GetCirclesCommand())
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .compose(bindView())
-            .subscribe(new ActionStateSubscriber<CirclesCommand>().onStart(circlesCommand -> onCirclesStart())
+            .subscribe(new ActionStateSubscriber<GetCirclesCommand>().onStart(circlesCommand -> onCirclesStart())
                   .onSuccess(circlesCommand -> onCirclesSuccess(circlesCommand.getResult(), actionCircle))
                   .onFail((circlesCommand, throwable) -> onCirclesError(circlesCommand.getErrorMessage())));
    }

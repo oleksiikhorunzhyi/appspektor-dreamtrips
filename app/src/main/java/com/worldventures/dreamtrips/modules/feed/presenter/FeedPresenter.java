@@ -27,7 +27,7 @@ import com.worldventures.dreamtrips.core.utils.events.EntityLikedEvent;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem;
 import com.worldventures.dreamtrips.modules.bucketlist.service.BucketInteractor;
 import com.worldventures.dreamtrips.modules.bucketlist.service.action.DeleteItemHttpAction;
-import com.worldventures.dreamtrips.modules.common.api.janet.command.CirclesCommand;
+import com.worldventures.dreamtrips.modules.common.api.janet.command.GetCirclesCommand;
 import com.worldventures.dreamtrips.modules.common.model.FlagData;
 import com.worldventures.dreamtrips.modules.common.model.MediaAttachment;
 import com.worldventures.dreamtrips.modules.common.model.PhotoGalleryModel;
@@ -179,17 +179,17 @@ public class FeedPresenter extends Presenter<FeedPresenter.View> {
 
    public void actionFilter() {
       circlesInteractor.pipe()
-            .createObservable(new CirclesCommand())
+            .createObservable(new GetCirclesCommand())
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .compose(bindView())
-            .subscribe(new ActionStateSubscriber<CirclesCommand>().onStart(circlesCommand -> onCirclesStart())
+            .subscribe(new ActionStateSubscriber<GetCirclesCommand>().onStart(circlesCommand -> onCirclesStart())
                   .onSuccess(circlesCommand -> onCirclesSuccess(circlesCommand.getResult()))
                   .onFail((circlesCommand, throwable) -> onCirclesError(circlesCommand.getErrorMessage())));
    }
 
    private void updateCircles() {
-      circlesInteractor.pipe().send(new CirclesCommand());
+      circlesInteractor.pipe().send(new GetCirclesCommand());
    }
 
    private void onCirclesStart() {

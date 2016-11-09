@@ -15,7 +15,7 @@ import com.worldventures.dreamtrips.modules.bucketlist.service.command.GetPopula
 import com.worldventures.dreamtrips.modules.bucketlist.service.command.GetPopularBucketItemsCommand;
 import com.worldventures.dreamtrips.modules.bucketlist.service.command.MergeBucketItemPhotosWithStorageCommand;
 import com.worldventures.dreamtrips.modules.common.api.janet.command.AcceptTermsCommand;
-import com.worldventures.dreamtrips.modules.common.api.janet.command.CirclesCommand;
+import com.worldventures.dreamtrips.modules.common.api.janet.command.GetCirclesCommand;
 import com.worldventures.dreamtrips.modules.common.api.janet.command.ClearStoragesCommand;
 import com.worldventures.dreamtrips.modules.common.api.janet.command.SubscribeToPushNotificationsCommand;
 import com.worldventures.dreamtrips.modules.common.api.janet.command.TripsFilterDataCommand;
@@ -104,7 +104,7 @@ import dagger.Module;
       AddBucketItemPhotoCommand.class,
       MergeBucketItemPhotosWithStorageCommand.class,
       TripsFilterDataCommand.class,
-      CirclesCommand.class,
+      GetCirclesCommand.class,
       GetCommentsCommand.class,
       LoginCommand.class,
       UpdateUserCommand.class,

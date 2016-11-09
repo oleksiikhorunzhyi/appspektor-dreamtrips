@@ -23,14 +23,14 @@ import io.techery.mappery.MapperyContext;
 import rx.schedulers.Schedulers;
 
 @CommandAction
-public class CirclesCommand extends CommandWithError<List<Circle>> implements InjectableAction, CachedAction<List<Circle>> {
+public class GetCirclesCommand extends CommandWithError<List<Circle>> implements InjectableAction, CachedAction<List<Circle>> {
 
    @Inject @Named(JanetModule.JANET_API_LIB) Janet janet;
    @Inject MapperyContext mapperyContext;
 
    private List<Circle> cachedData;
 
-   public CirclesCommand() {
+   public GetCirclesCommand() {
    }
 
    @Override

@@ -38,6 +38,7 @@ public abstract class WalletPresenter<V extends WalletScreen, S extends Parcelab
             .map(command -> command.getResult().connectionStatus())
             .startWith(smartCardInteractor.activeSmartCardPipe()
                   .createObservableResult(new GetActiveSmartCardCommand())
+                  .onErrorReturn(throwable -> null).filter(it -> it != null)
                   .map(it -> it.getResult().connectionStatus())
             )
             .compose(bindViewIoToMainComposer())

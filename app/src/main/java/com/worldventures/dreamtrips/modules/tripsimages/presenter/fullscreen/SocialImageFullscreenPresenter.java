@@ -11,13 +11,15 @@ import com.worldventures.dreamtrips.core.utils.events.PhotoDeletedEvent;
 import com.worldventures.dreamtrips.modules.common.model.FlagData;
 import com.worldventures.dreamtrips.modules.common.presenter.delegate.FlagDelegate;
 import com.worldventures.dreamtrips.modules.common.view.custom.tagview.viewgroup.newio.model.PhotoTag;
-import com.worldventures.dreamtrips.modules.feed.api.GetFeedEntityQuery;
 import com.worldventures.dreamtrips.modules.feed.bundle.CommentsBundle;
 import com.worldventures.dreamtrips.modules.feed.event.FeedEntityChangedEvent;
 import com.worldventures.dreamtrips.modules.feed.event.FeedEntityCommentedEvent;
 import com.worldventures.dreamtrips.modules.feed.event.FeedEntityDeletedEvent;
 import com.worldventures.dreamtrips.modules.feed.manager.FeedEntityManager;
 import com.worldventures.dreamtrips.modules.feed.model.FeedEntity;
+import com.worldventures.dreamtrips.modules.feed.model.FeedEntityHolder;
+import com.worldventures.dreamtrips.modules.feed.service.FeedInteractor;
+import com.worldventures.dreamtrips.modules.feed.service.command.GetFeedEntityCommand;
 import com.worldventures.dreamtrips.modules.feed.view.cell.Flaggable;
 import com.worldventures.dreamtrips.modules.flags.service.FlagsInteractor;
 import com.worldventures.dreamtrips.modules.tripsimages.bundle.EditPhotoBundle;
@@ -45,6 +47,8 @@ public class SocialImageFullscreenPresenter extends SocialFullScreenPresenter<Ph
    @Inject FragmentManager fm;
    @Inject FlagsInteractor flagsInteractor;
    @Inject TripImagesInteractor tripImagesInteractor;
+   @Inject FeedInteractor feedInteractor;
+
    private FlagDelegate flagDelegate;
 
    public SocialImageFullscreenPresenter(Photo photo, TripImagesType type) {
@@ -65,20 +69,25 @@ public class SocialImageFullscreenPresenter extends SocialFullScreenPresenter<Ph
       flagDelegate = new FlagDelegate(flagsInteractor);
    }
 
-   public void loadEntity() {
-      doRequest(new GetFeedEntityQuery(photo.getUid()), feedEntityHolder -> {
-         FeedEntity feedEntity = feedEntityHolder.getItem();
-         if (photo.getUser() != null) {
-            photo.syncLikeState(feedEntity);
-            photo.setCommentsCount(feedEntity.getCommentsCount());
-            photo.setComments(feedEntity.getComments());
-            photo.setPhotoTags(((Photo) feedEntity).getPhotoTags());
-         } else {
-            photo = (Photo) feedEntity;
-            view.showContentWrapper();
-         }
-         setupActualViewState();
-      });
+   private void loadEntity() {
+      feedInteractor.getFeedEntityPipe()
+            .createObservable(new GetFeedEntityCommand(photo.getUid(), FeedEntityHolder.Type.PHOTO))
+            .compose(bindViewToMainComposer())
+            .subscribe(new ActionStateSubscriber<GetFeedEntityCommand>()
+                  .onSuccess(getFeedEntityCommand -> {
+                     Photo photoFeedEntity = (Photo) getFeedEntityCommand.getResult();
+                     if (photo.getUser() != null) {
+                        photo.syncLikeState(photoFeedEntity);
+                        photo.setCommentsCount(photoFeedEntity.getCommentsCount());
+                        photo.setComments(photoFeedEntity.getComments());
+                        photo.setPhotoTags(photoFeedEntity.getPhotoTags());
+                     } else {
+                        photo = photoFeedEntity;
+                        view.showContentWrapper();
+                     }
+                     setupActualViewState();
+                  })
+                  .onFail(this::handleError));
    }
 
    @Override
@@ -103,11 +112,11 @@ public class SocialImageFullscreenPresenter extends SocialFullScreenPresenter<Ph
             .createObservable(new DeletePhotoTagsCommand(photo.getFSId(), userIds))
             .compose(bindViewToMainComposer())
             .subscribe(new ActionStateSubscriber<DeletePhotoTagsCommand>()
-               .onSuccess(deletePhotoTagsCommand -> {
-                  photo.getPhotoTags().remove(tag);
-                  photo.setPhotoTagsCount(photo.getPhotoTags().size());
-               })
-               .onFail(this::handleError));
+                  .onSuccess(deletePhotoTagsCommand -> {
+                     photo.getPhotoTags().remove(tag);
+                     photo.setPhotoTagsCount(photo.getPhotoTags().size());
+                  })
+                  .onFail(this::handleError));
    }
 
    @Override

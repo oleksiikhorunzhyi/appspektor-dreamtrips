@@ -16,7 +16,10 @@ import com.worldventures.dreamtrips.modules.feed.converter.FeedItemConverter;
 import com.worldventures.dreamtrips.modules.feed.converter.HashtagSimpleConverter;
 import com.worldventures.dreamtrips.modules.feed.converter.HashtagSuggestionConverter;
 import com.worldventures.dreamtrips.modules.feed.converter.LinksConverter;
+import com.worldventures.dreamtrips.modules.feed.converter.PhotoAttachmentConverter;
+import com.worldventures.dreamtrips.modules.feed.converter.PhotoSimpleConverter;
 import com.worldventures.dreamtrips.modules.feed.converter.PhotoSocializedConverter;
+import com.worldventures.dreamtrips.modules.feed.converter.PhotoWithAuthorConverter;
 import com.worldventures.dreamtrips.modules.feed.converter.PostSocializedConverter;
 import com.worldventures.dreamtrips.modules.feed.converter.ReversePostAttachmentsConverter;
 import com.worldventures.dreamtrips.modules.feed.converter.ReversePostDataConverter;
@@ -28,6 +31,7 @@ import com.worldventures.dreamtrips.modules.friends.model.converter.MutualsConve
 import com.worldventures.dreamtrips.modules.infopages.model.FeedbackTypeConverter;
 import com.worldventures.dreamtrips.modules.mapping.converter.CircleConverter;
 import com.worldventures.dreamtrips.modules.mapping.converter.Converter;
+import com.worldventures.dreamtrips.modules.mapping.converter.FeedMetaDataConverter;
 import com.worldventures.dreamtrips.modules.mapping.converter.FeedbackImageAttachmentConverter;
 import com.worldventures.dreamtrips.modules.mapping.converter.FlagConverter;
 import com.worldventures.dreamtrips.modules.mapping.converter.ImageConverter;
@@ -42,7 +46,6 @@ import com.worldventures.dreamtrips.modules.mapping.converter.PublicProfileConve
 import com.worldventures.dreamtrips.modules.mapping.converter.RelationshipConverter;
 import com.worldventures.dreamtrips.modules.mapping.converter.ReverseLocationConverter;
 import com.worldventures.dreamtrips.modules.mapping.converter.ShortProfilesConverter;
-import com.worldventures.dreamtrips.modules.mapping.converter.SimplePhotoConverter;
 import com.worldventures.dreamtrips.modules.mapping.converter.TaggedUserConverter;
 import com.worldventures.dreamtrips.modules.mapping.converter.UserAvatarConverter;
 import com.worldventures.dreamtrips.modules.mapping.converter.YSBHPhotoConverter;
@@ -394,12 +397,6 @@ public class MappingModule {
 
    @Provides(type = Provides.Type.SET)
    @Singleton
-   Converter provideSimplePhotoConverter() {
-      return new SimplePhotoConverter();
-   }
-
-   @Provides(type = Provides.Type.SET)
-   @Singleton
    Converter provideSentInviteConverter() {
       return new SentInviteConverter();
    }
@@ -492,5 +489,29 @@ public class MappingModule {
    @Singleton
    Converter providePopularBucketItemFromLocationConverter() {
       return new PopularBucketItemFromLocationConverter();
+   }
+
+   @Provides(type = Provides.Type.SET)
+   @Singleton
+   Converter provideFeedMetaDataConverter() {
+      return new FeedMetaDataConverter();
+   }
+
+   @Provides(type = Provides.Type.SET)
+   @Singleton
+   Converter providePhotoAttachmentConverter() {
+      return new PhotoAttachmentConverter();
+   }
+
+   @Provides(type = Provides.Type.SET)
+   @Singleton
+   Converter providePhotoSimpleConverter() {
+      return new PhotoSimpleConverter();
+   }
+
+   @Provides(type = Provides.Type.SET)
+   @Singleton
+   Converter providePhotoWithAuthorConverter() {
+      return new PhotoWithAuthorConverter();
    }
 }

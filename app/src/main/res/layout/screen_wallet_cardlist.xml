@@ -56,7 +56,6 @@
                   android:layout_height="match_parent"
                   android:clipToPadding="false"
                   android:paddingBottom="@dimen/spacing_large"
-                  tools:listitem="@layout/adapter_item_wallet_bankcard"
                   />
 
             <android.support.design.widget.FloatingActionButton
@@ -66,13 +65,30 @@
                   android:layout_gravity="bottom|center_horizontal"
                   android:layout_marginBottom="16dp"
                   android:src="@drawable/ic_white_plus"
-                  app:backgroundTint="@color/wallet_add_cards_inactive_color"
                   app:fab_size="normal"
                   app:layout_behavior="com.worldventures.dreamtrips.wallet.ui.dashboard.list.util.ScrollFABBehavior"
-                  app:rippleColor="@color/wallet_add_cards_inactive_color"
                   />
          </android.support.design.widget.CoordinatorLayout>
 
+         <TextView
+               android:id="@+id/empty_card_view"
+               android:layout_width="match_parent"
+               android:layout_height="154dp"
+               android:layout_alignParentBottom="true"
+               android:layout_centerHorizontal="true"
+               android:layout_gravity="bottom"
+               android:layout_marginBottom="72dp"
+               android:layout_marginLeft="30dp"
+               android:layout_marginRight="30dp"
+               android:background="@drawable/background_empty_card_list_message"
+               android:gravity="center"
+               android:paddingBottom="16dp"
+               android:text="@string/wallet_wizard_empty_card_list_add_card_coming_soon"
+               android:textColor="@color/wallet_card_list_empty_list_label_color"
+               android:textSize="18sp"
+               />
+
       </RelativeLayout>
    </LinearLayout>
+
 </com.worldventures.dreamtrips.wallet.ui.dashboard.list.CardListScreen>

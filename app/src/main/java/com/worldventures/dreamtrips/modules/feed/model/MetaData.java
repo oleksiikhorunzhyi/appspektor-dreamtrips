@@ -7,12 +7,12 @@ import com.esotericsoftware.kryo.DefaultSerializer;
 import com.esotericsoftware.kryo.serializers.CompatibleFieldSerializer;
 import com.worldventures.dreamtrips.modules.feed.model.feed.hashtag.Hashtag;
 
-import java.util.ArrayList;
+import java.util.List;
 
 @DefaultSerializer(CompatibleFieldSerializer.class)
 public class MetaData implements Parcelable {
 
-   ArrayList<Hashtag> hashtags;
+   List<Hashtag> hashtags;
 
    public MetaData() {
    }
@@ -21,11 +21,11 @@ public class MetaData implements Parcelable {
       hashtags = in.createTypedArrayList(Hashtag.CREATOR);
    }
 
-   public ArrayList<Hashtag> getHashtags() {
+   public List<Hashtag> getHashtags() {
       return hashtags;
    }
 
-   public void setHashtags(ArrayList<Hashtag> hashtags) {
+   public void setHashtags(List<Hashtag> hashtags) {
       this.hashtags = hashtags;
    }
 

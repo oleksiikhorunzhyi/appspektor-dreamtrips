@@ -5,9 +5,6 @@ import android.support.annotation.Nullable;
 import android.text.TextUtils;
 
 import com.innahema.collections.query.queriables.Queryable;
-import com.worldventures.dreamtrips.modules.feed.service.PostsInteractor;
-import com.worldventures.dreamtrips.modules.feed.service.command.DeletePostCommand;
-import com.worldventures.dreamtrips.modules.flags.service.FlagsInteractor;
 import com.worldventures.dreamtrips.core.rx.RxView;
 import com.worldventures.dreamtrips.core.rx.composer.IoToMainComposer;
 import com.worldventures.dreamtrips.core.utils.LocaleHelper;
@@ -36,12 +33,14 @@ import com.worldventures.dreamtrips.modules.feed.event.TranslatePostEvent;
 import com.worldventures.dreamtrips.modules.feed.manager.FeedEntityManager;
 import com.worldventures.dreamtrips.modules.feed.model.FeedEntity;
 import com.worldventures.dreamtrips.modules.feed.model.FeedItem;
-import com.worldventures.dreamtrips.modules.feed.model.feed.base.ParentFeedItem;
 import com.worldventures.dreamtrips.modules.feed.model.feed.hashtag.HashtagSuggestion;
 import com.worldventures.dreamtrips.modules.feed.service.HashtagInteractor;
+import com.worldventures.dreamtrips.modules.feed.service.PostsInteractor;
+import com.worldventures.dreamtrips.modules.feed.service.command.DeletePostCommand;
 import com.worldventures.dreamtrips.modules.feed.service.command.FeedByHashtagCommand;
 import com.worldventures.dreamtrips.modules.feed.service.command.HashtagSuggestionCommand;
 import com.worldventures.dreamtrips.modules.feed.view.util.TextualPostTranslationDelegate;
+import com.worldventures.dreamtrips.modules.flags.service.FlagsInteractor;
 import com.worldventures.dreamtrips.modules.tripsimages.service.TripImagesInteractor;
 import com.worldventures.dreamtrips.modules.tripsimages.service.command.DeletePhotoCommand;
 import com.worldventures.dreamtrips.modules.tripsimages.service.command.DownloadImageCommand;
@@ -143,25 +142,23 @@ public class FeedHashtagPresenter<T extends FeedHashtagPresenter.View> extends J
    }
 
    private void subscribeRefreshFeeds() {
-      view.bindUntilStop(interactor.getRefreshFeedsByHashtagsPipe().observe().compose(new IoToMainComposer<>()))
-            .subscribe(new ActionStateSubscriber<FeedByHashtagCommand.Refresh>().onSuccess(refresh -> refreshFeedSucceed(refresh
-                  .getResult()
-                  .getParentFeedItems())).onFail((refresh, throwable) -> {
-               view.informUser(refresh.getErrorMessage());
-               refreshFeedError();
+      interactor.getRefreshFeedsByHashtagsPipe().observe()
+            .compose(bindViewToMainComposer())
+            .subscribe(new ActionStateSubscriber<FeedByHashtagCommand.Refresh>()
+               .onSuccess(refresh -> refreshFeedSucceed(refresh.getResult()))
+               .onFail((refresh, throwable) -> {
+                  view.informUser(refresh.getErrorMessage());
+                  refreshFeedError();
             }));
    }
 
-   private void refreshFeedSucceed(ArrayList<ParentFeedItem> freshItems) {
+   private void refreshFeedSucceed(List<FeedItem> freshItems) {
       boolean noMoreFeeds = freshItems == null || freshItems.size() == 0;
       view.updateLoadingStatus(false, noMoreFeeds);
       //
       view.finishLoading();
       feedItems.clear();
-      feedItems.addAll(Queryable.from(freshItems)
-            .filter(ParentFeedItem::isSingle)
-            .map(element -> element.getItems().get(0))
-            .toList());
+      feedItems.addAll(freshItems);
       //
       view.refreshFeedItems(feedItems);
    }
@@ -173,26 +170,24 @@ public class FeedHashtagPresenter<T extends FeedHashtagPresenter.View> extends J
    }
 
    private void subscribeLoadNextFeeds() {
-      view.bindUntilStop(interactor.getLoadNextFeedsByHashtagsPipe().observe().compose(new IoToMainComposer<>()))
-            .subscribe(new ActionStateSubscriber<FeedByHashtagCommand.LoadNext>().onSuccess(loadNext -> addFeedItems(loadNext
-                  .getResult()
-                  .getParentFeedItems())).onFail((loadNext, throwable) -> {
-               view.informUser(loadNext.getErrorMessage());
-               loadMoreItemsError();
-            }));
+      interactor.getLoadNextFeedsByHashtagsPipe()
+            .observe()
+            .compose(bindViewToMainComposer())
+            .subscribe(new ActionStateSubscriber<FeedByHashtagCommand.LoadNext>()
+                  .onSuccess(loadNext -> addFeedItems(loadNext.getResult()))
+                  .onFail((loadNext, throwable) -> {
+                     view.informUser(loadNext.getErrorMessage());
+                     loadMoreItemsError();
+                  }));
    }
 
-   private void addFeedItems(List<ParentFeedItem> olderItems) {
-      boolean noMoreFeeds = olderItems == null || olderItems.size() == 0;
+   private void addFeedItems(List<FeedItem> newItems) {
+      boolean noMoreFeeds = newItems == null || newItems.size() == 0;
       view.updateLoadingStatus(false, noMoreFeeds);
       //
-      feedItems.addAll(Queryable.from(olderItems)
-            .filter(ParentFeedItem::isSingle)
-            .map(element -> element.getItems().get(0))
-            .toList());
+      feedItems.addAll(newItems);
       view.refreshFeedItems(feedItems);
    }
-
 
    private void loadMoreItemsError() {
       view.updateLoadingStatus(false, false);

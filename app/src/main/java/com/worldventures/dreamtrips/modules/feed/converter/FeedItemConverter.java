@@ -2,13 +2,17 @@ package com.worldventures.dreamtrips.modules.feed.converter;
 
 import com.worldventures.dreamtrips.api.bucketlist.model.BucketItem;
 import com.worldventures.dreamtrips.api.entity.model.EntityHolder;
-import com.worldventures.dreamtrips.api.feed.model.FeedItem;
 import com.worldventures.dreamtrips.api.photos.model.Photo;
 import com.worldventures.dreamtrips.api.post.model.response.Post;
 import com.worldventures.dreamtrips.api.trip.model.Trip;
+import com.worldventures.dreamtrips.modules.feed.model.BucketFeedItem;
 import com.worldventures.dreamtrips.modules.feed.model.FeedEntity;
 import com.worldventures.dreamtrips.modules.feed.model.FeedEntityHolder;
+import com.worldventures.dreamtrips.modules.feed.model.FeedItem;
+import com.worldventures.dreamtrips.modules.feed.model.PhotoFeedItem;
+import com.worldventures.dreamtrips.modules.feed.model.PostFeedItem;
 import com.worldventures.dreamtrips.modules.feed.model.TextualPost;
+import com.worldventures.dreamtrips.modules.feed.model.TripFeedItem;
 import com.worldventures.dreamtrips.modules.feed.model.UndefinedFeedItem;
 import com.worldventures.dreamtrips.modules.feed.model.feed.item.Links;
 import com.worldventures.dreamtrips.modules.mapping.converter.Converter;
@@ -29,22 +33,25 @@ public class FeedItemConverter implements Converter<EntityHolder, FeedEntityHold
    }
 
    @Override
-   public com.worldventures.dreamtrips.modules.feed.model.FeedItem convert(MapperyContext mapperyContext, EntityHolder entityHolder) {
-      com.worldventures.dreamtrips.modules.feed.model.FeedItem feedItem = new com.worldventures.dreamtrips.modules.feed.model.FeedItem();
-      if (entityHolder instanceof FeedItem) {
-         FeedItem apiFeedItem = (FeedItem) entityHolder;
+   public FeedItem convert(MapperyContext mapperyContext, EntityHolder entityHolder) {
+      FeedEntity feedEntity = null;
+      FeedItem.Type type;
+      TargetClassInfo targetClassInfo = getTargetClassInfo(entityHolder.entity());
+      type = targetClassInfo.type;
+      if (type != FeedEntityHolder.Type.UNDEFINED) {
+         feedEntity = mapperyContext.convert(entityHolder.entity(), targetClassInfo.targetClass);
+      }
+
+      FeedItem feedItem = createFeedItem(type);
+      feedItem.setType(type);
+      feedItem.setItem(feedEntity);
+      if (entityHolder instanceof com.worldventures.dreamtrips.api.feed.model.FeedItem) {
+         com.worldventures.dreamtrips.api.feed.model.FeedItem apiFeedItem = (com.worldventures.dreamtrips.api.feed.model.FeedItem) entityHolder;
          feedItem.setReadAt(apiFeedItem.readAt());
          if (apiFeedItem.id() != null) feedItem.setId(apiFeedItem.id());
          feedItem.setCreatedAt(apiFeedItem.createdAt());
          feedItem.setLinks(mapperyContext.convert(apiFeedItem.links(), Links.class));
          feedItem.setAction(mapAction(apiFeedItem.action()));
-      }
-      TargetClassInfo targetClassInfo = getTargetClassInfo(entityHolder.entity());
-      try {
-         feedItem.setType(targetClassInfo.type);
-         feedItem.setItem(mapperyContext.convert(entityHolder.entity(), targetClassInfo.targetClass));
-      } catch (IllegalArgumentException ex) {
-         return new UndefinedFeedItem();
       }
       return feedItem;
    }
@@ -64,10 +71,10 @@ public class FeedItemConverter implements Converter<EntityHolder, FeedEntityHold
          return new TargetClassInfo(FeedEntityHolder.Type.BUCKET_LIST_ITEM,
                com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem.class);
       }
-      throw new IllegalArgumentException("No such class found for the feed");
+      return new TargetClassInfo(FeedEntityHolder.Type.UNDEFINED, null);
    }
 
-   private com.worldventures.dreamtrips.modules.feed.model.FeedItem.Action mapAction(FeedItem.Action action) {
+   private FeedItem.Action mapAction(com.worldventures.dreamtrips.api.feed.model.FeedItem.Action action) {
       switch (action) {
          case ADD:
             return com.worldventures.dreamtrips.modules.feed.model.FeedItem.Action.ADD;
@@ -92,7 +99,23 @@ public class FeedItemConverter implements Converter<EntityHolder, FeedEntityHold
          case UNKNOWN:
             return com.worldventures.dreamtrips.modules.feed.model.FeedItem.Action.UNKNOWN;
       }
-      throw new IllegalArgumentException("No such type");
+      throw new RuntimeException("No such type");
+   }
+
+   private FeedItem createFeedItem(FeedItem.Type type) {
+      switch (type) {
+         case POST:
+            return new PostFeedItem();
+         case PHOTO:
+            return new PhotoFeedItem();
+         case BUCKET_LIST_ITEM:
+            return new BucketFeedItem();
+         case TRIP:
+            return new TripFeedItem();
+         case UNDEFINED:
+         default:
+            return new UndefinedFeedItem();
+      }
    }
 
    private static class TargetClassInfo {

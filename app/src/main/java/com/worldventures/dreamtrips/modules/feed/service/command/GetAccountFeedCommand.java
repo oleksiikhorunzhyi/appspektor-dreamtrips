@@ -1,7 +1,8 @@
 package com.worldventures.dreamtrips.modules.feed.service.command;
 
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.modules.feed.service.api.GetAccountFeedHttpAction;
+import com.worldventures.dreamtrips.api.feed.GetAccountFeedHttpAction;
+import com.worldventures.dreamtrips.api.feed.ImmutableGetAccountFeedHttpAction;
 
 import java.util.Date;
 
@@ -23,7 +24,12 @@ public class GetAccountFeedCommand extends BaseGetFeedCommand<GetAccountFeedHttp
 
    @Override
    protected GetAccountFeedHttpAction provideRequest() {
-      return new GetAccountFeedHttpAction(circleId, FEED_LIMIT, before);
+      GetAccountFeedHttpAction.Params params = ImmutableGetAccountFeedHttpAction.Params.builder()
+            .circleId(circleId)
+            .pageSize(FEED_LIMIT)
+            .before(before)
+            .build();
+      return new GetAccountFeedHttpAction(params);
    }
 
    @Override

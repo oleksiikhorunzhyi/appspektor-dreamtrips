@@ -4,6 +4,7 @@ import android.os.Bundle;
 
 import com.innahema.collections.query.queriables.Queryable;
 import com.octo.android.robospice.persistence.exception.SpiceException;
+import com.worldventures.dreamtrips.core.api.action.CommandWithError;
 import com.worldventures.dreamtrips.core.module.RouteCreatorModule;
 import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.navigation.creator.RouteCreator;
@@ -34,13 +35,12 @@ import com.worldventures.dreamtrips.modules.feed.model.FeedEntity;
 import com.worldventures.dreamtrips.modules.feed.model.FeedItem;
 import com.worldventures.dreamtrips.modules.feed.service.FeedInteractor;
 import com.worldventures.dreamtrips.modules.feed.service.PostsInteractor;
-import com.worldventures.dreamtrips.modules.feed.service.command.BaseGetFeedCommand;
 import com.worldventures.dreamtrips.modules.feed.service.command.DeletePostCommand;
 import com.worldventures.dreamtrips.modules.feed.view.util.TextualPostTranslationDelegate;
+import com.worldventures.dreamtrips.modules.tripsimages.bundle.TripsImagesBundle;
 import com.worldventures.dreamtrips.modules.tripsimages.service.TripImagesInteractor;
 import com.worldventures.dreamtrips.modules.tripsimages.service.command.DeletePhotoCommand;
 import com.worldventures.dreamtrips.modules.tripsimages.service.command.DownloadImageCommand;
-import com.worldventures.dreamtrips.modules.tripsimages.bundle.TripsImagesBundle;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -289,7 +289,7 @@ public abstract class ProfilePresenter<T extends ProfilePresenter.View, U extend
 
    public abstract void loadNext(Date date);
 
-   protected void refreshFeedSucceed(List<FeedItem<FeedEntity>> freshItems) {
+   protected void refreshFeedSucceed(List<FeedItem> freshItems) {
       boolean noMoreElements = freshItems == null || freshItems.size() == 0;
       view.updateLoadingStatus(false, noMoreElements);
       //
@@ -299,7 +299,7 @@ public abstract class ProfilePresenter<T extends ProfilePresenter.View, U extend
       view.refreshFeedItems(feedItems);
    }
 
-   protected void addFeedItems(List<FeedItem<FeedEntity>> olderItems) {
+   protected void addFeedItems(List<FeedItem> olderItems) {
       boolean noMoreElements = olderItems == null || olderItems.size() == 0;
       view.updateLoadingStatus(false, noMoreElements);
       //
@@ -307,14 +307,14 @@ public abstract class ProfilePresenter<T extends ProfilePresenter.View, U extend
       view.refreshFeedItems(feedItems);
    }
 
-   protected void refreshFeedError(BaseGetFeedCommand action, Throwable throwable) {
+   protected void refreshFeedError(CommandWithError action, Throwable throwable) {
       view.informUser(action.getErrorMessage());
       view.updateLoadingStatus(false, false);
       view.finishLoading();
       view.refreshFeedItems(feedItems);
    }
 
-   protected void loadMoreItemsError(BaseGetFeedCommand action, Throwable throwable) {
+   protected void loadMoreItemsError(CommandWithError action, Throwable throwable) {
       view.informUser(action.getErrorMessage());
       view.updateLoadingStatus(false, false);
       addFeedItems(new ArrayList<>());

@@ -2,6 +2,7 @@ package com.worldventures.dreamtrips.wallet.service.command;
 
 
 import com.worldventures.dreamtrips.core.janet.dagger.InjectableAction;
+import com.worldventures.dreamtrips.wallet.domain.entity.AddressInfo;
 import com.worldventures.dreamtrips.wallet.domain.entity.card.BankCard;
 import com.worldventures.dreamtrips.wallet.domain.entity.card.ImmutableBankCard;
 
@@ -32,6 +33,15 @@ public class UpdateBankCardCommand extends Command<BankCard> implements Injectab
 
    public static UpdateBankCardCommand updateNickName(BankCard bankCard, String nickName) {
       return new UpdateBankCardCommand(ImmutableBankCard.builder().from(bankCard).nickName(nickName).build());
+   }
+
+   public static UpdateBankCardCommand updateAddress(BankCard bankCard, AddressInfo addressInfo) {
+      return new UpdateBankCardCommand(
+            ImmutableBankCard.builder()
+                  .from(bankCard)
+                  .addressInfo(addressInfo)
+                  .build()
+      );
    }
 
    @Override

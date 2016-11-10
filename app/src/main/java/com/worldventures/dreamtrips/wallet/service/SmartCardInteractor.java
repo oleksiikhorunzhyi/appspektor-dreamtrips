@@ -178,7 +178,7 @@ public final class SmartCardInteractor {
       return addRecordPipe;
    }
 
-   public WriteActionPipe<UpdateBankCardCommand> updateBankCardPipe() {
+   public ActionPipe<UpdateBankCardCommand> updateBankCardPipe() {
       return updateBankCardPipe;
    }
 

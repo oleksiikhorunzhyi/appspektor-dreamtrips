@@ -15,7 +15,7 @@ import com.worldventures.dreamtrips.wallet.domain.entity.AddressInfoWithLocale;
 import com.worldventures.dreamtrips.wallet.domain.entity.ImmutableAddressInfoWithLocale;
 import com.worldventures.dreamtrips.wallet.domain.entity.card.BankCard;
 import com.worldventures.dreamtrips.wallet.service.SmartCardInteractor;
-import com.worldventures.dreamtrips.wallet.service.command.UpdateCardDetailsDataCommand;
+import com.worldventures.dreamtrips.wallet.service.command.UpdateBankCardCommand;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletPresenter;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.WalletScreen;
 import com.worldventures.dreamtrips.wallet.ui.common.helper.ErrorHandler;
@@ -59,12 +59,12 @@ public class EditCardDetailsPresenter extends WalletPresenter<EditCardDetailsPre
    }
 
    private void connectToUpdateCardDetailsPipe() {
-      smartCardInteractor.updatePipe()
+      smartCardInteractor.updateBankCardPipe()
             .observe()
             .compose(bindViewIoToMainComposer())
-            .subscribe(OperationActionStateSubscriberWrapper.<UpdateCardDetailsDataCommand>forView(getView().provideOperationDelegate())
+            .subscribe(OperationActionStateSubscriberWrapper.<UpdateBankCardCommand>forView(getView().provideOperationDelegate())
                   .onSuccess(command -> addressChanged())
-                  .onFail(ErrorHandler.<UpdateCardDetailsDataCommand>builder(getContext())
+                  .onFail(ErrorHandler.<UpdateBankCardCommand>builder(getContext())
                         .handle(FormatException.class, R.string.wallet_add_card_details_error_message)
                         .build())
                   .wrap());
@@ -77,7 +77,7 @@ public class EditCardDetailsPresenter extends WalletPresenter<EditCardDetailsPre
    }
 
    void onCardAddressConfirmed(AddressInfo addressInfo) {
-      smartCardInteractor.updatePipe().send(new UpdateCardDetailsDataCommand(bankCard, addressInfo));
+      smartCardInteractor.updateBankCardPipe().send(UpdateBankCardCommand.updateAddress(bankCard, addressInfo));
    }
 
    public void goBack() {

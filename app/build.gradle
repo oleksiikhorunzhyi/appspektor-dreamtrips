@@ -422,8 +422,6 @@ dependencies {
    compile(group: 'com.worldventures.dreamtrips', name: 'api', version: '2.8.0-STAGE-SNAPSHOT', changing: true) {
       exclude group: "joda-time"
    }
-   compile 'com.octo.android.robospice:robospice:1.4.14'
-   compile 'com.octo.android.robospice:robospice-retrofit:1.4.14'
    compile 'com.squareup.okhttp:okhttp:2.7.5'
    compile 'com.squareup.okhttp:okhttp-urlconnection:2.7.5'
    compile 'com.google.code.gson:gson:2.7'

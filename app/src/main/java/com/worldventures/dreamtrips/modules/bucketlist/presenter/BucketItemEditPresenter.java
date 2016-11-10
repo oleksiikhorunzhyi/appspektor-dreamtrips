@@ -4,7 +4,6 @@ import android.net.Uri;
 import android.support.annotation.NonNull;
 
 import com.innahema.collections.query.queriables.Queryable;
-import com.octo.android.robospice.persistence.exception.SpiceException;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.core.utils.DateTimeUtils;
@@ -18,8 +17,8 @@ import com.worldventures.dreamtrips.modules.bucketlist.service.action.UpdateItem
 import com.worldventures.dreamtrips.modules.bucketlist.service.command.AddBucketItemPhotoCommand;
 import com.worldventures.dreamtrips.modules.bucketlist.service.command.DeleteItemPhotoCommand;
 import com.worldventures.dreamtrips.modules.bucketlist.service.command.MergeBucketItemPhotosWithStorageCommand;
-import com.worldventures.dreamtrips.modules.common.model.EntityStateHolder;
 import com.worldventures.dreamtrips.modules.bucketlist.service.model.ImmutableBucketPostBody;
+import com.worldventures.dreamtrips.modules.common.model.EntityStateHolder;
 import com.worldventures.dreamtrips.modules.common.model.PhotoGalleryModel;
 import com.worldventures.dreamtrips.modules.common.view.bundle.BucketBundle;
 import com.worldventures.dreamtrips.modules.common.view.util.MediaPickerEventDelegate;
@@ -86,8 +85,8 @@ public class BucketItemEditPresenter extends BucketDetailsBasePresenter<BucketIt
    }
 
    @Override
-   public void handleError(SpiceException error) {
-      super.handleError(error);
+   public void handleError(Object action, Throwable error) {
+      super.handleError(action, error);
       view.hideLoading();
    }
 

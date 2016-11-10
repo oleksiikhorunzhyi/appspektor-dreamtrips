@@ -7,10 +7,7 @@ import com.techery.spares.module.Injector;
 import com.techery.spares.module.qualifier.ForApplication;
 import com.techery.spares.module.qualifier.Global;
 import com.techery.spares.session.SessionHolder;
-import com.worldventures.dreamtrips.core.api.DreamSpiceManager;
-import com.worldventures.dreamtrips.core.api.DreamSpiceService;
 import com.worldventures.dreamtrips.core.api.PhotoUploadingManagerS3;
-import com.worldventures.dreamtrips.core.api.VideoDownloadSpiceService;
 import com.worldventures.dreamtrips.core.janet.JanetModule;
 import com.worldventures.dreamtrips.core.janet.SessionActionPipeCreator;
 import com.worldventures.dreamtrips.core.session.CirclesInteractor;
@@ -55,9 +52,6 @@ import de.greenrobot.event.EventBus;
 
 @Module(
       injects = {
-            DreamSpiceManager.class,
-            DreamSpiceService.class,
-            VideoDownloadSpiceService.class,
             PhotoUploadingManagerS3.class,
             DtlFilterMerchantInteractor.class,
             DtlMerchantInteractor.class,
@@ -65,11 +59,6 @@ import de.greenrobot.event.EventBus;
       },
       library = true, complete = false)
 public class ManagerModule {
-
-   @Provides
-   public DreamSpiceManager provideSpiceManager(@ForApplication Injector injector) {
-      return new DreamSpiceManager(DreamSpiceService.class, injector);
-   }
 
    @Singleton
    @Provides
@@ -159,8 +148,8 @@ public class ManagerModule {
 
    @Provides
    @Singleton
-   SocialCropImageManager provideGlobalConfigManager(@ForApplication Context context, DreamSpiceManager dreamSpiceManager) {
-      return new SocialCropImageManager(context, dreamSpiceManager);
+   SocialCropImageManager provideGlobalConfigManager(@ForApplication Context context) {
+      return new SocialCropImageManager(context);
    }
 
    @Provides

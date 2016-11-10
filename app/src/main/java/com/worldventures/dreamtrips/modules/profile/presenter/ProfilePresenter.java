@@ -3,7 +3,6 @@ package com.worldventures.dreamtrips.modules.profile.presenter;
 import android.os.Bundle;
 
 import com.innahema.collections.query.queriables.Queryable;
-import com.octo.android.robospice.persistence.exception.SpiceException;
 import com.worldventures.dreamtrips.core.api.action.CommandWithError;
 import com.worldventures.dreamtrips.core.module.RouteCreatorModule;
 import com.worldventures.dreamtrips.core.navigation.Route;
@@ -122,8 +121,8 @@ public abstract class ProfilePresenter<T extends ProfilePresenter.View, U extend
    }
 
    @Override
-   public void handleError(SpiceException error) {
-      super.handleError(error);
+   public void handleError(Object action, Throwable error) {
+      super.handleError(action, error);
       view.finishLoading();
    }
 

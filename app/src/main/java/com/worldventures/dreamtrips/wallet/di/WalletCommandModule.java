@@ -41,7 +41,6 @@ import com.worldventures.dreamtrips.wallet.service.command.http.FetchTermsAndCon
 import com.worldventures.dreamtrips.wallet.service.command.reset.ConfirmResetCommand;
 import com.worldventures.dreamtrips.wallet.service.command.reset.RemoveSmartCardDataCommand;
 import com.worldventures.dreamtrips.wallet.service.command.reset.ResetSmartCardCommand;
-import com.worldventures.dreamtrips.wallet.service.command.wizard.AddDummyCardCommand;
 import com.worldventures.dreamtrips.wallet.service.command.wizard.WizardCheckCommand;
 
 import dagger.Module;
@@ -88,10 +87,8 @@ import dagger.Module;
             ResetSmartCardCommand.class,
             ConfirmResetCommand.class,
             FetchBatteryLevelCommand.class,
-            AddDummyCardCommand.class,
             DisassociateCardUserCommand.class,
             DisassociateActiveCardUserCommand.class,
-            AddDummyCardCommand.class,
             SaveLockStateCommand.class
       },
       complete = false, library = true)

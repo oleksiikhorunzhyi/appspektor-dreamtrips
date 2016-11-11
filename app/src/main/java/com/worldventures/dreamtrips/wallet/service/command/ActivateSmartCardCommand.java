@@ -9,7 +9,6 @@ import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.wallet.domain.entity.ImmutableSmartCard;
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCard;
 import com.worldventures.dreamtrips.wallet.service.SmartCardInteractor;
-import com.worldventures.dreamtrips.wallet.service.command.wizard.AddDummyCardCommand;
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -45,14 +44,7 @@ public class ActivateSmartCardCommand extends Command<SmartCard> implements Inje
       smartCardInteractor.enableLockUnlockDeviceActionPipe()
             .createObservableResult(new EnableLockUnlockDeviceAction(true))
             .onErrorResumeNext(Observable.just(null))
-            .subscribe(action ->
-                  //TODO: for beta release
-                  janet.createPipe(AddDummyCardCommand.class)
-                        .createObservableResult(new AddDummyCardCommand(smartCard.cardName()))
-                        .map(c -> c.getResult())
-                        .onErrorReturn(throwable -> null)
-                        .subscribe(aVoid -> callback.onSuccess(smartCard)), t -> callback.onFail(t));
-
+            .subscribe(action -> callback.onSuccess(smartCard), throwable -> callback.onFail(throwable));
    }
 
    @Override

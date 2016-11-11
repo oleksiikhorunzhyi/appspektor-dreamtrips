@@ -8,7 +8,6 @@ import android.support.annotation.Nullable;
 import com.techery.spares.module.Injector;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.janet.composer.ActionPipeCacheWiper;
-import com.worldventures.dreamtrips.core.utils.LocaleHelper;
 import com.worldventures.dreamtrips.core.utils.tracksystem.AnalyticsInteractor;
 import com.worldventures.dreamtrips.wallet.analytics.AddCardDetailsAction;
 import com.worldventures.dreamtrips.wallet.analytics.CardDetailsOptionsAction;
@@ -35,6 +34,8 @@ import com.worldventures.dreamtrips.wallet.util.CardUtils;
 import com.worldventures.dreamtrips.wallet.util.FormatException;
 import com.worldventures.dreamtrips.wallet.util.SmartCardInteractorHelper;
 
+import java.util.Locale;
+
 import javax.inject.Inject;
 
 import flow.Flow.Direction;
@@ -45,7 +46,6 @@ import rx.functions.Action1;
 public class AddCardDetailsPresenter extends WalletPresenter<AddCardDetailsPresenter.Screen, Parcelable> {
 
    @Inject Navigator navigator;
-   @Inject LocaleHelper localeHelper;
    @Inject BankCardHelper bankCardHelper;
    @Inject SmartCardInteractor smartCardInteractor;
    @Inject AnalyticsInteractor analyticsInteractor;
@@ -103,7 +103,7 @@ public class AddCardDetailsPresenter extends WalletPresenter<AddCardDetailsPrese
 
                return ImmutableAddressInfoWithLocale.builder()
                      .addressInfo(addressInfo)
-                     .locale(localeHelper.getDefaultLocale())
+                     .locale(Locale.getDefault())
                      .build();
             })
             .compose(bindViewIoToMainComposer())

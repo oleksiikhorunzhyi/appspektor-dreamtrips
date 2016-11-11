@@ -1,6 +1,5 @@
 package com.worldventures.dreamtrips.core.utils;
 
-
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
 
@@ -11,37 +10,31 @@ import java.util.Locale;
 
 public class LocaleHelper {
 
-   private SessionHolder<UserSession> appSessionHolder;
-
-   public LocaleHelper(SessionHolder<UserSession> appSessionHolder) {
-      this.appSessionHolder = appSessionHolder;
+   public static String getDefaultLocaleFormatted() {
+      return formatLocale(Locale.getDefault());
    }
 
-   public Locale getDefaultLocale() {
-      if (!appSessionHolder.get().isPresent() || appSessionHolder.get().get().getLocale() == null)
-         return Locale.getDefault();
-
-      UserSession userSession = appSessionHolder.get().get();
-      String language = userSession.getLocale().split("-")[0];
-      String country = userSession.getLocale().split("-")[1];
-
-      return new Locale(language, country);
-   }
-
-   public String getDefaultLocaleFormatted() {
-      if (appSessionHolder.get().isPresent() && appSessionHolder.get().get().getLocale() != null) {
-         return appSessionHolder.get().get().getLocale();
-      }
-
-      Locale locale = Locale.getDefault();
+   public static String formatLocale(Locale locale) {
       return android.text.TextUtils.join("-", new String[]{locale.getLanguage(), locale.getCountry()});
    }
 
-   public boolean isOwnLanguage(@Nullable String languageCode) {
-      if (!appSessionHolder.get().isPresent()) return false;
+   public static boolean isOwnLanguage(SessionHolder<UserSession> sessionHolder, @Nullable String languageCode) {
+      if (!sessionHolder.get().isPresent()) return false;
 
-      String locale = appSessionHolder.get().get().getLocale();
+      String locale = sessionHolder.get().get().getLocale();
       String userLanguageCode = TextUtils.isEmpty(locale) ? getDefaultLocaleFormatted() : locale;
       return userLanguageCode.split("-")[0].equalsIgnoreCase(languageCode);
+   }
+
+   public static Locale buildFromLanguageCode(String languageCode) {
+      final String[] codeParts = languageCode.split("-");
+
+      if (codeParts.length == 1) return new Locale(codeParts[0]);
+      else return new Locale(codeParts[0], codeParts[1]);
+   }
+
+   public static boolean compareLocales(Locale lhs, Locale rhs) {
+      return lhs.getCountry().equalsIgnoreCase(rhs.getCountry()) &&
+            lhs.getLanguage().equalsIgnoreCase(rhs.getLanguage());
    }
 }

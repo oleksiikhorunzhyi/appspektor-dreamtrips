@@ -8,7 +8,6 @@ import android.text.TextUtils;
 import com.techery.spares.module.Injector;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.janet.composer.ActionPipeCacheWiper;
-import com.worldventures.dreamtrips.core.utils.LocaleHelper;
 import com.worldventures.dreamtrips.core.utils.tracksystem.AnalyticsInteractor;
 import com.worldventures.dreamtrips.wallet.analytics.CardDetailsAction;
 import com.worldventures.dreamtrips.wallet.analytics.ChangeDefaultCardAction;
@@ -30,6 +29,8 @@ import com.worldventures.dreamtrips.wallet.ui.wizard.edit_card.EditCardDetailsPa
 import com.worldventures.dreamtrips.wallet.util.BankCardHelper;
 import com.worldventures.dreamtrips.wallet.util.CardUtils;
 
+import java.util.Locale;
+
 import javax.inject.Inject;
 
 import io.techery.janet.Command;
@@ -42,7 +43,6 @@ import static java.lang.Integer.valueOf;
 public class CardDetailsPresenter extends WalletPresenter<CardDetailsPresenter.Screen, Parcelable> {
 
    @Inject Navigator navigator;
-   @Inject LocaleHelper localeHelper;
    @Inject SmartCardInteractor smartCardInteractor;
    @Inject AnalyticsInteractor analyticsInteractor;
    @Inject BankCardHelper bankCardHelper;
@@ -129,7 +129,7 @@ public class CardDetailsPresenter extends WalletPresenter<CardDetailsPresenter.S
    private AddressInfoWithLocale obtainAddressWithCountry() {
       return ImmutableAddressInfoWithLocale.builder()
             .addressInfo(bankCard.addressInfo())
-            .locale(localeHelper.getDefaultLocale())
+            .locale(Locale.getDefault())
             .build();
    }
 

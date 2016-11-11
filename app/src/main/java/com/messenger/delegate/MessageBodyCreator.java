@@ -4,18 +4,11 @@ import android.text.TextUtils;
 
 import com.messenger.messengerservers.model.AttachmentHolder;
 import com.messenger.messengerservers.model.MessageBody;
-import com.worldventures.dreamtrips.core.utils.LocaleHelper;
 
 import java.util.Collections;
 import java.util.Locale;
 
 public class MessageBodyCreator {
-
-   private LocaleHelper localeHelper;
-
-   public MessageBodyCreator(LocaleHelper localeHelper) {
-      this.localeHelper = localeHelper;
-   }
 
    public MessageBody provideForAttachment(AttachmentHolder attachmentHolder) {
       return provideForTextAndAttachment(null, attachmentHolder);
@@ -32,7 +25,7 @@ public class MessageBodyCreator {
 
       if (!TextUtils.isEmpty(text)) builder.text(text);
 
-      return builder.locale(generateMessageLocale(localeHelper.getDefaultLocale())).build();
+      return builder.locale(generateMessageLocale(Locale.getDefault())).build();
    }
 
    private String generateMessageLocale(Locale locale) {

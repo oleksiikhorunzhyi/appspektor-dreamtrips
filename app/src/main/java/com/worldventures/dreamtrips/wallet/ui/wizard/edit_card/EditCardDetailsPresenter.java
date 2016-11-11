@@ -5,7 +5,6 @@ import android.os.Parcelable;
 
 import com.techery.spares.module.Injector;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.core.utils.LocaleHelper;
 import com.worldventures.dreamtrips.core.utils.tracksystem.AnalyticsInteractor;
 import com.worldventures.dreamtrips.wallet.analytics.BillingAddressSavedAction;
 import com.worldventures.dreamtrips.wallet.analytics.EditBillingAddressAction;
@@ -24,6 +23,8 @@ import com.worldventures.dreamtrips.wallet.ui.common.navigation.Navigator;
 import com.worldventures.dreamtrips.wallet.ui.dashboard.list.CardListPath;
 import com.worldventures.dreamtrips.wallet.util.FormatException;
 
+import java.util.Locale;
+
 import javax.inject.Inject;
 
 import flow.Flow;
@@ -31,7 +32,6 @@ import flow.Flow;
 public class EditCardDetailsPresenter extends WalletPresenter<EditCardDetailsPresenter.Screen, Parcelable> {
 
    @Inject Navigator navigator;
-   @Inject LocaleHelper localeHelper;
    @Inject SmartCardInteractor smartCardInteractor;
    @Inject AnalyticsInteractor analyticsInteractor;
 
@@ -49,7 +49,7 @@ public class EditCardDetailsPresenter extends WalletPresenter<EditCardDetailsPre
       connectToUpdateCardDetailsPipe();
       getView().address(ImmutableAddressInfoWithLocale.builder()
             .addressInfo(bankCard.addressInfo())
-            .locale(localeHelper.getDefaultLocale())
+            .locale(Locale.getDefault())
             .build());
    }
 

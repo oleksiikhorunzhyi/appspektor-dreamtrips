@@ -24,7 +24,6 @@ import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.session.UserSession;
 import com.worldventures.dreamtrips.core.utils.DateTimeUtils;
 import com.worldventures.dreamtrips.core.utils.GraphicUtils;
-import com.worldventures.dreamtrips.core.utils.LocaleHelper;
 import com.worldventures.dreamtrips.core.utils.ViewUtils;
 import com.worldventures.dreamtrips.modules.common.view.custom.ShowMoreTextView;
 import com.worldventures.dreamtrips.modules.dtl.helper.DtlMerchantHelper;
@@ -37,6 +36,7 @@ import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 import javax.inject.Inject;
@@ -56,7 +56,6 @@ public class MerchantOffersInflater extends MerchantDataInflater {
    @InjectView(R.id.perk_divider) View perkDivider;
 
    @Inject protected SessionHolder<UserSession> sessionHolder;
-   @Inject LocaleHelper localeHelper;
 
    private List<OfferClickListener> offerClickListeners = new ArrayList<>();
    private Map<Integer, WeakReference<ExpandableOfferView>> cashedViewMap = new HashMap<>();
@@ -180,7 +179,7 @@ public class MerchantOffersInflater extends MerchantDataInflater {
       AppCompatTextView expirationBarCaption = ButterKnife.<AppCompatTextView>findById(perkView, R.id.expirationBarCaption);
       if (DtlMerchantHelper.isOfferExpiringSoon(offerData)) {
          ViewUtils.setTextOrHideView(expirationBarCaption, DtlMerchantHelper.
-               getOfferExpiringCaption(perkView.getContext(), offerData, localeHelper.getDefaultLocale()));
+               getOfferExpiringCaption(perkView.getContext(), offerData, Locale.getDefault()));
       }
    }
 

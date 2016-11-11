@@ -23,6 +23,7 @@ import javax.inject.Inject;
 
 import io.techery.janet.Janet;
 import io.techery.janet.command.annotations.CommandAction;
+import rx.Observable;
 import rx.schedulers.Schedulers;
 
 @CommandAction
@@ -32,7 +33,7 @@ public class LoginCommand extends CommandWithError<UserSession> implements Injec
    @Inject SessionHolder<UserSession> appSessionHolder;
    @Inject AuthInteractor authInteractor;
    @Inject SnappyRepository db;
-   @Inject Device device;
+   @Inject Observable<Device> deviceSource;
 
    private String userName;
    private String userPassword;
@@ -61,6 +62,7 @@ public class LoginCommand extends CommandWithError<UserSession> implements Injec
             throw new Exception("You have to set username and password");
          }
       }
+      Device device = deviceSource.toBlocking().first();
 
       janet.createPipe(LoginAction.class, Schedulers.io())
             .createObservableResult(new LoginAction(userName, userPassword, device))

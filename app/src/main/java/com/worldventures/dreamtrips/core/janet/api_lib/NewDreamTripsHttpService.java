@@ -33,6 +33,7 @@ import io.techery.janet.Janet;
 import io.techery.janet.JanetException;
 import io.techery.janet.converter.Converter;
 import io.techery.janet.http.HttpClient;
+import rx.Observable;
 import timber.log.Timber;
 
 public class NewDreamTripsHttpService extends ActionServiceWrapper {
@@ -41,7 +42,7 @@ public class NewDreamTripsHttpService extends ActionServiceWrapper {
    @Inject LocaleHelper localeHelper;
    @Inject AppVersionNameBuilder appVersionNameBuilder;
    @Inject SnappyRepository db;
-   @Inject Device device;
+   @Inject Observable<Device> deviceSource;
 
    private final ActionPipe<LoginAction> loginActionPipe;
    private final Set<Object> retriedActions = new CopyOnWriteArraySet<>();
@@ -130,6 +131,7 @@ public class NewDreamTripsHttpService extends ActionServiceWrapper {
       UserSession userSession = appSessionHolder.get().get();
       String username = userSession.getUsername();
       String userPassword = userSession.getUserPassword();
+      Device device = deviceSource.toBlocking().first();
       LoginAction loginAction = new LoginAction(username, userPassword, device);
       loginAction.setAppVersionHeader(appVersionNameBuilder.getSemanticVersionName());
       loginAction.setLanguageHeader(localeHelper.getDefaultLocaleFormatted());

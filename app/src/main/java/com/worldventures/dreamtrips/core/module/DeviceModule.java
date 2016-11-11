@@ -11,24 +11,27 @@ import javax.inject.Singleton;
 
 import dagger.Module;
 import dagger.Provides;
+import rx.Observable;
+import rx.schedulers.Schedulers;
 
-@Module(
-      library = true, complete = false)
+@Module(library = true, complete = false)
 public class DeviceModule {
 
    @Provides
    @Singleton
-   DeviceName.DeviceInfo provideDeviceInfo(@ForApplication Context context) {
-      return DeviceName.getDeviceInfo(context);
+   Observable<DeviceName.DeviceInfo> provideDeviceInfo(@ForApplication Context context) {
+      return Observable.defer(() -> Observable.just(DeviceName.getDeviceInfo(context))).subscribeOn(Schedulers.io());
    }
 
    @Provides
    @Singleton
-   Device provideDevice(DeviceName.DeviceInfo deviceInfo) {
-      return ImmutableDevice.builder()
-            .manufacturer(deviceInfo.manufacturer)
-            .model(deviceInfo.marketName)
-            .build();
+   Observable<Device> provideDevice(Observable<DeviceName.DeviceInfo> source) {
+      return source.map(deviceInfo ->
+            ImmutableDevice.builder()
+                  .manufacturer(deviceInfo.manufacturer)
+                  .model(deviceInfo.marketName)
+                  .build()
+      );
    }
 
 }

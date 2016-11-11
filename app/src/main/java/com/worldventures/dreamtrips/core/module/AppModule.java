@@ -52,7 +52,7 @@ import dagger.Provides;
             //
             FlagsModule.class, PodcastAppModule.class, MappingModule.class,
             //
-            SecurityModule.class
+            SecurityModule.class, DeviceModule.class,
       },
       library = true,
       complete = false,

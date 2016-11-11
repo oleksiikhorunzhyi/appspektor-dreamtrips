@@ -15,6 +15,7 @@ import com.worldventures.dreamtrips.wallet.service.command.FetchDefaultCardComma
 import com.worldventures.dreamtrips.wallet.service.command.FetchDefaultCardIdCommand;
 import com.worldventures.dreamtrips.wallet.service.command.FetchSmartCardLockState;
 import com.worldventures.dreamtrips.wallet.service.command.GetActiveSmartCardCommand;
+import com.worldventures.dreamtrips.wallet.service.command.GetCompatibleDevicesCommand;
 import com.worldventures.dreamtrips.wallet.service.command.GetDefaultAddressCommand;
 import com.worldventures.dreamtrips.wallet.service.command.LoadImageForSmartCardCommand;
 import com.worldventures.dreamtrips.wallet.service.command.SaveCardDetailsDataCommand;
@@ -49,6 +50,7 @@ import dagger.Module;
 @Module(
       includes = {},
       injects = {
+            GetCompatibleDevicesCommand.class,
             CompressImageForSmartCardCommand.class,
             CardListCommand.class,
             AttachCardCommand.class,

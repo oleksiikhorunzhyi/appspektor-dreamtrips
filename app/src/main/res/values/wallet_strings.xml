@@ -264,4 +264,9 @@
    <!--puck connection screen-->
    <string name="wallet_puck_connection_title">Smart Card Update</string>
    <string name="wallet_puck_connection_comment">Make sure your flye smart card is connected to the charger.</string>
+
+   <!--supported device screen-->
+   <string name="wallet_supported_device_chapter">Support for your device is coming soon.</string>
+   <string name="wallet_supported_device_info">We are currently adding devices weekly and will email you when your device is supported.\n\nIf you have any further questions please contact Customer Support (855) 999-3593.</string>
+   <string name="wallet_supported_device_list_title">Supported Devices</string>
 </resources>

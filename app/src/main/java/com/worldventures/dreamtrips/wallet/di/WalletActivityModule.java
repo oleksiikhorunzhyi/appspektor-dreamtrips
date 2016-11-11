@@ -12,7 +12,10 @@ import com.worldventures.dreamtrips.wallet.ui.dashboard.list.CardListPresenter;
 import com.worldventures.dreamtrips.wallet.ui.dashboard.list.util.cell.BankCardCell;
 import com.worldventures.dreamtrips.wallet.ui.dashboard.list.util.cell.CardStackCell;
 import com.worldventures.dreamtrips.wallet.ui.dashboard.list.util.cell.CardStackHeaderCell;
-import com.worldventures.dreamtrips.wallet.ui.start.WalletStartPresenter;
+import com.worldventures.dreamtrips.wallet.ui.provisioning_blocked.WalletProvisioningBlockedPresenter;
+import com.worldventures.dreamtrips.wallet.ui.provisioning_blocked.cell.SupportedDeviceItemCell;
+import com.worldventures.dreamtrips.wallet.ui.provisioning_blocked.cell.SupportedDevicesListCell;
+import com.worldventures.dreamtrips.wallet.ui.provisioning_blocked.cell.UnsupportedDeviceInfoCell;
 import com.worldventures.dreamtrips.wallet.ui.settings.common.cell.SectionDividerCell;
 import com.worldventures.dreamtrips.wallet.ui.settings.common.cell.SettingsRadioCell;
 import com.worldventures.dreamtrips.wallet.ui.settings.disabledefaultcard.WalletDisableDefaultCardPresenter;
@@ -27,11 +30,12 @@ import com.worldventures.dreamtrips.wallet.ui.settings.firmware.puck_connection.
 import com.worldventures.dreamtrips.wallet.ui.settings.firmware.uptodate.WalletUpToDateFirmwarePresenter;
 import com.worldventures.dreamtrips.wallet.ui.settings.general.WalletSettingsPresenter;
 import com.worldventures.dreamtrips.wallet.ui.settings.removecards.WalletAutoClearCardsPresenter;
+import com.worldventures.dreamtrips.wallet.ui.start.WalletStartPresenter;
+import com.worldventures.dreamtrips.wallet.ui.wizard.associate.ConnectSmartCardPresenter;
 import com.worldventures.dreamtrips.wallet.ui.wizard.barcode.WizardScanBarcodePresenter;
 import com.worldventures.dreamtrips.wallet.ui.wizard.card_details.AddCardDetailsPresenter;
 import com.worldventures.dreamtrips.wallet.ui.wizard.charging.WizardChargingPresenter;
 import com.worldventures.dreamtrips.wallet.ui.wizard.checking.WizardCheckingPresenter;
-import com.worldventures.dreamtrips.wallet.ui.wizard.associate.ConnectSmartCardPresenter;
 import com.worldventures.dreamtrips.wallet.ui.wizard.edit_card.EditCardDetailsPresenter;
 import com.worldventures.dreamtrips.wallet.ui.wizard.edit_card.EditCardDetailsScreen;
 import com.worldventures.dreamtrips.wallet.ui.wizard.finish.WalletPinIsSetPresenter;
@@ -55,11 +59,15 @@ import dagger.Provides;
       injects = {
             WalletActivityPresenter.class,
             WalletStartPresenter.class,
+            UnsupportedDeviceInfoCell.class,
+            SupportedDevicesListCell.class,
+            SupportedDeviceItemCell.class,
             BankCardCell.class,
             CardStackCell.class,
             CardStackHeaderCell.class,
             SettingsRadioCell.class,
             SectionDividerCell.class,
+            WalletProvisioningBlockedPresenter.class,
             WizardSplashPresenter.class,
             WizardPowerOnPresenter.class,
             WizardTermsScreenPresenter.class,

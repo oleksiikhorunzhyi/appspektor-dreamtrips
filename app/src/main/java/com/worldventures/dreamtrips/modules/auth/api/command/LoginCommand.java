@@ -2,6 +2,7 @@ package com.worldventures.dreamtrips.modules.auth.api.command;
 
 import com.techery.spares.session.SessionHolder;
 import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.api.session.model.Device;
 import com.worldventures.dreamtrips.core.api.AuthRetryPolicy;
 import com.worldventures.dreamtrips.core.api.action.CommandWithError;
 import com.worldventures.dreamtrips.core.api.action.LoginAction;
@@ -31,6 +32,7 @@ public class LoginCommand extends CommandWithError<UserSession> implements Injec
    @Inject SessionHolder<UserSession> appSessionHolder;
    @Inject AuthInteractor authInteractor;
    @Inject SnappyRepository db;
+   @Inject Device device;
 
    private String userName;
    private String userPassword;
@@ -61,7 +63,7 @@ public class LoginCommand extends CommandWithError<UserSession> implements Injec
       }
 
       janet.createPipe(LoginAction.class, Schedulers.io())
-            .createObservableResult(new LoginAction(userName, userPassword))
+            .createObservableResult(new LoginAction(userName, userPassword, device))
             .map(LoginAction::getLoginResponse)
             .doOnNext(this::saveSettings)
             .map(session -> SessionUtil.createUserSession(session, userName, userPassword))

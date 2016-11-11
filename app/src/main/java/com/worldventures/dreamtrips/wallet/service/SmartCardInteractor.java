@@ -10,6 +10,7 @@ import com.worldventures.dreamtrips.wallet.service.command.FetchBatteryLevelComm
 import com.worldventures.dreamtrips.wallet.service.command.FetchDefaultCardCommand;
 import com.worldventures.dreamtrips.wallet.service.command.FetchDefaultCardIdCommand;
 import com.worldventures.dreamtrips.wallet.service.command.GetActiveSmartCardCommand;
+import com.worldventures.dreamtrips.wallet.service.command.GetCompatibleDevicesCommand;
 import com.worldventures.dreamtrips.wallet.service.command.GetDefaultAddressCommand;
 import com.worldventures.dreamtrips.wallet.service.command.SaveCardDetailsDataCommand;
 import com.worldventures.dreamtrips.wallet.service.command.SaveLockStateCommand;
@@ -98,6 +99,8 @@ public final class SmartCardInteractor {
 
    private final ActionPipe<DisassociateActiveCardUserCommand> disassociateActiveCardActionPipe;
 
+   private final ActionPipe<GetCompatibleDevicesCommand> compatibleDevicesActionPipe;
+
    private final FirmwareInteractor firmwareInteractor;
 
    public SmartCardInteractor(@Named(JANET_WALLET) Janet janet, SessionActionPipeCreator sessionActionPipeCreator, FirmwareInteractor firmwareInteractor) {
@@ -144,6 +147,8 @@ public final class SmartCardInteractor {
       disassociateActiveCardActionPipe = sessionActionPipeCreator.createPipe(DisassociateActiveCardUserCommand.class, Schedulers
             .io());
       this.firmwareInteractor = firmwareInteractor;
+
+      compatibleDevicesActionPipe = sessionActionPipeCreator.createPipe(GetCompatibleDevicesCommand.class, Schedulers.io());
 
       connect(janet);
       connectToLockEvent();
@@ -262,6 +267,10 @@ public final class SmartCardInteractor {
 
    public ActionPipe<DisassociateActiveCardUserCommand> disassociateActiveCardActionPipe() {
       return disassociateActiveCardActionPipe;
+   }
+
+   public ActionPipe<GetCompatibleDevicesCommand> compatibleDevicesActionPipe() {
+      return compatibleDevicesActionPipe;
    }
 
    private void connect(Janet janet) {

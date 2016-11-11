@@ -1,0 +1,50 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:gravity="center_horizontal"
+      android:orientation="vertical"
+      >
+
+   <ImageView
+         android:layout_width="wrap_content"
+         android:layout_height="wrap_content"
+         android:layout_marginTop="50dp"
+         android:src="@drawable/flyecard_front_with_swipe_chip_dialog"
+         />
+
+   <TextView
+         android:layout_width="wrap_content"
+         android:layout_height="wrap_content"
+         android:layout_marginBottom="30dp"
+         android:layout_marginLeft="50dp"
+         android:layout_marginRight="50dp"
+         android:layout_marginTop="30dp"
+         android:gravity="center_horizontal"
+         android:text="@string/wallet_supported_device_chapter"
+         android:textAppearance="?android:attr/textAppearanceLarge"
+         />
+
+   <TextView
+         android:layout_width="wrap_content"
+         android:layout_height="wrap_content"
+         android:layout_marginLeft="20dp"
+         android:layout_marginRight="20dp"
+         android:autoLink="phone"
+         android:gravity="center_horizontal"
+         android:text="@string/wallet_supported_device_info"
+         android:textAppearance="?android:attr/textAppearanceSmall"
+         android:textColor="@color/wallet_support_device_info_color"
+         />
+
+   <TextView
+         android:layout_width="match_parent"
+         android:layout_height="wrap_content"
+         android:layout_marginLeft="20dp"
+         android:layout_marginRight="20dp"
+         android:layout_marginTop="30dp"
+         android:text="@string/wallet_supported_device_list_title"
+         android:textAppearance="?android:attr/textAppearanceSmall"
+         android:textColor="@color/wallet_support_device_list_title_color"
+         />
+
+</LinearLayout>

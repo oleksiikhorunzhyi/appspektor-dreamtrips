@@ -415,7 +415,7 @@ dependencies {
    compile 'com.snappydb:snappydb-lib:0.5.2'
    compile 'com.esotericsoftware.kryo:kryo:2.24.0'
    // Networking
-   compile(group: 'com.worldventures.dreamtrips', name: 'api', version: '2.5.0', changing: true) {
+   compile(group: 'com.worldventures.dreamtrips', name: 'api', version: '2.5.1-PREPROD-SNAPSHOT', changing: true) {
       exclude group: "joda-time"
    }
    compile 'com.octo.android.robospice:robospice:1.4.14'
@@ -499,6 +499,7 @@ dependencies {
    compile 'frankiesardo:icepick:3.2.0'
    apt 'frankiesardo:icepick-processor:3.2.0'
    compile 'com.github.techery:mappery:8675fb6'
+   compile 'com.jaredrummler:android-device-names:1.1.2'
 
    devCompile "com.squareup.leakcanary:leakcanary-android:${leakCanaryVersion}"
    devpremarshmallowCompile "com.squareup.leakcanary:leakcanary-android:${leakCanaryVersion}"

@@ -5,6 +5,7 @@ import android.content.Context;
 import com.techery.spares.module.qualifier.ForApplication;
 import com.worldventures.dreamtrips.core.janet.dagger.InjectableAction;
 import com.worldventures.dreamtrips.modules.infopages.StaticPageProvider;
+import com.worldventures.dreamtrips.util.HttpUploaderyException;
 
 import java.io.File;
 import java.io.IOException;
@@ -34,7 +35,7 @@ public abstract class UploaderyImageCommand<T> extends BaseUploadImageCommand<T>
    protected void run(CommandCallback<T> callback) {
       getFileObservable(context, fileUri).flatMap(this::upload)
             .compose(nextAction())
-            .subscribe(callback::onSuccess, callback::onFail);
+            .subscribe(callback::onSuccess, throwable -> callback.onFail(new HttpUploaderyException(throwable)));
 
    }
 

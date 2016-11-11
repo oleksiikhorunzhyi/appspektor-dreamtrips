@@ -295,7 +295,7 @@ public class DtlMapPresenterImpl extends DtlPresenterImpl<DtlMapScreen, ViewStat
       Observable.combineLatest(
             getMerchantsUpdates(),
             cameraPositionOutOfLimitObservable(),
-            ButtonsUpdateFunc.create()
+            updateButtonsFunc
       )
             .compose(bindView())
             .observeOn(AndroidSchedulers.mainThread())
@@ -362,19 +362,11 @@ public class DtlMapPresenterImpl extends DtlPresenterImpl<DtlMapScreen, ViewStat
       return action.getResult().size() >= FilterData.LIMIT;
    }
 
-   private static final class ButtonsUpdateFunc implements Func2<ActionState<MerchantsAction>, Boolean, Pair<Boolean, Boolean>> {
-
-      public static ButtonsUpdateFunc create() {
-         return new ButtonsUpdateFunc();
+   private final Func2<ActionState<MerchantsAction>, Boolean, Pair<Boolean, Boolean>> updateButtonsFunc = (state1, isCenterOutOfLimit) -> {
+      switch (state1.status) {
+         case SUCCESS: return new Pair<>(isCenterOutOfLimit, !isCenterOutOfLimit && isNeedShowLoadMoreButton(state1.action));
+         case FAIL: return new Pair<>(isCenterOutOfLimit, !isCenterOutOfLimit);
+         default: return new Pair<>(false, false);
       }
-
-      @Override
-      public Pair<Boolean, Boolean> call(ActionState<MerchantsAction> state, Boolean isCenterOutOfLimit) {
-         switch (state.status) {
-            case SUCCESS: return new Pair<>(isCenterOutOfLimit, !isCenterOutOfLimit && isNeedShowLoadMoreButton(state.action));
-            case FAIL: return new Pair<>(isCenterOutOfLimit, !isCenterOutOfLimit);
-            default: return new Pair<>(false, false);
-         }
-      }
-   }
+   };
 }

@@ -5,7 +5,6 @@ import android.content.Context;
 import android.os.Parcelable;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.annotation.StringRes;
 import android.text.TextUtils;
 import android.view.WindowManager;
 
@@ -20,6 +19,7 @@ import com.worldventures.dreamtrips.wallet.analytics.PhotoWasSetAction;
 import com.worldventures.dreamtrips.wallet.analytics.SetupUserAction;
 import com.worldventures.dreamtrips.wallet.analytics.WalletAnalyticsCommand;
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCard;
+import com.worldventures.dreamtrips.wallet.domain.entity.SmartCardUserPhoto;
 import com.worldventures.dreamtrips.wallet.service.SmartCardAvatarInteractor;
 import com.worldventures.dreamtrips.wallet.service.SmartCardInteractor;
 import com.worldventures.dreamtrips.wallet.service.WizardInteractor;
@@ -57,7 +57,7 @@ public class WizardEditProfilePresenter extends WalletPresenter<WizardEditProfil
    @Inject AnalyticsInteractor analyticsInteractor;
    @Inject SessionHolder<UserSession> appSessionHolder;
 
-   @Nullable private File preparedPhotoFile;
+   @Nullable private SmartCardUserPhoto preparedPhoto;
 
    private final String smartCardId;
 
@@ -158,9 +158,9 @@ public class WizardEditProfilePresenter extends WalletPresenter<WizardEditProfil
       wizardInteractor.disassociatePipe().send(new DisassociateCardUserCommand(smartCardId));
    }
 
-   private void photoPrepared(File filePhoto) {
-      preparedPhotoFile = filePhoto;
-      getView().setPreviewPhoto(filePhoto);
+   private void photoPrepared(SmartCardUserPhoto photo) {
+      preparedPhoto = photo;
+      getView().setPreviewPhoto(photo.monochrome());
    }
 
    void goToBack() {
@@ -178,7 +178,7 @@ public class WizardEditProfilePresenter extends WalletPresenter<WizardEditProfil
 
    void setupUserData() {
       wizardInteractor.setupUserDataPipe().send(new SetupUserDataCommand(getView().getUserName()
-            .trim(), preparedPhotoFile, smartCardId));
+            .trim(), preparedPhoto, smartCardId));
    }
 
    private void fetchAndStoreDefaultAddress() {

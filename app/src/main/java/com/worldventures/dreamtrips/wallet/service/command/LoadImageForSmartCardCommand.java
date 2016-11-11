@@ -4,12 +4,13 @@ import android.support.annotation.NonNull;
 
 import com.worldventures.dreamtrips.core.janet.dagger.InjectableAction;
 import com.worldventures.dreamtrips.util.SmartCardAvatarHelper;
-
-import java.io.File;
+import com.worldventures.dreamtrips.wallet.domain.entity.ImmutableSmartCardUserPhoto;
+import com.worldventures.dreamtrips.wallet.domain.entity.SmartCardUserPhoto;
 
 import javax.inject.Inject;
 
 import io.techery.janet.command.annotations.CommandAction;
+import rx.Observable;
 
 @CommandAction
 public class LoadImageForSmartCardCommand extends SmartCardAvatarCommand implements InjectableAction {
@@ -29,7 +30,11 @@ public class LoadImageForSmartCardCommand extends SmartCardAvatarCommand impleme
    }
 
    @Override
-   protected void run(CommandCallback<File> callback) throws Throwable {
-      smartCardAvatarHelper.compressPhotoFromUrl(photoUrl, imageSize).subscribe(callback::onSuccess, callback::onFail);
+   protected void run(CommandCallback<SmartCardUserPhoto> callback) throws Throwable {
+      smartCardAvatarHelper.compressPhotoFromUrl(photoUrl, imageSize)
+            .map(ImmutableSmartCardUserPhoto::of)
+            .flatMap(photo -> Observable.fromCallable(() ->
+                  photo.withMonochrome(smartCardAvatarHelper.toMonochromeFile(photo.original()))))
+            .subscribe(callback::onSuccess, callback::onFail);
    }
 }

@@ -16,11 +16,11 @@ import com.worldventures.dreamtrips.core.session.UserSession;
 import com.worldventures.dreamtrips.util.SmartCardAvatarHelper;
 import com.worldventures.dreamtrips.wallet.domain.entity.ImmutableSmartCard;
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCard;
+import com.worldventures.dreamtrips.wallet.domain.entity.SmartCardUserPhoto;
 import com.worldventures.dreamtrips.wallet.domain.storage.SmartCardStorage;
 import com.worldventures.dreamtrips.wallet.util.FormatException;
 import com.worldventures.dreamtrips.wallet.util.WalletValidateHelper;
 
-import java.io.File;
 import java.io.IOException;
 
 import javax.inject.Inject;
@@ -49,14 +49,14 @@ public class SetupUserDataCommand extends Command<SmartCard> implements Injectab
    @Inject SmartCardAvatarHelper smartCardAvatarHelper;
 
    private final String fullName;
-   private final File avatarFile;
+   private final SmartCardUserPhoto avatar;
    private final String smartCardId;
    private SmartCard smartCard;
 
-   public SetupUserDataCommand(String fullName, File avatarFile, String smartCardId) {
+   public SetupUserDataCommand(String fullName, SmartCardUserPhoto avatar, String smartCardId) {
       // TODO: 8/2/16 change on first name and second name
       this.fullName = fullName;
-      this.avatarFile = avatarFile;
+      this.avatar = avatar;
       this.smartCardId = smartCardId;
    }
 
@@ -77,7 +77,7 @@ public class SetupUserDataCommand extends Command<SmartCard> implements Injectab
 
    private Observable<? extends UpdateCardUserHttpAction> uploadUserData() {
       return janetGeneric.createPipe(SimpleUploaderyCommand.class)
-            .createObservableResult(new SimpleUploaderyCommand(Uri.fromFile(avatarFile).toString()))
+            .createObservableResult(new SimpleUploaderyCommand(Uri.fromFile(avatar.original()).toString()))
             .map(c -> c.getResult().getPhotoUploadResponse().getLocation())
             .flatMap(avatarUrl -> {
                      ImmutableUpdateCardUserData cardUserData = ImmutableUpdateCardUserData.builder()
@@ -93,15 +93,16 @@ public class SetupUserDataCommand extends Command<SmartCard> implements Injectab
    private SmartCard attachAvatarToLocalSmartCard() {
       smartCard = ImmutableSmartCard.builder()
             .from(smartCard)
-            .userPhoto("file://" + avatarFile.getAbsolutePath())
+            .userPhoto("file://" + avatar.monochrome().getAbsolutePath())
             .cardName(fullName)
             .build();
       return smartCard;
    }
 
    private User validateUserNameAndCreateUser() throws FormatException {
-      if (avatarFile == null) throw new MissedAvatarException("avatarFile == null");
-      if (!avatarFile.exists()) throw new MissedAvatarException("Avatar does not exist");
+      if (avatar == null) throw new MissedAvatarException("avatar == null");
+      if (avatar.monochrome() == null) throw new MissedAvatarException("Monochrome avatar file == null");
+      if (!avatar.monochrome().exists()) throw new MissedAvatarException("Avatar does not exist");
 
       String[] nameParts = fullName.split(" ");
       String firstName, lastName, middleName = null;
@@ -134,7 +135,7 @@ public class SetupUserDataCommand extends Command<SmartCard> implements Injectab
    }
 
    private byte[] getAvatarAsByteArray() throws IOException {
-      return smartCardAvatarHelper.convertBytesForUpload(avatarFile);
+      return smartCardAvatarHelper.convertBytesForUpload(avatar.monochrome());
    }
 
    @Override

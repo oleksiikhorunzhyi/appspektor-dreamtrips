@@ -31,16 +31,20 @@ public class SmartCardAvatarHelper {
    }
 
    public File compressPhotoFromFile(String originImage, int imageSize) throws IOException {
-      return toMonochromeFile(scaleBitmap(fromFile(originImage), imageSize));
+      return saveToFile(context, scaleBitmap(fromFile(originImage), imageSize));
    }
 
    public Observable<File> compressPhotoFromUrl(String url, int imageSize) {
       return ImageUtils.getBitmap(context, Uri.parse(url), imageSize, imageSize)
-            .flatMap(bitmap -> Observable.fromCallable(() -> toMonochromeFile(bitmap)));
+            .flatMap(bitmap -> Observable.fromCallable(() -> saveToFile(context, bitmap)));
    }
 
    public File toMonochromeFile(Bitmap bitmap) throws IOException {
       return saveToFile(context, toMonochromeBitmap(bitmap));
+   }
+
+   public File toMonochromeFile(File imageFile) throws IOException {
+      return saveToFile(context, toMonochromeBitmap(fromFile(imageFile.getAbsolutePath())));
    }
 
    public byte[] convertBytesForUpload(File file) {

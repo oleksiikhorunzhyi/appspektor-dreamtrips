@@ -8,7 +8,6 @@ import com.raizlabs.android.dbflow.config.FlowManager;
 import com.techery.spares.module.qualifier.ForApplication;
 import com.techery.spares.module.qualifier.Global;
 import com.techery.spares.session.SessionHolder;
-import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.api.api_common.AuthorizedHttpAction;
 import com.worldventures.dreamtrips.api.session.LogoutHttpAction;
 import com.worldventures.dreamtrips.core.janet.JanetModule;
@@ -19,6 +18,7 @@ import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.core.session.UserSession;
 import com.worldventures.dreamtrips.core.utils.BadgeUpdater;
 import com.worldventures.dreamtrips.core.utils.DTCookieManager;
+import com.worldventures.dreamtrips.core.utils.LocaleSwitcher;
 import com.worldventures.dreamtrips.modules.auth.service.AuthInteractor;
 import com.worldventures.dreamtrips.modules.common.api.janet.command.ClearStoragesCommand;
 import com.worldventures.dreamtrips.modules.common.presenter.delegate.OfflineWarningDelegate;
@@ -39,7 +39,6 @@ import io.techery.janet.Command;
 import io.techery.janet.Janet;
 import io.techery.janet.command.annotations.CommandAction;
 import rx.Observable;
-import rx.functions.FuncN;
 import timber.log.Timber;
 
 @CommandAction
@@ -50,6 +49,7 @@ public class LogoutCommand extends Command<Void> implements InjectableAction {
    @Inject @Global EventBus eventBus;
    @Inject SnappyRepository snappyRepository;
    @Inject SessionHolder<UserSession> appSessionHolder;
+   @Inject LocaleSwitcher localeSwitcher;
    @Inject NotificationDelegate notificationDelegate;
    @Inject BadgeUpdater badgeUpdater;
    @Inject DTCookieManager cookieManager;
@@ -104,6 +104,7 @@ public class LogoutCommand extends Command<Void> implements InjectableAction {
       return Observable.create(subscriber -> {
          cookieManager.clearCookies();
          appSessionHolder.destroy();
+         localeSwitcher.resetLocale();
          eventBus.post(new SessionHolder.Events.SessionDestroyed());
          sessionActionPipeCreator.clearReplays();
          sessionApiActionPipeCreator.clearReplays();

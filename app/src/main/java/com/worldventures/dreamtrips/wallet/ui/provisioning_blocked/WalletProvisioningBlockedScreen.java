@@ -1,14 +1,22 @@
 package com.worldventures.dreamtrips.wallet.ui.provisioning_blocked;
 
 import android.content.Context;
-import android.support.annotation.NonNull;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
 import android.util.AttributeSet;
 
+import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.modules.bucketlist.view.adapter.IgnoreFirstItemAdapter;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletLinearLayout;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.OperationScreen;
+import com.worldventures.dreamtrips.wallet.ui.common.base.screen.delegate.DialogOperationScreen;
+import com.worldventures.dreamtrips.wallet.ui.provisioning_blocked.cell.SupportedDevicesListCell;
+import com.worldventures.dreamtrips.wallet.ui.provisioning_blocked.cell.SupportedDevicesListModel;
+import com.worldventures.dreamtrips.wallet.ui.provisioning_blocked.cell.UnsupportedDeviceInfoCell;
+import com.worldventures.dreamtrips.wallet.ui.provisioning_blocked.cell.UnsupportedDeviceModel;
 
-import java.util.List;
-
+import butterknife.InjectView;
 
 public class WalletProvisioningBlockedScreen extends WalletLinearLayout<WalletProvisioningBlockedPresenter.Screen, WalletProvisioningBlockedPresenter, WalletProvisioningBlockedPath> implements WalletProvisioningBlockedPresenter.Screen {
 
@@ -20,25 +28,50 @@ public class WalletProvisioningBlockedScreen extends WalletLinearLayout<WalletPr
       super(context, attrs);
    }
 
-   @Override
-   protected boolean hasToolbar() {
-      return false;
-   }
+   @InjectView(R.id.toolbar) Toolbar toolbar;
+   @InjectView(R.id.recycler_view) RecyclerView deviceList;
+   IgnoreFirstItemAdapter adapter;
 
-   @NonNull
    @Override
    public WalletProvisioningBlockedPresenter createPresenter() {
       return new WalletProvisioningBlockedPresenter(getContext(), getInjector());
    }
 
-
    @Override
-   public OperationScreen provideOperationDelegate() {
-      return null;
+   protected void onPostAttachToWindowView() {
+      super.onPostAttachToWindowView();
+
+      toolbar.setNavigationOnClickListener(v -> onNavigationClick());
+
+      adapter = new IgnoreFirstItemAdapter(getContext(), getInjector());
+
+      adapter.registerCell(UnsupportedDeviceModel.class, UnsupportedDeviceInfoCell.class);
+      adapter.registerCell(SupportedDevicesListModel.class, SupportedDevicesListCell.class);
+      adapter.addItem(0, new UnsupportedDeviceModel());
+
+      deviceList.setAdapter(adapter);
+      LinearLayoutManager layout = new LinearLayoutManager(getContext());
+      layout.setAutoMeasureEnabled(true);
+      deviceList.setLayoutManager(layout);
    }
 
    @Override
-   public void onSupportedDevicesLoaded(List<String> devices) {
+   protected boolean hasToolbar() {
+      return true;
+   }
 
+   private void onNavigationClick() {
+      presenter.goBack();
+   }
+
+   @Override
+   public OperationScreen provideOperationDelegate() {
+      return new DialogOperationScreen(this);
+   }
+
+   @Override
+   public void onSupportedDevicesLoaded(SupportedDevicesListModel devicesModel) {
+      adapter.clear();
+      adapter.addItem(devicesModel);
    }
 }

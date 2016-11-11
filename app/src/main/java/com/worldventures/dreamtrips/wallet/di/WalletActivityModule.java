@@ -13,6 +13,9 @@ import com.worldventures.dreamtrips.wallet.ui.dashboard.list.util.cell.BankCardC
 import com.worldventures.dreamtrips.wallet.ui.dashboard.list.util.cell.CardStackCell;
 import com.worldventures.dreamtrips.wallet.ui.dashboard.list.util.cell.CardStackHeaderCell;
 import com.worldventures.dreamtrips.wallet.ui.provisioning_blocked.WalletProvisioningBlockedPresenter;
+import com.worldventures.dreamtrips.wallet.ui.provisioning_blocked.cell.SupportedDeviceItemCell;
+import com.worldventures.dreamtrips.wallet.ui.provisioning_blocked.cell.SupportedDevicesListCell;
+import com.worldventures.dreamtrips.wallet.ui.provisioning_blocked.cell.UnsupportedDeviceInfoCell;
 import com.worldventures.dreamtrips.wallet.ui.settings.common.cell.SectionDividerCell;
 import com.worldventures.dreamtrips.wallet.ui.settings.common.cell.SettingsRadioCell;
 import com.worldventures.dreamtrips.wallet.ui.settings.disabledefaultcard.WalletDisableDefaultCardPresenter;
@@ -56,6 +59,9 @@ import dagger.Provides;
       injects = {
             WalletActivityPresenter.class,
             WalletStartPresenter.class,
+            UnsupportedDeviceInfoCell.class,
+            SupportedDevicesListCell.class,
+            SupportedDeviceItemCell.class,
             BankCardCell.class,
             CardStackCell.class,
             CardStackHeaderCell.class,

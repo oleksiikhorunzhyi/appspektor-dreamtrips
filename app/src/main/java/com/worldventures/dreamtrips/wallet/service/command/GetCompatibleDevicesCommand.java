@@ -1,6 +1,7 @@
 package com.worldventures.dreamtrips.wallet.service.command;
 
 
+import com.innahema.collections.query.queriables.Queryable;
 import com.worldventures.dreamtrips.api.session.model.Device;
 import com.worldventures.dreamtrips.api.smart_card.user_association.GetCompatibleDevicesHttpAction;
 import com.worldventures.dreamtrips.core.janet.dagger.InjectableAction;
@@ -46,6 +47,7 @@ public class GetCompatibleDevicesCommand extends Command<List<Device>> implement
                      }
                );
       }
-      callback.onSuccess(allDevices);
+      List<Device> uniqueDevices = Queryable.from(allDevices).distinct().toList();
+      callback.onSuccess(uniqueDevices);
    }
 }

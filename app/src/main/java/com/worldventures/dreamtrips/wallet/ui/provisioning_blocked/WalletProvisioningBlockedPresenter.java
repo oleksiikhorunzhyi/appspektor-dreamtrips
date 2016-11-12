@@ -45,6 +45,7 @@ public class WalletProvisioningBlockedPresenter extends WalletPresenter<WalletPr
                            List<Device> response = action.getResult();
                            List<String> devices = Queryable.from(response)
                                  .map(device -> device.manufacturer() + " " + device.model())
+                                 .sort()
                                  .toList();
                            getView().onSupportedDevicesLoaded(new SupportedDevicesListModel(devices));
                         })

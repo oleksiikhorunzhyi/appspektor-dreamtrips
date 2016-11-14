@@ -31,10 +31,10 @@ public class LoadImageForSmartCardCommand extends SmartCardAvatarCommand impleme
 
    @Override
    protected void run(CommandCallback<SmartCardUserPhoto> callback) throws Throwable {
-      smartCardAvatarHelper.compressPhotoFromUrl(photoUrl, imageSize)
+      smartCardAvatarHelper.compressPhotoFromUrl(photoUrl)
             .map(ImmutableSmartCardUserPhoto::of)
             .flatMap(photo -> Observable.fromCallable(() ->
-                  photo.withMonochrome(smartCardAvatarHelper.toMonochromeFile(photo.original()))))
+                  photo.withMonochrome(smartCardAvatarHelper.toMonochromeFile(photo.original(), imageSize))))
             .subscribe(callback::onSuccess, callback::onFail);
    }
 }

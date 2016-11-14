@@ -30,8 +30,20 @@ public class SmartCardAvatarHelper {
       this.context = context;
    }
 
+   public File compressPhotoFromFile(String originImage) throws IOException {
+      return compressPhotoFromFile(originImage, 0);
+   }
+
    public File compressPhotoFromFile(String originImage, int imageSize) throws IOException {
-      return saveToFile(context, scaleBitmap(fromFile(originImage), imageSize));
+      Bitmap bitmap = fromFile(originImage);
+      if (imageSize > 0) {
+         bitmap = scaleBitmap(bitmap, imageSize);
+      }
+      return saveToFile(context, bitmap);
+   }
+
+   public Observable<File> compressPhotoFromUrl(String url) {
+      return compressPhotoFromUrl(url, 0);
    }
 
    public Observable<File> compressPhotoFromUrl(String url, int imageSize) {
@@ -39,12 +51,16 @@ public class SmartCardAvatarHelper {
             .flatMap(bitmap -> Observable.fromCallable(() -> saveToFile(context, bitmap)));
    }
 
-   public File toMonochromeFile(Bitmap bitmap) throws IOException {
-      return saveToFile(context, toMonochromeBitmap(bitmap));
+   public File toMonochromeFile(File imageFile) throws IOException {
+      return toMonochromeFile(imageFile, 0);
    }
 
-   public File toMonochromeFile(File imageFile) throws IOException {
-      return saveToFile(context, toMonochromeBitmap(fromFile(imageFile.getAbsolutePath())));
+   public File toMonochromeFile(File imageFile, int imageSize) throws IOException {
+      Bitmap bitmap = fromFile(imageFile.getAbsolutePath());
+      if (imageSize > 0) {
+         bitmap = scaleBitmap(bitmap, imageSize);
+      }
+      return saveToFile(context, toMonochromeBitmap(bitmap));
    }
 
    public byte[] convertBytesForUpload(File file) {

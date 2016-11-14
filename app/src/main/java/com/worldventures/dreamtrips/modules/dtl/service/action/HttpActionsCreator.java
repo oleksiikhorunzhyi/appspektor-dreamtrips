@@ -29,7 +29,7 @@ public class HttpActionsCreator {
             .coordinates(provideFormattedLocation(dtlLocation))
             .radius(FilterHelper.provideMaxDistance(filterData))
             .search(TextUtils.isEmpty(filterData.searchQuery()) ? null : filterData.searchQuery())
-            .partnerStatus(providePartnerStatusParameter(filterData.isOffersOnly()))
+            .partnerStatuses(providePartnerStatusParameter(filterData.isOffersOnly()))
             .budgetMin(filterData.budgetMin())
             .budgetMax(filterData.budgetMax())
             .filterAttributes(provideAmenitiesParameter(filterData))
@@ -47,9 +47,9 @@ public class HttpActionsCreator {
       return String.format(Locale.US, "%1$f,%2$f", coordinates.getLat(), coordinates.getLng());
    }
 
-   private static String providePartnerStatusParameter(boolean isOffersOnly) {
-      return isOffersOnly ? PartnerStatus.PARTICIPANT.toString().toLowerCase(Locale.US) + ","
-            + PartnerStatus.PENDING.toString().toLowerCase(Locale.US) : null;
+   private static List<String> providePartnerStatusParameter(boolean isOffersOnly) {
+      return isOffersOnly ? Arrays.asList(PartnerStatus.PARTICIPANT.toString().toLowerCase(Locale.US),
+            PartnerStatus.PENDING.toString().toLowerCase(Locale.US)) : null;
    }
 
    private static List<String> provideAmenitiesParameter(FilterData filterData) {

@@ -132,7 +132,7 @@ public abstract class BaseFeedEntity implements FeedEntity {
 
       BaseFeedEntity that = (BaseFeedEntity) o;
 
-      return uid.equals(that.uid);
+      return uid != null ? uid.equals(that.uid) : that.uid == null;
    }
 
    @Override

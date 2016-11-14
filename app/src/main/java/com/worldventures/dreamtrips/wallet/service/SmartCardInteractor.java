@@ -2,6 +2,7 @@ package com.worldventures.dreamtrips.wallet.service;
 
 import com.worldventures.dreamtrips.core.janet.SessionActionPipeCreator;
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCard;
+import com.worldventures.dreamtrips.wallet.service.command.AddBankCardCommand;
 import com.worldventures.dreamtrips.wallet.service.command.AttachCardCommand;
 import com.worldventures.dreamtrips.wallet.service.command.CardListCommand;
 import com.worldventures.dreamtrips.wallet.service.command.CardStacksCommand;
@@ -11,7 +12,6 @@ import com.worldventures.dreamtrips.wallet.service.command.FetchDefaultCardComma
 import com.worldventures.dreamtrips.wallet.service.command.FetchDefaultCardIdCommand;
 import com.worldventures.dreamtrips.wallet.service.command.GetActiveSmartCardCommand;
 import com.worldventures.dreamtrips.wallet.service.command.GetDefaultAddressCommand;
-import com.worldventures.dreamtrips.wallet.service.command.SaveCardDetailsDataCommand;
 import com.worldventures.dreamtrips.wallet.service.command.SaveLockStateCommand;
 import com.worldventures.dreamtrips.wallet.service.command.SetAutoClearSmartCardDelayCommand;
 import com.worldventures.dreamtrips.wallet.service.command.SetDefaultCardOnDeviceCommand;
@@ -71,7 +71,7 @@ public final class SmartCardInteractor {
    private final ActionPipe<CardStacksCommand> cardStacksPipe;
    private final ActionPipe<GetActiveSmartCardCommand> activeSmartCardPipe;
    private final ActionPipe<GetDefaultAddressCommand> getDefaultAddressCommandPipe;
-   private final ActionPipe<SaveCardDetailsDataCommand> saveCardDetailsDataCommandPipe;
+   private final ActionPipe<AddBankCardCommand> saveCardDetailsDataCommandPipe;
    private final ActionPipe<SetStealthModeCommand> stealthModePipe;
    private final ActionPipe<SetLockStateCommand> setLockPipe;
    private final ActionPipe<SaveLockStateCommand> saveLockStatePipe;
@@ -116,7 +116,7 @@ public final class SmartCardInteractor {
       saveLockStatePipe = sessionActionPipeCreator.createPipe(SaveLockStateCommand.class, Schedulers.io());
 
       getDefaultAddressCommandPipe = sessionActionPipeCreator.createPipe(GetDefaultAddressCommand.class, Schedulers.io());
-      saveCardDetailsDataCommandPipe = sessionActionPipeCreator.createPipe(SaveCardDetailsDataCommand.class, Schedulers.io());
+      saveCardDetailsDataCommandPipe = sessionActionPipeCreator.createPipe(AddBankCardCommand.class, Schedulers.io());
       fetchDefaultCardIdCommandPipe = sessionActionPipeCreator.createPipe(FetchDefaultCardIdCommand.class, Schedulers.io());
       fetchDefaultCardCommandPipe = sessionActionPipeCreator.createPipe(FetchDefaultCardCommand.class, Schedulers.io());
       fetchBatteryLevelPipe = sessionActionPipeCreator.createPipe(FetchBatteryLevelCommand.class, Schedulers.io());
@@ -219,7 +219,7 @@ public final class SmartCardInteractor {
       return lockDeviceChangedEventPipe;
    }
 
-   public ActionPipe<SaveCardDetailsDataCommand> saveCardDetailsDataPipe() {
+   public ActionPipe<AddBankCardCommand> saveCardDetailsDataPipe() {
       return saveCardDetailsDataCommandPipe;
    }
 
@@ -293,7 +293,7 @@ public final class SmartCardInteractor {
                   .flatMap(deleteCommand -> cardsListInnerPipe.createObservable(remove(valueOf(deleteCommand.recordId)))),
             addRecordPipe
                   .observeSuccess()
-                  .flatMap(attachCardCommand -> cardsListInnerPipe.createObservable(add(attachCardCommand.bankCard()))),
+                  .flatMap(attachCardCommand -> cardsListInnerPipe.createObservable(add(attachCardCommand.getResult()))),
             updateBankCardPipe
                   .observeSuccess()
                   .flatMap(updateBankCardCommand -> cardsListInnerPipe.createObservable(edit(updateBankCardCommand.getResult()))),

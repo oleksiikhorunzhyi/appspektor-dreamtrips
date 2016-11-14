@@ -17,12 +17,12 @@ import rx.Observable;
 import static com.worldventures.dreamtrips.core.janet.JanetModule.JANET_WALLET;
 
 @CommandAction
-public class AttachCardCommand extends Command<Record> implements InjectableAction {
+public class AttachCardCommand extends Command<BankCard> implements InjectableAction {
 
    @Inject @Named(JANET_WALLET) Janet janet;
    @Inject MapperyContext mapperyContext;
 
-   private BankCard card;
+   private final BankCard card;
    private final boolean setAsDefaultCard;
 
    public AttachCardCommand(BankCard card, boolean setAsDefaultCard) {
@@ -31,16 +31,14 @@ public class AttachCardCommand extends Command<Record> implements InjectableActi
    }
 
    @Override
-   protected void run(CommandCallback<Record> callback) throws Throwable {
+   protected void run(CommandCallback<BankCard> callback) throws Throwable {
       Record record = mapperyContext.convert(card, Record.class);
       janet.createPipe(AddRecordAction.class)
             .createObservableResult(new AddRecordAction(record))
-            .map(it -> it.record)
+            .map(it -> it.record) // id should be added in AddRecordAction
             .flatMap(this::saveDefaultCard)
-            .subscribe(addedRecord -> {
-               card = mapperyContext.convert(addedRecord, BankCard.class);
-               callback.onSuccess(addedRecord);
-            }, callback::onFail);
+            .subscribe(addedRecord -> callback.onSuccess(mapperyContext.convert(addedRecord, BankCard.class)),
+                  callback::onFail);
    }
 
    private Observable<Record> saveDefaultCard(Record record) {
@@ -49,9 +47,5 @@ public class AttachCardCommand extends Command<Record> implements InjectableActi
                   .createObservableResult(SetDefaultCardOnDeviceCommand.setAsDefault(String.valueOf(record.id())))
                   .map(setDefaultCardOnDeviceAction -> record) :
             Observable.just(record);
-   }
-
-   public BankCard bankCard() {
-      return card;
    }
 }

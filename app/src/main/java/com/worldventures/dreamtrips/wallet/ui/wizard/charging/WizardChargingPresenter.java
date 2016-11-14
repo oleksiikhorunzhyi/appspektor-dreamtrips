@@ -51,17 +51,16 @@ public class WizardChargingPresenter extends WalletPresenter<WizardChargingPrese
    }
 
    private void observeCharger() {
-      ErrorHandler cardRecordingErrorHandler = addErrorHandling(ErrorHandler.<StartCardRecordingAction>builder(getContext()))
-            .build();
+      ErrorHandler<StartCardRecordingAction> cardRecordingErrorHandler = createErrorHandlerBuilder(StartCardRecordingAction.class).build();
       smartCardInteractor.startCardRecordingPipe()
             .createObservable(new StartCardRecordingAction())
             .compose(bindViewIoToMainComposer())
             .subscribe(ErrorActionStateSubscriberWrapper.<StartCardRecordingAction>forView(getView().provideOperationDelegate())
-                  .onFail(cardRecordingErrorHandler::call)
+                  .onFail(cardRecordingErrorHandler)
                   .wrap());
 
-      ErrorHandler chargedEventErrorHandler = addErrorHandling(ErrorHandler.<CardChargedEvent>builder(getContext())
-            .defaultMessage(R.string.wallet_wizard_charging_swipe_error))
+      ErrorHandler<CardChargedEvent> chargedEventErrorHandler = createErrorHandlerBuilder(CardChargedEvent.class)
+            .defaultMessage(R.string.wallet_wizard_charging_swipe_error)
             .build();
       smartCardInteractor.chargedEventPipe()
             .observe()
@@ -70,31 +69,30 @@ public class WizardChargingPresenter extends WalletPresenter<WizardChargingPrese
             .compose(new ActionPipeCacheWiper<>(smartCardInteractor.chargedEventPipe()))
             .subscribe(OperationActionStateSubscriberWrapper.<CardChargedEvent>forView(getView().provideOperationDelegate())
                   .onSuccess(event -> cardSwiped(event.card))
-                  .onFail(chargedEventErrorHandler::call)
+                  .onFail(chargedEventErrorHandler)
                   .wrap());
    }
 
    private void observeBankCardCreation() {
-      ErrorHandler<CreateBankCardCommand> errorHandler = addErrorHandling(ErrorHandler.builder(getContext())).build();
+      ErrorHandler<CreateBankCardCommand> errorHandler = createErrorHandlerBuilder(CreateBankCardCommand.class).build();
       smartCardInteractor.bankCardPipe()
             .observe()
             .compose(bindViewIoToMainComposer())
             .subscribe(OperationActionStateSubscriberWrapper.<CreateBankCardCommand>forView(getView().provideOperationDelegate())
-                  .onFail(errorHandler::call)
+                  .onFail(errorHandler)
                   .onSuccess(command -> bankCardCreated(command.getResult()))
                   .wrap());
    }
 
-   private <T> ErrorHandler.Builder addErrorHandling(ErrorHandler.Builder<T> builder) {
-      builder.handle(NotConnectedException.class, t -> {
+   private <T> ErrorHandler.Builder<T> createErrorHandlerBuilder(Class<T> clazz) {
+      return ErrorHandler.<T>builder(getContext())
+            .handle(NotConnectedException.class, t -> {
          analyticsInteractor.walletAnalyticsCommandPipe()
                .send(new WalletAnalyticsCommand(FailedToAddCardAction.noCardConnection()));
       }).handle(UnknownHostException.class, t -> {
          analyticsInteractor.walletAnalyticsCommandPipe()
                .send(new WalletAnalyticsCommand(FailedToAddCardAction.noNetworkConnection()));
       });
-
-      return builder;
    }
 
    private void trackScreen() {

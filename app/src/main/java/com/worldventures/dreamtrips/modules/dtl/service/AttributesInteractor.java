@@ -41,8 +41,7 @@ public class AttributesInteractor {
                   .map(FilterDataAction::getResult),
             (location, filterData) ->
                   new AttributesAction(location.getLat() + "," + location.getLng(),
-                        FilterHelper.provideMaxDistance(filterData),
-                        AttributeType.AMENITY.toString().toLowerCase()))
+                        FilterHelper.provideMaxDistance(filterData)))
             .take(1)
             .subscribe(attributesAction -> attributesPipe.send(attributesAction));
    }

@@ -1,13 +1,16 @@
 package com.worldventures.dreamtrips.modules.dtl.service.action;
 
 import com.worldventures.dreamtrips.api.dtl.attributes.AttributesHttpAction;
+import com.worldventures.dreamtrips.api.dtl.attributes.model.AttributeType;
 import com.worldventures.dreamtrips.core.janet.JanetModule;
 import com.worldventures.dreamtrips.core.janet.dagger.InjectableAction;
 import com.worldventures.dreamtrips.modules.dtl.model.mapping.AttributeMapper;
 import com.worldventures.dreamtrips.modules.dtl.model.mapping.AttributesSortTransformer;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.Attribute;
 
+import java.util.Arrays;
 import java.util.List;
+import java.util.Locale;
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -23,12 +26,12 @@ public class AttributesAction extends Command<List<Attribute>> implements Inject
 
    private final String ll;
    private final double radius;
-   private final String attributeTypes;
+   private final List<String> attributeTypes;
 
-   public AttributesAction(String ll, double radius, String attributeTypes) {
+   public AttributesAction(String ll, double radius) {
       this.ll = ll;
       this.radius = radius;
-      this.attributeTypes = attributeTypes;
+      this.attributeTypes = Arrays.asList(AttributeType.AMENITY.toString().toLowerCase(Locale.US));
    }
 
    @Override

@@ -31,10 +31,10 @@ public class CompressImageForSmartCardCommand extends SmartCardAvatarCommand imp
    @Override
    protected void run(CommandCallback<SmartCardUserPhoto> callback) throws Throwable {
       try {
-         File original = smartCardAvatarHelper.compressPhotoFromFile(filePath, imageSize);
+         File original = smartCardAvatarHelper.compressPhotoFromFile(filePath);
          SmartCardUserPhoto photo = ImmutableSmartCardUserPhoto.builder()
                .original(original)
-               .monochrome(smartCardAvatarHelper.toMonochromeFile(original))
+               .monochrome(smartCardAvatarHelper.toMonochromeFile(original, imageSize))
                .build();
          callback.onSuccess(photo);
       } catch (Throwable throwable) {

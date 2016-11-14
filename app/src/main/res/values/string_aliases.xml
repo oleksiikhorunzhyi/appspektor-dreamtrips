@@ -25,4 +25,9 @@
    <string name="account_who_liked_item_one">@string/users_who_liked_with_first_single</string>
    <string name="account_who_liked_item_other">@string/users_who_liked_with_first_multiple</string>
 
+   <string-array name="dialog_action_feedback_failed_uploading_attachment">
+      <item>@string/feedback_attachment_failed_item_retry</item>
+      <item>@string/feedback_attachment_failed_item_remove</item>
+   </string-array>
+
 </resources>

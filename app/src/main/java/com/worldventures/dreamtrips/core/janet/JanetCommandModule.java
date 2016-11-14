@@ -13,4 +13,4 @@ import dagger.Module;
       WalletCommandModule.class,
       SocialJanetCommandModule.class
 }, complete = false, library = true)
-public class JanetCommandModule {}
+class JanetCommandModule {}

@@ -57,7 +57,7 @@ public class FeedActionPanelView extends LinearLayout implements Flaggable {
    OnFlagDialogClickListener onFlagDialogClickListener;
 
    private FeedItem feedItem;
-   private boolean foreign;
+   private boolean isMine;
 
    private WeakHandler handler;
 
@@ -108,7 +108,7 @@ public class FeedActionPanelView extends LinearLayout implements Flaggable {
 
    @OnClick(R.id.more)
    public void onMoreClick() {
-      if (foreign) {
+      if (isMine) {
          if (onMoreClickListener != null) onMoreClickListener.onClick(feedItem);
       } else {
          PopupMenu popup = new PopupMenu(getContext(), more);
@@ -158,9 +158,9 @@ public class FeedActionPanelView extends LinearLayout implements Flaggable {
       onEditClickListener.onClick(feedItem);
    }
 
-   public void setState(FeedItem feedItem, boolean foreign) {
+   public void setState(FeedItem feedItem, boolean isMine) {
       this.feedItem = feedItem;
-      this.foreign = foreign;
+      this.isMine = isMine;
       FeedEntity feedEntity = feedItem.getItem();
       Resources res = getResources();
 
@@ -194,7 +194,7 @@ public class FeedActionPanelView extends LinearLayout implements Flaggable {
       }
 
       boolean isEditableItem = feedItem.getType() != FeedEntityHolder.Type.TRIP;
-      if ((foreign && isEditableItem) || isEditableItem) {
+      if ((isMine && isEditableItem) || isEditableItem) {
          more.setVisibility(View.VISIBLE);
       } else {
          more.setVisibility(View.GONE);

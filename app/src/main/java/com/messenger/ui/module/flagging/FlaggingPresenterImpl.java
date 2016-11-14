@@ -3,7 +3,7 @@ package com.messenger.ui.module.flagging;
 import android.text.TextUtils;
 
 import com.worldventures.dreamtrips.modules.flags.command.GetFlagsCommand;
-import com.messenger.delegate.FlagsInteractor;
+import com.worldventures.dreamtrips.modules.flags.service.FlagsInteractor;
 import com.messenger.delegate.chat.flagging.FlagMessageCommand;
 import com.messenger.delegate.chat.flagging.FlagMessageDelegate;
 import com.messenger.delegate.chat.flagging.ImmutableFlagMessageDTO;

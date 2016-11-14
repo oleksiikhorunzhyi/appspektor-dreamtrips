@@ -43,6 +43,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 
 import rx.Observable;
 import rx.Subscriber;
@@ -156,6 +157,7 @@ public class ImageUtils {
                   proportional = new TagPosition(proportional.getTopLeft(), new Position(bottomXProportional, bottomYProportional));
                   result.add(new PhotoTag(proportional, 0));
                }
+               Collections.sort(result);
                return result;
             })
             .doOnUnsubscribe(() -> detector.release())

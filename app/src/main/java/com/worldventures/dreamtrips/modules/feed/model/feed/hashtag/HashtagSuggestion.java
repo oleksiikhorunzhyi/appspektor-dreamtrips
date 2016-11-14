@@ -20,6 +20,10 @@ public class HashtagSuggestion implements Parcelable {
       return usageCount;
    }
 
+   public void setUsageCount(int usageCount) {
+      this.usageCount = usageCount;
+   }
+
    @Override
    public int describeContents() {
       return 0;

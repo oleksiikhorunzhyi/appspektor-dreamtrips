@@ -150,7 +150,7 @@
                   android:orientation="horizontal"
                   >
 
-               <com.worldventures.dreamtrips.modules.bucketlist.view.custom.BucketPhotosView
+               <com.worldventures.dreamtrips.modules.bucketlist.view.custom.BucketHorizontalPhotosView
                      android:id="@+id/bucket_photos"
                      android:overScrollMode="never"
                      android:layout_width="64dp"

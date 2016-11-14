@@ -8,12 +8,8 @@ import rx.Observable;
 @CommandAction
 public class SimpleUploaderyCommand extends UploaderyImageCommand<UploadImageAction> {
 
-   public SimpleUploaderyCommand(String filePath) {
-      super(filePath, 0);
-   }
-
-   public SimpleUploaderyCommand(String filePath, int commandId) {
-      super(filePath, commandId);
+   public SimpleUploaderyCommand(String fileUri) {
+      super(fileUri);
    }
 
    @Override

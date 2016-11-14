@@ -5,7 +5,7 @@ import android.support.annotation.Nullable;
 import android.text.TextUtils;
 
 import com.innahema.collections.query.queriables.Queryable;
-import com.messenger.delegate.FlagsInteractor;
+import com.worldventures.dreamtrips.modules.flags.service.FlagsInteractor;
 import com.worldventures.dreamtrips.core.rx.RxView;
 import com.worldventures.dreamtrips.core.rx.composer.IoToMainComposer;
 import com.worldventures.dreamtrips.core.utils.LocaleHelper;
@@ -15,7 +15,7 @@ import com.worldventures.dreamtrips.modules.bucketlist.service.BucketInteractor;
 import com.worldventures.dreamtrips.modules.bucketlist.service.action.DeleteItemHttpAction;
 import com.worldventures.dreamtrips.modules.common.model.FlagData;
 import com.worldventures.dreamtrips.modules.common.presenter.JobPresenter;
-import com.worldventures.dreamtrips.modules.common.presenter.delegate.UidItemDelegate;
+import com.worldventures.dreamtrips.modules.common.presenter.delegate.FlagDelegate;
 import com.worldventures.dreamtrips.modules.common.view.ApiErrorView;
 import com.worldventures.dreamtrips.modules.common.view.bundle.BucketBundle;
 import com.worldventures.dreamtrips.modules.feed.api.DeletePostCommand;
@@ -70,7 +70,7 @@ public class FeedHashtagPresenter<T extends FeedHashtagPresenter.View> extends J
    @Inject BucketInteractor bucketInteractor;
    @Inject FlagsInteractor flagsInteractor;
 
-   private UidItemDelegate uidItemDelegate;
+   private FlagDelegate flagDelegate;
 
    @Override
    public void takeView(T view) {
@@ -97,7 +97,7 @@ public class FeedHashtagPresenter<T extends FeedHashtagPresenter.View> extends J
    public void onInjected() {
       super.onInjected();
       entityManager.setRequestingPresenter(this);
-      uidItemDelegate = new UidItemDelegate(this, flagsInteractor);
+      flagDelegate = new FlagDelegate(flagsInteractor);
    }
 
    @Nullable
@@ -309,12 +309,12 @@ public class FeedHashtagPresenter<T extends FeedHashtagPresenter.View> extends J
    }
 
    public void onEvent(LoadFlagEvent event) {
-      if (view.isVisibleOnScreen()) uidItemDelegate.loadFlags(event.getFlaggableView(), this::handleError);
+      if (view.isVisibleOnScreen()) flagDelegate.loadFlags(event.getFlaggableView(), this::handleError);
    }
 
    public void onEvent(ItemFlaggedEvent event) {
-      if (view.isVisibleOnScreen()) uidItemDelegate.flagItem(new FlagData(event.getEntity()
-            .getUid(), event.getFlagReasonId(), event.getNameOfReason()), view);
+      if (view.isVisibleOnScreen()) flagDelegate.flagItem(new FlagData(event.getEntity()
+            .getUid(), event.getFlagReasonId(), event.getNameOfReason()), view, this::handleError);
    }
 
    private void itemLiked(FeedEntity feedEntity) {
@@ -332,7 +332,7 @@ public class FeedHashtagPresenter<T extends FeedHashtagPresenter.View> extends J
       interactor.getSuggestionPipe().cancelLatest();
    }
 
-   public interface View extends RxView, UidItemDelegate.View, TextualPostTranslationDelegate.View, ApiErrorView {
+   public interface View extends RxView, FlagDelegate.View, TextualPostTranslationDelegate.View, ApiErrorView {
 
       void startLoading();
 

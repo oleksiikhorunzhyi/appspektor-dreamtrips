@@ -15,14 +15,14 @@ import java.util.Map;
 import io.techery.janet.smartcard.model.Record;
 import io.techery.mappery.MapperyContext;
 
-import static com.worldventures.dreamtrips.wallet.domain.converter.Converter.ADDRESS1_FIELD;
-import static com.worldventures.dreamtrips.wallet.domain.converter.Converter.ADDRESS2_FIELD;
-import static com.worldventures.dreamtrips.wallet.domain.converter.Converter.BANK_CARD_CATEGORY;
-import static com.worldventures.dreamtrips.wallet.domain.converter.Converter.BANK_NAME_FIELD;
-import static com.worldventures.dreamtrips.wallet.domain.converter.Converter.CITY_FIELD;
-import static com.worldventures.dreamtrips.wallet.domain.converter.Converter.STATE_FIELD;
-import static com.worldventures.dreamtrips.wallet.domain.converter.Converter.TYPE_CARD_FIELD;
-import static com.worldventures.dreamtrips.wallet.domain.converter.Converter.ZIP_FIELD;
+import static com.worldventures.dreamtrips.wallet.domain.converter.RecordFields.ADDRESS1_FIELD;
+import static com.worldventures.dreamtrips.wallet.domain.converter.RecordFields.ADDRESS2_FIELD;
+import static com.worldventures.dreamtrips.wallet.domain.converter.RecordFields.BANK_CARD_CATEGORY;
+import static com.worldventures.dreamtrips.wallet.domain.converter.RecordFields.BANK_NAME_FIELD;
+import static com.worldventures.dreamtrips.wallet.domain.converter.RecordFields.CITY_FIELD;
+import static com.worldventures.dreamtrips.wallet.domain.converter.RecordFields.STATE_FIELD;
+import static com.worldventures.dreamtrips.wallet.domain.converter.RecordFields.TYPE_CARD_FIELD;
+import static com.worldventures.dreamtrips.wallet.domain.converter.RecordFields.ZIP_FIELD;
 
 public class RecordToBankCardConverter implements com.worldventures.dreamtrips.modules.mapping.converter.Converter<Record, BankCard> {
    @Override

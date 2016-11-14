@@ -43,6 +43,7 @@ import com.worldventures.dreamtrips.modules.video.model.converter.VideoConverter
 import com.worldventures.dreamtrips.modules.video.model.converter.VideoLanguageConverter;
 import com.worldventures.dreamtrips.modules.video.model.converter.VideoLocaleConverter;
 import com.worldventures.dreamtrips.wallet.domain.converter.BankCardToRecordConverter;
+import com.worldventures.dreamtrips.wallet.domain.converter.BankInfoConverter;
 import com.worldventures.dreamtrips.wallet.domain.converter.FirmwareResponseToFirmwareDataConverter;
 import com.worldventures.dreamtrips.wallet.domain.converter.ProfileAddressToUserAddressConverter;
 import com.worldventures.dreamtrips.wallet.domain.converter.RecordToBankCardConverter;
@@ -142,6 +143,12 @@ public class MappingModule {
    @Singleton
    Converter provideBankCardToRecordConverter() {
       return new BankCardToRecordConverter();
+   }
+
+   @Provides(type = Provides.Type.SET)
+   @Singleton
+   Converter provideBankInfoConverter() {
+      return new BankInfoConverter();
    }
 
    @Provides(type = Provides.Type.SET)

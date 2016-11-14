@@ -1,6 +1,5 @@
 package com.worldventures.dreamtrips.wallet.domain.converter;
 
-
 import com.worldventures.dreamtrips.wallet.domain.entity.AddressInfo;
 import com.worldventures.dreamtrips.wallet.domain.entity.card.BankCard;
 
@@ -10,16 +9,17 @@ import io.techery.janet.smartcard.model.ImmutableRecord;
 import io.techery.janet.smartcard.model.Record;
 import io.techery.mappery.MapperyContext;
 
-import static com.worldventures.dreamtrips.wallet.domain.converter.Converter.*;
-import static com.worldventures.dreamtrips.wallet.domain.converter.Converter.ADDRESS1_FIELD;
-import static com.worldventures.dreamtrips.wallet.domain.converter.Converter.ADDRESS2_FIELD;
-import static com.worldventures.dreamtrips.wallet.domain.converter.Converter.BANK_NAME_FIELD;
-import static com.worldventures.dreamtrips.wallet.domain.converter.Converter.CITY_FIELD;
-import static com.worldventures.dreamtrips.wallet.domain.converter.Converter.STATE_FIELD;
-import static com.worldventures.dreamtrips.wallet.domain.converter.Converter.TYPE_CARD_FIELD;
-import static com.worldventures.dreamtrips.wallet.domain.converter.Converter.ZIP_FIELD;
+import static com.worldventures.dreamtrips.wallet.domain.converter.RecordFields.*;
+import static com.worldventures.dreamtrips.wallet.domain.converter.RecordFields.ADDRESS1_FIELD;
+import static com.worldventures.dreamtrips.wallet.domain.converter.RecordFields.ADDRESS2_FIELD;
+import static com.worldventures.dreamtrips.wallet.domain.converter.RecordFields.BANK_NAME_FIELD;
+import static com.worldventures.dreamtrips.wallet.domain.converter.RecordFields.CITY_FIELD;
+import static com.worldventures.dreamtrips.wallet.domain.converter.RecordFields.STATE_FIELD;
+import static com.worldventures.dreamtrips.wallet.domain.converter.RecordFields.TYPE_CARD_FIELD;
+import static com.worldventures.dreamtrips.wallet.domain.converter.RecordFields.ZIP_FIELD;
 
 public class BankCardToRecordConverter implements com.worldventures.dreamtrips.modules.mapping.converter.Converter<BankCard, Record> {
+
    @Override
    public Class<BankCard> sourceClass() {
       return BankCard.class;
@@ -45,9 +45,8 @@ public class BankCardToRecordConverter implements com.worldventures.dreamtrips.m
       metadata.put(BANK_NAME_FIELD, card.issuerInfo().bankName());
       metadata.put(BANK_CARD_CATEGORY, card.category().name());
 
-      // TODO: use normal id
       return ImmutableRecord.builder()
-            .id(Integer.parseInt(card.id()))
+            .id(parseCardId(card))
             .title(card.title())
             .cardNumber(String.valueOf(card.number()))
             .cvv(String.valueOf(card.cvv()))
@@ -59,5 +58,10 @@ public class BankCardToRecordConverter implements com.worldventures.dreamtrips.m
             .t3("")
             .metadata(metadata)
             .build();
+   }
+
+   private Integer parseCardId(BankCard card) {
+      // RecordId is null until Record was not added on sc
+      return card.id() != null ? Integer.parseInt(card.id()) : null;
    }
 }

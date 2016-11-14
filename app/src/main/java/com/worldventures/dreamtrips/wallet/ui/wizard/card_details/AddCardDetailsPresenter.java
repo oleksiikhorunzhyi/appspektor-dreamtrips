@@ -20,9 +20,9 @@ import com.worldventures.dreamtrips.wallet.domain.entity.ImmutableAddressInfoWit
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCard;
 import com.worldventures.dreamtrips.wallet.domain.entity.card.BankCard;
 import com.worldventures.dreamtrips.wallet.service.SmartCardInteractor;
+import com.worldventures.dreamtrips.wallet.service.command.AddBankCardCommand;
 import com.worldventures.dreamtrips.wallet.service.command.FetchDefaultCardCommand;
 import com.worldventures.dreamtrips.wallet.service.command.GetDefaultAddressCommand;
-import com.worldventures.dreamtrips.wallet.service.command.SaveCardDetailsDataCommand;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletPresenter;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.WalletScreen;
 import com.worldventures.dreamtrips.wallet.ui.common.helper.ErrorHandler;
@@ -129,15 +129,15 @@ public class AddCardDetailsPresenter extends WalletPresenter<AddCardDetailsPrese
             .observeWithReplay()
             .compose(bindViewIoToMainComposer())
             .compose(new ActionPipeCacheWiper<>(smartCardInteractor.saveCardDetailsDataPipe()))
-            .subscribe(OperationActionStateSubscriberWrapper.<SaveCardDetailsDataCommand>forView(getView().provideOperationDelegate())
+            .subscribe(OperationActionStateSubscriberWrapper.<AddBankCardCommand>forView(getView().provideOperationDelegate())
                   .onSuccess(this::onCardAdd)
-                  .onFail(ErrorHandler.<SaveCardDetailsDataCommand>builder(getContext())
+                  .onFail(ErrorHandler.<AddBankCardCommand>builder(getContext())
                         .handle(FormatException.class, R.string.wallet_add_card_details_error_message)
                         .build())
                   .wrap());
    }
 
-   private void onCardAdd(SaveCardDetailsDataCommand command) {
+   private void onCardAdd(AddBankCardCommand command) {
       if (command.setAsDefaultCard()) trackSetAsDefault(command.getResult());
       trackAddedCard(bankCard, command.setAsDefaultCard());
       navigator.single(new CardListPath(), Direction.REPLACE);
@@ -160,7 +160,7 @@ public class AddCardDetailsPresenter extends WalletPresenter<AddCardDetailsPrese
 
    public void onCardInfoConfirmed(AddressInfo addressInfo, String cvv, String nickname, boolean useDefaultAddress, boolean setAsDefaultAddress, boolean setAsDefaultCard) {
       smartCardInteractor.saveCardDetailsDataPipe()
-            .send(new SaveCardDetailsDataCommand.Builder().setBankCard(bankCard)
+            .send(new AddBankCardCommand.Builder().setBankCard(bankCard)
                   .setManualAddressInfo(addressInfo)
                   .setNickName(nickname)
                   .setCvv(cvv)

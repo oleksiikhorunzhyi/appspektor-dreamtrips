@@ -18,7 +18,7 @@ import rx.Observable;
 import timber.log.Timber;
 
 @CommandAction
-public class SaveCardDetailsDataCommand extends Command<BankCard> implements InjectableAction {
+public class AddBankCardCommand extends Command<BankCard> implements InjectableAction {
 
    @Inject SmartCardInteractor smartCardInteractor;
    @Inject SnappyRepository snappyRepository;
@@ -32,7 +32,7 @@ public class SaveCardDetailsDataCommand extends Command<BankCard> implements Inj
    private final boolean useDefaultAddress;
    private final boolean setAsDefaultCard;
 
-   private SaveCardDetailsDataCommand(BankCard bankCard,
+   private AddBankCardCommand(BankCard bankCard,
          AddressInfo manualAddressInfo,
          String nickName,
          String cvv,
@@ -88,9 +88,10 @@ public class SaveCardDetailsDataCommand extends Command<BankCard> implements Inj
    }
 
    private Observable<BankCard> pushBankCard(BankCard bankCard) {
+      //card without id -> AttachCardCommand -> card with id
       return smartCardInteractor.addRecordPipe()
             .createObservableResult(new AttachCardCommand(bankCard, setAsDefaultCard))
-            .map(command -> bankCard);
+            .map(Command::getResult);
    }
 
    private BankCard createBankCard(AddressInfo address) {
@@ -159,8 +160,8 @@ public class SaveCardDetailsDataCommand extends Command<BankCard> implements Inj
          return this;
       }
 
-      public SaveCardDetailsDataCommand create() {
-         return new SaveCardDetailsDataCommand(bankCard, manualAddressInfo, nickName, cvv, issuerInfo,
+      public AddBankCardCommand create() {
+         return new AddBankCardCommand(bankCard, manualAddressInfo, nickName, cvv, issuerInfo,
                useDefaultAddress, setAsDefaultAddress, setAsDefaultCard);
       }
    }

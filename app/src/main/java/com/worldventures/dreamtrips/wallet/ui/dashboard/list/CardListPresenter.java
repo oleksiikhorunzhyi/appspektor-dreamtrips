@@ -79,7 +79,7 @@ public class CardListPresenter extends WalletPresenter<CardListPresenter.Screen,
       observeChanges();
       observeFirmwareInfo();
 
-      fetchCardsOnConnection();
+      fetchCards();
       trackScreen();
 
       smartCardInteractor.smartCardModifierPipe()
@@ -88,14 +88,8 @@ public class CardListPresenter extends WalletPresenter<CardListPresenter.Screen,
             .subscribe(it -> setSmartCard(it.getResult()));
    }
 
-   private void fetchCardsOnConnection() {
-      smartCardInteractor.connectActionPipe().observeSuccess()
-            .filter(c -> c.getResult().connectionStatus() == CONNECTED)
-            .compose(bindViewIoToMainComposer())
-            .subscribe(c -> {
-               //TODO For first release we should get info from cache cause SC device does't support operation
-               smartCardInteractor.cardStacksPipe().send(CardStacksCommand.get(false));
-            });
+   private void fetchCards() {
+      smartCardInteractor.cardStacksPipe().send(CardStacksCommand.get(false));
    }
 
    private void observeFirmwareInfo() {

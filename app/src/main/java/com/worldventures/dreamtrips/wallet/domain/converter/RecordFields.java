@@ -1,6 +1,6 @@
 package com.worldventures.dreamtrips.wallet.domain.converter;
 
-public interface Converter<T, R> {
+interface RecordFields {
    String ADDRESS1_FIELD = "address1";
    String ADDRESS2_FIELD = "address2";
    String CITY_FIELD = "city";
@@ -10,9 +10,5 @@ public interface Converter<T, R> {
    String TYPE_CARD_FIELD = "type_card";
    String BANK_NAME_FIELD = "bank_name";
    String BANK_CARD_CATEGORY = "bank_card_category";
-
-   R from(T object);
-
-   T to(R object);
 }
 

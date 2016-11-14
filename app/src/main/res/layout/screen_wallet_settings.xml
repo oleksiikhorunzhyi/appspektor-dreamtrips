@@ -1,5 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
-
 <com.worldventures.dreamtrips.wallet.ui.settings.general.WalletSettingsScreen xmlns:android="http://schemas.android.com/apk/res/android"
       xmlns:app="http://schemas.android.com/apk/res-auto"
       xmlns:tools="http://schemas.android.com/tools"
@@ -8,6 +7,13 @@
       android:background="@color/wallet_gray_background"
       android:theme="@style/WalletTheme"
       >
+
+   <android.support.v7.widget.Toolbar
+         android:id="@+id/toolbar"
+         android:layout_width="match_parent"
+         android:layout_height="?attr/actionBarSize"
+         app:title="@string/wallet_card_settings_title"
+         />
 
    <android.support.v4.widget.NestedScrollView
          android:layout_width="match_parent"
@@ -309,11 +315,5 @@
                />
       </LinearLayout>
    </android.support.v4.widget.NestedScrollView>
-   <android.support.v7.widget.Toolbar
-         android:id="@+id/toolbar"
-         android:layout_width="match_parent"
-         android:layout_height="?attr/actionBarSize"
-         app:title="@string/wallet_card_settings_title"
-         />
 
 </com.worldventures.dreamtrips.wallet.ui.settings.general.WalletSettingsScreen>

@@ -58,7 +58,7 @@ public class WalletNewFirmwareAvailablePresenter extends WalletPresenter<WalletN
                      @Override
                      public void call(GetActiveSmartCardCommand command) {
                         WalletNewFirmwareAvailablePresenter.this.getView()
-                              .currentFirmwareInfo(command.getResult().sdkVersion());
+                              .currentFirmwareInfo(command.getResult().firmWareVersion());
                      }
                   })
                   .onFail(ErrorHandler.create(getContext()))

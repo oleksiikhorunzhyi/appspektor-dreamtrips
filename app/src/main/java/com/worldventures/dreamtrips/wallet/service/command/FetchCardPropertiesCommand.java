@@ -44,16 +44,20 @@ public class FetchCardPropertiesCommand extends Command<SmartCard> implements In
                   .createObservableResult(new GetLockDeviceStatusAction()),
             janet.createPipe(GetStealthModeAction.class)
                   .createObservableResult(new GetStealthModeAction()),
+            janet.createPipe(GetDisableDefaultCardDelayAction.class)
+                  .createObservableResult(new GetDisableDefaultCardDelayAction()),
+            janet.createPipe(GetClearRecordsDelayAction.class)
+                  .createObservableResult(new GetClearRecordsDelayAction()),
             (sdkVersionAction, firmwareVersionAction, getBatteryLevelAction, getLockDeviceStatusAction,
-                  getStealthModeAction) ->
+                  getStealthModeAction, getDisableDefaultCardDelayAction, getClearRecordsDelayAction) ->
                   ImmutableSmartCard.builder().from(smartCard)
                         .sdkVersion(sdkVersionAction.version)
                         .firmWareVersion(firmwareVersionAction.version)
                         .batteryLevel(Integer.parseInt(getBatteryLevelAction.level))
                         .lock(getLockDeviceStatusAction.locked)
                         .stealthMode(getStealthModeAction.enabled)
-                        .disableCardDelay(0l) // TODO set actual value when FW is ready
-                        .clearFlyeDelay(0l) // TODO set actual value when FW is ready
+                        .disableCardDelay(getDisableDefaultCardDelayAction.delay)
+                        .clearFlyeDelay(getClearRecordsDelayAction.delay)
                         .build())
             .subscribe(callback::onSuccess, callback::onFail);
    }

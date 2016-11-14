@@ -40,7 +40,7 @@ public class SetAutoClearSmartCardDelayCommand extends Command<SmartCard>
    @Override
    protected void run(CommandCallback<SmartCard> callback) throws Throwable {
       janet.createPipe(SetClearRecordsDelayAction.class)
-            .createObservableResult(new SetClearRecordsDelayAction(TimeUnit.MILLISECONDS, delay))
+            .createObservableResult(new SetClearRecordsDelayAction(TimeUnit.MINUTES, delay))
             .flatMap(it -> fetchActiveSmartCard()
                   .map(smartCard -> ImmutableSmartCard.builder()
                         .from(smartCard)

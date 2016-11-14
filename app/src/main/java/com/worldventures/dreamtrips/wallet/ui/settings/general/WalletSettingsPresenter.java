@@ -236,9 +236,9 @@ public class WalletSettingsPresenter extends WalletPresenter<WalletSettingsPrese
 
       void testConnection(boolean connected);
 
-      void disableDefaultPaymentValue(long millis);
+      void disableDefaultPaymentValue(long minutes);
 
-      void autoClearSmartCardValue(long millis);
+      void autoClearSmartCardValue(long minutes);
 
       void firmwareUpdateCount(int count);
 

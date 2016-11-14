@@ -166,7 +166,6 @@
                      android:layout_width="match_parent"
                      android:layout_height="wrap_content"
                      android:padding="@dimen/spacing_normal"
-                     android:visibility="gone"
                      >
 
                   <TextView
@@ -190,17 +189,13 @@
                         />
                </RelativeLayout>
 
-               <View
-                     style="@style/SettingsItemDividerStyle"
-                     android:visibility="gone"
-                     />
+               <View style="@style/SettingsItemDividerStyle" />
 
                <RelativeLayout
                      android:id="@+id/item_auto_delete_cards"
                      android:layout_width="match_parent"
                      android:layout_height="wrap_content"
                      android:padding="@dimen/spacing_normal"
-                     android:visibility="gone"
                      >
 
                   <TextView

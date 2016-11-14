@@ -63,8 +63,8 @@ public class WalletDisableDefaultCardScreen
    }
 
    @Override
-   public void selectedTime(long millis) {
-      selectionManager.setSelection(itemProvider.getPositionForValue(millis) + 1, true); // +1 is Header
+   public void selectedTime(long minutes) {
+      selectionManager.setSelection(itemProvider.getPositionForValue(minutes) + 1, true); // +1 is Header
    }
 
    private void onNavigationClick() {

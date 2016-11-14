@@ -37,10 +37,10 @@ public class WalletAutoClearCardsPresenter extends WalletPresenter<WalletAutoCle
    }
 
    /**
-    * @param delayMillis 0 - never
+    * @param delayMinutes 0 - never
     */
-   public void onTimeSelected(long delayMillis) {
-      smartCardInteractor.autoClearDelayPipe().send(new SetAutoClearSmartCardDelayCommand(delayMillis));
+   public void onTimeSelected(long delayMinutes) {
+      smartCardInteractor.autoClearDelayPipe().send(new SetAutoClearSmartCardDelayCommand(delayMinutes));
    }
 
    private void observerSmartCard() {
@@ -61,6 +61,6 @@ public class WalletAutoClearCardsPresenter extends WalletPresenter<WalletAutoCle
 
    public interface Screen extends WalletScreen {
 
-      void selectedTime(long millis);
+      void selectedTime(long minutes);
    }
 }

@@ -113,13 +113,13 @@ public class WalletSettingsScreen extends WalletLinearLayout<WalletSettingsPrese
    }
 
    @Override
-   public void disableDefaultPaymentValue(long millis) {
-      disableDefaultPaymentCardAfterLabel.setText(disableDefaultCardItemProvider.provideTextByValue(millis));
+   public void disableDefaultPaymentValue(long minutes) {
+      disableDefaultPaymentCardAfterLabel.setText(disableDefaultCardItemProvider.provideTextByValue(minutes));
    }
 
    @Override
-   public void autoClearSmartCardValue(long millis) {
-      autoDeleteCardLabel.setText(autoClearSmartCardItemProvider.provideTextByValue(millis));
+   public void autoClearSmartCardValue(long minutes) {
+      autoDeleteCardLabel.setText(autoClearSmartCardItemProvider.provideTextByValue(minutes));
    }
 
    @Override

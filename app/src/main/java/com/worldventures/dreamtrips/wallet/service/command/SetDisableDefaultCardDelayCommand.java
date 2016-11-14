@@ -20,6 +20,7 @@ import io.techery.janet.command.annotations.CommandAction;
 import io.techery.janet.helper.ActionStateToActionTransformer;
 import io.techery.janet.smartcard.action.settings.SetDisableDefaultCardDelayAction;
 import rx.Observable;
+import timber.log.Timber;
 
 import static com.worldventures.dreamtrips.core.janet.JanetModule.JANET_WALLET;
 
@@ -40,7 +41,7 @@ public class SetDisableDefaultCardDelayCommand extends Command<SmartCard>
    @Override
    protected void run(CommandCallback<SmartCard> callback) throws Throwable {
       janet.createPipe(SetDisableDefaultCardDelayAction.class)
-            .createObservableResult(new SetDisableDefaultCardDelayAction(TimeUnit.MILLISECONDS, delay))
+            .createObservableResult(new SetDisableDefaultCardDelayAction(TimeUnit.MINUTES, delay))
             .flatMap(it -> fetchActiveSmartCard()
                   .map(smartCard -> ImmutableSmartCard.builder()
                         .from(smartCard)

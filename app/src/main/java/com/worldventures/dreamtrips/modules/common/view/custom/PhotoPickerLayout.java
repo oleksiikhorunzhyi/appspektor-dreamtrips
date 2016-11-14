@@ -240,6 +240,8 @@ public class PhotoPickerLayout extends SlidingUpPanelLayout {
       this.pickLimit = pickLimit;
 
       if (photoPickerListener != null) photoPickerListener.onOpened();
+      photoPickerDelegate.onOpened();
+
       isShown = true;
       boolean isKeyboardClosed = inputMethodManager.hideSoftInputFromWindow(getWindowToken(), 0);
       //
@@ -255,6 +257,8 @@ public class PhotoPickerLayout extends SlidingUpPanelLayout {
 
    public void hidePanel() {
       if (photoPickerListener != null) photoPickerListener.onClosed();
+      photoPickerDelegate.onClosed();
+
       isShown = false;
       updatePickedItemsCount(0);
       setPanelHeight(0);

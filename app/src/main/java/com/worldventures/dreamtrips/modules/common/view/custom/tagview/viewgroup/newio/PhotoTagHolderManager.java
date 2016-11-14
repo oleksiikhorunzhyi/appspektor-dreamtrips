@@ -51,7 +51,7 @@ public class PhotoTagHolderManager {
       }
    }
 
-   public void addSuggestionTagView(List<PhotoTag> photoTags, TagSuggestionActionListener listener) {
+   public void addSuggestionTagViews(List<PhotoTag> photoTags, TagSuggestionActionListener listener) {
       Queryable.from(photoTags).forEachR(arg -> photoTagHolder.addSuggestionTagView(arg, listener));
    }
 

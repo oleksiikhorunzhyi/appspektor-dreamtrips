@@ -33,9 +33,9 @@ android {
 
    // App version
    def versionMajor = 1
-   def versionMinor = 15
+   def versionMinor = 16
    def versionPatch = 0
-   def versionBuild = 16  // bump for dogfood builds, public betas, etc.
+   def versionBuild = 2  // bump for dogfood builds, public betas, etc.
    //
    // flavor codes
    String DEV_CODE = "dev"
@@ -64,12 +64,12 @@ android {
    def BUILD_LOG_TAG = "BUILD_LOG"
    //
    def CONFIG_MAP_DEFAULT = [
-         'DreamTripsApi'    : '"http://techery--dt--staging-techery-io-txbe74ea4jwh.runscope.net/"',
-         'S3Api'            : '"https://s3-us-west-2.amazonaws.com/techery-worldventures/config/staging"',
-         'MESSENGER_API_URL': '"dtmsgapp-dev.worldventures.biz"',
-         'NEWRELIC_API_KEY' : '"AA02bc55e3bfb4886360f8be57d75b526bea2b1bcf"',
-         'UPLOADERY_API_URL' : '"http://techery-dt-staging-uploadery.techery.io"',
-         'SMART_CARD_SDK_CLIENT' : '"nxtid"'
+         'DreamTripsApi'        : '"http://techery--dt--staging-techery-io-txbe74ea4jwh.runscope.net/"',
+         'S3Api'                : '"https://s3-us-west-2.amazonaws.com/techery-worldventures/config/staging"',
+         'MESSENGER_API_URL'    : '"dtmsgapp-dev.worldventures.biz"',
+         'NEWRELIC_API_KEY'     : '"AA02bc55e3bfb4886360f8be57d75b526bea2b1bcf"',
+         'UPLOADERY_API_URL'    : '"http://techery-dt-staging-uploadery.techery.io"',
+         'SMART_CARD_SDK_CLIENT': '"nxtid"'
    ]
    def CONFIG_MAP_EXTERNAL = [
          'NEWRELIC_API_KEY': '"AAd06d4d4d218e74f8d48a7e0bf8d7de4623cb1662"',
@@ -78,7 +78,7 @@ android {
          'DreamTripsApi'    : '"http://techery-dt-preprod.techery.io/"',
          'S3Api'            : '"https://s3-us-west-2.amazonaws.com/techery-worldventures/config/preprod"',
          'MESSENGER_API_URL': '"dtmsgapp-qa.worldventures.biz"',
-         'UPLOADERY_API_URL' : '"http://techery-dt-preprod-uploadery.techery.io"',
+         'UPLOADERY_API_URL': '"http://techery-dt-preprod-uploadery.techery.io"',
    ]
    def CONFIG_MAP_PERF = [
          'DreamTripsApi'    : '"http://dtapp-perf.worldventures.biz"',
@@ -93,24 +93,24 @@ android {
          'UPLOADERY_API_URL': '"http://dtappuploads.wvholdings.com"',
    ]
    def CONFIG_MAP_DTL = [
-         'DreamTripsApi': '"http://techery--dt--dtl-techery-io-b8ctgyaku6eu.runscope.net/"',
-         'UPLOADERY_API_URL' : '"http://techery-dt-dtl-uploadery.techery.io"',
+         'DreamTripsApi'    : '"http://techery--dt--dtl-techery-io-b8ctgyaku6eu.runscope.net/"',
+         'UPLOADERY_API_URL': '"http://techery-dt-dtl-uploadery.techery.io"',
    ]
    def CONFIG_MAP_SMARTCARD_MOCK = [
-         'SMART_CARD_SDK_CLIENT' : '"mock"'
+         'SMART_CARD_SDK_CLIENT': '"mock"'
    ]
    def CONFIG_MAP_SMARTCARD_NXTID = [
-         'SMART_CARD_SDK_CLIENT' : '"nxtid"'
+         'SMART_CARD_SDK_CLIENT': '"nxtid"'
    ]
    //
    def CONFIG_MAPS = [
-         "external": CONFIG_MAP_EXTERNAL,
-         "preprod" : CONFIG_MAP_PREPROD,
-         "perf"    : CONFIG_MAP_PERF,
-         "prod"    : CONFIG_MAP_PROD,
-         "dtl"     : CONFIG_MAP_DTL,
-         "smartcardmock"   : CONFIG_MAP_SMARTCARD_MOCK,
-         "smartcardnxtid"  : CONFIG_MAP_SMARTCARD_NXTID,
+         "external"      : CONFIG_MAP_EXTERNAL,
+         "preprod"       : CONFIG_MAP_PREPROD,
+         "perf"          : CONFIG_MAP_PERF,
+         "prod"          : CONFIG_MAP_PROD,
+         "dtl"           : CONFIG_MAP_DTL,
+         "smartcardmock" : CONFIG_MAP_SMARTCARD_MOCK,
+         "smartcardnxtid": CONFIG_MAP_SMARTCARD_NXTID,
    ]
 
    defaultConfig {
@@ -144,6 +144,7 @@ android {
 
       buildConfigField 'boolean', 'RX_DEBUG_HOOK_ENABLED', 'false'
       buildConfigField 'boolean', 'CRASHLYTICS_DISABLED', 'false'
+      buildConfigField 'boolean', 'NEWRELIC_ENABLED', 'true'
       ext.enableCrashlytics = true
       //
       buildConfigField 'String', 'versionMajor', "\"${versionMajor}\""
@@ -173,12 +174,14 @@ android {
          minSdkVersion 23
          ext.enableCrashlytics = false
          buildConfigField 'boolean', 'CRASHLYTICS_DISABLED', 'true'
+         buildConfigField 'boolean', 'NEWRELIC_ENABLED', 'false'
       }
       devpremarshmallow {
          dimension "build"
          applicationIdSuffix = DEV_CODE
          ext.enableCrashlytics = false
          buildConfigField 'boolean', 'CRASHLYTICS_DISABLED', 'true'
+         buildConfigField 'boolean', 'NEWRELIC_ENABLED', 'false'
       }
       external { dimension "build" }
 
@@ -369,25 +372,26 @@ android {
    }
 }
 
-// TODO: Remove on 2.2.x android plugin – it's a hack for multidex on 2.1.x android plugin
-afterEvaluate {
-   project.tasks.each { task ->
-      if (task.name.startsWith('collect') && task.name.endsWith('MultiDexComponents')) {
-         println "main-dex-filter: found task $task.name"
-         task.filter { name, attrs ->
-            def componentName = attrs.get('android:name')
-            if ('activity'.equals(name)) {
-               println "main-dex-filter: skipping, detected activity [$componentName]"
-               return false
-            } else {
-               println "main-dex-filter: keeping, detected $name [$componentName]"
-               return true
-            }
-         }
-      }
+task disableNR << {
+   logger.info("[newrelic] newRelicInstrumentTask will be disabled")
+   try {
+      newRelicInstrumentTask.enabled = false
+      newRelicDeinstrumentTask.enabled = false
+   } catch (Exception e) {
+      logger.log(LogLevel.ERROR, "[newrelic] an error occured attempting to disable New Relic instrumentation." + "\n" + e.printStackTrace())
+   }
+   if (newRelicInstrumentTask.enabled == true) {
+      logger.log(LogLevel.ERROR, "[newrelic] an error occured attempting to disable New Relic instrumentation.")
+   } else {
+      logger.info("[newrelic] newrelicInstrumentTask has been disabled")
    }
 }
 
+tasks.whenTaskAdded { task ->
+   if (task.name.startsWith("transformClassesWithDexFor") && (task.name.toLowerCase().contains("dev") || task.name.toLowerCase().contains("debug"))) {
+      task.dependsOn disableNR
+   }
+}
 
 def googleLibrariesVersion = '24.2.0'
 def googlePlayServicesVersion = '9.2.1'
@@ -442,7 +446,7 @@ dependencies {
    compile('com.crashlytics.sdk.android:crashlytics:2.5.5@aar') {
       transitive = true;
    }
-   compile 'com.newrelic.agent.android:android-agent:5.6.0'
+   compile 'com.newrelic.agent.android:android-agent:5.8.4'
    compile 'com.apptentive:apptentive-android:2.0.1@aar'
    compile 'com.github.techery:job-executor:0.1.1'
    compile 'com.amazonaws:aws-android-sdk-core:2.2.6'
@@ -503,7 +507,7 @@ dependencies {
    devCompile "com.squareup.leakcanary:leakcanary-android:${leakCanaryVersion}"
    devpremarshmallowCompile "com.squareup.leakcanary:leakcanary-android:${leakCanaryVersion}"
    externalCompile "com.squareup.leakcanary:leakcanary-android-no-op:${leakCanaryVersion}"
-   compile ("com.github.pwittchen:reactivenetwork:0.5.2") {
+   compile("com.github.pwittchen:reactivenetwork:0.5.2") {
       // we should update RxJava to 1.1.9, for now exclude conflicting version
       exclude group: 'io.reactivex', module: 'rxjava'
    }

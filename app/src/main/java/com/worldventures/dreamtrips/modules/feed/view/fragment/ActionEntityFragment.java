@@ -11,7 +11,6 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.crashlytics.android.Crashlytics;
 import com.techery.spares.adapter.BaseDelegateAdapter;
 import com.techery.spares.module.Injector;
 import com.techery.spares.module.qualifier.ForActivity;
@@ -270,7 +269,7 @@ public abstract class ActionEntityFragment<PM extends ActionEntityPresenter, P e
    protected void openTagEditScreen(PhotoCreationItem item, PhotoTag activeSuggestion) {
       SoftInputUtil.hideSoftInputMethod(getView());
 
-      PhotoEntity photoEntity = new PhotoEntity(item.getOriginUrl(), item.getFilePath());
+      PhotoEntity photoEntity = new PhotoEntity(item.getOriginUrl(), item.getFileUri());
       EditPhotoTagsBundle bundle = new EditPhotoTagsBundle();
       bundle.setPhoto(photoEntity);
       bundle.setActiveSuggestion(activeSuggestion);

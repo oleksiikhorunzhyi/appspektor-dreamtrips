@@ -24,6 +24,7 @@ import com.worldventures.dreamtrips.modules.common.model.MediaAttachment;
 import com.worldventures.dreamtrips.modules.common.model.UploadTask;
 import com.worldventures.dreamtrips.modules.common.view.custom.EmptyRecyclerView;
 import com.worldventures.dreamtrips.modules.common.view.custom.RecyclerItemClickListener;
+import com.worldventures.dreamtrips.modules.feed.bundle.CreateEntityBundle;
 import com.worldventures.dreamtrips.modules.tripsimages.bundle.FullScreenImagesBundle;
 import com.worldventures.dreamtrips.modules.tripsimages.bundle.TripsImagesBundle;
 import com.worldventures.dreamtrips.modules.tripsimages.model.IFullScreenObject;
@@ -43,7 +44,8 @@ import butterknife.InjectView;
 import static com.worldventures.dreamtrips.modules.tripsimages.bundle.FullScreenImagesBundle.NO_NOTIFICATION;
 
 @Layout(R.layout.fragment_trip_list_images)
-public class TripImagesListFragment<T extends TripImagesListPresenter> extends RxBaseFragmentWithArgs<T, TripsImagesBundle> implements TripImagesListPresenter.View, SwipeRefreshLayout.OnRefreshListener, MembersImagesPresenter.View {
+public class TripImagesListFragment<T extends TripImagesListPresenter> extends RxBaseFragmentWithArgs<T, TripsImagesBundle>
+      implements TripImagesListPresenter.View, SwipeRefreshLayout.OnRefreshListener, MembersImagesPresenter.View {
 
    @InjectView(R.id.lv_items) protected EmptyRecyclerView recyclerView;
 
@@ -211,7 +213,7 @@ public class TripImagesListFragment<T extends TripImagesListPresenter> extends R
    }
 
    @Override
-   public void openCreatePhoto(MediaAttachment mediaAttachment) {
+   public void openCreatePhoto(MediaAttachment mediaAttachment, CreateEntityBundle.Origin photoOrigin) {
       //TODO temp solution will be removed after refactoring
    }
 }

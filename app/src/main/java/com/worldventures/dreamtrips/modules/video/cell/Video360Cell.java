@@ -56,9 +56,9 @@ public class Video360Cell extends AbstractDelegateCell<Video, VideoCellDelegate>
    public void onItemClick() {
       Video video = getModelObject();
       CachedEntity cacheEntity = getModelObject().getCacheEntity();
-      String url = getModelObject().getMp4Url();
+      String url = getModelObject().getVideoUrl();
       if (cacheEntity.isCached(context)) {
-         url = CachedEntity.getFilePath(context, getModelObject().getMp4Url());
+         url = CachedEntity.getFilePath(context, getModelObject().getVideoUrl());
       }
       activityRouter.open360Activity(url, video.getVideoName());
       //

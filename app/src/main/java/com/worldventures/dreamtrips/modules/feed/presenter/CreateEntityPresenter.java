@@ -1,116 +1,98 @@
 package com.worldventures.dreamtrips.modules.feed.presenter;
 
-import android.net.Uri;
-import android.support.annotation.NonNull;
-import android.support.v4.util.Pair;
-
 import com.innahema.collections.query.queriables.Queryable;
-import com.worldventures.dreamtrips.core.api.SocialUploaderyManager;
 import com.worldventures.dreamtrips.core.api.uploadery.SimpleUploaderyCommand;
-import com.worldventures.dreamtrips.core.api.uploadery.UploaderyImageCommand;
+import com.worldventures.dreamtrips.core.api.uploadery.UploaderyInteractor;
 import com.worldventures.dreamtrips.core.rx.composer.IoToMainComposer;
-import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.common.api.CopyFileCommand;
 import com.worldventures.dreamtrips.modules.common.model.Coordinates;
 import com.worldventures.dreamtrips.modules.common.model.MediaAttachment;
 import com.worldventures.dreamtrips.modules.common.model.PhotoGalleryModel;
-import com.worldventures.dreamtrips.modules.common.model.UploadTask;
-import com.worldventures.dreamtrips.modules.common.view.util.MediaPickerManager;
-import com.worldventures.dreamtrips.modules.common.view.util.Size;
+import com.worldventures.dreamtrips.modules.common.view.util.MediaPickerEventDelegate;
 import com.worldventures.dreamtrips.modules.feed.api.CreatePostCommand;
 import com.worldventures.dreamtrips.modules.feed.api.UploadPhotosCommand;
+import com.worldventures.dreamtrips.modules.feed.bundle.CreateEntityBundle;
 import com.worldventures.dreamtrips.modules.feed.event.FeedItemAddedEvent;
 import com.worldventures.dreamtrips.modules.feed.model.CreatePhotoEntity;
 import com.worldventures.dreamtrips.modules.feed.model.CreatePhotoPostEntity;
 import com.worldventures.dreamtrips.modules.feed.model.FeedEntity;
 import com.worldventures.dreamtrips.modules.feed.model.FeedItem;
 import com.worldventures.dreamtrips.modules.feed.model.PhotoCreationItem;
+import com.worldventures.dreamtrips.modules.feed.model.TextualPost;
+import com.worldventures.dreamtrips.modules.feed.service.analytics.SharePhotoPostAction;
+import com.worldventures.dreamtrips.modules.feed.service.analytics.SharePostAction;
 import com.worldventures.dreamtrips.modules.tripsimages.model.Photo;
-import com.worldventures.dreamtrips.modules.tripsimages.vision.ImageUtils;
+import com.worldventures.dreamtrips.modules.tripsimages.service.TripImagesInteractor;
+import com.worldventures.dreamtrips.modules.tripsimages.service.command.CreatePhotoCreationItemCommand;
+import com.worldventures.dreamtrips.modules.tripsimages.service.command.FetchLocationFromExifCommand;
 import com.worldventures.dreamtrips.util.ValidationUtils;
 
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
 import javax.inject.Inject;
 
 import io.techery.janet.ActionState;
+import io.techery.janet.Command;
 import rx.Observable;
-import rx.Subscription;
-import rx.android.schedulers.AndroidSchedulers;
-import rx.schedulers.Schedulers;
 import timber.log.Timber;
 
-public abstract class CreateEntityPresenter<V extends CreateEntityPresenter.View> extends ActionEntityPresenter<V> {
+public class CreateEntityPresenter<V extends CreateEntityPresenter.View> extends ActionEntityPresenter<V> {
 
-   public static final int MAX_PHOTOS_COUNT = 15;
+   private static final int MAX_PHOTOS_COUNT = 15;
 
-   @Inject MediaPickerManager mediaPickerManager;
+   private CreateEntityBundle.Origin origin;
 
-   @Inject protected SocialUploaderyManager photoUploadManager;
+   @Inject MediaPickerEventDelegate mediaPickerEventDelegate;
+   @Inject UploaderyInteractor uploaderyInteractor;
+   @Inject TripImagesInteractor tripImagesInteractor;
 
-   private Subscription mediaSubscription;
-   private Subscription uploaderySubscription;
-   private List<Subscription> mediaAttachmentSubscriptions = new ArrayList<>();
+   public CreateEntityPresenter(CreateEntityBundle.Origin origin) {
+      this.origin = origin;
+   }
 
    @Override
    public void takeView(V view) {
       super.takeView(view);
-      //
-      mediaSubscription = mediaPickerManager.toObservable()
-            .filter(attachment -> attachment.requestId == getMediaRequestId())
-            .subscribe(this::attachImages, error -> {
-               Timber.e(error, "");
-            });
-      //
-      Observable<ActionState<UploaderyImageCommand>> observable = photoUploadManager.getTaskChangingObservable()
-            .compose(new IoToMainComposer<>());
-      //
-      uploaderySubscription = observable.subscribe(state -> {
-         PhotoCreationItem item = getPhotoCreationItemById(state.action.getCommandId());
-         if (item != null) {
-            item.setStatus(state.status);
-            if (state.status == ActionState.Status.SUCCESS) {
-               item.setOriginUrl(((SimpleUploaderyCommand) state.action).getResult()
-                     .getPhotoUploadResponse()
-                     .getLocation());
-               invalidateDynamicViews();
-               updatePickerState();
-            } else if (state.status == ActionState.Status.FAIL) {
-               invalidateDynamicViews();
-               updatePickerState();
-            }
-            view.updateItem(item);
-         }
-      }, error -> {
-         Timber.e(error, "");
-      });
+      uploaderyInteractor.uploadImageActionPipe().observe()
+            .compose(bindViewToMainComposer())
+            .subscribe(state -> {
+               PhotoCreationItem item = getPhotoCreationItemById(state.action.getFileUri());
+               if (item != null) {
+                  item.setStatus(state.status);
+                  if (state.status == ActionState.Status.SUCCESS) {
+                     item.setOriginUrl(((SimpleUploaderyCommand) state.action).getResult()
+                           .getPhotoUploadResponse()
+                           .getLocation());
+                     invalidateDynamicViews();
+                     updatePickerState();
+                  } else if (state.status == ActionState.Status.FAIL) {
+                     invalidateDynamicViews();
+                     updatePickerState();
+                  }
+                  view.updateItem(item);
+               }
+            }, error -> Timber.e(error, ""));
    }
-
-   protected PhotoCreationItem getPhotoCreationItemById(int id) {
-      return Queryable.from(cachedCreationItems).firstOrDefault(cachedTask -> cachedTask.getId() == id);
-   }
-
-   public abstract int getMediaRequestId();
 
    @Override
-   public void dropView() {
-      super.dropView();
-      //
-      if (mediaSubscription != null && !mediaSubscription.isUnsubscribed()) mediaSubscription.unsubscribe();
-      if (uploaderySubscription != null && !uploaderySubscription.isUnsubscribed()) uploaderySubscription.unsubscribe();
-      Queryable.from(mediaAttachmentSubscriptions).forEachR(subscription -> {
-         if (subscription != null && !subscription.isUnsubscribed()) subscription.unsubscribe();
-      });
+   public void onResume() {
+      super.onResume();
+      mediaPickerEventDelegate.getObservable()
+            .compose(new IoToMainComposer<>())
+            .compose(bindUntilPause())
+            .subscribe(this::attachImages, error -> Timber.e(error, ""));
+   }
+
+   private PhotoCreationItem getPhotoCreationItemById(String fileUri) {
+      return Queryable.from(cachedCreationItems).firstOrDefault(cachedTask -> cachedTask.getFileUri()
+            .equals(fileUri));
    }
 
    @Override
    protected void updateUi() {
       super.updateUi();
-      //
       if (!isCachedUploadTaskEmpty()) view.attachPhotos(cachedCreationItems);
-      //
       invalidateDynamicViews();
    }
 
@@ -126,15 +108,16 @@ public abstract class CreateEntityPresenter<V extends CreateEntityPresenter.View
       } else {
          CreatePhotoEntity createPhotoEntity = new CreatePhotoEntity();
          Queryable.from(cachedCreationItems)
-               .forEachR(item -> createPhotoEntity.addPhoto(new CreatePhotoEntity.PhotoEntity.Builder().originUrl(item.getOriginUrl())
-                     .title(item.getTitle())
-                     .width(item.getWidth())
-                     .height(item.getHeight())
-                     .date(Calendar.getInstance().getTime())
-                     .coordinates(location != null ? new Coordinates(location.getLat(), location.getLng()) : null)
-                     .locationName(location != null ? location.getName() : null)
-                     .photoTags(item.getCachedAddedPhotoTags())
-                     .build()));
+               .forEachR(item -> createPhotoEntity
+                     .addPhoto(new CreatePhotoEntity.PhotoEntity.Builder().originUrl(item.getOriginUrl())
+                           .title(item.getTitle())
+                           .width(item.getWidth())
+                           .height(item.getHeight())
+                           .date(Calendar.getInstance().getTime())
+                           .coordinates(location != null ? new Coordinates(location.getLat(), location.getLng()) : null)
+                           .locationName(location != null ? location.getName() : null)
+                           .photoTags(item.getCachedAddedPhotoTags())
+                           .build()));
          if (!createPhotoEntity.isEmpty()) {
             doRequest(new UploadPhotosCommand(createPhotoEntity), this::createPost);
          }
@@ -151,12 +134,26 @@ public abstract class CreateEntityPresenter<V extends CreateEntityPresenter.View
    }
 
    @Override
-   protected void processPostSuccess(FeedEntity feedEntity) {
-      if (cachedCreationItems.size() > 0) TrackingHelper.actionPhotosUploaded(cachedCreationItems.size());
-      //
-      super.processPostSuccess(feedEntity);
-      //
-      eventBus.post(new FeedItemAddedEvent(FeedItem.create(feedEntity, getAccount())));
+   protected void processPostSuccess(FeedEntity textualPost) {
+      super.processPostSuccess(textualPost);
+      if (cachedCreationItems.size() > 0) {
+         Observable.from(cachedCreationItems)
+               .concatMap(item -> tripImagesInteractor.fetchLocationFromExifPipe()
+                     .createObservableResult(new FetchLocationFromExifCommand(item.getFilePath()))
+                     .map(command -> {
+                        item.setLocationFromExif(command.getResult());
+                        return item;
+                     }))
+               .toList()
+               .subscribe(creationItemsWithExif -> {
+                  analyticsInteractor.analyticsActionPipe()
+                        .send(SharePhotoPostAction.createPostAction((TextualPost) textualPost, creationItemsWithExif, origin));
+               });
+      } else {
+         analyticsInteractor.analyticsActionPipe().send(SharePostAction.createPostAction((TextualPost) textualPost));
+      }
+
+      eventBus.post(new FeedItemAddedEvent(FeedItem.create(textualPost, getAccount())));
    }
 
    public int getRemainingPhotosCount() {
@@ -173,63 +170,44 @@ public abstract class CreateEntityPresenter<V extends CreateEntityPresenter.View
    }
 
    public void attachImages(MediaAttachment mediaAttachment) {
-      if (view == null || mediaAttachment.chosenImages == null || mediaAttachment.chosenImages.size() == 0) {
-         return;
-      }
-      //
+      if (view == null || mediaAttachment.chosenImages == null || mediaAttachment.chosenImages.isEmpty()) return;
+     
       view.disableImagePicker();
-      //
       imageSelected(mediaAttachment);
    }
 
    private void imageSelected(MediaAttachment mediaAttachment) {
-      if (view != null) {
-         mediaAttachmentSubscriptions.add(Observable.from(mediaAttachment.chosenImages)
-               .concatMap(this::convertPhotoCreationItem)
-               .subscribeOn(Schedulers.io())
-               .observeOn(AndroidSchedulers.mainThread())
-               .subscribe(newImage -> {
-                  cachedCreationItems.add(newImage);
-                  if (view != null) {
-                     view.attachPhoto(newImage);
-                     if (ValidationUtils.isUrl(newImage.getFilePath())) {
-                        doRequest(new CopyFileCommand(context, newImage.getFilePath()), s -> {
-                           newImage.setFilePath(s);
-                           startUpload(newImage);
-                        });
-                     } else {
+      Observable.from(mediaAttachment.chosenImages)
+            .concatMap(photoGalleryModel -> convertPhotoCreationItem(photoGalleryModel, mediaAttachment.source))
+            .compose(bindViewToMainComposer())
+            .subscribe(newImage -> {
+               cachedCreationItems.add(newImage);
+               if (view != null) {
+                  view.attachPhoto(newImage);
+                  if (ValidationUtils.isUrl(newImage.getFileUri())) {
+                     doRequest(new CopyFileCommand(context, newImage.getFileUri()), s -> {
+                        newImage.setFileUri(s);
                         startUpload(newImage);
-                     }
+                     });
+                  } else {
+                     startUpload(newImage);
                   }
-               }, throwable -> {
-                  Timber.e(throwable, "");
-               }));
-      }
+               }
+            }, throwable -> Timber.e(throwable, ""));
    }
 
-   @NonNull
-   private Observable<PhotoCreationItem> convertPhotoCreationItem(PhotoGalleryModel photoGalleryModel) {
-      return ImageUtils.getBitmap(context, Uri.parse(photoGalleryModel.getThumbnailPath()), 300, 300)
-            .compose(bitmapObservable -> Observable.zip(ImageUtils.getRecognizedFaces(context, bitmapObservable), bitmapObservable, (photoTags, bitmap) -> new Pair<>(bitmap, photoTags)))
-            .map(pair -> {
-               PhotoCreationItem item = new PhotoCreationItem();
-               item.setFilePath(photoGalleryModel.getThumbnailPath());
-               item.setStatus(ActionState.Status.START);
-               Size imageSize = photoGalleryModel.getSize();
-               item.setWidth(imageSize != null ? imageSize.getWidth() : pair.first.getWidth());
-               item.setHeight(imageSize != null ? imageSize.getHeight() : pair.first.getHeight());
-               item.setSuggestions(pair.second);
-               item.setCanDelete(true);
-               item.setCanEdit(true);
-               return item;
-            });
+   private Observable<PhotoCreationItem> convertPhotoCreationItem(PhotoGalleryModel photoGalleryModel,
+         MediaAttachment.Source source) {
+      return tripImagesInteractor.createPhotoCreationItemPipe()
+            .createObservableResult(new CreatePhotoCreationItemCommand(photoGalleryModel, source))
+            .map(Command::getResult);
    }
 
-   protected boolean isCachedUploadTaskEmpty() {
+   private boolean isCachedUploadTaskEmpty() {
       return cachedCreationItems.size() == 0;
    }
 
-   protected boolean isEntitiesReadyToPost() {
+   private boolean isEntitiesReadyToPost() {
       return Queryable.from(cachedCreationItems)
             .firstOrDefault(item -> item.getStatus() != ActionState.Status.SUCCESS) == null;
    }
@@ -247,14 +225,9 @@ public abstract class CreateEntityPresenter<V extends CreateEntityPresenter.View
       return Queryable.from(cachedCreationItems).count(item -> item.getStatus() == ActionState.Status.PROGRESS) == 0;
    }
 
-   ////////////////////////////////////////
-   /////// Photo upload
-   ////////////////////////////////////////
-
    public void startUpload(PhotoCreationItem item) {
-      UploadTask uploadTask = item.toUploadTask();
-      photoUploadManager.upload(uploadTask.getFilePath());
-      item.setId(uploadTask.getFilePath().hashCode());
+      item.setId(item.getFileUri().hashCode());
+      uploaderyInteractor.uploadImageActionPipe().send(new SimpleUploaderyCommand(item.getFileUri()));
    }
 
    public interface View extends ActionEntityPresenter.View {

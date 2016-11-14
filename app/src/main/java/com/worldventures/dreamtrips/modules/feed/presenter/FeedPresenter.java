@@ -6,7 +6,10 @@ import android.support.annotation.StringRes;
 import android.util.Pair;
 
 import com.innahema.collections.query.queriables.Queryable;
-import com.messenger.delegate.FlagsInteractor;
+import com.worldventures.dreamtrips.core.utils.tracksystem.AnalyticsInteractor;
+import com.worldventures.dreamtrips.modules.common.view.util.MediaPickerEventDelegate;
+import com.worldventures.dreamtrips.modules.feed.service.analytics.ViewFeedAction;
+import com.worldventures.dreamtrips.modules.flags.service.FlagsInteractor;
 import com.messenger.ui.activity.MessengerActivity;
 import com.messenger.util.UnreadConversationObservable;
 import com.techery.spares.module.Injector;
@@ -27,12 +30,11 @@ import com.worldventures.dreamtrips.modules.common.model.FlagData;
 import com.worldventures.dreamtrips.modules.common.model.MediaAttachment;
 import com.worldventures.dreamtrips.modules.common.model.PhotoGalleryModel;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
-import com.worldventures.dreamtrips.modules.common.presenter.delegate.UidItemDelegate;
+import com.worldventures.dreamtrips.modules.common.presenter.delegate.FlagDelegate;
 import com.worldventures.dreamtrips.modules.common.view.ApiErrorView;
 import com.worldventures.dreamtrips.modules.common.view.BlockingProgressView;
 import com.worldventures.dreamtrips.modules.common.view.bundle.BucketBundle;
 import com.worldventures.dreamtrips.modules.common.view.util.DrawableUtil;
-import com.worldventures.dreamtrips.modules.common.view.util.MediaPickerManager;
 import com.worldventures.dreamtrips.modules.common.view.util.Size;
 import com.worldventures.dreamtrips.modules.feed.api.DeletePostCommand;
 import com.worldventures.dreamtrips.modules.feed.event.DeleteBucketEvent;
@@ -83,7 +85,7 @@ public class FeedPresenter extends Presenter<FeedPresenter.View> {
 
    @Inject FeedEntityManager entityManager;
    @Inject SnappyRepository db;
-   @Inject MediaPickerManager mediaPickerManager;
+   @Inject MediaPickerEventDelegate mediaPickerEventDelegate;
    @Inject TextualPostTranslationDelegate textualPostTranslationDelegate;
    @Inject DrawableUtil drawableUtil;
    @Inject UnreadConversationObservable unreadConversationObservable;
@@ -93,12 +95,13 @@ public class FeedPresenter extends Presenter<FeedPresenter.View> {
 
    @Inject BucketInteractor bucketInteractor;
    @Inject FeedInteractor feedInteractor;
+   @Inject AnalyticsInteractor analyticsInteractor;
    @Inject SuggestedPhotoInteractor suggestedPhotoInteractor;
    @Inject CirclesInteractor circlesInteractor;
    @Inject FlagsInteractor flagsInteractor;
 
    private Circle filterCircle;
-   private UidItemDelegate uidItemDelegate;
+   private FlagDelegate flagDelegate;
    private SuggestedPhotoCellPresenterHelper suggestedPhotoHelper;
 
    @State ArrayList<FeedItem> feedItems;
@@ -108,7 +111,13 @@ public class FeedPresenter extends Presenter<FeedPresenter.View> {
    public void onInjected() {
       super.onInjected();
       entityManager.setRequestingPresenter(this);
-      uidItemDelegate = new UidItemDelegate(this, flagsInteractor);
+      flagDelegate = new FlagDelegate(flagsInteractor);
+   }
+
+   @Override
+   public void onResume() {
+      super.onResume();
+      analyticsInteractor.analyticsActionPipe().send(new ViewFeedAction());
    }
 
    @Override
@@ -374,12 +383,12 @@ public class FeedPresenter extends Presenter<FeedPresenter.View> {
    }
 
    public void onEvent(LoadFlagEvent event) {
-      if (view.isVisibleOnScreen()) uidItemDelegate.loadFlags(event.getFlaggableView(), this::handleError);
+      if (view.isVisibleOnScreen()) flagDelegate.loadFlags(event.getFlaggableView(), this::handleError);
    }
 
    public void onEvent(ItemFlaggedEvent event) {
-      if (view.isVisibleOnScreen()) uidItemDelegate.flagItem(new FlagData(event.getEntity()
-            .getUid(), event.getFlagReasonId(), event.getNameOfReason()), view);
+      if (view.isVisibleOnScreen()) flagDelegate.flagItem(new FlagData(event.getEntity()
+            .getUid(), event.getFlagReasonId(), event.getNameOfReason()), view, this::handleError);
    }
 
    private void itemLiked(FeedEntity feedEntity) {
@@ -444,16 +453,16 @@ public class FeedPresenter extends Presenter<FeedPresenter.View> {
    public void attachSelectedSuggestionPhotos() {
       Observable.from(getSelectedSuggestionPhotos())
             .map(element -> {
-               Pair<String, Size> pair = ImageUtils.generateUri(drawableUtil, element.getOriginalPath());
+               Pair<String, Size> pair = ImageUtils.generateUri(drawableUtil, element.getAbsolutePath());
                return new PhotoGalleryModel(pair.first, pair.second);
             })
             .map(photoGalleryModel -> {
                ArrayList<PhotoGalleryModel> chosenImages = new ArrayList<>();
                chosenImages.add(photoGalleryModel);
-               return new MediaAttachment(chosenImages, 0, CreateFeedPostPresenter.REQUEST_ID);
+               return new MediaAttachment(chosenImages, MediaAttachment.Source.GALLERY);
             })
             .compose(new IoToMainComposer<>())
-            .subscribe(mediaAttachment -> mediaPickerManager.attach(mediaAttachment), error -> Timber.e(error, ""));
+            .subscribe(mediaAttachment -> mediaPickerEventDelegate.post(mediaAttachment), error -> Timber.e(error, ""));
    }
 
    public List<PhotoGalleryModel> getSelectedSuggestionPhotos() {
@@ -481,7 +490,7 @@ public class FeedPresenter extends Presenter<FeedPresenter.View> {
       }, throwable -> Timber.w("Can't get friends notifications count"));
    }
 
-   public interface View extends RxView, UidItemDelegate.View, TextualPostTranslationDelegate.View, ApiErrorView, BlockingProgressView {
+   public interface View extends RxView, FlagDelegate.View, TextualPostTranslationDelegate.View, ApiErrorView, BlockingProgressView {
 
       void setRequestsCount(int count);
 

@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <resources>
+   <string name="dtl_local">Local</string>
    <string name="dtl_locations_title">Selectați locația</string>
    <string name="dtl_locations_try_search">Nu am putut localiza un oraș în apropierea dvs.\nÎncercați căutarea orașului</string>
    <string name="dtl_merchant_tab_offers">Oferte</string>

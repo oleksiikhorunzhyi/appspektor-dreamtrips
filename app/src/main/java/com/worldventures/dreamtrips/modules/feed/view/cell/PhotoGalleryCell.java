@@ -28,7 +28,7 @@ public class PhotoGalleryCell extends AbstractDelegateCell<PhotoGalleryModel, Ce
 
    @Override
    protected void syncUIStateWithModel() {
-      setImage(Uri.parse(getModelObject().getThumbnailPath()), photo);
+      setImage(Uri.parse(getModelObject().getImageUri()), photo);
 
       itemView.setOnClickListener(v -> {
          getModelObject().setChecked(!getModelObject().isChecked());

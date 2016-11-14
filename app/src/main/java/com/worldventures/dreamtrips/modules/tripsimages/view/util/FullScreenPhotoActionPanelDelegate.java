@@ -3,6 +3,7 @@ package com.worldventures.dreamtrips.modules.tripsimages.view.util;
 import android.app.Activity;
 import android.content.Context;
 import android.net.Uri;
+import android.support.annotation.StringRes;
 import android.text.Spanned;
 import android.text.TextUtils;
 import android.view.View;
@@ -116,10 +117,10 @@ public class FullScreenPhotoActionPanelDelegate {
       }
    }
 
-
    public void setCommentCount(int count) {
       if (count > 0) {
-         tvCommentsCount.setText(context.getString(R.string.comments, count));
+         @StringRes int commentFormat = count == 1 ? R.string.comment_single : R.string.comments;
+         tvCommentsCount.setText(context.getString(commentFormat, count));
          tvCommentsCount.setVisibility(View.VISIBLE);
       } else {
          tvCommentsCount.setVisibility(View.GONE);
@@ -128,7 +129,8 @@ public class FullScreenPhotoActionPanelDelegate {
 
    public void setLikeCount(int count) {
       if (count > 0) {
-         tvLikesCount.setText(context.getString(R.string.likes, count));
+         @StringRes int likesFormat = count == 1 ? R.string.like : R.string.likes;
+         tvLikesCount.setText(context.getString(likesFormat, count));
          tvLikesCount.setVisibility(View.VISIBLE);
       } else {
          tvLikesCount.setVisibility(View.GONE);

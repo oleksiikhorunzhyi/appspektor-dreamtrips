@@ -5,6 +5,7 @@ import android.graphics.Rect;
 import android.graphics.RectF;
 import android.os.Parcelable;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.util.AttributeSet;
 import android.view.View;
 import android.widget.RelativeLayout;
@@ -36,6 +37,7 @@ import static com.worldventures.dreamtrips.modules.common.view.util.CoordinatesT
 public class PhotoTagHolder extends RelativeLayout {
 
    private static final int MAX_WIDTH = 1;
+   private static int index;
 
    @State boolean isShown;
    @State RectF imageBounds = new RectF();
@@ -83,19 +85,23 @@ public class PhotoTagHolder extends RelativeLayout {
       isShown = false;
    }
 
-   protected ExistsTagView addExistsTagView(PhotoTag photoTag, boolean deleteEnabled) {
+   void addExistsTagView(PhotoTag photoTag, boolean deleteEnabled) {
+      if (isExistingTagViewExists(photoTag)) {
+         return;
+      }
       ExistsTagView view = new ExistsTagView(getContext());
       view.setDeleteEnabled(deleteEnabled);
       view.setTagListener(tag -> manager.notifyTagDeleted(tag));
       addTagView(view, photoTag);
-      return view;
    }
 
-   protected void addSuggestionTagView(PhotoTag photoTag, TagSuggestionActionListener tagSuggestionActionListener) {
+   void addSuggestionTagView(PhotoTag photoTag, TagSuggestionActionListener tagSuggestionActionListener) {
+      if (isSuggestionViewExists(photoTag)) {
+         return;
+      }
       SuggestionTagView view = new SuggestionTagView(getContext());
       view.setTagListener(tagSuggestionActionListener);
       addTagView(view, photoTag, 0);
-      //
       if (!isSuggestionHelpExists()) addSuggestionHelp(photoTag);
    }
 
@@ -113,6 +119,7 @@ public class PhotoTagHolder extends RelativeLayout {
 
    private CreationTagView addCreationTag(float x, float y) {
       removeUncompletedViews();
+      removeSuggestionHelp();
       CreationTagView view = new CreationTagView(getContext());
       view.setTagListener(new TagCreationActionsListener() {
          @Override
@@ -169,11 +176,6 @@ public class PhotoTagHolder extends RelativeLayout {
       addView(view, viewPos, layoutParams);
    }
 
-   protected void addSuggestionHelp(PhotoTag photoTag) {
-      SuggestionHelpView helpView = new SuggestionHelpView(getContext());
-      addTagView(helpView, photoTag, 0);
-   }
-
    @NonNull
    private LayoutParams calculatePosition(TagView view) {
       LayoutParams layoutParams = new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
@@ -201,22 +203,50 @@ public class PhotoTagHolder extends RelativeLayout {
       return layoutParams;
    }
 
+   private void addSuggestionHelp(PhotoTag photoTag) {
+      SuggestionHelpView helpView = new SuggestionHelpView(getContext());
+      addTagView(helpView, photoTag, 0);
+   }
+
+   private void removeSuggestionHelp() {
+      removeView(findTagView(null, SuggestionHelpView.class));
+   }
+
    private boolean isSuggestionHelpExists() {
-      for (int i = 0; i < getChildCount(); i++) {
-         if (getChildAt(i) instanceof SuggestionHelpView) {
-            return true;
-         }
-      }
-      return false;
+      return findTagView(null, SuggestionHelpView.class) != null;
    }
 
    private boolean isSuggestionViewExists() {
+      return findSuggestionTagView() != null;
+   }
+
+   private boolean isSuggestionViewExists(PhotoTag photoTag) {
+      return findSuggestionTagView(photoTag) != null;
+   }
+
+   private boolean isExistingTagViewExists(PhotoTag photoTag) {
+      return findTagView(photoTag, ExistsTagView.class) != null;
+   }
+
+   private SuggestionTagView findSuggestionTagView() {
+      return findSuggestionTagView(null);
+   }
+
+   private SuggestionTagView findSuggestionTagView(@Nullable PhotoTag photoTag) {
+      return findTagView(photoTag, SuggestionTagView.class);
+   }
+
+   private <T extends TagView> T findTagView(@Nullable PhotoTag photoTag, Class<T> clazz) {
       for (int i = 0; i < getChildCount(); i++) {
-         if (getChildAt(i) instanceof SuggestionTagView) {
-            return true;
+         View view = getChildAt(i);
+         if (view.getClass().equals(clazz)) {
+            T tagView = (T) view;
+            if (photoTag == null || tagView.getPhotoTag().equals(photoTag)) {
+               return tagView;
+            }
          }
       }
-      return false;
+      return null;
    }
 
    protected void removeUncompletedViews() {
@@ -288,6 +318,4 @@ public class PhotoTagHolder extends RelativeLayout {
          return findNextSuggestion(tagPosition);
       }
    }
-
-   private static int index = 0;
 }

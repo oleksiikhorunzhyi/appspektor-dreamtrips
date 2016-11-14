@@ -201,6 +201,7 @@ public class FragmentWithFeedDelegate {
       router.moveTo(Route.POST_CREATE, NavigationConfigBuilder.forFragment()
             .backStackEnabled(false)
             .fragmentManager(fragmentManager)
+            .data(new CreateEntityBundle(false, CreateEntityBundle.Origin.FEED))
             .containerId(R.id.container_details_floating)
             .build());
    }

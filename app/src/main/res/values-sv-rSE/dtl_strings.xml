@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <resources>
+   <string name="dtl_local">Lokal</string>
    <string name="dtl_locations_title">Välj plats</string>
    <string name="dtl_locations_try_search">Vi kunde inte hitta en stad nära dig.\nTesta vår stadssökningsfunktion</string>
    <string name="dtl_merchant_tab_offers">Erbjudanden</string>

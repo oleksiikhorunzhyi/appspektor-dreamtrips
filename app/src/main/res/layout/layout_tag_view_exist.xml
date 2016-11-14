@@ -34,43 +34,54 @@
          android:background="@drawable/photo_tag_main_part"
          android:gravity="center"
          android:orientation="horizontal"
-         android:padding="@dimen/spacing_small"
          >
 
-      <TextView
-            android:id="@+id/tagged_user_name"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_gravity="left"
-            android:layout_weight="1"
-            android:singleLine="false"
-            android:textColor="@android:color/white"
-            android:textIsSelectable="false"
-            android:textSize="@dimen/font_medium"
-            tools:text="Techery Test"
-            android:focusableInTouchMode="true"
-            android:gravity="center"
-            />
+         <TextView
+               android:id="@+id/tagged_user_name"
+               android:layout_width="0dp"
+               android:layout_height="wrap_content"
+               android:layout_gravity="left|center_vertical"
+               android:layout_weight="1"
+               android:singleLine="false"
+               android:textColor="@android:color/white"
+               android:textIsSelectable="false"
+               android:textSize="@dimen/font_medium"
+               tools:text="Techery Test"
+               android:focusableInTouchMode="true"
+               android:gravity="center"
+               android:layout_margin="@dimen/spacing_small"
+               />
 
-      <View
-            android:id="@+id/tagged_user_delete_tag_divider"
-            android:layout_width="1dp"
-            android:layout_height="match_parent"
-            android:layout_marginLeft="@dimen/spacing_small"
-            android:layout_marginRight="@dimen/spacing_small"
-            android:background="@color/tag_view_background_border"
-            android:visibility="gone"
-            />
+         <View
+               android:id="@+id/tagged_user_delete_tag_divider"
+               android:layout_width="1dp"
+               android:layout_height="match_parent"
+               android:background="@color/tag_view_background_border"
+               android:visibility="gone"
+               android:layout_marginTop="@dimen/spacing_small"
+               android:layout_marginBottom="@dimen/spacing_small"
+               android:layout_marginRight="@dimen/spacing_small"
+               />
 
-      <ImageView
-            android:id="@+id/tagged_user_delete_tag"
-            android:layout_width="16dp"
-            android:layout_height="16dp"
-            android:src="@drawable/ic_close_tag"
-            android:padding="@dimen/spacing_tiniest"
-            android:scaleType="fitCenter"
-            android:visibility="gone"
-            />
+         <FrameLayout
+               android:id="@+id/tagged_user_delete_tag"
+               android:layout_width="wrap_content"
+               android:layout_height="wrap_content"
+               android:paddingTop="@dimen/spacing_small"
+               android:paddingBottom="@dimen/spacing_small"
+               android:paddingRight="@dimen/spacing_small"
+               android:visibility="gone"
+               >
+
+               <ImageView
+                     android:layout_width="16dp"
+                     android:layout_height="16dp"
+                     android:src="@drawable/ic_close_tag"
+                     android:padding="@dimen/spacing_tiniest"
+                     android:scaleType="fitCenter"
+                     />
+         </FrameLayout>
+
    </LinearLayout>
 
    <ImageView

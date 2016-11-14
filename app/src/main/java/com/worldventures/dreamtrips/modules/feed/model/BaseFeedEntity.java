@@ -1,5 +1,7 @@
 package com.worldventures.dreamtrips.modules.feed.model;
 
+import android.text.TextUtils;
+
 import com.esotericsoftware.kryo.DefaultSerializer;
 import com.esotericsoftware.kryo.serializers.CompatibleFieldSerializer;
 import com.google.gson.annotations.SerializedName;
@@ -132,7 +134,7 @@ public abstract class BaseFeedEntity implements FeedEntity {
 
       BaseFeedEntity that = (BaseFeedEntity) o;
 
-      return uid.equals(that.uid);
+      return uid != null && that.uid != null && uid.equals(that.uid);
    }
 
    @Override

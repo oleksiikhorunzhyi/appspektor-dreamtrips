@@ -19,6 +19,7 @@ import com.worldventures.dreamtrips.wallet.analytics.PhotoWasSetAction;
 import com.worldventures.dreamtrips.wallet.analytics.SetupUserAction;
 import com.worldventures.dreamtrips.wallet.analytics.WalletAnalyticsCommand;
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCard;
+import com.worldventures.dreamtrips.wallet.domain.entity.SmartCardUserPhoto;
 import com.worldventures.dreamtrips.wallet.service.SmartCardAvatarInteractor;
 import com.worldventures.dreamtrips.wallet.service.SmartCardInteractor;
 import com.worldventures.dreamtrips.wallet.service.WizardInteractor;
@@ -56,7 +57,7 @@ public class WizardEditProfilePresenter extends WalletPresenter<WizardEditProfil
    @Inject AnalyticsInteractor analyticsInteractor;
    @Inject SessionHolder<UserSession> appSessionHolder;
 
-   @Nullable private File preparedPhotoFile;
+   @Nullable private SmartCardUserPhoto preparedPhoto;
 
    private final String smartCardId;
 
@@ -119,6 +120,7 @@ public class WizardEditProfilePresenter extends WalletPresenter<WizardEditProfil
             .compose(bindViewIoToMainComposer())
             .compose(new ActionPipeCacheWiper<>(wizardInteractor.setupUserDataPipe()))
             .subscribe(OperationActionStateSubscriberWrapper.<SetupUserDataCommand>forView(getView().provideOperationDelegate())
+                  .onStart(getContext().getString(R.string.wallet_long_operation_hint))
                   .onSuccess(setupUserDataCommand -> onUserSetupSuccess(setupUserDataCommand.getResult()))
                   .onFail(ErrorHandler.<SetupUserDataCommand>builder(getContext())
                         .handle(FormatException.class, R.string.wallet_edit_profile_name_format_detail)
@@ -156,9 +158,9 @@ public class WizardEditProfilePresenter extends WalletPresenter<WizardEditProfil
       wizardInteractor.disassociatePipe().send(new DisassociateCardUserCommand(smartCardId));
    }
 
-   private void photoPrepared(File filePhoto) {
-      preparedPhotoFile = filePhoto;
-      getView().setPreviewPhoto(filePhoto);
+   private void photoPrepared(SmartCardUserPhoto photo) {
+      preparedPhoto = photo;
+      getView().setPreviewPhoto(photo.monochrome());
    }
 
    void goToBack() {
@@ -176,7 +178,7 @@ public class WizardEditProfilePresenter extends WalletPresenter<WizardEditProfil
 
    void setupUserData() {
       wizardInteractor.setupUserDataPipe().send(new SetupUserDataCommand(getView().getUserName()
-            .trim(), preparedPhotoFile, smartCardId));
+            .trim(), preparedPhoto, smartCardId));
    }
 
    private void fetchAndStoreDefaultAddress() {

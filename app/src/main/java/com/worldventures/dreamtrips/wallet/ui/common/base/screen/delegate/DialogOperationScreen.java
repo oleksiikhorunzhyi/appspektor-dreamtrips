@@ -3,6 +3,7 @@ package com.worldventures.dreamtrips.wallet.ui.common.base.screen.delegate;
 import android.app.Dialog;
 import android.content.Context;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.view.View;
 
 import com.afollestad.materialdialogs.MaterialDialog;
@@ -36,11 +37,11 @@ public class DialogOperationScreen implements OperationScreen<Dialog> {
    }
 
    @Override
-   public void showProgress() {
+   public void showProgress(@Nullable String text) {
       hideDialogs();
 
       progressDialog = new MaterialDialog.Builder(context())
-            .content(R.string.loading)
+            .content(text == null? viewRef.get().getContext().getString(R.string.loading) : text)
             .progress(true, 0)
             .cancelable(false)
             .build();

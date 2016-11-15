@@ -42,7 +42,7 @@ public class WalletInstallFirmwareScreen extends WalletLinearLayout<WalletInstal
    @NonNull
    @Override
    public WalletInstallFirmwarePresenter createPresenter() {
-      return new WalletInstallFirmwarePresenter(getContext(), getInjector(), getPath().filePath, getPath().firmwareInfo);
+      return new WalletInstallFirmwarePresenter(getContext(), getInjector(), getPath().firmwareData);
    }
 
    @Override
@@ -57,7 +57,7 @@ public class WalletInstallFirmwareScreen extends WalletLinearLayout<WalletInstal
    public OperationScreen provideOperationDelegate() { return new DialogOperationScreen(this); }
 
    @Override
-   public void showProgress() {
+   public void showProgress(@Nullable String text) {
       installProgress.setVisibility(VISIBLE);
    }
 

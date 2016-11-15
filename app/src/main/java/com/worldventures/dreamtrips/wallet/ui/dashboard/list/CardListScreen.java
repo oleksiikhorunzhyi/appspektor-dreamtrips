@@ -67,11 +67,6 @@ public class CardListScreen extends WalletLinearLayout<CardListPresenter.Screen,
       toolbar.setNavigationOnClickListener(it -> presenter.navigationClick());
 
       setupCardStackList();
-      setupConnectionStatusDisconnectedLabel();
-   }
-
-   private void setupConnectionStatusDisconnectedLabel() {
-      setResIdLabelStatusDisconnected(R.string.wallet_smart_card_locked_disconnected_status);
    }
 
    @Override

@@ -50,7 +50,7 @@ public class ConnectSmartCardPresenter extends WalletPresenter<ConnectSmartCardP
    public void attachView(Screen view) {
       super.attachView(view);
 
-      view.provideOperationDelegate().showProgress();
+      view.provideOperationDelegate().showProgress(null);
       backStackDelegate.setListener(() -> true);
    }
 

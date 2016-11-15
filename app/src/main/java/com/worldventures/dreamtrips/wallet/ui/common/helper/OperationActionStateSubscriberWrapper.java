@@ -17,6 +17,7 @@ public final class OperationActionStateSubscriberWrapper<T> {
    private Func1<Throwable, MessageActionHolder<T>> onFailFactory;
    private Action2<T, Integer> onProgress;
    private Action1<T> onSuccessAction;
+   private @Nullable String progressText = null;
 
    private OperationActionStateSubscriberWrapper(OperationScreen view) {
       this.view = view;
@@ -24,6 +25,11 @@ public final class OperationActionStateSubscriberWrapper<T> {
 
    public static <T> OperationActionStateSubscriberWrapper<T> forView(OperationScreen view) {
       return new OperationActionStateSubscriberWrapper<>(view);
+   }
+
+   public OperationActionStateSubscriberWrapper<T> onStart(String message) {
+      this.progressText = message;
+      return this;
    }
 
    public OperationActionStateSubscriberWrapper<T> onSuccess(@Nullable Action1<T> onSuccess) {
@@ -52,7 +58,7 @@ public final class OperationActionStateSubscriberWrapper<T> {
    }
 
    public ActionStateSubscriber<T> wrap() {
-      return new ActionStateSubscriber<T>().onStart(t -> view.showProgress())
+      return new ActionStateSubscriber<T>().onStart(t -> view.showProgress(progressText))
             .onSuccess(t -> {
                view.hideProgress();
                if (onSuccessAction != null) onSuccessAction.call(t);

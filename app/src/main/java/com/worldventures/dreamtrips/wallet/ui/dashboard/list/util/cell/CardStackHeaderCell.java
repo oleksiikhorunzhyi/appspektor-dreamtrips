@@ -6,7 +6,7 @@ import com.techery.spares.annotations.Layout;
 import com.techery.spares.ui.view.cell.AbstractDelegateCell;
 import com.techery.spares.ui.view.cell.CellDelegate;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.wallet.domain.entity.Firmware;
+import com.worldventures.dreamtrips.wallet.domain.entity.FirmwareUpdateData;
 import com.worldventures.dreamtrips.wallet.ui.dashboard.list.util.CardStackHeaderHolder;
 import com.worldventures.dreamtrips.wallet.ui.widget.SmartCardWidget;
 
@@ -24,8 +24,8 @@ public class CardStackHeaderCell extends AbstractDelegateCell<CardStackHeaderHol
    @Override
    protected void syncUIStateWithModel() {
       if (getModelObject().smartCard() != null) {
-         Firmware firmware = getModelObject().firmware();
-         smartCardWidget.bindCard(getModelObject().smartCard(), firmware != null && firmware.updateAvailable());
+         FirmwareUpdateData firmwareUpdateData = getModelObject().firmware();
+         smartCardWidget.bindCard(getModelObject().smartCard(), firmwareUpdateData != null && firmwareUpdateData.updateAvailable());
       }
       smartCardWidget.bindCount(getModelObject().cardCount());
       smartCardWidget.setOnSettingsClickListener(v -> cellDelegate.onSettingsChosen());

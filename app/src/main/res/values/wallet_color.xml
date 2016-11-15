@@ -27,4 +27,9 @@
    <color name="wallet_alert_phone_number_color">#76b2fe</color>
 
    <color name="pin_normal">#6B767E</color>
+
+   <color name="wallet_support_device_info_color">#8e8e93</color>
+   <color name="wallet_support_device_telephone_number_color">#005e92</color>
+   <color name="wallet_support_device_list_title_color">#005e92</color>
+
 </resources>

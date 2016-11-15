@@ -15,6 +15,7 @@
    <string name="wallet_no_internet_connection">No internet connection</string>
    <string name="wallet_fail_disassociate">Fail of disassociate</string>
    <string name="wallet_smart_card_locked_disconnected_status">Smart card is locked. Swipe the chip twice to unlock</string>
+   <string name="wallet_long_operation_hint">This could take a few minutes…</string>
 
    <!--card alias-->
    <string name="wallet_wizard_card_alias_subtitle">Name your smart card</string>
@@ -263,4 +264,9 @@
    <!--puck connection screen-->
    <string name="wallet_puck_connection_title">Smart Card Update</string>
    <string name="wallet_puck_connection_comment">Make sure your flye smart card is connected to the charger.</string>
+
+   <!--supported device screen-->
+   <string name="wallet_supported_device_chapter">Support for your device is coming soon.</string>
+   <string name="wallet_supported_device_info">We are currently adding devices weekly and will email you when your device is supported.\n\nIf you have any further questions please contact Customer Support (855) 999-3593.</string>
+   <string name="wallet_supported_device_list_title">Supported Devices</string>
 </resources>

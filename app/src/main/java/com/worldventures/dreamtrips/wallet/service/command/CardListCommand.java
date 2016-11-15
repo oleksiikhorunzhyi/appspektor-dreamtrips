@@ -73,7 +73,7 @@ public class CardListCommand extends Command<List<Card>> implements InjectableAc
 
       if (operationFunc != null) {
          listObservable = listObservable
-               .map(list -> new ArrayList<>(cachedItems))
+               .map(list -> new ArrayList<>(list))
                .flatMap(operationFunc);
       }
       listObservable.subscribe(callback::onSuccess, callback::onFail);

@@ -5,8 +5,6 @@ import android.content.Context;
 import android.os.StatFs;
 import android.support.v4.content.ContextCompat;
 
-import com.worldventures.dreamtrips.wallet.domain.entity.FirmwareInfo;
-
 import java.io.File;
 
 public class WalletFilesUtils {
@@ -40,12 +38,12 @@ public class WalletFilesUtils {
       return filePath.getAbsolutePath() + File.separator + FIRMWARE_FILE_NAME;
    }
 
-   public static void checkStorageAvailability(Context context, FirmwareInfo firmwareInfo) throws NotEnoughSpaceException {
+   public static void checkStorageAvailability(Context context, long requiredStorageInBytes) throws NotEnoughSpaceException {
       File mostAppropriateStorage = getMostAppropriateCacheStorage(context);
       long availableBytes = getAvailableBytes(mostAppropriateStorage);
-      boolean enoughSpace = availableBytes > firmwareInfo.fileSize();
+      boolean enoughSpace = availableBytes > requiredStorageInBytes;
       if (!enoughSpace) {
-         throw new NotEnoughSpaceException(firmwareInfo.fileSize() - availableBytes);
+         throw new NotEnoughSpaceException(requiredStorageInBytes - availableBytes);
       }
    }
 

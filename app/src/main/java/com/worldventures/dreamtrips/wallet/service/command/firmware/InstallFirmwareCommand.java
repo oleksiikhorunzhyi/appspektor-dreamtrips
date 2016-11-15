@@ -2,10 +2,11 @@ package com.worldventures.dreamtrips.wallet.service.command.firmware;
 
 import com.worldventures.dreamtrips.core.janet.dagger.InjectableAction;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
-import com.worldventures.dreamtrips.wallet.domain.entity.FirmwareDescriptor;
+import com.worldventures.dreamtrips.wallet.domain.entity.FirmwareUpdateData;
 import com.worldventures.dreamtrips.wallet.domain.entity.ImmutableSmartCard;
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCard;
 import com.worldventures.dreamtrips.wallet.domain.storage.TemporaryStorage;
+import com.worldventures.dreamtrips.wallet.service.FirmwareInteractor;
 import com.worldventures.dreamtrips.wallet.service.SmartCardInteractor;
 import com.worldventures.dreamtrips.wallet.service.command.ConnectSmartCardCommand;
 import com.worldventures.dreamtrips.wallet.service.command.GetActiveSmartCardCommand;
@@ -22,63 +23,54 @@ import io.techery.janet.smartcard.action.settings.EnableLockUnlockDeviceAction;
 import io.techery.janet.smartcard.action.support.UpgradeFirmwareAction;
 import rx.Observable;
 
+import static com.worldventures.dreamtrips.core.janet.CommandActionBaseHelper.ActionCommandSubscriber.wrap;
 import static com.worldventures.dreamtrips.core.janet.JanetModule.JANET_WALLET;
 import static com.worldventures.dreamtrips.wallet.domain.entity.SmartCard.ConnectionStatus.CONNECTED;
 import static com.worldventures.dreamtrips.wallet.domain.entity.SmartCard.ConnectionStatus.DFU;
 import static rx.Observable.just;
 
 @CommandAction
-public class InstallFirmwareCommand extends Command<Void> implements InjectableAction, FirmwareVersionCacheCommand {
+public class InstallFirmwareCommand extends Command implements InjectableAction, FirmwareVersionCacheCommand {
 
    @Inject @Named(JANET_WALLET) Janet janet;
    @Inject SmartCardInteractor smartCardInteractor;
+   @Inject FirmwareInteractor firmwareInteractor;
    @Inject TemporaryStorage temporaryStorage;
    @Inject SnappyRepository snappyRepository;
 
-   private final FirmwareDescriptor firmwareDescriptor;
+   private final FirmwareUpdateData firmwareUpdateData;
 
-   public InstallFirmwareCommand(FirmwareDescriptor firmwareDescriptor) {
-      this.firmwareDescriptor = firmwareDescriptor;
+   public InstallFirmwareCommand(FirmwareUpdateData firmwareUpdateData) {
+      this.firmwareUpdateData = firmwareUpdateData;
    }
 
    @Override
-   protected void run(CommandCallback<Void> callback) throws Throwable {
-      activeSmartCard()
-            .flatMap(this::prepareCardAndInstallFirmware)
-            .subscribe(callback::onSuccess, callback::onFail);
+   protected void run(CommandCallback callback) throws Throwable {
+      cacheFirmwareUpdateData()
+            .flatMap(aVoid -> activeSmartCard()
+                  .flatMap(sc -> prepareCardAndInstallFirmware(sc))
+                  .flatMap(sc -> saveNewFirmwareVersion(sc))
+            )
+            .flatMap(aVoid -> clearFirmwareUpdateCache())
+            .subscribe(wrap(callback));
    }
 
-   private Observable<Void> prepareCardAndInstallFirmware(SmartCard smartCard) {
+   private Observable<SmartCard> prepareCardAndInstallFirmware(SmartCard smartCard) {
       return prepareSmartCard(smartCard)
             .flatMap(it -> {
                if (it.connectionStatus() == CONNECTED) return enableLockUnlockDevice(false);
                else if (it.connectionStatus() == DFU) return just(it);
-               else return Observable.error(new IllegalStateException("Can't connect to card on firmware upgrade"));
+               else return Observable.error(new IllegalStateException("Can't connect to card on firmwareUpdateData upgrade"));
             })
-            .map(it -> firmwareDescriptor.firmwareFile())
+            .map(it -> firmwareUpdateData.firmwareFile())
             .flatMap(this::installFirmware)
-            .flatMap(aVoid -> saveNewFirmwareVersion(smartCard))
-            .doOnNext(aVoid -> enableLockUnlockDevice(true));
+            .doOnNext(aVoid -> enableLockUnlockDevice(true))
+            .map(aVoid -> smartCard);
    }
 
    private Observable<SmartCard> prepareSmartCard(SmartCard smartCard) {
       return smartCard.connectionStatus() == CONNECTED
             || smartCard.connectionStatus() == DFU ? just(smartCard) : connectCard(smartCard);
-   }
-
-   private Observable<Void> saveNewFirmwareVersion(SmartCard smartCard) {
-      return Observable.create(subscriber -> {
-         snappyRepository.saveSmartCard(ImmutableSmartCard
-               .builder()
-               .from(smartCard)
-               .sdkVersion(firmwareDescriptor.sdkVersion())
-               .firmWareVersion(firmwareDescriptor.firmwareVersion())
-               .build());
-         //
-         if (subscriber.isUnsubscribed()) return;
-         subscriber.onNext(null);
-         subscriber.onCompleted();
-      });
    }
 
    private Observable<Void> enableLockUnlockDevice(boolean enable) {
@@ -97,6 +89,30 @@ public class InstallFirmwareCommand extends Command<Void> implements InjectableA
 
    }
 
+   private Observable saveNewFirmwareVersion(SmartCard smartCard) {
+      return Observable.create(subscriber -> {
+         snappyRepository.saveSmartCard(ImmutableSmartCard
+               .builder()
+               .from(smartCard)
+               .sdkVersion(firmwareUpdateData.firmwareInfo().sdkVersion())
+               .firmWareVersion(firmwareUpdateData.firmwareInfo().firmwareVersion())
+               .build());
+         //
+         if (subscriber.isUnsubscribed()) return;
+         subscriber.onNext(null);
+         subscriber.onCompleted();
+      });
+   }
+
+   private Observable cacheFirmwareUpdateData() {
+      return firmwareInteractor.firmwareCachePipe()
+            .createObservableResult(new FirmwareUpdateCacheCommand(firmwareUpdateData));
+   }
+
+   private Observable clearFirmwareUpdateCache() {
+      return firmwareInteractor.firmwareCachePipe().createObservableResult(new FirmwareUpdateCacheCommand(null));
+   }
+
    private Observable<SmartCard> activeSmartCard() {
       return smartCardInteractor.activeSmartCardPipe()
             .createObservableResult(new GetActiveSmartCardCommand())
@@ -111,11 +127,11 @@ public class InstallFirmwareCommand extends Command<Void> implements InjectableA
 
    @Override
    public String sdkVersion() {
-      return firmwareDescriptor.sdkVersion();
+      return firmwareUpdateData.firmwareInfo().sdkVersion();
    }
 
    @Override
    public String firmwareVersion() {
-      return firmwareDescriptor.firmwareVersion();
+      return firmwareUpdateData.firmwareInfo().firmwareVersion();
    }
 }

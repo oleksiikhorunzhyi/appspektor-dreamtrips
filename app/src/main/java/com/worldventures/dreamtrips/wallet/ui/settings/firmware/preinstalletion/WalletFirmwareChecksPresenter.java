@@ -4,7 +4,8 @@ import android.content.Context;
 import android.os.Parcelable;
 
 import com.techery.spares.module.Injector;
-import com.worldventures.dreamtrips.wallet.domain.entity.FirmwareInfo;
+import com.worldventures.dreamtrips.api.smart_card.firmware.model.FirmwareInfo;
+import com.worldventures.dreamtrips.wallet.domain.entity.ImmutableFirmwareUpdateData;
 import com.worldventures.dreamtrips.wallet.service.FirmwareInteractor;
 import com.worldventures.dreamtrips.wallet.service.SmartCardInteractor;
 import com.worldventures.dreamtrips.wallet.service.WalletBluetoothService;
@@ -13,6 +14,8 @@ import com.worldventures.dreamtrips.wallet.ui.common.base.WalletPresenter;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.WalletScreen;
 import com.worldventures.dreamtrips.wallet.ui.common.navigation.Navigator;
 import com.worldventures.dreamtrips.wallet.ui.settings.firmware.install.WalletInstallFirmwarePath;
+
+import java.io.File;
 
 import javax.inject.Inject;
 
@@ -61,7 +64,13 @@ public class WalletFirmwareChecksPresenter extends WalletPresenter<WalletFirmwar
    }
 
    void install() {
-      navigator.go(new WalletInstallFirmwarePath(firmwareFilePath, firmwareInfo));
+      navigator.go(new WalletInstallFirmwarePath(
+            ImmutableFirmwareUpdateData.builder()
+                  .firmwareInfo(firmwareInfo)
+                  .firmwareFile(new File(firmwareFilePath))
+                  .updateAvailable(true)
+                  .build())
+      );
    }
 
    void goBack() {

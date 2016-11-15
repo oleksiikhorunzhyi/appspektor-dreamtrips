@@ -8,6 +8,7 @@ import com.worldventures.dreamtrips.api.dtl.merchants.RatingHttpAction
 import com.worldventures.dreamtrips.api.dtl.merchants.model.EstimationResult
 import com.worldventures.dreamtrips.api.dtl.merchants.requrest.ImmutableEstimationParams
 import com.worldventures.dreamtrips.api.dtl.merchants.requrest.ImmutableRatingParams
+import com.worldventures.dreamtrips.core.janet.SessionActionPipeCreator
 import com.worldventures.dreamtrips.core.repository.SnappyRepository
 import com.worldventures.dreamtrips.core.utils.DateTimeUtils
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchant
@@ -66,7 +67,7 @@ class DtlTransactionInteractorSpec : BaseSpec({
       db = spy()
       whenever(db.getDtlTransaction(any())).thenReturn(transaction)
 
-      transactionInteractor = DtlTransactionInteractor(janet, janet)
+      transactionInteractor = DtlTransactionInteractor(SessionActionPipeCreator(janet), SessionActionPipeCreator(janet))
       commandService.registerProvider(SnappyRepository::class.java) { db }
    }
 

@@ -1,41 +1,40 @@
 package com.worldventures.dreamtrips.modules.common.presenter.delegate;
 
+import com.messenger.delegate.FlagsInteractor;
 import com.worldventures.dreamtrips.modules.common.model.FlagData;
 import com.worldventures.dreamtrips.modules.common.presenter.RequestingPresenter;
 import com.worldventures.dreamtrips.modules.feed.api.FlagItemCommand;
 import com.worldventures.dreamtrips.modules.feed.view.cell.Flaggable;
-import com.worldventures.dreamtrips.modules.tripsimages.api.GetFlagContentQuery;
-import com.worldventures.dreamtrips.modules.tripsimages.model.Flag;
+import com.worldventures.dreamtrips.modules.flags.command.GetFlagsCommand;
 
-import java.util.List;
+import io.techery.janet.Command;
+import io.techery.janet.helper.ActionStateSubscriber;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Action1;
+import rx.functions.Action2;
 
 public class UidItemDelegate {
 
    private RequestingPresenter requestingPresenter;
 
-   private List<Flag> flagsList;
+   private FlagsInteractor flagsInteractor;
 
-   public UidItemDelegate(RequestingPresenter requestingPresenter) {
+   public UidItemDelegate(RequestingPresenter requestingPresenter, FlagsInteractor flagsInteractor) {
       this.requestingPresenter = requestingPresenter;
+      this.flagsInteractor = flagsInteractor;
    }
 
-   public void loadFlags(Flaggable flaggable) {
-      if (flagsList == null) {
-         requestingPresenter.doRequest(new GetFlagContentQuery(), flags -> {
-            flagsList = flags;
-            flaggable.showFlagDialog(flagsList);
-         });
-      } else {
-         flaggable.showFlagDialog(flagsList);
-      }
+   public void loadFlags(Flaggable flaggable, Action2<Command, Throwable> errorAction) {
+      flagsInteractor.getFlagsPipe()
+            .createObservable(new GetFlagsCommand())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe(new ActionStateSubscriber<GetFlagsCommand>()
+                  .onSuccess(command -> flaggable.showFlagDialog(command.getResult()))
+                  .onFail(errorAction::call));
    }
 
    public void flagItem(FlagData data, View view) {
-      requestingPresenter.doRequest(new FlagItemCommand(data), aVoid -> {
-         if (view != null) {
-            view.flagSentSuccess();
-         }
-      });
+      requestingPresenter.doRequest(new FlagItemCommand(data), aVoid -> view.flagSentSuccess());
    }
 
    public interface View {

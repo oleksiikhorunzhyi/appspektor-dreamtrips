@@ -1,6 +1,7 @@
 package com.worldventures.dreamtrips.modules.feed.presenter;
 
 import com.innahema.collections.query.queriables.Queryable;
+import com.messenger.delegate.FlagsInteractor;
 import com.worldventures.dreamtrips.core.rx.RxView;
 import com.worldventures.dreamtrips.core.rx.composer.IoToMainComposer;
 import com.worldventures.dreamtrips.core.utils.LocaleHelper;
@@ -55,6 +56,7 @@ public class BaseCommentPresenter<T extends BaseCommentPresenter.View> extends P
    @Inject TranslationFeedInteractor translationFeedInteractor;
    @Inject CommentsInteractor commentsInteractor;
    @Inject LocaleHelper localeHelper;
+   @Inject FlagsInteractor flagsInteractor;
 
    private UidItemDelegate uidItemDelegate;
 
@@ -67,18 +69,19 @@ public class BaseCommentPresenter<T extends BaseCommentPresenter.View> extends P
 
    public BaseCommentPresenter(FeedEntity feedEntity) {
       this.feedEntity = feedEntity;
-      uidItemDelegate = new UidItemDelegate(this);
    }
 
    @Override
    public void onInjected() {
       super.onInjected();
       entityManager.setRequestingPresenter(this);
+      uidItemDelegate = new UidItemDelegate(this, flagsInteractor);
    }
 
    @Override
    public void takeView(T view) {
       super.takeView(view);
+      apiErrorPresenter.setView(view);
       view.setDraftComment(draftComment);
       view.setLikePanel(feedEntity);
 
@@ -101,20 +104,12 @@ public class BaseCommentPresenter<T extends BaseCommentPresenter.View> extends P
             }));
    }
 
-   /**
-    * Request comments and likes only once per view loading if suitable count > 0
-    */
    protected void checkCommentsAndLikesToLoad() {
       if (loadInitiated) return;
       //
-      if (feedEntity.getCommentsCount() > 0) {
-         loadComments();
-         loadInitiated = true;
-      }
-      if (feedEntity.getLikesCount() > 0) {
-         loadLikes();
-         loadInitiated = true;
-      }
+      loadComments();
+      loadInitiated = true;
+      loadLikes();
    }
 
    protected boolean isNeedCheckCommentsWhenStart() {
@@ -128,8 +123,8 @@ public class BaseCommentPresenter<T extends BaseCommentPresenter.View> extends P
 
    private void subscribeToCommentsLoading() {
       view.bindUntilDropView(commentsInteractor.commentsPipe().observe().compose(new IoToMainComposer<>()))
-            .subscribe(new ActionStateSubscriber<GetCommentsCommand>().onSuccess(getCommentsCommand -> onCommentsLoaded(getCommentsCommand
-                  .getResult()))
+            .subscribe(new ActionStateSubscriber<GetCommentsCommand>()
+                  .onSuccess(getCommentsCommand -> onCommentsLoaded(getCommentsCommand.getResult()))
                   .onFail((getCommentsCommand, throwable) -> view.informUser(getCommentsCommand.getErrorMessage())));
    }
 
@@ -163,7 +158,7 @@ public class BaseCommentPresenter<T extends BaseCommentPresenter.View> extends P
    }
 
    public void loadFlags(Flaggable flaggableView) {
-      uidItemDelegate.loadFlags(flaggableView);
+      uidItemDelegate.loadFlags(flaggableView, this::handleError);
    }
 
    public void flagItem(String uid, int reasonId, String reason) {
@@ -240,13 +235,13 @@ public class BaseCommentPresenter<T extends BaseCommentPresenter.View> extends P
                .subscribe(new ActionStateSubscriber<DeleteItemHttpAction>().onSuccess(deleteItemAction -> itemDeleted(bucketItemToDelete))
                      .onFail((deleteItemAction, throwable) -> {
                         view.setLoading(false); //TODO: review, after leave from robospice completely
-                        handleError(throwable);
+                        handleError(deleteItemAction, throwable);
                      }));
       }
    }
 
    public void onEvent(LoadFlagEvent event) {
-      if (view.isVisibleOnScreen()) uidItemDelegate.loadFlags(event.getFlaggableView());
+      if (view.isVisibleOnScreen()) uidItemDelegate.loadFlags(event.getFlaggableView(), this::handleError);
    }
 
    public void onEvent(ItemFlaggedEvent event) {

@@ -13,8 +13,6 @@ import com.worldventures.dreamtrips.modules.feed.model.CreatePhotoPostEntity;
 import com.worldventures.dreamtrips.modules.feed.model.FeedEntityHolder;
 import com.worldventures.dreamtrips.modules.feed.model.TextualPost;
 import com.worldventures.dreamtrips.modules.feed.model.comment.Comment;
-import com.worldventures.dreamtrips.modules.feed.model.feed.base.ParentFeedItem;
-import com.worldventures.dreamtrips.modules.infopages.model.FeedbackType;
 import com.worldventures.dreamtrips.modules.membership.api.InviteBody;
 import com.worldventures.dreamtrips.modules.membership.model.History;
 import com.worldventures.dreamtrips.modules.membership.model.InviteTemplate;
@@ -22,7 +20,6 @@ import com.worldventures.dreamtrips.modules.reptools.model.SuccessStory;
 import com.worldventures.dreamtrips.modules.reptools.model.VideoLocale;
 import com.worldventures.dreamtrips.modules.tripsimages.model.AddPhotoTag;
 import com.worldventures.dreamtrips.modules.tripsimages.model.DeletePhotoTag;
-import com.worldventures.dreamtrips.modules.tripsimages.model.Flag;
 import com.worldventures.dreamtrips.modules.tripsimages.model.Inspiration;
 import com.worldventures.dreamtrips.modules.tripsimages.model.Photo;
 import com.worldventures.dreamtrips.modules.tripsimages.model.YSBHPhoto;
@@ -39,16 +36,12 @@ import retrofit.http.Field;
 import retrofit.http.FormUrlEncoded;
 import retrofit.http.GET;
 import retrofit.http.Multipart;
-import retrofit.http.PATCH;
 import retrofit.http.POST;
 import retrofit.http.PUT;
 import retrofit.http.Part;
 import retrofit.http.Path;
 import retrofit.http.Query;
 import retrofit.mime.TypedFile;
-
-import static com.worldventures.dreamtrips.modules.friends.api.ResponseBatchRequestCommand.RequestBody;
-import static com.worldventures.dreamtrips.modules.infopages.api.SendFeedbackCommand.FeedbackBody;
 
 public interface DreamTripsApi {
 
@@ -174,9 +167,6 @@ public interface DreamTripsApi {
    @GET("/api/member_videos/locales")
    ArrayList<VideoLocale> getTrainingVideosLocales();
 
-   @GET("/api/flag_reasons")
-   ArrayList<Flag> getFlags();
-
    @GET("/api/social/friends")
    ArrayList<User> getFriends(@Query("circle_id") String circle_id, @Query("query") String query, @Query("page") int page, @Query("per_page") int perPage);
 
@@ -188,19 +178,6 @@ public interface DreamTripsApi {
 
    @GET("/api/social/friends/requests")
    ArrayList<User> getRequests();
-
-   @POST("/api/social/friends/requests")
-   JSONObject addFriend(@Query("user_id") int userId, @Query("circle_id") String circleId);
-
-   @FormUrlEncoded
-   @PUT("/api/social/friends/request_responses")
-   JSONObject actOnRequest(@Query("user_id") int userId, @Field("action") String action, @Field("circle_id") String circleId);
-
-   @PATCH("/api/social/friends/request_responses")
-   ArrayList<JSONObject> actOnBatchRequests(@Body RequestBody userIds);
-
-   @DELETE("/api/social/friends/request_responses")
-   JSONObject deleteRequest(@Query("user_id") int userId);
 
    @DELETE("/api/social/friends/{user_id}")
    JSONObject unfriend(@Path("user_id") int userId);
@@ -238,22 +215,13 @@ public interface DreamTripsApi {
    Void likeEntity(@Path("uid") String uid);
 
    @DELETE("/api/{uid}/likes")
-   Void dislikeEntity(@Path("uid") String uid);
+   Void dislikeEntity(@Path("uid") String uid );
 
    @GET("/api/{uid}/likes")
    ArrayList<User> getUsersWhoLikedEntity(@Path("uid") String uid, @Query("page") int page, @Query("per_page") int perPage);
 
-   @GET("/api/social/notifications")
-   ArrayList<ParentFeedItem> getNotifications(@Query("per_page") int perPage, @Query("before") String page);
-
    @GET("/api/{uid}")
    FeedEntityHolder getFeedEntity(@Path("uid") String uid);
-
-   @PUT("/api/social/notifications")
-   Void markAsRead(@Query("since") String since, @Query("before") String before);
-
-   @PUT("/api/social/notifications/{id}")
-   Void markAsRead(@Path("id") int id);
 
    @FormUrlEncoded
    @POST("/api/{uid}/flags")
@@ -270,10 +238,4 @@ public interface DreamTripsApi {
 
    @GET("/api/photos/{uid}")
    Photo getPhotoInfo(@Path("uid") String uid);
-
-   @GET("/api/feedbacks/reasons")
-   ArrayList<FeedbackType> getFeedbackReasons();
-
-   @POST("/api/feedbacks")
-   Void sendFeedback(@Body FeedbackBody feedbackBody);
 }

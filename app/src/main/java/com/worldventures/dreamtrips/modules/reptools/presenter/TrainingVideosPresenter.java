@@ -50,7 +50,10 @@ public class TrainingVideosPresenter<T extends TrainingVideosPresenter.View> ext
    }
 
    private void loadLocales() {
-      doRequest(new GetVideoLocales(), this::localesLoaded);
+      doRequest(new GetVideoLocales(), this::localesLoaded, spiceException -> {
+         view.finishLoading();
+         super.handleError(spiceException);
+      });
    }
 
    private void localesLoaded(ArrayList<VideoLocale> locales) {

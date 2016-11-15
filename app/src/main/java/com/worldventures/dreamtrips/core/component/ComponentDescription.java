@@ -9,6 +9,7 @@ import android.support.v4.app.Fragment;
 public class ComponentDescription implements Parcelable {
    private final String key;
    private final int toolbarTitle;
+   private final int toolbarLogo;
    private final int navMenuTitle;
    private final int icon;
    private final boolean ignored;
@@ -16,12 +17,17 @@ public class ComponentDescription implements Parcelable {
    private final boolean skipGeneralToolbar;
 
    public ComponentDescription(String key, @StringRes int toolbarTitle, @StringRes int navMenuTitle, @DrawableRes int iconRes, Class<? extends Fragment> fragmentClass) {
-      this(key, toolbarTitle, navMenuTitle, iconRes, false, false, fragmentClass);
+      this(key, toolbarTitle, 0, navMenuTitle, iconRes, false, false, fragmentClass);
    }
 
-   public ComponentDescription(String key, @StringRes int toolbarTitle, @StringRes int navMenuTitle, @DrawableRes int icon, boolean ignored, boolean skipGeneralToolbar, Class<? extends Fragment> fragmentClass) {
+   public ComponentDescription(String key, @StringRes int toolbarTitle, @DrawableRes int toolbarLogo, @StringRes int navMenuTitle, @DrawableRes int iconRes, Class<? extends Fragment> fragmentClass) {
+      this(key, toolbarTitle, toolbarLogo, navMenuTitle, iconRes, false, false, fragmentClass);
+   }
+
+   public ComponentDescription(String key, @StringRes int toolbarTitle, @DrawableRes int toolbarLogo, @StringRes int navMenuTitle, @DrawableRes int icon, boolean ignored, boolean skipGeneralToolbar, Class<? extends Fragment> fragmentClass) {
       this.key = key;
       this.toolbarTitle = toolbarTitle;
+      this.toolbarLogo = toolbarLogo;
       this.navMenuTitle = navMenuTitle;
       this.icon = icon;
       this.ignored = ignored;
@@ -30,7 +36,7 @@ public class ComponentDescription implements Parcelable {
    }
 
    public ComponentDescription(String key, @StringRes int toolbarTitle, @StringRes int navMenuTitle, @DrawableRes int iconRes, boolean skipGeneralToolbar, Class<? extends Fragment> fragmentClass) {
-      this(key, toolbarTitle, navMenuTitle, iconRes, false, skipGeneralToolbar, fragmentClass);
+      this(key, toolbarTitle, 0, navMenuTitle, iconRes, false, skipGeneralToolbar, fragmentClass);
    }
 
    public boolean isIgnored() {
@@ -47,6 +53,10 @@ public class ComponentDescription implements Parcelable {
 
    public int getToolbarTitle() {
       return toolbarTitle;
+   }
+
+   public int getToolbarLogo() {
+      return toolbarLogo;
    }
 
    public int getNavMenuTitle() {
@@ -88,6 +98,7 @@ public class ComponentDescription implements Parcelable {
       dest.writeString(this.key);
       dest.writeInt(this.navMenuTitle);
       dest.writeInt(this.toolbarTitle);
+      dest.writeInt(this.toolbarLogo);
       dest.writeInt(this.icon);
       dest.writeByte(ignored ? (byte) 1 : (byte) 0);
       dest.writeByte(skipGeneralToolbar ? (byte) 1 : (byte) 0);
@@ -98,6 +109,7 @@ public class ComponentDescription implements Parcelable {
       this.key = in.readString();
       this.navMenuTitle = in.readInt();
       this.toolbarTitle = in.readInt();
+      this.toolbarLogo = in.readInt();
       this.icon = in.readInt();
       this.ignored = in.readByte() != 0;
       this.skipGeneralToolbar = in.readByte() != 0;

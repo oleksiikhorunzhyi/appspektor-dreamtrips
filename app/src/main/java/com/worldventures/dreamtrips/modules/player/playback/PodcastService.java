@@ -178,12 +178,14 @@ public class PodcastService extends Service {
    private void releasePlayerIfNeeded() {
       if (activePlayerSubscription != null) {
          activePlayerSubscription.unsubscribe();
+         activePlayerSubscription = null;
       }
       if (player != null) {
          if (player.getState() != DtPlayer.State.STOPPED) player.stop();
          if (player.getState() != DtPlayer.State.RELEASED) player.release();
          player = null;
       }
+      isPreparingPlayer = false;
    }
 
    public void seekTo(int position) {

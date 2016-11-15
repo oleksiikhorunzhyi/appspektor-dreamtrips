@@ -5,6 +5,7 @@ import android.support.annotation.Nullable;
 
 import com.techery.spares.module.Injector;
 import com.techery.spares.session.SessionHolder;
+import com.worldventures.dreamtrips.api.session.model.Device;
 import com.worldventures.dreamtrips.core.api.AuthRetryPolicy;
 import com.worldventures.dreamtrips.core.api.action.AuthorizedHttpAction;
 import com.worldventures.dreamtrips.core.api.action.BaseHttpAction;
@@ -30,6 +31,7 @@ import io.techery.janet.Janet;
 import io.techery.janet.JanetException;
 import io.techery.janet.converter.Converter;
 import io.techery.janet.http.HttpClient;
+import rx.Observable;
 import timber.log.Timber;
 
 /**
@@ -42,6 +44,7 @@ public class DreamTripsHttpService extends ActionServiceWrapper {
    @Inject LocaleHelper localeHelper;
    @Inject AppVersionNameBuilder appVersionNameBuilder;
    @Inject SnappyRepository db;
+   @Inject Observable<Device> deviceSource;
 
    private final ActionPipe<LoginAction> loginActionPipe;
    private final Set<Object> retriedActions = new CopyOnWriteArraySet<>();
@@ -69,7 +72,7 @@ public class DreamTripsHttpService extends ActionServiceWrapper {
       action.setLanguageHeader(localeHelper.getDefaultLocaleFormatted());
       if (action instanceof AuthorizedHttpAction && appSessionHolder.get().isPresent()) {
          UserSession userSession = appSessionHolder.get().get();
-         ((AuthorizedHttpAction) action).setAuthorizationHeader("Token token=" + userSession.getApiToken());
+         ((AuthorizedHttpAction) action).setAuthorizationHeader(NewDreamTripsHttpService.getAuthorizationHeader(userSession.getApiToken()));
       }
    }
 
@@ -119,7 +122,8 @@ public class DreamTripsHttpService extends ActionServiceWrapper {
       UserSession userSession = appSessionHolder.get().get();
       String username = userSession.getUsername();
       String userPassword = userSession.getUserPassword();
-      LoginAction loginAction = new LoginAction(username, userPassword);
+      Device device = deviceSource.toBlocking().first();
+      LoginAction loginAction = new LoginAction(username, userPassword, device);
       prepareHttpAction(loginAction);
       ActionState<LoginAction> loginState = loginActionPipe.createObservable(loginAction).toBlocking().last();
       if (loginState.status == ActionState.Status.SUCCESS) {

@@ -15,14 +15,34 @@ import android.support.annotation.Nullable;
 import com.innahema.collections.query.queriables.Queryable;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.URISyntaxException;
+import java.util.Calendar;
 import java.util.List;
 
 import timber.log.Timber;
 
 public class FileUtils {
+
+   public static byte[] readByteArray(File file) throws IOException {
+      byte[] buffer = new byte[(int) file.length()];
+      InputStream ios = null;
+      try {
+         ios = new FileInputStream(file);
+         if (ios.read(buffer) == -1) {
+            throw new IOException("EOF reached while trying to read the whole file");
+         }
+      } finally {
+         try {
+            if (ios != null) ios.close();
+         } catch (IOException ignored) {
+         }
+      }
+      return buffer;
+   }
 
    public static void cleanDirectory(Context context, File directory, List<String> exceptFilePaths) throws IOException {
       if (!directory.exists()) {
@@ -140,6 +160,19 @@ public class FileUtils {
       }
 
       return null;
+   }
+
+   public static String buildFilePathOriginal(String foldername, String extension) {
+      return getDirectory(foldername) + File.separator + Calendar.getInstance().getTimeInMillis() + "." + extension;
+
+   }
+
+   public static String getDirectory(String foldername) {
+      File directory;
+      directory = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + foldername);
+      if (!directory.exists()) directory.mkdirs();
+
+      return directory.getAbsolutePath();
    }
 
    /**

@@ -586,8 +586,6 @@
    <string name="error_fail_to_load_videos">Videók betöltése sikertelen</string>
    <string name="error_fail_to_like_item">Tétel like-olása sikertelen</string>
    <string name="error_fail_to_unlike_item">Tétel vissza like-olása sikertelen</string>
-   <string name="error_fail_to_mark_notification">Értesítés megjelölés sikertelen</string>
-   <string name="error_fail_to_mark_notifications">Értesítések megjelölése sikertelen</string>
    <string name="tag_people">Emberek megjelölése</string>
 
    <string name="say_something">Mondj valamit a világnak</string>
@@ -653,9 +651,13 @@
 
    <string name="error_fail_to_translate_text">Nem sikerült lefordítani a szöveget</string>
 
-   <string name="book_it_disabled">DreamTrips klubtagnak kell lenni az út foglalásához</string>
+   <string name="book_it_disabled">DreamTrips klubtagnak kell lenni az út foglalásához. </string>
 
    <string name="error_fail_to_load_filters">Sajnáljuk, nem sikerült betölteni a szűrőket</string>
    <string name="flag_content_message">A WorldVentures munkatársai értesítést kapnak arról, hogy ellenőrizzék ezt a tartalmat </string>
+
+   <!-- change this later after approval from WV -->
+   <string name="offline_warning_dialog_title">Nincs internetkapcsolat</string>
+   <string name="offline_warning_dialog_message">A hozzáférés korlátozott</string>
 
 </resources>

@@ -1,7 +1,6 @@
 package com.worldventures.dreamtrips.core.module;
 
 import android.content.Context;
-import android.os.Build;
 
 import com.google.gson.FieldNamingPolicy;
 import com.google.gson.Gson;
@@ -17,6 +16,7 @@ import com.worldventures.dreamtrips.core.api.DreamTripsApi;
 import com.worldventures.dreamtrips.core.api.error.DTErrorHandler;
 import com.worldventures.dreamtrips.core.session.UserSession;
 import com.worldventures.dreamtrips.core.utils.AppVersionNameBuilder;
+import com.worldventures.dreamtrips.core.utils.HeaderProvider;
 import com.worldventures.dreamtrips.core.utils.InterceptingOkClient;
 import com.worldventures.dreamtrips.core.utils.LocaleHelper;
 import com.worldventures.dreamtrips.core.utils.PersistentCookieStore;
@@ -34,12 +34,11 @@ import com.worldventures.dreamtrips.modules.feed.model.serializer.FeedItemDeseri
 import com.worldventures.dreamtrips.modules.settings.model.Setting;
 import com.worldventures.dreamtrips.modules.settings.model.serializer.SettingsDeserializer;
 import com.worldventures.dreamtrips.modules.settings.model.serializer.SettingsSerializer;
-import com.worldventures.dreamtrips.modules.trips.model.MapObjectHolder;
-import com.worldventures.dreamtrips.modules.trips.model.serializer.MapObjectDeserializer;
 
 import java.net.CookieManager;
 import java.net.CookiePolicy;
 import java.util.Date;
+import java.util.List;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
@@ -79,20 +78,18 @@ public class ApiModule {
             .setRequestInterceptor(requestInterceptor);
    }
 
+   @Provides
+   HeaderProvider provideHeaderProvider(SessionHolder<UserSession> appSessionHolder, LocaleHelper localeHelper, AppVersionNameBuilder appVersionNameBuilder) {
+      return new HeaderProvider(appSessionHolder, localeHelper, appVersionNameBuilder);
+   }
 
    @Provides
-   RequestInterceptor provideRequestInterceptor(SessionHolder<UserSession> appSessionHolder, LocaleHelper localeHelper, AppVersionNameBuilder appVersionNameBuilder) {
+   RequestInterceptor provideRequestInterceptor(HeaderProvider headerProvider) {
       return request -> {
-         if (appSessionHolder.get().isPresent()) {
-            UserSession userSession = appSessionHolder.get().get();
-            String authToken = "Token token=" + userSession.getApiToken();
-            request.addHeader("Authorization", authToken);
+         List<HeaderProvider.Header> headers = headerProvider.getAppHeaders();
+         for (HeaderProvider.Header header : headers) {
+            request.addHeader(header.getName(), header.getValue());
          }
-         request.addHeader("Accept-Language", localeHelper.getDefaultLocaleFormatted());
-         request.addHeader("Accept", "application/com.dreamtrips.api+json;version=" + BuildConfig.API_VERSION);
-
-         request.addHeader("DT-App-Version", appVersionNameBuilder.getSemanticVersionName());
-         request.addHeader("DT-App-Platform", String.format("android-%d", Build.VERSION.SDK_INT));
       };
    }
 
@@ -119,8 +116,6 @@ public class ApiModule {
             .registerTypeAdapterFactory(new GsonAdaptersBucketCoverBody())
             .registerTypeAdapterFactory(new GsonAdaptersBucketStatusBody())
             .registerTypeAdapterFactory(new GsonAdaptersBucketBodyImpl())
-            //
-            .registerTypeAdapter(MapObjectHolder.class, new MapObjectDeserializer<>())
             .create();
    }
 

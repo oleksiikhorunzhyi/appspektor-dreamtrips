@@ -1,10 +1,11 @@
 package com.messenger.delegate.chat.event;
 
+import com.worldventures.dreamtrips.core.janet.SessionActionPipeCreator;
+
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
 import io.techery.janet.ActionPipe;
-import io.techery.janet.Janet;
 import rx.schedulers.Schedulers;
 
 @Singleton
@@ -13,9 +14,9 @@ public class ChatEventInteractor {
    private final ActionPipe<RevertClearingChatCommand> eventRevertClearingChatPipe;
 
    @Inject
-   ChatEventInteractor(Janet janet) {
-      eventClearChatPipe = janet.createPipe(ClearChatCommand.class, Schedulers.io());
-      eventRevertClearingChatPipe = janet.createPipe(RevertClearingChatCommand.class, Schedulers.io());
+   ChatEventInteractor(SessionActionPipeCreator sessionActionPipeCreator) {
+      eventClearChatPipe = sessionActionPipeCreator.createPipe(ClearChatCommand.class, Schedulers.io());
+      eventRevertClearingChatPipe = sessionActionPipeCreator.createPipe(RevertClearingChatCommand.class, Schedulers.io());
    }
 
    public ActionPipe<ClearChatCommand> getEventClearChatPipe() {

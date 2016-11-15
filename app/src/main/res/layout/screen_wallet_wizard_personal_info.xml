@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<com.worldventures.dreamtrips.wallet.ui.wizard.profile.WizardEditProfileScreen xmlns:android="http://schemas.android.com/apk/res/android"
+      xmlns:app="http://schemas.android.com/apk/res-auto"
+      xmlns:tools="http://schemas.android.com/tools"
+      android:layout_width="match_parent"
+      android:layout_height="match_parent"
+      android:theme="@style/WalletTheme"
+      >
+
+   <android.support.v7.widget.Toolbar
+         android:id="@+id/toolbar"
+         android:layout_width="match_parent"
+         android:layout_height="?attr/actionBarSize"
+         app:title="@string/wallet_wizard__welcom_screen_title"
+         />
+
+   <RelativeLayout style="@style/WalletTheme.ContentContainerStyle">
+
+      <TextView
+            android:id="@+id/text_description"
+            style="@style/WalletTheme.HeaderTextStyle"
+            android:text="@string/wallet_edit_profile_subtitle"
+            />
+
+      <FrameLayout
+            android:id="@+id/imageContainer"
+            android:layout_width="136dp"
+            android:layout_height="136dp"
+            android:layout_below="@+id/text_description"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="50dp"
+            >
+
+         <com.facebook.drawee.view.SimpleDraweeView
+               android:id="@+id/photo_preview"
+               android:layout_width="match_parent"
+               android:layout_height="match_parent"
+               android:src="@drawable/ic_dt_launcher"
+               app:failureImage="@drawable/ic_avatar_placeholder"
+               app:placeholderImage="@drawable/ic_avatar_placeholder"
+               />
+
+         <ImageView
+               android:layout_width="36dp"
+               android:layout_height="36dp"
+               android:layout_gravity="right|bottom"
+               android:layout_marginRight="5dp"
+               android:src="@drawable/ic_edit_photo"
+               />
+
+      </FrameLayout>
+
+      <EditText
+            android:id="@+id/person_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_marginBottom="136dp"
+            android:drawableRight="@drawable/ic_wallet_pencil"
+            android:hint="@string/wallet_edit_profile_name_hint"
+            android:imeOptions="actionDone"
+            android:inputType="textPersonName"
+            android:maxLength="@integer/wallet_wizard_user_full_name_length"
+            android:textColor="#666666"
+            tools:text="Shirley Temple"
+            />
+
+      <Button
+            android:id="@+id/next_button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:text="@string/wallet_next_label"
+            />
+
+   </RelativeLayout>
+
+</com.worldventures.dreamtrips.wallet.ui.wizard.profile.WizardEditProfileScreen>

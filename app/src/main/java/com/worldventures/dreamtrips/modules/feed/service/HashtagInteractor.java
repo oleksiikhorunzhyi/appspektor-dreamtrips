@@ -1,13 +1,15 @@
 package com.worldventures.dreamtrips.modules.feed.service;
 
+import com.worldventures.dreamtrips.core.janet.SessionActionPipeCreator;
 import com.worldventures.dreamtrips.modules.feed.service.command.FeedByHashtagCommand;
 import com.worldventures.dreamtrips.modules.feed.service.command.HashtagSuggestionCommand;
 
 import javax.inject.Inject;
+import javax.inject.Singleton;
 
 import io.techery.janet.ActionPipe;
-import io.techery.janet.Janet;
 
+@Singleton
 public class HashtagInteractor {
 
    private final ActionPipe<HashtagSuggestionCommand> suggestionPipe;
@@ -15,10 +17,10 @@ public class HashtagInteractor {
    private final ActionPipe<FeedByHashtagCommand.LoadNext> loadNextFeedsByHashtagsPipe;
 
    @Inject
-   public HashtagInteractor(Janet janet) {
-      suggestionPipe = janet.createPipe(HashtagSuggestionCommand.class);
-      refreshFeedsByHashtagsPipe = janet.createPipe(FeedByHashtagCommand.Refresh.class);
-      loadNextFeedsByHashtagsPipe = janet.createPipe(FeedByHashtagCommand.LoadNext.class);
+   public HashtagInteractor(SessionActionPipeCreator sessionActionPipeCreator) {
+      suggestionPipe = sessionActionPipeCreator.createPipe(HashtagSuggestionCommand.class);
+      refreshFeedsByHashtagsPipe = sessionActionPipeCreator.createPipe(FeedByHashtagCommand.Refresh.class);
+      loadNextFeedsByHashtagsPipe = sessionActionPipeCreator.createPipe(FeedByHashtagCommand.LoadNext.class);
    }
 
    public ActionPipe<HashtagSuggestionCommand> getSuggestionPipe() {

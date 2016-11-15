@@ -3,14 +3,18 @@ package com.worldventures.dreamtrips.modules.player.playback;
 import android.content.Context;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
+import android.net.ConnectivityManager;
 import android.net.Uri;
 import android.webkit.URLUtil;
+
+import java.io.IOException;
 
 import rx.Observable;
 import rx.subjects.ReplaySubject;
 import timber.log.Timber;
 
-public class DtMediaPlayer implements DtPlayer, MediaPlayer.OnBufferingUpdateListener, MediaPlayer.OnCompletionListener {
+public class DtMediaPlayer implements DtPlayer, MediaPlayer.OnBufferingUpdateListener,
+      MediaPlayer.OnCompletionListener, MediaPlayer.OnErrorListener {
 
    private Context context;
 
@@ -28,6 +32,7 @@ public class DtMediaPlayer implements DtPlayer, MediaPlayer.OnBufferingUpdateLis
       mediaPlayer = new MediaPlayer();
       mediaPlayer.setOnBufferingUpdateListener(this);
       mediaPlayer.setOnCompletionListener(this);
+      mediaPlayer.setOnErrorListener(this);
    }
 
    @Override
@@ -136,6 +141,12 @@ public class DtMediaPlayer implements DtPlayer, MediaPlayer.OnBufferingUpdateLis
    public void onCompletion(MediaPlayer mediaPlayer) {
       playbackCompleted = true;
       setState(State.STOPPED);
+   }
+
+   @Override
+   public boolean onError(MediaPlayer mp, int what, int extra) {
+      setState(State.ERROR);
+      return true;
    }
 
    ///////////////////////////////////////////////////////////////////////////

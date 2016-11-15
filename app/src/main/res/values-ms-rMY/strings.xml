@@ -586,8 +586,6 @@
    <string name="error_fail_to_load_videos">Gagal memuatkan video</string>
    <string name="error_fail_to_like_item">Gagal untuk suka item</string>
    <string name="error_fail_to_unlike_item">Gagal menyah suka item</string>
-   <string name="error_fail_to_mark_notification">Gagal menandakan pemberitahuan</string>
-   <string name="error_fail_to_mark_notifications">Gagal menandakan pemberitahuan</string>
    <string name="tag_people">Tag orang</string>
 
    <string name="say_something">Ucapkan sesuatu kepada dunia</string>
@@ -657,5 +655,9 @@
 
    <string name="error_fail_to_load_filters">Maaf, gagal untuk muat penapis</string>
    <string name="flag_content_message">Kakitangan WorldVentures akan dimaklumkan untuk menyemak kandungan ini untuk  </string>
+
+   <!-- change this later after approval from WV -->
+   <string name="offline_warning_dialog_title">Tiada Sambungan Internet. </string>
+   <string name="offline_warning_dialog_message">Akses anda akan dihadkan</string>
 
 </resources>

@@ -11,11 +11,13 @@ import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.friends.bundle.MutualFriendsBundle;
 import com.worldventures.dreamtrips.modules.friends.presenter.MutualFriendsPresenter;
 import com.worldventures.dreamtrips.modules.friends.view.cell.MutualFriendCell;
+import com.worldventures.dreamtrips.modules.friends.view.cell.delegate.FriendCellDelegate;
 
 import butterknife.InjectView;
 
 @Layout(R.layout.fragment_mutuals)
-public class MutualFriendsFragment extends BaseUsersFragment<MutualFriendsPresenter, MutualFriendsBundle> implements MutualFriendsPresenter.View {
+public class MutualFriendsFragment extends BaseUsersFragment<MutualFriendsPresenter, MutualFriendsBundle>
+      implements MutualFriendsPresenter.View, FriendCellDelegate {
 
    @InjectView(R.id.title) TextView header;
 
@@ -30,6 +32,7 @@ public class MutualFriendsFragment extends BaseUsersFragment<MutualFriendsPresen
       if (isTabletLandscape()) header.setVisibility(View.VISIBLE);
       caption.setText(R.string.no_mutual_friends);
       adapter.registerCell(User.class, MutualFriendCell.class);
+      adapter.registerDelegate(User.class, this);
    }
 
    @Override
@@ -42,5 +45,20 @@ public class MutualFriendsFragment extends BaseUsersFragment<MutualFriendsPresen
    @Override
    protected LinearLayoutManager createLayoutManager() {
       return new LinearLayoutManager(getActivity());
+   }
+
+   @Override
+   public void onOpenPrefs(User user) {
+      getPresenter().openPrefs(user);
+   }
+
+   @Override
+   public void onStartSingleChat(User user) {
+      //not required
+   }
+
+   @Override
+   public void onUnfriend(User user) {
+      getPresenter().unfriend(user);
    }
 }

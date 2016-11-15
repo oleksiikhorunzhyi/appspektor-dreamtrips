@@ -71,25 +71,25 @@ public class TripsFilterData implements Serializable {
    }
 
    @Nullable
-   public String getAcceptedRegionsIds() {
+   public List<Integer> getAcceptedRegions() {
       if (Queryable.from(allRegions).firstOrDefault(region -> !region.isChecked()) == null) {
          return null;
       }
-      return TextUtils.join(",", Queryable.from(allRegions)
+      return Queryable.from(allRegions)
             .filter(RegionModel::isChecked)
             .map(BaseEntity::getId)
-            .toList());
+            .toList();
    }
 
    @Nullable
-   public String getAcceptedActivitiesIds() {
+   public List<Integer> getAcceptedActivities() {
       if (Queryable.from(allParentActivities).firstOrDefault(activity -> !activity.isChecked()) == null) {
          return null;
       }
-      return TextUtils.join(",", Queryable.from(allParentActivities)
+      return Queryable.from(allParentActivities)
             .filter(ActivityModel::isChecked)
             .map(BaseEntity::getId)
-            .toList());
+            .toList();
    }
 
    public void setAllRegions(ArrayList<RegionModel> allRegions) {
@@ -108,8 +108,8 @@ public class TripsFilterData implements Serializable {
       return allParentActivities;
    }
 
-   public int isShowSoldOut() {
-      return showSoldOut ? 1 : 0;
+   public boolean isShowSoldOut() {
+      return showSoldOut;
    }
 
    public void setShowSoldOut(boolean showSoldOut) {
@@ -144,16 +144,16 @@ public class TripsFilterData implements Serializable {
       this.showFavorites = showFavorites;
    }
 
-   public int isShowFavorites() {
-      return showFavorites ? 1 : 0;
+   public boolean isShowFavorites() {
+      return showFavorites;
    }
 
    public void setShowRecentlyAdded(boolean showRecentlyAdded) {
       this.showRecentlyAdded = showRecentlyAdded;
    }
 
-   public int isShowRecentlyAdded() {
-      return showRecentlyAdded ? 1 : 0;
+   public boolean isShowRecentlyAdded() {
+      return showRecentlyAdded;
    }
 
    public static TripsFilterData createDefault(SnappyRepository db) {

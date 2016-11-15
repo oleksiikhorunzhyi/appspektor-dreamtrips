@@ -1,5 +1,6 @@
 package com.messenger.di;
 
+import com.messenger.api.GetShortProfilesCommand;
 import com.messenger.delegate.chat.attachment.SendImageAttachmentCommand;
 import com.messenger.delegate.chat.attachment.SendLocationAttachmentCommand;
 import com.messenger.delegate.chat.command.ClearChatServerCommand;
@@ -27,7 +28,30 @@ import com.messenger.delegate.user.FetchUsersDataCommand;
 import dagger.Module;
 
 @Module(includes = {EventCommandModule.class},
-        injects = {SendImageAttachmentCommand.class, SendLocationAttachmentCommand.class, RemoveChatAvatarCommand.class, FlagMessageCommand.class, ChatSendMessageCommand.class, RetrySendMessageCommand.class, LoadConversationCommand.class, LoadConversationsCommand.class, LeaveChatCommand.class, KickChatCommand.class, SyncConversationCommand.class, SyncConversationsCommand.class, FetchUsersDataCommand.class, LoadContactsCommand.class, SendChatStateCommand.class, LoadChatMessagesCommand.class, UploadChatAvatarCommand.class, SendChatAvatarCommand.class, SetChatAvatarCommand.class, RemoveChatAvatarCommand.class, MarkMessageAsReadCommand.class, ClearChatServerCommand.class, RevertClearingChatServerCommand.class},
+        injects = {SendImageAttachmentCommand.class,
+              SendLocationAttachmentCommand.class,
+              RemoveChatAvatarCommand.class,
+              FlagMessageCommand.class,
+              ChatSendMessageCommand.class,
+              RetrySendMessageCommand.class,
+              LoadConversationCommand.class,
+              LoadConversationsCommand.class,
+              LeaveChatCommand.class,
+              KickChatCommand.class,
+              SyncConversationCommand.class,
+              SyncConversationsCommand.class,
+              FetchUsersDataCommand.class,
+              LoadContactsCommand.class,
+              SendChatStateCommand.class,
+              LoadChatMessagesCommand.class,
+              UploadChatAvatarCommand.class,
+              SendChatAvatarCommand.class,
+              SetChatAvatarCommand.class,
+              RemoveChatAvatarCommand.class,
+              MarkMessageAsReadCommand.class,
+              ClearChatServerCommand.class,
+              RevertClearingChatServerCommand.class,
+              GetShortProfilesCommand.class},
         complete = false, library = true)
 public class MessengerJanetCommandModule {
 

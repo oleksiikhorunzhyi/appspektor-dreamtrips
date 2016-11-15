@@ -5,6 +5,7 @@ import android.support.annotation.Nullable;
 import android.text.TextUtils;
 
 import com.innahema.collections.query.queriables.Queryable;
+import com.messenger.delegate.FlagsInteractor;
 import com.worldventures.dreamtrips.core.rx.RxView;
 import com.worldventures.dreamtrips.core.rx.composer.IoToMainComposer;
 import com.worldventures.dreamtrips.core.utils.LocaleHelper;
@@ -67,16 +68,14 @@ public class FeedHashtagPresenter<T extends FeedHashtagPresenter.View> extends J
    @Inject HashtagInteractor interactor;
    @Inject FeedEntityManager entityManager;
    @Inject BucketInteractor bucketInteractor;
+   @Inject FlagsInteractor flagsInteractor;
 
    private UidItemDelegate uidItemDelegate;
-
-   public FeedHashtagPresenter() {
-      uidItemDelegate = new UidItemDelegate(this);
-   }
 
    @Override
    public void takeView(T view) {
       super.takeView(view);
+      apiErrorPresenter.setView(view);
       if (feedItems.size() != 0) {
          view.refreshFeedItems(feedItems);
       }
@@ -98,6 +97,7 @@ public class FeedHashtagPresenter<T extends FeedHashtagPresenter.View> extends J
    public void onInjected() {
       super.onInjected();
       entityManager.setRequestingPresenter(this);
+      uidItemDelegate = new UidItemDelegate(this, flagsInteractor);
    }
 
    @Nullable
@@ -122,6 +122,7 @@ public class FeedHashtagPresenter<T extends FeedHashtagPresenter.View> extends J
 
    public void onRefresh() {
       if (!TextUtils.isEmpty(query)) {
+         hashtagSuggestions.clear();
          view.startLoading();
          interactor.getRefreshFeedsByHashtagsPipe().send(new FeedByHashtagCommand.Refresh(query, FEEDS_PER_PAGE));
       }
@@ -197,7 +198,9 @@ public class FeedHashtagPresenter<T extends FeedHashtagPresenter.View> extends J
    private void subscribeSuggestions() {
       view.bindUntilStop(interactor.getSuggestionPipe().observe().compose(new IoToMainComposer<>()))
             .subscribe(new ActionStateSubscriber<HashtagSuggestionCommand>().onSuccess(hashtagSuggestionCommand -> {
-               view.onSuggestionsReceived(hashtagSuggestionCommand.getFullQueryText(), hashtagSuggestionCommand.getResult());
+               hashtagSuggestions.clear();
+               hashtagSuggestions.addAll(hashtagSuggestionCommand.getResult());
+               view.onSuggestionsReceived(hashtagSuggestionCommand.getFullQueryText(), hashtagSuggestions);
                view.hideSuggestionProgress();
             }).onFail((hashtagSuggestionCommand, throwable) -> {
                Timber.e(throwable, "");
@@ -306,7 +309,7 @@ public class FeedHashtagPresenter<T extends FeedHashtagPresenter.View> extends J
    }
 
    public void onEvent(LoadFlagEvent event) {
-      if (view.isVisibleOnScreen()) uidItemDelegate.loadFlags(event.getFlaggableView());
+      if (view.isVisibleOnScreen()) uidItemDelegate.loadFlags(event.getFlaggableView(), this::handleError);
    }
 
    public void onEvent(ItemFlaggedEvent event) {

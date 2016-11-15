@@ -1,48 +1,52 @@
 package com.worldventures.dreamtrips.modules.infopages.presenter;
 
-import android.os.Build;
-
-import com.worldventures.dreamtrips.core.repository.SnappyRepository;
-import com.worldventures.dreamtrips.core.utils.AppVersionNameBuilder;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
-import com.worldventures.dreamtrips.modules.infopages.api.GetFeedbackReasonsQuery;
-import com.worldventures.dreamtrips.modules.infopages.api.SendFeedbackCommand;
 import com.worldventures.dreamtrips.modules.infopages.model.FeedbackType;
+import com.worldventures.dreamtrips.modules.infopages.service.FeedbackInteractor;
+import com.worldventures.dreamtrips.modules.infopages.service.command.GetFeedbackCommand;
+import com.worldventures.dreamtrips.modules.infopages.service.command.SendFeedbackCommand;
 
 import java.util.List;
 
 import javax.inject.Inject;
 
+import io.techery.janet.helper.ActionStateSubscriber;
+
 public class SendFeedbackPresenter extends Presenter<SendFeedbackPresenter.View> {
 
-   @Inject SnappyRepository db;
-
-   @Inject AppVersionNameBuilder appVersionNameBuilder;
+   @Inject FeedbackInteractor feedbackInteractor;
 
    @Override
    public void takeView(View view) {
       super.takeView(view);
-      doRequest(new GetFeedbackReasonsQuery(), feedbackTypes -> {
-         db.setFeedbackTypes(feedbackTypes);
-         view.setFeedbackTypes(feedbackTypes);
-         view.hideProgressBar();
-      }, spiceException -> {
-         SendFeedbackPresenter.this.handleError(spiceException);
-         view.setFeedbackTypes(db.getFeedbackTypes());
-         view.hideProgressBar();
-      });
-      view.showProgressDialog();
+      feedbackInteractor.getFeeedbackPipe()
+            .createObservable(new GetFeedbackCommand())
+            .compose(bindViewToMainComposer())
+            .subscribe(new ActionStateSubscriber<GetFeedbackCommand>()
+                  .onStart(action -> {
+                     view.setFeedbackTypes(action.items());
+                     view.showProgressDialog();
+                  })
+                  .onSuccess(action -> {
+                     view.setFeedbackTypes(action.items());
+                     view.hideProgressBar();
+                  })
+                  .onFail((action, e) -> {
+                     view.informUser(action.getErrorMessage());
+                     view.setFeedbackTypes(action.items());
+                     view.hideProgressBar();
+                  }));
    }
 
    public void sendFeedback(int type, String text) {
-      String osVersion = String.format("android-%d", Build.VERSION.SDK_INT);
-      String buildName = appVersionNameBuilder.getSemanticVersionName();
-      String deviceModel = String.format("%s:%s", Build.MANUFACTURER, Build.MODEL);
-      SendFeedbackCommand.Metadata metadata = new SendFeedbackCommand.Metadata(deviceModel, buildName, osVersion);
       TrackingHelper.sendFeedback(type);
-
-      doRequest(new SendFeedbackCommand(type, text, metadata), o -> view.feedbackSent());
+      //
+      feedbackInteractor.sendFeedbackPipe()
+            .createObservable(new SendFeedbackCommand(type, text))
+            .subscribe(new ActionStateSubscriber<SendFeedbackCommand>()
+                  .onSuccess(action -> view.feedbackSent())
+                  .onFail((action, e) -> view.informUser(action.getErrorMessage())));
    }
 
    public interface View extends Presenter.View {

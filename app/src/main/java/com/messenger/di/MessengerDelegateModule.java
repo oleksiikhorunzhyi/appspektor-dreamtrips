@@ -9,14 +9,12 @@ import com.messenger.delegate.conversation.helper.CreateConversationHelper;
 import com.messenger.storage.dao.ConversationsDAO;
 import com.messenger.storage.dao.ParticipantsDAO;
 import com.messenger.storage.dao.UsersDAO;
-import com.messenger.ui.helper.LegacyPhotoPickerDelegate;
 import com.messenger.ui.util.UserSectionHelper;
 import com.messenger.util.ChatFacadeManager;
 import com.messenger.util.OpenedConversationTracker;
 import com.messenger.util.UnreadConversationObservable;
 import com.techery.spares.module.Injector;
 import com.techery.spares.module.qualifier.ForApplication;
-import com.techery.spares.module.qualifier.Global;
 import com.techery.spares.session.SessionHolder;
 import com.worldventures.dreamtrips.core.session.UserSession;
 import com.worldventures.dreamtrips.core.utils.LocaleHelper;
@@ -25,7 +23,6 @@ import javax.inject.Singleton;
 
 import dagger.Module;
 import dagger.Provides;
-import de.greenrobot.event.EventBus;
 import io.techery.janet.Janet;
 
 @Module(
@@ -57,11 +54,6 @@ public class MessengerDelegateModule {
    @Provides
    OpenedConversationTracker providedOpenedConversationTracker() {
       return new OpenedConversationTracker();
-   }
-
-   @Provides
-   LegacyPhotoPickerDelegate providePhotoPickerDelegate(@Global EventBus eventBus) {
-      return new LegacyPhotoPickerDelegate(eventBus);
    }
 
    @Provides

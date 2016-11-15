@@ -19,6 +19,10 @@ import timber.log.Timber;
 
 import static com.worldventures.dreamtrips.util.ThrowableUtils.getCauseByType;
 
+/**
+ * @deprecated use CommandWithError and Presenter.handleError(action, throwable)
+ */
+@Deprecated
 public class ApiErrorPresenter {
 
    ApiErrorView apiErrorView;
@@ -92,7 +96,7 @@ public class ApiErrorPresenter {
 
          if (getCauseByType(IOException.class, exception.getCause()) != null) {
             apiErrorView.informUser(R.string.no_connection);
-         } else if (errorResponse != null) {
+         } else if (errorResponse != null && errorResponse.getErrors() != null && !errorResponse.getErrors().isEmpty()) {
             logError(errorResponse);
             if (!apiErrorView.onApiError(errorResponse)) apiErrorView.informUser(errorResponse.getFirstMessage());
          } else {

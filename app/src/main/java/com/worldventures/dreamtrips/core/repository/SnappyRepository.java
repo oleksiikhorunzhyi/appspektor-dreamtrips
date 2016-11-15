@@ -9,20 +9,31 @@ import com.worldventures.dreamtrips.modules.dtl.model.location.DtlLocation;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchant;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchantAttribute;
 import com.worldventures.dreamtrips.modules.dtl.model.transaction.DtlTransaction;
+import com.worldventures.dreamtrips.modules.feed.model.FeedItem;
 import com.worldventures.dreamtrips.modules.friends.model.Circle;
 import com.worldventures.dreamtrips.modules.infopages.model.FeedbackType;
+import com.worldventures.dreamtrips.modules.membership.model.Podcast;
 import com.worldventures.dreamtrips.modules.reptools.model.VideoLanguage;
 import com.worldventures.dreamtrips.modules.reptools.model.VideoLocale;
 import com.worldventures.dreamtrips.modules.settings.model.Setting;
 import com.worldventures.dreamtrips.modules.trips.model.Location;
+import com.worldventures.dreamtrips.modules.trips.model.Pin;
+import com.worldventures.dreamtrips.modules.trips.model.TripModel;
 import com.worldventures.dreamtrips.modules.tripsimages.model.IFullScreenObject;
 import com.worldventures.dreamtrips.modules.tripsimages.model.SocialViewPagerState;
 import com.worldventures.dreamtrips.modules.tripsimages.model.TripImagesType;
 import com.worldventures.dreamtrips.modules.video.model.CachedEntity;
+import com.worldventures.dreamtrips.wallet.domain.entity.AddressInfo;
+import com.worldventures.dreamtrips.wallet.domain.entity.FirmwareUpdateData;
+import com.worldventures.dreamtrips.wallet.domain.entity.SmartCard;
+import com.worldventures.dreamtrips.wallet.domain.entity.SmartCardDetails;
+import com.worldventures.dreamtrips.wallet.domain.entity.TermsAndConditions;
+import com.worldventures.dreamtrips.wallet.domain.entity.card.Card;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+
+import io.techery.janet.smartcard.mock.device.SimpleDeviceStorage;
 
 public interface SnappyRepository {
 
@@ -47,6 +58,10 @@ public interface SnappyRepository {
    String FILTER_CIRCLE = "FILTER_CIRCLE";
    String FILTER_FEED_FRIEND_FILTER_CIRCLE = "FILTER_FEED_FRIEND_FILTER_CIRCLE";
    String SOCIAL_VIEW_PAGER_STATE = "SOCIAL_VIEW_PAGER_STATE";
+   String PODCASTS = "PODCASTS";
+   String TRIPS = "TRIPS";
+   String PINS = "PINS";
+   String TRIPS_DETAILS = "TRIPS_DETAILS";
 
    String DTL_MERCHANTS = "DTL_MERCHANTS";
    String DTL_SELECTED_LOCATION = "DTL_SELECTED_LOCATION";
@@ -56,6 +71,24 @@ public interface SnappyRepository {
    String DTL_AMENITIES = "DTL_AMENITIES";
    String FEEDBACK_TYPES = "FEEDBACK_TYPES";
    String SUGGESTED_PHOTOS_SYNC_TIME = "SUGGESTED_PHOTOS_SYNC_TIME";
+
+   String NOTIFICATIONS = "notifications";
+   String UNDEFINED_FEED_ITEM = "undefined";
+   String PHOTO_FEED_ITEM = "photo";
+   String POST_FEED_ITEM = "post";
+   String TRIP_FEED_ITEM = "trip";
+   String BUCKET_FEED_ITEM = "bucket";
+
+   String WALLET_CARDS_LIST = "WALLET_CARDS_LIST";
+   String WALLET_SMART_CARD = "WALLET_SMART_CARD";
+   String WALLET_DETAILS_SMART_CARD = "WALLET_DETAILS_SMART_CARD";
+   String WALLET_ACTIVE_SMART_CARD_ID = "WALLET_ACTIVE_SMART_CARD_ID";
+   String WALLET_DEVICE_STORAGE = "WALLET_DEVICE_STORAGE";
+   String WALLET_DEFAULT_BANK_CARD = "WALLET_DEFAULT_BANK_CARD";
+   String WALLET_DEFAULT_ADDRESS = "WALLET_DEFAULT_ADDRESS";
+   String WALLET_TERMS_AND_CONDITIONS = "WALLET_TERMS_AND_CONDITIONS";
+   String WALLET_FIRMWARE = "WALLET_FIRMWARE";
+
 
    void clearAll();
 
@@ -135,7 +168,7 @@ public interface SnappyRepository {
 
    List<FeedbackType> getFeedbackTypes();
 
-   void setFeedbackTypes(ArrayList<FeedbackType> types);
+   void setFeedbackTypes(List<FeedbackType> types);
 
    void saveDtlLocation(DtlLocation dtlLocation);
 
@@ -174,9 +207,87 @@ public interface SnappyRepository {
 
    void saveDownloadMediaEntity(CachedEntity e);
 
+   List<CachedEntity> getDownloadMediaEntities();
+
    CachedEntity getDownloadMediaEntity(String id);
 
    void setLastSyncAppVersion(String appVersion);
 
    String getLastSyncAppVersion();
+
+   void saveNotifications(List<FeedItem> notifications);
+
+   List<FeedItem> getNotifications();
+
+   void savePodcasts(List<Podcast> podcasts);
+
+   List<Podcast> getPodcasts();
+
+   void saveTrips(List<TripModel> trips);
+
+   List<TripModel> getTrips();
+
+   void savePins(List<Pin> pins);
+
+   List<Pin> getPins();
+
+   void saveTripDetails(TripModel tripModel);
+
+   void saveTripsDetails(List<TripModel> trips);
+
+   List<TripModel> getTripsDetailsForUids(List<String> uids);
+
+   TripModel getTripDetail(String uid);
+
+   SimpleDeviceStorage getWalletDeviceStorage();
+
+   void saveWalletDeviceStorage(SimpleDeviceStorage deviceStorage);
+
+   void saveWalletCardsList(List<Card> items);
+
+   List<Card> readWalletCardsList();
+
+   void deleteWalletCardList();
+
+   void saveWalletDefaultCardId(String id);
+
+   String readWalletDefaultCardId();
+
+   void saveDefaultAddress(AddressInfo addressInfo);
+
+   AddressInfo readDefaultAddress();
+
+   void deleteDefaultAddress();
+
+   void saveSmartCard(SmartCard smartCard);
+
+   SmartCard getSmartCard(String smartCardId);
+
+   void deleteSmartCard(String smartCardId);
+
+   List<SmartCard> getSmartCards();
+
+   String getActiveSmartCardId();
+
+   void setActiveSmartCardId(String scid);
+
+   void deleteActiveSmartCardId();
+
+   void saveWalletTermsAndConditions(TermsAndConditions data);
+
+   TermsAndConditions getWalletTermsAndConditions();
+
+   void deleteTermsAndConditions();
+
+   void saveSmartCardDetails(SmartCardDetails details);
+
+   SmartCardDetails getSmartCardDetails(String smartCardId);
+
+   void deleteSmartCardDetails(String smartCardId);
+
+   void saveFirmwareUpdateData(FirmwareUpdateData firmwareUpdateData);
+
+   FirmwareUpdateData getFirmwareUpdateData();
+
+   void deleteFirmwareUpdateData();
 }

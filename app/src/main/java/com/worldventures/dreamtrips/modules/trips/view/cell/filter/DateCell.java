@@ -10,7 +10,7 @@ import com.techery.spares.ui.view.cell.AbstractDelegateCell;
 import com.techery.spares.ui.view.cell.CellDelegate;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.utils.DateTimeUtils;
-import com.worldventures.dreamtrips.modules.trips.model.DateFilterItem;
+import com.worldventures.dreamtrips.modules.trips.model.filter.DateFilterItem;
 
 import java.util.Calendar;
 

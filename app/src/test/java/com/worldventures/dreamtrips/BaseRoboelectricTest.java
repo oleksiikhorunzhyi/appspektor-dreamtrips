@@ -12,7 +12,7 @@ import org.robolectric.shadows.multidex.ShadowMultiDex;
 @RunWith(RobolectricTestRunner.class)
 @Config(application = TestApplication.class,
         constants = BuildConfig.class, shadows = ShadowMultiDex.class)
-public class BaseRoboelectricTest {
+public abstract class BaseRoboelectricTest {
 
    protected Context getContext() {
       return RuntimeEnvironment.application;

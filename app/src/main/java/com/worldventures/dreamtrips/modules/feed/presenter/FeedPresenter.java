@@ -6,6 +6,7 @@ import android.support.annotation.StringRes;
 import android.util.Pair;
 
 import com.innahema.collections.query.queriables.Queryable;
+import com.messenger.delegate.FlagsInteractor;
 import com.messenger.ui.activity.MessengerActivity;
 import com.messenger.util.UnreadConversationObservable;
 import com.techery.spares.module.Injector;
@@ -59,7 +60,6 @@ import com.worldventures.dreamtrips.modules.feed.view.util.TextualPostTranslatio
 import com.worldventures.dreamtrips.modules.friends.model.Circle;
 import com.worldventures.dreamtrips.modules.tripsimages.api.DeletePhotoCommand;
 import com.worldventures.dreamtrips.modules.tripsimages.api.DownloadImageCommand;
-import com.worldventures.dreamtrips.modules.tripsimages.view.custom.PickImageDelegate;
 import com.worldventures.dreamtrips.modules.tripsimages.vision.ImageUtils;
 
 import java.util.ArrayList;
@@ -95,6 +95,7 @@ public class FeedPresenter extends Presenter<FeedPresenter.View> {
    @Inject FeedInteractor feedInteractor;
    @Inject SuggestedPhotoInteractor suggestedPhotoInteractor;
    @Inject CirclesInteractor circlesInteractor;
+   @Inject FlagsInteractor flagsInteractor;
 
    private Circle filterCircle;
    private UidItemDelegate uidItemDelegate;
@@ -103,14 +104,11 @@ public class FeedPresenter extends Presenter<FeedPresenter.View> {
    @State ArrayList<FeedItem> feedItems;
    @State int unreadConversationCount;
 
-   public FeedPresenter() {
-      uidItemDelegate = new UidItemDelegate(this);
-   }
-
    @Override
    public void onInjected() {
       super.onInjected();
       entityManager.setRequestingPresenter(this);
+      uidItemDelegate = new UidItemDelegate(this, flagsInteractor);
    }
 
    @Override
@@ -132,6 +130,7 @@ public class FeedPresenter extends Presenter<FeedPresenter.View> {
    @Override
    public void takeView(View view) {
       super.takeView(view);
+      apiErrorPresenter.setView(view);
       updateCircles();
       subscribeRefreshFeeds();
       subscribeLoadNextFeeds();
@@ -375,7 +374,7 @@ public class FeedPresenter extends Presenter<FeedPresenter.View> {
    }
 
    public void onEvent(LoadFlagEvent event) {
-      if (view.isVisibleOnScreen()) uidItemDelegate.loadFlags(event.getFlaggableView());
+      if (view.isVisibleOnScreen()) uidItemDelegate.loadFlags(event.getFlaggableView(), this::handleError);
    }
 
    public void onEvent(ItemFlaggedEvent event) {
@@ -451,7 +450,7 @@ public class FeedPresenter extends Presenter<FeedPresenter.View> {
             .map(photoGalleryModel -> {
                ArrayList<PhotoGalleryModel> chosenImages = new ArrayList<>();
                chosenImages.add(photoGalleryModel);
-               return new MediaAttachment(chosenImages, PickImageDelegate.PICK_PICTURE, CreateFeedPostPresenter.REQUEST_ID);
+               return new MediaAttachment(chosenImages, 0, CreateFeedPostPresenter.REQUEST_ID);
             })
             .compose(new IoToMainComposer<>())
             .subscribe(mediaAttachment -> mediaPickerManager.attach(mediaAttachment), error -> Timber.e(error, ""));

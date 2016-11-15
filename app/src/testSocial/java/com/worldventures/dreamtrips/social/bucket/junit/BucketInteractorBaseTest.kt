@@ -4,6 +4,7 @@ import android.support.annotation.CallSuper
 import com.techery.spares.session.SessionHolder
 import com.techery.spares.storage.complex_objects.Optional
 import com.worldventures.dreamtrips.BaseTest
+import com.worldventures.dreamtrips.core.janet.SessionActionPipeCreator
 import com.worldventures.dreamtrips.core.janet.cache.storage.ActionStorage
 import com.worldventures.dreamtrips.core.repository.SnappyRepository
 import com.worldventures.dreamtrips.core.session.UserSession
@@ -67,7 +68,7 @@ abstract class BucketInteractorBaseTest : BaseTest() {
             .addService(cachedService(httpStubWrapper))
             .build()
 
-      bucketInteractor = BucketInteractor(janet)
+      bucketInteractor = BucketInteractor(SessionActionPipeCreator(janet))
 
       userSession = mock(UserSession::class.java)
       val mockUser = mock(User::class.java)

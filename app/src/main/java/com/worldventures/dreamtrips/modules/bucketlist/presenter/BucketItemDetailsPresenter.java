@@ -19,6 +19,7 @@ import com.worldventures.dreamtrips.modules.feed.event.FeedEntityChangedEvent;
 
 import java.util.List;
 
+import io.techery.janet.helper.ActionStateSubscriber;
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
 
@@ -90,19 +91,19 @@ public class BucketItemDetailsPresenter extends BucketDetailsBasePresenter<Bucke
       if (bucketItem != null && status != bucketItem.isDone()) {
          view.disableMarkAsDone();
 
-         view.bind(bucketInteractor.updatePipe().createObservableResult(new UpdateItemHttpAction(ImmutableBucketBodyImpl
+         view.bind(bucketInteractor.updatePipe().createObservable(new UpdateItemHttpAction(ImmutableBucketBodyImpl
                .builder()
                .id(bucketItem.getUid())
                .status(getStatus(status))
-               .build())).map(UpdateItemHttpAction::getResponse).observeOn(AndroidSchedulers.mainThread()))
-               .subscribe(bucketItem -> {
-                  view.enableMarkAsDone();
-               }, throwable -> {
-                  handleError(throwable);
-
-                  view.setStatus(bucketItem.isDone());
-                  view.enableMarkAsDone();
-               });
+               .build()))
+               .observeOn(AndroidSchedulers.mainThread()))
+               .subscribe(new ActionStateSubscriber<UpdateItemHttpAction>()
+                     .onSuccess(updateItemHttpAction -> view.enableMarkAsDone())
+                     .onFail((action, throwable) -> {
+                        handleError(action, throwable);
+                        view.setStatus(bucketItem.isDone());
+                        view.enableMarkAsDone();
+                     }));
 
          eventBus.post(new BucketItemAnalyticEvent(bucketItem.getUid(), TrackingHelper.ATTRIBUTE_MARK_AS_DONE));
       }
@@ -114,10 +115,6 @@ public class BucketItemDetailsPresenter extends BucketDetailsBasePresenter<Bucke
       if (bucketItem.getOwner() == null) {
          bucketItem.setOwner(tempItem.getOwner());
       }
-
-      //TODO: check it, its not suitable fro current approach
-      //        getBucketChangePipe().send(BucketActionCreator.save(bucketItem));
-      //        bucketItemManager.saveSingleBucketItem(bucketItem);
    }
 
    @NonNull

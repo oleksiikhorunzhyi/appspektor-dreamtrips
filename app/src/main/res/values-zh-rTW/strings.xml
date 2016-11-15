@@ -586,8 +586,6 @@
    <string name="error_fail_to_load_videos">無法加載視頻</string>
    <string name="error_fail_to_like_item">無法點贊項目</string>
    <string name="error_fail_to_unlike_item">無法取消點贊項目</string>
-   <string name="error_fail_to_mark_notification">無法標記通知</string>
-   <string name="error_fail_to_mark_notifications">無法標記通知</string>
    <string name="tag_people">給人加標籤</string>
 
    <string name="say_something">向世界說點什麼</string>
@@ -657,5 +655,9 @@
 
    <string name="error_fail_to_load_filters">很抱歉，無法加載篩選條件</string>
    <string name="flag_content_message">WorldVentures人員將被通知審查此內容 </string>
+
+   <!-- change this later after approval from WV -->
+   <string name="offline_warning_dialog_title">沒有網絡連接</string>
+   <string name="offline_warning_dialog_message">您的使用將受到限制</string>
 
 </resources>

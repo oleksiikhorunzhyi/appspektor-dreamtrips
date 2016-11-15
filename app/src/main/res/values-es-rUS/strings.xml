@@ -586,8 +586,6 @@
    <string name="error_fail_to_load_videos">No se pudo cargar vídeos</string>
    <string name="error_fail_to_like_item">Error al marcar “me gusta”</string>
    <string name="error_fail_to_unlike_item">Error al quitar la merca de “me gusta” </string>
-   <string name="error_fail_to_mark_notification">Error al marcar la notificación</string>
-   <string name="error_fail_to_mark_notifications">Error al marcar las notificaciones</string>
    <string name="tag_people">Etiqueta personas</string>
 
    <string name="say_something">Dile algo al mundo</string>
@@ -657,5 +655,9 @@
 
    <string name="error_fail_to_load_filters">Lo sentimos, error al cargar los filtros</string>
    <string name="flag_content_message">El personal de WorldVentures recibirá una notificación para revisar este contenido por </string>
+
+   <!-- change this later after approval from WV -->
+   <string name="offline_warning_dialog_title">No hay conexión a internet</string>
+   <string name="offline_warning_dialog_message">Tu acceso será limitado</string>
 
 </resources>

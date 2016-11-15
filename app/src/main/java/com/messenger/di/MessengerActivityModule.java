@@ -8,7 +8,6 @@ import com.messenger.entities.DataUser;
 import com.messenger.ui.adapter.ChatAdapter;
 import com.messenger.ui.adapter.holder.chat.ChatHolderModule;
 import com.messenger.ui.adapter.inflater.chat.ChatTimestampInflater;
-import com.messenger.ui.helper.LegacyPhotoPickerDelegate;
 import com.messenger.ui.module.flagging.FlaggingPresenterImpl;
 import com.messenger.ui.presenter.AddChatMembersScreenPresenterImpl;
 import com.messenger.ui.presenter.ChatMembersScreenPresenterImpl;
@@ -34,6 +33,7 @@ import com.worldventures.dreamtrips.core.api.DreamSpiceManager;
 import com.worldventures.dreamtrips.core.component.ComponentDescription;
 import com.worldventures.dreamtrips.core.permission.PermissionDispatcher;
 import com.worldventures.dreamtrips.core.session.UserSession;
+import com.worldventures.dreamtrips.modules.common.service.MediaInteractor;
 import com.worldventures.dreamtrips.modules.common.view.custom.PhotoPickerLayoutDelegate;
 
 import javax.inject.Singleton;
@@ -68,8 +68,10 @@ public class MessengerActivityModule {
    }
 
    @Provides
-   MessengerMediaPickerDelegate provideChangeAvatarDelegate(LegacyPhotoPickerDelegate legacyPhotoPickerDelegate, PhotoPickerLayoutDelegate photoPickerLayoutDelegate, PermissionDispatcher permissionDispatcher) {
-      return new MessengerMediaPickerDelegateImpl(legacyPhotoPickerDelegate, photoPickerLayoutDelegate, permissionDispatcher);
+   MessengerMediaPickerDelegate provideChangeAvatarDelegate(MediaInteractor mediaInteractor,
+         PhotoPickerLayoutDelegate photoPickerLayoutDelegate,
+         PermissionDispatcher permissionDispatcher) {
+      return new MessengerMediaPickerDelegateImpl(mediaInteractor, photoPickerLayoutDelegate, permissionDispatcher);
    }
 
    @Provides

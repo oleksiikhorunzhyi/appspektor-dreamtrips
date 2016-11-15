@@ -1,5 +1,6 @@
 package com.worldventures.dreamtrips.modules.infopages.presenter;
 
+import com.worldventures.dreamtrips.core.janet.api_lib.NewDreamTripsHttpService;
 import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.rx.RxView;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
@@ -43,7 +44,7 @@ public class WebViewFragmentPresenter<T extends WebViewFragmentPresenter.View> e
    }
 
    public String getAuthToken() {
-      return "Token token=" + appSessionHolder.get().get().getApiToken();
+      return NewDreamTripsHttpService.getAuthorizationHeader(appSessionHolder.get().get().getApiToken());
    }
 
    public void track(Route route) {

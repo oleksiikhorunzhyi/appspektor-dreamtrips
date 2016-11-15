@@ -2,6 +2,7 @@ package com.worldventures.dreamtrips.core.janet.api_lib;
 
 import android.content.Context;
 import android.os.Build;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import com.techery.spares.module.Injector;
@@ -9,6 +10,7 @@ import com.techery.spares.session.SessionHolder;
 import com.worldventures.dreamtrips.BuildConfig;
 import com.worldventures.dreamtrips.api.api_common.AuthorizedHttpAction;
 import com.worldventures.dreamtrips.api.api_common.BaseHttpAction;
+import com.worldventures.dreamtrips.api.session.model.Device;
 import com.worldventures.dreamtrips.core.api.AuthRetryPolicy;
 import com.worldventures.dreamtrips.core.api.action.LoginAction;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
@@ -31,6 +33,7 @@ import io.techery.janet.Janet;
 import io.techery.janet.JanetException;
 import io.techery.janet.converter.Converter;
 import io.techery.janet.http.HttpClient;
+import rx.Observable;
 import timber.log.Timber;
 
 public class NewDreamTripsHttpService extends ActionServiceWrapper {
@@ -39,15 +42,18 @@ public class NewDreamTripsHttpService extends ActionServiceWrapper {
    @Inject LocaleHelper localeHelper;
    @Inject AppVersionNameBuilder appVersionNameBuilder;
    @Inject SnappyRepository db;
+   @Inject Observable<Device> deviceSource;
 
    private final ActionPipe<LoginAction> loginActionPipe;
    private final Set<Object> retriedActions = new CopyOnWriteArraySet<>();
    private final AuthRetryPolicy retryPolicy;
 
-   public NewDreamTripsHttpService(Context appContext, String baseUrl, HttpClient client, Converter converter) {
+   //TODO oldConverter should be removed when loginAction will be performed via api lib
+   public NewDreamTripsHttpService(Context appContext, String baseUrl, HttpClient client, Converter converter,
+         Converter oldConverter) {
       super(new HttpActionService(baseUrl, client, converter));
       ((Injector) appContext).inject(this);
-      loginActionPipe = new Janet.Builder().addService(new HttpActionService(baseUrl, client, converter))
+      loginActionPipe = new Janet.Builder().addService(new HttpActionService(baseUrl, client, oldConverter))
             .build()
             .createPipe(LoginAction.class);
       retryPolicy = new AuthRetryPolicy(appSessionHolder);
@@ -69,8 +75,13 @@ public class NewDreamTripsHttpService extends ActionServiceWrapper {
       //
       if (action instanceof AuthorizedHttpAction && appSessionHolder.get().isPresent()) {
          UserSession userSession = appSessionHolder.get().get();
-         ((AuthorizedHttpAction) action).setAuthorizationHeader("Token token=" + userSession.getApiToken());
+         ((AuthorizedHttpAction) action).setAuthorizationHeader(getAuthorizationHeader(userSession.getApiToken()));
       }
+   }
+
+   @NonNull
+   public static String getAuthorizationHeader(String apiToken) {
+      return "Token token=" + apiToken;
    }
 
 
@@ -120,7 +131,8 @@ public class NewDreamTripsHttpService extends ActionServiceWrapper {
       UserSession userSession = appSessionHolder.get().get();
       String username = userSession.getUsername();
       String userPassword = userSession.getUserPassword();
-      LoginAction loginAction = new LoginAction(username, userPassword);
+      Device device = deviceSource.toBlocking().first();
+      LoginAction loginAction = new LoginAction(username, userPassword, device);
       loginAction.setAppVersionHeader(appVersionNameBuilder.getSemanticVersionName());
       loginAction.setLanguageHeader(localeHelper.getDefaultLocaleFormatted());
       ActionState<LoginAction> loginState = loginActionPipe.createObservable(loginAction).toBlocking().last();

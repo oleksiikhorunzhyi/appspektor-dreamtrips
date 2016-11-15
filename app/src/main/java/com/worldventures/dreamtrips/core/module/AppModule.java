@@ -3,7 +3,7 @@ package com.worldventures.dreamtrips.core.module;
 import android.app.Application;
 import android.content.Context;
 
-import com.messenger.di.FlaggingModule;
+import com.worldventures.dreamtrips.modules.flags.FlagsModule;
 import com.messenger.di.MessengerModule;
 import com.techery.spares.application.BaseApplicationWithInjector;
 import com.techery.spares.module.DebugModule;
@@ -16,6 +16,7 @@ import com.worldventures.dreamtrips.modules.common.ResponseSnifferModule;
 import com.worldventures.dreamtrips.modules.common.SessionProcessingModule;
 import com.worldventures.dreamtrips.modules.gcm.ActionReceiverModule;
 import com.worldventures.dreamtrips.modules.gcm.GcmModule;
+import com.worldventures.dreamtrips.modules.mapping.MappingModule;
 import com.worldventures.dreamtrips.modules.player.PodcastAppModule;
 
 import dagger.Module;
@@ -45,11 +46,14 @@ import dagger.Provides;
             //
             LocaleModule.class, AppVersionNameModule.class,
             //
-            MessengerModule.class, FlaggingModule.class,
+            MessengerModule.class, FlagsModule.class,
             //
             JanetModule.class, AnalyticsModule.class, SessionProcessingModule.class,
             //
-            FlaggingModule.class, PodcastAppModule.class,},
+            FlagsModule.class, PodcastAppModule.class, MappingModule.class,
+            //
+            SecurityModule.class, DeviceModule.class,
+      },
       library = true,
       complete = false,
       overrides = true)

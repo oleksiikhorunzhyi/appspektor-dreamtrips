@@ -2,6 +2,7 @@ package com.worldventures.dreamtrips.modules.tripsimages.presenter.fullscreen;
 
 import android.support.v4.app.FragmentManager;
 
+import com.messenger.delegate.FlagsInteractor;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.navigation.router.Router;
@@ -31,7 +32,7 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-public class SocialImageFullscreenPresenter extends FullScreenPresenter<Photo, SocialImageFullscreenPresenter.View> {
+public class SocialImageFullscreenPresenter extends SocialFullScreenPresenter<Photo, SocialImageFullscreenPresenter.View> {
 
    @Inject FeedEntityManager entityManager;
 
@@ -43,11 +44,12 @@ public class SocialImageFullscreenPresenter extends FullScreenPresenter<Photo, S
 
    @Inject Router router;
    @Inject FragmentManager fm;
+   @Inject FlagsInteractor flagsInteractor;
 
    @Override
    public void takeView(View view) {
       super.takeView(view);
-      uidItemDelegate = new UidItemDelegate(this);
+      apiErrorPresenter.setView(view);
       loadEntity();
    }
 
@@ -55,6 +57,7 @@ public class SocialImageFullscreenPresenter extends FullScreenPresenter<Photo, S
    public void onInjected() {
       super.onInjected();
       entityManager.setRequestingPresenter(this);
+      uidItemDelegate = new UidItemDelegate(this, flagsInteractor);
    }
 
    public void loadEntity() {
@@ -130,7 +133,10 @@ public class SocialImageFullscreenPresenter extends FullScreenPresenter<Photo, S
    @Override
    public void onFlagAction(Flaggable flaggable) {
       view.showProgress();
-      uidItemDelegate.loadFlags(flaggable);
+      uidItemDelegate.loadFlags(flaggable, (command, throwable) -> {
+         view.hideProgress();
+         handleError(command, throwable);
+      });
    }
 
    public void onEvent(FeedEntityChangedEvent event) {
@@ -155,7 +161,7 @@ public class SocialImageFullscreenPresenter extends FullScreenPresenter<Photo, S
       return photo;
    }
 
-   public interface View extends FullScreenPresenter.View, UidItemDelegate.View {
+   public interface View extends SocialFullScreenPresenter.View, UidItemDelegate.View {
 
       void showProgress();
 

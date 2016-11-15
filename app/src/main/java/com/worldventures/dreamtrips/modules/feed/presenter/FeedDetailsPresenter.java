@@ -9,13 +9,14 @@ import com.worldventures.dreamtrips.modules.feed.event.FeedEntityCommentedEvent;
 import com.worldventures.dreamtrips.modules.feed.event.LikesPressedEvent;
 import com.worldventures.dreamtrips.modules.feed.manager.FeedEntityManager;
 import com.worldventures.dreamtrips.modules.feed.model.FeedEntity;
-import com.worldventures.dreamtrips.modules.feed.model.FeedEntityHolder;
 import com.worldventures.dreamtrips.modules.feed.model.FeedItem;
 import com.worldventures.dreamtrips.modules.feed.model.TripFeedItem;
-import com.worldventures.dreamtrips.modules.trips.model.TripModel;
+import com.worldventures.dreamtrips.modules.trips.command.GetTripDetailsCommand;
+import com.worldventures.dreamtrips.modules.trips.service.TripsInteractor;
 
 import javax.inject.Inject;
 
+import io.techery.janet.helper.ActionStateSubscriber;
 import timber.log.Timber;
 
 public class FeedDetailsPresenter<V extends FeedDetailsPresenter.View> extends BaseCommentPresenter<V> {
@@ -27,6 +28,7 @@ public class FeedDetailsPresenter<V extends FeedDetailsPresenter.View> extends B
    private WeakHandler handler = new WeakHandler();
 
    @Inject FeedEntityManager entityManager;
+   @Inject TripsInteractor tripsInteractor;
 
    public FeedDetailsPresenter(FeedItem feedItem) {
       super(feedItem.getItem());
@@ -37,6 +39,7 @@ public class FeedDetailsPresenter<V extends FeedDetailsPresenter.View> extends B
    public void takeView(V view) {
       super.takeView(view);
       view.setFeedItem(feedItem);
+      subscribeForTripsDetails();
       loadFullEventInfo();
    }
 
@@ -59,35 +62,35 @@ public class FeedDetailsPresenter<V extends FeedDetailsPresenter.View> extends B
 
    @Override
    protected boolean isNeedCheckCommentsWhenStart() {
-      return false;
+      return isTrip();
    }
 
    private void loadFullEventInfo() {
-      doRequest(new GetFeedEntityQuery(feedEntity.getUid()), feedEntityHolder -> {
-         updateFullEventInfo(feedEntityHolder);
-      }, spiceException -> Timber.e(spiceException, TAG));
+      //TODO trip details is requested from other place, all this hierarchy should be refactored
+      if (!isTrip()) doRequest(new GetFeedEntityQuery(feedEntity.getUid()),
+            feedEntityHolder -> updateFullEventInfo(feedEntityHolder.getItem()),
+            spiceException -> {
+               Timber.e(spiceException, TAG);
+               handleError(spiceException);
+            });
    }
 
-   protected void updateFullEventInfo(FeedEntityHolder feedEntityHolder) {
-      surviveNeedfulFields(feedEntity, feedEntityHolder);
-      feedEntity = feedEntityHolder.getItem();
+   protected void updateFullEventInfo(FeedEntity updatedFeedEntity) {
+      feedEntity = updatedFeedEntity;
       feedEntity.setComments(null);
       feedItem.setItem(feedEntity);
       eventBus.post(new FeedEntityChangedEvent(feedEntity));
       checkCommentsAndLikesToLoad();
       view.updateFeedItem(feedItem);
-      view.showAdditionalInfo(feedEntityHolder.getItem().getOwner());
+      view.showAdditionalInfo(feedEntity.getOwner());
    }
 
-   private void surviveNeedfulFields(FeedEntity feedEntity, FeedEntityHolder feedEntityHolder) {
-      feedEntity.setFirstLikerName(feedEntity.getFirstLikerName());
-      if (feedEntityHolder.getType() == FeedEntityHolder.Type.TRIP) {
-         TripModel freshItem = (TripModel) feedEntityHolder.getItem();
-         TripModel oldItem = (TripModel) feedEntity;
-         freshItem.setPrice(oldItem.getPrice());
-         freshItem.setPriceAvailable(oldItem.isPriceAvailable());
-         freshItem.setInBucketList(oldItem.isInBucketList());
-      }
+   private void subscribeForTripsDetails() {
+      tripsInteractor.detailsPipe()
+            .observe()
+            .compose(bindViewToMainComposer())
+            .subscribe(new ActionStateSubscriber<GetTripDetailsCommand>()
+                  .onSuccess(command -> updateFullEventInfo(command.getResult())));
    }
 
    public void onEvent(FeedEntityChangedEvent event) {

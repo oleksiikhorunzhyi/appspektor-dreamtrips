@@ -16,7 +16,6 @@ import com.worldventures.dreamtrips.wallet.analytics.WalletHomeAction;
 import com.worldventures.dreamtrips.wallet.domain.entity.FirmwareUpdateData;
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCard;
 import com.worldventures.dreamtrips.wallet.domain.entity.card.BankCard;
-import com.worldventures.dreamtrips.wallet.domain.entity.card.Card;
 import com.worldventures.dreamtrips.wallet.service.FirmwareInteractor;
 import com.worldventures.dreamtrips.wallet.service.SmartCardInteractor;
 import com.worldventures.dreamtrips.wallet.service.command.CardStacksCommand;
@@ -154,9 +153,7 @@ public class CardListPresenter extends WalletPresenter<CardListPresenter.Screen,
    }
 
    void cardClicked(BankCard bankCard) {
-      if (bankCard.category() != Card.Category.SAMPLE) {
-         navigator.go(new CardDetailsPath(bankCard));
-      }
+      navigator.go(new CardDetailsPath(bankCard));
    }
 
    void navigationClick() {

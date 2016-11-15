@@ -133,7 +133,7 @@ public class CardDetailsPresenter extends WalletPresenter<CardDetailsPresenter.S
             .build();
    }
 
-   public void onDeleteCardClick() {
+   void onDeleteCardClick() {
       smartCardInteractor.activeSmartCardPipe()
             .createObservableResult(new GetActiveSmartCardCommand())
             .compose(bindViewIoToMainComposer())
@@ -146,7 +146,7 @@ public class CardDetailsPresenter extends WalletPresenter<CardDetailsPresenter.S
             }, throwable -> Timber.e(throwable, ""));
    }
 
-   public void editAddress() {
+   void editAddress() {
       smartCardInteractor.activeSmartCardPipe()
             .createObservableResult(new GetActiveSmartCardCommand())
             .compose(bindViewIoToMainComposer())
@@ -159,22 +159,8 @@ public class CardDetailsPresenter extends WalletPresenter<CardDetailsPresenter.S
             }, throwable -> Timber.e(throwable, ""));
    }
 
-   public void onDeleteCardConfirmed() {
+   void onDeleteCardConfirmed() {
       smartCardInteractor.deleteCardPipe().send(new DeleteRecordAction(valueOf(bankCard.id())));
-   }
-
-   public void onSetAsDefaultCard(boolean setDefaultCard) {
-      smartCardInteractor.activeSmartCardPipe()
-            .createObservableResult(new GetActiveSmartCardCommand())
-            .compose(bindViewIoToMainComposer())
-            .subscribe(command -> {
-               if (command.getResult().connectionStatus().isConnected()) {
-                  executeSetDefaultCard(setDefaultCard);
-               } else {
-                  getView().setDefaultCardCondition(CardUtils.equals(defaultBankCard, bankCard));
-                  getView().showConnectionErrorDialog();
-               }
-            }, throwable -> Timber.e(throwable, ""));
    }
 
    private void executeSetDefaultCard(boolean setDefaultCard) {
@@ -194,7 +180,7 @@ public class CardDetailsPresenter extends WalletPresenter<CardDetailsPresenter.S
       }
    }
 
-   public void defaultCardDialogConfirmed(boolean confirmed) {
+   void defaultCardDialogConfirmed(boolean confirmed) {
       if (!confirmed) {
          getView().setDefaultCardCondition(false);
       } else {
@@ -213,8 +199,22 @@ public class CardDetailsPresenter extends WalletPresenter<CardDetailsPresenter.S
       navigator.goBack();
    }
 
-   void nicknameUpdated(String nickName) {
+   private void nicknameUpdated(String nickName) {
       smartCardInteractor.updateBankCardPipe().send(UpdateBankCardCommand.updateNickName(bankCard, nickName));
+   }
+
+   private void onSetAsDefaultCard(boolean setDefaultCard) {
+      smartCardInteractor.activeSmartCardPipe()
+            .createObservableResult(new GetActiveSmartCardCommand())
+            .compose(bindViewIoToMainComposer())
+            .subscribe(command -> {
+               if (command.getResult().connectionStatus().isConnected()) {
+                  executeSetDefaultCard(setDefaultCard);
+               } else {
+                  getView().setDefaultCardCondition(CardUtils.equals(defaultBankCard, bankCard));
+                  getView().showConnectionErrorDialog();
+               }
+            }, throwable -> Timber.e(throwable, ""));
    }
 
    public interface Screen extends WalletScreen {

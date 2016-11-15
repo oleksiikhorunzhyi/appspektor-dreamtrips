@@ -20,6 +20,8 @@ import com.worldventures.dreamtrips.wallet.domain.entity.card.Card;
 import com.worldventures.dreamtrips.wallet.service.FirmwareInteractor;
 import com.worldventures.dreamtrips.wallet.service.SmartCardInteractor;
 import com.worldventures.dreamtrips.wallet.service.command.CardStacksCommand;
+import com.worldventures.dreamtrips.wallet.service.command.GetActiveSmartCardCommand;
+import com.worldventures.dreamtrips.wallet.service.command.SmartCardModifier;
 import com.worldventures.dreamtrips.wallet.service.command.firmware.FirmwareUpdateCacheCommand;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletPresenter;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.WalletScreen;
@@ -42,6 +44,7 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import io.techery.janet.Command;
 import io.techery.janet.smartcard.exception.NotConnectedException;
 import rx.Observable;
 import timber.log.Timber;
@@ -76,16 +79,26 @@ public class CardListPresenter extends WalletPresenter<CardListPresenter.Screen,
    @Override
    public void onAttachedToWindow() {
       super.onAttachedToWindow();
+      observeSmartCard();
       observeChanges();
       observeFirmwareInfo();
 
       fetchCards();
       trackScreen();
+   }
 
-      smartCardInteractor.smartCardModifierPipe()
-            .observeSuccessWithReplay()
+   private void observeSmartCard() {
+      smartCardInteractor.smartCardModifierPipe().observeSuccessWithReplay().map(SmartCardModifier::getResult)
+            .startWith(smartCardInteractor.activeSmartCardPipe()
+                  .createObservableResult(new GetActiveSmartCardCommand())
+                  .map(Command::getResult)
+            )
             .compose(bindViewIoToMainComposer())
-            .subscribe(it -> setSmartCard(it.getResult()));
+            .subscribe(it -> setSmartCard(it));
+   }
+
+   private void fetchCardsOnce() {
+      smartCardInteractor.cardStacksPipe().send(CardStacksCommand.get(false));
    }
 
    private void fetchCards() {

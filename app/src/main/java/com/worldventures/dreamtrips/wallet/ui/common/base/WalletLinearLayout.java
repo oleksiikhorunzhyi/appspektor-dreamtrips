@@ -58,6 +58,7 @@ public abstract class WalletLinearLayout<V extends WalletScreen, P extends ViewS
          case CONNECTED:
             postDelayed(() -> removeView(connectionLabel), HIDE_ANIMATION_DELAY);
             break;
+         case ERROR:
          case DISCONNECTED:
             connectionLabel.setText(R.string.wallet_smart_card_locked_disconnected_status);
             if (indexOfChild(connectionLabel) < 0) {

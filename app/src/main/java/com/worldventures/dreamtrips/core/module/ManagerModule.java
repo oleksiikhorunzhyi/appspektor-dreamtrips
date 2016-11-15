@@ -39,7 +39,9 @@ import com.worldventures.dreamtrips.modules.dtl.service.DtlLocationInteractor;
 import com.worldventures.dreamtrips.modules.dtl.service.DtlTransactionInteractor;
 import com.worldventures.dreamtrips.modules.dtl.service.FilterDataInteractor;
 import com.worldventures.dreamtrips.modules.dtl.service.FullMerchantInteractor;
+import com.worldventures.dreamtrips.modules.dtl.service.MerchantsFacadeInteractor;
 import com.worldventures.dreamtrips.modules.dtl.service.MerchantsInteractor;
+import com.worldventures.dreamtrips.modules.dtl.service.MerchantsRequestSourceInteractor;
 import com.worldventures.dreamtrips.modules.dtl.service.PresentationInteractor;
 import com.worldventures.dreamtrips.modules.feed.manager.FeedEntityManager;
 import com.worldventures.dreamtrips.modules.infopages.service.FeedbackInteractor;
@@ -100,8 +102,8 @@ public class ManagerModule {
    @Singleton
    @Provides
    MerchantsInteractor provideMerchantsInteractor(SessionActionPipeCreator sessionActionPipeCreator,
-         DtlLocationInteractor locationInteractor, FilterDataInteractor filterDataInteractor, ClearMemoryInteractor clearMemoryInteractor) {
-      return new MerchantsInteractor(sessionActionPipeCreator, locationInteractor, filterDataInteractor, clearMemoryInteractor);
+         DtlLocationInteractor locationInteractor, ClearMemoryInteractor clearMemoryInteractor) {
+      return new MerchantsInteractor(sessionActionPipeCreator, locationInteractor, clearMemoryInteractor);
    }
 
    @Singleton
@@ -121,10 +123,16 @@ public class ManagerModule {
    @Singleton
    @Provides
    FilterDataInteractor provideFilterDataInteractor(SessionActionPipeCreator sessionActionPipeCreator,
-         AnalyticsInteractor analyticsInteractor, DtlLocationInteractor dtlLocationInteractor,
+         AnalyticsInteractor analyticsInteractor, DtlLocationInteractor dtlLocationInteractor, MerchantsRequestSourceInteractor merchantsRequestSourceInteractor,
          SnappyRepository snappyRepository) {
-      return new FilterDataInteractor(sessionActionPipeCreator, analyticsInteractor, dtlLocationInteractor,
+      return new FilterDataInteractor(sessionActionPipeCreator, analyticsInteractor, dtlLocationInteractor, merchantsRequestSourceInteractor,
             snappyRepository);
+   }
+
+   @Singleton
+   @Provides
+   MerchantsFacadeInteractor provideMerchantsFacadeInteractor(MerchantsRequestSourceInteractor merchantsRequestSourceInteractor, FilterDataInteractor filterDataInteractor, MerchantsInteractor merchantsInteractor, DtlLocationInteractor locationInteractor) {
+      return new MerchantsFacadeInteractor(merchantsRequestSourceInteractor, filterDataInteractor, merchantsInteractor, locationInteractor);
    }
 
    @Singleton
@@ -132,6 +140,12 @@ public class ManagerModule {
    AttributesInteractor provideAttributesInteractor(SessionActionPipeCreator sessionActionPipeCreator,
          FilterDataInteractor filterDataInteractor, DtlLocationInteractor dtlLocationInteractor) {
       return new AttributesInteractor(sessionActionPipeCreator, filterDataInteractor, dtlLocationInteractor);
+   }
+
+   @Singleton
+   @Provides
+   MerchantsRequestSourceInteractor provideMerchantsRequestSourceInteractor(SessionActionPipeCreator sessionActionPipeCreator) {
+      return new MerchantsRequestSourceInteractor(sessionActionPipeCreator);
    }
 
    @Singleton

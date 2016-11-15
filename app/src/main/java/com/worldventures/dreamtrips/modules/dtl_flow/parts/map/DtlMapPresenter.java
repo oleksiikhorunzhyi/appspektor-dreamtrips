@@ -13,8 +13,6 @@ public interface DtlMapPresenter extends DtlPresenter<DtlMapScreen, ViewState.EM
 
    void locationChangeRequested();
 
-   void onMarkerClick(ThinMerchant merchant);
-
    void onMarkerPopupDismiss();
 
    void onMarkerFocused();
@@ -22,6 +20,10 @@ public interface DtlMapPresenter extends DtlPresenter<DtlMapScreen, ViewState.EM
    void onLoadMerchantsClick(LatLng cameraPosition);
 
    void onListClicked();
+
+   void onLoadMoreClicked();
+
+   void onMarkerClicked(ThinMerchant merchant);
 
    void retryLoadMerchant();
 

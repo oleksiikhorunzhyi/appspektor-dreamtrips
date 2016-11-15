@@ -2,8 +2,6 @@ package com.worldventures.dreamtrips.modules.dtl.service.action;
 
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.api.dtl.merchants.ThinMerchantsHttpAction;
-import com.worldventures.dreamtrips.api.dtl.merchants.model.ImmutableThinMerchantsActionParams;
-import com.worldventures.dreamtrips.api.dtl.merchants.model.ThinMerchantsActionParams;
 import com.worldventures.dreamtrips.core.api.action.CommandWithError;
 import com.worldventures.dreamtrips.core.janet.JanetModule;
 import com.worldventures.dreamtrips.core.janet.cache.CacheBundle;
@@ -13,16 +11,12 @@ import com.worldventures.dreamtrips.core.janet.cache.CachedAction;
 import com.worldventures.dreamtrips.core.janet.cache.ImmutableCacheOptions;
 import com.worldventures.dreamtrips.core.janet.cache.storage.PaginatedStorage;
 import com.worldventures.dreamtrips.core.janet.dagger.InjectableAction;
-import com.worldventures.dreamtrips.modules.dtl.helper.FilterHelper;
-import com.worldventures.dreamtrips.modules.dtl.model.location.DtlLocation;
 import com.worldventures.dreamtrips.modules.dtl.model.mapping.ThinMerchantsTransformer;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.ThinMerchant;
-import com.worldventures.dreamtrips.modules.dtl.model.merchant.filter.FilterData;
-import com.worldventures.dreamtrips.modules.trips.model.Location;
+import com.worldventures.dreamtrips.modules.dtl.service.action.bundle.MerchantsParamsBundle;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -41,31 +35,37 @@ public class MerchantsAction extends CommandWithError<List<ThinMerchant>>
    @Inject @Named(JanetModule.JANET_API_LIB) Janet janet;
 
    private final boolean isRefresh;
-
-   private final FilterData filterData;
-   private final DtlLocation location;
+   private final MerchantsParamsBundle bundle;
 
    private List<ThinMerchant> cache = new ArrayList<>();
 
-   public static MerchantsAction create(FilterData filterData, DtlLocation dtlLocation) {
-      return new MerchantsAction(filterData, dtlLocation);
+   public static MerchantsAction create(MerchantsParamsBundle bundle) {
+      return new MerchantsAction(bundle);
    }
 
-   public MerchantsAction(FilterData filterData, DtlLocation dtlLocation) {
-      this.filterData = filterData;
-      this.location = dtlLocation;
-      this.isRefresh = HttpActionsCreator.calculateOffsetPagination(filterData) == 0;
+   public MerchantsAction(MerchantsParamsBundle bundle) {
+      this.bundle = bundle;
+      this.isRefresh = HttpActionsCreator.calculateOffsetPagination(bundle.filterData()) == 0;
    }
 
    @Override
    protected void run(CommandCallback<List<ThinMerchant>> callback) throws Throwable {
       callback.onProgress(0);
-      janet.createPipe(ThinMerchantsHttpAction.class, Schedulers.io())
-            .createObservableResult(HttpActionsCreator.provideMerchantsAction(filterData, location))
+       janet.createPipe(ThinMerchantsHttpAction.class, Schedulers.io())
+            .createObservableResult(HttpActionsCreator.provideMerchantsAction(bundle))
             .map(ThinMerchantsHttpAction::merchants)
             .doOnNext(action -> clearCacheIfNeeded())
             .compose(ThinMerchantsTransformer.INSTANCE)
             .subscribe(callback::onSuccess, callback::onFail);
+   }
+
+
+   public boolean isRefresh() {
+      return isRefresh;
+   }
+
+   public MerchantsParamsBundle bundle() {
+      return bundle;
    }
 
    @Override
@@ -97,10 +97,6 @@ public class MerchantsAction extends CommandWithError<List<ThinMerchant>>
 
    private void clearCacheIfNeeded() {
       if(isRefresh()) cache = null;
-   }
-
-   public boolean isRefresh() {
-      return isRefresh;
    }
 
    public List<ThinMerchant> merchants() {

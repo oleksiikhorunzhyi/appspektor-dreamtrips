@@ -207,7 +207,7 @@ public class DtlMerchantsPresenterImpl extends DtlPresenterImpl<DtlMerchantsScre
 
    @Override
    public void mapClicked() {
-      navigateToPath(new DtlMapPath(FlowUtil.currentMaster(getContext()), getView().isToolbarCollapsed()));
+      navigateToPath(new DtlMapPath(FlowUtil.currentMaster(getContext())));
    }
 
    @Override

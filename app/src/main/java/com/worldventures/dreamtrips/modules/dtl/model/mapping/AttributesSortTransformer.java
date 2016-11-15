@@ -17,6 +17,6 @@ public class AttributesSortTransformer implements Observable.Transformer<List<At
       return sourceList
             .flatMap(Observable::from)
             .toSortedList((attributeLeft, attributeRight) ->
-                  attributeLeft.name().compareToIgnoreCase(attributeRight.name()));
+                  attributeLeft.displayName().compareToIgnoreCase(attributeRight.displayName()));
    }
 }

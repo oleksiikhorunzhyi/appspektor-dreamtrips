@@ -41,9 +41,11 @@ public interface DtlMapScreen extends DtlScreen {
 
    void markerClick(Marker marker);
 
-   void showButtonLoadMerchants(boolean show);
+   void showButtonRedoMerchants(boolean show);
 
    void zoom(float zoom);
+
+   void showLoadMoreButton(boolean isShow);
 
    void tryHideMyLocationButton(boolean hide);
 

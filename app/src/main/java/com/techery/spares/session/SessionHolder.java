@@ -29,8 +29,8 @@ public class SessionHolder<S> extends ComplexObjectStorage<UserSession> {
    @Override
    public void put(UserSession userSession) {
       final Locale localeFromSession = LocaleHelper.buildFromLanguageCode(userSession.getLocale());
-      if (Queryable.from(supportedLocales).count(locale ->
-            LocaleHelper.compareLocales(localeFromSession, locale)) < 1) {
+      if (Queryable.from(supportedLocales).firstOrDefault(locale ->
+            LocaleHelper.compareLocales(localeFromSession, locale)) == null) {
          userSession.setLocale(Locale.US.getLanguage() + "-" + Locale.US.getCountry());
       }
       super.put(userSession);

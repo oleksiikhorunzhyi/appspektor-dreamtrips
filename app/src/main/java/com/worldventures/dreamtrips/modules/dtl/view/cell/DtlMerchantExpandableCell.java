@@ -15,6 +15,7 @@ import com.techery.spares.ui.view.cell.AbstractDelegateCell;
 import com.trello.rxlifecycle.RxLifecycle;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.utils.DateTimeUtils;
+import com.worldventures.dreamtrips.core.utils.LocaleHelper;
 import com.worldventures.dreamtrips.core.utils.ViewUtils;
 import com.worldventures.dreamtrips.core.utils.tracksystem.AnalyticsInteractor;
 import com.worldventures.dreamtrips.modules.common.view.custom.ImageryDraweeView;
@@ -28,7 +29,6 @@ import com.worldventures.dreamtrips.modules.dtl.model.merchant.offer.DtlOffer;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.operational_hour.OperationDay;
 
 import java.util.List;
-import java.util.Locale;
 
 import javax.inject.Inject;
 
@@ -192,7 +192,7 @@ public class DtlMerchantExpandableCell extends AbstractDelegateCell<DtlMerchant,
       //
       if (DtlMerchantHelper.isOfferExpiringSoon(offer)) { // expiration bar
          ViewUtils.setTextOrHideView(expirationBar, DtlMerchantHelper.
-               getOfferExpiringCaption(itemView.getContext(), offer, Locale.getDefault()));
+               getOfferExpiringCaption(itemView.getContext(), offer, LocaleHelper.getDefaultLocale()));
       } else ViewUtils.setViewVisibility(View.GONE, expirationBar);
       //
       title.setText(offer.getTitle()); // description

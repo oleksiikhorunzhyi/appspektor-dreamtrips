@@ -1,13 +1,13 @@
 package com.worldventures.dreamtrips.modules.trips.model;
 
 import com.google.gson.annotations.SerializedName;
+import com.worldventures.dreamtrips.core.utils.LocaleHelper;
 import com.worldventures.dreamtrips.modules.trips.model.filter.DateFilterItem;
 
 import java.io.Serializable;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.Locale;
 import java.util.TimeZone;
 
 public class Schedule implements Serializable {
@@ -23,13 +23,13 @@ public class Schedule implements Serializable {
    private final static SimpleDateFormat simpleDateFormatYearDay;
 
    static {
-      simpleDateFormatYearMonthDay = new SimpleDateFormat(PATTERN_YEAR_MONTH_AND_DAY, Locale.getDefault());
+      simpleDateFormatYearMonthDay = new SimpleDateFormat(PATTERN_YEAR_MONTH_AND_DAY, LocaleHelper.getDefaultLocale());
       simpleDateFormatYearMonthDay.setTimeZone(TimeZone.getTimeZone("UTC"));
-      simpleDateFormatMonthDay = new SimpleDateFormat(PATTERN_MONTH_AND_DAY, Locale.getDefault());
+      simpleDateFormatMonthDay = new SimpleDateFormat(PATTERN_MONTH_AND_DAY, LocaleHelper.getDefaultLocale());
       simpleDateFormatMonthDay.setTimeZone(TimeZone.getTimeZone("UTC"));
-      simpleDateFormatDay = new SimpleDateFormat(PATTERN_DAY, Locale.getDefault());
+      simpleDateFormatDay = new SimpleDateFormat(PATTERN_DAY, LocaleHelper.getDefaultLocale());
       simpleDateFormatDay.setTimeZone(TimeZone.getTimeZone("UTC"));
-      simpleDateFormatYearDay = new SimpleDateFormat(PATTERN_YEAR_AND_DAY, Locale.getDefault());
+      simpleDateFormatYearDay = new SimpleDateFormat(PATTERN_YEAR_AND_DAY, LocaleHelper.getDefaultLocale());
       simpleDateFormatYearDay.setTimeZone(TimeZone.getTimeZone("UTC"));
    }
 

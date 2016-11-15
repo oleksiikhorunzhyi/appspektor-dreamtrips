@@ -10,6 +10,7 @@ import com.techery.spares.ui.view.cell.AbstractDelegateCell;
 import com.techery.spares.ui.view.cell.CellDelegate;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.utils.DateTimeUtils;
+import com.worldventures.dreamtrips.core.utils.LocaleHelper;
 import com.worldventures.dreamtrips.core.utils.ViewUtils;
 import com.worldventures.dreamtrips.modules.common.view.custom.ImageryDraweeView;
 import com.worldventures.dreamtrips.modules.dtl.helper.DtlMerchantHelper;
@@ -18,7 +19,6 @@ import com.worldventures.dreamtrips.modules.dtl.model.merchant.offer.DtlOffer;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.operational_hour.OperationDay;
 
 import java.util.List;
-import java.util.Locale;
 
 import butterknife.InjectView;
 import butterknife.OnClick;
@@ -62,7 +62,7 @@ public class DtlPerkCell extends AbstractDelegateCell<DtlOffer, CellDelegate<Dtl
    private void bindExpirationBar() {
       if (DtlMerchantHelper.isOfferExpiringSoon(getModelObject())) {
          ViewUtils.setTextOrHideView(expirationBar, DtlMerchantHelper.
-               getOfferExpiringCaption(itemView.getContext(), getModelObject(), Locale.getDefault()));
+               getOfferExpiringCaption(itemView.getContext(), getModelObject(), LocaleHelper.getDefaultLocale()));
       } else ViewUtils.setViewVisibility(View.GONE, expirationBar);
    }
 
@@ -74,7 +74,7 @@ public class DtlPerkCell extends AbstractDelegateCell<DtlOffer, CellDelegate<Dtl
       List<OperationDay> operationDays = getModelObject().getOperationDays();
       if (operationDays == null) return;
       //
-      String concatDays = DateTimeUtils.concatOperationDays(itemView.getResources(), operationDays, Locale.getDefault());
+      String concatDays = DateTimeUtils.concatOperationDays(itemView.getResources(), operationDays, LocaleHelper.getDefaultLocale());
       this.operationDays.setText(concatDays);
    }
 }

@@ -11,7 +11,15 @@ import java.util.Locale;
 public class LocaleHelper {
 
    public static String getDefaultLocaleFormatted() {
-      return formatLocale(Locale.getDefault());
+      return formatLocale(LocaleHelper.getDefaultLocale());
+   }
+
+   /**
+    * Sugar to wrap <code>Locale.getDefault()</code> to have all locale accessing code in one place
+    * @return Locale that is currently set as default
+    */
+   public static Locale getDefaultLocale() {
+      return Locale.getDefault();
    }
 
    public static String formatLocale(Locale locale) {

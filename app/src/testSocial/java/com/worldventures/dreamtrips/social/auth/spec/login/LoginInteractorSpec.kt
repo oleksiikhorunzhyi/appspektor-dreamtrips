@@ -9,6 +9,7 @@ import com.techery.spares.storage.complex_objects.Optional
 import com.worldventures.dreamtrips.AssertUtil.assertActionFail
 import com.worldventures.dreamtrips.AssertUtil.assertActionSuccess
 import com.worldventures.dreamtrips.BaseSpec
+import com.worldventures.dreamtrips.api.session.model.Device
 import com.worldventures.dreamtrips.core.janet.SessionActionPipeCreator
 import com.worldventures.dreamtrips.core.repository.SnappyRepository
 import com.worldventures.dreamtrips.core.session.UserSession
@@ -23,6 +24,7 @@ import io.techery.janet.CommandActionService
 import io.techery.janet.Janet
 import io.techery.janet.http.test.MockHttpActionService
 import org.mockito.internal.verification.VerificationModeFactory
+import rx.Observable
 import rx.observers.TestSubscriber
 
 class LoginInteractorSpec : BaseSpec({
@@ -86,6 +88,7 @@ class LoginInteractorSpec : BaseSpec({
       val sessionHolderMock: SessionHolder<UserSession> = mock()
       val userSessionMock: UserSession = mock()
       val mockDB: SnappyRepository = spy()
+      val deviceObservable: Observable<Device> = Observable.just(null)
 
       lateinit var loginInteractor: LoginInteractor
 
@@ -105,6 +108,7 @@ class LoginInteractorSpec : BaseSpec({
          daggerCommandActionService.registerProvider(LoginInteractor::class.java) { loginInteractor }
          daggerCommandActionService.registerProvider(AuthInteractor::class.java) { authInteractor }
          daggerCommandActionService.registerProvider(SnappyRepository::class.java) { mockDB }
+         daggerCommandActionService.registerProvider(Observable::class.java) { deviceObservable }
 
          loginInteractor = LoginInteractor(sessionPiperCreator)
 

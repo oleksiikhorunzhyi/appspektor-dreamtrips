@@ -6,7 +6,7 @@ import com.techery.spares.adapter.BaseArrayListAdapter;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.api.action.CommandWithError;
 import com.worldventures.dreamtrips.core.session.CirclesInteractor;
-import com.worldventures.dreamtrips.modules.common.api.janet.command.CirclesCommand;
+import com.worldventures.dreamtrips.modules.common.api.janet.command.GetCirclesCommand;
 import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.common.view.BlockingProgressView;
@@ -98,16 +98,16 @@ public class RequestsPresenter extends Presenter<RequestsPresenter.View> {
       }
    }
 
-   private Observable<ActionState<CirclesCommand>> getCirclesObservable() {
+   private Observable<ActionState<GetCirclesCommand>> getCirclesObservable() {
       return circlesInteractor.pipe()
-            .createObservable(new CirclesCommand())
+            .createObservable(new GetCirclesCommand())
             .observeOn(AndroidSchedulers.mainThread())
             .compose(bindView());
    }
 
    public void acceptAllRequests() {
       getCirclesObservable()
-            .subscribe(new ActionStateSubscriber<CirclesCommand>().onStart(circlesCommand -> onCirclesStart())
+            .subscribe(new ActionStateSubscriber<GetCirclesCommand>().onStart(circlesCommand -> onCirclesStart())
                   .onSuccess(circlesCommand -> acceptAllCirclesSuccess(circlesCommand.getResult()))
                   .onFail((circlesCommand, throwable) -> onCirclesError(circlesCommand.getErrorMessage())));
    }
@@ -135,7 +135,7 @@ public class RequestsPresenter extends Presenter<RequestsPresenter.View> {
 
    public void acceptRequest(User user) {
       getCirclesObservable()
-            .subscribe(new ActionStateSubscriber<CirclesCommand>().onStart(circlesCommand -> onCirclesStart())
+            .subscribe(new ActionStateSubscriber<GetCirclesCommand>().onStart(circlesCommand -> onCirclesStart())
                   .onSuccess(circlesCommand -> acceptCirclesSuccess(user, circlesCommand.getResult()))
                   .onFail((circlesCommand, throwable) -> onCirclesError(circlesCommand.getErrorMessage())));
    }

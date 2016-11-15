@@ -1,32 +1,36 @@
 package com.worldventures.dreamtrips.modules.common.api.janet.command;
 
 import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.api.circles.GetCirclesHttpAction;
 import com.worldventures.dreamtrips.core.api.action.CommandWithError;
+import com.worldventures.dreamtrips.core.janet.JanetModule;
 import com.worldventures.dreamtrips.core.janet.cache.CacheOptions;
 import com.worldventures.dreamtrips.core.janet.cache.CachedAction;
 import com.worldventures.dreamtrips.core.janet.cache.ImmutableCacheOptions;
 import com.worldventures.dreamtrips.core.janet.dagger.InjectableAction;
-import com.worldventures.dreamtrips.modules.common.api.janet.GetCirclesHttpAction;
 import com.worldventures.dreamtrips.modules.friends.model.Circle;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
+import javax.inject.Named;
 
 import io.techery.janet.ActionHolder;
 import io.techery.janet.Janet;
 import io.techery.janet.command.annotations.CommandAction;
+import io.techery.mappery.MapperyContext;
 import rx.schedulers.Schedulers;
 
 @CommandAction
-public class CirclesCommand extends CommandWithError<List<Circle>> implements InjectableAction, CachedAction<List<Circle>> {
+public class GetCirclesCommand extends CommandWithError<List<Circle>> implements InjectableAction, CachedAction<List<Circle>> {
 
-   @Inject Janet janet;
+   @Inject @Named(JanetModule.JANET_API_LIB) Janet janet;
+   @Inject MapperyContext mapperyContext;
 
    private List<Circle> cachedData;
 
-   public CirclesCommand() {
+   public GetCirclesCommand() {
    }
 
    @Override
@@ -34,11 +38,7 @@ public class CirclesCommand extends CommandWithError<List<Circle>> implements In
       if (cachedData == null || cachedData.isEmpty()) {
          janet.createPipe(GetCirclesHttpAction.class, Schedulers.io())
                .createObservableResult(new GetCirclesHttpAction())
-               .map(getCirclesHttpAction -> {
-                  ArrayList<Circle> circles = getCirclesHttpAction.getCircles();
-                  if (circles == null) circles = new ArrayList<>();
-                  return circles;
-               })
+               .map(action -> mapperyContext.convert(action.response(), Circle.class))
                .subscribe(callback::onSuccess, callback::onFail);
       } else {
          callback.onSuccess(cachedData);

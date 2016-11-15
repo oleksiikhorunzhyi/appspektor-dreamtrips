@@ -108,7 +108,6 @@ android {
          "preprod"       : CONFIG_MAP_PREPROD,
          "perf"          : CONFIG_MAP_PERF,
          "prod"          : CONFIG_MAP_PROD,
-         "dtl"           : CONFIG_MAP_DTL,
          "smartcardmock" : CONFIG_MAP_SMARTCARD_MOCK,
          "smartcardnxtid": CONFIG_MAP_SMARTCARD_NXTID,
    ]

@@ -55,10 +55,6 @@ public class PrivateProfileConverter implements Converter<PrivateUserProfile, Us
       user.setFriendsCount(apiProfile.friendsCount());
       user.setTermsAccepted(apiProfile.termsAccepted());
 
-      if (apiProfile.relationship() != null) {
-         user.setRelationship(mapperyContext.convert(apiProfile.relationship(), User.Relationship.class));
-      }
-
       user.setBackgroundPhotoUrl(apiProfile.backgroundPhotoUrl());
 
       List<Subscription> apiSubscriptions = apiProfile.subscriptions();
@@ -69,14 +65,6 @@ public class PrivateProfileConverter implements Converter<PrivateUserProfile, Us
          }
       }
       user.setSubscriptions(subscriptions);
-
-      if (apiProfile.circles() != null) {
-         user.setCircles(mapperyContext.convert(apiProfile.circles(), Circle.class));
-      }
-
-      if (apiProfile.mutualFriends() != null) {
-         user.setMutualFriends(new User.MutualFriends(apiProfile.mutualFriends().count()));
-      }
 
       return user;
    }

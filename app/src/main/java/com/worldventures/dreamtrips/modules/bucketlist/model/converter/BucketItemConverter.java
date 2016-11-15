@@ -12,7 +12,7 @@ import java.util.ArrayList;
 import io.techery.mappery.MapperyContext;
 
 public abstract class BucketItemConverter<T extends com.worldventures.dreamtrips.api.bucketlist.model.BucketItem>
-   implements Converter<T, BucketItem> {
+      implements Converter<T, BucketItem> {
 
    @Override
    public Class<BucketItem> targetClass() {
@@ -29,13 +29,16 @@ public abstract class BucketItemConverter<T extends com.worldventures.dreamtrips
          bucketItem.setCategory(mapperyContext.convert(apiBucketItem.category(), CategoryItem.class));
       }
 
-      bucketItem.setType(mapperyContext.convert(apiBucketItem.type(), BucketItem.BucketType.class).toString().toLowerCase());
+      bucketItem.setType(mapperyContext.convert(apiBucketItem.type(), BucketItem.BucketType.class)
+            .toString()
+            .toLowerCase());
       bucketItem.setStatus(apiBucketItem.status().toString().toLowerCase());
 
-      bucketItem.setLocation(mapperyContext.convert(apiBucketItem.location(), BucketLocation.class));
+      if (apiBucketItem.location() != null) {
+         bucketItem.setLocation(mapperyContext.convert(apiBucketItem.location(), BucketLocation.class));
+      }
 
       bucketItem.setTargetDate(apiBucketItem.targetDate());
-
       bucketItem.setCompletionDate(apiBucketItem.completionDate());
 
       if (apiBucketItem.bucketCoverPhoto() != null) {

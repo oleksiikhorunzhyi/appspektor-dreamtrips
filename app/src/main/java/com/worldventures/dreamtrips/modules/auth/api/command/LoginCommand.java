@@ -2,6 +2,7 @@ package com.worldventures.dreamtrips.modules.auth.api.command;
 
 import com.techery.spares.session.SessionHolder;
 import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.api.session.model.Device;
 import com.worldventures.dreamtrips.core.api.AuthRetryPolicy;
 import com.worldventures.dreamtrips.core.api.action.CommandWithError;
 import com.worldventures.dreamtrips.core.api.action.LoginAction;
@@ -22,6 +23,7 @@ import javax.inject.Inject;
 
 import io.techery.janet.Janet;
 import io.techery.janet.command.annotations.CommandAction;
+import rx.Observable;
 import rx.schedulers.Schedulers;
 
 @CommandAction
@@ -31,6 +33,7 @@ public class LoginCommand extends CommandWithError<UserSession> implements Injec
    @Inject SessionHolder<UserSession> appSessionHolder;
    @Inject AuthInteractor authInteractor;
    @Inject SnappyRepository db;
+   @Inject Observable<Device> deviceSource;
 
    private String userName;
    private String userPassword;
@@ -59,9 +62,10 @@ public class LoginCommand extends CommandWithError<UserSession> implements Injec
             throw new Exception("You have to set username and password");
          }
       }
+      Device device = deviceSource.toBlocking().first();
 
       janet.createPipe(LoginAction.class, Schedulers.io())
-            .createObservableResult(new LoginAction(userName, userPassword))
+            .createObservableResult(new LoginAction(userName, userPassword, device))
             .map(LoginAction::getLoginResponse)
             .doOnNext(this::saveSettings)
             .map(session -> SessionUtil.createUserSession(session, userName, userPassword))

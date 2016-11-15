@@ -262,6 +262,7 @@
    <!--puck connection screen-->
    <string name="wallet_puck_connection_title">Smart Card Update</string>
    <string name="wallet_puck_connection_comment">Make sure your flye smart card is connected to the charger.</string>
+   <string name="wallet_image_uploadery_error">Failed to upload image</string>
 
    <!--supported device screen-->
    <string name="wallet_supported_device_chapter">Support for your device is coming soon.</string>

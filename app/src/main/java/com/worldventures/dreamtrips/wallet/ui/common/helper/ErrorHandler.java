@@ -8,6 +8,7 @@ import android.support.annotation.StringRes;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.api.api_common.BaseHttpAction;
 import com.worldventures.dreamtrips.util.JanetHttpErrorHandlingUtils;
+import com.worldventures.dreamtrips.util.HttpUploaderyException;
 
 import java.net.UnknownHostException;
 import java.util.ArrayList;
@@ -80,6 +81,8 @@ public class ErrorHandler<T> implements Func1<Throwable, MessageActionHolder<T>>
       }
       if (throwable instanceof HttpServiceException) { // HttpServiceException is wrapper
          return tryCreateActionHolder(throwable.getCause(), message, action);
+      } if (throwable instanceof HttpUploaderyException) {
+         if (message == null) message = context.getString(R.string.wallet_image_uploadery_error);
       }
       if (throwable instanceof UnknownHostException) {
          if (message == null) message = context.getString(R.string.wallet_no_internet_connection);

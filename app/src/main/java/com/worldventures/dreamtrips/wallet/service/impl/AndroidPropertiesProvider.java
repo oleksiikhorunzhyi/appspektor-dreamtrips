@@ -1,4 +1,4 @@
-package com.worldventures.dreamtrips.wallet.util;
+package com.worldventures.dreamtrips.wallet.service.impl;
 
 import android.content.Context;
 import android.os.Build;
@@ -6,31 +6,45 @@ import android.provider.Settings;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
 
+import com.worldventures.dreamtrips.wallet.service.SystemPropertiesProvider;
+
 import timber.log.Timber;
 
-public class SmartphoneUtils {
+public class AndroidPropertiesProvider implements SystemPropertiesProvider {
 
-   private static String deviceId;
+   private final Context context;
+   private String deviceId;
 
-   private SmartphoneUtils() {
+   public AndroidPropertiesProvider(Context appContext) {
+      this.context = appContext;
    }
 
-   public static String getDeviceName() {
+   @Override
+   public synchronized String deviceId() {
+      if (deviceId == null) {
+         deviceId = createDeviceIdentifier(context);
+      }
+      return deviceId;
+   }
+
+   @Override
+   public String osVersion() {
+      return "Android " + Build.VERSION.RELEASE;
+   }
+
+   @Override
+   public String deviceName() {
       String manufacturer = Build.MANUFACTURER;
       String model = Build.MODEL;
 
       return model.startsWith(manufacturer) ? capitalize(model) : String.format("%s %s", capitalize(manufacturer), model);
    }
 
-   private static String capitalize(String name) {
+   private String capitalize(String name) {
       if (TextUtils.isEmpty(name)) return "";
 
       char firstLetter = name.charAt(0);
       return Character.isUpperCase(firstLetter) ? name : Character.toUpperCase(firstLetter) + name.substring(1);
-   }
-
-   public static String getOsVersion() {
-      return "Android " + Build.VERSION.RELEASE;
    }
 
    /**
@@ -39,9 +53,7 @@ public class SmartphoneUtils {
     * android_id + serial number + pseudo_device_id (it's composed from system properties of device)
     * If there are bugs in retrieving all components, an Exception will be thrown
     */
-   public static synchronized String getDeviceIdentifier(Context context) {
-      if (deviceId != null) return deviceId;
-
+   private String createDeviceIdentifier(Context context) {
       StringBuilder sb = new StringBuilder();
       String androidId = Settings.Secure.getString(context.getContentResolver(), Settings.Secure.ANDROID_ID);
       String pseudoDeviceId = getPseudoDeviceId();
@@ -54,11 +66,11 @@ public class SmartphoneUtils {
       if (sb.length() == 0)
          throw new RuntimeException("Unique device indentifier wasn't obtained");
 
-      return deviceId = sb.toString();
+      return sb.toString();
    }
 
    @Nullable
-   private static String getPseudoDeviceId() {
+   private String getPseudoDeviceId() {
       String result = null;
       try {
          result = "35" + //we make this look like a valid IMEI
@@ -75,5 +87,4 @@ public class SmartphoneUtils {
 
       return result;
    }
-
 }

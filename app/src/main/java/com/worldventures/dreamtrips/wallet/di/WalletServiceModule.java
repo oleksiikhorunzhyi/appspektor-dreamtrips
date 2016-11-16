@@ -7,11 +7,13 @@ import com.worldventures.dreamtrips.core.janet.SessionActionPipeCreator;
 import com.worldventures.dreamtrips.wallet.service.FactoryResetManager;
 import com.worldventures.dreamtrips.wallet.service.FirmwareInteractor;
 import com.worldventures.dreamtrips.wallet.service.SmartCardInteractor;
+import com.worldventures.dreamtrips.wallet.service.SystemPropertiesProvider;
 import com.worldventures.dreamtrips.wallet.service.WalletBluetoothService;
 import com.worldventures.dreamtrips.wallet.service.WalletNetworkService;
 import com.worldventures.dreamtrips.wallet.service.WizardInteractor;
 import com.worldventures.dreamtrips.wallet.service.impl.AndroidBleService;
 import com.worldventures.dreamtrips.wallet.service.impl.AndroidNetworkManager;
+import com.worldventures.dreamtrips.wallet.service.impl.AndroidPropertiesProvider;
 
 import javax.inject.Named;
 import javax.inject.Singleton;
@@ -42,6 +44,12 @@ public class WalletServiceModule {
    @Provides
    WalletNetworkService walletNetworkService(@ForApplication Context appContext) {
       return new AndroidNetworkManager(appContext);
+   }
+
+   @Singleton
+   @Provides
+   SystemPropertiesProvider systemPropertiesProvider(@ForApplication Context appContext) {
+      return new AndroidPropertiesProvider(appContext);
    }
 
    @Singleton

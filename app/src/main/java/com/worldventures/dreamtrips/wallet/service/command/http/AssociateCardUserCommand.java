@@ -10,7 +10,7 @@ import com.worldventures.dreamtrips.core.janet.dagger.InjectableAction;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCardDetails;
 import com.worldventures.dreamtrips.wallet.domain.entity.TermsAndConditions;
-import com.worldventures.dreamtrips.wallet.util.SmartphoneUtils;
+import com.worldventures.dreamtrips.wallet.service.SystemPropertiesProvider;
 import com.worldventures.dreamtrips.wallet.util.WalletValidateHelper;
 
 import javax.inject.Inject;
@@ -30,6 +30,7 @@ public class AssociateCardUserCommand extends Command<SmartCardDetails> implemen
    @Inject @Named(JANET_API_LIB) Janet janet;
    @Inject SnappyRepository repository;
    @Inject MapperyContext mapperyContext;
+   @Inject SystemPropertiesProvider propertiesProvider;
 
    private final String barcode;
 
@@ -43,8 +44,9 @@ public class AssociateCardUserCommand extends Command<SmartCardDetails> implemen
 
       AssociationCardUserData data = ImmutableAssociationCardUserData.builder()
             .scid(Long.parseLong(barcode))
-            .deviceModel(SmartphoneUtils.getDeviceName())
-            .deviceOsVersion(SmartphoneUtils.getOsVersion())
+            .deviceModel(propertiesProvider.deviceName())
+            .deviceOsVersion(propertiesProvider.osVersion())
+            .deviceId(propertiesProvider.deviceId())
             .acceptedTermsAndConditionVersion(obtainTACVersion())
             .build();
 

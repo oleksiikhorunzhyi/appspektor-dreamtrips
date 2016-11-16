@@ -11,6 +11,7 @@ import com.techery.spares.session.SessionHolder;
 import com.techery.spares.storage.complex_objects.Optional;
 import com.worldventures.dreamtrips.api.messenger.model.response.TranslatedText;
 import com.worldventures.dreamtrips.core.session.UserSession;
+import com.worldventures.dreamtrips.core.utils.LocaleHelper;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.messenger.util.MessengerBaseTest;
 
@@ -37,12 +38,13 @@ import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 // There are test methods names like translationStatus_typeMessage,
 // where Status - status which we receive from server side success/failed
 // type - status of Translation notTranslated/Translating/Error/Reverted
 
-@PrepareForTest({MessengerDatabase.class, TrackingHelper.class})
+@PrepareForTest({MessengerDatabase.class, TrackingHelper.class, LocaleHelper.class})
 public class MessageTranslationDelegateTest extends MessengerBaseTest {
 
    TranslationsDAO translationsDAO;
@@ -198,6 +200,9 @@ public class MessageTranslationDelegateTest extends MessengerBaseTest {
    }
 
    private void mockTranslationDAO(DataTranslation translationFromDB, String messageId, TestSubscriber<DataTranslation> testSubscriber) {
+      PowerMockito.mockStatic(LocaleHelper.class);
+      when(LocaleHelper.getDefaultLocaleFormatted()).thenReturn("en-us");
+
       localeCache = new ArrayList<>();
       translationsDAO = mock(TranslationsDAO.class);
       doAnswer(invocation -> {

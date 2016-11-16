@@ -128,6 +128,10 @@
    <string name="bucket_list_create_message">Currently you have no Bucket List items. You can choose from popular Bucket List items or create your own goals</string>
    <string name="bucket_list_choose">Choose From Popular Items</string>
    <string name="bucket_list_create_new">Create My Own List</string>
+   <string name="bucket_list_action_create_error">Could not add Bucket List item</string>
+   <string name="bucket_list_action_update_error">Could not update Bucket List item</string>
+   <string name="bucket_list_action_change_order_error">Could not change Bucket List item order</string>
+   <string name="bucket_list_action_delete_error">Could not delete Bucket List item</string>
    <string name="bucket_hint_title">Title</string>
    <string name="bucket_hint_description">Description</string>
    <string name="bucket_hint_description_text">Type your description here</string>

@@ -7,7 +7,7 @@ import com.worldventures.dreamtrips.core.utils.LocaleHelper;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem;
 import com.worldventures.dreamtrips.modules.bucketlist.service.BucketInteractor;
-import com.worldventures.dreamtrips.modules.bucketlist.service.action.DeleteItemHttpAction;
+import com.worldventures.dreamtrips.modules.bucketlist.service.command.DeleteBucketItemCommand;
 import com.worldventures.dreamtrips.modules.common.model.FlagData;
 import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
@@ -255,9 +255,9 @@ public class BaseCommentPresenter<T extends BaseCommentPresenter.View> extends P
          BucketItem bucketItemToDelete = event.getEntity();
 
          view.bind(bucketInteractor.deleteItemPipe()
-               .createObservable(new DeleteItemHttpAction(bucketItemToDelete.getUid()))
+               .createObservable(new DeleteBucketItemCommand(bucketItemToDelete.getUid()))
                .observeOn(AndroidSchedulers.mainThread()))
-               .subscribe(new ActionStateSubscriber<DeleteItemHttpAction>().onSuccess(deleteItemAction -> itemDeleted(bucketItemToDelete))
+               .subscribe(new ActionStateSubscriber<DeleteBucketItemCommand>().onSuccess(deleteItemAction -> itemDeleted(bucketItemToDelete))
                      .onFail((deleteItemAction, throwable) -> {
                         view.setLoading(false); //TODO: review, after leave from robospice completely
                         handleError(deleteItemAction, throwable);

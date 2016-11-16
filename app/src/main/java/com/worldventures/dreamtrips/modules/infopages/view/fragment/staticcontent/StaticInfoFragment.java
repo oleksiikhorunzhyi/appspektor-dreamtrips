@@ -10,7 +10,6 @@ import android.net.http.SslError;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Parcelable;
-import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
@@ -47,7 +46,6 @@ import com.worldventures.dreamtrips.modules.membership.bundle.UrlBundle;
 import java.lang.ref.WeakReference;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
 
 import javax.inject.Inject;
@@ -398,14 +396,14 @@ public abstract class StaticInfoFragment<T extends WebViewFragmentPresenter, P e
          case WebViewClient.ERROR_HOST_LOOKUP:
          case WebViewClient.ERROR_AUTHENTICATION:
             errorText = R.string.error_webview_no_internet;
-            showOfflineOverlay();
+            getPresenter().noInternetConnection();
             break;
          case SECURE_CONNECTION_ERROR:
             errorText = R.string.error_webview_secure_connection;
             break;
          default:
             errorText = R.string.error_webview_default;
-            showOfflineOverlay();
+            getPresenter().noInternetConnection();
             break;
       }
       errorFragment = MessageDialogFragment.create(errorText);

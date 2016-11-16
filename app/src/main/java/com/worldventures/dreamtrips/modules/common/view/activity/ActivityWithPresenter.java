@@ -14,6 +14,7 @@ import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.utils.ViewUtils;
 import com.worldventures.dreamtrips.modules.common.presenter.ActivityPresenter;
 import com.worldventures.dreamtrips.modules.common.presenter.delegate.OfflineWarningDelegate;
+import com.worldventures.dreamtrips.modules.common.view.connection_overlay.ConnectionState;
 import com.worldventures.dreamtrips.modules.common.view.dialog.TermsConditionsDialog;
 
 import javax.inject.Inject;
@@ -79,11 +80,6 @@ public abstract class ActivityWithPresenter<PM extends ActivityPresenter> extend
    }
 
    @Override
-   public void showOfflineOverlay() {
-
-   }
-
-   @Override
    public boolean isTabletLandscape() {
       return ViewUtils.isTablet(this) && ViewUtils.isLandscapeOrientation(this);
    }
@@ -91,6 +87,11 @@ public abstract class ActivityWithPresenter<PM extends ActivityPresenter> extend
    @Override
    public boolean isVisibleOnScreen() {
       return !isPaused;
+   }
+
+   @Override
+   public void initConnectionOverlay(Observable<ConnectionState> connectionStateObservable, Observable stopper) {
+
    }
 
    @Override

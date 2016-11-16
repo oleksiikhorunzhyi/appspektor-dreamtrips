@@ -6,10 +6,10 @@ import android.os.Parcelable;
 import android.support.v7.widget.Toolbar;
 import android.util.AttributeSet;
 
-import com.messenger.synchmechanism.SyncStatus;
 import com.messenger.ui.presenter.MessengerPresenter;
 import com.worldventures.dreamtrips.core.flow.layout.BaseViewStateLinearLayout;
 import com.worldventures.dreamtrips.core.rx.composer.IoToMainComposer;
+import com.worldventures.dreamtrips.modules.common.view.connection_overlay.ConnectionState;
 import com.worldventures.dreamtrips.modules.common.view.connection_overlay.core.MessengerConnectionOverlay;
 
 import icepick.Icepick;
@@ -33,12 +33,6 @@ public abstract class MessengerLinearLayout<V extends MessengerScreen, P extends
    }
 
    @Override
-   protected void onAttachedToWindow() {
-      super.onAttachedToWindow();
-      initConnectionOverlay();
-   }
-
-   @Override
    protected void onDetachedFromWindow() {
       super.onDetachedFromWindow();
       detachStopper.onNext(null);
@@ -49,16 +43,12 @@ public abstract class MessengerLinearLayout<V extends MessengerScreen, P extends
    ///////////////////////////////////////////////////////////////////////////
 
    @Override
-   public void onConnectionChanged(SyncStatus syncStatus) {
-      messengerConnectionOverlay.reportConnectionState(syncStatus);
-   }
-
-   private void initConnectionOverlay() {
+   public void initDisconnectedOverlay(Observable<ConnectionState> syncStatus) {
       messengerConnectionOverlay = new MessengerConnectionOverlay(getContext(), this);
-      messengerConnectionOverlay.getClickObservable()
+      messengerConnectionOverlay.getRetryObservable()
             .compose(bindView())
             .subscribe(click -> getPresenter().onDisconnectedOverlayClicked());
-      messengerConnectionOverlay.startProcessingState(detachStopper);
+      messengerConnectionOverlay.startProcessingState(syncStatus, detachStopper);
    }
 
    ///////////////////////////////////////////////////////////////////////////

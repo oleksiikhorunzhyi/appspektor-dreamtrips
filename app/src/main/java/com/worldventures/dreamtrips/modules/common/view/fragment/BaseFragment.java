@@ -13,13 +13,13 @@ import com.afollestad.materialdialogs.MaterialDialog;
 import com.techery.spares.annotations.Layout;
 import com.techery.spares.ui.fragment.InjectingFragment;
 import com.techery.spares.utils.ui.SoftInputUtil;
-import com.trello.rxlifecycle.FragmentEvent;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.navigation.router.Router;
 import com.worldventures.dreamtrips.core.utils.ViewUtils;
 import com.worldventures.dreamtrips.core.utils.tracksystem.MonitoringHelper;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.common.presenter.delegate.OfflineWarningDelegate;
+import com.worldventures.dreamtrips.modules.common.view.connection_overlay.ConnectionState;
 import com.worldventures.dreamtrips.modules.common.view.connection_overlay.core.SocialConnectionOverlay;
 
 import java.util.ArrayList;
@@ -98,13 +98,6 @@ public abstract class BaseFragment<PM extends Presenter> extends InjectingFragme
    public void afterCreateView(View rootView) {
       super.afterCreateView(rootView);
       if (userVisibleHints.contains(true)) track();
-      initConnectionOverlay(rootView);
-   }
-
-   private void initConnectionOverlay(View view) {
-      if (connectionOverlay != null) return;
-      connectionOverlay = new SocialConnectionOverlay(getContext(), view);
-      connectionOverlay.startProcessingState(stopper);
    }
 
    @Override
@@ -228,13 +221,14 @@ public abstract class BaseFragment<PM extends Presenter> extends InjectingFragme
       offlineWarningDelegate.showOfflineWarning(getActivity());
    }
 
-   @Override
-   public void showOfflineOverlay() {
-      connectionOverlay.show();
-   }
-
    protected void track() {
 
+   }
+
+   @Override
+   public void initConnectionOverlay(Observable<ConnectionState> connectionStateObservable, Observable stopper) {
+      connectionOverlay = new SocialConnectionOverlay(getContext(), getView());
+      connectionOverlay.startProcessingState(connectionStateObservable, stopper);
    }
 
    ///////////////////////////////////////////////////////////////////////////

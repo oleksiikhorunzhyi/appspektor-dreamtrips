@@ -11,9 +11,11 @@ import com.techery.spares.annotations.Layout;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.utils.ViewUtils;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
+import com.worldventures.dreamtrips.modules.common.view.connection_overlay.ConnectionState;
 
 import butterknife.ButterKnife;
 import icepick.Icepick;
+import rx.Observable;
 
 public abstract class BaseDialogFragmentWithPresenter<T extends Presenter> extends BaseDialogFragment implements Presenter.View {
 
@@ -121,7 +123,7 @@ public abstract class BaseDialogFragmentWithPresenter<T extends Presenter> exten
    }
 
    @Override
-   public void showOfflineOverlay() {
+   public void initConnectionOverlay(Observable<ConnectionState> connectionStateObservable, Observable stopper) {
 
    }
 

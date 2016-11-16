@@ -4,16 +4,14 @@ import android.content.Context;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.messenger.synchmechanism.SyncStatus;
-import com.worldventures.dreamtrips.modules.common.view.connection_overlay.provider.MessengerConnectionStateProvider;
 import com.worldventures.dreamtrips.modules.common.view.connection_overlay.view.MessengerConnectionOverlayView;
 
 import rx.Observable;
 
-public class MessengerConnectionOverlay extends ConnectionOverlay<MessengerConnectionStateProvider, MessengerConnectionOverlayView> {
+public class MessengerConnectionOverlay extends ConnectionOverlay<MessengerConnectionOverlayView> {
 
    public MessengerConnectionOverlay(Context context, View rootView) {
-      super(context, rootView, new MessengerConnectionStateProvider());
+      super(context, rootView);
    }
 
    @Override
@@ -21,11 +19,7 @@ public class MessengerConnectionOverlay extends ConnectionOverlay<MessengerConne
       return new MessengerConnectionOverlayView(context, contentLayout);
    }
 
-   public void reportConnectionState(SyncStatus syncStatus) {
-      connectionStateProvider.reportConnectionState(syncStatus);
-   }
-
-   public Observable getClickObservable() {
-      return overlayView.getClickObservable();
+   public Observable getRetryObservable() {
+      return overlayView.getRetryObservable();
    }
 }

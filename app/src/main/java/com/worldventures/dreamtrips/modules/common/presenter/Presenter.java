@@ -3,6 +3,7 @@ package com.worldventures.dreamtrips.modules.common.presenter;
 import android.content.Context;
 import android.os.Bundle;
 
+import com.github.pwittchen.reactivenetwork.library.Connectivity;
 import com.github.pwittchen.reactivenetwork.library.ReactiveNetwork;
 import com.techery.spares.module.qualifier.Global;
 import com.techery.spares.session.SessionHolder;
@@ -16,7 +17,9 @@ import com.worldventures.dreamtrips.core.session.UserSession;
 import com.worldventures.dreamtrips.core.session.acl.FeatureManager;
 import com.worldventures.dreamtrips.core.utils.tracksystem.AnalyticsInteractor;
 import com.worldventures.dreamtrips.modules.common.model.User;
+import com.worldventures.dreamtrips.modules.common.presenter.delegate.FeedEntityManagerListener;
 import com.worldventures.dreamtrips.modules.common.presenter.delegate.OfflineWarningDelegate;
+import com.worldventures.dreamtrips.modules.common.view.connection_overlay.ConnectionState;
 import com.worldventures.dreamtrips.util.JanetHttpErrorHandlingUtils;
 
 import java.io.IOException;
@@ -27,14 +30,13 @@ import de.greenrobot.event.EventBus;
 import icepick.Icepick;
 import io.techery.janet.CancelException;
 import rx.Observable;
-import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.subjects.PublishSubject;
 import timber.log.Timber;
 
 import static com.worldventures.dreamtrips.util.ThrowableUtils.getCauseByType;
 
-public class Presenter<VT extends Presenter.View> {
+public class Presenter<VT extends Presenter.View> implements FeedEntityManagerListener{
 
    protected VT view;
 
@@ -47,14 +49,14 @@ public class Presenter<VT extends Presenter.View> {
    @Inject protected PhotoUploadingManagerS3 photoUploadingManagerS3;
    @Inject OfflineWarningDelegate offlineWarningDelegate;
 
-   private Subscription connectivityEventsSubscription;
-
    protected int priorityEventBus = 0;
 
    protected ApiErrorPresenter apiErrorPresenter;
 
-   PublishSubject<Void> destroyViewStopper = PublishSubject.create();
-   PublishSubject<Void> pauseViewStopper = PublishSubject.create();
+   private PublishSubject<Void> destroyViewStopper = PublishSubject.create();
+   private PublishSubject<Void> pauseViewStopper = PublishSubject.create();
+
+   protected PublishSubject<ConnectionState> connectionStatePublishSubject = PublishSubject.create();
 
    public Presenter() {
       apiErrorPresenter = provideApiErrorPresenter();
@@ -87,6 +89,21 @@ public class Presenter<VT extends Presenter.View> {
       } catch (Exception ignored) {
          Timber.v("EventBus :: Problem on registering sticky - no \'onEvent' method found in " + getClass().getName());
       }
+      initDisconnectedOverlay();
+   }
+
+   private void initDisconnectedOverlay() {
+      view.initConnectionOverlay(Observable.merge(connectionStatePublishSubject,
+            getConnectivityObservable()
+                  .filter(connectivity -> connectivity != null)
+                  .map(connectivity -> {
+                     switch (connectivity.getState()) {
+                        case CONNECTED:
+                           return ConnectionState.CONNECTED;
+                        default:
+                           return ConnectionState.DISCONNECTED;
+                     }
+                  })), destroyViewStopper);
    }
 
    public void dropView() {
@@ -108,9 +125,6 @@ public class Presenter<VT extends Presenter.View> {
 
    public void onPause() {
       pauseViewStopper.onNext(null);
-      if (connectivityEventsSubscription != null && !connectivityEventsSubscription.isUnsubscribed()) {
-         connectivityEventsSubscription.unsubscribe();
-      }
    }
 
    public void onStop() {
@@ -157,7 +171,7 @@ public class Presenter<VT extends Presenter.View> {
       if (view == null) return;
       if (getCauseByType(CancelException.class, error) != null) return;
       if (getCauseByType(IOException.class, error.getCause()) != null) {
-         view.showOfflineOverlay();
+         connectionStatePublishSubject.onNext(ConnectionState.DISCONNECTED);
          return;
       }
       if (action instanceof CommandWithError) {
@@ -168,16 +182,21 @@ public class Presenter<VT extends Presenter.View> {
             action, error, context.getString(R.string.smth_went_wrong));
       view.informUser(message);
    }
+
    private void subscribeToConnectivityStateUpdates() {
       // since there is no replay functionality in the lib make delegate check it straight away
-      connectivityEventsSubscription = Observable.merge(Observable.just(null), ReactiveNetwork.observeNetworkConnectivity(context))
-            .compose(bindView())
-            .observeOn(AndroidSchedulers.mainThread())
+      getConnectivityObservable()
             .subscribe(connectivity -> {
                if (view.isVisibleOnScreen() && offlineWarningDelegate.needToShowOfflineAlert(context)) {
                   view.showOfflineAlert();
                }
             }, e -> Timber.e(e, "Could not subscribe to network events"));
+   }
+
+   private Observable<Connectivity> getConnectivityObservable() {
+      return Observable.merge(Observable.just(null), ReactiveNetwork.observeNetworkConnectivity(context))
+            .observeOn(AndroidSchedulers.mainThread())
+            .compose(bindUntilPause());
    }
 
    protected boolean canShowOfflineAlert() {
@@ -208,7 +227,7 @@ public class Presenter<VT extends Presenter.View> {
 
       void showOfflineAlert();
 
-      void showOfflineOverlay();
+      void initConnectionOverlay(Observable<ConnectionState> connectionStateObservable, Observable stopper);
    }
 
    public interface TabletAnalytic {

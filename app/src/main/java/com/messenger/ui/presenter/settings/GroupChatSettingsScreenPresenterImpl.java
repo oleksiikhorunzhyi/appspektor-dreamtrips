@@ -188,4 +188,10 @@ public class GroupChatSettingsScreenPresenterImpl extends BaseGroupChatSettingsS
          screen.showErrorDialog(R.string.chat_settings_error_changing_avatar_subject);
       }
    }
+
+   @Override
+   public void onDetachedFromWindow() {
+      super.onDetachedFromWindow();
+      cropImageDelegate.destroy();
+   }
 }

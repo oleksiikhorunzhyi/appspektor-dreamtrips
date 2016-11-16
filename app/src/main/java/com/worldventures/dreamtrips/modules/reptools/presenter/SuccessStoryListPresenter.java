@@ -4,7 +4,6 @@ import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
 
 import com.innahema.collections.query.queriables.Queryable;
-import com.octo.android.robospice.persistence.exception.SpiceException;
 import com.techery.spares.utils.delegate.StoryLikedEventDelegate;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
@@ -61,9 +60,9 @@ public class SuccessStoryListPresenter extends Presenter<SuccessStoryListPresent
    }
 
    @Override
-   public void handleError(SpiceException error) {
+   public void handleError(Object action, Throwable error) {
+      super.handleError(action, error);
       view.finishLoading();
-      super.handleError(error);
    }
 
    public void onSuccessStoryCellClick(SuccessStory successStory, int position) {

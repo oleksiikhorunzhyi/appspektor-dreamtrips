@@ -29,8 +29,6 @@ import com.worldventures.dreamtrips.modules.feed.model.UndefinedFeedItem;
 import com.worldventures.dreamtrips.modules.friends.model.Circle;
 import com.worldventures.dreamtrips.modules.infopages.model.FeedbackType;
 import com.worldventures.dreamtrips.modules.membership.model.Podcast;
-import com.worldventures.dreamtrips.modules.video.model.VideoLanguage;
-import com.worldventures.dreamtrips.modules.video.model.VideoLocale;
 import com.worldventures.dreamtrips.modules.settings.model.FlagSetting;
 import com.worldventures.dreamtrips.modules.settings.model.SelectSetting;
 import com.worldventures.dreamtrips.modules.settings.model.Setting;
@@ -41,6 +39,8 @@ import com.worldventures.dreamtrips.modules.tripsimages.model.IFullScreenObject;
 import com.worldventures.dreamtrips.modules.tripsimages.model.SocialViewPagerState;
 import com.worldventures.dreamtrips.modules.tripsimages.model.TripImagesType;
 import com.worldventures.dreamtrips.modules.video.model.CachedEntity;
+import com.worldventures.dreamtrips.modules.video.model.VideoLanguage;
+import com.worldventures.dreamtrips.modules.video.model.VideoLocale;
 import com.worldventures.dreamtrips.wallet.domain.entity.AddressInfo;
 import com.worldventures.dreamtrips.wallet.domain.entity.FirmwareUpdateData;
 import com.worldventures.dreamtrips.wallet.domain.entity.ImmutableAddressInfo;
@@ -556,6 +556,16 @@ public class SnappyRepositoryImpl implements SnappyRepository {
    @Override
    public void saveCountFromHeader(String headerKey, int count) {
       act(db -> db.putInt(headerKey, count));
+   }
+
+   @Override
+   public void saveNotificationsCount(int count) {
+      act(db -> db.putInt(EXCLUSIVE_NOTIFICATIONS_COUNT, count));
+   }
+
+   @Override
+   public void saveFriendRequestsCount(int count) {
+      act(db -> db.putInt(FRIEND_REQUEST_COUNT, count));
    }
 
    @Override

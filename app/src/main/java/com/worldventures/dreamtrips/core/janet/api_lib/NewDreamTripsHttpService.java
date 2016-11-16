@@ -42,7 +42,9 @@ public class NewDreamTripsHttpService extends ActionServiceWrapper {
    @Inject LocaleHelper localeHelper;
    @Inject AppVersionNameBuilder appVersionNameBuilder;
    @Inject SnappyRepository db;
+
    @Inject Observable<Device> deviceSource;
+   @Inject Set<ResponseListener> responseListeners;
 
    private final ActionPipe<LoginAction> loginActionPipe;
    private final Set<Object> retriedActions = new CopyOnWriteArraySet<>();
@@ -99,6 +101,13 @@ public class NewDreamTripsHttpService extends ActionServiceWrapper {
 
    @Override
    protected <A> void onInterceptSuccess(ActionHolder<A> holder) {
+      if (holder.action() instanceof BaseHttpAction) {
+         if (responseListeners != null) {
+            for (ResponseListener responseListener : responseListeners) {
+               responseListener.onResponse((BaseHttpAction) holder.action());
+            }
+         }
+      }
       retriedActions.remove(holder.action());
    }
 
@@ -142,5 +151,9 @@ public class NewDreamTripsHttpService extends ActionServiceWrapper {
          Timber.w(loginState.exception, "Login error");
       }
       return null;
+   }
+
+   public interface ResponseListener {
+      void onResponse(BaseHttpAction action);
    }
 }

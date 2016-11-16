@@ -7,7 +7,6 @@ import com.amazonaws.mobileconnectors.s3.transferutility.TransferObserver;
 import com.amazonaws.mobileconnectors.s3.transferutility.TransferState;
 import com.amazonaws.services.cognitoidentity.model.InvalidParameterException;
 import com.crashlytics.android.Crashlytics;
-import com.octo.android.robospice.persistence.exception.SpiceException;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.rx.RxView;
 import com.worldventures.dreamtrips.core.rx.composer.ImmediateComposer;
@@ -137,8 +136,8 @@ public class DtlScanQrCodePresenter extends JobPresenter<DtlScanQrCodePresenter.
    }
 
    @Override
-   public void handleError(SpiceException error) {
-      super.handleError(error);
+   public void handleError(Object action, Throwable error) {
+      super.handleError(action, error);
       transactionInteractor.transactionActionPipe()
             .createObservableResult(DtlTransactionAction.get(dtlMerchant))
             .map(DtlTransactionAction::getResult)
@@ -146,7 +145,7 @@ public class DtlScanQrCodePresenter extends JobPresenter<DtlScanQrCodePresenter.
             .flatMap(transaction -> transactionInteractor.transactionActionPipe()
                   .createObservableResult(DtlTransactionAction.save(dtlMerchant, transaction)))
             .compose(bindViewIoToMainComposer())
-            .subscribe(action -> {
+            .subscribe(command -> {
             }, apiErrorPresenter::handleError);
    }
 

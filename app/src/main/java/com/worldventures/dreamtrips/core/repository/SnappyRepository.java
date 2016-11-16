@@ -51,8 +51,8 @@ public interface SnappyRepository {
    String IMAGE = "IMAGE";
    String OPEN_BUCKET_TAB_TYPE = "open_bucket_tab_type";
    String BADGE_NOTIFICATIONS_COUNT = "badge_notifications_count";
-   String EXCLUSIVE_NOTIFICATIONS_COUNT = "Unread-Notifications-Count"; // WARNING must be equal to server header
-   String FRIEND_REQUEST_COUNT = "Friend-Requests-Count"; // WARNING must be equal to server header
+   String EXCLUSIVE_NOTIFICATIONS_COUNT = "Unread-Notifications-Count";
+   String FRIEND_REQUEST_COUNT = "Friend-Requests-Count";
    String GCM_REG_TOKEN = "GCM_REG_TOKEN ";
    String LAST_SYNC_APP_VERSION = "LAST_SYNC_APP_VERSION";
    String FILTER_CIRCLE = "FILTER_CIRCLE";
@@ -137,6 +137,10 @@ public interface SnappyRepository {
    int getBadgeNotificationsCount();
 
    void saveCountFromHeader(String headerKey, int count);
+
+   void saveNotificationsCount(int count);
+
+   void saveFriendRequestsCount(int count);
 
    int getExclusiveNotificationsCount();
 

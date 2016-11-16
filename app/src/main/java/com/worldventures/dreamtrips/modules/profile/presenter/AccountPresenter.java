@@ -2,7 +2,6 @@ package com.worldventures.dreamtrips.modules.profile.presenter;
 
 import android.content.Intent;
 
-import com.octo.android.robospice.request.simple.BigBinaryRequest;
 import com.techery.spares.utils.delegate.NotificationCountEventDelegate;
 import com.worldventures.dreamtrips.core.component.RootComponentsProvider;
 import com.worldventures.dreamtrips.core.navigation.Route;
@@ -12,6 +11,8 @@ import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.auth.api.command.LogoutCommand;
 import com.worldventures.dreamtrips.modules.auth.api.command.UpdateUserCommand;
 import com.worldventures.dreamtrips.modules.auth.service.AuthInteractor;
+import com.worldventures.dreamtrips.modules.common.command.DownloadFileCommand;
+import com.worldventures.dreamtrips.modules.common.delegate.DownloadFileInteractor;
 import com.worldventures.dreamtrips.modules.common.delegate.SocialCropImageManager;
 import com.worldventures.dreamtrips.modules.common.model.MediaAttachment;
 import com.worldventures.dreamtrips.modules.common.model.PhotoGalleryModel;
@@ -47,6 +48,7 @@ public class AccountPresenter extends ProfilePresenter<AccountPresenter.View, Us
 
    @Inject RootComponentsProvider rootComponentsProvider;
    @Inject LogoutInteractor logoutInteractor;
+   @Inject DownloadFileInteractor downloadFileInteractor;
    @Inject MediaPickerEventDelegate mediaPickerEventDelegate;
    @Inject SocialCropImageManager socialCropImageManager;
    @Inject AuthInteractor authInteractor;
@@ -220,7 +222,8 @@ public class AccountPresenter extends ProfilePresenter<AccountPresenter.View, Us
 
    @Override
    public void openTripImages() {
-      view.openTripImages(Route.ACCOUNT_IMAGES, new TripsImagesBundle(TripImagesType.ACCOUNT_IMAGES_FROM_PROFILE, getAccount().getId()));
+      view.openTripImages(Route.ACCOUNT_IMAGES, new TripsImagesBundle(TripImagesType.ACCOUNT_IMAGES_FROM_PROFILE, getAccount()
+            .getId()));
    }
 
    public void photoClicked() {
@@ -287,14 +290,26 @@ public class AccountPresenter extends ProfilePresenter<AccountPresenter.View, Us
    }
 
    private void cacheFacebookImage(String url, Action<String> action) {
-      String filePath = CachedEntity.getFilePath(context, CachedEntity.getFilePath(context, url));
-      BigBinaryRequest bigBinaryRequest = new BigBinaryRequest(url, new File(filePath));
-
-      doRequest(bigBinaryRequest, inputStream -> action.action(filePath));
+      String filePath = CachedEntity.getFilePath(context, url);
+      downloadFileInteractor.getDownloadFileCommandPipe()
+            .createObservable(new DownloadFileCommand(new File(filePath), url))
+            .subscribe(new ActionStateSubscriber<DownloadFileCommand>()
+                  .onSuccess(downloadFileCommand -> action.action(filePath)));
    }
 
    private void onCoverChosen(PhotoGalleryModel image) {
-      view.cropImage(socialCropImageManager, image.getAbsolutePath());
+      if (image != null) {
+         String filePath = image.getAbsolutePath();
+         if (ValidationUtils.isUrl(filePath)) {
+            cacheFacebookImage(filePath, this::cropImage);
+         } else {
+            cropImage(filePath);
+         }
+      }
+   }
+
+   private void cropImage(String filePath) {
+      view.cropImage(socialCropImageManager, filePath);
    }
 
    public boolean onActivityResult(int requestCode, int resultCode, Intent data) {

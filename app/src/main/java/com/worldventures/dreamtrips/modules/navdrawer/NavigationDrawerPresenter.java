@@ -6,6 +6,7 @@ import android.support.v4.widget.DrawerLayout;
 import com.messenger.util.UnreadConversationObservable;
 import com.techery.spares.module.Injector;
 import com.techery.spares.session.SessionHolder;
+import com.techery.spares.utils.delegate.NotificationCountEventDelegate;
 import com.worldventures.dreamtrips.core.component.ComponentDescription;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.core.rx.composer.IoToMainComposer;
@@ -19,6 +20,7 @@ import javax.inject.Inject;
 
 import io.techery.janet.helper.ActionStateSubscriber;
 import rx.Observable;
+import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action0;
 import rx.functions.Action1;
 import rx.subjects.PublishSubject;
@@ -29,6 +31,7 @@ public class NavigationDrawerPresenter {
    @Inject SnappyRepository db;
    @Inject UnreadConversationObservable unreadObservable;
    @Inject AuthInteractor authInteractor;
+   @Inject NotificationCountEventDelegate notificationCountEventDelegate;
 
    private NavigationDrawerView navigationDrawerView;
    private DrawerLayout drawerLayout;
@@ -54,6 +57,10 @@ public class NavigationDrawerPresenter {
       navigationDrawerView.setData(components);
       navigationDrawerView.setUser(appSessionHolder.get().get().getUser());
 
+      notificationCountEventDelegate.getObservable()
+            .observeOn(AndroidSchedulers.mainThread())
+            .compose(bindView())
+            .subscribe(event -> updateNotificationsCount());
       navigationDrawerView.bind(unreadObservable.getObservable())
             .subscribe(navigationDrawerView::setUnreadMessagesCount);
       navigationDrawerView.bind(authInteractor.updateUserPipe().observe().compose(new IoToMainComposer<>()))

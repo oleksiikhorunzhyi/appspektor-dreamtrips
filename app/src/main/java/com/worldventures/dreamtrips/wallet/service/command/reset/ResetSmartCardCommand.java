@@ -63,7 +63,7 @@ public class ResetSmartCardCommand extends Command<Void> implements InjectableAc
    private Observable<DisassociateCardUserHttpAction> disassociateCardUserServer(SmartCard smartCard) {
       long scId = Long.parseLong(smartCard.smartCardId());
       return apiLibJanet.createPipe(DisassociateCardUserHttpAction.class, Schedulers.io())
-            .createObservableResult(new DisassociateCardUserHttpAction(scId));
+            .createObservableResult(new DisassociateCardUserHttpAction(scId, ""));
    }
 
    private Observable<UnAssignUserAction> disassociateCardUser() {

@@ -32,7 +32,7 @@ public class DisassociateCardUserCommand extends Command<Void> implements Inject
                   .createObservableResult(new DisconnectAction())
                   .onErrorResumeNext(Observable.just(null)),
             apiJanet.createPipe(DisassociateCardUserHttpAction.class)
-                  .createObservableResult(new DisassociateCardUserHttpAction(Long.parseLong(smartCardId)))
+                  .createObservableResult(new DisassociateCardUserHttpAction(Long.parseLong(smartCardId), ""))
                   .onErrorResumeNext(Observable.just(null)),
             (o1, o2) -> null
       ).subscribe((result) -> {

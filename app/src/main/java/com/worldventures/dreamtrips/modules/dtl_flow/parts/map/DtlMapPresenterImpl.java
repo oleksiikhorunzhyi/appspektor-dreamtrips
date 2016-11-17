@@ -5,6 +5,7 @@ import android.support.v4.util.Pair;
 import android.view.View;
 
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.LatLngBounds;
 import com.techery.spares.module.Injector;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.api.action.CommandWithError;
@@ -52,6 +53,7 @@ import flow.History;
 import flow.path.Path;
 import icepick.State;
 import io.techery.janet.ActionState;
+import io.techery.janet.Command;
 import io.techery.janet.helper.ActionStateSubscriber;
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
@@ -92,8 +94,8 @@ public class DtlMapPresenterImpl extends DtlPresenterImpl<DtlMapScreen, ViewStat
       locationInteractor.locationSourcePipe()
             .observeSuccess()
             .map(DtlLocationCommand::getResult)
-            .map(dtlLocation -> dtlLocation.getCoordinates().asLatLng())
-            .filter(command -> getView().isTabletLandscape())
+            .map(DtlLocation::getCoordinates)
+            .map(Location::asLatLng)
             .distinctUntilChanged()
             .compose(bindViewIoToMainComposer())
             .subscribe(coordinates -> getView().animateTo(coordinates, 0));
@@ -154,7 +156,7 @@ public class DtlMapPresenterImpl extends DtlPresenterImpl<DtlMapScreen, ViewStat
    private void onMerchantsLoaded(MerchantsAction action) {
       getView().showProgress(false);
       showPins(action.merchants());
-
+      updateMapZoom(action.merchants());
       updateMap(action.bundle().location());
    }
 
@@ -252,6 +254,19 @@ public class DtlMapPresenterImpl extends DtlPresenterImpl<DtlMapScreen, ViewStat
       fullMerchantInteractor.load(actionParamsHolder);
    }
 
+   private void updateMapZoom(List<ThinMerchant> merchants) {
+      if (merchants.isEmpty()) return;
+      getView().zoomBounds(buildBounds(merchants));
+   }
+
+   private LatLngBounds buildBounds(List<ThinMerchant> merchants) {
+      final LatLngBounds.Builder boundsBuilder = LatLngBounds.builder();
+      for (ThinMerchant merchant : merchants) {
+         boundsBuilder.include(new LatLng(merchant.coordinates().lat(), merchant.coordinates().lng()));
+      }
+      return boundsBuilder.build();
+   }
+
    private void showPins(List<ThinMerchant> merchants) {
       getView().showItems(merchants);
    }
@@ -266,12 +281,8 @@ public class DtlMapPresenterImpl extends DtlPresenterImpl<DtlMapScreen, ViewStat
 
    @Override
    public void onMapLoaded() {
+      getFirstCenterLocation().subscribe(getView()::centerIn);
       connectInteractors();
-
-      getFirstCenterLocation().compose(bindViewIoToMainComposer())
-            .take(1)
-            .subscribe(getView()::centerIn);
-
       connectButtonsUpdate();
 
       MapObservableFactory.createMarkerClickObservable(getView().getMap())
@@ -284,11 +295,12 @@ public class DtlMapPresenterImpl extends DtlPresenterImpl<DtlMapScreen, ViewStat
    }
 
    private Observable<Location> getFirstCenterLocation() {
-      return locationInteractor.locationSourcePipe().observeSuccessWithReplay().map(command -> {
-         Location lastPosition = db.getLastMapCameraPosition();
-         DtlLocation lastSelectedLocation = command.getResult();
-         return lastPosition != null ? lastPosition : (command.isResultDefined() ? lastSelectedLocation.getCoordinates() : new Location(0d, 0d));
-      });
+      return locationInteractor.locationSourcePipe().observeSuccessWithReplay()
+            .filter(DtlLocationCommand::isResultDefined)
+            .map(Command::getResult)
+            .map(DtlLocation::getCoordinates)
+            .take(1)
+            .compose(bindViewIoToMainComposer());
    }
 
    private void connectButtonsUpdate() {
@@ -309,17 +321,18 @@ public class DtlMapPresenterImpl extends DtlPresenterImpl<DtlMapScreen, ViewStat
    private Observable<Boolean> cameraPositionOutOfLimitObservable() {
       return MapObservableFactory.createCameraChangeObservable(getView().getMap())
             .doOnNext(position -> getView().cameraPositionChange(position))
-            .doOnNext(position -> new Location(position.target.latitude, position.target.longitude))
+            .compose(bindView())
             .flatMap(position -> locationInteractor.locationSourcePipe()
                   .observeSuccessWithReplay()
                   .take(1)
+                  .compose(bindView())
                   .map(DtlLocationCommand::getResult)
                   .map(location -> location.getCoordinates().asLatLng())
                   .map(location -> !DtlLocationHelper.checkMaxDistance(location, position.target)));
    }
 
    private Observable<ActionState<MerchantsAction>> getMerchantsUpdates() {
-      return merchantInteractor.thinMerchantsHttpPipe().observeWithReplay();
+      return merchantInteractor.thinMerchantsHttpPipe().observeWithReplay().compose(bindView());
    }
 
    @Override
@@ -362,9 +375,9 @@ public class DtlMapPresenterImpl extends DtlPresenterImpl<DtlMapScreen, ViewStat
       return action.getResult().size() >= FilterData.LIMIT;
    }
 
-   private final Func2<ActionState<MerchantsAction>, Boolean, Pair<Boolean, Boolean>> updateButtonsFunc = (state1, isCenterOutOfLimit) -> {
-      switch (state1.status) {
-         case SUCCESS: return new Pair<>(isCenterOutOfLimit, !isCenterOutOfLimit && isNeedShowLoadMoreButton(state1.action));
+   private final Func2<ActionState<MerchantsAction>, Boolean, Pair<Boolean, Boolean>> updateButtonsFunc = (state, isCenterOutOfLimit) -> {
+      switch (state.status) {
+         case SUCCESS: return new Pair<>(isCenterOutOfLimit, !isCenterOutOfLimit && isNeedShowLoadMoreButton(state.action));
          case FAIL: return new Pair<>(isCenterOutOfLimit, !isCenterOutOfLimit);
          default: return new Pair<>(false, false);
       }

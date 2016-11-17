@@ -5,6 +5,7 @@ import android.support.annotation.Nullable;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
 import com.worldventures.dreamtrips.modules.dtl.model.location.DtlLocation;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.ThinMerchant;
@@ -44,6 +45,8 @@ public interface DtlMapScreen extends DtlScreen {
    void showButtonRedoMerchants(boolean show);
 
    void zoom(float zoom);
+
+   void zoomBounds(LatLngBounds bounds);
 
    void showLoadMoreButton(boolean isShow);
 

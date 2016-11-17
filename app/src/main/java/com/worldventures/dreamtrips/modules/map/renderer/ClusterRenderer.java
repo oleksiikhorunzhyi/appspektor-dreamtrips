@@ -76,7 +76,7 @@ public class ClusterRenderer extends DefaultClusterRenderer<DtlClusterItem> {
       return cluster.getSize() > 3;
    }
 
-   private Bitmap makeIcon(View icon) {
+   public static Bitmap makeIcon(View icon) {
       if (icon.getMeasuredWidth() == 0 || icon.getMeasuredHeight() == 0) measureIcon(icon);
       Bitmap bitmap = Bitmap.createBitmap(icon.getMeasuredWidth(), icon.getMeasuredHeight(), Bitmap.Config.ARGB_8888);
       Canvas c = new Canvas(bitmap);
@@ -84,7 +84,7 @@ public class ClusterRenderer extends DefaultClusterRenderer<DtlClusterItem> {
       return bitmap;
    }
 
-   private void measureIcon(View icon) {
+   public static void measureIcon(View icon) {
       int measureSpec = View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED);
       icon.measure(measureSpec, measureSpec);
       icon.layout(0, 0, icon.getMeasuredWidth(), icon.getMeasuredHeight());

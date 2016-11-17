@@ -256,8 +256,8 @@ public class DtlMapScreenImpl extends DtlLayout<DtlMapScreen, DtlMapPresenter, D
    @Override
    public void showPinInfo(ThinMerchant merchant) {
       infoContainer.removeAllViews();
-      PathContext newContext = PathContext.create((PathContext) getContext(), new DtlMapInfoPath(FlowUtil.currentMaster(this), merchant), Path
-            .contextFactory());
+      PathContext newContext = PathContext.create((PathContext) getContext(), new DtlMapInfoPath(FlowUtil.currentMaster(this), merchant),
+            Path.contextFactory());
       DtlMapInfoScreenImpl infoView = (DtlMapInfoScreenImpl) LayoutInflater.from(getContext())
             .cloneInContext(newContext)
             .inflate(FlowUtil.layoutFrom(DtlMapInfoPath.class), infoContainer, false);
@@ -288,6 +288,11 @@ public class DtlMapScreenImpl extends DtlLayout<DtlMapScreen, DtlMapPresenter, D
    @Override
    public void zoom(float zoom) {
       googleMap.animateCamera(CameraUpdateFactory.zoomTo(zoom));
+   }
+
+   @Override
+   public void zoomBounds(LatLngBounds bounds) {
+      getMap().animateCamera(CameraUpdateFactory.newLatLngBounds(bounds, (int)ViewUtils.pxFromDp(getContext(), CAMERA_PADDING)));
    }
 
    @Override

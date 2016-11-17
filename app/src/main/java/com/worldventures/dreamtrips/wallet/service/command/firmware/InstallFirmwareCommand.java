@@ -52,6 +52,7 @@ public class InstallFirmwareCommand extends Command implements InjectableAction 
                   .flatMap(sc -> saveNewFirmwareVersion(sc))
             )
             .flatMap(aVoid -> clearFirmwareUpdateCache())
+            .flatMap(aVoid -> clearFirmwareFilesCache())
             .subscribe(wrap(callback));
    }
 
@@ -111,6 +112,11 @@ public class InstallFirmwareCommand extends Command implements InjectableAction 
 
    private Observable clearFirmwareUpdateCache() {
       return firmwareInteractor.firmwareCachePipe().createObservableResult(new FirmwareUpdateCacheCommand(null));
+   }
+
+   private Observable clearFirmwareFilesCache() {
+      return firmwareInteractor.clearFirmwareFilesPipe().createObservableResult(
+                  new FirmwareClearFilesCommand(firmwareUpdateData.firmwareFile().getParent()));
    }
 
    private Observable<SmartCard> activeSmartCard() {

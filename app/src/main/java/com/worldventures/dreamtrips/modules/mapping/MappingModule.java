@@ -48,6 +48,8 @@ import com.worldventures.dreamtrips.wallet.domain.converter.FirmwareResponseToFi
 import com.worldventures.dreamtrips.wallet.domain.converter.ProfileAddressToUserAddressConverter;
 import com.worldventures.dreamtrips.wallet.domain.converter.RecordToBankCardConverter;
 import com.worldventures.dreamtrips.wallet.domain.converter.SmartCardDetailsConverter;
+import com.worldventures.dreamtrips.wallet.domain.converter.SmartCardInfoToSmartCard;
+import com.worldventures.dreamtrips.wallet.domain.converter.SmartCardInfoToSmartCardDetail;
 
 import java.util.Set;
 
@@ -155,6 +157,18 @@ public class MappingModule {
    @Singleton
    Converter provideSmartCardDetailsConverter() {
       return new SmartCardDetailsConverter();
+   }
+
+   @Provides(type = Provides.Type.SET)
+   @Singleton
+   Converter provideSmartCardInfoToSmartCard() {
+      return new SmartCardInfoToSmartCard();
+   }
+
+   @Provides(type = Provides.Type.SET)
+   @Singleton
+   Converter provideSmartCardInfoToSmartCardDetail() {
+      return new SmartCardInfoToSmartCardDetail();
    }
 
    @Provides(type = Provides.Type.SET)

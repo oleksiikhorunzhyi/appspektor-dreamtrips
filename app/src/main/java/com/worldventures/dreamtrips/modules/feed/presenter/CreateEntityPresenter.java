@@ -62,9 +62,7 @@ public class CreateEntityPresenter<V extends CreateEntityPresenter.View> extends
                if (item != null) {
                   item.setStatus(state.status);
                   if (state.status == ActionState.Status.SUCCESS) {
-                     item.setOriginUrl(((SimpleUploaderyCommand) state.action).getResult()
-                           .getPhotoUploadResponse()
-                           .getLocation());
+                     item.setOriginUrl(((SimpleUploaderyCommand) state.action).getResult().response().uploaderyPhoto().location());
                      invalidateDynamicViews();
                      updatePickerState();
                   } else if (state.status == ActionState.Status.FAIL) {

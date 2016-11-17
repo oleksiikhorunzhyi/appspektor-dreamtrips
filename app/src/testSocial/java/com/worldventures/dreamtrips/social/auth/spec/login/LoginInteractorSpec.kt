@@ -1,9 +1,6 @@
 package com.worldventures.dreamtrips.social.auth.spec.login
 
-import com.nhaarman.mockito_kotlin.mock
-import com.nhaarman.mockito_kotlin.spy
-import com.nhaarman.mockito_kotlin.verify
-import com.nhaarman.mockito_kotlin.whenever
+import com.nhaarman.mockito_kotlin.*
 import com.techery.spares.session.SessionHolder
 import com.techery.spares.storage.complex_objects.Optional
 import com.worldventures.dreamtrips.AssertUtil.assertActionFail
@@ -23,6 +20,8 @@ import io.techery.janet.ActionState
 import io.techery.janet.CommandActionService
 import io.techery.janet.Janet
 import io.techery.janet.http.test.MockHttpActionService
+import io.techery.mappery.MapperyContext
+import org.mockito.Mockito.`when`
 import org.mockito.internal.verification.VerificationModeFactory
 import rx.Observable
 import rx.observers.TestSubscriber
@@ -87,6 +86,8 @@ class LoginInteractorSpec : BaseSpec({
 
       val sessionHolderMock: SessionHolder<UserSession> = mock()
       val userSessionMock: UserSession = mock()
+      val apiSession: com.worldventures.dreamtrips.api.session.model.Session = mock()
+      val mapperyContext: MapperyContext = mock()
       val mockDB: SnappyRepository = spy()
       val deviceObservable: Observable<Device> = Observable.just(null)
 
@@ -108,9 +109,12 @@ class LoginInteractorSpec : BaseSpec({
          daggerCommandActionService.registerProvider(LoginInteractor::class.java) { loginInteractor }
          daggerCommandActionService.registerProvider(AuthInteractor::class.java) { authInteractor }
          daggerCommandActionService.registerProvider(SnappyRepository::class.java) { mockDB }
+         daggerCommandActionService.registerProvider(MapperyContext::class.java) { mapperyContext }
          daggerCommandActionService.registerProvider(Observable::class.java) { deviceObservable }
 
          loginInteractor = LoginInteractor(sessionPiperCreator)
+
+         `when`(mapperyContext.convert(apiSession, Session::class.java)).thenReturn(session())
 
          whenever(sessionHolderMock.put(any())).then { }
       }
@@ -137,7 +141,7 @@ class LoginInteractorSpec : BaseSpec({
 
       fun mockHttpServiceForLogin(): MockHttpActionService {
          return MockHttpActionService.Builder()
-               .bind(MockHttpActionService.Response(200).body(session())) {
+               .bind(MockHttpActionService.Response(200).body(apiSession)) {
                   request ->
                   request.url.contains("/api/sessions")
                }

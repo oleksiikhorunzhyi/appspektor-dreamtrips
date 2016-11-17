@@ -29,8 +29,10 @@ import com.worldventures.dreamtrips.modules.friends.model.converter.FriendProfil
 import com.worldventures.dreamtrips.modules.friends.model.converter.FriendСandidateToUserConverter;
 import com.worldventures.dreamtrips.modules.friends.model.converter.MutualsConverter;
 import com.worldventures.dreamtrips.modules.infopages.model.FeedbackTypeConverter;
+import com.worldventures.dreamtrips.modules.mapping.converter.AccountToUserConverter;
 import com.worldventures.dreamtrips.modules.mapping.converter.CircleConverter;
 import com.worldventures.dreamtrips.modules.mapping.converter.Converter;
+import com.worldventures.dreamtrips.modules.mapping.converter.FeatureConverter;
 import com.worldventures.dreamtrips.modules.mapping.converter.FeedMetaDataConverter;
 import com.worldventures.dreamtrips.modules.mapping.converter.FeedbackImageAttachmentConverter;
 import com.worldventures.dreamtrips.modules.mapping.converter.FlagConverter;
@@ -45,6 +47,8 @@ import com.worldventures.dreamtrips.modules.mapping.converter.PrivateProfileConv
 import com.worldventures.dreamtrips.modules.mapping.converter.PublicProfileConverter;
 import com.worldventures.dreamtrips.modules.mapping.converter.RelationshipConverter;
 import com.worldventures.dreamtrips.modules.mapping.converter.ReverseLocationConverter;
+import com.worldventures.dreamtrips.modules.mapping.converter.SessionConverter;
+import com.worldventures.dreamtrips.modules.mapping.converter.SettingConverter;
 import com.worldventures.dreamtrips.modules.mapping.converter.ShortProfilesConverter;
 import com.worldventures.dreamtrips.modules.mapping.converter.TaggedUserConverter;
 import com.worldventures.dreamtrips.modules.mapping.converter.UserAvatarConverter;
@@ -514,4 +518,29 @@ public class MappingModule {
    Converter providePhotoWithAuthorConverter() {
       return new PhotoWithAuthorConverter();
    }
+
+   @Provides(type = Provides.Type.SET)
+   @Singleton
+   Converter provideAccountToUserConverter() {
+      return new AccountToUserConverter();
+   }
+
+   @Provides(type = Provides.Type.SET)
+   @Singleton
+   Converter provideSessionConverter() {
+      return new SessionConverter();
+   }
+
+   @Provides(type = Provides.Type.SET)
+   @Singleton
+   Converter provideFeatureConverter() {
+      return new FeatureConverter();
+   }
+
+   @Provides(type = Provides.Type.SET)
+   @Singleton
+   Converter provideSettingConverter() {
+      return new SettingConverter();
+   }
+
 }

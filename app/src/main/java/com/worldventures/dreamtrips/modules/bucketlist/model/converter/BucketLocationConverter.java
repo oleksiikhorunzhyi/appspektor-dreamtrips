@@ -5,10 +5,10 @@ import com.worldventures.dreamtrips.modules.mapping.converter.Converter;
 
 import io.techery.mappery.MapperyContext;
 
-public class BucketLocationConverter implements Converter<com.worldventures.dreamtrips.api.bucketlist.model.BucketLocation, BucketLocation> {
+public class BucketLocationConverter implements Converter<com.worldventures.dreamtrips.api.bucketlist.model.BucketListLocation, BucketLocation> {
 
    @Override
-   public BucketLocation convert(MapperyContext mapperyContext, com.worldventures.dreamtrips.api.bucketlist.model.BucketLocation apiLocation) {
+   public BucketLocation convert(MapperyContext mapperyContext, com.worldventures.dreamtrips.api.bucketlist.model.BucketListLocation apiLocation) {
       BucketLocation location = new BucketLocation();
       location.setName(apiLocation.name());
       location.setDescription(apiLocation.description());
@@ -17,8 +17,8 @@ public class BucketLocationConverter implements Converter<com.worldventures.drea
    }
 
    @Override
-   public Class<com.worldventures.dreamtrips.api.bucketlist.model.BucketLocation> sourceClass() {
-      return com.worldventures.dreamtrips.api.bucketlist.model.BucketLocation.class;
+   public Class<com.worldventures.dreamtrips.api.bucketlist.model.BucketListLocation> sourceClass() {
+      return com.worldventures.dreamtrips.api.bucketlist.model.BucketListLocation.class;
    }
 
    @Override

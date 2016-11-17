@@ -74,7 +74,7 @@ public class DtlMapScreenImpl extends DtlLayout<DtlMapScreen, DtlMapPresenter, D
    private ClusterManager<DtlClusterItem> clusterManager;
    private Marker locationPin;
    private GoogleMap googleMap;
-   private SweetAlertDialog errorDialog;
+   private int markerHeight;
 
    public DtlMapScreenImpl(Context context) {
       super(context);
@@ -93,6 +93,7 @@ public class DtlMapScreenImpl extends DtlLayout<DtlMapScreen, DtlMapPresenter, D
    protected void onPostAttachToWindowView() {
       checkMapAvailable();
       initToolbar();
+      prepareMarkerSize();
    }
 
    @Override
@@ -218,17 +219,11 @@ public class DtlMapScreenImpl extends DtlLayout<DtlMapScreen, DtlMapPresenter, D
    }
 
    @Override
-   public void prepareInfoWindow(int height) {
-      int ownHeight;
-      if (dtlToolbar == null) {
-         ownHeight = getHeight();
-      } else {
-         ownHeight = getHeight() - dtlToolbar.getBottom();
-      }
-      int centerY = ownHeight / 2;
-      int resultY = height + getResources().getDimensionPixelSize(R.dimen.size_huge);
-      int offset = resultY - centerY;
-      animateTo(selectedLocation, offset);
+   public void prepareInfoWindow(@Nullable LatLng location, int height) {
+      if (location == null) return;
+      int center = (dtlToolbar == null ? getHeight()/ 2 : (getHeight() - dtlToolbar.getBottom())/ 2) - height;
+      int offset = markerHeight - center;
+      animateTo(location, offset);
    }
 
    @Override
@@ -272,7 +267,7 @@ public class DtlMapScreenImpl extends DtlLayout<DtlMapScreen, DtlMapPresenter, D
 
    @Override
    public void showError(String error) {
-      errorDialog = DialogFactory.createRetryDialog(getActivity(), error);
+      SweetAlertDialog errorDialog = DialogFactory.createRetryDialog(getActivity(), error);
       errorDialog.setConfirmClickListener(listener -> {
          listener.dismissWithAnimation();
          getPresenter().retryLoadMerchant();
@@ -328,6 +323,13 @@ public class DtlMapScreenImpl extends DtlLayout<DtlMapScreen, DtlMapPresenter, D
          public void onCancel() {
          }
       });
+   }
+
+   private void prepareMarkerSize() {
+      ImageView marker = (ImageView) LayoutInflater.from(getContext()).inflate(R.layout.pin_map, null);
+      marker.setImageResource(R.drawable.offer_pin_icon);
+      ClusterRenderer.measureIcon(marker);
+      this.markerHeight = marker.getMeasuredHeight();
    }
 
    private void onMapLoaded() {

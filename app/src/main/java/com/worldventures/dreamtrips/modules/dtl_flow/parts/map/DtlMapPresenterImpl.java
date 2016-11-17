@@ -122,7 +122,7 @@ public class DtlMapPresenterImpl extends DtlPresenterImpl<DtlMapScreen, ViewStat
             .observeSuccess()
             .compose(bindView())
             .map(MapInfoReadyAction::getResult)
-            .subscribe(popupHeight -> getView().prepareInfoWindow(popupHeight));
+            .subscribe(pair -> getView().prepareInfoWindow(pair.first, pair.second));
       merchantInteractor.thinMerchantsHttpPipe()
             .observeSuccess()
             .compose(bindViewIoToMainComposer())

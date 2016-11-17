@@ -219,6 +219,8 @@
                         />
                </RelativeLayout>
 
+               <View style="@style/SettingsItemDividerStyle" />
+
                <TextView
                      android:id="@+id/item_reset_pin"
                      android:layout_width="match_parent"

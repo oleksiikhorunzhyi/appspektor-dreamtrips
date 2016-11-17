@@ -9,6 +9,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
 import android.widget.RelativeLayout;
 
 import com.google.android.gms.common.ConnectionResult;
@@ -20,6 +21,7 @@ import com.google.android.gms.maps.Projection;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.maps.android.clustering.ClusterManager;
@@ -59,6 +61,7 @@ import icepick.State;
 public class DtlMapScreenImpl extends DtlLayout<DtlMapScreen, DtlMapPresenter, DtlMapPath> implements DtlMapScreen {
 
    private static final int CAMERA_DURATION = 1000;
+   private static final float CAMERA_PADDING = 50f;
 
    public static final String MAP_TAG = "MAP_TAG";
 
@@ -70,7 +73,6 @@ public class DtlMapScreenImpl extends DtlLayout<DtlMapScreen, DtlMapPresenter, D
 
    @Optional @InjectView(R.id.expandableDtlToolbar) ExpandableDtlToolbar dtlToolbar;
 
-   private LatLng selectedLocation;
    private ClusterManager<DtlClusterItem> clusterManager;
    private Marker locationPin;
    private GoogleMap googleMap;
@@ -187,7 +189,7 @@ public class DtlMapScreenImpl extends DtlLayout<DtlMapScreen, DtlMapPresenter, D
    }
 
    @OnClick(R.id.redoMerchants)
-   public void onMechantsRedoClick() {
+   public void onRedoMerchantsClick() {
       getPresenter().onLoadMerchantsClick(googleMap.getCameraPosition().target);
    }
 
@@ -245,7 +247,6 @@ public class DtlMapScreenImpl extends DtlLayout<DtlMapScreen, DtlMapPresenter, D
    @Override
    public void cameraPositionChange(CameraPosition cameraPosition) {
       clusterManager.onCameraChange(cameraPosition);
-      selectedLocation = cameraPosition.target;
    }
 
    @Override
@@ -342,7 +343,6 @@ public class DtlMapScreenImpl extends DtlLayout<DtlMapScreen, DtlMapPresenter, D
       clusterManager.setRenderer(new ClusterRenderer(getContext().getApplicationContext(), googleMap, clusterManager));
 
       clusterManager.setOnClusterItemClickListener(dtlClusterItem -> {
-         selectedLocation = dtlClusterItem.getPosition();
          getPresenter().onMarkerClicked(dtlClusterItem.getMerchant());
          return true;
       });

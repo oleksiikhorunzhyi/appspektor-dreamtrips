@@ -666,16 +666,6 @@ public class SnappyRepositoryImpl implements SnappyRepository {
    ///////////////////////////////////////////////////////////////////////////
 
    @Override
-   public void saveLastMapCameraPosition(Location location) {
-      act(db -> db.put(DTL_LAST_MAP_POSITION, location));
-   }
-
-   @Override
-   public Location getLastMapCameraPosition() {
-      return actWithResult(db -> db.getObject(DTL_LAST_MAP_POSITION, Location.class)).orNull();
-   }
-
-   @Override
    public void cleanLastMapCameraPosition() {
       clearAllForKey(DTL_LAST_MAP_POSITION);
    }

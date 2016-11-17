@@ -43,6 +43,7 @@ import com.worldventures.dreamtrips.modules.feed.service.command.MarkNotificatio
 import com.worldventures.dreamtrips.modules.feed.service.command.SuggestedPhotoCommand;
 import com.worldventures.dreamtrips.modules.feed.service.command.TranslateTextCachedCommand;
 import com.worldventures.dreamtrips.modules.feed.service.command.TranslateUidItemCommand;
+import com.worldventures.dreamtrips.modules.feed.service.command.UnlikeEntityCommand;
 import com.worldventures.dreamtrips.modules.friends.service.command.AcceptAllFriendRequestsCommand;
 import com.worldventures.dreamtrips.modules.friends.service.command.ActOnFriendRequestCommand;
 import com.worldventures.dreamtrips.modules.friends.service.command.AddFriendCommand;
@@ -145,6 +146,7 @@ import dagger.Module;
       CreateCommentCommand.class,
       EditCommentCommand.class,
       LikeEntityCommand.class,
+      UnlikeEntityCommand.class,
       DeleteCommentCommand.class,
       DeleteFriendRequestCommand.class,
       AcceptAllFriendRequestsCommand.class,

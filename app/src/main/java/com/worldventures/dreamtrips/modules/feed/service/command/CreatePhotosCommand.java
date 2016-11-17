@@ -8,6 +8,7 @@ import com.worldventures.dreamtrips.api.photos.model.ImmutableCoordinate;
 import com.worldventures.dreamtrips.api.photos.model.ImmutablePhotoCreationParams;
 import com.worldventures.dreamtrips.api.photos.model.ImmutablePhotosCreationParams;
 import com.worldventures.dreamtrips.api.photos.model.PhotoTag;
+import com.worldventures.dreamtrips.api.photos.model.PhotoTagParams;
 import com.worldventures.dreamtrips.api.photos.model.PhotosCreationParams;
 import com.worldventures.dreamtrips.core.api.action.MappableApiActionCommand;
 import com.worldventures.dreamtrips.modules.feed.model.PhotoCreationItem;
@@ -64,7 +65,7 @@ public class CreatePhotosCommand extends MappableApiActionCommand<CreatePhotosHt
             .width(item.getWidth())
             .height(item.getHeight())
             .shotAt(Calendar.getInstance().getTime())
-            .photoTags(mapperyContext.convert(item.getCachedAddedPhotoTags(), PhotoTag.class));
+            .photoTags(mapperyContext.convert(item.getCachedAddedPhotoTags(), PhotoTagParams.class));
       if (location != null) {
          photoParamsBuilder.coordinate(ImmutableCoordinate.builder()
                .lat(location.getLat())

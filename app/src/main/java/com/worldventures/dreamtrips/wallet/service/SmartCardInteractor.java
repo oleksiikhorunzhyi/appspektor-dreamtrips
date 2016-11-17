@@ -23,10 +23,8 @@ import com.worldventures.dreamtrips.wallet.service.command.SmartCardModifier;
 import com.worldventures.dreamtrips.wallet.service.command.UpdateBankCardCommand;
 import com.worldventures.dreamtrips.wallet.service.command.UpdateCardDetailsDataCommand;
 import com.worldventures.dreamtrips.wallet.service.command.UpdateSmartCardConnectionStatus;
-import com.worldventures.dreamtrips.wallet.service.command.firmware.FirmwareVersionCacheCommand;
 import com.worldventures.dreamtrips.wallet.service.command.http.CreateBankCardCommand;
 import com.worldventures.dreamtrips.wallet.service.command.http.DisassociateActiveCardUserCommand;
-import com.worldventures.dreamtrips.wallet.service.command.http.FetchFirmwareInfoCommand;
 
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
@@ -153,15 +151,6 @@ public final class SmartCardInteractor {
       connect(janet);
       connectToLockEvent();
       observeBatteryLevel(janet);
-      observeSCFirmwareAndCheckUpdates(janet);
-   }
-
-   private void observeSCFirmwareAndCheckUpdates(Janet janet) {
-      janet.createPipe(FirmwareVersionCacheCommand.class)
-            .observeSuccess()
-            .subscribe(cache ->
-                  firmwareInteractor.firmwareInfoPipe()
-                        .send(new FetchFirmwareInfoCommand(cache.sdkVersion(), cache.firmwareVersion())));
    }
 
    public ActionPipe<CardListCommand> cardsListPipe() {

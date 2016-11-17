@@ -22,6 +22,7 @@ import com.worldventures.dreamtrips.wallet.service.command.CardStacksCommand;
 import com.worldventures.dreamtrips.wallet.service.command.GetActiveSmartCardCommand;
 import com.worldventures.dreamtrips.wallet.service.command.SmartCardModifier;
 import com.worldventures.dreamtrips.wallet.service.command.firmware.FirmwareUpdateCacheCommand;
+import com.worldventures.dreamtrips.wallet.service.command.http.FetchFirmwareInfoCommand;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletPresenter;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.WalletScreen;
 import com.worldventures.dreamtrips.wallet.ui.common.helper.ErrorActionStateSubscriberWrapper;
@@ -82,6 +83,7 @@ public class CardListPresenter extends WalletPresenter<CardListPresenter.Screen,
       observeChanges();
       observeFirmwareInfo();
 
+      fetchFirmwareInfo();
       fetchCards();
       trackScreen();
    }
@@ -98,6 +100,17 @@ public class CardListPresenter extends WalletPresenter<CardListPresenter.Screen,
 
    private void fetchCardsOnce() {
       smartCardInteractor.cardStacksPipe().send(CardStacksCommand.get(false));
+   }
+
+   private void fetchFirmwareInfo(){
+      smartCardInteractor
+            .activeSmartCardPipe()
+            .observeSuccessWithReplay()
+            .take(1)
+            .map(Command::getResult)
+            .compose(bindView())
+            .subscribe(smartCard -> firmwareInteractor.firmwareInfoPipe()
+                  .send(new FetchFirmwareInfoCommand(smartCard.sdkVersion(), smartCard.firmWareVersion())), throwable -> Timber.e(throwable, "Error while loading smartcard"));
    }
 
    private void fetchCards() {

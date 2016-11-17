@@ -8,7 +8,6 @@ import com.worldventures.dreamtrips.core.janet.dagger.InjectableAction;
 import com.worldventures.dreamtrips.wallet.domain.entity.ImmutableSmartCard;
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCard;
 import com.worldventures.dreamtrips.wallet.service.SmartCardInteractor;
-import com.worldventures.dreamtrips.wallet.service.command.firmware.FirmwareVersionCacheCommand;
 
 import java.util.concurrent.TimeUnit;
 
@@ -29,7 +28,7 @@ import timber.log.Timber;
 import static com.worldventures.dreamtrips.wallet.domain.entity.SmartCard.ConnectionStatus.CONNECTED;
 
 @CommandAction
-public class ConnectSmartCardCommand extends Command<SmartCard> implements InjectableAction, FirmwareVersionCacheCommand, SmartCardModifier, CachedAction<SmartCard> {
+public class ConnectSmartCardCommand extends Command<SmartCard> implements InjectableAction, SmartCardModifier, CachedAction<SmartCard> {
 
    @Inject @Named(JanetModule.JANET_WALLET) Janet janet;
    @Inject SmartCardInteractor smartCardInteractor;
@@ -113,15 +112,5 @@ public class ConnectSmartCardCommand extends Command<SmartCard> implements Injec
             .restoreFromCache(false)
             .saveToCache(true)
             .build();
-   }
-
-   @Override
-   public String sdkVersion() {
-      return getResult().sdkVersion();
-   }
-
-   @Override
-   public String firmwareVersion() {
-      return getResult().firmWareVersion();
    }
 }

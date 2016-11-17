@@ -30,7 +30,7 @@ import static com.worldventures.dreamtrips.wallet.domain.entity.SmartCard.Connec
 import static rx.Observable.just;
 
 @CommandAction
-public class InstallFirmwareCommand extends Command implements InjectableAction, FirmwareVersionCacheCommand {
+public class InstallFirmwareCommand extends Command implements InjectableAction {
 
    @Inject @Named(JANET_WALLET) Janet janet;
    @Inject SmartCardInteractor smartCardInteractor;
@@ -125,13 +125,4 @@ public class InstallFirmwareCommand extends Command implements InjectableAction,
             .map(Command::getResult);
    }
 
-   @Override
-   public String sdkVersion() {
-      return firmwareUpdateData.firmwareInfo().sdkVersion();
-   }
-
-   @Override
-   public String firmwareVersion() {
-      return firmwareUpdateData.firmwareInfo().firmwareVersion();
-   }
 }

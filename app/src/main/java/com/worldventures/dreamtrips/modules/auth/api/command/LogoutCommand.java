@@ -8,7 +8,6 @@ import com.raizlabs.android.dbflow.config.FlowManager;
 import com.techery.spares.module.qualifier.ForApplication;
 import com.techery.spares.module.qualifier.Global;
 import com.techery.spares.session.SessionHolder;
-import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.api.api_common.AuthorizedHttpAction;
 import com.worldventures.dreamtrips.api.session.LogoutHttpAction;
 import com.worldventures.dreamtrips.core.janet.JanetModule;
@@ -25,8 +24,6 @@ import com.worldventures.dreamtrips.modules.common.presenter.delegate.OfflineWar
 import com.worldventures.dreamtrips.modules.common.service.ClearStoragesInteractor;
 import com.worldventures.dreamtrips.modules.gcm.delegate.NotificationDelegate;
 import com.worldventures.dreamtrips.wallet.domain.storage.security.crypto.HybridAndroidCrypter;
-import com.worldventures.dreamtrips.wallet.service.SmartCardInteractor;
-import com.worldventures.dreamtrips.wallet.service.command.http.DisassociateActiveCardUserCommand;
 
 import java.security.KeyStoreException;
 import java.util.Arrays;
@@ -39,7 +36,6 @@ import io.techery.janet.Command;
 import io.techery.janet.Janet;
 import io.techery.janet.command.annotations.CommandAction;
 import rx.Observable;
-import rx.functions.FuncN;
 import timber.log.Timber;
 
 @CommandAction
@@ -61,7 +57,6 @@ public class LogoutCommand extends Command<Void> implements InjectableAction {
    @Inject @Named(JanetModule.JANET_API_LIB) SessionActionPipeCreator sessionApiActionPipeCreator;
    @Inject @Named(JanetModule.JANET_WALLET) SessionActionPipeCreator sessionWalletActionPipeCreator;
    @Inject HybridAndroidCrypter crypter;
-   @Inject SmartCardInteractor smartCardInteractor;
 
    @Override
    protected void run(CommandCallback<Void> callback) throws Throwable {
@@ -76,12 +71,11 @@ public class LogoutCommand extends Command<Void> implements InjectableAction {
    }
 
    private Observable clearWallet() {
-      return smartCardInteractor.disassociateActiveCardActionPipe()
-            .createObservableResult(new DisassociateActiveCardUserCommand())
-            .onErrorResumeNext(t -> {
-               return Observable.just(null);
-            })
-            .doOnCompleted(() -> sessionWalletActionPipeCreator.clearReplays());
+      return Observable.create(subscriber -> {
+         sessionWalletActionPipeCreator.clearReplays();
+         subscriber.onNext(null);
+         subscriber.onCompleted();
+      });
    }
 
    private Observable clearMessenger() {

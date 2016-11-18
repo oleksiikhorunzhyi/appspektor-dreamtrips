@@ -19,9 +19,10 @@ public class DisassociateActiveCardUserCommand extends Command<Void> implements 
 
    @Override
    protected void run(CommandCallback<Void> callback) throws Throwable {
-      smartCardInteractor.activeSmartCardPipe().createObservableResult(new GetActiveSmartCardCommand()).flatMap(action -> {
-         return wizardInteractor.disassociatePipe()
-               .createObservableResult(new DisassociateCardUserCommand(action.getResult().smartCardId()));
-      }).subscribe(o -> callback.onSuccess(null), t -> callback.onFail(t));
+      smartCardInteractor.activeSmartCardPipe()
+            .createObservableResult(new GetActiveSmartCardCommand())
+            .flatMap(action -> wizardInteractor.disassociatePipe()
+                  .createObservableResult(new DisassociateCardUserCommand(action.getResult().smartCardId())))
+            .subscribe(o -> callback.onSuccess(null), callback::onFail);
    }
 }

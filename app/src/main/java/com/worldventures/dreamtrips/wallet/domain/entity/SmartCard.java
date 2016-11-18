@@ -11,6 +11,11 @@ public abstract class SmartCard {
 
    public abstract CardStatus cardStatus();
 
+   /**
+    * this method is not used in application
+    * also we have {@link #cardName()} method
+    */
+   @Deprecated
    public abstract String deviceName();
 
    public abstract String deviceAddress();

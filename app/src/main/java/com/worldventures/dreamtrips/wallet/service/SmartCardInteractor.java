@@ -25,6 +25,7 @@ import com.worldventures.dreamtrips.wallet.service.command.UpdateCardDetailsData
 import com.worldventures.dreamtrips.wallet.service.command.UpdateSmartCardConnectionStatus;
 import com.worldventures.dreamtrips.wallet.service.command.http.CreateBankCardCommand;
 import com.worldventures.dreamtrips.wallet.service.command.http.DisassociateActiveCardUserCommand;
+import com.worldventures.dreamtrips.wallet.service.command.http.FetchAssociatedSmartCard;
 
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
@@ -67,6 +68,7 @@ public final class SmartCardInteractor {
    private final WriteActionPipe<CardListCommand> cardsListInnerPipe; // hotfix, see constructor
    private final ActionPipe<AttachCardCommand> addRecordPipe;
    private final ActionPipe<UpdateBankCardCommand> updateBankCardPipe;
+   private final ActionPipe<FetchAssociatedSmartCard> fetchAssociatedSmartCardPipe;
    private final ActionPipe<CardStacksCommand> cardStacksPipe;
    private final ActionPipe<GetActiveSmartCardCommand> activeSmartCardPipe;
    private final ActionPipe<GetDefaultAddressCommand> getDefaultAddressCommandPipe;
@@ -107,6 +109,7 @@ public final class SmartCardInteractor {
       cardsListInnerPipe = janet.createPipe(CardListCommand.class); //todo: hotfix: code in `observeCardsChanges` should be synchronous
       addRecordPipe = sessionActionPipeCreator.createPipe(AttachCardCommand.class, Schedulers.io());
       updateBankCardPipe = sessionActionPipeCreator.createPipe(UpdateBankCardCommand.class, Schedulers.io());
+      fetchAssociatedSmartCardPipe = sessionActionPipeCreator.createPipe(FetchAssociatedSmartCard.class, Schedulers.io());
       cardStacksPipe = sessionActionPipeCreator.createPipe(CardStacksCommand.class, Schedulers.io());
       activeSmartCardPipe = sessionActionPipeCreator.createPipe(GetActiveSmartCardCommand.class, Schedulers.io());
       stealthModePipe = sessionActionPipeCreator.createPipe(SetStealthModeCommand.class, Schedulers.io());
@@ -191,6 +194,10 @@ public final class SmartCardInteractor {
 
    public ActionPipe<UpdateCardDetailsDataCommand> updatePipe() {
       return updateCardDetailsPipe;
+   }
+
+   public ActionPipe<FetchAssociatedSmartCard> fetchAssociatedSmartCard() {
+      return fetchAssociatedSmartCardPipe;
    }
 
    public ActionPipe<GetActiveSmartCardCommand> activeSmartCardPipe() {

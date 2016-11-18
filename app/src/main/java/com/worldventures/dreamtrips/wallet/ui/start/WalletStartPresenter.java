@@ -7,7 +7,7 @@ import com.techery.spares.module.Injector;
 import com.worldventures.dreamtrips.core.session.acl.Feature;
 import com.worldventures.dreamtrips.core.session.acl.FeatureManager;
 import com.worldventures.dreamtrips.wallet.service.SmartCardInteractor;
-import com.worldventures.dreamtrips.wallet.service.command.GetActiveSmartCardCommand;
+import com.worldventures.dreamtrips.wallet.service.command.http.FetchAssociatedSmartCard;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletPresenter;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.WalletScreen;
 import com.worldventures.dreamtrips.wallet.ui.common.navigation.Navigator;
@@ -35,15 +35,22 @@ public class WalletStartPresenter extends WalletPresenter<WalletStartPresenter.S
       super.attachView(view);
 
       featureManager.with(Feature.WALLET_PROVISIONING,
-            () -> smartCardInteractor.activeSmartCardPipe()
-                  .createObservable(new GetActiveSmartCardCommand())
+            () -> smartCardInteractor.fetchAssociatedSmartCard()
+                  .createObservable(new FetchAssociatedSmartCard())
                   .compose(bindViewIoToMainComposer())
-                  .subscribe(new ActionStateSubscriber<GetActiveSmartCardCommand>()
-                        .onSuccess(command -> navigator.single(new CardListPath(), Flow.Direction.REPLACE))
-                        .onFail((command, throwable) -> navigator.single(new WizardPowerOnPath(), Flow.Direction.REPLACE))
+                  .subscribe(new ActionStateSubscriber<FetchAssociatedSmartCard>()
+                        .onSuccess(command -> handleResult(command.getResult()))
                   ),
             () -> navigator.single(new WalletProvisioningBlockedPath(), Flow.Direction.REPLACE)
       );
+   }
+
+   private void handleResult(FetchAssociatedSmartCard.AssociatedCard associatedCard) {
+      if (associatedCard.exist()) {
+         navigator.single(new CardListPath(), Flow.Direction.REPLACE);
+      } else {
+         navigator.single(new WizardPowerOnPath(), Flow.Direction.REPLACE);
+      }
    }
 
    public interface Screen extends WalletScreen {

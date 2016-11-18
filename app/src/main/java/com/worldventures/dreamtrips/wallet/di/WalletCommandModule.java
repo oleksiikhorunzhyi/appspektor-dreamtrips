@@ -37,6 +37,7 @@ import com.worldventures.dreamtrips.wallet.service.command.http.CreateBankCardCo
 import com.worldventures.dreamtrips.wallet.service.command.http.DisassociateActiveCardUserCommand;
 import com.worldventures.dreamtrips.wallet.service.command.http.DisassociateCardUserCommand;
 import com.worldventures.dreamtrips.wallet.service.command.http.FetchAndStoreDefaultAddressInfoCommand;
+import com.worldventures.dreamtrips.wallet.service.command.http.FetchAssociatedSmartCard;
 import com.worldventures.dreamtrips.wallet.service.command.http.FetchFirmwareInfoCommand;
 import com.worldventures.dreamtrips.wallet.service.command.http.FetchTermsAndConditionsCommand;
 import com.worldventures.dreamtrips.wallet.service.command.reset.ConfirmResetCommand;
@@ -91,6 +92,7 @@ import dagger.Module;
             FetchBatteryLevelCommand.class,
             DisassociateCardUserCommand.class,
             DisassociateActiveCardUserCommand.class,
+            FetchAssociatedSmartCard.class,
             SaveLockStateCommand.class
       },
       complete = false, library = true)

@@ -542,5 +542,4 @@ public class MappingModule {
    Converter provideSettingConverter() {
       return new SettingConverter();
    }
-
 }

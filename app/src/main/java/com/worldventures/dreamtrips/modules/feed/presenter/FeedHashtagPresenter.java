@@ -202,7 +202,7 @@ public class FeedHashtagPresenter<T extends FeedHashtagPresenter.View> extends J
                view.onSuggestionsReceived(hashtagSuggestionCommand.getFullQueryText(), hashtagSuggestions);
                view.hideSuggestionProgress();
             }).onFail((hashtagSuggestionCommand, throwable) -> {
-               Timber.e(throwable, "");
+               Timber.e(throwable, "Failed to load hashtag suggestions");
                view.hideSuggestionProgress();
             }));
    }

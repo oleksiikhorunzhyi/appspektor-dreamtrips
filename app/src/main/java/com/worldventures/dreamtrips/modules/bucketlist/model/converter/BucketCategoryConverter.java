@@ -20,6 +20,6 @@ public class BucketCategoryConverter implements Converter<BucketCategory, Catego
 
    @Override
    public CategoryItem convert(MapperyContext mapperyContext, BucketCategory bucketCategory) {
-      return new CategoryItem(bucketCategory.name());
+      return new CategoryItem(bucketCategory.id(), bucketCategory.name());
    }
 }

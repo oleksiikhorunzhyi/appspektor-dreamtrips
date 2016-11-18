@@ -82,7 +82,7 @@ public class CardDetailsScreen extends WalletLinearLayout<CardDetailsPresenter.S
    @Override
    public void showCardBankInfo(BankCardHelper cardHelper, BankCard bankCard) {
       bankCardWidget.setBankCardInfo(cardHelper, bankCard);
-      cardNickname.setText(bankCard.title());
+      cardNickname.setText(bankCard.nickName());
    }
 
    @Override

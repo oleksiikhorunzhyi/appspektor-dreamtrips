@@ -73,7 +73,7 @@ public class CardDetailsPresenter extends WalletPresenter<CardDetailsPresenter.S
 
    @Override
    public void detachView(boolean retainInstance) {
-      if (!cardDeleted && !TextUtils.equals(getView().getUpdateNickname(), bankCard.title())) {
+      if (!cardDeleted && !TextUtils.equals(getView().getUpdateNickname(), bankCard.nickName())) {
          nicknameUpdated(getView().getUpdateNickname());
       }
 
@@ -83,7 +83,7 @@ public class CardDetailsPresenter extends WalletPresenter<CardDetailsPresenter.S
 
    private void trackScreen() {
       analyticsInteractor.paycardAnalyticsCommandPipe()
-            .send(new PaycardAnalyticsCommand(new CardDetailsAction(bankCard.title()), bankCard));
+            .send(new PaycardAnalyticsCommand(new CardDetailsAction(bankCard.nickName()), bankCard));
    }
 
    private void connectToDefaultCardPipe() {

@@ -30,7 +30,7 @@ import io.techery.janet.smartcard.action.charger.StartCardRecordingAction;
 import io.techery.janet.smartcard.action.charger.StopCardRecordingAction;
 import io.techery.janet.smartcard.event.CardChargedEvent;
 import io.techery.janet.smartcard.exception.NotConnectedException;
-import io.techery.janet.smartcard.model.Card;
+import io.techery.janet.smartcard.model.Record;
 
 public class WizardChargingPresenter extends WalletPresenter<WizardChargingPresenter.Screen, Parcelable> {
 
@@ -68,7 +68,7 @@ public class WizardChargingPresenter extends WalletPresenter<WizardChargingPrese
             .compose(bindViewIoToMainComposer())
             .compose(new ActionPipeCacheWiper<>(smartCardInteractor.chargedEventPipe()))
             .subscribe(OperationActionStateSubscriberWrapper.<CardChargedEvent>forView(getView().provideOperationDelegate())
-                  .onSuccess(event -> cardSwiped(event.card))
+                  .onSuccess(event -> cardSwiped(event.record))
                   .onFail(chargedEventErrorHandler)
                   .wrap());
    }
@@ -110,7 +110,7 @@ public class WizardChargingPresenter extends WalletPresenter<WizardChargingPrese
       navigator.goBack();
    }
 
-   private void cardSwiped(Card card) {
+   private void cardSwiped(Record card) {
       smartCardInteractor.bankCardPipe().send(new CreateBankCardCommand(card));
    }
 

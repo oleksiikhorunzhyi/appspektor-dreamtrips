@@ -31,7 +31,7 @@ public class UpdateBankCardCommand extends Command<BankCard> implements Injectab
    }
 
    public static UpdateBankCardCommand updateNickName(BankCard bankCard, String nickName) {
-      return new UpdateBankCardCommand(ImmutableBankCard.builder().from(bankCard).title(nickName).build());
+      return new UpdateBankCardCommand(ImmutableBankCard.builder().from(bankCard).nickName(nickName).build());
    }
 
    @Override

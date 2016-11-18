@@ -29,6 +29,7 @@ public class FactoryResetManager {
       return smartCardInteractor.lockDeviceChangedEventPipe()
             .observeSuccess()
             .filter(event -> !event.locked)
+            .take(1)
             .flatMap(event -> resetSmartCardPipe.createObservable(new ResetSmartCardCommand()));
    }
 }

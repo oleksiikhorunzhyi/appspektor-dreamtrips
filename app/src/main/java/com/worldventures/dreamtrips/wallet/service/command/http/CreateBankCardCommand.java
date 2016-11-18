@@ -14,7 +14,6 @@ import javax.inject.Named;
 import io.techery.janet.Command;
 import io.techery.janet.Janet;
 import io.techery.janet.command.annotations.CommandAction;
-import io.techery.janet.smartcard.model.Card;
 import io.techery.janet.smartcard.model.Record;
 import io.techery.mappery.MapperyContext;
 
@@ -26,32 +25,33 @@ public class CreateBankCardCommand extends Command<BankCard> implements Injectab
    @Inject @Named(JANET_API_LIB) Janet janet;
    @Inject MapperyContext mappery;
 
-   private final Card swipedCard;
+   private final Record swipedCard;
 
-   public CreateBankCardCommand(Card swipedCard) {
+   public CreateBankCardCommand(Record swipedCard) {
       this.swipedCard = swipedCard;
    }
 
    @Override
    protected void run(CommandCallback<BankCard> callback) throws Throwable {
       janet.createPipe(GetBankInfoHttpAction.class)
-            .createObservableResult(new GetBankInfoHttpAction(BankCardHelper.obtainIin(swipedCard.pan())))
+            .createObservableResult(new GetBankInfoHttpAction(BankCardHelper.obtainIin(swipedCard.cardNumber())))
             .map(action -> mappery.convert(action.response(), RecordIssuerInfo.class))
             .map(this::createBankCard)
             .subscribe(callback::onSuccess, callback::onFail);
    }
 
    private BankCard createBankCard(RecordIssuerInfo recordIssuerInfo) {
-      if (BankCardHelper.isAmexBank(Long.parseLong(swipedCard.pan()))) {
+      if (BankCardHelper.isAmexBank(Long.parseLong(swipedCard.cardNumber()))) {
          recordIssuerInfo = ImmutableRecordIssuerInfo.copyOf(recordIssuerInfo)
                .withFinancialService(Record.FinancialService.AMEX);
       }
 
       return ImmutableBankCard.builder()
             .issuerInfo(recordIssuerInfo)
-            .number(Long.parseLong(swipedCard.pan()))
-            .expiryYear(Integer.parseInt(swipedCard.exp().substring(0, 2)))
-            .expiryMonth(Integer.parseInt(swipedCard.exp().substring(2, 4)))
+            .cardNameHolder(swipedCard.title())
+            .number(Long.parseLong(swipedCard.cardNumber()))
+            .expiryYear(Integer.parseInt(swipedCard.expDate().substring(0, 2)))
+            .expiryMonth(Integer.parseInt(swipedCard.expDate().substring(3, 5)))
             .build();
    }
 }

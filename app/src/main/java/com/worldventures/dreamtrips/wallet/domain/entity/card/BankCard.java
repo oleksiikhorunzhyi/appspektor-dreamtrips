@@ -12,7 +12,12 @@ import org.jetbrains.annotations.Nullable;
 public abstract class BankCard implements Card {
 
    @Value.Default
-   public String title() {
+   public String cardNameHolder() {
+      return "";
+   }
+
+   @Value.Default
+   public String nickName() {
       return "";
    }
 

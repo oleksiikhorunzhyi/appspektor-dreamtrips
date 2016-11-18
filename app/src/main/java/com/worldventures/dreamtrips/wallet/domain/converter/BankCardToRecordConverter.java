@@ -47,11 +47,10 @@ public class BankCardToRecordConverter implements com.worldventures.dreamtrips.m
 
       return ImmutableRecord.builder()
             .id(parseCardId(card))
-            .title(card.title())
+            .title(card.nickName())
             .cardNumber(String.valueOf(card.number()))
             .cvv(String.valueOf(card.cvv()))
-            .expiryMonth(card.expiryMonth())
-            .expiryYear(card.expiryYear())
+            .expDate(String.format("%s/%s", card.expiryMonth(), card.expiryYear()))
             .financialService(card.issuerInfo().financialService())
             .t1(card.track1() != null ? card.track1() : "")
             .t2(card.track2() != null ? card.track2() : "")

@@ -8,6 +8,17 @@ import com.worldventures.dreamtrips.modules.bucketlist.model.converter.BucketLoc
 import com.worldventures.dreamtrips.modules.bucketlist.model.converter.BucketPhotoConverter;
 import com.worldventures.dreamtrips.modules.bucketlist.model.converter.BucketTagConverter;
 import com.worldventures.dreamtrips.modules.bucketlist.model.converter.BucketTypeConverter;
+import com.worldventures.dreamtrips.modules.dtl.model.mapping.AttributeConverter;
+import com.worldventures.dreamtrips.modules.dtl.model.mapping.CoordinatesConverter;
+import com.worldventures.dreamtrips.modules.dtl.model.mapping.CurrencyConverter;
+import com.worldventures.dreamtrips.modules.dtl.model.mapping.DisclaimerConverter;
+import com.worldventures.dreamtrips.modules.dtl.model.mapping.MerchantConverter;
+import com.worldventures.dreamtrips.modules.dtl.model.mapping.MerchantMediaConverter;
+import com.worldventures.dreamtrips.modules.dtl.model.mapping.OfferConverter;
+import com.worldventures.dreamtrips.modules.dtl.model.mapping.OperationDayConverter;
+import com.worldventures.dreamtrips.modules.dtl.model.mapping.OperationHourConverter;
+import com.worldventures.dreamtrips.modules.dtl.model.mapping.ThinAttributeConverter;
+import com.worldventures.dreamtrips.modules.dtl.model.mapping.ThinMerchantConverter;
 import com.worldventures.dreamtrips.modules.feed.converter.CommentConverter;
 import com.worldventures.dreamtrips.modules.feed.converter.FeedItemConverter;
 import com.worldventures.dreamtrips.modules.feed.converter.HashtagSimpleConverter;
@@ -352,5 +363,71 @@ public class MappingModule {
    @Singleton
    Converter provideBucketTagConverter() {
       return new BucketTagConverter();
+   }
+
+   @Provides(type = Provides.Type.SET)
+   @Singleton
+   Converter provideAttributeConverter() {
+      return new AttributeConverter();
+   }
+
+   @Provides(type = Provides.Type.SET)
+   @Singleton
+   Converter provideCoordinatesConverter() {
+      return new CoordinatesConverter();
+   }
+
+   @Provides(type = Provides.Type.SET)
+   @Singleton
+   Converter provideCurrencyConverter() {
+      return new CurrencyConverter();
+   }
+
+   @Provides(type = Provides.Type.SET)
+   @Singleton
+   Converter provideDisclaimerConverter() {
+      return new DisclaimerConverter();
+   }
+
+   @Provides(type = Provides.Type.SET)
+   @Singleton
+   Converter provideMerchantConverter() {
+      return new MerchantConverter();
+   }
+
+   @Provides(type = Provides.Type.SET)
+   @Singleton
+   Converter provideMerchantMediaConverter() {
+      return new MerchantMediaConverter();
+   }
+
+   @Provides(type = Provides.Type.SET)
+   @Singleton
+   Converter provideOfferConverter() {
+      return new OfferConverter();
+   }
+
+   @Provides(type = Provides.Type.SET)
+   @Singleton
+   Converter provideOperationDayConverter() {
+      return new OperationDayConverter();
+   }
+
+   @Provides(type = Provides.Type.SET)
+   @Singleton
+   Converter provideOperationHourConverter() {
+      return new OperationHourConverter();
+   }
+
+   @Provides(type = Provides.Type.SET)
+   @Singleton
+   Converter provideThinAttributeConverter() {
+      return new ThinAttributeConverter();
+   }
+
+   @Provides(type = Provides.Type.SET)
+   @Singleton
+   Converter provideThinMerchantConverter() {
+      return new ThinMerchantConverter();
    }
 }

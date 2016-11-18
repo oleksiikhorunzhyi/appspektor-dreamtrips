@@ -136,7 +136,6 @@ import dagger.Module;
       GetTripsByUidCommand.class,
       HashtagSuggestionCommand.class,
       SubscribeToPushNotificationsCommand.class,
-      HashtagSuggestionCommand.class,
       ClearStoragesCommand.class,
       SubscribeToPushNotificationsCommand.class,
       SettingsCommand.class,

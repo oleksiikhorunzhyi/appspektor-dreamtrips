@@ -13,6 +13,7 @@ import com.worldventures.dreamtrips.modules.navdrawer.NavigationDrawerPresenter;
 import com.worldventures.dreamtrips.wallet.analytics.AddPaymentCardAction;
 import com.worldventures.dreamtrips.wallet.analytics.WalletAnalyticsCommand;
 import com.worldventures.dreamtrips.wallet.analytics.WalletHomeAction;
+import com.worldventures.dreamtrips.wallet.delegate.FirmwareDelegate;
 import com.worldventures.dreamtrips.wallet.domain.entity.FirmwareUpdateData;
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCard;
 import com.worldventures.dreamtrips.wallet.domain.entity.card.BankCard;
@@ -22,7 +23,6 @@ import com.worldventures.dreamtrips.wallet.service.command.CardStacksCommand;
 import com.worldventures.dreamtrips.wallet.service.command.GetActiveSmartCardCommand;
 import com.worldventures.dreamtrips.wallet.service.command.SmartCardModifier;
 import com.worldventures.dreamtrips.wallet.service.command.firmware.FirmwareUpdateCacheCommand;
-import com.worldventures.dreamtrips.wallet.service.command.http.FetchFirmwareInfoCommand;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletPresenter;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.WalletScreen;
 import com.worldventures.dreamtrips.wallet.ui.common.helper.ErrorActionStateSubscriberWrapper;
@@ -62,6 +62,7 @@ public class CardListPresenter extends WalletPresenter<CardListPresenter.Screen,
    @Inject SmartCardInteractor smartCardInteractor;
    @Inject FirmwareInteractor firmwareInteractor;
    @Inject AnalyticsInteractor analyticsInteractor;
+   @Inject FirmwareDelegate firmwareDelegate;
    @Inject NavigationDrawerPresenter navigationDrawerPresenter;
 
    private final CardListStackConverter cardListStackConverter;
@@ -83,7 +84,7 @@ public class CardListPresenter extends WalletPresenter<CardListPresenter.Screen,
       observeChanges();
       observeFirmwareInfo();
 
-      fetchFirmwareInfo();
+      firmwareDelegate.fetchFirmwareInfo(bindView());
       fetchCards();
       trackScreen();
    }
@@ -98,30 +99,14 @@ public class CardListPresenter extends WalletPresenter<CardListPresenter.Screen,
             .subscribe(it -> setSmartCard(it));
    }
 
-   private void fetchCardsOnce() {
-      smartCardInteractor.cardStacksPipe().send(CardStacksCommand.get(false));
-   }
-
-   private void fetchFirmwareInfo(){
-      smartCardInteractor
-            .activeSmartCardPipe()
-            .observeSuccessWithReplay()
-            .take(1)
-            .map(Command::getResult)
-            .compose(bindView())
-            .subscribe(smartCard -> firmwareInteractor.firmwareInfoPipe()
-                  .send(new FetchFirmwareInfoCommand(smartCard.sdkVersion(), smartCard.firmWareVersion())), throwable -> Timber.e(throwable, "Error while loading smartcard"));
-   }
-
    private void fetchCards() {
       smartCardInteractor.cardStacksPipe().send(CardStacksCommand.get(false));
    }
 
    private void observeFirmwareInfo() {
-      firmwareInteractor.firmwareInfoPipe()
-            .observeSuccessWithReplay()
+      firmwareDelegate.observeFirmwareInfo()
             .compose(bindViewIoToMainComposer())
-            .subscribe(command -> firmwareLoaded(command.getResult()));
+            .subscribe(this::firmwareLoaded);
    }
 
    private void firmwareLoaded(FirmwareUpdateData firmwareUpdateData) {

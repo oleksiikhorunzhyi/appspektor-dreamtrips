@@ -6,25 +6,26 @@ import com.nhaarman.mockito_kotlin.mock
 import com.nhaarman.mockito_kotlin.whenever
 import com.worldventures.dreamtrips.AssertUtil.assertActionSuccess
 import com.worldventures.dreamtrips.AssertUtil.assertStatusCount
+import com.worldventures.dreamtrips.api.uploadery.model.UploaderyImage
+import com.worldventures.dreamtrips.api.uploadery.model.UploaderyImageResponse
 import com.worldventures.dreamtrips.core.janet.cache.storage.ActionStorage
 import com.worldventures.dreamtrips.core.utils.FileUtils
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem.*
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketPhoto
-import com.worldventures.dreamtrips.modules.bucketlist.model.PhotoUploadResponse
 import com.worldventures.dreamtrips.modules.bucketlist.service.action.CreateBucketItemHttpAction
 import com.worldventures.dreamtrips.modules.bucketlist.service.action.DeleteItemHttpAction
 import com.worldventures.dreamtrips.modules.bucketlist.service.action.MarkItemAsDoneHttpAction
 import com.worldventures.dreamtrips.modules.bucketlist.service.action.UpdateItemHttpAction
 import com.worldventures.dreamtrips.modules.bucketlist.service.command.*
 import com.worldventures.dreamtrips.modules.bucketlist.service.model.BucketBody
-import com.worldventures.dreamtrips.modules.common.model.EntityStateHolder
-import com.worldventures.dreamtrips.modules.common.model.EntityStateHolder.State
-import com.worldventures.dreamtrips.modules.common.model.EntityStateHolder.create
 import com.worldventures.dreamtrips.modules.bucketlist.service.model.ImmutableBucketBodyImpl
 import com.worldventures.dreamtrips.modules.bucketlist.service.model.ImmutableBucketPostBody
 import com.worldventures.dreamtrips.modules.bucketlist.service.storage.BucketListDiskStorage
 import com.worldventures.dreamtrips.modules.bucketlist.service.storage.UploadBucketPhotoInMemoryStorage
+import com.worldventures.dreamtrips.modules.common.model.EntityStateHolder
+import com.worldventures.dreamtrips.modules.common.model.EntityStateHolder.State
+import com.worldventures.dreamtrips.modules.common.model.EntityStateHolder.create
 import com.worldventures.dreamtrips.modules.trips.model.TripModel
 import com.worldventures.dreamtrips.modules.tripsimages.uploader.UploadingFileManager
 import io.techery.janet.ActionState
@@ -359,7 +360,8 @@ class BucketItemInteractorSpec : BucketInteractorBaseSpec({
 
       val testBucketItem: BucketItem = mock()
       val testBucketPhoto: BucketPhoto = mock()
-      val testPhotoUploadResponse: PhotoUploadResponse = mock()
+      val testPhotoUploadResponse: UploaderyImageResponse = mock()
+      val testUploaderyPhoto: UploaderyImage = mock()
 
       val uploadControllerStorage: UploadBucketPhotoInMemoryStorage = mock()
 
@@ -382,7 +384,8 @@ class BucketItemInteractorSpec : BucketInteractorBaseSpec({
 
       init {
          whenever(uploadControllerStorage.actionClass).thenCallRealMethod()
-         whenever(testPhotoUploadResponse.location).thenReturn(TEST_BACKEND_PATH)
+         whenever(testPhotoUploadResponse.uploaderyPhoto()).thenReturn(testUploaderyPhoto)
+         whenever(testUploaderyPhoto.location()).thenReturn(TEST_BACKEND_PATH)
       }
 
       fun subscribeAddBucketItem(body: BucketBody): TestSubscriber<ActionState<CreateBucketItemHttpAction>> {

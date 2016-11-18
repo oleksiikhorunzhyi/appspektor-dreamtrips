@@ -78,7 +78,7 @@ public class SetupUserDataCommand extends Command<SmartCard> implements Injectab
    private Observable<? extends UpdateCardUserHttpAction> uploadUserData() {
       return janetGeneric.createPipe(SimpleUploaderyCommand.class)
             .createObservableResult(new SimpleUploaderyCommand(Uri.fromFile(avatar.original()).toString()))
-            .map(c -> c.getResult().getPhotoUploadResponse().getLocation())
+            .map(c -> c.getResult().response().uploaderyPhoto().location())
             .flatMap(avatarUrl -> {
                      ImmutableUpdateCardUserData cardUserData = ImmutableUpdateCardUserData.builder()
                            .nameToDisplay(fullName)

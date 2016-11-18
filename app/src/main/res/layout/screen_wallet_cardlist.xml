@@ -64,6 +64,8 @@
                   android:layout_height="wrap_content"
                   android:layout_gravity="bottom|center_horizontal"
                   android:layout_marginBottom="16dp"
+                  android:backgroundTint="@color/wallet_add_card_button_color"
+                  android:backgroundTintMode="src_atop"
                   android:src="@drawable/ic_white_plus"
                   app:fab_size="normal"
                   app:layout_behavior="com.worldventures.dreamtrips.wallet.ui.dashboard.list.util.ScrollFABBehavior"
@@ -83,7 +85,7 @@
                android:background="@drawable/background_empty_card_list_message"
                android:gravity="center"
                android:paddingBottom="16dp"
-               android:text="@string/wallet_wizard_empty_card_list_add_card_coming_soon"
+               android:text="@string/wallet_wizard_empty_card_list_label"
                android:textColor="@color/wallet_card_list_empty_list_label_color"
                android:textSize="18sp"
                />

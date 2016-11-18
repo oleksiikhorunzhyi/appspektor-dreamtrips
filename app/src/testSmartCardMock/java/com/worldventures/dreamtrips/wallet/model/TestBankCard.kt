@@ -10,8 +10,7 @@ class TestBankCard(
       private val title: String = "TEST",
       private val cardNameHolder: String = "Test Holder",
       private val number: Long = 123456789L,
-      private val expiryMonth: Int = 12,
-      private val expiryYear: Int = 34,
+      private val expDate: String = "07/17",
       private val cvv: Int = 375,
       private val track1: String? = null,
       private val track2: String? = null,
@@ -22,9 +21,7 @@ class TestBankCard(
 
    override fun number(): Long = number
 
-   override fun expiryMonth(): Int = expiryMonth
-
-   override fun expiryYear(): Int = expiryYear
+   override fun expDate(): String = expDate
 
    override fun track1(): String? = track1
 

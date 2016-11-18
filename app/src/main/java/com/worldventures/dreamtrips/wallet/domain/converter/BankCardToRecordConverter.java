@@ -50,7 +50,7 @@ public class BankCardToRecordConverter implements com.worldventures.dreamtrips.m
             .title(card.nickName())
             .cardNumber(String.valueOf(card.number()))
             .cvv(String.valueOf(card.cvv()))
-            .expDate(String.format("%s/%s", card.expiryMonth(), card.expiryYear()))
+            .expDate(card.expDate())
             .financialService(card.issuerInfo().financialService())
             .t1(card.track1() != null ? card.track1() : "")
             .t2(card.track2() != null ? card.track2() : "")

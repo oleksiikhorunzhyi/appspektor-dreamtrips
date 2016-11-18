@@ -51,7 +51,8 @@ public class WizardChargingPresenter extends WalletPresenter<WizardChargingPrese
    }
 
    private void observeCharger() {
-      ErrorHandler<StartCardRecordingAction> cardRecordingErrorHandler = createErrorHandlerBuilder(StartCardRecordingAction.class).build();
+      ErrorHandler<StartCardRecordingAction> cardRecordingErrorHandler = createErrorHandlerBuilder(StartCardRecordingAction.class)
+            .build();
       smartCardInteractor.startCardRecordingPipe()
             .createObservable(new StartCardRecordingAction())
             .compose(bindViewIoToMainComposer())
@@ -87,12 +88,12 @@ public class WizardChargingPresenter extends WalletPresenter<WizardChargingPrese
    private <T> ErrorHandler.Builder<T> createErrorHandlerBuilder(Class<T> clazz) {
       return ErrorHandler.<T>builder(getContext())
             .handle(NotConnectedException.class, t -> {
-         analyticsInteractor.walletAnalyticsCommandPipe()
-               .send(new WalletAnalyticsCommand(FailedToAddCardAction.noCardConnection()));
-      }).handle(UnknownHostException.class, t -> {
-         analyticsInteractor.walletAnalyticsCommandPipe()
-               .send(new WalletAnalyticsCommand(FailedToAddCardAction.noNetworkConnection()));
-      });
+               analyticsInteractor.walletAnalyticsCommandPipe()
+                     .send(new WalletAnalyticsCommand(FailedToAddCardAction.noCardConnection()));
+            }).handle(UnknownHostException.class, t -> {
+               analyticsInteractor.walletAnalyticsCommandPipe()
+                     .send(new WalletAnalyticsCommand(FailedToAddCardAction.noNetworkConnection()));
+            });
    }
 
    private void trackScreen() {

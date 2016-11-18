@@ -16,6 +16,7 @@ import io.techery.janet.Janet;
 import io.techery.janet.command.annotations.CommandAction;
 import io.techery.janet.smartcard.model.Record;
 import io.techery.mappery.MapperyContext;
+import rx.Observable;
 
 import static com.worldventures.dreamtrips.core.janet.JanetModule.JANET_API_LIB;
 
@@ -33,25 +34,20 @@ public class CreateBankCardCommand extends Command<BankCard> implements Injectab
 
    @Override
    protected void run(CommandCallback<BankCard> callback) throws Throwable {
-      janet.createPipe(GetBankInfoHttpAction.class)
-            .createObservableResult(new GetBankInfoHttpAction(BankCardHelper.obtainIin(swipedCard.cardNumber())))
-            .map(action -> mappery.convert(action.response(), RecordIssuerInfo.class))
-            .map(this::createBankCard)
+      Observable.zip(Observable.fromCallable(() -> mappery.convert(swipedCard, BankCard.class)),
+            janet.createPipe(GetBankInfoHttpAction.class)
+                  .createObservableResult(new GetBankInfoHttpAction(BankCardHelper.obtainIin(swipedCard.cardNumber())))
+                  .map(action -> mappery.convert(action.response(), RecordIssuerInfo.class)),
+            this::createBankCard)
             .subscribe(callback::onSuccess, callback::onFail);
    }
 
-   private BankCard createBankCard(RecordIssuerInfo recordIssuerInfo) {
+   private BankCard createBankCard(BankCard bankCard, RecordIssuerInfo recordIssuerInfo) {
       if (BankCardHelper.isAmexBank(Long.parseLong(swipedCard.cardNumber()))) {
          recordIssuerInfo = ImmutableRecordIssuerInfo.copyOf(recordIssuerInfo)
                .withFinancialService(Record.FinancialService.AMEX);
       }
-
-      return ImmutableBankCard.builder()
-            .issuerInfo(recordIssuerInfo)
-            .cardNameHolder(swipedCard.title())
-            .number(Long.parseLong(swipedCard.cardNumber()))
-            .expiryYear(Integer.parseInt(swipedCard.expDate().substring(0, 2)))
-            .expiryMonth(Integer.parseInt(swipedCard.expDate().substring(3, 5)))
-            .build();
+      return ImmutableBankCard.copyOf(bankCard)
+            .withIssuerInfo(recordIssuerInfo);
    }
 }

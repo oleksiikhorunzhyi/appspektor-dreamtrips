@@ -9,9 +9,7 @@ public interface Card {
 
    long number();
 
-   int expiryMonth();
-
-   int expiryYear();
+   String expDate();
 
    Category category();
 

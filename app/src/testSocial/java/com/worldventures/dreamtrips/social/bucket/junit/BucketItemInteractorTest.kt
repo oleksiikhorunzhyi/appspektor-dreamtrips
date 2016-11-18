@@ -6,6 +6,8 @@ import com.google.gson.JsonObject
 import com.nhaarman.mockito_kotlin.doReturn
 import com.nhaarman.mockito_kotlin.whenever
 import com.worldventures.dreamtrips.AssertUtil.assertActionSuccess
+import com.worldventures.dreamtrips.api.uploadery.model.UploaderyImage
+import com.worldventures.dreamtrips.api.uploadery.model.UploaderyImageResponse
 import com.worldventures.dreamtrips.core.api.uploadery.UploaderyInteractor
 import com.worldventures.dreamtrips.core.janet.cache.storage.ActionStorage
 import com.worldventures.dreamtrips.core.utils.FileUtils
@@ -13,17 +15,16 @@ import com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem.COMPLETED
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem.NEW
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketPhoto
-import com.worldventures.dreamtrips.modules.bucketlist.model.PhotoUploadResponse
 import com.worldventures.dreamtrips.modules.bucketlist.service.action.CreateBucketItemHttpAction
 import com.worldventures.dreamtrips.modules.bucketlist.service.action.DeleteItemHttpAction
 import com.worldventures.dreamtrips.modules.bucketlist.service.action.MarkItemAsDoneHttpAction
 import com.worldventures.dreamtrips.modules.bucketlist.service.action.UpdateItemHttpAction
 import com.worldventures.dreamtrips.modules.bucketlist.service.command.*
 import com.worldventures.dreamtrips.modules.bucketlist.service.model.BucketBody
-import com.worldventures.dreamtrips.modules.common.model.EntityStateHolder
 import com.worldventures.dreamtrips.modules.bucketlist.service.model.ImmutableBucketBodyImpl
 import com.worldventures.dreamtrips.modules.bucketlist.service.model.ImmutableBucketPostBody
 import com.worldventures.dreamtrips.modules.bucketlist.service.storage.UploadBucketPhotoInMemoryStorage
+import com.worldventures.dreamtrips.modules.common.model.EntityStateHolder
 import com.worldventures.dreamtrips.modules.trips.model.TripModel
 import com.worldventures.dreamtrips.modules.tripsimages.uploader.UploadingFileManager
 import io.techery.janet.ActionState
@@ -60,15 +61,19 @@ class BucketItemInteractorTest : BucketInteractorBaseTest() {
    @Mock internal var uploadControllerStorage: UploadBucketPhotoInMemoryStorage? = null
 
    private var testBucketItem: BucketItem? = null
-   private var testPhotoUploadResponse: PhotoUploadResponse? = null
+   private var testPhotoUploadResponse: UploaderyImageResponse ? = null
+   private var testUploaderyPhoto: UploaderyImage ? = null
+
    private var testBucketPhoto: BucketPhoto? = null
 
    init {
       testBucketItem = mock(BucketItem::class.java)
       testBucketPhoto = mock(BucketPhoto::class.java)
-      testPhotoUploadResponse = mock(PhotoUploadResponse::class.java)
+      testPhotoUploadResponse = mock(UploaderyImageResponse::class.java)
+      testUploaderyPhoto = mock(UploaderyImage::class.java)
 
-      `when`(testPhotoUploadResponse!!.location).thenReturn(TEST_BACKEND_PATH)
+      `when`(testPhotoUploadResponse!!.uploaderyPhoto()).thenReturn(testUploaderyPhoto)
+      `when`(testUploaderyPhoto!!.location()).thenReturn(TEST_BACKEND_PATH)
 
       `when`(testBucketItem!!.uid).thenReturn(TEST_BUCKET_ITEM_UID)
       `when`(testBucketItem!!.status).thenReturn(COMPLETED)

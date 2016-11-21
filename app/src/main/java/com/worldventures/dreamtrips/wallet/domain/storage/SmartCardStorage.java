@@ -13,6 +13,7 @@ import com.worldventures.dreamtrips.wallet.service.command.ConnectSmartCardComma
 import com.worldventures.dreamtrips.wallet.service.command.CreateAndConnectToCardCommand;
 import com.worldventures.dreamtrips.wallet.service.command.FetchBatteryLevelCommand;
 import com.worldventures.dreamtrips.wallet.service.command.FetchSmartCardLockState;
+import com.worldventures.dreamtrips.wallet.service.command.SaveLockStateCommand;
 import com.worldventures.dreamtrips.wallet.service.command.SetAutoClearSmartCardDelayCommand;
 import com.worldventures.dreamtrips.wallet.service.command.SetDisableDefaultCardDelayCommand;
 import com.worldventures.dreamtrips.wallet.service.command.SetStealthModeCommand;
@@ -61,6 +62,7 @@ public class SmartCardStorage implements MultipleActionStorage<SmartCard> {
             SetAutoClearSmartCardDelayCommand.class,
             SetDisableDefaultCardDelayCommand.class,
             FetchBatteryLevelCommand.class,
-            SetupUserDataCommand.class);
+            SetupUserDataCommand.class,
+            SaveLockStateCommand.class);
    }
 }

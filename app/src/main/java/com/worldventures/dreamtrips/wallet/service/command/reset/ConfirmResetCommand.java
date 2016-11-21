@@ -33,17 +33,14 @@ public class ConfirmResetCommand extends Command<Void> implements InjectableActi
 
    //before unassisign user, he should enter pin. For this purpose smartCard should be locked and unlocked,
    // because unlock operation performs by entering pin.
-   private Observable<LockDeviceAction> lockUnlockSmartCard(SmartCard smartCard) {
+   private Observable<Void> lockUnlockSmartCard(SmartCard smartCard) {
       ActionPipe<LockDeviceAction> lockDevicePipe = janet.createPipe(LockDeviceAction.class);
-
-      if (smartCard.lock()) {
-         return lockDevicePipe
-               .createObservableResult(new LockDeviceAction(false));
-      } else {
+      if (!smartCard.lock()) {
          return lockDevicePipe
                .createObservableResult(new LockDeviceAction(true))
-               .flatMap(setLockStateCommand -> lockDevicePipe.createObservableResult(new LockDeviceAction(false)));
+               .map(lockDeviceAction -> null);
       }
+      return Observable.just(null);
    }
 
 }

@@ -314,11 +314,14 @@ public final class SmartCardInteractor {
    }
 
    private void connectToLockEvent() {
-      lockDeviceChangedEventPipe
-            .observeSuccess()
-            .subscribe(lockDeviceChangedEvent -> {
-               saveLockStatePipe.send(new SaveLockStateCommand(lockDeviceChangedEvent.locked));
-            });
+      Observable.merge(
+            lockDeviceChangedEventPipe
+                  .observeSuccess()
+                  .map(event -> event.locked),
+            setLockPipe.observeSuccess()
+                  .map(SetLockStateCommand::isLock)
+      ).subscribe(lock -> saveLockStatePipe.send(new SaveLockStateCommand(lock)),
+            throwable -> Timber.e(throwable, "Error with connectToLockEvent"));
    }
 
    private void observeBatteryLevel(Janet janet) {

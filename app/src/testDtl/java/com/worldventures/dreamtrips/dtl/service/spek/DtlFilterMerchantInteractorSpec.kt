@@ -1,51 +1,28 @@
 package com.worldventures.dreamtrips.dtl.service.spek
 
-import android.location.Location
-import com.google.android.gms.maps.model.LatLng
-import com.nhaarman.mockito_kotlin.mock
-import com.nhaarman.mockito_kotlin.whenever
-import com.worldventures.dreamtrips.AssertUtil.assertActionSuccess
-import com.worldventures.dreamtrips.core.janet.SessionActionPipeCreator
 import com.worldventures.dreamtrips.modules.dtl.helper.DtlLocationHelper
-import com.worldventures.dreamtrips.modules.dtl.location.LocationDelegate
-import com.worldventures.dreamtrips.modules.dtl.model.LocationSourceType
-import com.worldventures.dreamtrips.modules.dtl.model.location.ImmutableDtlManualLocation
-import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchantAttribute
-import com.worldventures.dreamtrips.modules.dtl.service.DtlFilterMerchantInteractor
-import com.worldventures.dreamtrips.modules.dtl.service.action.DtlFilterDataAction
-import com.worldventures.dreamtrips.modules.dtl.service.action.DtlFilterMerchantsAction
-import com.worldventures.dreamtrips.modules.dtl.service.action.DtlLocationCommand
-import com.worldventures.dreamtrips.modules.settings.model.Setting
-import com.worldventures.dreamtrips.modules.settings.util.SettingsFactory.DISTANCE_UNITS
-import com.worldventures.dreamtrips.modules.settings.util.SettingsFactory.KILOMETERS
-import io.techery.janet.ActionState
-import org.junit.Before
-import org.powermock.api.mockito.PowerMockito
 import org.powermock.core.classloader.annotations.PrepareForTest
-import rx.functions.Func1
-import rx.lang.kotlin.toSingletonObservable
-import rx.observers.TestSubscriber
 
 @PrepareForTest(DtlLocationHelper::class)
 class DtlFilterMerchantInteractorSpec : DtlBaseMerchantSpec({
 
    beforeEach {
-      initVars()
+//      initVars()
 
-      val locationDelegate: LocationDelegate = mock()
-
-      location = mock()
-      whenever(location.latitude).thenReturn(1.0)
-      whenever(location.longitude).thenReturn(1.0)
-      whenever(locationDelegate.lastKnownLocationOrEmpty).thenReturn(location.toSingletonObservable())
-      whenever(locationDelegate.requestLocationUpdate()).thenReturn(location.toSingletonObservable())
-
-      whenever(db.settings).thenReturn(listOf(testDistanceSetting))
-      whenever(db.lastSelectedOffersOnlyToggle).thenReturn(false)
-      whenever(db.amenities).thenReturn(emptyList())
-      filterMerchantInteractor = DtlFilterMerchantInteractor(merchantInteractor, locationInteractor, locationDelegate,
-       SessionActionPipeCreator(janet))
-   }
+//      val locationDelegate: LocationDelegate = mock()
+//
+//      location = mock()
+//      whenever(location.latitude).thenReturn(1.0)
+//      whenever(location.longitude).thenReturn(1.0)
+//      whenever(locationDelegate.lastKnownLocationOrEmpty).thenReturn(location.toSingletonObservable())
+//      whenever(locationDelegate.requestLocationUpdate()).thenReturn(location.toSingletonObservable())
+//
+//      whenever(db.settings).thenReturn(listOf(testDistanceSetting))
+//      whenever(db.lastSelectedOffersOnlyToggle).thenReturn(false)
+//      whenever(db.amenities).thenReturn(emptyList())
+//      filterMerchantInteractor = DtlFilterMerchantInteractor(merchantInteractor, locationInteractor, locationDelegate,
+//       SessionActionPipeCreator(janet))
+//   }
 
 //   it("should init filter") {
 //      checkFilterAction(DtlFilterDataAction.init()) {
@@ -115,23 +92,23 @@ class DtlFilterMerchantInteractorSpec : DtlBaseMerchantSpec({
 //         !it.result.isEmpty()
 //      }
 //   }
-
-}) {
-
-   @Before
-   fun mockStatic() { //PowerMock works before running tests only
-      PowerMockito.mockStatic(DtlLocationHelper::class.java)
-      whenever(DtlLocationHelper.selectAcceptableLocation(any(), any())).thenReturn(LatLng(1.0, 1.0))
-      whenever(DtlLocationHelper.calculateDistance(any(), any())).thenReturn(1.0)
-   }
-
-   companion object {
-      //vars to ease use these in a constructor
-      val testDistanceSetting = Setting(DISTANCE_UNITS, Setting.Type.SELECT, KILOMETERS)
-      // late init in beforeEach
-      lateinit var filterMerchantInteractor: DtlFilterMerchantInteractor
-      lateinit var location: Location
-      //
+//
+//}) {
+//
+//   @Before
+//   fun mockStatic() { //PowerMock works before running tests only
+//      PowerMockito.mockStatic(DtlLocationHelper::class.java)
+//      whenever(DtlLocationHelper.selectAcceptableLocation(any(), any())).thenReturn(LatLng(1.0, 1.0))
+//      whenever(DtlLocationHelper.calculateDistance(any(), any())).thenReturn(1.0)
+//   }
+//
+////   companion object {
+//      //vars to ease use these in a constructor
+//      val testDistanceSetting = Setting(DISTANCE_UNITS, Setting.Type.SELECT, KILOMETERS)
+//      // late init in beforeEach
+//      lateinit var filterMerchantInteractor: DtlFilterMerchantInteractor
+//      lateinit var location: Location
+//      //
 
 //      fun checkFilterAction(filterDataAction: DtlFilterDataAction, assertPredicate: (DtlFilterDataAction) -> Boolean) {
 //         val subscriber = TestSubscriber<ActionState<DtlFilterDataAction>>()
@@ -139,6 +116,4 @@ class DtlFilterMerchantInteractorSpec : DtlBaseMerchantSpec({
 ////               .createObservable(filterDataAction)
 ////               .subscribe(subscriber)
 //         assertActionSuccess(subscriber, Func1 { assertPredicate(filterDataAction) })
-//      }
-   }
-}
+   }})

@@ -21,27 +21,27 @@ class DtlLocationInteractorSpec : BaseSpec({
 
    // general mocking for all tests
    // it's necessary for testing chains because there are such tests only
-   val location: DtlExternalLocation = mock()
-   val locationList = listOf(location)
-   whenever(location.longName).thenReturn("London")
-
-   val commandDaggerService = CommandActionService().wrapDagger()
-   val httpStubWrapper = MockHttpActionService.Builder()
-         .bind(MockHttpActionService.Response(200).body(locationList))
-         { request -> request.url.contains("/locations") }
-         .build()
-         .wrapStub()
-
-   val janet = Janet.Builder()
-         .addService(commandDaggerService.wrapCache())
-         .addService(httpStubWrapper.wrapCache())
-         .build()
-
-   commandDaggerService.registerProvider(Janet::class.java, { janet })
-
-   val locationInteractor = DtlLocationInteractor(SessionActionPipeCreator(janet))
-
-   //
+//   val location: DtlExternalLocation = mock()
+//   val locationList = listOf(location)
+//   whenever(location.longName).thenReturn("London")
+//
+//   val commandDaggerService = CommandActionService().wrapDagger()
+//   val httpStubWrapper = MockHttpActionService.Builder()
+//         .bind(MockHttpActionService.Response(200).body(locationList))
+//         { request -> request.url.contains("/locations") }
+//         .build()
+//         .wrapStub()
+//
+//   val janet = Janet.Builder()
+//         .addService(commandDaggerService.wrapCache())
+//         .addService(httpStubWrapper.wrapCache())
+//         .build()
+//
+//   commandDaggerService.registerProvider(Janet::class.java, { janet })
+//
+//   val locationInteractor = DtlLocationInteractor(SessionActionPipeCreator(janet))
+//
+//   //
 
 //   describe("DtlLocationCommand") {
 //      var subscriber = TestSubscriber<ActionState<DtlLocationCommand>>()
@@ -81,37 +81,37 @@ class DtlLocationInteractorSpec : BaseSpec({
 //         verify(spyHttpCallback).onSend(any<ActionHolder<Any>>())
 //      }
 //   }
-
-   describe("DtlSearchLocationAction") {
-      var subscriber = TestSubscriber<ActionState<DtlSearchLocationAction>>()
-      var spyHttpCallback = httpStubWrapper.spyCallback()
-
-      it("should skip searching when query#length() < 3") {
-         locationInteractor.searchLocationPipe()
-               .createObservable(DtlSearchLocationAction(location.longName.substring(0, 2)))
-               .subscribe(subscriber)
-         assertActionSuccess(subscriber) { action -> action.result.isEmpty() }
-         verify(spyHttpCallback, never()).onSend(any<ActionHolder<Any>>())
-      }
-
-      it("should send http request when query#length() >= 3") {
-         subscriber = TestSubscriber<ActionState<DtlSearchLocationAction>>()
-         spyHttpCallback = httpStubWrapper.spyCallback()
-         locationInteractor.searchLocationPipe()
-               .createObservable(DtlSearchLocationAction(location.longName.substring(0, 3)))
-               .subscribe(subscriber)
-         assertActionSuccess(subscriber) { action -> !action.result.isEmpty() }
-         verify(spyHttpCallback).onSend(any<ActionHolder<Any>>())
-      }
-
-      it("should use cache") {
-         subscriber = TestSubscriber<ActionState<DtlSearchLocationAction>>()
-         spyHttpCallback = httpStubWrapper.spyCallback()
-         locationInteractor.searchLocationPipe()
-               .createObservable(DtlSearchLocationAction(location.longName))
-               .subscribe(subscriber)
-         assertActionSuccess(subscriber) { action -> !action.result.isEmpty() }
-         verify(spyHttpCallback, never()).onSend(any<ActionHolder<Any>>())
-      }
-   }
+//
+//   describe("DtlSearchLocationAction") {
+//      var subscriber = TestSubscriber<ActionState<DtlSearchLocationAction>>()
+//      var spyHttpCallback = httpStubWrapper.spyCallback()
+//
+//      it("should skip searching when query#length() < 3") {
+//         locationInteractor.searchLocationPipe()
+//               .createObservable(DtlSearchLocationAction(location.longName.substring(0, 2)))
+//               .subscribe(subscriber)
+//         assertActionSuccess(subscriber) { action -> action.result.isEmpty() }
+//         verify(spyHttpCallback, never()).onSend(any<ActionHolder<Any>>())
+//      }
+//
+//      it("should send http request when query#length() >= 3") {
+//         subscriber = TestSubscriber<ActionState<DtlSearchLocationAction>>()
+//         spyHttpCallback = httpStubWrapper.spyCallback()
+//         locationInteractor.searchLocationPipe()
+//               .createObservable(DtlSearchLocationAction(location.longName.substring(0, 3)))
+//               .subscribe(subscriber)
+//         assertActionSuccess(subscriber) { action -> !action.result.isEmpty() }
+//         verify(spyHttpCallback).onSend(any<ActionHolder<Any>>())
+//      }
+//
+//      it("should use cache") {
+//         subscriber = TestSubscriber<ActionState<DtlSearchLocationAction>>()
+//         spyHttpCallback = httpStubWrapper.spyCallback()
+//         locationInteractor.searchLocationPipe()
+//               .createObservable(DtlSearchLocationAction(location.longName))
+//               .subscribe(subscriber)
+//         assertActionSuccess(subscriber) { action -> !action.result.isEmpty() }
+//         verify(spyHttpCallback, never()).onSend(any<ActionHolder<Any>>())
+//      }
+//   }
 })

@@ -31,4 +31,8 @@ public class SetLockStateCommand extends Command<Void> implements InjectableActi
             .createObservableResult(new LockDeviceAction(true))
             .subscribe(action -> callback.onSuccess(null), callback::onFail);
    }
+
+   public boolean isLock() {
+      return lock;
+   }
 }

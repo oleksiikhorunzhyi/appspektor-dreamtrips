@@ -7,7 +7,6 @@ import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
-import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
@@ -25,7 +24,6 @@ import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.maps.android.clustering.ClusterManager;
-import com.google.maps.android.clustering.algo.GridBasedAlgorithm;
 import com.innahema.collections.query.queriables.Queryable;
 import com.trello.rxlifecycle.RxLifecycle;
 import com.worldventures.dreamtrips.R;
@@ -49,14 +47,12 @@ import com.worldventures.dreamtrips.modules.trips.model.Location;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
-import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
 import butterknife.Optional;
 import cn.pedant.SweetAlert.SweetAlertDialog;
 import flow.path.Path;
 import flow.path.PathContext;
-import icepick.State;
 
 public class DtlMapScreenImpl extends DtlLayout<DtlMapScreen, DtlMapPresenter, DtlMapPath> implements DtlMapScreen {
 
@@ -77,6 +73,7 @@ public class DtlMapScreenImpl extends DtlLayout<DtlMapScreen, DtlMapPresenter, D
    private Marker locationPin;
    private GoogleMap googleMap;
    private int markerHeight;
+   private SweetAlertDialog errorDialog;
 
    public DtlMapScreenImpl(Context context) {
       super(context);
@@ -100,6 +97,7 @@ public class DtlMapScreenImpl extends DtlLayout<DtlMapScreen, DtlMapPresenter, D
 
    @Override
    protected void onDetachedFromWindow() {
+      hideErrorIfNeed();
       destroyMap();
       super.onDetachedFromWindow();
    }
@@ -223,7 +221,7 @@ public class DtlMapScreenImpl extends DtlLayout<DtlMapScreen, DtlMapPresenter, D
    @Override
    public void prepareInfoWindow(@Nullable LatLng location, int height) {
       if (location == null) return;
-      int center = (dtlToolbar == null ? getHeight()/ 2 : (getHeight() - dtlToolbar.getBottom())/ 2) - height;
+      int center = (dtlToolbar == null ? getHeight() / 2 : (getHeight() - dtlToolbar.getBottom()) / 2) - height;
       int offset = markerHeight - center;
       animateTo(location, offset);
    }
@@ -268,12 +266,16 @@ public class DtlMapScreenImpl extends DtlLayout<DtlMapScreen, DtlMapPresenter, D
 
    @Override
    public void showError(String error) {
-      SweetAlertDialog errorDialog = DialogFactory.createRetryDialog(getActivity(), error);
+      errorDialog = DialogFactory.createRetryDialog(getActivity(), error);
       errorDialog.setConfirmClickListener(listener -> {
          listener.dismissWithAnimation();
          getPresenter().retryLoadMerchant();
       });
       errorDialog.show();
+   }
+
+   private void hideErrorIfNeed() {
+      if (errorDialog != null && errorDialog.isShowing()) errorDialog.dismiss();
    }
 
    @Override
@@ -293,7 +295,7 @@ public class DtlMapScreenImpl extends DtlLayout<DtlMapScreen, DtlMapPresenter, D
 
    @Override
    public void zoomBounds(LatLngBounds bounds) {
-      getMap().animateCamera(CameraUpdateFactory.newLatLngBounds(bounds, (int)ViewUtils.pxFromDp(getContext(), CAMERA_PADDING)));
+      getMap().animateCamera(CameraUpdateFactory.newLatLngBounds(bounds, (int) ViewUtils.pxFromDp(getContext(), CAMERA_PADDING)));
    }
 
    @Override
@@ -360,7 +362,7 @@ public class DtlMapScreenImpl extends DtlLayout<DtlMapScreen, DtlMapPresenter, D
    }
 
    private void hideInfoIfShown() {
-      if(infoContainer.getChildCount() > 0) {
+      if (infoContainer.getChildCount() > 0) {
          infoContainer.removeAllViews();
          getPresenter().onMarkerPopupDismiss();
       }

@@ -20,10 +20,13 @@ public class SmartCardInfoToSmartCard implements Converter<SmartCardInfo, SmartC
 
    @Override
    public SmartCard convert(MapperyContext mapperyContext, SmartCardInfo smartCardInfo) {
+      //todo hotfix NPE when server returned name=null
+      //we should remove deviceName or cardName and make this field nullable
+      final String name = smartCardInfo.displayName() == null ? "" : smartCardInfo.displayName();
       return ImmutableSmartCard.builder()
             .smartCardId(String.valueOf(smartCardInfo.scId()))
-            .cardName(smartCardInfo.displayName())
-            .deviceName(smartCardInfo.displayName())
+            .cardName(name)
+            .deviceName(name)
             .userPhoto(smartCardInfo.displayPhoto())
             .serialNumber(smartCardInfo.serialNumber())
             .deviceAddress(smartCardInfo.bleAddress())

@@ -117,9 +117,8 @@ public class ManagerModule {
    }
 
    @Provides
-   FeedEntityManager provideBaseFeedEntityManager(@Global EventBus eventBus, LikesInteractor likesInteractor,
-         CommentsInteractor commentsInteractor) {
-      return new FeedEntityManager(eventBus, likesInteractor, commentsInteractor);
+   FeedEntityManager provideBaseFeedEntityManager(LikesInteractor likesInteractor) {
+      return new FeedEntityManager(likesInteractor);
    }
 
    @Provides

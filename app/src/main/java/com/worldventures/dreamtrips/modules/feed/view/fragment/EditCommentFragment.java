@@ -25,7 +25,6 @@ import butterknife.OnClick;
 @Layout(R.layout.fragment_edit_comment)
 public class EditCommentFragment extends BaseFragmentWithArgs<EditCommentPresenter, SingleCommentBundle> implements EditCommentPresenter.View {
 
-
    @InjectView(R.id.user_photo) SimpleDraweeView userPhoto;
    @InjectView(R.id.user_name) TextView userName;
    @InjectView(R.id.comment_edit) EditText editComment;
@@ -44,8 +43,12 @@ public class EditCommentFragment extends BaseFragmentWithArgs<EditCommentPresent
    @OnClick(R.id.save)
    public void onSave() {
       SoftInputUtil.hideSoftInputMethod(editComment);
+      getPresenter().onSave(editComment.getText().toString().trim());
+   }
+
+   @Override
+   public void disableSaveButton() {
       save.setEnabled(false);
-      getPresenter().onSave();
    }
 
    @Override
@@ -72,11 +75,6 @@ public class EditCommentFragment extends BaseFragmentWithArgs<EditCommentPresent
    @Override
    public void close() {
       eventBus.post(new EditCommentCloseRequest(this.getClass().getName()));
-   }
-
-   @Override
-   public String getText() {
-      return editComment.getText().toString().trim();
    }
 
    @Override

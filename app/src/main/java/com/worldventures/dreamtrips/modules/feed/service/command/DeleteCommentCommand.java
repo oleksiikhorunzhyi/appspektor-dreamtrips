@@ -2,34 +2,48 @@ package com.worldventures.dreamtrips.modules.feed.service.command;
 
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.api.comment.DeleteCommentHttpAction;
-import com.worldventures.dreamtrips.core.api.action.CommandWithError;
-import com.worldventures.dreamtrips.core.janet.JanetModule;
+import com.worldventures.dreamtrips.core.api.action.ApiActionCommand;
 import com.worldventures.dreamtrips.core.janet.dagger.InjectableAction;
+import com.worldventures.dreamtrips.modules.feed.model.FeedEntity;
+import com.worldventures.dreamtrips.modules.feed.model.comment.Comment;
 
-import javax.inject.Inject;
-import javax.inject.Named;
-
-import io.techery.janet.Janet;
 import io.techery.janet.command.annotations.CommandAction;
-import io.techery.mappery.MapperyContext;
 
 @CommandAction
-public class DeleteCommentCommand extends CommandWithError implements InjectableAction {
+public class DeleteCommentCommand extends ApiActionCommand<DeleteCommentHttpAction, Comment> implements InjectableAction {
 
-   private String commentId;
+   private FeedEntity feedEntity;
+   private Comment comment;
 
-   @Inject @Named(JanetModule.JANET_API_LIB) Janet janet;
-   @Inject MapperyContext mappery;
-
-   public DeleteCommentCommand(String commentId) {
-      this.commentId = commentId;
+   public DeleteCommentCommand(FeedEntity feedEntity, Comment comment) {
+      this.feedEntity = feedEntity;
+      this.comment = comment;
    }
 
    @Override
-   protected void run(CommandCallback callback) throws Throwable {
-      janet.createPipe(DeleteCommentHttpAction.class)
-            .createObservableResult(new DeleteCommentHttpAction(commentId))
-            .subscribe(callback::onSuccess, callback::onFail);
+   protected Comment mapCommandResult(Comment httpCommandResult) {
+      return comment;
+   }
+
+   @Override
+   protected void onSuccess(CommandCallback<Comment> callback, Comment comment) {
+      feedEntity.setCommentsCount(feedEntity.getCommentsCount() - 1);
+      feedEntity.getComments().remove(comment);
+      callback.onSuccess(comment);
+   }
+
+   @Override
+   protected DeleteCommentHttpAction getHttpAction() {
+      return new DeleteCommentHttpAction(comment.getUid());
+   }
+
+   @Override
+   protected Class<DeleteCommentHttpAction> getHttpActionClass() {
+      return DeleteCommentHttpAction.class;
+   }
+
+   public FeedEntity getFeedEntity() {
+      return feedEntity;
    }
 
    @Override

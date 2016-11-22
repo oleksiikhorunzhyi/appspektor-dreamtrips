@@ -1,13 +1,15 @@
 package com.worldventures.dreamtrips.modules.dtl_flow.parts.map.info;
 
 import android.content.Context;
+import android.support.annotation.Nullable;
 import android.text.TextUtils;
 
+import com.google.android.gms.maps.model.LatLng;
 import com.techery.spares.module.Injector;
 import com.worldventures.dreamtrips.modules.dtl.analytics.DtlAnalyticsCommand;
 import com.worldventures.dreamtrips.modules.dtl.analytics.MerchantFromSearchEvent;
 import com.worldventures.dreamtrips.modules.dtl.event.MapInfoReadyAction;
-import com.worldventures.dreamtrips.modules.dtl.event.ToggleMerchantSelectionEvent;
+import com.worldventures.dreamtrips.modules.dtl.model.merchant.Coordinates;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.ThinMerchant;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.filter.FilterData;
 import com.worldventures.dreamtrips.modules.dtl.service.DtlLocationInteractor;
@@ -29,7 +31,7 @@ public class DtlMapInfoPresenterImpl extends DtlPresenterImpl<DtlMapInfoScreen, 
    @Inject DtlLocationInteractor locationInteractor;
    @Inject PresentationInteractor presentationInteractor;
 
-   protected ThinMerchant merchant;
+   private final ThinMerchant merchant;
 
    public DtlMapInfoPresenterImpl(Context context, Injector injector, ThinMerchant merchant) {
       super(context);
@@ -50,7 +52,6 @@ public class DtlMapInfoPresenterImpl extends DtlPresenterImpl<DtlMapInfoScreen, 
 
    @Override
    public void onMarkerClick() {
-      eventBus.post(new ToggleMerchantSelectionEvent(merchant));
       trackIfNeeded();
       fullMerchantInteractor.load(merchant.id());
    }
@@ -67,8 +68,15 @@ public class DtlMapInfoPresenterImpl extends DtlPresenterImpl<DtlMapInfoScreen, 
                   .send(DtlAnalyticsCommand.create(new MerchantFromSearchEvent(query))));
    }
 
+   private @Nullable LatLng mapCoordinates() {
+      final Coordinates coordinates = merchant.coordinates();
+      if (coordinates == null) return null;
+      return new LatLng(coordinates.lat(), coordinates.lng());
+   }
+
    @Override
    public void onSizeReady(int height) {
-      presentationInteractor.mapPopupReadyPipe().send(MapInfoReadyAction.create(height));
+      presentationInteractor.mapPopupReadyPipe().send(MapInfoReadyAction.create(mapCoordinates(), height));
    }
+
 }

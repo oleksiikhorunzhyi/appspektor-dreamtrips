@@ -7,8 +7,8 @@ import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
-import android.widget.Button;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
 import android.widget.RelativeLayout;
 
 import com.google.android.gms.common.ConnectionResult;
@@ -20,10 +20,10 @@ import com.google.android.gms.maps.Projection;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.maps.android.clustering.ClusterManager;
-import com.google.maps.android.clustering.algo.GridBasedAlgorithm;
 import com.innahema.collections.query.queriables.Queryable;
 import com.trello.rxlifecycle.RxLifecycle;
 import com.worldventures.dreamtrips.R;
@@ -47,18 +47,17 @@ import com.worldventures.dreamtrips.modules.trips.model.Location;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
-import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
 import butterknife.Optional;
 import cn.pedant.SweetAlert.SweetAlertDialog;
 import flow.path.Path;
 import flow.path.PathContext;
-import icepick.State;
 
 public class DtlMapScreenImpl extends DtlLayout<DtlMapScreen, DtlMapPresenter, DtlMapPath> implements DtlMapScreen {
 
    private static final int CAMERA_DURATION = 1000;
+   private static final float CAMERA_PADDING = 50f;
 
    public static final String MAP_TAG = "MAP_TAG";
 
@@ -70,10 +69,10 @@ public class DtlMapScreenImpl extends DtlLayout<DtlMapScreen, DtlMapPresenter, D
 
    @Optional @InjectView(R.id.expandableDtlToolbar) ExpandableDtlToolbar dtlToolbar;
 
-   private LatLng selectedLocation;
    private ClusterManager<DtlClusterItem> clusterManager;
    private Marker locationPin;
    private GoogleMap googleMap;
+   private int markerHeight;
    private SweetAlertDialog errorDialog;
 
    public DtlMapScreenImpl(Context context) {
@@ -93,10 +92,12 @@ public class DtlMapScreenImpl extends DtlLayout<DtlMapScreen, DtlMapPresenter, D
    protected void onPostAttachToWindowView() {
       checkMapAvailable();
       initToolbar();
+      prepareMarkerSize();
    }
 
    @Override
    protected void onDetachedFromWindow() {
+      hideErrorIfNeed();
       destroyMap();
       super.onDetachedFromWindow();
    }
@@ -186,7 +187,7 @@ public class DtlMapScreenImpl extends DtlLayout<DtlMapScreen, DtlMapPresenter, D
    }
 
    @OnClick(R.id.redoMerchants)
-   public void onMechantsRedoClick() {
+   public void onRedoMerchantsClick() {
       getPresenter().onLoadMerchantsClick(googleMap.getCameraPosition().target);
    }
 
@@ -218,17 +219,11 @@ public class DtlMapScreenImpl extends DtlLayout<DtlMapScreen, DtlMapPresenter, D
    }
 
    @Override
-   public void prepareInfoWindow(int height) {
-      int ownHeight;
-      if (dtlToolbar == null) {
-         ownHeight = getHeight();
-      } else {
-         ownHeight = getHeight() - dtlToolbar.getBottom();
-      }
-      int centerY = ownHeight / 2;
-      int resultY = height + getResources().getDimensionPixelSize(R.dimen.size_huge);
-      int offset = resultY - centerY;
-      animateTo(selectedLocation, offset);
+   public void prepareInfoWindow(@Nullable LatLng location, int height) {
+      if (location == null) return;
+      int center = (dtlToolbar == null ? getHeight() / 2 : (getHeight() - dtlToolbar.getBottom()) / 2) - height;
+      int offset = markerHeight - center;
+      animateTo(location, offset);
    }
 
    @Override
@@ -250,7 +245,6 @@ public class DtlMapScreenImpl extends DtlLayout<DtlMapScreen, DtlMapPresenter, D
    @Override
    public void cameraPositionChange(CameraPosition cameraPosition) {
       clusterManager.onCameraChange(cameraPosition);
-      selectedLocation = cameraPosition.target;
    }
 
    @Override
@@ -261,8 +255,8 @@ public class DtlMapScreenImpl extends DtlLayout<DtlMapScreen, DtlMapPresenter, D
    @Override
    public void showPinInfo(ThinMerchant merchant) {
       infoContainer.removeAllViews();
-      PathContext newContext = PathContext.create((PathContext) getContext(), new DtlMapInfoPath(FlowUtil.currentMaster(this), merchant), Path
-            .contextFactory());
+      PathContext newContext = PathContext.create((PathContext) getContext(), new DtlMapInfoPath(FlowUtil.currentMaster(this), merchant),
+            Path.contextFactory());
       DtlMapInfoScreenImpl infoView = (DtlMapInfoScreenImpl) LayoutInflater.from(getContext())
             .cloneInContext(newContext)
             .inflate(FlowUtil.layoutFrom(DtlMapInfoPath.class), infoContainer, false);
@@ -280,6 +274,10 @@ public class DtlMapScreenImpl extends DtlLayout<DtlMapScreen, DtlMapPresenter, D
       errorDialog.show();
    }
 
+   private void hideErrorIfNeed() {
+      if (errorDialog != null && errorDialog.isShowing()) errorDialog.dismiss();
+   }
+
    @Override
    public void showButtonRedoMerchants(boolean isShow) {
       ViewUtils.setViewVisibility(redoMerchants, isShow ? View.VISIBLE : View.GONE);
@@ -293,6 +291,11 @@ public class DtlMapScreenImpl extends DtlLayout<DtlMapScreen, DtlMapPresenter, D
    @Override
    public void zoom(float zoom) {
       googleMap.animateCamera(CameraUpdateFactory.zoomTo(zoom));
+   }
+
+   @Override
+   public void zoomBounds(LatLngBounds bounds) {
+      getMap().animateCamera(CameraUpdateFactory.newLatLngBounds(bounds, (int) ViewUtils.pxFromDp(getContext(), CAMERA_PADDING)));
    }
 
    @Override
@@ -330,12 +333,18 @@ public class DtlMapScreenImpl extends DtlLayout<DtlMapScreen, DtlMapPresenter, D
       });
    }
 
+   private void prepareMarkerSize() {
+      ImageView marker = (ImageView) LayoutInflater.from(getContext()).inflate(R.layout.pin_map, null);
+      marker.setImageResource(R.drawable.offer_pin_icon);
+      ClusterRenderer.measureIcon(marker);
+      this.markerHeight = marker.getMeasuredHeight();
+   }
+
    private void onMapLoaded() {
       clusterManager = new ClusterManager<>(getContext(), googleMap);
       clusterManager.setRenderer(new ClusterRenderer(getContext().getApplicationContext(), googleMap, clusterManager));
 
       clusterManager.setOnClusterItemClickListener(dtlClusterItem -> {
-         selectedLocation = dtlClusterItem.getPosition();
          getPresenter().onMarkerClicked(dtlClusterItem.getMerchant());
          return true;
       });
@@ -353,7 +362,7 @@ public class DtlMapScreenImpl extends DtlLayout<DtlMapScreen, DtlMapPresenter, D
    }
 
    private void hideInfoIfShown() {
-      if(infoContainer.getChildCount() > 0) {
+      if (infoContainer.getChildCount() > 0) {
          infoContainer.removeAllViews();
          getPresenter().onMarkerPopupDismiss();
       }

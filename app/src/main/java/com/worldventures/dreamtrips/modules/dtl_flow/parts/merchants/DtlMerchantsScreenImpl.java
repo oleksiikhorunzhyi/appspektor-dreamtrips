@@ -312,7 +312,12 @@ public class DtlMerchantsScreenImpl extends DtlLayout<DtlMerchantsScreen, DtlMer
    @Override
    protected void onDetachedFromWindow() {
       selectionManager.release();
+      hideErrorIfNeed();
       super.onDetachedFromWindow();
+   }
+
+   private void hideErrorIfNeed() {
+      if (errorDialog != null && errorDialog.isShowing()) errorDialog.dismiss();
    }
 
    ///////////////////////////////////////////////////////////////////////////

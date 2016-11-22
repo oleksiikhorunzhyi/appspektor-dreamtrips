@@ -162,10 +162,6 @@ public interface SnappyRepository {
 
    void setFeedbackTypes(List<FeedbackType> types);
 
-   void saveLastMapCameraPosition(Location location);
-
-   Location getLastMapCameraPosition();
-
    void cleanLastMapCameraPosition();
 
    DtlTransaction getDtlTransaction(String id);

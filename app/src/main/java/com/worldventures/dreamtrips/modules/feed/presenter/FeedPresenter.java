@@ -22,7 +22,7 @@ import com.worldventures.dreamtrips.core.utils.events.EntityLikedEvent;
 import com.worldventures.dreamtrips.core.utils.tracksystem.AnalyticsInteractor;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem;
 import com.worldventures.dreamtrips.modules.bucketlist.service.BucketInteractor;
-import com.worldventures.dreamtrips.modules.bucketlist.service.action.DeleteItemHttpAction;
+import com.worldventures.dreamtrips.modules.bucketlist.service.command.DeleteBucketItemCommand;
 import com.worldventures.dreamtrips.modules.common.api.janet.command.GetCirclesCommand;
 import com.worldventures.dreamtrips.modules.common.model.FlagData;
 import com.worldventures.dreamtrips.modules.common.model.MediaAttachment;
@@ -317,9 +317,9 @@ public class FeedPresenter extends Presenter<FeedPresenter.View> {
          BucketItem item = event.getEntity();
 
          view.bind(bucketInteractor.deleteItemPipe()
-               .createObservable(new DeleteItemHttpAction(item.getUid()))
+               .createObservable(new DeleteBucketItemCommand(item.getUid()))
                .observeOn(AndroidSchedulers.mainThread()))
-               .subscribe(new ActionStateSubscriber<DeleteItemHttpAction>().onSuccess(deleteItemAction -> itemDeleted(item)));
+               .subscribe(new ActionStateSubscriber<DeleteBucketItemCommand>().onSuccess(deleteItemAction -> itemDeleted(item)));
       }
    }
 

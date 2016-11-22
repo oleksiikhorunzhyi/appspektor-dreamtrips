@@ -6,6 +6,10 @@ import com.worldventures.dreamtrips.modules.auth.api.command.LoginCommand;
 import com.worldventures.dreamtrips.modules.auth.api.command.LogoutCommand;
 import com.worldventures.dreamtrips.modules.auth.api.command.UnsubribeFromPushCommand;
 import com.worldventures.dreamtrips.modules.auth.api.command.UpdateUserCommand;
+import com.worldventures.dreamtrips.modules.bucketlist.service.action.CreateBucketItemCommand;
+import com.worldventures.dreamtrips.modules.bucketlist.service.action.UpdateBucketItemCommand;
+import com.worldventures.dreamtrips.modules.bucketlist.service.command.ChangeBucketListOrderCommand;
+import com.worldventures.dreamtrips.modules.bucketlist.service.command.DeleteBucketItemCommand;
 import com.worldventures.dreamtrips.modules.bucketlist.service.command.AddBucketItemPhotoCommand;
 import com.worldventures.dreamtrips.modules.bucketlist.service.command.BucketListCommand;
 import com.worldventures.dreamtrips.modules.bucketlist.service.command.DeleteItemPhotoCommand;
@@ -201,5 +205,9 @@ import dagger.Module;
       GetPopularBucketItemsCommand.class,
       GetFeedEntityCommand.class,
       CreatePhotosCommand.class,
+      CreateBucketItemCommand.class,
+      UpdateBucketItemCommand.class,
+      ChangeBucketListOrderCommand.class,
+      DeleteBucketItemCommand.class
 }, complete = false, library = true)
 public class SocialJanetCommandModule {}

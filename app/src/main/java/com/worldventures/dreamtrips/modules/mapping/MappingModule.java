@@ -5,6 +5,7 @@ import com.worldventures.dreamtrips.modules.bucketlist.model.converter.BucketCov
 import com.worldventures.dreamtrips.modules.bucketlist.model.converter.BucketItemSimpleConverter;
 import com.worldventures.dreamtrips.modules.bucketlist.model.converter.BucketItemSocializedConverter;
 import com.worldventures.dreamtrips.modules.bucketlist.model.converter.BucketLocationConverter;
+import com.worldventures.dreamtrips.modules.bucketlist.model.converter.BucketPhotoBodyConverter;
 import com.worldventures.dreamtrips.modules.bucketlist.model.converter.BucketPhotoConverter;
 import com.worldventures.dreamtrips.modules.bucketlist.model.converter.BucketTagConverter;
 import com.worldventures.dreamtrips.modules.bucketlist.model.converter.BucketTypeConverter;
@@ -46,6 +47,11 @@ import com.worldventures.dreamtrips.modules.mapping.converter.PhotoUpdateParamsC
 import com.worldventures.dreamtrips.modules.mapping.converter.PrivateProfileConverter;
 import com.worldventures.dreamtrips.modules.mapping.converter.PublicProfileConverter;
 import com.worldventures.dreamtrips.modules.mapping.converter.RelationshipConverter;
+import com.worldventures.dreamtrips.modules.mapping.converter.ReverseBucketBodyConverter;
+import com.worldventures.dreamtrips.modules.mapping.converter.ReverseBucketCoverBodyToUpdateBodyConverter;
+import com.worldventures.dreamtrips.modules.mapping.converter.ReverseBucketPostBodyConverter;
+import com.worldventures.dreamtrips.modules.mapping.converter.ReverseBucketPostBodyToUpdateBodyConverter;
+import com.worldventures.dreamtrips.modules.mapping.converter.ReverseBucketUpdateBodyConverter;
 import com.worldventures.dreamtrips.modules.mapping.converter.ReverseLocationConverter;
 import com.worldventures.dreamtrips.modules.mapping.converter.SessionConverter;
 import com.worldventures.dreamtrips.modules.mapping.converter.SettingConverter;
@@ -389,8 +395,44 @@ public class MappingModule {
 
    @Provides(type = Provides.Type.SET)
    @Singleton
+   Converter provideBucketPhotoBodyConverter() {
+      return new BucketPhotoBodyConverter();
+   }
+
+   @Provides(type = Provides.Type.SET)
+   @Singleton
    Converter provideBucketTagConverter() {
       return new BucketTagConverter();
+   }
+
+   @Provides(type = Provides.Type.SET)
+   @Singleton
+   Converter provideReverseBucketBodyConverter() {
+      return new ReverseBucketBodyConverter();
+   }
+
+   @Provides(type = Provides.Type.SET)
+   @Singleton
+   Converter provideReverseBucketCoverBodyToUpdateBodyConverter() {
+      return new ReverseBucketCoverBodyToUpdateBodyConverter();
+   }
+
+   @Provides(type = Provides.Type.SET)
+   @Singleton
+   Converter provideReverseBucketPostBodyToUpdateBodyConverter() {
+      return new ReverseBucketPostBodyToUpdateBodyConverter();
+   }
+
+   @Provides(type = Provides.Type.SET)
+   @Singleton
+   Converter provideReverseBucketUpdateBodyConverter() {
+      return new ReverseBucketUpdateBodyConverter();
+   }
+
+   @Provides(type = Provides.Type.SET)
+   @Singleton
+   Converter provideReversePostBucketBodyConverter() {
+      return new ReverseBucketPostBodyConverter();
    }
 
    @Provides(type = Provides.Type.SET)

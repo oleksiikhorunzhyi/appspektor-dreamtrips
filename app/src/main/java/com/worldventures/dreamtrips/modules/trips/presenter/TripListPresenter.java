@@ -5,7 +5,7 @@ import com.worldventures.dreamtrips.core.utils.events.EntityLikedEvent;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem;
 import com.worldventures.dreamtrips.modules.bucketlist.service.BucketInteractor;
-import com.worldventures.dreamtrips.modules.bucketlist.service.action.CreateBucketItemHttpAction;
+import com.worldventures.dreamtrips.modules.bucketlist.service.action.CreateBucketItemCommand;
 import com.worldventures.dreamtrips.modules.bucketlist.service.model.ImmutableBucketBodyImpl;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.feed.manager.FeedEntityManager;
@@ -147,11 +147,11 @@ public class TripListPresenter extends Presenter<TripListPresenter.View> {
       trackAction(tripModel, TrackingHelper.ATTRIBUTE_ADD_TO_BUCKET_LIST);
       if (!tripModel.isInBucketList()) {
          bucketInteractor.createPipe()
-               .createObservableResult(new CreateBucketItemHttpAction(ImmutableBucketBodyImpl.builder()
+               .createObservableResult(new CreateBucketItemCommand(ImmutableBucketBodyImpl.builder()
                      .type("trip")
                      .id(tripModel.getTripId())
                      .build()))
-               .map(CreateBucketItemHttpAction::getResponse)
+               .map(CreateBucketItemCommand::getResult)
                .compose(bindViewToMainComposer())
                .subscribe(bucketItem -> {
                   tripModel.setInBucketList(true);

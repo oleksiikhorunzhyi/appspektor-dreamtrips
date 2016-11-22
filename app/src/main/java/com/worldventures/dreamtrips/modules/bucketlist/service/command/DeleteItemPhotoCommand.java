@@ -1,9 +1,9 @@
 package com.worldventures.dreamtrips.modules.bucketlist.service.command;
 
+import com.worldventures.dreamtrips.api.bucketlist.DeletePhotoFromBucketItemHttpAction;
 import com.worldventures.dreamtrips.core.janet.dagger.InjectableAction;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketPhoto;
-import com.worldventures.dreamtrips.modules.bucketlist.service.action.DeleteBucketPhotoHttpAction;
 
 import javax.inject.Inject;
 
@@ -25,8 +25,8 @@ public class DeleteItemPhotoCommand extends Command<BucketItem> implements Injec
 
    @Override
    protected void run(CommandCallback<BucketItem> callback) throws Throwable {
-      janet.createPipe(DeleteBucketPhotoHttpAction.class)
-            .createObservableResult(new DeleteBucketPhotoHttpAction(bucketItem.getUid(), photo.getFSId()))
+      janet.createPipe(DeletePhotoFromBucketItemHttpAction.class)
+            .createObservableResult(new DeletePhotoFromBucketItemHttpAction(bucketItem.getUid(), photo.getFSId()))
             .map(deleteBucketPhotoAction -> {
                bucketItem.getPhotos().remove(photo);
 

@@ -6,6 +6,9 @@ import android.text.TextUtils;
 
 import com.innahema.collections.query.queriables.Queryable;
 import com.techery.spares.session.SessionHolder;
+import com.worldventures.dreamtrips.api.bucketlist.GetBucketItemsForUserHttpAction;
+import com.worldventures.dreamtrips.api.bucketlist.ImmutableGetBucketItemsForUserHttpAction;
+import com.worldventures.dreamtrips.core.janet.JanetModule;
 import com.worldventures.dreamtrips.core.janet.cache.CacheBundle;
 import com.worldventures.dreamtrips.core.janet.cache.CacheBundleImpl;
 import com.worldventures.dreamtrips.core.janet.cache.CacheOptions;
@@ -15,18 +18,19 @@ import com.worldventures.dreamtrips.core.janet.dagger.InjectableAction;
 import com.worldventures.dreamtrips.core.session.UserSession;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem;
 import com.worldventures.dreamtrips.modules.bucketlist.service.BucketInteractor;
-import com.worldventures.dreamtrips.modules.bucketlist.service.action.ChangeOrderHttpAction;
-import com.worldventures.dreamtrips.modules.bucketlist.service.action.LoadBucketListFullHttpAction;
 import com.worldventures.dreamtrips.modules.bucketlist.service.common.BucketUtility;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
+import javax.inject.Named;
 
 import io.techery.janet.ActionHolder;
 import io.techery.janet.Command;
+import io.techery.janet.Janet;
 import io.techery.janet.command.annotations.CommandAction;
+import io.techery.mappery.MapperyContext;
 import rx.Observable;
 import rx.functions.Func2;
 
@@ -38,8 +42,9 @@ public class BucketListCommand extends Command<List<BucketItem>> implements Inje
    public static final int USER_ID_WAS_NOT_PROVIDED = -1;
 
    @Inject BucketInteractor bucketInteractor;
-
    @Inject SessionHolder<UserSession> sessionHolder;
+   @Inject @Named(JanetModule.JANET_API_LIB) Janet janet;
+   @Inject MapperyContext mapperyContext;
 
    private Func2<BucketInteractor, List<BucketItem>, Observable<List<BucketItem>>> operationFunc;
 
@@ -65,10 +70,6 @@ public class BucketListCommand extends Command<List<BucketItem>> implements Inje
       return new BucketListCommand(new UpdateItemFunc(item));
    }
 
-   public static BucketListCommand markItemAsDone(BucketItem bucketItem) {
-      return new BucketListCommand(new MarkAsDoneFunc(bucketItem));
-   }
-
    public static BucketListCommand deleteItem(String bucketItemId) {
       return new BucketListCommand(new DeleteItemFunc(bucketItemId));
    }
@@ -90,9 +91,11 @@ public class BucketListCommand extends Command<List<BucketItem>> implements Inje
 
    @Override
    protected void run(CommandCallback<List<BucketItem>> callback) throws Throwable {
-      Observable<List<BucketItem>> networkObservable = bucketInteractor.loadPipe()
-            .createObservableResult(new LoadBucketListFullHttpAction(userId()))
-            .map(LoadBucketListFullHttpAction::getResponse);
+      Observable<List<BucketItem>> networkObservable = janet.createPipe(GetBucketItemsForUserHttpAction.class)
+            .createObservableResult(
+                  new GetBucketItemsForUserHttpAction(ImmutableGetBucketItemsForUserHttpAction
+                        .Params.of(userId)))
+            .map(action ->  mapperyContext.convert(action.response(), BucketItem.class));
 
       if (force) {
          networkObservable.subscribe(callback::onSuccess, callback::onFail);
@@ -168,8 +171,8 @@ public class BucketListCommand extends Command<List<BucketItem>> implements Inje
 
       @Override
       public Observable<List<BucketItem>> call(BucketInteractor interactor, List<BucketItem> bucketItems) {
-         int oldPosition = bucketItems.indexOf(item);
-         BucketItem oldItem = bucketItems.get(oldPosition);
+         BucketItem oldItem = Queryable.from(bucketItems).filter((element, index) -> element.getUid().equals(item.getUid())).firstOrDefault();
+         int oldPosition = bucketItems.indexOf(oldItem);
          int newPosition = (oldItem.isDone() && !item.isDone()) ? 0 : oldPosition;
 
          bucketItems.remove(oldPosition);
@@ -179,24 +182,6 @@ public class BucketListCommand extends Command<List<BucketItem>> implements Inje
             item.setOwner(oldItem.getOwner());
          }
 
-         return Observable.just(bucketItems);
-      }
-   }
-
-   private static class MarkAsDoneFunc extends ItemTransformer {
-      MarkAsDoneFunc(@NonNull BucketItem item) {
-         super(item);
-      }
-
-      @Override
-      public Observable<List<BucketItem>> call(BucketInteractor interactor, List<BucketItem> bucketItems) {
-         //resolve position
-         int position = !item.isDone() ? bucketItems.indexOf(Queryable.from(bucketItems)
-               .firstOrDefault(BucketItem::isDone)) : 0;
-         if (position < 0) position = 0;
-
-         bucketItems.remove(item);
-         bucketItems.add(position, item);
          return Observable.just(bucketItems);
       }
    }
@@ -242,7 +227,7 @@ public class BucketListCommand extends Command<List<BucketItem>> implements Inje
          return Observable.just(bucketItems)
                .compose(BucketUtility.disJoinByType(type))
                .flatMap(listOfItems -> interactor.movePipe()
-                     .createObservableResult(new ChangeOrderHttpAction(listOfItems.get(from).getUid(), to))
+                     .createObservableResult(new ChangeBucketListOrderCommand(listOfItems.get(from).getUid(), to))
                      .map(changeOrderAction -> {
                         BucketItem fromItem = listOfItems.get(from);
                         BucketItem toItem = listOfItems.get(to);

@@ -4,7 +4,7 @@ import com.worldventures.dreamtrips.core.rx.RxView;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem;
 import com.worldventures.dreamtrips.modules.bucketlist.model.PopularBucketItem;
 import com.worldventures.dreamtrips.modules.bucketlist.service.BucketInteractor;
-import com.worldventures.dreamtrips.modules.bucketlist.service.action.CreateBucketItemHttpAction;
+import com.worldventures.dreamtrips.modules.bucketlist.service.action.CreateBucketItemCommand;
 import com.worldventures.dreamtrips.modules.bucketlist.service.command.GetPopularBucketItemSuggestionsCommand;
 import com.worldventures.dreamtrips.modules.bucketlist.service.command.GetPopularBucketItemsCommand;
 import com.worldventures.dreamtrips.modules.bucketlist.service.command.RecentlyAddedBucketsFromPopularCommand;
@@ -72,16 +72,16 @@ public class BucketPopularPresenter extends Presenter<BucketPopularPresenter.Vie
 
    private void add(PopularBucketItem popularBucketItem, boolean done) {
       bucketInteractor.createPipe()
-            .createObservable(new CreateBucketItemHttpAction(ImmutableBucketBodyImpl.builder()
+            .createObservable(new CreateBucketItemCommand(ImmutableBucketBodyImpl.builder()
                   .type(type.getName())
                   .id(String.valueOf(popularBucketItem.getId()))
                   .status(done ? COMPLETED : NEW)
                   .build()))
             .observeOn(AndroidSchedulers.mainThread())
             .compose(bindView())
-            .subscribe(new ActionStateSubscriber<CreateBucketItemHttpAction>()
+            .subscribe(new ActionStateSubscriber<CreateBucketItemCommand>()
                   .onSuccess(createBucketItemHttpAction -> {
-                     BucketItem bucketItem = createBucketItemHttpAction.getResponse();
+                     BucketItem bucketItem = createBucketItemHttpAction.getResult();
                      bucketInteractor.recentlyAddedBucketsFromPopularCommandPipe()
                            .send(RecentlyAddedBucketsFromPopularCommand.add(bucketItem));
                      view.notifyItemWasAddedToBucketList(bucketItem);

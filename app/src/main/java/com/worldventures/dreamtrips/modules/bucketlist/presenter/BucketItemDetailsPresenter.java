@@ -9,7 +9,7 @@ import com.worldventures.dreamtrips.modules.bucketlist.event.BucketItemAnalyticE
 import com.worldventures.dreamtrips.modules.bucketlist.event.BucketItemShared;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem;
 import com.worldventures.dreamtrips.modules.bucketlist.model.DiningItem;
-import com.worldventures.dreamtrips.modules.bucketlist.service.action.UpdateItemHttpAction;
+import com.worldventures.dreamtrips.modules.bucketlist.service.action.UpdateBucketItemCommand;
 import com.worldventures.dreamtrips.modules.bucketlist.service.command.AddBucketItemPhotoCommand;
 import com.worldventures.dreamtrips.modules.bucketlist.service.command.DeleteItemPhotoCommand;
 import com.worldventures.dreamtrips.modules.bucketlist.service.model.ImmutableBucketBodyImpl;
@@ -36,7 +36,7 @@ public class BucketItemDetailsPresenter extends BucketDetailsBasePresenter<Bucke
 
       view.bind(Observable.merge(bucketInteractor.updatePipe()
             .observeSuccess()
-            .map(UpdateItemHttpAction::getResponse), bucketInteractor.deleteItemPhotoPipe()
+            .map(UpdateBucketItemCommand::getResult), bucketInteractor.deleteItemPhotoPipe()
             .observeSuccess()
             .map(DeleteItemPhotoCommand::getResult), bucketInteractor.addBucketItemPhotoPipe()
             .observeSuccess()
@@ -91,13 +91,13 @@ public class BucketItemDetailsPresenter extends BucketDetailsBasePresenter<Bucke
       if (bucketItem != null && status != bucketItem.isDone()) {
          view.disableMarkAsDone();
 
-         view.bind(bucketInteractor.updatePipe().createObservable(new UpdateItemHttpAction(ImmutableBucketBodyImpl
+         view.bind(bucketInteractor.updatePipe().createObservable(new UpdateBucketItemCommand(ImmutableBucketBodyImpl
                .builder()
                .id(bucketItem.getUid())
                .status(getStatus(status))
                .build()))
                .observeOn(AndroidSchedulers.mainThread()))
-               .subscribe(new ActionStateSubscriber<UpdateItemHttpAction>()
+               .subscribe(new ActionStateSubscriber<UpdateBucketItemCommand>()
                      .onSuccess(updateItemHttpAction -> view.enableMarkAsDone())
                      .onFail((action, throwable) -> {
                         handleError(action, throwable);

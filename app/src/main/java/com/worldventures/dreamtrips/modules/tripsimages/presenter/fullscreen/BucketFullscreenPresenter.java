@@ -1,7 +1,6 @@
 package com.worldventures.dreamtrips.modules.tripsimages.presenter.fullscreen;
 
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.core.utils.events.PhotoDeletedEvent;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketPhoto;
 import com.worldventures.dreamtrips.modules.bucketlist.service.BucketInteractor;
@@ -64,12 +63,10 @@ public class BucketFullscreenPresenter extends SocialFullScreenPresenter<BucketP
                .observeOn(AndroidSchedulers.mainThread())).subscribe(new ActionStateSubscriber<DeleteItemPhotoCommand>()
                .onSuccess(deleteItemPhotoAction -> {
                   view.informUser(context.getString(R.string.photo_deleted));
-                  eventBus.postSticky(new PhotoDeletedEvent(photo.getFSId()));
                })
                .onFail(this::handleError));
       }
    }
-
 
    public void onCheckboxPressed(boolean status) {
       if (bucketItem != null) {

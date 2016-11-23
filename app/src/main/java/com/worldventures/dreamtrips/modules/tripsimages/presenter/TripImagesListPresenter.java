@@ -6,7 +6,6 @@ import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.core.rx.RxView;
 import com.worldventures.dreamtrips.core.utils.events.EntityLikedEvent;
-import com.worldventures.dreamtrips.core.utils.events.PhotoDeletedEvent;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.feed.event.FeedEntityChangedEvent;
 import com.worldventures.dreamtrips.modules.feed.event.FeedItemAddedEvent;
@@ -87,6 +86,7 @@ public abstract class TripImagesListPresenter<VT extends TripImagesListPresenter
       view.clear();
       fillWithItems();
       reload();
+      subscribeToPhotoDeletedEvents();
    }
 
    private void fillWithItems() {
@@ -202,15 +202,21 @@ public abstract class TripImagesListPresenter<VT extends TripImagesListPresenter
       }
    }
 
-   public void onEventMainThread(PhotoDeletedEvent event) {
-      for (int i = 0; i < photos.size(); i++) {
-         IFullScreenObject o = photos.get(i);
-         if (o.getFSId().equals(event.getPhotoId())) {
-            photos.remove(i);
-            view.remove(i);
-            db.savePhotoEntityList(type, userId, photos);
-         }
-      }
+   private void subscribeToPhotoDeletedEvents() {
+      tripImagesInteractor.deletePhotoPipe()
+            .observeSuccessWithReplay()
+            .compose(bindViewToMainComposer())
+            .subscribe(deletePhotoCommand -> {
+               tripImagesInteractor.deletePhotoPipe().clearReplays();
+               for (int i = 0; i < photos.size(); i++) {
+                  IFullScreenObject o = photos.get(i);
+                  if (o.getFSId().equals(deletePhotoCommand.getResult())) {
+                     photos.remove(i);
+                     view.remove(i);
+                     db.savePhotoEntityList(type, userId, photos);
+                  }
+               }
+            });
    }
 
    public void onEvent(FeedEntityChangedEvent event) {

@@ -8,7 +8,6 @@ import com.worldventures.dreamtrips.core.navigation.router.NavigationConfigBuild
 import com.worldventures.dreamtrips.core.navigation.router.Router;
 import com.worldventures.dreamtrips.core.navigation.wrapper.NavigationWrapper;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
-import com.worldventures.dreamtrips.modules.bucketlist.event.BucketItemShared;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem;
 import com.worldventures.dreamtrips.modules.common.model.ShareType;
 import com.worldventures.dreamtrips.modules.common.view.bundle.ShareBundle;
@@ -96,7 +95,7 @@ public class FeedActionPanelViewActionHandler {
             BucketItem bucketItem = (BucketItem) feedItem.getItem();
             shareUrl = bucketItem.getUrl();
             text = String.format(context.getString(R.string.bucketlist_share), bucketItem.getName());
-            eventBus.post(new BucketItemShared());
+            TrackingHelper.actionBucketItem(TrackingHelper.ATTRIBUTE_SHARE, bucketItem.getUid());
 
             break;
       }

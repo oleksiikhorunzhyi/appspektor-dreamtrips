@@ -5,10 +5,8 @@ import com.techery.spares.adapter.BaseArrayListAdapter;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.janet.JanetModule;
 import com.worldventures.dreamtrips.core.rx.RxView;
-import com.worldventures.dreamtrips.core.utils.events.MarkBucketItemDoneEvent;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.auth.service.LoginInteractor;
-import com.worldventures.dreamtrips.modules.bucketlist.event.BucketItemAnalyticEvent;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem;
 import com.worldventures.dreamtrips.modules.bucketlist.service.BucketInteractor;
 import com.worldventures.dreamtrips.modules.bucketlist.service.action.CreateBucketItemCommand;
@@ -126,16 +124,14 @@ public class BucketListPresenter extends Presenter<BucketListPresenter.View> {
    public void itemClicked(BucketItem bucketItem) {
       if (!isTypeCorrect(bucketItem.getType()) && !bucketItems.contains(bucketItem)) return;
 
-      eventBus.post(new BucketItemAnalyticEvent(bucketItem.getUid(), TrackingHelper.ATTRIBUTE_VIEW));
+      TrackingHelper.actionBucketItem(TrackingHelper.ATTRIBUTE_VIEW, bucketItem.getUid());
       currentItem = bucketItem;
       openDetails(currentItem);
    }
 
-   public void onEvent(MarkBucketItemDoneEvent event) {
-      if (isTypeCorrect(event.getBucketItem().getType())) {
-         BucketItem bucketItem = event.getBucketItem();
-         eventBus.post(new BucketItemAnalyticEvent(bucketItem.getUid(), TrackingHelper.ATTRIBUTE_COMPLETE));
-         eventBus.cancelEventDelivery(event);
+   public void itemDoneClicked(BucketItem bucketItem) {
+      if (isTypeCorrect(bucketItem.getType())) {
+         TrackingHelper.actionBucketItem(TrackingHelper.ATTRIBUTE_COMPLETE, bucketItem.getUid());
          markAsDone(bucketItem);
       }
    }
@@ -240,6 +236,23 @@ public class BucketListPresenter extends Presenter<BucketListPresenter.View> {
 
    private String getMarkAsDoneStatus(BucketItem item) {
       return item.isDone() ? NEW : COMPLETED;
+   }
+
+   public void trackAnalyticsActionBucket(String actionAttribute) {
+      TrackingHelper.actionBucket(actionAttribute, getTabAttributeAnalytic());
+   }
+
+   private String getTabAttributeAnalytic() {
+      switch (type) {
+         case LOCATION:
+            return TrackingHelper.ATTRIBUTE_LOCATIONS;
+         case ACTIVITY:
+            return TrackingHelper.ATTRIBUTE_ACTIVITIES;
+         case DINING:
+            return TrackingHelper.ATTRIBUTE_DINING;
+         default:
+            return "";
+      }
    }
 
    public interface View extends RxView {

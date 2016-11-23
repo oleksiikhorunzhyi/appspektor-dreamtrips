@@ -36,6 +36,14 @@ public abstract class RxBaseFragmentWithArgs<PM extends Presenter, P extends Par
       return observable.compose(RxLifecycle.bindUntilFragmentEvent(lifecycle(), FragmentEvent.DESTROY_VIEW));
    }
 
+   protected <T>Observable.Transformer<T, T> bindUntilStopViewComposer() {
+      return RxLifecycle.bindUntilFragmentEvent(lifecycle(), FragmentEvent.STOP);
+   }
+
+   protected <T>Observable.Transformer<T, T> bindUntilDropViewComposer() {
+      return RxLifecycle.bindUntilFragmentEvent(lifecycle(), FragmentEvent.DESTROY_VIEW);
+   }
+
    @Override
    @CallSuper
    public void onAttach(android.app.Activity activity) {

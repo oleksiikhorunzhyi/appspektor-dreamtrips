@@ -49,22 +49,30 @@ public class RecordToBankCardConverter implements com.worldventures.dreamtrips.m
                .build();
       }
 
+      ImmutableRecordIssuerInfo.Builder recordIssuerInfoBuilder = ImmutableRecordIssuerInfo.builder();
+      if (metadata.containsKey(BANK_NAME_FIELD)) {
+         recordIssuerInfoBuilder.bankName(metadata.get(BANK_NAME_FIELD));
+      }
+      if (metadata.containsKey(TYPE_CARD_FIELD)) {
+         recordIssuerInfoBuilder.cardType(BankCard.CardType.valueOf(metadata.get(TYPE_CARD_FIELD)));
+      }
+      Card.Category category = Card.Category.BANK;
+      if(metadata.containsKey(BANK_CARD_CATEGORY)){
+         category = Card.Category.valueOf(metadata.get(BANK_CARD_CATEGORY));
+      }
+      recordIssuerInfoBuilder.financialService(record.financialService());
       return ImmutableBankCard.builder()
             .id(String.valueOf(record.id()))
-            .number(Long.parseLong(record.cardNumber()))
+            .number(record.cardNumber())
             .expDate(record.expDate())
-            .cvv(Integer.parseInt(record.cvv()))
+            .cvv(record.cvv())
             .track1(record.t1())
             .track2(record.t2())
             .cardNameHolder(record.title())
             .nickName(record.title())
-            .issuerInfo(ImmutableRecordIssuerInfo.builder()
-                  .bankName(metadata.get(BANK_NAME_FIELD))
-                  .cardType(BankCard.CardType.valueOf(metadata.get(TYPE_CARD_FIELD)))
-                  .financialService(record.financialService())
-                  .build())
+            .issuerInfo(recordIssuerInfoBuilder.build())
             .addressInfo(addressInfo)
-            .category(Card.Category.valueOf(metadata.get(BANK_CARD_CATEGORY)))
+            .category(category)
             .build();
    }
 }

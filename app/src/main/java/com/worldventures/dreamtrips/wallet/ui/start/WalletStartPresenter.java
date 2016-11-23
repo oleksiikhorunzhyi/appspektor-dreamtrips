@@ -46,6 +46,7 @@ public class WalletStartPresenter extends WalletPresenter<WalletStartPresenter.S
    }
 
    private void handleResult(FetchAssociatedSmartCard.AssociatedCard associatedCard) {
+//      navigator.single(new WizardPowerOnPath(), Flow.Direction.REPLACE);
       if (associatedCard.exist()) {
          navigator.single(new CardListPath(), Flow.Direction.REPLACE);
       } else {

@@ -8,6 +8,7 @@ import android.util.AttributeSet;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.afollestad.materialdialogs.MaterialDialog;
 import com.jakewharton.rxbinding.widget.RxCompoundButton;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.modules.common.view.custom.BadgeView;
@@ -95,6 +96,18 @@ public class WalletSettingsScreen extends WalletLinearLayout<WalletSettingsPrese
    @OnClick(R.id.item_factory_reset)
    protected void onFactoryResetClick() {
       presenter.factoryResetClick();
+   }
+
+   @OnClick(R.id.item_restart_smartcard)
+   protected void onRestartSmartCard() {
+      new MaterialDialog.Builder(getContext())
+            .title(R.string.wallet_card_settings_restart_smartcard)
+            .content(R.string.wallet_card_settings_are_you_sure)
+            .positiveText(R.string.wallet_restart)
+            .negativeText(R.string.cancel)
+            .onPositive(((dialog, which) -> presenter.confirmResetSmartCard()))
+            .build()
+            .show();
    }
 
    @Override

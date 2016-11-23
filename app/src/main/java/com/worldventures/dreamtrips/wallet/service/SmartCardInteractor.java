@@ -269,6 +269,10 @@ public final class SmartCardInteractor {
       return compatibleDevicesActionPipe;
    }
 
+   public ActionPipe<SaveLockStateCommand> lockStatePipe() {
+      return saveLockStatePipe;
+   }
+
    private void connect(Janet janet) {
       disconnectPipe
             .observe()

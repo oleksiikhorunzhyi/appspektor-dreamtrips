@@ -3,7 +3,6 @@ package com.worldventures.dreamtrips.wallet.ui.widget;
 import android.content.Context;
 import android.net.Uri;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -26,6 +25,7 @@ public class SmartCardWidget extends FrameLayout {
    @InjectView(R.id.bankLabel) TextView bankLabel;
    @InjectView(R.id.connectedCardsCount) TextView connectedCardsCount;
    @InjectView(R.id.batteryView) BatteryView batteryView;
+   @InjectView(R.id.batteryLevel) TextView batteryLevel;
    @InjectView(R.id.settings_button) View settingsButton;
 
    @InjectView(R.id.stealth_indicator) View stealthIndicator;
@@ -53,6 +53,7 @@ public class SmartCardWidget extends FrameLayout {
       bankLabel.setText(smartCard.cardName());
       if (url != null) scAvatar.setImageURI(Uri.parse(url));
       batteryView.setLevel(smartCard.batteryLevel());
+      batteryLevel.setText(String.format("%d%%", smartCard.batteryLevel()));
       stealthIndicator.setVisibility(smartCard.stealthMode() ? VISIBLE : GONE);
       bindLockStatus(smartCard.lock());
       bindConnectionStatus(smartCard.connectionStatus() == SmartCard.ConnectionStatus.CONNECTED);

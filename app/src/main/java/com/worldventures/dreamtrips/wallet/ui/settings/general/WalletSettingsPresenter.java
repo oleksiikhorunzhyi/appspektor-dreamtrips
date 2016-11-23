@@ -12,6 +12,7 @@ import com.worldventures.dreamtrips.wallet.domain.storage.TemporaryStorage;
 import com.worldventures.dreamtrips.wallet.service.FirmwareInteractor;
 import com.worldventures.dreamtrips.wallet.service.SmartCardInteractor;
 import com.worldventures.dreamtrips.wallet.service.command.ConnectSmartCardCommand;
+import com.worldventures.dreamtrips.wallet.service.command.RestartSmartCardCommand;
 import com.worldventures.dreamtrips.wallet.service.command.SetLockStateCommand;
 import com.worldventures.dreamtrips.wallet.service.command.SetStealthModeCommand;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletPresenter;
@@ -226,6 +227,11 @@ public class WalletSettingsPresenter extends WalletPresenter<WalletSettingsPrese
 
    void factoryResetClick() {
       navigator.go(new FactoryResetPath());
+   }
+
+   void confirmResetSmartCard() {
+      smartCardInteractor.restartSmartCardCommandActionPipe()
+            .send(new RestartSmartCardCommand());
    }
 
    public interface Screen extends WalletScreen {

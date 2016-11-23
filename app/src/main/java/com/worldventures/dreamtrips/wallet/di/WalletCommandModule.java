@@ -3,6 +3,7 @@ package com.worldventures.dreamtrips.wallet.di;
 import com.worldventures.dreamtrips.wallet.analytics.PaycardAnalyticsCommand;
 import com.worldventures.dreamtrips.wallet.analytics.WalletAnalyticsCommand;
 import com.worldventures.dreamtrips.wallet.service.command.ActivateSmartCardCommand;
+import com.worldventures.dreamtrips.wallet.service.command.AddBankCardCommand;
 import com.worldventures.dreamtrips.wallet.service.command.AttachCardCommand;
 import com.worldventures.dreamtrips.wallet.service.command.CardListCommand;
 import com.worldventures.dreamtrips.wallet.service.command.CardStacksCommand;
@@ -18,7 +19,7 @@ import com.worldventures.dreamtrips.wallet.service.command.GetActiveSmartCardCom
 import com.worldventures.dreamtrips.wallet.service.command.GetCompatibleDevicesCommand;
 import com.worldventures.dreamtrips.wallet.service.command.GetDefaultAddressCommand;
 import com.worldventures.dreamtrips.wallet.service.command.LoadImageForSmartCardCommand;
-import com.worldventures.dreamtrips.wallet.service.command.AddBankCardCommand;
+import com.worldventures.dreamtrips.wallet.service.command.RestartSmartCardCommand;
 import com.worldventures.dreamtrips.wallet.service.command.SaveLockStateCommand;
 import com.worldventures.dreamtrips.wallet.service.command.SetAutoClearSmartCardDelayCommand;
 import com.worldventures.dreamtrips.wallet.service.command.SetDefaultCardOnDeviceCommand;
@@ -93,7 +94,8 @@ import dagger.Module;
             DisassociateCardUserCommand.class,
             DisassociateActiveCardUserCommand.class,
             FetchAssociatedSmartCard.class,
-            SaveLockStateCommand.class
+            SaveLockStateCommand.class,
+            RestartSmartCardCommand.class
       },
       complete = false, library = true)
 public class WalletCommandModule {}

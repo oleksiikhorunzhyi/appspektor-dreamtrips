@@ -92,6 +92,9 @@
    <string name="wallet_card_settings_stealth_mode_off">Stealth mode was turned off</string>
    <string name="wallet_card_settings_stealth_mode_on">Stealth mode was turned on</string>
    <string name="wallet_card_settings_unlock_error">Unlock is not supported</string>
+   <string name="wallet_card_settings_restart_smartcard">Restart Smart Card</string>
+   <string name="wallet_card_settings_are_you_sure">Are you sure?</string>
+   <string name="wallet_restart">Restart</string>
 
    <!--card list-->
    <string name="wallet_card_list_title">My flye smart card</string>

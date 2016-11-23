@@ -244,6 +244,31 @@
          </android.support.v7.widget.CardView>
          <!--END security settings section-->
 
+         <!-- Reset section -->
+
+         <View
+               android:layout_width="match_parent"
+               android:layout_height="48dp"
+               android:gravity="center"
+               />
+
+         <android.support.v7.widget.CardView
+               android:layout_width="match_parent"
+               android:layout_height="wrap_content"
+               >
+
+            <TextView
+                  android:id="@+id/item_restart_smartcard"
+                  android:layout_width="match_parent"
+                  android:layout_height="wrap_content"
+                  android:padding="@dimen/spacing_normal"
+                  android:text="@string/wallet_card_settings_restart_smartcard"
+                  android:textAppearance="?android:attr/textAppearanceMedium"
+                  />
+         </android.support.v7.widget.CardView>
+
+         <!-- END Reset section -->
+
          <!--todo: remove after demo-->
          <!--BEGIN test settings section-->
          <LinearLayout

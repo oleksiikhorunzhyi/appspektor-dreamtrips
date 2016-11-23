@@ -13,6 +13,7 @@ import com.worldventures.dreamtrips.wallet.service.command.FetchDefaultCardIdCom
 import com.worldventures.dreamtrips.wallet.service.command.GetActiveSmartCardCommand;
 import com.worldventures.dreamtrips.wallet.service.command.GetCompatibleDevicesCommand;
 import com.worldventures.dreamtrips.wallet.service.command.GetDefaultAddressCommand;
+import com.worldventures.dreamtrips.wallet.service.command.RestartSmartCardCommand;
 import com.worldventures.dreamtrips.wallet.service.command.SaveLockStateCommand;
 import com.worldventures.dreamtrips.wallet.service.command.SetAutoClearSmartCardDelayCommand;
 import com.worldventures.dreamtrips.wallet.service.command.SetDefaultCardOnDeviceCommand;
@@ -86,6 +87,7 @@ public final class SmartCardInteractor {
    private final ActionPipe<UpdateCardDetailsDataCommand> updateCardDetailsPipe;
    private final ActionPipe<DisconnectAction> disconnectPipe;
    private final ActionPipe<UpdateSmartCardConnectionStatus> updateSmartCardConnectionStatusPipe;
+   private final ActionPipe<RestartSmartCardCommand> restartSmartCardCommandActionPipe;
 
    private final ReadActionPipe<CardChargedEvent> chargedEventPipe;
    private final ActionPipe<StartCardRecordingAction> startCardRecordingPipe;
@@ -132,6 +134,7 @@ public final class SmartCardInteractor {
       disconnectPipe = sessionActionPipeCreator.createPipe(DisconnectAction.class, Schedulers.io());
       updateSmartCardConnectionStatusPipe = sessionActionPipeCreator.createPipe(UpdateSmartCardConnectionStatus.class, Schedulers
             .io());
+      restartSmartCardCommandActionPipe = sessionActionPipeCreator.createPipe(RestartSmartCardCommand.class, Schedulers.io());
 
       chargedEventPipe = sessionActionPipeCreator.createPipe(CardChargedEvent.class, Schedulers.io());
       startCardRecordingPipe = sessionActionPipeCreator.createPipe(StartCardRecordingAction.class, Schedulers.io());
@@ -247,6 +250,10 @@ public final class SmartCardInteractor {
 
    public WriteActionPipe<DisconnectAction> disconnectPipe() {
       return disconnectPipe;
+   }
+
+   public ActionPipe<RestartSmartCardCommand> restartSmartCardCommandActionPipe() {
+      return restartSmartCardCommandActionPipe;
    }
 
    public ActionPipe<SetAutoClearSmartCardDelayCommand> autoClearDelayPipe() {

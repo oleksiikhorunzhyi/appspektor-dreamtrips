@@ -39,7 +39,7 @@ public class WalletValidateHelper {
       return !infoInvalid;
    }
 
-   public static boolean validateCardCvv(String cvv, String cardNumber) {
+   public static boolean validateCardCvv(String cvv, long cardNumber) {
       return cvv.length() == BankCardHelper.obtainRequiredCvvLength(cardNumber);
    }
 

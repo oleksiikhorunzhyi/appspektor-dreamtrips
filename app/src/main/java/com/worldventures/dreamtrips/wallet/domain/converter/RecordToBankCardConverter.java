@@ -57,15 +57,19 @@ public class RecordToBankCardConverter implements com.worldventures.dreamtrips.m
          recordIssuerInfoBuilder.cardType(BankCard.CardType.valueOf(metadata.get(TYPE_CARD_FIELD)));
       }
       Card.Category category = Card.Category.BANK;
-      if(metadata.containsKey(BANK_CARD_CATEGORY)){
+      if (metadata.containsKey(BANK_CARD_CATEGORY)) {
          category = Card.Category.valueOf(metadata.get(BANK_CARD_CATEGORY));
       }
       recordIssuerInfoBuilder.financialService(record.financialService());
+      int cvv = 0;
+      if (record.cvv().length() > 0) {
+         cvv = Integer.parseInt(record.cvv());
+      }
       return ImmutableBankCard.builder()
             .id(String.valueOf(record.id()))
-            .number(record.cardNumber())
+            .number(Long.parseLong(record.cardNumber()))
             .expDate(record.expDate())
-            .cvv(record.cvv())
+            .cvv(cvv)
             .track1(record.t1())
             .track2(record.t2())
             .cardNameHolder(record.title())

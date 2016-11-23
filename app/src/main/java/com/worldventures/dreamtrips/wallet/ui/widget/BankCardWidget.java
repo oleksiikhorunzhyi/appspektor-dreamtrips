@@ -60,8 +60,7 @@ public class BankCardWidget extends FrameLayout {
 
    private void setBankCardInfo(CharSequence bankLabel, BankCardHelper bankCardHelper, BankCard bankCard) {
       cardTitle.setText(bankCard.cardNameHolder());
-      cardNumber.setText(String.format("•••• •••• •••• %04d",
-            Long.parseLong(bankCard.number().replaceAll("[^0-9]", "")) % 10000));
+      cardNumber.setText(String.format("•••• •••• •••• %04d", bankCard.number() % 10000));
       expireDate.setText(bankCard.expDate());
       tvBankLabel.setText(bankLabel);
       cardTypeIcon.setImageResource(bankCardHelper.obtainFinancialServiceImageRes(bankCard.issuerInfo()

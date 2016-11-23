@@ -7,7 +7,7 @@ public abstract class Card {
    @Nullable
    public abstract String id();
 
-   public abstract String number();
+   public abstract long number();
 
    public abstract String expDate();
 

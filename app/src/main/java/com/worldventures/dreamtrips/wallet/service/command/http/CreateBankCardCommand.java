@@ -43,7 +43,7 @@ public class CreateBankCardCommand extends Command<BankCard> implements Injectab
    }
 
    private BankCard createBankCard(BankCard bankCard, RecordIssuerInfo recordIssuerInfo) {
-      if (BankCardHelper.isAmexBank(swipedCard.cardNumber())) {
+      if (BankCardHelper.isAmexBank(Long.parseLong(swipedCard.cardNumber()))) {
          recordIssuerInfo = ImmutableRecordIssuerInfo.copyOf(recordIssuerInfo)
                .withFinancialService(Record.FinancialService.AMEX);
       }

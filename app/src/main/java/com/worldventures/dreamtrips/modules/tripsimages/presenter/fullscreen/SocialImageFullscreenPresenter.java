@@ -6,7 +6,6 @@ import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.navigation.router.Router;
 import com.worldventures.dreamtrips.core.navigation.wrapper.NavigationWrapperFactory;
-import com.worldventures.dreamtrips.core.utils.events.EntityLikedEvent;
 import com.worldventures.dreamtrips.modules.common.model.FlagData;
 import com.worldventures.dreamtrips.modules.common.presenter.delegate.FlagDelegate;
 import com.worldventures.dreamtrips.modules.common.view.custom.tagview.viewgroup.newio.model.PhotoTag;
@@ -14,10 +13,10 @@ import com.worldventures.dreamtrips.modules.feed.bundle.CommentsBundle;
 import com.worldventures.dreamtrips.modules.feed.event.FeedEntityChangedEvent;
 import com.worldventures.dreamtrips.modules.feed.event.FeedEntityCommentedEvent;
 import com.worldventures.dreamtrips.modules.feed.event.FeedEntityDeletedEvent;
-import com.worldventures.dreamtrips.modules.feed.manager.FeedEntityManager;
 import com.worldventures.dreamtrips.modules.feed.model.FeedEntity;
 import com.worldventures.dreamtrips.modules.feed.model.FeedEntityHolder;
 import com.worldventures.dreamtrips.modules.feed.service.FeedInteractor;
+import com.worldventures.dreamtrips.modules.feed.service.command.ChangeFeedEntityLikedStatusCommand;
 import com.worldventures.dreamtrips.modules.feed.service.command.GetFeedEntityCommand;
 import com.worldventures.dreamtrips.modules.feed.view.cell.Flaggable;
 import com.worldventures.dreamtrips.modules.flags.service.FlagsInteractor;
@@ -41,7 +40,6 @@ import io.techery.janet.helper.ActionStateSubscriber;
 
 public class SocialImageFullscreenPresenter extends SocialFullScreenPresenter<Photo, SocialImageFullscreenPresenter.View> {
 
-   @Inject FeedEntityManager entityManager;
    @Inject Router router;
    @Inject FragmentManager fm;
    @Inject FlagsInteractor flagsInteractor;
@@ -57,14 +55,13 @@ public class SocialImageFullscreenPresenter extends SocialFullScreenPresenter<Ph
    @Override
    public void takeView(View view) {
       super.takeView(view);
-      apiErrorPresenter.setView(view);
+      subscribeToLikesChanges();
       loadEntity();
    }
 
    @Override
    public void onInjected() {
       super.onInjected();
-      entityManager.setFeedEntityManagerListener(this);
       flagDelegate = new FlagDelegate(flagsInteractor);
    }
 
@@ -124,18 +121,24 @@ public class SocialImageFullscreenPresenter extends SocialFullScreenPresenter<Ph
 
    @Override
    public void onLikeAction() {
-      if (!photo.isLiked()) {
-         entityManager.like(photo);
-      } else {
-         entityManager.unlike(photo);
-      }
+      feedInteractor.changeFeedEntityLikedStatusPipe()
+            .send(new ChangeFeedEntityLikedStatusCommand(photo));
    }
 
-   public void onEvent(EntityLikedEvent event) {
-      photo.syncLikeState(event.getFeedEntity());
+   private void subscribeToLikesChanges() {
+      feedInteractor.changeFeedEntityLikedStatusPipe()
+            .observe()
+            .compose(bindViewToMainComposer())
+            .subscribe(new ActionStateSubscriber<ChangeFeedEntityLikedStatusCommand>()
+                  .onSuccess(this::itemLiked)
+                  .onFail(this::handleError));
+   }
+
+   private void itemLiked(ChangeFeedEntityLikedStatusCommand command) {
+      photo.syncLikeState(command.getResult());
       view.setContent(photo);
 
-      if (event.getFeedEntity().isLiked()) {
+      if (command.getResult().isLiked()) {
          analyticsInteractor.analyticsActionPipe().send(new TripImageLikedAnalyticsEvent(photo.getFSId()));
       }
    }

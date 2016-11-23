@@ -24,7 +24,6 @@ import com.worldventures.dreamtrips.modules.feed.event.FeedEntityDeletedEvent;
 import com.worldventures.dreamtrips.modules.feed.event.ItemFlaggedEvent;
 import com.worldventures.dreamtrips.modules.feed.event.LoadFlagEvent;
 import com.worldventures.dreamtrips.modules.feed.event.LoadMoreEvent;
-import com.worldventures.dreamtrips.modules.feed.manager.FeedEntityManager;
 import com.worldventures.dreamtrips.modules.feed.model.FeedEntity;
 import com.worldventures.dreamtrips.modules.feed.model.FeedEntityHolder;
 import com.worldventures.dreamtrips.modules.feed.model.TextualPost;
@@ -60,7 +59,6 @@ public class BaseCommentPresenter<T extends BaseCommentPresenter.View> extends P
    private static final int PAGE = 1;
    private static final int PER_PAGE = 2;
 
-   @Inject FeedEntityManager entityManager;
    @Inject BucketInteractor bucketInteractor;
    @Inject TranslationFeedInteractor translationFeedInteractor;
    @Inject CommentsInteractor commentsInteractor;
@@ -86,7 +84,6 @@ public class BaseCommentPresenter<T extends BaseCommentPresenter.View> extends P
    @Override
    public void onInjected() {
       super.onInjected();
-      entityManager.setFeedEntityManagerListener(this);
       flagDelegate = new FlagDelegate(flagsInteractor);
    }
 

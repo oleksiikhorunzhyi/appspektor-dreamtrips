@@ -9,7 +9,7 @@ import org.immutables.value.Value;
 import org.jetbrains.annotations.Nullable;
 
 @Value.Immutable
-public abstract class BankCard implements Card {
+public abstract class BankCard extends Card {
 
    @Value.Default
    public String cardNameHolder() {

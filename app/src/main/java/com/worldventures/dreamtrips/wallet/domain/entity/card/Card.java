@@ -2,18 +2,30 @@ package com.worldventures.dreamtrips.wallet.domain.entity.card;
 
 import android.support.annotation.Nullable;
 
-public interface Card {
+public abstract class Card {
 
    @Nullable
-   String id();
+   public abstract String id();
 
-   long number();
+   public abstract long number();
 
-   String expDate();
+   public abstract String expDate();
 
-   Category category();
+   public abstract Category category();
 
-   enum Category {
+   @Override
+   public boolean equals(Object obj) {
+      if (super.equals(obj)) return true;
+      if (obj instanceof Card) {
+         final Card card = (Card) obj;
+         final String cardId = card.id();
+         final String id = id();
+         return (cardId != null && id != null && cardId.equals(id)) || card.number() != number();
+      }
+      return false;
+   }
+
+   public enum Category {
       BANK, DISCOUNT, SAMPLE
    }
 }

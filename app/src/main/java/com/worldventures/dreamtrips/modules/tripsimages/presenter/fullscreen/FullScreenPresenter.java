@@ -8,16 +8,22 @@ import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.feed.view.cell.Flaggable;
 import com.worldventures.dreamtrips.modules.profile.bundle.UserBundle;
-import com.worldventures.dreamtrips.modules.tripsimages.api.DownloadImageCommand;
+import com.worldventures.dreamtrips.modules.tripsimages.service.TripImagesInteractor;
+import com.worldventures.dreamtrips.modules.tripsimages.service.command.DownloadImageCommand;
 import com.worldventures.dreamtrips.modules.tripsimages.model.IFullScreenObject;
 import com.worldventures.dreamtrips.modules.tripsimages.model.Inspiration;
 import com.worldventures.dreamtrips.modules.tripsimages.model.TripImagesType;
 import com.worldventures.dreamtrips.modules.tripsimages.service.analytics.TripImageShareAnalyticsEvent;
 
+import javax.inject.Inject;
+
+import io.techery.janet.helper.ActionStateSubscriber;
+
 public abstract class FullScreenPresenter<T extends IFullScreenObject, PRESENTER_VIEW extends FullScreenPresenter.View> extends Presenter<PRESENTER_VIEW> {
 
    protected TripImagesType type;
    protected T photo;
+   @Inject TripImagesInteractor tripImagesInteractor;
 
    public FullScreenPresenter(T photo, TripImagesType type) {
       this.photo = photo;
@@ -79,7 +85,13 @@ public abstract class FullScreenPresenter<T extends IFullScreenObject, PRESENTER
          return;
       }
       if (type.equals(ShareType.EXTERNAL_STORAGE)) {
-         doRequest(new DownloadImageCommand(context, photo.getFSImage().getUrl()));
+         if (view.isVisibleOnScreen()) {
+            tripImagesInteractor.downloadImageActionPipe()
+                  .createObservable(new DownloadImageCommand(photo.getFSImage().getUrl()))
+                  .compose(bindViewToMainComposer())
+                  .subscribe(new ActionStateSubscriber<DownloadImageCommand>()
+                        .onFail(this::handleError));
+         }
       } else {
          view.openShare(photo.getFSImage().getUrl(), photo.getFSShareText(), type);
       }

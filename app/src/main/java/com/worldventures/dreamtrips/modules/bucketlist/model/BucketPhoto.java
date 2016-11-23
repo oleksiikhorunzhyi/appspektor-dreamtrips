@@ -28,7 +28,7 @@ public class BucketPhoto implements IFullScreenObject, Serializable, Parcelable 
    };
 
    private String uid;
-   @SerializedName("origin_url") private String originUrl;
+   private String originUrl;
    private String url;
 
    private boolean isCover;
@@ -40,6 +40,18 @@ public class BucketPhoto implements IFullScreenObject, Serializable, Parcelable 
       this.originUrl = in.readString();
       this.url = in.readString();
       this.uid = in.readString();
+   }
+
+   public void setUid(String uid) {
+      this.uid = uid;
+   }
+
+   public String getUid() {
+      return uid;
+   }
+
+   public String getOriginUrl() {
+      return originUrl;
    }
 
    public void setOriginUrl(String originUrl) {

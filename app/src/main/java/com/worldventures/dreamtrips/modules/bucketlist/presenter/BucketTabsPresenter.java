@@ -3,12 +3,12 @@ package com.worldventures.dreamtrips.modules.bucketlist.presenter;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.core.rx.RxView;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
-import com.worldventures.dreamtrips.modules.bucketlist.api.GetCategoryQuery;
 import com.worldventures.dreamtrips.modules.bucketlist.event.BucketAnalyticEvent;
 import com.worldventures.dreamtrips.modules.bucketlist.event.BucketItemAnalyticEvent;
 import com.worldventures.dreamtrips.modules.bucketlist.event.BucketItemPhotoAnalyticEvent;
 import com.worldventures.dreamtrips.modules.bucketlist.service.BucketInteractor;
 import com.worldventures.dreamtrips.modules.bucketlist.service.command.BucketListCommand;
+import com.worldventures.dreamtrips.modules.bucketlist.service.command.GetCategoriesCommand;
 import com.worldventures.dreamtrips.modules.bucketlist.service.command.RecentlyAddedBucketsFromPopularCommand;
 import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
@@ -21,6 +21,7 @@ import javax.inject.Inject;
 
 import io.techery.janet.ActionPipe;
 import io.techery.janet.Command;
+import io.techery.janet.helper.ActionStateSubscriber;
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
 
@@ -69,7 +70,14 @@ public class BucketTabsPresenter extends Presenter<BucketTabsPresenter.View> {
    }
 
    private void loadCategories() {
-      doRequest(new GetCategoryQuery(), categoryItems -> db.putList(SnappyRepository.CATEGORIES, categoryItems));
+      bucketInteractor.getCategoriesPipe()
+            .createObservable(new GetCategoriesCommand())
+            .compose(bindView())
+            .subscribe(new ActionStateSubscriber<GetCategoriesCommand>()
+                  .onSuccess(getCategoriesCommand -> db.putList(SnappyRepository.CATEGORIES,
+                        getCategoriesCommand.getResult()))
+                  .onFail(this::handleError)
+            );
    }
 
    public void setTabs() {

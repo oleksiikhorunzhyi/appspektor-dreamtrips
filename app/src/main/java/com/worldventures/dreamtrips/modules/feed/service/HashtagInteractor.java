@@ -3,11 +3,13 @@ package com.worldventures.dreamtrips.modules.feed.service;
 import com.worldventures.dreamtrips.core.janet.SessionActionPipeCreator;
 import com.worldventures.dreamtrips.modules.feed.service.command.FeedByHashtagCommand;
 import com.worldventures.dreamtrips.modules.feed.service.command.HashtagSuggestionCommand;
+import com.worldventures.dreamtrips.modules.trips.model.Schedule;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
 import io.techery.janet.ActionPipe;
+import rx.schedulers.Schedulers;
 
 @Singleton
 public class HashtagInteractor {
@@ -18,9 +20,9 @@ public class HashtagInteractor {
 
    @Inject
    public HashtagInteractor(SessionActionPipeCreator sessionActionPipeCreator) {
-      suggestionPipe = sessionActionPipeCreator.createPipe(HashtagSuggestionCommand.class);
-      refreshFeedsByHashtagsPipe = sessionActionPipeCreator.createPipe(FeedByHashtagCommand.Refresh.class);
-      loadNextFeedsByHashtagsPipe = sessionActionPipeCreator.createPipe(FeedByHashtagCommand.LoadNext.class);
+      suggestionPipe = sessionActionPipeCreator.createPipe(HashtagSuggestionCommand.class, Schedulers.io());
+      refreshFeedsByHashtagsPipe = sessionActionPipeCreator.createPipe(FeedByHashtagCommand.Refresh.class, Schedulers.io());
+      loadNextFeedsByHashtagsPipe = sessionActionPipeCreator.createPipe(FeedByHashtagCommand.LoadNext.class, Schedulers.io());
    }
 
    public ActionPipe<HashtagSuggestionCommand> getSuggestionPipe() {

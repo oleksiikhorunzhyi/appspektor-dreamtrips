@@ -75,7 +75,7 @@ public class SendImageAttachmentCommand extends BaseChatCommand<DataMessage> {
             .flatMap(uri -> uploaderyInteractor.uploadImageActionPipe().createObservable(new SimpleUploaderyCommand(uri)))
             .doOnNext(this::handleUploadStatus)
             .compose(new ActionStateToActionTransformer<>())
-            .map(action -> ((SimpleUploaderyCommand) action).getResult().getPhotoUploadResponse().getLocation());
+            .map(action -> ((SimpleUploaderyCommand) action).getResult().response().uploaderyPhoto().location());
    }
 
    private void handleUploadStatus(ActionState<UploaderyImageCommand> commandActionState) {
@@ -85,7 +85,7 @@ public class SendImageAttachmentCommand extends BaseChatCommand<DataMessage> {
             break;
          case SUCCESS:
             SimpleUploaderyCommand command = (SimpleUploaderyCommand) commandActionState.action;
-            successUploading(command.getResult().getPhotoUploadResponse().getLocation());
+            successUploading(command.getResult().response().uploaderyPhoto().location());
             break;
          case FAIL:
             failUploading();

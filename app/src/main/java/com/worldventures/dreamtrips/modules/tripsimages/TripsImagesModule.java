@@ -8,19 +8,18 @@ import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.component.ComponentDescription;
 import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.modules.common.view.util.DrawableUtil;
-import com.worldventures.dreamtrips.modules.tripsimages.api.GetUserPhotosQuery;
 import com.worldventures.dreamtrips.modules.tripsimages.presenter.EditPhotoTagsPresenter;
 import com.worldventures.dreamtrips.modules.tripsimages.presenter.InspireMePresenter;
-import com.worldventures.dreamtrips.modules.tripsimages.presenter.PhotoEditPresenter;
 import com.worldventures.dreamtrips.modules.tripsimages.presenter.TripImagePresenter;
 import com.worldventures.dreamtrips.modules.tripsimages.presenter.TripImagesListPresenter;
 import com.worldventures.dreamtrips.modules.tripsimages.presenter.TripImagesTabsPresenter;
 import com.worldventures.dreamtrips.modules.tripsimages.presenter.YSBHPresenter;
-import com.worldventures.dreamtrips.modules.tripsimages.presenter.fullscreen.AccountImagesPresenter;
+import com.worldventures.dreamtrips.modules.tripsimages.presenter.AccountImagesPresenter;
 import com.worldventures.dreamtrips.modules.tripsimages.presenter.fullscreen.BucketFullscreenPresenter;
 import com.worldventures.dreamtrips.modules.tripsimages.presenter.fullscreen.FullScreenPresenter;
 import com.worldventures.dreamtrips.modules.tripsimages.presenter.fullscreen.InspirationFullscreenPresenter;
-import com.worldventures.dreamtrips.modules.tripsimages.presenter.fullscreen.MembersImagesPresenter;
+import com.worldventures.dreamtrips.modules.tripsimages.presenter.MembersImagesBasePresenter;
+import com.worldventures.dreamtrips.modules.tripsimages.presenter.MembersImagesPresenter;
 import com.worldventures.dreamtrips.modules.tripsimages.presenter.fullscreen.SocialImageFullscreenPresenter;
 import com.worldventures.dreamtrips.modules.tripsimages.presenter.fullscreen.TripImageFullscreenPresenter;
 import com.worldventures.dreamtrips.modules.tripsimages.presenter.fullscreen.YouShouldBeHerePhotoFullscreenPresenter;
@@ -30,7 +29,7 @@ import com.worldventures.dreamtrips.modules.tripsimages.view.fragment.AccountIma
 import com.worldventures.dreamtrips.modules.tripsimages.view.fragment.EditPhotoTagsFragment;
 import com.worldventures.dreamtrips.modules.tripsimages.view.fragment.FullScreenPhotoWrapperFragment;
 import com.worldventures.dreamtrips.modules.tripsimages.view.fragment.FullScreenTripImageFragment;
-import com.worldventures.dreamtrips.modules.tripsimages.view.fragment.MemberImagesListFragment;
+import com.worldventures.dreamtrips.modules.tripsimages.view.fragment.MembersImagesListFragment;
 import com.worldventures.dreamtrips.modules.tripsimages.view.fragment.TripImagePagerFragment;
 import com.worldventures.dreamtrips.modules.tripsimages.view.fragment.TripImagesListFragment;
 import com.worldventures.dreamtrips.modules.tripsimages.view.fragment.TripImagesTabsFragment;
@@ -45,21 +44,41 @@ import dagger.Module;
 import dagger.Provides;
 
 @Module(
-      injects = {TripImagesTabsPresenter.class, TripImagesListPresenter.class, InspireMePresenter.class, AccountImagesPresenter.class, MembersImagesPresenter.class, YSBHPresenter.class, FullScreenPhotoFragment.class, TripImagePresenter.class,
-
-            FullScreenPresenter.class, BucketFullscreenPresenter.class, InspirationFullscreenPresenter.class,
-
-            TripImagesTabsFragment.class, TripImagesListFragment.class, TripImagesTabsFragment.class, TripImagePagerFragment.class, PhotoEditPresenter.class, FullScreenTripImageFragment.class, PhotoCell.class, PhotoUploadCell.class,
-
-            FullScreenPhotoWrapperFragment.class, GetUserPhotosQuery.class, AccountImagesListFragment.class, MemberImagesListFragment.class,
-
-            InspirePhotoFullscreenFragment.class, YSBHPhotoFullscreenFragment.class, YouShouldBeHerePhotoFullscreenPresenter.class, TripPhotoFullscreenFragment.class, BucketPhotoFullscreenFragment.class, SocialImageFullscreenPresenter.class, SocialImageFullscreenFragment.class,
-
-            InspirationFullscreenPresenter.class, TripImageFullscreenPresenter.class,
-
-            MessageImageFullscreenFragment.class, MessageImageFullscreenPresenter.class,
-
-            EditPhotoTagsPresenter.class, EditPhotoTagsFragment.class,},
+      injects = {TripImagesTabsPresenter.class,
+            TripImagesListPresenter.class,
+            InspireMePresenter.class,
+            AccountImagesPresenter.class,
+            MembersImagesPresenter.class,
+            MembersImagesBasePresenter.class,
+            YSBHPresenter.class, 
+            FullScreenPhotoFragment.class,
+            TripImagePresenter.class,
+            FullScreenPresenter.class,
+            BucketFullscreenPresenter.class,
+            InspirationFullscreenPresenter.class,
+            TripImagesTabsFragment.class,
+            TripImagesListFragment.class,
+            TripImagesTabsFragment.class,
+            TripImagePagerFragment.class,
+            FullScreenTripImageFragment.class,
+            PhotoCell.class,
+            PhotoUploadCell.class,
+            FullScreenPhotoWrapperFragment.class,
+            AccountImagesListFragment.class,
+            MembersImagesListFragment.class,
+            InspirePhotoFullscreenFragment.class,
+            YSBHPhotoFullscreenFragment.class,
+            YouShouldBeHerePhotoFullscreenPresenter.class,
+            TripPhotoFullscreenFragment.class,
+            BucketPhotoFullscreenFragment.class,
+            SocialImageFullscreenPresenter.class,
+            SocialImageFullscreenFragment.class,
+            InspirationFullscreenPresenter.class,
+            TripImageFullscreenPresenter.class,
+            MessageImageFullscreenFragment.class,
+            MessageImageFullscreenPresenter.class,
+            EditPhotoTagsPresenter.class,
+            EditPhotoTagsFragment.class,},
       complete = false,
       library = true)
 public class TripsImagesModule {

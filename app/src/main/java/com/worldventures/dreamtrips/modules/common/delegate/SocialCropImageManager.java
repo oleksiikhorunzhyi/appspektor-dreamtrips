@@ -4,17 +4,11 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
-import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.text.TextUtils;
 import android.util.Pair;
 
 import com.messenger.util.CroppingUtils;
-import com.octo.android.robospice.request.simple.BigBinaryRequest;
-import com.worldventures.dreamtrips.core.api.DreamSpiceManager;
-import com.worldventures.dreamtrips.modules.video.model.CachedEntity;
-import com.worldventures.dreamtrips.util.Action;
-import com.worldventures.dreamtrips.util.ValidationUtils;
 import com.yalantis.ucrop.UCrop;
 
 import java.io.File;
@@ -35,34 +29,25 @@ public class SocialCropImageManager {
 
    private Context context;
 
-   private DreamSpiceManager dreamSpiceManager;
-
    private PublishSubject<Notification<File>> croppedImagesStream = PublishSubject.create();
 
    private int ratioX = RATIO_X_DEFAULT;
    private int ratioY = RATIO_Y_DEFAULT;
 
-   public SocialCropImageManager(Context context, DreamSpiceManager dreamSpiceManager) {
-      this.dreamSpiceManager = dreamSpiceManager;
+   public SocialCropImageManager(Context context) {
       init(context);
    }
 
    private void init(Context context) {
       this.context = context;
-      if (!dreamSpiceManager.isStarted()) {
-         dreamSpiceManager.start(context);
-      }
    }
 
    public void cropImage(Fragment fragment, String filePath) {
       if (context == null) {
          throw new IllegalStateException("You must call init() first");
       }
-      if (ValidationUtils.isUrl(filePath)) {
-         cacheFacebookImage(filePath, path -> startCropActivity(fragment, path, path));
-      } else {
-         executeCrop(fragment, filePath);
-      }
+
+      executeCrop(fragment, filePath);
    }
 
    public Observable<Notification<File>> getCroppedImagesStream() {
@@ -77,17 +62,6 @@ public class SocialCropImageManager {
    private void executeCrop(Fragment fragment, String originalFilePath) {
       String temporaryFile = getTempFile(originalFilePath).getAbsolutePath();
       startCropActivity(fragment, originalFilePath, temporaryFile);
-   }
-
-   private void cacheFacebookImage(String url, Action<String> action) {
-      String filePath = CachedEntity.getFilePath(context, truncateUrlParams(url));
-      BigBinaryRequest bigBinaryRequest = new BigBinaryRequest(url, new File(filePath));
-
-      dreamSpiceManager.execute(bigBinaryRequest, inputStream -> action.action(filePath), e -> reportError(e, "Could not copy avatar file from Facebook"));
-   }
-
-   private String truncateUrlParams(@NonNull String url) {
-      return url.split("\\?")[0];
    }
 
    public boolean onActivityResult(int requestCode, int resultCode, Intent data) {

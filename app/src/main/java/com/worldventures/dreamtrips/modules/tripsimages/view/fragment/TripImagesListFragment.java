@@ -10,7 +10,7 @@ import android.view.View;
 
 import com.badoo.mobile.util.WeakHandler;
 import com.techery.spares.adapter.BaseArrayListAdapter;
-import com.techery.spares.adapter.IRoboSpiceAdapter;
+import com.techery.spares.adapter.ListAdapter;
 import com.techery.spares.annotations.Layout;
 import com.techery.spares.ui.recycler.RecyclerViewStateDelegate;
 import com.worldventures.dreamtrips.R;
@@ -32,8 +32,9 @@ import com.worldventures.dreamtrips.modules.tripsimages.model.Inspiration;
 import com.worldventures.dreamtrips.modules.tripsimages.model.Photo;
 import com.worldventures.dreamtrips.modules.tripsimages.model.TripImagesType;
 import com.worldventures.dreamtrips.modules.tripsimages.model.YSBHPhoto;
+import com.worldventures.dreamtrips.modules.tripsimages.presenter.MembersImagesBasePresenter;
 import com.worldventures.dreamtrips.modules.tripsimages.presenter.TripImagesListPresenter;
-import com.worldventures.dreamtrips.modules.tripsimages.presenter.fullscreen.MembersImagesPresenter;
+import com.worldventures.dreamtrips.modules.tripsimages.presenter.MembersImagesPresenter;
 import com.worldventures.dreamtrips.modules.tripsimages.view.cell.PhotoCell;
 import com.worldventures.dreamtrips.modules.tripsimages.view.cell.PhotoUploadCell;
 
@@ -45,7 +46,7 @@ import static com.worldventures.dreamtrips.modules.tripsimages.bundle.FullScreen
 
 @Layout(R.layout.fragment_trip_list_images)
 public class TripImagesListFragment<T extends TripImagesListPresenter> extends RxBaseFragmentWithArgs<T, TripsImagesBundle>
-      implements TripImagesListPresenter.View, SwipeRefreshLayout.OnRefreshListener, MembersImagesPresenter.View {
+      implements TripImagesListPresenter.View, SwipeRefreshLayout.OnRefreshListener, MembersImagesBasePresenter.View {
 
    @InjectView(R.id.lv_items) protected EmptyRecyclerView recyclerView;
 
@@ -136,7 +137,7 @@ public class TripImagesListFragment<T extends TripImagesListPresenter> extends R
    protected T createPresenter(Bundle savedInstanceState) {
       TripImagesType type = getArgs().getType();
       int userId = getArgs().getUserId();
-      return (T) TripImagesListPresenter.create(type, userId, null, false, 0, NO_NOTIFICATION);
+      return (T) TripImagesListPresenter.create(type, userId, null, 0, NO_NOTIFICATION);
    }
 
    @Override
@@ -155,7 +156,7 @@ public class TripImagesListFragment<T extends TripImagesListPresenter> extends R
    }
 
    @Override
-   public IRoboSpiceAdapter getAdapter() {
+   public ListAdapter getAdapter() {
       return arrayListAdapter;
    }
 

@@ -3,7 +3,7 @@ package com.worldventures.dreamtrips.modules.bucketlist.presenter;
 import com.innahema.collections.query.queriables.Queryable;
 import com.techery.spares.adapter.BaseArrayListAdapter;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.core.api.DreamTripsApi;
+import com.worldventures.dreamtrips.core.janet.JanetModule;
 import com.worldventures.dreamtrips.core.rx.RxView;
 import com.worldventures.dreamtrips.core.utils.events.MarkBucketItemDoneEvent;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
@@ -11,10 +11,11 @@ import com.worldventures.dreamtrips.modules.auth.service.LoginInteractor;
 import com.worldventures.dreamtrips.modules.bucketlist.event.BucketItemAnalyticEvent;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem;
 import com.worldventures.dreamtrips.modules.bucketlist.service.BucketInteractor;
-import com.worldventures.dreamtrips.modules.bucketlist.service.action.CreateBucketItemHttpAction;
-import com.worldventures.dreamtrips.modules.bucketlist.service.action.MarkItemAsDoneHttpAction;
+import com.worldventures.dreamtrips.modules.bucketlist.service.action.CreateBucketItemCommand;
+import com.worldventures.dreamtrips.modules.bucketlist.service.action.UpdateBucketItemCommand;
 import com.worldventures.dreamtrips.modules.bucketlist.service.command.BucketListCommand;
 import com.worldventures.dreamtrips.modules.bucketlist.service.common.BucketUtility;
+import com.worldventures.dreamtrips.modules.bucketlist.service.model.ImmutableBucketBodyImpl;
 import com.worldventures.dreamtrips.modules.bucketlist.service.model.ImmutableBucketPostBody;
 import com.worldventures.dreamtrips.modules.bucketlist.view.adapter.AutoCompleteAdapter;
 import com.worldventures.dreamtrips.modules.bucketlist.view.adapter.SuggestionLoader;
@@ -26,8 +27,10 @@ import java.util.Collection;
 import java.util.List;
 
 import javax.inject.Inject;
+import javax.inject.Named;
 
 import icepick.State;
+import io.techery.janet.Janet;
 import io.techery.janet.helper.ActionStateSubscriber;
 import rx.android.schedulers.AndroidSchedulers;
 import timber.log.Timber;
@@ -37,7 +40,7 @@ import static com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem.N
 
 public class BucketListPresenter extends Presenter<BucketListPresenter.View> {
 
-   @Inject DreamTripsApi api;
+   @Inject @Named(JanetModule.JANET_API_LIB) Janet janetApi;
    @Inject BucketInteractor bucketInteractor;
    @Inject LoginInteractor loginInteractor;
 
@@ -189,10 +192,11 @@ public class BucketListPresenter extends Presenter<BucketListPresenter.View> {
    }
 
    private void markAsDone(BucketItem bucketItem) {
-      view.bind(bucketInteractor.marksAsDonePipe()
-            .createObservable(new MarkItemAsDoneHttpAction(bucketItem.getUid(), getMarkAsDoneStatus(bucketItem)))
+      view.bind(bucketInteractor.updatePipe()
+            .createObservable(new UpdateBucketItemCommand(ImmutableBucketBodyImpl.builder().id(bucketItem.getUid())
+                  .status(getMarkAsDoneStatus(bucketItem)).build()))
             .observeOn(AndroidSchedulers.mainThread()))
-            .subscribe(new ActionStateSubscriber<MarkItemAsDoneHttpAction>().onFail((markItemAsDoneAction, throwable) -> {
+            .subscribe(new ActionStateSubscriber<UpdateBucketItemCommand>().onFail((markItemAsDoneAction, throwable) -> {
                refresh();
                handleError(markItemAsDoneAction, throwable);
             }));
@@ -209,13 +213,13 @@ public class BucketListPresenter extends Presenter<BucketListPresenter.View> {
 
    public void addToBucketList(String title) {
       view.bind(bucketInteractor.createPipe()
-            .createObservable(new CreateBucketItemHttpAction(ImmutableBucketPostBody.builder()
+            .createObservable(new CreateBucketItemCommand(ImmutableBucketPostBody.builder()
                   .type(type.getName())
                   .name(title)
                   .status(NEW)
                   .build()))
             .observeOn(AndroidSchedulers.mainThread()))
-            .subscribe(new ActionStateSubscriber<CreateBucketItemHttpAction>().onFail(this::handleError));
+            .subscribe(new ActionStateSubscriber<CreateBucketItemCommand>().onFail(this::handleError));
    }
 
    public boolean isShowToDO() {
@@ -227,7 +231,7 @@ public class BucketListPresenter extends Presenter<BucketListPresenter.View> {
    }
 
    public AutoCompleteAdapter.Loader getSuggestionLoader() {
-      return new SuggestionLoader(type, api, loginInteractor);
+      return new SuggestionLoader(type, janetApi);
    }
 
    private int getOriginalPosition(int filteredPosition) {

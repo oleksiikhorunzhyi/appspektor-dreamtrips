@@ -3,7 +3,6 @@ package com.worldventures.dreamtrips.modules.feed.presenter;
 import com.badoo.mobile.util.WeakHandler;
 import com.worldventures.dreamtrips.core.utils.events.EntityLikedEvent;
 import com.worldventures.dreamtrips.modules.common.model.User;
-import com.worldventures.dreamtrips.modules.feed.api.GetFeedEntityQuery;
 import com.worldventures.dreamtrips.modules.feed.event.FeedEntityChangedEvent;
 import com.worldventures.dreamtrips.modules.feed.event.FeedEntityCommentedEvent;
 import com.worldventures.dreamtrips.modules.feed.event.LikesPressedEvent;
@@ -11,13 +10,14 @@ import com.worldventures.dreamtrips.modules.feed.manager.FeedEntityManager;
 import com.worldventures.dreamtrips.modules.feed.model.FeedEntity;
 import com.worldventures.dreamtrips.modules.feed.model.FeedItem;
 import com.worldventures.dreamtrips.modules.feed.model.TripFeedItem;
+import com.worldventures.dreamtrips.modules.feed.service.FeedInteractor;
+import com.worldventures.dreamtrips.modules.feed.service.command.GetFeedEntityCommand;
 import com.worldventures.dreamtrips.modules.trips.command.GetTripDetailsCommand;
 import com.worldventures.dreamtrips.modules.trips.service.TripsInteractor;
 
 import javax.inject.Inject;
 
 import io.techery.janet.helper.ActionStateSubscriber;
-import timber.log.Timber;
 
 public class FeedDetailsPresenter<V extends FeedDetailsPresenter.View> extends BaseCommentPresenter<V> {
 
@@ -29,6 +29,7 @@ public class FeedDetailsPresenter<V extends FeedDetailsPresenter.View> extends B
 
    @Inject FeedEntityManager entityManager;
    @Inject TripsInteractor tripsInteractor;
+   @Inject FeedInteractor feedInteractor;
 
    public FeedDetailsPresenter(FeedItem feedItem) {
       super(feedItem.getItem());
@@ -46,7 +47,7 @@ public class FeedDetailsPresenter<V extends FeedDetailsPresenter.View> extends B
    @Override
    public void onInjected() {
       super.onInjected();
-      entityManager.setRequestingPresenter(this);
+      entityManager.setFeedEntityManagerListener(this);
    }
 
    @Override
@@ -67,12 +68,13 @@ public class FeedDetailsPresenter<V extends FeedDetailsPresenter.View> extends B
 
    private void loadFullEventInfo() {
       //TODO trip details is requested from other place, all this hierarchy should be refactored
-      if (!isTrip()) doRequest(new GetFeedEntityQuery(feedEntity.getUid()),
-            feedEntityHolder -> updateFullEventInfo(feedEntityHolder.getItem()),
-            spiceException -> {
-               Timber.e(spiceException, TAG);
-               handleError(spiceException);
-            });
+      if (!isTrip())
+         feedInteractor.getFeedEntityPipe()
+               .createObservable(new GetFeedEntityCommand(feedEntity.getUid(), feedItem.getType()))
+               .compose(bindViewToMainComposer())
+               .subscribe(new ActionStateSubscriber<GetFeedEntityCommand>()
+                     .onSuccess(getFeedEntityCommand -> updateFullEventInfo(getFeedEntityCommand.getResult()))
+                     .onFail(this::handleError));
    }
 
    protected void updateFullEventInfo(FeedEntity updatedFeedEntity) {

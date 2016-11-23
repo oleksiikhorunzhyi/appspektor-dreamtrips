@@ -8,7 +8,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.View;
 
 import com.innahema.collections.query.queriables.Queryable;
-import com.techery.spares.adapter.IRoboSpiceAdapter;
+import com.techery.spares.adapter.ListAdapter;
 import com.techery.spares.annotations.Layout;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.navigation.Route;
@@ -26,8 +26,9 @@ import com.worldventures.dreamtrips.modules.tripsimages.model.FragmentItemWithOb
 import com.worldventures.dreamtrips.modules.tripsimages.model.IFullScreenObject;
 import com.worldventures.dreamtrips.modules.tripsimages.model.SocialViewPagerState;
 import com.worldventures.dreamtrips.modules.tripsimages.model.TripImagesType;
+import com.worldventures.dreamtrips.modules.tripsimages.presenter.MembersImagesBasePresenter;
 import com.worldventures.dreamtrips.modules.tripsimages.presenter.TripImagesListPresenter;
-import com.worldventures.dreamtrips.modules.tripsimages.presenter.fullscreen.MembersImagesPresenter;
+import com.worldventures.dreamtrips.modules.tripsimages.presenter.MembersImagesPresenter;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -37,7 +38,8 @@ import javax.inject.Inject;
 import butterknife.InjectView;
 
 @Layout(R.layout.fragment_full_screen_photo_wrapper)
-public class FullScreenPhotoWrapperFragment extends RxBaseFragmentWithArgs<TripImagesListPresenter, FullScreenImagesBundle> implements MembersImagesPresenter.View {
+public class FullScreenPhotoWrapperFragment extends RxBaseFragmentWithArgs<TripImagesListPresenter, FullScreenImagesBundle>
+      implements MembersImagesBasePresenter.View {
 
    @InjectView(R.id.pager) protected ViewPager pager;
    @InjectView(R.id.toolbar_actionbar) protected Toolbar toolbar;
@@ -54,7 +56,7 @@ public class FullScreenPhotoWrapperFragment extends RxBaseFragmentWithArgs<TripI
       int notificationId = getArgs().getNotificationId();
       this.route = getArgs().getRoute();
       ArrayList<IFullScreenObject> fixedList = getArgs().getFixedList();
-      return TripImagesListPresenter.create(type, userId, fixedList, true, position, notificationId);
+      return TripImagesListPresenter.create(type, userId, fixedList, position, notificationId);
    }
 
    @Override
@@ -143,7 +145,7 @@ public class FullScreenPhotoWrapperFragment extends RxBaseFragmentWithArgs<TripI
    }
 
    @Override
-   public IRoboSpiceAdapter getAdapter() {
+   public ListAdapter getAdapter() {
       return adapter;
    }
 

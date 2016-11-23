@@ -3,25 +3,51 @@ package com.worldventures.dreamtrips.modules.membership.model;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import com.google.gson.annotations.SerializedName;
 import com.techery.spares.adapter.HeaderItem;
-import com.worldventures.dreamtrips.modules.common.model.BaseEntity;
 
 import java.util.ArrayList;
+import java.util.List;
 
-public class InviteTemplate extends BaseEntity implements Parcelable, HeaderItem {
+public class InviteTemplate implements Parcelable, HeaderItem {
 
+   private int id;
    private String title;
-   private CoverImage coverImage;
+   private Type type;
+   private String category;
+   private String coverUrl;
    private String video;
    private String locale;
    private String content;
-   private ArrayList<Member> to = new ArrayList<>(0);
+
+   private List<Member> to = new ArrayList<>();
    private String from;
-   private Type type;
    private String link;
    private String name;
-   private String category;
+
+   public InviteTemplate(int id, String title, Type type, String category, String coverUrl, String video, String locale, String content) {
+      this.id = id;
+      this.title = title;
+      this.type = type;
+      this.category = category;
+      this.coverUrl = coverUrl;
+      this.video = video;
+      this.locale = locale;
+      this.content = content;
+   }
+
+   public InviteTemplate(int id, String title, String coverUrl, String video, String link, String locale, String content) {
+      this.id = id;
+      this.title = title;
+      this.coverUrl = coverUrl;
+      this.video = video;
+      this.link = link;
+      this.locale = locale;
+      this.content = content;
+   }
+
+   public int getId() {
+      return id;
+   }
 
    public String getCategory() {
       return category;
@@ -31,7 +57,7 @@ public class InviteTemplate extends BaseEntity implements Parcelable, HeaderItem
       this.category = category;
    }
 
-   public ArrayList<Member> getTo() {
+   public List<Member> getTo() {
       return to;
    }
 
@@ -51,16 +77,16 @@ public class InviteTemplate extends BaseEntity implements Parcelable, HeaderItem
       return title;
    }
 
-   public CoverImage getCoverImage() {
-      return coverImage;
-   }
-
-   public void setName(String name) {
-      this.name = name;
+   public String getCoverUrl() {
+      return coverUrl;
    }
 
    public String getName() {
       return name;
+   }
+
+   public void setName(String name) {
+      this.name = name;
    }
 
    public String getVideo() {
@@ -75,8 +101,16 @@ public class InviteTemplate extends BaseEntity implements Parcelable, HeaderItem
       return content;
    }
 
+   public void setContent(String content) {
+      this.content = content;
+   }
+
    public Type getType() {
       return type;
+   }
+
+   public void setType(Type type) {
+      this.type = type;
    }
 
    public String getLink() {
@@ -87,27 +121,13 @@ public class InviteTemplate extends BaseEntity implements Parcelable, HeaderItem
       this.link = link;
    }
 
-   public void setType(Type type) {
-      this.type = type;
-   }
-
-   public void setCoverImage(CoverImage coverImage) {
-      this.coverImage = coverImage;
-   }
-
-   public InviteTemplate() {
-      super();
-   }
-
    @Override
    public String getHeaderTitle() {
       return getCategory();
    }
 
-
    public enum Type {
-      @SerializedName("email")EMAIL,
-      @SerializedName("sms")SMS;
+      EMAIL, SMS;
 
       public static Type from(int i) {
          return i == 0 ? EMAIL : SMS;
@@ -122,11 +142,12 @@ public class InviteTemplate extends BaseEntity implements Parcelable, HeaderItem
    @Override
    public void writeToParcel(Parcel dest, int flags) {
       dest.writeString(this.title);
-      dest.writeSerializable(this.coverImage);
+      dest.writeString(this.coverUrl);
       dest.writeString(this.video);
       dest.writeString(this.locale);
       dest.writeString(this.content);
-      dest.writeSerializable(this.to);
+      Member membersArray[] = new Member[to.size()];
+      dest.writeParcelableArray(to.toArray(membersArray), 0);
       dest.writeString(this.from);
       dest.writeInt(this.type == null ? -1 : this.type.ordinal());
       dest.writeString(this.link);
@@ -136,21 +157,20 @@ public class InviteTemplate extends BaseEntity implements Parcelable, HeaderItem
 
    private InviteTemplate(Parcel in) {
       this.title = in.readString();
-      this.coverImage = (CoverImage) in.readSerializable();
+      this.coverUrl = in.readString();
       this.video = in.readString();
       this.locale = in.readString();
       this.content = in.readString();
-      this.to = (ArrayList<Member>) in.readSerializable();
+      Parcelable[] membersArray = in.readParcelableArray(Member.class.getClassLoader());
+      for (Parcelable member : membersArray) {
+         this.to.add((Member) member);
+      }
       this.from = in.readString();
       int tmpType = in.readInt();
       this.type = tmpType == -1 ? null : Type.values()[tmpType];
       this.link = in.readString();
       this.id = in.readInt();
       this.name = in.readString();
-   }
-
-   public void setContent(String content) {
-      this.content = content;
    }
 
    public static final Creator<InviteTemplate> CREATOR = new Creator<InviteTemplate>() {

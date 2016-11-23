@@ -12,7 +12,7 @@ import java.util.ArrayList;
 import io.techery.mappery.MapperyContext;
 
 public abstract class BucketItemConverter<T extends com.worldventures.dreamtrips.api.bucketlist.model.BucketItem>
-   implements Converter<T, BucketItem> {
+      implements Converter<T, BucketItem> {
 
    @Override
    public Class<BucketItem> targetClass() {
@@ -25,24 +25,33 @@ public abstract class BucketItemConverter<T extends com.worldventures.dreamtrips
       bucketItem.setUid(apiBucketItem.uid());
       bucketItem.setName(apiBucketItem.name());
       bucketItem.setDescription(apiBucketItem.description());
-      bucketItem.setCategory(mapperyContext.convert(apiBucketItem.category(), CategoryItem.class));
+      if (apiBucketItem.category() != null) {
+         bucketItem.setCategory(mapperyContext.convert(apiBucketItem.category(), CategoryItem.class));
+      }
 
-      bucketItem.setType(mapperyContext.convert(apiBucketItem.type(), BucketItem.BucketType.class).toString().toLowerCase());
+      bucketItem.setType(mapperyContext.convert(apiBucketItem.type(), BucketItem.BucketType.class)
+            .toString()
+            .toLowerCase());
       bucketItem.setStatus(apiBucketItem.status().toString().toLowerCase());
 
-      bucketItem.setLocation(mapperyContext.convert(apiBucketItem.location(), BucketLocation.class));
+      if (apiBucketItem.location() != null) {
+         bucketItem.setLocation(mapperyContext.convert(apiBucketItem.location(), BucketLocation.class));
+      }
 
       bucketItem.setTargetDate(apiBucketItem.targetDate());
-
       bucketItem.setCompletionDate(apiBucketItem.completionDate());
 
-      bucketItem.setCoverPhoto(mapperyContext.convert(apiBucketItem.bucketCoverPhoto(), BucketPhoto.class));
+      if (apiBucketItem.bucketCoverPhoto() != null) {
+         bucketItem.setCoverPhoto(mapperyContext.convert(apiBucketItem.bucketCoverPhoto(), BucketPhoto.class));
+      }
 
       bucketItem.setPhotos(mapperyContext.convert(apiBucketItem.bucketPhoto(), BucketPhoto.class));
 
       bucketItem.setLink(apiBucketItem.link());
 
-      bucketItem.setTags(mapperyContext.convert(apiBucketItem.tags(), BucketTag.class));
+      if (apiBucketItem.tags() != null) {
+         bucketItem.setTags(mapperyContext.convert(apiBucketItem.tags(), BucketTag.class));
+      }
 
       bucketItem.setFriends(new ArrayList<>(apiBucketItem.friends()));
 

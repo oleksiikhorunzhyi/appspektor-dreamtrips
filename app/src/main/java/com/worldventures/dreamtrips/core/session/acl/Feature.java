@@ -9,7 +9,7 @@ import static java.lang.annotation.RetentionPolicy.SOURCE;
 public class Feature {
    @FeatureName public final String name;
 
-   public Feature(@FeatureName String name) {
+   public Feature(String name) {
       this.name = name;
    }
 
@@ -27,5 +27,6 @@ public class Feature {
    public static final String MEMBERSHIP = "membership";
    public static final String WALLET = "wallet";
    public static final String WALLET_PROVISIONING = "wallet_provisioning";
+   public static final String UNKNOWN = "unknown";
 
 }

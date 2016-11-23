@@ -1,16 +1,17 @@
 package com.worldventures.dreamtrips.modules.bucketlist.service;
 
 import com.worldventures.dreamtrips.core.janet.SessionActionPipeCreator;
-import com.worldventures.dreamtrips.modules.bucketlist.service.action.ChangeOrderHttpAction;
-import com.worldventures.dreamtrips.modules.bucketlist.service.action.CreateBucketItemHttpAction;
-import com.worldventures.dreamtrips.modules.bucketlist.service.action.DeleteItemHttpAction;
-import com.worldventures.dreamtrips.modules.bucketlist.service.action.LoadBucketListFullHttpAction;
-import com.worldventures.dreamtrips.modules.bucketlist.service.action.MarkItemAsDoneHttpAction;
-import com.worldventures.dreamtrips.modules.bucketlist.service.action.UpdateItemHttpAction;
+import com.worldventures.dreamtrips.modules.bucketlist.service.action.CreateBucketItemCommand;
+import com.worldventures.dreamtrips.modules.bucketlist.service.action.UpdateBucketItemCommand;
 import com.worldventures.dreamtrips.modules.bucketlist.service.command.AddBucketItemPhotoCommand;
 import com.worldventures.dreamtrips.modules.bucketlist.service.command.BucketListCommand;
+import com.worldventures.dreamtrips.modules.bucketlist.service.command.ChangeBucketListOrderCommand;
+import com.worldventures.dreamtrips.modules.bucketlist.service.command.DeleteBucketItemCommand;
 import com.worldventures.dreamtrips.modules.bucketlist.service.command.DeleteItemPhotoCommand;
 import com.worldventures.dreamtrips.modules.bucketlist.service.command.FindBucketItemByPhotoCommand;
+import com.worldventures.dreamtrips.modules.bucketlist.service.command.GetCategoriesCommand;
+import com.worldventures.dreamtrips.modules.bucketlist.service.command.GetPopularBucketItemSuggestionsCommand;
+import com.worldventures.dreamtrips.modules.bucketlist.service.command.GetPopularBucketItemsCommand;
 import com.worldventures.dreamtrips.modules.bucketlist.service.command.MergeBucketItemPhotosWithStorageCommand;
 import com.worldventures.dreamtrips.modules.bucketlist.service.command.RecentlyAddedBucketsFromPopularCommand;
 import com.worldventures.dreamtrips.modules.bucketlist.service.command.UploadPhotoControllerCommand;
@@ -23,14 +24,15 @@ import rx.Observable;
 import rx.schedulers.Schedulers;
 
 public final class BucketInteractor {
-   private final ActionPipe<LoadBucketListFullHttpAction> loadBucketListPipe;
-   private final ActionPipe<CreateBucketItemHttpAction> createBucketPipe;
-   private final ActionPipe<UpdateItemHttpAction> updateItemPipe;
-   private final ActionPipe<ChangeOrderHttpAction> moveItemPipe;
-   private final ActionPipe<MarkItemAsDoneHttpAction> markItemAsDonePipe;
-   private final ActionPipe<DeleteItemHttpAction> deleteItemPipe;
+   private final ActionPipe<CreateBucketItemCommand> createBucketPipe;
+   private final ActionPipe<UpdateBucketItemCommand> updateItemPipe;
+   private final ActionPipe<ChangeBucketListOrderCommand> moveItemPipe;
+   private final ActionPipe<DeleteBucketItemCommand> deleteItemPipe;
    private final ActionPipe<DeleteItemPhotoCommand> deleteItemPhotoPipe;
    private final ActionPipe<AddBucketItemPhotoCommand> addBucketItemPhotoPipe;
+   private final ActionPipe<GetCategoriesCommand> getCategoriesPipe;
+   private final ActionPipe<GetPopularBucketItemSuggestionsCommand> getPopularBucketItemSuggestionsPipe;
+   private final ActionPipe<GetPopularBucketItemsCommand> getPopularBucketItemsPipe;
 
    private final ActionPipe<BucketListCommand> bucketListActionPipe;
    private final ActionPipe<FindBucketItemByPhotoCommand> findBucketItemByPhotoActionPipe;
@@ -39,15 +41,15 @@ public final class BucketInteractor {
    private final ActionPipe<RecentlyAddedBucketsFromPopularCommand> recentlyAddedBucketsFromPopularCommandPipe;
 
    public BucketInteractor(SessionActionPipeCreator sessionActionPipeCreator) {
-      loadBucketListPipe = sessionActionPipeCreator.createPipe(LoadBucketListFullHttpAction.class, Schedulers.io());
-      createBucketPipe = sessionActionPipeCreator.createPipe(CreateBucketItemHttpAction.class, Schedulers.io());
-      updateItemPipe = sessionActionPipeCreator.createPipe(UpdateItemHttpAction.class, Schedulers.io());
-      moveItemPipe = sessionActionPipeCreator.createPipe(ChangeOrderHttpAction.class, Schedulers.io());
-      markItemAsDonePipe = sessionActionPipeCreator.createPipe(MarkItemAsDoneHttpAction.class, Schedulers.io());
-      deleteItemPipe = sessionActionPipeCreator.createPipe(DeleteItemHttpAction.class, Schedulers.io());
+      createBucketPipe = sessionActionPipeCreator.createPipe(CreateBucketItemCommand.class, Schedulers.io());
+      updateItemPipe = sessionActionPipeCreator.createPipe(UpdateBucketItemCommand.class, Schedulers.io());
+      moveItemPipe = sessionActionPipeCreator.createPipe(ChangeBucketListOrderCommand.class, Schedulers.io());
+      deleteItemPipe = sessionActionPipeCreator.createPipe(DeleteBucketItemCommand.class, Schedulers.io());
       deleteItemPhotoPipe = sessionActionPipeCreator.createPipe(DeleteItemPhotoCommand.class, Schedulers.io());
       addBucketItemPhotoPipe = sessionActionPipeCreator.createPipe(AddBucketItemPhotoCommand.class, Schedulers.io());
-
+      getCategoriesPipe = sessionActionPipeCreator.createPipe(GetCategoriesCommand.class, Schedulers.io());
+      getPopularBucketItemSuggestionsPipe = sessionActionPipeCreator.createPipe(GetPopularBucketItemSuggestionsCommand.class, Schedulers.io());
+      getPopularBucketItemsPipe = sessionActionPipeCreator.createPipe(GetPopularBucketItemsCommand.class, Schedulers.io());
       bucketListActionPipe = sessionActionPipeCreator.createPipe(BucketListCommand.class, Schedulers.io());
       findBucketItemByPhotoActionPipe = sessionActionPipeCreator.createPipe(FindBucketItemByPhotoCommand.class, Schedulers.immediate());
       uploadPhotoControllerCommandPipe = sessionActionPipeCreator.createPipe(UploadPhotoControllerCommand.class, Schedulers.immediate());
@@ -59,27 +61,19 @@ public final class BucketInteractor {
       connect();
    }
 
-   public ActionPipe<LoadBucketListFullHttpAction> loadPipe() {
-      return loadBucketListPipe;
-   }
-
-   public ActionPipe<CreateBucketItemHttpAction> createPipe() {
+   public ActionPipe<CreateBucketItemCommand> createPipe() {
       return createBucketPipe;
    }
 
-   public ActionPipe<UpdateItemHttpAction> updatePipe() {
+   public ActionPipe<UpdateBucketItemCommand> updatePipe() {
       return updateItemPipe;
    }
 
-   public ActionPipe<ChangeOrderHttpAction> movePipe() {
+   public ActionPipe<ChangeBucketListOrderCommand> movePipe() {
       return moveItemPipe;
    }
 
-   public ActionPipe<MarkItemAsDoneHttpAction> marksAsDonePipe() {
-      return markItemAsDonePipe;
-   }
-
-   public ActionPipe<DeleteItemHttpAction> deleteItemPipe() {
+   public ActionPipe<DeleteBucketItemCommand> deleteItemPipe() {
       return deleteItemPipe;
    }
 
@@ -89,6 +83,18 @@ public final class BucketInteractor {
 
    public ActionPipe<AddBucketItemPhotoCommand> addBucketItemPhotoPipe() {
       return addBucketItemPhotoPipe;
+   }
+
+   public ActionPipe<GetCategoriesCommand> getCategoriesPipe() {
+      return getCategoriesPipe;
+   }
+
+   public ActionPipe<GetPopularBucketItemSuggestionsCommand> getPopularBucketItemSuggestionsPipe() {
+      return getPopularBucketItemSuggestionsPipe;
+   }
+
+   public ActionPipe<GetPopularBucketItemsCommand> getPopularBucketItemsPipe() {
+      return getPopularBucketItemsPipe;
    }
 
    public ActionPipe<BucketListCommand> bucketListActionPipe() {
@@ -112,20 +118,17 @@ public final class BucketInteractor {
    }
 
    private void connect() {
-      createBucketPipe.observeSuccess().map(CreateBucketItemHttpAction::getResponse).subscribe(item -> {
+      createBucketPipe.observeSuccess().map(CreateBucketItemCommand::getResult).subscribe(item -> {
          bucketListActionPipe.send(BucketListCommand.createItem(item));
       });
       Observable.merge(updateItemPipe.observeSuccess()
-            .map(UpdateItemHttpAction::getResponse), deleteItemPhotoPipe.observeSuccess()
+            .map(UpdateBucketItemCommand::getResult), deleteItemPhotoPipe.observeSuccess()
             .map(DeleteItemPhotoCommand::getResult), addBucketItemPhotoPipe.observeSuccess()
             .map(AddBucketItemPhotoCommand::getResult)
             .map(bucketItemBucketPhotoPair -> bucketItemBucketPhotoPair.first)).subscribe(bucketItem -> {
          bucketListActionPipe.send(BucketListCommand.updateItem(bucketItem));
       });
-      markItemAsDonePipe.observeSuccess().map(MarkItemAsDoneHttpAction::getResponse).subscribe(item -> {
-         bucketListActionPipe.send(BucketListCommand.markItemAsDone(item));
-      });
-      deleteItemPipe.observeSuccess().map(DeleteItemHttpAction::getBucketItemUid).subscribe(bucketItemUid -> {
+      deleteItemPipe.observeSuccess().map(DeleteBucketItemCommand::getBucketItemUid).subscribe(bucketItemUid -> {
          bucketListActionPipe.send(BucketListCommand.deleteItem(bucketItemUid));
       });
       addBucketItemPhotoPipe.observe()

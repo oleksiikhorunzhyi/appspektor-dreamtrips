@@ -6,26 +6,24 @@ import android.support.annotation.StringRes;
 import android.util.Pair;
 
 import com.innahema.collections.query.queriables.Queryable;
-import com.worldventures.dreamtrips.core.utils.tracksystem.AnalyticsInteractor;
-import com.worldventures.dreamtrips.modules.common.view.util.MediaPickerEventDelegate;
-import com.worldventures.dreamtrips.modules.feed.service.analytics.ViewFeedAction;
-import com.worldventures.dreamtrips.modules.flags.service.FlagsInteractor;
 import com.messenger.ui.activity.MessengerActivity;
 import com.messenger.util.UnreadConversationObservable;
 import com.techery.spares.module.Injector;
 import com.techery.spares.module.qualifier.ForActivity;
 import com.techery.spares.utils.delegate.NotificationCountEventDelegate;
 import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.core.api.action.CommandWithError;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.core.rx.RxView;
 import com.worldventures.dreamtrips.core.rx.composer.IoToMainComposer;
 import com.worldventures.dreamtrips.core.session.CirclesInteractor;
 import com.worldventures.dreamtrips.core.utils.LocaleHelper;
 import com.worldventures.dreamtrips.core.utils.events.EntityLikedEvent;
+import com.worldventures.dreamtrips.core.utils.tracksystem.AnalyticsInteractor;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem;
 import com.worldventures.dreamtrips.modules.bucketlist.service.BucketInteractor;
-import com.worldventures.dreamtrips.modules.bucketlist.service.action.DeleteItemHttpAction;
-import com.worldventures.dreamtrips.modules.common.api.janet.command.CirclesCommand;
+import com.worldventures.dreamtrips.modules.bucketlist.service.command.DeleteBucketItemCommand;
+import com.worldventures.dreamtrips.modules.common.api.janet.command.GetCirclesCommand;
 import com.worldventures.dreamtrips.modules.common.model.FlagData;
 import com.worldventures.dreamtrips.modules.common.model.MediaAttachment;
 import com.worldventures.dreamtrips.modules.common.model.PhotoGalleryModel;
@@ -35,8 +33,8 @@ import com.worldventures.dreamtrips.modules.common.view.ApiErrorView;
 import com.worldventures.dreamtrips.modules.common.view.BlockingProgressView;
 import com.worldventures.dreamtrips.modules.common.view.bundle.BucketBundle;
 import com.worldventures.dreamtrips.modules.common.view.util.DrawableUtil;
+import com.worldventures.dreamtrips.modules.common.view.util.MediaPickerEventDelegate;
 import com.worldventures.dreamtrips.modules.common.view.util.Size;
-import com.worldventures.dreamtrips.modules.feed.api.DeletePostCommand;
 import com.worldventures.dreamtrips.modules.feed.event.DeleteBucketEvent;
 import com.worldventures.dreamtrips.modules.feed.event.DeletePhotoEvent;
 import com.worldventures.dreamtrips.modules.feed.event.DeletePostEvent;
@@ -54,14 +52,18 @@ import com.worldventures.dreamtrips.modules.feed.manager.FeedEntityManager;
 import com.worldventures.dreamtrips.modules.feed.model.FeedEntity;
 import com.worldventures.dreamtrips.modules.feed.model.FeedItem;
 import com.worldventures.dreamtrips.modules.feed.service.FeedInteractor;
+import com.worldventures.dreamtrips.modules.feed.service.PostsInteractor;
 import com.worldventures.dreamtrips.modules.feed.service.SuggestedPhotoInteractor;
-import com.worldventures.dreamtrips.modules.feed.service.command.BaseGetFeedCommand;
+import com.worldventures.dreamtrips.modules.feed.service.analytics.ViewFeedAction;
+import com.worldventures.dreamtrips.modules.feed.service.command.DeletePostCommand;
 import com.worldventures.dreamtrips.modules.feed.service.command.GetAccountFeedCommand;
 import com.worldventures.dreamtrips.modules.feed.service.command.SuggestedPhotoCommand;
 import com.worldventures.dreamtrips.modules.feed.view.util.TextualPostTranslationDelegate;
+import com.worldventures.dreamtrips.modules.flags.service.FlagsInteractor;
 import com.worldventures.dreamtrips.modules.friends.model.Circle;
-import com.worldventures.dreamtrips.modules.tripsimages.api.DeletePhotoCommand;
-import com.worldventures.dreamtrips.modules.tripsimages.api.DownloadImageCommand;
+import com.worldventures.dreamtrips.modules.tripsimages.service.TripImagesInteractor;
+import com.worldventures.dreamtrips.modules.tripsimages.service.command.DeletePhotoCommand;
+import com.worldventures.dreamtrips.modules.tripsimages.service.command.DownloadImageCommand;
 import com.worldventures.dreamtrips.modules.tripsimages.vision.ImageUtils;
 
 import java.util.ArrayList;
@@ -99,6 +101,8 @@ public class FeedPresenter extends Presenter<FeedPresenter.View> {
    @Inject SuggestedPhotoInteractor suggestedPhotoInteractor;
    @Inject CirclesInteractor circlesInteractor;
    @Inject FlagsInteractor flagsInteractor;
+   @Inject TripImagesInteractor tripImagesInteractor;
+   @Inject PostsInteractor postsInteractor;
 
    private Circle filterCircle;
    private FlagDelegate flagDelegate;
@@ -110,7 +114,7 @@ public class FeedPresenter extends Presenter<FeedPresenter.View> {
    @Override
    public void onInjected() {
       super.onInjected();
-      entityManager.setRequestingPresenter(this);
+      entityManager.setFeedEntityManagerListener(this);
       flagDelegate = new FlagDelegate(flagsInteractor);
    }
 
@@ -175,17 +179,17 @@ public class FeedPresenter extends Presenter<FeedPresenter.View> {
 
    public void actionFilter() {
       circlesInteractor.pipe()
-            .createObservable(new CirclesCommand())
+            .createObservable(new GetCirclesCommand())
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .compose(bindView())
-            .subscribe(new ActionStateSubscriber<CirclesCommand>().onStart(circlesCommand -> onCirclesStart())
+            .subscribe(new ActionStateSubscriber<GetCirclesCommand>().onStart(circlesCommand -> onCirclesStart())
                   .onSuccess(circlesCommand -> onCirclesSuccess(circlesCommand.getResult()))
                   .onFail((circlesCommand, throwable) -> onCirclesError(circlesCommand.getErrorMessage())));
    }
 
    private void updateCircles() {
-      circlesInteractor.pipe().send(new CirclesCommand());
+      circlesInteractor.pipe().send(new GetCirclesCommand());
    }
 
    private void onCirclesStart() {
@@ -209,12 +213,15 @@ public class FeedPresenter extends Presenter<FeedPresenter.View> {
    ///////////////////////////////////////////////////////////////////////////
 
    private void subscribeRefreshFeeds() {
-      view.bindUntilDropView(feedInteractor.getRefreshAccountFeedPipe().observe().compose(new IoToMainComposer<>()))
-            .subscribe(new ActionStateSubscriber<GetAccountFeedCommand.Refresh>().onSuccess(action -> refreshFeedSucceed(action
-                  .getResult())).onFail(this::refreshFeedError));
+      feedInteractor.getRefreshAccountFeedPipe()
+            .observe()
+            .compose(bindViewToMainComposer())
+            .subscribe(new ActionStateSubscriber<GetAccountFeedCommand.Refresh>()
+                  .onSuccess(action -> refreshFeedSucceed(action.getResult()))
+                  .onFail(this::refreshFeedError));
    }
 
-   private void refreshFeedSucceed(List<FeedItem<FeedEntity>> freshItems) {
+   private void refreshFeedSucceed(List<FeedItem> freshItems) {
       boolean noMoreFeeds = freshItems.size() == 0;
       view.updateLoadingStatus(false, noMoreFeeds);
       //
@@ -225,7 +232,7 @@ public class FeedPresenter extends Presenter<FeedPresenter.View> {
       suggestedPhotoInteractor.getSuggestedPhotoCommandActionPipe().send(new SuggestedPhotoCommand());
    }
 
-   private void refreshFeedError(BaseGetFeedCommand action, Throwable throwable) {
+   private void refreshFeedError(CommandWithError action, Throwable throwable) {
       view.informUser(action.getErrorMessage());
       view.updateLoadingStatus(false, false);
       view.finishLoading();
@@ -242,12 +249,15 @@ public class FeedPresenter extends Presenter<FeedPresenter.View> {
    ///////////////////////////////////////////////////////////////////////////
 
    private void subscribeLoadNextFeeds() {
-      view.bindUntilDropView(feedInteractor.getLoadNextAccountFeedPipe().observe().compose(new IoToMainComposer<>()))
-            .subscribe(new ActionStateSubscriber<GetAccountFeedCommand.LoadNext>().onFail(this::loadMoreItemsError)
-                  .onSuccess(action -> addFeedItems(action.getResult())));
+      feedInteractor.getLoadNextAccountFeedPipe()
+            .observe()
+            .compose(bindViewToMainComposer())
+            .subscribe(new ActionStateSubscriber<GetAccountFeedCommand.LoadNext>()
+                        .onSuccess(action -> addFeedItems(action.getResult()))
+                        .onFail(this::loadMoreItemsError));
    }
 
-   private void addFeedItems(List<FeedItem<FeedEntity>> olderItems) {
+   private void addFeedItems(List<FeedItem> olderItems) {
       boolean noMoreFeeds = olderItems.size() == 0;
       view.updateLoadingStatus(false, noMoreFeeds);
       //
@@ -255,7 +265,7 @@ public class FeedPresenter extends Presenter<FeedPresenter.View> {
       view.refreshFeedItems(feedItems);
    }
 
-   private void loadMoreItemsError(BaseGetFeedCommand action, Throwable throwable) {
+   private void loadMoreItemsError(CommandWithError action, Throwable throwable) {
       view.informUser(action.getErrorMessage());
       view.updateLoadingStatus(false, false);
       addFeedItems(new ArrayList<>());
@@ -283,7 +293,13 @@ public class FeedPresenter extends Presenter<FeedPresenter.View> {
    }
 
    public void onEvent(DownloadPhotoEvent event) {
-      if (view.isVisibleOnScreen()) doRequest(new DownloadImageCommand(context, event.url));
+      if (view.isVisibleOnScreen()) {
+         tripImagesInteractor.downloadImageActionPipe()
+               .createObservable(new DownloadImageCommand(event.url))
+               .compose(bindViewToMainComposer())
+               .subscribe(new ActionStateSubscriber<DownloadImageCommand>()
+                     .onFail(this::handleError));
+      }
    }
 
    public void onEvent(EditBucketEvent event) {
@@ -301,9 +317,9 @@ public class FeedPresenter extends Presenter<FeedPresenter.View> {
          BucketItem item = event.getEntity();
 
          view.bind(bucketInteractor.deleteItemPipe()
-               .createObservable(new DeleteItemHttpAction(item.getUid()))
+               .createObservable(new DeleteBucketItemCommand(item.getUid()))
                .observeOn(AndroidSchedulers.mainThread()))
-               .subscribe(new ActionStateSubscriber<DeleteItemHttpAction>().onSuccess(deleteItemAction -> itemDeleted(item)));
+               .subscribe(new ActionStateSubscriber<DeleteBucketItemCommand>().onSuccess(deleteItemAction -> itemDeleted(item)));
       }
    }
 
@@ -367,8 +383,13 @@ public class FeedPresenter extends Presenter<FeedPresenter.View> {
    }
 
    public void onEvent(DeletePostEvent event) {
-      if (view.isVisibleOnScreen()) doRequest(new DeletePostCommand(event.getEntity()
-            .getUid()), aVoid -> itemDeleted(event.getEntity()));
+      if (!view.isVisibleOnScreen()) return;
+      postsInteractor.deletePostPipe()
+            .createObservable(new DeletePostCommand(event.getEntity().getUid()))
+            .compose(bindViewToMainComposer())
+            .subscribe(new ActionStateSubscriber<DeletePostCommand>()
+                  .onSuccess(deletePostCommand -> itemDeleted(event.getEntity()))
+                  .onFail(this::handleError));
    }
 
    public void onEvent(TranslatePostEvent event) {
@@ -378,8 +399,14 @@ public class FeedPresenter extends Presenter<FeedPresenter.View> {
    }
 
    public void onEvent(DeletePhotoEvent event) {
-      if (view.isVisibleOnScreen()) doRequest(new DeletePhotoCommand(event.getEntity()
-            .getUid()), aVoid -> itemDeleted(event.getEntity()));
+      if (view.isVisibleOnScreen()) {
+         tripImagesInteractor.deletePhotoPipe()
+               .createObservable(new DeletePhotoCommand(event.getEntity().getUid()))
+               .compose(bindViewToMainComposer())
+               .subscribe(new ActionStateSubscriber<DeletePhotoCommand>()
+                     .onSuccess(deletePhotoCommand -> itemDeleted(event.getEntity()))
+                     .onFail(this::handleError));
+      }
    }
 
    public void onEvent(LoadFlagEvent event) {

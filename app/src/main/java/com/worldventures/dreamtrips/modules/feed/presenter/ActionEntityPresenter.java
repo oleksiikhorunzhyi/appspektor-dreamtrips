@@ -4,7 +4,6 @@ import android.support.annotation.Nullable;
 import android.text.TextUtils;
 
 import com.innahema.collections.query.queriables.Queryable;
-import com.octo.android.robospice.persistence.exception.SpiceException;
 import com.worldventures.dreamtrips.core.rx.RxView;
 import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
@@ -114,8 +113,8 @@ public abstract class ActionEntityPresenter<V extends ActionEntityPresenter.View
    }
 
    @Override
-   public void handleError(SpiceException error) {
-      super.handleError(error);
+   public void handleError(Object action, Throwable error) {
+      super.handleError(action, error);
       view.onPostError();
       view.enableButton();
    }

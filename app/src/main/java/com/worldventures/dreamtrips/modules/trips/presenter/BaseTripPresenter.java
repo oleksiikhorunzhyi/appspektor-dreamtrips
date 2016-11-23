@@ -4,7 +4,7 @@ import com.worldventures.dreamtrips.core.rx.RxView;
 import com.worldventures.dreamtrips.core.utils.events.EntityLikedEvent;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem;
 import com.worldventures.dreamtrips.modules.bucketlist.service.BucketInteractor;
-import com.worldventures.dreamtrips.modules.bucketlist.service.action.CreateBucketItemHttpAction;
+import com.worldventures.dreamtrips.modules.bucketlist.service.action.CreateBucketItemCommand;
 import com.worldventures.dreamtrips.modules.bucketlist.service.model.ImmutableBucketBodyImpl;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.feed.manager.FeedEntityManager;
@@ -27,7 +27,7 @@ public class BaseTripPresenter<V extends BaseTripPresenter.View> extends Present
 
    public void onInjected() {
       super.onInjected();
-      feedEntityManager.setRequestingPresenter(this);
+      feedEntityManager.setFeedEntityManagerListener(this);
    }
 
    @Override
@@ -38,11 +38,11 @@ public class BaseTripPresenter<V extends BaseTripPresenter.View> extends Present
 
    public void addTripToBucket() {
       view.bindUntilDropView(bucketInteractor.createPipe()
-            .createObservableResult(new CreateBucketItemHttpAction(ImmutableBucketBodyImpl.builder()
+            .createObservableResult(new CreateBucketItemCommand(ImmutableBucketBodyImpl.builder()
                   .type("trip")
                   .id(trip.getTripId())
                   .build()))
-            .map(CreateBucketItemHttpAction::getResponse)
+            .map(CreateBucketItemCommand::getResult)
             .observeOn(AndroidSchedulers.mainThread())).subscribe(bucketItem -> {
          trip.setInBucketList(true);
          view.setup(trip);

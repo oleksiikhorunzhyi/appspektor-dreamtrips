@@ -3,6 +3,7 @@ package com.worldventures.dreamtrips.modules.feed.service;
 import com.worldventures.dreamtrips.core.janet.SessionActionPipeCreator;
 import com.worldventures.dreamtrips.modules.feed.service.command.GetAccountFeedCommand;
 import com.worldventures.dreamtrips.modules.feed.service.command.GetAccountTimelineCommand;
+import com.worldventures.dreamtrips.modules.feed.service.command.GetFeedEntityCommand;
 import com.worldventures.dreamtrips.modules.feed.service.command.GetUserTimelineCommand;
 
 import javax.inject.Inject;
@@ -22,6 +23,8 @@ public class FeedInteractor {
    //
    private final ActionPipe<GetAccountTimelineCommand.Refresh> refreshAccountTimelinePipe;
    private final ActionPipe<GetAccountTimelineCommand.LoadNext> loadNextAccountTimelinePipe;
+   //
+   private final ActionPipe<GetFeedEntityCommand> getFeedEntityPipe;
 
    @Inject
    public FeedInteractor(SessionActionPipeCreator sessionActionPipeCreator) {
@@ -37,6 +40,7 @@ public class FeedInteractor {
             Schedulers.io());
       loadNextAccountTimelinePipe = sessionActionPipeCreator.createPipe(GetAccountTimelineCommand.LoadNext.class,
             Schedulers.io());
+      getFeedEntityPipe = sessionActionPipeCreator.createPipe(GetFeedEntityCommand.class, Schedulers.io());
    }
 
    public ActionPipe<GetAccountFeedCommand.Refresh> getRefreshAccountFeedPipe() {
@@ -61,5 +65,9 @@ public class FeedInteractor {
 
    public ActionPipe<GetAccountTimelineCommand.LoadNext> getLoadNextAccountTimelinePipe() {
       return loadNextAccountTimelinePipe;
+   }
+
+   public ActionPipe<GetFeedEntityCommand> getFeedEntityPipe() {
+      return getFeedEntityPipe;
    }
 }

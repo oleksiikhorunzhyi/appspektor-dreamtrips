@@ -1,14 +1,16 @@
 package com.worldventures.dreamtrips.modules.common.model;
 
 import android.os.Parcel;
+import android.os.Parcelable;
 
 import com.worldventures.dreamtrips.modules.tripsimages.model.IFullScreenObject;
 import com.worldventures.dreamtrips.modules.tripsimages.model.Image;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
 
-public class UploadTask implements IFullScreenObject {
+public class UploadTask implements Parcelable, Serializable {
 
    protected static final long serialVersionUID = 1233322;
 
@@ -158,65 +160,6 @@ public class UploadTask implements IFullScreenObject {
       this.linkedItemId = linkedItemId;
    }
 
-   @Override
-   public String getImagePath() {
-      return getFilePath();
-   }
-
-   @Override
-   public Image getFSImage() {
-      Image image = new Image();
-      image.setUrl(getFilePath());
-      image.setFromFile(true);
-      return image;
-   }
-
-   @Override
-   public String getFSTitle() {
-      return null;
-   }
-
-   @Override
-   public String getFSDescription() {
-      return title;
-   }
-
-   @Override
-   public String getFSShareText() {
-      return title;
-   }
-
-   @Override
-   public int getFSCommentCount() {
-      return -1;
-   }
-
-   @Override
-   public int getFSLikeCount() {
-      return 0;
-   }
-
-   @Override
-   public String getFSLocation() {
-      return locationName;
-   }
-
-   @Override
-   public String getFSDate() {
-      return "";
-   }
-
-   @Override
-   public String getFSUserPhoto() {
-      return null;
-   }
-
-   @Override
-   public String getFSId() {
-      return amazonTaskId;
-   }
-
-
    public String getPurpose() {
       return purpose;
    }
@@ -224,13 +167,6 @@ public class UploadTask implements IFullScreenObject {
    public void setPurpose(String purpose) {
       this.purpose = purpose;
    }
-
-
-   @Override
-   public User getUser() {
-      return null;
-   }
-
 
    public void setId(long id) {
       this.id = id;

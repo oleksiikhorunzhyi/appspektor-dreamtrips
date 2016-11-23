@@ -7,10 +7,7 @@ import com.techery.spares.module.Injector;
 import com.techery.spares.module.qualifier.ForApplication;
 import com.techery.spares.module.qualifier.Global;
 import com.techery.spares.session.SessionHolder;
-import com.worldventures.dreamtrips.core.api.DreamSpiceManager;
-import com.worldventures.dreamtrips.core.api.DreamSpiceService;
 import com.worldventures.dreamtrips.core.api.PhotoUploadingManagerS3;
-import com.worldventures.dreamtrips.core.api.VideoDownloadSpiceService;
 import com.worldventures.dreamtrips.core.janet.JanetModule;
 import com.worldventures.dreamtrips.core.janet.SessionActionPipeCreator;
 import com.worldventures.dreamtrips.core.session.CirclesInteractor;
@@ -35,9 +32,12 @@ import com.worldventures.dreamtrips.modules.dtl.service.DtlLocationInteractor;
 import com.worldventures.dreamtrips.modules.dtl.service.DtlMerchantInteractor;
 import com.worldventures.dreamtrips.modules.dtl.service.DtlTransactionInteractor;
 import com.worldventures.dreamtrips.modules.feed.manager.FeedEntityManager;
+import com.worldventures.dreamtrips.modules.feed.service.CommentsInteractor;
+import com.worldventures.dreamtrips.modules.feed.service.LikesInteractor;
+import com.worldventures.dreamtrips.modules.feed.service.PostsInteractor;
 import com.worldventures.dreamtrips.modules.infopages.service.FeedbackInteractor;
-import com.worldventures.dreamtrips.modules.membership.api.PhoneContactRequest;
 import com.worldventures.dreamtrips.modules.profile.service.ProfileInteractor;
+import com.worldventures.dreamtrips.modules.reptools.service.SuccessStoriesInteractor;
 import com.worldventures.dreamtrips.modules.tripsimages.service.TripImagesInteractor;
 import com.worldventures.dreamtrips.modules.tripsimages.view.util.EditPhotoTagsCallback;
 import com.worldventures.dreamtrips.modules.tripsimages.view.util.PostLocationPickerCallback;
@@ -52,11 +52,7 @@ import de.greenrobot.event.EventBus;
 
 @Module(
       injects = {
-            DreamSpiceManager.class,
-            DreamSpiceService.class,
-            VideoDownloadSpiceService.class,
             PhotoUploadingManagerS3.class,
-            PhoneContactRequest.class,
             DtlFilterMerchantInteractor.class,
             DtlMerchantInteractor.class,
             DtlTransactionInteractor.class,
@@ -64,15 +60,22 @@ import de.greenrobot.event.EventBus;
       library = true, complete = false)
 public class ManagerModule {
 
-   @Provides
-   public DreamSpiceManager provideSpiceManager(@ForApplication Injector injector) {
-      return new DreamSpiceManager(DreamSpiceService.class, injector);
-   }
-
    @Singleton
    @Provides
    public CirclesInteractor provideQueryCirclesInteractor(SessionActionPipeCreator sessionActionPipeCreator) {
       return new CirclesInteractor(sessionActionPipeCreator);
+   }
+
+   @Singleton
+   @Provides
+   public LikesInteractor provideLikesInteractor(SessionActionPipeCreator sessionActionPipeCreator) {
+      return new LikesInteractor(sessionActionPipeCreator);
+   }
+
+   @Singleton
+   @Provides
+   public CommentsInteractor provideCommentsInteractor(SessionActionPipeCreator sessionActionPipeCreator) {
+      return new CommentsInteractor(sessionActionPipeCreator);
    }
 
    @Provides
@@ -114,8 +117,9 @@ public class ManagerModule {
    }
 
    @Provides
-   FeedEntityManager provideBaseFeedEntityManager(@Global EventBus eventBus) {
-      return new FeedEntityManager(eventBus);
+   FeedEntityManager provideBaseFeedEntityManager(@Global EventBus eventBus, LikesInteractor likesInteractor,
+         CommentsInteractor commentsInteractor) {
+      return new FeedEntityManager(eventBus, likesInteractor, commentsInteractor);
    }
 
    @Provides
@@ -144,8 +148,8 @@ public class ManagerModule {
 
    @Provides
    @Singleton
-   SocialCropImageManager provideGlobalConfigManager(@ForApplication Context context, DreamSpiceManager dreamSpiceManager) {
-      return new SocialCropImageManager(context, dreamSpiceManager);
+   SocialCropImageManager provideGlobalConfigManager(@ForApplication Context context) {
+      return new SocialCropImageManager(context);
    }
 
    @Provides
@@ -182,6 +186,12 @@ public class ManagerModule {
    @Singleton
    TripImagesInteractor provideTripImagesInteractor(SessionActionPipeCreator sessionActionPipeCreator) {
       return new TripImagesInteractor(sessionActionPipeCreator);
+   }
+
+   @Provides
+   @Singleton
+   SuccessStoriesInteractor provideSuccessStoriesInteractor(SessionActionPipeCreator sessionActionPipeCreator) {
+      return new SuccessStoriesInteractor(sessionActionPipeCreator);
    }
 
    @Provides
@@ -225,5 +235,11 @@ public class ManagerModule {
    @Singleton
    DeviceInfoProvider provideProfileInteractor(Context context) {
       return new DeviceInfoProviderImpl(context);
+   }
+
+   @Provides
+   @Singleton
+   PostsInteractor providePostsInteractor(SessionActionPipeCreator sessionActionPipeCreator) {
+      return new PostsInteractor(sessionActionPipeCreator);
    }
 }

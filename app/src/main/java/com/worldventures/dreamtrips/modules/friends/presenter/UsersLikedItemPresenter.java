@@ -1,11 +1,13 @@
 package com.worldventures.dreamtrips.modules.friends.presenter;
 
-import com.worldventures.dreamtrips.core.api.request.Query;
 import com.worldventures.dreamtrips.modules.common.model.User;
-import com.worldventures.dreamtrips.modules.feed.api.GetUsersLikedEntityQuery;
 import com.worldventures.dreamtrips.modules.friends.bundle.UsersLikedEntityBundle;
+import com.worldventures.dreamtrips.modules.friends.service.command.GetLikersCommand;
 
-import java.util.ArrayList;
+import java.util.List;
+
+import io.techery.janet.helper.ActionStateSubscriber;
+import rx.functions.Action1;
 
 public class UsersLikedItemPresenter extends BaseUserListPresenter<BaseUserListPresenter.View> {
 
@@ -16,8 +18,14 @@ public class UsersLikedItemPresenter extends BaseUserListPresenter<BaseUserListP
    }
 
    @Override
-   protected Query<ArrayList<User>> getUserListQuery(int page) {
-      return new GetUsersLikedEntityQuery(entityUid, page, getPerPageCount());
+   protected void loadUsers(int page, Action1<List<User>> onSuccessAction) {
+      friendsInteractor.getLikersPipe()
+            .createObservable(new GetLikersCommand(entityUid, page, getPerPageCount()))
+            .compose(bindViewToMainComposer())
+            .subscribe(new ActionStateSubscriber<GetLikersCommand>()
+                  .onSuccess(likersCommand -> onSuccessAction.call(likersCommand.getResult()))
+                  .onFail((likersCommand, throwable) -> onError(likersCommand)));
+
    }
 
    @Override

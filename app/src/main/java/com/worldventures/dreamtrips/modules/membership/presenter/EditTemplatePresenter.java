@@ -4,34 +4,33 @@ import android.content.Intent;
 import android.text.TextUtils;
 
 import com.innahema.collections.query.queriables.Queryable;
-import com.octo.android.robospice.persistence.exception.SpiceException;
-import com.techery.spares.module.Injector;
-import com.techery.spares.module.qualifier.ForApplication;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.utils.IntentUtils;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
-import com.worldventures.dreamtrips.modules.membership.api.CreateFilledInvitationsTemplateQuery;
-import com.worldventures.dreamtrips.modules.membership.api.InviteBody;
-import com.worldventures.dreamtrips.modules.membership.api.SendInvitationsQuery;
 import com.worldventures.dreamtrips.modules.membership.bundle.TemplateBundle;
 import com.worldventures.dreamtrips.modules.membership.bundle.UrlBundle;
 import com.worldventures.dreamtrips.modules.membership.model.InviteTemplate;
 import com.worldventures.dreamtrips.modules.membership.model.Member;
+import com.worldventures.dreamtrips.modules.membership.service.InviteShareInteractor;
+import com.worldventures.dreamtrips.modules.membership.service.command.CreateFilledInviteTemplateCommand;
+import com.worldventures.dreamtrips.modules.membership.service.command.SendInvitesCommand;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
 
+import io.techery.janet.ActionState;
+import io.techery.janet.helper.ActionStateSubscriber;
+import rx.Observable;
+
 public class EditTemplatePresenter extends Presenter<EditTemplatePresenter.View> {
 
    private InviteTemplate template;
    private boolean preview = false;
 
-   private String uploadedPhotoUrl;
-
-   @Inject @ForApplication protected Injector injector;
+   @Inject InviteShareInteractor inviteShareInteractor;
 
    public EditTemplatePresenter(TemplateBundle templateBundle) {
       super();
@@ -89,33 +88,6 @@ public class EditTemplatePresenter extends Presenter<EditTemplatePresenter.View>
       updatePreview();
    }
 
-   private void getFilledInvitationsTemplateFailed(SpiceException spiceException) {
-      view.finishLoading();
-      handleError(spiceException);
-   }
-
-   private void getFilledInvitationsTemplateSuccess(InviteTemplate inviteTemplate) {
-      view.finishLoading();
-      if (inviteTemplate != null) {
-         view.setWebViewContent(inviteTemplate.getContent());
-         template.setContent(inviteTemplate.getContent());
-         template.setLink(inviteTemplate.getLink());
-         if (preview) {
-            preview = false;
-            view.openPreviewTemplate(new UrlBundle(inviteTemplate.getLink()));
-         }
-      } else {
-         handleError(new SpiceException(""));
-      }
-   }
-
-   private void createInviteSuccess(InviteTemplate template) {
-      getFilledInvitationsTemplateSuccess(template);
-
-      view.openShare(getShareIntent());
-      notifyServer();
-   }
-
    private String getSubject() {
       return template.getTitle();
    }
@@ -137,11 +109,8 @@ public class EditTemplatePresenter extends Presenter<EditTemplatePresenter.View>
    }
 
    private void notifyServer() {
-      InviteBody body = new InviteBody();
-      body.setContacts(getContactAddress());
-      body.setTemplateId(template.getId());
-      body.setType(template.getType());
-      doRequest(new SendInvitationsQuery(body), jsonObject -> {});
+      inviteShareInteractor.sendInvitesPipe()
+            .send(new SendInvitesCommand(template.getId(), getContactAddress(), template.getType()));
    }
 
    private List<String> getContactAddress() {
@@ -149,12 +118,48 @@ public class EditTemplatePresenter extends Presenter<EditTemplatePresenter.View>
    }
 
    private void updatePreview() {
-      view.startLoading();
-      doRequest(new CreateFilledInvitationsTemplateQuery(template.getId(), view.getMessage(), uploadedPhotoUrl), this::getFilledInvitationsTemplateSuccess, this::getFilledInvitationsTemplateFailed);
+      createFilledInviteObservable()
+            .subscribe(new ActionStateSubscriber<CreateFilledInviteTemplateCommand>()
+                  .onStart(command -> view.startLoading())
+                  .onSuccess(command -> getFilledInvitationsTemplateSuccess(command.getResult()))
+                  .onFail(this::onFail));
+   }
+
+   private void getFilledInvitationsTemplateSuccess(InviteTemplate inviteTemplate) {
+      view.finishLoading();
+      if (inviteTemplate != null) {
+         view.setWebViewContent(inviteTemplate.getContent());
+         template.setContent(inviteTemplate.getContent());
+         template.setLink(inviteTemplate.getLink());
+         if (preview) {
+            preview = false;
+            view.openPreviewTemplate(new UrlBundle(inviteTemplate.getLink()));
+         }
+      }
+   }
+
+   private void onFail(CreateFilledInviteTemplateCommand createFilledInviteTemplateCommand, Throwable e) {
+      view.finishLoading();
+      handleError(createFilledInviteTemplateCommand, e);
    }
 
    public void shareRequest() {
-      doRequest(new CreateFilledInvitationsTemplateQuery(template.getId(), view.getMessage(), uploadedPhotoUrl), this::createInviteSuccess);
+      createFilledInviteObservable()
+            .subscribe(new ActionStateSubscriber<CreateFilledInviteTemplateCommand>()
+                  .onSuccess(command -> createInviteSuccess(command.getResult()))
+                  .onFail(this::handleError));
+   }
+
+   private void createInviteSuccess(InviteTemplate template) {
+      getFilledInvitationsTemplateSuccess(template);
+      view.openShare(getShareIntent());
+      notifyServer();
+   }
+
+   private Observable<ActionState<CreateFilledInviteTemplateCommand>> createFilledInviteObservable() {
+      return inviteShareInteractor.createFilledInviteTemplatePipe()
+            .createObservable(new CreateFilledInviteTemplateCommand(template.getId(), view.getMessage()))
+            .compose(bindViewToMainComposer());
    }
 
    public interface View extends Presenter.View {

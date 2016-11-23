@@ -8,9 +8,7 @@ import com.worldventures.dreamtrips.BuildConfig;
 import com.worldventures.dreamtrips.core.janet.api_lib.NewDreamTripsHttpService;
 import com.worldventures.dreamtrips.core.session.UserSession;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 public class HeaderProvider {
@@ -24,18 +22,6 @@ public class HeaderProvider {
       this.appSessionHolder = appSessionHolder;
       this.localeHelper = localeHelper;
       this.appVersionNameBuilder = appVersionNameBuilder;
-   }
-
-   public List<Header> getAppHeaders() {
-      ArrayList<Header> headers = new ArrayList<>();
-      if (appSessionHolder.get().isPresent()) {
-         headers.add(getAuthHeader());
-      }
-      headers.add(getAcceptLanguageHeader());
-      headers.add(getApiVersionHeader());
-      headers.add(getAppVersionHeader());
-      headers.add(getAppPlatformHeader());
-      return headers;
    }
 
    @NonNull

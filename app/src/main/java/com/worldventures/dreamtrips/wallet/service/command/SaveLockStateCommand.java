@@ -51,6 +51,10 @@ public class SaveLockStateCommand extends Command<SmartCard> implements Injectab
             .map(Command::getResult);
    }
 
+   public boolean isLock() {
+      return lock;
+   }
+
    @Override
    public SmartCard getCacheData() {
       return smartCard;

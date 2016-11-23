@@ -26,9 +26,9 @@ public class FactoryResetManager {
    }
 
    public Observable<ActionState<ResetSmartCardCommand>> observeFactoryResetPipe() {
-      return smartCardInteractor.lockDeviceChangedEventPipe()
+      return smartCardInteractor.lockStatePipe()
             .observeSuccess()
-            .filter(event -> !event.locked)
+            .filter(event -> !event.isLock())
             .take(1)
             .flatMap(event -> resetSmartCardPipe.createObservable(new ResetSmartCardCommand()));
    }

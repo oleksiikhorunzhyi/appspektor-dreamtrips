@@ -17,7 +17,6 @@ import com.worldventures.dreamtrips.core.session.UserSession;
 import com.worldventures.dreamtrips.core.session.acl.FeatureManager;
 import com.worldventures.dreamtrips.core.utils.tracksystem.AnalyticsInteractor;
 import com.worldventures.dreamtrips.modules.common.model.User;
-import com.worldventures.dreamtrips.modules.common.presenter.delegate.FeedEntityManagerListener;
 import com.worldventures.dreamtrips.modules.common.presenter.delegate.OfflineWarningDelegate;
 import com.worldventures.dreamtrips.modules.common.view.connection_overlay.ConnectionState;
 import com.worldventures.dreamtrips.util.JanetHttpErrorHandlingUtils;
@@ -36,7 +35,7 @@ import timber.log.Timber;
 
 import static com.worldventures.dreamtrips.util.ThrowableUtils.getCauseByType;
 
-public class Presenter<VT extends Presenter.View> implements FeedEntityManagerListener{
+public class Presenter<VT extends Presenter.View> {
 
    protected VT view;
 

@@ -5,7 +5,6 @@ import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.core.rx.RxView;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
-import com.worldventures.dreamtrips.modules.bucketlist.event.BucketItemPhotoAnalyticEvent;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketPhoto;
 import com.worldventures.dreamtrips.modules.bucketlist.service.BucketInteractor;
@@ -105,7 +104,7 @@ public class BucketDetailsBasePresenter<V extends BucketDetailsBasePresenter.Vie
     */
    public void openFullScreen(int position) {
       if (isTabTrulyVisible()) {
-         eventBus.post(new BucketItemPhotoAnalyticEvent(TrackingHelper.ATTRIBUTE_VIEW_PHOTO, bucketItem.getUid()));
+         TrackingHelper.actionBucketItemPhoto(TrackingHelper.ATTRIBUTE_VIEW_PHOTO, bucketItem.getUid());
          openFullScreen(bucketItem.getPhotos().get(position));
       }
    }

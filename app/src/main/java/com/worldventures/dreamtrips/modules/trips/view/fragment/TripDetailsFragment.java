@@ -12,6 +12,7 @@ import android.widget.TextView;
 import com.linearlistview.LinearListView;
 import com.techery.spares.annotations.Layout;
 import com.techery.spares.annotations.MenuResource;
+import com.techery.spares.utils.delegate.ImagePresenterClickEventDelegate;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.navigation.ToolbarConfig;
@@ -19,7 +20,6 @@ import com.worldventures.dreamtrips.core.navigation.router.NavigationConfigBuild
 import com.worldventures.dreamtrips.core.rx.RxBaseFragmentWithArgs;
 import com.worldventures.dreamtrips.core.utils.TextViewLinkHandler;
 import com.worldventures.dreamtrips.core.utils.ViewUtils;
-import com.worldventures.dreamtrips.core.utils.events.ImageClickedEvent;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem;
 import com.worldventures.dreamtrips.modules.bucketlist.presenter.SweetDialogHelper;
 import com.worldventures.dreamtrips.modules.common.view.adapter.ContentAdapter;
@@ -32,6 +32,8 @@ import com.worldventures.dreamtrips.modules.trips.view.util.TripDetailsViewInjec
 import com.worldventures.dreamtrips.modules.tripsimages.bundle.FullScreenImagesBundle;
 
 import java.util.List;
+
+import javax.inject.Inject;
 
 import butterknife.InjectView;
 import butterknife.OnClick;
@@ -48,6 +50,8 @@ public class TripDetailsFragment extends RxBaseFragmentWithArgs<TripDetailsPrese
    @InjectView(R.id.signUp) TextView signUp;
    @Optional @InjectView(R.id.toolbar_actionbar) Toolbar toolbar;
    @Optional @InjectView(R.id.toolbar_actionbar_landscape) Toolbar toolbarLandscape;
+
+   @Inject ImagePresenterClickEventDelegate imagePresenterClickEventDelegate;
 
    private TripDetailsViewInjector tripDetailsViewInjector;
    private SweetDialogHelper sweetDialogHelper;
@@ -101,10 +105,14 @@ public class TripDetailsFragment extends RxBaseFragmentWithArgs<TripDetailsPrese
       }
 
       tripDetailsViewInjector.initGalleryData(getChildFragmentManager(), getPresenter().getFilteredImages());
+
+      subscribeToTripImagesClicks();
    }
 
-   public void onEvent(ImageClickedEvent event) {
-      getPresenter().onItemClick(tripDetailsViewInjector.getCurrentActivePhotoPosition());
+   private void subscribeToTripImagesClicks() {
+      imagePresenterClickEventDelegate.getObservable().compose(bindUntilDropViewComposer())
+            .subscribe(imagePathHolder -> getPresenter()
+                  .onItemClick(tripDetailsViewInjector.getCurrentActivePhotoPosition()));
    }
 
    @Override

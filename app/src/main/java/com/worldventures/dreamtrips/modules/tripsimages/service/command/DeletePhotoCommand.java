@@ -13,7 +13,7 @@ import io.techery.janet.Janet;
 import io.techery.janet.command.annotations.CommandAction;
 
 @CommandAction
-public class DeletePhotoCommand extends CommandWithError implements InjectableAction {
+public class DeletePhotoCommand extends CommandWithError<String> implements InjectableAction {
 
    @Inject @Named(JanetModule.JANET_API_LIB) Janet janet;
 
@@ -24,9 +24,10 @@ public class DeletePhotoCommand extends CommandWithError implements InjectableAc
    }
 
    @Override
-   protected void run(CommandCallback callback) throws Throwable {
+   protected void run(CommandCallback<String> callback) throws Throwable {
       janet.createPipe(DeletePhotoHttpAction.class)
             .createObservableResult(new DeletePhotoHttpAction(photoId))
+            .map(deletePhotoHttpAction -> photoId)
             .subscribe(callback::onSuccess, callback::onFail);
    }
 

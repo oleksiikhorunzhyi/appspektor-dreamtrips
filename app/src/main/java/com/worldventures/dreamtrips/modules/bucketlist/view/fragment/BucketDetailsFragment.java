@@ -18,6 +18,7 @@ import com.techery.spares.annotations.Layout;
 import com.techery.spares.module.Injector;
 import com.techery.spares.module.qualifier.ForActivity;
 import com.techery.spares.ui.fragment.FragmentUtil;
+import com.techery.spares.utils.delegate.ImagePresenterClickEventDelegate;
 import com.techery.spares.utils.ui.OrientationUtil;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.navigation.Route;
@@ -27,7 +28,6 @@ import com.worldventures.dreamtrips.core.rx.RxBaseFragmentWithArgs;
 import com.worldventures.dreamtrips.core.ui.fragment.ImageBundle;
 import com.worldventures.dreamtrips.core.utils.IntentUtils;
 import com.worldventures.dreamtrips.core.utils.ViewUtils;
-import com.worldventures.dreamtrips.core.utils.events.ImageClickedEvent;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketPhoto;
 import com.worldventures.dreamtrips.modules.bucketlist.model.DiningItem;
 import com.worldventures.dreamtrips.modules.bucketlist.presenter.BucketItemDetailsPresenter;
@@ -74,6 +74,7 @@ public class BucketDetailsFragment<T extends BucketItemDetailsPresenter> extends
    @InjectView(R.id.toolbar_actionbar) Toolbar toolbar;
 
    @Inject @ForActivity Provider<Injector> injector;
+   @Inject ImagePresenterClickEventDelegate imagePresenterClickEventDelegate;
 
    private int checkedPosition;
    private ViewPager.SimpleOnPageChangeListener onPageSelectedListener = new ViewPager.SimpleOnPageChangeListener() {
@@ -88,6 +89,7 @@ public class BucketDetailsFragment<T extends BucketItemDetailsPresenter> extends
       super.afterCreateView(view);
       setForeignIntentAction();
       viewPagerBucketGallery.addOnPageChangeListener(onPageSelectedListener);
+      subscribeToBucketImagesClicks();
    }
 
    @Override
@@ -274,8 +276,12 @@ public class BucketDetailsFragment<T extends BucketItemDetailsPresenter> extends
       viewPagerBucketGallery.setCurrentItem(checkedPosition);
    }
 
-
-   public void onEvent(ImageClickedEvent event) {
-      if (ViewUtils.isPartVisibleOnScreen(this)) getPresenter().openFullScreen(viewPagerBucketGallery.getCurrentItem());
+   private void subscribeToBucketImagesClicks() {
+      imagePresenterClickEventDelegate.getObservable().compose(bindUntilDropViewComposer())
+            .subscribe(imagePathHolder -> {
+               if (ViewUtils.isPartVisibleOnScreen(this)) {
+                  getPresenter().openFullScreen(viewPagerBucketGallery.getCurrentItem());
+               }
+            });
    }
 }

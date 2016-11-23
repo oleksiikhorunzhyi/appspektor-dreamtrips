@@ -7,7 +7,6 @@ import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.navigation.router.Router;
 import com.worldventures.dreamtrips.core.navigation.wrapper.NavigationWrapperFactory;
 import com.worldventures.dreamtrips.core.utils.events.EntityLikedEvent;
-import com.worldventures.dreamtrips.core.utils.events.PhotoDeletedEvent;
 import com.worldventures.dreamtrips.modules.common.model.FlagData;
 import com.worldventures.dreamtrips.modules.common.presenter.delegate.FlagDelegate;
 import com.worldventures.dreamtrips.modules.common.view.custom.tagview.viewgroup.newio.model.PhotoTag;
@@ -98,7 +97,6 @@ public class SocialImageFullscreenPresenter extends SocialFullScreenPresenter<Ph
             .subscribe(new ActionStateSubscriber<DeletePhotoCommand>()
                   .onSuccess(deletePhotoCommand -> {
                      view.informUser(context.getString(R.string.photo_deleted));
-                     eventBus.postSticky(new PhotoDeletedEvent(photo.getFSId()));
                      eventBus.postSticky(new FeedEntityDeletedEvent(photo));
                   })
                   .onFail(this::handleError));

@@ -9,7 +9,6 @@ import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.core.utils.DateTimeUtils;
 import com.worldventures.dreamtrips.core.utils.ProjectTextUtils;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
-import com.worldventures.dreamtrips.modules.bucketlist.event.BucketItemPhotoAnalyticEvent;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketPhoto;
 import com.worldventures.dreamtrips.modules.bucketlist.model.CategoryItem;
@@ -160,7 +159,7 @@ public class BucketItemEditPresenter extends BucketDetailsBasePresenter<BucketIt
 
    private void startUpload(EntityStateHolder<BucketPhoto> photoStateHolder) {
       TrackingHelper.bucketPhotoAction(TrackingHelper.ACTION_BUCKET_PHOTO_UPLOAD_START, "", bucketItem.getType());
-      eventBus.post(new BucketItemPhotoAnalyticEvent(TrackingHelper.ATTRIBUTE_UPLOAD_PHOTO, bucketItem.getUid()));
+      TrackingHelper.actionBucketItemPhoto(TrackingHelper.ATTRIBUTE_UPLOAD_PHOTO, bucketItem.getUid());
 
       imageSelected(Uri.parse(photoStateHolder.entity().getImagePath()));
    }

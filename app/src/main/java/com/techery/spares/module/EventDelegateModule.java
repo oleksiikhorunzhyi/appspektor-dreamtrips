@@ -1,5 +1,6 @@
 package com.techery.spares.module;
 
+import com.techery.spares.utils.delegate.ImagePresenterClickEventDelegate;
 import com.techery.spares.utils.delegate.NotificationCountEventDelegate;
 import com.techery.spares.utils.delegate.ScreenChangedEventDelegate;
 import com.techery.spares.utils.delegate.SearchFocusChangedDelegate;
@@ -50,5 +51,11 @@ public class EventDelegateModule {
    @Singleton
    ResetFilterEventDelegate provideResetFilterEventDelegate() {
       return new ResetFilterEventDelegate();
+   }
+
+   @Provides
+   @Singleton
+   ImagePresenterClickEventDelegate provideImagePresenterEventDelegate() {
+      return new ImagePresenterClickEventDelegate();
    }
 }

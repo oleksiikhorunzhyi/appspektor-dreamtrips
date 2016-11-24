@@ -38,7 +38,7 @@ import com.worldventures.dreamtrips.wallet.ui.wizard.charging.WizardChargingPres
 import com.worldventures.dreamtrips.wallet.ui.wizard.checking.WizardCheckingPresenter;
 import com.worldventures.dreamtrips.wallet.ui.wizard.edit_card.EditCardDetailsPresenter;
 import com.worldventures.dreamtrips.wallet.ui.wizard.edit_card.EditCardDetailsScreen;
-import com.worldventures.dreamtrips.wallet.ui.wizard.finish.WalletPinIsSetPresenter;
+import com.worldventures.dreamtrips.wallet.ui.wizard.pin.complete.WalletPinIsSetPresenter;
 import com.worldventures.dreamtrips.wallet.ui.wizard.manual.WizardManualInputPresenter;
 import com.worldventures.dreamtrips.wallet.ui.wizard.pin.setup.WizardPinSetupPresenter;
 import com.worldventures.dreamtrips.wallet.ui.wizard.pin.success.PinSetSuccessPresenter;

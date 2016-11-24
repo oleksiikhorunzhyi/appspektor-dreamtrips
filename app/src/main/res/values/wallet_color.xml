@@ -34,7 +34,4 @@
 
    <color name="wallet_battery_low_level">#fa2d46</color>
 
-   <!-- TODO: this color not approve, after approve correct color, change this color value-->
-   <color name="wallet_battery_high_level">#81c435</color>
-
 </resources>

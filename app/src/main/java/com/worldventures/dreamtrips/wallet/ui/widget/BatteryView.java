@@ -2,6 +2,7 @@ package com.worldventures.dreamtrips.wallet.ui.widget;
 
 import android.content.Context;
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.PorterDuff;
 import android.support.v7.widget.AppCompatImageView;
@@ -46,10 +47,10 @@ public class BatteryView extends AppCompatImageView {
    }
 
    private int getColorPaintByLevel(int level) {
-      if (level < BATTTER_LOW_THRESHOLD) {
+      if (level <= BATTTER_LOW_THRESHOLD) {
          return getResources().getColor(R.color.wallet_battery_low_level);
       } else {
-         return getResources().getColor(R.color.wallet_battery_high_level);
+         return Color.WHITE;
       }
    }
 

@@ -18,6 +18,8 @@ import com.worldventures.dreamtrips.wallet.ui.common.base.screen.delegate.Dialog
 import com.worldventures.dreamtrips.wallet.ui.settings.common.provider.AutoClearSmartCardItemProvider;
 import com.worldventures.dreamtrips.wallet.ui.settings.common.provider.DisableDefaultCardItemProvider;
 
+import java.util.Date;
+
 import butterknife.InjectView;
 import butterknife.OnClick;
 import rx.Observable;
@@ -25,8 +27,13 @@ import rx.Observable;
 public class WalletSettingsScreen extends WalletLinearLayout<WalletSettingsPresenter.Screen, WalletSettingsPresenter, WalletSettingsPath> implements WalletSettingsPresenter.Screen {
 
    @InjectView(R.id.toolbar) Toolbar toolbar;
-   @InjectView(R.id.stealth_mode_switcher) SwitchCompat stealthModeSwitcher;
+   @InjectView(R.id.status) TextView status;
+
+   @InjectView(R.id.offline_mode_switcher) SwitchCompat offlineModeSwitcher;
    @InjectView(R.id.lock_switcher) SwitchCompat lockSwitcher;
+   @InjectView(R.id.stealth_mode_switcher) SwitchCompat stealthModeSwitcher;
+   @InjectView(R.id.alert_connection_switcher) SwitchCompat alertConnectionSwitcher;
+
    @InjectView(R.id.test_connection_switcher) SwitchCompat testConnectionSwitcher;
    @InjectView(R.id.test_firmware_is_fail_install) SwitchCompat testFailInstallFirmwareSwitcher;
 
@@ -36,8 +43,11 @@ public class WalletSettingsScreen extends WalletLinearLayout<WalletSettingsPrese
    @InjectView(R.id.firmware_version_label) TextView firmwareVersionLabel;
    @InjectView(R.id.settings_section) ViewGroup settingsSection;
 
-   private Observable<Boolean> stealthModeSwitcherObservable;
+   private Observable<Boolean> offlineModeSwitcherObservable;
    private Observable<Boolean> lockSwitcherObservable;
+   private Observable<Boolean> stealthModeSwitcherObservable;
+   private Observable<Boolean> alertConnectionSwitcherObservable;
+
    private Observable<Boolean> testConnectionObservable;
    private Observable<Boolean> testFailInstallationObservable;
 
@@ -57,8 +67,11 @@ public class WalletSettingsScreen extends WalletLinearLayout<WalletSettingsPrese
       super.onFinishInflate();
       toolbar.setNavigationOnClickListener(v -> onNavigationClick());
       if (isInEditMode()) return;
+      offlineModeSwitcherObservable = RxCompoundButton.checkedChanges(offlineModeSwitcher);
       lockSwitcherObservable = RxCompoundButton.checkedChanges(lockSwitcher);
       stealthModeSwitcherObservable = RxCompoundButton.checkedChanges(stealthModeSwitcher);
+      alertConnectionSwitcherObservable = RxCompoundButton.checkedChanges(alertConnectionSwitcher);
+
       testConnectionObservable = RxCompoundButton.checkedChanges(testConnectionSwitcher);
       testFailInstallationObservable = RxCompoundButton.checkedChanges(testFailInstallFirmwareSwitcher);
    }
@@ -73,41 +86,70 @@ public class WalletSettingsScreen extends WalletLinearLayout<WalletSettingsPrese
       presenter.goBack();
    }
 
-   @OnClick(R.id.item_reset_pin)
-   protected void onResetPinClick() {
-      presenter.resetPin();
+   @OnClick(R.id.item_about)
+   void onAboutClick() {
+   }
+
+   @OnClick(R.id.item_battery_alert)
+   void onBatteryAlertClick() {
+   }
+
+   @OnClick(R.id.item_last_location)
+   void onLastLocationClick() {
    }
 
    @OnClick(R.id.item_disable_default_payment_card)
-   protected void onDisableDefaultCardClick() {
+   void onDisableDefaultCardClick() {
       presenter.disableDefaultCardTimer();
    }
 
+   @OnClick(R.id.item_reset_pin)
+   void onResetPinClick() {
+      presenter.resetPin();
+   }
+
    @OnClick(R.id.item_auto_delete_cards)
-   protected void onAutoDeleteCardsClick() {
+   void onAutoDeleteCardsClick() {
       presenter.autoClearSmartCardClick();
    }
 
    @OnClick(R.id.item_firmware_updates)
-   protected void onFirmwareUpdateClick() {
+   void onFirmwareUpdateClick() {
       presenter.firmwareUpdatesClick();
    }
 
+   @OnClick(R.id.item_setup_new_sc)
+   void onSetupNewSmartCardClick() {
+   }
+
    @OnClick(R.id.item_factory_reset)
-   protected void onFactoryResetClick() {
+   void onFactoryResetClick() {
       presenter.factoryResetClick();
    }
 
-   @OnClick(R.id.item_restart_smartcard)
-   protected void onRestartSmartCard() {
+   @OnClick(R.id.item_restart_sc)
+   void onRestartSmartCard() {
       new MaterialDialog.Builder(getContext())
-            .title(R.string.wallet_card_settings_restart_smartcard)
+            .title(R.string.wallet_card_settings_restart_sc)
             .content(R.string.wallet_card_settings_are_you_sure)
-            .positiveText(R.string.wallet_restart)
+            .positiveText(R.string.wallet_card_settings_restart)
             .negativeText(R.string.cancel)
             .onPositive(((dialog, which) -> presenter.confirmResetSmartCard()))
             .build()
             .show();
+   }
+
+   @OnClick(R.id.item_unpair_sc)
+   void onUnpairSmartCardClick() {
+   }
+
+   @Override
+   public void smartCardGeneralStatus(String version, int batteryLevel, Date lastSync) {
+      String formattedLastSync = "lastSync stub";
+      String formattedStatus = getString(R.string.wallet_card_settings_version, version) + "\n" +
+                  getString(R.string.wallet_card_settings_battery_level, batteryLevel) + "\n";
+//                + getString(R.string.wallet_card_settings_last_sync, formattedLastSync);
+      status.setText(formattedStatus);
    }
 
    @Override
@@ -151,13 +193,23 @@ public class WalletSettingsScreen extends WalletLinearLayout<WalletSettingsPrese
    }
 
    @Override
-   public Observable<Boolean> stealthModeStatus() {
-      return stealthModeSwitcherObservable;
+   public Observable<Boolean> offlineMode() {
+      return offlineModeSwitcherObservable;
    }
 
    @Override
    public Observable<Boolean> lockStatus() {
       return lockSwitcherObservable;
+   }
+
+   @Override
+   public Observable<Boolean> stealthModeStatus() {
+      return stealthModeSwitcherObservable;
+   }
+
+   @Override
+   public Observable<Boolean> alertConnection() {
+      return alertConnectionSwitcherObservable;
    }
 
    @Override

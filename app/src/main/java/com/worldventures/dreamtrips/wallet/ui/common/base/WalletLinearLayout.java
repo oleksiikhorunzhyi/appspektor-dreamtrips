@@ -95,6 +95,10 @@ public abstract class WalletLinearLayout<V extends WalletScreen, P extends ViewS
       return getResources().getString(stringId);
    }
 
+   protected String getString(@StringRes int stringId, Object... formatArgs) {
+      return getResources().getString(stringId, formatArgs);
+   }
+
    protected void supportConnectionStatusLabel(boolean showLabel){
       visibleConnectionLabel = showLabel;
    }

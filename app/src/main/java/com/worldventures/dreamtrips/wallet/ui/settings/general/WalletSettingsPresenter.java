@@ -29,6 +29,8 @@ import com.worldventures.dreamtrips.wallet.ui.wizard.pin.Action;
 import com.worldventures.dreamtrips.wallet.ui.wizard.pin.setup.WizardPinSetupPath;
 import com.worldventures.dreamtrips.wallet.util.SmartCardFlavorUtil;
 
+import java.util.Date;
+
 import javax.inject.Inject;
 
 import io.techery.janet.smartcard.action.support.DisconnectAction;
@@ -173,6 +175,7 @@ public class WalletSettingsPresenter extends WalletPresenter<WalletSettingsPrese
    private void bindSmartCard(SmartCard smartCard) {
       Screen view = getView();
       //noinspection all
+      view.smartCardGeneralStatus(smartCard.firmWareVersion(), smartCard.batteryLevel(), null);
       view.testConnection(smartCard.connectionStatus().isConnected());
       view.stealthModeStatus(smartCard.stealthMode());
       view.lockStatus(smartCard.lock());
@@ -236,6 +239,8 @@ public class WalletSettingsPresenter extends WalletPresenter<WalletSettingsPrese
 
    public interface Screen extends WalletScreen {
 
+      void smartCardGeneralStatus(String version, int batteryLevel, Date lastSync);
+
       void stealthModeStatus(boolean isEnabled);
 
       void lockStatus(boolean lock);
@@ -252,9 +257,13 @@ public class WalletSettingsPresenter extends WalletPresenter<WalletSettingsPrese
 
       void testFailInstallation(boolean failInstall);
 
-      Observable<Boolean> stealthModeStatus();
+      Observable<Boolean> offlineMode();
 
       Observable<Boolean> lockStatus();
+
+      Observable<Boolean> stealthModeStatus();
+
+      Observable<Boolean> alertConnection();
 
       Observable<Boolean> testConnection();
 

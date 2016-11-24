@@ -70,7 +70,7 @@
                   android:layout_height="wrap_content"
                   android:layout_gravity="center_horizontal"
                   android:scaleType="fitCenter"
-                  android:src="@drawable/flyecard_angle"
+                  android:src="@drawable/flyecard_angle_with_shadow"
                   tools:ignore="ContentDescription"
                   />
          </FrameLayout>

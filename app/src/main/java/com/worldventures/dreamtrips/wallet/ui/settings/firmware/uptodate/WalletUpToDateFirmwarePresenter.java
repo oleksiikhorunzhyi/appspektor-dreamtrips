@@ -4,6 +4,10 @@ import android.content.Context;
 import android.os.Parcelable;
 
 import com.techery.spares.module.Injector;
+import com.worldventures.dreamtrips.core.utils.tracksystem.AnalyticsInteractor;
+import com.worldventures.dreamtrips.wallet.analytics.ViewSdkVersionAction;
+import com.worldventures.dreamtrips.wallet.analytics.WalletAnalyticsCommand;
+import com.worldventures.dreamtrips.wallet.analytics.WalletHomeAction;
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCard;
 import com.worldventures.dreamtrips.wallet.service.SmartCardInteractor;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletPresenter;
@@ -16,6 +20,7 @@ public class WalletUpToDateFirmwarePresenter extends WalletPresenter<WalletUpToD
 
    @Inject Navigator navigator;
    @Inject SmartCardInteractor smartCardInteractor;
+   @Inject AnalyticsInteractor analyticsInteractor;
 
    public WalletUpToDateFirmwarePresenter(Context context, Injector injector) {
       super(context, injector);
@@ -25,6 +30,7 @@ public class WalletUpToDateFirmwarePresenter extends WalletPresenter<WalletUpToD
    public void onAttachedToWindow() {
       super.onAttachedToWindow();
       observeSmartCard();
+      sendAnalyticViewAction();
    }
 
    private void observeSmartCard() {
@@ -32,6 +38,11 @@ public class WalletUpToDateFirmwarePresenter extends WalletPresenter<WalletUpToD
             .observeSuccessWithReplay()
             .compose(bindViewIoToMainComposer())
             .subscribe(command -> bindSmartCard(command.getResult()));
+   }
+
+   private void sendAnalyticViewAction() {
+      WalletAnalyticsCommand analyticsCommand = new WalletAnalyticsCommand(new ViewSdkVersionAction());
+      analyticsInteractor.walletAnalyticsCommandPipe().send(analyticsCommand);
    }
 
    private void bindSmartCard(SmartCard smartCard) {

@@ -24,7 +24,6 @@ import com.worldventures.dreamtrips.modules.feed.event.FeedEntityDeletedEvent;
 import com.worldventures.dreamtrips.modules.feed.event.ItemFlaggedEvent;
 import com.worldventures.dreamtrips.modules.feed.event.LoadFlagEvent;
 import com.worldventures.dreamtrips.modules.feed.event.LoadMoreEvent;
-import com.worldventures.dreamtrips.modules.feed.manager.FeedEntityManager;
 import com.worldventures.dreamtrips.modules.feed.model.FeedEntity;
 import com.worldventures.dreamtrips.modules.feed.model.FeedEntityHolder;
 import com.worldventures.dreamtrips.modules.feed.model.TextualPost;
@@ -32,7 +31,10 @@ import com.worldventures.dreamtrips.modules.feed.model.comment.Comment;
 import com.worldventures.dreamtrips.modules.feed.service.CommentsInteractor;
 import com.worldventures.dreamtrips.modules.feed.service.PostsInteractor;
 import com.worldventures.dreamtrips.modules.feed.service.TranslationFeedInteractor;
+import com.worldventures.dreamtrips.modules.feed.service.command.CreateCommentCommand;
+import com.worldventures.dreamtrips.modules.feed.service.command.DeleteCommentCommand;
 import com.worldventures.dreamtrips.modules.feed.service.command.DeletePostCommand;
+import com.worldventures.dreamtrips.modules.feed.service.command.EditCommentCommand;
 import com.worldventures.dreamtrips.modules.feed.service.command.GetCommentsCommand;
 import com.worldventures.dreamtrips.modules.feed.service.command.TranslateUidItemCommand;
 import com.worldventures.dreamtrips.modules.feed.view.cell.Flaggable;
@@ -57,7 +59,6 @@ public class BaseCommentPresenter<T extends BaseCommentPresenter.View> extends P
    private static final int PAGE = 1;
    private static final int PER_PAGE = 2;
 
-   @Inject FeedEntityManager entityManager;
    @Inject BucketInteractor bucketInteractor;
    @Inject TranslationFeedInteractor translationFeedInteractor;
    @Inject CommentsInteractor commentsInteractor;
@@ -70,7 +71,7 @@ public class BaseCommentPresenter<T extends BaseCommentPresenter.View> extends P
    private FlagDelegate flagDelegate;
 
    @State FeedEntity feedEntity;
-   @State String draftComment;
+   @State String draftCommentText;
 
    private int page = 1;
    private int commentsCount = 0;
@@ -83,7 +84,6 @@ public class BaseCommentPresenter<T extends BaseCommentPresenter.View> extends P
    @Override
    public void onInjected() {
       super.onInjected();
-      entityManager.setFeedEntityManagerListener(this);
       flagDelegate = new FlagDelegate(flagsInteractor);
    }
 
@@ -91,11 +91,14 @@ public class BaseCommentPresenter<T extends BaseCommentPresenter.View> extends P
    public void takeView(T view) {
       super.takeView(view);
       apiErrorPresenter.setView(view);
-      view.setDraftComment(draftComment);
+      view.setDraftComment(draftCommentText);
       view.setLikePanel(feedEntity);
 
       if (isNeedCheckCommentsWhenStart()) checkCommentsAndLikesToLoad();
 
+      subscribeToCommentDeletion();
+      subscribeToCommentCreation();
+      subscribeToCommentChanges();
       subscribeToCommentsLoading();
       subscribeToCommentTranslation();
    }
@@ -163,12 +166,8 @@ public class BaseCommentPresenter<T extends BaseCommentPresenter.View> extends P
                   .onFail(this::handleError));
    }
 
-   public void setDraftComment(String comment) {
-      this.draftComment = comment;
-   }
-
-   public void post() {
-      entityManager.createComment(feedEntity, draftComment);
+   public void setDraftCommentText(String commentText) {
+      this.draftCommentText = commentText;
    }
 
    public void loadFlags(Flaggable flaggableView) {
@@ -184,35 +183,65 @@ public class BaseCommentPresenter<T extends BaseCommentPresenter.View> extends P
       sendAnalytic(TrackingHelper.ATTRIBUTE_EDIT_COMMENT);
    }
 
-   public void deleteComment(Comment comment) {
-      entityManager.deleteComment(feedEntity, comment);
-   }
-
    public void translateComment(Comment comment) {
       translationFeedInteractor.translateCommentPipe()
             .send(TranslateUidItemCommand.forComment(comment, localeHelper.getDefaultLocaleFormatted()));
    }
 
-   public void onEvent(FeedEntityManager.CommentEvent event) {
-      switch (event.getType()) {
-         case ADDED:
-            if (event.getException() == null) {
-               view.addComment(event.getComment());
-               sendAnalytic(TrackingHelper.ATTRIBUTE_COMMENT);
-            } else {
-               view.onPostError();
-               handleError(event.getException());
-            }
-            break;
-         case REMOVED:
-            view.removeComment(event.getComment());
-            sendAnalytic(TrackingHelper.ATTRIBUTE_DELETE_COMMENT);
-            break;
-         case EDITED:
-            view.updateComment(event.getComment());
-            break;
-      }
-      eventBus.post(new FeedEntityCommentedEvent(feedEntity));
+   public void deleteComment(Comment comment) {
+      commentsInteractor.deleteCommentPipe().send(new DeleteCommentCommand(feedEntity, comment));
+   }
+
+   private void subscribeToCommentDeletion() {
+      commentsInteractor.deleteCommentPipe()
+            .observe()
+            .compose(bindViewToMainComposer())
+            .subscribe(new ActionStateSubscriber<DeleteCommentCommand>()
+                  .onSuccess(this::commentDeleted)
+                  .onFail(this::handleError));
+   }
+
+   private void commentDeleted(DeleteCommentCommand deleteCommentCommand) {
+      view.removeComment(deleteCommentCommand.getResult());
+      sendAnalytic(TrackingHelper.ATTRIBUTE_DELETE_COMMENT);
+      eventBus.post(new FeedEntityCommentedEvent(deleteCommentCommand.getFeedEntity()));
+   }
+
+   public void createComment() {
+      commentsInteractor.createCommentPipe().send(new CreateCommentCommand(feedEntity, draftCommentText));
+   }
+
+   private void subscribeToCommentCreation() {
+      commentsInteractor.createCommentPipe()
+            .observe()
+            .compose(bindViewToMainComposer())
+            .subscribe(new ActionStateSubscriber<CreateCommentCommand>()
+                  .onSuccess(this::commentCreated)
+                  .onFail(this::comentCreationError));
+   }
+
+   private void commentCreated(CreateCommentCommand createCommentCommand) {
+      view.addComment(createCommentCommand.getResult());
+      sendAnalytic(TrackingHelper.ATTRIBUTE_COMMENT);
+      eventBus.post(new FeedEntityCommentedEvent(createCommentCommand.getFeedEntity()));
+   }
+
+   private void comentCreationError(CreateCommentCommand createCommentCommand, Throwable e) {
+      view.onPostError();
+      handleError(createCommentCommand, e);
+   }
+
+   private void subscribeToCommentChanges() {
+      commentsInteractor.editCommentPipe()
+            .observe()
+            .compose(bindViewToMainComposer())
+            .subscribe(new ActionStateSubscriber<EditCommentCommand>()
+                  .onSuccess(this::commentEdited));
+   }
+
+   private void commentEdited(EditCommentCommand commentCommand) {
+      view.updateComment(commentCommand.getResult());
+      eventBus.post(new FeedEntityCommentedEvent(commentCommand.getFeedEntity()));
    }
 
    public void onEvent(LoadMoreEvent event) {

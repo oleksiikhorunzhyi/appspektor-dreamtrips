@@ -14,6 +14,7 @@ import com.worldventures.dreamtrips.modules.dtl.helper.cache.DtlMerchantsStorage
 import com.worldventures.dreamtrips.modules.dtl.helper.cache.DtlSearchLocationStorage;
 import com.worldventures.dreamtrips.modules.feed.service.storage.NotificationMemoryStorage;
 import com.worldventures.dreamtrips.modules.feed.service.storage.NotificationsStorage;
+import com.worldventures.dreamtrips.modules.feed.service.storage.PendingLikesStorage;
 import com.worldventures.dreamtrips.modules.feed.service.storage.TranslationDiscStorage;
 import com.worldventures.dreamtrips.modules.flags.storage.FlagsStorage;
 import com.worldventures.dreamtrips.modules.friends.storage.CirclesStorage;
@@ -185,4 +186,11 @@ public class CacheActionStorageModule {
    MultipleActionStorage provideFirmwareStorage(SnappyRepository db) {
       return new FirmwareStorage(db);
    }
+
+   @Singleton
+   @Provides
+   PendingLikesStorage provideLikesStorage() {
+      return new PendingLikesStorage();
+   }
+
 }

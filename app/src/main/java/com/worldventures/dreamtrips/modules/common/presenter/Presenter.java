@@ -16,9 +16,9 @@ import com.worldventures.dreamtrips.core.session.UserSession;
 import com.worldventures.dreamtrips.core.session.acl.FeatureManager;
 import com.worldventures.dreamtrips.core.utils.tracksystem.AnalyticsInteractor;
 import com.worldventures.dreamtrips.modules.common.model.User;
-import com.worldventures.dreamtrips.modules.common.presenter.delegate.FeedEntityManagerListener;
 import com.worldventures.dreamtrips.modules.common.presenter.delegate.OfflineWarningDelegate;
 import com.worldventures.dreamtrips.util.JanetHttpErrorHandlingUtils;
+import com.worldventures.dreamtrips.util.ThrowableUtils;
 
 import javax.inject.Inject;
 
@@ -31,7 +31,7 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.subjects.PublishSubject;
 import timber.log.Timber;
 
-public class Presenter<VT extends Presenter.View> implements FeedEntityManagerListener {
+public class Presenter<VT extends Presenter.View> {
 
    protected VT view;
 
@@ -152,7 +152,7 @@ public class Presenter<VT extends Presenter.View> implements FeedEntityManagerLi
    public void handleError(Object action, Throwable error) {
       // null view callback scenario is possible from FeedEntityManager
       if (view == null) return;
-      if (error instanceof CancelException) return;
+      if (ThrowableUtils.getCauseByType(CancelException.class, error) != null) return;
       if (action instanceof CommandWithError) {
          view.informUser(((CommandWithError) action).getErrorMessage());
          return;

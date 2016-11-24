@@ -8,10 +8,10 @@ import com.worldventures.dreamtrips.modules.auth.api.command.UnsubribeFromPushCo
 import com.worldventures.dreamtrips.modules.auth.api.command.UpdateUserCommand;
 import com.worldventures.dreamtrips.modules.bucketlist.service.action.CreateBucketItemCommand;
 import com.worldventures.dreamtrips.modules.bucketlist.service.action.UpdateBucketItemCommand;
-import com.worldventures.dreamtrips.modules.bucketlist.service.command.ChangeBucketListOrderCommand;
-import com.worldventures.dreamtrips.modules.bucketlist.service.command.DeleteBucketItemCommand;
 import com.worldventures.dreamtrips.modules.bucketlist.service.command.AddBucketItemPhotoCommand;
 import com.worldventures.dreamtrips.modules.bucketlist.service.command.BucketListCommand;
+import com.worldventures.dreamtrips.modules.bucketlist.service.command.ChangeBucketListOrderCommand;
+import com.worldventures.dreamtrips.modules.bucketlist.service.command.DeleteBucketItemCommand;
 import com.worldventures.dreamtrips.modules.bucketlist.service.command.DeleteItemPhotoCommand;
 import com.worldventures.dreamtrips.modules.bucketlist.service.command.FindBucketItemByPhotoCommand;
 import com.worldventures.dreamtrips.modules.bucketlist.service.command.GetCategoriesCommand;
@@ -19,13 +19,14 @@ import com.worldventures.dreamtrips.modules.bucketlist.service.command.GetPopula
 import com.worldventures.dreamtrips.modules.bucketlist.service.command.GetPopularBucketItemsCommand;
 import com.worldventures.dreamtrips.modules.bucketlist.service.command.MergeBucketItemPhotosWithStorageCommand;
 import com.worldventures.dreamtrips.modules.common.api.janet.command.AcceptTermsCommand;
-import com.worldventures.dreamtrips.modules.common.api.janet.command.GetCirclesCommand;
 import com.worldventures.dreamtrips.modules.common.api.janet.command.ClearStoragesCommand;
+import com.worldventures.dreamtrips.modules.common.api.janet.command.GetCirclesCommand;
 import com.worldventures.dreamtrips.modules.common.api.janet.command.SubscribeToPushNotificationsCommand;
 import com.worldventures.dreamtrips.modules.common.api.janet.command.TripsFilterDataCommand;
 import com.worldventures.dreamtrips.modules.common.command.DeleteCachedEntityCommand;
 import com.worldventures.dreamtrips.modules.common.command.DownloadCachedEntityCommand;
 import com.worldventures.dreamtrips.modules.common.command.ResetCachedEntitiesInProgressCommand;
+import com.worldventures.dreamtrips.modules.feed.service.command.ChangeFeedEntityLikedStatusCommand;
 import com.worldventures.dreamtrips.modules.feed.service.command.CreateCommentCommand;
 import com.worldventures.dreamtrips.modules.feed.service.command.CreatePhotosCommand;
 import com.worldventures.dreamtrips.modules.feed.service.command.CreatePostCommand;
@@ -208,6 +209,7 @@ import dagger.Module;
       CreateBucketItemCommand.class,
       UpdateBucketItemCommand.class,
       ChangeBucketListOrderCommand.class,
-      DeleteBucketItemCommand.class
+      DeleteBucketItemCommand.class,
+      ChangeFeedEntityLikedStatusCommand.class,
 }, complete = false, library = true)
 public class SocialJanetCommandModule {}

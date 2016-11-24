@@ -5,7 +5,6 @@ import android.content.Context;
 import com.messenger.storage.dao.PhotoDAO;
 import com.techery.spares.module.Injector;
 import com.techery.spares.module.qualifier.ForApplication;
-import com.techery.spares.module.qualifier.Global;
 import com.techery.spares.session.SessionHolder;
 import com.worldventures.dreamtrips.core.api.PhotoUploadingManagerS3;
 import com.worldventures.dreamtrips.core.janet.JanetModule;
@@ -31,7 +30,6 @@ import com.worldventures.dreamtrips.modules.dtl.service.DtlFilterMerchantInterac
 import com.worldventures.dreamtrips.modules.dtl.service.DtlLocationInteractor;
 import com.worldventures.dreamtrips.modules.dtl.service.DtlMerchantInteractor;
 import com.worldventures.dreamtrips.modules.dtl.service.DtlTransactionInteractor;
-import com.worldventures.dreamtrips.modules.feed.manager.FeedEntityManager;
 import com.worldventures.dreamtrips.modules.feed.service.CommentsInteractor;
 import com.worldventures.dreamtrips.modules.feed.service.LikesInteractor;
 import com.worldventures.dreamtrips.modules.feed.service.PostsInteractor;
@@ -48,7 +46,6 @@ import javax.inject.Singleton;
 
 import dagger.Module;
 import dagger.Provides;
-import de.greenrobot.event.EventBus;
 
 @Module(
       injects = {
@@ -114,12 +111,6 @@ public class ManagerModule {
    @Provides
    LocationDelegate provideLocationDelegate(@ForApplication Context context) {
       return new LocationDelegateImpl(context);
-   }
-
-   @Provides
-   FeedEntityManager provideBaseFeedEntityManager(@Global EventBus eventBus, LikesInteractor likesInteractor,
-         CommentsInteractor commentsInteractor) {
-      return new FeedEntityManager(eventBus, likesInteractor, commentsInteractor);
    }
 
    @Provides

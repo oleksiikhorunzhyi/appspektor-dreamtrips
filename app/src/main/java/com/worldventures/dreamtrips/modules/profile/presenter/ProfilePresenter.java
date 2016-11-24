@@ -10,7 +10,6 @@ import com.worldventures.dreamtrips.core.navigation.creator.RouteCreator;
 import com.worldventures.dreamtrips.core.rx.RxView;
 import com.worldventures.dreamtrips.core.session.acl.Feature;
 import com.worldventures.dreamtrips.core.utils.LocaleHelper;
-import com.worldventures.dreamtrips.core.utils.events.EntityLikedEvent;
 import com.worldventures.dreamtrips.modules.bucketlist.bundle.ForeignBucketTabsBundle;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem;
 import com.worldventures.dreamtrips.modules.bucketlist.service.BucketInteractor;
@@ -29,11 +28,11 @@ import com.worldventures.dreamtrips.modules.feed.event.FeedEntityDeletedEvent;
 import com.worldventures.dreamtrips.modules.feed.event.FeedItemAddedEvent;
 import com.worldventures.dreamtrips.modules.feed.event.LikesPressedEvent;
 import com.worldventures.dreamtrips.modules.feed.event.TranslatePostEvent;
-import com.worldventures.dreamtrips.modules.feed.manager.FeedEntityManager;
 import com.worldventures.dreamtrips.modules.feed.model.FeedEntity;
 import com.worldventures.dreamtrips.modules.feed.model.FeedItem;
 import com.worldventures.dreamtrips.modules.feed.service.FeedInteractor;
 import com.worldventures.dreamtrips.modules.feed.service.PostsInteractor;
+import com.worldventures.dreamtrips.modules.feed.service.command.ChangeFeedEntityLikedStatusCommand;
 import com.worldventures.dreamtrips.modules.feed.service.command.DeletePostCommand;
 import com.worldventures.dreamtrips.modules.feed.view.util.TextualPostTranslationDelegate;
 import com.worldventures.dreamtrips.modules.tripsimages.bundle.TripsImagesBundle;
@@ -58,7 +57,6 @@ public abstract class ProfilePresenter<T extends ProfilePresenter.View, U extend
 
    @State ArrayList<FeedItem> feedItems;
 
-   @Inject FeedEntityManager entityManager;
    @Inject LocaleHelper localeHelper;
    @Inject @Named(RouteCreatorModule.PROFILE) RouteCreator<Integer> routeCreator;
    @Inject TextualPostTranslationDelegate textualPostTranslationDelegate;
@@ -81,12 +79,6 @@ public abstract class ProfilePresenter<T extends ProfilePresenter.View, U extend
    }
 
    @Override
-   public void onInjected() {
-      super.onInjected();
-      entityManager.setFeedEntityManagerListener(this);
-   }
-
-   @Override
    public void onResume() {
       super.onResume();
       refreshFeed();
@@ -101,6 +93,7 @@ public abstract class ProfilePresenter<T extends ProfilePresenter.View, U extend
       //
       attachUserToView(user);
       loadProfile();
+      subscribeToLikesChanges();
       textualPostTranslationDelegate.onTakeView(view, feedItems);
    }
 
@@ -223,17 +216,18 @@ public abstract class ProfilePresenter<T extends ProfilePresenter.View, U extend
 
    public void onEvent(LikesPressedEvent event) {
       if (view.isVisibleOnScreen()) {
-         FeedEntity model = event.getModel();
-         if (model.isLiked()) {
-            entityManager.unlike(model);
-         } else {
-            entityManager.like(model);
-         }
+         feedInteractor.changeFeedEntityLikedStatusPipe()
+               .send(new ChangeFeedEntityLikedStatusCommand(event.getModel()));
       }
    }
 
-   public void onEvent(EntityLikedEvent event) {
-      itemLiked(event.getFeedEntity());
+   private void subscribeToLikesChanges() {
+      feedInteractor.changeFeedEntityLikedStatusPipe()
+            .observe()
+            .compose(bindViewToMainComposer())
+            .subscribe(new ActionStateSubscriber<ChangeFeedEntityLikedStatusCommand>()
+                  .onSuccess(command -> itemLiked(command.getResult()))
+                  .onFail(this::handleError));
    }
 
    public void onEvent(DeletePostEvent event) {

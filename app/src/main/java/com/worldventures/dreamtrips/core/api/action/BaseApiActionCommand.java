@@ -19,7 +19,11 @@ public abstract class BaseApiActionCommand<HttpAction extends com.worldventures.
             .createObservableResult(getHttpAction())
             .map(this::mapHttpActionResult)
             .map(this::mapCommandResult)
-            .subscribe(callback::onSuccess, callback::onFail);
+            .subscribe(t -> onSuccess(callback, t), callback::onFail);
+   }
+
+   protected void onSuccess(CommandCallback<T> callback, T t) {
+      callback.onSuccess(t);
    }
 
    protected abstract R mapHttpActionResult(HttpAction httpAction);

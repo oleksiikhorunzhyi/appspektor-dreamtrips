@@ -5,11 +5,12 @@ import com.techery.spares.adapter.ListAdapter;
 import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.core.rx.RxView;
-import com.worldventures.dreamtrips.core.utils.events.EntityLikedEvent;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.feed.event.FeedEntityChangedEvent;
 import com.worldventures.dreamtrips.modules.feed.event.FeedItemAddedEvent;
 import com.worldventures.dreamtrips.modules.feed.model.TextualPost;
+import com.worldventures.dreamtrips.modules.feed.service.FeedInteractor;
+import com.worldventures.dreamtrips.modules.feed.service.command.ChangeFeedEntityLikedStatusCommand;
 import com.worldventures.dreamtrips.modules.tripsimages.bundle.FullScreenImagesBundle;
 import com.worldventures.dreamtrips.modules.tripsimages.model.IFullScreenObject;
 import com.worldventures.dreamtrips.modules.tripsimages.model.Photo;
@@ -32,8 +33,9 @@ public abstract class TripImagesListPresenter<VT extends TripImagesListPresenter
    public static final int PER_PAGE = 15;
    public final static int VISIBLE_TRESHOLD = 5;
 
-   @Inject protected SnappyRepository db;
-   @Inject protected TripImagesInteractor tripImagesInteractor;
+   @Inject SnappyRepository db;
+   @Inject TripImagesInteractor tripImagesInteractor;
+   @Inject FeedInteractor feedInteractor;
 
    protected TripImagesType type;
 
@@ -87,6 +89,7 @@ public abstract class TripImagesListPresenter<VT extends TripImagesListPresenter
       fillWithItems();
       reload();
       subscribeToPhotoDeletedEvents();
+      subscribeToLikesChanges();
    }
 
    private void fillWithItems() {
@@ -190,14 +193,20 @@ public abstract class TripImagesListPresenter<VT extends TripImagesListPresenter
       }
    }
 
-   ////////////////////////////
-   /// Events
-   ////////////////////////////
+   private void subscribeToLikesChanges() {
+      feedInteractor.changeFeedEntityLikedStatusPipe()
+            .observe()
+            .compose(bindViewToMainComposer())
+            .subscribe(new ActionStateSubscriber<ChangeFeedEntityLikedStatusCommand>()
+                  .onSuccess(this::itemLiked)
+                  .onFail(this::handleError));
+   }
 
-   public void onEvent(EntityLikedEvent event) {
+   private void itemLiked(ChangeFeedEntityLikedStatusCommand command) {
       for (Object o : photos) {
-         if (o instanceof Photo && ((Photo) o).getFSId().equals(event.getFeedEntity().getUid())) {
-            ((Photo) o).syncLikeState(event.getFeedEntity());
+         if (o instanceof Photo && ((Photo) o).getFSId().equals(command.getResult().getUid())) {
+            ((Photo) o).syncLikeState(command.getResult());
+            break;
          }
       }
    }
@@ -218,6 +227,10 @@ public abstract class TripImagesListPresenter<VT extends TripImagesListPresenter
                }
             });
    }
+
+   ////////////////////////////
+   /// Events
+   ////////////////////////////
 
    public void onEvent(FeedEntityChangedEvent event) {
       if (event.getFeedEntity() instanceof Photo) {

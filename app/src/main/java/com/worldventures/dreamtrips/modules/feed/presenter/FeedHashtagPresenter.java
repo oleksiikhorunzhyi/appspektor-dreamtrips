@@ -8,7 +8,6 @@ import com.innahema.collections.query.queriables.Queryable;
 import com.worldventures.dreamtrips.core.rx.RxView;
 import com.worldventures.dreamtrips.core.rx.composer.IoToMainComposer;
 import com.worldventures.dreamtrips.core.utils.LocaleHelper;
-import com.worldventures.dreamtrips.core.utils.events.EntityLikedEvent;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem;
 import com.worldventures.dreamtrips.modules.bucketlist.service.BucketInteractor;
 import com.worldventures.dreamtrips.modules.bucketlist.service.command.DeleteBucketItemCommand;
@@ -30,12 +29,13 @@ import com.worldventures.dreamtrips.modules.feed.event.ItemFlaggedEvent;
 import com.worldventures.dreamtrips.modules.feed.event.LikesPressedEvent;
 import com.worldventures.dreamtrips.modules.feed.event.LoadFlagEvent;
 import com.worldventures.dreamtrips.modules.feed.event.TranslatePostEvent;
-import com.worldventures.dreamtrips.modules.feed.manager.FeedEntityManager;
 import com.worldventures.dreamtrips.modules.feed.model.FeedEntity;
 import com.worldventures.dreamtrips.modules.feed.model.FeedItem;
 import com.worldventures.dreamtrips.modules.feed.model.feed.hashtag.HashtagSuggestion;
+import com.worldventures.dreamtrips.modules.feed.service.FeedInteractor;
 import com.worldventures.dreamtrips.modules.feed.service.HashtagInteractor;
 import com.worldventures.dreamtrips.modules.feed.service.PostsInteractor;
+import com.worldventures.dreamtrips.modules.feed.service.command.ChangeFeedEntityLikedStatusCommand;
 import com.worldventures.dreamtrips.modules.feed.service.command.DeletePostCommand;
 import com.worldventures.dreamtrips.modules.feed.service.command.FeedByHashtagCommand;
 import com.worldventures.dreamtrips.modules.feed.service.command.HashtagSuggestionCommand;
@@ -67,8 +67,8 @@ public class FeedHashtagPresenter<T extends FeedHashtagPresenter.View> extends J
    @Inject LocaleHelper localeHelper;
    @Inject TextualPostTranslationDelegate textualPostTranslationDelegate;
    @Inject HashtagInteractor interactor;
-   @Inject FeedEntityManager entityManager;
    @Inject BucketInteractor bucketInteractor;
+   @Inject FeedInteractor feedInteractor;
    @Inject FlagsInteractor flagsInteractor;
    @Inject TripImagesInteractor tripImagesInteractor;
    @Inject PostsInteractor postsInteractor;
@@ -87,6 +87,7 @@ public class FeedHashtagPresenter<T extends FeedHashtagPresenter.View> extends J
       subscribeRefreshFeeds();
       subscribeLoadNextFeeds();
       subscribeSuggestions();
+      subscribeToLikesChanges();
       textualPostTranslationDelegate.onTakeView(view, feedItems);
    }
 
@@ -99,7 +100,6 @@ public class FeedHashtagPresenter<T extends FeedHashtagPresenter.View> extends J
    @Override
    public void onInjected() {
       super.onInjected();
-      entityManager.setFeedEntityManagerListener(this);
       flagDelegate = new FlagDelegate(flagsInteractor);
    }
 
@@ -284,17 +284,18 @@ public class FeedHashtagPresenter<T extends FeedHashtagPresenter.View> extends J
 
    public void onEvent(LikesPressedEvent event) {
       if (view.isVisibleOnScreen()) {
-         FeedEntity model = event.getModel();
-         if (model.isLiked()) {
-            entityManager.unlike(model);
-         } else {
-            entityManager.like(model);
-         }
+         feedInteractor.changeFeedEntityLikedStatusPipe()
+               .send(new ChangeFeedEntityLikedStatusCommand(event.getModel()));
       }
    }
 
-   public void onEvent(EntityLikedEvent event) {
-      itemLiked(event.getFeedEntity());
+   private void subscribeToLikesChanges() {
+      feedInteractor.changeFeedEntityLikedStatusPipe()
+            .observe()
+            .compose(bindViewToMainComposer())
+            .subscribe(new ActionStateSubscriber<ChangeFeedEntityLikedStatusCommand>()
+                  .onSuccess(this::itemLiked)
+                  .onFail(this::handleError));
    }
 
    public void onEvent(DeletePostEvent event) {
@@ -333,11 +334,11 @@ public class FeedHashtagPresenter<T extends FeedHashtagPresenter.View> extends J
             .getUid(), event.getFlagReasonId(), event.getNameOfReason()), view, this::handleError);
    }
 
-   private void itemLiked(FeedEntity feedEntity) {
+   private void itemLiked(ChangeFeedEntityLikedStatusCommand command) {
       Queryable.from(feedItems).forEachR(feedItem -> {
          FeedEntity item = feedItem.getItem();
-         if (item.getUid().equals(feedEntity.getUid())) {
-            item.syncLikeState(feedEntity);
+         if (item.getUid().equals(command.getResult().getUid())) {
+            item.syncLikeState(command.getResult());
          }
       });
 

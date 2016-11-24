@@ -2,7 +2,6 @@ package com.worldventures.dreamtrips.modules.feed.presenter;
 
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.annotation.StringRes;
 import android.util.Pair;
 
 import com.innahema.collections.query.queriables.Queryable;
@@ -18,7 +17,6 @@ import com.worldventures.dreamtrips.core.rx.RxView;
 import com.worldventures.dreamtrips.core.rx.composer.IoToMainComposer;
 import com.worldventures.dreamtrips.core.session.CirclesInteractor;
 import com.worldventures.dreamtrips.core.utils.LocaleHelper;
-import com.worldventures.dreamtrips.core.utils.events.EntityLikedEvent;
 import com.worldventures.dreamtrips.core.utils.tracksystem.AnalyticsInteractor;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem;
 import com.worldventures.dreamtrips.modules.bucketlist.service.BucketInteractor;
@@ -48,13 +46,13 @@ import com.worldventures.dreamtrips.modules.feed.event.ItemFlaggedEvent;
 import com.worldventures.dreamtrips.modules.feed.event.LikesPressedEvent;
 import com.worldventures.dreamtrips.modules.feed.event.LoadFlagEvent;
 import com.worldventures.dreamtrips.modules.feed.event.TranslatePostEvent;
-import com.worldventures.dreamtrips.modules.feed.manager.FeedEntityManager;
 import com.worldventures.dreamtrips.modules.feed.model.FeedEntity;
 import com.worldventures.dreamtrips.modules.feed.model.FeedItem;
 import com.worldventures.dreamtrips.modules.feed.service.FeedInteractor;
 import com.worldventures.dreamtrips.modules.feed.service.PostsInteractor;
 import com.worldventures.dreamtrips.modules.feed.service.SuggestedPhotoInteractor;
 import com.worldventures.dreamtrips.modules.feed.service.analytics.ViewFeedAction;
+import com.worldventures.dreamtrips.modules.feed.service.command.ChangeFeedEntityLikedStatusCommand;
 import com.worldventures.dreamtrips.modules.feed.service.command.DeletePostCommand;
 import com.worldventures.dreamtrips.modules.feed.service.command.GetAccountFeedCommand;
 import com.worldventures.dreamtrips.modules.feed.service.command.SuggestedPhotoCommand;
@@ -85,7 +83,6 @@ public class FeedPresenter extends Presenter<FeedPresenter.View> {
 
    private static final int SUGGESTION_ITEM_CHUNK = 15;
 
-   @Inject FeedEntityManager entityManager;
    @Inject SnappyRepository db;
    @Inject MediaPickerEventDelegate mediaPickerEventDelegate;
    @Inject TextualPostTranslationDelegate textualPostTranslationDelegate;
@@ -114,22 +111,7 @@ public class FeedPresenter extends Presenter<FeedPresenter.View> {
    @Override
    public void onInjected() {
       super.onInjected();
-      entityManager.setFeedEntityManagerListener(this);
       flagDelegate = new FlagDelegate(flagsInteractor);
-   }
-
-   @Override
-   public void onResume() {
-      super.onResume();
-      analyticsInteractor.analyticsActionPipe().send(new ViewFeedAction());
-   }
-
-   @Override
-   public void saveInstanceState(Bundle outState) {
-      super.saveInstanceState(outState);
-      if (suggestedPhotoHelper != null) {
-         suggestedPhotoHelper.saveInstanceState(outState);
-      }
    }
 
    @Override
@@ -150,10 +132,26 @@ public class FeedPresenter extends Presenter<FeedPresenter.View> {
       subscribePhotoGalleryCheck();
       subscribeUnreadConversationsCount();
       subscribeFriendsNotificationsCount();
+      subscribeToLikesChanges();
       textualPostTranslationDelegate.onTakeView(view, feedItems);
 
       if (feedItems.size() != 0) {
          view.refreshFeedItems(feedItems);
+      }
+   }
+
+   @Override
+   public void onResume() {
+      super.onResume();
+      analyticsInteractor.analyticsActionPipe().send(new ViewFeedAction());
+   }
+
+
+   @Override
+   public void saveInstanceState(Bundle outState) {
+      super.saveInstanceState(outState);
+      if (suggestedPhotoHelper != null) {
+         suggestedPhotoHelper.saveInstanceState(outState);
       }
    }
 
@@ -203,7 +201,7 @@ public class FeedPresenter extends Presenter<FeedPresenter.View> {
       view.showFilter(resultCircles, filterCircle);
    }
 
-   private void onCirclesError(@StringRes String messageId) {
+   private void onCirclesError(String messageId) {
       view.hideBlockingProgress();
       view.informUser(messageId);
    }
@@ -253,8 +251,8 @@ public class FeedPresenter extends Presenter<FeedPresenter.View> {
             .observe()
             .compose(bindViewToMainComposer())
             .subscribe(new ActionStateSubscriber<GetAccountFeedCommand.LoadNext>()
-                        .onSuccess(action -> addFeedItems(action.getResult()))
-                        .onFail(this::loadMoreItemsError));
+                  .onSuccess(action -> addFeedItems(action.getResult()))
+                  .onFail(this::loadMoreItemsError));
    }
 
    private void addFeedItems(List<FeedItem> olderItems) {
@@ -369,17 +367,18 @@ public class FeedPresenter extends Presenter<FeedPresenter.View> {
 
    public void onEvent(LikesPressedEvent event) {
       if (view.isVisibleOnScreen()) {
-         FeedEntity model = event.getModel();
-         if (model.isLiked()) {
-            entityManager.unlike(model);
-         } else {
-            entityManager.like(model);
-         }
+         feedInteractor.changeFeedEntityLikedStatusPipe()
+               .send(new ChangeFeedEntityLikedStatusCommand(event.getModel()));
       }
    }
 
-   public void onEvent(EntityLikedEvent event) {
-      itemLiked(event.getFeedEntity());
+   private void subscribeToLikesChanges() {
+      feedInteractor.changeFeedEntityLikedStatusPipe()
+            .observe()
+            .compose(bindViewToMainComposer())
+            .subscribe(new ActionStateSubscriber<ChangeFeedEntityLikedStatusCommand>()
+                  .onSuccess(command -> itemLiked(command.getResult()))
+                  .onFail(this::handleError));
    }
 
    public void onEvent(DeletePostEvent event) {

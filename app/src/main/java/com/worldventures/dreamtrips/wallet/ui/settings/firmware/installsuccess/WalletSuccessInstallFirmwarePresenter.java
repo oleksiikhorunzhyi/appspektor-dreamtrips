@@ -4,6 +4,9 @@ import android.content.Context;
 import android.os.Parcelable;
 
 import com.techery.spares.module.Injector;
+import com.worldventures.dreamtrips.core.utils.tracksystem.AnalyticsInteractor;
+import com.worldventures.dreamtrips.wallet.analytics.UpdateSuccessfulAction;
+import com.worldventures.dreamtrips.wallet.analytics.WalletAnalyticsCommand;
 import com.worldventures.dreamtrips.wallet.service.SmartCardInteractor;
 import com.worldventures.dreamtrips.wallet.service.command.GetActiveSmartCardCommand;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletPresenter;
@@ -19,6 +22,7 @@ public class WalletSuccessInstallFirmwarePresenter extends WalletPresenter<Walle
 
    @Inject Navigator navigator;
    @Inject SmartCardInteractor smartCardInteractor;
+   @Inject AnalyticsInteractor analyticsInteractor;
 
    public WalletSuccessInstallFirmwarePresenter(Context context, Injector injector) {
       super(context, injector);
@@ -27,6 +31,7 @@ public class WalletSuccessInstallFirmwarePresenter extends WalletPresenter<Walle
    @Override
    public void onAttachedToWindow() {
       super.onAttachedToWindow();
+      sendAnalyticAction();
       smartCardInteractor.activeSmartCardPipe()
             .createObservable(new GetActiveSmartCardCommand())
             .compose(bindViewIoToMainComposer())
@@ -35,6 +40,11 @@ public class WalletSuccessInstallFirmwarePresenter extends WalletPresenter<Walle
                   .onFail(ErrorHandler.create(getContext()))
                   .wrap()
             );
+   }
+
+   private void sendAnalyticAction() {
+      WalletAnalyticsCommand analyticsCommand = new WalletAnalyticsCommand(new UpdateSuccessfulAction());
+      analyticsInteractor.walletAnalyticsCommandPipe().send(analyticsCommand);
    }
 
    void goDashboard() {

@@ -14,10 +14,15 @@ public abstract class ConnectionOverlay<V extends ConnectionOverlayView> {
 
    protected Context context;
    protected V overlayView;
+   protected View rootView;
 
    ConnectionOverlay(Context context, View rootView) {
+      this(context, rootView, R.id.content_layout);
+   }
+
+   ConnectionOverlay(Context context, View rootView, int contentLayoutId) {
       this.context = context;
-      ViewGroup contentLayout = findContentLayout(rootView);
+      ViewGroup contentLayout = findContentLayout(rootView, contentLayoutId);
       if (contentLayout != null) {
          this.overlayView = onCreateView(contentLayout);
       }
@@ -31,7 +36,7 @@ public abstract class ConnectionOverlay<V extends ConnectionOverlayView> {
    protected void processStateInternally(Observable<ConnectionState> connectionStateObservable, Observable stopper) {
       connectionStateObservable
             .compose(bindToStopper(stopper))
-            .subscribe(state -> overlayView.setConnectionState(state));
+            .subscribe(overlayView::setConnectionState);
    }
 
    protected abstract V onCreateView(ViewGroup contentLayout);
@@ -40,8 +45,8 @@ public abstract class ConnectionOverlay<V extends ConnectionOverlayView> {
       return overlayView != null;
    }
 
-   private ViewGroup findContentLayout(View rootView) {
-      return (ViewGroup) rootView.findViewById(R.id.content_layout);
+   private ViewGroup findContentLayout(View rootView, int contentLayoutId) {
+      return (ViewGroup) rootView.findViewById(contentLayoutId);
    }
 
    <T> Observable.Transformer<T, T> bindToStopper(Observable stopper) {

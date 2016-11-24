@@ -105,7 +105,7 @@ public class AccountPresenter extends ProfilePresenter<AccountPresenter.View, Us
             .subscribe(new ActionStateSubscriber<UploadAvatarCommand>()
                   .onSuccess(command -> onAvatarUploadSuccess())
                   .onFail((command, e) -> {
-                     view.informUser(command.getErrorMessage());
+                     handleError(command, e);
                      user.setAvatarUploadInProgress(false);
                      view.notifyUserChanged();
                   })
@@ -119,7 +119,7 @@ public class AccountPresenter extends ProfilePresenter<AccountPresenter.View, Us
             .subscribe(new ActionStateSubscriber<UploadBackgroundCommand>()
                   .onSuccess(command -> onCoverUploadSuccess())
                   .onFail((command, e) -> {
-                     view.informUser(command.getErrorMessage());
+                     handleError(command, e);
                      user.setCoverUploadInProgress(false);
                      view.notifyUserChanged();
                   })
@@ -171,7 +171,7 @@ public class AccountPresenter extends ProfilePresenter<AccountPresenter.View, Us
             .compose(bindViewToMainComposer())
             .subscribe(new ActionStateSubscriber<GetPrivateProfileCommand>()
                   .onSuccess(command -> this.onProfileLoaded(command.getResult()))
-                  .onFail((getCurrentUserCommand, throwable) -> this.handleError(throwable)));
+                  .onFail(this::handleError));
    }
 
    private void onAvatarUploadSuccess() {
@@ -294,7 +294,8 @@ public class AccountPresenter extends ProfilePresenter<AccountPresenter.View, Us
       downloadFileInteractor.getDownloadFileCommandPipe()
             .createObservable(new DownloadFileCommand(new File(filePath), url))
             .subscribe(new ActionStateSubscriber<DownloadFileCommand>()
-                  .onSuccess(downloadFileCommand -> action.action(filePath)));
+                  .onSuccess(downloadFileCommand -> action.action(filePath))
+                  .onFail(this::handleError));
    }
 
    private void onCoverChosen(PhotoGalleryModel image) {

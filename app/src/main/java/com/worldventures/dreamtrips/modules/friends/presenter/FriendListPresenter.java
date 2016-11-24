@@ -80,7 +80,7 @@ public class FriendListPresenter extends BaseUserListPresenter<FriendListPresent
             .compose(bindViewToMainComposer())
             .subscribe(new ActionStateSubscriber<GetFriendsCommand>()
                   .onSuccess(getFriendsCommand -> onSuccessAction.call(getFriendsCommand.getResult()))
-                  .onFail((getFriendsCommand, throwable) -> onError(getFriendsCommand)));
+                  .onFail(this::onError));
    }
 
    public interface View extends BaseUserListPresenter.View {

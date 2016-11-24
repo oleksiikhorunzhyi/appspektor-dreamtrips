@@ -1,7 +1,5 @@
 package com.worldventures.dreamtrips.modules.profile.presenter;
 
-import android.support.annotation.StringRes;
-
 import com.innahema.collections.query.functions.Action1;
 import com.messenger.delegate.StartChatDelegate;
 import com.messenger.ui.activity.MessengerActivity;
@@ -125,7 +123,7 @@ public class UserPresenter extends ProfilePresenter<UserPresenter.View, User> {
             .onSuccess(command -> this.onProfileLoaded(command.getResult()))
             .onFail((getPublicProfileCommand, throwable) -> {
                view.finishLoading();
-               super.handleError(getPublicProfileCommand, throwable);
+               handleError(getPublicProfileCommand, throwable);
             }));
    }
 
@@ -165,7 +163,7 @@ public class UserPresenter extends ProfilePresenter<UserPresenter.View, User> {
                      user.unfriend();
                      view.notifyUserChanged();
                   })
-                  .onFail((action, e) -> onError(action)));
+                  .onFail(this::onError));
    }
 
    private void addFriend() {
@@ -184,7 +182,7 @@ public class UserPresenter extends ProfilePresenter<UserPresenter.View, User> {
                      view.finishLoading();
                      view.notifyUserChanged();
                   })
-                  .onFail((action, e) -> onError(action)));
+                  .onFail(this::onError));
    }
 
    public void acceptClicked() {
@@ -203,7 +201,7 @@ public class UserPresenter extends ProfilePresenter<UserPresenter.View, User> {
                      user.setRelationship(User.Relationship.FRIEND);
                      view.notifyUserChanged();
                   })
-                  .onFail((action, e) -> onError(action)));
+                  .onFail(this::onError));
    }
 
    public void rejectClicked() {
@@ -222,12 +220,12 @@ public class UserPresenter extends ProfilePresenter<UserPresenter.View, User> {
                      user.setRelationship(User.Relationship.REJECTED);
                      view.notifyUserChanged();
                   })
-                  .onFail((action, e) -> onError(action)));
+                  .onFail(this::onError));
    }
 
-   private void onError(CommandWithError commandWithError) {
+   private void onError(CommandWithError commandWithError, Throwable throwable) {
       view.finishLoading();
-      view.informUser(commandWithError.getErrorMessage());
+      handleError(commandWithError, throwable);
    }
 
    private void subscribeToChangingCircles() {
@@ -280,7 +278,10 @@ public class UserPresenter extends ProfilePresenter<UserPresenter.View, User> {
             .compose(bindView())
             .subscribe(new ActionStateSubscriber<GetCirclesCommand>().onStart(circlesCommand -> onCirclesStart())
                   .onSuccess(circlesCommand -> onCirclesSuccess(circlesCommand.getResult(), actionCircle))
-                  .onFail((circlesCommand, throwable) -> onCirclesError(circlesCommand.getErrorMessage())));
+                  .onFail((getCirclesCommand, throwable) -> {
+                     view.hideBlockingProgress();
+                     handleError(getCirclesCommand, throwable);
+                  }));
    }
 
    private void onCirclesStart() {
@@ -290,11 +291,6 @@ public class UserPresenter extends ProfilePresenter<UserPresenter.View, User> {
    private void onCirclesSuccess(List<Circle> resultCircles, Action1<Circle> actionCircle) {
       view.showAddFriendDialog(resultCircles, actionCircle);
       view.hideBlockingProgress();
-   }
-
-   private void onCirclesError(@StringRes String messageId) {
-      view.hideBlockingProgress();
-      view.informUser(messageId);
    }
 
    public interface View extends ProfilePresenter.View, FlagDelegate.View, BlockingProgressView, ApiErrorView {

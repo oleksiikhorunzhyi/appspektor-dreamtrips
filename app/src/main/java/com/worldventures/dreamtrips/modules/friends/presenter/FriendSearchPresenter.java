@@ -29,7 +29,7 @@ public class FriendSearchPresenter extends BaseUserListPresenter<FriendSearchPre
             .compose(bindViewToMainComposer())
             .subscribe(new ActionStateSubscriber<GetSearchUsersCommand>()
                   .onSuccess(searchUsersCommand -> onSuccessAction.call(searchUsersCommand.getResult()))
-                  .onFail((searchUsersCommand, throwable) -> onError(searchUsersCommand)));
+                  .onFail(this::onError));
    }
 
    @Override
@@ -69,8 +69,8 @@ public class FriendSearchPresenter extends BaseUserListPresenter<FriendSearchPre
    }
 
    @Override
-   protected void onError(GetUsersCommand getUsersCommand) {
-      super.onError(getUsersCommand);
+   protected void onError(GetUsersCommand getUsersCommand, Throwable throwable) {
+      super.onError(getUsersCommand, throwable);
       updateEmptyView(false);
    }
 

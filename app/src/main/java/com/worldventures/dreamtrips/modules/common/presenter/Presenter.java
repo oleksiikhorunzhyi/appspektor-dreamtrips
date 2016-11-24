@@ -88,10 +88,10 @@ public class Presenter<VT extends Presenter.View> {
       } catch (Exception ignored) {
          Timber.v("EventBus :: Problem on registering sticky - no \'onEvent' method found in " + getClass().getName());
       }
-      initDisconnectedOverlay();
+      initConnectionOverlay();
    }
 
-   private void initDisconnectedOverlay() {
+   protected void initConnectionOverlay() {
       view.initConnectionOverlay(Observable.merge(connectionStatePublishSubject,
             getConnectivityObservable()
                   .filter(connectivity -> connectivity != null)

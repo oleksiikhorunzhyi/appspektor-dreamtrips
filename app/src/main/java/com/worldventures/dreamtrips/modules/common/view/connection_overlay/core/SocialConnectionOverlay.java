@@ -15,6 +15,10 @@ public class SocialConnectionOverlay extends ConnectionOverlay<SocialConnectionO
       super(context, rootView);
    }
 
+   public SocialConnectionOverlay(Context context, View rootView, int contentLayoutId) {
+      super(context, rootView, contentLayoutId);
+   }
+
    @Override
    protected SocialConnectionOverlayView onCreateView(ViewGroup contentLayout) {
       return new SocialConnectionOverlayView(context, contentLayout);

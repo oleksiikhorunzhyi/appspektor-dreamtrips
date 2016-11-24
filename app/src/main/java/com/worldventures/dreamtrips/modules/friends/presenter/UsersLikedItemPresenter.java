@@ -24,7 +24,7 @@ public class UsersLikedItemPresenter extends BaseUserListPresenter<BaseUserListP
             .compose(bindViewToMainComposer())
             .subscribe(new ActionStateSubscriber<GetLikersCommand>()
                   .onSuccess(likersCommand -> onSuccessAction.call(likersCommand.getResult()))
-                  .onFail((likersCommand, throwable) -> onError(likersCommand)));
+                  .onFail(this::onError));
 
    }
 

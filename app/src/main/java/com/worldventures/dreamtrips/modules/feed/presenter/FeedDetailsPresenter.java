@@ -83,7 +83,8 @@ public class FeedDetailsPresenter<V extends FeedDetailsPresenter.View> extends B
             .observe()
             .compose(bindViewToMainComposer())
             .subscribe(new ActionStateSubscriber<GetTripDetailsCommand>()
-                  .onSuccess(command -> updateFullEventInfo(command.getResult())));
+                  .onSuccess(command -> updateFullEventInfo(command.getResult()))
+                  .onFail(this::handleError));
    }
 
    public void onEvent(FeedEntityChangedEvent event) {

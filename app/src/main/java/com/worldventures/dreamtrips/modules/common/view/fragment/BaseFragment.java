@@ -2,6 +2,7 @@ package com.worldventures.dreamtrips.modules.common.view.fragment;
 
 
 import android.os.Bundle;
+import android.support.annotation.IdRes;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
 import android.view.LayoutInflater;
@@ -227,8 +228,12 @@ public abstract class BaseFragment<PM extends Presenter> extends InjectingFragme
 
    @Override
    public void initConnectionOverlay(Observable<ConnectionState> connectionStateObservable, Observable stopper) {
-      connectionOverlay = new SocialConnectionOverlay(getContext(), getView());
+      connectionOverlay = new SocialConnectionOverlay(getContext(), getView(), getContentLayoutId());
       connectionOverlay.startProcessingState(connectionStateObservable, stopper);
+   }
+
+   protected @IdRes int getContentLayoutId() {
+      return R.id.content_layout;
    }
 
    ///////////////////////////////////////////////////////////////////////////

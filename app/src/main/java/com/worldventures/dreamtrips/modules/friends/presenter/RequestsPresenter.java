@@ -48,9 +48,9 @@ public class RequestsPresenter extends Presenter<RequestsPresenter.View> {
       view.showBlockingProgress();
    }
 
-   private void onCirclesError(String messageId) {
+   private void onCirclesError(CommandWithError commandWithError, Throwable throwable) {
       view.hideBlockingProgress();
-      view.informUser(messageId);
+      handleError(commandWithError, throwable);
    }
 
    public void reloadRequests() {
@@ -60,7 +60,7 @@ public class RequestsPresenter extends Presenter<RequestsPresenter.View> {
             .subscribe(new ActionStateSubscriber<GetRequestsCommand>()
                   .onStart(getRequestsCommand -> view.startLoading())
                   .onSuccess(this::requestsLoaded)
-                  .onFail(((getRequestsCommand, throwable) -> onError(getRequestsCommand))));
+                  .onFail(this::onError));
    }
 
    private void requestsLoaded(GetRequestsCommand getRequestsCommand) {
@@ -109,7 +109,7 @@ public class RequestsPresenter extends Presenter<RequestsPresenter.View> {
       getCirclesObservable()
             .subscribe(new ActionStateSubscriber<GetCirclesCommand>().onStart(circlesCommand -> onCirclesStart())
                   .onSuccess(circlesCommand -> acceptAllCirclesSuccess(circlesCommand.getResult()))
-                  .onFail((circlesCommand, throwable) -> onCirclesError(circlesCommand.getErrorMessage())));
+                  .onFail(this::onCirclesError));
    }
 
    private void acceptAllCirclesSuccess(List<Circle> circles) {
@@ -129,7 +129,7 @@ public class RequestsPresenter extends Presenter<RequestsPresenter.View> {
                            reloadRequests();
                            updateRequestsCount();
                         })
-                        .onFail((action, e) -> onError(action)))
+                        .onFail(this::onError))
       );
    }
 
@@ -137,7 +137,7 @@ public class RequestsPresenter extends Presenter<RequestsPresenter.View> {
       getCirclesObservable()
             .subscribe(new ActionStateSubscriber<GetCirclesCommand>().onStart(circlesCommand -> onCirclesStart())
                   .onSuccess(circlesCommand -> acceptCirclesSuccess(user, circlesCommand.getResult()))
-                  .onFail((circlesCommand, throwable) -> onCirclesError(circlesCommand.getErrorMessage())));
+                  .onFail(this::onCirclesError));
    }
 
    private void acceptCirclesSuccess(User user, List<Circle> circles) {
@@ -153,7 +153,7 @@ public class RequestsPresenter extends Presenter<RequestsPresenter.View> {
                            onSuccess(user);
                            updateRequestsCount();
                         })
-                        .onFail((action, e) -> onError(action)))
+                        .onFail(this::onError))
       );
    }
 
@@ -168,7 +168,7 @@ public class RequestsPresenter extends Presenter<RequestsPresenter.View> {
                      onSuccess(user);
                      updateRequestsCount();
                   })
-                  .onFail((action, e) -> onError(action)));
+                  .onFail(this::onError));
    }
 
    public void hideRequest(User user) {
@@ -187,7 +187,7 @@ public class RequestsPresenter extends Presenter<RequestsPresenter.View> {
             .subscribe(new ActionStateSubscriber<DeleteFriendRequestCommand>()
                   .onStart(action -> view.startLoading())
                   .onSuccess(action -> onSuccess(user))
-                  .onFail((action, e) -> onError(action)));
+                  .onFail(this::onError));
    }
 
    private void onSuccess(User user) {
@@ -195,9 +195,9 @@ public class RequestsPresenter extends Presenter<RequestsPresenter.View> {
       view.getAdapter().remove(user);
    }
 
-   private void onError(CommandWithError commandWithError) {
+   private void onError(CommandWithError commandWithError, Throwable throwable) {
       view.finishLoading();
-      view.informUser(commandWithError.getErrorMessage());
+      handleError(commandWithError, throwable);
    }
 
    private void updateRequestsCount() {

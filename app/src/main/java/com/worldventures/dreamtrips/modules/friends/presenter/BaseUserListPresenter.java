@@ -110,9 +110,9 @@ public abstract class BaseUserListPresenter<T extends BaseUserListPresenter.View
       view.finishLoading();
    }
 
-   protected void onError(GetUsersCommand getUsersCommand) {
+   protected void onError(GetUsersCommand getUsersCommand, Throwable throwable) {
       view.finishLoading();
-      view.informUser(getUsersCommand.getErrorMessage());
+      handleError(getUsersCommand, throwable);
       loadUsersRequestLocked = false;
       loading = false;
    }
@@ -157,7 +157,7 @@ public abstract class BaseUserListPresenter<T extends BaseUserListPresenter.View
                            user.setRelationship(User.Relationship.FRIEND);
                            userActionSucceed(user);
                         })
-                        .onFail((action, e) -> onError(action)))
+                        .onFail(this::onError))
       );
    }
 
@@ -229,7 +229,7 @@ public abstract class BaseUserListPresenter<T extends BaseUserListPresenter.View
                      user.setRelationship(User.Relationship.NONE);
                      userActionSucceed(user);
                   })
-                  .onFail((action, e) -> onError(action)));
+                  .onFail(this::onError));
    }
 
    private void addFriend(User user, Circle circle) {
@@ -244,16 +244,16 @@ public abstract class BaseUserListPresenter<T extends BaseUserListPresenter.View
                      user.setRelationship(User.Relationship.OUTGOING_REQUEST);
                      userStateChanged(user);
                   })
-                  .onFail((action, e) -> onError(action)));
+                  .onFail(this::onError));
    }
 
    protected int getPerPageCount() {
       return 100;
    }
 
-   private void onError(CommandWithError commandWithError) {
+   private void onError(CommandWithError commandWithError, Throwable throwable) {
       view.finishLoading();
-      view.informUser(commandWithError.getErrorMessage());
+      handleError(commandWithError, throwable);
    }
 
    public void userClicked(User user) {

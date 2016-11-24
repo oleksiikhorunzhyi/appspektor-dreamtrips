@@ -305,14 +305,14 @@ public abstract class ProfilePresenter<T extends ProfilePresenter.View, U extend
    }
 
    protected void refreshFeedError(CommandWithError action, Throwable throwable) {
-      view.informUser(action.getErrorMessage());
+      handleError(action, throwable);
       view.updateLoadingStatus(false, false);
       view.finishLoading();
       view.refreshFeedItems(feedItems);
    }
 
    protected void loadMoreItemsError(CommandWithError action, Throwable throwable) {
-      view.informUser(action.getErrorMessage());
+      handleError(action, throwable);
       view.updateLoadingStatus(false, false);
       addFeedItems(new ArrayList<>());
    }

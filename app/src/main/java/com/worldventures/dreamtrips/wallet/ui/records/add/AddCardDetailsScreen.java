@@ -1,4 +1,4 @@
-package com.worldventures.dreamtrips.wallet.ui.wizard.card_details;
+package com.worldventures.dreamtrips.wallet.ui.records.add;
 
 import android.content.Context;
 import android.support.annotation.NonNull;

@@ -10,7 +10,7 @@ import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletLinearLayout;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.OperationScreen;
 import com.worldventures.dreamtrips.wallet.ui.widget.WalletCheckWidget;
-import com.worldventures.dreamtrips.wallet.ui.wizard.charging.WizardChargingPath;
+import com.worldventures.dreamtrips.wallet.ui.records.swiping.WizardChargingPath;
 
 import butterknife.InjectView;
 import butterknife.OnClick;

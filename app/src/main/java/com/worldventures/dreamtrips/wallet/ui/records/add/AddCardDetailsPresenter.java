@@ -1,4 +1,4 @@
-package com.worldventures.dreamtrips.wallet.ui.wizard.card_details;
+package com.worldventures.dreamtrips.wallet.ui.records.add;
 
 import android.content.Context;
 import android.os.Parcelable;
@@ -29,7 +29,7 @@ import com.worldventures.dreamtrips.wallet.ui.common.helper.ErrorHandler;
 import com.worldventures.dreamtrips.wallet.ui.common.helper.ErrorSubscriberWrapper;
 import com.worldventures.dreamtrips.wallet.ui.common.helper.OperationActionStateSubscriberWrapper;
 import com.worldventures.dreamtrips.wallet.ui.common.navigation.Navigator;
-import com.worldventures.dreamtrips.wallet.ui.dashboard.list.CardListPath;
+import com.worldventures.dreamtrips.wallet.ui.dashboard.CardListPath;
 import com.worldventures.dreamtrips.wallet.util.BankCardHelper;
 import com.worldventures.dreamtrips.wallet.util.CardUtils;
 import com.worldventures.dreamtrips.wallet.util.FormatException;

@@ -1,4 +1,4 @@
-package com.worldventures.dreamtrips.wallet.ui.wizard.charging.anim;
+package com.worldventures.dreamtrips.wallet.ui.records.swiping.anim;
 
 
 import android.animation.Animator;

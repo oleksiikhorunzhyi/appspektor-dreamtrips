@@ -1,4 +1,4 @@
-package com.worldventures.dreamtrips.wallet.ui.dashboard.list.util.cell;
+package com.worldventures.dreamtrips.wallet.ui.dashboard.util.cell;
 
 import android.view.View;
 
@@ -6,7 +6,7 @@ import com.techery.spares.annotations.Layout;
 import com.techery.spares.ui.view.cell.AbstractDelegateCell;
 import com.techery.spares.ui.view.cell.CellDelegate;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.wallet.ui.dashboard.list.util.BankCardViewModel;
+import com.worldventures.dreamtrips.wallet.ui.dashboard.util.BankCardViewModel;
 import com.worldventures.dreamtrips.wallet.ui.widget.BankCardWidget;
 import com.worldventures.dreamtrips.wallet.util.BankCardHelper;
 

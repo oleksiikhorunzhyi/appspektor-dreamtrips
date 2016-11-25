@@ -8,8 +8,8 @@ import com.innahema.collections.query.queriables.Queryable;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.wallet.domain.entity.card.BankCard;
 import com.worldventures.dreamtrips.wallet.service.command.CardStacksCommand;
-import com.worldventures.dreamtrips.wallet.ui.dashboard.list.util.BankCardViewModel;
-import com.worldventures.dreamtrips.wallet.ui.dashboard.list.util.CardStackViewModel;
+import com.worldventures.dreamtrips.wallet.ui.dashboard.util.BankCardViewModel;
+import com.worldventures.dreamtrips.wallet.ui.dashboard.util.CardStackViewModel;
 
 import java.util.ArrayList;
 import java.util.List;

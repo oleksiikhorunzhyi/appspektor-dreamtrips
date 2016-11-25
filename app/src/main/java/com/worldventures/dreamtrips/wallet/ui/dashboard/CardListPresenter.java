@@ -1,4 +1,4 @@
-package com.worldventures.dreamtrips.wallet.ui.dashboard.list;
+package com.worldventures.dreamtrips.wallet.ui.dashboard;
 
 import android.content.Context;
 import android.net.NetworkInfo;
@@ -28,14 +28,14 @@ import com.worldventures.dreamtrips.wallet.ui.common.base.screen.WalletScreen;
 import com.worldventures.dreamtrips.wallet.ui.common.helper.ErrorActionStateSubscriberWrapper;
 import com.worldventures.dreamtrips.wallet.ui.common.helper.ErrorHandler;
 import com.worldventures.dreamtrips.wallet.ui.common.navigation.Navigator;
-import com.worldventures.dreamtrips.wallet.ui.dashboard.detail.CardDetailsPath;
-import com.worldventures.dreamtrips.wallet.ui.dashboard.list.util.CardStackHeaderHolder;
-import com.worldventures.dreamtrips.wallet.ui.dashboard.list.util.CardStackViewModel;
-import com.worldventures.dreamtrips.wallet.ui.dashboard.list.util.ImmutableCardStackHeaderHolder;
+import com.worldventures.dreamtrips.wallet.ui.records.detail.CardDetailsPath;
+import com.worldventures.dreamtrips.wallet.ui.dashboard.util.CardStackHeaderHolder;
+import com.worldventures.dreamtrips.wallet.ui.dashboard.util.CardStackViewModel;
+import com.worldventures.dreamtrips.wallet.ui.dashboard.util.ImmutableCardStackHeaderHolder;
 import com.worldventures.dreamtrips.wallet.ui.settings.firmware.install.WalletInstallFirmwarePath;
 import com.worldventures.dreamtrips.wallet.ui.settings.firmware.newavailable.WalletNewFirmwareAvailablePath;
 import com.worldventures.dreamtrips.wallet.ui.settings.general.WalletSettingsPath;
-import com.worldventures.dreamtrips.wallet.ui.wizard.charging.WizardChargingPath;
+import com.worldventures.dreamtrips.wallet.ui.records.swiping.WizardChargingPath;
 import com.worldventures.dreamtrips.wallet.util.CardListStackConverter;
 import com.worldventures.dreamtrips.wallet.util.CardUtils;
 

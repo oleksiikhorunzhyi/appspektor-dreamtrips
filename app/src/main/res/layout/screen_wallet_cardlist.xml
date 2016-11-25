@@ -1,4 +1,4 @@
-<com.worldventures.dreamtrips.wallet.ui.dashboard.list.CardListScreen android:id="@+id/screen_root"
+<com.worldventures.dreamtrips.wallet.ui.dashboard.CardListScreen android:id="@+id/screen_root"
       xmlns:android="http://schemas.android.com/apk/res/android"
       xmlns:app="http://schemas.android.com/apk/res-auto"
       xmlns:tools="http://schemas.android.com/tools"
@@ -93,4 +93,4 @@
       </RelativeLayout>
    </LinearLayout>
 
-</com.worldventures.dreamtrips.wallet.ui.dashboard.list.CardListScreen>
+</com.worldventures.dreamtrips.wallet.ui.dashboard.CardListScreen>

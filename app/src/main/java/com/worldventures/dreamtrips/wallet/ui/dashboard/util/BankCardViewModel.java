@@ -1,4 +1,4 @@
-package com.worldventures.dreamtrips.wallet.ui.dashboard.list.util;
+package com.worldventures.dreamtrips.wallet.ui.dashboard.util;
 
 import com.worldventures.dreamtrips.wallet.domain.entity.card.BankCard;
 

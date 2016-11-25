@@ -63,14 +63,14 @@ public class BankCardWidget extends FrameLayout {
       cardNumber.setText(String.format("•••• •••• •••• %04d", bankCard.number() % 10000));
       expireDate.setText(bankCard.expDate());
       tvBankLabel.setText(bankLabel);
-      cardTypeIcon.setImageResource(bankCardHelper.obtainFinancialServiceImageRes(bankCard.issuerInfo()
-            .financialService()));
+      cardTypeIcon.setImageResource(
+            bankCardHelper.obtainFinancialServiceImageRes(bankCard.issuerInfo().financialService()));
       cardType.setText(bankCardHelper.obtainCardType(bankCard.issuerInfo().cardType()));
       if (bankCard.category() == Card.Category.SAMPLE) {
          cardTypeIcon.setVisibility(INVISIBLE);
          sampleCardHolder.setVisibility(VISIBLE);
       } else {
-         cardTypeIcon.setVisibility(INVISIBLE);
+         cardTypeIcon.setVisibility(VISIBLE);
          sampleCardHolder.setVisibility(GONE);
       }
    }

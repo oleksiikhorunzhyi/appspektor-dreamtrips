@@ -1,4 +1,4 @@
-package com.worldventures.dreamtrips.modules.dtl.model.mapping;
+package com.worldventures.dreamtrips.modules.dtl.domain.converter;
 
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.ImmutableThinAttribute;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.ThinAttribute;
@@ -20,6 +20,8 @@ public class ThinAttributeConverter implements Converter<com.worldventures.dream
 
    @Override
    public ThinAttribute convert(MapperyContext mapperyContext, com.worldventures.dreamtrips.api.dtl.merchants.model.ThinAttribute thinAttribute) {
-      return ImmutableThinAttribute.builder().name(thinAttribute.name()).build();
+      return ImmutableThinAttribute.builder()
+            .name(thinAttribute.name())
+            .build();
    }
 }

@@ -4,7 +4,7 @@ import com.worldventures.dreamtrips.api.dtl.attributes.AttributesHttpAction;
 import com.worldventures.dreamtrips.api.dtl.attributes.model.AttributeType;
 import com.worldventures.dreamtrips.core.janet.JanetModule;
 import com.worldventures.dreamtrips.core.janet.dagger.InjectableAction;
-import com.worldventures.dreamtrips.modules.dtl.model.mapping.AttributesSortTransformer;
+import com.worldventures.dreamtrips.modules.dtl.domain.converter.AttributesSortTransformer;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.Attribute;
 
 import java.util.Arrays;

@@ -1,4 +1,4 @@
-package com.worldventures.dreamtrips.modules.dtl.model.mapping;
+package com.worldventures.dreamtrips.modules.dtl.domain.converter;
 
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.operational_hour.OperationHours;
 import com.worldventures.dreamtrips.modules.mapping.converter.Converter;
@@ -24,7 +24,7 @@ public class OperationDayConverter implements Converter<com.worldventures.dreamt
    public OperationDay convert(MapperyContext mapperyContext, com.worldventures.dreamtrips.api.dtl.merchants.model.OperationDay operationDay) {
       return ImmutableOperationDay.builder()
             .dayOfWeek(DayOfWeek.from(operationDay.dayOfWeek()))
-            .operationHours(mapperyContext.convert(operationDay.operationHours(), OperationHours.class))
+            .operationHours(operationDay.operationHours() != null ? mapperyContext.convert(operationDay.operationHours(), OperationHours.class) : null)
             .build();
    }
 }

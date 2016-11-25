@@ -11,9 +11,9 @@ import com.worldventures.dreamtrips.core.janet.cache.CachedAction;
 import com.worldventures.dreamtrips.core.janet.cache.ImmutableCacheOptions;
 import com.worldventures.dreamtrips.core.janet.dagger.InjectableAction;
 import com.worldventures.dreamtrips.modules.dtl.model.location.DtlLocation;
-import com.worldventures.dreamtrips.modules.dtl.model.mapping.MerchantDistancePatcher;
+import com.worldventures.dreamtrips.modules.dtl.domain.converter.MerchantDistancePatcher;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.Merchant;
-import com.worldventures.dreamtrips.modules.dtl.service.storage.FullMerchantStorage;
+import com.worldventures.dreamtrips.modules.dtl.domain.storage.FullMerchantStorage;
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -61,7 +61,7 @@ public class FullMerchantAction extends CommandWithError<Merchant> implements In
          janet.createPipe(MerchantByIdHttpAction.class, Schedulers.io())
                .createObservableResult(new MerchantByIdHttpAction(merchantId))
                .map(MerchantByIdHttpAction::merchant)
-               .map(merchants -> mapperyContext.convert(merchants, Merchant.class))
+               .map(merchant -> mapperyContext.convert(merchant, Merchant.class))
                .map(MerchantDistancePatcher.create(dtlLocation))
                .subscribe(callback::onSuccess, callback::onFail);
       } else callback.onSuccess(cache);

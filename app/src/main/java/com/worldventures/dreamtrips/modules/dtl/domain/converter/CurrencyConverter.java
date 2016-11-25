@@ -1,4 +1,4 @@
-package com.worldventures.dreamtrips.modules.dtl.model.mapping;
+package com.worldventures.dreamtrips.modules.dtl.domain.converter;
 
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.offer.Currency;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.offer.ImmutableCurrency;

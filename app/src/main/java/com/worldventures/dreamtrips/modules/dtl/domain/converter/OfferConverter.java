@@ -1,6 +1,7 @@
-package com.worldventures.dreamtrips.modules.dtl.model.mapping;
+package com.worldventures.dreamtrips.modules.dtl.domain.converter;
 
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.MerchantMedia;
+import com.worldventures.dreamtrips.modules.dtl.model.merchant.operational_hour.OperationDay;
 import com.worldventures.dreamtrips.modules.mapping.converter.Converter;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.offer.ImmutableOffer;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.offer.Offer;
@@ -29,7 +30,8 @@ public class OfferConverter implements Converter<com.worldventures.dreamtrips.ap
             .disclaimer(offer.disclaimer())
             .startDate(offer.startDate())
             .endDate(offer.endDate())
-            .images(mapperyContext.convert(offer.images(), MerchantMedia.class))
+            .images(offer.images() != null ? mapperyContext.convert(offer.images(), MerchantMedia.class) : null)
+            .operationDays(offer.operationDays() != null ? mapperyContext.convert(offer.operationDays(), OperationDay.class) : null)
             .build();
    }
 }

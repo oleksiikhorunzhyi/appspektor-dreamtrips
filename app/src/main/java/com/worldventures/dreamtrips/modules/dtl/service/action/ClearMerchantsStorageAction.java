@@ -1,8 +1,8 @@
 package com.worldventures.dreamtrips.modules.dtl.service.action;
 
 import com.worldventures.dreamtrips.core.janet.dagger.InjectableAction;
-import com.worldventures.dreamtrips.modules.dtl.service.storage.FullMerchantStorage;
-import com.worldventures.dreamtrips.modules.dtl.service.storage.MerchantsStorage;
+import com.worldventures.dreamtrips.modules.dtl.domain.storage.FullMerchantStorage;
+import com.worldventures.dreamtrips.modules.dtl.domain.storage.MerchantsStorage;
 
 import javax.inject.Inject;
 

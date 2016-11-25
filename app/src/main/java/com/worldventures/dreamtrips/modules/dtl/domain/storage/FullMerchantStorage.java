@@ -1,4 +1,4 @@
-package com.worldventures.dreamtrips.modules.dtl.service.storage;
+package com.worldventures.dreamtrips.modules.dtl.domain.storage;
 
 import android.support.annotation.Nullable;
 

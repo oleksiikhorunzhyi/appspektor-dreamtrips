@@ -1,4 +1,4 @@
-package com.worldventures.dreamtrips.modules.dtl.model.mapping;
+package com.worldventures.dreamtrips.modules.dtl.domain.converter;
 
 import com.google.android.gms.maps.model.LatLng;
 import com.worldventures.dreamtrips.modules.dtl.helper.DtlLocationHelper;

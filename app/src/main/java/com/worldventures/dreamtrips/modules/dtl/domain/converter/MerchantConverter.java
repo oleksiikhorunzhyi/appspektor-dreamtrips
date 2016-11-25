@@ -1,4 +1,4 @@
-package com.worldventures.dreamtrips.modules.dtl.model.mapping;
+package com.worldventures.dreamtrips.modules.dtl.domain.converter;
 
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.Coordinates;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.ImmutableMerchant;
@@ -45,14 +45,14 @@ public class MerchantConverter implements Converter<com.worldventures.dreamtrips
             .email(merchant.email())
             .website(merchant.website())
             .timeZone(merchant.timeZone())
-            .coordinates(mapperyContext.convert(merchant.coordinates(), Coordinates.class))
-            .offers(mapperyContext.convert(merchant.offers(), Offer.class))
-            .images(mapperyContext.convert(merchant.images(), MerchantMedia.class))
-            .operationDays(mapperyContext.convert(merchant.operationDays(), OperationDay.class))
-            .disclaimers(mapperyContext.convert(merchant.disclaimers(), Disclaimer.class))
-            .currencies(mapperyContext.convert(merchant.currencies(), Currency.class))
-            .categories(mapperyContext.convert(merchant.categories(), ThinAttribute.class))
-            .amenities(mapperyContext.convert(merchant.amenities(), ThinAttribute.class))
+            .coordinates(merchant.coordinates() != null ? mapperyContext.convert(merchant.coordinates(), Coordinates.class) : null)
+            .offers(merchant.offers() != null ? mapperyContext.convert(merchant.offers(), Offer.class) : null)
+            .images(merchant.images() != null ? mapperyContext.convert(merchant.images(), MerchantMedia.class) : null)
+            .operationDays(merchant.operationDays() != null ? mapperyContext.convert(merchant.operationDays(), OperationDay.class) : null)
+            .disclaimers(merchant.disclaimers() != null ? mapperyContext.convert(merchant.disclaimers(), Disclaimer.class) : null)
+            .currencies(merchant.currencies() != null ? mapperyContext.convert(merchant.currencies(), Currency.class) : null)
+            .categories(merchant.categories() != null ? mapperyContext.convert(merchant.categories(), ThinAttribute.class) : null)
+            .amenities(merchant.categories() != null ? mapperyContext.convert(merchant.amenities(), ThinAttribute.class) : null)
             .build();
    }
 }

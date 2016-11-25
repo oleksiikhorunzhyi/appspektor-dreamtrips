@@ -1,4 +1,4 @@
-package com.worldventures.dreamtrips.modules.dtl.model.mapping;
+package com.worldventures.dreamtrips.modules.dtl.domain.converter;
 
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.Attribute;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.ImmutableAttribute;
@@ -23,7 +23,7 @@ public class AttributeConverter implements Converter<com.worldventures.dreamtrip
       return ImmutableAttribute.builder()
             .id(attribute.id())
             .type(attribute.type())
-            .name(attribute.displayName())
+            .name(attribute.name())
             .displayName(attribute.displayName())
             .merchantCount(attribute.merchantCount())
             .partnerCount(attribute.partnerCount())

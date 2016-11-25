@@ -1,4 +1,4 @@
-package com.worldventures.dreamtrips.modules.dtl.model.mapping;
+package com.worldventures.dreamtrips.modules.dtl.domain.converter;
 
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.Coordinates;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.ImmutableThinMerchant;
@@ -20,7 +20,7 @@ public class ThinMerchantConverter implements Converter<com.worldventures.dreamt
             .type(thinMerchant.type())
             .partnerStatus(thinMerchant.partnerStatus())
             .displayName(thinMerchant.displayName())
-            .coordinates(mapperyContext.convert(thinMerchant.coordinates(), Coordinates.class))
+            .coordinates(thinMerchant.coordinates() != null ? mapperyContext.convert(thinMerchant.coordinates(), Coordinates.class) : null)
             .city(thinMerchant.city())
             .state(thinMerchant.state())
             .country(thinMerchant.country())
@@ -28,10 +28,10 @@ public class ThinMerchantConverter implements Converter<com.worldventures.dreamt
             .rating(thinMerchant.rating())
             .distance(thinMerchant.distance())
             .timeZone(thinMerchant.timeZone())
-            .offers(mapperyContext.convert(thinMerchant.offers(), Offer.class))
-            .images(mapperyContext.convert(thinMerchant.images(), MerchantMedia.class))
-            .categories(mapperyContext.convert(thinMerchant.categories(), ThinAttribute.class))
-            .operationDays(mapperyContext.convert(thinMerchant.operationDays(), OperationDay.class))
+            .offers(thinMerchant.offers() != null ? mapperyContext.convert(thinMerchant.offers(), Offer.class) : null)
+            .images(thinMerchant.images() != null ? mapperyContext.convert(thinMerchant.images(), MerchantMedia.class) : null)
+            .categories(thinMerchant.categories() != null ? mapperyContext.convert(thinMerchant.categories(), ThinAttribute.class) : null)
+            .operationDays(thinMerchant.operationDays() != null ? mapperyContext.convert(thinMerchant.operationDays(), OperationDay.class) : null)
             .build();
    }
 

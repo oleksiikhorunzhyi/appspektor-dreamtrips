@@ -1,4 +1,4 @@
-package com.worldventures.dreamtrips.modules.dtl.model.mapping;
+package com.worldventures.dreamtrips.modules.dtl.domain.converter;
 
 import com.worldventures.dreamtrips.modules.mapping.converter.Converter;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.Coordinates;
@@ -20,6 +20,9 @@ public class CoordinatesConverter implements Converter<com.worldventures.dreamtr
 
    @Override
    public Coordinates convert(MapperyContext mapperyContext, com.worldventures.dreamtrips.api.dtl.locations.model.Coordinates coordinates) {
-      return ImmutableCoordinates.builder().lat(coordinates.lat()).lng(coordinates.lng()).build();
+      return ImmutableCoordinates.builder()
+            .lat(coordinates.lat())
+            .lng(coordinates.lng())
+            .build();
    }
 }

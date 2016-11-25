@@ -10,6 +10,7 @@ import com.worldventures.dreamtrips.wallet.service.SmartCardInteractor;
 import com.worldventures.dreamtrips.wallet.service.command.http.FetchAssociatedSmartCard;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletPresenter;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.WalletScreen;
+import com.worldventures.dreamtrips.wallet.ui.common.helper.OperationActionStateSubscriberWrapper;
 import com.worldventures.dreamtrips.wallet.ui.common.navigation.Navigator;
 import com.worldventures.dreamtrips.wallet.ui.dashboard.list.CardListPath;
 import com.worldventures.dreamtrips.wallet.ui.provisioning_blocked.WalletProvisioningBlockedPath;
@@ -18,7 +19,6 @@ import com.worldventures.dreamtrips.wallet.ui.wizard.power_on.WizardPowerOnPath;
 import javax.inject.Inject;
 
 import flow.Flow;
-import io.techery.janet.helper.ActionStateSubscriber;
 
 public class WalletStartPresenter extends WalletPresenter<WalletStartPresenter.Screen, Parcelable> {
 
@@ -38,8 +38,10 @@ public class WalletStartPresenter extends WalletPresenter<WalletStartPresenter.S
             () -> smartCardInteractor.fetchAssociatedSmartCard()
                   .createObservable(new FetchAssociatedSmartCard())
                   .compose(bindViewIoToMainComposer())
-                  .subscribe(new ActionStateSubscriber<FetchAssociatedSmartCard>()
+                  .subscribe(
+                        OperationActionStateSubscriberWrapper.<FetchAssociatedSmartCard>forView(getView().provideOperationDelegate())
                         .onSuccess(command -> handleResult(command.getResult()))
+                        .wrap()
                   ),
             () -> navigator.single(new WalletProvisioningBlockedPath(), Flow.Direction.REPLACE)
       );

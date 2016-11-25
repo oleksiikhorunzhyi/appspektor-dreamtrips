@@ -28,14 +28,13 @@ import static com.worldventures.dreamtrips.wallet.di.WalletActivityModule.WALLET
 
 @Layout(R.layout.activity_wallet)
 public class WalletActivity extends FlowActivity<WalletActivityPresenter> {
+
    private MediaPickerAdapter mediaPickerAdapter;
 
    @InjectView(R.id.wallet_photo_picker) PhotoPickerLayout photoPickerLayout;
 
    @Inject PhotoPickerLayoutDelegate photoPickerLayoutDelegate;
-
    @Inject MessengerMediaPickerDelegate messengerMediaPickerDelegate;
-
    @Inject CropImageDelegate cropImageDelegate;
 
    @Override

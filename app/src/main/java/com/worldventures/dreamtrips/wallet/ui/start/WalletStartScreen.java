@@ -20,7 +20,7 @@ import static com.worldventures.dreamtrips.wallet.ui.start.WalletStartPresenter.
 public class WalletStartScreen extends WalletLinearLayout<Screen, WalletStartPresenter, WalletStartPath>
       implements Screen, OperationScreen<Void> {
 
-   @InjectView(R.id.firmware_install_progress) WalletProgressWidget installProgress;
+   @InjectView(R.id.progress) WalletProgressWidget progressView;
    @InjectView(R.id.toolbar) Toolbar toolbar;
 
    public WalletStartScreen(Context context) {
@@ -29,12 +29,6 @@ public class WalletStartScreen extends WalletLinearLayout<Screen, WalletStartPre
 
    public WalletStartScreen(Context context, AttributeSet attrs) {
       super(context, attrs);
-   }
-
-   @Override
-   protected void onFinishInflate() {
-      super.onFinishInflate();
-      installProgress.start();
    }
 
    @Override
@@ -55,12 +49,14 @@ public class WalletStartScreen extends WalletLinearLayout<Screen, WalletStartPre
 
    @Override
    public void showProgress(@Nullable String text) {
-      installProgress.setVisibility(VISIBLE);
+      progressView.setVisibility(VISIBLE);
+      progressView.start();
    }
 
    @Override
    public void hideProgress() {
-      installProgress.setVisibility(INVISIBLE);
+      progressView.stop();
+      progressView.setVisibility(GONE);
    }
 
    @Override

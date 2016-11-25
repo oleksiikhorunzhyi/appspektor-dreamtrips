@@ -2,6 +2,7 @@
 
 <com.worldventures.dreamtrips.wallet.ui.start.WalletStartScreen xmlns:android="http://schemas.android.com/apk/res/android"
       xmlns:app="http://schemas.android.com/apk/res-auto"
+      xmlns:tools="http://schemas.android.com/tools"
       android:layout_width="match_parent"
       android:layout_height="match_parent"
       android:orientation="vertical"
@@ -18,12 +19,14 @@
 
    <!--image should be in center -->
    <com.worldventures.dreamtrips.wallet.ui.widget.WalletProgressWidget
-         android:id="@+id/firmware_install_progress"
+         android:id="@+id/progress"
          android:layout_width="wrap_content"
          android:layout_height="wrap_content"
          android:layout_gravity="center_horizontal"
          android:layout_weight="1"
          android:src="@drawable/wallet_download_progress"
+         android:visibility="gone"
+         tools:visibility="visible"
          />
 
 </com.worldventures.dreamtrips.wallet.ui.start.WalletStartScreen>

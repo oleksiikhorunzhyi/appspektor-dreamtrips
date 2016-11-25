@@ -1,4 +1,4 @@
-package com.worldventures.dreamtrips.wallet.ui.dashboard.list.util.cell;
+package com.worldventures.dreamtrips.wallet.ui.dashboard.util.cell;
 
 import android.view.View;
 
@@ -7,7 +7,7 @@ import com.techery.spares.ui.view.cell.AbstractDelegateCell;
 import com.techery.spares.ui.view.cell.CellDelegate;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.wallet.domain.entity.FirmwareUpdateData;
-import com.worldventures.dreamtrips.wallet.ui.dashboard.list.util.CardStackHeaderHolder;
+import com.worldventures.dreamtrips.wallet.ui.dashboard.util.CardStackHeaderHolder;
 import com.worldventures.dreamtrips.wallet.ui.widget.SmartCardWidget;
 
 import butterknife.InjectView;

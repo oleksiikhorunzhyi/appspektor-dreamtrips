@@ -1,4 +1,4 @@
-package com.worldventures.dreamtrips.wallet.ui.dashboard.list.util.cell;
+package com.worldventures.dreamtrips.wallet.ui.dashboard.util.cell;
 
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -12,9 +12,9 @@ import com.techery.spares.ui.view.cell.AbstractDelegateCell;
 import com.techery.spares.ui.view.cell.CellDelegate;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.wallet.domain.entity.card.BankCard;
-import com.worldventures.dreamtrips.wallet.ui.dashboard.list.util.CardStackViewModel;
-import com.worldventures.dreamtrips.wallet.ui.dashboard.list.util.BankCardViewModel;
-import com.worldventures.dreamtrips.wallet.ui.dashboard.list.util.OverlapDecoration;
+import com.worldventures.dreamtrips.wallet.ui.dashboard.util.CardStackViewModel;
+import com.worldventures.dreamtrips.wallet.ui.dashboard.util.BankCardViewModel;
+import com.worldventures.dreamtrips.wallet.ui.dashboard.util.OverlapDecoration;
 
 import javax.inject.Inject;
 

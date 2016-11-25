@@ -1,4 +1,4 @@
-package com.worldventures.dreamtrips.wallet.ui.wizard.charging;
+package com.worldventures.dreamtrips.wallet.ui.records.swiping;
 
 import android.content.Context;
 import android.os.Parcelable;
@@ -19,10 +19,9 @@ import com.worldventures.dreamtrips.wallet.ui.common.helper.ErrorActionStateSubs
 import com.worldventures.dreamtrips.wallet.ui.common.helper.ErrorHandler;
 import com.worldventures.dreamtrips.wallet.ui.common.helper.OperationActionStateSubscriberWrapper;
 import com.worldventures.dreamtrips.wallet.ui.common.navigation.Navigator;
-import com.worldventures.dreamtrips.wallet.ui.wizard.card_details.AddCardDetailsPath;
+import com.worldventures.dreamtrips.wallet.ui.records.add.AddCardDetailsPath;
 
 import java.net.UnknownHostException;
-import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
 
@@ -65,7 +64,6 @@ public class WizardChargingPresenter extends WalletPresenter<WizardChargingPrese
             .build();
       smartCardInteractor.chargedEventPipe()
             .observe()
-            .delay(2, TimeUnit.SECONDS) // // TODO: 9/16/16 for demo mock device
             .compose(bindViewIoToMainComposer())
             .compose(new ActionPipeCacheWiper<>(smartCardInteractor.chargedEventPipe()))
             .subscribe(OperationActionStateSubscriberWrapper.<CardChargedEvent>forView(getView().provideOperationDelegate())

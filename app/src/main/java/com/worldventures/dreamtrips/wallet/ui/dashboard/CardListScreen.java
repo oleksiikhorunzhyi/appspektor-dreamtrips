@@ -1,4 +1,4 @@
-package com.worldventures.dreamtrips.wallet.ui.dashboard.list;
+package com.worldventures.dreamtrips.wallet.ui.dashboard;
 
 import android.content.Context;
 import android.os.Bundle;
@@ -23,12 +23,12 @@ import com.worldventures.dreamtrips.wallet.domain.entity.card.BankCard;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletLinearLayout;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.OperationScreen;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.delegate.DialogOperationScreen;
-import com.worldventures.dreamtrips.wallet.ui.dashboard.list.util.CardListHeaderAdapter;
-import com.worldventures.dreamtrips.wallet.ui.dashboard.list.util.CardStackHeaderHolder;
-import com.worldventures.dreamtrips.wallet.ui.dashboard.list.util.CardStackViewModel;
-import com.worldventures.dreamtrips.wallet.ui.dashboard.list.util.ImmutableCardStackHeaderHolder;
-import com.worldventures.dreamtrips.wallet.ui.dashboard.list.util.cell.CardStackCell;
-import com.worldventures.dreamtrips.wallet.ui.dashboard.list.util.cell.CardStackHeaderCell;
+import com.worldventures.dreamtrips.wallet.ui.dashboard.util.CardListHeaderAdapter;
+import com.worldventures.dreamtrips.wallet.ui.dashboard.util.CardStackHeaderHolder;
+import com.worldventures.dreamtrips.wallet.ui.dashboard.util.CardStackViewModel;
+import com.worldventures.dreamtrips.wallet.ui.dashboard.util.ImmutableCardStackHeaderHolder;
+import com.worldventures.dreamtrips.wallet.ui.dashboard.util.cell.CardStackCell;
+import com.worldventures.dreamtrips.wallet.ui.dashboard.util.cell.CardStackHeaderCell;
 import com.worldventures.dreamtrips.wallet.ui.dialog.InstallFirmwareErrorDialog;
 
 import java.util.List;

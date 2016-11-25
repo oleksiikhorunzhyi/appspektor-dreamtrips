@@ -1,4 +1,4 @@
-package com.worldventures.dreamtrips.wallet.ui.wizard.finish;
+package com.worldventures.dreamtrips.wallet.ui.wizard.pin.complete;
 
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.flow.path.MasterDetailPath;

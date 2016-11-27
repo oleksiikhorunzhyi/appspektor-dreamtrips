@@ -186,7 +186,7 @@ public class FeedPresenter extends Presenter<FeedPresenter.View> {
             .compose(bindView())
             .subscribe(new ActionStateSubscriber<GetCirclesCommand>().onStart(circlesCommand -> onCirclesStart())
                   .onSuccess(circlesCommand -> onCirclesSuccess(circlesCommand.getResult()))
-                  .onFail((circlesCommand, throwable) -> onCirclesError(circlesCommand.getErrorMessage())));
+                  .onFail(this::onCirclesError));
    }
 
    private void updateCircles() {
@@ -204,9 +204,9 @@ public class FeedPresenter extends Presenter<FeedPresenter.View> {
       view.showFilter(resultCircles, filterCircle);
    }
 
-   private void onCirclesError(String messageId) {
+   private void onCirclesError(CommandWithError commandWithError, Throwable throwable) {
       view.hideBlockingProgress();
-      view.informUser(messageId);
+      handleError(commandWithError, throwable);
    }
 
    ///////////////////////////////////////////////////////////////////////////
@@ -267,7 +267,7 @@ public class FeedPresenter extends Presenter<FeedPresenter.View> {
    }
 
    private void loadMoreItemsError(CommandWithError action, Throwable throwable) {
-      view.informUser(action.getErrorMessage());
+      handleError(action, throwable);
       view.updateLoadingStatus(false, false);
       addFeedItems(new ArrayList<>());
    }

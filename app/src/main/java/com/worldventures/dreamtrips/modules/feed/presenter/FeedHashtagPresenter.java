@@ -149,7 +149,7 @@ public class FeedHashtagPresenter<T extends FeedHashtagPresenter.View> extends J
             .subscribe(new ActionStateSubscriber<FeedByHashtagCommand.Refresh>()
                .onSuccess(refresh -> refreshFeedSucceed(refresh.getResult()))
                .onFail((refresh, throwable) -> {
-                  view.informUser(refresh.getErrorMessage());
+                  handleError(refresh, throwable);
                   refreshFeedError();
             }));
    }
@@ -178,7 +178,7 @@ public class FeedHashtagPresenter<T extends FeedHashtagPresenter.View> extends J
             .subscribe(new ActionStateSubscriber<FeedByHashtagCommand.LoadNext>()
                   .onSuccess(loadNext -> addFeedItems(loadNext.getResult()))
                   .onFail((loadNext, throwable) -> {
-                     view.informUser(loadNext.getErrorMessage());
+                     handleError(loadNext, throwable);
                      loadMoreItemsError();
                   }));
    }

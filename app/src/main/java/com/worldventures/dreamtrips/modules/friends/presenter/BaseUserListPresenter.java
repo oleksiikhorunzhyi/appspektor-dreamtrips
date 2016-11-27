@@ -76,9 +76,9 @@ public abstract class BaseUserListPresenter<T extends BaseUserListPresenter.View
       view.hideBlockingProgress();
    }
 
-   protected void onCirclesError(String messageId) {
+   protected void onCirclesError(CommandWithError commandWithError, Throwable throwable) {
       view.hideBlockingProgress();
-      view.informUser(messageId);
+      handleError(commandWithError, throwable);
    }
 
    protected boolean isNeedPreload() {
@@ -141,7 +141,7 @@ public abstract class BaseUserListPresenter<T extends BaseUserListPresenter.View
    protected void acceptRequest(User user) {
       getCirclesObservable().subscribe(new ActionStateSubscriber<GetCirclesCommand>().onStart(circlesCommand -> onCirclesStart())
             .onSuccess(circlesCommand -> onCirclesSuccessAcceptRequest(user, circlesCommand.getResult()))
-            .onFail((circlesCommand, throwable) -> onCirclesError(circlesCommand.getErrorMessage())));
+            .onFail(this::onCirclesError));
    }
 
    private void onCirclesSuccessAcceptRequest(User user, List<Circle> circles) {
@@ -164,7 +164,7 @@ public abstract class BaseUserListPresenter<T extends BaseUserListPresenter.View
    protected void addFriend(User user) {
       getCirclesObservable().subscribe(new ActionStateSubscriber<GetCirclesCommand>().onStart(circlesCommand -> onCirclesStart())
             .onSuccess(circlesCommand -> onCirclesSuccessAddUserRequest(user, circlesCommand.getResult()))
-            .onFail((circlesCommand, throwable) -> onCirclesError(circlesCommand.getErrorMessage())));
+            .onFail(this::onCirclesError));
    }
 
    private void onCirclesSuccessAddUserRequest(User user, List<Circle> circles) {

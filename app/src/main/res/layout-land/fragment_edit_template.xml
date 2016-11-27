@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
       xmlns:card_view="http://schemas.android.com/apk/res-auto"
+      android:id="@id/content_layout"
       android:layout_width="600dp"
       android:layout_height="match_parent"
       android:layout_gravity="center_horizontal"
@@ -17,6 +18,5 @@
       <include layout="@layout/layout_edit_template" />
 
    </android.support.v7.widget.CardView>
-
 
 </RelativeLayout>

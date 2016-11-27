@@ -49,4 +49,8 @@ public class UpdateBucketItemCommand extends MappableApiActionCommand<UpdateBuck
    public int getFallbackErrorMessage() {
       return R.string.bucket_list_action_create_error;
    }
+
+   public String getBucketItemId() {
+      return bucketBody.id();
+   }
 }

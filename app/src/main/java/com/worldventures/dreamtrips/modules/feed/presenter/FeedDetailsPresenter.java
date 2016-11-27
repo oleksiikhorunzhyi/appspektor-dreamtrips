@@ -1,6 +1,8 @@
 package com.worldventures.dreamtrips.modules.feed.presenter;
 
 import com.badoo.mobile.util.WeakHandler;
+import com.worldventures.dreamtrips.modules.bucketlist.service.BucketInteractor;
+import com.worldventures.dreamtrips.modules.bucketlist.service.action.UpdateBucketItemCommand;
 import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.feed.event.FeedEntityChangedEvent;
 import com.worldventures.dreamtrips.modules.feed.event.FeedEntityCommentedEvent;
@@ -25,6 +27,7 @@ public class FeedDetailsPresenter<V extends FeedDetailsPresenter.View> extends B
    private WeakHandler handler = new WeakHandler();
 
    @Inject TripsInteractor tripsInteractor;
+   @Inject BucketInteractor bucketInteractor;
    @Inject FeedInteractor feedInteractor;
 
    public FeedDetailsPresenter(FeedItem feedItem) {
@@ -38,6 +41,7 @@ public class FeedDetailsPresenter<V extends FeedDetailsPresenter.View> extends B
       view.setFeedItem(feedItem);
       subscribeToLikesChanges();
       subscribeForTripsDetails();
+      subscribeToBucketDetailsUpdates();
       loadFullEventInfo();
    }
 
@@ -69,6 +73,7 @@ public class FeedDetailsPresenter<V extends FeedDetailsPresenter.View> extends B
    }
 
    protected void updateFullEventInfo(FeedEntity updatedFeedEntity) {
+      if (!updatedFeedEntity.getUid().equals(feedEntity.getUid())) return;
       feedEntity = updatedFeedEntity;
       feedEntity.setComments(null);
       feedItem.setItem(feedEntity);
@@ -85,6 +90,18 @@ public class FeedDetailsPresenter<V extends FeedDetailsPresenter.View> extends B
             .subscribe(new ActionStateSubscriber<GetTripDetailsCommand>()
                   .onSuccess(command -> updateFullEventInfo(command.getResult()))
                   .onFail(this::handleError));
+   }
+
+   private void subscribeToBucketDetailsUpdates() {
+      bucketInteractor.updatePipe()
+            .observe()
+            .compose(bindViewToMainComposer())
+            .subscribe(new ActionStateSubscriber<UpdateBucketItemCommand>()
+                  .onFail((updateBucketItemCommand, throwable) -> {
+                     if (feedEntity.getUid().equals(updateBucketItemCommand.getBucketItemId())) {
+                        handleError(updateBucketItemCommand, throwable);
+                     }
+                  }));
    }
 
    public void onEvent(FeedEntityChangedEvent event) {

@@ -1,6 +1,5 @@
 package com.worldventures.dreamtrips.wallet.ui.widget;
 
-
 import android.content.Context;
 import android.support.annotation.DrawableRes;
 import android.util.AttributeSet;
@@ -52,20 +51,22 @@ public class BankCardWidget extends FrameLayout {
 
    public void setBankCardInfoForList(BankCardHelper bankCardHelper, BankCard bankCard) {
       setBankCardInfo(bankCardHelper.formattedBankNameWithCardNumber(bankCard), bankCardHelper, bankCard);
+      setCardName(bankCard.cardNameHolder());
    }
 
    public void setBankCardInfo(BankCardHelper bankCardHelper, BankCard bankCard) {
       setBankCardInfo(bankCardHelper.formattedBankName(bankCard), bankCardHelper, bankCard);
+      setCardName(bankCard.nickName());
    }
 
    private void setBankCardInfo(CharSequence bankLabel, BankCardHelper bankCardHelper, BankCard bankCard) {
-      cardTitle.setText(bankCard.cardNameHolder());
       cardNumber.setText(String.format("•••• •••• •••• %04d", bankCard.number() % 10000));
       expireDate.setText(bankCard.expDate());
       tvBankLabel.setText(bankLabel);
       cardTypeIcon.setImageResource(
             bankCardHelper.obtainFinancialServiceImageRes(bankCard.issuerInfo().financialService()));
       cardType.setText(bankCardHelper.obtainCardType(bankCard.issuerInfo().cardType()));
+
       if (bankCard.category() == Card.Category.SAMPLE) {
          cardTypeIcon.setVisibility(INVISIBLE);
          sampleCardHolder.setVisibility(VISIBLE);
@@ -73,6 +74,10 @@ public class BankCardWidget extends FrameLayout {
          cardTypeIcon.setVisibility(VISIBLE);
          sampleCardHolder.setVisibility(GONE);
       }
+   }
+
+   private void setCardName(String cardName) {
+      cardTitle.setText(cardName);
    }
 
    public void setBankCardHolder(@DrawableRes int resource) {

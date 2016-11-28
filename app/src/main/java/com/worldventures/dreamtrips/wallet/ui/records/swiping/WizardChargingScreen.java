@@ -1,4 +1,4 @@
-package com.worldventures.dreamtrips.wallet.ui.wizard.charging;
+package com.worldventures.dreamtrips.wallet.ui.records.swiping;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
@@ -10,11 +10,11 @@ import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletLinearLayout;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.OperationScreen;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.delegate.DialogOperationScreen;
-import com.worldventures.dreamtrips.wallet.ui.wizard.charging.anim.ChargingSwipingAnimations;
+import com.worldventures.dreamtrips.wallet.ui.records.swiping.anim.ChargingSwipingAnimations;
 
 import butterknife.InjectView;
 
-import static com.worldventures.dreamtrips.wallet.ui.wizard.charging.anim.ChargingSwipingAnimations.BANKCARD_ANIMATION_REPEAT_DEFAULT;
+import static com.worldventures.dreamtrips.wallet.ui.records.swiping.anim.ChargingSwipingAnimations.BANKCARD_ANIMATION_REPEAT_DEFAULT;
 
 public class WizardChargingScreen extends WalletLinearLayout<WizardChargingPresenter.Screen, WizardChargingPresenter, WizardChargingPath> implements WizardChargingPresenter.Screen {
 
@@ -65,5 +65,10 @@ public class WizardChargingScreen extends WalletLinearLayout<WizardChargingPrese
    @Override
    protected boolean hasToolbar() {
       return true;
+   }
+
+   @Override
+   public void showSwipeError() {
+      operationScreen.showError(getString(R.string.wallet_wizard_charging_swipe_error), o -> {});
    }
 }

@@ -11,7 +11,7 @@ import com.worldventures.dreamtrips.wallet.ui.common.base.screen.WalletScreen;
 import com.worldventures.dreamtrips.wallet.ui.common.helper.ErrorActionStateSubscriberWrapper;
 import com.worldventures.dreamtrips.wallet.ui.common.helper.ErrorHandler;
 import com.worldventures.dreamtrips.wallet.ui.common.navigation.Navigator;
-import com.worldventures.dreamtrips.wallet.ui.dashboard.list.CardListPath;
+import com.worldventures.dreamtrips.wallet.ui.dashboard.CardListPath;
 
 import javax.inject.Inject;
 

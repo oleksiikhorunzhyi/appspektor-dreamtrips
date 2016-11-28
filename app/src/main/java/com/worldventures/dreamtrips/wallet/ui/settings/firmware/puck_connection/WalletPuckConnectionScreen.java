@@ -8,7 +8,7 @@ import android.view.View;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletLinearLayout;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.OperationScreen;
-import com.worldventures.dreamtrips.wallet.ui.wizard.charging.anim.ChargingSwipingAnimations;
+import com.worldventures.dreamtrips.wallet.ui.records.swiping.anim.ChargingSwipingAnimations;
 
 import butterknife.InjectView;
 import butterknife.OnClick;

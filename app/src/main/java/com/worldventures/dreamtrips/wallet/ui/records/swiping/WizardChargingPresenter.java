@@ -1,11 +1,9 @@
-package com.worldventures.dreamtrips.wallet.ui.wizard.charging;
+package com.worldventures.dreamtrips.wallet.ui.records.swiping;
 
 import android.content.Context;
 import android.os.Parcelable;
 
 import com.techery.spares.module.Injector;
-import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.core.janet.composer.ActionPipeCacheWiper;
 import com.worldventures.dreamtrips.core.utils.tracksystem.AnalyticsInteractor;
 import com.worldventures.dreamtrips.wallet.analytics.ConnectFlyeToChargerAction;
 import com.worldventures.dreamtrips.wallet.analytics.FailedToAddCardAction;
@@ -19,16 +17,15 @@ import com.worldventures.dreamtrips.wallet.ui.common.helper.ErrorActionStateSubs
 import com.worldventures.dreamtrips.wallet.ui.common.helper.ErrorHandler;
 import com.worldventures.dreamtrips.wallet.ui.common.helper.OperationActionStateSubscriberWrapper;
 import com.worldventures.dreamtrips.wallet.ui.common.navigation.Navigator;
-import com.worldventures.dreamtrips.wallet.ui.wizard.card_details.AddCardDetailsPath;
+import com.worldventures.dreamtrips.wallet.ui.records.add.AddCardDetailsPath;
 
 import java.net.UnknownHostException;
-import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
 
 import io.techery.janet.smartcard.action.charger.StartCardRecordingAction;
 import io.techery.janet.smartcard.action.charger.StopCardRecordingAction;
-import io.techery.janet.smartcard.event.CardChargedEvent;
+import io.techery.janet.smartcard.event.CardSwipedEvent;
 import io.techery.janet.smartcard.exception.NotConnectedException;
 import io.techery.janet.smartcard.model.Record;
 
@@ -51,36 +48,32 @@ public class WizardChargingPresenter extends WalletPresenter<WizardChargingPrese
    }
 
    private void observeCharger() {
-      ErrorHandler<StartCardRecordingAction> cardRecordingErrorHandler = createErrorHandlerBuilder(StartCardRecordingAction.class)
-            .build();
       smartCardInteractor.startCardRecordingPipe()
             .createObservable(new StartCardRecordingAction())
             .compose(bindViewIoToMainComposer())
             .subscribe(ErrorActionStateSubscriberWrapper.<StartCardRecordingAction>forView(getView().provideOperationDelegate())
-                  .onFail(cardRecordingErrorHandler)
+                  .onFail(createErrorHandlerBuilder(StartCardRecordingAction.class).build())
                   .wrap());
 
-      ErrorHandler<CardChargedEvent> chargedEventErrorHandler = createErrorHandlerBuilder(CardChargedEvent.class)
-            .defaultMessage(R.string.wallet_wizard_charging_swipe_error)
-            .build();
-      smartCardInteractor.chargedEventPipe()
-            .observe()
-            .delay(2, TimeUnit.SECONDS) // // TODO: 9/16/16 for demo mock device
+      smartCardInteractor.cardSwipedEventPipe()
+            .observeSuccess()
+            .filter(event -> event.result == CardSwipedEvent.Result.ERROR)
             .compose(bindViewIoToMainComposer())
-            .compose(new ActionPipeCacheWiper<>(smartCardInteractor.chargedEventPipe()))
-            .subscribe(OperationActionStateSubscriberWrapper.<CardChargedEvent>forView(getView().provideOperationDelegate())
-                  .onSuccess(event -> cardSwiped(event.record))
-                  .onFail(chargedEventErrorHandler)
-                  .wrap());
+            .subscribe(event -> getView().showSwipeError());
+
+      smartCardInteractor.chargedEventPipe()
+            .observeSuccess()
+            .compose(bindViewIoToMainComposer())
+            .take(1)
+            .subscribe(event -> cardSwiped(event.record));
    }
 
    private void observeBankCardCreation() {
-      ErrorHandler<CreateBankCardCommand> errorHandler = createErrorHandlerBuilder(CreateBankCardCommand.class).build();
       smartCardInteractor.bankCardPipe()
             .observe()
             .compose(bindViewIoToMainComposer())
             .subscribe(OperationActionStateSubscriberWrapper.<CreateBankCardCommand>forView(getView().provideOperationDelegate())
-                  .onFail(errorHandler)
+                  .onFail(createErrorHandlerBuilder(CreateBankCardCommand.class).build())
                   .onSuccess(command -> bankCardCreated(command.getResult()))
                   .wrap());
    }
@@ -120,5 +113,7 @@ public class WizardChargingPresenter extends WalletPresenter<WizardChargingPrese
    }
 
    public interface Screen extends WalletScreen {
+
+      void showSwipeError();
    }
 }

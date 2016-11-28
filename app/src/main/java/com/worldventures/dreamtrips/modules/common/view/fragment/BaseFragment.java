@@ -10,7 +10,6 @@ import android.view.Menu;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.afollestad.materialdialogs.MaterialDialog;
 import com.techery.spares.annotations.Layout;
 import com.techery.spares.ui.fragment.InjectingFragment;
 import com.techery.spares.utils.ui.SoftInputUtil;
@@ -204,16 +203,6 @@ public abstract class BaseFragment<PM extends Presenter> extends InjectingFragme
       } catch (Exception e) {
          // Snackbar initialization can produce NullPointerException on view parent getContext();
          Timber.e(e.getMessage());
-      }
-   }
-
-   @Override
-   public void alert(String s) {
-      if (getActivity() != null && isAdded()) {
-         getActivity().runOnUiThread(() -> getActivity().runOnUiThread(() -> {
-            MaterialDialog.Builder builder = new MaterialDialog.Builder(getActivity());
-            builder.title(R.string.alert).content(s).positiveText(R.string.OK).show();
-         }));
       }
    }
 

@@ -6,9 +6,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.afollestad.materialdialogs.MaterialDialog;
 import com.techery.spares.annotations.Layout;
-import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.utils.ViewUtils;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.common.view.connection_overlay.ConnectionState;
@@ -105,16 +103,6 @@ public abstract class BaseDialogFragmentWithPresenter<T extends Presenter> exten
    @Override
    public void informUser(String string) {
       if (isAdded() && getView() != null) Snackbar.make(getView(), string, Snackbar.LENGTH_SHORT).show();
-   }
-
-   @Override
-   public void alert(String s) {
-      if (getActivity() != null && isAdded()) {
-         getActivity().runOnUiThread(() -> getActivity().runOnUiThread(() -> {
-            MaterialDialog.Builder builder = new MaterialDialog.Builder(getActivity());
-            builder.title(R.string.alert).content(s).positiveText(R.string.OK).show();
-         }));
-      }
    }
 
    @Override

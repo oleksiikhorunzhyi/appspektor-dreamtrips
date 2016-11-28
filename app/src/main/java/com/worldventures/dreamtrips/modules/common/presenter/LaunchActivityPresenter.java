@@ -1,7 +1,5 @@
 package com.worldventures.dreamtrips.modules.common.presenter;
 
-import android.provider.Settings;
-
 import com.messenger.synchmechanism.MessengerConnector;
 import com.techery.spares.utils.ValidationUtils;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
@@ -24,7 +22,6 @@ import javax.inject.Inject;
 import icepick.State;
 import io.techery.janet.helper.ActionStateSubscriber;
 import rx.android.schedulers.AndroidSchedulers;
-import timber.log.Timber;
 
 import static com.worldventures.dreamtrips.util.ValidationUtils.isPasswordValid;
 import static com.worldventures.dreamtrips.util.ValidationUtils.isUsernameValid;
@@ -63,9 +60,10 @@ public class LaunchActivityPresenter extends ActivityPresenter<LaunchActivityPre
                      launchModeBasedOnExistingSession();
                   })
                   .onFail((loginCommand, throwable) -> {
+                     handleError(loginCommand, throwable);
+                     view.dismissLoginProgress();
                      loginInteractor.loginActionPipe().clearReplays();
                      analyticsInteractor.analyticsActionPipe().send(new LoginErrorAction());
-                     view.alertLogin(loginCommand.getErrorMessage());
                   }));
    }
 
@@ -140,7 +138,7 @@ public class LaunchActivityPresenter extends ActivityPresenter<LaunchActivityPre
 
       void openMain();
 
-      void alertLogin(String message);
+      void dismissLoginProgress();
 
       void showLoginProgress();
 

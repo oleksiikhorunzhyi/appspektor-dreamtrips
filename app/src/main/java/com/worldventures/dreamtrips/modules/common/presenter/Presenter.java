@@ -219,8 +219,6 @@ public class Presenter<VT extends Presenter.View> {
 
       void informUser(String string);
 
-      void alert(String s);
-
       boolean isVisibleOnScreen();
 
       void showOfflineAlert();

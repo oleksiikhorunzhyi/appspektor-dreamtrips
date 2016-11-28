@@ -6,11 +6,9 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.widget.Toast;
 
-import com.afollestad.materialdialogs.MaterialDialog;
 import com.facebook.Session;
 import com.trello.rxlifecycle.ActivityEvent;
 import com.trello.rxlifecycle.RxLifecycle;
-import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.utils.ViewUtils;
 import com.worldventures.dreamtrips.modules.common.presenter.ActivityPresenter;
 import com.worldventures.dreamtrips.modules.common.presenter.delegate.OfflineWarningDelegate;
@@ -92,14 +90,6 @@ public abstract class ActivityWithPresenter<PM extends ActivityPresenter> extend
    @Override
    public void initConnectionOverlay(Observable<ConnectionState> connectionStateObservable, Observable stopper) {
 
-   }
-
-   @Override
-   public void alert(String s) {
-      runOnUiThread(() -> {
-         MaterialDialog.Builder builder = new MaterialDialog.Builder(this);
-         builder.title(R.string.alert).content(s).positiveText(R.string.OK).show();
-      });
    }
 
    @Override

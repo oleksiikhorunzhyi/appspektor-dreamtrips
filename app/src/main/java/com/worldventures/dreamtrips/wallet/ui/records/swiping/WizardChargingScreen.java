@@ -66,4 +66,9 @@ public class WizardChargingScreen extends WalletLinearLayout<WizardChargingPrese
    protected boolean hasToolbar() {
       return true;
    }
+
+   @Override
+   public void showSwipeError() {
+      operationScreen.showError(getString(R.string.wallet_wizard_charging_swipe_error), o -> {});
+   }
 }

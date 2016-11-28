@@ -95,11 +95,13 @@ public class AddBankCardCommand extends Command<BankCard> implements InjectableA
    }
 
    private BankCard createBankCard(AddressInfo address) {
-      return ImmutableBankCard.copyOf(bankCard)
-            .withCvv(Integer.parseInt(cvv))
-            .withNickName(nickName)
-            .withIssuerInfo(issuerInfo)
-            .withAddressInfo(address);
+      return ImmutableBankCard.builder()
+            .from(bankCard)
+            .cvv(Integer.parseInt(cvv))
+            .nickName(nickName)
+            .issuerInfo(issuerInfo)
+            .addressInfo(address)
+            .build();
    }
 
    private void checkCardData() throws FormatException {

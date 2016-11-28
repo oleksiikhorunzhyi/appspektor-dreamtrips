@@ -1,6 +1,5 @@
 package com.worldventures.dreamtrips.wallet.domain.converter;
 
-
 import android.text.TextUtils;
 
 import com.worldventures.dreamtrips.wallet.domain.entity.AddressInfo;
@@ -25,6 +24,7 @@ import static com.worldventures.dreamtrips.wallet.domain.converter.RecordFields.
 import static com.worldventures.dreamtrips.wallet.domain.converter.RecordFields.ZIP_FIELD;
 
 public class RecordToBankCardConverter implements com.worldventures.dreamtrips.modules.mapping.converter.Converter<Record, BankCard> {
+
    @Override
    public Class<BankCard> targetClass() {
       return BankCard.class;
@@ -37,7 +37,8 @@ public class RecordToBankCardConverter implements com.worldventures.dreamtrips.m
 
    @Override
    public BankCard convert(MapperyContext mapperyContext, Record record) {
-      Map<String, String> metadata = record.metadata();
+      final Map<String, String> metadata = record.metadata();
+
       AddressInfo addressInfo = ImmutableAddressInfo.builder().build();
       if (record.metadata() != null && !TextUtils.isEmpty(record.metadata().get(CITY_FIELD))) {
          addressInfo = ImmutableAddressInfo.builder()
@@ -72,7 +73,7 @@ public class RecordToBankCardConverter implements com.worldventures.dreamtrips.m
             .cvv(cvv)
             .track1(record.t1())
             .track2(record.t2())
-            .cardNameHolder(record.title())
+            .cardNameHolder("") //// TODO: 11/28/16 use Record.cardNameHolder after sdk will updated !!!
             .nickName(record.title())
             .issuerInfo(recordIssuerInfoBuilder.build())
             .addressInfo(addressInfo)

@@ -44,6 +44,7 @@ public class BankCardToRecordConverter implements com.worldventures.dreamtrips.m
       metadata.put(TYPE_CARD_FIELD, card.issuerInfo().cardType().name());
       metadata.put(BANK_NAME_FIELD, card.issuerInfo().bankName());
       metadata.put(BANK_CARD_CATEGORY, card.category().name());
+      //// TODO: 11/28/16 add cardNameHolder into Record!!!
 
       return ImmutableRecord.builder()
             .id(parseCardId(card))

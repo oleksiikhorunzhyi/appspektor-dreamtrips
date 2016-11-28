@@ -47,6 +47,7 @@ import io.techery.janet.smartcard.action.support.ConnectAction;
 import io.techery.janet.smartcard.action.support.DisconnectAction;
 import io.techery.janet.smartcard.action.user.UnAssignUserAction;
 import io.techery.janet.smartcard.event.CardChargedEvent;
+import io.techery.janet.smartcard.event.CardSwipedEvent;
 import io.techery.janet.smartcard.event.LockDeviceChangedEvent;
 import io.techery.janet.smartcard.model.ConnectionType;
 import rx.Observable;
@@ -90,6 +91,7 @@ public final class SmartCardInteractor {
    private final ActionPipe<RestartSmartCardCommand> restartSmartCardCommandActionPipe;
 
    private final ReadActionPipe<CardChargedEvent> chargedEventPipe;
+   private final ReadActionPipe<CardSwipedEvent> cardSwipedEventPipe;
    private final ActionPipe<StartCardRecordingAction> startCardRecordingPipe;
    private final ActionPipe<StopCardRecordingAction> stopCardRecordingPipe;
    private final ActionPipe<CreateBankCardCommand> recordIssuerInfoPipe;
@@ -137,6 +139,7 @@ public final class SmartCardInteractor {
       restartSmartCardCommandActionPipe = sessionActionPipeCreator.createPipe(RestartSmartCardCommand.class, Schedulers.io());
 
       chargedEventPipe = sessionActionPipeCreator.createPipe(CardChargedEvent.class, Schedulers.io());
+      cardSwipedEventPipe = sessionActionPipeCreator.createPipe(CardSwipedEvent.class, Schedulers.io());
       startCardRecordingPipe = sessionActionPipeCreator.createPipe(StartCardRecordingAction.class, Schedulers.io());
       stopCardRecordingPipe = sessionActionPipeCreator.createPipe(StopCardRecordingAction.class, Schedulers.io());
 
@@ -233,6 +236,10 @@ public final class SmartCardInteractor {
 
    public ReadActionPipe<CardChargedEvent> chargedEventPipe() {
       return chargedEventPipe;
+   }
+
+   public ReadActionPipe<CardSwipedEvent> cardSwipedEventPipe() {
+      return cardSwipedEventPipe;
    }
 
    public ActionPipe<StartCardRecordingAction> startCardRecordingPipe() {

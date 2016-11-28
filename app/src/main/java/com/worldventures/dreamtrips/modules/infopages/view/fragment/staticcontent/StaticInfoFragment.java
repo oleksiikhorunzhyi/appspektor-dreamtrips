@@ -661,7 +661,7 @@ public abstract class StaticInfoFragment<T extends WebViewFragmentPresenter, P e
 
    }
 
-   @Layout(R.layout.fragment_webview)
+   @Layout(R.layout.fragment_webview_with_overlay)
    public static class BookItFragment extends BundleUrlFragment<WebViewFragmentPresenter> {
 
       private static final String BOOK_IT_HEADER_KEY = "DT-Device-Identifier";

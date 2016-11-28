@@ -127,7 +127,6 @@ public class FeedPresenter extends Presenter<FeedPresenter.View> {
    @Override
    public void takeView(View view) {
       super.takeView(view);
-      apiErrorPresenter.setView(view);
       updateCircles();
       subscribeRefreshFeeds();
       subscribeLoadNextFeeds();

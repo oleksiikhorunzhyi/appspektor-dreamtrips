@@ -33,7 +33,6 @@ public class BucketTabsPresenter extends Presenter<BucketTabsPresenter.View> {
    @Override
    public void takeView(View view) {
       super.takeView(view);
-      apiErrorPresenter.setView(view);
       setTabs();
       loadCategories();
       loadBucketList();

@@ -40,16 +40,9 @@ public class PodcastsPresenter<T extends PodcastsPresenter.View> extends JobPres
    @Override
    public void takeView(T view) {
       super.takeView(view);
-      apiErrorPresenter.setView(view);
       subscribeToApiUpdates();
       subscribeToCachingStatusUpdates();
       loadPodcasts(true);
-   }
-
-   @Override
-   public void dropView() {
-      apiErrorPresenter.dropView();
-      super.dropView();
    }
 
    public void scrolled(int totalItemCount, int lastVisible) {

@@ -73,7 +73,6 @@ public class UserPresenter extends ProfilePresenter<UserPresenter.View, User> {
    @Override
    public void takeView(View view) {
       super.takeView(view);
-      apiErrorPresenter.setView(view);
       subscribeLoadNextFeeds();
       subscribeRefreshFeeds();
       subscribeToChangingCircles();

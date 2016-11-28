@@ -153,18 +153,6 @@ public class Presenter<VT extends Presenter.View> {
       return Utils.isConnected(context);
    }
 
-   /**
-    * @deprecated use CommandWithError and Presenter.handleError(action, throwable)
-    */
-   protected void handleError(Throwable throwable) {
-      if (apiErrorPresenter.hasView()) {
-         apiErrorPresenter.handleError(throwable);
-      } else {
-         Timber.d("ApiErrorPresenter has detached view");
-         view.informUser(R.string.smth_went_wrong);
-      }
-   }
-
    public void handleError(Object action, Throwable error) {
       // null view callback scenario is possible from FeedEntityManager
       if (view == null) return;

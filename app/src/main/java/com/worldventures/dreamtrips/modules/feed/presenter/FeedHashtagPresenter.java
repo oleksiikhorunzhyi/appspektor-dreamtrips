@@ -79,7 +79,6 @@ public class FeedHashtagPresenter<T extends FeedHashtagPresenter.View> extends J
    @Override
    public void takeView(T view) {
       super.takeView(view);
-      apiErrorPresenter.setView(view);
       if (feedItems.size() != 0) {
          view.refreshFeedItems(feedItems);
       }

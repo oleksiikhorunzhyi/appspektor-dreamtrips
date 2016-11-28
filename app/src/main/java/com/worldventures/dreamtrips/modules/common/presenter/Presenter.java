@@ -153,21 +153,32 @@ public class Presenter<VT extends Presenter.View> {
       return Utils.isConnected(context);
    }
 
+   public void handleError(Throwable error) {
+      if (handleGenericError(error)) return;
+      view.informUser(R.string.smth_went_wrong);
+   }
+
    public void handleError(Object action, Throwable error) {
-      // null view callback scenario is possible from FeedEntityManager
-      if (view == null) return;
-      if (getCauseByType(CancelException.class, error) != null) return;
-      if (getCauseByType(IOException.class, error.getCause()) != null) {
-         connectionStatePublishSubject.onNext(ConnectionState.DISCONNECTED);
-         return;
-      }
+      if (handleGenericError(error)) return;
       if (action instanceof CommandWithError) {
          view.informUser(((CommandWithError) action).getErrorMessage());
-         return;
       }
       String message = JanetHttpErrorHandlingUtils.handleJanetHttpError(context,
             action, error, context.getString(R.string.smth_went_wrong));
       view.informUser(message);
+   }
+
+   private boolean handleGenericError(Throwable error) {
+      if (getCauseByType(CancelException.class, error) != null) return true;
+      if (getCauseByType(IOException.class, error) != null) {
+         reportNoConnection();
+         return true;
+      }
+      return false;
+   }
+
+   public void reportNoConnection() {
+      connectionStatePublishSubject.onNext(ConnectionState.DISCONNECTED);
    }
 
    private void subscribeToConnectivityStateUpdates() {

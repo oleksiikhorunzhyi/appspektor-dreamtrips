@@ -14,7 +14,7 @@
          >
 
       <com.facebook.drawee.view.SimpleDraweeView
-            android:id="@+id/trip_cover"
+            android:id="@+id/tripCover"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             fresco:actualImageScaleType="centerCrop"
@@ -23,30 +23,45 @@
             />
 
       <TextView
-            android:id="@+id/trip_mark"
+            android:id="@+id/textViewFeatured"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="6dp"
             android:padding="6dp"
             android:textColor="@color/white"
+            android:text="@string/featured_trip"
             android:textSize="@dimen/font_small"
-            tools:background="@color/blue"
-            tools:text="Featured trip"
+            android:background="@color/bucket_blue"
+            android:visibility="invisible"
             />
+
+      <TextView
+            android:id="@+id/sold_out"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="6dp"
+            android:padding="6dp"
+            android:text="@string/sold_out_trip"
+            android:textColor="@color/white"
+            android:textSize="@dimen/font_small"
+            android:background="@color/bucket_red"
+            android:visibility="invisible"
+            />
+
 
    </FrameLayout>
 
    <RelativeLayout
          android:layout_width="match_parent"
          android:layout_height="match_parent"
-         android:paddingTop="@dimen/map_trip_padding_vertical"
          android:paddingBottom="@dimen/map_trip_padding_vertical"
          android:paddingLeft="@dimen/map_trip_padding_horizontal"
          android:paddingRight="@dimen/map_trip_padding_horizontal"
+         android:paddingTop="@dimen/map_trip_padding_vertical"
          >
 
       <TextView
-            android:id="@+id/trip_title"
+            android:id="@+id/textViewName"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentTop="true"
@@ -59,10 +74,10 @@
             />
 
       <TextView
-            android:id="@+id/trip_location"
+            android:id="@+id/textViewPlace"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/trip_title"
+            android:layout_below="@+id/textViewName"
             android:layout_marginTop="@dimen/spacing_tiny"
             android:drawableLeft="@drawable/location_small_icon"
             android:drawablePadding="@dimen/spacing_tiny"
@@ -75,22 +90,22 @@
             />
 
       <TextView
-            android:id="@+id/trip_date"
+            android:id="@+id/textViewDate"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
             android:layout_alignParentLeft="true"
-            android:layout_toLeftOf="@+id/trip_price"
             android:layout_marginRight="@dimen/spacing_tiny"
-            android:maxLines="1"
+            android:layout_toLeftOf="@+id/textViewPrice"
             android:ellipsize="end"
+            android:maxLines="1"
             android:textColor="@color/blue"
             android:textSize="@dimen/font_medium"
             tools:text="Aug 26, 2016-Aug 29, 2016"
             />
 
       <TextView
-            android:id="@+id/trip_price"
+            android:id="@+id/textViewPrice"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"

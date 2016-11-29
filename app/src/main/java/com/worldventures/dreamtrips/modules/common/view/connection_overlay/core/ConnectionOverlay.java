@@ -14,7 +14,6 @@ public abstract class ConnectionOverlay<V extends ConnectionOverlayView> {
 
    protected Context context;
    protected V overlayView;
-   protected View rootView;
 
    ConnectionOverlay(Context context, View rootView) {
       this(context, rootView, R.id.content_layout);

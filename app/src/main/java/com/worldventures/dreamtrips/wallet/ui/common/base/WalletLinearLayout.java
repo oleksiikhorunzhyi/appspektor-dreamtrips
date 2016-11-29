@@ -63,9 +63,8 @@ public abstract class WalletLinearLayout<V extends WalletScreen, P extends ViewS
             connectionLabel.setText(R.string.wallet_smart_card_locked_disconnected_status);
             if (indexOfChild(connectionLabel) < 0) {
                addView(connectionLabel, hasToolbar() ? 1 : 0);
-            } else {
-               getHandler().removeCallbacksAndMessages(null);
             }
+            getHandler().removeCallbacksAndMessages(null);
             break;
       }
    }

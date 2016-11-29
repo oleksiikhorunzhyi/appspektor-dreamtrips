@@ -6,6 +6,10 @@ import android.os.Parcelable;
 import com.techery.spares.module.Injector;
 import com.worldventures.dreamtrips.api.smart_card.firmware.model.FirmwareInfo;
 import com.worldventures.dreamtrips.core.navigation.ActivityRouter;
+import com.worldventures.dreamtrips.core.utils.tracksystem.AnalyticsInteractor;
+import com.worldventures.dreamtrips.wallet.analytics.InstallingUpdateAction;
+import com.worldventures.dreamtrips.wallet.analytics.ViewSdkUpdateAction;
+import com.worldventures.dreamtrips.wallet.analytics.WalletAnalyticsCommand;
 import com.worldventures.dreamtrips.wallet.domain.storage.TemporaryStorage;
 import com.worldventures.dreamtrips.wallet.service.FirmwareInteractor;
 import com.worldventures.dreamtrips.wallet.service.SmartCardInteractor;
@@ -22,6 +26,7 @@ import java.io.File;
 
 import javax.inject.Inject;
 
+import rx.Observable;
 import rx.functions.Action1;
 
 import static com.worldventures.dreamtrips.wallet.util.WalletFilesUtils.checkStorageAvailability;
@@ -31,6 +36,7 @@ public class WalletNewFirmwareAvailablePresenter extends WalletPresenter<WalletN
 
    @Inject FirmwareInteractor firmwareInteractor;
    @Inject SmartCardInteractor smartCardInteractor;
+   @Inject AnalyticsInteractor analyticsInteractor;
 
    @Inject Navigator navigator;
    @Inject ActivityRouter activityRouter;
@@ -45,6 +51,8 @@ public class WalletNewFirmwareAvailablePresenter extends WalletPresenter<WalletN
    @Override
    public void onAttachedToWindow() {
       super.onAttachedToWindow();
+      sendAnalyticAction();
+
       observeLatestAvailableFirmware();
       observeSmartCard();
    }
@@ -77,6 +85,18 @@ public class WalletNewFirmwareAvailablePresenter extends WalletPresenter<WalletN
             });
    }
 
+   private void sendAnalyticAction() {
+      Observable.zip(firmwareInteractor.firmwareInfoPipe().observeSuccessWithReplay().take(1),
+            smartCardInteractor.activeSmartCardPipe().observeSuccessWithReplay().take(1),
+            (firmwareCommand, smartCardCommand) -> {
+               return new ViewSdkUpdateAction(firmwareCommand.getResult().firmwareInfo().firmwareVersion(),
+                     smartCardCommand.getResult().firmWareVersion(),
+                     !firmwareCommand.getResult().firmwareInfo().isCompatible());
+            }).subscribe(viewSdkUpdateAction -> {
+         analyticsInteractor.walletAnalyticsCommandPipe().send(new WalletAnalyticsCommand(viewSdkUpdateAction));
+      });
+   }
+
    void goBack() {
       navigator.goBack();
    }
@@ -96,6 +116,9 @@ public class WalletNewFirmwareAvailablePresenter extends WalletPresenter<WalletN
          downloadFile(file.getAbsolutePath());
       } catch (WalletFilesUtils.NotEnoughSpaceException e) {
          getView().insufficientSpace(e.getMissingByteSpace());
+
+         WalletAnalyticsCommand analyticsCommand = new WalletAnalyticsCommand(new InstallingUpdateAction());
+         analyticsInteractor.walletAnalyticsCommandPipe().send(analyticsCommand);
       }
    }
 

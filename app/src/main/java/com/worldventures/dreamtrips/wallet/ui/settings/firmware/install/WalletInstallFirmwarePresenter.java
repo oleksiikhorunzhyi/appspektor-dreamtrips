@@ -4,8 +4,13 @@ import android.content.Context;
 
 import com.techery.spares.module.Injector;
 import com.worldventures.dreamtrips.core.janet.composer.ActionPipeCacheWiper;
+import com.worldventures.dreamtrips.core.utils.tracksystem.AnalyticsInteractor;
+import com.worldventures.dreamtrips.wallet.analytics.InstallingUpdateAction;
+import com.worldventures.dreamtrips.wallet.analytics.RetryInstallUpdateAction;
+import com.worldventures.dreamtrips.wallet.analytics.WalletAnalyticsCommand;
 import com.worldventures.dreamtrips.wallet.domain.entity.FirmwareUpdateData;
 import com.worldventures.dreamtrips.wallet.service.FirmwareInteractor;
+import com.worldventures.dreamtrips.wallet.service.SmartCardInteractor;
 import com.worldventures.dreamtrips.wallet.service.command.firmware.InstallFirmwareCommand;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletPresenter;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.OperationScreen;
@@ -20,10 +25,14 @@ import javax.inject.Inject;
 
 import flow.Flow;
 import flow.History;
+import io.techery.janet.Command;
 
 public class WalletInstallFirmwarePresenter extends WalletPresenter<WalletInstallFirmwarePresenter.Screen, WalletInstallFirmwareState> {
 
    @Inject FirmwareInteractor firmwareInteractor;
+   @Inject SmartCardInteractor smartCardInteractor;
+   @Inject AnalyticsInteractor analyticsInteractor;
+
    @Inject Navigator navigator;
 
    private final FirmwareUpdateData firmwareData;
@@ -36,6 +45,7 @@ public class WalletInstallFirmwarePresenter extends WalletPresenter<WalletInstal
    @Override
    public void onAttachedToWindow() {
       super.onAttachedToWindow();
+      sendAnalyticEvent();
       firmwareInteractor.installFirmwarePipe()
             .observeWithReplay()
             .compose(new ActionPipeCacheWiper(firmwareInteractor.installFirmwarePipe()))
@@ -49,6 +59,11 @@ public class WalletInstallFirmwarePresenter extends WalletPresenter<WalletInstal
       if (!state.started) {
          install();
       }
+   }
+
+   private void sendAnalyticEvent() {
+      WalletAnalyticsCommand analyticsCommand = new WalletAnalyticsCommand(new InstallingUpdateAction());
+      analyticsInteractor.walletAnalyticsCommandPipe().send(analyticsCommand);
    }
 
    @Override
@@ -68,12 +83,28 @@ public class WalletInstallFirmwarePresenter extends WalletPresenter<WalletInstal
       navigator.setHistory(historyBuilder.build(), Flow.Direction.REPLACE);
    }
 
-   void goToDashboard() {
+   void cancelReinstall() {
+      sendRetryAnalyticAction(false);
       navigator.single(new CardListPath(), Flow.Direction.BACKWARD);
    }
 
    void retry() {
       install();
+      sendRetryAnalyticAction(true);
+   }
+
+   private void sendRetryAnalyticAction(boolean retry) {
+      smartCardInteractor.activeSmartCardPipe()
+            .observeSuccessWithReplay()
+            .take(1)
+            .map(Command::getResult)
+            .subscribe(smartcard -> {
+               RetryInstallUpdateAction retryInstallUpdateAction = new RetryInstallUpdateAction(smartcard.firmWareVersion(), firmwareData
+                     .firmwareInfo()
+                     .firmwareVersion(), retry);
+               WalletAnalyticsCommand analyticsCommand = new WalletAnalyticsCommand(retryInstallUpdateAction);
+               analyticsInteractor.walletAnalyticsCommandPipe().send(analyticsCommand);
+            });
    }
 
    public interface Screen extends WalletScreen, OperationScreen {

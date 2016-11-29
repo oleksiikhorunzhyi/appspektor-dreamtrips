@@ -5,6 +5,11 @@ import android.os.Parcelable;
 
 import com.techery.spares.module.Injector;
 import com.worldventures.dreamtrips.api.smart_card.firmware.model.FirmwareInfo;
+import com.worldventures.dreamtrips.core.utils.tracksystem.AnalyticsInteractor;
+import com.worldventures.dreamtrips.wallet.analytics.UpdateChecksVisitAction;
+import com.worldventures.dreamtrips.wallet.analytics.UpdateInstallAction;
+import com.worldventures.dreamtrips.wallet.analytics.UpdateInstallLaterAction;
+import com.worldventures.dreamtrips.wallet.analytics.WalletAnalyticsCommand;
 import com.worldventures.dreamtrips.wallet.domain.entity.ImmutableFirmwareUpdateData;
 import com.worldventures.dreamtrips.wallet.service.FirmwareInteractor;
 import com.worldventures.dreamtrips.wallet.service.SmartCardInteractor;
@@ -26,6 +31,7 @@ public class WalletFirmwareChecksPresenter extends WalletPresenter<WalletFirmwar
    @Inject WalletBluetoothService bluetoothService;
    @Inject FirmwareInteractor firmwareInteractor;
    @Inject SmartCardInteractor smartCardInteractor;
+   @Inject AnalyticsInteractor analyticsInteractor;
    @Inject Navigator navigator;
 
    private final String firmwareFilePath;
@@ -41,6 +47,14 @@ public class WalletFirmwareChecksPresenter extends WalletPresenter<WalletFirmwar
    public void attachView(Screen view) {
       super.attachView(view);
       observeChecks();
+   }
+
+   @Override
+   public void onAttachedToWindow() {
+      super.onAttachedToWindow();
+
+      WalletAnalyticsCommand analyticsCommand = new WalletAnalyticsCommand(new UpdateChecksVisitAction());
+      analyticsInteractor.walletAnalyticsCommandPipe().send(analyticsCommand);
    }
 
    private void observeChecks() {
@@ -61,9 +75,15 @@ public class WalletFirmwareChecksPresenter extends WalletPresenter<WalletFirmwar
 
    void installLater() {
       goBack();
+
+      WalletAnalyticsCommand analyticsCommand = new WalletAnalyticsCommand(new UpdateInstallLaterAction());
+      analyticsInteractor.walletAnalyticsCommandPipe().send(analyticsCommand);
    }
 
    void install() {
+      WalletAnalyticsCommand analyticsCommand = new WalletAnalyticsCommand(new UpdateInstallAction());
+      analyticsInteractor.walletAnalyticsCommandPipe().send(analyticsCommand);
+
       navigator.go(new WalletInstallFirmwarePath(
             ImmutableFirmwareUpdateData.builder()
                   .firmwareInfo(firmwareInfo)

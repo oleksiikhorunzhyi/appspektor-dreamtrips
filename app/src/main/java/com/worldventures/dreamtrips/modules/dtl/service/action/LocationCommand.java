@@ -7,21 +7,21 @@ import com.worldventures.dreamtrips.modules.dtl.model.location.DtlLocation;
 import io.techery.janet.command.annotations.CommandAction;
 
 @CommandAction
-public class DtlLocationCommand extends ValueCommandAction<DtlLocation> {
+public class LocationCommand extends ValueCommandAction<DtlLocation> {
 
-   public static DtlLocationCommand change(DtlLocation location) {
-      return new DtlLocationCommand(location);
+   public static LocationCommand change(DtlLocation location) {
+      return new LocationCommand(location);
    }
 
-   public static DtlLocationCommand clear() {
-      return change(DtlLocation.UNDEFINED);
+   public static LocationCommand clear() {
+      return change(DtlLocation.undefined());
    }
 
-   private DtlLocationCommand(DtlLocation dtlLocation) {
+   private LocationCommand(DtlLocation dtlLocation) {
       super(dtlLocation);
    }
 
    public boolean isResultDefined() {
-      return getResult() != null && getResult().getLocationSourceType() != LocationSourceType.UNDEFINED;
+      return getResult() != null && getResult().locationSourceType() != LocationSourceType.UNDEFINED;
    }
 }

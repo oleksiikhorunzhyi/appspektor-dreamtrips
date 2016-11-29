@@ -69,7 +69,8 @@ public final class OperationActionStateSubscriberWrapper<T> {
                      .getString(R.string.error_something_went_wrong);
 
                view.hideProgress();
-               view.showError(message, failHolder.action == null ? null : o -> failHolder.action.call(t));
+               Action1<T> action = failHolder.action;
+               view.showError(message, action == null ? null : o -> action.call(t));
             })
             .onProgress((t, integer) -> {
                if (onProgress != null) {

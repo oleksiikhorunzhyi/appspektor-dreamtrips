@@ -3,6 +3,7 @@ package com.worldventures.dreamtrips.wallet.ui.settings.general;
 import android.content.Context;
 import android.os.Parcelable;
 import android.support.annotation.Nullable;
+import android.util.Pair;
 
 import com.techery.spares.module.Injector;
 import com.worldventures.dreamtrips.R;
@@ -11,6 +12,7 @@ import com.worldventures.dreamtrips.wallet.domain.entity.SmartCard;
 import com.worldventures.dreamtrips.wallet.domain.storage.TemporaryStorage;
 import com.worldventures.dreamtrips.wallet.service.FirmwareInteractor;
 import com.worldventures.dreamtrips.wallet.service.SmartCardInteractor;
+import com.worldventures.dreamtrips.wallet.service.SmartCardManager;
 import com.worldventures.dreamtrips.wallet.service.command.ConnectSmartCardCommand;
 import com.worldventures.dreamtrips.wallet.service.command.RestartSmartCardCommand;
 import com.worldventures.dreamtrips.wallet.service.command.SetLockStateCommand;
@@ -42,8 +44,8 @@ public class WalletSettingsPresenter extends WalletPresenter<WalletSettingsPrese
    @Inject SmartCardInteractor smartCardInteractor;
    @Inject FirmwareInteractor firmwareInteractor;
    @Inject TemporaryStorage temporaryStorage;
+   @Inject SmartCardManager smartCardManager;
 
-   private SmartCard smartCard;
    @Nullable private FirmwareUpdateData firmwareUpdateData;
 
    public WalletSettingsPresenter(Context context, Injector injector) {
@@ -86,10 +88,9 @@ public class WalletSettingsPresenter extends WalletPresenter<WalletSettingsPrese
    }
 
    private void observeSmartCardChanges() {
-      smartCardInteractor.smartCardModifierPipe()
-            .observeSuccessWithReplay()
+      smartCardManager.smartCardObservable()
             .compose(bindViewIoToMainComposer())
-            .subscribe(command -> bindSmartCard(this.smartCard = command.getResult()));
+            .subscribe(this::bindSmartCard);
 
       smartCardInteractor.stealthModePipe()
             .observe()
@@ -97,7 +98,7 @@ public class WalletSettingsPresenter extends WalletPresenter<WalletSettingsPrese
             .subscribe(OperationActionStateSubscriberWrapper.<SetStealthModeCommand>forView(getView().provideOperationDelegate())
                   .onSuccess(action -> stealthModeChangedMessage(action.stealthModeEnabled))
                   .onFail(ErrorHandler.create(getContext(),
-                        command -> getView().stealthModeStatus(smartCard.stealthMode())))
+                        command -> stealthModeFailed()))
                   .wrap()
             );
 
@@ -109,17 +110,32 @@ public class WalletSettingsPresenter extends WalletPresenter<WalletSettingsPrese
                   })
                   .onFail(ErrorHandler.<SetLockStateCommand>builder(getContext())
                         .handle(IllegalArgumentException.class, R.string.wallet_dashboard_unlock_error)
-                        .defaultAction(a -> getView().lockStatus(smartCard.lock()))
+                        .defaultAction(a -> lockStatusFailed())
                         .build()
                   )
                   .wrap());
+   }
+
+   private void stealthModeFailed() {
+      smartCardManager.singleSmartCardObservable()
+            .compose(bindViewIoToMainComposer())
+            .subscribe(smartCard -> getView().stealthModeStatus(smartCard.stealthMode()));
+   }
+
+   private void lockStatusFailed() {
+      smartCardManager.singleSmartCardObservable()
+            .compose(bindViewIoToMainComposer())
+            .subscribe(smartCard -> getView().lockStatus(smartCard.lock()));
    }
 
    private void observeStealthModeController(Screen view) {
       view.stealthModeStatus()
             .compose(bindView())
             .skip(1)
-            .filter(checkedFlag -> smartCard.stealthMode() != checkedFlag)
+            .flatMap(stealthMode -> smartCardManager.singleSmartCardObservable()
+                  .filter(smartCard -> smartCard.stealthMode() != stealthMode)
+                  .map(smartCard -> stealthMode)
+            )
             .subscribe(this::stealthModeChanged);
    }
 
@@ -127,7 +143,10 @@ public class WalletSettingsPresenter extends WalletPresenter<WalletSettingsPrese
       view.lockStatus()
             .compose(bindView())
             .skip(1)
-            .filter(lock -> smartCard.lock() != lock)
+            .flatMap(lockStatus -> smartCardManager.singleSmartCardObservable()
+                  .filter(smartCard -> smartCard.lock() != lockStatus)
+                  .map(smartCard -> lockStatus)
+            )
             .subscribe(this::lockStatusChanged);
    }
 
@@ -135,8 +154,11 @@ public class WalletSettingsPresenter extends WalletPresenter<WalletSettingsPrese
       view.testConnection()
             .compose(bindView())
             .skip(1)
-            .filter(connected -> (smartCard.connectionStatus().isConnected()) != connected)
-            .subscribe(this::manageConnection);
+            .flatMap(connectedValue -> smartCardManager.singleSmartCardObservable()
+                  .filter(smartCard -> (smartCard.connectionStatus().isConnected()) != connectedValue)
+                  .map(smartCard -> new Pair<>(smartCard, connectedValue))
+            )
+            .subscribe(pair -> manageConnection(pair.first, pair.second));
    }
 
 
@@ -148,7 +170,7 @@ public class WalletSettingsPresenter extends WalletPresenter<WalletSettingsPrese
             .subscribe(this::changeFailInstallation);
    }
 
-   private void manageConnection(boolean connected) {
+   private void manageConnection(SmartCard smartCard, boolean connected) {
       if (connected) {
          smartCardInteractor.connectActionPipe()
                .createObservable(new ConnectSmartCardCommand(smartCard, false))
@@ -190,7 +212,10 @@ public class WalletSettingsPresenter extends WalletPresenter<WalletSettingsPrese
    }
 
    void resetPin() {
-      navigator.go(new WizardPinSetupPath(smartCard, Action.RESET));
+      smartCardManager.singleSmartCardObservable()
+            .compose(bindViewIoToMainComposer())
+            .subscribe(smartCard ->
+                  navigator.go(new WizardPinSetupPath(smartCard, Action.RESET)));
    }
 
    void disableDefaultCardTimer() {

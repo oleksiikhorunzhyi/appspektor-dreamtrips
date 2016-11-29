@@ -4,6 +4,7 @@ import com.techery.spares.utils.delegate.ImagePresenterClickEventDelegate;
 import com.techery.spares.utils.delegate.NotificationCountEventDelegate;
 import com.techery.spares.utils.delegate.ScreenChangedEventDelegate;
 import com.techery.spares.utils.delegate.SearchFocusChangedDelegate;
+import com.techery.spares.utils.delegate.DrawerOpenedEventDelegate;
 import com.techery.spares.utils.delegate.StoryLikedEventDelegate;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.modules.trips.delegate.ResetFilterEventDelegate;
@@ -57,5 +58,11 @@ public class EventDelegateModule {
    @Singleton
    ImagePresenterClickEventDelegate provideImagePresenterEventDelegate() {
       return new ImagePresenterClickEventDelegate();
+   }
+
+   @Provides
+   @Singleton
+   DrawerOpenedEventDelegate provideSideNavigationItemPressedDelegate() {
+      return new DrawerOpenedEventDelegate();
    }
 }

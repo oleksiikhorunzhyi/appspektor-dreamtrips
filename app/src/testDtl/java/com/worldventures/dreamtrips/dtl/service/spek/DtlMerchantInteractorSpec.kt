@@ -1,6 +1,6 @@
 package com.worldventures.dreamtrips.dtl.service.spek
 
-import com.worldventures.dreamtrips.modules.dtl.service.action.DtlLocationCommand
+import com.worldventures.dreamtrips.modules.dtl.service.action.LocationCommand
 import io.techery.janet.ActionState
 import rx.observers.TestSubscriber
 
@@ -8,7 +8,7 @@ class DtlMerchantInteractorSpec : DtlBaseMerchantSpec({
 
 //   val updateAmenitiesSubscriber = TestSubscriber<ActionState<DtlUpdateAmenitiesAction>>()
 //   val filterDataSubscriber = TestSubscriber<ActionState<DtlFilterDataAction>>()
-   val locationSubscriber = TestSubscriber<ActionState<DtlLocationCommand>>()
+   val locationSubscriber = TestSubscriber<ActionState<LocationCommand>>()
 
 //   given("Setup") {
 //      on("init basic variables") {
@@ -22,8 +22,8 @@ class DtlMerchantInteractorSpec : DtlBaseMerchantSpec({
 //         janet.createPipe(DtlFilterDataAction::class.java).observe()
 //               .subscribe(filterDataSubscriber)
 //      }
-//      on("subscribe DtlLocationCommand") {
-//         janet.createPipe(DtlLocationCommand::class.java).observe().subscribe(locationSubscriber)
+//      on("subscribe LocationCommand") {
+//         janet.createPipe(LocationCommand::class.java).observe().subscribe(locationSubscriber)
 //      }
 //   }
 //

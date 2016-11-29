@@ -6,7 +6,6 @@ import com.worldventures.dreamtrips.core.janet.cache.ImmutableCacheOptions;
 import com.worldventures.dreamtrips.core.janet.dagger.InjectableAction;
 import com.worldventures.dreamtrips.wallet.domain.entity.ImmutableSmartCard;
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCard;
-import com.worldventures.dreamtrips.wallet.service.SmartCardInteractor;
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -15,7 +14,6 @@ import io.techery.janet.ActionHolder;
 import io.techery.janet.Command;
 import io.techery.janet.Janet;
 import io.techery.janet.command.annotations.CommandAction;
-import io.techery.janet.helper.ActionStateToActionTransformer;
 import rx.Observable;
 
 import static com.worldventures.dreamtrips.core.janet.JanetModule.JANET_WALLET;
@@ -24,10 +22,8 @@ import static com.worldventures.dreamtrips.core.janet.JanetModule.JANET_WALLET;
 public class SaveLockStateCommand extends Command<SmartCard> implements InjectableAction, SmartCardModifier, CachedAction<SmartCard> {
 
    @Inject @Named(JANET_WALLET) Janet janet;
-   @Inject SmartCardInteractor smartCardInteractor;
 
    private final boolean lock;
-   private SmartCard smartCard;
 
    public SaveLockStateCommand(boolean lock) {
       this.lock = lock;
@@ -40,14 +36,12 @@ public class SaveLockStateCommand extends Command<SmartCard> implements Injectab
                   .from(smartCard)
                   .lock(lock)
                   .build())
-            .doOnNext(smartCard -> this.smartCard = smartCard)
             .subscribe(callback::onSuccess, callback::onFail);
    }
 
    private Observable<SmartCard> fetchActiveSmartCard() {
-      return smartCardInteractor.activeSmartCardPipe()
-            .createObservable(new GetActiveSmartCardCommand())
-            .compose(new ActionStateToActionTransformer<>())
+      return janet.createPipe(GetActiveSmartCardCommand.class)
+            .createObservableResult(new GetActiveSmartCardCommand())
             .map(Command::getResult);
    }
 
@@ -57,7 +51,7 @@ public class SaveLockStateCommand extends Command<SmartCard> implements Injectab
 
    @Override
    public SmartCard getCacheData() {
-      return smartCard;
+      return getResult();
    }
 
    @Override

@@ -6,7 +6,6 @@ import com.worldventures.dreamtrips.core.janet.cache.ImmutableCacheOptions;
 import com.worldventures.dreamtrips.core.janet.dagger.InjectableAction;
 import com.worldventures.dreamtrips.wallet.domain.entity.ImmutableSmartCard;
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCard;
-import com.worldventures.dreamtrips.wallet.service.SmartCardInteractor;
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -15,7 +14,6 @@ import io.techery.janet.ActionHolder;
 import io.techery.janet.Command;
 import io.techery.janet.Janet;
 import io.techery.janet.command.annotations.CommandAction;
-import io.techery.janet.helper.ActionStateToActionTransformer;
 import io.techery.janet.smartcard.action.settings.SetStealthModeAction;
 import rx.Observable;
 
@@ -25,10 +23,8 @@ import static com.worldventures.dreamtrips.core.janet.JanetModule.JANET_WALLET;
 public class SetStealthModeCommand extends Command<SmartCard> implements InjectableAction, SmartCardModifier, CachedAction<SmartCard> {
 
    @Inject @Named(JANET_WALLET) Janet janet;
-   @Inject SmartCardInteractor smartCardInteractor;
 
    public final boolean stealthModeEnabled;
-   public SmartCard smartCard;
 
    public SetStealthModeCommand(boolean stealthModeEnabled) {
       this.stealthModeEnabled = stealthModeEnabled;
@@ -36,24 +32,38 @@ public class SetStealthModeCommand extends Command<SmartCard> implements Injecta
 
    @Override
    protected void run(CommandCallback<SmartCard> callback) throws Throwable {
-      janet.createPipe(SetStealthModeAction.class)
-            .createObservableResult(new SetStealthModeAction(stealthModeEnabled))
-            .flatMap(action -> fetchActiveSmartCard())
-            .map(smartCard -> ImmutableSmartCard.builder().from(smartCard).stealthMode(stealthModeEnabled).build())
-            .doOnNext(smartCard -> this.smartCard = smartCard)
+      fetchSmartCard()
+            .flatMap(smartCard -> {
+               if (smartCard.stealthMode() == stealthModeEnabled) {
+                  return Observable.error(new IllegalArgumentException("Stealth mode already turned " + (stealthModeEnabled ? "on" : "off")));
+               } else {
+                  return Observable.just(smartCard);
+               }
+            })
+            .flatMap(smartCard -> janet.createPipe(SetStealthModeAction.class)
+                  .createObservableResult(new SetStealthModeAction(stealthModeEnabled))
+                  .flatMap(action -> updateSmartCard())
+            )
             .subscribe(callback::onSuccess, callback::onFail);
    }
 
-   private Observable<SmartCard> fetchActiveSmartCard() {
-      return smartCardInteractor.activeSmartCardPipe()
-            .createObservable(new GetActiveSmartCardCommand())
-            .compose(new ActionStateToActionTransformer<>())
+   private Observable<SmartCard> fetchSmartCard() {
+      return janet.createPipe(GetActiveSmartCardCommand.class)
+            .createObservableResult(new GetActiveSmartCardCommand())
             .map(Command::getResult);
+   }
+
+   private Observable<SmartCard> updateSmartCard() {
+      return fetchSmartCard()
+            .map(smartCard -> ImmutableSmartCard.builder()
+                  .from(smartCard)
+                  .stealthMode(stealthModeEnabled)
+                  .build());
    }
 
    @Override
    public SmartCard getCacheData() {
-      return smartCard;
+      return getResult();
    }
 
    @Override

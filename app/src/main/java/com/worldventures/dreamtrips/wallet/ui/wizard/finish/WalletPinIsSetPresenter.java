@@ -37,7 +37,7 @@ public class WalletPinIsSetPresenter extends WalletPresenter<WalletPinIsSetPrese
    public void attachView(Screen view) {
       super.attachView(view);
       analyticsInteractor.walletAnalyticsCommandPipe()
-            .send(new WalletAnalyticsCommand(new PinWasSetAction(smartCard.cardName())));
+            .send(new WalletAnalyticsCommand(new PinWasSetAction(smartCard.user().fullName())));
       observeActivation();
    }
 

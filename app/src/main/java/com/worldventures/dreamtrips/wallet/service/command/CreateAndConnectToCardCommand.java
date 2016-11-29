@@ -31,8 +31,6 @@ public class CreateAndConnectToCardCommand extends Command<SmartCard> implements
    @Inject @Named(JanetModule.JANET_WALLET) Janet janet;
    @Inject SmartCardInteractor smartCardInteractor;
 
-   private static final String DUMMY_DEVICE_NAME = "DUMMY_DEVICE_NAME"; // deviceName is not used inside SDK
-
    private SmartCardDetails smartCardDetails;
    private SmartCard smartCard;
 
@@ -70,7 +68,6 @@ public class CreateAndConnectToCardCommand extends Command<SmartCard> implements
 
    private SmartCard createSmartCard() {
       return ImmutableSmartCard.builder()
-            .deviceName(DUMMY_DEVICE_NAME)
             .serialNumber(smartCardDetails.serialNumber())
             .deviceAddress(smartCardDetails.bleAddress())
             .smartCardId(smartCardId)

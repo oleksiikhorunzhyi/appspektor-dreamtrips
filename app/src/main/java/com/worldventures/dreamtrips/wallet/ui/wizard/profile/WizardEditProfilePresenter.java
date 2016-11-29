@@ -130,7 +130,7 @@ public class WizardEditProfilePresenter extends WalletPresenter<WizardEditProfil
    private void onUserSetupSuccess(SmartCard smartCard) {
       navigator.go(new WizardPinSetupPath(smartCard, Action.SETUP));
       analyticsInteractor.walletAnalyticsCommandPipe()
-            .send(new WalletAnalyticsCommand(new PhotoWasSetAction(smartCard.cardName(), smartCardId)));
+            .send(new WalletAnalyticsCommand(new PhotoWasSetAction(smartCard.user().fullName(), smartCardId)));
    }
 
    private void smartCardError(String smartCardId) {

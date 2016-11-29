@@ -403,7 +403,7 @@ class SmartCardInteractorSpec : BaseSpec({
          whenever(mockedSmartCard.smartCardId()).thenReturn(cardId)
          whenever(mockedSmartCard.cardStatus()).thenReturn(SmartCard.CardStatus.ACTIVE)
          whenever(mockedSmartCard.connectionStatus()).thenReturn(SmartCard.ConnectionStatus.DISCONNECTED)
-         whenever(mockedSmartCard.deviceName()).thenReturn("device name")
+         whenever(mockedSmartCard.cardName()).thenReturn("device name")
          whenever(mockedSmartCard.deviceAddress()).thenReturn("device address")
          whenever(mockedSmartCard.cardName()).thenReturn("card name")
          whenever(mockedSmartCard.sdkVersion()).thenReturn("1.0.0")

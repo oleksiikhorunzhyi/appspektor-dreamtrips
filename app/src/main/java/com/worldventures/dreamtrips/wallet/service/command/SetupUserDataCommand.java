@@ -1,11 +1,6 @@
 package com.worldventures.dreamtrips.wallet.service.command;
 
-import android.net.Uri;
-
 import com.techery.spares.session.SessionHolder;
-import com.worldventures.dreamtrips.api.smart_card.user_info.UpdateCardUserHttpAction;
-import com.worldventures.dreamtrips.api.smart_card.user_info.model.ImmutableUpdateCardUserData;
-import com.worldventures.dreamtrips.core.api.uploadery.SimpleUploaderyCommand;
 import com.worldventures.dreamtrips.core.janet.cache.CacheBundle;
 import com.worldventures.dreamtrips.core.janet.cache.CacheBundleImpl;
 import com.worldventures.dreamtrips.core.janet.cache.CacheOptions;
@@ -15,7 +10,9 @@ import com.worldventures.dreamtrips.core.janet.dagger.InjectableAction;
 import com.worldventures.dreamtrips.core.session.UserSession;
 import com.worldventures.dreamtrips.util.SmartCardAvatarHelper;
 import com.worldventures.dreamtrips.wallet.domain.entity.ImmutableSmartCard;
+import com.worldventures.dreamtrips.wallet.domain.entity.ImmutableSmartCardUser;
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCard;
+import com.worldventures.dreamtrips.wallet.domain.entity.SmartCardUser;
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCardUserPhoto;
 import com.worldventures.dreamtrips.wallet.domain.storage.SmartCardStorage;
 import com.worldventures.dreamtrips.wallet.util.FormatException;
@@ -34,6 +31,7 @@ import io.techery.janet.smartcard.action.user.AssignUserAction;
 import io.techery.janet.smartcard.action.user.UpdateUserPhotoAction;
 import io.techery.janet.smartcard.model.ImmutableUser;
 import io.techery.janet.smartcard.model.User;
+import io.techery.mappery.MapperyContext;
 import rx.Observable;
 
 import static com.worldventures.dreamtrips.core.janet.JanetModule.JANET_API_LIB;
@@ -47,15 +45,24 @@ public class SetupUserDataCommand extends Command<SmartCard> implements Injectab
    @Inject @Named(JANET_API_LIB) Janet janetApi;
    @Inject SessionHolder<UserSession> userSessionHolder;
    @Inject SmartCardAvatarHelper smartCardAvatarHelper;
+   @Inject MapperyContext mappery;
 
-   private final String fullName;
+   private final String firstName;
+   private final String middleName;
+   private final String lastName;
    private final SmartCardUserPhoto avatar;
    private final String smartCardId;
+
    private SmartCard smartCard;
 
    public SetupUserDataCommand(String fullName, SmartCardUserPhoto avatar, String smartCardId) {
-      // TODO: 8/2/16 change on first name and second name
-      this.fullName = fullName;
+      this(split(fullName)[0], split(fullName)[1], split(fullName)[2], avatar, smartCardId);
+   }
+
+   public SetupUserDataCommand(String firstName, String middleName, String lastName, SmartCardUserPhoto avatar, String smartCardId) {
+      this.firstName = firstName;
+      this.middleName = middleName;
+      this.lastName = lastName;
       this.avatar = avatar;
       this.smartCardId = smartCardId;
    }
@@ -70,11 +77,12 @@ public class SetupUserDataCommand extends Command<SmartCard> implements Injectab
                   .flatMap(bytesArray -> janetWallet.createPipe(UpdateUserPhotoAction.class)
                         .createObservableResult(new UpdateUserPhotoAction(bytesArray)))
             )
-            .flatMap(action -> uploadUserData())
-            .map(action -> attachAvatarToLocalSmartCard())
+            //todo    .flatMap(action -> uploadUserData())
+            .map(action -> attachAvatarToLocalSmartCard(user))
             .subscribe(callback::onSuccess, callback::onFail);
    }
-
+/*
+//todo it should be called only from settings, from provisioning we need to upload only to SC
    private Observable<? extends UpdateCardUserHttpAction> uploadUserData() {
       return janetGeneric.createPipe(SimpleUploaderyCommand.class)
             .createObservableResult(new SimpleUploaderyCommand(Uri.fromFile(avatar.original()).toString()))
@@ -89,12 +97,15 @@ public class SetupUserDataCommand extends Command<SmartCard> implements Injectab
                   }
             );
    }
+*/
 
-   private SmartCard attachAvatarToLocalSmartCard() {
+   private SmartCard attachAvatarToLocalSmartCard(User user) {
       smartCard = ImmutableSmartCard.builder()
             .from(smartCard)
-            .userPhoto("file://" + avatar.monochrome().getAbsolutePath())
-            .cardName(fullName)
+            .user(ImmutableSmartCardUser.builder()
+                  .from(mappery.convert(user, SmartCardUser.class))
+                  .userPhoto(avatar)
+                  .build())
             .build();
       return smartCard;
    }
@@ -104,17 +115,7 @@ public class SetupUserDataCommand extends Command<SmartCard> implements Injectab
       if (avatar.monochrome() == null) throw new MissedAvatarException("Monochrome avatar file == null");
       if (!avatar.monochrome().exists()) throw new MissedAvatarException("Avatar does not exist");
 
-      String[] nameParts = fullName.split(" ");
-      String firstName, lastName, middleName = null;
-      if (nameParts.length < 2 || nameParts.length > 3) throw new FormatException();
-      if (nameParts.length == 2) {
-         firstName = nameParts[0];
-         lastName = nameParts[1];
-      } else {
-         firstName = nameParts[0];
-         middleName = nameParts[1];
-         lastName = nameParts[2];
-      }
+
       WalletValidateHelper.validateUserFullNameOrThrow(firstName, middleName, lastName);
 
       return ImmutableUser.builder()
@@ -158,6 +159,21 @@ public class SetupUserDataCommand extends Command<SmartCard> implements Injectab
             .restoreFromCache(true)
             .saveToCache(true)
             .build();
+   }
+
+   private static String[] split(String fullName) {
+      String[] nameParts = fullName.split(" ");
+      String firstName = null, lastName = null, middleName = null;
+      if (nameParts.length < 2 || nameParts.length > 3)
+         if (nameParts.length == 2) {
+            firstName = nameParts[0];
+            lastName = nameParts[1];
+         } else {
+            firstName = nameParts[0];
+            middleName = nameParts[1];
+            lastName = nameParts[2];
+         }
+      return new String[]{firstName, middleName, lastName};
    }
 
    public static class MissedAvatarException extends RuntimeException {

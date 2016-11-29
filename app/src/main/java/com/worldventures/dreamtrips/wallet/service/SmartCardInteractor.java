@@ -45,6 +45,7 @@ import io.techery.janet.smartcard.action.records.DeleteRecordAction;
 import io.techery.janet.smartcard.action.settings.EnableLockUnlockDeviceAction;
 import io.techery.janet.smartcard.action.support.ConnectAction;
 import io.techery.janet.smartcard.action.support.DisconnectAction;
+import io.techery.janet.smartcard.action.user.GetUserDataAction;
 import io.techery.janet.smartcard.action.user.UnAssignUserAction;
 import io.techery.janet.smartcard.event.CardChargedEvent;
 import io.techery.janet.smartcard.event.CardSwipedEvent;
@@ -105,6 +106,8 @@ public final class SmartCardInteractor {
 
    private final ActionPipe<GetCompatibleDevicesCommand> compatibleDevicesActionPipe;
 
+   private final ActionPipe<GetUserDataAction> userDataActionActionPipe;
+
    private final FirmwareInteractor firmwareInteractor;
 
    public SmartCardInteractor(@Named(JANET_WALLET) Janet janet, SessionActionPipeCreator sessionActionPipeCreator, FirmwareInteractor firmwareInteractor) {
@@ -147,6 +150,7 @@ public final class SmartCardInteractor {
 
       autoClearDelayPipe = sessionActionPipeCreator.createPipe(SetAutoClearSmartCardDelayCommand.class, Schedulers.io());
       disableDefaultCardPipe = sessionActionPipeCreator.createPipe(SetDisableDefaultCardDelayCommand.class, Schedulers.io());
+      userDataActionActionPipe = sessionActionPipeCreator.createPipe(GetUserDataAction.class, Schedulers.io());
 
       enableLockUnlockDeviceActionPipe = sessionActionPipeCreator.createPipe(EnableLockUnlockDeviceAction.class, Schedulers
             .io());
@@ -285,6 +289,10 @@ public final class SmartCardInteractor {
 
    public ActionPipe<SaveLockStateCommand> lockStatePipe() {
       return saveLockStatePipe;
+   }
+
+   public ActionPipe<GetUserDataAction> userDataActionActionPipe() {
+      return userDataActionActionPipe;
    }
 
    private void connect(Janet janet) {

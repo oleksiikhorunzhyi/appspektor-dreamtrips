@@ -37,8 +37,8 @@
             <ImageView
                   android:layout_width="100dp"
                   android:layout_height="100dp"
-                  android:src="@drawable/flyecard_angle"
                   android:contentDescription="@string/wallet_card_settings_flye_sc"
+                  android:src="@drawable/flyecard_angle"
                   />
 
             <LinearLayout
@@ -69,20 +69,18 @@
                android:layout_marginTop="@dimen/spacing_normal"
                />
 
-         <!--GONE smart card Profile-->
          <TextView
+               android:id="@+id/item_smartcard_profile"
                style="@style/SettingsItemText"
                android:layout_marginLeft="@dimen/spacing_normal"
                android:layout_marginTop="@dimen/spacing_large"
                android:text="@string/wallet_card_settings_sc_profile"
-               android:visibility="gone"
                />
 
-         <!--GONE divider-->
+         <!--divider-->
          <View
                style="@style/SettingsItemDividerStyle"
                android:layout_marginTop="@dimen/spacing_large"
-               android:visibility="gone"
                />
 
          <!--General-->
@@ -471,8 +469,8 @@
                android:id="@+id/settings_section"
                android:layout_width="match_parent"
                android:layout_height="wrap_content"
-               android:orientation="vertical"
                android:layout_marginTop="@dimen/spacing_large"
+               android:orientation="vertical"
                >
 
             <TextView

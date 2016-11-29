@@ -118,6 +118,17 @@
    <string name="wallet_card_settings_unpair_sc">Unpair smart card</string>
    <string name="wallet_card_settings_loads_cards_without_inet">Loads cards to device without internet</string>
 
+   <!--profile settings-->
+   <string name="wallet_card_settings_profile_title">Smart Card Profile</string>
+   <string name="wallet_card_settings_profile_firstname_hint">First name</string>
+   <string name="wallet_card_settings_profile_middle_hint">Middle name (optional)</string>
+   <string name="wallet_card_settings_profile_lastname_hint">Last name</string>
+   <string name="wallet_card_settings_profile_warning">Make sure your name is similar to what’s on your payment cards.</string>
+   <string name="wallet_card_settings_profile_dialog_changes_title">Some changes were made. Are you sure you want go back without saving them</string>
+   <string name="wallet_card_settings_profile_dialog_changes_positive">Back</string>
+   <string name="wallet_card_settings_profile_dialog_changes_negative">Cancel</string>
+
+
    <!--card list-->
    <string name="wallet_card_list_title">My flye smart card</string>
    <string name="dashboard_default_card_stack_title">Default</string>

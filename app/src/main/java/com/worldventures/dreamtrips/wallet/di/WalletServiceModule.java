@@ -7,6 +7,7 @@ import com.worldventures.dreamtrips.core.janet.SessionActionPipeCreator;
 import com.worldventures.dreamtrips.wallet.service.FactoryResetManager;
 import com.worldventures.dreamtrips.wallet.service.FirmwareInteractor;
 import com.worldventures.dreamtrips.wallet.service.SmartCardInteractor;
+import com.worldventures.dreamtrips.wallet.service.SmartCardManager;
 import com.worldventures.dreamtrips.wallet.service.SystemPropertiesProvider;
 import com.worldventures.dreamtrips.wallet.service.WalletBluetoothService;
 import com.worldventures.dreamtrips.wallet.service.WalletNetworkService;
@@ -74,5 +75,11 @@ public class WalletServiceModule {
    @Provides
    FactoryResetManager factoryResetManager(@Named(JANET_WALLET) Janet janet, SmartCardInteractor smartCardInteractor) {
       return new FactoryResetManager(janet, smartCardInteractor);
+   }
+
+   @Singleton
+   @Provides
+   SmartCardManager smartCardManager(SmartCardInteractor smartCardInteractor) {
+      return new SmartCardManager(smartCardInteractor);
    }
 }

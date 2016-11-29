@@ -4,17 +4,16 @@ import android.content.Context;
 import android.location.Location;
 import android.support.annotation.Nullable;
 
+import com.google.android.gms.maps.model.LatLng;
 import com.techery.spares.module.Injector;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.modules.dtl.helper.DtlLocationHelper;
 import com.worldventures.dreamtrips.modules.dtl.location.LocationDelegate;
-import com.worldventures.dreamtrips.modules.dtl.model.DistanceType;
 import com.worldventures.dreamtrips.modules.dtl.model.location.DtlLocation;
-import com.worldventures.dreamtrips.modules.dtl.model.location.ImmutableDtlManualLocation;
+import com.worldventures.dreamtrips.modules.dtl.model.location.ImmutableDtlLocation;
 import com.worldventures.dreamtrips.modules.dtl.service.AttributesInteractor;
 import com.worldventures.dreamtrips.modules.dtl.service.DtlLocationInteractor;
 import com.worldventures.dreamtrips.modules.dtl.service.MerchantsFacadeInteractor;
-import com.worldventures.dreamtrips.modules.dtl.service.action.DtlLocationFacadeCommand;
+import com.worldventures.dreamtrips.modules.dtl.service.action.LocationFacadeCommand;
 import com.worldventures.dreamtrips.modules.dtl_flow.DtlPresenterImpl;
 import com.worldventures.dreamtrips.modules.dtl_flow.ViewState;
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.locations.DtlLocationsPath;
@@ -67,16 +66,17 @@ public class DtlStartPresenterImpl extends DtlPresenterImpl<DtlStartScreen, View
             .observeSuccessWithReplay()
             .take(1)
             .compose(bindViewIoToMainComposer())
-            .map(DtlLocationFacadeCommand::getResult)
+            .map(LocationFacadeCommand::getResult)
             .subscribe(dtlLocation -> {
-               switch (dtlLocation.getLocationSourceType()) {
+               switch (dtlLocation.locationSourceType()) {
                   case UNDEFINED:
                      if (newGpsLocation == null) navigatePath(DtlLocationsPath.getDefault());
                      else {
-                        DtlLocation dtlManualLocation = ImmutableDtlManualLocation.builder()
+                        DtlLocation dtlManualLocation = ImmutableDtlLocation.builder()
+                              .isExternal(false)
                               .locationSourceType(NEAR_ME)
                               .longName(context.getString(R.string.dtl_near_me_caption))
-                              .coordinates(new com.worldventures.dreamtrips.modules.trips.model.Location(newGpsLocation))
+                              .coordinates(new LatLng(newGpsLocation.getLatitude(), newGpsLocation.getLongitude()))
                               .build();
                         locationInteractor.changeSourceLocation(dtlManualLocation);
                         navigatePath(DtlMerchantsPath.withAllowedRedirection());
@@ -88,11 +88,11 @@ public class DtlStartPresenterImpl extends DtlPresenterImpl<DtlStartScreen, View
                         navigatePath(DtlLocationsPath.getDefault());
                         return;
                      }
-                     if (!DtlLocationHelper.checkLocation(0.5, newGpsLocation, dtlLocation
-                           .getCoordinates().asAndroidLocation(), DistanceType.MILES)) {
-                        locationInteractor.changeSourceLocation(ImmutableDtlManualLocation.builder()
+                     if (dtlLocation.isOutOfMinDistance(newGpsLocation)) {
+                        locationInteractor.changeSourceLocation(ImmutableDtlLocation.builder()
                               .from(dtlLocation)
-                              .coordinates(new com.worldventures.dreamtrips.modules.trips.model.Location(newGpsLocation))
+                              .isExternal(false)
+                              .coordinates(new LatLng(newGpsLocation.getLatitude(), newGpsLocation.getLongitude()))
                               .build());
                      }
                      navigatePath(DtlMerchantsPath.withAllowedRedirection());
@@ -119,11 +119,11 @@ public class DtlStartPresenterImpl extends DtlPresenterImpl<DtlStartScreen, View
       locationInteractor.locationFacadePipe()
             .observeSuccessWithReplay()
             .take(1)
-            .map(DtlLocationFacadeCommand::getResult)
+            .map(LocationFacadeCommand::getResult)
             .compose(bindViewIoToMainComposer())
             .subscribe(location -> {
                // Determines whether we can proceed without locating device by GPS.
-               if (location.getLocationSourceType() != NEAR_ME) {
+               if (location.locationSourceType() != NEAR_ME) {
                   proceedNavigation(null);
                } else {
                   if (e instanceof LocationDelegate.LocationException)

@@ -23,7 +23,8 @@ import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.api.error.ErrorResponse;
 import com.worldventures.dreamtrips.core.flow.activity.FlowActivity;
 import com.worldventures.dreamtrips.core.utils.ActivityResultDelegate;
-import com.worldventures.dreamtrips.modules.dtl.model.location.DtlExternalLocation;
+import com.worldventures.dreamtrips.modules.dtl.model.location.DtlLocation;
+import com.worldventures.dreamtrips.modules.dtl.model.location.ImmutableDtlLocation;
 import com.worldventures.dreamtrips.modules.dtl.view.cell.DtlLocationCell;
 import com.worldventures.dreamtrips.modules.dtl_flow.DtlActivity;
 import com.worldventures.dreamtrips.modules.dtl_flow.DtlLayout;
@@ -39,7 +40,7 @@ import butterknife.InjectView;
 import flow.Flow;
 import timber.log.Timber;
 
-public class DtlLocationsScreenImpl extends DtlLayout<DtlLocationsScreen, DtlLocationsPresenter, DtlLocationsPath> implements DtlLocationsScreen, ActivityResultDelegate.ActivityResultListener, CellDelegate<DtlExternalLocation> {
+public class DtlLocationsScreenImpl extends DtlLayout<DtlLocationsScreen, DtlLocationsPresenter, DtlLocationsPath> implements DtlLocationsScreen, ActivityResultDelegate.ActivityResultListener, CellDelegate<DtlLocation> {
 
    @Inject @ForActivity Provider<Injector> injectorProvider;
    @Inject ActivityResultDelegate activityResultDelegate;
@@ -61,9 +62,9 @@ public class DtlLocationsScreenImpl extends DtlLayout<DtlLocationsScreen, DtlLoc
       recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
       recyclerView.addItemDecoration(new SimpleListDividerDecorator(getResources().getDrawable(R.drawable.list_divider), true));
       //
-      adapter = new BaseDelegateAdapter<DtlExternalLocation>(getActivity(), injectorProvider.get());
-      adapter.registerCell(DtlExternalLocation.class, DtlLocationCell.class);
-      adapter.registerDelegate(DtlExternalLocation.class, this);
+      adapter = new BaseDelegateAdapter<DtlLocation>(getActivity(), injectorProvider.get());
+      adapter.registerCell(ImmutableDtlLocation.class, DtlLocationCell.class);
+      adapter.registerDelegate(ImmutableDtlLocation.class, this);
       //
       recyclerView.setAdapter(adapter);
       //
@@ -108,13 +109,13 @@ public class DtlLocationsScreenImpl extends DtlLayout<DtlLocationsScreen, DtlLoc
    }
 
    @Override
-   public void onCellClicked(DtlExternalLocation location) {
+   public void onCellClicked(DtlLocation location) {
       hideSoftInput();
       getPresenter().onLocationSelected(location);
    }
 
    @Override
-   public void setItems(List<DtlExternalLocation> dtlExternalLocations) {
+   public void setItems(List<DtlLocation> dtlExternalLocations) {
       hideProgress();
 
       adapter.clear();

@@ -9,28 +9,25 @@ import com.google.android.gms.maps.model.LatLngBounds;
 import com.techery.spares.module.Injector;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.api.action.CommandWithError;
-import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.modules.dtl.event.MapInfoReadyAction;
 import com.worldventures.dreamtrips.modules.dtl.event.ShowMapInfoAction;
 import com.worldventures.dreamtrips.modules.dtl.event.ToggleMerchantSelectionAction;
-import com.worldventures.dreamtrips.modules.dtl.helper.DtlLocationHelper;
 import com.worldventures.dreamtrips.modules.dtl.helper.holder.FullMerchantParamsHolder;
 import com.worldventures.dreamtrips.modules.dtl.location.LocationDelegate;
 import com.worldventures.dreamtrips.modules.dtl.model.LocationSourceType;
 import com.worldventures.dreamtrips.modules.dtl.model.RequestSourceType;
 import com.worldventures.dreamtrips.modules.dtl.model.location.DtlLocation;
-import com.worldventures.dreamtrips.modules.dtl.model.location.ImmutableDtlManualLocation;
+import com.worldventures.dreamtrips.modules.dtl.model.location.ImmutableDtlLocation;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.Merchant;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.ThinMerchant;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.filter.FilterData;
 import com.worldventures.dreamtrips.modules.dtl.service.DtlLocationInteractor;
-import com.worldventures.dreamtrips.modules.dtl.service.DtlTransactionInteractor;
 import com.worldventures.dreamtrips.modules.dtl.service.FilterDataInteractor;
 import com.worldventures.dreamtrips.modules.dtl.service.FullMerchantInteractor;
 import com.worldventures.dreamtrips.modules.dtl.service.MerchantsInteractor;
 import com.worldventures.dreamtrips.modules.dtl.service.PresentationInteractor;
-import com.worldventures.dreamtrips.modules.dtl.service.action.DtlLocationCommand;
-import com.worldventures.dreamtrips.modules.dtl.service.action.DtlLocationFacadeCommand;
+import com.worldventures.dreamtrips.modules.dtl.service.action.LocationCommand;
+import com.worldventures.dreamtrips.modules.dtl.service.action.LocationFacadeCommand;
 import com.worldventures.dreamtrips.modules.dtl.service.action.FilterDataAction;
 import com.worldventures.dreamtrips.modules.dtl.service.action.FullMerchantAction;
 import com.worldventures.dreamtrips.modules.dtl.service.action.MerchantsAction;
@@ -42,7 +39,6 @@ import com.worldventures.dreamtrips.modules.dtl_flow.parts.location_change.DtlLo
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.merchants.DtlMerchantsPath;
 import com.worldventures.dreamtrips.modules.map.reactive.MapObservableFactory;
 import com.worldventures.dreamtrips.modules.map.view.MapViewUtils;
-import com.worldventures.dreamtrips.modules.trips.model.Location;
 
 import java.util.List;
 
@@ -63,12 +59,10 @@ import rx.functions.Func2;
 public class DtlMapPresenterImpl extends DtlPresenterImpl<DtlMapScreen, ViewState.EMPTY> implements DtlMapPresenter {
 
    @Inject LocationDelegate gpsLocationDelegate;
-   @Inject SnappyRepository db;
    @Inject MerchantsInteractor merchantInteractor;
    @Inject FilterDataInteractor filterDataInteractor;
    @Inject FullMerchantInteractor fullMerchantInteractor;
    @Inject DtlLocationInteractor locationInteractor;
-   @Inject DtlTransactionInteractor transactionInteractor;
    @Inject PresentationInteractor presentationInteractor;
 
    @State FullMerchantParamsHolder actionParamsHolder;
@@ -93,9 +87,8 @@ public class DtlMapPresenterImpl extends DtlPresenterImpl<DtlMapScreen, ViewStat
    private void connectInteractors() {
       locationInteractor.locationSourcePipe()
             .observeSuccess()
-            .map(DtlLocationCommand::getResult)
-            .map(DtlLocation::getCoordinates)
-            .map(Location::asLatLng)
+            .map(LocationCommand::getResult)
+            .map(DtlLocation::coordinates)
             .distinctUntilChanged()
             .compose(bindViewIoToMainComposer())
             .subscribe(coordinates -> getView().animateTo(coordinates, 0));
@@ -196,7 +189,7 @@ public class DtlMapPresenterImpl extends DtlPresenterImpl<DtlMapScreen, ViewStat
    private void setupToolbarTitlesUpdate() {
       locationInteractor.locationFacadePipe()
             .observeSuccessWithReplay()
-            .map(DtlLocationFacadeCommand::getResult)
+            .map(LocationFacadeCommand::getResult)
             .compose(bindViewIoToMainComposer())
             .subscribe(getView()::updateToolbarLocationTitle);
       filterDataInteractor.filterDataPipe()
@@ -272,11 +265,11 @@ public class DtlMapPresenterImpl extends DtlPresenterImpl<DtlMapScreen, ViewStat
    }
 
    private void updateMap(DtlLocation location) {
-      if (location.getLocationSourceType() == LocationSourceType.FROM_MAP && getView().getMap()
+      if (location.locationSourceType() == LocationSourceType.FROM_MAP && getView().getMap()
             .getCameraPosition().zoom < MapViewUtils.DEFAULT_ZOOM) getView().zoom(MapViewUtils.DEFAULT_ZOOM);
 
-      if (location.getLocationSourceType() != LocationSourceType.NEAR_ME)
-         getView().addLocationMarker(location.getCoordinates().asLatLng());
+      if (location.locationSourceType() != LocationSourceType.NEAR_ME)
+         getView().addLocationMarker(location.coordinates());
    }
 
    @Override
@@ -294,11 +287,11 @@ public class DtlMapPresenterImpl extends DtlPresenterImpl<DtlMapScreen, ViewStat
             .subscribe(location -> tryHideMyLocationButton(false), throwable -> tryHideMyLocationButton(true));
    }
 
-   private Observable<Location> getFirstCenterLocation() {
+   private Observable<LatLng> getFirstCenterLocation() {
       return locationInteractor.locationSourcePipe().observeSuccessWithReplay()
-            .filter(DtlLocationCommand::isResultDefined)
+            .filter(LocationCommand::isResultDefined)
             .map(Command::getResult)
-            .map(DtlLocation::getCoordinates)
+            .map(DtlLocation::coordinates)
             .take(1)
             .compose(bindViewIoToMainComposer());
    }
@@ -326,9 +319,8 @@ public class DtlMapPresenterImpl extends DtlPresenterImpl<DtlMapScreen, ViewStat
                   .observeSuccessWithReplay()
                   .take(1)
                   .compose(bindView())
-                  .map(DtlLocationCommand::getResult)
-                  .map(location -> location.getCoordinates().asLatLng())
-                  .map(location -> !DtlLocationHelper.checkMaxDistance(location, position.target)));
+                  .map(LocationCommand::getResult)
+                  .map(location -> location.isOutOfMaxDistance(position.target)));
    }
 
    private Observable<ActionState<MerchantsAction>> getMerchantsUpdates() {
@@ -364,9 +356,10 @@ public class DtlMapPresenterImpl extends DtlPresenterImpl<DtlMapScreen, ViewStat
 
    @Override
    public void onLoadMerchantsClick(LatLng latLng) {
-      DtlLocation mapSelectedLocation = ImmutableDtlManualLocation.builder()
+      DtlLocation mapSelectedLocation = ImmutableDtlLocation.builder()
+            .isExternal(false)
             .locationSourceType(LocationSourceType.FROM_MAP)
-            .coordinates(new com.worldventures.dreamtrips.modules.trips.model.Location(latLng.latitude, latLng.longitude))
+            .coordinates(latLng)
             .build();
       locationInteractor.changeSourceLocation(mapSelectedLocation);
    }

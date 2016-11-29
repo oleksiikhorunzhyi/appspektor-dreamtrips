@@ -1,6 +1,6 @@
 package com.worldventures.dreamtrips.modules.dtl_flow.parts.location_change;
 
-import com.worldventures.dreamtrips.modules.dtl.model.location.DtlExternalLocation;
+import com.worldventures.dreamtrips.modules.dtl.model.location.DtlLocation;
 import com.worldventures.dreamtrips.modules.dtl_flow.DtlPresenter;
 import com.worldventures.dreamtrips.modules.dtl_flow.ViewState;
 
@@ -8,7 +8,7 @@ public interface DtlLocationChangePresenter extends DtlPresenter<DtlLocationChan
 
    void loadNearMeRequested();
 
-   void locationSelected(DtlExternalLocation location);
+   void locationSelected(DtlLocation location);
 
    void onLocationResolutionGranted();
 

@@ -4,6 +4,7 @@ import android.content.Context;
 import android.location.Location;
 import android.util.Pair;
 
+import com.google.android.gms.maps.model.LatLng;
 import com.techery.spares.module.Injector;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.rx.composer.IoToMainComposer;
@@ -11,18 +12,17 @@ import com.worldventures.dreamtrips.modules.dtl.analytics.DtlAnalyticsCommand;
 import com.worldventures.dreamtrips.modules.dtl.analytics.LocationSearchEvent;
 import com.worldventures.dreamtrips.modules.dtl.location.LocationDelegate;
 import com.worldventures.dreamtrips.modules.dtl.model.LocationSourceType;
-import com.worldventures.dreamtrips.modules.dtl.model.location.DtlExternalLocation;
 import com.worldventures.dreamtrips.modules.dtl.model.location.DtlLocation;
-import com.worldventures.dreamtrips.modules.dtl.model.location.ImmutableDtlManualLocation;
+import com.worldventures.dreamtrips.modules.dtl.model.location.ImmutableDtlLocation;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.filter.FilterData;
 import com.worldventures.dreamtrips.modules.dtl.service.DtlLocationInteractor;
 import com.worldventures.dreamtrips.modules.dtl.service.DtlTransactionInteractor;
 import com.worldventures.dreamtrips.modules.dtl.service.FilterDataInteractor;
 import com.worldventures.dreamtrips.modules.dtl.service.MerchantsInteractor;
-import com.worldventures.dreamtrips.modules.dtl.service.action.DtlLocationCommand;
-import com.worldventures.dreamtrips.modules.dtl.service.action.DtlLocationFacadeCommand;
-import com.worldventures.dreamtrips.modules.dtl.service.action.DtlNearbyLocationAction;
-import com.worldventures.dreamtrips.modules.dtl.service.action.DtlSearchLocationAction;
+import com.worldventures.dreamtrips.modules.dtl.service.action.LocationCommand;
+import com.worldventures.dreamtrips.modules.dtl.service.action.LocationFacadeCommand;
+import com.worldventures.dreamtrips.modules.dtl.service.action.NearbyLocationAction;
+import com.worldventures.dreamtrips.modules.dtl.service.action.SearchLocationAction;
 import com.worldventures.dreamtrips.modules.dtl.service.action.FilterDataAction;
 import com.worldventures.dreamtrips.modules.dtl_flow.DtlPresenterImpl;
 import com.worldventures.dreamtrips.modules.dtl_flow.FlowUtil;
@@ -58,7 +58,7 @@ public class DtlLocationChangePresenterImpl extends DtlPresenterImpl<DtlLocation
    @Inject MerchantsInteractor merchantInteractor;
 
    @State ScreenMode screenMode = ScreenMode.NEARBY_LOCATIONS;
-   @State ArrayList<DtlExternalLocation> dtlNearbyLocations = new ArrayList<>();
+   @State ArrayList<DtlLocation> dtlNearbyLocations = new ArrayList<>();
    @State boolean toolbarInitialized;
 
    private Subscription locationRequestNoFallback;
@@ -117,7 +117,7 @@ public class DtlLocationChangePresenterImpl extends DtlPresenterImpl<DtlLocation
    private Observable<DtlLocation> connectDtlLocationUpdate() {
       Observable<DtlLocation> locationObservable = locationInteractor.locationFacadePipe()
             .observeSuccessWithReplay()
-            .map(DtlLocationFacadeCommand::getResult)
+            .map(LocationFacadeCommand::getResult)
             .compose(bindViewIoToMainComposer());
       Observable.combineLatest(locationObservable, filterDataInteractor.filterDataPipe()
             .observeSuccessWithReplay()
@@ -145,10 +145,11 @@ public class DtlLocationChangePresenterImpl extends DtlPresenterImpl<DtlLocation
             locationInteractor.requestNearbyLocations(location);
             break;
          case AUTO_NEAR_ME:
-            DtlLocation dtlLocation = ImmutableDtlManualLocation.builder()
+            DtlLocation dtlLocation = ImmutableDtlLocation.builder()
+                  .isExternal(false)
                   .locationSourceType(LocationSourceType.NEAR_ME)
                   .longName(context.getString(R.string.dtl_near_me_caption))
-                  .coordinates(new com.worldventures.dreamtrips.modules.trips.model.Location(location))
+                  .coordinates(new LatLng(location.getLatitude(), location.getLongitude()))
                   .build();
             locationInteractor.changeSourceLocation(dtlLocation);
             navigateToPath(DtlMerchantsPath.withAllowedRedirection());
@@ -175,8 +176,8 @@ public class DtlLocationChangePresenterImpl extends DtlPresenterImpl<DtlLocation
       locationInteractor.locationSourcePipe()
             .observeSuccessWithReplay()
             .take(1)
-            .map(DtlLocationCommand::getResult)
-            .map(dtlLocation -> dtlLocation.getLocationSourceType())
+            .map(LocationCommand::getResult)
+            .map(dtlLocation -> dtlLocation.locationSourceType())
             .filter(locationSourceType -> locationSourceType == LocationSourceType.NEAR_ME)
             .compose(bindViewIoToMainComposer())
             .subscribe(command -> getView().hideNearMeButton());
@@ -186,12 +187,12 @@ public class DtlLocationChangePresenterImpl extends DtlPresenterImpl<DtlLocation
       locationInteractor.searchLocationPipe()
             .observeWithReplay()
             .compose(bindViewIoToMainComposer())
-            .subscribe(new ActionStateSubscriber<DtlSearchLocationAction>().onStart(command -> getView().showProgress())
+            .subscribe(new ActionStateSubscriber<SearchLocationAction>().onStart(command -> getView().showProgress())
                   .onFail(apiErrorPresenter::handleActionError)
                   .onSuccess(this::onSearchFinished));
    }
 
-   private void onSearchFinished(DtlSearchLocationAction action) {
+   private void onSearchFinished(SearchLocationAction action) {
       getView().setItems(action.getResult(), false);
    }
 
@@ -215,7 +216,7 @@ public class DtlLocationChangePresenterImpl extends DtlPresenterImpl<DtlLocation
    private void search(String query) {
       screenMode = ScreenMode.SEARCH;
       locationInteractor.searchLocationPipe().cancelLatest();
-      locationInteractor.searchLocationPipe().send(new DtlSearchLocationAction(query.trim()));
+      locationInteractor.searchLocationPipe().send(new SearchLocationAction(query.trim()));
    }
 
    @Override
@@ -249,7 +250,7 @@ public class DtlLocationChangePresenterImpl extends DtlPresenterImpl<DtlLocation
       locationInteractor.nearbyLocationPipe()
             .observeWithReplay()
             .compose(bindViewIoToMainComposer())
-            .subscribe(new ActionStateSubscriber<DtlNearbyLocationAction>()
+            .subscribe(new ActionStateSubscriber<NearbyLocationAction>()
                   .onProgress((command, progress) -> getView().showProgress())
                   .onFail((action, throwable) -> {
                      getView().informUser(action.getFallbackErrorMessage());
@@ -258,12 +259,12 @@ public class DtlLocationChangePresenterImpl extends DtlPresenterImpl<DtlLocation
                   .onSuccess(this::onLocationsLoaded));
    }
 
-   private void onLocationsLoaded(DtlNearbyLocationAction action) {
+   private void onLocationsLoaded(NearbyLocationAction action) {
       getView().hideProgress();
       showLoadedLocations(action.getResult());
    }
 
-   private void showLoadedLocations(List<DtlExternalLocation> locations) {
+   private void showLoadedLocations(List<DtlLocation> locations) {
       dtlNearbyLocations.clear();
       dtlNearbyLocations.addAll(locations);
       getView().switchVisibilityNoMerchants(noMerchants.get());
@@ -281,11 +282,11 @@ public class DtlLocationChangePresenterImpl extends DtlPresenterImpl<DtlLocation
    }
 
    @Override
-   public void locationSelected(DtlExternalLocation dtlExternalLocation) {
-      locationInteractor.searchLocationPipe().clearReplays();
+   public void locationSelected(DtlLocation location) {
+      //locationInteractor.searchLocationPipe().clearReplays();
       analyticsInteractor.dtlAnalyticsCommandPipe()
-            .send(DtlAnalyticsCommand.create(LocationSearchEvent.create(dtlExternalLocation)));
-      locationInteractor.changeSourceLocation(dtlExternalLocation);
+            .send(DtlAnalyticsCommand.create(LocationSearchEvent.create(location)));
+      locationInteractor.changeSourceLocation(location);
       navigateToPath(DtlMerchantsPath.getDefault());
    }
 

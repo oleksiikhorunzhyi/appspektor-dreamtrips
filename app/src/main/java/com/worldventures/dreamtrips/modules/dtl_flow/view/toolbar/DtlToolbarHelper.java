@@ -11,13 +11,13 @@ public class DtlToolbarHelper {
    public static String provideLocationCaption(Resources resources, DtlLocation dtlLocation) {
       if (dtlLocation == null) return "";
 
-      switch (dtlLocation.getLocationSourceType()) {
+      switch (dtlLocation.locationSourceType()) {
          case NEAR_ME:
          case EXTERNAL:
-            return dtlLocation.getLongName();
+            return dtlLocation.longName();
          case FROM_MAP:
-            return TextUtils.isEmpty(dtlLocation.getLongName()) ? resources.getString(R.string.dtl_nearby_caption_empty) : resources
-                  .getString(R.string.dtl_nearby_caption_format, dtlLocation.getLongName());
+            return TextUtils.isEmpty(dtlLocation.longName()) ? resources.getString(R.string.dtl_nearby_caption_empty) : resources
+                  .getString(R.string.dtl_nearby_caption_format, dtlLocation.longName());
          default:
             return "";
       }

@@ -25,8 +25,8 @@ import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.flow.activity.FlowActivity;
 import com.worldventures.dreamtrips.core.utils.ActivityResultDelegate;
 import com.worldventures.dreamtrips.core.utils.ViewUtils;
-import com.worldventures.dreamtrips.modules.dtl.model.location.DtlExternalLocation;
 import com.worldventures.dreamtrips.modules.dtl.model.location.DtlLocation;
+import com.worldventures.dreamtrips.modules.dtl.model.location.ImmutableDtlLocation;
 import com.worldventures.dreamtrips.modules.dtl.view.cell.DtlLocationSearchCell;
 import com.worldventures.dreamtrips.modules.dtl.view.cell.DtlLocationSearchHeaderCell;
 import com.worldventures.dreamtrips.modules.dtl.view.cell.DtlNearbyHeaderCell;
@@ -155,12 +155,12 @@ public class MasterToolbarScreenImpl extends DtlLayout<MasterToolbarScreen, Mast
    }
 
    private void setupRecyclerView() {
-      adapter = new BaseDelegateAdapter<DtlExternalLocation>(getActivity(), injector);
-      adapter.registerCell(DtlExternalLocation.class, DtlLocationSearchCell.class);
+      adapter = new BaseDelegateAdapter<DtlLocation>(getActivity(), injector);
+      adapter.registerCell(ImmutableDtlLocation.class, DtlLocationSearchCell.class);
       adapter.registerCell(DtlLocationSearchHeaderCell.HeaderModel.class, DtlLocationSearchHeaderCell.class);
       adapter.registerCell(DtlNearbyHeaderCell.NearbyHeaderModel.class, DtlNearbyHeaderCell.class);
 
-      adapter.registerDelegate(DtlExternalLocation.class, location -> onLocationClicked((DtlExternalLocation) location));
+      adapter.registerDelegate(ImmutableDtlLocation.class, location -> onLocationClicked((DtlLocation) location));
 
       recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
       recyclerView.addItemDecoration(new SimpleListDividerDecorator(ContextCompat.getDrawable(getContext(), R.drawable.dtl_location_change_list_divider), false));
@@ -207,7 +207,7 @@ public class MasterToolbarScreenImpl extends DtlLayout<MasterToolbarScreen, Mast
       ViewUtils.setViewVisibility(View.VISIBLE, recyclerView);
    }
 
-   public void onLocationClicked(DtlExternalLocation location) {
+   public void onLocationClicked(DtlLocation location) {
       hideSoftInput();
       getPresenter().locationSelected(location);
    }
@@ -250,7 +250,7 @@ public class MasterToolbarScreenImpl extends DtlLayout<MasterToolbarScreen, Mast
    }
 
    @Override
-   public void setItems(List<DtlExternalLocation> items, boolean showNearbyHeader) {
+   public void setItems(List<DtlLocation> items, boolean showNearbyHeader) {
       hideProgress();
 
       List<Object> locations = prepareHeader(showNearbyHeader);

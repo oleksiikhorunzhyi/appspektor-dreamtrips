@@ -9,6 +9,7 @@ import com.messenger.ui.activity.MessengerActivity;
 import com.messenger.util.UnreadConversationObservable;
 import com.techery.spares.module.Injector;
 import com.techery.spares.module.qualifier.ForActivity;
+import com.techery.spares.utils.delegate.EntityDeletedEventDelegate;
 import com.techery.spares.utils.delegate.NotificationCountEventDelegate;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.api.action.CommandWithError;
@@ -40,7 +41,6 @@ import com.worldventures.dreamtrips.modules.feed.event.DownloadPhotoEvent;
 import com.worldventures.dreamtrips.modules.feed.event.EditBucketEvent;
 import com.worldventures.dreamtrips.modules.feed.event.FeedEntityChangedEvent;
 import com.worldventures.dreamtrips.modules.feed.event.FeedEntityCommentedEvent;
-import com.worldventures.dreamtrips.modules.feed.event.FeedEntityDeletedEvent;
 import com.worldventures.dreamtrips.modules.feed.event.FeedItemAddedEvent;
 import com.worldventures.dreamtrips.modules.feed.event.ItemFlaggedEvent;
 import com.worldventures.dreamtrips.modules.feed.event.LikesPressedEvent;
@@ -91,6 +91,7 @@ public class FeedPresenter extends Presenter<FeedPresenter.View> {
    @Inject LocaleHelper localeHelper;
    @Inject @ForActivity Provider<Injector> injectorProvider;
    @Inject NotificationCountEventDelegate notificationCountEventDelegate;
+   @Inject EntityDeletedEventDelegate entityDeletedEventDelegate;
 
    @Inject BucketInteractor bucketInteractor;
    @Inject FeedInteractor feedInteractor;
@@ -133,6 +134,7 @@ public class FeedPresenter extends Presenter<FeedPresenter.View> {
       subscribeUnreadConversationsCount();
       subscribeFriendsNotificationsCount();
       subscribeToLikesChanges();
+      subscribeToEntityDeletedEvents();
       textualPostTranslationDelegate.onTakeView(view, feedItems);
 
       if (feedItems.size() != 0) {
@@ -332,8 +334,10 @@ public class FeedPresenter extends Presenter<FeedPresenter.View> {
       view.refreshFeedItems(feedItems);
    }
 
-   public void onEvent(FeedEntityDeletedEvent event) {
-      itemDeleted(event.getEventModel());
+   private void subscribeToEntityDeletedEvents() {
+      entityDeletedEventDelegate.getReplayObservable()
+            .compose(bindViewToMainComposer())
+            .subscribe(this::itemDeleted);
    }
 
    public void onEvent(FeedItemAddedEvent event) {

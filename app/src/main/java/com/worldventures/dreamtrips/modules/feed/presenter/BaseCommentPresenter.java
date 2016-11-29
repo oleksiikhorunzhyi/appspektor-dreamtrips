@@ -1,6 +1,7 @@
 package com.worldventures.dreamtrips.modules.feed.presenter;
 
 import com.innahema.collections.query.queriables.Queryable;
+import com.techery.spares.utils.delegate.EntityDeletedEventDelegate;
 import com.worldventures.dreamtrips.core.rx.RxView;
 import com.worldventures.dreamtrips.core.rx.composer.IoToMainComposer;
 import com.worldventures.dreamtrips.core.utils.LocaleHelper;
@@ -20,7 +21,6 @@ import com.worldventures.dreamtrips.modules.feed.event.DeletePostEvent;
 import com.worldventures.dreamtrips.modules.feed.event.EditBucketEvent;
 import com.worldventures.dreamtrips.modules.feed.event.FeedEntityChangedEvent;
 import com.worldventures.dreamtrips.modules.feed.event.FeedEntityCommentedEvent;
-import com.worldventures.dreamtrips.modules.feed.event.FeedEntityDeletedEvent;
 import com.worldventures.dreamtrips.modules.feed.event.ItemFlaggedEvent;
 import com.worldventures.dreamtrips.modules.feed.event.LoadFlagEvent;
 import com.worldventures.dreamtrips.modules.feed.event.LoadMoreEvent;
@@ -67,6 +67,7 @@ public class BaseCommentPresenter<T extends BaseCommentPresenter.View> extends P
    @Inject TripImagesInteractor tripImagesInteractor;
    @Inject FriendsInteractor friendsInteractor;
    @Inject PostsInteractor postsInteractor;
+   @Inject EntityDeletedEventDelegate entityDeletedEventDelegate;
 
    private FlagDelegate flagDelegate;
 
@@ -304,7 +305,7 @@ public class BaseCommentPresenter<T extends BaseCommentPresenter.View> extends P
    }
 
    protected void itemDeleted(FeedEntity model) {
-      eventBus.post(new FeedEntityDeletedEvent(model));
+      entityDeletedEventDelegate.post(model);
       //
       back();
    }

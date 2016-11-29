@@ -1,5 +1,6 @@
 package com.techery.spares.module;
 
+import com.techery.spares.utils.delegate.EntityDeletedEventDelegate;
 import com.techery.spares.utils.delegate.ImagePresenterClickEventDelegate;
 import com.techery.spares.utils.delegate.NotificationCountEventDelegate;
 import com.techery.spares.utils.delegate.ScreenChangedEventDelegate;
@@ -64,5 +65,11 @@ public class EventDelegateModule {
    @Singleton
    DrawerOpenedEventDelegate provideSideNavigationItemPressedDelegate() {
       return new DrawerOpenedEventDelegate();
+   }
+
+   @Provides
+   @Singleton
+   EntityDeletedEventDelegate provideEntityDeletedEventDelegate() {
+      return new EntityDeletedEventDelegate();
    }
 }

@@ -5,6 +5,8 @@ import com.worldventures.dreamtrips.api.settings.model.Setting;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.util.ArrayList;
+
 import io.techery.mappery.MapperyContext;
 
 public class SettingConverter implements Converter<Setting, com.worldventures.dreamtrips.modules.settings.model.Setting> {
@@ -27,7 +29,7 @@ public class SettingConverter implements Converter<Setting, com.worldventures.dr
          case SELECT:
             return new com.worldventures.dreamtrips.modules.settings.model.SelectSetting(apiSetting.name(),
                   com.worldventures.dreamtrips.modules.settings.model.Setting.Type.SELECT,
-                  (String) apiSetting.value(), ((SelectSetting) apiSetting).options());
+                  (String) apiSetting.value(), new ArrayList<String>(((SelectSetting) apiSetting).options()));
          default:
             return new com.worldventures.dreamtrips.modules.settings.model.Setting<>("",
                   com.worldventures.dreamtrips.modules.settings.model.Setting.Type.UNKNOWN, "");

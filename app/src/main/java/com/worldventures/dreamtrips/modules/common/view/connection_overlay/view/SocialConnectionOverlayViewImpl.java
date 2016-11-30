@@ -9,7 +9,7 @@ import android.view.ViewGroup;
 import com.worldventures.dreamtrips.R;
 
 import rx.Observable;
-import rx.subjects.ReplaySubject;
+import rx.subjects.PublishSubject;
 
 public class SocialConnectionOverlayViewImpl implements SocialConnectionOverlayView {
 
@@ -17,7 +17,7 @@ public class SocialConnectionOverlayViewImpl implements SocialConnectionOverlayV
    private ViewGroup parentView;
    private View overlayView;
 
-   private ReplaySubject<Void> closeClickObservable = ReplaySubject.create();
+   private PublishSubject<Void> closeClickObservable = PublishSubject.create();
 
    public SocialConnectionOverlayViewImpl(Context context, @Nullable ViewGroup parentView) {
       this.context = context;

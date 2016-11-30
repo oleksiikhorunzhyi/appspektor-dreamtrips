@@ -36,6 +36,12 @@ public class WalletStartScreen extends WalletLinearLayout<Screen, WalletStartPre
       return false;
    }
 
+   @Override
+   protected void onFinishInflate() {
+      super.onFinishInflate();
+      supportConnectionStatusLabel(false);
+   }
+
    @NonNull
    @Override
    public WalletStartPresenter createPresenter() {

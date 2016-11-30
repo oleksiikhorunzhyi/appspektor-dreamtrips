@@ -34,6 +34,7 @@ public class WizardCheckingScreen extends WalletLinearLayout<WizardCheckingPrese
    @Override
    protected void onFinishInflate() {
       super.onFinishInflate();
+      supportConnectionStatusLabel(false);
       toolbar.setNavigationOnClickListener(v -> presenter.goBack());
    }
 

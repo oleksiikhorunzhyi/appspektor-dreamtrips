@@ -29,7 +29,7 @@ import io.techery.mappery.MapperyContext;
 import rx.Observable;
 
 @CommandAction
-public class FetchAssociatedSmartCard extends Command<FetchAssociatedSmartCard.AssociatedCard> implements InjectableAction {
+public class FetchAssociatedSmartCardCommand extends Command<FetchAssociatedSmartCardCommand.AssociatedCard> implements InjectableAction {
 
    @Inject @Named(JanetModule.JANET_API_LIB) Janet janet;
    @Inject @Named(JanetModule.JANET_WALLET) Janet janetWallet;
@@ -39,7 +39,7 @@ public class FetchAssociatedSmartCard extends Command<FetchAssociatedSmartCard.A
    @Inject MapperyContext mappery;
 
    @Override
-   protected void run(CommandCallback<FetchAssociatedSmartCard.AssociatedCard> callback) throws Throwable {
+   protected void run(CommandCallback<FetchAssociatedSmartCardCommand.AssociatedCard> callback) throws Throwable {
       SmartCard smartCard = getSmartCardFromCache();
       if (smartCard != null) {
          callback.onSuccess(createAssociatedCard(smartCard, snappyRepository.getSmartCardDetails(smartCard.smartCardId())));
@@ -60,7 +60,7 @@ public class FetchAssociatedSmartCard extends Command<FetchAssociatedSmartCard.A
       return snappyRepository.getSmartCard(activeSmartCardId);
    }
 
-   private Observable<FetchAssociatedSmartCard.AssociatedCard> handleResponse(List<SmartCardInfo> listSmartCardInfo) {
+   private Observable<FetchAssociatedSmartCardCommand.AssociatedCard> handleResponse(List<SmartCardInfo> listSmartCardInfo) {
       if (listSmartCardInfo.isEmpty()) return Observable.just(ImmutableAssociatedCard.of(false));
       final SmartCardInfo smartCardInfo = listSmartCardInfo.get(0);
 

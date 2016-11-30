@@ -306,6 +306,14 @@ public final class SmartCardInteractor {
             }, throwable -> Timber.e(throwable, "Error with handling connection event"));
 
       observeCardsChanges();
+      connectFetchingCards();
+   }
+
+   private void connectFetchingCards() {
+      smartCardModifierPipe.observeSuccess()
+            .map(SmartCardModifier::getResult)
+            .filter(smartCard -> smartCard.connectionStatus() == CONNECTED)
+            .subscribe(smartCard -> cardStacksPipe.send(CardStacksCommand.get(false)));
    }
 
    //TODO this way of syncing data between pipes is quite unobvious and should be reworked in future

@@ -38,7 +38,7 @@ import static com.worldventures.dreamtrips.core.janet.JanetModule.JANET_API_LIB;
 import static com.worldventures.dreamtrips.core.janet.JanetModule.JANET_WALLET;
 
 @CommandAction
-public class SetupUserDataCommand extends Command<SmartCard> implements InjectableAction, CachedAction<SmartCard> {
+public class SetupUserDataCommand extends Command<SmartCard> implements InjectableAction, CachedAction<SmartCard>, SmartCardModifier {
 
    @Inject Janet janetGeneric;
    @Inject @Named(JANET_WALLET) Janet janetWallet;
@@ -77,27 +77,9 @@ public class SetupUserDataCommand extends Command<SmartCard> implements Injectab
                   .flatMap(bytesArray -> janetWallet.createPipe(UpdateUserPhotoAction.class)
                         .createObservableResult(new UpdateUserPhotoAction(bytesArray)))
             )
-            //todo    .flatMap(action -> uploadUserData())
             .map(action -> attachAvatarToLocalSmartCard(user))
             .subscribe(callback::onSuccess, callback::onFail);
    }
-/*
-//todo it should be called only from settings, from provisioning we need to upload only to SC
-   private Observable<? extends UpdateCardUserHttpAction> uploadUserData() {
-      return janetGeneric.createPipe(SimpleUploaderyCommand.class)
-            .createObservableResult(new SimpleUploaderyCommand(Uri.fromFile(avatar.original()).toString()))
-            .map(c -> c.getResult().getPhotoUploadResponse().getLocation())
-            .flatMap(avatarUrl -> {
-                     ImmutableUpdateCardUserData cardUserData = ImmutableUpdateCardUserData.builder()
-                           .nameToDisplay(fullName)
-                           .photoUrl(avatarUrl)
-                           .build();
-                     return janetApi.createPipe(UpdateCardUserHttpAction.class)
-                           .createObservableResult(new UpdateCardUserHttpAction(Long.parseLong(smartCardId), cardUserData));
-                  }
-            );
-   }
-*/
 
    private SmartCard attachAvatarToLocalSmartCard(User user) {
       smartCard = ImmutableSmartCard.builder()
@@ -165,13 +147,13 @@ public class SetupUserDataCommand extends Command<SmartCard> implements Injectab
       String[] nameParts = fullName.split(" ");
       String firstName = null, lastName = null, middleName = null;
       if (nameParts.length == 2) {
-            firstName = nameParts[0];
-            lastName = nameParts[1];
+         firstName = nameParts[0];
+         lastName = nameParts[1];
       } else if (nameParts.length == 3) {
-            firstName = nameParts[0];
-            middleName = nameParts[1];
-            lastName = nameParts[2];
-         }
+         firstName = nameParts[0];
+         middleName = nameParts[1];
+         lastName = nameParts[2];
+      }
       return new String[]{firstName, middleName, lastName};
    }
 

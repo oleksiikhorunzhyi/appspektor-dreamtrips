@@ -15,7 +15,6 @@ public abstract class SmartCard {
 
    public abstract String deviceAddress();
 
-   @Nullable
    @Value.Default
    public SmartCardUser user() {
       //need for migration-hack

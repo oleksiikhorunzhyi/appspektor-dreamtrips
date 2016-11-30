@@ -6,28 +6,31 @@ import android.net.Uri;
 import android.os.Parcelable;
 import android.support.annotation.Nullable;
 import android.view.WindowManager;
-import android.widget.Toast;
 
 import com.techery.spares.module.Injector;
+import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCard;
+import com.worldventures.dreamtrips.wallet.domain.entity.SmartCardUser;
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCardUserPhoto;
 import com.worldventures.dreamtrips.wallet.domain.storage.TemporaryStorage;
 import com.worldventures.dreamtrips.wallet.service.FirmwareInteractor;
 import com.worldventures.dreamtrips.wallet.service.SmartCardAvatarInteractor;
 import com.worldventures.dreamtrips.wallet.service.SmartCardInteractor;
+import com.worldventures.dreamtrips.wallet.service.SmartCardManager;
 import com.worldventures.dreamtrips.wallet.service.WizardInteractor;
 import com.worldventures.dreamtrips.wallet.service.command.CompressImageForSmartCardCommand;
-import com.worldventures.dreamtrips.wallet.service.command.GetActiveSmartCardCommand;
-import com.worldventures.dreamtrips.wallet.service.command.SetupUserDataCommand;
 import com.worldventures.dreamtrips.wallet.service.command.SmartCardAvatarCommand;
+import com.worldventures.dreamtrips.wallet.service.command.UpdateUserDataCommand;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletPresenter;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.WalletScreen;
+import com.worldventures.dreamtrips.wallet.ui.common.helper.ErrorHandler;
+import com.worldventures.dreamtrips.wallet.ui.common.helper.OperationActionStateSubscriberWrapper;
 import com.worldventures.dreamtrips.wallet.ui.common.navigation.Navigator;
+import com.worldventures.dreamtrips.wallet.util.FormatException;
 
 import javax.inject.Inject;
 
 import io.techery.janet.helper.ActionStateSubscriber;
-import io.techery.janet.smartcard.action.user.GetUserDataAction;
 import rx.Observable;
 import timber.log.Timber;
 
@@ -40,8 +43,11 @@ public class WalletSettingsProfilePresenter extends WalletPresenter<WalletSettin
    @Inject Activity activity;
    @Inject SmartCardAvatarInteractor smartCardAvatarInteractor;
    @Inject WizardInteractor wizardInteractor;
+   @Inject SmartCardManager smartCardManager;
 
    @Nullable private SmartCardUserPhoto preparedPhoto;
+
+   private SmartCard baseValue;
 
    public WalletSettingsProfilePresenter(Context context, Injector injector) {
       super(context, injector);
@@ -55,22 +61,15 @@ public class WalletSettingsProfilePresenter extends WalletPresenter<WalletSettin
       observePickerAndCropper(view);
       subscribePreparingAvatarCommand();
 
-      smartCardInteractor.activeSmartCardPipe()
-            .createObservableResult(new GetActiveSmartCardCommand())
+      smartCardManager.singleSmartCardObservable()
             .compose(bindViewIoToMainComposer())
             .subscribe(it -> {
-               view.setPreviewPhoto(Uri.fromFile(it.getResult().user().userPhoto().original()));
+               this.baseValue = it;
+               preparedPhoto = baseValue.user().userPhoto();
+               view.setPreviewPhoto(Uri.fromFile(it.user().userPhoto().original()));
+               view.setUserName(it.user().firstName(), it.user().middleName(), it.user().lastName());
             }, throwable -> {
                Timber.e(throwable, "");
-            });
-
-      smartCardInteractor.userDataActionActionPipe()
-            .createObservableResult(new GetUserDataAction())
-            .compose(bindViewIoToMainComposer())
-            .subscribe(it -> {
-               getView().setUserName(it.user.firstName(), it.user.middleName(), it.user.lastName());
-            }, throwable -> {
-               //todo
             });
    }
 
@@ -80,26 +79,25 @@ public class WalletSettingsProfilePresenter extends WalletPresenter<WalletSettin
    }
 
    void setupUserData() {
+      if (!isDataChanged()) {goBack(true);}
 
-      //todo add validation
-      smartCardInteractor.activeSmartCardPipe()
-            .createObservableResult(new GetActiveSmartCardCommand())
-            .doOnNext(it -> {
-               if (it.getResult().connectionStatus() != SmartCard.ConnectionStatus.CONNECTED) {
-                  throw new IllegalStateException("Smart card should be connected");
-               }
-            })
-            .flatMap(it -> wizardInteractor.setupUserDataPipe()
-                  .createObservableResult(new SetupUserDataCommand(getView().getFirstName(), getView().getMiddleName(), getView()
-                        .getLastName(), preparedPhoto, it.getResult().smartCardId())))
+      smartCardInteractor.updateUserDataActionPipe()
+            .observeWithReplay()
             .compose(bindViewIoToMainComposer())
-            .subscribe(setupUserDataCommand -> {
-               Toast.makeText(getContext(), "SUCCESS", Toast.LENGTH_LONG).show();
-               //todo
-            }, throwable -> {
-               Timber.e(throwable, "");
-            });
+            .subscribe(OperationActionStateSubscriberWrapper.<UpdateUserDataCommand>forView(getView().provideOperationDelegate())
+                  .onSuccess(this::onDataSaved)
+                  .onFail(ErrorHandler.<UpdateUserDataCommand>builder(getContext())
+                        .handle(FormatException.class, R.string.wallet_add_card_details_error_message)
+                        .build())
+                  .wrap());
 
+      smartCardInteractor.updateUserDataActionPipe()
+            .send(new UpdateUserDataCommand(baseValue.user(), getView().getFirstName(), getView().getMiddleName(), getView()
+                  .getLastName(), preparedPhoto, baseValue.smartCardId()));
+   }
+
+   private void onDataSaved(UpdateUserDataCommand setupUserDataCommand) {
+      goBack(true);
    }
 
    private void subscribePreparingAvatarCommand() {
@@ -138,8 +136,12 @@ public class WalletSettingsProfilePresenter extends WalletPresenter<WalletSettin
       String viewFirstName = getView().getFirstName();
       String viewMiddleName = getView().getMiddleName();
       String viewLastName = getView().getLastName();
-
-      return true;
+      SmartCardUser user = baseValue.user();
+      boolean isFirstNameEdited = !viewFirstName.equals(user.firstName());
+      boolean isMiddleNameEdited = !viewMiddleName.equals(user.middleName());
+      boolean isLastNameEdited = !viewLastName.equals(user.lastName());
+      boolean isPhotoChanged = preparedPhoto != null && !preparedPhoto.original().equals(user.userPhoto().original());
+      return isFirstNameEdited || isMiddleNameEdited || isLastNameEdited || isPhotoChanged;
    }
 
    void choosePhoto() {

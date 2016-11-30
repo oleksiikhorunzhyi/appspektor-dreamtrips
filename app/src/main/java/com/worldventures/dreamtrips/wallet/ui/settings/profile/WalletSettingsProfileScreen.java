@@ -31,12 +31,8 @@ public class WalletSettingsProfileScreen extends WalletLinearLayout<WalletSettin
    @InjectView(R.id.last_name) EditText lastName;
    /**
     * TODO
-    * Store base info
-    * Send info to SC
-    * Send to backend
-    * Restore on failed backend request
+    * Send to backend blocked
     * Add ability to change 1 item independently
-    * validation back btn
     * notify other streams that it's ok
     */
 

@@ -11,6 +11,7 @@ import com.worldventures.dreamtrips.core.flow.layout.BaseViewStateLinearLayout;
 import com.worldventures.dreamtrips.core.rx.composer.IoToMainComposer;
 import com.worldventures.dreamtrips.modules.common.view.connection_overlay.ConnectionState;
 import com.worldventures.dreamtrips.modules.common.view.connection_overlay.core.MessengerConnectionOverlay;
+import com.worldventures.dreamtrips.modules.common.view.connection_overlay.view.MessengerConnectionOverlayViewFactory;
 
 import icepick.Icepick;
 import rx.Observable;
@@ -20,7 +21,7 @@ public abstract class MessengerLinearLayout<V extends MessengerScreen, P extends
 
    private MessengerConnectionOverlay messengerConnectionOverlay;
 
-   private PublishSubject detachStopper = PublishSubject.create();
+   private PublishSubject<Void> detachStopper = PublishSubject.create();
 
    private Bundle lastRestoredInstanceState;
 
@@ -44,7 +45,8 @@ public abstract class MessengerLinearLayout<V extends MessengerScreen, P extends
 
    @Override
    public void initDisconnectedOverlay(Observable<ConnectionState> syncStatus) {
-      messengerConnectionOverlay = new MessengerConnectionOverlay(getContext(), this);
+      messengerConnectionOverlay = new MessengerConnectionOverlay(new MessengerConnectionOverlayViewFactory(getContext(),
+            this));
       messengerConnectionOverlay.getRetryObservable()
             .compose(bindView())
             .subscribe(click -> getPresenter().onDisconnectedOverlayClicked());

@@ -88,7 +88,7 @@ public abstract class ActivityWithPresenter<PM extends ActivityPresenter> extend
    }
 
    @Override
-   public void initConnectionOverlay(Observable<ConnectionState> connectionStateObservable, Observable stopper) {
+   public void initConnectionOverlay(Observable<ConnectionState> connectionStateObservable, Observable<Void> stopper) {
 
    }
 

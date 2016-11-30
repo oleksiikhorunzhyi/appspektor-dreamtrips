@@ -21,6 +21,7 @@ import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.common.presenter.delegate.OfflineWarningDelegate;
 import com.worldventures.dreamtrips.modules.common.view.connection_overlay.ConnectionState;
 import com.worldventures.dreamtrips.modules.common.view.connection_overlay.core.SocialConnectionOverlay;
+import com.worldventures.dreamtrips.modules.common.view.connection_overlay.view.SocialConnectionOverlayViewFactory;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -216,12 +217,16 @@ public abstract class BaseFragment<PM extends Presenter> extends InjectingFragme
    }
 
    @Override
-   public void initConnectionOverlay(Observable<ConnectionState> connectionStateObservable, Observable stopper) {
-      connectionOverlay = new SocialConnectionOverlay(getContext(), getView(), getContentLayoutId());
-      connectionOverlay.startProcessingState(connectionStateObservable, stopper);
+   public void initConnectionOverlay(Observable<ConnectionState> connectionStateObservable, Observable<Void> stopper) {
+      if (getView() != null) {
+         connectionOverlay = new SocialConnectionOverlay(new SocialConnectionOverlayViewFactory(getContext(), getView(),
+               getContentLayoutId()));
+         connectionOverlay.startProcessingState(connectionStateObservable, stopper);
+      }
    }
 
-   protected @IdRes int getContentLayoutId() {
+   @IdRes
+   protected int getContentLayoutId() {
       return R.id.content_layout;
    }
 

@@ -113,7 +113,7 @@ public class TripDetailsFragment extends RxBaseFragmentWithArgs<TripDetailsPrese
    }
 
    @Override
-   public void initConnectionOverlay(Observable<ConnectionState> connectionStateObservable, Observable stopper) {
+   public void initConnectionOverlay(Observable<ConnectionState> connectionStateObservable, Observable<Void> stopper) {
       if (ViewUtils.isLandscapeOrientation(getContext())) {
          super.initConnectionOverlay(connectionStateObservable, stopper);
       }

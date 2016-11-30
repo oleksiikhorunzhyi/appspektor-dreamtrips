@@ -1,6 +1,7 @@
 package com.worldventures.dreamtrips.modules.common.view.connection_overlay.view;
 
 import android.content.Context;
+import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,7 +23,7 @@ public class MessengerConnectionOverlayView implements ConnectionOverlayView {
 
    private PublishSubject retryObservable = PublishSubject.create();
 
-   public MessengerConnectionOverlayView(Context context, ViewGroup contentView) {
+   public MessengerConnectionOverlayView(Context context, @Nullable ViewGroup contentView) {
       this.context = context;
       this.parentView = contentView;
    }
@@ -31,8 +32,9 @@ public class MessengerConnectionOverlayView implements ConnectionOverlayView {
       return retryObservable;
    }
 
-   @Override
    public void setConnectionState(ConnectionState connectionState) {
+      if (parentView == null) return;
+
       attachOverlayViewIfNeeded();
 
       switch (connectionState) {

@@ -15,6 +15,7 @@ import com.worldventures.dreamtrips.core.utils.ViewUtils;
 import com.worldventures.dreamtrips.modules.common.presenter.LaunchActivityPresenter;
 import com.worldventures.dreamtrips.modules.common.view.connection_overlay.ConnectionState;
 import com.worldventures.dreamtrips.modules.common.view.connection_overlay.core.SocialConnectionOverlay;
+import com.worldventures.dreamtrips.modules.common.view.connection_overlay.view.SocialConnectionOverlayViewFactory;
 import com.worldventures.dreamtrips.modules.common.view.custom.DTEditText;
 
 import butterknife.InjectView;
@@ -71,8 +72,8 @@ public class LaunchActivity extends ActivityWithPresenter<LaunchActivityPresente
    }
 
    @Override
-   public void initConnectionOverlay(Observable<ConnectionState> connectionStateObservable, Observable stopper) {
-      connectionOverlay = new SocialConnectionOverlay(this, contentView);
+   public void initConnectionOverlay(Observable<ConnectionState> connectionStateObservable, Observable<Void> stopper) {
+      connectionOverlay = new SocialConnectionOverlay(new SocialConnectionOverlayViewFactory(this, contentView));
       connectionOverlay.startProcessingState(connectionStateObservable, stopper);
    }
 

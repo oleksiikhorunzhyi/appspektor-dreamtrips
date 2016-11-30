@@ -111,7 +111,7 @@ public abstract class BaseDialogFragmentWithPresenter<T extends Presenter> exten
    }
 
    @Override
-   public void initConnectionOverlay(Observable<ConnectionState> connectionStateObservable, Observable stopper) {
+   public void initConnectionOverlay(Observable<ConnectionState> connectionStateObservable, Observable<Void> stopper) {
 
    }
 

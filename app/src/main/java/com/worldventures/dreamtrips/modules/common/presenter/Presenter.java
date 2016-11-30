@@ -223,7 +223,7 @@ public class Presenter<VT extends Presenter.View> {
 
       void showOfflineAlert();
 
-      void initConnectionOverlay(Observable<ConnectionState> connectionStateObservable, Observable stopper);
+      void initConnectionOverlay(Observable<ConnectionState> connectionStateObservable, Observable<Void> stopper);
    }
 
    public interface TabletAnalytic {

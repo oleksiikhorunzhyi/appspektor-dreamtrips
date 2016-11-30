@@ -1,22 +1,20 @@
 package com.worldventures.dreamtrips.modules.common.view.connection_overlay.core;
 
-import android.content.Context;
-import android.view.View;
-import android.view.ViewGroup;
-
+import com.worldventures.dreamtrips.modules.common.view.connection_overlay.ConnectionState;
 import com.worldventures.dreamtrips.modules.common.view.connection_overlay.view.MessengerConnectionOverlayView;
+import com.worldventures.dreamtrips.modules.common.view.connection_overlay.view.MessengerConnectionOverlayViewFactory;
 
 import rx.Observable;
 
 public class MessengerConnectionOverlay extends ConnectionOverlay<MessengerConnectionOverlayView> {
 
-   public MessengerConnectionOverlay(Context context, View rootView) {
-      super(context, rootView);
+   public MessengerConnectionOverlay(MessengerConnectionOverlayViewFactory connectionOverlayViewFactory) {
+      super(connectionOverlayViewFactory);
    }
 
    @Override
-   protected MessengerConnectionOverlayView onCreateView(ViewGroup contentLayout) {
-      return new MessengerConnectionOverlayView(context, contentLayout);
+   protected void connectionStateChanged(ConnectionState connectionState) {
+      overlayView.setConnectionState(connectionState);
    }
 
    public Observable getRetryObservable() {

@@ -60,7 +60,7 @@ public class FeedEntityDetailsFragment extends FeedDetailsFragment<FeedEntityDet
    }
 
    @Override
-   public void initConnectionOverlay(Observable<ConnectionState> connectionStateObservable, Observable stopper) {
+   public void initConnectionOverlay(Observable<ConnectionState> connectionStateObservable, Observable<Void> stopper) {
       // Trip details in landscape mode has specific connection overlay parent view down the hierarchy
       if (getArgs().getFeedEntity() instanceof TripModel && ViewUtils.isLandscapeOrientation(getContext())) {
          return;

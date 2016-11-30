@@ -164,11 +164,10 @@ public class SetupUserDataCommand extends Command<SmartCard> implements Injectab
    private static String[] split(String fullName) {
       String[] nameParts = fullName.split(" ");
       String firstName = null, lastName = null, middleName = null;
-      if (nameParts.length < 2 || nameParts.length > 3)
-         if (nameParts.length == 2) {
+      if (nameParts.length == 2) {
             firstName = nameParts[0];
             lastName = nameParts[1];
-         } else {
+      } else if (nameParts.length == 3) {
             firstName = nameParts[0];
             middleName = nameParts[1];
             lastName = nameParts[2];

@@ -23,7 +23,7 @@ public class UserToSmartCardUserConverter implements Converter<User, SmartCardUs
    public SmartCardUser convert(MapperyContext mapperyContext, User user) {
       return ImmutableSmartCardUser.builder()
             .firstName(user.firstName())
-            .middleName(user.middleName())
+            .middleName(user.middleName() == null? "" : user.middleName())
             .lastName(user.lastName())
             .build();
    }

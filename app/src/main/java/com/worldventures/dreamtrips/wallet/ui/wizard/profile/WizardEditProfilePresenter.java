@@ -85,7 +85,7 @@ public class WizardEditProfilePresenter extends WalletPresenter<WizardEditProfil
       fetchAndStoreDefaultAddress();
 
       User userProfile = appSessionHolder.get().get().getUser();
-      view.setUserFullName(userProfile.getFullName());
+      view.setUserFullName(userProfile.getFirstName(),  userProfile.getLastName());
       String defaultUserAvatar = userProfile.getAvatar().getThumb();
       if (!TextUtils.isEmpty(defaultUserAvatar)) {
          smartCardAvatarInteractor.smartCardAvatarPipe().send(new LoadImageForSmartCardCommand(defaultUserAvatar));
@@ -157,8 +157,9 @@ public class WizardEditProfilePresenter extends WalletPresenter<WizardEditProfil
    }
 
    void setupUserData() {
-      wizardInteractor.setupUserDataPipe().send(new SetupUserDataCommand(getView().getUserName()
-            .trim(), preparedPhoto, smartCardId));
+      String[] userNames = getView().getUserName();
+      wizardInteractor.setupUserDataPipe().send(new SetupUserDataCommand(userNames[0], userNames[1], userNames[2],
+            preparedPhoto, smartCardId));
    }
 
    private void fetchAndStoreDefaultAddress() {
@@ -179,9 +180,9 @@ public class WizardEditProfilePresenter extends WalletPresenter<WizardEditProfil
 
       void setPreviewPhoto(File photo);
 
-      void setUserFullName(String fullName);
+      void setUserFullName(String firstName, String lastName);
 
       @NonNull
-      String getUserName();
+      String[] getUserName();
    }
 }

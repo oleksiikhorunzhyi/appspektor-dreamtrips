@@ -8,7 +8,7 @@ import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.membership.bundle.TemplateBundle;
-import com.worldventures.dreamtrips.modules.membership.event.MemberStickyEvent;
+import com.worldventures.dreamtrips.modules.membership.delegate.MembersSelectedEventDelegate;
 import com.worldventures.dreamtrips.modules.membership.model.InviteTemplate;
 import com.worldventures.dreamtrips.modules.membership.model.Member;
 import com.worldventures.dreamtrips.modules.membership.service.InviteShareInteractor;
@@ -26,23 +26,25 @@ import io.techery.janet.helper.ActionStateSubscriber;
 public class SelectTemplatePresenter extends Presenter<SelectTemplatePresenter.View> {
 
    @Inject InviteShareInteractor inviteShareInteractor;
+   @Inject MembersSelectedEventDelegate membersSelectedEventDelegate;
 
    private ArrayList<Member> members = new ArrayList<>();
 
    @Override
    public void takeView(View view) {
       super.takeView(view);
-      fetchSelectedMember();
+      subscribeToSelectedMembers();
       subscribeToInviteTemplatesLoading(view);
       reload();
    }
 
-   private void fetchSelectedMember() {
-      MemberStickyEvent event = eventBus.getStickyEvent(MemberStickyEvent.class);
-      if (event != null && event.getMembers() != null) {
+   private void subscribeToSelectedMembers() {
+      membersSelectedEventDelegate.getReplayObservable()
+            .compose(bindViewToMainComposer())
+            .subscribe(newMembers -> {
          members.clear();
-         members.addAll(event.getMembers());
-      }
+         members.addAll(newMembers);
+      });
    }
 
    private void subscribeToInviteTemplatesLoading(View view) {

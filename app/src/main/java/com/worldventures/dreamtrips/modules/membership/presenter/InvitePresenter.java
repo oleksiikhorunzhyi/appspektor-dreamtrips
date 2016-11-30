@@ -10,10 +10,9 @@ import android.util.Patterns;
 import com.badoo.mobile.util.WeakHandler;
 import com.innahema.collections.query.queriables.Queryable;
 import com.techery.spares.utils.delegate.SearchFocusChangedDelegate;
-import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
-import com.worldventures.dreamtrips.modules.membership.event.MemberStickyEvent;
+import com.worldventures.dreamtrips.modules.membership.delegate.MembersSelectedEventDelegate;
 import com.worldventures.dreamtrips.modules.membership.model.InviteTemplate.Type;
 import com.worldventures.dreamtrips.modules.membership.model.Member;
 import com.worldventures.dreamtrips.modules.membership.model.SentInvite;
@@ -36,6 +35,7 @@ public class InvitePresenter extends Presenter<InvitePresenter.View> {
 
    @Inject InviteShareInteractor inviteShareInteractor;
    @Inject SearchFocusChangedDelegate searchFocusChangedDelegate;
+   @Inject MembersSelectedEventDelegate membersSelectedEventDelegate;
 
    @State ArrayList<Member> members = new ArrayList<>();
 
@@ -49,6 +49,13 @@ public class InvitePresenter extends Presenter<InvitePresenter.View> {
       if (members.isEmpty()) loadMembers();
       else contactsLoaded();
       view.setAdapterComparator(getSelectedComparator());
+      reportSelectedMembers();
+   }
+
+   @Override
+   public void dropView() {
+      super.dropView();
+      membersSelectedEventDelegate.clearReplays();
    }
 
    private void subscribeToContactLoading() {
@@ -191,7 +198,7 @@ public class InvitePresenter extends Presenter<InvitePresenter.View> {
 
    public void deselectAll() {
       resetSelected();
-      eventBus.removeStickyEvent(MemberStickyEvent.class);
+      membersSelectedEventDelegate.clearReplays();
       setMembers();
    }
 
@@ -206,9 +213,7 @@ public class InvitePresenter extends Presenter<InvitePresenter.View> {
    public void onMemberCellSelected(Member member) {
       boolean isVisible = isVisible();
 
-      eventBus.removeStickyEvent(MemberStickyEvent.class);
-      eventBus.postSticky(new MemberStickyEvent(Queryable.from(members)
-            .filter(Member::isChecked).toList()));
+      reportSelectedMembers();
 
       view.showNextStepButtonVisibility(isVisible);
       int count = Queryable.from(members).count(Member::isChecked);
@@ -218,6 +223,11 @@ public class InvitePresenter extends Presenter<InvitePresenter.View> {
       Member lastSelectedMember = Queryable.from(members).lastOrDefault(Member::isChecked);
       int lastSelected = lastSelectedMember != null ? lastSelectedMember.getOriginalPosition() : 0;
       view.move(member, to < lastSelected ? lastSelected : to);
+   }
+
+   private void reportSelectedMembers() {
+      membersSelectedEventDelegate.post(Queryable.from(members)
+            .filter(Member::isChecked).toList());
    }
 
    public boolean isVisible() {

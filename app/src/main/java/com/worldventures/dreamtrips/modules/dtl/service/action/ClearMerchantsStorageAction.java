@@ -11,8 +11,7 @@ import io.techery.janet.command.annotations.CommandAction;
 
 @CommandAction
 public class ClearMerchantsStorageAction extends Command<Void> implements InjectableAction {
-
-   @Inject MerchantsStorage merchantsStorage;
+   
    @Inject FullMerchantStorage fullMerchantStorage;
 
    public static ClearMerchantsStorageAction clear() {
@@ -21,7 +20,6 @@ public class ClearMerchantsStorageAction extends Command<Void> implements Inject
 
    @Override
    protected void run(CommandCallback<Void> callback) throws Throwable {
-      merchantsStorage.clearMemory();
       fullMerchantStorage.clearMemory();
    }
 }

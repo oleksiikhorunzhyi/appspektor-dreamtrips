@@ -5,6 +5,7 @@ import android.support.annotation.Nullable;
 import android.text.TextUtils;
 
 import com.innahema.collections.query.queriables.Queryable;
+import com.techery.spares.utils.delegate.EntityDeletedEventDelegate;
 import com.worldventures.dreamtrips.core.rx.RxView;
 import com.worldventures.dreamtrips.core.rx.composer.IoToMainComposer;
 import com.worldventures.dreamtrips.core.utils.LocaleHelper;
@@ -23,7 +24,6 @@ import com.worldventures.dreamtrips.modules.feed.event.DownloadPhotoEvent;
 import com.worldventures.dreamtrips.modules.feed.event.EditBucketEvent;
 import com.worldventures.dreamtrips.modules.feed.event.FeedEntityChangedEvent;
 import com.worldventures.dreamtrips.modules.feed.event.FeedEntityCommentedEvent;
-import com.worldventures.dreamtrips.modules.feed.event.FeedEntityDeletedEvent;
 import com.worldventures.dreamtrips.modules.feed.event.FeedItemAddedEvent;
 import com.worldventures.dreamtrips.modules.feed.event.ItemFlaggedEvent;
 import com.worldventures.dreamtrips.modules.feed.event.LikesPressedEvent;
@@ -72,6 +72,7 @@ public class FeedHashtagPresenter<T extends FeedHashtagPresenter.View> extends J
    @Inject FlagsInteractor flagsInteractor;
    @Inject TripImagesInteractor tripImagesInteractor;
    @Inject PostsInteractor postsInteractor;
+   @Inject EntityDeletedEventDelegate entityDeletedEventDelegate;
 
    private FlagDelegate flagDelegate;
 
@@ -88,6 +89,7 @@ public class FeedHashtagPresenter<T extends FeedHashtagPresenter.View> extends J
       subscribeLoadNextFeeds();
       subscribeSuggestions();
       subscribeToLikesChanges();
+      subscribeToEntityDeletedEvents();
       textualPostTranslationDelegate.onTakeView(view, feedItems);
    }
 
@@ -249,8 +251,10 @@ public class FeedHashtagPresenter<T extends FeedHashtagPresenter.View> extends J
       view.refreshFeedItems(feedItems);
    }
 
-   public void onEvent(FeedEntityDeletedEvent event) {
-      itemDeleted(event.getEventModel());
+   private void subscribeToEntityDeletedEvents() {
+      entityDeletedEventDelegate.getReplayObservable()
+            .compose(bindViewToMainComposer())
+            .subscribe(this::itemDeleted);
    }
 
    public void onEvent(FeedItemAddedEvent event) {

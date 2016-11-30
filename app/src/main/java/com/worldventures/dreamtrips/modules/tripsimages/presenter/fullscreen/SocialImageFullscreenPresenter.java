@@ -2,6 +2,7 @@ package com.worldventures.dreamtrips.modules.tripsimages.presenter.fullscreen;
 
 import android.support.v4.app.FragmentManager;
 
+import com.techery.spares.utils.delegate.EntityDeletedEventDelegate;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.navigation.router.Router;
@@ -12,7 +13,6 @@ import com.worldventures.dreamtrips.modules.common.view.custom.tagview.viewgroup
 import com.worldventures.dreamtrips.modules.feed.bundle.CommentsBundle;
 import com.worldventures.dreamtrips.modules.feed.event.FeedEntityChangedEvent;
 import com.worldventures.dreamtrips.modules.feed.event.FeedEntityCommentedEvent;
-import com.worldventures.dreamtrips.modules.feed.event.FeedEntityDeletedEvent;
 import com.worldventures.dreamtrips.modules.feed.model.FeedEntity;
 import com.worldventures.dreamtrips.modules.feed.model.FeedEntityHolder;
 import com.worldventures.dreamtrips.modules.feed.service.FeedInteractor;
@@ -45,6 +45,7 @@ public class SocialImageFullscreenPresenter extends SocialFullScreenPresenter<Ph
    @Inject FlagsInteractor flagsInteractor;
    @Inject TripImagesInteractor tripImagesInteractor;
    @Inject FeedInteractor feedInteractor;
+   @Inject EntityDeletedEventDelegate entityDeletedEventDelegate;
 
    private FlagDelegate flagDelegate;
 
@@ -94,7 +95,7 @@ public class SocialImageFullscreenPresenter extends SocialFullScreenPresenter<Ph
             .subscribe(new ActionStateSubscriber<DeletePhotoCommand>()
                   .onSuccess(deletePhotoCommand -> {
                      view.informUser(context.getString(R.string.photo_deleted));
-                     eventBus.postSticky(new FeedEntityDeletedEvent(photo));
+                     entityDeletedEventDelegate.post(photo);
                   })
                   .onFail(this::handleError));
    }

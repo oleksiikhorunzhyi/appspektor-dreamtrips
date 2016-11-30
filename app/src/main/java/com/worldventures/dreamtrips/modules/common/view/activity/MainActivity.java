@@ -19,6 +19,7 @@ import com.messenger.delegate.CropImageDelegate;
 import com.messenger.di.MessengerActivityModule;
 import com.messenger.ui.activity.MessengerActivity;
 import com.techery.spares.annotations.Layout;
+import com.techery.spares.utils.delegate.DrawerOpenedEventDelegate;
 import com.techery.spares.utils.ui.SoftInputUtil;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.component.ComponentDescription;
@@ -27,7 +28,6 @@ import com.worldventures.dreamtrips.core.navigation.ActivityRouter;
 import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.navigation.router.NavigationConfigBuilder;
 import com.worldventures.dreamtrips.core.utils.ViewUtils;
-import com.worldventures.dreamtrips.core.utils.events.MenuPressedEvent;
 import com.worldventures.dreamtrips.core.utils.tracksystem.LifecycleEvent;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.common.presenter.MainActivityPresenter;
@@ -64,6 +64,7 @@ public class MainActivity extends ActivityWithPresenter<MainActivityPresenter> i
 
    @Inject RootComponentsProvider rootComponentsProvider;
    @Inject CropImageDelegate cropImageDelegate;
+   @Inject DrawerOpenedEventDelegate drawerOpenedEventDelegate;
 
    @State ComponentDescription currentComponent;
    @State boolean toolbarGone;
@@ -192,7 +193,7 @@ public class MainActivity extends ActivityWithPresenter<MainActivityPresenter> i
             super.onDrawerOpened(drawerView);
             invalidateOptionsMenu();
             SoftInputUtil.hideSoftInputMethod(MainActivity.this);
-            eventBus.post(new MenuPressedEvent());
+            drawerOpenedEventDelegate.post(null);
          }
       };
       //
@@ -250,9 +251,7 @@ public class MainActivity extends ActivityWithPresenter<MainActivityPresenter> i
       }
       //
       currentComponent = component;
-      //
-      eventBus.post(new MenuPressedEvent());
-      //
+
       closeLeftDrawer();
       disableRightDrawer();
       makeActionBarGone(component.isSkipGeneralToolbar());

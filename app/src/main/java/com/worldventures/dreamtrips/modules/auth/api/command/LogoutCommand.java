@@ -8,7 +8,6 @@ import com.raizlabs.android.dbflow.config.FlowManager;
 import com.techery.spares.module.qualifier.ForApplication;
 import com.techery.spares.module.qualifier.Global;
 import com.techery.spares.session.SessionHolder;
-import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.api.api_common.AuthorizedHttpAction;
 import com.worldventures.dreamtrips.api.session.LogoutHttpAction;
 import com.worldventures.dreamtrips.core.janet.JanetModule;
@@ -21,6 +20,7 @@ import com.worldventures.dreamtrips.core.utils.BadgeUpdater;
 import com.worldventures.dreamtrips.core.utils.DTCookieManager;
 import com.worldventures.dreamtrips.modules.auth.service.AuthInteractor;
 import com.worldventures.dreamtrips.modules.common.api.janet.command.ClearStoragesCommand;
+import com.worldventures.dreamtrips.modules.common.delegate.ReplayEventDelegatesWiper;
 import com.worldventures.dreamtrips.modules.common.presenter.delegate.OfflineWarningDelegate;
 import com.worldventures.dreamtrips.modules.common.service.ClearStoragesInteractor;
 import com.worldventures.dreamtrips.modules.gcm.delegate.NotificationDelegate;
@@ -39,7 +39,6 @@ import io.techery.janet.Command;
 import io.techery.janet.Janet;
 import io.techery.janet.command.annotations.CommandAction;
 import rx.Observable;
-import rx.functions.FuncN;
 import timber.log.Timber;
 
 @CommandAction
@@ -56,6 +55,7 @@ public class LogoutCommand extends Command<Void> implements InjectableAction {
    @Inject AuthInteractor authInteractor;
    @Inject MessengerConnector messengerConnector;
    @Inject OfflineWarningDelegate offlineWarningDelegate;
+   @Inject ReplayEventDelegatesWiper replayEventDelegatesWiper;
    @Inject ClearStoragesInteractor clearStoragesInteractor;
    @Inject SessionActionPipeCreator sessionActionPipeCreator;
    @Inject @Named(JanetModule.JANET_API_LIB) SessionActionPipeCreator sessionApiActionPipeCreator;
@@ -127,6 +127,7 @@ public class LogoutCommand extends Command<Void> implements InjectableAction {
          notificationDelegate.cancelAll();
          badgeUpdater.updateBadge(0);
          offlineWarningDelegate.resetState();
+         replayEventDelegatesWiper.clearReplays();
          snappyRepository.clearAll();
 
          try {

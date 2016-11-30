@@ -6,6 +6,7 @@ import com.techery.spares.module.qualifier.ForApplication;
 import com.worldventures.dreamtrips.BuildConfig;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.wallet.domain.storage.PersistentDeviceStorage;
+import com.worldventures.dreamtrips.wallet.domain.storage.disk.StorageModule;
 
 import javax.inject.Provider;
 import javax.inject.Singleton;
@@ -18,7 +19,8 @@ import io.techery.janet.smartcard.mock.client.MockSmartCardClient;
 
 @Module(
       includes = {
-            WalletServiceModule.class
+            WalletServiceModule.class,
+            StorageModule.class
       },
       complete = false, library = true
 )

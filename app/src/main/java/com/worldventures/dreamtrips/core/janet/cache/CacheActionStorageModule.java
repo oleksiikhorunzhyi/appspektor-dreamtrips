@@ -33,6 +33,7 @@ import com.worldventures.dreamtrips.wallet.domain.storage.SmartCardDetailsStorag
 import com.worldventures.dreamtrips.wallet.domain.storage.SmartCardStorage;
 import com.worldventures.dreamtrips.wallet.domain.storage.TermsAndConditionsStorage;
 import com.worldventures.dreamtrips.wallet.domain.storage.WalletCardsDiskStorage;
+import com.worldventures.dreamtrips.wallet.domain.storage.disk.CardListStorage;
 
 import javax.inject.Singleton;
 
@@ -146,8 +147,8 @@ public class CacheActionStorageModule {
 
    @Singleton
    @Provides(type = Provides.Type.SET)
-   ActionStorage provideWalletCardListStorage(SnappyRepository snappyRepository) {
-      return new WalletCardsDiskStorage(snappyRepository);
+   ActionStorage provideWalletCardListStorage(CardListStorage cardListStorage) {
+      return new WalletCardsDiskStorage(cardListStorage);
    }
 
    @Singleton

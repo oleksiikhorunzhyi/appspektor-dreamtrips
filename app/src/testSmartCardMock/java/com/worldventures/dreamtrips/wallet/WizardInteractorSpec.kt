@@ -21,6 +21,7 @@ import com.worldventures.dreamtrips.wallet.domain.entity.card.BankCard
 import com.worldventures.dreamtrips.wallet.domain.storage.DefaultBankCardStorage
 import com.worldventures.dreamtrips.wallet.domain.storage.SmartCardStorage
 import com.worldventures.dreamtrips.wallet.domain.storage.WalletCardsDiskStorage
+import com.worldventures.dreamtrips.wallet.domain.storage.disk.CardListStorage
 import com.worldventures.dreamtrips.wallet.service.WizardInteractor
 import com.worldventures.dreamtrips.wallet.service.command.CreateAndConnectToCardCommand
 import com.worldventures.dreamtrips.wallet.service.command.http.AssociateCardUserCommand
@@ -47,6 +48,7 @@ class WizardInteractorSpec : BaseSpec({
          staticMockTextUtils()
 
          mockDb = createMockDb()
+         cardStorage = mock()
          mappery = createMappery()
          janet = createJanet()
          wizardInteractor = createInteractor(janet)
@@ -99,6 +101,8 @@ class WizardInteractorSpec : BaseSpec({
    private companion object {
 
       lateinit var mockDb: SnappyRepository
+      lateinit var cardStorage: CardListStorage
+
       lateinit var janet: Janet
       lateinit var mappery: MapperyContext
       lateinit var wizardInteractor: WizardInteractor
@@ -125,7 +129,7 @@ class WizardInteractorSpec : BaseSpec({
          val daggerCommandActionService = CommandActionService()
                .wrapCache()
                .bindMultiplyStorageSet(setOfMultiplyStorage())
-               .bindStorageSet(setOf(WalletCardsDiskStorage(mockDb)))
+               .bindStorageSet(setOf(WalletCardsDiskStorage(cardStorage)))
                .wrapDagger()
 
          janet = Janet.Builder()

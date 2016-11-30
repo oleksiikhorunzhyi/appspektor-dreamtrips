@@ -21,6 +21,7 @@ import com.worldventures.dreamtrips.wallet.domain.entity.card.BankCard
 import com.worldventures.dreamtrips.wallet.domain.storage.DefaultBankCardStorage
 import com.worldventures.dreamtrips.wallet.domain.storage.SmartCardStorage
 import com.worldventures.dreamtrips.wallet.domain.storage.WalletCardsDiskStorage
+import com.worldventures.dreamtrips.wallet.domain.storage.disk.CardListStorage
 import com.worldventures.dreamtrips.wallet.model.TestAddressInfo
 import com.worldventures.dreamtrips.wallet.model.TestBankCard
 import com.worldventures.dreamtrips.wallet.model.TestRecordIssuerInfo
@@ -52,6 +53,7 @@ class SmartCardInteractorSpec : BaseSpec({
          staticMockTextUtils()
 
          mockDb = createMockDb()
+         cardStorage = mock()
          mappery = createMappery()
          janet = createJanet()
          smartCardInteractor = createSmartCardInteractor(janet)
@@ -131,7 +133,7 @@ class SmartCardInteractorSpec : BaseSpec({
 
          beforeEach {
             val cardList = listOf(debitCard, creditCard)
-            whenever(mockDb.readWalletCardsList()).thenReturn(cardList)
+            whenever(cardStorage.readWalletCardsList()).thenReturn(cardList)
             whenever(mockDb.readWalletDefaultCardId()).thenReturn(defaultCardId)
          }
 
@@ -178,8 +180,8 @@ class SmartCardInteractorSpec : BaseSpec({
 
             // mock saving result after delete
             var list = listOf<BankCard>(debitCard, creditCard)
-            whenever(mockDb.readWalletCardsList()).thenAnswer { return@thenAnswer list }
-            whenever(mockDb.saveWalletCardsList(anyList())).thenAnswer { invocation ->
+            whenever(cardStorage.readWalletCardsList()).thenAnswer { return@thenAnswer list }
+            whenever(cardStorage.saveWalletCardsList(anyList())).thenAnswer { invocation ->
                list = invocation.arguments[0] as List<BankCard>
                return@thenAnswer null
             }
@@ -275,6 +277,7 @@ class SmartCardInteractorSpec : BaseSpec({
       lateinit var janet: Janet
       lateinit var mappery: MapperyContext
       lateinit var smartCardInteractor: SmartCardInteractor
+      lateinit var cardStorage: CardListStorage
 
       val setOfMultiplyStorage: () -> Set<MultipleActionStorage<*>> = {
          setOf(DefaultBankCardStorage(mockDb), SmartCardStorage(mockDb))
@@ -298,7 +301,7 @@ class SmartCardInteractorSpec : BaseSpec({
          val daggerCommandActionService = CommandActionService()
                .wrapCache()
                .bindMultiplyStorageSet(setOfMultiplyStorage())
-               .bindStorageSet(setOf(WalletCardsDiskStorage(mockDb)))
+               .bindStorageSet(setOf(WalletCardsDiskStorage(cardStorage)))
                .wrapDagger()
 
          janet = Janet.Builder()
@@ -309,6 +312,7 @@ class SmartCardInteractorSpec : BaseSpec({
 
          daggerCommandActionService.registerProvider(Janet::class.java) { janet }
          daggerCommandActionService.registerProvider(SnappyRepository::class.java) { mockDb }
+         daggerCommandActionService.registerProvider(CardListStorage::class.java) { cardStorage }
          daggerCommandActionService.registerProvider(MapperyContext::class.java) { mappery }
          daggerCommandActionService.registerProvider(Context::class.java, { MockContext() })
          daggerCommandActionService.registerProvider(SmartCardInteractor::class.java, { smartCardInteractor })

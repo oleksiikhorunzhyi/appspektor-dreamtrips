@@ -33,7 +33,6 @@ public class CardListCommand extends Command<List<Card>> implements InjectableAc
    @Inject MapperyContext mapperyContext;
 
    private final Func1<List<Card>, Observable<List<Card>>> operationFunc;
-   private final boolean shouldBeCached;
    private final boolean forceUpdate;
 
    private volatile List<Card> cachedItems;
@@ -56,14 +55,12 @@ public class CardListCommand extends Command<List<Card>> implements InjectableAc
 
    private CardListCommand(Func1<List<Card>, Observable<List<Card>>> operationFunc) {
       this.operationFunc = operationFunc;
-      this.shouldBeCached = true;
       this.forceUpdate = false;
    }
 
    private CardListCommand(boolean forceUpdate) {
       this.forceUpdate = forceUpdate;
       this.operationFunc = null;
-      this.shouldBeCached = false;
    }
 
    @Override
@@ -105,7 +102,6 @@ public class CardListCommand extends Command<List<Card>> implements InjectableAc
    @Override
    public CacheOptions getCacheOptions() {
       return ImmutableCacheOptions.builder()
-            .saveToCache(shouldBeCached)
             .build();
    }
 

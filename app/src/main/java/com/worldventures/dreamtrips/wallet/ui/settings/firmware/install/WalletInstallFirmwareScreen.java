@@ -14,6 +14,7 @@ import android.text.style.ForegroundColorSpan;
 import android.text.style.StyleSpan;
 import android.text.util.Linkify;
 import android.util.AttributeSet;
+import android.widget.TextView;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.worldventures.dreamtrips.R;
@@ -29,6 +30,7 @@ public class WalletInstallFirmwareScreen extends WalletLinearLayout<WalletInstal
       implements WalletInstallFirmwarePresenter.Screen {
 
    @InjectView(R.id.firmware_install_progress) WalletProgressWidget installProgress;
+   @InjectView(R.id.progressStatusLabel) TextView progressStatusLabel;
    @InjectView(R.id.toolbar) Toolbar toolbar;
 
    public WalletInstallFirmwareScreen(Context context) {
@@ -83,6 +85,11 @@ public class WalletInstallFirmwareScreen extends WalletLinearLayout<WalletInstal
             .onNegative((dialog, which) -> getPresenter().cancelReinstall())
             .cancelable(false)
             .show();
+   }
+
+   @Override
+   public void showInstallingStatus(int status) {
+      progressStatusLabel.setText(Integer.toString(status) + "%");
    }
 
    private CharSequence createDialogContentText() {

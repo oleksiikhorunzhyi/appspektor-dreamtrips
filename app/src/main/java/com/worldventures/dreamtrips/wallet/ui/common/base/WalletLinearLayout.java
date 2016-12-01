@@ -27,6 +27,7 @@ public abstract class WalletLinearLayout<V extends WalletScreen, P extends ViewS
    private Injector injector;
    private TextView connectionLabel;
    private boolean visibleConnectionLabel = true;
+   private Runnable hideLabelTask = () -> removeView(connectionLabel);
 
    public WalletLinearLayout(Context context) {
       this(context, null);
@@ -56,7 +57,7 @@ public abstract class WalletLinearLayout<V extends WalletScreen, P extends ViewS
 
       switch (connectionStatus) {
          case CONNECTED:
-            postDelayed(() -> removeView(connectionLabel), HIDE_ANIMATION_DELAY);
+            postDelayed(hideLabelTask, HIDE_ANIMATION_DELAY);
             break;
          case ERROR:
          case DISCONNECTED:
@@ -64,7 +65,7 @@ public abstract class WalletLinearLayout<V extends WalletScreen, P extends ViewS
             if (indexOfChild(connectionLabel) < 0) {
                addView(connectionLabel, hasToolbar() ? 1 : 0);
             }
-            getHandler().removeCallbacksAndMessages(null);
+            getHandler().removeCallbacksAndMessages(hideLabelTask);
             break;
       }
    }

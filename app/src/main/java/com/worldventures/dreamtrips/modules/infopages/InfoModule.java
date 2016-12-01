@@ -6,7 +6,9 @@ import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.modules.infopages.presenter.AuthorizedStaticInfoPresenter;
 import com.worldventures.dreamtrips.modules.infopages.presenter.FeedbackImageAttachmentFullscreenPresenter;
 import com.worldventures.dreamtrips.modules.infopages.presenter.FeedbackImageAttachmentsPresenter;
+import com.worldventures.dreamtrips.modules.infopages.presenter.HelpTabPresenter;
 import com.worldventures.dreamtrips.modules.infopages.presenter.SendFeedbackPresenter;
+import com.worldventures.dreamtrips.modules.infopages.presenter.TermsTabPresenter;
 import com.worldventures.dreamtrips.modules.infopages.presenter.WebViewFragmentPresenter;
 import com.worldventures.dreamtrips.modules.infopages.view.custom.AttachmentImagesHorizontalView;
 import com.worldventures.dreamtrips.modules.infopages.view.fragment.FeedbackImageAttachmentFullscreenFragment;
@@ -51,7 +53,9 @@ import dagger.Provides;
             HelpVideosFragment.class,
             HelpVideosPresenter.class,
             HelpFragment.class,
+            HelpTabPresenter.class,
             TermsTabFragment.class,
+            TermsTabPresenter.class,
             WebViewFragmentPresenter.class,
             SendFeedbackFragment.class,
             SendFeedbackPresenter.class,

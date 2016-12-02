@@ -24,6 +24,7 @@ public class CardStacksCommand extends Command<List<CardStacksCommand.CardStackM
    @Inject @Named(JANET_WALLET) Janet janet;
 
    private boolean forceUpdate;
+   private boolean fromDevice;
 
    public static CardStacksCommand get(boolean forceUpdate) {
       return new CardStacksCommand(forceUpdate);
@@ -32,6 +33,7 @@ public class CardStacksCommand extends Command<List<CardStacksCommand.CardStackM
    private CardStacksCommand(boolean forceUpdate) {
       this.forceUpdate = forceUpdate;
    }
+   
 
    @Override
    protected void run(CommandCallback<List<CardStackModel>> callback) throws Throwable {
@@ -42,7 +44,8 @@ public class CardStacksCommand extends Command<List<CardStacksCommand.CardStackM
 
    private Observable<CardListCommand> fetchCardList() {
       return janet.createPipe(CardListCommand.class)
-            .createObservableResult(CardListCommand.get(forceUpdate));
+            .createObservableResult(CardListCommand.get(forceUpdate))
+            .doOnNext(cardListCommand -> fromDevice = cardListCommand.isFromDevice());
    }
 
    private Observable<FetchDefaultCardIdCommand> fetchDefaultCardId() {
@@ -54,6 +57,10 @@ public class CardStacksCommand extends Command<List<CardStacksCommand.CardStackM
       List<BankCard> bankCards = Queryable.from(cardList).map(element -> (BankCard) element).toList();
       return bankCards.isEmpty() ? Collections.emptyList() :
             Collections.singletonList(new CardStackModel(CardStackModel.StackType.PAYMENT, bankCards, defaultCardId));
+   }
+
+   public boolean isFromDevice() {
+      return fromDevice;
    }
 
    public static class CardStackModel {

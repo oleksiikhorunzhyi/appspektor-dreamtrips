@@ -34,6 +34,7 @@ public class CardListCommand extends Command<List<Card>> implements InjectableAc
 
    private final Func1<List<Card>, Observable<List<Card>>> operationFunc;
    private final boolean forceUpdate;
+   private boolean fromDevice;
 
    private volatile List<Card> cachedItems;
 
@@ -81,6 +82,7 @@ public class CardListCommand extends Command<List<Card>> implements InjectableAc
    }
 
    private Observable<List<Card>> fetchFromDevice() {
+      fromDevice = true;
       return janet.createPipe(GetMemberRecordsAction.class)
             .createObservableResult(new GetMemberRecordsAction())
             .flatMap(action -> Observable.from(action.records)
@@ -151,5 +153,9 @@ public class CardListCommand extends Command<List<Card>> implements InjectableAc
 
    private boolean isCachePresent() {
       return cachedItems != null && !cachedItems.isEmpty();
+   }
+
+   public boolean isFromDevice() {
+      return fromDevice;
    }
 }

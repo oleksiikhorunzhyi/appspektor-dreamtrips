@@ -9,17 +9,12 @@ import com.worldventures.dreamtrips.core.rx.composer.IoToMainComposer;
 import com.worldventures.dreamtrips.core.session.CirclesInteractor;
 import com.worldventures.dreamtrips.modules.bucketlist.bundle.ForeignBucketTabsBundle;
 import com.worldventures.dreamtrips.modules.common.api.janet.command.GetCirclesCommand;
-import com.worldventures.dreamtrips.modules.common.model.FlagData;
 import com.worldventures.dreamtrips.modules.common.model.User;
-import com.worldventures.dreamtrips.modules.common.presenter.delegate.FlagDelegate;
 import com.worldventures.dreamtrips.modules.common.view.ApiErrorView;
 import com.worldventures.dreamtrips.modules.common.view.BlockingProgressView;
-import com.worldventures.dreamtrips.modules.feed.event.ItemFlaggedEvent;
-import com.worldventures.dreamtrips.modules.feed.event.LoadFlagEvent;
 import com.worldventures.dreamtrips.modules.feed.service.NotificationFeedInteractor;
 import com.worldventures.dreamtrips.modules.feed.service.command.GetUserTimelineCommand;
 import com.worldventures.dreamtrips.modules.feed.service.command.MarkNotificationAsReadCommand;
-import com.worldventures.dreamtrips.modules.flags.service.FlagsInteractor;
 import com.worldventures.dreamtrips.modules.friends.model.Circle;
 import com.worldventures.dreamtrips.modules.friends.service.FriendsInteractor;
 import com.worldventures.dreamtrips.modules.friends.service.command.ActOnFriendRequestCommand;
@@ -48,12 +43,10 @@ public class UserPresenter extends ProfilePresenter<UserPresenter.View, User> {
    @Inject NotificationFeedInteractor notificationFeedInteractor;
    @Inject NotificationDelegate notificationDelegate;
    @Inject StartChatDelegate startSingleChatDelegate;
-   @Inject FlagsInteractor flagsInteractor;
    @Inject ProfileInteractor profileInteractor;
 
    private int notificationId;
    private boolean acceptFriend;
-   private FlagDelegate flagDelegate;
 
    public UserPresenter(UserBundle userBundle) {
       super(userBundle.getUser());
@@ -67,7 +60,6 @@ public class UserPresenter extends ProfilePresenter<UserPresenter.View, User> {
    public void onInjected() {
       super.onInjected();
       notificationDelegate.cancel(user.getId());
-      flagDelegate = new FlagDelegate(flagsInteractor);
    }
 
    @Override
@@ -256,15 +248,6 @@ public class UserPresenter extends ProfilePresenter<UserPresenter.View, User> {
       view.openTripImages(Route.TRIP_LIST_IMAGES, new TripsImagesBundle(TripImagesType.ACCOUNT_IMAGES_FROM_PROFILE, user.getId()));
    }
 
-   public void onEvent(LoadFlagEvent event) {
-      if (view.isVisibleOnScreen()) flagDelegate.loadFlags(event.getFlaggableView(), this::handleError);
-   }
-
-   public void onEvent(ItemFlaggedEvent event) {
-      if (view.isVisibleOnScreen()) flagDelegate.flagItem(new FlagData(event.getEntity()
-            .getUid(), event.getFlagReasonId(), event.getNameOfReason()), view, this::handleError);
-   }
-
    ///////////////////////////////////////////////////////////////////////////
    // Circles
    ///////////////////////////////////////////////////////////////////////////
@@ -292,7 +275,7 @@ public class UserPresenter extends ProfilePresenter<UserPresenter.View, User> {
       view.hideBlockingProgress();
    }
 
-   public interface View extends ProfilePresenter.View, FlagDelegate.View, BlockingProgressView, ApiErrorView {
+   public interface View extends ProfilePresenter.View, BlockingProgressView, ApiErrorView {
 
       void showAddFriendDialog(List<Circle> circles, Action1<Circle> selectAction);
 

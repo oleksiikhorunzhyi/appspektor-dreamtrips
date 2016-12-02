@@ -6,55 +6,29 @@ import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.navigation.router.NavigationConfigBuilder;
 import com.worldventures.dreamtrips.core.navigation.router.Router;
-import com.worldventures.dreamtrips.core.navigation.wrapper.NavigationWrapper;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem;
 import com.worldventures.dreamtrips.modules.common.model.ShareType;
 import com.worldventures.dreamtrips.modules.common.view.bundle.ShareBundle;
 import com.worldventures.dreamtrips.modules.common.view.dialog.PhotosShareDialog;
 import com.worldventures.dreamtrips.modules.common.view.dialog.ShareDialog;
-import com.worldventures.dreamtrips.modules.feed.event.CommentIconClickedEvent;
-import com.worldventures.dreamtrips.modules.feed.event.DownloadPhotoEvent;
-import com.worldventures.dreamtrips.modules.feed.event.ItemFlaggedEvent;
-import com.worldventures.dreamtrips.modules.feed.event.LikesPressedEvent;
-import com.worldventures.dreamtrips.modules.feed.event.LoadFlagEvent;
 import com.worldventures.dreamtrips.modules.feed.model.FeedEntityHolder;
 import com.worldventures.dreamtrips.modules.feed.model.FeedItem;
 import com.worldventures.dreamtrips.modules.feed.view.custom.FeedActionPanelView;
-import com.worldventures.dreamtrips.modules.friends.bundle.UsersLikedEntityBundle;
 import com.worldventures.dreamtrips.modules.tripsimages.model.Photo;
 
-import de.greenrobot.event.EventBus;
+import rx.functions.Action1;
 
-public class FeedActionPanelViewActionHandler {
+public class ActionPanelViewShareHandler {
 
-   Router router;
-   EventBus eventBus;
+   private Router router;
+   private Action1<String> downloadPhotoAction;
 
-   public FeedActionPanelViewActionHandler(Router router, EventBus eventBus) {
+   public ActionPanelViewShareHandler(Router router) {
       this.router = router;
-      this.eventBus = eventBus;
    }
 
-   public void init(FeedActionPanelView actionView, NavigationWrapper navigationWrapper) {
-      actionView.setOnLikeIconClickListener(feedItem -> {
-         eventBus.post(new LikesPressedEvent(feedItem.getItem()));
-
-         String id = feedItem.getItem().getUid();
-         FeedEntityHolder.Type type = feedItem.getType();
-         if (type != FeedEntityHolder.Type.UNDEFINED && !feedItem.getItem().isLiked()) {
-            //send this event only if user likes item, if dislikes - skip
-            TrackingHelper.sendActionItemFeed(TrackingHelper.ATTRIBUTE_LIKE, id, type);
-         }
-      });
-
-      actionView.setOnLikersClickListener(feedItem -> {
-         navigationWrapper.navigate(Route.USERS_LIKED_CONTENT, new UsersLikedEntityBundle(feedItem.getItem()
-               .getUid(), feedItem.getItem().getLikesCount()));
-      });
-
-      actionView.setOnCommentIconClickListener(feedItem -> eventBus.post(new CommentIconClickedEvent(feedItem)));
-
+   public void init(FeedActionPanelView actionView, Action1<String> downloadPhotoAction) {
       actionView.setOnShareClickListener(feedItem -> {
          ShareDialog.ShareDialogCallback callback = type -> onShare(actionView.getContext(), feedItem, type);
          if (feedItem.getType() == FeedEntityHolder.Type.PHOTO) {
@@ -63,10 +37,7 @@ public class FeedActionPanelViewActionHandler {
             new ShareDialog(actionView.getContext(), callback).show();
          }
       });
-
-      actionView.setOnFlagClickListener(feedItem -> eventBus.post(new LoadFlagEvent(actionView)));
-      actionView.setOnFlagDialogClickListener((feedItem, flagReasonId, reason) -> eventBus.post(new ItemFlaggedEvent(feedItem
-            .getItem(), flagReasonId, reason)));
+      this.downloadPhotoAction = downloadPhotoAction;
    }
 
    private void onShare(Context context, FeedItem feedItem, String shareType) {
@@ -78,7 +49,8 @@ public class FeedActionPanelViewActionHandler {
    }
 
    private void downloadPhoto(FeedItem feedItem) {
-      eventBus.post(new DownloadPhotoEvent(((Photo) feedItem.getItem()).getFSImage().getUrl()));
+      String url = ((Photo) feedItem.getItem()).getFSImage().getUrl();
+      downloadPhotoAction.call(url);
    }
 
    private void share(Context context, FeedItem feedItem, String shareType) {

@@ -9,7 +9,6 @@ import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem;
 import com.worldventures.dreamtrips.modules.bucketlist.service.BucketInteractor;
 import com.worldventures.dreamtrips.modules.bucketlist.service.command.DeleteBucketItemCommand;
-import com.worldventures.dreamtrips.modules.common.model.FlagData;
 import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.common.presenter.delegate.FlagDelegate;
@@ -21,13 +20,13 @@ import com.worldventures.dreamtrips.modules.feed.event.DeletePostEvent;
 import com.worldventures.dreamtrips.modules.feed.event.EditBucketEvent;
 import com.worldventures.dreamtrips.modules.feed.event.FeedEntityChangedEvent;
 import com.worldventures.dreamtrips.modules.feed.event.FeedEntityCommentedEvent;
-import com.worldventures.dreamtrips.modules.feed.event.ItemFlaggedEvent;
-import com.worldventures.dreamtrips.modules.feed.event.LoadFlagEvent;
 import com.worldventures.dreamtrips.modules.feed.event.LoadMoreEvent;
 import com.worldventures.dreamtrips.modules.feed.model.FeedEntity;
 import com.worldventures.dreamtrips.modules.feed.model.FeedEntityHolder;
+import com.worldventures.dreamtrips.modules.feed.model.FeedItem;
 import com.worldventures.dreamtrips.modules.feed.model.TextualPost;
 import com.worldventures.dreamtrips.modules.feed.model.comment.Comment;
+import com.worldventures.dreamtrips.modules.feed.presenter.delegate.FeedActionHandlerDelegate;
 import com.worldventures.dreamtrips.modules.feed.service.CommentsInteractor;
 import com.worldventures.dreamtrips.modules.feed.service.PostsInteractor;
 import com.worldventures.dreamtrips.modules.feed.service.TranslationFeedInteractor;
@@ -38,7 +37,6 @@ import com.worldventures.dreamtrips.modules.feed.service.command.EditCommentComm
 import com.worldventures.dreamtrips.modules.feed.service.command.GetCommentsCommand;
 import com.worldventures.dreamtrips.modules.feed.service.command.TranslateUidItemCommand;
 import com.worldventures.dreamtrips.modules.feed.view.cell.Flaggable;
-import com.worldventures.dreamtrips.modules.flags.service.FlagsInteractor;
 import com.worldventures.dreamtrips.modules.friends.service.FriendsInteractor;
 import com.worldventures.dreamtrips.modules.friends.service.command.GetLikersCommand;
 import com.worldventures.dreamtrips.modules.trips.model.TripModel;
@@ -54,7 +52,8 @@ import icepick.State;
 import io.techery.janet.helper.ActionStateSubscriber;
 import rx.android.schedulers.AndroidSchedulers;
 
-public class BaseCommentPresenter<T extends BaseCommentPresenter.View> extends Presenter<T> {
+public class BaseCommentPresenter<T extends BaseCommentPresenter.View> extends Presenter<T>
+      implements FeedActionHandlerPresenter {
 
    private static final int PAGE = 1;
    private static final int PER_PAGE = 2;
@@ -62,13 +61,11 @@ public class BaseCommentPresenter<T extends BaseCommentPresenter.View> extends P
    @Inject BucketInteractor bucketInteractor;
    @Inject TranslationFeedInteractor translationFeedInteractor;
    @Inject CommentsInteractor commentsInteractor;
-   @Inject FlagsInteractor flagsInteractor;
    @Inject TripImagesInteractor tripImagesInteractor;
    @Inject FriendsInteractor friendsInteractor;
    @Inject PostsInteractor postsInteractor;
    @Inject EntityDeletedEventDelegate entityDeletedEventDelegate;
-
-   private FlagDelegate flagDelegate;
+   @Inject FeedActionHandlerDelegate feedActionHandlerDelegate;
 
    @State FeedEntity feedEntity;
    @State String draftCommentText;
@@ -79,12 +76,6 @@ public class BaseCommentPresenter<T extends BaseCommentPresenter.View> extends P
 
    public BaseCommentPresenter(FeedEntity feedEntity) {
       this.feedEntity = feedEntity;
-   }
-
-   @Override
-   public void onInjected() {
-      super.onInjected();
-      flagDelegate = new FlagDelegate(flagsInteractor);
    }
 
    @Override
@@ -169,12 +160,37 @@ public class BaseCommentPresenter<T extends BaseCommentPresenter.View> extends P
       this.draftCommentText = commentText;
    }
 
-   public void loadFlags(Flaggable flaggableView) {
-      flagDelegate.loadFlags(flaggableView, this::handleError);
+   @Override
+   public void onLikeItem(FeedItem feedItem) {
+      // nothing to do
    }
 
-   public void flagItem(String uid, int reasonId, String reason) {
-      flagDelegate.flagItem(new FlagData(uid, reasonId, reason), view, this::handleError);
+   @Override
+   public void onDownloadImage(String url) {
+      // nothing to do
+   }
+
+   @Override
+   public void onCommentItem(FeedItem feedItem) {
+      view.openInput();
+   }
+
+   @Override
+   public void onLoadFlags(Flaggable flaggableView) {
+      feedActionHandlerDelegate.onLoadFlags(flaggableView, this::handleError);
+   }
+
+   @Override
+   public void onFlagItem(FeedItem feedItem, int flagReasonId, String reason) {
+      flag(feedItem.getItem().getUid(), flagReasonId, reason);
+   }
+
+   public void onFlagComment(String uid, int flagReasonId, String reason) {
+      flag(uid, flagReasonId, reason);
+   }
+
+   private void flag(String id, int flagReasonId, String reason) {
+      feedActionHandlerDelegate.onFlagItem(id, flagReasonId, reason, view, this::handleError);
    }
 
    public void editComment(Comment comment) {
@@ -293,15 +309,6 @@ public class BaseCommentPresenter<T extends BaseCommentPresenter.View> extends P
       }
    }
 
-   public void onEvent(LoadFlagEvent event) {
-      if (view.isVisibleOnScreen()) flagDelegate.loadFlags(event.getFlaggableView(), this::handleError);
-   }
-
-   public void onEvent(ItemFlaggedEvent event) {
-      if (view.isVisibleOnScreen()) flagDelegate.flagItem(new FlagData(event.getEntity()
-            .getUid(), event.getFlagReasonId(), event.getNameOfReason()), view, this::handleError);
-   }
-
    protected void itemDeleted(FeedEntity model) {
       entityDeletedEventDelegate.post(model);
       //
@@ -360,6 +367,8 @@ public class BaseCommentPresenter<T extends BaseCommentPresenter.View> extends P
       void updateComment(Comment comment);
 
       void setDraftComment(String comment);
+
+      void openInput();
 
       void setLoading(boolean loading);
 

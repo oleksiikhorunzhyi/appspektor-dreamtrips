@@ -12,7 +12,6 @@ import com.worldventures.dreamtrips.core.utils.LocaleHelper;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem;
 import com.worldventures.dreamtrips.modules.bucketlist.service.BucketInteractor;
 import com.worldventures.dreamtrips.modules.bucketlist.service.command.DeleteBucketItemCommand;
-import com.worldventures.dreamtrips.modules.common.model.FlagData;
 import com.worldventures.dreamtrips.modules.common.presenter.JobPresenter;
 import com.worldventures.dreamtrips.modules.common.presenter.delegate.FlagDelegate;
 import com.worldventures.dreamtrips.modules.common.view.ApiErrorView;
@@ -20,18 +19,15 @@ import com.worldventures.dreamtrips.modules.common.view.bundle.BucketBundle;
 import com.worldventures.dreamtrips.modules.feed.event.DeleteBucketEvent;
 import com.worldventures.dreamtrips.modules.feed.event.DeletePhotoEvent;
 import com.worldventures.dreamtrips.modules.feed.event.DeletePostEvent;
-import com.worldventures.dreamtrips.modules.feed.event.DownloadPhotoEvent;
 import com.worldventures.dreamtrips.modules.feed.event.EditBucketEvent;
 import com.worldventures.dreamtrips.modules.feed.event.FeedEntityChangedEvent;
 import com.worldventures.dreamtrips.modules.feed.event.FeedEntityCommentedEvent;
 import com.worldventures.dreamtrips.modules.feed.event.FeedItemAddedEvent;
-import com.worldventures.dreamtrips.modules.feed.event.ItemFlaggedEvent;
-import com.worldventures.dreamtrips.modules.feed.event.LikesPressedEvent;
-import com.worldventures.dreamtrips.modules.feed.event.LoadFlagEvent;
 import com.worldventures.dreamtrips.modules.feed.event.TranslatePostEvent;
 import com.worldventures.dreamtrips.modules.feed.model.FeedEntity;
 import com.worldventures.dreamtrips.modules.feed.model.FeedItem;
 import com.worldventures.dreamtrips.modules.feed.model.feed.hashtag.HashtagSuggestion;
+import com.worldventures.dreamtrips.modules.feed.presenter.delegate.FeedActionHandlerDelegate;
 import com.worldventures.dreamtrips.modules.feed.service.FeedInteractor;
 import com.worldventures.dreamtrips.modules.feed.service.HashtagInteractor;
 import com.worldventures.dreamtrips.modules.feed.service.PostsInteractor;
@@ -39,11 +35,10 @@ import com.worldventures.dreamtrips.modules.feed.service.command.ChangeFeedEntit
 import com.worldventures.dreamtrips.modules.feed.service.command.DeletePostCommand;
 import com.worldventures.dreamtrips.modules.feed.service.command.FeedByHashtagCommand;
 import com.worldventures.dreamtrips.modules.feed.service.command.HashtagSuggestionCommand;
+import com.worldventures.dreamtrips.modules.feed.view.cell.Flaggable;
 import com.worldventures.dreamtrips.modules.feed.view.util.TextualPostTranslationDelegate;
-import com.worldventures.dreamtrips.modules.flags.service.FlagsInteractor;
 import com.worldventures.dreamtrips.modules.tripsimages.service.TripImagesInteractor;
 import com.worldventures.dreamtrips.modules.tripsimages.service.command.DeletePhotoCommand;
-import com.worldventures.dreamtrips.modules.tripsimages.service.command.DownloadImageCommand;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -53,9 +48,9 @@ import javax.inject.Inject;
 import icepick.State;
 import io.techery.janet.helper.ActionStateSubscriber;
 import rx.android.schedulers.AndroidSchedulers;
-import timber.log.Timber;
 
-public class FeedHashtagPresenter<T extends FeedHashtagPresenter.View> extends JobPresenter<T> {
+public class FeedHashtagPresenter<T extends FeedHashtagPresenter.View> extends JobPresenter<T>
+   implements FeedActionHandlerPresenter {
 
    private final static int FEEDS_PER_PAGE = 10;
    private final static int MIN_QUERY_LENGTH = 3;
@@ -68,12 +63,10 @@ public class FeedHashtagPresenter<T extends FeedHashtagPresenter.View> extends J
    @Inject HashtagInteractor interactor;
    @Inject BucketInteractor bucketInteractor;
    @Inject FeedInteractor feedInteractor;
-   @Inject FlagsInteractor flagsInteractor;
    @Inject TripImagesInteractor tripImagesInteractor;
    @Inject PostsInteractor postsInteractor;
    @Inject EntityDeletedEventDelegate entityDeletedEventDelegate;
-
-   private FlagDelegate flagDelegate;
+   @Inject FeedActionHandlerDelegate feedActionHandlerDelegate;
 
    @Override
    public void takeView(T view) {
@@ -95,12 +88,6 @@ public class FeedHashtagPresenter<T extends FeedHashtagPresenter.View> extends J
    public void dropView() {
       textualPostTranslationDelegate.onDropView();
       super.dropView();
-   }
-
-   @Override
-   public void onInjected() {
-      super.onInjected();
-      flagDelegate = new FlagDelegate(flagsInteractor);
    }
 
    @Nullable
@@ -202,19 +189,14 @@ public class FeedHashtagPresenter<T extends FeedHashtagPresenter.View> extends J
                view.onSuggestionsReceived(hashtagSuggestionCommand.getFullQueryText(), hashtagSuggestions);
                view.hideSuggestionProgress();
             }).onFail((hashtagSuggestionCommand, throwable) -> {
-               Timber.e(throwable, "Failed to load hashtag suggestions");
+               handleError(hashtagSuggestionCommand, throwable);
                view.hideSuggestionProgress();
             }));
    }
 
-   public void onEvent(DownloadPhotoEvent event) {
-      if (view.isVisibleOnScreen()) {
-         tripImagesInteractor.downloadImageActionPipe()
-               .createObservable(new DownloadImageCommand(event.url))
-               .compose(bindViewToMainComposer())
-               .subscribe(new ActionStateSubscriber<DownloadImageCommand>()
-                     .onFail(this::handleError));
-      }
+   @Override
+   public void onDownloadImage(String url) {
+      feedActionHandlerDelegate.onDownloadImage(url, bindViewToMainComposer(), this::handleError);
    }
 
    public void onEvent(EditBucketEvent event) {
@@ -284,11 +266,9 @@ public class FeedHashtagPresenter<T extends FeedHashtagPresenter.View> extends J
       view.refreshFeedItems(feedItems);
    }
 
-   public void onEvent(LikesPressedEvent event) {
-      if (view.isVisibleOnScreen()) {
-         feedInteractor.changeFeedEntityLikedStatusPipe()
-               .send(new ChangeFeedEntityLikedStatusCommand(event.getModel()));
-      }
+   @Override
+   public void onLikeItem(FeedItem feedItem) {
+      feedActionHandlerDelegate.onLikeItem(feedItem);
    }
 
    private void subscribeToLikesChanges() {
@@ -298,6 +278,11 @@ public class FeedHashtagPresenter<T extends FeedHashtagPresenter.View> extends J
             .subscribe(new ActionStateSubscriber<ChangeFeedEntityLikedStatusCommand>()
                   .onSuccess(this::itemLiked)
                   .onFail(this::handleError));
+   }
+
+   @Override
+   public void onCommentItem(FeedItem feedItem) {
+      view.showComments(feedItem);
    }
 
    public void onEvent(DeletePostEvent event) {
@@ -327,13 +312,14 @@ public class FeedHashtagPresenter<T extends FeedHashtagPresenter.View> extends J
       }
    }
 
-   public void onEvent(LoadFlagEvent event) {
-      if (view.isVisibleOnScreen()) flagDelegate.loadFlags(event.getFlaggableView(), this::handleError);
+   @Override
+   public void onLoadFlags(Flaggable flaggableView) {
+      feedActionHandlerDelegate.onLoadFlags(flaggableView, this::handleError);
    }
 
-   public void onEvent(ItemFlaggedEvent event) {
-      if (view.isVisibleOnScreen()) flagDelegate.flagItem(new FlagData(event.getEntity()
-            .getUid(), event.getFlagReasonId(), event.getNameOfReason()), view, this::handleError);
+   @Override
+   public void onFlagItem(FeedItem feedItem, int flagReasonId, String reason) {
+      feedActionHandlerDelegate.onFlagItem(feedItem.getItem().getUid(), flagReasonId, reason, view, this::handleError);
    }
 
    private void itemLiked(ChangeFeedEntityLikedStatusCommand command) {
@@ -370,5 +356,7 @@ public class FeedHashtagPresenter<T extends FeedHashtagPresenter.View> extends J
       void showSuggestionProgress();
 
       void hideSuggestionProgress();
+
+      void showComments(FeedItem feedItem);
    }
 }

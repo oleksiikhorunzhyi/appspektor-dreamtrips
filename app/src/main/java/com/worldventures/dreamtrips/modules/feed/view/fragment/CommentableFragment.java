@@ -28,7 +28,6 @@ import com.worldventures.dreamtrips.modules.common.view.custom.EmptyRecyclerView
 import com.worldventures.dreamtrips.modules.common.view.util.TextWatcherAdapter;
 import com.worldventures.dreamtrips.modules.feed.bundle.CommentableBundle;
 import com.worldventures.dreamtrips.modules.feed.bundle.SingleCommentBundle;
-import com.worldventures.dreamtrips.modules.feed.event.CommentIconClickedEvent;
 import com.worldventures.dreamtrips.modules.feed.model.FeedEntity;
 import com.worldventures.dreamtrips.modules.feed.model.comment.Comment;
 import com.worldventures.dreamtrips.modules.feed.model.comment.LoadMore;
@@ -127,12 +126,12 @@ public class CommentableFragment<T extends BaseCommentPresenter, P extends Comme
 
          @Override
          public void onFlagClicked(Flaggable flaggableView) {
-            getPresenter().loadFlags(flaggableView);
+            getPresenter().onLoadFlags(flaggableView);
          }
 
          @Override
          public void onFlagChosen(Comment comment, int flagReasonId, String reason) {
-            getPresenter().flagItem(comment.getUid(), flagReasonId, reason);
+            getPresenter().onFlagComment(comment.getUid(), flagReasonId, reason);
          }
 
          @Override
@@ -317,7 +316,8 @@ public class CommentableFragment<T extends BaseCommentPresenter, P extends Comme
       adapter.notifyDataSetChanged();
    }
 
-   public void onEvent(CommentIconClickedEvent event) {
+   @Override
+   public void openInput() {
       if (isVisibleOnScreen()) SoftInputUtil.showSoftInputMethod(input);
    }
 

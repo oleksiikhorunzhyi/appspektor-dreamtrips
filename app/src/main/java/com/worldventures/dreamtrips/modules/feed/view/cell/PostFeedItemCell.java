@@ -26,6 +26,7 @@ import com.worldventures.dreamtrips.modules.feed.event.TranslatePostEvent;
 import com.worldventures.dreamtrips.modules.feed.model.FeedEntityHolder;
 import com.worldventures.dreamtrips.modules.feed.model.PostFeedItem;
 import com.worldventures.dreamtrips.modules.feed.model.TextualPost;
+import com.worldventures.dreamtrips.modules.feed.view.cell.base.BaseFeedCell;
 import com.worldventures.dreamtrips.modules.feed.view.cell.base.FeedItemDetailsCell;
 import com.worldventures.dreamtrips.modules.feed.view.custom.TranslateView;
 import com.worldventures.dreamtrips.modules.feed.view.custom.collage.CollageItem;
@@ -230,7 +231,7 @@ public class PostFeedItemCell extends FeedItemDetailsCell<PostFeedItem, PostFeed
       showMoreDialog(R.menu.menu_feed_entity_edit, R.string.post_delete, R.string.post_delete_caption);
    }
 
-   public interface PostFeedItemDetailCellDelegate extends CellDelegate<PostFeedItem> {
+   public interface PostFeedItemDetailCellDelegate extends BaseFeedCell.FeedCellDelegate<PostFeedItem> {
 
       void onEditPost(PostFeedItem postFeedItem);
 

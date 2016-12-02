@@ -41,6 +41,7 @@ public abstract class WalletPresenter<V extends WalletScreen, S extends Parcelab
                   .onErrorReturn(throwable -> null).filter(it -> it != null)
                   .map(it -> it.getResult().connectionStatus())
             )
+            .distinctUntilChanged()
             .compose(bindViewIoToMainComposer())
             .subscribe(getView()::showConnectionStatus);
    }

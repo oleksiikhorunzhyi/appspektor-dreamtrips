@@ -22,12 +22,9 @@ import flow.path.Path;
 
 public abstract class WalletLinearLayout<V extends WalletScreen, P extends ViewStateMvpPresenter<V, ?>, T extends StyledPath> extends BaseViewStateLinearLayout<V, P> implements InjectorHolder, PathView<T> {
 
-   private static final long HIDE_ANIMATION_DELAY = 2000L;
-
    private Injector injector;
    private TextView connectionLabel;
    private boolean visibleConnectionLabel = true;
-   private Runnable hideLabelTask = () -> removeView(connectionLabel);
 
    public WalletLinearLayout(Context context) {
       this(context, null);
@@ -57,7 +54,7 @@ public abstract class WalletLinearLayout<V extends WalletScreen, P extends ViewS
 
       switch (connectionStatus) {
          case CONNECTED:
-            postDelayed(hideLabelTask, HIDE_ANIMATION_DELAY);
+            removeView(connectionLabel);
             break;
          case ERROR:
          case DISCONNECTED:
@@ -65,7 +62,6 @@ public abstract class WalletLinearLayout<V extends WalletScreen, P extends ViewS
             if (indexOfChild(connectionLabel) < 0) {
                addView(connectionLabel, hasToolbar() ? 1 : 0);
             }
-            getHandler().removeCallbacksAndMessages(hideLabelTask);
             break;
       }
    }
@@ -99,7 +95,7 @@ public abstract class WalletLinearLayout<V extends WalletScreen, P extends ViewS
       return getResources().getString(stringId, formatArgs);
    }
 
-   protected void supportConnectionStatusLabel(boolean showLabel){
+   protected void supportConnectionStatusLabel(boolean showLabel) {
       visibleConnectionLabel = showLabel;
    }
 }

@@ -1,14 +1,12 @@
 package com.worldventures.dreamtrips.modules.dtl.model.location;
 
 import android.support.annotation.Nullable;
-import android.text.TextUtils;
 
 import com.google.android.gms.maps.model.LatLng;
 import com.innahema.collections.query.queriables.Queryable;
 import com.worldventures.dreamtrips.api.dtl.locations.model.LocationType;
 import com.worldventures.dreamtrips.modules.dtl.helper.DtlLocationHelper;
 import com.worldventures.dreamtrips.modules.dtl.model.LocationSourceType;
-import com.worldventures.dreamtrips.modules.trips.model.Location;
 
 import org.immutables.value.Value;
 
@@ -55,14 +53,7 @@ public abstract class DtlLocation {
       return !DtlLocationHelper.checkMaxDistance(coordinates(), location);
    }
 
-   public static DtlLocation undefined() {
-      return ImmutableDtlLocation.builder()
-            .locationSourceType(LocationSourceType.UNDEFINED)
-            .isExternal(false)
-            .build();
-   }
-
-   private String getLongNameFor(LocationType type) {
+   @Value.Derived protected String getLongNameFor(LocationType type) {
       DtlLocation location = Queryable.from(locatedIn())
             .firstOrDefault(tempLocation -> tempLocation.type() == type);
       return location == null ? "-" : location.longName();

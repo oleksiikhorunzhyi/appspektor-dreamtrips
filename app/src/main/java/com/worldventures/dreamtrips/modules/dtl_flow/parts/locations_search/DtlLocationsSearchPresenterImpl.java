@@ -76,7 +76,6 @@ public class DtlLocationsSearchPresenterImpl extends DtlPresenterImpl<DtlLocatio
 
    @Override
    public void onLocationSelected(DtlLocation location) {
-      //locationInteractor.searchLocationPipe().clearReplays();
       analyticsInteractor.dtlAnalyticsCommandPipe()
             .send(DtlAnalyticsCommand.create(LocationSearchEvent.create(location)));
       locationInteractor.changeSourceLocation(location);

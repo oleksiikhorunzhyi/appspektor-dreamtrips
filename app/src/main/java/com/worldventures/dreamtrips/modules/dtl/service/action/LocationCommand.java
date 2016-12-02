@@ -3,6 +3,7 @@ package com.worldventures.dreamtrips.modules.dtl.service.action;
 import com.worldventures.dreamtrips.core.api.action.ValueCommandAction;
 import com.worldventures.dreamtrips.modules.dtl.model.LocationSourceType;
 import com.worldventures.dreamtrips.modules.dtl.model.location.DtlLocation;
+import com.worldventures.dreamtrips.modules.dtl.model.location.DtlUndefinedLocation;
 
 import io.techery.janet.command.annotations.CommandAction;
 
@@ -14,7 +15,7 @@ public class LocationCommand extends ValueCommandAction<DtlLocation> {
    }
 
    public static LocationCommand clear() {
-      return change(DtlLocation.undefined());
+      return change(DtlUndefinedLocation.INSTANCE);
    }
 
    private LocationCommand(DtlLocation dtlLocation) {

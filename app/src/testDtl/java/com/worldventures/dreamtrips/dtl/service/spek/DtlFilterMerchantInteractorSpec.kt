@@ -79,7 +79,7 @@ class DtlFilterMerchantInteractorSpec : DtlBaseMerchantSpec({
 //      val subscriber = TestSubscriber<ActionState<DtlFilterMerchantsAction>>()
 //      filterMerchantInteractor.filterMerchantsActionPipe().observe().subscribe(subscriber)
 //      locationInteractor.locationPipe().send(
-//            DtlLocationCommand.change(
+//            LocationCommand.change(
 //                  ImmutableDtlManualLocation.builder()
 //                        .locationSourceType(LocationSourceType.FROM_MAP)
 //                        .analyticsName("test")

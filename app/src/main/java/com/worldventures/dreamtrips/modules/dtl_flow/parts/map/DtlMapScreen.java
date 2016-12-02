@@ -34,7 +34,7 @@ public interface DtlMapScreen extends DtlScreen {
 
    void prepareInfoWindow(LatLng location, int height);
 
-   void centerIn(Location location);
+   void centerIn(LatLng location);
 
    void toggleOffersOnly(boolean enabled);
 

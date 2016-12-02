@@ -4,8 +4,7 @@ import com.worldventures.dreamtrips.api.dtl.attributes.AttributesHttpAction;
 import com.worldventures.dreamtrips.api.dtl.attributes.model.AttributeType;
 import com.worldventures.dreamtrips.core.janet.JanetModule;
 import com.worldventures.dreamtrips.core.janet.dagger.InjectableAction;
-import com.worldventures.dreamtrips.modules.dtl.model.mapping.AttributeMapper;
-import com.worldventures.dreamtrips.modules.dtl.model.mapping.AttributesSortTransformer;
+import com.worldventures.dreamtrips.modules.dtl.domain.converter.AttributesSortTransformer;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.Attribute;
 
 import java.util.Arrays;
@@ -18,11 +17,13 @@ import javax.inject.Named;
 import io.techery.janet.Command;
 import io.techery.janet.Janet;
 import io.techery.janet.command.annotations.CommandAction;
+import io.techery.mappery.MapperyContext;
 
 @CommandAction
 public class AttributesAction extends Command<List<Attribute>> implements InjectableAction {
 
    @Inject @Named(JanetModule.JANET_API_LIB) Janet janet;
+   @Inject MapperyContext mapperyContext;
 
    private final String ll;
    private final double radius;
@@ -40,7 +41,7 @@ public class AttributesAction extends Command<List<Attribute>> implements Inject
       janet.createPipe(AttributesHttpAction.class)
             .createObservableResult(new AttributesHttpAction(ll, radius, attributeTypes))
             .map(AttributesHttpAction::attributes)
-            .compose(new AttributeMapper())
+            .map(attributes -> mapperyContext.convert(attributes, Attribute.class))
             .compose(new AttributesSortTransformer())
             .subscribe(callback::onSuccess, callback::onFail);
    }

@@ -19,7 +19,8 @@ import com.techery.spares.module.qualifier.ForActivity;
 import com.techery.spares.ui.view.cell.CellDelegate;
 import com.trello.rxlifecycle.RxLifecycle;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.modules.dtl.model.location.DtlExternalLocation;
+import com.worldventures.dreamtrips.modules.dtl.model.location.DtlLocation;
+import com.worldventures.dreamtrips.modules.dtl.model.location.ImmutableDtlLocation;
 import com.worldventures.dreamtrips.modules.dtl.view.cell.DtlLocationCell;
 import com.worldventures.dreamtrips.modules.dtl_flow.DtlLayout;
 
@@ -31,7 +32,7 @@ import javax.inject.Provider;
 import butterknife.InjectView;
 import rx.Observable;
 
-public class DtlLocationsSearchScreenImpl extends DtlLayout<DtlLocationsSearchScreen, DtlLocationsSearchPresenter, DtlLocationsSearchPath> implements DtlLocationsSearchScreen, CellDelegate<DtlExternalLocation> {
+public class DtlLocationsSearchScreenImpl extends DtlLayout<DtlLocationsSearchScreen, DtlLocationsSearchPresenter, DtlLocationsSearchPath> implements DtlLocationsSearchScreen, CellDelegate<DtlLocation> {
 
    @Inject @ForActivity Provider<Injector> injectorProvider;
    //
@@ -50,9 +51,9 @@ public class DtlLocationsSearchScreenImpl extends DtlLayout<DtlLocationsSearchSc
       recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
       recyclerView.addItemDecoration(new SimpleListDividerDecorator(getResources().getDrawable(R.drawable.list_divider), true));
       //
-      adapter = new BaseDelegateAdapter<DtlExternalLocation>(getContext(), injectorProvider.get());
-      adapter.registerCell(DtlExternalLocation.class, DtlLocationCell.class);
-      adapter.registerDelegate(DtlExternalLocation.class, this);
+      adapter = new BaseDelegateAdapter<DtlLocation>(getContext(), injectorProvider.get());
+      adapter.registerCell(ImmutableDtlLocation.class, DtlLocationCell.class);
+      adapter.registerDelegate(ImmutableDtlLocation.class, this);
       //
       recyclerView.setAdapter(adapter);
       //
@@ -86,13 +87,13 @@ public class DtlLocationsSearchScreenImpl extends DtlLayout<DtlLocationsSearchSc
    }
 
    @Override
-   public void onCellClicked(DtlExternalLocation location) {
+   public void onCellClicked(DtlLocation location) {
       hideSoftInput();
       getPresenter().onLocationSelected(location);
    }
 
    @Override
-   public void setItems(List<DtlExternalLocation> dtlExternalLocations) {
+   public void setItems(List<DtlLocation> dtlExternalLocations) {
       hideProgress();
       adapter.clearAndUpdateItems(dtlExternalLocations);
    }

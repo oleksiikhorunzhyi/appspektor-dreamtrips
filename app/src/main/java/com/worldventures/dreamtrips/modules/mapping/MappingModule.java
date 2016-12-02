@@ -8,6 +8,17 @@ import com.worldventures.dreamtrips.modules.bucketlist.model.converter.BucketLoc
 import com.worldventures.dreamtrips.modules.bucketlist.model.converter.BucketPhotoConverter;
 import com.worldventures.dreamtrips.modules.bucketlist.model.converter.BucketTagConverter;
 import com.worldventures.dreamtrips.modules.bucketlist.model.converter.BucketTypeConverter;
+import com.worldventures.dreamtrips.modules.dtl.domain.converter.AttributeConverter;
+import com.worldventures.dreamtrips.modules.dtl.domain.converter.CoordinatesConverter;
+import com.worldventures.dreamtrips.modules.dtl.domain.converter.CurrencyConverter;
+import com.worldventures.dreamtrips.modules.dtl.domain.converter.DisclaimerConverter;
+import com.worldventures.dreamtrips.modules.dtl.domain.converter.MerchantConverter;
+import com.worldventures.dreamtrips.modules.dtl.domain.converter.MerchantMediaConverter;
+import com.worldventures.dreamtrips.modules.dtl.domain.converter.OfferConverter;
+import com.worldventures.dreamtrips.modules.dtl.domain.converter.OperationDayConverter;
+import com.worldventures.dreamtrips.modules.dtl.domain.converter.OperationHourConverter;
+import com.worldventures.dreamtrips.modules.dtl.domain.converter.ThinAttributeConverter;
+import com.worldventures.dreamtrips.modules.dtl.domain.converter.ThinMerchantConverter;
 import com.worldventures.dreamtrips.modules.feed.converter.CommentConverter;
 import com.worldventures.dreamtrips.modules.feed.converter.FeedItemConverter;
 import com.worldventures.dreamtrips.modules.feed.converter.HashtagSimpleConverter;

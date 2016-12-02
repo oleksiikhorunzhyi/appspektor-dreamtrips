@@ -4,7 +4,7 @@ package com.worldventures.dreamtrips.modules.dtl.service;
 import com.worldventures.dreamtrips.modules.dtl.model.RequestSourceType;
 import com.worldventures.dreamtrips.modules.dtl.model.location.DtlLocation;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.filter.FilterData;
-import com.worldventures.dreamtrips.modules.dtl.service.action.DtlLocationCommand;
+import com.worldventures.dreamtrips.modules.dtl.service.action.LocationCommand;
 import com.worldventures.dreamtrips.modules.dtl.service.action.FilterDataAction;
 import com.worldventures.dreamtrips.modules.dtl.service.action.MerchantsAction;
 import com.worldventures.dreamtrips.modules.dtl.service.action.RequestSourceTypeAction;
@@ -68,8 +68,8 @@ public class MerchantsFacadeInteractor {
    private Observable<DtlLocation> provideLastSourceLocationObservable() {
       return locationInteractor.locationSourcePipe().observeSuccessWithReplay()
             .take(1)
-            .filter(DtlLocationCommand::isResultDefined)
-            .map(DtlLocationCommand::getResult);
+            .filter(LocationCommand::isResultDefined)
+            .map(LocationCommand::getResult);
    }
 
    private final class MerchantsUpdateFunc implements Func2<FilterData, DtlLocation, MerchantsParamsBundle> {

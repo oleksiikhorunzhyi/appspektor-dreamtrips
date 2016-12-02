@@ -227,8 +227,8 @@ public class DtlMapScreenImpl extends DtlLayout<DtlMapScreen, DtlMapPresenter, D
    }
 
    @Override
-   public void centerIn(Location location) {
-      googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(location.asLatLng(), MapViewUtils.DEFAULT_ZOOM));
+   public void centerIn(LatLng location) {
+      googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(location, MapViewUtils.DEFAULT_ZOOM));
    }
 
    @Override

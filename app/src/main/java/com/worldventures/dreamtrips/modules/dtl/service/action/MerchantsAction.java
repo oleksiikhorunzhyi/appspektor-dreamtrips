@@ -11,7 +11,6 @@ import com.worldventures.dreamtrips.core.janet.cache.CachedAction;
 import com.worldventures.dreamtrips.core.janet.cache.ImmutableCacheOptions;
 import com.worldventures.dreamtrips.core.janet.cache.storage.PaginatedStorage;
 import com.worldventures.dreamtrips.core.janet.dagger.InjectableAction;
-import com.worldventures.dreamtrips.modules.dtl.model.mapping.ThinMerchantsTransformer;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.ThinMerchant;
 import com.worldventures.dreamtrips.modules.dtl.service.action.bundle.MerchantsParamsBundle;
 
@@ -24,15 +23,17 @@ import javax.inject.Named;
 import io.techery.janet.ActionHolder;
 import io.techery.janet.Janet;
 import io.techery.janet.command.annotations.CommandAction;
+import io.techery.mappery.MapperyContext;
 import rx.schedulers.Schedulers;
 
 @CommandAction
 public class MerchantsAction extends CommandWithError<List<ThinMerchant>>
       implements CachedAction<List<ThinMerchant>>, InjectableAction, NewRelicTrackableAction {
 
-   private final long startTime = System.currentTimeMillis();
-
    @Inject @Named(JanetModule.JANET_API_LIB) Janet janet;
+   @Inject MapperyContext mapperyContext;
+
+   private final long startTime = System.currentTimeMillis();
 
    private final boolean isRefresh;
    private final MerchantsParamsBundle bundle;
@@ -51,11 +52,11 @@ public class MerchantsAction extends CommandWithError<List<ThinMerchant>>
    @Override
    protected void run(CommandCallback<List<ThinMerchant>> callback) throws Throwable {
       callback.onProgress(0);
-       janet.createPipe(ThinMerchantsHttpAction.class, Schedulers.io())
+      janet.createPipe(ThinMerchantsHttpAction.class, Schedulers.io())
             .createObservableResult(HttpActionsCreator.provideMerchantsAction(bundle))
             .map(ThinMerchantsHttpAction::merchants)
+            .map(merchants -> mapperyContext.convert(merchants, ThinMerchant.class))
             .doOnNext(action -> clearCacheIfNeeded())
-            .compose(ThinMerchantsTransformer.INSTANCE)
             .subscribe(callback::onSuccess, callback::onFail);
    }
 
@@ -96,7 +97,7 @@ public class MerchantsAction extends CommandWithError<List<ThinMerchant>>
    }
 
    private void clearCacheIfNeeded() {
-      if(isRefresh()) cache = null;
+      if (isRefresh()) cache = null;
    }
 
    public List<ThinMerchant> merchants() {

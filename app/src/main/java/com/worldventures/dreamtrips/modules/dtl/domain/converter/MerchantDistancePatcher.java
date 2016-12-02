@@ -1,4 +1,4 @@
-package com.worldventures.dreamtrips.modules.dtl.model.mapping;
+package com.worldventures.dreamtrips.modules.dtl.domain.converter;
 
 import com.google.android.gms.maps.model.LatLng;
 import com.worldventures.dreamtrips.modules.dtl.helper.DtlLocationHelper;
@@ -27,7 +27,7 @@ public class MerchantDistancePatcher implements Func1<Merchant, Merchant> {
    }
 
    private static double calculateDistance(DtlLocation dtlLocation, Merchant merchant) {
-      return DtlLocationHelper.calculateDistance(dtlLocation.getCoordinates().asLatLng(),
+      return DtlLocationHelper.calculateDistance(dtlLocation.coordinates(),
             new LatLng(merchant.coordinates().lat(), merchant.coordinates().lng())) / 1000;
    }
 }

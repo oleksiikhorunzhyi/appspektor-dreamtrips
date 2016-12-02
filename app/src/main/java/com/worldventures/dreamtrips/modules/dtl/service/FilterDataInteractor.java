@@ -8,10 +8,9 @@ import com.worldventures.dreamtrips.core.utils.tracksystem.AnalyticsInteractor;
 import com.worldventures.dreamtrips.modules.dtl.analytics.DtlAnalyticsCommand;
 import com.worldventures.dreamtrips.modules.dtl.analytics.MerchantFilterAppliedEvent;
 import com.worldventures.dreamtrips.modules.dtl.helper.FilterHelper;
-import com.worldventures.dreamtrips.modules.dtl.model.RequestSourceType;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.filter.FilterData;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.filter.ImmutableFilterData;
-import com.worldventures.dreamtrips.modules.dtl.service.action.DtlLocationCommand;
+import com.worldventures.dreamtrips.modules.dtl.service.action.LocationCommand;
 import com.worldventures.dreamtrips.modules.dtl.service.action.FilterDataAction;
 import com.worldventures.dreamtrips.modules.dtl.service.action.RequestSourceTypeAction;
 
@@ -128,8 +127,8 @@ public class FilterDataInteractor {
 
    private void connectLocationChange() {
       dtlLocationInteractor.locationSourcePipe().observeSuccessWithReplay()
-            .filter(DtlLocationCommand::isResultDefined)
-            .map(DtlLocationCommand::getResult)
+            .filter(LocationCommand::isResultDefined)
+            .map(LocationCommand::getResult)
             .subscribe(dtlLocation ->
                   getLastFilterObservable()
                         .map(filterData -> ImmutableFilterData.copyOf(filterData)

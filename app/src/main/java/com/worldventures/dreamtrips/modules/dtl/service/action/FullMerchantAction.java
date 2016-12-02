@@ -11,10 +11,9 @@ import com.worldventures.dreamtrips.core.janet.cache.CachedAction;
 import com.worldventures.dreamtrips.core.janet.cache.ImmutableCacheOptions;
 import com.worldventures.dreamtrips.core.janet.dagger.InjectableAction;
 import com.worldventures.dreamtrips.modules.dtl.model.location.DtlLocation;
-import com.worldventures.dreamtrips.modules.dtl.model.mapping.MerchantDistancePatcher;
-import com.worldventures.dreamtrips.modules.dtl.model.mapping.MerchantMapper;
+import com.worldventures.dreamtrips.modules.dtl.domain.converter.MerchantDistancePatcher;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.Merchant;
-import com.worldventures.dreamtrips.modules.dtl.service.storage.FullMerchantStorage;
+import com.worldventures.dreamtrips.modules.dtl.domain.storage.FullMerchantStorage;
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -22,12 +21,14 @@ import javax.inject.Named;
 import io.techery.janet.ActionHolder;
 import io.techery.janet.Janet;
 import io.techery.janet.command.annotations.CommandAction;
+import io.techery.mappery.MapperyContext;
 import rx.schedulers.Schedulers;
 
 @CommandAction
 public class FullMerchantAction extends CommandWithError<Merchant> implements InjectableAction, CachedAction<Merchant> {
 
    @Inject @Named(JanetModule.JANET_API_LIB) Janet janet;
+   @Inject MapperyContext mapperyContext;
 
    private final String offerId;
    private final String merchantId;
@@ -60,7 +61,7 @@ public class FullMerchantAction extends CommandWithError<Merchant> implements In
          janet.createPipe(MerchantByIdHttpAction.class, Schedulers.io())
                .createObservableResult(new MerchantByIdHttpAction(merchantId))
                .map(MerchantByIdHttpAction::merchant)
-               .map(MerchantMapper.INSTANCE::convert)
+               .map(merchant -> mapperyContext.convert(merchant, Merchant.class))
                .map(MerchantDistancePatcher.create(dtlLocation))
                .subscribe(callback::onSuccess, callback::onFail);
       } else callback.onSuccess(cache);

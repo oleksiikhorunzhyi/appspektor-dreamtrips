@@ -3,6 +3,7 @@ package com.worldventures.dreamtrips.core.module;
 import android.app.Application;
 import android.content.Context;
 
+import com.worldventures.dreamtrips.modules.dtl_flow.di.DtlModule;
 import com.worldventures.dreamtrips.modules.flags.FlagsModule;
 import com.messenger.di.MessengerModule;
 import com.techery.spares.application.BaseApplicationWithInjector;
@@ -46,7 +47,7 @@ import dagger.Provides;
             //
             LocaleModule.class, AppVersionNameModule.class,
             //
-            MessengerModule.class, FlagsModule.class,
+            MessengerModule.class, FlagsModule.class, DtlModule.class,
             //
             JanetModule.class, AnalyticsModule.class, SessionProcessingModule.class,
             //

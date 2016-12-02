@@ -4,6 +4,7 @@ import android.content.Context;
 import android.location.Location;
 import android.os.Bundle;
 
+import com.google.android.gms.maps.model.LatLng;
 import com.techery.spares.module.Injector;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.rx.composer.IoToMainComposer;
@@ -11,21 +12,19 @@ import com.worldventures.dreamtrips.modules.dtl.analytics.DtlAnalyticsCommand;
 import com.worldventures.dreamtrips.modules.dtl.analytics.LocationSearchEvent;
 import com.worldventures.dreamtrips.modules.dtl.location.LocationDelegate;
 import com.worldventures.dreamtrips.modules.dtl.model.LocationSourceType;
-import com.worldventures.dreamtrips.modules.dtl.model.location.DtlExternalLocation;
 import com.worldventures.dreamtrips.modules.dtl.model.location.DtlLocation;
-import com.worldventures.dreamtrips.modules.dtl.model.location.ImmutableDtlManualLocation;
+import com.worldventures.dreamtrips.modules.dtl.model.location.ImmutableDtlLocation;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.filter.FilterData;
 import com.worldventures.dreamtrips.modules.dtl.service.DtlLocationInteractor;
 import com.worldventures.dreamtrips.modules.dtl.service.FilterDataInteractor;
 import com.worldventures.dreamtrips.modules.dtl.service.MerchantsInteractor;
-import com.worldventures.dreamtrips.modules.dtl.service.action.DtlLocationFacadeCommand;
-import com.worldventures.dreamtrips.modules.dtl.service.action.DtlNearbyLocationAction;
-import com.worldventures.dreamtrips.modules.dtl.service.action.DtlSearchLocationAction;
+import com.worldventures.dreamtrips.modules.dtl.service.action.LocationFacadeCommand;
+import com.worldventures.dreamtrips.modules.dtl.service.action.NearbyLocationAction;
+import com.worldventures.dreamtrips.modules.dtl.service.action.SearchLocationAction;
 import com.worldventures.dreamtrips.modules.dtl.service.action.FilterDataAction;
 import com.worldventures.dreamtrips.modules.dtl_flow.DtlPresenterImpl;
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.location_change.DtlLocationChangePresenterImpl;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -46,7 +45,6 @@ public class MasterToolbarPresenterImpl extends DtlPresenterImpl<MasterToolbarSc
    @Inject MerchantsInteractor merchantInteractor;
 
    @State DtlLocationChangePresenterImpl.ScreenMode screenMode = DtlLocationChangePresenterImpl.ScreenMode.NEARBY_LOCATIONS;
-   @State ArrayList<DtlExternalLocation> dtlNearbyLocations = new ArrayList<>();
 
    private AtomicBoolean showAutodetectButton = new AtomicBoolean(Boolean.TRUE);
    private AtomicBoolean noMerchants = new AtomicBoolean(Boolean.FALSE);
@@ -66,7 +64,6 @@ public class MasterToolbarPresenterImpl extends DtlPresenterImpl<MasterToolbarSc
    @Override
    public void onSaveInstanceState(Bundle bundle) {
       state.setPopupShowing(getView().isSearchPopupShowing());
-      state.setDtlNearbyLocations(dtlNearbyLocations);
       state.setScreenMode(screenMode);
       super.onSaveInstanceState(bundle);
    }
@@ -75,7 +72,6 @@ public class MasterToolbarPresenterImpl extends DtlPresenterImpl<MasterToolbarSc
    public void onRestoreInstanceState(Bundle instanceState) {
       super.onRestoreInstanceState(instanceState);
       if (state.isPopupShowing()) getView().toggleSearchPopupVisibility(true);
-      this.dtlNearbyLocations = state.getDtlNearbyLocations();
       this.screenMode = state.getScreenMode();
    }
 
@@ -150,7 +146,7 @@ public class MasterToolbarPresenterImpl extends DtlPresenterImpl<MasterToolbarSc
       locationInteractor.locationFacadePipe()
             .observeSuccessWithReplay()
             .take(1)
-            .map(DtlLocationFacadeCommand::getResult)
+            .map(LocationFacadeCommand::getResult)
             .compose(bindViewIoToMainComposer())
             .subscribe(getView()::updateToolbarLocationTitle);
       filterDataInteractor.filterDataPipe()
@@ -166,7 +162,7 @@ public class MasterToolbarPresenterImpl extends DtlPresenterImpl<MasterToolbarSc
       locationInteractor.locationFacadePipe()
             .observeSuccess()
             .filter(dtlLocationCommand -> !getView().isSearchPopupShowing())
-            .map(DtlLocationFacadeCommand::getResult)
+            .map(LocationFacadeCommand::getResult)
             .compose(bindViewIoToMainComposer())
             .subscribe(getView()::updateToolbarLocationTitle);
    }
@@ -186,10 +182,11 @@ public class MasterToolbarPresenterImpl extends DtlPresenterImpl<MasterToolbarSc
             locationInteractor.requestNearbyLocations(location);
             break;
          case AUTO_NEAR_ME:
-            DtlLocation dtlLocation = ImmutableDtlManualLocation.builder()
+            DtlLocation dtlLocation = ImmutableDtlLocation.builder()
+                  .isExternal(false)
                   .locationSourceType(LocationSourceType.NEAR_ME)
                   .longName(context.getString(R.string.dtl_near_me_caption))
-                  .coordinates(new com.worldventures.dreamtrips.modules.trips.model.Location(location))
+                  .coordinates(new LatLng(location.getLatitude(), location.getLongitude()))
                   .build();
             locationInteractor.changeSourceLocation(dtlLocation);
             break;
@@ -214,7 +211,7 @@ public class MasterToolbarPresenterImpl extends DtlPresenterImpl<MasterToolbarSc
             .observeSuccessWithReplay()
             .compose(bindViewIoToMainComposer())
             .map(Command::getResult)
-            .map(DtlLocation::getLocationSourceType)
+            .map(DtlLocation::locationSourceType)
             .map(mode -> mode != LocationSourceType.NEAR_ME)
             .subscribe(showAutodetectButton::set);
    }
@@ -223,19 +220,20 @@ public class MasterToolbarPresenterImpl extends DtlPresenterImpl<MasterToolbarSc
       locationInteractor.searchLocationPipe()
             .observeWithReplay()
             .compose(bindViewIoToMainComposer())
-            .subscribe(new ActionStateSubscriber<DtlSearchLocationAction>().onStart(command -> getView().showProgress())
+            .subscribe(new ActionStateSubscriber<SearchLocationAction>()
+                  .onStart(command -> getView().showProgress())
                   .onFail(apiErrorPresenter::handleActionError)
                   .onSuccess(this::onSearchFinished));
    }
 
-   private void onSearchFinished(DtlSearchLocationAction action) {
+   private void onSearchFinished(SearchLocationAction action) {
       getView().setItems(action.getResult(), false);
    }
 
    private void locationSearch(String query) {
       screenMode = DtlLocationChangePresenterImpl.ScreenMode.SEARCH;
       locationInteractor.searchLocationPipe().cancelLatest();
-      locationInteractor.searchLocationPipe().send(new DtlSearchLocationAction(query.trim()));
+      locationInteractor.searchLocationPipe().send(new SearchLocationAction(query.trim()));
    }
 
    @Override
@@ -280,7 +278,7 @@ public class MasterToolbarPresenterImpl extends DtlPresenterImpl<MasterToolbarSc
       locationInteractor.nearbyLocationPipe()
             .observeWithReplay()
             .compose(bindViewIoToMainComposer())
-            .subscribe(new ActionStateSubscriber<DtlNearbyLocationAction>()
+            .subscribe(new ActionStateSubscriber<NearbyLocationAction>()
                   .onProgress((action, progress) -> getView().showProgress())
                   .onFail((action, throwable) -> {
                      getView().informUser(action.getFallbackErrorMessage());
@@ -289,20 +287,14 @@ public class MasterToolbarPresenterImpl extends DtlPresenterImpl<MasterToolbarSc
                   .onSuccess(this::onLocationsLoaded));
    }
 
-   private void onLocationsLoaded(DtlNearbyLocationAction action) {
+   private void onLocationsLoaded(NearbyLocationAction action) {
       getView().hideProgress();
-      showLoadedLocations(action.getResult());
-   }
-
-   private void showLoadedLocations(List<DtlExternalLocation> locations) {
-      dtlNearbyLocations.clear();
-      dtlNearbyLocations.addAll(locations);
-      getView().setItems(locations, !locations.isEmpty());
+      getView().setItems(action.getResult(), !action.getResult().isEmpty());
    }
 
    @Override
-   public void locationSelected(DtlExternalLocation dtlExternalLocation) {
-      locationInteractor.searchLocationPipe().clearReplays();
+   public void locationSelected(DtlLocation dtlExternalLocation) {
+      //locationInteractor.searchLocationPipe().clearReplays();
       analyticsInteractor.dtlAnalyticsCommandPipe()
             .send(DtlAnalyticsCommand.create(LocationSearchEvent.create(dtlExternalLocation)));
       locationInteractor.changeSourceLocation(dtlExternalLocation);

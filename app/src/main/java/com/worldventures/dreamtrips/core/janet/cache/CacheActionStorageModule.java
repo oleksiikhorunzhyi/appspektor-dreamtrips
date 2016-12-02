@@ -9,9 +9,9 @@ import com.worldventures.dreamtrips.modules.bucketlist.service.storage.BucketLis
 import com.worldventures.dreamtrips.modules.bucketlist.service.storage.BucketMemoryStorage;
 import com.worldventures.dreamtrips.modules.bucketlist.service.storage.RecentlyAddedBucketItemStorage;
 import com.worldventures.dreamtrips.modules.bucketlist.service.storage.UploadBucketPhotoInMemoryStorage;
-import com.worldventures.dreamtrips.modules.dtl.helper.cache.DtlSearchLocationStorage;
-import com.worldventures.dreamtrips.modules.dtl.service.storage.FullMerchantStorage;
-import com.worldventures.dreamtrips.modules.dtl.service.storage.MerchantsStorage;
+import com.worldventures.dreamtrips.modules.dtl.domain.storage.LocationStorage;
+import com.worldventures.dreamtrips.modules.dtl.domain.storage.FullMerchantStorage;
+import com.worldventures.dreamtrips.modules.dtl.domain.storage.MerchantsStorage;
 import com.worldventures.dreamtrips.modules.feed.service.storage.NotificationMemoryStorage;
 import com.worldventures.dreamtrips.modules.feed.service.storage.NotificationsStorage;
 import com.worldventures.dreamtrips.modules.feed.service.storage.TranslationDiscStorage;
@@ -44,8 +44,8 @@ public class CacheActionStorageModule {
 
    @Singleton
    @Provides(type = Provides.Type.SET)
-   ActionStorage provideDtlSearchLocationStorage() {
-      return new DtlSearchLocationStorage();
+   ActionStorage provideLocationStorage() {
+      return new LocationStorage();
    }
 
    @Singleton

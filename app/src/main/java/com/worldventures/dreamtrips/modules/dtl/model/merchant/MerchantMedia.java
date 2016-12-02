@@ -13,5 +13,4 @@ public interface MerchantMedia extends ImagePathHolder  {
    String category();
    Integer width();
    Integer height();
-   String getImagePath();
 }

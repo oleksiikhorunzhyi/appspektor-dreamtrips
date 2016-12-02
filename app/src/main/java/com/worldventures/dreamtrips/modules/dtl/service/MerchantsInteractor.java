@@ -4,10 +4,9 @@ import com.newrelic.agent.android.NewRelic;
 import com.worldventures.dreamtrips.core.janet.SessionActionPipeCreator;
 import com.worldventures.dreamtrips.modules.dtl.model.LocationSourceType;
 import com.worldventures.dreamtrips.modules.dtl.model.location.DtlLocation;
-import com.worldventures.dreamtrips.modules.dtl.model.location.DtlManualLocation;
-import com.worldventures.dreamtrips.modules.dtl.model.location.ImmutableDtlManualLocation;
+import com.worldventures.dreamtrips.modules.dtl.model.location.ImmutableDtlLocation;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.ThinMerchant;
-import com.worldventures.dreamtrips.modules.dtl.service.action.DtlLocationCommand;
+import com.worldventures.dreamtrips.modules.dtl.service.action.LocationCommand;
 import com.worldventures.dreamtrips.modules.dtl.service.action.MerchantsAction;
 import com.worldventures.dreamtrips.modules.dtl.service.action.NewRelicTrackableAction;
 
@@ -37,7 +36,7 @@ public class MerchantsInteractor {
 
    private void connectMemoryClear() {
       dtlLocationInteractor.locationSourcePipe().observe()
-            .subscribe(new ActionStateSubscriber<DtlLocationCommand>()
+            .subscribe(new ActionStateSubscriber<LocationCommand>()
                   .onStart(action -> clearMemoryInteractor.clearMerchantsMemoryCache()));
    }
 
@@ -57,10 +56,10 @@ public class MerchantsInteractor {
             .subscribe(thinMerchant -> {
                dtlLocationInteractor.locationSourcePipe().observeSuccessWithReplay()
                      .take(1)
-                     .filter(DtlLocationCommand::isResultDefined)
-                     .map(DtlLocationCommand::getResult)
-                     .filter(dtlLocation -> dtlLocation.getLocationSourceType() == LocationSourceType.FROM_MAP ||
-                           dtlLocation.getLocationSourceType() == LocationSourceType.NEAR_ME)
+                     .filter(LocationCommand::isResultDefined)
+                     .map(LocationCommand::getResult)
+                     .filter(dtlLocation -> dtlLocation.locationSourceType() == LocationSourceType.FROM_MAP ||
+                           dtlLocation.locationSourceType() == LocationSourceType.NEAR_ME)
                      .subscribe(dtlLocation ->
                            dtlLocationInteractor.changeFacadeLocation(buildManualLocation(thinMerchant, dtlLocation))
                      );
@@ -72,9 +71,9 @@ public class MerchantsInteractor {
    }
 
    private static DtlLocation buildManualLocation(ThinMerchant thinMerchant, DtlLocation dtlLocation) {
-      return ImmutableDtlManualLocation.copyOf((DtlManualLocation) dtlLocation)
-            .withLongName(dtlLocation.getLocationSourceType() == LocationSourceType.FROM_MAP ? thinMerchant.city() : dtlLocation
-                  .getLongName())
+      return ImmutableDtlLocation.copyOf(dtlLocation)
+            .withLongName(dtlLocation.locationSourceType() == LocationSourceType.FROM_MAP ? thinMerchant.city() : dtlLocation
+                  .longName())
             .withAnalyticsName(thinMerchant.asMerchantAttributes().provideAnalyticsName());
    }
 }

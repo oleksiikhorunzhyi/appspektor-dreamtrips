@@ -79,6 +79,7 @@ import com.worldventures.dreamtrips.modules.reptools.service.command.GetSuccessS
 import com.worldventures.dreamtrips.modules.reptools.service.command.LikeSuccessStoryCommand;
 import com.worldventures.dreamtrips.modules.reptools.service.command.UnlikeSuccessStoryCommand;
 import com.worldventures.dreamtrips.modules.settings.command.SettingsCommand;
+import com.worldventures.dreamtrips.modules.trips.command.CheckTripsByUidCommand;
 import com.worldventures.dreamtrips.modules.trips.command.GetActivitiesCommand;
 import com.worldventures.dreamtrips.modules.trips.command.GetRegionsCommand;
 import com.worldventures.dreamtrips.modules.trips.command.GetTripDetailsCommand;
@@ -211,5 +212,6 @@ import dagger.Module;
       ChangeBucketListOrderCommand.class,
       DeleteBucketItemCommand.class,
       ChangeFeedEntityLikedStatusCommand.class,
+      CheckTripsByUidCommand.class,
 }, complete = false, library = true)
 public class SocialJanetCommandModule {}

@@ -26,6 +26,7 @@ import javax.inject.Inject;
 import flow.Flow;
 import flow.History;
 import io.techery.janet.Command;
+import timber.log.Timber;
 
 public class WalletInstallFirmwarePresenter extends WalletPresenter<WalletInstallFirmwarePresenter.Screen, WalletInstallFirmwareState> {
 
@@ -46,6 +47,7 @@ public class WalletInstallFirmwarePresenter extends WalletPresenter<WalletInstal
    public void onAttachedToWindow() {
       super.onAttachedToWindow();
       sendAnalyticEvent();
+      listenInstallingProgress();
       firmwareInteractor.installFirmwarePipe()
             .observeWithReplay()
             .compose(new ActionPipeCacheWiper(firmwareInteractor.installFirmwarePipe()))
@@ -66,6 +68,13 @@ public class WalletInstallFirmwarePresenter extends WalletPresenter<WalletInstal
       analyticsInteractor.walletAnalyticsCommandPipe().send(analyticsCommand);
    }
 
+   private void listenInstallingProgress() {
+      firmwareInteractor.getDfuProgressEventPipe()
+            .observeSuccess()
+            .compose(bindViewIoToMainComposer())
+            .subscribe(dfuProgressEvent -> getView().showInstallingStatus(dfuProgressEvent.progress));
+   }
+
    @Override
    public void onNewViewState() {
       state = new WalletInstallFirmwareState();
@@ -73,6 +82,7 @@ public class WalletInstallFirmwarePresenter extends WalletPresenter<WalletInstal
 
    protected void install() {
       getView().showProgress(null);
+      getView().showInstallingStatus(0);
       firmwareInteractor.installFirmwarePipe().send(new InstallFirmwareCommand(firmwareData));
    }
 
@@ -108,6 +118,8 @@ public class WalletInstallFirmwarePresenter extends WalletPresenter<WalletInstal
    }
 
    public interface Screen extends WalletScreen, OperationScreen {
+
+      void showInstallingStatus(int status);
 
    }
 }

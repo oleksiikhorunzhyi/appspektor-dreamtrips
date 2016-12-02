@@ -16,8 +16,10 @@ import com.worldventures.dreamtrips.core.rx.composer.IoToMainComposer;
 import com.worldventures.dreamtrips.core.session.UserSession;
 import com.worldventures.dreamtrips.core.session.acl.FeatureManager;
 import com.worldventures.dreamtrips.core.utils.tracksystem.AnalyticsInteractor;
+import com.worldventures.dreamtrips.modules.common.command.OfflineErrorCommand;
 import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.common.presenter.delegate.OfflineWarningDelegate;
+import com.worldventures.dreamtrips.modules.common.service.OfflineErrorInteractor;
 import com.worldventures.dreamtrips.modules.common.view.connection_overlay.ConnectionState;
 import com.worldventures.dreamtrips.util.JanetHttpErrorHandlingUtils;
 
@@ -47,6 +49,7 @@ public class Presenter<VT extends Presenter.View> {
    @Inject protected FeatureManager featureManager;
    @Inject protected PhotoUploadingManagerS3 photoUploadingManagerS3;
    @Inject OfflineWarningDelegate offlineWarningDelegate;
+   @Inject protected OfflineErrorInteractor offlineErrorInteractor;
 
    protected int priorityEventBus = 0;
 
@@ -171,6 +174,7 @@ public class Presenter<VT extends Presenter.View> {
    private boolean handleGenericError(Throwable error) {
       if (getCauseByType(CancelException.class, error) != null) return true;
       if (getCauseByType(IOException.class, error) != null) {
+         offlineErrorInteractor.offlineErrorCommandPipe().send(new OfflineErrorCommand(error));
          reportNoConnection();
          return true;
       }

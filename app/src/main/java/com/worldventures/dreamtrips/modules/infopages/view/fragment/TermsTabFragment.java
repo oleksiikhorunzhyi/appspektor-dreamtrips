@@ -13,13 +13,14 @@ import com.worldventures.dreamtrips.modules.common.view.custom.BadgedTabLayout;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragment;
 import com.worldventures.dreamtrips.modules.common.view.viewpager.BasePagerAdapter;
 import com.worldventures.dreamtrips.modules.common.view.viewpager.FragmentItem;
+import com.worldventures.dreamtrips.modules.infopages.presenter.TermsTabPresenter;
 
 import butterknife.InjectView;
 
 
 @Layout(R.layout.fragment_tab_info)
 @MenuResource(R.menu.menu_mock)
-public class TermsTabFragment extends BaseFragment<Presenter> implements Presenter.View {
+public class TermsTabFragment extends BaseFragment<TermsTabPresenter> implements Presenter.View {
 
    protected static final int TERMS_OFFSCREEN_PAGES = 2;
 
@@ -29,8 +30,8 @@ public class TermsTabFragment extends BaseFragment<Presenter> implements Present
    protected BasePagerAdapter adapter;
 
    @Override
-   protected Presenter createPresenter(Bundle savedInstanceState) {
-      return new Presenter();
+   protected TermsTabPresenter createPresenter(Bundle savedInstanceState) {
+      return new TermsTabPresenter();
    }
 
    @Override

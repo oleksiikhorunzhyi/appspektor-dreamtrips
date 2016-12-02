@@ -1,37 +1,61 @@
 package com.worldventures.dreamtrips.modules.dtl.model.location;
 
+import android.support.annotation.Nullable;
+
+import com.google.android.gms.maps.model.LatLng;
+import com.innahema.collections.query.queriables.Queryable;
+import com.worldventures.dreamtrips.api.dtl.locations.model.LocationType;
+import com.worldventures.dreamtrips.modules.dtl.helper.DtlLocationHelper;
 import com.worldventures.dreamtrips.modules.dtl.model.LocationSourceType;
-import com.worldventures.dreamtrips.modules.trips.model.Location;
 
-public interface DtlLocation {
+import org.immutables.value.Value;
 
-   LocationSourceType getLocationSourceType();
+import java.util.List;
+import java.util.Locale;
 
-   String getLongName();
+@Value.Immutable
+public abstract class DtlLocation {
 
-   Location getCoordinates();
+   public abstract LocationSourceType locationSourceType();
 
-   String getAnalyticsName();
+   @Nullable public abstract String id();
 
-   DtlLocation UNDEFINED = new DtlLocation() {
-      @Override
-      public LocationSourceType getLocationSourceType() {
-         return LocationSourceType.UNDEFINED;
-      }
+   @Nullable public abstract String longName();
 
-      @Override
-      public String getLongName() {
-         return null;
-      }
+   @Nullable public abstract LatLng coordinates();
 
-      @Override
-      public com.worldventures.dreamtrips.modules.trips.model.Location getCoordinates() {
-         return new Location(0, 0);
-      }
+   @Nullable public abstract List<DtlLocation> locatedIn();
 
-      @Override
-      public String getAnalyticsName() {
-         return "";
-      }
-   };
+   @Nullable public abstract LocationType type();
+
+   @Value.Default public boolean isExternal() {
+      return true;
+   }
+
+   @Value.Default public String analyticsName() {
+      if(isExternal() && locatedIn() != null) return String.format("%s:%s:%s", longName(), getLongNameFor(LocationType.STATE), getLongNameFor(LocationType.COUNTRY));
+      else return "-:-:-";
+   }
+
+   @Value.Derived public String provideFormattedLocation() {
+      if(coordinates() == null) return "";
+      return String.format(Locale.US, "%1$f,%2$f", coordinates().latitude, coordinates().longitude);
+   }
+
+   @Value.Derived public boolean isOutOfMinDistance(android.location.Location location) {
+      if (coordinates() == null) return false;
+      LatLng coordinates = DtlLocationHelper.asLatLng(location);
+      return !DtlLocationHelper.checkMinDistance(coordinates(), coordinates);
+   }
+
+   @Value.Derived public boolean isOutOfMaxDistance(LatLng location) {
+      if (coordinates() == null) return false;
+      return !DtlLocationHelper.checkMaxDistance(coordinates(), location);
+   }
+
+   @Value.Derived protected String getLongNameFor(LocationType type) {
+      DtlLocation location = Queryable.from(locatedIn())
+            .firstOrDefault(tempLocation -> tempLocation.type() == type);
+      return location == null ? "-" : location.longName();
+   }
 }

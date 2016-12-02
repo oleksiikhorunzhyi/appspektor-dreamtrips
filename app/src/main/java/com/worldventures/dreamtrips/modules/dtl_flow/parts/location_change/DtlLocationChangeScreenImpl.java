@@ -22,8 +22,8 @@ import com.techery.spares.ui.view.cell.CellDelegate;
 import com.trello.rxlifecycle.RxLifecycle;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.utils.ActivityResultDelegate;
-import com.worldventures.dreamtrips.modules.dtl.model.location.DtlExternalLocation;
 import com.worldventures.dreamtrips.modules.dtl.model.location.DtlLocation;
+import com.worldventures.dreamtrips.modules.dtl.model.location.ImmutableDtlLocation;
 import com.worldventures.dreamtrips.modules.dtl.view.cell.DtlLocationChangeCell;
 import com.worldventures.dreamtrips.modules.dtl_flow.DtlActivity;
 import com.worldventures.dreamtrips.modules.dtl_flow.DtlLayout;
@@ -40,7 +40,7 @@ import butterknife.InjectView;
 import rx.Observable;
 import timber.log.Timber;
 
-public class DtlLocationChangeScreenImpl extends DtlLayout<DtlLocationChangeScreen, DtlLocationChangePresenter, DtlLocationChangePath> implements DtlLocationChangeScreen, ActivityResultDelegate.ActivityResultListener, CellDelegate<DtlExternalLocation> {
+public class DtlLocationChangeScreenImpl extends DtlLayout<DtlLocationChangeScreen, DtlLocationChangePresenter, DtlLocationChangePath> implements DtlLocationChangeScreen, ActivityResultDelegate.ActivityResultListener, CellDelegate<DtlLocation> {
 
    @Inject @ForActivity Provider<Injector> injectorProvider;
    @Inject ActivityResultDelegate activityResultDelegate;
@@ -79,9 +79,9 @@ public class DtlLocationChangeScreenImpl extends DtlLayout<DtlLocationChangeScre
       recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
       recyclerView.addItemDecoration(new SimpleListDividerDecorator(getResources().getDrawable(R.drawable.dtl_location_change_list_divider), true));
 
-      adapter = new BaseDelegateAdapter<DtlExternalLocation>(getActivity(), injectorProvider.get());
-      adapter.registerCell(DtlExternalLocation.class, DtlLocationChangeCell.class);
-      adapter.registerDelegate(DtlExternalLocation.class, this);
+      adapter = new BaseDelegateAdapter<DtlLocation>(getActivity(), injectorProvider.get());
+      adapter.registerCell(ImmutableDtlLocation.class, DtlLocationChangeCell.class);
+      adapter.registerDelegate(ImmutableDtlLocation.class, this);
 
       recyclerView.setAdapter(adapter);
    }
@@ -122,14 +122,14 @@ public class DtlLocationChangeScreenImpl extends DtlLayout<DtlLocationChangeScre
    @Override
    public void updateToolbarTitle(@Nullable DtlLocation dtlLocation, @Nullable String appliedSearchQuery) {
       if (dtlLocation == null) return;
-      switch (dtlLocation.getLocationSourceType()) {
+      switch (dtlLocation.locationSourceType()) {
          case NEAR_ME:
          case EXTERNAL:
-            dtlToolbar.setCaptions(appliedSearchQuery, dtlLocation.getLongName());
+            dtlToolbar.setCaptions(appliedSearchQuery, dtlLocation.longName());
             break;
          case FROM_MAP:
-            String locationTitle = TextUtils.isEmpty(dtlLocation.getLongName()) ? getResources().getString(R.string.dtl_nearby_caption_empty) : getResources()
-                  .getString(R.string.dtl_nearby_caption_format, dtlLocation.getLongName());
+            String locationTitle = TextUtils.isEmpty(dtlLocation.longName()) ? getResources().getString(R.string.dtl_nearby_caption_empty) : getResources()
+                  .getString(R.string.dtl_nearby_caption_format, dtlLocation.longName());
             dtlToolbar.setCaptions(appliedSearchQuery, locationTitle);
             break;
       }
@@ -164,7 +164,7 @@ public class DtlLocationChangeScreenImpl extends DtlLayout<DtlLocationChangeScre
    }
 
    @Override
-   public void onCellClicked(DtlExternalLocation location) {
+   public void onCellClicked(DtlLocation location) {
       hideSoftInput();
       getPresenter().locationSelected(location);
    }
@@ -202,7 +202,7 @@ public class DtlLocationChangeScreenImpl extends DtlLayout<DtlLocationChangeScre
    }
 
    @Override
-   public void setItems(List<DtlExternalLocation> locations, boolean showLocationHeader) {
+   public void setItems(List<DtlLocation> locations, boolean showLocationHeader) {
       hideProgress();
 
       selectFromNearbyCitiesCaption.setVisibility(showLocationHeader ? VISIBLE : GONE);

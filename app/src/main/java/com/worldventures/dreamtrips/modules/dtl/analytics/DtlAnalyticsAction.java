@@ -13,8 +13,8 @@ public abstract class DtlAnalyticsAction extends BaseAnalyticsAction {
    @Attribute("locationmethod") String dtlLocationMethod = null;
 
    public void setAnalyticsLocation(@NonNull DtlLocation dtlLocation) {
-      this.dtlLocation = dtlLocation.getAnalyticsName();
-      switch (dtlLocation.getLocationSourceType()) {
+      this.dtlLocation = dtlLocation.analyticsName();
+      switch (dtlLocation.locationSourceType()) {
          case NEAR_ME:
             dtlLocationMethod = "Near me";
             break;

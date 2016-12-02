@@ -9,7 +9,7 @@ import com.worldventures.dreamtrips.BaseSpec
 import com.worldventures.dreamtrips.core.janet.SessionActionPipeCreator
 import com.worldventures.dreamtrips.modules.dtl.model.location.DtlExternalLocation
 import com.worldventures.dreamtrips.modules.dtl.service.DtlLocationInteractor
-import com.worldventures.dreamtrips.modules.dtl.service.action.DtlSearchLocationAction
+import com.worldventures.dreamtrips.modules.dtl.service.action.SearchLocationAction
 import io.techery.janet.ActionHolder
 import io.techery.janet.ActionState
 import io.techery.janet.CommandActionService
@@ -43,8 +43,8 @@ class DtlLocationInteractorSpec : BaseSpec({
 //
 //   //
 
-//   describe("DtlLocationCommand") {
-//      var subscriber = TestSubscriber<ActionState<DtlLocationCommand>>()
+//   describe("LocationCommand") {
+//      var subscriber = TestSubscriber<ActionState<LocationCommand>>()
 //
 //      it("should return undefined location at first") {
 //         locationInteractor.locationPipe()
@@ -56,7 +56,7 @@ class DtlLocationInteractorSpec : BaseSpec({
 //      it("changes location to \"${location.longName}\"") {
 //         subscriber = TestSubscriber()
 //         locationInteractor.locationPipe()
-//               .createObservable(DtlLocationCommand.change(location))
+//               .createObservable(LocationCommand.change(location))
 //               .subscribe(subscriber)
 //         assertActionSuccess(subscriber) { action -> action.result == location }
 //      }
@@ -69,46 +69,46 @@ class DtlLocationInteractorSpec : BaseSpec({
 //      }
 //   }
 
-//   describe("DtlNearbyLocationAction") {
-//      val subscriber = TestSubscriber<ActionState<DtlNearbyLocationAction>>()
+//   describe("NearbyLocationAction") {
+//      val subscriber = TestSubscriber<ActionState<NearbyLocationAction>>()
 //
 //      it("should call HttpActionService") {
 //         val spyHttpCallback = httpStubWrapper.spyCallback()
 //         locationInteractor.nearbyLocationPipe()
-//               .createObservable(DtlNearbyLocationAction(mock()))
+//               .createObservable(NearbyLocationAction(mock()))
 //               .subscribe(subscriber)
 //         assertActionSuccess(subscriber) { action -> action.result.isNotEmpty() }
 //         verify(spyHttpCallback).onSend(any<ActionHolder<Any>>())
 //      }
 //   }
 //
-//   describe("DtlSearchLocationAction") {
-//      var subscriber = TestSubscriber<ActionState<DtlSearchLocationAction>>()
+//   describe("SearchLocationAction") {
+//      var subscriber = TestSubscriber<ActionState<SearchLocationAction>>()
 //      var spyHttpCallback = httpStubWrapper.spyCallback()
 //
 //      it("should skip searching when query#length() < 3") {
 //         locationInteractor.searchLocationPipe()
-//               .createObservable(DtlSearchLocationAction(location.longName.substring(0, 2)))
+//               .createObservable(SearchLocationAction(location.longName.substring(0, 2)))
 //               .subscribe(subscriber)
 //         assertActionSuccess(subscriber) { action -> action.result.isEmpty() }
 //         verify(spyHttpCallback, never()).onSend(any<ActionHolder<Any>>())
 //      }
 //
 //      it("should send http request when query#length() >= 3") {
-//         subscriber = TestSubscriber<ActionState<DtlSearchLocationAction>>()
+//         subscriber = TestSubscriber<ActionState<SearchLocationAction>>()
 //         spyHttpCallback = httpStubWrapper.spyCallback()
 //         locationInteractor.searchLocationPipe()
-//               .createObservable(DtlSearchLocationAction(location.longName.substring(0, 3)))
+//               .createObservable(SearchLocationAction(location.longName.substring(0, 3)))
 //               .subscribe(subscriber)
 //         assertActionSuccess(subscriber) { action -> !action.result.isEmpty() }
 //         verify(spyHttpCallback).onSend(any<ActionHolder<Any>>())
 //      }
 //
 //      it("should use cache") {
-//         subscriber = TestSubscriber<ActionState<DtlSearchLocationAction>>()
+//         subscriber = TestSubscriber<ActionState<SearchLocationAction>>()
 //         spyHttpCallback = httpStubWrapper.spyCallback()
 //         locationInteractor.searchLocationPipe()
-//               .createObservable(DtlSearchLocationAction(location.longName))
+//               .createObservable(SearchLocationAction(location.longName))
 //               .subscribe(subscriber)
 //         assertActionSuccess(subscriber) { action -> !action.result.isEmpty() }
 //         verify(spyHttpCallback, never()).onSend(any<ActionHolder<Any>>())

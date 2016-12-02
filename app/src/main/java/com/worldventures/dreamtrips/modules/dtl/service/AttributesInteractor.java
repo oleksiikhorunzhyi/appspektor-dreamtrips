@@ -1,10 +1,9 @@
 package com.worldventures.dreamtrips.modules.dtl.service;
 
-import com.worldventures.dreamtrips.api.dtl.attributes.model.AttributeType;
 import com.worldventures.dreamtrips.core.janet.SessionActionPipeCreator;
 import com.worldventures.dreamtrips.modules.dtl.helper.FilterHelper;
 import com.worldventures.dreamtrips.modules.dtl.service.action.AttributesAction;
-import com.worldventures.dreamtrips.modules.dtl.service.action.DtlLocationCommand;
+import com.worldventures.dreamtrips.modules.dtl.service.action.LocationCommand;
 import com.worldventures.dreamtrips.modules.dtl.service.action.FilterDataAction;
 
 import io.techery.janet.ActionPipe;
@@ -34,16 +33,14 @@ public class AttributesInteractor {
             dtlLocationInteractor.locationSourcePipe()
                   .observeSuccessWithReplay()
                   .take(1)
-                  .map(dtlLocationCommand -> dtlLocationCommand.getResult().getCoordinates()),
+                  .map(dtlLocationCommand -> dtlLocationCommand.getResult().provideFormattedLocation()),
             filterDataInteractor.filterDataPipe()
                   .observeSuccessWithReplay()
                   .take(1)
                   .map(FilterDataAction::getResult),
-            (location, filterData) ->
-                  new AttributesAction(location.getLat() + "," + location.getLng(),
-                        FilterHelper.provideMaxDistance(filterData)))
+            (ll, filterData) -> new AttributesAction(ll, FilterHelper.provideMaxDistance(filterData)))
             .take(1)
-            .subscribe(attributesAction -> attributesPipe.send(attributesAction));
+            .subscribe(attributesPipe::send);
    }
 
    public ReadActionPipe<AttributesAction> attributesPipe() {
@@ -52,8 +49,8 @@ public class AttributesInteractor {
 
    private void connectLocationChange() {
       dtlLocationInteractor.locationSourcePipe().observeSuccessWithReplay()
-            .filter(DtlLocationCommand::isResultDefined)
-            .map(DtlLocationCommand::getResult)
+            .filter(LocationCommand::isResultDefined)
+            .map(LocationCommand::getResult)
             .subscribe(dtlLocation -> requestAmenities());
    }
 }

@@ -9,9 +9,9 @@ import com.techery.spares.module.Injector;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.modules.dtl.analytics.DtlAnalyticsCommand;
 import com.worldventures.dreamtrips.modules.dtl.analytics.LocationSearchEvent;
-import com.worldventures.dreamtrips.modules.dtl.model.location.DtlExternalLocation;
+import com.worldventures.dreamtrips.modules.dtl.model.location.DtlLocation;
 import com.worldventures.dreamtrips.modules.dtl.service.DtlLocationInteractor;
-import com.worldventures.dreamtrips.modules.dtl.service.action.DtlSearchLocationAction;
+import com.worldventures.dreamtrips.modules.dtl.service.action.SearchLocationAction;
 import com.worldventures.dreamtrips.modules.dtl_flow.DtlPresenterImpl;
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.merchants.DtlMerchantsPath;
 
@@ -45,13 +45,13 @@ public class DtlLocationsSearchPresenterImpl extends DtlPresenterImpl<DtlLocatio
       locationInteractor.searchLocationPipe()
             .observeWithReplay()
             .compose(bindViewIoToMainComposer())
-            .subscribe(new ActionStateSubscriber<DtlSearchLocationAction>().onStart(command -> getView().showProgress())
+            .subscribe(new ActionStateSubscriber<SearchLocationAction>().onStart(command -> getView().showProgress())
                   .onFail(apiErrorPresenter::handleActionError)
                   .onSuccess(this::onSearchFinished));
    }
 
-   private void onSearchFinished(DtlSearchLocationAction action) {
-      List<DtlExternalLocation> locations = action.getResult();
+   private void onSearchFinished(SearchLocationAction action) {
+      List<DtlLocation> locations = action.getResult();
       getView().hideProgress();
       getView().setItems(locations);
       if (TextUtils.isEmpty(action.getQuery()) && !locations.isEmpty()) getView().toggleDefaultCaptionVisibility(false);
@@ -71,12 +71,11 @@ public class DtlLocationsSearchPresenterImpl extends DtlPresenterImpl<DtlLocatio
 
    private void sendSearchAction(String query) {
       locationInteractor.searchLocationPipe().cancelLatest();
-      locationInteractor.searchLocationPipe().send(new DtlSearchLocationAction(query.trim()));
+      locationInteractor.searchLocationPipe().send(new SearchLocationAction(query.trim()));
    }
 
    @Override
-   public void onLocationSelected(DtlExternalLocation location) {
-      locationInteractor.searchLocationPipe().clearReplays();
+   public void onLocationSelected(DtlLocation location) {
       analyticsInteractor.dtlAnalyticsCommandPipe()
             .send(DtlAnalyticsCommand.create(LocationSearchEvent.create(location)));
       locationInteractor.changeSourceLocation(location);

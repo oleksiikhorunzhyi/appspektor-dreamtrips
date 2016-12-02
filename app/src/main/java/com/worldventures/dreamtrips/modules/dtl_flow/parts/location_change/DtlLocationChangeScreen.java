@@ -3,7 +3,6 @@ package com.worldventures.dreamtrips.modules.dtl_flow.parts.location_change;
 import android.support.annotation.Nullable;
 
 import com.google.android.gms.common.api.Status;
-import com.worldventures.dreamtrips.modules.dtl.model.location.DtlExternalLocation;
 import com.worldventures.dreamtrips.modules.dtl.model.location.DtlLocation;
 import com.worldventures.dreamtrips.modules.dtl_flow.DtlScreen;
 
@@ -17,7 +16,7 @@ public interface DtlLocationChangeScreen extends DtlScreen {
 
    void locationResolutionRequired(Status status);
 
-   void setItems(List<DtlExternalLocation> locations, boolean showLocationHeader);
+   void setItems(List<DtlLocation> locations, boolean showLocationHeader);
 
    void hideNearMeButton();
 

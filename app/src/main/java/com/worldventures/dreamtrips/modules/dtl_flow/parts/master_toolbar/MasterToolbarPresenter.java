@@ -1,6 +1,6 @@
 package com.worldventures.dreamtrips.modules.dtl_flow.parts.master_toolbar;
 
-import com.worldventures.dreamtrips.modules.dtl.model.location.DtlExternalLocation;
+import com.worldventures.dreamtrips.modules.dtl.model.location.DtlLocation;
 import com.worldventures.dreamtrips.modules.dtl_flow.DtlPresenter;
 
 public interface MasterToolbarPresenter extends DtlPresenter<MasterToolbarScreen, MasterToolbarState> {
@@ -9,7 +9,7 @@ public interface MasterToolbarPresenter extends DtlPresenter<MasterToolbarScreen
 
    void loadNearMeRequested();
 
-   void locationSelected(DtlExternalLocation location);
+   void locationSelected(DtlLocation location);
 
    void onLocationResolutionGranted();
 

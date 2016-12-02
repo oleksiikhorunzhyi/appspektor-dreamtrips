@@ -1,5 +1,6 @@
 package com.worldventures.dreamtrips.wallet.domain.converter;
 
+import com.worldventures.dreamtrips.wallet.domain.entity.AddressInfo;
 import com.worldventures.dreamtrips.wallet.domain.entity.ImmutableAddressInfo;
 import com.worldventures.dreamtrips.wallet.domain.entity.ImmutableRecordIssuerInfo;
 import com.worldventures.dreamtrips.wallet.domain.entity.card.BankCard;
@@ -57,14 +58,28 @@ public class RecordToBankCardConverter implements com.worldventures.dreamtrips.m
             .cardNameHolder("") //// TODO: 11/28/16 use Record.cardNameHolder after sdk will updated !!!
             .nickName(record.title())
             .issuerInfo(recordIssuerInfoBuilder.build())
-            .addressInfo(ImmutableAddressInfo.builder()
-                  .address1(record.streetName())
-                  .address2(record.country())
-                  .city(record.city())
-                  .state(record.state())
-                  .zip(record.zipCode())
-                  .build())
+            .addressInfo(fetchAddressInfoFromRecord(record))
             .category(category)
             .build();
+   }
+
+   private AddressInfo fetchAddressInfoFromRecord(Record record) {
+      ImmutableAddressInfo.Builder addressInfoBuilder = ImmutableAddressInfo.builder();
+      if (record.streetName() != null) {
+         addressInfoBuilder.address1(record.streetName());
+      }
+      if (record.country() != null) {
+         addressInfoBuilder.address2(record.country());
+      }
+      if (record.city() != null) {
+         addressInfoBuilder.city(record.city());
+      }
+      if (record.state() != null) {
+         addressInfoBuilder.state(record.state());
+      }
+      if (record.zipCode() != null) {
+         addressInfoBuilder.zip(record.zipCode());
+      }
+      return addressInfoBuilder.build();
    }
 }

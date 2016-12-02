@@ -188,6 +188,7 @@ public class Presenter<VT extends Presenter.View> {
    private void subscribeToConnectivityStateUpdates() {
       // since there is no replay functionality in the lib make delegate check it straight away
       getConnectivityObservable()
+            .compose(bindUntilPause())
             .subscribe(connectivity -> {
                if (view.isVisibleOnScreen() && offlineWarningDelegate.needToShowOfflineAlert(context)) {
                   view.showOfflineAlert();
@@ -197,8 +198,7 @@ public class Presenter<VT extends Presenter.View> {
 
    private Observable<Connectivity> getConnectivityObservable() {
       return Observable.merge(Observable.just(null), ReactiveNetwork.observeNetworkConnectivity(context))
-            .observeOn(AndroidSchedulers.mainThread())
-            .compose(bindUntilPause());
+            .observeOn(AndroidSchedulers.mainThread());
    }
 
    protected boolean canShowOfflineAlert() {

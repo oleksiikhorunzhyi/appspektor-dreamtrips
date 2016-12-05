@@ -13,5 +13,6 @@
 
    <integer name="wallet_smart_card_id_length">10</integer>
 
+   <integer name="wallet_card_name_length">11</integer>
    <integer name="wallet_custom_loafing_animation_duration">1000</integer>
 </resources>

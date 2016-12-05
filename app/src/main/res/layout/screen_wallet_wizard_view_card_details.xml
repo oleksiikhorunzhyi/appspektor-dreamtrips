@@ -85,7 +85,7 @@
                />
 
          <EditText
-               android:id="@+id/card_nickname"
+               android:id="@+id/card_name"
                android:layout_width="match_parent"
                android:layout_height="wrap_content"
                android:layout_below="@+id/default_payment_card_checkbox"
@@ -99,7 +99,7 @@
                android:id="@+id/delete_button"
                android:layout_width="match_parent"
                android:layout_height="wrap_content"
-               android:layout_below="@+id/card_nickname"
+               android:layout_below="@+id/card_name"
                android:layout_marginTop="@dimen/wallet_details_screen_component_margin_top"
                android:background="@color/wallet_card_details_delete_card_button_color"
                android:text="@string/wallet_card_details_button_delete_card"

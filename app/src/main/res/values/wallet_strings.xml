@@ -135,6 +135,8 @@
    <string name="wallet_add_card_details_title">Card Details</string>
    <string name="wallet_add_card_details_hint_enter_cvv">Enter CVV</string>
    <string name="wallet_add_card_details_hint_nickname_card">Card Nickname (optional)</string>
+   <string name="wallet_add_card_details_hint_card_name">Card Name</string>
+   <string name="wallet_add_card_details_hint_card_name_length">(11 characters)</string>
    <string name="wallet_add_card_details_hint_address1">Address 1</string>
    <string name="wallet_add_card_details_hint_address2">Address 2 (optional)</string>
    <string name="wallet_add_card_details_hint_city">City</string>

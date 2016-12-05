@@ -32,7 +32,7 @@ public class CardDetailsScreen extends WalletLinearLayout<CardDetailsPresenter.S
 
    @InjectView(R.id.default_payment_card_checkbox) SwitchCompat defaultPaymentCardCheckBox;
    @InjectView(R.id.address_textview) TextView addressText;
-   @InjectView(R.id.card_nickname) EditText cardNickname;
+   @InjectView(R.id.card_name) EditText cardNickname;
    @InjectView(R.id.card) BankCardWidget bankCardWidget;
 
    private Observable<Boolean> setAsDefaultCardObservable;
@@ -55,6 +55,8 @@ public class CardDetailsScreen extends WalletLinearLayout<CardDetailsPresenter.S
    @Override
    protected void onFinishInflate() {
       super.onFinishInflate();
+
+      if (isInEditMode()) return;
       toolbar.setNavigationOnClickListener(v -> presenter.goBack());
       setAsDefaultCardObservable = RxCompoundButton.checkedChanges(defaultPaymentCardCheckBox).skip(1);
    }

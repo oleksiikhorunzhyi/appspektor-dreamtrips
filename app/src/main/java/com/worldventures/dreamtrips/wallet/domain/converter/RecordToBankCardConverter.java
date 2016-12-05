@@ -32,7 +32,7 @@ public class RecordToBankCardConverter implements com.worldventures.dreamtrips.m
    public BankCard convert(MapperyContext mapperyContext, Record record) {
       final Map<String, String> metadata = record.metadata();
 
-      ImmutableRecordIssuerInfo.Builder recordIssuerInfoBuilder = ImmutableRecordIssuerInfo.builder();
+      final ImmutableRecordIssuerInfo.Builder recordIssuerInfoBuilder = ImmutableRecordIssuerInfo.builder();
       if (metadata.containsKey(BANK_NAME_FIELD)) {
          recordIssuerInfoBuilder.bankName(metadata.get(BANK_NAME_FIELD));
       }
@@ -48,8 +48,9 @@ public class RecordToBankCardConverter implements com.worldventures.dreamtrips.m
       if (record.cvv().length() > 0) {
          cvv = Integer.parseInt(record.cvv());
       }
+      final  Integer recordId = record.id();
       return ImmutableBankCard.builder()
-            .id(String.valueOf(record.id()))
+            .id(recordId != null ? String.valueOf(recordId) : null)
             .number(Long.parseLong(record.cardNumber()))
             .expDate(record.expDate())
             .cvv(cvv)

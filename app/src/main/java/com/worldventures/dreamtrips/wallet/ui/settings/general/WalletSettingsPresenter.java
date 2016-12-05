@@ -109,7 +109,7 @@ public class WalletSettingsPresenter extends WalletPresenter<WalletSettingsPrese
                   .onSuccess(setLockStateCommand -> {
                   })
                   .onFail(ErrorHandler.<SetLockStateCommand>builder(getContext())
-                        .handle(IllegalArgumentException.class, R.string.wallet_dashboard_unlock_error)
+                        .defaultMessage(R.string.wallet_smartcard_connection_error)
                         .defaultAction(a -> lockStatusFailed())
                         .build()
                   )

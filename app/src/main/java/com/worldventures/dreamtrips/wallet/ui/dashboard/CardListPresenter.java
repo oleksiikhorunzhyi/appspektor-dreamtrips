@@ -19,6 +19,7 @@ import com.worldventures.dreamtrips.wallet.domain.entity.SmartCard;
 import com.worldventures.dreamtrips.wallet.domain.entity.card.BankCard;
 import com.worldventures.dreamtrips.wallet.service.FirmwareInteractor;
 import com.worldventures.dreamtrips.wallet.service.SmartCardInteractor;
+import com.worldventures.dreamtrips.wallet.service.command.CardListCommand;
 import com.worldventures.dreamtrips.wallet.service.command.CardStacksCommand;
 import com.worldventures.dreamtrips.wallet.service.command.GetActiveSmartCardCommand;
 import com.worldventures.dreamtrips.wallet.service.command.SmartCardModifier;
@@ -45,6 +46,7 @@ import java.util.List;
 import javax.inject.Inject;
 
 import io.techery.janet.Command;
+import io.techery.janet.helper.JanetActionException;
 import io.techery.janet.smartcard.exception.NotConnectedException;
 import rx.Observable;
 import timber.log.Timber;
@@ -216,6 +218,14 @@ public class CardListPresenter extends WalletPresenter<CardListPresenter.Screen,
    private void observeChanges() {
       ErrorHandler errorHandler = ErrorHandler.builder(getContext())
             .ignore(NotConnectedException.class)
+            .ignore(throwable -> {
+               if (throwable instanceof JanetActionException
+                     && ((JanetActionException) throwable).getAction() instanceof CardListCommand) {
+                  CardListCommand command = (CardListCommand) ((JanetActionException) throwable).getAction();
+                  return command.isFromDevice();
+               }
+               return false;
+            })
             .build();
 
       smartCardInteractor.cardStacksPipe()

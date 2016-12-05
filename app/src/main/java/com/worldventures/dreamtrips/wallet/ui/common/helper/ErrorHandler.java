@@ -13,6 +13,7 @@ import com.worldventures.dreamtrips.util.HttpUploaderyException;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
@@ -33,6 +34,7 @@ public class ErrorHandler<T> implements Func1<Throwable, MessageActionHolder<T>>
    private final Map<Class<? extends Throwable>, String> throwableMessageMap;
    private final Map<Class<? extends Throwable>, Action1<T>> throwableActionMap;
    private final List<Class<? extends Throwable>> ignoredThrowables;
+   private final List<Func1<Throwable, Boolean>> ignoredFuncs;
    private final Action1<T> defaultErrorAction;
    private final String defaultErrorMessage;
    private final Context context;
@@ -41,6 +43,7 @@ public class ErrorHandler<T> implements Func1<Throwable, MessageActionHolder<T>>
       throwableMessageMap = builder.throwableMessageMap;
       throwableActionMap = builder.throwableActionMap;
       ignoredThrowables = builder.ignoredThrowables;
+      ignoredFuncs = builder.ignoredFuncs;
       defaultErrorAction = builder.defaultErrorAction;
       context = builder.context;
       defaultErrorMessage = builder.defaultErrorMessage;
@@ -62,6 +65,12 @@ public class ErrorHandler<T> implements Func1<Throwable, MessageActionHolder<T>>
          return null;
       }
 
+      for (Func1<Throwable, Boolean> ignoredFunc : ignoredFuncs) {
+         if (ignoredFunc.call(throwable)) {
+            return null;
+         }
+      }
+
       if (message != null && action != null) {
          // terminal branch
          return new MessageActionHolder<>(message, action);
@@ -81,7 +90,8 @@ public class ErrorHandler<T> implements Func1<Throwable, MessageActionHolder<T>>
       }
       if (throwable instanceof HttpServiceException) { // HttpServiceException is wrapper
          return tryCreateActionHolder(throwable.getCause(), message, action);
-      } if (throwable instanceof HttpUploaderyException) {
+      }
+      if (throwable instanceof HttpUploaderyException) {
          if (message == null) message = context.getString(R.string.wallet_image_uploadery_error);
       }
       if (throwable instanceof UnknownHostException) {
@@ -125,7 +135,9 @@ public class ErrorHandler<T> implements Func1<Throwable, MessageActionHolder<T>>
       private final Map<Class<? extends Throwable>, String> throwableMessageMap = new HashMap<>();
       private final Map<Class<? extends Throwable>, Action1<T>> throwableActionMap = new HashMap<>();
       private final List<Class<? extends Throwable>> ignoredThrowables = new ArrayList<>();
-      private Action1<T> defaultErrorAction = t -> {}; // stub defaultErrorAction
+      private final List<Func1<Throwable, Boolean>> ignoredFuncs = new LinkedList<>();
+      private Action1<T> defaultErrorAction = t -> {
+      }; // stub defaultErrorAction
       private String defaultErrorMessage;
       private final Context context;
 
@@ -150,6 +162,11 @@ public class ErrorHandler<T> implements Func1<Throwable, MessageActionHolder<T>>
 
       public Builder<T> ignore(@NonNull Class<? extends Throwable> clazz) {
          ignoredThrowables.add(clazz);
+         return this;
+      }
+
+      public Builder<T> ignore(@NonNull Func1<Throwable, Boolean> ignoreFunc) {
+         ignoredFuncs.add(ignoreFunc);
          return this;
       }
 

@@ -195,18 +195,14 @@
    <string name="wallet_settings_disable_default_card_1_month">1 month</string>
    <string name="wallet_settings_disable_default_card_never">Never</string>
 
-   <!--disable default card-->
+   <!--auto-clear default card-->
    <string name="wallet_settings_clear_flye_card_title">Auto Clear flye smart card After</string>
    <string name="wallet_settings_clear_flye_card_description">Set a timer to erase all content on your flye smart card after a period  of inactivity.</string>
-   <string name="wallet_settings_clear_flye_card_2_hours">2 hours</string>
-   <string name="wallet_settings_clear_flye_card_4_hours">4 hours</string>
-   <string name="wallet_settings_clear_flye_card_6_hours">6 hours</string>
-   <string name="wallet_settings_clear_flye_card_8_hours">8 hours</string>
-   <string name="wallet_settings_clear_flye_card_12_hours">12 hours</string>
-   <string name="wallet_settings_clear_flye_card_24_hours">24 hours</string>
-   <string name="wallet_settings_clear_flye_card_48_hours">48 hours</string>
-   <string name="wallet_settings_clear_flye_card_1_week">1 week</string>
-   <string name="wallet_settings_clear_flye_card_1_month">1 month</string>
+   <string name="wallet_settings_clear_flye_card_1_day">1 day</string>
+   <string name="wallet_settings_clear_flye_card_2_days">2 days</string>
+   <string name="wallet_settings_clear_flye_card_3_days">3 days</string>
+   <string name="wallet_settings_clear_flye_card_4_days">4 days</string>
+   <string name="wallet_settings_clear_flye_card_5_days">5 days</string>
    <string name="wallet_settings_clear_flye_card_never">Never</string>
 
    <!--firmware-->

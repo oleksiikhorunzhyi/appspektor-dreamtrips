@@ -89,7 +89,7 @@ public class WalletInstallFirmwareScreen extends WalletLinearLayout<WalletInstal
 
    @Override
    public void showInstallingStatus(int status) {
-      progressStatusLabel.setText(Integer.toString(status) + "%");
+      progressStatusLabel.setText(String.format("%d%%", status));
    }
 
    private CharSequence createDialogContentText() {

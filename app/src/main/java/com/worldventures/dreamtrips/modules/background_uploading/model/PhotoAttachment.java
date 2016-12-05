@@ -1,5 +1,7 @@
 package com.worldventures.dreamtrips.modules.background_uploading.model;
 
+import android.support.annotation.Nullable;
+
 import com.worldventures.dreamtrips.modules.feed.model.SelectedPhoto;
 
 import org.immutables.value.Value;
@@ -8,8 +10,8 @@ import org.immutables.value.Value;
 public interface PhotoAttachment {
 
    State state();
-   String originUrl();
    int progress();
+   @Nullable String originUrl();
 
    SelectedPhoto selectedPhoto();
 

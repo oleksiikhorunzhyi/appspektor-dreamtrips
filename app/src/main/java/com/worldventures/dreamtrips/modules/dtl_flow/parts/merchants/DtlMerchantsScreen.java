@@ -1,7 +1,6 @@
 package com.worldventures.dreamtrips.modules.dtl_flow.parts.merchants;
 
 import android.support.annotation.Nullable;
-import android.support.annotation.StringRes;
 
 import com.worldventures.dreamtrips.modules.dtl.model.location.DtlLocation;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.ThinMerchant;
@@ -23,7 +22,7 @@ public interface DtlMerchantsScreen extends DtlScreen {
 
    void showEmpty(boolean isShow);
 
-   void showNoMerchantsCaption(boolean isFilterDefault);
+   void showNoMerchantsCaption(boolean isFilterDefault, boolean isOffersOnly);
 
    void clearMerchants();
 

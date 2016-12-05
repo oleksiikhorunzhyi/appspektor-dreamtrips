@@ -282,15 +282,14 @@ public class DtlMerchantsPresenterImpl extends DtlPresenterImpl<DtlMerchantsScre
             .observeSuccessWithReplay()
             .take(1)
             .map(FilterDataAction::getResult)
-            .map(filterData -> filterData.isDefault() && !filterData.isOffersOnly())
-            .subscribe(this::showEmptyOrRedirect);
+            .subscribe(filterData -> showEmptyOrRedirect(filterData.isDefault(), filterData.isOffersOnly()));
    }
 
-   private void showEmptyOrRedirect(boolean isFilterDefault) {
-      if (!isAllowRedirect(isFilterDefault)) {
+   private void showEmptyOrRedirect(boolean isFilterDefault, boolean isOffersOnly) {
+      if (!isAllowRedirect(isFilterDefault && !isOffersOnly)) {
          getView().clearMerchants();
          getView().showEmpty(true);
-         getView().showNoMerchantsCaption(isFilterDefault);
+         getView().showNoMerchantsCaption(isFilterDefault, isOffersOnly);
       } else navigateToPath(new DtlLocationChangePath());
    }
 

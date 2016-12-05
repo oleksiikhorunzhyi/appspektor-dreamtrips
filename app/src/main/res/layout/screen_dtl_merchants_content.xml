@@ -44,7 +44,6 @@
             android:text="@string/merchants_no_results"
             android:textSize="@dimen/font_medium"
             />
-
    </LinearLayout>
 
    <LinearLayout

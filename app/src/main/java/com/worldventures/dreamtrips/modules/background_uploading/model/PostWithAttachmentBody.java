@@ -10,5 +10,5 @@ import java.util.List;
 public interface PostWithAttachmentBody {
    String text();
    Location location();
-   List<Attachment> attachments();
+   List<PhotoAttachment> attachments();
 }

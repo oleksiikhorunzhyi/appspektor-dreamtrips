@@ -1,8 +1,11 @@
 #!/usr/bin/env groovy
 
-def buildParams = [:]
+def MAIN_NODE = 'android'
 
-runBuild {
+def buildParams = [:]
+def utils = fileLoader.fromGit('jenkins-android-pipeline-utils.groovy', 'https://gist.github.com/3d72ba81965db879ceb38e4bef991b6a.git', 'aea43f238b1d75312c37fcdca35984f674a72823', null, 'master')
+
+utils.runBuild(MAIN_NODE) {
    stage('prepare build') {
       buildParams = generateParams()
       println buildParams
@@ -28,13 +31,13 @@ runBuild {
    stage('tests') {
       tests = [:]
       for (String task : buildParams.TEST_TASKS) {
-         tests[(task)] = createTestStep("app:${task}", buildParams.TEST_REPORT_FOLDER, buildParams.TEST_REPORT_PATTERN)
+         tests[(task)] = createTestStep(utils, MAIN_NODE, "app:${task}", buildParams.TEST_REPORT_FOLDER, buildParams.TEST_REPORT_PATTERN)
 
       }
       parallel tests
    }
    stage('assemble') {
-      gradlew "app:${buildParams.ASSEMBLE_TASK}"
+      utils.gradlew "app:${buildParams.ASSEMBLE_TASK}"
    }
 }
 
@@ -42,13 +45,17 @@ runBuild {
 def Map generateParams() {
    def buildParams = [:]
 
-   def flavors = [
-         stable   : "Stable",
+   def streamFlavors = [
          social   : "Social",
          dtl      : "Dtl",
          messenger: "Messenger",
          smartcard: "Smartcardmock",
    ]
+   def flavors = [stable: "Stable"]
+   for (Map.Entry it : streamFlavors) {
+      flavors[it.getKey()] = it.getValue()
+   }
+
 
    buildParams.FLAVOR = flavors.stable
    if (env.GITHUB_PR_TARGET_BRANCH.contains("social/")) buildParams.FLAVOR = flavors.social
@@ -57,7 +64,7 @@ def Map generateParams() {
    else if (env.GITHUB_PR_TARGET_BRANCH.contains("smart-card/")) buildParams.FLAVOR = flavors.smartcard
 
    if (buildParams.FLAVOR == flavors.stable) {
-      buildParams.TEST_TASKS = flavors.values().collect { flavor -> "testExternal${flavor}PreprodDebug" }
+      buildParams.TEST_TASKS = streamFlavors.values().collect { flavor -> "testExternal${flavor}PreprodDebug" }
    } else {
       buildParams.TEST_TASKS = ["testExternal${buildParams.FLAVOR}StageDebug"]
    }
@@ -70,72 +77,12 @@ def Map generateParams() {
    return buildParams
 }
 
-def createTestStep(String task, String reportFolder, String reportPattern) {
+def createTestStep(runner, nodeName, String task, String reportFolder, String reportPattern) {
    return {
-      node('android') {
+      node(nodeName) {
          deleteDir()
          unstash 'sources'
-         runTestAndArchiveResult(task, reportFolder, reportPattern)
+         runner.runTestAndArchiveResult(task, reportFolder, reportPattern)
       }
    }
-}
-
-def runBuild(Closure<Void> task) {
-   notifyGithub('STARTED')
-   catchError {
-      decorateBuild {
-         task()
-      }
-   }
-   notifyGithub(currentBuild.result)
-}
-
-def decorateBuild(Closure<Void> task) {
-   node('android') {
-      currentBuild.result = 'SUCCESS'
-      wrap([$class: 'TimestamperBuildWrapper']) {
-         ansiColor('XTerm') {
-            task()
-         }
-      }
-   }
-}
-
-def runTestAndArchiveResult(String gradleTestTask, String reportFolder, String reportPattern) {
-   Throwable error = null
-   try {
-      gradlew gradleTestTask
-   } catch (e) {
-      error = e
-   }
-   if (!fileExists(reportFolder)) throw error
-   junit allowEmptyResults: true, testResults: "${reportFolder}/${reportPattern}"
-}
-
-def notifyGithub(String result) {
-   switch (result) {
-      case 'STARTED':
-         setGitHubPullRequestStatus(context: env.JOB_NAME, message: "Build started", state: 'PENDING')
-         break
-      case 'FAILURE':
-         setGitHubPullRequestStatus(context: env.JOB_NAME, message: "Build error", state: 'ERROR')
-         break
-      case 'UNSTABLE':
-         setGitHubPullRequestStatus(context: env.JOB_NAME, message: "Tests are broken", state: 'FAILURE')
-         break
-      case 'SUCCESS':
-         setGitHubPullRequestStatus(context: env.JOB_NAME, message: "All is good", state: 'SUCCESS')
-         break
-   }
-}
-
-def gradlew(String task) {
-   bash "./gradlew clean ${task} -PdisablePreDex "
-}
-
-def bash(String command) {
-   println "Bash shell executes -> $command"
-   sh(script: """#!/bin/bash -l
-      $command
-    """)
 }

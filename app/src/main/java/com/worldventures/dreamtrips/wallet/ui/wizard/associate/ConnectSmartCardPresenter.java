@@ -14,6 +14,7 @@ import com.worldventures.dreamtrips.wallet.domain.entity.SmartCard;
 import com.worldventures.dreamtrips.wallet.service.WizardInteractor;
 import com.worldventures.dreamtrips.wallet.service.command.CreateAndConnectToCardCommand;
 import com.worldventures.dreamtrips.wallet.service.command.http.AssociateCardUserCommand;
+import com.worldventures.dreamtrips.wallet.service.command.http.AvailabilitySmartCardCommand;
 import com.worldventures.dreamtrips.wallet.service.command.http.DisassociateCardUserCommand;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletPresenter;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.WalletScreen;
@@ -65,8 +66,21 @@ public class ConnectSmartCardPresenter extends WalletPresenter<ConnectSmartCardP
       super.onAttachedToWindow();
       observeConnectionError();
       observeAssociation();
+      observerAvailabilitySmartCard();
 
-      wizardInteractor.associateCardUserCommandPipe().send(new AssociateCardUserCommand(barcode));
+      wizardInteractor.availabilitySmartCardCommandActionPipe().send(new AvailabilitySmartCardCommand(barcode));
+   }
+
+   private void observerAvailabilitySmartCard() {
+      wizardInteractor.availabilitySmartCardCommandActionPipe()
+            .observeWithReplay()
+            .compose(bindViewIoToMainComposer())
+            .subscribe(OperationActionStateSubscriberWrapper.<AvailabilitySmartCardCommand>forView(getView().provideOperationDelegate())
+                  .onSuccess(command -> wizardInteractor.associateCardUserCommandPipe().send(new AssociateCardUserCommand(barcode)))
+                  .onFail(ErrorHandler.<AvailabilitySmartCardCommand>builder(getContext())
+                        .defaultAction(command -> goBack())
+                        .build())
+                  .wrap());
    }
 
    private void observeAssociation() {

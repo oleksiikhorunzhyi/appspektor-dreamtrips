@@ -1,0 +1,97 @@
+#!/usr/bin/env groovy
+
+def buildParams = [:]
+def utils = fileLoader.fromGit('jenkins-android-pipeline-utils.groovy', 'https://gist.github.com/3d72ba81965db879ceb38e4bef991b6a.git', 'af8f12a2381b76c23e71edbf774bb35fdbaf52d5', null, 'master')
+
+utils.runBuild('android', false) {
+   stage('prepare build') {
+      buildParams = generateParams()
+      println buildParams
+   }
+   stage('checkout') {
+      checkout([
+            $class                           : 'GitSCM',
+            branches                         : [[name: buildParams.branch]],
+            userRemoteConfigs                : scm.userRemoteConfigs,
+            submoduleCfg                     : [],
+            doGenerateSubmoduleConfigurations: false,
+            extensions                       : [
+                  [$class: 'CleanBeforeCheckout'],
+                  [$class : 'CloneOption',
+                   shallow: true,
+                   depth  : 10,
+                   noTags : true,
+                   timeout: 30]
+            ]
+      ])
+   }
+   stage('assemble') {
+      withCredentials([file(credentialsId: 'dreamtrips-android-signing-key', variable: 'SIGNING_KEY'),
+                       file(credentialsId: 'dreamtrips-android-signing-properties', variable: 'SIGNING_PROPS')]) {
+         utils.bash("chmod +rx ${SIGNING_KEY}")
+         utils.bash("chmod +rx ${SIGNING_PROPS}")
+         utils.bash("cp -f ${SIGNING_KEY} signing")
+         utils.bash("cp -f ${SIGNING_PROPS} signing")
+         utils.gradlew "app:assembleExternal${buildParams.streamFlavor}${buildParams.serverFlavor}${buildParams.apkBuildType}"
+      }
+   }
+   stage('publish') {
+      def apkPath = "app/build/outputs/apk/DreamTrips-external-${buildParams.streamFlavor.toLowerCase()}-${buildParams.serverFlavor.toLowerCase()}-${buildParams.apkBuildType.toLowerCase()}.apk"
+      step([$class   : 'HockeyappRecorder', applications:
+            [[apiToken          : params.hockeyApiToken,
+              filePath          : apkPath,
+              downloadAllowed   : true,
+              mandatory         : false,
+              notifyTeam        : true,
+              teams             : buildParams.hockeyAppTeams.join(','),
+              releaseNotesMethod: [$class: 'ChangelogReleaseNotes'],
+              uploadMethod      : [$class: 'VersionCreation', appId: buildParams.hockeyAppId]
+             ]],
+            debugMode: false, failGracefully: true
+      ])
+   }
+}
+
+@NonCPS
+def Map generateParams() {
+   def params = [
+         streamFlavor  : "Stable",
+         serverFlavor  : "Stage",
+         apkBuildType  : "Debug",
+         hockeyApiToken: "c190d98f211e4ed689ce441d0de9ef1d",
+         hockeyAppId   : "",
+         hockeyAppTeams: []
+   ]
+
+   qaTeam = "77196"
+
+   params.branch = env.GIT_BRANCH.replace("origin/", "")
+
+   if (params.branch.startsWith("develop") || params.branch.startsWith("common")) {
+      params.hockeyAppId = "48de37eaf46ec363d392ae15ae521df6"
+      params.hockeyAppTeams = ["40021"]
+   } else if (params.branch.startsWith("release/")) {
+      params.serverFlavor = "Preprod"
+      params.apkBuildType = "Release"
+      params.hockeyAppId = "790422bf7d324c3c92bb0411b04ce6eb"
+      params.hockeyAppTeams = [qaTeam, "40021"]
+   } else if (params.branch.startsWith("social/")) {
+      params.streamFlavor = "Social"
+      params.hockeyAppId = "421e85e3825848fd9034328a66546852"
+      params.hockeyAppTeams = [qaTeam, "77190"]
+   } else if (params.branch.startsWith("dtl/")) {
+      params.streamFlavor = "Dtl"
+      params.hockeyAppId = "0093d3d64a8e425f9ec628fc7e26e294"
+      params.hockeyAppTeams = [qaTeam, "77189"]
+   } else if (params.branch.startsWith("messenger/")) {
+      params.streamFlavor = "Messenger"
+      params.hockeyAppId = "5dc7e124dea64ac29aa99fe28cbd9087"
+      params.hockeyAppTeams = [qaTeam, "77405"]
+   } else if (params.branch.startsWith("smart-card/")) {
+      params.streamFlavor = "SmartCardNxtid"
+      params.hockeyAppId = "427d6a383bcf44e698227ea31c778d3b"
+      params.hockeyAppTeams = [qaTeam, "77191"]
+   }
+
+   return params
+}

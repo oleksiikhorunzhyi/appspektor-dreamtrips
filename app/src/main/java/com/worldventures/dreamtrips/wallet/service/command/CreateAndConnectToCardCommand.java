@@ -11,6 +11,8 @@ import com.worldventures.dreamtrips.wallet.domain.entity.SmartCardDetails;
 import com.worldventures.dreamtrips.wallet.service.SmartCardInteractor;
 import com.worldventures.dreamtrips.wallet.util.SmartCardConnectException;
 
+import java.util.concurrent.TimeUnit;
+
 import javax.inject.Inject;
 import javax.inject.Named;
 
@@ -18,10 +20,13 @@ import io.techery.janet.ActionHolder;
 import io.techery.janet.Command;
 import io.techery.janet.Janet;
 import io.techery.janet.command.annotations.CommandAction;
+import io.techery.janet.smartcard.action.records.SetClearRecordsDelayAction;
 import rx.Observable;
 
 @CommandAction
 public class CreateAndConnectToCardCommand extends Command<SmartCard> implements InjectableAction, CachedAction<SmartCard> {
+
+   private final static long DEFAULT_AUTO_CLEAR_DELAY_CLEAR_RECORDS_MINS = 2 * 60 * 24;
 
    @Inject @Named(JanetModule.JANET_WALLET) Janet janet;
    @Inject SmartCardInteractor smartCardInteractor;
@@ -44,7 +49,9 @@ public class CreateAndConnectToCardCommand extends Command<SmartCard> implements
             .flatMap(smartCard -> smartCardInteractor.connectActionPipe()
                   .createObservableResult(new ConnectSmartCardCommand(smartCard, true, true))
             )
-            .doOnNext(command -> this.smartCard = command.getResult())
+            .map(ConnectSmartCardCommand::getResult)
+            .flatMap(this::setDefaults)
+            .doOnNext(result -> this.smartCard = result)
             .subscribe(connectCommand -> {
                if (smartCard.connectionStatus() == SmartCard.ConnectionStatus.CONNECTED) {
                   callback.onSuccess(smartCard);
@@ -52,6 +59,13 @@ public class CreateAndConnectToCardCommand extends Command<SmartCard> implements
                   callback.onFail(new SmartCardConnectException("Could not connect to the device"));
                }
             }, callback::onFail);
+   }
+
+   private Observable<SmartCard> setDefaults(SmartCard smartCard) {
+      return janet.createPipe(SetClearRecordsDelayAction.class)
+            .createObservableResult(new SetClearRecordsDelayAction(TimeUnit.MINUTES, DEFAULT_AUTO_CLEAR_DELAY_CLEAR_RECORDS_MINS))
+            .map(action -> ImmutableSmartCard.copyOf(smartCard)
+                  .withClearFlyeDelay(DEFAULT_AUTO_CLEAR_DELAY_CLEAR_RECORDS_MINS));
    }
 
    private SmartCard createSmartCard() {

@@ -70,8 +70,7 @@ public class DtlLocationsSearchPresenterImpl extends DtlPresenterImpl<DtlLocatio
    }
 
    private void sendSearchAction(String query) {
-      locationInteractor.searchLocationPipe().cancelLatest();
-      locationInteractor.searchLocationPipe().send(new SearchLocationAction(query.trim()));
+      locationInteractor.search(query.trim());
    }
 
    @Override

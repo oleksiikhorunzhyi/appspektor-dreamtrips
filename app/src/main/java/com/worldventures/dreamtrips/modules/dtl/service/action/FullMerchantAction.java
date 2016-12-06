@@ -14,6 +14,7 @@ import com.worldventures.dreamtrips.modules.dtl.model.location.DtlLocation;
 import com.worldventures.dreamtrips.modules.dtl.domain.converter.MerchantDistancePatcher;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.Merchant;
 import com.worldventures.dreamtrips.modules.dtl.domain.storage.FullMerchantStorage;
+import com.worldventures.dreamtrips.modules.dtl.service.action.creator.FullMerchantActionCreator;
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -29,6 +30,7 @@ public class FullMerchantAction extends CommandWithError<Merchant> implements In
 
    @Inject @Named(JanetModule.JANET_API_LIB) Janet janet;
    @Inject MapperyContext mapperyContext;
+   @Inject FullMerchantActionCreator actionCreator;
 
    private final String offerId;
    private final String merchantId;

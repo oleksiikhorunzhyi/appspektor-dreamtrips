@@ -12,7 +12,8 @@ import com.worldventures.dreamtrips.core.janet.cache.ImmutableCacheOptions;
 import com.worldventures.dreamtrips.core.janet.cache.storage.PaginatedStorage;
 import com.worldventures.dreamtrips.core.janet.dagger.InjectableAction;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.ThinMerchant;
-import com.worldventures.dreamtrips.modules.dtl.service.action.bundle.MerchantsParamsBundle;
+import com.worldventures.dreamtrips.modules.dtl.service.action.bundle.MerchantsActionParams;
+import com.worldventures.dreamtrips.modules.dtl.service.action.creator.MerchantsActionCreator;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -32,28 +33,29 @@ public class MerchantsAction extends CommandWithError<List<ThinMerchant>>
 
    @Inject @Named(JanetModule.JANET_API_LIB) Janet janet;
    @Inject MapperyContext mapperyContext;
+   @Inject MerchantsActionCreator actionCreator;
 
    private final long startTime = System.currentTimeMillis();
 
    private final boolean isRefresh;
-   private final MerchantsParamsBundle bundle;
+   private final MerchantsActionParams actionParams;
 
    private List<ThinMerchant> cache = new ArrayList<>();
 
-   public static MerchantsAction create(MerchantsParamsBundle bundle) {
-      return new MerchantsAction(bundle);
+   public static MerchantsAction create(MerchantsActionParams params) {
+      return new MerchantsAction(params);
    }
 
-   public MerchantsAction(MerchantsParamsBundle bundle) {
-      this.bundle = bundle;
-      this.isRefresh = HttpActionsCreator.calculateOffsetPagination(bundle.filterData()) == 0;
+   public MerchantsAction(MerchantsActionParams params) {
+      this.actionParams = params;
+      this.isRefresh = MerchantsActionCreator.calculateOffsetPagination(params.filterData()) == 0;
    }
 
    @Override
    protected void run(CommandCallback<List<ThinMerchant>> callback) throws Throwable {
       callback.onProgress(0);
       janet.createPipe(ThinMerchantsHttpAction.class, Schedulers.io())
-            .createObservableResult(HttpActionsCreator.provideMerchantsAction(bundle))
+            .createObservableResult(actionCreator.createAction(actionParams))
             .map(ThinMerchantsHttpAction::merchants)
             .map(merchants -> mapperyContext.convert(merchants, ThinMerchant.class))
             .doOnNext(action -> clearCacheIfNeeded())
@@ -65,8 +67,8 @@ public class MerchantsAction extends CommandWithError<List<ThinMerchant>>
       return isRefresh;
    }
 
-   public MerchantsParamsBundle bundle() {
-      return bundle;
+   public MerchantsActionParams bundle() {
+      return actionParams;
    }
 
    @Override

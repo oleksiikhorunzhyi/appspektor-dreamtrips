@@ -1,10 +1,8 @@
-package com.worldventures.dreamtrips.modules.dtl.service.action;
-
+package com.worldventures.dreamtrips.modules.dtl.service.action.creator;
 
 import android.text.TextUtils;
 
 import com.innahema.collections.query.queriables.Queryable;
-import com.worldventures.dreamtrips.api.dtl.locations.LocationsHttpAction;
 import com.worldventures.dreamtrips.api.dtl.merchants.ThinMerchantsHttpAction;
 import com.worldventures.dreamtrips.api.dtl.merchants.model.ImmutableThinMerchantsActionParams;
 import com.worldventures.dreamtrips.api.dtl.merchants.model.PartnerStatus;
@@ -20,23 +18,20 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
 
-public class HttpActionsCreator {
+import javax.inject.Inject;
 
-   public static ThinMerchantsHttpAction provideMerchantsAction(MerchantsActionParams bundle) {
-      return new ThinMerchantsHttpAction(provideMerchantsActionParams(bundle));
+
+public class MerchantsActionCreator implements HttpActionCreator<ThinMerchantsHttpAction, MerchantsActionParams> {
+
+   @Inject
+   public MerchantsActionCreator(){}
+
+   @Override
+   public ThinMerchantsHttpAction createAction(MerchantsActionParams params) {
+      return new ThinMerchantsHttpAction(createMerchantsActionParams(params));
    }
 
-   public static LocationsHttpAction provideNearbyHttpAction(android.location.Location location) {
-      if (location == null) throw new NullPointerException("Could not create LocationsHttpAction : location is null");
-      return new LocationsHttpAction(null, provideFormattedCoordinates(location));
-   }
-
-   public static LocationsHttpAction provideLocationSearchHttpAction(String query) {
-      if (query == null) throw new NullPointerException("Could not create LocationsHttpAction : query is null");
-      return new LocationsHttpAction(query, null);
-   }
-
-   private static ThinMerchantsActionParams provideMerchantsActionParams(MerchantsActionParams bundle) {
+   private static ThinMerchantsActionParams createMerchantsActionParams(MerchantsActionParams bundle) {
       final FilterData filterData = bundle.filterData();
       final DtlLocation location = bundle.location();
       return ImmutableThinMerchantsActionParams.builder()
@@ -52,10 +47,6 @@ public class HttpActionsCreator {
             .build();
    }
 
-   public static int calculateOffsetPagination(FilterData filterData) {
-      return filterData.page() * filterData.offset();
-   }
-
    private static List<String> providePartnerStatusParameter(boolean isOffersOnly) {
       return isOffersOnly ? Arrays.asList(PartnerStatus.PARTICIPANT.toString().toLowerCase(Locale.US),
             PartnerStatus.PENDING.toString().toLowerCase(Locale.US)) : null;
@@ -69,7 +60,7 @@ public class HttpActionsCreator {
       return new ArrayList<>(Arrays.asList(parameter));
    }
 
-   private static String provideFormattedCoordinates(android.location.Location location) {
-      return String.format(Locale.US, "%f,%f", location.getLatitude(), location.getLongitude());
+   public static int calculateOffsetPagination(FilterData filterData) {
+      return filterData.page() * filterData.offset();
    }
 }

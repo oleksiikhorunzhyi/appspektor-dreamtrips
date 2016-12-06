@@ -135,7 +135,7 @@ public class AddCardDetailsScreen extends WalletLinearLayout<AddCardDetailsPrese
             .zip(zipField.getText().toString().trim())
             .build();
 
-      getPresenter().onCardInfoConfirmed(addressInfo, cvv, nickname, true, true, setAsDefaultCard);
+      getPresenter().onCardInfoConfirmed(addressInfo, cvv, nickname, setAsDefaultCard);
    }
 
    @Override

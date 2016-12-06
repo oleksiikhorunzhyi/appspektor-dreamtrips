@@ -158,15 +158,13 @@ public class AddCardDetailsPresenter extends WalletPresenter<AddCardDetailsPrese
       smartCardInteractor.getDefaultAddressCommandPipe().send(new GetDefaultAddressCommand());
    }
 
-   public void onCardInfoConfirmed(AddressInfo addressInfo, String cvv, String nickname, boolean useDefaultAddress, boolean setAsDefaultAddress, boolean setAsDefaultCard) {
+   public void onCardInfoConfirmed(AddressInfo addressInfo, String cvv, String nickname, boolean setAsDefaultCard) {
       smartCardInteractor.saveCardDetailsDataPipe()
             .send(new AddBankCardCommand.Builder().setBankCard(bankCard)
                   .setManualAddressInfo(addressInfo)
                   .setNickName(nickname)
                   .setCvv(cvv)
                   .setIssuerInfo(bankCard.issuerInfo())
-                  .setUseDefaultAddress(useDefaultAddress)
-                  .setSetAsDefaultAddress(setAsDefaultAddress)
                   .setSetAsDefaultCard(setAsDefaultCard)
                   .create());
    }

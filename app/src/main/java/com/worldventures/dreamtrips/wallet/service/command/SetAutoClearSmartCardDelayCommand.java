@@ -30,17 +30,17 @@ public class SetAutoClearSmartCardDelayCommand extends Command<SmartCard>
    @Inject @Named(JANET_WALLET) Janet janet;
    @Inject SmartCardInteractor smartCardInteractor;
 
-   private final long delay;
+   private final long delayMins;
    private SmartCard smartCard;
 
-   public SetAutoClearSmartCardDelayCommand(long delay) {
-      this.delay = delay;
+   public SetAutoClearSmartCardDelayCommand(long delayMins) {
+      this.delayMins = delayMins;
    }
 
    @Override
    protected void run(CommandCallback<SmartCard> callback) throws Throwable {
       janet.createPipe(SetClearRecordsDelayAction.class)
-            .createObservableResult(new SetClearRecordsDelayAction(TimeUnit.MINUTES, delay))
+            .createObservableResult(new SetClearRecordsDelayAction(TimeUnit.MINUTES, delayMins))
             .flatMap(it -> fetchActiveSmartCard()
                   .map(smartCard -> ImmutableSmartCard.builder()
                         .from(smartCard)

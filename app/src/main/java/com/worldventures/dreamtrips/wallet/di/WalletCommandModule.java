@@ -34,6 +34,7 @@ import com.worldventures.dreamtrips.wallet.service.command.UpdateSmartCardConnec
 import com.worldventures.dreamtrips.wallet.service.command.firmware.InstallFirmwareCommand;
 import com.worldventures.dreamtrips.wallet.service.command.firmware.PreInstallationCheckCommand;
 import com.worldventures.dreamtrips.wallet.service.command.http.AssociateCardUserCommand;
+import com.worldventures.dreamtrips.wallet.service.command.http.AvailabilitySmartCardCommand;
 import com.worldventures.dreamtrips.wallet.service.command.http.CreateBankCardCommand;
 import com.worldventures.dreamtrips.wallet.service.command.http.DisassociateActiveCardUserCommand;
 import com.worldventures.dreamtrips.wallet.service.command.http.DisassociateCardUserCommand;
@@ -95,7 +96,8 @@ import dagger.Module;
             DisassociateActiveCardUserCommand.class,
             FetchAssociatedSmartCard.class,
             SaveLockStateCommand.class,
-            RestartSmartCardCommand.class
+            RestartSmartCardCommand.class,
+            AvailabilitySmartCardCommand.class
       },
       complete = false, library = true)
 public class WalletCommandModule {}

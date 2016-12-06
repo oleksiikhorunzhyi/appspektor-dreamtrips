@@ -201,13 +201,8 @@
             <TextView
                   android:id="@+id/lock_card"
                   style="@style/SettingsItemText"
+                  android:layout_centerVertical="true"
                   android:text="@string/wallet_card_settings_lock_card"
-                  />
-
-            <TextView
-                  style="@style/SettingsItemSecondaryText"
-                  android:layout_below="@id/lock_card"
-                  android:text="@string/wallet_card_settings_requires_pin_entry_to_unlock"
                   />
 
             <android.support.v7.widget.SwitchCompat

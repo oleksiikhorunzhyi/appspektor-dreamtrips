@@ -12,12 +12,9 @@ import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCard;
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCardUser;
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCardUserPhoto;
-import com.worldventures.dreamtrips.wallet.domain.storage.TemporaryStorage;
-import com.worldventures.dreamtrips.wallet.service.FirmwareInteractor;
 import com.worldventures.dreamtrips.wallet.service.SmartCardAvatarInteractor;
 import com.worldventures.dreamtrips.wallet.service.SmartCardInteractor;
 import com.worldventures.dreamtrips.wallet.service.SmartCardManager;
-import com.worldventures.dreamtrips.wallet.service.WizardInteractor;
 import com.worldventures.dreamtrips.wallet.service.command.CompressImageForSmartCardCommand;
 import com.worldventures.dreamtrips.wallet.service.command.SmartCardAvatarCommand;
 import com.worldventures.dreamtrips.wallet.service.command.UpdateUserDataCommand;
@@ -38,11 +35,8 @@ public class WalletSettingsProfilePresenter extends WalletPresenter<WalletSettin
 
    @Inject Navigator navigator;
    @Inject SmartCardInteractor smartCardInteractor;
-   @Inject FirmwareInteractor firmwareInteractor;
-   @Inject TemporaryStorage temporaryStorage;
    @Inject Activity activity;
    @Inject SmartCardAvatarInteractor smartCardAvatarInteractor;
-   @Inject WizardInteractor wizardInteractor;
    @Inject SmartCardManager smartCardManager;
 
    @Nullable private SmartCardUserPhoto preparedPhoto;

@@ -11,7 +11,6 @@ import com.worldventures.dreamtrips.core.janet.dagger.InjectableAction;
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCard;
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCardUser;
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCardUserPhoto;
-import com.worldventures.dreamtrips.wallet.service.WizardInteractor;
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -20,7 +19,6 @@ import io.techery.janet.ActionPipe;
 import io.techery.janet.Command;
 import io.techery.janet.Janet;
 import io.techery.janet.command.annotations.CommandAction;
-import io.techery.mappery.MapperyContext;
 import rx.Observable;
 
 import static com.worldventures.dreamtrips.core.janet.JanetModule.JANET_API_LIB;
@@ -29,11 +27,9 @@ import static com.worldventures.dreamtrips.core.janet.JanetModule.JANET_WALLET;
 @CommandAction
 public class UpdateUserDataCommand extends Command<SmartCard> implements InjectableAction {
 
-   @Inject WizardInteractor wizardInteractor;
    @Inject @Named(JANET_WALLET) Janet jannetWallet;
    @Inject @Named(JANET_API_LIB) Janet janetApi;
    @Inject Janet jannetGeneric;
-   @Inject MapperyContext mappery;
 
    private final SmartCardUser baseUser;
    private final String firstName;
@@ -55,15 +51,15 @@ public class UpdateUserDataCommand extends Command<SmartCard> implements Injecta
    protected void run(CommandCallback<SmartCard> callback) throws Throwable {
       final ActionPipe<SetupUserDataCommand> pipe = jannetWallet.createPipe(SetupUserDataCommand.class);
       pipe.createObservableResult(new SetupUserDataCommand(firstName, middleName, lastName, avatar, smartCardId))
-            .flatMap(it -> uploadUserData()
-                  .doOnError(e -> pipe.send(restoreCommand()))
-                  .map(a -> it.getResult()))
-            .subscribe(callback::onSuccess, callback::onFail);
+            .flatMap(it -> uploadUserData().map(o -> it.getResult()))
+            .subscribe(callback::onSuccess, throwable ->
+                  pipe.createObservableResult(restoreCommand())
+                        .subscribe(command -> callback.onFail(throwable), callback::onFail));
    }
 
    @NonNull
    private SetupUserDataCommand restoreCommand() {
-      return new SetupUserDataCommand(baseUser.fullName(), baseUser.middleName(), baseUser.lastName(), avatar, smartCardId);
+      return new SetupUserDataCommand(baseUser.firstName(), baseUser.middleName(), baseUser.lastName(), baseUser.userPhoto(), smartCardId);
    }
 
    private Observable<? extends UpdateCardUserHttpAction> uploadUserData() {
@@ -72,7 +68,9 @@ public class UpdateUserDataCommand extends Command<SmartCard> implements Injecta
             .map(c -> c.getResult().getPhotoUploadResponse().getLocation())
             .flatMap(avatarUrl -> {
                      ImmutableUpdateCardUserData cardUserData = ImmutableUpdateCardUserData.builder()
-                           .nameToDisplay(firstName/*TODO when server changes is, return as is*/)
+                           .displayFirstName(firstName)
+                           .displayMiddleName(middleName)
+                           .displayLastName(lastName)
                            .photoUrl(avatarUrl)
                            .build();
                      return janetApi.createPipe(UpdateCardUserHttpAction.class)

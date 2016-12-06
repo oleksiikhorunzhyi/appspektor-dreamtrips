@@ -61,11 +61,11 @@
                android:id="@+id/card_name"
                android:layout_width="match_parent"
                android:layout_height="wrap_content"
+               android:inputType="textCapSentences"
                android:layout_marginTop="@dimen/wallet_add_card_details_component_margin_top"
-               android:imeOptions="actionDone"
                android:singleLine="true"
                android:maxLength="@integer/wallet_card_name_length"
-               tools:ignore="LabelFor,TextFields"
+               tools:ignore="LabelFor"
                />
 
          <include
@@ -89,7 +89,7 @@
                android:id="@+id/confirm_button"
                android:layout_width="match_parent"
                android:layout_height="wrap_content"
-               android:layout_marginTop="@dimen/wallet_add_card_details_component_margin_top"
+               android:layout_marginTop="@dimen/spacing_large"
                android:text="@string/wallet_add_card_details_button_confirm"
                />
 

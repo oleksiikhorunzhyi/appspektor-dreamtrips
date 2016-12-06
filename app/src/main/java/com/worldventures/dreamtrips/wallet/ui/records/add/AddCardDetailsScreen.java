@@ -16,6 +16,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import com.jakewharton.rxbinding.widget.RxCompoundButton;
+import com.jakewharton.rxbinding.widget.RxTextView;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.wallet.domain.entity.AddressInfo;
 import com.worldventures.dreamtrips.wallet.domain.entity.AddressInfoWithLocale;
@@ -50,15 +51,18 @@ public class AddCardDetailsScreen extends WalletLinearLayout<AddCardDetailsPrese
    @InjectView(R.id.set_default_card_switcher) CompoundButton defaultPaymentCardSwitcher;
 
 
+   private final BankCardHelper bankCardHelper;
    private DialogOperationScreen dialogOperationScreen;
    private Observable<Boolean> setAsDefaultCardObservable;
+   private Observable<String> cardNameObservable;
 
    public AddCardDetailsScreen(Context context) {
-      super(context);
+      this(context, null);
    }
 
    public AddCardDetailsScreen(Context context, AttributeSet attrs) {
       super(context, attrs);
+      bankCardHelper = new BankCardHelper(context);
    }
 
    @NonNull
@@ -76,14 +80,25 @@ public class AddCardDetailsScreen extends WalletLinearLayout<AddCardDetailsPrese
       if (isInEditMode()) return;
       toolbar.setNavigationOnClickListener(v -> navigateButtonClick());
       setAsDefaultCardObservable = RxCompoundButton.checkedChanges(defaultPaymentCardSwitcher).skip(1);
+      cardNameObservable = RxTextView.afterTextChangeEvents(cardNameField).map(event -> event.editable().toString()).skip(1);
    }
 
    @Override
-   public void cardBankInfo(BankCardHelper cardHelper, BankCard bankCard) {
-      bankCardWidget.setBankCardInfo(cardHelper, bankCard);
+   public void setCardBank(BankCard bankCard) {
+      bankCardWidget.setBankCard(bankCard);
 
       int cvvLength = BankCardHelper.obtainRequiredCvvLength(bankCard.number());
       cardCvvField.setMaxLength(cvvLength);
+   }
+
+   @Override
+   public Observable<String> getCardNameObservable() {
+      return cardNameObservable;
+   }
+
+   @Override
+   public void setCardName(String cardName) {
+      bankCardWidget.setCardName(cardName);
    }
 
    @Override
@@ -108,8 +123,8 @@ public class AddCardDetailsScreen extends WalletLinearLayout<AddCardDetailsPrese
    }
 
    @Override
-   public void showChangeCardDialog(@NonNull String bankCardName) {
-      new ChangeDefaultPaymentCardDialog(getContext(), bankCardName)
+   public void showChangeCardDialog(BankCard bankCard) {
+      new ChangeDefaultPaymentCardDialog(getContext(), bankCardHelper.bankNameWithCardNumber(bankCard))
             .setOnCancelAction(() -> getPresenter().defaultCardDialogConfirmed(false))
             .show();
    }
@@ -162,7 +177,7 @@ public class AddCardDetailsScreen extends WalletLinearLayout<AddCardDetailsPrese
 
    private void setCardNameHint() {
       final SpannableString cardNameLength = new SpannableString(getString(R.string.wallet_add_card_details_hint_card_name_length));
-      cardNameLength.setSpan(new RelativeSizeSpan(.75f), 0, cardNameLength.length() - 1, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+      cardNameLength.setSpan(new RelativeSizeSpan(.75f), 0, cardNameLength.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
       cardNameField.setHint(new SpannableStringBuilder()
             .append(getString(R.string.wallet_add_card_details_hint_card_name))
             .append(spannableRequiredFields())

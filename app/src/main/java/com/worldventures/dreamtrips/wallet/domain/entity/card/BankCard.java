@@ -17,7 +17,7 @@ public abstract class BankCard extends Card {
    }
 
    @Value.Default
-   public String nickName() {
+   public String nickName() { // TODO: 12/6/16 remove to cardName
       return "";
    }
 

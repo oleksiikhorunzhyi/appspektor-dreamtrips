@@ -37,13 +37,15 @@ public class CardDetailsScreen extends WalletLinearLayout<CardDetailsPresenter.S
 
    private Observable<Boolean> setAsDefaultCardObservable;
    private MaterialDialog connectedErrorDialog;
+   private final BankCardHelper bankCardHelper;
 
    public CardDetailsScreen(Context context) {
-      super(context);
+      this(context, null);
    }
 
    public CardDetailsScreen(Context context, AttributeSet attrs) {
       super(context, attrs);
+      bankCardHelper = new BankCardHelper(context);
    }
 
    @NonNull
@@ -77,19 +79,17 @@ public class CardDetailsScreen extends WalletLinearLayout<CardDetailsPresenter.S
    }
 
    @Override
-   public void setTitle(String title) {
-      toolbar.setTitle(title);
-   }
-
-   @Override
-   public void showCardBankInfo(BankCardHelper cardHelper, BankCard bankCard) {
-      bankCardWidget.setBankCardInfo(cardHelper, bankCard);
+   public void showCardBank(BankCard bankCard) {
+      // // TODO: 12/6/16 remove bank name
+      toolbar.setTitle(bankCardHelper.financialServiceWithCardNumber(bankCard));
+      bankCardWidget.setBankCard(bankCard);
       cardNickname.setText(bankCard.nickName());
    }
 
    @Override
-   public void showDefaultCardDialog(@NonNull String bankCardName) {
-      new ChangeDefaultPaymentCardDialog(getContext(), bankCardName)
+   public void showDefaultCardDialog(BankCard defaultBankCard) {
+      // TODO: 12/6/16 remove bank name
+      new ChangeDefaultPaymentCardDialog(getContext(), bankCardHelper.bankNameWithCardNumber(defaultBankCard))
             .setOnConfirmAction(() -> getPresenter().defaultCardDialogConfirmed(true))
             .setOnCancelAction(() -> getPresenter().defaultCardDialogConfirmed(false))
             .show();

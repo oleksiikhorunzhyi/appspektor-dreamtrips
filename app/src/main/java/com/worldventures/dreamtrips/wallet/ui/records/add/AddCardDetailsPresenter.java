@@ -2,7 +2,6 @@ package com.worldventures.dreamtrips.wallet.ui.records.add;
 
 import android.content.Context;
 import android.os.Parcelable;
-import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import com.techery.spares.module.Injector;
@@ -30,7 +29,6 @@ import com.worldventures.dreamtrips.wallet.ui.common.helper.ErrorSubscriberWrapp
 import com.worldventures.dreamtrips.wallet.ui.common.helper.OperationActionStateSubscriberWrapper;
 import com.worldventures.dreamtrips.wallet.ui.common.navigation.Navigator;
 import com.worldventures.dreamtrips.wallet.ui.dashboard.CardListPath;
-import com.worldventures.dreamtrips.wallet.util.BankCardHelper;
 import com.worldventures.dreamtrips.wallet.util.CardUtils;
 import com.worldventures.dreamtrips.wallet.util.FormatException;
 import com.worldventures.dreamtrips.wallet.util.SmartCardInteractorHelper;
@@ -46,7 +44,6 @@ public class AddCardDetailsPresenter extends WalletPresenter<AddCardDetailsPrese
 
    @Inject Navigator navigator;
    @Inject LocaleHelper localeHelper;
-   @Inject BankCardHelper bankCardHelper;
    @Inject SmartCardInteractor smartCardInteractor;
    @Inject AnalyticsInteractor analyticsInteractor;
    @Inject SmartCardInteractorHelper smartCardInteractorHelper;
@@ -61,13 +58,14 @@ public class AddCardDetailsPresenter extends WalletPresenter<AddCardDetailsPrese
    @Override
    public void attachView(Screen view) {
       super.attachView(view);
-      getView().cardBankInfo(bankCardHelper, bankCard);
+      getView().setCardBank(bankCard);
    }
 
    @Override
    public void onAttachedToWindow() {
       super.onAttachedToWindow();
       trackScreen();
+      observeCardNameChanging();
       connectToDefaultCardPipe();
       connectToDefaultAddressPipe();
       connectToSaveCardDetailsPipe();
@@ -174,7 +172,7 @@ public class AddCardDetailsPresenter extends WalletPresenter<AddCardDetailsPrese
 
       smartCardInteractorHelper.sendSingleDefaultCardTask(defaultCard -> {
          if (!CardUtils.isRealCard(defaultCard)) return;
-         getView().showChangeCardDialog(bankCardHelper.bankNameWithCardNumber(defaultCard));
+         getView().showChangeCardDialog(defaultCard);
       }, bindViewIoToMainComposer());
    }
 
@@ -186,15 +184,26 @@ public class AddCardDetailsPresenter extends WalletPresenter<AddCardDetailsPrese
       navigator.goBack();
    }
 
+   private void observeCardNameChanging() {
+      final Screen view = getView();
+      view.getCardNameObservable()
+            .compose(bindView())
+            .subscribe(view::setCardName);
+   }
+
    public interface Screen extends WalletScreen {
 
-      void cardBankInfo(BankCardHelper cardHelper, BankCard bankCard);
+      void setCardBank(BankCard bankCard);
+
+      void setCardName(String cardName);
+
+      Observable<String> getCardNameObservable();
 
       void defaultAddress(AddressInfoWithLocale defaultAddress);
 
       void defaultPaymentCard(boolean defaultPaymentCard);
 
-      void showChangeCardDialog(@NonNull String bankCardName);
+      void showChangeCardDialog(BankCard bankCard);
 
       Observable<Boolean> setAsDefaultPaymentCardCondition();
    }

@@ -48,7 +48,7 @@
          <ImageView
                android:layout_width="wrap_content"
                android:layout_height="wrap_content"
-               android:src="@drawable/flye_card_front_without_emv"
+               android:src="@drawable/flye_card_front_with_emv_charger"
                />
 
          <ImageView

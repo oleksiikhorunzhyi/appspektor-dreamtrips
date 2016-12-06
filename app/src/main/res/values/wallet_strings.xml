@@ -90,7 +90,7 @@
    <string name="wallet_card_settings_about">About</string>
    <string name="wallet_card_settings_offline_mode">Offline mode</string>
    <string name="wallet_card_settings_low_battery_alert">Low battery alert</string>
-   <string name="wallet_card_settings_locate_sc">Locate smart card</string>
+   <string name="wallet_card_settings_locate_sc">Locate smart card (Coming Soon)</string>
    <string name="wallet_card_settings_view_location_connected">View location of the last time it was connected</string>
    <string name="wallet_card_settings_security">Security</string>
    <string name="wallet_card_settings_lock_card">Lock card</string>

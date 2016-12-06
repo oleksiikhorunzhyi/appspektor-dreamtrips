@@ -675,4 +675,6 @@
    <string name="merchant_message_text" formatted="false">Congratulations! You earned %s DreamTrips points @%s, %s</string>
 
    <string name="beta_label">Beta</string>
+
+   <string name="documents">Documents</string>
 </resources>

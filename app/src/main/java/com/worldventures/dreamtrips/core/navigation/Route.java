@@ -46,11 +46,13 @@ import com.worldventures.dreamtrips.modules.friends.view.fragment.FriendsMainFra
 import com.worldventures.dreamtrips.modules.friends.view.fragment.MutualFriendsFragment;
 import com.worldventures.dreamtrips.modules.friends.view.fragment.RequestsFragment;
 import com.worldventures.dreamtrips.modules.friends.view.fragment.UsersLikedItemFragment;
+import com.worldventures.dreamtrips.modules.infopages.view.fragment.DocumentListFragment;
 import com.worldventures.dreamtrips.modules.infopages.view.fragment.FeedbackImageAttachmentFullscreenFragment;
 import com.worldventures.dreamtrips.modules.infopages.view.fragment.FeedbackImageAttachmentsFragment;
 import com.worldventures.dreamtrips.modules.infopages.view.fragment.HelpFragment;
 import com.worldventures.dreamtrips.modules.infopages.view.fragment.SendFeedbackFragment;
 import com.worldventures.dreamtrips.modules.infopages.view.fragment.TermsTabFragment;
+import com.worldventures.dreamtrips.modules.infopages.view.fragment.staticcontent.DocumentFragment;
 import com.worldventures.dreamtrips.modules.infopages.view.fragment.staticcontent.OtaFragment;
 import com.worldventures.dreamtrips.modules.infopages.view.fragment.staticcontent.StaticInfoFragment;
 import com.worldventures.dreamtrips.modules.membership.view.fragment.EditTemplateFragment;
@@ -134,6 +136,8 @@ public enum Route {
    REP_TOOLS(RepToolsFragment.class),
    FAQ(StaticInfoFragment.FAQFragment.class),
    HELP(HelpFragment.class),
+   DOCUMENT_LIST(DocumentListFragment.class),
+   DOCUMENT(DocumentFragment.class),
    HELP_VIDEOS(HelpVideosFragment.class),
    TERMS(TermsTabFragment.class),
    TERMS_OF_SERVICE(StaticInfoFragment.TermsOfServiceFragment.class),

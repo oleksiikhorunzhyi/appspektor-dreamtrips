@@ -1,6 +1,5 @@
 package com.worldventures.dreamtrips.wallet.service.command;
 
-import com.worldventures.dreamtrips.core.janet.JanetModule;
 import com.worldventures.dreamtrips.core.janet.cache.CacheOptions;
 import com.worldventures.dreamtrips.core.janet.cache.CachedAction;
 import com.worldventures.dreamtrips.core.janet.cache.ImmutableCacheOptions;
@@ -12,18 +11,15 @@ import com.worldventures.dreamtrips.wallet.service.SmartCardInteractor;
 import com.worldventures.dreamtrips.wallet.util.SmartCardConnectException;
 
 import javax.inject.Inject;
-import javax.inject.Named;
 
 import io.techery.janet.ActionHolder;
 import io.techery.janet.Command;
-import io.techery.janet.Janet;
 import io.techery.janet.command.annotations.CommandAction;
 import rx.Observable;
 
 @CommandAction
 public class CreateAndConnectToCardCommand extends Command<SmartCard> implements InjectableAction, CachedAction<SmartCard> {
 
-   @Inject @Named(JanetModule.JANET_WALLET) Janet janet;
    @Inject SmartCardInteractor smartCardInteractor;
 
    private static final String DUMMY_DEVICE_NAME = "DUMMY_DEVICE_NAME"; // deviceName is not used inside SDK

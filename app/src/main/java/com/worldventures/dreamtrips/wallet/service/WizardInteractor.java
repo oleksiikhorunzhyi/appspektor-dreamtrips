@@ -5,6 +5,7 @@ import com.worldventures.dreamtrips.wallet.service.command.ActivateSmartCardComm
 import com.worldventures.dreamtrips.wallet.service.command.CreateAndConnectToCardCommand;
 import com.worldventures.dreamtrips.wallet.service.command.SetupUserDataCommand;
 import com.worldventures.dreamtrips.wallet.service.command.http.AssociateCardUserCommand;
+import com.worldventures.dreamtrips.wallet.service.command.http.AvailabilitySmartCardCommand;
 import com.worldventures.dreamtrips.wallet.service.command.http.DisassociateCardUserCommand;
 import com.worldventures.dreamtrips.wallet.service.command.http.FetchAndStoreDefaultAddressInfoCommand;
 import com.worldventures.dreamtrips.wallet.service.command.wizard.WizardCheckCommand;
@@ -26,6 +27,7 @@ public final class WizardInteractor {
    private final ActionPipe<StartPinSetupAction> startPinSetupPipe;
    private final ActionPipe<ActivateSmartCardCommand> activateSmartCardPipe;
    private final ActionPipe<WizardCheckCommand> checksPipe;
+   private final ActionPipe<AvailabilitySmartCardCommand> availabilitySmartCardCommandActionPipe;
 
    private final ActionPipe<FetchAndStoreDefaultAddressInfoCommand> fetchAndStoreDefaultAddressInfoPipe;
 
@@ -41,6 +43,7 @@ public final class WizardInteractor {
       checksPipe = sessionActionPipeCreator.createPipe(WizardCheckCommand.class, Schedulers.io());
 
       fetchAndStoreDefaultAddressInfoPipe = sessionActionPipeCreator.createPipe(FetchAndStoreDefaultAddressInfoCommand.class, Schedulers.io());
+      availabilitySmartCardCommandActionPipe = sessionActionPipeCreator.createPipe(AvailabilitySmartCardCommand.class, Schedulers.io());
 
       connect();
    }
@@ -79,6 +82,10 @@ public final class WizardInteractor {
 
    public ActionPipe<FetchAndStoreDefaultAddressInfoCommand> fetchAndStoreDefaultAddressInfoPipe() {
       return fetchAndStoreDefaultAddressInfoPipe;
+   }
+
+   public ActionPipe<AvailabilitySmartCardCommand> availabilitySmartCardCommandActionPipe() {
+      return availabilitySmartCardCommandActionPipe;
    }
 
    private void connect() {

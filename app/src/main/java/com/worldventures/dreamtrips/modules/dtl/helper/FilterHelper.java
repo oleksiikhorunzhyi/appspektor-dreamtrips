@@ -13,7 +13,8 @@ import java.util.Locale;
 
 public abstract class FilterHelper {
 
-   private static final double MILES_MULTIPLIER = 1.60934;
+   public static final double MILES_MULTIPLIER = 1.60934;
+
    private static final double[] MILES_VALUES = {10, 20, 30, 40, 50};
    private static final String DISTANCE_VALUE_FORMAT = "%.0f";
 
@@ -34,8 +35,7 @@ public abstract class FilterHelper {
    }
 
    public static double provideMaxDistance(FilterData filterData) {
-      double value = MILES_VALUES[filterData.distanceMaxIndex()];
-      if (filterData.distanceType() == DistanceType.KMS) value = value * MILES_MULTIPLIER;
+      double value = MILES_VALUES[filterData.distanceMaxIndex()] * MILES_MULTIPLIER;
       return new BigDecimal(value).setScale(1, RoundingMode.DOWN).doubleValue();
    }
 

@@ -13,22 +13,21 @@ import com.worldventures.dreamtrips.wallet.ui.wizard.pin.Action;
 
 import javax.inject.Inject;
 
-
 public class PinSetSuccessPresenter extends WalletPresenter<PinSetSuccessPresenter.Screen, Parcelable> {
 
    @Inject Navigator navigator;
 
-   private final Action action;
+   private final Action mode;
 
    public PinSetSuccessPresenter(Context context, Injector injector, Action mode) {
       super(context, injector);
-      this.action = mode;
+      this.mode = mode;
    }
 
    @Override
    public void attachView(Screen view) {
       super.attachView(view);
-      view.showMode(action);
+      view.showMode(mode);
    }
 
    void goToBack() {

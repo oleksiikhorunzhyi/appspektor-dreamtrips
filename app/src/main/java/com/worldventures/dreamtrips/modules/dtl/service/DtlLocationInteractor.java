@@ -8,6 +8,9 @@ import com.worldventures.dreamtrips.modules.dtl.service.action.LocationCommand;
 import com.worldventures.dreamtrips.modules.dtl.service.action.LocationFacadeCommand;
 import com.worldventures.dreamtrips.modules.dtl.service.action.NearbyLocationAction;
 import com.worldventures.dreamtrips.modules.dtl.service.action.SearchLocationAction;
+import com.worldventures.dreamtrips.modules.dtl.service.action.bundle.ImmutableLocationsActionParams;
+import com.worldventures.dreamtrips.modules.dtl.service.composer.ActionPipeCancelWiper;
+import com.worldventures.dreamtrips.modules.dtl.service.composer.ActionPipeClearWiper;
 
 import io.techery.janet.ActionPipe;
 import io.techery.janet.ReadActionPipe;
@@ -50,6 +53,11 @@ public class DtlLocationInteractor {
       return searchLocationPipe;
    }
 
+   public void search(String query) {
+      searchLocationPipe.cancelLatest();
+      searchLocationPipe.send(SearchLocationAction.create(ImmutableLocationsActionParams.builder().query(query).build()));
+   }
+
    public void clear() {
       locationSourcePipe.send(LocationCommand.clear());
    }
@@ -63,17 +71,15 @@ public class DtlLocationInteractor {
    }
 
    public void requestNearbyLocations(Location location) {
-      nearbyLocationPipe.send(new NearbyLocationAction(location));
+      nearbyLocationPipe.send(NearbyLocationAction.create(ImmutableLocationsActionParams.builder().location(location).build()));
    }
 
    private void connectSearchCancelLatest() {
-      searchLocationPipe.observe().subscribe(new ActionStateSubscriber<SearchLocationAction>()
-            .onStart(action -> nearbyLocationPipe.cancelLatest()));
+      searchLocationPipe.observe().compose(new ActionPipeCancelWiper<>(nearbyLocationPipe)).subscribe();
    }
 
    private void connectClearSearches() {
-      locationSourcePipe.observe().subscribe(new ActionStateSubscriber<LocationCommand>()
-            .onStart(action -> searchLocationPipe.clearReplays()));
+      locationSourcePipe.observe().compose(new ActionPipeClearWiper<>(searchLocationPipe)).subscribe();
    }
 
    private void connectLocationPipes() {

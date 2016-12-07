@@ -13,6 +13,9 @@ import com.worldventures.dreamtrips.core.janet.cache.ImmutableCacheOptions;
 import com.worldventures.dreamtrips.core.janet.dagger.InjectableAction;
 import com.worldventures.dreamtrips.modules.dtl.helper.comparator.LocationComparator;
 import com.worldventures.dreamtrips.modules.dtl.model.location.DtlLocation;
+import com.worldventures.dreamtrips.modules.dtl.service.action.bundle.ImmutableLocationsActionParams;
+import com.worldventures.dreamtrips.modules.dtl.service.action.bundle.LocationsActionParams;
+import com.worldventures.dreamtrips.modules.dtl.service.action.creator.LocationsActionCreator;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -32,18 +35,23 @@ public class SearchLocationAction extends CommandWithError<List<DtlLocation>> im
 
    @Inject @Named(JanetModule.JANET_API_LIB) Janet janet;
    @Inject MapperyContext mapperyContext;
+   @Inject LocationsActionCreator actionCreator;
 
    private static final int API_SEARCH_QUERY_LENGTH = 3;
 
-   private final String query;
+   private final LocationsActionParams actionParams;
    private String apiQuery;
    private boolean restored;
    private List<DtlLocation> locations = new ArrayList<>();
 
-   public SearchLocationAction(String query) {
-      this.query = query;
-      if (query.length() >= API_SEARCH_QUERY_LENGTH) {
-         this.apiQuery = query.substring(0, API_SEARCH_QUERY_LENGTH).toLowerCase();
+   public static SearchLocationAction create(LocationsActionParams params) {
+      return new SearchLocationAction(params);
+   }
+
+   public SearchLocationAction(LocationsActionParams params) {
+      this.actionParams = params;
+      if (params.query().length() >= API_SEARCH_QUERY_LENGTH) {
+         this.apiQuery = params.query().substring(0, API_SEARCH_QUERY_LENGTH).toLowerCase();
       }
    }
 
@@ -52,15 +60,15 @@ public class SearchLocationAction extends CommandWithError<List<DtlLocation>> im
       callback.onProgress(0);
       if (needApiRequest()) {
          janet.createPipe(LocationsHttpAction.class, Schedulers.io())
-               .createObservableResult(HttpActionsCreator.provideLocationSearchHttpAction(query))
+               .createObservableResult(actionCreator.createAction(actionParams))
                .map(LocationsHttpAction::locations)
                .map(locations -> mapperyContext.convert(locations, DtlLocation.class))
                .subscribe(response -> {
                   locations = response;
-                  callback.onSuccess(filter(locations, query));
+                  callback.onSuccess(filter(locations, actionParams.query()));
                }, callback::onFail);
       } else {
-         callback.onSuccess(filter(locations, query));
+         callback.onSuccess(filter(locations, actionParams.query()));
       }
    }
 
@@ -87,7 +95,7 @@ public class SearchLocationAction extends CommandWithError<List<DtlLocation>> im
    }
 
    public String getQuery() {
-      return query;
+      return actionParams.query();
    }
 
    private static List<DtlLocation> filter(List<DtlLocation> result, String query) {

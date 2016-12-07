@@ -232,8 +232,7 @@ public class MasterToolbarPresenterImpl extends DtlPresenterImpl<MasterToolbarSc
 
    private void locationSearch(String query) {
       screenMode = DtlLocationChangePresenterImpl.ScreenMode.SEARCH;
-      locationInteractor.searchLocationPipe().cancelLatest();
-      locationInteractor.searchLocationPipe().send(new SearchLocationAction(query.trim()));
+      locationInteractor.search(query.trim());
    }
 
    @Override

@@ -3,6 +3,7 @@ package com.worldventures.dreamtrips.modules.dtl.service;
 import com.worldventures.dreamtrips.core.janet.SessionActionPipeCreator;
 import com.worldventures.dreamtrips.modules.dtl.helper.holder.FullMerchantParamsHolder;
 import com.worldventures.dreamtrips.modules.dtl.service.action.FullMerchantAction;
+import com.worldventures.dreamtrips.modules.dtl.service.action.bundle.FullMerchantActionParams;
 
 import io.techery.janet.ActionPipe;
 import io.techery.janet.Command;
@@ -37,7 +38,7 @@ public class FullMerchantInteractor {
       dtlLocationInteractor.locationSourcePipe().observeSuccessWithReplay()
             .take(1)
             .map(Command::getResult)
-            .subscribe(dtlLocation ->
-                  fullMerchantPipe.send(FullMerchantAction.create(merchantId, offerId, dtlLocation)));
+            .map(location -> FullMerchantAction.create(merchantId, offerId, location))
+            .subscribe(fullMerchantPipe::send);
    }
 }

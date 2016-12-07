@@ -2,10 +2,14 @@ package com.worldventures.dreamtrips.modules.dtl.service.action;
 
 import com.worldventures.dreamtrips.api.dtl.attributes.AttributesHttpAction;
 import com.worldventures.dreamtrips.api.dtl.attributes.model.AttributeType;
+import com.worldventures.dreamtrips.api.dtl.locations.model.ImmutableLocation;
 import com.worldventures.dreamtrips.core.janet.JanetModule;
 import com.worldventures.dreamtrips.core.janet.dagger.InjectableAction;
 import com.worldventures.dreamtrips.modules.dtl.domain.converter.AttributesSortTransformer;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.Attribute;
+import com.worldventures.dreamtrips.modules.dtl.service.action.bundle.AttributesActionParams;
+import com.worldventures.dreamtrips.modules.dtl.service.action.bundle.ImmutableAttributesActionParams;
+import com.worldventures.dreamtrips.modules.dtl.service.action.creator.AttributesActionCreator;
 
 import java.util.Arrays;
 import java.util.List;
@@ -24,22 +28,23 @@ public class AttributesAction extends Command<List<Attribute>> implements Inject
 
    @Inject @Named(JanetModule.JANET_API_LIB) Janet janet;
    @Inject MapperyContext mapperyContext;
+   @Inject AttributesActionCreator actionCreator;
 
-   private final String ll;
-   private final double radius;
-   private final List<String> attributeTypes;
+   private final AttributesActionParams actionParams;
 
-   public AttributesAction(String ll, double radius) {
-      this.ll = ll;
-      this.radius = radius;
-      this.attributeTypes = Arrays.asList(AttributeType.AMENITY.toString().toLowerCase(Locale.US));
+   public static AttributesAction create(AttributesActionParams params) {
+      return new AttributesAction(params);
+   }
+
+   public AttributesAction(AttributesActionParams params) {
+      this.actionParams = params;
    }
 
    @Override
    protected void run(CommandCallback<List<Attribute>> callback) throws Throwable {
       callback.onProgress(0);
       janet.createPipe(AttributesHttpAction.class)
-            .createObservableResult(new AttributesHttpAction(ll, radius, attributeTypes))
+            .createObservableResult(actionCreator.createAction(actionParams))
             .map(AttributesHttpAction::attributes)
             .map(attributes -> mapperyContext.convert(attributes, Attribute.class))
             .compose(new AttributesSortTransformer())

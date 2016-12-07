@@ -8,7 +8,8 @@ import com.worldventures.dreamtrips.modules.dtl.service.action.LocationCommand;
 import com.worldventures.dreamtrips.modules.dtl.service.action.FilterDataAction;
 import com.worldventures.dreamtrips.modules.dtl.service.action.MerchantsAction;
 import com.worldventures.dreamtrips.modules.dtl.service.action.RequestSourceTypeAction;
-import com.worldventures.dreamtrips.modules.dtl.service.action.bundle.MerchantsParamsBundle;
+import com.worldventures.dreamtrips.modules.dtl.service.action.bundle.ImmutableMerchantsActionParams;
+import com.worldventures.dreamtrips.modules.dtl.service.action.bundle.MerchantsActionParams;
 
 import rx.Observable;
 import rx.functions.Func2;
@@ -53,10 +54,7 @@ public class MerchantsFacadeInteractor {
       )
             .take(1)
             .map(MerchantsAction::create)
-            .subscribe(action -> {
-               merchantsInteractor.thinMerchantsHttpPipe().send(action);
-               merchantsRequestSourceInteractor.requestSourceActionPipe().send(RequestSourceTypeAction.list());
-            });
+            .subscribe(this::sendMerchantsAction);
    }
 
    private Observable<FilterData> provideFilterDataObservable() {
@@ -72,11 +70,20 @@ public class MerchantsFacadeInteractor {
             .map(LocationCommand::getResult);
    }
 
-   private final class MerchantsUpdateFunc implements Func2<FilterData, DtlLocation, MerchantsParamsBundle> {
+   private void sendMerchantsAction(MerchantsAction action) {
+      merchantsInteractor.thinMerchantsHttpPipe().send(action);
+      merchantsRequestSourceInteractor.requestSourceActionPipe().send(RequestSourceTypeAction.list());
+   }
+
+   private final class MerchantsUpdateFunc implements Func2<FilterData, DtlLocation, MerchantsActionParams> {
 
       @Override
-      public MerchantsParamsBundle call(FilterData filterData, DtlLocation location) {
-         return MerchantsParamsBundle.create(filterData, location, requestSourceType);
+      public MerchantsActionParams call(FilterData filterData, DtlLocation location) {
+         return ImmutableMerchantsActionParams.builder()
+               .filterData(filterData)
+               .location(location)
+               .requestSource(requestSourceType)
+               .build();
       }
    }
 }

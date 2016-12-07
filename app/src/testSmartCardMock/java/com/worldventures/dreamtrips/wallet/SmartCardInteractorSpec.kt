@@ -367,7 +367,7 @@ class SmartCardInteractorSpec : BaseSpec({
          val cmd = AddBankCardCommand.Builder()
                .setBankCard(bankCard)
                .setManualAddressInfo(manualAddressInfo)
-               .setNickName(nickName)
+               .setCardName(nickName)
                .setCvv(cvv)
                .setIssuerInfo(issuerInfo)
                .setUseDefaultAddress(useDefaultAddress)

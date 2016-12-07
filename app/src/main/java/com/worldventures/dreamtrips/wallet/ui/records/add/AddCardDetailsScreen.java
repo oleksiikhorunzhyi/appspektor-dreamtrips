@@ -10,6 +10,7 @@ import android.text.SpannableStringBuilder;
 import android.text.style.ForegroundColorSpan;
 import android.text.style.RelativeSizeSpan;
 import android.util.AttributeSet;
+import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.widget.CompoundButton;
 import android.widget.EditText;
@@ -49,12 +50,17 @@ public class AddCardDetailsScreen extends WalletLinearLayout<AddCardDetailsPrese
    @InjectView(R.id.card_name) EditText cardNameField;
    @InjectView(R.id.cvv_label) TextView cvvLabel;
    @InjectView(R.id.set_default_card_switcher) CompoundButton defaultPaymentCardSwitcher;
-
+   @InjectView(R.id.confirm_button) View confirmButton;
 
    private final BankCardHelper bankCardHelper;
    private DialogOperationScreen dialogOperationScreen;
+
    private Observable<Boolean> setAsDefaultCardObservable;
    private Observable<String> cardNameObservable;
+   private Observable<String> address1Observable;
+   private Observable<String> stateObservable;
+   private Observable<String> cityObservable;
+   private Observable<String> zipObservable;
 
    public AddCardDetailsScreen(Context context) {
       this(context, null);
@@ -80,7 +86,16 @@ public class AddCardDetailsScreen extends WalletLinearLayout<AddCardDetailsPrese
       if (isInEditMode()) return;
       toolbar.setNavigationOnClickListener(v -> navigateButtonClick());
       setAsDefaultCardObservable = RxCompoundButton.checkedChanges(defaultPaymentCardSwitcher).skip(1);
-      cardNameObservable = RxTextView.afterTextChangeEvents(cardNameField).map(event -> event.editable().toString()).skip(1);
+      cardNameObservable = observableFrom(cardNameField);
+
+      address1Observable = observableFrom(address1Field);
+      stateObservable = observableFrom(stateField);
+      cityObservable = observableFrom(cityField);
+      zipObservable = observableFrom(zipField);
+   }
+
+   private Observable<String> observableFrom(TextView textView) {
+      return RxTextView.afterTextChangeEvents(textView).map(event -> event.editable().toString()).skip(1);
    }
 
    @Override
@@ -94,6 +109,26 @@ public class AddCardDetailsScreen extends WalletLinearLayout<AddCardDetailsPrese
    @Override
    public Observable<String> getCardNameObservable() {
       return cardNameObservable;
+   }
+
+   @Override
+   public Observable<String> getAddress1Observable() {
+      return address1Observable;
+   }
+
+   @Override
+   public Observable<String> getStateObservable() {
+      return stateObservable;
+   }
+
+   @Override
+   public Observable<String> getZipObservable() {
+      return zipObservable;
+   }
+
+   @Override
+   public Observable<String> getCityObservable() {
+      return cityObservable;
    }
 
    @Override
@@ -132,6 +167,11 @@ public class AddCardDetailsScreen extends WalletLinearLayout<AddCardDetailsPrese
    @Override
    public Observable<Boolean> setAsDefaultPaymentCardCondition() {
       return setAsDefaultCardObservable;
+   }
+
+   @Override
+   public void setEnableButton(boolean enable) {
+      confirmButton.setEnabled(enable);
    }
 
    protected void navigateButtonClick() {

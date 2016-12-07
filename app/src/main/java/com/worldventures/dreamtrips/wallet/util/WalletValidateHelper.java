@@ -10,6 +10,7 @@ import java.util.regex.Pattern;
 
 public class WalletValidateHelper {
 
+   private static final Pattern CARD_NAME_PATTERN = Pattern.compile("[\\p{L}0-9]{1,11}+");
    private static final Pattern FIRST_NAME_PATTERN = Pattern.compile("[\\p{L}]{2,21}+");
    private static final Pattern MIDDLE_NAME_PATTERN = Pattern.compile("[\\p{L}]{1,21}+");
    private static final Pattern LAST_NAME_PATTERN = FIRST_NAME_PATTERN;
@@ -45,5 +46,19 @@ public class WalletValidateHelper {
 
    public static boolean validateSCId(String scid) {
       return SCID_PATTERN.matcher(scid).matches();
+   }
+
+   public static void validateCardNameOrThrow(String cardName) throws CardNameFormatException {
+      if (!CARD_NAME_PATTERN.matcher(cardName).matches()) throw new CardNameFormatException();
+   }
+
+   public static void validateAddressInfoOrThrow(AddressInfo addressInfo) throws AddressFormatException {
+      if (!validateAddressInfo(addressInfo)) {
+         throw new AddressFormatException();
+      }
+   }
+
+   public static void validateCvvOrThrow(String cvv, long cardNumber) throws CvvFormatException {
+      if (!validateCardCvv(cvv, cardNumber)) throw new CvvFormatException();
    }
 }

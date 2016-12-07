@@ -41,8 +41,4 @@ public class FullMerchantInteractor {
             .map(location -> FullMerchantAction.create(merchantId, offerId, location))
             .subscribe(fullMerchantPipe::send);
    }
-
-//   private FullMerchantActionParams createActionParams() {
-//      return ImmFu;
-//   }
 }

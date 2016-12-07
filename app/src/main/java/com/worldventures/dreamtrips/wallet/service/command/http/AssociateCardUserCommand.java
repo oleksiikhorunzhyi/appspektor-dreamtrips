@@ -3,6 +3,7 @@ package com.worldventures.dreamtrips.wallet.service.command.http;
 import com.worldventures.dreamtrips.api.smart_card.user_association.AssociateCardUserHttpAction;
 import com.worldventures.dreamtrips.api.smart_card.user_association.model.AssociationCardUserData;
 import com.worldventures.dreamtrips.api.smart_card.user_association.model.ImmutableAssociationCardUserData;
+import com.worldventures.dreamtrips.api.smart_card.user_info.model.UpdateCardUserData;
 import com.worldventures.dreamtrips.core.janet.cache.CacheOptions;
 import com.worldventures.dreamtrips.core.janet.cache.CachedAction;
 import com.worldventures.dreamtrips.core.janet.cache.ImmutableCacheOptions;
@@ -33,9 +34,11 @@ public class AssociateCardUserCommand extends Command<SmartCardDetails> implemen
    @Inject SystemPropertiesProvider propertiesProvider;
 
    private final String barcode;
+   private UpdateCardUserData updateCardUserData;
 
-   public AssociateCardUserCommand(String barcode) {
+   public AssociateCardUserCommand(String barcode, UpdateCardUserData cardUserData) {
       this.barcode = barcode;
+      this.updateCardUserData = cardUserData;
    }
 
    @Override
@@ -48,6 +51,10 @@ public class AssociateCardUserCommand extends Command<SmartCardDetails> implemen
             .deviceOsVersion(propertiesProvider.osVersion())
             .deviceId(propertiesProvider.deviceId())
             .acceptedTermsAndConditionVersion(obtainTACVersion())
+            .displayFirstName(updateCardUserData.displayFirstName())
+            .displayLastName(updateCardUserData.displayLastName())
+            .displayMiddleName(updateCardUserData.displayMiddleName())
+            .displayPhoto(updateCardUserData.photoUrl())
             .build();
 
       janet.createPipe(AssociateCardUserHttpAction.class)

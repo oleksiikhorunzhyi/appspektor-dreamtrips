@@ -8,10 +8,7 @@ import com.worldventures.dreamtrips.core.flow.util.Layout;
 @Layout(R.layout.screen_wallet_wizard_welcome)
 public class WizardWelcomePath extends StyledPath {
 
-   public final String smartCardId;
-
-   public WizardWelcomePath(String smartCardId) {
-      this.smartCardId = smartCardId;
+   public WizardWelcomePath() {
    }
 
    @Override

@@ -64,8 +64,8 @@ public class WizardAssignUserScreen extends WalletLinearLayout<WizardAssignUserP
 
    @Override
    public void hideProgress() {
-      assignProgress.setVisibility(GONE);
       assignProgress.stop();
+      assignProgress.setVisibility(GONE);
    }
 
    @Override

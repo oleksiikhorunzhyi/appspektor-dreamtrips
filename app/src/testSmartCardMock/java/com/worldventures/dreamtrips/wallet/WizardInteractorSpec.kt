@@ -64,7 +64,7 @@ class WizardInteractorSpec : BaseSpec({
 
             val testSubscriber: TestSubscriber<ActionState<CreateAndConnectToCardCommand>> = TestSubscriber()
             janet.createPipe(CreateAndConnectToCardCommand::class.java)
-                  .createObservable(CreateAndConnectToCardCommand(smartCardDetails))
+                  .createObservable(CreateAndConnectToCardCommand())
                   .subscribe(testSubscriber)
 
             testSubscriber.assertCompleted()
@@ -119,7 +119,7 @@ class WizardInteractorSpec : BaseSpec({
          TextUtils.`equals`(anyString(), anyString())
       }
 
-      fun createInteractor(janet: Janet) = WizardInteractor(janet, SessionActionPipeCreator(janet))
+      fun createInteractor(janet: Janet) = WizardInteractor(SessionActionPipeCreator(janet))
 
       fun createJanet(): Janet {
          val daggerCommandActionService = CommandActionService()

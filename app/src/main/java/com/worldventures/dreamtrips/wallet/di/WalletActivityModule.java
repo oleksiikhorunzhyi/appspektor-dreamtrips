@@ -38,6 +38,7 @@ import com.worldventures.dreamtrips.wallet.ui.records.swiping.WizardChargingPres
 import com.worldventures.dreamtrips.wallet.ui.wizard.checking.WizardCheckingPresenter;
 import com.worldventures.dreamtrips.wallet.ui.wizard.edit_card.EditCardDetailsPresenter;
 import com.worldventures.dreamtrips.wallet.ui.wizard.edit_card.EditCardDetailsScreen;
+import com.worldventures.dreamtrips.wallet.ui.wizard.finish.WizardAssignUserPresenter;
 import com.worldventures.dreamtrips.wallet.ui.wizard.pin.complete.WalletPinIsSetPresenter;
 import com.worldventures.dreamtrips.wallet.ui.wizard.manual.WizardManualInputPresenter;
 import com.worldventures.dreamtrips.wallet.ui.wizard.pin.setup.WizardPinSetupPresenter;
@@ -97,7 +98,8 @@ import dagger.Provides;
             WalletInstallFirmwarePresenter.class,
             WizardCheckingPresenter.class,
             WalletNewFirmwareAvailablePresenter.class,
-            WalletPuckConnectionPresenter.class
+            WalletPuckConnectionPresenter.class,
+            WizardAssignUserPresenter.class
       },
       complete = false, library = true
 )

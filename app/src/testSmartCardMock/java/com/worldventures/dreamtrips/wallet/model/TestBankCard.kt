@@ -17,6 +17,8 @@ class TestBankCard(
       private val addressInfo: AddressInfo = TestAddressInfo()
       ): BankCard() {
 
+   override fun title(): String? = null
+
    override fun id(): String? = id
 
    override fun number(): Long = number

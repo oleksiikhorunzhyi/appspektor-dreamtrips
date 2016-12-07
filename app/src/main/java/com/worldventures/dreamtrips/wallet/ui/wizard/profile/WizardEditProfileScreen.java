@@ -42,7 +42,7 @@ public class WizardEditProfileScreen extends WalletLinearLayout<WizardEditProfil
    @NonNull
    @Override
    public WizardEditProfilePresenter createPresenter() {
-      return new WizardEditProfilePresenter(getContext(), getInjector(), getPath().getSmartCardId());
+      return new WizardEditProfilePresenter(getContext(), getInjector());
    }
 
    @Override

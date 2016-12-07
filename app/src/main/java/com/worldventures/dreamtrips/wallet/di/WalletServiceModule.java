@@ -55,8 +55,8 @@ public class WalletServiceModule {
 
    @Singleton
    @Provides
-   WizardInteractor provideWizardInteractor(@Named(JANET_WALLET) Janet janet, @Named(JANET_WALLET) SessionActionPipeCreator sessionActionPipeCreator) {
-      return new WizardInteractor(janet, sessionActionPipeCreator);
+   WizardInteractor provideWizardInteractor(@Named(JANET_WALLET) SessionActionPipeCreator sessionActionPipeCreator) {
+      return new WizardInteractor(sessionActionPipeCreator);
    }
 
    @Singleton

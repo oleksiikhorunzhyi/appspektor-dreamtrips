@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
+import android.widget.ProgressBar;
 
 import com.techery.spares.adapter.BaseDelegateAdapter;
 import com.techery.spares.annotations.Layout;
@@ -29,6 +30,7 @@ public class DocumentListFragment extends BaseFragment<DocumentListPresenter> im
       DocumentListPresenter.View {
 
    @InjectView(R.id.documentsList) RecyclerView documentsList;
+   @InjectView(R.id.progress) ProgressBar progressBar;
 
    private BaseDelegateAdapter adapter;
 
@@ -59,5 +61,15 @@ public class DocumentListFragment extends BaseFragment<DocumentListPresenter> im
    @Override
    public void setDocumentList(List<Document> documentList) {
       adapter.setItems(documentList);
+   }
+
+   @Override
+   public void showProgress() {
+      progressBar.setVisibility(View.VISIBLE);
+   }
+
+   @Override
+   public void hideProgress() {
+      progressBar.setVisibility(View.GONE);
    }
 }

@@ -1,11 +1,12 @@
 package com.worldventures.dreamtrips.modules.infopages.view.fragment;
 
 import android.os.Bundle;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
-import android.widget.ProgressBar;
 
+import com.badoo.mobile.util.WeakHandler;
 import com.techery.spares.adapter.BaseDelegateAdapter;
 import com.techery.spares.annotations.Layout;
 import com.techery.spares.ui.view.cell.CellDelegate;
@@ -27,16 +28,22 @@ import static com.worldventures.dreamtrips.modules.membership.view.util.DividerI
 
 @Layout(R.layout.fragment_documents)
 public class DocumentListFragment extends BaseFragment<DocumentListPresenter> implements CellDelegate<Document>,
-      DocumentListPresenter.View {
+      DocumentListPresenter.View, SwipeRefreshLayout.OnRefreshListener {
 
    @InjectView(R.id.documentsList) RecyclerView documentsList;
-   @InjectView(R.id.progress) ProgressBar progressBar;
+   @InjectView(R.id.swipe_container) SwipeRefreshLayout swipeContainer;
 
    private BaseDelegateAdapter adapter;
+   private WeakHandler weakHandler;
 
    @Override
    public void afterCreateView(View rootView) {
       super.afterCreateView(rootView);
+
+      weakHandler = new WeakHandler();
+
+      swipeContainer.setColorSchemeResources(R.color.theme_main_darker);
+      swipeContainer.setOnRefreshListener(this);
 
       adapter = new BaseDelegateAdapter(getContext(), this);
       adapter.registerCell(Document.class, DocumentCell.class, this);
@@ -65,11 +72,16 @@ public class DocumentListFragment extends BaseFragment<DocumentListPresenter> im
 
    @Override
    public void showProgress() {
-      progressBar.setVisibility(View.VISIBLE);
+      weakHandler.post(() -> swipeContainer.setRefreshing(true));
    }
 
    @Override
    public void hideProgress() {
-      progressBar.setVisibility(View.GONE);
+      weakHandler.post(() -> swipeContainer.setRefreshing(false));
+   }
+
+   @Override
+   public void onRefresh() {
+      getPresenter().getDocuments();
    }
 }

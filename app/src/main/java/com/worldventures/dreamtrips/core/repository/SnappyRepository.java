@@ -11,6 +11,7 @@ import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchantAttrib
 import com.worldventures.dreamtrips.modules.dtl.model.transaction.DtlTransaction;
 import com.worldventures.dreamtrips.modules.feed.model.FeedItem;
 import com.worldventures.dreamtrips.modules.friends.model.Circle;
+import com.worldventures.dreamtrips.modules.infopages.model.Document;
 import com.worldventures.dreamtrips.modules.infopages.model.FeedbackType;
 import com.worldventures.dreamtrips.modules.membership.model.Podcast;
 import com.worldventures.dreamtrips.modules.settings.model.Setting;
@@ -70,6 +71,7 @@ public interface SnappyRepository {
    String DTL_SHOW_OFFERS_ONLY_TOGGLE = "DTL_SHOW_OFFERS_ONLY_TOGGLE";
    String DTL_AMENITIES = "DTL_AMENITIES";
    String FEEDBACK_TYPES = "FEEDBACK_TYPES";
+   String DOCUMENTS = "DOCUMENTS";
    String SUGGESTED_PHOTOS_SYNC_TIME = "SUGGESTED_PHOTOS_SYNC_TIME";
 
    String NOTIFICATIONS = "notifications";
@@ -173,6 +175,10 @@ public interface SnappyRepository {
    List<FeedbackType> getFeedbackTypes();
 
    void setFeedbackTypes(List<FeedbackType> types);
+
+   List<Document> getDocuments();
+
+   void setDocuments(List<Document> documents);
 
    void saveDtlLocation(DtlLocation dtlLocation);
 

@@ -19,23 +19,46 @@ public class DocumentListPresenter extends Presenter<DocumentListPresenter.View>
    public void takeView(View view) {
       super.takeView(view);
 
+      observeDocuments();
+
       getDocuments();
    }
 
-   private void getDocuments() {
+   public void getDocuments() {
+      documentsInteractor.getDocumentsPipe().send(new GetDocumentsCommand());
+   }
+
+   private void observeDocuments() {
       documentsInteractor.getDocumentsPipe()
-            .createObservable(new GetDocumentsCommand())
+            .observe()
             .compose(bindViewToMainComposer())
             .subscribe(new ActionStateSubscriber<GetDocumentsCommand>()
-                  .onStart(action -> view.showProgress())
-                  .onSuccess(action -> {
-                     view.hideProgress();
-                     view.setDocumentList(action.getResult());
-                  })
-                  .onFail((action, error) -> {
-                     view.hideProgress();
-                     handleError(action, error);
-                  }));
+                  .onStart(this::onDocumentsLoadingStarted)
+                  .onSuccess(this::onDocumentsLoadSuccess)
+                  .onFail(this::onDocumentsLoadError));
+   }
+
+   private void onDocumentsLoadingStarted(GetDocumentsCommand command) {
+      List<Document> items = command.items();
+
+      if (items == null || items.isEmpty()) {
+         view.showProgress();
+      } else {
+         view.setDocumentList(items);
+      }
+   }
+
+   private void onDocumentsLoadSuccess(GetDocumentsCommand command) {
+      view.setDocumentList(command.items());
+      view.hideProgress();
+   }
+
+   private void onDocumentsLoadError(GetDocumentsCommand command, Throwable error) {
+      view.setDocumentList(command.items());
+
+      handleError(command, error);
+
+      view.hideProgress();
    }
 
    public interface View extends Presenter.View {

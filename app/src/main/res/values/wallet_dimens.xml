@@ -16,7 +16,7 @@
    <dimen name="wallet_details_screen_address_space_between_lines">5dp</dimen>
    <dimen name="wallet_details_screen_billing_address_text_size">12sp</dimen>
    <dimen name="wallet_details_screen_edit_address_button_text_size">16sp</dimen>
-   <dimen name="wallet_details_screen_delete_card_button_text_size">20sp</dimen>
+   <dimen name="wallet_details_screen_card_interact_button_text_size">20sp</dimen>
 
    <dimen name="wallet_gray_edit_text_text_size">18sp</dimen>
    <dimen name="wallet_gray_text_view_text_size">14sp</dimen>

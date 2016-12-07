@@ -261,6 +261,8 @@ public class CardListPresenter extends WalletPresenter<CardListPresenter.Screen,
 
       void showAddCardErrorDialog(@ErrorDialogType int errorDialogType);
 
+      void showCardIsReadyDialog(String cardName);
+
       void hideFirmwareUpdateBtn();
 
       void showFirmwareUpdateBtn();

@@ -117,6 +117,15 @@ public class CardListScreen extends WalletLinearLayout<CardListPresenter.Screen,
    }
 
    @Override
+   public void showCardIsReadyDialog(String cardName) {
+      MaterialDialog.Builder builder = new MaterialDialog.Builder(getContext());
+      builder.content(getString(R.string.wallet_wizard_card_list_card_is_ready_text, cardName))
+            .positiveText(R.string.ok)
+            .build()
+            .show();
+   }
+
+   @Override
    public void hideFirmwareUpdateBtn() {
       firmwareAvailableView.setVisibility(GONE);
    }

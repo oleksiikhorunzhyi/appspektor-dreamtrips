@@ -73,6 +73,11 @@ public class CardDetailsScreen extends WalletLinearLayout<CardDetailsPresenter.S
       getPresenter().editAddress();
    }
 
+   @OnClick(R.id.pay_this_card_button)
+   public void onPayThisCardClicked() {
+      getPresenter().payThisCard();
+   }
+
    @Override
    public OperationScreen provideOperationDelegate() {
       return new DialogOperationScreen(this);

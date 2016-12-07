@@ -156,6 +156,11 @@ public class CardDetailsPresenter extends WalletPresenter<CardDetailsPresenter.S
             }, throwable -> Timber.e(throwable, ""));
    }
 
+   void payThisCard() {
+      //TODO : implement "pay with logic"
+      navigator.goBack();
+   }
+
    void onDeleteCardConfirmed() {
       smartCardInteractor.deleteCardPipe().send(new DeleteRecordAction(valueOf(bankCard.id())));
    }

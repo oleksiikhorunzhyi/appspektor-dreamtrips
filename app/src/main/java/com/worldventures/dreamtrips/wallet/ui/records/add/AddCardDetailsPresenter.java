@@ -2,7 +2,6 @@ package com.worldventures.dreamtrips.wallet.ui.records.add;
 
 import android.content.Context;
 import android.os.Parcelable;
-import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import com.techery.spares.module.Injector;
@@ -30,8 +29,10 @@ import com.worldventures.dreamtrips.wallet.ui.common.helper.ErrorSubscriberWrapp
 import com.worldventures.dreamtrips.wallet.ui.common.helper.OperationActionStateSubscriberWrapper;
 import com.worldventures.dreamtrips.wallet.ui.common.navigation.Navigator;
 import com.worldventures.dreamtrips.wallet.ui.dashboard.CardListPath;
-import com.worldventures.dreamtrips.wallet.util.BankCardHelper;
+import com.worldventures.dreamtrips.wallet.util.AddressFormatException;
+import com.worldventures.dreamtrips.wallet.util.CardNameFormatException;
 import com.worldventures.dreamtrips.wallet.util.CardUtils;
+import com.worldventures.dreamtrips.wallet.util.CvvFormatException;
 import com.worldventures.dreamtrips.wallet.util.FormatException;
 import com.worldventures.dreamtrips.wallet.util.SmartCardInteractorHelper;
 
@@ -42,11 +43,12 @@ import io.techery.janet.helper.ActionStateToActionTransformer;
 import rx.Observable;
 import rx.functions.Action1;
 
+import static android.text.TextUtils.getTrimmedLength;
+
 public class AddCardDetailsPresenter extends WalletPresenter<AddCardDetailsPresenter.Screen, Parcelable> {
 
    @Inject Navigator navigator;
    @Inject LocaleHelper localeHelper;
-   @Inject BankCardHelper bankCardHelper;
    @Inject SmartCardInteractor smartCardInteractor;
    @Inject AnalyticsInteractor analyticsInteractor;
    @Inject SmartCardInteractorHelper smartCardInteractorHelper;
@@ -61,17 +63,19 @@ public class AddCardDetailsPresenter extends WalletPresenter<AddCardDetailsPrese
    @Override
    public void attachView(Screen view) {
       super.attachView(view);
-      getView().cardBankInfo(bankCardHelper, bankCard);
+      getView().setCardBank(bankCard);
    }
 
    @Override
    public void onAttachedToWindow() {
       super.onAttachedToWindow();
       trackScreen();
+      observeCardNameChanging();
       connectToDefaultCardPipe();
       connectToDefaultAddressPipe();
       connectToSaveCardDetailsPipe();
       loadDataFromDevice();
+      observeMandatoryFields();
    }
 
    private void trackScreen() {
@@ -132,7 +136,10 @@ public class AddCardDetailsPresenter extends WalletPresenter<AddCardDetailsPrese
             .subscribe(OperationActionStateSubscriberWrapper.<AddBankCardCommand>forView(getView().provideOperationDelegate())
                   .onSuccess(this::onCardAdd)
                   .onFail(ErrorHandler.<AddBankCardCommand>builder(getContext())
-                        .handle(FormatException.class, R.string.wallet_add_card_details_error_message)
+                        // this changes need for improve error handling in feature
+                        .handle(CardNameFormatException.class, R.string.wallet_add_card_details_error_message)
+                        .handle(CvvFormatException.class, R.string.wallet_add_card_details_error_message)
+                        .handle(AddressFormatException.class, R.string.wallet_add_card_details_error_message)
                         .build())
                   .wrap());
    }
@@ -158,11 +165,11 @@ public class AddCardDetailsPresenter extends WalletPresenter<AddCardDetailsPrese
       smartCardInteractor.getDefaultAddressCommandPipe().send(new GetDefaultAddressCommand());
    }
 
-   public void onCardInfoConfirmed(AddressInfo addressInfo, String cvv, String nickname, boolean setAsDefaultCard) {
+   public void onCardInfoConfirmed(AddressInfo addressInfo, String cvv, String cardName, boolean setAsDefaultCard) {
       smartCardInteractor.saveCardDetailsDataPipe()
             .send(new AddBankCardCommand.Builder().setBankCard(bankCard)
                   .setManualAddressInfo(addressInfo)
-                  .setNickName(nickname)
+                  .setCardName(cardName)
                   .setCvv(cvv)
                   .setIssuerInfo(bankCard.issuerInfo())
                   .setSetAsDefaultCard(setAsDefaultCard)
@@ -174,7 +181,7 @@ public class AddCardDetailsPresenter extends WalletPresenter<AddCardDetailsPrese
 
       smartCardInteractorHelper.sendSingleDefaultCardTask(defaultCard -> {
          if (!CardUtils.isRealCard(defaultCard)) return;
-         getView().showChangeCardDialog(bankCardHelper.bankNameWithCardNumber(defaultCard));
+         getView().showChangeCardDialog(defaultCard);
       }, bindViewIoToMainComposer());
    }
 
@@ -186,17 +193,60 @@ public class AddCardDetailsPresenter extends WalletPresenter<AddCardDetailsPrese
       navigator.goBack();
    }
 
+   private void observeCardNameChanging() {
+      final Screen view = getView();
+      view.getCardNameObservable()
+            .compose(bindView())
+            .subscribe(view::setCardName);
+   }
+
+   private void observeMandatoryFields() {
+      final Screen screen = getView();
+
+      Observable.combineLatest(
+            screen.getCardNameObservable(),
+            screen.getAddress1Observable(),
+            screen.getCityObservable(),
+            screen.getZipObservable(),
+            screen.getStateObservable(),
+            this::checkMandatoryFields)
+            .compose(bindView())
+            .subscribe(screen::setEnableButton);
+   }
+
+   private boolean checkMandatoryFields(String cardName, String address1, String city, String zipCode, String state) {
+      return getTrimmedLength(cardName) > 0
+            && getTrimmedLength(address1) > 0
+            && getTrimmedLength(city) > 0
+            && getTrimmedLength(zipCode) > 0
+            && getTrimmedLength(state) > 0;
+   }
+
    public interface Screen extends WalletScreen {
 
-      void cardBankInfo(BankCardHelper cardHelper, BankCard bankCard);
+      void setCardBank(BankCard bankCard);
+
+      void setCardName(String cardName);
+
+      Observable<String> getCardNameObservable();
+
+      Observable<String> getAddress1Observable();
+
+      Observable<String> getStateObservable();
+
+      Observable<String> getZipObservable();
+
+      Observable<String> getCityObservable();
 
       void defaultAddress(AddressInfoWithLocale defaultAddress);
 
       void defaultPaymentCard(boolean defaultPaymentCard);
 
-      void showChangeCardDialog(@NonNull String bankCardName);
+      void showChangeCardDialog(BankCard bankCard);
 
       Observable<Boolean> setAsDefaultPaymentCardCondition();
+
+      void setEnableButton(boolean enable);
    }
 
 }

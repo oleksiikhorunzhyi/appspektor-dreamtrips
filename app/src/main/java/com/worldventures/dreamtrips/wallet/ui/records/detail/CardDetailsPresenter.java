@@ -45,7 +45,6 @@ public class CardDetailsPresenter extends WalletPresenter<CardDetailsPresenter.S
    @Inject LocaleHelper localeHelper;
    @Inject SmartCardInteractor smartCardInteractor;
    @Inject AnalyticsInteractor analyticsInteractor;
-   @Inject BankCardHelper bankCardHelper;
 
    private final BankCard bankCard;
    private BankCard defaultBankCard;
@@ -62,8 +61,7 @@ public class CardDetailsPresenter extends WalletPresenter<CardDetailsPresenter.S
       trackScreen();
       Screen view = getView();
 
-      view.setTitle(bankCardHelper.financialServiceWithCardNumber(bankCard));
-      view.showCardBankInfo(bankCardHelper, bankCard);
+      view.showCardBank(bankCard);
       view.showDefaultAddress(obtainAddressWithCountry());
 
       connectToDefaultCardPipe();
@@ -166,7 +164,7 @@ public class CardDetailsPresenter extends WalletPresenter<CardDetailsPresenter.S
    private void executeSetDefaultCard(boolean setDefaultCard) {
       if (setDefaultCard) {
          if (CardUtils.isRealCard(defaultBankCard)) {
-            getView().showDefaultCardDialog(bankCardHelper.bankNameWithCardNumber(defaultBankCard));
+            getView().showDefaultCardDialog(defaultBankCard);
          } else {
             trackSetAsDefault();
             smartCardInteractor.setDefaultCardOnDeviceCommandPipe()
@@ -218,13 +216,11 @@ public class CardDetailsPresenter extends WalletPresenter<CardDetailsPresenter.S
    }
 
    public interface Screen extends WalletScreen {
-      void setTitle(String title);
-
-      void showCardBankInfo(BankCardHelper bankCardHelper, BankCard bankCard);
+      void showCardBank(BankCard bankCard);
 
       void showDefaultAddress(AddressInfoWithLocale addressInfoWithLocale);
 
-      void showDefaultCardDialog(@NonNull String bankCardName);
+      void showDefaultCardDialog(BankCard defaultBankCard);
 
       void showDeleteCardDialog();
 

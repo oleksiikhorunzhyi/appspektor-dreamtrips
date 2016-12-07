@@ -1,14 +1,23 @@
 package com.worldventures.dreamtrips.wallet.ui.records.add;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.Toolbar;
+import android.text.Spannable;
+import android.text.SpannableString;
+import android.text.SpannableStringBuilder;
+import android.text.style.ForegroundColorSpan;
+import android.text.style.RelativeSizeSpan;
 import android.util.AttributeSet;
+import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.widget.CompoundButton;
 import android.widget.EditText;
+import android.widget.TextView;
 
 import com.jakewharton.rxbinding.widget.RxCompoundButton;
+import com.jakewharton.rxbinding.widget.RxTextView;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.wallet.domain.entity.AddressInfo;
 import com.worldventures.dreamtrips.wallet.domain.entity.AddressInfoWithLocale;
@@ -38,19 +47,28 @@ public class AddCardDetailsScreen extends WalletLinearLayout<AddCardDetailsPrese
    @InjectView(R.id.city) EditText cityField;
    @InjectView(R.id.state) EditText stateField;
    @InjectView(R.id.zip) EditText zipField;
-   @InjectView(R.id.card_nickname) EditText cardNameField;
-
+   @InjectView(R.id.card_name) EditText cardNameField;
+   @InjectView(R.id.cvv_label) TextView cvvLabel;
    @InjectView(R.id.set_default_card_switcher) CompoundButton defaultPaymentCardSwitcher;
+   @InjectView(R.id.confirm_button) View confirmButton;
 
+   private final BankCardHelper bankCardHelper;
    private DialogOperationScreen dialogOperationScreen;
+
    private Observable<Boolean> setAsDefaultCardObservable;
+   private Observable<String> cardNameObservable;
+   private Observable<String> address1Observable;
+   private Observable<String> stateObservable;
+   private Observable<String> cityObservable;
+   private Observable<String> zipObservable;
 
    public AddCardDetailsScreen(Context context) {
-      super(context);
+      this(context, null);
    }
 
    public AddCardDetailsScreen(Context context, AttributeSet attrs) {
       super(context, attrs);
+      bankCardHelper = new BankCardHelper(context);
    }
 
    @NonNull
@@ -62,17 +80,60 @@ public class AddCardDetailsScreen extends WalletLinearLayout<AddCardDetailsPrese
    @Override
    protected void onFinishInflate() {
       super.onFinishInflate();
+      setCvvLabel();
+      setCardNameHint();
+
       if (isInEditMode()) return;
       toolbar.setNavigationOnClickListener(v -> navigateButtonClick());
       setAsDefaultCardObservable = RxCompoundButton.checkedChanges(defaultPaymentCardSwitcher).skip(1);
+      cardNameObservable = observableFrom(cardNameField);
+
+      address1Observable = observableFrom(address1Field);
+      stateObservable = observableFrom(stateField);
+      cityObservable = observableFrom(cityField);
+      zipObservable = observableFrom(zipField);
+   }
+
+   private Observable<String> observableFrom(TextView textView) {
+      return RxTextView.afterTextChangeEvents(textView).map(event -> event.editable().toString()).skip(1);
    }
 
    @Override
-   public void cardBankInfo(BankCardHelper cardHelper, BankCard bankCard) {
-      bankCardWidget.setBankCardInfo(cardHelper, bankCard);
+   public void setCardBank(BankCard bankCard) {
+      bankCardWidget.setBankCard(bankCard);
 
       int cvvLength = BankCardHelper.obtainRequiredCvvLength(bankCard.number());
       cardCvvField.setMaxLength(cvvLength);
+   }
+
+   @Override
+   public Observable<String> getCardNameObservable() {
+      return cardNameObservable;
+   }
+
+   @Override
+   public Observable<String> getAddress1Observable() {
+      return address1Observable;
+   }
+
+   @Override
+   public Observable<String> getStateObservable() {
+      return stateObservable;
+   }
+
+   @Override
+   public Observable<String> getZipObservable() {
+      return zipObservable;
+   }
+
+   @Override
+   public Observable<String> getCityObservable() {
+      return cityObservable;
+   }
+
+   @Override
+   public void setCardName(String cardName) {
+      bankCardWidget.setCardName(cardName);
    }
 
    @Override
@@ -97,8 +158,8 @@ public class AddCardDetailsScreen extends WalletLinearLayout<AddCardDetailsPrese
    }
 
    @Override
-   public void showChangeCardDialog(@NonNull String bankCardName) {
-      new ChangeDefaultPaymentCardDialog(getContext(), bankCardName)
+   public void showChangeCardDialog(BankCard bankCard) {
+      new ChangeDefaultPaymentCardDialog(getContext(), bankCardHelper.bankNameWithCardNumber(bankCard))
             .setOnCancelAction(() -> getPresenter().defaultCardDialogConfirmed(false))
             .show();
    }
@@ -108,11 +169,16 @@ public class AddCardDetailsScreen extends WalletLinearLayout<AddCardDetailsPrese
       return setAsDefaultCardObservable;
    }
 
+   @Override
+   public void setEnableButton(boolean enable) {
+      confirmButton.setEnabled(enable);
+   }
+
    protected void navigateButtonClick() {
       presenter.goBack();
    }
 
-   @OnEditorAction(R.id.card_nickname)
+   @OnEditorAction(R.id.card_name)
    boolean onEditorAction(int action) {
       if (action == EditorInfo.IME_ACTION_DONE) {
          onConfirmButtonClicked();
@@ -141,5 +207,28 @@ public class AddCardDetailsScreen extends WalletLinearLayout<AddCardDetailsPrese
    @Override
    protected boolean hasToolbar() {
       return true;
+   }
+
+   private void setCvvLabel() {
+      cvvLabel.setText(new SpannableStringBuilder()
+            .append(getString(R.string.wallet_add_card_details_cvv_label))
+            .append(spannableRequiredFields()));
+   }
+
+   private void setCardNameHint() {
+      final SpannableString cardNameLength = new SpannableString(getString(R.string.wallet_add_card_details_hint_card_name_length));
+      cardNameLength.setSpan(new RelativeSizeSpan(.75f), 0, cardNameLength.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+      cardNameField.setHint(new SpannableStringBuilder()
+            .append(getString(R.string.wallet_add_card_details_hint_card_name))
+            .append(spannableRequiredFields())
+            .append(" ")
+            .append(cardNameLength)
+      );
+   }
+
+   private SpannableString spannableRequiredFields() {
+      final SpannableString requiredFields = new SpannableString("*");
+      requiredFields.setSpan(new ForegroundColorSpan(Color.RED), 0, 1, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+      return requiredFields;
    }
 }

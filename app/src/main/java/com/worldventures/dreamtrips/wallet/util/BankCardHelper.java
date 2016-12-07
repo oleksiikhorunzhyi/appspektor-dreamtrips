@@ -2,7 +2,6 @@ package com.worldventures.dreamtrips.wallet.util;
 
 import android.content.Context;
 import android.graphics.Typeface;
-import android.support.annotation.DrawableRes;
 import android.text.SpannableString;
 import android.text.SpannableStringBuilder;
 import android.text.Spanned;
@@ -14,19 +13,14 @@ import com.techery.spares.module.qualifier.ForApplication;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.wallet.domain.entity.card.BankCard;
 
-import javax.inject.Inject;
-import javax.inject.Singleton;
-
 import io.techery.janet.smartcard.model.Record;
 
 import static java.lang.String.format;
 
-@Singleton
 public class BankCardHelper {
 
    private final Context context;
 
-   @Inject
    public BankCardHelper(@ForApplication Context appContext) {
       this.context = appContext;
    }
@@ -74,7 +68,66 @@ public class BankCardHelper {
       }
    }
 
-   @DrawableRes
+   public String financialServiceWithCardNumber(BankCard bankCard) {
+      return format("%s •••• %s", obtainFinancialServiceType(bankCard.issuerInfo()
+            .financialService()), obtainLastCardDigits(bankCard.number()));
+   }
+
+   public String bankNameWithCardNumber(BankCard bankCard) {
+      String bankName = bankCard.issuerInfo().bankName();
+      bankName = (bankName == null) ? "" : bankName;
+      return format("%s •••• %s", bankName, obtainLastCardDigits(bankCard.number()));
+   }
+
+   // utils
+   public String obtainCardType(BankCard.CardType cardType) {
+      if (cardType == null) {
+         return null;
+      }
+      switch (cardType) {
+         case CREDIT:
+            return context.getString(R.string.wallet_record_type_credit);
+         case DEBIT:
+            return context.getString(R.string.wallet_record_type_debit);
+         default:
+            return context.getString(R.string.empty);
+      }
+   }
+
+   public CharSequence obtainFullCardNumber(long number) {
+      return "•••• •••• •••• " + obtainLastCardDigits(number);
+   }
+
+   public CharSequence obtainShortCardNumber(long number) {
+      SpannableString lastDigits = new SpannableString(obtainLastCardDigits(number));
+      lastDigits.setSpan(new RelativeSizeSpan(.6f), 0, lastDigits.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+      return new SpannableStringBuilder()
+            .append("••••")
+            .append(lastDigits);
+   }
+
+   public CharSequence toBoldSpannable(CharSequence text) {
+      if (TextUtils.isEmpty(text)) return "";
+      SpannableString boldSpannable = new SpannableString(text);
+      boldSpannable.setSpan(new StyleSpan(Typeface.BOLD), 0, boldSpannable.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+      return boldSpannable;
+   }
+
+   @SuppressWarnings("unused")
+   public CharSequence formattedBankNameWithCardNumber(BankCard bankCard) {
+      CharSequence bankName = toBoldSpannable(bankCard.issuerInfo().bankName());
+
+      SpannableString cardNumber = new SpannableString(format(" •••• %s", obtainLastCardDigits(bankCard.number())));
+      cardNumber.setSpan(new RelativeSizeSpan(0.8f), 0, cardNumber.length(), 0);
+
+      if (TextUtils.isEmpty(bankName)) return cardNumber;
+
+      return new SpannableStringBuilder()
+            .append(bankName)
+            .append(cardNumber);
+   }
+
+   @SuppressWarnings("unused")
    public int obtainFinancialServiceImageRes(Record.FinancialService financialService) {
       if (financialService == null) {
          return 0;
@@ -93,50 +146,5 @@ public class BankCardHelper {
          default:
             throw new IllegalStateException("Incorrect Financial Service");
       }
-   }
-
-   public String financialServiceWithCardNumber(BankCard bankCard) {
-      return format("%s •••• %s", obtainFinancialServiceType(bankCard.issuerInfo()
-            .financialService()), obtainLastCardDigits(bankCard.number()));
-   }
-
-   public String obtainCardType(BankCard.CardType cardType) {
-      if (cardType == null) {
-         return null;
-      }
-      switch (cardType) {
-         case CREDIT:
-            return context.getString(R.string.wallet_record_type_credit);
-         case DEBIT:
-            return context.getString(R.string.wallet_record_type_debit);
-         default:
-            return context.getString(R.string.empty);
-      }
-   }
-
-   public String bankNameWithCardNumber(BankCard bankCard) {
-      String bankName = bankCard.issuerInfo().bankName();
-      bankName = (bankName == null) ? "" : bankName;
-      return format("%s •••• %s", bankName, obtainLastCardDigits(bankCard.number()));
-   }
-
-   public CharSequence formattedBankNameWithCardNumber(BankCard bankCard) {
-      SpannableString bankName = formattedBankName(bankCard);
-
-      SpannableString cardNumber = new SpannableString(format(" •••• %s", obtainLastCardDigits(bankCard.number())));
-      cardNumber.setSpan(new RelativeSizeSpan(0.8f), 0, cardNumber.length(), 0);
-
-      if (TextUtils.isEmpty(bankName)) return cardNumber;
-
-      return new SpannableStringBuilder()
-            .append(bankName)
-            .append(cardNumber);
-   }
-
-   public SpannableString formattedBankName(BankCard bankCard) {
-      if (TextUtils.isEmpty(bankCard.issuerInfo().bankName())) return null;
-      SpannableString bankName = new SpannableString(bankCard.issuerInfo().bankName());
-      bankName.setSpan(new StyleSpan(Typeface.BOLD), 0, bankName.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-      return bankName;
    }
 }

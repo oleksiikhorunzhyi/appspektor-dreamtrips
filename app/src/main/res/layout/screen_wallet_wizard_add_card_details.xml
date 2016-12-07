@@ -38,8 +38,8 @@
                android:layout_height="wrap_content"
                android:layout_gravity="center_horizontal"
                android:layout_marginTop="@dimen/wallet_add_card_details_component_margin_top"
-               android:text="@string/wallet_add_card_details_cvv_label"
                android:textAppearance="?android:attr/textAppearanceSmall"
+               android:textColor="#666666"
                />
 
          <com.worldventures.dreamtrips.wallet.ui.widget.PinEntryEditText
@@ -55,6 +55,17 @@
                app:pinCharacterSpacing="8dp"
                app:pinLineColors="@color/wallet_number_edit_text_pin_line_color"
                app:pinRepeatedHint="#"
+               />
+
+         <EditText
+               android:id="@+id/card_name"
+               android:layout_width="match_parent"
+               android:layout_height="wrap_content"
+               android:inputType="textCapSentences"
+               android:layout_marginTop="@dimen/wallet_add_card_details_component_margin_top"
+               android:singleLine="true"
+               android:maxLength="@integer/wallet_card_name_length"
+               tools:ignore="LabelFor"
                />
 
          <include
@@ -74,21 +85,12 @@
                tools:checked="true"
                />
 
-         <EditText
-               android:id="@+id/card_nickname"
-               android:layout_width="match_parent"
-               android:layout_height="wrap_content"
-               android:layout_marginTop="@dimen/wallet_add_card_details_component_margin_top"
-               android:hint="@string/wallet_add_card_details_hint_nickname_card"
-               android:imeOptions="actionDone"
-               android:singleLine="true"
-               />
-
          <Button
                android:id="@+id/confirm_button"
+               android:enabled="false"
                android:layout_width="match_parent"
                android:layout_height="wrap_content"
-               android:layout_marginTop="@dimen/wallet_add_card_details_component_margin_top"
+               android:layout_marginTop="@dimen/spacing_large"
                android:text="@string/wallet_add_card_details_button_confirm"
                />
 

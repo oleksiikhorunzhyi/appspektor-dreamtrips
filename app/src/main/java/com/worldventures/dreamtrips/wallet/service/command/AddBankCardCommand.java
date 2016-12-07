@@ -8,7 +8,6 @@ import com.worldventures.dreamtrips.wallet.domain.entity.card.BankCard;
 import com.worldventures.dreamtrips.wallet.domain.entity.card.ImmutableBankCard;
 import com.worldventures.dreamtrips.wallet.service.SmartCardInteractor;
 import com.worldventures.dreamtrips.wallet.util.FormatException;
-import com.worldventures.dreamtrips.wallet.util.WalletValidateHelper;
 
 import javax.inject.Inject;
 
@@ -16,6 +15,10 @@ import io.techery.janet.Command;
 import io.techery.janet.command.annotations.CommandAction;
 import rx.Observable;
 import timber.log.Timber;
+
+import static com.worldventures.dreamtrips.wallet.util.WalletValidateHelper.validateAddressInfoOrThrow;
+import static com.worldventures.dreamtrips.wallet.util.WalletValidateHelper.validateCardNameOrThrow;
+import static com.worldventures.dreamtrips.wallet.util.WalletValidateHelper.validateCvvOrThrow;
 
 @CommandAction
 public class AddBankCardCommand extends Command<BankCard> implements InjectableAction {
@@ -26,7 +29,7 @@ public class AddBankCardCommand extends Command<BankCard> implements InjectableA
    private final BankCard bankCard;
    private final AddressInfo manualAddressInfo;
    private final String cvv;
-   private final String nickName;
+   private final String cardName;
    private final RecordIssuerInfo issuerInfo;
    private final boolean setAsDefaultAddress;
    private final boolean useDefaultAddress;
@@ -34,7 +37,7 @@ public class AddBankCardCommand extends Command<BankCard> implements InjectableA
 
    private AddBankCardCommand(BankCard bankCard,
          AddressInfo manualAddressInfo,
-         String nickName,
+         String cardName,
          String cvv,
          RecordIssuerInfo issuerInfo,
          boolean useDefaultAddress,
@@ -44,7 +47,7 @@ public class AddBankCardCommand extends Command<BankCard> implements InjectableA
       this.issuerInfo = issuerInfo;
       this.setAsDefaultAddress = setAsDefaultAddress;
       this.useDefaultAddress = useDefaultAddress;
-      this.nickName = nickName;
+      this.cardName = cardName;
       this.cvv = cvv;
       this.bankCard = bankCard;
       this.manualAddressInfo = manualAddressInfo;
@@ -98,17 +101,16 @@ public class AddBankCardCommand extends Command<BankCard> implements InjectableA
       return ImmutableBankCard.builder()
             .from(bankCard)
             .cvv(Integer.parseInt(cvv))
-            .nickName(nickName)
+            .nickName(cardName)
             .issuerInfo(issuerInfo)
             .addressInfo(address)
             .build();
    }
 
    private void checkCardData() throws FormatException {
-      boolean validInfo = (WalletValidateHelper.validateAddressInfo(manualAddressInfo)) &&
-            WalletValidateHelper.validateCardCvv(cvv, bankCard.number());
-
-      if (!validInfo) throw new FormatException();
+      validateCardNameOrThrow(cardName);
+      validateAddressInfoOrThrow(manualAddressInfo);
+      validateCvvOrThrow(cvv, bankCard.number());
    }
 
    public static class Builder {
@@ -116,7 +118,7 @@ public class AddBankCardCommand extends Command<BankCard> implements InjectableA
       private BankCard bankCard;
       private AddressInfo manualAddressInfo;
       private String cvv;
-      private String nickName;
+      private String cardName;
       private RecordIssuerInfo issuerInfo;
       private boolean useDefaultAddress;
       private boolean setAsDefaultAddress;
@@ -132,8 +134,8 @@ public class AddBankCardCommand extends Command<BankCard> implements InjectableA
          return this;
       }
 
-      public Builder setNickName(String nickName) {
-         this.nickName = nickName;
+      public Builder setCardName(String cardName) {
+         this.cardName = cardName;
          return this;
       }
 
@@ -163,7 +165,7 @@ public class AddBankCardCommand extends Command<BankCard> implements InjectableA
       }
 
       public AddBankCardCommand create() {
-         return new AddBankCardCommand(bankCard, manualAddressInfo, nickName, cvv, issuerInfo,
+         return new AddBankCardCommand(bankCard, manualAddressInfo, cardName, cvv, issuerInfo,
                useDefaultAddress, setAsDefaultAddress, setAsDefaultCard);
       }
    }

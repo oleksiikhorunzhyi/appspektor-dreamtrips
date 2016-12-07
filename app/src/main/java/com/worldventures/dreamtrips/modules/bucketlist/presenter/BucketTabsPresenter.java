@@ -19,7 +19,6 @@ import io.techery.janet.ActionPipe;
 import io.techery.janet.Command;
 import io.techery.janet.helper.ActionStateSubscriber;
 import rx.Observable;
-import rx.android.schedulers.AndroidSchedulers;
 
 import static com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem.BucketType;
 import static com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem.BucketType.ACTIVITY;
@@ -34,16 +33,9 @@ public class BucketTabsPresenter extends Presenter<BucketTabsPresenter.View> {
    @Override
    public void takeView(View view) {
       super.takeView(view);
-      apiErrorPresenter.setView(view);
       setTabs();
       loadCategories();
-
-      view.bind(bucketInteractor.bucketListActionPipe()
-            .createObservableResult(BucketListCommand.fetch(getUser().getId(), false))
-            .concatMap(bucketListAction -> bucketListAction.isFromCache() ? bucketInteractor.bucketListActionPipe()
-                  .createObservable(BucketListCommand.fetch(getUser().getId(), true)) : Observable.just(bucketListAction))
-            .observeOn(AndroidSchedulers.mainThread())).subscribe(bucketListAction -> {
-      }, this::handleError);
+      loadBucketList();
    }
 
    @Override
@@ -61,10 +53,6 @@ public class BucketTabsPresenter extends Presenter<BucketTabsPresenter.View> {
       db.saveOpenBucketTabType(null);
    }
 
-   protected User getUser() {
-      return getAccount();
-   }
-
    private void loadCategories() {
       bucketInteractor.getCategoriesPipe()
             .createObservable(new GetCategoriesCommand())
@@ -74,6 +62,16 @@ public class BucketTabsPresenter extends Presenter<BucketTabsPresenter.View> {
                         getCategoriesCommand.getResult()))
                   .onFail(this::handleError)
             );
+   }
+
+   private void loadBucketList() {
+      bucketInteractor.bucketListActionPipe()
+            .createObservable(BucketListCommand.fetch(getUser().getId(), false))
+            .compose(bindViewToMainComposer())
+            .concatMap(state -> state.action.isFromCache() ? bucketInteractor.bucketListActionPipe()
+                  .createObservable(BucketListCommand.fetch(getUser().getId(), true)) : Observable.just(state))
+            .subscribe(new ActionStateSubscriber<BucketListCommand>()
+                  .onFail(this::handleError));
    }
 
    public void setTabs() {
@@ -93,6 +91,10 @@ public class BucketTabsPresenter extends Presenter<BucketTabsPresenter.View> {
       return Observable.merge(recentPipe.createObservableResult(RecentlyAddedBucketsFromPopularCommand.get(LOCATION)), recentPipe
             .createObservableResult(RecentlyAddedBucketsFromPopularCommand.get(ACTIVITY)), recentPipe.createObservableResult(RecentlyAddedBucketsFromPopularCommand
             .get(DINING)));
+   }
+
+   protected User getUser() {
+      return getAccount();
    }
 
    public interface View extends RxView, ApiErrorView {

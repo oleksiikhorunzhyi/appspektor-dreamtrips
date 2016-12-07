@@ -23,6 +23,7 @@ import com.worldventures.dreamtrips.core.utils.ViewUtils;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem;
 import com.worldventures.dreamtrips.modules.bucketlist.presenter.SweetDialogHelper;
 import com.worldventures.dreamtrips.modules.common.view.adapter.ContentAdapter;
+import com.worldventures.dreamtrips.modules.common.view.connection_overlay.ConnectionState;
 import com.worldventures.dreamtrips.modules.membership.bundle.UrlBundle;
 import com.worldventures.dreamtrips.modules.trips.model.ContentItem;
 import com.worldventures.dreamtrips.modules.trips.model.TripModel;
@@ -38,6 +39,8 @@ import javax.inject.Inject;
 import butterknife.InjectView;
 import butterknife.OnClick;
 import butterknife.Optional;
+import rx.Observable;
+import timber.log.Timber;
 
 @Layout(R.layout.fragment_trip_details)
 @MenuResource(R.menu.menu_detailed_trip)
@@ -107,6 +110,22 @@ public class TripDetailsFragment extends RxBaseFragmentWithArgs<TripDetailsPrese
       tripDetailsViewInjector.initGalleryData(getChildFragmentManager(), getPresenter().getFilteredImages());
 
       subscribeToTripImagesClicks();
+   }
+
+   @Override
+   public void initConnectionOverlay(Observable<ConnectionState> connectionStateObservable, Observable<Void> stopper) {
+      if (ViewUtils.isLandscapeOrientation(getContext())) {
+         super.initConnectionOverlay(connectionStateObservable, stopper);
+      }
+   }
+
+   @Override
+   protected int getContentLayoutId() {
+      // Trip details in landscape mode has specific connection overlay parent view
+      if (ViewUtils.isLandscapeOrientation(getContext())) {
+         return R.id.trip_landscape_details_content_layout;
+      }
+      return super.getContentLayoutId();
    }
 
    private void subscribeToTripImagesClicks() {

@@ -24,7 +24,7 @@ public class MutualFriendsPresenter extends BaseUserListPresenter<MutualFriendsP
             .compose(bindViewToMainComposer())
             .subscribe(new ActionStateSubscriber<GetMutualFriendsCommand>()
                   .onSuccess(getMutualFriendsCommand -> onSuccessAction.call(getMutualFriendsCommand.getResult()))
-                  .onFail((getMutualFriendsCommand, throwable) -> onError(getMutualFriendsCommand)));
+                  .onFail(this::onError));
    }
 
    @Override

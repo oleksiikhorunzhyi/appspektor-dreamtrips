@@ -91,7 +91,6 @@ public class BaseCommentPresenter<T extends BaseCommentPresenter.View> extends P
    @Override
    public void takeView(T view) {
       super.takeView(view);
-      apiErrorPresenter.setView(view);
       view.setDraftComment(draftCommentText);
       view.setLikePanel(feedEntity);
 
@@ -108,7 +107,7 @@ public class BaseCommentPresenter<T extends BaseCommentPresenter.View> extends P
       view.bindUntilDropView(commentsInteractor.commentsPipe().observe().compose(new IoToMainComposer<>()))
             .subscribe(new ActionStateSubscriber<GetCommentsCommand>()
                   .onSuccess(getCommentsCommand -> onCommentsLoaded(getCommentsCommand.getResult()))
-                  .onFail((getCommentsCommand, throwable) -> view.informUser(getCommentsCommand.getErrorMessage())));
+                  .onFail(this::handleError));
    }
 
    private void subscribeToCommentTranslation() {
@@ -120,7 +119,7 @@ public class BaseCommentPresenter<T extends BaseCommentPresenter.View> extends P
                view.updateComment(translateCommentCommand.getResult());
             }).onFail((translateCommentCommand, throwable) -> {
                view.notifyDataSetChanged();
-               view.informUser(translateCommentCommand.getErrorMessage());
+               handleError(translateCommentCommand, throwable);
             }));
    }
 

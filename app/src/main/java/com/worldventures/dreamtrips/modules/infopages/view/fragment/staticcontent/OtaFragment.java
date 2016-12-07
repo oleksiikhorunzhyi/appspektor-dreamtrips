@@ -12,7 +12,7 @@ import com.worldventures.dreamtrips.modules.membership.bundle.UrlBundle;
 import java.util.HashMap;
 import java.util.Map;
 
-@Layout(R.layout.fragment_webview)
+@Layout(R.layout.fragment_webview_with_overlay)
 @MenuResource(R.menu.menu_mock)
 public class OtaFragment extends AuthorizedStaticInfoFragment<UrlBundle> {
 

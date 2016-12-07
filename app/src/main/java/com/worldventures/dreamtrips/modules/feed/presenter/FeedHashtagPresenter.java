@@ -79,7 +79,6 @@ public class FeedHashtagPresenter<T extends FeedHashtagPresenter.View> extends J
    @Override
    public void takeView(T view) {
       super.takeView(view);
-      apiErrorPresenter.setView(view);
       if (feedItems.size() != 0) {
          view.refreshFeedItems(feedItems);
       }
@@ -127,10 +126,8 @@ public class FeedHashtagPresenter<T extends FeedHashtagPresenter.View> extends J
 
    public void onRefresh() {
       if (!TextUtils.isEmpty(query)) {
-         hashtagSuggestions.clear();
-         view.startLoading();
          interactor.getRefreshFeedsByHashtagsPipe().send(new FeedByHashtagCommand.Refresh(query, FEEDS_PER_PAGE));
-      }
+      } else view.finishLoading();
    }
 
    public void loadNext() {
@@ -147,21 +144,23 @@ public class FeedHashtagPresenter<T extends FeedHashtagPresenter.View> extends J
       interactor.getRefreshFeedsByHashtagsPipe().observe()
             .compose(bindViewToMainComposer())
             .subscribe(new ActionStateSubscriber<FeedByHashtagCommand.Refresh>()
-               .onSuccess(refresh -> refreshFeedSucceed(refresh.getResult()))
-               .onFail((refresh, throwable) -> {
-                  view.informUser(refresh.getErrorMessage());
-                  refreshFeedError();
-            }));
+                  .onStart(refresh -> {
+                     view.startLoading();
+                     hashtagSuggestions.clear();
+                  })
+                  .onSuccess(refresh -> refreshFeedSucceed(refresh.getResult()))
+                  .onFail((refresh, throwable) -> {
+                     handleError(refresh, throwable);
+                     refreshFeedError();
+                  }));
    }
 
    private void refreshFeedSucceed(List<FeedItem> freshItems) {
       boolean noMoreFeeds = freshItems == null || freshItems.size() == 0;
       view.updateLoadingStatus(false, noMoreFeeds);
-      //
       view.finishLoading();
       feedItems.clear();
       feedItems.addAll(freshItems);
-      //
       view.refreshFeedItems(feedItems);
    }
 
@@ -178,7 +177,7 @@ public class FeedHashtagPresenter<T extends FeedHashtagPresenter.View> extends J
             .subscribe(new ActionStateSubscriber<FeedByHashtagCommand.LoadNext>()
                   .onSuccess(loadNext -> addFeedItems(loadNext.getResult()))
                   .onFail((loadNext, throwable) -> {
-                     view.informUser(loadNext.getErrorMessage());
+                     handleError(loadNext, throwable);
                      loadMoreItemsError();
                   }));
    }
@@ -215,7 +214,7 @@ public class FeedHashtagPresenter<T extends FeedHashtagPresenter.View> extends J
                .createObservable(new DownloadImageCommand(event.url))
                .compose(bindViewToMainComposer())
                .subscribe(new ActionStateSubscriber<DownloadImageCommand>()
-                  .onFail(this::handleError));
+                     .onFail(this::handleError));
       }
    }
 

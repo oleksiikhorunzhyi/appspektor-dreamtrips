@@ -44,7 +44,10 @@ public class ChangeFeedEntityLikedStatusCommand extends CommandWithError<FeedEnt
             .subscribe(likeEntityCommand -> {
                pendingLikesStorage.remove(likeEntityCommand.getResult().getUid());
                callback.onSuccess(likeEntityCommand.getResult());
-            }, callback::onFail);
+            }, throwable -> {
+               pendingLikesStorage.remove(feedEntity.getUid());
+               callback.onFail(throwable);
+            });
    }
 
    private void unlike(CommandCallback<FeedEntity> callback) {
@@ -52,7 +55,10 @@ public class ChangeFeedEntityLikedStatusCommand extends CommandWithError<FeedEnt
             .subscribe(unlikeEntityCommand -> {
                pendingLikesStorage.remove(unlikeEntityCommand.getResult().getUid());
                callback.onSuccess(unlikeEntityCommand.getResult());
-            }, callback::onFail);
+            }, throwable -> {
+               pendingLikesStorage.remove(feedEntity.getUid());
+               callback.onFail(throwable);
+            });
    }
 
    @Override

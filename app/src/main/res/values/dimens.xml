@@ -311,10 +311,9 @@
    <dimen name="messenger_swappable_action_button_padding">16dp</dimen>
    <dimen name="messenger_swappable_action_button_drawable_padding">4dp</dimen>
 
-   <dimen name="messenger_connection_overlay_height">46dp</dimen>
-   <dimen name="messenger_connection_overlay_message_text_size">15sp</dimen>
-   <dimen name="messenger_connection_overlay_progress_bar_right_margin">8dp</dimen>
-   <dimen name="messenger_overlay_reconnect_button_padding">20dp</dimen>
+   <dimen name="connection_overlay_height">46dp</dimen>
+   <dimen name="connection_overlay_message_text_size">15sp</dimen>
+   <dimen name="connection_overlay_progress_bar_right_margin">8dp</dimen>
 
    <dimen name="messenger_master_width">300dp</dimen>
 

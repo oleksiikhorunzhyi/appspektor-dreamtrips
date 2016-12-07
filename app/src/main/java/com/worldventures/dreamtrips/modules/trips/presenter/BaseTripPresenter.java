@@ -39,17 +39,19 @@ public class BaseTripPresenter<V extends BaseTripPresenter.View> extends Present
    }
 
    public void addTripToBucket() {
-      view.bindUntilDropView(bucketInteractor.createPipe()
-            .createObservableResult(new CreateBucketItemCommand(ImmutableBucketBodyImpl.builder()
+      bucketInteractor.createPipe()
+            .createObservable(new CreateBucketItemCommand(ImmutableBucketBodyImpl.builder()
                   .type("trip")
                   .id(trip.getTripId())
                   .build()))
-            .map(CreateBucketItemCommand::getResult)
-            .observeOn(AndroidSchedulers.mainThread())).subscribe(bucketItem -> {
-         trip.setInBucketList(true);
-         view.setup(trip);
-         view.tripAddedToBucketItem(bucketItem);
-      }, this::handleError);
+            .compose(bindViewToMainComposer())
+            .subscribe(new ActionStateSubscriber<CreateBucketItemCommand>()
+                  .onSuccess(createBucketItemCommand -> {
+                     trip.setInBucketList(true);
+                     view.setup(trip);
+                     view.tripAddedToBucketItem(createBucketItemCommand.getResult());
+                  })
+                  .onFail(this::handleError));
    }
 
    public void likeTrip() {

@@ -17,7 +17,7 @@
          >
 
       <FrameLayout
-            android:id="@+id/new_chat_content_view"
+            android:id="@id/content_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             >

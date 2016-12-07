@@ -669,9 +669,9 @@
    <string name="error_fail_to_load_filters">Sorry, failed to load filters</string>
    <string name="flag_content_message">WorldVentures personnel will be notified to review this content for </string>
 
-   <!-- change this later after approval from WV -->
    <string name="offline_warning_dialog_title">No Internet Connection</string>
    <string name="offline_warning_dialog_message">Your access will be limited</string>
+   <string name="offline_indicator_description">No Internet connection</string>
 
    <string name="merchant_message_text" formatted="false">Congratulations! You earned %s DreamTrips points @%s, %s</string>
 

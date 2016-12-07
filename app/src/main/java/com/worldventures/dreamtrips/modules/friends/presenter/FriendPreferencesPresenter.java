@@ -1,6 +1,7 @@
 package com.worldventures.dreamtrips.modules.friends.presenter;
 
 import com.innahema.collections.query.queriables.Queryable;
+import com.worldventures.dreamtrips.core.api.action.CommandWithError;
 import com.worldventures.dreamtrips.core.session.CirclesInteractor;
 import com.worldventures.dreamtrips.modules.common.api.janet.command.GetCirclesCommand;
 import com.worldventures.dreamtrips.modules.common.model.User;
@@ -50,7 +51,7 @@ public class FriendPreferencesPresenter extends Presenter<FriendPreferencesPrese
             .compose(bindView())
             .subscribe(new ActionStateSubscriber<GetCirclesCommand>().onStart(circlesCommand -> onCirclesStart())
                   .onSuccess(circlesCommand -> onCirclesSuccess(circlesCommand.getResult()))
-                  .onFail((circlesCommand, throwable) -> onCirclesError(circlesCommand.getErrorMessage())));
+                  .onFail(this::onCirclesError));
    }
 
    private void onCirclesStart() {
@@ -64,9 +65,9 @@ public class FriendPreferencesPresenter extends Presenter<FriendPreferencesPrese
       view.hideBlockingProgress();
    }
 
-   private void onCirclesError(String messageId) {
+   private void onCirclesError(CommandWithError commandWithError, Throwable throwable) {
       view.hideBlockingProgress();
-      view.informUser(messageId);
+      handleError(commandWithError, throwable);
    }
 
    public void onRelationshipChanged(Circle circle, State state) {

@@ -3,6 +3,7 @@ package com.worldventures.dreamtrips.modules.feed.presenter;
 import android.support.annotation.NonNull;
 
 import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.core.api.action.CommandWithError;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.core.session.CirclesInteractor;
 import com.worldventures.dreamtrips.modules.common.api.janet.command.GetCirclesCommand;
@@ -65,7 +66,7 @@ public class FeedListAdditionalInfoPresenter extends FeedItemAdditionalInfoPrese
             .compose(bindView())
             .subscribe(new ActionStateSubscriber<GetCirclesCommand>().onStart(circlesCommand -> onCirclesStart())
                   .onSuccess(circlesCommand -> onCirclesSuccess(circlesCommand.getResult()))
-                  .onFail((circlesCommand, throwable) -> onCirclesError(circlesCommand.getErrorMessage())));
+                  .onFail(this::onCirclesError));
 
    }
 
@@ -73,9 +74,9 @@ public class FeedListAdditionalInfoPresenter extends FeedItemAdditionalInfoPrese
       view.showBlockingProgress();
    }
 
-   private void onCirclesError(String messageId) {
+   private void onCirclesError(CommandWithError commandWithError, Throwable throwable) {
       view.hideBlockingProgress();
-      view.informUser(messageId);
+      handleError(commandWithError, throwable);
    }
 
    private void onCirclesSuccess(List<Circle> resultCircles) {

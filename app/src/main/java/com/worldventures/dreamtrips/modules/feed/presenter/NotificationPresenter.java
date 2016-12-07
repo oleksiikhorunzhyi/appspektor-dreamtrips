@@ -63,7 +63,7 @@ public class NotificationPresenter extends Presenter<NotificationPresenter.View>
    }
 
    private void notificationsError(CommandWithError action, Throwable throwable) {
-      view.informUser(action.getErrorMessage());
+      handleError(action, throwable);
       view.updateLoadingStatus(false, false);
       view.finishLoading();
    }

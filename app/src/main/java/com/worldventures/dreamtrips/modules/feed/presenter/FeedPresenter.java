@@ -52,6 +52,7 @@ import com.worldventures.dreamtrips.modules.feed.service.FeedInteractor;
 import com.worldventures.dreamtrips.modules.feed.service.PostsInteractor;
 import com.worldventures.dreamtrips.modules.feed.service.SuggestedPhotoInteractor;
 import com.worldventures.dreamtrips.modules.feed.service.analytics.ViewFeedAction;
+import com.worldventures.dreamtrips.modules.feed.service.command.BaseGetFeedCommand;
 import com.worldventures.dreamtrips.modules.feed.service.command.ChangeFeedEntityLikedStatusCommand;
 import com.worldventures.dreamtrips.modules.feed.service.command.DeletePostCommand;
 import com.worldventures.dreamtrips.modules.feed.service.command.GetAccountFeedCommand;
@@ -126,7 +127,6 @@ public class FeedPresenter extends Presenter<FeedPresenter.View> {
    @Override
    public void takeView(View view) {
       super.takeView(view);
-      apiErrorPresenter.setView(view);
       updateCircles();
       subscribeRefreshFeeds();
       subscribeLoadNextFeeds();
@@ -185,7 +185,7 @@ public class FeedPresenter extends Presenter<FeedPresenter.View> {
             .compose(bindView())
             .subscribe(new ActionStateSubscriber<GetCirclesCommand>().onStart(circlesCommand -> onCirclesStart())
                   .onSuccess(circlesCommand -> onCirclesSuccess(circlesCommand.getResult()))
-                  .onFail((circlesCommand, throwable) -> onCirclesError(circlesCommand.getErrorMessage())));
+                  .onFail(this::onCirclesError));
    }
 
    private void updateCircles() {
@@ -203,9 +203,9 @@ public class FeedPresenter extends Presenter<FeedPresenter.View> {
       view.showFilter(resultCircles, filterCircle);
    }
 
-   private void onCirclesError(String messageId) {
+   private void onCirclesError(CommandWithError commandWithError, Throwable throwable) {
       view.hideBlockingProgress();
-      view.informUser(messageId);
+      handleError(commandWithError, throwable);
    }
 
    ///////////////////////////////////////////////////////////////////////////
@@ -232,8 +232,8 @@ public class FeedPresenter extends Presenter<FeedPresenter.View> {
       suggestedPhotoInteractor.getSuggestedPhotoCommandActionPipe().send(new SuggestedPhotoCommand());
    }
 
-   private void refreshFeedError(CommandWithError action, Throwable throwable) {
-      view.informUser(action.getErrorMessage());
+   private void refreshFeedError(BaseGetFeedCommand action, Throwable throwable) {
+      handleError(action, throwable);
       view.updateLoadingStatus(false, false);
       view.finishLoading();
       view.refreshFeedItems(feedItems);
@@ -266,7 +266,7 @@ public class FeedPresenter extends Presenter<FeedPresenter.View> {
    }
 
    private void loadMoreItemsError(CommandWithError action, Throwable throwable) {
-      view.informUser(action.getErrorMessage());
+      handleError(action, throwable);
       view.updateLoadingStatus(false, false);
       addFeedItems(new ArrayList<>());
    }

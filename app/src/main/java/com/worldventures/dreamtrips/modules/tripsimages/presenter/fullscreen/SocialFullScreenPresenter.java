@@ -14,7 +14,6 @@ public class SocialFullScreenPresenter<T extends IFullScreenObject,
    @Override
    public void takeView(PRESENTER_VIEW view) {
       super.takeView(view);
-      apiErrorPresenter.setView(view);
    }
 
    public interface View extends FullScreenPresenter.View, ApiErrorView {

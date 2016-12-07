@@ -39,7 +39,7 @@ public class FriendListPresenter extends BaseUserListPresenter<FriendListPresent
    public void onFilterClicked() {
       getCirclesObservable().subscribe(new ActionStateSubscriber<GetCirclesCommand>().onStart(circlesCommand -> onCirclesStart())
             .onSuccess(circlesCommand -> onCirclesFilterSuccess(circlesCommand.getResult()))
-            .onFail((circlesCommand, throwable) -> onCirclesError(circlesCommand.getErrorMessage())));
+            .onFail(this::onCirclesError));
    }
 
    private void onCirclesFilterSuccess(List<Circle> circles) {
@@ -80,7 +80,7 @@ public class FriendListPresenter extends BaseUserListPresenter<FriendListPresent
             .compose(bindViewToMainComposer())
             .subscribe(new ActionStateSubscriber<GetFriendsCommand>()
                   .onSuccess(getFriendsCommand -> onSuccessAction.call(getFriendsCommand.getResult()))
-                  .onFail((getFriendsCommand, throwable) -> onError(getFriendsCommand)));
+                  .onFail(this::onError));
    }
 
    public interface View extends BaseUserListPresenter.View {

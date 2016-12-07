@@ -22,7 +22,6 @@ import java.util.List;
 import javax.inject.Inject;
 
 import icepick.State;
-import io.techery.janet.CancelException;
 import io.techery.janet.helper.ActionStateSubscriber;
 import rx.Observable;
 
@@ -120,9 +119,8 @@ public class TripListPresenter extends Presenter<TripListPresenter.View> {
                      view.itemsChanged(getTripsCommand.getItems());
                   })
                   .onFail((getTripsCommand, throwable) -> {
-                     if (throwable instanceof CancelException) return;
+                     this.handleError(getTripsCommand, throwable);
                      view.finishLoading();
-                     view.informUser(getTripsCommand.getErrorMessage());
                   }));
    }
 
@@ -144,20 +142,21 @@ public class TripListPresenter extends Presenter<TripListPresenter.View> {
       trackAction(tripModel, TrackingHelper.ATTRIBUTE_ADD_TO_BUCKET_LIST);
       if (!tripModel.isInBucketList()) {
          bucketInteractor.createPipe()
-               .createObservableResult(new CreateBucketItemCommand(ImmutableBucketBodyImpl.builder()
+               .createObservable(new CreateBucketItemCommand(ImmutableBucketBodyImpl.builder()
                      .type("trip")
                      .id(tripModel.getTripId())
                      .build()))
-               .map(CreateBucketItemCommand::getResult)
                .compose(bindViewToMainComposer())
-               .subscribe(bucketItem -> {
-                  tripModel.setInBucketList(true);
-                  view.dataSetChanged();
-                  view.showItemAddedToBucketList(bucketItem);
-               }, throwable -> {
+               .subscribe(new ActionStateSubscriber<CreateBucketItemCommand>()
+                  .onSuccess(createBucketItemCommand -> {
+                     tripModel.setInBucketList(true);
+                     view.dataSetChanged();
+                     view.showItemAddedToBucketList(createBucketItemCommand.getResult());
+                  })
+               .onFail((createBucketItemCommand, throwable) -> {
                   tripModel.setInBucketList(!tripModel.isInBucketList());
-                  handleError(throwable);
-               });
+                  handleError(createBucketItemCommand, throwable);
+               }));
       } else {
          tripModel.setInBucketList(!tripModel.isInBucketList());
          view.dataSetChanged();

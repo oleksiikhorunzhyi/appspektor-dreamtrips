@@ -30,8 +30,8 @@ import javax.inject.Named;
 import icepick.State;
 import io.techery.janet.Janet;
 import io.techery.janet.helper.ActionStateSubscriber;
+import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
-import timber.log.Timber;
 
 import static com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem.COMPLETED;
 import static com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem.NEW;
@@ -66,19 +66,25 @@ public class BucketListPresenter extends Presenter<BucketListPresenter.View> {
    public void onStart() {
       super.onStart();
       view.startLoading();
-      view.bindUntilStop(bucketInteractor.bucketListActionPipe()
-            .observeSuccessWithReplay()
-            .map(BucketListCommand::getResult)
-            .compose(BucketUtility.disJoinByType(type))
-            .observeOn(AndroidSchedulers.mainThread())).subscribe(items -> {
-         Timber.d("List of buckets updated : " + items.size());
-         bucketItems = items;
+      bucketInteractor.bucketListActionPipe()
+            .observeWithReplay()
+            .compose(bindViewToMainComposer())
+            .subscribe(new ActionStateSubscriber<BucketListCommand>()
+            .onSuccess(bucketListCommand -> onSuccessLoadingBucketList(bucketListCommand.getResult()))
+            .onFail((bucketListCommand, throwable) -> {
+               view.finishLoading();
+               handleError(bucketListCommand, throwable);
+            }));
+   }
 
-         view.finishLoading();
-         refresh();
-      }, throwable -> {
-         view.finishLoading();
-      });
+   private void onSuccessLoadingBucketList(List<BucketItem> newItems) {
+      Observable.just(newItems)
+            .compose(BucketUtility.disJoinByType(type))
+            .subscribe(items -> {
+               bucketItems = items;
+               view.finishLoading();
+               refresh();
+            });
    }
 
    @Override

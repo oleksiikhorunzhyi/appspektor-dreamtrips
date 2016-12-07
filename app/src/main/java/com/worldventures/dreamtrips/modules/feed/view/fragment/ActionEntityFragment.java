@@ -227,7 +227,7 @@ public abstract class ActionEntityFragment<PM extends ActionEntityPresenter, P e
       getPresenter().cancelClicked();
    }
 
-   @OnClick(R.id.space)
+   @OnClick(R.id.content_layout)
    void onSpaceClicked() {
       if (ViewUtils.isTablet(getActivity())) getPresenter().cancelClicked();
    }

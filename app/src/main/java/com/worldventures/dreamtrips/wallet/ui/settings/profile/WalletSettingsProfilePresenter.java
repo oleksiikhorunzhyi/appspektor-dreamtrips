@@ -12,21 +12,21 @@ import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCard;
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCardUser;
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCardUserPhoto;
-import com.worldventures.dreamtrips.wallet.service.SmartCardAvatarInteractor;
+import com.worldventures.dreamtrips.wallet.service.SmartCardUserDataInteractor;
 import com.worldventures.dreamtrips.wallet.service.SmartCardInteractor;
 import com.worldventures.dreamtrips.wallet.service.SmartCardManager;
 import com.worldventures.dreamtrips.wallet.service.command.CompressImageForSmartCardCommand;
+import com.worldventures.dreamtrips.wallet.service.command.SetupUserDataCommand;
 import com.worldventures.dreamtrips.wallet.service.command.SmartCardAvatarCommand;
-import com.worldventures.dreamtrips.wallet.service.command.UpdateUserDataCommand;
+import com.worldventures.dreamtrips.wallet.service.command.http.UpdateCardUserServerDataCommand;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletPresenter;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.WalletScreen;
-import com.worldventures.dreamtrips.wallet.ui.common.helper.ErrorHandler;
-import com.worldventures.dreamtrips.wallet.ui.common.helper.OperationActionStateSubscriberWrapper;
 import com.worldventures.dreamtrips.wallet.ui.common.navigation.Navigator;
 import com.worldventures.dreamtrips.wallet.util.FormatException;
 
 import javax.inject.Inject;
 
+import io.techery.janet.Command;
 import io.techery.janet.helper.ActionStateSubscriber;
 import rx.Observable;
 import timber.log.Timber;
@@ -36,7 +36,7 @@ public class WalletSettingsProfilePresenter extends WalletPresenter<WalletSettin
    @Inject Navigator navigator;
    @Inject SmartCardInteractor smartCardInteractor;
    @Inject Activity activity;
-   @Inject SmartCardAvatarInteractor smartCardAvatarInteractor;
+   @Inject SmartCardUserDataInteractor smartCardUserDataInteractor;
    @Inject SmartCardManager smartCardManager;
 
    @Nullable private SmartCardUserPhoto preparedPhoto;
@@ -73,29 +73,53 @@ public class WalletSettingsProfilePresenter extends WalletPresenter<WalletSettin
    }
 
    void setupUserData() {
-      if (!isDataChanged()) {goBack(true);}
+      if (!isDataChanged()) {
+         goBack(true);
+         return;
+      }
 
-      smartCardInteractor.updateUserDataActionPipe()
-            .observeWithReplay()
-            .compose(bindViewIoToMainComposer())
-            .subscribe(OperationActionStateSubscriberWrapper.<UpdateUserDataCommand>forView(getView().provideOperationDelegate())
-                  .onSuccess(this::onDataSaved)
-                  .onFail(ErrorHandler.<UpdateUserDataCommand>builder(getContext())
-                        .handle(FormatException.class, R.string.wallet_add_card_details_error_message)
-                        .build())
-                  .wrap());
-
-      smartCardInteractor.updateUserDataActionPipe()
-            .send(new UpdateUserDataCommand(baseValue.user(), getView().getFirstName(), getView().getMiddleName(), getView()
-                  .getLastName(), preparedPhoto, baseValue.smartCardId()));
+      getView().showProgress();
+      setupCardUserData(getView().getFirstName(), getView().getMiddleName(), getView().getLastName(), preparedPhoto)
+            .subscribe(smartCardCommand -> uploadDataToServer(), throwable -> {
+               String text = getContext().getString(throwable instanceof FormatException?
+                     R.string.wallet_add_card_details_error_message : R.string.wallet_card_settings_profile_dialog_error_smartcard_content);
+               getView().showUploadSmartCardFailDialog(text);
+            });
    }
 
-   private void onDataSaved(UpdateUserDataCommand setupUserDataCommand) {
-      goBack(true);
+   void cancelUploadSmartUserData(){
+      getView().hideProgress();
+   }
+
+   void uploadDataToServer() {
+      smartCardUserDataInteractor.updateCardUserServerDataCommandPipe()
+            .createObservableResult(new UpdateCardUserServerDataCommand(getView().getFirstName(), getView().getMiddleName(), getView()
+                  .getLastName(), preparedPhoto, baseValue.smartCardId()))
+            .compose(bindViewIoToMainComposer())
+            .subscribe(obj -> {
+               getView().hideProgress();
+               goBack(true);
+            }, throwable -> getView().showUploadServerFailDialog());
+   }
+
+   void cancelUploadServerUserData() {
+      setupCardUserData(baseValue.user().firstName(), baseValue.user().middleName(), baseValue.user().lastName(), baseValue.user().userPhoto())
+            .compose(bindViewIoToMainComposer())
+            .subscribe(smartCardCommand -> getView().hideProgress(), throwable ->
+                  Timber.e(throwable, "Error while restore old information"));
+   }
+
+   private Observable<SmartCard> setupCardUserData(String firstName, String middleName, String lastName, SmartCardUserPhoto userPhoto) {
+      SetupUserDataCommand command = new SetupUserDataCommand(firstName, middleName, lastName, userPhoto, baseValue.smartCardId());
+
+      return smartCardUserDataInteractor.setupUserDataCommandPipe()
+            .createObservableResult(command)
+            .compose(bindViewIoToMainComposer())
+            .map(Command::getResult);
    }
 
    private void subscribePreparingAvatarCommand() {
-      smartCardAvatarInteractor.smartCardAvatarPipe()
+      smartCardUserDataInteractor.smartCardAvatarPipe()
             .observe()
             .compose(bindViewIoToMainComposer())
             .subscribe(new ActionStateSubscriber<SmartCardAvatarCommand>()
@@ -110,10 +134,10 @@ public class WalletSettingsProfilePresenter extends WalletPresenter<WalletSettin
 
 
    private void onImageCropped(String path) {
-      smartCardAvatarInteractor.smartCardAvatarPipe().send(new CompressImageForSmartCardCommand(path));
+      smartCardUserDataInteractor.smartCardAvatarPipe().send(new CompressImageForSmartCardCommand(path));
    }
 
-   public void setupInputMode() {
+   void setupInputMode() {
       activity.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
    }
 
@@ -157,6 +181,11 @@ public class WalletSettingsProfilePresenter extends WalletPresenter<WalletSettin
       String getFirstName();
       String getMiddleName();
       String getLastName();
+
+      void showProgress();
+      void hideProgress();
+      void showUploadSmartCardFailDialog(String text);
+      void showUploadServerFailDialog();
    }
 
 }

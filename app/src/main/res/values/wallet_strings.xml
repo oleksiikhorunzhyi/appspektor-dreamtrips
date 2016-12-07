@@ -127,6 +127,8 @@
    <string name="wallet_card_settings_profile_dialog_changes_title">Some changes were made. Are you sure you want go back without saving them</string>
    <string name="wallet_card_settings_profile_dialog_changes_positive">Back</string>
    <string name="wallet_card_settings_profile_dialog_changes_negative">Cancel</string>
+   <string name="wallet_card_settings_profile_dialog_error_server_content">Server error, Retry?</string>
+   <string name="wallet_card_settings_profile_dialog_error_smartcard_content">Smart card error, Retry?</string>
 
 
    <!--card list-->

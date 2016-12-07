@@ -1,5 +1,6 @@
 package com.worldventures.dreamtrips.wallet.ui.settings.profile;
 
+import android.app.Dialog;
 import android.content.Context;
 import android.net.Uri;
 import android.support.annotation.NonNull;
@@ -14,7 +15,6 @@ import com.worldventures.dreamtrips.modules.common.view.custom.PhotoPickerLayout
 import com.worldventures.dreamtrips.wallet.ui.common.base.MediaPickerService;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletLinearLayout;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.OperationScreen;
-import com.worldventures.dreamtrips.wallet.ui.common.base.screen.delegate.DialogOperationScreen;
 
 import java.io.File;
 
@@ -37,6 +37,7 @@ public class WalletSettingsProfileScreen extends WalletLinearLayout<WalletSettin
     */
 
    private MediaPickerService mediaPickerService;
+   private Dialog progressDialog;
 
    public WalletSettingsProfileScreen(Context context) {
       super(context);
@@ -138,7 +139,53 @@ public class WalletSettingsProfileScreen extends WalletLinearLayout<WalletSettin
 
    @Override
    public OperationScreen provideOperationDelegate() {
-      return new DialogOperationScreen(this);
+      return null;
+   }
+
+   @Override
+   public void showProgress() {
+      hideProgress();
+
+      progressDialog = new MaterialDialog.Builder(getContext())
+            .content(R.string.loading)
+            .progress(true, 0)
+            .cancelable(false)
+            .build();
+
+      progressDialog.show();
+   }
+
+   @Override
+   public void hideProgress() {
+      if (progressDialog != null && progressDialog.isShowing()) {
+         progressDialog.dismiss();
+      }
+   }
+
+   @Override
+   public void showUploadSmartCardFailDialog(String text) {
+      new MaterialDialog.Builder(getContext())
+            .content(text)
+            .cancelable(false)
+            .positiveText(R.string.ok)
+            .onPositive((dialog, which) -> getPresenter().setupUserData())
+            .onNegative((dialog, which) -> getPresenter().cancelUploadSmartUserData())
+            .negativeText(R.string.cancel)
+            .build()
+            .show();
+   }
+
+   @Override
+   public void showUploadServerFailDialog() {
+      new MaterialDialog.Builder(getContext())
+            .content(R.string.wallet_card_settings_profile_dialog_error_server_content)
+            .cancelable(false)
+            .positiveText(R.string.ok)
+            .negativeText(R.string.cancel)
+            .onPositive((dialog, which) -> getPresenter().uploadDataToServer())
+            .onNegative((dialog, which) -> getPresenter().cancelUploadServerUserData())
+            .build()
+            .show();
    }
 
    @Override

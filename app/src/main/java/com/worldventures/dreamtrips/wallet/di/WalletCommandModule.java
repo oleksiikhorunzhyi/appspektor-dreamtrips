@@ -31,7 +31,6 @@ import com.worldventures.dreamtrips.wallet.service.command.SetupUserDataCommand;
 import com.worldventures.dreamtrips.wallet.service.command.UpdateBankCardCommand;
 import com.worldventures.dreamtrips.wallet.service.command.UpdateCardDetailsDataCommand;
 import com.worldventures.dreamtrips.wallet.service.command.UpdateSmartCardConnectionStatus;
-import com.worldventures.dreamtrips.wallet.service.command.UpdateUserDataCommand;
 import com.worldventures.dreamtrips.wallet.service.command.firmware.InstallFirmwareCommand;
 import com.worldventures.dreamtrips.wallet.service.command.firmware.PreInstallationCheckCommand;
 import com.worldventures.dreamtrips.wallet.service.command.http.AssociateCardUserCommand;
@@ -42,6 +41,7 @@ import com.worldventures.dreamtrips.wallet.service.command.http.FetchAndStoreDef
 import com.worldventures.dreamtrips.wallet.service.command.http.FetchAssociatedSmartCardCommand;
 import com.worldventures.dreamtrips.wallet.service.command.http.FetchFirmwareInfoCommand;
 import com.worldventures.dreamtrips.wallet.service.command.http.FetchTermsAndConditionsCommand;
+import com.worldventures.dreamtrips.wallet.service.command.http.UpdateCardUserServerDataCommand;
 import com.worldventures.dreamtrips.wallet.service.command.reset.ConfirmResetCommand;
 import com.worldventures.dreamtrips.wallet.service.command.reset.RemoveSmartCardDataCommand;
 import com.worldventures.dreamtrips.wallet.service.command.reset.ResetSmartCardCommand;
@@ -61,7 +61,6 @@ import dagger.Module;
             CardStacksCommand.class,
             LoadImageForSmartCardCommand.class,
             SetupUserDataCommand.class,
-            UpdateUserDataCommand.class,
             FetchDefaultCardIdCommand.class,
             ActivateSmartCardCommand.class,
             CreateAndConnectToCardCommand.class,
@@ -97,7 +96,8 @@ import dagger.Module;
             DisassociateActiveCardUserCommand.class,
             FetchAssociatedSmartCardCommand.class,
             SaveLockStateCommand.class,
-            RestartSmartCardCommand.class
+            RestartSmartCardCommand.class,
+            UpdateCardUserServerDataCommand.class
       },
       complete = false, library = true)
 public class WalletCommandModule {}

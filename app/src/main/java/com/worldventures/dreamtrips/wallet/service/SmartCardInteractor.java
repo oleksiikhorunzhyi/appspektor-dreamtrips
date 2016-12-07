@@ -24,7 +24,6 @@ import com.worldventures.dreamtrips.wallet.service.command.SmartCardModifier;
 import com.worldventures.dreamtrips.wallet.service.command.UpdateBankCardCommand;
 import com.worldventures.dreamtrips.wallet.service.command.UpdateCardDetailsDataCommand;
 import com.worldventures.dreamtrips.wallet.service.command.UpdateSmartCardConnectionStatus;
-import com.worldventures.dreamtrips.wallet.service.command.UpdateUserDataCommand;
 import com.worldventures.dreamtrips.wallet.service.command.http.CreateBankCardCommand;
 import com.worldventures.dreamtrips.wallet.service.command.http.DisassociateActiveCardUserCommand;
 import com.worldventures.dreamtrips.wallet.service.command.http.FetchAssociatedSmartCardCommand;
@@ -91,7 +90,6 @@ public final class SmartCardInteractor {
    private final ActionPipe<DisconnectAction> disconnectPipe;
    private final ActionPipe<UpdateSmartCardConnectionStatus> updateSmartCardConnectionStatusPipe;
    private final ActionPipe<RestartSmartCardCommand> restartSmartCardCommandActionPipe;
-   private final ActionPipe<UpdateUserDataCommand> updateUserDataCommandActionPipe;
 
    private final ReadActionPipe<CardChargedEvent> chargedEventPipe;
    private final ReadActionPipe<CardSwipedEvent> cardSwipedEventPipe;
@@ -142,7 +140,6 @@ public final class SmartCardInteractor {
       updateSmartCardConnectionStatusPipe = sessionActionPipeCreator.createPipe(UpdateSmartCardConnectionStatus.class, Schedulers
             .io());
       restartSmartCardCommandActionPipe = sessionActionPipeCreator.createPipe(RestartSmartCardCommand.class, Schedulers.io());
-      updateUserDataCommandActionPipe = sessionActionPipeCreator.createPipe(UpdateUserDataCommand.class, Schedulers.io());
 
       chargedEventPipe = sessionActionPipeCreator.createPipe(CardChargedEvent.class, Schedulers.io());
       cardSwipedEventPipe = sessionActionPipeCreator.createPipe(CardSwipedEvent.class, Schedulers.io());
@@ -292,14 +289,6 @@ public final class SmartCardInteractor {
 
    public ActionPipe<SaveLockStateCommand> lockStatePipe() {
       return saveLockStatePipe;
-   }
-
-   public ActionPipe<GetUserDataAction> userDataActionActionPipe() {
-      return userDataActionActionPipe;
-   }
-
-   public ActionPipe<UpdateUserDataCommand> updateUserDataActionPipe() {
-      return updateUserDataCommandActionPipe;
    }
 
    private void connect(Janet janet) {

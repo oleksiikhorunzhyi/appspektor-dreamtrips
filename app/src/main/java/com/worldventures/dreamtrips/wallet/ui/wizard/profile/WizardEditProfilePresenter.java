@@ -20,7 +20,7 @@ import com.worldventures.dreamtrips.wallet.analytics.SetupUserAction;
 import com.worldventures.dreamtrips.wallet.analytics.WalletAnalyticsCommand;
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCard;
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCardUserPhoto;
-import com.worldventures.dreamtrips.wallet.service.SmartCardAvatarInteractor;
+import com.worldventures.dreamtrips.wallet.service.SmartCardUserDataInteractor;
 import com.worldventures.dreamtrips.wallet.service.SmartCardInteractor;
 import com.worldventures.dreamtrips.wallet.service.WizardInteractor;
 import com.worldventures.dreamtrips.wallet.service.command.CompressImageForSmartCardCommand;
@@ -51,7 +51,7 @@ public class WizardEditProfilePresenter extends WalletPresenter<WizardEditProfil
 
    @Inject Activity activity;
    @Inject Navigator navigator;
-   @Inject SmartCardAvatarInteractor smartCardAvatarInteractor;
+   @Inject SmartCardUserDataInteractor smartCardUserDataInteractor;
    @Inject WizardInteractor wizardInteractor;
    @Inject SmartCardInteractor smartCardInteractor;
    @Inject AnalyticsInteractor analyticsInteractor;
@@ -88,7 +88,7 @@ public class WizardEditProfilePresenter extends WalletPresenter<WizardEditProfil
       view.setUserFullName(userProfile.getFirstName(),  userProfile.getLastName());
       String defaultUserAvatar = userProfile.getAvatar().getThumb();
       if (!TextUtils.isEmpty(defaultUserAvatar)) {
-         smartCardAvatarInteractor.smartCardAvatarPipe().send(new LoadImageForSmartCardCommand(defaultUserAvatar));
+         smartCardUserDataInteractor.smartCardAvatarPipe().send(new LoadImageForSmartCardCommand(defaultUserAvatar));
       }
    }
 
@@ -103,7 +103,7 @@ public class WizardEditProfilePresenter extends WalletPresenter<WizardEditProfil
    }
 
    private void subscribePreparingAvatarCommand() {
-      smartCardAvatarInteractor.smartCardAvatarPipe()
+      smartCardUserDataInteractor.smartCardAvatarPipe()
             .observe()
             .compose(bindViewIoToMainComposer())
             .subscribe(new ActionStateSubscriber<SmartCardAvatarCommand>()
@@ -153,7 +153,7 @@ public class WizardEditProfilePresenter extends WalletPresenter<WizardEditProfil
    }
 
    private void prepareImage(String path) {
-      smartCardAvatarInteractor.smartCardAvatarPipe().send(new CompressImageForSmartCardCommand(path));
+      smartCardUserDataInteractor.smartCardAvatarPipe().send(new CompressImageForSmartCardCommand(path));
    }
 
    void setupUserData() {

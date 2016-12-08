@@ -2,7 +2,9 @@ package com.worldventures.dreamtrips.wallet.service.command.http;
 
 import com.worldventures.dreamtrips.api.smart_card.user_association.AssociateCardUserHttpAction;
 import com.worldventures.dreamtrips.api.smart_card.user_association.model.AssociationCardUserData;
+import com.worldventures.dreamtrips.api.smart_card.user_association.model.AssociationUserData;
 import com.worldventures.dreamtrips.api.smart_card.user_association.model.ImmutableAssociationCardUserData;
+import com.worldventures.dreamtrips.api.smart_card.user_association.model.ImmutableAssociationUserData;
 import com.worldventures.dreamtrips.api.smart_card.user_info.model.UpdateCardUserData;
 import com.worldventures.dreamtrips.core.janet.cache.CacheOptions;
 import com.worldventures.dreamtrips.core.janet.cache.CachedAction;
@@ -45,16 +47,20 @@ public class AssociateCardUserCommand extends Command<SmartCardDetails> implemen
    protected void run(CommandCallback<SmartCardDetails> callback) throws Throwable {
       WalletValidateHelper.validateSCIdOrThrow(barcode);
 
+      AssociationUserData userData = ImmutableAssociationUserData.builder()
+            .firstName(updateCardUserData.firstName())
+            .middleName(updateCardUserData.middleName())
+            .lastName(updateCardUserData.lastName())
+            .displayPhoto(updateCardUserData.photoUrl())
+            .build();
+
       AssociationCardUserData data = ImmutableAssociationCardUserData.builder()
             .scid(Long.parseLong(barcode))
             .deviceModel(propertiesProvider.deviceName())
             .deviceOsVersion(propertiesProvider.osVersion())
             .deviceId(propertiesProvider.deviceId())
             .acceptedTermsAndConditionVersion(obtainTACVersion())
-            .displayFirstName(updateCardUserData.displayFirstName())
-            .displayLastName(updateCardUserData.displayLastName())
-            .displayMiddleName(updateCardUserData.displayMiddleName())
-            .displayPhoto(updateCardUserData.photoUrl())
+            .user(userData)
             .build();
 
       janet.createPipe(AssociateCardUserHttpAction.class)

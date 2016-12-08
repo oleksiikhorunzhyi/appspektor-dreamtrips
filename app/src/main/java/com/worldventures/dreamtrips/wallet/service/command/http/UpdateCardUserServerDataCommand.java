@@ -45,9 +45,9 @@ public class UpdateCardUserServerDataCommand extends Command<Void> implements In
             .flatMap(avatarUrl -> {
                      ImmutableUpdateCardUserData cardUserData = ImmutableUpdateCardUserData.builder()
                            .photoUrl(avatarUrl)
-                           .displayFirstName(firstName)
-                           .displayMiddleName(middleName)
-                           .displayLastName(lastName)
+                           .firstName(firstName)
+                           .middleName(middleName)
+                           .lastName(lastName)
                            .build();
                      return janetApi.createPipe(UpdateCardUserHttpAction.class)
                            .createObservableResult(new UpdateCardUserHttpAction(Long.parseLong(smartCardId), cardUserData));

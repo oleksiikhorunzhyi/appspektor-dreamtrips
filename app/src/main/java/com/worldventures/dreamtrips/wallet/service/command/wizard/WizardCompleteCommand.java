@@ -46,9 +46,9 @@ public class WizardCompleteCommand extends Command<Void> implements InjectableAc
 
    private UpdateCardUserData createUserData(String avatarUrl) {
       return ImmutableUpdateCardUserData.builder()
-            .displayFirstName(wizardMemoryStorage.getFirstName())
-            .displayLastName(wizardMemoryStorage.getLastName())
-            .displayMiddleName(wizardMemoryStorage.getMiddleName())
+            .firstName(wizardMemoryStorage.getFirstName())
+            .lastName(wizardMemoryStorage.getLastName())
+            .middleName(wizardMemoryStorage.getMiddleName())
             .photoUrl(avatarUrl)
             .build();
    }

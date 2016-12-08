@@ -13,7 +13,10 @@ public abstract class SmartCard {
 
    public abstract CardStatus cardStatus();
 
-   public abstract String deviceAddress();
+   @Value.Default
+   public String deviceAddress() {
+      return "";
+   }
 
    @Value.Default
    public SmartCardUser user() {
@@ -48,6 +51,7 @@ public abstract class SmartCard {
 
    //legacy, now you need request fullname from user()
    @Value.Default
+   @Deprecated
    public String cardName() {
       return "";
    }
@@ -64,6 +68,7 @@ public abstract class SmartCard {
 
    //legacy, now you need request photo from user()
    @Nullable
+   @Deprecated
    public abstract String userPhoto();
 
    @Value.Default

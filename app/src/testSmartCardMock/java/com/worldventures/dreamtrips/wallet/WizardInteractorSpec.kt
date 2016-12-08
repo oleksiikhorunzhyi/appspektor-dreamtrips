@@ -7,6 +7,8 @@ import com.nhaarman.mockito_kotlin.mock
 import com.nhaarman.mockito_kotlin.spy
 import com.nhaarman.mockito_kotlin.whenever
 import com.worldventures.dreamtrips.BaseSpec
+import com.worldventures.dreamtrips.api.smart_card.user_info.model.ImmutableUpdateCardUserData
+import com.worldventures.dreamtrips.api.smart_card.user_info.model.UpdateCardUserData
 import com.worldventures.dreamtrips.core.janet.SessionActionPipeCreator
 import com.worldventures.dreamtrips.core.janet.cache.CacheResultWrapper
 import com.worldventures.dreamtrips.core.janet.cache.storage.ActionStorage
@@ -66,7 +68,7 @@ class WizardInteractorSpec : BaseSpec({
 
             val testSubscriber: TestSubscriber<ActionState<CreateAndConnectToCardCommand>> = TestSubscriber()
             janet.createPipe(CreateAndConnectToCardCommand::class.java)
-                  .createObservable(CreateAndConnectToCardCommand(smartCardDetails))
+                  .createObservable(CreateAndConnectToCardCommand())
                   .subscribe(testSubscriber)
 
             testSubscriber.assertCompleted()
@@ -75,9 +77,10 @@ class WizardInteractorSpec : BaseSpec({
 
          it("Associate smart card") {
             var barcode: String = "13371340"
+            var cardUserData : UpdateCardUserData = mockUpdateCardUserData()
             val testSubscriber: TestSubscriber<ActionState<AssociateCardUserCommand>> = TestSubscriber()
             janet.createPipe(AssociateCardUserCommand::class.java)
-                  .createObservable(AssociateCardUserCommand(barcode))
+                  .createObservable(AssociateCardUserCommand(barcode, cardUserData))
                   .subscribe(testSubscriber)
 
             testSubscriber.assertCompleted()
@@ -123,7 +126,7 @@ class WizardInteractorSpec : BaseSpec({
          TextUtils.`equals`(anyString(), anyString())
       }
 
-      fun createInteractor(janet: Janet) = WizardInteractor(janet, SessionActionPipeCreator(janet))
+      fun createInteractor(janet: Janet) = WizardInteractor(SessionActionPipeCreator(janet))
 
       fun createJanet(): Janet {
          val daggerCommandActionService = CommandActionService()
@@ -205,6 +208,17 @@ class WizardInteractorSpec : BaseSpec({
          return mockedSmartCardDetails
       }
    }
+}
+
+fun mockUpdateCardUserData(): UpdateCardUserData {
+   var mockedUpdateCardUserData : UpdateCardUserData = ImmutableUpdateCardUserData.builder()
+         .displayFirstName("Test")
+         .displayLastName("Lasttest")
+         .displayMiddleName("testMiddle")
+         .nameToDisplay("Test Lasttest")
+         .photoUrl("http://img.com/image_123")
+         .build()
+   return mockedUpdateCardUserData
 }
 
 

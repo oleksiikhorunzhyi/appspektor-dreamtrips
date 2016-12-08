@@ -25,7 +25,6 @@ import com.worldventures.dreamtrips.wallet.service.command.UpdateBankCardCommand
 import com.worldventures.dreamtrips.wallet.service.command.UpdateCardDetailsDataCommand;
 import com.worldventures.dreamtrips.wallet.service.command.UpdateSmartCardConnectionStatus;
 import com.worldventures.dreamtrips.wallet.service.command.http.CreateBankCardCommand;
-import com.worldventures.dreamtrips.wallet.service.command.http.DisassociateActiveCardUserCommand;
 import com.worldventures.dreamtrips.wallet.service.command.http.FetchAssociatedSmartCardCommand;
 
 import java.util.concurrent.Executors;
@@ -102,8 +101,6 @@ public final class SmartCardInteractor {
 
    private final ActionPipe<EnableLockUnlockDeviceAction> enableLockUnlockDeviceActionPipe;
 
-   private final ActionPipe<DisassociateActiveCardUserCommand> disassociateActiveCardActionPipe;
-
    private final ActionPipe<GetCompatibleDevicesCommand> compatibleDevicesActionPipe;
 
    private final ActionPipe<GetUserDataAction> userDataActionActionPipe;
@@ -155,8 +152,6 @@ public final class SmartCardInteractor {
       enableLockUnlockDeviceActionPipe = sessionActionPipeCreator.createPipe(EnableLockUnlockDeviceAction.class, Schedulers
             .io());
 
-      disassociateActiveCardActionPipe = sessionActionPipeCreator.createPipe(DisassociateActiveCardUserCommand.class, Schedulers
-            .io());
       this.firmwareInteractor = firmwareInteractor;
 
       compatibleDevicesActionPipe = sessionActionPipeCreator.createPipe(GetCompatibleDevicesCommand.class, Schedulers.io());
@@ -277,10 +272,6 @@ public final class SmartCardInteractor {
 
    public ActionPipe<EnableLockUnlockDeviceAction> enableLockUnlockDeviceActionPipe() {
       return enableLockUnlockDeviceActionPipe;
-   }
-
-   public ActionPipe<DisassociateActiveCardUserCommand> disassociateActiveCardActionPipe() {
-      return disassociateActiveCardActionPipe;
    }
 
    public ActionPipe<GetCompatibleDevicesCommand> compatibleDevicesActionPipe() {

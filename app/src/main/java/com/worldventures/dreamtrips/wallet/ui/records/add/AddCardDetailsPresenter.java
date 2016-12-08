@@ -33,7 +33,6 @@ import com.worldventures.dreamtrips.wallet.util.AddressFormatException;
 import com.worldventures.dreamtrips.wallet.util.CardNameFormatException;
 import com.worldventures.dreamtrips.wallet.util.CardUtils;
 import com.worldventures.dreamtrips.wallet.util.CvvFormatException;
-import com.worldventures.dreamtrips.wallet.util.FormatException;
 import com.worldventures.dreamtrips.wallet.util.SmartCardInteractorHelper;
 
 import javax.inject.Inject;

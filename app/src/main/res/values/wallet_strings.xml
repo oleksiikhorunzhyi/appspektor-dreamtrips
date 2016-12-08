@@ -134,11 +134,13 @@
    <!--add card details-->
    <string name="wallet_add_card_details_title">Card Details</string>
    <string name="wallet_add_card_details_hint_enter_cvv">Enter CVV</string>
-   <string name="wallet_add_card_details_hint_nickname_card">Card Nickname (optional)</string>
+   <string name="wallet_add_card_details_hint_nickname_card">Card Nickname (optional)</string> <!--todo: remove after detail screen was updated-->
    <string name="wallet_add_card_details_hint_card_name">Card Name</string>
    <string name="wallet_add_card_details_hint_card_name_length">(11 characters)</string>
    <string name="wallet_add_card_details_hint_address1">Address 1</string>
-   <string name="wallet_add_card_details_hint_address2">Address 2 (optional)</string>
+   <string name="wallet_add_card_details_hint_address2">Address 2 (optional)</string> <!--todo: remove after detail screen was updated-->
+   <string name="wallet_add_card_details_hint_address2_label">Address 2</string>
+   <string name="wallet_add_card_details_hint_optional">(optional)</string>
    <string name="wallet_add_card_details_hint_city">City</string>
    <string name="wallet_add_card_details_hint_state">State</string>
    <string name="wallet_add_card_details_hint_zip">Zip</string>

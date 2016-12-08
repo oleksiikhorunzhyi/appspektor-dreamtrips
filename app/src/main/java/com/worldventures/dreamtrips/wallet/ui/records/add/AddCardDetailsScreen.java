@@ -82,6 +82,7 @@ public class AddCardDetailsScreen extends WalletLinearLayout<AddCardDetailsPrese
       super.onFinishInflate();
       setCvvLabel();
       setCardNameHint();
+      setAddressHints();
 
       if (isInEditMode()) return;
       toolbar.setNavigationOnClickListener(v -> navigateButtonClick());
@@ -216,19 +217,38 @@ public class AddCardDetailsScreen extends WalletLinearLayout<AddCardDetailsPrese
    }
 
    private void setCardNameHint() {
-      final SpannableString cardNameLength = new SpannableString(getString(R.string.wallet_add_card_details_hint_card_name_length));
-      cardNameLength.setSpan(new RelativeSizeSpan(.75f), 0, cardNameLength.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
       cardNameField.setHint(new SpannableStringBuilder()
             .append(getString(R.string.wallet_add_card_details_hint_card_name))
             .append(spannableRequiredFields())
             .append(" ")
-            .append(cardNameLength)
+            .append(reduceSizeSpannable(getString(R.string.wallet_add_card_details_hint_card_name_length)))
       );
+   }
+
+   private void setAddressHints() {
+      address1Field.setHint(new SpannableStringBuilder(getString(R.string.wallet_add_card_details_hint_address1))
+            .append(spannableRequiredFields()));
+      address2Field.setHint(new SpannableStringBuilder(getString(R.string.wallet_add_card_details_hint_address2_label))
+            .append(" ")
+            .append(reduceSizeSpannable(getString(R.string.wallet_add_card_details_hint_optional)))
+      );
+      cityField.setHint(new SpannableStringBuilder(getString(R.string.wallet_add_card_details_hint_city))
+            .append(spannableRequiredFields()));
+      stateField.setHint(new SpannableStringBuilder(getString(R.string.wallet_add_card_details_hint_state))
+            .append(spannableRequiredFields()));
+      zipField.setHint(new SpannableStringBuilder(getString(R.string.wallet_add_card_details_hint_zip))
+            .append(spannableRequiredFields()));
    }
 
    private SpannableString spannableRequiredFields() {
       final SpannableString requiredFields = new SpannableString("*");
       requiredFields.setSpan(new ForegroundColorSpan(Color.RED), 0, 1, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
       return requiredFields;
+   }
+
+   private SpannableString reduceSizeSpannable(String text) {
+      final SpannableString spannableString = new SpannableString(text);
+      spannableString.setSpan(new RelativeSizeSpan(.75f), 0, spannableString.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+      return spannableString;
    }
 }

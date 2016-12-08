@@ -189,6 +189,17 @@
 
    <color name="comments_action_color">#2977b2</color>
 
+   <color name="uploading_cell_title">#222222</color>
+   <color name="uploading_cell_status_label_uploading">#53b5fe</color>
+   <color name="uploading_cell_status_label_failure">#ff5454</color>
+   <color name="uploading_cell_status_label_paused">#929292</color>
+   <color name="uploading_cell_time_left">#9b9b9b</color>
+   <color name="uploading_cell_progress_bar_active_current">@color/uploading_cell_status_label_uploading</color>
+   <color name="uploading_cell_progress_bar_active_total">#cde9fe</color>
+   <color name="uploading_cell_progress_bar_paused_current">@color/uploading_cell_status_label_paused</color>
+   <color name="uploading_cell_progress_bar_paused_total">#dfdfdf</color>
+   <color name="uploading_cell_additional_queue">@color/white</color>
+
    <!--end messenger-->
 
    <color name="dim_foreground_dark">#bebebe</color>

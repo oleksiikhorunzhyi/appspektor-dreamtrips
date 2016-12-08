@@ -600,6 +600,17 @@
    <string name="error_fail_to_unlike_item">Failed to unlike item</string>
    <string name="tag_people">Tag people</string>
 
+   <string name="uploading_post_status_progress_singular">Uploading photo…</string>
+   <string name="uploading_post_status_progress_plural">Uploading %d photos…</string>
+   <string name="uploading_post_status_paused">Upload paused</string>
+   <string name="uploading_post_status_failed_connection">Connection lost</string>
+   <string name="uploading_post_status_uploaded">Post successfully uploaded!</string>
+   <string name="uploading_post_time_left_estimating">Estimating…</string>
+   <string name="uploading_post_time_left_seconds">s</string>
+   <string name="uploading_post_time_left_minutes">m</string>
+   <string name="uploading_post_time_left_hours">h</string>
+   <string name="uploading_post_time_left_more_than_one_day">More than 1 day…</string>
+
    <string name="say_something">Say something to the world</string>
 
    <string name="update">Update</string>

@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="utf-8"?>
+<merge
+      xmlns:android="http://schemas.android.com/apk/res/android"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      >
+
+   <RelativeLayout
+         android:id="@+id/uploading_cell_general_upload_container"
+         android:layout_width="match_parent"
+         android:layout_height="wrap_content"
+         android:background="@color/white"
+         android:orientation="horizontal"
+         android:paddingBottom="@dimen/uploading_cell_vertical_padding"
+         android:paddingLeft="@dimen/uploading_cell_horizontal_padding"
+         android:paddingRight="@dimen/uploading_cell_horizontal_padding"
+         android:paddingTop="@dimen/uploading_cell_vertical_padding"
+         >
+
+      <FrameLayout
+            android:id="@+id/uploading_cell_attachment_container"
+            android:layout_width="@dimen/uploading_cell_width"
+            android:layout_height="@dimen/uploading_cell_height"
+            />
+
+      <RelativeLayout
+            android:layout_toRightOf="@id/uploading_cell_attachment_container"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            >
+
+         <ImageView
+               android:id="@+id/uploading_cell_control_cancel"
+               android:layout_width="@dimen/uploading_cell_control_button_size"
+               android:layout_height="@dimen/uploading_cell_control_button_size"
+               android:layout_alignParentRight="true"
+               android:layout_alignParentTop="true"
+               android:padding="@dimen/spacing_tiny"
+               android:src="@drawable/uploading_control_cancel"
+               />
+
+         <ImageView
+               android:id="@+id/uploading_cell_control_main_action"
+               android:layout_width="@dimen/uploading_cell_control_button_size"
+               android:layout_height="@dimen/uploading_cell_control_button_size"
+               android:layout_alignBottom="@id/uploading_cell_control_cancel"
+               android:layout_marginRight="8dp"
+               android:layout_toLeftOf="@id/uploading_cell_control_cancel"
+               android:src="@drawable/uploading_control_resume"
+               />
+
+         <TextView
+               android:id="@+id/uploading_cell_upload_title_text_view"
+               android:layout_width="match_parent"
+               android:layout_height="wrap_content"
+               android:layout_alignBaseline="@id/uploading_cell_control_main_action"
+               android:layout_toLeftOf="@id/uploading_cell_control_main_action"
+               android:textColor="@color/uploading_cell_title"
+               android:textSize="@dimen/uploading_cell_title_text_size"
+               android:text="May 23, 2016"
+               android:textStyle="bold"
+               style="@style/RobotoMediumTextView"
+               />
+
+         <LinearLayout
+               android:id="@+id/uploading_cell_title_and_progress"
+               android:layout_width="match_parent"
+               android:layout_height="wrap_content"
+               android:layout_below="@+id/uploading_cell_upload_title_text_view"
+               android:layout_marginTop="@dimen/spacing_small"
+               >
+
+            <TextView
+                  android:id="@+id/uploading_cell_upload_status_text_view"
+                  android:layout_width="0dp"
+                  android:layout_height="wrap_content"
+                  android:layout_weight="1"
+                  android:text="Uploading 15 photos..."
+                  style="@style/UploadStatusTextView"
+                  />
+
+            <TextView
+                  android:id="@+id/uploading_cell_upload_time_left_text_view"
+                  android:layout_width="wrap_content"
+                  android:layout_height="wrap_content"
+                  android:text="15s left"
+                  android:textColor="@color/uploading_cell_time_left"
+                  android:textSize="@dimen/uploading_cell_time_left_text_size"
+                  />
+
+         </LinearLayout>
+
+         <ProgressBar
+               android:id="@+id/uploading_cell_progress_bar"
+               style="@style/Widget.AppCompat.ProgressBar.Horizontal"
+               android:layout_width="match_parent"
+               android:layout_height="@dimen/uploading_cell_progress_bar_height"
+               android:layout_below="@+id/uploading_cell_title_and_progress"
+               android:layout_marginTop="@dimen/uploading_cell_progress_bar_margin_top"
+               android:max="100"
+               />
+
+      </RelativeLayout>
+
+   </RelativeLayout>
+
+   <FrameLayout
+         android:id="@+id/uploading_cell_upload_finished_container"
+         android:layout_width="match_parent"
+         android:layout_height="match_parent"
+         >
+
+      <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:drawableLeft="@drawable/ic_check"
+            android:drawablePadding="@dimen/spacing_small"
+            android:text="@string/uploading_post_status_uploaded"
+            android:layout_gravity="center"
+            style="@style/UploadStatusTextView"
+            />
+
+   </FrameLayout>
+
+
+</merge>

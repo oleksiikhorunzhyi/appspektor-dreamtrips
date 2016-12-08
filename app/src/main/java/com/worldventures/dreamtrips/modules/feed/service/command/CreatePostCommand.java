@@ -29,10 +29,6 @@ public class CreatePostCommand extends MappableApiActionCommand<CreatePostHttpAc
                .addAttachment(new CreatePhotoPostEntity.Attachment(photo.getUid())));
    }
 
-   public CreatePostCommand(CreatePhotoPostEntity createPhotoPostEntity) {
-      this.createPhotoPostEntity = createPhotoPostEntity;
-   }
-
    @Override
    protected Class<TextualPost> getMappingTargetClass() {
       return TextualPost.class;

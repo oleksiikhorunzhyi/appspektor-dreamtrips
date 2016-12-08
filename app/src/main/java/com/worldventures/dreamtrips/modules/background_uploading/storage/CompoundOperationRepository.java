@@ -8,6 +8,8 @@ public interface CompoundOperationRepository {
 
    List<CompoundOperationModel> readCompoundOperations();
 
+   void saveCompoundOperations(List<CompoundOperationModel> compoundOperations);
+
    void createCompoundOperation(CompoundOperationModel compoundOperationModel);
 
    void updateCompoundOperation(CompoundOperationModel compoundOperationModel);

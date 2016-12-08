@@ -7,11 +7,10 @@ import com.worldventures.dreamtrips.api.photos.CreatePhotosHttpAction;
 import com.worldventures.dreamtrips.api.photos.model.ImmutableCoordinate;
 import com.worldventures.dreamtrips.api.photos.model.ImmutablePhotoCreationParams;
 import com.worldventures.dreamtrips.api.photos.model.ImmutablePhotosCreationParams;
-import com.worldventures.dreamtrips.api.photos.model.PhotoTag;
 import com.worldventures.dreamtrips.api.photos.model.PhotoTagParams;
 import com.worldventures.dreamtrips.api.photos.model.PhotosCreationParams;
 import com.worldventures.dreamtrips.core.api.action.MappableApiActionCommand;
-import com.worldventures.dreamtrips.modules.feed.model.PhotoCreationItem;
+import com.worldventures.dreamtrips.modules.background_uploading.model.PhotoAttachment;
 import com.worldventures.dreamtrips.modules.trips.model.Location;
 import com.worldventures.dreamtrips.modules.tripsimages.model.Photo;
 
@@ -23,11 +22,11 @@ import io.techery.janet.command.annotations.CommandAction;
 @CommandAction
 public class CreatePhotosCommand extends MappableApiActionCommand<CreatePhotosHttpAction, List<Photo>, Photo> {
 
-   private List<PhotoCreationItem> creationItems;
+   private List<PhotoAttachment> attachments;
    private Location location;
 
-   public CreatePhotosCommand(List<PhotoCreationItem> creationItems, Location location) {
-      this.creationItems = creationItems;
+   public CreatePhotosCommand(List<PhotoAttachment> attachments, Location location) {
+      this.attachments = attachments;
       this.location = location;
    }
 
@@ -53,19 +52,19 @@ public class CreatePhotosCommand extends MappableApiActionCommand<CreatePhotosHt
 
    private PhotosCreationParams provideParams() {
       ImmutablePhotosCreationParams.Builder builder = ImmutablePhotosCreationParams.builder();
-      Queryable.from(creationItems)
+      Queryable.from(attachments)
             .forEachR(item -> addPhotoCreationParams(builder, item));
       return builder.build();
    }
 
-   private void addPhotoCreationParams(ImmutablePhotosCreationParams.Builder builder, PhotoCreationItem item) {
+   private void addPhotoCreationParams(ImmutablePhotosCreationParams.Builder builder, PhotoAttachment attachment) {
       ImmutablePhotoCreationParams.Builder photoParamsBuilder = ImmutablePhotoCreationParams.builder();
-      photoParamsBuilder.originURL(item.getOriginUrl())
-            .title(item.getTitle())
-            .width(item.getWidth())
-            .height(item.getHeight())
+      photoParamsBuilder.originURL(attachment.originUrl())
+            .title(attachment.selectedPhoto().title())
+            .width(attachment.selectedPhoto().width())
+            .height(attachment.selectedPhoto().height())
             .shotAt(Calendar.getInstance().getTime())
-            .photoTags(mapperyContext.convert(item.getCachedAddedPhotoTags(), PhotoTagParams.class));
+            .photoTags(mapperyContext.convert(attachment.selectedPhoto().tags(), PhotoTagParams.class));
       if (location != null) {
          photoParamsBuilder.coordinate(ImmutableCoordinate.builder()
                .lat(location.getLat())

@@ -16,7 +16,7 @@ public class PostCompoundOperationModelComparator implements Comparator<Compound
       int displayPriorityDiff = getDisplayPriorityByState(o2.state()) -
             getDisplayPriorityByState(o1.state());
       if (displayPriorityDiff == 0 && o1.state().equals(o2.state())) {
-         return o2.position() - o1.position();
+         return o2.creationDate().compareTo(o1.creationDate());
       }
       return displayPriorityDiff;
    }

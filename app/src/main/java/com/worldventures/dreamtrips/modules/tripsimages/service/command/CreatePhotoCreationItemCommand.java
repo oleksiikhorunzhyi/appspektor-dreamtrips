@@ -39,6 +39,7 @@ public class CreatePhotoCreationItemCommand extends Command<PhotoCreationItem> i
                   bitmapObservable, Pair::new))
             .map(pair -> {
                PhotoCreationItem item = new PhotoCreationItem();
+               item.setId(photoGalleryModel.getImageUri().hashCode());
                item.setFileUri(photoGalleryModel.getImageUri());
                item.setFilePath(photoGalleryModel.getAbsolutePath());
                item.setStatus(ActionState.Status.START);

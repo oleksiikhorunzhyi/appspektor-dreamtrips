@@ -8,7 +8,6 @@ import com.worldventures.dreamtrips.core.rx.RxView;
 import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.common.view.custom.tagview.viewgroup.newio.model.PhotoTag;
-import com.worldventures.dreamtrips.modules.feed.model.FeedEntity;
 import com.worldventures.dreamtrips.modules.feed.model.PhotoCreationItem;
 import com.worldventures.dreamtrips.modules.feed.service.CreatePostBodyInteractor;
 import com.worldventures.dreamtrips.modules.feed.service.HashtagInteractor;
@@ -134,10 +133,6 @@ public abstract class ActionEntityPresenter<V extends ActionEntityPresenter.View
       return TextUtils.isEmpty(cachedText);
    }
 
-   protected void processPostSuccess(FeedEntity feedEntity) {
-      closeView();
-   }
-
    protected PhotoCreationItem createItemFromPhoto(Photo photo) {
       PhotoCreationItem photoCreationItem = new PhotoCreationItem();
       photoCreationItem.setTitle(photo.getTitle());
@@ -152,7 +147,7 @@ public abstract class ActionEntityPresenter<V extends ActionEntityPresenter.View
       return photoCreationItem;
    }
 
-   private void closeView() {
+   protected void closeView() {
       view.cancel();
       view = null;
    }

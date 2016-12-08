@@ -19,6 +19,8 @@ import com.worldventures.dreamtrips.core.rx.composer.IoToMainComposer;
 import com.worldventures.dreamtrips.core.session.CirclesInteractor;
 import com.worldventures.dreamtrips.core.utils.LocaleHelper;
 import com.worldventures.dreamtrips.core.utils.tracksystem.AnalyticsInteractor;
+import com.worldventures.dreamtrips.modules.background_uploading.service.BackgroundUploadingInteractor;
+import com.worldventures.dreamtrips.modules.background_uploading.service.CompoundOperationsCommand;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem;
 import com.worldventures.dreamtrips.modules.bucketlist.service.BucketInteractor;
 import com.worldventures.dreamtrips.modules.bucketlist.service.command.DeleteBucketItemCommand;
@@ -101,6 +103,7 @@ public class FeedPresenter extends Presenter<FeedPresenter.View> {
    @Inject FlagsInteractor flagsInteractor;
    @Inject TripImagesInteractor tripImagesInteractor;
    @Inject PostsInteractor postsInteractor;
+   @Inject BackgroundUploadingInteractor backgroundUploadingInteractor;
 
    private Circle filterCircle;
    private FlagDelegate flagDelegate;
@@ -134,6 +137,7 @@ public class FeedPresenter extends Presenter<FeedPresenter.View> {
       subscribeFriendsNotificationsCount();
       subscribeToLikesChanges();
       subscribeToEntityDeletedEvents();
+      subscribeToBackgroundUploadingOperations();
       textualPostTranslationDelegate.onTakeView(view, feedItems);
 
       if (feedItems.size() != 0) {
@@ -337,6 +341,16 @@ public class FeedPresenter extends Presenter<FeedPresenter.View> {
       entityDeletedEventDelegate.getReplayObservable()
             .compose(bindViewToMainComposer())
             .subscribe(this::itemDeleted);
+   }
+
+   private void subscribeToBackgroundUploadingOperations() {
+      backgroundUploadingInteractor.compoundOperationsPipe()
+            .observe()
+            .subscribe(new ActionStateSubscriber<CompoundOperationsCommand>()
+                  .onSuccess(compoundOperationsCommand -> {
+                     //process upcoming command here
+                     Timber.d("[Compound operations : %s]", compoundOperationsCommand.getResult().toString());
+                  }));
    }
 
    public void onEvent(FeedItemAddedEvent event) {

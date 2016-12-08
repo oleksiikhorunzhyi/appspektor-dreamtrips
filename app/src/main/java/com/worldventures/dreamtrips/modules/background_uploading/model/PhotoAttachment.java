@@ -9,13 +9,14 @@ import org.immutables.value.Value;
 @Value.Immutable
 public interface PhotoAttachment {
 
+   int id();
    State state();
    int progress();
    @Nullable String originUrl();
 
    SelectedPhoto selectedPhoto();
 
-   public enum State {
+   enum State {
       SCHEDULED, STARTED, UPLOADED, FAILED
    }
 }

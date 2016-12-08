@@ -285,11 +285,6 @@ public abstract class ActionEntityFragment<PM extends ActionEntityPresenter, P e
    }
 
    @Override
-   public void onProgressClicked(PhotoCreationItem uploadTask) {
-      // nothing to do
-   }
-
-   @Override
    public void onRemoveClicked(PhotoCreationItem uploadTask) {
 
    }

@@ -92,7 +92,7 @@ public class PhotoPostCreationCell extends AbstractDelegateCell<PhotoCreationIte
          photoContainer.post(() -> {
             itemView.setVisibility(View.VISIBLE);
             photoTagHolder.removeAllViews();
-            if (getModelObject().getStatus() == ActionState.Status.SUCCESS && getModelObject().isCanEdit()) {
+            if (getModelObject().isCanEdit()) {
                showTagViewGroup();
             }
             invalidateAddTagBtn();
@@ -113,20 +113,6 @@ public class PhotoPostCreationCell extends AbstractDelegateCell<PhotoCreationIte
       } else {
          itemView.setVisibility(View.INVISIBLE);
          itemView.post(this::syncUIStateWithModel);
-      }
-
-      switch (getModelObject().getStatus()) {
-         case START:
-            showProgress();
-            break;
-         case PROGRESS:
-            break;
-         case SUCCESS:
-            hideProgress();
-            break;
-         case FAIL:
-            showError();
-            break;
       }
    }
 
@@ -173,36 +159,6 @@ public class PhotoPostCreationCell extends AbstractDelegateCell<PhotoCreationIte
                   new ArrayList<>(currentTags));
       photoTagHolderManager.addSuggestionTagViews(notIntersectingSuggestions,
             tag -> cellDelegate.onSuggestionClicked(getModelObject(), tag));
-   }
-
-   private void showProgress() {
-      shadow.setVisibility(View.VISIBLE);
-      fabProgress.setVisibility(View.VISIBLE);
-      fabProgress.setIcon(R.drawable.ic_upload_cloud, R.drawable.ic_upload_cloud);
-      fabProgress.setIndeterminate(true);
-      fabProgress.showProgress(true);
-      int color = itemView.getResources().getColor(R.color.bucket_blue);
-      circleView.setColor(color);
-   }
-
-   private void hideProgress() {
-      fabProgress.setVisibility(View.GONE);
-      shadow.setVisibility(View.GONE);
-   }
-
-   private void showError() {
-      fabProgress.setVisibility(View.VISIBLE);
-      fabProgress.showProgress(false);
-      fabProgress.setIcon(R.drawable.ic_upload_retry, R.drawable.ic_upload_retry);
-      int color = itemView.getResources().getColor(R.color.bucket_red);
-      circleView.setColor(color);
-   }
-
-   @OnClick(R.id.fab_progress)
-   void onProgress() {
-      if (getModelObject().getStatus().equals(ActionState.Status.FAIL)) {
-         cellDelegate.onProgressClicked(getModelObject());
-      }
    }
 
    @OnClick(R.id.tag_btn)

@@ -60,7 +60,7 @@ public class WalletSettingsProfilePresenter extends WalletPresenter<WalletSettin
             .subscribe(it -> {
                this.baseValue = it;
                preparedPhoto = baseValue.user().userPhoto();
-               view.setPreviewPhoto(Uri.fromFile(it.user().userPhoto().original()));
+               view.setPreviewPhoto(Uri.fromFile(it.user().userPhoto().monochrome()));
                view.setUserName(it.user().firstName(), it.user().middleName(), it.user().lastName());
             }, throwable -> {
                Timber.e(throwable, "");
@@ -129,7 +129,7 @@ public class WalletSettingsProfilePresenter extends WalletPresenter<WalletSettin
 
    private void photoPrepared(SmartCardUserPhoto photo) {
       preparedPhoto = photo;
-      getView().setPreviewPhoto(Uri.fromFile(photo.original()));
+      getView().setPreviewPhoto(Uri.fromFile(photo.monochrome()));
    }
 
 

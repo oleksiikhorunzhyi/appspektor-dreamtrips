@@ -19,6 +19,7 @@ import com.worldventures.dreamtrips.wallet.service.command.SetAutoClearSmartCard
 import com.worldventures.dreamtrips.wallet.service.command.SetDefaultCardOnDeviceCommand;
 import com.worldventures.dreamtrips.wallet.service.command.SetDisableDefaultCardDelayCommand;
 import com.worldventures.dreamtrips.wallet.service.command.SetLockStateCommand;
+import com.worldventures.dreamtrips.wallet.service.command.SetPaymentCardAction;
 import com.worldventures.dreamtrips.wallet.service.command.SetStealthModeCommand;
 import com.worldventures.dreamtrips.wallet.service.command.SmartCardModifier;
 import com.worldventures.dreamtrips.wallet.service.command.UpdateBankCardCommand;
@@ -84,6 +85,7 @@ public final class SmartCardInteractor {
    private final ActionPipe<FetchDefaultCardCommand> fetchDefaultCardCommandPipe;
    private final WriteActionPipe<FetchBatteryLevelCommand> fetchBatteryLevelPipe;
    private final ActionPipe<SetDefaultCardOnDeviceCommand> setDefaultCardOnDeviceCommandPipe;
+   private final ActionPipe<SetPaymentCardAction> setPaymentCardActionActionPipe;
    private final ActionPipe<DeleteRecordAction> deleteCardPipe;
    private final ActionPipe<UpdateCardDetailsDataCommand> updateCardDetailsPipe;
    private final ActionPipe<DisconnectAction> disconnectPipe;
@@ -113,7 +115,8 @@ public final class SmartCardInteractor {
       cardsListInnerPipe = janet.createPipe(CardListCommand.class); //todo: hotfix: code in `observeCardsChanges` should be synchronous
       addRecordPipe = sessionActionPipeCreator.createPipe(AttachCardCommand.class, Schedulers.io());
       updateBankCardPipe = sessionActionPipeCreator.createPipe(UpdateBankCardCommand.class, Schedulers.io());
-      fetchAssociatedSmartCardPipe = sessionActionPipeCreator.createPipe(FetchAssociatedSmartCardCommand.class, Schedulers.io());
+      fetchAssociatedSmartCardPipe = sessionActionPipeCreator.createPipe(FetchAssociatedSmartCardCommand.class, Schedulers
+            .io());
       cardStacksPipe = sessionActionPipeCreator.createPipe(CardStacksCommand.class, Schedulers.io());
       activeSmartCardPipe = sessionActionPipeCreator.createPipe(GetActiveSmartCardCommand.class, Schedulers.io());
       stealthModePipe = sessionActionPipeCreator.createPipe(SetStealthModeCommand.class, Schedulers.io());
@@ -130,6 +133,7 @@ public final class SmartCardInteractor {
       fetchBatteryLevelPipe = sessionActionPipeCreator.createPipe(FetchBatteryLevelCommand.class, Schedulers.io());
       setDefaultCardOnDeviceCommandPipe = sessionActionPipeCreator.createPipe(SetDefaultCardOnDeviceCommand.class, Schedulers
             .io());
+      setPaymentCardActionActionPipe = sessionActionPipeCreator.createPipe(SetPaymentCardAction.class, Schedulers.io());
       deleteCardPipe = sessionActionPipeCreator.createPipe(DeleteRecordAction.class, Schedulers.io());
       updateCardDetailsPipe = sessionActionPipeCreator.createPipe(UpdateCardDetailsDataCommand.class, Schedulers.io());
 
@@ -232,6 +236,10 @@ public final class SmartCardInteractor {
 
    public ActionPipe<SetDefaultCardOnDeviceCommand> setDefaultCardOnDeviceCommandPipe() {
       return setDefaultCardOnDeviceCommandPipe;
+   }
+
+   public ActionPipe<SetPaymentCardAction> setPaymentCardActionActionPipe() {
+      return setPaymentCardActionActionPipe;
    }
 
    public ReadActionPipe<CardChargedEvent> chargedEventPipe() {

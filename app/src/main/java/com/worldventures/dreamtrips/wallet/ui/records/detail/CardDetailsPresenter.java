@@ -21,6 +21,7 @@ import com.worldventures.dreamtrips.wallet.service.SmartCardInteractor;
 import com.worldventures.dreamtrips.wallet.service.command.FetchDefaultCardCommand;
 import com.worldventures.dreamtrips.wallet.service.command.GetActiveSmartCardCommand;
 import com.worldventures.dreamtrips.wallet.service.command.SetDefaultCardOnDeviceCommand;
+import com.worldventures.dreamtrips.wallet.service.command.SetPaymentCardAction;
 import com.worldventures.dreamtrips.wallet.service.command.UpdateBankCardCommand;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletPresenter;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.WalletScreen;
@@ -66,6 +67,7 @@ public class CardDetailsPresenter extends WalletPresenter<CardDetailsPresenter.S
       connectToDefaultCardPipe();
       connectToDeleteCardPipe();
       connectToSetDefaultCardIdPipe();
+      connectSetPaymentCardPipe();
    }
 
    @Override
@@ -123,6 +125,18 @@ public class CardDetailsPresenter extends WalletPresenter<CardDetailsPresenter.S
                   .wrap());
    }
 
+   private void connectSetPaymentCardPipe() {
+      smartCardInteractor.setPaymentCardActionActionPipe()
+            .observeWithReplay()
+            .compose(bindViewIoToMainComposer())
+            .compose(new ActionPipeCacheWiper<>(smartCardInteractor.setPaymentCardActionActionPipe()))
+            .subscribe(OperationActionStateSubscriberWrapper.<SetPaymentCardAction>forView(getView().provideOperationDelegate())
+                  .onFail(getContext().getString(R.string.error_something_went_wrong))
+                  //TODO: use card name for this message
+                  .onSuccess(action -> getView().showCardIsReadyDialog(bankCard.nickName()))
+                  .wrap());
+   }
+
    private AddressInfoWithLocale obtainAddressWithCountry() {
       return ImmutableAddressInfoWithLocale.builder()
             .addressInfo(bankCard.addressInfo())
@@ -157,7 +171,10 @@ public class CardDetailsPresenter extends WalletPresenter<CardDetailsPresenter.S
    }
 
    void payThisCard() {
-      //TODO : implement "pay with logic"
+      smartCardInteractor.setPaymentCardActionActionPipe().send(new SetPaymentCardAction(bankCard));
+   }
+
+   void onCardIsReadyDialogShown() {
       navigator.goBack();
    }
 
@@ -232,9 +249,10 @@ public class CardDetailsPresenter extends WalletPresenter<CardDetailsPresenter.S
 
       void setDefaultCardCondition(boolean defaultCard);
 
+      void showCardIsReadyDialog(String cardName);
+
       Observable<Boolean> setAsDefaultPaymentCardCondition();
 
       String getUpdateNickname();
    }
-
 }

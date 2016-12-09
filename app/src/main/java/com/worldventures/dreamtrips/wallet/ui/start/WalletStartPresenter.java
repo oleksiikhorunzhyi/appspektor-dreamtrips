@@ -4,7 +4,6 @@ import android.content.Context;
 import android.os.Parcelable;
 
 import com.techery.spares.module.Injector;
-import com.worldventures.dreamtrips.core.session.acl.Feature;
 import com.worldventures.dreamtrips.core.session.acl.FeatureManager;
 import com.worldventures.dreamtrips.wallet.service.SmartCardInteractor;
 import com.worldventures.dreamtrips.wallet.service.command.http.FetchAssociatedSmartCardCommand;
@@ -14,7 +13,6 @@ import com.worldventures.dreamtrips.wallet.ui.common.helper.ErrorHandler;
 import com.worldventures.dreamtrips.wallet.ui.common.helper.OperationActionStateSubscriberWrapper;
 import com.worldventures.dreamtrips.wallet.ui.common.navigation.Navigator;
 import com.worldventures.dreamtrips.wallet.ui.dashboard.CardListPath;
-import com.worldventures.dreamtrips.wallet.ui.provisioning_blocked.WalletProvisioningBlockedPath;
 import com.worldventures.dreamtrips.wallet.ui.wizard.power_on.WizardPowerOnPath;
 
 import javax.inject.Inject;
@@ -35,10 +33,11 @@ public class WalletStartPresenter extends WalletPresenter<WalletStartPresenter.S
    public void attachView(Screen view) {
       super.attachView(view);
 
-      featureManager.with(Feature.WALLET_PROVISIONING,
-            this::onWalletAvailable,
-            () -> navigator.single(new WalletProvisioningBlockedPath(), Flow.Direction.REPLACE)
-      );
+//      featureManager.with(Feature.WALLET_PROVISIONING,
+//            this::onWalletAvailable,
+//            () -> navigator.single(new WalletProvisioningBlockedPath(), Flow.Direction.REPLACE)
+//      );
+      onWalletAvailable();
    }
 
    private void onWalletAvailable() {

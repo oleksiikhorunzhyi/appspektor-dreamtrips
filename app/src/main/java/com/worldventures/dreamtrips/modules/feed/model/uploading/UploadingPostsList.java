@@ -2,6 +2,7 @@ package com.worldventures.dreamtrips.modules.feed.model.uploading;
 
 import com.worldventures.dreamtrips.modules.background_uploading.model.PostCompoundOperationModel;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -16,6 +17,7 @@ public class UploadingPostsList {
    }
 
    public List<PostCompoundOperationModel> getPhotoPosts() {
+      if (photoPosts == null) return new ArrayList<>();
       return photoPosts;
    }
 }

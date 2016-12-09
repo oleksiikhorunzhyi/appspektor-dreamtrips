@@ -27,6 +27,7 @@ import com.worldventures.dreamtrips.core.api.error.ErrorResponse;
 import com.worldventures.dreamtrips.core.rx.RxBaseFragmentWithArgs;
 import com.worldventures.dreamtrips.core.utils.ViewUtils;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
+import com.worldventures.dreamtrips.modules.background_uploading.model.PostCompoundOperationModel;
 import com.worldventures.dreamtrips.modules.common.model.MediaAttachment;
 import com.worldventures.dreamtrips.modules.common.model.PhotoGalleryModel;
 import com.worldventures.dreamtrips.modules.common.view.bundle.BucketBundle;
@@ -36,10 +37,13 @@ import com.worldventures.dreamtrips.modules.feed.bundle.FeedBundle;
 import com.worldventures.dreamtrips.modules.feed.event.CommentIconClickedEvent;
 import com.worldventures.dreamtrips.modules.feed.model.FeedItem;
 import com.worldventures.dreamtrips.modules.feed.model.LoadMoreModel;
+import com.worldventures.dreamtrips.modules.feed.model.uploading.UploadingPostsList;
 import com.worldventures.dreamtrips.modules.feed.presenter.FeedPresenter;
 import com.worldventures.dreamtrips.modules.feed.presenter.SuggestedPhotoCellPresenterHelper;
 import com.worldventures.dreamtrips.modules.feed.view.cell.SuggestedPhotosCell;
 import com.worldventures.dreamtrips.modules.feed.view.cell.delegate.SuggestedPhotosDelegate;
+import com.worldventures.dreamtrips.modules.feed.view.cell.delegate.UploadingCellDelegate;
+import com.worldventures.dreamtrips.modules.feed.view.cell.uploading.UploadingPhotoPostsSectionCell;
 import com.worldventures.dreamtrips.modules.feed.view.util.CirclesFilterPopupWindow;
 import com.worldventures.dreamtrips.modules.feed.view.util.FragmentWithFeedDelegate;
 import com.worldventures.dreamtrips.modules.feed.view.util.StatePaginatedRecyclerViewManager;
@@ -274,32 +278,22 @@ public class FeedFragment extends RxBaseFragmentWithArgs<FeedPresenter, FeedBund
    }
 
    @Override
-   public void refreshFeedItems(List<FeedItem> feedItems, List<PhotoGalleryModel> suggestedPhotos) {
-      if (isNeedAddSuggestions(suggestedPhotos.size(), feedItems.size())) {
-         List listWithSuggestion = new ArrayList<>(feedItems.size() + 1);
-         listWithSuggestion.add(new MediaAttachment(suggestedPhotos, MediaAttachment.Source.GALLERY));
-         listWithSuggestion.addAll(feedItems);
-         //
-         fragmentWithFeedDelegate.clearItems();
-         refreshFeedItems(listWithSuggestion);
-         return;
+   public void refreshFeedItems(List<FeedItem> feedItems, UploadingPostsList uploadingPostsList,
+         List<PhotoGalleryModel> suggestedPhotos) {
+      List newFeedItems = new ArrayList();
+      int suggestedPhotosSize = suggestedPhotos == null ? 0 : suggestedPhotos.size();
+      if (isNeedAddSuggestions(suggestedPhotosSize, feedItems.size())) {
+         newFeedItems.add(new MediaAttachment(suggestedPhotos, MediaAttachment.Source.GALLERY));
       }
-      refreshFeedItems(feedItems);
-   }
 
-   @Override
-   public void refreshFeedItems(List feedItems) {
-      if (isNeedToSaveSuggestions()) {
-         List listWithSuggestion = new ArrayList<>();
-         listWithSuggestion.add(0, fragmentWithFeedDelegate.getItem(0));
-         listWithSuggestion.addAll(feedItems);
-         fragmentWithFeedDelegate.clearItems();
-         fragmentWithFeedDelegate.addItems(listWithSuggestion);
-         fragmentWithFeedDelegate.notifyDataSetChanged();
-         return;
+      if (!uploadingPostsList.getPhotoPosts().isEmpty()) {
+         newFeedItems.add(uploadingPostsList);
       }
+
+      newFeedItems.addAll(feedItems);
+
       fragmentWithFeedDelegate.clearItems();
-      fragmentWithFeedDelegate.addItems(feedItems);
+      fragmentWithFeedDelegate.addItems(newFeedItems);
       fragmentWithFeedDelegate.notifyDataSetChanged();
    }
 
@@ -403,11 +397,6 @@ public class FeedFragment extends RxBaseFragmentWithArgs<FeedPresenter, FeedBund
       return feedItemsSize > 0 && suggestedPhotosSize > 0 || isAdapterContainsSuggestions;
    }
 
-   private boolean isNeedToSaveSuggestions() {
-      return fragmentWithFeedDelegate.getItemsCount() > 0 && fragmentWithFeedDelegate.getItem(0) instanceof MediaAttachment && getPresenter()
-            .hasNewPhotos(((MediaAttachment) fragmentWithFeedDelegate.getItem(0)).chosenImages);
-   }
-
    private void createSuggestionObserver() {
       contentObserver = new ContentObserver(new Handler(Looper.getMainLooper())) {
          @Override
@@ -430,6 +419,8 @@ public class FeedFragment extends RxBaseFragmentWithArgs<FeedPresenter, FeedBund
    private void registerCellDelegates() {
       fragmentWithFeedDelegate.registerDelegate(MediaAttachment.class, this);
       fragmentWithFeedDelegate.registerDelegate(ReloadFeedModel.class, model -> getPresenter().refreshFeed());
+      fragmentWithFeedDelegate.registerDelegate(UploadingPostsList.class, new UploadingCellDelegate(getPresenter(),
+            getContext()));
    }
 
    @Override

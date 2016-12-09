@@ -7,6 +7,7 @@ import android.view.ViewGroup;
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.worldventures.dreamtrips.modules.background_uploading.model.PhotoAttachment;
 
+import java.io.File;
 import java.util.List;
 
 public class SinglePhotoAttachmentPreviewView implements PhotoAttachmentPreviewView {
@@ -18,7 +19,7 @@ public class SinglePhotoAttachmentPreviewView implements PhotoAttachmentPreviewV
 
    @Override
    public void showPreview(List<PhotoAttachment> attachments) {
-      simpleDraweeView.setImageURI(Uri.parse(attachments.get(0).originUrl()));
+      simpleDraweeView.setImageURI(Uri.fromFile(new File(attachments.get(0).selectedPhoto().path())));
    }
 
    @Override

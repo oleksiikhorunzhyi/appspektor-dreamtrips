@@ -66,14 +66,14 @@ public class UploadingPhotoPostsSectionCell extends AbstractDelegateCell<Uploadi
       }
    }
 
-   interface Delegate extends CellDelegate<UploadingPostsList> {
+   public interface Delegate extends CellDelegate<UploadingPostsList> {
 
-      void onUploadPauseClicked(CompoundOperationModel model);
+      void onUploadPauseClicked(PostCompoundOperationModel model);
 
-      void onUploadResumeClicked(CompoundOperationModel model);
+      void onUploadResumeClicked(PostCompoundOperationModel model);
 
-      void onUploadRetryClicked(CompoundOperationModel model);
+      void onUploadRetryClicked(PostCompoundOperationModel model);
 
-      void onUploadCancelClicked(CompoundOperationModel model);
+      void onUploadCancelClicked(PostCompoundOperationModel model);
    }
 }

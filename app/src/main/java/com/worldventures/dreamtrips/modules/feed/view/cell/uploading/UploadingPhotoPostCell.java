@@ -16,6 +16,7 @@ import android.widget.TextView;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.modules.background_uploading.model.CompoundOperationModel;
 import com.worldventures.dreamtrips.modules.background_uploading.model.PhotoAttachment;
+import com.worldventures.dreamtrips.modules.background_uploading.model.PostCompoundOperationModel;
 import com.worldventures.dreamtrips.modules.background_uploading.model.PostWithAttachmentBody;
 import com.worldventures.dreamtrips.modules.feed.view.cell.uploading.preview.PhotoAttachmentPreviewView;
 import com.worldventures.dreamtrips.modules.feed.view.cell.uploading.preview.PhotoPreviewViewFactory;
@@ -42,7 +43,7 @@ public class UploadingPhotoPostCell extends FrameLayout {
    @InjectView(R.id.uploading_cell_control_main_action) ImageView mainControlImageView;
    @InjectView(R.id.uploading_cell_progress_bar) ProgressBar progressBar;
 
-   private CompoundOperationModel<PostWithAttachmentBody> compoundOperationModel;
+   private PostCompoundOperationModel compoundOperationModel;
    private UploadingPhotoPostsSectionCell.Delegate cellDelegate;
    private UploadingTimeLeftFormatter timeLeftFormatter;
 
@@ -62,11 +63,11 @@ public class UploadingPhotoPostCell extends FrameLayout {
       timeLeftFormatter = new UploadingTimeLeftFormatter(getContext());
    }
 
-   public void update(CompoundOperationModel compoundOperationModel, UploadingPhotoPostsSectionCell.Delegate delegate) {
+   public void update(PostCompoundOperationModel compoundOperationModel, UploadingPhotoPostsSectionCell.Delegate delegate) {
       this.compoundOperationModel = compoundOperationModel;
       this.cellDelegate = delegate;
 
-      PostWithAttachmentBody postWithAttachmentBody = (PostWithAttachmentBody) compoundOperationModel.body();
+      PostWithAttachmentBody postWithAttachmentBody = compoundOperationModel.body();
       List<PhotoAttachment> attachments = postWithAttachmentBody.attachments();
 
       PhotoAttachmentPreviewView photoPreviewView = PhotoPreviewViewFactory.provideView(getContext(), attachments);

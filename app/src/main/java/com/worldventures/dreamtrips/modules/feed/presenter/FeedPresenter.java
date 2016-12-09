@@ -19,7 +19,6 @@ import com.worldventures.dreamtrips.core.rx.composer.IoToMainComposer;
 import com.worldventures.dreamtrips.core.session.CirclesInteractor;
 import com.worldventures.dreamtrips.core.utils.LocaleHelper;
 import com.worldventures.dreamtrips.core.utils.tracksystem.AnalyticsInteractor;
-import com.worldventures.dreamtrips.modules.background_uploading.model.CompoundOperationModel;
 import com.worldventures.dreamtrips.modules.background_uploading.model.PostCompoundOperationModel;
 import com.worldventures.dreamtrips.modules.background_uploading.service.BackgroundUploadingInteractor;
 import com.worldventures.dreamtrips.modules.background_uploading.service.CompoundOperationsCommand;
@@ -356,12 +355,8 @@ public class FeedPresenter extends Presenter<FeedPresenter.View> implements Uplo
             .compose(bindViewToMainComposer())
             .subscribe(new ActionStateSubscriber<CompoundOperationsCommand>()
                   .onSuccess(compoundOperationsCommand -> {
-                     List<CompoundOperationModel> compoundOperations = compoundOperationsCommand.getResult();
-                     List<PostCompoundOperationModel> models = new ArrayList<>();
-                     for (CompoundOperationModel model : compoundOperations) {
-                        models.add((PostCompoundOperationModel) model);
-                     }
-                     postUploads = models;
+                     postUploads = Queryable.from(compoundOperationsCommand.getResult())
+                           .cast(PostCompoundOperationModel.class).toList();
                      refreshFeed();
                   }));
    }

@@ -20,7 +20,6 @@ public abstract class BasePhotoAttachmentsPreviewView implements PhotoAttachment
 
    public BasePhotoAttachmentsPreviewView(Context context) {
       this.context = context;
-      init();
    }
 
    private void init() {
@@ -29,6 +28,12 @@ public abstract class BasePhotoAttachmentsPreviewView implements PhotoAttachment
          previewViews.add((SimpleDraweeView) view.findViewById(id));
       }
       onViewCreated();
+   }
+
+   @Override
+   public void attachView(ViewGroup viewGroup) {
+      init();
+      viewGroup.addView(view);
    }
 
    @Override
@@ -41,11 +46,6 @@ public abstract class BasePhotoAttachmentsPreviewView implements PhotoAttachment
          PhotoAttachment photoAttachment = attachments.get(i);
          previewViews.get(i).setImageURI(Uri.parse(photoAttachment.originUrl()));
       }
-   }
-
-   @Override
-   public void attachView(ViewGroup viewGroup) {
-      viewGroup.addView(view);
    }
 
    protected void onViewCreated() {

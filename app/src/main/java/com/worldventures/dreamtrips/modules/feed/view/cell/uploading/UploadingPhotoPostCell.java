@@ -43,9 +43,10 @@ public class UploadingPhotoPostCell extends FrameLayout {
    @InjectView(R.id.uploading_cell_control_main_action) ImageView mainControlImageView;
    @InjectView(R.id.uploading_cell_progress_bar) ProgressBar progressBar;
 
-   private PostCompoundOperationModel compoundOperationModel;
    private UploadingPhotoPostsSectionCell.Delegate cellDelegate;
    private UploadingTimeLeftFormatter timeLeftFormatter;
+
+   private PostCompoundOperationModel compoundOperationModel;
 
    public UploadingPhotoPostCell(Context context) {
       super(context);
@@ -70,18 +71,37 @@ public class UploadingPhotoPostCell extends FrameLayout {
       PostWithAttachmentBody postWithAttachmentBody = compoundOperationModel.body();
       List<PhotoAttachment> attachments = postWithAttachmentBody.attachments();
 
-      PhotoAttachmentPreviewView photoPreviewView = PhotoPreviewViewFactory.provideView(getContext(), attachments);
-      photoPreviewView.attachView(previewContainer);
-      photoPreviewView.showPreview(attachments);
+      refreshPhotoPreviewView(attachments);
 
-      // TODO Change to actual time of creation
-      long timestampPostCreated = System.currentTimeMillis();
       titleTextView.setText(DateUtils.formatDateTime(getContext(),
-            timestampPostCreated, FORMAT_SHOW_DATE | FORMAT_SHOW_YEAR | FORMAT_ABBREV_MONTH));
+            compoundOperationModel.creationDate().getTime(), FORMAT_SHOW_DATE | FORMAT_SHOW_YEAR | FORMAT_ABBREV_MONTH));
 
       progressBar.setProgress(compoundOperationModel.progress());
 
       updateViewsAccordingToState(compoundOperationModel);
+   }
+
+   /*
+    * Reuse photo preview view is suitable, otherwise attach new one
+    */
+   private void refreshPhotoPreviewView(List<PhotoAttachment> attachments) {
+      PhotoAttachmentPreviewView newPhotoPreviewView = PhotoPreviewViewFactory.provideView(getContext(), attachments);
+      PhotoAttachmentPreviewView existingPhotoPreviewView = null;
+      PhotoAttachmentPreviewView photoPreviewView;
+      if (previewContainer.getChildCount() > 0) {
+         existingPhotoPreviewView = (PhotoAttachmentPreviewView) previewContainer.getChildAt(0);
+      }
+      if (existingPhotoPreviewView != null
+            && existingPhotoPreviewView.getClass().equals(newPhotoPreviewView.getClass())) {
+         photoPreviewView = existingPhotoPreviewView;
+      } else {
+         if (existingPhotoPreviewView != null) {
+            previewContainer.removeAllViews();
+         }
+         newPhotoPreviewView.attachView(previewContainer);
+         photoPreviewView = newPhotoPreviewView;
+      }
+      photoPreviewView.showPreview(attachments);
    }
 
    private void updateViewsAccordingToState(CompoundOperationModel compoundOperationModel) {

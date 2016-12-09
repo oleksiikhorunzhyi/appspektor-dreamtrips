@@ -11,19 +11,23 @@ import java.io.File;
 import java.util.List;
 
 public class SinglePhotoAttachmentPreviewView implements PhotoAttachmentPreviewView {
+
+   private Context context;
    private SimpleDraweeView simpleDraweeView;
 
    public SinglePhotoAttachmentPreviewView(Context context) {
-      simpleDraweeView = new SimpleDraweeView(context);
-   }
-
-   @Override
-   public void showPreview(List<PhotoAttachment> attachments) {
-      simpleDraweeView.setImageURI(Uri.fromFile(new File(attachments.get(0).selectedPhoto().path())));
+      this.context = context;
    }
 
    @Override
    public void attachView(ViewGroup viewGroup) {
+      simpleDraweeView = new SimpleDraweeView(context);
       viewGroup.addView(simpleDraweeView);
+   }
+
+   @Override
+   public void showPreview(List<PhotoAttachment> attachments) {
+      if (simpleDraweeView.getParent() == null) throw new IllegalStateException("Must call attachView() first");
+      simpleDraweeView.setImageURI(Uri.fromFile(new File(attachments.get(0).selectedPhoto().path())));
    }
 }

@@ -2,11 +2,8 @@ package com.worldventures.dreamtrips.modules.infopages.view.fragment;
 
 import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.view.View;
 
-import com.badoo.mobile.util.WeakHandler;
 import com.techery.spares.adapter.BaseDelegateAdapter;
 import com.techery.spares.annotations.Layout;
 import com.techery.spares.ui.view.cell.CellDelegate;
@@ -14,6 +11,9 @@ import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.navigation.router.NavigationConfigBuilder;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragment;
+import com.worldventures.dreamtrips.modules.feed.model.LoadMoreModel;
+import com.worldventures.dreamtrips.modules.feed.view.cell.LoaderCell;
+import com.worldventures.dreamtrips.modules.feed.view.util.StatePaginatedRecyclerViewManager;
 import com.worldventures.dreamtrips.modules.infopages.bundle.DocumentBundle;
 import com.worldventures.dreamtrips.modules.infopages.model.Document;
 import com.worldventures.dreamtrips.modules.infopages.presenter.DocumentListPresenter;
@@ -22,35 +22,42 @@ import com.worldventures.dreamtrips.modules.membership.view.util.DividerItemDeco
 
 import java.util.List;
 
-import butterknife.InjectView;
-
 import static com.worldventures.dreamtrips.modules.membership.view.util.DividerItemDecoration.VERTICAL_LIST;
 
 @Layout(R.layout.fragment_documents)
 public class DocumentListFragment extends BaseFragment<DocumentListPresenter> implements CellDelegate<Document>,
       DocumentListPresenter.View, SwipeRefreshLayout.OnRefreshListener {
 
-   @InjectView(R.id.documentsList) RecyclerView documentsList;
-   @InjectView(R.id.swipe_container) SwipeRefreshLayout swipeContainer;
-
    private BaseDelegateAdapter adapter;
-   private WeakHandler weakHandler;
+   private StatePaginatedRecyclerViewManager statePaginatedRecyclerViewManager;
+   private Bundle savedInstanceState;
+
+   @Override
+   public void onCreate(Bundle savedInstanceState) {
+      super.onCreate(savedInstanceState);
+      this.savedInstanceState = savedInstanceState;
+   }
 
    @Override
    public void afterCreateView(View rootView) {
       super.afterCreateView(rootView);
 
-      weakHandler = new WeakHandler();
-
-      swipeContainer.setColorSchemeResources(R.color.theme_main_darker);
-      swipeContainer.setOnRefreshListener(this);
-
       adapter = new BaseDelegateAdapter(getContext(), this);
       adapter.registerCell(Document.class, DocumentCell.class, this);
+      adapter.registerCell(LoadMoreModel.class, LoaderCell.class);
 
-      documentsList.setLayoutManager(new LinearLayoutManager(getContext()));
-      documentsList.addItemDecoration(new DividerItemDecoration(getContext(), VERTICAL_LIST));
-      documentsList.setAdapter(adapter);
+      statePaginatedRecyclerViewManager = new StatePaginatedRecyclerViewManager(rootView);
+      statePaginatedRecyclerViewManager.init(adapter, savedInstanceState);
+      statePaginatedRecyclerViewManager.setOnRefreshListener(this);
+      statePaginatedRecyclerViewManager.addItemDecoration(new DividerItemDecoration(getContext(), VERTICAL_LIST));
+      statePaginatedRecyclerViewManager.setPaginationListener(() -> {
+         if (!statePaginatedRecyclerViewManager.isNoMoreElements()) {
+            adapter.addItem(new LoadMoreModel());
+            adapter.notifyDataSetChanged();
+         }
+
+         getPresenter().loadNextDocuments();
+      });
    }
 
    @Override
@@ -66,22 +73,32 @@ public class DocumentListFragment extends BaseFragment<DocumentListPresenter> im
    }
 
    @Override
+   public boolean isAdapterEmpty() {
+      return adapter.getItemCount() == 0;
+   }
+
+   @Override
    public void setDocumentList(List<Document> documentList) {
       adapter.setItems(documentList);
    }
 
    @Override
    public void showProgress() {
-      weakHandler.post(() -> swipeContainer.setRefreshing(true));
+      statePaginatedRecyclerViewManager.startLoading();
    }
 
    @Override
    public void hideProgress() {
-      weakHandler.post(() -> swipeContainer.setRefreshing(false));
+      statePaginatedRecyclerViewManager.finishLoading();
+   }
+
+   @Override
+   public void updateLoadingStatus(boolean noMoreElements) {
+      statePaginatedRecyclerViewManager.updateLoadingStatus(false, noMoreElements);
    }
 
    @Override
    public void onRefresh() {
-      getPresenter().getDocuments();
+      getPresenter().refreshDocuments();
    }
 }

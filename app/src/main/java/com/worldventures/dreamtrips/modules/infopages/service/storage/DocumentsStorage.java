@@ -20,11 +20,6 @@ public class DocumentsStorage implements ActionStorage<List<Document>> {
    }
 
    @Override
-   public Class<? extends CachedAction> getActionClass() {
-      return GetDocumentsCommand.class;
-   }
-
-   @Override
    public void save(@Nullable CacheBundle params, List<Document> data) {
       snappyRepository.setDocuments(data);
    }
@@ -32,5 +27,10 @@ public class DocumentsStorage implements ActionStorage<List<Document>> {
    @Override
    public List<Document> get(@Nullable CacheBundle action) {
       return snappyRepository.getDocuments();
+   }
+
+   @Override
+   public Class<? extends CachedAction> getActionClass() {
+      return GetDocumentsCommand.class;
    }
 }

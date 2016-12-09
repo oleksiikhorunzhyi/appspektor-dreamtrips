@@ -8,13 +8,13 @@ import rx.schedulers.Schedulers;
 
 public class DocumentsInteractor {
 
-   private final ActionPipe<GetDocumentsCommand> getDocumentsPipe;
+   private final ActionPipe<GetDocumentsCommand> getDocumentsActionPipe;
 
    public DocumentsInteractor(SessionActionPipeCreator actionPipeCreator) {
-      this.getDocumentsPipe = actionPipeCreator.createPipe(GetDocumentsCommand.class, Schedulers.io());
+      this.getDocumentsActionPipe = actionPipeCreator.createPipe(GetDocumentsCommand.class, Schedulers.io());
    }
 
-   public ActionPipe<GetDocumentsCommand> getDocumentsPipe() {
-      return getDocumentsPipe;
+   public ActionPipe<GetDocumentsCommand> getDocumentsActionPipe() {
+      return getDocumentsActionPipe;
    }
 }

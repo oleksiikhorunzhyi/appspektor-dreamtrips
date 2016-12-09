@@ -1,11 +1,15 @@
 package com.worldventures.dreamtrips.modules.infopages.service.command;
 
 import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.api.documents.GetDocumentsHttpAction;
 import com.worldventures.dreamtrips.core.api.action.CommandWithError;
 import com.worldventures.dreamtrips.core.janet.JanetModule;
+import com.worldventures.dreamtrips.core.janet.cache.CacheBundle;
+import com.worldventures.dreamtrips.core.janet.cache.CacheBundleImpl;
 import com.worldventures.dreamtrips.core.janet.cache.CacheOptions;
 import com.worldventures.dreamtrips.core.janet.cache.CachedAction;
 import com.worldventures.dreamtrips.core.janet.cache.ImmutableCacheOptions;
+import com.worldventures.dreamtrips.core.janet.cache.storage.PaginatedStorage;
 import com.worldventures.dreamtrips.core.janet.dagger.InjectableAction;
 import com.worldventures.dreamtrips.modules.infopages.model.Document;
 
@@ -19,7 +23,6 @@ import io.techery.janet.ActionHolder;
 import io.techery.janet.Janet;
 import io.techery.janet.command.annotations.CommandAction;
 import io.techery.mappery.MapperyContext;
-import rx.Observable;
 
 @CommandAction
 public class GetDocumentsCommand extends CommandWithError<List<Document>> implements InjectableAction,
@@ -30,7 +33,7 @@ public class GetDocumentsCommand extends CommandWithError<List<Document>> implem
    @Inject @Named(JanetModule.JANET_API_LIB) Janet janet;
    @Inject MapperyContext mappery;
 
-   protected List<Document> cachedDocuments;
+   private List<Document> cachedDocuments;
 
    private boolean refresh;
 
@@ -44,12 +47,9 @@ public class GetDocumentsCommand extends CommandWithError<List<Document>> implem
 
    @Override
    protected void run(CommandCallback<List<Document>> callback) throws Throwable {
-//            return janet.createPipe(GetDocumentsHttpAction.class)
-//                  .createObservableResult(new GetDocumentsHttpAction(getPage(), PER_PAGE))
-//                  .map(action -> mappery.convert(action.response(), Document.class))
-//                  .doOnNext(list -> clearCacheIfNeeded())
-//                  .subscribe(callback::onSuccess, callback::onFail);
-      Observable.just(stub())
+      janet.createPipe(GetDocumentsHttpAction.class)
+            .createObservableResult(new GetDocumentsHttpAction(getPage(), PER_PAGE))
+            .map(action -> mappery.convert(action.response(), Document.class))
             .doOnNext(list -> clearCacheIfNeeded())
             .subscribe(callback::onSuccess, callback::onFail);
    }
@@ -73,12 +73,14 @@ public class GetDocumentsCommand extends CommandWithError<List<Document>> implem
 
    @Override
    public List<Document> getCacheData() {
-      return new ArrayList<>(items());
+      return new ArrayList<>(getResult());
    }
 
    @Override
    public CacheOptions getCacheOptions() {
-      return ImmutableCacheOptions.builder().build();
+      CacheBundle cacheBundle = new CacheBundleImpl();
+      cacheBundle.put(PaginatedStorage.BUNDLE_REFRESH, refresh);
+      return ImmutableCacheOptions.builder().params(cacheBundle).build();
    }
 
    public boolean isNoMoreElements() {
@@ -87,13 +89,6 @@ public class GetDocumentsCommand extends CommandWithError<List<Document>> implem
 
    public boolean isRefreshCommand() {
       return refresh;
-   }
-
-   private List<Document> stub() {
-      List<Document> documentList = new ArrayList<>();
-      documentList.add(new Document(1, "Google", "https://google.com.ua"));
-      documentList.add(new Document(2, "Amazon", "https://amazon.com"));
-      return documentList;
    }
 
    private void clearCacheIfNeeded() {

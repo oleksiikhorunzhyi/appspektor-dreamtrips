@@ -33,6 +33,7 @@ import com.worldventures.dreamtrips.modules.infopages.model.FeedbackTypeConverte
 import com.worldventures.dreamtrips.modules.mapping.converter.AccountToUserConverter;
 import com.worldventures.dreamtrips.modules.mapping.converter.CircleConverter;
 import com.worldventures.dreamtrips.modules.mapping.converter.Converter;
+import com.worldventures.dreamtrips.modules.mapping.converter.DocumentsConverter;
 import com.worldventures.dreamtrips.modules.mapping.converter.FeatureConverter;
 import com.worldventures.dreamtrips.modules.mapping.converter.FeedMetaDataConverter;
 import com.worldventures.dreamtrips.modules.mapping.converter.FeedbackImageAttachmentConverter;
@@ -583,5 +584,11 @@ public class MappingModule {
    @Singleton
    Converter provideSettingConverter() {
       return new SettingConverter();
+   }
+
+   @Provides(type = Provides.Type.SET)
+   @Singleton
+   Converter provideDocumentsConverter() {
+      return new DocumentsConverter();
    }
 }

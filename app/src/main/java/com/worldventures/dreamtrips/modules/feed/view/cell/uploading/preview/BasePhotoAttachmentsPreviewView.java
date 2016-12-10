@@ -9,6 +9,7 @@ import android.view.ViewGroup;
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.worldventures.dreamtrips.modules.background_uploading.model.PhotoAttachment;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -44,7 +45,7 @@ public abstract class BasePhotoAttachmentsPreviewView implements PhotoAttachment
             break;
          }
          PhotoAttachment photoAttachment = attachments.get(i);
-         previewViews.get(i).setImageURI(Uri.parse(photoAttachment.originUrl()));
+         previewViews.get(i).setImageURI(Uri.fromFile(new File(photoAttachment.selectedPhoto().path())));
       }
    }
 

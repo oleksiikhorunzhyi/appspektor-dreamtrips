@@ -74,7 +74,8 @@ public class UploadingPhotoPostCell extends FrameLayout {
       refreshPhotoPreviewView(attachments);
 
       titleTextView.setText(DateUtils.formatDateTime(getContext(),
-            compoundOperationModel.creationDate().getTime(), FORMAT_SHOW_DATE | FORMAT_SHOW_YEAR | FORMAT_ABBREV_MONTH));
+            compoundOperationModel.creationDate()
+                  .getTime(), FORMAT_SHOW_DATE | FORMAT_SHOW_YEAR | FORMAT_ABBREV_MONTH));
 
       progressBar.setProgress(compoundOperationModel.progress());
 
@@ -85,22 +86,9 @@ public class UploadingPhotoPostCell extends FrameLayout {
     * Reuse photo preview view is suitable, otherwise attach new one
     */
    private void refreshPhotoPreviewView(List<PhotoAttachment> attachments) {
-      PhotoAttachmentPreviewView newPhotoPreviewView = PhotoPreviewViewFactory.provideView(getContext(), attachments);
-      PhotoAttachmentPreviewView existingPhotoPreviewView = null;
-      PhotoAttachmentPreviewView photoPreviewView;
-      if (previewContainer.getChildCount() > 0) {
-         existingPhotoPreviewView = (PhotoAttachmentPreviewView) previewContainer.getChildAt(0);
-      }
-      if (existingPhotoPreviewView != null
-            && existingPhotoPreviewView.getClass().equals(newPhotoPreviewView.getClass())) {
-         photoPreviewView = existingPhotoPreviewView;
-      } else {
-         if (existingPhotoPreviewView != null) {
-            previewContainer.removeAllViews();
-         }
-         newPhotoPreviewView.attachView(previewContainer);
-         photoPreviewView = newPhotoPreviewView;
-      }
+      PhotoAttachmentPreviewView photoPreviewView = PhotoPreviewViewFactory.provideView(getContext(), attachments);
+      previewContainer.removeAllViews();
+      photoPreviewView.attachView(previewContainer);
       photoPreviewView.showPreview(attachments);
    }
 
@@ -184,7 +172,7 @@ public class UploadingPhotoPostCell extends FrameLayout {
       uploadFinishedView.setVisibility(View.VISIBLE);
    }
 
-   private void setProgressBarProgressColor(@ColorRes int current, @ColorRes  int total) {
+   private void setProgressBarProgressColor(@ColorRes int current, @ColorRes int total) {
       progressBar.getProgressDrawable().setColorFilter(getContext().getColor(current), PorterDuff.Mode.SRC_IN);
       progressBar.setBackgroundColor(getContext().getColor(total));
    }

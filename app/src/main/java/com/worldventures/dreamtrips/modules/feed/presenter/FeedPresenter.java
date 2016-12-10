@@ -355,9 +355,8 @@ public class FeedPresenter extends Presenter<FeedPresenter.View> implements Uplo
             .compose(bindViewToMainComposer())
             .subscribe(new ActionStateSubscriber<CompoundOperationsCommand>()
                   .onSuccess(compoundOperationsCommand -> {
-                     postUploads = Queryable.from(compoundOperationsCommand.getResult())
-                           .cast(PostCompoundOperationModel.class).toList();
-                     refreshFeed();
+                        postUploads = Queryable.from(compoundOperationsCommand.getResult()).cast(PostCompoundOperationModel.class).toList();
+                        refreshFeedItems();
                   }));
    }
 

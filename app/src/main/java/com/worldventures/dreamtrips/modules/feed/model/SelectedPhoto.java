@@ -18,4 +18,5 @@ public interface SelectedPhoto {
    @Nullable Location locationFromExif(); //analytics related
    @Nullable String title();
    @Nullable List<PhotoTag> tags();
+   long size();
 }

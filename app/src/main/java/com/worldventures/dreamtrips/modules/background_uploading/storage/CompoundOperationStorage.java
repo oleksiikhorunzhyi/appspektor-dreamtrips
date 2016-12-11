@@ -4,14 +4,18 @@ import android.support.annotation.Nullable;
 
 import com.worldventures.dreamtrips.core.janet.cache.CacheBundle;
 import com.worldventures.dreamtrips.core.janet.cache.CachedAction;
-import com.worldventures.dreamtrips.core.janet.cache.storage.ActionStorage;
 import com.worldventures.dreamtrips.core.janet.cache.storage.MemoryStorage;
+import com.worldventures.dreamtrips.core.janet.cache.storage.MultipleActionStorage;
 import com.worldventures.dreamtrips.modules.background_uploading.model.CompoundOperationModel;
-import com.worldventures.dreamtrips.modules.background_uploading.service.CompoundOperationsCommand;
+import com.worldventures.dreamtrips.modules.background_uploading.service.DeleteCompoundOperationsCommand;
+import com.worldventures.dreamtrips.modules.background_uploading.service.ScheduleCompoundOperationCommand;
+import com.worldventures.dreamtrips.modules.background_uploading.service.StartNextCompoundOperationCommand;
+import com.worldventures.dreamtrips.modules.background_uploading.service.UpdateCompoundOperationsCommand;
 
+import java.util.Arrays;
 import java.util.List;
 
-public class CompoundOperationStorage implements ActionStorage<List<CompoundOperationModel>> {
+public class CompoundOperationStorage implements MultipleActionStorage<List<CompoundOperationModel>> {
 
    private CompoundOperationRepository compoundOperationRepository;
 
@@ -22,8 +26,11 @@ public class CompoundOperationStorage implements ActionStorage<List<CompoundOper
    private MemoryStorage<List<CompoundOperationModel>> memoryStorage = new MemoryStorage<>();
 
    @Override
-   public Class<? extends CachedAction> getActionClass() {
-      return CompoundOperationsCommand.class;
+   public List<Class<? extends CachedAction>> getActionClasses() {
+      return Arrays.asList(UpdateCompoundOperationsCommand.class,
+            DeleteCompoundOperationsCommand.class,
+            ScheduleCompoundOperationCommand.class,
+            StartNextCompoundOperationCommand.class);
    }
 
    @Override

@@ -38,7 +38,6 @@ public abstract class UploaderyImageCommand<T> extends BaseUploadImageCommand<T>
       getFileObservable(context, fileUri).flatMap(this::upload)
             .compose(nextAction())
             .subscribe(callback::onSuccess, callback::onFail);
-
    }
 
    public String getFileUri() {

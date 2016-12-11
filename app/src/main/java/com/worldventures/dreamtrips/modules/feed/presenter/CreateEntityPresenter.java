@@ -3,9 +3,11 @@ package com.worldventures.dreamtrips.modules.feed.presenter;
 import com.innahema.collections.query.functions.Converter;
 import com.innahema.collections.query.queriables.Queryable;
 import com.worldventures.dreamtrips.core.rx.composer.IoToMainComposer;
+import com.worldventures.dreamtrips.core.utils.FileUtils;
+import com.worldventures.dreamtrips.modules.background_uploading.model.PostWithAttachmentBody;
 import com.worldventures.dreamtrips.modules.background_uploading.service.BackgroundUploadingInteractor;
-import com.worldventures.dreamtrips.modules.background_uploading.service.CompoundOperationsCommand;
 import com.worldventures.dreamtrips.modules.background_uploading.service.CreatePostCompoundOperationCommand;
+import com.worldventures.dreamtrips.modules.background_uploading.service.ScheduleCompoundOperationCommand;
 import com.worldventures.dreamtrips.modules.common.command.CopyFileCommand;
 import com.worldventures.dreamtrips.modules.common.model.MediaAttachment;
 import com.worldventures.dreamtrips.modules.common.model.PhotoGalleryModel;
@@ -16,6 +18,7 @@ import com.worldventures.dreamtrips.modules.feed.model.ImmutableSelectedPhoto;
 import com.worldventures.dreamtrips.modules.feed.model.PhotoCreationItem;
 import com.worldventures.dreamtrips.modules.feed.model.SelectedPhoto;
 import com.worldventures.dreamtrips.modules.feed.service.PostsInteractor;
+import com.worldventures.dreamtrips.modules.feed.service.command.CreatePostCommand;
 import com.worldventures.dreamtrips.modules.tripsimages.service.TripImagesInteractor;
 import com.worldventures.dreamtrips.modules.tripsimages.service.command.CreatePhotoCreationItemCommand;
 import com.worldventures.dreamtrips.modules.tripsimages.service.command.FetchLocationFromExifCommand;
@@ -26,7 +29,9 @@ import java.util.List;
 import javax.inject.Inject;
 
 import io.techery.janet.Command;
+import io.techery.janet.helper.ActionStateSubscriber;
 import rx.Observable;
+import rx.schedulers.Schedulers;
 import timber.log.Timber;
 
 public class CreateEntityPresenter<V extends CreateEntityPresenter.View> extends ActionEntityPresenter<V> {
@@ -50,12 +55,23 @@ public class CreateEntityPresenter<V extends CreateEntityPresenter.View> extends
       super.takeView(view);
       postsInteractor.createPostCompoundOperationPipe()
             .observeSuccess()
+            .map(Command::getResult)
             .compose(bindViewToMainComposer())
-            .subscribe(command -> {
-               closeView();
-               backgroundUploadingInteractor.compoundOperationsPipe()
-                     .send(CompoundOperationsCommand.compoundCommandChanged(command.getResult()));
+            .subscribe(postCompoundOperationModel -> {
+               if (postCompoundOperationModel.body().attachments().size() > 0) {
+                  closeView();
+                  backgroundUploadingInteractor.scheduleOperationPipe()
+                        .send(new ScheduleCompoundOperationCommand(postCompoundOperationModel));
+               } else {
+                  createTextualPost(postCompoundOperationModel.body());
+               }
             });
+      postsInteractor.createPostPipe()
+            .observe()
+            .compose(bindViewToMainComposer())
+            .subscribe(new ActionStateSubscriber<CreatePostCommand>()
+                  .onFail(this::handleError)
+                  .onSuccess(command -> closeView()));
    }
 
    @Override
@@ -74,6 +90,10 @@ public class CreateEntityPresenter<V extends CreateEntityPresenter.View> extends
       invalidateDynamicViews();
    }
 
+   private void createTextualPost(PostWithAttachmentBody postWithAttachmentBody) {
+      postsInteractor.createPostPipe().send(new CreatePostCommand(postWithAttachmentBody));
+   }
+
    @Override
    protected boolean isChanged() {
       return !isCachedTextEmpty() || (cachedCreationItems.size() > 0);
@@ -89,7 +109,9 @@ public class CreateEntityPresenter<V extends CreateEntityPresenter.View> extends
                      return item;
                   }))
             .toList()
-            .compose(bindViewToMainComposer())
+            .compose(bindView())
+            .subscribeOn(Schedulers.io())
+            .observeOn(Schedulers.io())
             .subscribe(creationItems ->
                   postsInteractor.createPostCompoundOperationPipe()
                         .send(new CreatePostCompoundOperationCommand(cachedText, getSelectionPhotos(creationItems), location))
@@ -105,13 +127,12 @@ public class CreateEntityPresenter<V extends CreateEntityPresenter.View> extends
                         .locationFromExif(element.getLocationFromExif())
                         .tags(element.getCachedAddedPhotoTags())
                         .locationFromPost(location)
+                        .size(FileUtils.getFileSize(element.getFilePath()))
                         .width(element.getWidth())
                         .height(element.getHeight())
                         .build())
             .toList();
-
    }
-
 
    public int getRemainingPhotosCount() {
       return MAX_PHOTOS_COUNT - cachedCreationItems.size();

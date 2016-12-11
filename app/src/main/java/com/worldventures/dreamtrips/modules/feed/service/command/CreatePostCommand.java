@@ -5,12 +5,9 @@ import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.api.post.CreatePostHttpAction;
 import com.worldventures.dreamtrips.api.post.model.request.PostData;
 import com.worldventures.dreamtrips.core.api.action.MappableApiActionCommand;
+import com.worldventures.dreamtrips.modules.background_uploading.model.PostWithAttachmentBody;
 import com.worldventures.dreamtrips.modules.feed.model.CreatePhotoPostEntity;
 import com.worldventures.dreamtrips.modules.feed.model.TextualPost;
-import com.worldventures.dreamtrips.modules.trips.model.Location;
-import com.worldventures.dreamtrips.modules.tripsimages.model.Photo;
-
-import java.util.List;
 
 import io.techery.janet.command.annotations.CommandAction;
 
@@ -20,13 +17,13 @@ public class CreatePostCommand extends MappableApiActionCommand<CreatePostHttpAc
 
    private CreatePhotoPostEntity createPhotoPostEntity;
 
-   public CreatePostCommand(String text, Location location, List<Photo> photos) {
+   public CreatePostCommand(PostWithAttachmentBody postWithAttachmentBody) {
       createPhotoPostEntity = new CreatePhotoPostEntity();
-      createPhotoPostEntity.setDescription(text);
-      createPhotoPostEntity.setLocation(location);
-      if (photos != null)
-         Queryable.from(photos).forEachR(photo -> createPhotoPostEntity
-               .addAttachment(new CreatePhotoPostEntity.Attachment(photo.getUid())));
+      createPhotoPostEntity.setDescription(postWithAttachmentBody.text());
+      createPhotoPostEntity.setLocation(postWithAttachmentBody.location());
+      if (postWithAttachmentBody.uploadedPhotos() != null)
+         Queryable.from(postWithAttachmentBody.uploadedPhotos())
+               .forEachR(photo -> createPhotoPostEntity.addAttachment(new CreatePhotoPostEntity.Attachment(photo.getUid())));
    }
 
    @Override

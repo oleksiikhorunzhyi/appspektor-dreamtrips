@@ -180,7 +180,7 @@ public class CacheActionStorageModule {
 
    @Singleton
    @Provides(type = Provides.Type.SET)
-   ActionStorage provideCompoundOperationStorage(CompoundOperationRepository compoundOperationRepository) {
+   MultipleActionStorage provideCompoundOperationStorage(CompoundOperationRepository compoundOperationRepository) {
       return new CompoundOperationStorage(compoundOperationRepository);
    }
 

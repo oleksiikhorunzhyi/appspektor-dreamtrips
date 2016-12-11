@@ -11,6 +11,7 @@ import com.worldventures.dreamtrips.api.photos.model.PhotoTagParams;
 import com.worldventures.dreamtrips.api.photos.model.PhotosCreationParams;
 import com.worldventures.dreamtrips.core.api.action.MappableApiActionCommand;
 import com.worldventures.dreamtrips.modules.background_uploading.model.PhotoAttachment;
+import com.worldventures.dreamtrips.modules.background_uploading.model.PostWithAttachmentBody;
 import com.worldventures.dreamtrips.modules.trips.model.Location;
 import com.worldventures.dreamtrips.modules.tripsimages.model.Photo;
 
@@ -25,9 +26,9 @@ public class CreatePhotosCommand extends MappableApiActionCommand<CreatePhotosHt
    private List<PhotoAttachment> attachments;
    private Location location;
 
-   public CreatePhotosCommand(List<PhotoAttachment> attachments, Location location) {
-      this.attachments = attachments;
-      this.location = location;
+   public CreatePhotosCommand(PostWithAttachmentBody postWithAttachmentBody) {
+      this.attachments = postWithAttachmentBody.attachments();
+      this.location = postWithAttachmentBody.location();
    }
 
    @Override

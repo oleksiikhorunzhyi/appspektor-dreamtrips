@@ -29,9 +29,14 @@ import dagger.Provides;
             // base injection and helpers/drivers
             InjectingApplicationModule.class,
             //
-            DebugModule.class, InitializerModule.class, HolderModule.class, SnappyModule.class, ManagerModule.class,
+            DebugModule.class,
+            InitializerModule.class,
+            HolderModule.class,
+            SnappyModule.class,
+            ManagerModule.class,
             //
-            ApiModule.class, AmazonModule.class,
+            ApiModule.class,
+            AmazonModule.class,
             //
             UiBindingModule.class,
             //

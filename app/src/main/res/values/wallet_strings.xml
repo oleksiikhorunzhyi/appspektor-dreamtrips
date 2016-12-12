@@ -44,7 +44,12 @@
 
    <!--pin is set-->
    <string name="wallet_wizard_pin_is_set">Your PIN is set!</string>
-   <string name="wallet_wizard_pin_is_set_suggestion">You can now begin loading credit and debit cards</string>
+   <string name="wallet_wizard_pin_is_set_suggestion">Your Smart Card is now secure. Next we need to update this\ninformation on your Smart Card.</string>
+
+   <!--finish-->
+   <string name="wallet_wizard_finish_title">Finishing Set Up</string>
+   <string name="wallet_wizard_setup_complete_label">Set up is almost complete. </string>
+   <string name="wallet_wizard_finish_label">When finished you will be able to add credit and debit cards.</string>
 
    <!--splash-->
    <string name="wallet_wizard_splash_title1">Get ready to soar</string>
@@ -117,6 +122,20 @@
    <string name="wallet_card_settings_are_you_sure">Are you sure?</string>
    <string name="wallet_card_settings_unpair_sc">Unpair smart card</string>
    <string name="wallet_card_settings_loads_cards_without_inet">Loads cards to device without internet</string>
+
+   <!--profile settings-->
+   <string name="wallet_card_settings_profile_title">Smart Card Profile</string>
+   <string name="wallet_card_settings_profile_firstname_hint">First name</string>
+   <string name="wallet_card_settings_profile_middle_hint">Middle name (optional)</string>
+   <string name="wallet_card_settings_profile_lastname_hint">Last name</string>
+   <string name="wallet_card_settings_profile_warning">Make sure your name is similar to what’s on your payment cards.</string>
+   <string name="wallet_card_settings_profile_dialog_changes_title">Some changes were made. Are you sure you want go back without saving them</string>
+   <string name="wallet_card_settings_profile_dialog_changes_positive">Back</string>
+   <string name="wallet_card_settings_profile_dialog_changes_negative">Cancel</string>
+   <string name="wallet_card_settings_profile_dialog_error_smartcard_header">Cannot connect to smartcard</string>
+   <string name="wallet_card_settings_profile_dialog_error_server_content">We’re sorry there was an error communicating with the server. Please try again later.</string>
+   <string name="wallet_card_settings_profile_dialog_error_smartcard_content">Please make sure your smart card is on and Bluetooth is enabled on your phone.</string>
+
 
    <!--card list-->
    <string name="wallet_card_list_title">My flye smart card</string>

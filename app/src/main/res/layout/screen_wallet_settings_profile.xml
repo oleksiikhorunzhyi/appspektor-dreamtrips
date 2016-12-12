@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.worldventures.dreamtrips.wallet.ui.settings.profile.WalletSettingsProfileScreen xmlns:android="http://schemas.android.com/apk/res/android"
+      xmlns:app="http://schemas.android.com/apk/res-auto"
+      xmlns:tools="http://schemas.android.com/tools"
+      android:layout_width="match_parent"
+      android:layout_height="match_parent"
+      android:background="@android:color/white"
+      android:theme="@style/WalletTheme"
+      >
+
+   <android.support.v7.widget.Toolbar
+         android:id="@+id/toolbar"
+         android:layout_width="match_parent"
+         android:layout_height="?attr/actionBarSize"
+         app:title="@string/wallet_card_settings_profile_title"
+         />
+
+   <LinearLayout
+         style="@style/WalletTheme.ContentContainerStyle"
+         android:gravity="center_horizontal"
+         android:orientation="vertical"
+         >
+
+      <FrameLayout
+            android:id="@+id/imageContainer"
+            android:layout_width="136dp"
+            android:layout_height="136dp"
+            android:layout_below="@+id/text_description"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="40dp"
+            >
+
+         <com.facebook.drawee.view.SimpleDraweeView
+               android:id="@+id/photo_preview"
+               android:layout_width="match_parent"
+               android:layout_height="match_parent"
+               android:layout_gravity="center_horizontal"
+               android:src="@drawable/ic_dt_launcher"
+               app:failureImage="@drawable/ic_avatar_placeholder"
+               app:placeholderImage="@drawable/ic_avatar_placeholder"
+               />
+
+         <ImageView
+               android:layout_width="36dp"
+               android:layout_height="36dp"
+               android:layout_gravity="right|bottom"
+               android:layout_marginRight="5dp"
+               android:src="@drawable/ic_edit_photo"
+               />
+
+      </FrameLayout>
+
+      <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="20dp"
+            android:layout_marginLeft="40dp"
+            android:layout_marginRight="40dp"
+            android:layout_marginTop="20dp"
+            android:gravity="center_horizontal"
+            android:text="@string/wallet_card_settings_profile_warning"
+            android:textColor="@color/grey"
+            android:textSize="@dimen/font_medium"
+            />
+
+      <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_below="@+id/imageContainer"
+            android:orientation="vertical"
+            >
+
+         <EditText
+               android:id="@+id/first_name"
+               android:layout_width="match_parent"
+               android:layout_height="wrap_content"
+               android:layout_alignParentBottom="true"
+               android:drawableRight="@drawable/ic_wallet_pencil"
+               android:hint="@string/wallet_card_settings_profile_firstname_hint"
+               android:imeOptions="actionNext"
+               android:inputType="textPersonName|textCapWords"
+               android:maxLength="@integer/wallet_settings_name_max_length"
+               android:maxLines="1"
+               android:textColor="#666666"
+               android:textColorHint="@color/grey"
+               android:textSize="@dimen/font_normal"
+               tools:text="Shirley"
+               />
+
+         <EditText
+               android:id="@+id/middle_name"
+               android:layout_width="match_parent"
+               android:layout_height="wrap_content"
+               android:layout_alignParentBottom="true"
+               android:drawableRight="@drawable/ic_wallet_pencil"
+               android:hint="@string/wallet_card_settings_profile_middle_hint"
+               android:imeOptions="actionNext"
+               android:inputType="textPersonName|textCapWords"
+               android:maxLength="@integer/wallet_settings_name_max_length"
+               android:maxLines="1"
+               android:textColor="#666666"
+               android:textColorHint="@color/grey"
+               android:textSize="@dimen/font_normal"
+               tools:text="Shirley Temple"
+               />
+
+         <EditText
+               android:id="@+id/last_name"
+               android:layout_width="match_parent"
+               android:layout_height="wrap_content"
+               android:layout_alignParentBottom="true"
+               android:drawableRight="@drawable/ic_wallet_pencil"
+               android:hint="@string/wallet_card_settings_profile_lastname_hint"
+               android:imeOptions="actionDone"
+               android:inputType="textPersonName|textCapWords"
+               android:maxLength="@integer/wallet_settings_name_max_length"
+               android:maxLines="1"
+               android:textColor="#666666"
+               android:textColorHint="@color/grey"
+               android:textSize="@dimen/font_normal"
+               tools:text="Temple"
+               />
+      </LinearLayout>
+
+   </LinearLayout>
+
+</com.worldventures.dreamtrips.wallet.ui.settings.profile.WalletSettingsProfileScreen>

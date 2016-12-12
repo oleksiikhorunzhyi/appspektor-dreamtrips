@@ -18,7 +18,6 @@ import com.worldventures.dreamtrips.core.session.UserSession;
 import com.worldventures.dreamtrips.core.utils.AppVersionNameBuilder;
 import com.worldventures.dreamtrips.core.utils.HeaderProvider;
 import com.worldventures.dreamtrips.core.utils.InterceptingOkClient;
-import com.worldventures.dreamtrips.core.utils.LocaleHelper;
 import com.worldventures.dreamtrips.core.utils.PersistentCookieStore;
 import com.worldventures.dreamtrips.modules.bucketlist.service.model.GsonAdaptersBucketBodyImpl;
 import com.worldventures.dreamtrips.modules.bucketlist.service.model.GsonAdaptersBucketCoverBody;
@@ -34,6 +33,9 @@ import com.worldventures.dreamtrips.modules.feed.model.serializer.FeedItemDeseri
 import com.worldventures.dreamtrips.modules.settings.model.Setting;
 import com.worldventures.dreamtrips.modules.settings.model.serializer.SettingsDeserializer;
 import com.worldventures.dreamtrips.modules.settings.model.serializer.SettingsSerializer;
+import com.worldventures.dreamtrips.wallet.domain.entity.GsonAdaptersAddressInfo;
+import com.worldventures.dreamtrips.wallet.domain.entity.GsonAdaptersRecordIssuerInfo;
+import com.worldventures.dreamtrips.wallet.domain.entity.card.GsonAdaptersBankCard;
 
 import java.net.CookieManager;
 import java.net.CookiePolicy;
@@ -79,8 +81,8 @@ public class ApiModule {
    }
 
    @Provides
-   HeaderProvider provideHeaderProvider(SessionHolder<UserSession> appSessionHolder, LocaleHelper localeHelper, AppVersionNameBuilder appVersionNameBuilder) {
-      return new HeaderProvider(appSessionHolder, localeHelper, appVersionNameBuilder);
+   HeaderProvider provideHeaderProvider(SessionHolder<UserSession> appSessionHolder, AppVersionNameBuilder appVersionNameBuilder) {
+      return new HeaderProvider(appSessionHolder, appVersionNameBuilder);
    }
 
    @Provides
@@ -116,6 +118,10 @@ public class ApiModule {
             .registerTypeAdapterFactory(new GsonAdaptersBucketCoverBody())
             .registerTypeAdapterFactory(new GsonAdaptersBucketStatusBody())
             .registerTypeAdapterFactory(new GsonAdaptersBucketBodyImpl())
+            //smartcard flow
+            .registerTypeAdapterFactory(new GsonAdaptersBankCard())
+            .registerTypeAdapterFactory(new GsonAdaptersAddressInfo())
+            .registerTypeAdapterFactory(new GsonAdaptersRecordIssuerInfo())
             .create();
    }
 

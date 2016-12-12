@@ -29,6 +29,7 @@ import com.worldventures.dreamtrips.wallet.ui.settings.firmware.preinstalletion.
 import com.worldventures.dreamtrips.wallet.ui.settings.firmware.puck_connection.WalletPuckConnectionPresenter;
 import com.worldventures.dreamtrips.wallet.ui.settings.firmware.uptodate.WalletUpToDateFirmwarePresenter;
 import com.worldventures.dreamtrips.wallet.ui.settings.general.WalletSettingsPresenter;
+import com.worldventures.dreamtrips.wallet.ui.settings.profile.WalletSettingsProfilePresenter;
 import com.worldventures.dreamtrips.wallet.ui.settings.removecards.WalletAutoClearCardsPresenter;
 import com.worldventures.dreamtrips.wallet.ui.start.WalletStartPresenter;
 import com.worldventures.dreamtrips.wallet.ui.wizard.associate.ConnectSmartCardPresenter;
@@ -38,7 +39,8 @@ import com.worldventures.dreamtrips.wallet.ui.records.swiping.WizardChargingPres
 import com.worldventures.dreamtrips.wallet.ui.wizard.checking.WizardCheckingPresenter;
 import com.worldventures.dreamtrips.wallet.ui.wizard.edit_card.EditCardDetailsPresenter;
 import com.worldventures.dreamtrips.wallet.ui.wizard.edit_card.EditCardDetailsScreen;
-import com.worldventures.dreamtrips.wallet.ui.wizard.finish.WalletPinIsSetPresenter;
+import com.worldventures.dreamtrips.wallet.ui.wizard.finish.WizardAssignUserPresenter;
+import com.worldventures.dreamtrips.wallet.ui.wizard.pin.complete.WalletPinIsSetPresenter;
 import com.worldventures.dreamtrips.wallet.ui.wizard.manual.WizardManualInputPresenter;
 import com.worldventures.dreamtrips.wallet.ui.wizard.pin.setup.WizardPinSetupPresenter;
 import com.worldventures.dreamtrips.wallet.ui.wizard.pin.success.PinSetSuccessPresenter;
@@ -79,6 +81,7 @@ import dagger.Provides;
             CardDetailsPresenter.class,
             CardListPresenter.class,
             WalletSettingsPresenter.class,
+            WalletSettingsProfilePresenter.class,
             PinSetSuccessPresenter.class,
             AddCardDetailsPresenter.class,
             WizardPinSetupPresenter.class,
@@ -97,7 +100,8 @@ import dagger.Provides;
             WalletInstallFirmwarePresenter.class,
             WizardCheckingPresenter.class,
             WalletNewFirmwareAvailablePresenter.class,
-            WalletPuckConnectionPresenter.class
+            WalletPuckConnectionPresenter.class,
+            WizardAssignUserPresenter.class
       },
       complete = false, library = true
 )

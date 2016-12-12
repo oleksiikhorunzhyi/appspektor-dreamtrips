@@ -25,7 +25,6 @@ import com.worldventures.dreamtrips.wallet.service.command.UpdateBankCardCommand
 import com.worldventures.dreamtrips.wallet.service.command.UpdateCardDetailsDataCommand;
 import com.worldventures.dreamtrips.wallet.service.command.UpdateSmartCardConnectionStatus;
 import com.worldventures.dreamtrips.wallet.service.command.http.CreateBankCardCommand;
-import com.worldventures.dreamtrips.wallet.service.command.http.DisassociateActiveCardUserCommand;
 import com.worldventures.dreamtrips.wallet.service.command.http.FetchAssociatedSmartCardCommand;
 
 import java.util.concurrent.Executors;
@@ -45,6 +44,7 @@ import io.techery.janet.smartcard.action.records.DeleteRecordAction;
 import io.techery.janet.smartcard.action.settings.EnableLockUnlockDeviceAction;
 import io.techery.janet.smartcard.action.support.ConnectAction;
 import io.techery.janet.smartcard.action.support.DisconnectAction;
+import io.techery.janet.smartcard.action.user.GetUserDataAction;
 import io.techery.janet.smartcard.action.user.UnAssignUserAction;
 import io.techery.janet.smartcard.event.CardChargedEvent;
 import io.techery.janet.smartcard.event.CardSwipedEvent;
@@ -101,9 +101,9 @@ public final class SmartCardInteractor {
 
    private final ActionPipe<EnableLockUnlockDeviceAction> enableLockUnlockDeviceActionPipe;
 
-   private final ActionPipe<DisassociateActiveCardUserCommand> disassociateActiveCardActionPipe;
-
    private final ActionPipe<GetCompatibleDevicesCommand> compatibleDevicesActionPipe;
+
+   private final ActionPipe<GetUserDataAction> userDataActionActionPipe;
 
    private final FirmwareInteractor firmwareInteractor;
 
@@ -147,12 +147,11 @@ public final class SmartCardInteractor {
 
       autoClearDelayPipe = sessionActionPipeCreator.createPipe(SetAutoClearSmartCardDelayCommand.class, Schedulers.io());
       disableDefaultCardPipe = sessionActionPipeCreator.createPipe(SetDisableDefaultCardDelayCommand.class, Schedulers.io());
+      userDataActionActionPipe = sessionActionPipeCreator.createPipe(GetUserDataAction.class, Schedulers.io());
 
       enableLockUnlockDeviceActionPipe = sessionActionPipeCreator.createPipe(EnableLockUnlockDeviceAction.class, Schedulers
             .io());
 
-      disassociateActiveCardActionPipe = sessionActionPipeCreator.createPipe(DisassociateActiveCardUserCommand.class, Schedulers
-            .io());
       this.firmwareInteractor = firmwareInteractor;
 
       compatibleDevicesActionPipe = sessionActionPipeCreator.createPipe(GetCompatibleDevicesCommand.class, Schedulers.io());
@@ -273,10 +272,6 @@ public final class SmartCardInteractor {
 
    public ActionPipe<EnableLockUnlockDeviceAction> enableLockUnlockDeviceActionPipe() {
       return enableLockUnlockDeviceActionPipe;
-   }
-
-   public ActionPipe<DisassociateActiveCardUserCommand> disassociateActiveCardActionPipe() {
-      return disassociateActiveCardActionPipe;
    }
 
    public ActionPipe<GetCompatibleDevicesCommand> compatibleDevicesActionPipe() {

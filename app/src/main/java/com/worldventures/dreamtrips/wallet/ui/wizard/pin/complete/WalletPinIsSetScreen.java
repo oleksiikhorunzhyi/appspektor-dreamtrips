@@ -1,4 +1,4 @@
-package com.worldventures.dreamtrips.wallet.ui.wizard.finish;
+package com.worldventures.dreamtrips.wallet.ui.wizard.pin.complete;
 
 import android.content.Context;
 import android.support.annotation.NonNull;

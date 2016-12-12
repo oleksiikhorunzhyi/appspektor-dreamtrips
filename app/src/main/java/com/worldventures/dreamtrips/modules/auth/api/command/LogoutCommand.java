@@ -18,6 +18,7 @@ import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.core.session.UserSession;
 import com.worldventures.dreamtrips.core.utils.BadgeUpdater;
 import com.worldventures.dreamtrips.core.utils.DTCookieManager;
+import com.worldventures.dreamtrips.core.utils.LocaleSwitcher;
 import com.worldventures.dreamtrips.modules.auth.service.AuthInteractor;
 import com.worldventures.dreamtrips.modules.common.api.janet.command.ClearStoragesCommand;
 import com.worldventures.dreamtrips.modules.common.presenter.delegate.OfflineWarningDelegate;
@@ -46,6 +47,7 @@ public class LogoutCommand extends Command<Void> implements InjectableAction {
    @Inject @Global EventBus eventBus;
    @Inject SnappyRepository snappyRepository;
    @Inject SessionHolder<UserSession> appSessionHolder;
+   @Inject LocaleSwitcher localeSwitcher;
    @Inject NotificationDelegate notificationDelegate;
    @Inject BadgeUpdater badgeUpdater;
    @Inject DTCookieManager cookieManager;
@@ -98,6 +100,7 @@ public class LogoutCommand extends Command<Void> implements InjectableAction {
       return Observable.create(subscriber -> {
          cookieManager.clearCookies();
          appSessionHolder.destroy();
+         localeSwitcher.resetLocale();
          eventBus.post(new SessionHolder.Events.SessionDestroyed());
          sessionActionPipeCreator.clearReplays();
          sessionApiActionPipeCreator.clearReplays();

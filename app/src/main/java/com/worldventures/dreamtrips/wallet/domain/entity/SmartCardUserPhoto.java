@@ -10,6 +10,7 @@ import java.io.File;
 public interface SmartCardUserPhoto {
 
    @Value.Parameter
+   @Nullable
    File original();
 
    @Nullable

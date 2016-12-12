@@ -2,7 +2,10 @@ package com.worldventures.dreamtrips.wallet.service.command.http;
 
 import com.worldventures.dreamtrips.api.smart_card.user_association.AssociateCardUserHttpAction;
 import com.worldventures.dreamtrips.api.smart_card.user_association.model.AssociationCardUserData;
+import com.worldventures.dreamtrips.api.smart_card.user_association.model.AssociationUserData;
 import com.worldventures.dreamtrips.api.smart_card.user_association.model.ImmutableAssociationCardUserData;
+import com.worldventures.dreamtrips.api.smart_card.user_association.model.ImmutableAssociationUserData;
+import com.worldventures.dreamtrips.api.smart_card.user_info.model.UpdateCardUserData;
 import com.worldventures.dreamtrips.core.janet.cache.CacheOptions;
 import com.worldventures.dreamtrips.core.janet.cache.CachedAction;
 import com.worldventures.dreamtrips.core.janet.cache.ImmutableCacheOptions;
@@ -33,14 +36,23 @@ public class AssociateCardUserCommand extends Command<SmartCardDetails> implemen
    @Inject SystemPropertiesProvider propertiesProvider;
 
    private final String barcode;
+   private UpdateCardUserData updateCardUserData;
 
-   public AssociateCardUserCommand(String barcode) {
+   public AssociateCardUserCommand(String barcode, UpdateCardUserData cardUserData) {
       this.barcode = barcode;
+      this.updateCardUserData = cardUserData;
    }
 
    @Override
    protected void run(CommandCallback<SmartCardDetails> callback) throws Throwable {
       WalletValidateHelper.validateSCIdOrThrow(barcode);
+
+      AssociationUserData userData = ImmutableAssociationUserData.builder()
+            .firstName(updateCardUserData.firstName())
+            .middleName(updateCardUserData.middleName())
+            .lastName(updateCardUserData.lastName())
+            .displayPhoto(updateCardUserData.photoUrl())
+            .build();
 
       AssociationCardUserData data = ImmutableAssociationCardUserData.builder()
             .scid(Long.parseLong(barcode))
@@ -48,6 +60,7 @@ public class AssociateCardUserCommand extends Command<SmartCardDetails> implemen
             .deviceOsVersion(propertiesProvider.osVersion())
             .deviceId(propertiesProvider.deviceId())
             .acceptedTermsAndConditionVersion(obtainTACVersion())
+            .user(userData)
             .build();
 
       janet.createPipe(AssociateCardUserHttpAction.class)

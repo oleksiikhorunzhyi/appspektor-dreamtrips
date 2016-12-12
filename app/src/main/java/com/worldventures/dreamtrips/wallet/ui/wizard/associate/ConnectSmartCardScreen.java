@@ -5,6 +5,7 @@ import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.annotation.StringRes;
 import android.support.v7.widget.Toolbar;
 import android.util.AttributeSet;
 import android.view.View;
@@ -77,6 +78,11 @@ public class ConnectSmartCardScreen extends WalletLinearLayout<ConnectSmartCardP
                if (action != null) action.call(null);
             })
             .show();
+   }
+
+   @Override
+   public void showError(@StringRes int messageId) {
+      showError(getString(messageId), null);
    }
 
    @Override

@@ -5,7 +5,6 @@ import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.Toolbar;
 import android.util.AttributeSet;
-import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
 
 import com.facebook.drawee.view.SimpleDraweeView;
@@ -20,13 +19,14 @@ import java.io.File;
 
 import butterknife.InjectView;
 import butterknife.OnClick;
-import butterknife.OnEditorAction;
 import rx.Observable;
 
 public class WizardEditProfileScreen extends WalletLinearLayout<WizardEditProfilePresenter.Screen, WizardEditProfilePresenter, WizardEditProfilePath> implements WizardEditProfilePresenter.Screen {
 
    @InjectView(R.id.toolbar) Toolbar toolbar;
-   @InjectView(R.id.person_name) EditText personName;
+   @InjectView(R.id.first_name) EditText firstName;
+   @InjectView(R.id.middle_name) EditText middleName;
+   @InjectView(R.id.last_name) EditText lastName;
    @InjectView(R.id.photo_preview) SimpleDraweeView previewPhotoView;
 
    private MediaPickerService mediaPickerService;
@@ -42,7 +42,7 @@ public class WizardEditProfileScreen extends WalletLinearLayout<WizardEditProfil
    @NonNull
    @Override
    public WizardEditProfilePresenter createPresenter() {
-      return new WizardEditProfilePresenter(getContext(), getInjector(), getPath().getSmartCardId());
+      return new WizardEditProfilePresenter(getContext(), getInjector());
    }
 
    @Override
@@ -75,13 +75,6 @@ public class WizardEditProfileScreen extends WalletLinearLayout<WizardEditProfil
    @OnClick(R.id.next_button)
    public void nextClick() {
       presenter.setupUserData();
-   }
-
-   @OnEditorAction(R.id.person_name)
-   public boolean actionNext(int action) {
-      if (action != EditorInfo.IME_ACTION_NEXT) return false;
-      presenter.setupUserData();
-      return true;
    }
 
    @OnClick(R.id.imageContainer)
@@ -125,15 +118,18 @@ public class WizardEditProfileScreen extends WalletLinearLayout<WizardEditProfil
    }
 
    @Override
-   public void setUserFullName(@NonNull String fullName) {
-      personName.setText(fullName);
-      personName.setSelection(fullName.length());
+   public void setUserFullName(@NonNull String firstName, @NonNull String lastName) {
+      this.firstName.setText(firstName);
+      this.lastName.setText(lastName);
+      this.firstName.setSelection(firstName.length());
+      this.lastName.setSelection(lastName.length());
    }
 
    @NonNull
    @Override
-   public String getUserName() {
-      return personName.getText().toString();
+   public String[] getUserName() {
+      return new String[]{ firstName.getText().toString().trim(), middleName.getText().toString().trim(),
+            lastName.getText().toString().trim() };
    }
 
    @Override

@@ -12,9 +12,10 @@ import com.worldventures.dreamtrips.core.utils.tracksystem.AnalyticsInteractor;
 import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.wallet.analytics.NewHeightsAction;
 import com.worldventures.dreamtrips.wallet.analytics.WalletAnalyticsCommand;
-import com.worldventures.dreamtrips.wallet.service.SmartCardAvatarInteractor;
+import com.worldventures.dreamtrips.wallet.service.SmartCardUserDataInteractor;
 import com.worldventures.dreamtrips.wallet.service.command.LoadImageForSmartCardCommand;
 import com.worldventures.dreamtrips.wallet.service.command.SmartCardAvatarCommand;
+import com.worldventures.dreamtrips.wallet.service.storage.WizardMemoryStorage;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletPresenter;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.WalletScreen;
 import com.worldventures.dreamtrips.wallet.ui.common.navigation.Navigator;
@@ -32,13 +33,10 @@ public class WizardWelcomePresenter extends WalletPresenter<WizardWelcomePresent
    @Inject Navigator navigator;
    @Inject SessionHolder<UserSession> appSessionHolder;
    @Inject AnalyticsInteractor analyticsInteractor;
-   @Inject SmartCardAvatarInteractor smartCardAvatarInteractor;
+   @Inject SmartCardUserDataInteractor smartCardUserDataInteractor;
 
-   private final String smartCardId;
-
-   public WizardWelcomePresenter(Context context, Injector injector, String smartCardId) {
+   public WizardWelcomePresenter(Context context, Injector injector) {
       super(context, injector);
-      this.smartCardId = smartCardId;
    }
 
    @Override
@@ -60,14 +58,14 @@ public class WizardWelcomePresenter extends WalletPresenter<WizardWelcomePresent
 
    private void loadUserPhoto(String avatarPath) {
       if (!TextUtils.isEmpty(avatarPath)) {
-         smartCardAvatarInteractor.smartCardAvatarPipe()
+         smartCardUserDataInteractor.smartCardAvatarPipe()
                .observe()
                .compose(bindViewIoToMainComposer())
                .subscribe(new ActionStateSubscriber<SmartCardAvatarCommand>()
                      .onSuccess(command -> getView().userPhoto(command.getResult().monochrome()))
                      .onFail((command, throwable) -> Timber.e("", throwable)));
 
-         smartCardAvatarInteractor.smartCardAvatarPipe().send(new LoadImageForSmartCardCommand(avatarPath));
+         smartCardUserDataInteractor.smartCardAvatarPipe().send(new LoadImageForSmartCardCommand(avatarPath));
       }
    }
 
@@ -78,7 +76,7 @@ public class WizardWelcomePresenter extends WalletPresenter<WizardWelcomePresent
    }
 
    public void setupCardClicked() {
-      navigator.withoutLast(new WizardEditProfilePath(smartCardId));
+      navigator.withoutLast(new WizardEditProfilePath());
    }
 
    public void backButtonClicked() {

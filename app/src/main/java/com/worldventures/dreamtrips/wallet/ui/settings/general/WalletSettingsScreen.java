@@ -86,6 +86,11 @@ public class WalletSettingsScreen extends WalletLinearLayout<WalletSettingsPrese
       presenter.goBack();
    }
 
+   @OnClick(R.id.item_smartcard_profile)
+   void onProfileClick() {
+      presenter.smartCardProfileClick();
+
+   }
    @OnClick(R.id.item_about)
    void onAboutClick() {
    }

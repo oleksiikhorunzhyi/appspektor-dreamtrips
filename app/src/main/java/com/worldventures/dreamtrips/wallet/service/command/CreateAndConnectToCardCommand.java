@@ -7,8 +7,8 @@ import com.worldventures.dreamtrips.core.janet.cache.ImmutableCacheOptions;
 import com.worldventures.dreamtrips.core.janet.dagger.InjectableAction;
 import com.worldventures.dreamtrips.wallet.domain.entity.ImmutableSmartCard;
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCard;
-import com.worldventures.dreamtrips.wallet.domain.entity.SmartCardDetails;
 import com.worldventures.dreamtrips.wallet.service.SmartCardInteractor;
+import com.worldventures.dreamtrips.wallet.service.storage.WizardMemoryStorage;
 import com.worldventures.dreamtrips.wallet.util.SmartCardConnectException;
 
 import java.util.concurrent.TimeUnit;
@@ -30,18 +30,9 @@ public class CreateAndConnectToCardCommand extends Command<SmartCard> implements
 
    @Inject @Named(JanetModule.JANET_WALLET) Janet janet;
    @Inject SmartCardInteractor smartCardInteractor;
+   @Inject WizardMemoryStorage wizardMemoryStorage;
 
-   private static final String DUMMY_DEVICE_NAME = "DUMMY_DEVICE_NAME"; // deviceName is not used inside SDK
-
-   private SmartCardDetails smartCardDetails;
    private SmartCard smartCard;
-
-   private String smartCardId;
-
-   public CreateAndConnectToCardCommand(SmartCardDetails smartCardDetails) {
-      this.smartCardDetails = smartCardDetails;
-      this.smartCardId = String.valueOf(smartCardDetails.smartCardId());
-   }
 
    @Override
    protected void run(CommandCallback<SmartCard> callback) throws Throwable {
@@ -70,16 +61,9 @@ public class CreateAndConnectToCardCommand extends Command<SmartCard> implements
 
    private SmartCard createSmartCard() {
       return ImmutableSmartCard.builder()
-            .deviceName(DUMMY_DEVICE_NAME)
-            .serialNumber(smartCardDetails.serialNumber())
-            .deviceAddress(smartCardDetails.bleAddress())
-            .smartCardId(smartCardId)
+            .smartCardId(String.valueOf(Long.valueOf(wizardMemoryStorage.getBarcode()))) //remove zeros from start
             .cardStatus(SmartCard.CardStatus.DRAFT)
             .build();
-   }
-
-   public String getSmartCardId() {
-      return smartCardId;
    }
 
    @Override

@@ -25,9 +25,8 @@ public class SmartCardInfoToSmartCard implements Converter<SmartCardInfo, SmartC
       final String name = smartCardInfo.displayName() == null ? "" : smartCardInfo.displayName();
       return ImmutableSmartCard.builder()
             .smartCardId(String.valueOf(smartCardInfo.scId()))
-            .cardName(name)
-            .deviceName(name)
-            .userPhoto(smartCardInfo.displayPhoto())
+           //todo .cardName(name)
+          //todo  .userPhoto(smartCardInfo.displayPhoto())
             .serialNumber(smartCardInfo.serialNumber())
             .deviceAddress(smartCardInfo.bleAddress())
             .cardStatus(SmartCard.CardStatus.ACTIVE)

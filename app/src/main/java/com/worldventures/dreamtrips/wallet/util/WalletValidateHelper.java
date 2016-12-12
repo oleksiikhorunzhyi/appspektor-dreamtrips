@@ -18,7 +18,7 @@ public class WalletValidateHelper {
 
    public static boolean validateUserFullName(@NonNull String firstName, @Nullable String middleName, @NonNull String lastName) {
       boolean result = FIRST_NAME_PATTERN.matcher(firstName).matches() && LAST_NAME_PATTERN.matcher(lastName).matches();
-      return result && (middleName == null || MIDDLE_NAME_PATTERN.matcher(middleName).matches());
+      return result && (TextUtils.isEmpty(middleName) || MIDDLE_NAME_PATTERN.matcher(middleName).matches());
    }
 
    public static void validateUserFullNameOrThrow(@NonNull String firstName, @Nullable String middleName, @NonNull String lastName) throws FormatException {

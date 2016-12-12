@@ -25,9 +25,9 @@ import com.worldventures.dreamtrips.modules.dtl.service.FilterDataInteractor;
 import com.worldventures.dreamtrips.modules.dtl.service.FullMerchantInteractor;
 import com.worldventures.dreamtrips.modules.dtl.service.MerchantsInteractor;
 import com.worldventures.dreamtrips.modules.dtl.service.PresentationInteractor;
-import com.worldventures.dreamtrips.modules.dtl.service.action.LocationFacadeCommand;
 import com.worldventures.dreamtrips.modules.dtl.service.action.FilterDataAction;
 import com.worldventures.dreamtrips.modules.dtl.service.action.FullMerchantAction;
+import com.worldventures.dreamtrips.modules.dtl.service.action.LocationFacadeCommand;
 import com.worldventures.dreamtrips.modules.dtl.service.action.MerchantsAction;
 import com.worldventures.dreamtrips.modules.dtl_flow.DtlPresenterImpl;
 import com.worldventures.dreamtrips.modules.dtl_flow.FlowUtil;
@@ -282,15 +282,14 @@ public class DtlMerchantsPresenterImpl extends DtlPresenterImpl<DtlMerchantsScre
             .observeSuccessWithReplay()
             .take(1)
             .map(FilterDataAction::getResult)
-            .map(FilterData::isDefault)
-            .subscribe(this::showEmptyOrRedirect);
+            .subscribe(filterData -> showEmptyOrRedirect(filterData.isDefault(), filterData.isOffersOnly()));
    }
 
-   private void showEmptyOrRedirect(boolean isFilterDefault) {
-      if (!isAllowRedirect(isFilterDefault)) {
+   private void showEmptyOrRedirect(boolean isFilterDefault, boolean isOffersOnly) {
+      if (!isAllowRedirect(isFilterDefault && !isOffersOnly)) {
          getView().clearMerchants();
          getView().showEmpty(true);
-         getView().showNoMerchantsCaption(isFilterDefault);
+         getView().showNoMerchantsCaption(isFilterDefault, isOffersOnly);
       } else navigateToPath(new DtlLocationChangePath());
    }
 

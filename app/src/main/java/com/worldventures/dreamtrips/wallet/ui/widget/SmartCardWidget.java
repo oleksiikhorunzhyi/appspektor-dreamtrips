@@ -16,6 +16,8 @@ import com.worldventures.dreamtrips.core.utils.QuantityHelper;
 import com.worldventures.dreamtrips.modules.common.view.custom.BadgeView;
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCard;
 
+import java.io.File;
+
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 
@@ -49,9 +51,9 @@ public class SmartCardWidget extends FrameLayout {
    }
 
    public void bindCard(@NonNull SmartCard smartCard, boolean isFirmwareAvailable) {
-      String url = smartCard.userPhoto();
-      bankLabel.setText(smartCard.cardName());
-      if (url != null) scAvatar.setImageURI(Uri.parse(url));
+      File photoFile = smartCard.user().userPhoto().monochrome();
+      bankLabel.setText(smartCard.user().fullName());
+      if (photoFile != null) scAvatar.setImageURI(Uri.fromFile(photoFile));
       batteryView.setLevel(smartCard.batteryLevel());
       batteryLevel.setText(String.format("%d%%", smartCard.batteryLevel()));
       stealthIndicator.setVisibility(smartCard.stealthMode() ? VISIBLE : GONE);

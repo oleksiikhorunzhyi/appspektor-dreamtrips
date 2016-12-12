@@ -1,4 +1,4 @@
-package com.worldventures.dreamtrips.wallet.ui.wizard.finish;
+package com.worldventures.dreamtrips.wallet.ui.wizard.pin.complete;
 
 import android.content.Context;
 import android.os.Parcelable;
@@ -17,6 +17,7 @@ import com.worldventures.dreamtrips.wallet.ui.common.base.screen.WalletScreen;
 import com.worldventures.dreamtrips.wallet.ui.common.helper.OperationActionStateSubscriberWrapper;
 import com.worldventures.dreamtrips.wallet.ui.common.navigation.Navigator;
 import com.worldventures.dreamtrips.wallet.ui.dashboard.CardListPath;
+import com.worldventures.dreamtrips.wallet.ui.wizard.finish.WizardAssignUserPath;
 
 import javax.inject.Inject;
 
@@ -37,7 +38,7 @@ public class WalletPinIsSetPresenter extends WalletPresenter<WalletPinIsSetPrese
    public void attachView(Screen view) {
       super.attachView(view);
       analyticsInteractor.walletAnalyticsCommandPipe()
-            .send(new WalletAnalyticsCommand(new PinWasSetAction(smartCard.cardName())));
+            .send(new WalletAnalyticsCommand(new PinWasSetAction(smartCard.user().fullName())));
       observeActivation();
    }
 
@@ -47,7 +48,7 @@ public class WalletPinIsSetPresenter extends WalletPresenter<WalletPinIsSetPrese
             .compose(new ActionPipeCacheWiper<>(wizardInteractor.activateSmartCardPipe()))
             .compose(bindViewIoToMainComposer())
             .subscribe(OperationActionStateSubscriberWrapper.<ActivateSmartCardCommand>forView(getView().provideOperationDelegate())
-                  .onSuccess(command -> navigateToDashboardScreen())
+                  .onSuccess(command -> navigateToNextScreen())
                   .onFail(getContext().getString(R.string.error_something_went_wrong))
                   .wrap());
    }
@@ -60,8 +61,8 @@ public class WalletPinIsSetPresenter extends WalletPresenter<WalletPinIsSetPrese
       wizardInteractor.activateSmartCardPipe().send(new ActivateSmartCardCommand(smartCard));
    }
 
-   private void navigateToDashboardScreen() {
-      navigator.single(new CardListPath());
+   private void navigateToNextScreen() {
+      navigator.go(new WizardAssignUserPath());
    }
 
    public interface Screen extends WalletScreen {

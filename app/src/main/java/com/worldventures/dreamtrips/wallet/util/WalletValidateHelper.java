@@ -11,14 +11,14 @@ import java.util.regex.Pattern;
 public class WalletValidateHelper {
 
    private static final Pattern CARD_NAME_PATTERN = Pattern.compile("[\\p{L} 0-9]{1,11}+");
-   private static final Pattern FIRST_NAME_PATTERN = Pattern.compile("[\\p{L}]{2,21}+");
-   private static final Pattern MIDDLE_NAME_PATTERN = Pattern.compile("[\\p{L}]{1,21}+");
+   private static final Pattern FIRST_NAME_PATTERN = Pattern.compile("[\\p{L}]{3,21}+");
+   private static final Pattern MIDDLE_NAME_PATTERN = FIRST_NAME_PATTERN;
    private static final Pattern LAST_NAME_PATTERN = FIRST_NAME_PATTERN;
    private static final Pattern SCID_PATTERN = Pattern.compile("^\\d+$");
 
    public static boolean validateUserFullName(@NonNull String firstName, @Nullable String middleName, @NonNull String lastName) {
       boolean result = FIRST_NAME_PATTERN.matcher(firstName).matches() && LAST_NAME_PATTERN.matcher(lastName).matches();
-      return result && (middleName == null || MIDDLE_NAME_PATTERN.matcher(middleName).matches());
+      return result && (TextUtils.isEmpty(middleName) || MIDDLE_NAME_PATTERN.matcher(middleName).matches());
    }
 
    public static void validateUserFullNameOrThrow(@NonNull String firstName, @Nullable String middleName, @NonNull String lastName) throws FormatException {

@@ -26,6 +26,7 @@ import com.worldventures.dreamtrips.wallet.ui.settings.disabledefaultcard.Wallet
 import com.worldventures.dreamtrips.wallet.ui.settings.factory_reset.FactoryResetPath;
 import com.worldventures.dreamtrips.wallet.ui.settings.firmware.newavailable.WalletNewFirmwareAvailablePath;
 import com.worldventures.dreamtrips.wallet.ui.settings.firmware.uptodate.WalletUpToDateFirmwarePath;
+import com.worldventures.dreamtrips.wallet.ui.settings.profile.WalletSettingsProfilePath;
 import com.worldventures.dreamtrips.wallet.ui.settings.removecards.WalletAutoClearCardsPath;
 import com.worldventures.dreamtrips.wallet.ui.wizard.pin.Action;
 import com.worldventures.dreamtrips.wallet.ui.wizard.pin.setup.WizardPinSetupPath;
@@ -243,6 +244,10 @@ public class WalletSettingsPresenter extends WalletPresenter<WalletSettingsPrese
       return getContext().getString(
             isEnabled ? R.string.wallet_card_settings_stealth_mode_on : R.string.wallet_card_settings_stealth_mode_off
       );
+   }
+
+   public void smartCardProfileClick() {
+      navigator.go(new WalletSettingsProfilePath());
    }
 
    void firmwareUpdatesClick() {

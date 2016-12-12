@@ -15,7 +15,7 @@ import com.worldventures.dreamtrips.wallet.ui.common.base.screen.WalletScreen;
 import com.worldventures.dreamtrips.wallet.ui.common.helper.ErrorActionStateSubscriberWrapper;
 import com.worldventures.dreamtrips.wallet.ui.common.helper.ErrorHandler;
 import com.worldventures.dreamtrips.wallet.ui.common.navigation.Navigator;
-import com.worldventures.dreamtrips.wallet.ui.wizard.finish.WalletPinIsSetPath;
+import com.worldventures.dreamtrips.wallet.ui.wizard.pin.complete.WalletPinIsSetPath;
 import com.worldventures.dreamtrips.wallet.ui.wizard.pin.Action;
 import com.worldventures.dreamtrips.wallet.ui.wizard.pin.success.PinSetSuccessPath;
 
@@ -51,7 +51,7 @@ public class WizardPinSetupPresenter extends WalletPresenter<WizardPinSetupPrese
    public void onAttachedToWindow() {
       super.onAttachedToWindow();
       analyticsInteractor.walletAnalyticsCommandPipe()
-            .send(new WalletAnalyticsCommand(new SetPinAction(smartCard.cardName())));
+            .send(new WalletAnalyticsCommand(new SetPinAction(smartCard.user().fullName())));
    }
 
    @Override

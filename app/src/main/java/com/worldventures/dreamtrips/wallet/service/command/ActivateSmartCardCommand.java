@@ -41,7 +41,7 @@ public class ActivateSmartCardCommand extends Command<SmartCard> implements Inje
             .build();
       snappyRepository.setActiveSmartCardId(smartCard.smartCardId());
 
-      smartCardInteractor.enableLockUnlockDeviceActionPipe()
+      janet.createPipe(EnableLockUnlockDeviceAction.class)
             .createObservableResult(new EnableLockUnlockDeviceAction(true))
             .onErrorResumeNext(Observable.just(null))
             .subscribe(action -> callback.onSuccess(smartCard), throwable -> callback.onFail(throwable));

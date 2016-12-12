@@ -42,7 +42,6 @@ import io.techery.janet.helper.ActionStateSubscriber;
 import io.techery.janet.smartcard.action.charger.StartCardRecordingAction;
 import io.techery.janet.smartcard.action.charger.StopCardRecordingAction;
 import io.techery.janet.smartcard.action.records.DeleteRecordAction;
-import io.techery.janet.smartcard.action.settings.EnableLockUnlockDeviceAction;
 import io.techery.janet.smartcard.action.support.ConnectAction;
 import io.techery.janet.smartcard.action.support.DisconnectAction;
 import io.techery.janet.smartcard.action.user.GetUserDataAction;
@@ -101,8 +100,6 @@ public final class SmartCardInteractor {
    private final ActionPipe<SetAutoClearSmartCardDelayCommand> autoClearDelayPipe;
    private final ActionPipe<SetDisableDefaultCardDelayCommand> disableDefaultCardPipe;
 
-   private final ActionPipe<EnableLockUnlockDeviceAction> enableLockUnlockDeviceActionPipe;
-
    private final ActionPipe<GetCompatibleDevicesCommand> compatibleDevicesActionPipe;
 
    private final ActionPipe<GetUserDataAction> userDataActionActionPipe;
@@ -152,9 +149,6 @@ public final class SmartCardInteractor {
       autoClearDelayPipe = sessionActionPipeCreator.createPipe(SetAutoClearSmartCardDelayCommand.class, Schedulers.io());
       disableDefaultCardPipe = sessionActionPipeCreator.createPipe(SetDisableDefaultCardDelayCommand.class, Schedulers.io());
       userDataActionActionPipe = sessionActionPipeCreator.createPipe(GetUserDataAction.class, Schedulers.io());
-
-      enableLockUnlockDeviceActionPipe = sessionActionPipeCreator.createPipe(EnableLockUnlockDeviceAction.class, Schedulers
-            .io());
 
       this.firmwareInteractor = firmwareInteractor;
 
@@ -276,10 +270,6 @@ public final class SmartCardInteractor {
 
    public ActionPipe<SetDisableDefaultCardDelayCommand> disableDefaultCardPipe() {
       return disableDefaultCardPipe;
-   }
-
-   public ActionPipe<EnableLockUnlockDeviceAction> enableLockUnlockDeviceActionPipe() {
-      return enableLockUnlockDeviceActionPipe;
    }
 
    public ActionPipe<GetCompatibleDevicesCommand> compatibleDevicesActionPipe() {

@@ -7,7 +7,6 @@ import com.worldventures.dreamtrips.core.janet.cache.ImmutableCacheOptions;
 import com.worldventures.dreamtrips.core.janet.dagger.InjectableAction;
 import com.worldventures.dreamtrips.wallet.domain.entity.ImmutableSmartCard;
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCard;
-import com.worldventures.dreamtrips.wallet.service.SmartCardInteractor;
 
 import java.util.concurrent.TimeUnit;
 
@@ -31,7 +30,6 @@ import static com.worldventures.dreamtrips.wallet.domain.entity.SmartCard.Connec
 public class ConnectSmartCardCommand extends Command<SmartCard> implements InjectableAction, SmartCardModifier, CachedAction<SmartCard> {
 
    @Inject @Named(JanetModule.JANET_WALLET) Janet janet;
-   @Inject SmartCardInteractor smartCardInteractor;
 
    private SmartCard activeSmartCard;
    private final boolean waitForParing;
@@ -60,7 +58,7 @@ public class ConnectSmartCardCommand extends Command<SmartCard> implements Injec
             })
             .flatMap(action -> {
                if (stayAwake) {
-                  return smartCardInteractor.enableLockUnlockDeviceActionPipe()
+                  return janet.createPipe(EnableLockUnlockDeviceAction.class)
                         .createObservableResult(new EnableLockUnlockDeviceAction(false))
                         .onErrorResumeNext(Observable.just(null));
                } else {

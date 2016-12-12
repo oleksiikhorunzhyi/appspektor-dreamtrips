@@ -57,8 +57,8 @@ public class MessengerDelegateModule {
    }
 
    @Provides
-   MessageBodyCreator provideMessageBodyCreator(LocaleHelper localeHelper) {
-      return new MessageBodyCreator(localeHelper);
+   MessageBodyCreator provideMessageBodyCreator() {
+      return new MessageBodyCreator();
    }
 
    @Provides

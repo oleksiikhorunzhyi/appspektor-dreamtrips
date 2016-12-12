@@ -89,7 +89,6 @@ public class FeedPresenter extends Presenter<FeedPresenter.View> {
    @Inject TextualPostTranslationDelegate textualPostTranslationDelegate;
    @Inject DrawableUtil drawableUtil;
    @Inject UnreadConversationObservable unreadConversationObservable;
-   @Inject LocaleHelper localeHelper;
    @Inject @ForActivity Provider<Injector> injectorProvider;
    @Inject NotificationCountEventDelegate notificationCountEventDelegate;
    @Inject EntityDeletedEventDelegate entityDeletedEventDelegate;
@@ -397,7 +396,7 @@ public class FeedPresenter extends Presenter<FeedPresenter.View> {
 
    public void onEvent(TranslatePostEvent event) {
       if (view.isVisibleOnScreen()) {
-         textualPostTranslationDelegate.translate(event.getPostFeedItem(), localeHelper.getDefaultLocaleFormatted());
+         textualPostTranslationDelegate.translate(event.getPostFeedItem(), LocaleHelper.getDefaultLocaleFormatted());
       }
    }
 

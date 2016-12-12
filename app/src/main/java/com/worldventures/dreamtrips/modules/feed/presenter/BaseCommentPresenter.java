@@ -62,7 +62,6 @@ public class BaseCommentPresenter<T extends BaseCommentPresenter.View> extends P
    @Inject BucketInteractor bucketInteractor;
    @Inject TranslationFeedInteractor translationFeedInteractor;
    @Inject CommentsInteractor commentsInteractor;
-   @Inject LocaleHelper localeHelper;
    @Inject FlagsInteractor flagsInteractor;
    @Inject TripImagesInteractor tripImagesInteractor;
    @Inject FriendsInteractor friendsInteractor;
@@ -185,7 +184,7 @@ public class BaseCommentPresenter<T extends BaseCommentPresenter.View> extends P
 
    public void translateComment(Comment comment) {
       translationFeedInteractor.translateCommentPipe()
-            .send(TranslateUidItemCommand.forComment(comment, localeHelper.getDefaultLocaleFormatted()));
+            .send(TranslateUidItemCommand.forComment(comment, LocaleHelper.getDefaultLocaleFormatted()));
    }
 
    public void deleteComment(Comment comment) {

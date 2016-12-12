@@ -14,7 +14,6 @@ import com.worldventures.dreamtrips.core.api.DateTimeSerializer;
 import com.worldventures.dreamtrips.core.session.UserSession;
 import com.worldventures.dreamtrips.core.utils.AppVersionNameBuilder;
 import com.worldventures.dreamtrips.core.utils.HeaderProvider;
-import com.worldventures.dreamtrips.core.utils.LocaleHelper;
 import com.worldventures.dreamtrips.core.utils.PersistentCookieStore;
 import com.worldventures.dreamtrips.modules.bucketlist.service.model.GsonAdaptersBucketBodyImpl;
 import com.worldventures.dreamtrips.modules.bucketlist.service.model.GsonAdaptersBucketCoverBody;
@@ -80,7 +79,7 @@ public class ApiModule {
    }
 
    @Provides
-   HeaderProvider provideHeaderProvider(SessionHolder<UserSession> appSessionHolder, LocaleHelper localeHelper, AppVersionNameBuilder appVersionNameBuilder) {
-      return new HeaderProvider(appSessionHolder, localeHelper, appVersionNameBuilder);
+   HeaderProvider provideHeaderProvider(SessionHolder<UserSession> appSessionHolder, AppVersionNameBuilder appVersionNameBuilder) {
+      return new HeaderProvider(appSessionHolder, appVersionNameBuilder);
    }
 }

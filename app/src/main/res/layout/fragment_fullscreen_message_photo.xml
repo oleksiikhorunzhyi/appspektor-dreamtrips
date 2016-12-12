@@ -1,9 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+      xmlns:custom="http://schemas.android.com/apk/res-auto"
       xmlns:fresco="http://schemas.android.com/apk/res-auto"
-      android:background="@android:color/black"
+      xmlns:tools="http://schemas.android.com/tools"
       android:layout_width="match_parent"
       android:layout_height="match_parent"
+      android:background="@android:color/black"
       >
 
    <com.worldventures.dreamtrips.modules.tripsimages.view.custom.ScaleImageView
@@ -21,4 +23,49 @@
          android:background="@drawable/trip_item_shadow"
          />
 
+   <LinearLayout
+         android:layout_width="match_parent"
+         android:layout_height="wrap_content"
+         android:layout_gravity="bottom"
+         android:background="@drawable/black_gradient_inspire_me"
+         android:orientation="vertical"
+         android:paddingTop="24dp"
+         >
+
+      <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="right"
+            android:orientation="horizontal"
+            android:padding="20dp"
+            >
+
+         <TextView
+               android:id="@+id/tv_date"
+               style="@style/MessengerImageFullscreenDateStyle"
+               android:layout_width="wrap_content"
+               android:layout_height="match_parent"
+               android:layout_weight="1"
+               android:visibility="visible"
+               tools:text="Hello"
+               />
+
+         <ImageView
+               android:id="@+id/iv_share"
+               android:layout_width="wrap_content"
+               android:layout_height="wrap_content"
+               android:layout_centerInParent="true"
+               android:padding="5dp"
+               android:src="@drawable/ic_fs_share"
+               />
+
+         <com.worldventures.dreamtrips.modules.common.view.custom.FlagView
+               android:id="@+id/flag"
+               android:layout_width="wrap_content"
+               android:layout_height="wrap_content"
+               android:visibility="gone"
+               custom:icon="@drawable/ic_fs_flag"
+               />
+      </LinearLayout>
+   </LinearLayout>
 </FrameLayout>

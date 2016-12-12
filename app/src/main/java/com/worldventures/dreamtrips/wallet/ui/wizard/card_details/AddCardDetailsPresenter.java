@@ -45,7 +45,6 @@ import rx.functions.Action1;
 public class AddCardDetailsPresenter extends WalletPresenter<AddCardDetailsPresenter.Screen, Parcelable> {
 
    @Inject Navigator navigator;
-   @Inject LocaleHelper localeHelper;
    @Inject BankCardHelper bankCardHelper;
    @Inject SmartCardInteractor smartCardInteractor;
    @Inject AnalyticsInteractor analyticsInteractor;
@@ -103,7 +102,7 @@ public class AddCardDetailsPresenter extends WalletPresenter<AddCardDetailsPrese
 
                return ImmutableAddressInfoWithLocale.builder()
                      .addressInfo(addressInfo)
-                     .locale(localeHelper.getDefaultLocale())
+                     .locale(LocaleHelper.getDefaultLocale())
                      .build();
             })
             .compose(bindViewIoToMainComposer())

@@ -20,8 +20,6 @@ import com.worldventures.dreamtrips.modules.dtl.model.merchant.operational_hour.
 
 import java.util.List;
 
-import javax.inject.Inject;
-
 import butterknife.InjectView;
 import butterknife.OnClick;
 
@@ -32,8 +30,6 @@ public class DtlPerkCell extends AbstractDelegateCell<DtlOffer, CellDelegate<Dtl
    @InjectView(R.id.perks_description) TextView title;
    @InjectView(R.id.perks_operation_days) TextView operationDays;
    @InjectView(R.id.expirationBar) AppCompatTextView expirationBar;
-
-   @Inject LocaleHelper localeHelper;
 
    public DtlPerkCell(View view) {
       super(view);
@@ -66,7 +62,7 @@ public class DtlPerkCell extends AbstractDelegateCell<DtlOffer, CellDelegate<Dtl
    private void bindExpirationBar() {
       if (DtlMerchantHelper.isOfferExpiringSoon(getModelObject())) {
          ViewUtils.setTextOrHideView(expirationBar, DtlMerchantHelper.
-               getOfferExpiringCaption(itemView.getContext(), getModelObject(), localeHelper.getDefaultLocale()));
+               getOfferExpiringCaption(itemView.getContext(), getModelObject(), LocaleHelper.getDefaultLocale()));
       } else ViewUtils.setViewVisibility(View.GONE, expirationBar);
    }
 
@@ -78,7 +74,7 @@ public class DtlPerkCell extends AbstractDelegateCell<DtlOffer, CellDelegate<Dtl
       List<OperationDay> operationDays = getModelObject().getOperationDays();
       if (operationDays == null) return;
       //
-      String concatDays = DateTimeUtils.concatOperationDays(itemView.getResources(), operationDays, localeHelper.getDefaultLocale());
+      String concatDays = DateTimeUtils.concatOperationDays(itemView.getResources(), operationDays, LocaleHelper.getDefaultLocale());
       this.operationDays.setText(concatDays);
    }
 }

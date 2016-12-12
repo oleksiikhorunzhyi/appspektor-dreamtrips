@@ -31,7 +31,6 @@ import flow.Flow;
 public class EditCardDetailsPresenter extends WalletPresenter<EditCardDetailsPresenter.Screen, Parcelable> {
 
    @Inject Navigator navigator;
-   @Inject LocaleHelper localeHelper;
    @Inject SmartCardInteractor smartCardInteractor;
    @Inject AnalyticsInteractor analyticsInteractor;
 
@@ -49,7 +48,7 @@ public class EditCardDetailsPresenter extends WalletPresenter<EditCardDetailsPre
       connectToUpdateCardDetailsPipe();
       getView().address(ImmutableAddressInfoWithLocale.builder()
             .addressInfo(bankCard.addressInfo())
-            .locale(localeHelper.getDefaultLocale())
+            .locale(LocaleHelper.getDefaultLocale())
             .build());
    }
 

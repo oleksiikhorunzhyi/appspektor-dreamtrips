@@ -57,7 +57,6 @@ public abstract class ProfilePresenter<T extends ProfilePresenter.View, U extend
 
    @State ArrayList<FeedItem> feedItems;
 
-   @Inject LocaleHelper localeHelper;
    @Inject @Named(RouteCreatorModule.PROFILE) RouteCreator<Integer> routeCreator;
    @Inject TextualPostTranslationDelegate textualPostTranslationDelegate;
    @Inject BucketInteractor bucketInteractor;
@@ -246,7 +245,7 @@ public abstract class ProfilePresenter<T extends ProfilePresenter.View, U extend
 
    public void onEvent(TranslatePostEvent event) {
       if (view.isVisibleOnScreen()) {
-         textualPostTranslationDelegate.translate(event.getPostFeedItem(), localeHelper.getDefaultLocaleFormatted());
+         textualPostTranslationDelegate.translate(event.getPostFeedItem(), LocaleHelper.getDefaultLocaleFormatted());
       }
    }
 

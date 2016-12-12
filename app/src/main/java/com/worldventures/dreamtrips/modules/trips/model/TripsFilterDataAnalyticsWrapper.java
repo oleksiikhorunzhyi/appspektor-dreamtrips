@@ -6,12 +6,12 @@ import android.text.TextUtils;
 
 import com.innahema.collections.query.queriables.Queryable;
 import com.worldventures.dreamtrips.core.utils.DateTimeUtils;
+import com.worldventures.dreamtrips.core.utils.LocaleHelper;
 import com.worldventures.dreamtrips.util.TripsFilterData;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 
 public class TripsFilterDataAnalyticsWrapper {
 
@@ -45,7 +45,7 @@ public class TripsFilterDataAnalyticsWrapper {
       this.minPrice = tripsFilterData.getMinPrice() == null ? TripsFilterData.MIN_PRICE : tripsFilterData.getMinPrice();
       this.maxPrice = tripsFilterData.getMaxPrice() == null ? TripsFilterData.MAX_PRICE : tripsFilterData.getMaxPrice();
       //
-      SimpleDateFormat sdf = new SimpleDateFormat(DateTimeUtils.TRIP_FILTER_ANALYTIC_DATE_FORMAT, Locale.getDefault());
+      SimpleDateFormat sdf = new SimpleDateFormat(DateTimeUtils.TRIP_FILTER_ANALYTIC_DATE_FORMAT, LocaleHelper.getDefaultLocale());
       this.startDate = DateTimeUtils.convertDateToString(tripsFilterData.getStartDate(), sdf);
       this.endDate = DateTimeUtils.convertDateToString(tripsFilterData.getEndDate(), sdf);
       //
@@ -59,8 +59,8 @@ public class TripsFilterDataAnalyticsWrapper {
 
    public String getFilterAnalyticString() {
       List<String> filters = new ArrayList<>();
-      filters.add(String.format(Locale.getDefault(), NIGHTS_FORMAT, minNights, maxNights));
-      filters.add(String.format(Locale.getDefault(), PRICE_FORMAT, minPrice, maxPrice));
+      filters.add(String.format(LocaleHelper.getDefaultLocale(), NIGHTS_FORMAT, minNights, maxNights));
+      filters.add(String.format(LocaleHelper.getDefaultLocale(), PRICE_FORMAT, minPrice, maxPrice));
       filters.add(startDate);
       filters.add(endDate);
       if (!TextUtils.isEmpty(getBooleanFieldsAnalyticString())) filters.add(getBooleanFieldsAnalyticString());

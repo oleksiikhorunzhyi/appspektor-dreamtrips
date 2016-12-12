@@ -1,11 +1,11 @@
 package com.worldventures.dreamtrips.util;
 
 import android.support.annotation.Nullable;
-import android.text.TextUtils;
 
 import com.innahema.collections.query.queriables.Queryable;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.core.utils.DateTimeUtils;
+import com.worldventures.dreamtrips.core.utils.LocaleHelper;
 import com.worldventures.dreamtrips.modules.common.model.BaseEntity;
 import com.worldventures.dreamtrips.modules.trips.model.ActivityModel;
 import com.worldventures.dreamtrips.modules.trips.model.RegionModel;
@@ -16,7 +16,6 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
-import java.util.Locale;
 
 public class TripsFilterData implements Serializable {
 
@@ -117,7 +116,7 @@ public class TripsFilterData implements Serializable {
    }
 
    public String getStartDateFormatted() {
-      return DateTimeUtils.convertDateToString(startDate, new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()));
+      return DateTimeUtils.convertDateToString(startDate, new SimpleDateFormat("yyyy-MM-dd", LocaleHelper.getDefaultLocale()));
    }
 
    public void setStartDate(Date startDate) {
@@ -125,7 +124,7 @@ public class TripsFilterData implements Serializable {
    }
 
    public String getEndDateFormatted() {
-      return DateTimeUtils.convertDateToString(endDate, new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()));
+      return DateTimeUtils.convertDateToString(endDate, new SimpleDateFormat("yyyy-MM-dd", LocaleHelper.getDefaultLocale()));
    }
 
    public Date getStartDate() {

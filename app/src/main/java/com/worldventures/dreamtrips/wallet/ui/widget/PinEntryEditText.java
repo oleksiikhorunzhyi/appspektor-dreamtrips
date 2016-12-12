@@ -31,10 +31,10 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 
 import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.core.utils.LocaleHelper;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 
 /**
  * Due to issues with JitPack
@@ -249,7 +249,7 @@ public class PinEntryEditText extends EditText {
       int startX;
       int bottom = getHeight() - getPaddingBottom();
       int rtlFlag;
-      final boolean isLayoutRtl = TextUtilsCompat.getLayoutDirectionFromLocale(Locale.getDefault()) == ViewCompat.LAYOUT_DIRECTION_RTL;
+      final boolean isLayoutRtl = TextUtilsCompat.getLayoutDirectionFromLocale(LocaleHelper.getDefaultLocale()) == ViewCompat.LAYOUT_DIRECTION_RTL;
       if (isLayoutRtl) {
          rtlFlag = -1;
          startX = (int) (getWidth() - ViewCompat.getPaddingStart(this) - mCharSize);

@@ -15,13 +15,13 @@ public class HolderModule {
 
    @Provides
    @Singleton
-   public SessionHolder<UserSession> session(SimpleKeyValueStorage simpleKeyValueStorage) {
-      return new SessionHolder<>(simpleKeyValueStorage, UserSession.class);
+   public SessionHolder<UserSession> provideSessionHolder(SimpleKeyValueStorage simpleKeyValueStorage) {
+      return new SessionHolder<UserSession>(simpleKeyValueStorage);
    }
 
    @Provides
    @Singleton
-   public FeatureManager featureManager(SessionHolder<UserSession> session) {
-      return new FeatureManager(session);
+   public FeatureManager provideFeatureManager(SessionHolder<UserSession> sessionHolder) {
+      return new FeatureManager(sessionHolder);
    }
 }

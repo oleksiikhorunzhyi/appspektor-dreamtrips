@@ -17,8 +17,6 @@ import com.worldventures.dreamtrips.modules.dtl.model.merchant.operational_hour.
 import java.util.Calendar;
 import java.util.List;
 
-import javax.inject.Inject;
-
 import butterknife.InjectView;
 
 @Layout(R.layout.adapter_item_dtl_details_working_hours_cell)
@@ -26,8 +24,6 @@ public class DtlWorkingHoursCell extends AbstractCell<OperationDay> {
 
    @InjectView(R.id.workingDay) TextView workingDay;
    @InjectView(R.id.workingHours) TextView workingHours;
-
-   @Inject LocaleHelper localeHelper;
 
    private int timezone;
 
@@ -40,7 +36,7 @@ public class DtlWorkingHoursCell extends AbstractCell<OperationDay> {
       final DayOfWeek dayOfWeek = getModelObject().getDayOfWeek();
       final List<OperationHours> operationDays = getModelObject().getOperationHours();
       //
-      workingDay.setText(DateTimeUtils.getDisplayWeekDay(dayOfWeek.getDay(), Calendar.LONG, localeHelper.getDefaultLocale()));
+      workingDay.setText(DateTimeUtils.getDisplayWeekDay(dayOfWeek.getDay(), Calendar.LONG, LocaleHelper.getDefaultLocale()));
       workingHours.setText(DtlMerchantHelper.formatOperationDayHours(itemView.getContext(), operationDays));
       //
       if (DateTimeUtils.isSameDayOfWeek(dayOfWeek, timezone)) {

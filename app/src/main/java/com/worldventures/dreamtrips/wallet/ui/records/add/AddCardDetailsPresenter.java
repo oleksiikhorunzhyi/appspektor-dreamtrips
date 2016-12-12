@@ -48,7 +48,6 @@ import static android.text.TextUtils.getTrimmedLength;
 public class AddCardDetailsPresenter extends WalletPresenter<AddCardDetailsPresenter.Screen, Parcelable> {
 
    @Inject Navigator navigator;
-   @Inject LocaleHelper localeHelper;
    @Inject SmartCardInteractor smartCardInteractor;
    @Inject AnalyticsInteractor analyticsInteractor;
    @Inject SmartCardInteractorHelper smartCardInteractorHelper;

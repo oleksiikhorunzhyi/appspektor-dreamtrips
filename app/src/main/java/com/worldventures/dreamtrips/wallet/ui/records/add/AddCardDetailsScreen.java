@@ -61,6 +61,7 @@ public class AddCardDetailsScreen extends WalletLinearLayout<AddCardDetailsPrese
    private Observable<String> stateObservable;
    private Observable<String> cityObservable;
    private Observable<String> zipObservable;
+   private Observable<String> cvvObservable;
 
    public AddCardDetailsScreen(Context context) {
       this(context, null);
@@ -93,6 +94,7 @@ public class AddCardDetailsScreen extends WalletLinearLayout<AddCardDetailsPrese
       stateObservable = observableFrom(stateField);
       cityObservable = observableFrom(cityField);
       zipObservable = observableFrom(zipField);
+      cvvObservable = observableFrom(cardCvvField);
    }
 
    private Observable<String> observableFrom(TextView textView) {
@@ -130,6 +132,11 @@ public class AddCardDetailsScreen extends WalletLinearLayout<AddCardDetailsPrese
    @Override
    public Observable<String> getCityObservable() {
       return cityObservable;
+   }
+
+   @Override
+   public Observable<String> getCvvObservable() {
+      return cvvObservable;
    }
 
    @Override

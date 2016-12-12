@@ -30,6 +30,7 @@ import com.worldventures.dreamtrips.wallet.ui.common.helper.OperationActionState
 import com.worldventures.dreamtrips.wallet.ui.common.navigation.Navigator;
 import com.worldventures.dreamtrips.wallet.ui.dashboard.CardListPath;
 import com.worldventures.dreamtrips.wallet.util.AddressFormatException;
+import com.worldventures.dreamtrips.wallet.util.BankCardHelper;
 import com.worldventures.dreamtrips.wallet.util.CardNameFormatException;
 import com.worldventures.dreamtrips.wallet.util.CardUtils;
 import com.worldventures.dreamtrips.wallet.util.CvvFormatException;
@@ -208,17 +209,19 @@ public class AddCardDetailsPresenter extends WalletPresenter<AddCardDetailsPrese
             screen.getCityObservable(),
             screen.getZipObservable(),
             screen.getStateObservable(),
+            screen.getCvvObservable(),
             this::checkMandatoryFields)
             .compose(bindView())
             .subscribe(screen::setEnableButton);
    }
 
-   private boolean checkMandatoryFields(String cardName, String address1, String city, String zipCode, String state) {
+   private boolean checkMandatoryFields(String cardName, String address1, String city, String zipCode, String state, String cvv) {
       return getTrimmedLength(cardName) > 0
             && getTrimmedLength(address1) > 0
             && getTrimmedLength(city) > 0
             && getTrimmedLength(zipCode) > 0
-            && getTrimmedLength(state) > 0;
+            && getTrimmedLength(state) > 0
+            && cvv.length() == BankCardHelper.obtainRequiredCvvLength(bankCard.number());
    }
 
    public interface Screen extends WalletScreen {
@@ -236,6 +239,8 @@ public class AddCardDetailsPresenter extends WalletPresenter<AddCardDetailsPrese
       Observable<String> getZipObservable();
 
       Observable<String> getCityObservable();
+
+      Observable<String> getCvvObservable();
 
       void defaultAddress(AddressInfoWithLocale defaultAddress);
 

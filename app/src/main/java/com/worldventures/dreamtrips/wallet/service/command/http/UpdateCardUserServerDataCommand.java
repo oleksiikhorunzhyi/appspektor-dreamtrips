@@ -4,7 +4,7 @@ import android.net.Uri;
 
 import com.worldventures.dreamtrips.api.smart_card.user_info.UpdateCardUserHttpAction;
 import com.worldventures.dreamtrips.api.smart_card.user_info.model.ImmutableUpdateCardUserData;
-import com.worldventures.dreamtrips.core.api.uploadery.SimpleUploaderyCommand;
+import com.worldventures.dreamtrips.core.api.uploadery.SmartCardSimpleUploaderyCommand;
 import com.worldventures.dreamtrips.core.janet.dagger.InjectableAction;
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCardUserPhoto;
 
@@ -39,9 +39,9 @@ public class UpdateCardUserServerDataCommand extends Command<Void> implements In
 
    @Override
    protected void run(CommandCallback<Void> callback) throws Throwable {
-      jannetGeneric.createPipe(SimpleUploaderyCommand.class)
-            .createObservableResult(new SimpleUploaderyCommand(Uri.fromFile(avatar.original()).toString()))
-            .map(c -> c.getResult().getPhotoUploadResponse().getLocation())
+      jannetGeneric.createPipe(SmartCardSimpleUploaderyCommand.class)
+            .createObservableResult(new SmartCardSimpleUploaderyCommand(smartCardId, Uri.fromFile(avatar.original()).toString()))
+            .map(c -> c.getResult().response().uploaderyPhoto().location())
             .flatMap(avatarUrl -> {
                      ImmutableUpdateCardUserData cardUserData = ImmutableUpdateCardUserData.builder()
                            .photoUrl(avatarUrl)

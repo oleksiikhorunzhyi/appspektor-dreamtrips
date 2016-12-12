@@ -12,23 +12,40 @@
          android:layout_width="match_parent"
          android:layout_height="?attr/actionBarSize"
          app:navigationIcon="@null"
-         app:title="@string/wallet_wizard_title"
+         app:title="@string/wallet_wizard_finish_title"
          />
 
-   <FrameLayout
-         android:layout_width="match_parent"
-         android:layout_height="match_parent"
+   <RelativeLayout
+         style="@style/WalletTheme.ContentContainerStyle"
+         android:layout_marginTop="80dp"
          >
+      <TextView
+            style="@style/WalletTheme.HeaderTextStyle"
+            android:id="@+id/label_setup_is_complete"
+            android:text="@string/wallet_wizard_setup_complete_label"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            />
+
+      <TextView
+            style="@style/WalletTheme.HeaderTextStyle"
+            android:id="@+id/label_able_to_add_cards"
+            android:layout_below="@+id/label_setup_is_complete"
+            android:layout_marginTop="15dp"
+            android:text="@string/wallet_wizard_finish_label"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            />
 
       <com.worldventures.dreamtrips.wallet.ui.widget.WalletProgressWidget
             android:id="@+id/assign_progress"
+            android:layout_below="@+id/label_able_to_add_cards"
+            android:layout_marginTop="30dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"
+            android:layout_centerHorizontal="true"
             android:visibility="gone"
             android:src="@drawable/wallet_download_progress"
             />
 
-   </FrameLayout>
+   </RelativeLayout>
 
 </com.worldventures.dreamtrips.wallet.ui.wizard.finish.WizardAssignUserScreen>

@@ -678,4 +678,5 @@
    <string name="beta_label">Beta</string>
 
    <string name="documents">Documents</string>
+   <string name="documents_empty_text">Documents could not be loaded at this time.</string>
 </resources>

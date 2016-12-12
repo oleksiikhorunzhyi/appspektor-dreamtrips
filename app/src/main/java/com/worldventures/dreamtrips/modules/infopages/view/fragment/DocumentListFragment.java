@@ -3,6 +3,7 @@ package com.worldventures.dreamtrips.modules.infopages.view.fragment;
 import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.view.View;
+import android.widget.TextView;
 
 import com.techery.spares.adapter.BaseDelegateAdapter;
 import com.techery.spares.annotations.Layout;
@@ -22,11 +23,15 @@ import com.worldventures.dreamtrips.modules.membership.view.util.DividerItemDeco
 
 import java.util.List;
 
+import butterknife.InjectView;
+
 import static com.worldventures.dreamtrips.modules.membership.view.util.DividerItemDecoration.VERTICAL_LIST;
 
 @Layout(R.layout.fragment_documents)
 public class DocumentListFragment extends BaseFragment<DocumentListPresenter> implements CellDelegate<Document>,
       DocumentListPresenter.View, SwipeRefreshLayout.OnRefreshListener {
+
+   @InjectView(R.id.emptyView) TextView emptyView;
 
    private BaseDelegateAdapter adapter;
    private StatePaginatedRecyclerViewManager statePaginatedRecyclerViewManager;
@@ -47,6 +52,7 @@ public class DocumentListFragment extends BaseFragment<DocumentListPresenter> im
       adapter.registerCell(LoadMoreModel.class, LoaderCell.class);
 
       statePaginatedRecyclerViewManager = new StatePaginatedRecyclerViewManager(rootView);
+      statePaginatedRecyclerViewManager.stateRecyclerView.setEmptyView(emptyView);
       statePaginatedRecyclerViewManager.init(adapter, savedInstanceState);
       statePaginatedRecyclerViewManager.setOnRefreshListener(this);
       statePaginatedRecyclerViewManager.addItemDecoration(new DividerItemDecoration(getContext(), VERTICAL_LIST));

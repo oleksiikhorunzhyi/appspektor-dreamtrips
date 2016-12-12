@@ -1,0 +1,84 @@
+#!/usr/bin/env groovy
+
+def MAIN_NODE = 'android'
+
+def buildParams = [:]
+def utils = fileLoader.fromGit('jenkins-android-pipeline-utils.groovy', 'https://gist.github.com/3d72ba81965db879ceb38e4bef991b6a.git', 'cfead7642677b4ae8c4dfb134f73d62c8124e4e7', null, 'master')
+
+utils.runBuild(MAIN_NODE) {
+   stage('prepare build') {
+      buildParams = generateParams()
+      println buildParams
+   }
+   stage('checkout') {
+      checkout([
+            $class                           : 'GitSCM',
+            branches                         : scm.branches,
+            userRemoteConfigs                : scm.userRemoteConfigs,
+            submoduleCfg                     : [],
+            doGenerateSubmoduleConfigurations: false,
+            extensions                       : [
+                  [$class: 'CleanBeforeCheckout'],
+                  [$class : 'CloneOption',
+                   shallow: true,
+                   depth  : 10,
+                   noTags : true,
+                   timeout: 30]
+            ]
+      ])
+   }
+   stage('tests') {
+      for (String task : buildParams.TEST_TASKS)
+         utils.runTestAndArchiveResult("app:${task}", buildParams.TEST_REPORT_FOLDER, "${testFolderFromTask(task)}/*.xml")
+   }
+   stage('assemble') {
+      utils.gradlew "app:${buildParams.ASSEMBLE_TASK}"
+   }
+}
+
+@NonCPS
+def Map generateParams() {
+   def buildParams = [:]
+
+   def streamFlavors = [
+         social   : "Social",
+         dtl      : "Dtl",
+         messenger: "Messenger",
+         smartcard: "Smartcardmock",
+   ]
+   def flavors = [stable: "Stable"]
+   for (Map.Entry it : streamFlavors) {
+      flavors[it.getKey()] = it.getValue()
+   }
+
+
+   buildParams.FLAVOR = flavors.stable
+   if (env.GITHUB_PR_TARGET_BRANCH.contains("social/")) buildParams.FLAVOR = flavors.social
+   else if (env.GITHUB_PR_TARGET_BRANCH.contains("dtl/")) buildParams.FLAVOR = flavors.dtl
+   else if (env.GITHUB_PR_TARGET_BRANCH.contains("messenger/")) buildParams.FLAVOR = flavors.messenger
+   else if (env.GITHUB_PR_TARGET_BRANCH.contains("smart-card/")) buildParams.FLAVOR = flavors.smartcard
+
+   if (buildParams.FLAVOR == flavors.stable) {
+      buildParams.TEST_TASKS = streamFlavors.values().collect { flavor -> "testExternal${flavor}PreprodDebug" }
+   } else {
+      buildParams.TEST_TASKS = ["testExternal${buildParams.FLAVOR}StageDebug"]
+   }
+
+   buildParams.ASSEMBLE_TASK = "assembleExternal${buildParams.FLAVOR}StageDebug"
+
+   buildParams.TEST_REPORT_FOLDER = 'app/build/test-results'
+   buildParams.TEST_REPORT_PATTERN = '**/*.xml'
+
+   return buildParams
+}
+
+@NonCPS
+def String convertToTestTask(Collection tasks) {
+   tasks.collect { it -> "app:${it}" }.join(' ')
+}
+
+@NonCPS
+def String testFolderFromTask(String testTask) {
+   def part = (testTask =~ /(?<=test).*/)[0]
+   return "${part.toLowerCase().charAt(0)}" + part.substring(1)
+}

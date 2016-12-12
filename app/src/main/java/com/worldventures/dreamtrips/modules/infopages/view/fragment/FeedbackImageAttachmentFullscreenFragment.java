@@ -8,7 +8,7 @@ import com.worldventures.dreamtrips.modules.infopages.model.FeedbackImageAttachm
 import com.worldventures.dreamtrips.modules.infopages.presenter.FeedbackImageAttachmentFullscreenPresenter;
 import com.worldventures.dreamtrips.modules.tripsimages.view.fragment.singlefullscreen.FullScreenPhotoFragment;
 
-@Layout(R.layout.fragment_fullscreen_message_photo)
+@Layout(R.layout.fragment_fullscreen_feedback_image_attachment)
 public class FeedbackImageAttachmentFullscreenFragment extends FullScreenPhotoFragment<FeedbackImageAttachmentFullscreenPresenter,
       FeedbackImageAttachment> {
 

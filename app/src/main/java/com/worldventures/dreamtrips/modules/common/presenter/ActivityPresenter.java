@@ -7,7 +7,6 @@ import com.techery.spares.storage.complex_objects.Optional;
 import com.worldventures.dreamtrips.core.rx.RxView;
 import com.worldventures.dreamtrips.core.rx.composer.IoToMainComposer;
 import com.worldventures.dreamtrips.core.session.UserSession;
-import com.worldventures.dreamtrips.core.utils.LocaleHelper;
 import com.worldventures.dreamtrips.core.utils.LocaleSwitcher;
 import com.worldventures.dreamtrips.modules.auth.api.command.LogoutCommand;
 import com.worldventures.dreamtrips.modules.auth.api.command.UpdateUserCommand;
@@ -24,7 +23,6 @@ public class ActivityPresenter<VT extends ActivityPresenter.View> extends Presen
 
    @Inject protected Activity activity;
    @Inject protected LocaleSwitcher localeSwitcher;
-   @Inject protected LocaleHelper localeHelper;
    @Inject LogoutInteractor logoutInteractor;
    @Inject protected AuthInteractor authInteractor;
 
@@ -76,7 +74,7 @@ public class ActivityPresenter<VT extends ActivityPresenter.View> extends Presen
    }
 
    protected void setupUserLocale() {
-      localeSwitcher.applyLocale(localeHelper.getDefaultLocale());
+      localeSwitcher.applyLocaleFromSession();
    }
 
    private void subscribeToUserUpdate() {

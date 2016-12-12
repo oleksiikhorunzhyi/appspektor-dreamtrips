@@ -42,7 +42,6 @@ import static java.lang.Integer.valueOf;
 public class CardDetailsPresenter extends WalletPresenter<CardDetailsPresenter.Screen, Parcelable> {
 
    @Inject Navigator navigator;
-   @Inject LocaleHelper localeHelper;
    @Inject SmartCardInteractor smartCardInteractor;
    @Inject AnalyticsInteractor analyticsInteractor;
 
@@ -127,7 +126,7 @@ public class CardDetailsPresenter extends WalletPresenter<CardDetailsPresenter.S
    private AddressInfoWithLocale obtainAddressWithCountry() {
       return ImmutableAddressInfoWithLocale.builder()
             .addressInfo(bankCard.addressInfo())
-            .locale(localeHelper.getDefaultLocale())
+            .locale(LocaleHelper.getDefaultLocale())
             .build();
    }
 

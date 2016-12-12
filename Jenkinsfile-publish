@@ -101,7 +101,7 @@ def Map generateParams(boolean isGithubBuild) {
                   hockeyAppId : "790422bf7d324c3c92bb0411b04ce6eb"
             ]
          }
-         paramss << [
+         params << [
                apkBuildType  : "Release",
                hockeyAppTeams: [qaTeam, devTeam]
          ]

@@ -48,7 +48,7 @@ public class RecordToBankCardConverter implements com.worldventures.dreamtrips.m
       if (record.cvv().length() > 0) {
          cvv = Integer.parseInt(record.cvv());
       }
-      final  Integer recordId = record.id();
+      final Integer recordId = record.id();
       return ImmutableBankCard.builder()
             .id(recordId != null ? String.valueOf(recordId) : null)
             .number(Long.parseLong(record.cardNumber()))
@@ -56,11 +56,14 @@ public class RecordToBankCardConverter implements com.worldventures.dreamtrips.m
             .cvv(cvv)
             .track1(record.t1())
             .track2(record.t2())
-            .cardNameHolder("") //// TODO: 11/28/16 use Record.cardNameHolder after sdk will updated !!!
+            .cardNameHolder(record.firstName() + " " + record.middleName() + " " + record.lastName()) //// TODO: 11/28/16 use Record.cardNameHolder after sdk will updated !!!
             .nickName(record.title())
             .issuerInfo(recordIssuerInfoBuilder.build())
             .addressInfo(fetchAddressInfoFromRecord(record))
             .category(category)
+            .cardHolderFirstName(record.firstName())
+            .cardHolderLastName(record.lastName())
+            .cardHolderMiddleName(record.middleName())
             .build();
    }
 

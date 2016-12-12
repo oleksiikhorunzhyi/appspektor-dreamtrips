@@ -7,7 +7,6 @@ import com.worldventures.dreamtrips.wallet.domain.entity.ImmutableSmartCard;
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCard;
 import com.worldventures.dreamtrips.wallet.domain.storage.TemporaryStorage;
 import com.worldventures.dreamtrips.wallet.service.FirmwareInteractor;
-import com.worldventures.dreamtrips.wallet.service.SmartCardInteractor;
 import com.worldventures.dreamtrips.wallet.service.command.ConnectSmartCardCommand;
 import com.worldventures.dreamtrips.wallet.service.command.GetActiveSmartCardCommand;
 
@@ -33,7 +32,6 @@ import static rx.Observable.just;
 public class InstallFirmwareCommand extends Command implements InjectableAction {
 
    @Inject @Named(JANET_WALLET) Janet janet;
-   @Inject SmartCardInteractor smartCardInteractor;
    @Inject FirmwareInteractor firmwareInteractor;
    @Inject TemporaryStorage temporaryStorage;
    @Inject SnappyRepository snappyRepository;
@@ -75,7 +73,7 @@ public class InstallFirmwareCommand extends Command implements InjectableAction 
    }
 
    private Observable<Void> enableLockUnlockDevice(boolean enable) {
-      return smartCardInteractor.enableLockUnlockDeviceActionPipe()
+      return janet.createPipe(EnableLockUnlockDeviceAction.class)
             .createObservableResult(new EnableLockUnlockDeviceAction(enable))
             .onErrorResumeNext(Observable.just(null))
             .map(action -> (Void) null);
@@ -120,13 +118,13 @@ public class InstallFirmwareCommand extends Command implements InjectableAction 
    }
 
    private Observable<SmartCard> activeSmartCard() {
-      return smartCardInteractor.activeSmartCardPipe()
+      return janet.createPipe(GetActiveSmartCardCommand.class)
             .createObservableResult(new GetActiveSmartCardCommand())
             .map(Command::getResult);
    }
 
    private Observable<SmartCard> connectCard(SmartCard smartCard) {
-      return smartCardInteractor.connectActionPipe()
+      return janet.createPipe(ConnectSmartCardCommand.class)
             .createObservableResult(new ConnectSmartCardCommand(smartCard, false, true))
             .map(Command::getResult);
    }

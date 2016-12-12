@@ -83,6 +83,7 @@
    <string name="wallet_card_details_progress_delete">Deleting %s…</string>
    <string name="wallet_card_details_delete_card_dialog_title">Delete payment card</string>
    <string name="wallet_card_details_delete_card_dialog_content">Are you sure?</string>
+   <string name="wallet_card_details_button_pay_with_this">Pay with this card</string>
 
    <!--settings-->
    <string name="wallet_card_settings_title">Settings</string>
@@ -149,6 +150,7 @@
    <string name="wallet_wizard_limited_access">@string/offline_warning_dialog_message</string>
    <string name="wallet_wizard_card_list_add_card_coming_soon_title">Coming Soon</string>
    <string name="wallet_wizard_card_list_add_card_coming_soon_text">Ability to add cards is coming soon.</string>
+   <string name="wallet_wizard_card_list_card_is_ready_text">%1$s is ready for payment on your flye smart card.</string>
 
    <!--add card details-->
    <string name="wallet_add_card_details_title">Card Details</string>

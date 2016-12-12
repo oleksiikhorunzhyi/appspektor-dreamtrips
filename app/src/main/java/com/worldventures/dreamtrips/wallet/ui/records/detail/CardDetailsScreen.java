@@ -73,6 +73,11 @@ public class CardDetailsScreen extends WalletLinearLayout<CardDetailsPresenter.S
       getPresenter().editAddress();
    }
 
+   @OnClick(R.id.pay_this_card_button)
+   public void onPayThisCardClicked() {
+      getPresenter().payThisCard();
+   }
+
    @Override
    public OperationScreen provideOperationDelegate() {
       return new DialogOperationScreen(this);
@@ -122,6 +127,16 @@ public class CardDetailsScreen extends WalletLinearLayout<CardDetailsPresenter.S
                .build();
          connectedErrorDialog.show();
       }
+   }
+
+   @Override
+   public void showCardIsReadyDialog(String cardName) {
+      MaterialDialog.Builder builder = new MaterialDialog.Builder(getContext());
+      builder.content(getString(R.string.wallet_wizard_card_list_card_is_ready_text, cardName))
+            .positiveText(R.string.ok)
+            .onPositive((dialog, which) -> getPresenter().onCardIsReadyDialogShown())
+            .build()
+            .show();
    }
 
    @Override

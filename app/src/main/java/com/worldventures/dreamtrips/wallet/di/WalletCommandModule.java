@@ -25,6 +25,7 @@ import com.worldventures.dreamtrips.wallet.service.command.SetAutoClearSmartCard
 import com.worldventures.dreamtrips.wallet.service.command.SetDefaultCardOnDeviceCommand;
 import com.worldventures.dreamtrips.wallet.service.command.SetDisableDefaultCardDelayCommand;
 import com.worldventures.dreamtrips.wallet.service.command.SetLockStateCommand;
+import com.worldventures.dreamtrips.wallet.service.command.SetPaymentCardAction;
 import com.worldventures.dreamtrips.wallet.service.command.SetStealthModeCommand;
 import com.worldventures.dreamtrips.wallet.service.command.SetupDefaultAddressCommand;
 import com.worldventures.dreamtrips.wallet.service.command.SetupUserDataCommand;
@@ -70,6 +71,7 @@ import dagger.Module;
             AddBankCardCommand.class,
             SetupDefaultAddressCommand.class,
             SetDefaultCardOnDeviceCommand.class,
+            SetPaymentCardAction.class,
             FetchSmartCardLockState.class,
             UpdateSmartCardConnectionStatus.class,
             SetStealthModeCommand.class,

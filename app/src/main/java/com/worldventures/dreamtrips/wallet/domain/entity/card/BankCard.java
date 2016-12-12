@@ -19,6 +19,22 @@ public abstract class BankCard extends Card {
    }
 
    @Value.Default
+   public String cardHolderFirstName() {
+      return "";
+   }
+
+   @Value.Default
+   public String cardHolderMiddleName() {
+      return "";
+   }
+
+   @Value.Default
+   public String cardHolderLastName() {
+      return "";
+   }
+
+
+   @Value.Default
    public String nickName() { // TODO: 12/6/16 remove to cardName
       return "";
    }

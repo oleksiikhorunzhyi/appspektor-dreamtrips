@@ -43,6 +43,9 @@ public class BankCardToRecordConverter implements com.worldventures.dreamtrips.m
             .t1(card.track1() != null ? card.track1() : "")
             .t2(card.track2() != null ? card.track2() : "")
             .t3("")
+            .lastName(card.cardHolderLastName())
+            .firstName(card.cardHolderFirstName())
+            .middleName(card.cardHolderMiddleName())
             .metadata(metadata);
 
       if (addressInfo != null) {

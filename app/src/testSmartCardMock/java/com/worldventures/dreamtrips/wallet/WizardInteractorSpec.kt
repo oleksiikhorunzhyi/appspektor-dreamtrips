@@ -5,9 +5,7 @@ import android.test.mock.MockContext
 import android.text.TextUtils
 import com.nhaarman.mockito_kotlin.mock
 import com.nhaarman.mockito_kotlin.spy
-import com.nhaarman.mockito_kotlin.whenever
 import com.worldventures.dreamtrips.BaseSpec
-import com.worldventures.dreamtrips.api.smart_card.user_info.model.ImmutableUpdateCardUserData
 import com.worldventures.dreamtrips.api.smart_card.user_info.model.UpdateCardUserData
 import com.worldventures.dreamtrips.core.janet.SessionActionPipeCreator
 import com.worldventures.dreamtrips.core.janet.cache.CacheResultWrapper
@@ -16,14 +14,12 @@ import com.worldventures.dreamtrips.core.janet.cache.storage.MultipleActionStora
 import com.worldventures.dreamtrips.core.repository.SnappyRepository
 import com.worldventures.dreamtrips.wallet.domain.converter.BankCardToRecordConverter
 import com.worldventures.dreamtrips.wallet.domain.converter.RecordToBankCardConverter
-import com.worldventures.dreamtrips.wallet.domain.entity.ImmutableSmartCardDetails
-import com.worldventures.dreamtrips.wallet.domain.entity.SmartCard
-import com.worldventures.dreamtrips.wallet.domain.entity.SmartCardDetails
 import com.worldventures.dreamtrips.wallet.domain.entity.card.BankCard
 import com.worldventures.dreamtrips.wallet.domain.storage.DefaultBankCardStorage
 import com.worldventures.dreamtrips.wallet.domain.storage.SmartCardStorage
 import com.worldventures.dreamtrips.wallet.domain.storage.WalletCardsDiskStorage
 import com.worldventures.dreamtrips.wallet.domain.storage.disk.CardListStorage
+import com.worldventures.dreamtrips.wallet.model.TestUpdateCardUserData
 import com.worldventures.dreamtrips.wallet.service.WizardInteractor
 import com.worldventures.dreamtrips.wallet.service.command.CreateAndConnectToCardCommand
 import com.worldventures.dreamtrips.wallet.service.command.http.AssociateCardUserCommand
@@ -42,7 +38,6 @@ import io.techery.mappery.MapperyContext
 import org.powermock.api.mockito.PowerMockito
 import rx.functions.Func1
 import rx.observers.TestSubscriber
-import java.util.*
 
 class WizardInteractorSpec : BaseSpec({
    describe("SmartCard SDK actions") {
@@ -63,9 +58,6 @@ class WizardInteractorSpec : BaseSpec({
       context("Smart Card create connect, associate and disassociate") {
 
          it("Create connect to smart card") {
-            val smartcard: SmartCard = mockSmartCard("4")
-            val smartCardDetails: SmartCardDetails = mockSmartCardDetails(smartcard)
-
             val testSubscriber: TestSubscriber<ActionState<CreateAndConnectToCardCommand>> = TestSubscriber()
             janet.createPipe(CreateAndConnectToCardCommand::class.java)
                   .createObservable(CreateAndConnectToCardCommand())
@@ -76,8 +68,8 @@ class WizardInteractorSpec : BaseSpec({
          }
 
          it("Associate smart card") {
-            var barcode: String = "13371340"
-            var cardUserData : UpdateCardUserData = mockUpdateCardUserData()
+            val barcode: String = "13371340"
+            val cardUserData : UpdateCardUserData = mockUpdateCardUserData()
             val testSubscriber: TestSubscriber<ActionState<AssociateCardUserCommand>> = TestSubscriber()
             janet.createPipe(AssociateCardUserCommand::class.java)
                   .createObservable(AssociateCardUserCommand(barcode, cardUserData))
@@ -88,7 +80,7 @@ class WizardInteractorSpec : BaseSpec({
          }
 
          it("Disassociate smart card") {
-            var barcode: String = "13371340"
+            val barcode: String = "13371340"
             val testSubscriber: TestSubscriber<ActionState<DisassociateCardUserCommand>> = TestSubscriber()
             janet.createPipe(DisassociateCardUserCommand::class.java)
                   .createObservable(DisassociateCardUserCommand(barcode))
@@ -120,7 +112,7 @@ class WizardInteractorSpec : BaseSpec({
          PowerMockito.`mockStatic`(TextUtils::class.java)
          PowerMockito.`doAnswer`({ invocation ->
             val arg1: String = invocation.getArgumentAt(0, String::class.java)
-            var arg2: String = invocation.getArgumentAt(1, String::class.java)
+            val arg2: String = invocation.getArgumentAt(1, String::class.java)
             arg1 == arg2
          }).`when`(TextUtils::class.java)
          TextUtils.`equals`(anyString(), anyString())
@@ -179,46 +171,7 @@ class WizardInteractorSpec : BaseSpec({
          this.createPipe(ConnectAction::class.java).createObservableResult(ConnectAction(ImmutableConnectionParams.of(1))).subscribe()
       }
 
-      fun mockSmartCard(cardId: String): SmartCard {
-         var mockedSmartCard: SmartCard = mock()
-         whenever(mockedSmartCard.smartCardId()).thenReturn(cardId)
-         whenever(mockedSmartCard.cardStatus()).thenReturn(SmartCard.CardStatus.ACTIVE)
-         whenever(mockedSmartCard.connectionStatus()).thenReturn(SmartCard.ConnectionStatus.DISCONNECTED)
-         whenever(mockedSmartCard.cardName()).thenReturn("device name")
-         whenever(mockedSmartCard.deviceAddress()).thenReturn("device address")
-         whenever(mockedSmartCard.cardName()).thenReturn("card name")
-         whenever(mockedSmartCard.sdkVersion()).thenReturn("1.0.0")
-         whenever(mockedSmartCard.firmWareVersion()).thenReturn("1.0.0")
-         whenever(mockedSmartCard.serialNumber()).thenReturn("")
-
-         return mockedSmartCard
-      }
-
-      fun mockSmartCardDetails(smartCard: SmartCard): SmartCardDetails {
-         var mockedSmartCardDetails: SmartCardDetails = ImmutableSmartCardDetails.builder()
-               .smartCardId(smartCard.smartCardId().toLong())
-               .bleAddress("DA:30:55:CF:B4:9E")
-               .nxtOrderId("123")
-               .serialNumber("")
-               .wvOrderId("")
-               .revVersion("")
-               .orderDate(Date())
-               .build()
-
-         return mockedSmartCardDetails
-      }
+      fun mockUpdateCardUserData(): UpdateCardUserData = TestUpdateCardUserData()
    }
 }
-
-fun mockUpdateCardUserData(): UpdateCardUserData {
-   var mockedUpdateCardUserData : UpdateCardUserData = ImmutableUpdateCardUserData.builder()
-         .displayFirstName("Test")
-         .displayLastName("Lasttest")
-         .displayMiddleName("testMiddle")
-         .nameToDisplay("Test Lasttest")
-         .photoUrl("http://img.com/image_123")
-         .build()
-   return mockedUpdateCardUserData
-}
-
 

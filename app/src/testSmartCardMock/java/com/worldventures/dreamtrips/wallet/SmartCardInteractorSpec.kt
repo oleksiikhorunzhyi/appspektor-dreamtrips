@@ -360,7 +360,7 @@ class SmartCardInteractorSpec : BaseSpec({
                            useDefaultAddress: Boolean = false,
                            issuerInfo: RecordIssuerInfo = TestRecordIssuerInfo(),
                            manualAddressInfo: AddressInfo = TestAddressInfo(),
-                           nickName: String = "Card1",
+                           nickName: String = "Test Card",
                            cvv: String = "000"): TestSubscriber<ActionState<AddBankCardCommand>> {
          // by default, mock payment card number is 123456789. It mean then cvv should be contain only 3 digit.
          val testSubscriber = TestSubscriber<ActionState<AddBankCardCommand>>()

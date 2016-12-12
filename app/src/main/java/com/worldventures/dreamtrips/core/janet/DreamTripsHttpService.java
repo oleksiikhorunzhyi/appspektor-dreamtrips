@@ -128,7 +128,7 @@ public class DreamTripsHttpService extends ActionServiceWrapper {
       Device device = deviceSource.toBlocking().first();
       LoginHttpAction loginAction = new LoginHttpAction(username, userPassword, device);
       loginAction.setAppVersionHeader(appVersionNameBuilder.getSemanticVersionName());
-      loginAction.setAppLanguageHeader(localeHelper.getDefaultLocaleFormatted());
+      loginAction.setAppLanguageHeader(LocaleHelper.getDefaultLocaleFormatted());
       loginAction.setApiVersionForAccept(BuildConfig.API_VERSION);
       loginAction.setAppPlatformHeader(String.format("android-%d", Build.VERSION.SDK_INT));
 

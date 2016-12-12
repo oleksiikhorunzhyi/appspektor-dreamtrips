@@ -9,6 +9,7 @@ import com.worldventures.dreamtrips.modules.background_uploading.model.CompoundO
 import com.worldventures.dreamtrips.modules.background_uploading.model.CompoundOperationState;
 import com.worldventures.dreamtrips.modules.background_uploading.model.PostCompoundOperationModel;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -23,12 +24,13 @@ public class ScheduleCompoundOperationCommand extends Command<Void> implements I
 
    private PostCompoundOperationModel compoundOperationModel;
 
-   private List<CompoundOperationModel> existingUploads;
+   private List<CompoundOperationModel> existingUploads = new ArrayList<>();
 
    @Inject BackgroundUploadingInteractor backgroundUploadingInteractor;
 
    public ScheduleCompoundOperationCommand(PostCompoundOperationModel compoundOperationModel) {
       this.compoundOperationModel = compoundOperationModel;
+      existingUploads.add(compoundOperationModel);
    }
 
    @Override
@@ -44,7 +46,7 @@ public class ScheduleCompoundOperationCommand extends Command<Void> implements I
    }
 
    private boolean hasStartedUploads() {
-      return existingUploads != null && Queryable.from(existingUploads)
+      return Queryable.from(existingUploads)
             .firstOrDefault(element -> element.state() == CompoundOperationState.STARTED) != null;
    }
 
@@ -55,7 +57,9 @@ public class ScheduleCompoundOperationCommand extends Command<Void> implements I
 
    @Override
    public void onRestore(ActionHolder holder, List<CompoundOperationModel> cache) {
-      existingUploads = cache;
+      if (cache != null) {
+         existingUploads.addAll(cache);
+      }
    }
 
    @Override

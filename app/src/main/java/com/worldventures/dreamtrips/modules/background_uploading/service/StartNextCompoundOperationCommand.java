@@ -27,7 +27,7 @@ public class StartNextCompoundOperationCommand extends Command<Void> implements 
    @Override
    protected void run(CommandCallback<Void> callback) throws Throwable {
       if (hasScheduledOperations()) {
-         backgroundUploadingInteractor.postProcessingPipe().send(new PostProcessingCommand(getNext()));
+         backgroundUploadingInteractor.postProcessingPipe().send(new PostProcessingCommand(getNextOperation()));
       }
       callback.onSuccess(null);
    }
@@ -37,7 +37,7 @@ public class StartNextCompoundOperationCommand extends Command<Void> implements 
             .any(item -> item.state() == CompoundOperationState.SCHEDULED);
    }
 
-   private PostCompoundOperationModel getNext() {
+   private PostCompoundOperationModel getNextOperation() {
       return Queryable.from(existingUploads)
             .cast(PostCompoundOperationModel.class)
             .first(item -> item.state() == CompoundOperationState.SCHEDULED);

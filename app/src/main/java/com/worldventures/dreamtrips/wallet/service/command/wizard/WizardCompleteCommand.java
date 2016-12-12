@@ -4,7 +4,7 @@ import android.net.Uri;
 
 import com.worldventures.dreamtrips.api.smart_card.user_info.model.ImmutableUpdateCardUserData;
 import com.worldventures.dreamtrips.api.smart_card.user_info.model.UpdateCardUserData;
-import com.worldventures.dreamtrips.core.api.uploadery.SimpleUploaderyCommand;
+import com.worldventures.dreamtrips.core.api.uploadery.SmartCardSimpleUploaderyCommand;
 import com.worldventures.dreamtrips.core.janet.dagger.InjectableAction;
 import com.worldventures.dreamtrips.wallet.service.command.http.AssociateCardUserCommand;
 import com.worldventures.dreamtrips.wallet.service.storage.WizardMemoryStorage;
@@ -35,10 +35,11 @@ public class WizardCompleteCommand extends Command<Void> implements InjectableAc
    }
 
    private Observable<? extends AssociateCardUserCommand> uploadUserDataAndAssociateSmartCard() {
-      return walletJanet.createPipe(SimpleUploaderyCommand.class)
-            .createObservableResult(new SimpleUploaderyCommand(Uri.fromFile(wizardMemoryStorage.getUserPhoto())
+      return walletJanet.createPipe(SmartCardSimpleUploaderyCommand.class)
+            .createObservableResult(new SmartCardSimpleUploaderyCommand(wizardMemoryStorage.getBarcode(), Uri.fromFile(wizardMemoryStorage
+                  .getUserPhoto())
                   .toString()))
-            .map(c -> c.getResult().getPhotoUploadResponse().getLocation())
+            .map(c -> c.getResult().response().uploaderyPhoto().location())
             .flatMap(avatarUrl -> walletJanet.createPipe(AssociateCardUserCommand.class)
                   .createObservableResult(new AssociateCardUserCommand(wizardMemoryStorage.getBarcode(), createUserData(avatarUrl)))
             );

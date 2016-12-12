@@ -26,7 +26,7 @@ public class SetPaymentCardAction extends Command<BankCard> implements Injectabl
    @Override
    protected void run(CommandCallback<BankCard> callback) throws Throwable {
       janet.createPipe(SetActiveRecordAction.class)
-            .createObservableResult(new SetActiveRecordAction(valueOf(bankCard.id())))
+            .createObservableResult(new SetActiveRecordAction(valueOf(bankCard.id()), true))
             .map(action -> bankCard)
             .subscribe(callback::onSuccess, callback::onFail);
    }

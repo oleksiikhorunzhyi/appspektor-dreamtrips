@@ -42,6 +42,7 @@ public class UploadingPhotoPostCell extends FrameLayout {
    @InjectView(R.id.uploading_cell_upload_time_left_text_view) TextView timeLeftTextView;
    @InjectView(R.id.uploading_cell_control_main_action) ImageView mainControlImageView;
    @InjectView(R.id.uploading_cell_progress_bar) ProgressBar progressBar;
+   private PhotoAttachmentPreviewView photoPreviewView;
 
    private UploadingPhotoPostsSectionCell.Delegate cellDelegate;
    private UploadingTimeLeftFormatter timeLeftFormatter;
@@ -86,9 +87,12 @@ public class UploadingPhotoPostCell extends FrameLayout {
     * Reuse photo preview view is suitable, otherwise attach new one
     */
    private void refreshPhotoPreviewView(List<PhotoAttachment> attachments) {
-      PhotoAttachmentPreviewView photoPreviewView = PhotoPreviewViewFactory.provideView(getContext(), attachments);
-      previewContainer.removeAllViews();
-      photoPreviewView.attachView(previewContainer);
+      PhotoAttachmentPreviewView newPhotoPreviewView = PhotoPreviewViewFactory.provideView(getContext(), attachments);
+      if (photoPreviewView == null || !photoPreviewView.getClass().equals(newPhotoPreviewView.getClass())) {
+         previewContainer.removeAllViews();
+         newPhotoPreviewView.attachView(previewContainer);
+         photoPreviewView = newPhotoPreviewView;
+      }
       photoPreviewView.showPreview(attachments);
    }
 

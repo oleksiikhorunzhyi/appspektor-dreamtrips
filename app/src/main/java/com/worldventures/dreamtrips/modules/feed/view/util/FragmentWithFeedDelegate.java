@@ -136,7 +136,6 @@ public class FragmentWithFeedDelegate {
       adapter.registerCell(BucketFeedItem.class, FeedItemCell.class);
       adapter.registerCell(PostFeedItem.class, FeedItemCell.class);
       adapter.registerCell(UndefinedFeedItem.class, UndefinedFeedItemDetailsCell.class);
-      adapter.registerCell(CompoundOperationModel.class, UploadingPhotoPostsSectionCell.class);
       adapter.registerCell(UploadingPostsList.class, UploadingPhotoPostsSectionCell.class);
       adapter.registerCell(LoadMoreModel.class, LoaderCell.class);
    }

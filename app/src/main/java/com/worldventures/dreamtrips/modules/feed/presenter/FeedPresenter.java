@@ -147,7 +147,7 @@ public class FeedPresenter extends Presenter<FeedPresenter.View> implements Uplo
       textualPostTranslationDelegate.onTakeView(view, feedItems);
 
       if (feedItems.size() != 0) {
-         refreshFeedItems();
+         refreshFeedItemsInView();
       }
    }
 
@@ -245,7 +245,7 @@ public class FeedPresenter extends Presenter<FeedPresenter.View> implements Uplo
       handleError(action, throwable);
       view.updateLoadingStatus(false, false);
       view.finishLoading();
-      refreshFeedItems();
+      refreshFeedItemsInView();
    }
 
    public void refreshFeed() {
@@ -271,7 +271,7 @@ public class FeedPresenter extends Presenter<FeedPresenter.View> implements Uplo
       view.updateLoadingStatus(false, noMoreFeeds);
       //
       feedItems.addAll(olderItems);
-      refreshFeedItems();
+      refreshFeedItemsInView();
    }
 
    private void loadMoreItemsError(CommandWithError action, Throwable throwable) {
@@ -340,7 +340,7 @@ public class FeedPresenter extends Presenter<FeedPresenter.View> implements Uplo
       feedItems.clear();
       feedItems.addAll(filteredItems);
 
-      refreshFeedItems();
+      refreshFeedItemsInView();
    }
 
    private void subscribeToEntityDeletedEvents() {
@@ -356,13 +356,13 @@ public class FeedPresenter extends Presenter<FeedPresenter.View> implements Uplo
             .subscribe(new ActionStateSubscriber<CompoundOperationsCommand>()
                   .onSuccess(compoundOperationsCommand -> {
                         postUploads = Queryable.from(compoundOperationsCommand.getResult()).cast(PostCompoundOperationModel.class).toList();
-                        refreshFeedItems();
+                        refreshFeedItemsInView();
                   }));
    }
 
    public void onEvent(FeedItemAddedEvent event) {
       feedItems.add(0, event.getFeedItem());
-      refreshFeedItems();
+      refreshFeedItemsInView();
    }
 
    public void onEvent(FeedEntityChangedEvent event) {
@@ -376,7 +376,7 @@ public class FeedPresenter extends Presenter<FeedPresenter.View> implements Uplo
          }
       });
 
-      refreshFeedItems();
+      refreshFeedItemsInView();
    }
 
    public void onEvent(FeedEntityCommentedEvent event) {
@@ -386,7 +386,7 @@ public class FeedPresenter extends Presenter<FeedPresenter.View> implements Uplo
          }
       });
 
-      refreshFeedItems();
+      refreshFeedItemsInView();
    }
 
    public void onEvent(LikesPressedEvent event) {
@@ -449,7 +449,7 @@ public class FeedPresenter extends Presenter<FeedPresenter.View> implements Uplo
          }
       });
 
-      refreshFeedItems();
+      refreshFeedItemsInView();
    }
 
    ///////////////////////////////////////////////////////////////////////////
@@ -465,8 +465,8 @@ public class FeedPresenter extends Presenter<FeedPresenter.View> implements Uplo
                   suggestedPhotos = new ArrayList<>(Queryable.from(suggestedPhotoCommand.getResult())
                         .take(SUGGESTION_ITEM_CHUNK).toList());
                }
-               refreshFeedItems();
-            }).onFail((suggestedPhotoCommand, throwable) -> refreshFeedItems()));
+               refreshFeedItemsInView();
+            }).onFail((suggestedPhotoCommand, throwable) -> refreshFeedItemsInView()));
    }
 
    public boolean hasNewPhotos(List<PhotoGalleryModel> photos) {
@@ -475,7 +475,7 @@ public class FeedPresenter extends Presenter<FeedPresenter.View> implements Uplo
 
    public void removeSuggestedPhotos() {
       suggestedPhotoHelper.reset();
-      refreshFeedItems();
+      refreshFeedItemsInView();
    }
 
    public void takeSuggestionView(SuggestedPhotoCellPresenterHelper.View view, SuggestedPhotoCellPresenterHelper.OutViewBinder binder, Bundle bundle, Observable<Void> notificationObservable) {
@@ -538,7 +538,7 @@ public class FeedPresenter extends Presenter<FeedPresenter.View> implements Uplo
       }, throwable -> Timber.w("Can't get friends notifications count"));
    }
 
-   private void refreshFeedItems() {
+   private void refreshFeedItemsInView() {
       view.refreshFeedItems(feedItems, new UploadingPostsList(postUploads), suggestedPhotos);
    }
 

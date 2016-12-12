@@ -54,14 +54,14 @@ public class UploadingPhotoPostsSectionCell extends AbstractDelegateCell<Uploadi
 
    private void addOrRemoveCells(int newSize) {
       int currentCellsSize = cellsList.size();
-      for (int i = Math.min(currentCellsSize, newSize); i < Math.max(cellsList.size(), newSize); i++) {
-         if (i > cellsList.size() - 1) {
+      for (int i = Math.min(currentCellsSize, newSize); i < Math.max(currentCellsSize, newSize); i++) {
+         if (i > currentCellsSize - 1) {
             UploadingPhotoPostCell itemCell = new UploadingPhotoPostCell(context);
             cellsList.add(itemCell);
             itemCellsContainer.addView(itemCell);
          } else {
-            cellsList.remove(i);
-            itemCellsContainer.removeView(cellsList.get(i));
+            UploadingPhotoPostCell sectionCell = cellsList.remove(i);
+            itemCellsContainer.removeView(sectionCell);
          }
       }
    }

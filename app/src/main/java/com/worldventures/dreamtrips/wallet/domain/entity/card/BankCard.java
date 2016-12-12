@@ -5,10 +5,12 @@ import com.worldventures.dreamtrips.wallet.domain.entity.ImmutableAddressInfo;
 import com.worldventures.dreamtrips.wallet.domain.entity.ImmutableRecordIssuerInfo;
 import com.worldventures.dreamtrips.wallet.domain.entity.RecordIssuerInfo;
 
+import org.immutables.gson.Gson;
 import org.immutables.value.Value;
 import org.jetbrains.annotations.Nullable;
 
 @Value.Immutable
+@Gson.TypeAdapters
 public abstract class BankCard extends Card {
 
    @Value.Default

@@ -15,15 +15,12 @@ import com.techery.spares.session.SessionHolder;
 import com.techery.spares.storage.complex_objects.Optional;
 import com.worldventures.dreamtrips.core.janet.SessionActionPipeCreator;
 import com.worldventures.dreamtrips.core.session.UserSession;
-import com.worldventures.dreamtrips.core.utils.LocaleHelper;
 import com.worldventures.dreamtrips.janet.MockDaggerActionService;
 
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.powermock.core.classloader.annotations.PrepareForTest;
-
-import java.util.Locale;
 
 import rx.Observable;
 import rx.observers.TestSubscriber;
@@ -34,7 +31,6 @@ import static org.mockito.Mockito.doReturn;
 @PrepareForTest(MessengerDatabase.class)
 public class ChatMessageInteractorTest extends BaseChatActionDelegateTest {
 
-   @Mock LocaleHelper localeHelper;
    @Mock SessionHolder<UserSession> sessionHolder;
    @Mock Optional<UserSession> userSessionOptional;
    @Mock ConversationsDAO conversationsDAO;
@@ -50,8 +46,7 @@ public class ChatMessageInteractorTest extends BaseChatActionDelegateTest {
    @Before
    public void setup() {
       super.setup();
-      messageBodyCreator = new MessageBodyCreator(localeHelper);
-      doReturn(Locale.getDefault()).when(localeHelper).getDefaultLocale();
+      messageBodyCreator = new MessageBodyCreator();
 
       UserSession userSession = new UserSession();
       userSession.setUsername(testDataUserId);

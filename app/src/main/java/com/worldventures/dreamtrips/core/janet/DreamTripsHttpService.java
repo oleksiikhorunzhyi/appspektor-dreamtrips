@@ -41,7 +41,6 @@ import timber.log.Timber;
 public class DreamTripsHttpService extends ActionServiceWrapper {
 
    @Inject SessionHolder<UserSession> appSessionHolder;
-   @Inject LocaleHelper localeHelper;
    @Inject AppVersionNameBuilder appVersionNameBuilder;
    @Inject SnappyRepository db;
    @Inject Observable<Device> deviceSource;
@@ -69,7 +68,7 @@ public class DreamTripsHttpService extends ActionServiceWrapper {
 
    private void prepareHttpAction(BaseHttpAction action) {
       action.setAppVersionHeader(appVersionNameBuilder.getSemanticVersionName());
-      action.setLanguageHeader(localeHelper.getDefaultLocaleFormatted());
+      action.setLanguageHeader(LocaleHelper.getDefaultLocaleFormatted());
       if (action instanceof AuthorizedHttpAction && appSessionHolder.get().isPresent()) {
          UserSession userSession = appSessionHolder.get().get();
          ((AuthorizedHttpAction) action).setAuthorizationHeader(NewDreamTripsHttpService.getAuthorizationHeader(userSession.getApiToken()));

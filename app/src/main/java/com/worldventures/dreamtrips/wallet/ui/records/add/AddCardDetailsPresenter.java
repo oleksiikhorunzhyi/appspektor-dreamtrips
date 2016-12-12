@@ -106,7 +106,7 @@ public class AddCardDetailsPresenter extends WalletPresenter<AddCardDetailsPrese
 
                return ImmutableAddressInfoWithLocale.builder()
                      .addressInfo(addressInfo)
-                     .locale(localeHelper.getDefaultLocale())
+                     .locale(LocaleHelper.getDefaultLocale())
                      .build();
             })
             .compose(bindViewIoToMainComposer())

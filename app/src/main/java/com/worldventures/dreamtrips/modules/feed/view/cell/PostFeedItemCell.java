@@ -58,7 +58,6 @@ public class PostFeedItemCell extends FeedItemDetailsCell<PostFeedItem, PostFeed
 
    @Inject FragmentManager fragmentManager;
    @Inject SessionHolder<UserSession> appSessionHolder;
-   @Inject LocaleHelper localeHelper;
 
    private int width;
 
@@ -88,7 +87,7 @@ public class PostFeedItemCell extends FeedItemDetailsCell<PostFeedItem, PostFeed
 
       boolean ownPost = textualPost.getOwner().getId() == appSessionHolder.get().get().getUser().getId();
       boolean emptyPostText = TextUtils.isEmpty(textualPost.getDescription());
-      boolean ownLanguage = localeHelper.isOwnLanguage(textualPost.getLanguageFrom());
+      boolean ownLanguage = LocaleHelper.isOwnLanguage(appSessionHolder, textualPost.getLanguageFrom());
       boolean emptyPostLanguage = TextUtils.isEmpty(textualPost.getLanguageFrom());
       boolean alreadyTranslated = postFeedItem.isTranslated();
 

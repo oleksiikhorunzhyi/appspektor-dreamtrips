@@ -72,7 +72,7 @@ public class GetMemberVideosCommand extends CommandWithError<List<VideoCategory>
 
    public static GetMemberVideosCommand forHelpVideos(com.worldventures.dreamtrips.modules.video.model.VideoLanguage videoLanguage) {
       if (videoLanguage == null) return new GetMemberVideosCommand(VideoType.DTAPPHELP);
-      return new GetMemberVideosCommand(VideoType.DTAPP, ImmutableVideoLanguage.builder()
+      return new GetMemberVideosCommand(VideoType.DTAPPHELP, ImmutableVideoLanguage.builder()
             .title(videoLanguage.getTitle())
             .localeName(videoLanguage.getLocaleName())
             .build());

@@ -56,7 +56,6 @@ public class MerchantOffersInflater extends MerchantDataInflater {
    @InjectView(R.id.perk_divider) View perkDivider;
 
    @Inject protected SessionHolder<UserSession> sessionHolder;
-   @Inject LocaleHelper localeHelper;
 
    private List<OfferClickListener> offerClickListeners = new ArrayList<>();
    private Map<Integer, WeakReference<ExpandableOfferView>> cashedViewMap = new HashMap<>();
@@ -180,7 +179,7 @@ public class MerchantOffersInflater extends MerchantDataInflater {
       AppCompatTextView expirationBarCaption = ButterKnife.<AppCompatTextView>findById(perkView, R.id.expirationBarCaption);
       if (DtlMerchantHelper.isOfferExpiringSoon(offerData)) {
          ViewUtils.setTextOrHideView(expirationBarCaption, DtlMerchantHelper.
-               getOfferExpiringCaption(perkView.getContext(), offerData, localeHelper.getDefaultLocale()));
+               getOfferExpiringCaption(perkView.getContext(), offerData, LocaleHelper.getDefaultLocale()));
       }
    }
 

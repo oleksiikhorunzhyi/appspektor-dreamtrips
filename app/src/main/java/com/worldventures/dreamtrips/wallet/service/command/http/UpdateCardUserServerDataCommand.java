@@ -21,7 +21,7 @@ import static com.worldventures.dreamtrips.core.janet.JanetModule.JANET_API_LIB;
 public class UpdateCardUserServerDataCommand extends Command<Void> implements InjectableAction {
 
    @Inject @Named(JANET_API_LIB) Janet janetApi;
-   @Inject Janet jannetGeneric;
+   @Inject Janet janetGeneric;
 
    private final String firstName;
    private final String middleName;
@@ -39,7 +39,7 @@ public class UpdateCardUserServerDataCommand extends Command<Void> implements In
 
    @Override
    protected void run(CommandCallback<Void> callback) throws Throwable {
-      jannetGeneric.createPipe(SmartCardSimpleUploaderyCommand.class)
+      janetGeneric.createPipe(SmartCardSimpleUploaderyCommand.class)
             .createObservableResult(new SmartCardSimpleUploaderyCommand(smartCardId, Uri.fromFile(avatar.original()).toString()))
             .map(c -> c.getResult().response().uploaderyPhoto().location())
             .flatMap(avatarUrl -> {

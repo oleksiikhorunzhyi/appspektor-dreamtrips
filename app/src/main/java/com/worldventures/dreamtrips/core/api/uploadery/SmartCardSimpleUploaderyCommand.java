@@ -43,24 +43,18 @@ public class SmartCardSimpleUploaderyCommand extends BaseUploadImageCommand<Uplo
    protected void run(CommandCallback<UploadSmartCardImageHttpAction> callback) {
       getFileObservable(context, fileUri)
             .flatMap(this::upload)
-            .compose(nextAction())
             .subscribe(callback::onSuccess, throwable -> callback.onFail(new HttpUploaderyException(throwable)));
    }
 
-   protected Observable<ActionState<UploadSmartCardImageHttpAction>> upload(File file) {
+   protected Observable<UploadSmartCardImageHttpAction> upload(File file) {
       try {
          String userId = userSessionHolder.get().get().getUsername();
          UploadSmartCardImageHttpAction action = new UploadSmartCardImageHttpAction(BuildConfig.UPLOADERY_API_URL, userId, smartcardId, file);
-         return janet.createPipe(UploadSmartCardImageHttpAction.class)
-               .createObservable(action);
+         return janet.createPipe(UploadSmartCardImageHttpAction.class, Schedulers.io()) //// TODO: 12/12/16 this code called from UI thread
+               .createObservableResult(action);
       } catch (IOException e) {
          return Observable.error(e);
       }
-   }
-
-
-   private Observable.Transformer<ActionState<UploadSmartCardImageHttpAction>, UploadSmartCardImageHttpAction> nextAction() {
-      return uploadImageActionObservable -> uploadImageActionObservable.compose(new ActionStateToActionTransformer<>());
    }
 
 }

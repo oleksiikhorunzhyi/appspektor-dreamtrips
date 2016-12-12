@@ -39,7 +39,6 @@ import timber.log.Timber;
 public class NewDreamTripsHttpService extends ActionServiceWrapper {
 
    @Inject SessionHolder<UserSession> appSessionHolder;
-   @Inject LocaleHelper localeHelper;
    @Inject AppVersionNameBuilder appVersionNameBuilder;
    @Inject SnappyRepository db;
    @Inject Observable<Device> deviceSource;
@@ -69,7 +68,7 @@ public class NewDreamTripsHttpService extends ActionServiceWrapper {
 
    private void prepareNewHttpAction(BaseHttpAction action) {
       action.setAppVersionHeader(appVersionNameBuilder.getSemanticVersionName());
-      action.setAppLanguageHeader(localeHelper.getDefaultLocaleFormatted());
+      action.setAppLanguageHeader(LocaleHelper.getDefaultLocaleFormatted());
       action.setApiVersionForAccept(BuildConfig.API_VERSION);
       action.setAppPlatformHeader(String.format("android-%d", Build.VERSION.SDK_INT));
       //
@@ -134,7 +133,7 @@ public class NewDreamTripsHttpService extends ActionServiceWrapper {
       Device device = deviceSource.toBlocking().first();
       LoginAction loginAction = new LoginAction(username, userPassword, device);
       loginAction.setAppVersionHeader(appVersionNameBuilder.getSemanticVersionName());
-      loginAction.setLanguageHeader(localeHelper.getDefaultLocaleFormatted());
+      loginAction.setLanguageHeader(LocaleHelper.getDefaultLocaleFormatted());
       ActionState<LoginAction> loginState = loginActionPipe.createObservable(loginAction).toBlocking().last();
       if (loginState.status == ActionState.Status.SUCCESS) {
          return loginState.action.getLoginResponse();

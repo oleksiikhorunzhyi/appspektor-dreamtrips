@@ -55,7 +55,6 @@ public class CommentCell extends AbstractDelegateCell<Comment, CommentCell.Comme
    @InjectView(R.id.translation_dot_separator) View translationDotSeparator;
 
    @Inject SessionHolder<UserSession> appSessionHolder;
-   @Inject LocaleHelper localeHelper;
    @Inject @Named(RouteCreatorModule.PROFILE) RouteCreator<Integer> routeCreator;
    @Inject @ForActivity Provider<Injector> injectorProvider;
 
@@ -74,7 +73,7 @@ public class CommentCell extends AbstractDelegateCell<Comment, CommentCell.Comme
 
       boolean ownComment = owner.getId() == appSessionHolder.get().get().getUser().getId();
       boolean emptyCommentLanguage = TextUtils.isEmpty(getModelObject().getLanguageFrom());
-      boolean ownLanguage = localeHelper.isOwnLanguage(getModelObject().getLanguageFrom());
+      boolean ownLanguage = LocaleHelper.isOwnLanguage(appSessionHolder, getModelObject().getLanguageFrom());
       boolean alreadyTranslated = getModelObject().isTranslated();
 
       if (ownComment) {

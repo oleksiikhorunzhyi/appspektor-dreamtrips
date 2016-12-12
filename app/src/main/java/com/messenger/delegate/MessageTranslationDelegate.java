@@ -24,21 +24,19 @@ import timber.log.Timber;
 public class MessageTranslationDelegate {
 
    private TranslationsDAO translationsDAO;
-   private LocaleHelper localeHelper;
    private SessionHolder<UserSession> sessionHolder;
    private TranslationInteractor translationInteractor;
 
    @Inject
-   public MessageTranslationDelegate(TranslationInteractor translationInteractor, TranslationsDAO translationsDAO, LocaleHelper localeHelper, SessionHolder<UserSession> sessionHolder) {
+   public MessageTranslationDelegate(TranslationInteractor translationInteractor, TranslationsDAO translationsDAO, SessionHolder<UserSession> sessionHolder) {
       this.translationInteractor = translationInteractor;
       this.translationsDAO = translationsDAO;
-      this.localeHelper = localeHelper;
       this.sessionHolder = sessionHolder;
    }
 
    public void translateMessage(DataMessage message) {
       translationsDAO.getTranslation(message.getId()).first().subscribe(dataTranslation -> {
-         String translateToLocale = localeHelper.getDefaultLocaleFormatted();
+         String translateToLocale = LocaleHelper.getDefaultLocaleFormatted();
          if ((dataTranslation == null || dataTranslation.getTranslateStatus() == TranslationStatus.ERROR) && SessionHolderHelper
                .hasEntity(sessionHolder)) {
             translateMessageRequest(message, translateToLocale);

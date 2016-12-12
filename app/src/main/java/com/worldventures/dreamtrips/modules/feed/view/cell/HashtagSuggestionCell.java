@@ -7,10 +7,9 @@ import com.techery.spares.annotations.Layout;
 import com.techery.spares.ui.view.cell.AbstractDelegateCell;
 import com.techery.spares.ui.view.cell.CellDelegate;
 import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.core.utils.LocaleHelper;
 import com.worldventures.dreamtrips.core.utils.QuantityHelper;
 import com.worldventures.dreamtrips.modules.feed.model.feed.hashtag.HashtagSuggestion;
-
-import java.util.Locale;
 
 import butterknife.InjectView;
 
@@ -28,7 +27,7 @@ public class HashtagSuggestionCell extends AbstractDelegateCell<HashtagSuggestio
       suggestionText.setText(String.format("#%s", getModelObject().getName()));
       if (getModelObject().getUsageCount() > 0) {
          int usageCount = getModelObject().getUsageCount();
-         suggestionCount.setText(String.format(Locale.getDefault(), getSuggestionsCountString(usageCount), usageCount));
+         suggestionCount.setText(String.format(LocaleHelper.getDefaultLocale(), getSuggestionsCountString(usageCount), usageCount));
          suggestionCount.setVisibility(View.VISIBLE);
       } else {
          suggestionCount.setVisibility(View.GONE);

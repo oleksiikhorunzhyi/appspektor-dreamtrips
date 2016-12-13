@@ -12,7 +12,6 @@ import com.worldventures.dreamtrips.core.janet.SessionActionPipeCreator;
 import com.worldventures.dreamtrips.core.session.CirclesInteractor;
 import com.worldventures.dreamtrips.core.session.UserSession;
 import com.worldventures.dreamtrips.core.utils.DTCookieManager;
-import com.worldventures.dreamtrips.modules.background_uploading.service.BackgroundUploadingInteractor;
 import com.worldventures.dreamtrips.modules.bucketlist.service.BucketInteractor;
 import com.worldventures.dreamtrips.modules.common.delegate.CachedEntityDelegate;
 import com.worldventures.dreamtrips.modules.common.delegate.CachedEntityInteractor;
@@ -240,11 +239,5 @@ public class ManagerModule {
    @Singleton
    OfflineErrorInteractor provideOfflineErrorInteractor(SessionActionPipeCreator sessionActionPipeCreator) {
       return new OfflineErrorInteractor(sessionActionPipeCreator);
-   }
-
-   @Provides
-   @Singleton
-   BackgroundUploadingInteractor provideBackgroundUploadingInteractor(SessionActionPipeCreator sessionActionPipeCreator) {
-      return new BackgroundUploadingInteractor(sessionActionPipeCreator);
    }
 }

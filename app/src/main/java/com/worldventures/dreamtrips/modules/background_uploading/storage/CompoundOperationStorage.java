@@ -11,11 +11,16 @@ import com.worldventures.dreamtrips.modules.background_uploading.service.DeleteC
 import com.worldventures.dreamtrips.modules.background_uploading.service.ScheduleCompoundOperationCommand;
 import com.worldventures.dreamtrips.modules.background_uploading.service.StartNextCompoundOperationCommand;
 import com.worldventures.dreamtrips.modules.background_uploading.service.UpdateCompoundOperationsCommand;
+import com.worldventures.dreamtrips.modules.feed.view.cell.uploading.util.PostCompoundOperationModelComparator;
 
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 public class CompoundOperationStorage implements MultipleActionStorage<List<CompoundOperationModel>> {
+
+   private static final Comparator<CompoundOperationModel> CELLS_COMPARATOR = new PostCompoundOperationModelComparator();
 
    private CompoundOperationRepository compoundOperationRepository;
 
@@ -41,6 +46,12 @@ public class CompoundOperationStorage implements MultipleActionStorage<List<Comp
 
    @Override
    public List<CompoundOperationModel> get(@Nullable CacheBundle action) {
+      List<CompoundOperationModel> models = getInternal(action);
+      if (models != null) Collections.sort(models, CELLS_COMPARATOR);
+      return models;
+   }
+
+   private List<CompoundOperationModel> getInternal(@Nullable CacheBundle action) {
       List<CompoundOperationModel> compoundOperationModels = memoryStorage.get(action);
       return compoundOperationModels != null ? compoundOperationModels : compoundOperationRepository.readCompoundOperations();
    }

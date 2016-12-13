@@ -1,13 +1,11 @@
 package com.worldventures.dreamtrips.modules.background_uploading.service;
 
 
-import com.techery.spares.session.SessionHolder;
+import com.innahema.collections.query.queriables.Queryable;
 import com.worldventures.dreamtrips.core.janet.dagger.InjectableAction;
-import com.worldventures.dreamtrips.core.session.UserSession;
-import com.worldventures.dreamtrips.modules.background_uploading.model.CompoundOperationState;
-import com.worldventures.dreamtrips.modules.background_uploading.model.ImmutablePostCompoundOperationModel;
-import com.worldventures.dreamtrips.modules.background_uploading.model.ImmutablePostWithAttachmentBody;
+import com.worldventures.dreamtrips.modules.background_uploading.model.PhotoAttachment;
 import com.worldventures.dreamtrips.modules.background_uploading.model.PostCompoundOperationModel;
+import com.worldventures.dreamtrips.modules.background_uploading.model.PostCompoundOperationMutator;
 import com.worldventures.dreamtrips.modules.feed.service.PostsInteractor;
 import com.worldventures.dreamtrips.modules.feed.service.command.CreatePhotosCommand;
 import com.worldventures.dreamtrips.modules.feed.service.command.CreatePostCommand;
@@ -18,21 +16,20 @@ import io.techery.janet.Command;
 import io.techery.janet.Janet;
 import io.techery.janet.command.annotations.CommandAction;
 import rx.Observable;
+import rx.subjects.PublishSubject;
 import timber.log.Timber;
 
 @CommandAction
 public class PostProcessingCommand extends Command<PostCompoundOperationModel> implements InjectableAction {
 
-   public static final int PROGRESS_PHOTOS_CREATING = 90;
-   public static final int PROGRESS_PHOTOS_CREATED = 95;
-   public static final int PROGRESS_POST_CREATED = 100;
-
    @Inject Janet janet;
    @Inject PostsInteractor postsInteractor;
    @Inject BackgroundUploadingInteractor backgroundUploadingInteractor;
-   @Inject SessionHolder<UserSession> sessionSessionHolder;
+   @Inject PostCompoundOperationMutator compoundOperationObjectMutator;
 
    private PostCompoundOperationModel postCompoundOperationModel;
+
+   private PublishSubject cancelationSubject = PublishSubject.create();
 
    public PostProcessingCommand(PostCompoundOperationModel postCompoundOperationModel) {
       this.postCompoundOperationModel = postCompoundOperationModel;
@@ -41,18 +38,25 @@ public class PostProcessingCommand extends Command<PostCompoundOperationModel> i
    @Override
    protected void run(CommandCallback<PostCompoundOperationModel> callback) throws Throwable {
       Observable.just(postCompoundOperationModel)
-            .map(postOperationModel -> ImmutablePostCompoundOperationModel.copyOf(postOperationModel)
-                  .withState(CompoundOperationState.STARTED))
+            .map(postOperationModel -> compoundOperationObjectMutator.start(postOperationModel))
             .doOnNext(this::notifyCompoundCommandChanged)
             .flatMap(this::createPhotosIfNeeded)
             .doOnNext(this::notifyCompoundCommandChanged)
             .flatMap(this::createPost)
             .doOnNext(this::notifyCompoundCommandChanged)
-            .doOnNext(createdPost -> Timber.d("[New Post Creation] Post created"))
-            .doOnError(e -> notifyCompoundCommandChanged(ImmutablePostCompoundOperationModel
-                  .copyOf(postCompoundOperationModel)
-                  .withState(CompoundOperationState.FAILED)))
+            .doOnError(e -> notifyCompoundCommandChanged(compoundOperationObjectMutator.failed(postCompoundOperationModel)))
+            .compose(observeUntilCancel())
             .subscribe(callback::onSuccess, callback::onFail);
+   }
+
+   private Observable.Transformer<PostCompoundOperationModel, PostCompoundOperationModel> observeUntilCancel() {
+      return input -> input.takeUntil(cancelationSubject);
+   }
+
+   @Override
+   protected void cancel() {
+      super.cancel();
+      cancelationSubject.onNext(null);
    }
 
    private Observable<PostCompoundOperationModel> createPhotosIfNeeded(PostCompoundOperationModel postOperationModel) {
@@ -62,7 +66,13 @@ public class PostProcessingCommand extends Command<PostCompoundOperationModel> i
 
    private Observable<PostCompoundOperationModel> createPhotos(PostCompoundOperationModel postOperationModel) {
       final PostCompoundOperationModel[] tempOperationModels = {postOperationModel};
+      if (Queryable.from(postOperationModel.body().attachments())
+            .all(attachment -> attachment.state() == PhotoAttachment.State.UPLOADED)) {
+         return Observable.just(postOperationModel)
+               .flatMap(this::createPhotosEntities);
+      }
       return Observable.from(tempOperationModels[0].body().attachments())
+            .filter(attachment -> attachment.state() != PhotoAttachment.State.UPLOADED)
             .concatMap(attachment -> janet.createPipe(PhotoAttachmentUploadingCommand.class)
                   .createObservable(new PhotoAttachmentUploadingCommand(tempOperationModels[0], attachment))
                   .flatMap(state -> {
@@ -88,28 +98,15 @@ public class PostProcessingCommand extends Command<PostCompoundOperationModel> i
             .createObservableResult(new CreatePhotosCommand(postOperationModel.body()))
             .doOnNext(textualPost -> Timber.d("[New Post Creation] Photos created"))
             .map(Command::getResult)
-            .map(photos -> ImmutablePostCompoundOperationModel
-                  .copyOf(postOperationModel)
-                  .withProgress(PROGRESS_PHOTOS_CREATED)
-                  .withBody(ImmutablePostWithAttachmentBody
-                        .copyOf(postOperationModel.body())
-                        .withUploadedPhotos(photos)));
+            .map(photos -> compoundOperationObjectMutator.photosUploaded(postOperationModel, photos));
    }
 
    private Observable<PostCompoundOperationModel> createPost(PostCompoundOperationModel postOperationModel) {
       return postsInteractor.createPostPipe()
             .createObservableResult(new CreatePostCommand(postOperationModel.body()))
             .map(Command::getResult)
-            .map(textualPost -> {
-               textualPost.setOwner(sessionSessionHolder.get().get().getUser());
-               return ImmutablePostCompoundOperationModel
-                     .copyOf(postOperationModel)
-                     .withProgress(PROGRESS_POST_CREATED)
-                     .withState(CompoundOperationState.FINISHED)
-                     .withBody(ImmutablePostWithAttachmentBody
-                           .copyOf(postOperationModel.body())
-                           .withCreatedPost(textualPost));
-            });
+            .doOnNext(createdPost -> Timber.d("[New Post Creation] Post created"))
+            .map(textualPost -> compoundOperationObjectMutator.finished(postOperationModel, textualPost));
    }
 
    private void notifyCompoundCommandChanged(PostCompoundOperationModel postOperationModel) {

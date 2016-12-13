@@ -99,6 +99,8 @@ public class UploadingPhotoPostCell extends FrameLayout {
    private void updateViewsAccordingToState(CompoundOperationModel compoundOperationModel) {
       switch (compoundOperationModel.state()) {
          case SCHEDULED:
+            updateAccordingToScheduledState();
+            break;
          case STARTED:
             updateAccordingToStartedState(compoundOperationModel);
             break;
@@ -106,7 +108,6 @@ public class UploadingPhotoPostCell extends FrameLayout {
             updateAccordingToFailedState();
             break;
          case PAUSED:
-         case CANCELED:
             updateAccordingToPausedState();
             break;
          case FINISHED:
@@ -122,6 +123,7 @@ public class UploadingPhotoPostCell extends FrameLayout {
       initViewsForGeneralUploadState();
 
       mainControlImageView.setImageResource(R.drawable.uploading_control_pause);
+      mainControlImageView.setVisibility(VISIBLE);
 
       if (attachments.size() > 1) {
          statusTextView.setText(getContext().getString(R.string.uploading_post_status_progress_plural, attachments.size()));
@@ -141,8 +143,22 @@ public class UploadingPhotoPostCell extends FrameLayout {
       initViewsForGeneralUploadState();
 
       mainControlImageView.setImageResource(R.drawable.uploading_control_resume);
+      mainControlImageView.setVisibility(VISIBLE);
 
       statusTextView.setText(getContext().getString(R.string.uploading_post_status_paused));
+      statusTextView.setTextColor(getContext().getColor(R.color.uploading_cell_status_label_paused));
+      timeLeftTextView.setVisibility(View.GONE);
+
+      setProgressBarProgressColor(R.color.uploading_cell_progress_bar_paused_current,
+            R.color.uploading_cell_progress_bar_paused_total);
+   }
+
+   private void updateAccordingToScheduledState() {
+      initViewsForGeneralUploadState();
+
+      mainControlImageView.setVisibility(GONE);
+
+      statusTextView.setText(getContext().getString(R.string.uploading_post_status_waiting));
       statusTextView.setTextColor(getContext().getColor(R.color.uploading_cell_status_label_paused));
       timeLeftTextView.setVisibility(View.GONE);
 
@@ -154,6 +170,7 @@ public class UploadingPhotoPostCell extends FrameLayout {
       initViewsForGeneralUploadState();
 
       mainControlImageView.setImageResource(R.drawable.uploading_control_retry);
+      mainControlImageView.setVisibility(VISIBLE);
 
       statusTextView.setText(getContext().getString(R.string.uploading_post_status_failed_connection));
       statusTextView.setTextColor(getContext().getColor(R.color.uploading_cell_status_label_failure));
@@ -190,6 +207,7 @@ public class UploadingPhotoPostCell extends FrameLayout {
    void onMainControlActionClicked() {
       switch (compoundOperationModel.state()) {
          case STARTED:
+            break;
          case SCHEDULED:
             cellDelegate.onUploadPauseClicked(compoundOperationModel);
             break;
@@ -200,9 +218,5 @@ public class UploadingPhotoPostCell extends FrameLayout {
             cellDelegate.onUploadRetryClicked(compoundOperationModel);
             break;
       }
-   }
-
-   public void setTimeLeftFormatter(UploadingTimeLeftFormatter timeLeftFormatter) {
-      this.timeLeftFormatter = timeLeftFormatter;
    }
 }

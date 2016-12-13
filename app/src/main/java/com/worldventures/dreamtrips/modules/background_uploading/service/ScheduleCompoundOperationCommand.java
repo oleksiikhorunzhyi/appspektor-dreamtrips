@@ -38,11 +38,13 @@ public class ScheduleCompoundOperationCommand extends Command<Void> implements I
       Timber.d("[New Post Creation] Scheduling new command, %s", existingUploads == null ? "No existing items" :
             existingUploads.toString());
       backgroundUploadingInteractor.compoundOperationsPipe()
-            .send(CompoundOperationsCommand.compoundCommandChanged(compoundOperationModel));
-      if (!hasStartedUploads()) {
-         backgroundUploadingInteractor.startNextCompoundPipe().send(new StartNextCompoundOperationCommand());
-      }
-      callback.onSuccess(null);
+            .createObservableResult(CompoundOperationsCommand.compoundCommandChanged(compoundOperationModel))
+            .subscribe(command -> {
+               if (!hasStartedUploads()) {
+                  backgroundUploadingInteractor.startNextCompoundPipe().send(new StartNextCompoundOperationCommand());
+               }
+               callback.onSuccess(null);
+            });
    }
 
    private boolean hasStartedUploads() {

@@ -25,15 +25,13 @@ public class PostCompoundOperationModelComparator implements Comparator<Compound
       switch (state) {
          case FAILED:
             return 0;
-         case CANCELED:
-            return 1;
          case PAUSED:
-            return 2;
+            return 1;
          case SCHEDULED:
-            return 3;
+            return 2;
          case STARTED:
          case FINISHED:
-            return 4;
+            return 3;
          default:
             return 0;
       }

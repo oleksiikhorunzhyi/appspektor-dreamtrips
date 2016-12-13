@@ -7,10 +7,6 @@ import com.worldventures.dreamtrips.modules.auth.api.command.LogoutCommand;
 import com.worldventures.dreamtrips.modules.auth.api.command.UnsubribeFromPushCommand;
 import com.worldventures.dreamtrips.modules.auth.api.command.UpdateUserCommand;
 import com.worldventures.dreamtrips.modules.background_uploading.service.CreatePostCompoundOperationCommand;
-import com.worldventures.dreamtrips.modules.background_uploading.service.PhotoAttachmentUploadingCommand;
-import com.worldventures.dreamtrips.modules.background_uploading.service.PostProcessingCommand;
-import com.worldventures.dreamtrips.modules.background_uploading.service.ScheduleCompoundOperationCommand;
-import com.worldventures.dreamtrips.modules.background_uploading.service.StartNextCompoundOperationCommand;
 import com.worldventures.dreamtrips.modules.bucketlist.service.action.CreateBucketItemCommand;
 import com.worldventures.dreamtrips.modules.bucketlist.service.action.UpdateBucketItemCommand;
 import com.worldventures.dreamtrips.modules.bucketlist.service.command.AddBucketItemPhotoCommand;
@@ -217,9 +213,5 @@ import dagger.Module;
       DeleteBucketItemCommand.class,
       ChangeFeedEntityLikedStatusCommand.class,
       CreatePostCompoundOperationCommand.class,
-      PostProcessingCommand.class,
-      PhotoAttachmentUploadingCommand.class,
-      ScheduleCompoundOperationCommand.class,
-      StartNextCompoundOperationCommand.class,
 }, complete = false, library = true)
 public class SocialJanetCommandModule {}

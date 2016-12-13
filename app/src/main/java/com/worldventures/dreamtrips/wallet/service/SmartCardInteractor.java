@@ -7,7 +7,6 @@ import com.worldventures.dreamtrips.wallet.service.command.AttachCardCommand;
 import com.worldventures.dreamtrips.wallet.service.command.CardListCommand;
 import com.worldventures.dreamtrips.wallet.service.command.CardStacksCommand;
 import com.worldventures.dreamtrips.wallet.service.command.ConnectSmartCardCommand;
-import com.worldventures.dreamtrips.wallet.service.command.FetchBatteryLevelCommand;
 import com.worldventures.dreamtrips.wallet.service.command.FetchDefaultCardCommand;
 import com.worldventures.dreamtrips.wallet.service.command.FetchDefaultCardIdCommand;
 import com.worldventures.dreamtrips.wallet.service.command.GetActiveSmartCardCommand;
@@ -29,9 +28,6 @@ import com.worldventures.dreamtrips.wallet.service.command.http.CreateBankCardCo
 import com.worldventures.dreamtrips.wallet.service.command.http.FetchAssociatedSmartCardCommand;
 
 import java.util.concurrent.Executors;
-import java.util.concurrent.TimeUnit;
-
-import javax.inject.Named;
 
 import io.techery.janet.ActionPipe;
 import io.techery.janet.ActionState;
@@ -45,7 +41,6 @@ import io.techery.janet.smartcard.action.records.DeleteRecordAction;
 import io.techery.janet.smartcard.action.support.ConnectAction;
 import io.techery.janet.smartcard.action.support.DisconnectAction;
 import io.techery.janet.smartcard.action.user.GetUserDataAction;
-import io.techery.janet.smartcard.action.user.UnAssignUserAction;
 import io.techery.janet.smartcard.event.CardChargedEvent;
 import io.techery.janet.smartcard.event.CardSwipedEvent;
 import io.techery.janet.smartcard.event.LockDeviceChangedEvent;
@@ -54,7 +49,6 @@ import rx.Observable;
 import rx.schedulers.Schedulers;
 import timber.log.Timber;
 
-import static com.worldventures.dreamtrips.core.janet.JanetModule.JANET_WALLET;
 import static com.worldventures.dreamtrips.wallet.domain.entity.SmartCard.ConnectionStatus.CONNECTED;
 import static com.worldventures.dreamtrips.wallet.domain.entity.SmartCard.ConnectionStatus.DFU;
 import static com.worldventures.dreamtrips.wallet.domain.entity.SmartCard.ConnectionStatus.DISCONNECTED;
@@ -82,7 +76,6 @@ public final class SmartCardInteractor {
    private final ReadActionPipe<SmartCardModifier> smartCardModifierPipe;
    private final ActionPipe<FetchDefaultCardIdCommand> fetchDefaultCardIdCommandPipe;
    private final ActionPipe<FetchDefaultCardCommand> fetchDefaultCardCommandPipe;
-   private final WriteActionPipe<FetchBatteryLevelCommand> fetchBatteryLevelPipe;
    private final ActionPipe<SetDefaultCardOnDeviceCommand> setDefaultCardOnDeviceCommandPipe;
    private final ActionPipe<SetPaymentCardAction> setPaymentCardActionActionPipe;
    private final ActionPipe<DeleteRecordAction> deleteCardPipe;
@@ -104,9 +97,12 @@ public final class SmartCardInteractor {
 
    private final ActionPipe<GetUserDataAction> userDataActionActionPipe;
 
-   private final FirmwareInteractor firmwareInteractor;
+   @Deprecated
+   public SmartCardInteractor(Janet janet, SessionActionPipeCreator sessionActionPipeCreator, FirmwareInteractor firmwareInteractor) {
+      this(janet, sessionActionPipeCreator);
+   }
 
-   public SmartCardInteractor(@Named(JANET_WALLET) Janet janet, SessionActionPipeCreator sessionActionPipeCreator, FirmwareInteractor firmwareInteractor) {
+   public SmartCardInteractor(Janet janet, SessionActionPipeCreator sessionActionPipeCreator) {
       connectionPipe = sessionActionPipeCreator.createPipe(ConnectSmartCardCommand.class, Schedulers.io());
       cardsListPipe = sessionActionPipeCreator.createPipe(CardListCommand.class, Schedulers.from(Executors.newSingleThreadExecutor()));
       cardsListInnerPipe = janet.createPipe(CardListCommand.class); //todo: hotfix: code in `observeCardsChanges` should be synchronous
@@ -127,7 +123,6 @@ public final class SmartCardInteractor {
       saveCardDetailsDataCommandPipe = sessionActionPipeCreator.createPipe(AddBankCardCommand.class, Schedulers.io());
       fetchDefaultCardIdCommandPipe = sessionActionPipeCreator.createPipe(FetchDefaultCardIdCommand.class, Schedulers.io());
       fetchDefaultCardCommandPipe = sessionActionPipeCreator.createPipe(FetchDefaultCardCommand.class, Schedulers.io());
-      fetchBatteryLevelPipe = sessionActionPipeCreator.createPipe(FetchBatteryLevelCommand.class, Schedulers.io());
       setDefaultCardOnDeviceCommandPipe = sessionActionPipeCreator.createPipe(SetDefaultCardOnDeviceCommand.class, Schedulers
             .io());
       setPaymentCardActionActionPipe = sessionActionPipeCreator.createPipe(SetPaymentCardAction.class, Schedulers.io());
@@ -150,13 +145,10 @@ public final class SmartCardInteractor {
       disableDefaultCardPipe = sessionActionPipeCreator.createPipe(SetDisableDefaultCardDelayCommand.class, Schedulers.io());
       userDataActionActionPipe = sessionActionPipeCreator.createPipe(GetUserDataAction.class, Schedulers.io());
 
-      this.firmwareInteractor = firmwareInteractor;
-
       compatibleDevicesActionPipe = sessionActionPipeCreator.createPipe(GetCompatibleDevicesCommand.class, Schedulers.io());
 
       connect(janet);
       connectToLockEvent();
-      observeBatteryLevel(janet);
    }
 
    public ActionPipe<CardListCommand> cardsListPipe() {
@@ -343,27 +335,4 @@ public final class SmartCardInteractor {
             throwable -> Timber.e(throwable, "Error with connectToLockEvent"));
    }
 
-   private void observeBatteryLevel(Janet janet) {
-      Observable.combineLatest(
-            janet.createPipe(ConnectSmartCardCommand.class)
-                  .observeSuccess()
-                  .filter(action -> action.getResult().connectionStatus() == CONNECTED),
-            activeSmartCardPipe.createObservableResult(new GetActiveSmartCardCommand())
-                  .onErrorResumeNext(activeSmartCardPipe.observeSuccessWithReplay().first()),
-            (connectCommand, activeCommand) -> connectCommand)
-            .subscribe(action -> createBatteryObservable(janet),
-                  throwable -> Timber.e(throwable, "Could not schedule battery level requests"));
-
-   }
-
-   private void createBatteryObservable(Janet janet) {
-      Observable.interval(0, 1, TimeUnit.MINUTES)
-            .takeUntil(janet.createPipe(UnAssignUserAction.class).observe().first())
-            .takeUntil(disconnectPipe.observeSuccess())
-            .takeUntil(janet.createPipe(ConnectAction.class)
-                  .observeSuccess()
-                  .filter(action -> action.type == ConnectionType.DFU))
-            .doOnNext(o -> fetchBatteryLevelPipe.send(new FetchBatteryLevelCommand()))
-            .subscribe();
-   }
 }

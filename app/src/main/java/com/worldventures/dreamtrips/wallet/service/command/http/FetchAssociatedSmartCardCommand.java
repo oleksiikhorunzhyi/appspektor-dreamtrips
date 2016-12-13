@@ -65,17 +65,16 @@ public class FetchAssociatedSmartCardCommand extends Command<FetchAssociatedSmar
       if (listSmartCardInfo.isEmpty()) return Observable.just(ImmutableAssociatedCard.of(false));
       final SmartCardInfo smartCardInfo = listSmartCardInfo.get(0);
 
-      final SmartCard smartCard = mappery.convert(smartCardInfo, SmartCard.class);
       final SmartCardDetails smartCardDetails = mappery.convert(smartCardInfo, SmartCardDetails.class);
 
-      return compressPhotoIfExist(smartCard)
+      return createSmartCard(smartCardInfo)
             .flatMap(sc -> save(sc, smartCardDetails));
    }
 
-   private Observable<SmartCard> compressPhotoIfExist(SmartCard smartCard) {
-      if (smartCard.user() != null && smartCard.user().userPhoto() != null && smartCard.user()
-            .userPhoto().original() != null) {
-         final String photoUrl = smartCard.user().userPhoto().original().getAbsolutePath();
+   private Observable<SmartCard> createSmartCard(SmartCardInfo smartCardInfo) {
+      final SmartCard smartCard = mappery.convert(smartCardInfo, SmartCard.class);
+      if (smartCardInfo.user() != null && smartCardInfo.user().displayPhoto() != null) {
+         final String photoUrl = smartCardInfo.user().displayPhoto();
          return janetWallet.createPipe(CompressImageForSmartCardCommand.class)
                .createObservableResult(new CompressImageForSmartCardCommand(photoUrl))
                .map(command -> changeUserPhoto(smartCard, command.getResult()));

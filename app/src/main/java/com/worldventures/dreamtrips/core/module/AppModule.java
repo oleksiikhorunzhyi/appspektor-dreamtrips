@@ -10,6 +10,7 @@ import com.techery.spares.module.InjectingApplicationModule;
 import com.techery.spares.module.qualifier.ForApplication;
 import com.worldventures.dreamtrips.App;
 import com.worldventures.dreamtrips.core.janet.JanetModule;
+import com.worldventures.dreamtrips.core.janet.JanetUploaderyModule;
 import com.worldventures.dreamtrips.core.janet.cache.CacheActionStorageModule;
 import com.worldventures.dreamtrips.modules.common.ResponseSnifferModule;
 import com.worldventures.dreamtrips.modules.common.SessionProcessingModule;
@@ -53,7 +54,7 @@ import dagger.Provides;
             //
             MessengerModule.class, FlagsModule.class,
             //
-            JanetModule.class, AnalyticsModule.class, SessionProcessingModule.class,
+            JanetModule.class, JanetUploaderyModule.class, AnalyticsModule.class, SessionProcessingModule.class,
             //
             FlagsModule.class, PodcastAppModule.class, MappingModule.class,
             //

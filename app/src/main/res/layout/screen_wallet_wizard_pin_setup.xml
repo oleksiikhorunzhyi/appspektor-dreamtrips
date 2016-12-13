@@ -24,11 +24,14 @@
             style="@style/WalletTheme.HeaderTextStyle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_above="@+id/flye_card_image"
-            android:layout_marginBottom="56dp"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true"
+            android:paddingLeft="@dimen/spacing_normal"
+            android:paddingRight="@dimen/spacing_normal"
+            android:paddingTop="@dimen/spacing_normal"
+            android:textSize="@dimen/font_large"
             tools:text="@string/wallet_wizard_setup_pin_header"
             />
-
 
       <ImageView
             android:id="@+id/flye_card_image"

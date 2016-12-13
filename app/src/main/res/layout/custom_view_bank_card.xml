@@ -6,7 +6,6 @@
       android:layout_width="match_parent"
       android:layout_height="@dimen/wallet_card_height"
       android:layout_gravity="center_horizontal"
-      android:background="@drawable/creditcard_blue"
       android:paddingBottom="@dimen/spacing_large"
       android:paddingLeft="@dimen/spacing_normal"
       android:paddingRight="@dimen/spacing_normal"

@@ -1,6 +1,7 @@
 package com.worldventures.dreamtrips.wallet.ui.widget;
 
 import android.content.Context;
+import android.content.res.TypedArray;
 import android.support.annotation.DrawableRes;
 import android.text.SpannableString;
 import android.text.SpannableStringBuilder;
@@ -35,6 +36,7 @@ public class BankCardWidget extends FrameLayout {
    private final SpannableString goodThru;
 
    private boolean showShortNumber;
+   private int drawableResId;
 
    public BankCardWidget(Context context) {
       this(context, null);
@@ -46,6 +48,16 @@ public class BankCardWidget extends FrameLayout {
 
    public BankCardWidget(Context context, AttributeSet attrs, int defStyleAttr) {
       super(context, attrs, defStyleAttr);
+      TypedArray a = context.getTheme().obtainStyledAttributes(
+            attrs,
+            R.styleable.BankCardWidget,
+            0, 0);
+      try {
+         int attrId = a.getInt(R.styleable.BankCardWidget_cardDrawable, BankCardResource.BLUE.getAttrId());
+         drawableResId = BankCardResource.fromAttrId(attrId).getDrawableResId();
+      } finally {
+         a.recycle();
+      }
       bankCardHelper = new BankCardHelper(context);
       goodThru = new SpannableString(getResources().getString(R.string.wallet_bank_card_good_thru));
       goodThru.setSpan(new RelativeSizeSpan(.65f), 0, goodThru.length(), 0);
@@ -56,6 +68,7 @@ public class BankCardWidget extends FrameLayout {
       super.onFinishInflate();
       View.inflate(getContext(), R.layout.custom_view_bank_card, this);
       bankCardHolder = getChildAt(0);
+      setBankCardHolder(drawableResId);
       ButterKnife.inject(this);
       tvShortCardNumber.setVisibility(GONE);
    }
@@ -117,4 +130,34 @@ public class BankCardWidget extends FrameLayout {
    public void setCardType(BankCard.CardType cardType) {
       tvCardType.setText(bankCardHelper.obtainCardType(cardType));
    }
+
+   public enum BankCardResource {
+      BLUE(0, R.drawable.creditcard_blue),
+      GREY(1, R.drawable.creditcard_grey),
+      DARK_BLUE(2, R.drawable.creditcard_darkblue);
+
+      private int attrId;
+      private int drawableResId;
+
+      BankCardResource(int attrId, int drawableResId) {
+         this.attrId = attrId;
+         this.drawableResId = drawableResId;
+      }
+
+      public int getAttrId() {
+         return attrId;
+      }
+
+      public int getDrawableResId() {
+         return drawableResId;
+      }
+
+      static BankCardResource fromAttrId(int attrId) {
+         for (BankCardResource drawables : values()) {
+            if (drawables.attrId == attrId) return drawables;
+         }
+         throw new IllegalArgumentException();
+      }
+   }
+
 }

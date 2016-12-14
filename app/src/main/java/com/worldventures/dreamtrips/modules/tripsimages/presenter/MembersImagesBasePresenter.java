@@ -2,19 +2,35 @@ package com.worldventures.dreamtrips.modules.tripsimages.presenter;
 
 import android.support.annotation.NonNull;
 
+import com.innahema.collections.query.queriables.Queryable;
+import com.worldventures.dreamtrips.modules.background_uploading.model.PostCompoundOperationModel;
+import com.worldventures.dreamtrips.modules.background_uploading.service.BackgroundUploadingInteractor;
+import com.worldventures.dreamtrips.modules.background_uploading.service.CompoundOperationsCommand;
 import com.worldventures.dreamtrips.modules.common.model.MediaAttachment;
 import com.worldventures.dreamtrips.modules.common.view.util.MediaPickerEventDelegate;
 import com.worldventures.dreamtrips.modules.feed.bundle.CreateEntityBundle;
+import com.worldventures.dreamtrips.modules.feed.model.uploading.UploadingPostsList;
+import com.worldventures.dreamtrips.modules.feed.presenter.UploadingListenerPresenter;
+import com.worldventures.dreamtrips.modules.feed.presenter.delegate.UploadingPresenterDelegate;
 import com.worldventures.dreamtrips.modules.tripsimages.model.IFullScreenObject;
 import com.worldventures.dreamtrips.modules.tripsimages.model.TripImagesType;
 import com.worldventures.dreamtrips.modules.tripsimages.service.analytics.TripImageViewAnalyticsEvent;
 import com.worldventures.dreamtrips.modules.tripsimages.service.command.TripImagesCommand;
 
+import java.util.List;
+
 import javax.inject.Inject;
 
-public abstract class MembersImagesBasePresenter<C extends TripImagesCommand<? extends IFullScreenObject>> extends TripImagesListPresenter<MembersImagesBasePresenter.View, C> {
+import io.techery.janet.helper.ActionStateSubscriber;
+
+public abstract class MembersImagesBasePresenter<C extends TripImagesCommand<? extends IFullScreenObject>>
+      extends TripImagesListPresenter<MembersImagesBasePresenter.View, C> implements UploadingListenerPresenter {
 
    @Inject MediaPickerEventDelegate mediaPickerEventDelegate;
+   @Inject BackgroundUploadingInteractor backgroundUploadingInteractor;
+   @Inject UploadingPresenterDelegate uploadingPresenterDelegate;
+
+   private List<PostCompoundOperationModel> postUploads;
 
    public MembersImagesBasePresenter() {
       this(TripImagesType.MEMBERS_IMAGES, 0);
@@ -33,6 +49,24 @@ public abstract class MembersImagesBasePresenter<C extends TripImagesCommand<? e
                if (view.isVisibleOnScreen()) //cause neighbour tab also catches this event
                   view.openCreatePhoto(mediaAttachment, getRoutingOrigin());
             });
+      subscribeToBackgroundUploadingOperations();
+   }
+
+   private void subscribeToBackgroundUploadingOperations() {
+      backgroundUploadingInteractor.compoundOperationsPipe()
+            .observeWithReplay()
+            .compose(bindViewToMainComposer())
+            .subscribe(new ActionStateSubscriber<CompoundOperationsCommand>()
+                  .onSuccess(compoundOperationsCommand -> {
+                     postUploads = Queryable.from(compoundOperationsCommand.getResult())
+                           .cast(PostCompoundOperationModel.class).toList();
+                     refreshImagesInView();
+                  }));
+   }
+
+   @Override
+   protected void refreshImagesInView() {
+      view.setImages(photos, new UploadingPostsList(postUploads));
    }
 
    @NonNull
@@ -48,13 +82,38 @@ public abstract class MembersImagesBasePresenter<C extends TripImagesCommand<? e
    }
 
    @Override
-   public void onItemClick(int position) {
-      super.onItemClick(position);
-      IFullScreenObject screenObject = photos.get(position);
-      analyticsInteractor.analyticsActionPipe().send(new TripImageViewAnalyticsEvent(screenObject.getFSId()));
+   public void onItemClick(IFullScreenObject image) {
+      super.onItemClick(image);
+      analyticsInteractor.analyticsActionPipe().send(new TripImageViewAnalyticsEvent(image.getFSId()));
+   }
+
+   ///////////////////////////////////////////////////////////////////////////
+   // Uploading handling
+   ///////////////////////////////////////////////////////////////////////////
+
+   @Override
+   public void onUploadResume(PostCompoundOperationModel compoundOperationModel) {
+      uploadingPresenterDelegate.onUploadResume(compoundOperationModel);
+   }
+
+   @Override
+   public void onUploadPaused(PostCompoundOperationModel compoundOperationModel) {
+      uploadingPresenterDelegate.onUploadPaused(compoundOperationModel);
+   }
+
+   @Override
+   public void onUploadRetry(PostCompoundOperationModel compoundOperationModel) {
+      uploadingPresenterDelegate.onUploadRetry(compoundOperationModel);
+   }
+
+   @Override
+   public void onUploadCancel(PostCompoundOperationModel compoundOperationModel) {
+      uploadingPresenterDelegate.onUploadCancel(compoundOperationModel);
    }
 
    public interface View extends TripImagesListPresenter.View {
       void openCreatePhoto(MediaAttachment mediaAttachment, CreateEntityBundle.Origin photoOrigin);
+
+      void setImages(List<IFullScreenObject> images, UploadingPostsList uploadingPostsList);
    }
 }

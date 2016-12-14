@@ -1,5 +1,7 @@
 package com.worldventures.dreamtrips.modules.tripsimages.presenter;
 
+import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
+import com.worldventures.dreamtrips.modules.tripsimages.model.IFullScreenObject;
 import com.worldventures.dreamtrips.modules.tripsimages.model.TripImagesType;
 import com.worldventures.dreamtrips.modules.tripsimages.service.command.GetInspireMePhotosCommand;
 
@@ -27,5 +29,11 @@ public class InspireMePresenter extends TripImagesListPresenter<TripImagesListPr
    @Override
    protected GetInspireMePhotosCommand getLoadMoreCommand(int currentPage) {
       return new GetInspireMePhotosCommand(randomSeed, currentPage, PER_PAGE);
+   }
+
+   @Override
+   public void onItemClick(IFullScreenObject image) {
+      super.onItemClick(image);
+      TrackingHelper.viewTripImage(TrackingHelper.ACTION_INSPIRE_ME_IMAGES, image.getFSId());
    }
 }

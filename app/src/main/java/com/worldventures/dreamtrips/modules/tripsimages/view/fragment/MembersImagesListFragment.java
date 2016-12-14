@@ -1,5 +1,7 @@
 package com.worldventures.dreamtrips.modules.tripsimages.view.fragment;
 
+import android.support.v7.widget.GridLayoutManager;
+
 import com.innahema.collections.query.queriables.Queryable;
 import com.techery.spares.annotations.Layout;
 import com.worldventures.dreamtrips.R;
@@ -9,8 +11,15 @@ import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.common.model.MediaAttachment;
 import com.worldventures.dreamtrips.modules.common.view.bundle.PickerBundle;
 import com.worldventures.dreamtrips.modules.feed.bundle.CreateEntityBundle;
+import com.worldventures.dreamtrips.modules.feed.model.uploading.UploadingPostsList;
+import com.worldventures.dreamtrips.modules.feed.view.cell.delegate.UploadingCellDelegate;
+import com.worldventures.dreamtrips.modules.feed.view.cell.uploading.UploadingPhotoPostsSectionCell;
+import com.worldventures.dreamtrips.modules.tripsimages.model.IFullScreenObject;
 import com.worldventures.dreamtrips.modules.tripsimages.presenter.MembersImagesBasePresenter;
 import com.worldventures.dreamtrips.modules.tripsimages.presenter.MembersImagesPresenter;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import butterknife.OnClick;
 
@@ -64,6 +73,33 @@ public class MembersImagesListFragment<P extends MembersImagesBasePresenter> ext
             .containerId(R.id.container_details_floating)
             .data(new CreateEntityBundle(mediaAttachment, photoOrigin))
             .build());
+   }
+
+   @Override
+   public void setImages(List<IFullScreenObject> images, UploadingPostsList uploadingPostsList) {
+      List items = new ArrayList();
+      if (!uploadingPostsList.getPhotoPosts().isEmpty()) {
+         items.add(uploadingPostsList);
+      }
+      layoutManager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
+         @Override
+         public int getSpanSize(int position) {
+            if (adapter.getItem(position) instanceof UploadingPostsList) {
+               return getSpanCount();
+            }
+            return 1;
+         }
+      });
+      items.addAll(images);
+      adapter.setItems(items);
+      adapter.notifyDataSetChanged();
+   }
+
+   @Override
+   protected void registerCellsAndDelegates() {
+      super.registerCellsAndDelegates();
+      adapter.registerCell(UploadingPostsList.class, UploadingPhotoPostsSectionCell.class);
+      adapter.registerDelegate(UploadingPostsList.class, new UploadingCellDelegate(getPresenter(), getContext()));
    }
 
    private boolean isCreatePhotoAlreadyAttached() {

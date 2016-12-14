@@ -95,6 +95,11 @@ def Map generateParams(boolean isGithubBuild) {
                   serverFlavor: "Prod",
                   hockeyAppId : "4fc6063859b3388635cb834dbb004324"
             ]
+         } else if (params.comment.contains("-server perf")) {
+            params << [
+                  serverFlavor: "Perf",
+                  hockeyAppId : "24c6abce67eb486291f601eaec8d06ca"
+            ]
          } else {
             params << [
                   serverFlavor: "Preprod",

@@ -1,6 +1,6 @@
 package com.techery.spares.ui.fragment;
 
-import android.app.Activity;
+import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -22,51 +22,25 @@ import timber.log.Timber;
 
 public abstract class InjectingFragment extends Fragment implements ConfigurableFragment, Injector {
 
-   ///////////////////////////////////////////////////////////////////////////
-   // Injection
-   ///////////////////////////////////////////////////////////////////////////
-
-   private ObjectGraph objectGraph;
-
    @Override
-   public void onAttach(Activity activity) {
-      super.onAttach(activity);
-      objectGraph = getInitialObjectGraph();
-      objectGraph.inject(this);
-   }
-
-   @Override
-   public void onDetach() {
-      super.onDetach();
-      objectGraph = null;
-   }
-
-   protected ObjectGraph getInitialObjectGraph() {
-      return ((InjectingActivity) getActivity()).getObjectGraph();
+   public void onAttach(Context context) {
+      super.onAttach(context);
+      inject(this);
    }
 
    @Override
    public void inject(Object target) {
-      this.objectGraph.inject(target);
+      getObjectGraph().inject(target);
    }
 
    @Override
    public ObjectGraph getObjectGraph() {
-      return this.objectGraph;
+      return ((InjectingActivity) getActivity()).getObjectGraph();
    }
-
-   ///////////////////////////////////////////////////////////////////////////
-   // UI
-   ///////////////////////////////////////////////////////////////////////////
 
    @Override
    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
       return FragmentHelper.onCreateView(inflater, container, this);
-   }
-
-   @Override
-   public void onViewCreated(View view, Bundle savedInstanceState) {
-      super.onViewCreated(view, savedInstanceState);
    }
 
    @Override
@@ -106,14 +80,6 @@ public abstract class InjectingFragment extends Fragment implements Configurable
    ///////////////////////////////////////////////////////////////////////////
 
    @Inject @Global public EventBus eventBus;
-
-   public interface Events {
-      class ReloadEvent {}
-   }
-
-   public void onEvent(Events.ReloadEvent reloadEvent) {
-      //do nothing
-   }
 
    public EventBus getEventBus() {
       return eventBus;

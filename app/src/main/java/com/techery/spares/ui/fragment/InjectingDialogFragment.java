@@ -59,6 +59,6 @@ public abstract class InjectingDialogFragment extends DialogFragment implements 
       return RxLifecycle.bindFragment(lifecycleSubject);
    }
 
-   public void afterCreateView(View rootView) {}
-
+   public void afterCreateView(View rootView) {
+   }
 }

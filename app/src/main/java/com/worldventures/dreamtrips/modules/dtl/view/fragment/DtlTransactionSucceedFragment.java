@@ -12,13 +12,14 @@ import com.worldventures.dreamtrips.core.navigation.router.NavigationConfigBuild
 import com.worldventures.dreamtrips.core.rx.RxBaseFragmentWithArgs;
 import com.worldventures.dreamtrips.modules.common.view.bundle.ShareBundle;
 import com.worldventures.dreamtrips.modules.common.view.dialog.ShareDialog;
+import com.techery.spares.utils.delegate.CloseDialogEventDelegate;
 import com.worldventures.dreamtrips.modules.dtl.bundle.MerchantBundle;
-import com.worldventures.dreamtrips.modules.dtl.event.CloseDialogEvent;
 import com.worldventures.dreamtrips.modules.dtl.helper.MerchantHelper;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.Merchant;
 import com.worldventures.dreamtrips.modules.dtl.model.transaction.DtlTransactionResult;
 import com.worldventures.dreamtrips.modules.dtl.presenter.DtlTransactionSucceedPresenter;
 
+import javax.inject.Inject;
 import butterknife.InjectView;
 import butterknife.OnClick;
 import io.techery.properratingbar.ProperRatingBar;
@@ -28,8 +29,9 @@ public class DtlTransactionSucceedFragment extends RxBaseFragmentWithArgs<DtlTra
 
    @InjectView(R.id.total) TextView total;
    @InjectView(R.id.earned) TextView earned;
-
    @InjectView(R.id.rating_bar) ProperRatingBar properRatingBar;
+
+   @Inject CloseDialogEventDelegate closeDialogEventDelegate;
 
    @Override
    public void afterCreateView(View rootView) {
@@ -60,8 +62,7 @@ public class DtlTransactionSucceedFragment extends RxBaseFragmentWithArgs<DtlTra
    @OnClick(R.id.done)
    void onDoneClicked() {
       getPresenter().done();
-      //TODO think about dismissing dialog from fragment
-      eventBus.post(new CloseDialogEvent());
+      closeDialogEventDelegate.post(new Object());
    }
 
    @Override

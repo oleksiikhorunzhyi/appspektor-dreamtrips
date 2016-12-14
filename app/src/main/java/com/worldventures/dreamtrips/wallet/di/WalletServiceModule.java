@@ -79,7 +79,7 @@ public class WalletServiceModule {
 
    @Singleton
    @Provides
-   SmartCardManager smartCardManager(SmartCardInteractor smartCardInteractor) {
-      return new SmartCardManager(smartCardInteractor);
+   SmartCardManager smartCardManager(@Named(JANET_WALLET) Janet janet, SmartCardInteractor smartCardInteractor) {
+      return new SmartCardManager(janet, smartCardInteractor);
    }
 }

@@ -91,8 +91,17 @@ public class ConnectSmartCardCommand extends Command<SmartCard> implements Injec
 
    private Observable<SmartCard> fetchTechnicalProperties() {
       return janet.createPipe(FetchCardPropertiesCommand.class)
-            .createObservableResult(new FetchCardPropertiesCommand(activeSmartCard))
-            .map(Command::getResult);
+            .createObservableResult(new FetchCardPropertiesCommand())
+            .map(Command::getResult)
+            .map(properties -> ImmutableSmartCard.builder().from(activeSmartCard)
+                  .sdkVersion(properties.sdkVersion())
+                  .firmWareVersion(properties.firmWareVersion())
+                  .batteryLevel(properties.batteryLevel())
+                  .lock(properties.lock())
+                  .stealthMode(properties.stealthMode())
+                  .disableCardDelay(properties.disableCardDelay())
+                  .clearFlyeDelay(properties.clearFlyeDelay())
+                  .build());
    }
 
    @Override

@@ -2,8 +2,8 @@ package com.worldventures.dreamtrips.wallet.service.command;
 
 import com.worldventures.dreamtrips.core.janet.JanetModule;
 import com.worldventures.dreamtrips.core.janet.dagger.InjectableAction;
-import com.worldventures.dreamtrips.wallet.domain.entity.ImmutableSmartCard;
-import com.worldventures.dreamtrips.wallet.domain.entity.SmartCard;
+
+import org.immutables.value.Value;
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -21,18 +21,12 @@ import io.techery.janet.smartcard.action.support.GetSDKVersionAction;
 import rx.Observable;
 
 @CommandAction
-public class FetchCardPropertiesCommand extends Command<SmartCard> implements InjectableAction {
+public class FetchCardPropertiesCommand extends Command<FetchCardPropertiesCommand.Properties> implements InjectableAction {
 
    @Inject @Named(JanetModule.JANET_WALLET) Janet janet;
 
-   private final SmartCard smartCard;
-
-   public FetchCardPropertiesCommand(SmartCard smartCard) {
-      this.smartCard = smartCard;
-   }
-
    @Override
-   protected void run(CommandCallback<SmartCard> callback) throws Throwable {
+   protected void run(CommandCallback<Properties> callback) throws Throwable {
       Observable.zip(
             janet.createPipe(GetSDKVersionAction.class)
                   .createObservableResult(new GetSDKVersionAction()),
@@ -50,7 +44,7 @@ public class FetchCardPropertiesCommand extends Command<SmartCard> implements In
                   .createObservableResult(new GetClearRecordsDelayAction()),
             (sdkVersionAction, firmwareVersionAction, getBatteryLevelAction, getLockDeviceStatusAction,
                   getStealthModeAction, getDisableDefaultCardDelayAction, getClearRecordsDelayAction) ->
-                  ImmutableSmartCard.builder().from(smartCard)
+                  (Properties) ImmutableProperties.builder()
                         .sdkVersion(sdkVersionAction.version)
                         .firmWareVersion(firmwareVersionAction.version)
                         .batteryLevel(Integer.parseInt(getBatteryLevelAction.level))
@@ -60,5 +54,23 @@ public class FetchCardPropertiesCommand extends Command<SmartCard> implements In
                         .clearFlyeDelay(getClearRecordsDelayAction.delay)
                         .build())
             .subscribe(callback::onSuccess, callback::onFail);
+   }
+
+   @Value.Immutable
+   public interface Properties {
+
+      String sdkVersion();
+
+      String firmWareVersion();
+
+      int batteryLevel();
+
+      boolean lock();
+
+      boolean stealthMode();
+
+      long disableCardDelay();
+
+      long clearFlyeDelay();
    }
 }

@@ -7,7 +7,6 @@ import com.worldventures.dreamtrips.core.janet.cache.ImmutableCacheOptions;
 import com.worldventures.dreamtrips.core.janet.dagger.InjectableAction;
 import com.worldventures.dreamtrips.wallet.domain.entity.ImmutableSmartCard;
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCard;
-import com.worldventures.dreamtrips.wallet.service.SmartCardInteractor;
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -16,33 +15,32 @@ import io.techery.janet.ActionHolder;
 import io.techery.janet.Command;
 import io.techery.janet.Janet;
 import io.techery.janet.command.annotations.CommandAction;
-import io.techery.janet.smartcard.action.support.GetBatteryLevelAction;
-import rx.Observable;
 
 @CommandAction
-public class FetchBatteryLevelCommand extends Command<SmartCard> implements SmartCardModifier, InjectableAction, CachedAction<SmartCard> {
+public class UpdateSmartCardPropertiesCommand extends Command<SmartCard> implements SmartCardModifier, InjectableAction, CachedAction<SmartCard> {
 
    @Inject @Named(JanetModule.JANET_WALLET) Janet janet;
-   @Inject SmartCardInteractor smartCardInteractor;
 
    @Override
    protected void run(CommandCallback<SmartCard> callback) throws Throwable {
-      janet.createPipe(GetBatteryLevelAction.class)
-            .createObservableResult(new GetBatteryLevelAction())
-            .map(action -> action.level)
-            .onErrorReturn(throwable -> "0")
-            .flatMap(butteryLevel -> updateSmartCard(Integer.parseInt(butteryLevel)))
+      janet.createPipe(FetchCardPropertiesCommand.class)
+            .createObservableResult(new FetchCardPropertiesCommand())
+            .map(Command::getResult)
+            .flatMap(properties ->
+                  janet.createPipe(GetActiveSmartCardCommand.class)
+                        .createObservableResult(new GetActiveSmartCardCommand())
+                        .map(command -> ImmutableSmartCard.builder().from(command.getResult())
+                              .sdkVersion(properties.sdkVersion())
+                              .firmWareVersion(properties.firmWareVersion())
+                              .batteryLevel(properties.batteryLevel())
+                              .lock(properties.lock())
+                              .stealthMode(properties.stealthMode())
+                              .disableCardDelay(properties.disableCardDelay())
+                              .clearFlyeDelay(properties.clearFlyeDelay())
+                              .build()
+                        )
+            )
             .subscribe(callback::onSuccess, callback::onFail);
-   }
-
-   private Observable<SmartCard> updateSmartCard(int butteryLevel) {
-      return smartCardInteractor.activeSmartCardPipe()
-            .createObservableResult(new GetActiveSmartCardCommand())
-            .map(command -> ImmutableSmartCard.builder()
-                  .from(command.getResult())
-                  .batteryLevel(butteryLevel)
-                  .build()
-            );
    }
 
    @Override

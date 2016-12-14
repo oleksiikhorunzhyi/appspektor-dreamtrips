@@ -1,6 +1,7 @@
 package com.worldventures.dreamtrips.modules.common.view.fragment;
 
 
+import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
@@ -47,8 +48,9 @@ public abstract class BaseFragment<PM extends Presenter> extends InjectingFragme
    private List<Boolean> userVisibleHints = new ArrayList<>();
 
    @Override
-   protected ObjectGraph getInitialObjectGraph() {
-      return super.getInitialObjectGraph().plus(new BaseFragmentModule(this, this, this));
+   public void onAttach(Context context) {
+      super.onAttach(context);
+      getObjectGraph().plus(new BaseFragmentModule(this, this, this));
    }
 
    ///////////////////////////////////////////////////////////////////////////

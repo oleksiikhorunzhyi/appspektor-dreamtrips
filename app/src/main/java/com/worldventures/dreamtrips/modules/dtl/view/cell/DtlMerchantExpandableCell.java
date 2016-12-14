@@ -1,6 +1,5 @@
 package com.worldventures.dreamtrips.modules.dtl.view.cell;
 
-import android.content.Context;
 import android.content.res.Resources;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.AppCompatTextView;
@@ -16,7 +15,6 @@ import com.techery.spares.ui.view.cell.AbstractDelegateCell;
 import com.trello.rxlifecycle.RxLifecycle;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.api.dtl.merchants.model.OfferType;
-import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.core.selectable.SelectableCell;
 import com.worldventures.dreamtrips.core.selectable.SelectableDelegate;
 import com.worldventures.dreamtrips.core.utils.DateTimeUtils;
@@ -31,8 +29,6 @@ import com.worldventures.dreamtrips.modules.dtl.model.merchant.MerchantMedia;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.offer.Offer;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.operational_hour.OperationDay;
 import com.worldventures.dreamtrips.modules.dtl.view.cell.delegates.MerchantCellDelegate;
-import com.worldventures.dreamtrips.modules.settings.model.Setting;
-import com.worldventures.dreamtrips.modules.settings.util.SettingsFactory;
 
 import java.util.List;
 
@@ -60,7 +56,7 @@ public class DtlMerchantExpandableCell extends AbstractDelegateCell<ImmutableThi
    @InjectView(R.id.perk_toggle_label) TextView perkToggleText;
    @InjectView(R.id.expandedContainer) ViewGroup expandedContainer;
 
-   @Inject LocaleHelper localeHelper;
+   @Inject AnalyticsInteractor analyticsInteractor;
 
    private SelectableDelegate selectableDelegate;
    private DistanceType distanceType;
@@ -205,7 +201,7 @@ public class DtlMerchantExpandableCell extends AbstractDelegateCell<ImmutableThi
       //
       if (MerchantHelper.isOfferExpiringSoon(offer)) { // expiration bar
          ViewUtils.setTextOrHideView(expirationBar, MerchantHelper.
-               getOfferExpiringCaption(itemView.getContext(), offer, localeHelper.getDefaultLocale()));
+               getOfferExpiringCaption(itemView.getContext(), offer, LocaleHelper.getDefaultLocale()));
       } else ViewUtils.setViewVisibility(View.GONE, expirationBar);
       //
       title.setText(offer.title()); // description

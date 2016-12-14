@@ -1,12 +1,13 @@
 package com.worldventures.dreamtrips.modules.player.view.custom;
 
+import com.worldventures.dreamtrips.core.utils.LocaleHelper;
+
 import java.util.Formatter;
-import java.util.Locale;
 
 public class MediaStringUtils {
 
    private StringBuilder mFormatBuilder = new StringBuilder();
-   private Formatter mFormatter = new Formatter(mFormatBuilder, Locale.getDefault());
+   private Formatter mFormatter = new Formatter(mFormatBuilder, LocaleHelper.getDefaultLocale());
 
    public String stringForTime(int timeMs) {
       int totalSeconds = timeMs / 1000;

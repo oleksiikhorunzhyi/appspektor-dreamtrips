@@ -63,7 +63,6 @@ public class FeedHashtagPresenter<T extends FeedHashtagPresenter.View> extends J
    @State ArrayList<FeedItem> feedItems = new ArrayList<>();
    @State ArrayList<HashtagSuggestion> hashtagSuggestions = new ArrayList<>();
 
-   @Inject LocaleHelper localeHelper;
    @Inject TextualPostTranslationDelegate textualPostTranslationDelegate;
    @Inject HashtagInteractor interactor;
    @Inject FeedEntityManager entityManager;
@@ -299,7 +298,7 @@ public class FeedHashtagPresenter<T extends FeedHashtagPresenter.View> extends J
 
    public void onEvent(TranslatePostEvent event) {
       if (view.isVisibleOnScreen()) {
-         textualPostTranslationDelegate.translate(event.getPostFeedItem(), localeHelper.getDefaultLocaleFormatted());
+         textualPostTranslationDelegate.translate(event.getPostFeedItem(), LocaleHelper.getDefaultLocaleFormatted());
       }
    }
 

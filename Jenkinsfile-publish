@@ -1,0 +1,235 @@
+#!/usr/bin/env groovy
+
+def utils = fileLoader.fromGit('jenkins-android-pipeline-utils.groovy', 'https://gist.github.com/3d72ba81965db879ceb38e4bef991b6a.git', '1a9b441a7ca5821b74bf18e6a7c9d41704e14651', null, 'master')
+def buildParams = [:]
+
+utils.runBuild('android', isGithubBuild()) {
+   stage('prepare build') {
+      buildParams = generateParams(isGithubBuild())
+      println "Build params: $buildParams"
+   }
+   stage('checkout') {
+      def branches = (isGithubBuild() ? scm.branches : [[name: "origin/${buildParams.branch}"]])
+      checkout([
+            $class                           : 'GitSCM',
+            branches                         : branches,
+            userRemoteConfigs                : scm.userRemoteConfigs,
+            submoduleCfg                     : [],
+            doGenerateSubmoduleConfigurations: false,
+            extensions                       : [
+                  [$class: 'CleanBeforeCheckout'],
+                  [$class : 'CloneOption',
+                   shallow: true,
+                   depth  : 20,
+                   noTags : true,
+                   timeout: 5]
+            ]
+      ])
+   }
+   stage('assemble') {
+      withCredentials([file(credentialsId: 'dreamtrips-android-signing-key', variable: 'SIGNING_KEY'),
+                       file(credentialsId: 'dreamtrips-android-signing-properties', variable: 'SIGNING_PROPS')]) {
+         utils.bash("chmod +rx ${SIGNING_KEY}")
+         utils.bash("chmod +rx ${SIGNING_PROPS}")
+         utils.bash("cp -f ${SIGNING_KEY} signing")
+         utils.bash("cp -f ${SIGNING_PROPS} signing")
+         utils.gradlew "app:assembleExternal${buildParams.streamFlavor}${buildParams.serverFlavor}${buildParams.apkBuildType}"
+      }
+   }
+   stage('publish') {
+      def releaseNotes = generateReleaseNotes(buildParams, changelog(utils, buildParams.targetBranch, buildParams.branch), isGithubBuild())
+      def apkPath = "app/build/outputs/apk/DreamTrips-external-${buildParams.streamFlavor.toLowerCase()}-${buildParams.serverFlavor.toLowerCase()}-${buildParams.apkBuildType.toLowerCase()}.apk"
+      step([$class   : 'HockeyappRecorder', applications:
+            [[apiToken          : params.hockeyApiToken,
+              filePath          : apkPath,
+              downloadAllowed   : true,
+              mandatory         : false,
+              notifyTeam        : true,
+              teams             : buildParams.hockeyAppTeams.join(','),
+              releaseNotesMethod: [$class: 'ManualReleaseNotes', releaseNotes: releaseNotes, isMarkdown: true],
+              uploadMethod      : [$class: 'VersionCreation', appId: buildParams.hockeyAppId]
+             ]],
+            debugMode: false, failGracefully: true
+      ])
+   }
+   if (isGithubBuild()) stage('notify') {
+      def links = hockeyInstallationLinks(currentBuild.rawBuild.getActions(hockeyapp.HockeyappBuildAction.class))
+      def text = "Published to HockeyApp:\r\n* Public link:\r\n${links.public}\r\n* Private link:\r\n${links.private}"
+      step([$class: 'GitHubPRCommentPublisher', comment: [content: text]])
+   }
+}
+node('android') {
+   // cleanup
+   utils.bash('rm -rf signing')
+}
+
+@NonCPS
+def Map generateParams(boolean isGithubBuild) {
+   def params = [
+         streamFlavor  : "Stable",
+         serverFlavor  : "Stage",
+         apkBuildType  : "Debug",
+         hockeyApiToken: "c190d98f211e4ed689ce441d0de9ef1d",
+         hockeyAppId   : "",
+         hockeyAppTeams: []
+   ]
+
+   def devTeam = "40021"
+   def qaTeam = "77196"
+
+   params.branch = (isGithubBuild ? env.GITHUB_PR_SOURCE_BRANCH : env.GIT_BRANCH).replace("origin/", "")
+   params.comment = (isGithubBuild ? env.GITHUB_PR_COMMENT_BODY : env.COMMENT) ?: ""
+
+   switch (params.branch) {
+      case ~/^(develop)|(common\/.+)/:
+         params << [
+               streamFlavor  : "Stable",
+               serverFlavor  : params.comment.contains("-server qa") ? "Qa" : "Stage",
+               hockeyAppId   : "48de37eaf46ec363d392ae15ae521df6",
+               hockeyAppTeams: [devTeam],
+         ]
+         break
+      case ~/^(release\/.+)|(hotfix\/.+)/:
+         if (params.comment.contains("-server prod")) {
+            params << [
+                  serverFlavor: "Prod",
+                  hockeyAppId : "4fc6063859b3388635cb834dbb004324"
+            ]
+         } else if (params.comment.contains("-server perf")) {
+            params << [
+                  serverFlavor: "Perf",
+                  hockeyAppId : "24c6abce67eb486291f601eaec8d06ca"
+            ]
+         } else {
+            params << [
+                  serverFlavor: "Preprod",
+                  hockeyAppId : "790422bf7d324c3c92bb0411b04ce6eb"
+            ]
+         }
+         params << [
+               apkBuildType  : "Release",
+               hockeyAppTeams: [qaTeam, devTeam]
+         ]
+         break
+      case ~/^social\/.+/:
+         params << [
+               streamFlavor  : "Social",
+               hockeyAppId   : "421e85e3825848fd9034328a66546852",
+               hockeyAppTeams: [qaTeam, "77190"]
+         ]
+         break
+      case ~/^dtl\/.+/:
+         params << [
+               streamFlavor  : "Dtl",
+               hockeyAppId   : "0093d3d64a8e425f9ec628fc7e26e294",
+               hockeyAppTeams: [qaTeam, "77189"],
+         ]
+         break
+      case ~/^messenger\/.+/:
+         params << [
+               streamFlavor  : "Messenger",
+               hockeyAppId   : "5dc7e124dea64ac29aa99fe28cbd9087",
+               hockeyAppTeams: [qaTeam, "77405"]
+         ]
+         break
+      case ~/^smart-card\/.+/:
+         params << [
+               streamFlavor  : params.comment.contains("-smartcard mocked") ? "SmartCardMock" : "SmartCardNxtid",
+               hockeyAppId   : "427d6a383bcf44e698227ea31c778d3b",
+               hockeyAppTeams: [qaTeam, "77191"]
+         ]
+         break
+      default:
+         println "Branch '${params.branch}' is not supported"
+         throw new IllegalArgumentException("Branch is not supported")
+   }
+
+   def targetBranch
+   if (isGithubBuild) targetBranch = env.GITHUB_PR_TARGET_BRANCH
+   else switch (params.branch) {
+      case ~/^common\/.+/:
+         targetBranch = 'develop'
+         break
+      case ~/^(release\/.+)|(hotfix\/.+)|(develop)/:
+         targetBranch = 'master'
+         break
+      case ~/^smart-card\/(?!dev).+/:
+         targetBranch = 'smart-card/dev'
+         break
+      case ~/^social\/(?!dev).+/:
+         targetBranch = 'social/develop'
+         break
+      case ~/^messenger\/(?!dev).+/:
+         targetBranch = 'messenger/dev'
+         break
+      case ~/^dtl\/(?!dev).+/:
+         targetBranch = 'dtl/dev'
+         break
+      default:
+         targetBranch = 'develop'
+         break
+   }
+   params.targetBranch = targetBranch
+
+   return params
+}
+
+def boolean isGithubBuild() {
+   env.GITHUB_PR_TARGET_BRANCH != null
+}
+
+@NonCPS
+def String generateReleaseNotes(buildParams, changelog, boolean isGithubBuild) {
+   StringBuilder text = new StringBuilder()
+   changelog = changelog?.split('\\n').collect { s -> "* $s" }.join('\n')
+   if (isGithubBuild) {
+      // title
+      text
+            .append("## $env.GITHUB_PR_TITLE").append('\n')
+            .append("[Pull Request Link]($env.GITHUB_PR_URL)").append('\n')
+      // description
+      if (env.GITHUB_PR_DESCRIPTION) text
+            .append("### Description").append('\n')
+            .append(env.GITHUB_PR_DESCRIPTION).append('\n')
+      // comment
+      if (env.GITHUB_PR_COMMENT_BODY) text
+            .append("### Comment").append('\n')
+            .append(env.GITHUB_PR_COMMENT_BODY.replaceAll("(\\r\\n)|(\\r)", "\n")).append('\n')
+      // author
+      text
+            .append("#### Author").append('\n')
+            .append(env.GITHUB_PR_TRIGGER_SENDER_AUTHOR).append('\n')
+      // changelog
+      if (changelog) text
+            .append("#### Commits").append('\n')
+            .append(changelog)
+   } else {
+      text
+            .append("## Manual build").append('\n')
+            .append("### Branch").append('\n')
+            .append(buildParams.branch).append('\n')
+      if (env.COMMENT) text
+            .append("### Comment").append('\n')
+            .append(env.COMMENT).append('\n')
+      // changelog
+      if (changelog) text
+            .append("#### Commits").append('\n')
+            .append(changelog)
+   }
+   return text.toString()
+}
+
+def String changelog(utils, targetBranch, headBranch) {
+   if (!(targetBranch =~ /^origin.*/)) targetBranch = "origin/$targetBranch"
+   if (!(headBranch =~ /^origin.*/)) headBranch = "origin/$headBranch"
+   utils.bash("git rev-list $targetBranch..$headBranch --oneline")
+}
+
+@NonCPS
+def Map hockeyInstallationLinks(actions) {
+   actions.collectEntries { action ->
+      if (action.getDisplayName().toLowerCase() =~ /.*install.*/) [public: action.getUrlName()]
+      else if (action.getDisplayName().toLowerCase() =~ /.*configuration.*/) [private: action.getUrlName()]
+      else [:]
+   }
+}

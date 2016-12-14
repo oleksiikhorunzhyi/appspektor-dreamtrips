@@ -3,8 +3,6 @@ package com.worldventures.dreamtrips.core.module;
 import android.app.Application;
 import android.content.Context;
 
-import com.worldventures.dreamtrips.modules.dtl_flow.di.DtlModule;
-import com.worldventures.dreamtrips.modules.flags.FlagsModule;
 import com.messenger.di.MessengerModule;
 import com.techery.spares.application.BaseApplicationWithInjector;
 import com.techery.spares.module.DebugModule;
@@ -12,9 +10,12 @@ import com.techery.spares.module.InjectingApplicationModule;
 import com.techery.spares.module.qualifier.ForApplication;
 import com.worldventures.dreamtrips.App;
 import com.worldventures.dreamtrips.core.janet.JanetModule;
+import com.worldventures.dreamtrips.core.janet.JanetUploaderyModule;
 import com.worldventures.dreamtrips.core.janet.cache.CacheActionStorageModule;
 import com.worldventures.dreamtrips.modules.common.ResponseSnifferModule;
 import com.worldventures.dreamtrips.modules.common.SessionProcessingModule;
+import com.worldventures.dreamtrips.modules.dtl_flow.di.DtlModule;
+import com.worldventures.dreamtrips.modules.flags.FlagsModule;
 import com.worldventures.dreamtrips.modules.gcm.ActionReceiverModule;
 import com.worldventures.dreamtrips.modules.gcm.GcmModule;
 import com.worldventures.dreamtrips.modules.mapping.MappingModule;
@@ -29,9 +30,14 @@ import dagger.Provides;
             // base injection and helpers/drivers
             InjectingApplicationModule.class,
             //
-            DebugModule.class, InitializerModule.class, HolderModule.class, PersistenceModule.class, ManagerModule.class,
+            DebugModule.class,
+            InitializerModule.class,
+            HolderModule.class,
+            PersistenceModule.class,
+            ManagerModule.class,
             //
-            ApiModule.class, AmazonModule.class,
+            ApiModule.class,
+            AmazonModule.class,
             //
             UiBindingModule.class,
             //
@@ -49,7 +55,7 @@ import dagger.Provides;
             //
             MessengerModule.class, FlagsModule.class, DtlModule.class,
             //
-            JanetModule.class, AnalyticsModule.class, SessionProcessingModule.class,
+            JanetModule.class, JanetUploaderyModule.class, AnalyticsModule.class, SessionProcessingModule.class,
             //
             FlagsModule.class, PodcastAppModule.class, MappingModule.class,
             //

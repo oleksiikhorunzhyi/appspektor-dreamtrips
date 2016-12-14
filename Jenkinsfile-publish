@@ -153,16 +153,16 @@ def Map generateParams(boolean isGithubBuild) {
       case ~/^(release\/.+)|(hotfix\/.+)|(develop)/:
          targetBranch = 'master'
          break
-      case ~/^smart-card\/.+/:
+      case ~/^smart-card\/(?!dev).+/:
          targetBranch = 'smart-card/dev'
          break
-      case ~/^social\/.+/:
+      case ~/^social\/(?!dev).+/:
          targetBranch = 'social/develop'
          break
-      case ~/^messenger\/.+/:
+      case ~/^messenger\/(?!dev).+/:
          targetBranch = 'messenger/dev'
          break
-      case ~/^dtl\/.+/:
+      case ~/^dtl\/(?!dev).+/:
          targetBranch = 'dtl/dev'
          break
       default:
@@ -181,7 +181,7 @@ def boolean isGithubBuild() {
 @NonCPS
 def String generateReleaseNotes(buildParams, changelog, boolean isGithubBuild) {
    StringBuilder text = new StringBuilder()
-   changelog = changelog.split('\\n').collect { s -> "* $s" }.join('\n')
+   changelog = changelog?.split('\\n').collect { s -> "* $s" }.join('\n')
    if (isGithubBuild) {
       // title
       text
@@ -200,7 +200,7 @@ def String generateReleaseNotes(buildParams, changelog, boolean isGithubBuild) {
             .append("#### Author").append('\n')
             .append(env.GITHUB_PR_TRIGGER_SENDER_AUTHOR).append('\n')
       // changelog
-      text
+      if (changelog) text
             .append("#### Commits").append('\n')
             .append(changelog)
    } else {
@@ -212,7 +212,7 @@ def String generateReleaseNotes(buildParams, changelog, boolean isGithubBuild) {
             .append("### Comment").append('\n')
             .append(env.COMMENT).append('\n')
       // changelog
-      text
+      if (changelog) text
             .append("#### Commits").append('\n')
             .append(changelog)
    }

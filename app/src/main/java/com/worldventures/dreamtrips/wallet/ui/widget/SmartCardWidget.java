@@ -52,8 +52,8 @@ public class SmartCardWidget extends FrameLayout {
 
    public void bindCard(@NonNull SmartCard smartCard, boolean isFirmwareAvailable) {
       File photoFile = smartCard.user().userPhoto().monochrome();
-      bankLabel.setText(smartCard.user().fullName());
       if (photoFile != null) scAvatar.setImageURI(Uri.fromFile(photoFile));
+      bankLabel.setText(smartCard.user().fullName());
       batteryView.setLevel(smartCard.batteryLevel());
       batteryLevel.setText(String.format("%d%%", smartCard.batteryLevel()));
       stealthIndicator.setVisibility(smartCard.stealthMode() ? VISIBLE : GONE);

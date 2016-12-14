@@ -3,6 +3,7 @@ package com.worldventures.dreamtrips.wallet.domain.converter;
 import com.worldventures.dreamtrips.api.smart_card.association_info.model.SmartCardInfo;
 import com.worldventures.dreamtrips.modules.mapping.converter.Converter;
 import com.worldventures.dreamtrips.wallet.domain.entity.ImmutableSmartCard;
+import com.worldventures.dreamtrips.wallet.domain.entity.ImmutableSmartCardUser;
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCard;
 
 import io.techery.mappery.MapperyContext;
@@ -20,13 +21,13 @@ public class SmartCardInfoToSmartCard implements Converter<SmartCardInfo, SmartC
 
    @Override
    public SmartCard convert(MapperyContext mapperyContext, SmartCardInfo smartCardInfo) {
-      //todo hotfix NPE when server returned name=null
-      //we should remove deviceName or cardName and make this field nullable
-      final String name = smartCardInfo.displayName() == null ? "" : smartCardInfo.displayName();
       return ImmutableSmartCard.builder()
             .smartCardId(String.valueOf(smartCardInfo.scId()))
-           //todo .cardName(name)
-          //todo  .userPhoto(smartCardInfo.displayPhoto())
+            .user(ImmutableSmartCardUser.builder()
+                  .firstName(smartCardInfo.user().firstName())
+                  .middleName(smartCardInfo.user().middleName() != null ? smartCardInfo.user().middleName() : "")
+                  .lastName(smartCardInfo.user().lastName())
+                  .build())
             .serialNumber(smartCardInfo.serialNumber())
             .deviceAddress(smartCardInfo.bleAddress())
             .cardStatus(SmartCard.CardStatus.ACTIVE)

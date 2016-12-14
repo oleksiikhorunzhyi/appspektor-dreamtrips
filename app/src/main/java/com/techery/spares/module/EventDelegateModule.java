@@ -1,10 +1,12 @@
 package com.techery.spares.module;
 
+import com.techery.spares.utils.delegate.EditCommentCloseDelegate;
 import com.techery.spares.utils.delegate.NotificationCountEventDelegate;
 import com.techery.spares.utils.delegate.ScreenChangedEventDelegate;
 import com.techery.spares.utils.delegate.SearchFocusChangedDelegate;
 import com.techery.spares.utils.delegate.StoryLikedEventDelegate;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
+import com.techery.spares.utils.delegate.CloseDialogEventDelegate;
 import com.worldventures.dreamtrips.modules.trips.delegate.ResetFilterEventDelegate;
 import com.worldventures.dreamtrips.modules.trips.delegate.TripFilterEventDelegate;
 
@@ -26,6 +28,18 @@ public class EventDelegateModule {
    @Singleton
    ScreenChangedEventDelegate provideScreenChangedDelegate() {
       return new ScreenChangedEventDelegate();
+   }
+
+   @Provides
+   @Singleton
+   CloseDialogEventDelegate provideCloseDialogEventDelegate() {
+      return new CloseDialogEventDelegate();
+   }
+
+   @Provides
+   @Singleton
+   EditCommentCloseDelegate provideEditCommentCloseDelegate() {
+      return new EditCommentCloseDelegate();
    }
 
    @Provides

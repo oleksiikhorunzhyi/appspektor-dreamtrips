@@ -72,15 +72,15 @@
          <TextView
                android:id="@+id/item_smartcard_profile"
                style="@style/SettingsItemText"
-               android:layout_marginLeft="@dimen/spacing_normal"
-               android:layout_marginTop="@dimen/spacing_large"
+               android:paddingStart="@dimen/spacing_normal"
+               android:paddingTop="@dimen/spacing_large"
+               android:paddingBottom="@dimen/spacing_large"
                android:text="@string/wallet_card_settings_sc_profile"
                />
 
          <!--divider-->
          <View
                style="@style/SettingsItemDividerStyle"
-               android:layout_marginTop="@dimen/spacing_large"
                />
 
          <!--General-->
@@ -94,8 +94,8 @@
          <TextView
                android:id="@+id/item_about"
                style="@style/SettingsItemText"
-               android:layout_marginLeft="@dimen/spacing_normal"
-               android:layout_marginTop="@dimen/spacing_large"
+               android:paddingStart="@dimen/spacing_normal"
+               android:paddingTop="@dimen/spacing_large"
                android:text="@string/wallet_card_settings_about"
                android:visibility="gone"
                />
@@ -104,8 +104,8 @@
          <RelativeLayout
                android:layout_width="match_parent"
                android:layout_height="wrap_content"
-               android:layout_marginLeft="@dimen/spacing_normal"
-               android:layout_marginTop="@dimen/spacing_large"
+               android:paddingStart="@dimen/spacing_normal"
+               android:paddingTop="@dimen/spacing_large"
                android:visibility="gone"
                >
 
@@ -160,8 +160,9 @@
                android:id="@+id/item_last_location"
                android:layout_width="match_parent"
                android:layout_height="wrap_content"
-               android:layout_marginLeft="@dimen/spacing_normal"
-               android:layout_marginTop="@dimen/spacing_large"
+               android:paddingStart="@dimen/spacing_normal"
+               android:paddingTop="@dimen/spacing_large"
+               android:paddingBottom="@dimen/spacing_large"
                android:orientation="vertical"
                >
 
@@ -180,7 +181,6 @@
          <!--divider-->
          <View
                style="@style/SettingsItemDividerStyle"
-               android:layout_marginTop="@dimen/spacing_large"
                />
 
          <!--Security-->
@@ -194,8 +194,9 @@
          <RelativeLayout
                android:layout_width="match_parent"
                android:layout_height="wrap_content"
-               android:layout_marginLeft="@dimen/spacing_normal"
-               android:layout_marginTop="@dimen/spacing_large"
+               android:paddingStart="@dimen/spacing_normal"
+               android:paddingTop="@dimen/spacing_large"
+               android:paddingBottom="@dimen/spacing_large"
                >
 
             <TextView
@@ -222,8 +223,9 @@
                android:id="@+id/item_disable_default_payment_card"
                android:layout_width="match_parent"
                android:layout_height="wrap_content"
-               android:layout_marginLeft="@dimen/spacing_normal"
-               android:layout_marginTop="@dimen/spacing_large"
+               android:paddingStart="@dimen/spacing_normal"
+               android:paddingTop="@dimen/spacing_large"
+               android:paddingBottom="@dimen/spacing_large"
                android:orientation="vertical"
                >
 
@@ -244,8 +246,9 @@
          <TextView
                android:id="@+id/item_reset_pin"
                style="@style/SettingsItemText"
-               android:layout_marginLeft="@dimen/spacing_normal"
-               android:layout_marginTop="@dimen/spacing_large"
+               android:paddingStart="@dimen/spacing_normal"
+               android:paddingTop="@dimen/spacing_large"
+               android:paddingBottom="@dimen/spacing_large"
                android:text="@string/wallet_card_settings_reset_pin"
                />
 
@@ -254,8 +257,9 @@
                android:id="@+id/item_auto_delete_cards"
                android:layout_width="match_parent"
                android:layout_height="wrap_content"
-               android:layout_marginLeft="@dimen/spacing_normal"
-               android:layout_marginTop="@dimen/spacing_large"
+               android:paddingStart="@dimen/spacing_normal"
+               android:paddingTop="@dimen/spacing_large"
+               android:paddingBottom="@dimen/spacing_large"
                android:orientation="vertical"
                >
 
@@ -276,8 +280,9 @@
          <RelativeLayout
                android:layout_width="match_parent"
                android:layout_height="wrap_content"
-               android:layout_marginLeft="@dimen/spacing_normal"
-               android:layout_marginTop="@dimen/spacing_large"
+               android:paddingStart="@dimen/spacing_normal"
+               android:paddingTop="@dimen/spacing_large"
+               android:paddingBottom="@dimen/spacing_large"
                >
 
             <TextView
@@ -306,8 +311,8 @@
          <RelativeLayout
                android:layout_width="match_parent"
                android:layout_height="wrap_content"
-               android:layout_marginLeft="@dimen/spacing_normal"
-               android:layout_marginTop="@dimen/spacing_large"
+               android:paddingStart="@dimen/spacing_normal"
+               android:paddingTop="@dimen/spacing_large"
                android:visibility="gone"
                >
 
@@ -336,7 +341,6 @@
          <!--divider-->
          <View
                style="@style/SettingsItemDividerStyle"
-               android:layout_marginTop="@dimen/spacing_large"
                />
 
          <!--Updates-->
@@ -351,9 +355,10 @@
                android:id="@+id/item_firmware_updates"
                android:layout_width="match_parent"
                android:layout_height="wrap_content"
-               android:layout_marginLeft="@dimen/spacing_normal"
-               android:layout_marginRight="@dimen/spacing_normal"
-               android:layout_marginTop="@dimen/spacing_large"
+               android:paddingStart="@dimen/spacing_normal"
+               android:paddingEnd="@dimen/spacing_normal"
+               android:paddingTop="@dimen/spacing_large"
+               android:paddingBottom="@dimen/spacing_large"
                android:orientation="vertical"
                >
 
@@ -397,7 +402,6 @@
          <!--divider-->
          <View
                style="@style/SettingsItemDividerStyle"
-               android:layout_marginTop="@dimen/spacing_large"
                />
 
          <!--Setup-->
@@ -422,8 +426,8 @@
                android:id="@+id/item_factory_reset"
                android:layout_width="match_parent"
                android:layout_height="wrap_content"
-               android:layout_marginLeft="@dimen/spacing_normal"
-               android:layout_marginTop="@dimen/spacing_large"
+               android:paddingStart="@dimen/spacing_normal"
+               android:paddingTop="@dimen/spacing_large"
                android:orientation="vertical"
                >
 
@@ -443,8 +447,9 @@
          <TextView
                android:id="@+id/item_restart_sc"
                style="@style/SettingsItemText"
-               android:layout_marginLeft="@dimen/spacing_normal"
-               android:layout_marginTop="@dimen/spacing_large"
+               android:paddingStart="@dimen/spacing_normal"
+               android:paddingTop="@dimen/spacing_large"
+               android:paddingBottom="@dimen/spacing_large"
                android:text="@string/wallet_card_settings_restart_sc"
                />
 
@@ -452,9 +457,9 @@
          <TextView
                android:id="@+id/item_unpair_sc"
                style="@style/SettingsItemText"
-               android:layout_marginBottom="@dimen/spacing_large"
-               android:layout_marginLeft="@dimen/spacing_normal"
-               android:layout_marginTop="@dimen/spacing_large"
+               android:paddingBottom="@dimen/spacing_large"
+               android:paddingStart="@dimen/spacing_normal"
+               android:paddingTop="@dimen/spacing_large"
                android:text="@string/wallet_card_settings_unpair_sc"
                android:visibility="gone"
                />
@@ -464,8 +469,8 @@
                android:id="@+id/settings_section"
                android:layout_width="match_parent"
                android:layout_height="wrap_content"
-               android:layout_marginTop="@dimen/spacing_large"
                android:orientation="vertical"
+               android:visibility="visible"
                >
 
             <TextView
@@ -473,10 +478,7 @@
                   android:layout_width="match_parent"
                   android:layout_height="wrap_content"
                   android:gravity="center"
-                  android:paddingBottom="@dimen/spacing_normal"
-                  android:paddingEnd="@dimen/spacing_normal"
-                  android:paddingStart="@dimen/spacing_normal"
-                  android:paddingTop="@dimen/spacing_normal"
+                  android:padding="@dimen/spacing_normal"
                   android:text="Test section"
                   android:textAppearance="?android:attr/textAppearanceSmall"
                   tools:ignore="HardcodedText"

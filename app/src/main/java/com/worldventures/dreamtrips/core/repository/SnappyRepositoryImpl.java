@@ -869,6 +869,15 @@ public class SnappyRepositoryImpl implements SnappyRepository {
    }
 
    @Override
+   public boolean hasTripsDetailsForUids(List<String> uids) {
+      return actWithResult(db ->
+            Queryable.from()
+                  .toList()
+                  .containsAll(Queryable.from(uids).map(uid -> TRIPS_DETAILS + uid).toList())
+      ).or(false);
+   }
+
+   @Override
    public List<TripModel> getTripsDetailsForUids(List<String> uids) {
       return actWithResult(db -> {
          List<TripModel> tripModels = new ArrayList<>();

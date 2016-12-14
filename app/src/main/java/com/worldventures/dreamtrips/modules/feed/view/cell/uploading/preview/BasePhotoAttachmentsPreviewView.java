@@ -3,7 +3,6 @@ package com.worldventures.dreamtrips.modules.feed.view.cell.uploading.preview;
 import android.content.Context;
 import android.net.Uri;
 import android.view.LayoutInflater;
-import android.view.View;
 import android.view.ViewGroup;
 
 import com.facebook.drawee.view.SimpleDraweeView;
@@ -13,20 +12,18 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
-public abstract class BasePhotoAttachmentsPreviewView implements PhotoAttachmentPreviewView {
+public abstract class BasePhotoAttachmentsPreviewView extends BasePhotoAttachmentPreviewView {
 
-   protected Context context;
-   protected View view;
    private List<SimpleDraweeView> previewViews = new ArrayList<>();
 
    public BasePhotoAttachmentsPreviewView(Context context) {
-      this.context = context;
+      super(context);
    }
 
    private void init() {
-      view = LayoutInflater.from(context).inflate(getLayoutId(), null, false);
+      rootView = LayoutInflater.from(context).inflate(getLayoutId(), null, false);
       for (int id : getPreviewViewsIds()) {
-         previewViews.add((SimpleDraweeView) view.findViewById(id));
+         previewViews.add((SimpleDraweeView) rootView.findViewById(id));
       }
       onViewCreated();
    }
@@ -34,11 +31,12 @@ public abstract class BasePhotoAttachmentsPreviewView implements PhotoAttachment
    @Override
    public void attachView(ViewGroup viewGroup) {
       init();
-      viewGroup.addView(view);
+      viewGroup.addView(rootView);
    }
 
    @Override
-   public void showPreview(List<PhotoAttachment> attachments) {
+   public void showPreview(List<PhotoAttachment> attachments, boolean animate) {
+      super.showPreview(attachments, animate);
       int attachmentsLastElementIndex = attachments.size() - 1;
       for (int i = 0; i < previewViews.size(); i++) {
          if (i > attachmentsLastElementIndex) {
@@ -50,7 +48,6 @@ public abstract class BasePhotoAttachmentsPreviewView implements PhotoAttachment
    }
 
    protected void onViewCreated() {
-
    }
 
    protected abstract int[] getPreviewViewsIds();

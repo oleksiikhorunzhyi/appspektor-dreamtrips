@@ -10,23 +10,23 @@ import com.worldventures.dreamtrips.modules.background_uploading.model.PhotoAtta
 import java.io.File;
 import java.util.List;
 
-public class SinglePhotoAttachmentPreviewView implements PhotoAttachmentPreviewView {
+public class SinglePhotoAttachmentPreviewView extends BasePhotoAttachmentPreviewView {
 
-   private Context context;
    private SimpleDraweeView simpleDraweeView;
 
    public SinglePhotoAttachmentPreviewView(Context context) {
-      this.context = context;
+      super(context);
    }
 
    @Override
    public void attachView(ViewGroup viewGroup) {
-      simpleDraweeView = new SimpleDraweeView(context);
+      rootView = simpleDraweeView = new SimpleDraweeView(context);
       viewGroup.addView(simpleDraweeView);
    }
 
    @Override
-   public void showPreview(List<PhotoAttachment> attachments) {
+   public void showPreview(List<PhotoAttachment> attachments, boolean animate) {
+      super.showPreview(attachments, animate);
       if (simpleDraweeView.getParent() == null) throw new IllegalStateException("Must call attachView() first");
       simpleDraweeView.setImageURI(Uri.fromFile(new File(attachments.get(0).selectedPhoto().path())));
    }

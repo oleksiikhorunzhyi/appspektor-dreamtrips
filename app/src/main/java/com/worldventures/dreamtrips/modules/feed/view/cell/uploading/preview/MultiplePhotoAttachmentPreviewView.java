@@ -34,8 +34,8 @@ public class MultiplePhotoAttachmentPreviewView extends BasePhotoAttachmentsPrev
    }
 
    @Override
-   public void showPreview(List<PhotoAttachment> attachments) {
-      super.showPreview(attachments);
+   public void showPreview(List<PhotoAttachment> attachments, boolean animate) {
+      super.showPreview(attachments, animate);
       if (attachments.size() > MAX_DISPLAY_COUNT) {
          additionalCountTextView.setText(String.format("+%d", attachments.size() - MAX_DISPLAY_COUNT));
          additionalCountTextView.setVisibility(View.VISIBLE);
@@ -47,6 +47,6 @@ public class MultiplePhotoAttachmentPreviewView extends BasePhotoAttachmentsPrev
    @Override
    protected void onViewCreated() {
       super.onViewCreated();
-      ButterKnife.inject(this, view);
+      ButterKnife.inject(this, rootView);
    }
 }

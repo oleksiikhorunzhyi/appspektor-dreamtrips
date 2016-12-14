@@ -15,6 +15,7 @@ import android.widget.TextView;
 
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.modules.background_uploading.model.CompoundOperationModel;
+import com.worldventures.dreamtrips.modules.background_uploading.model.CompoundOperationState;
 import com.worldventures.dreamtrips.modules.background_uploading.model.PhotoAttachment;
 import com.worldventures.dreamtrips.modules.background_uploading.model.PostCompoundOperationModel;
 import com.worldventures.dreamtrips.modules.background_uploading.model.PostWithAttachmentBody;
@@ -72,7 +73,7 @@ public class UploadingPhotoPostCell extends FrameLayout {
       PostWithAttachmentBody postWithAttachmentBody = compoundOperationModel.body();
       List<PhotoAttachment> attachments = postWithAttachmentBody.attachments();
 
-      refreshPhotoPreviewView(attachments);
+      refreshPhotoPreviewView(compoundOperationModel.state(), attachments);
 
       titleTextView.setText(DateUtils.formatDateTime(getContext(),
             compoundOperationModel.creationDate()
@@ -86,14 +87,14 @@ public class UploadingPhotoPostCell extends FrameLayout {
    /*
     * Reuse photo preview view is suitable, otherwise attach new one
     */
-   private void refreshPhotoPreviewView(List<PhotoAttachment> attachments) {
+   private void refreshPhotoPreviewView(CompoundOperationState state, List<PhotoAttachment> attachments) {
       PhotoAttachmentPreviewView newPhotoPreviewView = PhotoPreviewViewFactory.provideView(getContext(), attachments);
       if (photoPreviewView == null || !photoPreviewView.getClass().equals(newPhotoPreviewView.getClass())) {
          previewContainer.removeAllViews();
          newPhotoPreviewView.attachView(previewContainer);
          photoPreviewView = newPhotoPreviewView;
       }
-      photoPreviewView.showPreview(attachments);
+      photoPreviewView.showPreview(attachments, state == CompoundOperationState.STARTED);
    }
 
    private void updateViewsAccordingToState(CompoundOperationModel compoundOperationModel) {

@@ -74,8 +74,8 @@ public class JanetUploaderyModule {
 
    @Provides
    @Named(JANET_UPLOADERY)
-   ActionService provideUploaderyActionService(@ForApplication Context appContext, @Named(JANET_UPLOADERY) HttpClient httpClient, Gson gson) {
+   ActionService provideUploaderyActionService(@ForApplication Context appContext, @Named(JANET_UPLOADERY) HttpClient httpClient) {
       return new NewDreamTripsHttpService(appContext, BuildConfig.DreamTripsApi, httpClient, new GsonConverter(new GsonProvider()
-            .provideGson()), new GsonConverter(gson));
+            .provideGson()));
    }
 }

@@ -206,9 +206,9 @@ public class UploadingPhotoPostCell extends FrameLayout {
    @OnClick(R.id.uploading_cell_control_main_action)
    void onMainControlActionClicked() {
       switch (compoundOperationModel.state()) {
-         case STARTED:
-            break;
          case SCHEDULED:
+            break;
+         case STARTED:
             cellDelegate.onUploadPauseClicked(compoundOperationModel);
             break;
          case PAUSED:

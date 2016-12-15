@@ -12,6 +12,7 @@ import com.worldventures.dreamtrips.App;
 import com.worldventures.dreamtrips.core.janet.JanetModule;
 import com.worldventures.dreamtrips.core.janet.JanetUploaderyModule;
 import com.worldventures.dreamtrips.core.janet.cache.CacheActionStorageModule;
+import com.worldventures.dreamtrips.modules.background_uploading.BackgroundUploadingModule;
 import com.worldventures.dreamtrips.modules.common.ResponseSnifferModule;
 import com.worldventures.dreamtrips.modules.common.SessionProcessingModule;
 import com.worldventures.dreamtrips.modules.flags.FlagsModule;
@@ -59,6 +60,7 @@ import dagger.Provides;
             FlagsModule.class, PodcastAppModule.class, MappingModule.class,
             //
             SecurityModule.class, DeviceModule.class,
+            BackgroundUploadingModule.class,
       },
       library = true,
       complete = false,

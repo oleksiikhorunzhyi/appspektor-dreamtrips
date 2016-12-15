@@ -2,9 +2,10 @@ package com.worldventures.dreamtrips.modules.feed.presenter.delegate;
 
 import com.worldventures.dreamtrips.modules.background_uploading.model.PostCompoundOperationModel;
 import com.worldventures.dreamtrips.modules.background_uploading.service.BackgroundUploadingInteractor;
+import com.worldventures.dreamtrips.modules.background_uploading.service.CancelCompoundOperationCommand;
+import com.worldventures.dreamtrips.modules.background_uploading.service.PauseCompoundOperationCommand;
+import com.worldventures.dreamtrips.modules.background_uploading.service.ResumeCompoundOperationCommand;
 import com.worldventures.dreamtrips.modules.feed.presenter.UploadingListenerPresenter;
-
-import timber.log.Timber;
 
 public class UploadingPresenterDelegate implements UploadingListenerPresenter {
 
@@ -16,21 +17,24 @@ public class UploadingPresenterDelegate implements UploadingListenerPresenter {
 
    @Override
    public void onUploadResume(PostCompoundOperationModel compoundOperationModel) {
-      Timber.d("Upload -- start %s", compoundOperationModel);
+      uploadingInteractor.resumeCompoundOperationPipe()
+            .send(new ResumeCompoundOperationCommand(compoundOperationModel));
    }
 
    @Override
    public void onUploadPaused(PostCompoundOperationModel compoundOperationModel) {
-      Timber.d("Upload -- pause %s", compoundOperationModel);
+      uploadingInteractor.pauseCompoundOperationPipe().send(new PauseCompoundOperationCommand(compoundOperationModel));
    }
 
    @Override
    public void onUploadRetry(PostCompoundOperationModel compoundOperationModel) {
-      Timber.d("Upload -- retry %s", compoundOperationModel);
+      uploadingInteractor.resumeCompoundOperationPipe()
+            .send(new ResumeCompoundOperationCommand(compoundOperationModel));
    }
 
    @Override
    public void onUploadCancel(PostCompoundOperationModel compoundOperationModel) {
-      Timber.d("Upload -- cancel %s", compoundOperationModel);
+      uploadingInteractor.cancelCompoundOperationPipe()
+            .send(new CancelCompoundOperationCommand(compoundOperationModel));
    }
 }

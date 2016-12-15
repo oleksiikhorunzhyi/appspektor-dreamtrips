@@ -603,6 +603,7 @@
    <string name="uploading_post_status_progress_singular">Uploading photo…</string>
    <string name="uploading_post_status_progress_plural">Uploading %d photos…</string>
    <string name="uploading_post_status_paused">Upload paused</string>
+   <string name="uploading_post_status_waiting">Waiting</string>
    <string name="uploading_post_status_failed_connection">Connection lost</string>
    <string name="uploading_post_status_uploaded">Post successfully uploaded!</string>
    <string name="uploading_post_time_left_estimating">Estimating…</string>

@@ -37,4 +37,8 @@ public abstract class CompoundOperationsCommand extends Command<List<CompoundOpe
    public static CompoundOperationsCommand compoundCommandChanged(CompoundOperationModel updatedModel) {
       return new UpdateCompoundOperationsCommand(updatedModel);
    }
+
+   public static CompoundOperationsCommand compoundCommandRemoved(CompoundOperationModel updatedModel) {
+      return new DeleteCompoundOperationsCommand(updatedModel);
+   }
 }

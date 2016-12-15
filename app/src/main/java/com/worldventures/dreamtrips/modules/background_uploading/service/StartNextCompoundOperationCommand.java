@@ -26,7 +26,7 @@ public class StartNextCompoundOperationCommand extends Command<Void> implements 
 
    @Override
    protected void run(CommandCallback<Void> callback) throws Throwable {
-      if (hasScheduledOperations()) {
+      if (hasScheduledOperations() && !hasStartedOperations()) {
          backgroundUploadingInteractor.postProcessingPipe().send(new PostProcessingCommand(getNextOperation()));
       }
       callback.onSuccess(null);
@@ -35,6 +35,11 @@ public class StartNextCompoundOperationCommand extends Command<Void> implements 
    private boolean hasScheduledOperations() {
       return existingUploads != null && Queryable.from(existingUploads)
             .any(item -> item.state() == CompoundOperationState.SCHEDULED);
+   }
+
+   private boolean hasStartedOperations() {
+      return existingUploads != null && Queryable.from(existingUploads)
+            .any(item -> item.state() == CompoundOperationState.STARTED);
    }
 
    private PostCompoundOperationModel getNextOperation() {

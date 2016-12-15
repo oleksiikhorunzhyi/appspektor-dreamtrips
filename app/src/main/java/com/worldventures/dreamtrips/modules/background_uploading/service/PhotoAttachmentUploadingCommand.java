@@ -4,13 +4,10 @@ import com.innahema.collections.query.queriables.Queryable;
 import com.worldventures.dreamtrips.core.api.uploadery.SimpleUploaderyCommand;
 import com.worldventures.dreamtrips.core.janet.dagger.InjectableAction;
 import com.worldventures.dreamtrips.modules.background_uploading.model.ImmutablePhotoAttachment;
-import com.worldventures.dreamtrips.modules.background_uploading.model.ImmutablePostCompoundOperationModel;
-import com.worldventures.dreamtrips.modules.background_uploading.model.ImmutablePostWithAttachmentBody;
 import com.worldventures.dreamtrips.modules.background_uploading.model.PhotoAttachment;
 import com.worldventures.dreamtrips.modules.background_uploading.model.PostCompoundOperationModel;
+import com.worldventures.dreamtrips.modules.background_uploading.model.PostCompoundOperationMutator;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
@@ -18,19 +15,20 @@ import javax.inject.Inject;
 import io.techery.janet.Command;
 import io.techery.janet.Janet;
 import io.techery.janet.command.annotations.CommandAction;
-import rx.Observable;
+import io.techery.janet.helper.ActionStateSubscriber;
 import timber.log.Timber;
 
 @CommandAction
 public class PhotoAttachmentUploadingCommand extends Command<PostCompoundOperationModel> implements InjectableAction {
 
    @Inject Janet janet;
+   @Inject PostCompoundOperationMutator compoundOperationObjectMutator;
 
    private PostCompoundOperationModel postCompoundOperationModel;
    private PhotoAttachment photoAttachment;
 
-   private long totalUploadedSize;
-   private long totalSize;
+   private double totalUploadedSize;
+   private double totalSize;
    private int attachmentIndex;
 
    public PhotoAttachmentUploadingCommand(PostCompoundOperationModel postCompoundOperationModel,
@@ -73,6 +71,7 @@ public class PhotoAttachmentUploadingCommand extends Command<PostCompoundOperati
                      String originUrl = actionState.action.getResult().response().uploaderyPhoto().location();
                      Timber.d("[New Photo Attachment Creation] Succeed %s", originUrl);
                      builder.originUrl(originUrl);
+                     builder.progress(100);
                      builder.state(PhotoAttachment.State.UPLOADED);
                      break;
                   case FAIL:
@@ -83,37 +82,25 @@ public class PhotoAttachmentUploadingCommand extends Command<PostCompoundOperati
                photoAttachmentUpdated(builder.build());
                return actionState;
             })
-            .flatMap(actionState -> {
-               switch (actionState.status) {
-                  case SUCCESS:
-                     return Observable.just(postCompoundOperationModel);
-                  case FAIL:
-                     return Observable.error(actionState.exception);
-                  default:
-                     return Observable.never();
-               }
-            })
-            .subscribe(callback::onSuccess, callback::onFail);
+            .subscribe(new ActionStateSubscriber<SimpleUploaderyCommand>()
+                  .onProgress((command, progress) -> callback.onProgress(progress))
+                  .onSuccess(command -> callback.onSuccess(postCompoundOperationModel))
+                  .onFail((command, e) -> callback.onFail(e)));
    }
 
-   public PostCompoundOperationModel getPostCompoundOperationModel() {
+   PostCompoundOperationModel getPostCompoundOperationModel() {
       return postCompoundOperationModel;
    }
 
    private void photoAttachmentUpdated(PhotoAttachment updatedAttachment) {
-      List<PhotoAttachment> attachments = new ArrayList<>(postCompoundOperationModel.body().attachments());
-      attachments.remove(attachmentIndex);
-      attachments.add(attachmentIndex, updatedAttachment);
-
-      postCompoundOperationModel = ImmutablePostCompoundOperationModel
-            .copyOf(postCompoundOperationModel)
-            .withProgress(calculateProgress())
-            .withBody(ImmutablePostWithAttachmentBody
-                  .copyOf(postCompoundOperationModel.body())
-                  .withAttachments(attachments));
+      photoAttachment = updatedAttachment;
+      postCompoundOperationModel = compoundOperationObjectMutator.photoAttachmentChanged(postCompoundOperationModel,
+            photoAttachment, attachmentIndex, (totalUploadedSize + getUploadedSizeOfAttachment(updatedAttachment)) / totalSize);
    }
 
-   private int calculateProgress() {
-      return (int) (PostProcessingCommand.PROGRESS_PHOTOS_CREATING * totalUploadedSize / totalSize);
+   private double getUploadedSizeOfAttachment(PhotoAttachment updatedAttachment) {
+      double uplodedSize = updatedAttachment.progress() * updatedAttachment.selectedPhoto().size() / 100.0d;
+      Timber.d("Photo attachment uploading - %d of %d", (long) uplodedSize, updatedAttachment.selectedPhoto().size());
+      return uplodedSize;
    }
 }

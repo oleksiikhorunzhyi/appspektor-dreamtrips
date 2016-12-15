@@ -1,5 +1,8 @@
 package com.worldventures.dreamtrips.modules.feed.view.cell.uploading;
 
+import android.animation.AnimatorSet;
+import android.animation.ObjectAnimator;
+import android.animation.ValueAnimator;
 import android.content.Context;
 import android.graphics.PorterDuff;
 import android.support.annotation.ColorRes;
@@ -35,6 +38,10 @@ import static android.text.format.DateUtils.FORMAT_SHOW_YEAR;
 
 public class UploadingPhotoPostCell extends FrameLayout {
 
+   private static final int ANIMATION_DURATION_DELAY = 2000;
+   private static final int ANIMATION_DURATION_FADE_OUT = 500;
+   private static final int ANIMATION_DURATION_SLIDE_UP = 500;
+
    @InjectView(R.id.uploading_cell_general_upload_container) ViewGroup generalUploadContainer;
    @InjectView(R.id.uploading_cell_upload_finished_container) View uploadFinishedView;
    @InjectView(R.id.uploading_cell_attachment_container) ViewGroup previewContainer;
@@ -49,6 +56,8 @@ public class UploadingPhotoPostCell extends FrameLayout {
    private UploadingTimeLeftFormatter timeLeftFormatter;
 
    private PostCompoundOperationModel compoundOperationModel;
+
+   private AnimatorSet removeCellAnimationSet;
 
    public UploadingPhotoPostCell(Context context) {
       super(context);
@@ -78,7 +87,6 @@ public class UploadingPhotoPostCell extends FrameLayout {
       titleTextView.setText(DateUtils.formatDateTime(getContext(),
             compoundOperationModel.creationDate()
                   .getTime(), FORMAT_SHOW_DATE | FORMAT_SHOW_YEAR | FORMAT_ABBREV_MONTH));
-
       progressBar.setProgress(compoundOperationModel.progress());
 
       updateViewsAccordingToState(compoundOperationModel);
@@ -98,6 +106,9 @@ public class UploadingPhotoPostCell extends FrameLayout {
    }
 
    private void updateViewsAccordingToState(CompoundOperationModel compoundOperationModel) {
+      if (compoundOperationModel.state() != CompoundOperationState.FINISHED) {
+         resetAnimationsForFinishedState();
+      }
       switch (compoundOperationModel.state()) {
          case SCHEDULED:
             updateAccordingToScheduledState();
@@ -192,6 +203,38 @@ public class UploadingPhotoPostCell extends FrameLayout {
       generalUploadContainer.setAlpha(0.1f);
       // show finished view as overlay
       uploadFinishedView.setVisibility(View.VISIBLE);
+      if (!isAnimatingUploadFinishedState()) {
+         startAnimatingUploadFinishedState();
+      }
+   }
+
+   private boolean isAnimatingUploadFinishedState() {
+      return removeCellAnimationSet != null;
+   }
+
+   private void startAnimatingUploadFinishedState() {
+      ObjectAnimator fadeOut = ObjectAnimator.ofFloat(this, "alpha", 1f, 0f);
+      fadeOut.setDuration(ANIMATION_DURATION_FADE_OUT);
+      ValueAnimator slideUp = ValueAnimator.ofInt(0, - getHeight());
+      slideUp.addUpdateListener(animation -> {
+         ((MarginLayoutParams) getLayoutParams()).topMargin = (int) animation.getAnimatedValue();
+         requestLayout();
+      });
+      slideUp.setDuration(ANIMATION_DURATION_SLIDE_UP);
+      removeCellAnimationSet = new AnimatorSet();
+      removeCellAnimationSet.setStartDelay(ANIMATION_DURATION_DELAY);
+      removeCellAnimationSet.playSequentially(fadeOut, slideUp);
+      removeCellAnimationSet.start();
+   }
+
+   private void resetAnimationsForFinishedState() {
+      if (isAnimatingUploadFinishedState()) {
+         removeCellAnimationSet.removeAllListeners();
+         removeCellAnimationSet.cancel();
+      }
+      removeCellAnimationSet = null;
+      setAlpha(1f);
+      ((MarginLayoutParams) getLayoutParams()).topMargin = 0;
    }
 
    private void setProgressBarProgressColor(@ColorRes int current, @ColorRes int total) {

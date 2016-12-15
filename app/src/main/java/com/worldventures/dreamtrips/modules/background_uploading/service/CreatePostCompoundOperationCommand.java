@@ -2,6 +2,7 @@ package com.worldventures.dreamtrips.modules.background_uploading.service;
 
 import android.support.annotation.Nullable;
 
+import com.innahema.collections.query.queriables.Queryable;
 import com.worldventures.dreamtrips.modules.background_uploading.model.CompoundOperationState;
 import com.worldventures.dreamtrips.modules.background_uploading.model.ImmutablePhotoAttachment;
 import com.worldventures.dreamtrips.modules.background_uploading.model.ImmutablePostCompoundOperationModel;
@@ -12,6 +13,7 @@ import com.worldventures.dreamtrips.modules.background_uploading.model.PostWithA
 import com.worldventures.dreamtrips.modules.feed.model.SelectedPhoto;
 import com.worldventures.dreamtrips.modules.trips.model.Location;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
@@ -65,14 +67,13 @@ public class CreatePostCompoundOperationCommand extends Command<PostCompoundOper
       ImmutablePostWithAttachmentBody.Builder builder = ImmutablePostWithAttachmentBody.builder();
       builder.text(text);
       builder.location(location);
-      for (SelectedPhoto selectedPhoto : selectedPhotos) {
-         builder.addAttachments(ImmutablePhotoAttachment.builder()
-               .id(resolveId())
-               .progress(0)
-               .state(PhotoAttachment.State.SCHEDULED)
-               .selectedPhoto(selectedPhoto)
-               .build());
-      }
+      builder.attachments(new ArrayList<>(Queryable.from(selectedPhotos)
+      .map(selectedPhoto -> ImmutablePhotoAttachment.builder()
+            .id(resolveId())
+            .progress(0)
+            .state(PhotoAttachment.State.SCHEDULED)
+            .selectedPhoto(selectedPhoto)
+            .build()).toList()));
       return builder.build();
    }
 

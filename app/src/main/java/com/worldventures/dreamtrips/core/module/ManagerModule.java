@@ -2,7 +2,6 @@ package com.worldventures.dreamtrips.core.module;
 
 import android.content.Context;
 
-import com.messenger.storage.dao.PhotoDAO;
 import com.techery.spares.module.Injector;
 import com.techery.spares.module.qualifier.ForApplication;
 import com.techery.spares.session.SessionHolder;
@@ -20,9 +19,9 @@ import com.worldventures.dreamtrips.modules.common.delegate.SocialCropImageManag
 import com.worldventures.dreamtrips.modules.common.delegate.system.ConnectionInfoProvider;
 import com.worldventures.dreamtrips.modules.common.delegate.system.DeviceInfoProvider;
 import com.worldventures.dreamtrips.modules.common.delegate.system.DeviceInfoProviderImpl;
-import com.worldventures.dreamtrips.modules.common.presenter.delegate.ClearDirectoryDelegate;
 import com.worldventures.dreamtrips.modules.common.presenter.delegate.OfflineWarningDelegate;
 import com.worldventures.dreamtrips.modules.common.service.OfflineErrorInteractor;
+import com.worldventures.dreamtrips.modules.common.view.util.DrawableUtil;
 import com.worldventures.dreamtrips.modules.common.view.util.MediaPickerEventDelegate;
 import com.worldventures.dreamtrips.modules.common.view.util.PhotoPickerDelegate;
 import com.worldventures.dreamtrips.modules.dtl.location.LocationDelegate;
@@ -124,12 +123,6 @@ public class ManagerModule {
    @Singleton
    DTCookieManager provideCookieManager(@ForApplication Context context) {
       return new DTCookieManager(context);
-   }
-
-   @Provides
-   @Singleton
-   ClearDirectoryDelegate provideClearDirectoryDelegate(@ForApplication Context context, PhotoDAO photoDAO) {
-      return new ClearDirectoryDelegate(context, photoDAO);
    }
 
    @Provides
@@ -239,5 +232,11 @@ public class ManagerModule {
    @Singleton
    OfflineErrorInteractor provideOfflineErrorInteractor(SessionActionPipeCreator sessionActionPipeCreator) {
       return new OfflineErrorInteractor(sessionActionPipeCreator);
+   }
+
+   @Provides
+   @Singleton
+   DrawableUtil provideDrawableUtil(Context context) {
+      return new DrawableUtil(context);
    }
 }

@@ -204,7 +204,7 @@ public class CacheActionStorageModule {
 
    @Singleton
    @Provides
-   CompoundOperationRepository provideCompoundOperationRepository() {
-      return new CompoundOperationRepositoryImpl();
+   CompoundOperationRepository provideCompoundOperationRepository(SnappyRepository snappyRepository) {
+      return new CompoundOperationRepositoryImpl(snappyRepository);
    }
 }

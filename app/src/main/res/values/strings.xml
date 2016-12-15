@@ -606,7 +606,7 @@
    <string name="uploading_post_status_waiting">Waiting</string>
    <string name="uploading_post_status_failed_connection">Connection lost</string>
    <string name="uploading_post_status_uploaded">Post successfully uploaded!</string>
-   <string name="uploading_post_time_left_estimating">Estimating…</string>
+   <string name="uploading_post_time_left_posting">Posting…</string>
    <string name="uploading_post_time_left_seconds">s</string>
    <string name="uploading_post_time_left_minutes">m</string>
    <string name="uploading_post_time_left_hours">h</string>

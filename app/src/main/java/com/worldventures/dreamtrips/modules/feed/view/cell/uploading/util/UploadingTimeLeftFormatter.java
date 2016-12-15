@@ -6,7 +6,7 @@ import com.worldventures.dreamtrips.R;
 
 public class UploadingTimeLeftFormatter {
 
-   private static final String DURATION_FORMAT = "%d%s %d%s";
+   private static final String DURATION_FORMAT = "%d%s %d%s left";
 
    private Context context;
    private String hoursString;
@@ -21,8 +21,8 @@ public class UploadingTimeLeftFormatter {
    }
 
    public String format(long durationMillis) {
-      if (durationMillis == -1) {
-         return context.getString(R.string.uploading_post_time_left_estimating);
+      if (durationMillis == 0) {
+         return context.getString(R.string.uploading_post_time_left_posting);
       }
       long totalSecondsCount = durationMillis / 1000;
       long totalMinutesCount = totalSecondsCount / 60;

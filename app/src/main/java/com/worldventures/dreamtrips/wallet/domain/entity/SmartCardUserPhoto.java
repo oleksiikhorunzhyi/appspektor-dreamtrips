@@ -15,4 +15,7 @@ public interface SmartCardUserPhoto {
 
    @Nullable
    File monochrome();//pending value
+
+   @Nullable
+   String photoUrl();
 }

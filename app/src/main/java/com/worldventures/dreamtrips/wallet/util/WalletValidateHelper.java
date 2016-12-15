@@ -40,7 +40,7 @@ public class WalletValidateHelper {
       return !infoInvalid;
    }
 
-   public static boolean validateCardCvv(String cvv, long cardNumber) {
+   public static boolean validateCardCvv(String cvv, String cardNumber) {
       return cvv.length() == BankCardHelper.obtainRequiredCvvLength(cardNumber);
    }
 
@@ -58,7 +58,7 @@ public class WalletValidateHelper {
       }
    }
 
-   public static void validateCvvOrThrow(String cvv, long cardNumber) throws CvvFormatException {
+   public static void validateCvvOrThrow(String cvv, String cardNumber) throws CvvFormatException {
       if (!validateCardCvv(cvv, cardNumber)) throw new CvvFormatException();
    }
 }

@@ -9,7 +9,7 @@ class TestBankCard(
       private val issuerInfo: RecordIssuerInfo,
       private val title: String = "TEST",
       private val cardNameHolder: String = "Test Holder",
-      private val number: Long = 123456789L,
+      private val number: String = "123456789",
       private val expDate: String = "07/17",
       private val cvv: Int = 375,
       private val track1: String? = null,
@@ -21,7 +21,7 @@ class TestBankCard(
 
    override fun id(): String? = id
 
-   override fun number(): Long = number
+   override fun number(): String = number
 
    override fun expDate(): String = expDate
 

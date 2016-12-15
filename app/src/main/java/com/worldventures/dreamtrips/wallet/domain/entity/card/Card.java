@@ -9,7 +9,7 @@ public abstract class Card {
    @Nullable
    public abstract String id();
 
-   public abstract long number();
+   public abstract String number();
 
    public abstract String expDate();
 
@@ -34,7 +34,7 @@ public abstract class Card {
          final Card card = (Card) obj;
          final String cardId = card.id();
          final String id = id();
-         return (cardId != null && id != null && cardId.equals(id)) || card.number() != number();
+         return (cardId != null && id != null && cardId.equals(id)) || card.number().equals(number());
       }
       return false;
    }

@@ -25,18 +25,16 @@ public class BankCardHelper {
       this.context = appContext;
    }
 
-   public static String obtainLastCardDigits(long cardNumber) {
-      String number = Long.toString(cardNumber);
-      // TODO: 9/6/16 or throw exception
-      if (number.length() <= 4) return number;
-      return number.substring(number.length() - 4);
+   public static String obtainLastCardDigits(String cardNumber) {
+      if (cardNumber.length() <= 4) return cardNumber;
+      return cardNumber.substring(cardNumber.length() - 4);
    }
 
    public static long obtainIin(String swipedCardPan) {
       return Long.parseLong(swipedCardPan.substring(0, 6));
    }
 
-   public static int obtainRequiredCvvLength(long cardNumber) {
+   public static int obtainRequiredCvvLength(String cardNumber) {
       return isAmexBank(cardNumber) ? 4 : 3;
    }
 
@@ -44,10 +42,9 @@ public class BankCardHelper {
       If card number begins with 34 or 37 and is 15 digits in length
       then it is an American express and should have 4 digits of cvv.
     */
-   public static boolean isAmexBank(long cardNumber) {
-      String number = String.valueOf(cardNumber);
-      boolean amexPrefix = number.startsWith("34") || number.startsWith("37");
-      return number.length() == 15 && amexPrefix;
+   public static boolean isAmexBank(String cardNumber) {
+      boolean amexPrefix = cardNumber.startsWith("34") || cardNumber.startsWith("37");
+      return cardNumber.length() == 15 && amexPrefix;
    }
 
    public String obtainFinancialServiceType(Record.FinancialService financialService) {
@@ -94,11 +91,11 @@ public class BankCardHelper {
       }
    }
 
-   public CharSequence obtainFullCardNumber(long number) {
+   public CharSequence obtainFullCardNumber(String number) {
       return "•••• •••• •••• " + obtainLastCardDigits(number);
    }
 
-   public CharSequence obtainShortCardNumber(long number) {
+   public CharSequence obtainShortCardNumber(String number) {
       SpannableString lastDigits = new SpannableString(obtainLastCardDigits(number));
       lastDigits.setSpan(new RelativeSizeSpan(.6f), 0, lastDigits.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
       return new SpannableStringBuilder()

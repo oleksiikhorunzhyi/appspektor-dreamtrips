@@ -36,7 +36,7 @@ public class BankCardToRecordConverter implements com.worldventures.dreamtrips.m
       ImmutableRecord.Builder recordBuilder = ImmutableRecord.builder()
             .id(parseCardId(card))
             .title(card.nickName())
-            .cardNumber(String.valueOf(card.number()))
+            .cardNumber(card.number())
             .cvv(String.valueOf(card.cvv()))
             .expDate(card.expDate())
             .financialService(card.issuerInfo().financialService())

@@ -51,7 +51,7 @@ public class RecordToBankCardConverter implements com.worldventures.dreamtrips.m
       final Integer recordId = record.id();
       return ImmutableBankCard.builder()
             .id(recordId != null ? String.valueOf(recordId) : null)
-            .number(Long.parseLong(record.cardNumber()))
+            .number(record.cardNumber())
             .expDate(record.expDate())
             .cvv(cvv)
             .track1(record.t1())

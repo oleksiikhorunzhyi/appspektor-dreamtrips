@@ -112,7 +112,7 @@ public class BankCardWidget extends FrameLayout {
       );
    }
 
-   public void setCardNumber(long cardNumber) {
+   public void setCardNumber(String cardNumber) {
       tvCardNumber.setText(bankCardHelper.obtainFullCardNumber(cardNumber));
       if (showShortNumber) {
          tvShortCardNumber.setText(bankCardHelper.obtainShortCardNumber(cardNumber));

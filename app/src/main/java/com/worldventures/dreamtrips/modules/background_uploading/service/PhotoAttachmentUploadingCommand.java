@@ -63,7 +63,7 @@ public class PhotoAttachmentUploadingCommand extends Command<PostCompoundOperati
                   case START:
                      uploadTimeEstimator.prepare(totalSize, totalUploadedSize, photoAttachment.selectedPhoto().size(),
                            postCompoundOperationModel.averageUploadSpeed());
-                     uploadTimeEstimator.onUploadingStarted();
+                     uploadTimeEstimator.onUploadingStarted(System.currentTimeMillis());
                      Timber.d("[New Photo Attachment Creation] Uploading photo %s", photoAttachment.selectedPhoto()
                            .title());
                      builder.state(PhotoAttachment.State.STARTED);
@@ -99,7 +99,7 @@ public class PhotoAttachmentUploadingCommand extends Command<PostCompoundOperati
 
    private void photoAttachmentUpdated(PhotoAttachment updatedAttachment) {
       photoAttachment = updatedAttachment;
-      long remainingTimeInMillis = uploadTimeEstimator.estimate(updatedAttachment.progress());
+      long remainingTimeInMillis = uploadTimeEstimator.estimate(updatedAttachment.progress(), System.currentTimeMillis());
       double updatedAverageSpeed = uploadTimeEstimator.getAverageUploadSpeed();
       postCompoundOperationModel = compoundOperationObjectMutator.photoAttachmentChanged(postCompoundOperationModel,
             photoAttachment, attachmentIndex, (totalUploadedSize + getUploadedSizeOfAttachment(updatedAttachment)) / totalSize,

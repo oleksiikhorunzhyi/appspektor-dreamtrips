@@ -25,19 +25,18 @@ public class UploadTimeEstimator {
       return averageUploadSpeed;
    }
 
-   public void onUploadingStarted() {
-      previousUploadingMeasuredTime = System.currentTimeMillis();
+   public void onUploadingStarted(long time) {
+      previousUploadingMeasuredTime = time;
    }
 
    /**
     * @param progress in percents
     * @return the value of remaining upload time in milliseconds
     */
-   public long estimate(int progress) {
+   public long estimate(int progress, long currentUploadingTime) {
       if (progress == 0) return 0;
 
       long currentUploadedSize = calculateCurrentUploadedSize(progress);
-      long currentUploadingTime = System.currentTimeMillis();
 
       double uploadingSpeed = calculateUploadingSpeed(currentUploadedSize, currentUploadingTime);
       updateAverageSpeed(uploadingSpeed);

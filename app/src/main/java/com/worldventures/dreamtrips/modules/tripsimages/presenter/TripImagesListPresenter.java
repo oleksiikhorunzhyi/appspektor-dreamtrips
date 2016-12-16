@@ -87,7 +87,9 @@ public abstract class TripImagesListPresenter<VT extends TripImagesListPresenter
       super.takeView(view);
       view.clear();
       fillWithItems();
-      reload();
+      if (!view.isFullscreenView()) {
+         reload();
+      }
       subscribeToPhotoDeletedEvents();
       subscribeToLikesChanges();
    }
@@ -277,5 +279,7 @@ public abstract class TripImagesListPresenter<VT extends TripImagesListPresenter
       void openFullscreen(FullScreenImagesBundle data);
 
       void inject(Object getMyPhotosQuery);
+
+      boolean isFullscreenView();
    }
 }

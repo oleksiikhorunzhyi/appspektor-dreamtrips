@@ -49,6 +49,7 @@ public interface SnappyRepository {
    String LAST_SELECTED_VIDEO_LOCALE = "LAST_SELECTED_VIDEO_LOCALE";
    String LAST_SELECTED_VIDEO_LANGUAGE = "LAST_SELECTED_VIDEO_LANGUAGE ";
    String IMAGE = "IMAGE";
+   String LAST_USED_INSPIRE_ME_RANDOM_SEED = "LAST_USED_INSPIRE_ME_RANDOM_SEED";
    String OPEN_BUCKET_TAB_TYPE = "open_bucket_tab_type";
    String BADGE_NOTIFICATIONS_COUNT = "badge_notifications_count";
    String EXCLUSIVE_NOTIFICATIONS_COUNT = "Unread-Notifications-Count";
@@ -123,6 +124,10 @@ public interface SnappyRepository {
    void savePhotoEntityList(TripImagesType type, int userId, List<IFullScreenObject> items);
 
    List<IFullScreenObject> readPhotoEntityList(TripImagesType type, int userId);
+
+   void saveLastUsedInspireMeRandomSeed(double randomSeed);
+
+   double getLastUsedInspireMeRandomSeed();
 
    void saveLastSelectedVideoLocale(VideoLocale videoLocale);
 

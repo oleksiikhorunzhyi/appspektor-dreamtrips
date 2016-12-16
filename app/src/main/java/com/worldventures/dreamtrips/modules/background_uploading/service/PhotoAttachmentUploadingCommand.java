@@ -7,6 +7,7 @@ import com.worldventures.dreamtrips.modules.background_uploading.model.Immutable
 import com.worldventures.dreamtrips.modules.background_uploading.model.PhotoAttachment;
 import com.worldventures.dreamtrips.modules.background_uploading.model.PostCompoundOperationModel;
 import com.worldventures.dreamtrips.modules.background_uploading.model.PostCompoundOperationMutator;
+import com.worldventures.dreamtrips.modules.background_uploading.util.UploadTimeEstimator;
 
 import java.util.concurrent.TimeUnit;
 
@@ -23,6 +24,7 @@ public class PhotoAttachmentUploadingCommand extends Command<PostCompoundOperati
 
    @Inject Janet janet;
    @Inject PostCompoundOperationMutator compoundOperationObjectMutator;
+   @Inject UploadTimeEstimator uploadTimeEstimator;
 
    private PostCompoundOperationModel postCompoundOperationModel;
    private PhotoAttachment photoAttachment;
@@ -31,16 +33,10 @@ public class PhotoAttachmentUploadingCommand extends Command<PostCompoundOperati
    private double totalSize;
    private int attachmentIndex;
 
-   private static final double SMOOTHING_FACTOR = 0.005;
-   private long previousUploadingSize;
-   private long previousTime;
-   private double averageUploadSpeed;
-
    public PhotoAttachmentUploadingCommand(PostCompoundOperationModel postCompoundOperationModel,
          PhotoAttachment photoAttachment) {
       this.postCompoundOperationModel = postCompoundOperationModel;
       this.photoAttachment = photoAttachment;
-      this.averageUploadSpeed = postCompoundOperationModel.averageUploadSpeed();
       attachmentIndex = postCompoundOperationModel.body().attachments().indexOf(photoAttachment);
       calculateSize();
    }
@@ -65,7 +61,9 @@ public class PhotoAttachmentUploadingCommand extends Command<PostCompoundOperati
                      .from(photoAttachment);
                switch (actionState.status) {
                   case START:
-                     previousTime = System.currentTimeMillis();
+                     uploadTimeEstimator.prepare(totalSize, totalUploadedSize, photoAttachment.selectedPhoto().size(),
+                           postCompoundOperationModel.averageUploadSpeed());
+                     uploadTimeEstimator.onUploadingStarted();
                      Timber.d("[New Photo Attachment Creation] Uploading photo %s", photoAttachment.selectedPhoto()
                            .title());
                      builder.state(PhotoAttachment.State.STARTED);
@@ -101,34 +99,16 @@ public class PhotoAttachmentUploadingCommand extends Command<PostCompoundOperati
 
    private void photoAttachmentUpdated(PhotoAttachment updatedAttachment) {
       photoAttachment = updatedAttachment;
+      long remainingTimeInMillis = uploadTimeEstimator.estimate(updatedAttachment.progress());
+      double updatedAverageSpeed = uploadTimeEstimator.getAverageUploadSpeed();
       postCompoundOperationModel = compoundOperationObjectMutator.photoAttachmentChanged(postCompoundOperationModel,
             photoAttachment, attachmentIndex, (totalUploadedSize + getUploadedSizeOfAttachment(updatedAttachment)) / totalSize,
-            (calculateRemainingTimeInSeconds(updatedAttachment.progress()) * 1000), averageUploadSpeed);
+            remainingTimeInMillis, updatedAverageSpeed);
    }
 
    private double getUploadedSizeOfAttachment(PhotoAttachment updatedAttachment) {
       double uplodedSize = updatedAttachment.progress() * updatedAttachment.selectedPhoto().size() / 100.0d;
       Timber.d("Photo attachment uploading - %d of %d", (long) uplodedSize, updatedAttachment.selectedPhoto().size());
       return uplodedSize;
-   }
-
-   private int calculateRemainingTimeInSeconds(int progress) {
-      long currentUploadedSize = photoAttachment.selectedPhoto().size() * progress / 100;
-      long currentTime = System.currentTimeMillis();
-      double timeDiffInSeconds = ((double) currentTime - previousTime) / 1000;
-      double uploadingSpeedPerSecond = (currentUploadedSize - previousUploadingSize) / timeDiffInSeconds;
-
-      averageUploadSpeed = SMOOTHING_FACTOR * uploadingSpeedPerSecond + (1 - SMOOTHING_FACTOR) * averageUploadSpeed;
-
-      previousUploadingSize = currentUploadedSize;
-      previousTime = currentTime;
-
-      double remainingTime = (totalSize - (totalUploadedSize + currentUploadedSize)) / averageUploadSpeed;
-      int remainingTimeInSeconds = (int) Math.round(remainingTime);
-
-      Timber.d("Current uploaded size = %d bytes.\nTimeDiff %.2f sec.\nUploading speed = %.2f bytes/sec.\nRemaining time = %d sec",
-            currentUploadedSize, timeDiffInSeconds, uploadingSpeedPerSecond, remainingTimeInSeconds);
-
-      return remainingTimeInSeconds;
    }
 }

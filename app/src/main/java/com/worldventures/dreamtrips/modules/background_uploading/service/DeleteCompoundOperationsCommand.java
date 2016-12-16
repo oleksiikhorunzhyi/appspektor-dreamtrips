@@ -9,10 +9,14 @@ import io.techery.janet.command.annotations.CommandAction;
 @CommandAction
 public class DeleteCompoundOperationsCommand extends CompoundOperationsCommand {
 
-   private CompoundOperationModel deletedModel;
+   private CompoundOperationModel removedModel;
 
-   DeleteCompoundOperationsCommand(CompoundOperationModel deletedModel) {
-      this.deletedModel = deletedModel;
+   DeleteCompoundOperationsCommand(CompoundOperationModel removedModel) {
+      this.removedModel = removedModel;
+   }
+
+   public CompoundOperationModel getRemovedModel() {
+      return removedModel;
    }
 
    @Override
@@ -23,7 +27,7 @@ public class DeleteCompoundOperationsCommand extends CompoundOperationsCommand {
 
    private void processUpdatedModel() {
       for (int i = 0; i < cachedModels.size(); i++) {
-         if (cachedModels.get(i).id() == deletedModel.id()) {
+         if (cachedModels.get(i).id() == removedModel.id()) {
             cachedModels.remove(i);
             break;
          }

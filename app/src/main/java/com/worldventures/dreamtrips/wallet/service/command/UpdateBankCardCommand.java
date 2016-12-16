@@ -13,10 +13,13 @@ import javax.inject.Named;
 import io.techery.janet.Command;
 import io.techery.janet.Janet;
 import io.techery.janet.command.annotations.CommandAction;
+import io.techery.janet.smartcard.action.records.AddRecordAction;
 import io.techery.janet.smartcard.action.records.EditRecordAction;
 import io.techery.janet.smartcard.model.Record;
 import io.techery.mappery.MapperyContext;
 import rx.Observable;
+import rx.functions.Func1;
+import timber.log.Timber;
 
 import static com.worldventures.dreamtrips.core.janet.JanetModule.JANET_WALLET;
 import static com.worldventures.dreamtrips.wallet.util.WalletValidateHelper.validateAddressInfoOrThrow;
@@ -50,13 +53,11 @@ public class UpdateBankCardCommand extends Command<BankCard> implements Injectab
    @Override
    protected void run(CommandCallback<BankCard> callback) throws Throwable {
       checkCardData();
-
-      Observable.just(bankCard)
-            .map(it -> mapperyContext.convert(it, Record.class))
-            .flatMap(record -> janet.createPipe(EditRecordAction.class)
-                  .createObservableResult(new EditRecordAction(record)))
-            .map(recordAction -> mapperyContext.convert(recordAction.record, BankCard.class))
-            .subscribe(callback::onSuccess, callback::onFail);
+      final Record record = mapperyContext.convert(bankCard, Record.class);
+      janet.createPipe(EditRecordAction.class)
+            .createObservableResult(new EditRecordAction(record))
+            .map(editRecordAction -> editRecordAction.record)
+            .subscribe(result -> callback.onSuccess(mapperyContext.convert(result, BankCard.class)), callback::onFail);
    }
 
    private void checkCardData() throws FormatException {

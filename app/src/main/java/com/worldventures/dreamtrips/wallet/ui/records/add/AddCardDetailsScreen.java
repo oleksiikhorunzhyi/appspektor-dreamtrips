@@ -1,14 +1,8 @@
 package com.worldventures.dreamtrips.wallet.ui.records.add;
 
 import android.content.Context;
-import android.graphics.Color;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.Toolbar;
-import android.text.Spannable;
-import android.text.SpannableString;
-import android.text.SpannableStringBuilder;
-import android.text.style.ForegroundColorSpan;
-import android.text.style.RelativeSizeSpan;
 import android.util.AttributeSet;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
@@ -36,6 +30,8 @@ import butterknife.OnClick;
 import butterknife.OnEditorAction;
 import rx.Observable;
 
+import static com.worldventures.dreamtrips.wallet.util.WalletCardNameUtil.bindSpannableStringToTarget;
+
 public class AddCardDetailsScreen extends WalletLinearLayout<AddCardDetailsPresenter.Screen, AddCardDetailsPresenter, AddCardDetailsPath>
       implements AddCardDetailsPresenter.Screen {
 
@@ -47,7 +43,7 @@ public class AddCardDetailsScreen extends WalletLinearLayout<AddCardDetailsPrese
    @InjectView(R.id.city) EditText cityField;
    @InjectView(R.id.state) EditText stateField;
    @InjectView(R.id.zip) EditText zipField;
-   @InjectView(R.id.card_name) EditText cardNameField;
+   @InjectView(R.id.card_name) EditText cardNicknameField;
    @InjectView(R.id.cvv_label) TextView cvvLabel;
    @InjectView(R.id.set_default_card_switcher) CompoundButton defaultPaymentCardSwitcher;
    @InjectView(R.id.confirm_button) View confirmButton;
@@ -56,7 +52,7 @@ public class AddCardDetailsScreen extends WalletLinearLayout<AddCardDetailsPrese
    private DialogOperationScreen dialogOperationScreen;
 
    private Observable<Boolean> setAsDefaultCardObservable;
-   private Observable<String> cardNameObservable;
+   private Observable<String> cardNicknameObservable;
    private Observable<String> address1Observable;
    private Observable<String> stateObservable;
    private Observable<String> cityObservable;
@@ -81,14 +77,12 @@ public class AddCardDetailsScreen extends WalletLinearLayout<AddCardDetailsPrese
    @Override
    protected void onFinishInflate() {
       super.onFinishInflate();
-      setCvvLabel();
-      setCardNameHint();
-      setAddressHints();
+      setHintsAndLabels();
 
       if (isInEditMode()) return;
       toolbar.setNavigationOnClickListener(v -> navigateButtonClick());
       setAsDefaultCardObservable = RxCompoundButton.checkedChanges(defaultPaymentCardSwitcher).skip(1);
-      cardNameObservable = observableFrom(cardNameField);
+      cardNicknameObservable = observableFrom(cardNicknameField);
 
       address1Observable = observableFrom(address1Field);
       stateObservable = observableFrom(stateField);
@@ -109,9 +103,8 @@ public class AddCardDetailsScreen extends WalletLinearLayout<AddCardDetailsPrese
       cardCvvField.setMaxLength(cvvLength);
    }
 
-   @Override
-   public Observable<String> getCardNameObservable() {
-      return cardNameObservable;
+   public Observable<String> getCardNicknameObservable() {
+      return cardNicknameObservable;
    }
 
    @Override
@@ -198,7 +191,7 @@ public class AddCardDetailsScreen extends WalletLinearLayout<AddCardDetailsPrese
    @OnClick(R.id.confirm_button)
    public void onConfirmButtonClicked() {
       String cvv = cardCvvField.getText().toString().trim();
-      String nickname = cardNameField.getText().toString().trim();
+      String nickname = cardNicknameField.getText().toString().trim();
       boolean setAsDefaultCard = defaultPaymentCardSwitcher.isChecked();
 
       AddressInfo addressInfo = ImmutableAddressInfo.builder()
@@ -217,45 +210,14 @@ public class AddCardDetailsScreen extends WalletLinearLayout<AddCardDetailsPrese
       return true;
    }
 
-   private void setCvvLabel() {
-      cvvLabel.setText(new SpannableStringBuilder()
-            .append(getString(R.string.wallet_add_card_details_cvv_label))
-            .append(spannableRequiredFields()));
-   }
-
-   private void setCardNameHint() {
-      cardNameField.setHint(new SpannableStringBuilder()
-            .append(getString(R.string.wallet_add_card_details_hint_card_name))
-            .append(spannableRequiredFields())
-            .append(" ")
-            .append(reduceSizeSpannable(getString(R.string.wallet_add_card_details_hint_card_name_length)))
-      );
-   }
-
-   private void setAddressHints() {
-      address1Field.setHint(new SpannableStringBuilder(getString(R.string.wallet_add_card_details_hint_address1))
-            .append(spannableRequiredFields()));
-      address2Field.setHint(new SpannableStringBuilder(getString(R.string.wallet_add_card_details_hint_address2_label))
-            .append(" ")
-            .append(reduceSizeSpannable(getString(R.string.wallet_add_card_details_hint_optional)))
-      );
-      cityField.setHint(new SpannableStringBuilder(getString(R.string.wallet_add_card_details_hint_city))
-            .append(spannableRequiredFields()));
-      stateField.setHint(new SpannableStringBuilder(getString(R.string.wallet_add_card_details_hint_state))
-            .append(spannableRequiredFields()));
-      zipField.setHint(new SpannableStringBuilder(getString(R.string.wallet_add_card_details_hint_zip))
-            .append(spannableRequiredFields()));
-   }
-
-   private SpannableString spannableRequiredFields() {
-      final SpannableString requiredFields = new SpannableString("*");
-      requiredFields.setSpan(new ForegroundColorSpan(Color.RED), 0, 1, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-      return requiredFields;
-   }
-
-   private SpannableString reduceSizeSpannable(String text) {
-      final SpannableString spannableString = new SpannableString(text);
-      spannableString.setSpan(new RelativeSizeSpan(.75f), 0, spannableString.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-      return spannableString;
+   private void setHintsAndLabels() {
+      bindSpannableStringToTarget(cvvLabel, R.string.wallet_add_card_details_cvv_label, true, false);
+      bindSpannableStringToTarget(cardNicknameField, R.string.wallet_add_card_details_hint_nickname_card, true, true);
+      bindSpannableStringToTarget(address1Field, R.string.wallet_add_card_details_hint_address1, true, true);
+      bindSpannableStringToTarget(address2Field, R.string.wallet_add_card_details_hint_address2_label,
+            R.string.wallet_add_card_details_hint_optional, false, true);
+      bindSpannableStringToTarget(cityField, R.string.wallet_add_card_details_hint_city, true, true);
+      bindSpannableStringToTarget(stateField, R.string.wallet_add_card_details_hint_state, true, true);
+      bindSpannableStringToTarget(zipField, R.string.wallet_add_card_details_hint_zip, true, true);
    }
 }

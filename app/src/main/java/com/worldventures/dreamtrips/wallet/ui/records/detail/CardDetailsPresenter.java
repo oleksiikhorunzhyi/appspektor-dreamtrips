@@ -2,7 +2,6 @@ package com.worldventures.dreamtrips.wallet.ui.records.detail;
 
 import android.content.Context;
 import android.os.Parcelable;
-import android.support.annotation.NonNull;
 import android.text.TextUtils;
 
 import com.techery.spares.module.Injector;
@@ -28,7 +27,6 @@ import com.worldventures.dreamtrips.wallet.ui.common.base.screen.WalletScreen;
 import com.worldventures.dreamtrips.wallet.ui.common.helper.OperationActionStateSubscriberWrapper;
 import com.worldventures.dreamtrips.wallet.ui.common.navigation.Navigator;
 import com.worldventures.dreamtrips.wallet.ui.wizard.edit_card.EditCardDetailsPath;
-import com.worldventures.dreamtrips.wallet.util.BankCardHelper;
 import com.worldventures.dreamtrips.wallet.util.CardUtils;
 
 import javax.inject.Inject;
@@ -68,6 +66,7 @@ public class CardDetailsPresenter extends WalletPresenter<CardDetailsPresenter.S
       connectToDeleteCardPipe();
       connectToSetDefaultCardIdPipe();
       connectSetPaymentCardPipe();
+      observeNickname();
    }
 
    @Override
@@ -135,6 +134,14 @@ public class CardDetailsPresenter extends WalletPresenter<CardDetailsPresenter.S
                   //TODO: use card name for this message
                   .onSuccess(action -> getView().showCardIsReadyDialog(bankCard.nickName()))
                   .wrap());
+   }
+
+   private void observeNickname() {
+      final Screen view = getView();
+      view.getCardNicknameObservable()
+            .compose(bindView())
+            .skip(1)
+            .subscribe(view::setCardNickname);
    }
 
    private AddressInfoWithLocale obtainAddressWithCountry() {
@@ -251,7 +258,11 @@ public class CardDetailsPresenter extends WalletPresenter<CardDetailsPresenter.S
 
       void showCardIsReadyDialog(String cardName);
 
+      void setCardNickname(String cardNickname);
+
       Observable<Boolean> setAsDefaultPaymentCardCondition();
+
+      Observable<String> getCardNicknameObservable();
 
       String getUpdateNickname();
    }

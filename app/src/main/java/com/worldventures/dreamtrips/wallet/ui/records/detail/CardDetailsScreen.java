@@ -10,6 +10,7 @@ import android.widget.TextView;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.jakewharton.rxbinding.widget.RxCompoundButton;
+import com.jakewharton.rxbinding.widget.RxTextView;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.wallet.domain.entity.AddressInfoWithLocale;
 import com.worldventures.dreamtrips.wallet.domain.entity.card.BankCard;
@@ -25,6 +26,8 @@ import butterknife.InjectView;
 import butterknife.OnClick;
 import rx.Observable;
 
+import static com.worldventures.dreamtrips.wallet.util.WalletCardNameUtil.bindSpannableStringToTarget;
+
 public class CardDetailsScreen extends WalletLinearLayout<CardDetailsPresenter.Screen, CardDetailsPresenter, CardDetailsPath>
       implements CardDetailsPresenter.Screen {
 
@@ -34,8 +37,10 @@ public class CardDetailsScreen extends WalletLinearLayout<CardDetailsPresenter.S
    @InjectView(R.id.address_textview) TextView addressText;
    @InjectView(R.id.card_name) EditText cardNickname;
    @InjectView(R.id.card) BankCardWidget bankCardWidget;
+   @InjectView(R.id.card_nickname_label) TextView cardNicknameLabel;
 
    private Observable<Boolean> setAsDefaultCardObservable;
+   private Observable<String> cardNicknameObservable;
    private MaterialDialog connectedErrorDialog;
    private final BankCardHelper bankCardHelper;
 
@@ -61,6 +66,9 @@ public class CardDetailsScreen extends WalletLinearLayout<CardDetailsPresenter.S
       if (isInEditMode()) return;
       toolbar.setNavigationOnClickListener(v -> presenter.goBack());
       setAsDefaultCardObservable = RxCompoundButton.checkedChanges(defaultPaymentCardCheckBox).skip(1);
+      cardNicknameObservable = RxTextView.afterTextChangeEvents(cardNickname).map(event -> event.editable().toString()).skip(1);
+      bindSpannableStringToTarget(cardNicknameLabel, R.string.wallet_card_details_label_card_nickname,
+            R.string.wallet_add_card_details_hint_card_name_length, true, false);
    }
 
    @OnClick(R.id.delete_button)
@@ -140,8 +148,18 @@ public class CardDetailsScreen extends WalletLinearLayout<CardDetailsPresenter.S
    }
 
    @Override
+   public void setCardNickname(String cardNickname) {
+      bankCardWidget.setCardName(cardNickname);
+   }
+
+   @Override
    public Observable<Boolean> setAsDefaultPaymentCardCondition() {
       return setAsDefaultCardObservable;
+   }
+
+   @Override
+   public Observable<String> getCardNicknameObservable() {
+      return cardNicknameObservable;
    }
 
    @Override

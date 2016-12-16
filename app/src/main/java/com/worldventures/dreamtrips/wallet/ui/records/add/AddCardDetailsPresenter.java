@@ -194,7 +194,7 @@ public class AddCardDetailsPresenter extends WalletPresenter<AddCardDetailsPrese
 
    private void observeCardNameChanging() {
       final Screen view = getView();
-      view.getCardNameObservable()
+      view.getCardNicknameObservable()
             .compose(bindView())
             .subscribe(view::setCardName);
    }
@@ -203,7 +203,7 @@ public class AddCardDetailsPresenter extends WalletPresenter<AddCardDetailsPrese
       final Screen screen = getView();
 
       Observable.combineLatest(
-            screen.getCardNameObservable(),
+            screen.getCardNicknameObservable(),
             screen.getAddress1Observable(),
             screen.getCityObservable(),
             screen.getZipObservable(),
@@ -229,7 +229,7 @@ public class AddCardDetailsPresenter extends WalletPresenter<AddCardDetailsPrese
 
       void setCardName(String cardName);
 
-      Observable<String> getCardNameObservable();
+      Observable<String> getCardNicknameObservable();
 
       Observable<String> getAddress1Observable();
 

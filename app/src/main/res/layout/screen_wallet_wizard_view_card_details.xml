@@ -58,6 +58,7 @@
                   android:layout_weight="1"
                   android:text="@string/wallet_card_details_label_billing_address"
                   android:textAppearance="?android:attr/textAppearanceSmall"
+                  android:textColor="@color/wallet_card_details_address_text_color"
                   />
 
             <ImageView
@@ -75,13 +76,12 @@
                android:id="@+id/address_textview"
                android:layout_width="match_parent"
                android:layout_height="wrap_content"
-               android:layout_alignLeft="@+id/billing_address_label"
+               android:layout_alignStart="@+id/billing_address_label"
                android:layout_below="@+id/billing_address_label"
                android:layout_marginTop="@dimen/wallet_details_screen_address_margin_top"
                android:importantForAccessibility="no"
                android:lineSpacingExtra="@dimen/wallet_details_screen_address_space_between_lines"
                android:textAppearance="?android:attr/textAppearanceMedium"
-               android:textColor="@color/wallet_card_details_address_text_color"
                android:textSize="@dimen/wallet_details_screen_address_text_size"
                tools:text="12345 Lollipop Drive\nApt 123\nNew York, NY 10010\nUSA"
                />
@@ -96,16 +96,27 @@
                android:text="@string/wallet_add_card_details_option_set_as_default_card"
                />
 
+         <TextView
+               android:id="@+id/card_nickname_label"
+               android:layout_width="wrap_content"
+               android:layout_height="wrap_content"
+               android:layout_below="@+id/default_payment_card_checkbox"
+               android:layout_marginTop="@dimen/wallet_details_screen_component_margin_top"
+               android:text="@string/wallet_card_details_label_card_nickname"
+               android:textAppearance="?android:attr/textAppearanceSmall"
+               android:textColor="@color/wallet_card_details_address_text_color"
+               />
+
          <EditText
                android:id="@+id/card_name"
                android:layout_width="match_parent"
                android:layout_height="wrap_content"
-               android:layout_below="@+id/default_payment_card_checkbox"
-               android:layout_marginTop="@dimen/wallet_details_screen_component_margin_top"
-               android:hint="@string/wallet_add_card_details_hint_nickname_card"
+               android:layout_below="@+id/card_nickname_label"
+               android:hint="@string/wallet_view_card_details_hint_nickname_card"
                android:imeOptions="actionDone"
                android:maxLength="@integer/wallet_card_name_length"
                android:singleLine="true"
+               android:drawableEnd="@drawable/ic_wallet_pencil_gray"
                />
 
          <Button
@@ -118,6 +129,7 @@
                android:textSize="@dimen/wallet_details_screen_card_interact_button_text_size"
                android:textColor="@color/dtl_text_color_disabled"
                app:backgroundTint="@color/white"
+               tools:ignore="MissingPrefix"
                />
 
       </RelativeLayout>

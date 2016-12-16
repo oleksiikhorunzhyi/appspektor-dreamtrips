@@ -78,6 +78,7 @@
 
    <!--details-->
    <string name="wallet_card_details_label_billing_address">Billing Address</string>
+   <string name="wallet_card_details_label_card_nickname">Card Nickname</string>
    <string name="wallet_card_details_button_edit_billing_address">Edit Billing Address</string>
    <string name="wallet_card_details_button_delete_card">Delete Card</string>
    <string name="wallet_card_details_progress_delete">Deleting %s…</string>
@@ -155,8 +156,7 @@
    <!--add card details-->
    <string name="wallet_add_card_details_title">Card Details</string>
    <string name="wallet_add_card_details_hint_enter_cvv">Enter CVV</string>
-   <string name="wallet_add_card_details_hint_nickname_card">Card Nickname (optional)</string> <!--todo: remove after detail screen was updated-->
-   <string name="wallet_add_card_details_hint_card_name">Card Name</string>
+   <string name="wallet_add_card_details_hint_nickname_card">Card Nickname</string> <!--todo: remove after detail screen was updated-->
    <string name="wallet_add_card_details_hint_card_name_length">(11 characters)</string>
    <string name="wallet_add_card_details_hint_address1">Address 1</string>
    <string name="wallet_add_card_details_hint_address2">Address 2 (optional)</string> <!--todo: remove after detail screen was updated-->
@@ -171,6 +171,7 @@
    <string name="wallet_add_card_details_option_set_as_default_card">Set As Default Payment Card</string>
    <string name="wallet_add_card_details_error_message">Some of requirement fields are empty or contains incorrect data</string>
    <string name="wallet_add_card_details_default_card_exist_dialog_text">Your default card %s will be replaced with this card. Do you want to proceed?</string>
+   <string name="wallet_view_card_details_hint_nickname_card">i.e. \"Pacific Bank Card\"</string>
 
    <!--card type-->
    <string name="wallet_card_financial_service_master_card">Master Card</string>

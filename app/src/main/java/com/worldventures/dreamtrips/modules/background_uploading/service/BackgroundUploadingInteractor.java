@@ -11,7 +11,7 @@ import rx.schedulers.Schedulers;
 
 public class BackgroundUploadingInteractor {
 
-   private static final int DELAY_TO_DELETE_COMPOUND_OPERATION = 2;
+   private static final int DELAY_TO_DELETE_COMPOUND_OPERATION = 3;
 
    private ActionPipe<CompoundOperationsCommand> compoundOperationsPipe;
    private ActionPipe<PostProcessingCommand> postProcessingPipe;

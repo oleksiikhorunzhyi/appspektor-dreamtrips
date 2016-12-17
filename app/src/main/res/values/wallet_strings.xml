@@ -136,6 +136,7 @@
    <string name="wallet_card_settings_profile_dialog_changes_negative">Cancel</string>
    <string name="wallet_card_settings_profile_dialog_error_smartcard_header">Cannot connect to smartcard</string>
    <string name="wallet_card_settings_profile_dialog_error_server_content">We’re sorry there was an error communicating with the server. Please try again later.</string>
+   <string name="wallet_card_settings_profile_dialog_error_network_unavailable">You don’t have internet connection. Check it and try again.</string>
    <string name="wallet_card_settings_profile_dialog_error_smartcard_content">Please make sure your smart card is on and Bluetooth is enabled on your phone.</string>
 
 

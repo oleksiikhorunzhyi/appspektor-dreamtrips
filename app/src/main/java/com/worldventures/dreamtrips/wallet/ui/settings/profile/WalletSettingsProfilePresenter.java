@@ -20,6 +20,7 @@ import com.worldventures.dreamtrips.wallet.service.command.profile.UploadProfile
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletPresenter;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.WalletScreen;
 import com.worldventures.dreamtrips.wallet.ui.common.navigation.Navigator;
+import com.worldventures.dreamtrips.wallet.util.NetworkUnavailableException;
 
 import java.io.File;
 
@@ -166,8 +167,10 @@ public class WalletSettingsProfilePresenter extends WalletPresenter<WalletSettin
    private void onError(JanetException exception) {
       final Screen view = getView();
       view.hideProgress();
-      if (exception.getCause() instanceof UploadProfileDataException) {
-         view.showUploadServerFailDialog();
+      if (exception.getCause() instanceof NetworkUnavailableException) {
+         view.showNetworkUnavailableError();
+      } else if (exception.getCause() instanceof UploadProfileDataException) {
+         view.showUploadServerError();
       } else {
          view.showError(exception.getCause());
       }
@@ -269,7 +272,8 @@ public class WalletSettingsProfilePresenter extends WalletPresenter<WalletSettin
       Observable<String> lastNameObservable();
 
       void showError(Throwable throwable);
-      void showUploadServerFailDialog();
+      void showUploadServerError();
+      void showNetworkUnavailableError();
 
       void showProgress();
       void hideProgress();

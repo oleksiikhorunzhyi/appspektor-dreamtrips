@@ -206,7 +206,7 @@ public class WalletSettingsProfileScreen extends WalletLinearLayout<WalletSettin
    }
 
    @Override
-   public void showUploadServerFailDialog() {
+   public void showUploadServerError() {
       new MaterialDialog.Builder(getContext())
             .content(R.string.wallet_card_settings_profile_dialog_error_server_content)
             .cancelable(false)
@@ -214,6 +214,17 @@ public class WalletSettingsProfileScreen extends WalletLinearLayout<WalletSettin
             .negativeText(R.string.cancel)
             .onPositive((dialog, which) -> getPresenter().retryUploadToServer())
             .onNegative((dialog, which) -> getPresenter().cancelUploadServerUserData())
+            .build()
+            .show();
+   }
+
+   @Override
+   public void showNetworkUnavailableError() {
+      new MaterialDialog.Builder(getContext())
+            .content(R.string.wallet_card_settings_profile_dialog_error_network_unavailable)
+            .cancelable(false)
+            .positiveText(R.string.ok)
+            .onPositive((dialog, which) -> dialog.dismiss())
             .build()
             .show();
    }

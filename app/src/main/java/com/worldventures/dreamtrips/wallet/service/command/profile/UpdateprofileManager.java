@@ -67,10 +67,8 @@ class UpdateProfileManager {
       if (changedFields.photo() != null) {
          userBuilder.userPhoto(ImmutableSmartCardUserPhoto.builder()
                .from(changedFields.photo())
-               .photoUrl(updateCardUserData.photoUrl());
+               .photoUrl(updateCardUserData.photoUrl())
                .build());
-
-
       }
       return ImmutableSmartCard.builder().from(smartCard)
             .user(userBuilder.build())

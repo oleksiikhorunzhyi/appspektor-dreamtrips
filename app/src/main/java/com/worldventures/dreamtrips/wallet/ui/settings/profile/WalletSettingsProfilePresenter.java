@@ -2,6 +2,7 @@ package com.worldventures.dreamtrips.wallet.ui.settings.profile;
 
 import android.app.Activity;
 import android.content.Context;
+import android.os.Bundle;
 import android.view.WindowManager;
 
 import com.techery.spares.module.Injector;
@@ -11,7 +12,6 @@ import com.worldventures.dreamtrips.wallet.service.SmartCardInteractor;
 import com.worldventures.dreamtrips.wallet.service.SmartCardManager;
 import com.worldventures.dreamtrips.wallet.service.SmartCardUserDataInteractor;
 import com.worldventures.dreamtrips.wallet.service.command.CompressImageForSmartCardCommand;
-import com.worldventures.dreamtrips.wallet.service.command.SmartCardAvatarCommand;
 import com.worldventures.dreamtrips.wallet.service.command.profile.ImmutableChangedFields;
 import com.worldventures.dreamtrips.wallet.service.command.profile.RetryHttpUploadUpdatingCommand;
 import com.worldventures.dreamtrips.wallet.service.command.profile.RevertSmartCardUserUpdatingCommand;
@@ -25,7 +25,8 @@ import java.io.File;
 
 import javax.inject.Inject;
 
-import io.techery.janet.ActionState;
+import io.techery.janet.Command;
+import io.techery.janet.JanetException;
 import io.techery.janet.helper.ActionStateSubscriber;
 import rx.Observable;
 
@@ -37,13 +38,34 @@ public class WalletSettingsProfilePresenter extends WalletPresenter<WalletSettin
    @Inject SmartCardInteractor smartCardInteractor;
    @Inject SmartCardUserDataInteractor smartCardUserDataInteractor;
 
-   private SmartCardUserPhoto preparedPhoto; // todo save to state
-   private int changeNameFlag = 0;
+   private SmartCardUserPhoto preparedPhoto;
+   private int changeProfileFlag = 0;
 
    public WalletSettingsProfilePresenter(Context context, Injector injector) {
       super(context, injector);
    }
 
+   // View State
+   @Override
+   public void onNewViewState() {
+      state = new WalletSettingsProfileState();
+   }
+
+   @Override
+   public void applyViewState() {
+      super.applyViewState();
+      changeProfileFlag = state.getChangeProfileFlag();
+      preparedPhoto = state.getUserPhoto();
+   }
+
+   @Override
+   public void onSaveInstanceState(Bundle bundle) {
+      state.setChangeProfileFlag(changeProfileFlag);
+      state.setUserPhoto(preparedPhoto);
+      super.onSaveInstanceState(bundle);
+   }
+
+   // bind to view
    @Override
    public void attachView(WalletSettingsProfilePresenter.Screen view) {
       super.attachView(view);
@@ -51,7 +73,7 @@ public class WalletSettingsProfilePresenter extends WalletPresenter<WalletSettin
       observePickerAndCropper(view);
       observeCompressingAvatar();
       observeUpdating();
-      observeNameChanging();
+      observeChanging();
 
       smartCardManager.singleSmartCardObservable()
             .compose(bindViewIoToMainComposer())
@@ -59,11 +81,6 @@ public class WalletSettingsProfilePresenter extends WalletPresenter<WalletSettin
                view.setPreviewPhoto(it.user().userPhoto().monochrome());
                view.setUserName(it.user().firstName(), it.user().middleName(), it.user().lastName());;
             });
-   }
-
-   private void observePickerAndCropper(WalletSettingsProfilePresenter.Screen view) {
-      view.observePickPhoto().compose(bindView()).subscribe(view::cropPhoto);
-      view.observeCropper().compose(bindView()).subscribe(this::onImageCropped);
    }
 
    void setupUserData() {
@@ -81,36 +98,6 @@ public class WalletSettingsProfilePresenter extends WalletPresenter<WalletSettin
                         .lastName(view.getLastName())
                         .photo(preparedPhoto)
                         .build()));
-   }
-
-   private void observeUpdating() {
-      smartCardUserDataInteractor.updateSmartCardUserPipe()
-            .observeWithReplay()
-            .compose(bindViewIoToMainComposer())
-            .compose(new ActionPipeCacheWiper<>(smartCardUserDataInteractor.updateSmartCardUserPipe()))
-            .filter(actionState -> actionState.status != ActionState.Status.PROGRESS)
-            .subscribe(this::handleUpdateSmartCardUserCommand);
-   }
-
-   private void handleUpdateSmartCardUserCommand(ActionState<UpdateSmartCardUserCommand> actionState) {
-      final Screen view = getView();
-
-      switch (actionState.status) {
-         case START:
-            view.showProgress();
-            break;
-         case SUCCESS:
-            view.hideProgress();
-            break;
-         case FAIL:
-            view.hideProgress();
-            if (actionState.exception.getCause() instanceof UploadProfileDataException) {
-               view.showUploadServerFailDialog();
-            } else {
-               view.showError(actionState.exception.getCause());
-            }
-            break;
-      }
    }
 
    void cancelUploadServerUserData() {
@@ -147,12 +134,50 @@ public class WalletSettingsProfilePresenter extends WalletPresenter<WalletSettin
       getView().pickPhoto();
    }
 
+   private void observePickerAndCropper(WalletSettingsProfilePresenter.Screen view) {
+      view.observePickPhoto().compose(bindView()).subscribe(view::cropPhoto);
+      view.observeCropper().compose(bindView()).subscribe(this::onImageCropped);
+   }
+
+   private void observeUpdating() {
+      final Screen view = getView();
+
+      smartCardUserDataInteractor.updateSmartCardUserPipe()
+            .observeWithReplay()
+            .compose(bindViewIoToMainComposer())
+            .compose(new ActionPipeCacheWiper<>(smartCardUserDataInteractor.updateSmartCardUserPipe()))
+            .subscribe(new ActionStateSubscriber<UpdateSmartCardUserCommand>()
+                  .onStart(o -> view.showProgress())
+                  .onSuccess(o -> view.hideProgress())
+                  .onFail((o, throwable) -> onError((JanetException) throwable))
+            );
+
+      smartCardUserDataInteractor.retryHttpUploadUpdatingPipe()
+            .observeWithReplay()
+            .compose(bindViewIoToMainComposer())
+            .compose(new ActionPipeCacheWiper<>(smartCardUserDataInteractor.retryHttpUploadUpdatingPipe()))
+            .subscribe(new ActionStateSubscriber<RetryHttpUploadUpdatingCommand>()
+                  .onStart(o -> view.showProgress())
+                  .onSuccess(o -> view.hideProgress())
+                  .onFail((o, throwable) -> onError((JanetException) throwable))
+            );
+   }
+
+   private void onError(JanetException exception) {
+      final Screen view = getView();
+      view.hideProgress();
+      if (exception.getCause() instanceof UploadProfileDataException) {
+         view.showUploadServerFailDialog();
+      } else {
+         view.showError(exception.getCause());
+      }
+   }
+
    private void observeCompressingAvatar() {
       smartCardUserDataInteractor.smartCardAvatarPipe()
-            .observe() // todo observeSuccessWithReplay && clear pipe in wizard
+            .observeSuccess()
             .compose(bindViewIoToMainComposer())
-            .subscribe(new ActionStateSubscriber<SmartCardAvatarCommand>()
-                  .onSuccess(command -> photoPrepared(command.getResult())));
+            .subscribe(command -> photoPrepared(command.getResult()));
    }
 
    private void photoPrepared(SmartCardUserPhoto photo) {
@@ -165,10 +190,10 @@ public class WalletSettingsProfilePresenter extends WalletPresenter<WalletSettin
    }
 
    private boolean isDataChanged() {
-      return changeNameFlag != 0 || preparedPhoto != null;
+      return changeProfileFlag != 0;
    }
 
-   private void observeNameChanging() {
+   private void observeChanging() {
       Screen view = getView();
       //noinspection all
       Observable.combineLatest(
@@ -176,10 +201,12 @@ public class WalletSettingsProfilePresenter extends WalletPresenter<WalletSettin
             view.firstNameObservable(),
             view.middleNameObservable(),
             view.lastNameObservable(),
-            (smartCard, firstName, middleName, lastName) -> {
+            smartCardUserDataInteractor.smartCardAvatarPipe().observeSuccess().map(Command::getResult).startWith(Observable.just(null)),
+            (smartCard, firstName, middleName, lastName, newAvatar) -> {
                handleFirstName(smartCard.user().firstName(), firstName);
                handleMiddleName(smartCard.user().middleName(), middleName);
                handleLastName(smartCard.user().lastName(), lastName);
+               handleAvatar(smartCard.user().userPhoto(), newAvatar);
                return null;
             })
             .compose(bindView())
@@ -188,25 +215,35 @@ public class WalletSettingsProfilePresenter extends WalletPresenter<WalletSettin
 
    private void handleFirstName(String firstName, String newFirstName) {
       if (newFirstName.equals(firstName)) {
-         changeNameFlag &= 0xFF_FF_FF_00;
+         changeProfileFlag &= 0xFF_FF_FF_00;
       } else {
-         changeNameFlag |= 0x00_00_00_FF;
+         changeProfileFlag |= 0x00_00_00_FF;
       }
    }
 
    private void handleMiddleName(String middleName, String newMiddleName) {
       if (middleName.equals(newMiddleName)) {
-         changeNameFlag &= 0xFF_FF_00_FF;
+         changeProfileFlag &= 0xFF_FF_00_FF;
       } else {
-         changeNameFlag |= 0x00_00_FF_00;
+         changeProfileFlag |= 0x00_00_FF_00;
       }
    }
 
    private void handleLastName(String lastName, String newLastName) {
       if (lastName.equals(newLastName)) {
-         changeNameFlag &= 0xFF_00_FF_FF;
+         changeProfileFlag &= 0xFF_00_FF_FF;
       } else {
-         changeNameFlag |= 0x00_FF_00_00;
+         changeProfileFlag |= 0x00_FF_00_00;
+      }
+   }
+
+   private void handleAvatar(SmartCardUserPhoto userPhoto, SmartCardUserPhoto newUserPhoto) {
+      if ((userPhoto == null && newUserPhoto != null) ||
+            (userPhoto != null && newUserPhoto != null && !newUserPhoto.original().equals(userPhoto.original()))) {
+            // new photo
+         changeProfileFlag |= 0xFF_00_00_00;
+      } else {
+         changeProfileFlag &= 0x00_FF_FF_FF;
       }
    }
 

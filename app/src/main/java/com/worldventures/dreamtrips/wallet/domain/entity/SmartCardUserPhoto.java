@@ -5,9 +5,10 @@ import android.support.annotation.Nullable;
 import org.immutables.value.Value;
 
 import java.io.File;
+import java.io.Serializable;
 
 @Value.Immutable
-public interface SmartCardUserPhoto {
+public interface SmartCardUserPhoto extends Serializable {
 
    @Value.Parameter
    @Nullable

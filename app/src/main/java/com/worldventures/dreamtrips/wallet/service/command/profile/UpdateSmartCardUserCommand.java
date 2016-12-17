@@ -13,6 +13,7 @@ import com.worldventures.dreamtrips.wallet.domain.entity.SmartCardUser;
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCardUserPhoto;
 import com.worldventures.dreamtrips.wallet.service.WalletNetworkService;
 import com.worldventures.dreamtrips.wallet.service.command.GetActiveSmartCardCommand;
+import com.worldventures.dreamtrips.wallet.service.command.SmartCardModifier;
 import com.worldventures.dreamtrips.wallet.util.NetworkUnavailableException;
 import com.worldventures.dreamtrips.wallet.util.WalletValidateHelper;
 
@@ -31,7 +32,7 @@ import static com.worldventures.dreamtrips.core.janet.JanetModule.JANET_API_LIB;
 import static com.worldventures.dreamtrips.core.janet.JanetModule.JANET_WALLET;
 
 @CommandAction
-public class UpdateSmartCardUserCommand extends Command<Void> implements InjectableAction {
+public class UpdateSmartCardUserCommand extends Command<SmartCard> implements InjectableAction, SmartCardModifier {
 
    @Inject @Named(JANET_API_LIB) Janet janetApi;
    @Inject @Named(JANET_WALLET) Janet janet;
@@ -49,7 +50,7 @@ public class UpdateSmartCardUserCommand extends Command<Void> implements Injecta
    }
 
    @Override
-   protected void run(CommandCallback<Void> callback) throws Throwable {
+   protected void run(CommandCallback<SmartCard> callback) throws Throwable {
       validateData();
       if (!networkService.isAvailable()) throw new NetworkUnavailableException();
       updateDataHolder.saveChanging(changedFields);
@@ -58,7 +59,7 @@ public class UpdateSmartCardUserCommand extends Command<Void> implements Injecta
             .createObservableResult(new GetActiveSmartCardCommand())
             .map(Command::getResult)
             .flatMap(this::uploadData)
-            .subscribe(smartCard -> callback.onSuccess(null), callback::onFail);
+            .subscribe(callback::onSuccess, callback::onFail);
    }
 
    private void validateData() {

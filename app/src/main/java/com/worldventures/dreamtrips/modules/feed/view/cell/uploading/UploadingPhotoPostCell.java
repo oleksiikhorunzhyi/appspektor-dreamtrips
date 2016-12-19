@@ -6,6 +6,7 @@ import android.animation.ValueAnimator;
 import android.content.Context;
 import android.graphics.PorterDuff;
 import android.support.annotation.ColorRes;
+import android.support.v4.content.ContextCompat;
 import android.text.format.DateUtils;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
@@ -142,7 +143,7 @@ public class UploadingPhotoPostCell extends FrameLayout {
       } else {
          statusTextView.setText(getContext().getString(R.string.uploading_post_status_progress_singular));
       }
-      statusTextView.setTextColor(getContext().getColor(R.color.uploading_cell_status_label_uploading));
+      statusTextView.setTextColor(getColor(R.color.uploading_cell_status_label_uploading));
 
       timeLeftTextView.setVisibility(View.VISIBLE);
       timeLeftTextView.setText(timeLeftFormatter.format(compoundOperationModel.millisLeft()));
@@ -158,7 +159,7 @@ public class UploadingPhotoPostCell extends FrameLayout {
       mainControlImageView.setVisibility(VISIBLE);
 
       statusTextView.setText(getContext().getString(R.string.uploading_post_status_paused));
-      statusTextView.setTextColor(getContext().getColor(R.color.uploading_cell_status_label_paused));
+      statusTextView.setTextColor(getColor(R.color.uploading_cell_status_label_paused));
       timeLeftTextView.setVisibility(View.GONE);
 
       setProgressBarProgressColor(R.color.uploading_cell_progress_bar_paused_current,
@@ -171,7 +172,7 @@ public class UploadingPhotoPostCell extends FrameLayout {
       mainControlImageView.setVisibility(GONE);
 
       statusTextView.setText(getContext().getString(R.string.uploading_post_status_waiting));
-      statusTextView.setTextColor(getContext().getColor(R.color.uploading_cell_status_label_paused));
+      statusTextView.setTextColor(getColor(R.color.uploading_cell_status_label_paused));
       timeLeftTextView.setVisibility(View.GONE);
 
       setProgressBarProgressColor(R.color.uploading_cell_progress_bar_paused_current,
@@ -185,7 +186,7 @@ public class UploadingPhotoPostCell extends FrameLayout {
       mainControlImageView.setVisibility(VISIBLE);
 
       statusTextView.setText(getContext().getString(R.string.uploading_post_status_failed_connection));
-      statusTextView.setTextColor(getContext().getColor(R.color.uploading_cell_status_label_failure));
+      statusTextView.setTextColor(getColor(R.color.uploading_cell_status_label_failure));
       timeLeftTextView.setVisibility(View.GONE);
 
       setProgressBarProgressColor(R.color.uploading_cell_progress_bar_paused_current,
@@ -238,8 +239,12 @@ public class UploadingPhotoPostCell extends FrameLayout {
    }
 
    private void setProgressBarProgressColor(@ColorRes int current, @ColorRes int total) {
-      progressBar.getProgressDrawable().setColorFilter(getContext().getColor(current), PorterDuff.Mode.SRC_IN);
-      progressBar.setBackgroundColor(getContext().getColor(total));
+      progressBar.getProgressDrawable().setColorFilter(getColor(current), PorterDuff.Mode.SRC_IN);
+      progressBar.setBackgroundColor(getColor(total));
+   }
+
+   private int getColor(@ColorRes int color) {
+      return ContextCompat.getColor(getContext(), color);
    }
 
    @OnClick(R.id.uploading_cell_control_cancel)

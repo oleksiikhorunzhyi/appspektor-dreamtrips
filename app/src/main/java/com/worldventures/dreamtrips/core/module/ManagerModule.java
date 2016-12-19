@@ -23,6 +23,7 @@ import com.worldventures.dreamtrips.modules.common.presenter.delegate.OfflineWar
 import com.worldventures.dreamtrips.modules.common.service.OfflineErrorInteractor;
 import com.worldventures.dreamtrips.modules.common.view.util.DrawableUtil;
 import com.worldventures.dreamtrips.modules.common.view.util.MediaPickerEventDelegate;
+import com.worldventures.dreamtrips.modules.common.view.util.MediaPickerImagesProcessedEventDelegate;
 import com.worldventures.dreamtrips.modules.common.view.util.PhotoPickerDelegate;
 import com.worldventures.dreamtrips.modules.dtl.location.LocationDelegate;
 import com.worldventures.dreamtrips.modules.dtl.location.LocationDelegateImpl;
@@ -129,6 +130,12 @@ public class ManagerModule {
    @Singleton
    MediaPickerEventDelegate provideMediaPickerManager() {
       return new MediaPickerEventDelegate();
+   }
+
+   @Provides
+   @Singleton
+   MediaPickerImagesProcessedEventDelegate provideMediaPickerImagesProcessedDelegate() {
+      return new MediaPickerImagesProcessedEventDelegate();
    }
 
    @Provides

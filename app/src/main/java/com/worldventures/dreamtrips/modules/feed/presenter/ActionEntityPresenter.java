@@ -5,9 +5,12 @@ import android.text.TextUtils;
 
 import com.innahema.collections.query.queriables.Queryable;
 import com.worldventures.dreamtrips.core.rx.RxView;
+import com.worldventures.dreamtrips.modules.common.model.MediaAttachment;
 import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
+import com.worldventures.dreamtrips.modules.common.view.custom.PhotoPickerLayout;
 import com.worldventures.dreamtrips.modules.common.view.custom.tagview.viewgroup.newio.model.PhotoTag;
+import com.worldventures.dreamtrips.modules.common.view.util.PhotoPickerDelegate;
 import com.worldventures.dreamtrips.modules.feed.model.PhotoCreationItem;
 import com.worldventures.dreamtrips.modules.feed.service.CreatePostBodyInteractor;
 import com.worldventures.dreamtrips.modules.feed.service.HashtagInteractor;
@@ -36,6 +39,9 @@ public abstract class ActionEntityPresenter<V extends ActionEntityPresenter.View
    @Inject PostLocationPickerCallback postLocationPickerCallback;
    @Inject HashtagInteractor hashtagInteractor;
    @Inject CreatePostBodyInteractor createPostBodyInteractor;
+   @Inject PhotoPickerDelegate photoPickerDelegate;
+
+   protected boolean photoPickerVisible;
 
    @Override
    public void takeView(V view) {
@@ -48,6 +54,17 @@ public abstract class ActionEntityPresenter<V extends ActionEntityPresenter.View
       postLocationPickerCallback.toObservable()
             .compose(bindView())
             .subscribe(this::updateLocation, error -> Timber.e(error, ""));
+      photoPickerDelegate.setPhotoPickerListener(new PhotoPickerLayout.PhotoPickerListener() {
+         @Override
+         public void onClosed() {
+            photoPickerVisible = false;
+         }
+
+         @Override
+         public void onOpened() {
+            photoPickerVisible = true;
+         }
+      });
    }
 
    @Override

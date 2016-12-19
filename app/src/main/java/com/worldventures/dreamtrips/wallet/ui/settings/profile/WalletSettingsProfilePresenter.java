@@ -128,7 +128,6 @@ public class WalletSettingsProfilePresenter extends WalletPresenter<WalletSettin
    }
 
    void cancelUpdating() {
-      goBack();
    }
 
    void choosePhoto() {

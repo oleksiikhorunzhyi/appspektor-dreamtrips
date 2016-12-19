@@ -14,7 +14,7 @@ import java.util.List;
 
 public abstract class BasePhotoAttachmentsPreviewView extends BasePhotoAttachmentPreviewView {
 
-   private List<SimpleDraweeView> previewViews = new ArrayList<>();
+   protected List<SimpleDraweeView> previewViews = new ArrayList<>();
 
    public BasePhotoAttachmentsPreviewView(Context context) {
       super(context);

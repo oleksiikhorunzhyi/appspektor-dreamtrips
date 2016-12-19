@@ -8,6 +8,6 @@ import com.worldventures.dreamtrips.core.utils.tracksystem.Attribute;
                 trackers = AdobeTracker.TRACKER_KEY)
 public class UpdateChecksVisitAction extends WalletAnalyticsAction {
 
-   @Attribute("scupdatestep2") final String udateStep2 = "1";
+   @Attribute("scupdatestep3") final String udateStep3 = "1";
 
 }

@@ -7,7 +7,7 @@ import com.techery.spares.module.Injector;
 import com.worldventures.dreamtrips.api.smart_card.firmware.model.FirmwareInfo;
 import com.worldventures.dreamtrips.core.navigation.ActivityRouter;
 import com.worldventures.dreamtrips.core.utils.tracksystem.AnalyticsInteractor;
-import com.worldventures.dreamtrips.wallet.analytics.InstallingUpdateAction;
+import com.worldventures.dreamtrips.wallet.analytics.InsufficientStorageAction;
 import com.worldventures.dreamtrips.wallet.analytics.ViewSdkUpdateAction;
 import com.worldventures.dreamtrips.wallet.analytics.WalletAnalyticsCommand;
 import com.worldventures.dreamtrips.wallet.domain.storage.TemporaryStorage;
@@ -117,7 +117,7 @@ public class WalletNewFirmwareAvailablePresenter extends WalletPresenter<WalletN
       } catch (WalletFilesUtils.NotEnoughSpaceException e) {
          getView().insufficientSpace(e.getMissingByteSpace());
 
-         WalletAnalyticsCommand analyticsCommand = new WalletAnalyticsCommand(new InstallingUpdateAction());
+         WalletAnalyticsCommand analyticsCommand = new WalletAnalyticsCommand(new InsufficientStorageAction());
          analyticsInteractor.walletAnalyticsCommandPipe().send(analyticsCommand);
       }
    }

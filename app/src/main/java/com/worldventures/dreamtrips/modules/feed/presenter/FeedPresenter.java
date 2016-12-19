@@ -360,12 +360,12 @@ public class FeedPresenter extends Presenter<FeedPresenter.View> implements Uplo
                   }));
    }
 
-   public void onEvent(FeedItemAddedEvent event) {
+   public void onEventMainThread(FeedItemAddedEvent event) {
       feedItems.add(0, event.getFeedItem());
       refreshFeedItemsInView();
    }
 
-   public void onEvent(FeedEntityChangedEvent event) {
+   public void onEventMainThread(FeedEntityChangedEvent event) {
       Queryable.from(feedItems).forEachR(item -> {
          if (item.getItem() != null && item.getItem().equals(event.getFeedEntity())) {
             FeedEntity feedEntity = event.getFeedEntity();

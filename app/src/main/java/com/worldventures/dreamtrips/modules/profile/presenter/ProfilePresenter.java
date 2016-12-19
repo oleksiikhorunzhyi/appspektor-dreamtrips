@@ -188,7 +188,7 @@ public abstract class ProfilePresenter<T extends ProfilePresenter.View, U extend
             .subscribe(this::itemDeleted);
    }
 
-   public void onEvent(FeedItemAddedEvent event) {
+   public void onEventMainThread(FeedItemAddedEvent event) {
       feedItems.add(0, event.getFeedItem());
       refreshFeedItemsInView();
    }

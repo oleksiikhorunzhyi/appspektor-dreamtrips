@@ -46,7 +46,7 @@ public class PostCompoundOperationMutator {
 
    public PostCompoundOperationModel photoAttachmentChanged(PostCompoundOperationModel postCompoundOperationModel,
          PhotoAttachment photoAttachment,
-         int attachmentIndex, double attachmentsUploadingProgress) {
+         int attachmentIndex, double attachmentsUploadingProgress, long remainingTime, double averageUploadSpeed) {
       int progress = (int) (PROGRESS_PHOTOS_CREATING * attachmentsUploadingProgress);
       Timber.d("Post uploading progress - %d of 100", progress);
       List<PhotoAttachment> attachments = new ArrayList<>(postCompoundOperationModel.body().attachments());
@@ -55,6 +55,8 @@ public class PostCompoundOperationMutator {
       return ImmutablePostCompoundOperationModel
             .copyOf(postCompoundOperationModel)
             .withProgress(progress)
+            .withMillisLeft(remainingTime)
+            .withAverageUploadSpeed(averageUploadSpeed)
             .withBody(ImmutablePostWithAttachmentBody
                   .copyOf(postCompoundOperationModel.body())
                   .withAttachments(new ArrayList<>(attachments)));

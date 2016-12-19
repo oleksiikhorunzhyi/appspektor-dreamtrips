@@ -58,6 +58,7 @@ public class CreatePostCompoundOperationCommand extends Command<PostCompoundOper
             .progress(0)
             .creationDate(new Date())
             .millisLeft(0)
+            .averageUploadSpeed(0)
             .state(CompoundOperationState.SCHEDULED)
             .body(createPostBody())
             .build();

@@ -7,6 +7,7 @@ public interface CompoundOperationModel<T> {
    CompoundOperationState state();
    int progress();
    long millisLeft();
+   double averageUploadSpeed();
    Date creationDate();
    T body();
 }

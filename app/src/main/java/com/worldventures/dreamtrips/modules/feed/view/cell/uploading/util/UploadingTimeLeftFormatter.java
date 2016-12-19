@@ -6,23 +6,26 @@ import com.worldventures.dreamtrips.R;
 
 public class UploadingTimeLeftFormatter {
 
-   private static final String DURATION_FORMAT = "%d%s %d%s";
+   private static final String DURATION_FORMAT = "%d%s %d%s %s";
+   private static final String SHORTENED_DURATION_FORMAT = "%d%s %s";
 
    private Context context;
    private String hoursString;
    private String minutesString;
    private String secondsString;
+   private String leftString;
 
    public UploadingTimeLeftFormatter(Context context) {
       this.context = context;
       hoursString = context.getString(R.string.uploading_post_time_left_hours);
       minutesString = context.getString(R.string.uploading_post_time_left_minutes);
       secondsString = context.getString(R.string.uploading_post_time_left_seconds);
+      leftString = context.getString(R.string.uploading_post_time_time_left);
    }
 
    public String format(long durationMillis) {
-      if (durationMillis == -1) {
-         return context.getString(R.string.uploading_post_time_left_estimating);
+      if (durationMillis == 0) {
+         return context.getString(R.string.uploading_post_time_left_posting);
       }
       long totalSecondsCount = durationMillis / 1000;
       long totalMinutesCount = totalSecondsCount / 60;
@@ -37,9 +40,11 @@ public class UploadingTimeLeftFormatter {
       if (totalHoursCount > 0) {
          long roundedMinutesRemainder = minutesRemainder;
          if (secondsRemainder > 30) roundedMinutesRemainder++;
-         return String.format(DURATION_FORMAT, totalHoursCount, hoursString, roundedMinutesRemainder, minutesString);
+         return String.format(DURATION_FORMAT, totalHoursCount, hoursString, roundedMinutesRemainder, minutesString, leftString);
+      } else if (totalMinutesCount > 0) {
+         return String.format(DURATION_FORMAT, minutesRemainder, minutesString, secondsRemainder, secondsString, leftString);
       } else {
-         return String.format(DURATION_FORMAT, minutesRemainder, minutesString, secondsRemainder, secondsString);
+         return String.format(SHORTENED_DURATION_FORMAT, secondsRemainder, secondsString, leftString);
       }
    }
 }

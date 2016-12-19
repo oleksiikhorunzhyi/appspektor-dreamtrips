@@ -13,6 +13,7 @@ import com.worldventures.dreamtrips.modules.background_uploading.service.PostPro
 import com.worldventures.dreamtrips.modules.background_uploading.service.ResumeCompoundOperationCommand;
 import com.worldventures.dreamtrips.modules.background_uploading.service.ScheduleCompoundOperationCommand;
 import com.worldventures.dreamtrips.modules.background_uploading.service.StartNextCompoundOperationCommand;
+import com.worldventures.dreamtrips.modules.background_uploading.util.UploadTimeEstimator;
 
 import javax.inject.Singleton;
 
@@ -43,6 +44,11 @@ public class BackgroundUploadingModule {
    @Provides
    PostCompoundOperationMutator providePostCompoundOperationMutator(SessionHolder<UserSession> sessionHolder) {
       return new PostCompoundOperationMutator(sessionHolder);
+   }
+
+   @Provides
+   UploadTimeEstimator provideUploadingTimeEstimator() {
+      return new UploadTimeEstimator();
    }
 
 }

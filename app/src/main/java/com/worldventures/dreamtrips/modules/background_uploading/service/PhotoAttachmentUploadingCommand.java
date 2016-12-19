@@ -7,6 +7,7 @@ import com.worldventures.dreamtrips.modules.background_uploading.model.Immutable
 import com.worldventures.dreamtrips.modules.background_uploading.model.PhotoAttachment;
 import com.worldventures.dreamtrips.modules.background_uploading.model.PostCompoundOperationModel;
 import com.worldventures.dreamtrips.modules.background_uploading.model.PostCompoundOperationMutator;
+import com.worldventures.dreamtrips.modules.background_uploading.util.UploadTimeEstimator;
 
 import java.util.concurrent.TimeUnit;
 
@@ -23,6 +24,7 @@ public class PhotoAttachmentUploadingCommand extends Command<PostCompoundOperati
 
    @Inject Janet janet;
    @Inject PostCompoundOperationMutator compoundOperationObjectMutator;
+   @Inject UploadTimeEstimator uploadTimeEstimator;
 
    private PostCompoundOperationModel postCompoundOperationModel;
    private PhotoAttachment photoAttachment;
@@ -59,6 +61,9 @@ public class PhotoAttachmentUploadingCommand extends Command<PostCompoundOperati
                      .from(photoAttachment);
                switch (actionState.status) {
                   case START:
+                     uploadTimeEstimator.prepare(totalSize, totalUploadedSize, photoAttachment.selectedPhoto().size(),
+                           postCompoundOperationModel.averageUploadSpeed());
+                     uploadTimeEstimator.onUploadingStarted(System.currentTimeMillis());
                      Timber.d("[New Photo Attachment Creation] Uploading photo %s", photoAttachment.selectedPhoto()
                            .title());
                      builder.state(PhotoAttachment.State.STARTED);
@@ -94,8 +99,11 @@ public class PhotoAttachmentUploadingCommand extends Command<PostCompoundOperati
 
    private void photoAttachmentUpdated(PhotoAttachment updatedAttachment) {
       photoAttachment = updatedAttachment;
+      long remainingTimeInMillis = uploadTimeEstimator.estimate(updatedAttachment.progress(), System.currentTimeMillis());
+      double updatedAverageSpeed = uploadTimeEstimator.getAverageUploadSpeed();
       postCompoundOperationModel = compoundOperationObjectMutator.photoAttachmentChanged(postCompoundOperationModel,
-            photoAttachment, attachmentIndex, (totalUploadedSize + getUploadedSizeOfAttachment(updatedAttachment)) / totalSize);
+            photoAttachment, attachmentIndex, (totalUploadedSize + getUploadedSizeOfAttachment(updatedAttachment)) / totalSize,
+            remainingTimeInMillis, updatedAverageSpeed);
    }
 
    private double getUploadedSizeOfAttachment(PhotoAttachment updatedAttachment) {

@@ -2,6 +2,7 @@ package com.worldventures.dreamtrips.modules.feed.presenter;
 
 import com.innahema.collections.query.functions.Converter;
 import com.innahema.collections.query.queriables.Queryable;
+import com.worldventures.dreamtrips.core.navigation.BackStackDelegate;
 import com.worldventures.dreamtrips.core.rx.composer.IoToMainComposer;
 import com.worldventures.dreamtrips.core.utils.FileUtils;
 import com.worldventures.dreamtrips.modules.background_uploading.model.PostWithAttachmentBody;
@@ -13,6 +14,7 @@ import com.worldventures.dreamtrips.modules.common.model.MediaAttachment;
 import com.worldventures.dreamtrips.modules.common.model.PhotoGalleryModel;
 import com.worldventures.dreamtrips.modules.common.service.MediaInteractor;
 import com.worldventures.dreamtrips.modules.common.view.util.MediaPickerEventDelegate;
+import com.worldventures.dreamtrips.modules.common.view.util.MediaPickerImagesProcessedEventDelegate;
 import com.worldventures.dreamtrips.modules.feed.bundle.CreateEntityBundle;
 import com.worldventures.dreamtrips.modules.feed.event.FeedItemAddedEvent;
 import com.worldventures.dreamtrips.modules.feed.model.FeedItem;
@@ -43,10 +45,15 @@ public class CreateEntityPresenter<V extends CreateEntityPresenter.View> extends
    private CreateEntityBundle.Origin origin;
 
    @Inject MediaPickerEventDelegate mediaPickerEventDelegate;
+
    @Inject MediaInteractor mediaInteractor;
+   @Inject MediaPickerImagesProcessedEventDelegate mediaPickerImagesProcessedEventDelegate;
    @Inject TripImagesInteractor tripImagesInteractor;
    @Inject PostsInteractor postsInteractor;
    @Inject BackgroundUploadingInteractor backgroundUploadingInteractor;
+   @Inject BackStackDelegate backStackDelegate;
+
+   private boolean mediaPickerProcessingImages;
 
    public CreateEntityPresenter(CreateEntityBundle.Origin origin) {
       this.origin = origin;
@@ -77,6 +84,12 @@ public class CreateEntityPresenter<V extends CreateEntityPresenter.View> extends
                      eventBus.post(new FeedItemAddedEvent(FeedItem.create(command.getResult(), getAccount())));
                      closeView();
                   }));
+      mediaPickerImagesProcessedEventDelegate.getObservable()
+            .compose(bindViewToMainComposer())
+            .subscribe(mediaPickerProcessingImages -> {
+               this.mediaPickerProcessingImages = mediaPickerProcessingImages;
+               invalidateDynamicViews();
+            });
    }
 
    @Override
@@ -101,7 +114,7 @@ public class CreateEntityPresenter<V extends CreateEntityPresenter.View> extends
 
    @Override
    protected boolean isChanged() {
-      return !isCachedTextEmpty() || (cachedCreationItems.size() > 0);
+      return !isCachedTextEmpty() || !mediaPickerProcessingImages;
    }
 
    @Override
@@ -160,25 +173,29 @@ public class CreateEntityPresenter<V extends CreateEntityPresenter.View> extends
    }
 
    private void imageSelected(MediaAttachment mediaAttachment) {
+      invalidateDynamicViews();
       Observable.from(mediaAttachment.chosenImages)
             .concatMap(photoGalleryModel -> convertPhotoCreationItem(photoGalleryModel, mediaAttachment.source))
             .compose(bindViewToMainComposer())
             .subscribe(newImage -> {
                cachedCreationItems.add(newImage);
-               if (view != null) {
-                  if (ValidationUtils.isUrl(newImage.getFileUri())) {
-                     mediaInteractor.copyFilePipe()
-                           .createObservableResult(new CopyFileCommand(context, newImage.getFileUri()))
-                           .compose(bindViewToMainComposer())
-                           .subscribe(command -> {
-                              view.attachPhoto(newImage);
-                              newImage.setFileUri(command.getResult());
-                           }, e -> Timber.e(e, "Failed to copy file"));
-                  } else {
-                     view.attachPhoto(newImage);
-                  }
+               if (ValidationUtils.isUrl(newImage.getFileUri())) {
+                  mediaInteractor.copyFilePipe()
+                        .createObservableResult(new CopyFileCommand(context, newImage.getFileUri()))
+                        .compose(bindViewToMainComposer())
+                        .subscribe(command -> {
+                           updateUiAfterImageProcessing(newImage);
+                           newImage.setFileUri(command.getResult());
+                        }, e -> Timber.e(e, "Failed to copy file"));
+               } else {
+                  updateUiAfterImageProcessing(newImage);
                }
             }, throwable -> Timber.e(throwable, ""));
+   }
+
+   private void updateUiAfterImageProcessing(PhotoCreationItem newImage) {
+      view.attachPhoto(newImage);
+      invalidateDynamicViews();
    }
 
    private Observable<PhotoCreationItem> convertPhotoCreationItem(PhotoGalleryModel photoGalleryModel,

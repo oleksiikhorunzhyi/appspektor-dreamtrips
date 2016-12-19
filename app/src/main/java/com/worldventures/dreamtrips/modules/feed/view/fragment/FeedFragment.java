@@ -27,7 +27,6 @@ import com.worldventures.dreamtrips.core.api.error.ErrorResponse;
 import com.worldventures.dreamtrips.core.rx.RxBaseFragmentWithArgs;
 import com.worldventures.dreamtrips.core.utils.ViewUtils;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
-import com.worldventures.dreamtrips.modules.background_uploading.model.PostCompoundOperationModel;
 import com.worldventures.dreamtrips.modules.common.model.MediaAttachment;
 import com.worldventures.dreamtrips.modules.common.model.PhotoGalleryModel;
 import com.worldventures.dreamtrips.modules.common.view.bundle.BucketBundle;
@@ -43,7 +42,6 @@ import com.worldventures.dreamtrips.modules.feed.presenter.SuggestedPhotoCellPre
 import com.worldventures.dreamtrips.modules.feed.view.cell.SuggestedPhotosCell;
 import com.worldventures.dreamtrips.modules.feed.view.cell.delegate.SuggestedPhotosDelegate;
 import com.worldventures.dreamtrips.modules.feed.view.cell.delegate.UploadingCellDelegate;
-import com.worldventures.dreamtrips.modules.feed.view.cell.uploading.UploadingPhotoPostsSectionCell;
 import com.worldventures.dreamtrips.modules.feed.view.util.CirclesFilterPopupWindow;
 import com.worldventures.dreamtrips.modules.feed.view.util.FragmentWithFeedDelegate;
 import com.worldventures.dreamtrips.modules.feed.view.util.StatePaginatedRecyclerViewManager;
@@ -282,7 +280,8 @@ public class FeedFragment extends RxBaseFragmentWithArgs<FeedPresenter, FeedBund
          List<PhotoGalleryModel> suggestedPhotos) {
       List newFeedItems = new ArrayList();
       int suggestedPhotosSize = suggestedPhotos == null ? 0 : suggestedPhotos.size();
-      if (isNeedAddSuggestions(suggestedPhotosSize, feedItems.size())) {
+      int feedItemsSize = feedItems == null ? 0 : feedItems.size();
+      if (feedItemsSize > 0 && suggestedPhotosSize > 0) {
          newFeedItems.add(new MediaAttachment(suggestedPhotos, MediaAttachment.Source.GALLERY));
       }
 
@@ -389,12 +388,6 @@ public class FeedFragment extends RxBaseFragmentWithArgs<FeedPresenter, FeedBund
          }
       }
       return collapseView;
-   }
-
-   private boolean isNeedAddSuggestions(int suggestedPhotosSize, int feedItemsSize) {
-      boolean isAdapterEmpty = fragmentWithFeedDelegate.getItemsCount() == 0;
-      boolean isAdapterContainsSuggestions = !isAdapterEmpty && fragmentWithFeedDelegate.getItem(0) instanceof MediaAttachment;
-      return feedItemsSize > 0 && suggestedPhotosSize > 0 || isAdapterContainsSuggestions;
    }
 
    private void createSuggestionObserver() {

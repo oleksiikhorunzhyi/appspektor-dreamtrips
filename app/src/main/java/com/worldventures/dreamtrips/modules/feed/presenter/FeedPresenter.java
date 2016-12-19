@@ -474,6 +474,7 @@ public class FeedPresenter extends Presenter<FeedPresenter.View> implements Uplo
    }
 
    public void removeSuggestedPhotos() {
+      suggestedPhotos.clear();
       suggestedPhotoHelper.reset();
       refreshFeedItemsInView();
    }

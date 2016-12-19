@@ -92,6 +92,7 @@ public abstract class TripImagesListPresenter<VT extends TripImagesListPresenter
       }
       subscribeToPhotoDeletedEvents();
       subscribeToLikesChanges();
+      subscribeToErrorUpdates();
    }
 
    private void fillWithItems() {
@@ -228,6 +229,13 @@ public abstract class TripImagesListPresenter<VT extends TripImagesListPresenter
                   }
                }
             });
+   }
+
+   private void subscribeToErrorUpdates() {
+      offlineErrorInteractor.offlineErrorCommandPipe()
+            .observeSuccess()
+            .compose(bindViewToMainComposer())
+            .subscribe(command -> reportNoConnection());
    }
 
    ////////////////////////////

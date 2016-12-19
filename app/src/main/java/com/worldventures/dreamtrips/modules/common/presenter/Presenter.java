@@ -174,11 +174,19 @@ public class Presenter<VT extends Presenter.View> {
    private boolean handleGenericError(Throwable error) {
       if (getCauseByType(CancelException.class, error) != null) return true;
       if (getCauseByType(IOException.class, error) != null) {
-         offlineErrorInteractor.offlineErrorCommandPipe().send(new OfflineErrorCommand(error));
-         reportNoConnection();
+         reportNoConnectionWithOfflineErrorPipe(error);
          return true;
       }
       return false;
+   }
+
+   public void reportNoConnectionWithOfflineErrorPipe() {
+      reportNoConnectionWithOfflineErrorPipe(new IOException());
+   }
+
+   private void reportNoConnectionWithOfflineErrorPipe(Throwable throwable) {
+      offlineErrorInteractor.offlineErrorCommandPipe().send(new OfflineErrorCommand(throwable));
+      reportNoConnection();
    }
 
    public void reportNoConnection() {

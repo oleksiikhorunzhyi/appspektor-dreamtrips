@@ -10,6 +10,8 @@ import com.worldventures.dreamtrips.wallet.domain.entity.ImmutableSmartCardUser;
 import com.worldventures.dreamtrips.wallet.domain.entity.ImmutableSmartCardUserPhoto;
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCard;
 import com.worldventures.dreamtrips.wallet.service.command.GetActiveSmartCardCommand;
+import com.worldventures.dreamtrips.wallet.domain.entity.SmartCard;
+import com.worldventures.dreamtrips.wallet.service.command.ActivateSmartCardCommand;
 import com.worldventures.dreamtrips.wallet.service.command.http.AssociateCardUserCommand;
 import com.worldventures.dreamtrips.wallet.service.storage.WizardMemoryStorage;
 
@@ -21,7 +23,6 @@ import javax.inject.Named;
 import io.techery.janet.Command;
 import io.techery.janet.Janet;
 import io.techery.janet.command.annotations.CommandAction;
-import io.techery.janet.smartcard.action.settings.EnableLockUnlockDeviceAction;
 import rx.Observable;
 
 import static com.worldventures.dreamtrips.core.janet.JanetModule.JANET_WALLET;
@@ -33,10 +34,12 @@ public class WizardCompleteCommand extends Command<Void> implements InjectableAc
    @Inject WizardMemoryStorage wizardMemoryStorage;
    @Inject SnappyRepository snappyRepository;
 
+   private final SmartCard smartCard;
+
    @Override
    protected void run(CommandCallback<Void> callback) throws Throwable {
-      walletJanet.createPipe(EnableLockUnlockDeviceAction.class)
-            .createObservableResult(new EnableLockUnlockDeviceAction(true))
+      walletJanet.createPipe(ActivateSmartCardCommand.class)
+            .createObservableResult(new ActivateSmartCardCommand(smartCard))
             .flatMap(action -> uploadUserDataAndAssociateSmartCard())
             .subscribe(aVoid -> callback.onSuccess(null), callback::onFail);
    }
@@ -82,4 +85,6 @@ public class WizardCompleteCommand extends Command<Void> implements InjectableAc
             .photoUrl(avatarUrl)
             .build();
    }
+
+   public WizardCompleteCommand(SmartCard smartCard) {this.smartCard = smartCard;}
 }

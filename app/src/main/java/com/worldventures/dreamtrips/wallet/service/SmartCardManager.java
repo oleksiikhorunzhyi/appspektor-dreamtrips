@@ -54,8 +54,15 @@ public class SmartCardManager {
    }
 
    private void smartCardConnected() {
-      createBatteryObservable();
-      fetchFirmwareVersion();
+      smartCardInteractor.activeSmartCardPipe()
+            .createObservableResult(new GetActiveSmartCardCommand())
+            .map(GetActiveSmartCardCommand::getResult)
+            .filter(smartCard -> smartCard.cardStatus() == SmartCard.CardStatus.ACTIVE)
+            .subscribe(smartCard -> {
+               createBatteryObservable();
+               fetchFirmwareVersion();
+            }, throwable -> {
+            });
    }
 
    private void createBatteryObservable() {

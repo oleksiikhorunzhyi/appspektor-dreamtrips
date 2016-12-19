@@ -81,11 +81,9 @@ public class AddCardDetailsPresenter extends WalletPresenter<AddCardDetailsPrese
       smartCardInteractor.smartCardModifierPipe()
             .observeSuccessWithReplay()
             .take(1)
-            .subscribe(command -> {
-               analyticsInteractor.walletAnalyticsCommandPipe()
-                     .send(new WalletAnalyticsCommand(AddCardDetailsAction.forBankCard(bankCard,
-                           command.getResult().connectionStatus() == SmartCard.ConnectionStatus.CONNECTED)));
-            });
+            .subscribe(command -> analyticsInteractor.walletAnalyticsCommandPipe()
+                  .send(new WalletAnalyticsCommand(AddCardDetailsAction.forBankCard(bankCard,
+                        command.getResult().connectionStatus() == SmartCard.ConnectionStatus.CONNECTED))));
    }
 
    private void connectToDefaultCardPipe() {

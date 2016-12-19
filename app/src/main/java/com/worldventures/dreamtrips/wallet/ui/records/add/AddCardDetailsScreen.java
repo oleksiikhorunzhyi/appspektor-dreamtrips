@@ -92,7 +92,7 @@ public class AddCardDetailsScreen extends WalletLinearLayout<AddCardDetailsPrese
    }
 
    private Observable<String> observableFrom(TextView textView) {
-      return RxTextView.afterTextChangeEvents(textView).map(event -> event.editable().toString()).skip(1);
+      return RxTextView.afterTextChangeEvents(textView).map(event -> event.editable().toString());
    }
 
    @Override

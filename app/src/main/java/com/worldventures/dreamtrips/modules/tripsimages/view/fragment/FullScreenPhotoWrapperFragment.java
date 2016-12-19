@@ -206,6 +206,11 @@ public class FullScreenPhotoWrapperFragment extends RxBaseFragmentWithArgs<TripI
    }
 
    @Override
+   public boolean isFullscreenView() {
+      return true;
+   }
+
+   @Override
    public void openCreatePhoto(MediaAttachment mediaAttachment, CreateEntityBundle.Origin photoOrigin) {
       //TODO Temporary. Need to refactor. Need to create own presenter for {@link FullScreenPhotoWrapperFragment}
    }

@@ -13,8 +13,6 @@ import com.worldventures.dreamtrips.modules.feed.model.FeedItem;
 import com.worldventures.dreamtrips.modules.friends.model.Circle;
 import com.worldventures.dreamtrips.modules.infopages.model.FeedbackType;
 import com.worldventures.dreamtrips.modules.membership.model.Podcast;
-import com.worldventures.dreamtrips.modules.video.model.VideoLanguage;
-import com.worldventures.dreamtrips.modules.video.model.VideoLocale;
 import com.worldventures.dreamtrips.modules.settings.model.Setting;
 import com.worldventures.dreamtrips.modules.trips.model.Location;
 import com.worldventures.dreamtrips.modules.trips.model.Pin;
@@ -23,6 +21,8 @@ import com.worldventures.dreamtrips.modules.tripsimages.model.IFullScreenObject;
 import com.worldventures.dreamtrips.modules.tripsimages.model.SocialViewPagerState;
 import com.worldventures.dreamtrips.modules.tripsimages.model.TripImagesType;
 import com.worldventures.dreamtrips.modules.video.model.CachedEntity;
+import com.worldventures.dreamtrips.modules.video.model.VideoLanguage;
+import com.worldventures.dreamtrips.modules.video.model.VideoLocale;
 import com.worldventures.dreamtrips.wallet.domain.entity.AddressInfo;
 import com.worldventures.dreamtrips.wallet.domain.entity.FirmwareUpdateData;
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCard;
@@ -49,6 +49,7 @@ public interface SnappyRepository {
    String LAST_SELECTED_VIDEO_LOCALE = "LAST_SELECTED_VIDEO_LOCALE";
    String LAST_SELECTED_VIDEO_LANGUAGE = "LAST_SELECTED_VIDEO_LANGUAGE ";
    String IMAGE = "IMAGE";
+   String LAST_USED_INSPIRE_ME_RANDOM_SEED = "LAST_USED_INSPIRE_ME_RANDOM_SEED";
    String OPEN_BUCKET_TAB_TYPE = "open_bucket_tab_type";
    String BADGE_NOTIFICATIONS_COUNT = "badge_notifications_count";
    String EXCLUSIVE_NOTIFICATIONS_COUNT = "Unread-Notifications-Count";
@@ -123,6 +124,10 @@ public interface SnappyRepository {
    void savePhotoEntityList(TripImagesType type, int userId, List<IFullScreenObject> items);
 
    List<IFullScreenObject> readPhotoEntityList(TripImagesType type, int userId);
+
+   void saveLastUsedInspireMeRandomSeed(double randomSeed);
+
+   double getLastUsedInspireMeRandomSeed();
 
    void saveLastSelectedVideoLocale(VideoLocale videoLocale);
 
@@ -238,6 +243,8 @@ public interface SnappyRepository {
    void saveTripDetails(TripModel tripModel);
 
    void saveTripsDetails(List<TripModel> trips);
+
+   boolean hasTripsDetailsForUids(List<String> uids);
 
    List<TripModel> getTripsDetailsForUids(List<String> uids);
 

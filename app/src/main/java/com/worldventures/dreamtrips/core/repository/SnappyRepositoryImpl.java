@@ -514,6 +514,16 @@ public class SnappyRepositoryImpl implements SnappyRepository {
    }
 
    @Override
+   public void saveLastUsedInspireMeRandomSeed(double randomSeed) {
+      act(db -> db.putDouble(LAST_USED_INSPIRE_ME_RANDOM_SEED, randomSeed));
+   }
+
+   @Override
+   public double getLastUsedInspireMeRandomSeed() {
+      return actWithResult(db -> db.getDouble(LAST_USED_INSPIRE_ME_RANDOM_SEED)).or(0d);
+   }
+
+   @Override
    public void saveLastSelectedVideoLocale(VideoLocale videoLocale) {
       act(db -> db.put(LAST_SELECTED_VIDEO_LOCALE, videoLocale));
    }
@@ -866,6 +876,15 @@ public class SnappyRepositoryImpl implements SnappyRepository {
    @Override
    public TripModel getTripDetail(String uid) {
       return actWithResult(db -> db.get(TRIPS_DETAILS + uid, TripModel.class)).orNull();
+   }
+
+   @Override
+   public boolean hasTripsDetailsForUids(List<String> uids) {
+      return actWithResult(db ->
+            Queryable.from()
+                  .toList()
+                  .containsAll(Queryable.from(uids).map(uid -> TRIPS_DETAILS + uid).toList())
+      ).or(false);
    }
 
    @Override

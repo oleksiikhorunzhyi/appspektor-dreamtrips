@@ -218,6 +218,11 @@ public class TripImagesListFragment<T extends TripImagesListPresenter> extends R
    }
 
    @Override
+   public boolean isFullscreenView() {
+      return false;
+   }
+
+   @Override
    public void openCreatePhoto(MediaAttachment mediaAttachment, CreateEntityBundle.Origin photoOrigin) {
       //TODO temp solution will be removed after refactoring
    }

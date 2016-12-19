@@ -14,6 +14,8 @@ import com.worldventures.dreamtrips.modules.common.model.PhotoGalleryModel;
 import com.worldventures.dreamtrips.modules.common.service.MediaInteractor;
 import com.worldventures.dreamtrips.modules.common.view.util.MediaPickerEventDelegate;
 import com.worldventures.dreamtrips.modules.feed.bundle.CreateEntityBundle;
+import com.worldventures.dreamtrips.modules.feed.event.FeedItemAddedEvent;
+import com.worldventures.dreamtrips.modules.feed.model.FeedItem;
 import com.worldventures.dreamtrips.modules.feed.model.ImmutableSelectedPhoto;
 import com.worldventures.dreamtrips.modules.feed.model.PhotoCreationItem;
 import com.worldventures.dreamtrips.modules.feed.model.SelectedPhoto;
@@ -71,7 +73,10 @@ public class CreateEntityPresenter<V extends CreateEntityPresenter.View> extends
             .compose(bindViewToMainComposer())
             .subscribe(new ActionStateSubscriber<CreatePostCommand>()
                   .onFail(this::handleError)
-                  .onSuccess(command -> closeView()));
+                  .onSuccess(command -> {
+                     eventBus.post(new FeedItemAddedEvent(FeedItem.create(command.getResult(), getAccount())));
+                     closeView();
+                  }));
    }
 
    @Override

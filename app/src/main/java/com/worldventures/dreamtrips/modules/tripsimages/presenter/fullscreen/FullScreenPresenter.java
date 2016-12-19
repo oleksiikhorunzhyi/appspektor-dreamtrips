@@ -70,7 +70,7 @@ public abstract class FullScreenPresenter<T extends IFullScreenObject, PRESENTER
 
    public void onShareAction() {
       if (!isConnected()) {
-         reportNoConnection();
+         reportNoConnectionWithOfflineErrorPipe();
          return;
       }
 

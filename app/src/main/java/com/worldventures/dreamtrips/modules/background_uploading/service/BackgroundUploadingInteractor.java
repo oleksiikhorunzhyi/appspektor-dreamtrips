@@ -23,6 +23,8 @@ public class BackgroundUploadingInteractor {
    private ActionPipe<ScheduleCompoundOperationCommand> scheduleOperationPipe;
    private ActionPipe<StartNextCompoundOperationCommand> startNextCompoundPipe;
    private ActionPipe<PauseCompoundOperationCommand> pauseCompoundOperationPipe;
+   private ActionPipe<QueryCompoundOperationsCommand> queryCompoundOperationsPipe;
+   private ActionPipe<RestoreCompoundOperationsCommand> restoreCompoundOperationsPipe;
    private ActionPipe<ResumeCompoundOperationCommand> resumeCompoundOperationPipe;
    private ActionPipe<CancelCompoundOperationCommand> cancelCompoundOperationPipe;
 
@@ -35,14 +37,24 @@ public class BackgroundUploadingInteractor {
       this.sessionHolder = sessionHolder;
       postProcessingPipe = sessionActionPipeCreator.createPipe(PostProcessingCommand.class, Schedulers.io());
       compoundOperationsPipe = sessionActionPipeCreator.createPipe(CompoundOperationsCommand.class, Schedulers.io());
+      queryCompoundOperationsPipe = sessionActionPipeCreator.createPipe(QueryCompoundOperationsCommand.class, Schedulers.io());
       scheduleOperationPipe = sessionActionPipeCreator.createPipe(ScheduleCompoundOperationCommand.class, Schedulers.io());
       startNextCompoundPipe = sessionActionPipeCreator.createPipe(StartNextCompoundOperationCommand.class, Schedulers.io());
+      restoreCompoundOperationsPipe = sessionActionPipeCreator.createPipe(RestoreCompoundOperationsCommand.class, Schedulers.io());
       pauseCompoundOperationPipe = sessionActionPipeCreator.createPipe(PauseCompoundOperationCommand.class, Schedulers.io());
       resumeCompoundOperationPipe = sessionActionPipeCreator.createPipe(ResumeCompoundOperationCommand.class, Schedulers
             .io());
       cancelCompoundOperationPipe = sessionActionPipeCreator.createPipe(CancelCompoundOperationCommand.class, Schedulers
             .io());
       subscribeToPostProcessed();
+   }
+
+   public ActionPipe<RestoreCompoundOperationsCommand> restoreCompoundOperationsPipe() {
+      return restoreCompoundOperationsPipe;
+   }
+
+   public ActionPipe<QueryCompoundOperationsCommand> queryCompoundOperationsPipe() {
+      return queryCompoundOperationsPipe;
    }
 
    public ActionPipe<ScheduleCompoundOperationCommand> scheduleOperationPipe() {

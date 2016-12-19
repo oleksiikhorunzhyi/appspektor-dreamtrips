@@ -7,9 +7,10 @@ import com.worldventures.dreamtrips.modules.trips.model.Location;
 
 import org.immutables.value.Value;
 
-import java.util.List;
+import java.util.ArrayList;
 
 @Value.Immutable
+@Value.Style(privateNoargConstructor = true, defaultAsDefault = true)
 public interface SelectedPhoto {
    String path();
    int width();
@@ -17,6 +18,6 @@ public interface SelectedPhoto {
    @Nullable Location locationFromPost();
    @Nullable Location locationFromExif(); //analytics related
    @Nullable String title();
-   @Nullable List<PhotoTag> tags();
+   @Nullable ArrayList<PhotoTag> tags();
    long size();
 }

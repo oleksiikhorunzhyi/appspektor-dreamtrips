@@ -8,13 +8,13 @@ import com.worldventures.dreamtrips.modules.tripsimages.model.Photo;
 
 import org.immutables.value.Value;
 
-import java.util.List;
+import java.util.ArrayList;
 
 @Value.Immutable
 public interface PostWithAttachmentBody {
    @Nullable String text();
    @Nullable Location location();
-   List<PhotoAttachment> attachments();
-   @Nullable List<Photo> uploadedPhotos();
+   ArrayList<PhotoAttachment> attachments();
+   @Nullable ArrayList<Photo> uploadedPhotos();
    @Nullable TextualPost createdPost();
 }

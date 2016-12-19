@@ -57,7 +57,7 @@ public class PostCompoundOperationMutator {
             .withProgress(progress)
             .withBody(ImmutablePostWithAttachmentBody
                   .copyOf(postCompoundOperationModel.body())
-                  .withAttachments(attachments));
+                  .withAttachments(new ArrayList<>(attachments)));
    }
 
    public PostCompoundOperationModel photosUploaded(PostCompoundOperationModel compoundOperationModel, List<Photo> photos) {
@@ -66,7 +66,7 @@ public class PostCompoundOperationMutator {
             .withProgress(PROGRESS_PHOTOS_CREATED)
             .withBody(ImmutablePostWithAttachmentBody
                   .copyOf(compoundOperationModel.body())
-                  .withUploadedPhotos(photos));
+                  .withUploadedPhotos(new ArrayList<>(photos)));
    }
 
    public PostCompoundOperationModel finished(PostCompoundOperationModel compoundOperationModel, TextualPost textualPost) {

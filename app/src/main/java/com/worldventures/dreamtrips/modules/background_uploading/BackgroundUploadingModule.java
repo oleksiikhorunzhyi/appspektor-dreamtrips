@@ -6,6 +6,7 @@ import com.worldventures.dreamtrips.core.janet.SessionActionPipeCreator;
 import com.worldventures.dreamtrips.core.session.UserSession;
 import com.worldventures.dreamtrips.modules.background_uploading.model.PostCompoundOperationMutator;
 import com.worldventures.dreamtrips.modules.background_uploading.service.BackgroundUploadingInteractor;
+import com.worldventures.dreamtrips.modules.background_uploading.service.CancelCompoundOperationCommand;
 import com.worldventures.dreamtrips.modules.background_uploading.service.PauseCompoundOperationCommand;
 import com.worldventures.dreamtrips.modules.background_uploading.service.PhotoAttachmentUploadingCommand;
 import com.worldventures.dreamtrips.modules.background_uploading.service.PostProcessingCommand;
@@ -24,6 +25,7 @@ import de.greenrobot.event.EventBus;
             PostProcessingCommand.class,
             PhotoAttachmentUploadingCommand.class,
             ScheduleCompoundOperationCommand.class,
+            CancelCompoundOperationCommand.class,
             StartNextCompoundOperationCommand.class,
             PauseCompoundOperationCommand.class,
             ResumeCompoundOperationCommand.class,

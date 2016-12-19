@@ -8,6 +8,8 @@ import com.worldventures.dreamtrips.core.janet.cache.storage.MemoryStorage;
 import com.worldventures.dreamtrips.core.janet.cache.storage.MultipleActionStorage;
 import com.worldventures.dreamtrips.modules.background_uploading.model.CompoundOperationModel;
 import com.worldventures.dreamtrips.modules.background_uploading.service.DeleteCompoundOperationsCommand;
+import com.worldventures.dreamtrips.modules.background_uploading.service.QueryCompoundOperationsCommand;
+import com.worldventures.dreamtrips.modules.background_uploading.service.RestoreCompoundOperationsCommand;
 import com.worldventures.dreamtrips.modules.background_uploading.service.ScheduleCompoundOperationCommand;
 import com.worldventures.dreamtrips.modules.background_uploading.service.StartNextCompoundOperationCommand;
 import com.worldventures.dreamtrips.modules.background_uploading.service.UpdateCompoundOperationsCommand;
@@ -33,8 +35,10 @@ public class CompoundOperationStorage implements MultipleActionStorage<List<Comp
    @Override
    public List<Class<? extends CachedAction>> getActionClasses() {
       return Arrays.asList(UpdateCompoundOperationsCommand.class,
+            QueryCompoundOperationsCommand.class,
             DeleteCompoundOperationsCommand.class,
             ScheduleCompoundOperationCommand.class,
+            RestoreCompoundOperationsCommand.class,
             StartNextCompoundOperationCommand.class);
    }
 

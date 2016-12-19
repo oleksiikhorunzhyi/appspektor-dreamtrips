@@ -43,7 +43,8 @@ import com.worldventures.dreamtrips.wallet.service.command.http.FetchAndStoreDef
 import com.worldventures.dreamtrips.wallet.service.command.http.FetchAssociatedSmartCardCommand;
 import com.worldventures.dreamtrips.wallet.service.command.http.FetchFirmwareInfoCommand;
 import com.worldventures.dreamtrips.wallet.service.command.http.FetchTermsAndConditionsCommand;
-import com.worldventures.dreamtrips.wallet.service.command.http.UpdateCardUserServerDataCommand;
+import com.worldventures.dreamtrips.wallet.service.command.profile.UpdateProfileModule;
+import com.worldventures.dreamtrips.wallet.service.command.profile.UpdateSmartCardUserCommand;
 import com.worldventures.dreamtrips.wallet.service.command.reset.ConfirmResetCommand;
 import com.worldventures.dreamtrips.wallet.service.command.reset.RemoveSmartCardDataCommand;
 import com.worldventures.dreamtrips.wallet.service.command.reset.ResetSmartCardCommand;
@@ -53,7 +54,9 @@ import com.worldventures.dreamtrips.wallet.service.command.wizard.WizardComplete
 import dagger.Module;
 
 @Module(
-      includes = {},
+      includes = {
+            UpdateProfileModule.class
+      },
       injects = {
             GetCompatibleDevicesCommand.class,
             CompressImageForSmartCardCommand.class,
@@ -103,7 +106,7 @@ import dagger.Module;
             RestartSmartCardCommand.class,
             AvailabilitySmartCardCommand.class,
             UpdateSmartCardPropertiesCommand.class,
-            UpdateCardUserServerDataCommand.class
+            UpdateSmartCardUserCommand.class
       },
       complete = false, library = true)
 public class WalletCommandModule {}

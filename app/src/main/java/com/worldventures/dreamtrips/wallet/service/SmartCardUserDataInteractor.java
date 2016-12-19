@@ -1,42 +1,42 @@
 package com.worldventures.dreamtrips.wallet.service;
 
-import com.worldventures.dreamtrips.wallet.service.command.SetupUserDataCommand;
+import com.worldventures.dreamtrips.core.janet.SessionActionPipeCreator;
 import com.worldventures.dreamtrips.wallet.service.command.SmartCardAvatarCommand;
-import com.worldventures.dreamtrips.wallet.service.command.http.UpdateCardUserServerDataCommand;
-
-import javax.inject.Inject;
-import javax.inject.Named;
-import javax.inject.Singleton;
+import com.worldventures.dreamtrips.wallet.service.command.profile.RetryHttpUploadUpdatingCommand;
+import com.worldventures.dreamtrips.wallet.service.command.profile.RevertSmartCardUserUpdatingCommand;
+import com.worldventures.dreamtrips.wallet.service.command.profile.UpdateSmartCardUserCommand;
 
 import io.techery.janet.ActionPipe;
-import io.techery.janet.Janet;
+import io.techery.janet.WriteActionPipe;
 import rx.schedulers.Schedulers;
 
-import static com.worldventures.dreamtrips.core.janet.JanetModule.JANET_WALLET;
-
-@Singleton
 public class SmartCardUserDataInteractor {
 
    private final ActionPipe<SmartCardAvatarCommand> smartCardAvatarPipe;
-   private final ActionPipe<SetupUserDataCommand> setupUserDataCommandPipe;
-   private final ActionPipe<UpdateCardUserServerDataCommand> cardUserServerDataCommandPipe;
+   private final ActionPipe<UpdateSmartCardUserCommand> updateSmartCardUserPipe;
+   private final WriteActionPipe<RevertSmartCardUserUpdatingCommand> revertSmartCardUserUpdatingPipe;
+   private final ActionPipe<RetryHttpUploadUpdatingCommand> retryHttpUploadUpdatingPipe;
 
-   @Inject public SmartCardUserDataInteractor(@Named(JANET_WALLET) Janet janet) {
-      smartCardAvatarPipe = janet.createPipe(SmartCardAvatarCommand.class, Schedulers.io());
-      setupUserDataCommandPipe = janet.createPipe(SetupUserDataCommand.class, Schedulers.io());
-      cardUserServerDataCommandPipe = janet.createPipe(UpdateCardUserServerDataCommand.class, Schedulers.io());
+   public SmartCardUserDataInteractor(SessionActionPipeCreator sessionActionPipeCreator) {
+      smartCardAvatarPipe = sessionActionPipeCreator.createPipe(SmartCardAvatarCommand.class, Schedulers.io());
+      updateSmartCardUserPipe = sessionActionPipeCreator.createPipe(UpdateSmartCardUserCommand.class, Schedulers.io());
+      revertSmartCardUserUpdatingPipe = sessionActionPipeCreator.createPipe(RevertSmartCardUserUpdatingCommand.class, Schedulers.io());
+      retryHttpUploadUpdatingPipe = sessionActionPipeCreator.createPipe(RetryHttpUploadUpdatingCommand.class, Schedulers.io());
    }
 
    public ActionPipe<SmartCardAvatarCommand> smartCardAvatarPipe() {
       return smartCardAvatarPipe;
    }
 
-   public ActionPipe<SetupUserDataCommand> setupUserDataCommandPipe() {
-      return setupUserDataCommandPipe;
+   public ActionPipe<UpdateSmartCardUserCommand> updateSmartCardUserPipe() {
+      return updateSmartCardUserPipe;
    }
 
-   public ActionPipe<UpdateCardUserServerDataCommand> updateCardUserServerDataCommandPipe() {
-      return cardUserServerDataCommandPipe;
+   public WriteActionPipe<RevertSmartCardUserUpdatingCommand> revertSmartCardUserUpdatingPipe() {
+      return revertSmartCardUserUpdatingPipe;
    }
 
+   public ActionPipe<RetryHttpUploadUpdatingCommand> retryHttpUploadUpdatingPipe() {
+      return retryHttpUploadUpdatingPipe;
+   }
 }

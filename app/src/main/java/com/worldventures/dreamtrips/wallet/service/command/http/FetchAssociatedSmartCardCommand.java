@@ -67,6 +67,7 @@ public class FetchAssociatedSmartCardCommand extends Command<FetchAssociatedSmar
 
       final SmartCardDetails smartCardDetails = mappery.convert(smartCardInfo, SmartCardDetails.class);
 
+      /// TODO: 12/16/16 save photo url
       return createSmartCard(smartCardInfo)
             .flatMap(sc -> save(sc, smartCardDetails));
    }

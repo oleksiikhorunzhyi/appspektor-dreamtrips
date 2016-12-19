@@ -10,11 +10,13 @@ import android.widget.EditText;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.facebook.drawee.view.SimpleDraweeView;
+import com.jakewharton.rxbinding.widget.RxTextView;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.modules.common.view.custom.PhotoPickerLayout;
 import com.worldventures.dreamtrips.wallet.ui.common.base.MediaPickerService;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletLinearLayout;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.OperationScreen;
+import com.worldventures.dreamtrips.wallet.util.FormatException;
 
 import java.io.File;
 
@@ -29,6 +31,11 @@ public class WalletSettingsProfileScreen extends WalletLinearLayout<WalletSettin
    @InjectView(R.id.first_name) EditText firstName;
    @InjectView(R.id.middle_name) EditText middleName;
    @InjectView(R.id.last_name) EditText lastName;
+
+   private Observable<String> firstNameObservable;
+   private Observable<String> middleNameObservable;
+   private Observable<String> lastNameObservable;
+
    /**
     * TODO
     * Send to backend blocked
@@ -65,6 +72,9 @@ public class WalletSettingsProfileScreen extends WalletLinearLayout<WalletSettin
       //noinspection all
       mediaPickerService = (MediaPickerService) getContext().getSystemService(MediaPickerService.SERVICE_NAME);
       mediaPickerService.setPhotoPickerListener(photoPickerListener);
+      firstNameObservable = RxTextView.afterTextChangeEvents(firstName).map(event -> event.editable().toString());
+      middleNameObservable = RxTextView.afterTextChangeEvents(middleName).map(event -> event.editable().toString());
+      lastNameObservable = RxTextView.afterTextChangeEvents(lastName).map(event -> event.editable().toString());
    }
 
    private PhotoPickerLayout.PhotoPickerListener photoPickerListener = new PhotoPickerLayout.PhotoPickerListener() {
@@ -96,12 +106,12 @@ public class WalletSettingsProfileScreen extends WalletLinearLayout<WalletSettin
    }
 
    protected void onNavigationClick() {
-      presenter.goBack(false);
+      presenter.checkChangingAndGoBack();
    }
 
    @Override
-   public void setPreviewPhoto(Uri uri) {
-      previewPhotoView.setImageURI(uri);
+   public void setPreviewPhoto(File file) {
+      previewPhotoView.setImageURI(Uri.fromFile(file));
    }
 
    @Override
@@ -117,7 +127,7 @@ public class WalletSettingsProfileScreen extends WalletLinearLayout<WalletSettin
       new MaterialDialog.Builder(getContext()).content(R.string.wallet_card_settings_profile_dialog_changes_title)
             .positiveText(R.string.wallet_card_settings_profile_dialog_changes_positive)
             .negativeText(R.string.wallet_card_settings_profile_dialog_changes_negative)
-            .onPositive((dialog, which) -> getPresenter().goBack(true))
+            .onPositive((dialog, which) -> getPresenter().goBack())
             .onNegative((dialog, which) -> dialog.dismiss())
             .show();
    }
@@ -135,6 +145,21 @@ public class WalletSettingsProfileScreen extends WalletLinearLayout<WalletSettin
    @Override
    public String getLastName() {
       return lastName.getText().toString();
+   }
+
+   @Override
+   public Observable<String> firstNameObservable() {
+      return firstNameObservable;
+   }
+
+   @Override
+   public Observable<String> middleNameObservable() {
+      return middleNameObservable;
+   }
+
+   @Override
+   public Observable<String> lastNameObservable() {
+      return lastNameObservable;
    }
 
    @Override
@@ -163,28 +188,43 @@ public class WalletSettingsProfileScreen extends WalletLinearLayout<WalletSettin
    }
 
    @Override
-   public void showUploadSmartCardFailDialog(String text) {
+   public void showError(Throwable throwable) {
+      String text = getContext().getString(throwable instanceof FormatException ?
+            R.string.wallet_add_card_details_error_message :
+            R.string.wallet_card_settings_profile_dialog_error_smartcard_content);
+
       new MaterialDialog.Builder(getContext())
             .content(text)
             .cancelable(false)
             .title(R.string.wallet_card_settings_profile_dialog_error_smartcard_header)
             .positiveText(R.string.ok)
             .onPositive((dialog, which) -> getPresenter().setupUserData())
-            .onNegative((dialog, which) -> getPresenter().cancelUploadSmartUserData())
+            .onNegative((dialog, which) -> getPresenter().cancelUpdating())
             .negativeText(R.string.cancel)
             .build()
             .show();
    }
 
    @Override
-   public void showUploadServerFailDialog() {
+   public void showUploadServerError() {
       new MaterialDialog.Builder(getContext())
             .content(R.string.wallet_card_settings_profile_dialog_error_server_content)
             .cancelable(false)
             .positiveText(R.string.retry)
             .negativeText(R.string.cancel)
-            .onPositive((dialog, which) -> getPresenter().uploadDataToServer())
+            .onPositive((dialog, which) -> getPresenter().retryUploadToServer())
             .onNegative((dialog, which) -> getPresenter().cancelUploadServerUserData())
+            .build()
+            .show();
+   }
+
+   @Override
+   public void showNetworkUnavailableError() {
+      new MaterialDialog.Builder(getContext())
+            .content(R.string.wallet_card_settings_profile_dialog_error_network_unavailable)
+            .cancelable(false)
+            .positiveText(R.string.ok)
+            .onPositive((dialog, which) -> dialog.dismiss())
             .build()
             .show();
    }

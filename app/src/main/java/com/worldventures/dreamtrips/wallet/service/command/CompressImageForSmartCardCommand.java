@@ -33,6 +33,7 @@ public class CompressImageForSmartCardCommand extends SmartCardAvatarCommand imp
             .flatMap(original -> Observable.fromCallable(() -> ImmutableSmartCardUserPhoto.builder()
                   .original(original)
                   .monochrome(smartCardAvatarHelper.toMonochromeFile(original, imageSize))
+                  .photoUrl(schemePath)
                   .build()))
             .subscribe(callback::onSuccess, callback::onFail);
    }

@@ -15,6 +15,7 @@ import com.worldventures.dreamtrips.wallet.domain.entity.SmartCard;
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCardUser;
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCardUserPhoto;
 import com.worldventures.dreamtrips.wallet.domain.storage.SmartCardStorage;
+import com.worldventures.dreamtrips.wallet.service.command.profile.UserSmartCardUtils;
 import com.worldventures.dreamtrips.wallet.service.storage.WizardMemoryStorage;
 import com.worldventures.dreamtrips.wallet.util.FormatException;
 import com.worldventures.dreamtrips.wallet.util.WalletValidateHelper;
@@ -113,18 +114,12 @@ public class SetupUserDataCommand extends Command<SmartCard> implements Injectab
             .firstName(firstName)
             .lastName(lastName)
             .middleName(middleName)
-            .memberStatus(getMemberStatus())
+            .memberStatus(UserSmartCardUtils.obtainMemberStatus(userSessionHolder))
             .memberId(userSessionHolder.get().get().getUser().getId())
             .barcodeId(Long.valueOf(wizardMemoryStorage.getBarcode()))
             .build();
    }
 
-   private User.MemberStatus getMemberStatus() {
-      com.worldventures.dreamtrips.modules.common.model.User user = userSessionHolder.get().get().getUser();
-      if (user.isGold()) return User.MemberStatus.GOLD;
-      if (user.isGeneral() || user.isPlatinum()) return User.MemberStatus.ACTIVE;
-      return User.MemberStatus.INACTIVE;
-   }
 
    private byte[] getAvatarAsByteArray() throws IOException {
       return smartCardAvatarHelper.convertBytesForUpload(avatar.monochrome());

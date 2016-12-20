@@ -84,7 +84,7 @@ public class CreateEntityPresenter<V extends CreateEntityPresenter.View> extends
                      eventBus.post(new FeedItemAddedEvent(FeedItem.create(command.getResult(), getAccount())));
                      closeView();
                   }));
-      mediaPickerImagesProcessedEventDelegate.getObservable()
+      mediaPickerImagesProcessedEventDelegate.getReplayObservable()
             .compose(bindViewToMainComposer())
             .subscribe(mediaPickerProcessingImages -> {
                this.mediaPickerProcessingImages = mediaPickerProcessingImages;

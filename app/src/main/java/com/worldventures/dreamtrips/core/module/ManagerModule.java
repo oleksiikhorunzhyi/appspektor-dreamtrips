@@ -15,6 +15,7 @@ import com.worldventures.dreamtrips.modules.bucketlist.service.BucketInteractor;
 import com.worldventures.dreamtrips.modules.common.delegate.CachedEntityDelegate;
 import com.worldventures.dreamtrips.modules.common.delegate.CachedEntityInteractor;
 import com.worldventures.dreamtrips.modules.common.delegate.DownloadFileInteractor;
+import com.worldventures.dreamtrips.modules.common.delegate.ReplayEventDelegatesWiper;
 import com.worldventures.dreamtrips.modules.common.delegate.SocialCropImageManager;
 import com.worldventures.dreamtrips.modules.common.delegate.system.ConnectionInfoProvider;
 import com.worldventures.dreamtrips.modules.common.delegate.system.DeviceInfoProvider;
@@ -134,8 +135,8 @@ public class ManagerModule {
 
    @Provides
    @Singleton
-   MediaPickerImagesProcessedEventDelegate provideMediaPickerImagesProcessedDelegate() {
-      return new MediaPickerImagesProcessedEventDelegate();
+   MediaPickerImagesProcessedEventDelegate provideMediaPickerImagesProcessedDelegate(ReplayEventDelegatesWiper wiper) {
+      return new MediaPickerImagesProcessedEventDelegate(wiper);
    }
 
    @Provides

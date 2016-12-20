@@ -250,6 +250,13 @@
    <string name="wallet_firmware_space_alert_cancel_action">Cancel</string>
    <string name="wallet_firmware_space_alert_settings_action">Settings</string>
 
+   <!-- About -->
+   <string name="wallet_about_label_name">Name</string>
+   <string name="wallet_about_label_qty_card_available">Cards Available</string>
+   <string name="wallet_about_label_atmel_card_fw">Atmel Card Firmware</string>
+   <string name="wallet_about_label_bootloader_fw">Bootloader Firmware</string>
+   <string name="wallet_about_label_atmel_charger_fw">Atmel Charger Firmware</string>
+
    <!--factory reset-->
    <string name="wallet_factory_reset_title">Factory Reset flye smart card</string>
    <string name="wallet_factory_reset_enter_pin_text">Enter your PIN on the flye\u2122 smart card to factory reset.</string>
@@ -316,4 +323,8 @@
    <string name="wallet_supported_device_chapter">Support for your device is coming soon.</string>
    <string name="wallet_supported_device_info">We are currently adding devices weekly and will email you when your device is supported.\n\nIf you have any further questions please contact Customer Support (855) 999-3593.</string>
    <string name="wallet_supported_device_list_title">Supported Devices</string>
+   <string name="wallet_about_label_smart_card_id">smart card ID</string>
+   <string name="wallet_about_label_qty_pay_cards">Cards Stored</string>
+   <string name="wallet_about_label_dt_app">DreamTrips App</string>
+   <string name="wallet_about_label_nordic_fw">Nordic Card Firmware</string>
 </resources>

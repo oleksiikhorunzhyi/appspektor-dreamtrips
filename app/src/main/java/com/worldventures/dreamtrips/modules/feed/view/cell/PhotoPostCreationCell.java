@@ -16,6 +16,7 @@ import com.techery.spares.ui.view.cell.AbstractDelegateCell;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.session.UserSession;
 import com.worldventures.dreamtrips.core.utils.GraphicUtils;
+import com.worldventures.dreamtrips.core.utils.ViewUtils;
 import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.common.view.custom.tagview.viewgroup.newio.PhotoTagHolder;
 import com.worldventures.dreamtrips.modules.common.view.custom.tagview.viewgroup.newio.PhotoTagHolderManager;
@@ -53,11 +54,8 @@ public class PhotoPostCreationCell extends AbstractDelegateCell<PhotoCreationIte
    @InjectView(R.id.photo_post_taggable_holder) PhotoTagHolder photoTagHolder;
    @InjectView(R.id.remove) View remove;
 
-   private int cellWidth;
-
    public PhotoPostCreationCell(View view) {
       super(view);
-      itemView.post(() -> cellWidth = (itemView.getWidth()));
       view.addOnAttachStateChangeListener(new View.OnAttachStateChangeListener() {
          @Override
          public void onViewAttachedToWindow(View v) {
@@ -85,40 +83,46 @@ public class PhotoPostCreationCell extends AbstractDelegateCell<PhotoCreationIte
 
    @Override
    protected void syncUIStateWithModel() {
-      if (cellWidth > 0) {
-         photoContainer.getLayoutParams().width = cellWidth;
-         photoContainer.getLayoutParams().height = calculateHeight();
-         photoContainer.requestLayout();
-         photoContainer.post(() -> {
-            itemView.setVisibility(View.VISIBLE);
-            photoTagHolder.removeAllViews();
-            if (getModelObject().isCanEdit()) {
-               showTagViewGroup();
-            }
-            invalidateAddTagBtn();
-         });
-
-         PipelineDraweeController draweeController = GraphicUtils.provideFrescoResizingController(Uri.parse(getModelObject()
-               .getFileUri() == null ? getModelObject().getOriginUrl() : getModelObject().getFileUri()), attachedPhoto
-               .getController());
-
-         attachedPhoto.setController(draweeController);
-         photoTitle.setText(getModelObject().getTitle());
-         boolean titleChangesEnabled = getModelObject().isCanEdit();
-         photoTitle.setVisibility(titleChangesEnabled || !TextUtils.isEmpty(getModelObject().getTitle()) ? View.VISIBLE : View.GONE);
-         photoTitle.setEnabled(titleChangesEnabled);
-         invalidateAddTagBtn();
-         invalidateDeleteBtn();
-
+      if (itemView.getWidth() > 0) {
+         updateUi();
       } else {
          itemView.setVisibility(View.INVISIBLE);
-         itemView.post(this::syncUIStateWithModel);
+         ViewUtils.runTaskAfterMeasure(itemView, () -> {
+            updateUi();
+         });
       }
+   }
+
+   private void updateUi() {
+      photoContainer.getLayoutParams().width = itemView.getWidth();
+      photoContainer.getLayoutParams().height = calculateHeight();
+      photoContainer.requestLayout();
+      photoContainer.post(() -> {
+         itemView.setVisibility(View.VISIBLE);
+         photoTagHolder.removeAllViews();
+         if (getModelObject().isCanEdit()) {
+            showTagViewGroup();
+         }
+         invalidateAddTagBtn();
+      });
+
+      PipelineDraweeController draweeController = GraphicUtils.provideFrescoResizingController(Uri.parse(getModelObject()
+            .getFileUri() == null ? getModelObject().getOriginUrl() : getModelObject().getFileUri()), attachedPhoto
+            .getController());
+
+      attachedPhoto.setController(draweeController);
+      photoTitle.setText(getModelObject().getTitle());
+      boolean titleChangesEnabled = getModelObject().isCanEdit();
+      photoTitle.setVisibility(titleChangesEnabled || !TextUtils.isEmpty(getModelObject().getTitle()) ? View.VISIBLE : View.GONE);
+      photoTitle.setEnabled(titleChangesEnabled);
+      invalidateAddTagBtn();
+      invalidateDeleteBtn();
    }
 
    private int calculateHeight() {
       int width = getModelObject().getWidth();
       int height = getModelObject().getHeight();
+      int cellWidth = itemView.getWidth();
       //in case of server response width = 0, height = 0;
       if (width == 0 || height == 0) {
          width = cellWidth;

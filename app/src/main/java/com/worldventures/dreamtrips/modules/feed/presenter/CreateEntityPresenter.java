@@ -186,8 +186,10 @@ public class CreateEntityPresenter<V extends CreateEntityPresenter.View> extends
                         .createObservableResult(new CopyFileCommand(context, newImage.getFileUri()))
                         .compose(bindViewToMainComposer())
                         .subscribe(command -> {
-                           newImage.setFilePath(command.getResult());
-                           newImage.setFileUri(command.getResult());
+                           String stringUri = command.getResult();
+                           Uri uri = Uri.parse(stringUri);
+                           newImage.setFilePath(uri.getPath());
+                           newImage.setFileUri(stringUri);
                            updateUiAfterImageProcessing(newImage);
                         }, e -> Timber.e(e, "Failed to copy file"));
                } else {

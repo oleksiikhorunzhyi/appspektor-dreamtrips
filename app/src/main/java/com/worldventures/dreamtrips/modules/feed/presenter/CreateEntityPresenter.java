@@ -196,6 +196,9 @@ public class CreateEntityPresenter<V extends CreateEntityPresenter.View> extends
    private void updateUiAfterImageProcessing(PhotoCreationItem newImage) {
       view.attachPhoto(newImage);
       invalidateDynamicViews();
+      if (!mediaPickerProcessingImages) {
+         updatePickerState();
+      }
    }
 
    private Observable<PhotoCreationItem> convertPhotoCreationItem(PhotoGalleryModel photoGalleryModel,

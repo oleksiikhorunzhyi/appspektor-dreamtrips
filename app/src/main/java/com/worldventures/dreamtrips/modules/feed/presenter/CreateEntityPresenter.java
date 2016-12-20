@@ -56,6 +56,7 @@ public class CreateEntityPresenter<V extends CreateEntityPresenter.View> extends
    @Inject BackStackDelegate backStackDelegate;
 
    private boolean mediaPickerProcessingImages;
+   private int locallyProcessingImagesCount;
 
    public CreateEntityPresenter(CreateEntityBundle.Origin origin) {
       this.origin = origin;
@@ -116,7 +117,9 @@ public class CreateEntityPresenter<V extends CreateEntityPresenter.View> extends
 
    @Override
    protected boolean isChanged() {
-      return !isCachedTextEmpty() || !mediaPickerProcessingImages;
+      boolean imageAreProcessing = mediaPickerProcessingImages || locallyProcessingImagesCount > 0;
+      boolean imagesAreFullyLoaded = cachedCreationItems.size() > 0 && !imageAreProcessing;
+      return !isCachedTextEmpty() && !imageAreProcessing || imagesAreFullyLoaded;
    }
 
    @Override
@@ -175,12 +178,12 @@ public class CreateEntityPresenter<V extends CreateEntityPresenter.View> extends
    }
 
    private void imageSelected(MediaAttachment mediaAttachment) {
+      locallyProcessingImagesCount++;
       invalidateDynamicViews();
       Observable.from(mediaAttachment.chosenImages)
             .concatMap(photoGalleryModel -> convertPhotoCreationItem(photoGalleryModel, mediaAttachment.source))
             .compose(bindViewToMainComposer())
             .subscribe(newImage -> {
-               cachedCreationItems.add(newImage);
                if (ValidationUtils.isUrl(newImage.getFileUri())) {
                   mediaInteractor.copyFilePipe()
                         .createObservableResult(new CopyFileCommand(context, newImage.getFileUri()))
@@ -190,15 +193,20 @@ public class CreateEntityPresenter<V extends CreateEntityPresenter.View> extends
                            Uri uri = Uri.parse(stringUri);
                            newImage.setFilePath(uri.getPath());
                            newImage.setFileUri(stringUri);
-                           updateUiAfterImageProcessing(newImage);
-                        }, e -> Timber.e(e, "Failed to copy file"));
+                           onFinishedImageProcessing(newImage);
+                        }, e -> {
+                           locallyProcessingImagesCount--;
+                           Timber.e(e, "Failed to copy file");
+                        });
                } else {
-                  updateUiAfterImageProcessing(newImage);
+                  onFinishedImageProcessing(newImage);
                }
             }, throwable -> Timber.e(throwable, ""));
    }
 
-   private void updateUiAfterImageProcessing(PhotoCreationItem newImage) {
+   private void onFinishedImageProcessing(PhotoCreationItem newImage) {
+      locallyProcessingImagesCount--;
+      cachedCreationItems.add(newImage);
       view.attachPhoto(newImage);
       invalidateDynamicViews();
       if (!mediaPickerProcessingImages) {

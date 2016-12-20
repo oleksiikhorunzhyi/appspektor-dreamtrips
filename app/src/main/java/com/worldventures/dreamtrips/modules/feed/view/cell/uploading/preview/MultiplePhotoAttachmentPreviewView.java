@@ -8,6 +8,7 @@ import android.widget.TextView;
 import com.facebook.drawee.backends.pipeline.Fresco;
 import com.facebook.drawee.backends.pipeline.PipelineDraweeControllerBuilder;
 import com.facebook.drawee.view.SimpleDraweeView;
+import com.facebook.imagepipeline.common.ResizeOptions;
 import com.facebook.imagepipeline.request.ImageRequestBuilder;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.modules.background_uploading.model.PhotoAttachment;
@@ -69,6 +70,10 @@ public class MultiplePhotoAttachmentPreviewView extends BasePhotoAttachmentsPrev
       boolean blurImage = false;
       if (attachments.size() > MAX_DISPLAY_COUNT && index == BLUR_PREVIEW_POSITION) {
          imageRequest.setPostprocessor(new BlurPostprocessor(context, BLUR_RADIUS, BLUR_SAMPLING));
+         if (view.getMeasuredWidth() == 0) {
+            view.measure(0, 0);
+         }
+         imageRequest.setResizeOptions(new ResizeOptions(view.getMeasuredWidth(), view.getMeasuredHeight()));
          blurImage = true;
       }
       imageRequest.build();

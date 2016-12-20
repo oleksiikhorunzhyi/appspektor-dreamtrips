@@ -23,13 +23,14 @@ public class UpdateSmartCardPropertiesCommand extends Command<SmartCard> impleme
 
    @Override
    protected void run(CommandCallback<SmartCard> callback) throws Throwable {
-      janet.createPipe(FetchCardPropertiesCommand.class)
-            .createObservableResult(new FetchCardPropertiesCommand())
+      janet.createPipe(GetActiveSmartCardCommand.class)
+            .createObservableResult(new GetActiveSmartCardCommand())
             .map(Command::getResult)
-            .flatMap(properties ->
-                  janet.createPipe(GetActiveSmartCardCommand.class)
-                        .createObservableResult(new GetActiveSmartCardCommand())
-                        .map(command -> ImmutableSmartCard.builder().from(command.getResult())
+            .flatMap(smartCard ->
+                  janet.createPipe(FetchCardPropertiesCommand.class)
+                        .createObservableResult(new FetchCardPropertiesCommand())
+                        .map(Command::getResult)
+                        .map(properties -> ImmutableSmartCard.builder().from(smartCard)
                               .sdkVersion(properties.sdkVersion())
                               .firmWareVersion(properties.firmWareVersion())
                               .batteryLevel(properties.batteryLevel())
@@ -37,9 +38,7 @@ public class UpdateSmartCardPropertiesCommand extends Command<SmartCard> impleme
                               .stealthMode(properties.stealthMode())
                               .disableCardDelay(properties.disableCardDelay())
                               .clearFlyeDelay(properties.clearFlyeDelay())
-                              .build()
-                        )
-            )
+                              .build()))
             .subscribe(callback::onSuccess, callback::onFail);
    }
 

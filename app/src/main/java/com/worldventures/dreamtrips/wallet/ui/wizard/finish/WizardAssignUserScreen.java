@@ -7,8 +7,6 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.Toolbar;
 import android.util.AttributeSet;
-import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.worldventures.dreamtrips.R;
@@ -42,7 +40,7 @@ public class WizardAssignUserScreen extends WalletLinearLayout<WizardAssignUserP
    @NonNull
    @Override
    public WizardAssignUserPresenter createPresenter() {
-      return new WizardAssignUserPresenter(getContext(), getInjector());
+      return new WizardAssignUserPresenter(getContext(), getInjector(), getPath().smartCard);
    }
 
    @Override

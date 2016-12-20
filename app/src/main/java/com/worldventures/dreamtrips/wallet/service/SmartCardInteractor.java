@@ -282,12 +282,14 @@ public final class SmartCardInteractor {
 
       janet.createPipe(ConnectAction.class)
             .observeSuccess()
-            .subscribe(action -> {
+            .flatMap(action -> {
                SmartCard.ConnectionStatus status = CONNECTED;
                if (action.type == ConnectionType.DFU) {
                   status = DFU;
                }
-               updateSmartCardConnectionStatusPipe.send(new UpdateSmartCardConnectionStatus(status));
+               return updateSmartCardConnectionStatusPipe.createObservableResult(new UpdateSmartCardConnectionStatus(status));
+            })
+            .subscribe(action -> {
             }, throwable -> Timber.e(throwable, "Error with handling connection event"));
 
       observeCardsChanges();
@@ -297,7 +299,8 @@ public final class SmartCardInteractor {
    private void connectFetchingCards() {
       smartCardModifierPipe.observeSuccess()
             .map(SmartCardModifier::getResult)
-            .filter(smartCard -> smartCard.connectionStatus() == CONNECTED)
+            .filter(smartCard -> smartCard.cardStatus() == SmartCard.CardStatus.ACTIVE
+                  && smartCard.connectionStatus() == CONNECTED)
             .subscribe(smartCard -> cardStacksPipe.send(CardStacksCommand.get(false)));
    }
 

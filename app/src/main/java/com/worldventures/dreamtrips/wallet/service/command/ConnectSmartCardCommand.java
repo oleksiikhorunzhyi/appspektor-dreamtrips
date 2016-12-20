@@ -69,39 +69,18 @@ public class ConnectSmartCardCommand extends Command<SmartCard> implements Injec
       if (waitForParing) {
          observable = observable.delay(20L, TimeUnit.SECONDS); //TODO: Hard code for waiting typing PIN
       }
-
-      observable.flatMap(action -> {
-         if (activeSmartCard.connectionStatus() == CONNECTED) return fetchTechnicalProperties();
-         else return Observable.just(activeSmartCard);
-      })
-            .doOnNext(smartCard -> activeSmartCard = smartCard)
-            .subscribe(smartCard -> {
-                     callback.onSuccess(activeSmartCard);
-                  },
-                  throwable -> {
-                     Timber.e(throwable, "Error while connecting to smart card");
-                     callback.onSuccess(smartCardWithStatus(SmartCard.ConnectionStatus.ERROR));
-                  }
-            );
+      observable.subscribe(value -> {
+               callback.onSuccess(activeSmartCard);
+            },
+            throwable -> {
+               Timber.e(throwable, "Error while connecting to smart card");
+               callback.onSuccess(smartCardWithStatus(SmartCard.ConnectionStatus.ERROR));
+            }
+      );
    }
 
    private SmartCard smartCardWithStatus(SmartCard.ConnectionStatus connectionStatus) {
       return ImmutableSmartCard.copyOf(activeSmartCard).withConnectionStatus(connectionStatus);
-   }
-
-   private Observable<SmartCard> fetchTechnicalProperties() {
-      return janet.createPipe(FetchCardPropertiesCommand.class)
-            .createObservableResult(new FetchCardPropertiesCommand())
-            .map(Command::getResult)
-            .map(properties -> ImmutableSmartCard.builder().from(activeSmartCard)
-                  .sdkVersion(properties.sdkVersion())
-                  .firmWareVersion(properties.firmWareVersion())
-                  .batteryLevel(properties.batteryLevel())
-                  .lock(properties.lock())
-                  .stealthMode(properties.stealthMode())
-                  .disableCardDelay(properties.disableCardDelay())
-                  .clearFlyeDelay(properties.clearFlyeDelay())
-                  .build());
    }
 
    @Override

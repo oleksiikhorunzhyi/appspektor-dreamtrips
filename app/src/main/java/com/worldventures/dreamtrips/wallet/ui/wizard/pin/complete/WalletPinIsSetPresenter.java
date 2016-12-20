@@ -4,19 +4,14 @@ import android.content.Context;
 import android.os.Parcelable;
 
 import com.techery.spares.module.Injector;
-import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.core.janet.composer.ActionPipeCacheWiper;
 import com.worldventures.dreamtrips.core.utils.tracksystem.AnalyticsInteractor;
 import com.worldventures.dreamtrips.wallet.analytics.PinWasSetAction;
 import com.worldventures.dreamtrips.wallet.analytics.WalletAnalyticsCommand;
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCard;
 import com.worldventures.dreamtrips.wallet.service.WizardInteractor;
-import com.worldventures.dreamtrips.wallet.service.command.ActivateSmartCardCommand;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletPresenter;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.WalletScreen;
-import com.worldventures.dreamtrips.wallet.ui.common.helper.OperationActionStateSubscriberWrapper;
 import com.worldventures.dreamtrips.wallet.ui.common.navigation.Navigator;
-import com.worldventures.dreamtrips.wallet.ui.dashboard.CardListPath;
 import com.worldventures.dreamtrips.wallet.ui.wizard.finish.WizardAssignUserPath;
 
 import javax.inject.Inject;
@@ -39,18 +34,6 @@ public class WalletPinIsSetPresenter extends WalletPresenter<WalletPinIsSetPrese
       super.attachView(view);
       analyticsInteractor.walletAnalyticsCommandPipe()
             .send(new WalletAnalyticsCommand(new PinWasSetAction(smartCard.user().fullName())));
-      observeActivation();
-   }
-
-   private void observeActivation() {
-      wizardInteractor.activateSmartCardPipe()
-            .observeWithReplay()
-            .compose(new ActionPipeCacheWiper<>(wizardInteractor.activateSmartCardPipe()))
-            .compose(bindViewIoToMainComposer())
-            .subscribe(OperationActionStateSubscriberWrapper.<ActivateSmartCardCommand>forView(getView().provideOperationDelegate())
-                  .onSuccess(command -> navigateToNextScreen())
-                  .onFail(getContext().getString(R.string.error_something_went_wrong))
-                  .wrap());
    }
 
    public void goBack() {
@@ -58,11 +41,11 @@ public class WalletPinIsSetPresenter extends WalletPresenter<WalletPinIsSetPrese
    }
 
    public void activateSmartCard() {
-      wizardInteractor.activateSmartCardPipe().send(new ActivateSmartCardCommand(smartCard));
+      navigateToNextScreen();
    }
 
    private void navigateToNextScreen() {
-      navigator.go(new WizardAssignUserPath());
+      navigator.go(new WizardAssignUserPath(smartCard));
    }
 
    public interface Screen extends WalletScreen {

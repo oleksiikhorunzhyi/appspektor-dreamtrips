@@ -4,6 +4,7 @@ import android.content.Context;
 import android.os.Parcelable;
 
 import com.techery.spares.module.Injector;
+import com.worldventures.dreamtrips.wallet.domain.entity.SmartCard;
 import com.worldventures.dreamtrips.wallet.service.WizardInteractor;
 import com.worldventures.dreamtrips.wallet.service.command.wizard.WizardCompleteCommand;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletPresenter;
@@ -20,15 +21,18 @@ public class WizardAssignUserPresenter extends WalletPresenter<WizardAssignUserP
    @Inject Navigator navigator;
    @Inject WizardInteractor wizardInteractor;
 
-   public WizardAssignUserPresenter(Context context, Injector injector) {
+   private final SmartCard smartCard;
+
+   public WizardAssignUserPresenter(Context context, Injector injector, SmartCard smartCard) {
       super(context, injector);
+      this.smartCard = smartCard;
    }
 
    @Override
    public void onAttachedToWindow() {
       super.onAttachedToWindow();
       observeComplete();
-      wizardInteractor.completePipe().send(new WizardCompleteCommand());
+      wizardInteractor.completePipe().send(new WizardCompleteCommand(smartCard));
    }
 
    private void observeComplete() {
@@ -45,7 +49,7 @@ public class WizardAssignUserPresenter extends WalletPresenter<WizardAssignUserP
       navigator.single(new CardListPath());
    }
 
-   private void goBack(){
+   private void goBack() {
       navigator.goBack();
    }
 

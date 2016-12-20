@@ -3,7 +3,7 @@ package com.worldventures.dreamtrips.modules.dtl.presenter;
 import android.net.Uri;
 
 import com.amazonaws.mobileconnectors.s3.transferutility.TransferObserver;
-import com.worldventures.dreamtrips.api.dtl.merchants.EstimationHttpAction;
+import com.worldventures.dreamtrips.api.dtl.merchants.EstimatePointsHttpAction;
 import com.worldventures.dreamtrips.api.dtl.merchants.requrest.ImmutableEstimationParams;
 import com.worldventures.dreamtrips.core.rx.RxView;
 import com.worldventures.dreamtrips.core.utils.DateTimeUtils;
@@ -102,7 +102,7 @@ public class DtlScanReceiptPresenter extends JobPresenter<DtlScanReceiptPresente
             .observe()
             .takeUntil(state -> state.status == ActionState.Status.SUCCESS || state.status == ActionState.Status.FAIL)
             .compose(bindViewIoToMainComposer())
-            .subscribe(new ActionStateSubscriber<EstimationHttpAction>().onStart(action -> view.showProgress())
+            .subscribe(new ActionStateSubscriber<EstimatePointsHttpAction>().onStart(action -> view.showProgress())
                   .onFail(apiErrorPresenter::handleActionError)
                   .onSuccess(action -> attachDtPoints(action.estimatedPoints().points())));
    }
@@ -115,7 +115,7 @@ public class DtlScanReceiptPresenter extends JobPresenter<DtlScanReceiptPresente
                   .withBillTotal(amount)))
             .map(DtlTransactionAction::getResult)
             .flatMap(transaction -> transactionInteractor.estimatePointsActionPipe()
-                  .createObservableResult(new EstimationHttpAction(merchant.id(), ImmutableEstimationParams.builder()
+                  .createObservableResult(new EstimatePointsHttpAction(merchant.id(), ImmutableEstimationParams.builder()
                         .checkinTime(DateTimeUtils.currentUtcString())
                         .billTotal(transaction.getBillTotal())
                         .currencyCode(merchant.asMerchantAttributes().defaultCurrency().code())

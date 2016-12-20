@@ -3,7 +3,7 @@ package com.worldventures.dreamtrips.modules.dtl.service.action.creator;
 import android.text.TextUtils;
 
 import com.innahema.collections.query.queriables.Queryable;
-import com.worldventures.dreamtrips.api.dtl.merchants.ThinMerchantsHttpAction;
+import com.worldventures.dreamtrips.api.dtl.merchants.GetThinMerchantsHttpAction;
 import com.worldventures.dreamtrips.api.dtl.merchants.model.ImmutableThinMerchantsActionParams;
 import com.worldventures.dreamtrips.api.dtl.merchants.model.PartnerStatus;
 import com.worldventures.dreamtrips.api.dtl.merchants.model.ThinMerchantsActionParams;
@@ -21,14 +21,14 @@ import java.util.Locale;
 import javax.inject.Inject;
 
 
-public class MerchantsActionCreator implements HttpActionCreator<ThinMerchantsHttpAction, MerchantsActionParams> {
+public class MerchantsActionCreator implements HttpActionCreator<GetThinMerchantsHttpAction, MerchantsActionParams> {
 
    @Inject
    public MerchantsActionCreator(){}
 
    @Override
-   public ThinMerchantsHttpAction createAction(MerchantsActionParams params) {
-      return new ThinMerchantsHttpAction(createMerchantsActionParams(params));
+   public GetThinMerchantsHttpAction createAction(MerchantsActionParams params) {
+      return new GetThinMerchantsHttpAction(createMerchantsActionParams(params));
    }
 
    private static ThinMerchantsActionParams createMerchantsActionParams(MerchantsActionParams bundle) {

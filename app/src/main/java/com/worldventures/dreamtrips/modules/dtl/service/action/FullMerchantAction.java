@@ -1,7 +1,7 @@
 package com.worldventures.dreamtrips.modules.dtl.service.action;
 
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.api.dtl.merchants.MerchantByIdHttpAction;
+import com.worldventures.dreamtrips.api.dtl.merchants.GetMerchantByIdHttpAction;
 import com.worldventures.dreamtrips.core.api.action.CommandWithError;
 import com.worldventures.dreamtrips.core.janet.JanetModule;
 import com.worldventures.dreamtrips.core.janet.cache.CacheBundle;
@@ -60,9 +60,9 @@ public class FullMerchantAction extends CommandWithError<Merchant> implements In
    protected void run(CommandCallback<Merchant> callback) throws Throwable {
       if (cache == null) {
          callback.onProgress(0);
-         janet.createPipe(MerchantByIdHttpAction.class, Schedulers.io())
-               .createObservableResult(new MerchantByIdHttpAction(merchantId))
-               .map(MerchantByIdHttpAction::merchant)
+         janet.createPipe(GetMerchantByIdHttpAction.class, Schedulers.io())
+               .createObservableResult(new GetMerchantByIdHttpAction(merchantId))
+               .map(GetMerchantByIdHttpAction::merchant)
                .map(merchant -> mapperyContext.convert(merchant, Merchant.class))
                .map(MerchantDistancePatcher.create(dtlLocation))
                .subscribe(callback::onSuccess, callback::onFail);

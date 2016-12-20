@@ -3,8 +3,6 @@ package com.worldventures.dreamtrips.dtl.service.spek
 import com.nhaarman.mockito_kotlin.*
 import com.worldventures.dreamtrips.AssertUtil.assertActionSuccess
 import com.worldventures.dreamtrips.BaseSpec
-import com.worldventures.dreamtrips.api.dtl.merchants.EstimationHttpAction
-import com.worldventures.dreamtrips.api.dtl.merchants.RatingHttpAction
 import com.worldventures.dreamtrips.api.dtl.merchants.model.EstimationResult
 import com.worldventures.dreamtrips.api.dtl.merchants.requrest.ImmutableEstimationParams
 import com.worldventures.dreamtrips.api.dtl.merchants.requrest.ImmutableRatingParams

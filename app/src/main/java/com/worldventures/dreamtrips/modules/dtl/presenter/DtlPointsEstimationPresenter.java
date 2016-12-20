@@ -3,7 +3,7 @@ package com.worldventures.dreamtrips.modules.dtl.presenter;
 import android.support.annotation.StringRes;
 
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.api.dtl.merchants.EstimationHttpAction;
+import com.worldventures.dreamtrips.api.dtl.merchants.EstimatePointsHttpAction;
 import com.worldventures.dreamtrips.api.dtl.merchants.requrest.ImmutableEstimationParams;
 import com.worldventures.dreamtrips.core.rx.RxView;
 import com.worldventures.dreamtrips.core.utils.DateTimeUtils;
@@ -44,7 +44,7 @@ public class DtlPointsEstimationPresenter extends JobPresenter<DtlPointsEstimati
       transactionInteractor.estimatePointsActionPipe()
             .observe()
             .compose(bindViewIoToMainComposer())
-            .subscribe(new ActionStateSubscriber<EstimationHttpAction>().onStart(action -> view.showProgress())
+            .subscribe(new ActionStateSubscriber<EstimatePointsHttpAction>().onStart(action -> view.showProgress())
                   .onFail(apiErrorPresenter::handleActionError)
                   .onSuccess(action -> view.showEstimatedPoints(action.estimatedPoints().points().intValue())));
    }
@@ -56,7 +56,7 @@ public class DtlPointsEstimationPresenter extends JobPresenter<DtlPointsEstimati
             .send(DtlAnalyticsCommand.create(new PointsEstimatorCalculateEvent(merchant.asMerchantAttributes())));
 
       transactionInteractor.estimatePointsActionPipe()
-            .send(new EstimationHttpAction(merchant.id(), ImmutableEstimationParams.builder()
+            .send(new EstimatePointsHttpAction(merchant.id(), ImmutableEstimationParams.builder()
                   .billTotal(Double.valueOf(userInput))
                   .checkinTime(DateTimeUtils.currentUtcString())
                   .currencyCode(merchant.asMerchantAttributes().defaultCurrency().code())

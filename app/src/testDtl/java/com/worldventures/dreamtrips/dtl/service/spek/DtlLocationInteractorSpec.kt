@@ -7,7 +7,6 @@ import com.nhaarman.mockito_kotlin.whenever
 import com.worldventures.dreamtrips.AssertUtil.assertActionSuccess
 import com.worldventures.dreamtrips.BaseSpec
 import com.worldventures.dreamtrips.core.janet.SessionActionPipeCreator
-import com.worldventures.dreamtrips.modules.dtl.model.location.DtlExternalLocation
 import com.worldventures.dreamtrips.modules.dtl.service.DtlLocationInteractor
 import com.worldventures.dreamtrips.modules.dtl.service.action.SearchLocationAction
 import io.techery.janet.ActionHolder

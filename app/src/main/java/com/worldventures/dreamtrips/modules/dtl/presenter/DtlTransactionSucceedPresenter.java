@@ -2,7 +2,7 @@ package com.worldventures.dreamtrips.modules.dtl.presenter;
 
 import android.location.Location;
 
-import com.worldventures.dreamtrips.api.dtl.merchants.RatingHttpAction;
+import com.worldventures.dreamtrips.api.dtl.merchants.AddRatingHttpAction;
 import com.worldventures.dreamtrips.api.dtl.merchants.requrest.ImmutableRatingParams;
 import com.worldventures.dreamtrips.core.rx.RxView;
 import com.worldventures.dreamtrips.modules.common.model.ShareType;
@@ -55,7 +55,7 @@ public class DtlTransactionSucceedPresenter extends JobPresenter<DtlTransactionS
             .createObservableResult(DtlTransactionAction.get(merchant))
             .map(DtlTransactionAction::getResult)
             .flatMap(transaction -> transactionInteractor.rateActionPipe()
-                  .createObservableResult(new RatingHttpAction(merchant.id(), ImmutableRatingParams.builder()
+                  .createObservableResult(new AddRatingHttpAction(merchant.id(), ImmutableRatingParams.builder()
                         .rating(stars)
                         .transactionId(transaction.getDtlTransactionResult().getId())
                         .build())))
@@ -91,7 +91,7 @@ public class DtlTransactionSucceedPresenter extends JobPresenter<DtlTransactionS
    private void bindApiPipe() {
       transactionInteractor.rateActionPipe()
             .observe()
-            .subscribe(new ActionStateSubscriber<RatingHttpAction>().onFail(apiErrorPresenter::handleActionError));
+            .subscribe(new ActionStateSubscriber<AddRatingHttpAction>().onFail(apiErrorPresenter::handleActionError));
    }
 
    public void trackSharing(@ShareType String type) {

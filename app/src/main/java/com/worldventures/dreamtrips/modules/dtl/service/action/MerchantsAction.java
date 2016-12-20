@@ -1,7 +1,7 @@
 package com.worldventures.dreamtrips.modules.dtl.service.action;
 
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.api.dtl.merchants.ThinMerchantsHttpAction;
+import com.worldventures.dreamtrips.api.dtl.merchants.GetThinMerchantsHttpAction;
 import com.worldventures.dreamtrips.core.api.action.CommandWithError;
 import com.worldventures.dreamtrips.core.janet.JanetModule;
 import com.worldventures.dreamtrips.core.janet.cache.CacheBundle;
@@ -54,14 +54,13 @@ public class MerchantsAction extends CommandWithError<List<ThinMerchant>>
    @Override
    protected void run(CommandCallback<List<ThinMerchant>> callback) throws Throwable {
       callback.onProgress(0);
-      janet.createPipe(ThinMerchantsHttpAction.class, Schedulers.io())
+      janet.createPipe(GetThinMerchantsHttpAction.class, Schedulers.io())
             .createObservableResult(actionCreator.createAction(actionParams))
-            .map(ThinMerchantsHttpAction::merchants)
+            .map(GetThinMerchantsHttpAction::merchants)
             .map(merchants -> mapperyContext.convert(merchants, ThinMerchant.class))
             .doOnNext(action -> clearCacheIfNeeded())
             .subscribe(callback::onSuccess, callback::onFail);
    }
-
 
    public boolean isRefresh() {
       return isRefresh;

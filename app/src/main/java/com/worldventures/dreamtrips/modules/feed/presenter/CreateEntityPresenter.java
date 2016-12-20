@@ -1,5 +1,7 @@
 package com.worldventures.dreamtrips.modules.feed.presenter;
 
+import android.net.Uri;
+
 import com.innahema.collections.query.functions.Converter;
 import com.innahema.collections.query.queriables.Queryable;
 import com.worldventures.dreamtrips.core.navigation.BackStackDelegate;
@@ -184,8 +186,9 @@ public class CreateEntityPresenter<V extends CreateEntityPresenter.View> extends
                         .createObservableResult(new CopyFileCommand(context, newImage.getFileUri()))
                         .compose(bindViewToMainComposer())
                         .subscribe(command -> {
-                           updateUiAfterImageProcessing(newImage);
+                           newImage.setFilePath(command.getResult());
                            newImage.setFileUri(command.getResult());
+                           updateUiAfterImageProcessing(newImage);
                         }, e -> Timber.e(e, "Failed to copy file"));
                } else {
                   updateUiAfterImageProcessing(newImage);

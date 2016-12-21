@@ -9,6 +9,7 @@ import com.techery.spares.module.Injector;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.wallet.domain.entity.FirmwareUpdateData;
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCard;
+import com.worldventures.dreamtrips.wallet.domain.entity.SmartCardFirmware;
 import com.worldventures.dreamtrips.wallet.domain.storage.TemporaryStorage;
 import com.worldventures.dreamtrips.wallet.service.FirmwareInteractor;
 import com.worldventures.dreamtrips.wallet.service.SmartCardInteractor;
@@ -198,13 +199,13 @@ public class WalletSettingsPresenter extends WalletPresenter<WalletSettingsPrese
    private void bindSmartCard(SmartCard smartCard) {
       Screen view = getView();
       //noinspection all
-      view.smartCardGeneralStatus(smartCard.firmWareVersion(), smartCard.batteryLevel(), null);
+      view.smartCardGeneralStatus(smartCard.firmwareVersion(), smartCard.batteryLevel(), null);
       view.testConnection(smartCard.connectionStatus().isConnected());
       view.stealthModeStatus(smartCard.stealthMode());
       view.lockStatus(smartCard.lock());
       view.disableDefaultPaymentValue(smartCard.disableCardDelay());
       view.autoClearSmartCardValue(smartCard.clearFlyeDelay());
-      view.firmwareVersion(smartCard.firmWareVersion());
+      view.firmwareVersion(smartCard.firmwareVersion());
       toggleFirmwareBargeOrVersion(firmwareUpdateData != null && firmwareUpdateData.updateAvailable());
    }
 
@@ -269,7 +270,7 @@ public class WalletSettingsPresenter extends WalletPresenter<WalletSettingsPrese
 
    public interface Screen extends WalletScreen {
 
-      void smartCardGeneralStatus(String version, int batteryLevel, Date lastSync);
+      void smartCardGeneralStatus(@Nullable SmartCardFirmware version, int batteryLevel, Date lastSync);
 
       void stealthModeStatus(boolean isEnabled);
 
@@ -283,7 +284,7 @@ public class WalletSettingsPresenter extends WalletPresenter<WalletSettingsPrese
 
       void firmwareUpdateCount(int count);
 
-      void firmwareVersion(String version);
+      void firmwareVersion(@Nullable SmartCardFirmware version);
 
       void testFailInstallation(boolean failInstall);
 

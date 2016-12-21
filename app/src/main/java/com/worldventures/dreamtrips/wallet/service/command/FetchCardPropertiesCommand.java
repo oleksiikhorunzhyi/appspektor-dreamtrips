@@ -2,6 +2,7 @@ package com.worldventures.dreamtrips.wallet.service.command;
 
 import com.worldventures.dreamtrips.core.janet.JanetModule;
 import com.worldventures.dreamtrips.core.janet.dagger.InjectableAction;
+import com.worldventures.dreamtrips.wallet.domain.entity.SmartCardFirmware;
 
 import org.immutables.value.Value;
 
@@ -18,12 +19,15 @@ import io.techery.janet.smartcard.action.settings.GetStealthModeAction;
 import io.techery.janet.smartcard.action.support.GetBatteryLevelAction;
 import io.techery.janet.smartcard.action.support.GetFirmwareVersionAction;
 import io.techery.janet.smartcard.action.support.GetSDKVersionAction;
+import io.techery.janet.smartcard.model.FirmwareVersion;
+import io.techery.mappery.MapperyContext;
 import rx.Observable;
 
 @CommandAction
 public class FetchCardPropertiesCommand extends Command<FetchCardPropertiesCommand.Properties> implements InjectableAction {
 
    @Inject @Named(JanetModule.JANET_WALLET) Janet janet;
+   @Inject MapperyContext mapperyContext;
 
    @Override
    protected void run(CommandCallback<Properties> callback) throws Throwable {
@@ -46,7 +50,7 @@ public class FetchCardPropertiesCommand extends Command<FetchCardPropertiesComma
                   getStealthModeAction, getDisableDefaultCardDelayAction, getClearRecordsDelayAction) ->
                   (Properties) ImmutableProperties.builder()
                         .sdkVersion(sdkVersionAction.version)
-                        .firmWareVersion(firmwareVersionAction.version)
+                        .firmwareVersion(mapperyContext.convert(firmwareVersionAction.version, SmartCardFirmware.class))
                         .batteryLevel(Integer.parseInt(getBatteryLevelAction.level))
                         .lock(getLockDeviceStatusAction.locked)
                         .stealthMode(getStealthModeAction.enabled)
@@ -61,7 +65,7 @@ public class FetchCardPropertiesCommand extends Command<FetchCardPropertiesComma
 
       String sdkVersion();
 
-      String firmWareVersion();
+      SmartCardFirmware firmwareVersion();
 
       int batteryLevel();
 

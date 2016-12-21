@@ -1,11 +1,12 @@
 package com.worldventures.dreamtrips.wallet.domain.converter;
 
+import com.worldventures.dreamtrips.modules.mapping.converter.Converter;
 import com.worldventures.dreamtrips.wallet.domain.entity.ImmutableSmartCardDetails;
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCardDetails;
 
 import io.techery.mappery.MapperyContext;
 
-public class SmartCardDetailsConverter implements com.worldventures.dreamtrips.modules.mapping.converter.Converter<com.worldventures.dreamtrips.api.smart_card.user_association.model.SmartCardDetails, SmartCardDetails> {
+class SmartCardDetailsConverter implements Converter<com.worldventures.dreamtrips.api.smart_card.user_association.model.SmartCardDetails, SmartCardDetails> {
 
    @Override
    public Class<SmartCardDetails> targetClass() {

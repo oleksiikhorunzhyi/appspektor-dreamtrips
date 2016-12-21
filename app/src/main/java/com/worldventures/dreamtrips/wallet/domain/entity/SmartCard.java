@@ -34,10 +34,8 @@ public abstract class SmartCard {
       return "";
    }
 
-   @Value.Default
-   public String firmWareVersion() {
-      return "";
-   }
+   @Nullable
+   public abstract SmartCardFirmware firmwareVersion();
 
    @Value.Default
    public String serialNumber() {

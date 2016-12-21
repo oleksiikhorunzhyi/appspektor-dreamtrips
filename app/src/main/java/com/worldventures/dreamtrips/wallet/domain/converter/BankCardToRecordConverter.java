@@ -1,5 +1,6 @@
 package com.worldventures.dreamtrips.wallet.domain.converter;
 
+import com.worldventures.dreamtrips.modules.mapping.converter.Converter;
 import com.worldventures.dreamtrips.wallet.domain.entity.AddressInfo;
 import com.worldventures.dreamtrips.wallet.domain.entity.card.BankCard;
 
@@ -13,7 +14,7 @@ import static com.worldventures.dreamtrips.wallet.domain.converter.RecordFields.
 import static com.worldventures.dreamtrips.wallet.domain.converter.RecordFields.BANK_NAME_FIELD;
 import static com.worldventures.dreamtrips.wallet.domain.converter.RecordFields.TYPE_CARD_FIELD;
 
-public class BankCardToRecordConverter implements com.worldventures.dreamtrips.modules.mapping.converter.Converter<BankCard, Record> {
+public class BankCardToRecordConverter implements Converter<BankCard, Record> {
 
    @Override
    public Class<BankCard> sourceClass() {

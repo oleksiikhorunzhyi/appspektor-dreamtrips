@@ -8,6 +8,7 @@ import java.util.Map;
 import io.techery.janet.smartcard.action.settings.SetStatusBarSettingAction;
 import io.techery.janet.smartcard.mock.device.DeviceStorage;
 import io.techery.janet.smartcard.mock.device.SimpleDeviceStorage;
+import io.techery.janet.smartcard.model.FirmwareVersion;
 import io.techery.janet.smartcard.model.Record;
 import io.techery.janet.smartcard.model.User;
 
@@ -34,12 +35,12 @@ public class PersistentDeviceStorage implements DeviceStorage {
    }
 
    @Override
-   public String getFirmwareVersion() {
+   public FirmwareVersion getFirmwareVersion() {
       return memoryStorage.getFirmwareVersion();
    }
 
    @Override
-   public void setFirmwareVersion(String firmwareVersion) {
+   public void setFirmwareVersion(FirmwareVersion firmwareVersion) {
       memoryStorage.setFirmwareVersion(firmwareVersion);
       persistStorage();
    }

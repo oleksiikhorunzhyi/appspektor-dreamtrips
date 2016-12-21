@@ -2,6 +2,7 @@ package com.worldventures.dreamtrips.modules.profile.presenter;
 
 import android.content.Intent;
 
+import com.innahema.collections.query.queriables.Queryable;
 import com.techery.spares.utils.delegate.NotificationCountEventDelegate;
 import com.worldventures.dreamtrips.core.component.RootComponentsProvider;
 import com.worldventures.dreamtrips.core.navigation.Route;
@@ -11,6 +12,9 @@ import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.auth.api.command.LogoutCommand;
 import com.worldventures.dreamtrips.modules.auth.api.command.UpdateUserCommand;
 import com.worldventures.dreamtrips.modules.auth.service.AuthInteractor;
+import com.worldventures.dreamtrips.modules.background_uploading.model.PostCompoundOperationModel;
+import com.worldventures.dreamtrips.modules.background_uploading.service.BackgroundUploadingInteractor;
+import com.worldventures.dreamtrips.modules.background_uploading.service.CompoundOperationsCommand;
 import com.worldventures.dreamtrips.modules.common.command.DownloadFileCommand;
 import com.worldventures.dreamtrips.modules.common.delegate.DownloadFileInteractor;
 import com.worldventures.dreamtrips.modules.common.delegate.SocialCropImageManager;
@@ -19,6 +23,10 @@ import com.worldventures.dreamtrips.modules.common.model.PhotoGalleryModel;
 import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.common.service.LogoutInteractor;
 import com.worldventures.dreamtrips.modules.common.view.util.MediaPickerEventDelegate;
+import com.worldventures.dreamtrips.modules.feed.model.FeedItem;
+import com.worldventures.dreamtrips.modules.feed.model.uploading.UploadingPostsList;
+import com.worldventures.dreamtrips.modules.feed.presenter.UploadingListenerPresenter;
+import com.worldventures.dreamtrips.modules.feed.presenter.delegate.UploadingPresenterDelegate;
 import com.worldventures.dreamtrips.modules.feed.service.command.GetAccountTimelineCommand;
 import com.worldventures.dreamtrips.modules.profile.service.ProfileInteractor;
 import com.worldventures.dreamtrips.modules.profile.service.command.GetPrivateProfileCommand;
@@ -32,6 +40,7 @@ import com.worldventures.dreamtrips.util.ValidationUtils;
 
 import java.io.File;
 import java.util.Date;
+import java.util.List;
 
 import javax.inject.Inject;
 
@@ -39,7 +48,8 @@ import icepick.State;
 import io.techery.janet.helper.ActionStateSubscriber;
 import timber.log.Timber;
 
-public class AccountPresenter extends ProfilePresenter<AccountPresenter.View, User> {
+public class AccountPresenter extends ProfilePresenter<AccountPresenter.View, User>
+   implements UploadingListenerPresenter {
 
    private static final int AVATAR_MEDIA_REQUEST_ID = 155322;
    private static final int COVER_MEDIA_REQUEST_ID = 155323;
@@ -49,15 +59,19 @@ public class AccountPresenter extends ProfilePresenter<AccountPresenter.View, Us
    @Inject RootComponentsProvider rootComponentsProvider;
    @Inject LogoutInteractor logoutInteractor;
    @Inject DownloadFileInteractor downloadFileInteractor;
+   @Inject BackgroundUploadingInteractor backgroundUploadingInteractor;
    @Inject MediaPickerEventDelegate mediaPickerEventDelegate;
    @Inject SocialCropImageManager socialCropImageManager;
    @Inject AuthInteractor authInteractor;
    @Inject ProfileInteractor profileInteractor;
    @Inject NotificationCountEventDelegate notificationCountEventDelegate;
    @Inject SnappyRepository db;
+   @Inject UploadingPresenterDelegate uploadingPresenterDelegate;
 
    @State boolean shouldReload;
    @State int mediaRequestId;
+
+   private List<PostCompoundOperationModel> postUploads;
 
    public AccountPresenter() {
       super();
@@ -75,6 +89,7 @@ public class AccountPresenter extends ProfilePresenter<AccountPresenter.View, Us
       subscribeRefreshFeeds();
       connectToCroppedImageStream();
       subscribeToMediaPicker();
+      subscribeToBackgroundUploadingOperations();
    }
 
    @Override
@@ -152,6 +167,18 @@ public class AccountPresenter extends ProfilePresenter<AccountPresenter.View, Us
             .subscribe(new ActionStateSubscriber<GetAccountTimelineCommand.LoadNext>()
                   .onFail(this::loadMoreItemsError)
                   .onSuccess(action -> addFeedItems(action.getResult())));
+   }
+
+   private void subscribeToBackgroundUploadingOperations() {
+      backgroundUploadingInteractor.compoundOperationsPipe()
+            .observeWithReplay()
+            .compose(bindViewToMainComposer())
+            .subscribe(new ActionStateSubscriber<CompoundOperationsCommand>()
+                  .onSuccess(compoundOperationsCommand -> {
+                     postUploads = Queryable.from(compoundOperationsCommand.getResult())
+                           .cast(PostCompoundOperationModel.class).toList();
+                     refreshFeedItemsInView();
+                  }));
    }
 
    @Override
@@ -317,6 +344,35 @@ public class AccountPresenter extends ProfilePresenter<AccountPresenter.View, Us
       return socialCropImageManager.onActivityResult(requestCode, resultCode, data);
    }
 
+   @Override
+   protected void refreshFeedItemsInView() {
+      view.refreshFeedItems(feedItems, new UploadingPostsList(postUploads));
+   }
+
+   ///////////////////////////////////////////////////////////////////////////
+   // Uploading handling
+   ///////////////////////////////////////////////////////////////////////////
+
+   @Override
+   public void onUploadResume(PostCompoundOperationModel compoundOperationModel) {
+      uploadingPresenterDelegate.onUploadResume(compoundOperationModel);
+   }
+
+   @Override
+   public void onUploadPaused(PostCompoundOperationModel compoundOperationModel) {
+      uploadingPresenterDelegate.onUploadPaused(compoundOperationModel);
+   }
+
+   @Override
+   public void onUploadRetry(PostCompoundOperationModel compoundOperationModel) {
+      uploadingPresenterDelegate.onUploadRetry(compoundOperationModel);
+   }
+
+   @Override
+   public void onUploadCancel(PostCompoundOperationModel compoundOperationModel) {
+      uploadingPresenterDelegate.onUploadCancel(compoundOperationModel);
+   }
+
    public interface View extends ProfilePresenter.View {
 
       void openAvatarPicker();
@@ -325,12 +381,12 @@ public class AccountPresenter extends ProfilePresenter<AccountPresenter.View, Us
 
       void updateBadgeCount(int count);
 
-      void inject(Object object);
-
       void showMediaPicker(int requestId);
 
       void hideMediaPicker();
 
       void cropImage(SocialCropImageManager socialCropImageManager, String path);
+
+      void refreshFeedItems(List<FeedItem> items, UploadingPostsList uploadingPostsList);
    }
 }

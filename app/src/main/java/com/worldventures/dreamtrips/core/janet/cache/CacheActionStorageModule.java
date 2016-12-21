@@ -5,6 +5,9 @@ import com.worldventures.dreamtrips.core.janet.cache.storage.MemoryStorage;
 import com.worldventures.dreamtrips.core.janet.cache.storage.MultipleActionStorage;
 import com.worldventures.dreamtrips.core.janet.cache.storage.PaginatedMemoryStorage;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
+import com.worldventures.dreamtrips.modules.background_uploading.storage.CompoundOperationRepository;
+import com.worldventures.dreamtrips.modules.background_uploading.storage.CompoundOperationRepositoryImpl;
+import com.worldventures.dreamtrips.modules.background_uploading.storage.CompoundOperationStorage;
 import com.worldventures.dreamtrips.modules.bucketlist.service.storage.BucketListDiskStorage;
 import com.worldventures.dreamtrips.modules.bucketlist.service.storage.BucketMemoryStorage;
 import com.worldventures.dreamtrips.modules.bucketlist.service.storage.RecentlyAddedBucketItemStorage;
@@ -179,6 +182,12 @@ public class CacheActionStorageModule {
 
    @Singleton
    @Provides(type = Provides.Type.SET)
+   MultipleActionStorage provideCompoundOperationStorage(CompoundOperationRepository compoundOperationRepository) {
+      return new CompoundOperationStorage(compoundOperationRepository);
+   }
+
+   @Singleton
+   @Provides(type = Provides.Type.SET)
    ActionStorage provideFeedbackStorage(SnappyRepository db) {
       return new FeedbackTypeStorage(db);
    }
@@ -195,6 +204,12 @@ public class CacheActionStorageModule {
       return new PendingLikesStorage();
    }
 
+   @Singleton
+   @Provides
+   CompoundOperationRepository provideCompoundOperationRepository(SnappyRepository snappyRepository) {
+      return new CompoundOperationRepositoryImpl(snappyRepository);
+   }
+   
    @Singleton
    @Provides(type = Provides.Type.SET)
    ActionStorage provideDocumentsStorage(SnappyRepository db) {

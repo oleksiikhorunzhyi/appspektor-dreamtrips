@@ -1,7 +1,6 @@
 package com.worldventures.dreamtrips.modules.tripsimages.presenter;
 
 import com.innahema.collections.query.queriables.Queryable;
-import com.techery.spares.adapter.ListAdapter;
 import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.core.rx.RxView;
@@ -97,7 +96,7 @@ public abstract class TripImagesListPresenter<VT extends TripImagesListPresenter
 
    private void fillWithItems() {
       photos.addAll(db.readPhotoEntityList(type, userId));
-      view.fillWithItems(photos);
+      refreshImagesInView();
       view.setSelection(currentPhotoPosition);
    }
 
@@ -126,7 +125,7 @@ public abstract class TripImagesListPresenter<VT extends TripImagesListPresenter
 
    public void loadNext() {
       currentPage++;
-      load(getLoadMoreCommand(view.getAdapter().getCount()), this::savePhotosAndUpdateView);
+      load(getLoadMoreCommand(photos.size()), this::savePhotosAndUpdateView);
    }
 
    private void load(C command, Action1<List<IFullScreenObject>> successAction) {
@@ -151,15 +150,16 @@ public abstract class TripImagesListPresenter<VT extends TripImagesListPresenter
       photos.clear();
       previousTotal = 0;
       loading = false;
-      view.getAdapter().clear();
    }
 
    private void savePhotosAndUpdateView(List<IFullScreenObject> list) {
       photos.addAll(list);
       db.savePhotoEntityList(type, userId, photos);
-      view.getAdapter().addItems(list);
-      view.getAdapter().notifyDataSetChanged();
+      refreshImagesInView();
+   }
 
+   protected void refreshImagesInView() {
+      view.setImages(photos);
    }
 
    public IFullScreenObject getPhoto(int position) {
@@ -170,8 +170,8 @@ public abstract class TripImagesListPresenter<VT extends TripImagesListPresenter
       this.currentPhotoPosition = currentPhotoPosition;
    }
 
-   public void onItemClick(int position) {
-      view.openFullscreen(getFullscreenArgs(position).build());
+   public void onItemClick(IFullScreenObject image) {
+      view.openFullscreen(getFullscreenArgs(photos.indexOf(image)).build());
    }
 
    private FullScreenImagesBundle.Builder getFullscreenArgs(int position) {
@@ -280,13 +280,9 @@ public abstract class TripImagesListPresenter<VT extends TripImagesListPresenter
 
       void setSelection(int photoPosition);
 
-      void fillWithItems(List<IFullScreenObject> items);
-
-      ListAdapter getAdapter();
+      void setImages(List<IFullScreenObject> items);
 
       void openFullscreen(FullScreenImagesBundle data);
-
-      void inject(Object getMyPhotosQuery);
 
       boolean isFullscreenView();
    }

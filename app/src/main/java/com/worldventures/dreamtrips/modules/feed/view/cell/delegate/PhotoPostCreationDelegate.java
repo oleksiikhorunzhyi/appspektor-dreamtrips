@@ -6,8 +6,6 @@ import com.worldventures.dreamtrips.modules.feed.model.PhotoCreationItem;
 
 public interface PhotoPostCreationDelegate extends CellDelegate<PhotoCreationItem> {
 
-   void onProgressClicked(PhotoCreationItem item);
-
    void onTagIconClicked(PhotoCreationItem item);
 
    void onRemoveClicked(PhotoCreationItem item);

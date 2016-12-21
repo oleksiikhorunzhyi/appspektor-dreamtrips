@@ -255,7 +255,7 @@ public class FeedHashtagPresenter<T extends FeedHashtagPresenter.View> extends J
             .subscribe(this::itemDeleted);
    }
 
-   public void onEvent(FeedItemAddedEvent event) {
+   public void onEventMainThread(FeedItemAddedEvent event) {
       feedItems.add(0, event.getFeedItem());
       view.refreshFeedItems(feedItems);
    }

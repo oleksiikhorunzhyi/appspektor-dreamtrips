@@ -179,7 +179,7 @@ public abstract class ProfilePresenter<T extends ProfilePresenter.View, U extend
       feedItems.clear();
       feedItems.addAll(filteredItems);
 
-      view.refreshFeedItems(feedItems);
+      refreshFeedItemsInView();
    }
 
    private void subscribeToEntityDeletedEvents() {
@@ -188,9 +188,9 @@ public abstract class ProfilePresenter<T extends ProfilePresenter.View, U extend
             .subscribe(this::itemDeleted);
    }
 
-   public void onEvent(FeedItemAddedEvent event) {
+   public void onEventMainThread(FeedItemAddedEvent event) {
       feedItems.add(0, event.getFeedItem());
-      view.refreshFeedItems(feedItems);
+      refreshFeedItemsInView();
    }
 
    public void onEvent(FeedEntityChangedEvent event) {
@@ -204,7 +204,7 @@ public abstract class ProfilePresenter<T extends ProfilePresenter.View, U extend
          }
       });
 
-      view.refreshFeedItems(feedItems);
+      refreshFeedItemsInView();
    }
 
    public void onEvent(FeedEntityCommentedEvent event) {
@@ -214,7 +214,7 @@ public abstract class ProfilePresenter<T extends ProfilePresenter.View, U extend
          }
       });
 
-      view.refreshFeedItems(feedItems);
+      refreshFeedItemsInView();
    }
 
    public void onEvent(LikesPressedEvent event) {
@@ -268,7 +268,7 @@ public abstract class ProfilePresenter<T extends ProfilePresenter.View, U extend
          }
       });
 
-      view.refreshFeedItems(feedItems);
+      refreshFeedItemsInView();
    }
 
    public void onRefresh() {
@@ -292,7 +292,7 @@ public abstract class ProfilePresenter<T extends ProfilePresenter.View, U extend
       view.finishLoading();
       feedItems.clear();
       feedItems.addAll(freshItems);
-      view.refreshFeedItems(feedItems);
+      refreshFeedItemsInView();
    }
 
    protected void addFeedItems(List<FeedItem> olderItems) {
@@ -300,20 +300,24 @@ public abstract class ProfilePresenter<T extends ProfilePresenter.View, U extend
       view.updateLoadingStatus(false, noMoreElements);
       //
       feedItems.addAll(olderItems);
-      view.refreshFeedItems(feedItems);
+      refreshFeedItemsInView();
    }
 
    protected void refreshFeedError(CommandWithError action, Throwable throwable) {
       handleError(action, throwable);
       view.updateLoadingStatus(false, false);
       view.finishLoading();
-      view.refreshFeedItems(feedItems);
+      refreshFeedItemsInView();
    }
 
    protected void loadMoreItemsError(CommandWithError action, Throwable throwable) {
       handleError(action, throwable);
       view.updateLoadingStatus(false, false);
       addFeedItems(new ArrayList<>());
+   }
+
+   protected void refreshFeedItemsInView() {
+      view.refreshFeedItems(feedItems);
    }
 
    public interface View extends RxView, TextualPostTranslationDelegate.View {
@@ -334,7 +338,7 @@ public abstract class ProfilePresenter<T extends ProfilePresenter.View, U extend
 
       void finishLoading();
 
-      void refreshFeedItems(List<FeedItem> events);
+      void refreshFeedItems(List<FeedItem> items);
 
       void showEdit(BucketBundle bucketBundle);
 

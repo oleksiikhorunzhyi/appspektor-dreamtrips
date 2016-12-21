@@ -1,5 +1,7 @@
 package com.worldventures.dreamtrips.modules.feed;
 
+import android.content.Context;
+
 import com.techery.spares.module.qualifier.Global;
 import com.techery.spares.session.SessionHolder;
 import com.worldventures.dreamtrips.R;
@@ -7,6 +9,7 @@ import com.worldventures.dreamtrips.core.component.ComponentDescription;
 import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.navigation.router.Router;
 import com.worldventures.dreamtrips.core.session.UserSession;
+import com.worldventures.dreamtrips.modules.background_uploading.service.BackgroundUploadingInteractor;
 import com.worldventures.dreamtrips.modules.common.presenter.ComponentPresenter;
 import com.worldventures.dreamtrips.modules.common.presenter.GalleryPresenter;
 import com.worldventures.dreamtrips.modules.common.view.fragment.DtGalleryFragment;
@@ -27,6 +30,7 @@ import com.worldventures.dreamtrips.modules.feed.presenter.FeedPresenter;
 import com.worldventures.dreamtrips.modules.feed.presenter.LocationPresenter;
 import com.worldventures.dreamtrips.modules.feed.presenter.NotificationPresenter;
 import com.worldventures.dreamtrips.modules.feed.presenter.SuggestedPhotoCellPresenterHelper;
+import com.worldventures.dreamtrips.modules.feed.presenter.delegate.UploadingPresenterDelegate;
 import com.worldventures.dreamtrips.modules.feed.service.TranslationFeedInteractor;
 import com.worldventures.dreamtrips.modules.feed.view.cell.BucketFeedEntityDetailsCell;
 import com.worldventures.dreamtrips.modules.feed.view.cell.BucketFeedItemDetailsCell;
@@ -50,6 +54,8 @@ import com.worldventures.dreamtrips.modules.feed.view.cell.UndefinedFeedItemDeta
 import com.worldventures.dreamtrips.modules.feed.view.cell.base.BaseFeedCell;
 import com.worldventures.dreamtrips.modules.feed.view.cell.base.FeedItemDetailsCell;
 import com.worldventures.dreamtrips.modules.feed.view.cell.notification.NotificationCell;
+import com.worldventures.dreamtrips.modules.feed.view.cell.uploading.UploadingPhotoPostsSectionCell;
+import com.worldventures.dreamtrips.modules.feed.view.cell.util.FeedViewInjector;
 import com.worldventures.dreamtrips.modules.feed.view.fragment.ActionEntityFragment;
 import com.worldventures.dreamtrips.modules.feed.view.fragment.CommentableFragment;
 import com.worldventures.dreamtrips.modules.feed.view.fragment.CreateEntityFragment;
@@ -74,41 +80,78 @@ import com.worldventures.dreamtrips.modules.feed.view.util.StatePaginatedRecycle
 import com.worldventures.dreamtrips.modules.feed.view.util.TextualPostTranslationDelegate;
 import com.worldventures.dreamtrips.modules.tripsimages.view.fragment.CreateTripImageFragment;
 
+import javax.inject.Singleton;
+
 import dagger.Module;
 import dagger.Provides;
 import de.greenrobot.event.EventBus;
 
 @Module(
-      injects = {TripFeedItemDetailsCell.class, FeedPresenter.class, SuggestedPhotoCellPresenterHelper.class, FeedFragment.class, BucketFeedItemDetailsCell.class, LoadMoreCell.class, PhotoFeedItemDetailsCell.class, PostFeedItemCell.class, UndefinedFeedItemDetailsCell.class, FeedHashtagFragment.class, FeedHashtagPresenter.class,
-
-            PickerIrregularPhotoCell.class, PhotoGalleryCell.class,
-
+      injects = {TripFeedItemDetailsCell.class,
+            FeedPresenter.class,
+            SuggestedPhotoCellPresenterHelper.class,
+            FeedFragment.class,
+            BucketFeedItemDetailsCell.class,
+            LoadMoreCell.class,
+            PhotoFeedItemDetailsCell.class,
+            PostFeedItemCell.class,
+            UndefinedFeedItemDetailsCell.class,
+            FeedHashtagFragment.class,
+            FeedHashtagPresenter.class,
+            PickerIrregularPhotoCell.class,
+            PhotoGalleryCell.class,
             EditCommentPresenter.class,
-
-            CommentableFragment.class, ComponentPresenter.class, FeedItemDetailsFragment.class, FeedItemDetailsPresenter.class, FeedDetailsFragment.class, FeedDetailsPresenter.class, FeedEntityDetailsFragment.class, FeedEntityDetailsPresenter.class, CommentCell.class, BaseCommentPresenter.class,
-
-            NotificationFragment.class, NotificationPresenter.class, NotificationCell.class, NotificationFragment.NotificationAdapter.class,
-
-            FeedItemDetailsCell.class, FeedItemCell.class, BaseFeedCell.class, FeedEntityDetailsCell.class, BucketFeedEntityDetailsCell.class, TripFeedItemDetailsCell.class,
-
-            FeedListAdditionalInfoFragment.class, FeedListAdditionalInfoPresenter.class, FeedItemAdditionalInfoFragment.class, FeedItemAdditionalInfoPresenter.class,
-
-            EditCommentFragment.class, EditCommentPresenter.class,
-
-            DtGalleryFragment.class, GalleryPresenter.class,
-
-            ActionEntityFragment.class, ActionEntityPresenter.class, CreateTripImageFragment.class, CreateFeedPostFragment.class, CreateEntityFragment.class, CreateEntityPresenter.class,
-
-            LocationFragment.class, LocationPresenter.class,
-
-            SuggestedPhotosCell.class, SuggestionPhotoCell.class,
-
-            PhotoPostCreationCell.class, PostCreationTextCell.class, SubPhotoAttachmentCell.class, PostFeedItemDetailsCell.class,
-
-            EditPostFragment.class, EditPostPresenter.class, EditPhotoFragment.class, EditPhotoPresenter.class, DescriptionCreatorFragment.class, DescriptionCreatorPresenter.class, HashtagSuggestionCell.class,
-
+            CommentableFragment.class,
+            ComponentPresenter.class,
+            FeedItemDetailsFragment.class,
+            FeedItemDetailsPresenter.class,
+            FeedDetailsFragment.class,
+            FeedDetailsPresenter.class,
+            FeedEntityDetailsFragment.class,
+            FeedEntityDetailsPresenter.class,
+            CommentCell.class,
+            BaseCommentPresenter.class,
+            NotificationFragment.class,
+            NotificationPresenter.class,
+            NotificationCell.class,
+            NotificationFragment.NotificationAdapter.class,
+            FeedItemDetailsCell.class,
+            FeedItemCell.class,
+            BaseFeedCell.class,
+            FeedEntityDetailsCell.class,
+            BucketFeedEntityDetailsCell.class,
+            TripFeedItemDetailsCell.class,
+            FeedListAdditionalInfoFragment.class,
+            FeedListAdditionalInfoPresenter.class,
+            FeedItemAdditionalInfoFragment.class,
+            FeedItemAdditionalInfoPresenter.class,
+            EditCommentFragment.class,
+            EditCommentPresenter.class,
+            DtGalleryFragment.class,
+            GalleryPresenter.class,
+            ActionEntityFragment.class,
+            ActionEntityPresenter.class,
+            CreateTripImageFragment.class,
+            CreateFeedPostFragment.class,
+            CreateEntityFragment.class,
+            CreateEntityPresenter.class,
+            LocationFragment.class,
+            LocationPresenter.class,
+            SuggestedPhotosCell.class,
+            SuggestionPhotoCell.class,
+            PhotoPostCreationCell.class,
+            PostCreationTextCell.class,
+            SubPhotoAttachmentCell.class,
+            PostFeedItemDetailsCell.class,
+            EditPostFragment.class,
+            EditPostPresenter.class,
+            EditPhotoFragment.class,
+            EditPhotoPresenter.class,
+            DescriptionCreatorFragment.class,
+            DescriptionCreatorPresenter.class,
+            HashtagSuggestionCell.class,
             StatePaginatedRecyclerViewManager.class,
-
+            UploadingPhotoPostsSectionCell.class
       },
       complete = false,
       library = true)
@@ -145,5 +188,17 @@ public class FeedModule {
    @Provides
    TextualPostTranslationDelegate provideTextualPostTranslationDelegate(TranslationFeedInteractor translationFeedInteractor) {
       return new TextualPostTranslationDelegate(translationFeedInteractor);
+   }
+
+   @Provides
+   @Singleton
+   FeedViewInjector provideFeedViewInjector(Context context) {
+      return new FeedViewInjector(context);
+   }
+
+   @Provides
+   @Singleton
+   UploadingPresenterDelegate provideUploadingPresenterDelegate(BackgroundUploadingInteractor uploadingInteractor) {
+      return new UploadingPresenterDelegate(uploadingInteractor);
    }
 }

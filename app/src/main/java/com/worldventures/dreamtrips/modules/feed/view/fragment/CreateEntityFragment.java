@@ -60,12 +60,6 @@ public abstract class CreateEntityFragment extends ActionEntityFragment<CreateEn
    }
 
    @Override
-   public void onProgressClicked(PhotoCreationItem item) {
-      super.onProgressClicked(item);
-      getPresenter().startUpload(item);
-   }
-
-   @Override
    public void onRemoveClicked(PhotoCreationItem uploadTask) {
       super.onRemoveClicked(uploadTask);
       boolean removed = getPresenter().removeImage(uploadTask);

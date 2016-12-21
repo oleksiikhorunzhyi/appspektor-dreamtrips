@@ -6,6 +6,7 @@ import com.worldventures.dreamtrips.modules.auth.api.command.LoginCommand;
 import com.worldventures.dreamtrips.modules.auth.api.command.LogoutCommand;
 import com.worldventures.dreamtrips.modules.auth.api.command.UnsubribeFromPushCommand;
 import com.worldventures.dreamtrips.modules.auth.api.command.UpdateUserCommand;
+import com.worldventures.dreamtrips.modules.background_uploading.service.CreatePostCompoundOperationCommand;
 import com.worldventures.dreamtrips.modules.bucketlist.service.action.CreateBucketItemCommand;
 import com.worldventures.dreamtrips.modules.bucketlist.service.action.UpdateBucketItemCommand;
 import com.worldventures.dreamtrips.modules.bucketlist.service.command.AddBucketItemPhotoCommand;
@@ -26,6 +27,7 @@ import com.worldventures.dreamtrips.modules.common.api.janet.command.TripsFilter
 import com.worldventures.dreamtrips.modules.common.command.DeleteCachedEntityCommand;
 import com.worldventures.dreamtrips.modules.common.command.DownloadCachedEntityCommand;
 import com.worldventures.dreamtrips.modules.common.command.ResetCachedEntitiesInProgressCommand;
+import com.worldventures.dreamtrips.modules.common.service.CleanTempDirectoryCommand;
 import com.worldventures.dreamtrips.modules.feed.service.command.ChangeFeedEntityLikedStatusCommand;
 import com.worldventures.dreamtrips.modules.feed.service.command.CreateCommentCommand;
 import com.worldventures.dreamtrips.modules.feed.service.command.CreatePhotosCommand;
@@ -213,6 +215,8 @@ import dagger.Module;
       ChangeBucketListOrderCommand.class,
       DeleteBucketItemCommand.class,
       ChangeFeedEntityLikedStatusCommand.class,
+      CreatePostCompoundOperationCommand.class,
+      CleanTempDirectoryCommand.class,
       CheckTripsByUidCommand.class,
       GetDocumentsCommand.class,
 }, complete = false, library = true)

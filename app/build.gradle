@@ -407,12 +407,12 @@ dependencies {
    // Dagger-related. Needed for @Generated annotation (missing in Java <= 1.6 & Android)
    compile 'javax.annotation:jsr250-api:1.0'
    // janet
-   compile "com.github.techery:janet:1.0.6"
-   compile "com.github.techery:janet-command:1.0.3"
-   compile "com.github.techery.janet-http:service:1.0.9"
-   apt "com.github.techery.janet-http:service-compiler:1.0.9"
-   compile "com.github.techery.janet-http:client-okhttp:1.0.9"
-   compile "com.github.techery.janet-converters:gson:1.0.1"
+   compile "com.github.techery:janet:1.0.7"
+   compile "com.github.techery:janet-command:1.0.5"
+   compile "com.github.techery.janet-http:service:1.0.11"
+   apt "com.github.techery.janet-http:service-compiler:1.0.11"
+   compile "com.github.techery.janet-http:client-okhttp:1.0.11"
+   compile "com.github.techery.janet-converters:gson:1.0.2"
    compile 'com.squareup.okhttp:logging-interceptor:2.+'
    compile 'com.squareup.okhttp3:logging-interceptor:3.5.0'
    // Data storage, flow

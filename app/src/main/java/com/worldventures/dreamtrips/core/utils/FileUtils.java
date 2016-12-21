@@ -48,6 +48,10 @@ public class FileUtils {
       return buffer;
    }
 
+   public static long getFileSize(String path) {
+      return new File(path).length();
+   }
+
    public static void cleanDirectory(Context context, File directory, List<String> exceptFilePaths) throws IOException {
       if (!directory.exists()) {
          throw new IllegalArgumentException(directory + " does not exist");

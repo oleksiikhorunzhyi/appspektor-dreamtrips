@@ -1,5 +1,7 @@
 package com.worldventures.dreamtrips.modules.tripsimages.presenter;
 
+import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
+import com.worldventures.dreamtrips.modules.tripsimages.model.IFullScreenObject;
 import com.worldventures.dreamtrips.modules.tripsimages.model.TripImagesType;
 import com.worldventures.dreamtrips.modules.tripsimages.service.command.GetYSBHPhotosCommand;
 
@@ -23,5 +25,11 @@ public class YSBHPresenter extends TripImagesListPresenter<TripImagesListPresent
    @Override
    protected GetYSBHPhotosCommand getLoadMoreCommand(int currentPage) {
       return new GetYSBHPhotosCommand(PER_PAGE, currentPage);
+   }
+
+   @Override
+   public void onItemClick(IFullScreenObject image) {
+      super.onItemClick(image);
+      TrackingHelper.viewTripImage(TrackingHelper.ACTION_YSHB_IMAGES, image.getFSId());
    }
 }

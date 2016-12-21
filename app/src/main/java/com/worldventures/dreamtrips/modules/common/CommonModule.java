@@ -180,5 +180,4 @@ public class CommonModule {
    PhotoPickerLayoutDelegate providePhotoPickerLayoutDelegate(BackStackDelegate backStackDelegate) {
       return new PhotoPickerLayoutDelegate(backStackDelegate);
    }
-
 }

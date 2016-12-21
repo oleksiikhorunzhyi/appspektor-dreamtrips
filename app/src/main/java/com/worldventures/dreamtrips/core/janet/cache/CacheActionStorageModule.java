@@ -18,6 +18,8 @@ import com.worldventures.dreamtrips.modules.feed.service.storage.PendingLikesSto
 import com.worldventures.dreamtrips.modules.feed.service.storage.TranslationDiscStorage;
 import com.worldventures.dreamtrips.modules.flags.storage.FlagsStorage;
 import com.worldventures.dreamtrips.modules.friends.storage.CirclesStorage;
+import com.worldventures.dreamtrips.modules.infopages.service.storage.DocumentsDiskStorage;
+import com.worldventures.dreamtrips.modules.infopages.service.storage.DocumentsStorage;
 import com.worldventures.dreamtrips.modules.infopages.service.storage.FeedbackTypeStorage;
 import com.worldventures.dreamtrips.modules.membership.storage.PodcastsDiskStorage;
 import com.worldventures.dreamtrips.modules.membership.storage.PodcastsStorage;
@@ -193,4 +195,9 @@ public class CacheActionStorageModule {
       return new PendingLikesStorage();
    }
 
+   @Singleton
+   @Provides(type = Provides.Type.SET)
+   ActionStorage provideDocumentsStorage(SnappyRepository db) {
+      return new DocumentsStorage(new PaginatedMemoryStorage<>(), new DocumentsDiskStorage(db));
+   }
 }

@@ -59,6 +59,7 @@ import com.worldventures.dreamtrips.modules.friends.service.command.GetMutualFri
 import com.worldventures.dreamtrips.modules.friends.service.command.GetRequestsCommand;
 import com.worldventures.dreamtrips.modules.friends.service.command.GetSearchUsersCommand;
 import com.worldventures.dreamtrips.modules.friends.service.command.RemoveFriendCommand;
+import com.worldventures.dreamtrips.modules.infopages.service.command.GetDocumentsCommand;
 import com.worldventures.dreamtrips.modules.infopages.service.command.GetFeedbackCommand;
 import com.worldventures.dreamtrips.modules.infopages.service.command.SendFeedbackCommand;
 import com.worldventures.dreamtrips.modules.infopages.service.command.UploadFeedbackAttachmentCommand;
@@ -213,5 +214,6 @@ import dagger.Module;
       DeleteBucketItemCommand.class,
       ChangeFeedEntityLikedStatusCommand.class,
       CheckTripsByUidCommand.class,
+      GetDocumentsCommand.class,
 }, complete = false, library = true)
 public class SocialJanetCommandModule {}

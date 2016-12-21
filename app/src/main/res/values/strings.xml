@@ -598,6 +598,7 @@
    <string name="error_fail_to_load_videos">Failed to load videos</string>
    <string name="error_fail_to_like_item">Failed to like item</string>
    <string name="error_fail_to_unlike_item">Failed to unlike item</string>
+   <string name="error_fail_to_load_documents">Failed to load documents</string>
    <string name="tag_people">Tag people</string>
 
    <string name="say_something">Say something to the world</string>
@@ -675,4 +676,7 @@
    <string name="merchant_message_text" formatted="false">Congratulations! You earned %s DreamTrips points @%s, %s</string>
 
    <string name="beta_label">Beta</string>
+
+   <string name="documents">Documents</string>
+   <string name="documents_empty_text">Documents could not be loaded at this time.</string>
 </resources>

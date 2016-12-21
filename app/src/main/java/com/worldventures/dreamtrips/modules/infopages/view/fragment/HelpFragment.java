@@ -42,8 +42,8 @@ public class HelpFragment extends BaseFragment<HelpTabPresenter> {
    public void afterCreateView(View rootView) {
       if (adapter == null) {
          this.adapter = new BasePagerAdapter(getChildFragmentManager());
+         this.adapter.add(new FragmentItem(Route.DOCUMENT_LIST, getString(R.string.documents)));
          this.adapter.add(new FragmentItem(Route.HELP_VIDEOS, getString(R.string.presentations)));
-         this.adapter.add(new FragmentItem(Route.FAQ, getString(R.string.faq)));
       }
 
       pager.setAdapter(adapter);

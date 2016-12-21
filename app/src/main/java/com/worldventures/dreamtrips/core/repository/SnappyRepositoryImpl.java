@@ -27,6 +27,7 @@ import com.worldventures.dreamtrips.modules.feed.model.PostFeedItem;
 import com.worldventures.dreamtrips.modules.feed.model.TripFeedItem;
 import com.worldventures.dreamtrips.modules.feed.model.UndefinedFeedItem;
 import com.worldventures.dreamtrips.modules.friends.model.Circle;
+import com.worldventures.dreamtrips.modules.infopages.model.Document;
 import com.worldventures.dreamtrips.modules.infopages.model.FeedbackType;
 import com.worldventures.dreamtrips.modules.membership.model.Podcast;
 import com.worldventures.dreamtrips.modules.settings.model.FlagSetting;
@@ -672,6 +673,15 @@ public class SnappyRepositoryImpl implements SnappyRepository {
       putList(FEEDBACK_TYPES, types);
    }
 
+   @Override
+   public List<Document> getDocuments() {
+      return readList(DOCUMENTS, Document.class);
+   }
+
+   @Override
+   public void setDocuments(List<Document> documents) {
+      putList(DOCUMENTS, documents);
+   }
 
    ///////////////////////////////////////////////////////////////////////////
    // GCM

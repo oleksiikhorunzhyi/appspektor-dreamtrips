@@ -96,6 +96,7 @@ public class WalletSettingsScreen extends WalletLinearLayout<WalletSettingsPrese
 
    @OnClick(R.id.item_about)
    void onAboutClick() {
+      presenter.openAboutScreen();
    }
 
    @OnClick(R.id.item_battery_alert)

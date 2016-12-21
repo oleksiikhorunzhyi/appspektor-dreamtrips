@@ -73,7 +73,7 @@
    <style name="SettingsItemDividerStyle">
       <item name="android:layout_width">match_parent</item>
       <item name="android:layout_height">0.5dp</item>
-      <item name="android:background">#C8C7CC</item>
+      <item name="android:background">@color/wallet_color_divider</item>
    </style>
 
    <style name="SettingsItemSubTitleStyle">
@@ -90,6 +90,14 @@
       <item name="android:layout_height">wrap_content</item>
       <item name="android:textColor">@color/black</item>
       <item name="android:textAppearance">?android:attr/textAppearanceMedium</item>
+   </style>
+
+   <style name="AboutItemText" parent="TextAppearance.AppCompat.Medium">
+      <item name="android:textColor">@color/black</item>
+   </style>
+
+   <style name="AboutItemText.Value" parent="TextAppearance.AppCompat.Medium">
+      <item name="android:textColor">@color/wallet_about_item_value</item>
    </style>
 
    <style name="SettingsItemSecondaryText">

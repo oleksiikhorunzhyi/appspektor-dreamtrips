@@ -26,7 +26,7 @@ class SmartCardInfoToSmartCard implements Converter<SmartCardInfo, SmartCard> {
             .user(ImmutableSmartCardUser.builder()
                   .firstName(smartCardInfo.user().firstName())
                   .middleName(smartCardInfo.user().middleName() != null ? smartCardInfo.user().middleName() : "")
-                  .lastName(smartCardInfo.user().lastName())
+                  .lastName(smartCardInfo.user().lastName() != null ? smartCardInfo.user().lastName() : "")
                   .build())
             .serialNumber(smartCardInfo.serialNumber())
             .deviceAddress(smartCardInfo.bleAddress())

@@ -23,6 +23,7 @@ import com.worldventures.dreamtrips.wallet.ui.common.base.screen.WalletScreen;
 import com.worldventures.dreamtrips.wallet.ui.common.helper.ErrorHandler;
 import com.worldventures.dreamtrips.wallet.ui.common.helper.OperationActionStateSubscriberWrapper;
 import com.worldventures.dreamtrips.wallet.ui.common.navigation.Navigator;
+import com.worldventures.dreamtrips.wallet.ui.settings.about.AboutPath;
 import com.worldventures.dreamtrips.wallet.ui.settings.disabledefaultcard.WalletDisableDefaultCardPath;
 import com.worldventures.dreamtrips.wallet.ui.settings.factory_reset.FactoryResetPath;
 import com.worldventures.dreamtrips.wallet.ui.settings.firmware.newavailable.WalletNewFirmwareAvailablePath;
@@ -266,6 +267,10 @@ public class WalletSettingsPresenter extends WalletPresenter<WalletSettingsPrese
    void confirmResetSmartCard() {
       smartCardInteractor.restartSmartCardCommandActionPipe()
             .send(new RestartSmartCardCommand());
+   }
+
+   void openAboutScreen() {
+      navigator.go(new AboutPath());
    }
 
    public interface Screen extends WalletScreen {

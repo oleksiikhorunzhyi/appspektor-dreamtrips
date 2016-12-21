@@ -9,7 +9,8 @@ public abstract class SmartCardUser {
 
    public abstract String firstName();
 
-   public abstract String lastName();
+   @Value.Default
+   public String lastName(){return "";}
 
    @Value.Default
    public String middleName() {return "";}

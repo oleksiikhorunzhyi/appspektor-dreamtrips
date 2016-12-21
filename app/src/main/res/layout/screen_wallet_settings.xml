@@ -91,13 +91,14 @@
                />
 
          <!--GONE About-->
+
          <TextView
                android:id="@+id/item_about"
                style="@style/SettingsItemText"
                android:paddingStart="@dimen/spacing_normal"
                android:paddingTop="@dimen/spacing_large"
+               android:paddingBottom="@dimen/spacing_large"
                android:text="@string/wallet_card_settings_about"
-               android:visibility="gone"
                />
 
          <!--GONE Offline mode-->

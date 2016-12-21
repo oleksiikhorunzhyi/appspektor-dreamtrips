@@ -7,7 +7,7 @@ import io.techery.janet.smartcard.model.ImmutableUser;
 import io.techery.janet.smartcard.model.User;
 import io.techery.mappery.MapperyContext;
 
-public class SmartCardUserToUserConverter implements Converter<SmartCardUser, User> {
+class SmartCardUserToUserConverter implements Converter<SmartCardUser, User> {
 
    @Override
    public Class<User> targetClass() {

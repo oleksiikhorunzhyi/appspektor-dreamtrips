@@ -32,7 +32,7 @@ public class UpdateSmartCardPropertiesCommand extends Command<SmartCard> impleme
                         .map(Command::getResult)
                         .map(properties -> ImmutableSmartCard.builder().from(smartCard)
                               .sdkVersion(properties.sdkVersion())
-                              .firmWareVersion(properties.firmWareVersion())
+                              .firmwareVersion(properties.firmwareVersion())
                               .batteryLevel(properties.batteryLevel())
                               .lock(properties.lock())
                               .stealthMode(properties.stealthMode())

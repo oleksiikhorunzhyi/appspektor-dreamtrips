@@ -36,7 +36,7 @@ public class WalletSuccessInstallFirmwarePresenter extends WalletPresenter<Walle
             .createObservable(new GetActiveSmartCardCommand())
             .compose(bindViewIoToMainComposer())
             .subscribe(ErrorActionStateSubscriberWrapper.<GetActiveSmartCardCommand>forView(getView().provideOperationDelegate())
-                  .onSuccess(command -> getView().setSubTitle(command.getResult().firmWareVersion()))
+                  .onSuccess(command -> getView().setSubTitle(command.getResult().firmwareVersion().firmwareVersion()))
                   .onFail(ErrorHandler.create(getContext()))
                   .wrap()
             );

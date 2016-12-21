@@ -26,7 +26,6 @@ import javax.inject.Inject;
 import flow.Flow;
 import flow.History;
 import io.techery.janet.Command;
-import timber.log.Timber;
 
 public class WalletInstallFirmwarePresenter extends WalletPresenter<WalletInstallFirmwarePresenter.Screen, WalletInstallFirmwareState> {
 
@@ -109,7 +108,7 @@ public class WalletInstallFirmwarePresenter extends WalletPresenter<WalletInstal
             .take(1)
             .map(Command::getResult)
             .subscribe(smartcard -> {
-               RetryInstallUpdateAction retryInstallUpdateAction = new RetryInstallUpdateAction(smartcard.firmWareVersion(), firmwareData
+               RetryInstallUpdateAction retryInstallUpdateAction = new RetryInstallUpdateAction(smartcard.firmwareVersion().firmwareVersion(), firmwareData
                      .firmwareInfo()
                      .firmwareVersion(), retry);
                WalletAnalyticsCommand analyticsCommand = new WalletAnalyticsCommand(retryInstallUpdateAction);

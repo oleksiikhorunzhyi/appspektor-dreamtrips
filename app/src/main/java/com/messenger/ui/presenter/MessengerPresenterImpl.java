@@ -11,6 +11,7 @@ import com.messenger.synchmechanism.SyncStatus;
 import com.messenger.ui.view.layout.MessengerScreen;
 import com.techery.spares.module.Injector;
 import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.modules.common.view.connection_overlay.ConnectionState;
 
 import java.util.concurrent.TimeUnit;
 
@@ -41,12 +42,23 @@ public abstract class MessengerPresenterImpl<V extends MessengerScreen, S extend
             .throttleLast(50, TimeUnit.MILLISECONDS)
             .compose(bindViewIoToMainComposer());
 
-      connectionStatusStream.subscribe(connectionStatus -> {
-         currentConnectivityStatus = connectionStatus;
-         if (isViewAttached()) {
-            getView().onConnectionChanged(connectionStatus);
-         }
-      });
+      connectionStatusStream.subscribe(connectionStatus -> currentConnectivityStatus = connectionStatus);
+      initDisconnectedOverlay();
+   }
+
+   private void initDisconnectedOverlay() {
+      getView().initDisconnectedOverlay(connectionStatusStream
+            .map(connectionStatus -> {
+               switch (connectionStatus) {
+                  case CONNECTED:
+                     return ConnectionState.CONNECTED;
+                  case ERROR:
+                  case DISCONNECTED:
+                     return ConnectionState.DISCONNECTED;
+                  default:
+                     return ConnectionState.CONNECTING;
+               }
+            }));
    }
 
    protected boolean isConnectionPresent() {

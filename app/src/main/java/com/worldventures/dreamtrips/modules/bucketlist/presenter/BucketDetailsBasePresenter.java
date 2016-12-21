@@ -5,11 +5,10 @@ import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.core.rx.RxView;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
-import com.worldventures.dreamtrips.modules.bucketlist.event.BucketItemPhotoAnalyticEvent;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketPhoto;
 import com.worldventures.dreamtrips.modules.bucketlist.service.BucketInteractor;
-import com.worldventures.dreamtrips.modules.bucketlist.service.action.UpdateItemHttpAction;
+import com.worldventures.dreamtrips.modules.bucketlist.service.action.UpdateBucketItemCommand;
 import com.worldventures.dreamtrips.modules.bucketlist.service.model.ImmutableBucketCoverBody;
 import com.worldventures.dreamtrips.modules.bucketlist.util.BucketItemInfoUtil;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
@@ -105,7 +104,7 @@ public class BucketDetailsBasePresenter<V extends BucketDetailsBasePresenter.Vie
     */
    public void openFullScreen(int position) {
       if (isTabTrulyVisible()) {
-         eventBus.post(new BucketItemPhotoAnalyticEvent(TrackingHelper.ATTRIBUTE_VIEW_PHOTO, bucketItem.getUid()));
+         TrackingHelper.actionBucketItemPhoto(TrackingHelper.ATTRIBUTE_VIEW_PHOTO, bucketItem.getUid());
          openFullScreen(bucketItem.getPhotos().get(position));
       }
    }
@@ -133,15 +132,15 @@ public class BucketDetailsBasePresenter<V extends BucketDetailsBasePresenter.Vie
 
    public void saveCover(BucketPhoto photo) {
       view.bind(bucketInteractor.updatePipe()
-            .createObservable(new UpdateItemHttpAction(ImmutableBucketCoverBody.builder()
+            .createObservable(new UpdateBucketItemCommand(ImmutableBucketCoverBody.builder()
                   .id(bucketItem.getUid())
                   .status(bucketItem.getStatus())
                   .type(bucketItem.getType())
                   .coverId(photo.getFSId())
                   .build()))
             .observeOn(AndroidSchedulers.mainThread()))
-            .subscribe(new ActionStateSubscriber<UpdateItemHttpAction>().onSuccess(action -> {
-               bucketItem = action.getResponse();
+            .subscribe(new ActionStateSubscriber<UpdateBucketItemCommand>().onSuccess(action -> {
+               bucketItem = action.getResult();
                syncUI();
             }).onFail(this::handleError));
    }

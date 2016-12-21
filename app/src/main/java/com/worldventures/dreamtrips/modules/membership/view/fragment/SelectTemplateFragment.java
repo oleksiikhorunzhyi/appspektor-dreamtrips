@@ -22,7 +22,7 @@ import com.worldventures.dreamtrips.modules.membership.presenter.SelectTemplateP
 import com.worldventures.dreamtrips.modules.membership.view.cell.InviteTemplateCell;
 import com.worldventures.dreamtrips.modules.reptools.view.adapter.SuccessStoryHeaderAdapter;
 
-import java.util.ArrayList;
+import java.util.List;
 
 import butterknife.InjectView;
 
@@ -82,7 +82,7 @@ public class SelectTemplateFragment extends BaseFragment<SelectTemplatePresenter
    }
 
    @Override
-   public void addItems(ArrayList<InviteTemplate> inviteTemplates) {
+   public void addItems(List<InviteTemplate> inviteTemplates) {
       adapter.clear();
       adapter.addItems(inviteTemplates);
    }

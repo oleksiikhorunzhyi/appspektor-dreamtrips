@@ -20,7 +20,7 @@ import javax.inject.Inject;
 
 import de.greenrobot.event.EventBus;
 
-public class BaseArrayListAdapter<BaseItemClass> extends RecyclerView.Adapter<AbstractCell> implements IRoboSpiceAdapter<BaseItemClass> {
+public class BaseArrayListAdapter<BaseItemClass> extends RecyclerView.Adapter<AbstractCell> implements ListAdapter<BaseItemClass> {
 
    private final Map<Class, Class<? extends AbstractCell>> itemCellMapping = new HashMap<>();
 

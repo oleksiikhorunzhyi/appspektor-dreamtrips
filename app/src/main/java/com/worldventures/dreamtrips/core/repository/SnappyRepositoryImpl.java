@@ -27,10 +27,9 @@ import com.worldventures.dreamtrips.modules.feed.model.PostFeedItem;
 import com.worldventures.dreamtrips.modules.feed.model.TripFeedItem;
 import com.worldventures.dreamtrips.modules.feed.model.UndefinedFeedItem;
 import com.worldventures.dreamtrips.modules.friends.model.Circle;
+import com.worldventures.dreamtrips.modules.infopages.model.Document;
 import com.worldventures.dreamtrips.modules.infopages.model.FeedbackType;
 import com.worldventures.dreamtrips.modules.membership.model.Podcast;
-import com.worldventures.dreamtrips.modules.video.model.VideoLanguage;
-import com.worldventures.dreamtrips.modules.video.model.VideoLocale;
 import com.worldventures.dreamtrips.modules.settings.model.FlagSetting;
 import com.worldventures.dreamtrips.modules.settings.model.SelectSetting;
 import com.worldventures.dreamtrips.modules.settings.model.Setting;
@@ -41,6 +40,8 @@ import com.worldventures.dreamtrips.modules.tripsimages.model.IFullScreenObject;
 import com.worldventures.dreamtrips.modules.tripsimages.model.SocialViewPagerState;
 import com.worldventures.dreamtrips.modules.tripsimages.model.TripImagesType;
 import com.worldventures.dreamtrips.modules.video.model.CachedEntity;
+import com.worldventures.dreamtrips.modules.video.model.VideoLanguage;
+import com.worldventures.dreamtrips.modules.video.model.VideoLocale;
 import com.worldventures.dreamtrips.wallet.domain.entity.AddressInfo;
 import com.worldventures.dreamtrips.wallet.domain.entity.FirmwareUpdateData;
 import com.worldventures.dreamtrips.wallet.domain.entity.ImmutableAddressInfo;
@@ -514,6 +515,16 @@ public class SnappyRepositoryImpl implements SnappyRepository {
    }
 
    @Override
+   public void saveLastUsedInspireMeRandomSeed(double randomSeed) {
+      act(db -> db.putDouble(LAST_USED_INSPIRE_ME_RANDOM_SEED, randomSeed));
+   }
+
+   @Override
+   public double getLastUsedInspireMeRandomSeed() {
+      return actWithResult(db -> db.getDouble(LAST_USED_INSPIRE_ME_RANDOM_SEED)).or(0d);
+   }
+
+   @Override
    public void saveLastSelectedVideoLocale(VideoLocale videoLocale) {
       act(db -> db.put(LAST_SELECTED_VIDEO_LOCALE, videoLocale));
    }
@@ -556,6 +567,16 @@ public class SnappyRepositoryImpl implements SnappyRepository {
    @Override
    public void saveCountFromHeader(String headerKey, int count) {
       act(db -> db.putInt(headerKey, count));
+   }
+
+   @Override
+   public void saveNotificationsCount(int count) {
+      act(db -> db.putInt(EXCLUSIVE_NOTIFICATIONS_COUNT, count));
+   }
+
+   @Override
+   public void saveFriendRequestsCount(int count) {
+      act(db -> db.putInt(FRIEND_REQUEST_COUNT, count));
    }
 
    @Override
@@ -652,6 +673,15 @@ public class SnappyRepositoryImpl implements SnappyRepository {
       putList(FEEDBACK_TYPES, types);
    }
 
+   @Override
+   public List<Document> getDocuments() {
+      return readList(DOCUMENTS, Document.class);
+   }
+
+   @Override
+   public void setDocuments(List<Document> documents) {
+      putList(DOCUMENTS, documents);
+   }
 
    ///////////////////////////////////////////////////////////////////////////
    // GCM
@@ -856,6 +886,15 @@ public class SnappyRepositoryImpl implements SnappyRepository {
    @Override
    public TripModel getTripDetail(String uid) {
       return actWithResult(db -> db.get(TRIPS_DETAILS + uid, TripModel.class)).orNull();
+   }
+
+   @Override
+   public boolean hasTripsDetailsForUids(List<String> uids) {
+      return actWithResult(db ->
+            Queryable.from()
+                  .toList()
+                  .containsAll(Queryable.from(uids).map(uid -> TRIPS_DETAILS + uid).toList())
+      ).or(false);
    }
 
    @Override

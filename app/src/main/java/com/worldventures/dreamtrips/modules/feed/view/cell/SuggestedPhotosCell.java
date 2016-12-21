@@ -8,7 +8,6 @@ import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
 
@@ -21,13 +20,13 @@ import com.techery.spares.ui.view.cell.AbstractDelegateCell;
 import com.techery.spares.ui.view.cell.CellDelegate;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.utils.QuantityHelper;
-import com.worldventures.dreamtrips.core.utils.ViewUtils;
 import com.worldventures.dreamtrips.modules.common.model.MediaAttachment;
 import com.worldventures.dreamtrips.modules.common.model.PhotoGalleryModel;
 import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.common.view.custom.SmartAvatarView;
 import com.worldventures.dreamtrips.modules.feed.presenter.SuggestedPhotoCellPresenterHelper;
 import com.worldventures.dreamtrips.modules.feed.view.cell.delegate.SuggestedPhotosDelegate;
+import com.worldventures.dreamtrips.modules.feed.view.cell.util.FeedViewInjector;
 import com.worldventures.dreamtrips.modules.feed.view.util.SuggestedPhotosListDecorator;
 
 import java.util.List;
@@ -45,6 +44,7 @@ public class SuggestedPhotosCell extends AbstractDelegateCell<MediaAttachment, S
    private static final String SUGGESTION_LIST_STATE_KEY = "suggestion.list.state";
 
    @Inject @ForActivity Provider<Injector> injectorProvider;
+   @Inject FeedViewInjector feedViewInjector;
 
    @InjectView(R.id.suggestion_avatar) SmartAvatarView avatar;
    @InjectView(R.id.suggested_photos_user) TextView userName;
@@ -99,14 +99,7 @@ public class SuggestedPhotosCell extends AbstractDelegateCell<MediaAttachment, S
          cellDelegate.onSuggestionViewCreated(this);
       }
 
-      //
-      if (ViewUtils.isTablet(itemView.getContext())) {
-         cardViewWrapper.setCardElevation(4);
-         int m = itemView.getContext().getResources().getDimensionPixelSize(R.dimen.spacing_small);
-         ((ViewGroup.MarginLayoutParams) cardViewWrapper.getLayoutParams()).setMargins(m, m, m, m);
-      } else {
-         cardViewWrapper.setCardElevation(0);
-      }
+      feedViewInjector.initCardViewWrapper(cardViewWrapper);
 
       cellDelegate.onSyncViewState();
    }

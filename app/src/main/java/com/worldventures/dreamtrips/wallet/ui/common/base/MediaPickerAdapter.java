@@ -51,6 +51,7 @@ public class MediaPickerAdapter implements MediaPickerService {
 
    @Override
    public void destroy() {
+      cropImageDelegate.destroy();
       if (subscription != null && !subscription.isUnsubscribed()) {
          subscription.unsubscribe();
       }

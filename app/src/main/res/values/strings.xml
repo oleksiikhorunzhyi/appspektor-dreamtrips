@@ -127,6 +127,10 @@
    <string name="bucket_list_create_message">Currently you have no Bucket List items. You can choose from popular Bucket List items or create your own goals</string>
    <string name="bucket_list_choose">Choose From Popular Items</string>
    <string name="bucket_list_create_new">Create My Own List</string>
+   <string name="bucket_list_action_create_error">Could not add Bucket List item</string>
+   <string name="bucket_list_action_update_error">Could not update Bucket List item</string>
+   <string name="bucket_list_action_change_order_error">Could not change Bucket List item order</string>
+   <string name="bucket_list_action_delete_error">Could not delete Bucket List item</string>
    <string name="bucket_hint_title">Title</string>
    <string name="bucket_hint_description">Description</string>
    <string name="bucket_hint_description_text">Type your description here</string>
@@ -394,6 +398,7 @@
    <string name="photo_delete">Delete photo</string>
    <string name="photo_edit">Edit photo</string>
    <string name="photo_delete_caption">Are you sure you want to delete this photo?</string>
+   <string name="photo_edit_error">Could not edit photo</string>
 
    <string name="bucket_delete">Delete bucket item</string>
    <string name="bucket_edit">Edit bucket item</string>
@@ -593,7 +598,24 @@
    <string name="error_fail_to_load_videos">Failed to load videos</string>
    <string name="error_fail_to_like_item">Failed to like item</string>
    <string name="error_fail_to_unlike_item">Failed to unlike item</string>
+   <string name="error_fail_to_load_documents">Failed to load documents</string>
    <string name="tag_people">Tag people</string>
+
+   <string name="uploading_post_status_progress_singular">Uploading photo…</string>
+   <string name="uploading_post_status_progress_plural">Uploading %d photos…</string>
+   <string name="uploading_post_status_paused">Upload paused</string>
+   <string name="uploading_post_status_waiting">Waiting</string>
+   <string name="uploading_post_status_failed_connection">Connection lost</string>
+   <string name="uploading_post_status_uploaded">Post successfully uploaded!</string>
+   <string name="uploading_post_time_left_posting">Posting…</string>
+   <string name="uploading_post_time_time_left">left</string>
+   <string name="uploading_post_time_left_seconds">s</string>
+   <string name="uploading_post_time_left_minutes">m</string>
+   <string name="uploading_post_time_left_hours">h</string>
+   <string name="uploading_post_time_left_more_than_one_day">More than 1 day…</string>
+   <string name="uploading_post_cancel_upload_message">Cancel upload?</string>
+   <string name="uploading_post_cancel_upload_positive_button">Yes</string>
+   <string name="uploading_post_cancel_upload_negative_button">No</string>
 
    <string name="say_something">Say something to the world</string>
 
@@ -663,11 +685,14 @@
    <string name="error_fail_to_load_filters">Sorry, failed to load filters</string>
    <string name="flag_content_message">WorldVentures personnel will be notified to review this content for </string>
 
-   <!-- change this later after approval from WV -->
    <string name="offline_warning_dialog_title">No Internet Connection</string>
    <string name="offline_warning_dialog_message">Your access will be limited</string>
+   <string name="offline_indicator_description">No Internet connection</string>
 
    <string name="merchant_message_text" formatted="false">Congratulations! You earned %s DreamTrips points @%s, %s</string>
 
    <string name="beta_label">Beta</string>
+
+   <string name="documents">Documents</string>
+   <string name="documents_empty_text">Documents could not be loaded at this time.</string>
 </resources>

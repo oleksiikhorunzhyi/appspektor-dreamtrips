@@ -4,20 +4,25 @@ import android.content.Context;
 import android.support.v4.util.Pair;
 
 import com.techery.spares.module.qualifier.ForApplication;
+import com.worldventures.dreamtrips.api.bucketlist.AddPhotoToBucketItemHttpAction;
+import com.worldventures.dreamtrips.api.bucketlist.model.BucketPhotoBody;
 import com.worldventures.dreamtrips.core.api.uploadery.SimpleUploaderyCommand;
 import com.worldventures.dreamtrips.core.api.uploadery.UploaderyInteractor;
+import com.worldventures.dreamtrips.core.janet.JanetModule;
 import com.worldventures.dreamtrips.core.janet.dagger.InjectableAction;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketPhoto;
 import com.worldventures.dreamtrips.modules.bucketlist.service.BucketInteractor;
-import com.worldventures.dreamtrips.modules.bucketlist.service.action.UploadPhotoHttpAction;
+import com.worldventures.dreamtrips.modules.common.command.CopyFileCommand;
 import com.worldventures.dreamtrips.modules.common.model.EntityStateHolder;
 
 import javax.inject.Inject;
+import javax.inject.Named;
 
 import io.techery.janet.Command;
 import io.techery.janet.Janet;
 import io.techery.janet.command.annotations.CommandAction;
+import io.techery.mappery.MapperyContext;
 import rx.subjects.PublishSubject;
 
 import static com.worldventures.dreamtrips.modules.common.model.EntityStateHolder.State.DONE;
@@ -26,11 +31,10 @@ import static com.worldventures.dreamtrips.modules.common.model.EntityStateHolde
 @CommandAction
 public class AddBucketItemPhotoCommand extends Command<Pair<BucketItem, BucketPhoto>> implements InjectableAction {
    @Inject @ForApplication Context context;
-
    @Inject Janet janet;
-
+   @Inject @Named(JanetModule.JANET_API_LIB) Janet apiJanet;
+   @Inject MapperyContext mapperyContext;
    @Inject BucketInteractor bucketInteractor;
-
    @Inject UploaderyInteractor uploaderyInteractor;
 
    private PublishSubject<Object> cancelSubject = PublishSubject.create();
@@ -52,21 +56,20 @@ public class AddBucketItemPhotoCommand extends Command<Pair<BucketItem, BucketPh
             .flatMap(path -> uploaderyInteractor.uploadImageActionPipe()
                   .createObservableResult(new SimpleUploaderyCommand(path)))
             .cast(SimpleUploaderyCommand.class)
-            .map(uploaderyCommand -> uploaderyCommand.getResult().getPhotoUploadResponse().getLocation())
+            .map(uploaderyCommand -> uploaderyCommand.getResult().response().uploaderyPhoto().location())
             .map(location -> {
                BucketPhoto bucketPhoto = new BucketPhoto();
                bucketPhoto.setOriginUrl(location);
-
                return bucketPhoto;
             })
-            .flatMap(photo -> janet.createPipe(UploadPhotoHttpAction.class)
-                  .createObservableResult(new UploadPhotoHttpAction(bucketItem.getUid(), photo))
-                  .map(UploadPhotoHttpAction::getResponse))
+            .flatMap(photo -> apiJanet.createPipe(AddPhotoToBucketItemHttpAction.class)
+                  .createObservableResult(new AddPhotoToBucketItemHttpAction(bucketItem.getUid(),
+                        mapperyContext.convert(photo, BucketPhotoBody.class)))
+                  .map(action -> mapperyContext.convert(action.response(), BucketPhoto.class)))
             .map(photo -> {
                if (bucketItem.getCoverPhoto() == null) {
                   bucketItem.setCoverPhoto(photo);
                }
-
                bucketItem.getPhotos().add(0, photo);
                return Pair.create(bucketItem, photo);
             })

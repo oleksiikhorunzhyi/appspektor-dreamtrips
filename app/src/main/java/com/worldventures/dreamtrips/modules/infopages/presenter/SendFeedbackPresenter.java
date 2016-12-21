@@ -84,7 +84,7 @@ public class SendFeedbackPresenter extends Presenter<SendFeedbackPresenter.View>
                      view.hideProgressBar();
                   })
                   .onFail((action, e) -> {
-                     view.informUser(action.getErrorMessage());
+                     handleError(action, e);
                      view.setFeedbackTypes(action.items());
                      view.hideProgressBar();
                   }));
@@ -104,7 +104,7 @@ public class SendFeedbackPresenter extends Presenter<SendFeedbackPresenter.View>
                   })
                   .onFail((sendFeedbackCommand, throwable) -> {
                      view.changeDoneButtonState(true);
-                     super.handleError(sendFeedbackCommand, throwable);
+                     handleError(sendFeedbackCommand, throwable);
                   }));
    }
 
@@ -230,7 +230,7 @@ public class SendFeedbackPresenter extends Presenter<SendFeedbackPresenter.View>
                   .onSuccess(successCommand -> updateImageAttachment(successCommand))
                   .onFail((failedCommand, throwable) -> {
                      updateImageAttachment(failedCommand);
-                     this.handleError(failedCommand, throwable);
+                     handleError(failedCommand, throwable);
                   })
             );
    }

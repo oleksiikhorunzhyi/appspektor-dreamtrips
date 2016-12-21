@@ -27,6 +27,10 @@ import timber.log.Timber;
 
 public class FileUtils {
 
+   private static final long ONE_KB = 1024;
+   private static final long ONE_MB = ONE_KB * ONE_KB;
+   private static final long ONE_GB = ONE_KB * ONE_MB;
+
    public static byte[] readByteArray(File file) throws IOException {
       byte[] buffer = new byte[(int) file.length()];
       InputStream ios = null;
@@ -42,6 +46,10 @@ public class FileUtils {
          }
       }
       return buffer;
+   }
+
+   public static long getFileSize(String path) {
+      return new File(path).length();
    }
 
    public static void cleanDirectory(Context context, File directory, List<String> exceptFilePaths) throws IOException {
@@ -173,6 +181,17 @@ public class FileUtils {
       if (!directory.exists()) directory.mkdirs();
 
       return directory.getAbsolutePath();
+   }
+
+   public static String byteCountToDisplaySize(long size) {
+      String displaySize;
+
+      if (size / ONE_GB > 0) displaySize = String.valueOf(size / ONE_GB) + " GB";
+      else if (size / ONE_MB > 0) displaySize = String.valueOf(size / ONE_MB) + " MB";
+      else if (size / ONE_KB > 0) displaySize = String.valueOf(size / ONE_KB) + " KB";
+      else displaySize = String.valueOf(size) + " bytes";
+
+      return displaySize;
    }
 
    /**

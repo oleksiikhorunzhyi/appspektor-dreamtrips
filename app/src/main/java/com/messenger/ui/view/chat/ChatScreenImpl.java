@@ -69,7 +69,7 @@ public class ChatScreenImpl extends MessengerPathLayout<ChatScreen, ChatScreenPr
    @Inject ChatTimestampInflater chatTimestampInflater;
    @Inject ChatTimestampFormatter chatTimestampFormatter;
 
-   @InjectView(R.id.chat_content_view) ViewGroup contentView;
+   @InjectView(R.id.content_layout) ViewGroup contentView;
    @InjectView(R.id.chat_loading_view) View loadingView;
    @InjectView(R.id.chat_toolbar) Toolbar toolbar;
    @InjectView(R.id.chat_toolbar_title) TextView title;
@@ -423,11 +423,6 @@ public class ChatScreenImpl extends MessengerPathLayout<ChatScreen, ChatScreenPr
    @Override
    public Observable<String> getAttachmentClickStream() {
       return attachmentClickStream;
-   }
-
-   @Override
-   public ViewGroup getContentView() {
-      return contentView;
    }
 
    @Override

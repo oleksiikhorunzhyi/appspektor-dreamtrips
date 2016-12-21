@@ -8,7 +8,7 @@ import com.worldventures.dreamtrips.api.dtl.merchants.requrest.ImmutableEstimati
 import com.worldventures.dreamtrips.core.rx.RxView;
 import com.worldventures.dreamtrips.core.rx.composer.ImmediateComposer;
 import com.worldventures.dreamtrips.core.utils.DateTimeUtils;
-import com.worldventures.dreamtrips.modules.common.api.CopyFileCommand;
+import com.worldventures.dreamtrips.modules.common.command.CopyFileCommand;
 import com.worldventures.dreamtrips.modules.common.model.UploadTask;
 import com.worldventures.dreamtrips.modules.common.presenter.JobPresenter;
 import com.worldventures.dreamtrips.modules.common.service.MediaInteractor;
@@ -32,6 +32,7 @@ import icepick.State;
 import io.techery.janet.ActionState;
 import io.techery.janet.Command;
 import io.techery.janet.helper.ActionStateSubscriber;
+import timber.log.Timber;
 
 public class DtlScanReceiptPresenter extends JobPresenter<DtlScanReceiptPresenter.View> {
 
@@ -170,7 +171,10 @@ public class DtlScanReceiptPresenter extends JobPresenter<DtlScanReceiptPresente
    }
 
    private void savePhotoIfNeeded(String filePath) {
-      doRequest(new CopyFileCommand(context, filePath), this::attachPhoto);
+      mediaInteractor.copyFilePipe()
+            .createObservableResult(new CopyFileCommand(context, filePath))
+            .compose(bindViewToMainComposer())
+            .subscribe(command -> attachPhoto(command.getResult()), e -> Timber.e(e, "Failed to copy file"));
    }
 
    private void attachPhoto(String filePath) {

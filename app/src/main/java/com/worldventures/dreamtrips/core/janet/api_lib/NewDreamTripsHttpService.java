@@ -10,9 +10,9 @@ import com.techery.spares.session.SessionHolder;
 import com.worldventures.dreamtrips.BuildConfig;
 import com.worldventures.dreamtrips.api.api_common.AuthorizedHttpAction;
 import com.worldventures.dreamtrips.api.api_common.BaseHttpAction;
+import com.worldventures.dreamtrips.api.session.LoginHttpAction;
 import com.worldventures.dreamtrips.api.session.model.Device;
 import com.worldventures.dreamtrips.core.api.AuthRetryPolicy;
-import com.worldventures.dreamtrips.core.api.action.LoginAction;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.core.session.UserSession;
 import com.worldventures.dreamtrips.core.utils.AppVersionNameBuilder;
@@ -33,6 +33,7 @@ import io.techery.janet.Janet;
 import io.techery.janet.JanetException;
 import io.techery.janet.converter.Converter;
 import io.techery.janet.http.HttpClient;
+import io.techery.mappery.MapperyContext;
 import rx.Observable;
 import timber.log.Timber;
 
@@ -41,20 +42,21 @@ public class NewDreamTripsHttpService extends ActionServiceWrapper {
    @Inject SessionHolder<UserSession> appSessionHolder;
    @Inject AppVersionNameBuilder appVersionNameBuilder;
    @Inject SnappyRepository db;
-   @Inject Observable<Device> deviceSource;
+   @Inject MapperyContext mapperyContext;
 
-   private final ActionPipe<LoginAction> loginActionPipe;
+   @Inject Observable<Device> deviceSource;
+   @Inject Set<ResponseListener> responseListeners;
+
+   private final ActionPipe<LoginHttpAction> loginActionPipe;
    private final Set<Object> retriedActions = new CopyOnWriteArraySet<>();
    private final AuthRetryPolicy retryPolicy;
 
-   //TODO oldConverter should be removed when loginAction will be performed via api lib
-   public NewDreamTripsHttpService(Context appContext, String baseUrl, HttpClient client, Converter converter,
-         Converter oldConverter) {
+   public NewDreamTripsHttpService(Context appContext, String baseUrl, HttpClient client, Converter converter) {
       super(new HttpActionService(baseUrl, client, converter));
       ((Injector) appContext).inject(this);
-      loginActionPipe = new Janet.Builder().addService(new HttpActionService(baseUrl, client, oldConverter))
+      loginActionPipe = new Janet.Builder().addService(new HttpActionService(baseUrl, client, converter))
             .build()
-            .createPipe(LoginAction.class);
+            .createPipe(LoginHttpAction.class);
       retryPolicy = new AuthRetryPolicy(appSessionHolder);
    }
 
@@ -98,6 +100,13 @@ public class NewDreamTripsHttpService extends ActionServiceWrapper {
 
    @Override
    protected <A> void onInterceptSuccess(ActionHolder<A> holder) {
+      if (holder.action() instanceof BaseHttpAction) {
+         if (responseListeners != null) {
+            for (ResponseListener responseListener : responseListeners) {
+               responseListener.onResponse((BaseHttpAction) holder.action());
+            }
+         }
+      }
       retriedActions.remove(holder.action());
    }
 
@@ -131,15 +140,18 @@ public class NewDreamTripsHttpService extends ActionServiceWrapper {
       String username = userSession.getUsername();
       String userPassword = userSession.getUserPassword();
       Device device = deviceSource.toBlocking().first();
-      LoginAction loginAction = new LoginAction(username, userPassword, device);
-      loginAction.setAppVersionHeader(appVersionNameBuilder.getSemanticVersionName());
-      loginAction.setLanguageHeader(LocaleHelper.getDefaultLocaleFormatted());
-      ActionState<LoginAction> loginState = loginActionPipe.createObservable(loginAction).toBlocking().last();
+      LoginHttpAction loginAction = new LoginHttpAction(username, userPassword, device);
+      prepareNewHttpAction(loginAction);
+      ActionState<LoginHttpAction> loginState = loginActionPipe.createObservable(loginAction).toBlocking().last();
       if (loginState.status == ActionState.Status.SUCCESS) {
-         return loginState.action.getLoginResponse();
+         return mapperyContext.convert(loginState.action.response(), Session.class);
       } else {
          Timber.w(loginState.exception, "Login error");
       }
       return null;
+   }
+
+   public interface ResponseListener {
+      void onResponse(BaseHttpAction action);
    }
 }

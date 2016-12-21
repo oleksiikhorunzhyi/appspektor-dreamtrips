@@ -46,11 +46,13 @@ import com.worldventures.dreamtrips.modules.friends.view.fragment.FriendsMainFra
 import com.worldventures.dreamtrips.modules.friends.view.fragment.MutualFriendsFragment;
 import com.worldventures.dreamtrips.modules.friends.view.fragment.RequestsFragment;
 import com.worldventures.dreamtrips.modules.friends.view.fragment.UsersLikedItemFragment;
+import com.worldventures.dreamtrips.modules.infopages.view.fragment.DocumentListFragment;
 import com.worldventures.dreamtrips.modules.infopages.view.fragment.FeedbackImageAttachmentFullscreenFragment;
 import com.worldventures.dreamtrips.modules.infopages.view.fragment.FeedbackImageAttachmentsFragment;
 import com.worldventures.dreamtrips.modules.infopages.view.fragment.HelpFragment;
 import com.worldventures.dreamtrips.modules.infopages.view.fragment.SendFeedbackFragment;
 import com.worldventures.dreamtrips.modules.infopages.view.fragment.TermsTabFragment;
+import com.worldventures.dreamtrips.modules.infopages.view.fragment.staticcontent.DocumentFragment;
 import com.worldventures.dreamtrips.modules.infopages.view.fragment.staticcontent.OtaFragment;
 import com.worldventures.dreamtrips.modules.infopages.view.fragment.staticcontent.StaticInfoFragment;
 import com.worldventures.dreamtrips.modules.membership.view.fragment.EditTemplateFragment;
@@ -77,7 +79,7 @@ import com.worldventures.dreamtrips.modules.tripsimages.view.fragment.AccountIma
 import com.worldventures.dreamtrips.modules.tripsimages.view.fragment.CreateTripImageFragment;
 import com.worldventures.dreamtrips.modules.tripsimages.view.fragment.EditPhotoTagsFragment;
 import com.worldventures.dreamtrips.modules.tripsimages.view.fragment.FullScreenPhotoWrapperFragment;
-import com.worldventures.dreamtrips.modules.tripsimages.view.fragment.MemberImagesListFragment;
+import com.worldventures.dreamtrips.modules.tripsimages.view.fragment.MembersImagesListFragment;
 import com.worldventures.dreamtrips.modules.tripsimages.view.fragment.TripImagePagerFragment;
 import com.worldventures.dreamtrips.modules.tripsimages.view.fragment.TripImagesListFragment;
 import com.worldventures.dreamtrips.modules.tripsimages.view.fragment.TripImagesTabsFragment;
@@ -116,7 +118,7 @@ public enum Route {
    TRIP_TAB_IMAGES(TripImagesTabsFragment.class, R.string.trip_images),
    TRIP_LIST_IMAGES(TripImagesListFragment.class, R.string.trip_images),
    ACCOUNT_IMAGES(AccountImagesListFragment.class, R.string.trip_images),
-   MEMBERS_IMAGES(MemberImagesListFragment.class),
+   MEMBERS_IMAGES(MembersImagesListFragment.class),
   
    MEMBERSHIP(MembershipFragment.class),
    TRAINING_VIDEOS(TrainingVideosFragment.class),
@@ -134,6 +136,8 @@ public enum Route {
    REP_TOOLS(RepToolsFragment.class),
    FAQ(StaticInfoFragment.FAQFragment.class),
    HELP(HelpFragment.class),
+   DOCUMENT_LIST(DocumentListFragment.class),
+   DOCUMENT(DocumentFragment.class),
    HELP_VIDEOS(HelpVideosFragment.class),
    TERMS(TermsTabFragment.class),
    TERMS_OF_SERVICE(StaticInfoFragment.TermsOfServiceFragment.class),

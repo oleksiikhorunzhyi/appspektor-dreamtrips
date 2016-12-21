@@ -1,26 +1,31 @@
 package com.worldventures.dreamtrips.modules.feed.service.command;
 
-import com.innahema.collections.query.queriables.Queryable;
 import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.api.hashtags.GetHashtagsSearchAction;
+import com.worldventures.dreamtrips.api.hashtags.model.HashtagsSearchParams;
+import com.worldventures.dreamtrips.api.hashtags.model.ImmutableHashtagsSearchParams;
 import com.worldventures.dreamtrips.core.api.action.CommandWithError;
+import com.worldventures.dreamtrips.core.janet.JanetModule;
 import com.worldventures.dreamtrips.core.janet.dagger.InjectableAction;
-import com.worldventures.dreamtrips.core.utils.DateTimeUtils;
-import com.worldventures.dreamtrips.modules.feed.model.DataMetaData;
-import com.worldventures.dreamtrips.modules.feed.model.FeedEntity;
 import com.worldventures.dreamtrips.modules.feed.model.FeedItem;
-import com.worldventures.dreamtrips.modules.feed.service.api.GetFeedsByHashtagHttpAction;
+import com.worldventures.dreamtrips.modules.feed.model.MetaData;
 
 import java.util.Date;
+import java.util.List;
 
 import javax.inject.Inject;
+import javax.inject.Named;
 
 import io.techery.janet.Janet;
 import io.techery.janet.command.annotations.CommandAction;
+import io.techery.mappery.MapperyContext;
 import rx.schedulers.Schedulers;
 
-public class FeedByHashtagCommand extends CommandWithError<DataMetaData> implements InjectableAction {
+@CommandAction
+public class FeedByHashtagCommand extends CommandWithError<List<FeedItem>> implements InjectableAction {
 
-   @Inject Janet janet;
+   @Inject @Named(JanetModule.JANET_API_LIB) Janet janet;
+   @Inject MapperyContext mapperyContext;
 
    private String query;
    private int perPage;
@@ -33,19 +38,24 @@ public class FeedByHashtagCommand extends CommandWithError<DataMetaData> impleme
    }
 
    @Override
-   protected void run(CommandCallback<DataMetaData> callback) throws Throwable {
-      janet.createPipe(GetFeedsByHashtagHttpAction.class, Schedulers.io())
-            .createObservableResult(new GetFeedsByHashtagHttpAction(query, perPage, DateTimeUtils.convertDateToUTCString(before)))
-            .map(GetFeedsByHashtagHttpAction::getResponseItems)
-            .doOnNext(dataMetaData -> shareMetaDataWithChildren(dataMetaData))
+   protected void run(CommandCallback<List<FeedItem>> callback) throws Throwable {
+      HashtagsSearchParams hashtagsSearchParams = ImmutableHashtagsSearchParams.builder()
+            .query(query)
+            .pageSize(perPage)
+            .before(before)
+            .type(HashtagsSearchParams.Type.POST)
+            .build();
+      janet.createPipe(GetHashtagsSearchAction.class, Schedulers.io())
+            .createObservableResult(new GetHashtagsSearchAction(hashtagsSearchParams))
+            .map(action -> {
+               MetaData metaData = mapperyContext.convert(action.metadata(), MetaData.class);
+               List<FeedItem> feedItems = mapperyContext.convert(action.response(), FeedItem.class);
+               for (FeedItem feedItem : feedItems) {
+                  feedItem.setMetaData(metaData);
+               }
+               return feedItems;
+            })
             .subscribe(callback::onSuccess, callback::onFail);
-   }
-
-   private void shareMetaDataWithChildren(DataMetaData dataMetaData) {
-      Queryable.from(dataMetaData.getParentFeedItems())
-            .forEachR(parentFeedItem -> Queryable.from(parentFeedItem.getItems())
-                  .forEachR((com.innahema.collections.query.functions.Action1<FeedItem<FeedEntity>>) feedItem -> feedItem
-                        .setMetaData(dataMetaData.getMetaData())));
    }
 
    @Override

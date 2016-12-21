@@ -4,8 +4,9 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.innahema.collections.query.queriables.Queryable;
-import com.worldventures.dreamtrips.core.utils.events.MenuPressedEvent;
+import com.techery.spares.utils.delegate.DrawerOpenedEventDelegate;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
+import com.worldventures.dreamtrips.modules.trips.command.CheckTripsByUidCommand;
 import com.worldventures.dreamtrips.modules.trips.command.GetTripsByUidCommand;
 import com.worldventures.dreamtrips.modules.trips.command.GetTripsLocationsCommand;
 import com.worldventures.dreamtrips.modules.trips.delegate.TripFilterEventDelegate;
@@ -30,6 +31,7 @@ public class TripMapPresenter extends Presenter<TripMapPresenter.View> {
 
    @Inject TripMapInteractor tripMapInteractor;
    @Inject TripFilterEventDelegate tripFilterEventDelegate;
+   @Inject DrawerOpenedEventDelegate drawerOpenedEventDelegate;
 
    private List<Pin> pins;
    private List<Marker> exisingMarkers;
@@ -42,6 +44,7 @@ public class TripMapPresenter extends Presenter<TripMapPresenter.View> {
    @Override
    public void takeView(View view) {
       super.takeView(view);
+      subscribeToSideNavigationClicks();
       subscribeToMapReloading();
       subscribeToFilterEvents();
       subscribeToTripLoading();
@@ -53,8 +56,10 @@ public class TripMapPresenter extends Presenter<TripMapPresenter.View> {
             .subscribe(tripsFilterData -> reloadMapObjects());
    }
 
-   public void onEvent(MenuPressedEvent event) {
-      removeInfoIfNeeded();
+   private void subscribeToSideNavigationClicks() {
+      drawerOpenedEventDelegate.getObservable()
+            .compose(bindViewToMainComposer())
+            .subscribe(event -> removeInfoIfNeeded());
    }
 
    public void onCameraChanged() {
@@ -91,18 +96,28 @@ public class TripMapPresenter extends Presenter<TripMapPresenter.View> {
             .firstOrDefault(pin -> pin.getCoordinates().getLat() == marker.getPosition().latitude
                   && pin.getCoordinates().getLng() == marker.getPosition().longitude);
       if (holder == null) return;
-      //
-      view.setSelectedLocation(marker.getPosition());
-      //
+
       List<String> tripUids = holder.getTripUids();
-      view.scrollCameraToPin(tripUids.size());
-      updateExistsMarkers(view.getMarkers());
-      //
-      view.showInfoContainer();
-      view.updateContainerParams(tripUids.size());
-      //
-      addAlphaToMarkers(marker);
-      loadTrips(tripUids);
+      tripMapInteractor.checkTripsByUidPipe()
+            .createObservableResult(new CheckTripsByUidCommand(tripUids))
+            .compose(bindViewToMainComposer())
+            .subscribe(cacheExistsCommand -> cacheIsChecked(marker, tripUids, cacheExistsCommand.getResult()));
+   }
+
+   private void cacheIsChecked(Marker marker, List<String> tripUids, boolean cacheExists) {
+      if (!isConnected() && !cacheExists) {
+         reportNoConnection();
+      } else {
+         view.setSelectedLocation(marker.getPosition());
+         view.scrollCameraToPin(tripUids.size());
+         updateExistsMarkers(view.getMarkers());
+
+         view.showInfoContainer();
+         view.updateContainerParams(tripUids.size());
+
+         addAlphaToMarkers(marker);
+         loadTrips(tripUids);
+      }
    }
 
    private void updateExistsMarkers(List<Marker> markers) {

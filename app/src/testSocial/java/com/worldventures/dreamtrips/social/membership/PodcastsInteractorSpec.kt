@@ -8,7 +8,7 @@ import com.worldventures.dreamtrips.api.podcasts.model.ImmutablePodcast
 import com.worldventures.dreamtrips.core.janet.SessionActionPipeCreator
 import com.worldventures.dreamtrips.core.repository.SnappyRepository
 import com.worldventures.dreamtrips.modules.mapping.mapper.PodcastsMapper
-import com.worldventures.dreamtrips.modules.membership.command.GetPodcastsCommand
+import com.worldventures.dreamtrips.modules.membership.service.command.GetPodcastsCommand
 import com.worldventures.dreamtrips.modules.membership.model.Podcast
 import com.worldventures.dreamtrips.modules.membership.service.PodcastsInteractor
 import io.techery.janet.ActionState

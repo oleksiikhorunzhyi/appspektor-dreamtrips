@@ -169,11 +169,11 @@ public class BucketListPopularFragment extends RxBaseFragment<BucketPopularPrese
 
    @Override
    public void addClicked(PopularBucketItem popularBucketItem, int position) {
-      getPresenter().onAdd(popularBucketItem, position);
+      getPresenter().onAdd(popularBucketItem);
    }
 
    @Override
    public void doneClicked(PopularBucketItem popularBucketItem, int position) {
-      getPresenter().onDone(popularBucketItem, position);
+      getPresenter().onDone(popularBucketItem);
    }
 }

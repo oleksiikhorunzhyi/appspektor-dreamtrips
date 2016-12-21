@@ -3,13 +3,11 @@ package com.worldventures.dreamtrips.modules.bucketlist.presenter;
 import android.support.annotation.NonNull;
 import android.text.TextUtils;
 
-import com.worldventures.dreamtrips.core.utils.events.MarkBucketItemDoneEvent;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
-import com.worldventures.dreamtrips.modules.bucketlist.event.BucketItemAnalyticEvent;
-import com.worldventures.dreamtrips.modules.bucketlist.event.BucketItemShared;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem;
 import com.worldventures.dreamtrips.modules.bucketlist.model.DiningItem;
-import com.worldventures.dreamtrips.modules.bucketlist.service.action.UpdateItemHttpAction;
+import com.worldventures.dreamtrips.modules.bucketlist.service.BucketInteractor;
+import com.worldventures.dreamtrips.modules.bucketlist.service.action.UpdateBucketItemCommand;
 import com.worldventures.dreamtrips.modules.bucketlist.service.command.AddBucketItemPhotoCommand;
 import com.worldventures.dreamtrips.modules.bucketlist.service.command.DeleteItemPhotoCommand;
 import com.worldventures.dreamtrips.modules.bucketlist.service.model.ImmutableBucketBodyImpl;
@@ -18,6 +16,8 @@ import com.worldventures.dreamtrips.modules.common.view.bundle.BucketBundle;
 import com.worldventures.dreamtrips.modules.feed.event.FeedEntityChangedEvent;
 
 import java.util.List;
+
+import javax.inject.Inject;
 
 import io.techery.janet.helper.ActionStateSubscriber;
 import rx.Observable;
@@ -29,6 +29,8 @@ public class BucketItemDetailsPresenter extends BucketDetailsBasePresenter<Bucke
       super(bundle);
    }
 
+   @Inject BucketInteractor bucketInteractor;
+
    @Override
    public void takeView(View view) {
       super.takeView(view);
@@ -36,7 +38,7 @@ public class BucketItemDetailsPresenter extends BucketDetailsBasePresenter<Bucke
 
       view.bind(Observable.merge(bucketInteractor.updatePipe()
             .observeSuccess()
-            .map(UpdateItemHttpAction::getResponse), bucketInteractor.deleteItemPhotoPipe()
+            .map(UpdateBucketItemCommand::getResult), bucketInteractor.deleteItemPhotoPipe()
             .observeSuccess()
             .map(DeleteItemPhotoCommand::getResult), bucketInteractor.addBucketItemPhotoPipe()
             .observeSuccess()
@@ -46,6 +48,7 @@ public class BucketItemDetailsPresenter extends BucketDetailsBasePresenter<Bucke
          bucketItem = item;
          syncUI();
       });
+      subscribeToItemDoneEvents();
    }
 
    @Override
@@ -69,11 +72,16 @@ public class BucketItemDetailsPresenter extends BucketDetailsBasePresenter<Bucke
       }
    }
 
-   public void onEvent(MarkBucketItemDoneEvent event) {
-      if (event.getBucketItem().equals(bucketItem)) {
-         updateBucketItem(event.getBucketItem());
-         syncUI();
-      }
+   public void subscribeToItemDoneEvents() {
+      bucketInteractor.updatePipe()
+            .observeSuccess()
+            .compose(bindViewToMainComposer())
+            .map(UpdateBucketItemCommand::getResult)
+            .filter(bucketItem -> bucketItem.equals(this.bucketItem))
+            .subscribe(item -> {
+                  updateBucketItem(bucketItem);
+                  syncUI();
+            });
    }
 
    public void onEvent(FeedEntityChangedEvent event) {
@@ -83,21 +91,17 @@ public class BucketItemDetailsPresenter extends BucketDetailsBasePresenter<Bucke
       }
    }
 
-   public void onEvent(@SuppressWarnings("unused") BucketItemShared event) {
-      eventBus.post(new BucketItemAnalyticEvent(bucketItem.getUid(), TrackingHelper.ATTRIBUTE_SHARE));
-   }
-
    public void onStatusUpdated(boolean status) {
       if (bucketItem != null && status != bucketItem.isDone()) {
          view.disableMarkAsDone();
 
-         view.bind(bucketInteractor.updatePipe().createObservable(new UpdateItemHttpAction(ImmutableBucketBodyImpl
+         view.bind(bucketInteractor.updatePipe().createObservable(new UpdateBucketItemCommand(ImmutableBucketBodyImpl
                .builder()
                .id(bucketItem.getUid())
                .status(getStatus(status))
                .build()))
                .observeOn(AndroidSchedulers.mainThread()))
-               .subscribe(new ActionStateSubscriber<UpdateItemHttpAction>()
+               .subscribe(new ActionStateSubscriber<UpdateBucketItemCommand>()
                      .onSuccess(updateItemHttpAction -> view.enableMarkAsDone())
                      .onFail((action, throwable) -> {
                         handleError(action, throwable);
@@ -105,7 +109,7 @@ public class BucketItemDetailsPresenter extends BucketDetailsBasePresenter<Bucke
                         view.enableMarkAsDone();
                      }));
 
-         eventBus.post(new BucketItemAnalyticEvent(bucketItem.getUid(), TrackingHelper.ATTRIBUTE_MARK_AS_DONE));
+         TrackingHelper.actionBucketItem(TrackingHelper.ATTRIBUTE_MARK_AS_DONE, bucketItem.getUid());
       }
    }
 

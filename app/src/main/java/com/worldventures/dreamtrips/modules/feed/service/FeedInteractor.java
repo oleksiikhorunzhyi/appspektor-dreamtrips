@@ -1,8 +1,10 @@
 package com.worldventures.dreamtrips.modules.feed.service;
 
 import com.worldventures.dreamtrips.core.janet.SessionActionPipeCreator;
+import com.worldventures.dreamtrips.modules.feed.service.command.ChangeFeedEntityLikedStatusCommand;
 import com.worldventures.dreamtrips.modules.feed.service.command.GetAccountFeedCommand;
 import com.worldventures.dreamtrips.modules.feed.service.command.GetAccountTimelineCommand;
+import com.worldventures.dreamtrips.modules.feed.service.command.GetFeedEntityCommand;
 import com.worldventures.dreamtrips.modules.feed.service.command.GetUserTimelineCommand;
 
 import javax.inject.Inject;
@@ -16,12 +18,12 @@ public class FeedInteractor {
 
    private final ActionPipe<GetAccountFeedCommand.Refresh> refreshAccountFeedPipe;
    private final ActionPipe<GetAccountFeedCommand.LoadNext> loadNextAccountFeedPipe;
-   //
    private final ActionPipe<GetUserTimelineCommand.Refresh> refreshUserTimelinePipe;
    private final ActionPipe<GetUserTimelineCommand.LoadNext> loadNextUserTimelinePipe;
-   //
    private final ActionPipe<GetAccountTimelineCommand.Refresh> refreshAccountTimelinePipe;
    private final ActionPipe<GetAccountTimelineCommand.LoadNext> loadNextAccountTimelinePipe;
+   private final ActionPipe<GetFeedEntityCommand> getFeedEntityPipe;
+   private final ActionPipe<ChangeFeedEntityLikedStatusCommand> changeFeedEntityLikedStatusPipe;
 
    @Inject
    public FeedInteractor(SessionActionPipeCreator sessionActionPipeCreator) {
@@ -36,6 +38,9 @@ public class FeedInteractor {
       refreshAccountTimelinePipe = sessionActionPipeCreator.createPipe(GetAccountTimelineCommand.Refresh.class,
             Schedulers.io());
       loadNextAccountTimelinePipe = sessionActionPipeCreator.createPipe(GetAccountTimelineCommand.LoadNext.class,
+            Schedulers.io());
+      getFeedEntityPipe = sessionActionPipeCreator.createPipe(GetFeedEntityCommand.class, Schedulers.io());
+      changeFeedEntityLikedStatusPipe = sessionActionPipeCreator.createPipe(ChangeFeedEntityLikedStatusCommand.class,
             Schedulers.io());
    }
 
@@ -61,5 +66,13 @@ public class FeedInteractor {
 
    public ActionPipe<GetAccountTimelineCommand.LoadNext> getLoadNextAccountTimelinePipe() {
       return loadNextAccountTimelinePipe;
+   }
+
+   public ActionPipe<GetFeedEntityCommand> getFeedEntityPipe() {
+      return getFeedEntityPipe;
+   }
+
+   public ActionPipe<ChangeFeedEntityLikedStatusCommand> changeFeedEntityLikedStatusPipe() {
+      return changeFeedEntityLikedStatusPipe;
    }
 }

@@ -1,39 +1,45 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+      android:id="@id/content_layout"
       android:layout_width="match_parent"
       android:layout_height="match_parent"
-      android:animateLayoutChanges="true"
-      android:background="@android:color/white"
-      android:orientation="vertical"
       >
 
-   <TextView
-         android:layout_width="wrap_content"
-         android:layout_height="wrap_content"
-         android:focusable="true"
-         android:focusableInTouchMode="true"
-         android:padding="16dp"
-         android:text="@string/invitation_select_template"
-         android:textColor="@android:color/black"
-         android:textSize="18sp"
-         />
-
-   <android.support.v4.widget.SwipeRefreshLayout
-         android:id="@+id/swipe_container"
+   <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
          android:layout_width="match_parent"
-         android:layout_height="0dp"
-         android:layout_weight="1"
-         android:visibility="visible"
+         android:layout_height="match_parent"
+         android:animateLayoutChanges="true"
+         android:background="@android:color/white"
+         android:orientation="vertical"
          >
 
+      <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:focusable="true"
+            android:focusableInTouchMode="true"
+            android:padding="16dp"
+            android:text="@string/invitation_select_template"
+            android:textColor="@android:color/black"
+            android:textSize="18sp"
+            />
 
-      <android.support.v7.widget.RecyclerView
-            android:id="@+id/lv_templates"
+      <android.support.v4.widget.SwipeRefreshLayout
+            android:id="@+id/swipe_container"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:visibility="visible"
             >
 
-      </android.support.v7.widget.RecyclerView>
-   </android.support.v4.widget.SwipeRefreshLayout>
 
-</LinearLayout>
+         <android.support.v7.widget.RecyclerView
+               android:id="@+id/lv_templates"
+               android:layout_width="match_parent"
+               android:layout_height="match_parent"
+               >
+
+         </android.support.v7.widget.RecyclerView>
+      </android.support.v4.widget.SwipeRefreshLayout>
+   </LinearLayout>
+</FrameLayout>

@@ -10,7 +10,7 @@ import rx.subjects.Subject;
  */
 public class EventDelegate<Event> {
 
-   private final Subject<Event, Event> publishSubject = PublishSubject.<Event>create().toSerialized();
+   protected final Subject<Event, Event> publishSubject = PublishSubject.<Event>create().toSerialized();
 
    public void post(Event event) {
       publishSubject.onNext(event);

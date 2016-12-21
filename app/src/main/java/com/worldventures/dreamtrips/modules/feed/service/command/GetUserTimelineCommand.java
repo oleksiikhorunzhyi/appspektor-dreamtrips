@@ -1,7 +1,8 @@
 package com.worldventures.dreamtrips.modules.feed.service.command;
 
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.modules.feed.service.api.GetUserTimelineHttpAction;
+import com.worldventures.dreamtrips.api.feed.GetUserTimelineHttpAction;
+import com.worldventures.dreamtrips.api.feed.ImmutableGetUserTimelineHttpAction;
 
 import java.util.Date;
 
@@ -23,7 +24,12 @@ public class GetUserTimelineCommand extends BaseGetFeedCommand<GetUserTimelineHt
 
    @Override
    protected GetUserTimelineHttpAction provideRequest() {
-      return new GetUserTimelineHttpAction(userId, TIMELINE_LIMIT, before);
+      GetUserTimelineHttpAction.Params params = ImmutableGetUserTimelineHttpAction.Params.builder()
+            .pageSize(TIMELINE_LIMIT)
+            .before(before)
+            .userId(userId)
+            .build();
+      return new GetUserTimelineHttpAction(params);
    }
 
    @Override

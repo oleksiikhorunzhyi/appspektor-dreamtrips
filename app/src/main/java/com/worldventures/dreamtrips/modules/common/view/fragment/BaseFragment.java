@@ -2,6 +2,7 @@ package com.worldventures.dreamtrips.modules.common.view.fragment;
 
 
 import android.os.Bundle;
+import android.support.annotation.IdRes;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
 import android.view.LayoutInflater;
@@ -9,7 +10,6 @@ import android.view.Menu;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.afollestad.materialdialogs.MaterialDialog;
 import com.techery.spares.annotations.Layout;
 import com.techery.spares.ui.fragment.InjectingFragment;
 import com.techery.spares.utils.ui.SoftInputUtil;
@@ -19,6 +19,9 @@ import com.worldventures.dreamtrips.core.utils.ViewUtils;
 import com.worldventures.dreamtrips.core.utils.tracksystem.MonitoringHelper;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.common.presenter.delegate.OfflineWarningDelegate;
+import com.worldventures.dreamtrips.modules.common.view.connection_overlay.ConnectionState;
+import com.worldventures.dreamtrips.modules.common.view.connection_overlay.core.SocialConnectionOverlay;
+import com.worldventures.dreamtrips.modules.common.view.connection_overlay.view.SocialConnectionOverlayViewFactory;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -28,15 +31,21 @@ import javax.inject.Inject;
 import butterknife.ButterKnife;
 import dagger.ObjectGraph;
 import icepick.Icepick;
+import rx.Observable;
+import rx.subjects.PublishSubject;
 import timber.log.Timber;
 
 public abstract class BaseFragment<PM extends Presenter> extends InjectingFragment implements Presenter.View {
+
+   private final PublishSubject stopper = PublishSubject.create();
 
    private PM presenter;
 
    @Inject protected Router router;
    @Inject protected Presenter.TabletAnalytic tabletAnalytic;
+
    @Inject OfflineWarningDelegate offlineWarningDelegate;
+   protected SocialConnectionOverlay connectionOverlay;
 
    public PM getPresenter() {
       return presenter;
@@ -90,6 +99,12 @@ public abstract class BaseFragment<PM extends Presenter> extends InjectingFragme
    public void afterCreateView(View rootView) {
       super.afterCreateView(rootView);
       if (userVisibleHints.contains(true)) track();
+   }
+
+   @Override
+   public void onDetach() {
+      super.onDetach();
+      stopper.onNext(null);
    }
 
    @Override
@@ -193,22 +208,26 @@ public abstract class BaseFragment<PM extends Presenter> extends InjectingFragme
    }
 
    @Override
-   public void alert(String s) {
-      if (getActivity() != null && isAdded()) {
-         getActivity().runOnUiThread(() -> getActivity().runOnUiThread(() -> {
-            MaterialDialog.Builder builder = new MaterialDialog.Builder(getActivity());
-            builder.title(R.string.alert).content(s).positiveText(R.string.OK).show();
-         }));
-      }
-   }
-
-   @Override
    public void showOfflineAlert() {
       offlineWarningDelegate.showOfflineWarning(getActivity());
    }
 
    protected void track() {
 
+   }
+
+   @Override
+   public void initConnectionOverlay(Observable<ConnectionState> connectionStateObservable, Observable<Void> stopper) {
+      if (getView() != null) {
+         connectionOverlay = new SocialConnectionOverlay(new SocialConnectionOverlayViewFactory(getContext(), getView(),
+               getContentLayoutId()));
+         connectionOverlay.startProcessingState(connectionStateObservable, stopper);
+      }
+   }
+
+   @IdRes
+   protected int getContentLayoutId() {
+      return R.id.content_layout;
    }
 
    ///////////////////////////////////////////////////////////////////////////

@@ -1,119 +1,125 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
       android:layout_width="match_parent"
-      android:layout_height="match_parent"
-      android:orientation="horizontal"
-      >
+      android:layout_height="match_parent">
 
-   <LinearLayout
-         android:layout_width="0dp"
+   <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+         android:layout_width="match_parent"
          android:layout_height="match_parent"
-         android:layout_weight="4"
-         android:orientation="vertical"
-         android:visibility="visible"
+         android:orientation="horizontal"
          >
 
-      <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="60dp"
-            android:background="@android:color/white"
-            android:focusable="true"
-            android:focusableInTouchMode="true"
-            >
-
-         <ImageView
-               android:id="@+id/iv_filter"
-               android:layout_width="wrap_content"
-               android:layout_height="wrap_content"
-               android:layout_alignParentEnd="true"
-               android:layout_alignParentRight="true"
-               android:layout_centerVertical="true"
-               android:nestedScrollingEnabled="false"
-               android:padding="16dp"
-               android:src="@drawable/ic_success_story_filters_normal"
-               />
-
-         <android.support.v7.widget.SearchView
-               android:id="@+id/search"
-               android:layout_width="wrap_content"
-               android:layout_height="match_parent"
-               android:layout_alignParentLeft="true"
-               android:layout_alignParentStart="true"
-               android:layout_centerVertical="true"
-               android:background="@android:color/white"
-               android:src="@drawable/ic_success_story_search"
-               />
-      </RelativeLayout>
-
-
-      <FrameLayout
-            android:layout_width="match_parent"
+      <LinearLayout
+            android:layout_width="0dp"
             android:layout_height="match_parent"
+            android:layout_weight="4"
+            android:orientation="vertical"
+            android:visibility="visible"
             >
 
          <RelativeLayout
-               android:id="@+id/ll_empty_view"
                android:layout_width="match_parent"
-               android:layout_height="match_parent"
-               android:layout_alignParentLeft="false"
-               android:layout_alignParentTop="false"
-               android:gravity="center"
-               android:orientation="vertical"
-               android:visibility="gone"
+               android:layout_height="60dp"
+               android:background="@android:color/white"
+               android:focusable="true"
+               android:focusableInTouchMode="true"
                >
 
             <ImageView
-                  android:layout_width="match_parent"
-                  android:layout_height="match_parent"
-                  android:layout_alignParentLeft="true"
-                  android:layout_alignParentTop="true"
-                  android:scaleType="centerCrop"
-                  android:src="@drawable/ic_background_empty_view"
+                  android:id="@+id/iv_filter"
+                  android:layout_width="wrap_content"
+                  android:layout_height="wrap_content"
+                  android:layout_alignParentEnd="true"
+                  android:layout_alignParentRight="true"
+                  android:layout_centerVertical="true"
+                  android:nestedScrollingEnabled="false"
+                  android:padding="16dp"
+                  android:src="@drawable/ic_success_story_filters_normal"
                   />
 
-            <TextView
-                  android:layout_width="match_parent"
-                  android:layout_height="wrap_content"
+            <android.support.v7.widget.SearchView
+                  android:id="@+id/search"
+                  android:layout_width="wrap_content"
+                  android:layout_height="match_parent"
                   android:layout_alignParentLeft="true"
                   android:layout_alignParentStart="true"
                   android:layout_centerVertical="true"
-                  android:layout_gravity="center"
-                  android:alpha="0.54"
-                  android:gravity="center"
-                  android:padding="25dp"
-                  android:text="@string/filter_no_results"
-                  android:textColor="@android:color/black"
-                  android:textSize="18dp"
+                  android:background="@android:color/white"
+                  android:src="@drawable/ic_success_story_search"
                   />
-
          </RelativeLayout>
 
 
-         <android.support.v4.widget.SwipeRefreshLayout
-               android:id="@+id/swipe_container"
+         <FrameLayout
                android:layout_width="match_parent"
                android:layout_height="match_parent"
-               android:visibility="visible"
                >
 
-            <com.worldventures.dreamtrips.modules.common.view.custom.EmptyRecyclerView
-                  android:id="@+id/recyclerViewStories"
+            <RelativeLayout
+                  android:id="@+id/ll_empty_view"
                   android:layout_width="match_parent"
                   android:layout_height="match_parent"
-                  />
+                  android:layout_alignParentLeft="false"
+                  android:layout_alignParentTop="false"
+                  android:gravity="center"
+                  android:orientation="vertical"
+                  android:visibility="gone"
+                  >
 
-         </android.support.v4.widget.SwipeRefreshLayout>
+               <ImageView
+                     android:layout_width="match_parent"
+                     android:layout_height="match_parent"
+                     android:layout_alignParentLeft="true"
+                     android:layout_alignParentTop="true"
+                     android:scaleType="centerCrop"
+                     android:src="@drawable/ic_background_empty_view"
+                     />
 
-      </FrameLayout>
+               <TextView
+                     android:layout_width="match_parent"
+                     android:layout_height="wrap_content"
+                     android:layout_alignParentLeft="true"
+                     android:layout_alignParentStart="true"
+                     android:layout_centerVertical="true"
+                     android:layout_gravity="center"
+                     android:alpha="0.54"
+                     android:gravity="center"
+                     android:padding="25dp"
+                     android:text="@string/filter_no_results"
+                     android:textColor="@android:color/black"
+                     android:textSize="18dp"
+                     />
+
+            </RelativeLayout>
+
+
+            <android.support.v4.widget.SwipeRefreshLayout
+                  android:id="@+id/swipe_container"
+                  android:layout_width="match_parent"
+                  android:layout_height="match_parent"
+                  android:visibility="visible"
+                  >
+
+               <com.worldventures.dreamtrips.modules.common.view.custom.EmptyRecyclerView
+                     android:id="@+id/recyclerViewStories"
+                     android:layout_width="match_parent"
+                     android:layout_height="match_parent"
+                     />
+
+            </android.support.v4.widget.SwipeRefreshLayout>
+
+         </FrameLayout>
+
+      </LinearLayout>
+
+      <FrameLayout
+            android:id="@+id/detail_container"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="6"
+            android:visibility="gone"
+            />
 
    </LinearLayout>
 
-   <FrameLayout
-         android:id="@+id/detail_container"
-         android:layout_width="0dp"
-         android:layout_height="match_parent"
-         android:layout_weight="6"
-         android:visibility="gone"
-         />
-
-</LinearLayout>
+</FrameLayout>

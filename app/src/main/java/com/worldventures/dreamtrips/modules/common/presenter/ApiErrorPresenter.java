@@ -6,7 +6,6 @@ import com.crashlytics.android.Crashlytics;
 import com.innahema.collections.query.queriables.Queryable;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.api.action.BaseHttpAction;
-import com.worldventures.dreamtrips.core.api.error.DtApiException;
 import com.worldventures.dreamtrips.core.api.error.ErrorResponse;
 import com.worldventures.dreamtrips.modules.common.view.ApiErrorView;
 
@@ -49,21 +48,7 @@ public class ApiErrorPresenter {
       }
       //
       apiErrorView.onApiCallFailed();
-      //
-      DtApiException dtApiException = getCauseByType(DtApiException.class, exception);
-      if (dtApiException != null) {
-         ErrorResponse errorResponse = dtApiException.getErrorResponse();
-         if (errorResponse == null || errorResponse.getErrors() == null || errorResponse.getErrors().isEmpty()) {
-            apiErrorView.informUser(exception.getCause().getLocalizedMessage());
-            return;
-         }
-         //
-         logError(errorResponse);
-         //
-         if (!apiErrorView.onApiError(errorResponse)) apiErrorView.informUser(errorResponse.getFirstMessage());
-      } else if (!handleJanetHttpError(null, exception)) {
-         apiErrorView.informUser(R.string.smth_went_wrong);
-      }
+      apiErrorView.informUser(R.string.smth_went_wrong);
    }
 
    public void handleActionError(Object action, Throwable exception) {
@@ -96,7 +81,8 @@ public class ApiErrorPresenter {
 
          if (getCauseByType(IOException.class, exception.getCause()) != null) {
             apiErrorView.informUser(R.string.no_connection);
-         } else if (errorResponse != null && errorResponse.getErrors() != null && !errorResponse.getErrors().isEmpty()) {
+         } else if (errorResponse != null && errorResponse.getErrors() != null && !errorResponse.getErrors()
+               .isEmpty()) {
             logError(errorResponse);
             if (!apiErrorView.onApiError(errorResponse)) apiErrorView.informUser(errorResponse.getFirstMessage());
          } else {

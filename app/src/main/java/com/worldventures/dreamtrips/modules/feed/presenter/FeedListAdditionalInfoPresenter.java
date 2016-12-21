@@ -1,17 +1,17 @@
 package com.worldventures.dreamtrips.modules.feed.presenter;
 
 import android.support.annotation.NonNull;
-import android.support.annotation.StringRes;
 
-import com.octo.android.robospice.persistence.exception.SpiceException;
 import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.core.api.action.CommandWithError;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.core.session.CirclesInteractor;
-import com.worldventures.dreamtrips.modules.common.api.janet.command.CirclesCommand;
+import com.worldventures.dreamtrips.modules.common.api.janet.command.GetCirclesCommand;
 import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.common.view.BlockingProgressView;
-import com.worldventures.dreamtrips.modules.friends.api.GetFriendsQuery;
 import com.worldventures.dreamtrips.modules.friends.model.Circle;
+import com.worldventures.dreamtrips.modules.friends.service.FriendsInteractor;
+import com.worldventures.dreamtrips.modules.friends.service.command.GetFriendsCommand;
 import com.worldventures.dreamtrips.modules.profile.bundle.UserBundle;
 
 import java.util.Collections;
@@ -25,8 +25,11 @@ import rx.schedulers.Schedulers;
 
 public class FeedListAdditionalInfoPresenter extends FeedItemAdditionalInfoPresenter<FeedListAdditionalInfoPresenter.View> {
 
+   private static final int PAGE_SIZE = 100;
+
    @Inject SnappyRepository db;
    @Inject CirclesInteractor circlesInteractor;
+   @Inject FriendsInteractor friendsInteractor;
 
    private int nextPage = 1;
    private int prevTotalItemCount = 0;
@@ -57,13 +60,13 @@ public class FeedListAdditionalInfoPresenter extends FeedItemAdditionalInfoPrese
 
    public void onCircleFilterClicked() {
       circlesInteractor.pipe()
-            .createObservable(new CirclesCommand())
+            .createObservable(new GetCirclesCommand())
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .compose(bindView())
-            .subscribe(new ActionStateSubscriber<CirclesCommand>().onStart(circlesCommand -> onCirclesStart())
+            .subscribe(new ActionStateSubscriber<GetCirclesCommand>().onStart(circlesCommand -> onCirclesStart())
                   .onSuccess(circlesCommand -> onCirclesSuccess(circlesCommand.getResult()))
-                  .onFail((circlesCommand, throwable) -> onCirclesError(circlesCommand.getErrorMessage())));
+                  .onFail(this::onCirclesError));
 
    }
 
@@ -71,9 +74,9 @@ public class FeedListAdditionalInfoPresenter extends FeedItemAdditionalInfoPrese
       view.showBlockingProgress();
    }
 
-   private void onCirclesError(@StringRes String messageId) {
+   private void onCirclesError(CommandWithError commandWithError, Throwable throwable) {
       view.hideBlockingProgress();
-      view.informUser(messageId);
+      handleError(commandWithError, throwable);
    }
 
    private void onCirclesSuccess(List<Circle> resultCircles) {
@@ -97,30 +100,35 @@ public class FeedListAdditionalInfoPresenter extends FeedItemAdditionalInfoPrese
    // Friends loading
    ///////////////////////////////////////////////////////////////////////////
 
-   public void loadFriends() {
-      loading = true;
-      view.startLoading();
-      doRequest(new GetFriendsQuery(getFilterCircle(), null, nextPage, getPageSize()), users -> {
-         if (nextPage == 1) view.setFriends(users);
-         else view.addFriends(users);
-         canLoadMore = users.size() > 0;
-         nextPage++;
-         loading = false;
-         view.finishLoading();
-      });
+   private void loadFriends() {
+      friendsInteractor.getFriendsPipe()
+            .createObservable(new GetFriendsCommand(getFilterCircle(), nextPage, PAGE_SIZE))
+            .compose(bindViewToMainComposer())
+            .subscribe(new ActionStateSubscriber<GetFriendsCommand>()
+                  .onStart(getFriendsCommand -> {
+                     loading = true;
+                     view.startLoading();
+                  })
+                  .onSuccess(getFriendsCommand -> {
+                     if (nextPage == 1) view.setFriends(getFriendsCommand.getResult());
+                     else view.addFriends(getFriendsCommand.getResult());
+                     canLoadMore = getFriendsCommand.getResult().size() > 0;
+                     nextPage++;
+                     loading = false;
+                     view.finishLoading();
+                  })
+                  .onFail((getFriendsCommand, throwable) -> {
+                     loading = false;
+                     view.finishLoading();
+                     handleError(getFriendsCommand, throwable);
+                  })
+            );
    }
 
    public void reload() {
       nextPage = 1;
       prevTotalItemCount = 0;
       loadFriends();
-   }
-
-   @Override
-   public void handleError(SpiceException error) {
-      super.handleError(error);
-      loading = false;
-      view.finishLoading();
    }
 
    public void onScrolled(int totalItemCount, int lastVisible) {
@@ -130,10 +138,6 @@ public class FeedListAdditionalInfoPresenter extends FeedItemAdditionalInfoPrese
       if (!loading && canLoadMore && lastVisible >= totalItemCount - 1) {
          loadFriends();
       }
-   }
-
-   public int getPageSize() {
-      return 100;
    }
 
    ///////////////////////////////////////////////////////////////////////////

@@ -4,27 +4,25 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 
 import com.badoo.mobile.util.WeakHandler;
-import com.techery.spares.adapter.BaseArrayListAdapter;
-import com.techery.spares.adapter.IRoboSpiceAdapter;
+import com.techery.spares.adapter.BaseDelegateAdapter;
+import com.techery.spares.adapter.ListAdapter;
 import com.techery.spares.annotations.Layout;
 import com.techery.spares.ui.recycler.RecyclerViewStateDelegate;
+import com.techery.spares.ui.view.cell.CellDelegate;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.navigation.ToolbarConfig;
 import com.worldventures.dreamtrips.core.navigation.router.NavigationConfigBuilder;
 import com.worldventures.dreamtrips.core.rx.RxBaseFragmentWithArgs;
 import com.worldventures.dreamtrips.core.utils.ViewUtils;
-import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.common.model.MediaAttachment;
-import com.worldventures.dreamtrips.modules.common.model.UploadTask;
 import com.worldventures.dreamtrips.modules.common.view.custom.EmptyRecyclerView;
-import com.worldventures.dreamtrips.modules.common.view.custom.RecyclerItemClickListener;
 import com.worldventures.dreamtrips.modules.feed.bundle.CreateEntityBundle;
+import com.worldventures.dreamtrips.modules.feed.model.uploading.UploadingPostsList;
 import com.worldventures.dreamtrips.modules.tripsimages.bundle.FullScreenImagesBundle;
 import com.worldventures.dreamtrips.modules.tripsimages.bundle.TripsImagesBundle;
 import com.worldventures.dreamtrips.modules.tripsimages.model.IFullScreenObject;
@@ -32,10 +30,9 @@ import com.worldventures.dreamtrips.modules.tripsimages.model.Inspiration;
 import com.worldventures.dreamtrips.modules.tripsimages.model.Photo;
 import com.worldventures.dreamtrips.modules.tripsimages.model.TripImagesType;
 import com.worldventures.dreamtrips.modules.tripsimages.model.YSBHPhoto;
+import com.worldventures.dreamtrips.modules.tripsimages.presenter.MembersImagesBasePresenter;
 import com.worldventures.dreamtrips.modules.tripsimages.presenter.TripImagesListPresenter;
-import com.worldventures.dreamtrips.modules.tripsimages.presenter.fullscreen.MembersImagesPresenter;
 import com.worldventures.dreamtrips.modules.tripsimages.view.cell.PhotoCell;
-import com.worldventures.dreamtrips.modules.tripsimages.view.cell.PhotoUploadCell;
 
 import java.util.List;
 
@@ -45,16 +42,15 @@ import static com.worldventures.dreamtrips.modules.tripsimages.bundle.FullScreen
 
 @Layout(R.layout.fragment_trip_list_images)
 public class TripImagesListFragment<T extends TripImagesListPresenter> extends RxBaseFragmentWithArgs<T, TripsImagesBundle>
-      implements TripImagesListPresenter.View, SwipeRefreshLayout.OnRefreshListener, MembersImagesPresenter.View {
+      implements TripImagesListPresenter.View, SwipeRefreshLayout.OnRefreshListener, MembersImagesBasePresenter.View {
 
-   @InjectView(R.id.lv_items) protected EmptyRecyclerView recyclerView;
+   @InjectView(R.id.lv_items) EmptyRecyclerView recyclerView;
+   @InjectView(R.id.swipe_container) SwipeRefreshLayout refreshLayout;
 
-   @InjectView(R.id.swipe_container) protected SwipeRefreshLayout refreshLayout;
+   protected BaseDelegateAdapter adapter;
+   protected GridLayoutManager layoutManager;
+   private RecyclerViewStateDelegate stateDelegate;
 
-   private BaseArrayListAdapter arrayListAdapter;
-   private LinearLayoutManager layoutManager;
-
-   RecyclerViewStateDelegate stateDelegate;
    private WeakHandler weakHandler;
 
    @Override
@@ -74,31 +70,47 @@ public class TripImagesListFragment<T extends TripImagesListPresenter> extends R
    @Override
    public void afterCreateView(View rootView) {
       super.afterCreateView(rootView);
-      this.layoutManager = getLayoutManager();
-      this.recyclerView.setLayoutManager(layoutManager);
+      initAdapter();
+      initRecyclerView();
+      refreshLayout.setOnRefreshListener(this);
+      refreshLayout.setColorSchemeResources(R.color.theme_main_darker);
+   }
+
+   ///////////////////////////////////////////////////////////////////////////
+   // Adapter related
+   ///////////////////////////////////////////////////////////////////////////
+
+   private void initAdapter() {
+      initLayoutManager(getSpanCount());
       stateDelegate.setRecyclerView(recyclerView);
+      adapter = new BaseDelegateAdapter(getContext(), this);
+      registerCellsAndDelegates();
+      recyclerView.setAdapter(this.adapter);
+   }
 
-      this.arrayListAdapter = new BaseArrayListAdapter<>(rootView.getContext(), this);
-      this.arrayListAdapter.registerCell(Photo.class, PhotoCell.class);
-      this.arrayListAdapter.registerCell(YSBHPhoto.class, PhotoCell.class);
-      this.arrayListAdapter.registerCell(Inspiration.class, PhotoCell.class);
-      this.arrayListAdapter.registerCell(UploadTask.class, PhotoUploadCell.class);
-      this.recyclerView.setAdapter(this.arrayListAdapter);
+   protected void initLayoutManager(int spanCount) {
+      layoutManager = new GridLayoutManager(getActivity(), spanCount);
+      recyclerView.setLayoutManager(layoutManager);
+   }
 
-      this.refreshLayout.setOnRefreshListener(this);
-      this.refreshLayout.setColorSchemeResources(R.color.theme_main_darker);
+   protected void registerCellsAndDelegates() {
+      adapter.registerCell(Photo.class, PhotoCell.class);
+      adapter.registerCell(YSBHPhoto.class, PhotoCell.class);
+      adapter.registerCell(Inspiration.class, PhotoCell.class);
 
-      this.recyclerView.addOnItemTouchListener(new RecyclerItemClickListener(getActivity(), (view1, position) -> {
-         if (getArgs().getType() == TripImagesType.YOU_SHOULD_BE_HERE)
-            TrackingHelper.viewTripImage(TrackingHelper.ACTION_YSHB_IMAGES, getPresenter().getPhoto(position)
-                  .getFSId());
-         if (getArgs().getType() == TripImagesType.INSPIRE_ME)
-            TrackingHelper.viewTripImage(TrackingHelper.ACTION_INSPIRE_ME_IMAGES, getPresenter().getPhoto(position)
-                  .getFSId());
+      CellDelegate<IFullScreenObject> delegate = getPresenter()::onItemClick;
+      adapter.registerDelegate(Photo.class, delegate);
+      adapter.registerDelegate(YSBHPhoto.class, delegate);
+      adapter.registerDelegate(Inspiration.class, delegate);
+   }
 
-         this.getPresenter().onItemClick(position);
-      }));
-      this.recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+   protected int getSpanCount() {
+      boolean landscape = ViewUtils.isLandscapeOrientation(getActivity());
+      return landscape ? 4 : ViewUtils.isTablet(getActivity()) ? 3 : 2;
+   }
+
+   private void initRecyclerView() {
+      recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
          @Override
          public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
             int childCount = recyclerView.getChildCount();
@@ -121,12 +133,6 @@ public class TripImagesListFragment<T extends TripImagesListPresenter> extends R
       //nothing to do here
    }
 
-   private GridLayoutManager getLayoutManager() {
-      boolean landscape = ViewUtils.isLandscapeOrientation(getActivity());
-      int spanCount = landscape ? 4 : ViewUtils.isTablet(getActivity()) ? 3 : 2;
-      return new GridLayoutManager(getActivity(), spanCount);
-   }
-
    @Override
    public void onRefresh() {
       getPresenter().reload();
@@ -136,7 +142,7 @@ public class TripImagesListFragment<T extends TripImagesListPresenter> extends R
    protected T createPresenter(Bundle savedInstanceState) {
       TripImagesType type = getArgs().getType();
       int userId = getArgs().getUserId();
-      return (T) TripImagesListPresenter.create(type, userId, null, false, 0, NO_NOTIFICATION);
+      return (T) TripImagesListPresenter.create(type, userId, null, 0, NO_NOTIFICATION);
    }
 
    @Override
@@ -155,11 +161,6 @@ public class TripImagesListFragment<T extends TripImagesListPresenter> extends R
    }
 
    @Override
-   public IRoboSpiceAdapter getAdapter() {
-      return arrayListAdapter;
-   }
-
-   @Override
    public void openFullscreen(FullScreenImagesBundle data) {
       router.moveTo(Route.FULLSCREEN_PHOTO_LIST, NavigationConfigBuilder.forActivity()
             .toolbarConfig(ToolbarConfig.Builder.create().visible(false).build())
@@ -168,48 +169,57 @@ public class TripImagesListFragment<T extends TripImagesListPresenter> extends R
    }
 
    @Override
-   public void fillWithItems(List<IFullScreenObject> items) {
-      int itemCount = arrayListAdapter.getItemCount();
-      arrayListAdapter.addItems(items);
-      arrayListAdapter.notifyItemRangeInserted(itemCount - 1, items.size());
+   public void setImages(List<IFullScreenObject> items) {
+      adapter.setItems(items);
+      adapter.notifyDataSetChanged();
+   }
+
+   @Override
+   public void setImages(List<IFullScreenObject> images, UploadingPostsList uploadingPostsList) {
+      setImages(images);
    }
 
    @Override
    public void add(IFullScreenObject item) {
       recyclerView.scrollToPosition(0);
-      arrayListAdapter.addItem(item);
-      arrayListAdapter.notifyItemInserted(arrayListAdapter.getItemCount() - 1);
+      adapter.addItem(item);
+      adapter.notifyItemInserted(adapter.getItemCount() - 1);
    }
 
    @Override
    public void add(int position, IFullScreenObject item) {
       recyclerView.scrollToPosition(0);
-      arrayListAdapter.addItem(position, item);
-      arrayListAdapter.notifyItemInserted(position);
+      adapter.addItem(position, item);
+      adapter.notifyItemInserted(position);
    }
 
    @Override
    public void addAll(int position, List<? extends IFullScreenObject> items) {
       recyclerView.scrollToPosition(0);
-      arrayListAdapter.addItems(0, items);
-      arrayListAdapter.notifyDataSetChanged();
+      adapter.addItems(0, items);
+      adapter.notifyDataSetChanged();
    }
 
    @Override
    public void clear() {
-      arrayListAdapter.clear();
+      adapter.clear();
    }
 
    @Override
    public void replace(int position, IFullScreenObject item) {
-      arrayListAdapter.replaceItem(position, item);
-      arrayListAdapter.notifyItemChanged(position);
+      adapter.replaceItem(position, item);
+      adapter.notifyItemChanged(position);
    }
 
    @Override
    public void remove(int index) {
-      arrayListAdapter.remove(index);
-      arrayListAdapter.notifyItemRemoved(index);
+      adapter.remove(index);
+      adapter.notifyItemRemoved(index);
+   }
+
+   @Override
+   public boolean isFullscreenView() {
+      return false;
    }
 
    @Override

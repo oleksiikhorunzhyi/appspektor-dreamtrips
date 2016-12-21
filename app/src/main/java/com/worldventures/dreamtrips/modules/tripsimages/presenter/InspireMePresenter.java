@@ -1,13 +1,15 @@
 package com.worldventures.dreamtrips.modules.tripsimages.presenter;
 
-import com.octo.android.robospice.request.SpiceRequest;
-import com.worldventures.dreamtrips.modules.tripsimages.api.GetInspireMePhotosQuery;
+import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.tripsimages.model.IFullScreenObject;
 import com.worldventures.dreamtrips.modules.tripsimages.model.TripImagesType;
+import com.worldventures.dreamtrips.modules.tripsimages.service.command.GetInspireMePhotosCommand;
 
-import java.util.ArrayList;
+import io.techery.janet.ActionPipe;
 
-public class InspireMePresenter extends TripImagesListPresenter<TripImagesListPresenter.View> {
+public class InspireMePresenter extends TripImagesListPresenter<TripImagesListPresenter.View, GetInspireMePhotosCommand> {
+   private static final double RESET_PHOTO_SEED_VALUE = 0d;
+
    protected double randomSeed;
 
    public InspireMePresenter(int userId) {
@@ -15,13 +17,42 @@ public class InspireMePresenter extends TripImagesListPresenter<TripImagesListPr
    }
 
    @Override
-   public SpiceRequest<ArrayList<IFullScreenObject>> getReloadRequest() {
-      randomSeed = Math.random();
-      return new GetInspireMePhotosQuery(PER_PAGE, 1, randomSeed);
+   public void onInjected() {
+      super.onInjected();
+      randomSeed = db.getLastUsedInspireMeRandomSeed();
+      if (randomSeed == RESET_PHOTO_SEED_VALUE) {
+         // generate seed in range from -1 to 1
+         randomSeed = Math.random() * 2 - 1;
+         db.saveLastUsedInspireMeRandomSeed(randomSeed);
+      }
    }
 
    @Override
-   public SpiceRequest<ArrayList<IFullScreenObject>> getNextPageRequest(int currentPage) {
-      return new GetInspireMePhotosQuery(PER_PAGE, currentPage, randomSeed);
+   public void dropView() {
+      if (!view.isFullscreenView()) {
+         db.saveLastUsedInspireMeRandomSeed(RESET_PHOTO_SEED_VALUE);
+      }
+      super.dropView();
+   }
+
+   @Override
+   protected ActionPipe<GetInspireMePhotosCommand> getLoadingPipe() {
+      return tripImagesInteractor.getInspireMePhotosPipe();
+   }
+
+   @Override
+   protected GetInspireMePhotosCommand getReloadCommand() {
+      return new GetInspireMePhotosCommand(randomSeed, 1, PER_PAGE);
+   }
+
+   @Override
+   protected GetInspireMePhotosCommand getLoadMoreCommand(int currentCount) {
+      return new GetInspireMePhotosCommand(randomSeed, currentCount / PER_PAGE + 1, PER_PAGE);
+   }
+
+   @Override
+   public void onItemClick(IFullScreenObject image) {
+      super.onItemClick(image);
+      TrackingHelper.viewTripImage(TrackingHelper.ACTION_INSPIRE_ME_IMAGES, image.getFSId());
    }
 }

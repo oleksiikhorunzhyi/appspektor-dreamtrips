@@ -4,22 +4,20 @@ import android.net.Uri;
 import android.support.annotation.NonNull;
 
 import com.innahema.collections.query.queriables.Queryable;
-import com.octo.android.robospice.persistence.exception.SpiceException;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.core.utils.DateTimeUtils;
 import com.worldventures.dreamtrips.core.utils.ProjectTextUtils;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
-import com.worldventures.dreamtrips.modules.bucketlist.event.BucketItemPhotoAnalyticEvent;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketPhoto;
 import com.worldventures.dreamtrips.modules.bucketlist.model.CategoryItem;
-import com.worldventures.dreamtrips.modules.bucketlist.service.action.UpdateItemHttpAction;
+import com.worldventures.dreamtrips.modules.bucketlist.service.action.UpdateBucketItemCommand;
 import com.worldventures.dreamtrips.modules.bucketlist.service.command.AddBucketItemPhotoCommand;
 import com.worldventures.dreamtrips.modules.bucketlist.service.command.DeleteItemPhotoCommand;
 import com.worldventures.dreamtrips.modules.bucketlist.service.command.MergeBucketItemPhotosWithStorageCommand;
-import com.worldventures.dreamtrips.modules.common.model.EntityStateHolder;
 import com.worldventures.dreamtrips.modules.bucketlist.service.model.ImmutableBucketPostBody;
+import com.worldventures.dreamtrips.modules.common.model.EntityStateHolder;
 import com.worldventures.dreamtrips.modules.common.model.PhotoGalleryModel;
 import com.worldventures.dreamtrips.modules.common.view.bundle.BucketBundle;
 import com.worldventures.dreamtrips.modules.common.view.util.MediaPickerEventDelegate;
@@ -86,8 +84,8 @@ public class BucketItemEditPresenter extends BucketDetailsBasePresenter<BucketIt
    }
 
    @Override
-   public void handleError(SpiceException error) {
-      super.handleError(error);
+   public void handleError(Object action, Throwable error) {
+      super.handleError(action, error);
       view.hideLoading();
    }
 
@@ -96,9 +94,9 @@ public class BucketItemEditPresenter extends BucketDetailsBasePresenter<BucketIt
       savingItem = true;
 
       view.bind(bucketInteractor.updatePipe()
-            .createObservable(new UpdateItemHttpAction(createBucketPostBody()))
+            .createObservable(new UpdateBucketItemCommand(createBucketPostBody()))
             .observeOn(AndroidSchedulers.mainThread()))
-            .subscribe(new ActionStateSubscriber<UpdateItemHttpAction>().onSuccess(result -> {
+            .subscribe(new ActionStateSubscriber<UpdateBucketItemCommand>().onSuccess(result -> {
                if (savingItem) {
                   savingItem = false;
                   view.done();
@@ -161,7 +159,7 @@ public class BucketItemEditPresenter extends BucketDetailsBasePresenter<BucketIt
 
    private void startUpload(EntityStateHolder<BucketPhoto> photoStateHolder) {
       TrackingHelper.bucketPhotoAction(TrackingHelper.ACTION_BUCKET_PHOTO_UPLOAD_START, "", bucketItem.getType());
-      eventBus.post(new BucketItemPhotoAnalyticEvent(TrackingHelper.ATTRIBUTE_UPLOAD_PHOTO, bucketItem.getUid()));
+      TrackingHelper.actionBucketItemPhoto(TrackingHelper.ATTRIBUTE_UPLOAD_PHOTO, bucketItem.getUid());
 
       imageSelected(Uri.parse(photoStateHolder.entity().getImagePath()));
    }
@@ -200,7 +198,7 @@ public class BucketItemEditPresenter extends BucketDetailsBasePresenter<BucketIt
 
       view.bind(Observable.merge(bucketInteractor.updatePipe()
             .observeSuccess()
-            .map(UpdateItemHttpAction::getResponse), bucketInteractor.addBucketItemPhotoPipe()
+            .map(UpdateBucketItemCommand::getResult), bucketInteractor.addBucketItemPhotoPipe()
             .observeSuccess()
             .map(addBucketItemPhotoCommand -> addBucketItemPhotoCommand.getResult().first), bucketInteractor.deleteItemPhotoPipe()
             .observeSuccess()
@@ -222,10 +220,6 @@ public class BucketItemEditPresenter extends BucketDetailsBasePresenter<BucketIt
       return categoryItem != null ? categoryItem.getId() : 0;
    }
 
-   private String getDateAsString(Date date) {
-      return DateTimeUtils.convertDateToString(date, DateTimeUtils.DEFAULT_ISO_FORMAT);
-   }
-
    @NonNull
    private ImmutableBucketPostBody createBucketPostBody() {
       return ImmutableBucketPostBody.builder()
@@ -236,7 +230,7 @@ public class BucketItemEditPresenter extends BucketDetailsBasePresenter<BucketIt
             .tags(ProjectTextUtils.getListFromString(view.getTags()))
             .friends(ProjectTextUtils.getListFromString(view.getPeople()))
             .categoryId(getCategoryId())
-            .date(getDateAsString(selectedDate))
+            .date(selectedDate)
             .build();
    }
 

@@ -157,8 +157,8 @@
    <string name="sent_location">发送了位置</string>
    <string name="unread_conversation">对话</string>
 
-   <string name="disconnected_overlay_disconnected_message">失去连接</string>
-   <string name="disconnected_overlay_connecting_message">连接中…</string>
+   <string name="connection_overlay_disconnected_message">失去连接</string>
+   <string name="connection_overlay_connecting_message">连接中…</string>
 
    <string name="warning_no_internet_connection">互联网连接不存在</string>
 

@@ -221,6 +221,10 @@
       <item name="android:textColorSecondary">@color/theme_main_darker</item>
    </style>
 
+   <style name="RobotoMediumTextView" parent="TextAppearance.AppCompat">
+      <item name="android:fontFamily">sans-serif</item>
+   </style>
+
    <!--messenger-->
    <style name="SmallSingleChatAvatarView">
       <item name="android:layout_width">@dimen/list_item_small_avatar_image_size</item>
@@ -496,6 +500,11 @@
       <item name="android:layout_height">wrap_content</item>
       <item name="android:layout_marginTop">@dimen/chat_settings_action_button_top_margin</item>
       <item name="android:textSize">@dimen/chat_settings_action_buttons_text_size</item>
+   </style>
+
+   <style name="UploadStatusTextView">
+      <item name="android:textColor">@color/uploading_cell_status_label_uploading</item>
+      <item name="android:textSize">@dimen/uploading_cell_status_label_text_size</item>
    </style>
    <!--end in app notifications-->
 </resources>

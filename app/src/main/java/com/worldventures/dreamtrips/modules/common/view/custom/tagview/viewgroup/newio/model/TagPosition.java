@@ -31,8 +31,16 @@ public class TagPosition implements Parcelable, Serializable {
       return topLeft;
    }
 
+   public void setTopLeft(Position topLeft) {
+      this.topLeft = topLeft;
+   }
+
    public Position getBottomRight() {
       return bottomRight;
+   }
+
+   public void setBottomRight(Position bottomRight) {
+      this.bottomRight = bottomRight;
    }
 
    protected TagPosition(Parcel in) {

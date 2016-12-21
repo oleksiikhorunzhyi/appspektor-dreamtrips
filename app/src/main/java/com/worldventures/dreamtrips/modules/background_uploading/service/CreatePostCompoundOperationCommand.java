@@ -10,6 +10,7 @@ import com.worldventures.dreamtrips.modules.background_uploading.model.Immutable
 import com.worldventures.dreamtrips.modules.background_uploading.model.PhotoAttachment;
 import com.worldventures.dreamtrips.modules.background_uploading.model.PostCompoundOperationModel;
 import com.worldventures.dreamtrips.modules.background_uploading.model.PostWithAttachmentBody;
+import com.worldventures.dreamtrips.modules.feed.bundle.CreateEntityBundle;
 import com.worldventures.dreamtrips.modules.feed.model.SelectedPhoto;
 import com.worldventures.dreamtrips.modules.trips.model.Location;
 
@@ -29,14 +30,17 @@ public class CreatePostCompoundOperationCommand extends Command<PostCompoundOper
    private String text;
    private List<SelectedPhoto> selectedPhotos;
    private Location location;
+   private CreateEntityBundle.Origin origin;
 
    public CreatePostCompoundOperationCommand(
          @Nullable String text,
          @Nullable List<SelectedPhoto> selectedPhotos,
-         @Nullable Location location) {
+         @Nullable Location location,
+         CreateEntityBundle.Origin origin) {
       this.text = text;
       this.selectedPhotos = selectedPhotos;
       this.location = location;
+      this.origin = origin;
    }
 
    @Override
@@ -67,14 +71,15 @@ public class CreatePostCompoundOperationCommand extends Command<PostCompoundOper
    private PostWithAttachmentBody createPostBody() {
       ImmutablePostWithAttachmentBody.Builder builder = ImmutablePostWithAttachmentBody.builder();
       builder.text(text);
+      builder.origin(origin);
       builder.location(location);
       builder.attachments(new ArrayList<>(Queryable.from(selectedPhotos)
-      .map(selectedPhoto -> ImmutablePhotoAttachment.builder()
-            .id(resolveId())
-            .progress(0)
-            .state(PhotoAttachment.State.SCHEDULED)
-            .selectedPhoto(selectedPhoto)
-            .build()).toList()));
+            .map(selectedPhoto -> ImmutablePhotoAttachment.builder()
+                  .id(resolveId())
+                  .progress(0)
+                  .state(PhotoAttachment.State.SCHEDULED)
+                  .selectedPhoto(selectedPhoto)
+                  .build()).toList()));
       return builder.build();
    }
 

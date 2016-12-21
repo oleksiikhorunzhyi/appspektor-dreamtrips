@@ -5,6 +5,8 @@
    <string name="wallet_done_label">Done</string>
    <string name="wallet_continue_label">Continue</string>
    <string name="wallet_got_it_label">Got it!</string>
+   <string name="wallet_error_label">Error</string>
+   <string name="wallet_retry_label">Retry</string>
 
    <string name="wallet">flye smart card</string>
    <string name="wallet_dashboard_title">My flye smart card</string>
@@ -55,6 +57,7 @@
    <string name="wallet_wizard_splash_title1">Get ready to soar</string>
    <string name="wallet_wizard_splash_title2">Next, you must accept to\nthe User Agreement</string>
    <string name="wallet_wizard_splash_review_btn">User Agreement</string>
+   <string name="wallet_wizard_splash_accept_user_agreement">Please accept the user agreement.</string>
 
    <string name="wallet_wizard_scan_proposal">Scan the back of your\nflye&#8482; smart card to set up</string>
    <string name="wallet_wizard_scan_start_btn">Scan Card</string>

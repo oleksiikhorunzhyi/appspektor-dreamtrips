@@ -32,6 +32,9 @@
    <dimen name="wallet_wizard_bar_code_view_top">170dp</dimen>
    <dimen name="wallet_wizard_bar_code_view_right">18dp</dimen>
    <dimen name="wallet_wizard_bar_code_view_bottom">150dp</dimen>
+   <dimen name="wallet_wizard_agreement_margin_start_end">60dp</dimen>
+   <dimen name="wallet_wizard_agreement_margin_top">30dp</dimen>
+   <dimen name="wallet_wizard_agreement_margin_bottom">23dp</dimen>
 
    <dimen name="wallet_common_item_padding">16dp</dimen>
    <dimen name="wallet_common_item_icon_size">24dp</dimen>

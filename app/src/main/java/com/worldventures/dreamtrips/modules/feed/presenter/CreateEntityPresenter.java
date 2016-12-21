@@ -24,6 +24,7 @@ import com.worldventures.dreamtrips.modules.feed.model.ImmutableSelectedPhoto;
 import com.worldventures.dreamtrips.modules.feed.model.PhotoCreationItem;
 import com.worldventures.dreamtrips.modules.feed.model.SelectedPhoto;
 import com.worldventures.dreamtrips.modules.feed.service.PostsInteractor;
+import com.worldventures.dreamtrips.modules.feed.service.analytics.SharePostAction;
 import com.worldventures.dreamtrips.modules.feed.service.command.CreatePostCommand;
 import com.worldventures.dreamtrips.modules.tripsimages.service.TripImagesInteractor;
 import com.worldventures.dreamtrips.modules.tripsimages.service.command.CreatePhotoCreationItemCommand;
@@ -84,6 +85,7 @@ public class CreateEntityPresenter<V extends CreateEntityPresenter.View> extends
             .subscribe(new ActionStateSubscriber<CreatePostCommand>()
                   .onFail(this::handleError)
                   .onSuccess(command -> {
+                     analyticsInteractor.analyticsActionPipe().send(SharePostAction.createPostAction(command.getResult()));
                      eventBus.post(new FeedItemAddedEvent(FeedItem.create(command.getResult(), getAccount())));
                      closeView();
                   }));
@@ -137,7 +139,8 @@ public class CreateEntityPresenter<V extends CreateEntityPresenter.View> extends
             .observeOn(Schedulers.io())
             .subscribe(creationItems ->
                   postsInteractor.createPostCompoundOperationPipe()
-                        .send(new CreatePostCompoundOperationCommand(cachedText, getSelectionPhotos(creationItems), location))
+                        .send(new CreatePostCompoundOperationCommand(cachedText, getSelectionPhotos(creationItems),
+                              location, origin))
             );
    }
 
@@ -150,6 +153,7 @@ public class CreateEntityPresenter<V extends CreateEntityPresenter.View> extends
                         .locationFromExif(element.getLocationFromExif())
                         .tags(element.getCachedAddedPhotoTags())
                         .locationFromPost(location)
+                        .source(element.getSource())
                         .size(FileUtils.getFileSize(element.getFilePath()))
                         .width(element.getWidth())
                         .height(element.getHeight())

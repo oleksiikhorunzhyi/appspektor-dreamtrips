@@ -39,7 +39,6 @@ public class LaunchActivityPresenter extends ActivityPresenter<LaunchActivityPre
    @Inject BackgroundUploadingInteractor backgroundUploadingInteractor;
 
    @State boolean dtlInitDone;
-   @State boolean clearCacheDone;
 
    @Override
    public void takeView(View view) {
@@ -79,18 +78,12 @@ public class LaunchActivityPresenter extends ActivityPresenter<LaunchActivityPre
 
    private void splashMode() {
       view.openSplash();
-
-      if (!clearCacheDone) {
-         clearStoragesInteractor.cleanTempDirectoryPipe()
-               .createObservable(new CleanTempDirectoryCommand())
-               .compose(bindViewToMainComposer())
-               .subscribe(command -> {
-                  clearCacheDone = true;
-                  onAuthSuccess();
-               });
-      } else {
-         onAuthSuccess();
-      }
+      clearStoragesInteractor.cleanTempDirectoryPipe()
+            .createObservable(new CleanTempDirectoryCommand())
+            .compose(bindViewToMainComposer())
+            .subscribe(new ActionStateSubscriber<CleanTempDirectoryCommand>()
+                  .onSuccess(cleanTempDirectoryCommand -> onAuthSuccess())
+                  .onFail((cleanTempDirectoryCommand, throwable) -> onAuthSuccess()));
    }
 
    private void loginMode() {

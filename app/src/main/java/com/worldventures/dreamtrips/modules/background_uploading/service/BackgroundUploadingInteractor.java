@@ -3,9 +3,11 @@ package com.worldventures.dreamtrips.modules.background_uploading.service;
 import com.techery.spares.session.SessionHolder;
 import com.worldventures.dreamtrips.core.janet.SessionActionPipeCreator;
 import com.worldventures.dreamtrips.core.session.UserSession;
+import com.worldventures.dreamtrips.core.utils.tracksystem.AnalyticsInteractor;
 import com.worldventures.dreamtrips.modules.background_uploading.model.CompoundOperationState;
 import com.worldventures.dreamtrips.modules.feed.event.FeedItemAddedEvent;
 import com.worldventures.dreamtrips.modules.feed.model.FeedItem;
+import com.worldventures.dreamtrips.modules.feed.service.analytics.SharePhotoPostAction;
 
 import java.util.concurrent.TimeUnit;
 
@@ -30,11 +32,13 @@ public class BackgroundUploadingInteractor {
 
    private EventBus eventBus;
    private SessionHolder<UserSession> sessionHolder;
+   private AnalyticsInteractor analyticsInteractor;
 
    public BackgroundUploadingInteractor(SessionActionPipeCreator sessionActionPipeCreator,EventBus eventBus,
-         SessionHolder<UserSession> sessionHolder) {
+         SessionHolder<UserSession> sessionHolder, AnalyticsInteractor analyticsInteractor) {
       this.eventBus = eventBus;
       this.sessionHolder = sessionHolder;
+      this.analyticsInteractor = analyticsInteractor;
       postProcessingPipe = sessionActionPipeCreator.createPipe(PostProcessingCommand.class, Schedulers.io());
       compoundOperationsPipe = sessionActionPipeCreator.createPipe(CompoundOperationsCommand.class, Schedulers.io());
       queryCompoundOperationsPipe = sessionActionPipeCreator.createPipe(QueryCompoundOperationsCommand.class, Schedulers.io());
@@ -93,6 +97,8 @@ public class BackgroundUploadingInteractor {
             .subscribe(postCompoundOperationModel -> {
                eventBus.post(new FeedItemAddedEvent(FeedItem.create(postCompoundOperationModel.body().createdPost(),
                      sessionHolder.get().get().getUser())));
+               analyticsInteractor.analyticsActionPipe().send(SharePhotoPostAction.createPostAction(postCompoundOperationModel
+                     .body()));
                compoundOperationsPipe.send(CompoundOperationsCommand.compoundCommandRemoved(postCompoundOperationModel));
                startNextCompoundPipe.send(new StartNextCompoundOperationCommand());
             });

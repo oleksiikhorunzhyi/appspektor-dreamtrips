@@ -5,14 +5,12 @@ import android.os.Parcelable;
 
 import com.techery.spares.module.Injector;
 import com.worldventures.dreamtrips.core.utils.tracksystem.AnalyticsInteractor;
-import com.worldventures.dreamtrips.wallet.analytics.AcceptTermsAction;
 import com.worldventures.dreamtrips.wallet.analytics.TermsAcceptedAction;
+import com.worldventures.dreamtrips.wallet.analytics.TermsAction;
 import com.worldventures.dreamtrips.wallet.analytics.WalletAnalyticsCommand;
 import com.worldventures.dreamtrips.wallet.service.command.http.FetchTermsAndConditionsCommand;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletPresenter;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.WalletScreen;
-import com.worldventures.dreamtrips.wallet.ui.common.helper.ErrorHandler;
-import com.worldventures.dreamtrips.wallet.ui.common.helper.ErrorSubscriberWrapper;
 import com.worldventures.dreamtrips.wallet.ui.common.navigation.Navigator;
 import com.worldventures.dreamtrips.wallet.ui.wizard.splash.WizardSplashPath;
 
@@ -21,7 +19,8 @@ import javax.inject.Named;
 
 import flow.Flow.Direction;
 import io.techery.janet.Janet;
-import rx.functions.Action1;
+import io.techery.janet.operationsubscriber.OperationActionSubscriber;
+import io.techery.janet.operationsubscriber.view.OperationView;
 
 import static com.worldventures.dreamtrips.core.janet.JanetModule.JANET_WALLET;
 
@@ -39,28 +38,21 @@ public class WizardTermsScreenPresenter extends WalletPresenter<WizardTermsScree
    public void onAttachedToWindow() {
       super.onAttachedToWindow();
       loadTerms();
-      analyticsInteractor.walletAnalyticsCommandPipe().send(new WalletAnalyticsCommand(new AcceptTermsAction()));
+      analyticsInteractor.walletAnalyticsCommandPipe().send(new WalletAnalyticsCommand(new TermsAction()));
    }
 
    public void acceptTermsPressed() {
       analyticsInteractor.walletAnalyticsCommandPipe().send(new WalletAnalyticsCommand(new TermsAcceptedAction()));
-      navigator.single(new WizardSplashPath(true), Direction.BACKWARD);
+      navigator.single(new WizardSplashPath(), Direction.BACKWARD);
    }
 
    protected void loadTerms() {
       janet.createPipe(FetchTermsAndConditionsCommand.class)
-            .createObservableResult(new FetchTermsAndConditionsCommand())
+            .createObservable(new FetchTermsAndConditionsCommand())
             .compose(bindViewIoToMainComposer())
-            .subscribe(ErrorSubscriberWrapper.<FetchTermsAndConditionsCommand>forView(getView().provideOperationDelegate())
-                  .onNext(new Action1<FetchTermsAndConditionsCommand>() {
-                     @Override
-                     public void call(FetchTermsAndConditionsCommand command) {
-                        WizardTermsScreenPresenter.this.getView().showTerms(command.getResult().url());
-                     }
-                  })
-                  .onFail(ErrorHandler.create(getContext(), throwable -> getView().failedToLoadTerms()))
-                  .wrap()
-            );
+            .subscribe(OperationActionSubscriber.forView(getView().termsOperationView())
+                  .onSuccess(command -> getView().showTerms(command.getResult().url()))
+                  .create());
    }
 
    public void onBack() {
@@ -71,6 +63,6 @@ public class WizardTermsScreenPresenter extends WalletPresenter<WizardTermsScree
 
       void showTerms(String url);
 
-      void failedToLoadTerms();
+      OperationView<FetchTermsAndConditionsCommand> termsOperationView();
    }
 }

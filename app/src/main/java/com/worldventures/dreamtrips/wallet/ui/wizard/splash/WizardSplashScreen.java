@@ -53,7 +53,7 @@ public class WizardSplashScreen extends WalletLinearLayout<WizardSplashPresenter
    @NonNull
    @Override
    public WizardSplashPresenter createPresenter() {
-      return new WizardSplashPresenter(getContext(), getInjector(), getPath().termsAccepted);
+      return new WizardSplashPresenter(getContext(), getInjector());
    }
 
    @Override
@@ -80,21 +80,15 @@ public class WizardSplashScreen extends WalletLinearLayout<WizardSplashPresenter
    }
 
    @Override
-   public void setup(boolean termsAccepted) {
-      if (termsAccepted) {
-         apply(asList(actionBtn, cardContainer, walletHelpForScanTitle), (view, index) -> view.setAlpha(1));
+   public void setup() {
+      apply(asList(actionBtn, cardContainer, walletHelpForScanTitle), (view, index) -> view.setAlpha(1));
 
-         actionBtn.setText(R.string.wallet_wizard_scan_start_btn);
-         actionBtn.setOnClickListener(view -> getPresenter().startScanCard());
-         walletWizardSplashTitle.setText(R.string.wallet_wizard_scan_proposal);
+      actionBtn.setText(R.string.wallet_wizard_scan_start_btn);
+      actionBtn.setOnClickListener(view -> getPresenter().startScanCard());
+      walletWizardSplashTitle.setText(R.string.wallet_wizard_scan_proposal);
 
-         front.setImageResource(R.drawable.flyecard_front);
-         flipAnim.flipCard(FLIP_ANIM_DELAY);
-      } else {
-         actionBtn.setText(R.string.wallet_wizard_splash_review_btn);
-         actionBtn.setOnClickListener(view -> getPresenter().openTerms());
-         walletWizardSplashTitle.setText(R.string.wallet_wizard_splash_title2);
-      }
+      front.setImageResource(R.drawable.flyecard_front);
+      flipAnim.flipCard(FLIP_ANIM_DELAY);
 
       setDefaultAlpha();
 

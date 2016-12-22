@@ -36,7 +36,6 @@ android {
    def versionMinor = 17
    def versionPatch = 0
    def versionBuild = 4 // bump for dogfood builds, public betas, etc.
-   //
    // flavor codes
    String DEV_CODE = "dev"
    String DEV_PRE_MARSHMALLOW_CODE = "devpremarshmallow"
@@ -80,6 +79,10 @@ android {
          'MESSENGER_API_URL': '"dtmsgapp-qa.worldventures.biz"',
          'UPLOADERY_API_URL': '"http://techery-dt-preprod-uploadery.techery.io"',
    ]
+   def CONFIG_MAP_DTL = [
+         'DreamTripsApi'    : '"http://techery-dt-dtl.techery.io/"',
+         'UPLOADERY_API_URL': '"http://techery-dt-dtl-uploadery.techery.io"',
+   ]
    def CONFIG_MAP_PERF = [
          'DreamTripsApi'    : '"http://dtapp-perf.worldventures.biz"',
          'NEWRELIC_API_KEY' : '"AA8998d2de5c99adddd3668515e76b5d501271a04b"',
@@ -91,10 +94,6 @@ android {
          'MESSENGER_API_URL': '"dtmsgapp.worldventures.biz"',
          'NEWRELIC_API_KEY' : '"AAb8d55ede8fd2f0aeaaf66b18b8b53af90e48b371"',
          'UPLOADERY_API_URL': '"http://dtappuploads.wvholdings.com"',
-   ]
-   def CONFIG_MAP_DTL = [
-         'DreamTripsApi'    : '"http://techery--dt--dtl-techery-io-b8ctgyaku6eu.runscope.net/"',
-         'UPLOADERY_API_URL': '"http://techery-dt-dtl-uploadery.techery.io"',
    ]
    def CONFIG_MAP_SMARTCARD_MOCK = [
          'SMART_CARD_SDK_CLIENT': '"mock"'
@@ -108,7 +107,6 @@ android {
          "preprod"       : CONFIG_MAP_PREPROD,
          "perf"          : CONFIG_MAP_PERF,
          "prod"          : CONFIG_MAP_PROD,
-         "dtl"           : CONFIG_MAP_DTL,
          "smartcardmock" : CONFIG_MAP_SMARTCARD_MOCK,
          "smartcardnxtid": CONFIG_MAP_SMARTCARD_NXTID,
    ]
@@ -420,7 +418,7 @@ dependencies {
    compile 'com.snappydb:snappydb-lib:0.5.2'
    compile 'com.esotericsoftware.kryo:kryo:2.24.0'
    // Networking
-   compile(group: 'com.worldventures.dreamtrips', name: 'api', version: '2.8.8-STAGE-SNAPSHOT', changing: true) {
+   compile(group: 'com.worldventures.dreamtrips', name: 'api', version: '2.8.9-STAGE-SNAPSHOT', changing: true) {
       exclude group: "joda-time"
    }
    compile 'com.squareup.okhttp:okhttp:2.7.5'

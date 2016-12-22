@@ -12,9 +12,9 @@ import com.worldventures.dreamtrips.modules.bucketlist.service.storage.BucketLis
 import com.worldventures.dreamtrips.modules.bucketlist.service.storage.BucketMemoryStorage;
 import com.worldventures.dreamtrips.modules.bucketlist.service.storage.RecentlyAddedBucketItemStorage;
 import com.worldventures.dreamtrips.modules.bucketlist.service.storage.UploadBucketPhotoInMemoryStorage;
-import com.worldventures.dreamtrips.modules.dtl.helper.cache.DtlLocationStorage;
-import com.worldventures.dreamtrips.modules.dtl.helper.cache.DtlMerchantsStorage;
-import com.worldventures.dreamtrips.modules.dtl.helper.cache.DtlSearchLocationStorage;
+import com.worldventures.dreamtrips.modules.dtl.domain.storage.LocationStorage;
+import com.worldventures.dreamtrips.modules.dtl.domain.storage.FullMerchantStorage;
+import com.worldventures.dreamtrips.modules.dtl.domain.storage.MerchantsStorage;
 import com.worldventures.dreamtrips.modules.feed.service.storage.NotificationMemoryStorage;
 import com.worldventures.dreamtrips.modules.feed.service.storage.NotificationsStorage;
 import com.worldventures.dreamtrips.modules.feed.service.storage.PendingLikesStorage;
@@ -50,20 +50,8 @@ public class CacheActionStorageModule {
 
    @Singleton
    @Provides(type = Provides.Type.SET)
-   ActionStorage provideDtlMerchantsStorage(SnappyRepository db) {
-      return new DtlMerchantsStorage(db);
-   }
-
-   @Singleton
-   @Provides(type = Provides.Type.SET)
-   ActionStorage provideDtlSearchLocationStorage() {
-      return new DtlSearchLocationStorage();
-   }
-
-   @Singleton
-   @Provides(type = Provides.Type.SET)
-   ActionStorage provideDtlLocationStorage(SnappyRepository db) {
-      return new DtlLocationStorage(db);
+   ActionStorage provideLocationStorage() {
+      return new LocationStorage();
    }
 
    @Singleton
@@ -148,6 +136,18 @@ public class CacheActionStorageModule {
    @Provides(type = Provides.Type.SET)
    ActionStorage provideTripDetailsStorage(SnappyRepository snappyRepository) {
       return new TripDetailsStorage(snappyRepository);
+   }
+
+   @Singleton
+   @Provides(type = Provides.Type.SET)
+   ActionStorage provideMerchantsStorage() {
+      return new MerchantsStorage();
+   }
+
+   @Singleton
+   @Provides(type = Provides.Type.SET)
+   ActionStorage provideFullMerchantStorage() {
+      return new FullMerchantStorage();
    }
 
    @Singleton

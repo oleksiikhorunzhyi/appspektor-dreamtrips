@@ -5,6 +5,8 @@ import com.techery.spares.adapter.expandable.BaseExpandableDelegateAdapter;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.component.ComponentDescription;
 import com.worldventures.dreamtrips.modules.common.presenter.ActivityPresenter;
+import com.worldventures.dreamtrips.modules.dtl.helper.inflater.MerchantInfoInflater;
+import com.worldventures.dreamtrips.modules.dtl.helper.inflater.MerchantMapInfoInflater;
 import com.worldventures.dreamtrips.modules.dtl.helper.inflater.MerchantOffersInflater;
 import com.worldventures.dreamtrips.modules.dtl.presenter.DtlPointsEstimationPresenter;
 import com.worldventures.dreamtrips.modules.dtl.presenter.DtlScanQrCodePresenter;
@@ -20,8 +22,9 @@ import com.worldventures.dreamtrips.modules.dtl.view.cell.DtlMerchantExpandableC
 import com.worldventures.dreamtrips.modules.dtl.view.cell.DtlNearbyHeaderCell;
 import com.worldventures.dreamtrips.modules.dtl.view.cell.DtlPerkCell;
 import com.worldventures.dreamtrips.modules.dtl.view.cell.DtlPointsCell;
-import com.worldventures.dreamtrips.modules.dtl.view.cell.DtlWorkingHoursCell;
+import com.worldventures.dreamtrips.modules.dtl.view.cell.WorkingHoursCell;
 import com.worldventures.dreamtrips.modules.dtl.view.cell.adapter.MerchantWorkingHoursAdapter;
+import com.worldventures.dreamtrips.modules.dtl.view.cell.adapter.ThinMerchantsAdapter;
 import com.worldventures.dreamtrips.modules.dtl.view.dialog.DtlPointsEstimationFragment;
 import com.worldventures.dreamtrips.modules.dtl.view.fragment.DtlScanQrCodeFragment;
 import com.worldventures.dreamtrips.modules.dtl.view.fragment.DtlScanReceiptFragment;
@@ -83,10 +86,12 @@ import dagger.Provides;
             DtlMerchantExpandableCell.class,
             DtlLocationSearchCell.class,
             MerchantOffersInflater.class,
+            MerchantInfoInflater.class,
+            MerchantMapInfoInflater.class,
             DtlPerkCell.class,
             DtlPointsCell.class,
             DtlLocationChangeCell.class,
-            DtlWorkingHoursCell.class,
+            WorkingHoursCell.class,
             DtlScanReceiptFragment.class,
             DtlScanReceiptPresenter.class,
             DtlPointsEstimationFragment.class,
@@ -98,6 +103,7 @@ import dagger.Provides;
             DtlVerifyAmountFragment.class,
             DtlVerifyAmountPresenter.class,
             MerchantWorkingHoursAdapter.class,
+            ThinMerchantsAdapter.class,
             BaseExpandableAdapter.class,
             BaseExpandableDelegateAdapter.class,
       },

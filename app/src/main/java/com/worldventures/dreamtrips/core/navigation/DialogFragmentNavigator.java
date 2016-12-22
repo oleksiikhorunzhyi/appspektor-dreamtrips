@@ -1,6 +1,6 @@
 package com.worldventures.dreamtrips.core.navigation;
 
-import android.app.Activity;
+import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.FragmentManager;
@@ -10,6 +10,8 @@ import android.view.ViewGroup;
 
 import com.innahema.collections.query.queriables.Queryable;
 import com.techery.spares.annotations.Layout;
+import com.techery.spares.utils.delegate.CloseDialogEventDelegate;
+import com.techery.spares.utils.delegate.EditCommentCloseDelegate;
 import com.techery.spares.utils.ui.OrientationUtil;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.navigation.router.NavigationConfigBuilder;
@@ -17,8 +19,6 @@ import com.worldventures.dreamtrips.core.navigation.router.Router;
 import com.worldventures.dreamtrips.modules.common.presenter.ComponentPresenter;
 import com.worldventures.dreamtrips.modules.common.view.dialog.BaseDialogFragment;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragment;
-import com.worldventures.dreamtrips.modules.dtl.event.CloseDialogEvent;
-import com.worldventures.dreamtrips.modules.feed.event.EditCommentCloseRequest;
 
 import javax.inject.Inject;
 
@@ -49,6 +49,8 @@ public class DialogFragmentNavigator implements Navigator {
       private Bundle bundle;
 
       @Inject Router router;
+      @Inject CloseDialogEventDelegate closeDialogEventDelegate;
+      @Inject EditCommentCloseDelegate commentCloseDelegate;
 
       public static NavigationDialogFragment newInstance(Route route, Bundle bundle, int gravity) {
          NavigationDialogFragment fragment = new NavigationDialogFragment();
@@ -61,8 +63,11 @@ public class DialogFragmentNavigator implements Navigator {
       }
 
       @Override
-      public void onAttach(Activity activity) {
-         super.onAttach(activity);
+      public void onAttach(Context context) {
+         super.onAttach(context);
+
+         connectCloseDelegate();
+         connectCloseCommentDelegate();
       }
 
       @Override
@@ -109,14 +114,18 @@ public class DialogFragmentNavigator implements Navigator {
          if (isLastInStack()) OrientationUtil.unlockOrientation(getActivity());
       }
 
-      public void onEvent(CloseDialogEvent event) {
-         if (isVisible()) dismiss();
+      private void connectCloseDelegate() {
+         closeDialogEventDelegate.getObservable()
+               .compose(bindToLifecycle())
+               .filter(o -> isVisible())
+               .subscribe(aVoid -> dismiss());
       }
 
-      public void onEvent(EditCommentCloseRequest event) {
-         if (route.getClazzName().equals(event.getFragmentClazz())) {
-            dismissAllowingStateLoss();
-         }
+      private void connectCloseCommentDelegate() {
+         commentCloseDelegate.getObservable()
+               .compose(bindToLifecycle())
+               .filter(clazz -> route.getClazzName().equals(clazz))
+               .subscribe(aVoid -> dismissAllowingStateLoss());
       }
 
       private boolean isLastInStack() {

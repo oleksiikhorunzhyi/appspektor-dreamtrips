@@ -13,10 +13,16 @@
          android:background="@drawable/divider_list"
          />
 
-   <ImageView
-         android:src="@drawable/ic_points_earn_badge"
-         style="@style/DtlOfferImageView"
-         />
+   <FrameLayout style="@style/DtlOfferImageView">
+
+      <ImageView
+            android:layout_width="49dp"
+            android:layout_height="43dp"
+            android:src="@drawable/ic_dtl_points_badge"
+            android:layout_gravity="center"
+            android:padding="@dimen/spacing_tiny"
+            />
+   </FrameLayout>
 
    <TextView
          android:id="@+id/pointsDescription"

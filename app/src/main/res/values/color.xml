@@ -53,6 +53,7 @@
    <color name="light_grey_background">#eeeeee</color>
    <color name="dtl_cities_text_color">#929292</color>
    <color name="dtl_badge_color">#8896a6b6</color>
+   <color name="dtl_selection_color">#f7f7f7</color>
 
    <color name="suggest_merchant_hint_text">#7e000000</color>
    <color name="suggest_merchant_input_text">#db000000</color>

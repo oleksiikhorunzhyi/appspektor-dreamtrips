@@ -11,12 +11,14 @@ import com.techery.spares.annotations.Layout;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.api.error.ErrorResponse;
 import com.worldventures.dreamtrips.core.rx.RxBaseFragmentWithArgs;
+import com.techery.spares.utils.delegate.CloseDialogEventDelegate;
 import com.worldventures.dreamtrips.modules.common.view.util.TextWatcherAdapter;
 import com.worldventures.dreamtrips.modules.dtl.bundle.PointsEstimationDialogBundle;
-import com.worldventures.dreamtrips.modules.dtl.event.CloseDialogEvent;
-import com.worldventures.dreamtrips.modules.dtl.model.merchant.offer.DtlCurrency;
+import com.worldventures.dreamtrips.modules.dtl.model.merchant.offer.Currency;
 import com.worldventures.dreamtrips.modules.dtl.presenter.DtlPointsEstimationPresenter;
 import com.worldventures.dreamtrips.modules.dtl.view.custom.CurrencyDTEditText;
+
+import javax.inject.Inject;
 
 import butterknife.InjectView;
 import butterknife.OnClick;
@@ -30,6 +32,7 @@ public class DtlPointsEstimationFragment extends RxBaseFragmentWithArgs<DtlPoint
    @InjectView(R.id.progressBar) ProgressBar progressBar;
    @InjectView(R.id.info) TextView info;
    @InjectView(R.id.currency) TextView currency;
+   @Inject CloseDialogEventDelegate closeDialogEventDelegate;
 
    private TextWatcherAdapter textWatcherAdapter = new TextWatcherAdapter() {
       @Override
@@ -41,7 +44,7 @@ public class DtlPointsEstimationFragment extends RxBaseFragmentWithArgs<DtlPoint
 
    @Override
    protected DtlPointsEstimationPresenter createPresenter(Bundle savedInstanceState) {
-      return new DtlPointsEstimationPresenter(getArgs().getMerchantId());
+      return new DtlPointsEstimationPresenter(getArgs().getMerchant());
    }
 
    @Override
@@ -59,9 +62,9 @@ public class DtlPointsEstimationFragment extends RxBaseFragmentWithArgs<DtlPoint
    }
 
    @Override
-   public void showCurrency(DtlCurrency dtlCurrency) {
-      currency.setText(dtlCurrency.getCurrencyHint());
-      inputPoints.setCurrencySymbol(dtlCurrency.getPrefix());
+   public void showCurrency(Currency currency) {
+      this.currency.setText(currency.getCurrencyHint());
+      inputPoints.setCurrencySymbol(currency.prefix());
    }
 
    @Override
@@ -103,7 +106,7 @@ public class DtlPointsEstimationFragment extends RxBaseFragmentWithArgs<DtlPoint
 
    @OnClick(R.id.button_cancel)
    void onCancel() {
-      eventBus.post(new CloseDialogEvent());
+      closeDialogEventDelegate.post(new Object());
    }
 
    @Override

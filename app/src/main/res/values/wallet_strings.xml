@@ -330,4 +330,10 @@
    <string name="wallet_about_label_qty_pay_cards">Cards Stored</string>
    <string name="wallet_about_label_dt_app">DreamTrips App</string>
    <string name="wallet_about_label_nordic_fw">Nordic Card Firmware</string>
+
+   <!-- Pair Key & Connect SC-->
+   <string name="wallet_wizard_pair_key_instruction">Check the front of your smart card and proceed to next step.</string>
+   <string name="wallet_wizard_check_from_of_card">Check Front of Smart Card</string>
+   <string name="wallet_wizard_assigning_msg">Assigning your smart card to this device in our system.</string>
+
 </resources>

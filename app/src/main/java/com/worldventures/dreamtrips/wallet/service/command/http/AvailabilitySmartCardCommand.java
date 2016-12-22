@@ -23,6 +23,10 @@ public class AvailabilitySmartCardCommand extends Command<Void> implements Injec
       this.smartCardId = smartCardId;
    }
 
+   public String getSmartCardId() {
+      return smartCardId;
+   }
+
    @Override
    protected void run(CommandCallback<Void> callback) throws Throwable {
       apiJanet.createPipe(AvailabilitySmartCardHttpAction.class)

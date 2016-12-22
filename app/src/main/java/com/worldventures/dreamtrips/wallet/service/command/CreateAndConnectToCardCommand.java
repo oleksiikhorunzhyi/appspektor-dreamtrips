@@ -7,7 +7,6 @@ import com.worldventures.dreamtrips.core.janet.cache.ImmutableCacheOptions;
 import com.worldventures.dreamtrips.core.janet.dagger.InjectableAction;
 import com.worldventures.dreamtrips.wallet.domain.entity.ImmutableSmartCard;
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCard;
-import com.worldventures.dreamtrips.wallet.service.SmartCardInteractor;
 import com.worldventures.dreamtrips.wallet.service.storage.WizardMemoryStorage;
 import com.worldventures.dreamtrips.wallet.util.SmartCardConnectException;
 
@@ -18,26 +17,19 @@ import io.techery.janet.ActionHolder;
 import io.techery.janet.Command;
 import io.techery.janet.Janet;
 import io.techery.janet.command.annotations.CommandAction;
-import rx.Observable;
 
 @CommandAction
 public class CreateAndConnectToCardCommand extends Command<SmartCard> implements InjectableAction, CachedAction<SmartCard> {
 
    @Inject @Named(JanetModule.JANET_WALLET) Janet janet;
-   @Inject SmartCardInteractor smartCardInteractor;
    @Inject WizardMemoryStorage wizardMemoryStorage;
-
-   private SmartCard smartCard;
 
    @Override
    protected void run(CommandCallback<SmartCard> callback) throws Throwable {
-      Observable.just(createSmartCard())
-            .flatMap(smartCard -> smartCardInteractor.connectActionPipe()
-                  .createObservableResult(new ConnectSmartCardCommand(smartCard, true, true))
-            )
+      janet.createPipe(ConnectSmartCardCommand.class)
+            .createObservableResult(new ConnectSmartCardCommand(createSmartCard(), true, true))
             .map(ConnectSmartCardCommand::getResult)
-            .doOnNext(result -> this.smartCard = result)
-            .subscribe(connectCommand -> {
+            .subscribe(smartCard -> {
                if (smartCard.connectionStatus() == SmartCard.ConnectionStatus.CONNECTED) {
                   callback.onSuccess(smartCard);
                } else {
@@ -55,7 +47,7 @@ public class CreateAndConnectToCardCommand extends Command<SmartCard> implements
 
    @Override
    public SmartCard getCacheData() {
-      return smartCard;
+      return getResult();
    }
 
    @Override

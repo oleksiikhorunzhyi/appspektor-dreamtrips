@@ -6,7 +6,10 @@ import android.support.v7.widget.Toolbar;
 import android.util.AttributeSet;
 import android.widget.TextView;
 
+import com.worldventures.dreamtrips.BuildConfig;
 import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.wallet.domain.entity.SmartCardFirmware;
+import com.worldventures.dreamtrips.wallet.domain.entity.SmartCardUser;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletLinearLayout;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.OperationScreen;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.delegate.DialogOperationScreen;
@@ -46,6 +49,11 @@ public class AboutScreen extends WalletLinearLayout<AboutPresenter.Screen, About
    protected void onFinishInflate() {
       super.onFinishInflate();
       toolbar.setNavigationOnClickListener(v -> getPresenter().goBack());
+      provideAppVersion();
+   }
+
+   private void provideAppVersion() {
+      tvDTAppVersion.setText(BuildConfig.VERSION_NAME);
    }
 
    @Override
@@ -56,5 +64,21 @@ public class AboutScreen extends WalletLinearLayout<AboutPresenter.Screen, About
    @Override
    protected boolean hasToolbar() {
       return true;
+   }
+
+   @Override
+   public void onProvideSmartCard(final SmartCardFirmware smartCardFirmware, final String smartCardId, final SmartCardUser user) {
+      tvUserName.setText(user.fullName());
+      tvSmartCardId.setText(smartCardId);
+      tvNordicFWVersion.setText(smartCardFirmware.firmwareVersion());
+      tvAtmelCardFWVersion.setText(smartCardFirmware.internalAtmelVersion());
+      tvBootLoaderFWVersion.setText(smartCardFirmware.nrfBootloaderVersion());
+      tvAtmelChargerFWVersion.setText(smartCardFirmware.externalAtmelVersion());
+   }
+
+   @Override
+   public void onProvidePayCardInfo(final int cardStored, final int cardAvailable) {
+      tvQtyCardStored.setText(String.valueOf(cardStored));
+      tvQtyCardAvailable.setText(String.valueOf(cardAvailable));
    }
 }

@@ -58,7 +58,7 @@ import static io.techery.janet.ActionState.Status.SUCCESS;
 
 public class CardListPresenter extends WalletPresenter<CardListPresenter.Screen, Parcelable> {
 
-   private static final int MAX_CARD_LIMIT = 10;
+   public static final int MAX_CARD_LIMIT = 10;
 
    @Inject Navigator navigator;
    @Inject SmartCardInteractor smartCardInteractor;

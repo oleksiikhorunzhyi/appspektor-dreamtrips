@@ -15,8 +15,10 @@ import com.worldventures.dreamtrips.modules.bucketlist.bundle.ForeignBucketTabsB
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem;
 import com.worldventures.dreamtrips.modules.bucketlist.service.BucketInteractor;
 import com.worldventures.dreamtrips.modules.bucketlist.service.command.DeleteBucketItemCommand;
+import com.worldventures.dreamtrips.modules.common.model.FlagData;
 import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
+import com.worldventures.dreamtrips.modules.common.presenter.delegate.FlagDelegate;
 import com.worldventures.dreamtrips.modules.common.view.bundle.BucketBundle;
 import com.worldventures.dreamtrips.modules.feed.event.DeleteBucketEvent;
 import com.worldventures.dreamtrips.modules.feed.event.DeletePhotoEvent;
@@ -26,7 +28,9 @@ import com.worldventures.dreamtrips.modules.feed.event.EditBucketEvent;
 import com.worldventures.dreamtrips.modules.feed.event.FeedEntityChangedEvent;
 import com.worldventures.dreamtrips.modules.feed.event.FeedEntityCommentedEvent;
 import com.worldventures.dreamtrips.modules.feed.event.FeedItemAddedEvent;
+import com.worldventures.dreamtrips.modules.feed.event.ItemFlaggedEvent;
 import com.worldventures.dreamtrips.modules.feed.event.LikesPressedEvent;
+import com.worldventures.dreamtrips.modules.feed.event.LoadFlagEvent;
 import com.worldventures.dreamtrips.modules.feed.event.TranslatePostEvent;
 import com.worldventures.dreamtrips.modules.feed.model.FeedEntity;
 import com.worldventures.dreamtrips.modules.feed.model.FeedItem;
@@ -35,6 +39,7 @@ import com.worldventures.dreamtrips.modules.feed.service.PostsInteractor;
 import com.worldventures.dreamtrips.modules.feed.service.command.ChangeFeedEntityLikedStatusCommand;
 import com.worldventures.dreamtrips.modules.feed.service.command.DeletePostCommand;
 import com.worldventures.dreamtrips.modules.feed.view.util.TextualPostTranslationDelegate;
+import com.worldventures.dreamtrips.modules.flags.service.FlagsInteractor;
 import com.worldventures.dreamtrips.modules.tripsimages.bundle.TripsImagesBundle;
 import com.worldventures.dreamtrips.modules.tripsimages.service.TripImagesInteractor;
 import com.worldventures.dreamtrips.modules.tripsimages.service.command.DeletePhotoCommand;
@@ -64,6 +69,8 @@ public abstract class ProfilePresenter<T extends ProfilePresenter.View, U extend
    @Inject TripImagesInteractor tripImagesInteractor;
    @Inject PostsInteractor postsInteractor;
    @Inject EntityDeletedEventDelegate entityDeletedEventDelegate;
+   @Inject FlagsInteractor flagsInteractor;
+   private FlagDelegate flagDelegate;
 
    public ProfilePresenter() {
    }
@@ -82,6 +89,12 @@ public abstract class ProfilePresenter<T extends ProfilePresenter.View, U extend
    public void onResume() {
       super.onResume();
       refreshFeed();
+   }
+
+   @Override
+   public void onInjected() {
+      super.onInjected();
+      flagDelegate = new FlagDelegate(flagsInteractor);
    }
 
    @Override
@@ -148,6 +161,15 @@ public abstract class ProfilePresenter<T extends ProfilePresenter.View, U extend
                .subscribe(new ActionStateSubscriber<DownloadImageCommand>()
                      .onFail(this::handleError));
       }
+   }
+
+   public void onEvent(LoadFlagEvent event) {
+      if (view.isVisibleOnScreen()) flagDelegate.loadFlags(event.getFlaggableView(), this::handleError);
+   }
+
+   public void onEvent(ItemFlaggedEvent event) {
+      if (view.isVisibleOnScreen()) flagDelegate.flagItem(new FlagData(event.getEntity()
+            .getUid(), event.getFlagReasonId(), event.getNameOfReason()), view, this::handleError);
    }
 
    public void onEvent(EditBucketEvent event) {
@@ -320,7 +342,7 @@ public abstract class ProfilePresenter<T extends ProfilePresenter.View, U extend
       view.refreshFeedItems(feedItems);
    }
 
-   public interface View extends RxView, TextualPostTranslationDelegate.View {
+   public interface View extends RxView, FlagDelegate.View, TextualPostTranslationDelegate.View {
 
       void openPost();
 

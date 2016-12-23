@@ -88,6 +88,7 @@ public class ConnectSmartCardPresenter extends WalletPresenter<ConnectSmartCardP
    private void observerAvailabilitySmartCard() {
       wizardInteractor.availabilitySmartCardCommandActionPipe()
             .observeWithReplay()
+            .compose(new ActionPipeCacheWiper<>(wizardInteractor.availabilitySmartCardCommandActionPipe()))
             .compose(bindViewIoToMainComposer())
             .subscribe(OperationActionStateSubscriberWrapper.<AvailabilitySmartCardCommand>forView(getView().provideOperationDelegate())
                   .onSuccess(command -> wizardInteractor.createAndConnectActionPipe().send(new CreateAndConnectToCardCommand()))

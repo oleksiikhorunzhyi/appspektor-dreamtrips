@@ -421,7 +421,7 @@ dependencies {
    compile 'com.snappydb:snappydb-lib:0.5.2'
    compile 'com.esotericsoftware.kryo:kryo:2.24.0'
    // Networking
-   compile(group: 'com.worldventures.dreamtrips', name: 'api', version: '2.8.6-STAGE-SNAPSHOT', changing: true) {
+   compile(group: 'com.worldventures.dreamtrips', name: 'api', version: '2.8.8-STAGE-SNAPSHOT', changing: true) {
       exclude group: "joda-time"
    }
    compile 'com.octo.android.robospice:robospice:1.4.14'

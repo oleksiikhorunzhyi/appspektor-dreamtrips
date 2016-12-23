@@ -283,4 +283,9 @@ public abstract class ProfileFragment<T extends ProfilePresenter> extends RxBase
    public void onCellClicked(User model) {
       //
    }
+
+   @Override
+   public void flagSentSuccess() {
+      informUser(R.string.flag_sent_success_msg);
+   }
 }

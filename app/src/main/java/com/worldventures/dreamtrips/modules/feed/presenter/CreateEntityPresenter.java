@@ -18,13 +18,12 @@ import com.worldventures.dreamtrips.modules.common.service.MediaInteractor;
 import com.worldventures.dreamtrips.modules.common.view.util.MediaPickerEventDelegate;
 import com.worldventures.dreamtrips.modules.common.view.util.MediaPickerImagesProcessedEventDelegate;
 import com.worldventures.dreamtrips.modules.feed.bundle.CreateEntityBundle;
-import com.worldventures.dreamtrips.modules.feed.event.FeedItemAddedEvent;
-import com.worldventures.dreamtrips.modules.feed.model.FeedItem;
 import com.worldventures.dreamtrips.modules.feed.model.ImmutableSelectedPhoto;
 import com.worldventures.dreamtrips.modules.feed.model.PhotoCreationItem;
 import com.worldventures.dreamtrips.modules.feed.model.SelectedPhoto;
 import com.worldventures.dreamtrips.modules.feed.service.PostsInteractor;
 import com.worldventures.dreamtrips.modules.feed.service.command.CreatePostCommand;
+import com.worldventures.dreamtrips.modules.feed.service.command.PostCreatedCommand;
 import com.worldventures.dreamtrips.modules.tripsimages.service.TripImagesInteractor;
 import com.worldventures.dreamtrips.modules.tripsimages.service.command.CreatePhotoCreationItemCommand;
 import com.worldventures.dreamtrips.modules.tripsimages.service.command.FetchLocationFromExifCommand;
@@ -84,7 +83,7 @@ public class CreateEntityPresenter<V extends CreateEntityPresenter.View> extends
             .subscribe(new ActionStateSubscriber<CreatePostCommand>()
                   .onFail(this::handleError)
                   .onSuccess(command -> {
-                     eventBus.post(new FeedItemAddedEvent(FeedItem.create(command.getResult(), getAccount())));
+                     postsInteractor.postCreatedPipe().send(new PostCreatedCommand(command.getResult()));
                      closeView();
                   }));
       mediaPickerImagesProcessedEventDelegate.getReplayObservable()

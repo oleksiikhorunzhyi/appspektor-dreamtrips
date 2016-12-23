@@ -47,6 +47,7 @@ import com.worldventures.dreamtrips.modules.feed.service.command.HashtagSuggesti
 import com.worldventures.dreamtrips.modules.feed.service.command.LikeEntityCommand;
 import com.worldventures.dreamtrips.modules.feed.service.command.MarkNotificationAsReadCommand;
 import com.worldventures.dreamtrips.modules.feed.service.command.MarkNotificationsAsReadCommand;
+import com.worldventures.dreamtrips.modules.feed.service.command.PostCreatedCommand;
 import com.worldventures.dreamtrips.modules.feed.service.command.SuggestedPhotoCommand;
 import com.worldventures.dreamtrips.modules.feed.service.command.TranslateTextCachedCommand;
 import com.worldventures.dreamtrips.modules.feed.service.command.TranslateUidItemCommand;
@@ -149,6 +150,7 @@ import dagger.Module;
       SubscribeToPushNotificationsCommand.class,
       SettingsCommand.class,
       CreatePostCommand.class,
+      PostCreatedCommand.class,
       EditPostCommand.class,
       DeletePostCommand.class,
       CreateCommentCommand.class,

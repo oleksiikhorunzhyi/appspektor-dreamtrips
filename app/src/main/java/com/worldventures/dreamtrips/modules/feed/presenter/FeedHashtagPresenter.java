@@ -22,7 +22,6 @@ import com.worldventures.dreamtrips.modules.feed.event.DeletePostEvent;
 import com.worldventures.dreamtrips.modules.feed.event.EditBucketEvent;
 import com.worldventures.dreamtrips.modules.feed.event.FeedEntityChangedEvent;
 import com.worldventures.dreamtrips.modules.feed.event.FeedEntityCommentedEvent;
-import com.worldventures.dreamtrips.modules.feed.event.FeedItemAddedEvent;
 import com.worldventures.dreamtrips.modules.feed.event.TranslatePostEvent;
 import com.worldventures.dreamtrips.modules.feed.model.FeedEntity;
 import com.worldventures.dreamtrips.modules.feed.model.FeedItem;
@@ -79,6 +78,7 @@ public class FeedHashtagPresenter<T extends FeedHashtagPresenter.View> extends J
       subscribeRefreshFeeds();
       subscribeLoadNextFeeds();
       subscribeSuggestions();
+      subscribeToNewItems();
       subscribeToLikesChanges();
       subscribeToEntityDeletedEvents();
       textualPostTranslationDelegate.onTakeView(view, feedItems);
@@ -237,9 +237,14 @@ public class FeedHashtagPresenter<T extends FeedHashtagPresenter.View> extends J
             .subscribe(this::itemDeleted);
    }
 
-   public void onEventMainThread(FeedItemAddedEvent event) {
-      feedItems.add(0, event.getFeedItem());
-      view.refreshFeedItems(feedItems);
+   private void subscribeToNewItems() {
+      postsInteractor.postCreatedPipe()
+            .observeSuccess()
+            .compose(bindViewToMainComposer())
+            .subscribe(command -> {
+               feedItems.add(0, command.getFeedItem());
+               view.refreshFeedItems(feedItems);
+            });
    }
 
    public void onEvent(FeedEntityChangedEvent event) {

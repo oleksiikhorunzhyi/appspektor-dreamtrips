@@ -42,7 +42,6 @@ import com.worldventures.dreamtrips.modules.feed.event.DeletePostEvent;
 import com.worldventures.dreamtrips.modules.feed.event.EditBucketEvent;
 import com.worldventures.dreamtrips.modules.feed.event.FeedEntityChangedEvent;
 import com.worldventures.dreamtrips.modules.feed.event.FeedEntityCommentedEvent;
-import com.worldventures.dreamtrips.modules.feed.event.FeedItemAddedEvent;
 import com.worldventures.dreamtrips.modules.feed.event.TranslatePostEvent;
 import com.worldventures.dreamtrips.modules.feed.model.FeedEntity;
 import com.worldventures.dreamtrips.modules.feed.model.FeedItem;
@@ -132,6 +131,7 @@ public class FeedPresenter extends Presenter<FeedPresenter.View> implements Feed
       subscribeToLikesChanges();
       subscribeToEntityDeletedEvents();
       subscribeToBackgroundUploadingOperations();
+      subscribeToNewItems();
       textualPostTranslationDelegate.onTakeView(view, feedItems);
 
       if (feedItems.size() != 0) {
@@ -343,9 +343,14 @@ public class FeedPresenter extends Presenter<FeedPresenter.View> implements Feed
                   }));
    }
 
-   public void onEventMainThread(FeedItemAddedEvent event) {
-      feedItems.add(0, event.getFeedItem());
-      refreshFeedItemsInView();
+   private void subscribeToNewItems() {
+      postsInteractor.postCreatedPipe()
+            .observeSuccess()
+            .compose(bindViewToMainComposer())
+            .subscribe(command -> {
+               feedItems.add(0, command.getFeedItem());
+               refreshFeedItemsInView();
+            });
    }
 
    public void onEventMainThread(FeedEntityChangedEvent event) {

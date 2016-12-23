@@ -17,20 +17,19 @@ import com.worldventures.dreamtrips.wallet.ui.wizard.splash.WizardSplashPath;
 import javax.inject.Inject;
 import javax.inject.Named;
 
-import flow.Flow.Direction;
 import io.techery.janet.Janet;
 import io.techery.janet.operationsubscriber.OperationActionSubscriber;
 import io.techery.janet.operationsubscriber.view.OperationView;
 
 import static com.worldventures.dreamtrips.core.janet.JanetModule.JANET_WALLET;
 
-public class WizardTermsScreenPresenter extends WalletPresenter<WizardTermsScreenPresenter.Screen, Parcelable> {
+public class WizardTermsPresenter extends WalletPresenter<WizardTermsPresenter.Screen, Parcelable> {
 
    @Inject Navigator navigator;
    @Inject AnalyticsInteractor analyticsInteractor;
    @Inject @Named(JANET_WALLET) Janet janet;
 
-   public WizardTermsScreenPresenter(Context context, Injector injector) {
+   public WizardTermsPresenter(Context context, Injector injector) {
       super(context, injector);
    }
 
@@ -43,7 +42,7 @@ public class WizardTermsScreenPresenter extends WalletPresenter<WizardTermsScree
 
    public void acceptTermsPressed() {
       analyticsInteractor.walletAnalyticsCommandPipe().send(new WalletAnalyticsCommand(new TermsAcceptedAction()));
-      navigator.single(new WizardSplashPath(), Direction.BACKWARD);
+      navigator.withoutLast(new WizardSplashPath());
    }
 
    protected void loadTerms() {

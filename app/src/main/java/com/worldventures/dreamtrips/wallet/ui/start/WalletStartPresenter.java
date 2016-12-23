@@ -15,7 +15,7 @@ import com.worldventures.dreamtrips.wallet.ui.common.helper.OperationActionState
 import com.worldventures.dreamtrips.wallet.ui.common.navigation.Navigator;
 import com.worldventures.dreamtrips.wallet.ui.dashboard.CardListPath;
 import com.worldventures.dreamtrips.wallet.ui.provisioning_blocked.WalletProvisioningBlockedPath;
-import com.worldventures.dreamtrips.wallet.ui.wizard.power_on.WizardPowerOnPath;
+import com.worldventures.dreamtrips.wallet.ui.wizard.welcome.WizardWelcomePath;
 
 import javax.inject.Inject;
 
@@ -57,7 +57,7 @@ public class WalletStartPresenter extends WalletPresenter<WalletStartPresenter.S
       if (associatedCard.exist()) {
          navigator.single(new CardListPath(), Flow.Direction.REPLACE);
       } else {
-         navigator.single(new WizardPowerOnPath(), Flow.Direction.REPLACE);
+         navigator.single(new WizardWelcomePath(), Flow.Direction.REPLACE);
       }
    }
 

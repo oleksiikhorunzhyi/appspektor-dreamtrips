@@ -48,7 +48,7 @@ import com.worldventures.dreamtrips.wallet.ui.wizard.pin.success.PinSetSuccessPr
 import com.worldventures.dreamtrips.wallet.ui.wizard.power_on.WizardPowerOnPresenter;
 import com.worldventures.dreamtrips.wallet.ui.wizard.profile.WizardEditProfilePresenter;
 import com.worldventures.dreamtrips.wallet.ui.wizard.splash.WizardSplashPresenter;
-import com.worldventures.dreamtrips.wallet.ui.wizard.termsandconditionals.WizardTermsScreenPresenter;
+import com.worldventures.dreamtrips.wallet.ui.wizard.termsandconditionals.WizardTermsPresenter;
 import com.worldventures.dreamtrips.wallet.ui.wizard.welcome.WizardWelcomePresenter;
 
 import javax.inject.Singleton;
@@ -73,7 +73,7 @@ import dagger.Provides;
             WalletProvisioningBlockedPresenter.class,
             WizardSplashPresenter.class,
             WizardPowerOnPresenter.class,
-            WizardTermsScreenPresenter.class,
+            WizardTermsPresenter.class,
             WizardScanBarcodePresenter.class,
             WizardManualInputPresenter.class,
             WizardEditProfilePresenter.class,

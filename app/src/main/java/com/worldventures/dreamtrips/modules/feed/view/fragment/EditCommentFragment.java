@@ -12,11 +12,14 @@ import com.facebook.drawee.view.SimpleDraweeView;
 import com.techery.spares.annotations.Layout;
 import com.techery.spares.utils.ui.SoftInputUtil;
 import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.core.navigation.service.DialogNavigatorInteractor;
+import com.worldventures.dreamtrips.core.navigation.service.command.CloseDialogCommand;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragmentWithArgs;
 import com.worldventures.dreamtrips.modules.common.view.util.TextWatcherAdapter;
 import com.worldventures.dreamtrips.modules.feed.bundle.SingleCommentBundle;
-import com.worldventures.dreamtrips.modules.feed.event.EditCommentCloseRequest;
 import com.worldventures.dreamtrips.modules.feed.presenter.EditCommentPresenter;
+
+import javax.inject.Inject;
 
 import butterknife.InjectView;
 import butterknife.OnClick;
@@ -29,6 +32,8 @@ public class EditCommentFragment extends BaseFragmentWithArgs<EditCommentPresent
    @InjectView(R.id.user_name) TextView userName;
    @InjectView(R.id.comment_edit) EditText editComment;
    @InjectView(R.id.save) Button save;
+
+   @Inject DialogNavigatorInteractor dialogNavigatorInteractor;
 
    @Override
    public void afterCreateView(View rootView) {
@@ -74,7 +79,7 @@ public class EditCommentFragment extends BaseFragmentWithArgs<EditCommentPresent
 
    @Override
    public void close() {
-      eventBus.post(new EditCommentCloseRequest(this.getClass().getName()));
+      dialogNavigatorInteractor.closeDialogActionPipe().send(new CloseDialogCommand());
    }
 
    @Override

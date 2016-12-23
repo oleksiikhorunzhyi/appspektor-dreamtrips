@@ -8,6 +8,7 @@ import com.techery.spares.session.SessionHolder;
 import com.worldventures.dreamtrips.core.api.PhotoUploadingManagerS3;
 import com.worldventures.dreamtrips.core.janet.JanetModule;
 import com.worldventures.dreamtrips.core.janet.SessionActionPipeCreator;
+import com.worldventures.dreamtrips.core.navigation.service.DialogNavigatorInteractor;
 import com.worldventures.dreamtrips.core.session.CirclesInteractor;
 import com.worldventures.dreamtrips.core.session.UserSession;
 import com.worldventures.dreamtrips.core.utils.DTCookieManager;
@@ -180,6 +181,12 @@ public class ManagerModule {
    @Singleton
    TripImagesInteractor provideTripImagesInteractor(SessionActionPipeCreator sessionActionPipeCreator) {
       return new TripImagesInteractor(sessionActionPipeCreator);
+   }
+
+   @Provides
+   @Singleton
+   DialogNavigatorInteractor provideDialogNavigatorInteractor(SessionActionPipeCreator sessionActionPipeCreator) {
+      return new DialogNavigatorInteractor(sessionActionPipeCreator);
    }
 
    @Provides

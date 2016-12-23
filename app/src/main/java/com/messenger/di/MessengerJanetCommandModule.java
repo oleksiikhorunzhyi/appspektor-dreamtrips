@@ -1,6 +1,7 @@
 package com.messenger.di;
 
 import com.messenger.api.GetShortProfilesCommand;
+import com.messenger.command.LoginToMessengerServerCommand;
 import com.messenger.delegate.chat.attachment.SendImageAttachmentCommand;
 import com.messenger.delegate.chat.attachment.SendLocationAttachmentCommand;
 import com.messenger.delegate.chat.command.ClearChatServerCommand;
@@ -51,6 +52,7 @@ import dagger.Module;
               MarkMessageAsReadCommand.class,
               ClearChatServerCommand.class,
               RevertClearingChatServerCommand.class,
+              LoginToMessengerServerCommand.class,
               GetShortProfilesCommand.class},
         complete = false, library = true)
 public class MessengerJanetCommandModule {

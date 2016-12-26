@@ -24,6 +24,7 @@ import javax.inject.Inject;
 import icepick.State;
 import io.techery.janet.helper.ActionStateSubscriber;
 import rx.Observable;
+import rx.android.schedulers.AndroidSchedulers;
 import timber.log.Timber;
 
 public class TripMapPresenter extends Presenter<TripMapPresenter.View> {
@@ -82,6 +83,8 @@ public class TripMapPresenter extends Presenter<TripMapPresenter.View> {
 
    private void subscribeToSearch() {
       view.textChanges()
+            .subscribeOn(AndroidSchedulers.mainThread())
+            .observeOn(AndroidSchedulers.mainThread())
             .compose(bindView())
             .subscribe(this::search);
    }

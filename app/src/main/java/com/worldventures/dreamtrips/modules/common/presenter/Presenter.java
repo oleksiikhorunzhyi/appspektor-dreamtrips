@@ -148,6 +148,10 @@ public class Presenter<VT extends Presenter.View> {
       return input -> input.takeUntil(pauseViewStopper);
    }
 
+   protected <T> Observable.Transformer<T, T> bindUntilPauseIoToMainComposer() {
+      return input -> input.compose(new IoToMainComposer<>()).compose(bindUntilPause());
+   }
+
    protected <T> Observable.Transformer<T, T> bindViewToMainComposer() {
       return input -> input.compose(new IoToMainComposer<>()).compose(bindView());
    }

@@ -30,6 +30,8 @@ public class FeatureConverter implements Converter<Feature, com.worldventures.dr
             return new com.worldventures.dreamtrips.core.session.acl.Feature(com.worldventures.dreamtrips.core.session.acl.Feature.DTL);
          case REP_SUGGEST_MERCHANT:
             return new com.worldventures.dreamtrips.core.session.acl.Feature(com.worldventures.dreamtrips.core.session.acl.Feature.REP_SUGGEST_MERCHANT);
+         case BOOK_TRIP:
+            return new com.worldventures.dreamtrips.core.session.acl.Feature(com.worldventures.dreamtrips.core.session.acl.Feature.BOOK_TRIP);
          case BOOK_TRAVEL:
             return new com.worldventures.dreamtrips.core.session.acl.Feature(com.worldventures.dreamtrips.core.session.acl.Feature.BOOK_TRAVEL);
          case MEMBERSHIP:

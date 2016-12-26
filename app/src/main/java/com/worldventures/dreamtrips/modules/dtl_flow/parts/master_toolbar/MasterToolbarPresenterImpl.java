@@ -32,6 +32,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import javax.inject.Inject;
 
 import icepick.State;
+import io.techery.janet.CancelException;
 import io.techery.janet.Command;
 import io.techery.janet.helper.ActionStateSubscriber;
 import rx.Subscription;
@@ -279,11 +280,14 @@ public class MasterToolbarPresenterImpl extends DtlPresenterImpl<MasterToolbarSc
             .compose(bindViewIoToMainComposer())
             .subscribe(new ActionStateSubscriber<NearbyLocationAction>()
                   .onProgress((action, progress) -> getView().showProgress())
-                  .onFail((action, throwable) -> {
-                     getView().informUser(action.getFallbackErrorMessage());
-                     getView().hideProgress();
-                  })
+                  .onFail(this::onLocationLoadedError)
                   .onSuccess(this::onLocationsLoaded));
+   }
+
+   private void onLocationLoadedError(NearbyLocationAction action, Throwable throwable) {
+      if(throwable instanceof CancelException) return;
+      getView().informUser(action.getErrorMessage());
+      getView().hideProgress();
    }
 
    private void onLocationsLoaded(NearbyLocationAction action) {
@@ -293,7 +297,6 @@ public class MasterToolbarPresenterImpl extends DtlPresenterImpl<MasterToolbarSc
 
    @Override
    public void locationSelected(DtlLocation dtlExternalLocation) {
-      //locationInteractor.searchLocationPipe().clearReplays();
       analyticsInteractor.dtlAnalyticsCommandPipe()
             .send(DtlAnalyticsCommand.create(LocationSearchEvent.create(dtlExternalLocation)));
       locationInteractor.changeSourceLocation(dtlExternalLocation);

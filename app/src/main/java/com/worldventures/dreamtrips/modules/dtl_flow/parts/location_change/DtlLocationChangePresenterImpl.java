@@ -42,6 +42,7 @@ import flow.Flow;
 import flow.History;
 import flow.path.Path;
 import icepick.State;
+import io.techery.janet.CancelException;
 import io.techery.janet.Command;
 import io.techery.janet.helper.ActionStateSubscriber;
 import rx.Observable;
@@ -251,11 +252,14 @@ public class DtlLocationChangePresenterImpl extends DtlPresenterImpl<DtlLocation
             .compose(bindViewIoToMainComposer())
             .subscribe(new ActionStateSubscriber<NearbyLocationAction>()
                   .onProgress((command, progress) -> getView().showProgress())
-                  .onFail((action, throwable) -> {
-                     getView().informUser(action.getFallbackErrorMessage());
-                     getView().hideProgress();
-                  })
+                  .onFail(this::onLocationLoadedError)
                   .onSuccess(this::onLocationsLoaded));
+   }
+
+   private void onLocationLoadedError(NearbyLocationAction action, Throwable throwable) {
+      if(throwable instanceof CancelException) return;
+      getView().informUser(action.getErrorMessage());
+      getView().hideProgress();
    }
 
    private void onLocationsLoaded(NearbyLocationAction action) {
@@ -282,7 +286,6 @@ public class DtlLocationChangePresenterImpl extends DtlPresenterImpl<DtlLocation
 
    @Override
    public void locationSelected(DtlLocation location) {
-      //locationInteractor.searchLocationPipe().clearReplays();
       analyticsInteractor.dtlAnalyticsCommandPipe()
             .send(DtlAnalyticsCommand.create(LocationSearchEvent.create(location)));
       locationInteractor.changeSourceLocation(location);

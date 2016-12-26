@@ -45,7 +45,8 @@ public class DtlLocationsSearchPresenterImpl extends DtlPresenterImpl<DtlLocatio
       locationInteractor.searchLocationPipe()
             .observeWithReplay()
             .compose(bindViewIoToMainComposer())
-            .subscribe(new ActionStateSubscriber<SearchLocationAction>().onStart(command -> getView().showProgress())
+            .subscribe(new ActionStateSubscriber<SearchLocationAction>()
+                  .onStart(command -> getView().showProgress())
                   .onFail(apiErrorPresenter::handleActionError)
                   .onSuccess(this::onSearchFinished));
    }

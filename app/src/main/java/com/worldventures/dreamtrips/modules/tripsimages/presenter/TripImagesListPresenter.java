@@ -87,7 +87,7 @@ public abstract class TripImagesListPresenter<VT extends TripImagesListPresenter
       view.clear();
       fillWithItems();
       if (!view.isFullscreenView()) {
-         reload();
+         reload(false);
       }
       subscribeToPhotoDeletedEvents();
       subscribeToLikesChanges();
@@ -117,7 +117,7 @@ public abstract class TripImagesListPresenter<VT extends TripImagesListPresenter
 
    protected abstract C getLoadMoreCommand(int currentCount);
 
-   public void reload() {
+   public void reload(boolean userInitiated) {
       view.startLoading();
       currentPage = 1;
       load(getReloadCommand(), this::onFullDataLoaded);

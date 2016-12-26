@@ -55,10 +55,10 @@ public class WizardPowerOnPresenter extends WalletPresenter<WizardPowerOnPresent
 
    private void bindResult(WizardCheckCommand.Checks result) {
       getView().setButtonAction((result.internetIsAvailable() && result.bluetoothIsEnabled())
-            ? button -> openUserAgreement() : button ->  openWelcome());
+            ? button -> openUserAgreement() : button ->  openCheckScreen());
    }
 
-   public void openWelcome() {
+   public void openCheckScreen() {
       navigator.single(new WizardCheckingPath());
    }
 

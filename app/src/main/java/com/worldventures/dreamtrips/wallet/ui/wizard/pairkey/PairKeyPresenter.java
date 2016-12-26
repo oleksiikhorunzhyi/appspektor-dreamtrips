@@ -18,7 +18,7 @@ import com.worldventures.dreamtrips.wallet.ui.common.base.screen.WalletScreen;
 import com.worldventures.dreamtrips.wallet.ui.common.helper.ErrorHandler;
 import com.worldventures.dreamtrips.wallet.ui.common.helper.OperationActionStateSubscriberWrapper;
 import com.worldventures.dreamtrips.wallet.ui.common.navigation.Navigator;
-import com.worldventures.dreamtrips.wallet.ui.wizard.welcome.WizardWelcomePath;
+import com.worldventures.dreamtrips.wallet.ui.wizard.profile.WizardEditProfilePath;
 import com.worldventures.dreamtrips.wallet.util.SmartCardConnectException;
 import com.worldventures.dreamtrips.wallet.util.WalletValidateHelper;
 
@@ -62,7 +62,7 @@ public class PairKeyPresenter extends WalletPresenter<PairKeyPresenter.Screen, P
 
    private void smartCardConnected(SmartCard smartCard) {
       if (checkBarcode(smartCard.smartCardId())) {
-         navigator.withoutLast(new WizardWelcomePath());
+         navigator.withoutLast(new WizardEditProfilePath());
          trackCardAdded(barcode);
       }
    }

@@ -30,7 +30,7 @@ import io.techery.janet.operationsubscriber.view.ComposableOperationView;
 import io.techery.janet.operationsubscriber.view.ErrorView;
 import io.techery.janet.operationsubscriber.view.OperationView;
 
-public class WizardTermsScreen extends WalletLinearLayout<WizardTermsScreenPresenter.Screen, WizardTermsScreenPresenter, WizardTermsPath> implements WizardTermsScreenPresenter.Screen, ErrorView {
+public class WizardTermsScreen extends WalletLinearLayout<WizardTermsPresenter.Screen, WizardTermsPresenter, WizardTermsPath> implements WizardTermsPresenter.Screen, ErrorView {
 
    @InjectView(R.id.toolbar) Toolbar toolbar;
    @InjectView(R.id.container_layout_agreement) ViewGroup userAgreementViewGroup;
@@ -50,8 +50,8 @@ public class WizardTermsScreen extends WalletLinearLayout<WizardTermsScreenPrese
 
    @NonNull
    @Override
-   public WizardTermsScreenPresenter createPresenter() {
-      return new WizardTermsScreenPresenter(getContext(), getInjector());
+   public WizardTermsPresenter createPresenter() {
+      return new WizardTermsPresenter(getContext(), getInjector());
    }
 
    @Override

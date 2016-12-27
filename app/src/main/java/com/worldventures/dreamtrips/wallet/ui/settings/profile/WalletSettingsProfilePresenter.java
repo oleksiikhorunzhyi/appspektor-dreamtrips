@@ -80,7 +80,7 @@ public class WalletSettingsProfilePresenter extends WalletPresenter<WalletSettin
             .compose(bindViewIoToMainComposer())
             .subscribe(it -> {
                view.setPreviewPhoto(it.user().userPhoto().monochrome());
-               view.setUserName(it.user().firstName(), it.user().middleName(), it.user().lastName());;
+               view.setUserName(it.user().firstName(), it.user().middleName(), it.user().lastName());
             });
    }
 
@@ -148,7 +148,10 @@ public class WalletSettingsProfilePresenter extends WalletPresenter<WalletSettin
             .compose(new ActionPipeCacheWiper<>(smartCardUserDataInteractor.updateSmartCardUserPipe()))
             .subscribe(new ActionStateSubscriber<UpdateSmartCardUserCommand>()
                   .onStart(o -> view.showProgress())
-                  .onSuccess(o -> view.hideProgress())
+                  .onSuccess(o -> {
+                     view.hideProgress();
+                     goBack();
+                  })
                   .onFail((o, throwable) -> onError((JanetException) throwable))
             );
 
@@ -203,7 +206,10 @@ public class WalletSettingsProfilePresenter extends WalletPresenter<WalletSettin
             view.firstNameObservable(),
             view.middleNameObservable(),
             view.lastNameObservable(),
-            smartCardUserDataInteractor.smartCardAvatarPipe().observeSuccess().map(Command::getResult).startWith(Observable.just(null)),
+            smartCardUserDataInteractor.smartCardAvatarPipe()
+                  .observeSuccess()
+                  .map(Command::getResult)
+                  .startWith(Observable.just(null)),
             (smartCard, firstName, middleName, lastName, newAvatar) -> {
                handleFirstName(smartCard.user().firstName(), firstName);
                handleMiddleName(smartCard.user().middleName(), middleName);
@@ -242,7 +248,7 @@ public class WalletSettingsProfilePresenter extends WalletPresenter<WalletSettin
    private void handleAvatar(SmartCardUserPhoto userPhoto, SmartCardUserPhoto newUserPhoto) {
       if ((userPhoto == null && newUserPhoto != null) ||
             (userPhoto != null && newUserPhoto != null && !newUserPhoto.original().equals(userPhoto.original()))) {
-            // new photo
+         // new photo
          changeProfileFlag |= 0xFF_00_00_00;
       } else {
          changeProfileFlag &= 0x00_FF_FF_FF;

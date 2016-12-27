@@ -5,7 +5,6 @@ import android.net.Uri;
 import com.innahema.collections.query.functions.Converter;
 import com.innahema.collections.query.queriables.Queryable;
 import com.worldventures.dreamtrips.core.navigation.BackStackDelegate;
-import com.worldventures.dreamtrips.core.rx.composer.IoToMainComposer;
 import com.worldventures.dreamtrips.core.utils.FileUtils;
 import com.worldventures.dreamtrips.modules.background_uploading.model.PostWithAttachmentBody;
 import com.worldventures.dreamtrips.modules.background_uploading.service.BackgroundUploadingInteractor;
@@ -95,14 +94,8 @@ public class CreateEntityPresenter<V extends CreateEntityPresenter.View> extends
                this.mediaPickerProcessingImages = mediaPickerProcessingImages;
                invalidateDynamicViews();
             });
-   }
-
-   @Override
-   public void onResume() {
-      super.onResume();
       mediaPickerEventDelegate.getObservable()
-            .compose(new IoToMainComposer<>())
-            .compose(bindUntilPause())
+            .compose(bindViewToMainComposer())
             .subscribe(this::attachImages, error -> Timber.e(error, ""));
    }
 

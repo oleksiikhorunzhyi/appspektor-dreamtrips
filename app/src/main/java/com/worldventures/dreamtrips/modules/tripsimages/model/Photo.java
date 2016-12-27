@@ -90,10 +90,7 @@ public class Photo extends BaseFeedEntity implements IFullScreenObject {
    }
 
    public void setPhotoTags(List<PhotoTag> photoTags) {
-      if (photoTags != null) {
-         this.photoTags = photoTags;
-         this.photoTagsCount = photoTags.size();
-      }
+      this.photoTags = photoTags;
    }
 
    public int getPhotoTagsCount() {
@@ -260,6 +257,7 @@ public class Photo extends BaseFeedEntity implements IFullScreenObject {
       parcel.writeString(taskId);
       parcel.writeParcelable(owner, i);
       parcel.writeTypedList(photoTags);
+      parcel.writeInt(photoTagsCount);
       parcel.writeInt(width);
       parcel.writeInt(height);
    }
@@ -278,6 +276,7 @@ public class Photo extends BaseFeedEntity implements IFullScreenObject {
       owner = in.readParcelable(User.class.getClassLoader());
       photoTags = new ArrayList<>();
       in.readTypedList(photoTags, PhotoTag.CREATOR);
+      photoTagsCount = in.readInt();
       width = in.readInt();
       height = in.readInt();
    }

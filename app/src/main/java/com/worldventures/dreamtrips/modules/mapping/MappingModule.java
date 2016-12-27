@@ -2,6 +2,7 @@ package com.worldventures.dreamtrips.modules.mapping;
 
 import com.worldventures.dreamtrips.modules.bucketlist.model.converter.BucketCategoryConverter;
 import com.worldventures.dreamtrips.modules.bucketlist.model.converter.BucketCoverPhotoConverter;
+import com.worldventures.dreamtrips.modules.bucketlist.model.converter.BucketDiningItemConverter;
 import com.worldventures.dreamtrips.modules.bucketlist.model.converter.BucketItemSimpleConverter;
 import com.worldventures.dreamtrips.modules.bucketlist.model.converter.BucketItemSocializedConverter;
 import com.worldventures.dreamtrips.modules.bucketlist.model.converter.BucketLocationConverter;
@@ -362,6 +363,12 @@ public class MappingModule {
    @Singleton
    Converter provideBucketSimpleConverter() {
       return new BucketItemSimpleConverter();
+   }
+
+   @Provides(type = Provides.Type.SET)
+   @Singleton
+   Converter provideBucketDiningConverter() {
+      return new BucketDiningItemConverter();
    }
 
    @Provides(type = Provides.Type.SET)

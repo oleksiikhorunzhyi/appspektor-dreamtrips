@@ -79,7 +79,7 @@ public class BucketItemDetailsPresenter extends BucketDetailsBasePresenter<Bucke
             .map(UpdateBucketItemCommand::getResult)
             .filter(bucketItem -> bucketItem.equals(this.bucketItem))
             .subscribe(item -> {
-                  updateBucketItem(bucketItem);
+                  updateBucketItem(item);
                   syncUI();
             });
    }

@@ -23,6 +23,7 @@ public class ApiUserToUserConverter implements Converter<com.worldventures.dream
       user.setId(apiUser.id());
       user.setFirstName(apiUser.firstName());
       user.setLastName(apiUser.lastName());
+      user.setUsername(apiUser.userName());
       user.setAvatar(mapperyContext.convert(apiUser.avatar(), User.Avatar.class));
       user.setBadges(apiUser.badges());
       user.setLocation(apiUser.location());

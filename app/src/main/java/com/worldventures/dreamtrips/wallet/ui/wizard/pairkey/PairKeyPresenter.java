@@ -13,6 +13,11 @@ import com.worldventures.dreamtrips.wallet.analytics.WalletAnalyticsCommand;
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCard;
 import com.worldventures.dreamtrips.wallet.service.WizardInteractor;
 import com.worldventures.dreamtrips.wallet.service.command.CreateAndConnectToCardCommand;
+<<<<<<< HEAD:app/src/main/java/com/worldventures/dreamtrips/wallet/ui/wizard/pairkey/PairKeyPresenter.java
+=======
+import com.worldventures.dreamtrips.wallet.service.command.http.AvailabilitySmartCardCommand;
+import com.worldventures.dreamtrips.wallet.service.storage.WizardMemoryStorage;
+>>>>>>> smart-card/dev:app/src/main/java/com/worldventures/dreamtrips/wallet/ui/wizard/associate/ConnectSmartCardPresenter.java
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletPresenter;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.WalletScreen;
 import com.worldventures.dreamtrips.wallet.ui.common.helper.ErrorHandler;

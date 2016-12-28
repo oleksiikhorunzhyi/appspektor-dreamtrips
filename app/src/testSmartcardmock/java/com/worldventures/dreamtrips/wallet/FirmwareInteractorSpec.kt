@@ -12,12 +12,14 @@ import com.worldventures.dreamtrips.wallet.model.TestFirmware
 import com.worldventures.dreamtrips.wallet.service.FirmwareInteractor
 import com.worldventures.dreamtrips.wallet.service.SmartCardInteractor
 import com.worldventures.dreamtrips.wallet.service.WalletBluetoothService
+import com.worldventures.dreamtrips.wallet.service.command.ActiveSmartCardCommand
 import com.worldventures.dreamtrips.wallet.service.command.firmware.PreInstallationCheckCommand
 import io.techery.janet.ActionState
 import io.techery.janet.CommandActionService
 import io.techery.janet.Janet
 import rx.Observable
 import rx.observers.TestSubscriber
+import rx.schedulers.Schedulers
 
 class FirmwareInteractorSpec : BaseSpec({
 
@@ -27,6 +29,11 @@ class FirmwareInteractorSpec : BaseSpec({
          janet = createJanet()
          bluetoothService = createBluetoothService()
          smartCardInteractor = createInteractor(janet)
+         val id = "4"
+         val smartcard = mockSmartCard(id)
+         whenever(mockDb.getActiveSmartCardId()).thenReturn(id)
+         whenever(mockDb.getSmartCard(id)).thenReturn(smartcard)
+         smartCardInteractor.activeSmartCardPipe().send(ActiveSmartCardCommand(smartCard))
       }
 
       context("Pre installation checks") {
@@ -72,7 +79,7 @@ class FirmwareInteractorSpec : BaseSpec({
 }) {
    companion object {
 
-      val smartCard = mockSmartCard()
+      val smartCard = mockSmartCard("4")
 
       lateinit var mockDb: SnappyRepository
       lateinit var janet: Janet
@@ -81,7 +88,7 @@ class FirmwareInteractorSpec : BaseSpec({
 
       fun createMockDb(): SnappyRepository = spy()
 
-      fun createInteractor(janet: Janet) = SmartCardInteractor(janet, SessionActionPipeCreator(janet), createFirmwareInteractor(janet))
+      fun createInteractor(janet: Janet) = SmartCardInteractor(janet, SessionActionPipeCreator(janet), { Schedulers.immediate() })
 
       fun createFirmwareInteractor(janet: Janet) = FirmwareInteractor(janet)
 
@@ -117,9 +124,9 @@ class FirmwareInteractorSpec : BaseSpec({
          }
       }
 
-      fun mockSmartCard(): SmartCard {
+      fun mockSmartCard(id: String): SmartCard {
          val mockedSmartCard: SmartCard = mock()
-         whenever(mockedSmartCard.smartCardId()).thenReturn("3049")
+         whenever(mockedSmartCard.smartCardId()).thenReturn(id)
          whenever(mockedSmartCard.batteryLevel()).thenReturn(90)
          whenever(mockedSmartCard.cardStatus()).thenReturn(SmartCard.CardStatus.ACTIVE)
          whenever(mockedSmartCard.connectionStatus()).thenReturn(SmartCard.ConnectionStatus.DISCONNECTED)

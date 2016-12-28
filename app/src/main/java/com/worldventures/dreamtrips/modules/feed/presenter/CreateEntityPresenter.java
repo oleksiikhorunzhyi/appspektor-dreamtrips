@@ -4,9 +4,10 @@ import android.net.Uri;
 
 import com.innahema.collections.query.functions.Converter;
 import com.innahema.collections.query.queriables.Queryable;
+import com.techery.spares.annotations.State;
 import com.worldventures.dreamtrips.core.navigation.BackStackDelegate;
 import com.worldventures.dreamtrips.core.utils.FileUtils;
-import com.worldventures.dreamtrips.modules.background_uploading.model.PostWithAttachmentBody;
+import com.worldventures.dreamtrips.modules.background_uploading.model.PostCompoundOperationModel;
 import com.worldventures.dreamtrips.modules.background_uploading.service.BackgroundUploadingInteractor;
 import com.worldventures.dreamtrips.modules.background_uploading.service.CreatePostCompoundOperationCommand;
 import com.worldventures.dreamtrips.modules.background_uploading.service.ScheduleCompoundOperationCommand;
@@ -47,13 +48,14 @@ public class CreateEntityPresenter<V extends CreateEntityPresenter.View> extends
    private CreateEntityBundle.Origin origin;
 
    @Inject MediaPickerEventDelegate mediaPickerEventDelegate;
-
    @Inject MediaInteractor mediaInteractor;
    @Inject MediaPickerImagesProcessedEventDelegate mediaPickerImagesProcessedEventDelegate;
    @Inject TripImagesInteractor tripImagesInteractor;
    @Inject PostsInteractor postsInteractor;
    @Inject BackgroundUploadingInteractor backgroundUploadingInteractor;
    @Inject BackStackDelegate backStackDelegate;
+
+   @State int postInProgressId;
 
    private boolean mediaPickerProcessingImages;
    private int locallyProcessingImagesCount;
@@ -65,6 +67,10 @@ public class CreateEntityPresenter<V extends CreateEntityPresenter.View> extends
    @Override
    public void takeView(V view) {
       super.takeView(view);
+      if (postInProgressId != 0) {
+         view.disableImagePicker();
+         view.disableButton();
+      }
       postsInteractor.createPostCompoundOperationPipe()
             .observeSuccess()
             .map(Command::getResult)
@@ -75,17 +81,18 @@ public class CreateEntityPresenter<V extends CreateEntityPresenter.View> extends
                   backgroundUploadingInteractor.scheduleOperationPipe()
                         .send(new ScheduleCompoundOperationCommand(postCompoundOperationModel));
                } else {
-                  createTextualPost(postCompoundOperationModel.body());
+                  createTextualPost(postCompoundOperationModel);
                }
             });
       postsInteractor.createPostPipe()
             .observe()
+            .filter(state -> state.action.getId() == postInProgressId)
             .compose(bindViewToMainComposer())
             .subscribe(new ActionStateSubscriber<CreatePostCommand>()
                   .onFail(this::handleError)
                   .onSuccess(command -> {
-                     analyticsInteractor.analyticsActionPipe().send(SharePostAction.createPostAction(command.getResult()));
                      eventBus.post(new FeedItemAddedEvent(FeedItem.create(command.getResult(), getAccount())));
+                     analyticsInteractor.analyticsActionPipe().send(SharePostAction.createPostAction(command.getResult()));
                      closeView();
                   }));
       mediaPickerImagesProcessedEventDelegate.getReplayObservable()
@@ -106,8 +113,9 @@ public class CreateEntityPresenter<V extends CreateEntityPresenter.View> extends
       invalidateDynamicViews();
    }
 
-   private void createTextualPost(PostWithAttachmentBody postWithAttachmentBody) {
-      postsInteractor.createPostPipe().send(new CreatePostCommand(postWithAttachmentBody));
+   private void createTextualPost(PostCompoundOperationModel postCompoundOperationModel) {
+      postInProgressId = postCompoundOperationModel.id();
+      postsInteractor.createPostPipe().send(new CreatePostCommand(postCompoundOperationModel));
    }
 
    @Override

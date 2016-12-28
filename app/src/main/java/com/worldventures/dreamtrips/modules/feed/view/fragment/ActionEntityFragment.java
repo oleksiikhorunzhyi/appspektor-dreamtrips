@@ -202,7 +202,7 @@ public abstract class ActionEntityFragment<PM extends ActionEntityPresenter, P e
 
    @OnClick(R.id.post_button)
    void onPost() {
-      postButton.setEnabled(false);
+      disableButton();
       getPresenter().post();
    }
 

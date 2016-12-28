@@ -34,6 +34,7 @@ public class WizardPinSetupScreen extends WalletLinearLayout<WizardPinSetupPrese
    protected void onFinishInflate() {
       super.onFinishInflate();
       toolbar.setNavigationOnClickListener(v -> onBackClick());
+      headerTextView.setText(R.string.wallet_wizard_setup_pin_header);
    }
 
    private void onBackClick() {
@@ -43,10 +44,8 @@ public class WizardPinSetupScreen extends WalletLinearLayout<WizardPinSetupPrese
    @Override
    public void showMode(Action mode) {
       if (mode == Action.RESET) {
-         headerTextView.setText(R.string.wallet_wizard_setup_new_pin_header);
          nextButton.setText(R.string.wallet_continue_label);
       } else {
-         headerTextView.setText(R.string.wallet_wizard_setup_pin_header);
          nextButton.setText(R.string.wallet_got_it_label);
          supportConnectionStatusLabel(false);
       }

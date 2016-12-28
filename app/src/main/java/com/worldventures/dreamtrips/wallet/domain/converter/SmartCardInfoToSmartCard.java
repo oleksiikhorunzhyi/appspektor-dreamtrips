@@ -8,7 +8,7 @@ import com.worldventures.dreamtrips.wallet.domain.entity.SmartCard;
 
 import io.techery.mappery.MapperyContext;
 
-public class SmartCardInfoToSmartCard implements Converter<SmartCardInfo, SmartCard> {
+class SmartCardInfoToSmartCard implements Converter<SmartCardInfo, SmartCard> {
    @Override
    public Class<SmartCardInfo> sourceClass() {
       return SmartCardInfo.class;
@@ -26,7 +26,7 @@ public class SmartCardInfoToSmartCard implements Converter<SmartCardInfo, SmartC
             .user(ImmutableSmartCardUser.builder()
                   .firstName(smartCardInfo.user().firstName())
                   .middleName(smartCardInfo.user().middleName() != null ? smartCardInfo.user().middleName() : "")
-                  .lastName(smartCardInfo.user().lastName())
+                  .lastName(smartCardInfo.user().lastName() != null ? smartCardInfo.user().lastName() : "")
                   .build())
             .serialNumber(smartCardInfo.serialNumber())
             .deviceAddress(smartCardInfo.bleAddress())

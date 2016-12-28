@@ -4,7 +4,9 @@ import com.worldventures.dreamtrips.core.janet.dagger.InjectableAction;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.wallet.domain.entity.FirmwareUpdateData;
 import com.worldventures.dreamtrips.wallet.domain.entity.ImmutableSmartCard;
+import com.worldventures.dreamtrips.wallet.domain.entity.ImmutableSmartCardFirmware;
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCard;
+import com.worldventures.dreamtrips.wallet.domain.entity.SmartCardFirmware;
 import com.worldventures.dreamtrips.wallet.domain.storage.TemporaryStorage;
 import com.worldventures.dreamtrips.wallet.service.FirmwareInteractor;
 import com.worldventures.dreamtrips.wallet.service.command.ActiveSmartCardCommand;
@@ -26,6 +28,7 @@ import static com.worldventures.dreamtrips.core.janet.CommandActionBaseHelper.Ac
 import static com.worldventures.dreamtrips.core.janet.JanetModule.JANET_WALLET;
 import static com.worldventures.dreamtrips.wallet.domain.entity.SmartCard.ConnectionStatus.CONNECTED;
 import static com.worldventures.dreamtrips.wallet.domain.entity.SmartCard.ConnectionStatus.DFU;
+import static rx.Observable.error;
 import static rx.Observable.just;
 
 @CommandAction
@@ -59,7 +62,9 @@ public class InstallFirmwareCommand extends Command implements InjectableAction 
             .flatMap(it -> {
                if (it.connectionStatus() == CONNECTED) return enableLockUnlockDevice(false);
                else if (it.connectionStatus() == DFU) return just(it);
-               else return Observable.error(new IllegalStateException("Can't connect to card on firmwareUpdateData upgrade"));
+               else {
+                  return error(new IllegalStateException("Can't connect to card on firmwareUpdateData upgrade"));
+               }
             })
             .map(it -> firmwareUpdateData.firmwareFile())
             .flatMap(this::installFirmware)
@@ -83,18 +88,24 @@ public class InstallFirmwareCommand extends Command implements InjectableAction 
       return janet.createPipe(UpgradeFirmwareAction.class)
             .createObservableResult(new UpgradeFirmwareAction(file))
             .flatMap(action ->//todo remove it when temporary storage will be useless
-                  temporaryStorage.failInstall() ? Observable.error(new RuntimeException()) : Observable.just(action))
+                  temporaryStorage.failInstall() ? error(new RuntimeException()) : Observable.just(action))
             .map(it -> (Void) null);
 
    }
 
    private Observable saveNewFirmwareVersion(SmartCard smartCard) {
       return Observable.create(subscriber -> {
+         final SmartCardFirmware firmware =
+               ImmutableSmartCardFirmware.builder()
+                     .from(smartCard.firmwareVersion())
+                     .firmwareVersion(firmwareUpdateData.firmwareInfo().firmwareVersion())
+                     .build();
+
          snappyRepository.saveSmartCard(ImmutableSmartCard
                .builder()
                .from(smartCard)
                .sdkVersion(firmwareUpdateData.firmwareInfo().sdkVersion())
-               .firmWareVersion(firmwareUpdateData.firmwareInfo().firmwareVersion())
+               .firmwareVersion(firmware)
                .build());
          //
          if (subscriber.isUnsubscribed()) return;
@@ -114,7 +125,7 @@ public class InstallFirmwareCommand extends Command implements InjectableAction 
 
    private Observable clearFirmwareFilesCache() {
       return firmwareInteractor.clearFirmwareFilesPipe().createObservableResult(
-                  new FirmwareClearFilesCommand(firmwareUpdateData.firmwareFile().getParent()));
+            new FirmwareClearFilesCommand(firmwareUpdateData.firmwareFile().getParent()));
    }
 
    private Observable<SmartCard> activeSmartCard() {

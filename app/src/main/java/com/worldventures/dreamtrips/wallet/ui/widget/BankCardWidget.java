@@ -29,11 +29,13 @@ public class BankCardWidget extends FrameLayout {
    @InjectView(R.id.wallet_sample_holder) View sampleCardHolder;
    @InjectView(R.id.tv_default_card_label) TextView tvDefaultCardLabel;
    @InjectView(R.id.tv_short_card_number) TextView tvShortCardNumber;
+   @InjectView(R.id.tv_cvv_code) TextView tvCvvCode;
 
    private View bankCardHolder;
 
    private final BankCardHelper bankCardHelper;
    private final SpannableString goodThru;
+   private final SpannableString cvvSpannable;
 
    private boolean showShortNumber;
    private int drawableResId;
@@ -61,6 +63,8 @@ public class BankCardWidget extends FrameLayout {
       bankCardHelper = new BankCardHelper(context);
       goodThru = new SpannableString(getResources().getString(R.string.wallet_bank_card_good_thru));
       goodThru.setSpan(new RelativeSizeSpan(.65f), 0, goodThru.length(), 0);
+      cvvSpannable = new SpannableString(getResources().getString(R.string.wallet_bank_card_cvv_label));
+      cvvSpannable.setSpan(new RelativeSizeSpan(.65f), 0, cvvSpannable.length(), 0);
    }
 
    @Override
@@ -85,6 +89,7 @@ public class BankCardWidget extends FrameLayout {
       setExpireDate(card.expDate());
       setCardType(card.issuerInfo().cardType());
       setCardCategory(card.category());
+      setCardCvvCode(card.cvv());
    }
 
    //   properties:
@@ -131,6 +136,14 @@ public class BankCardWidget extends FrameLayout {
       tvCardType.setText(bankCardHelper.obtainCardType(cardType));
    }
 
+   public void setCardCvvCode(int cardCvvCode) {
+      tvCvvCode.setText(new SpannableStringBuilder()
+            .append(cvvSpannable)
+            .append(" ")
+            .append(String.valueOf(cardCvvCode))
+      );
+   }
+
    public enum BankCardResource {
       BLUE(0, R.drawable.creditcard_blue),
       GREY(1, R.drawable.creditcard_grey),
@@ -159,5 +172,4 @@ public class BankCardWidget extends FrameLayout {
          throw new IllegalArgumentException();
       }
    }
-
 }

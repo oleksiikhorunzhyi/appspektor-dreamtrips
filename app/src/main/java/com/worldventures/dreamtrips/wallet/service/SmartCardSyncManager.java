@@ -137,7 +137,7 @@ class SmartCardSyncManager {
                         ImmutableSmartCard.builder()
                               .from(smartCard)
                               .sdkVersion(properties.sdkVersion())
-                              .firmWareVersion(properties.firmWareVersion())
+                              .firmwareVersion(properties.firmwareVersion())
                               .batteryLevel(properties.batteryLevel())
                               .lock(properties.lock())
                               .stealthMode(properties.stealthMode())

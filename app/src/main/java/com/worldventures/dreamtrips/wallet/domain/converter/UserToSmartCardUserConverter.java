@@ -7,7 +7,7 @@ import com.worldventures.dreamtrips.wallet.domain.entity.SmartCardUser;
 import io.techery.janet.smartcard.model.User;
 import io.techery.mappery.MapperyContext;
 
-public class UserToSmartCardUserConverter implements Converter<User, SmartCardUser> {
+class UserToSmartCardUserConverter implements Converter<User, SmartCardUser> {
 
    @Override
    public Class<User> sourceClass() {

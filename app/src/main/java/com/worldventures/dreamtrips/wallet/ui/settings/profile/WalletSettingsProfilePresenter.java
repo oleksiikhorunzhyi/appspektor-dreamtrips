@@ -82,7 +82,6 @@ public class WalletSettingsProfilePresenter extends WalletPresenter<WalletSettin
             .subscribe(it -> {
                view.setPreviewPhoto(it.user().userPhoto().monochrome());
                view.setUserName(it.user().firstName(), it.user().middleName(), it.user().lastName());
-               ;
             });
    }
 
@@ -150,7 +149,10 @@ public class WalletSettingsProfilePresenter extends WalletPresenter<WalletSettin
             .compose(new ActionPipeCacheWiper<>(smartCardUserDataInteractor.updateSmartCardUserPipe()))
             .subscribe(new ActionStateSubscriber<UpdateSmartCardUserCommand>()
                   .onStart(o -> view.showProgress())
-                  .onSuccess(o -> view.hideProgress())
+                  .onSuccess(o -> {
+                     view.hideProgress();
+                     goBack();
+                  })
                   .onFail((o, throwable) -> onError((JanetException) throwable))
             );
 

@@ -9,6 +9,7 @@ import com.techery.spares.module.Injector;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.wallet.domain.entity.FirmwareUpdateData;
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCard;
+import com.worldventures.dreamtrips.wallet.domain.entity.SmartCardFirmware;
 import com.worldventures.dreamtrips.wallet.domain.storage.TemporaryStorage;
 import com.worldventures.dreamtrips.wallet.service.FirmwareInteractor;
 import com.worldventures.dreamtrips.wallet.service.SmartCardInteractor;
@@ -22,6 +23,7 @@ import com.worldventures.dreamtrips.wallet.ui.common.base.screen.WalletScreen;
 import com.worldventures.dreamtrips.wallet.ui.common.helper.ErrorHandler;
 import com.worldventures.dreamtrips.wallet.ui.common.helper.OperationActionStateSubscriberWrapper;
 import com.worldventures.dreamtrips.wallet.ui.common.navigation.Navigator;
+import com.worldventures.dreamtrips.wallet.ui.settings.about.AboutPath;
 import com.worldventures.dreamtrips.wallet.ui.settings.disabledefaultcard.WalletDisableDefaultCardPath;
 import com.worldventures.dreamtrips.wallet.ui.settings.factory_reset.FactoryResetPath;
 import com.worldventures.dreamtrips.wallet.ui.settings.firmware.newavailable.WalletNewFirmwareAvailablePath;
@@ -209,13 +211,13 @@ public class WalletSettingsPresenter extends WalletPresenter<WalletSettingsPrese
    private void bindSmartCard(SmartCard smartCard) {
       Screen view = getView();
       //noinspection all
-      view.smartCardGeneralStatus(smartCard.firmWareVersion(), smartCard.batteryLevel(), null);
+      view.smartCardGeneralStatus(smartCard.firmwareVersion(), smartCard.batteryLevel(), null);
       view.testConnection(smartCard.connectionStatus().isConnected());
       view.stealthModeStatus(smartCard.stealthMode());
       view.lockStatus(smartCard.lock());
       view.disableDefaultPaymentValue(smartCard.disableCardDelay());
       view.autoClearSmartCardValue(smartCard.clearFlyeDelay());
-      view.firmwareVersion(smartCard.firmWareVersion());
+      view.firmwareVersion(smartCard.firmwareVersion());
       toggleFirmwareBargeOrVersion(firmwareUpdateData != null && firmwareUpdateData.updateAvailable());
    }
 
@@ -279,9 +281,13 @@ public class WalletSettingsPresenter extends WalletPresenter<WalletSettingsPrese
             .send(new RestartSmartCardCommand());
    }
 
+   void openAboutScreen() {
+      navigator.go(new AboutPath());
+   }
+
    public interface Screen extends WalletScreen {
 
-      void smartCardGeneralStatus(String version, int batteryLevel, Date lastSync);
+      void smartCardGeneralStatus(@Nullable SmartCardFirmware version, int batteryLevel, Date lastSync);
 
       void stealthModeStatus(boolean isEnabled);
 
@@ -295,7 +301,7 @@ public class WalletSettingsPresenter extends WalletPresenter<WalletSettingsPrese
 
       void firmwareUpdateCount(int count);
 
-      void firmwareVersion(String version);
+      void firmwareVersion(@Nullable SmartCardFirmware version);
 
       void testFailInstallation(boolean failInstall);
 

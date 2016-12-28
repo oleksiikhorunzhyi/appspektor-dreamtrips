@@ -42,16 +42,7 @@ import com.worldventures.dreamtrips.modules.video.model.converter.CategoryConver
 import com.worldventures.dreamtrips.modules.video.model.converter.VideoConverter;
 import com.worldventures.dreamtrips.modules.video.model.converter.VideoLanguageConverter;
 import com.worldventures.dreamtrips.modules.video.model.converter.VideoLocaleConverter;
-import com.worldventures.dreamtrips.wallet.domain.converter.BankCardToRecordConverter;
-import com.worldventures.dreamtrips.wallet.domain.converter.BankInfoConverter;
-import com.worldventures.dreamtrips.wallet.domain.converter.FirmwareResponseToFirmwareDataConverter;
-import com.worldventures.dreamtrips.wallet.domain.converter.ProfileAddressToUserAddressConverter;
-import com.worldventures.dreamtrips.wallet.domain.converter.RecordToBankCardConverter;
-import com.worldventures.dreamtrips.wallet.domain.converter.SmartCardDetailsConverter;
-import com.worldventures.dreamtrips.wallet.domain.converter.SmartCardInfoToSmartCard;
-import com.worldventures.dreamtrips.wallet.domain.converter.SmartCardInfoToSmartCardDetail;
-import com.worldventures.dreamtrips.wallet.domain.converter.SmartCardUserToUserConverter;
-import com.worldventures.dreamtrips.wallet.domain.converter.UserToSmartCardUserConverter;
+import com.worldventures.dreamtrips.wallet.domain.converter.SmartCardConverterModule;
 
 import java.util.Set;
 
@@ -64,8 +55,9 @@ import io.techery.mappery.MapperyContext;
 import timber.log.Timber;
 
 @Module(
-      injects = {},
-      library = true, complete = false)
+      includes = {
+            SmartCardConverterModule.class
+      }, library = true, complete = false)
 public class MappingModule {
 
    @Provides
@@ -141,67 +133,6 @@ public class MappingModule {
    @Singleton
    Converter provideFeedbackTypeConverter() {
       return new FeedbackTypeConverter();
-   }
-
-   @Provides(type = Provides.Type.SET)
-   @Singleton
-   Converter provideBankCardToRecordConverter() {
-      return new BankCardToRecordConverter();
-   }
-
-   @Provides(type = Provides.Type.SET)
-   @Singleton
-   Converter provideBankInfoConverter() {
-      return new BankInfoConverter();
-   }
-
-   @Provides(type = Provides.Type.SET)
-   @Singleton
-   Converter provideSmartCardDetailsConverter() {
-      return new SmartCardDetailsConverter();
-   }
-
-   @Provides(type = Provides.Type.SET)
-   @Singleton
-   Converter provideSmartCardInfoToSmartCard() {
-      return new SmartCardInfoToSmartCard();
-   }
-
-   @Provides(type = Provides.Type.SET)
-   @Singleton
-   Converter provideSmartCardInfoToSmartCardDetail() {
-      return new SmartCardInfoToSmartCardDetail();
-   }
-
-   @Provides(type = Provides.Type.SET)
-   @Singleton
-   Converter provideRecordToBankCardConverter() {
-      return new RecordToBankCardConverter();
-   }
-
-   @Provides(type = Provides.Type.SET)
-   @Singleton
-   Converter provideProfileAddressToUserAddressConverter() {
-      return new ProfileAddressToUserAddressConverter();
-   }
-
-   @Provides(type = Provides.Type.SET)
-   @Singleton
-   Converter provideFirmwareRepsonseToFirmwareConverter() {
-      return new FirmwareResponseToFirmwareDataConverter();
-   }
-
-
-   @Provides(type = Provides.Type.SET)
-   @Singleton
-   Converter provideSmartCardUserToUserConverter() {
-      return new SmartCardUserToUserConverter();
-   }
-
-   @Provides(type = Provides.Type.SET)
-   @Singleton
-   Converter provideUserToSmartCardUserConverter() {
-      return new UserToSmartCardUserConverter();
    }
 
    @Provides

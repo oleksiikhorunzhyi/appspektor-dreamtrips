@@ -2,6 +2,7 @@ package com.worldventures.dreamtrips.wallet.ui.settings.firmware.newavailable;
 
 import android.content.Context;
 import android.os.Parcelable;
+import android.support.annotation.Nullable;
 
 import com.techery.spares.module.Injector;
 import com.worldventures.dreamtrips.api.smart_card.firmware.model.FirmwareInfo;
@@ -10,6 +11,7 @@ import com.worldventures.dreamtrips.core.utils.tracksystem.AnalyticsInteractor;
 import com.worldventures.dreamtrips.wallet.analytics.InsufficientStorageAction;
 import com.worldventures.dreamtrips.wallet.analytics.ViewSdkUpdateAction;
 import com.worldventures.dreamtrips.wallet.analytics.WalletAnalyticsCommand;
+import com.worldventures.dreamtrips.wallet.domain.entity.SmartCardFirmware;
 import com.worldventures.dreamtrips.wallet.domain.storage.TemporaryStorage;
 import com.worldventures.dreamtrips.wallet.service.FirmwareInteractor;
 import com.worldventures.dreamtrips.wallet.service.SmartCardInteractor;
@@ -68,7 +70,7 @@ public class WalletNewFirmwareAvailablePresenter extends WalletPresenter<WalletN
                      @Override
                      public void call(ActiveSmartCardCommand command) {
                         WalletNewFirmwareAvailablePresenter.this.getView()
-                              .currentFirmwareInfo(command.getResult().firmWareVersion());
+                              .currentFirmwareInfo(command.getResult().firmwareVersion());
                      }
                   })
                   .onFail(ErrorHandler.create(getContext()))
@@ -92,7 +94,7 @@ public class WalletNewFirmwareAvailablePresenter extends WalletPresenter<WalletN
             smartCardInteractor.activeSmartCardPipe().observeSuccessWithReplay().take(1),
             (firmwareCommand, smartCardCommand) -> {
                return new ViewSdkUpdateAction(firmwareCommand.getResult().firmwareInfo().firmwareVersion(),
-                     smartCardCommand.getResult().firmWareVersion(),
+                     smartCardCommand.getResult().firmwareVersion().firmwareVersion(),
                      !firmwareCommand.getResult().firmwareInfo().isCompatible());
             }).subscribe(viewSdkUpdateAction -> {
          analyticsInteractor.walletAnalyticsCommandPipe().send(new WalletAnalyticsCommand(viewSdkUpdateAction));
@@ -134,7 +136,7 @@ public class WalletNewFirmwareAvailablePresenter extends WalletPresenter<WalletN
 
       void availableFirmwareInfo(FirmwareInfo firmwareInfo);
 
-      void currentFirmwareInfo(String version);
+      void currentFirmwareInfo(@Nullable SmartCardFirmware version);
 
       void insufficientSpace(long missingByteSpace);
 

@@ -36,7 +36,7 @@ public class FirmwareDelegate {
       if (viewLifecycle != null) observable = observable.compose(viewLifecycle);
 
       observable.subscribe(smartCard -> firmwareInteractor.firmwareInfoPipe()
-                  .send(new FetchFirmwareInfoCommand(smartCard.sdkVersion(), smartCard.firmWareVersion())),
+                  .send(new FetchFirmwareInfoCommand(smartCard.sdkVersion(), smartCard.firmwareVersion())),
             throwable -> Timber.e(throwable, "Error while loading smartcard"));
    }
 

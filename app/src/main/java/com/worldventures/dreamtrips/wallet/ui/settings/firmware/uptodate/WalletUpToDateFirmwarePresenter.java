@@ -2,12 +2,14 @@ package com.worldventures.dreamtrips.wallet.ui.settings.firmware.uptodate;
 
 import android.content.Context;
 import android.os.Parcelable;
+import android.support.annotation.Nullable;
 
 import com.techery.spares.module.Injector;
 import com.worldventures.dreamtrips.core.utils.tracksystem.AnalyticsInteractor;
 import com.worldventures.dreamtrips.wallet.analytics.ViewSdkVersionAction;
 import com.worldventures.dreamtrips.wallet.analytics.WalletAnalyticsCommand;
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCard;
+import com.worldventures.dreamtrips.wallet.domain.entity.SmartCardFirmware;
 import com.worldventures.dreamtrips.wallet.service.SmartCardInteractor;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletPresenter;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.WalletScreen;
@@ -45,7 +47,7 @@ public class WalletUpToDateFirmwarePresenter extends WalletPresenter<WalletUpToD
    }
 
    private void bindSmartCard(SmartCard smartCard) {
-      getView().version(smartCard.firmWareVersion());
+      getView().version(smartCard.firmwareVersion());
    }
 
    void goBack() {
@@ -54,6 +56,6 @@ public class WalletUpToDateFirmwarePresenter extends WalletPresenter<WalletUpToD
 
    public interface Screen extends WalletScreen {
 
-      void version(String version);
+      void version(@Nullable SmartCardFirmware version);
    }
 }

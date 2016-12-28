@@ -8,6 +8,7 @@ import com.worldventures.dreamtrips.BaseSpec
 import com.worldventures.dreamtrips.core.janet.SessionActionPipeCreator
 import com.worldventures.dreamtrips.core.repository.SnappyRepository
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCard
+import com.worldventures.dreamtrips.wallet.model.TestFirmware
 import com.worldventures.dreamtrips.wallet.service.FirmwareInteractor
 import com.worldventures.dreamtrips.wallet.service.SmartCardInteractor
 import com.worldventures.dreamtrips.wallet.service.WalletBluetoothService
@@ -133,7 +134,7 @@ class FirmwareInteractorSpec : BaseSpec({
          whenever(mockedSmartCard.deviceAddress()).thenReturn("device address")
          whenever(mockedSmartCard.cardName()).thenReturn("card name")
          whenever(mockedSmartCard.sdkVersion()).thenReturn("1.0.0")
-         whenever(mockedSmartCard.firmWareVersion()).thenReturn("1.0.0")
+         whenever(mockedSmartCard.firmwareVersion()).thenReturn(TestFirmware())
          whenever(mockedSmartCard.serialNumber()).thenReturn("")
          return mockedSmartCard
       }

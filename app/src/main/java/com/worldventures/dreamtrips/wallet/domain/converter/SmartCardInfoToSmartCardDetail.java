@@ -7,7 +7,7 @@ import com.worldventures.dreamtrips.wallet.domain.entity.SmartCardDetails;
 
 import io.techery.mappery.MapperyContext;
 
-public class SmartCardInfoToSmartCardDetail implements Converter<SmartCardInfo, SmartCardDetails> {
+class SmartCardInfoToSmartCardDetail implements Converter<SmartCardInfo, SmartCardDetails> {
 
    @Override
    public Class<SmartCardInfo> sourceClass() {

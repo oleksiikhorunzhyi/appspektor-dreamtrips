@@ -34,7 +34,6 @@ import io.techery.janet.smartcard.action.charger.StartCardRecordingAction;
 import io.techery.janet.smartcard.action.charger.StopCardRecordingAction;
 import io.techery.janet.smartcard.action.records.DeleteRecordAction;
 import io.techery.janet.smartcard.action.support.DisconnectAction;
-import io.techery.janet.smartcard.action.user.GetUserDataAction;
 import io.techery.janet.smartcard.event.CardChargedEvent;
 import io.techery.janet.smartcard.event.CardSwipedEvent;
 import io.techery.janet.smartcard.event.LockDeviceChangedEvent;

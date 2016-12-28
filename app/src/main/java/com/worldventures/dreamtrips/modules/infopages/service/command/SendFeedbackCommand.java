@@ -1,6 +1,5 @@
 package com.worldventures.dreamtrips.modules.infopages.service.command;
 
-
 import android.os.Build;
 
 import com.worldventures.dreamtrips.R;
@@ -29,6 +28,8 @@ import io.techery.janet.Janet;
 import io.techery.janet.command.annotations.CommandAction;
 import io.techery.janet.helper.ActionStateSubscriber;
 import io.techery.mappery.MapperyContext;
+
+import static com.worldventures.dreamtrips.wallet.util.SCFirmwareUtils.smartCardFirmwareVersion;
 
 @CommandAction
 public class SendFeedbackCommand extends CommandWithError implements InjectableAction {
@@ -80,7 +81,7 @@ public class SendFeedbackCommand extends CommandWithError implements InjectableA
             .smartCardId(Integer.parseInt(smartCard.smartCardId()))
             .smartCardSerialNumber(smartCard.serialNumber())
             .bleId(smartCard.deviceAddress())
-            .firmwareVersion(smartCard.firmWareVersion())
+            .firmwareVersion(smartCardFirmwareVersion(smartCard.firmwareVersion()))
             .sdkVersion(smartCard.sdkVersion())
             .build();
    }

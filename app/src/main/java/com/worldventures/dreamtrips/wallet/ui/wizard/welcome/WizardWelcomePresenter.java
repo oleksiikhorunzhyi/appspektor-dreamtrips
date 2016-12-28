@@ -19,7 +19,7 @@ import com.worldventures.dreamtrips.wallet.service.command.SmartCardAvatarComman
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletPresenter;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.WalletScreen;
 import com.worldventures.dreamtrips.wallet.ui.common.navigation.Navigator;
-import com.worldventures.dreamtrips.wallet.ui.wizard.profile.WizardEditProfilePath;
+import com.worldventures.dreamtrips.wallet.ui.wizard.power_on.WizardPowerOnPath;
 
 import java.io.File;
 
@@ -79,7 +79,7 @@ public class WizardWelcomePresenter extends WalletPresenter<WizardWelcomePresent
    }
 
    public void setupCardClicked() {
-      navigator.withoutLast(new WizardEditProfilePath(smartCard));
+      navigator.go(new WizardPowerOnPath());
    }
 
    public void backButtonClicked() {

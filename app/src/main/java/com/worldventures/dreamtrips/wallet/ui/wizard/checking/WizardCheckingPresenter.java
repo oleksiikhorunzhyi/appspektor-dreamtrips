@@ -12,6 +12,7 @@ import com.worldventures.dreamtrips.wallet.ui.common.base.WalletPresenter;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.WalletScreen;
 import com.worldventures.dreamtrips.wallet.ui.common.navigation.Navigator;
 import com.worldventures.dreamtrips.wallet.ui.wizard.splash.WizardSplashPath;
+import com.worldventures.dreamtrips.wallet.ui.wizard.termsandconditionals.WizardTermsPath;
 
 import javax.inject.Inject;
 
@@ -42,7 +43,7 @@ public class WizardCheckingPresenter extends WalletPresenter<WizardCheckingPrese
    }
 
    void goNext() {
-      navigator.single(new WizardSplashPath());
+      navigator.single(new WizardTermsPath());
    }
 
    private void observeBluetoothAndNetwork() {

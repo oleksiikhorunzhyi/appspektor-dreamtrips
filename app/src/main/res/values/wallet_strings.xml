@@ -60,8 +60,8 @@
    <string name="wallet_wizard_splash_review_btn">User Agreement</string>
    <string name="wallet_wizard_splash_accept_user_agreement">Please accept the user agreement.</string>
 
-   <string name="wallet_wizard_scan_proposal">Scan the back of your\nflye&#8482; smart card to set up</string>
-   <string name="wallet_wizard_scan_start_btn">Scan Card</string>
+   <string name="wallet_wizard_scan_proposal">Scan the barcode on the back of your smart card.</string>
+   <string name="wallet_wizard_scan_start_btn">Scan Barcode</string>
    <string name="wallet_wizard_scan_title">Scan flye smart card</string>
    <string name="wallet_wizard_scan_help_if_power_off">Make sure the card is powered on by swiping twice on the chip from the bottom to the top.</string>
 
@@ -76,7 +76,7 @@
 
    <!--bar code manual-->
    <string name="wallet_wizard_manual_input_header">Enter the 10-digit number\nlocated below the barcode</string>
-   <string name="wallet_wizard_manual_input_title">flye smart card Number</string>
+   <string name="wallet_wizard_manual_input_title">Enter Smart Card ID</string>
    <string name="wallet_wizard_bar_code_validation_error">Wrong barcode Number</string>
    <string name="wallet_bank_name_text_holder">Bank Name</string>
 
@@ -315,8 +315,8 @@
    <string name="wallet_smartcard_connection_error">Could not connect to the smart card.\nPlease ensure that the smart card is turned on and unlocked.</string>
 
    <!-- Power On -->
-   <string name="wallet_wizard_power_on_title">flye smart card</string>
-   <string name="wallet_wizard_power_on_header">Power on your flye\u2122 smart card by swiping twice on the chip from the bottom to the top.</string>
+   <string name="wallet_wizard_power_on_title">Power On Smart Card</string>
+   <string name="wallet_wizard_power_on_header">Power on your flye\u2122 smart card by sliding your thumb twice across the gold chip on your smart card.</string>
 
    <!--puck connection screen-->
    <string name="wallet_puck_connection_title">Smart Card Update</string>

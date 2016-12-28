@@ -2,13 +2,13 @@ package com.worldventures.dreamtrips.wallet.service.command.profile;
 
 import com.worldventures.dreamtrips.api.smart_card.user_info.UpdateCardUserHttpAction;
 import com.worldventures.dreamtrips.api.smart_card.user_info.model.UpdateCardUserData;
-import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.wallet.domain.entity.ImmutableSmartCard;
 import com.worldventures.dreamtrips.wallet.domain.entity.ImmutableSmartCardUser;
 import com.worldventures.dreamtrips.wallet.domain.entity.ImmutableSmartCardUserPhoto;
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCard;
-import com.worldventures.dreamtrips.wallet.service.command.GetActiveSmartCardCommand;
+import com.worldventures.dreamtrips.wallet.service.command.ActiveSmartCardCommand;
 
+import io.techery.janet.Command;
 import io.techery.janet.Janet;
 import rx.Observable;
 
@@ -16,16 +16,14 @@ class UpdateProfileManager {
 
    private final Janet janetApi;
    private final Janet janetWallet;
-   private final SnappyRepository snappyRepository;
    private UpdateDataHolder updateDataHolder;
 
    private SmartCard smartCard;
    private UpdateCardUserData updateCardUserData;
 
-   UpdateProfileManager(Janet janetApi, Janet janetWallet, SnappyRepository snappyRepository, UpdateDataHolder updateDataHolder) {
+   UpdateProfileManager(Janet janetApi, Janet janetWallet, UpdateDataHolder updateDataHolder) {
       this.janetApi = janetApi;
       this.janetWallet = janetWallet;
-      this.snappyRepository = snappyRepository;
       this.updateDataHolder = updateDataHolder;
    }
 
@@ -49,10 +47,9 @@ class UpdateProfileManager {
    }
 
    private Observable<SmartCard> save() {
-      return janetWallet.createPipe(GetActiveSmartCardCommand.class)
-            .createObservableResult(new GetActiveSmartCardCommand())
-            .map(command -> bindNewFields(command.getResult()))
-            .doOnNext(snappyRepository::saveSmartCard);
+      return janetWallet.createPipe(ActiveSmartCardCommand.class)
+            .createObservableResult(new ActiveSmartCardCommand(this::bindNewFields))
+            .map(Command::getResult);
    }
 
    private SmartCard bindNewFields(SmartCard smartCard) {

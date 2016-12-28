@@ -12,8 +12,7 @@ import com.worldventures.dreamtrips.wallet.domain.entity.SmartCard;
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCardUser;
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCardUserPhoto;
 import com.worldventures.dreamtrips.wallet.service.WalletNetworkService;
-import com.worldventures.dreamtrips.wallet.service.command.GetActiveSmartCardCommand;
-import com.worldventures.dreamtrips.wallet.service.command.SmartCardModifier;
+import com.worldventures.dreamtrips.wallet.service.command.ActiveSmartCardCommand;
 import com.worldventures.dreamtrips.wallet.util.NetworkUnavailableException;
 import com.worldventures.dreamtrips.wallet.util.WalletValidateHelper;
 
@@ -32,7 +31,7 @@ import static com.worldventures.dreamtrips.core.janet.JanetModule.JANET_API_LIB;
 import static com.worldventures.dreamtrips.core.janet.JanetModule.JANET_WALLET;
 
 @CommandAction
-public class UpdateSmartCardUserCommand extends Command<SmartCard> implements InjectableAction, SmartCardModifier {
+public class UpdateSmartCardUserCommand extends Command<SmartCard> implements InjectableAction {
 
    @Inject @Named(JANET_API_LIB) Janet janetApi;
    @Inject @Named(JANET_WALLET) Janet janet;
@@ -55,8 +54,8 @@ public class UpdateSmartCardUserCommand extends Command<SmartCard> implements In
       if (!networkService.isAvailable()) throw new NetworkUnavailableException();
       updateDataHolder.saveChanging(changedFields);
 
-      janet.createPipe(GetActiveSmartCardCommand.class)
-            .createObservableResult(new GetActiveSmartCardCommand())
+      janet.createPipe(ActiveSmartCardCommand.class)
+            .createObservableResult(new ActiveSmartCardCommand())
             .map(Command::getResult)
             .flatMap(this::uploadData)
             .subscribe(callback::onSuccess, callback::onFail);

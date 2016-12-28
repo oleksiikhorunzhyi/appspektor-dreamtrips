@@ -3,7 +3,7 @@ package com.worldventures.dreamtrips.wallet.service.command.reset;
 import com.worldventures.dreamtrips.core.janet.dagger.InjectableAction;
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCard;
 import com.worldventures.dreamtrips.wallet.service.SmartCardInteractor;
-import com.worldventures.dreamtrips.wallet.service.command.GetActiveSmartCardCommand;
+import com.worldventures.dreamtrips.wallet.service.command.ActiveSmartCardCommand;
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -26,7 +26,7 @@ public class ConfirmResetCommand extends Command<Void> implements InjectableActi
    @Override
    protected void run(CommandCallback<Void> callback) throws Throwable {
       smartCardInteractor.activeSmartCardPipe()
-            .createObservableResult(new GetActiveSmartCardCommand())
+            .createObservableResult(new ActiveSmartCardCommand())
             .flatMap(command -> lockUnlockSmartCard(command.getResult()))
             .subscribe(action -> callback.onSuccess(null), callback::onFail);
    }

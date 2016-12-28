@@ -3,7 +3,6 @@ package com.worldventures.dreamtrips.wallet.ui.dashboard.util;
 import android.support.annotation.Nullable;
 
 import com.techery.spares.adapter.HeaderItem;
-import com.worldventures.dreamtrips.wallet.service.command.CardStacksCommand.CardStackModel.StackType;
 
 import java.util.List;
 
@@ -30,5 +29,9 @@ public class CardStackViewModel implements HeaderItem {
    @Override
    public String getHeaderTitle() {
       return title;
+   }
+
+   public enum StackType {
+      PAYMENT, LOYALTY
    }
 }

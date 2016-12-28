@@ -9,8 +9,8 @@ import com.worldventures.dreamtrips.wallet.domain.entity.ImmutableSmartCard;
 import com.worldventures.dreamtrips.wallet.domain.entity.ImmutableSmartCardUser;
 import com.worldventures.dreamtrips.wallet.domain.entity.ImmutableSmartCardUserPhoto;
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCard;
-import com.worldventures.dreamtrips.wallet.service.command.GetActiveSmartCardCommand;
 import com.worldventures.dreamtrips.wallet.service.command.ActivateSmartCardCommand;
+import com.worldventures.dreamtrips.wallet.service.command.ActiveSmartCardCommand;
 import com.worldventures.dreamtrips.wallet.service.command.http.AssociateCardUserCommand;
 import com.worldventures.dreamtrips.wallet.service.storage.WizardMemoryStorage;
 
@@ -45,8 +45,8 @@ public class WizardCompleteCommand extends Command<Void> implements InjectableAc
    }
 
    private Observable<? extends AssociateCardUserCommand> uploadUserDataAndAssociateSmartCard() {
-      return walletJanet.createPipe(GetActiveSmartCardCommand.class, Schedulers.io())
-            .createObservableResult(new GetActiveSmartCardCommand())
+      return walletJanet.createPipe(ActiveSmartCardCommand.class, Schedulers.io())
+            .createObservableResult(new ActiveSmartCardCommand())
             .map(Command::getResult)
             .flatMap(smartCard ->
                   uploadPhoto(smartCard, wizardMemoryStorage.getUserPhoto())

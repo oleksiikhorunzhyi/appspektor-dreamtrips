@@ -17,8 +17,8 @@ import com.worldventures.dreamtrips.wallet.domain.entity.AddressInfoWithLocale;
 import com.worldventures.dreamtrips.wallet.domain.entity.ImmutableAddressInfoWithLocale;
 import com.worldventures.dreamtrips.wallet.domain.entity.card.BankCard;
 import com.worldventures.dreamtrips.wallet.service.SmartCardInteractor;
+import com.worldventures.dreamtrips.wallet.service.command.ActiveSmartCardCommand;
 import com.worldventures.dreamtrips.wallet.service.command.FetchDefaultCardCommand;
-import com.worldventures.dreamtrips.wallet.service.command.GetActiveSmartCardCommand;
 import com.worldventures.dreamtrips.wallet.service.command.SetDefaultCardOnDeviceCommand;
 import com.worldventures.dreamtrips.wallet.service.command.SetPaymentCardAction;
 import com.worldventures.dreamtrips.wallet.service.command.UpdateBankCardCommand;
@@ -153,7 +153,7 @@ public class CardDetailsPresenter extends WalletPresenter<CardDetailsPresenter.S
 
    void onDeleteCardClick() {
       smartCardInteractor.activeSmartCardPipe()
-            .createObservableResult(new GetActiveSmartCardCommand())
+            .createObservableResult(new ActiveSmartCardCommand())
             .compose(bindViewIoToMainComposer())
             .subscribe(command -> {
                if (command.getResult().connectionStatus().isConnected()) {
@@ -166,7 +166,7 @@ public class CardDetailsPresenter extends WalletPresenter<CardDetailsPresenter.S
 
    void editAddress() {
       smartCardInteractor.activeSmartCardPipe()
-            .createObservableResult(new GetActiveSmartCardCommand())
+            .createObservableResult(new ActiveSmartCardCommand())
             .compose(bindViewIoToMainComposer())
             .subscribe(command -> {
                if (command.getResult().connectionStatus().isConnected()) {
@@ -231,7 +231,7 @@ public class CardDetailsPresenter extends WalletPresenter<CardDetailsPresenter.S
 
    private void onSetAsDefaultCard(boolean setDefaultCard) {
       smartCardInteractor.activeSmartCardPipe()
-            .createObservableResult(new GetActiveSmartCardCommand())
+            .createObservableResult(new ActiveSmartCardCommand())
             .compose(bindViewIoToMainComposer())
             .subscribe(command -> {
                if (command.getResult().connectionStatus().isConnected()) {

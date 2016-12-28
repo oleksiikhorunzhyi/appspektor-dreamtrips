@@ -104,7 +104,7 @@ class WizardInteractorSpec : BaseSpec({
 
       lateinit var mockedDebitCard: BankCard
 
-      val setOfMultiplyStorage: () -> Set<MultipleActionStorage<*>> = {
+      val setOfMultiplyStorage: () -> Set<ActionStorage<*>> = {
          setOf(DefaultBankCardStorage(mockDb), SmartCardStorage(mockDb))
       }
 
@@ -123,7 +123,7 @@ class WizardInteractorSpec : BaseSpec({
       fun createJanet(): Janet {
          val daggerCommandActionService = CommandActionService()
                .wrapCache()
-               .bindMultiplyStorageSet(setOfMultiplyStorage())
+               .bindStorageSet(setOfMultiplyStorage())
                .bindStorageSet(setOf(WalletCardsDiskStorage(cardStorage)))
                .wrapDagger()
 

@@ -25,6 +25,7 @@ import com.worldventures.dreamtrips.wallet.domain.storage.WalletCardsDiskStorage
 import com.worldventures.dreamtrips.wallet.domain.storage.disk.CardListStorage
 import com.worldventures.dreamtrips.wallet.model.TestAddressInfo
 import com.worldventures.dreamtrips.wallet.model.TestBankCard
+import com.worldventures.dreamtrips.wallet.model.TestFirmware
 import com.worldventures.dreamtrips.wallet.model.TestRecordIssuerInfo
 import com.worldventures.dreamtrips.wallet.service.SmartCardInteractor
 import com.worldventures.dreamtrips.wallet.service.command.*
@@ -422,7 +423,7 @@ class SmartCardInteractorSpec : BaseSpec({
          whenever(mockedSmartCard.deviceAddress()).thenReturn("device address")
          whenever(mockedSmartCard.cardName()).thenReturn("card name")
          whenever(mockedSmartCard.sdkVersion()).thenReturn("1.0.0")
-         whenever(mockedSmartCard.firmwareVersion()!!.firmwareVersion()).thenReturn("1.0.0")
+         whenever(mockedSmartCard.firmwareVersion()).thenReturn(TestFirmware())
          whenever(mockedSmartCard.serialNumber()).thenReturn("")
          whenever(mockedSmartCard.user()).thenReturn(mock())
 

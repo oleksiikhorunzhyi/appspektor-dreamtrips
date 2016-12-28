@@ -75,8 +75,6 @@ public final class SmartCardInteractor {
 
    private final ActionPipe<GetCompatibleDevicesCommand> compatibleDevicesActionPipe;
 
-   private final SmartCardSyncManager syncManager;
-
    @Deprecated
    public SmartCardInteractor(Janet janet, SessionActionPipeCreator sessionActionPipeCreator, FirmwareInteractor firmwareInteractor, SmartCardSyncManager syncManager) {
       this(janet, sessionActionPipeCreator);
@@ -126,7 +124,7 @@ public final class SmartCardInteractor {
 
       compatibleDevicesActionPipe = sessionActionPipeCreator.createPipe(GetCompatibleDevicesCommand.class, Schedulers.io());
 
-      syncManager = new SmartCardSyncManager(janet, this);// start sync when start use the wallet
+      new SmartCardSyncManager(janet, this);// start sync when start use the wallet
    }
 
    private static Scheduler singleThreadScheduler() {

@@ -8,7 +8,7 @@ import com.worldventures.dreamtrips.core.utils.tracksystem.AnalyticsInteractor;
 import com.worldventures.dreamtrips.wallet.analytics.UpdateSuccessfulAction;
 import com.worldventures.dreamtrips.wallet.analytics.WalletAnalyticsCommand;
 import com.worldventures.dreamtrips.wallet.service.SmartCardInteractor;
-import com.worldventures.dreamtrips.wallet.service.command.GetActiveSmartCardCommand;
+import com.worldventures.dreamtrips.wallet.service.command.ActiveSmartCardCommand;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletPresenter;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.WalletScreen;
 import com.worldventures.dreamtrips.wallet.ui.common.helper.ErrorActionStateSubscriberWrapper;
@@ -33,9 +33,9 @@ public class WalletSuccessInstallFirmwarePresenter extends WalletPresenter<Walle
       super.onAttachedToWindow();
       sendAnalyticAction();
       smartCardInteractor.activeSmartCardPipe()
-            .createObservable(new GetActiveSmartCardCommand())
+            .createObservable(new ActiveSmartCardCommand())
             .compose(bindViewIoToMainComposer())
-            .subscribe(ErrorActionStateSubscriberWrapper.<GetActiveSmartCardCommand>forView(getView().provideOperationDelegate())
+            .subscribe(ErrorActionStateSubscriberWrapper.<ActiveSmartCardCommand>forView(getView().provideOperationDelegate())
                   .onSuccess(command -> getView().setSubTitle(command.getResult().firmWareVersion()))
                   .onFail(ErrorHandler.create(getContext()))
                   .wrap()

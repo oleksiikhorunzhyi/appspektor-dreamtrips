@@ -42,7 +42,7 @@ public class WizardEditProfileScreen extends WalletLinearLayout<WizardEditProfil
    @NonNull
    @Override
    public WizardEditProfilePresenter createPresenter() {
-      return new WizardEditProfilePresenter(getContext(), getInjector());
+      return new WizardEditProfilePresenter(getContext(), getInjector(), getPath().smartCard);
    }
 
    @Override
@@ -128,8 +128,8 @@ public class WizardEditProfileScreen extends WalletLinearLayout<WizardEditProfil
    @NonNull
    @Override
    public String[] getUserName() {
-      return new String[]{ firstName.getText().toString().trim(), middleName.getText().toString().trim(),
-            lastName.getText().toString().trim() };
+      return new String[]{firstName.getText().toString().trim(), middleName.getText().toString().trim(),
+            lastName.getText().toString().trim()};
    }
 
    @Override

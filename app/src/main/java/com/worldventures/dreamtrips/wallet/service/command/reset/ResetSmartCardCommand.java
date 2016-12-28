@@ -4,7 +4,7 @@ import com.worldventures.dreamtrips.api.smart_card.user_association.Disassociate
 import com.worldventures.dreamtrips.core.janet.dagger.InjectableAction;
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCard;
 import com.worldventures.dreamtrips.wallet.service.SystemPropertiesProvider;
-import com.worldventures.dreamtrips.wallet.service.command.GetActiveSmartCardCommand;
+import com.worldventures.dreamtrips.wallet.service.command.ActiveSmartCardCommand;
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -31,8 +31,8 @@ public class ResetSmartCardCommand extends Command<Void> implements InjectableAc
 
    @Override
    protected void run(CommandCallback<Void> callback) throws Throwable {
-      walletJanet.createPipe(GetActiveSmartCardCommand.class)
-            .createObservableResult(new GetActiveSmartCardCommand())
+      walletJanet.createPipe(ActiveSmartCardCommand.class)
+            .createObservableResult(new ActiveSmartCardCommand())
             .flatMap(command -> reset(command.getResult()))
             .subscribe(callback::onSuccess, callback::onFail);
    }

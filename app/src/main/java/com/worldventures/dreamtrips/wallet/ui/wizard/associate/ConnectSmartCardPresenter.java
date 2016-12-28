@@ -14,10 +14,8 @@ import com.worldventures.dreamtrips.wallet.analytics.WalletAnalyticsCommand;
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCard;
 import com.worldventures.dreamtrips.wallet.service.WizardInteractor;
 import com.worldventures.dreamtrips.wallet.service.command.CreateAndConnectToCardCommand;
-import com.worldventures.dreamtrips.wallet.service.storage.WizardMemoryStorage;
-import com.worldventures.dreamtrips.wallet.service.command.http.AssociateCardUserCommand;
 import com.worldventures.dreamtrips.wallet.service.command.http.AvailabilitySmartCardCommand;
-import com.worldventures.dreamtrips.wallet.service.command.http.DisassociateCardUserCommand;
+import com.worldventures.dreamtrips.wallet.service.storage.WizardMemoryStorage;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletPresenter;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.WalletScreen;
 import com.worldventures.dreamtrips.wallet.ui.common.helper.ErrorHandler;
@@ -109,7 +107,7 @@ public class ConnectSmartCardPresenter extends WalletPresenter<ConnectSmartCardP
 
    private void smartCardConnected(SmartCard smartCard) {
       if (checkBarcode()) {
-         navigator.withoutLast(new WizardWelcomePath());
+         navigator.withoutLast(new WizardWelcomePath(smartCard));
          trackCardAdded(smartCard.smartCardId());
       }
    }

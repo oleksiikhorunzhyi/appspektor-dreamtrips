@@ -5,7 +5,7 @@ import com.worldventures.dreamtrips.core.session.UserSession;
 import com.worldventures.dreamtrips.util.SmartCardAvatarHelper;
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCard;
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCardUser;
-import com.worldventures.dreamtrips.wallet.service.command.GetActiveSmartCardCommand;
+import com.worldventures.dreamtrips.wallet.service.command.ActiveSmartCardCommand;
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -32,8 +32,8 @@ public class RevertSmartCardUserUpdatingCommand extends Command<Void> {
 
    @Override
    protected void run(CommandCallback callback) throws Throwable {
-      janet.createPipe(GetActiveSmartCardCommand.class)
-            .createObservableResult(new GetActiveSmartCardCommand())
+      janet.createPipe(ActiveSmartCardCommand.class)
+            .createObservableResult(new ActiveSmartCardCommand())
             .flatMap(command -> revertUpdating(command.getResult()))
             .subscribe(callback::onSuccess, callback::onFail);
    }

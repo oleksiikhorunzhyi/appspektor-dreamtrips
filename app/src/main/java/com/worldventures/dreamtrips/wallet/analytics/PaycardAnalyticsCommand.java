@@ -7,7 +7,6 @@ import com.worldventures.dreamtrips.core.janet.dagger.InjectableAction;
 import com.worldventures.dreamtrips.core.utils.tracksystem.AnalyticsInteractor;
 import com.worldventures.dreamtrips.wallet.domain.entity.card.BankCard;
 import com.worldventures.dreamtrips.wallet.service.SmartCardInteractor;
-import com.worldventures.dreamtrips.wallet.service.command.FetchDefaultCardIdCommand;
 
 import javax.inject.Inject;
 
@@ -30,8 +29,9 @@ public class PaycardAnalyticsCommand extends Command<Void> implements Injectable
 
    @Override
    protected void run(CommandCallback<Void> callback) throws Throwable {
-      smartCardInteractor.fetchDefaultCardIdCommandPipe()
-            .createObservableResult(FetchDefaultCardIdCommand.fetch(false))
+      smartCardInteractor.defaultCardIdPipe()
+            .observeSuccessWithReplay()
+            .take(1)
             .flatMap(command -> {
                boolean isDefault = TextUtils.equals(bankCard.id(), command.getResult());
                cardDetailsWithDefaultAction.fillPaycardInfo(bankCard, isDefault);

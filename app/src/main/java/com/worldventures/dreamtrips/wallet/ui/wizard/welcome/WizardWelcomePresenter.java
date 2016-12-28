@@ -12,10 +12,10 @@ import com.worldventures.dreamtrips.core.utils.tracksystem.AnalyticsInteractor;
 import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.wallet.analytics.NewHeightsAction;
 import com.worldventures.dreamtrips.wallet.analytics.WalletAnalyticsCommand;
+import com.worldventures.dreamtrips.wallet.domain.entity.SmartCard;
 import com.worldventures.dreamtrips.wallet.service.SmartCardUserDataInteractor;
 import com.worldventures.dreamtrips.wallet.service.command.LoadImageForSmartCardCommand;
 import com.worldventures.dreamtrips.wallet.service.command.SmartCardAvatarCommand;
-import com.worldventures.dreamtrips.wallet.service.storage.WizardMemoryStorage;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletPresenter;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.WalletScreen;
 import com.worldventures.dreamtrips.wallet.ui.common.navigation.Navigator;
@@ -35,8 +35,11 @@ public class WizardWelcomePresenter extends WalletPresenter<WizardWelcomePresent
    @Inject AnalyticsInteractor analyticsInteractor;
    @Inject SmartCardUserDataInteractor smartCardUserDataInteractor;
 
-   public WizardWelcomePresenter(Context context, Injector injector) {
+   private final SmartCard smartCard;
+
+   public WizardWelcomePresenter(Context context, Injector injector, SmartCard smartCard) {
       super(context, injector);
+      this.smartCard = smartCard;
    }
 
    @Override
@@ -76,7 +79,7 @@ public class WizardWelcomePresenter extends WalletPresenter<WizardWelcomePresent
    }
 
    public void setupCardClicked() {
-      navigator.withoutLast(new WizardEditProfilePath());
+      navigator.withoutLast(new WizardEditProfilePath(smartCard));
    }
 
    public void backButtonClicked() {

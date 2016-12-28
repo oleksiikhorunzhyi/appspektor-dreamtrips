@@ -57,9 +57,11 @@ public class WizardEditProfilePresenter extends WalletPresenter<WizardEditProfil
    @Inject WizardMemoryStorage wizardMemoryStorage;
 
    @Nullable private SmartCardUserPhoto preparedPhoto;
+   private final SmartCard smartCard;
 
-   public WizardEditProfilePresenter(Context context, Injector injector) {
+   public WizardEditProfilePresenter(Context context, Injector injector, SmartCard smartCard) {
       super(context, injector);
+      this.smartCard = smartCard;
    }
 
    @Override
@@ -154,7 +156,7 @@ public class WizardEditProfilePresenter extends WalletPresenter<WizardEditProfil
    void setupUserData() {
       final String[] userNames = getView().getUserName();
       wizardInteractor.setupUserDataPipe().send(new SetupUserDataCommand(userNames[0], userNames[1], userNames[2],
-            preparedPhoto, wizardMemoryStorage.getBarcode()));
+            preparedPhoto, wizardMemoryStorage.getBarcode(), smartCard));
    }
 
    private void fetchAndStoreDefaultAddress() {

@@ -103,7 +103,7 @@ public class PostProcessingCommand extends Command<PostCompoundOperationModel> i
 
    private Observable<PostCompoundOperationModel> createPost(PostCompoundOperationModel postOperationModel) {
       return postsInteractor.createPostPipe()
-            .createObservableResult(new CreatePostCommand(postOperationModel.body()))
+            .createObservableResult(new CreatePostCommand(postOperationModel))
             .map(Command::getResult)
             .doOnNext(createdPost -> Timber.d("[New Post Creation] Post created"))
             .map(textualPost -> compoundOperationObjectMutator.finished(postOperationModel, textualPost));

@@ -9,8 +9,8 @@ import com.techery.spares.module.Injector;
 import com.worldventures.dreamtrips.core.janet.composer.ActionPipeCacheWiper;
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCardUserPhoto;
 import com.worldventures.dreamtrips.wallet.service.SmartCardInteractor;
-import com.worldventures.dreamtrips.wallet.service.SmartCardManager;
 import com.worldventures.dreamtrips.wallet.service.SmartCardUserDataInteractor;
+import com.worldventures.dreamtrips.wallet.service.command.ActiveSmartCardCommand;
 import com.worldventures.dreamtrips.wallet.service.command.CompressImageForSmartCardCommand;
 import com.worldventures.dreamtrips.wallet.service.command.profile.ImmutableChangedFields;
 import com.worldventures.dreamtrips.wallet.service.command.profile.RetryHttpUploadUpdatingCommand;
@@ -23,6 +23,7 @@ import com.worldventures.dreamtrips.wallet.ui.common.navigation.Navigator;
 import com.worldventures.dreamtrips.wallet.util.NetworkUnavailableException;
 
 import java.io.File;
+import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
 
@@ -35,7 +36,6 @@ public class WalletSettingsProfilePresenter extends WalletPresenter<WalletSettin
 
    @Inject Activity activity;
    @Inject Navigator navigator;
-   @Inject SmartCardManager smartCardManager;
    @Inject SmartCardInteractor smartCardInteractor;
    @Inject SmartCardUserDataInteractor smartCardUserDataInteractor;
 
@@ -76,7 +76,8 @@ public class WalletSettingsProfilePresenter extends WalletPresenter<WalletSettin
       observeUpdating();
       observeChanging();
 
-      smartCardManager.singleSmartCardObservable()
+      smartCardInteractor.activeSmartCardPipe().createObservableResult(new ActiveSmartCardCommand())
+            .map(Command::getResult)
             .compose(bindViewIoToMainComposer())
             .subscribe(it -> {
                view.setPreviewPhoto(it.user().userPhoto().monochrome());
@@ -202,7 +203,9 @@ public class WalletSettingsProfilePresenter extends WalletPresenter<WalletSettin
       Screen view = getView();
       //noinspection all
       Observable.combineLatest(
-            smartCardManager.smartCardObservable(),
+            smartCardInteractor.activeSmartCardPipe().observeSuccessWithReplay()
+                  .map(Command::getResult)
+                  .throttleLast(200, TimeUnit.MILLISECONDS),
             view.firstNameObservable(),
             view.middleNameObservable(),
             view.lastNameObservable(),

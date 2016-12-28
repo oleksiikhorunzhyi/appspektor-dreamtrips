@@ -15,7 +15,7 @@ import com.worldventures.dreamtrips.wallet.domain.entity.SmartCardFirmware;
 import com.worldventures.dreamtrips.wallet.domain.storage.TemporaryStorage;
 import com.worldventures.dreamtrips.wallet.service.FirmwareInteractor;
 import com.worldventures.dreamtrips.wallet.service.SmartCardInteractor;
-import com.worldventures.dreamtrips.wallet.service.command.GetActiveSmartCardCommand;
+import com.worldventures.dreamtrips.wallet.service.command.ActiveSmartCardCommand;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletPresenter;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.WalletScreen;
 import com.worldventures.dreamtrips.wallet.ui.common.helper.ErrorHandler;
@@ -28,6 +28,7 @@ import java.io.File;
 
 import javax.inject.Inject;
 
+import io.techery.janet.helper.ActionStateToActionTransformer;
 import rx.Observable;
 import rx.functions.Action1;
 
@@ -61,12 +62,13 @@ public class WalletNewFirmwareAvailablePresenter extends WalletPresenter<WalletN
 
    private void observeSmartCard() {
       smartCardInteractor.activeSmartCardPipe()
-            .createObservableResult(new GetActiveSmartCardCommand())
+            .observeWithReplay()
+            .compose(new ActionStateToActionTransformer<>())
             .compose(bindViewIoToMainComposer())
-            .subscribe(ErrorSubscriberWrapper.<GetActiveSmartCardCommand>forView(getView().provideOperationDelegate())
-                  .onNext(new Action1<GetActiveSmartCardCommand>() {
+            .subscribe(ErrorSubscriberWrapper.<ActiveSmartCardCommand>forView(getView().provideOperationDelegate())
+                  .onNext(new Action1<ActiveSmartCardCommand>() {
                      @Override
-                     public void call(GetActiveSmartCardCommand command) {
+                     public void call(ActiveSmartCardCommand command) {
                         WalletNewFirmwareAvailablePresenter.this.getView()
                               .currentFirmwareInfo(command.getResult().firmwareVersion());
                      }

@@ -9,8 +9,8 @@ import com.worldventures.dreamtrips.wallet.domain.entity.SmartCard;
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCardFirmware;
 import com.worldventures.dreamtrips.wallet.domain.storage.TemporaryStorage;
 import com.worldventures.dreamtrips.wallet.service.FirmwareInteractor;
+import com.worldventures.dreamtrips.wallet.service.command.ActiveSmartCardCommand;
 import com.worldventures.dreamtrips.wallet.service.command.ConnectSmartCardCommand;
-import com.worldventures.dreamtrips.wallet.service.command.GetActiveSmartCardCommand;
 
 import java.io.File;
 
@@ -129,8 +129,9 @@ public class InstallFirmwareCommand extends Command implements InjectableAction 
    }
 
    private Observable<SmartCard> activeSmartCard() {
-      return janet.createPipe(GetActiveSmartCardCommand.class)
-            .createObservableResult(new GetActiveSmartCardCommand())
+      return janet.createPipe(ActiveSmartCardCommand.class)
+            .observeSuccessWithReplay()
+            .take(1)
             .map(Command::getResult);
    }
 

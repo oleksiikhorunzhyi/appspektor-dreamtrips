@@ -13,7 +13,7 @@ import com.worldventures.dreamtrips.wallet.domain.entity.SmartCardFirmware;
 import com.worldventures.dreamtrips.wallet.domain.storage.TemporaryStorage;
 import com.worldventures.dreamtrips.wallet.service.FirmwareInteractor;
 import com.worldventures.dreamtrips.wallet.service.SmartCardInteractor;
-import com.worldventures.dreamtrips.wallet.service.SmartCardManager;
+import com.worldventures.dreamtrips.wallet.service.command.ActiveSmartCardCommand;
 import com.worldventures.dreamtrips.wallet.service.command.ConnectSmartCardCommand;
 import com.worldventures.dreamtrips.wallet.service.command.RestartSmartCardCommand;
 import com.worldventures.dreamtrips.wallet.service.command.SetLockStateCommand;
@@ -35,9 +35,11 @@ import com.worldventures.dreamtrips.wallet.ui.wizard.pin.setup.WizardPinSetupPat
 import com.worldventures.dreamtrips.wallet.util.SmartCardFlavorUtil;
 
 import java.util.Date;
+import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
 
+import io.techery.janet.Command;
 import io.techery.janet.smartcard.action.support.DisconnectAction;
 import rx.Observable;
 
@@ -47,7 +49,6 @@ public class WalletSettingsPresenter extends WalletPresenter<WalletSettingsPrese
    @Inject SmartCardInteractor smartCardInteractor;
    @Inject FirmwareInteractor firmwareInteractor;
    @Inject TemporaryStorage temporaryStorage;
-   @Inject SmartCardManager smartCardManager;
 
    @Nullable private FirmwareUpdateData firmwareUpdateData;
 
@@ -91,7 +92,9 @@ public class WalletSettingsPresenter extends WalletPresenter<WalletSettingsPrese
    }
 
    private void observeSmartCardChanges() {
-      smartCardManager.smartCardObservable()
+      smartCardInteractor.activeSmartCardPipe().observeSuccessWithReplay()
+            .map(ActiveSmartCardCommand::getResult)
+            .throttleLast(200, TimeUnit.MILLISECONDS)
             .compose(bindViewIoToMainComposer())
             .subscribe(this::bindSmartCard);
 
@@ -120,13 +123,15 @@ public class WalletSettingsPresenter extends WalletPresenter<WalletSettingsPrese
    }
 
    private void stealthModeFailed() {
-      smartCardManager.singleSmartCardObservable()
+      smartCardInteractor.activeSmartCardPipe().createObservableResult(new ActiveSmartCardCommand())
+            .map(ActiveSmartCardCommand::getResult)
             .compose(bindViewIoToMainComposer())
             .subscribe(smartCard -> getView().stealthModeStatus(smartCard.stealthMode()));
    }
 
    private void lockStatusFailed() {
-      smartCardManager.singleSmartCardObservable()
+      smartCardInteractor.activeSmartCardPipe().createObservableResult(new ActiveSmartCardCommand())
+            .map(ActiveSmartCardCommand::getResult)
             .compose(bindViewIoToMainComposer())
             .subscribe(smartCard -> getView().lockStatus(smartCard.lock()));
    }
@@ -135,9 +140,11 @@ public class WalletSettingsPresenter extends WalletPresenter<WalletSettingsPrese
       view.stealthModeStatus()
             .compose(bindView())
             .skip(1)
-            .flatMap(stealthMode -> smartCardManager.singleSmartCardObservable()
-                  .filter(smartCard -> smartCard.stealthMode() != stealthMode)
-                  .map(smartCard -> stealthMode)
+            .flatMap(stealthMode ->
+                  smartCardInteractor.activeSmartCardPipe().createObservableResult(new ActiveSmartCardCommand())
+                        .map(Command::getResult)
+                        .filter(smartCard -> smartCard.stealthMode() != stealthMode)
+                        .map(smartCard -> stealthMode)
             )
             .subscribe(this::stealthModeChanged);
    }
@@ -146,7 +153,9 @@ public class WalletSettingsPresenter extends WalletPresenter<WalletSettingsPrese
       view.lockStatus()
             .compose(bindView())
             .skip(1)
-            .flatMap(lockStatus -> smartCardManager.singleSmartCardObservable()
+            .flatMap(lockStatus -> smartCardInteractor.activeSmartCardPipe()
+                  .createObservableResult(new ActiveSmartCardCommand())
+                  .map(Command::getResult)
                   .filter(smartCard -> smartCard.lock() != lockStatus)
                   .map(smartCard -> lockStatus)
             )
@@ -157,7 +166,9 @@ public class WalletSettingsPresenter extends WalletPresenter<WalletSettingsPrese
       view.testConnection()
             .compose(bindView())
             .skip(1)
-            .flatMap(connectedValue -> smartCardManager.singleSmartCardObservable()
+            .flatMap(connectedValue -> smartCardInteractor.activeSmartCardPipe()
+                  .createObservableResult(new ActiveSmartCardCommand())
+                  .map(ActiveSmartCardCommand::getResult)
                   .filter(smartCard -> (smartCard.connectionStatus().isConnected()) != connectedValue)
                   .map(smartCard -> new Pair<>(smartCard, connectedValue))
             )
@@ -215,7 +226,8 @@ public class WalletSettingsPresenter extends WalletPresenter<WalletSettingsPrese
    }
 
    void resetPin() {
-      smartCardManager.singleSmartCardObservable()
+      smartCardInteractor.activeSmartCardPipe().createObservableResult(new ActiveSmartCardCommand())
+            .map(Command::getResult)
             .compose(bindViewIoToMainComposer())
             .subscribe(smartCard ->
                   navigator.go(new WizardPinSetupPath(smartCard, Action.RESET)));

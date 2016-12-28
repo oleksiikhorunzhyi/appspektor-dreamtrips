@@ -17,14 +17,14 @@ import io.techery.janet.Janet;
 import io.techery.janet.command.annotations.CommandAction;
 
 @CommandAction
-public class UpdateSmartCardPropertiesCommand extends Command<SmartCard> implements SmartCardModifier, InjectableAction, CachedAction<SmartCard> {
+public class UpdateSmartCardPropertiesCommand extends Command<SmartCard> implements InjectableAction, CachedAction<SmartCard> {
 
    @Inject @Named(JanetModule.JANET_WALLET) Janet janet;
 
    @Override
    protected void run(CommandCallback<SmartCard> callback) throws Throwable {
-      janet.createPipe(GetActiveSmartCardCommand.class)
-            .createObservableResult(new GetActiveSmartCardCommand())
+      janet.createPipe(ActiveSmartCardCommand.class)
+            .createObservableResult(new ActiveSmartCardCommand())
             .map(Command::getResult)
             .flatMap(smartCard ->
                   janet.createPipe(FetchCardPropertiesCommand.class)

@@ -7,16 +7,16 @@ import com.techery.spares.module.Injector;
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCardFirmware;
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCardUser;
 import com.worldventures.dreamtrips.wallet.service.SmartCardInteractor;
-import com.worldventures.dreamtrips.wallet.service.command.CardStacksCommand;
-import com.worldventures.dreamtrips.wallet.service.command.GetActiveSmartCardCommand;
+import com.worldventures.dreamtrips.wallet.service.command.ActiveSmartCardCommand;
+import com.worldventures.dreamtrips.wallet.service.command.CardListCommand;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletPresenter;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.WalletScreen;
-import com.worldventures.dreamtrips.wallet.ui.common.helper.ErrorActionStateSubscriberWrapper;
-import com.worldventures.dreamtrips.wallet.ui.common.helper.ErrorHandler;
 import com.worldventures.dreamtrips.wallet.ui.common.navigation.Navigator;
 import com.worldventures.dreamtrips.wallet.ui.dashboard.CardListPresenter;
 
 import javax.inject.Inject;
+
+import timber.log.Timber;
 
 public class AboutPresenter extends WalletPresenter<AboutPresenter.Screen, Parcelable> {
 
@@ -36,26 +36,25 @@ public class AboutPresenter extends WalletPresenter<AboutPresenter.Screen, Parce
 
    private void provideSmartCardFirmware() {
       smartCardInteractor.activeSmartCardPipe()
-            .observeSuccess()
+            .createObservableResult(new ActiveSmartCardCommand())
+            .compose(bindViewIoToMainComposer())
             .map(command -> command.getResult())
             .subscribe(smartCard -> getView().onProvideSmartCard(
-                  smartCard.firmwareVersion(), smartCard.smartCardId(), smartCard.user()));
+                  smartCard.firmwareVersion(), smartCard.smartCardId(), smartCard.user()),
+                  throwable -> Timber.e(throwable, ""));
 
-      smartCardInteractor.activeSmartCardPipe().send(new GetActiveSmartCardCommand());
+      smartCardInteractor.activeSmartCardPipe().send(new ActiveSmartCardCommand());
    }
 
    private void providePayCardsInfo() {
-      smartCardInteractor.cardStacksPipe()
-            .observe()
+      smartCardInteractor.cardsListPipe()
+            .createObservableResult(new CardListCommand())
             .compose(bindViewIoToMainComposer())
-            .subscribe(ErrorActionStateSubscriberWrapper.<CardStacksCommand>forView(getView().provideOperationDelegate())
-                  .onSuccess(command -> getView().onProvidePayCardInfo(
-                        command.getResult().size(),
-                        CardListPresenter.MAX_CARD_LIMIT - command.getResult().size()))
-                  .onFail(ErrorHandler.<CardStacksCommand>builder(getContext()).build())
-                  .wrap());
+            .subscribe(cardListCommand -> getView().onProvidePayCardInfo(
+                  cardListCommand.getResult().size(),
+                  CardListPresenter.MAX_CARD_LIMIT - cardListCommand.getResult().size()));
 
-      smartCardInteractor.cardStacksPipe().send(CardStacksCommand.get(false));
+      smartCardInteractor.cardsListPipe().send(CardListCommand.fetch());
    }
 
    public void goBack() {

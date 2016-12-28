@@ -57,7 +57,7 @@ public class WalletStartPresenter extends WalletPresenter<WalletStartPresenter.S
       if (associatedCard.exist()) {
          navigator.single(new CardListPath(), Flow.Direction.REPLACE);
       } else {
-         navigator.single(new WizardWelcomePath(), Flow.Direction.REPLACE);
+         navigator.single(new WizardWelcomePath(associatedCard.smartCard()), Flow.Direction.REPLACE);
       }
    }
 

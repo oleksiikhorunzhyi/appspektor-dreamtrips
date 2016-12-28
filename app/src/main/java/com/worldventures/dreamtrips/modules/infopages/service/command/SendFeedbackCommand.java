@@ -17,7 +17,7 @@ import com.worldventures.dreamtrips.modules.common.delegate.system.DeviceInfoPro
 import com.worldventures.dreamtrips.modules.infopages.model.FeedbackImageAttachment;
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCard;
 import com.worldventures.dreamtrips.wallet.service.SmartCardInteractor;
-import com.worldventures.dreamtrips.wallet.service.command.GetActiveSmartCardCommand;
+import com.worldventures.dreamtrips.wallet.service.command.ActiveSmartCardCommand;
 
 import java.util.List;
 
@@ -53,8 +53,8 @@ public class SendFeedbackCommand extends CommandWithError implements InjectableA
    @Override
    protected void run(CommandCallback callback) throws Throwable {
       smartCardInteractor.activeSmartCardPipe()
-            .createObservable(new GetActiveSmartCardCommand())
-            .subscribe(new ActionStateSubscriber<GetActiveSmartCardCommand>()
+            .createObservable(new ActiveSmartCardCommand())
+            .subscribe(new ActionStateSubscriber<ActiveSmartCardCommand>()
                   .onSuccess(command -> sendFeedback(callback, command.getResult()))
                   .onFail((command, throwable) -> sendFeedback(callback, command.getResult())));
    }

@@ -78,7 +78,7 @@ public class AddCardDetailsPresenter extends WalletPresenter<AddCardDetailsPrese
    }
 
    private void trackScreen() {
-      smartCardInteractor.smartCardModifierPipe()
+      smartCardInteractor.activeSmartCardPipe()
             .observeSuccessWithReplay()
             .take(1)
             .subscribe(command -> analyticsInteractor.walletAnalyticsCommandPipe()

@@ -2,6 +2,7 @@ package com.worldventures.dreamtrips.wallet.service.command;
 
 import com.worldventures.dreamtrips.core.janet.dagger.InjectableAction;
 import com.worldventures.dreamtrips.wallet.domain.entity.card.BankCard;
+import com.worldventures.dreamtrips.wallet.service.SmartCardInteractor;
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -21,6 +22,7 @@ public class AttachCardCommand extends Command<BankCard> implements InjectableAc
 
    @Inject @Named(JANET_WALLET) Janet janet;
    @Inject MapperyContext mapperyContext;
+   @Inject SmartCardInteractor interactor;
 
    private final BankCard card;
    private final boolean setAsDefaultCard;
@@ -42,10 +44,13 @@ public class AttachCardCommand extends Command<BankCard> implements InjectableAc
    }
 
    private Observable<Record> saveDefaultCard(Record record) {
+      String cardId = String.valueOf(record.id());
       return setAsDefaultCard ?
-            janet.createPipe(SetDefaultCardOnDeviceCommand.class)
-                  .createObservableResult(SetDefaultCardOnDeviceCommand.setAsDefault(String.valueOf(record.id())))
-                  .map(setDefaultCardOnDeviceAction -> record) :
+            interactor.defaultCardIdPipe().createObservableResult(DefaultCardIdCommand.set(cardId))
+                  .flatMap(defaultCardIdCommand -> interactor.setDefaultCardOnDeviceCommandPipe()
+                        .createObservableResult(SetDefaultCardOnDeviceCommand.setAsDefault(cardId))
+                        .map(setDefaultCardOnDeviceAction -> record))
+            :
             Observable.just(record);
    }
 }

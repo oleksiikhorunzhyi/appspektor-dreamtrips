@@ -98,6 +98,7 @@
 
    <style name="AboutItemText.Value" parent="TextAppearance.AppCompat.Medium">
       <item name="android:textColor">@color/wallet_about_item_value</item>
+      <item name="android:layout_height">match_parent</item>
    </style>
 
    <style name="SettingsItemSecondaryText">

@@ -153,13 +153,13 @@ public class CacheActionStorageModule {
 
    @Singleton
    @Provides(type = Provides.Type.SET)
-   MultipleActionStorage provideDefaultBankCardStorage(SnappyRepository snappyRepository) {
+   ActionStorage provideDefaultBankCardStorage(SnappyRepository snappyRepository) {
       return new DefaultBankCardStorage(snappyRepository);
    }
 
    @Singleton
    @Provides(type = Provides.Type.SET)
-   MultipleActionStorage provideSmartCardStorage(SnappyRepository snappyRepository) {
+   ActionStorage provideSmartCardStorage(SnappyRepository snappyRepository) {
       return new SmartCardStorage(snappyRepository);
    }
 

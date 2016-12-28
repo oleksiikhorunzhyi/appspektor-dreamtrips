@@ -28,7 +28,7 @@ import com.worldventures.dreamtrips.wallet.model.TestRecordIssuerInfo
 import com.worldventures.dreamtrips.wallet.service.FirmwareInteractor
 import com.worldventures.dreamtrips.wallet.service.SmartCardInteractor
 import com.worldventures.dreamtrips.wallet.service.command.*
-import com.worldventures.dreamtrips.wallet.service.command.CardStacksCommand.CardStackModel.StackType
+import com.worldventures.dreamtrips.wallet.service.command.SyncCardsCommand.CardStackModel.StackType
 import com.worldventures.dreamtrips.wallet.util.FormatException
 import io.techery.janet.ActionState
 import io.techery.janet.CommandActionService
@@ -102,7 +102,7 @@ class SmartCardInteractorSpec : BaseSpec({
             assertActionSuccess(loadDefaultCardId(), { testSmartCardId == it.result })
          }
 
-         it("should get default card id from sdk") {
+         it("should fetch default card id from sdk") {
             val testSmartCardId: String = "4"
 
             janet.createPipe(SetRecordAsDefaultAction::class.java)
@@ -188,9 +188,9 @@ class SmartCardInteractorSpec : BaseSpec({
          }
 
          it("should delete item from cache of card list") {
-            val testSubscriber: TestSubscriber<ActionState<CardStacksCommand>> = TestSubscriber()
+            val testSubscriber: TestSubscriber<ActionState<SyncCardsCommand>> = TestSubscriber()
 
-            smartCardInteractor.cardStacksPipe()
+            smartCardInteractor.cardSyncPipe()
                   .observe()
                   .subscribe(testSubscriber)
 
@@ -213,7 +213,7 @@ class SmartCardInteractorSpec : BaseSpec({
             return testSubscriber
          }
 
-         it("should get lock state") {
+         it("should fetch lock state") {
             smartCardInteractor.lockPipe().createObservableResult(SetLockStateCommand(true)).subscribe()
             assertActionSuccess(getLockState(), { it.locked })
          }
@@ -330,17 +330,17 @@ class SmartCardInteractorSpec : BaseSpec({
       fun loadDefaultCardId(force: Boolean = false): TestSubscriber<ActionState<FetchDefaultCardIdCommand>> {
          val testSubscriber = TestSubscriber<ActionState<FetchDefaultCardIdCommand>>()
 
-         smartCardInteractor.fetchDefaultCardIdCommandPipe()
+         smartCardInteractor.defaultCardIdPipe()
                .createObservable(FetchDefaultCardIdCommand.fetch(force))
                .subscribe(testSubscriber)
          return testSubscriber
       }
 
-      fun fetchCardStackListOfCard(force: Boolean = false, predicate: (command: CardStacksCommand) -> Boolean): Unit {
-         val testSubscriber: TestSubscriber<ActionState<CardStacksCommand>> = TestSubscriber()
+      fun fetchCardStackListOfCard(force: Boolean = false, predicate: (command: SyncCardsCommand) -> Boolean): Unit {
+         val testSubscriber: TestSubscriber<ActionState<SyncCardsCommand>> = TestSubscriber()
 
-         janet.createPipe(CardStacksCommand::class.java)
-               .createObservable(CardStacksCommand.get(force))
+         janet.createPipe(SyncCardsCommand::class.java)
+               .createObservable(SyncCardsCommand.get(force))
                .subscribe(testSubscriber)
          assertActionSuccess(testSubscriber, { predicate(it) })
       }

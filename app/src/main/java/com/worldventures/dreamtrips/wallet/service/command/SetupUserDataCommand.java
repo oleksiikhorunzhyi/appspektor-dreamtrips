@@ -1,11 +1,6 @@
 package com.worldventures.dreamtrips.wallet.service.command;
 
 import com.techery.spares.session.SessionHolder;
-import com.worldventures.dreamtrips.core.janet.cache.CacheBundle;
-import com.worldventures.dreamtrips.core.janet.cache.CacheBundleImpl;
-import com.worldventures.dreamtrips.core.janet.cache.CacheOptions;
-import com.worldventures.dreamtrips.core.janet.cache.CachedAction;
-import com.worldventures.dreamtrips.core.janet.cache.ImmutableCacheOptions;
 import com.worldventures.dreamtrips.core.janet.dagger.InjectableAction;
 import com.worldventures.dreamtrips.core.session.UserSession;
 import com.worldventures.dreamtrips.util.SmartCardAvatarHelper;
@@ -14,7 +9,6 @@ import com.worldventures.dreamtrips.wallet.domain.entity.ImmutableSmartCardUser;
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCard;
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCardUser;
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCardUserPhoto;
-import com.worldventures.dreamtrips.wallet.domain.storage.SmartCardStorage;
 import com.worldventures.dreamtrips.wallet.service.command.profile.UserSmartCardUtils;
 import com.worldventures.dreamtrips.wallet.service.storage.WizardMemoryStorage;
 import com.worldventures.dreamtrips.wallet.util.FormatException;
@@ -25,7 +19,6 @@ import java.io.IOException;
 import javax.inject.Inject;
 import javax.inject.Named;
 
-import io.techery.janet.ActionHolder;
 import io.techery.janet.Command;
 import io.techery.janet.Janet;
 import io.techery.janet.command.annotations.CommandAction;
@@ -39,7 +32,7 @@ import rx.Observable;
 import static com.worldventures.dreamtrips.core.janet.JanetModule.JANET_WALLET;
 
 @CommandAction
-public class SetupUserDataCommand extends Command<SmartCard> implements InjectableAction, CachedAction<SmartCard>, SmartCardModifier {
+public class SetupUserDataCommand extends Command<SmartCard> implements InjectableAction {
 
    @Inject Janet janetGeneric;
    @Inject @Named(JANET_WALLET) Janet janetWallet;
@@ -56,8 +49,8 @@ public class SetupUserDataCommand extends Command<SmartCard> implements Injectab
 
    private SmartCard smartCard;
 
-   public SetupUserDataCommand(String fullName, SmartCardUserPhoto avatar, String barcode) {
-      this(split(fullName)[0], split(fullName)[1], split(fullName)[2], avatar, barcode);
+   public SetupUserDataCommand(String fullName, SmartCardUserPhoto avatar, String barcode, SmartCard smartCard) {
+      this(split(fullName)[0], split(fullName)[1], split(fullName)[2], avatar, barcode, smartCard);
    }
 
    /**
@@ -65,12 +58,13 @@ public class SetupUserDataCommand extends Command<SmartCard> implements Injectab
     * SetupUserDataCommand#getCacheOptions() requires barcode from WizardMemoryStorage
     * and getCacheOptions executes before inject
     */
-   public SetupUserDataCommand(String firstName, String middleName, String lastName, SmartCardUserPhoto avatar, String barcode) {
+   public SetupUserDataCommand(String firstName, String middleName, String lastName, SmartCardUserPhoto avatar, String barcode, SmartCard smartCard) {
       this.firstName = firstName;
       this.middleName = middleName;
       this.lastName = lastName;
       this.avatar = avatar;
       this.barcode = barcode;
+      this.smartCard = smartCard;
    }
 
    @Override
@@ -104,8 +98,10 @@ public class SetupUserDataCommand extends Command<SmartCard> implements Injectab
 
    private User validateUserNameAndCreateUser() throws FormatException {
       if (avatar == null) throw new MissedAvatarException("avatar == null");
-      if (avatar.monochrome() == null || avatar.original() == null) throw new MissedAvatarException("Monochrome avatar file == null");
-      if (!avatar.monochrome().exists() || !avatar.original().exists()) throw new MissedAvatarException("Avatar does not exist");
+      if (avatar.monochrome() == null || avatar.original() == null)
+         throw new MissedAvatarException("Monochrome avatar file == null");
+      if (!avatar.monochrome().exists() || !avatar.original().exists())
+         throw new MissedAvatarException("Avatar does not exist");
 
 
       WalletValidateHelper.validateUserFullNameOrThrow(firstName, middleName, lastName);
@@ -123,28 +119,6 @@ public class SetupUserDataCommand extends Command<SmartCard> implements Injectab
 
    private byte[] getAvatarAsByteArray() throws IOException {
       return smartCardAvatarHelper.convertBytesForUpload(avatar.monochrome());
-   }
-
-   @Override
-   public SmartCard getCacheData() {
-      return smartCard;
-   }
-
-   @Override
-   public void onRestore(ActionHolder holder, SmartCard cache) {
-      this.smartCard = cache;
-   }
-
-   @Override
-   public CacheOptions getCacheOptions() {
-      CacheBundle bundle = new CacheBundleImpl();
-      bundle.put(SmartCardStorage.CARD_ID_PARAM, String.valueOf(Long.valueOf(barcode)));
-
-      return ImmutableCacheOptions.builder()
-            .params(bundle)
-            .restoreFromCache(true)
-            .saveToCache(true)
-            .build();
    }
 
    private static String[] split(String fullName) {

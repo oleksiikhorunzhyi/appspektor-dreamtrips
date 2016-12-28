@@ -5,6 +5,7 @@ import com.worldventures.dreamtrips.wallet.service.command.reset.ResetSmartCardC
 
 import io.techery.janet.ActionPipe;
 import io.techery.janet.ActionState;
+import io.techery.janet.Command;
 import io.techery.janet.Janet;
 import rx.Observable;
 import rx.schedulers.Schedulers;
@@ -26,9 +27,10 @@ public class FactoryResetManager {
    }
 
    public Observable<ActionState<ResetSmartCardCommand>> observeFactoryResetPipe() {
-      return smartCardInteractor.lockStatePipe()
+      return smartCardInteractor.activeSmartCardPipe()
             .observeSuccess()
-            .filter(event -> !event.isLock())
+            .map(Command::getResult)
+            .filter(smartCard -> !smartCard.lock())
             .take(1)
             .flatMap(event -> resetSmartCardPipe.createObservable(new ResetSmartCardCommand()));
    }

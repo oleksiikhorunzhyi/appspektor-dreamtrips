@@ -38,18 +38,18 @@ public class WalletDisableDefaultCardPresenter extends WalletPresenter<WalletDis
     * @param delayMinutes 0 - never
     */
    void onTimeSelected(long delayMinutes) {
-      smartCardInteractor.disableDefaultCardPipe().send(new SetDisableDefaultCardDelayCommand(delayMinutes));
+      smartCardInteractor.disableDefaultCardDelayPipe().send(new SetDisableDefaultCardDelayCommand(delayMinutes));
    }
 
    private void observerSmartCard() {
-      smartCardInteractor.smartCardModifierPipe()
+      smartCardInteractor.activeSmartCardPipe()
             .observeSuccessWithReplay()
             .compose(bindViewIoToMainComposer())
             .subscribe(smartCardModifier -> getView().selectedTime(smartCardModifier.getResult().disableCardDelay()));
    }
 
    private void observeDelayChange() {
-      smartCardInteractor.disableDefaultCardPipe()
+      smartCardInteractor.disableDefaultCardDelayPipe()
             .observe()
             .compose(bindViewIoToMainComposer())
             .subscribe(OperationActionStateSubscriberWrapper.<SetDisableDefaultCardDelayCommand>forView(getView().provideOperationDelegate())

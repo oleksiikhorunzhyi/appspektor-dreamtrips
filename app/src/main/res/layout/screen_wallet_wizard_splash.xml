@@ -74,19 +74,6 @@
                   tools:ignore="ContentDescription"
                   />
          </FrameLayout>
-
-         <TextView
-               android:id="@+id/wallet_textview_info_power_on"
-               android:layout_width="match_parent"
-               android:layout_height="wrap_content"
-               android:layout_alignParentStart="true"
-               android:layout_below="@+id/card_container"
-               android:layout_marginTop="@dimen/spacing_normal"
-               android:layout_marginStart="@dimen/spacing_normal"
-               android:layout_marginEnd="@dimen/spacing_normal"
-               android:gravity="center"
-               android:text="@string/wallet_wizard_scan_help_if_power_off"
-               />
       </RelativeLayout>
 
    </FrameLayout>

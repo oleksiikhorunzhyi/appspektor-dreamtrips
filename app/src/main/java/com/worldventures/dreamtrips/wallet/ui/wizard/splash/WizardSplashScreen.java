@@ -34,7 +34,6 @@ public class WizardSplashScreen extends WalletLinearLayout<WizardSplashPresenter
 
    @InjectView(R.id.wallet_wizard_splash_title) TextView walletWizardSplashTitle;
    @InjectView(R.id.wallet_wizard_splash_btn) Button actionBtn;
-   @InjectView(R.id.wallet_textview_info_power_on) TextView walletHelpForScanTitle;
 
    @InjectView(R.id.card_container) View cardContainer;
    @InjectView(R.id.wallet_wizard_smarcard_front) ImageView front;
@@ -69,7 +68,7 @@ public class WizardSplashScreen extends WalletLinearLayout<WizardSplashPresenter
    private void hideAllView() {
       if (isInEditMode()) return;
       apply(
-            asList(walletWizardSplashTitle, actionBtn, cardContainer, walletHelpForScanTitle),
+            asList(walletWizardSplashTitle, actionBtn, cardContainer),
             (view, index) -> view.setAlpha(0)
       );
    }
@@ -81,7 +80,7 @@ public class WizardSplashScreen extends WalletLinearLayout<WizardSplashPresenter
 
    @Override
    public void setup() {
-      apply(asList(actionBtn, cardContainer, walletHelpForScanTitle), (view, index) -> view.setAlpha(1));
+      apply(asList(actionBtn, cardContainer), (view, index) -> view.setAlpha(1));
 
       actionBtn.setText(R.string.wallet_wizard_scan_start_btn);
       actionBtn.setOnClickListener(view -> getPresenter().startScanCard());

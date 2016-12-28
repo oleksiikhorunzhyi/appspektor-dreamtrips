@@ -38,6 +38,7 @@ import io.techery.janet.smartcard.event.CardChargedEvent;
 import io.techery.janet.smartcard.event.CardSwipedEvent;
 import io.techery.janet.smartcard.event.LockDeviceChangedEvent;
 import rx.Scheduler;
+import rx.functions.Func0;
 import rx.schedulers.Schedulers;
 
 public final class SmartCardInteractor {
@@ -75,19 +76,21 @@ public final class SmartCardInteractor {
 
    private final ActionPipe<GetCompatibleDevicesCommand> compatibleDevicesActionPipe;
 
-   @Deprecated
-   public SmartCardInteractor(Janet janet, SessionActionPipeCreator sessionActionPipeCreator, FirmwareInteractor firmwareInteractor, SmartCardSyncManager syncManager) {
-      this(janet, sessionActionPipeCreator);
+   public SmartCardInteractor(Janet janet, SessionActionPipeCreator sessionActionPipeCreator) {
+      this(janet, sessionActionPipeCreator, SmartCardInteractor::singleThreadScheduler);
    }
 
-   public SmartCardInteractor(Janet janet, SessionActionPipeCreator sessionActionPipeCreator) {
+   public SmartCardInteractor(Janet janet, SessionActionPipeCreator sessionActionPipeCreator, Func0<Scheduler> cacheSchedulerFactory) {
       //synchronized pipes
-      cardsListPipe = sessionActionPipeCreator.createPipe(CardListCommand.class, Schedulers.io());
-      syncCardsPipe = sessionActionPipeCreator.createPipe(SyncCardsCommand.class, singleThreadScheduler());
-      activeSmartCardActionPipe = sessionActionPipeCreator.createPipe(ActiveSmartCardCommand.class, singleThreadScheduler());
-      defaultCardIdPipe = sessionActionPipeCreator.createPipe(DefaultCardIdCommand.class, singleThreadScheduler());
-      fetchDefaultCardCommandPipe = sessionActionPipeCreator.createPipe(FetchDefaultCardCommand.class, singleThreadScheduler());
-      fetchCardPropertiesPipe = sessionActionPipeCreator.createPipe(FetchCardPropertiesCommand.class, singleThreadScheduler());
+      cardsListPipe = sessionActionPipeCreator.createPipe(CardListCommand.class, cacheSchedulerFactory.call());
+      syncCardsPipe = sessionActionPipeCreator.createPipe(SyncCardsCommand.class, cacheSchedulerFactory.call());
+      activeSmartCardActionPipe = sessionActionPipeCreator.createPipe(ActiveSmartCardCommand.class, cacheSchedulerFactory
+            .call());
+      defaultCardIdPipe = sessionActionPipeCreator.createPipe(DefaultCardIdCommand.class, cacheSchedulerFactory.call());
+      fetchDefaultCardCommandPipe = sessionActionPipeCreator.createPipe(FetchDefaultCardCommand.class, cacheSchedulerFactory
+            .call());
+      fetchCardPropertiesPipe = sessionActionPipeCreator.createPipe(FetchCardPropertiesCommand.class, cacheSchedulerFactory
+            .call());
 
       connectionPipe = sessionActionPipeCreator.createPipe(ConnectSmartCardCommand.class, Schedulers.io());
       updateBankCardPipe = sessionActionPipeCreator.createPipe(UpdateBankCardCommand.class, Schedulers.io());
@@ -123,7 +126,7 @@ public final class SmartCardInteractor {
       disableDefaultCardPipe = sessionActionPipeCreator.createPipe(SetDisableDefaultCardDelayCommand.class, Schedulers.io());
 
       compatibleDevicesActionPipe = sessionActionPipeCreator.createPipe(GetCompatibleDevicesCommand.class, Schedulers.io());
-
+      //
       new SmartCardSyncManager(janet, this);// start sync when start use the wallet
    }
 

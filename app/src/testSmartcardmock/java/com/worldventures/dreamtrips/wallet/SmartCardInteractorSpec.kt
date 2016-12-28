@@ -45,6 +45,7 @@ import io.techery.mappery.MapperyContext
 import org.junit.Assert
 import org.powermock.api.mockito.PowerMockito
 import rx.observers.TestSubscriber
+import rx.schedulers.Schedulers
 
 class SmartCardInteractorSpec : BaseSpec({
    describe("SmartCard SDK actions") {
@@ -307,7 +308,7 @@ class SmartCardInteractorSpec : BaseSpec({
          TextUtils.`equals`(anyString(), anyString())
       }
 
-      fun createSmartCardInteractor(janet: Janet) = SmartCardInteractor(janet, SessionActionPipeCreator(janet))
+      fun createSmartCardInteractor(janet: Janet) = SmartCardInteractor(janet, SessionActionPipeCreator(janet), { Schedulers.immediate() })
 
       fun createJanet(): Janet {
          val daggerCommandActionService = CommandActionService()

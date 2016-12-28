@@ -21,8 +21,8 @@ public class BucketCoverPhotoConverter implements Converter<BucketCoverPhoto, Bu
    @Override
    public BucketPhoto convert(MapperyContext mapperyContext, BucketCoverPhoto apiPhoto) {
       BucketPhoto photo = new BucketPhoto();
+      photo.setUid(apiPhoto.uid());
       photo.setUrl(apiPhoto.url());
-      photo.setOriginUrl(apiPhoto.originUrl());
       return photo;
    }
 }

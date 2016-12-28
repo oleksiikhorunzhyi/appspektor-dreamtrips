@@ -29,7 +29,7 @@
                android:layout_height="@dimen/wallet_card_height"
                android:layout_alignParentTop="true"
                android:layout_centerHorizontal="true"
-               app:cardDrawable="grey"
+               app:cardDrawable="blue"
                />
 
          <Button
@@ -127,7 +127,7 @@
                android:layout_marginTop="@dimen/wallet_details_screen_component_margin_top"
                android:text="@string/wallet_card_details_button_delete_card"
                android:textSize="@dimen/wallet_details_screen_card_interact_button_text_size"
-               android:textColor="@color/dtl_text_color_disabled"
+               android:textColor="@color/red_btn_bg_pressed_color"
                app:backgroundTint="@color/white"
                tools:ignore="MissingPrefix"
                />

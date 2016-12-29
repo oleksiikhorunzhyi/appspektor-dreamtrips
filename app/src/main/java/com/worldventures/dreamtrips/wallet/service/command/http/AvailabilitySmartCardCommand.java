@@ -10,7 +10,6 @@ import javax.inject.Named;
 import io.techery.janet.Command;
 import io.techery.janet.Janet;
 import io.techery.janet.command.annotations.CommandAction;
-import rx.Observable;
 
 @CommandAction
 public class AvailabilitySmartCardCommand extends Command<Void> implements InjectableAction {
@@ -31,7 +30,7 @@ public class AvailabilitySmartCardCommand extends Command<Void> implements Injec
    protected void run(CommandCallback<Void> callback) throws Throwable {
       apiJanet.createPipe(AvailabilitySmartCardHttpAction.class)
             .createObservableResult(new AvailabilitySmartCardHttpAction(String.valueOf(Long.parseLong(smartCardId))))
-            .onErrorResumeNext(Observable.just(null))
-            .subscribe(action -> callback.onSuccess(null), throwable -> callback.onFail(null));
+            .map(availabilitySmartCardHttpAction -> (Void) null)
+            .subscribe(callback::onSuccess, callback::onFail);
    }
 }

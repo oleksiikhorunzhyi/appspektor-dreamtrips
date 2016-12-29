@@ -8,8 +8,10 @@ import com.worldventures.dreamtrips.core.utils.tracksystem.AnalyticsInteractor;
 import com.worldventures.dreamtrips.wallet.analytics.ConnectFlyeToChargerAction;
 import com.worldventures.dreamtrips.wallet.analytics.FailedToAddCardAction;
 import com.worldventures.dreamtrips.wallet.analytics.WalletAnalyticsCommand;
+import com.worldventures.dreamtrips.wallet.domain.entity.SmartCard;
 import com.worldventures.dreamtrips.wallet.domain.entity.card.BankCard;
 import com.worldventures.dreamtrips.wallet.service.SmartCardInteractor;
+import com.worldventures.dreamtrips.wallet.service.command.ActiveSmartCardCommand;
 import com.worldventures.dreamtrips.wallet.service.command.http.CreateBankCardCommand;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletPresenter;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.WalletScreen;
@@ -18,11 +20,14 @@ import com.worldventures.dreamtrips.wallet.ui.common.helper.ErrorHandler;
 import com.worldventures.dreamtrips.wallet.ui.common.helper.OperationActionStateSubscriberWrapper;
 import com.worldventures.dreamtrips.wallet.ui.common.navigation.Navigator;
 import com.worldventures.dreamtrips.wallet.ui.records.add.AddCardDetailsPath;
+import com.worldventures.dreamtrips.wallet.ui.records.connectionerror.ConnectionErrorPath;
 
 import java.net.UnknownHostException;
+import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
 
+import io.techery.janet.Command;
 import io.techery.janet.smartcard.action.charger.StartCardRecordingAction;
 import io.techery.janet.smartcard.action.charger.StopCardRecordingAction;
 import io.techery.janet.smartcard.event.CardSwipedEvent;
@@ -45,6 +50,20 @@ public class WizardChargingPresenter extends WalletPresenter<WizardChargingPrese
       trackScreen();
       observeCharger();
       observeBankCardCreation();
+      observeConnectionStatus();
+   }
+
+   private void observeConnectionStatus() {
+      smartCardInteractor.activeSmartCardPipe()
+            .observeSuccessWithReplay()
+            .throttleLast(1, TimeUnit.SECONDS)
+            .map(Command::getResult)
+            .map(SmartCard::connectionStatus)
+            .distinctUntilChanged()
+            .compose(bindViewIoToMainComposer())
+            .subscribe(getView()::checkConnection);
+
+      smartCardInteractor.activeSmartCardPipe().send(new ActiveSmartCardCommand());
    }
 
    private void observeCharger() {
@@ -52,20 +71,32 @@ public class WizardChargingPresenter extends WalletPresenter<WizardChargingPrese
             .createObservable(new StartCardRecordingAction())
             .compose(bindViewIoToMainComposer())
             .subscribe(ErrorActionStateSubscriberWrapper.<StartCardRecordingAction>forView(getView().provideOperationDelegate())
-                  .onFail(createErrorHandlerBuilder(StartCardRecordingAction.class).build())
+                  .onFail(createErrorHandlerBuilder(StartCardRecordingAction.class)
+                        .handle(Throwable.class, action -> getView().trySwipeAgain())
+                        .build())
                   .wrap());
 
       smartCardInteractor.cardSwipedEventPipe()
             .observeSuccess()
-            .filter(event -> event.result == CardSwipedEvent.Result.ERROR)
             .compose(bindViewIoToMainComposer())
-            .subscribe(event -> getView().showSwipeError());
+            .subscribe(event -> {
+               if (event.result == CardSwipedEvent.Result.ERROR) {
+                  getView().showSwipeError();
+               } else {
+                  getView().showSwipeSuccess();
+               }
+            });
 
       smartCardInteractor.chargedEventPipe()
             .observeSuccess()
             .compose(bindViewIoToMainComposer())
             .take(1)
-            .subscribe(event -> cardSwiped(event.record));
+            .map(cardChargedEvent -> cardChargedEvent.record)
+            .subscribe(this::cardSwiped, this::errorReceiveRecord);
+   }
+
+   private void errorReceiveRecord(Throwable throwable) {
+      getView().trySwipeAgain();
    }
 
    private void observeBankCardCreation() {
@@ -112,8 +143,18 @@ public class WizardChargingPresenter extends WalletPresenter<WizardChargingPrese
       navigator.withoutLast(new AddCardDetailsPath(bankCard));
    }
 
+   public void showConnectionErrorScreen() {
+      navigator.withoutLast(new ConnectionErrorPath());
+   }
+
    public interface Screen extends WalletScreen {
 
+      void checkConnection(SmartCard.ConnectionStatus connectionStatus);
+
       void showSwipeError();
+
+      void trySwipeAgain();
+
+      void showSwipeSuccess();
    }
 }

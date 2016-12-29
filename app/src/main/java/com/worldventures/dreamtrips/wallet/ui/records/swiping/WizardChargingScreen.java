@@ -7,6 +7,7 @@ import android.util.AttributeSet;
 import android.view.View;
 
 import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.wallet.domain.entity.SmartCard;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletLinearLayout;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.OperationScreen;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.delegate.DialogOperationScreen;
@@ -68,7 +69,22 @@ public class WizardChargingScreen extends WalletLinearLayout<WizardChargingPrese
    }
 
    @Override
+   public void checkConnection(SmartCard.ConnectionStatus connectionStatus) {
+      if(!connectionStatus.isConnected()) presenter.showConnectionErrorScreen();
+   }
+
+   @Override
    public void showSwipeError() {
       operationScreen.showError(getString(R.string.wallet_wizard_charging_swipe_error), o -> {});
+   }
+
+   @Override
+   public void trySwipeAgain() {
+      operationScreen.showError(getString(R.string.wallet_receive_data_error), o -> {});
+   }
+
+   @Override
+   public void showSwipeSuccess() {
+      operationScreen.showProgress(getString(R.string.wallet_add_card_swipe_success));
    }
 }

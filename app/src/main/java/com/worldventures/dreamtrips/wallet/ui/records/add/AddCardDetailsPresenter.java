@@ -16,7 +16,6 @@ import com.worldventures.dreamtrips.wallet.analytics.WalletAnalyticsCommand;
 import com.worldventures.dreamtrips.wallet.domain.entity.AddressInfo;
 import com.worldventures.dreamtrips.wallet.domain.entity.AddressInfoWithLocale;
 import com.worldventures.dreamtrips.wallet.domain.entity.ImmutableAddressInfoWithLocale;
-import com.worldventures.dreamtrips.wallet.domain.entity.SmartCard;
 import com.worldventures.dreamtrips.wallet.domain.entity.card.BankCard;
 import com.worldventures.dreamtrips.wallet.service.SmartCardInteractor;
 import com.worldventures.dreamtrips.wallet.service.command.AddBankCardCommand;
@@ -83,7 +82,7 @@ public class AddCardDetailsPresenter extends WalletPresenter<AddCardDetailsPrese
             .take(1)
             .subscribe(command -> analyticsInteractor.walletAnalyticsCommandPipe()
                   .send(new WalletAnalyticsCommand(AddCardDetailsAction.forBankCard(bankCard,
-                        command.getResult().connectionStatus() == SmartCard.ConnectionStatus.CONNECTED))));
+                        command.getResult().connectionStatus().isConnected()))));
    }
 
    private void connectToDefaultCardPipe() {
@@ -137,6 +136,7 @@ public class AddCardDetailsPresenter extends WalletPresenter<AddCardDetailsPrese
                         .handle(CardNameFormatException.class, R.string.wallet_add_card_details_error_message)
                         .handle(CvvFormatException.class, R.string.wallet_add_card_details_error_message)
                         .handle(AddressFormatException.class, R.string.wallet_add_card_details_error_message)
+                        .defaultAction(action -> getView().showPushCardError())
                         .build())
                   .wrap());
    }
@@ -248,6 +248,7 @@ public class AddCardDetailsPresenter extends WalletPresenter<AddCardDetailsPrese
       Observable<Boolean> setAsDefaultPaymentCardCondition();
 
       void setEnableButton(boolean enable);
-   }
 
+      void showPushCardError();
+   }
 }

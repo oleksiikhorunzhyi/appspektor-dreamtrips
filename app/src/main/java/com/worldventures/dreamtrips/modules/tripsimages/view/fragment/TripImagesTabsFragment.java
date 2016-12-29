@@ -37,6 +37,7 @@ public class TripImagesTabsFragment extends BaseFragment<TripImagesTabsPresenter
          this.adapter = new BaseStatePagerAdapter(getChildFragmentManager()) {
             @Override
             public void setArgs(int position, Fragment fragment) {
+               //TODO should be refactored
                if (fragment instanceof TripImagesListFragment) {
                   TripImagesType type = TripImagesType.values()[position];
                   BaseFragmentWithArgs fragmentWithArgs = (BaseFragmentWithArgs) fragment;

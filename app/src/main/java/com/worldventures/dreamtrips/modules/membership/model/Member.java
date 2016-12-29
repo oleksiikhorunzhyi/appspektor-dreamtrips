@@ -1,28 +1,32 @@
 package com.worldventures.dreamtrips.modules.membership.model;
 
+import android.os.Parcel;
+import android.os.Parcelable;
 import android.text.TextUtils;
 
 import com.worldventures.dreamtrips.modules.common.view.util.Filterable;
 
-import java.io.Serializable;
+public class Member implements Parcelable, Filterable {
 
-public class Member implements Serializable, Filterable {
+   private String id;
+   private String name;
+   private String email;
+   private String phone;
+   private boolean emailIsMain = true;
+   private boolean isChecked;
+   private SentInvite sentInvite;
 
-   String id;
-   String name;
-   String email;
-   String phone;
-   boolean emailIsMain = true;
-   boolean isChecked;
-   History history;
-   int originalPosition;
-
-   public History getHistory() {
-      return history;
+   public Member() {
    }
 
-   public void setHistory(History history) {
-      this.history = history;
+   private int originalPosition;
+
+   public SentInvite getSentInvite() {
+      return sentInvite;
+   }
+
+   public void setSentInvite(SentInvite sentInvite) {
+      this.sentInvite = sentInvite;
    }
 
    public void setEmailIsMain(boolean emailIsMain) {
@@ -77,10 +81,6 @@ public class Member implements Serializable, Filterable {
       return emailIsMain;
    }
 
-   public boolean isEmailIsMain() {
-      return emailIsMain;
-   }
-
    public int getOriginalPosition() {
       return originalPosition;
    }
@@ -100,8 +100,7 @@ public class Member implements Serializable, Filterable {
       boolean emailEq = email != null ? email.equals(member.email) : member.email == null;
       boolean phoneEq = phone != null ? phone.equals(member.phone) : member.phone == null;
       if (emailIsMain && nameEq && emailEq) return true;
-      else if (nameEq && phoneEq) return true;
-      else return false;
+      else return nameEq && phoneEq;
    }
 
    @Override
@@ -114,8 +113,48 @@ public class Member implements Serializable, Filterable {
 
    @Override
    public boolean containsQuery(String query) {
-      if (query == null || TextUtils.isEmpty(query.trim())) return false;
-      return (name != null && name.toLowerCase().contains(query)) || (email != null && email.toLowerCase()
-            .contains(query)) || (phone != null && phone.contains(query));
+      return !(query == null || TextUtils.isEmpty(query.trim())) && ((name != null && name.toLowerCase()
+            .contains(query)) || (email != null && email.toLowerCase()
+            .contains(query)) || (phone != null && phone.contains(query)));
+   }
+
+   protected Member(Parcel in) {
+      id = in.readString();
+      name = in.readString();
+      email = in.readString();
+      phone = in.readString();
+      emailIsMain = in.readByte() != 0;
+      isChecked = in.readByte() != 0;
+      sentInvite = in.readParcelable(SentInvite.class.getClassLoader());
+      originalPosition = in.readInt();
+   }
+
+   public static final Creator<Member> CREATOR = new Creator<Member>() {
+      @Override
+      public Member createFromParcel(Parcel in) {
+         return new Member(in);
+      }
+
+      @Override
+      public Member[] newArray(int size) {
+         return new Member[size];
+      }
+   };
+
+   @Override
+   public int describeContents() {
+      return 0;
+   }
+
+   @Override
+   public void writeToParcel(Parcel dest, int flags) {
+      dest.writeString(id);
+      dest.writeString(name);
+      dest.writeString(email);
+      dest.writeString(phone);
+      dest.writeByte((byte) (emailIsMain ? 1 : 0));
+      dest.writeByte((byte) (isChecked ? 1 : 0));
+      dest.writeParcelable(sentInvite, flags);
+      dest.writeInt(originalPosition);
    }
 }

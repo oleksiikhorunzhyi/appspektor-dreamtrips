@@ -14,348 +14,362 @@
          android:layout_width="match_parent"
          />
 
-   <LinearLayout
+   <FrameLayout
+         android:id="@+id/trip_landscape_details_content_layout"
          android:layout_width="match_parent"
          android:layout_height="match_parent"
-         android:orientation="horizontal"
          >
 
-      <ScrollView
-            android:layout_width="0dp"
+      <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_weight="1.5"
-            android:fitsSystemWindows="true"
+            android:orientation="horizontal"
             >
 
-         <LinearLayout
-               android:layout_width="match_parent"
-               android:layout_height="wrap_content"
-               android:orientation="vertical"
+         <ScrollView
+               android:layout_width="0dp"
+               android:layout_height="match_parent"
+               android:layout_weight="1.5"
+               android:fitsSystemWindows="true"
                >
 
-            <FrameLayout
+            <LinearLayout
                   android:layout_width="match_parent"
-                  android:layout_height="@dimen/tripImageHeightDetailed"
+                  android:layout_height="wrap_content"
+                  android:orientation="vertical"
                   >
 
-               <android.support.v4.view.ViewPager
-                     android:id="@+id/viewPagerGallery"
-                     android:layout_width="match_parent"
-                     android:layout_height="match_parent"
-                     />
-
-               <me.relex.circleindicator.CircleIndicator
-                     android:id="@+id/circleIndicator"
-                     android:layout_width="match_parent"
-                     android:layout_height="40dp"
-                     android:layout_gravity="bottom"
-                     />
-
                <FrameLayout
-                     android:id="@+id/pointsCountLayout"
-                     android:layout_width="64dp"
-                     android:layout_height="64dp"
-                     android:layout_gravity="bottom"
-                     android:padding="5dp"
+                     android:layout_width="match_parent"
+                     android:layout_height="@dimen/tripImageHeightDetailed"
                      >
 
-                  <ImageView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:src="@drawable/ic_points_badge"
+                  <android.support.v4.view.ViewPager
+                        android:id="@+id/viewPagerGallery"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
                         />
 
-                  <TextView
-                        android:id="@+id/textViewPoints"
+                  <me.relex.circleindicator.CircleIndicator
+                        android:id="@+id/circleIndicator"
+                        android:layout_width="match_parent"
+                        android:layout_height="40dp"
+                        android:layout_gravity="bottom"
+                        />
+
+                  <FrameLayout
+                        android:id="@+id/pointsCountLayout"
+                        android:layout_width="64dp"
+                        android:layout_height="64dp"
+                        android:layout_gravity="bottom"
+                        android:padding="5dp"
+                        >
+
+                     <ImageView
+                           android:layout_width="wrap_content"
+                           android:layout_height="wrap_content"
+                           android:src="@drawable/ic_points_badge"
+                           />
+
+                     <TextView
+                           android:id="@+id/textViewPoints"
+                           android:layout_width="wrap_content"
+                           android:layout_height="wrap_content"
+                           android:layout_gravity="center"
+                           android:textColor="@color/white"
+                           android:textSize="12dp"
+                           />
+
+                  </FrameLayout>
+
+                  <RelativeLayout
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_gravity="center"
-                        android:textColor="@color/white"
-                        android:textSize="12dp"
+                        android:layout_gravity="bottom|end"
+                        >
+
+                     <TextView
+                           android:id="@+id/textViewFeatured"
+                           android:layout_width="wrap_content"
+                           android:layout_height="wrap_content"
+                           android:layout_centerVertical="true"
+                           android:background="@drawable/ic_stripe_left"
+                           android:gravity="center"
+                           android:padding="@dimen/spacing_medium"
+                           android:text="@string/trip_featured"
+                           android:textColor="@color/white"
+                           android:textSize="12sp"
+                           android:textStyle="bold"
+                           android:visibility="invisible"
+                           />
+
+                  </RelativeLayout>
+
+                  <ImageView
+                        android:id="@+id/sold_out"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="bottom|end"
+                        android:src="@drawable/soldout"
+                        android:visibility="gone"
                         />
 
                </FrameLayout>
 
-               <RelativeLayout
-                     android:layout_width="wrap_content"
+               <LinearLayout
+                     android:layout_width="match_parent"
                      android:layout_height="wrap_content"
-                     android:layout_gravity="bottom|end"
+                     android:orientation="vertical"
                      >
 
-                  <TextView
-                        android:id="@+id/textViewFeatured"
-                        android:layout_width="wrap_content"
+                  <LinearLayout
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_centerVertical="true"
-                        android:background="@drawable/ic_stripe_left"
-                        android:gravity="center"
+                        android:orientation="horizontal"
                         android:padding="@dimen/spacing_medium"
-                        android:text="@string/trip_featured"
-                        android:textColor="@color/white"
-                        android:textSize="12sp"
-                        android:textStyle="bold"
-                        android:visibility="invisible"
-                        />
-
-               </RelativeLayout>
-
-               <ImageView
-                     android:id="@+id/sold_out"
-                     android:layout_width="wrap_content"
-                     android:layout_height="wrap_content"
-                     android:layout_gravity="bottom|end"
-                     android:src="@drawable/soldout"
-                     android:visibility="gone"
-                     />
-
-            </FrameLayout>
-
-            <LinearLayout
-                  android:layout_width="match_parent"
-                  android:layout_height="wrap_content"
-                  android:orientation="vertical"
-                  >
-
-               <LinearLayout
-                     android:layout_width="match_parent"
-                     android:layout_height="wrap_content"
-                     android:orientation="horizontal"
-                     android:padding="@dimen/spacing_medium"
-                     >
-
-                  <LinearLayout
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:orientation="vertical"
                         >
 
-                     <TextView
-                           android:id="@+id/textViewName"
-                           android:layout_width="match_parent"
+                     <LinearLayout
+                           android:layout_width="0dp"
                            android:layout_height="wrap_content"
-                           android:fontFamily="sans-serif-light"
-                           android:textColor="@color/black"
-                           android:textSize="16sp"
-                           />
+                           android:layout_weight="1"
+                           android:orientation="vertical"
+                           >
+
+                        <TextView
+                              android:id="@+id/textViewName"
+                              android:layout_width="match_parent"
+                              android:layout_height="wrap_content"
+                              android:fontFamily="sans-serif-light"
+                              android:textColor="@color/black"
+                              android:textSize="16sp"
+                              />
 
 
-                     <TextView
-                           android:id="@+id/textViewPlace"
-                           android:layout_width="match_parent"
-                           android:layout_height="wrap_content"
-                           android:drawableLeft="@drawable/ic_location"
-                           android:drawablePadding="5dp"
-                           android:drawableStart="@drawable/ic_location"
-                           android:textColor="@color/tripPlaceColor"
-                           />
-                  </LinearLayout>
-
-                  <TextView
-                        android:id="@+id/textViewPrice"
-                        android:layout_width="wrap_content"
-                        android:layout_height="match_parent"
-                        android:fontFamily="sans-serif-light"
-                        android:gravity="center_vertical"
-                        android:textColor="@color/tripPlaceColor"
-                        android:textSize="22sp"
-                        android:textStyle="bold"
-                        />
-
-
-               </LinearLayout>
-
-               <View
-                     android:layout_width="match_parent"
-                     android:layout_height="4dp"
-                     android:background="@drawable/trip_details_shadow"
-                     />
-
-               <LinearLayout
-                     android:layout_width="match_parent"
-                     android:layout_height="wrap_content"
-                     android:orientation="horizontal"
-                     >
-
-                  <LinearLayout
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center_vertical"
-                        android:layout_weight="1"
-                        android:orientation="vertical"
-                        >
+                        <TextView
+                              android:id="@+id/textViewPlace"
+                              android:layout_width="match_parent"
+                              android:layout_height="wrap_content"
+                              android:drawableLeft="@drawable/ic_location"
+                              android:drawablePadding="5dp"
+                              android:drawableStart="@drawable/ic_location"
+                              android:textColor="@color/tripPlaceColor"
+                              />
+                     </LinearLayout>
 
                      <TextView
-                           android:id="@+id/textViewDate"
+                           android:id="@+id/textViewPrice"
                            android:layout_width="wrap_content"
-                           android:layout_height="wrap_content"
-                           android:background="@drawable/ic_stripe_right"
-                           android:paddingBottom="@dimen/spacing_medium"
-                           android:paddingLeft="@dimen/spacing_medium"
-                           android:paddingRight="@dimen/spacing_large"
-                           android:paddingTop="@dimen/spacing_medium"
-                           android:textColor="@color/white"
-                           android:textSize="16sp"
+                           android:layout_height="match_parent"
+                           android:fontFamily="sans-serif-light"
+                           android:gravity="center_vertical"
+                           android:textColor="@color/tripPlaceColor"
+                           android:textSize="22sp"
                            android:textStyle="bold"
                            />
 
+
                   </LinearLayout>
 
-                  <TextView
-                        android:id="@+id/textViewScheduleDescription"
+                  <View
+                        android:layout_width="match_parent"
+                        android:layout_height="4dp"
+                        android:background="@drawable/trip_details_shadow"
+                        />
+
+                  <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        >
+
+                     <LinearLayout
+                           android:layout_width="0dp"
+                           android:layout_height="wrap_content"
+                           android:layout_gravity="center_vertical"
+                           android:layout_weight="1"
+                           android:orientation="vertical"
+                           >
+
+                        <TextView
+                              android:id="@+id/textViewDate"
+                              android:layout_width="wrap_content"
+                              android:layout_height="wrap_content"
+                              android:background="@drawable/ic_stripe_right"
+                              android:paddingBottom="@dimen/spacing_medium"
+                              android:paddingLeft="@dimen/spacing_medium"
+                              android:paddingRight="@dimen/spacing_large"
+                              android:paddingTop="@dimen/spacing_medium"
+                              android:textColor="@color/white"
+                              android:textSize="16sp"
+                              android:textStyle="bold"
+                              />
+
+                     </LinearLayout>
+
+                     <TextView
+                           android:id="@+id/textViewScheduleDescription"
+                           android:layout_width="wrap_content"
+                           android:layout_height="wrap_content"
+                           android:fontFamily="sans-serif-light"
+                           android:gravity="end"
+                           android:padding="@dimen/spacing_medium"
+                           android:textColor="@color/black"
+                           />
+                  </LinearLayout>
+
+                  <View
+                        android:layout_width="match_parent"
+                        android:layout_height="4dp"
+                        android:background="@drawable/trip_details_shadow"
+                        />
+
+                  <LinearLayout
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:layout_gravity="center_horizontal"
+                        android:layout_marginBottom="@dimen/spacing_medium"
+                        android:layout_marginTop="@dimen/spacing_medium"
+                        android:orientation="vertical"
+                        >
+
+                     <TextView
+                           android:id="@+id/textViewBookIt"
+                           android:layout_width="wrap_content"
+                           android:layout_height="wrap_content"
+                           android:background="@color/tripButtonColor"
+                           android:gravity="center"
+                           android:paddingBottom="@dimen/spacing_normal"
+                           android:paddingLeft="@dimen/spacing_huger"
+                           android:paddingRight="@dimen/spacing_huger"
+                           android:paddingTop="@dimen/spacing_normal"
+                           android:text="@string/book_it"
+                           android:textColor="@color/white"
+                           android:textSize="22sp"
+                           />
+
+                     <TextView
+                           android:id="@+id/signUp"
+                           android:layout_width="match_parent"
+                           android:layout_height="wrap_content"
+                           android:fontFamily="sans-serif-light"
+                           android:gravity="center"
+                           android:paddingTop="@dimen/spacing_small"
+                           android:text="@string/book_it_disabled"
+                           android:textColor="@android:color/black"
+                           android:visibility="gone"
+                           />
+
+                  </LinearLayout>
+
+
+                  <TextView
+                        android:id="@+id/textViewDescription"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
                         android:fontFamily="sans-serif-light"
-                        android:gravity="end"
                         android:padding="@dimen/spacing_medium"
                         android:textColor="@color/black"
                         />
-               </LinearLayout>
 
-               <View
-                     android:layout_width="match_parent"
-                     android:layout_height="4dp"
-                     android:background="@drawable/trip_details_shadow"
-                     />
-
-               <LinearLayout
-                     android:layout_width="wrap_content"
-                     android:layout_height="wrap_content"
-                     android:layout_marginTop="@dimen/spacing_medium"
-                     android:layout_gravity="center_horizontal"
-                     android:layout_marginBottom="@dimen/spacing_medium"
-                     android:orientation="vertical"
-                     >
-
-                  <TextView
-                        android:id="@+id/textViewBookIt"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:background="@color/tripButtonColor"
-                        android:gravity="center"
-                        android:paddingTop="@dimen/spacing_normal"
-                        android:paddingBottom="@dimen/spacing_normal"
-                        android:paddingLeft="@dimen/spacing_huger"
-                        android:paddingRight="@dimen/spacing_huger"
-                        android:text="@string/book_it"
-                        android:textColor="@color/white"
-                        android:textSize="22sp"
-                        />
-
-                  <TextView
-                        android:id="@+id/signUp"
+                  <View
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:paddingTop="@dimen/spacing_small"
-                        android:visibility="gone"
-                        android:textColor="@android:color/black"
-                        android:fontFamily="sans-serif-light"
-                        android:gravity="center"
-                        android:text="@string/book_it_disabled"
+                        android:layout_height="64dp"
                         />
 
                </LinearLayout>
 
-
-               <TextView
-                     android:id="@+id/textViewDescription"
-                     android:layout_width="match_parent"
-                     android:layout_height="wrap_content"
-                     android:fontFamily="sans-serif-light"
-                     android:padding="@dimen/spacing_medium"
-                     android:textColor="@color/black"
-                     />
-
-               <View
-                     android:layout_width="match_parent"
-                     android:layout_height="64dp"
-                     />
-
-            </LinearLayout>
-
-         </LinearLayout>
-
-
-      </ScrollView>
-
-      <FrameLayout
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="2"
-            >
-
-         <ScrollView
-               android:layout_width="match_parent"
-               android:layout_height="match_parent"
-               >
-
-            <LinearLayout
-                  android:layout_width="match_parent"
-                  android:layout_height="wrap_content"
-                  android:orientation="vertical"
-                  >
-
-               <TextView
-                     android:layout_width="match_parent"
-                     android:layout_height="wrap_content"
-                     android:background="@android:color/white"
-                     android:fontFamily="sans-serif-light"
-                     android:padding="10dp"
-                     android:text="@string/trip_details"
-                     android:textColor="@android:color/black"
-                     android:textSize="22sp"
-                     />
-
-               <View
-                     android:layout_width="match_parent"
-                     android:layout_height="4dp"
-                     android:background="@drawable/trip_details_shadow"
-                     />
-
-               <ProgressBar
-                     android:id="@+id/progressBarDetailLoading"
-                     android:layout_width="wrap_content"
-                     android:layout_height="wrap_content"
-                     android:layout_gravity="center"
-                     />
-
-               <TextView
-                     android:id="@+id/textViewReload"
-                     android:layout_width="match_parent"
-                     android:layout_height="wrap_content"
-                     android:gravity="center"
-                     android:padding="@dimen/spacing_normal"
-                     android:text="@string/reload_trip_details"
-                     android:textColor="@color/tripPlaceColor"
-                     android:textSize="22sp"
-                     android:visibility="gone"
-                     />
-
-               <com.linearlistview.LinearListView
-                     android:id="@+id/listViewContent"
-                     android:layout_width="match_parent"
-                     android:layout_height="match_parent"
-                     android:orientation="vertical"
-                     android:showDividers="none"
-                     />
-
-               <View
-                     android:layout_width="match_parent"
-                     android:layout_height="64dp"
-                     />
             </LinearLayout>
 
 
          </ScrollView>
 
-         <View
-               android:layout_width="4dp"
+         <FrameLayout
+               android:layout_width="0dp"
                android:layout_height="match_parent"
-               android:background="@drawable/trip_details_shadow_vertical"
-               />
+               android:layout_weight="2"
+               >
 
-      </FrameLayout>
+            <ScrollView
+                  android:layout_width="match_parent"
+                  android:layout_height="match_parent"
+                  >
 
-   </LinearLayout>
+               <LinearLayout
+                     android:layout_width="match_parent"
+                     android:layout_height="wrap_content"
+                     android:orientation="vertical"
+                     >
+
+                  <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@android:color/white"
+                        android:fontFamily="sans-serif-light"
+                        android:padding="10dp"
+                        android:text="@string/trip_details"
+                        android:textColor="@android:color/black"
+                        android:textSize="22sp"
+                        />
+
+                  <View
+                        android:layout_width="match_parent"
+                        android:layout_height="4dp"
+                        android:background="@drawable/trip_details_shadow"
+                        />
+
+                  <ProgressBar
+                        android:id="@+id/progressBarDetailLoading"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        />
+
+                  <TextView
+                        android:id="@+id/textViewReload"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="center"
+                        android:padding="@dimen/spacing_normal"
+                        android:text="@string/reload_trip_details"
+                        android:textColor="@color/tripPlaceColor"
+                        android:textSize="22sp"
+                        android:visibility="gone"
+                        />
+
+                  <com.linearlistview.LinearListView
+                        android:id="@+id/listViewContent"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:orientation="vertical"
+                        android:showDividers="none"
+                        />
+
+                  <View
+                        android:layout_width="match_parent"
+                        android:layout_height="64dp"
+                        />
+               </LinearLayout>
+
+
+            </ScrollView>
+
+            <View
+                  android:layout_width="4dp"
+                  android:layout_height="match_parent"
+                  android:background="@drawable/trip_details_shadow_vertical"
+                  />
+
+         </FrameLayout>
+
+      </LinearLayout>
+
+      <TextView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:textColor="@color/black"
+            />
+
+   </FrameLayout>
 
 </LinearLayout>

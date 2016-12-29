@@ -1,7 +1,9 @@
 package com.worldventures.dreamtrips.modules.map.model;
 
+import android.support.annotation.DrawableRes;
+
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchantType;
+import com.worldventures.dreamtrips.modules.dtl.helper.MerchantHelper;
 
 public enum ClusterType {
 
@@ -13,11 +15,11 @@ public enum ClusterType {
       this.resource = resource;
    }
 
-   public int asResource() {
+   public @DrawableRes int asResource() {
       return resource;
    }
 
    public static ClusterType from(DtlClusterItem clusterItem) {
-      return clusterItem.getDtlMerchantType() == DtlMerchantType.OFFER ? OFFERS : DININGS;
+      return clusterItem.getMerchant().asMerchantAttributes().hasOffers() ? OFFERS : DININGS;
    }
 }

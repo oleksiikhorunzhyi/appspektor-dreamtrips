@@ -2,7 +2,6 @@ package com.worldventures.dreamtrips.core.janet;
 
 import android.content.Context;
 
-import com.google.gson.Gson;
 import com.techery.spares.module.qualifier.ForApplication;
 import com.worldventures.dreamtrips.BuildConfig;
 import com.worldventures.dreamtrips.api.api_common.converter.GsonProvider;
@@ -62,7 +61,7 @@ public class JanetUploaderyModule {
    @Named(JANET_UPLOADERY)
    Interceptor provideOkHttp3Interceptor() {
       HttpLoggingInterceptor interceptor = new okhttp3.logging.HttpLoggingInterceptor();
-      interceptor.setLevel(okhttp3.logging.HttpLoggingInterceptor.Level.BODY);
+      interceptor.setLevel(HttpLoggingInterceptor.Level.BASIC);
       return interceptor;
    }
 
@@ -74,8 +73,8 @@ public class JanetUploaderyModule {
 
    @Provides
    @Named(JANET_UPLOADERY)
-   ActionService provideUploaderyActionService(@ForApplication Context appContext, @Named(JANET_UPLOADERY) HttpClient httpClient, Gson gson) {
+   ActionService provideUploaderyActionService(@ForApplication Context appContext, @Named(JANET_UPLOADERY) HttpClient httpClient) {
       return new NewDreamTripsHttpService(appContext, BuildConfig.DreamTripsApi, httpClient, new GsonConverter(new GsonProvider()
-            .provideGson()), new GsonConverter(gson));
+            .provideGson()));
    }
 }

@@ -1,20 +1,20 @@
 package com.worldventures.dreamtrips.core.session;
 
 import com.worldventures.dreamtrips.core.janet.SessionActionPipeCreator;
-import com.worldventures.dreamtrips.modules.common.api.janet.command.CirclesCommand;
+import com.worldventures.dreamtrips.modules.common.api.janet.command.GetCirclesCommand;
 
 import io.techery.janet.ActionPipe;
 import rx.schedulers.Schedulers;
 
 public class CirclesInteractor {
 
-   ActionPipe<CirclesCommand> pipe;
+   ActionPipe<GetCirclesCommand> pipe;
 
    public CirclesInteractor(SessionActionPipeCreator sessionActionPipeCreator) {
-      pipe = sessionActionPipeCreator.createPipe(CirclesCommand.class, Schedulers.io());
+      pipe = sessionActionPipeCreator.createPipe(GetCirclesCommand.class, Schedulers.io());
    }
 
-   public ActionPipe<CirclesCommand> pipe() {
+   public ActionPipe<GetCirclesCommand> pipe() {
       return pipe;
    }
 }

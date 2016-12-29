@@ -1,23 +1,24 @@
 package com.worldventures.dreamtrips.modules.trips.presenter;
 
 import com.worldventures.dreamtrips.core.rx.RxView;
-import com.worldventures.dreamtrips.core.utils.events.EntityLikedEvent;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem;
 import com.worldventures.dreamtrips.modules.bucketlist.service.BucketInteractor;
-import com.worldventures.dreamtrips.modules.bucketlist.service.action.CreateBucketItemHttpAction;
+import com.worldventures.dreamtrips.modules.bucketlist.service.action.CreateBucketItemCommand;
 import com.worldventures.dreamtrips.modules.bucketlist.service.model.ImmutableBucketBodyImpl;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
-import com.worldventures.dreamtrips.modules.feed.manager.FeedEntityManager;
+import com.worldventures.dreamtrips.modules.feed.service.FeedInteractor;
+import com.worldventures.dreamtrips.modules.feed.service.command.ChangeFeedEntityLikedStatusCommand;
 import com.worldventures.dreamtrips.modules.trips.model.TripModel;
 
 import javax.inject.Inject;
 
+import io.techery.janet.helper.ActionStateSubscriber;
 import rx.android.schedulers.AndroidSchedulers;
 
 public class BaseTripPresenter<V extends BaseTripPresenter.View> extends Presenter<V> {
 
    @Inject BucketInteractor bucketInteractor;
-   @Inject FeedEntityManager feedEntityManager;
+   @Inject FeedInteractor feedInteractor;
 
    protected TripModel trip;
 
@@ -25,9 +26,10 @@ public class BaseTripPresenter<V extends BaseTripPresenter.View> extends Present
       this.trip = trip;
    }
 
-   public void onInjected() {
-      super.onInjected();
-      feedEntityManager.setRequestingPresenter(this);
+   @Override
+   public void takeView(V view) {
+      super.takeView(view);
+      subscribeToLikesChanges();
    }
 
    @Override
@@ -37,30 +39,37 @@ public class BaseTripPresenter<V extends BaseTripPresenter.View> extends Present
    }
 
    public void addTripToBucket() {
-      view.bindUntilDropView(bucketInteractor.createPipe()
-            .createObservableResult(new CreateBucketItemHttpAction(ImmutableBucketBodyImpl.builder()
+      bucketInteractor.createPipe()
+            .createObservable(new CreateBucketItemCommand(ImmutableBucketBodyImpl.builder()
                   .type("trip")
                   .id(trip.getTripId())
                   .build()))
-            .map(CreateBucketItemHttpAction::getResponse)
-            .observeOn(AndroidSchedulers.mainThread())).subscribe(bucketItem -> {
-         trip.setInBucketList(true);
-         view.setup(trip);
-         view.tripAddedToBucketItem(bucketItem);
-      }, this::handleError);
+            .compose(bindViewToMainComposer())
+            .subscribe(new ActionStateSubscriber<CreateBucketItemCommand>()
+                  .onSuccess(createBucketItemCommand -> {
+                     trip.setInBucketList(true);
+                     view.setup(trip);
+                     view.tripAddedToBucketItem(createBucketItemCommand.getResult());
+                  })
+                  .onFail(this::handleError));
    }
 
    public void likeTrip() {
-      if (!trip.isLiked()) {
-         feedEntityManager.like(trip);
-      } else {
-         feedEntityManager.unlike(trip);
-      }
+      feedInteractor.changeFeedEntityLikedStatusPipe().send(new ChangeFeedEntityLikedStatusCommand(trip));
    }
 
-   public void onEvent(EntityLikedEvent event) {
-      if (event.getFeedEntity().getUid().equals(trip.getUid())) {
-         trip.syncLikeState(event.getFeedEntity());
+   private void subscribeToLikesChanges() {
+      feedInteractor.changeFeedEntityLikedStatusPipe()
+            .observe()
+            .compose(bindViewToMainComposer())
+            .subscribe(new ActionStateSubscriber<ChangeFeedEntityLikedStatusCommand>()
+                  .onSuccess(this::likeStatusChanged)
+                  .onFail(this::handleError));
+   }
+
+   private void likeStatusChanged(ChangeFeedEntityLikedStatusCommand command) {
+      if (command.getResult().getUid().equals(trip.getUid())) {
+         trip.syncLikeState(command.getResult());
          view.setup(trip);
          if (view.isVisibleOnScreen()) view.tripLiked(trip);
       }

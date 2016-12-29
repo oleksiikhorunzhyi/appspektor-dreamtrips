@@ -2,6 +2,7 @@ package com.worldventures.dreamtrips.modules.bucketlist.model.converter;
 
 import com.worldventures.dreamtrips.api.bucketlist.model.BucketItemSocialized;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem;
+import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.feed.model.comment.Comment;
 
 import io.techery.mappery.MapperyContext;
@@ -22,6 +23,8 @@ public class BucketItemSocializedConverter extends BucketItemConverter<BucketIte
 
       bucketItem.setCommentsCount(apiBucketItem.commentsCount());
       bucketItem.setComments(mapperyContext.convert(apiBucketItem.comments(), Comment.class));
+
+      bucketItem.setOwner(mapperyContext.convert(apiBucketItem.author(), User.class));
 
       return bucketItem;
    }

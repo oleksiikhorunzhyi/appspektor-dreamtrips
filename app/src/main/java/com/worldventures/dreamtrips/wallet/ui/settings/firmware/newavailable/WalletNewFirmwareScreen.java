@@ -13,12 +13,11 @@ import android.widget.TextView;
 
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.api.smart_card.firmware.model.FirmwareInfo;
+import com.worldventures.dreamtrips.core.utils.FileUtils;
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCardFirmware;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletLinearLayout;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.OperationScreen;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.delegate.DialogOperationScreen;
-
-import org.apache.commons.io.FileUtils;
 
 import butterknife.InjectView;
 import butterknife.OnClick;

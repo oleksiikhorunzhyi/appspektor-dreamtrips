@@ -8,7 +8,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.View;
 
 import com.innahema.collections.query.queriables.Queryable;
-import com.techery.spares.adapter.IRoboSpiceAdapter;
+import com.techery.spares.adapter.ListAdapter;
 import com.techery.spares.annotations.Layout;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.navigation.Route;
@@ -20,14 +20,15 @@ import com.worldventures.dreamtrips.modules.common.model.MediaAttachment;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragmentWithArgs;
 import com.worldventures.dreamtrips.modules.common.view.viewpager.BaseStatePagerAdapter;
 import com.worldventures.dreamtrips.modules.feed.bundle.CreateEntityBundle;
+import com.worldventures.dreamtrips.modules.feed.model.uploading.UploadingPostsList;
 import com.worldventures.dreamtrips.modules.tripsimages.bundle.FullScreenImagesBundle;
 import com.worldventures.dreamtrips.modules.tripsimages.bundle.FullScreenPhotoBundle;
 import com.worldventures.dreamtrips.modules.tripsimages.model.FragmentItemWithObject;
 import com.worldventures.dreamtrips.modules.tripsimages.model.IFullScreenObject;
 import com.worldventures.dreamtrips.modules.tripsimages.model.SocialViewPagerState;
 import com.worldventures.dreamtrips.modules.tripsimages.model.TripImagesType;
+import com.worldventures.dreamtrips.modules.tripsimages.presenter.MembersImagesBasePresenter;
 import com.worldventures.dreamtrips.modules.tripsimages.presenter.TripImagesListPresenter;
-import com.worldventures.dreamtrips.modules.tripsimages.presenter.fullscreen.MembersImagesPresenter;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -37,7 +38,8 @@ import javax.inject.Inject;
 import butterknife.InjectView;
 
 @Layout(R.layout.fragment_full_screen_photo_wrapper)
-public class FullScreenPhotoWrapperFragment extends RxBaseFragmentWithArgs<TripImagesListPresenter, FullScreenImagesBundle> implements MembersImagesPresenter.View {
+public class FullScreenPhotoWrapperFragment extends RxBaseFragmentWithArgs<TripImagesListPresenter, FullScreenImagesBundle>
+      implements MembersImagesBasePresenter.View {
 
    @InjectView(R.id.pager) protected ViewPager pager;
    @InjectView(R.id.toolbar_actionbar) protected Toolbar toolbar;
@@ -54,7 +56,7 @@ public class FullScreenPhotoWrapperFragment extends RxBaseFragmentWithArgs<TripI
       int notificationId = getArgs().getNotificationId();
       this.route = getArgs().getRoute();
       ArrayList<IFullScreenObject> fixedList = getArgs().getFixedList();
-      return TripImagesListPresenter.create(type, userId, fixedList, true, position, notificationId);
+      return TripImagesListPresenter.create(type, userId, fixedList, position, notificationId);
    }
 
    @Override
@@ -143,11 +145,6 @@ public class FullScreenPhotoWrapperFragment extends RxBaseFragmentWithArgs<TripI
    }
 
    @Override
-   public IRoboSpiceAdapter getAdapter() {
-      return adapter;
-   }
-
-   @Override
    public void openFullscreen(FullScreenImagesBundle data) {
       router.moveTo(Route.FULLSCREEN_PHOTO_LIST, NavigationConfigBuilder.forActivity()
             .toolbarConfig(ToolbarConfig.Builder.create().visible(false).build())
@@ -161,19 +158,18 @@ public class FullScreenPhotoWrapperFragment extends RxBaseFragmentWithArgs<TripI
    }
 
    @Override
-   public void fillWithItems(List<IFullScreenObject> items) {
+   public void setImages(List<IFullScreenObject> items) {
+      adapter.clear();
       addToAdapter(items);
       adapter.notifyDataSetChanged();
    }
 
    private void addToAdapter(List<IFullScreenObject> items) {
-      Queryable.from(items).forEachR(item -> {
-         if (route == null) {
-            throw new IllegalStateException("You must specify route for this type");
-         } else {
-            adapter.add(new FragmentItemWithObject<>(route, "", item));
-         }
-      });
+      if (route == null) {
+         throw new IllegalStateException("You must specify route for this type");
+      }
+      Queryable.from(items).forEachR(item
+            -> adapter.add(new FragmentItemWithObject<>(route, "", item)));
    }
 
    @Override
@@ -210,7 +206,18 @@ public class FullScreenPhotoWrapperFragment extends RxBaseFragmentWithArgs<TripI
    }
 
    @Override
+   public boolean isFullscreenView() {
+      return true;
+   }
+
+   @Override
    public void openCreatePhoto(MediaAttachment mediaAttachment, CreateEntityBundle.Origin photoOrigin) {
       //TODO Temporary. Need to refactor. Need to create own presenter for {@link FullScreenPhotoWrapperFragment}
+   }
+
+   @Override
+   public void setImages(List<IFullScreenObject> images, UploadingPostsList uploadingPostsList) {
+      //TODO Temporary. Need to refactor. Need to create own presenter for {@link FullScreenPhotoWrapperFragment}
+      setImages(images);
    }
 }

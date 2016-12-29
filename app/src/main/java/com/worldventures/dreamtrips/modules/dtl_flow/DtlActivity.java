@@ -26,7 +26,7 @@ public class DtlActivity extends FlowActivity<ActivityPresenter<ActivityPresente
    @Override
    protected void onCreate(Bundle savedInstanceState) {
       super.onCreate(savedInstanceState);
-      //
+
       navigationDrawerPresenter.setCurrentComponent(getCurrentComponent());
       setupFilter();
    }
@@ -50,7 +50,6 @@ public class DtlActivity extends FlowActivity<ActivityPresenter<ActivityPresente
       return new ActivityPresenter<>();
    }
 
-   //TODO refactor after merge with social and update social router
    public static void startDtl(Context context) {
       context.startActivity(new Intent(context, DtlActivity.class));
    }

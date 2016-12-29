@@ -30,7 +30,7 @@ public class UploadChatAvatarCommand extends Command<String> implements Injectab
             .doOnNext(state -> handleUploadingState(state, callback))
             .compose(new ActionStateToActionTransformer<>())
             .map(command -> ((SimpleUploaderyCommand) command))
-            .map(simpleCommand -> simpleCommand.getResult().getPhotoUploadResponse().getLocation())
+            .map(simpleCommand -> simpleCommand.getResult().response().uploaderyPhoto().location())
             .subscribe(callback::onSuccess, callback::onFail);
    }
 

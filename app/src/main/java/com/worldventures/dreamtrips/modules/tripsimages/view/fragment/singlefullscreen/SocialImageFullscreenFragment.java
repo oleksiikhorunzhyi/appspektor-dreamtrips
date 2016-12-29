@@ -20,7 +20,6 @@ import com.worldventures.dreamtrips.modules.common.view.custom.tagview.viewgroup
 import com.worldventures.dreamtrips.modules.feed.view.cell.Flaggable;
 import com.worldventures.dreamtrips.modules.feed.view.popup.FeedItemMenuBuilder;
 import com.worldventures.dreamtrips.modules.tripsimages.bundle.EditPhotoBundle;
-import com.worldventures.dreamtrips.modules.tripsimages.events.SocialViewPagerStateChangedEvent;
 import com.worldventures.dreamtrips.modules.tripsimages.model.Flag;
 import com.worldventures.dreamtrips.modules.tripsimages.model.IFullScreenObject;
 import com.worldventures.dreamtrips.modules.tripsimages.model.Photo;
@@ -83,7 +82,7 @@ public class SocialImageFullscreenFragment extends FullScreenPhotoFragment<Socia
       super.onStart();
       //it is ok sync and send message to sync
       syncContentWrapperViewGroupWithGlobalState();
-      eventBus.post(new SocialViewPagerStateChangedEvent());
+      syncState();
    }
 
    @Override
@@ -174,7 +173,7 @@ public class SocialImageFullscreenFragment extends FullScreenPhotoFragment<Socia
    public void onTag() {
       SocialViewPagerState state = getState();
       saveViewState(state.isContentWrapperVisible(), !photoTagHolder.isShown());
-      eventBus.post(new SocialViewPagerStateChangedEvent());
+      syncState();
    }
 
    protected void hideTagViewGroup() {
@@ -216,10 +215,10 @@ public class SocialImageFullscreenFragment extends FullScreenPhotoFragment<Socia
    public void onVisibilityChange() {
       SocialViewPagerState state = getState();
       saveViewState(!state.isContentWrapperVisible(), state.isTagHolderVisible());
-      eventBus.post(new SocialViewPagerStateChangedEvent());
+      syncState();
    }
 
-   public void onEvent(SocialViewPagerStateChangedEvent event) {
+   public void syncState() {
       if (isResumed()) {
          syncTagViewGroupWithGlobalState();
          syncContentWrapperViewGroupWithGlobalState();

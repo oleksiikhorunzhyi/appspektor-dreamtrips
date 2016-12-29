@@ -19,7 +19,7 @@
          >
 
       <FrameLayout
-            android:id="@+id/edit_chat_members_content_view"
+            android:id="@id/content_layout"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="vertical"

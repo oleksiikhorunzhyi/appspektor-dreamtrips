@@ -1,62 +1,69 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
       android:layout_width="match_parent"
       android:layout_height="match_parent"
-      android:background="#0F2639"
-      android:orientation="vertical"
       >
 
-   <android.support.v4.widget.SwipeRefreshLayout
-         android:id="@+id/swipe_container"
+   <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
          android:layout_width="match_parent"
          android:layout_height="match_parent"
+         android:background="#0F2639"
+         android:orientation="vertical"
          >
 
-      <ScrollView
-            android:id="@+id/containerLandscape"
+      <android.support.v4.widget.SwipeRefreshLayout
+            android:id="@+id/swipe_container"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             >
 
-         <LinearLayout
+         <ScrollView
+               android:id="@+id/containerLandscape"
                android:layout_width="match_parent"
-               android:layout_height="wrap_content"
-               android:orientation="vertical"
+               android:layout_height="match_parent"
                >
 
-            <TextView
+            <LinearLayout
                   android:layout_width="match_parent"
                   android:layout_height="wrap_content"
-                  android:padding="10dp"
-                  android:text="@string/featured_header"
-                  android:textColor="@android:color/white"
-                  android:textStyle="bold"
-                  />
+                  android:orientation="vertical"
+                  >
 
-            <com.worldventures.dreamtrips.modules.tripsimages.view.custom.HotFixRecyclerView
-                  android:id="@+id/recyclerViewFeatured"
-                  android:layout_width="match_parent"
-                  android:layout_height="@dimen/video_three_sixty_height"
-                  />
+               <TextView
+                     android:layout_width="match_parent"
+                     android:layout_height="wrap_content"
+                     android:padding="10dp"
+                     android:text="@string/featured_header"
+                     android:textColor="@android:color/white"
+                     android:textStyle="bold"
+                     />
 
-            <TextView
-                  android:layout_width="match_parent"
-                  android:layout_height="wrap_content"
-                  android:padding="10dp"
-                  android:text="@string/recent_header"
-                  android:textColor="@android:color/white"
-                  android:textStyle="bold"
-                  />
+               <com.worldventures.dreamtrips.modules.tripsimages.view.custom.HotFixRecyclerView
+                     android:id="@+id/recyclerViewFeatured"
+                     android:layout_width="match_parent"
+                     android:layout_height="@dimen/video_three_sixty_height"
+                     />
 
-            <com.worldventures.dreamtrips.modules.tripsimages.view.custom.HotFixRecyclerView
-                  android:id="@+id/recyclerViewRecent"
-                  android:layout_width="match_parent"
-                  android:layout_height="@dimen/video_three_sixty_height_small"
-                  />
-         </LinearLayout>
+               <TextView
+                     android:layout_width="match_parent"
+                     android:layout_height="wrap_content"
+                     android:padding="10dp"
+                     android:text="@string/recent_header"
+                     android:textColor="@android:color/white"
+                     android:textStyle="bold"
+                     />
 
-      </ScrollView>
+               <com.worldventures.dreamtrips.modules.tripsimages.view.custom.HotFixRecyclerView
+                     android:id="@+id/recyclerViewRecent"
+                     android:layout_width="match_parent"
+                     android:layout_height="@dimen/video_three_sixty_height_small"
+                     />
+            </LinearLayout>
 
-   </android.support.v4.widget.SwipeRefreshLayout>
+         </ScrollView>
 
-</LinearLayout>
+      </android.support.v4.widget.SwipeRefreshLayout>
+
+   </LinearLayout>
+
+</FrameLayout>

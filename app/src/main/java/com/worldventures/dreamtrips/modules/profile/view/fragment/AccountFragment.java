@@ -17,8 +17,14 @@ import com.worldventures.dreamtrips.modules.common.delegate.SocialCropImageManag
 import com.worldventures.dreamtrips.modules.common.view.activity.MainActivity;
 import com.worldventures.dreamtrips.modules.common.view.bundle.PickerBundle;
 import com.worldventures.dreamtrips.modules.common.view.custom.BadgeView;
+import com.worldventures.dreamtrips.modules.feed.model.FeedItem;
+import com.worldventures.dreamtrips.modules.feed.model.uploading.UploadingPostsList;
+import com.worldventures.dreamtrips.modules.feed.view.cell.delegate.UploadingCellDelegate;
 import com.worldventures.dreamtrips.modules.profile.adapters.IgnoreFirstExpandedItemAdapter;
 import com.worldventures.dreamtrips.modules.profile.presenter.AccountPresenter;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Layout(R.layout.fragment_account)
 @MenuResource(R.menu.menu_empty)
@@ -54,6 +60,25 @@ public class AccountFragment extends ProfileFragment<AccountPresenter> implement
    @Override
    protected BaseDelegateAdapter createAdapter() {
       return new IgnoreFirstExpandedItemAdapter(getContext(), this);
+   }
+
+   @Override
+   public void refreshFeedItems(List<FeedItem> items, UploadingPostsList uploadingPostsList) {
+      List newItems = new ArrayList();
+      if (!uploadingPostsList.getPhotoPosts().isEmpty()) {
+         newItems.add(uploadingPostsList);
+      }
+      newItems.addAll(items);
+      fragmentWithFeedDelegate.clearItems();
+      fragmentWithFeedDelegate.addItems(newItems);
+      fragmentWithFeedDelegate.notifyDataSetChanged();
+   }
+
+   @Override
+   protected void registerCellDelegates() {
+      super.registerCellDelegates();
+      fragmentWithFeedDelegate.registerDelegate(UploadingPostsList.class, new UploadingCellDelegate(getPresenter(),
+            getContext()));
    }
 
    @Override

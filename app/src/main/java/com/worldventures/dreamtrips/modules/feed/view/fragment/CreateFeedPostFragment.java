@@ -3,10 +3,9 @@ package com.worldventures.dreamtrips.modules.feed.view.fragment;
 import com.techery.spares.annotations.Layout;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.navigation.Route;
-import com.worldventures.dreamtrips.modules.feed.presenter.CreateEntityPresenter;
 
 @Layout(R.layout.layout_post)
-public class CreateFeedPostFragment extends CreateEntityFragment implements CreateEntityPresenter.View {
+public class CreateFeedPostFragment extends CreateEntityFragment {
 
    @Override
    public void onResume() {

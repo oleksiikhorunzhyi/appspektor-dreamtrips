@@ -1,15 +1,15 @@
 package com.worldventures.dreamtrips.modules.trips.presenter;
 
 import com.worldventures.dreamtrips.core.rx.RxView;
-import com.worldventures.dreamtrips.core.utils.events.EntityLikedEvent;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem;
 import com.worldventures.dreamtrips.modules.bucketlist.service.BucketInteractor;
-import com.worldventures.dreamtrips.modules.bucketlist.service.action.CreateBucketItemHttpAction;
+import com.worldventures.dreamtrips.modules.bucketlist.service.action.CreateBucketItemCommand;
 import com.worldventures.dreamtrips.modules.bucketlist.service.model.ImmutableBucketBodyImpl;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
-import com.worldventures.dreamtrips.modules.feed.manager.FeedEntityManager;
 import com.worldventures.dreamtrips.modules.feed.model.FeedEntity;
+import com.worldventures.dreamtrips.modules.feed.service.FeedInteractor;
+import com.worldventures.dreamtrips.modules.feed.service.command.ChangeFeedEntityLikedStatusCommand;
 import com.worldventures.dreamtrips.modules.trips.command.GetTripsCommand;
 import com.worldventures.dreamtrips.modules.trips.delegate.ResetFilterEventDelegate;
 import com.worldventures.dreamtrips.modules.trips.delegate.TripFilterEventDelegate;
@@ -22,13 +22,12 @@ import java.util.List;
 import javax.inject.Inject;
 
 import icepick.State;
-import io.techery.janet.CancelException;
 import io.techery.janet.helper.ActionStateSubscriber;
 import rx.Observable;
 
 public class TripListPresenter extends Presenter<TripListPresenter.View> {
 
-   @Inject FeedEntityManager entityManager;
+   @Inject FeedInteractor feedInteractor;
    @Inject BucketInteractor bucketInteractor;
    @Inject TripFilterEventDelegate tripFilterEventDelegate;
    @Inject ResetFilterEventDelegate resetFilterEventDelegate;
@@ -39,15 +38,9 @@ public class TripListPresenter extends Presenter<TripListPresenter.View> {
    private boolean loadWithStatus;
 
    private boolean loading;
-   private int page = 1;
    private boolean noMoreItems = false;
 
    public TripListPresenter() {
-   }
-
-   @Override
-   public void onInjected() {
-      entityManager.setRequestingPresenter(this);
    }
 
    public void takeView(View view) {
@@ -55,6 +48,7 @@ public class TripListPresenter extends Presenter<TripListPresenter.View> {
       TrackingHelper.dreamTrips(getAccountUserId());
       subscribeToLoadTrips();
       subscribeToFilterEvents();
+      subscribeToLikesChanges();
    }
 
    @Override
@@ -67,7 +61,6 @@ public class TripListPresenter extends Presenter<TripListPresenter.View> {
    public void reload() {
       if (view == null) return;
 
-      page = 1;
       loading = true;
       noMoreItems = false;
       if (loadWithStatus) {
@@ -81,8 +74,7 @@ public class TripListPresenter extends Presenter<TripListPresenter.View> {
       resetFilterEventDelegate.post(null);
    }
 
-   public void loadMore() {
-      page++;
+   private void loadMore() {
       loadTrips(false);
    }
 
@@ -127,40 +119,44 @@ public class TripListPresenter extends Presenter<TripListPresenter.View> {
                      view.itemsChanged(getTripsCommand.getItems());
                   })
                   .onFail((getTripsCommand, throwable) -> {
-                     if (throwable instanceof CancelException) return;
+                     this.handleError(getTripsCommand, throwable);
                      view.finishLoading();
-                     view.informUser(getTripsCommand.getErrorMessage());
                   }));
    }
 
-   public void onEvent(EntityLikedEvent event) {
-      view.itemLiked(event.getFeedEntity());
+   public void likeItem(TripModel trip) {
+      trackAction(trip, TrackingHelper.ATTRIBUTE_LIKE);
+      feedInteractor.changeFeedEntityLikedStatusPipe().send(new ChangeFeedEntityLikedStatusCommand(trip));
    }
 
-   public void likeItem(TripModel tripModel) {
-      trackAction(tripModel, TrackingHelper.ATTRIBUTE_LIKE);
-      if (!tripModel.isLiked()) entityManager.like(tripModel);
-      else entityManager.unlike(tripModel);
+   private void subscribeToLikesChanges() {
+      feedInteractor.changeFeedEntityLikedStatusPipe()
+            .observe()
+            .compose(bindViewToMainComposer())
+            .subscribe(new ActionStateSubscriber<ChangeFeedEntityLikedStatusCommand>()
+                  .onSuccess(command -> view.itemLiked(command.getResult()))
+                  .onFail(this::handleError));
    }
 
    public void addItemToBucket(TripModel tripModel) {
       trackAction(tripModel, TrackingHelper.ATTRIBUTE_ADD_TO_BUCKET_LIST);
       if (!tripModel.isInBucketList()) {
          bucketInteractor.createPipe()
-               .createObservableResult(new CreateBucketItemHttpAction(ImmutableBucketBodyImpl.builder()
+               .createObservable(new CreateBucketItemCommand(ImmutableBucketBodyImpl.builder()
                      .type("trip")
                      .id(tripModel.getTripId())
                      .build()))
-               .map(CreateBucketItemHttpAction::getResponse)
                .compose(bindViewToMainComposer())
-               .subscribe(bucketItem -> {
-                  tripModel.setInBucketList(true);
-                  view.dataSetChanged();
-                  view.showItemAddedToBucketList(bucketItem);
-               }, throwable -> {
+               .subscribe(new ActionStateSubscriber<CreateBucketItemCommand>()
+                  .onSuccess(createBucketItemCommand -> {
+                     tripModel.setInBucketList(true);
+                     view.dataSetChanged();
+                     view.showItemAddedToBucketList(createBucketItemCommand.getResult());
+                  })
+               .onFail((createBucketItemCommand, throwable) -> {
                   tripModel.setInBucketList(!tripModel.isInBucketList());
-                  handleError(throwable);
-               });
+                  handleError(createBucketItemCommand, throwable);
+               }));
       } else {
          tripModel.setInBucketList(!tripModel.isInBucketList());
          view.dataSetChanged();

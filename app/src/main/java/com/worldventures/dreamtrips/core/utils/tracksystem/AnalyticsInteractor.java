@@ -11,24 +11,24 @@ import rx.schedulers.Schedulers;
 
 public class AnalyticsInteractor {
 
-   private final ActionPipe<BaseAnalyticsAction> analyticEventPipe;
-   private final ActionPipe<DtlAnalyticsCommand> dtlAnalyticCommandPipe;
+   private final ActionPipe<BaseAnalyticsAction> analyticsActionPipe;
+   private final ActionPipe<DtlAnalyticsCommand> analyticsCommandPipe;
    private final ActionPipe<WalletAnalyticsCommand> walletAnalyticsCommandPipe;
    private final ActionPipe<PaycardAnalyticsCommand> paycardAnalyticsCommandPipe;
 
    public AnalyticsInteractor(SessionActionPipeCreator sessionActionPipeCreator) {
-      analyticEventPipe = sessionActionPipeCreator.createPipe(BaseAnalyticsAction.class, Schedulers.io());
-      dtlAnalyticCommandPipe = sessionActionPipeCreator.createPipe(DtlAnalyticsCommand.class, Schedulers.io());
+      analyticsActionPipe = sessionActionPipeCreator.createPipe(BaseAnalyticsAction.class, Schedulers.io());
+      analyticsCommandPipe = sessionActionPipeCreator.createPipe(DtlAnalyticsCommand.class, Schedulers.io());
       walletAnalyticsCommandPipe = sessionActionPipeCreator.createPipe(WalletAnalyticsCommand.class, Schedulers.io());
       paycardAnalyticsCommandPipe = sessionActionPipeCreator.createPipe(PaycardAnalyticsCommand.class, Schedulers.io());
    }
 
    public WriteActionPipe<BaseAnalyticsAction> analyticsActionPipe() {
-      return analyticEventPipe;
+      return analyticsActionPipe;
    }
 
    public WriteActionPipe<DtlAnalyticsCommand> dtlAnalyticsCommandPipe() {
-      return dtlAnalyticCommandPipe;
+      return analyticsCommandPipe;
    }
 
    public WriteActionPipe<WalletAnalyticsCommand> walletAnalyticsCommandPipe() {

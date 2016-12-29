@@ -53,6 +53,7 @@
    <color name="light_grey_background">#eeeeee</color>
    <color name="dtl_cities_text_color">#929292</color>
    <color name="dtl_badge_color">#8896a6b6</color>
+   <color name="dtl_selection_color">#f7f7f7</color>
 
    <color name="suggest_merchant_hint_text">#7e000000</color>
    <color name="suggest_merchant_input_text">#db000000</color>
@@ -170,7 +171,7 @@
    <color name="chat_edit_members_delete_button_bg">#FA6D6D</color>
    <color name="chat_edit_members_delete_button_text_color">@color/white</color>
 
-   <color name="disconnected_overlay_text_color">#fa2d46</color>
+   <color name="connection_overlay_text_color">#fa2d46</color>
    <color name="connecting_overlay_text_color">#7f7f7f</color>
 
    <color name="in_app_notification_title_text_color">#dd000000</color>
@@ -188,6 +189,17 @@
    <color name="hashtag_suggestion_count_color">#88343434</color>
 
    <color name="comments_action_color">#2977b2</color>
+
+   <color name="uploading_cell_title">#222222</color>
+   <color name="uploading_cell_status_label_uploading">#53b5fe</color>
+   <color name="uploading_cell_status_label_failure">#ff5454</color>
+   <color name="uploading_cell_status_label_paused">#929292</color>
+   <color name="uploading_cell_time_left">#9b9b9b</color>
+   <color name="uploading_cell_progress_bar_active_current">@color/uploading_cell_status_label_uploading</color>
+   <color name="uploading_cell_progress_bar_active_total">#cde9fe</color>
+   <color name="uploading_cell_progress_bar_paused_current">@color/uploading_cell_status_label_paused</color>
+   <color name="uploading_cell_progress_bar_paused_total">#dfdfdf</color>
+   <color name="uploading_cell_additional_queue">@color/white</color>
 
    <!--end messenger-->
 

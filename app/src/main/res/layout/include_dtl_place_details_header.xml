@@ -58,18 +58,22 @@
             android:id="@+id/merchant_details_points_badge"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@drawable/badge_placeholder"
+            tools:src="@drawable/ic_dtl_points_and_perks_badge"
+            />
+
+      <ImageView
+            android:id="@+id/perks_only_badge"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            tools:src="@drawable/perks_icon"
+            android:paddingLeft="@dimen/spacing_tiny"
             />
 
       <TextView
-            android:id="@+id/perks"
+            android:id="@+id/perks_caption"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="bottom"
-            android:layout_marginLeft="@dimen/perks_margin"
-            android:drawableLeft="@drawable/perks_icon"
-            android:drawablePadding="@dimen/spacing_tiny"
-            android:drawableStart="@drawable/perks_icon"
             android:gravity="center"
             android:text="@string/dtl_perks_description"
             android:textColor="@color/white"

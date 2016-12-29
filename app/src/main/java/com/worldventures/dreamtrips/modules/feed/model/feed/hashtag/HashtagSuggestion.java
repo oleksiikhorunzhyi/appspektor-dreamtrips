@@ -8,6 +8,14 @@ public class HashtagSuggestion implements Parcelable {
    private String name;
    private int usageCount;
 
+   public HashtagSuggestion(String name, int usageCount) {
+      this.name = name;
+      this.usageCount = usageCount;
+   }
+
+   public HashtagSuggestion() {
+   }
+
    public String getName() {
       return name;
    }
@@ -33,9 +41,6 @@ public class HashtagSuggestion implements Parcelable {
    public void writeToParcel(Parcel dest, int flags) {
       dest.writeString(this.name);
       dest.writeInt(usageCount);
-   }
-
-   public HashtagSuggestion() {
    }
 
    protected HashtagSuggestion(Parcel in) {

@@ -1,17 +1,15 @@
 package com.worldventures.dreamtrips.modules.dtl_flow.parts.master_toolbar;
 
-import com.worldventures.dreamtrips.modules.dtl.model.location.DtlExternalLocation;
+import com.worldventures.dreamtrips.modules.dtl.model.location.DtlLocation;
 import com.worldventures.dreamtrips.modules.dtl_flow.DtlPresenter;
 
 public interface MasterToolbarPresenter extends DtlPresenter<MasterToolbarScreen, MasterToolbarState> {
 
    void applySearch(String query);
 
-   void applyOffersOnlyFilterState(boolean enabled);
-
    void loadNearMeRequested();
 
-   void locationSelected(DtlExternalLocation location);
+   void locationSelected(DtlLocation location);
 
    void onLocationResolutionGranted();
 
@@ -20,4 +18,6 @@ public interface MasterToolbarPresenter extends DtlPresenter<MasterToolbarScreen
    void onShowToolbar();
 
    boolean needShowAutodetectButton();
+
+   void offersOnlySwitched(boolean isOffersOnly);
 }

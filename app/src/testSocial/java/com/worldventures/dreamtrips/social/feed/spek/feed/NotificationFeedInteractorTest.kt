@@ -5,21 +5,37 @@ import com.nhaarman.mockito_kotlin.spy
 import com.nhaarman.mockito_kotlin.whenever
 import com.worldventures.dreamtrips.AssertUtil
 import com.worldventures.dreamtrips.BaseSpec
+import com.worldventures.dreamtrips.api.entity.model.BaseEntityHolder
+import com.worldventures.dreamtrips.api.feed.converter.ImmutableObjFeedItem
+import com.worldventures.dreamtrips.api.feed.model.FeedItemWrapper
+import com.worldventures.dreamtrips.api.feed.model.ImmutableFeedItemLinks
+import com.worldventures.dreamtrips.api.feed.model.ImmutableFeedItemWrapper
+import com.worldventures.dreamtrips.api.messenger.model.response.ImmutableShortUserProfile
+import com.worldventures.dreamtrips.api.post.model.response.ImmutableLocation
+import com.worldventures.dreamtrips.api.post.model.response.ImmutablePostSocialized
+import com.worldventures.dreamtrips.api.post.model.response.PostSocialized
+import com.worldventures.dreamtrips.api.session.model.ImmutableAvatar
 import com.worldventures.dreamtrips.core.janet.SessionActionPipeCreator
 import com.worldventures.dreamtrips.core.janet.cache.storage.ActionStorage
 import com.worldventures.dreamtrips.core.repository.SnappyRepository
-import com.worldventures.dreamtrips.modules.feed.model.FeedEntity
+import com.worldventures.dreamtrips.modules.feed.converter.FeedItemConverter
+import com.worldventures.dreamtrips.modules.feed.converter.LinksConverter
+import com.worldventures.dreamtrips.modules.feed.converter.PostSocializedConverter
 import com.worldventures.dreamtrips.modules.feed.model.FeedItem
 import com.worldventures.dreamtrips.modules.feed.model.TextualPost
-import com.worldventures.dreamtrips.modules.feed.model.feed.base.ParentFeedItem
 import com.worldventures.dreamtrips.modules.feed.service.NotificationFeedInteractor
 import com.worldventures.dreamtrips.modules.feed.service.command.GetNotificationsCommand
 import com.worldventures.dreamtrips.modules.feed.service.storage.NotificationMemoryStorage
 import com.worldventures.dreamtrips.modules.feed.service.storage.NotificationsStorage
+import com.worldventures.dreamtrips.modules.mapping.converter.Converter
+import com.worldventures.dreamtrips.modules.mapping.converter.LocationConverter
+import com.worldventures.dreamtrips.modules.mapping.converter.ShortProfilesConverter
 import io.techery.janet.ActionState
 import io.techery.janet.CommandActionService
 import io.techery.janet.Janet
 import io.techery.janet.http.test.MockHttpActionService
+import io.techery.mappery.Mappery
+import io.techery.mappery.MapperyContext
 import rx.observers.TestSubscriber
 import java.util.*
 import kotlin.test.assertTrue
@@ -38,7 +54,9 @@ class NotificationFeedInteractorTest : BaseSpec({
                   .subscribe(testSubrciber)
 
             it("Should not call onProgress") {
-               assertTrue { testSubrciber.onNextEvents.firstOrNull { it.status == ActionState.Status.PROGRESS } == null }
+               assertTrue {
+                  testSubrciber.onNextEvents.firstOrNull {
+                     it.status == ActionState.Status.PROGRESS } == null }
             }
 
             it("Items should contain new items") {
@@ -109,12 +127,20 @@ class NotificationFeedInteractorTest : BaseSpec({
 
       lateinit var feedInteractor: NotificationFeedInteractor
 
-      val notificationsParentList1 = ArrayList(listOf(generateFeedItem("1")))
-      val notificationsList1 = notificationsParentList1.map { it.items[0] }
-      val notificationsParentList2 = ArrayList(listOf(generateFeedItem("2")))
-      val notificationsList2 = notificationsParentList2.map { it.items[0] }
+      lateinit var notificationsParentList1: List<FeedItemWrapper>
+      lateinit var notificationsList1: List<FeedItem<TextualPost>>
+      lateinit var notificationsParentList2: List<FeedItemWrapper>
+      lateinit var notificationsList2: List<FeedItem<TextualPost>>
 
       fun setup(storageSet: () -> Set<ActionStorage<*>>, httpService: () -> MockHttpActionService) {
+         val mappery = getMappery()
+
+         notificationsParentList1 = listOf(generateParentItem("1"))
+         notificationsList1 = mappery.convert(notificationsParentList1.get(0).items(), FeedItem::class.java) as List<FeedItem<TextualPost>>
+
+         notificationsParentList2 = listOf(generateParentItem("2"))
+         notificationsList2 = mappery.convert(notificationsParentList2.get(0).items(), FeedItem::class.java) as List<FeedItem<TextualPost>>
+
          val daggerCommandActionService = CommandActionService()
                .wrapCache()
                .bindStorageSet(storageSet())
@@ -124,6 +150,8 @@ class NotificationFeedInteractorTest : BaseSpec({
                .addService(httpService().wrapStub().wrapCache())
                .build()
 
+
+         daggerCommandActionService.registerProvider(MapperyContext::class.java) { mappery }
          daggerCommandActionService.registerProvider(Janet::class.java) { janet }
          daggerCommandActionService.registerProvider(NotificationFeedInteractor::class.java) { feedInteractor }
 
@@ -138,19 +166,62 @@ class NotificationFeedInteractorTest : BaseSpec({
                }.build()
       }
 
-      fun generateFeedItem(uid: String): ParentFeedItem {
-         val parentFeedItem = ParentFeedItem()
-         val feedItem = FeedItem<FeedEntity>()
-         val entity = TextualPost()
-         entity.uid = uid
-         feedItem.item = entity
-         feedItem.createdAt = Date()
+      fun generateParentItem(uid: String): FeedItemWrapper {
+         val parentFeedItem = ImmutableFeedItemWrapper.builder()
+         parentFeedItem.type(FeedItemWrapper.Type.SINGLE)
 
-         parentFeedItem.type = "Single"
-         parentFeedItem.items = listOf(feedItem)
+         val feedItem = ImmutableObjFeedItem.builder<PostSocialized>()
 
-         return parentFeedItem
+         val entity = ImmutablePostSocialized.builder()
+         var profile = ImmutableShortUserProfile.builder()
+            .id(1)
+            .username("Test")
+            .firstName("Test")
+            .lastName("Test")
+            .avatar(ImmutableAvatar.builder().original("").medium("").thumb("").build())
+            .badges(listOf(""))
+            .build()
+         entity.owner(profile)
+         entity.uid(uid)
+         entity.description(uid)
+         entity.createdAt(Date())
+         entity.updatedAt(Date())
+         entity.liked(false)
+         entity.likes(1)
+         entity.location(ImmutableLocation.builder().lat(1.0).lng(1.0).name("1").build())
+         entity.commentsCount(1)
+
+         feedItem.entity(entity.build())
+         feedItem.createdAt(Date())
+         feedItem.action(com.worldventures.dreamtrips.api.feed.model.FeedItem.Action.COMMENT)
+         feedItem.links(ImmutableFeedItemLinks.builder().addAllUsers(listOf(profile)).build())
+         feedItem.type(BaseEntityHolder.Type.BUCKET_LIST_ITEM)
+
+         parentFeedItem.addAllItems(listOf(feedItem.build()))
+
+         return parentFeedItem.build()
       }
 
+      private fun getMappery(): Mappery {
+         val builder = Mappery.Builder()
+         for (converter in constructConverters()) {
+            builder.map(converter.sourceClass()).to(converter.targetClass(), converter)
+         }
+         return builder.build()
+      }
+
+      fun constructConverters(): List<Converter<Any, Any>> {
+         return listOf(castConverter(FeedItemConverter()),
+               castConverter(PostSocializedConverter()),
+               castConverter(ShortProfilesConverter()),
+               castConverter(LocationConverter()),
+               castConverter(LinksConverter()))
+      }
+
+      // TODO Improve this, there should not be need for cast, but currently
+      // it's not compilable if we return Converter<*, *>
+      fun castConverter(converter: Converter<*, *>): Converter<Any, Any> {
+         return converter as Converter<Any, Any>
+      }
    }
 }

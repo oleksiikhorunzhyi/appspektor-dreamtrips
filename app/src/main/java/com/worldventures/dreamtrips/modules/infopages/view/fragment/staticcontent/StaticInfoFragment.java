@@ -10,7 +10,6 @@ import android.net.http.SslError;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Parcelable;
-import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
@@ -38,6 +37,8 @@ import com.worldventures.dreamtrips.core.rx.RxBaseFragmentWithArgs;
 import com.worldventures.dreamtrips.core.utils.HeaderProvider;
 import com.worldventures.dreamtrips.core.utils.ViewUtils;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
+import com.worldventures.dreamtrips.modules.common.command.OfflineErrorCommand;
+import com.worldventures.dreamtrips.modules.common.service.OfflineErrorInteractor;
 import com.worldventures.dreamtrips.modules.common.view.dialog.MessageDialogFragment;
 import com.worldventures.dreamtrips.modules.dtl.bundle.MerchantIdBundle;
 import com.worldventures.dreamtrips.modules.infopages.StaticPageProvider;
@@ -47,7 +48,6 @@ import com.worldventures.dreamtrips.modules.membership.bundle.UrlBundle;
 import java.lang.ref.WeakReference;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
 
 import javax.inject.Inject;
@@ -66,6 +66,7 @@ public abstract class StaticInfoFragment<T extends WebViewFragmentPresenter, P e
    @Inject protected StaticPageProvider provider;
    @Inject protected HeaderProvider headerProvider;
    @Inject ScreenChangedEventDelegate screenChangedEventDelegate;
+   @Inject OfflineErrorInteractor offlineErrorInteractor;
 
    @InjectView(R.id.web_view) protected VideoEnabledWebView webView;
    @InjectView(R.id.swipe_container) protected SwipeRefreshLayout refreshLayout;
@@ -398,16 +399,23 @@ public abstract class StaticInfoFragment<T extends WebViewFragmentPresenter, P e
          case WebViewClient.ERROR_HOST_LOOKUP:
          case WebViewClient.ERROR_AUTHENTICATION:
             errorText = R.string.error_webview_no_internet;
+            noInternetConnection();
             break;
          case SECURE_CONNECTION_ERROR:
             errorText = R.string.error_webview_secure_connection;
             break;
          default:
             errorText = R.string.error_webview_default;
+            noInternetConnection();
             break;
       }
       errorFragment = MessageDialogFragment.create(errorText);
       getChildFragmentManager().beginTransaction().replace(R.id.web_view, errorFragment).commitAllowingStateLoss();
+   }
+
+   private void noInternetConnection() {
+      getPresenter().noInternetConnection();
+      offlineErrorInteractor.offlineErrorCommandPipe().send(new OfflineErrorCommand());
    }
 
    private void cleanError() {
@@ -661,7 +669,7 @@ public abstract class StaticInfoFragment<T extends WebViewFragmentPresenter, P e
 
    }
 
-   @Layout(R.layout.fragment_webview)
+   @Layout(R.layout.fragment_webview_with_overlay)
    public static class BookItFragment extends BundleUrlFragment<WebViewFragmentPresenter> {
 
       private static final String BOOK_IT_HEADER_KEY = "DT-Device-Identifier";

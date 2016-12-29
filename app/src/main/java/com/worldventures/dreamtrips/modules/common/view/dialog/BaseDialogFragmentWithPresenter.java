@@ -6,14 +6,14 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.afollestad.materialdialogs.MaterialDialog;
 import com.techery.spares.annotations.Layout;
-import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.utils.ViewUtils;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
+import com.worldventures.dreamtrips.modules.common.view.connection_overlay.ConnectionState;
 
 import butterknife.ButterKnife;
 import icepick.Icepick;
+import rx.Observable;
 
 public abstract class BaseDialogFragmentWithPresenter<T extends Presenter> extends BaseDialogFragment implements Presenter.View {
 
@@ -106,17 +106,12 @@ public abstract class BaseDialogFragmentWithPresenter<T extends Presenter> exten
    }
 
    @Override
-   public void alert(String s) {
-      if (getActivity() != null && isAdded()) {
-         getActivity().runOnUiThread(() -> getActivity().runOnUiThread(() -> {
-            MaterialDialog.Builder builder = new MaterialDialog.Builder(getActivity());
-            builder.title(R.string.alert).content(s).positiveText(R.string.OK).show();
-         }));
-      }
+   public void showOfflineAlert() {
+
    }
 
    @Override
-   public void showOfflineAlert() {
+   public void initConnectionOverlay(Observable<ConnectionState> connectionStateObservable, Observable<Void> stopper) {
 
    }
 

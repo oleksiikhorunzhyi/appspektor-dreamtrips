@@ -4,17 +4,21 @@ import com.techery.spares.utils.delegate.StoryLikedEventDelegate;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.common.model.ShareType;
 import com.worldventures.dreamtrips.modules.infopages.presenter.WebViewFragmentPresenter;
-import com.worldventures.dreamtrips.modules.reptools.api.successstories.LikeSuccessStoryCommand;
-import com.worldventures.dreamtrips.modules.reptools.api.successstories.UnlikeSuccessStoryCommand;
 import com.worldventures.dreamtrips.modules.reptools.model.SuccessStory;
+import com.worldventures.dreamtrips.modules.reptools.service.SuccessStoriesInteractor;
+import com.worldventures.dreamtrips.modules.reptools.service.command.LikeSuccessStoryCommand;
+import com.worldventures.dreamtrips.modules.reptools.service.command.UnlikeSuccessStoryCommand;
 
 import javax.inject.Inject;
+
+import io.techery.janet.helper.ActionStateSubscriber;
 
 public class SuccessStoryDetailsPresenter extends WebViewFragmentPresenter<SuccessStoryDetailsPresenter.View> {
 
    private SuccessStory successStory;
 
    @Inject StoryLikedEventDelegate storyLikedEventDelegate;
+   @Inject SuccessStoriesInteractor successStoriesInteractor;
 
    public SuccessStoryDetailsPresenter(SuccessStory story, String url) {
       super(url);
@@ -30,10 +34,20 @@ public class SuccessStoryDetailsPresenter extends WebViewFragmentPresenter<Succe
    public void like(SuccessStory successStory) {
       if (successStory.isLiked()) {
          TrackingHelper.unlikeSS(getAccountUserId(), successStory.getId());
-         doRequest(new UnlikeSuccessStoryCommand(successStory.getId()), (object) -> onLiked());
+         successStoriesInteractor.unlikeSuccessStoryPipe()
+               .createObservable(new UnlikeSuccessStoryCommand(successStory.getId()))
+               .compose(bindViewToMainComposer())
+               .subscribe(new ActionStateSubscriber<UnlikeSuccessStoryCommand>()
+                     .onSuccess(command -> onLiked())
+                     .onFail(this::handleError));
       } else {
          TrackingHelper.likeSS(getAccountUserId(), successStory.getId());
-         doRequest(new LikeSuccessStoryCommand(successStory.getId()), (object) -> onLiked());
+         successStoriesInteractor.likeSuccessStoryPipe()
+               .createObservable(new LikeSuccessStoryCommand(successStory.getId()))
+               .compose(bindViewToMainComposer())
+               .subscribe(new ActionStateSubscriber<LikeSuccessStoryCommand>()
+                     .onSuccess(command -> onLiked())
+                     .onFail(this::handleError));
       }
    }
 

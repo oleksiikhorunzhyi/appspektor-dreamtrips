@@ -38,7 +38,7 @@ public class TermsConditionsDialogPresenter extends Presenter<TermsConditionsDia
             .subscribe(new ActionStateSubscriber<AcceptTermsCommand>().onSuccess(action -> view.dismissDialog())
                   .onFail((action, e) -> {
                      view.enableButtons();
-                     view.informUser(action.getErrorMessage());
+                     handleError(action, e);
                   }));
    }
 

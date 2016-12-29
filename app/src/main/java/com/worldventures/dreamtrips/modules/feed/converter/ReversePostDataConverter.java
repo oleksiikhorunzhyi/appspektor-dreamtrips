@@ -18,7 +18,9 @@ public class ReversePostDataConverter implements Converter<CreatePhotoPostEntity
       ImmutablePostData.Builder postData = ImmutablePostData.builder();
 
       postData.description(createPhotoPostEntity.getDescription());
-      postData.location(mapperyContext.convert(createPhotoPostEntity.getLocation(), Location.class));
+      if (createPhotoPostEntity.getLocation() != null) {
+         postData.location(mapperyContext.convert(createPhotoPostEntity.getLocation(), Location.class));
+      }
 
       postData.attachments(mapperyContext.convert(createPhotoPostEntity.getAttachments(), Attachment.class));
 

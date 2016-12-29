@@ -16,7 +16,8 @@ import butterknife.InjectView;
 import butterknife.OnClick;
 
 @Layout(R.layout.adapter_item_filter_header)
-public class DtlFilterAttributeHeaderCell extends AbstractDelegateCell<SelectableHeaderItem, CellDelegate<SelectableHeaderItem>> implements SelectableCell {
+public class DtlFilterAttributeHeaderCell
+      extends AbstractDelegateCell<SelectableHeaderItem, CellDelegate<SelectableHeaderItem>> implements SelectableCell {
 
    private SelectableDelegate selectableDelegate;
 

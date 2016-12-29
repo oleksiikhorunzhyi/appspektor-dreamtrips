@@ -29,7 +29,6 @@ public class BankCardWidget extends FrameLayout {
    @InjectView(R.id.wallet_sample_holder) View sampleCardHolder;
    @InjectView(R.id.tv_default_card_label) TextView tvDefaultCardLabel;
    @InjectView(R.id.tv_short_card_number) TextView tvShortCardNumber;
-   @InjectView(R.id.tv_cvv_code) TextView tvCvvCode;
 
    private View bankCardHolder;
 
@@ -89,7 +88,6 @@ public class BankCardWidget extends FrameLayout {
       setExpireDate(card.expDate());
       setCardType(card.issuerInfo().cardType());
       setCardCategory(card.category());
-      setCardCvvCode(card.cvv());
    }
 
    //   properties:
@@ -134,14 +132,6 @@ public class BankCardWidget extends FrameLayout {
 
    public void setCardType(BankCard.CardType cardType) {
       tvCardType.setText(bankCardHelper.obtainCardType(cardType));
-   }
-
-   public void setCardCvvCode(int cardCvvCode) {
-      tvCvvCode.setText(new SpannableStringBuilder()
-            .append(cvvSpannable)
-            .append(" ")
-            .append(String.valueOf(cardCvvCode))
-      );
    }
 
    public enum BankCardResource {

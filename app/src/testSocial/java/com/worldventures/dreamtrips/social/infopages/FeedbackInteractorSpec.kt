@@ -112,7 +112,7 @@ class FeedbackInteractorSpec : BaseSpec({
          daggerCommandActionService.registerProvider(SmartCardInteractor::class.java) { smartCardInteractor }
 
          feedbackInteractor = FeedbackInteractor(SessionActionPipeCreator(janet))
-         smartCardInteractor = SmartCardInteractor(janet, SessionActionPipeCreator(janet), FirmwareInteractor(janet))
+         smartCardInteractor = SmartCardInteractor(janet, SessionActionPipeCreator(janet))
       }
 
       // getting feedback reasons specific
@@ -173,7 +173,6 @@ class FeedbackInteractorSpec : BaseSpec({
       fun createDummySmartCard() = ImmutableSmartCard.builder()
             .smartCardId(smartCardId)
             .cardStatus(SmartCard.CardStatus.ACTIVE)
-            .deviceName("fsadf")
             .deviceAddress("fsadfsa")
             .build()
 

@@ -10,7 +10,6 @@ import com.worldventures.dreamtrips.wallet.domain.entity.ImmutableSmartCardUser;
 import com.worldventures.dreamtrips.wallet.domain.entity.ImmutableSmartCardUserPhoto;
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCard;
 import com.worldventures.dreamtrips.wallet.service.command.ActivateSmartCardCommand;
-import com.worldventures.dreamtrips.wallet.service.command.ActiveSmartCardCommand;
 import com.worldventures.dreamtrips.wallet.service.command.http.AssociateCardUserCommand;
 import com.worldventures.dreamtrips.wallet.service.storage.WizardMemoryStorage;
 
@@ -38,23 +37,22 @@ public class WizardCompleteCommand extends Command<Void> implements InjectableAc
 
    @Override
    protected void run(CommandCallback<Void> callback) throws Throwable {
-      walletJanet.createPipe(ActivateSmartCardCommand.class, Schedulers.io())
-            .createObservableResult(new ActivateSmartCardCommand(smartCard))
-            .flatMap(action -> uploadUserDataAndAssociateSmartCard())
+      uploadUserDataAndAssociateSmartCard(smartCard)
+            .flatMap(sc -> walletJanet.createPipe(ActivateSmartCardCommand.class, Schedulers.io())
+                  .createObservableResult(new ActivateSmartCardCommand(sc)))
             .subscribe(aVoid -> callback.onSuccess(null), callback::onFail);
    }
 
-   private Observable<? extends AssociateCardUserCommand> uploadUserDataAndAssociateSmartCard() {
-      return walletJanet.createPipe(ActiveSmartCardCommand.class, Schedulers.io())
-            .createObservableResult(new ActiveSmartCardCommand())
-            .map(Command::getResult)
-            .flatMap(smartCard ->
-                  uploadPhoto(smartCard, wizardMemoryStorage.getUserPhoto())
-                        .doOnNext(photoUrl -> updatePhoto(smartCard, photoUrl))
-            )
-            .flatMap(avatarUrl ->
+   private Observable<SmartCard> uploadUserDataAndAssociateSmartCard(SmartCard smartCard) {
+      return uploadPhoto(smartCard, wizardMemoryStorage.getUserPhoto())
+            .map(photoUrl -> updatePhoto(smartCard, photoUrl))
+            .flatMap(sc ->
                   walletJanet.createPipe(AssociateCardUserCommand.class, Schedulers.io())
-                        .createObservableResult(new AssociateCardUserCommand(wizardMemoryStorage.getBarcode(), createUserData(avatarUrl)))
+                        .createObservableResult(new AssociateCardUserCommand(wizardMemoryStorage.getBarcode(), createUserData(sc
+                              .user()
+                              .userPhoto()
+                              .photoUrl())))
+                        .map(associateCardUserCommand -> sc)
             );
    }
 
@@ -65,7 +63,7 @@ public class WizardCompleteCommand extends Command<Void> implements InjectableAc
    }
 
    private SmartCard updatePhoto(SmartCard smartCard, String photoUrl) {
-      SmartCard newSmartCard = ImmutableSmartCard.builder().from(smartCard)
+      return ImmutableSmartCard.builder().from(smartCard)
             .user(ImmutableSmartCardUser.builder().from(smartCard.user())
                   .userPhoto(ImmutableSmartCardUserPhoto.builder()
                         .from(smartCard.user().userPhoto())
@@ -73,8 +71,6 @@ public class WizardCompleteCommand extends Command<Void> implements InjectableAc
                         .build())
                   .build())
             .build();
-      snappyRepository.saveSmartCard(newSmartCard);
-      return newSmartCard;
    }
 
    private UpdateCardUserData createUserData(String avatarUrl) {

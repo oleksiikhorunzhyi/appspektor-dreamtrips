@@ -48,7 +48,6 @@ public class WizardScanBarcodePresenter extends WalletPresenter<WizardScanBarcod
                   .onStart(getContext().getString(R.string.wallet_wizard_assigning_msg))
                   .onSuccess(command -> navigator.go(new PairKeyPath(PairKeyPath.BarcodeOrigin.SCAN, command.getSmartCardId())))
                   .onFail(ErrorHandler.<AvailabilitySmartCardCommand>builder(getContext())
-                        .defaultAction(command -> goBack())
                         .build())
                   .wrap());
    }

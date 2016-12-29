@@ -55,7 +55,6 @@ public class WizardManualInputPresenter extends WalletPresenter<WizardManualInpu
                   .onStart(getContext().getString(R.string.wallet_wizard_assigning_msg))
                   .onSuccess(command -> navigator.go(new PairKeyPath(PairKeyPath.BarcodeOrigin.MANUAL, command.getSmartCardId())))
                   .onFail(ErrorHandler.<AvailabilitySmartCardCommand>builder(getContext())
-                        .defaultAction(command -> goBack())
                         .build())
                   .wrap());
    }

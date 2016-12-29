@@ -120,7 +120,6 @@ public class WizardEditProfilePresenter extends WalletPresenter<WizardEditProfil
                   .onFail(ErrorHandler.<SetupUserDataCommand>builder(getContext())
                         .handle(FormatException.class, R.string.wallet_edit_profile_name_format_detail)
                         .handle(SetupUserDataCommand.MissedAvatarException.class, R.string.wallet_edit_profile_avatar_not_chosen)
-                        .handle(SmartCardServiceException.class, command -> smartCardError())
                         .build())
                   .wrap());
    }
@@ -129,10 +128,6 @@ public class WizardEditProfilePresenter extends WalletPresenter<WizardEditProfil
       navigator.go(new WizardPinSetupPath(smartCard, Action.SETUP));
       analyticsInteractor.walletAnalyticsCommandPipe()
             .send(new WalletAnalyticsCommand(new PhotoWasSetAction(smartCard.user().fullName(), smartCard.smartCardId())));
-   }
-
-   private void smartCardError() {
-      navigator.goBack();
    }
 
    private void photoPrepared(SmartCardUserPhoto photo) {

@@ -26,12 +26,17 @@ import com.worldventures.dreamtrips.core.rx.RxBaseFragmentWithArgs;
 import com.worldventures.dreamtrips.modules.common.view.bundle.BucketBundle;
 import com.worldventures.dreamtrips.modules.common.view.custom.ProgressEmptyRecyclerView;
 import com.worldventures.dreamtrips.modules.feed.bundle.FeedHashtagBundle;
-import com.worldventures.dreamtrips.modules.feed.event.CommentIconClickedEvent;
+import com.worldventures.dreamtrips.modules.feed.model.BucketFeedItem;
 import com.worldventures.dreamtrips.modules.feed.model.FeedItem;
 import com.worldventures.dreamtrips.modules.feed.model.LoadMoreModel;
+import com.worldventures.dreamtrips.modules.feed.model.PhotoFeedItem;
+import com.worldventures.dreamtrips.modules.feed.model.PostFeedItem;
+import com.worldventures.dreamtrips.modules.feed.model.TripFeedItem;
 import com.worldventures.dreamtrips.modules.feed.model.feed.hashtag.HashtagSuggestion;
 import com.worldventures.dreamtrips.modules.feed.presenter.FeedHashtagPresenter;
 import com.worldventures.dreamtrips.modules.feed.view.cell.HashtagSuggestionCell;
+import com.worldventures.dreamtrips.modules.feed.view.cell.base.BaseFeedCell;
+import com.worldventures.dreamtrips.modules.feed.view.cell.delegate.FeedCellDelegate;
 import com.worldventures.dreamtrips.modules.feed.view.custom.SideMarginsItemDecorator;
 import com.worldventures.dreamtrips.modules.feed.view.util.FragmentWithFeedDelegate;
 import com.worldventures.dreamtrips.modules.feed.view.util.HashtagSuggestionUtil;
@@ -91,6 +96,11 @@ public class FeedHashtagFragment extends RxBaseFragmentWithArgs<FeedHashtagPrese
          statePaginatedRecyclerViewManager.addItemDecoration(new SideMarginsItemDecorator(16));
       }
       fragmentWithFeedDelegate.init(feedAdapter);
+      BaseFeedCell.FeedCellDelegate delegate = new FeedCellDelegate(getPresenter());
+      fragmentWithFeedDelegate.registerDelegate(PhotoFeedItem.class, delegate);
+      fragmentWithFeedDelegate.registerDelegate(TripFeedItem.class, delegate);
+      fragmentWithFeedDelegate.registerDelegate(BucketFeedItem.class, delegate);
+      fragmentWithFeedDelegate.registerDelegate(PostFeedItem.class, delegate);
 
       suggestionAdapter = new BaseDelegateAdapter<>(getActivity(), this);
       suggestionAdapter.registerCell(HashtagSuggestion.class, HashtagSuggestionCell.class);
@@ -309,8 +319,9 @@ public class FeedHashtagFragment extends RxBaseFragmentWithArgs<FeedHashtagPrese
       informUser(R.string.flag_sent_success_msg);
    }
 
-   public void onEvent(CommentIconClickedEvent event) {
-      fragmentWithFeedDelegate.openComments(event.getFeedItem(), isVisibleOnScreen(), isTabletLandscape());
+   @Override
+   public void showComments(FeedItem feedItem) {
+      fragmentWithFeedDelegate.openComments(feedItem, isVisibleOnScreen(), isTabletLandscape());
    }
 
    @Override

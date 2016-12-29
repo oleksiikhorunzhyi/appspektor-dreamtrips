@@ -36,9 +36,8 @@ public class BackgroundUploadingModule {
 
    @Provides
    @Singleton
-   BackgroundUploadingInteractor provideBackgroundUploadingInteractor(SessionActionPipeCreator sessionActionPipeCreator,
-         @Global EventBus eventBus, SessionHolder<UserSession> sessionHolder) {
-      return new BackgroundUploadingInteractor(sessionActionPipeCreator, eventBus, sessionHolder);
+   BackgroundUploadingInteractor provideBackgroundUploadingInteractor(SessionActionPipeCreator sessionActionPipeCreator) {
+      return new BackgroundUploadingInteractor(sessionActionPipeCreator);
    }
 
    @Provides

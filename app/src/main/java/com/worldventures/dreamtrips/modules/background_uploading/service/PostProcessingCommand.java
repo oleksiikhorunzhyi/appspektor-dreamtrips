@@ -9,6 +9,9 @@ import com.worldventures.dreamtrips.modules.background_uploading.model.PostCompo
 import com.worldventures.dreamtrips.modules.feed.service.PostsInteractor;
 import com.worldventures.dreamtrips.modules.feed.service.command.CreatePhotosCommand;
 import com.worldventures.dreamtrips.modules.feed.service.command.CreatePostCommand;
+import com.worldventures.dreamtrips.modules.feed.service.command.PostCreatedCommand;
+
+import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
 
@@ -21,6 +24,8 @@ import timber.log.Timber;
 
 @CommandAction
 public class PostProcessingCommand extends Command<PostCompoundOperationModel> implements InjectableAction {
+
+   private static final int DELAY_TO_DELETE_COMPOUND_OPERATION = 3;
 
    @Inject Janet janet;
    @Inject PostsInteractor postsInteractor;
@@ -44,6 +49,8 @@ public class PostProcessingCommand extends Command<PostCompoundOperationModel> i
             .doOnNext(this::notifyCompoundCommandChanged)
             .flatMap(this::createPost)
             .doOnNext(this::notifyCompoundCommandChanged)
+            .delay(DELAY_TO_DELETE_COMPOUND_OPERATION, TimeUnit.SECONDS)
+            .doOnNext(this::notifyCompoundCommandFinished)
             .doOnError(e -> notifyCompoundCommandChanged(compoundOperationObjectMutator.failed(postCompoundOperationModel)))
             .compose(observeUntilCancel())
             .subscribe(callback::onSuccess, callback::onFail);
@@ -114,5 +121,12 @@ public class PostProcessingCommand extends Command<PostCompoundOperationModel> i
       postCompoundOperationModel = postOperationModel;
       backgroundUploadingInteractor.compoundOperationsPipe()
             .send(CompoundOperationsCommand.compoundCommandChanged(postOperationModel));
+   }
+
+   private void notifyCompoundCommandFinished(PostCompoundOperationModel postOperationModel) {
+      Timber.d("[New Post Creation] Compound operation finished, %s", postOperationModel);
+      postsInteractor.postCreatedPipe().send(new PostCreatedCommand(postOperationModel.body().createdPost()));
+      backgroundUploadingInteractor.compoundOperationsPipe().send(CompoundOperationsCommand.compoundCommandRemoved(postCompoundOperationModel));
+      backgroundUploadingInteractor.startNextCompoundPipe().send(new StartNextCompoundOperationCommand());
    }
 }

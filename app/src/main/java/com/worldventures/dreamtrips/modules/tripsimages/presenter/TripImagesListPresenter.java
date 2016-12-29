@@ -6,10 +6,12 @@ import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.core.rx.RxView;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.feed.event.FeedEntityChangedEvent;
-import com.worldventures.dreamtrips.modules.feed.event.FeedItemAddedEvent;
+import com.worldventures.dreamtrips.modules.feed.model.FeedItem;
 import com.worldventures.dreamtrips.modules.feed.model.TextualPost;
 import com.worldventures.dreamtrips.modules.feed.service.FeedInteractor;
+import com.worldventures.dreamtrips.modules.feed.service.PostsInteractor;
 import com.worldventures.dreamtrips.modules.feed.service.command.ChangeFeedEntityLikedStatusCommand;
+import com.worldventures.dreamtrips.modules.feed.service.command.PostCreatedCommand;
 import com.worldventures.dreamtrips.modules.tripsimages.bundle.FullScreenImagesBundle;
 import com.worldventures.dreamtrips.modules.tripsimages.model.IFullScreenObject;
 import com.worldventures.dreamtrips.modules.tripsimages.model.Photo;
@@ -35,6 +37,7 @@ public abstract class TripImagesListPresenter<VT extends TripImagesListPresenter
    @Inject SnappyRepository db;
    @Inject TripImagesInteractor tripImagesInteractor;
    @Inject FeedInteractor feedInteractor;
+   @Inject PostsInteractor postsInteractor;
 
    protected TripImagesType type;
 
@@ -89,6 +92,7 @@ public abstract class TripImagesListPresenter<VT extends TripImagesListPresenter
       if (!view.isFullscreenView()) {
          reload();
       }
+      subscribeToNewItems();
       subscribeToPhotoDeletedEvents();
       subscribeToLikesChanges();
       subscribeToErrorUpdates();
@@ -254,15 +258,23 @@ public abstract class TripImagesListPresenter<VT extends TripImagesListPresenter
       }
    }
 
-   public void onEventMainThread(FeedItemAddedEvent event) {
-      if (event.getFeedItem().getItem() instanceof Photo) {
-         Photo photo = (Photo) event.getFeedItem().getItem();
+   private void subscribeToNewItems() {
+      postsInteractor.postCreatedPipe()
+            .observeSuccess()
+            .compose(bindViewToMainComposer())
+            .map(PostCreatedCommand::getFeedItem)
+            .subscribe(this::onFeedItemAdded);
+   }
+
+   public void onFeedItemAdded(FeedItem feedItem) {
+      if (feedItem.getItem() instanceof Photo) {
+         Photo photo = (Photo) feedItem.getItem();
          photos.add(0, photo);
          db.savePhotoEntityList(type, userId, photos);
          view.add(0, photo);
-      } else if (event.getFeedItem().getItem() instanceof TextualPost && ((TextualPost) event.getFeedItem()
+      } else if (feedItem.getItem() instanceof TextualPost && ((TextualPost) feedItem
             .getItem()).getAttachments().size() > 0) {
-         List<Photo> addedPhotos = Queryable.from(((TextualPost) event.getFeedItem().getItem()).getAttachments())
+         List<Photo> addedPhotos = Queryable.from(((TextualPost) feedItem.getItem()).getAttachments())
                .map(holder -> (Photo) holder.getItem())
                .toList();
          Collections.reverse(addedPhotos);

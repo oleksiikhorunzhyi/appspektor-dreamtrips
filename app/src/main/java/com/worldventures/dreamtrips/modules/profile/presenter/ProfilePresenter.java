@@ -17,28 +17,28 @@ import com.worldventures.dreamtrips.modules.bucketlist.service.BucketInteractor;
 import com.worldventures.dreamtrips.modules.bucketlist.service.command.DeleteBucketItemCommand;
 import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
+import com.worldventures.dreamtrips.modules.common.presenter.delegate.FlagDelegate;
 import com.worldventures.dreamtrips.modules.common.view.bundle.BucketBundle;
 import com.worldventures.dreamtrips.modules.feed.event.DeleteBucketEvent;
 import com.worldventures.dreamtrips.modules.feed.event.DeletePhotoEvent;
 import com.worldventures.dreamtrips.modules.feed.event.DeletePostEvent;
-import com.worldventures.dreamtrips.modules.feed.event.DownloadPhotoEvent;
 import com.worldventures.dreamtrips.modules.feed.event.EditBucketEvent;
 import com.worldventures.dreamtrips.modules.feed.event.FeedEntityChangedEvent;
 import com.worldventures.dreamtrips.modules.feed.event.FeedEntityCommentedEvent;
-import com.worldventures.dreamtrips.modules.feed.event.FeedItemAddedEvent;
-import com.worldventures.dreamtrips.modules.feed.event.LikesPressedEvent;
 import com.worldventures.dreamtrips.modules.feed.event.TranslatePostEvent;
 import com.worldventures.dreamtrips.modules.feed.model.FeedEntity;
 import com.worldventures.dreamtrips.modules.feed.model.FeedItem;
+import com.worldventures.dreamtrips.modules.feed.presenter.FeedActionHandlerPresenter;
+import com.worldventures.dreamtrips.modules.feed.presenter.delegate.FeedActionHandlerDelegate;
 import com.worldventures.dreamtrips.modules.feed.service.FeedInteractor;
 import com.worldventures.dreamtrips.modules.feed.service.PostsInteractor;
 import com.worldventures.dreamtrips.modules.feed.service.command.ChangeFeedEntityLikedStatusCommand;
 import com.worldventures.dreamtrips.modules.feed.service.command.DeletePostCommand;
+import com.worldventures.dreamtrips.modules.feed.view.cell.Flaggable;
 import com.worldventures.dreamtrips.modules.feed.view.util.TextualPostTranslationDelegate;
 import com.worldventures.dreamtrips.modules.tripsimages.bundle.TripsImagesBundle;
 import com.worldventures.dreamtrips.modules.tripsimages.service.TripImagesInteractor;
 import com.worldventures.dreamtrips.modules.tripsimages.service.command.DeletePhotoCommand;
-import com.worldventures.dreamtrips.modules.tripsimages.service.command.DownloadImageCommand;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -51,7 +51,8 @@ import icepick.State;
 import io.techery.janet.helper.ActionStateSubscriber;
 import rx.android.schedulers.AndroidSchedulers;
 
-public abstract class ProfilePresenter<T extends ProfilePresenter.View, U extends User> extends Presenter<T> {
+public abstract class ProfilePresenter<T extends ProfilePresenter.View, U extends User> extends Presenter<T>
+   implements FeedActionHandlerPresenter {
 
    protected U user;
 
@@ -64,6 +65,7 @@ public abstract class ProfilePresenter<T extends ProfilePresenter.View, U extend
    @Inject TripImagesInteractor tripImagesInteractor;
    @Inject PostsInteractor postsInteractor;
    @Inject EntityDeletedEventDelegate entityDeletedEventDelegate;
+   @Inject FeedActionHandlerDelegate feedActionHandlerDelegate;
 
    public ProfilePresenter() {
    }
@@ -94,6 +96,7 @@ public abstract class ProfilePresenter<T extends ProfilePresenter.View, U extend
       attachUserToView(user);
       loadProfile();
       subscribeToLikesChanges();
+      subscribeToNewItems();
       subscribeToEntityDeletedEvents();
       textualPostTranslationDelegate.onTakeView(view, feedItems);
    }
@@ -140,14 +143,19 @@ public abstract class ProfilePresenter<T extends ProfilePresenter.View, U extend
       return user;
    }
 
-   public void onEvent(DownloadPhotoEvent event) {
-      if (view.isVisibleOnScreen()) {
-         tripImagesInteractor.downloadImageActionPipe()
-               .createObservable(new DownloadImageCommand(event.url))
-               .compose(bindViewToMainComposer())
-               .subscribe(new ActionStateSubscriber<DownloadImageCommand>()
-                     .onFail(this::handleError));
-      }
+   @Override
+   public void onDownloadImage(String url) {
+      feedActionHandlerDelegate.onDownloadImage(url, bindViewToMainComposer(), this::handleError);
+   }
+
+   @Override
+   public void onLoadFlags(Flaggable flaggableView) {
+      feedActionHandlerDelegate.onLoadFlags(flaggableView, this::handleError);
+   }
+
+   @Override
+   public void onFlagItem(FeedItem feedItem, int flagReasonId, String reason) {
+      feedActionHandlerDelegate.onFlagItem(feedItem.getItem().getUid(), flagReasonId, reason, view, this::handleError);
    }
 
    public void onEvent(EditBucketEvent event) {
@@ -188,9 +196,14 @@ public abstract class ProfilePresenter<T extends ProfilePresenter.View, U extend
             .subscribe(this::itemDeleted);
    }
 
-   public void onEventMainThread(FeedItemAddedEvent event) {
-      feedItems.add(0, event.getFeedItem());
-      refreshFeedItemsInView();
+   private void subscribeToNewItems() {
+      postsInteractor.postCreatedPipe()
+            .observeSuccess()
+            .compose(bindViewToMainComposer())
+            .subscribe(command -> {
+               feedItems.add(0, command.getFeedItem());
+               refreshFeedItemsInView();
+            });
    }
 
    public void onEvent(FeedEntityChangedEvent event) {
@@ -217,11 +230,9 @@ public abstract class ProfilePresenter<T extends ProfilePresenter.View, U extend
       refreshFeedItemsInView();
    }
 
-   public void onEvent(LikesPressedEvent event) {
-      if (view.isVisibleOnScreen()) {
-         feedInteractor.changeFeedEntityLikedStatusPipe()
-               .send(new ChangeFeedEntityLikedStatusCommand(event.getModel()));
-      }
+   @Override
+   public void onLikeItem(FeedItem feedItem) {
+      feedActionHandlerDelegate.onLikeItem(feedItem);
    }
 
    private void subscribeToLikesChanges() {
@@ -231,6 +242,11 @@ public abstract class ProfilePresenter<T extends ProfilePresenter.View, U extend
             .subscribe(new ActionStateSubscriber<ChangeFeedEntityLikedStatusCommand>()
                   .onSuccess(command -> itemLiked(command.getResult()))
                   .onFail(this::handleError));
+   }
+
+   @Override
+   public void onCommentItem(FeedItem feedItem) {
+      view.openComments(feedItem);
    }
 
    public void onEvent(DeletePostEvent event) {
@@ -320,11 +336,13 @@ public abstract class ProfilePresenter<T extends ProfilePresenter.View, U extend
       view.refreshFeedItems(feedItems);
    }
 
-   public interface View extends RxView, TextualPostTranslationDelegate.View {
+   public interface View extends RxView, FlagDelegate.View, TextualPostTranslationDelegate.View {
 
       void openPost();
 
       void openFriends();
+
+      void openComments(FeedItem feedItem);
 
       void openTripImages(Route route, TripsImagesBundle tripImagesBundle);
 

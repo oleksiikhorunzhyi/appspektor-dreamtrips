@@ -52,6 +52,13 @@ public class AccountFragment extends ProfileFragment<AccountPresenter> implement
    }
 
    @Override
+   protected void registerCellDelegates() {
+      super.registerCellDelegates();
+      fragmentWithFeedDelegate.registerDelegate(UploadingPostsList.class, new UploadingCellDelegate(getPresenter(),
+            getContext()));
+   }
+
+   @Override
    public void onResume() {
       super.onResume();
       TrackingHelper.viewMyProfileScreen();
@@ -72,13 +79,6 @@ public class AccountFragment extends ProfileFragment<AccountPresenter> implement
       fragmentWithFeedDelegate.clearItems();
       fragmentWithFeedDelegate.addItems(newItems);
       fragmentWithFeedDelegate.notifyDataSetChanged();
-   }
-
-   @Override
-   protected void registerCellDelegates() {
-      super.registerCellDelegates();
-      fragmentWithFeedDelegate.registerDelegate(UploadingPostsList.class, new UploadingCellDelegate(getPresenter(),
-            getContext()));
    }
 
    @Override

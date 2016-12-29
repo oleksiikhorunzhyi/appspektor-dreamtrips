@@ -15,9 +15,14 @@ import com.worldventures.dreamtrips.core.rx.RxBaseFragmentWithArgs;
 import com.worldventures.dreamtrips.modules.bucketlist.bundle.ForeignBucketTabsBundle;
 import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.common.view.bundle.BucketBundle;
-import com.worldventures.dreamtrips.modules.feed.event.CommentIconClickedEvent;
+import com.worldventures.dreamtrips.modules.feed.model.BucketFeedItem;
 import com.worldventures.dreamtrips.modules.feed.model.FeedItem;
 import com.worldventures.dreamtrips.modules.feed.model.LoadMoreModel;
+import com.worldventures.dreamtrips.modules.feed.model.PhotoFeedItem;
+import com.worldventures.dreamtrips.modules.feed.model.PostFeedItem;
+import com.worldventures.dreamtrips.modules.feed.model.TripFeedItem;
+import com.worldventures.dreamtrips.modules.feed.view.cell.base.BaseFeedCell;
+import com.worldventures.dreamtrips.modules.feed.view.cell.delegate.FeedCellDelegate;
 import com.worldventures.dreamtrips.modules.feed.view.custom.SideMarginsItemDecorator;
 import com.worldventures.dreamtrips.modules.feed.view.util.FragmentWithFeedDelegate;
 import com.worldventures.dreamtrips.modules.feed.view.util.StatePaginatedRecyclerViewManager;
@@ -190,8 +195,9 @@ public abstract class ProfileFragment<T extends ProfilePresenter> extends RxBase
       fragmentWithFeedDelegate.openBucketEdit(getActivity().getSupportFragmentManager(), isTabletLandscape(), bucketBundle);
    }
 
-   public void onEvent(CommentIconClickedEvent event) {
-      fragmentWithFeedDelegate.openComments(event.getFeedItem(), isVisibleOnScreen(), isTabletLandscape());
+   @Override
+   public void openComments(FeedItem feedItem) {
+      fragmentWithFeedDelegate.openComments(feedItem, isVisibleOnScreen(), isTabletLandscape());
    }
 
    @Optional
@@ -232,6 +238,17 @@ public abstract class ProfileFragment<T extends ProfilePresenter> extends RxBase
    protected void registerCellDelegates() {
       fragmentWithFeedDelegate.registerDelegate(User.class, this);
       fragmentWithFeedDelegate.registerDelegate(ReloadFeedModel.class, model -> getPresenter().onRefresh());
+
+      BaseFeedCell.FeedCellDelegate delegate = new FeedCellDelegate(getPresenter());
+      fragmentWithFeedDelegate.registerDelegate(PhotoFeedItem.class, delegate);
+      fragmentWithFeedDelegate.registerDelegate(TripFeedItem.class, delegate);
+      fragmentWithFeedDelegate.registerDelegate(BucketFeedItem.class, delegate);
+      fragmentWithFeedDelegate.registerDelegate(PostFeedItem.class, delegate);
+   }
+
+   @Override
+   public void flagSentSuccess() {
+      informUser(R.string.flag_sent_success_msg);
    }
 
    @Override

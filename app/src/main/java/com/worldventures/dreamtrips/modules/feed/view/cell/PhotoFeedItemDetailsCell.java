@@ -20,6 +20,7 @@ import com.worldventures.dreamtrips.core.utils.GraphicUtils;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.feed.event.DeletePhotoEvent;
 import com.worldventures.dreamtrips.modules.feed.model.PhotoFeedItem;
+import com.worldventures.dreamtrips.modules.feed.view.cell.base.BaseFeedCell;
 import com.worldventures.dreamtrips.modules.feed.view.cell.base.FeedItemDetailsCell;
 import com.worldventures.dreamtrips.modules.tripsimages.bundle.EditPhotoBundle;
 import com.worldventures.dreamtrips.modules.tripsimages.bundle.FullScreenImagesBundle;
@@ -33,7 +34,7 @@ import butterknife.InjectView;
 import butterknife.OnClick;
 
 @Layout(R.layout.adapter_item_feed_photo_event)
-public class PhotoFeedItemDetailsCell extends FeedItemDetailsCell<PhotoFeedItem, CellDelegate<PhotoFeedItem>> {
+public class PhotoFeedItemDetailsCell extends FeedItemDetailsCell<PhotoFeedItem, BaseFeedCell.FeedCellDelegate<PhotoFeedItem>> {
 
    @InjectView(R.id.photo) SimpleDraweeView photo;
    @InjectView(R.id.title) TextView title;

@@ -1,15 +1,11 @@
 package com.worldventures.dreamtrips.modules.feed.presenter;
 
 import com.worldventures.dreamtrips.core.utils.LocaleHelper;
-import com.worldventures.dreamtrips.modules.feed.event.DownloadPhotoEvent;
 import com.worldventures.dreamtrips.modules.feed.event.TranslatePostEvent;
 import com.worldventures.dreamtrips.modules.feed.model.FeedItem;
 import com.worldventures.dreamtrips.modules.feed.view.util.TextualPostTranslationDelegate;
-import com.worldventures.dreamtrips.modules.tripsimages.service.command.DownloadImageCommand;
 
 import javax.inject.Inject;
-
-import io.techery.janet.helper.ActionStateSubscriber;
 
 public class FeedItemDetailsPresenter extends FeedDetailsPresenter<FeedItemDetailsPresenter.View> {
 
@@ -31,14 +27,9 @@ public class FeedItemDetailsPresenter extends FeedDetailsPresenter<FeedItemDetai
       super.dropView();
    }
 
-   public void onEvent(DownloadPhotoEvent event) {
-      if (view.isVisibleOnScreen()) {
-         tripImagesInteractor.downloadImageActionPipe()
-               .createObservable(new DownloadImageCommand(event.url))
-               .compose(bindViewToMainComposer())
-               .subscribe(new ActionStateSubscriber<DownloadImageCommand>()
-                     .onFail(this::handleError));
-      }
+   @Override
+   public void onDownloadImage(String url) {
+      feedActionHandlerDelegate.onDownloadImage(url, bindViewToMainComposer(), this::handleError);
    }
 
    public void onEvent(TranslatePostEvent event) {

@@ -14,13 +14,15 @@ import com.techery.spares.utils.ui.OrientationUtil;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.navigation.router.NavigationConfigBuilder;
 import com.worldventures.dreamtrips.core.navigation.router.Router;
+import com.worldventures.dreamtrips.core.navigation.service.DialogNavigatorInteractor;
 import com.worldventures.dreamtrips.modules.common.presenter.ComponentPresenter;
 import com.worldventures.dreamtrips.modules.common.view.dialog.BaseDialogFragment;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragment;
 import com.worldventures.dreamtrips.modules.dtl.event.CloseDialogEvent;
-import com.worldventures.dreamtrips.modules.feed.event.EditCommentCloseRequest;
 
 import javax.inject.Inject;
+
+import rx.Subscription;
 
 public class DialogFragmentNavigator implements Navigator {
 
@@ -49,6 +51,8 @@ public class DialogFragmentNavigator implements Navigator {
       private Bundle bundle;
 
       @Inject Router router;
+      @Inject DialogNavigatorInteractor dialogNavigatorInteractor;
+      private Subscription dialogNavigatorInteractorSubscription;
 
       public static NavigationDialogFragment newInstance(Route route, Bundle bundle, int gravity) {
          NavigationDialogFragment fragment = new NavigationDialogFragment();
@@ -72,6 +76,10 @@ public class DialogFragmentNavigator implements Navigator {
          bundle = getArguments().getBundle(Bundle.class.getName());
          //
          setStyle(DialogFragment.STYLE_NO_TITLE, 0);
+
+         dialogNavigatorInteractorSubscription = dialogNavigatorInteractor.closeDialogActionPipe()
+               .observeSuccess()
+               .subscribe(command -> dismissAllowingStateLoss());
       }
 
       @Override
@@ -109,14 +117,14 @@ public class DialogFragmentNavigator implements Navigator {
          if (isLastInStack()) OrientationUtil.unlockOrientation(getActivity());
       }
 
-      public void onEvent(CloseDialogEvent event) {
-         if (isVisible()) dismiss();
+      @Override
+      public void onDestroy() {
+         super.onDestroy();
+         dialogNavigatorInteractorSubscription.unsubscribe();
       }
 
-      public void onEvent(EditCommentCloseRequest event) {
-         if (route.getClazzName().equals(event.getFragmentClazz())) {
-            dismissAllowingStateLoss();
-         }
+      public void onEvent(CloseDialogEvent event) {
+         if (isVisible()) dismiss();
       }
 
       private boolean isLastInStack() {

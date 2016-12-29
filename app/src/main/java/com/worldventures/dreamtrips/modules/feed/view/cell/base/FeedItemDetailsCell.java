@@ -30,7 +30,7 @@ import butterknife.OnClick;
 import butterknife.Optional;
 import timber.log.Timber;
 
-public abstract class FeedItemDetailsCell<I extends FeedItem, D extends CellDelegate<I>> extends BaseFeedCell<I, D> {
+public abstract class FeedItemDetailsCell<I extends FeedItem, D extends BaseFeedCell.FeedCellDelegate<I>> extends BaseFeedCell<I, D> {
 
    FeedItemCommonDataHelper feedItemCommonDataHelper;
 

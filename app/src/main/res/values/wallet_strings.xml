@@ -62,7 +62,7 @@
 
    <string name="wallet_wizard_scan_proposal">Scan the barcode on the back of your smart card.</string>
    <string name="wallet_wizard_scan_start_btn">Scan Barcode</string>
-   <string name="wallet_wizard_scan_title">Scan flye smart card</string>
+   <string name="wallet_wizard_scan_title">Scan Smart Card</string>
    <string name="wallet_wizard_scan_help_if_power_off">Make sure the card is powered on by swiping twice on the chip from the bottom to the top.</string>
 
    <string name="wallet_wizard_scan_barcode_header">Position the flye™ smart card barcode in the viewfinder box.</string>

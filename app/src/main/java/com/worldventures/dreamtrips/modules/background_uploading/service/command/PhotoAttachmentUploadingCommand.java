@@ -1,4 +1,4 @@
-package com.worldventures.dreamtrips.modules.background_uploading.service;
+package com.worldventures.dreamtrips.modules.background_uploading.service.command;
 
 import com.innahema.collections.query.queriables.Queryable;
 import com.worldventures.dreamtrips.core.api.uploadery.SimpleUploaderyCommand;

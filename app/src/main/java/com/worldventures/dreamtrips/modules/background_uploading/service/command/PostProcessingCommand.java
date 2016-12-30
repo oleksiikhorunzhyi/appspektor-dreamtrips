@@ -1,14 +1,18 @@
-package com.worldventures.dreamtrips.modules.background_uploading.service;
+package com.worldventures.dreamtrips.modules.background_uploading.service.command;
 
 
 import com.innahema.collections.query.queriables.Queryable;
 import com.worldventures.dreamtrips.core.janet.dagger.InjectableAction;
 import com.worldventures.dreamtrips.core.utils.tracksystem.AnalyticsInteractor;
+import com.worldventures.dreamtrips.core.utils.tracksystem.BaseAnalyticsAction;
 import com.worldventures.dreamtrips.modules.background_uploading.model.PhotoAttachment;
 import com.worldventures.dreamtrips.modules.background_uploading.model.PostCompoundOperationModel;
 import com.worldventures.dreamtrips.modules.background_uploading.model.PostCompoundOperationMutator;
+import com.worldventures.dreamtrips.modules.background_uploading.service.BackgroundUploadingInteractor;
+import com.worldventures.dreamtrips.modules.background_uploading.service.CompoundOperationsInteractor;
 import com.worldventures.dreamtrips.modules.feed.service.PostsInteractor;
 import com.worldventures.dreamtrips.modules.feed.service.analytics.SharePhotoPostAction;
+import com.worldventures.dreamtrips.modules.feed.service.analytics.SharePostAction;
 import com.worldventures.dreamtrips.modules.feed.service.command.CreatePhotosCommand;
 import com.worldventures.dreamtrips.modules.feed.service.command.CreatePostCommand;
 import com.worldventures.dreamtrips.modules.feed.service.command.PostCreatedCommand;
@@ -21,6 +25,7 @@ import io.techery.janet.Command;
 import io.techery.janet.Janet;
 import io.techery.janet.command.annotations.CommandAction;
 import rx.Observable;
+import rx.schedulers.Schedulers;
 import rx.subjects.PublishSubject;
 import timber.log.Timber;
 
@@ -33,14 +38,22 @@ public class PostProcessingCommand extends Command<PostCompoundOperationModel> i
    @Inject PostsInteractor postsInteractor;
    @Inject AnalyticsInteractor analyticsInteractor;
    @Inject BackgroundUploadingInteractor backgroundUploadingInteractor;
+   @Inject CompoundOperationsInteractor compoundOperationsInteractor;
    @Inject PostCompoundOperationMutator compoundOperationObjectMutator;
 
    private PostCompoundOperationModel postCompoundOperationModel;
 
    private PublishSubject cancelationSubject = PublishSubject.create();
 
+   private int compoundOperationDeletionDelay;
+
    public PostProcessingCommand(PostCompoundOperationModel postCompoundOperationModel) {
       this.postCompoundOperationModel = postCompoundOperationModel;
+      this.compoundOperationDeletionDelay = DELAY_TO_DELETE_COMPOUND_OPERATION;
+   }
+
+   public PostCompoundOperationModel getPostCompoundOperationModel() {
+      return postCompoundOperationModel;
    }
 
    @Override
@@ -49,14 +62,16 @@ public class PostProcessingCommand extends Command<PostCompoundOperationModel> i
             .map(postOperationModel -> compoundOperationObjectMutator.start(postOperationModel))
             .doOnNext(this::notifyCompoundCommandChanged)
             .flatMap(this::createPhotosIfNeeded)
-            .doOnNext(this::notifyCompoundCommandChanged)
             .flatMap(this::createPost)
-            .doOnNext(this::notifyCompoundCommandChanged)
-            .delay(DELAY_TO_DELETE_COMPOUND_OPERATION, TimeUnit.SECONDS)
+            // use trampoline for unit tests, works OK for usual scenario too
+            .delay(compoundOperationDeletionDelay, TimeUnit.SECONDS, Schedulers.trampoline())
             .doOnNext(this::notifyCompoundCommandFinished)
-            .doOnError(e -> notifyCompoundCommandChanged(compoundOperationObjectMutator.failed(postCompoundOperationModel)))
             .compose(observeUntilCancel())
             .subscribe(callback::onSuccess, callback::onFail);
+   }
+
+   public void setCompoundOperationDeletionDelay(int compoundOperationDeletionDelay) {
+      this.compoundOperationDeletionDelay = compoundOperationDeletionDelay;
    }
 
    private Observable.Transformer<PostCompoundOperationModel, PostCompoundOperationModel> observeUntilCancel() {
@@ -70,17 +85,17 @@ public class PostProcessingCommand extends Command<PostCompoundOperationModel> i
    }
 
    private Observable<PostCompoundOperationModel> createPhotosIfNeeded(PostCompoundOperationModel postOperationModel) {
-      if (postOperationModel.body().attachments() != null) return createPhotos(postOperationModel);
+      if (!postOperationModel.body().attachments().isEmpty()) return createPhotos(postOperationModel);
       return Observable.just(postOperationModel);
    }
 
    private Observable<PostCompoundOperationModel> createPhotos(PostCompoundOperationModel postOperationModel) {
-      final PostCompoundOperationModel[] tempOperationModels = {postOperationModel};
       if (Queryable.from(postOperationModel.body().attachments())
             .all(attachment -> attachment.state() == PhotoAttachment.State.UPLOADED)) {
          return Observable.just(postOperationModel)
                .flatMap(this::createPhotosEntities);
       }
+      final PostCompoundOperationModel[] tempOperationModels = {postOperationModel};
       return Observable.from(tempOperationModels[0].body().attachments())
             .filter(attachment -> attachment.state() != PhotoAttachment.State.UPLOADED)
             .concatMap(attachment -> janet.createPipe(PhotoAttachmentUploadingCommand.class)
@@ -108,7 +123,9 @@ public class PostProcessingCommand extends Command<PostCompoundOperationModel> i
             .createObservableResult(new CreatePhotosCommand(postOperationModel.body()))
             .doOnNext(textualPost -> Timber.d("[New Post Creation] Photos created"))
             .map(Command::getResult)
-            .map(photos -> compoundOperationObjectMutator.photosUploaded(postOperationModel, photos));
+            .map(photos -> compoundOperationObjectMutator.photosUploaded(postOperationModel, photos))
+            .doOnNext(this::notifyCompoundCommandChanged);
+
    }
 
    private Observable<PostCompoundOperationModel> createPost(PostCompoundOperationModel postOperationModel) {
@@ -116,22 +133,33 @@ public class PostProcessingCommand extends Command<PostCompoundOperationModel> i
             .createObservableResult(new CreatePostCommand(postOperationModel))
             .map(Command::getResult)
             .doOnNext(createdPost -> Timber.d("[New Post Creation] Post created"))
-            .map(textualPost -> compoundOperationObjectMutator.finished(postOperationModel, textualPost));
+            .map(textualPost -> compoundOperationObjectMutator.finished(postOperationModel, textualPost))
+            .doOnNext(this::notifyCompoundCommandChanged);
    }
 
    private void notifyCompoundCommandChanged(PostCompoundOperationModel postOperationModel) {
       Timber.d("[New Post Creation] Compound operation changed, %s", postOperationModel);
       postCompoundOperationModel = postOperationModel;
-      backgroundUploadingInteractor.compoundOperationsPipe()
+      compoundOperationsInteractor.compoundOperationsPipe()
             .send(CompoundOperationsCommand.compoundCommandChanged(postOperationModel));
    }
 
    private void notifyCompoundCommandFinished(PostCompoundOperationModel postOperationModel) {
       Timber.d("[New Post Creation] Compound operation finished, %s", postOperationModel);
       postsInteractor.postCreatedPipe().send(new PostCreatedCommand(postOperationModel.body().createdPost()));
-      backgroundUploadingInteractor.compoundOperationsPipe().send(CompoundOperationsCommand.compoundCommandRemoved(postCompoundOperationModel));
+      compoundOperationsInteractor.compoundOperationsPipe()
+            .send(CompoundOperationsCommand.compoundCommandRemoved(postCompoundOperationModel));
       backgroundUploadingInteractor.startNextCompoundPipe().send(new StartNextCompoundOperationCommand());
-      analyticsInteractor.analyticsActionPipe().send(SharePhotoPostAction.createPostAction(postCompoundOperationModel
-            .body()));
+      sendAnalytics();
+   }
+
+   private void sendAnalytics() {
+      BaseAnalyticsAction action;
+      if (postCompoundOperationModel.body().uploadedPhotos() == null) {
+         action = SharePostAction.createPostAction(postCompoundOperationModel.body().createdPost());
+      } else {
+         action = SharePhotoPostAction.createPostAction(postCompoundOperationModel.body());
+      }
+      analyticsInteractor.analyticsActionPipe().send(action);
    }
 }

@@ -11,7 +11,8 @@ import com.worldventures.dreamtrips.core.utils.FileUtils;
 import com.worldventures.dreamtrips.modules.background_uploading.model.CompoundOperationModel;
 import com.worldventures.dreamtrips.modules.background_uploading.model.PostCompoundOperationModel;
 import com.worldventures.dreamtrips.modules.background_uploading.service.BackgroundUploadingInteractor;
-import com.worldventures.dreamtrips.modules.background_uploading.service.QueryCompoundOperationsCommand;
+import com.worldventures.dreamtrips.modules.background_uploading.service.CompoundOperationsInteractor;
+import com.worldventures.dreamtrips.modules.background_uploading.service.command.QueryCompoundOperationsCommand;
 import com.worldventures.dreamtrips.modules.common.view.util.DrawableUtil;
 import com.worldventures.dreamtrips.modules.tripsimages.view.custom.PickImageDelegate;
 
@@ -32,12 +33,11 @@ public class CleanTempDirectoryCommand extends Command implements InjectableActi
    @ForApplication @Inject Context context;
    @Inject DrawableUtil drawableUtil;
    @Inject PhotoDAO photoDAO;
-   @Inject BackgroundUploadingInteractor backgroundUploadingInteractor;
+   @Inject CompoundOperationsInteractor compoundOperationsInteractor;
 
    @Override
    protected void run(CommandCallback callback) throws Throwable {
-      Observable.combineLatest(backgroundUploadingInteractor
-                  .queryCompoundOperationsPipe()
+      Observable.combineLatest(compoundOperationsInteractor.compoundOperationsPipe()
                   .createObservableResult(new QueryCompoundOperationsCommand()),
             photoDAO.getErrorAttachments().take(1), ((queryCompoundOperationsCommand, dataPhotoAttachments) -> {
                List<String> exceptFilePaths = new ArrayList<>();

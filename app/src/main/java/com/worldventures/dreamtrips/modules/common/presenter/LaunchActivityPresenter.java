@@ -11,7 +11,7 @@ import com.worldventures.dreamtrips.modules.auth.service.analytics.LoginAction;
 import com.worldventures.dreamtrips.modules.auth.service.analytics.LoginErrorAction;
 import com.worldventures.dreamtrips.modules.auth.util.SessionUtil;
 import com.worldventures.dreamtrips.modules.background_uploading.service.BackgroundUploadingInteractor;
-import com.worldventures.dreamtrips.modules.background_uploading.service.RestoreCompoundOperationsCommand;
+import com.worldventures.dreamtrips.modules.background_uploading.service.command.RestoreCompoundOperationsCommand;
 import com.worldventures.dreamtrips.modules.common.service.CleanTempDirectoryCommand;
 import com.worldventures.dreamtrips.modules.common.service.ClearStoragesInteractor;
 import com.worldventures.dreamtrips.modules.common.view.ApiErrorView;

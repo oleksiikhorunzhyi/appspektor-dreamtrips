@@ -7,7 +7,7 @@ import com.worldventures.dreamtrips.modules.auth.api.command.LoginCommand;
 import com.worldventures.dreamtrips.modules.auth.api.command.LogoutCommand;
 import com.worldventures.dreamtrips.modules.auth.api.command.UnsubribeFromPushCommand;
 import com.worldventures.dreamtrips.modules.auth.api.command.UpdateUserCommand;
-import com.worldventures.dreamtrips.modules.background_uploading.service.CreatePostCompoundOperationCommand;
+import com.worldventures.dreamtrips.modules.background_uploading.service.command.CreatePostCompoundOperationCommand;
 import com.worldventures.dreamtrips.modules.bucketlist.service.action.CreateBucketItemCommand;
 import com.worldventures.dreamtrips.modules.bucketlist.service.action.UpdateBucketItemCommand;
 import com.worldventures.dreamtrips.modules.bucketlist.service.command.AddBucketItemPhotoCommand;

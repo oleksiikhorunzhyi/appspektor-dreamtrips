@@ -177,6 +177,7 @@
    <string name="wallet_add_card_details_error_message">Some of requirement fields are empty or contains incorrect data</string>
    <string name="wallet_add_card_details_default_card_exist_dialog_text">Your default card %s will be replaced with this card. Do you want to proceed?</string>
    <string name="wallet_view_card_details_hint_nickname_card">i.e. \"Pacific Bank Card\"</string>
+   <string name="wallet_tap_confirm_try_again">Did not save to smart card.\nTap Confirm to try again.</string>
 
    <!--card type-->
    <string name="wallet_card_financial_service_master_card">Master Card</string>
@@ -200,6 +201,7 @@
    <string name="wallet_terms_and_conditions_try_again">Try Again</string>
    <string name="wallet_terms_and_conditions_load_failed">Failed to retrieve user agreement</string>
    <string name="wallet_terms_and_conditions_accept_failed">Failed to accept user agreement</string>
+   <string name="wallet_add_card_swipe_success">Successfully swipe. Loading&#8230;</string>
 
    <!--set up smart card-->
    <string name="wallet_wizard_welcome_title">flye smart card</string>
@@ -336,5 +338,11 @@
    <string name="wallet_wizard_pair_key_instruction">Check the front of your smart card and proceed to next step.</string>
    <string name="wallet_wizard_check_from_of_card">Check Front of Smart Card</string>
    <string name="wallet_wizard_assigning_msg">Assigning your smart card to this device in our system.</string>
+
+   <!-- Connection Error screen -->
+   <string name="wallet_connection_error_message_label">Cannot Connect to Smart Card</string>
+   <string name="wallet_connection_error_message">Make sure your smart card is on and\nBluetooth is enabled on your phone.</string>
+   <string name="wallet_connection_error_message_unlock_card">Power on your smart card by sliding your thumb\ntwice across the gold chip on your smart card.</string>
+   <string name="wallet_receive_data_error">Card did not load.\nTry swiping again.</string>
 
 </resources>

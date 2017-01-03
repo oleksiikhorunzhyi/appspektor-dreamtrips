@@ -9,6 +9,6 @@ public final class SCFirmwareUtils {
    private SCFirmwareUtils() {}
 
    public static String smartCardFirmwareVersion(@Nullable SmartCardFirmware firmware) {
-      return firmware != null ? firmware.firmwareVersion() : null;
+      return firmware != null ? firmware.firmwareVersion() : "";
    }
 }

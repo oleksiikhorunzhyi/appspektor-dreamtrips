@@ -5,6 +5,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.net.Uri;
+import android.webkit.URLUtil;
 
 import com.techery.spares.module.qualifier.ForApplication;
 import com.worldventures.dreamtrips.modules.tripsimages.vision.ImageUtils;
@@ -49,6 +50,18 @@ public class SmartCardAvatarHelper {
    public Observable<File> compressPhotoFromUrl(String url, int imageSize) {
       return ImageUtils.getBitmap(context, Uri.parse(url), imageSize, imageSize)
             .flatMap(bitmap -> Observable.fromCallable(() -> saveToFile(context, bitmap)));
+   }
+
+   public Observable<File> compressPhotoFromSchemePath(String schemePath) {
+      return compressPhotoFromSchemePath(schemePath, 0);
+   }
+
+   public Observable<File> compressPhotoFromSchemePath(String schemePath, int imageSize) {
+      if (URLUtil.isNetworkUrl(schemePath)) {
+         return compressPhotoFromUrl(schemePath, imageSize);
+      } else {
+         return Observable.fromCallable(() -> compressPhotoFromFile(schemePath, imageSize));
+      }
    }
 
    public File toMonochromeFile(File imageFile) throws IOException {

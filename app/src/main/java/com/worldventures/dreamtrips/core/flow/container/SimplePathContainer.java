@@ -103,12 +103,13 @@ public class SimplePathContainer extends PathContainer {
       //
       containerView.addView(newView);
       Utils.waitForMeasure(newView, ((view, width, height) -> {
-         if (animatorRegistrar == null) {
+
+         AnimatorFactory factory = animatorRegistrar != null ? animatorRegistrar.getAnimatorFactory(traversalState.fromPath(), to) : null;
+         if (factory == null) {
             finalizeViewTransition(containerView, fromView, pathContext, oldPath, callback);
             return;
          }
          //
-         AnimatorFactory factory = animatorRegistrar.getAnimatorFactory(traversalState.fromPath(), to);
          Animator animator = factory.createAnimator(fromView, newView, direction, containerView);
          animator.addListener(new AnimatorListenerAdapter() {
             @Override
@@ -119,8 +120,8 @@ public class SimplePathContainer extends PathContainer {
          animator.start();
       }), view -> {
          finalizeViewTransition(containerView, fromView, pathContext, oldPath, callback);
-         String logMessage = String.format(Locale.US, "Measuring new view failed: fromView = %s, newView = ", fromView.getClass(), newView
-               .getClass());
+         String logMessage = String.format(Locale.US, "Measuring new view failed: fromView = %s, newView = %s",
+               fromView.getClass(), newView.getClass());
          Timber.e(logMessage);
          Crashlytics.log(logMessage);
          Crashlytics.logException(new IllegalStateException("Measuring view failed"));

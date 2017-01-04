@@ -1,13 +1,7 @@
 package com.worldventures.dreamtrips.core.repository;
 
 import android.content.Context;
-import android.support.annotation.NonNull;
 
-import com.esotericsoftware.kryo.Kryo;
-import com.esotericsoftware.kryo.io.Input;
-import com.esotericsoftware.kryo.io.Output;
-import com.esotericsoftware.kryo.serializers.CompatibleFieldSerializer;
-import com.esotericsoftware.kryo.serializers.DefaultSerializers;
 import com.innahema.collections.query.queriables.Queryable;
 import com.snappydb.DB;
 import com.snappydb.DBFactory;
@@ -47,19 +41,12 @@ import com.worldventures.dreamtrips.wallet.domain.entity.ImmutableTermsAndCondit
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCard;
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCardDetails;
 import com.worldventures.dreamtrips.wallet.domain.entity.TermsAndConditions;
-import com.worldventures.dreamtrips.wallet.domain.entity.card.Card;
-import com.worldventures.dreamtrips.wallet.domain.storage.security.crypto.Crypter.CryptoData;
-import com.worldventures.dreamtrips.wallet.domain.storage.security.crypto.HybridAndroidCrypter;
+import com.worldventures.dreamtrips.wallet.domain.storage.disk.DiskStorage;
 
-import org.objenesis.strategy.StdInstantiatorStrategy;
-
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -71,28 +58,16 @@ import java.util.concurrent.Future;
 import io.techery.janet.smartcard.mock.device.SimpleDeviceStorage;
 import timber.log.Timber;
 
-public class SnappyRepositoryImpl implements SnappyRepository {
+class SnappyRepositoryImpl implements SnappyRepository, DiskStorage {
 
-   private Context context;
-   private ExecutorService executorService;
-   private Kryo kryo;
-   private HybridAndroidCrypter crypter;
+   private final Context context;
+   private final ExecutorService executorService;
+   private final SnappyCrypter snappyCrypter;
 
-   public SnappyRepositoryImpl(@NonNull Context context, @NonNull HybridAndroidCrypter crypter) {
+   SnappyRepositoryImpl(Context context, SnappyCrypter snappyCrypter) {
       this.context = context;
-      this.crypter = crypter;
+      this.snappyCrypter = snappyCrypter;
       this.executorService = Executors.newSingleThreadExecutor();
-      //
-      initCustomKryo();
-   }
-
-   private void initCustomKryo() {
-      this.kryo = new Kryo();
-      this.kryo.register(Date.class, new DefaultSerializers.DateSerializer());
-      this.kryo.setDefaultSerializer(CompatibleFieldSerializer.class);
-      Kryo.DefaultInstantiatorStrategy strategy = new Kryo.DefaultInstantiatorStrategy();
-      strategy.setFallbackInstantiatorStrategy(new StdInstantiatorStrategy());
-      this.kryo.setInstantiatorStrategy(strategy);
    }
 
    ///////////////////////////////////////////////////////////////////////////
@@ -164,37 +139,29 @@ public class SnappyRepositoryImpl implements SnappyRepository {
    }
 
    ///////////////////////////////////////////////////////////////////////////
+   // DiskStorage
+   ///////////////////////////////////////////////////////////////////////////
+
+   @Override
+   public <T> Optional<T> executeWithResult(SnappyResult<T> action) {
+      return actWithResult(action);
+   }
+
+   @Override
+   public void execute(SnappyAction action) {
+      act(action);
+   }
+
+   ///////////////////////////////////////////////////////////////////////////
    // Public
    ///////////////////////////////////////////////////////////////////////////
 
    private void putEncrypted(String key, Object obj) {
-      act(db -> {
-         Output output = new Output(new ByteArrayOutputStream());
-         kryo.writeClassAndObject(output, obj);
-         byte[] bytes = crypter.encrypt(new CryptoData(new ByteArrayInputStream(output.getBuffer()))).toByteArray();
-         db.put(key, bytes);
-      });
+      act(db -> snappyCrypter.putEncrypted(db, key, obj));
    }
 
    private <T> T getEncrypted(String key, Class<T> clazz) {
-      return actWithResult(db -> {
-         T result = null;
-         Input input = new Input();
-         try {
-            byte[] bytes = crypter.decrypt(new CryptoData(new ByteArrayInputStream(db.getBytes(key)))).toByteArray();
-            input.setBuffer(bytes);
-            result = (T) kryo.readClassAndObject(input);
-         } finally {
-            input.close();
-         }
-         return result;
-      }).orNull();
-   }
-
-   private <T> List<T> getEncryptedList(String key) {
-      List decrypted = getEncrypted(key, List.class);
-      if (decrypted == null) return Collections.emptyList();
-      else return (List<T>) decrypted;
+      return actWithResult(db -> snappyCrypter.getEncrypted(db, key, clazz)).orNull();
    }
 
    @Override
@@ -359,21 +326,11 @@ public class SnappyRepositoryImpl implements SnappyRepository {
       act(db -> db.del(WALLET_ACTIVE_SMART_CARD_ID));
    }
 
-   @Override
-   public void saveWalletCardsList(List<Card> items) {
-      putEncrypted(WALLET_CARDS_LIST, items);
-   }
+/////////
 
    @Override
-   public List<Card> readWalletCardsList() {
-      return getEncryptedList(WALLET_CARDS_LIST);
-   }
-
-   public void deleteWalletCardList() {
-      act(db -> {
-         db.del(WALLET_CARDS_LIST);
-         db.del(WALLET_DEFAULT_BANK_CARD);
-      });
+   public void deleteWalletDefaultCardId() {
+      act(db -> db.del(WALLET_DEFAULT_BANK_CARD));
    }
 
    @Override
@@ -676,18 +633,6 @@ public class SnappyRepositoryImpl implements SnappyRepository {
    @Override
    public void setDocuments(List<Document> documents) {
       putList(DOCUMENTS, documents);
-   }
-
-   ///////////////////////////////////////////////////////////////////////////
-   // GCM
-   ///////////////////////////////////////////////////////////////////////////
-
-   private interface SnappyAction {
-      void call(DB db) throws SnappydbException;
-   }
-
-   private interface SnappyResult<T> {
-      T call(DB db) throws SnappydbException;
    }
 
    ///////////////////////////////////////////////////////////////////////////

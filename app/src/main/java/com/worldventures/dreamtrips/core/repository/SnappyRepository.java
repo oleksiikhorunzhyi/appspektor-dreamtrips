@@ -23,7 +23,6 @@ import com.worldventures.dreamtrips.wallet.domain.entity.FirmwareUpdateData;
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCard;
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCardDetails;
 import com.worldventures.dreamtrips.wallet.domain.entity.TermsAndConditions;
-import com.worldventures.dreamtrips.wallet.domain.entity.card.Card;
 
 import java.util.Collection;
 import java.util.List;
@@ -73,7 +72,6 @@ public interface SnappyRepository {
    String TRIP_FEED_ITEM = "trip";
    String BUCKET_FEED_ITEM = "bucket";
 
-   String WALLET_CARDS_LIST = "WALLET_CARDS_LIST";
    String WALLET_SMART_CARD = "WALLET_SMART_CARD";
    String WALLET_DETAILS_SMART_CARD = "WALLET_DETAILS_SMART_CARD";
    String WALLET_ACTIVE_SMART_CARD_ID = "WALLET_ACTIVE_SMART_CARD_ID";
@@ -224,11 +222,7 @@ public interface SnappyRepository {
 
    void saveWalletDeviceStorage(SimpleDeviceStorage deviceStorage);
 
-   void saveWalletCardsList(List<Card> items);
-
-   List<Card> readWalletCardsList();
-
-   void deleteWalletCardList();
+   void deleteWalletDefaultCardId();
 
    void saveWalletDefaultCardId(String id);
 

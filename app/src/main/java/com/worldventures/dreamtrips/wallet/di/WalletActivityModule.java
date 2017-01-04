@@ -7,15 +7,19 @@ import com.worldventures.dreamtrips.core.component.ComponentDescription;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletActivityPresenter;
 import com.worldventures.dreamtrips.wallet.ui.common.navigation.FlowNavigator;
 import com.worldventures.dreamtrips.wallet.ui.common.navigation.Navigator;
-import com.worldventures.dreamtrips.wallet.ui.dashboard.detail.CardDetailsPresenter;
-import com.worldventures.dreamtrips.wallet.ui.dashboard.list.CardListPresenter;
-import com.worldventures.dreamtrips.wallet.ui.dashboard.list.util.cell.BankCardCell;
-import com.worldventures.dreamtrips.wallet.ui.dashboard.list.util.cell.CardStackCell;
-import com.worldventures.dreamtrips.wallet.ui.dashboard.list.util.cell.CardStackHeaderCell;
+import com.worldventures.dreamtrips.wallet.ui.dashboard.CardListPresenter;
+import com.worldventures.dreamtrips.wallet.ui.dashboard.util.cell.BankCardCell;
+import com.worldventures.dreamtrips.wallet.ui.dashboard.util.cell.CardStackCell;
+import com.worldventures.dreamtrips.wallet.ui.dashboard.util.cell.CardStackHeaderCell;
 import com.worldventures.dreamtrips.wallet.ui.provisioning_blocked.WalletProvisioningBlockedPresenter;
 import com.worldventures.dreamtrips.wallet.ui.provisioning_blocked.cell.SupportedDeviceItemCell;
 import com.worldventures.dreamtrips.wallet.ui.provisioning_blocked.cell.SupportedDevicesListCell;
 import com.worldventures.dreamtrips.wallet.ui.provisioning_blocked.cell.UnsupportedDeviceInfoCell;
+import com.worldventures.dreamtrips.wallet.ui.records.add.AddCardDetailsPresenter;
+import com.worldventures.dreamtrips.wallet.ui.records.connectionerror.ConnectionErrorPresenter;
+import com.worldventures.dreamtrips.wallet.ui.records.detail.CardDetailsPresenter;
+import com.worldventures.dreamtrips.wallet.ui.records.swiping.WizardChargingPresenter;
+import com.worldventures.dreamtrips.wallet.ui.settings.about.AboutPresenter;
 import com.worldventures.dreamtrips.wallet.ui.settings.common.cell.SectionDividerCell;
 import com.worldventures.dreamtrips.wallet.ui.settings.common.cell.SettingsRadioCell;
 import com.worldventures.dreamtrips.wallet.ui.settings.disabledefaultcard.WalletDisableDefaultCardPresenter;
@@ -29,23 +33,23 @@ import com.worldventures.dreamtrips.wallet.ui.settings.firmware.preinstalletion.
 import com.worldventures.dreamtrips.wallet.ui.settings.firmware.puck_connection.WalletPuckConnectionPresenter;
 import com.worldventures.dreamtrips.wallet.ui.settings.firmware.uptodate.WalletUpToDateFirmwarePresenter;
 import com.worldventures.dreamtrips.wallet.ui.settings.general.WalletSettingsPresenter;
+import com.worldventures.dreamtrips.wallet.ui.settings.profile.WalletSettingsProfilePresenter;
 import com.worldventures.dreamtrips.wallet.ui.settings.removecards.WalletAutoClearCardsPresenter;
 import com.worldventures.dreamtrips.wallet.ui.start.WalletStartPresenter;
-import com.worldventures.dreamtrips.wallet.ui.wizard.associate.ConnectSmartCardPresenter;
 import com.worldventures.dreamtrips.wallet.ui.wizard.barcode.WizardScanBarcodePresenter;
-import com.worldventures.dreamtrips.wallet.ui.wizard.card_details.AddCardDetailsPresenter;
-import com.worldventures.dreamtrips.wallet.ui.wizard.charging.WizardChargingPresenter;
 import com.worldventures.dreamtrips.wallet.ui.wizard.checking.WizardCheckingPresenter;
 import com.worldventures.dreamtrips.wallet.ui.wizard.edit_card.EditCardDetailsPresenter;
 import com.worldventures.dreamtrips.wallet.ui.wizard.edit_card.EditCardDetailsScreen;
-import com.worldventures.dreamtrips.wallet.ui.wizard.finish.WalletPinIsSetPresenter;
+import com.worldventures.dreamtrips.wallet.ui.wizard.finish.WizardAssignUserPresenter;
 import com.worldventures.dreamtrips.wallet.ui.wizard.manual.WizardManualInputPresenter;
+import com.worldventures.dreamtrips.wallet.ui.wizard.pairkey.PairKeyPresenter;
+import com.worldventures.dreamtrips.wallet.ui.wizard.pin.complete.WalletPinIsSetPresenter;
 import com.worldventures.dreamtrips.wallet.ui.wizard.pin.setup.WizardPinSetupPresenter;
 import com.worldventures.dreamtrips.wallet.ui.wizard.pin.success.PinSetSuccessPresenter;
 import com.worldventures.dreamtrips.wallet.ui.wizard.power_on.WizardPowerOnPresenter;
 import com.worldventures.dreamtrips.wallet.ui.wizard.profile.WizardEditProfilePresenter;
 import com.worldventures.dreamtrips.wallet.ui.wizard.splash.WizardSplashPresenter;
-import com.worldventures.dreamtrips.wallet.ui.wizard.termsandconditionals.WizardTermsScreenPresenter;
+import com.worldventures.dreamtrips.wallet.ui.wizard.termsandconditionals.WizardTermsPresenter;
 import com.worldventures.dreamtrips.wallet.ui.wizard.welcome.WizardWelcomePresenter;
 
 import javax.inject.Singleton;
@@ -70,7 +74,7 @@ import dagger.Provides;
             WalletProvisioningBlockedPresenter.class,
             WizardSplashPresenter.class,
             WizardPowerOnPresenter.class,
-            WizardTermsScreenPresenter.class,
+            WizardTermsPresenter.class,
             WizardScanBarcodePresenter.class,
             WizardManualInputPresenter.class,
             WizardEditProfilePresenter.class,
@@ -79,6 +83,7 @@ import dagger.Provides;
             CardDetailsPresenter.class,
             CardListPresenter.class,
             WalletSettingsPresenter.class,
+            WalletSettingsProfilePresenter.class,
             PinSetSuccessPresenter.class,
             AddCardDetailsPresenter.class,
             WizardPinSetupPresenter.class,
@@ -93,11 +98,14 @@ import dagger.Provides;
             WalletDownloadFirmwarePresenter.class,
             FactoryResetPresenter.class,
             FactoryResetSuccessPresenter.class,
-            ConnectSmartCardPresenter.class,
             WalletInstallFirmwarePresenter.class,
             WizardCheckingPresenter.class,
             WalletNewFirmwareAvailablePresenter.class,
-            WalletPuckConnectionPresenter.class
+            WalletPuckConnectionPresenter.class,
+            WizardAssignUserPresenter.class,
+            AboutPresenter.class,
+            PairKeyPresenter.class,
+            ConnectionErrorPresenter.class
       },
       complete = false, library = true
 )

@@ -10,12 +10,11 @@ import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletLinearLayout;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.OperationScreen;
 import com.worldventures.dreamtrips.wallet.ui.widget.WalletCheckWidget;
-import com.worldventures.dreamtrips.wallet.ui.wizard.charging.WizardChargingPath;
 
 import butterknife.InjectView;
 import butterknife.OnClick;
 
-public class WizardCheckingScreen extends WalletLinearLayout<WizardCheckingPresenter.Screen, WizardCheckingPresenter, WizardChargingPath>
+public class WizardCheckingScreen extends WalletLinearLayout<WizardCheckingPresenter.Screen, WizardCheckingPresenter, WizardCheckingPath>
       implements WizardCheckingPresenter.Screen {
 
    @InjectView(R.id.check_widget_wifi) WalletCheckWidget checkInternet;
@@ -34,6 +33,7 @@ public class WizardCheckingScreen extends WalletLinearLayout<WizardCheckingPrese
    @Override
    protected void onFinishInflate() {
       super.onFinishInflate();
+      supportConnectionStatusLabel(false);
       toolbar.setNavigationOnClickListener(v -> presenter.goBack());
    }
 

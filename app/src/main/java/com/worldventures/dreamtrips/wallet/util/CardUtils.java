@@ -5,7 +5,7 @@ import android.text.TextUtils;
 
 import com.innahema.collections.query.queriables.Queryable;
 import com.worldventures.dreamtrips.wallet.domain.entity.card.Card;
-import com.worldventures.dreamtrips.wallet.ui.dashboard.list.util.CardStackViewModel;
+import com.worldventures.dreamtrips.wallet.ui.dashboard.util.CardStackViewModel;
 
 import java.util.List;
 

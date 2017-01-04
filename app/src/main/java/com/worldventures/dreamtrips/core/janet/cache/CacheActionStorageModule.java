@@ -39,6 +39,7 @@ import com.worldventures.dreamtrips.wallet.domain.storage.SmartCardDetailsStorag
 import com.worldventures.dreamtrips.wallet.domain.storage.SmartCardStorage;
 import com.worldventures.dreamtrips.wallet.domain.storage.TermsAndConditionsStorage;
 import com.worldventures.dreamtrips.wallet.domain.storage.WalletCardsDiskStorage;
+import com.worldventures.dreamtrips.wallet.domain.storage.disk.CardListStorage;
 
 import javax.inject.Singleton;
 
@@ -152,19 +153,19 @@ public class CacheActionStorageModule {
 
    @Singleton
    @Provides(type = Provides.Type.SET)
-   ActionStorage provideWalletCardListStorage(SnappyRepository snappyRepository) {
-      return new WalletCardsDiskStorage(snappyRepository);
+   ActionStorage provideWalletCardListStorage(CardListStorage cardListStorage) {
+      return new WalletCardsDiskStorage(cardListStorage);
    }
 
    @Singleton
    @Provides(type = Provides.Type.SET)
-   MultipleActionStorage provideDefaultBankCardStorage(SnappyRepository snappyRepository) {
+   ActionStorage provideDefaultBankCardStorage(SnappyRepository snappyRepository) {
       return new DefaultBankCardStorage(snappyRepository);
    }
 
    @Singleton
    @Provides(type = Provides.Type.SET)
-   MultipleActionStorage provideSmartCardStorage(SnappyRepository snappyRepository) {
+   ActionStorage provideSmartCardStorage(SnappyRepository snappyRepository) {
       return new SmartCardStorage(snappyRepository);
    }
 
@@ -209,7 +210,7 @@ public class CacheActionStorageModule {
    CompoundOperationRepository provideCompoundOperationRepository(SnappyRepository snappyRepository) {
       return new CompoundOperationRepositoryImpl(snappyRepository);
    }
-   
+
    @Singleton
    @Provides(type = Provides.Type.SET)
    ActionStorage provideDocumentsStorage(SnappyRepository db) {

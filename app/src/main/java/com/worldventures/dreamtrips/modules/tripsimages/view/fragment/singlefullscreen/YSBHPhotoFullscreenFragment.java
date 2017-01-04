@@ -52,14 +52,4 @@ public class YSBHPhotoFullscreenFragment extends FullScreenPhotoFragment<YouShou
       tvDescription.setVisibility(View.VISIBLE);
       tvSeeMore.setVisibility(View.VISIBLE);
    }
-
-   @Override
-   public boolean onApiError(ErrorResponse errorResponse) {
-      return false;
-   }
-
-   @Override
-   public void onApiCallFailed() {
-
-   }
 }

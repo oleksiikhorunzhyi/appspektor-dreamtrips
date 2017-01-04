@@ -1,6 +1,8 @@
 package com.worldventures.dreamtrips.modules.feed.view.custom;
 
 import android.content.Context;
+import android.content.res.TypedArray;
+import android.support.annotation.ColorRes;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -21,6 +23,9 @@ public class TranslateView extends FrameLayout {
    @InjectView(R.id.translated_text) TextView translatedText;
    @InjectView(R.id.translated_info) TextView translatedInfo;
 
+   @ColorRes
+   private int textColor;
+
    public TranslateView(Context context) {
       this(context, null);
    }
@@ -31,8 +36,14 @@ public class TranslateView extends FrameLayout {
 
    public TranslateView(Context context, AttributeSet attrs, int defStyleAttr) {
       super(context, attrs, defStyleAttr);
+      TypedArray a = context.getTheme().obtainStyledAttributes(attrs, R.styleable.TranslateView, 0, 0);
+      textColor = a.getResourceId(R.styleable.TranslateView_translatedTextColor, R.color.black);
+      a.recycle();
+
       LayoutInflater.from(getContext()).inflate(R.layout.layout_translate_view, this, true);
       ButterKnife.inject(this);
+
+      translatedText.setTextColor(context.getResources().getColor(textColor));
    }
 
    public void hide() {

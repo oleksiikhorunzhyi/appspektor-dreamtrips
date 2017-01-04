@@ -42,5 +42,5 @@ public interface FeedEntity extends Serializable, UidItem {
    void syncLikeState(FeedEntity feedEntity);
 
    @Nullable
-   String getLanguageFrom();
+   String getLanguage();
 }

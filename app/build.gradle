@@ -488,7 +488,7 @@ dependencies {
    compile 'com.github.techery:properratingbar:0.0.5'
    compile 'com.sothree.slidinguppanel:library:3.2.1'
    compile 'com.amulyakhare:com.amulyakhare.textdrawable:1.0.1'
-   compile ('com.github.techery:OperationActionSubscriber:0.0.2') {
+   compile ('com.github.techery:OperationActionSubscriber:1.0.0') {
       exclude group: 'org.jetbrains', module: 'annotations-java5'
    }
    // Util

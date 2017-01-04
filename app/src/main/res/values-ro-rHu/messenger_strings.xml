@@ -157,8 +157,8 @@
    <string name="sent_location">locație trimisă</string>
    <string name="unread_conversation">Conversații </string>
 
-   <string name="disconnected_overlay_disconnected_message">Conexiune pierdută</string>
-   <string name="disconnected_overlay_connecting_message">Se conectează…</string>
+   <string name="connection_overlay_disconnected_message">Conexiune pierdută</string>
+   <string name="connection_overlay_connecting_message">Se conectează…</string>
 
    <string name="warning_no_internet_connection">Nu există conexiune la internet </string>
 

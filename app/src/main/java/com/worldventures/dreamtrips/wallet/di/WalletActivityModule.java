@@ -16,6 +16,7 @@ import com.worldventures.dreamtrips.wallet.ui.provisioning_blocked.cell.Supporte
 import com.worldventures.dreamtrips.wallet.ui.provisioning_blocked.cell.SupportedDevicesListCell;
 import com.worldventures.dreamtrips.wallet.ui.provisioning_blocked.cell.UnsupportedDeviceInfoCell;
 import com.worldventures.dreamtrips.wallet.ui.records.add.AddCardDetailsPresenter;
+import com.worldventures.dreamtrips.wallet.ui.records.connectionerror.ConnectionErrorPresenter;
 import com.worldventures.dreamtrips.wallet.ui.records.detail.CardDetailsPresenter;
 import com.worldventures.dreamtrips.wallet.ui.records.swiping.WizardChargingPresenter;
 import com.worldventures.dreamtrips.wallet.ui.settings.about.AboutPresenter;
@@ -103,7 +104,8 @@ import dagger.Provides;
             WalletPuckConnectionPresenter.class,
             WizardAssignUserPresenter.class,
             AboutPresenter.class,
-            PairKeyPresenter.class
+            PairKeyPresenter.class,
+            ConnectionErrorPresenter.class
       },
       complete = false, library = true
 )

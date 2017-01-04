@@ -8,8 +8,9 @@ import com.techery.spares.adapter.BaseArrayListAdapter;
 import com.techery.spares.module.Injector;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.utils.ViewUtils;
-import com.worldventures.dreamtrips.modules.dtl.model.merchant.operational_hour.OperationDay;
-import com.worldventures.dreamtrips.modules.dtl.view.cell.DtlWorkingHoursCell;
+import com.worldventures.dreamtrips.modules.dtl.helper.MerchantHelper;
+import com.worldventures.dreamtrips.modules.dtl.model.merchant.operational_hour.ImmutableOperationDay;
+import com.worldventures.dreamtrips.modules.dtl.view.cell.WorkingHoursCell;
 import com.worldventures.dreamtrips.modules.dtl.view.cell.adapter.MerchantWorkingHoursAdapter;
 import com.worldventures.dreamtrips.modules.dtl.view.custom.ExpandableOfferView;
 
@@ -18,7 +19,7 @@ import butterknife.InjectView;
 
 public class MerchantWorkingHoursInflater extends MerchantDataInflater {
 
-   @InjectView(R.id.expandedWorkingHoursView) protected ExpandableOfferView expandedView;
+   @InjectView(R.id.expandedWorkingHoursView) ExpandableOfferView expandedView;
    protected RecyclerView hoursRecyclerView;
    protected BaseArrayListAdapter adapter;
 
@@ -38,13 +39,13 @@ public class MerchantWorkingHoursInflater extends MerchantDataInflater {
    }
 
    @Override
-   protected void onMerchantApply() {
-      if (merchant.getOperationDays().isEmpty()) {
+   protected void onMerchantAttributesApply() {
+      if (!merchantAttributes.hasOperationDays()) {
          ViewUtils.setViewVisibility(expandedView, View.GONE);
       } else {
-         adapter = new MerchantWorkingHoursAdapter(rootView.getContext(), merchant, injector);
-         adapter.registerCell(OperationDay.class, DtlWorkingHoursCell.class);
-         adapter.setItems(merchant.getOperationDays());
+         adapter = new MerchantWorkingHoursAdapter(rootView.getContext(), merchantAttributes, injector);
+         adapter.registerCell(ImmutableOperationDay.class, WorkingHoursCell.class);
+         adapter.setItems(merchantAttributes.operationDays());
          hoursRecyclerView.setAdapter(adapter);
       }
    }

@@ -11,7 +11,8 @@ public class CategoryItem extends BaseEntity {
    public CategoryItem() {
    }
 
-   public CategoryItem(String name) {
+   public CategoryItem(int id, String name) {
+      setId(id);
       this.name = name;
    }
 

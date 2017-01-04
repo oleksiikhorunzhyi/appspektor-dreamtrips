@@ -43,7 +43,7 @@ import rx.Observable;
 
 public class EditChatMembersScreenImpl extends MessengerPathLayout<EditChatMembersScreen, EditChatMembersScreenPresenter, EditChatPath> implements EditChatMembersScreen {
 
-   @InjectView(R.id.edit_chat_members_content_view) ViewGroup contentView;
+   @InjectView(R.id.content_layout) ViewGroup contentView;
    @InjectView(R.id.edit_chat_members_loading_view) View loadingView;
    @InjectView(R.id.edit_chat_members_error_view) View errorView;
 
@@ -135,11 +135,6 @@ public class EditChatMembersScreenImpl extends MessengerPathLayout<EditChatMembe
       contentView.setVisibility(View.GONE);
       loadingView.setVisibility(View.GONE);
       errorView.setVisibility(View.VISIBLE);
-   }
-
-   @Override
-   public ViewGroup getContentView() {
-      return contentView;
    }
 
    @Override

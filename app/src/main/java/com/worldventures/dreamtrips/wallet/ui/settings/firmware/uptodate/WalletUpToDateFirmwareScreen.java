@@ -49,7 +49,7 @@ public class WalletUpToDateFirmwareScreen
 
    @Override
    public void version(@Nullable SmartCardFirmware version) {
-      versionView.setText(version == null ? "" : getString(R.string.wallet_settings_version, version));
+      versionView.setText(version == null ? "" : getString(R.string.wallet_settings_version, version.firmwareVersion()));
    }
 
    @Override

@@ -1,11 +1,10 @@
 package com.worldventures.dreamtrips.modules.tripsimages.presenter.fullscreen;
 
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.core.utils.events.PhotoDeletedEvent;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketPhoto;
 import com.worldventures.dreamtrips.modules.bucketlist.service.BucketInteractor;
-import com.worldventures.dreamtrips.modules.bucketlist.service.action.UpdateItemHttpAction;
+import com.worldventures.dreamtrips.modules.bucketlist.service.action.UpdateBucketItemCommand;
 import com.worldventures.dreamtrips.modules.bucketlist.service.command.DeleteItemPhotoCommand;
 import com.worldventures.dreamtrips.modules.bucketlist.service.command.FindBucketItemByPhotoCommand;
 import com.worldventures.dreamtrips.modules.bucketlist.service.model.ImmutableBucketCoverBody;
@@ -64,12 +63,10 @@ public class BucketFullscreenPresenter extends SocialFullScreenPresenter<BucketP
                .observeOn(AndroidSchedulers.mainThread())).subscribe(new ActionStateSubscriber<DeleteItemPhotoCommand>()
                .onSuccess(deleteItemPhotoAction -> {
                   view.informUser(context.getString(R.string.photo_deleted));
-                  eventBus.postSticky(new PhotoDeletedEvent(photo.getFSId()));
                })
                .onFail(this::handleError));
       }
    }
-
 
    public void onCheckboxPressed(boolean status) {
       if (bucketItem != null) {
@@ -77,14 +74,14 @@ public class BucketFullscreenPresenter extends SocialFullScreenPresenter<BucketP
             view.showCoverProgress();
 
             view.bind(bucketInteractor.updatePipe()
-                  .createObservable(new UpdateItemHttpAction(ImmutableBucketCoverBody.builder()
+                  .createObservable(new UpdateBucketItemCommand(ImmutableBucketCoverBody.builder()
                         .id(bucketItem.getUid())
                         .status(bucketItem.getStatus())
                         .type(bucketItem.getType())
                         .coverId(photo.getFSId())
                         .build()))
                   .observeOn(AndroidSchedulers.mainThread()))
-                  .subscribe(new ActionStateSubscriber<UpdateItemHttpAction>().onSuccess(itemAction -> view.hideCoverProgress())
+                  .subscribe(new ActionStateSubscriber<UpdateBucketItemCommand>().onSuccess(itemAction -> view.hideCoverProgress())
                         .onFail((itemAction, throwable) -> {
                            view.hideCoverProgress();
                            handleError(itemAction, throwable);
@@ -96,7 +93,7 @@ public class BucketFullscreenPresenter extends SocialFullScreenPresenter<BucketP
    private void bindChanges(View view) {
       view.bind(bucketInteractor.updatePipe()
             .observeSuccess()
-            .map(UpdateItemHttpAction::getResponse)
+            .map(UpdateBucketItemCommand::getResult)
             .observeOn(AndroidSchedulers.mainThread())).subscribe(item -> {
          if (item != null && item.getCoverPhoto() != null) {
             view.showCheckbox(item.getCoverPhoto().equals(photo));

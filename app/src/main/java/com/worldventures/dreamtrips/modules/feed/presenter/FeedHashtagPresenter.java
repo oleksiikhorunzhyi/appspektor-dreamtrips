@@ -5,20 +5,18 @@ import android.support.annotation.Nullable;
 import android.text.TextUtils;
 
 import com.innahema.collections.query.queriables.Queryable;
-import com.worldventures.dreamtrips.modules.flags.service.FlagsInteractor;
+import com.techery.spares.utils.delegate.EntityDeletedEventDelegate;
 import com.worldventures.dreamtrips.core.rx.RxView;
 import com.worldventures.dreamtrips.core.rx.composer.IoToMainComposer;
 import com.worldventures.dreamtrips.core.utils.LocaleHelper;
-import com.worldventures.dreamtrips.core.utils.events.EntityLikedEvent;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem;
 import com.worldventures.dreamtrips.modules.bucketlist.service.BucketInteractor;
-import com.worldventures.dreamtrips.modules.bucketlist.service.action.DeleteItemHttpAction;
+import com.worldventures.dreamtrips.modules.bucketlist.service.command.DeleteBucketItemCommand;
 import com.worldventures.dreamtrips.modules.common.model.FlagData;
 import com.worldventures.dreamtrips.modules.common.presenter.JobPresenter;
 import com.worldventures.dreamtrips.modules.common.presenter.delegate.FlagDelegate;
 import com.worldventures.dreamtrips.modules.common.view.ApiErrorView;
 import com.worldventures.dreamtrips.modules.common.view.bundle.BucketBundle;
-import com.worldventures.dreamtrips.modules.feed.api.DeletePostCommand;
 import com.worldventures.dreamtrips.modules.feed.event.DeleteBucketEvent;
 import com.worldventures.dreamtrips.modules.feed.event.DeletePhotoEvent;
 import com.worldventures.dreamtrips.modules.feed.event.DeletePostEvent;
@@ -26,23 +24,26 @@ import com.worldventures.dreamtrips.modules.feed.event.DownloadPhotoEvent;
 import com.worldventures.dreamtrips.modules.feed.event.EditBucketEvent;
 import com.worldventures.dreamtrips.modules.feed.event.FeedEntityChangedEvent;
 import com.worldventures.dreamtrips.modules.feed.event.FeedEntityCommentedEvent;
-import com.worldventures.dreamtrips.modules.feed.event.FeedEntityDeletedEvent;
 import com.worldventures.dreamtrips.modules.feed.event.FeedItemAddedEvent;
 import com.worldventures.dreamtrips.modules.feed.event.ItemFlaggedEvent;
 import com.worldventures.dreamtrips.modules.feed.event.LikesPressedEvent;
 import com.worldventures.dreamtrips.modules.feed.event.LoadFlagEvent;
 import com.worldventures.dreamtrips.modules.feed.event.TranslatePostEvent;
-import com.worldventures.dreamtrips.modules.feed.manager.FeedEntityManager;
 import com.worldventures.dreamtrips.modules.feed.model.FeedEntity;
 import com.worldventures.dreamtrips.modules.feed.model.FeedItem;
-import com.worldventures.dreamtrips.modules.feed.model.feed.base.ParentFeedItem;
 import com.worldventures.dreamtrips.modules.feed.model.feed.hashtag.HashtagSuggestion;
+import com.worldventures.dreamtrips.modules.feed.service.FeedInteractor;
 import com.worldventures.dreamtrips.modules.feed.service.HashtagInteractor;
+import com.worldventures.dreamtrips.modules.feed.service.PostsInteractor;
+import com.worldventures.dreamtrips.modules.feed.service.command.ChangeFeedEntityLikedStatusCommand;
+import com.worldventures.dreamtrips.modules.feed.service.command.DeletePostCommand;
 import com.worldventures.dreamtrips.modules.feed.service.command.FeedByHashtagCommand;
 import com.worldventures.dreamtrips.modules.feed.service.command.HashtagSuggestionCommand;
 import com.worldventures.dreamtrips.modules.feed.view.util.TextualPostTranslationDelegate;
-import com.worldventures.dreamtrips.modules.tripsimages.api.DeletePhotoCommand;
-import com.worldventures.dreamtrips.modules.tripsimages.api.DownloadImageCommand;
+import com.worldventures.dreamtrips.modules.flags.service.FlagsInteractor;
+import com.worldventures.dreamtrips.modules.tripsimages.service.TripImagesInteractor;
+import com.worldventures.dreamtrips.modules.tripsimages.service.command.DeletePhotoCommand;
+import com.worldventures.dreamtrips.modules.tripsimages.service.command.DownloadImageCommand;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -65,16 +66,18 @@ public class FeedHashtagPresenter<T extends FeedHashtagPresenter.View> extends J
 
    @Inject TextualPostTranslationDelegate textualPostTranslationDelegate;
    @Inject HashtagInteractor interactor;
-   @Inject FeedEntityManager entityManager;
    @Inject BucketInteractor bucketInteractor;
+   @Inject FeedInteractor feedInteractor;
    @Inject FlagsInteractor flagsInteractor;
+   @Inject TripImagesInteractor tripImagesInteractor;
+   @Inject PostsInteractor postsInteractor;
+   @Inject EntityDeletedEventDelegate entityDeletedEventDelegate;
 
    private FlagDelegate flagDelegate;
 
    @Override
    public void takeView(T view) {
       super.takeView(view);
-      apiErrorPresenter.setView(view);
       if (feedItems.size() != 0) {
          view.refreshFeedItems(feedItems);
       }
@@ -83,6 +86,8 @@ public class FeedHashtagPresenter<T extends FeedHashtagPresenter.View> extends J
       subscribeRefreshFeeds();
       subscribeLoadNextFeeds();
       subscribeSuggestions();
+      subscribeToLikesChanges();
+      subscribeToEntityDeletedEvents();
       textualPostTranslationDelegate.onTakeView(view, feedItems);
    }
 
@@ -95,7 +100,6 @@ public class FeedHashtagPresenter<T extends FeedHashtagPresenter.View> extends J
    @Override
    public void onInjected() {
       super.onInjected();
-      entityManager.setRequestingPresenter(this);
       flagDelegate = new FlagDelegate(flagsInteractor);
    }
 
@@ -121,10 +125,8 @@ public class FeedHashtagPresenter<T extends FeedHashtagPresenter.View> extends J
 
    public void onRefresh() {
       if (!TextUtils.isEmpty(query)) {
-         hashtagSuggestions.clear();
-         view.startLoading();
          interactor.getRefreshFeedsByHashtagsPipe().send(new FeedByHashtagCommand.Refresh(query, FEEDS_PER_PAGE));
-      }
+      } else view.finishLoading();
    }
 
    public void loadNext() {
@@ -138,26 +140,26 @@ public class FeedHashtagPresenter<T extends FeedHashtagPresenter.View> extends J
    }
 
    private void subscribeRefreshFeeds() {
-      view.bindUntilStop(interactor.getRefreshFeedsByHashtagsPipe().observe().compose(new IoToMainComposer<>()))
-            .subscribe(new ActionStateSubscriber<FeedByHashtagCommand.Refresh>().onSuccess(refresh -> refreshFeedSucceed(refresh
-                  .getResult()
-                  .getParentFeedItems())).onFail((refresh, throwable) -> {
-               view.informUser(refresh.getErrorMessage());
-               refreshFeedError();
-            }));
+      interactor.getRefreshFeedsByHashtagsPipe().observe()
+            .compose(bindViewToMainComposer())
+            .subscribe(new ActionStateSubscriber<FeedByHashtagCommand.Refresh>()
+                  .onStart(refresh -> {
+                     view.startLoading();
+                     hashtagSuggestions.clear();
+                  })
+                  .onSuccess(refresh -> refreshFeedSucceed(refresh.getResult()))
+                  .onFail((refresh, throwable) -> {
+                     handleError(refresh, throwable);
+                     refreshFeedError();
+                  }));
    }
 
-   private void refreshFeedSucceed(ArrayList<ParentFeedItem> freshItems) {
+   private void refreshFeedSucceed(List<FeedItem> freshItems) {
       boolean noMoreFeeds = freshItems == null || freshItems.size() == 0;
       view.updateLoadingStatus(false, noMoreFeeds);
-      //
       view.finishLoading();
       feedItems.clear();
-      feedItems.addAll(Queryable.from(freshItems)
-            .filter(ParentFeedItem::isSingle)
-            .map(element -> element.getItems().get(0))
-            .toList());
-      //
+      feedItems.addAll(freshItems);
       view.refreshFeedItems(feedItems);
    }
 
@@ -168,26 +170,24 @@ public class FeedHashtagPresenter<T extends FeedHashtagPresenter.View> extends J
    }
 
    private void subscribeLoadNextFeeds() {
-      view.bindUntilStop(interactor.getLoadNextFeedsByHashtagsPipe().observe().compose(new IoToMainComposer<>()))
-            .subscribe(new ActionStateSubscriber<FeedByHashtagCommand.LoadNext>().onSuccess(loadNext -> addFeedItems(loadNext
-                  .getResult()
-                  .getParentFeedItems())).onFail((loadNext, throwable) -> {
-               view.informUser(loadNext.getErrorMessage());
-               loadMoreItemsError();
-            }));
+      interactor.getLoadNextFeedsByHashtagsPipe()
+            .observe()
+            .compose(bindViewToMainComposer())
+            .subscribe(new ActionStateSubscriber<FeedByHashtagCommand.LoadNext>()
+                  .onSuccess(loadNext -> addFeedItems(loadNext.getResult()))
+                  .onFail((loadNext, throwable) -> {
+                     handleError(loadNext, throwable);
+                     loadMoreItemsError();
+                  }));
    }
 
-   private void addFeedItems(List<ParentFeedItem> olderItems) {
-      boolean noMoreFeeds = olderItems == null || olderItems.size() == 0;
+   private void addFeedItems(List<FeedItem> newItems) {
+      boolean noMoreFeeds = newItems == null || newItems.size() == 0;
       view.updateLoadingStatus(false, noMoreFeeds);
       //
-      feedItems.addAll(Queryable.from(olderItems)
-            .filter(ParentFeedItem::isSingle)
-            .map(element -> element.getItems().get(0))
-            .toList());
+      feedItems.addAll(newItems);
       view.refreshFeedItems(feedItems);
    }
-
 
    private void loadMoreItemsError() {
       view.updateLoadingStatus(false, false);
@@ -202,13 +202,19 @@ public class FeedHashtagPresenter<T extends FeedHashtagPresenter.View> extends J
                view.onSuggestionsReceived(hashtagSuggestionCommand.getFullQueryText(), hashtagSuggestions);
                view.hideSuggestionProgress();
             }).onFail((hashtagSuggestionCommand, throwable) -> {
-               Timber.e(throwable, "");
+               Timber.e(throwable, "Failed to load hashtag suggestions");
                view.hideSuggestionProgress();
             }));
    }
 
    public void onEvent(DownloadPhotoEvent event) {
-      if (view.isVisibleOnScreen()) doRequest(new DownloadImageCommand(context, event.url));
+      if (view.isVisibleOnScreen()) {
+         tripImagesInteractor.downloadImageActionPipe()
+               .createObservable(new DownloadImageCommand(event.url))
+               .compose(bindViewToMainComposer())
+               .subscribe(new ActionStateSubscriber<DownloadImageCommand>()
+                     .onFail(this::handleError));
+      }
    }
 
    public void onEvent(EditBucketEvent event) {
@@ -226,9 +232,9 @@ public class FeedHashtagPresenter<T extends FeedHashtagPresenter.View> extends J
          BucketItem item = event.getEntity();
 
          view.bind(bucketInteractor.deleteItemPipe()
-               .createObservable(new DeleteItemHttpAction(item.getUid()))
+               .createObservable(new DeleteBucketItemCommand(item.getUid()))
                .observeOn(AndroidSchedulers.mainThread()))
-               .subscribe(new ActionStateSubscriber<DeleteItemHttpAction>().onSuccess(deleteItemAction -> itemDeleted(item)));
+               .subscribe(new ActionStateSubscriber<DeleteBucketItemCommand>().onSuccess(deleteItemAction -> itemDeleted(item)));
       }
    }
 
@@ -243,11 +249,13 @@ public class FeedHashtagPresenter<T extends FeedHashtagPresenter.View> extends J
       view.refreshFeedItems(feedItems);
    }
 
-   public void onEvent(FeedEntityDeletedEvent event) {
-      itemDeleted(event.getEventModel());
+   private void subscribeToEntityDeletedEvents() {
+      entityDeletedEventDelegate.getReplayObservable()
+            .compose(bindViewToMainComposer())
+            .subscribe(this::itemDeleted);
    }
 
-   public void onEvent(FeedItemAddedEvent event) {
+   public void onEventMainThread(FeedItemAddedEvent event) {
       feedItems.add(0, event.getFeedItem());
       view.refreshFeedItems(feedItems);
    }
@@ -278,22 +286,28 @@ public class FeedHashtagPresenter<T extends FeedHashtagPresenter.View> extends J
 
    public void onEvent(LikesPressedEvent event) {
       if (view.isVisibleOnScreen()) {
-         FeedEntity model = event.getModel();
-         if (model.isLiked()) {
-            entityManager.unlike(model);
-         } else {
-            entityManager.like(model);
-         }
+         feedInteractor.changeFeedEntityLikedStatusPipe()
+               .send(new ChangeFeedEntityLikedStatusCommand(event.getModel()));
       }
    }
 
-   public void onEvent(EntityLikedEvent event) {
-      itemLiked(event.getFeedEntity());
+   private void subscribeToLikesChanges() {
+      feedInteractor.changeFeedEntityLikedStatusPipe()
+            .observe()
+            .compose(bindViewToMainComposer())
+            .subscribe(new ActionStateSubscriber<ChangeFeedEntityLikedStatusCommand>()
+                  .onSuccess(this::itemLiked)
+                  .onFail(this::handleError));
    }
 
    public void onEvent(DeletePostEvent event) {
-      if (view.isVisibleOnScreen()) doRequest(new DeletePostCommand(event.getEntity()
-            .getUid()), aVoid -> itemDeleted(event.getEntity()));
+      if (!view.isVisibleOnScreen()) return;
+      postsInteractor.deletePostPipe()
+            .createObservable(new DeletePostCommand(event.getEntity().getUid()))
+            .compose(bindViewToMainComposer())
+            .subscribe(new ActionStateSubscriber<DeletePostCommand>()
+                  .onSuccess(deletePostCommand -> itemDeleted(event.getEntity()))
+                  .onFail(this::handleError));
    }
 
    public void onEvent(TranslatePostEvent event) {
@@ -303,8 +317,14 @@ public class FeedHashtagPresenter<T extends FeedHashtagPresenter.View> extends J
    }
 
    public void onEvent(DeletePhotoEvent event) {
-      if (view.isVisibleOnScreen()) doRequest(new DeletePhotoCommand(event.getEntity()
-            .getUid()), aVoid -> itemDeleted(event.getEntity()));
+      if (view.isVisibleOnScreen()) {
+         tripImagesInteractor.deletePhotoPipe()
+               .createObservable(new DeletePhotoCommand(event.getEntity().getUid()))
+               .compose(bindViewToMainComposer())
+               .subscribe(new ActionStateSubscriber<DeletePhotoCommand>()
+                     .onSuccess(deletePhotoCommand -> itemDeleted(event.getEntity()))
+                     .onFail(this::handleError));
+      }
    }
 
    public void onEvent(LoadFlagEvent event) {
@@ -316,11 +336,11 @@ public class FeedHashtagPresenter<T extends FeedHashtagPresenter.View> extends J
             .getUid(), event.getFlagReasonId(), event.getNameOfReason()), view, this::handleError);
    }
 
-   private void itemLiked(FeedEntity feedEntity) {
+   private void itemLiked(ChangeFeedEntityLikedStatusCommand command) {
       Queryable.from(feedItems).forEachR(feedItem -> {
          FeedEntity item = feedItem.getItem();
-         if (item.getUid().equals(feedEntity.getUid())) {
-            item.syncLikeState(feedEntity);
+         if (item.getUid().equals(command.getResult().getUid())) {
+            item.syncLikeState(command.getResult());
          }
       });
 

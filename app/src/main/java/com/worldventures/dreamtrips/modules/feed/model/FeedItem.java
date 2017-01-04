@@ -20,7 +20,7 @@ import java.util.Date;
 
 public class FeedItem<T extends FeedEntity> extends BaseEntity implements FeedEntityHolder, TranslatableItem {
 
-   @SerializedName("notification_id") protected int notificationId;
+   protected int notificationId;
    protected FeedItem.Type type = Type.UNDEFINED;
    protected FeedItem.Action action;
    protected T item;
@@ -34,6 +34,16 @@ public class FeedItem<T extends FeedEntity> extends BaseEntity implements FeedEn
    private MetaData metaData;
 
    public static FeedItem create(FeedEntity item, User owner) {
+      FeedItem feedItem = create(item);
+      item.setComments(new ArrayList<>());
+      feedItem.action = Action.ADD;
+      feedItem.item = item;
+      feedItem.createdAt = Calendar.getInstance().getTime();
+      feedItem.links = Links.forUser(owner);
+      return feedItem;
+   }
+
+   public static FeedItem create(FeedEntity item) {
       Type type;
       FeedItem feedItem;
       if (item instanceof TextualPost) {
@@ -52,13 +62,7 @@ public class FeedItem<T extends FeedEntity> extends BaseEntity implements FeedEn
          feedItem = new UndefinedFeedItem();
          type = Type.UNDEFINED;
       }
-
-      item.setComments(new ArrayList<>());
-      feedItem.action = Action.ADD;
-      feedItem.type = type;
-      feedItem.item = item;
-      feedItem.createdAt = Calendar.getInstance().getTime();
-      feedItem.links = Links.forUser(owner);
+      feedItem.setType(type);
       return feedItem;
    }
 
@@ -119,6 +123,10 @@ public class FeedItem<T extends FeedEntity> extends BaseEntity implements FeedEn
 
    public Date getReadAt() {
       return readAt;
+   }
+
+   public void setReadAt(Date readAt) {
+      this.readAt = readAt;
    }
 
    public MetaData getMetaData() {

@@ -3,18 +3,21 @@ package com.worldventures.dreamtrips.modules.common.presenter;
 import android.net.Uri;
 import android.text.TextUtils;
 
-import com.octo.android.robospice.persistence.DurationInMillis;
-import com.octo.android.robospice.persistence.exception.SpiceException;
-import com.octo.android.robospice.request.listener.RequestListener;
-import com.octo.android.robospice.request.simple.BigBinaryRequest;
 import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.modules.common.command.DownloadFileCommand;
+import com.worldventures.dreamtrips.modules.common.delegate.DownloadFileInteractor;
 import com.worldventures.dreamtrips.modules.common.model.ShareType;
 import com.worldventures.dreamtrips.modules.video.model.CachedEntity;
 
 import java.io.File;
-import java.io.InputStream;
+
+import javax.inject.Inject;
+
+import io.techery.janet.helper.ActionStateSubscriber;
 
 public class SharePresenter extends Presenter<SharePresenter.View> {
+
+   @Inject DownloadFileInteractor downloadFileInteractor;
 
    public void create(String imageUrl, String shareLink, String text, String type) {
       text = text == null ? "" : text;
@@ -37,20 +40,14 @@ public class SharePresenter extends Presenter<SharePresenter.View> {
 
    private void downloadFile(String url, final String shareLink, final String text) {
       File cacheFile = new File(CachedEntity.getExternalFilePath(context, url));
-      BigBinaryRequest bigBinaryRequest = new BigBinaryRequest(url, cacheFile);
-
-      dreamSpiceManager.execute(bigBinaryRequest, url, DurationInMillis.ALWAYS_RETURNED, new RequestListener<InputStream>() {
-         @Override
-         public void onRequestFailure(SpiceException spiceException) {
-            view.informUser(R.string.share_error);
-         }
-
-         @Override
-         public void onRequestSuccess(InputStream inputStream) {
-            Uri parse = Uri.fromFile(cacheFile);
-            view.shareTwitterDialog(parse, shareLink, text);
-         }
-      });
+      downloadFileInteractor.getDownloadFileCommandPipe()
+            .createObservable(new DownloadFileCommand(cacheFile, url))
+            .subscribe(new ActionStateSubscriber<DownloadFileCommand>()
+                  .onSuccess(downloadFileCommand -> {
+                     Uri parse = Uri.fromFile(downloadFileCommand.getFile());
+                     view.shareTwitterDialog(parse, shareLink, text);
+                  })
+                  .onFail((downloadFileCommand, throwable) -> view.informUser(R.string.share_error)));
    }
 
    public interface View extends Presenter.View {

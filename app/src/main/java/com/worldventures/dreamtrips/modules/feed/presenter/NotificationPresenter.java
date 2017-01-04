@@ -1,14 +1,13 @@
 package com.worldventures.dreamtrips.modules.feed.presenter;
 
 import com.techery.spares.utils.delegate.NotificationCountEventDelegate;
+import com.worldventures.dreamtrips.core.api.action.CommandWithError;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.core.rx.RxView;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
-import com.worldventures.dreamtrips.modules.feed.model.FeedEntity;
 import com.worldventures.dreamtrips.modules.feed.model.FeedItem;
 import com.worldventures.dreamtrips.modules.feed.service.NotificationFeedInteractor;
-import com.worldventures.dreamtrips.modules.feed.service.command.BaseGetFeedCommand;
 import com.worldventures.dreamtrips.modules.feed.service.command.GetNotificationsCommand;
 import com.worldventures.dreamtrips.modules.feed.service.command.MarkNotificationsAsReadCommand;
 
@@ -63,14 +62,13 @@ public class NotificationPresenter extends Presenter<NotificationPresenter.View>
                   .onSuccess(action -> notificationsSucceed(action.getItems(), action.getResult())));
    }
 
-   private void notificationsError(BaseGetFeedCommand action, Throwable throwable) {
-      view.informUser(action.getErrorMessage());
+   private void notificationsError(CommandWithError action, Throwable throwable) {
+      handleError(action, throwable);
       view.updateLoadingStatus(false, false);
       view.finishLoading();
    }
 
-
-   private void notificationsSucceed(List<FeedItem<FeedEntity>> items, List<FeedItem<FeedEntity>> newItems) {
+   private void notificationsSucceed(List<FeedItem> items, List<FeedItem> newItems) {
       boolean noMoreItems = newItems == null || newItems.size() == 0;
       view.updateLoadingStatus(false, noMoreItems);
       view.finishLoading();
@@ -94,7 +92,7 @@ public class NotificationPresenter extends Presenter<NotificationPresenter.View>
 
       void finishLoading();
 
-      void refreshNotifications(List<FeedItem<FeedEntity>> notifications);
+      void refreshNotifications(List<FeedItem> notifications);
 
       void updateLoadingStatus(boolean loading, boolean noMoreElements);
    }

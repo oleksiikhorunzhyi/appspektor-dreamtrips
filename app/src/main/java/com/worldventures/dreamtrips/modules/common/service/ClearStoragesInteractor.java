@@ -13,13 +13,19 @@ import rx.schedulers.Schedulers;
 public class ClearStoragesInteractor {
 
    private final ActionPipe<ClearStoragesCommand> clearMemoryStorageActionPipe;
+   private final ActionPipe<CleanTempDirectoryCommand> cleanTempDirectoryPipe;
 
    @Inject
    public ClearStoragesInteractor(SessionActionPipeCreator sessionActionPipeCreator) {
       clearMemoryStorageActionPipe = sessionActionPipeCreator.createPipe(ClearStoragesCommand.class, Schedulers.io());
+      cleanTempDirectoryPipe = sessionActionPipeCreator.createPipe(CleanTempDirectoryCommand.class, Schedulers.io());
    }
 
    public ActionPipe<ClearStoragesCommand> clearMemoryStorageActionPipe() {
       return clearMemoryStorageActionPipe;
+   }
+
+   public ActionPipe<CleanTempDirectoryCommand> cleanTempDirectoryPipe() {
+      return cleanTempDirectoryPipe;
    }
 }

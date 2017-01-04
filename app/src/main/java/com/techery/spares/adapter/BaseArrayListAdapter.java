@@ -20,7 +20,7 @@ import javax.inject.Inject;
 
 import de.greenrobot.event.EventBus;
 
-public class BaseArrayListAdapter<BaseItemClass> extends RecyclerView.Adapter<AbstractCell> implements IRoboSpiceAdapter<BaseItemClass> {
+public class BaseArrayListAdapter<BaseItemClass> extends RecyclerView.Adapter<AbstractCell> implements ListAdapter<BaseItemClass> {
 
    private final Map<Class, Class<? extends AbstractCell>> itemCellMapping = new HashMap<>();
 
@@ -53,6 +53,10 @@ public class BaseArrayListAdapter<BaseItemClass> extends RecyclerView.Adapter<Ab
     * @return viewType id
     */
    public int getClassItemViewType(Class<?> itemClass) {
+      int index = viewTypes.indexOf(itemClass);
+      if (index < 0) {
+         throw new IllegalArgumentException(itemClass.getSimpleName() + " is not registered");
+      }
       return this.viewTypes.indexOf(itemClass);
    }
 
@@ -81,11 +85,7 @@ public class BaseArrayListAdapter<BaseItemClass> extends RecyclerView.Adapter<Ab
    public int getItemViewType(int position) {
       BaseItemClass baseItemClass = this.items.get(position);
       Class itemClass = baseItemClass.getClass();
-      int index = viewTypes.indexOf(itemClass);
-      if (index < 0) {
-         throw new IllegalArgumentException(itemClass.getSimpleName() + " is not registered");
-      }
-      return index;
+      return getClassItemViewType(itemClass);
    }
 
    @Override
@@ -99,6 +99,13 @@ public class BaseArrayListAdapter<BaseItemClass> extends RecyclerView.Adapter<Ab
    @Override
    public int getItemCount() {
       return this.items.size();
+   }
+
+   public int getItemCount(Class<?> itemClass) {
+      int classViewType = getClassItemViewType(itemClass);
+      return Queryable.from(getItems())
+            .filter((element, index) -> getItemViewType(index) == classViewType)
+            .count();
    }
 
    public BaseItemClass getItem(int position) {

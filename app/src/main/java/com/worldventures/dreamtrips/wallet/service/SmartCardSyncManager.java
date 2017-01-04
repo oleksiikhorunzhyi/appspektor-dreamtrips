@@ -50,17 +50,19 @@ class SmartCardSyncManager {
             .observeSuccess()
             .filter(connectAction -> connectAction.type == ConnectionType.APP)
             .map(connectAction -> connectAction.type)
+            .throttleFirst(1, TimeUnit.SECONDS)
             .subscribe(this::smartCardConnected, throwable -> Timber.e(throwable, "Error with handling connection event"));
 
       interactor.disconnectPipe()
             .observe()
             .filter(state -> state.status == ActionState.Status.SUCCESS || state.status == ActionState.Status.FAIL)
             .map(state -> state.status == ActionState.Status.SUCCESS ? DISCONNECTED : ERROR)
-            .subscribe(connectionStatus -> interactor.activeSmartCardPipe()
-                        .createObservableResult(new ActiveSmartCardCommand(smartCard ->
-                              ImmutableSmartCard.copyOf(smartCard)
-                                    .withConnectionStatus(connectionStatus))),
-                  throwable -> Timber.e(throwable, "Error while updating status of active card"));
+            .flatMap(connectionStatus -> interactor.activeSmartCardPipe()
+                  .createObservableResult(new ActiveSmartCardCommand(smartCard ->
+                        ImmutableSmartCard.copyOf(smartCard)
+                              .withConnectionStatus(connectionStatus))))
+            .subscribe(command -> {
+            }, throwable -> Timber.e(throwable, "Error while updating status of active card"));
    }
 
    private void smartCardConnected(ConnectionType connectionType) {

@@ -11,6 +11,7 @@ import com.worldventures.dreamtrips.wallet.service.command.ActiveSmartCardComman
 import io.techery.janet.Command;
 import io.techery.janet.Janet;
 import rx.Observable;
+import rx.schedulers.Schedulers;
 
 class UpdateProfileManager {
 
@@ -39,7 +40,7 @@ class UpdateProfileManager {
    }
 
    private Observable<SmartCard> uploadToServerAndSave() {
-      return janetApi.createPipe(UpdateCardUserHttpAction.class)
+      return janetApi.createPipe(UpdateCardUserHttpAction.class, Schedulers.io())
             .createObservableResult(new UpdateCardUserHttpAction(Long.parseLong(smartCard.smartCardId()), updateCardUserData))
             .map(updateHttpAction -> null)
             .onErrorReturn(throwable -> Observable.error(new UploadProfileDataException(throwable)))

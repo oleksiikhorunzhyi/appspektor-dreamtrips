@@ -31,7 +31,7 @@ public class RelationshipConverter implements Converter<Relationship, User.Relat
          case NONE:
             return User.Relationship.NONE;
          default:
-            throw new IllegalArgumentException("No match in relationship");
+            return User.Relationship.UNKNOWN;
       }
    }
 }

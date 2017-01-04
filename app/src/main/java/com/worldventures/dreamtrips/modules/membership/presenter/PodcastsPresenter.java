@@ -11,7 +11,7 @@ import com.worldventures.dreamtrips.modules.common.delegate.CachedEntityDelegate
 import com.worldventures.dreamtrips.modules.common.delegate.CachedEntityInteractor;
 import com.worldventures.dreamtrips.modules.common.presenter.JobPresenter;
 import com.worldventures.dreamtrips.modules.common.view.ApiErrorView;
-import com.worldventures.dreamtrips.modules.membership.command.GetPodcastsCommand;
+import com.worldventures.dreamtrips.modules.membership.service.command.GetPodcastsCommand;
 import com.worldventures.dreamtrips.modules.membership.model.MediaHeader;
 import com.worldventures.dreamtrips.modules.membership.model.Podcast;
 import com.worldventures.dreamtrips.modules.membership.service.PodcastsInteractor;
@@ -40,16 +40,9 @@ public class PodcastsPresenter<T extends PodcastsPresenter.View> extends JobPres
    @Override
    public void takeView(T view) {
       super.takeView(view);
-      apiErrorPresenter.setView(view);
       subscribeToApiUpdates();
       subscribeToCachingStatusUpdates();
       loadPodcasts(true);
-   }
-
-   @Override
-   public void dropView() {
-      apiErrorPresenter.dropView();
-      super.dropView();
    }
 
    public void scrolled(int totalItemCount, int lastVisible) {

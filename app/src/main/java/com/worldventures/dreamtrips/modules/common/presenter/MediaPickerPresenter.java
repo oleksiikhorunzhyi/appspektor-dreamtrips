@@ -8,6 +8,7 @@ import com.worldventures.dreamtrips.modules.common.model.PhotoGalleryModel;
 import com.worldventures.dreamtrips.modules.common.service.MediaInteractor;
 import com.worldventures.dreamtrips.modules.common.view.util.DrawableUtil;
 import com.worldventures.dreamtrips.modules.common.view.util.MediaPickerEventDelegate;
+import com.worldventures.dreamtrips.modules.common.view.util.MediaPickerImagesProcessedEventDelegate;
 import com.worldventures.dreamtrips.modules.common.view.util.Size;
 import com.worldventures.dreamtrips.modules.tripsimages.vision.ImageUtils;
 
@@ -33,6 +34,7 @@ public class MediaPickerPresenter extends Presenter<MediaPickerPresenter.View> {
    private int requestId;
 
    @Inject MediaPickerEventDelegate mediaPickerEventDelegate;
+   @Inject MediaPickerImagesProcessedEventDelegate mediaPickerImagesProcessedEventDelegate;
    @Inject MediaInteractor mediaInteractor;
    @Inject DrawableUtil drawableUtil;
 
@@ -58,11 +60,10 @@ public class MediaPickerPresenter extends Presenter<MediaPickerPresenter.View> {
                // done method isn't called and picker won't close
                if (view != null) view.back();
             });
-
-
    }
 
    public void attachImages(List<BasePhotoPickerModel> pickedImages, int type) {
+      mediaPickerImagesProcessedEventDelegate.post(true);
       Observable.from(pickedImages)
             .map(element -> {
                Pair<String, Size> pair = ImageUtils.generateUri(drawableUtil, element.getAbsolutePath());
@@ -80,7 +81,10 @@ public class MediaPickerPresenter extends Presenter<MediaPickerPresenter.View> {
             .compose(bindView())
             .subscribe(mediaAttachment -> mediaPickerEventDelegate.post(mediaAttachment),
                   error -> Timber.e(error, ""),
-                  () -> view.back());
+                  () -> {
+                     mediaPickerImagesProcessedEventDelegate.post(false);
+                     view.back();
+                  });
    }
 
    public interface View extends Presenter.View {

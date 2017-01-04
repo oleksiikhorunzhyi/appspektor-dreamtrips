@@ -4,6 +4,7 @@ import android.support.v7.widget.RecyclerView;
 
 import com.innahema.collections.query.queriables.Queryable;
 
+import java.util.Collections;
 import java.util.List;
 
 public class MultiSelectionManager extends SimpleSelectionManager {
@@ -33,7 +34,7 @@ public class MultiSelectionManager extends SimpleSelectionManager {
 
    public boolean isAllSelected(int itemViewTypeId) {
       if (selectableWrapperAdapter.getItemCount() == 0) return false;
-      //
+
       return Queryable.from(selectableWrapperAdapter.getSelectedItems())
             .filter(pos -> selectableWrapperAdapter.getItemViewType((Integer) pos) == itemViewTypeId)
             .count() == Queryable.range(0, selectableWrapperAdapter.getItemCount())
@@ -48,6 +49,8 @@ public class MultiSelectionManager extends SimpleSelectionManager {
     * @return list of positions of selected items
     */
    public List<Integer> getSelectedPositions(int itemViewTypeId) {
+      if (selectableWrapperAdapter.getItemCount() == 0) return Collections.emptyList();
+
       return Queryable.from(selectableWrapperAdapter.getSelectedItems())
             .filter(pos -> selectableWrapperAdapter.getItemViewType((Integer) pos) == itemViewTypeId)
             .toList();

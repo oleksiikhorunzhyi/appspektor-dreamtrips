@@ -4,14 +4,14 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 
-import com.techery.spares.adapter.IRoboSpiceAdapter;
+import com.techery.spares.adapter.ListAdapter;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import timber.log.Timber;
 
-public class BasePagerAdapter<T extends FragmentItem> extends FragmentPagerAdapter implements IRoboSpiceAdapter<T> {
+public class BasePagerAdapter<T extends FragmentItem> extends FragmentPagerAdapter implements ListAdapter<T> {
 
    protected List<T> fragmentItems = new ArrayList<>();
 

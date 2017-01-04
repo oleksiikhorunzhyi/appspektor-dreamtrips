@@ -75,7 +75,7 @@ public class CommentableFragment<T extends BaseCommentPresenter, P extends Comme
       public void onTextChanged(CharSequence s, int start, int before, int count) {
          super.onTextChanged(s, start, before, count);
          String text = s.toString().trim();
-         getPresenter().setDraftComment(text);
+         getPresenter().setDraftCommentText(text);
          post.setEnabled(text.length() > 0);
       }
    };
@@ -296,7 +296,7 @@ public class CommentableFragment<T extends BaseCommentPresenter, P extends Comme
 
    @OnClick(R.id.post)
    void onPost() {
-      getPresenter().post();
+      getPresenter().createComment();
       post.setEnabled(false);
       input.setFocusable(false);
    }

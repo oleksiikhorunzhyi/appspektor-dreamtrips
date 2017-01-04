@@ -21,6 +21,7 @@ import com.worldventures.dreamtrips.core.utils.DTCookieManager;
 import com.worldventures.dreamtrips.core.utils.LocaleSwitcher;
 import com.worldventures.dreamtrips.modules.auth.service.AuthInteractor;
 import com.worldventures.dreamtrips.modules.common.api.janet.command.ClearStoragesCommand;
+import com.worldventures.dreamtrips.modules.common.delegate.ReplayEventDelegatesWiper;
 import com.worldventures.dreamtrips.modules.common.presenter.delegate.OfflineWarningDelegate;
 import com.worldventures.dreamtrips.modules.common.service.ClearStoragesInteractor;
 import com.worldventures.dreamtrips.modules.gcm.delegate.NotificationDelegate;
@@ -54,6 +55,7 @@ public class LogoutCommand extends Command<Void> implements InjectableAction {
    @Inject AuthInteractor authInteractor;
    @Inject MessengerConnector messengerConnector;
    @Inject OfflineWarningDelegate offlineWarningDelegate;
+   @Inject ReplayEventDelegatesWiper replayEventDelegatesWiper;
    @Inject ClearStoragesInteractor clearStoragesInteractor;
    @Inject SessionActionPipeCreator sessionActionPipeCreator;
    @Inject @Named(JanetModule.JANET_API_LIB) SessionActionPipeCreator sessionApiActionPipeCreator;
@@ -124,6 +126,7 @@ public class LogoutCommand extends Command<Void> implements InjectableAction {
          notificationDelegate.cancelAll();
          badgeUpdater.updateBadge(0);
          offlineWarningDelegate.resetState();
+         replayEventDelegatesWiper.clearReplays();
          snappyRepository.clearAll();
 
          try {

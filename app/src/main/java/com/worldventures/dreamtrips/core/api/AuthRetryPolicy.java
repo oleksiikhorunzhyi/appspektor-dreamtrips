@@ -11,7 +11,6 @@ import com.worldventures.dreamtrips.modules.common.presenter.delegate.SessionAbs
 import java.util.List;
 
 import io.techery.janet.http.exception.HttpException;
-import retrofit.RetrofitError;
 import rx.functions.Func0;
 import timber.log.Timber;
 
@@ -68,9 +67,6 @@ public class AuthRetryPolicy {
          return true;
       } else if (error instanceof HttpException) { // for janet-http
          HttpException cause = (HttpException) error;
-         return cause.getResponse() != null && cause.getResponse().getStatus() == HTTP_UNAUTHORIZED;
-      } else if (error instanceof RetrofitError) { // for retrofit
-         RetrofitError cause = (RetrofitError) error;
          return cause.getResponse() != null && cause.getResponse().getStatus() == HTTP_UNAUTHORIZED;
       } else if (error.getCause() != null) {
          return isLoginError(error.getCause());

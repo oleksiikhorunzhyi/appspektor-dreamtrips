@@ -67,7 +67,6 @@ public class DtlToolbar extends LinearLayout {
 
    protected void bindSearchQueryPersisting() {
       RxDtlToolbar.merchantSearchTextChanges(this)
-            .skip(1)
             .compose(RxLifecycle.bindView(this))
             .subscribe(searchQuery -> this.searchQuery = searchQuery);
    }
@@ -104,7 +103,7 @@ public class DtlToolbar extends LinearLayout {
       filtersButton.setFilterEnabled(enabled);
    }
 
-   public void toggleDiningFilterSwitch(boolean enabled) {
+   public void toggleOffersOnly(boolean enabled) {
       filterDiningsSwitch.setChecked(enabled);
    }
 

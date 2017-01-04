@@ -159,9 +159,9 @@ public abstract class ProfileFragment<T extends ProfilePresenter> extends RxBase
    }
 
    @Override
-   public void refreshFeedItems(List<FeedItem> events) {
+   public void refreshFeedItems(List<FeedItem> items) {
       fragmentWithFeedDelegate.clearItems();
-      fragmentWithFeedDelegate.addItems(events);
+      fragmentWithFeedDelegate.addItems(items);
       fragmentWithFeedDelegate.notifyDataSetChanged();
    }
 
@@ -229,7 +229,7 @@ public abstract class ProfileFragment<T extends ProfilePresenter> extends RxBase
       fragmentWithFeedDelegate.registerAdditionalCell(User.class, ProfileCell.class);
    }
 
-   private void registerCellDelegates() {
+   protected void registerCellDelegates() {
       fragmentWithFeedDelegate.registerDelegate(User.class, this);
       fragmentWithFeedDelegate.registerDelegate(ReloadFeedModel.class, model -> getPresenter().onRefresh());
    }
@@ -282,5 +282,10 @@ public abstract class ProfileFragment<T extends ProfilePresenter> extends RxBase
    @Override
    public void onCellClicked(User model) {
       //
+   }
+
+   @Override
+   public void flagSentSuccess() {
+      informUser(R.string.flag_sent_success_msg);
    }
 }

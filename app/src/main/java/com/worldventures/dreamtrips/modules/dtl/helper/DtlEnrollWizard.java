@@ -8,7 +8,7 @@ import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.navigation.creator.RouteCreator;
 import com.worldventures.dreamtrips.core.navigation.router.NavigationConfigBuilder;
 import com.worldventures.dreamtrips.core.navigation.router.Router;
-import com.worldventures.dreamtrips.modules.dtl.bundle.MerchantIdBundle;
+import com.worldventures.dreamtrips.modules.dtl.bundle.MerchantBundle;
 import com.worldventures.dreamtrips.modules.dtl.model.transaction.DtlTransaction;
 
 public class DtlEnrollWizard {
@@ -21,15 +21,15 @@ public class DtlEnrollWizard {
       this.routeCreator = routeCreator;
    }
 
-   public void clearAndProceed(FragmentManager fragmentManager, DtlTransaction dtlTransaction, MerchantIdBundle bundle) {
+   public void clearAndProceed(FragmentManager fragmentManager, DtlTransaction dtlTransaction, MerchantBundle bundle) {
       showNext(fragmentManager, dtlTransaction, bundle, true);
    }
 
-   public void proceed(FragmentManager fragmentManager, DtlTransaction dtlTransaction, MerchantIdBundle bundle) {
+   public void proceed(FragmentManager fragmentManager, DtlTransaction dtlTransaction, MerchantBundle bundle) {
       showNext(fragmentManager, dtlTransaction, bundle, false);
    }
 
-   private void showNext(FragmentManager fragmentManager, DtlTransaction dtlTransaction, MerchantIdBundle bundle, boolean clearBackStack) {
+   private void showNext(FragmentManager fragmentManager, DtlTransaction dtlTransaction, MerchantBundle bundle, boolean clearBackStack) {
       Route route = routeCreator.createRoute(dtlTransaction);
       router.moveTo(route, NavigationConfigBuilder.forFragment()
             .containerId(R.id.container_main)

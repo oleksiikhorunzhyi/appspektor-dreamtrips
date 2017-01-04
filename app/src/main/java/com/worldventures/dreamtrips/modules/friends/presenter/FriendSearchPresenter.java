@@ -2,15 +2,17 @@ package com.worldventures.dreamtrips.modules.friends.presenter;
 
 import android.support.annotation.StringRes;
 
-import com.octo.android.robospice.persistence.exception.SpiceException;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.core.api.request.Query;
 import com.worldventures.dreamtrips.modules.common.model.User;
-import com.worldventures.dreamtrips.modules.friends.api.SearchUsersQuery;
+import com.worldventures.dreamtrips.modules.friends.service.command.GetSearchUsersCommand;
+import com.worldventures.dreamtrips.modules.friends.service.command.GetUsersCommand;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import icepick.State;
+import io.techery.janet.helper.ActionStateSubscriber;
+import rx.functions.Action1;
 
 public class FriendSearchPresenter extends BaseUserListPresenter<FriendSearchPresenter.View> {
 
@@ -21,8 +23,13 @@ public class FriendSearchPresenter extends BaseUserListPresenter<FriendSearchPre
    }
 
    @Override
-   protected Query<ArrayList<User>> getUserListQuery(int page) {
-      return new SearchUsersQuery(query, page, getPerPageCount());
+   protected void loadUsers(int page, Action1<List<User>> onSuccessAction) {
+      friendsInteractor.getSearchUsersPipe()
+            .createObservable(new GetSearchUsersCommand(query, page, getPerPageCount()))
+            .compose(bindViewToMainComposer())
+            .subscribe(new ActionStateSubscriber<GetSearchUsersCommand>()
+                  .onSuccess(searchUsersCommand -> onSuccessAction.call(searchUsersCommand.getResult()))
+                  .onFail(this::onError));
    }
 
    @Override
@@ -50,25 +57,25 @@ public class FriendSearchPresenter extends BaseUserListPresenter<FriendSearchPre
    }
 
    @Override
-   protected void onUsersAdded(ArrayList<User> freshUsers) {
+   protected void onUsersAdded(List<User> freshUsers) {
       super.onUsersAdded(freshUsers);
       updateEmptyView(false);
    }
 
    @Override
-   protected void onUsersLoaded(ArrayList<User> freshUsers) {
+   protected void onUsersLoaded(List<User> freshUsers) {
       super.onUsersLoaded(freshUsers);
       updateEmptyView(false);
    }
 
    @Override
-   public void handleError(SpiceException error) {
-      super.handleError(error);
+   protected void onError(GetUsersCommand getUsersCommand, Throwable throwable) {
+      super.onError(getUsersCommand, throwable);
       updateEmptyView(false);
    }
 
    private void updateEmptyView(boolean isLoading) {
-      if (view != null) view.updateEmptyView(users.size(), isLoading);
+      view.updateEmptyView(users.size(), isLoading);
    }
 
    public void addUserRequest(User user) {

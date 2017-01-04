@@ -1,6 +1,7 @@
 package com.worldventures.dreamtrips.social.infopages
 
-import com.nhaarman.mockito_kotlin.*
+import com.nhaarman.mockito_kotlin.spy
+import com.nhaarman.mockito_kotlin.verify
 import com.worldventures.dreamtrips.AssertUtil.assertActionSuccess
 import com.worldventures.dreamtrips.BaseSpec
 import com.worldventures.dreamtrips.api.feedback.model.FeedbackAttachment
@@ -8,21 +9,14 @@ import com.worldventures.dreamtrips.api.feedback.model.FeedbackReason
 import com.worldventures.dreamtrips.api.feedback.model.ImmutableFeedbackReason
 import com.worldventures.dreamtrips.core.janet.SessionActionPipeCreator
 import com.worldventures.dreamtrips.core.repository.SnappyRepository
-import com.worldventures.dreamtrips.core.utils.AppVersionNameBuilder
-import com.worldventures.dreamtrips.modules.common.delegate.system.DeviceInfoProvider
 import com.worldventures.dreamtrips.modules.infopages.model.FeedbackImageAttachment
 import com.worldventures.dreamtrips.modules.infopages.model.FeedbackType
 import com.worldventures.dreamtrips.modules.infopages.model.FeedbackTypeConverter
 import com.worldventures.dreamtrips.modules.infopages.service.FeedbackInteractor
 import com.worldventures.dreamtrips.modules.infopages.service.command.GetFeedbackCommand
-import com.worldventures.dreamtrips.modules.infopages.service.command.SendFeedbackCommand
 import com.worldventures.dreamtrips.modules.infopages.service.storage.FeedbackTypeStorage
 import com.worldventures.dreamtrips.modules.mapping.converter.Converter
 import com.worldventures.dreamtrips.modules.mapping.converter.FeedbackImageAttachmentConverter
-import com.worldventures.dreamtrips.wallet.domain.entity.ImmutableSmartCard
-import com.worldventures.dreamtrips.wallet.domain.entity.SmartCard
-import com.worldventures.dreamtrips.wallet.service.FirmwareInteractor
-import com.worldventures.dreamtrips.wallet.service.SmartCardInteractor
 import io.techery.janet.ActionService
 import io.techery.janet.ActionState
 import io.techery.janet.CommandActionService
@@ -53,27 +47,10 @@ class FeedbackInteractorSpec : BaseSpec({
       }
    }
 
-   describe("Send feedback command") {
-      setup(makeSendFeedbackHttpService())
-
-      beforeEach {
-         doReturn(smartCardId).whenever(mockDb).activeSmartCardId
-         doReturn(smartCard).whenever(mockDb).getSmartCard(any())
-         doReturn("1.16").whenever(appVersionNameBuilder).semanticVersionName
-      }
-
-      context("Should finish successfully") {
-         val testSub = TestSubscriber<ActionState<SendFeedbackCommand>>()
-         val command = SendFeedbackCommand(1, "text", emptyList())
-         feedbackInteractor.sendFeedbackPipe().createObservable(command).subscribe(testSub)
-         assertActionSuccess(testSub) { true }
-      }
-   }
-
    describe("Image attachments mapper") {
 
       context("Should map entities correctly") {
-         val stubInputAttachment = getStubImageAttachment();
+         val stubInputAttachment = getStubImageAttachment()
          val mappedAttachment: FeedbackAttachment = getMappery().convert(stubInputAttachment, FeedbackAttachment::class.java)
          assertEquals(mappedAttachment.originUrl(), stubInputAttachment.url)
          assertEquals(mappedAttachment.type(), FeedbackAttachment.FeedbackType.IMAGE)
@@ -81,18 +58,11 @@ class FeedbackInteractorSpec : BaseSpec({
    }
 
 }) {
-   companion object BaseCompanion {
+   companion object {
       val mockDb: SnappyRepository = spy()
-      val deviceInfoProvider: DeviceInfoProvider = mock()
-      val appVersionNameBuilder: AppVersionNameBuilder = mock()
-
-      val smartCardId = "1234123421"
-      val smartCard = createDummySmartCard()
-      var stubFeedbackReasons: List<FeedbackReason> = makeStubFeedbackReasons()
-
+      val stubFeedbackReasons: List<FeedbackReason> = makeStubFeedbackReasons()
 
       lateinit var feedbackInteractor: FeedbackInteractor
-      lateinit var smartCardInteractor: SmartCardInteractor
 
       fun setup(httpService: ActionService) {
          val daggerCommandActionService = CommandActionService()
@@ -106,13 +76,8 @@ class FeedbackInteractorSpec : BaseSpec({
 
          daggerCommandActionService.registerProvider(MapperyContext::class.java) { getMappery() }
          daggerCommandActionService.registerProvider(Janet::class.java) { janet }
-         daggerCommandActionService.registerProvider(SnappyRepository::class.java) { mockDb }
-         daggerCommandActionService.registerProvider(AppVersionNameBuilder::class.java) { AppVersionNameBuilder() }
-         daggerCommandActionService.registerProvider(DeviceInfoProvider::class.java) { deviceInfoProvider }
-         daggerCommandActionService.registerProvider(SmartCardInteractor::class.java) { smartCardInteractor }
 
          feedbackInteractor = FeedbackInteractor(SessionActionPipeCreator(janet))
-         smartCardInteractor = SmartCardInteractor(janet, SessionActionPipeCreator(janet), FirmwareInteractor(janet))
       }
 
       // getting feedback reasons specific
@@ -149,7 +114,7 @@ class FeedbackInteractorSpec : BaseSpec({
 
       // mappers
 
-      private fun getMappery(): Mappery {
+      fun getMappery(): Mappery {
          val builder = Mappery.Builder()
          for (converter in constructConverters()) {
             builder.map(converter.sourceClass()).to(converter.targetClass(), converter)
@@ -157,33 +122,13 @@ class FeedbackInteractorSpec : BaseSpec({
          return builder.build()
       }
 
-      fun constructConverters(): List<Converter<Any, Any>> {
-         return listOf(castConverter(FeedbackTypeConverter()),
-               castConverter(FeedbackImageAttachmentConverter()))
-      }
+      fun constructConverters(): List<Converter<Any, Any>> =
+            listOf(castConverter(FeedbackTypeConverter()), castConverter(FeedbackImageAttachmentConverter()))
 
       // TODO Improve this, there should not be need for cast, but currently
       // it's not compilable if we return Converter<*, *>
       fun castConverter(converter: Converter<*, *>): Converter<Any, Any> {
          return converter as Converter<Any, Any>
-      }
-
-      // sending feedback specific
-
-      fun createDummySmartCard() = ImmutableSmartCard.builder()
-            .smartCardId(smartCardId)
-            .cardStatus(SmartCard.CardStatus.ACTIVE)
-            .deviceName("fsadf")
-            .deviceAddress("fsadfsa")
-            .build()
-
-      fun makeSendFeedbackHttpService(): MockHttpActionService {
-         return MockHttpActionService.Builder()
-               .bind(MockHttpActionService.Response(200)
-                     .body(stubFeedbackReasons)) {
-                  it.url.contains("/api/feedbacks")
-               }
-               .build()
       }
 
       fun getStubImageAttachment(): FeedbackImageAttachment {

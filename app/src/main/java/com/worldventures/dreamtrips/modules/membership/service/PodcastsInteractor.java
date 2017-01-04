@@ -1,7 +1,7 @@
 package com.worldventures.dreamtrips.modules.membership.service;
 
 import com.worldventures.dreamtrips.core.janet.SessionActionPipeCreator;
-import com.worldventures.dreamtrips.modules.membership.command.GetPodcastsCommand;
+import com.worldventures.dreamtrips.modules.membership.service.command.GetPodcastsCommand;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;

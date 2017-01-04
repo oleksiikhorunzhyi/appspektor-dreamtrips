@@ -23,6 +23,7 @@ import com.techery.spares.utils.ui.SoftInputUtil;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.api.error.ErrorResponse;
 import com.worldventures.dreamtrips.core.rx.RxBaseFragmentWithArgs;
+import com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem;
 import com.worldventures.dreamtrips.modules.common.view.bundle.BucketBundle;
 import com.worldventures.dreamtrips.modules.common.view.custom.ProgressEmptyRecyclerView;
 import com.worldventures.dreamtrips.modules.feed.bundle.FeedHashtagBundle;
@@ -31,6 +32,7 @@ import com.worldventures.dreamtrips.modules.feed.model.FeedItem;
 import com.worldventures.dreamtrips.modules.feed.model.LoadMoreModel;
 import com.worldventures.dreamtrips.modules.feed.model.PhotoFeedItem;
 import com.worldventures.dreamtrips.modules.feed.model.PostFeedItem;
+import com.worldventures.dreamtrips.modules.feed.model.TextualPost;
 import com.worldventures.dreamtrips.modules.feed.model.TripFeedItem;
 import com.worldventures.dreamtrips.modules.feed.model.feed.hashtag.HashtagSuggestion;
 import com.worldventures.dreamtrips.modules.feed.presenter.FeedHashtagPresenter;
@@ -42,6 +44,7 @@ import com.worldventures.dreamtrips.modules.feed.view.util.FragmentWithFeedDeleg
 import com.worldventures.dreamtrips.modules.feed.view.util.HashtagSuggestionUtil;
 import com.worldventures.dreamtrips.modules.feed.view.util.StatePaginatedRecyclerViewManager;
 import com.worldventures.dreamtrips.modules.membership.view.util.DividerItemDecoration;
+import com.worldventures.dreamtrips.modules.tripsimages.model.Photo;
 
 import java.util.List;
 
@@ -51,7 +54,8 @@ import butterknife.InjectView;
 
 @MenuResource(R.menu.menu_hashtag_feed)
 @Layout(R.layout.fragment_hashtag_feed)
-public class FeedHashtagFragment extends RxBaseFragmentWithArgs<FeedHashtagPresenter, FeedHashtagBundle> implements FeedHashtagPresenter.View, SwipeRefreshLayout.OnRefreshListener {
+public class FeedHashtagFragment extends RxBaseFragmentWithArgs<FeedHashtagPresenter, FeedHashtagBundle>
+      implements FeedHashtagPresenter.View, SwipeRefreshLayout.OnRefreshListener, FeedEntityEditingView {
 
    @InjectView(R.id.empty_view) ViewGroup emptyView;
    @InjectView(R.id.suggestionProgress) View suggestionProgressBar;
@@ -280,8 +284,18 @@ public class FeedHashtagFragment extends RxBaseFragmentWithArgs<FeedHashtagPrese
    }
 
    @Override
-   public void showEdit(BucketBundle bucketBundle) {
-      fragmentWithFeedDelegate.openBucketEdit(getActivity().getSupportFragmentManager(), isTabletLandscape(), bucketBundle);
+   public void openEditTextualPost(TextualPost textualPost) {
+      fragmentWithFeedDelegate.openTextualPostEdit(getActivity().getSupportFragmentManager(), textualPost);
+   }
+
+   @Override
+   public void openEditPhoto(Photo photo) {
+      fragmentWithFeedDelegate.openPhotoEdit(getActivity().getSupportFragmentManager(), photo);
+   }
+
+   @Override
+   public void openEditBucketItem(BucketItem bucketItem, BucketItem.BucketType type) {
+      fragmentWithFeedDelegate.openBucketEdit(getActivity().getSupportFragmentManager(), isTabletLandscape(), new BucketBundle(bucketItem, type));
    }
 
    @Override

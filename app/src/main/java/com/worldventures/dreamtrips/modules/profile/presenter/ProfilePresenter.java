@@ -14,31 +14,29 @@ import com.worldventures.dreamtrips.core.utils.LocaleHelper;
 import com.worldventures.dreamtrips.modules.bucketlist.bundle.ForeignBucketTabsBundle;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem;
 import com.worldventures.dreamtrips.modules.bucketlist.service.BucketInteractor;
-import com.worldventures.dreamtrips.modules.bucketlist.service.command.DeleteBucketItemCommand;
 import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.common.presenter.delegate.FlagDelegate;
-import com.worldventures.dreamtrips.modules.common.view.bundle.BucketBundle;
-import com.worldventures.dreamtrips.modules.feed.event.DeleteBucketEvent;
-import com.worldventures.dreamtrips.modules.feed.event.DeletePhotoEvent;
-import com.worldventures.dreamtrips.modules.feed.event.DeletePostEvent;
-import com.worldventures.dreamtrips.modules.feed.event.EditBucketEvent;
 import com.worldventures.dreamtrips.modules.feed.event.FeedEntityChangedEvent;
 import com.worldventures.dreamtrips.modules.feed.event.FeedEntityCommentedEvent;
 import com.worldventures.dreamtrips.modules.feed.event.TranslatePostEvent;
 import com.worldventures.dreamtrips.modules.feed.model.FeedEntity;
 import com.worldventures.dreamtrips.modules.feed.model.FeedItem;
+import com.worldventures.dreamtrips.modules.feed.model.TextualPost;
 import com.worldventures.dreamtrips.modules.feed.presenter.FeedActionHandlerPresenter;
+import com.worldventures.dreamtrips.modules.feed.presenter.FeedEditEntityPresenter;
+import com.worldventures.dreamtrips.modules.feed.presenter.FeedItemsHolder;
 import com.worldventures.dreamtrips.modules.feed.presenter.delegate.FeedActionHandlerDelegate;
+import com.worldventures.dreamtrips.modules.feed.presenter.delegate.FeedEntitiesHolderDelegate;
 import com.worldventures.dreamtrips.modules.feed.service.FeedInteractor;
 import com.worldventures.dreamtrips.modules.feed.service.PostsInteractor;
 import com.worldventures.dreamtrips.modules.feed.service.command.ChangeFeedEntityLikedStatusCommand;
-import com.worldventures.dreamtrips.modules.feed.service.command.DeletePostCommand;
 import com.worldventures.dreamtrips.modules.feed.view.cell.Flaggable;
+import com.worldventures.dreamtrips.modules.feed.view.fragment.FeedEntityEditingView;
 import com.worldventures.dreamtrips.modules.feed.view.util.TextualPostTranslationDelegate;
 import com.worldventures.dreamtrips.modules.tripsimages.bundle.TripsImagesBundle;
+import com.worldventures.dreamtrips.modules.tripsimages.model.Photo;
 import com.worldventures.dreamtrips.modules.tripsimages.service.TripImagesInteractor;
-import com.worldventures.dreamtrips.modules.tripsimages.service.command.DeletePhotoCommand;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -49,23 +47,24 @@ import javax.inject.Named;
 
 import icepick.State;
 import io.techery.janet.helper.ActionStateSubscriber;
-import rx.android.schedulers.AndroidSchedulers;
 
 public abstract class ProfilePresenter<T extends ProfilePresenter.View, U extends User> extends Presenter<T>
-   implements FeedActionHandlerPresenter {
+   implements FeedActionHandlerPresenter, FeedEditEntityPresenter, FeedItemsHolder {
 
    protected U user;
 
    @State ArrayList<FeedItem> feedItems;
 
    @Inject @Named(RouteCreatorModule.PROFILE) RouteCreator<Integer> routeCreator;
-   @Inject TextualPostTranslationDelegate textualPostTranslationDelegate;
+
    @Inject BucketInteractor bucketInteractor;
    @Inject FeedInteractor feedInteractor;
    @Inject TripImagesInteractor tripImagesInteractor;
    @Inject PostsInteractor postsInteractor;
-   @Inject EntityDeletedEventDelegate entityDeletedEventDelegate;
+
+   @Inject TextualPostTranslationDelegate textualPostTranslationDelegate;
    @Inject FeedActionHandlerDelegate feedActionHandlerDelegate;
+   @Inject FeedEntitiesHolderDelegate feedEntitiesHolderDelegate;
 
    public ProfilePresenter() {
    }
@@ -92,12 +91,11 @@ public abstract class ProfilePresenter<T extends ProfilePresenter.View, U extend
       if (feedItems.size() != 0) {
          view.refreshFeedItems(feedItems);
       }
-      //
+      feedActionHandlerDelegate.setFeedEntityEditingView(view);
+      feedEntitiesHolderDelegate.subscribeToUpdates(this, bindViewToMainComposer(), this::handleError);
       attachUserToView(user);
       loadProfile();
       subscribeToLikesChanges();
-      subscribeToNewItems();
-      subscribeToEntityDeletedEvents();
       textualPostTranslationDelegate.onTakeView(view, feedItems);
    }
 
@@ -158,66 +156,26 @@ public abstract class ProfilePresenter<T extends ProfilePresenter.View, U extend
       feedActionHandlerDelegate.onFlagItem(feedItem.getItem().getUid(), flagReasonId, reason, view, this::handleError);
    }
 
-   public void onEvent(EditBucketEvent event) {
-      if (!view.isVisibleOnScreen()) return;
-      //
-      BucketBundle bundle = new BucketBundle();
-      bundle.setType(event.type());
-      bundle.setBucketItem(event.bucketItem());
-
-      view.showEdit(bundle);
+   @Override
+   public void deleteFeedEntity(String uid) {
+      feedEntitiesHolderDelegate.deleteFeedItemInList(feedItems, uid);
+      refreshFeedItems();
    }
 
-   public void onEvent(DeleteBucketEvent event) {
-      if (view.isVisibleOnScreen()) {
-         BucketItem item = event.getEntity();
-
-         view.bind(bucketInteractor.deleteItemPipe()
-               .createObservable(new DeleteBucketItemCommand(item.getUid()))
-               .observeOn(AndroidSchedulers.mainThread()))
-               .subscribe(new ActionStateSubscriber<DeleteBucketItemCommand>().onSuccess(deleteItemAction -> itemDeleted(item)));
-      }
+   @Override
+   public void addFeedItem(FeedItem feedItem) {
+      feedItems.add(0, feedItem);
+      refreshFeedItems();
    }
 
-   private void itemDeleted(FeedEntity feedEntity) {
-      List<FeedItem> filteredItems = Queryable.from(feedItems)
-            .filter(element -> !element.getItem().equals(feedEntity))
-            .toList();
-
-      feedItems.clear();
-      feedItems.addAll(filteredItems);
-
-      refreshFeedItemsInView();
+   public void onEventMainThread(FeedEntityChangedEvent event) {
+      updateFeedEntity(event.getFeedEntity());
    }
 
-   private void subscribeToEntityDeletedEvents() {
-      entityDeletedEventDelegate.getReplayObservable()
-            .compose(bindViewToMainComposer())
-            .subscribe(this::itemDeleted);
-   }
-
-   private void subscribeToNewItems() {
-      postsInteractor.postCreatedPipe()
-            .observeSuccess()
-            .compose(bindViewToMainComposer())
-            .subscribe(command -> {
-               feedItems.add(0, command.getFeedItem());
-               refreshFeedItemsInView();
-            });
-   }
-
-   public void onEvent(FeedEntityChangedEvent event) {
-      Queryable.from(feedItems).forEachR(item -> {
-         if (item.getItem() != null && item.getItem().equals(event.getFeedEntity())) {
-            FeedEntity feedEntity = event.getFeedEntity();
-            if (feedEntity.getOwner() == null) {
-               feedEntity.setOwner(item.getItem().getOwner());
-            }
-            item.setItem(feedEntity);
-         }
-      });
-
-      refreshFeedItemsInView();
+   @Override
+   public void updateFeedEntity(FeedEntity updatedFeedEntity) {
+      feedEntitiesHolderDelegate.updateFeedItemInList(feedItems, updatedFeedEntity);
+      refreshFeedItems();
    }
 
    public void onEvent(FeedEntityCommentedEvent event) {
@@ -227,7 +185,7 @@ public abstract class ProfilePresenter<T extends ProfilePresenter.View, U extend
          }
       });
 
-      refreshFeedItemsInView();
+      refreshFeedItems();
    }
 
    @Override
@@ -249,30 +207,9 @@ public abstract class ProfilePresenter<T extends ProfilePresenter.View, U extend
       view.openComments(feedItem);
    }
 
-   public void onEvent(DeletePostEvent event) {
-      if (!view.isVisibleOnScreen()) return;
-      postsInteractor.deletePostPipe()
-            .createObservable(new DeletePostCommand(event.getEntity().getUid()))
-            .compose(bindViewToMainComposer())
-            .subscribe(new ActionStateSubscriber<DeletePostCommand>()
-                  .onSuccess(deletePostCommand -> itemDeleted(event.getEntity()))
-                  .onFail(this::handleError));
-   }
-
    public void onEvent(TranslatePostEvent event) {
       if (view.isVisibleOnScreen()) {
          textualPostTranslationDelegate.translate(event.getPostFeedItem(), LocaleHelper.getDefaultLocaleFormatted());
-      }
-   }
-
-   public void onEvent(DeletePhotoEvent event) {
-      if (view.isVisibleOnScreen()) {
-         tripImagesInteractor.deletePhotoPipe()
-               .createObservable(new DeletePhotoCommand(event.getEntity().getUid()))
-               .compose(bindViewToMainComposer())
-               .subscribe(new ActionStateSubscriber<DeletePhotoCommand>()
-                     .onSuccess(deletePhotoCommand -> itemDeleted(event.getEntity()))
-                     .onFail(this::handleError));
       }
    }
 
@@ -284,7 +221,7 @@ public abstract class ProfilePresenter<T extends ProfilePresenter.View, U extend
          }
       });
 
-      refreshFeedItemsInView();
+      refreshFeedItems();
    }
 
    public void onRefresh() {
@@ -308,7 +245,7 @@ public abstract class ProfilePresenter<T extends ProfilePresenter.View, U extend
       view.finishLoading();
       feedItems.clear();
       feedItems.addAll(freshItems);
-      refreshFeedItemsInView();
+      refreshFeedItems();
    }
 
    protected void addFeedItems(List<FeedItem> olderItems) {
@@ -316,14 +253,14 @@ public abstract class ProfilePresenter<T extends ProfilePresenter.View, U extend
       view.updateLoadingStatus(false, noMoreElements);
       //
       feedItems.addAll(olderItems);
-      refreshFeedItemsInView();
+      refreshFeedItems();
    }
 
    protected void refreshFeedError(CommandWithError action, Throwable throwable) {
       handleError(action, throwable);
       view.updateLoadingStatus(false, false);
       view.finishLoading();
-      refreshFeedItemsInView();
+      refreshFeedItems();
    }
 
    protected void loadMoreItemsError(CommandWithError action, Throwable throwable) {
@@ -332,11 +269,42 @@ public abstract class ProfilePresenter<T extends ProfilePresenter.View, U extend
       addFeedItems(new ArrayList<>());
    }
 
-   protected void refreshFeedItemsInView() {
+   @Override
+   public void refreshFeedItems() {
       view.refreshFeedItems(feedItems);
    }
 
-   public interface View extends RxView, FlagDelegate.View, TextualPostTranslationDelegate.View {
+   @Override
+   public void onEditTextualPost(TextualPost textualPost) {
+      feedActionHandlerDelegate.onEditTextualPost(textualPost);
+   }
+
+   @Override
+   public void onDeleteTextualPost(TextualPost textualPost) {
+      feedActionHandlerDelegate.onDeleteTextualPost(textualPost);
+   }
+
+   @Override
+   public void onEditPhoto(Photo photo) {
+      feedActionHandlerDelegate.onEditPhoto(photo);
+   }
+
+   @Override
+   public void onDeletePhoto(Photo photo) {
+      feedActionHandlerDelegate.onDeletePhoto(photo);
+   }
+
+   @Override
+   public void onEditBucketItem(BucketItem bucketItem, BucketItem.BucketType type) {
+      feedActionHandlerDelegate.onEditBucketItem(bucketItem, type);
+   }
+
+   @Override
+   public void onDeleteBucketItem(BucketItem bucketItem) {
+      feedActionHandlerDelegate.onDeleteBucketItem(bucketItem);
+   }
+
+   public interface View extends RxView, FlagDelegate.View, TextualPostTranslationDelegate.View, FeedEntityEditingView {
 
       void openPost();
 
@@ -357,8 +325,6 @@ public abstract class ProfilePresenter<T extends ProfilePresenter.View, U extend
       void finishLoading();
 
       void refreshFeedItems(List<FeedItem> items);
-
-      void showEdit(BucketBundle bucketBundle);
 
       void updateLoadingStatus(boolean loading, boolean noMoreElements);
    }

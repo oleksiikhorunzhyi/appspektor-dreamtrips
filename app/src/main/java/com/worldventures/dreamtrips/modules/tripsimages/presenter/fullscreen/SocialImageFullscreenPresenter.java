@@ -2,7 +2,6 @@ package com.worldventures.dreamtrips.modules.tripsimages.presenter.fullscreen;
 
 import android.support.v4.app.FragmentManager;
 
-import com.techery.spares.utils.delegate.EntityDeletedEventDelegate;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.navigation.router.Router;
@@ -45,7 +44,6 @@ public class SocialImageFullscreenPresenter extends SocialFullScreenPresenter<Ph
    @Inject FlagsInteractor flagsInteractor;
    @Inject TripImagesInteractor tripImagesInteractor;
    @Inject FeedInteractor feedInteractor;
-   @Inject EntityDeletedEventDelegate entityDeletedEventDelegate;
 
    private FlagDelegate flagDelegate;
 
@@ -90,13 +88,10 @@ public class SocialImageFullscreenPresenter extends SocialFullScreenPresenter<Ph
    @Override
    public void onDeleteAction() {
       tripImagesInteractor.deletePhotoPipe()
-            .createObservable(new DeletePhotoCommand(photo.getFSId()))
+            .createObservable(new DeletePhotoCommand(photo.getUid()))
             .compose(bindViewToMainComposer())
             .subscribe(new ActionStateSubscriber<DeletePhotoCommand>()
-                  .onSuccess(deletePhotoCommand -> {
-                     view.informUser(context.getString(R.string.photo_deleted));
-                     entityDeletedEventDelegate.post(photo);
-                  })
+                  .onSuccess(deletePhotoCommand -> view.informUser(context.getString(R.string.photo_deleted)))
                   .onFail(this::handleError));
    }
 

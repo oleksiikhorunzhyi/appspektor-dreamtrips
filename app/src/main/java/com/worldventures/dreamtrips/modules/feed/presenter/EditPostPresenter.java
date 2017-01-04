@@ -69,10 +69,7 @@ public class EditPostPresenter extends ActionEntityPresenter<EditPostPresenter.V
             .createObservable(new EditPostCommand(post.getUid(), createPostObject()))
             .compose(bindViewToMainComposer())
             .subscribe(new ActionStateSubscriber<EditPostCommand>()
-               .onSuccess(editPostCommand -> {
-                  eventBus.post(new FeedEntityChangedEvent(editPostCommand.getResult()));
-                  view.cancel();
-               })
+               .onSuccess(editPostCommand -> view.cancel())
                .onFail((editPostCommand, throwable) -> {
                   view.cancel();
                   handleError(editPostCommand, throwable);

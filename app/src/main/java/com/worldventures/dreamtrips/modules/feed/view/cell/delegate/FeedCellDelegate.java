@@ -1,11 +1,16 @@
 package com.worldventures.dreamtrips.modules.feed.view.cell.delegate;
 
+import com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem;
 import com.worldventures.dreamtrips.modules.feed.model.FeedItem;
+import com.worldventures.dreamtrips.modules.feed.model.TextualPost;
 import com.worldventures.dreamtrips.modules.feed.presenter.FeedActionHandlerPresenter;
+import com.worldventures.dreamtrips.modules.feed.presenter.FeedEditEntityPresenter;
 import com.worldventures.dreamtrips.modules.feed.view.cell.Flaggable;
 import com.worldventures.dreamtrips.modules.feed.view.cell.base.BaseFeedCell;
+import com.worldventures.dreamtrips.modules.tripsimages.model.Photo;
 
-public class FeedCellDelegate<P extends FeedActionHandlerPresenter, T extends FeedItem> implements BaseFeedCell.FeedCellDelegate<T> {
+public class FeedCellDelegate<P extends FeedActionHandlerPresenter & FeedEditEntityPresenter,
+      T extends FeedItem> implements BaseFeedCell.FeedCellDelegate<T> {
 
    private P presenter;
 
@@ -41,5 +46,35 @@ public class FeedCellDelegate<P extends FeedActionHandlerPresenter, T extends Fe
    @Override
    public void onCellClicked(T model) {
 
+   }
+
+   @Override
+   public void onEditTextualPost(TextualPost textualPost) {
+      presenter.onEditTextualPost(textualPost);
+   }
+
+   @Override
+   public void onDeleteTextualPost(TextualPost textualPost) {
+      presenter.onDeleteTextualPost(textualPost);
+   }
+
+   @Override
+   public void onEditPhoto(Photo photo) {
+      presenter.onEditPhoto(photo);
+   }
+
+   @Override
+   public void onDeletePhoto(Photo photo) {
+      presenter.onDeletePhoto(photo);
+   }
+
+   @Override
+   public void onEditBucketItem(BucketItem bucketItem, BucketItem.BucketType type) {
+      presenter.onEditBucketItem(bucketItem, type);
+   }
+
+   @Override
+   public void onDeleteBucketItem(BucketItem bucketItem) {
+      presenter.onDeleteBucketItem(bucketItem);
    }
 }

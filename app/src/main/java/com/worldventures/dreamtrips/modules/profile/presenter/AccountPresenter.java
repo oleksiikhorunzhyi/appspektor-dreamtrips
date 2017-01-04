@@ -177,7 +177,7 @@ public class AccountPresenter extends ProfilePresenter<AccountPresenter.View, Us
                   .onSuccess(compoundOperationsCommand -> {
                      postUploads = Queryable.from(compoundOperationsCommand.getResult())
                            .cast(PostCompoundOperationModel.class).toList();
-                     refreshFeedItemsInView();
+                     refreshFeedItems();
                   }));
    }
 
@@ -345,7 +345,7 @@ public class AccountPresenter extends ProfilePresenter<AccountPresenter.View, Us
    }
 
    @Override
-   protected void refreshFeedItemsInView() {
+   public void refreshFeedItems() {
       view.refreshFeedItems(feedItems, new UploadingPostsList(postUploads));
    }
 

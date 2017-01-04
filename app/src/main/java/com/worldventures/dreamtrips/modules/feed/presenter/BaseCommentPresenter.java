@@ -8,16 +8,10 @@ import com.worldventures.dreamtrips.core.utils.LocaleHelper;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem;
 import com.worldventures.dreamtrips.modules.bucketlist.service.BucketInteractor;
-import com.worldventures.dreamtrips.modules.bucketlist.service.command.DeleteBucketItemCommand;
 import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.common.presenter.delegate.FlagDelegate;
 import com.worldventures.dreamtrips.modules.common.view.ApiErrorView;
-import com.worldventures.dreamtrips.modules.common.view.bundle.BucketBundle;
-import com.worldventures.dreamtrips.modules.feed.event.DeleteBucketEvent;
-import com.worldventures.dreamtrips.modules.feed.event.DeletePhotoEvent;
-import com.worldventures.dreamtrips.modules.feed.event.DeletePostEvent;
-import com.worldventures.dreamtrips.modules.feed.event.EditBucketEvent;
 import com.worldventures.dreamtrips.modules.feed.event.FeedEntityChangedEvent;
 import com.worldventures.dreamtrips.modules.feed.event.FeedEntityCommentedEvent;
 import com.worldventures.dreamtrips.modules.feed.event.LoadMoreEvent;
@@ -32,17 +26,16 @@ import com.worldventures.dreamtrips.modules.feed.service.PostsInteractor;
 import com.worldventures.dreamtrips.modules.feed.service.TranslationFeedInteractor;
 import com.worldventures.dreamtrips.modules.feed.service.command.CreateCommentCommand;
 import com.worldventures.dreamtrips.modules.feed.service.command.DeleteCommentCommand;
-import com.worldventures.dreamtrips.modules.feed.service.command.DeletePostCommand;
 import com.worldventures.dreamtrips.modules.feed.service.command.EditCommentCommand;
 import com.worldventures.dreamtrips.modules.feed.service.command.GetCommentsCommand;
 import com.worldventures.dreamtrips.modules.feed.service.command.TranslateUidItemCommand;
 import com.worldventures.dreamtrips.modules.feed.view.cell.Flaggable;
+import com.worldventures.dreamtrips.modules.feed.view.fragment.FeedEntityEditingView;
 import com.worldventures.dreamtrips.modules.friends.service.FriendsInteractor;
 import com.worldventures.dreamtrips.modules.friends.service.command.GetLikersCommand;
 import com.worldventures.dreamtrips.modules.trips.model.TripModel;
 import com.worldventures.dreamtrips.modules.tripsimages.model.Photo;
 import com.worldventures.dreamtrips.modules.tripsimages.service.TripImagesInteractor;
-import com.worldventures.dreamtrips.modules.tripsimages.service.command.DeletePhotoCommand;
 
 import java.util.List;
 
@@ -50,7 +43,6 @@ import javax.inject.Inject;
 
 import icepick.State;
 import io.techery.janet.helper.ActionStateSubscriber;
-import rx.android.schedulers.AndroidSchedulers;
 
 public class BaseCommentPresenter<T extends BaseCommentPresenter.View> extends Presenter<T>
       implements FeedActionHandlerPresenter {
@@ -64,7 +56,6 @@ public class BaseCommentPresenter<T extends BaseCommentPresenter.View> extends P
    @Inject TripImagesInteractor tripImagesInteractor;
    @Inject FriendsInteractor friendsInteractor;
    @Inject PostsInteractor postsInteractor;
-   @Inject EntityDeletedEventDelegate entityDeletedEventDelegate;
    @Inject FeedActionHandlerDelegate feedActionHandlerDelegate;
 
    @State FeedEntity feedEntity;
@@ -263,58 +254,6 @@ public class BaseCommentPresenter<T extends BaseCommentPresenter.View> extends P
       loadComments();
    }
 
-   public void onEvent(EditBucketEvent event) {
-      if (!view.isVisibleOnScreen()) return;
-      //
-      BucketBundle bundle = new BucketBundle();
-      bundle.setType(event.type());
-      bundle.setBucketItem(event.bucketItem());
-
-      view.showEdit(bundle);
-   }
-
-   public void onEvent(DeletePostEvent event) {
-      if (!view.isVisibleOnScreen()) return;
-      postsInteractor.deletePostPipe()
-            .createObservable(new DeletePostCommand(event.getEntity().getUid()))
-            .compose(bindViewToMainComposer())
-            .subscribe(new ActionStateSubscriber<DeletePostCommand>()
-                  .onSuccess(deletePostCommand -> itemDeleted(event.getEntity()))
-                  .onFail(this::handleError));
-   }
-
-   public void onEvent(DeletePhotoEvent event) {
-      if (view.isVisibleOnScreen()) {
-         tripImagesInteractor.deletePhotoPipe()
-               .createObservable(new DeletePhotoCommand(event.getEntity().getUid()))
-               .compose(bindViewToMainComposer())
-               .subscribe(new ActionStateSubscriber<DeletePhotoCommand>()
-                     .onSuccess(deletePhotoCommand -> itemDeleted(event.getEntity()))
-                     .onFail(this::handleError));
-      }
-   }
-
-   public void onEvent(DeleteBucketEvent event) {
-      if (view.isVisibleOnScreen()) {
-         BucketItem bucketItemToDelete = event.getEntity();
-
-         view.bind(bucketInteractor.deleteItemPipe()
-               .createObservable(new DeleteBucketItemCommand(bucketItemToDelete.getUid()))
-               .observeOn(AndroidSchedulers.mainThread()))
-               .subscribe(new ActionStateSubscriber<DeleteBucketItemCommand>().onSuccess(deleteItemAction -> itemDeleted(bucketItemToDelete))
-                     .onFail((deleteItemAction, throwable) -> {
-                        view.setLoading(false); //TODO: review, after leave from robospice completely
-                        handleError(deleteItemAction, throwable);
-                     }));
-      }
-   }
-
-   protected void itemDeleted(FeedEntity model) {
-      entityDeletedEventDelegate.post(model);
-      //
-      back();
-   }
-
    protected void back() {
       view.back();
    }
@@ -381,8 +320,6 @@ public class BaseCommentPresenter<T extends BaseCommentPresenter.View> extends P
       void onPostError();
 
       void showViewMore();
-
-      void showEdit(BucketBundle bucketBundle);
 
       void setLikePanel(FeedEntity entity);
 

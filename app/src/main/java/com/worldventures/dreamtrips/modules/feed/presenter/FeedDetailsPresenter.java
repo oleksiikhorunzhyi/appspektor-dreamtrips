@@ -1,6 +1,7 @@
 package com.worldventures.dreamtrips.modules.feed.presenter;
 
 import com.badoo.mobile.util.WeakHandler;
+import com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem;
 import com.worldventures.dreamtrips.modules.bucketlist.service.BucketInteractor;
 import com.worldventures.dreamtrips.modules.bucketlist.service.action.UpdateBucketItemCommand;
 import com.worldventures.dreamtrips.modules.common.model.User;
@@ -8,22 +9,31 @@ import com.worldventures.dreamtrips.modules.feed.event.FeedEntityChangedEvent;
 import com.worldventures.dreamtrips.modules.feed.event.FeedEntityCommentedEvent;
 import com.worldventures.dreamtrips.modules.feed.model.FeedEntity;
 import com.worldventures.dreamtrips.modules.feed.model.FeedItem;
+import com.worldventures.dreamtrips.modules.feed.model.TextualPost;
 import com.worldventures.dreamtrips.modules.feed.model.TripFeedItem;
+import com.worldventures.dreamtrips.modules.feed.presenter.delegate.FeedActionHandlerDelegate;
+import com.worldventures.dreamtrips.modules.feed.presenter.delegate.FeedEntitiesHolderDelegate;
 import com.worldventures.dreamtrips.modules.feed.service.FeedInteractor;
 import com.worldventures.dreamtrips.modules.feed.service.command.ChangeFeedEntityLikedStatusCommand;
 import com.worldventures.dreamtrips.modules.feed.service.command.GetFeedEntityCommand;
+import com.worldventures.dreamtrips.modules.feed.view.fragment.FeedEntityEditingView;
 import com.worldventures.dreamtrips.modules.trips.command.GetTripDetailsCommand;
 import com.worldventures.dreamtrips.modules.trips.service.TripsInteractor;
+import com.worldventures.dreamtrips.modules.tripsimages.model.Photo;
 
 import javax.inject.Inject;
 
 import io.techery.janet.helper.ActionStateSubscriber;
 
-public class FeedDetailsPresenter<V extends FeedDetailsPresenter.View> extends BaseCommentPresenter<V> {
+public class FeedDetailsPresenter<V extends FeedDetailsPresenter.View> extends BaseCommentPresenter<V>
+   implements FeedEditEntityPresenter, FeedItemsHolder {
 
    protected FeedItem feedItem;
 
    private WeakHandler handler = new WeakHandler();
+
+   @Inject FeedEntitiesHolderDelegate feedEntitiesHolderDelegate;
+   @Inject FeedActionHandlerDelegate feedActionHandlerDelegate;
 
    @Inject TripsInteractor tripsInteractor;
    @Inject BucketInteractor bucketInteractor;
@@ -37,6 +47,8 @@ public class FeedDetailsPresenter<V extends FeedDetailsPresenter.View> extends B
    @Override
    public void takeView(V view) {
       super.takeView(view);
+      feedActionHandlerDelegate.setFeedEntityEditingView(view);
+      feedEntitiesHolderDelegate.subscribeToUpdates(this, bindViewToMainComposer(), this::handleError);
       view.setFeedItem(feedItem);
       subscribeToLikesChanges();
       subscribeForTripsDetails();
@@ -78,7 +90,7 @@ public class FeedDetailsPresenter<V extends FeedDetailsPresenter.View> extends B
       feedItem.setItem(feedEntity);
       eventBus.post(new FeedEntityChangedEvent(feedEntity));
       checkCommentsAndLikesToLoad();
-      view.updateFeedItem(feedItem);
+      refreshFeedItems();
       view.showAdditionalInfo(feedEntity.getOwner());
    }
 
@@ -103,12 +115,34 @@ public class FeedDetailsPresenter<V extends FeedDetailsPresenter.View> extends B
                   }));
    }
 
-   public void onEvent(FeedEntityChangedEvent event) {
-      if (event.getFeedEntity().equals(feedItem.getItem())) {
-         feedItem.setItem(event.getFeedEntity());
-         feedEntity = event.getFeedEntity();
-         view.updateFeedItem(feedItem);
+   public void onEventMainThread(FeedEntityChangedEvent event) {
+      updateFeedEntity(event.getFeedEntity());
+   }
+
+   @Override
+   public void addFeedItem(FeedItem feedItem) {
+      // nothing to do
+   }
+
+   @Override
+   public void updateFeedEntity(FeedEntity updatedFeedEntity) {
+      if (updatedFeedEntity.equals(feedItem.getItem())) {
+         feedItem.setItem(updatedFeedEntity);
+         feedEntity = updatedFeedEntity;
+         refreshFeedItems();
       }
+   }
+
+   @Override
+   public void deleteFeedEntity(String uid) {
+      if (feedEntity.getUid().equals(uid)) {
+         back();
+      }
+   }
+
+   @Override
+   public void refreshFeedItems() {
+      view.updateFeedItem(feedItem);
    }
 
    @Override
@@ -134,11 +168,41 @@ public class FeedDetailsPresenter<V extends FeedDetailsPresenter.View> extends B
       if (event.getFeedEntity().equals(feedItem.getItem())) {
          feedItem.setItem(event.getFeedEntity());
          feedEntity = event.getFeedEntity();
-         view.updateFeedItem(feedItem);
+         refreshFeedItems();
       }
    }
 
-   public interface View extends BaseCommentPresenter.View {
+   @Override
+   public void onEditTextualPost(TextualPost textualPost) {
+      feedActionHandlerDelegate.onEditTextualPost(textualPost);
+   }
+
+   @Override
+   public void onDeleteTextualPost(TextualPost textualPost) {
+      feedActionHandlerDelegate.onDeleteTextualPost(textualPost);
+   }
+
+   @Override
+   public void onEditPhoto(Photo photo) {
+      feedActionHandlerDelegate.onEditPhoto(photo);
+   }
+
+   @Override
+   public void onDeletePhoto(Photo photo) {
+      feedActionHandlerDelegate.onDeletePhoto(photo);
+   }
+
+   @Override
+   public void onEditBucketItem(BucketItem bucketItem, BucketItem.BucketType type) {
+      feedActionHandlerDelegate.onEditBucketItem(bucketItem, type);
+   }
+
+   @Override
+   public void onDeleteBucketItem(BucketItem bucketItem) {
+      feedActionHandlerDelegate.onDeleteBucketItem(bucketItem);
+   }
+
+   public interface View extends BaseCommentPresenter.View, FeedEntityEditingView {
 
       void setFeedItem(FeedItem feedItem);
 

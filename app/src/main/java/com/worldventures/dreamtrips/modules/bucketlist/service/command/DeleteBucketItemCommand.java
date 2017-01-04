@@ -3,15 +3,13 @@ package com.worldventures.dreamtrips.modules.bucketlist.service.command;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.api.bucketlist.DeleteBucketItemHttpAction;
 import com.worldventures.dreamtrips.core.api.action.ApiActionCommand;
+import com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem;
 
 import io.techery.janet.command.annotations.CommandAction;
-import io.techery.janet.http.annotations.HttpAction;
-import io.techery.janet.http.annotations.Path;
-import timber.log.Timber;
 
 @CommandAction
 public class DeleteBucketItemCommand extends ApiActionCommand<DeleteBucketItemHttpAction, Object> {
-   @Path("uid") String uid;
+   String uid;
 
    public DeleteBucketItemCommand(String uid) {
       this.uid = uid;

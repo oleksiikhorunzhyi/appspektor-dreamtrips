@@ -17,13 +17,16 @@ import com.worldventures.dreamtrips.core.navigation.wrapper.NavigationWrapper;
 import com.worldventures.dreamtrips.core.navigation.wrapper.NavigationWrapperFactory;
 import com.worldventures.dreamtrips.core.session.UserSession;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
+import com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.feed.model.FeedItem;
+import com.worldventures.dreamtrips.modules.feed.model.TextualPost;
 import com.worldventures.dreamtrips.modules.feed.view.cell.Flaggable;
 import com.worldventures.dreamtrips.modules.feed.view.custom.FeedActionPanelView;
 import com.worldventures.dreamtrips.modules.feed.view.util.ActionPanelViewShareHandler;
 import com.worldventures.dreamtrips.modules.feed.view.util.LikersPanelHelper;
 import com.worldventures.dreamtrips.modules.friends.bundle.UsersLikedEntityBundle;
+import com.worldventures.dreamtrips.modules.tripsimages.model.Photo;
 
 import javax.inject.Inject;
 
@@ -136,5 +139,17 @@ public abstract class BaseFeedCell<ITEM extends FeedItem, DELEGATE extends BaseF
       void onLoadFlags(Flaggable flaggableView);
 
       void onFlagChosen(FeedItem feedItem, int flagReasonId, String reason);
+
+      void onEditTextualPost(TextualPost textualPost);
+
+      void onDeleteTextualPost(TextualPost textualPost);
+
+      void onEditPhoto(Photo photo);
+
+      void onDeletePhoto(Photo photo);
+
+      void onEditBucketItem(BucketItem bucketItem, BucketItem.BucketType type);
+
+      void onDeleteBucketItem(BucketItem bucketItem);
    }
 }

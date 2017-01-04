@@ -1,6 +1,5 @@
 package com.worldventures.dreamtrips.modules.feed.view.cell;
 
-import android.support.annotation.IdRes;
 import android.support.v4.app.FragmentManager;
 import android.text.TextUtils;
 import android.view.View;
@@ -9,7 +8,6 @@ import android.widget.ImageView;
 import com.innahema.collections.query.queriables.Queryable;
 import com.techery.spares.annotations.Layout;
 import com.techery.spares.session.SessionHolder;
-import com.techery.spares.ui.view.cell.CellDelegate;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.navigation.ToolbarConfig;
@@ -18,10 +16,8 @@ import com.worldventures.dreamtrips.core.navigation.router.NavigationConfigBuild
 import com.worldventures.dreamtrips.core.session.UserSession;
 import com.worldventures.dreamtrips.core.utils.LocaleHelper;
 import com.worldventures.dreamtrips.modules.common.view.custom.HashtagTextView;
-import com.worldventures.dreamtrips.modules.feed.bundle.EditPostBundle;
 import com.worldventures.dreamtrips.modules.feed.bundle.FeedHashtagBundle;
 import com.worldventures.dreamtrips.modules.feed.bundle.FeedItemDetailsBundle;
-import com.worldventures.dreamtrips.modules.feed.event.DeletePostEvent;
 import com.worldventures.dreamtrips.modules.feed.event.TranslatePostEvent;
 import com.worldventures.dreamtrips.modules.feed.model.FeedEntityHolder;
 import com.worldventures.dreamtrips.modules.feed.model.PostFeedItem;
@@ -48,7 +44,7 @@ import butterknife.OnClick;
 import butterknife.Optional;
 
 @Layout(R.layout.adapter_item_feed_post_event)
-public class PostFeedItemCell extends FeedItemDetailsCell<PostFeedItem, PostFeedItemCell.PostFeedItemDetailCellDelegate> {
+public class PostFeedItemCell extends FeedItemDetailsCell<PostFeedItem, BaseFeedCell.FeedCellDelegate<PostFeedItem>> {
 
    @InjectView(R.id.post) HashtagTextView post;
    @InjectView(R.id.card_view_wrapper) View cardViewWrapper;
@@ -208,36 +204,16 @@ public class PostFeedItemCell extends FeedItemDetailsCell<PostFeedItem, PostFeed
    @Override
    protected void onDelete() {
       super.onDelete();
-      getEventBus().post(new DeletePostEvent(getModelObject().getItem()));
+      cellDelegate.onDeleteTextualPost(getModelObject().getItem());
    }
 
    @Override
    protected void onEdit() {
-      @IdRes int containerId = R.id.container_details_floating;
-      router.moveTo(Route.EDIT_POST, NavigationConfigBuilder.forRemoval()
-            .containerId(containerId)
-            .fragmentManager(fragmentManager)
-            .build());
-      router.moveTo(Route.EDIT_POST, NavigationConfigBuilder.forFragment()
-            .containerId(containerId)
-            .backStackEnabled(false)
-            .fragmentManager(fragmentManager)
-            .data(new EditPostBundle(getModelObject().getItem()))
-            .build());
+      cellDelegate.onEditTextualPost(getModelObject().getItem());
    }
 
    @Override
    protected void onMore() {
       showMoreDialog(R.menu.menu_feed_entity_edit, R.string.post_delete, R.string.post_delete_caption);
-   }
-
-   public interface PostFeedItemDetailCellDelegate extends BaseFeedCell.FeedCellDelegate<PostFeedItem> {
-
-      void onEditPost(PostFeedItem postFeedItem);
-
-      void onDeletePost(PostFeedItem postFeedItem);
-
-      void onTranslatePost(PostFeedItem postFeedItem);
-
    }
 }

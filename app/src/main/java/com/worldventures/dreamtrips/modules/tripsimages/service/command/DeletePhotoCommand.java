@@ -17,22 +17,26 @@ public class DeletePhotoCommand extends CommandWithError<String> implements Inje
 
    @Inject @Named(JanetModule.JANET_API_LIB) Janet janet;
 
-   private String photoId;
+   private String uid;
 
-   public DeletePhotoCommand(String photoId) {
-      this.photoId = photoId;
+   public DeletePhotoCommand(String uid) {
+      this.uid = uid;
    }
 
    @Override
    protected void run(CommandCallback<String> callback) throws Throwable {
       janet.createPipe(DeletePhotoHttpAction.class)
-            .createObservableResult(new DeletePhotoHttpAction(photoId))
-            .map(deletePhotoHttpAction -> photoId)
+            .createObservableResult(new DeletePhotoHttpAction(uid))
+            .map(deletePhotoHttpAction -> uid)
             .subscribe(callback::onSuccess, callback::onFail);
    }
 
    @Override
    public int getFallbackErrorMessage() {
       return R.string.error_failed_to_delete_image;
+   }
+
+   public String getUid() {
+      return uid;
    }
 }

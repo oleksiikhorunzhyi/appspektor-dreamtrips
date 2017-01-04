@@ -35,6 +35,7 @@ import com.worldventures.dreamtrips.modules.feed.presenter.BaseCommentPresenter;
 import com.worldventures.dreamtrips.modules.feed.view.cell.CommentCell;
 import com.worldventures.dreamtrips.modules.feed.view.cell.Flaggable;
 import com.worldventures.dreamtrips.modules.feed.view.cell.LoadMoreCell;
+import com.worldventures.dreamtrips.modules.feed.view.util.FragmentWithFeedDelegate;
 import com.worldventures.dreamtrips.modules.feed.view.util.LikersPanelHelper;
 import com.worldventures.dreamtrips.modules.friends.bundle.UsersLikedEntityBundle;
 
@@ -258,33 +259,6 @@ public class CommentableFragment<T extends BaseCommentPresenter, P extends Comme
    public void showViewMore() {
       loadMore.setVisible(true);
       adapter.notifyItemChanged(getLoadMorePosition());
-   }
-
-   @Override
-   public void showEdit(BucketBundle bucketBundle) {
-      @IdRes int containerId = R.id.container_details_floating;
-      bucketBundle.setLock(true);
-      try {
-         bucketBundle.setOwnerId(getArgs().getFeedEntity().getOwner().getId());
-      } catch (Exception e) {
-         Timber.e(e, "");
-      }
-      if (isTabletLandscape()) {
-         router.moveTo(Route.BUCKET_EDIT, NavigationConfigBuilder.forFragment()
-               .backStackEnabled(true)
-               .containerId(containerId)
-               .fragmentManager(getActivity().getSupportFragmentManager())
-               .data(bucketBundle)
-               .build());
-         showContainer(containerId);
-      } else {
-         router.moveTo(Route.BUCKET_EDIT, NavigationConfigBuilder.forActivity().data(bucketBundle).build());
-      }
-   }
-
-   private void showContainer(@IdRes int containerId) {
-      View container = ButterKnife.findById(getActivity(), containerId);
-      if (container != null) container.setVisibility(View.VISIBLE);
    }
 
    @Override

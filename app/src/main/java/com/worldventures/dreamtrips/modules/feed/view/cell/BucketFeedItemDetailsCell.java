@@ -10,7 +10,6 @@ import com.facebook.drawee.interfaces.DraweeController;
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.facebook.imagepipeline.request.ImageRequest;
 import com.techery.spares.annotations.Layout;
-import com.techery.spares.ui.view.cell.CellDelegate;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.navigation.ToolbarConfig;
@@ -19,8 +18,6 @@ import com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem;
 import com.worldventures.dreamtrips.modules.bucketlist.service.common.BucketUtility;
 import com.worldventures.dreamtrips.modules.bucketlist.util.BucketItemInfoUtil;
 import com.worldventures.dreamtrips.modules.feed.bundle.FeedEntityDetailsBundle;
-import com.worldventures.dreamtrips.modules.feed.event.DeleteBucketEvent;
-import com.worldventures.dreamtrips.modules.feed.event.EditBucketEvent;
 import com.worldventures.dreamtrips.modules.feed.model.BucketFeedItem;
 import com.worldventures.dreamtrips.modules.feed.view.cell.base.BaseFeedCell;
 import com.worldventures.dreamtrips.modules.feed.view.cell.base.FeedItemDetailsCell;
@@ -86,14 +83,14 @@ public class BucketFeedItemDetailsCell extends FeedItemDetailsCell<BucketFeedIte
    @Override
    protected void onDelete() {
       super.onDelete();
-      getEventBus().post(new DeleteBucketEvent(getModelObject().getItem()));
+      cellDelegate.onDeleteBucketItem(getModelObject().getItem());
    }
 
    @Override
    protected void onEdit() {
       super.onEdit();
       BucketItem bucketItem = getModelObject().getItem();
-      getEventBus().post(new EditBucketEvent(bucketItem, BucketUtility.typeFromItem(bucketItem)));
+      cellDelegate.onEditBucketItem(bucketItem, BucketUtility.typeFromItem(bucketItem));
    }
 
    @OnClick(R.id.bucket_main)

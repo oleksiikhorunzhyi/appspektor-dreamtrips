@@ -50,6 +50,7 @@ class SmartCardSyncManager {
             .observeSuccess()
             .filter(connectAction -> connectAction.type == ConnectionType.APP)
             .map(connectAction -> connectAction.type)
+            .throttleFirst(1, TimeUnit.SECONDS)
             .subscribe(this::smartCardConnected, throwable -> Timber.e(throwable, "Error with handling connection event"));
 
       interactor.disconnectPipe()

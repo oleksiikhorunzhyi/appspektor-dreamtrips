@@ -22,6 +22,10 @@ public class FactoryResetManager {
       confirmResetPipe = walletJanetInstance.createPipe(ConfirmResetCommand.class, Schedulers.io());
    }
 
+   public ActionPipe<ConfirmResetCommand> confirmResetPipe() {
+      return confirmResetPipe;
+   }
+
    public void factoryReset() {
       confirmResetPipe.send(new ConfirmResetCommand());
    }

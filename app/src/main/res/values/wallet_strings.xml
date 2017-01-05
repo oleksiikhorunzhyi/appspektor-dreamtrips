@@ -190,6 +190,10 @@
    <string name="wallet_card_list_record_connected">%d card loaded</string>
    <string name="wallet_dashboard_unlock_error">Unlock is not supported</string>
    <string name="wallet_dashboard_flye_firmware_update">flye smart card Update</string>
+   <string name="wallet_dashboard_update_dialog_title">Smart Card Update Available</string>
+   <string name="wallet_dashboard_update_dialog_content">In order to get the best smart card experience please update your smart card with the latest software</string>
+   <string name="wallet_dashboard_update_dialog_btn_text_negative">Not now</string>
+   <string name="wallet_dashboard_update_dialog_btn_text_positive">Update</string>
 
    <!--charging-->
    <string name="wallet_charging_swiping_screen_title">Add Payment Card</string>

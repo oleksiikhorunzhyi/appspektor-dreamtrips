@@ -140,6 +140,19 @@ public class CardListScreen extends WalletLinearLayout<CardListPresenter.Screen,
    }
 
    @Override
+   public void showFirmwareUpdateDialog() {
+      new MaterialDialog.Builder(getContext())
+            .title(R.string.wallet_dashboard_update_dialog_title)
+            .content(R.string.wallet_dashboard_update_dialog_content)
+            .negativeText(R.string.wallet_dashboard_update_dialog_btn_text_negative)
+            .onNegative((dialog, which) -> getPresenter().navigateBack())
+            .positiveText(R.string.wallet_dashboard_update_dialog_btn_text_positive)
+            .onPositive((dialog, which) -> getPresenter().navigateToInstallFirmware())
+            .build()
+            .show();
+   }
+
+   @Override
    protected Parcelable onSaveInstanceState() {
       Bundle state = (Bundle) super.onSaveInstanceState();
       state.putInt(KEY_SHOW_UPDATE_BUTTON_STATE, firmwareAvailableView.getVisibility());

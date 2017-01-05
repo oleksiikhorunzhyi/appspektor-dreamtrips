@@ -16,8 +16,6 @@ import io.techery.janet.ActionState;
 import io.techery.janet.Command;
 import io.techery.janet.Janet;
 import io.techery.janet.smartcard.action.support.ConnectAction;
-import io.techery.janet.smartcard.action.support.DisconnectAction;
-import io.techery.janet.smartcard.action.user.UnAssignUserAction;
 import io.techery.janet.smartcard.model.ConnectionType;
 import rx.Observable;
 import timber.log.Timber;
@@ -165,7 +163,10 @@ class SmartCardSyncManager {
 
    private void connectFetchingBattery() {
       Observable.interval(0, 1, TimeUnit.MINUTES)
-            .takeUntil(observeUnbindActions())
+            .flatMap(aLong -> interactor.activeSmartCardPipe()
+                  .createObservableResult(new ActiveSmartCardCommand()))
+            .map(Command::getResult)
+            .filter(smartCard -> smartCard.connectionStatus() == CONNECTED && smartCard.cardStatus() == SmartCard.CardStatus.ACTIVE)
             .subscribe(value ->
                         interactor.fetchBatteryLevelPipe().send(new FetchBatteryLevelCommand()),
                   throwable -> {
@@ -176,10 +177,16 @@ class SmartCardSyncManager {
       Observable.interval(10, TimeUnit.MINUTES)
             .mergeWith(interactor.cardsListPipe().observeSuccess()
                   .map(cardListCommand -> null))
+            .flatMap(aLong -> interactor.activeSmartCardPipe()
+                  .createObservableResult(new ActiveSmartCardCommand()))
+            .map(Command::getResult)
+            .filter(smartCard -> smartCard.connectionStatus() == CONNECTED && smartCard.cardStatus() == SmartCard.CardStatus.ACTIVE)
             .throttleFirst(10, TimeUnit.MINUTES)
-            .takeUntil(observeUnbindActions())
-            .subscribe(command -> interactor.cardSyncPipe()
-                  .send(new SyncCardsCommand()), Throwable::printStackTrace);
+            .flatMap(aLong -> interactor.cardSyncPipe()
+                  .createObservableResult(new SyncCardsCommand()))
+            .retry(1)
+            .subscribe(command -> {
+            }, Throwable::printStackTrace);
 
       interactor.deleteCardPipe()
             .observeSuccess()
@@ -208,16 +215,6 @@ class SmartCardSyncManager {
             .map(Command::getResult)
             .subscribe(id -> interactor.defaultCardIdPipe().send(DefaultCardIdCommand.set(id)), throwable -> {
             });
-   }
-
-   private Observable<Object> observeUnbindActions() {
-      return Observable.merge(
-            janet.createPipe(UnAssignUserAction.class).observe().first(),
-            janet.createPipe(DisconnectAction.class).observeSuccess(),
-            janet.createPipe(ConnectAction.class)
-                  .observeSuccess()
-                  .filter(action -> action.type == ConnectionType.DFU)
-      );
    }
 
 }

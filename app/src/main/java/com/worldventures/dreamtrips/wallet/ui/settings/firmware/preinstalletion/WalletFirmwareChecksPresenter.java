@@ -66,7 +66,9 @@ public class WalletFirmwareChecksPresenter extends WalletPresenter<WalletFirmwar
       Observable.concat(
             smartCardInteractor.activeSmartCardPipe()
                   .observeSuccessWithReplay().map(command -> (Void) null),
-            bluetoothService.observeEnablesState().map(value -> (Void) null)
+            bluetoothService.observeEnablesState().map(value -> (Void) null),
+            smartCardInteractor.cardInChargerEventPipe()
+                  .observeSuccess().map(event -> (Void) null)
       )
             .compose(bindView())
             .subscribe(aVoid -> firmwareInteractor

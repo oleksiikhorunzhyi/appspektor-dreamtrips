@@ -35,6 +35,7 @@ import io.techery.janet.smartcard.action.charger.StopCardRecordingAction;
 import io.techery.janet.smartcard.action.records.DeleteRecordAction;
 import io.techery.janet.smartcard.action.support.DisconnectAction;
 import io.techery.janet.smartcard.event.CardChargedEvent;
+import io.techery.janet.smartcard.event.CardInChargerEvent;
 import io.techery.janet.smartcard.event.CardSwipedEvent;
 import io.techery.janet.smartcard.event.LockDeviceChangedEvent;
 import rx.Scheduler;
@@ -75,6 +76,7 @@ public final class SmartCardInteractor {
    private final ActionPipe<SetDisableDefaultCardDelayCommand> disableDefaultCardPipe;
 
    private final ActionPipe<GetCompatibleDevicesCommand> compatibleDevicesActionPipe;
+   private final ActionPipe<CardInChargerEvent> cardInChargerEventPipe;
 
    public SmartCardInteractor(Janet janet, SessionActionPipeCreator sessionActionPipeCreator) {
       this(janet, sessionActionPipeCreator, SmartCardInteractor::singleThreadScheduler);
@@ -125,6 +127,7 @@ public final class SmartCardInteractor {
       autoClearDelayPipe = sessionActionPipeCreator.createPipe(SetAutoClearSmartCardDelayCommand.class, Schedulers.io());
       disableDefaultCardPipe = sessionActionPipeCreator.createPipe(SetDisableDefaultCardDelayCommand.class, Schedulers.io());
 
+      cardInChargerEventPipe = sessionActionPipeCreator.createPipe(CardInChargerEvent.class, Schedulers.io());
       compatibleDevicesActionPipe = sessionActionPipeCreator.createPipe(GetCompatibleDevicesCommand.class, Schedulers.io());
       //
       new SmartCardSyncManager(janet, this);// start sync when start use the wallet
@@ -253,6 +256,10 @@ public final class SmartCardInteractor {
 
    public ActionPipe<FetchBatteryLevelCommand> fetchBatteryLevelPipe() {
       return fetchBatteryLevelPipe;
+   }
+
+   public ActionPipe<CardInChargerEvent> cardInChargerEventPipe() {
+      return cardInChargerEventPipe;
    }
 
 }

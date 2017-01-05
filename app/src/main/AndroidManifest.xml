@@ -212,15 +212,6 @@
             android:name="com.amazonaws.mobileconnectors.s3.transferutility.TransferService"
             android:enabled="true"
             />
-
-      <service
-            android:name=".core.api.DreamSpiceService"
-            android:exported="false"
-            />
-      <service
-            android:name=".core.api.VideoDownloadSpiceService"
-            android:exported="false"
-            />
       <service
             android:name=".modules.player.playback.PodcastService"
             android:exported="false"

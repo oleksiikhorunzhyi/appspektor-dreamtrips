@@ -64,12 +64,14 @@ public final class OperationActionStateSubscriberWrapper<T> {
                if (onSuccessAction != null) onSuccessAction.call(t);
             })
             .onFail((t, throwable) -> {
-               final MessageActionHolder<T> failHolder = onFailFactory != null ? onFailFactory.call(throwable) : null;
-               String message = hasActionMessage(failHolder) ? failHolder.message.provide(t) : view.context()
-                     .getString(R.string.error_something_went_wrong);
-
                view.hideProgress();
-               view.showError(message, failHolder.action == null ? null : o -> failHolder.action.call(t));
+               final MessageActionHolder<T> failHolder = onFailFactory != null ? onFailFactory.call(throwable) : null;
+               if (failHolder != null) {
+                  String message = hasActionMessage(failHolder) ? failHolder.message.provide(t) : view.context()
+                        .getString(R.string.error_something_went_wrong);
+                  Action1<T> action = failHolder.action;
+                  view.showError(message, action == null ? null : o -> action.call(t));
+               }
             })
             .onProgress((t, integer) -> {
                if (onProgress != null) {

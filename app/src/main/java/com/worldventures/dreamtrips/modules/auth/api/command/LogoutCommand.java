@@ -21,12 +21,11 @@ import com.worldventures.dreamtrips.core.utils.DTCookieManager;
 import com.worldventures.dreamtrips.core.utils.LocaleSwitcher;
 import com.worldventures.dreamtrips.modules.auth.service.AuthInteractor;
 import com.worldventures.dreamtrips.modules.common.api.janet.command.ClearStoragesCommand;
+import com.worldventures.dreamtrips.modules.common.delegate.ReplayEventDelegatesWiper;
 import com.worldventures.dreamtrips.modules.common.presenter.delegate.OfflineWarningDelegate;
 import com.worldventures.dreamtrips.modules.common.service.ClearStoragesInteractor;
 import com.worldventures.dreamtrips.modules.gcm.delegate.NotificationDelegate;
 import com.worldventures.dreamtrips.wallet.domain.storage.security.crypto.HybridAndroidCrypter;
-import com.worldventures.dreamtrips.wallet.service.SmartCardInteractor;
-import com.worldventures.dreamtrips.wallet.service.command.http.DisassociateActiveCardUserCommand;
 
 import java.security.KeyStoreException;
 import java.util.Arrays;
@@ -56,12 +55,12 @@ public class LogoutCommand extends Command<Void> implements InjectableAction {
    @Inject AuthInteractor authInteractor;
    @Inject MessengerConnector messengerConnector;
    @Inject OfflineWarningDelegate offlineWarningDelegate;
+   @Inject ReplayEventDelegatesWiper replayEventDelegatesWiper;
    @Inject ClearStoragesInteractor clearStoragesInteractor;
    @Inject SessionActionPipeCreator sessionActionPipeCreator;
    @Inject @Named(JanetModule.JANET_API_LIB) SessionActionPipeCreator sessionApiActionPipeCreator;
    @Inject @Named(JanetModule.JANET_WALLET) SessionActionPipeCreator sessionWalletActionPipeCreator;
    @Inject HybridAndroidCrypter crypter;
-   @Inject SmartCardInteractor smartCardInteractor;
 
    @Override
    protected void run(CommandCallback<Void> callback) throws Throwable {
@@ -76,12 +75,11 @@ public class LogoutCommand extends Command<Void> implements InjectableAction {
    }
 
    private Observable clearWallet() {
-      return smartCardInteractor.disassociateActiveCardActionPipe()
-            .createObservableResult(new DisassociateActiveCardUserCommand())
-            .onErrorResumeNext(t -> {
-               return Observable.just(null);
-            })
-            .doOnCompleted(() -> sessionWalletActionPipeCreator.clearReplays());
+      return Observable.create(subscriber -> {
+         sessionWalletActionPipeCreator.clearReplays();
+         subscriber.onNext(null);
+         subscriber.onCompleted();
+      });
    }
 
    private Observable clearMessenger() {
@@ -128,6 +126,7 @@ public class LogoutCommand extends Command<Void> implements InjectableAction {
          notificationDelegate.cancelAll();
          badgeUpdater.updateBadge(0);
          offlineWarningDelegate.resetState();
+         replayEventDelegatesWiper.clearReplays();
          snappyRepository.clearAll();
 
          try {

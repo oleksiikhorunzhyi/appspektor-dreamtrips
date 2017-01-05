@@ -11,16 +11,12 @@ import static java.util.Arrays.asList;
 public class AutoClearSmartCardItemProvider extends BaseItemProvider {
 
    private final List<SettingsRadioModel> items = asList(
-         new SettingsRadioModel(R.string.wallet_settings_clear_flye_card_never, 0),
-         new SettingsRadioModel(R.string.wallet_settings_clear_flye_card_2_hours, TimeUnit.SECONDS.toMillis(2)),
-         new SettingsRadioModel(R.string.wallet_settings_clear_flye_card_4_hours, TimeUnit.SECONDS.toMillis(4)),
-         new SettingsRadioModel(R.string.wallet_settings_clear_flye_card_6_hours, TimeUnit.SECONDS.toMillis(6)),
-         new SettingsRadioModel(R.string.wallet_settings_clear_flye_card_8_hours, TimeUnit.SECONDS.toMillis(8)),
-         new SettingsRadioModel(R.string.wallet_settings_clear_flye_card_12_hours, TimeUnit.SECONDS.toMillis(12)),
-         new SettingsRadioModel(R.string.wallet_settings_clear_flye_card_24_hours, TimeUnit.SECONDS.toMillis(24)),
-         new SettingsRadioModel(R.string.wallet_settings_clear_flye_card_48_hours, TimeUnit.SECONDS.toMillis(48)),
-         new SettingsRadioModel(R.string.wallet_settings_clear_flye_card_1_week, TimeUnit.MINUTES.toMillis(7)),
-         new SettingsRadioModel(R.string.wallet_settings_clear_flye_card_1_month, TimeUnit.MINUTES.toMillis(30))
+         new SettingsRadioModel(R.string.wallet_settings_clear_flye_card_1_day, TimeUnit.DAYS.toMinutes(1)),
+         new SettingsRadioModel(R.string.wallet_settings_clear_flye_card_2_days, TimeUnit.DAYS.toMinutes(2)),
+         new SettingsRadioModel(R.string.wallet_settings_clear_flye_card_3_days, TimeUnit.DAYS.toMinutes(3)),
+         new SettingsRadioModel(R.string.wallet_settings_clear_flye_card_4_days, TimeUnit.DAYS.toMinutes(4)),
+         new SettingsRadioModel(R.string.wallet_settings_clear_flye_card_5_days, TimeUnit.DAYS.toMinutes(5)),
+         new SettingsRadioModel(R.string.wallet_settings_clear_flye_card_never, 0)
    );
 
    @Override

@@ -2,13 +2,9 @@ package com.worldventures.dreamtrips.modules.bucketlist.presenter;
 
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.core.rx.RxView;
-import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
-import com.worldventures.dreamtrips.modules.bucketlist.api.GetCategoryQuery;
-import com.worldventures.dreamtrips.modules.bucketlist.event.BucketAnalyticEvent;
-import com.worldventures.dreamtrips.modules.bucketlist.event.BucketItemAnalyticEvent;
-import com.worldventures.dreamtrips.modules.bucketlist.event.BucketItemPhotoAnalyticEvent;
 import com.worldventures.dreamtrips.modules.bucketlist.service.BucketInteractor;
 import com.worldventures.dreamtrips.modules.bucketlist.service.command.BucketListCommand;
+import com.worldventures.dreamtrips.modules.bucketlist.service.command.GetCategoriesCommand;
 import com.worldventures.dreamtrips.modules.bucketlist.service.command.RecentlyAddedBucketsFromPopularCommand;
 import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
@@ -21,8 +17,8 @@ import javax.inject.Inject;
 
 import io.techery.janet.ActionPipe;
 import io.techery.janet.Command;
+import io.techery.janet.helper.ActionStateSubscriber;
 import rx.Observable;
-import rx.android.schedulers.AndroidSchedulers;
 
 import static com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem.BucketType;
 import static com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem.BucketType.ACTIVITY;
@@ -37,16 +33,9 @@ public class BucketTabsPresenter extends Presenter<BucketTabsPresenter.View> {
    @Override
    public void takeView(View view) {
       super.takeView(view);
-      apiErrorPresenter.setView(view);
       setTabs();
       loadCategories();
-
-      view.bind(bucketInteractor.bucketListActionPipe()
-            .createObservableResult(BucketListCommand.fetch(getUser().getId(), false))
-            .concatMap(bucketListAction -> bucketListAction.isFromCache() ? bucketInteractor.bucketListActionPipe()
-                  .createObservable(BucketListCommand.fetch(getUser().getId(), true)) : Observable.just(bucketListAction))
-            .observeOn(AndroidSchedulers.mainThread())).subscribe(bucketListAction -> {
-      }, this::handleError);
+      loadBucketList();
    }
 
    @Override
@@ -64,12 +53,25 @@ public class BucketTabsPresenter extends Presenter<BucketTabsPresenter.View> {
       db.saveOpenBucketTabType(null);
    }
 
-   protected User getUser() {
-      return getAccount();
+   private void loadCategories() {
+      bucketInteractor.getCategoriesPipe()
+            .createObservable(new GetCategoriesCommand())
+            .compose(bindView())
+            .subscribe(new ActionStateSubscriber<GetCategoriesCommand>()
+                  .onSuccess(getCategoriesCommand -> db.putList(SnappyRepository.CATEGORIES,
+                        getCategoriesCommand.getResult()))
+                  .onFail(this::handleError)
+            );
    }
 
-   private void loadCategories() {
-      doRequest(new GetCategoryQuery(), categoryItems -> db.putList(SnappyRepository.CATEGORIES, categoryItems));
+   private void loadBucketList() {
+      bucketInteractor.bucketListActionPipe()
+            .createObservable(BucketListCommand.fetch(getUser().getId(), false))
+            .compose(bindViewToMainComposer())
+            .concatMap(state -> state.action.isFromCache() ? bucketInteractor.bucketListActionPipe()
+                  .createObservable(BucketListCommand.fetch(getUser().getId(), true)) : Observable.just(state))
+            .subscribe(new ActionStateSubscriber<BucketListCommand>()
+                  .onFail(this::handleError));
    }
 
    public void setTabs() {
@@ -84,18 +86,6 @@ public class BucketTabsPresenter extends Presenter<BucketTabsPresenter.View> {
       db.saveOpenBucketTabType(type.name());
    }
 
-   public void onEvent(BucketAnalyticEvent event) {
-      TrackingHelper.actionBucket(event.getActionAttribute(), getTabAttributeAnalytic());
-   }
-
-   public void onEvent(BucketItemAnalyticEvent event) {
-      TrackingHelper.actionBucketItem(event.getActionAttribute(), event.getBucketItemId());
-   }
-
-   public void onEvent(BucketItemPhotoAnalyticEvent event) {
-      TrackingHelper.actionBucketItemPhoto(event.getActionAttribute(), event.getBucketItemId());
-   }
-
    private Observable<RecentlyAddedBucketsFromPopularCommand> recentTabCountObservable() {
       ActionPipe<RecentlyAddedBucketsFromPopularCommand> recentPipe = bucketInteractor.recentlyAddedBucketsFromPopularCommandPipe();
       return Observable.merge(recentPipe.createObservableResult(RecentlyAddedBucketsFromPopularCommand.get(LOCATION)), recentPipe
@@ -103,20 +93,8 @@ public class BucketTabsPresenter extends Presenter<BucketTabsPresenter.View> {
             .get(DINING)));
    }
 
-   private String getTabAttributeAnalytic() {
-      String tabAttribute = "";
-      switch (view.getCurrentTabPosition()) {
-         case 0:
-            tabAttribute = TrackingHelper.ATTRIBUTE_LOCATIONS;
-            break;
-         case 1:
-            tabAttribute = TrackingHelper.ATTRIBUTE_ACTIVITIES;
-            break;
-         case 2:
-            tabAttribute = TrackingHelper.ATTRIBUTE_DINING;
-            break;
-      }
-      return tabAttribute;
+   protected User getUser() {
+      return getAccount();
    }
 
    public interface View extends RxView, ApiErrorView {
@@ -125,7 +103,5 @@ public class BucketTabsPresenter extends Presenter<BucketTabsPresenter.View> {
       void setRecentBucketItemCountByType(BucketType type, int count);
 
       void updateSelection();
-
-      int getCurrentTabPosition();
    }
 }

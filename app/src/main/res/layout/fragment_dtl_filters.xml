@@ -6,6 +6,7 @@
       android:layout_height="match_parent"
       android:background="@color/white"
       android:clickable="true"
+      tools:layout_marginLeft="100dp"
       >
 
    <FrameLayout
@@ -62,7 +63,6 @@
             android:textSize="14sp"
             tools:ignore="HardcodedText"
             />
-
    </FrameLayout>
 
    <FrameLayout
@@ -83,9 +83,6 @@
             custom:mrb_pinColor="#54B5FC"
             custom:mrb_rangeBar="false"
             custom:mrb_selectorColor="#54B5FC"
-            custom:mrb_tickEnd="50"
-            custom:mrb_tickInterval="10"
-            custom:mrb_tickStart="10"
             />
 
       <TextView
@@ -99,39 +96,92 @@
             android:textColor="@color/black"
             />
 
-      <TextView
+      <android.support.v7.widget.AppCompatTextView
+            android:id="@+id/filter_distance_left_value"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="bottom"
             android:paddingLeft="25dp"
             android:paddingTop="15dp"
-            android:text="10"
             android:textColor="@color/black"
             android:textSize="14sp"
-            tools:ignore="HardcodedText"
+            tools:text="10"
             />
 
-      <TextView
+      <android.support.v7.widget.AppCompatTextView
+            android:id="@+id/filter_distance_right_value"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="bottom|end"
             android:paddingRight="20dp"
             android:paddingTop="15dp"
-            android:text="50+"
             android:textColor="@color/black"
             android:textSize="14sp"
-            tools:ignore="HardcodedText"
+            tools:text="50"
             />
-
    </FrameLayout>
 
-   <android.support.v7.widget.RecyclerView
-         android:id="@+id/recyclerViewFilters"
+   <FrameLayout
          android:layout_width="match_parent"
-         android:layout_height="wrap_content"
-         android:layout_above="@+id/footer"
+         android:layout_height="match_parent"
          android:layout_below="@+id/distance_view_group"
-         />
+         android:layout_above="@+id/footer"
+         >
+
+      <android.support.v7.widget.RecyclerView
+            android:id="@+id/recyclerViewFilters"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            />
+
+      <FrameLayout
+            android:id="@+id/amenities_progress"
+            android:layout_width="match_parent"
+            android:layout_height="83dp"
+            android:visibility="gone"
+            tools:visibility="visible"
+            >
+
+         <me.zhanghai.android.materialprogressbar.MaterialProgressBar
+               android:layout_width="wrap_content"
+               android:layout_height="wrap_content"
+               android:layout_gravity="center"
+               android:indeterminate="true"
+               />
+      </FrameLayout>
+
+      <LinearLayout
+            android:id="@+id/amenities_error_view"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="57dp"
+            android:orientation="vertical"
+            android:gravity="center"
+            android:visibility="gone"
+            tools:visibility="visible"
+            >
+
+         <android.support.v7.widget.AppCompatTextView
+               android:id="@+id/amenities_error_caption"
+               android:layout_width="wrap_content"
+               android:layout_height="wrap_content"
+               android:paddingLeft="24dp"
+               android:paddingRight="24dp"
+               android:gravity="center_horizontal"
+               android:text="@string/filter_amenities_error_caption"
+               android:textColor="@android:color/black"
+               />
+
+         <android.support.v7.widget.AppCompatButton
+               android:id="@+id/amenities_retry_button"
+               android:layout_width="wrap_content"
+               android:layout_height="wrap_content"
+               android:layout_marginTop="14dp"
+               android:text="@string/try_again"
+               android:theme="@style/DtlButtonWhiteTheme"
+               />
+      </LinearLayout>
+   </FrameLayout>
 
    <LinearLayout
          android:id="@+id/footer"
@@ -167,8 +217,5 @@
             android:textColor="#025E93"
             android:textStyle="bold"
             />
-
    </LinearLayout>
-
-
 </RelativeLayout>

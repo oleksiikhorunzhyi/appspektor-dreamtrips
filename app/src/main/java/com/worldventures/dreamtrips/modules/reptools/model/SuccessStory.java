@@ -23,7 +23,6 @@ public class SuccessStory extends BaseEntity implements Parcelable, Filterable, 
    private String author;
    private String category;
    private String locale;
-   @SerializedName("published_date") private String publishedDate;
    private String url;
    private String sharingUrl = "";
    private boolean liked;
@@ -38,7 +37,6 @@ public class SuccessStory extends BaseEntity implements Parcelable, Filterable, 
       this.author = in.readString();
       this.category = in.readString();
       this.locale = in.readString();
-      this.publishedDate = in.readString();
       this.url = in.readString();
       this.sharingUrl = in.readString();
       this.liked = in.readByte() != 0;
@@ -85,14 +83,6 @@ public class SuccessStory extends BaseEntity implements Parcelable, Filterable, 
       this.locale = locale;
    }
 
-   public String getPublishedDate() {
-      return publishedDate;
-   }
-
-   public void setPublishedDate(String publishedDate) {
-      this.publishedDate = publishedDate;
-   }
-
    public String getUrl() {
       return url;
    }
@@ -124,7 +114,6 @@ public class SuccessStory extends BaseEntity implements Parcelable, Filterable, 
       dest.writeString(this.author);
       dest.writeString(this.category);
       dest.writeString(this.locale);
-      dest.writeString(this.publishedDate);
       dest.writeString(this.url);
       dest.writeString(this.sharingUrl);
       dest.writeByte(liked ? (byte) 1 : (byte) 0);

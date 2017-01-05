@@ -20,6 +20,7 @@ public class BucketPhotoConverter implements Converter<com.worldventures.dreamtr
    @Override
    public BucketPhoto convert(MapperyContext mapperyContext, com.worldventures.dreamtrips.api.bucketlist.model.BucketPhoto apiPhoto) {
       BucketPhoto photo = new BucketPhoto();
+      photo.setUid(apiPhoto.uid());
       photo.setUrl(apiPhoto.url());
       photo.setOriginUrl(apiPhoto.originUrl());
       return photo;

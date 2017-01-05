@@ -16,6 +16,7 @@ import com.worldventures.dreamtrips.modules.common.view.custom.PhotoPickerLayout
 import javax.inject.Inject;
 
 import butterknife.InjectView;
+import timber.log.Timber;
 
 @Layout(R.layout.fragment_picker)
 public class MediaPickerFragment extends BaseFragmentWithArgs<MediaPickerPresenter, PickerBundle> implements MediaPickerPresenter.View {
@@ -93,12 +94,17 @@ public class MediaPickerFragment extends BaseFragmentWithArgs<MediaPickerPresent
 
    @Override
    public boolean back() {
-      photoPickerLayout.hidePanel();
-      @IdRes int containerId = (getView() != null && getView().getParent() != null) ? ((View) getView().getParent()).getId() : DEFAULT_CONTAINER_ID;
-      router.moveTo(Route.MEDIA_PICKER, NavigationConfigBuilder.forRemoval()
-            .containerId(containerId)
-            .fragmentManager(getFragmentManager())
-            .build());
+      // TODO Revise operations with stack and binding to view when returning processed images from presenter
+      try {
+         photoPickerLayout.hidePanel();
+         @IdRes int containerId = (getView() != null && getView().getParent() != null) ? ((View) getView().getParent()).getId() : DEFAULT_CONTAINER_ID;
+         router.moveTo(Route.MEDIA_PICKER, NavigationConfigBuilder.forRemoval()
+               .containerId(containerId)
+               .fragmentManager(getFragmentManager())
+               .build());
+      } catch (Exception ex) {
+         Timber.w(ex, "Could not hide photo picker");
+      }
       return true;
    }
 }

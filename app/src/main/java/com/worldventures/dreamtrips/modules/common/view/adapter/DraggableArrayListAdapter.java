@@ -24,11 +24,14 @@ import com.h6ah4i.android.widget.advrecyclerview.draggable.DraggableItemAdapter;
 import com.h6ah4i.android.widget.advrecyclerview.draggable.DraggableItemViewHolder;
 import com.h6ah4i.android.widget.advrecyclerview.draggable.ItemDraggableRange;
 import com.techery.spares.adapter.BaseArrayListAdapter;
+import com.techery.spares.adapter.BaseDelegateAdapter;
 import com.techery.spares.module.Injector;
 import com.techery.spares.ui.view.cell.AbstractCell;
+import com.techery.spares.ui.view.cell.AbstractDelegateCell;
+import com.techery.spares.ui.view.cell.CellDelegate;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem;
 
-public abstract class DraggableArrayListAdapter<V> extends BaseArrayListAdapter<V> implements DraggableItemAdapter<DraggableArrayListAdapter.DraggableCell> {
+public abstract class DraggableArrayListAdapter<V> extends BaseDelegateAdapter<V> implements DraggableItemAdapter<DraggableArrayListAdapter.DraggableCell> {
 
    private MoveListener moveListener;
    private SparseBooleanArray dragMarkers;
@@ -106,7 +109,7 @@ public abstract class DraggableArrayListAdapter<V> extends BaseArrayListAdapter<
       void onItemMoved(int from, int to);
    }
 
-   public static abstract class DraggableCell<V> extends AbstractCell<V> implements DraggableItemViewHolder {
+   public static abstract class DraggableCell<T, V extends CellDelegate<T>> extends AbstractDelegateCell<T, V> implements DraggableItemViewHolder {
       public DraggableCell(View view) {
          super(view);
       }

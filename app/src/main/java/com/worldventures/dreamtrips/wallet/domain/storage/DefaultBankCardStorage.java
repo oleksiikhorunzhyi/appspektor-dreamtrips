@@ -4,15 +4,11 @@ import android.support.annotation.Nullable;
 
 import com.worldventures.dreamtrips.core.janet.cache.CacheBundle;
 import com.worldventures.dreamtrips.core.janet.cache.CachedAction;
-import com.worldventures.dreamtrips.core.janet.cache.storage.MultipleActionStorage;
+import com.worldventures.dreamtrips.core.janet.cache.storage.ActionStorage;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
-import com.worldventures.dreamtrips.wallet.service.command.FetchDefaultCardIdCommand;
-import com.worldventures.dreamtrips.wallet.service.command.SetDefaultCardOnDeviceCommand;
+import com.worldventures.dreamtrips.wallet.service.command.DefaultCardIdCommand;
 
-import java.util.Arrays;
-import java.util.List;
-
-public class DefaultBankCardStorage implements MultipleActionStorage<String> {
+public class DefaultBankCardStorage implements ActionStorage<String> {
 
    private final SnappyRepository snappyRepository;
 
@@ -31,8 +27,7 @@ public class DefaultBankCardStorage implements MultipleActionStorage<String> {
    }
 
    @Override
-   public List<Class<? extends CachedAction>> getActionClasses() {
-      return Arrays.asList(FetchDefaultCardIdCommand.class, SetDefaultCardOnDeviceCommand.class);
+   public Class<? extends CachedAction> getActionClass() {
+      return DefaultCardIdCommand.class;
    }
-
 }

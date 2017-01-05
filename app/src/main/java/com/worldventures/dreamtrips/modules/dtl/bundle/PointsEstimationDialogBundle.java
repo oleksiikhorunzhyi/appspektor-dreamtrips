@@ -3,16 +3,22 @@ package com.worldventures.dreamtrips.modules.dtl.bundle;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.worldventures.dreamtrips.modules.dtl.model.merchant.Merchant;
+
 public class PointsEstimationDialogBundle implements Parcelable {
 
-   private String merchantId;
+   private Merchant merchant;
 
-   public PointsEstimationDialogBundle(String merchantId) {
-      this.merchantId = merchantId;
+   public PointsEstimationDialogBundle(Merchant merchant) {
+      this.merchant = merchant;
    }
 
-   public String getMerchantId() {
-      return merchantId;
+   public Merchant getMerchant() {
+      return merchant;
+   }
+
+   public void setMerchant(Merchant merchant) {
+      this.merchant = merchant;
    }
 
    ///////////////////////////////////////////////////////////////////////////
@@ -20,23 +26,23 @@ public class PointsEstimationDialogBundle implements Parcelable {
    ///////////////////////////////////////////////////////////////////////////
 
    protected PointsEstimationDialogBundle(Parcel in) {
-      merchantId = in.readString();
+      merchant = (Merchant) in.readSerializable();
    }
 
    @Override
    public void writeToParcel(Parcel dest, int flags) {
-      dest.writeString(merchantId);
+      dest.writeSerializable(merchant);
    }
 
-   public static final Creator<PointsEstimationDialogBundle> CREATOR = new Creator<PointsEstimationDialogBundle>() {
+   public static final Creator<MerchantBundle> CREATOR = new Creator<MerchantBundle>() {
       @Override
-      public PointsEstimationDialogBundle createFromParcel(Parcel in) {
-         return new PointsEstimationDialogBundle(in);
+      public MerchantBundle createFromParcel(Parcel in) {
+         return new MerchantBundle(in);
       }
 
       @Override
-      public PointsEstimationDialogBundle[] newArray(int size) {
-         return new PointsEstimationDialogBundle[size];
+      public MerchantBundle[] newArray(int size) {
+         return new MerchantBundle[size];
       }
    };
 

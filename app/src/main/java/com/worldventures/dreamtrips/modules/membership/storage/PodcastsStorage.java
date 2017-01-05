@@ -5,7 +5,7 @@ import com.worldventures.dreamtrips.core.janet.cache.storage.ActionStorage;
 import com.worldventures.dreamtrips.core.janet.cache.storage.PaginatedCombinedStorage;
 import com.worldventures.dreamtrips.core.janet.cache.storage.PaginatedDiskStorage;
 import com.worldventures.dreamtrips.core.janet.cache.storage.PaginatedMemoryStorage;
-import com.worldventures.dreamtrips.modules.membership.command.GetPodcastsCommand;
+import com.worldventures.dreamtrips.modules.membership.service.command.GetPodcastsCommand;
 import com.worldventures.dreamtrips.modules.membership.model.Podcast;
 
 import java.util.List;

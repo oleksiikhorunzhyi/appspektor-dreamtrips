@@ -29,7 +29,6 @@ import com.messenger.ui.view.settings.TripChatSettingsScreenImpl;
 import com.messenger.ui.widget.MessengerPhotoPickerLayout;
 import com.techery.spares.session.SessionHolder;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.core.api.DreamSpiceManager;
 import com.worldventures.dreamtrips.core.component.ComponentDescription;
 import com.worldventures.dreamtrips.core.permission.PermissionDispatcher;
 import com.worldventures.dreamtrips.core.session.UserSession;
@@ -76,8 +75,8 @@ public class MessengerActivityModule {
 
    @Provides
    @Singleton
-   CropImageDelegate provideCropImageDelegate(Activity activity, DreamSpiceManager dreamSpiceManager) {
-      return new CropImageDelegate(activity, dreamSpiceManager);
+   CropImageDelegate provideCropImageDelegate(Activity activity) {
+      return new CropImageDelegate(activity);
    }
 
 }

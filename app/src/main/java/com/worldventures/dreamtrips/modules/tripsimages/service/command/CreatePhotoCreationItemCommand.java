@@ -14,7 +14,6 @@ import com.worldventures.dreamtrips.modules.tripsimages.vision.ImageUtils;
 
 import javax.inject.Inject;
 
-import io.techery.janet.ActionState;
 import io.techery.janet.Command;
 import io.techery.janet.command.annotations.CommandAction;
 import rx.Observable;
@@ -39,9 +38,9 @@ public class CreatePhotoCreationItemCommand extends Command<PhotoCreationItem> i
                   bitmapObservable, Pair::new))
             .map(pair -> {
                PhotoCreationItem item = new PhotoCreationItem();
+               item.setId(photoGalleryModel.getImageUri().hashCode());
                item.setFileUri(photoGalleryModel.getImageUri());
                item.setFilePath(photoGalleryModel.getAbsolutePath());
-               item.setStatus(ActionState.Status.START);
                Size imageSize = photoGalleryModel.getSize();
                item.setWidth(imageSize != null ? imageSize.getWidth() : pair.second.getWidth());
                item.setHeight(imageSize != null ? imageSize.getHeight() : pair.second.getHeight());

@@ -4,12 +4,13 @@ import com.worldventures.dreamtrips.core.janet.dagger.InjectableAction;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.wallet.domain.entity.FirmwareUpdateData;
 import com.worldventures.dreamtrips.wallet.domain.entity.ImmutableSmartCard;
+import com.worldventures.dreamtrips.wallet.domain.entity.ImmutableSmartCardFirmware;
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCard;
+import com.worldventures.dreamtrips.wallet.domain.entity.SmartCardFirmware;
 import com.worldventures.dreamtrips.wallet.domain.storage.TemporaryStorage;
 import com.worldventures.dreamtrips.wallet.service.FirmwareInteractor;
-import com.worldventures.dreamtrips.wallet.service.SmartCardInteractor;
+import com.worldventures.dreamtrips.wallet.service.command.ActiveSmartCardCommand;
 import com.worldventures.dreamtrips.wallet.service.command.ConnectSmartCardCommand;
-import com.worldventures.dreamtrips.wallet.service.command.GetActiveSmartCardCommand;
 
 import java.io.File;
 
@@ -27,13 +28,13 @@ import static com.worldventures.dreamtrips.core.janet.CommandActionBaseHelper.Ac
 import static com.worldventures.dreamtrips.core.janet.JanetModule.JANET_WALLET;
 import static com.worldventures.dreamtrips.wallet.domain.entity.SmartCard.ConnectionStatus.CONNECTED;
 import static com.worldventures.dreamtrips.wallet.domain.entity.SmartCard.ConnectionStatus.DFU;
+import static rx.Observable.error;
 import static rx.Observable.just;
 
 @CommandAction
-public class InstallFirmwareCommand extends Command implements InjectableAction, FirmwareVersionCacheCommand {
+public class InstallFirmwareCommand extends Command implements InjectableAction {
 
    @Inject @Named(JANET_WALLET) Janet janet;
-   @Inject SmartCardInteractor smartCardInteractor;
    @Inject FirmwareInteractor firmwareInteractor;
    @Inject TemporaryStorage temporaryStorage;
    @Inject SnappyRepository snappyRepository;
@@ -52,6 +53,7 @@ public class InstallFirmwareCommand extends Command implements InjectableAction,
                   .flatMap(sc -> saveNewFirmwareVersion(sc))
             )
             .flatMap(aVoid -> clearFirmwareUpdateCache())
+            .flatMap(aVoid -> clearFirmwareFilesCache())
             .subscribe(wrap(callback));
    }
 
@@ -60,7 +62,9 @@ public class InstallFirmwareCommand extends Command implements InjectableAction,
             .flatMap(it -> {
                if (it.connectionStatus() == CONNECTED) return enableLockUnlockDevice(false);
                else if (it.connectionStatus() == DFU) return just(it);
-               else return Observable.error(new IllegalStateException("Can't connect to card on firmwareUpdateData upgrade"));
+               else {
+                  return error(new IllegalStateException("Can't connect to card on firmwareUpdateData upgrade"));
+               }
             })
             .map(it -> firmwareUpdateData.firmwareFile())
             .flatMap(this::installFirmware)
@@ -74,7 +78,7 @@ public class InstallFirmwareCommand extends Command implements InjectableAction,
    }
 
    private Observable<Void> enableLockUnlockDevice(boolean enable) {
-      return smartCardInteractor.enableLockUnlockDeviceActionPipe()
+      return janet.createPipe(EnableLockUnlockDeviceAction.class)
             .createObservableResult(new EnableLockUnlockDeviceAction(enable))
             .onErrorResumeNext(Observable.just(null))
             .map(action -> (Void) null);
@@ -84,18 +88,24 @@ public class InstallFirmwareCommand extends Command implements InjectableAction,
       return janet.createPipe(UpgradeFirmwareAction.class)
             .createObservableResult(new UpgradeFirmwareAction(file))
             .flatMap(action ->//todo remove it when temporary storage will be useless
-                  temporaryStorage.failInstall() ? Observable.error(new RuntimeException()) : Observable.just(action))
+                  temporaryStorage.failInstall() ? error(new RuntimeException()) : Observable.just(action))
             .map(it -> (Void) null);
 
    }
 
    private Observable saveNewFirmwareVersion(SmartCard smartCard) {
       return Observable.create(subscriber -> {
+         final SmartCardFirmware firmware =
+               ImmutableSmartCardFirmware.builder()
+                     .from(smartCard.firmwareVersion())
+                     .firmwareVersion(firmwareUpdateData.firmwareInfo().firmwareVersion())
+                     .build();
+
          snappyRepository.saveSmartCard(ImmutableSmartCard
                .builder()
                .from(smartCard)
                .sdkVersion(firmwareUpdateData.firmwareInfo().sdkVersion())
-               .firmWareVersion(firmwareUpdateData.firmwareInfo().firmwareVersion())
+               .firmwareVersion(firmware)
                .build());
          //
          if (subscriber.isUnsubscribed()) return;
@@ -113,25 +123,22 @@ public class InstallFirmwareCommand extends Command implements InjectableAction,
       return firmwareInteractor.firmwareCachePipe().createObservableResult(new FirmwareUpdateCacheCommand(null));
    }
 
+   private Observable clearFirmwareFilesCache() {
+      return firmwareInteractor.clearFirmwareFilesPipe().createObservableResult(
+            new FirmwareClearFilesCommand(firmwareUpdateData.firmwareFile().getParent()));
+   }
+
    private Observable<SmartCard> activeSmartCard() {
-      return smartCardInteractor.activeSmartCardPipe()
-            .createObservableResult(new GetActiveSmartCardCommand())
+      return janet.createPipe(ActiveSmartCardCommand.class)
+            .observeSuccessWithReplay()
+            .take(1)
             .map(Command::getResult);
    }
 
    private Observable<SmartCard> connectCard(SmartCard smartCard) {
-      return smartCardInteractor.connectActionPipe()
+      return janet.createPipe(ConnectSmartCardCommand.class)
             .createObservableResult(new ConnectSmartCardCommand(smartCard, false, true))
             .map(Command::getResult);
    }
 
-   @Override
-   public String sdkVersion() {
-      return firmwareUpdateData.firmwareInfo().sdkVersion();
-   }
-
-   @Override
-   public String firmwareVersion() {
-      return firmwareUpdateData.firmwareInfo().firmwareVersion();
-   }
 }

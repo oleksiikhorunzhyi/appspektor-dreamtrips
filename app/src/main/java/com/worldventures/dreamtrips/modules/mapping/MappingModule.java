@@ -2,35 +2,70 @@ package com.worldventures.dreamtrips.modules.mapping;
 
 import com.worldventures.dreamtrips.modules.bucketlist.model.converter.BucketCategoryConverter;
 import com.worldventures.dreamtrips.modules.bucketlist.model.converter.BucketCoverPhotoConverter;
+import com.worldventures.dreamtrips.modules.bucketlist.model.converter.BucketDiningItemConverter;
 import com.worldventures.dreamtrips.modules.bucketlist.model.converter.BucketItemSimpleConverter;
 import com.worldventures.dreamtrips.modules.bucketlist.model.converter.BucketItemSocializedConverter;
 import com.worldventures.dreamtrips.modules.bucketlist.model.converter.BucketLocationConverter;
+import com.worldventures.dreamtrips.modules.bucketlist.model.converter.BucketPhotoBodyConverter;
 import com.worldventures.dreamtrips.modules.bucketlist.model.converter.BucketPhotoConverter;
 import com.worldventures.dreamtrips.modules.bucketlist.model.converter.BucketTagConverter;
 import com.worldventures.dreamtrips.modules.bucketlist.model.converter.BucketTypeConverter;
+import com.worldventures.dreamtrips.modules.bucketlist.model.converter.PopularBucketItemFromActivityConverter;
+import com.worldventures.dreamtrips.modules.bucketlist.model.converter.PopularBucketItemFromDinningConverter;
+import com.worldventures.dreamtrips.modules.bucketlist.model.converter.PopularBucketItemFromLocationConverter;
 import com.worldventures.dreamtrips.modules.feed.converter.CommentConverter;
 import com.worldventures.dreamtrips.modules.feed.converter.FeedItemConverter;
 import com.worldventures.dreamtrips.modules.feed.converter.HashtagSimpleConverter;
 import com.worldventures.dreamtrips.modules.feed.converter.HashtagSuggestionConverter;
 import com.worldventures.dreamtrips.modules.feed.converter.LinksConverter;
+import com.worldventures.dreamtrips.modules.feed.converter.PhotoAttachmentConverter;
+import com.worldventures.dreamtrips.modules.feed.converter.PhotoSimpleConverter;
 import com.worldventures.dreamtrips.modules.feed.converter.PhotoSocializedConverter;
+import com.worldventures.dreamtrips.modules.feed.converter.PhotoWithAuthorConverter;
 import com.worldventures.dreamtrips.modules.feed.converter.PostSocializedConverter;
 import com.worldventures.dreamtrips.modules.feed.converter.ReversePostAttachmentsConverter;
 import com.worldventures.dreamtrips.modules.feed.converter.ReversePostDataConverter;
 import com.worldventures.dreamtrips.modules.feed.converter.SimplePostConverter;
+import com.worldventures.dreamtrips.modules.friends.model.converter.ApiUserToUserConverter;
+import com.worldventures.dreamtrips.modules.friends.model.converter.FriendProfileToUserConverter;
+import com.worldventures.dreamtrips.modules.friends.model.converter.FriendСandidateToUserConverter;
+import com.worldventures.dreamtrips.modules.friends.model.converter.MutualsConverter;
 import com.worldventures.dreamtrips.modules.infopages.model.FeedbackTypeConverter;
+import com.worldventures.dreamtrips.modules.mapping.converter.AccountToUserConverter;
 import com.worldventures.dreamtrips.modules.mapping.converter.CircleConverter;
 import com.worldventures.dreamtrips.modules.mapping.converter.Converter;
+import com.worldventures.dreamtrips.modules.mapping.converter.DocumentsConverter;
+import com.worldventures.dreamtrips.modules.mapping.converter.FeatureConverter;
+import com.worldventures.dreamtrips.modules.mapping.converter.FeedMetaDataConverter;
 import com.worldventures.dreamtrips.modules.mapping.converter.FeedbackImageAttachmentConverter;
 import com.worldventures.dreamtrips.modules.mapping.converter.FlagConverter;
+import com.worldventures.dreamtrips.modules.mapping.converter.ImageConverter;
+import com.worldventures.dreamtrips.modules.mapping.converter.InspirationModelsConverter;
 import com.worldventures.dreamtrips.modules.mapping.converter.LocationConverter;
+import com.worldventures.dreamtrips.modules.mapping.converter.MemberImageConverter;
+import com.worldventures.dreamtrips.modules.mapping.converter.PhotoTagConverter;
+import com.worldventures.dreamtrips.modules.mapping.converter.PhotoTagsParamsConverter;
+import com.worldventures.dreamtrips.modules.mapping.converter.PhotoUpdateParamsConverter;
 import com.worldventures.dreamtrips.modules.mapping.converter.PrivateProfileConverter;
 import com.worldventures.dreamtrips.modules.mapping.converter.PublicProfileConverter;
 import com.worldventures.dreamtrips.modules.mapping.converter.RelationshipConverter;
+import com.worldventures.dreamtrips.modules.mapping.converter.ReverseBucketBodyConverter;
+import com.worldventures.dreamtrips.modules.mapping.converter.ReverseBucketCoverBodyToUpdateBodyConverter;
+import com.worldventures.dreamtrips.modules.mapping.converter.ReverseBucketPostBodyConverter;
+import com.worldventures.dreamtrips.modules.mapping.converter.ReverseBucketPostBodyToUpdateBodyConverter;
+import com.worldventures.dreamtrips.modules.mapping.converter.ReverseBucketUpdateBodyConverter;
 import com.worldventures.dreamtrips.modules.mapping.converter.ReverseLocationConverter;
+import com.worldventures.dreamtrips.modules.mapping.converter.SessionConverter;
+import com.worldventures.dreamtrips.modules.mapping.converter.SettingConverter;
 import com.worldventures.dreamtrips.modules.mapping.converter.ShortProfilesConverter;
+import com.worldventures.dreamtrips.modules.mapping.converter.TaggedUserConverter;
 import com.worldventures.dreamtrips.modules.mapping.converter.UserAvatarConverter;
+import com.worldventures.dreamtrips.modules.mapping.converter.YSBHPhotoConverter;
 import com.worldventures.dreamtrips.modules.mapping.mapper.PodcastsMapper;
+import com.worldventures.dreamtrips.modules.membership.model.converter.InviteTemplateConverter;
+import com.worldventures.dreamtrips.modules.membership.model.converter.InviteTemplateFromInvitationPreviewConverter;
+import com.worldventures.dreamtrips.modules.membership.model.converter.SentInviteConverter;
+import com.worldventures.dreamtrips.modules.reptools.model.converter.SuccessStoryConverter;
 import com.worldventures.dreamtrips.modules.trips.model.converter.ActivityConverter;
 import com.worldventures.dreamtrips.modules.trips.model.converter.ContentItemConverter;
 import com.worldventures.dreamtrips.modules.trips.model.converter.RegionConverter;
@@ -42,11 +77,7 @@ import com.worldventures.dreamtrips.modules.video.model.converter.CategoryConver
 import com.worldventures.dreamtrips.modules.video.model.converter.VideoConverter;
 import com.worldventures.dreamtrips.modules.video.model.converter.VideoLanguageConverter;
 import com.worldventures.dreamtrips.modules.video.model.converter.VideoLocaleConverter;
-import com.worldventures.dreamtrips.wallet.domain.converter.BankCardToRecordConverter;
-import com.worldventures.dreamtrips.wallet.domain.converter.FirmwareResponseToFirmwareDataConverter;
-import com.worldventures.dreamtrips.wallet.domain.converter.ProfileAddressToUserAddressConverter;
-import com.worldventures.dreamtrips.wallet.domain.converter.RecordToBankCardConverter;
-import com.worldventures.dreamtrips.wallet.domain.converter.SmartCardDetailsConverter;
+import com.worldventures.dreamtrips.wallet.domain.converter.SmartCardConverterModule;
 
 import java.util.Set;
 
@@ -59,8 +90,9 @@ import io.techery.mappery.MapperyContext;
 import timber.log.Timber;
 
 @Module(
-      injects = {},
-      library = true, complete = false)
+      includes = {
+            SmartCardConverterModule.class
+      }, library = true, complete = false)
 public class MappingModule {
 
    @Provides
@@ -128,44 +160,14 @@ public class MappingModule {
 
    @Provides(type = Provides.Type.SET)
    @Singleton
+   Converter provideMemberImageConverter() {
+      return new MemberImageConverter();
+   }
+
+   @Provides(type = Provides.Type.SET)
+   @Singleton
    Converter provideContentItemConverter() {
       return new ContentItemConverter();
-   }
-
-   @Provides(type = Provides.Type.SET)
-   @Singleton
-   Converter provideFeedbackTypeConverter() {
-      return new FeedbackTypeConverter();
-   }
-
-   @Provides(type = Provides.Type.SET)
-   @Singleton
-   Converter provideBankCardToRecordConverter() {
-      return new BankCardToRecordConverter();
-   }
-
-   @Provides(type = Provides.Type.SET)
-   @Singleton
-   Converter provideSmartCardDetailsConverter() {
-      return new SmartCardDetailsConverter();
-   }
-
-   @Provides(type = Provides.Type.SET)
-   @Singleton
-   Converter provideRecordToBankCardConverter() {
-      return new RecordToBankCardConverter();
-   }
-
-   @Provides(type = Provides.Type.SET)
-   @Singleton
-   Converter provideProfileAddressToUserAddressConverter() {
-      return new ProfileAddressToUserAddressConverter();
-   }
-
-   @Provides(type = Provides.Type.SET)
-   @Singleton
-   Converter provideFirmwareRepsonseToFirmwareConverter() {
-      return new FirmwareResponseToFirmwareDataConverter();
    }
 
    @Provides
@@ -232,6 +234,18 @@ public class MappingModule {
    @Singleton
    Converter provideFeedbackBodyConverter() {
       return new FeedbackImageAttachmentConverter();
+   }
+
+   @Provides(type = Provides.Type.SET)
+   @Singleton
+   Converter provideInspirationModelsConverter() {
+      return new InspirationModelsConverter();
+   }
+
+   @Provides(type = Provides.Type.SET)
+   @Singleton
+   Converter provideFeedbackTypeConverter() {
+      return new FeedbackTypeConverter();
    }
 
    @Provides(type = Provides.Type.SET)
@@ -320,6 +334,12 @@ public class MappingModule {
 
    @Provides(type = Provides.Type.SET)
    @Singleton
+   Converter provideBucketDiningConverter() {
+      return new BucketDiningItemConverter();
+   }
+
+   @Provides(type = Provides.Type.SET)
+   @Singleton
    Converter provideBucketCategoryConverter() {
       return new BucketCategoryConverter();
    }
@@ -350,7 +370,199 @@ public class MappingModule {
 
    @Provides(type = Provides.Type.SET)
    @Singleton
+   Converter provideBucketPhotoBodyConverter() {
+      return new BucketPhotoBodyConverter();
+   }
+
+   @Provides(type = Provides.Type.SET)
+   @Singleton
    Converter provideBucketTagConverter() {
       return new BucketTagConverter();
+   }
+
+   @Provides(type = Provides.Type.SET)
+   @Singleton
+   Converter provideReverseBucketBodyConverter() {
+      return new ReverseBucketBodyConverter();
+   }
+
+   @Provides(type = Provides.Type.SET)
+   @Singleton
+   Converter provideReverseBucketCoverBodyToUpdateBodyConverter() {
+      return new ReverseBucketCoverBodyToUpdateBodyConverter();
+   }
+
+   @Provides(type = Provides.Type.SET)
+   @Singleton
+   Converter provideReverseBucketPostBodyToUpdateBodyConverter() {
+      return new ReverseBucketPostBodyToUpdateBodyConverter();
+   }
+
+   @Provides(type = Provides.Type.SET)
+   @Singleton
+   Converter provideReverseBucketUpdateBodyConverter() {
+      return new ReverseBucketUpdateBodyConverter();
+   }
+
+   @Provides(type = Provides.Type.SET)
+   @Singleton
+   Converter provideReversePostBucketBodyConverter() {
+      return new ReverseBucketPostBodyConverter();
+   }
+
+   @Provides(type = Provides.Type.SET)
+   @Singleton
+   Converter provideInviteTemplateConverter() {
+      return new InviteTemplateConverter();
+   }
+
+   @Provides(type = Provides.Type.SET)
+   @Singleton
+   Converter provideSentInviteConverter() {
+      return new SentInviteConverter();
+   }
+
+   @Provides(type = Provides.Type.SET)
+   @Singleton
+   Converter provideSuccessStoryConverter() {
+      return new SuccessStoryConverter();
+   }
+
+   @Provides(type = Provides.Type.SET)
+   @Singleton
+   Converter provideImageConverter() {
+      return new ImageConverter();
+   }
+
+   @Provides(type = Provides.Type.SET)
+   @Singleton
+   Converter providePhotoTagConverter() {
+      return new PhotoTagConverter();
+   }
+
+   @Provides(type = Provides.Type.SET)
+   @Singleton
+   Converter provideYSBHPhotoConverter() {
+      return new YSBHPhotoConverter();
+   }
+
+   @Provides(type = Provides.Type.SET)
+   @Singleton
+   Converter provideTaggedUserConverter() {
+      return new TaggedUserConverter();
+   }
+
+   @Provides(type = Provides.Type.SET)
+   @Singleton
+   Converter providePhotoTagsParamsConverter() {
+      return new PhotoTagsParamsConverter();
+   }
+
+   @Provides(type = Provides.Type.SET)
+   @Singleton
+   Converter providePhotoUpdateParamsConverter() {
+      return new PhotoUpdateParamsConverter();
+   }
+
+   @Provides(type = Provides.Type.SET)
+   @Singleton
+   Converter provideInviteTemplateFromInvitationPreviewConverter() {
+      return new InviteTemplateFromInvitationPreviewConverter();
+   }
+
+   @Provides(type = Provides.Type.SET)
+   @Singleton
+   Converter provideApiUserToUserConverter() {
+      return new ApiUserToUserConverter();
+   }
+
+   @Provides(type = Provides.Type.SET)
+   @Singleton
+   Converter provideFriendСandidateToUserConverter() {
+      return new FriendСandidateToUserConverter();
+   }
+
+   @Provides(type = Provides.Type.SET)
+   @Singleton
+   Converter provideFriendProfileToUserConverter() {
+      return new FriendProfileToUserConverter();
+   }
+
+   @Provides(type = Provides.Type.SET)
+   @Singleton
+   Converter provideMutualsConverter() {
+      return new MutualsConverter();
+   }
+
+   @Provides(type = Provides.Type.SET)
+   @Singleton
+   Converter providePopularBucketItemFromActivityConverter() {
+      return new PopularBucketItemFromActivityConverter();
+   }
+
+   @Provides(type = Provides.Type.SET)
+   @Singleton
+   Converter providePopularBucketItemFromDinningConverter() {
+      return new PopularBucketItemFromDinningConverter();
+   }
+
+   @Provides(type = Provides.Type.SET)
+   @Singleton
+   Converter providePopularBucketItemFromLocationConverter() {
+      return new PopularBucketItemFromLocationConverter();
+   }
+
+   @Provides(type = Provides.Type.SET)
+   @Singleton
+   Converter provideFeedMetaDataConverter() {
+      return new FeedMetaDataConverter();
+   }
+
+   @Provides(type = Provides.Type.SET)
+   @Singleton
+   Converter providePhotoAttachmentConverter() {
+      return new PhotoAttachmentConverter();
+   }
+
+   @Provides(type = Provides.Type.SET)
+   @Singleton
+   Converter providePhotoSimpleConverter() {
+      return new PhotoSimpleConverter();
+   }
+
+   @Provides(type = Provides.Type.SET)
+   @Singleton
+   Converter providePhotoWithAuthorConverter() {
+      return new PhotoWithAuthorConverter();
+   }
+
+   @Provides(type = Provides.Type.SET)
+   @Singleton
+   Converter provideAccountToUserConverter() {
+      return new AccountToUserConverter();
+   }
+
+   @Provides(type = Provides.Type.SET)
+   @Singleton
+   Converter provideSessionConverter() {
+      return new SessionConverter();
+   }
+
+   @Provides(type = Provides.Type.SET)
+   @Singleton
+   Converter provideFeatureConverter() {
+      return new FeatureConverter();
+   }
+
+   @Provides(type = Provides.Type.SET)
+   @Singleton
+   Converter provideSettingConverter() {
+      return new SettingConverter();
+   }
+
+   @Provides(type = Provides.Type.SET)
+   @Singleton
+   Converter provideDocumentsConverter() {
+      return new DocumentsConverter();
    }
 }

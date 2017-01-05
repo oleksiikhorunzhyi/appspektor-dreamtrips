@@ -5,6 +5,7 @@ import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.rx.RxView;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
+import com.worldventures.dreamtrips.modules.common.view.connection_overlay.ConnectionState;
 
 public class WebViewFragmentPresenter<T extends WebViewFragmentPresenter.View> extends Presenter<T> {
 
@@ -25,6 +26,10 @@ public class WebViewFragmentPresenter<T extends WebViewFragmentPresenter.View> e
    public void onResume() {
       super.onResume();
       if (inErrorState) load();
+   }
+
+   public void noInternetConnection() {
+      connectionStatePublishSubject.onNext(ConnectionState.DISCONNECTED);
    }
 
    protected void load() {

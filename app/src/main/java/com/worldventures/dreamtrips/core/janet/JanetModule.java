@@ -19,6 +19,7 @@ import com.worldventures.dreamtrips.core.janet.dagger.DaggerActionServiceWrapper
 import com.worldventures.dreamtrips.core.utils.tracksystem.Tracker;
 import com.worldventures.dreamtrips.wallet.di.MagstripeReaderModule;
 import com.worldventures.dreamtrips.wallet.di.SmartCardModule;
+import com.worldventures.dreamtrips.wallet.di.WalletDelegateModule;
 
 import java.net.CookieManager;
 import java.util.List;
@@ -46,6 +47,7 @@ import io.techery.janet.smartcard.client.SmartCardClient;
             JanetServiceModule.class,
             CacheActionStorageModule.class,
             SmartCardModule.class,
+            WalletDelegateModule.class,
             MagstripeReaderModule.class
       },
       complete = false, library = true)
@@ -62,13 +64,22 @@ public class JanetModule {
 
    @Singleton
    @Provides
-   Janet provideJanet(Set<ActionService> services, Set<ActionStorage> cacheStorageSet, @ForApplication Context context) {
+   Janet provideJanet(Set<ActionService> services, Set<ActionStorage> cacheStorageSet,
+         Set<MultipleActionStorage> multipleActionStorageSet,
+         @ForApplication Context context) {
       Janet.Builder builder = new Janet.Builder();
       for (ActionService service : services) {
          service = new TimberServiceWrapper(service);
          service = new CacheResultWrapper(service) {{
             for (ActionStorage storage : cacheStorageSet) {
                bindStorage(storage.getActionClass(), storage);
+            }
+
+            for (MultipleActionStorage storage : multipleActionStorageSet) {
+               List<Class<? extends CachedAction>> cachedActions = storage.getActionClasses();
+               for (Class clazz : cachedActions) {
+                  bindStorage(clazz, storage);
+               }
             }
          }};
          service = new DaggerActionServiceWrapper(service, context);
@@ -129,15 +140,16 @@ public class JanetModule {
    @Singleton
    @Provides(type = Provides.Type.SET)
    ActionService provideHttpService(@ForApplication Context appContext, HttpClient httpClient, Gson gson) {
-      return new DreamTripsHttpService(appContext, BuildConfig.DreamTripsApi, httpClient, new GsonConverter(gson));
+      return new DreamTripsHttpService(appContext, BuildConfig.DreamTripsApi, httpClient, new GsonConverter(gson),
+            new GsonConverter(new GsonProvider().provideGson()));
    }
 
    @Singleton
    @Provides
    @Named(JANET_API_LIB)
-   ActionService provideApiLibHttpService(@ForApplication Context appContext, HttpClient httpClient, Gson gson) {
+   ActionService provideApiLibHttpService(@ForApplication Context appContext, HttpClient httpClient) {
       return new NewDreamTripsHttpService(appContext, BuildConfig.DreamTripsApi, httpClient, new GsonConverter(new GsonProvider()
-            .provideGson()), new GsonConverter(gson));
+            .provideGson()));
    }
 
    @Singleton

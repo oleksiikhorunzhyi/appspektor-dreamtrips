@@ -4,23 +4,19 @@ import android.os.Parcel;
 
 import com.esotericsoftware.kryo.DefaultSerializer;
 import com.esotericsoftware.kryo.serializers.CompatibleFieldSerializer;
-import com.google.gson.annotations.SerializedName;
 import com.worldventures.dreamtrips.modules.common.model.BaseEntity;
 
 @DefaultSerializer(CompatibleFieldSerializer.class)
 public class DiningItem extends BaseEntity {
 
-   String name;
-   String country;
-   String city;
-   String address;
-   String cuisine;
-   @SerializedName("phone_number") String phone_number;
-   String url;
-   String description;
-   @SerializedName("short_description") String shortDescription;
-   @SerializedName("cover_photo") DiningCoverPhoto coverPhoto;
-   @SerializedName("price_range") String priceRange;
+   private String name;
+   private String country;
+   private String city;
+   private String address;
+   private String phone_number;
+   private String url;
+   private String description;
+   private String priceRange;
 
    public DiningItem() {
       super();
@@ -42,10 +38,6 @@ public class DiningItem extends BaseEntity {
       return address;
    }
 
-   public String getCuisine() {
-      return cuisine;
-   }
-
    public String getPhoneNumber() {
       return phone_number;
    }
@@ -62,12 +54,36 @@ public class DiningItem extends BaseEntity {
       return description;
    }
 
-   public String getShortDescription() {
-      return shortDescription;
+   public void setName(String name) {
+      this.name = name;
    }
 
-   public DiningCoverPhoto getCoverPhoto() {
-      return coverPhoto;
+   public void setCountry(String country) {
+      this.country = country;
+   }
+
+   public void setCity(String city) {
+      this.city = city;
+   }
+
+   public void setAddress(String address) {
+      this.address = address;
+   }
+
+   public void setPhoneNumber(String phoneNumber) {
+      this.phone_number = phoneNumber;
+   }
+
+   public void setUrl(String url) {
+      this.url = url;
+   }
+
+   public void setDescription(String description) {
+      this.description = description;
+   }
+
+   public void setPriceRange(String priceRange) {
+      this.priceRange = priceRange;
    }
 
    @Override
@@ -77,12 +93,9 @@ public class DiningItem extends BaseEntity {
       dest.writeString(this.country);
       dest.writeString(this.city);
       dest.writeString(this.address);
-      dest.writeString(this.cuisine);
       dest.writeString(this.phone_number);
       dest.writeString(this.url);
       dest.writeString(this.description);
-      dest.writeString(this.shortDescription);
-      dest.writeSerializable(this.coverPhoto);
       dest.writeString(this.priceRange);
    }
 
@@ -92,12 +105,9 @@ public class DiningItem extends BaseEntity {
       this.country = in.readString();
       this.city = in.readString();
       this.address = in.readString();
-      this.cuisine = in.readString();
       this.phone_number = in.readString();
       this.url = in.readString();
       this.description = in.readString();
-      this.shortDescription = in.readString();
-      this.coverPhoto = (DiningCoverPhoto) in.readSerializable();
       this.priceRange = in.readString();
    }
 

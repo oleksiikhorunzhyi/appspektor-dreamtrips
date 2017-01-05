@@ -1,6 +1,5 @@
 package com.worldventures.dreamtrips.modules.feed.converter;
 
-import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.common.view.custom.tagview.viewgroup.newio.model.PhotoTag;
 import com.worldventures.dreamtrips.modules.mapping.converter.Converter;
 import com.worldventures.dreamtrips.modules.trips.model.Location;
@@ -12,7 +11,7 @@ import java.util.ArrayList;
 import io.techery.mappery.MapperyContext;
 
 public abstract class PhotoConverter<T extends com.worldventures.dreamtrips.api.photos.model.Photo>
-   implements Converter<T, Photo> {
+      implements Converter<T, Photo> {
 
    @Override
    public Class<Photo> targetClass() {
@@ -30,8 +29,8 @@ public abstract class PhotoConverter<T extends com.worldventures.dreamtrips.api.
       photo.setLocation(mapperyContext.convert(apiPhoto.location(), Location.class));
       photo.setTags(new ArrayList<>(apiPhoto.tags()));
 
-      photo.setWidth(apiPhoto.width());
-      photo.setHeight(apiPhoto.height());
+      if (apiPhoto.width() != null) photo.setWidth(apiPhoto.width());
+      if (apiPhoto.height() != null) photo.setHeight(apiPhoto.height());
 
       photo.setPhotoTagsCount(apiPhoto.photoTagsCount());
       photo.setPhotoTags(mapperyContext.convert(apiPhoto.photoTags(), PhotoTag.class));

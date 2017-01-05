@@ -157,8 +157,8 @@
    <string name="sent_location">αποστολή τοποθεσίας</string>
    <string name="unread_conversation">Συζητήσεις</string>
 
-   <string name="disconnected_overlay_disconnected_message">Η σύνδεση χάθηκε</string>
-   <string name="disconnected_overlay_connecting_message">Σύνδεση…</string>
+   <string name="connection_overlay_disconnected_message">Η σύνδεση χάθηκε</string>
+   <string name="connection_overlay_connecting_message">Σύνδεση…</string>
 
    <string name="warning_no_internet_connection">Δεν υπάρχει σύνδεση στο διαδίκτυο</string>
 

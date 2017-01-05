@@ -15,7 +15,8 @@ public class BaseAnimatorRegistrar implements ScreenAnimatorRegistrar {
 
    @Override
    public AnimatorFactory getAnimatorFactory(Path from, Path to) {
-      AnimatorFactory animatorFactory = animators.get(new Pair<>(from.getClass(), to.getClass()));
-      return animatorFactory == null ? new HorizontalAnimatorFactory() : animatorFactory;
+      final Pair<Class<? extends Path>, Class<? extends Path>> key = new Pair<>(from.getClass(), to.getClass());
+      if (!animators.containsKey(key)) return new HorizontalAnimatorFactory();
+      return animators.get(key);
    }
 }

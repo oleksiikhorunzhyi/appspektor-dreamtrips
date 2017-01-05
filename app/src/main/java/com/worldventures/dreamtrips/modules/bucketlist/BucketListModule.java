@@ -16,7 +16,6 @@ import com.worldventures.dreamtrips.modules.bucketlist.presenter.ForeignBucketTa
 import com.worldventures.dreamtrips.modules.bucketlist.view.adapter.AutoCompleteAdapter;
 import com.worldventures.dreamtrips.modules.bucketlist.view.adapter.BucketItemAdapter;
 import com.worldventures.dreamtrips.modules.bucketlist.view.adapter.IgnoreFirstItemAdapter;
-import com.worldventures.dreamtrips.modules.common.view.horizontal_photo_view.cell.AddPhotoCell;
 import com.worldventures.dreamtrips.modules.bucketlist.view.cell.BucketItemCell;
 import com.worldventures.dreamtrips.modules.bucketlist.view.cell.BucketItemStaticCell;
 import com.worldventures.dreamtrips.modules.bucketlist.view.cell.BucketPhotoCell;
@@ -31,8 +30,9 @@ import com.worldventures.dreamtrips.modules.bucketlist.view.fragment.BucketTabsF
 import com.worldventures.dreamtrips.modules.bucketlist.view.fragment.ForeignBucketDetailsFragment;
 import com.worldventures.dreamtrips.modules.bucketlist.view.fragment.ForeignBucketListFragment;
 import com.worldventures.dreamtrips.modules.bucketlist.view.fragment.ForeignBucketTabsFragment;
+import com.worldventures.dreamtrips.modules.common.view.horizontal_photo_view.cell.AddPhotoCell;
 import com.worldventures.dreamtrips.modules.profile.adapters.IgnoreFirstExpandedItemAdapter;
-import com.worldventures.dreamtrips.modules.tripsimages.presenter.FixedListPhotosFullScreenPresenter;
+import com.worldventures.dreamtrips.modules.tripsimages.presenter.FixedListPhotosPresenter;
 
 import dagger.Module;
 import dagger.Provides;
@@ -58,7 +58,7 @@ import dagger.Provides;
             IgnoreFirstExpandedItemAdapter.class,
             AddPhotoCell.class,
             BucketPhotoCell.class,
-            FixedListPhotosFullScreenPresenter.class,
+            FixedListPhotosPresenter.class,
             BucketHorizontalPhotosView.class,
             ForeignBucketItemDetailsPresenter.class,
             ForeignBucketDetailsFragment.class,

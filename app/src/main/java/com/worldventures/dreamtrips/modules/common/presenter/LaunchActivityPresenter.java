@@ -1,7 +1,5 @@
 package com.worldventures.dreamtrips.modules.common.presenter;
 
-import android.provider.Settings;
-
 import com.messenger.synchmechanism.MessengerConnector;
 import com.techery.spares.utils.ValidationUtils;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
@@ -12,35 +10,33 @@ import com.worldventures.dreamtrips.modules.auth.service.LoginInteractor;
 import com.worldventures.dreamtrips.modules.auth.service.analytics.LoginAction;
 import com.worldventures.dreamtrips.modules.auth.service.analytics.LoginErrorAction;
 import com.worldventures.dreamtrips.modules.auth.util.SessionUtil;
-import com.worldventures.dreamtrips.modules.common.presenter.delegate.ClearDirectoryDelegate;
+import com.worldventures.dreamtrips.modules.background_uploading.service.BackgroundUploadingInteractor;
+import com.worldventures.dreamtrips.modules.background_uploading.service.RestoreCompoundOperationsCommand;
+import com.worldventures.dreamtrips.modules.common.service.CleanTempDirectoryCommand;
+import com.worldventures.dreamtrips.modules.common.service.ClearStoragesInteractor;
 import com.worldventures.dreamtrips.modules.common.view.ApiErrorView;
-import com.worldventures.dreamtrips.modules.common.view.util.DrawableUtil;
-import com.worldventures.dreamtrips.modules.dtl.model.location.DtlLocation;
 import com.worldventures.dreamtrips.modules.dtl.service.DtlLocationInteractor;
-import com.worldventures.dreamtrips.modules.dtl.service.action.DtlLocationCommand;
 
 import javax.inject.Inject;
 
 import icepick.State;
 import io.techery.janet.helper.ActionStateSubscriber;
 import rx.android.schedulers.AndroidSchedulers;
-import timber.log.Timber;
 
 import static com.worldventures.dreamtrips.util.ValidationUtils.isPasswordValid;
 import static com.worldventures.dreamtrips.util.ValidationUtils.isUsernameValid;
 
 public class LaunchActivityPresenter extends ActivityPresenter<LaunchActivityPresenter.View> {
 
-   @Inject ClearDirectoryDelegate clearTemporaryDirectoryDelegate;
-   @Inject DrawableUtil drawableUtil;
+   @Inject ClearStoragesInteractor clearStoragesInteractor;
    @Inject SnappyRepository db;
    @Inject AnalyticsInteractor analyticsInteractor;
    @Inject DtlLocationInteractor dtlLocationInteractor;
    @Inject LoginInteractor loginInteractor;
    @Inject MessengerConnector messengerConnector;
+   @Inject BackgroundUploadingInteractor backgroundUploadingInteractor;
 
    @State boolean dtlInitDone;
-   @State boolean clearCacheDone;
 
    @Override
    public void takeView(View view) {
@@ -63,9 +59,10 @@ public class LaunchActivityPresenter extends ActivityPresenter<LaunchActivityPre
                      launchModeBasedOnExistingSession();
                   })
                   .onFail((loginCommand, throwable) -> {
+                     handleError(loginCommand, throwable);
+                     view.dismissLoginProgress();
                      loginInteractor.loginActionPipe().clearReplays();
                      analyticsInteractor.analyticsActionPipe().send(new LoginErrorAction());
-                     view.alertLogin(loginCommand.getErrorMessage());
                   }));
    }
 
@@ -79,14 +76,12 @@ public class LaunchActivityPresenter extends ActivityPresenter<LaunchActivityPre
 
    private void splashMode() {
       view.openSplash();
-
-      if (!clearCacheDone) {
-         clearTemporaryDirectoryDelegate.clearTemporaryDirectory();
-         drawableUtil.removeCacheImages();
-         clearCacheDone = true;
-      }
-
-      onAuthSuccess();
+      clearStoragesInteractor.cleanTempDirectoryPipe()
+            .createObservable(new CleanTempDirectoryCommand())
+            .compose(bindViewToMainComposer())
+            .subscribe(new ActionStateSubscriber<CleanTempDirectoryCommand>()
+                  .onSuccess(cleanTempDirectoryCommand -> onAuthSuccess())
+                  .onFail((cleanTempDirectoryCommand, throwable) -> onAuthSuccess()));
    }
 
    private void loginMode() {
@@ -98,10 +93,8 @@ public class LaunchActivityPresenter extends ActivityPresenter<LaunchActivityPre
       return false;
    }
 
-   public void initDtl() {
-      db.cleanLastSelectedOffersOnlyToggle();
-      db.cleanLastMapCameraPosition();
-      dtlLocationInteractor.locationPipe().send(DtlLocationCommand.change(DtlLocation.UNDEFINED));
+   private void initDtl() {
+      db.cleanLastMapCameraPosition(); // TODO :: 26.09.16 move to PresetationInteractor
    }
 
    public void loginAction() {
@@ -120,6 +113,7 @@ public class LaunchActivityPresenter extends ActivityPresenter<LaunchActivityPre
    }
 
    private void onAuthSuccess() {
+      backgroundUploadingInteractor.restoreCompoundOperationsPipe().send(new RestoreCompoundOperationsCommand());
       analyticsInteractor.analyticsActionPipe().send(new LoginAction(appSessionHolder.get()
             .get().getUser().getUsername()));
       TrackingHelper.setUserId(getAccount().getUsername(), Integer.toString(getAccount().getId()));
@@ -140,7 +134,7 @@ public class LaunchActivityPresenter extends ActivityPresenter<LaunchActivityPre
 
       void openMain();
 
-      void alertLogin(String message);
+      void dismissLoginProgress();
 
       void showLoginProgress();
 

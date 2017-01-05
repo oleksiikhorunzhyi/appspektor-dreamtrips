@@ -134,10 +134,12 @@ public class DrawableUtil {
       }
    }
 
-   public void removeCacheImages() {
+   public void removeCacheImages(List<String> filteredPathes) {
       File[] cachedFiles = getImagesCacheDir().listFiles();
       for (File cachedFile : cachedFiles) {
-         cachedFile.delete();
+         if (!filteredPathes.contains(cachedFile.getAbsolutePath())) {
+            cachedFile.delete();
+         }
       }
    }
 
@@ -145,12 +147,5 @@ public class DrawableUtil {
       File cacheDir = new File(context.getCacheDir(), CACHE_DIR);
       cacheDir.mkdir();
       return cacheDir;
-   }
-
-   public static boolean isFileImage(File file) {
-      BitmapFactory.Options options = new BitmapFactory.Options();
-      options.inJustDecodeBounds = true;
-      BitmapFactory.decodeFile(file.getPath(), options);
-      return options.outWidth != -1 && options.outHeight != -1;
    }
 }

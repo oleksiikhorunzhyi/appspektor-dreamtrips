@@ -132,11 +132,6 @@ public class BucketTabsFragment<PRESENTER extends BucketTabsPresenter> extends R
    }
 
    @Override
-   public int getCurrentTabPosition() {
-      return currentPosition;
-   }
-
-   @Override
    public <T> Observable<T> bind(Observable<T> observable) {
       return observable;
    }

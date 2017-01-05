@@ -4,18 +4,16 @@ import android.content.Context;
 import android.location.Location;
 import android.support.annotation.Nullable;
 
+import com.google.android.gms.maps.model.LatLng;
 import com.techery.spares.module.Injector;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.modules.dtl.helper.DtlLocationHelper;
 import com.worldventures.dreamtrips.modules.dtl.location.LocationDelegate;
-import com.worldventures.dreamtrips.modules.dtl.model.DistanceType;
-import com.worldventures.dreamtrips.modules.dtl.model.LocationSourceType;
 import com.worldventures.dreamtrips.modules.dtl.model.location.DtlLocation;
-import com.worldventures.dreamtrips.modules.dtl.model.location.ImmutableDtlManualLocation;
-import com.worldventures.dreamtrips.modules.dtl.service.DtlFilterMerchantInteractor;
+import com.worldventures.dreamtrips.modules.dtl.model.location.ImmutableDtlLocation;
+import com.worldventures.dreamtrips.modules.dtl.service.AttributesInteractor;
 import com.worldventures.dreamtrips.modules.dtl.service.DtlLocationInteractor;
-import com.worldventures.dreamtrips.modules.dtl.service.DtlMerchantInteractor;
-import com.worldventures.dreamtrips.modules.dtl.service.action.DtlLocationCommand;
+import com.worldventures.dreamtrips.modules.dtl.service.MerchantsFacadeInteractor;
+import com.worldventures.dreamtrips.modules.dtl.service.action.LocationFacadeCommand;
 import com.worldventures.dreamtrips.modules.dtl_flow.DtlPresenterImpl;
 import com.worldventures.dreamtrips.modules.dtl_flow.ViewState;
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.locations.DtlLocationsPath;
@@ -27,12 +25,14 @@ import flow.Flow;
 import flow.History;
 import flow.path.Path;
 
+import static com.worldventures.dreamtrips.modules.dtl.model.LocationSourceType.NEAR_ME;
+
 public class DtlStartPresenterImpl extends DtlPresenterImpl<DtlStartScreen, ViewState.EMPTY> implements DtlStartPresenter {
 
    @Inject LocationDelegate gpsLocationDelegate;
    @Inject DtlLocationInteractor locationInteractor;
-   @Inject DtlMerchantInteractor merchantInteractor;
-   @Inject DtlFilterMerchantInteractor filterInteractor;
+   @Inject AttributesInteractor attributesInteractor;
+   @Inject MerchantsFacadeInteractor interactor;
 
    public DtlStartPresenterImpl(Context context, Injector injector) {
       super(context);
@@ -61,47 +61,46 @@ public class DtlStartPresenterImpl extends DtlPresenterImpl<DtlStartScreen, View
       proceedNavigation(null);
    }
 
-   public void proceedNavigation(@Nullable Location newLocation) {
-      locationInteractor.locationPipe()
-            .createObservableResult(DtlLocationCommand.last())
+   private void proceedNavigation(@Nullable Location newGpsLocation) {
+      locationInteractor.locationFacadePipe()
+            .observeSuccessWithReplay()
+            .take(1)
             .compose(bindViewIoToMainComposer())
-            .subscribe(command -> {
-               if (!command.isResultDefined()) {
-                  merchantInteractor.merchantsActionPipe().clearReplays();
-                  if (newLocation == null) navigatePath(DtlLocationsPath.getDefault());
-                  else {
-                     DtlLocation dtlLocation = ImmutableDtlManualLocation.builder()
-                           .locationSourceType(LocationSourceType.NEAR_ME)
-                           .longName(context.getString(R.string.dtl_near_me_caption))
-                           .coordinates(new com.worldventures.dreamtrips.modules.trips.model.Location(newLocation))
-                           .build();
-                     locationInteractor.locationPipe().send(DtlLocationCommand.change(dtlLocation));
-                     navigatePath(DtlMerchantsPath.withAllowedRedirection());
-                  }
-               } else {
-                  switch (command.getResult().getLocationSourceType()) {
-                     case NEAR_ME:
-                        if (newLocation == null) { // we had location before, but not now - and we need it
-                           locationInteractor.locationPipe().send(DtlLocationCommand.change(DtlLocation.UNDEFINED));
-                           filterInteractor.filterMerchantsActionPipe().clearReplays();
-                           navigatePath(DtlLocationsPath.getDefault());
-                           break;
-                        }
-                        //
-                        if (!DtlLocationHelper.checkLocation(0.5, newLocation, command.getResult()
-                              .getCoordinates()
-                              .asAndroidLocation(), DistanceType.MILES))
-                           filterInteractor.filterMerchantsActionPipe().clearReplays();
-                        //
+            .map(LocationFacadeCommand::getResult)
+            .subscribe(dtlLocation -> {
+               switch (dtlLocation.locationSourceType()) {
+                  case UNDEFINED:
+                     if (newGpsLocation == null) navigatePath(DtlLocationsPath.getDefault());
+                     else {
+                        DtlLocation dtlManualLocation = ImmutableDtlLocation.builder()
+                              .isExternal(false)
+                              .locationSourceType(NEAR_ME)
+                              .longName(context.getString(R.string.dtl_near_me_caption))
+                              .coordinates(new LatLng(newGpsLocation.getLatitude(), newGpsLocation.getLongitude()))
+                              .build();
+                        locationInteractor.changeSourceLocation(dtlManualLocation);
                         navigatePath(DtlMerchantsPath.withAllowedRedirection());
-                        break;
-                     case FROM_MAP:
-                        navigatePath(DtlMerchantsPath.getDefault());
-                        break;
-                     case EXTERNAL:
-                        navigatePath(DtlMerchantsPath.getDefault());
-                        break;
-                  }
+                     }
+                     break;
+                  case NEAR_ME:
+                     if (newGpsLocation == null) { // we had location before, but not now - and we need it
+                        locationInteractor.clear();
+                        navigatePath(DtlLocationsPath.getDefault());
+                        return;
+                     }
+                     if (dtlLocation.isOutOfMinDistance(newGpsLocation)) {
+                        locationInteractor.changeSourceLocation(ImmutableDtlLocation.builder()
+                              .from(dtlLocation)
+                              .isExternal(false)
+                              .coordinates(new LatLng(newGpsLocation.getLatitude(), newGpsLocation.getLongitude()))
+                              .build());
+                     }
+                     navigatePath(DtlMerchantsPath.withAllowedRedirection());
+                     break;
+                  case FROM_MAP:
+                  case EXTERNAL:
+                     navigatePath(DtlMerchantsPath.getDefault());
+                     break;
                }
             });
    }
@@ -117,13 +116,14 @@ public class DtlStartPresenterImpl extends DtlPresenterImpl<DtlStartScreen, View
     * @param e exception that {@link LocationDelegate} subscription returned
     */
    private void onLocationError(Throwable e) {
-      locationInteractor.locationPipe()
-            .createObservableResult(DtlLocationCommand.last())
-            .map(DtlLocationCommand::getResult)
+      locationInteractor.locationFacadePipe()
+            .observeSuccessWithReplay()
+            .take(1)
+            .map(LocationFacadeCommand::getResult)
             .compose(bindViewIoToMainComposer())
             .subscribe(location -> {
                // Determines whether we can proceed without locating device by GPS.
-               if (location.getLocationSourceType() != LocationSourceType.NEAR_ME) {
+               if (location.locationSourceType() != NEAR_ME) {
                   proceedNavigation(null);
                } else {
                   if (e instanceof LocationDelegate.LocationException)

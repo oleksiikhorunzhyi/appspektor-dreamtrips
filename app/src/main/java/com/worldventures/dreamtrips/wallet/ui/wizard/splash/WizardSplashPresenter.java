@@ -6,13 +6,11 @@ import android.os.Parcelable;
 import com.techery.spares.module.Injector;
 import com.worldventures.dreamtrips.core.utils.tracksystem.AnalyticsInteractor;
 import com.worldventures.dreamtrips.wallet.analytics.ScanCardAction;
-import com.worldventures.dreamtrips.wallet.analytics.TermsAction;
 import com.worldventures.dreamtrips.wallet.analytics.WalletAnalyticsCommand;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletPresenter;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.WalletScreen;
 import com.worldventures.dreamtrips.wallet.ui.common.navigation.Navigator;
 import com.worldventures.dreamtrips.wallet.ui.wizard.barcode.WizardScanBarcodePath;
-import com.worldventures.dreamtrips.wallet.ui.wizard.termsandconditionals.WizardTermsPath;
 
 import javax.inject.Inject;
 
@@ -21,30 +19,19 @@ public class WizardSplashPresenter extends WalletPresenter<WizardSplashPresenter
    @Inject Navigator navigator;
    @Inject AnalyticsInteractor analyticsInteractor;
 
-   private boolean termsAccepted;
-
-   public WizardSplashPresenter(Context context, Injector injector, boolean termsAccepted) {
+   public WizardSplashPresenter(Context context, Injector injector) {
       super(context, injector);
-      this.termsAccepted = termsAccepted;
    }
 
    @Override
    public void onAttachedToWindow() {
       super.onAttachedToWindow();
       trackScreen();
-      getView().setup(termsAccepted);
+      getView().setup();
    }
 
    private void trackScreen() {
-      if (!termsAccepted) {
-         analyticsInteractor.walletAnalyticsCommandPipe().send(new WalletAnalyticsCommand(new TermsAction()));
-      } else {
-         analyticsInteractor.walletAnalyticsCommandPipe().send(new WalletAnalyticsCommand(new ScanCardAction()));
-      }
-   }
-
-   public void openTerms() {
-      navigator.go(new WizardTermsPath());
+      analyticsInteractor.walletAnalyticsCommandPipe().send(new WalletAnalyticsCommand(new ScanCardAction()));
    }
 
    public void startScanCard() {
@@ -57,6 +44,6 @@ public class WizardSplashPresenter extends WalletPresenter<WizardSplashPresenter
 
    public interface Screen extends WalletScreen {
 
-      void setup(boolean termsAccepted);
+      void setup();
    }
 }

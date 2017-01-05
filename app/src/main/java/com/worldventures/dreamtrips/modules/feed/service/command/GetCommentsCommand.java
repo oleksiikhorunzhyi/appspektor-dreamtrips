@@ -1,17 +1,20 @@
 package com.worldventures.dreamtrips.modules.feed.service.command;
 
 import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.api.comment.GetCommentsHttpAction;
 import com.worldventures.dreamtrips.core.api.action.CommandWithError;
+import com.worldventures.dreamtrips.core.janet.JanetModule;
 import com.worldventures.dreamtrips.core.janet.dagger.InjectableAction;
 import com.worldventures.dreamtrips.modules.feed.model.comment.Comment;
-import com.worldventures.dreamtrips.modules.feed.service.api.GetCommentsHttpAction;
 
 import java.util.List;
 
 import javax.inject.Inject;
+import javax.inject.Named;
 
 import io.techery.janet.Janet;
 import io.techery.janet.command.annotations.CommandAction;
+import io.techery.mappery.MapperyContext;
 import rx.schedulers.Schedulers;
 
 @CommandAction
@@ -19,7 +22,8 @@ public class GetCommentsCommand extends CommandWithError<List<Comment>> implemen
 
    public static final int LIMIT = 10;
 
-   @Inject Janet janet;
+   @Inject @Named(JanetModule.JANET_API_LIB) Janet janet;
+   @Inject MapperyContext mapperyContext;
 
    private final String itemUid;
    private final int page;
@@ -33,7 +37,7 @@ public class GetCommentsCommand extends CommandWithError<List<Comment>> implemen
    protected void run(CommandCallback<List<Comment>> callback) throws Throwable {
       janet.createPipe(GetCommentsHttpAction.class, Schedulers.io())
             .createObservableResult(new GetCommentsHttpAction(itemUid, page, LIMIT))
-            .map(GetCommentsHttpAction::response)
+            .map(action -> mapperyContext.convert(action.response(), Comment.class))
             .subscribe(callback::onSuccess, callback::onFail);
    }
 

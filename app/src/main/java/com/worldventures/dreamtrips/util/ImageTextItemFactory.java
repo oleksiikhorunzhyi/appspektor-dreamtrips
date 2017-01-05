@@ -8,7 +8,7 @@ import android.text.TextUtils;
 
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.utils.IntentUtils;
-import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchant;
+import com.worldventures.dreamtrips.modules.dtl.model.merchant.Merchant;
 
 public class ImageTextItemFactory {
 
@@ -16,16 +16,16 @@ public class ImageTextItemFactory {
       throw new IllegalArgumentException("no instance");
    }
 
-   public static ImageTextItem create(Context context, DtlMerchant merchant, ImageTextItem.Type type) {
+   public static ImageTextItem create(Context context, Merchant merchant, ImageTextItem.Type type) {
       switch (type) {
          case ADDRESS:
-            return create(context, String.format("%s, %s, %s, %s", merchant.getAddress1(), merchant.getCity(), merchant.getState(), merchant
-                  .getZip()), R.drawable.address_icon, IntentUtils.newMapIntent(merchant.getCoordinates()
-                  .getLat(), merchant.getCoordinates().getLng()), type);
+            return create(context, String.format("%s, %s, %s, %s", merchant.address(), merchant.city(), merchant.state(), merchant
+                  .zip()), R.drawable.address_icon, IntentUtils.newMapIntent(merchant.coordinates()
+                  .lat(), merchant.coordinates().lng()), type);
          case PHONE_NUMBER:
-            return create(context, merchant.getPhone(), R.drawable.phone_icon, IntentUtils.newDialerIntent(merchant.getPhone()), type);
+            return create(context, merchant.phone(), R.drawable.phone_icon, IntentUtils.newDialerIntent(merchant.phone()), type);
          case WEBSITE_URL:
-            return create(context, merchant.getWebsite(), R.drawable.website_icon, IntentUtils.browserIntent(merchant.getWebsite()), type);
+            return create(context, merchant.website(), R.drawable.website_icon, IntentUtils.browserIntent(merchant.website()), type);
       }
       return null;
    }

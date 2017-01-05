@@ -52,9 +52,7 @@ public class WizardPowerOnScreen extends WalletLinearLayout<WizardPowerOnPresent
    protected void onFinishInflate() {
       super.onFinishInflate();
       supportConnectionStatusLabel(false);
-      toolbar.setNavigationOnClickListener(v -> presenter.onBack());
-
-      actionBtn.setOnClickListener(view -> getPresenter().openWelcome());
+      toolbar.setNavigationOnClickListener(v -> getPresenter().onBack());
       hideAllView();
       postDelayed(this::startSoarAnimation, SHOW_SOAR_TITLE_DELAY);
    }
@@ -91,5 +89,10 @@ public class WizardPowerOnScreen extends WalletLinearLayout<WizardPowerOnPresent
    @Override
    protected boolean hasToolbar() {
       return true;
+   }
+
+   @Override
+   public void setButtonAction(OnClickListener onClicklistener) {
+      actionBtn.setOnClickListener(onClicklistener);
    }
 }

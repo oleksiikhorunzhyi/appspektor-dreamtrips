@@ -10,13 +10,15 @@ import android.widget.TextView;
 
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.techery.spares.annotations.Layout;
+import com.techery.spares.utils.delegate.EditCommentCloseDelegate;
 import com.techery.spares.utils.ui.SoftInputUtil;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragmentWithArgs;
 import com.worldventures.dreamtrips.modules.common.view.util.TextWatcherAdapter;
 import com.worldventures.dreamtrips.modules.feed.bundle.SingleCommentBundle;
-import com.worldventures.dreamtrips.modules.feed.event.EditCommentCloseRequest;
 import com.worldventures.dreamtrips.modules.feed.presenter.EditCommentPresenter;
+
+import javax.inject.Inject;
 
 import butterknife.InjectView;
 import butterknife.OnClick;
@@ -25,11 +27,12 @@ import butterknife.OnClick;
 @Layout(R.layout.fragment_edit_comment)
 public class EditCommentFragment extends BaseFragmentWithArgs<EditCommentPresenter, SingleCommentBundle> implements EditCommentPresenter.View {
 
-
    @InjectView(R.id.user_photo) SimpleDraweeView userPhoto;
    @InjectView(R.id.user_name) TextView userName;
    @InjectView(R.id.comment_edit) EditText editComment;
    @InjectView(R.id.save) Button save;
+
+   @Inject EditCommentCloseDelegate commentCloseDelegate;
 
    @Override
    public void afterCreateView(View rootView) {
@@ -44,8 +47,12 @@ public class EditCommentFragment extends BaseFragmentWithArgs<EditCommentPresent
    @OnClick(R.id.save)
    public void onSave() {
       SoftInputUtil.hideSoftInputMethod(editComment);
+      getPresenter().onSave(editComment.getText().toString().trim());
+   }
+
+   @Override
+   public void disableSaveButton() {
       save.setEnabled(false);
-      getPresenter().onSave();
    }
 
    @Override
@@ -71,12 +78,7 @@ public class EditCommentFragment extends BaseFragmentWithArgs<EditCommentPresent
 
    @Override
    public void close() {
-      eventBus.post(new EditCommentCloseRequest(this.getClass().getName()));
-   }
-
-   @Override
-   public String getText() {
-      return editComment.getText().toString().trim();
+      commentCloseDelegate.post(this.getClass().getName());
    }
 
    @Override

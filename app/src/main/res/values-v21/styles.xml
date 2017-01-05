@@ -26,4 +26,9 @@
       <item name="android:thumbOffset">2dp</item>
       <item name="android:thumbTint">@android:color/white</item>
    </style>
+
+   <style name="RobotoMediumTextView" parent="TextAppearance.AppCompat">
+      <item name="android:fontFamily">sans-serif</item>
+   </style>
+
 </resources>

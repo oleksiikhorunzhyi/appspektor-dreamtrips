@@ -202,7 +202,7 @@ public abstract class ActionEntityFragment<PM extends ActionEntityPresenter, P e
 
    @OnClick(R.id.post_button)
    void onPost() {
-      postButton.setEnabled(false);
+      disableButton();
       getPresenter().post();
    }
 
@@ -227,7 +227,7 @@ public abstract class ActionEntityFragment<PM extends ActionEntityPresenter, P e
       getPresenter().cancelClicked();
    }
 
-   @OnClick(R.id.space)
+   @OnClick(R.id.content_layout)
    void onSpaceClicked() {
       if (ViewUtils.isTablet(getActivity())) getPresenter().cancelClicked();
    }
@@ -282,11 +282,6 @@ public abstract class ActionEntityFragment<PM extends ActionEntityPresenter, P e
             .containerId(R.id.additional_page_container)
             .data(bundle)
             .build());
-   }
-
-   @Override
-   public void onProgressClicked(PhotoCreationItem uploadTask) {
-      // nothing to do
    }
 
    @Override

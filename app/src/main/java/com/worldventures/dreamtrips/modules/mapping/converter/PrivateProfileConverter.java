@@ -3,7 +3,6 @@ package com.worldventures.dreamtrips.modules.mapping.converter;
 import com.worldventures.dreamtrips.api.profile.model.PrivateUserProfile;
 import com.worldventures.dreamtrips.api.session.model.Subscription;
 import com.worldventures.dreamtrips.modules.common.model.User;
-import com.worldventures.dreamtrips.modules.friends.model.Circle;
 
 import java.util.ArrayList;
 import java.util.List;

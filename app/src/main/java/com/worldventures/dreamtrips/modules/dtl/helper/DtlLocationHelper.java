@@ -6,9 +6,11 @@ import com.google.android.gms.maps.model.LatLng;
 import com.worldventures.dreamtrips.modules.dtl.model.DistanceType;
 import com.worldventures.dreamtrips.modules.dtl.model.LocationSourceType;
 import com.worldventures.dreamtrips.modules.dtl.model.location.DtlLocation;
-import com.worldventures.dreamtrips.modules.dtl.model.merchant.filter.DtlFilterParameters;
+import com.worldventures.dreamtrips.modules.dtl.model.merchant.Coordinates;
 
 public class DtlLocationHelper {
+
+   public static final double MAX_DISTANCE = 50;
 
    /**
     * Check if deviceLocation in near enough to city center
@@ -21,29 +23,34 @@ public class DtlLocationHelper {
     * @return LatLng object preferable for filtering purposes
     */
    public static LatLng selectAcceptableLocation(Location deviceLocation, DtlLocation dtlLocation) {
-      if (dtlLocation.getLocationSourceType() == LocationSourceType.EXTERNAL) {
-         return dtlLocation.getCoordinates().asLatLng();
+      if (dtlLocation.locationSourceType() == LocationSourceType.EXTERNAL) {
+         return dtlLocation.coordinates();
       }
       //
-      if (dtlLocation.getLocationSourceType() == LocationSourceType.NEAR_ME || dtlLocation.getLocationSourceType() == LocationSourceType.UNDEFINED) {
+      if (dtlLocation.locationSourceType() == LocationSourceType.NEAR_ME || dtlLocation.locationSourceType() == LocationSourceType.UNDEFINED) {
          return new LatLng(deviceLocation.getLatitude(), deviceLocation.getLongitude());
       }
       //
-      LatLng deviceLatLng = new LatLng(deviceLocation.getLatitude(), deviceLocation.getLongitude());
-      LatLng cityLatLng = dtlLocation.getCoordinates().asLatLng();
-      return checkLocation(DtlFilterParameters.MAX_DISTANCE, deviceLatLng, cityLatLng, DistanceType.MILES) ? deviceLatLng : cityLatLng;
+      LatLng deviceLatLng = asLatLng(deviceLocation);
+      LatLng cityLatLng = dtlLocation.coordinates();
+      return checkLocation(deviceLatLng, cityLatLng, MAX_DISTANCE, DistanceType.MILES) ? deviceLatLng : cityLatLng;
    }
 
-   public static boolean checkLocation(double maxDistance, LatLng currentLocation, LatLng targetLatLng, DistanceType distanceType) {
+   public static boolean checkMaxDistance(LatLng currentLocation, LatLng targetLatLng) {
+      return checkLocation(currentLocation, targetLatLng, MAX_DISTANCE, DistanceType.MILES);
+   }
+
+   public static boolean checkMinDistance(LatLng currentLocation, LatLng targetLatLng) {
+      return checkLocation(currentLocation, targetLatLng, 0.5, DistanceType.MILES);
+   }
+
+   public static boolean checkLocation(LatLng currentLocation, LatLng targetLatLng, double maxDistance, DistanceType distanceType) {
       double distance = distanceType == DistanceType.KMS ? distanceInKms(currentLocation, targetLatLng) : distanceInMiles(currentLocation, targetLatLng);
       return distance < maxDistance;
    }
 
-   public static boolean checkLocation(double maxDistance, Location currentLocation, Location targetLatLng, DistanceType distanceType) {
-      LatLng current = new LatLng(currentLocation.getLatitude(), currentLocation.getLongitude());
-      LatLng target = new LatLng(targetLatLng.getLatitude(), targetLatLng.getLongitude());
-      //
-      return checkLocation(maxDistance, current, target, distanceType);
+   public static LatLng asLatLng(Location location) {
+      return new LatLng(location.getLatitude(), location.getLongitude());
    }
 
    public static double calculateDistance(LatLng currentLatLng, LatLng targetLatLng) {

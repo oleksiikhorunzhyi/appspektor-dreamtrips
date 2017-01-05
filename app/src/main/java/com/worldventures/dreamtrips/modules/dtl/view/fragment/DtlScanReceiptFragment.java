@@ -18,9 +18,9 @@ import com.worldventures.dreamtrips.core.rx.RxBaseFragmentWithArgs;
 import com.worldventures.dreamtrips.core.utils.GraphicUtils;
 import com.worldventures.dreamtrips.modules.common.view.dialog.ProgressDialogFragment;
 import com.worldventures.dreamtrips.modules.common.view.util.TextWatcherAdapter;
-import com.worldventures.dreamtrips.modules.dtl.bundle.MerchantIdBundle;
+import com.worldventures.dreamtrips.modules.dtl.bundle.MerchantBundle;
 import com.worldventures.dreamtrips.modules.dtl.helper.DtlEnrollWizard;
-import com.worldventures.dreamtrips.modules.dtl.model.merchant.offer.DtlCurrency;
+import com.worldventures.dreamtrips.modules.dtl.model.merchant.offer.Currency;
 import com.worldventures.dreamtrips.modules.dtl.model.transaction.DtlTransaction;
 import com.worldventures.dreamtrips.modules.dtl.presenter.DtlPointsEstimationPresenter;
 import com.worldventures.dreamtrips.modules.dtl.presenter.DtlScanReceiptPresenter;
@@ -38,7 +38,7 @@ import mbanje.kurt.fabbutton.FabButton;
 
 @Layout(R.layout.fragment_scan_receipt)
 @MenuResource(R.menu.menu_mock)
-public class DtlScanReceiptFragment extends RxBaseFragmentWithArgs<DtlScanReceiptPresenter, MerchantIdBundle> implements DtlScanReceiptPresenter.View {
+public class DtlScanReceiptFragment extends RxBaseFragmentWithArgs<DtlScanReceiptPresenter, MerchantBundle> implements DtlScanReceiptPresenter.View {
 
    @InjectView(R.id.verify) Button verify;
    @InjectView(R.id.scan_receipt) Button scanReceipt;
@@ -94,7 +94,7 @@ public class DtlScanReceiptFragment extends RxBaseFragmentWithArgs<DtlScanReceip
 
    @Override
    protected DtlScanReceiptPresenter createPresenter(Bundle savedInstanceState) {
-      return new DtlScanReceiptPresenter(getArgs().getMerchantId());
+      return new DtlScanReceiptPresenter(getArgs().getMerchant());
    }
 
    @Override
@@ -128,11 +128,11 @@ public class DtlScanReceiptFragment extends RxBaseFragmentWithArgs<DtlScanReceip
    }
 
    @Override
-   public void showCurrency(DtlCurrency currency) {
-      final int padding = amountInput.getPaddingForCurrency(currency.getPrefix());
+   public void showCurrency(Currency currency) {
+      final int padding = amountInput.getPaddingForCurrency(currency.prefix());
       currencyHint.setPadding(0, padding, 0, 0);
       currencyHint.setText(currency.getCurrencyHint());
-      amountInput.setCurrencySymbol(currency.getPrefix());
+      amountInput.setCurrencySymbol(currency.prefix());
    }
 
    @Override

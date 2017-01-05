@@ -24,7 +24,7 @@
       <ImageView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@drawable/flyecard_angle"
+            android:src="@drawable/flyecard_angle_with_shadow"
             tools:ignore="ContentDescription"
             />
 

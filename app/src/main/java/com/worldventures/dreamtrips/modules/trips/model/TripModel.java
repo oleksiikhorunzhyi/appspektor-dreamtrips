@@ -122,7 +122,7 @@ public class TripModel extends BaseFeedEntity {
       this.available = available;
    }
 
-   public boolean isHasMultipleDates() {
+   public boolean hasMultipleDates() {
       return hasMultipleDates;
    }
 

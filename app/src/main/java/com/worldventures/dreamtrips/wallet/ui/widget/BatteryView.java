@@ -4,8 +4,7 @@ import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
-import android.graphics.Rect;
-import android.support.v4.content.ContextCompat;
+import android.graphics.PorterDuff;
 import android.support.v7.widget.AppCompatImageView;
 import android.util.AttributeSet;
 
@@ -13,6 +12,8 @@ import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.utils.ViewUtils;
 
 public class BatteryView extends AppCompatImageView {
+
+   public static final int BATTTER_LOW_THRESHOLD = 20;
    private final float rightLevelMargin;
    private final float leftLevelMargin;
    private final float topLevelMargin;
@@ -28,10 +29,10 @@ public class BatteryView extends AppCompatImageView {
    public BatteryView(Context context, AttributeSet attrs, int defStyleAttr) {
       super(context, attrs, defStyleAttr);
       //        setup margins
-      rightLevelMargin = ViewUtils.pxFromDp(getContext(), 18f);
+      rightLevelMargin = ViewUtils.pxFromDp(getContext(), 3f);
       leftLevelMargin = ViewUtils.pxFromDp(getContext(), 2f);
-      topLevelMargin = ViewUtils.pxFromDp(getContext(), 7f);
-      bottomLevelMargin = ViewUtils.pxFromDp(getContext(), 4f);
+      topLevelMargin = ViewUtils.pxFromDp(getContext(), 2f);
+      bottomLevelMargin = ViewUtils.pxFromDp(getContext(), 2f);
    }
 
    public void setLevel(int level) {
@@ -42,20 +43,31 @@ public class BatteryView extends AppCompatImageView {
    @Override
    protected void onFinishInflate() {
       super.onFinishInflate();
-      int primaryColor = Color.WHITE;
-      levelPaint.setColor(primaryColor);
       setImageResource(R.drawable.ic_wallet_battery);
+   }
+
+   private int getColorPaintByLevel(int level) {
+      if (level <= BATTTER_LOW_THRESHOLD) {
+         return getResources().getColor(R.color.wallet_battery_low_level);
+      } else {
+         return Color.WHITE;
+      }
    }
 
    @Override
    protected void onDraw(Canvas canvas) {
       super.onDraw(canvas);
+      int primaryColor = getColorPaintByLevel(level);
+      levelPaint.setColor(primaryColor);
+      if(!isInEditMode()) setColorFilter(primaryColor, PorterDuff.Mode.MULTIPLY);
+
       drawBatteryLevel(canvas);
    }
 
    private void drawBatteryLevel(Canvas canvas) {
-      Rect batteryBounds = getDrawable().getBounds();
-      float rightBorder = (batteryBounds.right - rightLevelMargin) * (level / 100f);
-      canvas.drawRect(batteryBounds.left + leftLevelMargin, batteryBounds.top + topLevelMargin, rightBorder, batteryBounds.bottom - bottomLevelMargin, levelPaint);
+      int width = getWidth();
+      int height = getHeight();
+      float rightBorder = (width - rightLevelMargin) * (level / 100f);
+      canvas.drawRect(leftLevelMargin, topLevelMargin, rightBorder, height - bottomLevelMargin, levelPaint);
    }
 }

@@ -3,6 +3,9 @@ package com.worldventures.dreamtrips.core.module;
 import android.app.Application;
 import android.content.Context;
 
+import com.worldventures.dreamtrips.core.repository.SnappyModule;
+import com.worldventures.dreamtrips.modules.dtl_flow.di.DtlModule;
+import com.worldventures.dreamtrips.modules.flags.FlagsModule;
 import com.messenger.di.MessengerModule;
 import com.techery.spares.application.BaseApplicationWithInjector;
 import com.techery.spares.module.DebugModule;
@@ -12,6 +15,7 @@ import com.worldventures.dreamtrips.App;
 import com.worldventures.dreamtrips.core.janet.JanetModule;
 import com.worldventures.dreamtrips.core.janet.JanetUploaderyModule;
 import com.worldventures.dreamtrips.core.janet.cache.CacheActionStorageModule;
+import com.worldventures.dreamtrips.modules.background_uploading.BackgroundUploadingModule;
 import com.worldventures.dreamtrips.modules.common.ResponseSnifferModule;
 import com.worldventures.dreamtrips.modules.common.SessionProcessingModule;
 import com.worldventures.dreamtrips.modules.flags.FlagsModule;
@@ -32,7 +36,7 @@ import dagger.Provides;
             DebugModule.class,
             InitializerModule.class,
             HolderModule.class,
-            PersistenceModule.class,
+            SnappyModule.class,
             ManagerModule.class,
             //
             ApiModule.class,
@@ -52,13 +56,14 @@ import dagger.Provides;
             //
             LocaleModule.class, AppVersionNameModule.class,
             //
-            MessengerModule.class, FlagsModule.class,
+            MessengerModule.class, FlagsModule.class, DtlModule.class,
             //
             JanetModule.class, JanetUploaderyModule.class, AnalyticsModule.class, SessionProcessingModule.class,
             //
             FlagsModule.class, PodcastAppModule.class, MappingModule.class,
             //
             SecurityModule.class, DeviceModule.class,
+            BackgroundUploadingModule.class,
       },
       library = true,
       complete = false,

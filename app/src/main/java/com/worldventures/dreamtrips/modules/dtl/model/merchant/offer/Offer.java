@@ -1,22 +1,31 @@
 package com.worldventures.dreamtrips.modules.dtl.model.merchant.offer;
 
-import android.support.annotation.StringDef;
+import android.support.annotation.Nullable;
 
-import java.lang.annotation.Retention;
+import com.esotericsoftware.kryo.DefaultSerializer;
+import com.esotericsoftware.kryo.serializers.CompatibleFieldSerializer;
+import com.worldventures.dreamtrips.api.dtl.merchants.model.OfferType;
+import com.worldventures.dreamtrips.modules.dtl.model.merchant.MerchantMedia;
+import com.worldventures.dreamtrips.modules.dtl.model.merchant.operational_hour.OperationDay;
 
-import static java.lang.annotation.RetentionPolicy.SOURCE;
+import org.immutables.value.Value;
 
-public class Offer {
-   @OfferType public final String name;
+import java.io.Serializable;
+import java.util.Date;
+import java.util.List;
 
-   public Offer(@OfferType String name) {
-      this.name = name;
-   }
+@DefaultSerializer(CompatibleFieldSerializer.class)
+@Value.Immutable
+public interface Offer extends Serializable {
 
-   @Retention(SOURCE)
-   @StringDef({POINT_REWARD, PERKS})
-   public @interface OfferType {}
+   String id();
+   OfferType type();
+   String title();
+   String description();
+   String disclaimer();
+   @Nullable Date startDate();
+   @Nullable Date endDate();
+   @Nullable List<OperationDay> operationDays();
+   @Nullable List<MerchantMedia> images();
 
-   public static final String POINT_REWARD = "points";
-   public static final String PERKS = "perk";
 }

@@ -137,7 +137,6 @@ public class ExpandableDtlToolbar extends DtlToolbar {
    @Override
    protected void bindSearchQueryPersisting() {
       RxDtlToolbar.merchantSearchTextChanges(this)
-            .skip(1)
             .filter(s -> !isCollapsed())
             .compose(RxLifecycle.bindView(this))
             .subscribe(searchQuery -> this.searchQuery = searchQuery);

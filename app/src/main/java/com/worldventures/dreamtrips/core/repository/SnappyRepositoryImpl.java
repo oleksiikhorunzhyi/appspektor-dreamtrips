@@ -1,23 +1,13 @@
 package com.worldventures.dreamtrips.core.repository;
 
 import android.content.Context;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 
-import com.esotericsoftware.kryo.Kryo;
-import com.esotericsoftware.kryo.io.Input;
-import com.esotericsoftware.kryo.io.Output;
-import com.esotericsoftware.kryo.serializers.CompatibleFieldSerializer;
-import com.esotericsoftware.kryo.serializers.DefaultSerializers;
 import com.innahema.collections.query.queriables.Queryable;
 import com.snappydb.DB;
 import com.snappydb.DBFactory;
 import com.snappydb.SnappydbException;
 import com.techery.spares.storage.complex_objects.Optional;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem;
-import com.worldventures.dreamtrips.modules.dtl.model.location.DtlLocation;
-import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchant;
-import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchantAttribute;
 import com.worldventures.dreamtrips.modules.dtl.model.transaction.DtlTransaction;
 import com.worldventures.dreamtrips.modules.dtl.model.transaction.ImmutableDtlTransaction;
 import com.worldventures.dreamtrips.modules.feed.model.BucketFeedItem;
@@ -27,20 +17,20 @@ import com.worldventures.dreamtrips.modules.feed.model.PostFeedItem;
 import com.worldventures.dreamtrips.modules.feed.model.TripFeedItem;
 import com.worldventures.dreamtrips.modules.feed.model.UndefinedFeedItem;
 import com.worldventures.dreamtrips.modules.friends.model.Circle;
+import com.worldventures.dreamtrips.modules.infopages.model.Document;
 import com.worldventures.dreamtrips.modules.infopages.model.FeedbackType;
 import com.worldventures.dreamtrips.modules.membership.model.Podcast;
-import com.worldventures.dreamtrips.modules.video.model.VideoLanguage;
-import com.worldventures.dreamtrips.modules.video.model.VideoLocale;
 import com.worldventures.dreamtrips.modules.settings.model.FlagSetting;
 import com.worldventures.dreamtrips.modules.settings.model.SelectSetting;
 import com.worldventures.dreamtrips.modules.settings.model.Setting;
-import com.worldventures.dreamtrips.modules.trips.model.Location;
 import com.worldventures.dreamtrips.modules.trips.model.Pin;
 import com.worldventures.dreamtrips.modules.trips.model.TripModel;
 import com.worldventures.dreamtrips.modules.tripsimages.model.IFullScreenObject;
 import com.worldventures.dreamtrips.modules.tripsimages.model.SocialViewPagerState;
 import com.worldventures.dreamtrips.modules.tripsimages.model.TripImagesType;
 import com.worldventures.dreamtrips.modules.video.model.CachedEntity;
+import com.worldventures.dreamtrips.modules.video.model.VideoLanguage;
+import com.worldventures.dreamtrips.modules.video.model.VideoLocale;
 import com.worldventures.dreamtrips.wallet.domain.entity.AddressInfo;
 import com.worldventures.dreamtrips.wallet.domain.entity.FirmwareUpdateData;
 import com.worldventures.dreamtrips.wallet.domain.entity.ImmutableAddressInfo;
@@ -51,19 +41,12 @@ import com.worldventures.dreamtrips.wallet.domain.entity.ImmutableTermsAndCondit
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCard;
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCardDetails;
 import com.worldventures.dreamtrips.wallet.domain.entity.TermsAndConditions;
-import com.worldventures.dreamtrips.wallet.domain.entity.card.Card;
-import com.worldventures.dreamtrips.wallet.domain.storage.security.crypto.Crypter.CryptoData;
-import com.worldventures.dreamtrips.wallet.domain.storage.security.crypto.HybridAndroidCrypter;
+import com.worldventures.dreamtrips.wallet.domain.storage.disk.DiskStorage;
 
-import org.objenesis.strategy.StdInstantiatorStrategy;
-
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -75,28 +58,16 @@ import java.util.concurrent.Future;
 import io.techery.janet.smartcard.mock.device.SimpleDeviceStorage;
 import timber.log.Timber;
 
-public class SnappyRepositoryImpl implements SnappyRepository {
+class SnappyRepositoryImpl implements SnappyRepository, DiskStorage {
 
-   private Context context;
-   private ExecutorService executorService;
-   private Kryo kryo;
-   private HybridAndroidCrypter crypter;
+   private final Context context;
+   private final ExecutorService executorService;
+   private final SnappyCrypter snappyCrypter;
 
-   public SnappyRepositoryImpl(@NonNull Context context, @NonNull HybridAndroidCrypter crypter) {
+   SnappyRepositoryImpl(Context context, SnappyCrypter snappyCrypter) {
       this.context = context;
-      this.crypter = crypter;
+      this.snappyCrypter = snappyCrypter;
       this.executorService = Executors.newSingleThreadExecutor();
-      //
-      initCustomKryo();
-   }
-
-   private void initCustomKryo() {
-      this.kryo = new Kryo();
-      this.kryo.register(Date.class, new DefaultSerializers.DateSerializer());
-      this.kryo.setDefaultSerializer(CompatibleFieldSerializer.class);
-      Kryo.DefaultInstantiatorStrategy strategy = new Kryo.DefaultInstantiatorStrategy();
-      strategy.setFallbackInstantiatorStrategy(new StdInstantiatorStrategy());
-      this.kryo.setInstantiatorStrategy(strategy);
    }
 
    ///////////////////////////////////////////////////////////////////////////
@@ -168,37 +139,29 @@ public class SnappyRepositoryImpl implements SnappyRepository {
    }
 
    ///////////////////////////////////////////////////////////////////////////
+   // DiskStorage
+   ///////////////////////////////////////////////////////////////////////////
+
+   @Override
+   public <T> Optional<T> executeWithResult(SnappyResult<T> action) {
+      return actWithResult(action);
+   }
+
+   @Override
+   public void execute(SnappyAction action) {
+      act(action);
+   }
+
+   ///////////////////////////////////////////////////////////////////////////
    // Public
    ///////////////////////////////////////////////////////////////////////////
 
    private void putEncrypted(String key, Object obj) {
-      act(db -> {
-         Output output = new Output(new ByteArrayOutputStream());
-         kryo.writeClassAndObject(output, obj);
-         byte[] bytes = crypter.encrypt(new CryptoData(new ByteArrayInputStream(output.getBuffer()))).toByteArray();
-         db.put(key, bytes);
-      });
+      act(db -> snappyCrypter.putEncrypted(db, key, obj));
    }
 
    private <T> T getEncrypted(String key, Class<T> clazz) {
-      return actWithResult(db -> {
-         T result = null;
-         Input input = new Input();
-         try {
-            byte[] bytes = crypter.decrypt(new CryptoData(new ByteArrayInputStream(db.getBytes(key)))).toByteArray();
-            input.setBuffer(bytes);
-            result = (T) kryo.readClassAndObject(input);
-         } finally {
-            input.close();
-         }
-         return result;
-      }).orNull();
-   }
-
-   private <T> List<T> getEncryptedList(String key) {
-      List decrypted = getEncrypted(key, List.class);
-      if (decrypted == null) return Collections.emptyList();
-      else return (List<T>) decrypted;
+      return actWithResult(db -> snappyCrypter.getEncrypted(db, key, clazz)).orNull();
    }
 
    @Override
@@ -363,21 +326,11 @@ public class SnappyRepositoryImpl implements SnappyRepository {
       act(db -> db.del(WALLET_ACTIVE_SMART_CARD_ID));
    }
 
-   @Override
-   public void saveWalletCardsList(List<Card> items) {
-      putEncrypted(WALLET_CARDS_LIST, items);
-   }
+/////////
 
    @Override
-   public List<Card> readWalletCardsList() {
-      return getEncryptedList(WALLET_CARDS_LIST);
-   }
-
-   public void deleteWalletCardList() {
-      act(db -> {
-         db.del(WALLET_CARDS_LIST);
-         db.del(WALLET_DEFAULT_BANK_CARD);
-      });
+   public void deleteWalletDefaultCardId() {
+      act(db -> db.del(WALLET_DEFAULT_BANK_CARD));
    }
 
    @Override
@@ -514,6 +467,16 @@ public class SnappyRepositoryImpl implements SnappyRepository {
    }
 
    @Override
+   public void saveLastUsedInspireMeRandomSeed(double randomSeed) {
+      act(db -> db.putDouble(LAST_USED_INSPIRE_ME_RANDOM_SEED, randomSeed));
+   }
+
+   @Override
+   public double getLastUsedInspireMeRandomSeed() {
+      return actWithResult(db -> db.getDouble(LAST_USED_INSPIRE_ME_RANDOM_SEED)).or(0d);
+   }
+
+   @Override
    public void saveLastSelectedVideoLocale(VideoLocale videoLocale) {
       act(db -> db.put(LAST_SELECTED_VIDEO_LOCALE, videoLocale));
    }
@@ -556,6 +519,16 @@ public class SnappyRepositoryImpl implements SnappyRepository {
    @Override
    public void saveCountFromHeader(String headerKey, int count) {
       act(db -> db.putInt(headerKey, count));
+   }
+
+   @Override
+   public void saveNotificationsCount(int count) {
+      act(db -> db.putInt(EXCLUSIVE_NOTIFICATIONS_COUNT, count));
+   }
+
+   @Override
+   public void saveFriendRequestsCount(int count) {
+      act(db -> db.putInt(FRIEND_REQUEST_COUNT, count));
    }
 
    @Override
@@ -652,17 +625,14 @@ public class SnappyRepositoryImpl implements SnappyRepository {
       putList(FEEDBACK_TYPES, types);
    }
 
-
-   ///////////////////////////////////////////////////////////////////////////
-   // GCM
-   ///////////////////////////////////////////////////////////////////////////
-
-   private interface SnappyAction {
-      void call(DB db) throws SnappydbException;
+   @Override
+   public List<Document> getDocuments() {
+      return readList(DOCUMENTS, Document.class);
    }
 
-   private interface SnappyResult<T> {
-      T call(DB db) throws SnappydbException;
+   @Override
+   public void setDocuments(List<Document> documents) {
+      putList(DOCUMENTS, documents);
    }
 
    ///////////////////////////////////////////////////////////////////////////
@@ -670,87 +640,9 @@ public class SnappyRepositoryImpl implements SnappyRepository {
    ///////////////////////////////////////////////////////////////////////////
 
    @Override
-   public void saveDtlLocation(DtlLocation dtlLocation) {
-      // list below is a hack to allow manipulating DtlLocation class since it is an interface
-      List<DtlLocation> location = new ArrayList<>();
-      location.add(dtlLocation);
-      putList(DTL_SELECTED_LOCATION, location);
-   }
-
-   @Override
-   public void cleanDtlLocation() {
-      clearAllForKey(DTL_SELECTED_LOCATION);
-   }
-
-   @Override
-   @Nullable
-   public DtlLocation getDtlLocation() {
-      // list below is a hack to allow manipulating DtlLocation class since it is an interface
-      List<DtlLocation> location = readList(DTL_SELECTED_LOCATION, DtlLocation.class);
-      if (location.isEmpty()) return DtlLocation.UNDEFINED;
-      else return location.get(0);
-   }
-
-   @Override
-   public void saveDtlMerhants(List<DtlMerchant> merchants) {
-      clearAllForKey(DTL_MERCHANTS);
-      putList(DTL_MERCHANTS, merchants);
-   }
-
-   @Override
-   public List<DtlMerchant> getDtlMerchants() {
-      return readList(DTL_MERCHANTS, DtlMerchant.class);
-   }
-
-   @Override
-   public void saveAmenities(Collection<DtlMerchantAttribute> amenities) {
-      clearAllForKey(DTL_AMENITIES);
-      putList(DTL_AMENITIES, amenities);
-   }
-
-   @Override
-   public List<DtlMerchantAttribute> getAmenities() {
-      return readList(DTL_AMENITIES, DtlMerchantAttribute.class);
-   }
-
-   @Override
-   public void clearMerchantData() {
-      clearAllForKeys(DTL_MERCHANTS, DTL_AMENITIES, DTL_TRANSACTION_PREFIX);
-   }
-
-   @Override
-   public void saveLastMapCameraPosition(Location location) {
-      act(db -> db.put(DTL_LAST_MAP_POSITION, location));
-   }
-
-   @Override
-   public Location getLastMapCameraPosition() {
-      return actWithResult(db -> db.getObject(DTL_LAST_MAP_POSITION, Location.class)).orNull();
-   }
-
-   @Override
    public void cleanLastMapCameraPosition() {
       clearAllForKey(DTL_LAST_MAP_POSITION);
    }
-
-   @Override
-   public void saveLastSelectedOffersOnlyToogle(boolean state) {
-      act(db -> db.putBoolean(DTL_SHOW_OFFERS_ONLY_TOGGLE, state));
-   }
-
-   @Override
-   public Boolean getLastSelectedOffersOnlyToggle() {
-      return actWithResult(db -> db.getBoolean(DTL_SHOW_OFFERS_ONLY_TOGGLE)).or(Boolean.FALSE);
-   }
-
-   @Override
-   public void cleanLastSelectedOffersOnlyToggle() {
-      clearAllForKey(DTL_SHOW_OFFERS_ONLY_TOGGLE);
-   }
-
-   ///////////////////////////////////////////////////////////////////////////
-   // DTL Transaction
-   ///////////////////////////////////////////////////////////////////////////
 
    @Override
    public DtlTransaction getDtlTransaction(String id) {
@@ -856,6 +748,15 @@ public class SnappyRepositoryImpl implements SnappyRepository {
    @Override
    public TripModel getTripDetail(String uid) {
       return actWithResult(db -> db.get(TRIPS_DETAILS + uid, TripModel.class)).orNull();
+   }
+
+   @Override
+   public boolean hasTripsDetailsForUids(List<String> uids) {
+      return actWithResult(db ->
+            Queryable.from()
+                  .toList()
+                  .containsAll(Queryable.from(uids).map(uid -> TRIPS_DETAILS + uid).toList())
+      ).or(false);
    }
 
    @Override

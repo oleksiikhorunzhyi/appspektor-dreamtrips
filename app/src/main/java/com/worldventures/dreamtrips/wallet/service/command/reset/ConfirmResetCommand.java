@@ -3,7 +3,7 @@ package com.worldventures.dreamtrips.wallet.service.command.reset;
 import com.worldventures.dreamtrips.core.janet.dagger.InjectableAction;
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCard;
 import com.worldventures.dreamtrips.wallet.service.SmartCardInteractor;
-import com.worldventures.dreamtrips.wallet.service.command.GetActiveSmartCardCommand;
+import com.worldventures.dreamtrips.wallet.service.command.ActiveSmartCardCommand;
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -26,24 +26,21 @@ public class ConfirmResetCommand extends Command<Void> implements InjectableActi
    @Override
    protected void run(CommandCallback<Void> callback) throws Throwable {
       smartCardInteractor.activeSmartCardPipe()
-            .createObservableResult(new GetActiveSmartCardCommand())
+            .createObservableResult(new ActiveSmartCardCommand())
             .flatMap(command -> lockUnlockSmartCard(command.getResult()))
             .subscribe(action -> callback.onSuccess(null), callback::onFail);
    }
 
    //before unassisign user, he should enter pin. For this purpose smartCard should be locked and unlocked,
    // because unlock operation performs by entering pin.
-   private Observable<LockDeviceAction> lockUnlockSmartCard(SmartCard smartCard) {
+   private Observable<Void> lockUnlockSmartCard(SmartCard smartCard) {
       ActionPipe<LockDeviceAction> lockDevicePipe = janet.createPipe(LockDeviceAction.class);
-
-      if (smartCard.lock()) {
-         return lockDevicePipe
-               .createObservableResult(new LockDeviceAction(false));
-      } else {
+      if (!smartCard.lock()) {
          return lockDevicePipe
                .createObservableResult(new LockDeviceAction(true))
-               .flatMap(setLockStateCommand -> lockDevicePipe.createObservableResult(new LockDeviceAction(false)));
+               .map(lockDeviceAction -> null);
       }
+      return Observable.just(null);
    }
 
 }

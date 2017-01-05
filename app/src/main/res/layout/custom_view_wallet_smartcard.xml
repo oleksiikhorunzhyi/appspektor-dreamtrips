@@ -53,7 +53,7 @@
          android:layout_alignParentBottom="true"
          android:layout_alignParentEnd="true"
          android:layout_marginTop="15dp"
-         android:gravity="center_vertical"
+         android:gravity="center_vertical|bottom"
          android:orientation="horizontal"
          >
 
@@ -86,12 +86,31 @@
             tools:src="@drawable/ic_wallet_lock_indicator"
             />
 
-      <com.worldventures.dreamtrips.wallet.ui.widget.BatteryView
-            android:id="@+id/batteryView"
-            android:layout_width="21dp"
-            android:layout_height="21dp"
-            android:layout_margin="2dp"
-            />
+      <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center_horizontal"
+            android:orientation="vertical"
+            >
+
+         <TextView
+               android:id="@+id/batteryLevel"
+               android:layout_width="wrap_content"
+               android:layout_height="wrap_content"
+               android:textColor="#ffffff"
+               android:textSize="10sp"
+               tools:text="0%"
+               />
+
+         <com.worldventures.dreamtrips.wallet.ui.widget.BatteryView
+               android:id="@+id/batteryView"
+               android:layout_width="21dp"
+               android:layout_height="11dp"
+               android:layout_marginBottom="2dp"
+               android:layout_marginLeft="2dp"
+               android:layout_marginRight="2dp"
+               />
+      </LinearLayout>
 
    </LinearLayout>
 
@@ -113,9 +132,9 @@
          android:layout_height="90.4dp"
          android:layout_above="@+id/indicators_container"
          android:layout_alignParentEnd="true"
+         android:layout_marginBottom="10dp"
          app:placeholderImage="@drawable/avatar"
          app:placeholderImageScaleType="fitCenter"
-         android:layout_marginBottom="10dp"
          />
 
    <TextView

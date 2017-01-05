@@ -14,6 +14,7 @@ import com.worldventures.dreamtrips.core.initializer.LeakCanaryInitializer;
 import com.worldventures.dreamtrips.core.initializer.LoggingInitializer;
 import com.worldventures.dreamtrips.core.initializer.NewrelicInitializer;
 import com.worldventures.dreamtrips.core.initializer.RxJavaLoggingInitializer;
+import com.worldventures.dreamtrips.core.initializer.SnappyStorageManagerInitializer;
 import com.worldventures.dreamtrips.core.initializer.SoftInputInitializer;
 import com.worldventures.dreamtrips.core.initializer.ViewServerInitializer;
 import com.worldventures.dreamtrips.modules.common.delegate.CachedEntityInteractor;
@@ -22,8 +23,21 @@ import dagger.Module;
 import dagger.Provides;
 
 @Module(
-      injects = {LeakCanaryInitializer.class, FabricInitializer.class, NewrelicInitializer.class, FrescoInitializer.class, SoftInputInitializer.class, ViewServerInitializer.class, BadgeCountObserverInitializer.class, JodaTimeInitializer.class, AnalyticsInitializer.class,},
-      includes = {MessengerInitializerModule.class},
+      injects = {
+            LeakCanaryInitializer.class,
+            FabricInitializer.class,
+            NewrelicInitializer.class,
+            FrescoInitializer.class,
+            SoftInputInitializer.class,
+            ViewServerInitializer.class,
+            BadgeCountObserverInitializer.class,
+            JodaTimeInitializer.class,
+            AnalyticsInitializer.class,
+            SnappyStorageManagerInitializer.class
+      },
+      includes = {
+            MessengerInitializerModule.class
+      },
       library = true, complete = false)
 public class InitializerModule {
 
@@ -47,6 +61,11 @@ public class InitializerModule {
    @Provides(type = Provides.Type.SET)
    AppInitializer provideSoftInputInitializer() {
       return new SoftInputInitializer();
+   }
+
+   @Provides(type = Provides.Type.SET)
+   AppInitializer provideSnappyStorageManagerInitializer() {
+      return new SnappyStorageManagerInitializer();
    }
 
    @Provides(type = Provides.Type.SET)

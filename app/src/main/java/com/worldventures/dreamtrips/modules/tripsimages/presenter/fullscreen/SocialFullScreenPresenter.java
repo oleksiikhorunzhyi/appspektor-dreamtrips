@@ -1,6 +1,5 @@
 package com.worldventures.dreamtrips.modules.tripsimages.presenter.fullscreen;
 
-import com.worldventures.dreamtrips.modules.common.view.ApiErrorView;
 import com.worldventures.dreamtrips.modules.tripsimages.model.IFullScreenObject;
 import com.worldventures.dreamtrips.modules.tripsimages.model.TripImagesType;
 
@@ -16,7 +15,5 @@ public class SocialFullScreenPresenter<T extends IFullScreenObject,
       super.takeView(view);
    }
 
-   public interface View extends FullScreenPresenter.View, ApiErrorView {
-
-   }
+   public interface View extends FullScreenPresenter.View {}
 }

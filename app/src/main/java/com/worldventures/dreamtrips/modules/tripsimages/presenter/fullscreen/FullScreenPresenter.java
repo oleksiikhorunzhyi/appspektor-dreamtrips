@@ -24,6 +24,7 @@ public abstract class FullScreenPresenter<T extends IFullScreenObject, PRESENTER
    protected T photo;
    @Inject TripImagesInteractor tripImagesInteractor;
 
+
    public FullScreenPresenter(T photo, TripImagesType type) {
       this.photo = photo;
       this.type = type;
@@ -36,22 +37,15 @@ public abstract class FullScreenPresenter<T extends IFullScreenObject, PRESENTER
       TrackingHelper.view(type, String.valueOf(photo.getFSId()), getAccountUserId());
    }
 
-   public void onEdit() {
-   }
+   public void onEdit() { }
 
-   public void onLikeAction() {
-   }
+   public void onLikeAction() { }
 
-   public void onFlagAction(Flaggable flaggable) {
-   }
+   public void onFlagAction(Flaggable flaggable) { }
 
-   public void onCommentsAction() {
+   public void onCommentsAction() { }
 
-   }
-
-   public void onLikesAction() {
-
-   }
+   public void onLikesAction() { }
 
    public void onUserClicked() {
       User user = photo.getUser();
@@ -62,11 +56,9 @@ public abstract class FullScreenPresenter<T extends IFullScreenObject, PRESENTER
       view.setContent(photo);
    }
 
-   public void sendFlagAction(int flagReasonId, String reason) {
-   }
+   public void sendFlagAction(int flagReasonId, String reason) { }
 
-   public void onDeleteAction() {
-   }
+   public void onDeleteAction() { }
 
    public void onShareAction() {
       if (!isConnected()) {

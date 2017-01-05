@@ -101,6 +101,7 @@ import com.worldventures.dreamtrips.modules.tripsimages.service.command.GetInspi
 import com.worldventures.dreamtrips.modules.tripsimages.service.command.GetMembersPhotosCommand;
 import com.worldventures.dreamtrips.modules.tripsimages.service.command.GetUserPhotosCommand;
 import com.worldventures.dreamtrips.modules.tripsimages.service.command.GetYSBHPhotosCommand;
+import com.worldventures.dreamtrips.modules.tripsimages.service.command.TranslatePhotoCommand;
 import com.worldventures.dreamtrips.modules.tripsimages.service.command.TripImagesCommand;
 import com.worldventures.dreamtrips.modules.video.service.command.GetMemberVideosCommand;
 import com.worldventures.dreamtrips.modules.video.service.command.GetVideoLocalesCommand;
@@ -221,5 +222,6 @@ import dagger.Module;
       CleanTempDirectoryCommand.class,
       CheckTripsByUidCommand.class,
       GetDocumentsCommand.class,
+      TranslatePhotoCommand.class,
 }, complete = false, library = true)
 public class SocialJanetCommandModule {}

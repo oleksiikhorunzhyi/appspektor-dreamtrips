@@ -30,7 +30,7 @@ public class FullScreenPhotoActionPanelDelegate {
    @InjectView(R.id.iv_image) ScaleImageView ivImage;
    @InjectView(R.id.ll_global_content_wrapper) protected LinearLayout llContentWrapper;
    @InjectView(R.id.ll_more_info) protected LinearLayout llMoreInfo;
-   @InjectView(R.id.tv_title) protected TextView tvTitle;
+   @InjectView(R.id.tv_title) protected TextView tvUsername;
    @InjectView(R.id.tv_description) protected TextView tvDescription;
    @InjectView(R.id.tv_see_more) protected TextView tvSeeMore;
    @InjectView(R.id.tv_location) protected TextView tvLocation;
@@ -74,7 +74,7 @@ public class FullScreenPhotoActionPanelDelegate {
    }
 
    public void setContent(Photo photo) {
-      setTitleSpanned(photo.getUser().getUsernameWithCompany(context));
+      setUsername(photo.getUser().getUsernameWithCompany(context));
       setCommentCount(photo.getFSCommentCount());
       setDescription(photo.getFSDescription());
       setLikeCount(photo.getFSLikeCount());
@@ -168,8 +168,8 @@ public class FullScreenPhotoActionPanelDelegate {
       tvSeeMore.setVisibility(View.VISIBLE);
    }
 
-   public void setTitleSpanned(Spanned titleSpanned) {
-      tvTitle.setText(titleSpanned);
+   public void setUsername(Spanned titleSpanned) {
+      tvUsername.setText(titleSpanned);
    }
 
    public void setLiked(boolean isLiked) {

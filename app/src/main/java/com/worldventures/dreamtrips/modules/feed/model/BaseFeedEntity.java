@@ -97,7 +97,7 @@ public abstract class BaseFeedEntity implements FeedEntity {
    }
 
    @Override
-   public String getLanguageFrom() {
+   public String getLanguage() {
       return language;
    }
 

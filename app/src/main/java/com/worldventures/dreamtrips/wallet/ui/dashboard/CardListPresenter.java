@@ -292,6 +292,8 @@ public class CardListPresenter extends WalletPresenter<CardListPresenter.Screen,
 
       void showFirmwareUpdateError();
 
+      void showFirmwareUpdateDialog();
+
       @IntDef({ERROR_DIALOG_FULL_SMARTCARD, ERROR_DIALOG_NO_INTERNET_CONNECTION, ERROR_DIALOG_NO_SMARTCARD_CONNECTION})
       @interface ErrorDialogType {}
    }

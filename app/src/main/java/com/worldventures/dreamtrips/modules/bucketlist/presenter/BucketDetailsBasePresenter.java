@@ -110,7 +110,7 @@ public class BucketDetailsBasePresenter<V extends BucketDetailsBasePresenter.Vie
    }
 
    public void openFullScreen(BucketPhoto selectedPhoto) {
-      if ((bucketItem.getPhotos().contains(selectedPhoto))) {
+      if ((bucketItem.getPhotos().contains(selectedPhoto)) && bucketItem.getOwner() != null) {
          ArrayList<IFullScreenObject> photos = new ArrayList<>();
          if (bucketItem.getCoverPhoto() != null) {
             Queryable.from(bucketItem.getPhotos()).forEachR(photo -> photo.setIsCover(photo.getFSId()

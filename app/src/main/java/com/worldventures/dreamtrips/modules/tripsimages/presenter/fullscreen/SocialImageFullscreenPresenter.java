@@ -82,7 +82,6 @@ public class SocialImageFullscreenPresenter extends SocialFullScreenPresenter<Ph
       } else {
          view.showTranslationButton();
       }
-      view.showTranslationButton();
    }
 
    private void loadEntity() {

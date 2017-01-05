@@ -12,9 +12,9 @@ import com.worldventures.dreamtrips.modules.bucketlist.service.storage.BucketLis
 import com.worldventures.dreamtrips.modules.bucketlist.service.storage.BucketMemoryStorage;
 import com.worldventures.dreamtrips.modules.bucketlist.service.storage.RecentlyAddedBucketItemStorage;
 import com.worldventures.dreamtrips.modules.bucketlist.service.storage.UploadBucketPhotoInMemoryStorage;
-import com.worldventures.dreamtrips.modules.dtl.helper.cache.DtlLocationStorage;
-import com.worldventures.dreamtrips.modules.dtl.helper.cache.DtlMerchantsStorage;
-import com.worldventures.dreamtrips.modules.dtl.helper.cache.DtlSearchLocationStorage;
+import com.worldventures.dreamtrips.modules.dtl.domain.storage.LocationStorage;
+import com.worldventures.dreamtrips.modules.dtl.domain.storage.FullMerchantStorage;
+import com.worldventures.dreamtrips.modules.dtl.domain.storage.MerchantsStorage;
 import com.worldventures.dreamtrips.modules.feed.service.storage.NotificationMemoryStorage;
 import com.worldventures.dreamtrips.modules.feed.service.storage.NotificationsStorage;
 import com.worldventures.dreamtrips.modules.feed.service.storage.PendingLikesStorage;
@@ -39,6 +39,7 @@ import com.worldventures.dreamtrips.wallet.domain.storage.SmartCardDetailsStorag
 import com.worldventures.dreamtrips.wallet.domain.storage.SmartCardStorage;
 import com.worldventures.dreamtrips.wallet.domain.storage.TermsAndConditionsStorage;
 import com.worldventures.dreamtrips.wallet.domain.storage.WalletCardsDiskStorage;
+import com.worldventures.dreamtrips.wallet.domain.storage.disk.CardListStorage;
 
 import javax.inject.Singleton;
 
@@ -50,20 +51,8 @@ public class CacheActionStorageModule {
 
    @Singleton
    @Provides(type = Provides.Type.SET)
-   ActionStorage provideDtlMerchantsStorage(SnappyRepository db) {
-      return new DtlMerchantsStorage(db);
-   }
-
-   @Singleton
-   @Provides(type = Provides.Type.SET)
-   ActionStorage provideDtlSearchLocationStorage() {
-      return new DtlSearchLocationStorage();
-   }
-
-   @Singleton
-   @Provides(type = Provides.Type.SET)
-   ActionStorage provideDtlLocationStorage(SnappyRepository db) {
-      return new DtlLocationStorage(db);
+   ActionStorage provideLocationStorage() {
+      return new LocationStorage();
    }
 
    @Singleton
@@ -152,19 +141,31 @@ public class CacheActionStorageModule {
 
    @Singleton
    @Provides(type = Provides.Type.SET)
-   ActionStorage provideWalletCardListStorage(SnappyRepository snappyRepository) {
-      return new WalletCardsDiskStorage(snappyRepository);
+   ActionStorage provideMerchantsStorage() {
+      return new MerchantsStorage();
    }
 
    @Singleton
    @Provides(type = Provides.Type.SET)
-   MultipleActionStorage provideDefaultBankCardStorage(SnappyRepository snappyRepository) {
+   ActionStorage provideFullMerchantStorage() {
+      return new FullMerchantStorage();
+   }
+
+   @Singleton
+   @Provides(type = Provides.Type.SET)
+   ActionStorage provideWalletCardListStorage(CardListStorage cardListStorage) {
+      return new WalletCardsDiskStorage(cardListStorage);
+   }
+
+   @Singleton
+   @Provides(type = Provides.Type.SET)
+   ActionStorage provideDefaultBankCardStorage(SnappyRepository snappyRepository) {
       return new DefaultBankCardStorage(snappyRepository);
    }
 
    @Singleton
    @Provides(type = Provides.Type.SET)
-   MultipleActionStorage provideSmartCardStorage(SnappyRepository snappyRepository) {
+   ActionStorage provideSmartCardStorage(SnappyRepository snappyRepository) {
       return new SmartCardStorage(snappyRepository);
    }
 
@@ -209,7 +210,7 @@ public class CacheActionStorageModule {
    CompoundOperationRepository provideCompoundOperationRepository(SnappyRepository snappyRepository) {
       return new CompoundOperationRepositoryImpl(snappyRepository);
    }
-   
+
    @Singleton
    @Provides(type = Provides.Type.SET)
    ActionStorage provideDocumentsStorage(SnappyRepository db) {

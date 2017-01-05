@@ -9,7 +9,7 @@ import com.trello.rxlifecycle.RxLifecycle;
 import com.worldventures.dreamtrips.modules.dtl.helper.inflater.MerchantDataInflater;
 import com.worldventures.dreamtrips.modules.dtl.helper.inflater.MerchantMapInfoInflater;
 import com.worldventures.dreamtrips.modules.dtl.helper.inflater.MerchantSingleImageDataInflater;
-import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchant;
+import com.worldventures.dreamtrips.modules.dtl.model.merchant.ThinMerchant;
 import com.worldventures.dreamtrips.modules.dtl_flow.DtlLayout;
 
 public class DtlMapInfoScreenImpl extends DtlLayout<DtlMapInfoScreen, DtlMapInfoPresenter, DtlMapInfoPath> implements DtlMapInfoScreen {
@@ -32,7 +32,7 @@ public class DtlMapInfoScreenImpl extends DtlLayout<DtlMapInfoScreen, DtlMapInfo
    @Override
    protected void onPostAttachToWindowView() {
       commonDataInflater = new MerchantSingleImageDataInflater();
-      categoryDataInflater = new MerchantMapInfoInflater();
+      categoryDataInflater = new MerchantMapInfoInflater(injector);
       commonDataInflater.setView(this);
       categoryDataInflater.setView(this);
       observeSize(this);
@@ -60,8 +60,8 @@ public class DtlMapInfoScreenImpl extends DtlLayout<DtlMapInfoScreen, DtlMapInfo
    }
 
    @Override
-   public void setMerchant(DtlMerchant merchant) {
-      commonDataInflater.applyMerchant(merchant);
-      categoryDataInflater.applyMerchant(merchant);
+   public void setMerchant(ThinMerchant merchant) {
+      commonDataInflater.applyMerchantAttributes(merchant.asMerchantAttributes());
+      categoryDataInflater.applyMerchantAttributes(merchant.asMerchantAttributes());
    }
 }

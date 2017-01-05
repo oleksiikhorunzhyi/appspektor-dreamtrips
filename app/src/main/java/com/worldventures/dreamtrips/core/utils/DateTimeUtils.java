@@ -313,7 +313,7 @@ public class DateTimeUtils {
       //
       List<OperationDay> days = Queryable.from(operationDays)
             .filter(OperationDay::isHaveOperationHours)
-            .filter(operationDay -> operationDay.getDayOfWeek() != null)
+            .filter(operationDay -> operationDay.dayOfWeek() != null)
             .toList();
       //
       if (days.isEmpty()) return "";
@@ -321,7 +321,7 @@ public class DateTimeUtils {
       if (days.size() == Calendar.DAY_OF_WEEK) return res.getString(R.string.everyday);
       //
       String delimiter = days.size() == 2 ? " & " : " "; // TODO need translations??
-      List<String> names = Queryable.from(days).map(day -> getDisplayWeekDay(day.getDayOfWeek()
+      List<String> names = Queryable.from(days).map(day -> getDisplayWeekDay(day.dayOfWeek()
             .getDay(), Calendar.SHORT, locale)).toList();
       return android.text.TextUtils.join(delimiter, names);
    }

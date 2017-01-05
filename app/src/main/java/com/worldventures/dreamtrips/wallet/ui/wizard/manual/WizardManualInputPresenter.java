@@ -12,10 +12,14 @@ import com.worldventures.dreamtrips.core.utils.tracksystem.AnalyticsInteractor;
 import com.worldventures.dreamtrips.wallet.analytics.ManualCardInputAction;
 import com.worldventures.dreamtrips.wallet.analytics.WalletAnalyticsCommand;
 import com.worldventures.dreamtrips.wallet.service.WizardInteractor;
+import com.worldventures.dreamtrips.wallet.service.command.http.AvailabilitySmartCardCommand;
+import com.worldventures.dreamtrips.wallet.service.storage.WizardMemoryStorage;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletPresenter;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.WalletScreen;
+import com.worldventures.dreamtrips.wallet.ui.common.helper.ErrorHandler;
+import com.worldventures.dreamtrips.wallet.ui.common.helper.OperationActionStateSubscriberWrapper;
 import com.worldventures.dreamtrips.wallet.ui.common.navigation.Navigator;
-import com.worldventures.dreamtrips.wallet.ui.wizard.associate.ConnectSmartCardPath;
+import com.worldventures.dreamtrips.wallet.ui.wizard.pairkey.PairKeyPath;
 
 import javax.inject.Inject;
 
@@ -27,6 +31,7 @@ public class WizardManualInputPresenter extends WalletPresenter<WizardManualInpu
    @Inject WizardInteractor wizardInteractor;
    @Inject AnalyticsInteractor analyticsInteractor;
    @Inject Activity activity;
+   @Inject WizardMemoryStorage wizardMemoryStorage;
 
    private int scidLength;
 
@@ -37,7 +42,21 @@ public class WizardManualInputPresenter extends WalletPresenter<WizardManualInpu
    @Override
    public void onAttachedToWindow() {
       super.onAttachedToWindow();
+      observerAvailabilitySmartCard();
+
       analyticsInteractor.walletAnalyticsCommandPipe().send(new WalletAnalyticsCommand(new ManualCardInputAction()));
+   }
+
+   private void observerAvailabilitySmartCard() {
+      wizardInteractor.availabilitySmartCardCommandActionPipe()
+            .observe()
+            .compose(bindViewIoToMainComposer())
+            .subscribe(OperationActionStateSubscriberWrapper.<AvailabilitySmartCardCommand>forView(getView().provideOperationDelegate())
+                  .onStart(getContext().getString(R.string.wallet_wizard_assigning_msg))
+                  .onSuccess(command -> navigator.go(new PairKeyPath(PairKeyPath.BarcodeOrigin.MANUAL, command.getSmartCardId())))
+                  .onFail(ErrorHandler.<AvailabilitySmartCardCommand>builder(getContext())
+                        .build())
+                  .wrap());
    }
 
    @Override
@@ -58,7 +77,8 @@ public class WizardManualInputPresenter extends WalletPresenter<WizardManualInpu
    }
 
    public void checkBarcode(String barcode) {
-      navigator.go(new ConnectSmartCardPath(ConnectSmartCardPath.BarcodeOrigin.MANUAL, barcode));
+      wizardMemoryStorage.saveBarcode(barcode);
+      wizardInteractor.availabilitySmartCardCommandActionPipe().send(new AvailabilitySmartCardCommand(barcode));
    }
 
    public void goBack() {

@@ -19,9 +19,6 @@ import com.worldventures.dreamtrips.modules.bucketlist.service.model.GsonAdapter
 import com.worldventures.dreamtrips.modules.bucketlist.service.model.GsonAdaptersBucketCoverBody;
 import com.worldventures.dreamtrips.modules.bucketlist.service.model.GsonAdaptersBucketPostBody;
 import com.worldventures.dreamtrips.modules.bucketlist.service.model.GsonAdaptersBucketStatusBody;
-import com.worldventures.dreamtrips.modules.dtl.model.merchant.offer.DtlOffer;
-import com.worldventures.dreamtrips.modules.dtl.model.merchant.offer.DtlOfferDeserializer;
-import com.worldventures.dreamtrips.modules.dtl.model.merchant.offer.DtlOfferSerializer;
 import com.worldventures.dreamtrips.modules.feed.model.FeedEntityHolder;
 import com.worldventures.dreamtrips.modules.feed.model.FeedItem;
 import com.worldventures.dreamtrips.modules.feed.model.serializer.FeedEntityDeserializer;
@@ -29,6 +26,9 @@ import com.worldventures.dreamtrips.modules.feed.model.serializer.FeedItemDeseri
 import com.worldventures.dreamtrips.modules.settings.model.Setting;
 import com.worldventures.dreamtrips.modules.settings.model.serializer.SettingsDeserializer;
 import com.worldventures.dreamtrips.modules.settings.model.serializer.SettingsSerializer;
+import com.worldventures.dreamtrips.wallet.domain.entity.GsonAdaptersAddressInfo;
+import com.worldventures.dreamtrips.wallet.domain.entity.GsonAdaptersRecordIssuerInfo;
+import com.worldventures.dreamtrips.wallet.domain.entity.card.GsonAdaptersBankCard;
 
 import java.net.CookieManager;
 import java.net.CookiePolicy;
@@ -50,8 +50,6 @@ public class ApiModule {
             .registerTypeAdapter(Date.class, new DateTimeSerializer())
             .registerTypeAdapter(FeedItem.class, new FeedItemDeserializer())
             .registerTypeAdapter(FeedEntityHolder.class, new FeedEntityDeserializer())
-            .registerTypeAdapter(DtlOffer.class, new DtlOfferDeserializer())
-            .registerTypeAdapter(DtlOffer.class, new DtlOfferSerializer())
             .registerTypeAdapter(Setting.class, new SettingsDeserializer())
             .registerTypeAdapter(Setting.class, new SettingsSerializer())
             //new
@@ -59,6 +57,10 @@ public class ApiModule {
             .registerTypeAdapterFactory(new GsonAdaptersBucketCoverBody())
             .registerTypeAdapterFactory(new GsonAdaptersBucketStatusBody())
             .registerTypeAdapterFactory(new GsonAdaptersBucketBodyImpl())
+            //smartcard flow
+            .registerTypeAdapterFactory(new GsonAdaptersBankCard())
+            .registerTypeAdapterFactory(new GsonAdaptersAddressInfo())
+            .registerTypeAdapterFactory(new GsonAdaptersRecordIssuerInfo())
             .create();
    }
 

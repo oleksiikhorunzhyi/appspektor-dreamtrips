@@ -12,10 +12,6 @@ import org.jetbrains.annotations.NotNull;
 import java.util.ArrayList;
 import java.util.List;
 
-import io.techery.janet.ActionState;
-
-import static io.techery.janet.ActionState.Status;
-
 public class PhotoCreationItem implements Parcelable {
 
    long id;
@@ -23,7 +19,6 @@ public class PhotoCreationItem implements Parcelable {
    @NotNull String filePath;
    @NotNull String originUrl = "";
    @NotNull String location;
-   @NotNull Status status;
    @NotNull ArrayList<PhotoTag> basePhotoTags = new ArrayList<>();
    @NotNull ArrayList<PhotoTag> cachedAddedPhotoTags = new ArrayList<>();
    @NotNull ArrayList<PhotoTag> cachedRemovedPhotoTags = new ArrayList<>();
@@ -104,11 +99,6 @@ public class PhotoCreationItem implements Parcelable {
       this.id = id;
    }
 
-   @NotNull
-   public Status getStatus() {
-      return status;
-   }
-
    public List<PhotoTag> getCombinedTags() {
       List<PhotoTag> combinedTags = new ArrayList<>(cachedAddedPhotoTags);
       combinedTags.removeAll(cachedRemovedPhotoTags);
@@ -175,7 +165,6 @@ public class PhotoCreationItem implements Parcelable {
       dest.writeString(this.fileUri);
       dest.writeString(this.originUrl);
       dest.writeString(this.location);
-      dest.writeInt(this.status == null ? -1 : this.status.ordinal());
       dest.writeTypedList(basePhotoTags);
       dest.writeTypedList(cachedAddedPhotoTags);
       dest.writeTypedList(cachedRemovedPhotoTags);
@@ -193,7 +182,6 @@ public class PhotoCreationItem implements Parcelable {
       this.originUrl = in.readString();
       this.location = in.readString();
       int tmpStatus = in.readInt();
-      this.status = tmpStatus == -1 ? null : ActionState.Status.values()[tmpStatus];
       this.basePhotoTags = in.createTypedArrayList(PhotoTag.CREATOR);
       this.cachedAddedPhotoTags = in.createTypedArrayList(PhotoTag.CREATOR);
       this.cachedRemovedPhotoTags = in.createTypedArrayList(PhotoTag.CREATOR);
@@ -215,10 +203,6 @@ public class PhotoCreationItem implements Parcelable {
          return new PhotoCreationItem[size];
       }
    };
-
-   public void setStatus(@NotNull Status status) {
-      this.status = status;
-   }
 
    public void setWidth(int width) {
       this.width = width;

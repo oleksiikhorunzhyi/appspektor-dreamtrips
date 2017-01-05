@@ -6,6 +6,7 @@ import com.worldventures.dreamtrips.wallet.ui.common.base.screen.ErrorScreen;
 
 import io.techery.janet.helper.ActionStateSubscriber;
 import rx.functions.Action1;
+import rx.functions.Action2;
 import rx.functions.Func1;
 
 public class ErrorActionStateSubscriberWrapper<T> {
@@ -14,6 +15,7 @@ public class ErrorActionStateSubscriberWrapper<T> {
    @Nullable private Func1<Throwable, MessageActionHolder<T>> onFailFactory;
    @Nullable private Action1<T> onSuccessAction;
    @Nullable private Action1<T> onStartAction;
+   @Nullable private Action2<T, Integer> onProgressAction;
 
    private ErrorActionStateSubscriberWrapper(ErrorScreen errorView) {
       this.view = errorView;
@@ -30,6 +32,11 @@ public class ErrorActionStateSubscriberWrapper<T> {
 
    public ErrorActionStateSubscriberWrapper<T> onStart(@Nullable Action1<T> onStart) {
       this.onStartAction = onStart;
+      return this;
+   }
+
+   public ErrorActionStateSubscriberWrapper<T> onProgress(@Nullable Action2<T, Integer> onProgress) {
+      this.onProgressAction = onProgress;
       return this;
    }
 
@@ -54,6 +61,9 @@ public class ErrorActionStateSubscriberWrapper<T> {
             })
             .onSuccess(t -> {
                if (onSuccessAction != null) onSuccessAction.call(t);
+            })
+            .onProgress((t, progress) -> {
+               if (onProgressAction != null) onProgressAction.call(t, progress);
             })
             .onFail((t, throwable) -> {
                final MessageActionHolder<T> failHolder = onFailFactory != null ? onFailFactory.call(throwable) : null;

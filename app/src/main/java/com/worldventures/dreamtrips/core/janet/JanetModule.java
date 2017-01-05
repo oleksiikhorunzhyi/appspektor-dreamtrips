@@ -19,6 +19,7 @@ import com.worldventures.dreamtrips.core.janet.dagger.DaggerActionServiceWrapper
 import com.worldventures.dreamtrips.core.utils.tracksystem.Tracker;
 import com.worldventures.dreamtrips.wallet.di.MagstripeReaderModule;
 import com.worldventures.dreamtrips.wallet.di.SmartCardModule;
+import com.worldventures.dreamtrips.wallet.di.WalletDelegateModule;
 
 import java.net.CookieManager;
 import java.util.List;
@@ -46,6 +47,7 @@ import io.techery.janet.smartcard.client.SmartCardClient;
             JanetServiceModule.class,
             CacheActionStorageModule.class,
             SmartCardModule.class,
+            WalletDelegateModule.class,
             MagstripeReaderModule.class
       },
       complete = false, library = true)

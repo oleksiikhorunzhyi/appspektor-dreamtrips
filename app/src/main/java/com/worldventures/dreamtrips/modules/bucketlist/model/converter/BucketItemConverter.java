@@ -5,6 +5,7 @@ import com.worldventures.dreamtrips.modules.bucketlist.model.BucketLocation;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketPhoto;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketTag;
 import com.worldventures.dreamtrips.modules.bucketlist.model.CategoryItem;
+import com.worldventures.dreamtrips.modules.bucketlist.model.DiningItem;
 import com.worldventures.dreamtrips.modules.mapping.converter.Converter;
 
 import java.util.ArrayList;
@@ -56,6 +57,10 @@ public abstract class BucketItemConverter<T extends com.worldventures.dreamtrips
       bucketItem.setFriends(new ArrayList<>(apiBucketItem.friends()));
 
       bucketItem.setLanguage(apiBucketItem.language());
+
+      if (apiBucketItem.dining() != null) {
+         bucketItem.setDining(mapperyContext.convert(apiBucketItem.dining(), DiningItem.class));
+      }
 
       return bucketItem;
    }

@@ -35,8 +35,7 @@ android {
    def versionMajor = 1
    def versionMinor = 17
    def versionPatch = 0
-   def versionBuild = 4 // bump for dogfood builds, public betas, etc.
-   //
+   def versionBuild = 5 // bump for dogfood builds, public betas, etc.
    // flavor codes
    String DEV_CODE = "dev"
    String DEV_PRE_MARSHMALLOW_CODE = "devpremarshmallow"
@@ -75,10 +74,14 @@ android {
          'NEWRELIC_API_KEY': '"AAd06d4d4d218e74f8d48a7e0bf8d7de4623cb1662"',
    ]
    def CONFIG_MAP_PREPROD = [
-         'DreamTripsApi'    : '"http://dtapp-qa.worldventures.biz/"',
+         'DreamTripsApi'    : '"http://techery-dt-preprod.techery.io/"',
          'S3Api'            : '"https://s3-us-west-2.amazonaws.com/techery-worldventures/config/preprod"',
          'MESSENGER_API_URL': '"dtmsgapp-qa.worldventures.biz"',
-         'UPLOADERY_API_URL': '"http://dtapp-qa.worldventures.biz/uploadery"',
+         'UPLOADERY_API_URL': '"http://techery-dt-preprod-uploadery.techery.io"',
+   ]
+   def CONFIG_MAP_DTL = [
+         'DreamTripsApi'    : '"http://techery-dt-dtl.techery.io/"',
+         'UPLOADERY_API_URL': '"http://techery-dt-dtl-uploadery.techery.io"',
    ]
    def CONFIG_MAP_PERF = [
          'DreamTripsApi'    : '"http://dtapp-perf.worldventures.biz"',
@@ -92,10 +95,6 @@ android {
          'NEWRELIC_API_KEY' : '"AAb8d55ede8fd2f0aeaaf66b18b8b53af90e48b371"',
          'UPLOADERY_API_URL': '"http://dtappuploads.wvholdings.com"',
    ]
-   def CONFIG_MAP_DTL = [
-         'DreamTripsApi'    : '"http://techery--dt--dtl-techery-io-b8ctgyaku6eu.runscope.net/"',
-         'UPLOADERY_API_URL': '"http://techery-dt-dtl-uploadery.techery.io"',
-   ]
    def CONFIG_MAP_SMARTCARD_MOCK = [
          'SMART_CARD_SDK_CLIENT': '"mock"'
    ]
@@ -108,7 +107,6 @@ android {
          "preprod"       : CONFIG_MAP_PREPROD,
          "perf"          : CONFIG_MAP_PERF,
          "prod"          : CONFIG_MAP_PROD,
-         "dtl"           : CONFIG_MAP_DTL,
          "smartcardmock" : CONFIG_MAP_SMARTCARD_MOCK,
          "smartcardnxtid": CONFIG_MAP_SMARTCARD_NXTID,
    ]
@@ -369,6 +367,7 @@ android {
    useLibrary 'org.apache.http.legacy'
    sourceSets {
       main.java.srcDirs += 'src/main/kotlin'
+      test.java.srcDirs += 'src/testSmartCardMock/java'
    }
 }
 
@@ -420,7 +419,7 @@ dependencies {
    compile 'com.snappydb:snappydb-lib:0.5.2'
    compile 'com.esotericsoftware.kryo:kryo:2.24.0'
    // Networking
-   compile(group: 'com.worldventures.dreamtrips', name: 'api', version: '2.8.8-STAGE-SNAPSHOT', changing: true) {
+   compile(group: 'com.worldventures.dreamtrips', name: 'api', version: '2.8.10-STAGE-SNAPSHOT', changing: true) {
       exclude group: "joda-time"
    }
    compile 'com.squareup.okhttp:okhttp:2.7.5'
@@ -489,6 +488,9 @@ dependencies {
    compile 'com.github.techery:properratingbar:0.0.5'
    compile 'com.sothree.slidinguppanel:library:3.2.1'
    compile 'com.amulyakhare:com.amulyakhare.textdrawable:1.0.1'
+   compile ('com.github.techery:OperationActionSubscriber:0.0.2') {
+      exclude group: 'org.jetbrains', module: 'annotations-java5'
+   }
    // Util
    retrolambdaConfig 'net.orfjackal.retrolambda:retrolambda:2.3.0'
    compile 'com.google.maps.android:android-maps-utils:0.4'
@@ -534,7 +536,7 @@ dependencies {
    compile 'org.igniterealtime.smack:smack-android-extensions:4.1.6'
    compile 'org.igniterealtime.smack:smack-tcp:4.1.6'
 
-   compile(group: 'io.techery.janet', name: 'smartcard', version: '0.11.14-SNAPSHOT', changing: true)
+   compile(group: 'io.techery.janet', name: 'smartcard', version: '0.14.1-SNAPSHOT', changing: true)
    compile(group: 'io.techery.janet.magstripe-reader', name: 'service', version: '0.1.0-SNAPSHOT', changing: true)
    compile(group: 'io.techery.janet.magstripe-reader', name: 'client-mock', version: '0.1.0-SNAPSHOT', changing: true)
    compile(group: 'io.techery.janet.magstripe-reader', name: 'client-rhombus', version: '0.1.0-SNAPSHOT', changing: true)

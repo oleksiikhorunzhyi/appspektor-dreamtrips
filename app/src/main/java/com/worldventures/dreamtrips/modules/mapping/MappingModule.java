@@ -2,6 +2,7 @@ package com.worldventures.dreamtrips.modules.mapping;
 
 import com.worldventures.dreamtrips.modules.bucketlist.model.converter.BucketCategoryConverter;
 import com.worldventures.dreamtrips.modules.bucketlist.model.converter.BucketCoverPhotoConverter;
+import com.worldventures.dreamtrips.modules.bucketlist.model.converter.BucketDiningItemConverter;
 import com.worldventures.dreamtrips.modules.bucketlist.model.converter.BucketItemSimpleConverter;
 import com.worldventures.dreamtrips.modules.bucketlist.model.converter.BucketItemSocializedConverter;
 import com.worldventures.dreamtrips.modules.bucketlist.model.converter.BucketLocationConverter;
@@ -76,11 +77,7 @@ import com.worldventures.dreamtrips.modules.video.model.converter.CategoryConver
 import com.worldventures.dreamtrips.modules.video.model.converter.VideoConverter;
 import com.worldventures.dreamtrips.modules.video.model.converter.VideoLanguageConverter;
 import com.worldventures.dreamtrips.modules.video.model.converter.VideoLocaleConverter;
-import com.worldventures.dreamtrips.wallet.domain.converter.BankCardToRecordConverter;
-import com.worldventures.dreamtrips.wallet.domain.converter.FirmwareResponseToFirmwareDataConverter;
-import com.worldventures.dreamtrips.wallet.domain.converter.ProfileAddressToUserAddressConverter;
-import com.worldventures.dreamtrips.wallet.domain.converter.RecordToBankCardConverter;
-import com.worldventures.dreamtrips.wallet.domain.converter.SmartCardDetailsConverter;
+import com.worldventures.dreamtrips.wallet.domain.converter.SmartCardConverterModule;
 
 import java.util.Set;
 
@@ -93,8 +90,9 @@ import io.techery.mappery.MapperyContext;
 import timber.log.Timber;
 
 @Module(
-      injects = {},
-      library = true, complete = false)
+      includes = {
+            SmartCardConverterModule.class
+      }, library = true, complete = false)
 public class MappingModule {
 
    @Provides
@@ -170,36 +168,6 @@ public class MappingModule {
    @Singleton
    Converter provideContentItemConverter() {
       return new ContentItemConverter();
-   }
-
-   @Provides(type = Provides.Type.SET)
-   @Singleton
-   Converter provideBankCardToRecordConverter() {
-      return new BankCardToRecordConverter();
-   }
-
-   @Provides(type = Provides.Type.SET)
-   @Singleton
-   Converter provideSmartCardDetailsConverter() {
-      return new SmartCardDetailsConverter();
-   }
-
-   @Provides(type = Provides.Type.SET)
-   @Singleton
-   Converter provideRecordToBankCardConverter() {
-      return new RecordToBankCardConverter();
-   }
-
-   @Provides(type = Provides.Type.SET)
-   @Singleton
-   Converter provideProfileAddressToUserAddressConverter() {
-      return new ProfileAddressToUserAddressConverter();
-   }
-
-   @Provides(type = Provides.Type.SET)
-   @Singleton
-   Converter provideFirmwareRepsonseToFirmwareConverter() {
-      return new FirmwareResponseToFirmwareDataConverter();
    }
 
    @Provides
@@ -362,6 +330,12 @@ public class MappingModule {
    @Singleton
    Converter provideBucketSimpleConverter() {
       return new BucketItemSimpleConverter();
+   }
+
+   @Provides(type = Provides.Type.SET)
+   @Singleton
+   Converter provideBucketDiningConverter() {
+      return new BucketDiningItemConverter();
    }
 
    @Provides(type = Provides.Type.SET)

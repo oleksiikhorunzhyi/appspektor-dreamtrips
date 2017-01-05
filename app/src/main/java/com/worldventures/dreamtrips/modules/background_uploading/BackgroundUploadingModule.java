@@ -1,6 +1,5 @@
 package com.worldventures.dreamtrips.modules.background_uploading;
 
-import com.techery.spares.module.qualifier.Global;
 import com.techery.spares.session.SessionHolder;
 import com.worldventures.dreamtrips.core.janet.SessionActionPipeCreator;
 import com.worldventures.dreamtrips.core.session.UserSession;
@@ -19,7 +18,6 @@ import javax.inject.Singleton;
 
 import dagger.Module;
 import dagger.Provides;
-import de.greenrobot.event.EventBus;
 
 @Module(
       injects = {

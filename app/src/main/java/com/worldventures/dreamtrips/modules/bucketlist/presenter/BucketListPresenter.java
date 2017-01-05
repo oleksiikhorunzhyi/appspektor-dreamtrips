@@ -46,7 +46,7 @@ public class BucketListPresenter extends Presenter<BucketListPresenter.View> {
    @State boolean showToDO = true;
    @State boolean showCompleted = true;
 
-   private BucketItem currentItem;
+   private BucketItem lastOpenedBucketItem;
 
    private List<BucketItem> bucketItems = new ArrayList<>();
 
@@ -66,15 +66,20 @@ public class BucketListPresenter extends Presenter<BucketListPresenter.View> {
    public void onStart() {
       super.onStart();
       view.startLoading();
+   }
+
+   @Override
+   public void onResume() {
+      super.onResume();
       bucketInteractor.bucketListActionPipe()
             .observeWithReplay()
-            .compose(bindViewToMainComposer())
+            .compose(bindUntilPauseIoToMainComposer())
             .subscribe(new ActionStateSubscriber<BucketListCommand>()
-            .onSuccess(bucketListCommand -> onSuccessLoadingBucketList(bucketListCommand.getResult()))
-            .onFail((bucketListCommand, throwable) -> {
-               view.finishLoading();
-               handleError(bucketListCommand, throwable);
-            }));
+                  .onSuccess(bucketListCommand -> onSuccessLoadingBucketList(bucketListCommand.getResult()))
+                  .onFail((bucketListCommand, throwable) -> {
+                     view.finishLoading();
+                     handleError(bucketListCommand, throwable);
+                  }));
    }
 
    private void onSuccessLoadingBucketList(List<BucketItem> newItems) {
@@ -87,21 +92,9 @@ public class BucketListPresenter extends Presenter<BucketListPresenter.View> {
             });
    }
 
-   @Override
-   public void onResume() {
-      super.onResume();
-      openDetailsIfNeeded(currentItem);
-   }
-
    private void refresh() {
-      fillWithItems();
-      openDetailsIfNeeded(currentItem);
-   }
-
-   private void fillWithItems() {
       if (bucketItems.isEmpty()) {
          filteredItems.clear();
-         currentItem = null;
       } else {
          filteredItems.clear();
          if (showToDO) {
@@ -116,10 +109,8 @@ public class BucketListPresenter extends Presenter<BucketListPresenter.View> {
             filteredItems.addAll(done);
          }
          //
-         if (filteredItems.isEmpty()) {
-            currentItem = null;
-         } else if (!filteredItems.contains(currentItem)) {
-            currentItem = filteredItems.get(0);
+         if (!filteredItems.isEmpty() && !filteredItems.get(0).equals(lastOpenedBucketItem)) {
+            openDetailsIfNeeded(filteredItems.get(0));
          }
       }
 
@@ -131,8 +122,7 @@ public class BucketListPresenter extends Presenter<BucketListPresenter.View> {
       if (!isTypeCorrect(bucketItem.getType()) && !bucketItems.contains(bucketItem)) return;
 
       TrackingHelper.actionBucketItem(TrackingHelper.ATTRIBUTE_VIEW, bucketItem.getUid());
-      currentItem = bucketItem;
-      openDetails(currentItem);
+      openDetails(bucketItem);
    }
 
    public void itemDoneClicked(BucketItem bucketItem) {
@@ -156,6 +146,8 @@ public class BucketListPresenter extends Presenter<BucketListPresenter.View> {
    }
 
    private void openDetails(BucketItem bucketItem) {
+      lastOpenedBucketItem = bucketItem;
+
       BucketBundle bundle = new BucketBundle();
       bundle.setType(type);
       bundle.setBucketItem(bucketItem);

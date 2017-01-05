@@ -14,6 +14,7 @@ import android.text.style.ForegroundColorSpan;
 import android.text.style.StyleSpan;
 import android.text.util.Linkify;
 import android.util.AttributeSet;
+import android.widget.TextView;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.worldventures.dreamtrips.R;
@@ -29,6 +30,7 @@ public class WalletInstallFirmwareScreen extends WalletLinearLayout<WalletInstal
       implements WalletInstallFirmwarePresenter.Screen {
 
    @InjectView(R.id.firmware_install_progress) WalletProgressWidget installProgress;
+   @InjectView(R.id.progressStatusLabel) TextView progressStatusLabel;
    @InjectView(R.id.toolbar) Toolbar toolbar;
 
    public WalletInstallFirmwareScreen(Context context) {
@@ -80,15 +82,21 @@ public class WalletInstallFirmwareScreen extends WalletLinearLayout<WalletInstal
             .positiveText(R.string.wallet_firmware_install_error_retry_action)
             .onPositive((dialog, which) -> getPresenter().retry())
             .negativeText(R.string.wallet_firmware_install_error_cancel_action)
-            .onNegative((dialog, which) -> getPresenter().goToDashboard())
+            .onNegative((dialog, which) -> getPresenter().cancelReinstall())
             .cancelable(false)
             .show();
+   }
+
+   @Override
+   public void showInstallingStatus(int status) {
+      progressStatusLabel.setText(String.format("%d%%", status));
    }
 
    private CharSequence createDialogContentText() {
       SpannableString supportPhoneNumber = new SpannableString(getString(R.string.wallet_firmware_install_customer_support_phone_number));
       supportPhoneNumber.setSpan(new StyleSpan(Typeface.BOLD), 0, supportPhoneNumber.length(), 0);
-      supportPhoneNumber.setSpan(new ForegroundColorSpan(ContextCompat.getColor(getContext(), R.color.wallet_alert_phone_number_color)), 0, supportPhoneNumber.length(), 0);
+      supportPhoneNumber.setSpan(new ForegroundColorSpan(ContextCompat.getColor(getContext(), R.color.wallet_alert_phone_number_color)), 0, supportPhoneNumber
+            .length(), 0);
       Linkify.addLinks(supportPhoneNumber, Linkify.PHONE_NUMBERS);
 
       return new SpannableStringBuilder()

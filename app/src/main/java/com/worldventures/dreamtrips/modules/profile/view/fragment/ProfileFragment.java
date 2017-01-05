@@ -288,32 +288,20 @@ public abstract class ProfileFragment<T extends ProfilePresenter> extends RxBase
    }
 
    @Override
-   public void onUserPhotoClicked() {
-      //
-   }
+   public void onUserPhotoClicked() {}
 
    @Override
-   public void onUserCoverClicked() {
-      //
-   }
+   public void onUserCoverClicked() {}
 
    @Override
-   public void onAcceptRequest() {
-      //
-   }
+   public void onAcceptRequest() {}
 
    @Override
-   public void onRejectRequest() {
-      //
-   }
+   public void onRejectRequest() {}
 
    @Override
-   public void onAddFriend() {
-      //
-   }
+   public void onAddFriend() { }
 
    @Override
-   public void onCellClicked(User model) {
-      //
-   }
+   public void onCellClicked(User model) { }
 }

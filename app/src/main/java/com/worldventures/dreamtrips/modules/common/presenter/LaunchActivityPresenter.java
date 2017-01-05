@@ -15,9 +15,7 @@ import com.worldventures.dreamtrips.modules.background_uploading.service.Restore
 import com.worldventures.dreamtrips.modules.common.service.CleanTempDirectoryCommand;
 import com.worldventures.dreamtrips.modules.common.service.ClearStoragesInteractor;
 import com.worldventures.dreamtrips.modules.common.view.ApiErrorView;
-import com.worldventures.dreamtrips.modules.dtl.model.location.DtlLocation;
 import com.worldventures.dreamtrips.modules.dtl.service.DtlLocationInteractor;
-import com.worldventures.dreamtrips.modules.dtl.service.action.DtlLocationCommand;
 
 import javax.inject.Inject;
 
@@ -39,7 +37,6 @@ public class LaunchActivityPresenter extends ActivityPresenter<LaunchActivityPre
    @Inject BackgroundUploadingInteractor backgroundUploadingInteractor;
 
    @State boolean dtlInitDone;
-   @State boolean clearCacheDone;
 
    @Override
    public void takeView(View view) {
@@ -79,18 +76,12 @@ public class LaunchActivityPresenter extends ActivityPresenter<LaunchActivityPre
 
    private void splashMode() {
       view.openSplash();
-
-      if (!clearCacheDone) {
-         clearStoragesInteractor.cleanTempDirectoryPipe()
-               .createObservable(new CleanTempDirectoryCommand())
-               .compose(bindViewToMainComposer())
-               .subscribe(command -> {
-                  clearCacheDone = true;
-                  onAuthSuccess();
-               });
-      } else {
-         onAuthSuccess();
-      }
+      clearStoragesInteractor.cleanTempDirectoryPipe()
+            .createObservable(new CleanTempDirectoryCommand())
+            .compose(bindViewToMainComposer())
+            .subscribe(new ActionStateSubscriber<CleanTempDirectoryCommand>()
+                  .onSuccess(cleanTempDirectoryCommand -> onAuthSuccess())
+                  .onFail((cleanTempDirectoryCommand, throwable) -> onAuthSuccess()));
    }
 
    private void loginMode() {
@@ -102,10 +93,8 @@ public class LaunchActivityPresenter extends ActivityPresenter<LaunchActivityPre
       return false;
    }
 
-   public void initDtl() {
-      db.cleanLastSelectedOffersOnlyToggle();
-      db.cleanLastMapCameraPosition();
-      dtlLocationInteractor.locationPipe().send(DtlLocationCommand.change(DtlLocation.UNDEFINED));
+   private void initDtl() {
+      db.cleanLastMapCameraPosition(); // TODO :: 26.09.16 move to PresetationInteractor
    }
 
    public void loginAction() {

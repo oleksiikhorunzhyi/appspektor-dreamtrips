@@ -33,7 +33,7 @@ public class FixedListPhotosPresenter extends TripImagesListPresenter<TripImages
    }
 
    @Override
-   public void reload() {
+   public void reload(boolean userInitiated) {
    }
 
    @Override

@@ -5,6 +5,7 @@ import android.os.Build;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
+import com.messenger.command.LoginToMessengerServerCommand;
 import com.techery.spares.module.Injector;
 import com.techery.spares.session.SessionHolder;
 import com.worldventures.dreamtrips.BuildConfig;
@@ -35,6 +36,7 @@ import io.techery.janet.converter.Converter;
 import io.techery.janet.http.HttpClient;
 import io.techery.mappery.MapperyContext;
 import rx.Observable;
+import rx.schedulers.Schedulers;
 import timber.log.Timber;
 
 public class NewDreamTripsHttpService extends ActionServiceWrapper {
@@ -43,7 +45,7 @@ public class NewDreamTripsHttpService extends ActionServiceWrapper {
    @Inject AppVersionNameBuilder appVersionNameBuilder;
    @Inject SnappyRepository db;
    @Inject MapperyContext mapperyContext;
-
+   @Inject Janet janet;
    @Inject Observable<Device> deviceSource;
    @Inject Set<ResponseListener> responseListeners;
 
@@ -144,6 +146,8 @@ public class NewDreamTripsHttpService extends ActionServiceWrapper {
       prepareNewHttpAction(loginAction);
       ActionState<LoginHttpAction> loginState = loginActionPipe.createObservable(loginAction).toBlocking().last();
       if (loginState.status == ActionState.Status.SUCCESS) {
+         janet.createPipe(LoginToMessengerServerCommand.class, Schedulers.io())
+               .send(new LoginToMessengerServerCommand());
          return mapperyContext.convert(loginState.action.response(), Session.class);
       } else {
          Timber.w(loginState.exception, "Login error");

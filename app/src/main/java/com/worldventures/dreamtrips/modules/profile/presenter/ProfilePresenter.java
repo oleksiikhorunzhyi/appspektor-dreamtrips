@@ -3,7 +3,6 @@ package com.worldventures.dreamtrips.modules.profile.presenter;
 import android.os.Bundle;
 
 import com.innahema.collections.query.queriables.Queryable;
-import com.techery.spares.utils.delegate.EntityDeletedEventDelegate;
 import com.worldventures.dreamtrips.core.api.action.CommandWithError;
 import com.worldventures.dreamtrips.core.module.RouteCreatorModule;
 import com.worldventures.dreamtrips.core.navigation.Route;
@@ -61,7 +60,6 @@ public abstract class ProfilePresenter<T extends ProfilePresenter.View, U extend
    @Inject FeedInteractor feedInteractor;
    @Inject TripImagesInteractor tripImagesInteractor;
    @Inject PostsInteractor postsInteractor;
-
    @Inject TextualPostTranslationDelegate textualPostTranslationDelegate;
    @Inject FeedActionHandlerDelegate feedActionHandlerDelegate;
    @Inject FeedEntitiesHolderDelegate feedEntitiesHolderDelegate;
@@ -305,7 +303,6 @@ public abstract class ProfilePresenter<T extends ProfilePresenter.View, U extend
    }
 
    public interface View extends RxView, FlagDelegate.View, TextualPostTranslationDelegate.View, FeedEntityEditingView {
-
       void openPost();
 
       void openFriends();

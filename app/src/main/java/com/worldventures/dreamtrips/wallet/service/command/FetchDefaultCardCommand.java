@@ -7,6 +7,7 @@ import com.worldventures.dreamtrips.core.janet.dagger.InjectableAction;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.wallet.domain.entity.card.BankCard;
 import com.worldventures.dreamtrips.wallet.domain.entity.card.Card;
+import com.worldventures.dreamtrips.wallet.domain.storage.disk.CardListStorage;
 
 import java.util.List;
 
@@ -18,12 +19,12 @@ import io.techery.janet.command.annotations.CommandAction;
 @CommandAction
 public class FetchDefaultCardCommand extends Command<BankCard> implements InjectableAction {
 
-   @Inject
-   SnappyRepository snappyRepository;
+   @Inject SnappyRepository snappyRepository;
+   @Inject CardListStorage cardListStorage;
 
    @Override
    protected void run(CommandCallback<BankCard> callback) throws Throwable {
-      List<Card> cards = snappyRepository.readWalletCardsList();
+      List<Card> cards = cardListStorage.readWalletCardsList();
       String defaultId = snappyRepository.readWalletDefaultCardId();
       Card defaultCard = Queryable.from(cards).firstOrDefault(c -> TextUtils.equals(c.id(), defaultId));
       callback.onSuccess((BankCard) defaultCard);

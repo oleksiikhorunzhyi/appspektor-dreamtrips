@@ -6,12 +6,12 @@ import com.techery.spares.annotations.Layout;
 import com.techery.spares.ui.view.cell.AbstractDelegateCell;
 import com.techery.spares.ui.view.cell.CellDelegate;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.modules.dtl.model.merchant.offer.DtlOffer;
+import com.worldventures.dreamtrips.modules.dtl.model.merchant.offer.Offer;
 
 import butterknife.OnClick;
 
 @Layout(R.layout.adapter_item_offer_points)
-public class DtlPointsCell extends AbstractDelegateCell<DtlOffer, CellDelegate<DtlOffer>> {
+public class DtlPointsCell extends AbstractDelegateCell<Offer, CellDelegate<Offer>> {
 
    public DtlPointsCell(View view) {
       super(view);

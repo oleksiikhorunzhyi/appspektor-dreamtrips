@@ -18,7 +18,7 @@ public class ChangeDefaultCardAction extends BaseSetDefaultCardAction {
       ChangeDefaultCardAction action = new ChangeDefaultCardAction();
       action.setDefaultWhere = "In-App:Card Detail";
       action.fillPaycardInfo(bankCard);
-      action.cardNickname = bankCard.title();
+      action.cardNickname = bankCard.nickName();
       return action;
    }
 }

@@ -4,7 +4,7 @@ import com.worldventures.dreamtrips.core.janet.dagger.InjectableAction;
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCard;
 import com.worldventures.dreamtrips.wallet.service.SmartCardInteractor;
 import com.worldventures.dreamtrips.wallet.service.WalletBluetoothService;
-import com.worldventures.dreamtrips.wallet.service.command.GetActiveSmartCardCommand;
+import com.worldventures.dreamtrips.wallet.service.command.ActiveSmartCardCommand;
 
 import org.immutables.value.Value;
 
@@ -24,7 +24,7 @@ public class PreInstallationCheckCommand extends Command<PreInstallationCheckCom
    @Override
    protected void run(CommandCallback<PreInstallationCheckCommand.Checks> callback) throws Throwable {
       smartCardInteractor.activeSmartCardPipe()
-            .createObservableResult(new GetActiveSmartCardCommand())
+            .createObservableResult(new ActiveSmartCardCommand())
             .map(command -> check(command.getResult()))
             .subscribe(callback::onSuccess, callback::onFail);
    }

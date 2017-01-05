@@ -1,6 +1,5 @@
 package com.worldventures.dreamtrips.modules.infopages.service.command;
 
-
 import android.os.Build;
 
 import com.worldventures.dreamtrips.R;
@@ -18,7 +17,7 @@ import com.worldventures.dreamtrips.modules.common.delegate.system.DeviceInfoPro
 import com.worldventures.dreamtrips.modules.infopages.model.FeedbackImageAttachment;
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCard;
 import com.worldventures.dreamtrips.wallet.service.SmartCardInteractor;
-import com.worldventures.dreamtrips.wallet.service.command.GetActiveSmartCardCommand;
+import com.worldventures.dreamtrips.wallet.service.command.ActiveSmartCardCommand;
 
 import java.util.List;
 
@@ -29,6 +28,8 @@ import io.techery.janet.Janet;
 import io.techery.janet.command.annotations.CommandAction;
 import io.techery.janet.helper.ActionStateSubscriber;
 import io.techery.mappery.MapperyContext;
+
+import static com.worldventures.dreamtrips.wallet.util.SCFirmwareUtils.smartCardFirmwareVersion;
 
 @CommandAction
 public class SendFeedbackCommand extends CommandWithError implements InjectableAction {
@@ -52,8 +53,8 @@ public class SendFeedbackCommand extends CommandWithError implements InjectableA
    @Override
    protected void run(CommandCallback callback) throws Throwable {
       smartCardInteractor.activeSmartCardPipe()
-            .createObservable(new GetActiveSmartCardCommand())
-            .subscribe(new ActionStateSubscriber<GetActiveSmartCardCommand>()
+            .createObservable(new ActiveSmartCardCommand())
+            .subscribe(new ActionStateSubscriber<ActiveSmartCardCommand>()
                   .onSuccess(command -> sendFeedback(callback, command.getResult()))
                   .onFail((command, throwable) -> sendFeedback(callback, command.getResult())));
    }
@@ -80,7 +81,7 @@ public class SendFeedbackCommand extends CommandWithError implements InjectableA
             .smartCardId(Integer.parseInt(smartCard.smartCardId()))
             .smartCardSerialNumber(smartCard.serialNumber())
             .bleId(smartCard.deviceAddress())
-            .firmwareVersion(smartCard.firmWareVersion())
+            .firmwareVersion(smartCardFirmwareVersion(smartCard.firmwareVersion()))
             .sdkVersion(smartCard.sdkVersion())
             .build();
    }

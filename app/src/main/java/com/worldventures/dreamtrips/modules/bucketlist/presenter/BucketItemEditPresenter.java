@@ -165,7 +165,10 @@ public class BucketItemEditPresenter extends BucketDetailsBasePresenter<BucketIt
    }
 
    private void cancelUpload(EntityStateHolder<BucketPhoto> photoStateHolder) {
-      bucketInteractor.addBucketItemPhotoPipe().cancel(findCommandByStateHolder(photoStateHolder));
+      AddBucketItemPhotoCommand addBucketItemPhotoCommand = findCommandByStateHolder(photoStateHolder);
+      if (addBucketItemPhotoCommand != null) {
+         bucketInteractor.addBucketItemPhotoPipe().cancel(addBucketItemPhotoCommand);
+      }
    }
 
    private void attachImages(List<PhotoGalleryModel> chosenImages) {
@@ -208,7 +211,8 @@ public class BucketItemEditPresenter extends BucketDetailsBasePresenter<BucketIt
                eventBus.post(new FeedEntityChangedEvent(bucketItem)); //TODO fix it when feed would be rewrote
             });
       //
-      view.bind(mediaPickerEventDelegate.getObservable().filter(attachment -> attachment.requestId == BUCKET_MEDIA_REQUEST_ID))
+      view.bind(mediaPickerEventDelegate.getObservable()
+            .filter(attachment -> attachment.requestId == BUCKET_MEDIA_REQUEST_ID))
             .subscribe(mediaAttachment -> attachImages(mediaAttachment.chosenImages));
    }
 

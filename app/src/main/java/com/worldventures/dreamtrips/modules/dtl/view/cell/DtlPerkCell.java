@@ -13,9 +13,9 @@ import com.worldventures.dreamtrips.core.utils.DateTimeUtils;
 import com.worldventures.dreamtrips.core.utils.LocaleHelper;
 import com.worldventures.dreamtrips.core.utils.ViewUtils;
 import com.worldventures.dreamtrips.modules.common.view.custom.ImageryDraweeView;
-import com.worldventures.dreamtrips.modules.dtl.helper.DtlMerchantHelper;
-import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchantMedia;
-import com.worldventures.dreamtrips.modules.dtl.model.merchant.offer.DtlOffer;
+import com.worldventures.dreamtrips.modules.dtl.helper.MerchantHelper;
+import com.worldventures.dreamtrips.modules.dtl.model.merchant.MerchantMedia;
+import com.worldventures.dreamtrips.modules.dtl.model.merchant.offer.Offer;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.operational_hour.OperationDay;
 
 import java.util.List;
@@ -24,7 +24,7 @@ import butterknife.InjectView;
 import butterknife.OnClick;
 
 @Layout(R.layout.adapter_item_offer_perk)
-public class DtlPerkCell extends AbstractDelegateCell<DtlOffer, CellDelegate<DtlOffer>> {
+public class DtlPerkCell extends AbstractDelegateCell<Offer, CellDelegate<Offer>> {
 
    @InjectView(R.id.perk_logo) ImageryDraweeView image;
    @InjectView(R.id.perks_description) TextView title;
@@ -53,25 +53,25 @@ public class DtlPerkCell extends AbstractDelegateCell<DtlOffer, CellDelegate<Dtl
    }
 
    private void bindImage() {
-      DtlMerchantMedia media = Queryable.from(getModelObject().getImages()).firstOrDefault();
+      MerchantMedia media = Queryable.from(getModelObject().images()).firstOrDefault();
       if (media == null) return;
       //
       image.setImageUrl(media.getImagePath());
    }
 
    private void bindExpirationBar() {
-      if (DtlMerchantHelper.isOfferExpiringSoon(getModelObject())) {
-         ViewUtils.setTextOrHideView(expirationBar, DtlMerchantHelper.
+      if (MerchantHelper.isOfferExpiringSoon(getModelObject())) {
+         ViewUtils.setTextOrHideView(expirationBar, MerchantHelper.
                getOfferExpiringCaption(itemView.getContext(), getModelObject(), LocaleHelper.getDefaultLocale()));
       } else ViewUtils.setViewVisibility(View.GONE, expirationBar);
    }
 
    private void bindDescription() {
-      if (getModelObject().getDescription() != null) title.setText(getModelObject().getTitle());
+      if (getModelObject().description() != null) title.setText(getModelObject().title());
    }
 
    private void bindOperationDays() {
-      List<OperationDay> operationDays = getModelObject().getOperationDays();
+      List<OperationDay> operationDays = getModelObject().operationDays();
       if (operationDays == null) return;
       //
       String concatDays = DateTimeUtils.concatOperationDays(itemView.getResources(), operationDays, LocaleHelper.getDefaultLocale());

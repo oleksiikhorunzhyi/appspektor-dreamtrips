@@ -135,7 +135,7 @@ public class TripImagesListFragment<T extends TripImagesListPresenter> extends R
 
    @Override
    public void onRefresh() {
-      getPresenter().reload();
+      getPresenter().reload(true);
    }
 
    @Override

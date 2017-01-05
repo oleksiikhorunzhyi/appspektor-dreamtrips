@@ -9,9 +9,11 @@ import com.worldventures.dreamtrips.core.api.PhotoUploadingManagerS3;
 import com.worldventures.dreamtrips.core.janet.JanetModule;
 import com.worldventures.dreamtrips.core.janet.SessionActionPipeCreator;
 import com.worldventures.dreamtrips.core.navigation.service.DialogNavigatorInteractor;
+import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.core.session.CirclesInteractor;
 import com.worldventures.dreamtrips.core.session.UserSession;
 import com.worldventures.dreamtrips.core.utils.DTCookieManager;
+import com.worldventures.dreamtrips.core.utils.tracksystem.AnalyticsInteractor;
 import com.worldventures.dreamtrips.modules.bucketlist.service.BucketInteractor;
 import com.worldventures.dreamtrips.modules.common.delegate.CachedEntityDelegate;
 import com.worldventures.dreamtrips.modules.common.delegate.CachedEntityInteractor;
@@ -29,10 +31,16 @@ import com.worldventures.dreamtrips.modules.common.view.util.MediaPickerImagesPr
 import com.worldventures.dreamtrips.modules.common.view.util.PhotoPickerDelegate;
 import com.worldventures.dreamtrips.modules.dtl.location.LocationDelegate;
 import com.worldventures.dreamtrips.modules.dtl.location.LocationDelegateImpl;
-import com.worldventures.dreamtrips.modules.dtl.service.DtlFilterMerchantInteractor;
+import com.worldventures.dreamtrips.modules.dtl.service.AttributesInteractor;
+import com.worldventures.dreamtrips.modules.dtl.service.ClearMemoryInteractor;
 import com.worldventures.dreamtrips.modules.dtl.service.DtlLocationInteractor;
-import com.worldventures.dreamtrips.modules.dtl.service.DtlMerchantInteractor;
 import com.worldventures.dreamtrips.modules.dtl.service.DtlTransactionInteractor;
+import com.worldventures.dreamtrips.modules.dtl.service.FilterDataInteractor;
+import com.worldventures.dreamtrips.modules.dtl.service.FullMerchantInteractor;
+import com.worldventures.dreamtrips.modules.dtl.service.MerchantsFacadeInteractor;
+import com.worldventures.dreamtrips.modules.dtl.service.MerchantsInteractor;
+import com.worldventures.dreamtrips.modules.dtl.service.MerchantsRequestSourceInteractor;
+import com.worldventures.dreamtrips.modules.dtl.service.PresentationInteractor;
 import com.worldventures.dreamtrips.modules.feed.service.CommentsInteractor;
 import com.worldventures.dreamtrips.modules.feed.service.LikesInteractor;
 import com.worldventures.dreamtrips.modules.feed.service.PostsInteractor;
@@ -54,9 +62,6 @@ import dagger.Provides;
 @Module(
       injects = {
             PhotoUploadingManagerS3.class,
-            DtlFilterMerchantInteractor.class,
-            DtlMerchantInteractor.class,
-            DtlTransactionInteractor.class,
       },
       library = true, complete = false)
 public class ManagerModule {
@@ -86,16 +91,28 @@ public class ManagerModule {
 
    @Singleton
    @Provides
-   DtlMerchantInteractor dtlMerchantInteractor(SessionActionPipeCreator sessionActionPipeCreator,
-         DtlLocationInteractor locationInteractor) {
-      return new DtlMerchantInteractor(sessionActionPipeCreator, locationInteractor);
+   ClearMemoryInteractor provideClearMemoryInteractor(SessionActionPipeCreator sessionActionPipeCreator) {
+      return new ClearMemoryInteractor(sessionActionPipeCreator);
    }
 
    @Singleton
    @Provides
-   DtlFilterMerchantInteractor dtlFilteredMerchantInteractor(DtlMerchantInteractor dtlMerchantInteractor,
-         DtlLocationInteractor locationInteractor, LocationDelegate locationDelegate, SessionActionPipeCreator sessionActionPipeCreator) {
-      return new DtlFilterMerchantInteractor(dtlMerchantInteractor, locationInteractor, locationDelegate, sessionActionPipeCreator);
+   DtlLocationInteractor provideDtlLocationInteractor(SessionActionPipeCreator sessionActionPipeCreator) {
+      return new DtlLocationInteractor(sessionActionPipeCreator);
+   }
+
+   @Singleton
+   @Provides
+   MerchantsInteractor provideMerchantsInteractor(SessionActionPipeCreator sessionActionPipeCreator,
+         DtlLocationInteractor locationInteractor, ClearMemoryInteractor clearMemoryInteractor) {
+      return new MerchantsInteractor(sessionActionPipeCreator, locationInteractor, clearMemoryInteractor);
+   }
+
+   @Singleton
+   @Provides
+   FullMerchantInteractor provideFullMerchantInteractor(SessionActionPipeCreator sessionActionPipeCreator,
+         DtlLocationInteractor dtlLocationInteractor) {
+      return new FullMerchantInteractor(sessionActionPipeCreator, dtlLocationInteractor);
    }
 
    @Singleton
@@ -107,8 +124,36 @@ public class ManagerModule {
 
    @Singleton
    @Provides
-   DtlLocationInteractor provideDtlLocationService(SessionActionPipeCreator sessionActionPipeCreator) {
-      return new DtlLocationInteractor(sessionActionPipeCreator);
+   FilterDataInteractor provideFilterDataInteractor(SessionActionPipeCreator sessionActionPipeCreator,
+         AnalyticsInteractor analyticsInteractor, DtlLocationInteractor dtlLocationInteractor, MerchantsRequestSourceInteractor merchantsRequestSourceInteractor,
+         SnappyRepository snappyRepository) {
+      return new FilterDataInteractor(sessionActionPipeCreator, analyticsInteractor, dtlLocationInteractor, merchantsRequestSourceInteractor,
+            snappyRepository);
+   }
+
+   @Singleton
+   @Provides
+   MerchantsFacadeInteractor provideMerchantsFacadeInteractor(MerchantsRequestSourceInteractor merchantsRequestSourceInteractor, FilterDataInteractor filterDataInteractor, MerchantsInteractor merchantsInteractor, DtlLocationInteractor locationInteractor) {
+      return new MerchantsFacadeInteractor(merchantsRequestSourceInteractor, filterDataInteractor, merchantsInteractor, locationInteractor);
+   }
+
+   @Singleton
+   @Provides
+   AttributesInteractor provideAttributesInteractor(SessionActionPipeCreator sessionActionPipeCreator,
+         FilterDataInteractor filterDataInteractor, DtlLocationInteractor dtlLocationInteractor) {
+      return new AttributesInteractor(sessionActionPipeCreator, filterDataInteractor, dtlLocationInteractor);
+   }
+
+   @Singleton
+   @Provides
+   MerchantsRequestSourceInteractor provideMerchantsRequestSourceInteractor(SessionActionPipeCreator sessionActionPipeCreator) {
+      return new MerchantsRequestSourceInteractor(sessionActionPipeCreator);
+   }
+
+   @Singleton
+   @Provides
+   PresentationInteractor providePresentationInteractor(SessionActionPipeCreator sessionActionPipeCreator) {
+      return new PresentationInteractor(sessionActionPipeCreator);
    }
 
    @Singleton

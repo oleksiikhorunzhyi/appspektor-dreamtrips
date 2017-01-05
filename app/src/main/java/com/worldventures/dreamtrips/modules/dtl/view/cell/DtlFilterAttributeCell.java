@@ -1,5 +1,6 @@
 package com.worldventures.dreamtrips.modules.dtl.view.cell;
 
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.CheckBox;
 import android.widget.TextView;
@@ -10,17 +11,18 @@ import com.techery.spares.ui.view.cell.CellDelegate;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.selectable.SelectableCell;
 import com.worldventures.dreamtrips.core.selectable.SelectableDelegate;
-import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchantAttribute;
+import com.worldventures.dreamtrips.modules.dtl.model.merchant.ImmutableAttribute;
 
 import butterknife.InjectView;
 import butterknife.OnClick;
 
 @Layout(R.layout.adapter_item_filter_checkbox)
-public class DtlFilterAttributeCell extends AbstractDelegateCell<DtlMerchantAttribute, CellDelegate<DtlMerchantAttribute>> implements SelectableCell {
+public class DtlFilterAttributeCell
+      extends AbstractDelegateCell<ImmutableAttribute, CellDelegate<ImmutableAttribute>> implements SelectableCell {
 
    @InjectView(R.id.textViewAttributeCaption) protected TextView textViewName;
    @InjectView(R.id.checkBox) protected CheckBox checkBox;
-   //
+
    private SelectableDelegate selectableDelegate;
 
    public DtlFilterAttributeCell(View view) {
@@ -29,7 +31,8 @@ public class DtlFilterAttributeCell extends AbstractDelegateCell<DtlMerchantAttr
 
    @Override
    protected void syncUIStateWithModel() {
-      textViewName.setText(getModelObject().getName());
+      textViewName.setText(TextUtils.isEmpty(getModelObject().displayName()) ?
+            getModelObject().name() : getModelObject().displayName());
       checkBox.setChecked(selectableDelegate.isSelected(getAdapterPosition()));
    }
 

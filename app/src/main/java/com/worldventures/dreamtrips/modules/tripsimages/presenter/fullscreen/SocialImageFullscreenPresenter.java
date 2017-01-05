@@ -97,6 +97,7 @@ public class SocialImageFullscreenPresenter extends SocialFullScreenPresenter<Ph
                         photo.setCommentsCount(photoFeedEntity.getCommentsCount());
                         photo.setComments(photoFeedEntity.getComments());
                         photo.setPhotoTags(photoFeedEntity.getPhotoTags());
+                        photo.setPhotoTagsCount(photoFeedEntity.getPhotoTagsCount());
                      } else {
                         photo = photoFeedEntity;
                         view.showContentWrapper();

@@ -3,6 +3,9 @@ package com.worldventures.dreamtrips.core.module;
 import android.app.Application;
 import android.content.Context;
 
+import com.worldventures.dreamtrips.core.repository.SnappyModule;
+import com.worldventures.dreamtrips.modules.dtl_flow.di.DtlModule;
+import com.worldventures.dreamtrips.modules.flags.FlagsModule;
 import com.messenger.di.MessengerModule;
 import com.techery.spares.application.BaseApplicationWithInjector;
 import com.techery.spares.module.DebugModule;
@@ -33,7 +36,7 @@ import dagger.Provides;
             DebugModule.class,
             InitializerModule.class,
             HolderModule.class,
-            PersistenceModule.class,
+            SnappyModule.class,
             ManagerModule.class,
             //
             ApiModule.class,
@@ -53,7 +56,7 @@ import dagger.Provides;
             //
             LocaleModule.class, AppVersionNameModule.class,
             //
-            MessengerModule.class, FlagsModule.class,
+            MessengerModule.class, FlagsModule.class, DtlModule.class,
             //
             JanetModule.class, JanetUploaderyModule.class, AnalyticsModule.class, SessionProcessingModule.class,
             //

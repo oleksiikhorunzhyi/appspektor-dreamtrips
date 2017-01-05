@@ -34,7 +34,6 @@ import javax.inject.Inject;
 
 import butterknife.InjectView;
 import butterknife.OnClick;
-import io.techery.janet.ActionState;
 import mbanje.kurt.fabbutton.CircleImageView;
 import mbanje.kurt.fabbutton.FabButton;
 
@@ -188,7 +187,7 @@ public class PhotoPostCreationCell extends AbstractDelegateCell<PhotoCreationIte
    }
 
    private void invalidateAddTagBtn() {
-      tagButton.setVisibility((getModelObject().getStatus() == ActionState.Status.SUCCESS && getModelObject().isCanEdit()) ? View.VISIBLE : View.GONE);
+      tagButton.setVisibility(getModelObject().isCanEdit() ? View.VISIBLE : View.GONE);
       //
       if (getModelObject().getCombinedTags().isEmpty()) {
          tagButton.setText(R.string.tag_people);

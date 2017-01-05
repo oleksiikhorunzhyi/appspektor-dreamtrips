@@ -10,10 +10,11 @@ import com.worldventures.dreamtrips.core.utils.tracksystem.AnalyticsEvent;
 import com.worldventures.dreamtrips.core.utils.tracksystem.Attribute;
 import com.worldventures.dreamtrips.core.utils.tracksystem.AttributeMap;
 import com.worldventures.dreamtrips.core.utils.tracksystem.BaseAnalyticsAction;
+import com.worldventures.dreamtrips.modules.background_uploading.model.PhotoAttachment;
+import com.worldventures.dreamtrips.modules.background_uploading.model.PostWithAttachmentBody;
 import com.worldventures.dreamtrips.modules.common.model.MediaAttachment;
 import com.worldventures.dreamtrips.modules.feed.bundle.CreateEntityBundle;
 import com.worldventures.dreamtrips.modules.feed.model.FeedEntityHolder;
-import com.worldventures.dreamtrips.modules.feed.model.PhotoCreationItem;
 import com.worldventures.dreamtrips.modules.feed.model.TextualPost;
 import com.worldventures.dreamtrips.modules.feed.model.feed.hashtag.Hashtag;
 import com.worldventures.dreamtrips.modules.trips.model.Location;
@@ -40,10 +41,10 @@ public abstract class SharePhotoPostAction extends BaseAnalyticsAction {
    private SharePhotoPostAction() {
    }
 
-   public static SharePhotoPostAction createPostAction(TextualPost textualPost,
-         List<PhotoCreationItem> photoCreationItems, CreateEntityBundle.Origin origin) {
-      final SharePhotoPostAction sharePostAction = getSharePhotoPostAction(origin);
-
+   public static SharePhotoPostAction createPostAction(PostWithAttachmentBody postWithAttachmentBody) {
+      final SharePhotoPostAction sharePostAction = getSharePhotoPostAction(postWithAttachmentBody.origin());
+      final TextualPost textualPost = postWithAttachmentBody.createdPost();
+      final List<PhotoAttachment> photos = postWithAttachmentBody.attachments();
       if (textualPost.getHashtags() != null && !textualPost.getHashtags().isEmpty()) {
          sharePostAction.hashTags = TextUtils.join(",", Queryable.from(textualPost.getHashtags())
                .map(Hashtag::getName)
@@ -55,18 +56,18 @@ public abstract class SharePhotoPostAction extends BaseAnalyticsAction {
          sharePostAction.locationAdded = textualPost.getLocation().getName();
       }
 
-      sharePostAction.uploadCount = String.valueOf(photoCreationItems.size());
-      sharePostAction.photoMethodCam = String.valueOf(Queryable.from(photoCreationItems)
-            .count(item -> item.getSource() == MediaAttachment.Source.CAMERA));
-      sharePostAction.photoMethodFb = String.valueOf(Queryable.from(photoCreationItems)
-            .count(item -> item.getSource() == MediaAttachment.Source.FACEBOOK));
-      sharePostAction.photoMethodGallery = String.valueOf(Queryable.from(photoCreationItems)
-            .count(item -> item.getSource() == MediaAttachment.Source.GALLERY));
+      sharePostAction.uploadCount = String.valueOf(photos);
+      sharePostAction.photoMethodCam = String.valueOf(Queryable.from(photos)
+            .count(item -> item.selectedPhoto().source() == MediaAttachment.Source.CAMERA));
+      sharePostAction.photoMethodFb = String.valueOf(Queryable.from(photos)
+            .count(item -> item.selectedPhoto().source() == MediaAttachment.Source.FACEBOOK));
+      sharePostAction.photoMethodGallery = String.valueOf(Queryable.from(photos)
+            .count(item -> item.selectedPhoto().source() == MediaAttachment.Source.GALLERY));
 
       int photosTaggedCount = Queryable.from(textualPost.getAttachments())
             .filter(feedEntityHolder -> feedEntityHolder.getType() == FeedEntityHolder.Type.PHOTO)
             .map(feedEntityHolder -> (Photo) feedEntityHolder.getItem())
-            .map((photo, idx) -> fullfillLocation(sharePostAction, photoCreationItems, photo, idx))
+            .map((photo, idx) -> fullfillLocation(sharePostAction, photos, photo, idx))
             .sum();
 
       if (photosTaggedCount > 0) {
@@ -79,9 +80,9 @@ public abstract class SharePhotoPostAction extends BaseAnalyticsAction {
 
    @NonNull
    private static Integer fullfillLocation(SharePhotoPostAction sharePostAction,
-         List<PhotoCreationItem> photoCreationItems, Photo photo, int idx) {
+         List<PhotoAttachment> photoCreationItems, Photo photo, int idx) {
       // there is no option to match Photo and PhotoCreationItem, we're assuming that order is not changed
-      Location locationFromExif = photoCreationItems.get(idx).getLocationFromExif();
+      Location locationFromExif = photoCreationItems.get(idx).selectedPhoto().locationFromExif();
       String photoCoordinates = isLocationValid(locationFromExif)
             ? String.format(Locale.US, "%f,%f", locationFromExif.getLat(), locationFromExif.getLng())
             : "Not Available";

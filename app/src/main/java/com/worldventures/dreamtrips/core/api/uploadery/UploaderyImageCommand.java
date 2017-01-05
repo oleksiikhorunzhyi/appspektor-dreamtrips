@@ -7,6 +7,7 @@ import com.worldventures.dreamtrips.api.uploadery.UploadImageHttpAction;
 import com.worldventures.dreamtrips.core.janet.JanetUploaderyModule;
 import com.worldventures.dreamtrips.core.janet.dagger.InjectableAction;
 import com.worldventures.dreamtrips.modules.infopages.StaticPageProvider;
+import com.worldventures.dreamtrips.util.HttpUploaderyException;
 
 import java.io.File;
 import java.io.IOException;
@@ -40,7 +41,8 @@ public abstract class UploaderyImageCommand<T> extends BaseUploadImageCommand<T>
                if (action.status == ActionState.Status.PROGRESS) callback.onProgress(action.progress);
             })
             .compose(nextAction())
-            .subscribe(callback::onSuccess, callback::onFail);
+            .subscribe(callback::onSuccess, throwable -> callback.onFail(new HttpUploaderyException(throwable)));
+
    }
 
    public String getFileUri() {

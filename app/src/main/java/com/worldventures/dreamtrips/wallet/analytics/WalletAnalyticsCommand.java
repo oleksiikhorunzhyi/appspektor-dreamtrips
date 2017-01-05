@@ -4,7 +4,7 @@ package com.worldventures.dreamtrips.wallet.analytics;
 import com.worldventures.dreamtrips.core.janet.dagger.InjectableAction;
 import com.worldventures.dreamtrips.core.utils.tracksystem.AnalyticsInteractor;
 import com.worldventures.dreamtrips.wallet.service.SmartCardInteractor;
-import com.worldventures.dreamtrips.wallet.service.command.GetActiveSmartCardCommand;
+import com.worldventures.dreamtrips.wallet.service.command.ActiveSmartCardCommand;
 
 import javax.inject.Inject;
 
@@ -26,8 +26,7 @@ public class WalletAnalyticsCommand extends Command<Void> implements InjectableA
    @Override
    protected void run(CommandCallback<Void> callback) throws Throwable {
       smartCardInteractor.activeSmartCardPipe()
-            .createObservableResult(new GetActiveSmartCardCommand())
-            .take(1)
+            .createObservableResult(new ActiveSmartCardCommand())
             .map(Command::getResult)
             .subscribe(smartCard -> {
                walletAnalyticsAction.setSmartCardAction(smartCard);

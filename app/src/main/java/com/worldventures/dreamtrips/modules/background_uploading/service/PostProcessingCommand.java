@@ -3,10 +3,12 @@ package com.worldventures.dreamtrips.modules.background_uploading.service;
 
 import com.innahema.collections.query.queriables.Queryable;
 import com.worldventures.dreamtrips.core.janet.dagger.InjectableAction;
+import com.worldventures.dreamtrips.core.utils.tracksystem.AnalyticsInteractor;
 import com.worldventures.dreamtrips.modules.background_uploading.model.PhotoAttachment;
 import com.worldventures.dreamtrips.modules.background_uploading.model.PostCompoundOperationModel;
 import com.worldventures.dreamtrips.modules.background_uploading.model.PostCompoundOperationMutator;
 import com.worldventures.dreamtrips.modules.feed.service.PostsInteractor;
+import com.worldventures.dreamtrips.modules.feed.service.analytics.SharePhotoPostAction;
 import com.worldventures.dreamtrips.modules.feed.service.command.CreatePhotosCommand;
 import com.worldventures.dreamtrips.modules.feed.service.command.CreatePostCommand;
 import com.worldventures.dreamtrips.modules.feed.service.command.PostCreatedCommand;
@@ -29,6 +31,7 @@ public class PostProcessingCommand extends Command<PostCompoundOperationModel> i
 
    @Inject Janet janet;
    @Inject PostsInteractor postsInteractor;
+   @Inject AnalyticsInteractor analyticsInteractor;
    @Inject BackgroundUploadingInteractor backgroundUploadingInteractor;
    @Inject PostCompoundOperationMutator compoundOperationObjectMutator;
 
@@ -110,7 +113,7 @@ public class PostProcessingCommand extends Command<PostCompoundOperationModel> i
 
    private Observable<PostCompoundOperationModel> createPost(PostCompoundOperationModel postOperationModel) {
       return postsInteractor.createPostPipe()
-            .createObservableResult(new CreatePostCommand(postOperationModel.body()))
+            .createObservableResult(new CreatePostCommand(postOperationModel))
             .map(Command::getResult)
             .doOnNext(createdPost -> Timber.d("[New Post Creation] Post created"))
             .map(textualPost -> compoundOperationObjectMutator.finished(postOperationModel, textualPost));
@@ -128,5 +131,7 @@ public class PostProcessingCommand extends Command<PostCompoundOperationModel> i
       postsInteractor.postCreatedPipe().send(new PostCreatedCommand(postOperationModel.body().createdPost()));
       backgroundUploadingInteractor.compoundOperationsPipe().send(CompoundOperationsCommand.compoundCommandRemoved(postCompoundOperationModel));
       backgroundUploadingInteractor.startNextCompoundPipe().send(new StartNextCompoundOperationCommand());
+      analyticsInteractor.analyticsActionPipe().send(SharePhotoPostAction.createPostAction(postCompoundOperationModel
+            .body()));
    }
 }

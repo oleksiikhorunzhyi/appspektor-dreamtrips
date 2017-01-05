@@ -1,6 +1,5 @@
 package com.worldventures.dreamtrips.core.navigation;
 
-import android.app.Activity;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.FragmentManager;
@@ -18,11 +17,8 @@ import com.worldventures.dreamtrips.core.navigation.service.DialogNavigatorInter
 import com.worldventures.dreamtrips.modules.common.presenter.ComponentPresenter;
 import com.worldventures.dreamtrips.modules.common.view.dialog.BaseDialogFragment;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragment;
-import com.worldventures.dreamtrips.modules.dtl.event.CloseDialogEvent;
 
 import javax.inject.Inject;
-
-import rx.Subscription;
 
 public class DialogFragmentNavigator implements Navigator {
 
@@ -52,7 +48,6 @@ public class DialogFragmentNavigator implements Navigator {
 
       @Inject Router router;
       @Inject DialogNavigatorInteractor dialogNavigatorInteractor;
-      private Subscription dialogNavigatorInteractorSubscription;
 
       public static NavigationDialogFragment newInstance(Route route, Bundle bundle, int gravity) {
          NavigationDialogFragment fragment = new NavigationDialogFragment();
@@ -65,11 +60,6 @@ public class DialogFragmentNavigator implements Navigator {
       }
 
       @Override
-      public void onAttach(Activity activity) {
-         super.onAttach(activity);
-      }
-
-      @Override
       public void onCreate(Bundle savedInstanceState) {
          super.onCreate(savedInstanceState);
          route = (Route) getArguments().getSerializable(Route.class.getName());
@@ -77,15 +67,15 @@ public class DialogFragmentNavigator implements Navigator {
          //
          setStyle(DialogFragment.STYLE_NO_TITLE, 0);
 
-         dialogNavigatorInteractorSubscription = dialogNavigatorInteractor.closeDialogActionPipe()
+         dialogNavigatorInteractor.closeDialogActionPipe()
                .observeSuccess()
+               .compose(bindToLifecycle())
                .subscribe(command -> dismissAllowingStateLoss());
       }
 
       @Override
       public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
          getDialog().getWindow().setGravity(getArguments().getInt(DIALOG_GRAVITY, 0));
-
          return super.onCreateView(inflater, container, savedInstanceState);
       }
 
@@ -115,16 +105,6 @@ public class DialogFragmentNavigator implements Navigator {
       public void onPause() {
          super.onPause();
          if (isLastInStack()) OrientationUtil.unlockOrientation(getActivity());
-      }
-
-      @Override
-      public void onDestroy() {
-         super.onDestroy();
-         dialogNavigatorInteractorSubscription.unsubscribe();
-      }
-
-      public void onEvent(CloseDialogEvent event) {
-         if (isVisible()) dismiss();
       }
 
       private boolean isLastInStack() {

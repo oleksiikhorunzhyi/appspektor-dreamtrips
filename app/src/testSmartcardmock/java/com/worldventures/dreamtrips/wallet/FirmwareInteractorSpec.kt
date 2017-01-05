@@ -5,6 +5,8 @@ import com.nhaarman.mockito_kotlin.spy
 import com.nhaarman.mockito_kotlin.whenever
 import com.worldventures.dreamtrips.AssertUtil
 import com.worldventures.dreamtrips.BaseSpec
+import com.worldventures.dreamtrips.api.smart_card.firmware.model.FirmwareInfo
+import com.worldventures.dreamtrips.api.smart_card.firmware.model.FirmwareVersions
 import com.worldventures.dreamtrips.core.janet.SessionActionPipeCreator
 import com.worldventures.dreamtrips.core.repository.SnappyRepository
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCard
@@ -139,10 +141,31 @@ class FirmwareInteractorSpec : BaseSpec({
          return mockedSmartCard
       }
 
+      fun mockFirmwareInfo(): FirmwareInfo {
+         val mockFirmwareVersions: FirmwareVersions = mock()
+         whenever(mockFirmwareVersions.atmelVersion()).thenReturn("1.0.0")
+         whenever(mockFirmwareVersions.bootloaderNordicVersion()).thenReturn("1.0.0")
+         whenever(mockFirmwareVersions.nordicVersion()).thenReturn("1.0.0")
+         whenever(mockFirmwareVersions.puckAtmelVerstion()).thenReturn("1.0.0")
+
+         val mockFirmware: FirmwareInfo = mock()
+         whenever(mockFirmware.id()).thenReturn("30")
+         whenever(mockFirmware.firmwareName()).thenReturn("test")
+         whenever(mockFirmware.firmwareVersion()).thenReturn("test")
+         whenever(mockFirmware.sdkVersion()).thenReturn("1.0.6")
+         whenever(mockFirmware.fileSize()).thenReturn(20000)
+         whenever(mockFirmware.url()).thenReturn("device addf, vress")
+         whenever(mockFirmware.releaseNotes()).thenReturn("card name")
+         whenever(mockFirmware.sdkVersion()).thenReturn("1.0.0")
+         whenever(mockFirmware.firmwareVersions()).thenReturn(mockFirmwareVersions)
+
+         return mockFirmware
+      }
+
       fun runPreInstallationCommandSubscriber(): TestSubscriber<ActionState<PreInstallationCheckCommand>> {
          val testSubscriber: TestSubscriber<ActionState<PreInstallationCheckCommand>> = TestSubscriber()
          janet.createPipe(PreInstallationCheckCommand::class.java)
-               .createObservable(PreInstallationCheckCommand())
+               .createObservable(PreInstallationCheckCommand(mockFirmwareInfo()))
                .subscribe(testSubscriber)
          return testSubscriber
       }

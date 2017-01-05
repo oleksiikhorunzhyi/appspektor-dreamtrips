@@ -70,7 +70,7 @@ public class WalletFirmwareChecksPresenter extends WalletPresenter<WalletFirmwar
       )
             .compose(bindView())
             .subscribe(aVoid -> firmwareInteractor
-                  .preInstallationCheckPipe().send(new PreInstallationCheckCommand()));
+                  .preInstallationCheckPipe().send(new PreInstallationCheckCommand(firmwareInfo)));
    }
 
    void installLater() {
@@ -102,15 +102,19 @@ public class WalletFirmwareChecksPresenter extends WalletPresenter<WalletFirmwar
       boolean bluetoothEnabled = checks.bluetoothIsEnabled();
       boolean connected = checks.smartCardIsConnected();
       boolean charged = checks.smartCardIsCharged();
+      boolean cardInCharger = checks.connectToCharger();
+      boolean cardInChargerRequired = checks.connectCardToChargerRequired();
       //noinspection all
       view.connectionStatusVisible(bluetoothEnabled); // secont item
       view.chargedStatusVisible(bluetoothEnabled && connected); // third item
+      view.cardIsInChargerCheckVisible(bluetoothEnabled && connected && charged && cardInChargerRequired);
 
       view.bluetoothEnabled(bluetoothEnabled);
       view.cardConnected(connected);
       view.cardCharged(charged);
+      view.cardIsInCharger(cardInCharger);
 
-      view.installButtonEnabled(bluetoothEnabled && connected && charged);
+      view.installButtonEnabled(bluetoothEnabled && connected && charged && (!cardInChargerRequired || cardInCharger));
    }
 
    public interface Screen extends WalletScreen {
@@ -126,5 +130,9 @@ public class WalletFirmwareChecksPresenter extends WalletPresenter<WalletFirmwar
       void chargedStatusVisible(boolean isVisible);
 
       void installButtonEnabled(boolean enabled);
+
+      void cardIsInCharger(boolean enabled);
+
+      void cardIsInChargerCheckVisible(boolean isVisible);
    }
 }

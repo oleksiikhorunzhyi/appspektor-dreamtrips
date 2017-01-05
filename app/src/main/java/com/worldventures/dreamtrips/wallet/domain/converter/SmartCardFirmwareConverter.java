@@ -12,8 +12,8 @@ class SmartCardFirmwareConverter implements Converter<FirmwareVersion, SmartCard
    @Override
    public SmartCardFirmware convert(MapperyContext mapperyContext, FirmwareVersion firmwareVersion) {
       return ImmutableSmartCardFirmware.builder()
-            .firmwareVersion(firmwareVersion.firmwareVersion())
-            .nrfBootloaderVersion(firmwareVersion.nrfBootloaderVersion())
+            .firmwareVersion(firmwareVersion.appFirmwareVersion())
+            .nrfBootloaderVersion(firmwareVersion.appBootloaderVersion())
             .internalAtmelVersion(firmwareVersion.internalAtmelVersion())
             .internalAtmelBootloaderVersion(firmwareVersion.internalAtmelBootloaderVersion())
             .externalAtmelVersion(firmwareVersion.externalAtmelVersion())

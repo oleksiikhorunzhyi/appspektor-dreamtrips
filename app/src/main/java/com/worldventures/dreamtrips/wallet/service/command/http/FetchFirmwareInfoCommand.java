@@ -11,7 +11,6 @@ import javax.inject.Named;
 import io.techery.janet.Command;
 import io.techery.janet.Janet;
 import io.techery.janet.command.annotations.CommandAction;
-import io.techery.janet.smartcard.model.FirmwareVersion;
 import io.techery.mappery.MapperyContext;
 
 import static com.worldventures.dreamtrips.core.janet.JanetModule.JANET_API_LIB;
@@ -33,7 +32,7 @@ public class FetchFirmwareInfoCommand extends Command<FirmwareUpdateData> implem
    @Override
    protected void run(CommandCallback<FirmwareUpdateData> callback) throws Throwable {
       janet.createPipe(GetFirmwareHttpAction.class)
-            .createObservableResult(new GetFirmwareHttpAction(firmwareVersion.firmwareVersion(), sdkVersion))
+            .createObservableResult(new GetFirmwareHttpAction("1.0.36", "1.0.6"))
             .map(it -> mapperyContext.convert(it.response(), FirmwareUpdateData.class))
             .subscribe(callback::onSuccess, callback::onFail);
    }

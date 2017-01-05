@@ -46,16 +46,18 @@ public class WalletInstallFirmwarePresenter extends WalletPresenter<WalletInstal
    public void onAttachedToWindow() {
       super.onAttachedToWindow();
       sendAnalyticEvent();
-      listenInstallingProgress();
+
       firmwareInteractor.installFirmwarePipe()
             .observeWithReplay()
             .compose(new ActionPipeCacheWiper(firmwareInteractor.installFirmwarePipe()))
             .compose(bindViewIoToMainComposer())
             .subscribe(OperationActionStateSubscriberWrapper.<InstallFirmwareCommand>forView(getView())
                   .onSuccess(command -> openSuccess())
+                  .onProgress((command, integer) -> getView().showInstallingStatus(command.getCurrentStep(),
+                        InstallFirmwareCommand.INSTALL_FIRMWARE_TOTAL_STEPS, integer))
                   .onFail(ErrorHandler.create(getContext()))
-                  .wrap().
-                        onStart(installFirmwareCommand -> state.started = true)
+                  .wrap()
+                  .onStart(installFirmwareCommand -> state.started = true)
             );
       if (!state.started) {
          install();
@@ -67,13 +69,6 @@ public class WalletInstallFirmwarePresenter extends WalletPresenter<WalletInstal
       analyticsInteractor.walletAnalyticsCommandPipe().send(analyticsCommand);
    }
 
-   private void listenInstallingProgress() {
-      firmwareInteractor.getDfuProgressEventPipe()
-            .observeSuccess()
-            .compose(bindViewIoToMainComposer())
-            .subscribe(dfuProgressEvent -> getView().showInstallingStatus(dfuProgressEvent.progress));
-   }
-
    @Override
    public void onNewViewState() {
       state = new WalletInstallFirmwareState();
@@ -81,7 +76,7 @@ public class WalletInstallFirmwarePresenter extends WalletPresenter<WalletInstal
 
    protected void install() {
       getView().showProgress(null);
-      getView().showInstallingStatus(0);
+      getView().showInstallingStatus(0, InstallFirmwareCommand.INSTALL_FIRMWARE_TOTAL_STEPS, 0);
       firmwareInteractor.installFirmwarePipe().send(new InstallFirmwareCommand(firmwareData));
    }
 
@@ -118,7 +113,7 @@ public class WalletInstallFirmwarePresenter extends WalletPresenter<WalletInstal
 
    public interface Screen extends WalletScreen, OperationScreen {
 
-      void showInstallingStatus(int status);
+      void showInstallingStatus(int currentStep, int totalSteps, int progress);
 
    }
 }

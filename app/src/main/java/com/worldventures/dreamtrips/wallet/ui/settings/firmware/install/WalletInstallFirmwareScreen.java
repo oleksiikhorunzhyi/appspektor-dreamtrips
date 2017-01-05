@@ -31,6 +31,7 @@ public class WalletInstallFirmwareScreen extends WalletLinearLayout<WalletInstal
 
    @InjectView(R.id.firmware_install_progress) WalletProgressWidget installProgress;
    @InjectView(R.id.progressStatusLabel) TextView progressStatusLabel;
+   @InjectView(R.id.install_step) TextView installStep;
    @InjectView(R.id.toolbar) Toolbar toolbar;
 
    public WalletInstallFirmwareScreen(Context context) {
@@ -88,8 +89,9 @@ public class WalletInstallFirmwareScreen extends WalletLinearLayout<WalletInstal
    }
 
    @Override
-   public void showInstallingStatus(int status) {
-      progressStatusLabel.setText(String.format("%d%%", status));
+   public void showInstallingStatus(int currentStep, int totalSteps, int progress) {
+      progressStatusLabel.setText(String.format("%d%%", progress));
+      installStep.setText(getString(R.string.wallet_firmware_install_sub_text, currentStep, totalSteps));
    }
 
    private CharSequence createDialogContentText() {

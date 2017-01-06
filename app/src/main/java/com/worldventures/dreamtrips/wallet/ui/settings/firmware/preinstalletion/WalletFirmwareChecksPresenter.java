@@ -63,16 +63,16 @@ public class WalletFirmwareChecksPresenter extends WalletPresenter<WalletFirmwar
             .compose(bindViewIoToMainComposer())
             .subscribe(command -> bind(command.getResult()));
 
-      Observable.concat(
-            smartCardInteractor.activeSmartCardPipe()
-                  .observeSuccessWithReplay().map(command -> (Void) null),
-            bluetoothService.observeEnablesState().map(value -> (Void) null),
+      Observable.combineLatest(
+            bluetoothService.observeEnablesState(),
             smartCardInteractor.cardInChargerEventPipe()
-                  .observeSuccess().map(event -> (Void) null)
+                  .observeSuccess(), (aBoolean, cardInChargerEvent) -> null
       )
             .compose(bindView())
             .subscribe(aVoid -> firmwareInteractor
                   .preInstallationCheckPipe().send(new PreInstallationCheckCommand(firmwareInfo)));
+      firmwareInteractor
+            .preInstallationCheckPipe().send(new PreInstallationCheckCommand(firmwareInfo));
    }
 
    void installLater() {

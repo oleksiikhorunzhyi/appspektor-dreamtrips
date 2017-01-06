@@ -19,6 +19,10 @@ import com.worldventures.dreamtrips.wallet.service.command.firmware.PreInstallat
 import io.techery.janet.ActionState
 import io.techery.janet.CommandActionService
 import io.techery.janet.Janet
+import io.techery.janet.SmartCardActionService
+import io.techery.janet.smartcard.action.support.ConnectAction
+import io.techery.janet.smartcard.mock.client.MockSmartCardClient
+import io.techery.janet.smartcard.model.ImmutableConnectionParams
 import rx.Observable
 import rx.observers.TestSubscriber
 import rx.schedulers.Schedulers
@@ -36,6 +40,7 @@ class FirmwareInteractorSpec : BaseSpec({
          whenever(mockDb.getActiveSmartCardId()).thenReturn(id)
          whenever(mockDb.getSmartCard(id)).thenReturn(smartcard)
          smartCardInteractor.activeSmartCardPipe().send(ActiveSmartCardCommand(smartCard))
+         janet.connectToSmartCardSdk()
       }
 
       context("Pre installation checks") {
@@ -101,6 +106,7 @@ class FirmwareInteractorSpec : BaseSpec({
 
          janet = Janet.Builder()
                .addService(daggerCommandActionService)
+               .addService(SmartCardActionService.createDefault(MockSmartCardClient()))
                .build()
 
          daggerCommandActionService.registerProvider(Janet::class.java) { janet }
@@ -166,8 +172,15 @@ class FirmwareInteractorSpec : BaseSpec({
          val testSubscriber: TestSubscriber<ActionState<PreInstallationCheckCommand>> = TestSubscriber()
          janet.createPipe(PreInstallationCheckCommand::class.java)
                .createObservable(PreInstallationCheckCommand(mockFirmwareInfo()))
+               .toBlocking()
                .subscribe(testSubscriber)
          return testSubscriber
+      }
+
+      fun Janet.connectToSmartCardSdk() {
+         this.createPipe(ConnectAction::class.java).createObservableResult(ConnectAction(ImmutableConnectionParams.of(1)))
+               .toBlocking()
+               .subscribe()
       }
    }
 }

@@ -1,6 +1,6 @@
 package com.worldventures.dreamtrips.wallet.service.command.firmware;
 
-import android.util.Pair;
+import android.support.v4.util.Pair;
 
 import com.worldventures.dreamtrips.api.smart_card.firmware.model.FirmwareInfo;
 import com.worldventures.dreamtrips.core.janet.JanetModule;
@@ -21,7 +21,7 @@ import io.techery.janet.command.annotations.CommandAction;
 import io.techery.janet.smartcard.action.charger.CardInChargerAction;
 import rx.Observable;
 
-import static com.worldventures.dreamtrips.wallet.util.SCFirmwareUtils.*;
+import static com.worldventures.dreamtrips.wallet.util.SCFirmwareUtils.newFirmwareAvailable;
 
 @CommandAction
 public class PreInstallationCheckCommand extends Command<PreInstallationCheckCommand.Checks> implements InjectableAction {
@@ -53,7 +53,7 @@ public class PreInstallationCheckCommand extends Command<PreInstallationCheckCom
       boolean smartCardConnected = bluetoothEnabled &&
             (smartCard.connectionStatus() == SmartCard.ConnectionStatus.CONNECTED || smartCard.connectionStatus() == SmartCard.ConnectionStatus.DFU);
       boolean smartCardCharged = smartCardConnected && smartCard.batteryLevel() >= MIN_BATTERY_LEVEL;
-      boolean smartCardOnDeviceRequired = newFirmwareAvailable(smartCard.firmwareVersion().externalAtmelBootloaderVersion(),
+      boolean smartCardOnDeviceRequired = newFirmwareAvailable(smartCard.firmwareVersion().externalAtmelVersion(),
             firmwareInfo.firmwareVersions().puckAtmelVerstion());
       return ImmutableChecks.builder()
             .bluetoothIsEnabled(bluetoothEnabled)

@@ -32,6 +32,7 @@ import com.worldventures.dreamtrips.wallet.ui.settings.firmware.newavailable.Wal
 import com.worldventures.dreamtrips.wallet.ui.settings.firmware.preinstalletion.WalletFirmwareChecksPresenter;
 import com.worldventures.dreamtrips.wallet.ui.settings.firmware.puck_connection.WalletPuckConnectionPresenter;
 import com.worldventures.dreamtrips.wallet.ui.settings.firmware.uptodate.WalletUpToDateFirmwarePresenter;
+import com.worldventures.dreamtrips.wallet.ui.settings.forcefactoryreset.ForceFactoryResetPresenter;
 import com.worldventures.dreamtrips.wallet.ui.settings.general.WalletSettingsPresenter;
 import com.worldventures.dreamtrips.wallet.ui.settings.profile.WalletSettingsProfilePresenter;
 import com.worldventures.dreamtrips.wallet.ui.settings.removecards.WalletAutoClearCardsPresenter;
@@ -105,7 +106,8 @@ import dagger.Provides;
             WizardAssignUserPresenter.class,
             AboutPresenter.class,
             PairKeyPresenter.class,
-            ConnectionErrorPresenter.class
+            ConnectionErrorPresenter.class,
+            ForceFactoryResetPresenter.class
       },
       complete = false, library = true
 )

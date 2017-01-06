@@ -1,4 +1,4 @@
-package com.worldventures.dreamtrips.wallet.ui.settings.firmware.newavailable;
+package com.worldventures.dreamtrips.wallet.ui.settings.forcefactoryreset;
 
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.flow.path.MasterDetailPath;
@@ -7,15 +7,23 @@ import com.worldventures.dreamtrips.core.flow.util.Layout;
 import com.worldventures.dreamtrips.wallet.domain.entity.FirmwareUpdateData;
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCard;
 
-@Layout(R.layout.screen_wallet_new_firmware_available)
-public class WalletNewFirmwareAvailablePath extends StyledPath {
+@Layout(R.layout.screen_wallet_force_factory_reset)
+public class ForceFactoryResetPath extends StyledPath {
 
-   public final SmartCard smartCard;
-   public final FirmwareUpdateData firmwareUpdateData;
+   private final SmartCard smartCard;
+   private final FirmwareUpdateData firmwareUpdateData;
 
-   public WalletNewFirmwareAvailablePath(SmartCard smartCard, FirmwareUpdateData firmwareUpdateData) {
+   public ForceFactoryResetPath(SmartCard smartCard, FirmwareUpdateData firmwareUpdateData) {
       this.smartCard = smartCard;
       this.firmwareUpdateData = firmwareUpdateData;
+   }
+
+   public SmartCard smartCard() {
+      return smartCard;
+   }
+
+   public FirmwareUpdateData firmwareUpdateData() {
+      return firmwareUpdateData;
    }
 
    @Override

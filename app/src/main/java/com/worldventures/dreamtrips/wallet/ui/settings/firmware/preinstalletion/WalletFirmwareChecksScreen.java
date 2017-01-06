@@ -5,6 +5,7 @@ import android.support.annotation.NonNull;
 import android.support.v7.widget.Toolbar;
 import android.util.AttributeSet;
 import android.widget.Button;
+import android.widget.TextView;
 
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletLinearLayout;
@@ -24,6 +25,7 @@ public class WalletFirmwareChecksScreen extends WalletLinearLayout<WalletFirmwar
    @InjectView(R.id.check_widget_bluetooth) WalletCheckWidget checkWidgetBluetooth;
    @InjectView(R.id.check_widget_charger) WalletCheckWidget checkWidgetCharger;
    @InjectView(R.id.install) Button installButton;
+   @InjectView(R.id.install_later) TextView tvInstallLater;
 
    public WalletFirmwareChecksScreen(Context context) {
       super(context);
@@ -36,13 +38,16 @@ public class WalletFirmwareChecksScreen extends WalletLinearLayout<WalletFirmwar
    @NonNull
    @Override
    public WalletFirmwareChecksPresenter createPresenter() {
-      return new WalletFirmwareChecksPresenter(getContext(), getInjector(), getPath().firmwareFilePath, getPath().firmwareInfo);
+      return new WalletFirmwareChecksPresenter(getPath().smartCard, getContext(), getInjector(), getPath().firmwareFilePath, getPath().firmwareInfo);
    }
 
    @Override
    protected void onFinishInflate() {
       super.onFinishInflate();
       toolbar.setNavigationOnClickListener(view -> presenter.goBack());
+      if (getPath().smartCard == null) {
+         tvInstallLater.setVisibility(INVISIBLE);
+      }
    }
 
    @OnClick(R.id.install_later)

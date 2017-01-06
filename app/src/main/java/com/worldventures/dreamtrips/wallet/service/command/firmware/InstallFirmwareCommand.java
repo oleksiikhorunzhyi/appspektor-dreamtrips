@@ -91,7 +91,8 @@ public class InstallFirmwareCommand extends Command implements InjectableAction 
    }
 
    private Observable<Void> installFirmware(File file, SmartCard smartCard, CommandCallback callback) {
-      loadFirmwareFilesCommand = new LoadFirmwareFilesCommand(file, smartCard.firmwareVersion(), firmwareUpdateData.firmwareInfo().firmwareVersions());
+      loadFirmwareFilesCommand = new LoadFirmwareFilesCommand(file, smartCard.firmwareVersion(), firmwareUpdateData.firmwareInfo().firmwareVersions(),
+            smartCard.connectionStatus() == DFU);
       Subscription subscription = loadFirmwareFilesCommandActionPipe.observe()
             .filter(actionState -> actionState.status == ActionState.Status.PROGRESS)
             .subscribe(actionState -> callback.onProgress(actionState.progress));

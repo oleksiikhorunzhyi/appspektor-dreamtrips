@@ -1,11 +1,15 @@
 package com.worldventures.dreamtrips.wallet.domain.entity;
 
 import org.immutables.value.Value;
+import org.jetbrains.annotations.Nullable;
 
 @Value.Immutable
 public interface SmartCardFirmware {
 
+   @Nullable
    String firmwareVersion();
+
+   String nordicAppVersion();
 
    String nrfBootloaderVersion();
 

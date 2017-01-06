@@ -1,10 +1,9 @@
 package com.worldventures.dreamtrips.modules.feed.model;
 
-import android.text.TextUtils;
+import android.support.annotation.Nullable;
 
 import com.esotericsoftware.kryo.DefaultSerializer;
 import com.esotericsoftware.kryo.serializers.CompatibleFieldSerializer;
-import com.google.gson.annotations.SerializedName;
 import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.feed.model.comment.Comment;
 
@@ -12,13 +11,13 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 @DefaultSerializer(CompatibleFieldSerializer.class)
 public abstract class BaseFeedEntity implements FeedEntity {
 
    protected String uid;
-   @SerializedName("user") protected User owner;
-
+   protected User owner;
    protected int commentsCount;
    protected List<Comment> comments;
    protected boolean liked;
@@ -99,6 +98,39 @@ public abstract class BaseFeedEntity implements FeedEntity {
    @Override
    public String getLanguage() {
       return language;
+   }
+
+   ///////////////////////////////////////////////////////////////////////////
+   // Translate staff
+   ///////////////////////////////////////////////////////////////////////////
+
+   private transient Map<String, String> translationMap;
+   private transient boolean translated;
+
+   @Override
+   public Map<String, String> getOriginalText() {
+      return null;
+   }
+
+   @Nullable
+   @Override
+   public Map<String, String> getTranslation() {
+      return translationMap;
+   }
+
+   @Override
+   public void setTranslations(Map<String, String> translationMap) {
+      this.translationMap = translationMap;
+   }
+
+   @Override
+   public boolean isTranslated() {
+      return translated;
+   }
+
+   @Override
+   public void setTranslated(boolean translated) {
+      this.translated = translated;
    }
 
    ///////////////////////////////////////////////////////////////////////////

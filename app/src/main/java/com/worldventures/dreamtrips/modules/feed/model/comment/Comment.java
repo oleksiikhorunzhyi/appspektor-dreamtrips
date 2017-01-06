@@ -2,32 +2,34 @@ package com.worldventures.dreamtrips.modules.feed.model.comment;
 
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.support.annotation.Nullable;
 
-import com.google.gson.annotations.SerializedName;
 import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.feed.model.TranslatableItem;
 import com.worldventures.dreamtrips.modules.feed.model.UidItem;
 
 import java.io.Serializable;
+import java.util.Collections;
 import java.util.Date;
+import java.util.Map;
 
 public class Comment implements Parcelable, Serializable, UidItem, TranslatableItem {
 
-   String uid;
-   String parent_id;
-   /**
-    * Parent entity uid
-    */
-   String originId;
-   String text;
-   User user;
-   @SerializedName("created_at") Date createdAt;
-   @SerializedName("updated_at") Date updatedAt;
-   boolean update;
-   String company;
-   String language;
-   String translation;
-   boolean translated;
+   private static final String TEXT_KEY = "description";
+
+   private String uid;
+   private String parent_id;
+   private String originId; // Parent entity uid
+   private String text;
+   private User user;
+   private Date createdAt;
+   private Date updatedAt;
+   private boolean update;
+   private String company;
+   private String language;
+
+   private transient Map<String, String> translationMap;
+   private transient boolean translated;
 
    public Comment() {
    }
@@ -38,8 +40,6 @@ public class Comment implements Parcelable, Serializable, UidItem, TranslatableI
       text = in.readString();
       user = in.readParcelable(User.class.getClassLoader());
       language = in.readString();
-      translation = in.readString();
-      translated = in.readByte() == 1;
    }
 
    public static final Creator<Comment> CREATOR = new Creator<Comment>() {
@@ -131,8 +131,6 @@ public class Comment implements Parcelable, Serializable, UidItem, TranslatableI
       parcel.writeString(text);
       parcel.writeParcelable(user, i);
       parcel.writeString(language);
-      parcel.writeString(translation);
-      parcel.writeByte((byte) (translated ? 1 : 0));
    }
 
    @Override
@@ -155,23 +153,28 @@ public class Comment implements Parcelable, Serializable, UidItem, TranslatableI
    // Translation
    ///////////////////////////////////////////////////////////////////////////
 
-   @Override
-   public String getTranslation() {
-      return translation;
-   }
-
-   @Override
-   public void setTranslation(String translation) {
-      this.translation = translation;
-   }
-
-   @Override
-   public String getOriginalText() {
-      return text;
-   }
-
-   public String getLanguageFrom() {
+   public String getLanguage() {
       return language;
+   }
+
+   @Override
+   public Map<String, String> getOriginalText() {
+      return Collections.singletonMap(TEXT_KEY, text);
+   }
+
+   @Nullable
+   @Override
+   public Map<String, String> getTranslation() {
+      return translationMap;
+   }
+
+   public String getTranslationForText() {
+      return translationMap != null ?translationMap.get(TEXT_KEY) : null;
+   }
+
+   @Override
+   public void setTranslations(Map<String, String> translationMap) {
+      this.translationMap = translationMap;
    }
 
    @Override

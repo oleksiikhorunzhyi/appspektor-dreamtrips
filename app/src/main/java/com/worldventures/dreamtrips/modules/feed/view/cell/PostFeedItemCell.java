@@ -18,7 +18,6 @@ import com.worldventures.dreamtrips.core.utils.LocaleHelper;
 import com.worldventures.dreamtrips.modules.common.view.custom.HashtagTextView;
 import com.worldventures.dreamtrips.modules.feed.bundle.FeedHashtagBundle;
 import com.worldventures.dreamtrips.modules.feed.bundle.FeedItemDetailsBundle;
-import com.worldventures.dreamtrips.modules.feed.event.TranslatePostEvent;
 import com.worldventures.dreamtrips.modules.feed.model.FeedEntityHolder;
 import com.worldventures.dreamtrips.modules.feed.model.PostFeedItem;
 import com.worldventures.dreamtrips.modules.feed.model.TextualPost;
@@ -86,12 +85,12 @@ public class PostFeedItemCell extends FeedItemDetailsCell<PostFeedItem, BaseFeed
       boolean emptyPostText = TextUtils.isEmpty(textualPost.getDescription());
       boolean ownLanguage = LocaleHelper.isOwnLanguage(appSessionHolder, textualPost.getLanguage());
       boolean emptyPostLanguage = TextUtils.isEmpty(textualPost.getLanguage());
-      boolean alreadyTranslated = postFeedItem.isTranslated();
 
       if (!ownPost && !emptyPostText && !ownLanguage && !emptyPostLanguage) {
+         boolean alreadyTranslated = textualPost.isTranslated();
          if (alreadyTranslated) {
             translateButton.setVisibility(View.GONE);
-            viewWithTranslation.showTranslation(postFeedItem.getTranslation(), textualPost.getLanguage());
+            viewWithTranslation.showTranslation(textualPost.getTranslationForDescription(), textualPost.getLanguage());
          } else {
             translateButton.setVisibility(View.VISIBLE);
             viewWithTranslation.hide();
@@ -198,7 +197,7 @@ public class PostFeedItemCell extends FeedItemDetailsCell<PostFeedItem, BaseFeed
    public void translate() {
       translateButton.setVisibility(View.GONE);
       viewWithTranslation.showProgress();
-      getEventBus().post(new TranslatePostEvent(getModelObject()));
+      cellDelegate.onTranslateItem(getModelObject().getItem());
    }
 
    @Override

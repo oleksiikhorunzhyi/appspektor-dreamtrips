@@ -1,15 +1,15 @@
 package com.worldventures.dreamtrips.modules.feed.presenter;
 
 import com.worldventures.dreamtrips.core.utils.LocaleHelper;
-import com.worldventures.dreamtrips.modules.feed.event.TranslatePostEvent;
+import com.worldventures.dreamtrips.modules.feed.model.FeedEntity;
 import com.worldventures.dreamtrips.modules.feed.model.FeedItem;
-import com.worldventures.dreamtrips.modules.feed.view.util.TextualPostTranslationDelegate;
+import com.worldventures.dreamtrips.modules.feed.view.util.TranslationDelegate;
 
 import javax.inject.Inject;
 
 public class FeedItemDetailsPresenter extends FeedDetailsPresenter<FeedItemDetailsPresenter.View> {
 
-   @Inject TextualPostTranslationDelegate textualPostTranslationDelegate;
+   @Inject TranslationDelegate translationDelegate;
 
    public FeedItemDetailsPresenter(FeedItem feedItem) {
       super(feedItem);
@@ -18,12 +18,12 @@ public class FeedItemDetailsPresenter extends FeedDetailsPresenter<FeedItemDetai
    @Override
    public void takeView(View view) {
       super.takeView(view);
-      textualPostTranslationDelegate.onTakeView(view, feedItem);
+      translationDelegate.onTakeView(view, feedItem);
    }
 
    @Override
    public void dropView() {
-      textualPostTranslationDelegate.onDropView();
+      translationDelegate.onDropView();
       super.dropView();
    }
 
@@ -32,13 +32,12 @@ public class FeedItemDetailsPresenter extends FeedDetailsPresenter<FeedItemDetai
       feedActionHandlerDelegate.onDownloadImage(url, bindViewToMainComposer(), this::handleError);
    }
 
-   public void onEvent(TranslatePostEvent event) {
-      if (view.isVisibleOnScreen()) {
-         textualPostTranslationDelegate.translate(event.getPostFeedItem(), LocaleHelper.getDefaultLocaleFormatted());
-      }
+   @Override
+   public void onTranslateFeedEntity(FeedEntity translatableItem) {
+      translationDelegate.translate(translatableItem, LocaleHelper.getDefaultLocaleFormatted());
    }
 
-   public interface View extends FeedDetailsPresenter.View, TextualPostTranslationDelegate.View {
+   public interface View extends FeedDetailsPresenter.View, TranslationDelegate.View {
 
    }
 }

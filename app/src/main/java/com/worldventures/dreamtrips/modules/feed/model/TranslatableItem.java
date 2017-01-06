@@ -2,14 +2,16 @@ package com.worldventures.dreamtrips.modules.feed.model;
 
 import android.support.annotation.Nullable;
 
+import java.util.Map;
+
 public interface TranslatableItem {
 
-   String getOriginalText();
+   Map<String, String> getOriginalText();
 
    @Nullable
-   String getTranslation();
+   Map<String, String> getTranslation();
 
-   void setTranslation(String text);
+   void setTranslations(Map<String, String> text);
 
    boolean isTranslated();
 

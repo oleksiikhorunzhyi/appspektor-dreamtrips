@@ -17,12 +17,14 @@ import java.io.File;
 import javax.inject.Inject;
 import javax.inject.Named;
 
+import io.techery.janet.ActionPipe;
+import io.techery.janet.ActionState;
 import io.techery.janet.Command;
 import io.techery.janet.Janet;
 import io.techery.janet.command.annotations.CommandAction;
 import io.techery.janet.smartcard.action.settings.EnableLockUnlockDeviceAction;
-import io.techery.janet.smartcard.action.support.UpgradeFirmwareAction;
 import rx.Observable;
+import rx.Subscription;
 
 import static com.worldventures.dreamtrips.core.janet.CommandActionBaseHelper.ActionCommandSubscriber.wrap;
 import static com.worldventures.dreamtrips.core.janet.JanetModule.JANET_WALLET;
@@ -34,12 +36,16 @@ import static rx.Observable.just;
 @CommandAction
 public class InstallFirmwareCommand extends Command implements InjectableAction {
 
+   public static final int INSTALL_FIRMWARE_TOTAL_STEPS = 4;
+
    @Inject @Named(JANET_WALLET) Janet janet;
    @Inject FirmwareInteractor firmwareInteractor;
    @Inject TemporaryStorage temporaryStorage;
    @Inject SnappyRepository snappyRepository;
 
    private final FirmwareUpdateData firmwareUpdateData;
+   private LoadFirmwareFilesCommand loadFirmwareFilesCommand;
+   private ActionPipe<LoadFirmwareFilesCommand> loadFirmwareFilesCommandActionPipe;
 
    public InstallFirmwareCommand(FirmwareUpdateData firmwareUpdateData) {
       this.firmwareUpdateData = firmwareUpdateData;
@@ -47,9 +53,11 @@ public class InstallFirmwareCommand extends Command implements InjectableAction 
 
    @Override
    protected void run(CommandCallback callback) throws Throwable {
+      loadFirmwareFilesCommandActionPipe = janet.createPipe(LoadFirmwareFilesCommand.class);
+
       cacheFirmwareUpdateData()
             .flatMap(aVoid -> activeSmartCard()
-                  .flatMap(sc -> prepareCardAndInstallFirmware(sc))
+                  .flatMap(sc -> prepareCardAndInstallFirmware(sc, callback))
                   .flatMap(sc -> saveNewFirmwareVersion(sc))
             )
             .flatMap(aVoid -> clearFirmwareUpdateCache())
@@ -57,17 +65,15 @@ public class InstallFirmwareCommand extends Command implements InjectableAction 
             .subscribe(wrap(callback));
    }
 
-   private Observable<SmartCard> prepareCardAndInstallFirmware(SmartCard smartCard) {
+   private Observable<SmartCard> prepareCardAndInstallFirmware(SmartCard smartCard, CommandCallback callback) {
       return prepareSmartCard(smartCard)
             .flatMap(it -> {
                if (it.connectionStatus() == CONNECTED) return enableLockUnlockDevice(false);
                else if (it.connectionStatus() == DFU) return just(it);
-               else {
-                  return error(new IllegalStateException("Can't connect to card on firmwareUpdateData upgrade"));
-               }
+               else return error(new IllegalStateException("Can't connect to card on firmwareUpdateData upgrade"));
             })
             .map(it -> firmwareUpdateData.firmwareFile())
-            .flatMap(this::installFirmware)
+            .flatMap(file -> installFirmware(file, smartCard, callback))
             .doOnNext(aVoid -> enableLockUnlockDevice(true))
             .map(aVoid -> smartCard);
    }
@@ -84,13 +90,19 @@ public class InstallFirmwareCommand extends Command implements InjectableAction 
             .map(action -> (Void) null);
    }
 
-   private Observable<Void> installFirmware(File file) {
-      return janet.createPipe(UpgradeFirmwareAction.class)
-            .createObservableResult(new UpgradeFirmwareAction(file))
-            .flatMap(action ->//todo remove it when temporary storage will be useless
-                  temporaryStorage.failInstall() ? error(new RuntimeException()) : Observable.just(action))
-            .map(it -> (Void) null);
+   private Observable<Void> installFirmware(File file, SmartCard smartCard, CommandCallback callback) {
+      loadFirmwareFilesCommand = new LoadFirmwareFilesCommand(file, smartCard.firmwareVersion(), firmwareUpdateData.firmwareInfo().firmwareVersions(),
+            smartCard.connectionStatus() == DFU);
+      Subscription subscription = loadFirmwareFilesCommandActionPipe.observe()
+            .filter(actionState -> actionState.status == ActionState.Status.PROGRESS)
+            .subscribe(actionState -> callback.onProgress(actionState.progress));
 
+      return janet.createPipe(LoadFirmwareFilesCommand.class)
+               .createObservableResult(loadFirmwareFilesCommand)
+               .doOnNext(command -> subscription.unsubscribe())
+               .flatMap(action ->//todo remove it when temporary storage will be useless
+                  temporaryStorage.failInstall() ? error(new RuntimeException()) : Observable.just(action))
+               .map(it -> (Void) null);
    }
 
    private Observable saveNewFirmwareVersion(SmartCard smartCard) {
@@ -101,8 +113,7 @@ public class InstallFirmwareCommand extends Command implements InjectableAction 
                      .firmwareVersion(firmwareUpdateData.firmwareInfo().firmwareVersion())
                      .build();
 
-         snappyRepository.saveSmartCard(ImmutableSmartCard
-               .builder()
+         snappyRepository.saveSmartCard(ImmutableSmartCard.builder()
                .from(smartCard)
                .sdkVersion(firmwareUpdateData.firmwareInfo().sdkVersion())
                .firmwareVersion(firmware)
@@ -141,4 +152,8 @@ public class InstallFirmwareCommand extends Command implements InjectableAction 
             .map(Command::getResult);
    }
 
+   public int getCurrentStep() {
+      if (loadFirmwareFilesCommand == null) return 0;
+      else return loadFirmwareFilesCommand.getCurrentStep();
+   }
 }

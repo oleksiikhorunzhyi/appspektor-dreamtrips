@@ -1,6 +1,7 @@
 package com.worldventures.dreamtrips.wallet.service;
 
 import com.worldventures.dreamtrips.wallet.domain.entity.ImmutableSmartCard;
+import com.worldventures.dreamtrips.wallet.domain.entity.ImmutableSmartCardFirmware;
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCard;
 import com.worldventures.dreamtrips.wallet.service.command.ActiveSmartCardCommand;
 import com.worldventures.dreamtrips.wallet.service.command.CardListCommand;
@@ -133,18 +134,20 @@ class SmartCardSyncManager {
       interactor.fetchCardPropertiesPipe().observeSuccess()
             .map(Command::getResult)
             .subscribe(properties -> interactor.activeSmartCardPipe()
-                  .send(new ActiveSmartCardCommand(smartCard ->
-                        ImmutableSmartCard.builder()
+                  .send(new ActiveSmartCardCommand(smartCard -> {
+                     ImmutableSmartCardFirmware smartCardFirmware = ImmutableSmartCardFirmware.copyOf(properties.firmwareVersion())
+                           .withFirmwareVersion(smartCard.firmwareVersion().firmwareVersion());
+                        return ImmutableSmartCard.builder()
                               .from(smartCard)
                               .sdkVersion(properties.sdkVersion())
-                              .firmwareVersion(properties.firmwareVersion())
+                              .firmwareVersion(smartCardFirmware)
                               .batteryLevel(properties.batteryLevel())
                               .lock(properties.lock())
                               .stealthMode(properties.stealthMode())
                               .disableCardDelay(properties.disableCardDelay())
                               .clearFlyeDelay(properties.clearFlyeDelay())
-                              .build())), throwable -> {
-            });
+                              .build();
+                  })), throwable -> {});
 
       Observable.merge(
             interactor.lockDeviceChangedEventPipe()

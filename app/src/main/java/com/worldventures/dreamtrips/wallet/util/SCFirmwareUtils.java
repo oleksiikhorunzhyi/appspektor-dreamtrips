@@ -11,4 +11,9 @@ public final class SCFirmwareUtils {
    public static String smartCardFirmwareVersion(@Nullable SmartCardFirmware firmware) {
       return firmware != null ? firmware.firmwareVersion() : "";
    }
+
+   public static boolean newFirmwareAvailable(String currentVersion, String availableVersion) {
+      return !currentVersion.equalsIgnoreCase(availableVersion);
+   }
+
 }

@@ -19,9 +19,10 @@ public class WalletFirmwareChecksScreen extends WalletLinearLayout<WalletFirmwar
       implements WalletFirmwareChecksPresenter.Screen {
 
    @InjectView(R.id.toolbar) Toolbar toolbar;
-   @InjectView(R.id.check_widget_charge) WalletCheckWidget checkWidgetCharge;
+   @InjectView(R.id.check_widget_battery) WalletCheckWidget checkWidgetButtery;
    @InjectView(R.id.check_widget_connection) WalletCheckWidget checkWidgetConnection;
    @InjectView(R.id.check_widget_bluetooth) WalletCheckWidget checkWidgetBluetooth;
+   @InjectView(R.id.check_widget_charger) WalletCheckWidget checkWidgetCharger;
    @InjectView(R.id.install) Button installButton;
 
    public WalletFirmwareChecksScreen(Context context) {
@@ -71,7 +72,7 @@ public class WalletFirmwareChecksScreen extends WalletLinearLayout<WalletFirmwar
 
    @Override
    public void cardCharged(boolean charged) {
-      checkWidgetCharge.setChecked(charged);
+      checkWidgetButtery.setChecked(charged);
    }
 
    @Override
@@ -81,12 +82,22 @@ public class WalletFirmwareChecksScreen extends WalletLinearLayout<WalletFirmwar
 
    @Override
    public void chargedStatusVisible(boolean isVisible) {
-      checkWidgetCharge.setVisibility(isVisible ? VISIBLE : GONE);
+      checkWidgetButtery.setVisibility(isVisible ? VISIBLE : GONE);
    }
 
    @Override
    public void installButtonEnabled(boolean enabled) {
       installButton.setEnabled(enabled);
+   }
+
+   @Override
+   public void cardIsInCharger(boolean enabled) {
+      checkWidgetCharger.setChecked(enabled);
+   }
+
+   @Override
+   public void cardIsInChargerCheckVisible(boolean isVisible) {
+      checkWidgetCharger.setVisibility(isVisible? VISIBLE : GONE);
    }
 
    @Override

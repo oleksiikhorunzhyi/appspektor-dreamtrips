@@ -280,7 +280,7 @@
    <!-- firmware install-->
    <string name="wallet_firmware_install_header">flye smart card Update</string>
    <string name="wallet_firmware_install_text">Installing Update</string>
-   <string name="wallet_firmware_install_sub_text">Do not turn off flye smart card</string>
+   <string name="wallet_firmware_install_sub_text" formatted="false">Step %d of %d</string>
    <string name="wallet_firmware_install_error_alert_title">Installation Error</string>
    <string name="wallet_firmware_install_error_alert_content">Update failed to complete installation. Would you like to retry?</string>
    <string name="wallet_firmware_install_error_alert_content_customer_support">For assistance please contact Customer Support at</string>
@@ -306,7 +306,7 @@
    <string name="wallet_card_not_paired">Card is not paired with device</string>
 
    <!--pre installation check-->
-   <string name="wallet_firmware_pre_installation_title">flye smart card Update</string>
+   <string name="wallet_firmware_pre_installation_title">flye SmartCard Update</string>
    <string name="wallet_firmware_pre_installation_header">To install the update\nPlease do the following:</string>
    <string name="wallet_firmware_pre_installation_bluetooth">Enable Bluetooth and connect to the flye smart card</string>
    <string name="wallet_firmware_pre_installation_connection">Turn on the flye smart card</string>

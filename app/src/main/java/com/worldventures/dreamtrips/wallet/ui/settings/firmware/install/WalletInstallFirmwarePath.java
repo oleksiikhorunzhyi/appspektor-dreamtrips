@@ -1,7 +1,6 @@
 package com.worldventures.dreamtrips.wallet.ui.settings.firmware.install;
 
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.api.smart_card.firmware.model.FirmwareInfo;
 import com.worldventures.dreamtrips.core.flow.path.MasterDetailPath;
 import com.worldventures.dreamtrips.core.flow.path.StyledPath;
 import com.worldventures.dreamtrips.core.flow.util.Layout;

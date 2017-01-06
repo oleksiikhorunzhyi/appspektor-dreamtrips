@@ -24,6 +24,8 @@ class FirmwareResponseToFirmwareDataConverter implements Converter<FirmwareRespo
       return ImmutableFirmwareUpdateData.builder()
             .firmwareInfo(firmwareResponse.firmwareInfo())
             .updateAvailable(firmwareResponse.updateAvailable())
+            .factoryResetRequired(firmwareResponse.factoryResetRequired())
+            .updateCritical(firmwareResponse.updateCritical())
             .build();
    }
 }

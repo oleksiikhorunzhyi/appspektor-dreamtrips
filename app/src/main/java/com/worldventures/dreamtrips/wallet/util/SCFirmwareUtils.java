@@ -16,4 +16,8 @@ public final class SCFirmwareUtils {
       return !currentVersion.equalsIgnoreCase(availableVersion);
    }
 
+   public static int firmwareStringToInt(String firmwareVersion) {
+      String parsed = firmwareVersion.replaceAll(".", "").intern();
+      return Integer.parseInt(parsed);
+   }
 }

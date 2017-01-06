@@ -13,6 +13,10 @@ public abstract class FirmwareUpdateData implements Serializable {
 
    public abstract boolean updateAvailable();
 
+   public abstract boolean updateCritical();
+
+   public abstract boolean factoryResetRequired();
+
    @Nullable
    public abstract FirmwareInfo firmwareInfo();
 

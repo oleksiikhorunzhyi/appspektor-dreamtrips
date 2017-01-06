@@ -14,7 +14,6 @@ import com.worldventures.dreamtrips.wallet.ui.common.base.screen.WalletScreen;
 import com.worldventures.dreamtrips.wallet.ui.common.helper.ErrorActionStateSubscriberWrapper;
 import com.worldventures.dreamtrips.wallet.ui.common.helper.ErrorHandler;
 import com.worldventures.dreamtrips.wallet.ui.common.navigation.Navigator;
-import com.worldventures.dreamtrips.wallet.ui.dashboard.CardListPath;
 
 import javax.inject.Inject;
 
@@ -37,7 +36,7 @@ public class WalletSuccessInstallFirmwarePresenter extends WalletPresenter<Walle
             .compose(bindViewIoToMainComposer())
             .subscribe(ErrorActionStateSubscriberWrapper.<ActiveSmartCardCommand>forView(getView().provideOperationDelegate())
                   .onSuccess(command -> getView().setSubTitle(command.getResult().firmwareVersion().firmwareVersion()))
-                  .onFail(ErrorHandler.create(getContext()))
+                  .onFail(ErrorHandler.create(getContext(), action -> navigator.finish()))
                   .wrap()
             );
    }
@@ -48,7 +47,7 @@ public class WalletSuccessInstallFirmwarePresenter extends WalletPresenter<Walle
    }
 
    void goDashboard() {
-      navigator.single(new CardListPath());
+      navigator.goBack();
    }
 
    public interface Screen extends WalletScreen {

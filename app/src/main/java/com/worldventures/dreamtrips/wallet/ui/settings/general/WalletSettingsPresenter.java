@@ -266,7 +266,7 @@ public class WalletSettingsPresenter extends WalletPresenter<WalletSettingsPrese
 
    void firmwareUpdatesClick() {
       if (firmwareUpdateData != null && firmwareUpdateData.updateAvailable()) {
-         navigator.go(new WalletNewFirmwareAvailablePath());
+         navigator.go(new WalletNewFirmwareAvailablePath(null, firmwareUpdateData));
       } else {
          navigator.go(new WalletUpToDateFirmwarePath());
       }

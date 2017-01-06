@@ -89,7 +89,8 @@ class SmartCardSyncManager {
             .flatMap(connectionStatus -> interactor.activeSmartCardPipe()
                   .createObservableResult(new ActiveSmartCardCommand(smartCard ->
                         ImmutableSmartCard.copyOf(smartCard)
-                              .withConnectionStatus(connectionStatus))))
+                              .withConnectionStatus(connectionStatus)))
+                  .filter(command -> command.getCacheData() != null))
             .subscribe(command -> {
             }, throwable -> Timber.e(throwable, "Error while updating status of active card"));
    }
@@ -166,23 +167,20 @@ class SmartCardSyncManager {
             .map(Command::getResult)
             .subscribe(properties -> interactor.activeSmartCardPipe()
                   .send(new ActiveSmartCardCommand(smartCard -> {
-                     ImmutableSmartCardFirmware smartCardFirmware = ImmutableSmartCardFirmware.copyOf(properties.firmwareVersion());
-                     if (smartCard.firmwareVersion() != null) {
-                        smartCardFirmware = smartCardFirmware
-                              .withFirmwareVersion(smartCard.firmwareVersion().firmwareVersion());
-                     }
-                     return ImmutableSmartCard.builder()
-                           .from(smartCard)
-                           .sdkVersion(properties.sdkVersion())
-                           .firmwareVersion(smartCardFirmware)
-                           .batteryLevel(properties.batteryLevel())
-                           .lock(properties.lock())
-                           .stealthMode(properties.stealthMode())
-                           .disableCardDelay(properties.disableCardDelay())
-                           .clearFlyeDelay(properties.clearFlyeDelay())
-                           .build();
-                  })), throwable -> {
-            });
+                     // 2 lines for support @deprecated field of firmwareVersion, new field nordicAppVersion.
+                     ImmutableSmartCardFirmware smartCardFirmware = ImmutableSmartCardFirmware.copyOf(properties.firmwareVersion())
+                           .withFirmwareVersion(properties.firmwareVersion().nordicAppVersion());
+                        return ImmutableSmartCard.builder()
+                              .from(smartCard)
+                              .sdkVersion(properties.sdkVersion())
+                              .firmwareVersion(smartCardFirmware)
+                              .batteryLevel(properties.batteryLevel())
+                              .lock(properties.lock())
+                              .stealthMode(properties.stealthMode())
+                              .disableCardDelay(properties.disableCardDelay())
+                              .clearFlyeDelay(properties.clearFlyeDelay())
+                              .build();
+                  })), throwable -> {});
 
       Observable.merge(
             interactor.lockDeviceChangedEventPipe()

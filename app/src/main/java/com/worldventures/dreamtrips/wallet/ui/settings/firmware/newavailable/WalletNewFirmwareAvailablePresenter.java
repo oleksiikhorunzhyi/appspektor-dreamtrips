@@ -11,6 +11,8 @@ import com.worldventures.dreamtrips.core.utils.tracksystem.AnalyticsInteractor;
 import com.worldventures.dreamtrips.wallet.analytics.InsufficientStorageAction;
 import com.worldventures.dreamtrips.wallet.analytics.ViewSdkUpdateAction;
 import com.worldventures.dreamtrips.wallet.analytics.WalletAnalyticsCommand;
+import com.worldventures.dreamtrips.wallet.domain.entity.FirmwareUpdateData;
+import com.worldventures.dreamtrips.wallet.domain.entity.SmartCard;
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCardFirmware;
 import com.worldventures.dreamtrips.wallet.domain.storage.TemporaryStorage;
 import com.worldventures.dreamtrips.wallet.service.FirmwareInteractor;
@@ -46,35 +48,44 @@ public class WalletNewFirmwareAvailablePresenter extends WalletPresenter<WalletN
    @Inject TemporaryStorage temporaryStorage;
 
    private FirmwareInfo firmwareInfo;
+   private final SmartCard smartCard;
+   private final FirmwareUpdateData firmwareUpdateData;
 
-   public WalletNewFirmwareAvailablePresenter(Context context, Injector injector) {
+   public WalletNewFirmwareAvailablePresenter(SmartCard smartCard, FirmwareUpdateData firmwareUpdateData, Context context, Injector injector) {
       super(context, injector);
+      this.smartCard = smartCard;
+      this.firmwareUpdateData = firmwareUpdateData;
    }
 
    @Override
    public void onAttachedToWindow() {
       super.onAttachedToWindow();
-      sendAnalyticAction();
-
       observeLatestAvailableFirmware();
       observeSmartCard();
+
+      sendAnalyticAction();
    }
 
    private void observeSmartCard() {
-      smartCardInteractor.activeSmartCardPipe()
-            .observeWithReplay()
-            .compose(new ActionStateToActionTransformer<>())
-            .compose(bindViewIoToMainComposer())
-            .subscribe(ErrorSubscriberWrapper.<ActiveSmartCardCommand>forView(getView().provideOperationDelegate())
-                  .onNext(new Action1<ActiveSmartCardCommand>() {
-                     @Override
-                     public void call(ActiveSmartCardCommand command) {
-                        WalletNewFirmwareAvailablePresenter.this.getView()
-                              .currentFirmwareInfo(command.getResult().firmwareVersion());
-                     }
-                  })
-                  .onFail(ErrorHandler.create(getContext()))
-                  .wrap());
+      if (smartCard == null) {
+         smartCardInteractor.activeSmartCardPipe()
+               .observeWithReplay()
+               .compose(new ActionStateToActionTransformer<>())
+               .compose(bindViewIoToMainComposer())
+               .subscribe(ErrorSubscriberWrapper.<ActiveSmartCardCommand>forView(getView().provideOperationDelegate())
+                     .onNext(new Action1<ActiveSmartCardCommand>() {
+                        @Override
+                        public void call(ActiveSmartCardCommand command) {
+                           WalletNewFirmwareAvailablePresenter.this.getView()
+                                 .currentFirmwareInfo(command.getResult().firmwareVersion());
+                        }
+                     })
+                     .onFail(ErrorHandler.create(getContext()))
+                     .wrap());
+
+      } else {
+         getView().currentFirmwareInfo();
+      }
    }
 
    private void observeLatestAvailableFirmware() {
@@ -82,23 +93,37 @@ public class WalletNewFirmwareAvailablePresenter extends WalletPresenter<WalletN
             .compose(bindViewIoToMainComposer())
             .subscribe(command -> {
                firmwareInfo = command.getResult().firmwareInfo();
-               getView().availableFirmwareInfo(firmwareInfo);
-               if (!firmwareInfo.isCompatible()) {
-                  getView().requiredLatestDtAppVersion();
+               if (firmwareInfo != null) {
+                  getView().availableFirmwareInfo(firmwareInfo);
+                  if (!firmwareInfo.isCompatible()) {
+                     getView().requiredLatestDtAppVersion();
+                  }
                }
             });
    }
 
    private void sendAnalyticAction() {
-      Observable.zip(firmwareInteractor.firmwareInfoPipe().observeSuccessWithReplay().take(1),
-            smartCardInteractor.activeSmartCardPipe().observeSuccessWithReplay().take(1),
-            (firmwareCommand, smartCardCommand) -> {
-               return new ViewSdkUpdateAction(firmwareCommand.getResult().firmwareInfo().firmwareVersion(),
-                     smartCardCommand.getResult().firmwareVersion().firmwareVersion(),
-                     !firmwareCommand.getResult().firmwareInfo().isCompatible());
-            }).subscribe(viewSdkUpdateAction -> {
-         analyticsInteractor.walletAnalyticsCommandPipe().send(new WalletAnalyticsCommand(viewSdkUpdateAction));
-      });
+      if (smartCard == null) {
+         Observable.zip(firmwareInteractor.firmwareInfoPipe().observeSuccessWithReplay().take(1),
+               smartCardInteractor.activeSmartCardPipe().observeSuccessWithReplay().take(1),
+               (firmwareCommand, smartCardCommand) -> {
+                  return new ViewSdkUpdateAction(firmwareCommand.getResult().firmwareInfo().firmwareVersion(),
+                        smartCardCommand.getResult().firmwareVersion().firmwareVersion(),
+                        !firmwareCommand.getResult().firmwareInfo().isCompatible());
+               }).subscribe(viewSdkUpdateAction -> {
+            analyticsInteractor.walletAnalyticsCommandPipe().send(new WalletAnalyticsCommand(smartCard, viewSdkUpdateAction));
+         });
+      } else {
+         if (firmwareUpdateData.firmwareInfo() != null) {
+            analyticsInteractor.walletAnalyticsCommandPipe().send(
+                  new WalletAnalyticsCommand(smartCard,
+                        new ViewSdkUpdateAction(
+                              firmwareUpdateData.firmwareInfo().firmwareVersion(),
+                              smartCard.firmwareVersion().firmwareVersion(),
+                              !firmwareUpdateData.firmwareInfo().isCompatible())
+                  ));
+         }
+      }
    }
 
    void goBack() {
@@ -121,13 +146,13 @@ public class WalletNewFirmwareAvailablePresenter extends WalletPresenter<WalletN
       } catch (WalletFilesUtils.NotEnoughSpaceException e) {
          getView().insufficientSpace(e.getMissingByteSpace());
 
-         WalletAnalyticsCommand analyticsCommand = new WalletAnalyticsCommand(new InsufficientStorageAction());
+         WalletAnalyticsCommand analyticsCommand = new WalletAnalyticsCommand(smartCard, new InsufficientStorageAction());
          analyticsInteractor.walletAnalyticsCommandPipe().send(analyticsCommand);
       }
    }
 
    void downloadFile(String filePath) {
-      navigator.go(new WalletPuckConnectionPath(firmwareInfo, filePath));
+      navigator.go(new WalletPuckConnectionPath(smartCard, firmwareInfo, filePath));
    }
 
    public interface Screen extends WalletScreen {
@@ -138,7 +163,8 @@ public class WalletNewFirmwareAvailablePresenter extends WalletPresenter<WalletN
 
       void currentFirmwareInfo(@Nullable SmartCardFirmware version);
 
-      void insufficientSpace(long missingByteSpace);
+      void currentFirmwareInfo();
 
+      void insufficientSpace(long missingByteSpace);
    }
 }

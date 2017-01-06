@@ -31,7 +31,7 @@ public class WalletPuckConnectionScreen extends WalletLinearLayout<WalletPuckCon
 
    @Override
    public WalletPuckConnectionPresenter createPresenter() {
-      return new WalletPuckConnectionPresenter(getContext(), getInjector(), getPath().firmwareInfo, getPath().filePath);
+      return new WalletPuckConnectionPresenter(getPath().smartCard, getContext(), getInjector(), getPath().firmwareInfo, getPath().filePath);
    }
 
    @Override

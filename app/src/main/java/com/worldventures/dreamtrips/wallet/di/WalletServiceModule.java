@@ -73,8 +73,8 @@ public class WalletServiceModule {
 
    @Singleton
    @Provides
-   FactoryResetManager factoryResetManager(@Named(JANET_WALLET) Janet janet, SmartCardInteractor smartCardInteractor) {
-      return new FactoryResetManager(janet, smartCardInteractor);
+   FactoryResetManager factoryResetManager(@Named(JANET_WALLET) Janet janet) {
+      return new FactoryResetManager(janet);
    }
 
    @Singleton

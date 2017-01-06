@@ -1,14 +1,12 @@
 package com.worldventures.dreamtrips.wallet.service.command.firmware;
 
-import android.support.v4.util.Pair;
-
 import com.worldventures.dreamtrips.api.smart_card.firmware.model.FirmwareInfo;
 import com.worldventures.dreamtrips.core.janet.JanetModule;
 import com.worldventures.dreamtrips.core.janet.dagger.InjectableAction;
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCard;
 import com.worldventures.dreamtrips.wallet.service.SmartCardInteractor;
 import com.worldventures.dreamtrips.wallet.service.WalletBluetoothService;
-import com.worldventures.dreamtrips.wallet.service.command.ActiveSmartCardCommand;
+import com.worldventures.dreamtrips.wallet.util.SCFirmwareUtils;
 
 import org.immutables.value.Value;
 
@@ -19,7 +17,6 @@ import io.techery.janet.Command;
 import io.techery.janet.Janet;
 import io.techery.janet.command.annotations.CommandAction;
 import io.techery.janet.smartcard.action.charger.CardInChargerAction;
-import rx.Observable;
 
 import static com.worldventures.dreamtrips.wallet.util.SCFirmwareUtils.newFirmwareAvailable;
 
@@ -27,25 +24,36 @@ import static com.worldventures.dreamtrips.wallet.util.SCFirmwareUtils.newFirmwa
 public class PreInstallationCheckCommand extends Command<PreInstallationCheckCommand.Checks> implements InjectableAction {
 
    private final static int MIN_BATTERY_LEVEL = 50;
+   private final static int SUPPORTED_CHARGER_ACTION_VERSION_FW = 1052;
 
    @Inject @Named(JanetModule.JANET_WALLET) Janet janet;
    @Inject WalletBluetoothService bluetoothService;
    @Inject SmartCardInteractor smartCardInteractor;
 
    private final FirmwareInfo firmwareInfo;
+   private final SmartCard smartCard;
 
-   public PreInstallationCheckCommand(FirmwareInfo firmwareInfo) {
+   public PreInstallationCheckCommand(SmartCard smartCard, FirmwareInfo firmwareInfo) {
+      this.smartCard = smartCard;
       this.firmwareInfo = firmwareInfo;
    }
 
    @Override
    protected void run(CommandCallback<PreInstallationCheckCommand.Checks> callback) throws Throwable {
-      Observable.combineLatest(
-            smartCardInteractor.activeSmartCardPipe().createObservableResult(new ActiveSmartCardCommand()),
-            janet.createPipe(CardInChargerAction.class).createObservableResult(new CardInChargerAction()),
-            (smartCardCommand, cardInChargerCommand) -> new Pair<>(smartCardCommand.getResult(), cardInChargerCommand.inCharger))
-            .map(dataPair -> check(dataPair.first, dataPair.second))
-            .subscribe(callback::onSuccess, callback::onFail);
+      // TODO: 1/10/17 check for v37, in charger, it is not support
+      if (SCFirmwareUtils.firmwareStringToInt(smartCard.firmwareVersion()
+            .nordicAppVersion()) < SUPPORTED_CHARGER_ACTION_VERSION_FW) {
+         janet.createPipe(CardInChargerAction.class)
+               .createObservableResult(new CardInChargerAction())
+               .map(action -> check(smartCard, action.inCharger))
+               .subscribe(callback::onSuccess, callback::onFail);
+      } else {
+         try {
+            callback.onSuccess(check(smartCard, false));
+         } catch (Exception e) {
+            callback.onFail(e);
+         }
+      }
    }
 
    private Checks check(SmartCard smartCard, boolean inCharger) {

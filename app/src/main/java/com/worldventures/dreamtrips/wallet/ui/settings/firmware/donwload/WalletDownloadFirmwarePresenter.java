@@ -10,6 +10,7 @@ import com.worldventures.dreamtrips.modules.common.command.DownloadFileCommand;
 import com.worldventures.dreamtrips.modules.common.delegate.DownloadFileInteractor;
 import com.worldventures.dreamtrips.wallet.analytics.DownloadingUpdateAction;
 import com.worldventures.dreamtrips.wallet.analytics.WalletAnalyticsCommand;
+import com.worldventures.dreamtrips.wallet.domain.entity.SmartCard;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletPresenter;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.WalletScreen;
 import com.worldventures.dreamtrips.wallet.ui.common.helper.ErrorHandler;
@@ -31,11 +32,13 @@ public class WalletDownloadFirmwarePresenter extends WalletPresenter<WalletDownl
 
    @Inject Navigator navigator;
    private DownloadFileCommand action;
+   private final SmartCard smartCard;
 
-   public WalletDownloadFirmwarePresenter(Context context, Injector injector, FirmwareInfo firmwareInfo, String firmwareFilePath) {
+   public WalletDownloadFirmwarePresenter(SmartCard smartCard, Context context, Injector injector, FirmwareInfo firmwareInfo, String firmwareFilePath) {
       super(context, injector);
       this.firmwareInfo = firmwareInfo;
       this.firmwareFilePath = firmwareFilePath;
+      this.smartCard = smartCard;
    }
 
    @Override
@@ -50,12 +53,12 @@ public class WalletDownloadFirmwarePresenter extends WalletPresenter<WalletDownl
                   .onFail(ErrorHandler.create(getContext(), it -> navigator.goBack()))
                   .wrap());
 
-      WalletAnalyticsCommand analyticsCommand = new WalletAnalyticsCommand(new DownloadingUpdateAction());
+      WalletAnalyticsCommand analyticsCommand = new WalletAnalyticsCommand(smartCard, new DownloadingUpdateAction());
       analyticsInteractor.walletAnalyticsCommandPipe().send(analyticsCommand);
    }
 
    private void openPreInstallationChecks() {
-      navigator.withoutLast(new WalletFirmwareChecksPath(firmwareFilePath, firmwareInfo));
+      navigator.withoutLast(new WalletFirmwareChecksPath(smartCard, firmwareFilePath, firmwareInfo));
    }
 
    void cancelDownload() {

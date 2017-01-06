@@ -11,6 +11,7 @@ import com.worldventures.dreamtrips.wallet.analytics.UpdateInstallAction;
 import com.worldventures.dreamtrips.wallet.analytics.UpdateInstallLaterAction;
 import com.worldventures.dreamtrips.wallet.analytics.WalletAnalyticsCommand;
 import com.worldventures.dreamtrips.wallet.domain.entity.ImmutableFirmwareUpdateData;
+import com.worldventures.dreamtrips.wallet.domain.entity.SmartCard;
 import com.worldventures.dreamtrips.wallet.service.FirmwareInteractor;
 import com.worldventures.dreamtrips.wallet.service.SmartCardInteractor;
 import com.worldventures.dreamtrips.wallet.service.WalletBluetoothService;
@@ -37,11 +38,13 @@ public class WalletFirmwareChecksPresenter extends WalletPresenter<WalletFirmwar
 
    private final String firmwareFilePath;
    private final FirmwareInfo firmwareInfo;
+   private final SmartCard smartCard;
 
-   WalletFirmwareChecksPresenter(Context context, Injector injector, String firmwareFilePath, FirmwareInfo firmwareInfo) {
+   WalletFirmwareChecksPresenter(SmartCard smartCard, Context context, Injector injector, String firmwareFilePath, FirmwareInfo firmwareInfo) {
       super(context, injector);
       this.firmwareFilePath = firmwareFilePath;
       this.firmwareInfo = firmwareInfo;
+      this.smartCard = smartCard;
    }
 
    @Override
@@ -54,7 +57,7 @@ public class WalletFirmwareChecksPresenter extends WalletPresenter<WalletFirmwar
    public void onAttachedToWindow() {
       super.onAttachedToWindow();
 
-      WalletAnalyticsCommand analyticsCommand = new WalletAnalyticsCommand(new UpdateChecksVisitAction());
+      WalletAnalyticsCommand analyticsCommand = new WalletAnalyticsCommand(smartCard, new UpdateChecksVisitAction());
       analyticsInteractor.walletAnalyticsCommandPipe().send(analyticsCommand);
    }
 
@@ -62,7 +65,7 @@ public class WalletFirmwareChecksPresenter extends WalletPresenter<WalletFirmwar
       firmwareInteractor.preInstallationCheckPipe()
             .observeSuccess()
             .compose(bindViewIoToMainComposer())
-            .subscribe(command -> bind(command.getResult()));
+            .subscribe(command -> bind(command.getResult()), throwable -> {});
 
       Observable.merge(
             bluetoothService.observeEnablesState(),
@@ -73,21 +76,21 @@ public class WalletFirmwareChecksPresenter extends WalletPresenter<WalletFirmwar
                   .preInstallationCheckPipe().send(new PreInstallationCheckCommand(firmwareInfo)), throwable -> {
             });
       firmwareInteractor
-            .preInstallationCheckPipe().send(new PreInstallationCheckCommand(firmwareInfo));
+            .preInstallationCheckPipe().send(new PreInstallationCheckCommand(smartCard, firmwareInfo));
    }
 
    void installLater() {
       goBack();
 
-      WalletAnalyticsCommand analyticsCommand = new WalletAnalyticsCommand(new UpdateInstallLaterAction());
+      WalletAnalyticsCommand analyticsCommand = new WalletAnalyticsCommand(smartCard, new UpdateInstallLaterAction());
       analyticsInteractor.walletAnalyticsCommandPipe().send(analyticsCommand);
    }
 
    void install() {
-      WalletAnalyticsCommand analyticsCommand = new WalletAnalyticsCommand(new UpdateInstallAction());
+      WalletAnalyticsCommand analyticsCommand = new WalletAnalyticsCommand(smartCard, new UpdateInstallAction());
       analyticsInteractor.walletAnalyticsCommandPipe().send(analyticsCommand);
 
-      navigator.go(new WalletInstallFirmwarePath(
+      navigator.go(new WalletInstallFirmwarePath(smartCard,
             ImmutableFirmwareUpdateData.builder()
                   .firmwareInfo(firmwareInfo)
                   .firmwareFile(new File(firmwareFilePath))

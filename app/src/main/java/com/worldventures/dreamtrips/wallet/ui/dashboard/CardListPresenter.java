@@ -37,6 +37,7 @@ import com.worldventures.dreamtrips.wallet.ui.records.detail.CardDetailsPath;
 import com.worldventures.dreamtrips.wallet.ui.records.swiping.WizardChargingPath;
 import com.worldventures.dreamtrips.wallet.ui.settings.firmware.install.WalletInstallFirmwarePath;
 import com.worldventures.dreamtrips.wallet.ui.settings.firmware.newavailable.WalletNewFirmwareAvailablePath;
+import com.worldventures.dreamtrips.wallet.ui.settings.forcefactoryreset.ForceFactoryResetPath;
 import com.worldventures.dreamtrips.wallet.ui.settings.general.WalletSettingsPath;
 import com.worldventures.dreamtrips.wallet.util.CardListStackConverter;
 import com.worldventures.dreamtrips.wallet.util.CardUtils;
@@ -46,6 +47,7 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import flow.Flow;
 import io.techery.janet.Command;
 import io.techery.janet.helper.ActionStateToActionTransformer;
 import io.techery.janet.smartcard.exception.NotConnectedException;
@@ -129,6 +131,7 @@ public class CardListPresenter extends WalletPresenter<CardListPresenter.Screen,
       getView().notifySmartCardChanged(cardStackHeaderHolder);
 
       if (firmwareUpdateData.updateAvailable()) {
+         if (firmwareUpdateData.updateCritical()) getView().showForceFirmwareUpdateDialog();
          getView().showFirmwareUpdateBtn();
       } else {
          getView().hideFirmwareUpdateBtn();
@@ -178,7 +181,7 @@ public class CardListPresenter extends WalletPresenter<CardListPresenter.Screen,
             })
             .compose(bindViewIoToMainComposer())
             .subscribe(ErrorActionStateSubscriberWrapper.<FirmwareUpdateCacheCommand>forView(getView().provideOperationDelegate())
-                  .onSuccess(c -> navigator.go(new WalletInstallFirmwarePath(c.getResult())))
+                  .onSuccess(c -> navigator.go(new WalletInstallFirmwarePath(cardStackHeaderHolder.smartCard(), c.getResult())))
                   .wrap()
             );
    }
@@ -216,7 +219,7 @@ public class CardListPresenter extends WalletPresenter<CardListPresenter.Screen,
    }
 
    void firmwareAvailable() {
-      navigator.go(new WalletNewFirmwareAvailablePath());
+      navigator.go(new WalletNewFirmwareAvailablePath(cardStackHeaderHolder.smartCard(), cardStackHeaderHolder.firmware()));
    }
 
    private void observeChanges() {
@@ -286,6 +289,11 @@ public class CardListPresenter extends WalletPresenter<CardListPresenter.Screen,
       getView().showRecordsInfo(cards);
    }
 
+   public void navigateToForceUpdate() {
+      navigator.single(new ForceFactoryResetPath(
+            cardStackHeaderHolder.smartCard(), cardStackHeaderHolder.firmware()), Flow.Direction.REPLACE);
+   }
+
    public interface Screen extends WalletScreen {
 
       int ERROR_DIALOG_FULL_SMARTCARD = 1;
@@ -303,6 +311,8 @@ public class CardListPresenter extends WalletPresenter<CardListPresenter.Screen,
       void showFirmwareUpdateBtn();
 
       void showFirmwareUpdateError();
+
+      void showForceFirmwareUpdateDialog();
 
       void showCardSynchronizationDialog(boolean visible);
 

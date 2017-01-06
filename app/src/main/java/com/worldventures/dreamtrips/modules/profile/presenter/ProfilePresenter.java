@@ -18,7 +18,6 @@ import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.common.presenter.delegate.FlagDelegate;
 import com.worldventures.dreamtrips.modules.feed.event.FeedEntityChangedEvent;
 import com.worldventures.dreamtrips.modules.feed.event.FeedEntityCommentedEvent;
-import com.worldventures.dreamtrips.modules.feed.event.TranslatePostEvent;
 import com.worldventures.dreamtrips.modules.feed.model.FeedEntity;
 import com.worldventures.dreamtrips.modules.feed.model.FeedItem;
 import com.worldventures.dreamtrips.modules.feed.model.TextualPost;
@@ -32,7 +31,7 @@ import com.worldventures.dreamtrips.modules.feed.service.PostsInteractor;
 import com.worldventures.dreamtrips.modules.feed.service.command.ChangeFeedEntityLikedStatusCommand;
 import com.worldventures.dreamtrips.modules.feed.view.cell.Flaggable;
 import com.worldventures.dreamtrips.modules.feed.view.fragment.FeedEntityEditingView;
-import com.worldventures.dreamtrips.modules.feed.view.util.TextualPostTranslationDelegate;
+import com.worldventures.dreamtrips.modules.feed.view.util.TranslationDelegate;
 import com.worldventures.dreamtrips.modules.tripsimages.bundle.TripsImagesBundle;
 import com.worldventures.dreamtrips.modules.tripsimages.model.Photo;
 import com.worldventures.dreamtrips.modules.tripsimages.service.TripImagesInteractor;
@@ -60,7 +59,7 @@ public abstract class ProfilePresenter<T extends ProfilePresenter.View, U extend
    @Inject FeedInteractor feedInteractor;
    @Inject TripImagesInteractor tripImagesInteractor;
    @Inject PostsInteractor postsInteractor;
-   @Inject TextualPostTranslationDelegate textualPostTranslationDelegate;
+   @Inject TranslationDelegate translationDelegate;
    @Inject FeedActionHandlerDelegate feedActionHandlerDelegate;
    @Inject FeedEntitiesHolderDelegate feedEntitiesHolderDelegate;
 
@@ -94,12 +93,12 @@ public abstract class ProfilePresenter<T extends ProfilePresenter.View, U extend
       attachUserToView(user);
       loadProfile();
       subscribeToLikesChanges();
-      textualPostTranslationDelegate.onTakeView(view, feedItems);
+      translationDelegate.onTakeView(view, feedItems);
    }
 
    @Override
    public void dropView() {
-      textualPostTranslationDelegate.onDropView();
+      translationDelegate.onDropView();
       super.dropView();
    }
 
@@ -205,10 +204,9 @@ public abstract class ProfilePresenter<T extends ProfilePresenter.View, U extend
       view.openComments(feedItem);
    }
 
-   public void onEvent(TranslatePostEvent event) {
-      if (view.isVisibleOnScreen()) {
-         textualPostTranslationDelegate.translate(event.getPostFeedItem(), LocaleHelper.getDefaultLocaleFormatted());
-      }
+   @Override
+   public void onTranslateFeedEntity(FeedEntity translatableItem) {
+      translationDelegate.translate(translatableItem, LocaleHelper.getDefaultLocaleFormatted());
    }
 
    private void itemLiked(FeedEntity feedEntity) {
@@ -302,7 +300,7 @@ public abstract class ProfilePresenter<T extends ProfilePresenter.View, U extend
       feedActionHandlerDelegate.onDeleteBucketItem(bucketItem);
    }
 
-   public interface View extends RxView, FlagDelegate.View, TextualPostTranslationDelegate.View, FeedEntityEditingView {
+   public interface View extends RxView, FlagDelegate.View, TranslationDelegate.View, FeedEntityEditingView {
       void openPost();
 
       void openFriends();

@@ -5,7 +5,6 @@ import android.support.annotation.Nullable;
 import android.text.TextUtils;
 
 import com.innahema.collections.query.queriables.Queryable;
-import com.techery.spares.utils.delegate.EntityDeletedEventDelegate;
 import com.worldventures.dreamtrips.core.rx.RxView;
 import com.worldventures.dreamtrips.core.rx.composer.IoToMainComposer;
 import com.worldventures.dreamtrips.core.utils.LocaleHelper;
@@ -16,7 +15,6 @@ import com.worldventures.dreamtrips.modules.common.presenter.delegate.FlagDelega
 import com.worldventures.dreamtrips.modules.common.view.ApiErrorView;
 import com.worldventures.dreamtrips.modules.feed.event.FeedEntityChangedEvent;
 import com.worldventures.dreamtrips.modules.feed.event.FeedEntityCommentedEvent;
-import com.worldventures.dreamtrips.modules.feed.event.TranslatePostEvent;
 import com.worldventures.dreamtrips.modules.feed.model.FeedEntity;
 import com.worldventures.dreamtrips.modules.feed.model.FeedItem;
 import com.worldventures.dreamtrips.modules.feed.model.TextualPost;
@@ -31,7 +29,7 @@ import com.worldventures.dreamtrips.modules.feed.service.command.FeedByHashtagCo
 import com.worldventures.dreamtrips.modules.feed.service.command.HashtagSuggestionCommand;
 import com.worldventures.dreamtrips.modules.feed.view.cell.Flaggable;
 import com.worldventures.dreamtrips.modules.feed.view.fragment.FeedEntityEditingView;
-import com.worldventures.dreamtrips.modules.feed.view.util.TextualPostTranslationDelegate;
+import com.worldventures.dreamtrips.modules.feed.view.util.TranslationDelegate;
 import com.worldventures.dreamtrips.modules.tripsimages.model.Photo;
 import com.worldventures.dreamtrips.modules.tripsimages.service.TripImagesInteractor;
 
@@ -59,7 +57,7 @@ public class FeedHashtagPresenter<T extends FeedHashtagPresenter.View> extends J
    @Inject TripImagesInteractor tripImagesInteractor;
    @Inject PostsInteractor postsInteractor;
 
-   @Inject TextualPostTranslationDelegate textualPostTranslationDelegate;
+   @Inject TranslationDelegate translationDelegate;
    @Inject FeedActionHandlerDelegate feedActionHandlerDelegate;
    @Inject FeedEntitiesHolderDelegate feedEntitiesHolderDelegate;
 
@@ -77,12 +75,12 @@ public class FeedHashtagPresenter<T extends FeedHashtagPresenter.View> extends J
       subscribeLoadNextFeeds();
       subscribeSuggestions();
       subscribeToLikesChanges();
-      textualPostTranslationDelegate.onTakeView(view, feedItems);
+      translationDelegate.onTakeView(view, feedItems);
    }
 
    @Override
    public void dropView() {
-      textualPostTranslationDelegate.onDropView();
+      translationDelegate.onDropView();
       super.dropView();
    }
 
@@ -251,10 +249,9 @@ public class FeedHashtagPresenter<T extends FeedHashtagPresenter.View> extends J
       view.showComments(feedItem);
    }
 
-   public void onEvent(TranslatePostEvent event) {
-      if (view.isVisibleOnScreen()) {
-         textualPostTranslationDelegate.translate(event.getPostFeedItem(), LocaleHelper.getDefaultLocaleFormatted());
-      }
+   @Override
+   public void onTranslateFeedEntity(FeedEntity translatableItem) {
+      translationDelegate.translate(translatableItem, LocaleHelper.getDefaultLocaleFormatted());
    }
 
    @Override
@@ -312,7 +309,7 @@ public class FeedHashtagPresenter<T extends FeedHashtagPresenter.View> extends J
       feedActionHandlerDelegate.onDeleteBucketItem(bucketItem);
    }
 
-   public interface View extends RxView, FlagDelegate.View, TextualPostTranslationDelegate.View, ApiErrorView,
+   public interface View extends RxView, FlagDelegate.View, TranslationDelegate.View, ApiErrorView,
          FeedEntityEditingView {
 
       void startLoading();

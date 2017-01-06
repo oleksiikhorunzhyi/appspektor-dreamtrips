@@ -35,7 +35,6 @@ import com.worldventures.dreamtrips.modules.common.view.util.MediaPickerEventDel
 import com.worldventures.dreamtrips.modules.common.view.util.Size;
 import com.worldventures.dreamtrips.modules.feed.event.FeedEntityChangedEvent;
 import com.worldventures.dreamtrips.modules.feed.event.FeedEntityCommentedEvent;
-import com.worldventures.dreamtrips.modules.feed.event.TranslatePostEvent;
 import com.worldventures.dreamtrips.modules.feed.model.FeedEntity;
 import com.worldventures.dreamtrips.modules.feed.model.FeedItem;
 import com.worldventures.dreamtrips.modules.feed.model.TextualPost;
@@ -53,7 +52,7 @@ import com.worldventures.dreamtrips.modules.feed.service.command.GetAccountFeedC
 import com.worldventures.dreamtrips.modules.feed.service.command.SuggestedPhotoCommand;
 import com.worldventures.dreamtrips.modules.feed.view.cell.Flaggable;
 import com.worldventures.dreamtrips.modules.feed.view.fragment.FeedEntityEditingView;
-import com.worldventures.dreamtrips.modules.feed.view.util.TextualPostTranslationDelegate;
+import com.worldventures.dreamtrips.modules.feed.view.util.TranslationDelegate;
 import com.worldventures.dreamtrips.modules.friends.model.Circle;
 import com.worldventures.dreamtrips.modules.tripsimages.model.Photo;
 import com.worldventures.dreamtrips.modules.tripsimages.service.TripImagesInteractor;
@@ -81,7 +80,7 @@ public class FeedPresenter extends Presenter<FeedPresenter.View> implements Feed
 
    @Inject SnappyRepository db;
    @Inject MediaPickerEventDelegate mediaPickerEventDelegate;
-   @Inject TextualPostTranslationDelegate textualPostTranslationDelegate;
+   @Inject TranslationDelegate translationDelegate;
    @Inject DrawableUtil drawableUtil;
    @Inject UnreadConversationObservable unreadConversationObservable;
    @Inject @ForActivity Provider<Injector> injectorProvider;
@@ -128,7 +127,7 @@ public class FeedPresenter extends Presenter<FeedPresenter.View> implements Feed
       subscribeFriendsNotificationsCount();
       subscribeToLikesChanges();
       subscribeToBackgroundUploadingOperations();
-      textualPostTranslationDelegate.onTakeView(view, feedItems);
+      translationDelegate.onTakeView(view, feedItems);
 
       if (feedItems.size() != 0) {
          refreshFeedItems();
@@ -152,7 +151,7 @@ public class FeedPresenter extends Presenter<FeedPresenter.View> implements Feed
 
    @Override
    public void dropView() {
-      textualPostTranslationDelegate.onDropView();
+      translationDelegate.onDropView();
       super.dropView();
    }
 
@@ -302,8 +301,10 @@ public class FeedPresenter extends Presenter<FeedPresenter.View> implements Feed
             .compose(bindViewToMainComposer())
             .subscribe(new ActionStateSubscriber<CompoundOperationsCommand>()
                   .onSuccess(compoundOperationsCommand -> {
-                        postUploads = Queryable.from(compoundOperationsCommand.getResult()).cast(PostCompoundOperationModel.class).toList();
-                        refreshFeedItems();
+                     postUploads = Queryable.from(compoundOperationsCommand.getResult())
+                           .cast(PostCompoundOperationModel.class)
+                           .toList();
+                     refreshFeedItems();
                   }));
    }
 
@@ -352,10 +353,9 @@ public class FeedPresenter extends Presenter<FeedPresenter.View> implements Feed
       view.openComments(feedItem);
    }
 
-   public void onEvent(TranslatePostEvent event) {
-      if (view.isVisibleOnScreen()) {
-         textualPostTranslationDelegate.translate(event.getPostFeedItem(), LocaleHelper.getDefaultLocaleFormatted());
-      }
+   @Override
+   public void onTranslateFeedEntity(FeedEntity feedEntity) {
+      translationDelegate.translate(feedEntity, LocaleHelper.getDefaultLocaleFormatted());
    }
 
    @Override
@@ -525,7 +525,7 @@ public class FeedPresenter extends Presenter<FeedPresenter.View> implements Feed
       uploadingPresenterDelegate.onUploadCancel(compoundOperationModel);
    }
 
-   public interface View extends RxView, FlagDelegate.View, TextualPostTranslationDelegate.View, ApiErrorView,
+   public interface View extends RxView, FlagDelegate.View, TranslationDelegate.View, ApiErrorView,
          BlockingProgressView, FeedEntityEditingView {
 
       void setRequestsCount(int count);

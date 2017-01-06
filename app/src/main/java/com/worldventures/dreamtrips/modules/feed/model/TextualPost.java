@@ -1,5 +1,7 @@
 package com.worldventures.dreamtrips.modules.feed.model;
 
+import android.support.annotation.Nullable;
+
 import com.esotericsoftware.kryo.DefaultSerializer;
 import com.esotericsoftware.kryo.serializers.CompatibleFieldSerializer;
 import com.worldventures.dreamtrips.modules.feed.model.feed.hashtag.Hashtag;
@@ -8,11 +10,14 @@ import com.worldventures.dreamtrips.modules.trips.model.Location;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 
 @DefaultSerializer(CompatibleFieldSerializer.class)
 public class TextualPost extends BaseFeedEntity {
 
+   private static final String DESCRIPTION_KEY = "description";
    private String description;
 
    private List<FeedEntityHolder> attachments = new ArrayList<>();
@@ -57,5 +62,15 @@ public class TextualPost extends BaseFeedEntity {
    @Override
    public String place() {
       return location != null ? location.getName() : "";
+   }
+
+   @Override
+   public Map<String, String> getOriginalText() {
+      return Collections.singletonMap(DESCRIPTION_KEY, description);
+   }
+
+   @Nullable
+   public String getTranslationForDescription() {
+      return getTranslation() != null ? getTranslation().get(DESCRIPTION_KEY) : null;
    }
 }

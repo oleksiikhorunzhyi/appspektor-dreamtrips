@@ -1,5 +1,6 @@
 package com.worldventures.dreamtrips.modules.feed.presenter;
 
+import com.worldventures.dreamtrips.modules.feed.model.FeedEntity;
 import com.worldventures.dreamtrips.modules.feed.model.FeedItem;
 import com.worldventures.dreamtrips.modules.feed.view.cell.Flaggable;
 
@@ -14,4 +15,6 @@ public interface FeedActionHandlerPresenter {
    void onLoadFlags(Flaggable flaggableView);
 
    void onFlagItem(FeedItem feedItem, int flagReasonId, String reason);
+
+   void onTranslateFeedEntity(FeedEntity translatableItem);
 }

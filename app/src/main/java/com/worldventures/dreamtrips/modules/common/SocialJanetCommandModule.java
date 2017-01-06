@@ -134,7 +134,7 @@ import dagger.Module;
       FeedByHashtagCommand.Refresh.class,
       FeedByHashtagCommand.LoadNext.class,
       TranslateUidItemCommand.TranslateCommentCommand.class,
-      TranslateUidItemCommand.TranslatePostCommand.class,
+      TranslateUidItemCommand.TranslateFeedEntityCommand.class,
       TranslateTextCachedCommand.class,
       AcceptTermsCommand.class,
       GetSuccessStoriesCommand.class,

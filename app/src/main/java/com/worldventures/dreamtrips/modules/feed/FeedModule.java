@@ -80,7 +80,7 @@ import com.worldventures.dreamtrips.modules.feed.view.fragment.NotificationFragm
 import com.worldventures.dreamtrips.modules.feed.view.util.FeedEntityContentFragmentFactory;
 import com.worldventures.dreamtrips.modules.feed.view.util.FragmentWithFeedDelegate;
 import com.worldventures.dreamtrips.modules.feed.view.util.StatePaginatedRecyclerViewManager;
-import com.worldventures.dreamtrips.modules.feed.view.util.TextualPostTranslationDelegate;
+import com.worldventures.dreamtrips.modules.feed.view.util.TranslationDelegate;
 import com.worldventures.dreamtrips.modules.flags.service.FlagsInteractor;
 import com.worldventures.dreamtrips.modules.tripsimages.service.TripImagesInteractor;
 import com.worldventures.dreamtrips.modules.tripsimages.view.fragment.CreateTripImageFragment;
@@ -184,8 +184,8 @@ public class FeedModule {
    }
 
    @Provides
-   TextualPostTranslationDelegate provideTextualPostTranslationDelegate(TranslationFeedInteractor translationFeedInteractor) {
-      return new TextualPostTranslationDelegate(translationFeedInteractor);
+   TranslationDelegate provideTextualPostTranslationDelegate(TranslationFeedInteractor translationFeedInteractor) {
+      return new TranslationDelegate(translationFeedInteractor);
    }
 
    @Provides

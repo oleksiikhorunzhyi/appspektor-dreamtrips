@@ -124,7 +124,7 @@ public class FragmentWithFeedDelegate {
     */
    public void resetTranslatedStatus() {
       Queryable.from(adapter.getItems()).forEachR(item -> {
-         if (item instanceof FeedItem) ((FeedItem) item).setTranslated(false);
+         if (item instanceof FeedItem) ((FeedItem) item).getItem().setTranslated(false);
       });
       notifyDataSetChanged();
    }

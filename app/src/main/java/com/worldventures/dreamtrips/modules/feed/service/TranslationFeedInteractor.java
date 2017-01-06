@@ -13,25 +13,25 @@ import rx.schedulers.Schedulers;
 @Singleton
 public class TranslationFeedInteractor {
 
+   private final ActionPipe<TranslateUidItemCommand.TranslateFeedEntityCommand> translateFeedEntityPipe;
    private final ActionPipe<TranslateUidItemCommand.TranslateCommentCommand> translateCommentPipe;
-   private final ActionPipe<TranslateUidItemCommand.TranslatePostCommand> translatePostPipe;
    private final ActionPipe<TranslatePhotoCommand> translatePhotoPipe;
 
    @Inject
    public TranslationFeedInteractor(SessionActionPipeCreator sessionActionPipeCreator) {
-      translateCommentPipe = sessionActionPipeCreator.createPipe(TranslateUidItemCommand.TranslateCommentCommand.class,
+      translateFeedEntityPipe = sessionActionPipeCreator.createPipe(TranslateUidItemCommand.TranslateFeedEntityCommand.class,
             Schedulers.io());
-      translatePostPipe = sessionActionPipeCreator.createPipe(TranslateUidItemCommand.TranslatePostCommand.class,
+      translateCommentPipe = sessionActionPipeCreator.createPipe(TranslateUidItemCommand.TranslateCommentCommand.class,
             Schedulers.io());
       translatePhotoPipe = sessionActionPipeCreator.createPipe(TranslatePhotoCommand.class, Schedulers.io());
    }
 
-   public ActionPipe<TranslateUidItemCommand.TranslateCommentCommand> translateCommentPipe() {
-      return translateCommentPipe;
+   public ActionPipe<TranslateUidItemCommand.TranslateFeedEntityCommand> translateFeedEntityPipe() {
+      return translateFeedEntityPipe;
    }
 
-   public ActionPipe<TranslateUidItemCommand.TranslatePostCommand> translatePostPipe() {
-      return translatePostPipe;
+   public ActionPipe<TranslateUidItemCommand.TranslateCommentCommand> translateCommentPipe() {
+      return translateCommentPipe;
    }
 
    public ActionPipe<TranslatePhotoCommand> translatePhotoPipe() {

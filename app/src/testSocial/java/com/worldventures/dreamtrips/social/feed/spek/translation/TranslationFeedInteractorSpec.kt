@@ -33,45 +33,45 @@ class TranslationFeedInteractorSpec : BaseSpec({
          val testSubscribe = translateComment(comment, languageTo)
 
          assertActionSuccess(testSubscribe) {
-            it.result.isTranslated && it.result.translation.equals(translationFromNetwork)
+            it.result.isTranslated && it.result.translation!!.containsValue(translationFromNetwork)
          }
       }
 
       context("Translate comment when disc storage is not empty") {
          whenever(mockDb.getTranslation(anyString(), anyString())).thenReturn(translationFromDisc)
 
-         textualPost.description = "originalText"
+         comment.message = "originalText"
 
          val testSubscribe = translateComment(comment, languageTo)
 
          assertActionSuccess(testSubscribe) {
-            it.result.isTranslated && it.result.translation.equals(translationFromDisc)
+            it.result.isTranslated && it.result.translation!!.containsValue(translationFromDisc)
          }
       }
 
       context("Translate post when disc storage is empty") {
          whenever(mockDb.getTranslation(anyString(), anyString())).thenReturn("")
 
-         postFeedItem.item = textualPost
          textualPost.description = "originalText"
 
-         val testSubscribe = translatePost(postFeedItem, languageTo)
+         val testSubscribe = translatePost(textualPost, languageTo)
 
          assertActionSuccess(testSubscribe) {
-            it.result.isTranslated && it.result.translation.equals(translationFromNetwork)
+            it.result.isTranslated && it.result.translation != null &&
+                  it.result.translation!!.containsValue(translationFromNetwork)
          }
       }
 
       context("Translate post when disc storage is not empty") {
          whenever(mockDb.getTranslation(anyString(), anyString())).thenReturn(translationFromDisc)
 
-         postFeedItem.item = textualPost
          textualPost.description = "originalText"
 
-         val testSubscribe = translatePost(postFeedItem, languageTo)
+         val testSubscribe = translatePost(textualPost, languageTo)
 
          assertActionSuccess(testSubscribe) {
-            it.result.isTranslated && it.result.translation.equals(translationFromDisc)
+            it.result.isTranslated && it.result.translation != null &&
+                  it.result.translation!!.containsValue(translationFromDisc)
          }
       }
    }
@@ -83,8 +83,6 @@ class TranslationFeedInteractorSpec : BaseSpec({
       val translationFromNetwork = "translationFromNetwork"
       val translationFromDisc = "translationFromDisc"
       val comment = Comment()
-
-      val postFeedItem = PostFeedItem()
       val textualPost = TextualPost()
 
       lateinit var translateFeedInteractor: TranslationFeedInteractor
@@ -113,16 +111,16 @@ class TranslationFeedInteractorSpec : BaseSpec({
          val testSubscriber = TestSubscriber<ActionState<TranslateUidItemCommand.TranslateCommentCommand>>()
 
          translateFeedInteractor.translateCommentPipe().
-               createObservable(TranslateUidItemCommand.forComment(comment, languageTo))
+               createObservable(TranslateUidItemCommand.TranslateCommentCommand(comment, languageTo))
                .subscribe(testSubscriber)
          return testSubscriber
       }
 
-      fun translatePost(postFeedItem: PostFeedItem, languageTo: String): TestSubscriber<ActionState<TranslateUidItemCommand.TranslatePostCommand>> {
-         val testSubscriber = TestSubscriber<ActionState<TranslateUidItemCommand.TranslatePostCommand>>()
+      fun translatePost(textualPost: TextualPost, languageTo: String): TestSubscriber<ActionState<TranslateUidItemCommand.TranslateFeedEntityCommand>> {
+         val testSubscriber = TestSubscriber<ActionState<TranslateUidItemCommand.TranslateFeedEntityCommand>>()
 
-         translateFeedInteractor.translatePostPipe().
-               createObservable(TranslateUidItemCommand.forPost(postFeedItem, languageTo))
+         translateFeedInteractor.translateFeedEntityPipe().
+               createObservable(TranslateUidItemCommand.TranslateFeedEntityCommand(textualPost, languageTo))
                .subscribe(testSubscriber)
          return testSubscriber
       }

@@ -1,7 +1,6 @@
 package com.worldventures.dreamtrips.modules.feed.presenter;
 
 import com.innahema.collections.query.queriables.Queryable;
-import com.techery.spares.utils.delegate.EntityDeletedEventDelegate;
 import com.worldventures.dreamtrips.core.rx.RxView;
 import com.worldventures.dreamtrips.core.rx.composer.IoToMainComposer;
 import com.worldventures.dreamtrips.core.utils.LocaleHelper;
@@ -30,7 +29,6 @@ import com.worldventures.dreamtrips.modules.feed.service.command.EditCommentComm
 import com.worldventures.dreamtrips.modules.feed.service.command.GetCommentsCommand;
 import com.worldventures.dreamtrips.modules.feed.service.command.TranslateUidItemCommand;
 import com.worldventures.dreamtrips.modules.feed.view.cell.Flaggable;
-import com.worldventures.dreamtrips.modules.feed.view.fragment.FeedEntityEditingView;
 import com.worldventures.dreamtrips.modules.friends.service.FriendsInteractor;
 import com.worldventures.dreamtrips.modules.friends.service.command.GetLikersCommand;
 import com.worldventures.dreamtrips.modules.trips.model.TripModel;
@@ -92,16 +90,17 @@ public class BaseCommentPresenter<T extends BaseCommentPresenter.View> extends P
    }
 
    private void subscribeToCommentTranslation() {
-      view.bindUntilDropView(translationFeedInteractor.translateCommentPipe()
+      translationFeedInteractor.translateCommentPipe()
             .observe()
-            .compose(new IoToMainComposer<>()))
-            .subscribe(new ActionStateSubscriber<TranslateUidItemCommand.TranslateCommentCommand>().onSuccess(translateCommentCommand -> {
-               updateEntityComments(translateCommentCommand.getResult());
-               view.updateComment(translateCommentCommand.getResult());
-            }).onFail((translateCommentCommand, throwable) -> {
-               view.notifyDataSetChanged();
-               handleError(translateCommentCommand, throwable);
-            }));
+            .compose(bindViewToMainComposer())
+            .subscribe(new ActionStateSubscriber<TranslateUidItemCommand.TranslateCommentCommand>()
+                  .onSuccess(translateCommentCommand -> {
+                     updateEntityComments(translateCommentCommand.getResult());
+                     view.updateComment(translateCommentCommand.getResult());
+                  }).onFail((translateCommentCommand, throwable) -> {
+                     view.notifyDataSetChanged();
+                     handleError(translateCommentCommand, throwable);
+                  }));
    }
 
    protected void checkCommentsAndLikesToLoad() {
@@ -162,6 +161,11 @@ public class BaseCommentPresenter<T extends BaseCommentPresenter.View> extends P
    }
 
    @Override
+   public void onTranslateFeedEntity(FeedEntity translatableItem) {
+      // nothing to do
+   }
+
+   @Override
    public void onCommentItem(FeedItem feedItem) {
       view.openInput();
    }
@@ -191,7 +195,7 @@ public class BaseCommentPresenter<T extends BaseCommentPresenter.View> extends P
 
    public void translateComment(Comment comment) {
       translationFeedInteractor.translateCommentPipe()
-            .send(TranslateUidItemCommand.forComment(comment, LocaleHelper.getDefaultLocaleFormatted()));
+            .send(new TranslateUidItemCommand.TranslateCommentCommand(comment, LocaleHelper.getDefaultLocaleFormatted()));
    }
 
    public void deleteComment(Comment comment) {

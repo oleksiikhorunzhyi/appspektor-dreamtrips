@@ -91,18 +91,19 @@ public class InstallFirmwareCommand extends Command implements InjectableAction 
    }
 
    private Observable<Void> installFirmware(File file, SmartCard smartCard, CommandCallback callback) {
-      loadFirmwareFilesCommand = new LoadFirmwareFilesCommand(file, smartCard.firmwareVersion(), firmwareUpdateData.firmwareInfo().firmwareVersions(),
+      loadFirmwareFilesCommand = new LoadFirmwareFilesCommand(file, smartCard.firmwareVersion(), firmwareUpdateData.firmwareInfo()
+            .firmwareVersions(),
             smartCard.connectionStatus() == DFU);
       Subscription subscription = loadFirmwareFilesCommandActionPipe.observe()
             .filter(actionState -> actionState.status == ActionState.Status.PROGRESS)
             .subscribe(actionState -> callback.onProgress(actionState.progress));
 
       return janet.createPipe(LoadFirmwareFilesCommand.class)
-               .createObservableResult(loadFirmwareFilesCommand)
-               .doOnNext(command -> subscription.unsubscribe())
-               .flatMap(action ->//todo remove it when temporary storage will be useless
+            .createObservableResult(loadFirmwareFilesCommand)
+            .doOnCompleted(subscription::unsubscribe)
+            .flatMap(action ->//todo remove it when temporary storage will be useless
                   temporaryStorage.failInstall() ? error(new RuntimeException()) : Observable.just(action))
-               .map(it -> (Void) null);
+            .map(it -> (Void) null);
    }
 
    private Observable saveNewFirmwareVersion(SmartCard smartCard) {

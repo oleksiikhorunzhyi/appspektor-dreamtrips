@@ -157,6 +157,7 @@
    <string name="wallet_wizard_card_list_add_card_coming_soon_title">Coming Soon</string>
    <string name="wallet_wizard_card_list_add_card_coming_soon_text">Ability to add cards is coming soon.</string>
    <string name="wallet_wizard_card_list_card_is_ready_text">%1$s is ready for payment on your flye smart card.</string>
+   <string name="wallet_wizard_card_list_card_synchronization_dialog_text">Payment cards synchronization</string>
 
    <!--add card details-->
    <string name="wallet_add_card_details_title">Card Details</string>

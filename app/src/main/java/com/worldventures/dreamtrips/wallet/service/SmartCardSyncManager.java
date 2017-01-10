@@ -49,7 +49,7 @@ class SmartCardSyncManager {
             .observeSuccess()
             .filter(connectAction -> connectAction.type == ConnectionType.APP)
             .map(connectAction -> connectAction.type)
-            .throttleFirst(1, TimeUnit.SECONDS)
+            .debounce(1, TimeUnit.SECONDS)
             .subscribe(this::smartCardConnected, throwable -> Timber.e(throwable, "Error with handling connection event"));
 
       interactor.disconnectPipe()
@@ -137,17 +137,18 @@ class SmartCardSyncManager {
                   .send(new ActiveSmartCardCommand(smartCard -> {
                      ImmutableSmartCardFirmware smartCardFirmware = ImmutableSmartCardFirmware.copyOf(properties.firmwareVersion())
                            .withFirmwareVersion(smartCard.firmwareVersion().firmwareVersion());
-                        return ImmutableSmartCard.builder()
-                              .from(smartCard)
-                              .sdkVersion(properties.sdkVersion())
-                              .firmwareVersion(smartCardFirmware)
-                              .batteryLevel(properties.batteryLevel())
-                              .lock(properties.lock())
-                              .stealthMode(properties.stealthMode())
-                              .disableCardDelay(properties.disableCardDelay())
-                              .clearFlyeDelay(properties.clearFlyeDelay())
-                              .build();
-                  })), throwable -> {});
+                     return ImmutableSmartCard.builder()
+                           .from(smartCard)
+                           .sdkVersion(properties.sdkVersion())
+                           .firmwareVersion(smartCardFirmware)
+                           .batteryLevel(properties.batteryLevel())
+                           .lock(properties.lock())
+                           .stealthMode(properties.stealthMode())
+                           .disableCardDelay(properties.disableCardDelay())
+                           .clearFlyeDelay(properties.clearFlyeDelay())
+                           .build();
+                  })), throwable -> {
+            });
 
       Observable.merge(
             interactor.lockDeviceChangedEventPipe()

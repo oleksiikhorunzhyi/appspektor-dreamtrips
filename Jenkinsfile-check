@@ -1,11 +1,9 @@
 #!/usr/bin/env groovy
 
-def MAIN_NODE = 'android'
-
 def buildParams = [:]
-def utils = fileLoader.fromGit('jenkins-android-pipeline-utils.groovy', 'https://gist.github.com/3d72ba81965db879ceb38e4bef991b6a.git', 'cfead7642677b4ae8c4dfb134f73d62c8124e4e7', null, 'master')
+def utils = fileLoader.fromGit('jenkins-pipeline-job-utils.groovy', 'git@repos.wvholdings.com:mobile/pipeline-helper-scripts-android.git', 'master', '5ee47e5e-00fb-43a5-9ccd-f5aa5a5310ee', '')
 
-utils.runBuild(MAIN_NODE) {
+utils.runBuild('android', utils.notifiers.gitlab(this)) {
    stage('prepare build') {
       buildParams = generateParams()
       println buildParams
@@ -29,11 +27,26 @@ utils.runBuild(MAIN_NODE) {
    }
    stage('tests') {
       for (String task : buildParams.TEST_TASKS)
-         utils.runTestAndArchiveResult("app:${task}", buildParams.TEST_REPORT_FOLDER, "${testFolderFromTask(task)}/*.xml")
+         utils.runTests(
+               testTask: "app:${task}",
+               reportFolder: buildParams.TEST_REPORT_FOLDER,
+               reportPattern: "${testFolderFromTask(task)}/*.xml"
+         )
    }
    stage('assemble') {
-      utils.gradlew "app:${buildParams.ASSEMBLE_TASK}"
+      withCredentials([file(credentialsId: 'dreamtrips-android-signing-key', variable: 'SIGNING_KEY'),
+                       file(credentialsId: 'dreamtrips-android-signing-properties', variable: 'SIGNING_PROPS')]) {
+         utils.scripts.bash("chmod +rx ${SIGNING_KEY}")
+         utils.scripts.bash("chmod +rx ${SIGNING_PROPS}")
+         utils.scripts.bash("cp -f ${SIGNING_KEY} signing")
+         utils.scripts.bash("cp -f ${SIGNING_PROPS} signing")
+         utils.scripts.gradlew "app:${buildParams.ASSEMBLE_TASK}"
+      }
    }
+}
+node('android') {
+   // cleanup
+   utils.scripts.bash('rm -rf signing')
 }
 
 @NonCPS
@@ -53,10 +66,10 @@ def Map generateParams() {
 
 
    buildParams.FLAVOR = flavors.stable
-   if (env.GITHUB_PR_TARGET_BRANCH.contains("social/")) buildParams.FLAVOR = flavors.social
-   else if (env.GITHUB_PR_TARGET_BRANCH.contains("dtl/")) buildParams.FLAVOR = flavors.dtl
-   else if (env.GITHUB_PR_TARGET_BRANCH.contains("messenger/")) buildParams.FLAVOR = flavors.messenger
-   else if (env.GITHUB_PR_TARGET_BRANCH.contains("smart-card/")) buildParams.FLAVOR = flavors.smartcard
+   if (env.gitlabTargetBranch.contains("social/")) buildParams.FLAVOR = flavors.social
+   else if (env.gitlabTargetBranch.contains("dtl/")) buildParams.FLAVOR = flavors.dtl
+   else if (env.gitlabTargetBranch.contains("messenger/")) buildParams.FLAVOR = flavors.messenger
+   else if (env.gitlabTargetBranch.contains("smart-card/")) buildParams.FLAVOR = flavors.smartcard
 
    if (buildParams.FLAVOR == flavors.stable) {
       buildParams.TEST_TASKS = streamFlavors.values().collect { flavor -> "testExternal${flavor}PreprodDebug" }

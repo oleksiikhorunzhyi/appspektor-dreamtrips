@@ -105,7 +105,8 @@ public abstract class TripImagesListPresenter<VT extends TripImagesListPresenter
          loading = false;
          previousTotal = totalItemCount;
       }
-      if (!loading && (totalItemCount - visibleItemCount) <= (firstVisibleItem + VISIBLE_TRESHOLD)) {
+      if (!loading && (totalItemCount - visibleItemCount) <= (firstVisibleItem + VISIBLE_TRESHOLD)
+            && totalItemCount % PER_PAGE == 0) {
          loadNext();
          loading = true;
       }

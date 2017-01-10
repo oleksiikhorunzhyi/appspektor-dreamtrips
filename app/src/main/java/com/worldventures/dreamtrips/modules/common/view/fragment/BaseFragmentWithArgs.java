@@ -22,9 +22,4 @@ public abstract class BaseFragmentWithArgs<PM extends Presenter, P extends Parce
       }
       return getArguments().getParcelable(ComponentPresenter.EXTRA_DATA);
    }
-
-   public void clearArgs() {
-      getArguments().remove(ComponentPresenter.EXTRA_DATA);
-   }
-
 }

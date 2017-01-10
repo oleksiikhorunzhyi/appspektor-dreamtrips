@@ -8,6 +8,7 @@ import com.worldventures.dreamtrips.core.initializer.AnalyticsInitializer;
 import com.worldventures.dreamtrips.core.initializer.BadgeCountObserverInitializer;
 import com.worldventures.dreamtrips.core.initializer.CachedEntityCommandInitializer;
 import com.worldventures.dreamtrips.core.initializer.FabricInitializer;
+import com.worldventures.dreamtrips.core.initializer.FacebookInitializer;
 import com.worldventures.dreamtrips.core.initializer.FrescoInitializer;
 import com.worldventures.dreamtrips.core.initializer.JodaTimeInitializer;
 import com.worldventures.dreamtrips.core.initializer.LeakCanaryInitializer;
@@ -33,7 +34,8 @@ import dagger.Provides;
             BadgeCountObserverInitializer.class,
             JodaTimeInitializer.class,
             AnalyticsInitializer.class,
-            SnappyStorageManagerInitializer.class
+            SnappyStorageManagerInitializer.class,
+            FacebookInitializer.class,
       },
       includes = {
             MessengerInitializerModule.class
@@ -111,5 +113,10 @@ public class InitializerModule {
    @Provides(type = Provides.Type.SET)
    public AppInitializer provideCachedEntitiesInitializer(CachedEntityInteractor interactor) {
       return new CachedEntityCommandInitializer(interactor);
+   }
+
+   @Provides(type = Provides.Type.SET)
+   public AppInitializer provideFacebookInitializer() {
+      return new FacebookInitializer();
    }
 }

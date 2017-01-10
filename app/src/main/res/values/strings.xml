@@ -95,7 +95,9 @@
    <string name="error_while_loading">Error while loading image</string>
    <string name="fab_select_album">Select Album</string>
    <string name="fab_select_photo">Select Photo</string>
+   <string name="facebook_login_error">Could not login to Facebook</string>
    <string name="fab_posted">Successfully posted to Facebook</string>
+   <string name="facebook_posting_error">Could not post to Facebook</string>
    <string-array name="photo_dialog_items">
       <item>Take Photo</item>
       <item>Choose Photo</item>

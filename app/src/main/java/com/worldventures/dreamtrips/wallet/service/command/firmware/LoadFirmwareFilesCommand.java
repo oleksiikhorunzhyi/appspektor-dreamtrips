@@ -5,6 +5,7 @@ import com.worldventures.dreamtrips.core.janet.dagger.InjectableAction;
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCardFirmware;
 
 import java.io.File;
+import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -14,12 +15,14 @@ import io.techery.janet.ActionState;
 import io.techery.janet.Command;
 import io.techery.janet.Janet;
 import io.techery.janet.command.annotations.CommandAction;
+import io.techery.janet.smartcard.action.support.ConnectAction;
+import io.techery.janet.smartcard.model.ConnectionType;
 import rx.Observable;
 import rx.Subscription;
 import timber.log.Timber;
 
 import static com.worldventures.dreamtrips.core.janet.JanetModule.JANET_WALLET;
-import static com.worldventures.dreamtrips.wallet.util.SCFirmwareUtils.*;
+import static com.worldventures.dreamtrips.wallet.util.SCFirmwareUtils.newFirmwareAvailable;
 
 @CommandAction
 public class LoadFirmwareFilesCommand extends Command<Void> implements InjectableAction {
@@ -76,9 +79,9 @@ public class LoadFirmwareFilesCommand extends Command<Void> implements Injectabl
 
    private Subscription listenCommandProgress(CommandCallback<Void> callback) {
       return Observable.merge(
-               loadPuckAtmelFirmwareCommandActionPipe.observe(),
-               loadAppAtmelFirmwareCommandActionPipe.observe(),
-               loadNordicFirmwareCommandActionPipe.observe())
+            loadPuckAtmelFirmwareCommandActionPipe.observe(),
+            loadAppAtmelFirmwareCommandActionPipe.observe(),
+            loadNordicFirmwareCommandActionPipe.observe())
             .filter(actionState -> actionState.status == ActionState.Status.PROGRESS)
             .subscribe(actionState -> callback.onProgress(actionState.progress));
    }
@@ -112,11 +115,17 @@ public class LoadFirmwareFilesCommand extends Command<Void> implements Injectabl
          return loadNordicFirmwareCommandActionPipe
                .createObservableResult(new LoadNordicFirmwareCommand(fileBundle.booloaderNordic(),
                      availableFirmwareVersions.bootloaderNordicVersion(), true))
+               .flatMap(loadNordicFirmwareCommand -> janet.createPipe(ConnectAction.class) // waiting for restart to DFU mode
+                     .observeSuccessWithReplay()
+                     .map(connectAction -> connectAction.type)
+                     .filter(connectionType -> connectionType == ConnectionType.DFU)
+                     .timeout(5, TimeUnit.MINUTES)
+                     .take(1))
                .map(command -> fileBundle);
       } else {
          return Observable.just(fileBundle);
       }
-}
+   }
 
    private Observable<UnzipFilesCommand.FirmwareBundle> loadNordicAppFirmware(UnzipFilesCommand.FirmwareBundle fileBundle) {
       notifyNewInstallStep();

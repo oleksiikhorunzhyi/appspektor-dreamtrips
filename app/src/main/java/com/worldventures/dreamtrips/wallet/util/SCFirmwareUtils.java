@@ -9,7 +9,7 @@ public final class SCFirmwareUtils {
    private SCFirmwareUtils() {}
 
    public static String smartCardFirmwareVersion(@Nullable SmartCardFirmware firmware) {
-      return firmware != null ? firmware.firmwareVersion() : "";
+      return firmware != null ? firmware.nordicAppVersion() : "";
    }
 
    public static boolean newFirmwareAvailable(String currentVersion, String availableVersion) {

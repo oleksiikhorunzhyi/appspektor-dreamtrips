@@ -10,6 +10,7 @@ import com.worldventures.dreamtrips.wallet.service.command.DefaultCardIdCommand;
 import com.worldventures.dreamtrips.wallet.service.command.FetchBatteryLevelCommand;
 import com.worldventures.dreamtrips.wallet.service.command.FetchCardPropertiesCommand;
 import com.worldventures.dreamtrips.wallet.service.command.FetchDefaultCardCommand;
+import com.worldventures.dreamtrips.wallet.service.command.FetchFirmwareVersionCommand;
 import com.worldventures.dreamtrips.wallet.service.command.GetCompatibleDevicesCommand;
 import com.worldventures.dreamtrips.wallet.service.command.GetDefaultAddressCommand;
 import com.worldventures.dreamtrips.wallet.service.command.RestartSmartCardCommand;
@@ -65,6 +66,7 @@ public final class SmartCardInteractor {
    private final ActionPipe<DisconnectAction> disconnectPipe;
    private final ActionPipe<RestartSmartCardCommand> restartSmartCardCommandActionPipe;
    private final ActionPipe<FetchCardPropertiesCommand> fetchCardPropertiesPipe;
+   private final ActionPipe<FetchFirmwareVersionCommand> fetchFirmwareVersionPipe;
 
    private final ReadActionPipe<CardChargedEvent> chargedEventPipe;
    private final ReadActionPipe<CardSwipedEvent> cardSwipedEventPipe;
@@ -94,6 +96,7 @@ public final class SmartCardInteractor {
       fetchCardPropertiesPipe = sessionActionPipeCreator.createPipe(FetchCardPropertiesCommand.class, cacheSchedulerFactory
             .call());
 
+      fetchFirmwareVersionPipe = sessionActionPipeCreator.createPipe(FetchFirmwareVersionCommand.class, Schedulers.io());
       connectionPipe = sessionActionPipeCreator.createPipe(ConnectSmartCardCommand.class, Schedulers.io());
       updateBankCardPipe = sessionActionPipeCreator.createPipe(UpdateBankCardCommand.class, Schedulers.io());
       fetchAssociatedSmartCardPipe = sessionActionPipeCreator.createPipe(FetchAssociatedSmartCardCommand.class, Schedulers
@@ -207,6 +210,10 @@ public final class SmartCardInteractor {
 
    public ActionPipe<FetchCardPropertiesCommand> fetchCardPropertiesPipe() {
       return fetchCardPropertiesPipe;
+   }
+
+   public ActionPipe<FetchFirmwareVersionCommand> fetchFirmwareVersionPipe() {
+      return fetchFirmwareVersionPipe;
    }
 
    public ActionPipe<SetPaymentCardAction> setPaymentCardActionActionPipe() {

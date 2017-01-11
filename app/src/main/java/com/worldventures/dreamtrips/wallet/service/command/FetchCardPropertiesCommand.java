@@ -17,25 +17,21 @@ import io.techery.janet.smartcard.action.records.GetClearRecordsDelayAction;
 import io.techery.janet.smartcard.action.settings.GetDisableDefaultCardDelayAction;
 import io.techery.janet.smartcard.action.settings.GetStealthModeAction;
 import io.techery.janet.smartcard.action.support.GetBatteryLevelAction;
-import io.techery.janet.smartcard.action.support.GetFirmwareVersionAction;
 import io.techery.janet.smartcard.action.support.GetSDKVersionAction;
-import io.techery.janet.smartcard.model.FirmwareVersion;
-import io.techery.mappery.MapperyContext;
 import rx.Observable;
 
 @CommandAction
 public class FetchCardPropertiesCommand extends Command<FetchCardPropertiesCommand.Properties> implements InjectableAction {
 
    @Inject @Named(JanetModule.JANET_WALLET) Janet janet;
-   @Inject MapperyContext mapperyContext;
 
    @Override
    protected void run(CommandCallback<Properties> callback) throws Throwable {
       Observable.zip(
             janet.createPipe(GetSDKVersionAction.class)
                   .createObservableResult(new GetSDKVersionAction()),
-            janet.createPipe(GetFirmwareVersionAction.class)
-                  .createObservableResult(new GetFirmwareVersionAction()),
+            janet.createPipe(FetchFirmwareVersionCommand.class)
+                  .createObservableResult(new FetchFirmwareVersionCommand()),
             janet.createPipe(GetBatteryLevelAction.class)
                   .createObservableResult(new GetBatteryLevelAction()),
             janet.createPipe(GetLockDeviceStatusAction.class)
@@ -46,11 +42,11 @@ public class FetchCardPropertiesCommand extends Command<FetchCardPropertiesComma
                   .createObservableResult(new GetDisableDefaultCardDelayAction()),
             janet.createPipe(GetClearRecordsDelayAction.class)
                   .createObservableResult(new GetClearRecordsDelayAction()),
-            (sdkVersionAction, firmwareVersionAction, getBatteryLevelAction, getLockDeviceStatusAction,
+            (sdkVersionAction, fetchFirmwareVersionCommand, getBatteryLevelAction, getLockDeviceStatusAction,
                   getStealthModeAction, getDisableDefaultCardDelayAction, getClearRecordsDelayAction) ->
                   (Properties) ImmutableProperties.builder()
                         .sdkVersion(sdkVersionAction.version)
-                        .firmwareVersion(mapperyContext.convert(firmwareVersionAction.version, SmartCardFirmware.class))
+                        .firmwareVersion(fetchFirmwareVersionCommand.getResult())
                         .batteryLevel(Integer.parseInt(getBatteryLevelAction.level))
                         .lock(getLockDeviceStatusAction.locked)
                         .stealthMode(getStealthModeAction.enabled)

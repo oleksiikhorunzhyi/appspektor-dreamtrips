@@ -294,6 +294,10 @@ public class CardListPresenter extends WalletPresenter<CardListPresenter.Screen,
             cardStackHeaderHolder.smartCard(), cardStackHeaderHolder.firmware()), Flow.Direction.REPLACE);
    }
 
+   public void handleForceFirmwareUpdateConfirmation() {
+      getView().showFactoryResetConfirmationDialog();
+   }
+
    public interface Screen extends WalletScreen {
 
       int ERROR_DIALOG_FULL_SMARTCARD = 1;
@@ -313,6 +317,8 @@ public class CardListPresenter extends WalletPresenter<CardListPresenter.Screen,
       void showFirmwareUpdateError();
 
       void showForceFirmwareUpdateDialog();
+
+      void showFactoryResetConfirmationDialog();
 
       void showCardSynchronizationDialog(boolean visible);
 

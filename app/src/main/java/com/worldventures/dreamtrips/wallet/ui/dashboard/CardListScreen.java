@@ -174,6 +174,19 @@ public class CardListScreen extends WalletLinearLayout<CardListPresenter.Screen,
             .dismissListener(dialog -> getPresenter().navigateBack())
             .onNegative((dialog, which) -> getPresenter().navigateBack())
             .positiveText(R.string.wallet_dashboard_update_dialog_btn_text_positive)
+            .onPositive((dialog, which) -> getPresenter().handleForceFirmwareUpdateConfirmation())
+            .build()
+            .show();
+   }
+
+   @Override
+   public void showFactoryResetConfirmationDialog() {
+      new MaterialDialog.Builder(getContext())
+            .content(R.string.wallet_dashboard_factory_reset_dialog_content)
+            .negativeText(R.string.wallet_dashboard_factory_reset_dialog_btn_text_negative)
+            .dismissListener(dialog -> getPresenter().navigateBack())
+            .onNegative((dialog, which) -> getPresenter().navigateBack())
+            .positiveText(R.string.wallet_dashboard_factory_reset_dialog_btn_text_positive)
             .onPositive((dialog, which) -> getPresenter().navigateToForceUpdate())
             .build()
             .show();

@@ -1,5 +1,6 @@
 package com.worldventures.dreamtrips.wallet.ui.dashboard;
 
+import android.app.Dialog;
 import android.content.Context;
 import android.os.Bundle;
 import android.os.Parcelable;
@@ -48,6 +49,7 @@ public class CardListScreen extends WalletLinearLayout<CardListPresenter.Screen,
 
    private IgnoreFirstItemAdapter adapter;
    private InstallFirmwareErrorDialog installFirmwareErrorDialog;
+   private Dialog synchronizationDialog;
 
    public CardListScreen(Context context) {
       super(context);
@@ -68,6 +70,12 @@ public class CardListScreen extends WalletLinearLayout<CardListPresenter.Screen,
       toolbar.setNavigationOnClickListener(it -> presenter.navigationClick());
 
       setupCardStackList();
+   }
+
+   @Override
+   protected void onDetachedFromWindow() {
+      if (synchronizationDialog != null && synchronizationDialog.isShowing()) synchronizationDialog.dismiss();
+      super.onDetachedFromWindow();
    }
 
    @Override
@@ -137,6 +145,24 @@ public class CardListScreen extends WalletLinearLayout<CardListPresenter.Screen,
       if (!installFirmwareErrorDialog.isShowing()) {
          installFirmwareErrorDialog.show();
       }
+   }
+
+   @Override
+   public void showCardSynchronizationDialog(boolean visible) {
+      if (visible) {
+         if (synchronizationDialog == null) createSynchronizationDialog();
+         synchronizationDialog.show();
+      } else {
+         if (synchronizationDialog != null) synchronizationDialog.dismiss();
+      }
+   }
+
+   private void createSynchronizationDialog() {
+      synchronizationDialog = new MaterialDialog.Builder(getContext())
+            .content(getString(R.string.wallet_wizard_card_list_card_synchronization_dialog_text))
+            .progress(true, 0)
+            .cancelable(false)
+            .build();
    }
 
    @Override

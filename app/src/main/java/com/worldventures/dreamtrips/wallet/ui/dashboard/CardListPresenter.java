@@ -254,10 +254,15 @@ public class CardListPresenter extends WalletPresenter<CardListPresenter.Screen,
                   .wrap());
 
       smartCardInteractor.cardSyncPipe()
-            .observe()
+            .observeWithReplay()
             .compose(bindViewIoToMainComposer())
             .subscribe(ErrorActionStateSubscriberWrapper.<SyncCardsCommand>forView(getView().provideOperationDelegate())
-                  .onFail(errorHandler)
+                  .onStart(syncCardsCommand -> getView().showCardSynchronizationDialog(true))
+                  .onSuccess(syncCardsCommand -> getView().showCardSynchronizationDialog(false))
+                  .onFail(throwable -> {
+                     getView().showCardSynchronizationDialog(false);
+                     return errorHandler.call(throwable);
+                  })
                   .wrap());
 
    }
@@ -291,6 +296,8 @@ public class CardListPresenter extends WalletPresenter<CardListPresenter.Screen,
       void showFirmwareUpdateBtn();
 
       void showFirmwareUpdateError();
+
+      void showCardSynchronizationDialog(boolean visible);
 
       @IntDef({ERROR_DIALOG_FULL_SMARTCARD, ERROR_DIALOG_NO_INTERNET_CONNECTION, ERROR_DIALOG_NO_SMARTCARD_CONNECTION})
       @interface ErrorDialogType {}

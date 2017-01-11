@@ -274,7 +274,6 @@ class SmartCardInteractorSpec : BaseSpec({
             val subscriber = saveBankCardData(bankCard, setAsDefaultCard = false, setAsDefaultAddress = false)
             assertActionSuccess(subscriber, { true })
             verify(mockDb, times(0)).saveDefaultAddress(any())
-            verify(mockDb, times(1)).saveWalletDefaultCardId(any())//because a cards was added
          }
 
          it("Card with invalid data shouldn't be stored") {

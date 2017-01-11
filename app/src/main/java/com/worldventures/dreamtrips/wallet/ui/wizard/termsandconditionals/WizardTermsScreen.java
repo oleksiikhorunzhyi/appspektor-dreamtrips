@@ -154,4 +154,14 @@ public class WizardTermsScreen extends WalletLinearLayout<WizardTermsPresenter.S
    public void showError(Object o, Throwable throwable) {
       failedToLoadTerms();
    }
+
+   @Override
+   public boolean isErrorVisible() {
+      return errorDialog != null && errorDialog.isShowing();
+   }
+
+   @Override
+   public void hideError() {
+      if(errorDialog != null) errorDialog.dismiss();
+   }
 }

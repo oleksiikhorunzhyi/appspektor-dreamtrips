@@ -85,18 +85,18 @@ public class UpdateSmartCardUserCommand extends Command<SmartCard> implements In
       boolean needUpdate = false;
       final ImmutableUpdateCardUserData.Builder dataBuilder = ImmutableUpdateCardUserData.builder()
             .photoUrl(user.userPhoto().photoUrl()); // photoUrl is mandatory field for API
-      if (!changedFields.firstName().equals(user.firstName())) {
-         dataBuilder.firstName(changedFields.firstName());
+
+      dataBuilder.firstName(changedFields.firstName());
+      dataBuilder.middleName(changedFields.middleName());
+      dataBuilder.lastName(changedFields.lastName());
+
+      if (!changedFields.firstName().equals(user.firstName())
+            || !changedFields.middleName().equals(user.middleName())
+            || !changedFields.lastName().equals(user.lastName())
+            || !changedFields.photo().photoUrl().equals(user.userPhoto().photoUrl())) {
          needUpdate = true;
       }
-      if (!changedFields.middleName().equals(user.middleName())) {
-         dataBuilder.middleName(changedFields.middleName());
-         needUpdate = true;
-      }
-      if (!changedFields.lastName().equals(user.lastName())) {
-         dataBuilder.lastName(changedFields.lastName());
-         needUpdate = true;
-      }
+
       final UpdateCardUserData userData = dataBuilder.build();
 
       if (needUpdate) {

@@ -42,7 +42,7 @@ public class FetchAssociatedSmartCardCommand extends Command<FetchAssociatedSmar
    @Override
    protected void run(CommandCallback<FetchAssociatedSmartCardCommand.AssociatedCard> callback) throws Throwable {
       SmartCard smartCard = getSmartCardFromCache();
-      if (smartCard != null) {
+      if (smartCard != null && smartCard.cardStatus() == SmartCard.CardStatus.ACTIVE) {
          callback.onSuccess(createAssociatedCard(smartCard, snappyRepository.getSmartCardDetails(smartCard.smartCardId())));
          return;
       }

@@ -1,6 +1,8 @@
 package com.worldventures.dreamtrips.wallet.service.command;
 
 
+import android.text.TextUtils;
+
 import com.innahema.collections.query.queriables.Queryable;
 import com.worldventures.dreamtrips.core.janet.dagger.InjectableAction;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
@@ -67,7 +69,7 @@ public class SyncCardsCommand extends Command<Void> implements InjectableAction 
       Queryable.from(bundle.deviceCards)
             .forEachR(deviceCard -> {
                if (Queryable.from(bundle.cacheCards)
-                     .count(element -> element.id() != null && element.id().equals(deviceCard.id())) == 0) {
+                     .count(element -> TextUtils.equals(element.id(), deviceCard.id())) == 0) {
                   operations.add(interactor.cardsListPipe()
                         .createObservableResult(CardListCommand.add(deviceCard))
                         .map(value -> null));
@@ -77,7 +79,7 @@ public class SyncCardsCommand extends Command<Void> implements InjectableAction 
       Queryable.from(bundle.cacheCards)
             .forEachR(cacheCard -> {
                if (Queryable.from(bundle.deviceCards)
-                     .count(element -> element.id() != null && element.id().equals(cacheCard.id())) == 0) {
+                     .count(element -> TextUtils.equals(element.id(), cacheCard.id())) == 0) {
                   operations.add(interactor.addRecordPipe()
                         .createObservableResult(new AttachCardCommand((BankCard) cacheCard, false))
                         .map(value -> null));
@@ -94,8 +96,8 @@ public class SyncCardsCommand extends Command<Void> implements InjectableAction 
                .createObservableResult(SetDefaultCardOnDeviceCommand.setAsDefault(bundle.cacheDefaultCardId))
                .map(value -> null));
       }
-      return Queryable.from(operations)
-            .fold((observable, observable2) -> observable.concatWith(observable2));
+      return operations.isEmpty() ? Observable.just(null)
+            : Queryable.from(operations).fold((observable, observable2) -> observable.concatWith(observable2));
    }
 
 

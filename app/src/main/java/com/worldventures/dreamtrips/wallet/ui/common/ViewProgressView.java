@@ -18,6 +18,11 @@ public class ViewProgressView<T> implements ProgressView<T> {
    }
 
    @Override
+   public boolean isProgressVisible() {
+      return progressView.getVisibility() == View.VISIBLE;
+   }
+
+   @Override
    public void hideProgress() {
       progressView.setVisibility(View.GONE);
    }

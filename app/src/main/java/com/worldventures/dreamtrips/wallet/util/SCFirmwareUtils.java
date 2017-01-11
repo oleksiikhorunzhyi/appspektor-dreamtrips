@@ -17,7 +17,7 @@ public final class SCFirmwareUtils {
    }
 
    public static int firmwareStringToInt(String firmwareVersion) {
-      String parsed = firmwareVersion.replaceAll(".", "").intern();
+      String parsed = firmwareVersion.replaceAll("\\.", "").intern();
       return Integer.parseInt(parsed);
    }
 }

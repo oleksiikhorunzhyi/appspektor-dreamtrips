@@ -1,4 +1,4 @@
-package com.worldventures.dreamtrips.wallet.ui.settings.forcefactoryreset;
+package com.worldventures.dreamtrips.wallet.ui.settings.firmware.force.factoryreset;
 
 import android.content.Context;
 import android.os.Parcelable;
@@ -13,6 +13,7 @@ import com.worldventures.dreamtrips.wallet.ui.common.base.screen.WalletScreen;
 import com.worldventures.dreamtrips.wallet.ui.common.helper.ErrorHandler;
 import com.worldventures.dreamtrips.wallet.ui.common.helper.OperationActionStateSubscriberWrapper;
 import com.worldventures.dreamtrips.wallet.ui.common.navigation.Navigator;
+import com.worldventures.dreamtrips.wallet.ui.settings.firmware.force.poweron.ForceUpdatePowerOnPath;
 import com.worldventures.dreamtrips.wallet.ui.settings.firmware.newavailable.WalletNewFirmwareAvailablePath;
 
 import javax.inject.Inject;
@@ -36,10 +37,10 @@ public class ForceFactoryResetPresenter extends WalletPresenter<ForceFactoryRese
    @Override
    public void attachView(Screen view) {
       super.attachView(view);
-      if (getView().factoryResetIsRequired()) {
+      if (firmwareUpdateData.factoryResetRequired()) {
          factoryResetSmartCard();
       } else {
-         goToFirmwareUpgrade();
+         goToFWUpdate();
       }
    }
 
@@ -48,7 +49,7 @@ public class ForceFactoryResetPresenter extends WalletPresenter<ForceFactoryRese
             .observe()
             .compose(bindViewIoToMainComposer())
             .subscribe(OperationActionStateSubscriberWrapper.<FactoryResetCommand>forView(getView().provideOperationDelegate())
-                  .onSuccess(command -> goToFirmwareUpgrade())
+                  .onSuccess(command -> goToConnectionInstructions())
                   .onFail(ErrorHandler.create(getContext(), command -> navigator.finish()))
                   .wrap()
             );
@@ -56,7 +57,11 @@ public class ForceFactoryResetPresenter extends WalletPresenter<ForceFactoryRese
       factoryResetManager.factoryResetCommandActionPipe().send(new FactoryResetCommand(false));
    }
 
-   private void goToFirmwareUpgrade() {
+   private void goToConnectionInstructions() {
+      navigator.single(new ForceUpdatePowerOnPath(smartCard, firmwareUpdateData), Flow.Direction.REPLACE);
+   }
+
+   private void goToFWUpdate() {
       navigator.single(new WalletNewFirmwareAvailablePath(smartCard, firmwareUpdateData), Flow.Direction.REPLACE);
    }
 
@@ -65,7 +70,5 @@ public class ForceFactoryResetPresenter extends WalletPresenter<ForceFactoryRese
    }
 
    public interface Screen extends WalletScreen {
-
-      boolean factoryResetIsRequired();
    }
 }

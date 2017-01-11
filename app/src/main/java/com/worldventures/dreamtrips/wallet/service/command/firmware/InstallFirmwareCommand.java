@@ -44,11 +44,13 @@ public class InstallFirmwareCommand extends Command implements InjectableAction 
    @Inject SnappyRepository snappyRepository;
 
    private final FirmwareUpdateData firmwareUpdateData;
+   private final SmartCard smartCard;
    private LoadFirmwareFilesCommand loadFirmwareFilesCommand;
    private ActionPipe<LoadFirmwareFilesCommand> loadFirmwareFilesCommandActionPipe;
 
-   public InstallFirmwareCommand(FirmwareUpdateData firmwareUpdateData) {
+   public InstallFirmwareCommand(SmartCard smartCard, FirmwareUpdateData firmwareUpdateData) {
       this.firmwareUpdateData = firmwareUpdateData;
+      this.smartCard = smartCard;
    }
 
    @Override
@@ -56,7 +58,7 @@ public class InstallFirmwareCommand extends Command implements InjectableAction 
       loadFirmwareFilesCommandActionPipe = janet.createPipe(LoadFirmwareFilesCommand.class);
 
       cacheFirmwareUpdateData()
-            .flatMap(aVoid -> activeSmartCard()
+            .flatMap(aVoid -> smartCard == null ? activeSmartCard() : Observable.just(smartCard)
                   .flatMap(sc -> prepareCardAndInstallFirmware(sc, callback))
                   .flatMap(sc -> saveNewFirmwareVersion(sc))
             )

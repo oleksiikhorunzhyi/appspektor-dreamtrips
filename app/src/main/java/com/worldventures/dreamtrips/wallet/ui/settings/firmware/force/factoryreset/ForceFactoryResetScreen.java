@@ -1,4 +1,4 @@
-package com.worldventures.dreamtrips.wallet.ui.settings.forcefactoryreset;
+package com.worldventures.dreamtrips.wallet.ui.settings.firmware.force.factoryreset;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
@@ -45,11 +45,6 @@ public class ForceFactoryResetScreen extends WalletLinearLayout<ForceFactoryRese
    @Override
    protected boolean hasToolbar() {
       return true;
-   }
-
-   @Override
-   public boolean factoryResetIsRequired() {
-      return getPath().firmwareUpdateData().factoryResetRequired();
    }
 
    @Override

@@ -80,7 +80,7 @@ public class WalletInstallFirmwarePresenter extends WalletPresenter<WalletInstal
    protected void install() {
       getView().showProgress(null);
       getView().showInstallingStatus(0, InstallFirmwareCommand.INSTALL_FIRMWARE_TOTAL_STEPS, 0);
-      firmwareInteractor.installFirmwarePipe().send(new InstallFirmwareCommand(firmwareData));
+      firmwareInteractor.installFirmwarePipe().send(new InstallFirmwareCommand(smartCard, firmwareData));
    }
 
    private void openSuccess() {

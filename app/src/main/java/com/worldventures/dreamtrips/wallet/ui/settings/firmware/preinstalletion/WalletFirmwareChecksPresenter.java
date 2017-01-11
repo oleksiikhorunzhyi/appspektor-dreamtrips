@@ -93,6 +93,8 @@ public class WalletFirmwareChecksPresenter extends WalletPresenter<WalletFirmwar
                   .firmwareInfo(firmwareInfo)
                   .firmwareFile(new File(firmwareFilePath))
                   .updateAvailable(true)
+                  .factoryResetRequired(smartCard != null)
+                  .updateCritical(smartCard != null)
                   .build())
       );
    }

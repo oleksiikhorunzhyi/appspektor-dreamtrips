@@ -41,6 +41,7 @@ import com.worldventures.dreamtrips.modules.dtl.service.MerchantsFacadeInteracto
 import com.worldventures.dreamtrips.modules.dtl.service.MerchantsInteractor;
 import com.worldventures.dreamtrips.modules.dtl.service.MerchantsRequestSourceInteractor;
 import com.worldventures.dreamtrips.modules.dtl.service.PresentationInteractor;
+import com.worldventures.dreamtrips.modules.facebook.service.FacebookInteractor;
 import com.worldventures.dreamtrips.modules.feed.service.CommentsInteractor;
 import com.worldventures.dreamtrips.modules.feed.service.LikesInteractor;
 import com.worldventures.dreamtrips.modules.feed.service.PostsInteractor;
@@ -301,7 +302,7 @@ public class ManagerModule {
    DrawableUtil provideDrawableUtil(Context context) {
       return new DrawableUtil(context);
    }
-   
+
    @Provides
    @Singleton
    DocumentsInteractor provideDocumentsInteractor(SessionActionPipeCreator sessionActionPipeCreator) {
@@ -312,5 +313,11 @@ public class ManagerModule {
    @Singleton
    VideoInteractor provideVideoInteractor(SessionActionPipeCreator sessionActionPipeCreator) {
       return new VideoInteractor(sessionActionPipeCreator);
+   }
+
+   @Provides
+   @Singleton
+   FacebookInteractor provideFacebookInteractor(SessionActionPipeCreator sessionActionPipeCreator) {
+      return new FacebookInteractor(sessionActionPipeCreator);
    }
 }

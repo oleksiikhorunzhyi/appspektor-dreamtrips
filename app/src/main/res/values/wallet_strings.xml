@@ -195,6 +195,9 @@
    <string name="wallet_dashboard_update_dialog_content">In order to get the best smart card experience please update your smart card with the latest software</string>
    <string name="wallet_dashboard_update_dialog_btn_text_negative">Not now</string>
    <string name="wallet_dashboard_update_dialog_btn_text_positive">Update</string>
+   <string name="wallet_dashboard_factory_reset_dialog_content">In order to enable the latest features on your smart card it will need to be factory reset. This will only take a few minutes. After the update you will need to set up your smart card again.</string>
+   <string name="wallet_dashboard_factory_reset_dialog_btn_text_negative">Cancel</string>
+   <string name="wallet_dashboard_factory_reset_dialog_btn_text_positive">Continue</string>
 
    <!--charging-->
    <string name="wallet_charging_swiping_screen_title">Add Payment Card</string>

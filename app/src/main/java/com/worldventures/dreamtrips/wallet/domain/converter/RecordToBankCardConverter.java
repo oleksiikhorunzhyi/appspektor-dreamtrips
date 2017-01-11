@@ -2,6 +2,7 @@ package com.worldventures.dreamtrips.wallet.domain.converter;
 
 import com.worldventures.dreamtrips.modules.mapping.converter.Converter;
 import com.worldventures.dreamtrips.wallet.domain.entity.AddressInfo;
+import com.worldventures.dreamtrips.wallet.domain.entity.FinancialService;
 import com.worldventures.dreamtrips.wallet.domain.entity.ImmutableAddressInfo;
 import com.worldventures.dreamtrips.wallet.domain.entity.ImmutableRecordIssuerInfo;
 import com.worldventures.dreamtrips.wallet.domain.entity.card.BankCard;
@@ -44,7 +45,7 @@ public class RecordToBankCardConverter implements Converter<Record, BankCard> {
       if (metadata.containsKey(BANK_CARD_CATEGORY)) {
          category = Card.Category.valueOf(metadata.get(BANK_CARD_CATEGORY));
       }
-      recordIssuerInfoBuilder.financialService(record.financialService());
+      recordIssuerInfoBuilder.financialService(mapperyContext.convert(record.financialService(), FinancialService.class));
       int cvv = 0;
       if (record.cvv().length() > 0) {
          cvv = Integer.parseInt(record.cvv());

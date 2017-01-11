@@ -1,15 +1,15 @@
 #!/usr/bin/env groovy
 
-def utils = fileLoader.fromGit('jenkins-android-pipeline-utils.groovy', 'https://gist.github.com/3d72ba81965db879ceb38e4bef991b6a.git', '1a9b441a7ca5821b74bf18e6a7c9d41704e14651', null, 'master')
+def utils = fileLoader.fromGit('jenkins-pipeline-job-utils.groovy', 'git@repos.wvholdings.com:mobile/pipeline-helper-scripts-android.git', 'master', '5ee47e5e-00fb-43a5-9ccd-f5aa5a5310ee', '')
 def buildParams = [:]
 
-utils.runBuild('android', isGithubBuild()) {
+utils.runBuild('android', getNotifier(utils)) {
    stage('prepare build') {
-      buildParams = generateParams(isGithubBuild())
+      buildParams = generateParams(isPullRequest())
       println "Build params: $buildParams"
    }
    stage('checkout') {
-      def branches = (isGithubBuild() ? scm.branches : [[name: "origin/${buildParams.branch}"]])
+      def branches = (isPullRequest() ? scm.branches : [[name: "origin/${buildParams.branch}"]])
       checkout([
             $class                           : 'GitSCM',
             branches                         : branches,
@@ -29,15 +29,16 @@ utils.runBuild('android', isGithubBuild()) {
    stage('assemble') {
       withCredentials([file(credentialsId: 'dreamtrips-android-signing-key', variable: 'SIGNING_KEY'),
                        file(credentialsId: 'dreamtrips-android-signing-properties', variable: 'SIGNING_PROPS')]) {
-         utils.bash("chmod +rx ${SIGNING_KEY}")
-         utils.bash("chmod +rx ${SIGNING_PROPS}")
-         utils.bash("cp -f ${SIGNING_KEY} signing")
-         utils.bash("cp -f ${SIGNING_PROPS} signing")
-         utils.gradlew "app:assembleExternal${buildParams.streamFlavor}${buildParams.serverFlavor}${buildParams.apkBuildType}"
+         utils.scripts.bash("chmod +rx ${SIGNING_KEY}")
+         utils.scripts.bash("chmod +rx ${SIGNING_PROPS}")
+         utils.scripts.bash("cp -f ${SIGNING_KEY} signing")
+         utils.scripts.bash("cp -f ${SIGNING_PROPS} signing")
+         utils.scripts.gradlew "app:assembleExternal${buildParams.streamFlavor}${buildParams.serverFlavor}${buildParams.apkBuildType}"
       }
    }
    stage('publish') {
-      def releaseNotes = generateReleaseNotes(buildParams, changelog(utils, buildParams.targetBranch, buildParams.branch), isGithubBuild())
+      def releaseNotes = generateReleaseNotes(buildParams, changelog(utils, buildParams.targetBranch, buildParams.branch), isPullRequest())
+      echo releaseNotes
       def apkPath = "app/build/outputs/apk/DreamTrips-external-${buildParams.streamFlavor.toLowerCase()}-${buildParams.serverFlavor.toLowerCase()}-${buildParams.apkBuildType.toLowerCase()}.apk"
       step([$class   : 'HockeyappRecorder', applications:
             [[apiToken          : params.hockeyApiToken,
@@ -52,19 +53,19 @@ utils.runBuild('android', isGithubBuild()) {
             debugMode: false, failGracefully: true
       ])
    }
-   if (isGithubBuild()) stage('notify') {
+   if (isPullRequest()) stage('notify') {
       def links = hockeyInstallationLinks(currentBuild.rawBuild.getActions(hockeyapp.HockeyappBuildAction.class))
       def text = "Published to HockeyApp:\r\n* Public link:\r\n${links.public}\r\n* Private link:\r\n${links.private}"
-      step([$class: 'GitHubPRCommentPublisher', comment: [content: text]])
+      getNotifier(utils).comment(text)
    }
 }
 node('android') {
    // cleanup
-   utils.bash('rm -rf signing')
+   utils.scripts.bash('rm -rf signing')
 }
 
 @NonCPS
-def Map generateParams(boolean isGithubBuild) {
+def Map generateParams(boolean isPullRequest) {
    def params = [
          streamFlavor  : "Stable",
          serverFlavor  : "Stage",
@@ -77,8 +78,8 @@ def Map generateParams(boolean isGithubBuild) {
    def devTeam = "40021"
    def qaTeam = "77196"
 
-   params.branch = (isGithubBuild ? env.GITHUB_PR_SOURCE_BRANCH : env.GIT_BRANCH).replace("origin/", "")
-   params.comment = (isGithubBuild ? env.GITHUB_PR_COMMENT_BODY : env.COMMENT) ?: ""
+   params.branch = (isPullRequest ? env.gitlabSourceBranch : env.GIT_BRANCH).replace("origin/", "")
+   params.comment = (isPullRequest ? env.gitlabTriggerPhrase : env.COMMENT) ?: ""
 
    switch (params.branch) {
       case ~/^(develop)|(common\/.+)/:
@@ -86,7 +87,7 @@ def Map generateParams(boolean isGithubBuild) {
                streamFlavor  : "Stable",
                serverFlavor  : params.comment.contains("-server qa") ? "Qa" : "Stage",
                hockeyAppId   : "48de37eaf46ec363d392ae15ae521df6",
-               hockeyAppTeams: [devTeam],
+               hockeyAppTeams: [qaTeam, devTeam],
          ]
          break
       case ~/^(release\/.+)|(hotfix\/.+)/:
@@ -145,7 +146,7 @@ def Map generateParams(boolean isGithubBuild) {
    }
 
    def targetBranch
-   if (isGithubBuild) targetBranch = env.GITHUB_PR_TARGET_BRANCH
+   if (isPullRequest) targetBranch = env.gitlabTargetBranch
    else switch (params.branch) {
       case ~/^common\/.+/:
          targetBranch = 'develop'
@@ -174,31 +175,35 @@ def Map generateParams(boolean isGithubBuild) {
    return params
 }
 
-def boolean isGithubBuild() {
-   env.GITHUB_PR_TARGET_BRANCH != null
+def boolean isPullRequest() {
+   env.gitlabBranch != null
+}
+
+def getNotifier(utils) {
+   isPullRequest() ? utils.notifiers.gitlab(this) : utils.notifiers.stub()
 }
 
 @NonCPS
-def String generateReleaseNotes(buildParams, changelog, boolean isGithubBuild) {
+def String generateReleaseNotes(buildParams, changelog, boolean isPullRequest) {
    StringBuilder text = new StringBuilder()
    changelog = changelog?.split('\\n').collect { s -> "* $s" }.join('\n')
-   if (isGithubBuild) {
+   if (isPullRequest) {
       // title
       text
-            .append("## $env.GITHUB_PR_TITLE").append('\n')
-            .append("[Pull Request Link]($env.GITHUB_PR_URL)").append('\n')
+            .append("## $env.gitlabMergeRequestTitle").append('\n')
+            .append("[Pull Request Link](${env.gitlabSourceRepoHttpUrl.replaceAll('.git', '')}/merge_requests/$env.gitlabMergeRequestIid)").append('\n')
       // description
-      if (env.GITHUB_PR_DESCRIPTION) text
+      if (env.gitlabMergeRequestDescription) text
             .append("### Description").append('\n')
-            .append(env.GITHUB_PR_DESCRIPTION).append('\n')
+            .append(env.gitlabMergeRequestDescription).append('\n')
       // comment
-      if (env.GITHUB_PR_COMMENT_BODY) text
+      if (env.gitlabTriggerPhrase) text
             .append("### Comment").append('\n')
-            .append(env.GITHUB_PR_COMMENT_BODY.replaceAll("(\\r\\n)|(\\r)", "\n")).append('\n')
+            .append(env.gitlabTriggerPhrase.replaceAll("(\\r\\n)|(\\r)", "\n")).append('\n')
       // author
       text
             .append("#### Author").append('\n')
-            .append(env.GITHUB_PR_TRIGGER_SENDER_AUTHOR).append('\n')
+            .append(env.gitlabUserEmail).append('\n')
       // changelog
       if (changelog) text
             .append("#### Commits").append('\n')
@@ -222,7 +227,7 @@ def String generateReleaseNotes(buildParams, changelog, boolean isGithubBuild) {
 def String changelog(utils, targetBranch, headBranch) {
    if (!(targetBranch =~ /^origin.*/)) targetBranch = "origin/$targetBranch"
    if (!(headBranch =~ /^origin.*/)) headBranch = "origin/$headBranch"
-   utils.bash("git rev-list $targetBranch..$headBranch --oneline")
+   utils.scripts.bash("git rev-list $targetBranch..$headBranch --oneline")
 }
 
 @NonCPS

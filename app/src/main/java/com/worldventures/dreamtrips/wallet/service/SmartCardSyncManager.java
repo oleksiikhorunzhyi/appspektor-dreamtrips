@@ -37,7 +37,7 @@ class SmartCardSyncManager {
 
    private final Janet janet;
    private final SmartCardInteractor interactor;
-   private volatile boolean syncDisabled = true;
+   private volatile boolean syncDisabled = false;
 
    SmartCardSyncManager(Janet janet, SmartCardInteractor interactor) {
       this.janet = janet;

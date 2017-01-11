@@ -52,7 +52,7 @@ public class BucketFullscreenPresenter extends SocialFullScreenPresenter<BucketP
       } else {
          view.hideCheckBox();
       }
-      if (bucketItem != null) view.showDeleteBtn();
+      if (bucketItem != null && !foreign) view.showDeleteBtn();
       else view.hideDeleteBtn();
    }
 

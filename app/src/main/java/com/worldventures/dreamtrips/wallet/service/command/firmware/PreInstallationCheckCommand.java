@@ -42,14 +42,14 @@ public class PreInstallationCheckCommand extends Command<PreInstallationCheckCom
    protected void run(CommandCallback<PreInstallationCheckCommand.Checks> callback) throws Throwable {
       // TODO: 1/10/17 check for v37, in charger, it is not support
       if (SCFirmwareUtils.firmwareStringToInt(smartCard.firmwareVersion()
-            .nordicAppVersion()) < SUPPORTED_CHARGER_ACTION_VERSION_FW) {
+            .nordicAppVersion()) >= SUPPORTED_CHARGER_ACTION_VERSION_FW) {
          janet.createPipe(CardInChargerAction.class)
                .createObservableResult(new CardInChargerAction())
                .map(action -> check(smartCard, action.inCharger))
                .subscribe(callback::onSuccess, callback::onFail);
       } else {
          try {
-            callback.onSuccess(check(smartCard, false));
+            callback.onSuccess(check(smartCard, true));
          } catch (Exception e) {
             callback.onFail(e);
          }

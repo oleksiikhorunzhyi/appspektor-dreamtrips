@@ -11,6 +11,9 @@ import com.worldventures.dreamtrips.wallet.ui.dashboard.CardListPresenter;
 import com.worldventures.dreamtrips.wallet.ui.dashboard.util.cell.BankCardCell;
 import com.worldventures.dreamtrips.wallet.ui.dashboard.util.cell.CardStackCell;
 import com.worldventures.dreamtrips.wallet.ui.dashboard.util.cell.CardStackHeaderCell;
+import com.worldventures.dreamtrips.wallet.ui.settings.firmware.force.pairkey.ForcePairKeyPresenter;
+import com.worldventures.dreamtrips.wallet.ui.settings.firmware.force.poweron.ForceUpdatePowerOnPresenter;
+import com.worldventures.dreamtrips.wallet.ui.settings.firmware.force.factoryreset.ForceFactoryResetPresenter;
 import com.worldventures.dreamtrips.wallet.ui.provisioning_blocked.WalletProvisioningBlockedPresenter;
 import com.worldventures.dreamtrips.wallet.ui.provisioning_blocked.cell.SupportedDeviceItemCell;
 import com.worldventures.dreamtrips.wallet.ui.provisioning_blocked.cell.SupportedDevicesListCell;
@@ -32,7 +35,6 @@ import com.worldventures.dreamtrips.wallet.ui.settings.firmware.newavailable.Wal
 import com.worldventures.dreamtrips.wallet.ui.settings.firmware.preinstalletion.WalletFirmwareChecksPresenter;
 import com.worldventures.dreamtrips.wallet.ui.settings.firmware.puck_connection.WalletPuckConnectionPresenter;
 import com.worldventures.dreamtrips.wallet.ui.settings.firmware.uptodate.WalletUpToDateFirmwarePresenter;
-import com.worldventures.dreamtrips.wallet.ui.settings.forcefactoryreset.ForceFactoryResetPresenter;
 import com.worldventures.dreamtrips.wallet.ui.settings.general.WalletSettingsPresenter;
 import com.worldventures.dreamtrips.wallet.ui.settings.profile.WalletSettingsProfilePresenter;
 import com.worldventures.dreamtrips.wallet.ui.settings.removecards.WalletAutoClearCardsPresenter;
@@ -107,7 +109,9 @@ import dagger.Provides;
             AboutPresenter.class,
             PairKeyPresenter.class,
             ConnectionErrorPresenter.class,
-            ForceFactoryResetPresenter.class
+            ForceFactoryResetPresenter.class,
+            ForceUpdatePowerOnPresenter.class,
+            ForcePairKeyPresenter.class
       },
       complete = false, library = true
 )

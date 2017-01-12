@@ -10,6 +10,7 @@ import com.worldventures.dreamtrips.wallet.analytics.UpdateChecksVisitAction;
 import com.worldventures.dreamtrips.wallet.analytics.UpdateInstallAction;
 import com.worldventures.dreamtrips.wallet.analytics.UpdateInstallLaterAction;
 import com.worldventures.dreamtrips.wallet.analytics.WalletAnalyticsCommand;
+import com.worldventures.dreamtrips.wallet.domain.entity.FirmwareUpdateData;
 import com.worldventures.dreamtrips.wallet.domain.entity.ImmutableFirmwareUpdateData;
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCard;
 import com.worldventures.dreamtrips.wallet.service.FirmwareInteractor;
@@ -39,12 +40,14 @@ public class WalletFirmwareChecksPresenter extends WalletPresenter<WalletFirmwar
    private final String firmwareFilePath;
    private final FirmwareInfo firmwareInfo;
    private final SmartCard smartCard;
+   private final FirmwareUpdateData firmwareUpdateData;
 
-   WalletFirmwareChecksPresenter(SmartCard smartCard, Context context, Injector injector, String firmwareFilePath, FirmwareInfo firmwareInfo) {
+   WalletFirmwareChecksPresenter(SmartCard smartCard, FirmwareUpdateData firmwareUpdateData, Context context, Injector injector, String firmwareFilePath, FirmwareInfo firmwareInfo) {
       super(context, injector);
       this.firmwareFilePath = firmwareFilePath;
       this.firmwareInfo = firmwareInfo;
       this.smartCard = smartCard;
+      this.firmwareUpdateData = firmwareUpdateData;
    }
 
    @Override
@@ -92,11 +95,10 @@ public class WalletFirmwareChecksPresenter extends WalletPresenter<WalletFirmwar
 
       navigator.go(new WalletInstallFirmwarePath(smartCard,
             ImmutableFirmwareUpdateData.builder()
+                  .from(firmwareUpdateData)
                   .firmwareInfo(firmwareInfo)
                   .firmwareFile(new File(firmwareFilePath))
                   .updateAvailable(true)
-                  .factoryResetRequired(smartCard != null)
-                  .updateCritical(smartCard != null)
                   .build())
       );
    }

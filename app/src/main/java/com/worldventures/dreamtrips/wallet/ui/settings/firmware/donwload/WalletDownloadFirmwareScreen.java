@@ -36,7 +36,7 @@ public class WalletDownloadFirmwareScreen extends WalletLinearLayout<WalletDownl
    @NonNull
    @Override
    public WalletDownloadFirmwarePresenter createPresenter() {
-      return new WalletDownloadFirmwarePresenter(getPath().smartCard(), getContext(), getInjector(), getPath().firmwareInfo(), getPath().filePath());
+      return new WalletDownloadFirmwarePresenter(getPath().smartCard(), getPath().firmwareUpdateData(), getContext(), getInjector(), getPath().firmwareInfo(), getPath().filePath());
    }
 
    @Override

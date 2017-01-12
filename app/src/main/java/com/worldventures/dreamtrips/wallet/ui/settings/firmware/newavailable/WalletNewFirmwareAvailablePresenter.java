@@ -152,7 +152,7 @@ public class WalletNewFirmwareAvailablePresenter extends WalletPresenter<WalletN
    }
 
    void downloadFile(String filePath) {
-      navigator.go(new WalletPuckConnectionPath(smartCard, firmwareInfo, filePath));
+      navigator.go(new WalletPuckConnectionPath(smartCard, firmwareUpdateData, firmwareInfo, filePath));
    }
 
    public interface Screen extends WalletScreen {

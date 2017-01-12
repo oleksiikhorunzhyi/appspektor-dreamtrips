@@ -62,4 +62,14 @@ public class SmartCardConverterModule {
    Converter provideSmartCardFirmwareConverter() {
       return new SmartCardFirmwareConverter();
    }
+
+   @Provides(type = Provides.Type.SET)
+   Converter provideFinancialServiceToRecordConverter() {
+      return new FinancialServiceToRecordFinancialServiceConverter();
+   }
+
+   @Provides(type = Provides.Type.SET)
+   Converter provideRecordToFinancialServiceConverter() {
+      return new RecordFinancialServiceToFinancialServiceConverter();
+   }
 }

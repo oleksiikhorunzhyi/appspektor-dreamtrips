@@ -13,11 +13,10 @@ import com.worldventures.dreamtrips.core.janet.cache.storage.ActionStorage
 import com.worldventures.dreamtrips.core.janet.cache.storage.MultipleActionStorage
 import com.worldventures.dreamtrips.core.repository.SnappyRepository
 import com.worldventures.dreamtrips.wallet.domain.converter.BankCardToRecordConverter
+import com.worldventures.dreamtrips.wallet.domain.converter.FinancialServiceToRecordFinancialServiceConverter
+import com.worldventures.dreamtrips.wallet.domain.converter.RecordFinancialServiceToFinancialServiceConverter
 import com.worldventures.dreamtrips.wallet.domain.converter.RecordToBankCardConverter
-import com.worldventures.dreamtrips.wallet.domain.entity.AddressInfo
-import com.worldventures.dreamtrips.wallet.domain.entity.ImmutableSmartCard
-import com.worldventures.dreamtrips.wallet.domain.entity.RecordIssuerInfo
-import com.worldventures.dreamtrips.wallet.domain.entity.SmartCard
+import com.worldventures.dreamtrips.wallet.domain.entity.*
 import com.worldventures.dreamtrips.wallet.domain.entity.card.BankCard
 import com.worldventures.dreamtrips.wallet.domain.storage.DefaultBankCardStorage
 import com.worldventures.dreamtrips.wallet.domain.storage.SmartCardStorage
@@ -338,6 +337,8 @@ class SmartCardInteractorSpec : BaseSpec({
       fun createMappery(): MapperyContext = Mappery.Builder()
             .map(BankCard::class.java).to(Record::class.java, BankCardToRecordConverter())
             .map(Record::class.java).to(BankCard::class.java, RecordToBankCardConverter())
+            .map(FinancialService::class.java).to(Record.FinancialService::class.java, FinancialServiceToRecordFinancialServiceConverter())
+            .map(Record.FinancialService::class.java).to(FinancialService::class.java, RecordFinancialServiceToFinancialServiceConverter())
             .build()
 
       fun loadDefaultCardId(): TestSubscriber<ActionState<DefaultCardIdCommand>> {

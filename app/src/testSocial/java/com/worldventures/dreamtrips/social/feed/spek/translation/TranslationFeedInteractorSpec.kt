@@ -9,7 +9,6 @@ import com.worldventures.dreamtrips.api.messenger.model.response.ImmutableTransl
 import com.worldventures.dreamtrips.core.janet.SessionActionPipeCreator
 import com.worldventures.dreamtrips.core.janet.cache.storage.ActionStorage
 import com.worldventures.dreamtrips.core.repository.SnappyRepository
-import com.worldventures.dreamtrips.modules.feed.model.PostFeedItem
 import com.worldventures.dreamtrips.modules.feed.model.TextualPost
 import com.worldventures.dreamtrips.modules.feed.model.comment.Comment
 import com.worldventures.dreamtrips.modules.feed.service.TranslationFeedInteractor
@@ -33,7 +32,7 @@ class TranslationFeedInteractorSpec : BaseSpec({
          val testSubscribe = translateComment(comment, languageTo)
 
          assertActionSuccess(testSubscribe) {
-            it.result.isTranslated && it.result.translation!!.containsValue(translationFromNetwork)
+            it.result.isTranslated && it.result.translation.equals(translationFromNetwork)
          }
       }
 
@@ -45,7 +44,7 @@ class TranslationFeedInteractorSpec : BaseSpec({
          val testSubscribe = translateComment(comment, languageTo)
 
          assertActionSuccess(testSubscribe) {
-            it.result.isTranslated && it.result.translation!!.containsValue(translationFromDisc)
+            it.result.isTranslated && it.result.translation.equals(translationFromDisc)
          }
       }
 
@@ -57,8 +56,7 @@ class TranslationFeedInteractorSpec : BaseSpec({
          val testSubscribe = translatePost(textualPost, languageTo)
 
          assertActionSuccess(testSubscribe) {
-            it.result.isTranslated && it.result.translation != null &&
-                  it.result.translation!!.containsValue(translationFromNetwork)
+            it.result.isTranslated && it.result.translation.equals(translationFromNetwork)
          }
       }
 
@@ -70,8 +68,7 @@ class TranslationFeedInteractorSpec : BaseSpec({
          val testSubscribe = translatePost(textualPost, languageTo)
 
          assertActionSuccess(testSubscribe) {
-            it.result.isTranslated && it.result.translation != null &&
-                  it.result.translation!!.containsValue(translationFromDisc)
+            it.result.isTranslated && it.result.translation.equals(translationFromDisc)
          }
       }
    }

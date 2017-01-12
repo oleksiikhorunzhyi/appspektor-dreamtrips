@@ -65,6 +65,11 @@ public class FeedCellDelegate<P extends FeedActionHandlerPresenter & FeedEditEnt
    }
 
    @Override
+   public void onShowOriginal(FeedEntity feedEntity) {
+      presenter.onShowOriginal(feedEntity);
+   }
+
+   @Override
    public void onEditPhoto(Photo photo) {
       presenter.onEditPhoto(photo);
    }

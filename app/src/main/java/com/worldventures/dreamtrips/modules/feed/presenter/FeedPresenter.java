@@ -359,6 +359,11 @@ public class FeedPresenter extends Presenter<FeedPresenter.View> implements Feed
    }
 
    @Override
+   public void onShowOriginal(FeedEntity translatableItem) {
+      translationDelegate.showOriginal(translatableItem);
+   }
+
+   @Override
    public void onLoadFlags(Flaggable flaggableView) {
       feedActionHandlerDelegate.onLoadFlags(flaggableView, this::handleError);
    }

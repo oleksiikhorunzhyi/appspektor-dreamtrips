@@ -27,14 +27,12 @@ import io.techery.janet.helper.ActionStateSubscriber;
 import rx.android.schedulers.AndroidSchedulers;
 
 public class BucketDetailsBasePresenter<V extends BucketDetailsBasePresenter.View> extends Presenter<V> {
-   @Inject protected SnappyRepository db;
 
+   @Inject protected SnappyRepository db;
    @Inject protected BucketInteractor bucketInteractor;
 
    @State BucketItem.BucketType type;
-
    @State int ownerId;
-
    @State BucketItem bucketItem;
 
    public BucketDetailsBasePresenter(BucketBundle bundle) {
@@ -51,8 +49,7 @@ public class BucketDetailsBasePresenter<V extends BucketDetailsBasePresenter.Vie
 
    protected void syncUI() {
       if (bucketItem != null) {
-         view.setTitle(bucketItem.getName());
-         view.setDescription(bucketItem.getDescription());
+         view.setBucketItem(bucketItem);
          view.setStatus(bucketItem.isDone());
          view.setPeople(bucketItem.getFriends());
          view.setTags(bucketItem.getBucketTags());
@@ -151,9 +148,7 @@ public class BucketDetailsBasePresenter<V extends BucketDetailsBasePresenter.Vie
    }
 
    public interface View extends RxView {
-      void setTitle(String title);
-
-      void setDescription(String description);
+      void setBucketItem(BucketItem bucketItem);
 
       void setTime(String time);
 

@@ -17,4 +17,6 @@ public interface FeedActionHandlerPresenter {
    void onFlagItem(FeedItem feedItem, int flagReasonId, String reason);
 
    void onTranslateFeedEntity(FeedEntity translatableItem);
+
+   void onShowOriginal(FeedEntity translatableItem);
 }

@@ -24,6 +24,10 @@
 
          <include layout="@layout/adapter_item_feed_bucket_child" />
 
+         <include layout="@layout/view_bucket_item_translation" />
+
+         <include layout="@layout/horizontal_separator" />
+
          <include layout="@layout/adapter_item_feed_footer" />
 
          <include layout="@layout/include_user_liked" />

@@ -9,9 +9,7 @@ import com.worldventures.dreamtrips.modules.feed.model.TranslatableItem;
 import com.worldventures.dreamtrips.modules.feed.model.UidItem;
 
 import java.io.Serializable;
-import java.util.Collections;
 import java.util.Date;
-import java.util.Map;
 
 public class Comment implements Parcelable, Serializable, UidItem, TranslatableItem {
 
@@ -28,7 +26,7 @@ public class Comment implements Parcelable, Serializable, UidItem, TranslatableI
    private String company;
    private String language;
 
-   private transient Map<String, String> translationMap;
+   private transient String translation;
    private transient boolean translated;
 
    public Comment() {
@@ -158,23 +156,19 @@ public class Comment implements Parcelable, Serializable, UidItem, TranslatableI
    }
 
    @Override
-   public Map<String, String> getOriginalText() {
-      return Collections.singletonMap(TEXT_KEY, text);
+   public String getOriginalText() {
+      return text;
    }
 
    @Nullable
    @Override
-   public Map<String, String> getTranslation() {
-      return translationMap;
-   }
-
-   public String getTranslationForText() {
-      return translationMap != null ?translationMap.get(TEXT_KEY) : null;
+   public String getTranslation() {
+      return translation;
    }
 
    @Override
-   public void setTranslations(Map<String, String> translationMap) {
-      this.translationMap = translationMap;
+   public void setTranslation(String translation) {
+      this.translation = translation;
    }
 
    @Override

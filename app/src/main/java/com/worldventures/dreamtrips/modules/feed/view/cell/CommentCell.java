@@ -90,7 +90,7 @@ public class CommentCell extends AbstractDelegateCell<Comment, CommentCell.Comme
             hideTranslationButton();
          }
          if (alreadyTranslated) {
-            viewWithTranslation.showTranslation(getModelObject().getTranslationForText(), getModelObject().getLanguage());
+            viewWithTranslation.showTranslation(getModelObject().getTranslation(), getModelObject().getLanguage());
          } else {
             viewWithTranslation.hide();
          }

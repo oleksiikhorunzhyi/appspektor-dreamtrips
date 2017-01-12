@@ -151,19 +151,16 @@ public class BaseCommentPresenter<T extends BaseCommentPresenter.View> extends P
    }
 
    @Override
-   public void onLikeItem(FeedItem feedItem) {
-      // nothing to do
-   }
+   public void onLikeItem(FeedItem feedItem) {}
 
    @Override
-   public void onDownloadImage(String url) {
-      // nothing to do
-   }
+   public void onDownloadImage(String url) {}
 
    @Override
-   public void onTranslateFeedEntity(FeedEntity translatableItem) {
-      // nothing to do
-   }
+   public void onTranslateFeedEntity(FeedEntity translatableItem) {}
+
+   @Override
+   public void onShowOriginal(FeedEntity translatableItem) {}
 
    @Override
    public void onCommentItem(FeedItem feedItem) {

@@ -10,10 +10,12 @@ import com.worldventures.dreamtrips.modules.bucketlist.service.BucketInteractor;
 import com.worldventures.dreamtrips.modules.bucketlist.service.action.UpdateBucketItemCommand;
 import com.worldventures.dreamtrips.modules.bucketlist.service.command.AddBucketItemPhotoCommand;
 import com.worldventures.dreamtrips.modules.bucketlist.service.command.DeleteItemPhotoCommand;
+import com.worldventures.dreamtrips.modules.bucketlist.service.command.TranslateBucketItemCommand;
 import com.worldventures.dreamtrips.modules.bucketlist.service.model.ImmutableBucketBodyImpl;
 import com.worldventures.dreamtrips.modules.bucketlist.util.BucketItemInfoUtil;
 import com.worldventures.dreamtrips.modules.common.view.bundle.BucketBundle;
 import com.worldventures.dreamtrips.modules.feed.event.FeedEntityChangedEvent;
+import com.worldventures.dreamtrips.modules.feed.service.TranslationFeedInteractor;
 
 import java.util.List;
 
@@ -29,26 +31,25 @@ public class BucketItemDetailsPresenter extends BucketDetailsBasePresenter<Bucke
       super(bundle);
    }
 
+   @Inject TranslationFeedInteractor translationInteractor;
    @Inject BucketInteractor bucketInteractor;
 
    @Override
    public void takeView(View view) {
       super.takeView(view);
       TrackingHelper.bucketItemView(type.getName(), bucketItem.getUid());
-
-      view.bind(Observable.merge(bucketInteractor.updatePipe()
-            .observeSuccess()
-            .map(UpdateBucketItemCommand::getResult), bucketInteractor.deleteItemPhotoPipe()
-            .observeSuccess()
-            .map(DeleteItemPhotoCommand::getResult), bucketInteractor.addBucketItemPhotoPipe()
-            .observeSuccess()
-            .map(AddBucketItemPhotoCommand::getResult)
-            .map(bucketItemBucketPhotoModelPair -> bucketItemBucketPhotoModelPair.first))
-            .observeOn(AndroidSchedulers.mainThread())).subscribe(item -> {
-         bucketItem = item;
-         syncUI();
-      });
+      Observable.merge(bucketInteractor.updatePipe().observeSuccess().map(UpdateBucketItemCommand::getResult),
+            bucketInteractor.deleteItemPhotoPipe().observeSuccess().map(DeleteItemPhotoCommand::getResult),
+            bucketInteractor.addBucketItemPhotoPipe().observeSuccess().map(AddBucketItemPhotoCommand::getResult)
+                  .map(bucketItemBucketPhotoModelPair -> bucketItemBucketPhotoModelPair.first))
+            .observeOn(AndroidSchedulers.mainThread())
+            .compose(bindView())
+            .subscribe(item -> {
+               bucketItem = item;
+               syncUI();
+            });
       subscribeToItemDoneEvents();
+      subscribeToTranslations();
    }
 
    @Override
@@ -56,15 +57,12 @@ public class BucketItemDetailsPresenter extends BucketDetailsBasePresenter<Bucke
       super.syncUI();
       if (bucketItem != null) {
          List photos = bucketItem.getPhotos();
-
          if (photos != null) {
             putCoverPhotoAsFirst(photos);
             view.setImages(photos);
          }
-
          if (!TextUtils.isEmpty(bucketItem.getType())) {
-            String s = bucketItem.getCategoryName();
-            view.setCategory(s);
+            view.setCategory(bucketItem.getCategoryName());
          }
          view.setPlace(BucketItemInfoUtil.getPlace(bucketItem));
          view.setupDiningView(bucketItem.getDining());
@@ -72,16 +70,44 @@ public class BucketItemDetailsPresenter extends BucketDetailsBasePresenter<Bucke
       }
    }
 
-   public void subscribeToItemDoneEvents() {
+   public void onTranslateClicked() {
+      if (bucketItem.isTranslated()) {
+         bucketItem.setTranslated(false);
+         view.setBucketItem(bucketItem);
+      } else {
+         translationInteractor.translateBucketItemPipe().send(new TranslateBucketItemCommand(bucketItem));
+      }
+   }
+
+   private void subscribeToItemDoneEvents() {
       bucketInteractor.updatePipe()
             .observeSuccess()
             .compose(bindViewToMainComposer())
             .map(UpdateBucketItemCommand::getResult)
             .filter(bucketItem -> bucketItem.equals(this.bucketItem))
             .subscribe(item -> {
-                  updateBucketItem(item);
-                  syncUI();
+               updateBucketItem(item);
+               syncUI();
             });
+   }
+
+   private void subscribeToTranslations() {
+      translationInteractor.translateBucketItemPipe()
+            .observe()
+            .compose(bindViewToMainComposer())
+            .subscribe(new ActionStateSubscriber<TranslateBucketItemCommand>()
+                  .onSuccess(this::translationSucceed)
+                  .onFail(this::translationFailed));
+   }
+
+   private void translationSucceed(TranslateBucketItemCommand command) {
+      bucketItem = command.getResult();
+      view.setBucketItem(bucketItem);
+   }
+
+   private void translationFailed(TranslateBucketItemCommand command, Throwable e) {
+      handleError(command, e);
+      view.setBucketItem(bucketItem);
    }
 
    public void onEvent(FeedEntityChangedEvent event) {
@@ -94,13 +120,12 @@ public class BucketItemDetailsPresenter extends BucketDetailsBasePresenter<Bucke
    public void onStatusUpdated(boolean status) {
       if (bucketItem != null && status != bucketItem.isDone()) {
          view.disableMarkAsDone();
-
-         view.bind(bucketInteractor.updatePipe().createObservable(new UpdateBucketItemCommand(ImmutableBucketBodyImpl
+         bucketInteractor.updatePipe().createObservable(new UpdateBucketItemCommand(ImmutableBucketBodyImpl
                .builder()
                .id(bucketItem.getUid())
                .status(getStatus(status))
                .build()))
-               .observeOn(AndroidSchedulers.mainThread()))
+               .compose(bindViewToMainComposer())
                .subscribe(new ActionStateSubscriber<UpdateBucketItemCommand>()
                      .onSuccess(updateItemHttpAction -> view.enableMarkAsDone())
                      .onFail((action, throwable) -> {

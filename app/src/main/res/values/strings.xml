@@ -696,4 +696,7 @@
 
    <string name="documents">Documents</string>
    <string name="documents_empty_text">Documents could not be loaded at this time.</string>
+
+   <string name="show_original">Show original</string>
+   <string name="error_fail_to_translate_bucket_item">Failed to translate bucket item</string>
 </resources>

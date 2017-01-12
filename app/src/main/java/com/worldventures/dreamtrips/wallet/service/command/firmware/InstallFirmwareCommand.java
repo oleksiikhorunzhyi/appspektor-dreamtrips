@@ -114,13 +114,20 @@ public class InstallFirmwareCommand extends Command implements InjectableAction 
                ImmutableSmartCardFirmware.builder()
                      .from(smartCard.firmwareVersion())
                      .firmwareVersion(firmwareUpdateData.firmwareInfo().firmwareVersion())
+                     .nordicAppVersion(firmwareUpdateData.firmwareInfo().firmwareVersion())
                      .build();
 
-         snappyRepository.saveSmartCard(ImmutableSmartCard.builder()
-               .from(smartCard)
-               .sdkVersion(firmwareUpdateData.firmwareInfo().sdkVersion())
-               .firmwareVersion(firmware)
-               .build());
+         if (!firmwareUpdateData.factoryResetRequired()) {
+            snappyRepository.saveSmartCard(ImmutableSmartCard.builder()
+                  .from(smartCard)
+                  .sdkVersion(firmwareUpdateData.firmwareInfo().sdkVersion())
+                  .firmwareVersion(firmware)
+                  .build());
+         } else {
+            snappyRepository.deleteSmartCard(smartCard.smartCardId());
+            snappyRepository.deleteSmartCardDetails(smartCard.smartCardId());
+            snappyRepository.deleteActiveSmartCardId();
+         }
          //
          if (subscriber.isUnsubscribed()) return;
          subscriber.onNext(null);

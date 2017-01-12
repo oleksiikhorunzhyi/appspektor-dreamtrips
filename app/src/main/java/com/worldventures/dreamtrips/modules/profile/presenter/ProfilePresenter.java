@@ -299,8 +299,12 @@ public abstract class ProfilePresenter<T extends ProfilePresenter.View, U extend
       loadProfile();
    }
 
-   public void onLoadNext() {
-      loadNext(feedItems.get(feedItems.size() - 1).getCreatedAt());
+   public boolean onLoadNext() {
+      if (feedItems != null && feedItems.size() > 0) {
+         loadNext(feedItems.get(feedItems.size() - 1).getCreatedAt());
+         return true;
+      }
+      return false;
    }
 
    public abstract void refreshFeed();

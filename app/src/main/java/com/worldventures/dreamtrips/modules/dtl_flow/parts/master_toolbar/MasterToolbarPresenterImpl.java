@@ -93,18 +93,6 @@ public class MasterToolbarPresenterImpl extends DtlPresenterImpl<MasterToolbarSc
       connectMerchants();
       connectLocationDelegateNoFallback();
       connectToolbarLocationSearchInput();
-
-      connectFilterToggle();
-   }
-
-   private void connectFilterToggle() {
-      filterDataInteractor.filterDataPipe()
-            .observeSuccessWithReplay()
-            .take(1)
-            .compose(bindViewIoToMainComposer())
-            .map(FilterDataAction::getResult)
-            .map(FilterData::isOffersOnly)
-            .subscribe(getView()::toggleOffersOnly);
    }
 
    private void connectFilterDataChanges() {

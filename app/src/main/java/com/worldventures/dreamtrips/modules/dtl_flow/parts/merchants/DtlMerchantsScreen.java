@@ -16,8 +16,6 @@ public interface DtlMerchantsScreen extends DtlScreen {
 
    void setRefreshedItems(List<ThinMerchant> merchants);
 
-   void toggleOffersOnly(boolean enabled);
-
    void setFilterButtonState(boolean isDefault);
 
    void showEmpty(boolean isShow);

@@ -51,7 +51,7 @@ public abstract class FilterData {
 
    @Value.Default
    public boolean isOffersOnly() {
-      return true;
+      return false;
    }
 
    @Value @Nullable

@@ -26,7 +26,6 @@
    <string name="trips">DreamTrips</string>
    <string name="drawer_open">Menú abierto</string>
    <string name="drawer_close">Menú cerrado</string>
-   <string name="empty" translatable="false"></string>
    <string name="logout_dialog_title">Cerrar sesión</string>
    <string name="logout_dialog_message">¿Estás seguro de que deseas cerrar sesión?</string>
    <string name="logout_dialog_positive_btn">Cerrar sesión</string>
@@ -127,6 +126,10 @@
    <string name="bucket_list_create_message">Actualmente no tienes elementos en la lista de pendientes. Puedes elegir entre elementos populares de la lista de pendientes o crear tus propios objetivos</string>
    <string name="bucket_list_choose">Elegir entre elementos populares</string>
    <string name="bucket_list_create_new">Crear mi propia lista</string>
+   <string name="bucket_list_action_create_error">No se pudo agregar el elemento de la Lista de deseos</string>
+   <string name="bucket_list_action_update_error">No se pudo actualizar el elemento de la Lista de deseos</string>
+   <string name="bucket_list_action_change_order_error">No se pudo cambiar el elemento de la Lista de deseos</string>
+   <string name="bucket_list_action_delete_error">No se pudo eliminar el elemento de la Lista de deseos</string>
    <string name="bucket_hint_title">Título</string>
    <string name="bucket_hint_description">Descripción</string>
    <string name="bucket_hint_description_text">Escribe tu descripción aquí</string>
@@ -171,7 +174,9 @@
    <string name="training_videos">Videos de capacitación</string>
    <string name="error_while_sync">Algo fue mal</string>
    <string name="can_not_like_photo">No te puede gustar la foto</string>
+   <string name="like">%1$d me gusta</string>
    <string name="likes">%1$d me gusta</string>
+   <string name="comment_single">%1$d comentario</string>
    <string name="comments">%1$d comentarios</string>
    <string name="wrong_image">Imagen equivocada</string>
    <string name="could_not_load">No se pudo cargar </string>
@@ -392,6 +397,7 @@
    <string name="photo_delete">Borrar foto</string>
    <string name="photo_edit">Editar foto</string>
    <string name="photo_delete_caption">¿Estás seguro de que deseas borrar esta foto?</string>
+   <string name="photo_edit_error">No se pudo editar la foto</string>
 
    <string name="bucket_delete">Borrar elemento pendiente</string>
    <string name="bucket_edit">Editar elemento pendiente</string>
@@ -487,6 +493,12 @@
    <string name="feedback_has_been_sent">Se enviaron tus comentarios. Gracias</string>
    <string name="feedback_send_btn">Enviar</string>
    <string name="feedback_select_category">Eligir categoría</string>
+   <string name="feedback_add_photos">Agregar fotos</string>
+   <string name="feedback_could_not_load_attachment">No se pudo cargar el archivo adjunto</string>
+   <string name="feedback_attachment_failed_item_retry">Volver a intentarlo</string>
+   <string name="feedback_attachment_failed_item_remove">Eliminar</string>
+   <string name="feedback_fullscreen_attachments_format">%1$d de %2$d</string>
+   <string name="feedback_fullscreen_attachments_remove">Eliminar</string>
 
    <string name="years_ago">%1$d años atrás</string>
    <string name="invitation_template">Seleccionar plantilla</string>
@@ -585,7 +597,24 @@
    <string name="error_fail_to_load_videos">No se pudo cargar vídeos</string>
    <string name="error_fail_to_like_item">Error al marcar “me gusta”</string>
    <string name="error_fail_to_unlike_item">Error al quitar la merca de “me gusta” </string>
+   <string name="error_fail_to_load_documents">No se pudieron cargar los documentos </string>
    <string name="tag_people">Etiqueta personas</string>
+
+   <string name="uploading_post_status_progress_singular">Subiendo Foto …</string>
+   <string name="uploading_post_status_progress_plural">Subiendo %1$d fotos …</string>
+   <string name="uploading_post_status_paused">Carga pausada</string>
+   <string name="uploading_post_status_waiting">Esperando</string>
+   <string name="uploading_post_status_failed_connection">Conexión perdida</string>
+   <string name="uploading_post_status_uploaded">¡Publicación cargada correctamente!</string>
+   <string name="uploading_post_time_left_posting">Publicando…</string>
+   <string name="uploading_post_time_time_left">salió</string>
+   <string name="uploading_post_time_left_seconds">s</string>
+   <string name="uploading_post_time_left_minutes">m</string>
+   <string name="uploading_post_time_left_hours">h</string>
+   <string name="uploading_post_time_left_more_than_one_day">Más de 1 día …</string>
+   <string name="uploading_post_cancel_upload_message">¿Cancelar la carga?</string>
+   <string name="uploading_post_cancel_upload_positive_button">Sí</string>
+   <string name="uploading_post_cancel_upload_negative_button">No</string>
 
    <string name="say_something">Dile algo al mundo</string>
 
@@ -654,9 +683,16 @@
 
    <string name="error_fail_to_load_filters">Lo sentimos, error al cargar los filtros</string>
    <string name="flag_content_message">El personal de WorldVentures recibirá una notificación para revisar este contenido por </string>
+   <string name="try_again">Intentarlo de nuevo</string>
 
-   <!-- change this later after approval from WV -->
    <string name="offline_warning_dialog_title">No hay conexión a internet</string>
    <string name="offline_warning_dialog_message">Tu acceso será limitado</string>
+   <string name="offline_indicator_description">No hay conexión a internet</string>
 
+   <string name="merchant_message_text" formatted="false">¡Felicidades! Has ganado %1$s DreamTrips points @%2$s, %3$s</string>
+
+   <string name="beta_label">Beta</string>
+
+   <string name="documents">Documentos</string>
+   <string name="documents_empty_text">No se pudieron cargar los documentos en este momento.</string>
 </resources>

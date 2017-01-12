@@ -24,7 +24,8 @@ import static com.worldventures.dreamtrips.wallet.util.SCFirmwareUtils.newFirmwa
 public class PreInstallationCheckCommand extends Command<PreInstallationCheckCommand.Checks> implements InjectableAction {
 
    private final static int MIN_BATTERY_LEVEL = 50;
-   private final static int SUPPORTED_CHARGER_ACTION_VERSION_FW = 1052;
+
+   public final static int SUPPORTED_CHARGER_ACTION_VERSION_FW = 1052;
 
    @Inject @Named(JanetModule.JANET_WALLET) Janet janet;
    @Inject WalletBluetoothService bluetoothService;

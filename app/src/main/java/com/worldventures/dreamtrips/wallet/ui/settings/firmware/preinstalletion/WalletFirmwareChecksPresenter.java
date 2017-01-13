@@ -4,29 +4,25 @@ import android.content.Context;
 import android.os.Parcelable;
 
 import com.techery.spares.module.Injector;
-import com.worldventures.dreamtrips.api.smart_card.firmware.model.FirmwareInfo;
 import com.worldventures.dreamtrips.core.utils.tracksystem.AnalyticsInteractor;
 import com.worldventures.dreamtrips.wallet.analytics.UpdateChecksVisitAction;
 import com.worldventures.dreamtrips.wallet.analytics.UpdateInstallAction;
 import com.worldventures.dreamtrips.wallet.analytics.UpdateInstallLaterAction;
 import com.worldventures.dreamtrips.wallet.analytics.WalletAnalyticsCommand;
-import com.worldventures.dreamtrips.wallet.domain.entity.FirmwareUpdateData;
-import com.worldventures.dreamtrips.wallet.domain.entity.ImmutableFirmwareUpdateData;
-import com.worldventures.dreamtrips.wallet.domain.entity.SmartCard;
 import com.worldventures.dreamtrips.wallet.service.FirmwareInteractor;
 import com.worldventures.dreamtrips.wallet.service.SmartCardInteractor;
 import com.worldventures.dreamtrips.wallet.service.WalletBluetoothService;
 import com.worldventures.dreamtrips.wallet.service.command.firmware.PreInstallationCheckCommand;
+import com.worldventures.dreamtrips.wallet.service.firmware.SCFirmwareFacade;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletPresenter;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.WalletScreen;
 import com.worldventures.dreamtrips.wallet.ui.common.navigation.Navigator;
 import com.worldventures.dreamtrips.wallet.ui.settings.firmware.install.WalletInstallFirmwarePath;
 
-import java.io.File;
-
 import javax.inject.Inject;
 
 import rx.Observable;
+import timber.log.Timber;
 
 public class WalletFirmwareChecksPresenter extends WalletPresenter<WalletFirmwareChecksPresenter.Screen, Parcelable> {
 
@@ -34,19 +30,11 @@ public class WalletFirmwareChecksPresenter extends WalletPresenter<WalletFirmwar
    @Inject FirmwareInteractor firmwareInteractor;
    @Inject SmartCardInteractor smartCardInteractor;
    @Inject AnalyticsInteractor analyticsInteractor;
+   @Inject SCFirmwareFacade firmwareFacade;
    @Inject Navigator navigator;
 
-   private final String firmwareFilePath;
-   private final FirmwareInfo firmwareInfo;
-   private final SmartCard smartCard;
-   private final FirmwareUpdateData firmwareUpdateData;
-
-   WalletFirmwareChecksPresenter(SmartCard smartCard, FirmwareUpdateData firmwareUpdateData, Context context, Injector injector, String firmwareFilePath, FirmwareInfo firmwareInfo) {
+   WalletFirmwareChecksPresenter(Context context, Injector injector) {
       super(context, injector);
-      this.firmwareFilePath = firmwareFilePath;
-      this.firmwareInfo = firmwareInfo;
-      this.smartCard = smartCard;
-      this.firmwareUpdateData = firmwareUpdateData;
    }
 
    @Override
@@ -59,15 +47,19 @@ public class WalletFirmwareChecksPresenter extends WalletPresenter<WalletFirmwar
    public void onAttachedToWindow() {
       super.onAttachedToWindow();
 
-      WalletAnalyticsCommand analyticsCommand = new WalletAnalyticsCommand(smartCard, new UpdateChecksVisitAction());
-      analyticsInteractor.walletAnalyticsCommandPipe().send(analyticsCommand);
+      firmwareFacade.takeFirmwareInfo()
+            .compose(bindView())
+            .subscribe(firmwareUpdateData -> analyticsInteractor.walletAnalyticsCommandPipe()
+                        .send(new WalletAnalyticsCommand(new UpdateChecksVisitAction(firmwareUpdateData.smartCardId()))),
+                  throwable -> Timber.e(throwable, ""));
    }
 
    private void observeChecks() {
       firmwareInteractor.preInstallationCheckPipe()
             .observeSuccess()
             .compose(bindViewIoToMainComposer())
-            .subscribe(command -> bind(command.getResult()), throwable -> {});
+            .subscribe(command -> bind(command.getResult()), throwable -> {
+            });
 
       Observable.combineLatest(
             bluetoothService.observeEnablesState(),
@@ -75,30 +67,26 @@ public class WalletFirmwareChecksPresenter extends WalletPresenter<WalletFirmwar
                   .observeSuccess().map(cardInChargerEvent -> null), (aBoolean, cardInChargerEvent) -> null)
             .compose(bindView())
             .subscribe(aVoid -> firmwareInteractor
-                  .preInstallationCheckPipe().send(new PreInstallationCheckCommand(smartCard, firmwareInfo)), throwable -> {});
+                  .preInstallationCheckPipe()
+                  .send(new PreInstallationCheckCommand()), throwable -> Timber.e(throwable, ""));
       firmwareInteractor
-            .preInstallationCheckPipe().send(new PreInstallationCheckCommand(smartCard, firmwareInfo));
+            .preInstallationCheckPipe().send(new PreInstallationCheckCommand());
    }
 
    void installLater() {
+      firmwareFacade.takeFirmwareInfo()
+            .compose(bindView())
+            .subscribe(firmwareUpdateData -> analyticsInteractor.walletAnalyticsCommandPipe()
+                  .send(new WalletAnalyticsCommand(new UpdateInstallLaterAction(firmwareUpdateData.smartCardId()))));
       goBack();
-
-      WalletAnalyticsCommand analyticsCommand = new WalletAnalyticsCommand(smartCard, new UpdateInstallLaterAction());
-      analyticsInteractor.walletAnalyticsCommandPipe().send(analyticsCommand);
    }
 
    void install() {
-      WalletAnalyticsCommand analyticsCommand = new WalletAnalyticsCommand(smartCard, new UpdateInstallAction());
-      analyticsInteractor.walletAnalyticsCommandPipe().send(analyticsCommand);
-
-      navigator.go(new WalletInstallFirmwarePath(smartCard,
-            ImmutableFirmwareUpdateData.builder()
-                  .from(firmwareUpdateData)
-                  .firmwareInfo(firmwareInfo)
-                  .firmwareFile(new File(firmwareFilePath))
-                  .updateAvailable(true)
-                  .build())
-      );
+      firmwareFacade.takeFirmwareInfo()
+            .compose(bindView())
+            .subscribe(firmwareUpdateData -> analyticsInteractor.walletAnalyticsCommandPipe()
+                  .send(new WalletAnalyticsCommand(new UpdateInstallAction(firmwareUpdateData.smartCardId()))));
+      navigator.go(new WalletInstallFirmwarePath());
    }
 
    void goBack() {

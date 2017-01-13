@@ -6,11 +6,11 @@ import io.techery.janet.ActionPipe;
 import io.techery.janet.Janet;
 import rx.schedulers.Schedulers;
 
-public class FactoryResetManager {
+public class FactoryResetInteractor {
 
    private final ActionPipe<FactoryResetCommand> factoryResetCommandActionPipe;
 
-   public FactoryResetManager(Janet walletJanetInstance) {
+   public FactoryResetInteractor(Janet walletJanetInstance) {
       factoryResetCommandActionPipe = walletJanetInstance.createPipe(FactoryResetCommand.class, Schedulers.io());
    }
 

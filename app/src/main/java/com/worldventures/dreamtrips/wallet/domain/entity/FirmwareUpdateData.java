@@ -17,6 +17,10 @@ public abstract class FirmwareUpdateData implements Serializable {
 
    public abstract boolean factoryResetRequired();
 
+   public abstract String smartCardId();
+
+   public abstract SmartCardFirmware currentFirmwareVersion();
+
    @Nullable
    public abstract FirmwareInfo firmwareInfo();
 

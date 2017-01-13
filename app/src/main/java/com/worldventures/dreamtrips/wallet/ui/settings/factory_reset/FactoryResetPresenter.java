@@ -4,7 +4,7 @@ import android.content.Context;
 import android.os.Parcelable;
 
 import com.techery.spares.module.Injector;
-import com.worldventures.dreamtrips.wallet.service.FactoryResetManager;
+import com.worldventures.dreamtrips.wallet.service.FactoryResetInteractor;
 import com.worldventures.dreamtrips.wallet.service.command.FactoryResetCommand;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletPresenter;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.WalletScreen;
@@ -17,7 +17,7 @@ import javax.inject.Inject;
 
 public class FactoryResetPresenter extends WalletPresenter<FactoryResetPresenter.Screen, Parcelable> {
 
-   @Inject FactoryResetManager factoryResetManager;
+   @Inject FactoryResetInteractor factoryResetInteractor;
    @Inject Navigator navigator;
 
    public FactoryResetPresenter(Context context, Injector injector) {
@@ -31,7 +31,7 @@ public class FactoryResetPresenter extends WalletPresenter<FactoryResetPresenter
    }
 
    private void resetSmartCard() {
-      factoryResetManager.factoryResetCommandActionPipe()
+      factoryResetInteractor.factoryResetCommandActionPipe()
             .observe()
             .compose(bindViewIoToMainComposer())
             .subscribe(OperationActionStateSubscriberWrapper.<FactoryResetCommand>forView(getView().provideOperationDelegate())
@@ -40,7 +40,7 @@ public class FactoryResetPresenter extends WalletPresenter<FactoryResetPresenter
                   .wrap()
             );
 
-      factoryResetManager.factoryResetCommandActionPipe().send(new FactoryResetCommand(true));
+      factoryResetInteractor.factoryResetCommandActionPipe().send(new FactoryResetCommand(true));
    }
 
    public void goBack() {

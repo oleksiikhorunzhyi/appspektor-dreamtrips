@@ -1,8 +1,4 @@
-package com.worldventures.dreamtrips.wallet.delegate;
-
-
-import android.support.annotation.Nullable;
-import android.text.TextUtils;
+package com.worldventures.dreamtrips.wallet.service.firmware;
 
 import com.worldventures.dreamtrips.wallet.domain.entity.FirmwareUpdateData;
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCard;
@@ -10,13 +6,15 @@ import com.worldventures.dreamtrips.wallet.service.FirmwareInteractor;
 import com.worldventures.dreamtrips.wallet.service.SmartCardInteractor;
 import com.worldventures.dreamtrips.wallet.service.command.http.FetchFirmwareInfoCommand;
 
+import io.techery.janet.ActionPipe;
 import io.techery.janet.Command;
 import rx.Observable;
 import timber.log.Timber;
 
 import static com.worldventures.dreamtrips.wallet.domain.entity.SmartCard.ConnectionStatus.CONNECTED;
 
-public class FirmwareDelegate {
+@Deprecated
+class FirmwareDelegate {
 
    private static final String SDK_FIRMWARE_VERSION_IF_NOT_PRESENT = "1.0.0";
 
@@ -28,7 +26,7 @@ public class FirmwareDelegate {
       this.firmwareInteractor = firmwareInteractor;
    }
 
-   public void fetchFirmwareInfo(@Nullable Observable.Transformer<SmartCard, SmartCard> viewLifecycle) {
+   void fetchFirmwareInfo() {
       Observable<SmartCard> observable = smartCardInteractor
             .activeSmartCardPipe()
             .observeSuccessWithReplay()
@@ -36,28 +34,23 @@ public class FirmwareDelegate {
             .filter(smartCard -> smartCard.connectionStatus() == CONNECTED)
             .filter(smartCard -> smartCard.firmwareVersion() != null)
             .take(1);
-
-      if (viewLifecycle != null) observable = observable.compose(viewLifecycle);
-
       observable.subscribe(this::fetchFirmwareInfo, throwable -> Timber.e(throwable, "Error while loading smartcard"));
    }
 
-   public void fetchFirmwareInfo(SmartCard smartCard) {
-      // in very first time user doesn't have installed firmware version, because this information are received only a from server.
-      // so there was a decision to use a version of nordicApp firmware instead for performing request to check if there is a
-      // new available update for a smart card in the server.
+   private void fetchFirmwareInfo(SmartCard smartCard) {
       if (smartCard.firmwareVersion() == null) return;
-      String firmwareVersion = TextUtils.isEmpty(smartCard.firmwareVersion().firmwareVersion()) ?
-            smartCard.firmwareVersion().nordicAppVersion() : smartCard.firmwareVersion().firmwareVersion();
-      String sdkVersion = TextUtils.isEmpty(smartCard.sdkVersion()) ? SDK_FIRMWARE_VERSION_IF_NOT_PRESENT : smartCard
+      String sdkVersion = smartCard.sdkVersion().isEmpty() ? SDK_FIRMWARE_VERSION_IF_NOT_PRESENT : smartCard
             .sdkVersion();
-      firmwareInteractor.firmwareInfoPipe().send(new FetchFirmwareInfoCommand(sdkVersion, firmwareVersion));
+      firmwareInteractor.firmwareInfoPipe().send(new FetchFirmwareInfoCommand(smartCard.smartCardId(), sdkVersion, smartCard.firmwareVersion()));
    }
 
-   public Observable<FirmwareUpdateData> observeFirmwareInfo() {
+   Observable<FirmwareUpdateData> observeFirmwareInfo() {
       return firmwareInteractor.firmwareInfoPipe()
             .observeSuccess()
             .map(Command::getResult);
    }
 
+   ActionPipe<FetchFirmwareInfoCommand> fetchFirmwareInfoPipe() {
+      return firmwareInteractor.firmwareInfoPipe();
+   }
 }

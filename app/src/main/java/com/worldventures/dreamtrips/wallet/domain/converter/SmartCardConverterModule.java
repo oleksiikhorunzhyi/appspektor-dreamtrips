@@ -44,11 +44,6 @@ public class SmartCardConverterModule {
    }
 
    @Provides(type = Provides.Type.SET)
-   Converter provideFirmwareRepsonseToFirmwareConverter() {
-      return new FirmwareResponseToFirmwareDataConverter();
-   }
-
-   @Provides(type = Provides.Type.SET)
    Converter provideSmartCardUserToUserConverter() {
       return new SmartCardUserToUserConverter();
    }

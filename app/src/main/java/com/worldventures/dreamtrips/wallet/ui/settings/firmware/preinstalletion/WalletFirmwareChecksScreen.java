@@ -38,16 +38,13 @@ public class WalletFirmwareChecksScreen extends WalletLinearLayout<WalletFirmwar
    @NonNull
    @Override
    public WalletFirmwareChecksPresenter createPresenter() {
-      return new WalletFirmwareChecksPresenter(getPath().smartCard, getPath().firmwareUpdateData, getContext(), getInjector(), getPath().firmwareFilePath, getPath().firmwareInfo);
+      return new WalletFirmwareChecksPresenter(getContext(), getInjector());
    }
 
    @Override
    protected void onFinishInflate() {
       super.onFinishInflate();
       toolbar.setNavigationOnClickListener(view -> presenter.goBack());
-      if (getPath().smartCard == null) {
-         tvInstallLater.setVisibility(INVISIBLE);
-      }
    }
 
    @OnClick(R.id.install_later)

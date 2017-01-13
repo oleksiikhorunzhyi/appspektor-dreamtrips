@@ -44,7 +44,7 @@ public class ForceUpdatePowerOnScreen extends WalletLinearLayout<ForceUpdatePowe
    @NonNull
    @Override
    public ForceUpdatePowerOnPresenter createPresenter() {
-      return new ForceUpdatePowerOnPresenter(getPath().smartCard(), getPath().firmwareUpdateData(), getContext(), getInjector());
+      return new ForceUpdatePowerOnPresenter(getContext(), getInjector());
    }
 
    @Override

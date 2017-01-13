@@ -9,10 +9,9 @@ import com.worldventures.dreamtrips.wallet.analytics.InstallingUpdateAction;
 import com.worldventures.dreamtrips.wallet.analytics.RetryInstallUpdateAction;
 import com.worldventures.dreamtrips.wallet.analytics.WalletAnalyticsCommand;
 import com.worldventures.dreamtrips.wallet.domain.entity.FirmwareUpdateData;
-import com.worldventures.dreamtrips.wallet.domain.entity.SmartCard;
 import com.worldventures.dreamtrips.wallet.service.FirmwareInteractor;
-import com.worldventures.dreamtrips.wallet.service.SmartCardInteractor;
 import com.worldventures.dreamtrips.wallet.service.command.firmware.InstallFirmwareCommand;
+import com.worldventures.dreamtrips.wallet.service.firmware.SCFirmwareFacade;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletPresenter;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.OperationScreen;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.WalletScreen;
@@ -26,23 +25,17 @@ import javax.inject.Inject;
 
 import flow.Flow;
 import flow.History;
-import io.techery.janet.Command;
+import timber.log.Timber;
 
 public class WalletInstallFirmwarePresenter extends WalletPresenter<WalletInstallFirmwarePresenter.Screen, WalletInstallFirmwareState> {
 
    @Inject FirmwareInteractor firmwareInteractor;
-   @Inject SmartCardInteractor smartCardInteractor;
    @Inject AnalyticsInteractor analyticsInteractor;
-
+   @Inject SCFirmwareFacade firmwareFacade;
    @Inject Navigator navigator;
 
-   private final FirmwareUpdateData firmwareData;
-   private final SmartCard smartCard;
-
-   public WalletInstallFirmwarePresenter(SmartCard smartCard, Context context, Injector injector, FirmwareUpdateData firmwareData) {
+   public WalletInstallFirmwarePresenter(Context context, Injector injector) {
       super(context, injector);
-      this.smartCard = smartCard;
-      this.firmwareData = firmwareData;
    }
 
    @Override
@@ -68,8 +61,11 @@ public class WalletInstallFirmwarePresenter extends WalletPresenter<WalletInstal
    }
 
    private void sendAnalyticEvent() {
-      WalletAnalyticsCommand analyticsCommand = new WalletAnalyticsCommand(smartCard, new InstallingUpdateAction());
-      analyticsInteractor.walletAnalyticsCommandPipe().send(analyticsCommand);
+      firmwareFacade.takeFirmwareInfo()
+            .compose(bindView())
+            .subscribe(firmwareUpdateData -> analyticsInteractor.walletAnalyticsCommandPipe()
+                        .send(new WalletAnalyticsCommand(new InstallingUpdateAction(firmwareUpdateData.smartCardId()))),
+                  throwable -> Timber.e(throwable, ""));
    }
 
    @Override
@@ -80,7 +76,7 @@ public class WalletInstallFirmwarePresenter extends WalletPresenter<WalletInstal
    protected void install() {
       getView().showProgress(null);
       getView().showInstallingStatus(0, InstallFirmwareCommand.INSTALL_FIRMWARE_TOTAL_STEPS, 0);
-      firmwareInteractor.installFirmwarePipe().send(new InstallFirmwareCommand(smartCard, firmwareData));
+      firmwareInteractor.installFirmwarePipe().send(new InstallFirmwareCommand());
    }
 
    private void openSuccess() {
@@ -101,26 +97,21 @@ public class WalletInstallFirmwarePresenter extends WalletPresenter<WalletInstal
    }
 
    private void sendRetryAnalyticAction(boolean retry) {
-      if (smartCard == null) {
-         smartCardInteractor.activeSmartCardPipe()
-               .observeSuccessWithReplay()
-               .take(1)
-               .map(Command::getResult)
-               .subscribe(smartcard -> {
-                  executeCombinedDataAndSendAnalytics(smartcard, retry);
-               });
-      } else {
-         executeCombinedDataAndSendAnalytics(this.smartCard, retry);
-      }
+      firmwareFacade.takeFirmwareInfo()
+            .compose(bindView())
+            .subscribe(firmwareUpdateData -> executeCombinedDataAndSendAnalytics(firmwareUpdateData, retry),
+                  throwable -> Timber.e(throwable, ""));
    }
 
-   private void executeCombinedDataAndSendAnalytics(SmartCard smartcard, boolean retry) {
-      RetryInstallUpdateAction retryInstallUpdateAction = new RetryInstallUpdateAction(smartcard.firmwareVersion()
-            .firmwareVersion(), firmwareData
-            .firmwareInfo()
-            .firmwareVersion(), retry);
-      WalletAnalyticsCommand analyticsCommand = new WalletAnalyticsCommand(smartcard, retryInstallUpdateAction);
-      analyticsInteractor.walletAnalyticsCommandPipe().send(analyticsCommand);
+   private void executeCombinedDataAndSendAnalytics(FirmwareUpdateData firmwareUpdateData, boolean retry) {
+      final RetryInstallUpdateAction retryInstallUpdateAction = new RetryInstallUpdateAction(
+            firmwareUpdateData.smartCardId(),
+            firmwareUpdateData.currentFirmwareVersion().firmwareVersion(),
+            firmwareUpdateData.firmwareInfo().firmwareVersion(),
+            retry);
+
+      analyticsInteractor.walletAnalyticsCommandPipe()
+            .send(new WalletAnalyticsCommand(retryInstallUpdateAction));
    }
 
    public interface Screen extends WalletScreen, OperationScreen {

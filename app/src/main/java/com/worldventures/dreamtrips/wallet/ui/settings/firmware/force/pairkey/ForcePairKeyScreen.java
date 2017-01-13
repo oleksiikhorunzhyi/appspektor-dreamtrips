@@ -37,7 +37,7 @@ public class ForcePairKeyScreen extends WalletLinearLayout<ForcePairKeyPresenter
    @NonNull
    @Override
    public ForcePairKeyPresenter createPresenter() {
-      return new ForcePairKeyPresenter(getPath().smartCard(), getPath().firmwareUpdateData(), getContext(), getInjector());
+      return new ForcePairKeyPresenter(getContext(), getInjector());
    }
 
    @Override

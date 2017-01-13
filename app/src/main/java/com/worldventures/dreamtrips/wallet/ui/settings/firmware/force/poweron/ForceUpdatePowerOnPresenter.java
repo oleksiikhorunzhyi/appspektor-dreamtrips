@@ -5,8 +5,6 @@ import android.os.Parcelable;
 import android.view.View;
 
 import com.techery.spares.module.Injector;
-import com.worldventures.dreamtrips.wallet.domain.entity.FirmwareUpdateData;
-import com.worldventures.dreamtrips.wallet.domain.entity.SmartCard;
 import com.worldventures.dreamtrips.wallet.service.WalletBluetoothService;
 import com.worldventures.dreamtrips.wallet.service.WalletNetworkService;
 import com.worldventures.dreamtrips.wallet.service.WizardInteractor;
@@ -20,6 +18,7 @@ import javax.inject.Inject;
 
 import io.techery.janet.helper.ActionStateSubscriber;
 import rx.Observable;
+import timber.log.Timber;
 
 public class ForceUpdatePowerOnPresenter extends WalletPresenter<ForceUpdatePowerOnPresenter.Screen, Parcelable> {
 
@@ -29,13 +28,8 @@ public class ForceUpdatePowerOnPresenter extends WalletPresenter<ForceUpdatePowe
    @Inject WalletBluetoothService bluetoothService;
    @Inject WalletNetworkService networkService;
 
-   private final SmartCard smartCard;
-   private final FirmwareUpdateData firmwareUpdateData;
-
-   public ForceUpdatePowerOnPresenter(SmartCard smartCard, FirmwareUpdateData firmwareUpdateData, Context context, Injector injector) {
+   public ForceUpdatePowerOnPresenter(Context context, Injector injector) {
       super(context, injector);
-      this.smartCard = smartCard;
-      this.firmwareUpdateData = firmwareUpdateData;
    }
 
    @Override
@@ -48,7 +42,8 @@ public class ForceUpdatePowerOnPresenter extends WalletPresenter<ForceUpdatePowe
    private void observeBluetoothAndNetwork() {
       Observable.merge(bluetoothService.observeEnablesState(), networkService.observeConnectedState())
             .compose(bindViewIoToMainComposer())
-            .subscribe(b -> wizardInteractor.checksPipe().send(new WizardCheckCommand()));
+            .subscribe(b -> wizardInteractor.checksPipe()
+                  .send(new WizardCheckCommand()), throwable -> Timber.e(throwable, ""));
    }
 
    private void observeChecks() {
@@ -66,7 +61,7 @@ public class ForceUpdatePowerOnPresenter extends WalletPresenter<ForceUpdatePowe
    }
 
    public void openPairCardScreen() {
-      navigator.single(new ForcePairKeyPath(smartCard, firmwareUpdateData));
+      navigator.single(new ForcePairKeyPath());
    }
 
    public void onBack() {

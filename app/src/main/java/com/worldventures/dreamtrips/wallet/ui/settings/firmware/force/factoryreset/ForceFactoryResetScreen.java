@@ -32,7 +32,7 @@ public class ForceFactoryResetScreen extends WalletLinearLayout<ForceFactoryRese
    @NonNull
    @Override
    public ForceFactoryResetPresenter createPresenter() {
-      return new ForceFactoryResetPresenter(getPath().smartCard(), getPath().firmwareUpdateData(), getContext(), getInjector());
+      return new ForceFactoryResetPresenter(getContext(), getInjector());
    }
 
    @Override

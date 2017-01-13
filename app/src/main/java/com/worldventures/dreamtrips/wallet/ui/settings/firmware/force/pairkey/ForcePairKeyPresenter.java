@@ -7,8 +7,6 @@ import android.support.annotation.StringRes;
 import com.techery.spares.module.Injector;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.janet.composer.ActionPipeCacheWiper;
-import com.worldventures.dreamtrips.wallet.domain.entity.FirmwareUpdateData;
-import com.worldventures.dreamtrips.wallet.domain.entity.SmartCard;
 import com.worldventures.dreamtrips.wallet.service.WizardInteractor;
 import com.worldventures.dreamtrips.wallet.service.command.CreateAndConnectToCardCommand;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletPresenter;
@@ -18,7 +16,6 @@ import com.worldventures.dreamtrips.wallet.ui.common.helper.OperationActionState
 import com.worldventures.dreamtrips.wallet.ui.common.navigation.Navigator;
 import com.worldventures.dreamtrips.wallet.ui.settings.firmware.newavailable.WalletNewFirmwareAvailablePath;
 import com.worldventures.dreamtrips.wallet.util.SmartCardConnectException;
-import com.worldventures.dreamtrips.wallet.util.WalletValidateHelper;
 
 import javax.inject.Inject;
 
@@ -27,13 +24,8 @@ public class ForcePairKeyPresenter extends WalletPresenter<ForcePairKeyPresenter
    @Inject Navigator navigator;
    @Inject WizardInteractor wizardInteractor;
 
-   private final SmartCard smartCard;
-   private final FirmwareUpdateData firmwareUpdateData;
-
-   public ForcePairKeyPresenter(SmartCard smartCard, FirmwareUpdateData firmwareUpdateData, Context context, Injector injector) {
+   public ForcePairKeyPresenter(Context context, Injector injector) {
       super(context, injector);
-      this.smartCard = smartCard;
-      this.firmwareUpdateData = firmwareUpdateData;
    }
 
    @Override
@@ -56,23 +48,12 @@ public class ForcePairKeyPresenter extends WalletPresenter<ForcePairKeyPresenter
                   .wrap());
    }
 
-   private void smartCardConnected() {
-      if (checkBarcode(smartCard.smartCardId())) {
-         navigator.withoutLast(new WalletNewFirmwareAvailablePath(smartCard, firmwareUpdateData));
-      }
-   }
-
-   public void tryToPairAndConnectSmartCard() {
+   void tryToPairAndConnectSmartCard() {
       wizardInteractor.createAndConnectActionPipe().send(new CreateAndConnectToCardCommand());
    }
 
-   private boolean checkBarcode(String barcode) {
-      if (!WalletValidateHelper.validateSCId(barcode)) {
-         getView().showError(R.string.wallet_wizard_bar_code_validation_error);
-         return false;
-      } else {
-         return true;
-      }
+   private void smartCardConnected() {
+      navigator.withoutLast(new WalletNewFirmwareAvailablePath());
    }
 
    public void goBack() {

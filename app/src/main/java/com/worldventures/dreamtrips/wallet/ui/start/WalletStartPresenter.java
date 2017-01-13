@@ -6,8 +6,10 @@ import android.os.Parcelable;
 import com.techery.spares.module.Injector;
 import com.worldventures.dreamtrips.core.session.acl.Feature;
 import com.worldventures.dreamtrips.core.session.acl.FeatureManager;
+import com.worldventures.dreamtrips.wallet.service.FirmwareInteractor;
 import com.worldventures.dreamtrips.wallet.service.SmartCardInteractor;
 import com.worldventures.dreamtrips.wallet.service.command.http.FetchAssociatedSmartCardCommand;
+import com.worldventures.dreamtrips.wallet.service.firmware.command.FetchFirmwareUpdateData;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletPresenter;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.WalletScreen;
 import com.worldventures.dreamtrips.wallet.ui.common.helper.ErrorHandler;
@@ -15,6 +17,7 @@ import com.worldventures.dreamtrips.wallet.ui.common.helper.OperationActionState
 import com.worldventures.dreamtrips.wallet.ui.common.navigation.Navigator;
 import com.worldventures.dreamtrips.wallet.ui.dashboard.CardListPath;
 import com.worldventures.dreamtrips.wallet.ui.provisioning_blocked.WalletProvisioningBlockedPath;
+import com.worldventures.dreamtrips.wallet.ui.settings.firmware.install.WalletInstallFirmwarePath;
 import com.worldventures.dreamtrips.wallet.ui.wizard.welcome.WizardWelcomePath;
 
 import javax.inject.Inject;
@@ -24,6 +27,7 @@ import flow.Flow;
 public class WalletStartPresenter extends WalletPresenter<WalletStartPresenter.Screen, Parcelable> {
 
    @Inject SmartCardInteractor smartCardInteractor;
+   @Inject FirmwareInteractor firmwareInteractor;
    @Inject Navigator navigator;
    @Inject FeatureManager featureManager;
 
@@ -56,6 +60,25 @@ public class WalletStartPresenter extends WalletPresenter<WalletStartPresenter.S
    private void handleResult(FetchAssociatedSmartCardCommand.AssociatedCard associatedCard) {
       if (associatedCard.exist()) {
          navigator.single(new CardListPath(), Flow.Direction.REPLACE);
+      } else {
+         fetchFirmwareUpdateData(associatedCard);
+      }
+   }
+
+   private void fetchFirmwareUpdateData(final FetchAssociatedSmartCardCommand.AssociatedCard associatedCard) {
+      firmwareInteractor.fetchFirmwareUpdateDataPipe()
+            .createObservable(new FetchFirmwareUpdateData())
+            .compose(bindViewIoToMainComposer())
+            .subscribe(OperationActionStateSubscriberWrapper.<FetchFirmwareUpdateData>forView(getView().provideOperationDelegate())
+                  .onSuccess(command -> checkFirmwareUpdateData(command.getResult(), associatedCard))
+                  .onFail(ErrorHandler.create(getContext(), command -> navigator.goBack()))
+                  .wrap()
+            );
+   }
+
+   private void checkFirmwareUpdateData(FetchFirmwareUpdateData.Result result, FetchAssociatedSmartCardCommand.AssociatedCard associatedCard) {
+      if (result.hasUpdate()) {
+         navigator.single(new WalletInstallFirmwarePath(), Flow.Direction.REPLACE);
       } else {
          navigator.single(new WizardWelcomePath(associatedCard.smartCard()), Flow.Direction.REPLACE);
       }

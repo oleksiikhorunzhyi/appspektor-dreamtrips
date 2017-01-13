@@ -1,6 +1,7 @@
 package com.worldventures.dreamtrips.wallet.service.firmware.command;
 
 import com.worldventures.dreamtrips.core.janet.JanetModule;
+import com.worldventures.dreamtrips.core.janet.dagger.InjectableAction;
 import com.worldventures.dreamtrips.wallet.domain.entity.FirmwareUpdateData;
 import com.worldventures.dreamtrips.wallet.service.command.FactoryResetCommand;
 import com.worldventures.dreamtrips.wallet.service.firmware.FirmwareRepository;
@@ -14,7 +15,7 @@ import io.techery.janet.Janet;
 import io.techery.janet.command.annotations.CommandAction;
 
 @CommandAction
-public class PrepareForUpdateCommand extends Command<FirmwareUpdateType> {
+public class PrepareForUpdateCommand extends Command<FirmwareUpdateType> implements InjectableAction {
 
    @Inject @Named(JanetModule.JANET_WALLET) Janet janet;
    @Inject FirmwareRepository firmwareRepository;

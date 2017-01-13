@@ -14,7 +14,7 @@ import rx.Observable;
 public class SCFirmwareFacade {
 
    private final FirmwareInteractor firmwareInteractor;
-   private FirmwareRepository firmwareStorage;
+   private final FirmwareRepository firmwareStorage;
    private final FirmwareDelegate firmwareDelegate;
 
    private final AtomicBoolean resetStarting = new AtomicBoolean(false);
@@ -31,8 +31,9 @@ public class SCFirmwareFacade {
    }
 
    public void prepareForUpdate() {
-      firmwareDelegate.observeFirmwareInfo()
+      takeFirmwareInfo()
             .flatMap(firmwareUpdateData -> {
+               if (resetStarting.get()) return Observable.empty();
                resetStarting.set(true);
                return firmwareInteractor.prepareForUpdatePipe()
                      .createObservable(new PrepareForUpdateCommand(firmwareUpdateData));
@@ -55,7 +56,12 @@ public class SCFirmwareFacade {
    }
 
    public Observable<FirmwareUpdateData> takeFirmwareInfo() {
-      return firmwareDelegate.observeFirmwareInfo().take(1);
+      final FirmwareUpdateData firmwareUpdateData = firmwareStorage.getFirmwareUpdateData();
+      if (firmwareUpdateData != null) {
+         return Observable.fromCallable(() -> firmwareUpdateData);
+      } else {
+         return firmwareDelegate.observeFirmwareInfo(); // todo fetch from server
+      }
    }
 
    private void observeFirmware() {
@@ -63,6 +69,6 @@ public class SCFirmwareFacade {
             .observe()
             .filter(actionState -> actionState.status == ActionState.Status.SUCCESS)
             .map(actionState -> actionState.action.getResult())
-            .subscribe(firmwareUpdateData -> firmwareStorage.setFirmwareUpdateData(firmwareUpdateData));
+            .subscribe(firmwareStorage::setFirmwareUpdateData);
    }
 }

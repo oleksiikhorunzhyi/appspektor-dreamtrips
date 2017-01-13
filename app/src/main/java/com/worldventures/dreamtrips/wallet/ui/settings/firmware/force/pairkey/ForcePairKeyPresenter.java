@@ -9,6 +9,8 @@ import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.janet.composer.ActionPipeCacheWiper;
 import com.worldventures.dreamtrips.wallet.service.WizardInteractor;
 import com.worldventures.dreamtrips.wallet.service.command.CreateAndConnectToCardCommand;
+import com.worldventures.dreamtrips.wallet.service.firmware.SCFirmwareFacade;
+import com.worldventures.dreamtrips.wallet.service.storage.WizardMemoryStorage;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletPresenter;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.WalletScreen;
 import com.worldventures.dreamtrips.wallet.ui.common.helper.ErrorHandler;
@@ -23,6 +25,8 @@ public class ForcePairKeyPresenter extends WalletPresenter<ForcePairKeyPresenter
 
    @Inject Navigator navigator;
    @Inject WizardInteractor wizardInteractor;
+   @Inject SCFirmwareFacade firmwareFacade;
+   @Inject WizardMemoryStorage wizardMemoryStorage;
 
    public ForcePairKeyPresenter(Context context, Injector injector) {
       super(context, injector);
@@ -49,7 +53,15 @@ public class ForcePairKeyPresenter extends WalletPresenter<ForcePairKeyPresenter
    }
 
    void tryToPairAndConnectSmartCard() {
-      wizardInteractor.createAndConnectActionPipe().send(new CreateAndConnectToCardCommand());
+      firmwareFacade
+            .takeFirmwareInfo()
+            .compose(bindView())
+            .subscribe(firmwareUpdateData -> {
+               // TODO: 1/13/17 modify CreateAndConnectToCardCommand and remove next line
+               wizardMemoryStorage.saveBarcode(firmwareUpdateData.smartCardId());
+               wizardInteractor.createAndConnectActionPipe().send(new CreateAndConnectToCardCommand());
+            });
+      ;
    }
 
    private void smartCardConnected() {

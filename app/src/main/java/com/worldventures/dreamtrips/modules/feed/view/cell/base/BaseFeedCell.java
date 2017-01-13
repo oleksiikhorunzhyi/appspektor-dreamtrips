@@ -148,6 +148,8 @@ public abstract class BaseFeedCell<ITEM extends FeedItem, DELEGATE extends BaseF
 
       void onTranslateItem(FeedEntity translatableItem);
 
+      void onShowOriginal(FeedEntity translatableItem);
+
       void onEditPhoto(Photo photo);
 
       void onDeletePhoto(Photo photo);

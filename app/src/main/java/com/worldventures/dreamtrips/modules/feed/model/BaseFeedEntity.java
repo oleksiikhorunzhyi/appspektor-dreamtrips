@@ -11,7 +11,6 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 @DefaultSerializer(CompatibleFieldSerializer.class)
 public abstract class BaseFeedEntity implements FeedEntity {
@@ -104,23 +103,23 @@ public abstract class BaseFeedEntity implements FeedEntity {
    // Translate staff
    ///////////////////////////////////////////////////////////////////////////
 
-   private transient Map<String, String> translationMap;
+   private transient String translation;
    private transient boolean translated;
 
    @Override
-   public Map<String, String> getOriginalText() {
+   public String getOriginalText() {
       return null;
+   }
+
+   @Override
+   public void setTranslation(String translation) {
+      this.translation = translation;
    }
 
    @Nullable
    @Override
-   public Map<String, String> getTranslation() {
-      return translationMap;
-   }
-
-   @Override
-   public void setTranslations(Map<String, String> translationMap) {
-      this.translationMap = translationMap;
+   public String getTranslation() {
+      return translation;
    }
 
    @Override

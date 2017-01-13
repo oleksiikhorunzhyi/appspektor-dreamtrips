@@ -37,6 +37,11 @@ public class FeedItemDetailsPresenter extends FeedDetailsPresenter<FeedItemDetai
       translationDelegate.translate(translatableItem, LocaleHelper.getDefaultLocaleFormatted());
    }
 
+   @Override
+   public void onShowOriginal(FeedEntity translatableItem) {
+      translationDelegate.showOriginal(translatableItem);
+   }
+
    public interface View extends FeedDetailsPresenter.View, TranslationDelegate.View {
 
    }

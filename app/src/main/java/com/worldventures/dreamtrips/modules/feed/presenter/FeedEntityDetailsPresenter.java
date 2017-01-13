@@ -6,7 +6,6 @@ import android.util.Pair;
 import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.modules.common.view.bundle.BucketBundle;
 import com.worldventures.dreamtrips.modules.feed.event.FeedEntityShowEvent;
-import com.worldventures.dreamtrips.modules.feed.model.FeedEntity;
 import com.worldventures.dreamtrips.modules.feed.model.FeedEntityHolder;
 import com.worldventures.dreamtrips.modules.feed.model.FeedItem;
 import com.worldventures.dreamtrips.modules.feed.view.util.FeedEntityContentFragmentFactory;
@@ -36,9 +35,6 @@ public class FeedEntityDetailsPresenter extends FeedDetailsPresenter<FeedEntityD
       }
       view.showDetails(entityData.first, entityData.second);
    }
-
-   @Override
-   public void onTranslateFeedEntity(FeedEntity translatableItem) { }
 
    @Override
    protected void back() {

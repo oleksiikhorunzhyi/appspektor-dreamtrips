@@ -43,6 +43,19 @@ public final class TranslationDelegate<V extends RxView & TranslationDelegate.Vi
             .send(new TranslateUidItemCommand.TranslateFeedEntityCommand(translatableItem, languageTo));
    }
 
+   public void showOriginal(FeedEntity translatableItem) {
+      int size = feedItems.size();
+      for (int i = 0; i < size; i++) {
+         FeedItem feedItem = feedItems.get(i);
+         if (feedItem.getItem().equals(translatableItem)) {
+            translatableItem.setTranslated(false);
+            feedItem.setItem(translatableItem);
+            view.updateItem(feedItem);
+            return;
+         }
+      }
+   }
+
    private void subscribeToPostTranslation() {
       view.bindUntilDropView(translationFeedInteractor.translateFeedEntityPipe()
             .observe()

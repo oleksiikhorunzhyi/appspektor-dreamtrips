@@ -1,6 +1,5 @@
 package com.worldventures.dreamtrips.modules.feed.service.command;
 
-import com.innahema.collections.query.queriables.Queryable;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.api.action.CommandWithError;
 import com.worldventures.dreamtrips.core.janet.dagger.InjectableAction;
@@ -8,15 +7,10 @@ import com.worldventures.dreamtrips.modules.feed.model.FeedEntity;
 import com.worldventures.dreamtrips.modules.feed.model.TranslatableItem;
 import com.worldventures.dreamtrips.modules.feed.model.comment.Comment;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import javax.inject.Inject;
 
 import io.techery.janet.Janet;
 import io.techery.janet.command.annotations.CommandAction;
-import rx.Observable;
 import rx.schedulers.Schedulers;
 
 public abstract class TranslateUidItemCommand<T extends TranslatableItem> extends CommandWithError<T> implements InjectableAction {
@@ -33,20 +27,15 @@ public abstract class TranslateUidItemCommand<T extends TranslatableItem> extend
 
    @Override
    protected void run(CommandCallback<T> callback) throws Throwable {
-      Observable.from(translatableItem.getOriginalText().entrySet())
-            .flatMap(entry -> janet.createPipe(TranslateTextCachedCommand.class, Schedulers.io())
-                  .createObservableResult(new TranslateTextCachedCommand(entry.getValue(), languageTo))
-                  .map(TranslateTextCachedCommand::getResult)
-                  .map(translation -> new TranslationResult(entry.getKey(), translation)))
-            .toList()
+      janet.createPipe(TranslateTextCachedCommand.class, Schedulers.io())
+            .createObservableResult(new TranslateTextCachedCommand(translatableItem.getOriginalText(), languageTo))
+            .map(TranslateTextCachedCommand::getResult)
             .map(this::mapResult)
             .subscribe(callback::onSuccess, callback::onFail);
    }
 
-   private T mapResult(List<TranslationResult> translations) {
-      Map<String, String> map = new HashMap<>();
-      Queryable.from(translations).forEachR(result -> map.put(result.key, result.translation));
-      translatableItem.setTranslations(map);
+   private T mapResult(String translation) {
+      translatableItem.setTranslation(translation);
       translatableItem.setTranslated(true);
       return translatableItem;
    }
@@ -67,16 +56,6 @@ public abstract class TranslateUidItemCommand<T extends TranslatableItem> extend
    public static class TranslateCommentCommand extends TranslateUidItemCommand<Comment> {
       public TranslateCommentCommand(Comment translatableItem, String languageTo) {
          super(translatableItem, languageTo);
-      }
-   }
-
-   private static class TranslationResult {
-      private String key;
-      private String translation;
-
-      public TranslationResult(String key, String translation) {
-         this.key = key;
-         this.translation = translation;
       }
    }
 

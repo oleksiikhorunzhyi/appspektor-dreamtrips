@@ -14,6 +14,7 @@
    <!-- typical sizes for icons views -->
    <dimen name="size_huge">72dp</dimen>
    <dimen name="size_large">64dp</dimen>
+   <dimen name="size_normal">32dp</dimen>
    <dimen name="size_small">24dp</dimen>
 
    <!-- typical spacing between views -->

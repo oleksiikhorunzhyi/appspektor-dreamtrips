@@ -20,6 +20,7 @@ import com.worldventures.dreamtrips.modules.bucketlist.service.command.GetCatego
 import com.worldventures.dreamtrips.modules.bucketlist.service.command.GetPopularBucketItemSuggestionsCommand;
 import com.worldventures.dreamtrips.modules.bucketlist.service.command.GetPopularBucketItemsCommand;
 import com.worldventures.dreamtrips.modules.bucketlist.service.command.MergeBucketItemPhotosWithStorageCommand;
+import com.worldventures.dreamtrips.modules.bucketlist.service.command.TranslateBucketItemCommand;
 import com.worldventures.dreamtrips.modules.common.api.janet.command.AcceptTermsCommand;
 import com.worldventures.dreamtrips.modules.common.api.janet.command.ClearStoragesCommand;
 import com.worldventures.dreamtrips.modules.common.api.janet.command.GetCirclesCommand;
@@ -225,5 +226,6 @@ import dagger.Module;
       CheckTripsByUidCommand.class,
       GetDocumentsCommand.class,
       TranslatePhotoCommand.class,
+      TranslateBucketItemCommand.class,
 }, complete = false, library = true)
 public class SocialJanetCommandModule {}

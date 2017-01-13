@@ -15,7 +15,6 @@ import java.util.List;
 
 @DefaultSerializer(CompatibleFieldSerializer.class)
 public class BucketItem extends BaseFeedEntity {
-
    public static final String NEW = "new";
    public static final String COMPLETED = "completed";
 
@@ -35,6 +34,7 @@ public class BucketItem extends BaseFeedEntity {
    private DiningItem dining;
 
    private transient boolean selected;
+   private transient String translationDescription;
 
    @Override
    public String place() {
@@ -217,6 +217,19 @@ public class BucketItem extends BaseFeedEntity {
 
    public void setDining(DiningItem dining) {
       this.dining = dining;
+   }
+
+   @Override
+   public String getOriginalText() {
+      return name;
+   }
+
+   public String getTranslationDescription() {
+      return translationDescription;
+   }
+
+   public void setTranslationDescription(String translationDescription) {
+      this.translationDescription = translationDescription;
    }
 
    public enum BucketType {

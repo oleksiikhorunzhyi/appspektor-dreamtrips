@@ -78,9 +78,7 @@ public class PostFeedItemCell extends FeedItemDetailsCell<PostFeedItem, BaseFeed
    }
 
    private void processTranslations() {
-      PostFeedItem postFeedItem = getModelObject();
-      TextualPost textualPost = postFeedItem.getItem();
-
+      TextualPost textualPost = getModelObject().getItem();
       boolean ownPost = textualPost.getOwner().getId() == appSessionHolder.get().get().getUser().getId();
       boolean emptyPostText = TextUtils.isEmpty(textualPost.getDescription());
       boolean ownLanguage = LocaleHelper.isOwnLanguage(appSessionHolder, textualPost.getLanguage());
@@ -90,7 +88,7 @@ public class PostFeedItemCell extends FeedItemDetailsCell<PostFeedItem, BaseFeed
          boolean alreadyTranslated = textualPost.isTranslated();
          if (alreadyTranslated) {
             translateButton.setVisibility(View.GONE);
-            viewWithTranslation.showTranslation(textualPost.getTranslationForDescription(), textualPost.getLanguage());
+            viewWithTranslation.showTranslation(textualPost.getTranslation(), textualPost.getLanguage());
          } else {
             translateButton.setVisibility(View.VISIBLE);
             viewWithTranslation.hide();

@@ -35,7 +35,7 @@ public abstract class FeedItemDetailsCell<I extends FeedItem, D extends BaseFeed
    FeedItemCommonDataHelper feedItemCommonDataHelper;
 
    @Inject @Named(RouteCreatorModule.PROFILE) RouteCreator<Integer> routeCreator;
-   @Inject @ForActivity Provider<Injector> injectorProvider;
+   @Inject @ForActivity protected Provider<Injector> injectorProvider;
    @Inject FeedViewInjector feedViewInjector;
 
    @InjectView(R.id.card_view_wrapper) CardView cardViewWrapper;

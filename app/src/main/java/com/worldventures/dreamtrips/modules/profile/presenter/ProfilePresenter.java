@@ -209,6 +209,11 @@ public abstract class ProfilePresenter<T extends ProfilePresenter.View, U extend
       translationDelegate.translate(translatableItem, LocaleHelper.getDefaultLocaleFormatted());
    }
 
+   @Override
+   public void onShowOriginal(FeedEntity translatableItem) {
+      translationDelegate.showOriginal(translatableItem);
+   }
+
    private void itemLiked(FeedEntity feedEntity) {
       Queryable.from(feedItems).forEachR(feedItem -> {
          FeedEntity item = feedItem.getItem();

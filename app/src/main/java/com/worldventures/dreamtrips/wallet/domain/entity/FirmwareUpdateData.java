@@ -31,4 +31,9 @@ public abstract class FirmwareUpdateData implements Serializable {
    public boolean fileDownloaded() {
       return firmwareFile() != null;
    }
+
+   @Value.Default
+   public boolean isStarted() {
+      return false;
+   }
 }

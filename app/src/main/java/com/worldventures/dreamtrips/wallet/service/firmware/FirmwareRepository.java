@@ -8,7 +8,5 @@ public interface FirmwareRepository {
 
    void setFirmwareUpdateData(FirmwareUpdateData firmwareUpdateData);
 
-   void saveOnDisk();
-
    void clear();
 }

@@ -21,17 +21,23 @@ public class FetchFirmwareUpdateData extends Command<FetchFirmwareUpdateData.Res
    protected void run(CommandCallback<Result> callback) throws Throwable {
       final FirmwareUpdateData firmwareUpdateData = firmwareRepository.getFirmwareUpdateData();
       callback.onSuccess(ImmutableResult.builder()
-            .hasUpdate(firmwareUpdateData != null)
+            .isForceUpdateStarted(firmwareUpdateData != null && firmwareUpdateData.isStarted() && firmwareUpdateData.updateCritical())
             .firmwareUpdateData(firmwareUpdateData)
             .build());
    }
 
    @Value.Immutable
-   public interface Result {
+   public static abstract class Result {
 
-      boolean hasUpdate();
+      @Deprecated
+      @Value.Derived
+      public boolean hasUpdate() {
+         return isForceUpdateStarted();
+      }
+
+      public abstract boolean isForceUpdateStarted();
 
       @Nullable
-      FirmwareUpdateData firmwareUpdateData();
+      public abstract FirmwareUpdateData firmwareUpdateData();
    }
 }

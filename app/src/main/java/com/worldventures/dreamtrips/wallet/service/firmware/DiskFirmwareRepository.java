@@ -26,10 +26,6 @@ class DiskFirmwareRepository implements FirmwareRepository {
    @Override
    public synchronized void setFirmwareUpdateData(FirmwareUpdateData firmwareUpdateData) {
       this.firmwareUpdateData = firmwareUpdateData;
-   }
-
-   public synchronized void saveOnDisk() {
-      if (firmwareUpdateData == null) return;
       snappyRepository.saveFirmwareUpdateData(firmwareUpdateData);
    }
 

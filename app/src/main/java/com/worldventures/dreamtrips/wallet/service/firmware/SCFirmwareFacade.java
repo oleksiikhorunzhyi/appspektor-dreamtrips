@@ -31,13 +31,10 @@ public class SCFirmwareFacade {
    }
 
    public void prepareForUpdate() {
-      takeFirmwareInfo()
-            .flatMap(firmwareUpdateData -> {
-               if (resetStarting.get()) return Observable.empty();
-               resetStarting.set(true);
-               return firmwareInteractor.prepareForUpdatePipe()
-                     .createObservable(new PrepareForUpdateCommand(firmwareUpdateData));
-            })
+      if (resetStarting.get()) return;
+      resetStarting.set(true);
+      firmwareInteractor.prepareForUpdatePipe()
+            .createObservable(new PrepareForUpdateCommand())
             .subscribe(new ActionStateSubscriber<PrepareForUpdateCommand>()
                   .onFail((command, throwable) -> resetStarting.set(false))
                   .onSuccess(command -> resetStarting.set(false))

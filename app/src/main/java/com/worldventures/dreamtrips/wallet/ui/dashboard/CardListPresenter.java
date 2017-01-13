@@ -43,7 +43,6 @@ import com.worldventures.dreamtrips.wallet.util.CardUtils;
 
 import java.io.File;
 import java.util.List;
-import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
 
@@ -97,9 +96,23 @@ public class CardListPresenter extends WalletPresenter<CardListPresenter.Screen,
    private void observeSmartCard() {
       smartCardInteractor.activeSmartCardPipe().observeSuccessWithReplay()
             .map(Command::getResult)
-            .throttleLast(200, TimeUnit.MILLISECONDS)
             .compose(bindViewIoToMainComposer())
-            .subscribe(this::setSmartCard);
+            .subscribe(this::setSmartCard, throwable -> {
+            });
+
+      smartCardInteractor.activeSmartCardPipe().observeSuccessWithReplay()
+            .map(Command::getResult)
+            .map(SmartCard::connectionStatus)
+            .distinctUntilChanged()
+            .compose(bindViewIoToMainComposer())
+            .subscribe(connectionStatus -> {
+               if (connectionStatus == SmartCard.ConnectionStatus.DFU) {
+                  File firmwareFile = getAppropriateFirmwareFile(getContext());
+                  if (firmwareFile.exists()) {
+                     getView().showFirmwareUpdateError();
+                  }
+               }
+            });
    }
 
    private void observeFirmwareInfo() {
@@ -141,12 +154,6 @@ public class CardListPresenter extends WalletPresenter<CardListPresenter.Screen,
             .smartCard(smartCard)
             .build();
       getView().notifySmartCardChanged(cardStackHeaderHolder);
-      if (smartCard.connectionStatus() == SmartCard.ConnectionStatus.DFU) {
-         File firmwareFile = getAppropriateFirmwareFile(getContext());
-         if (firmwareFile.exists()) {
-            getView().showFirmwareUpdateError();
-         }
-      }
    }
 
    void cardClicked(BankCard bankCard) {

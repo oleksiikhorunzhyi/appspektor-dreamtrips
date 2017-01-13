@@ -57,8 +57,8 @@
    <string name="suggest_merchant_title">Εργαλεία DT Local</string>
    <string name="dtl_details_share_title">Θα κερδίσω πόντους Dreamtrips σε %1$s</string>
    <string name="dtl_details_share_title_earned" formatted="false">Έχω κερδίσει %1$s DreamTrips Πόντους σε %2$s</string>
-   <string name="dtl_wait_for_receipt">Περιμένετε... Γίνεται αποστολή της απόδειξης</string>
-   <string name="dtl_wait_for_earn">Περιμένετε ... Κερδίζετε πόντους</string>
+   <string name="dtl_wait_for_receipt">Περιμένετε… Γίνεται αποστολή της απόδειξης</string>
+   <string name="dtl_wait_for_earn">Περιμένετε … Κερδίζετε πόντους</string>
    <string name="dtl_wait_for_offers">Αναζήτηση κοντινών προσφορών.</string>
    <string name="dtl_wait_for_dinings">Αναζήτηση κοντινών εμπορικών καταστημάτων.</string>
    <string name="dtl_estimator_explanation">Οι πόντοι υπολογίζονται βάσει ενός ελάχιστου ποσού που έχει δαπανηθεί στον έμπορο και της ημέρας της εβδομάδας</string>
@@ -92,6 +92,15 @@
    <string name="merchants_list_empty_text">Προσεχή σημεία</string>
    <string name="merchants_list_empty_text_additional">- ή -</string>
    <string name="merchant_working_hours_caption">ώρες</string>
+   <string name="filter_amenities_error_caption">Οι υπηρεσίες δεν μπόρεσαν να φορτωθούν αυτή τη στιγμή</string>
+   <string name="merchants_no_results">Δεν βρέθηκαν αποτελέσματα \n Προσπαθήστε να προσαρμόστε τα φίλτρα σας ή εισάγετε μια νέα τοποθεσία.</string>
+   <string name="merchants_no_results_offers_only">Λυπούμαστε, δεν υπάρχουν ακόμη διαθέσιμες προσφορές στην περιοχή σας.\n Κλείστε τις προσφορές για να δείτε τα κοντινά σας εστιατόρια.</string>
+   <string name="dtl_try_again">Προσπαθήστε ξανά</string>
+   <string name="dtl_load_more">Φόρτωση Περισσότερων</string>
+
+   <!-- Errors -->
+   <string name="dtl_load_error">Σφάλμα Φόρτωσης</string>
+   <string name="dtl_load_merchant_error_caption">Τα αποτελέσματα δεν μπόρεσαν να φορτωθούν αυτή τη στιγμή.</string>
 
    <!-- DtlToolbar strings -->
    <string name="dtlt_search_hint">Φαγητό &amp; Ποτά</string>

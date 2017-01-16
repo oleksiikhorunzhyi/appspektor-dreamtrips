@@ -7,10 +7,8 @@ import android.support.annotation.StringRes;
 import com.techery.spares.module.Injector;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.janet.composer.ActionPipeCacheWiper;
-import com.worldventures.dreamtrips.wallet.service.WizardInteractor;
-import com.worldventures.dreamtrips.wallet.service.command.CreateAndConnectToCardCommand;
-import com.worldventures.dreamtrips.wallet.service.firmware.SCFirmwareFacade;
-import com.worldventures.dreamtrips.wallet.service.storage.WizardMemoryStorage;
+import com.worldventures.dreamtrips.wallet.service.FirmwareInteractor;
+import com.worldventures.dreamtrips.wallet.service.firmware.command.ConnectForFirmwareUpdate;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletPresenter;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.WalletScreen;
 import com.worldventures.dreamtrips.wallet.ui.common.helper.ErrorHandler;
@@ -24,9 +22,7 @@ import javax.inject.Inject;
 public class ForcePairKeyPresenter extends WalletPresenter<ForcePairKeyPresenter.Screen, Parcelable> {
 
    @Inject Navigator navigator;
-   @Inject WizardInteractor wizardInteractor;
-   @Inject SCFirmwareFacade firmwareFacade;
-   @Inject WizardMemoryStorage wizardMemoryStorage;
+   @Inject FirmwareInteractor firmwareInteractor;
 
    public ForcePairKeyPresenter(Context context, Injector injector) {
       super(context, injector);
@@ -39,13 +35,13 @@ public class ForcePairKeyPresenter extends WalletPresenter<ForcePairKeyPresenter
    }
 
    private void observeCreateAndConnectSmartCard() {
-      wizardInteractor.createAndConnectActionPipe()
+      firmwareInteractor.connectForFirmwareUpdatePipe()
             .observeWithReplay()
             .compose(bindViewIoToMainComposer())
-            .compose(new ActionPipeCacheWiper<>(wizardInteractor.createAndConnectActionPipe()))
-            .subscribe(OperationActionStateSubscriberWrapper.<CreateAndConnectToCardCommand>forView(getView().provideOperationDelegate())
+            .compose(new ActionPipeCacheWiper<>(firmwareInteractor.connectForFirmwareUpdatePipe()))
+            .subscribe(OperationActionStateSubscriberWrapper.<ConnectForFirmwareUpdate>forView(getView().provideOperationDelegate())
                   .onSuccess(command -> smartCardConnected())
-                  .onFail(ErrorHandler.<CreateAndConnectToCardCommand>builder(getContext())
+                  .onFail(ErrorHandler.<ConnectForFirmwareUpdate>builder(getContext())
                         .handle(SmartCardConnectException.class, R.string.wallet_smartcard_connection_error)
                         .defaultAction(command -> goBack())
                         .build())
@@ -53,15 +49,7 @@ public class ForcePairKeyPresenter extends WalletPresenter<ForcePairKeyPresenter
    }
 
    void tryToPairAndConnectSmartCard() {
-      firmwareFacade
-            .takeFirmwareInfo()
-            .compose(bindView())
-            .subscribe(firmwareUpdateData -> {
-               // TODO: 1/13/17 modify CreateAndConnectToCardCommand and remove next line
-               wizardMemoryStorage.saveBarcode(firmwareUpdateData.smartCardId());
-               wizardInteractor.createAndConnectActionPipe().send(new CreateAndConnectToCardCommand());
-            });
-      ;
+      firmwareInteractor.connectForFirmwareUpdatePipe().send(new ConnectForFirmwareUpdate());
    }
 
    private void smartCardConnected() {

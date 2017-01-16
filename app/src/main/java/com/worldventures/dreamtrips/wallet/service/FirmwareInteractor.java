@@ -4,6 +4,7 @@ import com.worldventures.dreamtrips.wallet.service.command.firmware.FirmwareClea
 import com.worldventures.dreamtrips.wallet.service.command.firmware.InstallFirmwareCommand;
 import com.worldventures.dreamtrips.wallet.service.command.firmware.PreInstallationCheckCommand;
 import com.worldventures.dreamtrips.wallet.service.command.http.FetchFirmwareInfoCommand;
+import com.worldventures.dreamtrips.wallet.service.firmware.command.ConnectForFirmwareUpdate;
 import com.worldventures.dreamtrips.wallet.service.firmware.command.FetchFirmwareUpdateData;
 import com.worldventures.dreamtrips.wallet.service.firmware.command.PrepareForUpdateCommand;
 
@@ -21,6 +22,7 @@ public class FirmwareInteractor {
    private final ActionPipe<UpgradeAppFirmwareProgressEvent> upgradeAppFirmwareProgressEventActionPipe;
    private final ActionPipe<PrepareForUpdateCommand> prepareForUpdatePipe;
    private final ActionPipe<FetchFirmwareUpdateData> fetchFirmwareUpdateDataPipe;
+   private final ActionPipe<ConnectForFirmwareUpdate> connectForFirmwareUpdatePipe;
 
    public FirmwareInteractor(Janet walletJanet) {
       firmwareInfo = walletJanet.createPipe(FetchFirmwareInfoCommand.class, Schedulers.io());
@@ -31,6 +33,7 @@ public class FirmwareInteractor {
             .io());
       prepareForUpdatePipe = walletJanet.createPipe(PrepareForUpdateCommand.class, Schedulers.io());
       fetchFirmwareUpdateDataPipe = walletJanet.createPipe(FetchFirmwareUpdateData.class, Schedulers.io());
+      connectForFirmwareUpdatePipe = walletJanet.createPipe(ConnectForFirmwareUpdate.class, Schedulers.io());
    }
 
    public ActionPipe<FetchFirmwareInfoCommand> firmwareInfoPipe() {
@@ -59,5 +62,9 @@ public class FirmwareInteractor {
 
    public ActionPipe<FetchFirmwareUpdateData> fetchFirmwareUpdateDataPipe() {
       return fetchFirmwareUpdateDataPipe;
+   }
+
+   public ActionPipe<ConnectForFirmwareUpdate> connectForFirmwareUpdatePipe() {
+      return connectForFirmwareUpdatePipe;
    }
 }

@@ -17,7 +17,7 @@ class DiskFirmwareRepository implements FirmwareRepository {
    public FirmwareUpdateData getFirmwareUpdateData() {
       synchronized (this) {
          if (firmwareUpdateData == null) {
-            firmwareUpdateData = null;
+            firmwareUpdateData = snappyRepository.getFirmwareUpdateData();
          }
       }
       return firmwareUpdateData;

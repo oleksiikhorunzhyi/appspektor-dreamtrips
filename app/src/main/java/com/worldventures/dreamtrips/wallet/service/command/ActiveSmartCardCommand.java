@@ -10,12 +10,7 @@ import rx.functions.Func1;
 public class ActiveSmartCardCommand extends CachedValueCommand<SmartCard> {
 
    public ActiveSmartCardCommand() {
-      super(cache -> {
-         if (cache == null) {
-            throw new NoActiveSmartCardException("Active Smart Card does not exist.");
-         }
-         return cache;
-      });
+      super(cache -> cache);
    }
 
    public ActiveSmartCardCommand(Func1<SmartCard, SmartCard> operationFunc) {

@@ -3,6 +3,7 @@ package com.worldventures.dreamtrips.wallet.service.command;
 import com.worldventures.dreamtrips.core.janet.cache.CacheOptions;
 import com.worldventures.dreamtrips.core.janet.cache.CachedAction;
 import com.worldventures.dreamtrips.core.janet.cache.ImmutableCacheOptions;
+import com.worldventures.dreamtrips.wallet.util.NoActiveSmartCardException;
 
 import io.techery.janet.ActionHolder;
 import io.techery.janet.Command;
@@ -23,6 +24,9 @@ public abstract class CachedValueCommand<T> extends Command<T> implements Cached
 
    @Override
    protected final void run(CommandCallback<T> callback) throws Throwable {
+      if (result == null) {
+         throw new NoActiveSmartCardException("Active Smart Card does not exist.");
+      }
       if (operationFunc != null) {
          result = operationFunc.call(result);
       }

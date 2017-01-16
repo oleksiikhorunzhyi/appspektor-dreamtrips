@@ -77,7 +77,7 @@ public class WalletStartPresenter extends WalletPresenter<WalletStartPresenter.S
    }
 
    private void checkFirmwareUpdateData(FetchFirmwareUpdateData.Result result, FetchAssociatedSmartCardCommand.AssociatedCard associatedCard) {
-      if (result.hasUpdate()) {
+      if (result.isForceUpdateStarted()) {
          navigator.single(new WalletInstallFirmwarePath(), Flow.Direction.REPLACE);
       } else {
          navigator.single(new WizardWelcomePath(associatedCard.smartCard()), Flow.Direction.REPLACE);

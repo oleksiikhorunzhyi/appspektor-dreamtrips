@@ -32,5 +32,6 @@ class DiskFirmwareRepository implements FirmwareRepository {
    @Override
    public synchronized void clear() {
       snappyRepository.deleteFirmwareUpdateData();
+      firmwareUpdateData = null;
    }
 }

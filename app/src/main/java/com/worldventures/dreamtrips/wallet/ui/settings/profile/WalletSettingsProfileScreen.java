@@ -198,7 +198,10 @@ public class WalletSettingsProfileScreen extends WalletLinearLayout<WalletSettin
             .cancelable(false)
             .title(R.string.wallet_card_settings_profile_dialog_error_smartcard_header)
             .positiveText(R.string.ok)
-            .onPositive((dialog, which) -> getPresenter().setupUserData())
+            .onPositive((dialog, which) -> {
+               if (throwable instanceof FormatException) getPresenter().cancelUpdating();
+               else getPresenter().setupUserData();
+            })
             .onNegative((dialog, which) -> getPresenter().cancelUpdating())
             .negativeText(R.string.cancel)
             .build()

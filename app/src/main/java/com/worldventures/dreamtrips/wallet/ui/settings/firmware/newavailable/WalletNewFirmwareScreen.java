@@ -54,7 +54,7 @@ public class WalletNewFirmwareScreen
    @NonNull
    @Override
    public WalletNewFirmwareAvailablePresenter createPresenter() {
-      return new WalletNewFirmwareAvailablePresenter(getPath().smartCard, getPath().firmwareUpdateData, getContext(), getInjector());
+      return new WalletNewFirmwareAvailablePresenter(getContext(), getInjector());
    }
 
    @Override
@@ -92,11 +92,6 @@ public class WalletNewFirmwareScreen
    @Override
    public void currentFirmwareInfo(@Nullable SmartCardFirmware version) {
       currentVersion.setText(version == null ? "" : getString(R.string.wallet_settings_version_current, version.nordicAppVersion()));
-   }
-
-   @Override
-   public void currentFirmwareInfo() {
-      if(getPath().smartCard != null) currentFirmwareInfo(getPath().smartCard.firmwareVersion());
    }
 
    @Override

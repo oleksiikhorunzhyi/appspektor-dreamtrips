@@ -45,9 +45,6 @@ public class WalletFirmwareChecksScreen extends WalletLinearLayout<WalletFirmwar
    protected void onFinishInflate() {
       super.onFinishInflate();
       toolbar.setNavigationOnClickListener(view -> presenter.goBack());
-      if (getPath().smartCard == null) {
-         tvInstallLater.setVisibility(INVISIBLE);
-      }
    }
 
    @OnClick(R.id.install_later)

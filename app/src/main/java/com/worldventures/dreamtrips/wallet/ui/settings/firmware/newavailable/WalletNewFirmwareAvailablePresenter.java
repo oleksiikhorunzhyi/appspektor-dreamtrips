@@ -121,8 +121,6 @@ public class WalletNewFirmwareAvailablePresenter extends WalletPresenter<WalletN
 
       void currentFirmwareInfo(@Nullable SmartCardFirmware version);
 
-      void currentFirmwareInfo();
-
       void insufficientSpace(long missingByteSpace);
    }
 }

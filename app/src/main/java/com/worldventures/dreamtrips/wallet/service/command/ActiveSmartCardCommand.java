@@ -18,6 +18,6 @@ public class ActiveSmartCardCommand extends CachedValueCommand<SmartCard> {
    }
 
    public ActiveSmartCardCommand(SmartCard smartCard) {
-      super(cache -> smartCard);
+      super(() -> smartCard);
    }
 }

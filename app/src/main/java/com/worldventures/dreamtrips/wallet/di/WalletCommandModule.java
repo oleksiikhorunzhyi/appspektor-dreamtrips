@@ -37,7 +37,7 @@ import com.worldventures.dreamtrips.wallet.service.command.firmware.LoadFirmware
 import com.worldventures.dreamtrips.wallet.service.command.firmware.LoadNordicFirmwareCommand;
 import com.worldventures.dreamtrips.wallet.service.command.firmware.LoadPuckAtmelFirmwareCommand;
 import com.worldventures.dreamtrips.wallet.service.command.firmware.PreInstallationCheckCommand;
-import com.worldventures.dreamtrips.wallet.service.command.firmware.UnzipFilesCommand;
+import com.worldventures.dreamtrips.wallet.service.command.firmware.UnzipFirmwareCommand;
 import com.worldventures.dreamtrips.wallet.service.command.http.AssociateCardUserCommand;
 import com.worldventures.dreamtrips.wallet.service.command.http.AvailabilitySmartCardCommand;
 import com.worldventures.dreamtrips.wallet.service.command.http.CreateBankCardCommand;
@@ -111,7 +111,7 @@ import dagger.Module;
             LoadAppAtmelFirmwareCommand.class,
             LoadNordicFirmwareCommand.class,
             LoadFirmwareFilesCommand.class,
-            UnzipFilesCommand.class,
+            UnzipFirmwareCommand.class,
             FactoryResetCommand.class
       },
       complete = false, library = true)

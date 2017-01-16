@@ -4,13 +4,13 @@ import android.content.Context;
 import android.os.Parcelable;
 
 import com.techery.spares.module.Injector;
+import com.worldventures.dreamtrips.core.janet.composer.ActionPipeCacheWiper;
 import com.worldventures.dreamtrips.core.utils.tracksystem.AnalyticsInteractor;
-import com.worldventures.dreamtrips.modules.common.command.DownloadFileCommand;
-import com.worldventures.dreamtrips.modules.common.delegate.DownloadFileInteractor;
 import com.worldventures.dreamtrips.wallet.analytics.DownloadingUpdateAction;
 import com.worldventures.dreamtrips.wallet.analytics.WalletAnalyticsCommand;
-import com.worldventures.dreamtrips.wallet.domain.entity.FirmwareUpdateData;
+import com.worldventures.dreamtrips.wallet.service.FirmwareInteractor;
 import com.worldventures.dreamtrips.wallet.service.firmware.SCFirmwareFacade;
+import com.worldventures.dreamtrips.wallet.service.firmware.command.DownloadFirmwareCommand;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletPresenter;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.WalletScreen;
 import com.worldventures.dreamtrips.wallet.ui.common.helper.ErrorHandler;
@@ -22,16 +22,14 @@ import javax.inject.Inject;
 
 import timber.log.Timber;
 
-import static com.worldventures.dreamtrips.wallet.util.WalletFilesUtils.getAppropriateFirmwareFile;
-
 public class WalletDownloadFirmwarePresenter extends WalletPresenter<WalletDownloadFirmwarePresenter.Screen, Parcelable> {
 
-   @Inject DownloadFileInteractor fileInteractor;
    @Inject AnalyticsInteractor analyticsInteractor;
+   @Inject FirmwareInteractor firmwareInteractor;
+   @Inject Navigator navigator;
    @Inject SCFirmwareFacade firmwareFacade;
 
-   @Inject Navigator navigator;
-   private DownloadFileCommand action;
+   private DownloadFirmwareCommand action;
 
    public WalletDownloadFirmwarePresenter(Context context, Injector injector) {
       super(context, injector);
@@ -40,24 +38,31 @@ public class WalletDownloadFirmwarePresenter extends WalletPresenter<WalletDownl
    @Override
    public void onAttachedToWindow() {
       super.onAttachedToWindow();
-      firmwareFacade.takeFirmwareInfo()
-            .compose(bindViewIoToMainComposer())
-            .subscribe(this::downloadFirmware, throwable -> Timber.e(throwable, ""));
+
+      observeDownload();
+      downloadFirmware();
    }
 
-   private void downloadFirmware(FirmwareUpdateData firmwareUpdateData) {
-      action = new DownloadFileCommand(getAppropriateFirmwareFile(getContext()), firmwareUpdateData.firmwareInfo().url());
-      fileInteractor.getDownloadFileCommandPipe()
-            .createObservable(action)
+   private void observeDownload() {
+      firmwareInteractor.downloadFirmwarePipe()
+            .observe()
+            .compose(new ActionPipeCacheWiper<>(firmwareInteractor.downloadFirmwarePipe()))
             .compose(bindViewIoToMainComposer())
-            .subscribe(OperationActionStateSubscriberWrapper.<DownloadFileCommand>forView(getView().provideOperationDelegate())
+            .subscribe(OperationActionStateSubscriberWrapper.<DownloadFirmwareCommand>forView(getView().provideOperationDelegate())
                   .onSuccess(event -> openPreInstallationChecks())
                   .onFail(ErrorHandler.create(getContext(), it -> navigator.goBack()))
                   .wrap());
+   }
 
-      WalletAnalyticsCommand analyticsCommand = new WalletAnalyticsCommand(new DownloadingUpdateAction(
-            firmwareUpdateData.smartCardId()));
-      analyticsInteractor.walletAnalyticsCommandPipe().send(analyticsCommand);
+   private void downloadFirmware() {
+      action = new DownloadFirmwareCommand();
+      firmwareInteractor.downloadFirmwarePipe().send(action);
+
+      firmwareFacade.takeFirmwareInfo()
+            .compose(bindViewIoToMainComposer())
+            .subscribe(firmwareUpdateData -> analyticsInteractor.walletAnalyticsCommandPipe()
+                        .send(new WalletAnalyticsCommand(new DownloadingUpdateAction(firmwareUpdateData.smartCardId()))),
+                  throwable -> Timber.e(throwable, ""));
    }
 
    private void openPreInstallationChecks() {
@@ -66,7 +71,7 @@ public class WalletDownloadFirmwarePresenter extends WalletPresenter<WalletDownl
 
    void cancelDownload() {
       if (action != null) {
-         fileInteractor.getDownloadFileCommandPipe().cancel(action);
+         firmwareInteractor.downloadFirmwarePipe().cancel(action);
       }
       navigator.goBack();
    }

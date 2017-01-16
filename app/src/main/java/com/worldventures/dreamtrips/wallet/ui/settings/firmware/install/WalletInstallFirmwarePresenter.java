@@ -9,6 +9,7 @@ import com.worldventures.dreamtrips.wallet.analytics.InstallingUpdateAction;
 import com.worldventures.dreamtrips.wallet.analytics.RetryInstallUpdateAction;
 import com.worldventures.dreamtrips.wallet.analytics.WalletAnalyticsCommand;
 import com.worldventures.dreamtrips.wallet.domain.entity.FirmwareUpdateData;
+import com.worldventures.dreamtrips.wallet.domain.entity.SmartCard;
 import com.worldventures.dreamtrips.wallet.service.FirmwareInteractor;
 import com.worldventures.dreamtrips.wallet.service.command.firmware.InstallFirmwareCommand;
 import com.worldventures.dreamtrips.wallet.service.firmware.SCFirmwareFacade;

@@ -315,6 +315,7 @@
    <string name="wallet_firmware_pre_installation_bluetooth">Enable Bluetooth and connect to the flye smart card</string>
    <string name="wallet_firmware_pre_installation_connection">Turn on the flye smart card</string>
    <string name="wallet_firmware_pre_installation_charging">Make sure your flye smart card is 50% charged</string>
+   <string name="wallet_firmware_pre_installation_insert_smart_card_to_charger">Insert Smart Card into the charger</string>
    <string name="wallet_firmware_pre_installation_button">Install</string>
    <string name="wallet_firmware_pre_installation_install_later">Install Later</string>
 

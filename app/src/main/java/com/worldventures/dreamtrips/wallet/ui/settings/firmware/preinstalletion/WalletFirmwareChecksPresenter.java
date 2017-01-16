@@ -19,6 +19,8 @@ import com.worldventures.dreamtrips.wallet.ui.common.base.screen.WalletScreen;
 import com.worldventures.dreamtrips.wallet.ui.common.navigation.Navigator;
 import com.worldventures.dreamtrips.wallet.ui.settings.firmware.install.WalletInstallFirmwarePath;
 
+import java.util.concurrent.TimeUnit;
+
 import javax.inject.Inject;
 
 import rx.Observable;
@@ -61,10 +63,10 @@ public class WalletFirmwareChecksPresenter extends WalletPresenter<WalletFirmwar
             .subscribe(command -> bind(command.getResult()), throwable -> {
             });
 
-      Observable.combineLatest(
+      Observable.merge(
             bluetoothService.observeEnablesState(),
-            smartCardInteractor.cardInChargerEventPipe()
-                  .observeSuccess().map(cardInChargerEvent -> null), (aBoolean, cardInChargerEvent) -> null)
+            smartCardInteractor.cardInChargerEventPipe().observeSuccess()
+      ).debounce(500, TimeUnit.MILLISECONDS)
             .compose(bindView())
             .subscribe(aVoid -> firmwareInteractor
                   .preInstallationCheckPipe()

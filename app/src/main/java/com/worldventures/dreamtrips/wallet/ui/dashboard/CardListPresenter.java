@@ -37,13 +37,13 @@ import com.worldventures.dreamtrips.wallet.ui.records.swiping.WizardChargingPath
 import com.worldventures.dreamtrips.wallet.ui.settings.firmware.force.factoryreset.ForceFactoryResetPath;
 import com.worldventures.dreamtrips.wallet.ui.settings.firmware.install.WalletInstallFirmwarePath;
 import com.worldventures.dreamtrips.wallet.ui.settings.firmware.newavailable.WalletNewFirmwareAvailablePath;
+import com.worldventures.dreamtrips.wallet.ui.settings.firmware.force.factoryreset.ForceFactoryResetPath;
 import com.worldventures.dreamtrips.wallet.ui.settings.general.WalletSettingsPath;
 import com.worldventures.dreamtrips.wallet.util.CardListStackConverter;
 import com.worldventures.dreamtrips.wallet.util.CardUtils;
 
 import java.io.File;
 import java.util.List;
-import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
 
@@ -98,9 +98,23 @@ public class CardListPresenter extends WalletPresenter<CardListPresenter.Screen,
    private void observeSmartCard() {
       smartCardInteractor.activeSmartCardPipe().observeSuccessWithReplay()
             .map(Command::getResult)
-            .throttleLast(200, TimeUnit.MILLISECONDS)
             .compose(bindViewIoToMainComposer())
-            .subscribe(this::setSmartCard);
+            .subscribe(this::setSmartCard, throwable -> {
+            });
+
+      smartCardInteractor.activeSmartCardPipe().observeSuccessWithReplay()
+            .map(Command::getResult)
+            .map(SmartCard::connectionStatus)
+            .distinctUntilChanged()
+            .compose(bindViewIoToMainComposer())
+            .subscribe(connectionStatus -> {
+               if (connectionStatus == SmartCard.ConnectionStatus.DFU) {
+                  File firmwareFile = getAppropriateFirmwareFile(getContext());
+                  if (firmwareFile.exists()) {
+                     getView().showFirmwareUpdateError();
+                  }
+               }
+            });
    }
 
    private void observeFirmwareInfo() {
@@ -143,12 +157,6 @@ public class CardListPresenter extends WalletPresenter<CardListPresenter.Screen,
             .smartCard(smartCard)
             .build();
       getView().notifySmartCardChanged(cardStackHeaderHolder);
-      if (smartCard.connectionStatus() == SmartCard.ConnectionStatus.DFU) {
-         File firmwareFile = getAppropriateFirmwareFile(getContext());
-         if (firmwareFile.exists()) {
-            getView().showFirmwareUpdateError();
-         }
-      }
    }
 
    void cardClicked(BankCard bankCard) {
@@ -200,7 +208,7 @@ public class CardListPresenter extends WalletPresenter<CardListPresenter.Screen,
    }
 
    void firmwareAvailable() {
-      navigator.go(new WalletNewFirmwareAvailablePath());
+      navigator.go(new WalletNewFirmwareAvailablePath(cardStackHeaderHolder.smartCard(), cardStackHeaderHolder.firmware()));
    }
 
    private void observeChanges() {

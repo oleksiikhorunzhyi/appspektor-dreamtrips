@@ -8,9 +8,6 @@ import com.worldventures.dreamtrips.core.flow.util.Layout;
 @Layout(R.layout.screen_wallet_force_factory_reset)
 public class ForceFactoryResetPath extends StyledPath {
 
-   public ForceFactoryResetPath() {
-   }
-
    @Override
    public MasterDetailPath getMaster() {
       return this;

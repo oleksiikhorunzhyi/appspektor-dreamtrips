@@ -10,6 +10,14 @@ import com.worldventures.dreamtrips.wallet.domain.entity.SmartCard;
 @Layout(R.layout.screen_wallet_new_firmware_available)
 public class WalletNewFirmwareAvailablePath extends StyledPath {
 
+   public final SmartCard smartCard;
+   public final FirmwareUpdateData firmwareUpdateData;
+
+   public WalletNewFirmwareAvailablePath(SmartCard smartCard, FirmwareUpdateData firmwareUpdateData) {
+      this.smartCard = smartCard;
+      this.firmwareUpdateData = firmwareUpdateData;
+   }
+
    @Override
    public MasterDetailPath getMaster() {
       return this;

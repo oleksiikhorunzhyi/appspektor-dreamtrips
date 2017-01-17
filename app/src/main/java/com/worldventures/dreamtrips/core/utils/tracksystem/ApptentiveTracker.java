@@ -5,6 +5,7 @@ import android.support.annotation.Nullable;
 import android.text.TextUtils;
 
 import com.apptentive.android.sdk.Apptentive;
+import com.worldventures.dreamtrips.BuildConfig;
 
 import java.lang.ref.WeakReference;
 import java.util.Map;
@@ -24,17 +25,17 @@ public class ApptentiveTracker extends Tracker {
 
    @Override
    public void onCreate(@Nullable Activity activity) {
-      Timber.v("onCreate");
+      Timber.v("onCreate enabled: " + BuildConfig.APPTENTIVE_ENABLED);
    }
 
    public void onStart(@Nullable Activity activity) {
-      if (checkNullAndWarn(activity)) return;
+      if (!BuildConfig.APPTENTIVE_ENABLED || checkNullAndWarn(activity)) return;
       this.activity = new WeakReference<>(activity);
       Apptentive.onStart(activity);
    }
 
    public void onStop(@Nullable Activity activity) {
-      if (checkNullAndWarn(activity)) return;
+      if (!BuildConfig.APPTENTIVE_ENABLED || checkNullAndWarn(activity)) return;
       Apptentive.onStop(activity);
    }
 
@@ -50,7 +51,7 @@ public class ApptentiveTracker extends Tracker {
 
    @Override
    public void trackEvent(String category, String action, Map<String, Object> data) {
-      if (activity == null) return;
+      if (!BuildConfig.APPTENTIVE_ENABLED || activity == null) return;
 
       Activity activity = this.activity.get();
       if (activity != null) {

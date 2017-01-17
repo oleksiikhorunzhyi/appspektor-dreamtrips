@@ -62,6 +62,9 @@ android {
    def ALLOW_BUILD_LOG = true
    def BUILD_LOG_TAG = "BUILD_LOG"
    //
+   def apptentiveEnabled = project.hasProperty("apptentive")?
+         project.getProperties().get("apptentive").equals("true") : true
+   //
    def CONFIG_MAP_DEFAULT = [
          'DreamTripsApi'        : '"http://techery--dt--staging-techery-io-txbe74ea4jwh.runscope.net/"',
          'S3Api'                : '"https://s3-us-west-2.amazonaws.com/techery-worldventures/config/staging"',
@@ -152,6 +155,7 @@ android {
       //
       buildConfigField 'String', 'MESSENGER_API_URL', '"dtmsgapp-dev.worldventures.biz"'
       buildConfigField 'int', 'MESSENGER_API_PORT', '5222'
+      buildConfigField 'boolean', 'APPTENTIVE_ENABLED', "${apptentiveEnabled}"
       //
       manifestPlaceholders = [:]
       manifestPlaceholders['fabricApiKey'] = "21da61424102fe8cf2f861fa914442a098312625"

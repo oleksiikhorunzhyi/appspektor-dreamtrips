@@ -1,9 +1,11 @@
-package com.worldventures.dreamtrips.modules.background_uploading.service;
+package com.worldventures.dreamtrips.modules.background_uploading.service.command;
 
 import com.worldventures.dreamtrips.core.janet.dagger.InjectableAction;
 import com.worldventures.dreamtrips.modules.background_uploading.model.CompoundOperationModel;
 import com.worldventures.dreamtrips.modules.background_uploading.model.PostCompoundOperationModel;
 import com.worldventures.dreamtrips.modules.background_uploading.model.PostCompoundOperationMutator;
+import com.worldventures.dreamtrips.modules.background_uploading.service.BackgroundUploadingInteractor;
+import com.worldventures.dreamtrips.modules.background_uploading.service.CompoundOperationsInteractor;
 
 import javax.inject.Inject;
 
@@ -17,6 +19,7 @@ public class ResumeCompoundOperationCommand extends Command<CompoundOperationMod
    private PostCompoundOperationModel compoundOperationModel;
 
    @Inject BackgroundUploadingInteractor backgroundUploadingInteractor;
+   @Inject CompoundOperationsInteractor compoundOperationsInteractor;
    @Inject PostCompoundOperationMutator compoundOperationObjectMutator;
 
    public ResumeCompoundOperationCommand(PostCompoundOperationModel compoundOperationModel) {
@@ -32,7 +35,7 @@ public class ResumeCompoundOperationCommand extends Command<CompoundOperationMod
    }
 
    private Observable<CompoundOperationModel> notifyCompoundOperationChanged(CompoundOperationModel model) {
-      return backgroundUploadingInteractor.compoundOperationsPipe()
+      return compoundOperationsInteractor.compoundOperationsPipe()
             .createObservableResult(CompoundOperationsCommand.compoundCommandChanged(model))
             .map(command -> model);
    }

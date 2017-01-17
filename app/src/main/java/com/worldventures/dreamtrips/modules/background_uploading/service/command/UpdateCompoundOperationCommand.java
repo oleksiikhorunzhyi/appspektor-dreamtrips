@@ -1,4 +1,4 @@
-package com.worldventures.dreamtrips.modules.background_uploading.service;
+package com.worldventures.dreamtrips.modules.background_uploading.service.command;
 
 import com.worldventures.dreamtrips.modules.background_uploading.model.CompoundOperationModel;
 
@@ -7,16 +7,12 @@ import java.util.List;
 import io.techery.janet.command.annotations.CommandAction;
 
 @CommandAction
-public class DeleteCompoundOperationsCommand extends CompoundOperationsCommand {
+public class UpdateCompoundOperationCommand extends CompoundOperationsCommand {
 
-   private CompoundOperationModel removedModel;
+   private CompoundOperationModel updatedModel;
 
-   DeleteCompoundOperationsCommand(CompoundOperationModel removedModel) {
-      this.removedModel = removedModel;
-   }
-
-   public CompoundOperationModel getRemovedModel() {
-      return removedModel;
+   UpdateCompoundOperationCommand(CompoundOperationModel updatedModel) {
+      this.updatedModel = updatedModel;
    }
 
    @Override
@@ -26,11 +22,15 @@ public class DeleteCompoundOperationsCommand extends CompoundOperationsCommand {
    }
 
    private void processUpdatedModel() {
+      int index = cachedModels.size();
       for (int i = 0; i < cachedModels.size(); i++) {
-         if (cachedModels.get(i).id() == removedModel.id()) {
+         if (cachedModels.get(i).id() == updatedModel.id()) {
             cachedModels.remove(i);
+            index = i;
             break;
          }
       }
+      cachedModels.add(index, updatedModel);
    }
+
 }

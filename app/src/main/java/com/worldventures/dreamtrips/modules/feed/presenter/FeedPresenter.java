@@ -19,8 +19,8 @@ import com.worldventures.dreamtrips.core.session.CirclesInteractor;
 import com.worldventures.dreamtrips.core.utils.LocaleHelper;
 import com.worldventures.dreamtrips.core.utils.tracksystem.AnalyticsInteractor;
 import com.worldventures.dreamtrips.modules.background_uploading.model.PostCompoundOperationModel;
-import com.worldventures.dreamtrips.modules.background_uploading.service.BackgroundUploadingInteractor;
-import com.worldventures.dreamtrips.modules.background_uploading.service.CompoundOperationsCommand;
+import com.worldventures.dreamtrips.modules.background_uploading.service.CompoundOperationsInteractor;
+import com.worldventures.dreamtrips.modules.background_uploading.service.command.CompoundOperationsCommand;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem;
 import com.worldventures.dreamtrips.modules.bucketlist.service.BucketInteractor;
 import com.worldventures.dreamtrips.modules.common.api.janet.command.GetCirclesCommand;
@@ -96,7 +96,7 @@ public class FeedPresenter extends Presenter<FeedPresenter.View> implements Feed
    @Inject CirclesInteractor circlesInteractor;
    @Inject TripImagesInteractor tripImagesInteractor;
    @Inject PostsInteractor postsInteractor;
-   @Inject BackgroundUploadingInteractor backgroundUploadingInteractor;
+   @Inject CompoundOperationsInteractor compoundOperationsInteractor;
 
    private Circle filterCircle;
    private SuggestedPhotoCellPresenterHelper suggestedPhotoHelper;
@@ -296,7 +296,7 @@ public class FeedPresenter extends Presenter<FeedPresenter.View> implements Feed
    }
 
    private void subscribeToBackgroundUploadingOperations() {
-      backgroundUploadingInteractor.compoundOperationsPipe()
+      compoundOperationsInteractor.compoundOperationsPipe()
             .observeWithReplay()
             .compose(bindViewToMainComposer())
             .subscribe(new ActionStateSubscriber<CompoundOperationsCommand>()

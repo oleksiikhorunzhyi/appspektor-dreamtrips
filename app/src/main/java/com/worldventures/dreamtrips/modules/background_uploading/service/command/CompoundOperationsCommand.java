@@ -1,4 +1,4 @@
-package com.worldventures.dreamtrips.modules.background_uploading.service;
+package com.worldventures.dreamtrips.modules.background_uploading.service.command;
 
 import com.worldventures.dreamtrips.core.janet.cache.CacheOptions;
 import com.worldventures.dreamtrips.core.janet.cache.CachedAction;
@@ -34,8 +34,12 @@ public abstract class CompoundOperationsCommand extends Command<List<CompoundOpe
             .build();
    }
 
+   public static CompoundOperationsCommand compoundOperationsChanged(List<CompoundOperationModel> updatedModels) {
+      return new UpdateCompoundOperationsCommand(updatedModels);
+   }
+
    public static CompoundOperationsCommand compoundCommandChanged(CompoundOperationModel updatedModel) {
-      return new UpdateCompoundOperationsCommand(updatedModel);
+      return new UpdateCompoundOperationCommand(updatedModel);
    }
 
    public static CompoundOperationsCommand compoundCommandRemoved(CompoundOperationModel updatedModel) {

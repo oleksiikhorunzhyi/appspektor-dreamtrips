@@ -1,8 +1,10 @@
-package com.worldventures.dreamtrips.modules.background_uploading.service;
+package com.worldventures.dreamtrips.modules.background_uploading.service.command;
 
 import com.worldventures.dreamtrips.core.janet.dagger.InjectableAction;
 import com.worldventures.dreamtrips.modules.background_uploading.model.CompoundOperationModel;
 import com.worldventures.dreamtrips.modules.background_uploading.model.CompoundOperationState;
+import com.worldventures.dreamtrips.modules.background_uploading.service.BackgroundUploadingInteractor;
+import com.worldventures.dreamtrips.modules.background_uploading.service.CompoundOperationsInteractor;
 
 import javax.inject.Inject;
 
@@ -15,6 +17,7 @@ public class CancelCompoundOperationCommand extends Command implements Injectabl
    private CompoundOperationModel compoundOperationModel;
 
    @Inject BackgroundUploadingInteractor backgroundUploadingInteractor;
+   @Inject CompoundOperationsInteractor compoundOperationsInteractor;
 
    public CancelCompoundOperationCommand(CompoundOperationModel compoundOperationModel) {
       this.compoundOperationModel = compoundOperationModel;
@@ -25,7 +28,7 @@ public class CancelCompoundOperationCommand extends Command implements Injectabl
       if (compoundOperationModel.state() == CompoundOperationState.STARTED) {
          backgroundUploadingInteractor.postProcessingPipe().cancelLatest();
       }
-      backgroundUploadingInteractor.compoundOperationsPipe()
+      compoundOperationsInteractor.compoundOperationsPipe()
             .createObservable(CompoundOperationsCommand.compoundCommandRemoved(compoundOperationModel))
             .doOnNext(command -> startNext())
             .subscribe(callback::onSuccess, callback::onFail);

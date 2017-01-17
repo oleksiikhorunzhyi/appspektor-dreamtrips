@@ -11,6 +11,7 @@ import com.worldventures.dreamtrips.wallet.service.command.FetchCardPropertiesCo
 import com.worldventures.dreamtrips.wallet.service.command.FetchFirmwareVersionCommand;
 import com.worldventures.dreamtrips.wallet.service.command.SetLockStateCommand;
 import com.worldventures.dreamtrips.wallet.service.command.SyncCardsCommand;
+import com.worldventures.dreamtrips.wallet.service.command.UpdateBankCardCommand;
 import com.worldventures.dreamtrips.wallet.service.command.firmware.LoadFirmwareFilesCommand;
 
 import java.util.concurrent.TimeUnit;
@@ -170,17 +171,18 @@ class SmartCardSyncManager {
                      // 2 lines for support @deprecated field of firmwareVersion, new field nordicAppVersion.
                      ImmutableSmartCardFirmware smartCardFirmware = ImmutableSmartCardFirmware.copyOf(properties.firmwareVersion())
                            .withFirmwareVersion(properties.firmwareVersion().nordicAppVersion());
-                        return ImmutableSmartCard.builder()
-                              .from(smartCard)
-                              .sdkVersion(properties.sdkVersion())
-                              .firmwareVersion(smartCardFirmware)
-                              .batteryLevel(properties.batteryLevel())
-                              .lock(properties.lock())
-                              .stealthMode(properties.stealthMode())
-                              .disableCardDelay(properties.disableCardDelay())
-                              .clearFlyeDelay(properties.clearFlyeDelay())
-                              .build();
-                  })), throwable -> {});
+                     return ImmutableSmartCard.builder()
+                           .from(smartCard)
+                           .sdkVersion(properties.sdkVersion())
+                           .firmwareVersion(smartCardFirmware)
+                           .batteryLevel(properties.batteryLevel())
+                           .lock(properties.lock())
+                           .stealthMode(properties.stealthMode())
+                           .disableCardDelay(properties.disableCardDelay())
+                           .clearFlyeDelay(properties.clearFlyeDelay())
+                           .build();
+                  })), throwable -> {
+            });
 
       Observable.merge(
             interactor.lockDeviceChangedEventPipe()
@@ -233,13 +235,12 @@ class SmartCardSyncManager {
                         .send(add(attachCardCommand.getResult())));
 
       interactor.updateBankCardPipe()
-            .observeSuccess()
-            .map(Command::getResult)
-            .mergeWith(interactor.updateCardDetailsPipe()
-                  .observeSuccess()
-                  .map(Command::getResult))
-            .subscribe(result -> interactor.cardsListPipe()
-                  .send(edit(result)));
+            .observe()
+            .subscribe(new ActionStateSubscriber<UpdateBankCardCommand>()
+                  .onStart(updateBankCardCommand -> interactor.cardsListPipe()
+                        .send(edit(updateBankCardCommand.getBankCard())))
+                  .onSuccess(updateBankCardCommand -> interactor.cardsListPipe()
+                        .send(edit(updateBankCardCommand.getResult()))));
 
       //update cache default card
       interactor.setDefaultCardOnDeviceCommandPipe()

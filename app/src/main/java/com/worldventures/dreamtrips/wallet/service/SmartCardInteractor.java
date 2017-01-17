@@ -172,6 +172,7 @@ public final class SmartCardInteractor {
       return deleteCardPipe;
    }
 
+   @Deprecated
    public ActionPipe<UpdateCardDetailsDataCommand> updateCardDetailsPipe() {
       return updateCardDetailsPipe;
    }

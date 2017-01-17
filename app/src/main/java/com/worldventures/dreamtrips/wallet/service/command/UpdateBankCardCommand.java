@@ -13,13 +13,9 @@ import javax.inject.Named;
 import io.techery.janet.Command;
 import io.techery.janet.Janet;
 import io.techery.janet.command.annotations.CommandAction;
-import io.techery.janet.smartcard.action.records.AddRecordAction;
 import io.techery.janet.smartcard.action.records.EditRecordAction;
 import io.techery.janet.smartcard.model.Record;
 import io.techery.mappery.MapperyContext;
-import rx.Observable;
-import rx.functions.Func1;
-import timber.log.Timber;
 
 import static com.worldventures.dreamtrips.core.janet.JanetModule.JANET_WALLET;
 import static com.worldventures.dreamtrips.wallet.util.WalletValidateHelper.validateAddressInfoOrThrow;
@@ -63,5 +59,9 @@ public class UpdateBankCardCommand extends Command<BankCard> implements Injectab
    private void checkCardData() throws FormatException {
       validateCardNameOrThrow(bankCard.nickName());
       validateAddressInfoOrThrow(bankCard.addressInfo());
+   }
+
+   public BankCard getBankCard() {
+      return bankCard;
    }
 }

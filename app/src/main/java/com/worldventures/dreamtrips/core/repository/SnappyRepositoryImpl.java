@@ -275,12 +275,12 @@ class SnappyRepositoryImpl implements SnappyRepository, DiskStorage {
 
    @Override
    public void saveSmartCard(SmartCard smartCard) {
-      putEncrypted(WALLET_SMART_CARD + smartCard.smartCardId(), smartCard);
+      putEncrypted(WALLET_SMART_CARD, smartCard);
    }
 
    @Override
-   public SmartCard getSmartCard(String smartCardId) {
-      return getEncrypted(WALLET_SMART_CARD + smartCardId, ImmutableSmartCard.class);
+   public SmartCard getSmartCard() {
+      return getEncrypted(WALLET_SMART_CARD, ImmutableSmartCard.class);
    }
 
    @Override
@@ -292,23 +292,23 @@ class SnappyRepositoryImpl implements SnappyRepository, DiskStorage {
    }
 
    @Override
-   public void deleteSmartCard(String smartCardId) {
-      act(db -> db.del(WALLET_SMART_CARD + smartCardId));
+   public void deleteSmartCard() {
+      act(db -> db.del(WALLET_SMART_CARD));
    }
 
    @Override
    public void saveSmartCardDetails(SmartCardDetails smartCardDetails) {
-      putEncrypted(WALLET_DETAILS_SMART_CARD + smartCardDetails.smartCardId(), smartCardDetails);
+      putEncrypted(WALLET_DETAILS_SMART_CARD, smartCardDetails);
    }
 
    @Override
-   public SmartCardDetails getSmartCardDetails(String smartCardId) {
-      return getEncrypted(WALLET_DETAILS_SMART_CARD + smartCardId, ImmutableSmartCardDetails.class);
+   public SmartCardDetails getSmartCardDetails() {
+      return getEncrypted(WALLET_DETAILS_SMART_CARD, ImmutableSmartCardDetails.class);
    }
 
    @Override
-   public void deleteSmartCardDetails(String smartCardId) {
-      act(db -> db.del(WALLET_DETAILS_SMART_CARD + smartCardId));
+   public void deleteSmartCardDetails() {
+      act(db -> db.del(WALLET_DETAILS_SMART_CARD));
    }
 
    @Override

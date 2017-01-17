@@ -30,10 +30,7 @@ public class SmartCardStorage implements ActionStorage<SmartCard> {
 
    @Override
    public SmartCard get(@Nullable CacheBundle bundle) {
-      String id = snappyRepository.getActiveSmartCardId();
-      if (id == null)
-         return null;
-      return snappyRepository.getSmartCard(id);
+      return snappyRepository.getSmartCard();
    }
 
 

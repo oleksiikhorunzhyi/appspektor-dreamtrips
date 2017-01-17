@@ -13,8 +13,6 @@ import javax.inject.Inject;
 
 public class SmartCardDetailsStorage implements ActionStorage<SmartCardDetails> {
 
-   public static final String CARD_ID_PARAM = "card_id";
-
    private final SnappyRepository snappyRepository;
 
    @Inject
@@ -34,14 +32,7 @@ public class SmartCardDetailsStorage implements ActionStorage<SmartCardDetails> 
 
    @Override
    public SmartCardDetails get(@Nullable CacheBundle params) {
-      return snappyRepository.getSmartCardDetails(obtainCardId(params));
-   }
-
-   private String obtainCardId(@Nullable CacheBundle bundle) {
-      if (bundle == null || !bundle.contains(CARD_ID_PARAM))
-         throw new IllegalArgumentException("you should provide CARD_ID_PARAM throw bundle");
-
-      return bundle.get(CARD_ID_PARAM);
+      return snappyRepository.getSmartCardDetails();
    }
 }
 

@@ -11,23 +11,23 @@ import io.techery.janet.smartcard.exception.InvalidFirmwareException;
 import io.techery.janet.smartcard.util.UnzipUtil;
 
 @CommandAction
-public class UnzipFilesCommand extends Command<UnzipFilesCommand.FirmwareBundle> {
+public class UnzipFirmwareCommand extends Command<UnzipFirmwareCommand.FirmwareBundle> {
 
    public static final String APP_NORDIC_FOLDER = "AppNordic";
    public static final String PUCK_ATMEL_FOLDER = "PuckAtmel";
    public static final String APP_ATMEL_FOLDER = "AppAtmel";
    public static final String BOOTLOADER_NORDIC_FOLDER = "BootloaderNordic";
 
-   private final File archive;
+   private final File firmwareArchive;
 
-   public UnzipFilesCommand(File archive) {
-      this.archive = archive;
+   public UnzipFirmwareCommand(File firmwareArchive) {
+      this.firmwareArchive = firmwareArchive;
    }
 
    @Override
    protected void run(CommandCallback<FirmwareBundle> callback) throws Throwable {
-      String firmwarePath = archive.getAbsolutePath();
-      String unzippedPath = archive.getParent();
+      String firmwarePath = firmwareArchive.getAbsolutePath();
+      String unzippedPath = firmwareArchive.getParent();
       try {
          UnzipUtil.unzip(firmwarePath, unzippedPath);
       } catch (IOException e) {

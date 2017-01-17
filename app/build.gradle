@@ -35,7 +35,7 @@ android {
    def versionMajor = 1
    def versionMinor = 17
    def versionPatch = 0
-   def versionBuild = 6 // bump for dogfood builds, public betas, etc.
+   def versionBuild = 8 // bump for dogfood builds, public betas, etc.
    // flavor codes
    String DEV_CODE = "dev"
    String DEV_PRE_MARSHMALLOW_CODE = "devpremarshmallow"
@@ -61,6 +61,9 @@ android {
    //
    def ALLOW_BUILD_LOG = true
    def BUILD_LOG_TAG = "BUILD_LOG"
+   //
+   def apptentiveEnabled = project.hasProperty("apptentive") ?
+         project.getProperties().get("apptentive").equals("true") : true
    //
    def CONFIG_MAP_DEFAULT = [
          'DreamTripsApi'        : '"http://techery--dt--staging-techery-io-txbe74ea4jwh.runscope.net/"',
@@ -152,6 +155,7 @@ android {
       //
       buildConfigField 'String', 'MESSENGER_API_URL', '"dtmsgapp-dev.worldventures.biz"'
       buildConfigField 'int', 'MESSENGER_API_PORT', '5222'
+      buildConfigField 'boolean', 'APPTENTIVE_ENABLED', "${apptentiveEnabled}"
       //
       manifestPlaceholders = [:]
       manifestPlaceholders['fabricApiKey'] = "21da61424102fe8cf2f861fa914442a098312625"
@@ -419,7 +423,7 @@ dependencies {
    compile 'com.snappydb:snappydb-lib:0.5.2'
    compile 'com.esotericsoftware.kryo:kryo:2.24.0'
    // Networking
-   compile(group: 'com.worldventures.dreamtrips', name: 'api', version: '2.8.13-STAGE-SNAPSHOT', changing: true) {
+   compile(group: 'com.worldventures.dreamtrips', name: 'api', version: '2.8.12-STAGE-SNAPSHOT', changing: true) {
       exclude group: "joda-time"
    }
    compile 'com.squareup.okhttp:okhttp:2.7.5'

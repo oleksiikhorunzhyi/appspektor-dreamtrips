@@ -11,6 +11,7 @@ import com.worldventures.dreamtrips.wallet.service.command.CompressImageForSmart
 import com.worldventures.dreamtrips.wallet.service.command.ConnectSmartCardCommand;
 import com.worldventures.dreamtrips.wallet.service.command.CreateAndConnectToCardCommand;
 import com.worldventures.dreamtrips.wallet.service.command.DefaultCardIdCommand;
+import com.worldventures.dreamtrips.wallet.service.command.FactoryResetCommand;
 import com.worldventures.dreamtrips.wallet.service.command.FetchBatteryLevelCommand;
 import com.worldventures.dreamtrips.wallet.service.command.FetchCardPropertiesCommand;
 import com.worldventures.dreamtrips.wallet.service.command.FetchDefaultCardCommand;
@@ -36,7 +37,7 @@ import com.worldventures.dreamtrips.wallet.service.command.firmware.LoadFirmware
 import com.worldventures.dreamtrips.wallet.service.command.firmware.LoadNordicFirmwareCommand;
 import com.worldventures.dreamtrips.wallet.service.command.firmware.LoadPuckAtmelFirmwareCommand;
 import com.worldventures.dreamtrips.wallet.service.command.firmware.PreInstallationCheckCommand;
-import com.worldventures.dreamtrips.wallet.service.command.firmware.UnzipFilesCommand;
+import com.worldventures.dreamtrips.wallet.service.command.firmware.UnzipFirmwareCommand;
 import com.worldventures.dreamtrips.wallet.service.command.http.AssociateCardUserCommand;
 import com.worldventures.dreamtrips.wallet.service.command.http.AvailabilitySmartCardCommand;
 import com.worldventures.dreamtrips.wallet.service.command.http.CreateBankCardCommand;
@@ -110,7 +111,8 @@ import dagger.Module;
             LoadAppAtmelFirmwareCommand.class,
             LoadNordicFirmwareCommand.class,
             LoadFirmwareFilesCommand.class,
-            UnzipFilesCommand.class
+            UnzipFirmwareCommand.class,
+            FactoryResetCommand.class
       },
       complete = false, library = true)
 public class WalletCommandModule {}

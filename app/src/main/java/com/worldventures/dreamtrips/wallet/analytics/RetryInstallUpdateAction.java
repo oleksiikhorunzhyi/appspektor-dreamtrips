@@ -12,7 +12,8 @@ public class RetryInstallUpdateAction extends WalletAnalyticsAction {
    @Attribute("currentversion") final String currentVersion;
    @Attribute("latestversion") final String latestVersion;
 
-   public RetryInstallUpdateAction(String currentVersion, String latestVersion, boolean retry) {
+   public RetryInstallUpdateAction(String scId, String currentVersion, String latestVersion, boolean retry) {
+      super(scId);
       this.currentVersion = currentVersion;
       this.latestVersion = latestVersion;
       this.retry = retry? "1" : "0";

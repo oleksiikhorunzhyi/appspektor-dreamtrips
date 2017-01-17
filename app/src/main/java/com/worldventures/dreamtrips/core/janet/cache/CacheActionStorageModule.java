@@ -12,8 +12,8 @@ import com.worldventures.dreamtrips.modules.bucketlist.service.storage.BucketLis
 import com.worldventures.dreamtrips.modules.bucketlist.service.storage.BucketMemoryStorage;
 import com.worldventures.dreamtrips.modules.bucketlist.service.storage.RecentlyAddedBucketItemStorage;
 import com.worldventures.dreamtrips.modules.bucketlist.service.storage.UploadBucketPhotoInMemoryStorage;
-import com.worldventures.dreamtrips.modules.dtl.domain.storage.LocationStorage;
 import com.worldventures.dreamtrips.modules.dtl.domain.storage.FullMerchantStorage;
+import com.worldventures.dreamtrips.modules.dtl.domain.storage.LocationStorage;
 import com.worldventures.dreamtrips.modules.dtl.domain.storage.MerchantsStorage;
 import com.worldventures.dreamtrips.modules.feed.service.storage.NotificationMemoryStorage;
 import com.worldventures.dreamtrips.modules.feed.service.storage.NotificationsStorage;
@@ -34,7 +34,6 @@ import com.worldventures.dreamtrips.modules.trips.storage.TripsByUidsStorage;
 import com.worldventures.dreamtrips.modules.trips.storage.TripsDiskStorage;
 import com.worldventures.dreamtrips.modules.trips.storage.TripsStorage;
 import com.worldventures.dreamtrips.wallet.domain.storage.DefaultBankCardStorage;
-import com.worldventures.dreamtrips.wallet.domain.storage.FirmwareStorage;
 import com.worldventures.dreamtrips.wallet.domain.storage.SmartCardDetailsStorage;
 import com.worldventures.dreamtrips.wallet.domain.storage.SmartCardStorage;
 import com.worldventures.dreamtrips.wallet.domain.storage.TermsAndConditionsStorage;
@@ -191,12 +190,6 @@ public class CacheActionStorageModule {
    @Provides(type = Provides.Type.SET)
    ActionStorage provideFeedbackStorage(SnappyRepository db) {
       return new FeedbackTypeStorage(db);
-   }
-
-   @Singleton
-   @Provides(type = Provides.Type.SET)
-   MultipleActionStorage provideFirmwareStorage(SnappyRepository db) {
-      return new FirmwareStorage(db);
    }
 
    @Singleton

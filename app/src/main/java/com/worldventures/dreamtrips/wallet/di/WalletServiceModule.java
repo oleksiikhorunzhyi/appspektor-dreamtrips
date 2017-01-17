@@ -4,7 +4,7 @@ import android.content.Context;
 
 import com.techery.spares.module.qualifier.ForApplication;
 import com.worldventures.dreamtrips.core.janet.SessionActionPipeCreator;
-import com.worldventures.dreamtrips.wallet.service.FactoryResetManager;
+import com.worldventures.dreamtrips.wallet.service.FactoryResetInteractor;
 import com.worldventures.dreamtrips.wallet.service.FirmwareInteractor;
 import com.worldventures.dreamtrips.wallet.service.SmartCardInteractor;
 import com.worldventures.dreamtrips.wallet.service.SmartCardUserDataInteractor;
@@ -12,6 +12,7 @@ import com.worldventures.dreamtrips.wallet.service.SystemPropertiesProvider;
 import com.worldventures.dreamtrips.wallet.service.WalletBluetoothService;
 import com.worldventures.dreamtrips.wallet.service.WalletNetworkService;
 import com.worldventures.dreamtrips.wallet.service.WizardInteractor;
+import com.worldventures.dreamtrips.wallet.service.firmware.FirmwareModule;
 import com.worldventures.dreamtrips.wallet.service.impl.AndroidBleService;
 import com.worldventures.dreamtrips.wallet.service.impl.AndroidNetworkManager;
 import com.worldventures.dreamtrips.wallet.service.impl.AndroidPropertiesProvider;
@@ -25,7 +26,11 @@ import io.techery.janet.Janet;
 
 import static com.worldventures.dreamtrips.core.janet.JanetModule.JANET_WALLET;
 
-@Module(complete = false, library = true)
+@Module(
+      includes = {
+            FirmwareModule.class
+      },
+      complete = false, library = true)
 public class WalletServiceModule {
 
    @Named(JANET_WALLET)
@@ -73,8 +78,8 @@ public class WalletServiceModule {
 
    @Singleton
    @Provides
-   FactoryResetManager factoryResetManager(@Named(JANET_WALLET) Janet janet, SmartCardInteractor smartCardInteractor) {
-      return new FactoryResetManager(janet, smartCardInteractor);
+   FactoryResetInteractor factoryResetManager(@Named(JANET_WALLET) Janet janet) {
+      return new FactoryResetInteractor(janet);
    }
 
    @Singleton

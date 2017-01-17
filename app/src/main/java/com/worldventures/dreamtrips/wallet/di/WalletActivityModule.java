@@ -11,6 +11,9 @@ import com.worldventures.dreamtrips.wallet.ui.dashboard.CardListPresenter;
 import com.worldventures.dreamtrips.wallet.ui.dashboard.util.cell.BankCardCell;
 import com.worldventures.dreamtrips.wallet.ui.dashboard.util.cell.CardStackCell;
 import com.worldventures.dreamtrips.wallet.ui.dashboard.util.cell.CardStackHeaderCell;
+import com.worldventures.dreamtrips.wallet.ui.settings.firmware.force.pairkey.ForcePairKeyPresenter;
+import com.worldventures.dreamtrips.wallet.ui.settings.firmware.force.poweron.ForceUpdatePowerOnPresenter;
+import com.worldventures.dreamtrips.wallet.ui.settings.firmware.force.factoryreset.ForceFactoryResetPresenter;
 import com.worldventures.dreamtrips.wallet.ui.provisioning_blocked.WalletProvisioningBlockedPresenter;
 import com.worldventures.dreamtrips.wallet.ui.provisioning_blocked.cell.SupportedDeviceItemCell;
 import com.worldventures.dreamtrips.wallet.ui.provisioning_blocked.cell.SupportedDevicesListCell;
@@ -105,7 +108,10 @@ import dagger.Provides;
             WizardAssignUserPresenter.class,
             AboutPresenter.class,
             PairKeyPresenter.class,
-            ConnectionErrorPresenter.class
+            ConnectionErrorPresenter.class,
+            ForceFactoryResetPresenter.class,
+            ForceUpdatePowerOnPresenter.class,
+            ForcePairKeyPresenter.class
       },
       complete = false, library = true
 )

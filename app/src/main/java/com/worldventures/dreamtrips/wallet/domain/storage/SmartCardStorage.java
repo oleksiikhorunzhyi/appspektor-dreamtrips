@@ -22,8 +22,10 @@ public class SmartCardStorage implements ActionStorage<SmartCard> {
 
    @Override
    public void save(@Nullable CacheBundle params, SmartCard data) {
-      snappyRepository.setActiveSmartCardId(data.smartCardId());
-      snappyRepository.saveSmartCard(data);
+      if (data != null) {
+         snappyRepository.setActiveSmartCardId(data.smartCardId());
+         snappyRepository.saveSmartCard(data);
+      }
    }
 
    @Override

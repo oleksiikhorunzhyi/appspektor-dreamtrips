@@ -1,5 +1,7 @@
 package com.worldventures.dreamtrips.core.module;
 
+import android.app.Application;
+
 import com.worldventures.dreamtrips.core.janet.SessionActionPipeCreator;
 import com.worldventures.dreamtrips.core.utils.tracksystem.AdobeTracker;
 import com.worldventures.dreamtrips.core.utils.tracksystem.AnalyticsInteractor;
@@ -24,8 +26,8 @@ public class AnalyticsModule {
 
    @Singleton
    @Provides(type = Provides.Type.SET)
-   Tracker provideApptentiveTracker() {
-      return new ApptentiveTracker();
+   Tracker provideApptentiveTracker(Application application) {
+      return new ApptentiveTracker(application);
    }
 
    @Singleton

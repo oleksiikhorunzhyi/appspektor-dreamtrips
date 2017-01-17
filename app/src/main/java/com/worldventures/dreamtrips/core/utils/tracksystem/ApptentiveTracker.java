@@ -1,10 +1,12 @@
 package com.worldventures.dreamtrips.core.utils.tracksystem;
 
 import android.app.Activity;
+import android.app.Application;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
 
 import com.apptentive.android.sdk.Apptentive;
+import com.worldventures.dreamtrips.BuildConfig;
 
 import java.lang.ref.WeakReference;
 import java.util.Map;
@@ -17,6 +19,10 @@ public class ApptentiveTracker extends Tracker {
 
    private WeakReference<Activity> activity;
 
+   public ApptentiveTracker(Application application) {
+      Apptentive.register(application, BuildConfig.SURVEY_API_TOKEN);
+   }
+
    @Override
    public String getKey() {
       return TRACKER_KEY;
@@ -28,14 +34,12 @@ public class ApptentiveTracker extends Tracker {
    }
 
    public void onStart(@Nullable Activity activity) {
-      if (checkNullAndWarn(activity)) return;
+      Timber.v("onStart");
       this.activity = new WeakReference<>(activity);
-      Apptentive.onStart(activity);
    }
 
    public void onStop(@Nullable Activity activity) {
-      if (checkNullAndWarn(activity)) return;
-      Apptentive.onStop(activity);
+      Timber.v("onStop");
    }
 
    @Override

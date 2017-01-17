@@ -153,9 +153,10 @@ android {
       buildConfigField 'String', 'MESSENGER_API_URL', '"dtmsgapp-dev.worldventures.biz"'
       buildConfigField 'int', 'MESSENGER_API_PORT', '5222'
       //
+      buildConfigField 'String', 'SURVEY_API_TOKEN', '"7bfd74f4bc1d1273aa54a5b0b6f7a8bd4c8eeaf36c6e902a1f0d66398f6707ba"'
+      //
       manifestPlaceholders = [:]
       manifestPlaceholders['fabricApiKey'] = "21da61424102fe8cf2f861fa914442a098312625"
-      manifestPlaceholders['surveyApiToken'] = "7bfd74f4bc1d1273aa54a5b0b6f7a8bd4c8eeaf36c6e902a1f0d66398f6707ba"
    }
 
    testOptions {
@@ -446,7 +447,7 @@ dependencies {
       transitive = true;
    }
    compile 'com.newrelic.agent.android:android-agent:5.8.4'
-   compile 'com.apptentive:apptentive-android:2.0.1@aar'
+   compile 'com.apptentive:apptentive-android:3.4.0@aar'
    compile 'com.github.techery:job-executor:0.1.1'
    compile 'com.amazonaws:aws-android-sdk-core:2.2.6'
    compile 'com.amazonaws:aws-android-sdk-s3:2.2.6'

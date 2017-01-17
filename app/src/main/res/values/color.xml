@@ -109,7 +109,7 @@
    <!-- General -->
    <color name="main_background">@color/white</color>
    <color name="action_bar_spinner_dropdown_text_color">#313131</color>
-   <color name="online_indicator_inner">@color/colorAccent</color>
+   <color name="online_indicator_inner">#1E88E5</color>
    <color name="online_indicator_outer">@color/white</color>
    <color name="chat_grey_color">#9B9B9B</color>
    <color name="list_item_divider_color">#E1E1E1</color>

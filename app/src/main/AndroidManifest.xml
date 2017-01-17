@@ -73,10 +73,6 @@
             android:value="AIzaSyBdicT31P63SyGzc9KWgrF2vB05nBTPciU"
             />
       <meta-data
-            android:name="apptentive_api_key"
-            android:value="${surveyApiToken}"
-            />
-      <meta-data
             android:name="io.fabric.ApiKey"
             android:value="${fabricApiKey}"
             />
@@ -201,11 +197,6 @@
             android:name="com.yalantis.ucrop.UCropActivity"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar"
-            />
-
-      <activity
-            android:name="com.apptentive.android.sdk.ViewActivity"
-            android:theme="@style/ApptentiveTheme.Transparent"
             />
 
       <service

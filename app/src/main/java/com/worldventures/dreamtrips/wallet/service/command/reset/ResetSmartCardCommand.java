@@ -42,7 +42,7 @@ public class ResetSmartCardCommand extends Command<Void> implements InjectableAc
             .flatMap(action -> disassociateCardUserServer(smartCard))
             .flatMap(action -> disassociateCardUser())
             .flatMap(action -> disconnect())
-            .flatMap(action -> removeSmartCardData(smartCard))
+            .flatMap(action -> removeSmartCardData())
             .map(action -> null);
    }
 
@@ -69,9 +69,9 @@ public class ResetSmartCardCommand extends Command<Void> implements InjectableAc
             .createObservableResult(new UnAssignUserAction());
    }
 
-   private Observable<RemoveSmartCardDataCommand> removeSmartCardData(SmartCard smartCard) {
+   private Observable<RemoveSmartCardDataCommand> removeSmartCardData() {
       return walletJanet.createPipe(RemoveSmartCardDataCommand.class)
-            .createObservableResult(new RemoveSmartCardDataCommand(smartCard.smartCardId()));
+            .createObservableResult(new RemoveSmartCardDataCommand());
    }
 
 }

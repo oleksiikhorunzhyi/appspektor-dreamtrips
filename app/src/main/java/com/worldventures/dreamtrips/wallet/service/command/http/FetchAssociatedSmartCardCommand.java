@@ -43,7 +43,7 @@ public class FetchAssociatedSmartCardCommand extends Command<FetchAssociatedSmar
    protected void run(CommandCallback<FetchAssociatedSmartCardCommand.AssociatedCard> callback) throws Throwable {
       SmartCard smartCard = getSmartCardFromCache();
       if (smartCard != null && smartCard.cardStatus() == SmartCard.CardStatus.ACTIVE) {
-         callback.onSuccess(createAssociatedCard(smartCard, snappyRepository.getSmartCardDetails(smartCard.smartCardId())));
+         callback.onSuccess(createAssociatedCard(smartCard, snappyRepository.getSmartCardDetails()));
          return;
       }
       janet.createPipe(GetAssociatedCardsHttpAction.class)
@@ -58,7 +58,7 @@ public class FetchAssociatedSmartCardCommand extends Command<FetchAssociatedSmar
    private SmartCard getSmartCardFromCache() {
       String activeSmartCardId = snappyRepository.getActiveSmartCardId();
       if (activeSmartCardId == null) return null;
-      return snappyRepository.getSmartCard(activeSmartCardId);
+      return snappyRepository.getSmartCard();
    }
 
    private Observable<FetchAssociatedSmartCardCommand.AssociatedCard> handleResponse(List<SmartCardInfo> listSmartCardInfo) {

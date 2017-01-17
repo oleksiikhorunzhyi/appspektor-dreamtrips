@@ -80,7 +80,7 @@ class SmartCardInteractorSpec : BaseSpec({
             val activeSmartCardId = "4"
             val smartcard: SmartCard = mockSmartCard(activeSmartCardId)
             whenever(mockDb.activeSmartCardId).thenReturn(activeSmartCardId)
-            whenever(mockDb.getSmartCard(activeSmartCardId)).thenReturn(smartcard)
+            whenever(mockDb.smartCard).thenReturn(smartcard)
 
             val connectionStastus = SmartCard.ConnectionStatus.DISCONNECTED;
             val testSubscriber: TestSubscriber<ActionState<ActiveSmartCardCommand>> = TestSubscriber()
@@ -192,7 +192,7 @@ class SmartCardInteractorSpec : BaseSpec({
             val smartCardId = "111"
             val smartCard = mockSmartCard(smartCardId)
             whenever(mockDb.activeSmartCardId).thenReturn(smartCardId)
-            whenever(mockDb.getSmartCard(smartCardId)).thenReturn(smartCard)
+            whenever(mockDb.smartCard).thenReturn(smartCard)
 
             // mock saving result after delete
             var list = listOf<BankCard>(debitCard, creditCard)
@@ -254,7 +254,7 @@ class SmartCardInteractorSpec : BaseSpec({
             val smartCardId = "111"
             val smartCard = mockSmartCard(smartCardId)
             whenever(mockDb.activeSmartCardId).thenReturn(smartCardId)
-            whenever(mockDb.getSmartCard(smartCardId)).thenReturn(smartCard)
+            whenever(mockDb.smartCard).thenReturn(smartCard)
          }
 
          it("Card with valid data should be stored with default address and marked as default") {

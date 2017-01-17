@@ -236,9 +236,9 @@ public interface SnappyRepository {
 
    void saveSmartCard(SmartCard smartCard);
 
-   SmartCard getSmartCard(String smartCardId);
+   SmartCard getSmartCard();
 
-   void deleteSmartCard(String smartCardId);
+   void deleteSmartCard();
 
    List<SmartCard> getSmartCards();
 
@@ -256,9 +256,9 @@ public interface SnappyRepository {
 
    void saveSmartCardDetails(SmartCardDetails details);
 
-   SmartCardDetails getSmartCardDetails(String smartCardId);
+   SmartCardDetails getSmartCardDetails();
 
-   void deleteSmartCardDetails(String smartCardId);
+   void deleteSmartCardDetails();
 
    void saveFirmwareUpdateData(FirmwareUpdateData firmwareUpdateData);
 

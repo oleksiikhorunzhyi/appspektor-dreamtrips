@@ -9,7 +9,6 @@ apply plugin: 'newrelic'
 apply from: 'helper-methods.gradle'
 
 repositories {
-   mavenLocal()
    jcenter()
    maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
    maven { url 'http://dl.bintray.com/techery/android' }

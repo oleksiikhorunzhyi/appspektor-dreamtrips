@@ -49,7 +49,7 @@ public class WalletInstallFirmwarePresenter extends WalletPresenter<WalletInstal
             .compose(new ActionPipeCacheWiper(firmwareInteractor.installFirmwarePipe()))
             .compose(bindViewIoToMainComposer())
             .subscribe(OperationActionStateSubscriberWrapper.<InstallFirmwareCommand>forView(getView())
-                  .onSuccess(command -> openSuccess())
+                  .onSuccess(command -> openSuccess(command.getResult()))
                   .onProgress((command, integer) -> getView().showInstallingStatus(command.getCurrentStep(),
                         InstallFirmwareCommand.INSTALL_FIRMWARE_TOTAL_STEPS, integer))
                   .onFail(ErrorHandler.create(getContext()))
@@ -80,10 +80,10 @@ public class WalletInstallFirmwarePresenter extends WalletPresenter<WalletInstal
       firmwareInteractor.installFirmwarePipe().send(new InstallFirmwareCommand());
    }
 
-   private void openSuccess() {
+   private void openSuccess(FirmwareUpdateData firmwareUpdateData) {
       History.Builder historyBuilder = History.emptyBuilder();
       historyBuilder.push(new CardListPath());
-      historyBuilder.push(new WalletSuccessInstallFirmwarePath());
+      historyBuilder.push(new WalletSuccessInstallFirmwarePath(firmwareUpdateData));
       navigator.setHistory(historyBuilder.build(), Flow.Direction.REPLACE);
    }
 

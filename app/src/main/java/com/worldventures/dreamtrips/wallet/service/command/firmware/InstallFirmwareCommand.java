@@ -22,13 +22,12 @@ import io.techery.janet.smartcard.model.ImmutableConnectionParams;
 import rx.Observable;
 import rx.Subscription;
 
-import static com.worldventures.dreamtrips.core.janet.CommandActionBaseHelper.ActionCommandSubscriber.wrap;
 import static com.worldventures.dreamtrips.core.janet.JanetModule.JANET_WALLET;
 import static rx.Observable.error;
 import static rx.Observable.just;
 
 @CommandAction
-public class InstallFirmwareCommand extends Command<Void> implements InjectableAction {
+public class InstallFirmwareCommand extends Command<FirmwareUpdateData> implements InjectableAction {
 
    public static final int INSTALL_FIRMWARE_TOTAL_STEPS = 4;
 
@@ -45,14 +44,14 @@ public class InstallFirmwareCommand extends Command<Void> implements InjectableA
    }
 
    @Override
-   protected void run(CommandCallback<Void> callback) throws Throwable {
+   protected void run(CommandCallback<FirmwareUpdateData> callback) throws Throwable {
       loadFirmwareFilesCommandActionPipe = janet.createPipe(LoadFirmwareFilesCommand.class);
       if (firmwareRepository.getFirmwareUpdateData() == null) {
          throw new IllegalStateException("FirmwareUpdateData does not exist");
       }
       prepareCardAndInstallFirmware(callback)
             .flatMap(aVoid -> clearFirmwareUpdateCache())
-            .subscribe(wrap(callback));
+            .subscribe(callback::onSuccess, callback::onFail);
    }
 
    private Observable<Void> prepareCardAndInstallFirmware(CommandCallback callback) {
@@ -102,12 +101,12 @@ public class InstallFirmwareCommand extends Command<Void> implements InjectableA
             .map(it -> (Void) null);
    }
 
-   private Observable<Void> clearFirmwareUpdateCache() {
+   private Observable<FirmwareUpdateData> clearFirmwareUpdateCache() {
       final FirmwareUpdateData data = firmwareRepository.getFirmwareUpdateData();
       firmwareRepository.clear();
       return firmwareInteractor.clearFirmwareFilesPipe()
             .createObservableResult(new FirmwareClearFilesCommand(data.firmwareFile().getParent()))
-            .map(command -> null);
+            .map(command -> data);
    }
 
    public int getCurrentStep() {

@@ -89,7 +89,7 @@ public class WalletInstallFirmwarePresenter extends WalletPresenter<WalletInstal
 
    void cancelReinstall() {
       sendRetryAnalyticAction(false);
-      navigator.single(new CardListPath(), Flow.Direction.BACKWARD);
+      navigator.finish();
    }
 
    void retry() {

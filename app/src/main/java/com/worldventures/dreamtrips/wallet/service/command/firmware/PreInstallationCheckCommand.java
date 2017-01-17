@@ -4,7 +4,6 @@ import com.worldventures.dreamtrips.core.janet.JanetModule;
 import com.worldventures.dreamtrips.core.janet.dagger.InjectableAction;
 import com.worldventures.dreamtrips.wallet.domain.entity.FirmwareUpdateData;
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCardFirmware;
-import com.worldventures.dreamtrips.wallet.service.SmartCardInteractor;
 import com.worldventures.dreamtrips.wallet.service.WalletBluetoothService;
 import com.worldventures.dreamtrips.wallet.service.firmware.FirmwareRepository;
 import com.worldventures.dreamtrips.wallet.util.SCFirmwareUtils;
@@ -36,7 +35,6 @@ public class PreInstallationCheckCommand extends Command<PreInstallationCheckCom
 
    @Inject @Named(JanetModule.JANET_WALLET) Janet janet;
    @Inject WalletBluetoothService bluetoothService;
-   @Inject SmartCardInteractor smartCardInteractor;
    @Inject FirmwareRepository firmwareRepository;
 
    @Override

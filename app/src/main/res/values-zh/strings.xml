@@ -26,7 +26,6 @@
    <string name="trips">DreamTrips</string>
    <string name="drawer_open">菜单已打开</string>
    <string name="drawer_close">菜单已关闭</string>
-   <string name="empty" translatable="false"></string>
    <string name="logout_dialog_title">退出</string>
    <string name="logout_dialog_message">您确定要退出吗？</string>
    <string name="logout_dialog_positive_btn">退出</string>
@@ -127,6 +126,10 @@
    <string name="bucket_list_create_message">目前您没有人生愿望清单项目。您可以从流行的人生愿望清单项目中进行选择或创建自己的目标</string>
    <string name="bucket_list_choose">选择热门项目</string>
    <string name="bucket_list_create_new">创建我自己的清单</string>
+   <string name="bucket_list_action_create_error">无法添加愿望清单项目</string>
+   <string name="bucket_list_action_update_error">无法更新愿望清单项目</string>
+   <string name="bucket_list_action_change_order_error">无法更改愿望清单项目顺序</string>
+   <string name="bucket_list_action_delete_error">无法删除愿望清单项目</string>
    <string name="bucket_hint_title">标题</string>
    <string name="bucket_hint_description">描述</string>
    <string name="bucket_hint_description_text">在此处键入您的描述</string>
@@ -171,7 +174,9 @@
    <string name="training_videos">培训视频</string>
    <string name="error_while_sync">出了些问题</string>
    <string name="can_not_like_photo">不能点赞照片</string>
+   <string name="like">%1$d点赞</string>
    <string name="likes">%1$d点赞</string>
+   <string name="comment_single">%1$d评论</string>
    <string name="comments">%1$d评论</string>
    <string name="wrong_image">错误的图像</string>
    <string name="could_not_load">无法加载 </string>
@@ -316,7 +321,7 @@
    <string name="feed_photo">照片</string>
    <string name="feed_bucket">人生愿望清单项目</string>
    <string name="coming_soon">即将推出</string>
-   <string name="loading">载入中…</string>
+   <string name="loading">载入中...</string>
    <string name="filter_video_title_language">选择语言</string>
    <string name="filter_video_title_country">选择国家</string>
    <string name="comments_title">评论</string>
@@ -330,7 +335,7 @@
    <string name="comment_delete_confirm">是的，删除它！</string>
    <string name="post_visibility_public">公开的</string>
    <string name="post_hint">您要做什么？</string>
-   <string name="photo_hint">说说照片…</string>
+   <string name="photo_hint">说说照片...</string>
    <string name="post">帖子</string>
 
    /////////Date time relative strings
@@ -392,6 +397,7 @@
    <string name="photo_delete">删除照片</string>
    <string name="photo_edit">编辑照片</string>
    <string name="photo_delete_caption">您确定要删除该照片？</string>
+   <string name="photo_edit_error">无法编辑照片</string>
 
    <string name="bucket_delete">删除人生愿望清单项目</string>
    <string name="bucket_edit">编辑人生愿望清单项目</string>
@@ -465,13 +471,13 @@
    <string name="no_mutual_friends">您没有任何共同的朋友</string>
 
    <string name="photo_limitation_message">请选择最多%1$d张照片</string>
-   <string name="pending">待处理…</string>
+   <string name="pending">待处理...</string>
 
    <string name="back">回去</string>
    <string name="logout_component">退出</string>
    <string name="start_typing_name">开始键入名称</string>
 
-   <string name="multiple_dates">多个日期， %1$s …</string>
+   <string name="multiple_dates">多个日期， %1$s ...</string>
 
    <string name="tag_photo">对您进行了标记</string>
 
@@ -487,6 +493,12 @@
    <string name="feedback_has_been_sent">您的反馈发送。谢谢您</string>
    <string name="feedback_send_btn">发送</string>
    <string name="feedback_select_category">选择类别</string>
+   <string name="feedback_add_photos">添加照片</string>
+   <string name="feedback_could_not_load_attachment">无法加载附件</string>
+   <string name="feedback_attachment_failed_item_retry">重试</string>
+   <string name="feedback_attachment_failed_item_remove">移除</string>
+   <string name="feedback_fullscreen_attachments_format">%2$d中的%1$d</string>
+   <string name="feedback_fullscreen_attachments_remove">移除</string>
 
    <string name="years_ago">%1$d年前</string>
    <string name="invitation_template">选择模板</string>
@@ -585,7 +597,24 @@
    <string name="error_fail_to_load_videos">无法加载视频</string>
    <string name="error_fail_to_like_item">无法点赞项目</string>
    <string name="error_fail_to_unlike_item">无法取消点赞项目</string>
+   <string name="error_fail_to_load_documents">无法加载文件</string>
    <string name="tag_people">给人加标签</string>
+
+   <string name="uploading_post_status_progress_singular">上传照片...</string>
+   <string name="uploading_post_status_progress_plural">上传%1$d张照片…</string>
+   <string name="uploading_post_status_paused">上传已暂停</string>
+   <string name="uploading_post_status_waiting">等候</string>
+   <string name="uploading_post_status_failed_connection">失去连接</string>
+   <string name="uploading_post_status_uploaded">帖子上传成功！</string>
+   <string name="uploading_post_time_left_posting">正在发布...</string>
+   <string name="uploading_post_time_time_left">离开</string>
+   <string name="uploading_post_time_left_seconds">S</string>
+   <string name="uploading_post_time_left_minutes">M</string>
+   <string name="uploading_post_time_left_hours">h</string>
+   <string name="uploading_post_time_left_more_than_one_day">超过1天...</string>
+   <string name="uploading_post_cancel_upload_message">取消上传？</string>
+   <string name="uploading_post_cancel_upload_positive_button">是</string>
+   <string name="uploading_post_cancel_upload_negative_button">不是</string>
 
    <string name="say_something">向世界说点什么</string>
 
@@ -654,9 +683,16 @@
 
    <string name="error_fail_to_load_filters">很抱歉，无法加载筛选条件</string>
    <string name="flag_content_message">WorldVentures人员将被通知审查此内容 </string>
+   <string name="try_again">再试一次</string>
 
-   <!-- change this later after approval from WV -->
    <string name="offline_warning_dialog_title">没有网络连接</string>
    <string name="offline_warning_dialog_message">您的使用将受到限制</string>
+   <string name="offline_indicator_description">没有网络连接</string>
 
+   <string name="merchant_message_text" formatted="false">恭喜！您已赚取%1$sDreamTrips点数@%2$s，%3$s</string>
+
+   <string name="beta_label">Beta版</string>
+
+   <string name="documents">文件</string>
+   <string name="documents_empty_text">此次无法加载文件。</string>
 </resources>

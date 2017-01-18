@@ -13,8 +13,8 @@ import io.techery.janet.command.annotations.CommandAction;
 @CommandAction
 public class HashtagSuggestionCommand extends MappableApiActionCommand<GetHashtagsSuggestsAction, List<HashtagSuggestion>, HashtagSuggestion> {
 
-   private final int PAGE = 1;
-   private final int PER_PAGE = 20;
+   private static final int PAGE = 1;
+   private static final int PER_PAGE = 10;
 
    private String fullQueryText;
    private String query;

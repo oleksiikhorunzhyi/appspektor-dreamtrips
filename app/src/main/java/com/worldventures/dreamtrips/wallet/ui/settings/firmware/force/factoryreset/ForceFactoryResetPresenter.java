@@ -36,10 +36,13 @@ public class ForceFactoryResetPresenter extends WalletPresenter<ForceFactoryRese
             .compose(bindViewIoToMainComposer())
             .subscribe(OperationActionStateSubscriberWrapper.<PrepareForUpdateCommand>forView(getView().provideOperationDelegate())
                   .onSuccess(command -> cardPrepared(command.getResult()))
-                  .onFail(ErrorHandler.create(getContext(), command -> navigator.finish()))
+                  .onFail(ErrorHandler.create(getContext(), command -> prepareForUpdate()))
                   .wrap());
 
+      prepareForUpdate();
+   }
 
+   private void prepareForUpdate() {
       firmwareFacade.prepareForUpdate();
    }
 
@@ -61,6 +64,10 @@ public class ForceFactoryResetPresenter extends WalletPresenter<ForceFactoryRese
 
    public void goBack() {
       navigator.goBack();
+   }
+
+   public void finish() {
+      navigator.finish();
    }
 
    public interface Screen extends WalletScreen {

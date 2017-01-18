@@ -73,10 +73,12 @@ public class ForceFactoryResetScreen extends WalletLinearLayout<ForceFactoryRese
    public void showError(String message, @Nullable Action1<Void> action) {
       new MaterialDialog.Builder(getContext())
             .content(message)
-            .positiveText(R.string.ok)
-            .dismissListener(dialog -> {
+            .positiveText(R.string.wallet_firmware_install_error_retry_action)
+            .negativeText(R.string.wallet_firmware_install_error_cancel_action)
+            .onPositive((dialog, which) -> {
                if (action != null) action.call(null);
             })
+            .onNegative((dialog, which) -> presenter.finish())
             .show();
    }
 }

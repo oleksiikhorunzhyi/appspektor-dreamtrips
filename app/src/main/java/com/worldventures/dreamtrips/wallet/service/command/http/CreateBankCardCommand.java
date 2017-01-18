@@ -2,6 +2,7 @@ package com.worldventures.dreamtrips.wallet.service.command.http;
 
 import com.worldventures.dreamtrips.api.smart_card.bank_info.GetBankInfoHttpAction;
 import com.worldventures.dreamtrips.core.janet.dagger.InjectableAction;
+import com.worldventures.dreamtrips.wallet.domain.entity.FinancialService;
 import com.worldventures.dreamtrips.wallet.domain.entity.ImmutableRecordIssuerInfo;
 import com.worldventures.dreamtrips.wallet.domain.entity.RecordIssuerInfo;
 import com.worldventures.dreamtrips.wallet.domain.entity.card.BankCard;
@@ -45,7 +46,7 @@ public class CreateBankCardCommand extends Command<BankCard> implements Injectab
    private BankCard createBankCard(BankCard bankCard, RecordIssuerInfo recordIssuerInfo) {
       if (BankCardHelper.isAmexBank(swipedCard.cardNumber())) {
          recordIssuerInfo = ImmutableRecordIssuerInfo.copyOf(recordIssuerInfo)
-               .withFinancialService(Record.FinancialService.AMEX);
+               .withFinancialService(FinancialService.AMEX);
       }
       return ImmutableBankCard.copyOf(bankCard)
             .withIssuerInfo(recordIssuerInfo);

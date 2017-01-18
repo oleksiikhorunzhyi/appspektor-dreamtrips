@@ -35,45 +35,45 @@
                android:orientation="vertical"
                >
 
-      <TextView
-            android:id="@+id/header"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="@dimen/spacing_medium"
-            android:layout_marginTop="@dimen/spacing_normal"
-            android:gravity="center"
-            android:text="@string/wallet_firmware_pre_installation_header"
-            />
+            <TextView
+                  android:id="@+id/header"
+                  android:layout_width="match_parent"
+                  android:layout_height="wrap_content"
+                  android:layout_marginBottom="@dimen/spacing_medium"
+                  android:layout_marginTop="@dimen/spacing_normal"
+                  android:gravity="center"
+                  android:text="@string/wallet_firmware_pre_installation_header"
+                  />
 
-      <com.worldventures.dreamtrips.wallet.ui.widget.WalletCheckWidget
-            android:id="@+id/check_widget_bluetooth"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:icon="@drawable/ic_wallet_bluetooth"
-            app:title="@string/wallet_firmware_pre_installation_bluetooth"
-            />
+            <com.worldventures.dreamtrips.wallet.ui.widget.WalletCheckWidget
+                  android:id="@+id/check_widget_bluetooth"
+                  android:layout_width="match_parent"
+                  android:layout_height="wrap_content"
+                  app:icon="@drawable/ic_wallet_bluetooth"
+                  app:title="@string/wallet_firmware_pre_installation_bluetooth"
+                  />
 
-      <com.worldventures.dreamtrips.wallet.ui.widget.WalletCheckWidget
-            android:id="@+id/check_widget_connection"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:visibility="gone"
-            app:checked="true"
-            app:icon="@drawable/ic_wallet_power"
-            app:title="@string/wallet_firmware_pre_installation_connection"
-            tools:visibility="visible"
-            />
+            <com.worldventures.dreamtrips.wallet.ui.widget.WalletCheckWidget
+                  android:id="@+id/check_widget_connection"
+                  android:layout_width="match_parent"
+                  android:layout_height="wrap_content"
+                  android:visibility="gone"
+                  app:checked="true"
+                  app:icon="@drawable/ic_wallet_power"
+                  app:title="@string/wallet_firmware_pre_installation_connection"
+                  tools:visibility="visible"
+                  />
 
-      <com.worldventures.dreamtrips.wallet.ui.widget.WalletCheckWidget
-            android:id="@+id/check_widget_battery"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            <com.worldventures.dreamtrips.wallet.ui.widget.WalletCheckWidget
+                  android:id="@+id/check_widget_battery"
+                  android:layout_width="match_parent"
+                  android:layout_height="wrap_content"
 
-            android:visibility="gone"
-            app:icon="@drawable/ic_wallet_charged"
-            app:title="@string/wallet_firmware_pre_installation_charging"
-            tools:visibility="visible"
-            />
+                  android:visibility="gone"
+                  app:icon="@drawable/ic_wallet_charged"
+                  app:title="@string/wallet_firmware_pre_installation_charging"
+                  tools:visibility="visible"
+                  />
 
             <com.worldventures.dreamtrips.wallet.ui.widget.WalletCheckWidget
                   android:id="@+id/check_widget_charger"
@@ -81,7 +81,7 @@
                   android:layout_height="wrap_content"
                   android:visibility="gone"
                   app:icon="@drawable/ic_wallet_card_in_charger"
-                  app:title="@string/wallet_firmware_pre_installation_charging"
+                  app:title="@string/wallet_firmware_pre_installation_insert_smart_card_to_charger"
                   tools:visibility="visible"
                   />
 

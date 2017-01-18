@@ -39,9 +39,11 @@ public abstract class BaseLoadFirmwareCommand extends Command<Void> implements I
    }
 
    private void updateSmartCardUpdateStatus() {
-      SmartCard smartCard = snappyRepository.getSmartCard(snappyRepository.getActiveSmartCardId());
-      SmartCardFirmware updatedSmartCardFirmware = updatedSmartCardFirmware(smartCard.firmwareVersion());
-      snappyRepository.saveSmartCard(ImmutableSmartCard.copyOf(smartCard).withFirmwareVersion(updatedSmartCardFirmware));
+      SmartCard smartCard = snappyRepository.getSmartCard();
+      if (smartCard != null && smartCard.firmwareVersion() != null) {
+         SmartCardFirmware updatedSmartCardFirmware = updatedSmartCardFirmware(smartCard.firmwareVersion());
+         snappyRepository.saveSmartCard(ImmutableSmartCard.copyOf(smartCard).withFirmwareVersion(updatedSmartCardFirmware));
+      }
    }
 
    abstract Observable<Integer> provideProgress();

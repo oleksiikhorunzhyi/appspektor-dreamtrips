@@ -11,6 +11,7 @@ import android.text.style.StyleSpan;
 
 import com.techery.spares.module.qualifier.ForApplication;
 import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.wallet.domain.entity.FinancialService;
 import com.worldventures.dreamtrips.wallet.domain.entity.card.BankCard;
 
 import io.techery.janet.smartcard.model.Record;
@@ -47,7 +48,7 @@ public class BankCardHelper {
       return cardNumber.length() == 15 && amexPrefix;
    }
 
-   public String obtainFinancialServiceType(Record.FinancialService financialService) {
+   public String obtainFinancialServiceType(FinancialService financialService) {
       switch (financialService) {
          case VISA:
             return context.getString(R.string.wallet_card_financial_service_visa);

@@ -8,8 +8,10 @@ import com.worldventures.dreamtrips.wallet.service.command.CardListCommand;
 import com.worldventures.dreamtrips.wallet.service.command.DefaultCardIdCommand;
 import com.worldventures.dreamtrips.wallet.service.command.FetchBatteryLevelCommand;
 import com.worldventures.dreamtrips.wallet.service.command.FetchCardPropertiesCommand;
+import com.worldventures.dreamtrips.wallet.service.command.FetchFirmwareVersionCommand;
 import com.worldventures.dreamtrips.wallet.service.command.SetLockStateCommand;
 import com.worldventures.dreamtrips.wallet.service.command.SyncCardsCommand;
+import com.worldventures.dreamtrips.wallet.service.command.UpdateBankCardCommand;
 import com.worldventures.dreamtrips.wallet.service.command.firmware.LoadFirmwareFilesCommand;
 
 import java.util.concurrent.TimeUnit;
@@ -36,7 +38,7 @@ class SmartCardSyncManager {
 
    private final Janet janet;
    private final SmartCardInteractor interactor;
-   private volatile boolean syncDisabled = true;
+   private volatile boolean syncDisabled = false;
 
    SmartCardSyncManager(Janet janet, SmartCardInteractor interactor) {
       this.janet = janet;
@@ -46,6 +48,24 @@ class SmartCardSyncManager {
       connectFetchingBattery();
       connectSyncCards();
       connectSyncDisabling();
+      connectFetchingFirmwareVersion();
+   }
+
+   private void connectFetchingFirmwareVersion() {
+      interactor.cardInChargerEventPipe().observeSuccess()
+            .filter(cardInChargerEvent -> cardInChargerEvent.inCharger)
+            .compose(new FilterActiveConnectedSmartCard(interactor))
+            .flatMap(smartCard ->
+                  interactor.fetchFirmwareVersionPipe()
+                        .createObservableResult(new FetchFirmwareVersionCommand())
+                        .map(Command::getResult))
+            .flatMap(firmwareVersion ->
+                  interactor.activeSmartCardPipe()
+                        .createObservableResult(new ActiveSmartCardCommand(smartCard ->
+                              ImmutableSmartCard.copyOf(smartCard)
+                                    .withFirmwareVersion(firmwareVersion))))
+            .subscribe();
+
    }
 
    private void connectSyncDisabling() {
@@ -70,7 +90,8 @@ class SmartCardSyncManager {
             .flatMap(connectionStatus -> interactor.activeSmartCardPipe()
                   .createObservableResult(new ActiveSmartCardCommand(smartCard ->
                         ImmutableSmartCard.copyOf(smartCard)
-                              .withConnectionStatus(connectionStatus))))
+                              .withConnectionStatus(connectionStatus)))
+                  .filter(command -> command.getCacheData() != null))
             .subscribe(command -> {
             }, throwable -> Timber.e(throwable, "Error while updating status of active card"));
    }
@@ -147,11 +168,9 @@ class SmartCardSyncManager {
             .map(Command::getResult)
             .subscribe(properties -> interactor.activeSmartCardPipe()
                   .send(new ActiveSmartCardCommand(smartCard -> {
-                     ImmutableSmartCardFirmware smartCardFirmware = ImmutableSmartCardFirmware.copyOf(properties.firmwareVersion());
-                     if (smartCard.firmwareVersion() != null) {
-                        smartCardFirmware = smartCardFirmware
-                              .withFirmwareVersion(smartCard.firmwareVersion().firmwareVersion());
-                     }
+                     // 2 lines for support @deprecated field of firmwareVersion, new field nordicAppVersion.
+                     ImmutableSmartCardFirmware smartCardFirmware = ImmutableSmartCardFirmware.copyOf(properties.firmwareVersion())
+                           .withFirmwareVersion(properties.firmwareVersion().nordicAppVersion());
                      return ImmutableSmartCard.builder()
                            .from(smartCard)
                            .sdkVersion(properties.sdkVersion())
@@ -182,11 +201,7 @@ class SmartCardSyncManager {
 
    private void connectFetchingBattery() {
       Observable.interval(0, 1, TimeUnit.MINUTES)
-            .flatMap(aLong -> interactor.activeSmartCardPipe()
-                  .createObservableResult(new ActiveSmartCardCommand()))
-            .map(Command::getResult)
-            .filter(smartCard -> smartCard.connectionStatus() == CONNECTED
-                  && smartCard.cardStatus() == SmartCard.CardStatus.ACTIVE)
+            .compose(new FilterActiveConnectedSmartCard(interactor))
             .filter(smartCard -> !syncDisabled)
             .subscribe(value ->
                         interactor.fetchBatteryLevelPipe().send(new FetchBatteryLevelCommand()),
@@ -198,11 +213,7 @@ class SmartCardSyncManager {
       Observable.interval(10, TimeUnit.MINUTES)
             .mergeWith(interactor.cardsListPipe().observeSuccess()
                   .map(cardListCommand -> null))
-            .flatMap(aLong -> interactor.activeSmartCardPipe()
-                  .createObservableResult(new ActiveSmartCardCommand()))
-            .map(Command::getResult)
-            .filter(smartCard -> smartCard.connectionStatus() == CONNECTED
-                  && smartCard.cardStatus() == SmartCard.CardStatus.ACTIVE)
+            .compose(new FilterActiveConnectedSmartCard(interactor))
             .filter(smartCard -> !syncDisabled)
             .throttleFirst(10, TimeUnit.MINUTES)
             .flatMap(aLong -> interactor.cardSyncPipe()
@@ -224,13 +235,12 @@ class SmartCardSyncManager {
                         .send(add(attachCardCommand.getResult())));
 
       interactor.updateBankCardPipe()
-            .observeSuccess()
-            .map(Command::getResult)
-            .mergeWith(interactor.updateCardDetailsPipe()
-                  .observeSuccess()
-                  .map(Command::getResult))
-            .subscribe(result -> interactor.cardsListPipe()
-                  .send(edit(result)));
+            .observe()
+            .subscribe(new ActionStateSubscriber<UpdateBankCardCommand>()
+                  .onStart(updateBankCardCommand -> interactor.cardsListPipe()
+                        .send(edit(updateBankCardCommand.getBankCard())))
+                  .onSuccess(updateBankCardCommand -> interactor.cardsListPipe()
+                        .send(edit(updateBankCardCommand.getResult()))));
 
       //update cache default card
       interactor.setDefaultCardOnDeviceCommandPipe()
@@ -238,6 +248,23 @@ class SmartCardSyncManager {
             .map(Command::getResult)
             .subscribe(id -> interactor.defaultCardIdPipe().send(DefaultCardIdCommand.set(id)), throwable -> {
             });
+   }
+
+   private static final class FilterActiveConnectedSmartCard implements Observable.Transformer<Object, SmartCard> {
+
+      private final SmartCardInteractor interactor;
+
+
+      private FilterActiveConnectedSmartCard(SmartCardInteractor interactor) {this.interactor = interactor;}
+
+      @Override
+      public Observable<SmartCard> call(Observable<Object> target) {
+         return target.flatMap(value -> interactor.activeSmartCardPipe()
+               .createObservableResult(new ActiveSmartCardCommand()))
+               .map(Command::getResult)
+               .filter(smartCard -> smartCard.connectionStatus() == CONNECTED
+                     && smartCard.cardStatus() == SmartCard.CardStatus.ACTIVE);
+      }
    }
 
 }

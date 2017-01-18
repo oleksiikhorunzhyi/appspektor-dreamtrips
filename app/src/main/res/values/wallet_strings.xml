@@ -195,6 +195,9 @@
    <string name="wallet_dashboard_update_dialog_content">In order to get the best smart card experience please update your smart card with the latest software</string>
    <string name="wallet_dashboard_update_dialog_btn_text_negative">Not now</string>
    <string name="wallet_dashboard_update_dialog_btn_text_positive">Update</string>
+   <string name="wallet_dashboard_factory_reset_dialog_content">In order to enable the latest features on your smart card it will need to be factory reset. This will only take a few minutes. After the update you will need to set up your smart card again.</string>
+   <string name="wallet_dashboard_factory_reset_dialog_btn_text_negative">Cancel</string>
+   <string name="wallet_dashboard_factory_reset_dialog_btn_text_positive">Continue</string>
 
    <!--charging-->
    <string name="wallet_charging_swiping_screen_title">Add Payment Card</string>
@@ -312,6 +315,7 @@
    <string name="wallet_firmware_pre_installation_bluetooth">Enable Bluetooth and connect to the flye smart card</string>
    <string name="wallet_firmware_pre_installation_connection">Turn on the flye smart card</string>
    <string name="wallet_firmware_pre_installation_charging">Make sure your flye smart card is 50% charged</string>
+   <string name="wallet_firmware_pre_installation_insert_smart_card_to_charger">Insert Smart Card into the charger</string>
    <string name="wallet_firmware_pre_installation_button">Install</string>
    <string name="wallet_firmware_pre_installation_install_later">Install Later</string>
 

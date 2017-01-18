@@ -69,7 +69,7 @@ public class WalletSuccessInstallFirmwareScreen
    @NonNull
    @Override
    public WalletSuccessInstallFirmwarePresenter createPresenter() {
-      return new WalletSuccessInstallFirmwarePresenter(getContext(), getInjector());
+      return new WalletSuccessInstallFirmwarePresenter(getContext(), getInjector(), getPath().firmwareUpdateData);
    }
 
    @Override
@@ -84,7 +84,7 @@ public class WalletSuccessInstallFirmwareScreen
 
    @OnClick(R.id.success_firmware_install_done)
    void onDoneClick() {
-      getPresenter().goDashboard();
+      getPresenter().finishUpdateFlow();
    }
 
 

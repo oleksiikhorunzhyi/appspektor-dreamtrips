@@ -156,10 +156,10 @@ public class WalletSettingsScreen extends WalletLinearLayout<WalletSettingsPrese
    public void smartCardGeneralStatus(@Nullable SmartCardFirmware version, int batteryLevel, Date lastSync) {
       final StringBuilder builder = new StringBuilder();
       if (version != null) {
-         builder.append(getString(R.string.wallet_card_settings_version, version.firmwareVersion())).append("\n");
+         builder.append(getString(R.string.wallet_card_settings_version, version.nordicAppVersion())).append("\n");
       }
       builder.append(getString(R.string.wallet_card_settings_battery_level, batteryLevel)).append("\n")
-//            .append(getString(R.string.wallet_card_settings_last_sync, formattedLastSync))
+      //            .append(getString(R.string.wallet_card_settings_last_sync, formattedLastSync))
       ;
 
       status.setText(builder.toString());
@@ -197,7 +197,7 @@ public class WalletSettingsScreen extends WalletLinearLayout<WalletSettingsPrese
 
    @Override
    public void firmwareVersion(@Nullable SmartCardFirmware version) {
-      firmwareVersionLabel.setText(version == null ? "" : version.firmwareVersion());
+      firmwareVersionLabel.setText(version == null ? "" : version.nordicAppVersion());
    }
 
    @Override

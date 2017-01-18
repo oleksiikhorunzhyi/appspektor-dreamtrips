@@ -13,6 +13,7 @@ import com.worldventures.dreamtrips.wallet.domain.entity.SmartCardUser;
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCardUserPhoto;
 import com.worldventures.dreamtrips.wallet.service.WalletNetworkService;
 import com.worldventures.dreamtrips.wallet.service.command.ActiveSmartCardCommand;
+import com.worldventures.dreamtrips.wallet.util.FormatException;
 import com.worldventures.dreamtrips.wallet.util.NetworkUnavailableException;
 import com.worldventures.dreamtrips.wallet.util.WalletValidateHelper;
 
@@ -61,9 +62,9 @@ public class UpdateSmartCardUserCommand extends Command<SmartCard> implements In
             .subscribe(callback::onSuccess, callback::onFail);
    }
 
-   private void validateData() {
+   private void validateData() throws FormatException {
       // TODO: 12/15/16 middle is mandatory ?
-      WalletValidateHelper.validateUserFullName(
+      WalletValidateHelper.validateUserFullNameOrThrow(
             changedFields.firstName(),
             changedFields.middleName(),
             changedFields.lastName());
@@ -72,7 +73,6 @@ public class UpdateSmartCardUserCommand extends Command<SmartCard> implements In
    private Observable<SmartCard> uploadData(SmartCard smartCard) {
       return createUpdateCardUserData(smartCard)
             .flatMap(updateCardUserData -> updateProfileManager.uploadData(smartCard, updateCardUserData));
-
    }
 
    private Observable<UpdateCardUserData> createUpdateCardUserData(SmartCard smartCard) {

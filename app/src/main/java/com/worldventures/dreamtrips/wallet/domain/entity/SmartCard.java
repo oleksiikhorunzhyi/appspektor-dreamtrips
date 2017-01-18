@@ -84,6 +84,9 @@ public abstract class SmartCard {
       return 0; //never
    }
 
+   @Nullable
+   public abstract String deviceId();
+
    public enum CardStatus {
       ACTIVE, INACTIVE, DRAFT
    }

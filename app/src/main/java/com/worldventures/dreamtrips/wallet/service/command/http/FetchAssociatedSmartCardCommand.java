@@ -56,8 +56,6 @@ public class FetchAssociatedSmartCardCommand extends Command<FetchAssociatedSmar
    }
 
    private SmartCard getSmartCardFromCache() {
-      String activeSmartCardId = snappyRepository.getActiveSmartCardId();
-      if (activeSmartCardId == null) return null;
       return snappyRepository.getSmartCard();
    }
 
@@ -97,7 +95,6 @@ public class FetchAssociatedSmartCardCommand extends Command<FetchAssociatedSmar
    }
 
    private Observable<AssociatedCard> save(SmartCard smartCard, SmartCardDetails smartCardDetails) {
-      snappyRepository.setActiveSmartCardId(smartCard.smartCardId());
       snappyRepository.saveSmartCard(smartCard);
       snappyRepository.saveSmartCardDetails(smartCardDetails);
 

@@ -12,8 +12,6 @@ import com.worldventures.dreamtrips.wallet.service.command.ActiveSmartCardComman
 
 public class SmartCardStorage implements ActionStorage<SmartCard> {
 
-   public static final String CARD_ID_PARAM = "card_id";
-
    private final SnappyRepository snappyRepository;
 
    public SmartCardStorage(SnappyRepository snappyRepository) {
@@ -23,7 +21,6 @@ public class SmartCardStorage implements ActionStorage<SmartCard> {
    @Override
    public void save(@Nullable CacheBundle params, SmartCard data) {
       if (data != null) {
-         snappyRepository.setActiveSmartCardId(data.smartCardId());
          snappyRepository.saveSmartCard(data);
       }
    }

@@ -18,7 +18,6 @@ public class RemoveSmartCardDataCommand extends Command<Void> implements Injecta
 
    @Override
    protected void run(CommandCallback<Void> callback) throws Throwable {
-      snappyRepository.deleteActiveSmartCardId();
       snappyRepository.deleteWalletDefaultCardId();
       cardListStorage.deleteWalletCardList();
       snappyRepository.deleteSmartCardDetails();

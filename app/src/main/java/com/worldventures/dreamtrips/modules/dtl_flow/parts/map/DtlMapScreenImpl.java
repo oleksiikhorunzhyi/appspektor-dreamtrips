@@ -124,9 +124,6 @@ public class DtlMapScreenImpl extends DtlLayout<DtlMapScreen, DtlMapPresenter, D
       RxDtlToolbar.filterButtonClicks(dtlToolbar)
             .compose(RxLifecycle.bindView(this))
             .subscribe(aVoid -> ((FlowActivity) getActivity()).openRightDrawer());
-      RxDtlToolbar.offersOnlyToggleChanges(dtlToolbar)
-            .compose(RxLifecycle.bindView(this))
-            .subscribe(getPresenter()::offersOnlySwitched);
    }
 
    @Override
@@ -229,12 +226,6 @@ public class DtlMapScreenImpl extends DtlLayout<DtlMapScreen, DtlMapPresenter, D
    @Override
    public void centerIn(LatLng location) {
       googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(location, MapViewUtils.DEFAULT_ZOOM));
-   }
-
-   @Override
-   public void toggleOffersOnly(boolean enabled) {
-      if (dtlToolbar == null) return;
-      dtlToolbar.toggleOffersOnly(enabled);
    }
 
    @Override

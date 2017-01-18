@@ -284,14 +284,6 @@ class SnappyRepositoryImpl implements SnappyRepository, DiskStorage {
    }
 
    @Override
-   public List<SmartCard> getSmartCards() {
-      List<SmartCard> result = new ArrayList<>();
-      String[] keys = actWithResult(db -> db.findKeys(WALLET_SMART_CARD)).or(new String[0]);
-      for (String key : keys) result.add(getEncrypted(key, ImmutableSmartCard.class));
-      return result;
-   }
-
-   @Override
    public void deleteSmartCard() {
       act(db -> db.del(WALLET_SMART_CARD));
    }
@@ -309,21 +301,6 @@ class SnappyRepositoryImpl implements SnappyRepository, DiskStorage {
    @Override
    public void deleteSmartCardDetails() {
       act(db -> db.del(WALLET_DETAILS_SMART_CARD));
-   }
-
-   @Override
-   public void setActiveSmartCardId(String scid) {
-      putEncrypted(WALLET_ACTIVE_SMART_CARD_ID, scid);
-   }
-
-   @Override
-   public String getActiveSmartCardId() {
-      return getEncrypted(WALLET_ACTIVE_SMART_CARD_ID, String.class);
-   }
-
-   @Override
-   public void deleteActiveSmartCardId() {
-      act(db -> db.del(WALLET_ACTIVE_SMART_CARD_ID));
    }
 
 /////////

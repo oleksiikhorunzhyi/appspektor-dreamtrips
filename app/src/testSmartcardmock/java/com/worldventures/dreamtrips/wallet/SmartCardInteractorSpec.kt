@@ -79,7 +79,6 @@ class SmartCardInteractorSpec : BaseSpec({
          it("Update smart card connection status") {
             val activeSmartCardId = "4"
             val smartcard: SmartCard = mockSmartCard(activeSmartCardId)
-            whenever(mockDb.activeSmartCardId).thenReturn(activeSmartCardId)
             whenever(mockDb.smartCard).thenReturn(smartcard)
 
             val connectionStastus = SmartCard.ConnectionStatus.DISCONNECTED;
@@ -191,7 +190,6 @@ class SmartCardInteractorSpec : BaseSpec({
             // mock active smart card
             val smartCardId = "111"
             val smartCard = mockSmartCard(smartCardId)
-            whenever(mockDb.activeSmartCardId).thenReturn(smartCardId)
             whenever(mockDb.smartCard).thenReturn(smartCard)
 
             // mock saving result after delete
@@ -253,7 +251,6 @@ class SmartCardInteractorSpec : BaseSpec({
          beforeEach {
             val smartCardId = "111"
             val smartCard = mockSmartCard(smartCardId)
-            whenever(mockDb.activeSmartCardId).thenReturn(smartCardId)
             whenever(mockDb.smartCard).thenReturn(smartCard)
          }
 

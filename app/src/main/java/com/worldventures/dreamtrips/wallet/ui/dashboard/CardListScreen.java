@@ -50,6 +50,7 @@ public class CardListScreen extends WalletLinearLayout<CardListPresenter.Screen,
    private IgnoreFirstItemAdapter adapter;
    private InstallFirmwareErrorDialog installFirmwareErrorDialog;
    private Dialog synchronizationDialog;
+   private MaterialDialog forceUpdateDialog;
 
    public CardListScreen(Context context) {
       super(context);
@@ -143,6 +144,10 @@ public class CardListScreen extends WalletLinearLayout<CardListPresenter.Screen,
                .setOnCancelAction(() -> presenter.navigateBack());
       }
       if (!installFirmwareErrorDialog.isShowing()) {
+         if (forceUpdateDialog != null && forceUpdateDialog.isShowing()) {
+            forceUpdateDialog.setOnCancelListener(null);
+            forceUpdateDialog.cancel();
+         }
          installFirmwareErrorDialog.show();
       }
    }
@@ -167,16 +172,22 @@ public class CardListScreen extends WalletLinearLayout<CardListPresenter.Screen,
 
    @Override
    public void showForceFirmwareUpdateDialog() {
-      new MaterialDialog.Builder(getContext())
-            .title(R.string.wallet_dashboard_update_dialog_title)
-            .content(R.string.wallet_dashboard_update_dialog_content)
-            .negativeText(R.string.wallet_dashboard_update_dialog_btn_text_negative)
-            .cancelListener(dialog -> getPresenter().navigateBack())
-            .onNegative((dialog, which) -> getPresenter().navigateBack())
-            .positiveText(R.string.wallet_dashboard_update_dialog_btn_text_positive)
-            .onPositive((dialog, which) -> getPresenter().handleForceFirmwareUpdateConfirmation())
-            .build()
-            .show();
+      if (forceUpdateDialog == null) {
+         forceUpdateDialog = new MaterialDialog.Builder(getContext())
+               .title(R.string.wallet_dashboard_update_dialog_title)
+               .content(R.string.wallet_dashboard_update_dialog_content)
+               .negativeText(R.string.wallet_dashboard_update_dialog_btn_text_negative)
+               .cancelListener(dialog -> getPresenter().navigateBack())
+               .onNegative((dialog, which) -> getPresenter().navigateBack())
+               .positiveText(R.string.wallet_dashboard_update_dialog_btn_text_positive)
+               .onPositive((dialog, which) -> getPresenter().handleForceFirmwareUpdateConfirmation())
+               .build();
+      } else {
+         forceUpdateDialog.dismiss();
+      }
+      if (installFirmwareErrorDialog == null || !installFirmwareErrorDialog.isShowing()) {
+         forceUpdateDialog.show();
+      }
    }
 
    @Override

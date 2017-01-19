@@ -49,8 +49,8 @@ public class ForceUpdatePowerOnScreen extends WalletLinearLayout<ForceUpdatePowe
 
    @Override
    protected void onFinishInflate() {
-      super.onFinishInflate();
       supportConnectionStatusLabel(false);
+      super.onFinishInflate();
       toolbar.setNavigationOnClickListener(v -> getPresenter().onBack());
       hideAllView();
       postDelayed(this::startSoarAnimation, SHOW_SOAR_TITLE_DELAY);

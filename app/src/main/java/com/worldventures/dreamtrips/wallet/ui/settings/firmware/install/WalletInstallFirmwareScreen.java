@@ -50,10 +50,10 @@ public class WalletInstallFirmwareScreen extends WalletLinearLayout<WalletInstal
 
    @Override
    protected void onFinishInflate() {
+      supportConnectionStatusLabel(false);
       super.onFinishInflate();
       toolbar.setNavigationIcon(new ColorDrawable(Color.TRANSPARENT));
       installProgress.start();
-      supportConnectionStatusLabel(false);
    }
 
    @Override

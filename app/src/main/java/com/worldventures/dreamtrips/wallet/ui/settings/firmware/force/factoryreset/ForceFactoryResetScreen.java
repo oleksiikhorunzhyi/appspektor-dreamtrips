@@ -37,9 +37,9 @@ public class ForceFactoryResetScreen extends WalletLinearLayout<ForceFactoryRese
 
    @Override
    protected void onFinishInflate() {
+      supportConnectionStatusLabel(false);
       super.onFinishInflate();
       toolbar.setNavigationOnClickListener(v -> getPresenter().goBack());
-      supportConnectionStatusLabel(false);
    }
 
    @Override

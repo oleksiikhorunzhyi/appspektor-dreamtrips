@@ -6,6 +6,7 @@ import android.os.Parcelable;
 import com.techery.spares.module.Injector;
 import com.worldventures.dreamtrips.core.session.acl.Feature;
 import com.worldventures.dreamtrips.core.session.acl.FeatureManager;
+import com.worldventures.dreamtrips.wallet.domain.entity.FirmwareUpdateData;
 import com.worldventures.dreamtrips.wallet.service.FirmwareInteractor;
 import com.worldventures.dreamtrips.wallet.service.SmartCardInteractor;
 import com.worldventures.dreamtrips.wallet.service.command.http.FetchAssociatedSmartCardCommand;
@@ -18,6 +19,7 @@ import com.worldventures.dreamtrips.wallet.ui.common.navigation.Navigator;
 import com.worldventures.dreamtrips.wallet.ui.dashboard.CardListPath;
 import com.worldventures.dreamtrips.wallet.ui.provisioning_blocked.WalletProvisioningBlockedPath;
 import com.worldventures.dreamtrips.wallet.ui.settings.firmware.install.WalletInstallFirmwarePath;
+import com.worldventures.dreamtrips.wallet.ui.settings.firmware.newavailable.WalletNewFirmwareAvailablePath;
 import com.worldventures.dreamtrips.wallet.ui.wizard.welcome.WizardWelcomePath;
 
 import javax.inject.Inject;
@@ -78,7 +80,13 @@ public class WalletStartPresenter extends WalletPresenter<WalletStartPresenter.S
 
    private void checkFirmwareUpdateData(FetchFirmwareUpdateData.Result result, FetchAssociatedSmartCardCommand.AssociatedCard associatedCard) {
       if (result.isForceUpdateStarted()) {
-         navigator.single(new WalletInstallFirmwarePath(), Flow.Direction.REPLACE);
+         final FirmwareUpdateData firmwareUpdateData = result.firmwareUpdateData();
+         //noinspection ConstantConditions
+         if (firmwareUpdateData.fileDownloaded()) {
+            navigator.single(new WalletInstallFirmwarePath(), Flow.Direction.REPLACE);
+         } else {
+            navigator.single(new WalletNewFirmwareAvailablePath(), Flow.Direction.REPLACE);
+         }
       } else {
          navigator.single(new WizardWelcomePath(associatedCard.smartCard()), Flow.Direction.REPLACE);
       }

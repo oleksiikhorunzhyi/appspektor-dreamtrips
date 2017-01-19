@@ -65,6 +65,7 @@ public class WalletFirmwareChecksPresenter extends WalletPresenter<WalletFirmwar
 
       Observable.merge(
             bluetoothService.observeEnablesState(),
+            smartCardInteractor.connectActionPipe().observeSuccess(),
             smartCardInteractor.cardInChargerEventPipe().observeSuccess()
       ).debounce(500, TimeUnit.MILLISECONDS)
             .compose(bindView())

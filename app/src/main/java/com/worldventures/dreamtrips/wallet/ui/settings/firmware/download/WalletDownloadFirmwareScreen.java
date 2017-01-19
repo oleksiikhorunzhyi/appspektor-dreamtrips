@@ -1,4 +1,4 @@
-package com.worldventures.dreamtrips.wallet.ui.settings.firmware.donwload;
+package com.worldventures.dreamtrips.wallet.ui.settings.firmware.download;
 
 
 import android.content.Context;
@@ -37,6 +37,12 @@ public class WalletDownloadFirmwareScreen extends WalletLinearLayout<WalletDownl
    @Override
    public WalletDownloadFirmwarePresenter createPresenter() {
       return new WalletDownloadFirmwarePresenter(getContext(), getInjector());
+   }
+
+   @Override
+   protected void onFinishInflate() {
+      supportConnectionStatusLabel(false);
+      super.onFinishInflate();
    }
 
    @Override

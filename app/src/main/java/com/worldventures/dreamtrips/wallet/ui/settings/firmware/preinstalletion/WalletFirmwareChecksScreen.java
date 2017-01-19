@@ -43,6 +43,7 @@ public class WalletFirmwareChecksScreen extends WalletLinearLayout<WalletFirmwar
 
    @Override
    protected void onFinishInflate() {
+      supportConnectionStatusLabel(false);
       super.onFinishInflate();
       toolbar.setNavigationOnClickListener(view -> presenter.goBack());
    }

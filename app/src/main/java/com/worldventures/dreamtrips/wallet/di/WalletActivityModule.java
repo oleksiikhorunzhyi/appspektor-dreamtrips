@@ -28,7 +28,7 @@ import com.worldventures.dreamtrips.wallet.ui.settings.common.cell.SettingsRadio
 import com.worldventures.dreamtrips.wallet.ui.settings.disabledefaultcard.WalletDisableDefaultCardPresenter;
 import com.worldventures.dreamtrips.wallet.ui.settings.factory_reset.FactoryResetPresenter;
 import com.worldventures.dreamtrips.wallet.ui.settings.factory_reset_success.FactoryResetSuccessPresenter;
-import com.worldventures.dreamtrips.wallet.ui.settings.firmware.donwload.WalletDownloadFirmwarePresenter;
+import com.worldventures.dreamtrips.wallet.ui.settings.firmware.download.WalletDownloadFirmwarePresenter;
 import com.worldventures.dreamtrips.wallet.ui.settings.firmware.install.WalletInstallFirmwarePresenter;
 import com.worldventures.dreamtrips.wallet.ui.settings.firmware.installsuccess.WalletSuccessInstallFirmwarePresenter;
 import com.worldventures.dreamtrips.wallet.ui.settings.firmware.newavailable.WalletNewFirmwareAvailablePresenter;

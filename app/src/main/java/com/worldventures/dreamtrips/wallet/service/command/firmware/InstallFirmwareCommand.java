@@ -84,9 +84,9 @@ public class InstallFirmwareCommand extends Command<FirmwareUpdateData> implemen
    private Observable<Void> installFirmware(FirmwareUpdateData firmwareUpdateData, ConnectionType connectionType, CommandCallback callback) {
       final SmartCardFirmware firmwareVersion = firmwareUpdateData.currentFirmwareVersion();
       loadFirmwareFilesCommand = new LoadFirmwareFilesCommand(
-            firmwareUpdateData.firmwareFile(),
             firmwareVersion,
             firmwareUpdateData.firmwareInfo().firmwareVersions(),
+            firmwareUpdateData.firmwareFile(),
             connectionType == ConnectionType.DFU);
 
       Subscription subscription = loadFirmwareFilesCommandActionPipe.observe()

@@ -52,6 +52,7 @@ public class WalletSuccessInstallFirmwareScreen
 
    @Override
    protected void onFinishInflate() {
+      supportConnectionStatusLabel(false);
       super.onFinishInflate();
       toolbar.setNavigationIcon(new ColorDrawable(Color.TRANSPARENT));
       hideAllView();

@@ -5,7 +5,6 @@ import com.worldventures.dreamtrips.wallet.service.FirmwareInteractor;
 import com.worldventures.dreamtrips.wallet.service.firmware.command.PrepareForUpdateCommand;
 
 import io.techery.janet.ActionPipe;
-import io.techery.janet.ActionState;
 import rx.Observable;
 
 public class SCFirmwareFacade {
@@ -21,8 +20,6 @@ public class SCFirmwareFacade {
       this.firmwareDelegate = firmwareDelegate;
       this.firmwareInteractor = firmwareInteractor;
       this.firmwareStorage = firmwareStorage;
-
-      observeFirmware();
    }
 
    public void prepareForUpdate() {
@@ -45,13 +42,5 @@ public class SCFirmwareFacade {
       } else {
          return firmwareDelegate.observeFirmwareInfo(); // todo fetch from server
       }
-   }
-
-   private void observeFirmware() {
-      firmwareDelegate.fetchFirmwareInfoPipe()
-            .observe()
-            .filter(actionState -> actionState.status == ActionState.Status.SUCCESS)
-            .map(actionState -> actionState.action.getResult())
-            .subscribe(firmwareStorage::setFirmwareUpdateData);
    }
 }

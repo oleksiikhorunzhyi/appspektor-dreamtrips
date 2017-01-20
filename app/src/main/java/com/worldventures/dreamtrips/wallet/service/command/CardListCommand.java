@@ -72,10 +72,15 @@ public class CardListCommand extends CachedValueCommand<List<Card>> {
 
       @Override
       public List<Card> call(List<Card> cards) {
-         Card cardInStack = Queryable.from(cards).firstOrDefault(element -> element.id().equals(card.id()));
-         int position = cardInStack == null ? -1 : cards.indexOf(cardInStack);
-         if (position != -1) cards.set(position, card);
-         return cards;
+         return !cards.isEmpty() ? Queryable.from(cards).map(this::remapCard).toList(): cards;
+      }
+
+      private Card remapCard(Card element) {
+         if (element.id().equals(card.id())) {
+            return card;
+         } else {
+            return element;
+         }
       }
    }
 }

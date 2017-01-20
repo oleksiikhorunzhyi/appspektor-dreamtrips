@@ -68,6 +68,8 @@ public class CommentCell extends AbstractDelegateCell<Comment, CommentCell.Comme
 
    @Override
    protected void syncUIStateWithModel() {
+      if (!appSessionHolder.get().isPresent()) return;
+
       commentCellHelper.set(getModelObject(), injectorProvider.get());
       User owner = getModelObject().getOwner();
 

@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <resources>
+   <string name="dtl_local">local</string>
    <string name="dtl_locations_title">选择位置</string>
    <string name="dtl_locations_try_search">我们无法找到离您近的城市。\n试试我们的城市搜索</string>
    <string name="dtl_merchant_tab_offers">报价</string>
@@ -56,8 +57,8 @@
    <string name="suggest_merchant_title">DT Local 工具</string>
    <string name="dtl_details_share_title">我将赚取%1$sDreamTrips点数</string>
    <string name="dtl_details_share_title_earned" formatted="false">我在%2$s赚取了%1$sDreamTrips点数</string>
-   <string name="dtl_wait_for_receipt">稍候...上传收据</string>
-   <string name="dtl_wait_for_earn">稍候...赚取点数</string>
+   <string name="dtl_wait_for_receipt">稍候…上传收据</string>
+   <string name="dtl_wait_for_earn">稍候…赚取点数</string>
    <string name="dtl_wait_for_offers">搜索附近的优惠。</string>
    <string name="dtl_wait_for_dinings">搜索附近的商家。</string>
    <string name="dtl_estimator_explanation">点数计算是根据在商家最低消费以及一周的哪一天</string>

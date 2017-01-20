@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <resources>
+   <string name="dtl_local">LOCAL programot</string>
    <string name="dtl_locations_title">Helyzet kiválasztása </string>
    <string name="dtl_locations_try_search">Nem találtunk várost a közelében.\nPróbálja ki a városok keresését.</string>
    <string name="dtl_merchant_tab_offers">Ajánlatok</string>
@@ -56,8 +57,8 @@
    <string name="suggest_merchant_title">DT Local eszközök</string>
    <string name="dtl_details_share_title">Dreamtrips-pontokat fogok szerezni itt: %1$s</string>
    <string name="dtl_details_share_title_earned" formatted="false">%1$s DreamTrips Points-pontot gyűjtöttem itt: %2$s </string>
-   <string name="dtl_wait_for_receipt">Várjon... Nyugta feltöltése</string>
-   <string name="dtl_wait_for_earn">Várjon... Pontok összegyűjtése</string>
+   <string name="dtl_wait_for_receipt">Várjon… Nyugta feltöltése</string>
+   <string name="dtl_wait_for_earn">Várjon… Pontok összegyűjtése</string>
    <string name="dtl_wait_for_offers">Közeli ajánlatok keresése.</string>
    <string name="dtl_wait_for_dinings">Kereskedők keresése a közelben.</string>
    <string name="dtl_estimator_explanation">A pontok számolása az értékesítőnél elköltött minimális összeg és a hét napja alapján történik</string>

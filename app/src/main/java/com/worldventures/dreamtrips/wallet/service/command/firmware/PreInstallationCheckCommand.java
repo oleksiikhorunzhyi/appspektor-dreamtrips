@@ -6,7 +6,6 @@ import com.worldventures.dreamtrips.wallet.domain.entity.FirmwareUpdateData;
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCardFirmware;
 import com.worldventures.dreamtrips.wallet.service.WalletBluetoothService;
 import com.worldventures.dreamtrips.wallet.service.firmware.FirmwareRepository;
-import com.worldventures.dreamtrips.wallet.util.SCFirmwareUtils;
 
 import org.immutables.value.Value;
 
@@ -23,15 +22,15 @@ import io.techery.janet.smartcard.model.ConnectionType;
 import io.techery.janet.smartcard.model.ImmutableConnectionParams;
 import rx.Observable;
 
-import static com.worldventures.dreamtrips.wallet.util.SCFirmwareUtils.newFirmwareAvailable;
+import static com.worldventures.dreamtrips.wallet.util.SCFirmwareUtils.SUPPORTED_CHARGER_ACTION_VERSION_FW;
+import static com.worldventures.dreamtrips.wallet.util.SCFirmwareUtils.firmwareStringToInt;
+import static com.worldventures.dreamtrips.wallet.util.SCFirmwareUtils.isNewFirmwareAvailableForCharger;
 import static java.lang.Integer.parseInt;
 
 @CommandAction
 public class PreInstallationCheckCommand extends Command<PreInstallationCheckCommand.Checks> implements InjectableAction {
 
    private final static int MIN_BATTERY_LEVEL = 50;
-
-   public final static int SUPPORTED_CHARGER_ACTION_VERSION_FW = 1052;
 
    @Inject @Named(JanetModule.JANET_WALLET) Janet janet;
    @Inject WalletBluetoothService bluetoothService;
@@ -57,7 +56,7 @@ public class PreInstallationCheckCommand extends Command<PreInstallationCheckCom
       boolean smartCardConnected = bluetoothEnabled &&
             (connectionType == ConnectionType.APP || connectionType == ConnectionType.DFU);
       boolean smartCardCharged = smartCardConnected && batteryLevel >= MIN_BATTERY_LEVEL;
-      boolean smartCardOnDeviceRequired = newFirmwareAvailable(
+      boolean smartCardOnDeviceRequired = isNewFirmwareAvailableForCharger(
             firmwareUpdateData.currentFirmwareVersion().externalAtmelVersion(),
             firmwareUpdateData.firmwareInfo().firmwareVersions().puckAtmelVerstion());
 
@@ -72,7 +71,7 @@ public class PreInstallationCheckCommand extends Command<PreInstallationCheckCom
 
    private Observable<Boolean> cardInChargerObservable(SmartCardFirmware smartCardFirmware) {
       // TODO: 1/10/17 check for v37, in charger, it is not support
-      if (SCFirmwareUtils.firmwareStringToInt(smartCardFirmware.nordicAppVersion()) >= SUPPORTED_CHARGER_ACTION_VERSION_FW) {
+      if (firmwareStringToInt(smartCardFirmware.nordicAppVersion()) >= SUPPORTED_CHARGER_ACTION_VERSION_FW) {
          return janet.createPipe(CardInChargerAction.class)
                .createObservableResult(new CardInChargerAction())
                .map(action -> action.inCharger);

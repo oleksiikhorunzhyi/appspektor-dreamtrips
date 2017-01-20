@@ -1,4 +1,4 @@
-package com.worldventures.dreamtrips.wallet.ui.settings.firmware.donwload;
+package com.worldventures.dreamtrips.wallet.ui.settings.firmware.download;
 
 import android.content.Context;
 import android.os.Parcelable;

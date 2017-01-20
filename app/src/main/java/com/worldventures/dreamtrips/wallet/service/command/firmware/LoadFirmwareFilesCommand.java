@@ -22,7 +22,8 @@ import rx.Subscription;
 import timber.log.Timber;
 
 import static com.worldventures.dreamtrips.core.janet.JanetModule.JANET_WALLET;
-import static com.worldventures.dreamtrips.wallet.util.SCFirmwareUtils.newFirmwareAvailable;
+import static com.worldventures.dreamtrips.wallet.util.SCFirmwareUtils.isNewFirmwareAvailable;
+import static com.worldventures.dreamtrips.wallet.util.SCFirmwareUtils.isNewFirmwareAvailableForCharger;
 
 @CommandAction
 public class LoadFirmwareFilesCommand extends Command<Void> implements InjectableAction {
@@ -31,7 +32,7 @@ public class LoadFirmwareFilesCommand extends Command<Void> implements Injectabl
 
    private final File fileArchive;
    private final FirmwareVersions availableFirmwareVersions;
-   private final SmartCardFirmware smartCardFirmware;
+   private final SmartCardFirmware currentFirmware;
    private final boolean dfuMode;
 
    private int step = 0;
@@ -41,11 +42,11 @@ public class LoadFirmwareFilesCommand extends Command<Void> implements Injectabl
    private ActionPipe<LoadAppAtmelFirmwareCommand> loadAppAtmelFirmwareCommandActionPipe;
    private ActionPipe<LoadNordicFirmwareCommand> loadNordicFirmwareCommandActionPipe;
 
-   public LoadFirmwareFilesCommand(File fileArchive, SmartCardFirmware smartCardFirmware,
-         FirmwareVersions availableFirmwareVersions, boolean dfuMode) {
-      this.fileArchive = fileArchive;
-      this.smartCardFirmware = smartCardFirmware;
+   public LoadFirmwareFilesCommand(SmartCardFirmware currentFirmware, FirmwareVersions availableFirmwareVersions,
+         File fileArchive, boolean dfuMode) {
+      this.currentFirmware = currentFirmware;
       this.availableFirmwareVersions = availableFirmwareVersions;
+      this.fileArchive = fileArchive;
       this.dfuMode = dfuMode;
    }
 
@@ -64,7 +65,7 @@ public class LoadFirmwareFilesCommand extends Command<Void> implements Injectabl
       janet.createPipe(UnzipFirmwareCommand.class)
             .createObservableResult(new UnzipFirmwareCommand(fileArchive))
             .map(Command::getResult)
-            .flatMap(this::loadPuckAtmelFirmware)
+            .flatMap(this::loadExternalAtmelFirmware)
             .flatMap(this::loadAppAtmelFirmware)
             .flatMap(this::loadNordicBootloaderFirmware)
             .flatMap(this::loadNordicAppFirmware)
@@ -86,9 +87,9 @@ public class LoadFirmwareFilesCommand extends Command<Void> implements Injectabl
             .subscribe(actionState -> callback.onProgress(actionState.progress));
    }
 
-   private Observable<UnzipFirmwareCommand.FirmwareBundle> loadPuckAtmelFirmware(UnzipFirmwareCommand.FirmwareBundle fileBundle) {
+   private Observable<UnzipFirmwareCommand.FirmwareBundle> loadExternalAtmelFirmware(UnzipFirmwareCommand.FirmwareBundle fileBundle) {
       notifyNewInstallStep();
-      if (newFirmwareAvailable(smartCardFirmware.externalAtmelVersion(), availableFirmwareVersions.puckAtmelVerstion())) {
+      if (isNewFirmwareAvailableForCharger(currentFirmware.externalAtmelVersion(), availableFirmwareVersions.puckAtmelVerstion())) {
          return loadPuckAtmelFirmwareCommandActionPipe
                .createObservableResult(new LoadPuckAtmelFirmwareCommand(fileBundle.puckAtmel(), availableFirmwareVersions
                      .puckAtmelVerstion()))
@@ -100,7 +101,7 @@ public class LoadFirmwareFilesCommand extends Command<Void> implements Injectabl
 
    private Observable<UnzipFirmwareCommand.FirmwareBundle> loadAppAtmelFirmware(UnzipFirmwareCommand.FirmwareBundle fileBundle) {
       notifyNewInstallStep();
-      if (newFirmwareAvailable(smartCardFirmware.internalAtmelVersion(), availableFirmwareVersions.atmelVersion())) {
+      if (isNewFirmwareAvailable(currentFirmware.internalAtmelVersion(), availableFirmwareVersions.atmelVersion())) {
          return loadAppAtmelFirmwareCommandActionPipe
                .createObservableResult(new LoadAppAtmelFirmwareCommand(fileBundle.appAtmel(), availableFirmwareVersions.atmelVersion()))
                .map(command -> fileBundle);
@@ -111,7 +112,7 @@ public class LoadFirmwareFilesCommand extends Command<Void> implements Injectabl
 
    private Observable<UnzipFirmwareCommand.FirmwareBundle> loadNordicBootloaderFirmware(UnzipFirmwareCommand.FirmwareBundle fileBundle) {
       notifyNewInstallStep();
-      if (dfuMode || newFirmwareAvailable(smartCardFirmware.nrfBootloaderVersion(), availableFirmwareVersions.bootloaderNordicVersion())) {
+      if (dfuMode || isNewFirmwareAvailable(currentFirmware.nrfBootloaderVersion(), availableFirmwareVersions.bootloaderNordicVersion())) {
          return loadNordicFirmwareCommandActionPipe
                .createObservableResult(new LoadNordicFirmwareCommand(fileBundle.booloaderNordic(),
                      availableFirmwareVersions.bootloaderNordicVersion(), true))
@@ -130,8 +131,8 @@ public class LoadFirmwareFilesCommand extends Command<Void> implements Injectabl
    private Observable<UnzipFirmwareCommand.FirmwareBundle> loadNordicAppFirmware(UnzipFirmwareCommand.FirmwareBundle fileBundle) {
       notifyNewInstallStep();
       //If app must perform a bootloader upgrade, then app MUST ALWAYS perform app nordic upgrade
-      if (dfuMode || newFirmwareAvailable(smartCardFirmware.nordicAppVersion(), availableFirmwareVersions.nordicVersion())
-            || newFirmwareAvailable(smartCardFirmware.nrfBootloaderVersion(), availableFirmwareVersions.bootloaderNordicVersion())) {
+      if (dfuMode || isNewFirmwareAvailable(currentFirmware.nordicAppVersion(), availableFirmwareVersions.nordicVersion())
+            || isNewFirmwareAvailable(currentFirmware.nrfBootloaderVersion(), availableFirmwareVersions.bootloaderNordicVersion())) {
          return loadNordicFirmwareCommandActionPipe
                .createObservableResult(new LoadNordicFirmwareCommand(fileBundle.appNordic(),
                      availableFirmwareVersions.nordicVersion(), false))

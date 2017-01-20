@@ -34,7 +34,7 @@ public abstract class Card {
          final Card card = (Card) obj;
          final String cardId = card.id();
          final String id = id();
-         return (cardId != null && id != null && cardId.equals(id)) || card.number().equals(number());
+         return cardId != null && id != null && cardId.equals(id);
       }
       return false;
    }

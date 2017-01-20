@@ -8,6 +8,7 @@ import android.support.v4.util.Pair;
 
 import com.github.pwittchen.reactivenetwork.library.ReactiveNetwork;
 import com.techery.spares.module.Injector;
+import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.janet.composer.ActionPipeCacheWiper;
 import com.worldventures.dreamtrips.core.utils.tracksystem.AnalyticsInteractor;
 import com.worldventures.dreamtrips.modules.navdrawer.NavigationDrawerPresenter;
@@ -76,7 +77,7 @@ public class CardListPresenter extends WalletPresenter<CardListPresenter.Screen,
 
    public CardListPresenter(Context context, Injector injector) {
       super(context, injector);
-      cardListStackConverter = new CardListStackConverter(context);
+      cardListStackConverter = new CardListStackConverter(context.getString(R.string.wallet_payment_cards_title));
       cardStackHeaderHolder = ImmutableCardStackHeaderHolder.builder().build();
    }
 

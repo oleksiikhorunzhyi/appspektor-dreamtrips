@@ -26,6 +26,9 @@ import timber.log.Timber;
 
 public class AnalyticsService extends ActionService {
 
+   private static final String FIELD_EXPRESSION_START = "${";
+   private static final String FIELD_EXPRESSION_END = "}";
+
    private final Map<String, Tracker> trackers = new HashMap<>();
 
    public AnalyticsService(Collection<Tracker> trackers) {
@@ -98,7 +101,26 @@ public class AnalyticsService extends ActionService {
    }
 
    private static String getAction(ActionHolder holder) {
-      return holder.action().getClass().getAnnotation(AnalyticsEvent.class).action();
+      Object analyticAction = holder.action();
+      String describedAction = analyticAction.getClass().getAnnotation(AnalyticsEvent.class).action();
+      String generatedAction = "";
+      int searchStart = 0, posStart = 0, posEnd;
+      while ((posStart = describedAction.indexOf(FIELD_EXPRESSION_START, posStart)) != -1) {
+         posEnd = describedAction.indexOf(FIELD_EXPRESSION_END, posStart);
+         if (posStart < posEnd) {
+            String fieldName = describedAction.substring(posStart+2, posEnd);
+            generatedAction += describedAction.substring(searchStart, posStart);
+            try {
+               Object object = analyticAction.getClass().getDeclaredField(fieldName).get(analyticAction);
+               generatedAction += object.toString();
+            } catch (Exception e) {
+               throw new RuntimeException("Check parameters in described action annotation and their access modifiers");
+            }
+         }
+         posStart += 2;
+         searchStart = posEnd + 1;
+      }
+      return TextUtils.isEmpty(generatedAction)? describedAction : generatedAction;
    }
 
    private static String[] getTypes(ActionHolder holder) {

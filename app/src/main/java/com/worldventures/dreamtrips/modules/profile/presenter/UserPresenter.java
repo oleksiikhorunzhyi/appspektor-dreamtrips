@@ -15,6 +15,9 @@ import com.worldventures.dreamtrips.modules.common.view.BlockingProgressView;
 import com.worldventures.dreamtrips.modules.feed.service.NotificationFeedInteractor;
 import com.worldventures.dreamtrips.modules.feed.service.command.GetUserTimelineCommand;
 import com.worldventures.dreamtrips.modules.feed.service.command.MarkNotificationAsReadCommand;
+import com.worldventures.dreamtrips.modules.feed.storage.command.UserTimelineStorageCommand;
+import com.worldventures.dreamtrips.modules.feed.storage.delegate.UserTimelineStorageDelegate;
+import com.worldventures.dreamtrips.modules.feed.storage.interactor.UserTimelineStorageInteractor;
 import com.worldventures.dreamtrips.modules.friends.model.Circle;
 import com.worldventures.dreamtrips.modules.friends.service.FriendsInteractor;
 import com.worldventures.dreamtrips.modules.friends.service.command.ActOnFriendRequestCommand;
@@ -32,6 +35,7 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import io.techery.janet.Command;
 import io.techery.janet.helper.ActionStateSubscriber;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
@@ -44,6 +48,7 @@ public class UserPresenter extends ProfilePresenter<UserPresenter.View, User> {
    @Inject NotificationDelegate notificationDelegate;
    @Inject StartChatDelegate startSingleChatDelegate;
    @Inject ProfileInteractor profileInteractor;
+   @Inject UserTimelineStorageDelegate userTimelineStorageDelegate;
 
    private int notificationId;
    private boolean acceptFriend;
@@ -65,6 +70,7 @@ public class UserPresenter extends ProfilePresenter<UserPresenter.View, User> {
    @Override
    public void takeView(View view) {
       super.takeView(view);
+      subscribeToStorage();
       subscribeLoadNextFeeds();
       subscribeRefreshFeeds();
       subscribeToChangingCircles();
@@ -80,6 +86,15 @@ public class UserPresenter extends ProfilePresenter<UserPresenter.View, User> {
          acceptClicked();
          acceptFriend = false;
       }
+   }
+
+   private void subscribeToStorage() {
+      userTimelineStorageDelegate.setUserId(user.getId());
+      userTimelineStorageDelegate.startUpdatingStorage()
+            .compose(bindViewToMainComposer())
+            .subscribe(new ActionStateSubscriber<UserTimelineStorageCommand>()
+               .onSuccess(storageCommand -> onItemsChanged(storageCommand.getResult()))
+               .onFail(this::handleError));
    }
 
    private void subscribeRefreshFeeds() {

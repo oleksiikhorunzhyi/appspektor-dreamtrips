@@ -20,13 +20,15 @@ import com.worldventures.dreamtrips.modules.feed.model.FeedItem;
 import com.worldventures.dreamtrips.modules.feed.model.TextualPost;
 import com.worldventures.dreamtrips.modules.feed.model.feed.hashtag.HashtagSuggestion;
 import com.worldventures.dreamtrips.modules.feed.presenter.delegate.FeedActionHandlerDelegate;
-import com.worldventures.dreamtrips.modules.feed.presenter.delegate.FeedEntitiesHolderDelegate;
 import com.worldventures.dreamtrips.modules.feed.service.FeedInteractor;
 import com.worldventures.dreamtrips.modules.feed.service.HashtagInteractor;
 import com.worldventures.dreamtrips.modules.feed.service.PostsInteractor;
 import com.worldventures.dreamtrips.modules.feed.service.command.ChangeFeedEntityLikedStatusCommand;
 import com.worldventures.dreamtrips.modules.feed.service.command.FeedByHashtagCommand;
 import com.worldventures.dreamtrips.modules.feed.service.command.HashtagSuggestionCommand;
+import com.worldventures.dreamtrips.modules.feed.storage.command.HashtagFeedStorageCommand;
+import com.worldventures.dreamtrips.modules.feed.storage.delegate.HashtagFeedStorageDelegate;
+import com.worldventures.dreamtrips.modules.feed.utils.FeedUtils;
 import com.worldventures.dreamtrips.modules.feed.view.cell.Flaggable;
 import com.worldventures.dreamtrips.modules.feed.view.fragment.FeedEntityEditingView;
 import com.worldventures.dreamtrips.modules.feed.view.util.TranslationDelegate;
@@ -40,9 +42,10 @@ import javax.inject.Inject;
 
 import icepick.State;
 import io.techery.janet.helper.ActionStateSubscriber;
+import rx.Subscription;
 
 public class FeedHashtagPresenter<T extends FeedHashtagPresenter.View> extends JobPresenter<T>
-   implements FeedActionHandlerPresenter, FeedEditEntityPresenter, FeedItemsHolder {
+   implements FeedActionHandlerPresenter, FeedEditEntityPresenter {
 
    private final static int FEEDS_PER_PAGE = 10;
    private final static int MIN_QUERY_LENGTH = 3;
@@ -50,6 +53,7 @@ public class FeedHashtagPresenter<T extends FeedHashtagPresenter.View> extends J
    @State String query;
    @State ArrayList<FeedItem> feedItems = new ArrayList<>();
    @State ArrayList<HashtagSuggestion> hashtagSuggestions = new ArrayList<>();
+   private Subscription storageSubscription;
 
    @Inject HashtagInteractor interactor;
    @Inject BucketInteractor bucketInteractor;
@@ -59,7 +63,7 @@ public class FeedHashtagPresenter<T extends FeedHashtagPresenter.View> extends J
 
    @Inject TranslationDelegate translationDelegate;
    @Inject FeedActionHandlerDelegate feedActionHandlerDelegate;
-   @Inject FeedEntitiesHolderDelegate feedEntitiesHolderDelegate;
+   @Inject HashtagFeedStorageDelegate hashtagFeedStorageDelegate;
 
    @Override
    public void takeView(T view) {
@@ -70,7 +74,7 @@ public class FeedHashtagPresenter<T extends FeedHashtagPresenter.View> extends J
       view.onSuggestionsReceived(query, hashtagSuggestions);
 
       feedActionHandlerDelegate.setFeedEntityEditingView(view);
-      feedEntitiesHolderDelegate.subscribeToUpdates(this, bindViewToMainComposer(), this::handleError);
+      subscribeToStorage();
       subscribeRefreshFeeds();
       subscribeLoadNextFeeds();
       subscribeSuggestions();
@@ -100,13 +104,25 @@ public class FeedHashtagPresenter<T extends FeedHashtagPresenter.View> extends J
       } else {
          view.clearSuggestions();
          view.hideSuggestionProgress();
-
       }
+   }
+
+   private void subscribeToStorage() {
+      if (storageSubscription != null && !storageSubscription.isUnsubscribed()) {
+         storageSubscription.unsubscribe();
+      }
+      hashtagFeedStorageDelegate.setHashtag(query);
+      storageSubscription = hashtagFeedStorageDelegate.startUpdatingStorage()
+            .compose(bindViewToMainComposer())
+            .subscribe(new ActionStateSubscriber<HashtagFeedStorageCommand>()
+                  .onSuccess(feedStorageCommand -> refreshFeed(feedStorageCommand.getResult()))
+                  .onFail(this::handleError));
    }
 
    public void onRefresh() {
       if (!TextUtils.isEmpty(query)) {
          interactor.getRefreshFeedsByHashtagsPipe().send(new FeedByHashtagCommand.Refresh(query, FEEDS_PER_PAGE));
+         subscribeToStorage();
       } else view.finishLoading();
    }
 
@@ -116,6 +132,12 @@ public class FeedHashtagPresenter<T extends FeedHashtagPresenter.View> extends J
             .send(new FeedByHashtagCommand.LoadNext(query, FEEDS_PER_PAGE, feedItems.get(feedItems.size() - 1)
                   .getCreatedAt()));
       return true;
+   }
+
+   private void refreshFeed(List<FeedItem> newFeedItems) {
+      feedItems.clear();
+      feedItems.addAll(newFeedItems);
+      refreshFeedItems();
    }
 
    private void subscribeRefreshFeeds() {
@@ -137,15 +159,11 @@ public class FeedHashtagPresenter<T extends FeedHashtagPresenter.View> extends J
       boolean noMoreFeeds = freshItems == null || freshItems.size() == 0;
       view.updateLoadingStatus(false, noMoreFeeds);
       view.finishLoading();
-      feedItems.clear();
-      feedItems.addAll(freshItems);
-      refreshFeedItems();
    }
 
    private void refreshFeedError() {
       view.updateLoadingStatus(false, false);
       view.finishLoading();
-      refreshFeedItems();
    }
 
    private void subscribeLoadNextFeeds() {
@@ -164,14 +182,10 @@ public class FeedHashtagPresenter<T extends FeedHashtagPresenter.View> extends J
       // server signals about end of pagination with empty page, NOT with items < page size
       boolean noMoreFeeds = newItems == null || newItems.size() == 0;
       view.updateLoadingStatus(false, noMoreFeeds);
-      //
-      feedItems.addAll(newItems);
-      refreshFeedItems();
    }
 
    private void loadMoreItemsError() {
-      view.updateLoadingStatus(false, false);
-      addFeedItems(new ArrayList<>());
+      view.updateLoadingStatus(false, true);
    }
 
    private void subscribeSuggestions() {
@@ -192,30 +206,16 @@ public class FeedHashtagPresenter<T extends FeedHashtagPresenter.View> extends J
       feedActionHandlerDelegate.onDownloadImage(url, bindViewToMainComposer(), this::handleError);
    }
 
-   @Override
-   public void deleteFeedEntity(String uid) {
-      feedEntitiesHolderDelegate.deleteFeedItemInList(feedItems, uid);
-      refreshFeedItems();
-   }
-
-   @Override
    public void refreshFeedItems() {
       view.refreshFeedItems(feedItems);
-   }
-
-   @Override
-   public void addFeedItem(FeedItem feedItem) {
-      feedItems.add(0, feedItem);
-      refreshFeedItems();
    }
 
    public void onEventMainThread(FeedEntityChangedEvent event) {
       updateFeedEntity(event.getFeedEntity());
    }
 
-   @Override
    public void updateFeedEntity(FeedEntity updatedFeedEntity) {
-      feedEntitiesHolderDelegate.updateFeedItemInList(feedItems, updatedFeedEntity);
+      FeedUtils.updateFeedItemInList(feedItems, updatedFeedEntity);
       refreshFeedItems();
    }
 

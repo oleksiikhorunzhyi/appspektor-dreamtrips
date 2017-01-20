@@ -110,7 +110,7 @@ public class SocialImageFullscreenPresenter extends SocialFullScreenPresenter<Ph
    @Override
    public void onDeleteAction() {
       tripImagesInteractor.deletePhotoPipe()
-            .createObservable(new DeletePhotoCommand(photo.getUid()))
+            .createObservable(new DeletePhotoCommand(photo))
             .compose(bindViewToMainComposer())
             .subscribe(new ActionStateSubscriber<DeletePhotoCommand>()
                   .onSuccess(deletePhotoCommand -> view.informUser(context.getString(R.string.photo_deleted)))

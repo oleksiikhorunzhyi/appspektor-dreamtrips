@@ -47,6 +47,10 @@ import com.worldventures.dreamtrips.modules.facebook.service.FacebookInteractor;
 import com.worldventures.dreamtrips.modules.feed.service.CommentsInteractor;
 import com.worldventures.dreamtrips.modules.feed.service.LikesInteractor;
 import com.worldventures.dreamtrips.modules.feed.service.PostsInteractor;
+import com.worldventures.dreamtrips.modules.feed.storage.interactor.AccountTimelineStorageInteractor;
+import com.worldventures.dreamtrips.modules.feed.storage.interactor.FeedStorageInteractor;
+import com.worldventures.dreamtrips.modules.feed.storage.interactor.HashtagFeedStorageInteractor;
+import com.worldventures.dreamtrips.modules.feed.storage.interactor.UserTimelineStorageInteractor;
 import com.worldventures.dreamtrips.modules.infopages.service.DocumentsInteractor;
 import com.worldventures.dreamtrips.modules.infopages.service.FeedbackInteractor;
 import com.worldventures.dreamtrips.modules.profile.service.ProfileInteractor;
@@ -336,5 +340,29 @@ public class ManagerModule {
    @Singleton
    VersionCheckInteractor provideVersionCheckInteractor(@Named(VersionCheckModule.JANET_QUALIFIER) Janet janet) {
       return new VersionCheckInteractor(janet);
+   }
+
+   @Provides
+   @Singleton
+   FeedStorageInteractor provideFeedStorageInteractor(SessionActionPipeCreator sessionActionPipeCreator) {
+      return new FeedStorageInteractor(sessionActionPipeCreator);
+   }
+
+   @Provides
+   @Singleton
+   AccountTimelineStorageInteractor provideTimelineStorageInteractor(SessionActionPipeCreator sessionActionPipeCreator) {
+      return new AccountTimelineStorageInteractor(sessionActionPipeCreator);
+   }
+
+   @Provides
+   @Singleton
+   UserTimelineStorageInteractor provideUserTimelineStorageInteractor(SessionActionPipeCreator sessionActionPipeCreator) {
+      return new UserTimelineStorageInteractor(sessionActionPipeCreator);
+   }
+
+   @Provides
+   @Singleton
+   HashtagFeedStorageInteractor provideHashtagFeedStorageInteractor(SessionActionPipeCreator sessionActionPipeCreator) {
+      return new HashtagFeedStorageInteractor(sessionActionPipeCreator);
    }
 }

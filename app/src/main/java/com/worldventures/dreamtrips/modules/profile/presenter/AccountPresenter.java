@@ -28,6 +28,8 @@ import com.worldventures.dreamtrips.modules.feed.model.uploading.UploadingPostsL
 import com.worldventures.dreamtrips.modules.feed.presenter.UploadingListenerPresenter;
 import com.worldventures.dreamtrips.modules.feed.presenter.delegate.UploadingPresenterDelegate;
 import com.worldventures.dreamtrips.modules.feed.service.command.GetAccountTimelineCommand;
+import com.worldventures.dreamtrips.modules.feed.storage.command.AccountTimelineStorageCommand;
+import com.worldventures.dreamtrips.modules.feed.storage.delegate.AccountTimelineStorageDelegate;
 import com.worldventures.dreamtrips.modules.profile.service.ProfileInteractor;
 import com.worldventures.dreamtrips.modules.profile.service.command.GetPrivateProfileCommand;
 import com.worldventures.dreamtrips.modules.profile.service.command.UploadAvatarCommand;
@@ -67,6 +69,7 @@ public class AccountPresenter extends ProfilePresenter<AccountPresenter.View, Us
    @Inject NotificationCountEventDelegate notificationCountEventDelegate;
    @Inject SnappyRepository db;
    @Inject UploadingPresenterDelegate uploadingPresenterDelegate;
+   @Inject AccountTimelineStorageDelegate accountTimelineStorageDelegate;
 
    @State boolean shouldReload;
    @State int mediaRequestId;
@@ -85,6 +88,7 @@ public class AccountPresenter extends ProfilePresenter<AccountPresenter.View, Us
       subscribeNotificationsBadgeUpdates();
       subscribeToAvatarUpdates();
       subscribeToBackgroundUpdates();
+      subscribeToStorage();
       subscribeLoadNextFeeds();
       subscribeRefreshFeeds();
       connectToCroppedImageStream();
@@ -158,6 +162,14 @@ public class AccountPresenter extends ProfilePresenter<AccountPresenter.View, Us
             .subscribe(new ActionStateSubscriber<GetAccountTimelineCommand.Refresh>()
                   .onFail(this::refreshFeedError)
                   .onSuccess(action -> refreshFeedSucceed(action.getResult())));
+   }
+
+   private void subscribeToStorage() {
+      accountTimelineStorageDelegate.startUpdatingStorage()
+            .compose(bindViewToMainComposer())
+            .subscribe(new ActionStateSubscriber<AccountTimelineStorageCommand>()
+                  .onSuccess(storageCommand -> onItemsChanged(storageCommand.getResult()))
+                  .onFail(this::handleError));
    }
 
    private void subscribeLoadNextFeeds() {

@@ -23,12 +23,11 @@ import com.worldventures.dreamtrips.modules.feed.model.FeedItem;
 import com.worldventures.dreamtrips.modules.feed.model.TextualPost;
 import com.worldventures.dreamtrips.modules.feed.presenter.FeedActionHandlerPresenter;
 import com.worldventures.dreamtrips.modules.feed.presenter.FeedEditEntityPresenter;
-import com.worldventures.dreamtrips.modules.feed.presenter.FeedItemsHolder;
 import com.worldventures.dreamtrips.modules.feed.presenter.delegate.FeedActionHandlerDelegate;
-import com.worldventures.dreamtrips.modules.feed.presenter.delegate.FeedEntitiesHolderDelegate;
 import com.worldventures.dreamtrips.modules.feed.service.FeedInteractor;
 import com.worldventures.dreamtrips.modules.feed.service.PostsInteractor;
 import com.worldventures.dreamtrips.modules.feed.service.command.ChangeFeedEntityLikedStatusCommand;
+import com.worldventures.dreamtrips.modules.feed.utils.FeedUtils;
 import com.worldventures.dreamtrips.modules.feed.view.cell.Flaggable;
 import com.worldventures.dreamtrips.modules.feed.view.fragment.FeedEntityEditingView;
 import com.worldventures.dreamtrips.modules.feed.view.util.TranslationDelegate;
@@ -47,7 +46,7 @@ import icepick.State;
 import io.techery.janet.helper.ActionStateSubscriber;
 
 public abstract class ProfilePresenter<T extends ProfilePresenter.View, U extends User> extends Presenter<T>
-   implements FeedActionHandlerPresenter, FeedEditEntityPresenter, FeedItemsHolder {
+   implements FeedActionHandlerPresenter, FeedEditEntityPresenter {
 
    protected U user;
 
@@ -61,7 +60,6 @@ public abstract class ProfilePresenter<T extends ProfilePresenter.View, U extend
    @Inject PostsInteractor postsInteractor;
    @Inject TranslationDelegate translationDelegate;
    @Inject FeedActionHandlerDelegate feedActionHandlerDelegate;
-   @Inject FeedEntitiesHolderDelegate feedEntitiesHolderDelegate;
 
    public ProfilePresenter() {
    }
@@ -89,7 +87,6 @@ public abstract class ProfilePresenter<T extends ProfilePresenter.View, U extend
          view.refreshFeedItems(feedItems);
       }
       feedActionHandlerDelegate.setFeedEntityEditingView(view);
-      feedEntitiesHolderDelegate.subscribeToUpdates(this, bindViewToMainComposer(), this::handleError);
       attachUserToView(user);
       loadProfile();
       subscribeToLikesChanges();
@@ -153,25 +150,12 @@ public abstract class ProfilePresenter<T extends ProfilePresenter.View, U extend
       feedActionHandlerDelegate.onFlagItem(feedItem.getItem().getUid(), flagReasonId, reason, view, this::handleError);
    }
 
-   @Override
-   public void deleteFeedEntity(String uid) {
-      feedEntitiesHolderDelegate.deleteFeedItemInList(feedItems, uid);
-      refreshFeedItems();
-   }
-
-   @Override
-   public void addFeedItem(FeedItem feedItem) {
-      feedItems.add(0, feedItem);
-      refreshFeedItems();
-   }
-
    public void onEventMainThread(FeedEntityChangedEvent event) {
       updateFeedEntity(event.getFeedEntity());
    }
 
-   @Override
    public void updateFeedEntity(FeedEntity updatedFeedEntity) {
-      feedEntitiesHolderDelegate.updateFeedItemInList(feedItems, updatedFeedEntity);
+      FeedUtils.updateFeedItemInList(feedItems, updatedFeedEntity);
       refreshFeedItems();
    }
 
@@ -244,36 +228,33 @@ public abstract class ProfilePresenter<T extends ProfilePresenter.View, U extend
    protected void refreshFeedSucceed(List<FeedItem> freshItems) {
       boolean noMoreElements = freshItems == null || freshItems.size() == 0;
       view.updateLoadingStatus(false, noMoreElements);
-      //
       view.finishLoading();
-      feedItems.clear();
-      feedItems.addAll(freshItems);
-      refreshFeedItems();
    }
 
    protected void addFeedItems(List<FeedItem> olderItems) {
       // server signals about end of pagination with empty page, NOT with items < page size
       boolean noMoreElements = olderItems == null || olderItems.size() == 0;
       view.updateLoadingStatus(false, noMoreElements);
-      //
-      feedItems.addAll(olderItems);
-      refreshFeedItems();
    }
 
    protected void refreshFeedError(CommandWithError action, Throwable throwable) {
       handleError(action, throwable);
       view.updateLoadingStatus(false, false);
       view.finishLoading();
-      refreshFeedItems();
    }
 
    protected void loadMoreItemsError(CommandWithError action, Throwable throwable) {
       handleError(action, throwable);
-      view.updateLoadingStatus(false, false);
-      addFeedItems(new ArrayList<>());
+      view.updateLoadingStatus(false, true);
+      view.finishLoading();
    }
 
-   @Override
+   protected void onItemsChanged(List<FeedItem> newFeedItems) {
+      feedItems.clear();
+      feedItems.addAll(newFeedItems);
+      refreshFeedItems();
+   }
+
    public void refreshFeedItems() {
       view.refreshFeedItems(feedItems);
    }

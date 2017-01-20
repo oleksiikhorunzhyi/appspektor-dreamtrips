@@ -40,7 +40,6 @@ import com.worldventures.dreamtrips.modules.feed.model.FeedItem;
 import com.worldventures.dreamtrips.modules.feed.model.TextualPost;
 import com.worldventures.dreamtrips.modules.feed.model.uploading.UploadingPostsList;
 import com.worldventures.dreamtrips.modules.feed.presenter.delegate.FeedActionHandlerDelegate;
-import com.worldventures.dreamtrips.modules.feed.presenter.delegate.FeedEntitiesHolderDelegate;
 import com.worldventures.dreamtrips.modules.feed.presenter.delegate.UploadingPresenterDelegate;
 import com.worldventures.dreamtrips.modules.feed.service.FeedInteractor;
 import com.worldventures.dreamtrips.modules.feed.service.PostsInteractor;
@@ -50,6 +49,9 @@ import com.worldventures.dreamtrips.modules.feed.service.command.BaseGetFeedComm
 import com.worldventures.dreamtrips.modules.feed.service.command.ChangeFeedEntityLikedStatusCommand;
 import com.worldventures.dreamtrips.modules.feed.service.command.GetAccountFeedCommand;
 import com.worldventures.dreamtrips.modules.feed.service.command.SuggestedPhotoCommand;
+import com.worldventures.dreamtrips.modules.feed.storage.command.FeedStorageCommand;
+import com.worldventures.dreamtrips.modules.feed.storage.delegate.FeedStorageDelegate;
+import com.worldventures.dreamtrips.modules.feed.utils.FeedUtils;
 import com.worldventures.dreamtrips.modules.feed.view.cell.Flaggable;
 import com.worldventures.dreamtrips.modules.feed.view.fragment.FeedEntityEditingView;
 import com.worldventures.dreamtrips.modules.feed.view.util.TranslationDelegate;
@@ -74,7 +76,7 @@ import rx.schedulers.Schedulers;
 import timber.log.Timber;
 
 public class FeedPresenter extends Presenter<FeedPresenter.View> implements FeedActionHandlerPresenter,
-      FeedEditEntityPresenter, UploadingListenerPresenter, FeedItemsHolder {
+      FeedEditEntityPresenter, UploadingListenerPresenter {
 
    private static final int SUGGESTION_ITEM_CHUNK = 15;
 
@@ -87,7 +89,7 @@ public class FeedPresenter extends Presenter<FeedPresenter.View> implements Feed
    @Inject NotificationCountEventDelegate notificationCountEventDelegate;
    @Inject UploadingPresenterDelegate uploadingPresenterDelegate;
    @Inject FeedActionHandlerDelegate feedActionHandlerDelegate;
-   @Inject FeedEntitiesHolderDelegate feedEntitiesHolderDelegate;
+   @Inject FeedStorageDelegate feedStorageDelegate;
 
    @Inject BucketInteractor bucketInteractor;
    @Inject FeedInteractor feedInteractor;
@@ -117,9 +119,9 @@ public class FeedPresenter extends Presenter<FeedPresenter.View> implements Feed
    @Override
    public void takeView(View view) {
       super.takeView(view);
-      feedEntitiesHolderDelegate.subscribeToUpdates(this, bindViewToMainComposer(), this::handleError);
       feedActionHandlerDelegate.setFeedEntityEditingView(view);
       updateCircles();
+      subscribeToStorage();
       subscribeRefreshFeeds();
       subscribeLoadNextFeeds();
       subscribePhotoGalleryCheck();
@@ -138,8 +140,8 @@ public class FeedPresenter extends Presenter<FeedPresenter.View> implements Feed
    public void onResume() {
       super.onResume();
       analyticsInteractor.analyticsActionPipe().send(new ViewFeedAction());
+      refreshFeed();
    }
-
 
    @Override
    public void saveInstanceState(Bundle outState) {
@@ -204,6 +206,20 @@ public class FeedPresenter extends Presenter<FeedPresenter.View> implements Feed
    // Refresh feeds
    ///////////////////////////////////////////////////////////////////////////
 
+   private void subscribeToStorage() {
+      feedStorageDelegate.startUpdatingStorage()
+            .compose(bindViewToMainComposer())
+            .subscribe(new ActionStateSubscriber<FeedStorageCommand>()
+               .onSuccess(feedStorageCommand -> refreshFeed(feedStorageCommand.getResult()))
+               .onFail(this::handleError));
+   }
+
+   private void refreshFeed(List<FeedItem> newFeedItems) {
+      feedItems.clear();
+      feedItems.addAll(newFeedItems);
+      refreshFeedItems();
+   }
+
    private void subscribeRefreshFeeds() {
       feedInteractor.getRefreshAccountFeedPipe()
             .observe()
@@ -216,11 +232,7 @@ public class FeedPresenter extends Presenter<FeedPresenter.View> implements Feed
    private void refreshFeedSucceed(List<FeedItem> freshItems) {
       boolean noMoreFeeds = freshItems.size() == 0;
       view.updateLoadingStatus(false, noMoreFeeds);
-      //
       view.finishLoading();
-      feedItems.clear();
-      feedItems.addAll(freshItems);
-      //
       suggestedPhotoInteractor.getSuggestedPhotoCommandActionPipe().send(new SuggestedPhotoCommand());
    }
 
@@ -228,7 +240,6 @@ public class FeedPresenter extends Presenter<FeedPresenter.View> implements Feed
       handleError(action, throwable);
       view.updateLoadingStatus(false, false);
       view.finishLoading();
-      refreshFeedItems();
    }
 
    public void refreshFeed() {
@@ -253,15 +264,11 @@ public class FeedPresenter extends Presenter<FeedPresenter.View> implements Feed
       // server signals about end of pagination with empty page, NOT with items < page size
       boolean noMoreFeeds = olderItems.size() == 0;
       view.updateLoadingStatus(false, noMoreFeeds);
-      //
-      feedItems.addAll(olderItems);
-      refreshFeedItems();
    }
 
    private void loadMoreItemsError(CommandWithError action, Throwable throwable) {
       handleError(action, throwable);
-      view.updateLoadingStatus(false, false);
-      addFeedItems(new ArrayList<>());
+      view.updateLoadingStatus(false, true);
    }
 
    public boolean loadNext() {
@@ -289,12 +296,6 @@ public class FeedPresenter extends Presenter<FeedPresenter.View> implements Feed
       feedActionHandlerDelegate.onDownloadImage(url, bindViewToMainComposer(), this::handleError);
    }
 
-   @Override
-   public void deleteFeedEntity(String uid) {
-      feedEntitiesHolderDelegate.deleteFeedItemInList(feedItems, uid);
-      refreshFeedItems();
-   }
-
    private void subscribeToBackgroundUploadingOperations() {
       compoundOperationsInteractor.compoundOperationsPipe()
             .observeWithReplay()
@@ -308,19 +309,8 @@ public class FeedPresenter extends Presenter<FeedPresenter.View> implements Feed
                   }));
    }
 
-   @Override
-   public void addFeedItem(FeedItem feedItem) {
-      feedItems.add(0, feedItem);
-      refreshFeedItems();
-   }
-
    public void onEventMainThread(FeedEntityChangedEvent event) {
-      updateFeedEntity(event.getFeedEntity());
-   }
-
-   @Override
-   public void updateFeedEntity(FeedEntity updatedFeedEntity) {
-      feedEntitiesHolderDelegate.updateFeedItemInList(feedItems, updatedFeedEntity);
+      FeedUtils.updateFeedItemInList(feedItems, event.getFeedEntity());
       refreshFeedItems();
    }
 
@@ -471,7 +461,6 @@ public class FeedPresenter extends Presenter<FeedPresenter.View> implements Feed
       }, throwable -> Timber.w("Can't get friends notifications count"));
    }
 
-   @Override
    public void refreshFeedItems() {
       view.refreshFeedItems(feedItems, new UploadingPostsList(postUploads), suggestedPhotos);
    }

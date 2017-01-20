@@ -696,4 +696,7 @@
 
    <string name="documents">Documents</string>
    <string name="documents_empty_text">Documents could not be loaded at this time.</string>
+   <string name="filter_merchant_food">Food</string>
+   <string name="filter_merchant_entertainment">Entertainment</string>
+   <string name="filter_merchant_spa">Spa</string>
 </resources>

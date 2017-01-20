@@ -50,4 +50,10 @@ public interface DtlMerchantsScreen extends DtlScreen {
 
    void onLoadNextError();
 
+   void onClickEntertainment();
+
+   void onClickSpa();
+
+   void onClickFood();
+
 }

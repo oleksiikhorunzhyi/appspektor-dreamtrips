@@ -178,6 +178,24 @@ public class DtlMerchantsScreenImpl extends DtlLayout<DtlMerchantsScreen, DtlMer
       this.updateLoadingState(true);
    }
 
+   @OnClick(R.id.btn_filter_merchant_entertainment)
+   @Override
+   public void onClickEntertainment() {
+      getPresenter().offersOnlySwitched(false);
+   }
+
+   @OnClick(R.id.btn_filter_merchant_spa)
+   @Override
+   public void onClickSpa() {
+      getPresenter().offersOnlySwitched(false);
+   }
+
+   @OnClick(R.id.btn_filter_merchant_food)
+   @Override
+   public void onClickFood() {
+      getPresenter().offersOnlySwitched(false);
+   }
+
    private void showhMerchantsError() {
       if (!delegate.isItemsPresent()) errorView.setVisibility(VISIBLE);
       else loadNextMerchantsError(true);

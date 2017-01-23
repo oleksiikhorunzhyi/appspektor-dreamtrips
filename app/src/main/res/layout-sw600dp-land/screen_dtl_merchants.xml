@@ -5,5 +5,7 @@
       android:layout_height="match_parent"
       >
 
+   <include layout="@layout/filter_merchants_buttons"/>
+
    <include layout="@layout/screen_dtl_merchants_content" />
 </com.worldventures.dreamtrips.modules.dtl_flow.parts.merchants.DtlMerchantsScreenImpl>

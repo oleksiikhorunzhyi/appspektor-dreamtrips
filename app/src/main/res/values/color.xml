@@ -4,6 +4,8 @@
    <color name="theme_main_darker">#76b2fe</color>
    <color name="accent">#76b2fe</color>
 
+   <color name="merchant_buttons">#cc55184f</color>
+
    <color name="white">@android:color/white</color>
 
    <color name="black">#000000</color>

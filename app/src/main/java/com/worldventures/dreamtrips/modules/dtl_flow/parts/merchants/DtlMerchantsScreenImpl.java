@@ -123,9 +123,6 @@ public class DtlMerchantsScreenImpl extends DtlLayout<DtlMerchantsScreen, DtlMer
       RxDtlToolbar.filterButtonClicks(dtlToolbar)
             .compose(RxLifecycle.bindView(this))
             .subscribe(aVoid -> ((FlowActivity) getActivity()).openRightDrawer());
-      RxDtlToolbar.offersOnlyToggleChanges(dtlToolbar)
-            .compose(RxLifecycle.bindView(this))
-            .subscribe(aBoolean -> getPresenter().offersOnlySwitched(aBoolean));
    }
 
    @Override
@@ -176,6 +173,24 @@ public class DtlMerchantsScreenImpl extends DtlLayout<DtlMerchantsScreen, DtlMer
       this.showhMerchantsError();
       this.showEmpty(false);
       this.updateLoadingState(true);
+   }
+
+   @OnClick(R.id.btn_filter_merchant_entertainment)
+   @Override
+   public void onClickEntertainment() {
+      getPresenter().offersOnlySwitched(false);
+   }
+
+   @OnClick(R.id.btn_filter_merchant_spa)
+   @Override
+   public void onClickSpa() {
+      getPresenter().offersOnlySwitched(false);
+   }
+
+   @OnClick(R.id.btn_filter_merchant_food)
+   @Override
+   public void onClickFood() {
+      getPresenter().offersOnlySwitched(false);
    }
 
    private void showhMerchantsError() {
@@ -269,12 +284,6 @@ public class DtlMerchantsScreenImpl extends DtlLayout<DtlMerchantsScreen, DtlMer
    @Override
    public void onOfferClick(ThinMerchant merchant, Offer offer) {
       getPresenter().onOfferClick(merchant, offer);
-   }
-
-   @Override
-   public void toggleOffersOnly(boolean enabled) {
-      if (dtlToolbar == null) return;
-      dtlToolbar.toggleOffersOnly(enabled);
    }
 
    @Override

@@ -26,7 +26,6 @@ import timber.log.Timber;
 public class DtlToolbar extends LinearLayout {
 
    @InjectView(R.id.dtlfb_rootView) protected DtlFilterButton filtersButton;
-   @InjectView(R.id.filterDiningsSwitch) protected SwitchCompat filterDiningsSwitch;
    @InjectView(R.id.dtlToolbarMerchantSearchInput) protected AppCompatEditText merchantSearchInput;
    @InjectView(R.id.dtlToolbarLocationSearchInput) protected AppCompatEditText locationSearchInput;
 
@@ -103,10 +102,6 @@ public class DtlToolbar extends LinearLayout {
       filtersButton.setFilterEnabled(enabled);
    }
 
-   public void toggleOffersOnly(boolean enabled) {
-      filterDiningsSwitch.setChecked(enabled);
-   }
-
    AppCompatEditText getMerchantSearchView() {
       return merchantSearchInput;
    }
@@ -115,9 +110,6 @@ public class DtlToolbar extends LinearLayout {
       return locationSearchInput;
    }
 
-   SwitchCompat getDiningFilterToggle() {
-      return filterDiningsSwitch;
-   }
 
    @OnClick(R.id.dtlfb_rootView)
    protected void filterButtonClicked(View view) {

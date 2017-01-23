@@ -4,6 +4,7 @@ import android.content.Context;
 import android.graphics.Point;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -44,6 +45,7 @@ import com.worldventures.dreamtrips.modules.map.renderer.ClusterRenderer;
 import com.worldventures.dreamtrips.modules.map.view.MapViewUtils;
 import com.worldventures.dreamtrips.modules.trips.model.Location;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
@@ -60,12 +62,20 @@ public class DtlMapScreenImpl extends DtlLayout<DtlMapScreen, DtlMapPresenter, D
    private static final float CAMERA_PADDING = 50f;
 
    public static final String MAP_TAG = "MAP_TAG";
+   private static final String RESTAURANT = "restaurant";
+   private static final String BAR = "bar";
+   private static final String ENTERTAINMENT = "entertainment";
+   private static final String SPAS = "spas";
 
    @InjectView(R.id.mapTouchView) View mapTouchView;
    @InjectView(R.id.infoContainer) FrameLayout infoContainer;
    @InjectView(R.id.noGoogleContainer) FrameLayout noGoogleContainer;
    @InjectView(R.id.redoMerchants) View redoMerchants;
    @InjectView(R.id.loadMoreMerchants) View loadMoreMerchants;
+
+   @InjectView(R.id.btn_filter_merchant_food) View filterFood;
+   @InjectView(R.id.btn_filter_merchant_entertainment) View filterEntertainment;
+   @InjectView(R.id.btn_filter_merchant_spa) View filterSpa;
 
    @Optional @InjectView(R.id.expandableDtlToolbar) ExpandableDtlToolbar dtlToolbar;
 
@@ -135,6 +145,22 @@ public class DtlMapScreenImpl extends DtlLayout<DtlMapScreen, DtlMapPresenter, D
       dtlToolbar.setFilterEnabled(!isDefault);
    }
 
+   @Override
+    public void updateMerchantType(List<String> type) {
+        if (type != null && type.size() > 1) {
+            if (type != null && type.get(0).equals(RESTAURANT) && type.get(1).equals(BAR)) {
+                filterFood.setSelected(true);
+            }
+        } else {
+            if (type != null && type.get(0).equals(ENTERTAINMENT)) {
+                filterEntertainment.setSelected(true);
+            } else if (type != null && type.get(0).equals(SPAS)) {
+                filterSpa.setSelected(true);
+            }
+        }
+        updateFiltersView();
+    }
+
    private void checkMapAvailable() {
       if (MapsInitializer.initialize(getActivity()) != ConnectionResult.SUCCESS) {
          destroyMap();
@@ -190,6 +216,46 @@ public class DtlMapScreenImpl extends DtlLayout<DtlMapScreen, DtlMapPresenter, D
    public void onRedoMerchantsClick() {
       getPresenter().onLoadMerchantsClick(googleMap.getCameraPosition().target);
    }
+
+    @OnClick(R.id.btn_filter_merchant_food)
+    public void onFilterFoodClick() {
+        if (!filterFood.isSelected()) {
+            List<String> merchantType = new ArrayList<>();
+            merchantType.add(RESTAURANT);
+            merchantType.add(BAR);
+            filterFood.setSelected(true);
+            filterEntertainment.setSelected(false);
+            filterSpa.setSelected(false);
+            getPresenter().onLoadMerchantsType(merchantType);
+            updateFiltersView();
+        }
+    }
+
+    @OnClick(R.id.btn_filter_merchant_entertainment)
+    public void onFilterEntertainmentClick() {
+        if (!filterEntertainment.isSelected()) {
+            List<String> merchantType = new ArrayList<>();
+            merchantType.add(ENTERTAINMENT);
+            filterFood.setSelected(false);
+            filterEntertainment.setSelected(true);
+            filterSpa.setSelected(false);
+            getPresenter().onLoadMerchantsType(merchantType);
+            updateFiltersView();
+        }
+    }
+
+    @OnClick(R.id.btn_filter_merchant_spa)
+    public void onFilterSpaClick() {
+        if (!filterSpa.isSelected()) {
+            List<String> merchantType = new ArrayList<>();
+            merchantType.add(SPAS);
+            filterFood.setSelected(false);
+            filterEntertainment.setSelected(false);
+            filterSpa.setSelected(true);
+            getPresenter().onLoadMerchantsType(merchantType);
+            updateFiltersView();
+        }
+    }
 
    @Override
    public void showProgress(boolean show) {
@@ -366,5 +432,26 @@ public class DtlMapScreenImpl extends DtlLayout<DtlMapScreen, DtlMapPresenter, D
          infoContainer.removeAllViews();
          getPresenter().onMarkerPopupDismiss();
       }
+   }
+
+   private void updateFiltersView() {
+
+      ViewUtils.setCompatDrawable(filterFood, filterFood.isSelected() ?
+            R.drawable.custom_button_filters_map_pressed : R.drawable.custom_button_filters_map_focused);
+
+      ViewUtils.setCompatDrawable(filterEntertainment, filterEntertainment.isSelected() ?
+            R.drawable.custom_button_filters_map_pressed : R.drawable.custom_button_filters_map_focused);
+
+      ViewUtils.setCompatDrawable(filterSpa, filterSpa.isSelected() ?
+            R.drawable.custom_button_filters_map_pressed : R.drawable.custom_button_filters_map_focused);
+
+      ViewUtils.setTextColor(filterFood, filterFood.isSelected() ?
+            R.color.white : R.color.dtl_text_color_disabled_filters);
+
+      ViewUtils.setTextColor(filterEntertainment, filterEntertainment.isSelected() ?
+            R.color.white : R.color.dtl_text_color_disabled_filters);
+
+      ViewUtils.setTextColor(filterSpa, filterSpa.isSelected() ?
+            R.color.white : R.color.dtl_text_color_disabled_filters);
    }
 }

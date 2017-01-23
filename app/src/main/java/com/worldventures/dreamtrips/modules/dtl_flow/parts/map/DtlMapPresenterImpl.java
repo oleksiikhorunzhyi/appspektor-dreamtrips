@@ -105,6 +105,13 @@ public class DtlMapPresenterImpl extends DtlPresenterImpl<DtlMapScreen, ViewStat
             .map(FilterDataAction::getResult)
             .map(FilterData::isOffersOnly)
             .subscribe(getView()::toggleOffersOnly);
+      filterDataInteractor.filterDataPipe()
+            .observeSuccessWithReplay()
+            .take(1)
+            .compose(bindViewIoToMainComposer())
+            .map(FilterDataAction::getResult)
+            .map(FilterData::getMerchantType)
+            .subscribe(getView()::updateMerchantType);
       fullMerchantInteractor.fullMerchantPipe()
             .observeWithReplay()
             .compose(bindViewIoToMainComposer())
@@ -208,6 +215,11 @@ public class DtlMapPresenterImpl extends DtlPresenterImpl<DtlMapScreen, ViewStat
    @Override
    public void offersOnlySwitched(boolean isOffersOnly) {
       filterDataInteractor.applyOffersOnly(isOffersOnly);
+   }
+
+   @Override
+   public void onLoadMerchantsType(List<String> merchantType) {
+      filterDataInteractor.applyMerchantTypes(merchantType);
    }
 
    @Override

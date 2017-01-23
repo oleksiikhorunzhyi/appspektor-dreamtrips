@@ -7,6 +7,7 @@ import com.worldventures.dreamtrips.modules.dtl.model.merchant.Attribute;
 
 import org.immutables.value.Value;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -18,6 +19,8 @@ public abstract class FilterData {
    private static final int BUDGET_MIN = 1;
    private static final int BUDGET_MAX = 5;
    private static final int DISTANCE_MAX_INDEX = 4;
+   private static final String RESTAURANT = "restaurant";
+   private static final String BAR = "bar";
 
    @Value.Default
    public int page() {
@@ -68,5 +71,13 @@ public abstract class FilterData {
             budgetMax() == BUDGET_MAX &&
             distanceMaxIndex() == DISTANCE_MAX_INDEX &&
             selectedAmenities().isEmpty();
+   }
+
+   @Value.Default
+   public List<String> getMerchantType() {
+      List<String> merchantTypeList = new ArrayList<>();
+      merchantTypeList.add(RESTAURANT);
+      merchantTypeList.add(BAR);
+      return merchantTypeList;
    }
 }

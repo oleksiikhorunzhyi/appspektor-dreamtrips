@@ -107,4 +107,8 @@
    <string name="dtlt_search_hint">Food &amp; Drinks</string>
    <!-- DtlFilterButton strings -->
    <string name="dtlfb_caption">Filters</string>
+   <!-- DtlFilterButton Options Merchants Type strings -->
+   <string name="filter_merchant_food">FOOD</string>
+   <string name="filter_merchant_entertainment">ENTERTAINMENT</string>
+   <string name="filter_merchant_spa">SPAS</string>
 </resources>

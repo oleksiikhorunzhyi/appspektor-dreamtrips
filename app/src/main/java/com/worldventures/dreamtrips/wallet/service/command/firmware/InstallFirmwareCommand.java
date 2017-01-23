@@ -40,9 +40,6 @@ public class InstallFirmwareCommand extends Command<FirmwareUpdateData> implemen
    private LoadFirmwareFilesCommand loadFirmwareFilesCommand;
    private ActionPipe<LoadFirmwareFilesCommand> loadFirmwareFilesCommandActionPipe;
 
-   public InstallFirmwareCommand() {
-   }
-
    @Override
    protected void run(CommandCallback<FirmwareUpdateData> callback) throws Throwable {
       loadFirmwareFilesCommandActionPipe = janet.createPipe(LoadFirmwareFilesCommand.class);

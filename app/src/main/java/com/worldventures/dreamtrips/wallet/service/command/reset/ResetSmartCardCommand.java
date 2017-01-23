@@ -3,7 +3,6 @@ package com.worldventures.dreamtrips.wallet.service.command.reset;
 import com.worldventures.dreamtrips.api.smart_card.user_association.DisassociateCardUserHttpAction;
 import com.worldventures.dreamtrips.core.janet.dagger.InjectableAction;
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCard;
-import com.worldventures.dreamtrips.wallet.service.command.ActiveSmartCardCommand;
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -26,16 +25,18 @@ public class ResetSmartCardCommand extends Command<Void> implements InjectableAc
 
    @Inject @Named(JANET_API_LIB) Janet apiLibJanet;
    @Inject @Named(JANET_WALLET) Janet walletJanet;
+   private final SmartCard smartCard;
+
+   public ResetSmartCardCommand(SmartCard smartCard) {
+      this.smartCard = smartCard;
+   }
 
    @Override
    protected void run(CommandCallback<Void> callback) throws Throwable {
-      walletJanet.createPipe(ActiveSmartCardCommand.class)
-            .createObservableResult(new ActiveSmartCardCommand())
-            .flatMap(command -> reset(command.getResult()))
-            .subscribe(callback::onSuccess, callback::onFail);
+      reset().subscribe(callback::onSuccess, callback::onFail);
    }
 
-   private Observable<Void> reset(SmartCard smartCard) {
+   private Observable<Void> reset() {
       if (!smartCard.connectionStatus().isConnected()) return Observable.error(new NotConnectedException());
 
       return disableAutoLock()
@@ -58,10 +59,8 @@ public class ResetSmartCardCommand extends Command<Void> implements InjectableAc
    }
 
    private Observable<DisassociateCardUserHttpAction> disassociateCardUserServer(SmartCard smartCard) {
-      //// TODO: 11/18/16 use DisassociateCardUserCommand for it
-      long scId = Long.parseLong(smartCard.smartCardId());
       return apiLibJanet.createPipe(DisassociateCardUserHttpAction.class, Schedulers.io())
-            .createObservableResult(new DisassociateCardUserHttpAction(scId, smartCard.deviceId()));
+            .createObservableResult(new DisassociateCardUserHttpAction(Long.parseLong(smartCard.smartCardId()), smartCard.deviceId()));
    }
 
    private Observable<UnAssignUserAction> disassociateCardUser() {
@@ -73,5 +72,4 @@ public class ResetSmartCardCommand extends Command<Void> implements InjectableAc
       return walletJanet.createPipe(RemoveSmartCardDataCommand.class)
             .createObservableResult(new RemoveSmartCardDataCommand());
    }
-
 }

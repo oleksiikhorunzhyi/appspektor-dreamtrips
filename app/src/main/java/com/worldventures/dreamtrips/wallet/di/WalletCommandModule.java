@@ -41,7 +41,6 @@ import com.worldventures.dreamtrips.wallet.service.command.firmware.UnzipFirmwar
 import com.worldventures.dreamtrips.wallet.service.command.http.AssociateCardUserCommand;
 import com.worldventures.dreamtrips.wallet.service.command.http.AvailabilitySmartCardCommand;
 import com.worldventures.dreamtrips.wallet.service.command.http.CreateBankCardCommand;
-import com.worldventures.dreamtrips.wallet.service.command.http.DisassociateCardUserCommand;
 import com.worldventures.dreamtrips.wallet.service.command.http.FetchAndStoreDefaultAddressInfoCommand;
 import com.worldventures.dreamtrips.wallet.service.command.http.FetchAssociatedSmartCardCommand;
 import com.worldventures.dreamtrips.wallet.service.command.http.FetchFirmwareInfoCommand;
@@ -102,7 +101,6 @@ import dagger.Module;
             ResetSmartCardCommand.class,
             ConfirmResetCommand.class,
             FetchBatteryLevelCommand.class,
-            DisassociateCardUserCommand.class,
             FetchAssociatedSmartCardCommand.class,
             RestartSmartCardCommand.class,
             AvailabilitySmartCardCommand.class,

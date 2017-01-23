@@ -123,9 +123,6 @@ public class DtlMerchantsScreenImpl extends DtlLayout<DtlMerchantsScreen, DtlMer
       RxDtlToolbar.filterButtonClicks(dtlToolbar)
             .compose(RxLifecycle.bindView(this))
             .subscribe(aVoid -> ((FlowActivity) getActivity()).openRightDrawer());
-      RxDtlToolbar.offersOnlyToggleChanges(dtlToolbar)
-            .compose(RxLifecycle.bindView(this))
-            .subscribe(aBoolean -> getPresenter().offersOnlySwitched(aBoolean));
    }
 
    @Override
@@ -287,12 +284,6 @@ public class DtlMerchantsScreenImpl extends DtlLayout<DtlMerchantsScreen, DtlMer
    @Override
    public void onOfferClick(ThinMerchant merchant, Offer offer) {
       getPresenter().onOfferClick(merchant, offer);
-   }
-
-   @Override
-   public void toggleOffersOnly(boolean enabled) {
-      if (dtlToolbar == null) return;
-      dtlToolbar.toggleOffersOnly(enabled);
    }
 
    @Override

@@ -116,13 +116,6 @@ public class DtlMerchantsPresenterImpl extends DtlPresenterImpl<DtlMerchantsScre
             .subscribe(getView()::updateToolbarSearchCaption);
       filterDataInteractor.filterDataPipe()
             .observeSuccessWithReplay()
-            .take(1)
-            .compose(bindViewIoToMainComposer())
-            .map(FilterDataAction::getResult)
-            .map(FilterData::isOffersOnly)
-            .subscribe(getView()::toggleOffersOnly);
-      filterDataInteractor.filterDataPipe()
-            .observeSuccessWithReplay()
             .map(FilterDataAction::getResult)
             .map(FilterData::isDefault)
             .compose(bindViewIoToMainComposer())

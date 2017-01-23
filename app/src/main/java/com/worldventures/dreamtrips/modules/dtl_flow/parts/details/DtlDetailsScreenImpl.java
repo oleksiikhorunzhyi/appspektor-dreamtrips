@@ -69,7 +69,6 @@ public class DtlDetailsScreenImpl extends DtlLayout<DtlDetailsScreen, DtlDetails
 
    @InjectView(R.id.toolbar_actionbar) Toolbar toolbar;
    @InjectView(R.id.merchant_details_earn_wrapper) ViewGroup earnWrapper;
-   @InjectView(R.id.merchant_details_merchant_wrapper) ViewGroup merchantWrapper;
    @InjectView(R.id.merchant_details_additional) ViewGroup additionalContainer;
    @InjectView(R.id.merchant_address) TextView merchantAddress;
 
@@ -271,16 +270,6 @@ public class DtlDetailsScreenImpl extends DtlLayout<DtlDetailsScreen, DtlDetails
    boolean onMapTouched() {
       getPresenter().routeToMerchantRequested(null);
       return false;
-   }
-
-   @OnClick(R.id.merchant_details_suggest_merchant)
-   void suggestMerchantClick() {
-      getPresenter().onMerchantClick();
-   }
-
-   @Override
-   public void setSuggestMerchantButtonAvailable(boolean available) {
-      merchantWrapper.setVisibility(available ? View.VISIBLE : View.GONE);
    }
 
    @Override

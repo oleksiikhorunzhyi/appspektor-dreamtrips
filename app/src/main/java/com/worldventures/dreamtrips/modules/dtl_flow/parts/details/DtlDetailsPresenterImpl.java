@@ -75,7 +75,6 @@ public class DtlDetailsPresenterImpl extends DtlPresenterImpl<DtlDetailsScreen, 
             .send(new MerchantDetailsViewCommand(new MerchantDetailsViewEvent(merchant.asMerchantAttributes())));
       getView().setMerchant(merchant);
       preExpandOffers();
-      tryHideSuggestMerchantButton();
    }
 
    @Override
@@ -129,13 +128,6 @@ public class DtlDetailsPresenterImpl extends DtlPresenterImpl<DtlDetailsScreen, 
       if (getViewState().isHoursViewExpanded()) {
          getView().expandHoursView();
       }
-   }
-
-   private void tryHideSuggestMerchantButton() {
-      boolean repToolsAvailable = featureManager.available(Feature.REP_SUGGEST_MERCHANT);
-      if (!merchant.asMerchantAttributes().hasOffers()) {
-         getView().setSuggestMerchantButtonAvailable(repToolsAvailable);
-      } else processTransaction();
    }
 
    private void processTransaction() {
@@ -227,13 +219,6 @@ public class DtlDetailsPresenterImpl extends DtlPresenterImpl<DtlDetailsScreen, 
    @Override
    public void onEstimationClick() {
       getView().showEstimationDialog(new PointsEstimationDialogBundle(merchant));
-   }
-
-   @Override
-   public void onMerchantClick() {
-      analyticsInteractor.dtlAnalyticsCommandPipe()
-            .send(DtlAnalyticsCommand.create(new SuggestMerchantEvent(merchant.asMerchantAttributes())));
-      getView().openSuggestMerchant(new MerchantIdBundle(merchant.id()));
    }
 
    @Override

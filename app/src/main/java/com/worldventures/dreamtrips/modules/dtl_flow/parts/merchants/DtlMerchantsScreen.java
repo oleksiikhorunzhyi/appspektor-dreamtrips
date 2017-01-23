@@ -54,4 +54,6 @@ public interface DtlMerchantsScreen extends DtlScreen {
 
    void onClickFood();
 
+   void updateMerchantType(List<String> type);
+
 }

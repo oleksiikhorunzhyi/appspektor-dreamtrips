@@ -1,6 +1,7 @@
 package com.worldventures.dreamtrips.modules.dtl_flow.di;
 
 import com.worldventures.dreamtrips.modules.dtl.service.action.creator.AttributesActionCreator;
+import com.worldventures.dreamtrips.modules.dtl.service.action.creator.CategoryHttpActionCreator;
 import com.worldventures.dreamtrips.modules.dtl.service.action.creator.FullMerchantActionCreator;
 import com.worldventures.dreamtrips.modules.dtl.service.action.creator.HttpActionCreator;
 import com.worldventures.dreamtrips.modules.dtl.service.action.creator.LocationsActionCreator;
@@ -28,7 +29,7 @@ public class DtlActionsModule {
 
    @Provides(type = Provides.Type.SET)
    @Singleton
-   HttpActionCreator provideAttributesActionCreator() {
+   CategoryHttpActionCreator provideAttributesActionCreator() {
       return new AttributesActionCreator();
    }
 

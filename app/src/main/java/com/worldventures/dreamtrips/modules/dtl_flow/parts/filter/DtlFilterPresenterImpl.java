@@ -1,12 +1,13 @@
 package com.worldventures.dreamtrips.modules.dtl_flow.parts.filter;
 
+
+import com.worldventures.dreamtrips.modules.dtl.model.merchant.filter.ImmutableFilterData;
 import com.worldventures.dreamtrips.modules.dtl.service.AttributesInteractor;
 import com.worldventures.dreamtrips.modules.dtl.service.FilterDataInteractor;
 import com.worldventures.dreamtrips.modules.dtl.service.action.AttributesAction;
 import com.worldventures.dreamtrips.modules.dtl.service.action.FilterDataAction;
-
+import java.util.Collections;
 import javax.inject.Inject;
-
 import io.techery.janet.ActionState;
 import io.techery.janet.helper.ActionStateSubscriber;
 import rx.android.schedulers.AndroidSchedulers;
@@ -97,6 +98,8 @@ public class DtlFilterPresenterImpl implements DtlFilterPresenter {
                            .map(FilterDataAction::getResult)
                            .observeOn(AndroidSchedulers.mainThread())
                            .takeUntil(detachStopper.asObservable())
+                           .map(filterData -> ImmutableFilterData.copyOf(filterData)
+                                 .withSelectedAmenities(Collections.emptyList()))
                            .subscribe(filterData ->
                                  view.showAmenitiesItems(attributesAction.getResult(), filterData));
                   })

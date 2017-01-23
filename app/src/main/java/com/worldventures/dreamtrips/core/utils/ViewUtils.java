@@ -8,6 +8,7 @@ import android.graphics.Rect;
 import android.os.Build;
 import android.support.annotation.ColorRes;
 import android.support.annotation.DrawableRes;
+import android.support.annotation.StringRes;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
@@ -184,5 +185,9 @@ public class ViewUtils {
 
    public static void setViewVisibility(int visibility, View... views) {
       Queryable.from(views).forEachR(view -> setViewVisibility(view, visibility));
+   }
+
+   public static String getStringById(Context context, @StringRes int text) {
+      return context.getResources().getString(text);
    }
 }

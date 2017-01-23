@@ -63,7 +63,7 @@ public abstract class FilterData {
    @Value.Default
    public List<Attribute> selectedAmenities() {
       return Collections.emptyList();
-   };
+   }
 
    @Value.Derived
    public boolean isDefault() {

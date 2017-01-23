@@ -10,7 +10,9 @@ import com.worldventures.dreamtrips.modules.dtl.bundle.PointsEstimationDialogBun
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.Merchant;
 import com.worldventures.dreamtrips.modules.dtl.model.transaction.DtlTransaction;
 import com.worldventures.dreamtrips.modules.dtl_flow.DtlScreen;
+import com.worldventures.dreamtrips.modules.dtl_flow.parts.reviews.model.ReviewObject;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public interface DtlDetailsScreen extends DtlScreen {
@@ -46,4 +48,16 @@ public interface DtlDetailsScreen extends DtlScreen {
    List<String> getExpandedOffersIds();
 
    boolean isHoursViewExpanded();
+
+   void showAllReviews();
+
+   void addNoCommentsAndReviews();
+
+   void addCommentsAndReviews(float ratingMerchant, int countReview, ArrayList<ReviewObject> listReviews);
+
+   void showButtonAllRateAndReview();
+
+   void hideButtonAllRateAndReview();
+
+   void setTextRateAndReviewButton(int size);
 }

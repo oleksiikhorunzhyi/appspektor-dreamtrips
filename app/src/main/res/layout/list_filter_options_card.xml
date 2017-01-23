@@ -17,7 +17,8 @@
          android:stateListAnimator="@null"
          android:text="@string/filter_merchant_food"
          android:textColor="@color/dtl_text_color_disabled_filters"
-         android:textSize="13sp"/>
+         android:textSize="13sp"
+         android:textAllCaps="true"/>
 
    <Button
          android:id="@+id/btn_filter_merchant_entertainment"
@@ -30,7 +31,8 @@
          android:stateListAnimator="@null"
          android:text="@string/filter_merchant_entertainment"
          android:textColor="@color/dtl_text_color_disabled_filters"
-         android:textSize="13sp"/>
+         android:textSize="13sp"
+         android:textAllCaps="true"/>
 
    <Button
          android:id="@+id/btn_filter_merchant_spa"
@@ -43,6 +45,7 @@
          android:stateListAnimator="@null"
          android:text="@string/filter_merchant_spa"
          android:textColor="@color/dtl_text_color_disabled_filters"
-         android:textSize="13sp"/>
+         android:textSize="13sp"
+         android:textAllCaps="true"/>
 
 </LinearLayout>

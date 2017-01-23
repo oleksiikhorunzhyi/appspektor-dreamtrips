@@ -4,7 +4,6 @@ import android.content.Context;
 import android.graphics.Point;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -43,7 +42,6 @@ import com.worldventures.dreamtrips.modules.dtl_flow.view.toolbar.RxDtlToolbar;
 import com.worldventures.dreamtrips.modules.map.model.DtlClusterItem;
 import com.worldventures.dreamtrips.modules.map.renderer.ClusterRenderer;
 import com.worldventures.dreamtrips.modules.map.view.MapViewUtils;
-import com.worldventures.dreamtrips.modules.trips.model.Location;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -65,7 +63,7 @@ public class DtlMapScreenImpl extends DtlLayout<DtlMapScreen, DtlMapPresenter, D
    private static final String RESTAURANT = "restaurant";
    private static final String BAR = "bar";
    private static final String ENTERTAINMENT = "entertainment";
-   private static final String SPAS = "spas";
+   private static final String SPAS = "spa";
 
    @InjectView(R.id.mapTouchView) View mapTouchView;
    @InjectView(R.id.infoContainer) FrameLayout infoContainer;
@@ -142,20 +140,24 @@ public class DtlMapScreenImpl extends DtlLayout<DtlMapScreen, DtlMapPresenter, D
       dtlToolbar.setFilterEnabled(!isDefault);
    }
 
-   @Override
+    @Override
     public void updateMerchantType(List<String> type) {
+        int idResource = 0;
         if (type != null && type.size() > 1) {
             if (type != null && type.get(0).equals(RESTAURANT) && type.get(1).equals(BAR)) {
                 filterFood.setSelected(true);
+                idResource = R.string.dtlt_search_hint;
             }
         } else {
             if (type != null && type.get(0).equals(ENTERTAINMENT)) {
                 filterEntertainment.setSelected(true);
+                idResource = R.string.filter_merchant_entertainment;
             } else if (type != null && type.get(0).equals(SPAS)) {
                 filterSpa.setSelected(true);
+                idResource = R.string.filter_merchant_spa;
             }
         }
-        updateFiltersView();
+        updateFiltersView(idResource);
     }
 
    private void checkMapAvailable() {
@@ -224,7 +226,8 @@ public class DtlMapScreenImpl extends DtlLayout<DtlMapScreen, DtlMapPresenter, D
             filterEntertainment.setSelected(false);
             filterSpa.setSelected(false);
             getPresenter().onLoadMerchantsType(merchantType);
-            updateFiltersView();
+            updateFiltersView(R.string.dtlt_search_hint);
+            getPresenter().loadAmenities(merchantType);
         }
     }
 
@@ -237,7 +240,8 @@ public class DtlMapScreenImpl extends DtlLayout<DtlMapScreen, DtlMapPresenter, D
             filterEntertainment.setSelected(true);
             filterSpa.setSelected(false);
             getPresenter().onLoadMerchantsType(merchantType);
-            updateFiltersView();
+            updateFiltersView(R.string.filter_merchant_entertainment);
+            getPresenter().loadAmenities(merchantType);
         }
     }
 
@@ -250,7 +254,8 @@ public class DtlMapScreenImpl extends DtlLayout<DtlMapScreen, DtlMapPresenter, D
             filterEntertainment.setSelected(false);
             filterSpa.setSelected(true);
             getPresenter().onLoadMerchantsType(merchantType);
-            updateFiltersView();
+            updateFiltersView(R.string.filter_merchant_spa);
+            getPresenter().loadAmenities(merchantType);
         }
     }
 
@@ -425,7 +430,7 @@ public class DtlMapScreenImpl extends DtlLayout<DtlMapScreen, DtlMapPresenter, D
       }
    }
 
-   private void updateFiltersView() {
+   private void updateFiltersView(int stringResource) {
 
       ViewUtils.setCompatDrawable(filterFood, filterFood.isSelected() ?
             R.drawable.custom_button_filters_map_pressed : R.drawable.custom_button_filters_map_focused);
@@ -444,5 +449,9 @@ public class DtlMapScreenImpl extends DtlLayout<DtlMapScreen, DtlMapPresenter, D
 
       ViewUtils.setTextColor(filterSpa, filterSpa.isSelected() ?
             R.color.white : R.color.dtl_text_color_disabled_filters);
+
+      if (stringResource != 0 && dtlToolbar != null) {
+         dtlToolbar.setSearchCaption(ViewUtils.getStringById(getContext(), stringResource));
+      }
    }
 }

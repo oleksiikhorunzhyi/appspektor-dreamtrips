@@ -513,4 +513,10 @@
       <item name="android:textSize">@dimen/uploading_cell_status_label_text_size</item>
    </style>
    <!--end in app notifications-->
+
+   <!-- most recent review merchant -->
+   <style name="RatingBar" parent="Theme.AppCompat">
+      <item name="colorControlNormal">@color/rating_normal</item>
+      <item name="colorControlActivated">@color/rating_color</item>
+   </style>
 </resources>

@@ -10,6 +10,9 @@ import com.worldventures.dreamtrips.modules.dtl.service.action.LocationCommand;
 import com.worldventures.dreamtrips.modules.dtl.service.action.bundle.AttributesActionParams;
 import com.worldventures.dreamtrips.modules.dtl.service.action.bundle.ImmutableAttributesActionParams;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import io.techery.janet.ActionPipe;
 import io.techery.janet.ReadActionPipe;
 import rx.Observable;
@@ -21,6 +24,9 @@ public class AttributesInteractor {
    private final ActionPipe<AttributesAction> attributesPipe;
    private final FilterDataInteractor filterDataInteractor;
    private final DtlLocationInteractor dtlLocationInteractor;
+
+   private static final String RESTAURANT = "restaurant";
+   private static final String BAR = "bar";
 
    public AttributesInteractor(SessionActionPipeCreator sessionActionPipeCreator,
          FilterDataInteractor filterDataInteractor, DtlLocationInteractor dtlLocationInteractor) {
@@ -38,12 +44,25 @@ public class AttributesInteractor {
    }
 
    public void requestAmenities() {
+      List<String> merchantType = new ArrayList<>();
+      merchantType.add(RESTAURANT);
+      merchantType.add(BAR);
       Observable.combineLatest(
             provideFormattedLocationObservable(),
             provideFilterDataObservable(),
             new AttributesUpdateFunc())
             .take(1)
-            .map(AttributesAction::create)
+            .map(param -> AttributesAction.create(param, merchantType))
+            .subscribe(attributesPipe::send);
+   }
+
+   public void requestAmenities(List<String> merchantType) {
+      Observable.combineLatest(
+            provideFormattedLocationObservable(),
+            provideFilterDataObservable(),
+            new AttributesUpdateFunc())
+            .take(1)
+            .map(param -> AttributesAction.create(param, merchantType))
             .subscribe(attributesPipe::send);
    }
 

@@ -120,6 +120,13 @@ public class DtlMerchantsPresenterImpl extends DtlPresenterImpl<DtlMerchantsScre
             .map(FilterData::isDefault)
             .compose(bindViewIoToMainComposer())
             .subscribe(getView()::setFilterButtonState);
+      filterDataInteractor.filterDataPipe()
+            .observeSuccessWithReplay()
+            .take(1)
+            .compose(bindViewIoToMainComposer())
+            .map(FilterDataAction::getResult)
+            .map(FilterData::getMerchantType)
+            .subscribe(getView()::updateMerchantType);
    }
 
    private void connectFullMerchantLoading() {
@@ -196,6 +203,11 @@ public class DtlMerchantsPresenterImpl extends DtlPresenterImpl<DtlMerchantsScre
    @Override
    public void offersOnlySwitched(boolean isOffersOnly) {
       filterDataInteractor.applyOffersOnly(isOffersOnly);
+   }
+
+   @Override
+   public void onLoadMerchantsType(List<String> merchantType) {
+      filterDataInteractor.applyMerchantTypes(merchantType);
    }
 
    @Override

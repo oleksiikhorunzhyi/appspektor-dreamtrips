@@ -17,6 +17,7 @@
             android:layout_height="wrap_content">
 
             <View
+                android:id="@+id/id_view_food"
                 android:layout_width="85dp"
                 android:layout_height="85dp"
                 android:background="@drawable/circle_merchant_button"
@@ -40,7 +41,8 @@
             android:layout_weight=".2"
             android:text="@string/filter_merchant_food"
             android:textColor="@color/white"
-            android:textStyle="bold" />
+            android:textStyle="bold"
+            android:textSize="12dp"  />
 
     </LinearLayout>
 
@@ -56,6 +58,7 @@
             android:layout_height="wrap_content">
 
             <View
+                android:id="@+id/id_view_entertainment"
                 android:layout_width="85dp"
                 android:layout_height="85dp"
                 android:background="@drawable/circle_merchant_button" />
@@ -79,7 +82,8 @@
             android:layout_weight=".2"
             android:text="@string/filter_merchant_entertainment"
             android:textColor="@color/white"
-            android:textStyle="bold" />
+            android:textStyle="bold"
+            android:textSize="12dp"/>
 
     </LinearLayout>
 
@@ -95,6 +99,7 @@
             android:layout_height="wrap_content">
 
             <View
+                android:id="@+id/id_view_spas"
                 android:layout_width="85dp"
                 android:layout_height="85dp"
                 android:background="@drawable/circle_merchant_button" />
@@ -102,23 +107,22 @@
             <ImageView
                 android:layout_width="52dp"
                 android:layout_height="44dp"
-
                 android:src="@drawable/ic_spa"
                 android:layout_centerVertical="true"
                 android:layout_centerHorizontal="true" />
-
 
         </RelativeLayout>
 
 
         <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="0dp"
-            android:layout_gravity="center"
-            android:layout_weight=".2"
-            android:text="@string/filter_merchant_spa"
-            android:textColor="@color/white"
-            android:textStyle="bold" />
+              android:layout_width="wrap_content"
+              android:layout_height="0dp"
+              android:layout_gravity="center"
+              android:layout_weight=".2"
+              android:text="@string/filter_merchant_spa"
+              android:textColor="@color/white"
+              android:textSize="12dp"
+              android:textStyle="bold"/>
 
     </LinearLayout>
 

@@ -6,7 +6,14 @@ import com.worldventures.dreamtrips.wallet.service.SmartCardInteractor;
 import com.worldventures.dreamtrips.wallet.service.firmware.command.ConnectForFirmwareUpdate;
 import com.worldventures.dreamtrips.wallet.service.firmware.command.DownloadFirmwareCommand;
 import com.worldventures.dreamtrips.wallet.service.firmware.command.FetchFirmwareUpdateData;
+import com.worldventures.dreamtrips.wallet.service.firmware.command.InstallFirmwareCommand;
+import com.worldventures.dreamtrips.wallet.service.firmware.command.LoadAppAtmelFirmwareCommand;
+import com.worldventures.dreamtrips.wallet.service.firmware.command.LoadFirmwareFilesCommand;
+import com.worldventures.dreamtrips.wallet.service.firmware.command.LoadNordicFirmwareCommand;
+import com.worldventures.dreamtrips.wallet.service.firmware.command.LoadPuckAtmelFirmwareCommand;
+import com.worldventures.dreamtrips.wallet.service.firmware.command.PreInstallationCheckCommand;
 import com.worldventures.dreamtrips.wallet.service.firmware.command.PrepareForUpdateCommand;
+import com.worldventures.dreamtrips.wallet.service.firmware.command.UnzipFirmwareCommand;
 
 import javax.inject.Singleton;
 
@@ -15,6 +22,13 @@ import dagger.Provides;
 
 @Module(
       injects = {
+            PreInstallationCheckCommand.class,
+            InstallFirmwareCommand.class,
+            LoadPuckAtmelFirmwareCommand.class,
+            LoadAppAtmelFirmwareCommand.class,
+            LoadNordicFirmwareCommand.class,
+            LoadFirmwareFilesCommand.class,
+            UnzipFirmwareCommand.class,
             PrepareForUpdateCommand.class,
             FetchFirmwareUpdateData.class,
             ConnectForFirmwareUpdate.class,

@@ -31,13 +31,6 @@ import com.worldventures.dreamtrips.wallet.service.command.SetupUserDataCommand;
 import com.worldventures.dreamtrips.wallet.service.command.SyncCardsCommand;
 import com.worldventures.dreamtrips.wallet.service.command.UpdateBankCardCommand;
 import com.worldventures.dreamtrips.wallet.service.command.UpdateCardDetailsDataCommand;
-import com.worldventures.dreamtrips.wallet.service.command.firmware.InstallFirmwareCommand;
-import com.worldventures.dreamtrips.wallet.service.command.firmware.LoadAppAtmelFirmwareCommand;
-import com.worldventures.dreamtrips.wallet.service.command.firmware.LoadFirmwareFilesCommand;
-import com.worldventures.dreamtrips.wallet.service.command.firmware.LoadNordicFirmwareCommand;
-import com.worldventures.dreamtrips.wallet.service.command.firmware.LoadPuckAtmelFirmwareCommand;
-import com.worldventures.dreamtrips.wallet.service.command.firmware.PreInstallationCheckCommand;
-import com.worldventures.dreamtrips.wallet.service.command.firmware.UnzipFirmwareCommand;
 import com.worldventures.dreamtrips.wallet.service.command.http.AssociateCardUserCommand;
 import com.worldventures.dreamtrips.wallet.service.command.http.AvailabilitySmartCardCommand;
 import com.worldventures.dreamtrips.wallet.service.command.http.CreateBankCardCommand;
@@ -90,9 +83,7 @@ import dagger.Module;
             AssociateCardUserCommand.class,
             WizardCompleteCommand.class,
             FetchFirmwareInfoCommand.class,
-            PreInstallationCheckCommand.class,
             SetAutoClearSmartCardDelayCommand.class,
-            InstallFirmwareCommand.class,
             WalletAnalyticsCommand.class,
             PaycardAnalyticsCommand.class,
             SetDisableDefaultCardDelayCommand.class,
@@ -105,11 +96,6 @@ import dagger.Module;
             RestartSmartCardCommand.class,
             AvailabilitySmartCardCommand.class,
             UpdateSmartCardUserCommand.class,
-            LoadPuckAtmelFirmwareCommand.class,
-            LoadAppAtmelFirmwareCommand.class,
-            LoadNordicFirmwareCommand.class,
-            LoadFirmwareFilesCommand.class,
-            UnzipFirmwareCommand.class,
             FactoryResetCommand.class
       },
       complete = false, library = true)

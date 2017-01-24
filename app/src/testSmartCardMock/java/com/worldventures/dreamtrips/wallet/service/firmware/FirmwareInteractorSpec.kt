@@ -5,7 +5,7 @@ import com.worldventures.dreamtrips.BaseSpec
 import com.worldventures.dreamtrips.wallet.model.TestFirmware
 import com.worldventures.dreamtrips.wallet.model.TestFirmwareUpdateData
 import com.worldventures.dreamtrips.wallet.service.WalletBluetoothService
-import com.worldventures.dreamtrips.wallet.service.command.firmware.PreInstallationCheckCommand
+import com.worldventures.dreamtrips.wallet.service.firmware.command.PreInstallationCheckCommand
 import io.techery.janet.ActionState
 import io.techery.janet.CommandActionService
 import io.techery.janet.Janet

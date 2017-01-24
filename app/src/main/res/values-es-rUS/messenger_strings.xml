@@ -1,170 +1,170 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <resources>
-   <!-- messenger-->
-   <string name="error_something_went_wrong">Algo fue mal</string>
-   <string name="error_no_connection">No estás conectado</string>
-   <string name="messenger">Mensajero</string>
-   <string name="chat">Chat</string>
+    <!-- messenger-->
+    <string name="error_something_went_wrong">Algo fue mal</string>
+    <string name="error_no_connection">No estás conectado</string>
+    <string name="messenger">Mensajero</string>
+    <string name="chat">Chat</string>
 
-   <!---->
-   <!--Conversation List -->
-   <!---->
-   <string name="conversation_list_title">Conversaciones</string>
+    <!---->
+    <!--Conversation List -->
+    <!---->
+    <string name="conversation_list_title">Conversaciones</string>
 
-   <string name="conversation_list_spinner_item_all_chats">Todos los chats</string>
-   <string name="conversation_list_spinner_item_group_chats">Chats de grupo</string>
+    <string name="conversation_list_spinner_item_all_chats">Todos los chats</string>
+    <string name="conversation_list_spinner_item_group_chats">Chats de grupo</string>
 
-   <string name="conversation_list_search_hint">Buscar conversaciones …</string>
-   <string name="conversation_list_search_edittext_hint">Buscar grupos y personas</string>
-   <string name="conversation_list_item_last_message_text_format_you">Tú: %1$s</string>
-   <string name="conversation_list_item_last_message_image_format_you">Has enviado una foto</string>
-   <string name="conversation_list_item_last_message_image">foto enviada</string>
-   <string name="conversation_list_item_last_message_location_format_you">Has enviado ubicación</string>
-   <string name="conversation_list_item_last_message_location">ubicación enviada</string>
-   <string name="conversation_list_last_message_date_format_yesterday">Ayer</string>
-   <string name="conversation_list_abandoned">Cerrado</string>
-   <string name="conversation_list_swipe_button_delete">Borrar</string>
-   <string name="conversation_list_delete_dialog_message">¿Estás seguro de que deseas borrar esta conversación?</string>
-   <string name="conversation_list_delete_dialog_pos_button">Borrar</string>
-   <string name="conversation_list_swipe_button_more">Más</string>
-   <string-array name="conversation_list_more_actions">
-      <item>Marcar como no leído</item>
-      <item>Desactivar las notificaciones</item>
-      <item>Cancelar</item>
-   </string-array>
+    <string name="conversation_list_search_hint">Buscar conversaciones ...</string>
+    <string name="conversation_list_search_edittext_hint">Buscar grupos y personas</string>
+    <string name="conversation_list_item_last_message_text_format_you">Tú: %1$s</string>
+    <string name="conversation_list_item_last_message_image_format_you">Has enviado una foto</string>
+    <string name="conversation_list_item_last_message_image">foto enviada</string>
+    <string name="conversation_list_item_last_message_location_format_you">Has enviado ubicación</string>
+    <string name="conversation_list_item_last_message_location">ubicación enviada</string>
+    <string name="conversation_list_last_message_date_format_yesterday">Ayer</string>
+    <string name="conversation_list_abandoned">Cerrado</string>
+    <string name="conversation_list_swipe_button_delete">Borrar</string>
+    <string name="conversation_list_delete_dialog_message">¿Estás seguro de que deseas borrar esta conversación?</string>
+    <string name="conversation_list_delete_dialog_pos_button">Borrar</string>
+    <string name="conversation_list_swipe_button_more">Más</string>
+    <string-array name="conversation_list_more_actions">
+        <item>Marcar como no leído</item>
+        <item>Desactivar las notificaciones</item>
+        <item>Cancelar</item>
+    </string-array>
 
 
-   <!---->
-   <!--New chat-->
-   <!---->
-   <string name="new_chat_title">Nuevo chat</string>
-   <string name="new_chat_toast_no_users_selected_error">Por favor, primero selecciona algunos usuarios</string>
-   <string name="new_multi_user_chat_not_supported">No se pueden crear grupos de chat</string>
-   <string name="new_chat_error_loading_contacts">No se pudo cargar los contactos</string>
-   <string name="new_chat_new_conversation_title_hint">Establecer nombre para la conversación</string>
-   <string name="new_chat_chosen_contacts_header_empty">"Agregar: "</string>
-   <string name="new_chat_chosen_contacts_header_contacts_list_start_value">Agregar</string>
-   <string name="new_chat_list_item_section_close_friends">Amigos cercanos</string>
-   <string name="menu_done">Listo</string>
+    <!---->
+    <!--New chat-->
+    <!---->
+    <string name="new_chat_title">Nuevo chat</string>
+    <string name="new_chat_toast_no_users_selected_error">Por favor, primero selecciona algunos usuarios</string>
+    <string name="new_multi_user_chat_not_supported">No se pueden crear grupos de chat</string>
+    <string name="new_chat_error_loading_contacts">No se pudo cargar los contactos</string>
+    <string name="new_chat_new_conversation_title_hint">Establecer nombre para la conversación</string>
+    <string name="new_chat_chosen_contacts_header_empty">"Agregar: "</string>
+    <string name="new_chat_chosen_contacts_header_contacts_list_start_value">Agregar</string>
+    <string name="new_chat_list_item_section_close_friends">Amigos cercanos</string>
+    <string name="menu_done">Listo</string>
 
-   <!---->
-   <!--Chat -->
-   <!---->
-   <string name="chat_subtitle_format_single_chat_online">en internet</string>
-   <string name="chat_subtitle_format_single_chat_offline">no en internet</string>
-   <string name="chat_subtitle_format_group_chat_format">%1$d miembros, %2$d conectados a internet</string>
-   <string name="chat_subtitle_format_group_chat_format_closed">%1$d miembros</string>
-   <string name="chat_subtitle_format_group_chat_offline">No hay usuarios conectados</string>
-   <string name="chat_message_edittext_hint">Tu mensaje</string>
-   <string name="chat_message_send_button_text">Enviar</string>
-   <string name="chat_message_sending_disabled">No puedes enviar mensajes porque ya no eres un participante.</string>
-   <string name="chat_error_loading">No se pudo cargar el historial de chat</string>
-   <string name="chat_unread_messages_textview_format">Tienes %1$d mensajes no leídos</string>
-   <string name="chat_more_typing_users_hint_format">y %1$d Más</string>
-   <string name="chat_list_date_entry_today">Hoy</string>
-   <string name="chat_list_date_entry_yesterday">Ayer</string>
-   <string name="chat_contextual_copy_message">Copia</string>
-   <string name="chat_contextual_translate_message">Traducir</string>
-   <string name="chat_contextual_revert_translate_message">Mostrar original</string>
-   <string name="chat_contextual_start_chat_format">Mensaje %1$s</string>
-   <string name="chat_contextual_flag">Marcar</string>
-   <string name="chat_share_dialog_location">Compartir ubicación</string>
-   <string name="chat_share_dialog_image">Compartir imagen</string>
-   <string name="chat_share_dialog_cancel">Cancelar</string>
-   <string name="chat_could_not_share_location">No se pudo compartir ubicación</string>
-   <string name="chat_error_marker_not_delivered">No enviado</string>
-   <string name="chat_retry_send_message_dialog_resend_message">¿Volver a enviar el mensaje ? </string>
-   <string name="chat_retry_send_message_dialog_resend">REENVIAR</string>
-   <string name="chat_retry_send_message_dialog_cancel">Cancelar</string>
-   <string name="chat_reload_chat_history_reload">Volver a cargar</string>
-   <string name="chat_reload_chat_history_info_text">Tu historial de chat ha borrado. Puede recuperarlo pulsando \"cargar\"</string>
+    <!---->
+    <!--Chat -->
+    <!---->
+    <string name="chat_subtitle_format_single_chat_online">en internet</string>
+    <string name="chat_subtitle_format_single_chat_offline">no en internet</string>
+    <string name="chat_subtitle_format_group_chat_format">%1$d miembros, %2$d conectados a internet</string>
+    <string name="chat_subtitle_format_group_chat_format_closed">%1$d miembros</string>
+    <string name="chat_subtitle_format_group_chat_offline">No hay usuarios conectados</string>
+    <string name="chat_message_edittext_hint">Tu mensaje</string>
+    <string name="chat_message_send_button_text">Enviar</string>
+    <string name="chat_message_sending_disabled">No puedes enviar mensajes porque ya no eres un participante.</string>
+    <string name="chat_error_loading">No se pudo cargar el historial de chat</string>
+    <string name="chat_unread_messages_textview_format">Tienes %1$d mensajes no leídos</string>
+    <string name="chat_more_typing_users_hint_format">y %1$d Más</string>
+    <string name="chat_list_date_entry_today">Hoy</string>
+    <string name="chat_list_date_entry_yesterday">Ayer</string>
+    <string name="chat_contextual_copy_message">Copia</string>
+    <string name="chat_contextual_translate_message">Traducir</string>
+    <string name="chat_contextual_revert_translate_message">Mostrar original</string>
+    <string name="chat_contextual_start_chat_format">Mensaje %1$s</string>
+    <string name="chat_contextual_flag">Marcar</string>
+    <string name="chat_share_dialog_location">Compartir ubicación</string>
+    <string name="chat_share_dialog_image">Compartir imagen</string>
+    <string name="chat_share_dialog_cancel">Cancelar</string>
+    <string name="chat_could_not_share_location">No se pudo compartir ubicación</string>
+    <string name="chat_error_marker_not_delivered">No enviado</string>
+    <string name="chat_retry_send_message_dialog_resend_message">¿Volver a enviar el mensaje ? </string>
+    <string name="chat_retry_send_message_dialog_resend">REENVIAR</string>
+    <string name="chat_retry_send_message_dialog_cancel">Cancelar</string>
+    <string name="chat_reload_chat_history_reload">Volver a cargar</string>
+    <string name="chat_reload_chat_history_info_text">Tu historial de chat ha borrado. Puede recuperarlo pulsando \"cargar\"</string>
 
-   <!-- system messages-->
-   <string name="system_message_you">TI</string>
-   <string name="system_message_admin" formatted="false">%1$s(Administración)</string>
-   <string name="system_message_added" formatted="false">%1$s &lt;b&gt;agregado&lt;/b&gt; %2$s</string>
-   <string name="system_message_is_added" formatted="false">%1$s &lt;b&gt;es agregado&lt;/b&gt;</string>
-   <string name="system_message_you_are_added" formatted="false">Has  &lt;b&gt;sido agregado&lt;/b&gt;</string>
-   <string name="system_message_removed" formatted="false">%1$s &lt;b&gt;Eliminó&lt;/b&gt; %2$s del chat</string>
-   <string name="system_message_is_removed" formatted="false">%1$s &lt;b&gt;es eliminado&lt;/b&gt;</string>
-   <string name="system_message_you_are_removed" formatted="false">Eres  &lt;b&gt;eliminado&lt;/b&gt;</string>
-   <string name="system_message_you_left_the_chat" formatted="false">Dejaste  &lt;b&gt;&lt;/b&gt; el chat</string>
-   <string name="system_message_left" formatted="false">%1$s &lt;b&gt;salió&lt;b&gt;</string>
+    <!-- system messages-->
+    <string name="system_message_you">TI</string>
+    <string name="system_message_admin" formatted="false">%1$s(Administración)</string>
+    <string name="system_message_added" formatted="false">%1$s &lt;b&gt;agregado&lt;/b&gt; %2$s</string>
+    <string name="system_message_is_added" formatted="false">%1$s &lt;b&gt;es agregado&lt;/b&gt;</string>
+    <string name="system_message_you_are_added" formatted="false">Has  &lt;b&gt;sido agregado&lt;/b&gt;</string>
+    <string name="system_message_removed" formatted="false">%1$s &lt;b&gt;Eliminó&lt;/b&gt; %2$s del chat</string>
+    <string name="system_message_is_removed" formatted="false">%1$s &lt;b&gt;es eliminado&lt;/b&gt;</string>
+    <string name="system_message_you_are_removed" formatted="false">Eres  &lt;b&gt;eliminado&lt;/b&gt;</string>
+    <string name="system_message_you_left_the_chat" formatted="false">Dejaste  &lt;b&gt;&lt;/b&gt; el chat</string>
+    <string name="system_message_left" formatted="false">%1$s &lt;b&gt;salió&lt;b&gt;</string>
 
-   <!-- flagging related -->
-   <string name="chat_flag_dialog_progress_loading_flags">Cargando…</string>
-   <string name="chat_flag_dialog_reason_title">Marcar</string>
-   <string name="chat_flag_dialog_reason_hint">Escribe el motivo</string>
-   <string name="chat_flag_dialog_reason_positive_button">Aceptar</string>
-   <string name="chat_flag_dialog_reason_negative_button">Cancelar</string>
-   <string name="chat_flag_dialog_confirmation_title">Confirmar</string>
-   <string name="chat_flag_dialog_confirmation_message_format">El personal de WorldVentures recibirá una notificación para revisar este mensaje para%1$s. ¿Quieres continuar?</string>
-   <string name="chat_flag_dialog_confirmation_positive_button">Enviar</string>
-   <string name="chat_flag_dialog_confirmation_negative_button">Cancelar</string>
-   <string name="chat_flag_dialog_flagging_progress">Marcando…</string>
-   <string name="chat_flag_failed">No se pudo marcar el mensaje</string>
+    <!-- flagging related -->
+    <string name="chat_flag_dialog_progress_loading_flags">Cargando...</string>
+    <string name="chat_flag_dialog_reason_title">Marcar</string>
+    <string name="chat_flag_dialog_reason_hint">Escribe el motivo</string>
+    <string name="chat_flag_dialog_reason_positive_button">Aceptar</string>
+    <string name="chat_flag_dialog_reason_negative_button">Cancelar</string>
+    <string name="chat_flag_dialog_confirmation_title">Confirmar</string>
+    <string name="chat_flag_dialog_confirmation_message_format">El personal de WorldVentures recibirá una notificación para revisar este mensaje para%1$s. ¿Quieres continuar?</string>
+    <string name="chat_flag_dialog_confirmation_positive_button">Enviar</string>
+    <string name="chat_flag_dialog_confirmation_negative_button">Cancelar</string>
+    <string name="chat_flag_dialog_flagging_progress">Marcando…</string>
+    <string name="chat_flag_failed">No se pudo marcar el mensaje</string>
 
-   <!---->
-   <!--Chat Settings -->
-   <!---->
-   <string name="chat_settings_single_chat">Configuraciones de chat</string>
-   <string name="chat_settings_group_chat">Configuraciones de grupo de chat</string>
-   <string name="chat_settings_error_loading">No se pudo cargar la configuración del chat</string>
-   <string name="chat_settings_single_chat_online">en internet</string>
-   <string name="chat_settings_single_chat_offline">no en internet</string>
-   <string name="chat_settings_row_notifications">Notificaciones</string>
-   <string name="chat_settings_row_shared_content">Contenido compartido</string>
-   <string name="chat_settings_row_members_format">Miembros %1$d)</string>
-   <string name="chat_settings_row_assign_new_admin">Asigna un nuevo administrador</string>
-   <string name="chat_settings_row_clear_chat">Borrar chat</string>
-   <string name="chat_settings_row_leave_chat">Dejar chat</string>
-   <string name="chat_settings_row_delete_chat">Borrar chat</string>
-   <string name="chat_settings_group_chat_info_text_format">Este grupo fue creado por %1$s</string>
-   <string name="chat_settings_menu_settings">Configuraciones</string>
-   <string name="chat_settings_menu_edit_chat_name">Editar nombre de chat</string>
-   <string name="chat_settings_menu_edit_change_chat_image">Cambiar imagen de chat</string>
-   <string name="chat_settings_menu_edit_remove_chat_image">Eliminar imagen de chat</string>
-   <string name="chat_settings_clear_chat_confirmation_text">El chat será borrado de todos tus dispositivos. Lo puedes volver a cargar después. ¿Quieres continuar?</string>
-   <string name="chat_settings_clear_chat_ok">Aceptar</string>
-   <string name="chat_settings_clear_chat_cancel">Cancelar</string>
-   <string name="chat_settings_leave_group_chat">¿Estás seguro que deseas salir de este chat?</string>
-   <string name="chat_settings_leave_group_chat_format">¿Estás seguro que deseas salir de %1$s chat?</string>
-   <string name="chat_settings_error_change_subject">No se puede cambiar el tema sin conexión de red</string>
-   <string name="chat_settings_error_changing_avatar_subject">No se puede cambiar el avatar de la conversación sin conexión de red</string>
-   <!---->
-   <!--Add new members -->
-   <!---->
-   <string name="chat_add_new_members_title">Agregar nuevo miembro</string>
-   <!---->
-   <!--Edit chat members -->
-   <!---->
-   <string name="edit_chat_members_title">Miembros %1$d)</string>
-   <string name="edit_chat_members_search_hint">Buscar miembros</string>
-   <string name="edit_chat_members_row_button_delete">Borrar</string>
-   <string name="edit_chat_dialog_confirm_user_deletion_message">¿Quieres eliminar este usuario del chat?</string>
-   <string name="edit_chat_dialog_confirm_user_deletion_button_delete">Borrar</string>
-   <string name="edit_chat_members_admin_section">Admin</string>
-   <string name="edit_chat_members_host_section">Apoyo en destinación</string>
-   <!--Messenger notifications-->
-   <string name="push_unsupported_message">Para ver archivo adjunto, Actualiza a la última versión de la aplicación DreamTrips</string>
-   <!---->
-   <!---->
-   <!--Messenger misc -->
-   <!---->
-   <string name="subject">Asunto:</string>
-   <string name="change_subject">Ingresar nombre del chat</string>
-   <string name="sent_photo">foto enviada</string>
-   <string name="sent_location">ubicación enviada</string>
-   <string name="unread_conversation">Conversaciones</string>
+    <!---->
+    <!--Chat Settings -->
+    <!---->
+    <string name="chat_settings_single_chat">Configuraciones de chat</string>
+    <string name="chat_settings_group_chat">Configuraciones de grupo de chat</string>
+    <string name="chat_settings_error_loading">No se pudo cargar la configuración del chat</string>
+    <string name="chat_settings_single_chat_online">en internet</string>
+    <string name="chat_settings_single_chat_offline">no en internet</string>
+    <string name="chat_settings_row_notifications">Notificaciones</string>
+    <string name="chat_settings_row_shared_content">Contenido compartido</string>
+    <string name="chat_settings_row_members_format">Miembros %1$d)</string>
+    <string name="chat_settings_row_assign_new_admin">Asigna un nuevo administrador</string>
+    <string name="chat_settings_row_clear_chat">Borrar chat</string>
+    <string name="chat_settings_row_leave_chat">Dejar chat</string>
+    <string name="chat_settings_row_delete_chat">Borrar chat</string>
+    <string name="chat_settings_group_chat_info_text_format">Este grupo fue creado por %1$s</string>
+    <string name="chat_settings_menu_settings">Configuraciones</string>
+    <string name="chat_settings_menu_edit_chat_name">Editar nombre de chat</string>
+    <string name="chat_settings_menu_edit_change_chat_image">Cambiar imagen de chat</string>
+    <string name="chat_settings_menu_edit_remove_chat_image">Eliminar imagen de chat</string>
+    <string name="chat_settings_clear_chat_confirmation_text">El chat será borrado de todos tus dispositivos. Lo puedes volver a cargar después. ¿Quieres continuar?</string>
+    <string name="chat_settings_clear_chat_ok">Aceptar</string>
+    <string name="chat_settings_clear_chat_cancel">Cancelar</string>
+    <string name="chat_settings_leave_group_chat">¿Estás seguro que deseas salir de este chat?</string>
+    <string name="chat_settings_leave_group_chat_format">¿Estás seguro que deseas salir de %1$s chat?</string>
+    <string name="chat_settings_error_change_subject">No se puede cambiar el tema sin conexión de red</string>
+    <string name="chat_settings_error_changing_avatar_subject">No se puede cambiar el avatar de la conversación sin conexión de red</string>
+    <!---->
+    <!--Add new members -->
+    <!---->
+    <string name="chat_add_new_members_title">Agregar nuevo miembro</string>
+    <!---->
+    <!--Edit chat members -->
+    <!---->
+    <string name="edit_chat_members_title">Miembros %1$d)</string>
+    <string name="edit_chat_members_search_hint">Buscar miembros</string>
+    <string name="edit_chat_members_row_button_delete">Borrar</string>
+    <string name="edit_chat_dialog_confirm_user_deletion_message">¿Quieres eliminar este usuario del chat?</string>
+    <string name="edit_chat_dialog_confirm_user_deletion_button_delete">Borrar</string>
+    <string name="edit_chat_members_admin_section">Admin</string>
+    <string name="edit_chat_members_host_section">Apoyo en destinación</string>
+    <!--Messenger notifications-->
+    <string name="push_unsupported_message">Para ver archivo adjunto, Actualiza a la última versión de la aplicación DreamTrips</string>
+    <!---->
+    <!---->
+    <!--Messenger misc -->
+    <!---->
+    <string name="subject">Asunto:</string>
+    <string name="change_subject">Ingresar nombre del chat</string>
+    <string name="sent_photo">foto enviada</string>
+    <string name="sent_location">ubicación enviada</string>
+    <string name="unread_conversation">Conversaciones</string>
 
-   <string name="disconnected_overlay_disconnected_message">Conexión perdida</string>
-   <string name="disconnected_overlay_connecting_message">Conectando …</string>
+    <string name="disconnected_overlay_disconnected_message">Conexión perdida</string>
+    <string name="disconnected_overlay_connecting_message">Conectando ...</string>
 
-   <string name="warning_no_internet_connection">La conexión al Internet está ausente</string>
+    <string name="warning_no_internet_connection">La conexión al Internet está ausente</string>
 
-   <string name="chat_update_proposition"><![CDATA[Para ver archivo adjunto, Actualiza a la última versión de la aplicación DreamTrips <a href=\"https://play.google.com/store/apps/details?id=com.worldventures.dreamtrips\">aquí</a>]]></string>
+    <string name="chat_update_proposition"><![CDATA[Para ver archivo adjunto, Actualiza a la última versión de la aplicación DreamTrips <a href=\"https://play.google.com/store/apps/details?id=com.worldventures.dreamtrips\">aquí</a>]]></string>
 
-   <string name="translate_from">Traducido</string>
-   <string name="translate_error">Error de traducción</string>
-   <!-- messenger ends-->
+    <string name="translate_from">Traducido</string>
+    <string name="translate_error">Error de traducción</string>
+    <!-- messenger ends-->
 </resources>

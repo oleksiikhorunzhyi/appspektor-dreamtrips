@@ -92,6 +92,15 @@
    <string name="merchants_list_empty_text">Platser kommer snart</string>
    <string name="merchants_list_empty_text_additional">- eller -</string>
    <string name="merchant_working_hours_caption">timmar</string>
+   <string name="filter_amenities_error_caption">Det gick inte att läsa in bekvämligheter just nu</string>
+   <string name="merchants_no_results">Inga resultat hittades \n Pröva med att justera filtren eller ange en ny plats.</string>
+   <string name="merchants_no_results_offers_only">Tyvärr finns inga erbjudanden tillgängliga i ditt område ännu.\n Inaktivera erbjudanden för att visa restauranger nära dig.</string>
+   <string name="dtl_try_again">Försök igen</string>
+   <string name="dtl_load_more">Läs in mer</string>
+
+   <!-- Errors -->
+   <string name="dtl_load_error">Läser in fel</string>
+   <string name="dtl_load_merchant_error_caption">Det gick inte att läsa in resultaten just nu.</string>
 
    <!-- DtlToolbar strings -->
    <string name="dtlt_search_hint">Mat och dryck</string>

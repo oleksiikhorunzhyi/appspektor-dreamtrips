@@ -1,0 +1,254 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<resources>
+   <!-- Common -->
+   <string name="wallet_next_label">Seterusnya</string>
+   <string name="wallet_done_label">Selesai</string>
+   <string name="wallet_continue_label">Teruskan</string>
+   <string name="wallet_got_it_label">Faham!</string>
+
+   <string name="wallet">flye SmartCard</string>
+   <string name="wallet_dashboard_title">flye SmartCard saya</string>
+   <string name="wallet_wizard_title">flye SmartCard</string>
+   <string name="wallet_input_data_is_incorrect">Data masukan adalah tidak betul</string>
+   <string name="wallet_bank_card_good_thru">BAIK SEHINGGA</string>
+   <string name="wallet_smart_card_is_disconnected">Smart Card telah diputuskan</string>
+   <string name="wallet_no_internet_connection">Tiada Sambungan Internet. </string>
+
+   <!--card alias-->
+   <string name="wallet_wizard_card_alias_subtitle">Namakan kad pintar anda</string>
+   <string name="wallet_wizard_card_alias_hint">Contohnya: Kad Pintar Shirley</string>
+   <string name="wallet_wizard_card_alias_format_error">Nama kad hanya boleh mengandungi huruf dan mempunyai panjang lebih daripada 2 aksara</string>
+   <string name="wallet_wizard_card_alias_was_setup">Nama kad telah ditambah</string>
+   <string name="wallet_wizard_card_alias_setup">Sediakan nama kad</string>
+
+   <!--edit profile-->
+   <string name="wallet_wizard__welcom_screen_title">Sediakan flye SmartCard</string>
+   <string name="wallet_edit_profile_subtitle">Tetapkan gambar paparan dan nama yang anda ingin paparkan pada kad anda.</string>
+   <string name="wallet_edit_profile_name_hint">Masukkan nama anda</string>
+   <string name="wallet_edit_profile_progress_dialog">Muat naik maklumat ke Kad Pintar</string>
+   <string name="wallet_edit_profile_success_dialog">Maklumat telah dimuat naik</string>
+   <string name="wallet_edit_profile_name_format_title">Format nama yang salah!</string>
+   <string name="wallet_edit_profile_name_format_detail">Anda patut masukkan nama pertama dan nama keluarga anda (nama tengah adalah tidak wajib)\nSetiap bahagian boleh mengandungi dari 2 hingga 21 huruf</string>
+   <string name="wallet_edit_profile_avatar_not_chosen">Sila pilih gambar anda untuk Kad Pintar</string>
+
+   <!--pin setup-->
+   <string name="wallet_wizard_setup_pin_title">Tetapkan PIN</string>
+   <string name="wallet_wizard_setup_pin_header">Tetapkan PIN anda pada panel sentuh\ndengan 4 gerakan ketik.</string>
+   <string name="wallet_wizard_setup_new_pin_header">Tetapkan PIN baharu pada panel sentuh kad pintar dengan 4 sapuan dan gerakan ketik</string>
+   <string name="wallet_wizard_setup_progress">Tetapkan PIN anda pada panel sentuh kad pintar…</string>
+   <string name="wallet_wizard_setup_error">Sesuatu yang tidak kena…\nSila cubalah lagi!</string>
+   <string name="wallet_wizard_setup_new_pin_success">PIN baharu sudah ditetapkan!</string>
+
+   <!--pin is set-->
+   <string name="wallet_wizard_pin_is_set">PIN anda sudah ditetapkan!</string>
+   <string name="wallet_wizard_pin_is_set_suggestion">Anda sekarang boleh mula memuatkan kad kredit dan debit</string>
+
+   <!--splash-->
+   <string name="wallet_wizard_splash_title1">Bersedia untuk menjulang tinggi</string>
+   <string name="wallet_wizard_splash_title2">Seterusnya, anda mesti bersetuju dengan\nTerma dan Syarat.</string>
+   <string name="wallet_wizard_splash_review_btn">Terma dan Syarat</string>
+
+   <string name="wallet_wizard_scan_proposal">Imbas belakang \nflye™ SmartCard anda untuk persediaan</string>
+   <string name="wallet_wizard_scan_start_btn">Imbas Kad</string>
+   <string name="wallet_wizard_scan_title">Imbas flye SmartCard</string>
+
+   <string name="wallet_wizard_scan_barcode_header">Letakkan kod bar flye™ SmartCard dalam petak pemidang tilik.</string>
+   <string name="wallet_wizard_scan_barcode_footer_title">Tidak dapat mengimbas?</string>
+   <string name="wallet_wizard_scan_barcode_footer_btn">Masukkan ID secara manual</string>
+   <string name="waller_wizard_scan_barcode_progress_label">Menyambung ke kad pintar…</string>
+
+   <string name="wallet_add_credit_card">Tambah kad kredit</string>
+   <string name="wallet_add_debit_card">Tambah kad debit</string>
+   <string name="wallet_payment_cards_title">Kad bayaran</string>
+
+   <!--bar code manual-->
+   <string name="wallet_wizard_manual_input_header">Masukkan angka 10 digit \nyang terletak di bawah kod bar</string>
+   <string name="wallet_wizard_manual_input_title">Nombor flye SmartCard</string>
+   <string name="wallet_wizard_bar_code_validation_error">Nombor kod bar yang salah</string>
+   <string name="wallet_bank_name_text_holder">Nama Bank</string>
+
+   <!--details-->
+   <string name="wallet_card_details_label_billing_address">Alamat Bil</string>
+   <string name="wallet_card_details_button_edit_billing_address">Sunting Alamat Bil</string>
+   <string name="wallet_card_details_button_delete_card">Hapus Kad</string>
+   <string name="wallet_card_details_progress_delete">Menghapuskan %1$s…</string>
+   <string name="wallet_card_details_delete_card_dialog_title">Hapuskan kad bayaran</string>
+   <string name="wallet_card_details_delete_card_dialog_content">Adakah anda pasti?</string>
+
+   <!--settings-->
+   <string name="wallet_card_settings_title">Tetapan</string>
+   <string name="wallet_card_settings_device_section_header">Anda boleh mengubah tetapan tersebut bagi menjimat bateri dan mengoptimumkan prestasi kad pintar flye™.</string>
+   <string name="wallet_card_settings_stealth_mode">Simpan Identiti Saya Peribadi</string>
+   <string name="wallet_card_settings_lock">Kunci Kad</string>
+   <string name="wallet_card_settings_firmware_update">Kemas Kini flye SmartCard</string>
+   <string name="wallet_card_settings_reset_pin">Set Semula Pin</string>
+   <string name="wallet_card_settings_factory_reset">Set Semula Kilang flye SmartCard</string>
+   <string name="wallet_card_settings_disable_default_payment_card">Lumpuh Kad Bayaran Lalai Selepas</string>
+   <string name="wallet_card_settings_auto_delete_cards">Padam flye SmartCard Secara Automatik Selepas</string>
+   <string name="wallet_card_settings_stealth_mode_off">Mod selinap dipadamkan</string>
+   <string name="wallet_card_settings_stealth_mode_on">Mod selinap dihidupkan</string>
+   <string name="wallet_card_settings_unlock_error">Tidak berkunci tidak disokong</string>
+
+   <!--card list-->
+   <string name="wallet_card_list_title">flye SmartCard saya</string>
+   <string name="dashboard_default_card_stack_title">Lalai</string>
+   <string name="wallet_wizard_default_card_label">LALAI</string>
+   <string name="wallet_wizard_empty_card_list_label">Tambah kad kredit dan debit \nke flye™ SmartCard anda</string>
+   <string name="wallet_wizard_full_card_list_error_message">Anda telah mencapai maksimum 10 kad. Sila hapuskan satu atau lebih kad untuk meneruskan.</string>
+   <string name="wallet_wizard_no_internet_connection_title">@string/offline_warning_dialog_title</string>
+   <string name="wallet_wizard_no_connection_to_card_title">flye card tidak berpaut</string>
+   <string name="wallet_wizard_limited_access">@string/offline_warning_dialog_message</string>
+
+   <!--add card details-->
+   <string name="wallet_add_card_details_title">Butiran Kad</string>
+   <string name="wallet_add_card_details_hint_enter_cvv">Masuk CVV</string>
+   <string name="wallet_add_card_details_hint_nickname_card">Nama Timangan Kad (pilihan)</string>
+   <string name="wallet_add_card_details_hint_address1">Alamat 1</string>
+   <string name="wallet_add_card_details_hint_address2">Alamat 2 (pilihan)</string>
+   <string name="wallet_add_card_details_hint_city">Bandar</string>
+   <string name="wallet_add_card_details_hint_state">Negeri</string>
+   <string name="wallet_add_card_details_hint_zip">Poskod</string>
+   <string name="wallet_add_card_details_button_confirm">Sahkan</string>
+   <string name="wallet_add_card_details_cvv_label">Nombor CVV</string>
+   <string name="wallet_add_card_details_billing_address_label">Alamat bil</string>
+   <string name="wallet_add_card_details_option_set_as_default_card">Ditetapkan Sebagai Kad Bayaran Lalai</string>
+   <string name="wallet_add_card_details_error_message">Beberapa medan keperluan adalah kosong atau mengandungi data yang salah</string>
+   <string name="wallet_add_card_details_default_card_exist_dialog_text">Kad lalai anda %1$s akan digantikan dengan kad ini. Adakah anda mahu meneruskan?</string>
+
+   <!--card type-->
+   <string name="wallet_card_financial_service_master_card">Master Card</string>
+   <string name="wallet_card_financial_service_visa">Visa</string>
+   <string name="wallet_card_financial_service_discover">Terokai</string>
+   <string name="wallet_card_financial_service_amex">Amex</string>
+
+   <string name="wallet_card_list_records_connected">%1$d kad dimuatkan</string>
+   <string name="wallet_card_list_record_connected">%1$d kad dimuatkan</string>
+   <string name="wallet_dashboard_unlock_error">Tidak berkunci tidak disokong</string>
+   <string name="wallet_dashboard_flye_firmware_update">Kemas Kini flye SmartCard</string>
+
+   <!--charging-->
+   <string name="wallet_charging_swiping_screen_title">Tambah Kad Bayaran</string>
+   <string name="wallet_charging_swiping_screen_instruction">Pasang flye™ ke dalam pengecas dan sapu kad kredit atau debit.</string>
+   <string name="wallet_charging_swiping_screen_notes">Pastikan kad flye™ anda dihidupkan dan 2 LED pengecas dihidupkan.</string>
+   <string name="wallet_wizard_charging_swipe_error">Bacaan kad yang salah. Cubalah lagi</string>
+   <string name="wallet_terms_and_conditions_header">Terma dan Syarat</string>
+   <string name="wallet_wizard_terms_and_conditions_agree_btn">Setuju</string>
+   <string name="wallet_terms_and_conditions_try_again">Cuba lagi</string>
+   <string name="wallet_terms_and_conditions_load_failed">Gagal untuk mendapat semula terma dan syarat</string>
+   <string name="wallet_terms_and_conditions_accept_failed">Gagal menerima terma dan syarat</string>
+
+   <!--set up smart card-->
+   <string name="wallet_wizard_welcome_title">flye SmartCard</string>
+   <string name="wallet_wizard_welcome_greeting">Hai %1$s!</string>
+   <string name="wallet_wizard_welcome_platinum_user">Tingkatkan keahlian platinum anda ke tahap baharu dengan flye™.</string>
+   <string name="wallet_wizard_welcome_gold_user">Tingkatkan keahlian emas anda ke tahap baharu dengan flye™.</string>
+   <string name="wallet_wizard_welcome_button_text">Sediakan</string>
+
+   <string name="wallet_record_type_credit">Kredit</string>
+   <string name="wallet_record_type_debit">Debit</string>
+
+   <!--disable default card-->
+   <string name="wallet_settings_disable_default_card_title">Lumpuh bayaran lalai selepas</string>
+   <string name="wallet_settings_disable_default_card_description">Tetapkan pemasa untuk melumpuhkan kad bayaran anda selepas tempoh tiada kesambungan</string>
+   <string name="wallet_settings_disable_default_card_2_hours">2 jam</string>
+   <string name="wallet_settings_disable_default_card_4_hours">4 jam</string>
+   <string name="wallet_settings_disable_default_card_6_hours">6 jam</string>
+   <string name="wallet_settings_disable_default_card_8_hours">8 jam</string>
+   <string name="wallet_settings_disable_default_card_12_hours">12 jam</string>
+   <string name="wallet_settings_disable_default_card_24_hours">24 jam</string>
+   <string name="wallet_settings_disable_default_card_48_hours">48 jam</string>
+   <string name="wallet_settings_disable_default_card_1_week">1 minggu</string>
+   <string name="wallet_settings_disable_default_card_1_month">1 bulan</string>
+   <string name="wallet_settings_disable_default_card_never">Tidak pernah</string>
+
+   <!--disable default card-->
+   <string name="wallet_settings_clear_flye_card_title">Padam flye SmartCard Secara Automatik Selepas</string>
+   <string name="wallet_settings_clear_flye_card_description">Tetapkan pemasa untuk memadamkan semua kandungan pada kad pintar flye anda selepas tempoh tidak aktif.</string>
+   <string name="wallet_settings_clear_flye_card_2_hours">2 jam</string>
+   <string name="wallet_settings_clear_flye_card_4_hours">4 jam</string>
+   <string name="wallet_settings_clear_flye_card_6_hours">6 jam</string>
+   <string name="wallet_settings_clear_flye_card_8_hours">8 jam</string>
+   <string name="wallet_settings_clear_flye_card_12_hours">12 jam</string>
+   <string name="wallet_settings_clear_flye_card_24_hours">24 jam</string>
+   <string name="wallet_settings_clear_flye_card_48_hours">48 jam</string>
+   <string name="wallet_settings_clear_flye_card_1_week">1 minggu</string>
+   <string name="wallet_settings_clear_flye_card_1_month">1 bulan</string>
+   <string name="wallet_settings_clear_flye_card_never">Tidak pernah</string>
+
+   <!--firmware-->
+   <string name="wallet_settings_last_version_title">Kemas Kini flye SmartCard</string>
+   <string name="wallet_settings_version">Versi %1$s</string>
+   <string name="wallet_settings_last_version">flye SmartCard anda dikemas kini dengan versi yang terbaru</string>
+   <string name="wallet_settings_latest_dt_version_required">Versi terbaru DreamTrips adalah diperlukan untuk kemas kini ini.</string>
+   <string name="wallet_settings_update_dt_app">Kemas Kini DreamTrips</string>
+   <string name="wallet_settings_update_size">%1$s</string>
+   <string name="wallet_settings_version_latest">Versi Yang Terbaru %1$s</string>
+   <string name="wallet_settings_version_current">Versi Semasa %1$s</string>
+   <string name="wallet_settings_version_whats_new">Apa Yang Baharu</string>
+   <string name="wallet_settings_download_install">Muat Turun dan Pasang</string>
+
+   <!-- firmware settings-->
+   <string name="wallet_firmware_space_alert_title">Ruang yang tidak mencukupi untuk Muat Turun</string>
+   <string name="wallet_firmware_space_alert_description">Anda perlu membebaskan %1$s untuk memuat turun kemas kini. Anda boleh menguruskan storan anda dalam tetapan.</string>
+   <string name="wallet_firmware_space_alert_cancel_action">Batal</string>
+   <string name="wallet_firmware_space_alert_settings_action">Tetapan</string>
+
+   <!--factory reset-->
+   <string name="wallet_factory_reset_title">Set Semula di Kilang flye SmartCard</string>
+   <string name="wallet_factory_reset_enter_pin_text">Masukkan PIN anda pada flye™ SmartCard untuk set semula kilang.</string>
+   <string name="wallet_factory_reset_card_reset_text">flye™ SmartCard anda telah diset semula kilang.</string>
+
+   <!--firmware download-->
+   <string name="wallet_firmware_download_header">Kemas Kini flye SmartCard</string>
+   <string name="wallet_firmware_download_text">Sedang Muat Turun Kemas Kini</string>
+   <string name="wallet_firmware_download_cancel_action">Batal</string>
+
+   <!-- firmware install-->
+   <string name="wallet_firmware_install_header">Kemas Kini flye SmartCard</string>
+   <string name="wallet_firmware_install_text">Memasang Kemas Kini</string>
+   <string name="wallet_firmware_install_sub_text">Jangan padam flye SmartCard</string>
+   <string name="wallet_firmware_install_error_alert_title">Ralat Pemasangan</string>
+   <string name="wallet_firmware_install_error_alert_content">Kemas kini telah gagal untuk menyelesaikan pemasangan. Adakah anda ingin mencuba semula?</string>
+   <string name="wallet_firmware_install_error_alert_content_customer_support">Untuk mendapatkan bantuan sila hubungi Sokongan Pelanggan di</string>
+   <string name="wallet_firmware_install_customer_support_phone_number">(855) 999–3593</string>
+   <string name="wallet_firmware_install_error_retry_action">Cuba lagi</string>
+   <string name="wallet_firmware_install_error_cancel_action">Batal</string>
+
+   <!-- firmware success install-->
+   <string name="wallet_firmware_install_success_header">Kemas Kini flye SmartCard</string>
+   <string name="wallet_firmware_install_success_sub_title">flye SmartCard berjaya dikemas kini kepada versi %1$s</string>
+   <string name="wallet_firmware_install_success_title">Berjaya Dikemas Kini</string>
+   <string name="wallet_firmware_install_success_action_button">Selesai</string>
+
+   <!--wizard checks-->
+   <string name="wallet_wizard_checks_header">Selamat datang ke persediaan flye™ SmartCard!</string>
+   <string name="wallet_wizard_checks_header2">Sebelum kami bermula, semak jika syarat-syarat yang berikut dipenuhi:</string>
+   <string name="wallet_wizard_checks_title">flye SmartCard</string>
+   <string name="wallet_wizard_checks_bluetooth_is_not_supported">Bluetooth Tenaga Rendah tidak disokong pada peranti ini</string>
+   <string name="wallet_wizard_checks_bluetooth_not_enable">Bluetooth tidak dibolehkan</string>
+   <string name="wallet_wizard_checks_bluetooth_enable">Bluetooth dibolehkan</string>
+   <string name="wallet_wizard_checks_network_not_available">Anda tidak bersambung ke Internet</string>
+   <string name="wallet_wizard_checks_network_available">Anda bersambung ke Internet</string>
+
+   <!--pre installation check-->
+   <string name="wallet_firmware_pre_installation_title">Kemas Kini flye SmartCard</string>
+   <string name="wallet_firmware_pre_installation_header">Untuk memasang kemas kini\nSila lakukan yang berikut:</string>
+   <string name="wallet_firmware_pre_installation_bluetooth">Bolehkan Bluetooth dan sambung kepada flye SmartCard</string>
+   <string name="wallet_firmware_pre_installation_connection">Hidupkan flye SmartCard</string>
+   <string name="wallet_firmware_pre_installation_charging">Pastikan flye SmartCard anda adalah bercas 50%</string>
+   <string name="wallet_firmware_pre_installation_button">Pasang</string>
+   <string name="wallet_firmware_pre_installation_install_later">Pasang Kemudian</string>
+
+   <!--smart card connection-->
+   <string name="wallet_smartcard_connected_label">SmartCard adalah bersambung</string>
+   <string name="wallet_smartcard_disconnected_label">SmartCard adalah terputus</string>
+   <string name="wallet_smartcard_connection_try_description">Sambung SmartCard dan cubalah lagi.</string>
+
+   <!-- Power On -->
+   <string name="wallet_wizard_power_on_title">flye SmartCard</string>
+   <string name="wallet_wizard_power_on_header">Hidupkan flye™ SmartCard anda dengan menyapu pada cip.</string>
+
+   <!--puck connection screen-->
+   <string name="wallet_puck_connection_title">Kemas Kini Kad Pintar</string>
+   <string name="wallet_puck_connection_comment">Pastikan flye smart card anda bersambung kepada pengecas.</string>
+</resources>

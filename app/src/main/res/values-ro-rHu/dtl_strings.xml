@@ -57,8 +57,8 @@
    <string name="suggest_merchant_title">Instrumente locale DT</string>
    <string name="dtl_details_share_title">Voi câștiga puncte Dreamtrips în %1$s</string>
    <string name="dtl_details_share_title_earned" formatted="false"> Ați câștigat %1$s DreamTrips Points în %2$s </string>
-   <string name="dtl_wait_for_receipt">Așteptați… Se încarcă nota de plată</string>
-   <string name="dtl_wait_for_earn">Așteptați… Se colectează punctele</string>
+   <string name="dtl_wait_for_receipt">Așteptați... Se încarcă nota de plată</string>
+   <string name="dtl_wait_for_earn">Așteptați... Se colectează punctele</string>
    <string name="dtl_wait_for_offers">Se caută oferte în apropiere.</string>
    <string name="dtl_wait_for_dinings">Se caută comercianți în apropiere.</string>
    <string name="dtl_estimator_explanation">Punctele se calculează în funcție de suma minimă cheltuită la comerciant și de ziua săptămânii</string>
@@ -92,6 +92,15 @@
    <string name="merchants_list_empty_text">Locuri în curând</string>
    <string name="merchants_list_empty_text_additional">- sau -</string>
    <string name="merchant_working_hours_caption">ore</string>
+   <string name="filter_amenities_error_caption">Facilitățile nu au putut fi încărcate de data aceasta</string>
+   <string name="merchants_no_results">Nu a fost găsit niciun rezultat \n Încercați să vă modificați filtrele sau introduceți o locație nouă.</string>
+   <string name="merchants_no_results_offers_only">Ne pare rău, deocamdată nu sunt oferte disponibile în zona dvs.\n Dezactivați ofertele pentru a vizualiza restaurante din apropiere.</string>
+   <string name="dtl_try_again">Încercați din nou</string>
+   <string name="dtl_load_more">Încărcați mai mult</string>
+
+   <!-- Errors -->
+   <string name="dtl_load_error">Eroare la încărcare</string>
+   <string name="dtl_load_merchant_error_caption">Rezultatele nu au putut fi încărcate în acest moment.</string>
 
    <!-- DtlToolbar strings -->
    <string name="dtlt_search_hint">Mâncare și băuturi</string>

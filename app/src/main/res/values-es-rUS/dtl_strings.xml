@@ -42,7 +42,7 @@
    <string name="dtl_scan_receipt_input_caption"> Ingresar Subtotal (Cantidad sin impuestos y propina)</string>
    <string name="dtl_congrats">¡Felicidades!</string>
    <string name="dtl_you_earned">Has ganado</string>
-   <string name="dtl_total">Total de Puntos: Dreamtrips</string>
+   <string name="dtl_total">Total de Dreamtrips Points:</string>
    <string name="rate_hint">Por favor, evalúa esta experiencia</string>
    <string name="dtl_success_title">Felicitaciones</string>
    <string name="dtl_amount_invalid">Cantidad no válida</string>
@@ -57,8 +57,8 @@
    <string name="suggest_merchant_title">Herramientas de DT Local  </string>
    <string name="dtl_details_share_title">Voy a ganar puntos Dreamtrips en %1$s</string>
    <string name="dtl_details_share_title_earned" formatted="false">He ganado %1$s puntos de DreamTrips en %2$s</string>
-   <string name="dtl_wait_for_receipt">Espera… Cargando recibo</string>
-   <string name="dtl_wait_for_earn">Espera… Ganando puntos</string>
+   <string name="dtl_wait_for_receipt">Espera... Cargando recibo</string>
+   <string name="dtl_wait_for_earn">Espera... Ganando puntos</string>
    <string name="dtl_wait_for_offers">Buscando ofertas cercanas.</string>
    <string name="dtl_wait_for_dinings">Buscando comerciantes cercanos.</string>
    <string name="dtl_estimator_explanation">Los puntos se calculan en función de una cantidad mínima gastada en un comerciante y del día de la semana</string>
@@ -92,6 +92,15 @@
    <string name="merchants_list_empty_text">Nuevos lugares próximamente</string>
    <string name="merchants_list_empty_text_additional">- o -</string>
    <string name="merchant_working_hours_caption">horas</string>
+   <string name="filter_amenities_error_caption">No se pudieron cargar las comodidades en este momento</string>
+   <string name="merchants_no_results">No se encontraron resultados \n Prueba ajustando los filtros o introduce una ubicación nueva.</string>
+   <string name="merchants_no_results_offers_only">Disculpa, aún no hay ofertas disponibles en tu zona.\n Desactiva las ofertas para ver los restaurantes cerca de ti.</string>
+   <string name="dtl_try_again">Intentarlo de nuevo</string>
+   <string name="dtl_load_more">Cargar más</string>
+
+   <!-- Errors -->
+   <string name="dtl_load_error">Error al cargar</string>
+   <string name="dtl_load_merchant_error_caption">No se pudieron cargar los resultados en este momento.</string>
 
    <!-- DtlToolbar strings -->
    <string name="dtlt_search_hint">Comida y Bebidas</string>

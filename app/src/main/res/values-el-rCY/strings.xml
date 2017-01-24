@@ -26,7 +26,6 @@
    <string name="trips">DreamTrips</string>
    <string name="drawer_open">Το μενού είναι ανοικτό</string>
    <string name="drawer_close">Το μενού είναι κλειστό</string>
-   <string name="empty" translatable="false"></string>
    <string name="logout_dialog_title">Αποσύνδεση</string>
    <string name="logout_dialog_message">Είστε σίγουροι ότι θέλετε να αποσυνδεθείτε;</string>
    <string name="logout_dialog_positive_btn">Αποσύνδεση</string>
@@ -127,6 +126,10 @@
    <string name="bucket_list_create_message">Αυτή τη στιγμή, δεν έχετε αντικείμενα στο Καλάθι αγορών σας. Μπορείτε να επιλέξετε αντικείμενα από τα δημοφιλή αντικείμενα του Καλαθιού αγορών ή να δημιουργήσετε τους δικούς σας στόχους</string>
    <string name="bucket_list_choose">Επιλογή από τα Δημοφιλή αντικείμενα</string>
    <string name="bucket_list_create_new">Δημιουργία του δικού μου Καλαθιού</string>
+   <string name="bucket_list_action_create_error">Το αντικείμενο δεν προστέθηκε στο Καλάθι Αγορών</string>
+   <string name="bucket_list_action_update_error">Το αντικείμενο στο Καλάθι Αγορών δεν ενημερώθηκε</string>
+   <string name="bucket_list_action_change_order_error">Η σειρά αντικειμένων στο Καλάθι Αγορών δεν άλλαξε</string>
+   <string name="bucket_list_action_delete_error">ΤΟ αντικείμενο στο Καλάθι Αγορών δεν διαγράφηκε</string>
    <string name="bucket_hint_title">Τίτλος</string>
    <string name="bucket_hint_description">Περιγραφή</string>
    <string name="bucket_hint_description_text">Πληκτρολογήστε την περιγραφή σας εδώ</string>
@@ -171,7 +174,9 @@
    <string name="training_videos">Εκπαιδευτικά βίντεο</string>
    <string name="error_while_sync">Κάτι δεν πήγε καλά</string>
    <string name="can_not_like_photo">Δεν είναι δυνατό να γίνει like στη φωτογραφία</string>
+   <string name="like">%1$d Μου αρέσει</string>
    <string name="likes">%1$d Μου Αρέσει</string>
+   <string name="comment_single">%1$d σχόλιο</string>
    <string name="comments">%1$d σχόλια</string>
    <string name="wrong_image">Λάθος εικόνα</string>
    <string name="could_not_load">Δεν ήταν δυνατή η φόρτωση </string>
@@ -392,6 +397,7 @@
    <string name="photo_delete">Διαγραφή φωτογραφίας</string>
    <string name="photo_edit">Επεξεργασία φωτογραφίας</string>
    <string name="photo_delete_caption">Είστε σίγουροι ότι θέλετε να διαγράψετε αυτή τη φωτογραφία;</string>
+   <string name="photo_edit_error">Η φωτογραφία δεν επεξεργάστηκε</string>
 
    <string name="bucket_delete">Διαγραφή αντικειμένου καλαθιού αγορών</string>
    <string name="bucket_edit">Επεξεργασία αντικειμένου Καλαθιού αγορών</string>
@@ -465,7 +471,7 @@
    <string name="no_mutual_friends">Δεν έχετε κοινούς φίλους</string>
 
    <string name="photo_limitation_message">Επιλέξτε έως %1$d φωτογραφίες</string>
-   <string name="pending">Σε εκκρεμότητα…</string>
+   <string name="pending">Σε εκκρεμότητα...</string>
 
    <string name="back">Πίσω</string>
    <string name="logout_component">Αποσύνδεση</string>
@@ -487,6 +493,12 @@
    <string name="feedback_has_been_sent">Τα σχόλιά σας στάλθηκαν. Ευχαριστούμε</string>
    <string name="feedback_send_btn">Αποστολή</string>
    <string name="feedback_select_category">Επιλέξτε Κατηγορία</string>
+   <string name="feedback_add_photos">Προσθήκη Φωτογραφιών</string>
+   <string name="feedback_could_not_load_attachment">Η επισύναψη δεν φορτώθηκε</string>
+   <string name="feedback_attachment_failed_item_retry">Επανάληψη</string>
+   <string name="feedback_attachment_failed_item_remove">Αφαίρεση</string>
+   <string name="feedback_fullscreen_attachments_format">%1$d από %2$d</string>
+   <string name="feedback_fullscreen_attachments_remove">Αφαίρεση</string>
 
    <string name="years_ago">πριν από %1$d έτη</string>
    <string name="invitation_template">Επιλογή φόρμας</string>
@@ -585,7 +597,24 @@
    <string name="error_fail_to_load_videos">Αποτυχία φόρτωσης βίντεο</string>
    <string name="error_fail_to_like_item">Αποτυχία \'Μου αρέσει\' αντικειμένου</string>
    <string name="error_fail_to_unlike_item">Αποτυχία \'Δεν μου αρέσει\' αντικειμένου</string>
+   <string name="error_fail_to_load_documents">Αποτυχία φόρτωσης εγγράφων</string>
    <string name="tag_people">Επισήμανση ατόμων</string>
+
+   <string name="uploading_post_status_progress_singular">Ανέβασμα φωτογραφίας…</string>
+   <string name="uploading_post_status_progress_plural">Ανέβασμα %1$d φωτογραφιών…</string>
+   <string name="uploading_post_status_paused">Παύση ανεβάσματος</string>
+   <string name="uploading_post_status_waiting">Αναμονή</string>
+   <string name="uploading_post_status_failed_connection">Η σύνδεση χάθηκε</string>
+   <string name="uploading_post_status_uploaded">Η δημοσίευση ανέβηκε με επιτυχία!</string>
+   <string name="uploading_post_time_left_posting">Δημοσίευση…</string>
+   <string name="uploading_post_time_time_left">έφυγε</string>
+   <string name="uploading_post_time_left_seconds">δ</string>
+   <string name="uploading_post_time_left_minutes">λ</string>
+   <string name="uploading_post_time_left_hours">ω</string>
+   <string name="uploading_post_time_left_more_than_one_day">Περισσότερο από 1 ημέρα…</string>
+   <string name="uploading_post_cancel_upload_message">Ακύρωση ανεβάσματος;</string>
+   <string name="uploading_post_cancel_upload_positive_button">Ναι</string>
+   <string name="uploading_post_cancel_upload_negative_button">Όχι</string>
 
    <string name="say_something">Πείτε κάτι στον κόσμο</string>
 
@@ -654,9 +683,16 @@
 
    <string name="error_fail_to_load_filters">Λυπούμαστε, απέτυχε να φορτώσει τα φίλτρα</string>
    <string name="flag_content_message">To προσωπικό της WorldVentures θα ειδοποιηθεί να αναθεωρήσει αυτό το περιεχόμενο για ακατάλληλο περιεχόμενο. </string>
+   <string name="try_again">Δοκιμάστε ξανά</string>
 
-   <!-- change this later after approval from WV -->
    <string name="offline_warning_dialog_title">Δεν υπάρχει σύνδεση στο διαδίκτυο</string>
    <string name="offline_warning_dialog_message">Η πρόσβασή σας θα είναι περιορισμένη</string>
+   <string name="offline_indicator_description">Δεν υπάρχει σύνδεση στο διαδίκτυο</string>
 
+   <string name="merchant_message_text" formatted="false">Συγχαρητήρια! Κερδίσατε %1$sDreamTrips Πόντους @%2$s, %3$s</string>
+
+   <string name="beta_label">Beta</string>
+
+   <string name="documents">Έγγραφα</string>
+   <string name="documents_empty_text">Τα έγγραφα δεν μπόρεσαν να φορτωθούν αυτή τη στιγμή.</string>
 </resources>

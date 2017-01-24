@@ -80,8 +80,6 @@ public final class SmartCardInteractor {
    private final ActionPipe<GetCompatibleDevicesCommand> compatibleDevicesActionPipe;
    private final ActionPipe<CardInChargerEvent> cardInChargerEventPipe;
 
-   private final SmartCardSyncManager smartCardSyncManager;
-
    public SmartCardInteractor(Janet janet, SessionActionPipeCreator sessionActionPipeCreator) {
       this(janet, sessionActionPipeCreator, SmartCardInteractor::singleThreadScheduler);
    }
@@ -134,8 +132,6 @@ public final class SmartCardInteractor {
 
       cardInChargerEventPipe = sessionActionPipeCreator.createPipe(CardInChargerEvent.class, Schedulers.io());
       compatibleDevicesActionPipe = sessionActionPipeCreator.createPipe(GetCompatibleDevicesCommand.class, Schedulers.io());
-      //
-      smartCardSyncManager = new SmartCardSyncManager(janet, this);// start sync when start use the wallet
    }
 
    private static Scheduler singleThreadScheduler() {

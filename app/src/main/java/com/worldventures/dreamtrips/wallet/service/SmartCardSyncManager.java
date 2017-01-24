@@ -23,6 +23,7 @@ import io.techery.janet.helper.ActionStateSubscriber;
 import io.techery.janet.smartcard.action.support.ConnectAction;
 import io.techery.janet.smartcard.model.ConnectionType;
 import rx.Observable;
+import rx.subscriptions.CompositeSubscription;
 import timber.log.Timber;
 
 import static com.worldventures.dreamtrips.wallet.domain.entity.SmartCard.ConnectionStatus.CONNECTED;
@@ -34,25 +35,40 @@ import static com.worldventures.dreamtrips.wallet.service.command.CardListComman
 import static com.worldventures.dreamtrips.wallet.service.command.CardListCommand.remove;
 import static java.lang.String.valueOf;
 
-class SmartCardSyncManager {
+public class SmartCardSyncManager {
 
    private final Janet janet;
    private final SmartCardInteractor interactor;
    private volatile boolean syncDisabled = false;
 
-   SmartCardSyncManager(Janet janet, SmartCardInteractor interactor) {
+   private CompositeSubscription subscriptions;
+
+   public SmartCardSyncManager(Janet janet, SmartCardInteractor interactor) {
       this.janet = janet;
       this.interactor = interactor;
-      observeConnection();
-      connectUpdateSmartCard();
-      connectFetchingBattery();
-      connectSyncCards();
-      connectSyncDisabling();
-      connectFetchingFirmwareVersion();
+
+      subscriptions = new CompositeSubscription();
+   }
+
+   public void connect() {
+      if (!subscriptions.hasSubscriptions() || subscriptions.isUnsubscribed()) {
+         observeConnection();
+         connectUpdateSmartCard();
+         connectFetchingBattery();
+         connectSyncCards();
+         connectSyncDisabling();
+         connectFetchingFirmwareVersion();
+      }
+   }
+
+   public void disconnect() {
+      if (subscriptions.hasSubscriptions() && !subscriptions.isUnsubscribed()) {
+         subscriptions.clear();
+      }
    }
 
    private void connectFetchingFirmwareVersion() {
-      interactor.cardInChargerEventPipe().observeSuccess()
+      subscriptions.add(interactor.cardInChargerEventPipe().observeSuccess()
             .filter(cardInChargerEvent -> cardInChargerEvent.inCharger)
             .compose(new FilterActiveConnectedSmartCard(interactor))
             .flatMap(smartCard ->
@@ -64,26 +80,25 @@ class SmartCardSyncManager {
                         .createObservableResult(new ActiveSmartCardCommand(smartCard ->
                               ImmutableSmartCard.copyOf(smartCard)
                                     .withFirmwareVersion(firmwareVersion))))
-            .subscribe();
-
+            .subscribe());
    }
 
    private void connectSyncDisabling() {
-      janet.createPipe(LoadFirmwareFilesCommand.class)
+      subscriptions.add(janet.createPipe(LoadFirmwareFilesCommand.class)
             .observeWithReplay()
             .subscribe(new ActionStateSubscriber<LoadFirmwareFilesCommand>()
                   .onStart(loadFirmwareFilesCommand -> syncDisabled = true)
-                  .onFinish(loadFirmwareFilesCommand -> syncDisabled = false));
+                  .onFinish(loadFirmwareFilesCommand -> syncDisabled = false)));
    }
 
    private void observeConnection() {
-      janet.createPipe(ConnectAction.class)
+      subscriptions.add(janet.createPipe(ConnectAction.class)
             .observeSuccess()
             .map(connectAction -> connectAction.type)
             .debounce(1, TimeUnit.SECONDS)
-            .subscribe(this::smartCardConnected, throwable -> Timber.e(throwable, "Error with handling connection event"));
+            .subscribe(this::smartCardConnected, throwable -> Timber.e(throwable, "Error with handling connection event")));
 
-      interactor.disconnectPipe()
+      subscriptions.add(interactor.disconnectPipe()
             .observe()
             .filter(state -> state.status == ActionState.Status.SUCCESS || state.status == ActionState.Status.FAIL)
             .map(state -> state.status == ActionState.Status.SUCCESS ? DISCONNECTED : ERROR)
@@ -93,7 +108,7 @@ class SmartCardSyncManager {
                               .withConnectionStatus(connectionStatus)))
                   .filter(command -> command.getCacheData() != null))
             .subscribe(command -> {
-            }, throwable -> Timber.e(throwable, "Error while updating status of active card"));
+            }, throwable -> Timber.e(throwable, "Error while updating status of active card")));
    }
 
    private void smartCardConnected(ConnectionType connectionType) {
@@ -103,7 +118,7 @@ class SmartCardSyncManager {
       }
 
       SmartCard.ConnectionStatus finalStatus = status;
-      interactor.activeSmartCardPipe()
+      subscriptions.add(interactor.activeSmartCardPipe()
             .createObservableResult(new ActiveSmartCardCommand(smartCard ->
                   ImmutableSmartCard.copyOf(smartCard)
                         .withConnectionStatus(finalStatus)))
@@ -115,26 +130,26 @@ class SmartCardSyncManager {
                      .send(new FetchCardPropertiesCommand());
                interactor.cardsListPipe().send(CardListCommand.fetch());
             }, throwable -> {
-            });
+            }));
    }
 
    private void connectUpdateSmartCard() {
-      interactor.fetchBatteryLevelPipe().observeSuccess()
+      subscriptions.add(interactor.fetchBatteryLevelPipe().observeSuccess()
             .map(Command::getResult)
             .subscribe(level -> interactor.activeSmartCardPipe()
                   .send(new ActiveSmartCardCommand(smartCard -> ImmutableSmartCard.builder()
                         .from(smartCard)
                         .batteryLevel(Integer.parseInt(level))
                         .build())), throwable -> {
-            });
+            }));
 
-      interactor.connectActionPipe().observeSuccess()
+      subscriptions.add(interactor.connectActionPipe().observeSuccess()
             .map(Command::getResult)
             .subscribe(smartCard -> interactor.activeSmartCardPipe()
                   .send(new ActiveSmartCardCommand(smartCard)), throwable -> {
-            });
+            }));
 
-      interactor.stealthModePipe().observeSuccess()
+      subscriptions.add(interactor.stealthModePipe().observeSuccess()
             .map(Command::getResult)
             .subscribe(value -> interactor.activeSmartCardPipe()
                   .send(new ActiveSmartCardCommand(smartCard ->
@@ -142,9 +157,9 @@ class SmartCardSyncManager {
                               .from(smartCard)
                               .stealthMode(value)
                               .build())), throwable -> {
-            });
+            }));
 
-      interactor.disableDefaultCardDelayPipe().observeSuccess()
+      subscriptions.add(interactor.disableDefaultCardDelayPipe().observeSuccess()
             .map(Command::getResult)
             .subscribe(delay -> interactor.activeSmartCardPipe()
                   .send(new ActiveSmartCardCommand(smartCard ->
@@ -152,9 +167,9 @@ class SmartCardSyncManager {
                               .from(smartCard)
                               .disableCardDelay(delay)
                               .build())), throwable -> {
-            });
+            }));
 
-      interactor.autoClearDelayPipe().observeSuccess()
+      subscriptions.add(interactor.autoClearDelayPipe().observeSuccess()
             .map(Command::getResult)
             .subscribe(delay -> interactor.activeSmartCardPipe()
                   .send(new ActiveSmartCardCommand(smartCard ->
@@ -162,9 +177,9 @@ class SmartCardSyncManager {
                               .from(smartCard)
                               .clearFlyeDelay(delay)
                               .build())), throwable -> {
-            });
+            }));
 
-      interactor.fetchCardPropertiesPipe().observeSuccess()
+      subscriptions.add(interactor.fetchCardPropertiesPipe().observeSuccess()
             .map(Command::getResult)
             .subscribe(properties -> interactor.activeSmartCardPipe()
                   .send(new ActiveSmartCardCommand(smartCard -> {
@@ -182,9 +197,9 @@ class SmartCardSyncManager {
                            .clearFlyeDelay(properties.clearFlyeDelay())
                            .build();
                   })), throwable -> {
-            });
+            }));
 
-      Observable.merge(
+      subscriptions.add(Observable.merge(
             interactor.lockDeviceChangedEventPipe()
                   .observeSuccess()
                   .map(event -> event.locked),
@@ -196,21 +211,21 @@ class SmartCardSyncManager {
                         .from(smartCard)
                         .lock(state)
                         .build())), throwable -> {
-      });
+      }));
    }
 
    private void connectFetchingBattery() {
-      Observable.interval(0, 1, TimeUnit.MINUTES)
+      subscriptions.add(Observable.interval(0, 1, TimeUnit.MINUTES)
             .compose(new FilterActiveConnectedSmartCard(interactor))
             .filter(smartCard -> !syncDisabled)
             .subscribe(value ->
                         interactor.fetchBatteryLevelPipe().send(new FetchBatteryLevelCommand()),
                   throwable -> {
-                  });
+                  }));
    }
 
    private void connectSyncCards() {
-      Observable.interval(10, TimeUnit.MINUTES)
+      subscriptions.add(Observable.interval(10, TimeUnit.MINUTES)
             .mergeWith(interactor.cardsListPipe().observeSuccess()
                   .map(cardListCommand -> null))
             .compose(new FilterActiveConnectedSmartCard(interactor))
@@ -220,34 +235,34 @@ class SmartCardSyncManager {
                   .createObservableResult(new SyncCardsCommand()))
             .retry(1)
             .subscribe(command -> {
-            }, Throwable::printStackTrace);
+            }, Throwable::printStackTrace));
 
-      interactor.deleteCardPipe()
+      subscriptions.add(interactor.deleteCardPipe()
             .observeSuccess()
             .subscribe(deleteRecordAction ->
                   interactor.cardsListPipe()
-                        .send(remove(valueOf(deleteRecordAction.recordId))));
+                        .send(remove(valueOf(deleteRecordAction.recordId)))));
 
-      interactor.addRecordPipe()
+      subscriptions.add(interactor.addRecordPipe()
             .observeSuccess()
             .subscribe(attachCardCommand ->
                   interactor.cardsListPipe()
-                        .send(add(attachCardCommand.getResult())));
+                        .send(add(attachCardCommand.getResult()))));
 
-      interactor.updateBankCardPipe()
+      subscriptions.add(interactor.updateBankCardPipe()
             .observe()
             .subscribe(new ActionStateSubscriber<UpdateBankCardCommand>()
                   .onStart(updateBankCardCommand -> interactor.cardsListPipe()
                         .send(edit(updateBankCardCommand.getBankCard())))
                   .onSuccess(updateBankCardCommand -> interactor.cardsListPipe()
-                        .send(edit(updateBankCardCommand.getResult()))));
+                        .send(edit(updateBankCardCommand.getResult())))));
 
       //update cache default card
-      interactor.setDefaultCardOnDeviceCommandPipe()
+      subscriptions.add(interactor.setDefaultCardOnDeviceCommandPipe()
             .observeSuccess()
             .map(Command::getResult)
             .subscribe(id -> interactor.defaultCardIdPipe().send(DefaultCardIdCommand.set(id)), throwable -> {
-            });
+            }));
    }
 
    private static final class FilterActiveConnectedSmartCard implements Observable.Transformer<Object, SmartCard> {

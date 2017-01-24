@@ -23,6 +23,7 @@ import javax.inject.Named;
 import io.techery.janet.Command;
 import io.techery.janet.Janet;
 import io.techery.janet.command.annotations.CommandAction;
+import io.techery.janet.smartcard.action.settings.EnableLockUnlockDeviceAction;
 import io.techery.janet.smartcard.action.user.UpdateUserAction;
 import io.techery.janet.smartcard.action.user.UpdateUserPhotoAction;
 import io.techery.janet.smartcard.model.ImmutableUser;
@@ -116,13 +117,22 @@ public class UpdateSmartCardUserCommand extends Command<SmartCard> implements In
       }
    }
 
+   private Observable<EnableLockUnlockDeviceAction> toggleLockUnlock(boolean enable) {
+      return janet.createPipe(EnableLockUnlockDeviceAction.class)
+            .createObservableResult(new EnableLockUnlockDeviceAction(enable))
+            .onErrorResumeNext(Observable.just(null));
+   }
+
    private Observable<UpdateCardUserData> uploadPhoto(SmartCard smartCard, UpdateCardUserData userData) {
       final SmartCardUserPhoto photo = changedFields.photo();
       if (photo != null) {
-         return janet.createPipe(UpdateUserPhotoAction.class)
-               .createObservableResult(new UpdateUserPhotoAction(smartCardAvatarHelper.convertBytesForUpload(photo.monochrome())))
-               .flatMap(action -> janet.createPipe(SmartCardUploaderyCommand.class)
-                     .createObservableResult(new SmartCardUploaderyCommand(smartCard.smartCardId(), photo.original())))
+         return toggleLockUnlock(false)
+               .flatMap(action -> janet.createPipe(UpdateUserPhotoAction.class)
+                     .createObservableResult(new UpdateUserPhotoAction(smartCardAvatarHelper.convertBytesForUpload(photo
+                           .monochrome()))))
+               .flatMap(action -> toggleLockUnlock(true)
+                     .flatMap(command -> janet.createPipe(SmartCardUploaderyCommand.class)
+                           .createObservableResult(new SmartCardUploaderyCommand(smartCard.smartCardId(), photo.original()))))
                .map(command -> ImmutableUpdateCardUserData.builder()
                      .from(userData)
                      //photoUrl saved in UpdateProfileManager

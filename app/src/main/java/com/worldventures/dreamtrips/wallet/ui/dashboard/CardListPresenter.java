@@ -35,7 +35,7 @@ import com.worldventures.dreamtrips.wallet.ui.dashboard.util.CardStackViewModel;
 import com.worldventures.dreamtrips.wallet.ui.dashboard.util.ImmutableCardStackHeaderHolder;
 import com.worldventures.dreamtrips.wallet.ui.records.detail.CardDetailsPath;
 import com.worldventures.dreamtrips.wallet.ui.records.swiping.WizardChargingPath;
-import com.worldventures.dreamtrips.wallet.ui.settings.firmware.force.factoryreset.ForceFactoryResetPath;
+import com.worldventures.dreamtrips.wallet.ui.settings.firmware.start.StartFirmwareInstallPath;
 import com.worldventures.dreamtrips.wallet.ui.settings.firmware.install.WalletInstallFirmwarePath;
 import com.worldventures.dreamtrips.wallet.ui.settings.firmware.newavailable.WalletNewFirmwareAvailablePath;
 import com.worldventures.dreamtrips.wallet.ui.settings.general.WalletSettingsPath;
@@ -271,7 +271,7 @@ public class CardListPresenter extends WalletPresenter<CardListPresenter.Screen,
    }
 
    public void navigateToForceUpdate() {
-      navigator.single(new ForceFactoryResetPath(), Flow.Direction.REPLACE);
+      navigator.single(new StartFirmwareInstallPath(), Flow.Direction.REPLACE);
    }
 
    public void handleForceFirmwareUpdateConfirmation() {

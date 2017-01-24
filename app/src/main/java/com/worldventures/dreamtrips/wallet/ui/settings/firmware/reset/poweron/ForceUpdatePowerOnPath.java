@@ -1,4 +1,4 @@
-package com.worldventures.dreamtrips.wallet.ui.settings.firmware.force.poweron;
+package com.worldventures.dreamtrips.wallet.ui.settings.firmware.reset.poweron;
 
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.flow.path.MasterDetailPath;

@@ -1,4 +1,4 @@
-package com.worldventures.dreamtrips.wallet.ui.settings.firmware.force.pairkey;
+package com.worldventures.dreamtrips.wallet.ui.settings.firmware.reset.pair;
 
 import android.content.Context;
 import android.os.Parcelable;

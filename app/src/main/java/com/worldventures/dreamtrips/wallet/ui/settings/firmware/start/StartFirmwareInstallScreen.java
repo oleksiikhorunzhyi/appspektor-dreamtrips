@@ -1,4 +1,4 @@
-package com.worldventures.dreamtrips.wallet.ui.settings.firmware.force.factoryreset;
+package com.worldventures.dreamtrips.wallet.ui.settings.firmware.start;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
@@ -15,24 +15,24 @@ import com.worldventures.dreamtrips.wallet.ui.widget.WalletProgressWidget;
 import butterknife.InjectView;
 import rx.functions.Action1;
 
-public class ForceFactoryResetScreen extends WalletLinearLayout<ForceFactoryResetPresenter.Screen, ForceFactoryResetPresenter, ForceFactoryResetPath>
-      implements ForceFactoryResetPresenter.Screen, OperationScreen<Void> {
+public class StartFirmwareInstallScreen extends WalletLinearLayout<StartFirmwareInstallPresenter.Screen, StartFirmwareInstallPresenter, StartFirmwareInstallPath>
+      implements StartFirmwareInstallPresenter.Screen, OperationScreen<Void> {
 
    @InjectView(R.id.progress) WalletProgressWidget progressView;
    @InjectView(R.id.toolbar) Toolbar toolbar;
 
-   public ForceFactoryResetScreen(Context context) {
+   public StartFirmwareInstallScreen(Context context) {
       super(context);
    }
 
-   public ForceFactoryResetScreen(Context context, AttributeSet attrs) {
+   public StartFirmwareInstallScreen(Context context, AttributeSet attrs) {
       super(context, attrs);
    }
 
    @NonNull
    @Override
-   public ForceFactoryResetPresenter createPresenter() {
-      return new ForceFactoryResetPresenter(getContext(), getInjector());
+   public StartFirmwareInstallPresenter createPresenter() {
+      return new StartFirmwareInstallPresenter(getContext(), getInjector());
    }
 
    @Override

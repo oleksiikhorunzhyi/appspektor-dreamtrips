@@ -281,8 +281,13 @@ public class FeedPresenter extends Presenter<FeedPresenter.View> implements Uplo
    }
 
    public void loadNext() {
-      feedInteractor.getLoadNextAccountFeedPipe()
-            .send(new GetAccountFeedCommand.LoadNext(filterCircle.getId(), getLastFeedDate()));
+      if(feedItems.isEmpty()) {
+         addFeedItems(feedItems);
+         return;
+      } else {
+         feedInteractor.getLoadNextAccountFeedPipe()
+               .send(new GetAccountFeedCommand.LoadNext(filterCircle.getId(), getLastFeedDate()));
+      }
    }
 
    private Date getLastFeedDate() {

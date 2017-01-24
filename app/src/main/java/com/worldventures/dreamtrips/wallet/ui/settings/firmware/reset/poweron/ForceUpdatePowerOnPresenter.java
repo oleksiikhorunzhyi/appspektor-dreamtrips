@@ -1,4 +1,4 @@
-package com.worldventures.dreamtrips.wallet.ui.settings.firmware.force.poweron;
+package com.worldventures.dreamtrips.wallet.ui.settings.firmware.reset.poweron;
 
 import android.content.Context;
 import android.os.Parcelable;
@@ -12,7 +12,7 @@ import com.worldventures.dreamtrips.wallet.service.command.wizard.WizardCheckCom
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletPresenter;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.WalletScreen;
 import com.worldventures.dreamtrips.wallet.ui.common.navigation.Navigator;
-import com.worldventures.dreamtrips.wallet.ui.settings.firmware.force.pairkey.ForcePairKeyPath;
+import com.worldventures.dreamtrips.wallet.ui.settings.firmware.reset.pair.ForcePairKeyPath;
 
 import javax.inject.Inject;
 

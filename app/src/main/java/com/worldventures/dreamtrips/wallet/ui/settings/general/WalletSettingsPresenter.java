@@ -26,7 +26,7 @@ import com.worldventures.dreamtrips.wallet.ui.common.navigation.Navigator;
 import com.worldventures.dreamtrips.wallet.ui.settings.about.AboutPath;
 import com.worldventures.dreamtrips.wallet.ui.settings.disabledefaultcard.WalletDisableDefaultCardPath;
 import com.worldventures.dreamtrips.wallet.ui.settings.factory_reset.FactoryResetPath;
-import com.worldventures.dreamtrips.wallet.ui.settings.firmware.newavailable.WalletNewFirmwareAvailablePath;
+import com.worldventures.dreamtrips.wallet.ui.settings.firmware.start.StartFirmwareInstallPath;
 import com.worldventures.dreamtrips.wallet.ui.settings.firmware.uptodate.WalletUpToDateFirmwarePath;
 import com.worldventures.dreamtrips.wallet.ui.settings.profile.WalletSettingsProfilePath;
 import com.worldventures.dreamtrips.wallet.ui.settings.removecards.WalletAutoClearCardsPath;
@@ -266,7 +266,7 @@ public class WalletSettingsPresenter extends WalletPresenter<WalletSettingsPrese
 
    void firmwareUpdatesClick() {
       if (firmwareUpdateData != null && firmwareUpdateData.updateAvailable()) {
-         navigator.go(new WalletNewFirmwareAvailablePath());
+         navigator.go(new StartFirmwareInstallPath());
       } else {
          navigator.go(new WalletUpToDateFirmwarePath());
       }

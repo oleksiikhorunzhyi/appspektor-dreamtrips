@@ -1,4 +1,4 @@
-package com.worldventures.dreamtrips.wallet.ui.settings.firmware.force.factoryreset;
+package com.worldventures.dreamtrips.wallet.ui.settings.firmware.start;
 
 import android.content.Context;
 import android.os.Parcelable;
@@ -12,19 +12,19 @@ import com.worldventures.dreamtrips.wallet.ui.common.base.screen.WalletScreen;
 import com.worldventures.dreamtrips.wallet.ui.common.helper.ErrorHandler;
 import com.worldventures.dreamtrips.wallet.ui.common.helper.OperationActionStateSubscriberWrapper;
 import com.worldventures.dreamtrips.wallet.ui.common.navigation.Navigator;
-import com.worldventures.dreamtrips.wallet.ui.settings.firmware.force.poweron.ForceUpdatePowerOnPath;
+import com.worldventures.dreamtrips.wallet.ui.settings.firmware.reset.poweron.ForceUpdatePowerOnPath;
 import com.worldventures.dreamtrips.wallet.ui.settings.firmware.newavailable.WalletNewFirmwareAvailablePath;
 
 import javax.inject.Inject;
 
 import flow.Flow;
 
-public class ForceFactoryResetPresenter extends WalletPresenter<ForceFactoryResetPresenter.Screen, Parcelable> {
+public class StartFirmwareInstallPresenter extends WalletPresenter<StartFirmwareInstallPresenter.Screen, Parcelable> {
 
    @Inject Navigator navigator;
    @Inject SCFirmwareFacade firmwareFacade;
 
-   public ForceFactoryResetPresenter(Context context, Injector injector) {
+   public StartFirmwareInstallPresenter(Context context, Injector injector) {
       super(context, injector);
    }
 

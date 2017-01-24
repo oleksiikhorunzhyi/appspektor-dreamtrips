@@ -23,7 +23,6 @@ import timber.log.Timber;
 
 import static com.worldventures.dreamtrips.core.janet.JanetModule.JANET_WALLET;
 import static com.worldventures.dreamtrips.wallet.util.SCFirmwareUtils.isNewFirmwareAvailable;
-import static com.worldventures.dreamtrips.wallet.util.SCFirmwareUtils.isNewFirmwareAvailableForCharger;
 
 @CommandAction
 public class LoadFirmwareFilesCommand extends Command<Void> implements InjectableAction {
@@ -89,7 +88,7 @@ public class LoadFirmwareFilesCommand extends Command<Void> implements Injectabl
 
    private Observable<UnzipFirmwareCommand.FirmwareBundle> loadExternalAtmelFirmware(UnzipFirmwareCommand.FirmwareBundle fileBundle) {
       notifyNewInstallStep();
-      if (isNewFirmwareAvailableForCharger(currentFirmware.externalAtmelVersion(), availableFirmwareVersions.puckAtmelVerstion())) {
+      if (isNewFirmwareAvailable(currentFirmware.externalAtmelVersion(), availableFirmwareVersions.puckAtmelVerstion())) {
          return loadPuckAtmelFirmwareCommandActionPipe
                .createObservableResult(new LoadPuckAtmelFirmwareCommand(fileBundle.puckAtmel(), availableFirmwareVersions
                      .puckAtmelVerstion()))

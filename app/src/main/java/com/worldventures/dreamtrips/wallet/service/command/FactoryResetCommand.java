@@ -1,6 +1,7 @@
 package com.worldventures.dreamtrips.wallet.service.command;
 
 import com.worldventures.dreamtrips.core.janet.dagger.InjectableAction;
+import com.worldventures.dreamtrips.wallet.domain.entity.SmartCard;
 import com.worldventures.dreamtrips.wallet.service.SmartCardInteractor;
 import com.worldventures.dreamtrips.wallet.service.command.reset.ConfirmResetCommand;
 import com.worldventures.dreamtrips.wallet.service.command.reset.ResetSmartCardCommand;
@@ -49,9 +50,10 @@ public class FactoryResetCommand extends Command<Void> implements InjectableActi
    }
 
    private Observable<ResetSmartCardCommand> resetSmartCard() {
-      return resetSmartCardPipe.createObservableResult(
-            new ResetSmartCardCommand()
-      );
+      return walletJanet.createPipe(ActiveSmartCardCommand.class)
+            .createObservableResult(new ActiveSmartCardCommand())
+            .flatMap(activeSmartCardCommand -> resetSmartCardPipe.createObservableResult(
+                  new ResetSmartCardCommand(activeSmartCardCommand.getResult())));
    }
 
    private void createPipes() {

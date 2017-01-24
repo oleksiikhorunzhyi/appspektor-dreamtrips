@@ -68,7 +68,10 @@ public class InstallFirmwareCommand extends Command<FirmwareUpdateData> implemen
    private Observable<ConnectionType> connectSmartCard(String scId) {
       return janet.createPipe(ConnectAction.class)
             .createObservableResult(new ConnectAction(ImmutableConnectionParams.of(Integer.parseInt(scId))))
-            .map(connectAction -> connectAction.type);
+            .map(connectAction -> connectAction.type)
+            // hotfix for first Disconnect event from smart card
+            .retryWhen(observable -> janet.createPipe(ConnectAction.class)
+                  .createObservableResult(new ConnectAction(ImmutableConnectionParams.of(Integer.parseInt(scId)))));
    }
 
    private Observable<Void> enableLockUnlockDevice(boolean enable) {

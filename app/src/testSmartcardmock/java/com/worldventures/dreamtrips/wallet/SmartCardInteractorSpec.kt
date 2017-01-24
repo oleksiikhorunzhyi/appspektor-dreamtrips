@@ -27,6 +27,7 @@ import com.worldventures.dreamtrips.wallet.model.TestBankCard
 import com.worldventures.dreamtrips.wallet.model.TestFirmware
 import com.worldventures.dreamtrips.wallet.model.TestRecordIssuerInfo
 import com.worldventures.dreamtrips.wallet.service.SmartCardInteractor
+import com.worldventures.dreamtrips.wallet.service.SmartCardSyncManager
 import com.worldventures.dreamtrips.wallet.service.command.*
 import com.worldventures.dreamtrips.wallet.util.FormatException
 import io.techery.janet.ActionState
@@ -57,8 +58,10 @@ class SmartCardInteractorSpec : BaseSpec({
          mappery = createMappery()
          janet = createJanet()
          smartCardInteractor = createSmartCardInteractor(janet)
+         smartCardSyncManager = createSmartCardSyncManager(janet, smartCardInteractor)
 
          janet.connectToSmartCardSdk()
+         smartCardSyncManager.connect()
       }
 
       context("Smart Card connection status should be changed") {
@@ -289,6 +292,7 @@ class SmartCardInteractorSpec : BaseSpec({
       lateinit var mappery: MapperyContext
       lateinit var smartCardInteractor: SmartCardInteractor
       lateinit var cardStorage: CardListStorage
+      lateinit var smartCardSyncManager: SmartCardSyncManager
 
       val setOfMultiplyStorage: () -> Set<ActionStorage<*>> = {
          setOf(DefaultBankCardStorage(mockDb), SmartCardStorage(mockDb))
@@ -305,6 +309,8 @@ class SmartCardInteractorSpec : BaseSpec({
       }
 
       fun createSmartCardInteractor(janet: Janet) = SmartCardInteractor(janet, SessionActionPipeCreator(janet), { Schedulers.immediate() })
+
+      fun createSmartCardSyncManager(janet: Janet, smartCardInteractor: SmartCardInteractor) = SmartCardSyncManager(janet, smartCardInteractor)
 
       fun createJanet(): Janet {
          val daggerCommandActionService = CommandActionService()

@@ -37,21 +37,25 @@ utils.runBuild('android', getNotifier(utils)) {
       }
    }
    stage('publish') {
-      def releaseNotes = generateReleaseNotes(buildParams, changelog(utils, buildParams.targetBranch, buildParams.branch), isPullRequest())
-      echo releaseNotes
-      def apkPath = "app/build/outputs/apk/DreamTrips-external-${buildParams.streamFlavor.toLowerCase()}-${buildParams.serverFlavor.toLowerCase()}-${buildParams.apkBuildType.toLowerCase()}.apk"
-      step([$class   : 'HockeyappRecorder', applications:
-            [[apiToken          : params.hockeyApiToken,
-              filePath          : apkPath,
-              downloadAllowed   : true,
-              mandatory         : false,
-              notifyTeam        : true,
-              teams             : buildParams.hockeyAppTeams.join(','),
-              releaseNotesMethod: [$class: 'ManualReleaseNotes', releaseNotes: releaseNotes, isMarkdown: true],
-              uploadMethod      : [$class: 'VersionCreation', appId: buildParams.hockeyAppId]
-             ]],
-            debugMode: false, failGracefully: true
-      ])
+      if (env.INTERNAL_ONLY) {
+        archiveArtifacts artifacts: 'app/build/outputs/apk/*.apk', caseSensitive: false, onlyIfSuccessful: true
+      } else {
+        def releaseNotes = generateReleaseNotes(buildParams, changelog(utils, buildParams.targetBranch, buildParams.branch), isPullRequest())
+        echo releaseNotes
+        def apkPath = "app/build/outputs/apk/DreamTrips-external-${buildParams.streamFlavor.toLowerCase()}-${buildParams.serverFlavor.toLowerCase()}-${buildParams.apkBuildType.toLowerCase()}.apk"
+        step([$class   : 'HockeyappRecorder', applications:
+              [[apiToken          : params.hockeyApiToken,
+                filePath          : apkPath,
+                downloadAllowed   : true,
+                mandatory         : false,
+                notifyTeam        : true,
+                teams             : buildParams.hockeyAppTeams.join(','),
+                releaseNotesMethod: [$class: 'ManualReleaseNotes', releaseNotes: releaseNotes, isMarkdown: true],
+                uploadMethod      : [$class: 'VersionCreation', appId: buildParams.hockeyAppId]
+               ]],
+              debugMode: false, failGracefully: true
+        ])
+      }
    }
    if (isPullRequest()) stage('notify') {
       def links = hockeyInstallationLinks(currentBuild.rawBuild.getActions(hockeyapp.HockeyappBuildAction.class))

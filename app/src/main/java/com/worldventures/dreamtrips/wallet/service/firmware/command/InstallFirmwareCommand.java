@@ -1,4 +1,4 @@
-package com.worldventures.dreamtrips.wallet.service.command.firmware;
+package com.worldventures.dreamtrips.wallet.service.firmware.command;
 
 import com.worldventures.dreamtrips.core.janet.dagger.InjectableAction;
 import com.worldventures.dreamtrips.wallet.domain.entity.FirmwareUpdateData;
@@ -40,9 +40,6 @@ public class InstallFirmwareCommand extends Command<FirmwareUpdateData> implemen
    private LoadFirmwareFilesCommand loadFirmwareFilesCommand;
    private ActionPipe<LoadFirmwareFilesCommand> loadFirmwareFilesCommandActionPipe;
 
-   public InstallFirmwareCommand() {
-   }
-
    @Override
    protected void run(CommandCallback<FirmwareUpdateData> callback) throws Throwable {
       loadFirmwareFilesCommandActionPipe = janet.createPipe(LoadFirmwareFilesCommand.class);
@@ -71,7 +68,10 @@ public class InstallFirmwareCommand extends Command<FirmwareUpdateData> implemen
    private Observable<ConnectionType> connectSmartCard(String scId) {
       return janet.createPipe(ConnectAction.class)
             .createObservableResult(new ConnectAction(ImmutableConnectionParams.of(Integer.parseInt(scId))))
-            .map(connectAction -> connectAction.type);
+            .map(connectAction -> connectAction.type)
+            // hotfix for first Disconnect event from smart card
+            .retryWhen(observable -> janet.createPipe(ConnectAction.class)
+                  .createObservableResult(new ConnectAction(ImmutableConnectionParams.of(Integer.parseInt(scId)))));
    }
 
    private Observable<Void> enableLockUnlockDevice(boolean enable) {

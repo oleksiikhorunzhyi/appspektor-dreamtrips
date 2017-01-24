@@ -1,4 +1,4 @@
-package com.worldventures.dreamtrips.wallet.service.command.firmware;
+package com.worldventures.dreamtrips.wallet.service.firmware.command;
 
 import com.worldventures.dreamtrips.api.smart_card.firmware.model.FirmwareVersions;
 import com.worldventures.dreamtrips.core.janet.dagger.InjectableAction;
@@ -23,7 +23,6 @@ import timber.log.Timber;
 
 import static com.worldventures.dreamtrips.core.janet.JanetModule.JANET_WALLET;
 import static com.worldventures.dreamtrips.wallet.util.SCFirmwareUtils.isNewFirmwareAvailable;
-import static com.worldventures.dreamtrips.wallet.util.SCFirmwareUtils.isNewFirmwareAvailableForCharger;
 
 @CommandAction
 public class LoadFirmwareFilesCommand extends Command<Void> implements InjectableAction {
@@ -89,10 +88,10 @@ public class LoadFirmwareFilesCommand extends Command<Void> implements Injectabl
 
    private Observable<UnzipFirmwareCommand.FirmwareBundle> loadExternalAtmelFirmware(UnzipFirmwareCommand.FirmwareBundle fileBundle) {
       notifyNewInstallStep();
-      if (isNewFirmwareAvailableForCharger(currentFirmware.externalAtmelVersion(), availableFirmwareVersions.puckAtmelVerstion())) {
+      if (isNewFirmwareAvailable(currentFirmware.externalAtmelVersion(), availableFirmwareVersions.puckAtmelVerstion())) {
          return loadPuckAtmelFirmwareCommandActionPipe
-               .createObservableResult(new LoadPuckAtmelFirmwareCommand(fileBundle.puckAtmel(), availableFirmwareVersions
-                     .puckAtmelVerstion()))
+               .createObservableResult(
+                     new LoadPuckAtmelFirmwareCommand(fileBundle.puckAtmel(), availableFirmwareVersions.puckAtmelVerstion()))
                .map(command -> fileBundle);
       } else {
          return Observable.just(fileBundle);
@@ -103,7 +102,8 @@ public class LoadFirmwareFilesCommand extends Command<Void> implements Injectabl
       notifyNewInstallStep();
       if (isNewFirmwareAvailable(currentFirmware.internalAtmelVersion(), availableFirmwareVersions.atmelVersion())) {
          return loadAppAtmelFirmwareCommandActionPipe
-               .createObservableResult(new LoadAppAtmelFirmwareCommand(fileBundle.appAtmel(), availableFirmwareVersions.atmelVersion()))
+               .createObservableResult(
+                     new LoadAppAtmelFirmwareCommand(fileBundle.appAtmel(), availableFirmwareVersions.atmelVersion()))
                .map(command -> fileBundle);
       } else {
          return Observable.just(fileBundle);
@@ -114,8 +114,8 @@ public class LoadFirmwareFilesCommand extends Command<Void> implements Injectabl
       notifyNewInstallStep();
       if (dfuMode || isNewFirmwareAvailable(currentFirmware.nrfBootloaderVersion(), availableFirmwareVersions.bootloaderNordicVersion())) {
          return loadNordicFirmwareCommandActionPipe
-               .createObservableResult(new LoadNordicFirmwareCommand(fileBundle.booloaderNordic(),
-                     availableFirmwareVersions.bootloaderNordicVersion(), true))
+               .createObservableResult(
+                     new LoadNordicFirmwareCommand(fileBundle.booloaderNordic(), availableFirmwareVersions.bootloaderNordicVersion(), true))
                .flatMap(loadNordicFirmwareCommand -> janet.createPipe(ConnectAction.class) // waiting for restart to DFU mode
                      .observeSuccessWithReplay()
                      .map(connectAction -> connectAction.type)
@@ -134,8 +134,8 @@ public class LoadFirmwareFilesCommand extends Command<Void> implements Injectabl
       if (dfuMode || isNewFirmwareAvailable(currentFirmware.nordicAppVersion(), availableFirmwareVersions.nordicVersion())
             || isNewFirmwareAvailable(currentFirmware.nrfBootloaderVersion(), availableFirmwareVersions.bootloaderNordicVersion())) {
          return loadNordicFirmwareCommandActionPipe
-               .createObservableResult(new LoadNordicFirmwareCommand(fileBundle.appNordic(),
-                     availableFirmwareVersions.nordicVersion(), false))
+               .createObservableResult(
+                     new LoadNordicFirmwareCommand(fileBundle.appNordic(), availableFirmwareVersions.nordicVersion(), false))
                .map(command -> fileBundle);
       } else {
          return Observable.just(fileBundle);

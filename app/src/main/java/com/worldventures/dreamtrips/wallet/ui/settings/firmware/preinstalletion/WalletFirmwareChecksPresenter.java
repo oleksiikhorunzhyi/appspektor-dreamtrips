@@ -12,7 +12,7 @@ import com.worldventures.dreamtrips.wallet.analytics.WalletAnalyticsCommand;
 import com.worldventures.dreamtrips.wallet.service.FirmwareInteractor;
 import com.worldventures.dreamtrips.wallet.service.SmartCardInteractor;
 import com.worldventures.dreamtrips.wallet.service.WalletBluetoothService;
-import com.worldventures.dreamtrips.wallet.service.command.firmware.PreInstallationCheckCommand;
+import com.worldventures.dreamtrips.wallet.service.firmware.command.PreInstallationCheckCommand;
 import com.worldventures.dreamtrips.wallet.service.firmware.SCFirmwareFacade;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletPresenter;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.WalletScreen;

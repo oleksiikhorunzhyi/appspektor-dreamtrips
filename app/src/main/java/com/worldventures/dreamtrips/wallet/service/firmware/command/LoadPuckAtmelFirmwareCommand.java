@@ -1,4 +1,4 @@
-package com.worldventures.dreamtrips.wallet.service.command.firmware;
+package com.worldventures.dreamtrips.wallet.service.firmware.command;
 
 import io.techery.janet.command.annotations.CommandAction;
 import io.techery.janet.smartcard.action.support.UpgradeExtAtmelFirmwareAction;

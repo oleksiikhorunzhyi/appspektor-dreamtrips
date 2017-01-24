@@ -1,4 +1,4 @@
-package com.worldventures.dreamtrips.wallet.service.command.firmware;
+package com.worldventures.dreamtrips.wallet.service.firmware.command;
 
 import com.worldventures.dreamtrips.core.janet.JanetModule;
 import com.worldventures.dreamtrips.core.janet.dagger.InjectableAction;
@@ -24,7 +24,7 @@ import rx.Observable;
 
 import static com.worldventures.dreamtrips.wallet.util.SCFirmwareUtils.SUPPORTED_CHARGER_ACTION_VERSION_FW;
 import static com.worldventures.dreamtrips.wallet.util.SCFirmwareUtils.firmwareStringToInt;
-import static com.worldventures.dreamtrips.wallet.util.SCFirmwareUtils.isNewFirmwareAvailableForCharger;
+import static com.worldventures.dreamtrips.wallet.util.SCFirmwareUtils.isNewFirmwareAvailable;
 import static java.lang.Integer.parseInt;
 
 @CommandAction
@@ -56,7 +56,7 @@ public class PreInstallationCheckCommand extends Command<PreInstallationCheckCom
       boolean smartCardConnected = bluetoothEnabled &&
             (connectionType == ConnectionType.APP || connectionType == ConnectionType.DFU);
       boolean smartCardCharged = smartCardConnected && batteryLevel >= MIN_BATTERY_LEVEL;
-      boolean smartCardOnDeviceRequired = isNewFirmwareAvailableForCharger(
+      boolean smartCardOnDeviceRequired = isNewFirmwareAvailable(
             firmwareUpdateData.currentFirmwareVersion().externalAtmelVersion(),
             firmwareUpdateData.firmwareInfo().firmwareVersions().puckAtmelVerstion());
 

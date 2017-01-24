@@ -12,7 +12,7 @@ import com.worldventures.dreamtrips.wallet.service.command.FetchFirmwareVersionC
 import com.worldventures.dreamtrips.wallet.service.command.SetLockStateCommand;
 import com.worldventures.dreamtrips.wallet.service.command.SyncCardsCommand;
 import com.worldventures.dreamtrips.wallet.service.command.UpdateBankCardCommand;
-import com.worldventures.dreamtrips.wallet.service.command.firmware.LoadFirmwareFilesCommand;
+import com.worldventures.dreamtrips.wallet.service.firmware.command.LoadFirmwareFilesCommand;
 
 import java.util.concurrent.TimeUnit;
 

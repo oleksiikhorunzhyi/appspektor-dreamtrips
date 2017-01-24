@@ -1,8 +1,8 @@
 package com.worldventures.dreamtrips.wallet.service;
 
-import com.worldventures.dreamtrips.wallet.service.command.firmware.FirmwareClearFilesCommand;
-import com.worldventures.dreamtrips.wallet.service.command.firmware.InstallFirmwareCommand;
-import com.worldventures.dreamtrips.wallet.service.command.firmware.PreInstallationCheckCommand;
+import com.worldventures.dreamtrips.wallet.service.firmware.command.FirmwareClearFilesCommand;
+import com.worldventures.dreamtrips.wallet.service.firmware.command.InstallFirmwareCommand;
+import com.worldventures.dreamtrips.wallet.service.firmware.command.PreInstallationCheckCommand;
 import com.worldventures.dreamtrips.wallet.service.command.http.FetchFirmwareInfoCommand;
 import com.worldventures.dreamtrips.wallet.service.firmware.command.ConnectForFirmwareUpdate;
 import com.worldventures.dreamtrips.wallet.service.firmware.command.DownloadFirmwareCommand;

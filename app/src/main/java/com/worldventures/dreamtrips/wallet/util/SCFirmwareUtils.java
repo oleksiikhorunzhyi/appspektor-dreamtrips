@@ -3,7 +3,6 @@ package com.worldventures.dreamtrips.wallet.util;
 import android.util.Log;
 
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCardFirmware;
-import com.worldventures.dreamtrips.wallet.service.command.firmware.PreInstallationCheckCommand;
 
 import org.jetbrains.annotations.Nullable;
 
@@ -20,11 +19,13 @@ public final class SCFirmwareUtils {
    }
 
    public static boolean isNewFirmwareAvailable(String currentVersion, String availableVersion) {
-      return !currentVersion.equalsIgnoreCase(availableVersion);
+      return currentVersion.isEmpty() ||
+            (!UNKNOW_VERSION.equals(currentVersion) && !currentVersion.equalsIgnoreCase(availableVersion));
    }
 
+   @Deprecated
    public static boolean isNewFirmwareAvailableForCharger(String currentVersion, String availableVersion) {
-      return !UNKNOW_VERSION.equals(currentVersion) && !currentVersion.equalsIgnoreCase(availableVersion);
+      return isNewFirmwareAvailable(currentVersion, availableVersion);
    }
 
    public static int firmwareStringToInt(String firmwareVersion) {

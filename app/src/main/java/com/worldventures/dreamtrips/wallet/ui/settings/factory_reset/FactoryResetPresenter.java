@@ -15,6 +15,8 @@ import com.worldventures.dreamtrips.wallet.ui.settings.factory_reset_success.Fac
 
 import javax.inject.Inject;
 
+import io.techery.janet.smartcard.action.lock.LockDeviceAction;
+
 public class FactoryResetPresenter extends WalletPresenter<FactoryResetPresenter.Screen, Parcelable> {
 
    @Inject FactoryResetInteractor factoryResetInteractor;
@@ -41,6 +43,13 @@ public class FactoryResetPresenter extends WalletPresenter<FactoryResetPresenter
             );
 
       factoryResetInteractor.factoryResetCommandActionPipe().send(new FactoryResetCommand(true));
+   }
+
+   @Override
+   public void detachView(boolean retainInstance) {
+      super.detachView(retainInstance);
+      factoryResetInteractor.factoryResetCommandActionPipe().cancelLatest();
+      factoryResetInteractor.lockDevicePipe().send(new LockDeviceAction(false));
    }
 
    public void goBack() {

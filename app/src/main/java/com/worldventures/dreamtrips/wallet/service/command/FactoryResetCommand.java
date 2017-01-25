@@ -17,6 +17,8 @@ import io.techery.janet.Janet;
 import io.techery.janet.command.annotations.CommandAction;
 import rx.Observable;
 import rx.schedulers.Schedulers;
+import rx.subjects.PublishSubject;
+import timber.log.Timber;
 
 import static com.worldventures.dreamtrips.core.janet.JanetModule.JANET_WALLET;
 
@@ -29,10 +31,13 @@ public class FactoryResetCommand extends Command<Void> implements InjectableActi
    private ActionPipe<ResetSmartCardCommand> resetSmartCardPipe;
    private ActionPipe<ConfirmResetCommand> confirmResetPipe;
 
-   private boolean withEnterPin = true;
+
+   private final PublishSubject<Void> resetCommandPublishSubject;
+   private final boolean withEnterPin;
 
    public FactoryResetCommand(boolean withEnterPin) {
       this.withEnterPin = withEnterPin;
+      this.resetCommandPublishSubject = PublishSubject.create();
    }
 
    @Override
@@ -66,6 +71,12 @@ public class FactoryResetCommand extends Command<Void> implements InjectableActi
             .observeSuccess()
             .filter(activeSmartCardCommand -> !activeSmartCardCommand.getResult().lock())
             .take(1)
+            .takeUntil(resetCommandPublishSubject)
             .delay(5000, TimeUnit.MILLISECONDS);
+   }
+
+   @Override
+   protected void cancel() {
+      resetCommandPublishSubject.onNext(null);
    }
 }

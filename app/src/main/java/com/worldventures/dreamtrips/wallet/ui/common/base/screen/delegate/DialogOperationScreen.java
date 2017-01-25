@@ -19,9 +19,11 @@ public class DialogOperationScreen implements OperationScreen<Dialog> {
 
    private Dialog errorDialog;
    private Dialog progressDialog;
+   private CancelStrategy cancelStrategy;
 
    public DialogOperationScreen(@NonNull View view) {
       this.viewRef = new WeakReference<>(view);
+      this.cancelStrategy = new SimpleCancelStrategy();
 
       view.addOnAttachStateChangeListener(new View.OnAttachStateChangeListener() {
          @Override
@@ -43,7 +45,8 @@ public class DialogOperationScreen implements OperationScreen<Dialog> {
       progressDialog = new MaterialDialog.Builder(context())
             .content(text == null? viewRef.get().getContext().getString(R.string.loading) : text)
             .progress(true, 0)
-            .cancelable(false)
+            .cancelable(cancelStrategy.isCancellable())
+            .cancelListener(cancelStrategy.getCancelListener())
             .build();
 
       progressDialog.show();
@@ -90,5 +93,9 @@ public class DialogOperationScreen implements OperationScreen<Dialog> {
       }
 
       return v;
+   }
+
+   public void setCancelStrategy(CancelStrategy cancelStrategy) {
+      this.cancelStrategy = cancelStrategy;
    }
 }

@@ -106,7 +106,7 @@ public class WalletInstallFirmwarePresenter extends WalletPresenter<WalletInstal
    private void executeCombinedDataAndSendAnalytics(FirmwareUpdateData firmwareUpdateData, boolean retry) {
       final RetryInstallUpdateAction retryInstallUpdateAction = new RetryInstallUpdateAction(
             firmwareUpdateData.smartCardId(),
-            firmwareUpdateData.currentFirmwareVersion().firmwareVersion(),
+            firmwareUpdateData.currentFirmwareVersion().nordicAppVersion(),
             firmwareUpdateData.firmwareInfo().firmwareVersion(),
             retry);
 

@@ -72,7 +72,7 @@ public class WalletNewFirmwareAvailablePresenter extends WalletPresenter<WalletN
                   new ViewSdkUpdateAction(
                         firmwareUpdateData.smartCardId(),
                         firmwareInfo.firmwareVersion(),
-                        firmwareUpdateData.currentFirmwareVersion().firmwareVersion(),
+                        firmwareUpdateData.currentFirmwareVersion().nordicAppVersion(),
                         !firmwareInfo.isCompatible())
             ));
    }

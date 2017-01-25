@@ -7,7 +7,7 @@ import org.jetbrains.annotations.Nullable;
 public interface SmartCardFirmware {
 
    @Nullable
-   String firmwareVersion();
+   String firmwareBundleVersion();
 
    String nordicAppVersion();
 

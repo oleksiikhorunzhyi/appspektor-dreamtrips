@@ -4,7 +4,7 @@ import com.worldventures.dreamtrips.wallet.domain.entity.SmartCardFirmware
 
 class TestFirmware : SmartCardFirmware {
 
-   override fun firmwareVersion() = "1.0.0-test"
+   override fun firmwareBundleVersion() = null
 
    override fun nordicAppVersion() = "1.0.0-test"
 

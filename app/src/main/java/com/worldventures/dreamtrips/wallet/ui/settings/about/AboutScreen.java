@@ -70,7 +70,7 @@ public class AboutScreen extends WalletLinearLayout<AboutPresenter.Screen, About
    public void onProvideSmartCard(final SmartCardFirmware smartCardFirmware, final String smartCardId, final SmartCardUser user) {
       tvUserName.setText(user.fullName());
       tvSmartCardId.setText(smartCardId);
-      tvNordicFWVersion.setText(smartCardFirmware.firmwareVersion());
+      tvNordicFWVersion.setText(smartCardFirmware.nordicAppVersion());
       tvAtmelCardFWVersion.setText(smartCardFirmware.internalAtmelVersion());
       tvBootLoaderFWVersion.setText(smartCardFirmware.nrfBootloaderVersion());
       tvAtmelChargerFWVersion.setText(smartCardFirmware.externalAtmelVersion());

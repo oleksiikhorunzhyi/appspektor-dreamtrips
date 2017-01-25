@@ -395,7 +395,6 @@ public class TrackingHelper {
    public static final String ATTRIBUTE_SHARE = "share";
    public static final String ATTRIBUTE_DOWNLOAD = "download";
    public static final String ATTRIBUTE_MARK_AS_DONE = "mark_as_done";
-   public static final String ATTRIBUTE_REASON = "feedbackreason";
    public static final String ATTRIBUTE_TERMS = "optinoptout";
    public static final String ATTRIBUTE_COMPLETE = "complete";
    public static final String ATTRIBUTE_FAVORITE = "favorite";
@@ -641,12 +640,6 @@ public class TrackingHelper {
       Map data = new HashMap<>();
       data.put(actionTab, "1");
       trackers.get(KEY_ADOBE_TRACKER).trackEvent(null, ACTION_MEMBER_IMAGES, data);
-   }
-
-   public static void sendFeedback(int reason) {
-      Map data = new HashMap<>();
-      data.put(ATTRIBUTE_REASON, String.valueOf(reason));
-      trackers.get(KEY_ADOBE_TRACKER).trackEvent(null, ACTION_FEEDBACK, data);
    }
 
    public static void termsConditionsAction(boolean accepted) {

@@ -2,9 +2,13 @@ package com.worldventures.dreamtrips.wallet.service.firmware.command;
 
 import com.worldventures.dreamtrips.core.janet.dagger.InjectableAction;
 import com.worldventures.dreamtrips.wallet.domain.entity.FirmwareUpdateData;
+import com.worldventures.dreamtrips.wallet.domain.entity.ImmutableSmartCard;
+import com.worldventures.dreamtrips.wallet.domain.entity.ImmutableSmartCardFirmware;
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCardFirmware;
 import com.worldventures.dreamtrips.wallet.domain.storage.TemporaryStorage;
 import com.worldventures.dreamtrips.wallet.service.FirmwareInteractor;
+import com.worldventures.dreamtrips.wallet.service.SmartCardInteractor;
+import com.worldventures.dreamtrips.wallet.service.command.ActiveSmartCardCommand;
 import com.worldventures.dreamtrips.wallet.service.firmware.FirmwareRepository;
 
 import javax.inject.Inject;
@@ -34,6 +38,7 @@ public class InstallFirmwareCommand extends Command<FirmwareUpdateData> implemen
    @Inject @Named(JANET_WALLET) Janet janet;
    @Inject FirmwareInteractor firmwareInteractor;
    @Inject FirmwareRepository firmwareRepository;
+   @Inject SmartCardInteractor smartCardInteractor;
 
    @Inject TemporaryStorage temporaryStorage;
 
@@ -47,6 +52,7 @@ public class InstallFirmwareCommand extends Command<FirmwareUpdateData> implemen
          throw new IllegalStateException("FirmwareUpdateData does not exist");
       }
       prepareCardAndInstallFirmware(callback)
+            .flatMap(aVoid -> addBundleVersion())
             .flatMap(aVoid -> clearFirmwareUpdateCache())
             .subscribe(callback::onSuccess, callback::onFail);
    }
@@ -107,6 +113,23 @@ public class InstallFirmwareCommand extends Command<FirmwareUpdateData> implemen
       return firmwareInteractor.clearFirmwareFilesPipe()
             .createObservableResult(new FirmwareClearFilesCommand(data.firmwareFile().getParent()))
             .map(command -> data);
+   }
+
+   private Observable<Void> addBundleVersion() {
+      final FirmwareUpdateData data = firmwareRepository.getFirmwareUpdateData();
+      return smartCardInteractor.activeSmartCardPipe()
+            .createObservableResult(new ActiveSmartCardCommand(smartCard ->
+                  ImmutableSmartCard.builder()
+                        .from(smartCard)
+                        .firmwareVersion(
+                              ImmutableSmartCardFirmware.builder()
+                                    .from(smartCard.firmwareVersion())
+                                    .firmwareBundleVersion(data.firmwareInfo().firmwareVersion())
+                                    .build()
+                        )
+                        .build()))
+            .onErrorReturn(throwable -> null)
+            .map(command -> null);
    }
 
    public int getCurrentStep() {

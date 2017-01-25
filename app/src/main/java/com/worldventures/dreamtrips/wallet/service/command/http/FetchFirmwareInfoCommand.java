@@ -66,6 +66,6 @@ public class FetchFirmwareInfoCommand extends Command<FirmwareUpdateData> implem
       // in very first time user doesn't have installed firmware version, because this information are received only a from server.
       // so there was a decision to use a version of nordicApp firmware instead for performing request to check if there is a
       // new available update for a smart card in the server.
-      return firmwareVersion.firmwareVersion() == null ? firmwareVersion.nordicAppVersion() : firmwareVersion.firmwareVersion();
+      return firmwareVersion.firmwareBundleVersion() == null ? firmwareVersion.nordicAppVersion() : firmwareVersion.firmwareBundleVersion();
    }
 }

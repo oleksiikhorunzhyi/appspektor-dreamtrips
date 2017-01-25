@@ -40,7 +40,7 @@ public class LoadNordicFirmwareCommand extends BaseLoadFirmwareCommand {
    SmartCardFirmware updatedSmartCardFirmware(SmartCardFirmware currentSmartCardFirmware) {
       return bootloaderFile ?
             ImmutableSmartCardFirmware.copyOf(currentSmartCardFirmware).withNrfBootloaderVersion(firmwareVersion) :
-            ImmutableSmartCardFirmware.copyOf(currentSmartCardFirmware).withFirmwareVersion(firmwareVersion);
+            ImmutableSmartCardFirmware.copyOf(currentSmartCardFirmware).withNordicAppVersion(firmwareVersion);
    }
 
 }

@@ -1,5 +1,6 @@
 package com.worldventures.dreamtrips.wallet.service.command.reset;
 
+import com.worldventures.dreamtrips.api.api_common.BaseHttpAction;
 import com.worldventures.dreamtrips.api.smart_card.user_association.DisassociateCardUserHttpAction;
 import com.worldventures.dreamtrips.core.janet.dagger.InjectableAction;
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCard;
@@ -10,6 +11,7 @@ import javax.inject.Named;
 import io.techery.janet.Command;
 import io.techery.janet.Janet;
 import io.techery.janet.command.annotations.CommandAction;
+import io.techery.janet.helper.JanetActionException;
 import io.techery.janet.smartcard.action.settings.EnableLockUnlockDeviceAction;
 import io.techery.janet.smartcard.action.support.DisconnectAction;
 import io.techery.janet.smartcard.action.user.UnAssignUserAction;
@@ -58,9 +60,19 @@ public class ResetSmartCardCommand extends Command<Void> implements InjectableAc
             .createObservableResult(new DisconnectAction());
    }
 
-   private Observable<DisassociateCardUserHttpAction> disassociateCardUserServer(SmartCard smartCard) {
+   private Observable<Void> disassociateCardUserServer(SmartCard smartCard) {
       return apiLibJanet.createPipe(DisassociateCardUserHttpAction.class, Schedulers.io())
-            .createObservableResult(new DisassociateCardUserHttpAction(Long.parseLong(smartCard.smartCardId()), smartCard.deviceId()));
+            .createObservableResult(
+                  new DisassociateCardUserHttpAction(Long.parseLong(smartCard.smartCardId()), smartCard.deviceId()))
+            .map(disassociateCardUserHttpAction -> (Void) null)
+            .onErrorResumeNext(throwable -> {
+               JanetActionException actionException = (JanetActionException) throwable;
+               if (((BaseHttpAction) actionException.getAction()).statusCode() == 404) {
+                  return Observable.just(null);
+               } else {
+                  return Observable.error(throwable);
+               }
+            });
    }
 
    private Observable<UnAssignUserAction> disassociateCardUser() {

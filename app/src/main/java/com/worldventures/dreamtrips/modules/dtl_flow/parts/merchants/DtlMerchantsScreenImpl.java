@@ -16,10 +16,13 @@ import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.flow.activity.FlowActivity;
 import com.worldventures.dreamtrips.core.selectable.SingleSelectionManager;
 import com.worldventures.dreamtrips.core.utils.ViewUtils;
+import com.worldventures.dreamtrips.modules.common.view.adapter.item.SelectableHeaderItem;
 import com.worldventures.dreamtrips.modules.common.view.custom.EmptyRecyclerView;
 import com.worldventures.dreamtrips.modules.dtl.model.location.DtlLocation;
+import com.worldventures.dreamtrips.modules.dtl.model.merchant.Attribute;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.ImmutableThinMerchant;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.ThinMerchant;
+import com.worldventures.dreamtrips.modules.dtl.model.merchant.filter.FilterData;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.offer.Offer;
 import com.worldventures.dreamtrips.modules.dtl.view.cell.MerchantsErrorCell;
 import com.worldventures.dreamtrips.modules.dtl.view.cell.ProgressCell;
@@ -52,7 +55,7 @@ public class DtlMerchantsScreenImpl extends DtlLayout<DtlMerchantsScreen, DtlMer
    private static final String RESTAURANT = "restaurant";
    private static final String BAR = "bar";
    private static final String ENTERTAINMENT = "entertainment";
-   private static final String SPAS = "spas";
+   private static final String SPAS = "spa";
 
    @Optional @InjectView(R.id.expandableDtlToolbar) ExpandableDtlToolbar dtlToolbar;
    @InjectView(R.id.lv_items) EmptyRecyclerView recyclerView;
@@ -202,7 +205,8 @@ public class DtlMerchantsScreenImpl extends DtlLayout<DtlMerchantsScreen, DtlMer
          filterEntertainment.setSelected(false);
          filterSpa.setSelected(false);
          getPresenter().onLoadMerchantsType(merchantType);
-         updateFiltersView();
+         updateFiltersView(R.string.dtlt_search_hint);
+         getPresenter().loadAmenities(merchantType);
       }
    }
 
@@ -216,7 +220,8 @@ public class DtlMerchantsScreenImpl extends DtlLayout<DtlMerchantsScreen, DtlMer
          filterEntertainment.setSelected(true);
          filterSpa.setSelected(false);
          getPresenter().onLoadMerchantsType(merchantType);
-         updateFiltersView();
+         updateFiltersView(R.string.filter_merchant_entertainment);
+         getPresenter().loadAmenities(merchantType);
       }
    }
 
@@ -230,25 +235,30 @@ public class DtlMerchantsScreenImpl extends DtlLayout<DtlMerchantsScreen, DtlMer
          filterEntertainment.setSelected(false);
          filterSpa.setSelected(true);
          getPresenter().onLoadMerchantsType(merchantType);
-         updateFiltersView();
+         updateFiltersView(R.string.filter_merchant_spa);
+         getPresenter().loadAmenities(merchantType);
       }
    }
 
-   @Override
-   public void updateMerchantType(List<String> type) {
-      if (type != null && type.size() > 1) {
-         if (type != null && type.get(0).equals(RESTAURANT) && type.get(1).equals(BAR)) {
-            filterFood.setSelected(true);
-         }
-      } else {
-         if (type != null && type.get(0).equals(ENTERTAINMENT)) {
-            filterEntertainment.setSelected(true);
-         } else if (type != null && type.get(0).equals(SPAS)) {
-            filterSpa.setSelected(true);
-         }
-      }
-      updateFiltersView();
-   }
+    @Override
+    public void updateMerchantType(List<String> type) {
+        int idResource = 0;
+        if (type != null && type.size() > 1) {
+            if (type != null && type.get(0).equals(RESTAURANT) && type.get(1).equals(BAR)) {
+                filterFood.setSelected(true);
+                idResource = R.string.dtlt_search_hint;
+            }
+        } else {
+            if (type != null && type.get(0).equals(ENTERTAINMENT)) {
+                filterEntertainment.setSelected(true);
+                idResource = R.string.filter_merchant_entertainment;
+            } else if (type != null && type.get(0).equals(SPAS)) {
+                filterSpa.setSelected(true);
+                idResource = R.string.filter_merchant_spa;
+            }
+        }
+        updateFiltersView(idResource);
+    }
 
    private void showhMerchantsError() {
       if (!delegate.isItemsPresent()) errorView.setVisibility(VISIBLE);
@@ -405,7 +415,7 @@ public class DtlMerchantsScreenImpl extends DtlLayout<DtlMerchantsScreen, DtlMer
       super(context, attrs);
    }
 
-   private void updateFiltersView() {
+   private void updateFiltersView(int stringResource) {
 
       ViewUtils.setCompatDrawable(backgroundFood, filterFood.isSelected() ?
             R.drawable.circle_merchant_button_selected : R.drawable.circle_merchant_button);
@@ -415,5 +425,9 @@ public class DtlMerchantsScreenImpl extends DtlLayout<DtlMerchantsScreen, DtlMer
 
       ViewUtils.setCompatDrawable(backgroundSpa, filterSpa.isSelected() ?
             R.drawable.circle_merchant_button_selected : R.drawable.circle_merchant_button);
+
+      if (stringResource != 0 && dtlToolbar != null) {
+         dtlToolbar.setSearchCaption(ViewUtils.getStringById(getContext(), stringResource));
+      }
    }
 }

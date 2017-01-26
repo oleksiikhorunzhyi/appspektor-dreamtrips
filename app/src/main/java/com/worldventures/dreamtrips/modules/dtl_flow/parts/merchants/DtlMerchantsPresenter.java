@@ -34,4 +34,6 @@ public interface DtlMerchantsPresenter extends DtlPresenter<DtlMerchantsScreen, 
    void offersOnlySwitched(boolean isOffersOnly);
 
    void onLoadMerchantsType(List<String> merchantType);
+
+   void loadAmenities(List<String> merchantType);
 }

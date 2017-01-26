@@ -5,7 +5,11 @@ import com.worldventures.dreamtrips.modules.dtl.service.FilterDataInteractor;
 import com.worldventures.dreamtrips.modules.dtl.service.action.AttributesAction;
 import com.worldventures.dreamtrips.modules.dtl.service.action.FilterDataAction;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.inject.Inject;
+import javax.xml.transform.stream.StreamResult;
 
 import io.techery.janet.ActionState;
 import io.techery.janet.helper.ActionStateSubscriber;

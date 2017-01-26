@@ -8,7 +8,7 @@ import android.util.AttributeSet;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletLinearLayout;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.OperationScreen;
-import com.worldventures.dreamtrips.wallet.ui.common.base.screen.delegate.CancelAvailableStrategy;
+import com.worldventures.dreamtrips.wallet.ui.common.base.screen.delegate.ExplicitCancelStrategy;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.delegate.DialogOperationScreen;
 
 import butterknife.InjectView;
@@ -42,7 +42,7 @@ public class FactoryResetScreen extends WalletLinearLayout<FactoryResetPresenter
    @Override
    public OperationScreen provideOperationDelegate() {
       if (dialogOperationScreen == null) dialogOperationScreen = new DialogOperationScreen(this);
-      dialogOperationScreen.setCancelStrategy(new CancelAvailableStrategy(dialog -> getPresenter().goBack()));
+      dialogOperationScreen.setCancelStrategy(new ExplicitCancelStrategy(dialog -> getPresenter().goBack()));
       return dialogOperationScreen;
    }
 

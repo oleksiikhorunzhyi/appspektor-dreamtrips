@@ -9,6 +9,11 @@ public class SimpleCancelStrategy implements CancelStrategy {
    }
 
    @Override
+   public boolean isCancellableOutside() {
+      return false;
+   }
+
+   @Override
    public DialogInterface.OnCancelListener getCancelListener() {
       return null;
    }

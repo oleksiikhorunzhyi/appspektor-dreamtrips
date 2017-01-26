@@ -216,8 +216,8 @@ public class DtlMerchantsPresenterImpl extends DtlPresenterImpl<DtlMerchantsScre
 
    @Override
    public void loadAmenities(List<String> merchantType) {
-      filterDataInteractor.resetAmenities();
       attributesInteractor.requestAmenities(merchantType);
+      filterDataInteractor.resetAmenities();
    }
 
    @Override

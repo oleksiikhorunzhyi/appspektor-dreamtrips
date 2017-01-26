@@ -69,19 +69,23 @@ public class SmartCardSyncManager {
    }
 
    private void connectFetchingFirmwareVersion() {
-      subscriptions.add(interactor.cardInChargerEventPipe().observeSuccess()
-            .filter(cardInChargerEvent -> cardInChargerEvent.inCharger)
-            .compose(new FilterActiveConnectedSmartCard(interactor))
-            .flatMap(smartCard ->
-                  interactor.fetchFirmwareVersionPipe()
-                        .createObservableResult(new FetchFirmwareVersionCommand())
-                        .map(Command::getResult))
-            .flatMap(firmwareVersion ->
-                  interactor.activeSmartCardPipe()
-                        .createObservableResult(new ActiveSmartCardCommand(smartCard ->
-                              ImmutableSmartCard.copyOf(smartCard)
-                                    .withFirmwareVersion(firmwareVersion))))
-            .subscribe());
+      subscriptions.add(
+            interactor.cardInChargerEventPipe()
+                  .observeSuccess()
+                  .filter(cardInChargerEvent -> cardInChargerEvent.inCharger)
+                  .compose(new FilterActiveConnectedSmartCard(interactor))
+                  .flatMap(smartCard ->
+                        interactor.fetchFirmwareVersionPipe()
+                              .createObservable(new FetchFirmwareVersionCommand())
+                              .filter(actionState -> actionState.status == ActionState.Status.SUCCESS)
+                              .map(actionState -> actionState.action.getResult()))
+                  .flatMap(firmwareVersion ->
+                        interactor.activeSmartCardPipe()
+                              .createObservable(new ActiveSmartCardCommand(smartCard ->
+                                    ImmutableSmartCard.copyOf(smartCard)
+                                          .withFirmwareVersion(firmwareVersion))))
+                  .subscribe()
+      );
    }
 
    private void connectSyncDisabling() {

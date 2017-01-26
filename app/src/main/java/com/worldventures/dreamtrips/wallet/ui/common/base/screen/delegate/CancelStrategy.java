@@ -5,5 +5,7 @@ import android.content.DialogInterface;
 public interface CancelStrategy {
    boolean isCancellable();
 
+   boolean isCancellableOutside();
+
    DialogInterface.OnCancelListener getCancelListener();
 }

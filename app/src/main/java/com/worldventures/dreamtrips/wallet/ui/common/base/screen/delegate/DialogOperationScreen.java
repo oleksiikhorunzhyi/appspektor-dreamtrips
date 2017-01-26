@@ -46,6 +46,7 @@ public class DialogOperationScreen implements OperationScreen<Dialog> {
             .content(text == null? viewRef.get().getContext().getString(R.string.loading) : text)
             .progress(true, 0)
             .cancelable(cancelStrategy.isCancellable())
+            .canceledOnTouchOutside(cancelStrategy.isCancellableOutside())
             .cancelListener(cancelStrategy.getCancelListener())
             .build();
 

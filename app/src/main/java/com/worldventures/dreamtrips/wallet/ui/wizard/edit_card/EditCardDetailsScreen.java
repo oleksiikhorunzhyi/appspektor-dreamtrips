@@ -5,8 +5,12 @@ import android.support.annotation.NonNull;
 import android.support.v7.widget.Toolbar;
 import android.util.AttributeSet;
 import android.view.inputmethod.EditorInfo;
+import android.widget.Button;
 import android.widget.EditText;
 
+import com.innahema.collections.query.queriables.Queryable;
+import com.jakewharton.rxbinding.widget.RxTextView;
+import com.trello.rxlifecycle.RxLifecycle;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.wallet.domain.entity.AddressInfo;
 import com.worldventures.dreamtrips.wallet.domain.entity.AddressInfoWithLocale;
@@ -18,6 +22,8 @@ import com.worldventures.dreamtrips.wallet.ui.common.base.screen.delegate.Dialog
 import butterknife.InjectView;
 import butterknife.OnClick;
 import butterknife.OnEditorAction;
+import rx.Observable;
+import rx.android.schedulers.AndroidSchedulers;
 
 public class EditCardDetailsScreen extends WalletLinearLayout<EditCardDetailsPresenter.Screen, EditCardDetailsPresenter, EditCardDetailsPath>
       implements EditCardDetailsPresenter.Screen {
@@ -28,6 +34,7 @@ public class EditCardDetailsScreen extends WalletLinearLayout<EditCardDetailsPre
    @InjectView(R.id.city) EditText cityField;
    @InjectView(R.id.state) EditText stateField;
    @InjectView(R.id.zip) EditText zipField;
+   @InjectView(R.id.confirm_button) Button confirmButton;
 
    private DialogOperationScreen dialogOperationScreen;
 
@@ -50,6 +57,15 @@ public class EditCardDetailsScreen extends WalletLinearLayout<EditCardDetailsPre
       super.onFinishInflate();
       if (isInEditMode()) return;
       toolbar.setNavigationOnClickListener(v -> presenter.goBack());
+
+      Observable.combineLatest(RxTextView.afterTextChangeEvents(address1Field), RxTextView.afterTextChangeEvents(cityField),
+            RxTextView.afterTextChangeEvents(stateField), RxTextView.afterTextChangeEvents(zipField),
+            (addressTextChangeEvent, cityTextChangeEvent, stateTextChangeEvent, zipTextChangeEvent) ->
+                  Queryable.from(addressTextChangeEvent, cityTextChangeEvent, stateTextChangeEvent, zipTextChangeEvent)
+                        .count(event -> event.editable().length() == 0) > 0)
+            .compose(RxLifecycle.bindView(this))
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe(someRequiredFieldIsEmpty -> confirmButton.setEnabled(!someRequiredFieldIsEmpty));
    }
 
    @Override

@@ -1,11 +1,9 @@
 package com.worldventures.dreamtrips.wallet.service.command;
 
-
 import android.text.TextUtils;
 
 import com.innahema.collections.query.queriables.Queryable;
 import com.worldventures.dreamtrips.core.janet.dagger.InjectableAction;
-import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.wallet.domain.entity.card.BankCard;
 import com.worldventures.dreamtrips.wallet.domain.entity.card.Card;
 import com.worldventures.dreamtrips.wallet.service.SmartCardInteractor;
@@ -32,7 +30,6 @@ public class SyncCardsCommand extends Command<Void> implements InjectableAction 
    @Inject SmartCardInteractor interactor;
    @Inject MapperyContext mapperyContext;
    @Inject @Named(JANET_WALLET) Janet janet;
-   @Inject SnappyRepository snappyRepository;
 
    @Override
    protected void run(CommandCallback<Void> callback) throws Throwable {
@@ -87,11 +84,10 @@ public class SyncCardsCommand extends Command<Void> implements InjectableAction 
             });
       //sync default card id
       if (bundle.deviceDefaultCardId != null && bundle.cacheDefaultCardId == null) {
-         operations.add(Observable.fromCallable(() -> {
-            snappyRepository.saveWalletDefaultCardId(bundle.deviceDefaultCardId);
-            interactor.defaultCardIdPipe().send(DefaultCardIdCommand.set(bundle.deviceDefaultCardId));
-            return null;
-         }));
+         operations.add(interactor.defaultCardIdPipe()
+               .createObservableResult(DefaultCardIdCommand.set(bundle.deviceDefaultCardId))
+               .map(command -> null)
+         );
       } else if (bundle.cacheDefaultCardId != null && !bundle.cacheDefaultCardId.equals(bundle.deviceDefaultCardId)) {
          operations.add(interactor.setDefaultCardOnDeviceCommandPipe()
                .createObservableResult(SetDefaultCardOnDeviceCommand.setAsDefault(bundle.cacheDefaultCardId))

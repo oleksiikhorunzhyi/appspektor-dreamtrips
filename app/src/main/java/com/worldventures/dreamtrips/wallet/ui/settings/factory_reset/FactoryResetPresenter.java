@@ -15,6 +15,7 @@ import com.worldventures.dreamtrips.wallet.ui.settings.factory_reset_success.Fac
 
 import javax.inject.Inject;
 
+import io.techery.janet.CancelException;
 import io.techery.janet.smartcard.action.lock.LockDeviceAction;
 
 public class FactoryResetPresenter extends WalletPresenter<FactoryResetPresenter.Screen, Parcelable> {
@@ -38,7 +39,10 @@ public class FactoryResetPresenter extends WalletPresenter<FactoryResetPresenter
             .compose(bindViewIoToMainComposer())
             .subscribe(OperationActionStateSubscriberWrapper.<FactoryResetCommand>forView(getView().provideOperationDelegate())
                   .onSuccess(command -> navigator.single(new FactoryResetSuccessPath()))
-                  .onFail(ErrorHandler.create(getContext(), command -> goBack()))
+                  .onFail(ErrorHandler.<FactoryResetCommand>builder(getContext())
+                        .ignore(CancelException.class)
+                        .defaultAction(command ->  goBack())
+                        .build())
                   .wrap()
             );
 

@@ -40,8 +40,10 @@ import java.util.concurrent.TimeUnit;
 import javax.inject.Inject;
 
 import io.techery.janet.Command;
+import io.techery.janet.helper.ActionStateSubscriber;
 import io.techery.janet.smartcard.action.support.DisconnectAction;
 import rx.Observable;
+import timber.log.Timber;
 
 public class WalletSettingsPresenter extends WalletPresenter<WalletSettingsPresenter.Screen, Parcelable> {
 
@@ -226,11 +228,17 @@ public class WalletSettingsPresenter extends WalletPresenter<WalletSettingsPrese
    }
 
    void resetPin() {
-      smartCardInteractor.activeSmartCardPipe().createObservableResult(new ActiveSmartCardCommand())
-            .map(Command::getResult)
-            .compose(bindViewIoToMainComposer())
-            .subscribe(smartCard ->
-                  navigator.go(new WizardPinSetupPath(smartCard, Action.RESET)));
+      createObservableActiveSmartCard(
+            new ActionStateSubscriber<ActiveSmartCardCommand>()
+                  .onSuccess(command -> {
+                     if (command.getResult().connectionStatus().isConnected()) {
+                        navigator.go(new WizardPinSetupPath(command.getResult(), Action.RESET));
+                     } else {
+                        getView().showSCNonConnectionDialog();
+                     }
+                  })
+                  .onFail((activeSmartCardCommand, throwable) -> Timber.e(throwable, ""))
+      );
    }
 
    void disableDefaultCardTimer() {
@@ -261,7 +269,17 @@ public class WalletSettingsPresenter extends WalletPresenter<WalletSettingsPrese
    }
 
    public void smartCardProfileClick() {
-      navigator.go(new WalletSettingsProfilePath());
+      createObservableActiveSmartCard(
+            new ActionStateSubscriber<ActiveSmartCardCommand>()
+                  .onSuccess(command -> {
+                     if (command.getResult().connectionStatus().isConnected()) {
+                        navigator.go(new WalletSettingsProfilePath());
+                     } else {
+                        getView().showSCNonConnectionDialog();
+                     }
+                  })
+                  .onFail((activeSmartCardCommand, throwable) -> Timber.e(throwable, ""))
+      );
    }
 
    void firmwareUpdatesClick() {
@@ -273,12 +291,39 @@ public class WalletSettingsPresenter extends WalletPresenter<WalletSettingsPrese
    }
 
    void factoryResetClick() {
-      navigator.go(new FactoryResetPath());
+      createObservableActiveSmartCard(
+            new ActionStateSubscriber<ActiveSmartCardCommand>()
+                  .onSuccess(command -> {
+                     if (command.getResult().connectionStatus().isConnected()) {
+                        navigator.go(new FactoryResetPath());
+                     } else {
+                        getView().showSCNonConnectionDialog();
+                     }
+                  })
+                  .onFail((activeSmartCardCommand, throwable) -> Timber.e(throwable, ""))
+      );
+   }
+
+   private void createObservableActiveSmartCard(ActionStateSubscriber<ActiveSmartCardCommand> actionStateSubscriber) {
+      smartCardInteractor.activeSmartCardPipe()
+            .createObservable(new ActiveSmartCardCommand())
+            .compose(bindViewIoToMainComposer())
+            .subscribe(actionStateSubscriber);
    }
 
    void confirmResetSmartCard() {
-      smartCardInteractor.restartSmartCardCommandActionPipe()
-            .send(new RestartSmartCardCommand());
+      createObservableActiveSmartCard(
+            new ActionStateSubscriber<ActiveSmartCardCommand>()
+                  .onSuccess(command -> {
+                     if (command.getResult().connectionStatus().isConnected()) {
+                        smartCardInteractor.restartSmartCardCommandActionPipe()
+                              .send(new RestartSmartCardCommand());
+                     } else {
+                        getView().showSCNonConnectionDialog();
+                     }
+                  })
+                  .onFail((activeSmartCardCommand, throwable) -> Timber.e(throwable, ""))
+      );
    }
 
    void openAboutScreen() {
@@ -322,5 +367,7 @@ public class WalletSettingsPresenter extends WalletPresenter<WalletSettingsPrese
       void showFirmwareBadge();
 
       void testSectionEnabled(boolean enabled);
+
+      void showSCNonConnectionDialog();
    }
 }

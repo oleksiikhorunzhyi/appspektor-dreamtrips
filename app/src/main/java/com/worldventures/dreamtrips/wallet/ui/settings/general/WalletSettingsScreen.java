@@ -261,4 +261,14 @@ public class WalletSettingsScreen extends WalletLinearLayout<WalletSettingsPrese
    public void testSectionEnabled(boolean enabled) {
       settingsSection.setVisibility(enabled ? VISIBLE : GONE);
    }
+
+   @Override
+   public void showSCNonConnectionDialog() {
+      new MaterialDialog.Builder(getContext())
+            .title(R.string.wallet_card_settings_cant_connected)
+            .content(R.string.wallet_card_settings_message_cant_connected)
+            .positiveText(R.string.ok)
+            .build()
+            .show();
+   }
 }

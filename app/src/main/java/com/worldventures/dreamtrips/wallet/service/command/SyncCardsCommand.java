@@ -55,7 +55,7 @@ public class SyncCardsCommand extends Command<Void> implements InjectableAction 
                SyncBundle bundle = new SyncBundle();
                bundle.cacheCards = cacheCards;
                bundle.deviceCards = deviceCards;
-               bundle.deviceDefaultCardId = deviceDefaultCardId > 0 ? String.valueOf(deviceDefaultCardId) : null;
+               bundle.deviceDefaultCardId = deviceDefaultCardId >= 0 ? String.valueOf(deviceDefaultCardId) : null;
                bundle.cacheDefaultCardId = cacheDefaultCardId;
                return bundle;
             }
@@ -89,6 +89,7 @@ public class SyncCardsCommand extends Command<Void> implements InjectableAction 
       if (bundle.deviceDefaultCardId != null && bundle.cacheDefaultCardId == null) {
          operations.add(Observable.fromCallable(() -> {
             snappyRepository.saveWalletDefaultCardId(bundle.deviceDefaultCardId);
+            interactor.defaultCardIdPipe().send(DefaultCardIdCommand.set(bundle.deviceDefaultCardId));
             return null;
          }));
       } else if (bundle.cacheDefaultCardId != null && !bundle.cacheDefaultCardId.equals(bundle.deviceDefaultCardId)) {

@@ -353,5 +353,7 @@
    <string name="wallet_connection_error_message">Make sure your smart card is on and\nBluetooth is enabled on your phone.</string>
    <string name="wallet_connection_error_message_unlock_card">Power on your smart card by sliding your thumb\ntwice across the gold chip on your smart card.</string>
    <string name="wallet_receive_data_error">Card did not load.\nTry swiping again.</string>
+   <string name="wallet_card_settings_cant_connected">Cannot connect to smart card</string>
+   <string name="wallet_card_settings_message_cant_connected">Please make sure your smart card is on and Bluetooth is enabled on your phone.</string>
 
 </resources>

@@ -159,7 +159,7 @@ public class CardDetailsPresenter extends WalletPresenter<CardDetailsPresenter.S
                if (command.getResult().connectionStatus().isConnected()) {
                   getView().showDeleteCardDialog();
                } else {
-                  getView().showConnectionErrorDialog();
+                  getView().showSCNonConnectionDialog();
                }
             }, throwable -> Timber.e(throwable, ""));
    }
@@ -178,7 +178,16 @@ public class CardDetailsPresenter extends WalletPresenter<CardDetailsPresenter.S
    }
 
    void payThisCard() {
-      smartCardInteractor.setPaymentCardActionActionPipe().send(new SetPaymentCardAction(bankCard));
+      smartCardInteractor.activeSmartCardPipe().createObservableResult(new ActiveSmartCardCommand())
+            .map(Command::getResult)
+            .compose(bindViewIoToMainComposer())
+            .subscribe(smartCard -> {
+               if (smartCard.connectionStatus().isConnected()) {
+                  smartCardInteractor.setPaymentCardActionActionPipe().send(new SetPaymentCardAction(bankCard));
+               } else {
+                  getView().showSCNonConnectionDialog();
+               }
+            }, throwable -> Timber.e(throwable, ""));
    }
 
    void onCardIsReadyDialogShown() {
@@ -238,7 +247,7 @@ public class CardDetailsPresenter extends WalletPresenter<CardDetailsPresenter.S
                   executeSetDefaultCard(setDefaultCard);
                } else {
                   getView().setDefaultCardCondition(CardUtils.equals(defaultBankCard, bankCard));
-                  getView().showConnectionErrorDialog();
+                  getView().showSCNonConnectionDialog();
                }
             }, throwable -> Timber.e(throwable, ""));
    }
@@ -265,5 +274,7 @@ public class CardDetailsPresenter extends WalletPresenter<CardDetailsPresenter.S
       Observable<String> getCardNicknameObservable();
 
       String getUpdateNickname();
+
+      void showSCNonConnectionDialog();
    }
 }

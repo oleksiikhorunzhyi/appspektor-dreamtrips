@@ -24,5 +24,4 @@ public class FactoryResetInteractor {
    public ActionPipe<LockDeviceAction> lockDevicePipe() {
       return lockDevicePipe;
    }
-
 }

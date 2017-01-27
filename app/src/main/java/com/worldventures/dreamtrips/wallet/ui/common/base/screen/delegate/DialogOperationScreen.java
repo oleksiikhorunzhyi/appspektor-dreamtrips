@@ -45,7 +45,7 @@ public class DialogOperationScreen implements OperationScreen<Dialog> {
       progressDialog = new MaterialDialog.Builder(context())
             .content(text == null? viewRef.get().getContext().getString(R.string.loading) : text)
             .progress(true, 0)
-            .cancelable(cancelStrategy.isCancellable())
+            .cancelable(cancelStrategy.isCancellable()) //methods ordering matters
             .canceledOnTouchOutside(cancelStrategy.isCancellableOutside())
             .cancelListener(cancelStrategy.getCancelListener())
             .build();
@@ -98,5 +98,14 @@ public class DialogOperationScreen implements OperationScreen<Dialog> {
 
    public void setCancelStrategy(CancelStrategy cancelStrategy) {
       this.cancelStrategy = cancelStrategy;
+   }
+
+   public void updateCancelStrategy(CancelStrategy cancelStrategy) {
+      setCancelStrategy(cancelStrategy);
+      if (progressDialog != null && progressDialog.isShowing()) {
+         progressDialog.setCancelable(cancelStrategy.isCancellable());
+         progressDialog.setCanceledOnTouchOutside(cancelStrategy.isCancellableOutside());
+         progressDialog.setOnCancelListener(cancelStrategy.getCancelListener());
+      }
    }
 }

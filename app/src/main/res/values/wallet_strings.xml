@@ -327,7 +327,7 @@
 
    <!-- Power On -->
    <string name="wallet_wizard_power_on_title">Power On Smart Card</string>
-   <string name="wallet_wizard_power_on_header">Power on your flye\u2122 smart card by sliding your thumb twice across the gold chip on your smart card.</string>
+   <string name="wallet_wizard_power_on_header">Power on your flye\u2122 smart card by pressing and holding on the bottom right corner of the chip.</string>
 
    <!--puck connection screen-->
    <string name="wallet_puck_connection_title">Smart Card Update</string>
@@ -355,5 +355,6 @@
    <string name="wallet_receive_data_error">Card did not load.\nTry swiping again.</string>
    <string name="wallet_card_settings_cant_connected">Cannot connect to smart card</string>
    <string name="wallet_card_settings_message_cant_connected">Please make sure your smart card is on and Bluetooth is enabled on your phone.</string>
+   <string name="wallet_smart_card_enable_instruction">Press and hold chip on smart card to power on.</string>
 
 </resources>

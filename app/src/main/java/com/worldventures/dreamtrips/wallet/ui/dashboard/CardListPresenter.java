@@ -51,6 +51,7 @@ import flow.Flow;
 import io.techery.janet.Command;
 import io.techery.janet.helper.ActionStateToActionTransformer;
 import io.techery.janet.smartcard.exception.NotConnectedException;
+import io.techery.janet.smartcard.exception.WaitingResponseException;
 import rx.Observable;
 import timber.log.Timber;
 
@@ -211,10 +212,6 @@ public class CardListPresenter extends WalletPresenter<CardListPresenter.Screen,
    }
 
    private void observeChanges() {
-      ErrorHandler errorHandler = ErrorHandler.builder(getContext())
-            .ignore(NotConnectedException.class)
-            .build();
-
       Observable.combineLatest(
             smartCardInteractor.cardsListPipe()
                   .observeWithReplay()
@@ -229,20 +226,6 @@ public class CardListPresenter extends WalletPresenter<CardListPresenter.Screen,
             .subscribe(pair -> cardsLoaded(pair.first, pair.second), throwable -> {
             } /*ignore here*/);
 
-      smartCardInteractor.cardsListPipe()
-            .observeWithReplay()
-            .compose(bindViewIoToMainComposer())
-            .subscribe(ErrorActionStateSubscriberWrapper.<CardListCommand>forView(getView().provideOperationDelegate())
-                  .onFail(errorHandler)
-                  .wrap());
-
-      smartCardInteractor.defaultCardIdPipe()
-            .observeWithReplay()
-            .compose(bindViewIoToMainComposer())
-            .subscribe(ErrorActionStateSubscriberWrapper.<DefaultCardIdCommand>forView(getView().provideOperationDelegate())
-                  .onFail(errorHandler)
-                  .wrap());
-
       smartCardInteractor.cardSyncPipe()
             .observeWithReplay()
             .compose(bindViewIoToMainComposer())
@@ -251,8 +234,18 @@ public class CardListPresenter extends WalletPresenter<CardListPresenter.Screen,
                   .onSuccess(syncCardsCommand -> getView().showCardSynchronizationDialog(false))
                   .onFail(throwable -> {
                      getView().showCardSynchronizationDialog(false);
-                     return errorHandler.call(throwable);
+                     return null;
                   })
+                  .wrap());
+
+      smartCardInteractor.cardSyncPipe()
+            .observe()
+            .compose(bindViewIoToMainComposer())
+            .subscribe(ErrorActionStateSubscriberWrapper.<SyncCardsCommand>forView(getView().provideOperationDelegate())
+                  .onFail(ErrorHandler.<SyncCardsCommand>builder(getContext())
+                        .ignore(NotConnectedException.class)
+                        .handle(WaitingResponseException.class, R.string.wallet_smart_card_is_disconnected)
+                        .build())
                   .wrap());
 
    }

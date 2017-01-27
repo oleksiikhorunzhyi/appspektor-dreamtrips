@@ -9,5 +9,5 @@
       android:textAppearance="?android:textAppearanceMedium"
       android:textColor="@color/wallet_smartcard_connection_plank_text_color"
       android:textSize="@dimen/apptentive_text_small"
-      tools:text="@string/wallet_smart_card_is_disconnected"
+      tools:text="@string/wallet_smart_card_enable_instruction"
       />

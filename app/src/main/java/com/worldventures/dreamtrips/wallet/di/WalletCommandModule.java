@@ -40,7 +40,6 @@ import com.worldventures.dreamtrips.wallet.service.command.http.FetchFirmwareInf
 import com.worldventures.dreamtrips.wallet.service.command.http.FetchTermsAndConditionsCommand;
 import com.worldventures.dreamtrips.wallet.service.command.profile.UpdateProfileModule;
 import com.worldventures.dreamtrips.wallet.service.command.profile.UpdateSmartCardUserCommand;
-import com.worldventures.dreamtrips.wallet.service.command.reset.ConfirmResetCommand;
 import com.worldventures.dreamtrips.wallet.service.command.reset.RemoveSmartCardDataCommand;
 import com.worldventures.dreamtrips.wallet.service.command.reset.ResetSmartCardCommand;
 import com.worldventures.dreamtrips.wallet.service.command.wizard.WizardCheckCommand;
@@ -90,7 +89,6 @@ import dagger.Module;
             FetchAndStoreDefaultAddressInfoCommand.class,
             RemoveSmartCardDataCommand.class,
             ResetSmartCardCommand.class,
-            ConfirmResetCommand.class,
             FetchBatteryLevelCommand.class,
             FetchAssociatedSmartCardCommand.class,
             RestartSmartCardCommand.class,

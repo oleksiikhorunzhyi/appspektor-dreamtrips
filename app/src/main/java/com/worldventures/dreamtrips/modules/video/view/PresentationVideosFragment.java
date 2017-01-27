@@ -163,6 +163,11 @@ public class PresentationVideosFragment<T extends PresentationVideosPresenter> e
    }
 
    @Override
+   public void onPlayVideoClicked(Video entity) {
+      getPresenter().onPlayVideo(entity);
+   }
+
+   @Override
    public void onCellClicked(Video model) {
       // nothing to do
    }

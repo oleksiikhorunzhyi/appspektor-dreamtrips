@@ -143,12 +143,7 @@ public abstract class StaticInfoFragment<T extends WebViewFragmentPresenter, P e
          @Override
          public void onPageFinished(WebView view, String url) {
             super.onPageFinished(view, url);
-            isLoading = false;
-            if (!(isDetached() || isRemoving() || refreshLayout == null)) {
-               weakHandler.post(() -> {
-                  if (refreshLayout != null) refreshLayout.setRefreshing(false);
-               });
-            }
+            onWebPageLoaded();
          }
 
          @Override
@@ -319,6 +314,15 @@ public abstract class StaticInfoFragment<T extends WebViewFragmentPresenter, P e
             });
 
       if (savedState != null) webView.restoreState(savedState);
+   }
+
+   protected void onWebPageLoaded() {
+      isLoading = false;
+      if (!(isDetached() || isRemoving() || refreshLayout == null)) {
+         weakHandler.post(() -> {
+            if (refreshLayout != null) refreshLayout.setRefreshing(false);
+         });
+      }
    }
 
    @Override

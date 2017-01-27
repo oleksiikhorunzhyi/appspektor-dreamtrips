@@ -6,6 +6,7 @@ import android.text.TextUtils;
 
 import com.innahema.collections.query.queriables.Queryable;
 import com.worldventures.dreamtrips.BuildConfig;
+import com.worldventures.dreamtrips.core.utils.tracksystem.ActionPart;
 import com.worldventures.dreamtrips.core.utils.tracksystem.AnalyticsEvent;
 import com.worldventures.dreamtrips.core.utils.tracksystem.Attribute;
 import com.worldventures.dreamtrips.core.utils.tracksystem.AttributeMap;
@@ -100,27 +101,20 @@ public class AnalyticsService extends ActionService {
       return holder.action().getClass().getAnnotation(AnalyticsEvent.class).category();
    }
 
-   private static String getAction(ActionHolder holder) {
+   private static String getAction(ActionHolder holder) throws IllegalAccessException {
       Object analyticAction = holder.action();
-      String describedAction = analyticAction.getClass().getAnnotation(AnalyticsEvent.class).action();
-      String generatedAction = "";
-      int searchStart = 0, posStart = 0, posEnd;
-      while ((posStart = describedAction.indexOf(FIELD_EXPRESSION_START, posStart)) != -1) {
-         posEnd = describedAction.indexOf(FIELD_EXPRESSION_END, posStart);
-         if (posStart < posEnd) {
-            String fieldName = describedAction.substring(posStart+2, posEnd);
-            generatedAction += describedAction.substring(searchStart, posStart);
-            try {
-               Object object = analyticAction.getClass().getDeclaredField(fieldName).get(analyticAction);
-               generatedAction += object.toString();
-            } catch (Exception e) {
-               throw new RuntimeException("Check parameters in described action annotation and their access modifiers");
-            }
+      String generatedAction = analyticAction.getClass().getAnnotation(AnalyticsEvent.class).action();
+
+      Field[] declaredFields = analyticAction.getClass().getDeclaredFields();
+      for (Field field : declaredFields) {
+         if (field.getAnnotation(ActionPart.class) != null) {
+            String fieldPattern = FIELD_EXPRESSION_START + field.getName() + FIELD_EXPRESSION_END;
+            field.setAccessible(true);
+            generatedAction = generatedAction.replace(fieldPattern, field.get(analyticAction).toString());
          }
-         posStart += 2;
-         searchStart = posEnd + 1;
       }
-      return TextUtils.isEmpty(generatedAction)? describedAction : generatedAction;
+
+      return generatedAction;
    }
 
    private static String[] getTypes(ActionHolder holder) {

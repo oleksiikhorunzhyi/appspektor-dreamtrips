@@ -13,4 +13,6 @@ public interface VideoCellDelegate extends CellDelegate<Video> {
    void onDeleteVideo(CachedEntity entity);
 
    void onCancelCachingVideo(CachedEntity entity);
+
+   void onPlayVideoClicked(Video entity);
 }

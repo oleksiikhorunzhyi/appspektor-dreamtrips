@@ -311,19 +311,23 @@ public class WalletSettingsPresenter extends WalletPresenter<WalletSettingsPrese
             .subscribe(actionStateSubscriber);
    }
 
-   void confirmResetSmartCard() {
+   void restartSmartCard() {
       createObservableActiveSmartCard(
             new ActionStateSubscriber<ActiveSmartCardCommand>()
                   .onSuccess(command -> {
                      if (command.getResult().connectionStatus().isConnected()) {
-                        smartCardInteractor.restartSmartCardCommandActionPipe()
-                              .send(new RestartSmartCardCommand());
+                        getView().showConfirmRestartSCDialog();
                      } else {
                         getView().showSCNonConnectionDialog();
                      }
                   })
                   .onFail((activeSmartCardCommand, throwable) -> Timber.e(throwable, ""))
       );
+   }
+
+   void confirmRestartSmartCard() {
+      smartCardInteractor.restartSmartCardCommandActionPipe()
+            .send(new RestartSmartCardCommand());
    }
 
    void openAboutScreen() {
@@ -369,5 +373,7 @@ public class WalletSettingsPresenter extends WalletPresenter<WalletSettingsPrese
       void testSectionEnabled(boolean enabled);
 
       void showSCNonConnectionDialog();
+
+      void showConfirmRestartSCDialog();
    }
 }

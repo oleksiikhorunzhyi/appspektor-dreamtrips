@@ -1,4 +1,4 @@
-package com.worldventures.dreamtrips.wallet.ui.common;
+package com.worldventures.dreamtrips.wallet.ui.common.helper2;
 
 import android.view.View;
 

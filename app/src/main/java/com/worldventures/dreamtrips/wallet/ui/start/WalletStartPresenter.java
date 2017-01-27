@@ -25,6 +25,8 @@ import com.worldventures.dreamtrips.wallet.ui.wizard.welcome.WizardWelcomePath;
 import javax.inject.Inject;
 
 import flow.Flow;
+import io.techery.janet.operationsubscriber.OperationActionSubscriber;
+import io.techery.janet.operationsubscriber.view.OperationView;
 
 public class WalletStartPresenter extends WalletPresenter<WalletStartPresenter.Screen, Parcelable> {
 
@@ -47,16 +49,24 @@ public class WalletStartPresenter extends WalletPresenter<WalletStartPresenter.S
       );
    }
 
+   void retryFetchingCard() {
+      smartCardInteractor.fetchAssociatedSmartCard().send(new FetchAssociatedSmartCardCommand());
+   }
+
+   void cancelFetchingCard() {
+      navigator.goBack();
+   }
+
    private void onWalletAvailable() {
       smartCardInteractor.fetchAssociatedSmartCard()
-            .createObservable(new FetchAssociatedSmartCardCommand())
+            .observeWithReplay()
             .compose(bindViewIoToMainComposer())
             .subscribe(
-                  OperationActionStateSubscriberWrapper.<FetchAssociatedSmartCardCommand>forView(getView().provideOperationDelegate())
+                  OperationActionSubscriber.forView(getView().provideOperationView())
                         .onSuccess(command -> handleResult(command.getResult()))
-                        .onFail(ErrorHandler.create(getContext(), command -> navigator.goBack()))
-                        .wrap()
+                        .create()
             );
+      smartCardInteractor.fetchAssociatedSmartCard().send(new FetchAssociatedSmartCardCommand());
    }
 
    private void handleResult(FetchAssociatedSmartCardCommand.AssociatedCard associatedCard) {
@@ -93,6 +103,8 @@ public class WalletStartPresenter extends WalletPresenter<WalletStartPresenter.S
    }
 
    public interface Screen extends WalletScreen {
+
+      OperationView<FetchAssociatedSmartCardCommand> provideOperationView();
 
    }
 }

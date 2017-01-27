@@ -19,7 +19,7 @@ import android.widget.Button;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.wallet.service.command.http.FetchTermsAndConditionsCommand;
-import com.worldventures.dreamtrips.wallet.ui.common.ViewProgressView;
+import com.worldventures.dreamtrips.wallet.ui.common.helper2.ViewProgressView;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletLinearLayout;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.OperationScreen;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.delegate.DialogOperationScreen;

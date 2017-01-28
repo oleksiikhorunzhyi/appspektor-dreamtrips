@@ -26,7 +26,6 @@ import com.worldventures.dreamtrips.modules.dtl.service.FilterDataInteractor;
 import com.worldventures.dreamtrips.modules.dtl.service.FullMerchantInteractor;
 import com.worldventures.dreamtrips.modules.dtl.service.MerchantsInteractor;
 import com.worldventures.dreamtrips.modules.dtl.service.PresentationInteractor;
-import com.worldventures.dreamtrips.modules.dtl.service.action.AttributesAction;
 import com.worldventures.dreamtrips.modules.dtl.service.action.FilterDataAction;
 import com.worldventures.dreamtrips.modules.dtl.service.action.FullMerchantAction;
 import com.worldventures.dreamtrips.modules.dtl.service.action.LocationFacadeCommand;
@@ -217,7 +216,6 @@ public class DtlMerchantsPresenterImpl extends DtlPresenterImpl<DtlMerchantsScre
    @Override
    public void loadAmenities(List<String> merchantType) {
       attributesInteractor.requestAmenities(merchantType);
-      filterDataInteractor.resetAmenities();
    }
 
    @Override

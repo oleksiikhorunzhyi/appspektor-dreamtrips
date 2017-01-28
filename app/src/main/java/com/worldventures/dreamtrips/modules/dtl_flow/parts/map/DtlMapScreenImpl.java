@@ -4,7 +4,6 @@ import android.content.Context;
 import android.graphics.Point;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -43,7 +42,6 @@ import com.worldventures.dreamtrips.modules.dtl_flow.view.toolbar.RxDtlToolbar;
 import com.worldventures.dreamtrips.modules.map.model.DtlClusterItem;
 import com.worldventures.dreamtrips.modules.map.renderer.ClusterRenderer;
 import com.worldventures.dreamtrips.modules.map.view.MapViewUtils;
-import com.worldventures.dreamtrips.modules.trips.model.Location;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -229,6 +227,7 @@ public class DtlMapScreenImpl extends DtlLayout<DtlMapScreen, DtlMapPresenter, D
             filterSpa.setSelected(false);
             getPresenter().onLoadMerchantsType(merchantType);
             updateFiltersView(R.string.dtlt_search_hint);
+            getPresenter().loadAmenities(merchantType);
         }
     }
 
@@ -242,6 +241,7 @@ public class DtlMapScreenImpl extends DtlLayout<DtlMapScreen, DtlMapPresenter, D
             filterSpa.setSelected(false);
             getPresenter().onLoadMerchantsType(merchantType);
             updateFiltersView(R.string.filter_merchant_entertainment);
+            getPresenter().loadAmenities(merchantType);
         }
     }
 
@@ -255,6 +255,7 @@ public class DtlMapScreenImpl extends DtlLayout<DtlMapScreen, DtlMapPresenter, D
             filterSpa.setSelected(true);
             getPresenter().onLoadMerchantsType(merchantType);
             updateFiltersView(R.string.filter_merchant_spa);
+            getPresenter().loadAmenities(merchantType);
         }
     }
 

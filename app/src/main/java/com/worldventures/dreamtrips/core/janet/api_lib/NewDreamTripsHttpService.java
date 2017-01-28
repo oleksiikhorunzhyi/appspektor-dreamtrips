@@ -84,8 +84,7 @@ public class NewDreamTripsHttpService extends ActionServiceWrapper {
 
    @NonNull
    public static String getAuthorizationHeader(String apiToken) {
-      //TODO: 5a94455204a0a7dfc64e6e4279288d4d
-      return "Token token=" + "a0e17e683839900387cf7e05ea4fb729";//apiToken;
+      return "Token token=" + apiToken;
    }
 
 

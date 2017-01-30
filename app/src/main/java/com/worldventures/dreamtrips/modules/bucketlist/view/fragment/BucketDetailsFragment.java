@@ -77,6 +77,7 @@ public class BucketDetailsFragment<T extends BucketItemDetailsPresenter> extends
    @Inject SessionHolder<UserSession> sessionHolder;
 
    private int checkedPosition;
+   private boolean viewPagerIndicatorInitialized;
    private TranslateBucketItemViewInjector translateBucketItemViewInjector;
 
    private ViewPager.SimpleOnPageChangeListener onPageSelectedListener = new ViewPager.SimpleOnPageChangeListener() {
@@ -276,8 +277,12 @@ public class BucketDetailsFragment<T extends BucketItemDetailsPresenter> extends
       viewPagerBucketGallery.setAdapter(adapter);
       Queryable.from(photos).forEachR(photo -> adapter.add(new FragmentItem(Route.TRIP_IMAGES_PAGER, "")));
       adapter.notifyDataSetChanged();
-      circleIndicator.setViewPager(viewPagerBucketGallery);
-      circleIndicator.onPageSelected(checkedPosition);  //disable ui point position jumping
+
+      // initialize once, initializing with empty list in view pager causes crash
+      if (!photos.isEmpty() && !viewPagerIndicatorInitialized) {
+         circleIndicator.setViewPager(viewPagerBucketGallery);
+         viewPagerIndicatorInitialized = true;
+      }
       viewPagerBucketGallery.setCurrentItem(checkedPosition);
    }
 

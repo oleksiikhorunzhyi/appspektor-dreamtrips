@@ -15,14 +15,15 @@ public class WalletValidateHelper {
    private static final Pattern LAST_NAME_PATTERN = Pattern.compile("[\\p{L}]{3,21}+");
    private static final Pattern SCID_PATTERN = Pattern.compile("^\\d+$");
 
-   public static boolean validateUserFullName(@NonNull String firstName, @NonNull String middleName, @NonNull String lastName) {
-      boolean result = FIRST_NAME_PATTERN.matcher(firstName).matches() && LAST_NAME_PATTERN.matcher(lastName).matches();
-      return result && MIDDLE_NAME_PATTERN.matcher(middleName).matches();
-   }
-
    public static void validateUserFullNameOrThrow(@NonNull String firstName, @NonNull String middleName, @NonNull String lastName) throws FormatException {
-      if (!validateUserFullName(firstName, middleName, lastName)) {
-         throw new FormatException();
+      if (!FIRST_NAME_PATTERN.matcher(firstName).matches()) {
+         throw new FirstNameException();
+      }
+      if (!MIDDLE_NAME_PATTERN.matcher(middleName).matches()) {
+         throw new MiddleNameException();
+      }
+      if (!LAST_NAME_PATTERN.matcher(lastName).matches()) {
+         throw new LastNameException();
       }
    }
 

@@ -5,6 +5,7 @@ import android.os.Parcelable;
 
 import com.techery.spares.module.Injector;
 import com.worldventures.dreamtrips.wallet.service.FactoryResetInteractor;
+import com.worldventures.dreamtrips.wallet.service.SmartCardInteractor;
 import com.worldventures.dreamtrips.wallet.service.command.FactoryResetCommand;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletPresenter;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.WalletScreen;
@@ -20,6 +21,7 @@ import io.techery.janet.smartcard.action.lock.LockDeviceAction;
 
 public class FactoryResetPresenter extends WalletPresenter<FactoryResetPresenter.Screen, Parcelable> {
 
+   @Inject SmartCardInteractor smartCardInteractor;
    @Inject FactoryResetInteractor factoryResetInteractor;
    @Inject Navigator navigator;
 
@@ -31,6 +33,7 @@ public class FactoryResetPresenter extends WalletPresenter<FactoryResetPresenter
    public void attachView(Screen view) {
       super.attachView(view);
       resetSmartCard();
+      observeUnlockCard();
    }
 
    private void resetSmartCard() {
@@ -49,17 +52,25 @@ public class FactoryResetPresenter extends WalletPresenter<FactoryResetPresenter
       factoryResetInteractor.factoryResetCommandActionPipe().send(new FactoryResetCommand(true));
    }
 
-   @Override
-   public void detachView(boolean retainInstance) {
-      super.detachView(retainInstance);
-      factoryResetInteractor.factoryResetCommandActionPipe().cancelLatest();
-      factoryResetInteractor.lockDevicePipe().send(new LockDeviceAction(false));
+   private void observeUnlockCard() {
+      smartCardInteractor.lockDeviceChangedEventPipe()
+            .observeSuccess()
+            .compose(bindViewIoToMainComposer())
+            .filter(lockDeviceChangedEvent -> !lockDeviceChangedEvent.locked)
+            .take(1)
+            .subscribe(lockDeviceChangedEvent ->  getView().restrictCancel());
    }
 
+   public void cancelFactoryReset() {
+      factoryResetInteractor.factoryResetCommandActionPipe().cancelLatest();
+      factoryResetInteractor.lockDevicePipe().send(new LockDeviceAction(false));
+      goBack();
+   }
    public void goBack() {
       navigator.goBack();
    }
 
    public interface Screen extends WalletScreen {
+      void restrictCancel();
    }
 }

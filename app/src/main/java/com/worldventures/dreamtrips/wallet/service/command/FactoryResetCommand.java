@@ -71,7 +71,7 @@ public class FactoryResetCommand extends Command<Void> implements InjectableActi
    }
 
    private Observable<LockDeviceChangedEvent> observeUnlockCard() {
-      return walletJanet.createPipe(LockDeviceChangedEvent.class)
+      return smartCardInteractor.lockDeviceChangedEventPipe()
             .observeSuccess()
             .filter(event -> !event.locked)
             .take(1);

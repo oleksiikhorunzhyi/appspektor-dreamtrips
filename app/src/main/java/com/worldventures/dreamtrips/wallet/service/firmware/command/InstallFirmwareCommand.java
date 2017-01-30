@@ -76,8 +76,7 @@ public class InstallFirmwareCommand extends Command<FirmwareUpdateData> implemen
             .createObservableResult(new ConnectAction(ImmutableConnectionParams.of(Integer.parseInt(scId))))
             .map(connectAction -> connectAction.type)
             // hotfix for first Disconnect event from smart card
-            .retryWhen(observable -> janet.createPipe(ConnectAction.class)
-                  .createObservableResult(new ConnectAction(ImmutableConnectionParams.of(Integer.parseInt(scId)))));
+            .retry((count, throwable) -> count < 2);
    }
 
    private Observable<Void> enableLockUnlockDevice(boolean enable) {

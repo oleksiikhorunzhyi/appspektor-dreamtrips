@@ -2,8 +2,6 @@ package com.worldventures.dreamtrips.wallet.domain.entity.card;
 
 import android.support.annotation.Nullable;
 
-import org.immutables.value.Value;
-
 public abstract class Card {
 
    @Nullable
@@ -14,18 +12,6 @@ public abstract class Card {
    public abstract String expDate();
 
    public abstract Category category();
-
-   @Value.Default
-   @Deprecated
-   public int expiryMonth() {
-      return 0;
-   }
-
-   @Value.Default
-   @Deprecated
-   public int expiryYear() {
-      return 0;
-   }
 
    @Override
    public boolean equals(Object obj) {

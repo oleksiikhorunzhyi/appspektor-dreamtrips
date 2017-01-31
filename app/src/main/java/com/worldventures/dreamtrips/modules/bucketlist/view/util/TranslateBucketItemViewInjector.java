@@ -38,7 +38,7 @@ public class TranslateBucketItemViewInjector {
    public void processTranslation(BucketItem bucketItem) {
       // bucket owner is null for own bucket items
       if (!appSessionHolder.get().isPresent() || bucketItem.getOwner() == null) {
-         hideTranslationUi();
+         hideTranslationUi(bucketItem);
          return;
       }
       boolean ownItem = bucketItem.getOwner().getId() == appSessionHolder.get().get().getUser().getId();
@@ -46,7 +46,7 @@ public class TranslateBucketItemViewInjector {
       boolean emptyLanguage = TextUtils.isEmpty(bucketItem.getLanguage());
 
       if (ownItem || ownLanguage || emptyLanguage) {
-         hideTranslationUi();
+         hideTranslationUi(bucketItem);
       } else {
          if (bucketItem.isTranslated()) {
             textViewName.setText(bucketItem.getTranslation());
@@ -67,7 +67,9 @@ public class TranslateBucketItemViewInjector {
       }
    }
 
-   private void hideTranslationUi() {
+   private void hideTranslationUi(BucketItem bucketItem) {
+      textViewName.setText(bucketItem.getName());
+      setTextForDescription(bucketItem.getDescription());
       translateButton.setVisibility(View.GONE);
       translationProgress.setVisibility(View.GONE);
       translatedFrom.setVisibility(View.GONE);

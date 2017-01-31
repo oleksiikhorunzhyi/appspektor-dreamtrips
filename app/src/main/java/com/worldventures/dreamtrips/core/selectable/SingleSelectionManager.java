@@ -16,8 +16,9 @@ public class SingleSelectionManager extends SimpleSelectionManager {
 
    @Override
    protected void toggleSelectionImpl(int position) {
+      selectableWrapperAdapter.clearSelections();
       selectableWrapperAdapter.toggleSelection(position);
-      selectableWrapperAdapter.notifyItemChanged(position);
+      selectableWrapperAdapter.notifyDataSetChanged();
    }
 
    public void clearSelections() {

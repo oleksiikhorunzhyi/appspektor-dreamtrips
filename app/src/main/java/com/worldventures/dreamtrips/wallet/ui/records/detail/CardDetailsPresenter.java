@@ -67,6 +67,7 @@ public class CardDetailsPresenter extends WalletPresenter<CardDetailsPresenter.S
       connectToSetDefaultCardIdPipe();
       connectSetPaymentCardPipe();
       observeNickname();
+      observeDefaultCard();
    }
 
    @Override
@@ -92,9 +93,6 @@ public class CardDetailsPresenter extends WalletPresenter<CardDetailsPresenter.S
             .subscribe(defaultBankCard -> {
                this.defaultBankCard = defaultBankCard;
                getView().setDefaultCardCondition(CardUtils.equals(defaultBankCard, bankCard));
-               getView().setAsDefaultPaymentCardCondition()
-                     .compose(bindView())
-                     .subscribe(this::onSetAsDefaultCard);
             }, throwable -> Timber.e(throwable, ""));
    }
 
@@ -142,6 +140,13 @@ public class CardDetailsPresenter extends WalletPresenter<CardDetailsPresenter.S
             .compose(bindView())
             .skip(1)
             .subscribe(view::setCardNickname);
+   }
+
+   private void observeDefaultCard() {
+      getView().setAsDefaultPaymentCardCondition()
+            .compose(bindView())
+            .filter(stateChanged -> stateChanged != CardUtils.equals(defaultBankCard, bankCard))
+            .subscribe(this::onSetAsDefaultCard);
    }
 
    private AddressInfoWithLocale obtainAddressWithCountry() {
@@ -217,7 +222,7 @@ public class CardDetailsPresenter extends WalletPresenter<CardDetailsPresenter.S
 
    void defaultCardDialogConfirmed(boolean confirmed) {
       if (!confirmed) {
-         getView().setDefaultCardCondition(false);
+         getView().setDefaultCardCondition(CardUtils.equals(defaultBankCard, bankCard));
       } else {
          trackSetAsDefault();
          smartCardInteractor.setDefaultCardOnDeviceCommandPipe()

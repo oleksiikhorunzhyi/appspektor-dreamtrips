@@ -64,7 +64,6 @@ public class UpdateSmartCardUserCommand extends Command<SmartCard> implements In
    }
 
    private void validateData() throws FormatException {
-      // TODO: 12/15/16 middle is mandatory ?
       WalletValidateHelper.validateUserFullNameOrThrow(
             changedFields.firstName(),
             changedFields.middleName(),

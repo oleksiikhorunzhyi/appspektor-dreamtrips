@@ -36,14 +36,17 @@ public class TranslateBucketItemViewInjector {
    }
 
    public void processTranslation(BucketItem bucketItem) {
+      // bucket owner is null for own bucket items
+      if (!appSessionHolder.get().isPresent() || bucketItem.getOwner() == null) {
+         hideTranslationUi();
+         return;
+      }
       boolean ownItem = bucketItem.getOwner().getId() == appSessionHolder.get().get().getUser().getId();
       boolean ownLanguage = LocaleHelper.isOwnLanguage(appSessionHolder, bucketItem.getLanguage());
       boolean emptyLanguage = TextUtils.isEmpty(bucketItem.getLanguage());
 
       if (ownItem || ownLanguage || emptyLanguage) {
-         translateButton.setVisibility(View.GONE);
-         translationProgress.setVisibility(View.GONE);
-         translatedFrom.setVisibility(View.GONE);
+         hideTranslationUi();
       } else {
          if (bucketItem.isTranslated()) {
             textViewName.setText(bucketItem.getTranslation());
@@ -62,6 +65,12 @@ public class TranslateBucketItemViewInjector {
             translationProgress.setVisibility(View.GONE);
          }
       }
+   }
+
+   private void hideTranslationUi() {
+      translateButton.setVisibility(View.GONE);
+      translationProgress.setVisibility(View.GONE);
+      translatedFrom.setVisibility(View.GONE);
    }
 
    private void setTextForDescription(String text) {

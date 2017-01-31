@@ -55,11 +55,6 @@ public class ResetSmartCardCommand extends Command<Void> implements InjectableAc
             .onErrorResumeNext(Observable.just(null));
    }
 
-   private Observable<DisconnectAction> disconnect() {
-      return walletJanet.createPipe(DisconnectAction.class)
-            .createObservableResult(new DisconnectAction());
-   }
-
    private Observable<Void> disassociateCardUserServer(SmartCard smartCard) {
       return apiLibJanet.createPipe(DisassociateCardUserHttpAction.class, Schedulers.io())
             .createObservableResult(
@@ -78,6 +73,11 @@ public class ResetSmartCardCommand extends Command<Void> implements InjectableAc
    private Observable<UnAssignUserAction> disassociateCardUser() {
       return walletJanet.createPipe(UnAssignUserAction.class)
             .createObservableResult(new UnAssignUserAction());
+   }
+
+   private Observable<DisconnectAction> disconnect() {
+      return walletJanet.createPipe(DisconnectAction.class)
+            .createObservableResult(new DisconnectAction());
    }
 
    private Observable<RemoveSmartCardDataCommand> removeSmartCardData() {

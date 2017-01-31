@@ -34,8 +34,8 @@ android {
    // App version
    def versionMajor = 1
    def versionMinor = 15
-   def versionPatch = 0
-   def versionBuild = 24  // bump for dogfood builds, public betas, etc.
+   def versionPatch = 1
+   def versionBuild = 0  // bump for dogfood builds, public betas, etc.
    //
    // flavor codes
    String DEV_CODE = "dev"
@@ -75,10 +75,10 @@ android {
          'NEWRELIC_API_KEY': '"AAd06d4d4d218e74f8d48a7e0bf8d7de4623cb1662"',
    ]
    def CONFIG_MAP_PREPROD = [
-         'DreamTripsApi'    : '"http://techery-dt-preprod.techery.io/"',
+         'DreamTripsApi'    : '"http://dtapp-qa.worldventures.biz/"',
          'S3Api'            : '"https://s3-us-west-2.amazonaws.com/techery-worldventures/config/preprod"',
          'MESSENGER_API_URL': '"dtmsgapp-qa.worldventures.biz"',
-         'UPLOADERY_API_URL' : '"http://techery-dt-preprod-uploadery.techery.io"',
+         'UPLOADERY_API_URL' : '"http://dtapp-qa.worldventures.biz/uploadery"',
    ]
    def CONFIG_MAP_PERF = [
          'DreamTripsApi'    : '"http://dtapp-perf.worldventures.biz"',
@@ -415,7 +415,7 @@ dependencies {
    compile 'com.snappydb:snappydb-lib:0.5.2'
    compile 'com.esotericsoftware.kryo:kryo:2.24.0'
    // Networking
-   compile(group: 'com.worldventures.dreamtrips', name: 'api', version: '2.5.1-PREPROD-SNAPSHOT', changing: true) {
+   compile(group: 'com.worldventures.dreamtrips', name: 'api', version: '2.5.1', changing: true) {
       exclude group: "joda-time"
    }
    compile 'com.octo.android.robospice:robospice:1.4.14'
@@ -530,7 +530,7 @@ dependencies {
    compile 'org.igniterealtime.smack:smack-android-extensions:4.1.6'
    compile 'org.igniterealtime.smack:smack-tcp:4.1.6'
 
-   compile(group: 'io.techery.janet', name: 'smartcard', version: '0.11.14-SNAPSHOT', changing: true)
+   compile(group: 'io.techery.janet', name: 'smartcard', version: '0.11.14', changing: true)
    compile(group: 'io.techery.janet.magstripe-reader', name: 'service', version: '0.1.0-SNAPSHOT', changing: true)
    compile(group: 'io.techery.janet.magstripe-reader', name: 'client-mock', version: '0.1.0-SNAPSHOT', changing: true)
    compile(group: 'io.techery.janet.magstripe-reader', name: 'client-rhombus', version: '0.1.0-SNAPSHOT', changing: true)

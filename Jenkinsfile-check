@@ -1,0 +1,97 @@
+#!/usr/bin/env groovy
+
+def buildParams = [:]
+def utils = fileLoader.fromGit('jenkins-pipeline-job-utils.groovy', 'git@repos.wvholdings.com:mobile/pipeline-helper-scripts-android.git', 'master', '5ee47e5e-00fb-43a5-9ccd-f5aa5a5310ee', '')
+
+utils.runBuild('android', utils.notifiers.gitlab(this)) {
+   stage('prepare build') {
+      buildParams = generateParams()
+      println buildParams
+   }
+   stage('checkout') {
+      checkout([
+            $class                           : 'GitSCM',
+            branches                         : scm.branches,
+            userRemoteConfigs                : scm.userRemoteConfigs,
+            submoduleCfg                     : [],
+            doGenerateSubmoduleConfigurations: false,
+            extensions                       : [
+                  [$class: 'CleanBeforeCheckout'],
+                  [$class : 'CloneOption',
+                   shallow: true,
+                   depth  : 10,
+                   noTags : true,
+                   timeout: 30]
+            ]
+      ])
+   }
+   stage('tests') {
+      for (String task : buildParams.TEST_TASKS)
+         utils.runTests(
+               testTask: "app:${task}",
+               reportFolder: buildParams.TEST_REPORT_FOLDER,
+               reportPattern: "${testFolderFromTask(task)}/*.xml"
+         )
+   }
+   stage('assemble') {
+      withCredentials([file(credentialsId: 'dreamtrips-android-signing-key', variable: 'SIGNING_KEY'),
+                       file(credentialsId: 'dreamtrips-android-signing-properties', variable: 'SIGNING_PROPS')]) {
+         utils.scripts.bash("chmod +rx ${SIGNING_KEY}")
+         utils.scripts.bash("chmod +rx ${SIGNING_PROPS}")
+         utils.scripts.bash("cp -f ${SIGNING_KEY} signing")
+         utils.scripts.bash("cp -f ${SIGNING_PROPS} signing")
+         utils.scripts.gradlew "app:${buildParams.ASSEMBLE_TASK}"
+      }
+   }
+}
+node('android') {
+   // cleanup
+   utils.scripts.bash('rm -rf signing')
+}
+
+@NonCPS
+def Map generateParams() {
+   def buildParams = [:]
+
+   def streamFlavors = [
+         social   : "Social",
+         dtl      : "Dtl",
+         messenger: "Messenger",
+         smartcard: "Smartcardmock",
+   ]
+   def flavors = [stable: "Stable"]
+   for (Map.Entry it : streamFlavors) {
+      flavors[it.getKey()] = it.getValue()
+   }
+
+
+   buildParams.FLAVOR = flavors.stable
+   if (env.gitlabTargetBranch.contains("social/")) buildParams.FLAVOR = flavors.social
+   else if (env.gitlabTargetBranch.contains("dtl/")) buildParams.FLAVOR = flavors.dtl
+   else if (env.gitlabTargetBranch.contains("messenger/")) buildParams.FLAVOR = flavors.messenger
+   else if (env.gitlabTargetBranch.contains("smart-card/")) buildParams.FLAVOR = flavors.smartcard
+
+   if (buildParams.FLAVOR == flavors.stable) {
+      buildParams.TEST_TASKS = streamFlavors.values().collect { flavor -> "testExternal${flavor}PreprodDebug" }
+   } else {
+      buildParams.TEST_TASKS = ["testExternal${buildParams.FLAVOR}StageDebug"]
+   }
+
+   buildParams.ASSEMBLE_TASK = "assembleExternal${buildParams.FLAVOR}StageDebug"
+
+   buildParams.TEST_REPORT_FOLDER = 'app/build/test-results'
+   buildParams.TEST_REPORT_PATTERN = '**/*.xml'
+
+   return buildParams
+}
+
+@NonCPS
+def String convertToTestTask(Collection tasks) {
+   tasks.collect { it -> "app:${it}" }.join(' ')
+}
+
+@NonCPS
+def String testFolderFromTask(String testTask) {
+   def part = (testTask =~ /(?<=test).*/)[0]
+   return "${part.toLowerCase().charAt(0)}" + part.substring(1)
+}

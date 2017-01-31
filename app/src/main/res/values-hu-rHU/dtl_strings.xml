@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <resources>
+   <string name="dtl_local">Local</string>
    <string name="dtl_locations_title">Helyzet kiválasztása </string>
    <string name="dtl_locations_try_search">Nem találtunk várost a közelében.\nPróbálja ki a városok keresését.</string>
    <string name="dtl_merchant_tab_offers">Ajánlatok</string>
@@ -91,6 +92,15 @@
    <string name="merchants_list_empty_text">Hamarosan jönnek a helyek</string>
    <string name="merchants_list_empty_text_additional">- vagy -</string>
    <string name="merchant_working_hours_caption">óra</string>
+   <string name="filter_amenities_error_caption">A szórakozási lehetőségeket nem lehet betölteni jelenleg</string>
+   <string name="merchants_no_results">Nincs találat \n Próbáld meg módosítani a szűrőket, vagy adj meg egy új helyet.</string>
+   <string name="merchants_no_results_offers_only">Sajnos nincs ajánlat a területeden még. Kapcsold ki az ajánlatokat, hogy lásd a közeli éttermeket.</string>
+   <string name="dtl_try_again">Próbáld újra</string>
+   <string name="dtl_load_more">Több betöltése</string>
+
+   <!-- Errors -->
+   <string name="dtl_load_error">Betöltés hiba</string>
+   <string name="dtl_load_merchant_error_caption">Az eredményeket nem lehet betölteni jelenleg.</string>
 
    <!-- DtlToolbar strings -->
    <string name="dtlt_search_hint">Étel &amp; Ital</string>

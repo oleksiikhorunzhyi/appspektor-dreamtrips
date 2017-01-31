@@ -88,11 +88,15 @@ public class TripImagesListFragment<T extends TripImagesListPresenter> extends R
 
       this.recyclerView.addOnItemTouchListener(new RecyclerItemClickListener(getActivity(), (view1, position) -> {
          if (getArgs().getType() == TripImagesType.YOU_SHOULD_BE_HERE)
-            TrackingHelper.viewTripImage(TrackingHelper.ACTION_YSHB_IMAGES, getPresenter().getPhoto(position)
-                  .getFSId());
+            TrackingHelper.viewTripImage(
+                  TrackingHelper.ACTION_YSHB_IMAGES,
+                  ((IFullScreenObject) arrayListAdapter.getItem(position)).getFSId()
+            );
          if (getArgs().getType() == TripImagesType.INSPIRE_ME)
-            TrackingHelper.viewTripImage(TrackingHelper.ACTION_INSPIRE_ME_IMAGES, getPresenter().getPhoto(position)
-                  .getFSId());
+            TrackingHelper.viewTripImage(
+                  TrackingHelper.ACTION_INSPIRE_ME_IMAGES,
+                  ((IFullScreenObject) arrayListAdapter.getItem(position)).getFSId()
+            );
 
          this.getPresenter().onItemClick(position);
       }));

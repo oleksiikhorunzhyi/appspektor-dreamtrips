@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <resources>
+   <string name="dtl_local">Local</string>
    <string name="dtl_locations_title">Selectați locația</string>
    <string name="dtl_locations_try_search">Nu am putut localiza un oraș în apropierea dvs.\nÎncercați căutarea orașului</string>
    <string name="dtl_merchant_tab_offers">Oferte</string>
@@ -91,6 +92,15 @@
    <string name="merchants_list_empty_text">Locuri în curând</string>
    <string name="merchants_list_empty_text_additional">- sau -</string>
    <string name="merchant_working_hours_caption">ore</string>
+   <string name="filter_amenities_error_caption">Facilitățile nu au putut fi încărcate de data aceasta</string>
+   <string name="merchants_no_results">Nu a fost găsit niciun rezultat \n Încercați să vă modificați filtrele sau introduceți o locație nouă.</string>
+   <string name="merchants_no_results_offers_only">Ne pare rău, deocamdată nu sunt oferte disponibile în zona dvs.\n Dezactivați ofertele pentru a vizualiza restaurante din apropiere.</string>
+   <string name="dtl_try_again">Încercați din nou</string>
+   <string name="dtl_load_more">Încărcați mai mult</string>
+
+   <!-- Errors -->
+   <string name="dtl_load_error">Eroare la încărcare</string>
+   <string name="dtl_load_merchant_error_caption">Rezultatele nu au putut fi încărcate în acest moment.</string>
 
    <!-- DtlToolbar strings -->
    <string name="dtlt_search_hint">Mâncare și băuturi</string>

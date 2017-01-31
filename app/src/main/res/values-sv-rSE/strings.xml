@@ -7,7 +7,6 @@
    <string name="membership">Medlemskap</string>
    <string name="trip_images">Resebilder</string>
    <string name="bucket_list">Drömresmål</string>
-   <string name="dtl">Upptäck</string>
    <string name="my_profile">Min profil</string>
    <string name="terms">Villkor</string>
    <string name="terms_of_service">Användarvillkor</string>
@@ -27,7 +26,6 @@
    <string name="trips">DreamTrips</string>
    <string name="drawer_open">Menyn har öppnats</string>
    <string name="drawer_close">Meny stängd</string>
-   <string name="empty" translatable="false"></string>
    <string name="logout_dialog_title">Logga ut</string>
    <string name="logout_dialog_message">Är du säker på att du vill logga ut?</string>
    <string name="logout_dialog_positive_btn">Logga ut</string>
@@ -128,6 +126,10 @@
    <string name="bucket_list_create_message">Du har för närvarande inga drömresmål. Du kan välja bland populära drömresmål eller skapa dina egna</string>
    <string name="bucket_list_choose">Välj från populära drömresmål</string>
    <string name="bucket_list_create_new">Skapa min egen lista</string>
+   <string name="bucket_list_action_create_error">Det gick inte att lägga till drömresmål</string>
+   <string name="bucket_list_action_update_error">Det gick inte att uppdatera drömresmål</string>
+   <string name="bucket_list_action_change_order_error">Det gick inte att uppdatera drömresmål</string>
+   <string name="bucket_list_action_delete_error">Det gick inte att ta bort drömresmål</string>
    <string name="bucket_hint_title">Titel</string>
    <string name="bucket_hint_description">Beskrivning</string>
    <string name="bucket_hint_description_text">Ange din beskrivning här</string>
@@ -172,7 +174,9 @@
    <string name="training_videos">Instruktionsvideor</string>
    <string name="error_while_sync">Något gick fel</string>
    <string name="can_not_like_photo">Du kan inte gilla fotot</string>
+   <string name="like">%1$d gillar</string>
    <string name="likes">%1$d gillar</string>
+   <string name="comment_single">%1$d kommentar</string>
    <string name="comments">%1$d kommentarer</string>
    <string name="wrong_image">Fel bild</string>
    <string name="could_not_load">Det gick inte att läsa in </string>
@@ -393,6 +397,7 @@
    <string name="photo_delete">Ta bort foto</string>
    <string name="photo_edit">Redigera foto</string>
    <string name="photo_delete_caption">Är du säker på att du vill ta bort fotot?</string>
+   <string name="photo_edit_error">Det gick inte att redigera foto</string>
 
    <string name="bucket_delete">Ta bort drömresmål</string>
    <string name="bucket_edit">Redigera drömresmål</string>
@@ -488,6 +493,12 @@
    <string name="feedback_has_been_sent">Din feedback har skickats. Tack.</string>
    <string name="feedback_send_btn">Skicka</string>
    <string name="feedback_select_category">Välj kategori</string>
+   <string name="feedback_add_photos">Lägg till foton</string>
+   <string name="feedback_could_not_load_attachment">Det gick inte att läsa in bilaga</string>
+   <string name="feedback_attachment_failed_item_retry">Försök igen</string>
+   <string name="feedback_attachment_failed_item_remove">Ta bort</string>
+   <string name="feedback_fullscreen_attachments_format">%1$d av %2$d</string>
+   <string name="feedback_fullscreen_attachments_remove">Ta bort</string>
 
    <string name="years_ago">%1$d år sedan</string>
    <string name="invitation_template"> Välj mall </string>
@@ -586,7 +597,24 @@
    <string name="error_fail_to_load_videos">Det gick inte att ladda videoklipp</string>
    <string name="error_fail_to_like_item">Det gick inte att gilla objekt</string>
    <string name="error_fail_to_unlike_item">Det gick inte att ogilla objekt</string>
+   <string name="error_fail_to_load_documents">Det gick inte att läsa in dokument</string>
    <string name="tag_people">Tagga personer</string>
+
+   <string name="uploading_post_status_progress_singular">Fotot överförs ...</string>
+   <string name="uploading_post_status_progress_plural">Överför %1$d foton…</string>
+   <string name="uploading_post_status_paused">Överföring pausad</string>
+   <string name="uploading_post_status_waiting">Väntar</string>
+   <string name="uploading_post_status_failed_connection"> Anslutning bruten </string>
+   <string name="uploading_post_status_uploaded">Inlägget har publicerats!</string>
+   <string name="uploading_post_time_left_posting">Publicerar…</string>
+   <string name="uploading_post_time_time_left">har lämnat chatten</string>
+   <string name="uploading_post_time_left_seconds">s</string>
+   <string name="uploading_post_time_left_minutes">m</string>
+   <string name="uploading_post_time_left_hours">h</string>
+   <string name="uploading_post_time_left_more_than_one_day">Mer än 1 dag…</string>
+   <string name="uploading_post_cancel_upload_message">Vill du avbryta överföringen?</string>
+   <string name="uploading_post_cancel_upload_positive_button">Ja</string>
+   <string name="uploading_post_cancel_upload_negative_button">Nej</string>
 
    <string name="say_something">Berätta något för världen</string>
 
@@ -655,9 +683,16 @@
 
    <string name="error_fail_to_load_filters">Det gick inte att ladda filter</string>
    <string name="flag_content_message">WorldVentures personal kommer att granska det här innehållet för </string>
+   <string name="try_again">Försök igen</string>
 
-   <!-- change this later after approval from WV -->
    <string name="offline_warning_dialog_title">Ingen internetanslutning</string>
-   
+   <string name="offline_warning_dialog_message">Din tillgång kommer att vara begränsad </string>
+   <string name="offline_indicator_description">Ingen internetanslutning</string>
 
+   <string name="merchant_message_text" formatted="false">Grattis! Du har tjänat %1$s DreamTrips Points @%2$s, %3$s</string>
+
+   <string name="beta_label">Beta</string>
+
+   <string name="documents">Dokument</string>
+   <string name="documents_empty_text">Det gick inte att läsa in dokumenten just nu.</string>
 </resources>

@@ -1,0 +1,254 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<resources>
+   <!-- Common -->
+   <string name="wallet_next_label">Înainte</string>
+   <string name="wallet_done_label">Terminat</string>
+   <string name="wallet_continue_label">Continuați</string>
+   <string name="wallet_got_it_label">Am înțeles!</string>
+
+   <string name="wallet">flye SmartCard</string>
+   <string name="wallet_dashboard_title">Flye SmartCardul meu</string>
+   <string name="wallet_wizard_title">flye SmartCard</string>
+   <string name="wallet_input_data_is_incorrect">Datele introduse nu sunt corecte</string>
+   <string name="wallet_bank_card_good_thru">MERGEȚI ÎNAINTE</string>
+   <string name="wallet_smart_card_is_disconnected">Smart Cardul a fost deconectat</string>
+   <string name="wallet_no_internet_connection">Nicio conexiune la internet</string>
+
+   <!--card alias-->
+   <string name="wallet_wizard_card_alias_subtitle">Denumiți-vă smart cardul</string>
+   <string name="wallet_wizard_card_alias_hint">De exemplu: Smart Cardul lui Shirley</string>
+   <string name="wallet_wizard_card_alias_format_error">Denumirea cardului poate conține numai litere și trebuie să aibă mai mult de 2 caractere</string>
+   <string name="wallet_wizard_card_alias_was_setup">Denumirea cardului a fost adăugată</string>
+   <string name="wallet_wizard_card_alias_setup">Configurarea denumirii cardului</string>
+
+   <!--edit profile-->
+   <string name="wallet_wizard__welcom_screen_title">Configurarea flye SmartCardului</string>
+   <string name="wallet_edit_profile_subtitle">Configurați fotografia de prezentare și numele pe care le doriți pe card.</string>
+   <string name="wallet_edit_profile_name_hint">Introduceți numele dvs.</string>
+   <string name="wallet_edit_profile_progress_dialog">Încărcați informațiile pe Smart Card</string>
+   <string name="wallet_edit_profile_success_dialog">Informațiile au fost încărcate</string>
+   <string name="wallet_edit_profile_name_format_title">Formatul numelui este incorect! </string>
+   <string name="wallet_edit_profile_name_format_detail">Trebuie să introduceți prenumele și numele de familie (al doilea prenume este opțional)\nFiecare poate conține de la 2 până la 21 de litere</string>
+   <string name="wallet_edit_profile_avatar_not_chosen">Vă rugăm alegeți o fotografie pentru Smart Card</string>
+
+   <!--pin setup-->
+   <string name="wallet_wizard_setup_pin_title">Configurați PIN-ul dvs.</string>
+   <string name="wallet_wizard_setup_pin_header">Configurați PIN-ul dvs. pe panoul tactil\nprin 4 mișcări de atingere.</string>
+   <string name="wallet_wizard_setup_new_pin_header">Configurați noul PIN pe panoul tactil al smart cardului prin 4 mișcări de glisare și atingere</string>
+   <string name="wallet_wizard_setup_progress">Configurați noul PIN pe panoul tactil al smart cardului...</string>
+   <string name="wallet_wizard_setup_error">A apărut o eroare...\nVă rugăm încercați din nou!</string>
+   <string name="wallet_wizard_setup_new_pin_success">Noul PIN a fost configurat!</string>
+
+   <!--pin is set-->
+   <string name="wallet_wizard_pin_is_set">PIN-ul dvs. a fost configurat!</string>
+   <string name="wallet_wizard_pin_is_set_suggestion">Acum puteți iniția încărcarea cardurilor dvs. de credit și debit</string>
+
+   <!--splash-->
+   <string name="wallet_wizard_splash_title1">Pregătiți-vă să prindeți aripi</string>
+   <string name="wallet_wizard_splash_title2">În continuare, trebuie să acceptați \nTermenii și condițiile.</string>
+   <string name="wallet_wizard_splash_review_btn">Termeni și condiții</string>
+
+   <string name="wallet_wizard_scan_proposal">Scanați \nflye™ SmartCardul pe verso pentru a configura</string>
+   <string name="wallet_wizard_scan_start_btn">Scanați Cardul</string>
+   <string name="wallet_wizard_scan_title">Scanați flye SmartCardul</string>
+
+   <string name="wallet_wizard_scan_barcode_header">Așezați codul de bare al flye ™ SmartCardului în caseta vizorului.</string>
+   <string name="wallet_wizard_scan_barcode_footer_title">Nu se scanează?</string>
+   <string name="wallet_wizard_scan_barcode_footer_btn">Introduceți ID-ul manual</string>
+   <string name="waller_wizard_scan_barcode_progress_label">Se conectează la smartcard...</string>
+
+   <string name="wallet_add_credit_card">Adăugați un card de credit</string>
+   <string name="wallet_add_debit_card">Adăugați un card de debit</string>
+   <string name="wallet_payment_cards_title">Carduri de efectuare a plăților</string>
+
+   <!--bar code manual-->
+   <string name="wallet_wizard_manual_input_header">Introduceți numărul din 10 cifre\naflat sub codul de bare</string>
+   <string name="wallet_wizard_manual_input_title">Numărul flye SmartCardului</string>
+   <string name="wallet_wizard_bar_code_validation_error">Numărul codului de bare este greșit</string>
+   <string name="wallet_bank_name_text_holder">Denumirea băncii</string>
+
+   <!--details-->
+   <string name="wallet_card_details_label_billing_address">Adresa de facturare</string>
+   <string name="wallet_card_details_button_edit_billing_address">Editați adresa de facturare</string>
+   <string name="wallet_card_details_button_delete_card">Ștergeți cardul</string>
+   <string name="wallet_card_details_progress_delete">Se șterge%1$s…</string>
+   <string name="wallet_card_details_delete_card_dialog_title">Ștergeți cardul de efectuare a plăților</string>
+   <string name="wallet_card_details_delete_card_dialog_content">Sunteți sigur(ă)?</string>
+
+   <!--settings-->
+   <string name="wallet_card_settings_title">Setări</string>
+   <string name="wallet_card_settings_device_section_header">Puteți modifica aceste setări pentru a economisi bateria sau a optimiza performanța flye™ smart cardului.</string>
+   <string name="wallet_card_settings_stealth_mode">Păstrează identitatea mea confidențială</string>
+   <string name="wallet_card_settings_lock">Blocați Cardul</string>
+   <string name="wallet_card_settings_firmware_update">Actualizare flye SmartCard</string>
+   <string name="wallet_card_settings_reset_pin">Reconfigurați Pin-ul</string>
+   <string name="wallet_card_settings_factory_reset">Readuceți flye SmartCard la setările din fabrică</string>
+   <string name="wallet_card_settings_disable_default_payment_card">Dezactivați ulterior Cardul implicit de efectuare a plăților</string>
+   <string name="wallet_card_settings_auto_delete_cards">Ștergere automată ulterioară a flye SmartCardului</string>
+   <string name="wallet_card_settings_stealth_mode_off">Modul nedetectabil a fost dezactivat</string>
+   <string name="wallet_card_settings_stealth_mode_on">Modul nedetectabil a fost activat</string>
+   <string name="wallet_card_settings_unlock_error">Deblocarea nu este disponibilă</string>
+
+   <!--card list-->
+   <string name="wallet_card_list_title">Flye SmartCardul meu</string>
+   <string name="dashboard_default_card_stack_title">Implicit</string>
+   <string name="wallet_wizard_default_card_label">IMPLICIT</string>
+   <string name="wallet_wizard_empty_card_list_label">Adăugați carduri de credit și debit\npe flye ™SmartCardul dvs.</string>
+   <string name="wallet_wizard_full_card_list_error_message">Ați depășit limita maximă de 10 carduri. Vă rugăm să ștergeți unul sau mai multe carduri pentru a continua.</string>
+   <string name="wallet_wizard_no_internet_connection_title">@string/offline_warning_dialog_title</string>
+   <string name="wallet_wizard_no_connection_to_card_title">flye cardul nu este conectat</string>
+   <string name="wallet_wizard_limited_access">@string/offline_warning_dialog_message</string>
+
+   <!--add card details-->
+   <string name="wallet_add_card_details_title">Detaliile cardului</string>
+   <string name="wallet_add_card_details_hint_enter_cvv">Introduceți VVC</string>
+   <string name="wallet_add_card_details_hint_nickname_card">Pseudonimul cardului (opțional)</string>
+   <string name="wallet_add_card_details_hint_address1">Adresa 1</string>
+   <string name="wallet_add_card_details_hint_address2">Adresa 2 (opțional)</string>
+   <string name="wallet_add_card_details_hint_city">Orașul</string>
+   <string name="wallet_add_card_details_hint_state">Statul</string>
+   <string name="wallet_add_card_details_hint_zip">Cod Poștal</string>
+   <string name="wallet_add_card_details_button_confirm">Confirmați</string>
+   <string name="wallet_add_card_details_cvv_label">Numărul VVC </string>
+   <string name="wallet_add_card_details_billing_address_label">Adresa de facturare</string>
+   <string name="wallet_add_card_details_option_set_as_default_card">Configurați ca și card de efectuare a plății implicit</string>
+   <string name="wallet_add_card_details_error_message">Unele câmpuri obligatorii nu sunt completate sau conțin informații incorecte </string>
+   <string name="wallet_add_card_details_default_card_exist_dialog_text">Cardul dvs. implicit%1$sva fi înlocuit cu acest card. Doriți să continuați?</string>
+
+   <!--card type-->
+   <string name="wallet_card_financial_service_master_card">Master Card</string>
+   <string name="wallet_card_financial_service_visa">Visa</string>
+   <string name="wallet_card_financial_service_discover">Descoperiți</string>
+   <string name="wallet_card_financial_service_amex">Amex</string>
+
+   <string name="wallet_card_list_records_connected">%1$d carduri încărcate</string>
+   <string name="wallet_card_list_record_connected">%1$d card încărcat</string>
+   <string name="wallet_dashboard_unlock_error">Deblocarea nu este disponibilă</string>
+   <string name="wallet_dashboard_flye_firmware_update">Actualizare flye SmartCard</string>
+
+   <!--charging-->
+   <string name="wallet_charging_swiping_screen_title">Adăugați card de efectuare a plății</string>
+   <string name="wallet_charging_swiping_screen_instruction">Conectați flye™ la încărcător și glisați cardul de credit sau debit.</string>
+   <string name="wallet_charging_swiping_screen_notes">Asigurați-vă că flye™cardul este activat și că cele 2 leduri ale încărcătorului sunt aprinse.</string>
+   <string name="wallet_wizard_charging_swipe_error">Citire a cardului incorectă. Încercați din nou</string>
+   <string name="wallet_terms_and_conditions_header">Termeni și Condiții</string>
+   <string name="wallet_wizard_terms_and_conditions_agree_btn">Accept</string>
+   <string name="wallet_terms_and_conditions_try_again">Încercați din nou</string>
+   <string name="wallet_terms_and_conditions_load_failed">Nu s-a reușit obținerea termenilor și condițiilor</string>
+   <string name="wallet_terms_and_conditions_accept_failed">Nu s-au putut accepta termenii și condițiile</string>
+
+   <!--set up smart card-->
+   <string name="wallet_wizard_welcome_title">flye SmartCard</string>
+   <string name="wallet_wizard_welcome_greeting">Salut %1$s!</string>
+   <string name="wallet_wizard_welcome_platinum_user">Statusul dvs. platinum atinge noi culmi cu flye™.</string>
+   <string name="wallet_wizard_welcome_gold_user">Statusul dvs. gold atinge noi culmi cu flye™. </string>
+   <string name="wallet_wizard_welcome_button_text">Configurare</string>
+
+   <string name="wallet_record_type_credit">Credit</string>
+   <string name="wallet_record_type_debit">Debit</string>
+
+   <!--disable default card-->
+   <string name="wallet_settings_disable_default_card_title">Dezactivați ulterior plata implicită</string>
+   <string name="wallet_settings_disable_default_card_description">Configurați un temporizator de dezactivare a cardului dvs. de efectuare a plății în caz de inactivitate</string>
+   <string name="wallet_settings_disable_default_card_2_hours">2 ore</string>
+   <string name="wallet_settings_disable_default_card_4_hours">4 ore</string>
+   <string name="wallet_settings_disable_default_card_6_hours">6 ore</string>
+   <string name="wallet_settings_disable_default_card_8_hours">8 ore</string>
+   <string name="wallet_settings_disable_default_card_12_hours">12 ore</string>
+   <string name="wallet_settings_disable_default_card_24_hours">24 ore</string>
+   <string name="wallet_settings_disable_default_card_48_hours">48 ore</string>
+   <string name="wallet_settings_disable_default_card_1_week">1 săptămână</string>
+   <string name="wallet_settings_disable_default_card_1_month">1 lună</string>
+   <string name="wallet_settings_disable_default_card_never">Niciodată</string>
+
+   <!--disable default card-->
+   <string name="wallet_settings_clear_flye_card_title">Radiere automată ulterioară a SmartCardului</string>
+   <string name="wallet_settings_clear_flye_card_description">Configurați un temporizator de ștergere a conținutului flye smart cardului dvs. după o perioadă de inactivitate.</string>
+   <string name="wallet_settings_clear_flye_card_2_hours">2 ore</string>
+   <string name="wallet_settings_clear_flye_card_4_hours">4 ore</string>
+   <string name="wallet_settings_clear_flye_card_6_hours">6 ore</string>
+   <string name="wallet_settings_clear_flye_card_8_hours">8 ore</string>
+   <string name="wallet_settings_clear_flye_card_12_hours">12 ore</string>
+   <string name="wallet_settings_clear_flye_card_24_hours">24 ore</string>
+   <string name="wallet_settings_clear_flye_card_48_hours">48 ore</string>
+   <string name="wallet_settings_clear_flye_card_1_week">1 săptămână</string>
+   <string name="wallet_settings_clear_flye_card_1_month">1 lună</string>
+   <string name="wallet_settings_clear_flye_card_never">Niciodată</string>
+
+   <!--firmware-->
+   <string name="wallet_settings_last_version_title">Actualizare flye SmartCard</string>
+   <string name="wallet_settings_version">Versiunea %1$s</string>
+   <string name="wallet_settings_last_version">Flye SmartCardul dvs. este actualizat cu ultima versiune</string>
+   <string name="wallet_settings_latest_dt_version_required">Este necesară ultima versiune a DreamTrips pentru această actualizare.</string>
+   <string name="wallet_settings_update_dt_app">Actualizare DreamTrips</string>
+   <string name="wallet_settings_update_size">%1$s</string>
+   <string name="wallet_settings_version_latest">Ultima versiune %1$s</string>
+   <string name="wallet_settings_version_current">Versiune actuală %1$s</string>
+   <string name="wallet_settings_version_whats_new">Ce e nou</string>
+   <string name="wallet_settings_download_install">Descărcați și instalați</string>
+
+   <!-- firmware settings-->
+   <string name="wallet_firmware_space_alert_title">Spațiu insuficient pentru descărcare</string>
+   <string name="wallet_firmware_space_alert_description">Trebuie să eliberați %1$spentru a descărca actualizarea. Puteți să vă gestionați spațiul de stocare la setări.</string>
+   <string name="wallet_firmware_space_alert_cancel_action">Anulați</string>
+   <string name="wallet_firmware_space_alert_settings_action">Setări</string>
+
+   <!--factory reset-->
+   <string name="wallet_factory_reset_title">Resetări de fabrică pentru flye SmartCard</string>
+   <string name="wallet_factory_reset_enter_pin_text">Introduceți PIN-ul dvs. pe flye SmartCard pentru a accesa setările de fabrică.</string>
+   <string name="wallet_factory_reset_card_reset_text">Flye SmartCardul dvs. a fost configurat conform setărilor de fabrică.</string>
+
+   <!--firmware download-->
+   <string name="wallet_firmware_download_header">Actualizare flye SmartCard</string>
+   <string name="wallet_firmware_download_text">Se descarcă actualizarea</string>
+   <string name="wallet_firmware_download_cancel_action">Anulați</string>
+
+   <!-- firmware install-->
+   <string name="wallet_firmware_install_header">Actualizare flye SmartCard</string>
+   <string name="wallet_firmware_install_text">Se instalează actualizarea</string>
+   <string name="wallet_firmware_install_sub_text">Nu închideți flye SmartCardul</string>
+   <string name="wallet_firmware_install_error_alert_title">Eroare de instalare</string>
+   <string name="wallet_firmware_install_error_alert_content">Instalare nereușită a actualizării. Doriți să încercați din nou?</string>
+   <string name="wallet_firmware_install_error_alert_content_customer_support">Pentru asistență, vă rugăm să contactați serviciul Customer Support la</string>
+   <string name="wallet_firmware_install_customer_support_phone_number">(855) 999–3593</string>
+   <string name="wallet_firmware_install_error_retry_action">Reîncercați</string>
+   <string name="wallet_firmware_install_error_cancel_action">Anulați</string>
+
+   <!-- firmware success install-->
+   <string name="wallet_firmware_install_success_header">Actualizare flye SmartCard</string>
+   <string name="wallet_firmware_install_success_sub_title">Actualizare reușită la versiunea %1$s a flye SmartCardului</string>
+   <string name="wallet_firmware_install_success_title">Actualizare reușită</string>
+   <string name="wallet_firmware_install_success_action_button">Terminat</string>
+
+   <!--wizard checks-->
+   <string name="wallet_wizard_checks_header">Bine ați venit la configurarea flye™ SmartCard! </string>
+   <string name="wallet_wizard_checks_header2">Înainte de a începe, verificați dacă ați întrunit următoarele condiții:</string>
+   <string name="wallet_wizard_checks_title">flye SmartCard</string>
+   <string name="wallet_wizard_checks_bluetooth_is_not_supported">Bluetooth Low Energy nu este disponibil pe acest dispozitiv</string>
+   <string name="wallet_wizard_checks_bluetooth_not_enable">Bluetooth nu este activat</string>
+   <string name="wallet_wizard_checks_bluetooth_enable">Bluetooth este activat</string>
+   <string name="wallet_wizard_checks_network_not_available">Nu sunteți conectat la Internet</string>
+   <string name="wallet_wizard_checks_network_available">Sunteți conectat la Internet</string>
+
+   <!--pre installation check-->
+   <string name="wallet_firmware_pre_installation_title">Actualizare flye SmartCard</string>
+   <string name="wallet_firmware_pre_installation_header">Pentru a instala actualizarea\nVă rugăm să faceți următorii pași:</string>
+   <string name="wallet_firmware_pre_installation_bluetooth">Activați BlueTooth și conectați-vă la flye SmartCard</string>
+   <string name="wallet_firmware_pre_installation_connection">Deschideți SmartCardul</string>
+   <string name="wallet_firmware_pre_installation_charging">Asigurați-vă ca flye SmartCardul dvs. este încărcat în proporție de 50%</string>
+   <string name="wallet_firmware_pre_installation_button">Instalați</string>
+   <string name="wallet_firmware_pre_installation_install_later">Instalați mai târziu</string>
+
+   <!--smart card connection-->
+   <string name="wallet_smartcard_connected_label">SmartCardul este conectat</string>
+   <string name="wallet_smartcard_disconnected_label">SmartCardul este deconectat</string>
+   <string name="wallet_smartcard_connection_try_description">Conectați SmartCardul și încercați din nou</string>
+
+   <!-- Power On -->
+   <string name="wallet_wizard_power_on_title">flye SmartCard</string>
+   <string name="wallet_wizard_power_on_header">Puneți în funcțiune flye™SmartCardul dvs. prin glisarea pe cip.</string>
+
+   <!--puck connection screen-->
+   <string name="wallet_puck_connection_title">Actualizare Smart Card</string>
+   <string name="wallet_puck_connection_comment">Asigurați-vă că flye smart cardul dvs. este conectat la încărcător.</string>
+</resources>

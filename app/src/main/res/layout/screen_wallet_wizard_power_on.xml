@@ -61,16 +61,6 @@
                />
       </FrameLayout>
 
-      <TextView
-            android:id="@+id/wallet_wizard_power_on_soar_title"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="100dp"
-            android:gravity="center"
-            android:text="@string/wallet_wizard_splash_title1"
-            android:textAppearance="?android:attr/textAppearanceLarge"
-            />
-
    </FrameLayout>
 
 </com.worldventures.dreamtrips.wallet.ui.wizard.power_on.WizardPowerOnScreen>

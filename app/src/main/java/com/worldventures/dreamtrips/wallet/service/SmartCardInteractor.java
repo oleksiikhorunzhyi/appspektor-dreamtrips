@@ -31,8 +31,10 @@ import java.util.concurrent.Executors;
 import io.techery.janet.ActionPipe;
 import io.techery.janet.Janet;
 import io.techery.janet.ReadActionPipe;
+import io.techery.janet.WriteActionPipe;
 import io.techery.janet.smartcard.action.charger.StartCardRecordingAction;
 import io.techery.janet.smartcard.action.charger.StopCardRecordingAction;
+import io.techery.janet.smartcard.action.records.AddRecordAction;
 import io.techery.janet.smartcard.action.records.DeleteRecordAction;
 import io.techery.janet.smartcard.action.support.DisconnectAction;
 import io.techery.janet.smartcard.event.CardChargedEvent;
@@ -50,6 +52,7 @@ public final class SmartCardInteractor {
    private final ActionPipe<FetchAssociatedSmartCardCommand> fetchAssociatedSmartCardPipe;
    private final ActionPipe<SyncCardsCommand> syncCardsPipe;
    private final ActionPipe<AttachCardCommand> addRecordPipe;
+   private final WriteActionPipe<AddRecordAction> addNativeRecordPipe;
    private final ActionPipe<GetDefaultAddressCommand> getDefaultAddressCommandPipe;
    private final ActionPipe<AddBankCardCommand> saveCardDetailsDataCommandPipe;
    private final ActionPipe<SetStealthModeCommand> stealthModePipe;
@@ -103,6 +106,7 @@ public final class SmartCardInteractor {
             .io());
       stealthModePipe = sessionActionPipeCreator.createPipe(SetStealthModeCommand.class, Schedulers.io());
       addRecordPipe = sessionActionPipeCreator.createPipe(AttachCardCommand.class, Schedulers.io());
+      addNativeRecordPipe = sessionActionPipeCreator.createPipe(AddRecordAction.class);
 
       lockDeviceChangedEventPipe = sessionActionPipeCreator.createPipe(LockDeviceChangedEvent.class, Schedulers.io());
       setLockPipe = sessionActionPipeCreator.createPipe(SetLockStateCommand.class, Schedulers.io());
@@ -181,6 +185,10 @@ public final class SmartCardInteractor {
 
    public ActionPipe<AttachCardCommand> addRecordPipe() {
       return addRecordPipe;
+   }
+
+   public WriteActionPipe<AddRecordAction> addNativeRecordPipe() {
+      return addNativeRecordPipe;
    }
 
    public ActionPipe<GetDefaultAddressCommand> getDefaultAddressCommandPipe() {

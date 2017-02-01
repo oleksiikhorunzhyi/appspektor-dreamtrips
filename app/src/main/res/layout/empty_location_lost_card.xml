@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout android:id="@+id/ll_disable_tracking_info_view"
+      xmlns:android="http://schemas.android.com/apk/res/android"
+      xmlns:tools="http://schemas.android.com/tools"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:layout_gravity="center"
+      android:orientation="vertical"
+      android:layout_marginBottom="52dp"
+      >
+
+   <ImageView
+         android:layout_width="wrap_content"
+         android:layout_height="wrap_content"
+         android:layout_gravity="center"
+         android:layout_marginBottom="@dimen/spacing_medium"
+         android:src="@drawable/ic_offer_pin_icon"
+         />
+
+   <TextView
+         android:id="@+id/tv_empty_lost_card_msg"
+         android:layout_width="wrap_content"
+         android:layout_height="wrap_content"
+         android:gravity="center"
+         android:paddingLeft="@dimen/spacing_large"
+         android:paddingRight="@dimen/spacing_large"
+         android:textSize="@dimen/font_normal"
+         tools:text="@string/wallet_lost_card_empty_view"
+         />
+</LinearLayout>

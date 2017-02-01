@@ -36,17 +36,17 @@ public class SelectableWrapperAdapter<VH extends RecyclerView.ViewHolder> extend
       super.onBindViewHolder(holder, position);
    }
 
-   void toggleSelection(Integer pos) {
+   public void toggleSelection(Integer pos) {
       if (selectedItems.contains(pos)) selectedItems.remove(pos);
       else selectedItems.add(pos);
    }
 
-   void setSelection(Integer pos, boolean isSelected) {
+   public void setSelection(Integer pos, boolean isSelected) {
       if (isSelected) selectedItems.add(pos);
       else selectedItems.remove(pos);
    }
 
-   void clearSelections() {
+   public void clearSelections() {
       selectedItems.clear();
    }
 

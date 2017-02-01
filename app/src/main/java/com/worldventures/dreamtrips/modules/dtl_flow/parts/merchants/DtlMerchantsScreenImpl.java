@@ -27,6 +27,7 @@ import com.worldventures.dreamtrips.modules.dtl.view.cell.delegates.MerchantsAda
 import com.worldventures.dreamtrips.modules.dtl.view.cell.delegates.ScrollingManager;
 import com.worldventures.dreamtrips.modules.dtl.view.cell.pagination.PaginationManager;
 import com.worldventures.dreamtrips.modules.dtl.view.dialog.DialogFactory;
+import com.worldventures.dreamtrips.modules.dtl.view.util.ClearableSelectionManager;
 import com.worldventures.dreamtrips.modules.dtl.view.util.LayoutManagerScrollPersister;
 import com.worldventures.dreamtrips.modules.dtl_flow.DtlLayout;
 import com.worldventures.dreamtrips.modules.dtl_flow.view.toolbar.DtlToolbarHelper;
@@ -56,7 +57,7 @@ public class DtlMerchantsScreenImpl extends DtlLayout<DtlMerchantsScreen, DtlMer
    @Inject MerchantsAdapterDelegate delegate;
 
    ScrollingManager scrollingManager;
-   SingleSelectionManager selectionManager;
+   ClearableSelectionManager selectionManager;
    SweetAlertDialog errorDialog;
    PaginationManager paginationManager;
    LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
@@ -90,7 +91,7 @@ public class DtlMerchantsScreenImpl extends DtlLayout<DtlMerchantsScreen, DtlMer
       scrollingManager = new ScrollingManager();
       scrollingManager.setup(recyclerView);
 
-      selectionManager = new SingleSelectionManager(recyclerView);
+      selectionManager = new ClearableSelectionManager(recyclerView);
       selectionManager.setEnabled(isTabletLandscape());
 
       recyclerView.setAdapter(selectionManager.provideWrappedAdapter(adapter));

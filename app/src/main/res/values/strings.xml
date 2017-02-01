@@ -696,4 +696,5 @@
 
    <string name="documents">Documents</string>
    <string name="documents_empty_text">Documents could not be loaded at this time.</string>
+   <string name="wallet_directions">Directions</string>
 </resources>

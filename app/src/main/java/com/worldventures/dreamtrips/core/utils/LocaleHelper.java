@@ -45,4 +45,9 @@ public class LocaleHelper {
       return lhs.getCountry().equalsIgnoreCase(rhs.getCountry()) &&
             lhs.getLanguage().equalsIgnoreCase(rhs.getLanguage());
    }
+
+   public static String obtainLanguageCode(String localName) {
+      return localName.split("-")[0];
+   }
+
 }

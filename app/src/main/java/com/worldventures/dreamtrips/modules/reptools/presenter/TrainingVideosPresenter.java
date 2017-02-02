@@ -2,6 +2,7 @@ package com.worldventures.dreamtrips.modules.reptools.presenter;
 
 import com.innahema.collections.query.queriables.Queryable;
 import com.worldventures.dreamtrips.core.api.action.CommandWithError;
+import com.worldventures.dreamtrips.core.utils.LocaleHelper;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.membership.model.MediaHeader;
 import com.worldventures.dreamtrips.modules.video.model.Video;
@@ -39,6 +40,10 @@ public class TrainingVideosPresenter<T extends TrainingVideosPresenter.View> ext
       videoLocale = db.getLastSelectedVideoLocale();
       videoLanguage = db.getLastSelectedVideoLanguage();
       super.onResume();
+      sendViewTrainingVideoAnalytic();
+   }
+
+   protected void sendViewTrainingVideoAnalytic() {
       TrackingHelper.viewRepToolsTrainingVideoScreen();
    }
 
@@ -57,7 +62,7 @@ public class TrainingVideosPresenter<T extends TrainingVideosPresenter.View> ext
       memberVideosInteractor.getVideoLocalesPipe().clearReplays();
    }
 
-   private void localesLoaded(List<VideoLocale> locales) {
+   protected void localesLoaded(List<VideoLocale> locales) {
       if (videoLocale == null) {
          videoLocale = getCurrentLocale(locales, context.getResources().getConfiguration().locale);
          if (videoLocale == null) videoLocale = getCurrentLocale(locales, Locale.US);
@@ -117,6 +122,12 @@ public class TrainingVideosPresenter<T extends TrainingVideosPresenter.View> ext
    @Override
    public void sendAnalytic(String action, String name) {
       TrackingHelper.actionRepToolsTrainingVideo(action, name);
+   }
+
+   @Override
+   protected String obtainVideoLanguage(Video video) {
+      String defaultLocalName = LocaleHelper.formatLocale(LocaleHelper.getDefaultLocale());
+      return LocaleHelper.obtainLanguageCode(videoLanguage == null? defaultLocalName : videoLanguage.getLocaleName());
    }
 
    @Override

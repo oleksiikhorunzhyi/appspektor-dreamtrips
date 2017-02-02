@@ -1,7 +1,6 @@
 package com.worldventures.dreamtrips.modules.video.cell;
 
 import android.content.Context;
-import android.content.Intent;
 import android.net.Uri;
 import android.view.View;
 import android.widget.TextView;
@@ -14,10 +13,8 @@ import com.techery.spares.ui.view.cell.AbstractDelegateCell;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.session.UserSession;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
-import com.worldventures.dreamtrips.modules.common.view.activity.PlayerActivity;
 import com.worldventures.dreamtrips.modules.common.view.custom.PinProgressButton;
 import com.worldventures.dreamtrips.modules.video.cell.delegate.VideoCellDelegate;
-import com.worldventures.dreamtrips.modules.video.model.CachedEntity;
 import com.worldventures.dreamtrips.modules.video.model.Video;
 
 import javax.inject.Inject;
@@ -55,20 +52,16 @@ public class VideoCell extends AbstractDelegateCell<Video, VideoCellDelegate> {
    @OnClick(R.id.iv_play)
    public void onPlayClick() {
       Video video = getModelObject();
-      CachedEntity videoEntity = video.getCacheEntity();
-      Uri parse = Uri.parse(getModelObject().getVideoUrl());
-      if (videoEntity.isCached(context)) {
-         parse = Uri.parse(CachedEntity.getFilePath(context, videoEntity.getUrl()));
-      }
-      Intent intent = new Intent(context, PlayerActivity.class).setData(parse);
-      //
+
       TrackingHelper.videoAction(TrackingHelper.ACTION_MEMBERSHIP, appSessionHolder.get()
             .get()
             .getUser()
             .getUsername(), TrackingHelper.ACTION_MEMBERSHIP_PLAY, video.getVideoName());
-      if (cellDelegate != null) cellDelegate.sendAnalytic(TrackingHelper.ATTRIBUTE_VIEW, video.getVideoName());
-      //
-      context.startActivity(intent);
+
+      if (cellDelegate != null) {
+         cellDelegate.sendAnalytic(TrackingHelper.ATTRIBUTE_VIEW, video.getVideoName());
+         cellDelegate.onPlayVideoClicked(video);
+      }
    }
 
    @OnClick(R.id.download_progress)

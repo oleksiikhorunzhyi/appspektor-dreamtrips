@@ -27,6 +27,7 @@ import com.worldventures.dreamtrips.modules.common.presenter.ComponentPresenter;
 import com.worldventures.dreamtrips.modules.common.presenter.LaunchActivityPresenter;
 import com.worldventures.dreamtrips.modules.common.presenter.MainActivityPresenter;
 import com.worldventures.dreamtrips.modules.common.presenter.MediaPickerPresenter;
+import com.worldventures.dreamtrips.modules.common.presenter.PlayerPresenter;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.common.presenter.SharePresenter;
 import com.worldventures.dreamtrips.modules.common.presenter.TermsConditionsDialogPresenter;
@@ -58,6 +59,7 @@ import com.worldventures.dreamtrips.modules.reptools.ReptoolsModule;
 import com.worldventures.dreamtrips.modules.settings.SettingsModule;
 import com.worldventures.dreamtrips.modules.trips.TripsModule;
 import com.worldventures.dreamtrips.modules.tripsimages.TripsImagesModule;
+import com.worldventures.dreamtrips.modules.tripsimages.presenter.VideoPlayerPresenter;
 import com.worldventures.dreamtrips.modules.tripsimages.view.custom.PickImageDelegate;
 import com.worldventures.dreamtrips.modules.video.VideoModule;
 import com.worldventures.dreamtrips.modules.video.presenter.PresentationVideosPresenter;
@@ -78,6 +80,7 @@ import dagger.Provides;
             ActivityPresenter.class,
             LaunchActivityPresenter.class,
             MainActivityPresenter.class,
+            PlayerPresenter.class,
             Presenter.class, SharePresenter.class,
             TermsConditionsDialogPresenter.class,
             TermsConditionsDialog.class,

@@ -180,4 +180,9 @@ public class ThreeSixtyVideosFragment extends BaseMediaFragment<ThreeSixtyVideos
    public void onCellClicked(Video model) {
 
    }
+
+   @Override
+   public void onPlayVideoClicked(Video entity) {
+      getPresenter().onPlayVideo(entity);
+   }
 }

@@ -24,12 +24,16 @@ import com.worldventures.dreamtrips.modules.membership.view.util.DividerItemDeco
 import java.util.List;
 
 import butterknife.InjectView;
+import rx.Observable;
+import rx.subjects.PublishSubject;
 
 import static com.worldventures.dreamtrips.modules.membership.view.util.DividerItemDecoration.VERTICAL_LIST;
 
 @Layout(R.layout.fragment_documents)
 public class DocumentListFragment extends BaseFragment<DocumentListPresenter> implements CellDelegate<Document>,
       DocumentListPresenter.View, SwipeRefreshLayout.OnRefreshListener {
+
+   private PublishSubject<Boolean> visibilityStream = PublishSubject.create();
 
    @InjectView(R.id.emptyView) TextView emptyView;
 
@@ -41,6 +45,12 @@ public class DocumentListFragment extends BaseFragment<DocumentListPresenter> im
    public void onCreate(Bundle savedInstanceState) {
       super.onCreate(savedInstanceState);
       this.savedInstanceState = savedInstanceState;
+   }
+
+   @Override
+   public void onResume() {
+      super.onResume();
+      visibilityStream.onNext(true);
    }
 
    @Override
@@ -101,6 +111,17 @@ public class DocumentListFragment extends BaseFragment<DocumentListPresenter> im
    @Override
    public void updateLoadingStatus(boolean noMoreElements) {
       statePaginatedRecyclerViewManager.updateLoadingStatus(false, noMoreElements);
+   }
+
+   @Override
+   public void setUserVisibleHint(boolean isVisibleToUser) {
+      super.setUserVisibleHint(isVisibleToUser);
+      visibilityStream.onNext(isVisibleToUser);
+   }
+
+   @Override
+   public Observable<Boolean> visibilityStream() {
+      return visibilityStream.asObservable();
    }
 
    @Override

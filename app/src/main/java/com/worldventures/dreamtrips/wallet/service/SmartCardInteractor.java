@@ -25,8 +25,6 @@ import com.worldventures.dreamtrips.wallet.service.command.UpdateBankCardCommand
 import com.worldventures.dreamtrips.wallet.service.command.UpdateCardDetailsDataCommand;
 import com.worldventures.dreamtrips.wallet.service.command.http.CreateBankCardCommand;
 import com.worldventures.dreamtrips.wallet.service.command.http.FetchAssociatedSmartCardCommand;
-import com.worldventures.dreamtrips.wallet.service.lostcard.command.CreateLocationCommand;
-import com.worldventures.dreamtrips.wallet.service.lostcard.command.GetLocationCommand;
 
 import java.util.concurrent.Executors;
 
@@ -81,8 +79,6 @@ public final class SmartCardInteractor {
 
    private final ActionPipe<GetCompatibleDevicesCommand> compatibleDevicesActionPipe;
    private final ActionPipe<CardInChargerEvent> cardInChargerEventPipe;
-   private final ActionPipe<CreateLocationCommand> createLocationPipe;
-   private final ActionPipe<GetLocationCommand> getLocationPipe;
 
    public SmartCardInteractor(Janet janet, SessionActionPipeCreator sessionActionPipeCreator) {
       this(janet, sessionActionPipeCreator, SmartCardInteractor::singleThreadScheduler);
@@ -136,9 +132,6 @@ public final class SmartCardInteractor {
 
       cardInChargerEventPipe = sessionActionPipeCreator.createPipe(CardInChargerEvent.class, Schedulers.io());
       compatibleDevicesActionPipe = sessionActionPipeCreator.createPipe(GetCompatibleDevicesCommand.class, Schedulers.io());
-
-      createLocationPipe = sessionActionPipeCreator.createPipe(CreateLocationCommand.class, Schedulers.io());
-      getLocationPipe = sessionActionPipeCreator.createPipe(GetLocationCommand.class, Schedulers.io());
    }
 
    private static Scheduler singleThreadScheduler() {
@@ -273,13 +266,5 @@ public final class SmartCardInteractor {
 
    public ActionPipe<CardInChargerEvent> cardInChargerEventPipe() {
       return cardInChargerEventPipe;
-   }
-
-   public ActionPipe<CreateLocationCommand> createLocationPipe() {
-      return createLocationPipe;
-   }
-
-   public ActionPipe<GetLocationCommand> getLocationPipe() {
-      return getLocationPipe;
    }
 }

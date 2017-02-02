@@ -4,7 +4,6 @@ import com.innahema.collections.query.queriables.Queryable;
 import com.worldventures.dreamtrips.api.smart_card.location.GetSmartCardLocationsHttpAction;
 import com.worldventures.dreamtrips.api.smart_card.location.model.SmartCardLocation;
 import com.worldventures.dreamtrips.core.janet.dagger.InjectableAction;
-import com.worldventures.dreamtrips.wallet.domain.entity.SmartCard;
 import com.worldventures.dreamtrips.wallet.service.SystemPropertiesProvider;
 import com.worldventures.dreamtrips.wallet.service.lostcard.SCLocationRepository;
 
@@ -16,12 +15,12 @@ import javax.inject.Named;
 
 import io.techery.janet.Command;
 import io.techery.janet.Janet;
+import io.techery.janet.command.annotations.CommandAction;
 import rx.Observable;
-import rx.schedulers.Schedulers;
 
 import static com.worldventures.dreamtrips.core.janet.JanetModule.JANET_API_LIB;
 
-
+@CommandAction
 public class GetLocationCommand extends Command<List<SmartCardLocation>> implements InjectableAction {
 
    @Inject @Named(JANET_API_LIB) Janet janet;
@@ -36,7 +35,7 @@ public class GetLocationCommand extends Command<List<SmartCardLocation>> impleme
    }
 
    private Observable<List<SmartCardLocation>> getHistoricalLocation() {
-      return janet.createPipe(GetSmartCardLocationsHttpAction.class, Schedulers.io())
+      return janet.createPipe(GetSmartCardLocationsHttpAction.class)
             .createObservableResult(new GetSmartCardLocationsHttpAction(Long.parseLong(propertiesProvider.deviceId())))
             .map(GetSmartCardLocationsHttpAction::response);
    }

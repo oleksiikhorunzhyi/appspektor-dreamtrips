@@ -7,6 +7,7 @@ import com.worldventures.dreamtrips.wallet.service.SmartCardInteractor;
 import com.worldventures.dreamtrips.wallet.service.SmartCardSyncManager;
 import com.worldventures.dreamtrips.wallet.service.command.ActiveSmartCardCommand;
 import com.worldventures.dreamtrips.wallet.service.command.ConnectSmartCardCommand;
+import com.worldventures.dreamtrips.wallet.service.lostcard.SCLocationManager;
 
 import javax.inject.Inject;
 
@@ -17,12 +18,14 @@ public class WalletActivityPresenter extends ActivityPresenter<ActivityPresenter
 
    @Inject SmartCardInteractor interactor;
    @Inject SmartCardSyncManager smartCardSyncManager;
+   @Inject SCLocationManager locationManager;
 
    @Override
    public void onCreate(Bundle savedInstanceState) {
       super.onCreate(savedInstanceState);
 
       smartCardSyncManager.connect();
+      locationManager.connect();
 
       interactor.activeSmartCardPipe()
             .createObservableResult(new ActiveSmartCardCommand())
@@ -36,5 +39,6 @@ public class WalletActivityPresenter extends ActivityPresenter<ActivityPresenter
    public void dropView() {
       super.dropView();
       interactor.disconnectPipe().send(new DisconnectAction());
+      locationManager.disconnect();
    }
 }

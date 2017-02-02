@@ -1,6 +1,7 @@
 package com.worldventures.dreamtrips.wallet.ui.settings.lostcard;
 
 import android.content.Context;
+import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
 import android.support.v7.widget.SwitchCompat;
 import android.support.v7.widget.Toolbar;
@@ -46,8 +47,6 @@ public class LostCardScreen extends WalletLinearLayout<LostCardPresenter.Screen,
    @InjectView(R.id.last_connected_label) TextView tvLastConnectionLabel;
    @InjectView(R.id.map_view) ToucheableMapView mapView;
 
-   private GoogleMap googleMap;
-
    private Observable<Boolean> enableTrackingObservable;
 
    public LostCardScreen(Context context) {
@@ -75,15 +74,32 @@ public class LostCardScreen extends WalletLinearLayout<LostCardPresenter.Screen,
       if (isInEditMode()) return;
       enableTrackingObservable = RxCompoundButton.checkedChanges(trackingEnableSwitcher);
 
+      mapView.onCreate(null);
+
       tvDisableLostCardMsg.setText(Html.fromHtml(getString(R.string.wallet_lost_card_empty_view)));
       checkGoogleServicesAndInitMap();
+   }
+
+   @Override
+   protected void onAttachedToWindow() {
+      super.onAttachedToWindow();
+      if(isInEditMode()) return;
+      mapView.onResume();
+   }
+
+   @Override
+   protected void onDetachedFromWindow() {
+      super.onDetachedFromWindow();
+      if(isInEditMode()) return;
+      mapView.onPause();
+      mapView.onDestroy();
    }
 
    private void checkGoogleServicesAndInitMap() {
       noGoogleContainer.setVisibility(View.GONE);
       if (!trackingEnableSwitcher.isChecked()) return;
       if (GooglePlayServicesUtil.isGooglePlayServicesAvailable(getContext()) != ConnectionResult.SUCCESS) {
-         toggleVisibleMap(false);
+         setVisibilityMap(false);
          toggleVisibleMsgEmptyLastLocation(false);
          toggleVisibleDisabledOfTrackingView(false);
          noGoogleContainer.setVisibility(View.VISIBLE);
@@ -118,7 +134,7 @@ public class LostCardScreen extends WalletLinearLayout<LostCardPresenter.Screen,
    }
 
    @Override
-   public void toggleVisibleMap(boolean visible) {
+   public void setVisibilityMap(boolean visible) {
       mapContainer.setVisibility(visible ? VISIBLE : GONE);
    }
 
@@ -128,13 +144,13 @@ public class LostCardScreen extends WalletLinearLayout<LostCardPresenter.Screen,
    }
 
    @Override
-   public void toggleSwitcher(boolean checked) {
+   public void toggleLostCardSwitcher(boolean checked) {
       trackingEnableSwitcher.setChecked(checked);
    }
 
    @Override
-   public void addPin(LostCardPin lostCardPin) {
-      if (googleMap != null && lostCardPin != null) {
+   public void addPin(@NonNull LostCardPin lostCardPin) {
+      mapView.getMapAsync(googleMap -> {
          googleMap.setInfoWindowAdapter(new SmartCardLocaleInfoWindow(getContext(), lostCardPin));
 
          Marker marker = googleMap.addMarker(
@@ -145,7 +161,7 @@ public class LostCardScreen extends WalletLinearLayout<LostCardPresenter.Screen,
          );
 
          marker.showInfoWindow();
-      }
+      });
    }
 
    @Override
@@ -167,6 +183,7 @@ public class LostCardScreen extends WalletLinearLayout<LostCardPresenter.Screen,
    @Override
    public void showDeniedForLocation() {
       Snackbar.make(this, R.string.wallet_lost_card_no_permission, Snackbar.LENGTH_SHORT).show();
+      toggleLostCardSwitcher(false);
    }
 
    @Override
@@ -175,8 +192,8 @@ public class LostCardScreen extends WalletLinearLayout<LostCardPresenter.Screen,
    }
 
    private void initMap() {
-      mapView.getMapAsync(map -> {
-         googleMap = map;
+      mapContainer.setVisibility(VISIBLE);
+      mapView.getMapAsync(googleMap -> {
          googleMap.setMyLocationEnabled(true);
          UiSettings uiSettings = googleMap.getUiSettings();
          uiSettings.setAllGesturesEnabled(true);
@@ -188,7 +205,7 @@ public class LostCardScreen extends WalletLinearLayout<LostCardPresenter.Screen,
    }
 
    private GoogleMap.OnMarkerClickListener onMarkerClickListener = marker -> {
-      googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(marker.getPosition(), 5));
+      mapView.getMapAsync(googleMap -> googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(marker.getPosition(), 5)));
       marker.showInfoWindow();
       return false;
    };

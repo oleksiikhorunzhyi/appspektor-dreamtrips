@@ -2,6 +2,7 @@ package com.worldventures.dreamtrips.wallet.ui.settings.lostcard;
 
 import android.content.Context;
 import android.os.Parcelable;
+import android.support.annotation.NonNull;
 
 import com.techery.spares.module.Injector;
 import com.worldventures.dreamtrips.core.permission.PermissionConstants;
@@ -56,6 +57,7 @@ public class LostCardPresenter extends WalletPresenter<LostCardPresenter.Screen,
    private void executeToggleTracking(boolean enableTracking) {
       getView().onTrackingChecked(enableTracking);
       getView().toggleVisibleDisabledOfTrackingView(!enableTracking);
+      getView().setVisibilityMap(enableTracking);
       // TODO: 2/1/17 add services toggle enable tracking of SC location
    }
 
@@ -80,13 +82,13 @@ public class LostCardPresenter extends WalletPresenter<LostCardPresenter.Screen,
 
       void toggleVisibleLastConnectionTime(boolean visible);
 
-      void toggleVisibleMap(boolean visible);
+      void setVisibilityMap(boolean visible);
 
       void setLastConnectionLabel(String lastConnection);
 
-      void toggleSwitcher(boolean checked);
+      void toggleLostCardSwitcher(boolean checked);
 
-      void addPin(LostCardPin lostCardPin);
+      void addPin(@NonNull LostCardPin lostCardPin);
 
       void onTrackingChecked(boolean checked);
 

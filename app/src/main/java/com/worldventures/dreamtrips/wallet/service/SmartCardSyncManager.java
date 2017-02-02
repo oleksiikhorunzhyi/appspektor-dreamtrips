@@ -12,7 +12,6 @@ import com.worldventures.dreamtrips.wallet.service.command.FetchCardPropertiesCo
 import com.worldventures.dreamtrips.wallet.service.command.FetchFirmwareVersionCommand;
 import com.worldventures.dreamtrips.wallet.service.command.SetLockStateCommand;
 import com.worldventures.dreamtrips.wallet.service.command.SyncCardsCommand;
-import com.worldventures.dreamtrips.wallet.service.command.UpdateBankCardCommand;
 import com.worldventures.dreamtrips.wallet.service.firmware.command.LoadFirmwareFilesCommand;
 
 import java.util.concurrent.TimeUnit;
@@ -262,12 +261,9 @@ public class SmartCardSyncManager {
                         .send(add(attachCardCommand.getResult()))));
 
       subscriptions.add(interactor.updateBankCardPipe()
-            .observe()
-            .subscribe(new ActionStateSubscriber<UpdateBankCardCommand>()
-                  .onStart(updateBankCardCommand -> interactor.cardsListPipe()
-                        .send(edit(updateBankCardCommand.getBankCard())))
-                  .onSuccess(updateBankCardCommand -> interactor.cardsListPipe()
-                        .send(edit(updateBankCardCommand.getResult())))));
+            .observeSuccess()
+            .subscribe(updateBankCardCommand -> interactor.cardsListPipe()
+                  .send(edit(updateBankCardCommand.getResult()))));
 
       //update cache default card
       subscriptions.add(interactor.setDefaultCardOnDeviceCommandPipe()

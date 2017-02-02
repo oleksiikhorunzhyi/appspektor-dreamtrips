@@ -24,6 +24,10 @@ public class CardListCommand extends CachedValueCommand<List<Card>> {
       return new CardListCommand(new AddOperationFunc(card));
    }
 
+   public static CardListCommand replace(Card card) {
+      return new CardListCommand(new EditOperationFunc(card));
+   }
+
    public static CardListCommand edit(Card card) {
       return new CardListCommand(new EditOperationFunc(card));
    }

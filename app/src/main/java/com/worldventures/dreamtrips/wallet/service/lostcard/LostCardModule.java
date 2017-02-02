@@ -9,8 +9,10 @@ import com.worldventures.dreamtrips.wallet.service.WalletDetectLocationService;
 import com.worldventures.dreamtrips.wallet.service.impl.AndroidDetectLocationService;
 import com.worldventures.dreamtrips.wallet.service.lostcard.command.DetectGeoLocationCommand;
 import com.worldventures.dreamtrips.wallet.service.lostcard.command.FetchAddressCommand;
+import com.worldventures.dreamtrips.wallet.service.lostcard.command.GetEnabledTrackingCommand;
 import com.worldventures.dreamtrips.wallet.service.lostcard.command.GetLocationCommand;
 import com.worldventures.dreamtrips.wallet.service.lostcard.command.PostLocationCommand;
+import com.worldventures.dreamtrips.wallet.service.lostcard.command.SaveEnabledTrackingCommand;
 
 import javax.inject.Singleton;
 
@@ -22,7 +24,9 @@ import dagger.Provides;
             PostLocationCommand.class,
             GetLocationCommand.class,
             DetectGeoLocationCommand.class,
-            FetchAddressCommand.class
+            FetchAddressCommand.class,
+            SaveEnabledTrackingCommand.class,
+            GetEnabledTrackingCommand.class
       },
       library = true, complete = false)
 public class LostCardModule {

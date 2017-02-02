@@ -1,6 +1,7 @@
 package com.worldventures.dreamtrips.wallet.ui.settings.lostcard;
 
 import android.content.Context;
+import android.support.design.widget.Snackbar;
 import android.support.v7.widget.SwitchCompat;
 import android.support.v7.widget.Toolbar;
 import android.text.Html;
@@ -8,6 +9,7 @@ import android.util.AttributeSet;
 import android.view.View;
 import android.widget.TextView;
 
+import com.afollestad.materialdialogs.MaterialDialog;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -79,7 +81,7 @@ public class LostCardScreen extends WalletLinearLayout<LostCardPresenter.Screen,
 
    private void checkGoogleServicesAndInitMap() {
       noGoogleContainer.setVisibility(View.GONE);
-      if(!trackingEnableSwitcher.isChecked()) return;
+      if (!trackingEnableSwitcher.isChecked()) return;
       if (GooglePlayServicesUtil.isGooglePlayServicesAvailable(getContext()) != ConnectionResult.SUCCESS) {
          toggleVisibleMap(false);
          toggleVisibleMsgEmptyLastLocation(false);
@@ -147,8 +149,24 @@ public class LostCardScreen extends WalletLinearLayout<LostCardPresenter.Screen,
    }
 
    @Override
-   public void onTrackingEnable() {
+   public void onTrackingChecked(boolean checked) {
       checkGoogleServicesAndInitMap();
+   }
+
+   @Override
+   public void showRationaleForLocation() {
+      new MaterialDialog.Builder(getContext())
+            .content(R.string.wallet_location_permission_message)
+            .positiveText(R.string.ok)
+            .negativeText(R.string.cancel)
+            .onPositive((dialog, which) -> presenter.requestPermissions(trackingEnableSwitcher.isChecked()))
+            .build()
+            .show();
+   }
+
+   @Override
+   public void showDeniedForLocation() {
+      Snackbar.make(this, R.string.wallet_lost_card_no_permission, Snackbar.LENGTH_SHORT).show();
    }
 
    @Override
@@ -176,6 +194,6 @@ public class LostCardScreen extends WalletLinearLayout<LostCardPresenter.Screen,
    };
 
    protected void onMapLoaded() {
-      if(trackingEnableSwitcher.isChecked()) presenter.loadLastSmartCardLocation();
+      if (trackingEnableSwitcher.isChecked()) presenter.loadLastSmartCardLocation();
    }
 }

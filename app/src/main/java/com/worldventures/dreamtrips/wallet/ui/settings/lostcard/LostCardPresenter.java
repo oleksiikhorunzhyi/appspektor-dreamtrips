@@ -4,6 +4,9 @@ import android.content.Context;
 import android.os.Parcelable;
 
 import com.techery.spares.module.Injector;
+import com.worldventures.dreamtrips.core.permission.PermissionConstants;
+import com.worldventures.dreamtrips.core.permission.PermissionDispatcher;
+import com.worldventures.dreamtrips.core.permission.PermissionSubscriber;
 import com.worldventures.dreamtrips.wallet.service.SmartCardInteractor;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletPresenter;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.WalletScreen;
@@ -18,6 +21,7 @@ public class LostCardPresenter extends WalletPresenter<LostCardPresenter.Screen,
 
    @Inject SmartCardInteractor smartCardInteractor;
    @Inject Navigator navigator;
+   @Inject PermissionDispatcher permissionDispatcher;
 
    public LostCardPresenter(Context context, Injector injector) {
       super(context, injector);
@@ -33,13 +37,24 @@ public class LostCardPresenter extends WalletPresenter<LostCardPresenter.Screen,
       view.observeTrackingEnable()
             .compose(bindView())
             .skip(1)
-            .subscribe(this::trackingToggleEnable);
+            .subscribe(this::enableToggleTracking);
    }
 
-   private void trackingToggleEnable(boolean enableTracking) {
-      if (enableTracking) {
-         getView().onTrackingEnable();
-      }
+   private void enableToggleTracking(boolean enableTracking) {
+      requestPermissions(enableTracking);
+      // TODO: 2/2/17 SAVE state of enabled tracking
+   }
+
+   public void requestPermissions(boolean enableTracking) {
+      permissionDispatcher.requestPermission(PermissionConstants.LOCATION_PERMISSIONS)
+            .subscribe(new PermissionSubscriber()
+                  .onPermissionGrantedAction(() -> executeToggleTracking(enableTracking))
+                  .onPermissionRationaleAction(() -> getView().showRationaleForLocation())
+                  .onPermissionDeniedAction(() -> getView().showDeniedForLocation()));
+   }
+
+   private void executeToggleTracking(boolean enableTracking) {
+      getView().onTrackingChecked(enableTracking);
       getView().toggleVisibleDisabledOfTrackingView(!enableTracking);
       // TODO: 2/1/17 add services toggle enable tracking of SC location
    }
@@ -73,6 +88,10 @@ public class LostCardPresenter extends WalletPresenter<LostCardPresenter.Screen,
 
       void addPin(LostCardPin lostCardPin);
 
-      void onTrackingEnable();
+      void onTrackingChecked(boolean checked);
+
+      void showRationaleForLocation();
+
+      void showDeniedForLocation();
    }
 }

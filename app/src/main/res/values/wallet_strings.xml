@@ -365,5 +365,9 @@
    <string name="wallet_lost_card_last_connected">Last Connected</string>
    <string name="wallet_lost_card_empty_view">Turn on <![CDATA[<b>Enable Tracking</b>]]> to gather location information about your Smart Card.</string>
    <string name="wallet_lost_card_empty_last_location_msg">Location tracking is enabled and will begin the next time your Smart Card is connected.</string>
+   <string name="wallet_lost_card_no_permission">You can not use this feature without Location permissions.</string>
+   <string name="wallet_directions">Directions</string>
+   <string name="wallet_location_permission_message">Grant of Location permission, for use this feature. Because is it required, for correct work of Google Map.</string>
+   <string name="wallet_google_play_services_unsupported_text">DreamTrips relies on Google Play services, which is not supported by your device. Contact the manufacturer for assistance.</string>
 
 </resources>

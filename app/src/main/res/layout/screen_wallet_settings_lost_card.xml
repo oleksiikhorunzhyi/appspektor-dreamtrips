@@ -130,7 +130,7 @@
                   android:gravity="center"
                   android:paddingLeft="@dimen/spacing_normal"
                   android:paddingRight="@dimen/spacing_normal"
-                  android:text="@string/common_google_play_services_unsupported_text"
+                  android:text="@string/wallet_google_play_services_unsupported_text"
                   android:textSize="@dimen/font_medium"
                   />
          </FrameLayout>

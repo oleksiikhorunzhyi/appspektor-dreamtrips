@@ -439,7 +439,6 @@
 
    <!--end messenger-->
 
-   <!--in app notifications-->
    <style name="BaseInAppNotificationUiElementsContainer">
       <item name="android:layout_height">wrap_content</item>
    </style>
@@ -512,5 +511,18 @@
       <item name="android:textColor">@color/uploading_cell_status_label_uploading</item>
       <item name="android:textSize">@dimen/uploading_cell_status_label_text_size</item>
    </style>
-   <!--end in app notifications-->
+
+   <style name="TranslateView">
+      <item name="android:layout_marginLeft">@dimen/spacing_normal</item>
+      <item name="android:layout_marginRight">@dimen/spacing_normal</item>
+      <item name="android:layout_marginBottom">@dimen/spacing_small</item>
+   </style>
+
+   <style name="TranslateButton">
+      <item name="android:layout_marginBottom">@dimen/spacing_small</item>
+      <item name="android:layout_marginLeft">@dimen/spacing_normal</item>
+      <item name="android:background">@drawable/background_translate_button</item>
+      <item name="android:padding">@dimen/spacing_tiny</item>
+   </style>
+
 </resources>

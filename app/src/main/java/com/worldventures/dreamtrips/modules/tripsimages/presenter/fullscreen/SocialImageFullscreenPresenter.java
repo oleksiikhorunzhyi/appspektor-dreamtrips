@@ -60,7 +60,7 @@ public class SocialImageFullscreenPresenter extends SocialFullScreenPresenter<Ph
    public void takeView(View view) {
       super.takeView(view);
       setupTranslationState();
-      subscribeToTranlsation();
+      subscribeToTranslation();
       subscribeToLikesChanges();
       loadEntity();
    }
@@ -219,9 +219,9 @@ public class SocialImageFullscreenPresenter extends SocialFullScreenPresenter<Ph
       translationFeedInteractor.translatePhotoPipe().send(new TranslatePhotoCommand(photo));
    }
 
-   private void subscribeToTranlsation() {
+   private void subscribeToTranslation() {
       translationFeedInteractor.translatePhotoPipe()
-            .observeWithReplay()
+            .observe()
             .filter(commandState -> commandState.action.getPhoto().equals(photo))
             .compose(bindViewToMainComposer())
             .subscribe(new ActionStateSubscriber<TranslatePhotoCommand>()

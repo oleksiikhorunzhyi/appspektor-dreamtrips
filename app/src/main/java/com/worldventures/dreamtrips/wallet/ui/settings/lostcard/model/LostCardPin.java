@@ -2,39 +2,14 @@ package com.worldventures.dreamtrips.wallet.ui.settings.lostcard.model;
 
 import com.google.android.gms.maps.model.LatLng;
 
-public class LostCardPin {
+import org.immutables.value.Value;
 
-   private String place;
-   private String address;
-   private LatLng position;
+@Value.Immutable
+public interface LostCardPin {
 
-   public LostCardPin(String place, String address, LatLng position) {
-      this.place = place;
-      this.address = address;
-      this.position = position;
-   }
+   String place();
 
-   public String place() {
-      return place;
-   }
+   String address();
 
-   public void setPlace(String place) {
-      this.place = place;
-   }
-
-   public String address() {
-      return address;
-   }
-
-   public void setAddress(String address) {
-      this.address = address;
-   }
-
-   public LatLng position() {
-      return position;
-   }
-
-   public void setPosition(LatLng position) {
-      this.position = position;
-   }
+   LatLng position();
 }

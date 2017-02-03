@@ -209,4 +209,8 @@
 
    <color name="dtl_text_color_disabled_filters">#8e99a8</color>
 
+   <color name="dtl_stroke_filters_map">#e3e3e3</color>
+   <color name="dtl_stroke_filters_map_pressed">#53b5fe</color>
+   <color name="dtl_filter_options_card">#f3f6f8</color>
+
 </resources>

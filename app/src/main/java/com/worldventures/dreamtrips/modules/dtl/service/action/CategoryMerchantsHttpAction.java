@@ -9,9 +9,6 @@ import io.techery.janet.http.annotations.HttpAction;
 import io.techery.janet.http.annotations.Query;
 import io.techery.janet.http.annotations.Response;
 
-/**
- * Created by yair.carreno on 1/22/2017.
- */
 
 @HttpAction(value = "api/dtl/v2/thin_merchants")
 public class CategoryMerchantsHttpAction extends AuthorizedHttpAction {

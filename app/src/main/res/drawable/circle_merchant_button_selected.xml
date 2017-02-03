@@ -5,5 +5,5 @@
          android:endColor="@color/merchant_buttons"
          android:startColor="@color/merchant_buttons"/>
    <stroke android:width="2dp"
-         android:color="#ffffff" />
+         android:color="@android:color/white" />
 </shape>

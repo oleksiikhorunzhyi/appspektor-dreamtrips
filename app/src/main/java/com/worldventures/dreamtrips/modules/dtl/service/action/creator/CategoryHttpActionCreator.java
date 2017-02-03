@@ -5,9 +5,6 @@ import com.worldventures.dreamtrips.modules.dtl.service.action.bundle.HttpAction
 
 import java.util.List;
 
-/**
- * Created by yair.carreno on 1/24/2017.
- */
 
 public interface CategoryHttpActionCreator<Action extends AuthorizedHttpAction, Params extends HttpActionParams> {
 

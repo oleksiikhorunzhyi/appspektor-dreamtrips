@@ -9,9 +9,7 @@ import io.techery.janet.http.annotations.HttpAction;
 import io.techery.janet.http.annotations.Query;
 import io.techery.janet.http.annotations.Response;
 
-/**
- * Created by yair.carreno on 1/24/2017.
- */
+
 @HttpAction(value = "api/dtl/v2/attributes")
 public class CategoryAttributesHttpAction extends AuthorizedHttpAction {
 

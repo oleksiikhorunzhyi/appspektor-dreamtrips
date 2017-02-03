@@ -1,6 +1,5 @@
 package com.worldventures.dreamtrips.modules.dtl.service.action;
 
-import android.util.Log;
 
 import com.worldventures.dreamtrips.core.janet.JanetModule;
 import com.worldventures.dreamtrips.core.janet.dagger.InjectableAction;

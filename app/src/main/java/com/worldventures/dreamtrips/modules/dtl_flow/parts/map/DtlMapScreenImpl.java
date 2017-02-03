@@ -143,21 +143,24 @@ public class DtlMapScreenImpl extends DtlLayout<DtlMapScreen, DtlMapPresenter, D
     @Override
     public void updateMerchantType(List<String> type) {
         int idResource = 0;
-        if (type != null && type.size() > 1) {
-            if (type != null && type.get(0).equals(RESTAURANT) && type.get(1).equals(BAR)) {
+
+       if (type != null ) {
+          if (type.size() > 1) {
+             if (type.get(0).equals(RESTAURANT) && type.get(1).equals(BAR)) {
                 filterFood.setSelected(true);
                 idResource = R.string.dtlt_search_hint;
-            }
-        } else {
-            if (type != null && type.get(0).equals(ENTERTAINMENT)) {
+             }
+          } else {
+             if (type.get(0).equals(ENTERTAINMENT)) {
                 filterEntertainment.setSelected(true);
                 idResource = R.string.filter_merchant_entertainment;
-            } else if (type != null && type.get(0).equals(SPAS)) {
+             } else if (type.get(0).equals(SPAS)) {
                 filterSpa.setSelected(true);
                 idResource = R.string.filter_merchant_spa;
-            }
-        }
-        updateFiltersView(idResource);
+             }
+          }
+       }
+       updateFiltersView(idResource);
     }
 
    private void checkMapAvailable() {
@@ -225,9 +228,7 @@ public class DtlMapScreenImpl extends DtlLayout<DtlMapScreen, DtlMapPresenter, D
             filterFood.setSelected(true);
             filterEntertainment.setSelected(false);
             filterSpa.setSelected(false);
-            getPresenter().onLoadMerchantsType(merchantType);
-            updateFiltersView(R.string.dtlt_search_hint);
-            getPresenter().loadAmenities(merchantType);
+            loadMerchantsAndAmenities(merchantType, R.string.dtlt_search_hint);
         }
     }
 
@@ -239,9 +240,7 @@ public class DtlMapScreenImpl extends DtlLayout<DtlMapScreen, DtlMapPresenter, D
             filterFood.setSelected(false);
             filterEntertainment.setSelected(true);
             filterSpa.setSelected(false);
-            getPresenter().onLoadMerchantsType(merchantType);
-            updateFiltersView(R.string.filter_merchant_entertainment);
-            getPresenter().loadAmenities(merchantType);
+            loadMerchantsAndAmenities(merchantType, R.string.filter_merchant_entertainment);
         }
     }
 
@@ -253,9 +252,7 @@ public class DtlMapScreenImpl extends DtlLayout<DtlMapScreen, DtlMapPresenter, D
             filterFood.setSelected(false);
             filterEntertainment.setSelected(false);
             filterSpa.setSelected(true);
-            getPresenter().onLoadMerchantsType(merchantType);
-            updateFiltersView(R.string.filter_merchant_spa);
-            getPresenter().loadAmenities(merchantType);
+            loadMerchantsAndAmenities(merchantType, R.string.filter_merchant_spa);
         }
     }
 
@@ -453,5 +450,11 @@ public class DtlMapScreenImpl extends DtlLayout<DtlMapScreen, DtlMapPresenter, D
       if (stringResource != 0 && dtlToolbar != null) {
          dtlToolbar.setSearchCaption(ViewUtils.getStringById(getContext(), stringResource));
       }
+   }
+
+   private void loadMerchantsAndAmenities(List<String> merchantType , int stringResource) {
+      getPresenter().onLoadMerchantsType(merchantType);
+      updateFiltersView(stringResource);
+      getPresenter().loadAmenities(merchantType);
    }
 }

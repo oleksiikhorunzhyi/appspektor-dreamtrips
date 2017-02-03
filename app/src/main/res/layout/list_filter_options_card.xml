@@ -2,7 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
       android:layout_width="match_parent"
       android:layout_height="48dp"
-      android:background="#f3f6f8"
+      android:background="@color/dtl_filter_options_card"
       android:elevation="2dp"
       android:orientation="horizontal">
 

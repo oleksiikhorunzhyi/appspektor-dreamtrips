@@ -102,6 +102,7 @@ public class SocialImageFullscreenPresenter extends SocialFullScreenPresenter<Ph
                         view.showContentWrapper();
                      }
                      setupActualViewState();
+                     setupTranslationState();
                   })
                   .onFail(this::handleError));
    }

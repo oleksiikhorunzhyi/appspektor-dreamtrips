@@ -338,4 +338,10 @@ public class DtlDetailsScreenImpl extends DtlLayout<DtlDetailsScreen, DtlDetails
    public DtlDetailsScreenImpl(Context context, AttributeSet attrs) {
       super(context, attrs);
    }
+
+   @OnClick(R.id.button_see_list_reviews)
+   @Override
+   public void showAllReviews() {
+      getPresenter().showAllReviews();
+   }
 }

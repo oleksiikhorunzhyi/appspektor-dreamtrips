@@ -38,6 +38,7 @@ import com.worldventures.dreamtrips.modules.dtl.service.PresentationInteractor;
 import com.worldventures.dreamtrips.modules.dtl.service.action.DtlTransactionAction;
 import com.worldventures.dreamtrips.modules.dtl_flow.DtlPresenterImpl;
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.fullscreen_image.DtlFullscreenImagePath;
+import com.worldventures.dreamtrips.modules.dtl_flow.parts.reviews.DtlReviewsPath;
 
 import java.util.Calendar;
 import java.util.List;
@@ -276,5 +277,10 @@ public class DtlDetailsPresenterImpl extends DtlPresenterImpl<DtlDetailsScreen, 
                .send(DtlAnalyticsCommand.create(new MerchantMapDestinationEvent(null, merchant)));
          getView().showMerchantMap(intent);
       });
+   }
+
+   @Override
+   public void showAllReviews() {
+      Flow.get(getContext()).set(new DtlReviewsPath());
    }
 }

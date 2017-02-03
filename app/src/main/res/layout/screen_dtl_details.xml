@@ -237,6 +237,13 @@
                   tools:visibility="visible"
                   />
          </LinearLayout>
+
+         <Button
+               android:id="@+id/button_see_list_reviews"
+               android:layout_width="wrap_content"
+               android:layout_height="wrap_content"
+               android:text="Get Review Screen"
+               />
       </LinearLayout>
    </android.support.v4.widget.NestedScrollView>
 </com.worldventures.dreamtrips.modules.dtl_flow.parts.details.DtlDetailsScreenImpl>

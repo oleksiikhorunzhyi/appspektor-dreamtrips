@@ -58,4 +58,9 @@ public class FacebookPhotoFragment extends BasePickerFragment<FacebookPhotoPrese
       String albumId = getArgs().getString(BUNDLE_ALBUM_ID);
       return new FacebookPhotoPresenter(albumId);
    }
+
+   @Override
+   public void back() {
+      getActivity().onBackPressed();
+   }
 }

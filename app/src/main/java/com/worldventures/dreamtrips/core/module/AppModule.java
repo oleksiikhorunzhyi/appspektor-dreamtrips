@@ -5,6 +5,7 @@ import android.content.Context;
 
 import com.worldventures.dreamtrips.core.repository.SnappyModule;
 import com.worldventures.dreamtrips.modules.dtl_flow.di.DtlModule;
+import com.worldventures.dreamtrips.modules.facebook.FacebookAppModule;
 import com.worldventures.dreamtrips.modules.flags.FlagsModule;
 import com.messenger.di.MessengerModule;
 import com.techery.spares.application.BaseApplicationWithInjector;
@@ -64,6 +65,7 @@ import dagger.Provides;
             //
             SecurityModule.class, DeviceModule.class,
             BackgroundUploadingModule.class,
+            FacebookAppModule.class
       },
       library = true,
       complete = false,

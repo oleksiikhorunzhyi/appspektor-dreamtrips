@@ -6,7 +6,6 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.widget.Toast;
 
-import com.facebook.Session;
 import com.trello.rxlifecycle.ActivityEvent;
 import com.trello.rxlifecycle.RxLifecycle;
 import com.worldventures.dreamtrips.core.utils.ViewUtils;
@@ -145,8 +144,6 @@ public abstract class ActivityWithPresenter<PM extends ActivityPresenter> extend
    @Override
    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
       super.onActivityResult(requestCode, resultCode, data);
-      if (Session.getActiveSession() != null && requestCode == Session.DEFAULT_AUTHORIZE_ACTIVITY_CODE)
-         Session.getActiveSession().onActivityResult(this, requestCode, resultCode, data);
    }
 
    @Override

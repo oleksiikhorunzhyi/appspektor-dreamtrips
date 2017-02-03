@@ -46,4 +46,6 @@ public interface DtlDetailsScreen extends DtlScreen {
    List<String> getExpandedOffersIds();
 
    boolean isHoursViewExpanded();
+
+   void showAllReviews();
 }

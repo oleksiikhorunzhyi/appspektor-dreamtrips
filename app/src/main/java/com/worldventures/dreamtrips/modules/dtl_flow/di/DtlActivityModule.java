@@ -48,6 +48,8 @@ import com.worldventures.dreamtrips.modules.dtl_flow.parts.master_toolbar.Master
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.master_toolbar.MasterToolbarScreenImpl;
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.merchants.DtlMerchantsPresenterImpl;
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.merchants.DtlMerchantsScreenImpl;
+import com.worldventures.dreamtrips.modules.dtl_flow.parts.reviews.DtlReviewsPresenterImpl;
+import com.worldventures.dreamtrips.modules.dtl_flow.parts.reviews.DtlReviewsScreenImpl;
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.start.DtlStartPresenterImpl;
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.start.DtlStartScreenImpl;
 import com.worldventures.dreamtrips.modules.trips.view.cell.filter.DtlFilterAttributeHeaderCell;
@@ -106,6 +108,8 @@ import dagger.Provides;
             ThinMerchantsAdapter.class,
             BaseExpandableAdapter.class,
             BaseExpandableDelegateAdapter.class,
+            DtlReviewsPresenterImpl.class,
+            DtlReviewsScreenImpl.class
       },
       complete = false, library = true)
 public class DtlActivityModule {

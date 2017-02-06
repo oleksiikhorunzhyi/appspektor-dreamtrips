@@ -6,7 +6,6 @@ import com.innahema.collections.query.queriables.Queryable;
 import com.snappydb.DB;
 import com.snappydb.DBFactory;
 import com.snappydb.SnappydbException;
-import com.techery.spares.storage.complex_objects.Optional;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem;
 import com.worldventures.dreamtrips.modules.dtl.model.transaction.DtlTransaction;
 import com.worldventures.dreamtrips.modules.dtl.model.transaction.ImmutableDtlTransaction;
@@ -41,7 +40,6 @@ import com.worldventures.dreamtrips.wallet.domain.entity.ImmutableTermsAndCondit
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCard;
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCardDetails;
 import com.worldventures.dreamtrips.wallet.domain.entity.TermsAndConditions;
-import com.worldventures.dreamtrips.wallet.domain.storage.disk.DiskStorage;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -50,118 +48,19 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
 
 import io.techery.janet.smartcard.mock.device.SimpleDeviceStorage;
-import timber.log.Timber;
 
-class SnappyRepositoryImpl implements SnappyRepository, DiskStorage {
+class SnappyRepositoryImpl extends BaseSnappyRepository implements SnappyRepository {
 
-   private final Context context;
-   private final ExecutorService executorService;
-   private final SnappyCrypter snappyCrypter;
-
-   SnappyRepositoryImpl(Context context, SnappyCrypter snappyCrypter) {
-      this.context = context;
-      this.snappyCrypter = snappyCrypter;
-      this.executorService = Executors.newSingleThreadExecutor();
-   }
-
-   ///////////////////////////////////////////////////////////////////////////
-   // Proxy helpers
-   ///////////////////////////////////////////////////////////////////////////
-
-   private void act(SnappyAction action) {
-      executorService.execute(() -> {
-         DB snappyDb = null;
-         try {
-            snappyDb = DBFactory.open(context);
-            action.call(snappyDb);
-         } catch (SnappydbException e) {
-            if (isNotFound(e)) Timber.v("Nothing found");
-            else Timber.w(e, "DB fails to act", e);
-         } finally {
-            try {
-               if (snappyDb != null && snappyDb.isOpen()) snappyDb.close();
-            } catch (SnappydbException e) {
-               Timber.w(e, "DB fails to close");
-            }
-         }
-      });
-   }
-
-   private <T> Optional<T> actWithResult(SnappyResult<T> action) {
-      Future<T> future = executorService.submit(() -> {
-         DB snappyDb = null;
-         try {
-            snappyDb = DBFactory.open(context);
-            T result = action.call(snappyDb);
-            Timber.v("DB action result: %s", result);
-            return result;
-         } catch (SnappydbException e) {
-            if (isNotFound(e)) Timber.v("Nothing found");
-            else Timber.w(e, "DB fails to act with result", e);
-            return null;
-         } finally {
-            if (snappyDb != null) try {
-               snappyDb.close();
-            } catch (SnappydbException e) {
-               Timber.w(e, "DB fails to close");
-            }
-         }
-      });
-      try {
-         return Optional.fromNullable(future.get());
-      } catch (InterruptedException | ExecutionException e) {
-         Timber.w(e, "DB fails to act with result");
-         return Optional.absent();
-      }
-   }
-
-   private boolean isNotFound(SnappydbException e) {
-      return e.getMessage().contains("NotFound");
+   SnappyRepositoryImpl(Context context, SnappyCrypter snappyCrypter, ExecutorService executorService) {
+      super(context, snappyCrypter, executorService);
    }
 
    @Override
-   public void clearAll() {
-      act(DB::destroy);
-   }
-
-   @Override
-   public Boolean isEmpty(String key) {
-      return actWithResult((db) -> {
-         String[] keys = db.findKeys(key);
-         return keys == null || keys.length == 0;
-      }).or(false);
-   }
-
-   ///////////////////////////////////////////////////////////////////////////
-   // DiskStorage
-   ///////////////////////////////////////////////////////////////////////////
-
-   @Override
-   public <T> Optional<T> executeWithResult(SnappyResult<T> action) {
-      return actWithResult(action);
-   }
-
-   @Override
-   public void execute(SnappyAction action) {
-      act(action);
-   }
-
-   ///////////////////////////////////////////////////////////////////////////
-   // Public
-   ///////////////////////////////////////////////////////////////////////////
-
-   private void putEncrypted(String key, Object obj) {
-      act(db -> snappyCrypter.putEncrypted(db, key, obj));
-   }
-
-   private <T> T getEncrypted(String key, Class<T> clazz) {
-      return actWithResult(db -> snappyCrypter.getEncrypted(db, key, clazz)).orNull();
+   protected DB openDbInstance(Context context) throws SnappydbException {
+      return DBFactory.open(context);
    }
 
    @Override
@@ -173,6 +72,19 @@ class SnappyRepositoryImpl implements SnappyRepository, DiskStorage {
    public <T> List<T> readList(String key, Class<T> clazz) {
       return actWithResult(db -> new ArrayList<>(Arrays.asList(db.getObjectArray(key, clazz))))
             .or(new ArrayList<>());
+   }
+
+   @Override
+   public Boolean isEmpty(String key) {
+      return actWithResult((db) -> {
+         String[] keys = db.findKeys(key);
+         return keys == null || keys.length == 0;
+      }).or(false);
+   }
+
+   @Override
+   public void clearAll() {
+      act(DB::destroy);
    }
 
    /**
@@ -203,6 +115,7 @@ class SnappyRepositoryImpl implements SnappyRepository, DiskStorage {
    ///////////////////////////////////////////////////////////////////////////
    // BucketItems
    ///////////////////////////////////////////////////////////////////////////
+
    @Override
    public void saveBucketList(List<BucketItem> items, int userId) {
       putList(BUCKET_LIST + "_" + userId, items);
@@ -303,7 +216,7 @@ class SnappyRepositoryImpl implements SnappyRepository, DiskStorage {
       act(db -> db.del(WALLET_DETAILS_SMART_CARD));
    }
 
-/////////
+   /////////
 
    @Override
    public void deleteWalletDefaultCardId() {

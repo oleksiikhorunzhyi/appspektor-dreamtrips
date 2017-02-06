@@ -8,12 +8,11 @@ import com.worldventures.dreamtrips.modules.dtl.event.ToggleMerchantSelectionAct
 import com.worldventures.dreamtrips.modules.dtl.service.PresentationInteractor;
 import com.worldventures.dreamtrips.modules.dtl_flow.DtlPresenterImpl;
 import com.worldventures.dreamtrips.modules.dtl_flow.ViewState;
+import com.worldventures.dreamtrips.modules.dtl_flow.parts.reviews.model.ReviewObject;
+
+import java.util.ArrayList;
 
 import javax.inject.Inject;
-
-/**
- * Created by yair.carreno on 2/1/2017.
- */
 
 public class DtlReviewsPresenterImpl extends DtlPresenterImpl<DtlReviewsScreen, ViewState.EMPTY> implements DtlReviewsPresenter {
 
@@ -27,5 +26,10 @@ public class DtlReviewsPresenterImpl extends DtlPresenterImpl<DtlReviewsScreen, 
    @Override
    public void onBackPressed() {
       presentationInteractor.toggleSelectionPipe().send(ToggleMerchantSelectionAction.clear());
+   }
+
+   @Override
+   public void addNewComments(float ratingMerchant, int countReview, ArrayList<ReviewObject> listReviews) {
+      getView().addCommentsAndReviews(ratingMerchant, countReview, listReviews);
    }
 }

@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.location.Location;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.view.MenuItem;
 import android.view.View;
@@ -39,7 +40,9 @@ import com.worldventures.dreamtrips.modules.dtl.service.action.DtlTransactionAct
 import com.worldventures.dreamtrips.modules.dtl_flow.DtlPresenterImpl;
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.fullscreen_image.DtlFullscreenImagePath;
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.reviews.DtlReviewsPath;
+import com.worldventures.dreamtrips.modules.dtl_flow.parts.reviews.model.ReviewObject;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
@@ -58,8 +61,10 @@ public class DtlDetailsPresenterImpl extends DtlPresenterImpl<DtlDetailsScreen, 
    @Inject PhotoUploadingManagerS3 photoUploadingManagerS3;
    @Inject PresentationInteractor presentationInteractor;
 
+
    private final Merchant merchant;
    private final List<String> preExpandOffers;
+   private static final int MAX_SIZE_TO_SHOW_BUTTON = 2;
 
    public DtlDetailsPresenterImpl(Context context, Injector injector, Merchant merchant, List<String> preExpandOffers) {
       super(context);
@@ -267,5 +272,37 @@ public class DtlDetailsPresenterImpl extends DtlPresenterImpl<DtlDetailsScreen, 
    @Override
    public void showAllReviews() {
       Flow.get(getContext()).set(new DtlReviewsPath());
+   }
+
+   @Override
+   public void addNewComments(float ratingMerchant, int countReview, ArrayList<ReviewObject> listReviews) {
+      //List Review have not to be null
+      if (null != listReviews){
+         //Get list's size
+         int sizeListComments = listReviews.size();
+         //Bussiness logic said if the size is equals than 0, so we need to show an screen without info
+         if (sizeListComments == 0){
+            getView().addNoCommentsAndReviews();
+         } else if (sizeListComments > MAX_SIZE_TO_SHOW_BUTTON) {
+            //If list size is major or equals 3, must be show read all message button
+            getView().addCommentsAndReviews(ratingMerchant, countReview, getListReviewByBussinessRule(listReviews));
+            getView().showButtonAllRateAndReview();
+            getView().setTextRateAndReviewButton(sizeListComments);
+         } else {
+            //if it doesn't, only show the comment in the same screen
+            getView().addCommentsAndReviews(ratingMerchant, countReview, listReviews);
+            getView().hideButtonAllRateAndReview();
+         }
+      } else {
+
+      }
+   }
+
+   private ArrayList<ReviewObject> getListReviewByBussinessRule(@NonNull ArrayList<ReviewObject> reviews){
+      ArrayList<ReviewObject> newListReviews = new ArrayList<>();
+      for (int i=0; i<MAX_SIZE_TO_SHOW_BUTTON; i++){
+         newListReviews.add(reviews.get(i));
+      }
+      return newListReviews;
    }
 }

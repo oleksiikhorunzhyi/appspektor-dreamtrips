@@ -11,14 +11,16 @@ public class CardListStorage extends CryptedModelStorage {
 
    private final String WALLET_CARDS_LIST = "WALLET_CARDS_LIST";
 
-   public CardListStorage(SnappyCrypter snappyCrypter) {
-      super(snappyCrypter);
+   public CardListStorage(SnappyStorage storage, SnappyCrypter snappyCrypter) {
+      super(storage, snappyCrypter);
    }
 
    @Override
    public boolean migrate(DB db, int oldVersion) throws SnappydbException {
       if (oldVersion == 0) {
          db.del(WALLET_CARDS_LIST);
+      } else if (oldVersion == 1) {
+         // TODO: 2/3/17 Must migrate data to persistent storage (also tokenize it)
       }
       return true;
    }
@@ -30,18 +32,19 @@ public class CardListStorage extends CryptedModelStorage {
 
    @Override
    public int getVersion() {
-      return 1;
+      return 2;
    }
 
    public void saveWalletCardsList(List<Card> items) {
-      putEncrypted(WALLET_CARDS_LIST, items);
+      put(WALLET_CARDS_LIST, items);
    }
 
    public List<Card> readWalletCardsList() {
-      return getEncryptedList(WALLET_CARDS_LIST);
+      return getList(WALLET_CARDS_LIST);
    }
 
    public void deleteWalletCardList() {
       execute(db -> db.del(WALLET_CARDS_LIST));
    }
+
 }

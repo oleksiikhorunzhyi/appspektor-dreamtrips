@@ -8,9 +8,9 @@ import com.worldventures.dreamtrips.core.repository.SnappyResult;
 
 public abstract class ModelStorage {
 
-   private DiskStorage storage;
+   private final SnappyStorage storage;
 
-   protected void bindStorage(DiskStorage storage) {
+   public ModelStorage(SnappyStorage storage) {
       this.storage = storage;
    }
 
@@ -27,4 +27,5 @@ public abstract class ModelStorage {
    protected <T> Optional<T> executeWithResult(SnappyResult<T> action) {
       return storage.executeWithResult(action);
    }
+
 }

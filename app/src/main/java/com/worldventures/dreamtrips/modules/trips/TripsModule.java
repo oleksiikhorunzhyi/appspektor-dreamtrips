@@ -1,8 +1,12 @@
 package com.worldventures.dreamtrips.modules.trips;
 
+import android.support.annotation.DrawableRes;
+
+import com.techery.spares.session.SessionHolder;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.component.ComponentDescription;
 import com.worldventures.dreamtrips.core.navigation.Route;
+import com.worldventures.dreamtrips.core.session.UserSession;
 import com.worldventures.dreamtrips.modules.infopages.view.fragment.staticcontent.OtaFragment;
 import com.worldventures.dreamtrips.modules.trips.presenter.FiltersPresenter;
 import com.worldventures.dreamtrips.modules.trips.presenter.TripDetailsPresenter;
@@ -46,19 +50,29 @@ public class TripsModule {
    public static final String TRIPS = Route.TRIPLIST.name();
    public static final String MAP_TRIPS = Route.MAP.name();
    public static final String OTA = Route.OTA.name();
+   public static final String MALAYSIYA_COUNTRY_CODE = "my";
 
    @Provides(type = Provides.Type.SET)
-   ComponentDescription provideTripsComponent() {
-      return new ComponentDescription(TRIPS, 0, R.drawable.dt_action_bar_logo, R.string.trips, R.drawable.ic_dreamtrips, TripListFragment.class);
+   ComponentDescription provideTripsComponent(SessionHolder<UserSession> sessionHolder) {
+      return new ComponentDescription(TRIPS, 0, getLogo(sessionHolder), R.string.trips, R.drawable.ic_dreamtrips, TripListFragment.class);
    }
 
    @Provides(type = Provides.Type.SET)
-   ComponentDescription provideMapTripsComponent() {
-      return new ComponentDescription(MAP_TRIPS, 0, R.drawable.dt_action_bar_logo, R.string.trips, R.drawable.ic_dreamtrips, true, true, TripMapFragment.class);
+   ComponentDescription provideMapTripsComponent(SessionHolder<UserSession> sessionHolder) {
+      return new ComponentDescription(MAP_TRIPS, 0, getLogo(sessionHolder), R.string.trips, R.drawable.ic_dreamtrips, true, true, TripMapFragment.class);
    }
 
    @Provides(type = Provides.Type.SET)
    ComponentDescription provideOTAComponent() {
       return new ComponentDescription(OTA, R.string.other_travel, R.string.other_travel, R.drawable.ic_other_travel, OtaFragment.class);
+   }
+
+   private @DrawableRes
+   int getLogo(SessionHolder<UserSession> sessionHolder) {
+      String countryCode = sessionHolder.get().get().getUser().getCountryCode();
+      if (MALAYSIYA_COUNTRY_CODE.equalsIgnoreCase(countryCode)) {
+         return R.drawable.dt_action_bar_logo_skyzone;
+      }
+      return R.drawable.dt_action_bar_logo;
    }
 }

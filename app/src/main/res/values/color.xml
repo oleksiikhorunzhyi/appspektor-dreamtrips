@@ -204,5 +204,9 @@
    <!--end messenger-->
 
    <color name="dim_foreground_dark">#bebebe</color>
+   <!-- most recent review merchant -->
+   <color name="rating_color">#FFEB3B</color>
+   <color name="rating_normal">#222222</color>
+   <color name="rating_background_button">#54b5FE</color>
 
 </resources>

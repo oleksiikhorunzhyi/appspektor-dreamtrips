@@ -6,6 +6,9 @@ import android.support.annotation.Nullable;
 import com.worldventures.dreamtrips.modules.common.model.ShareType;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.offer.Offer;
 import com.worldventures.dreamtrips.modules.dtl_flow.DtlPresenter;
+import com.worldventures.dreamtrips.modules.dtl_flow.parts.reviews.model.ReviewObject;
+
+import java.util.ArrayList;
 
 public interface DtlDetailsPresenter extends DtlPresenter<DtlDetailsScreen, DtlMerchantDetailsState> {
 
@@ -19,4 +22,5 @@ public interface DtlDetailsPresenter extends DtlPresenter<DtlDetailsScreen, DtlM
    void onOfferClick(Offer offer);
    void onBackPressed();
    void showAllReviews();
+   void addNewComments(float ratingMerchant, int countReview, ArrayList<ReviewObject> listReviews);
 }

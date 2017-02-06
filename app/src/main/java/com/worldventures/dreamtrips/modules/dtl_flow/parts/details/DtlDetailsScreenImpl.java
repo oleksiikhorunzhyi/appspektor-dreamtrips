@@ -4,13 +4,16 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentSender;
+import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.Toolbar;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.FrameLayout;
 import android.widget.TextView;
 
 import com.google.android.gms.common.api.Status;
@@ -45,9 +48,13 @@ import com.worldventures.dreamtrips.modules.dtl.model.merchant.Merchant;
 import com.worldventures.dreamtrips.modules.dtl.model.transaction.DtlTransaction;
 import com.worldventures.dreamtrips.modules.dtl_flow.DtlActivity;
 import com.worldventures.dreamtrips.modules.dtl_flow.DtlLayout;
+import com.worldventures.dreamtrips.modules.dtl_flow.parts.reviews.fragments.OfferNoReviewFragment;
+import com.worldventures.dreamtrips.modules.dtl_flow.parts.reviews.fragments.OfferWithReviewFragment;
+import com.worldventures.dreamtrips.modules.dtl_flow.parts.reviews.model.ReviewObject;
 import com.worldventures.dreamtrips.util.ImageTextItem;
 import com.worldventures.dreamtrips.util.ImageTextItemFactory;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -72,11 +79,15 @@ public class DtlDetailsScreenImpl extends DtlLayout<DtlDetailsScreen, DtlDetails
    @InjectView(R.id.merchant_details_merchant_wrapper) ViewGroup merchantWrapper;
    @InjectView(R.id.merchant_details_additional) ViewGroup additionalContainer;
    @InjectView(R.id.merchant_address) TextView merchantAddress;
+   @InjectView(R.id.tv_read_all_review) TextView mTvReadAllReviews;
 
    private MerchantOffersInflater merchantDataInflater;
    private MerchantWorkingHoursInflater merchantHoursInflater;
    private MerchantInflater merchantInfoInflater;
    private Merchant merchant;
+
+   public static int SIZE_COMMENTS = 7;
+   public static final float RATING_MERCHANT = 2.5f;
 
    @Override
    public DtlDetailsPresenter createPresenter() {
@@ -103,6 +114,51 @@ public class DtlDetailsScreenImpl extends DtlLayout<DtlDetailsScreen, DtlDetails
       merchantDataInflater.setView(this);
       merchantInfoInflater.setView(this);
       merchantHoursInflater.setView(this);
+      addNoCommentsAndReviews();
+   }
+
+   @Override
+   public void addNoCommentsAndReviews() {
+      FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
+      transaction.replace(R.id.container_comments, OfferNoReviewFragment.newInstance(null));
+      transaction.commit();
+   }
+
+   @Override
+   public void addCommentsAndReviews(float ratingMerchant, int countReview, ArrayList<ReviewObject> listReviews) {
+      Bundle bundle = new Bundle();
+      bundle.putParcelableArrayList(OfferWithReviewFragment.ARRAY, listReviews);
+      bundle.putFloat(OfferWithReviewFragment.RATING_MERCHANT, ratingMerchant);
+      bundle.putInt(OfferWithReviewFragment.COUNT_REVIEW, countReview);
+
+      FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
+      transaction.replace(R.id.container_comments, OfferWithReviewFragment.newInstance(bundle));
+      transaction.commit();
+   }
+
+   @Override
+   public void showButtonAllRateAndReview() {
+      mTvReadAllReviews.setVisibility(View.VISIBLE);
+   }
+
+   @Override
+   public void hideButtonAllRateAndReview() {
+      mTvReadAllReviews.setVisibility(View.GONE);
+   }
+
+   @Override
+   public void setTextRateAndReviewButton(int size) {
+      mTvReadAllReviews.setText("READ ALL REVIEWS(" + size + ")");
+   }
+
+   @OnClick(R.id.tv_read_all_review)
+   public void onClickReadAllReviews() {
+      getPresenter().showAllReviews();
+   }
+
+   @OnClick(R.id.button_see_list_reviews)
+   public void showAllReviews() {
+      getPresenter().addNewComments(RATING_MERCHANT, SIZE_COMMENTS, ReviewObject.getDummies(SIZE_COMMENTS));
    }
 
    @Override
@@ -337,11 +393,5 @@ public class DtlDetailsScreenImpl extends DtlLayout<DtlDetailsScreen, DtlDetails
 
    public DtlDetailsScreenImpl(Context context, AttributeSet attrs) {
       super(context, attrs);
-   }
-
-   @OnClick(R.id.button_see_list_reviews)
-   @Override
-   public void showAllReviews() {
-      getPresenter().showAllReviews();
    }
 }

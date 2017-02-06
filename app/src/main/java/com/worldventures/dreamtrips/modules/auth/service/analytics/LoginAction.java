@@ -13,9 +13,10 @@ public class LoginAction extends BaseAnalyticsAction {
 
    @Attribute("login") final String login = "1";
    @Attribute("member_id") final String username;
-   @Attribute("loggedin") final String loggedIn = "1";
+   @Attribute("loggedin") String loggedIn;
 
-   public LoginAction(String username) {
+   public LoginAction(String username, boolean launchAfterLogin) {
       this.username = username;
+      this.loggedIn = launchAfterLogin? "1" : null;
    }
 }

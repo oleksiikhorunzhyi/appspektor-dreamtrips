@@ -28,6 +28,10 @@ class UpdateProfileManager {
       this.updateDataHolder = updateDataHolder;
    }
 
+   void attachChangedFields(ChangedFields changedFields) {
+      updateDataHolder.saveChanging(changedFields);
+   }
+
    Observable<SmartCard> uploadData(SmartCard smartCard, UpdateCardUserData updateCardUserData) {
       this.smartCard = smartCard;
       this.updateCardUserData = updateCardUserData;

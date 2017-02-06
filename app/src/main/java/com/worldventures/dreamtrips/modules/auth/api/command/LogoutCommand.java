@@ -2,6 +2,8 @@ package com.worldventures.dreamtrips.modules.auth.api.command;
 
 import android.content.Context;
 
+import com.facebook.drawee.backends.pipeline.Fresco;
+import com.facebook.imagepipeline.core.ImagePipeline;
 import com.messenger.storage.MessengerDatabase;
 import com.messenger.synchmechanism.MessengerConnector;
 import com.raizlabs.android.dbflow.config.FlowManager;
@@ -131,6 +133,7 @@ public class LogoutCommand extends Command<Void> implements InjectableAction {
          offlineWarningDelegate.resetState();
          replayEventDelegatesWiper.clearReplays();
          snappyRepository.clearAll();
+         clearFrescoCaches();
 
          try {
             crypter.deleteKeys();
@@ -140,6 +143,11 @@ public class LogoutCommand extends Command<Void> implements InjectableAction {
          subscriber.onNext(null);
          subscriber.onCompleted();
       });
+   }
+
+   private void clearFrescoCaches() {
+      ImagePipeline imagePipeline = Fresco.getImagePipeline();
+      imagePipeline.clearCaches();
    }
 
    static <T extends AuthorizedHttpAction> T authorize(T action, String token) {

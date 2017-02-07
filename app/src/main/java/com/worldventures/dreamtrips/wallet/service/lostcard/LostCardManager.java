@@ -8,13 +8,15 @@ import java.util.concurrent.TimeUnit;
 
 import rx.subscriptions.CompositeSubscription;
 
-public class SCLocationManager {
+public class LostCardManager {
 
    private final SmartCardLocationInteractor locationInteractor;
+   private final LocationSyncManager jobScheduler;
    private final CompositeSubscription subscriptions;
 
-   public SCLocationManager(SmartCardLocationInteractor locationInteractor) {
+   public LostCardManager(SmartCardLocationInteractor locationInteractor, LocationSyncManager jobScheduler) {
       this.locationInteractor = locationInteractor;
+      this.jobScheduler = jobScheduler;
       this.subscriptions = new CompositeSubscription();
    }
 
@@ -22,6 +24,7 @@ public class SCLocationManager {
       if (!subscriptions.hasSubscriptions() || subscriptions.isUnsubscribed()) {
          observeConnection();
       }
+      jobScheduler.scheduleSync();
    }
 
    private void observeConnection() {
@@ -43,5 +46,6 @@ public class SCLocationManager {
       if (subscriptions.hasSubscriptions() && !subscriptions.isUnsubscribed()) {
          subscriptions.clear();
       }
+      jobScheduler.cancelSync();
    }
 }

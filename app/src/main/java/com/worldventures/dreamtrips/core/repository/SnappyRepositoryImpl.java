@@ -378,13 +378,14 @@ class SnappyRepositoryImpl implements SnappyRepository, DiskStorage {
    }
 
    @Override
-   public void saveSmartCardLocation(SmartCardLocation smartCardLocation) {
-      act(db -> db.put(WALLET_SMART_CARD_LOCATION, smartCardLocation));
+   public void saveSmartCardLocations(List<SmartCardLocation> smartCardLocations) {
+      if (smartCardLocations == null) smartCardLocations = new ArrayList<>();
+      putList(WALLET_SMART_CARD_LOCATION, smartCardLocations);
    }
 
    @Override
-   public SmartCardLocation getSmartCardLocation() {
-      return actWithResult(db -> db.getObject(WALLET_SMART_CARD_LOCATION, SmartCardLocation.class)).orNull();
+   public List<SmartCardLocation> getSmartCardLocations() {
+      return readList(WALLET_SMART_CARD_LOCATION, SmartCardLocation.class);
    }
 
    @Override

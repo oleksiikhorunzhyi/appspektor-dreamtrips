@@ -260,9 +260,9 @@ public interface SnappyRepository {
 
    void deleteFirmwareUpdateData();
 
-   void saveSmartCardLocation(SmartCardLocation smartCardLocation);
+   void saveSmartCardLocations(List<SmartCardLocation> smartCardLocations);
 
-   SmartCardLocation getSmartCardLocation();
+   List<SmartCardLocation> getSmartCardLocations();
 
    void saveEnabledTracking(boolean enable);
 

@@ -7,7 +7,6 @@ import com.worldventures.dreamtrips.core.janet.dagger.InjectableAction;
 import com.worldventures.dreamtrips.wallet.service.SystemPropertiesProvider;
 import com.worldventures.dreamtrips.wallet.service.lostcard.SCLocationRepository;
 
-import java.util.Collections;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -30,7 +29,6 @@ public class GetLocationCommand extends Command<List<SmartCardLocation>> impleme
    @Override
    protected void run(CommandCallback<List<SmartCardLocation>> callback) throws Throwable {
       Observable.concat(getStoredLocation(), getHistoricalLocation())
-            .map(this::sortListByDate)
             .subscribe(callback::onSuccess, callback::onFail);
    }
 
@@ -41,13 +39,6 @@ public class GetLocationCommand extends Command<List<SmartCardLocation>> impleme
    }
 
    private Observable<List<SmartCardLocation>> getStoredLocation() {
-      return Observable.just(Collections.singletonList(locationRepository.getSmartCardLocation()));
-   }
-
-   private List<SmartCardLocation> sortListByDate(List<SmartCardLocation> smartCardLocations) {
-      return Queryable.from(smartCardLocations)
-            .distinct()
-            .sort((smartCardLocation1, smartCardLocation2) -> smartCardLocation1.createdAt().compareTo(smartCardLocation2.createdAt()))
-            .toList();
+      return Observable.just(locationRepository.getSmartCardLocations());
    }
 }

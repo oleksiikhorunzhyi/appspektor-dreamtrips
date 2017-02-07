@@ -2,6 +2,7 @@ package com.worldventures.dreamtrips.core.repository;
 
 import com.snappydb.DB;
 import com.snappydb.SnappydbException;
+import com.worldventures.dreamtrips.api.smart_card.location.model.SmartCardLocation;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem;
 import com.worldventures.dreamtrips.modules.dtl.model.transaction.DtlTransaction;
 import com.worldventures.dreamtrips.modules.feed.model.FeedItem;
@@ -79,6 +80,7 @@ public interface SnappyRepository {
    String WALLET_DEFAULT_ADDRESS = "WALLET_DEFAULT_ADDRESS";
    String WALLET_TERMS_AND_CONDITIONS = "WALLET_TERMS_AND_CONDITIONS";
    String WALLET_FIRMWARE = "WALLET_FIRMWARE";
+   String WALLET_SMART_CARD_LOCATION = "WALLET_SMART_CARD_LOCATION";
 
 
    void clearAll();
@@ -256,4 +258,8 @@ public interface SnappyRepository {
    FirmwareUpdateData getFirmwareUpdateData();
 
    void deleteFirmwareUpdateData();
+
+   void saveSmartCardLocation(SmartCardLocation smartCardLocation);
+
+   SmartCardLocation getSmartCardLocation();
 }

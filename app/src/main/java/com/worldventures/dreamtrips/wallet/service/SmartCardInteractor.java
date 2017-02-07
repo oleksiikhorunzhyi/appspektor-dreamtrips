@@ -267,5 +267,4 @@ public final class SmartCardInteractor {
    public ActionPipe<CardInChargerEvent> cardInChargerEventPipe() {
       return cardInChargerEventPipe;
    }
-
 }

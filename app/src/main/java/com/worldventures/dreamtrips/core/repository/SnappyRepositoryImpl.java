@@ -7,6 +7,8 @@ import com.snappydb.DB;
 import com.snappydb.DBFactory;
 import com.snappydb.SnappydbException;
 import com.techery.spares.storage.complex_objects.Optional;
+import com.worldventures.dreamtrips.api.smart_card.location.model.ImmutableSmartCardLocation;
+import com.worldventures.dreamtrips.api.smart_card.location.model.SmartCardLocation;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem;
 import com.worldventures.dreamtrips.modules.dtl.model.transaction.DtlTransaction;
 import com.worldventures.dreamtrips.modules.dtl.model.transaction.ImmutableDtlTransaction;
@@ -374,6 +376,16 @@ class SnappyRepositoryImpl implements SnappyRepository, DiskStorage {
    @Override
    public SimpleDeviceStorage getWalletDeviceStorage() {
       return actWithResult(db -> db.get(WALLET_DEVICE_STORAGE, SimpleDeviceStorage.class)).orNull();
+   }
+
+   @Override
+   public void saveSmartCardLocation(SmartCardLocation smartCardLocation) {
+      act(db -> db.put(WALLET_SMART_CARD_LOCATION, smartCardLocation));
+   }
+
+   @Override
+   public SmartCardLocation getSmartCardLocation() {
+      return actWithResult(db -> db.getObject(WALLET_SMART_CARD_LOCATION, SmartCardLocation.class)).orNull();
    }
 
    ///////////////////////////////////////////////////////////////////////////

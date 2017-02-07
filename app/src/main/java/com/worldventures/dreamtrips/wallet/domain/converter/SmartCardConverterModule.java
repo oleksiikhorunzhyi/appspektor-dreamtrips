@@ -67,4 +67,10 @@ public class SmartCardConverterModule {
    Converter provideRecordToFinancialServiceConverter() {
       return new RecordFinancialServiceToFinancialServiceConverter();
    }
+
+   @Provides(type = Provides.Type.SET)
+   Converter provideWalletLocationToSmartCardLocationConverter() {
+      return new WalletLocationToSmartCardLocationConverter();
+   }
+
 }

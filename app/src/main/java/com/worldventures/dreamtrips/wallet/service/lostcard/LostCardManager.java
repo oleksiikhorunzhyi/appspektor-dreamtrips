@@ -1,6 +1,6 @@
 package com.worldventures.dreamtrips.wallet.service.lostcard;
 
-import com.worldventures.dreamtrips.api.smart_card.location.model.SmartCardLocationType;
+import com.worldventures.dreamtrips.wallet.domain.entity.lostcard.WalletLocationType;
 import com.worldventures.dreamtrips.wallet.service.SmartCardLocationInteractor;
 import com.worldventures.dreamtrips.wallet.service.lostcard.command.DetectGeoLocationCommand;
 
@@ -31,14 +31,14 @@ public class LostCardManager {
       subscriptions.add(locationInteractor.connectActionPipe()
             .observeSuccess()
             .debounce(1, TimeUnit.SECONDS)
-            .subscribe(connectAction ->  triggerLocation(SmartCardLocationType.CONNECT)));
+            .subscribe(connectAction ->  triggerLocation(WalletLocationType.CONNECT)));
 
       subscriptions.add(locationInteractor.disconnectPipe()
             .observeSuccess()
-            .subscribe(disconnectAction ->  triggerLocation(SmartCardLocationType.DISCONNECT)));
+            .subscribe(disconnectAction ->  triggerLocation(WalletLocationType.DISCONNECT)));
    }
 
-   private void triggerLocation(SmartCardLocationType locationType) {
+   private void triggerLocation(WalletLocationType locationType) {
       locationInteractor.detectGeoLocationPipe().send(new DetectGeoLocationCommand(locationType));
    }
 

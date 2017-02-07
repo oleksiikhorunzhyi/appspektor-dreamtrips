@@ -1,11 +1,11 @@
 package com.worldventures.dreamtrips.wallet.service.lostcard.command;
 
-import com.worldventures.dreamtrips.api.smart_card.location.model.ImmutableSmartCardCoordinates;
-import com.worldventures.dreamtrips.api.smart_card.location.model.ImmutableSmartCardLocation;
-import com.worldventures.dreamtrips.api.smart_card.location.model.SmartCardCoordinates;
-import com.worldventures.dreamtrips.api.smart_card.location.model.SmartCardLocation;
-import com.worldventures.dreamtrips.api.smart_card.location.model.SmartCardLocationType;
 import com.worldventures.dreamtrips.core.janet.dagger.InjectableAction;
+import com.worldventures.dreamtrips.wallet.domain.entity.lostcard.ImmutableWalletCoordinates;
+import com.worldventures.dreamtrips.wallet.domain.entity.lostcard.ImmutableWalletLocation;
+import com.worldventures.dreamtrips.wallet.domain.entity.lostcard.WalletCoordinates;
+import com.worldventures.dreamtrips.wallet.domain.entity.lostcard.WalletLocation;
+import com.worldventures.dreamtrips.wallet.domain.entity.lostcard.WalletLocationType;
 import com.worldventures.dreamtrips.wallet.service.WalletDetectLocationService;
 import com.worldventures.dreamtrips.wallet.service.lostcard.SCLocationRepository;
 import com.worldventures.dreamtrips.wallet.util.LocationPermissionDeniedException;
@@ -23,9 +23,9 @@ public class DetectGeoLocationCommand extends Command<Void> implements Injectabl
 
    @Inject WalletDetectLocationService locationService;
    @Inject SCLocationRepository locationRepository;
-   private final SmartCardLocationType type;
+   private final WalletLocationType type;
 
-   public DetectGeoLocationCommand(SmartCardLocationType type) {
+   public DetectGeoLocationCommand(WalletLocationType type) {
       this.type = type;
    }
 
@@ -35,25 +35,25 @@ public class DetectGeoLocationCommand extends Command<Void> implements Injectabl
          throw new LocationPermissionDeniedException();
       }
       locationService.detectLastKnownLocation()
-            .map(location -> constructSmartCardLocation(type, location.getLatitude(), location.getLongitude()))
+            .map(location -> constructWalletLocation(type, location.getLatitude(), location.getLongitude()))
             .subscribe((result) -> {
                saveLocation(result);
                callback.onSuccess(null);
             }, callback::onFail);
    }
 
-   private void saveLocation(SmartCardLocation location) {
-      final List<SmartCardLocation> smartCardLocations = locationRepository.getSmartCardLocations();
-      smartCardLocations.add(location);
-      locationRepository.saveSmartCardLocations(smartCardLocations);
+   private void saveLocation(WalletLocation location) {
+      final List<WalletLocation> walletLocations = locationRepository.getWalletLocations();
+      walletLocations.add(location);
+      locationRepository.saveWalletLocations(walletLocations);
    }
 
-   private SmartCardLocation constructSmartCardLocation(SmartCardLocationType type, double latitude, double longtitude) {
-      final SmartCardCoordinates coordinates = ImmutableSmartCardCoordinates.builder()
+   private WalletLocation constructWalletLocation(WalletLocationType type, double latitude, double longtitude) {
+      final WalletCoordinates coordinates = ImmutableWalletCoordinates.builder()
             .lat(latitude)
             .lng(longtitude)
             .build();
-      return ImmutableSmartCardLocation.builder()
+      return ImmutableWalletLocation.builder()
             .coordinates(coordinates)
             .createdAt(Calendar.getInstance().getTime())
             .type(type)

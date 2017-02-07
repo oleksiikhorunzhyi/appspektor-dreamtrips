@@ -5,7 +5,7 @@ import com.worldventures.dreamtrips.wallet.domain.entity.lostcard.WalletLocation
 
 import java.util.List;
 
-public interface SCLocationRepository {
+public interface LostCardRepository {
 
    List<WalletLocation> getWalletLocations();
 

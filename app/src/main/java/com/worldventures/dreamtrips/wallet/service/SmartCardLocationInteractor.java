@@ -9,6 +9,7 @@ import com.worldventures.dreamtrips.wallet.service.lostcard.command.GetEnabledTr
 import com.worldventures.dreamtrips.wallet.service.lostcard.command.GetLocationCommand;
 import com.worldventures.dreamtrips.wallet.service.lostcard.command.PostLocationCommand;
 import com.worldventures.dreamtrips.wallet.service.lostcard.command.SaveEnabledTrackingCommand;
+import com.worldventures.dreamtrips.wallet.service.lostcard.command.WalletLocationCommand;
 
 import io.techery.janet.ActionPipe;
 import io.techery.janet.smartcard.action.support.DisconnectAction;
@@ -18,6 +19,7 @@ public final class SmartCardLocationInteractor {
 
    private final ActionPipe<ConnectSmartCardCommand> connectionPipe;
    private final ActionPipe<DisconnectAction> disconnectPipe;
+   private final ActionPipe<WalletLocationCommand> walletLocationCommandPipe;
    private final ActionPipe<PostLocationCommand> postLocationPipe;
    private final ActionPipe<GetLocationCommand> getLocationPipe;
    private final ActionPipe<DetectGeoLocationCommand> detectGeoLocationPipe;
@@ -29,6 +31,8 @@ public final class SmartCardLocationInteractor {
    public SmartCardLocationInteractor(SessionActionPipeCreator pipeCreator) {
       connectionPipe = pipeCreator.createPipe(ConnectSmartCardCommand.class, Schedulers.io());
       disconnectPipe = pipeCreator.createPipe(DisconnectAction.class, Schedulers.io());
+
+      walletLocationCommandPipe = pipeCreator.createPipe(WalletLocationCommand.class, Schedulers.io());
 
       postLocationPipe = pipeCreator.createPipe(PostLocationCommand.class, Schedulers.io());
       getLocationPipe = pipeCreator.createPipe(GetLocationCommand.class, Schedulers.io());
@@ -46,6 +50,10 @@ public final class SmartCardLocationInteractor {
 
    public ActionPipe<DisconnectAction> disconnectPipe() {
       return disconnectPipe;
+   }
+
+   public ActionPipe<WalletLocationCommand> walletLocationCommandPipe() {
+      return walletLocationCommandPipe;
    }
 
    public ActionPipe<PostLocationCommand> postLocationPipe() {

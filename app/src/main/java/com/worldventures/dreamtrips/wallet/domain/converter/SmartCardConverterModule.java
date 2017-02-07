@@ -73,4 +73,9 @@ public class SmartCardConverterModule {
       return new WalletLocationToSmartCardLocationConverter();
    }
 
+   @Provides(type = Provides.Type.SET)
+   Converter provideAndroidAddressToWalletAddressConverter() {
+      return new AndroidAddressToWalletAddressConverter();
+   }
+
 }

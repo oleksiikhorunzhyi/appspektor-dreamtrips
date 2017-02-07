@@ -9,7 +9,8 @@ import com.worldventures.dreamtrips.core.janet.dagger.InjectableAction;
 import com.worldventures.dreamtrips.wallet.domain.entity.lostcard.ImmutableWalletLocation;
 import com.worldventures.dreamtrips.wallet.domain.entity.lostcard.WalletLocation;
 import com.worldventures.dreamtrips.wallet.service.SystemPropertiesProvider;
-import com.worldventures.dreamtrips.wallet.service.lostcard.SCLocationRepository;
+import com.worldventures.dreamtrips.wallet.service.lostcard.LostCardRepository;
+import com.worldventures.dreamtrips.wallet.util.WalletLocationsUtil;
 
 import java.util.Calendar;
 import java.util.Collections;
@@ -33,7 +34,7 @@ import static com.worldventures.dreamtrips.core.janet.JanetModule.JANET_API_LIB;
 public class PostLocationCommand extends Command<Void> implements InjectableAction{
 
    @Inject @Named(JANET_API_LIB) Janet janet;
-   @Inject SCLocationRepository locationRepository;
+   @Inject LostCardRepository locationRepository;
    @Inject SystemPropertiesProvider propertiesProvider;
    @Inject MapperyContext mapperyContext;
    private final PublishSubject<Void> commandPublishSubject;
@@ -44,15 +45,14 @@ public class PostLocationCommand extends Command<Void> implements InjectableActi
 
    @Override
    protected void run(CommandCallback<Void> callback) throws Throwable {
-      if (locationRepository.getWalletLocations().size() < 1) {
+      if (locationRepository.getWalletLocations().size() < 1
+            && WalletLocationsUtil.getLatestLocation(locationRepository.getWalletLocations()).postedAt() != null) {
          callback.onSuccess(null);
          return;
       }
       Observable.merge(postLocations(), commandPublishSubject)
-            .subscribe((result) -> {
-               wipeRedundantLocations();
-               callback.onSuccess(result);
-            }, callback::onFail);
+            .flatMap(aVoid -> wipeRedundantLocations())
+            .subscribe(callback::onSuccess, callback::onFail);
    }
 
    private Observable<Void> postLocations() {
@@ -62,7 +62,7 @@ public class PostLocationCommand extends Command<Void> implements InjectableActi
          .map(createSmartCardLocationHttpAction -> (Void) null);
    }
 
-   private void wipeRedundantLocations() {
+   private Observable<Void> wipeRedundantLocations() {
       final WalletLocation lastLocation = Queryable.from(locationRepository.getWalletLocations())
             .sort((smartCardLocation1, smartCardLocation2)
                   -> smartCardLocation1.createdAt().compareTo(smartCardLocation2.createdAt()))
@@ -72,6 +72,7 @@ public class PostLocationCommand extends Command<Void> implements InjectableActi
             .postedAt(Calendar.getInstance().getTime())
             .build();
       locationRepository.saveWalletLocations(Collections.singletonList(postedLocation));
+      return Observable.just(null);
    }
 
    private SmartCardLocationBody prepareRequestBody(List<WalletLocation> locations) {

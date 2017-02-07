@@ -1,15 +1,15 @@
 package com.worldventures.dreamtrips.wallet.service.lostcard;
 
 
-import com.worldventures.dreamtrips.api.smart_card.location.model.SmartCardLocation;
+import com.worldventures.dreamtrips.wallet.domain.entity.lostcard.WalletLocation;
 
 import java.util.List;
 
 public interface SCLocationRepository {
 
-   List<SmartCardLocation> getSmartCardLocations();
+   List<WalletLocation> getWalletLocations();
 
-   void saveSmartCardLocations(List<SmartCardLocation> smartCardLocations);
+   void saveWalletLocations(List<WalletLocation> walletLocations);
 
    void saveEnabledTracking(boolean enable);
 

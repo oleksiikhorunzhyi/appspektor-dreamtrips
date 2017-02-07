@@ -7,17 +7,18 @@ import android.support.annotation.NonNull;
 
 import com.google.android.gms.maps.model.LatLng;
 import com.techery.spares.module.Injector;
-import com.worldventures.dreamtrips.api.smart_card.location.model.SmartCardLocation;
 import com.worldventures.dreamtrips.core.location.LocationServiceDispatcher;
 import com.worldventures.dreamtrips.core.permission.PermissionConstants;
 import com.worldventures.dreamtrips.core.permission.PermissionDispatcher;
 import com.worldventures.dreamtrips.core.permission.PermissionSubscriber;
+import com.worldventures.dreamtrips.wallet.domain.entity.lostcard.WalletLocation;
 import com.worldventures.dreamtrips.wallet.service.SmartCardInteractor;
 import com.worldventures.dreamtrips.wallet.service.SmartCardLocationInteractor;
 import com.worldventures.dreamtrips.wallet.service.lostcard.command.FetchAddressCommand;
 import com.worldventures.dreamtrips.wallet.service.lostcard.command.GetEnabledTrackingCommand;
 import com.worldventures.dreamtrips.wallet.service.lostcard.command.GetLocationCommand;
 import com.worldventures.dreamtrips.wallet.service.lostcard.command.SaveEnabledTrackingCommand;
+import com.worldventures.dreamtrips.wallet.util.WalletLocationsUtil;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletPresenter;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.WalletScreen;
 import com.worldventures.dreamtrips.wallet.ui.common.helper.OperationActionStateSubscriberWrapper;
@@ -127,40 +128,40 @@ public class LostCardPresenter extends WalletPresenter<LostCardPresenter.Screen,
       smartCardLocationInteractor.getLocationPipe().send(new GetLocationCommand());
    }
 
-   private void takeLastLocationAndShow(List<SmartCardLocation> smartCardLocations) {
-      if (smartCardLocations == null || smartCardLocations.isEmpty()) {
+   private void takeLastLocationAndShow(List<WalletLocation> walletLocations) {
+      if (walletLocations == null || walletLocations.isEmpty()) {
          getView().toggleVisibleMsgEmptyLastLocation(true);
          getView().toggleVisibleLastConnectionTime(false);
       } else {
-         SmartCardLocation smartCardLocation = smartCardLocations.get(0);
+         final WalletLocation walletLocation = WalletLocationsUtil.getLatestLocation(walletLocations);
          smartCardLocationInteractor.fetchAddressPipe()
                .observe()
                .compose(bindViewIoToMainComposer())
                .subscribe(new ActionStateSubscriber<FetchAddressCommand>()
-                     .onSuccess(command -> setupLocationAndAddress(smartCardLocation, command.getResult()))
+                     .onSuccess(command -> setupLocationAndAddress(walletLocation, command.getResult()))
                      .onFail((fetchAddressCommand, throwable) -> Timber.e(throwable, ""))
                );
          smartCardLocationInteractor.fetchAddressPipe().send(
                new FetchAddressCommand(
-                     smartCardLocation.coordinates().lat(),
-                     smartCardLocation.coordinates().lng())
+                     walletLocation.coordinates().lat(),
+                     walletLocation.coordinates().lng())
          );
       }
    }
 
-   private void setupLocationAndAddress(@NonNull SmartCardLocation smartCardLocation, @NonNull Address address) {
+   private void setupLocationAndAddress(@NonNull WalletLocation walletLocation, @NonNull Address address) {
       LostCardPin lostCardPin = ImmutableLostCardPin.builder()
             .address(String.format("%s\n%s, %s",
                   address.getAddressLine(0), address.getCountryName(), address.getSubAdminArea() + address.getPostalCode()))
             .place(address.getAdminArea())
             .position(new LatLng(
-                  smartCardLocation.coordinates().lat(),
-                  smartCardLocation.coordinates().lng()))
+                  walletLocation.coordinates().lat(),
+                  walletLocation.coordinates().lng()))
             .build();
 
       getView().toggleVisibleMsgEmptyLastLocation(false);
       getView().toggleVisibleLastConnectionTime(true);
-      getView().setLastConnectionLabel(lastConnectedDateFormat.format(smartCardLocation.createdAt()));
+      getView().setLastConnectionLabel(lastConnectedDateFormat.format(walletLocation.createdAt()));
       getView().addPin(lostCardPin);
    }
 

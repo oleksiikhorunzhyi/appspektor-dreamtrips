@@ -1,6 +1,9 @@
 package com.worldventures.dreamtrips.wallet.ui.settings.lostcard;
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.Canvas;
+import android.graphics.drawable.Drawable;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
 import android.support.v7.widget.SwitchCompat;
@@ -77,7 +80,6 @@ public class LostCardScreen extends WalletLinearLayout<LostCardPresenter.Screen,
       mapView.onCreate(null);
 
       tvDisableLostCardMsg.setText(Html.fromHtml(getString(R.string.wallet_lost_card_empty_view)));
-      checkGoogleServicesAndInitMap();
    }
 
    @Override
@@ -155,13 +157,25 @@ public class LostCardScreen extends WalletLinearLayout<LostCardPresenter.Screen,
 
          Marker marker = googleMap.addMarker(
                new MarkerOptions()
-                     .icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_dining_pin_icon))
+                     .icon(BitmapDescriptorFactory.fromBitmap(getBitmapFromVectorDrawable()))
                      .position(lostCardPin.position())
                      .snippet(lostCardPin.place())
          );
 
+         googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(marker.getPosition(), 15));
+
          marker.showInfoWindow();
       });
+   }
+
+   private Bitmap getBitmapFromVectorDrawable() {
+      Drawable drawable = getResources().getDrawable(R.drawable.ic_dining_pin_icon);
+      Bitmap bitmap = Bitmap.createBitmap(drawable.getIntrinsicWidth(),
+            drawable.getIntrinsicHeight(), Bitmap.Config.ARGB_8888);
+      Canvas canvas = new Canvas(bitmap);
+      drawable.setBounds(0, 0, canvas.getWidth(), canvas.getHeight());
+      drawable.draw(canvas);
+      return bitmap;
    }
 
    @Override
@@ -205,7 +219,7 @@ public class LostCardScreen extends WalletLinearLayout<LostCardPresenter.Screen,
    }
 
    private GoogleMap.OnMarkerClickListener onMarkerClickListener = marker -> {
-      mapView.getMapAsync(googleMap -> googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(marker.getPosition(), 5)));
+      mapView.getMapAsync(googleMap -> googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(marker.getPosition(), 15)));
       marker.showInfoWindow();
       return false;
    };

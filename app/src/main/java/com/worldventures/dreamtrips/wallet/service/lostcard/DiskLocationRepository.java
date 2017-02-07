@@ -21,4 +21,14 @@ public class DiskLocationRepository implements SCLocationRepository {
    public void saveSmartCardLocation(SmartCardLocation smartCardLocation) {
       snappyRepository.saveSmartCardLocation(smartCardLocation);
    }
+
+   @Override
+   public void saveEnabledTracking(boolean enable) {
+      snappyRepository.saveEnabledTracking(enable);
+   }
+
+   @Override
+   public boolean isEnableTracking() {
+      return snappyRepository.isEnableTracking();
+   }
 }

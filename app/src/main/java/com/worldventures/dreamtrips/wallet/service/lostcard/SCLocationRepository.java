@@ -8,4 +8,8 @@ public interface SCLocationRepository {
    SmartCardLocation getSmartCardLocation();
 
    void saveSmartCardLocation(SmartCardLocation smartCardLocation);
+
+   void saveEnabledTracking(boolean enable);
+
+   boolean isEnableTracking();
 }

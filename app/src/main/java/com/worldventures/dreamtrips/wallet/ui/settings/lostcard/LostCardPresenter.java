@@ -1,37 +1,70 @@
 package com.worldventures.dreamtrips.wallet.ui.settings.lostcard;
 
 import android.content.Context;
+import android.location.Address;
 import android.os.Parcelable;
 import android.support.annotation.NonNull;
 
+import com.google.android.gms.maps.model.LatLng;
 import com.techery.spares.module.Injector;
+import com.worldventures.dreamtrips.api.smart_card.location.model.SmartCardLocation;
+import com.worldventures.dreamtrips.core.location.LocationServiceDispatcher;
 import com.worldventures.dreamtrips.core.permission.PermissionConstants;
 import com.worldventures.dreamtrips.core.permission.PermissionDispatcher;
 import com.worldventures.dreamtrips.core.permission.PermissionSubscriber;
 import com.worldventures.dreamtrips.wallet.service.SmartCardInteractor;
+import com.worldventures.dreamtrips.wallet.service.SmartCardLocationInteractor;
+import com.worldventures.dreamtrips.wallet.service.lostcard.command.FetchAddressCommand;
+import com.worldventures.dreamtrips.wallet.service.lostcard.command.GetEnabledTrackingCommand;
+import com.worldventures.dreamtrips.wallet.service.lostcard.command.GetLocationCommand;
+import com.worldventures.dreamtrips.wallet.service.lostcard.command.SaveEnabledTrackingCommand;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletPresenter;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.WalletScreen;
+import com.worldventures.dreamtrips.wallet.ui.common.helper.OperationActionStateSubscriberWrapper;
 import com.worldventures.dreamtrips.wallet.ui.common.navigation.Navigator;
+import com.worldventures.dreamtrips.wallet.ui.settings.lostcard.model.ImmutableLostCardPin;
 import com.worldventures.dreamtrips.wallet.ui.settings.lostcard.model.LostCardPin;
+
+import java.text.SimpleDateFormat;
+import java.util.List;
+import java.util.Locale;
 
 import javax.inject.Inject;
 
+import io.techery.janet.helper.ActionStateSubscriber;
 import rx.Observable;
+import timber.log.Timber;
 
 public class LostCardPresenter extends WalletPresenter<LostCardPresenter.Screen, Parcelable> {
 
    @Inject SmartCardInteractor smartCardInteractor;
    @Inject Navigator navigator;
    @Inject PermissionDispatcher permissionDispatcher;
+   @Inject LocationServiceDispatcher locationServiceDispatcher;
+   @Inject SmartCardLocationInteractor smartCardLocationInteractor;
+
+   private SimpleDateFormat lastConnectedDateFormat =
+         new SimpleDateFormat("EEEE, MMMM dd, h:mma", Locale.US);
 
    public LostCardPresenter(Context context, Injector injector) {
       super(context, injector);
    }
 
    @Override
-   public void attachView(Screen view) {
-      super.attachView(view);
-      observeEnableSwitcher(view);
+   public void onAttachedToWindow() {
+      super.onAttachedToWindow();
+      getEnableTrackingState();
+   }
+
+   private void getEnableTrackingState() {
+      smartCardLocationInteractor.enabledTrackingCommandActionPipe()
+            .observeSuccess()
+            .compose(bindViewIoToMainComposer())
+            .subscribe(command -> {
+               observeEnableSwitcher(getView());
+               getView().toggleLostCardSwitcher(command.getResult());
+            }, throwable -> Timber.e(throwable, ""));
+      smartCardLocationInteractor.enabledTrackingCommandActionPipe().send(new GetEnabledTrackingCommand());
    }
 
    private void observeEnableSwitcher(Screen view) {
@@ -43,29 +76,92 @@ public class LostCardPresenter extends WalletPresenter<LostCardPresenter.Screen,
 
    private void enableToggleTracking(boolean enableTracking) {
       requestPermissions(enableTracking);
-      // TODO: 2/2/17 SAVE state of enabled tracking
    }
 
    public void requestPermissions(boolean enableTracking) {
       permissionDispatcher.requestPermission(PermissionConstants.LOCATION_PERMISSIONS)
+            .compose(bindViewIoToMainComposer())
             .subscribe(new PermissionSubscriber()
-                  .onPermissionGrantedAction(() -> executeToggleTracking(enableTracking))
+                  .onPermissionGrantedAction(() -> checkLocationServiceEnabled(enableTracking))
                   .onPermissionRationaleAction(() -> getView().showRationaleForLocation())
                   .onPermissionDeniedAction(() -> getView().showDeniedForLocation()));
    }
 
+   private void checkLocationServiceEnabled(boolean enableTracking) {
+      locationServiceDispatcher.requestEnableLocationService()
+            .compose(bindViewIoToMainComposer())
+            .subscribe(isEnableLocationServices -> {
+               if (isEnableLocationServices) {
+                  executeToggleTracking(enableTracking);
+               } else {
+                  getView().toggleLostCardSwitcher(false);
+               }
+            });
+   }
+
    private void executeToggleTracking(boolean enableTracking) {
-      getView().onTrackingChecked(enableTracking);
-      getView().toggleVisibleDisabledOfTrackingView(!enableTracking);
-      getView().setVisibilityMap(enableTracking);
-      // TODO: 2/1/17 add services toggle enable tracking of SC location
+      smartCardLocationInteractor.saveEnabledTrackingPipe()
+            .observeSuccess()
+            .compose(bindViewIoToMainComposer())
+            .subscribe(command -> {
+               getView().toggleVisibleDisabledOfTrackingView(!enableTracking);
+               getView().onTrackingChecked(enableTracking);
+               getView().setVisibilityMap(enableTracking);
+            });
+      smartCardLocationInteractor.saveEnabledTrackingPipe().send(new SaveEnabledTrackingCommand(enableTracking));
    }
 
    public void loadLastSmartCardLocation() {
-      // TODO: 2/1/17 Add logic for request last location smartcard
-      // TODO: after load need to call getView().addPin(<position data>)
-      // TODO: if data empty call getView().toggleVisibleMsgEmptyLastLocation(true)
-      // TODO: if has data call getView().toggleVisibleMsgEmptyLastLocation(false),
+      smartCardLocationInteractor.getLocationPipe()
+            .observe()
+            .compose(bindViewIoToMainComposer())
+            .subscribe(OperationActionStateSubscriberWrapper.<GetLocationCommand>forView(getView().provideOperationDelegate())
+                  .onSuccess(getLocationCommand -> takeLastLocationAndShow(getLocationCommand.getResult()))
+                  .onFail(throwable -> {
+                     Timber.e(throwable, "");
+                     getView().toggleVisibleMsgEmptyLastLocation(true);
+                     getView().toggleVisibleLastConnectionTime(false);
+                     return null;
+                  })
+                  .wrap());
+      smartCardLocationInteractor.getLocationPipe().send(new GetLocationCommand());
+   }
+
+   private void takeLastLocationAndShow(List<SmartCardLocation> smartCardLocations) {
+      if (smartCardLocations == null || smartCardLocations.isEmpty()) {
+         getView().toggleVisibleMsgEmptyLastLocation(true);
+         getView().toggleVisibleLastConnectionTime(false);
+      } else {
+         SmartCardLocation smartCardLocation = smartCardLocations.get(0);
+         smartCardLocationInteractor.fetchAddressPipe()
+               .observe()
+               .compose(bindViewIoToMainComposer())
+               .subscribe(new ActionStateSubscriber<FetchAddressCommand>()
+                     .onSuccess(command -> setupLocationAndAddress(smartCardLocation, command.getResult()))
+                     .onFail((fetchAddressCommand, throwable) -> Timber.e(throwable, ""))
+               );
+         smartCardLocationInteractor.fetchAddressPipe().send(
+               new FetchAddressCommand(
+                     smartCardLocation.coordinates().lat(),
+                     smartCardLocation.coordinates().lng())
+         );
+      }
+   }
+
+   private void setupLocationAndAddress(@NonNull SmartCardLocation smartCardLocation, @NonNull Address address) {
+      LostCardPin lostCardPin = ImmutableLostCardPin.builder()
+            .address(String.format("%s\n%s, %s",
+                  address.getAddressLine(0), address.getCountryName(), address.getSubAdminArea() + address.getPostalCode()))
+            .place(address.getAdminArea())
+            .position(new LatLng(
+                  smartCardLocation.coordinates().lat(),
+                  smartCardLocation.coordinates().lng()))
+            .build();
+
+      getView().toggleVisibleMsgEmptyLastLocation(false);
+      getView().toggleVisibleLastConnectionTime(true);
+      getView().setLastConnectionLabel(lastConnectedDateFormat.format(smartCardLocation.createdAt()));
+      getView().addPin(lostCardPin);
    }
 
    public void goBack() {

@@ -19,8 +19,10 @@ public abstract class FilterData {
    private static final int BUDGET_MIN = 1;
    private static final int BUDGET_MAX = 5;
    private static final int DISTANCE_MAX_INDEX = 4;
-   private static final String RESTAURANT = "restaurant";
-   private static final String BAR = "bar";
+   public static final String RESTAURANT = "restaurant";
+   public static final String BAR = "bar";
+   public static final String ENTERTAINMENT = "entertainment";
+   public static final String SPAS = "spa";
 
    @Value.Default
    public int page() {

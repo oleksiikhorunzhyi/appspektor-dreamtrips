@@ -31,6 +31,7 @@ import com.worldventures.dreamtrips.core.flow.activity.FlowActivity;
 import com.worldventures.dreamtrips.core.utils.ViewUtils;
 import com.worldventures.dreamtrips.modules.dtl.model.location.DtlLocation;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.ThinMerchant;
+import com.worldventures.dreamtrips.modules.dtl.model.merchant.filter.FilterData;
 import com.worldventures.dreamtrips.modules.dtl.view.dialog.DialogFactory;
 import com.worldventures.dreamtrips.modules.dtl_flow.DtlLayout;
 import com.worldventures.dreamtrips.modules.dtl_flow.FlowUtil;
@@ -60,10 +61,6 @@ public class DtlMapScreenImpl extends DtlLayout<DtlMapScreen, DtlMapPresenter, D
    private static final float CAMERA_PADDING = 50f;
 
    public static final String MAP_TAG = "MAP_TAG";
-   private static final String RESTAURANT = "restaurant";
-   private static final String BAR = "bar";
-   private static final String ENTERTAINMENT = "entertainment";
-   private static final String SPAS = "spa";
 
    @InjectView(R.id.mapTouchView) View mapTouchView;
    @InjectView(R.id.infoContainer) FrameLayout infoContainer;
@@ -146,15 +143,15 @@ public class DtlMapScreenImpl extends DtlLayout<DtlMapScreen, DtlMapPresenter, D
 
        if (type != null ) {
           if (type.size() > 1) {
-             if (type.get(0).equals(RESTAURANT) && type.get(1).equals(BAR)) {
+             if (type.get(0).equals(FilterData.RESTAURANT) && type.get(1).equals(FilterData.BAR)) {
                 filterFood.setSelected(true);
                 idResource = R.string.dtlt_search_hint;
              }
           } else {
-             if (type.get(0).equals(ENTERTAINMENT)) {
+             if (type.get(0).equals(FilterData.ENTERTAINMENT)) {
                 filterEntertainment.setSelected(true);
                 idResource = R.string.filter_merchant_entertainment;
-             } else if (type.get(0).equals(SPAS)) {
+             } else if (type.get(0).equals(FilterData.SPAS)) {
                 filterSpa.setSelected(true);
                 idResource = R.string.filter_merchant_spa;
              }
@@ -223,8 +220,8 @@ public class DtlMapScreenImpl extends DtlLayout<DtlMapScreen, DtlMapPresenter, D
     public void onFilterFoodClick() {
         if (!filterFood.isSelected()) {
             List<String> merchantType = new ArrayList<>();
-            merchantType.add(RESTAURANT);
-            merchantType.add(BAR);
+            merchantType.add(FilterData.RESTAURANT);
+            merchantType.add(FilterData.BAR);
             filterFood.setSelected(true);
             filterEntertainment.setSelected(false);
             filterSpa.setSelected(false);
@@ -236,7 +233,7 @@ public class DtlMapScreenImpl extends DtlLayout<DtlMapScreen, DtlMapPresenter, D
     public void onFilterEntertainmentClick() {
         if (!filterEntertainment.isSelected()) {
             List<String> merchantType = new ArrayList<>();
-            merchantType.add(ENTERTAINMENT);
+            merchantType.add(FilterData.ENTERTAINMENT);
             filterFood.setSelected(false);
             filterEntertainment.setSelected(true);
             filterSpa.setSelected(false);
@@ -248,7 +245,7 @@ public class DtlMapScreenImpl extends DtlLayout<DtlMapScreen, DtlMapPresenter, D
     public void onFilterSpaClick() {
         if (!filterSpa.isSelected()) {
             List<String> merchantType = new ArrayList<>();
-            merchantType.add(SPAS);
+            merchantType.add(FilterData.SPAS);
             filterFood.setSelected(false);
             filterEntertainment.setSelected(false);
             filterSpa.setSelected(true);

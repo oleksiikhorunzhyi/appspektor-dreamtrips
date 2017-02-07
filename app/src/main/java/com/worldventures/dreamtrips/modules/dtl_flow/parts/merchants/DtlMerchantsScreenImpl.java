@@ -51,11 +51,6 @@ import cn.pedant.SweetAlert.SweetAlertDialog;
 public class DtlMerchantsScreenImpl extends DtlLayout<DtlMerchantsScreen, DtlMerchantsPresenter, DtlMerchantsPath>
       implements DtlMerchantsScreen, MerchantCellDelegate {
 
-   private static final String RESTAURANT = "restaurant";
-   private static final String BAR = "bar";
-   private static final String ENTERTAINMENT = "entertainment";
-   private static final String SPAS = "spa";
-
    @Optional @InjectView(R.id.expandableDtlToolbar) ExpandableDtlToolbar dtlToolbar;
    @InjectView(R.id.lv_items) EmptyRecyclerView recyclerView;
    @InjectView(R.id.swipe_container) SwipeRefreshLayout refreshLayout;
@@ -198,14 +193,12 @@ public class DtlMerchantsScreenImpl extends DtlLayout<DtlMerchantsScreen, DtlMer
    public void onClickFood() {
       if (!filterFood.isSelected()) {
          List<String> merchantType = new ArrayList<>();
-         merchantType.add(RESTAURANT);
-         merchantType.add(BAR);
+         merchantType.add(FilterData.RESTAURANT);
+         merchantType.add(FilterData.BAR);
          filterFood.setSelected(true);
          filterEntertainment.setSelected(false);
          filterSpa.setSelected(false);
-         getPresenter().onLoadMerchantsType(merchantType);
-         updateFiltersView(R.string.dtlt_search_hint);
-         getPresenter().loadAmenities(merchantType);
+         loadMerchantsAndAmenities(merchantType, R.string.dtlt_search_hint);
       }
    }
 
@@ -214,13 +207,11 @@ public class DtlMerchantsScreenImpl extends DtlLayout<DtlMerchantsScreen, DtlMer
    public void onClickEntertainment() {
       if (!filterEntertainment.isSelected()) {
          List<String> merchantType = new ArrayList<>();
-         merchantType.add(ENTERTAINMENT);
+         merchantType.add(FilterData.ENTERTAINMENT);
          filterFood.setSelected(false);
          filterEntertainment.setSelected(true);
          filterSpa.setSelected(false);
-         getPresenter().onLoadMerchantsType(merchantType);
-         updateFiltersView(R.string.filter_merchant_entertainment);
-         getPresenter().loadAmenities(merchantType);
+         loadMerchantsAndAmenities(merchantType, R.string.filter_merchant_entertainment);
       }
    }
 
@@ -229,34 +220,35 @@ public class DtlMerchantsScreenImpl extends DtlLayout<DtlMerchantsScreen, DtlMer
    public void onClickSpa() {
       if (!filterSpa.isSelected()) {
          List<String> merchantType = new ArrayList<>();
-         merchantType.add(SPAS);
+         merchantType.add(FilterData.SPAS);
          filterFood.setSelected(false);
          filterEntertainment.setSelected(false);
          filterSpa.setSelected(true);
-         getPresenter().onLoadMerchantsType(merchantType);
-         updateFiltersView(R.string.filter_merchant_spa);
-         getPresenter().loadAmenities(merchantType);
+         loadMerchantsAndAmenities(merchantType, R.string.filter_merchant_spa);
       }
    }
 
     @Override
     public void updateMerchantType(List<String> type) {
         int idResource = 0;
-        if (type != null && type.size() > 1) {
-            if (type != null && type.get(0).equals(RESTAURANT) && type.get(1).equals(BAR)) {
+
+       if (type != null ) {
+          if (type.size() > 1) {
+             if (type.get(0).equals(FilterData.RESTAURANT) && type.get(1).equals(FilterData.BAR)) {
                 filterFood.setSelected(true);
                 idResource = R.string.dtlt_search_hint;
-            }
-        } else {
-            if (type != null && type.get(0).equals(ENTERTAINMENT)) {
+             }
+          } else {
+             if (type.get(0).equals(FilterData.ENTERTAINMENT)) {
                 filterEntertainment.setSelected(true);
                 idResource = R.string.filter_merchant_entertainment;
-            } else if (type != null && type.get(0).equals(SPAS)) {
+             } else if (type.get(0).equals(FilterData.SPAS)) {
                 filterSpa.setSelected(true);
                 idResource = R.string.filter_merchant_spa;
-            }
-        }
-        updateFiltersView(idResource);
+             }
+          }
+       }
+       updateFiltersView(idResource);
     }
 
    private void showhMerchantsError() {
@@ -428,5 +420,11 @@ public class DtlMerchantsScreenImpl extends DtlLayout<DtlMerchantsScreen, DtlMer
       if (stringResource != 0 && dtlToolbar != null) {
          dtlToolbar.setSearchCaption(ViewUtils.getStringById(getContext(), stringResource));
       }
+   }
+
+   private void loadMerchantsAndAmenities(List<String> merchantType , int stringResource) {
+      getPresenter().onLoadMerchantsType(merchantType);
+      updateFiltersView(stringResource);
+      getPresenter().loadAmenities(merchantType);
    }
 }

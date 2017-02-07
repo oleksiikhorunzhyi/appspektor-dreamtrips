@@ -29,11 +29,11 @@ public class EditCardDetailsScreen extends WalletLinearLayout<EditCardDetailsPre
       implements EditCardDetailsPresenter.Screen {
 
    @InjectView(R.id.toolbar) Toolbar toolbar;
-   @InjectView(R.id.address1) EditText address1Field;
-   @InjectView(R.id.address2) EditText address2Field;
-   @InjectView(R.id.city) EditText cityField;
-   @InjectView(R.id.state) EditText stateField;
-   @InjectView(R.id.zip) EditText zipField;
+   @InjectView(R.id.address1) EditText etAddress1;
+   @InjectView(R.id.address2) EditText etAddress2;
+   @InjectView(R.id.city) EditText etCityField;
+   @InjectView(R.id.state) EditText etStateField;
+   @InjectView(R.id.zip) EditText etZipField;
    @InjectView(R.id.confirm_button) Button confirmButton;
 
    private DialogOperationScreen dialogOperationScreen;
@@ -58,8 +58,8 @@ public class EditCardDetailsScreen extends WalletLinearLayout<EditCardDetailsPre
       if (isInEditMode()) return;
       toolbar.setNavigationOnClickListener(v -> presenter.goBack());
 
-      Observable.combineLatest(RxTextView.afterTextChangeEvents(address1Field), RxTextView.afterTextChangeEvents(cityField),
-            RxTextView.afterTextChangeEvents(stateField), RxTextView.afterTextChangeEvents(zipField),
+      Observable.combineLatest(RxTextView.afterTextChangeEvents(etAddress1), RxTextView.afterTextChangeEvents(etCityField),
+            RxTextView.afterTextChangeEvents(etStateField), RxTextView.afterTextChangeEvents(etZipField),
             (addressTextChangeEvent, cityTextChangeEvent, stateTextChangeEvent, zipTextChangeEvent) ->
                   Queryable.from(addressTextChangeEvent, cityTextChangeEvent, stateTextChangeEvent, zipTextChangeEvent)
                         .count(event -> event.editable().length() == 0) > 0)
@@ -70,12 +70,21 @@ public class EditCardDetailsScreen extends WalletLinearLayout<EditCardDetailsPre
 
    @Override
    public void address(AddressInfoWithLocale defaultAddress) {
-      AddressInfo addressInfo = defaultAddress.addressInfo();
-      address1Field.setText(addressInfo.address1());
-      address2Field.setText(addressInfo.address2());
-      cityField.setText(addressInfo.city());
-      stateField.setText(addressInfo.state());
-      zipField.setText(addressInfo.zip());
+      final AddressInfo addressInfo = defaultAddress.addressInfo();
+      etAddress1.setText(addressInfo.address1());
+      etAddress1.setSelection(etAddress1.length());
+
+      etAddress2.setText(addressInfo.address2());
+      etAddress2.setSelection(etAddress2.length());
+
+      etCityField.setText(addressInfo.city());
+      etCityField.setSelection(etCityField.length());
+
+      etStateField.setText(addressInfo.state());
+      etStateField.setSelection(etStateField.length());
+
+      etZipField.setText(addressInfo.zip());
+      etZipField.setSelection(etZipField.length());
    }
 
    @Override
@@ -96,11 +105,11 @@ public class EditCardDetailsScreen extends WalletLinearLayout<EditCardDetailsPre
    @OnClick(R.id.confirm_button)
    public void onConfirmButtonClicked() {
       AddressInfo addressInfo = ImmutableAddressInfo.builder()
-            .address1(address1Field.getText().toString().trim())
-            .address2(address2Field.getText().toString().trim())
-            .city(cityField.getText().toString().trim())
-            .state(stateField.getText().toString().trim())
-            .zip(zipField.getText().toString().trim())
+            .address1(etAddress1.getText().toString().trim())
+            .address2(etAddress2.getText().toString().trim())
+            .city(etCityField.getText().toString().trim())
+            .state(etStateField.getText().toString().trim())
+            .zip(etZipField.getText().toString().trim())
             .build();
 
       getPresenter().onCardAddressConfirmed(addressInfo);

@@ -3,6 +3,7 @@ package com.worldventures.dreamtrips.wallet.service;
 
 import com.worldventures.dreamtrips.core.janet.SessionActionPipeCreator;
 import com.worldventures.dreamtrips.wallet.service.command.ConnectSmartCardCommand;
+import com.worldventures.dreamtrips.wallet.service.command.FetchPlacesNearbyCommand;
 import com.worldventures.dreamtrips.wallet.service.lostcard.command.DetectGeoLocationCommand;
 import com.worldventures.dreamtrips.wallet.service.lostcard.command.FetchAddressCommand;
 import com.worldventures.dreamtrips.wallet.service.lostcard.command.GetEnabledTrackingCommand;
@@ -28,6 +29,8 @@ public final class SmartCardLocationInteractor {
    private final ActionPipe<SaveEnabledTrackingCommand> saveEnabledTrackingPipe;
    private final ActionPipe<GetEnabledTrackingCommand> enabledTrackingCommandActionPipe;
 
+   private final ActionPipe<FetchPlacesNearbyCommand> fetchPlacesNearbyCommandActionPipe;
+
    public SmartCardLocationInteractor(SessionActionPipeCreator pipeCreator) {
       connectionPipe = pipeCreator.createPipe(ConnectSmartCardCommand.class, Schedulers.io());
       disconnectPipe = pipeCreator.createPipe(DisconnectAction.class, Schedulers.io());
@@ -42,6 +45,7 @@ public final class SmartCardLocationInteractor {
 
       saveEnabledTrackingPipe = pipeCreator.createPipe(SaveEnabledTrackingCommand.class, Schedulers.io());
       enabledTrackingCommandActionPipe = pipeCreator.createPipe(GetEnabledTrackingCommand.class, Schedulers.io());
+      fetchPlacesNearbyCommandActionPipe = pipeCreator.createPipe(FetchPlacesNearbyCommand.class, Schedulers.io());
    }
 
    public ActionPipe<ConnectSmartCardCommand> connectActionPipe() {
@@ -78,5 +82,9 @@ public final class SmartCardLocationInteractor {
 
    public ActionPipe<GetEnabledTrackingCommand> enabledTrackingCommandActionPipe() {
       return enabledTrackingCommandActionPipe;
+   }
+
+   public ActionPipe<FetchPlacesNearbyCommand> fetchPlacesNearbyCommandActionPipe() {
+      return fetchPlacesNearbyCommandActionPipe;
    }
 }

@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 
+import com.google.android.gms.common.api.GoogleApiClient;
 import com.messenger.delegate.CropImageDelegate;
 import com.messenger.ui.util.avatar.MessengerMediaPickerDelegate;
 import com.techery.spares.annotations.Layout;
@@ -36,6 +37,7 @@ public class WalletActivity extends FlowActivity<WalletActivityPresenter> {
    @Inject PhotoPickerLayoutDelegate photoPickerLayoutDelegate;
    @Inject MessengerMediaPickerDelegate messengerMediaPickerDelegate;
    @Inject CropImageDelegate cropImageDelegate;
+   @Inject GoogleApiClient googleApiClient;
 
    @Override
    protected void onCreate(Bundle savedInstanceState) {
@@ -45,12 +47,14 @@ public class WalletActivity extends FlowActivity<WalletActivityPresenter> {
       navigationDrawerPresenter.setCurrentComponent(rootComponentsProvider.getComponentByKey(WalletActivityModule.WALLET));
       messengerMediaPickerDelegate.resetPhotoPicker();
       messengerMediaPickerDelegate.register();
+      googleApiClient.connect();
    }
 
    @Override
    public void onDestroy() {
       messengerMediaPickerDelegate.unregister();
       mediaPickerAdapter.destroy();
+      googleApiClient.disconnect();
       super.onDestroy();
    }
 

@@ -7,7 +7,7 @@ import com.worldventures.dreamtrips.wallet.service.SmartCardInteractor;
 import com.worldventures.dreamtrips.wallet.service.SmartCardSyncManager;
 import com.worldventures.dreamtrips.wallet.service.command.ActiveSmartCardCommand;
 import com.worldventures.dreamtrips.wallet.service.command.ConnectSmartCardCommand;
-import com.worldventures.dreamtrips.wallet.service.lostcard.SCLocationManager;
+import com.worldventures.dreamtrips.wallet.service.lostcard.LostCardManager;
 
 import javax.inject.Inject;
 
@@ -18,7 +18,7 @@ public class WalletActivityPresenter extends ActivityPresenter<ActivityPresenter
 
    @Inject SmartCardInteractor interactor;
    @Inject SmartCardSyncManager smartCardSyncManager;
-   @Inject SCLocationManager locationManager;
+   @Inject LostCardManager locationManager;
 
    @Override
    public void onCreate(Bundle savedInstanceState) {

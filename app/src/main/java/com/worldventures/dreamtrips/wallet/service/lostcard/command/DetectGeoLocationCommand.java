@@ -11,6 +11,7 @@ import com.worldventures.dreamtrips.wallet.service.lostcard.SCLocationRepository
 import com.worldventures.dreamtrips.wallet.util.LocationPermissionDeniedException;
 
 import java.util.Calendar;
+import java.util.List;
 
 import javax.inject.Inject;
 
@@ -36,9 +37,15 @@ public class DetectGeoLocationCommand extends Command<Void> implements Injectabl
       locationService.detectLastKnownLocation()
             .map(location -> constructSmartCardLocation(type, location.getLatitude(), location.getLongitude()))
             .subscribe((result) -> {
-               locationRepository.saveSmartCardLocation(result);
+               saveLocation(result);
                callback.onSuccess(null);
             }, callback::onFail);
+   }
+
+   private void saveLocation(SmartCardLocation location) {
+      final List<SmartCardLocation> smartCardLocations = locationRepository.getSmartCardLocations();
+      smartCardLocations.add(location);
+      locationRepository.saveSmartCardLocations(smartCardLocations);
    }
 
    private SmartCardLocation constructSmartCardLocation(SmartCardLocationType type, double latitude, double longtitude) {

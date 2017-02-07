@@ -6,6 +6,7 @@ import com.techery.spares.module.qualifier.ForApplication;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.wallet.service.SmartCardLocationInteractor;
 import com.worldventures.dreamtrips.wallet.service.WalletDetectLocationService;
+import com.worldventures.dreamtrips.wallet.service.WalletNetworkService;
 import com.worldventures.dreamtrips.wallet.service.impl.AndroidDetectLocationService;
 import com.worldventures.dreamtrips.wallet.service.lostcard.command.DetectGeoLocationCommand;
 import com.worldventures.dreamtrips.wallet.service.lostcard.command.FetchAddressCommand;
@@ -45,7 +46,13 @@ public class LostCardModule {
 
    @Singleton
    @Provides
-   SCLocationManager locationManager(SmartCardLocationInteractor locationInteractor) {
-      return new SCLocationManager(locationInteractor);
+   LocationSyncManager jobScheduler(SmartCardLocationInteractor locationInteractor, WalletNetworkService networkService) {
+      return new LocationSyncManager(locationInteractor, networkService);
+   }
+
+   @Singleton
+   @Provides
+   LostCardManager locationManager(SmartCardLocationInteractor locationInteractor, LocationSyncManager jobScheduler) {
+      return new LostCardManager(locationInteractor, jobScheduler);
    }
 }

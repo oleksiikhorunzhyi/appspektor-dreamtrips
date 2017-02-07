@@ -4,6 +4,8 @@ package com.worldventures.dreamtrips.wallet.service.lostcard;
 import com.worldventures.dreamtrips.api.smart_card.location.model.SmartCardLocation;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 
+import java.util.List;
+
 public class DiskLocationRepository implements SCLocationRepository {
 
    private final SnappyRepository snappyRepository;
@@ -13,13 +15,13 @@ public class DiskLocationRepository implements SCLocationRepository {
    }
 
    @Override
-   public SmartCardLocation getSmartCardLocation() {
-      return snappyRepository.getSmartCardLocation();
+   public List<SmartCardLocation> getSmartCardLocations() {
+      return snappyRepository.getSmartCardLocations();
    }
 
    @Override
-   public void saveSmartCardLocation(SmartCardLocation smartCardLocation) {
-      snappyRepository.saveSmartCardLocation(smartCardLocation);
+   public void saveSmartCardLocations(List<SmartCardLocation> smartCardLocations) {
+      snappyRepository.saveSmartCardLocations(smartCardLocations);
    }
 
    @Override

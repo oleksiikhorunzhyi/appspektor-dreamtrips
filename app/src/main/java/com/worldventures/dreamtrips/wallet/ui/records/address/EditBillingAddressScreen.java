@@ -1,4 +1,4 @@
-package com.worldventures.dreamtrips.wallet.ui.wizard.edit_card;
+package com.worldventures.dreamtrips.wallet.ui.records.address;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
@@ -25,8 +25,8 @@ import butterknife.OnEditorAction;
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
 
-public class EditCardDetailsScreen extends WalletLinearLayout<EditCardDetailsPresenter.Screen, EditCardDetailsPresenter, EditCardDetailsPath>
-      implements EditCardDetailsPresenter.Screen {
+public class EditBillingAddressScreen extends WalletLinearLayout<EditBillingAddressPresenter.Screen, EditBillingAddressPresenter, EditBillingAddressPath>
+      implements EditBillingAddressPresenter.Screen {
 
    @InjectView(R.id.toolbar) Toolbar toolbar;
    @InjectView(R.id.address1) EditText etAddress1;
@@ -38,18 +38,18 @@ public class EditCardDetailsScreen extends WalletLinearLayout<EditCardDetailsPre
 
    private DialogOperationScreen dialogOperationScreen;
 
-   public EditCardDetailsScreen(Context context) {
+   public EditBillingAddressScreen(Context context) {
       super(context);
    }
 
-   public EditCardDetailsScreen(Context context, AttributeSet attrs) {
+   public EditBillingAddressScreen(Context context, AttributeSet attrs) {
       super(context, attrs);
    }
 
    @NonNull
    @Override
-   public EditCardDetailsPresenter createPresenter() {
-      return new EditCardDetailsPresenter(getContext(), getInjector(), getPath().getBankCard());
+   public EditBillingAddressPresenter createPresenter() {
+      return new EditBillingAddressPresenter(getContext(), getInjector(), getPath().getBankCard());
    }
 
    @Override

@@ -1,5 +1,7 @@
 package com.worldventures.dreamtrips.wallet.ui.common.helper2.error;
 
+import com.worldventures.dreamtrips.util.HttpUploaderyException;
+
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
@@ -52,7 +54,7 @@ public class ErrorViewFactory<T> implements ErrorView<T> {
          }
       }
 
-      if (throwable instanceof JanetException) { // CommandServiceException, JanetActionException, SmartCardServiceException
+      if (throwable instanceof JanetException || throwable instanceof HttpUploaderyException) { // CommandServiceException, JanetActionException, SmartCardServiceException, HttpUploaderyException
          return createErrorView(throwable.getCause(), t);
       }
       // default values

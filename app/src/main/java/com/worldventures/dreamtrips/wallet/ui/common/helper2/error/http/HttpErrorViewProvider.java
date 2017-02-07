@@ -45,10 +45,10 @@ public class HttpErrorViewProvider<T> implements ErrorViewProvider<T> {
       if (throwable instanceof JanetActionException &&
             ((JanetActionException) throwable).getAction() instanceof BaseHttpAction) {
          final BaseHttpAction action = ((BaseHttpAction) ((JanetActionException) throwable).getAction());
-         final String httpErrorMassage = action.statusCode() == IGNORE_HTTP_STATUS_CODE ? null
+         final String httpErrorMessage = action.statusCode() == IGNORE_HTTP_STATUS_CODE ? null
                : handleJanetHttpError(context, action, throwable, null);
-         if (httpErrorMassage == null) return null;
-         return new SimpleErrorView<>(context, cancelAction, httpErrorMassage);
+         if (httpErrorMessage == null) return null;
+         return new SimpleErrorView<>(context, cancelAction, httpErrorMessage);
       }
       if (throwable instanceof UnknownHostException || throwable instanceof ConnectException) {
          return new ConnectionErrorView<>(context, context.getString(R.string.wallet_no_internet_connection), retryAction, cancelAction);

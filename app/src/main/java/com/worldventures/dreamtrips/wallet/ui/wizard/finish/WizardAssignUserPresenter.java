@@ -9,12 +9,13 @@ import com.worldventures.dreamtrips.wallet.service.WizardInteractor;
 import com.worldventures.dreamtrips.wallet.service.command.wizard.WizardCompleteCommand;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletPresenter;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.WalletScreen;
-import com.worldventures.dreamtrips.wallet.ui.common.helper.ErrorHandler;
-import com.worldventures.dreamtrips.wallet.ui.common.helper.OperationActionStateSubscriberWrapper;
 import com.worldventures.dreamtrips.wallet.ui.common.navigation.Navigator;
 import com.worldventures.dreamtrips.wallet.ui.dashboard.CardListPath;
 
 import javax.inject.Inject;
+
+import io.techery.janet.operationsubscriber.OperationActionSubscriber;
+import io.techery.janet.operationsubscriber.view.OperationView;
 
 public class WizardAssignUserPresenter extends WalletPresenter<WizardAssignUserPresenter.Screen, Parcelable> {
 
@@ -32,27 +33,32 @@ public class WizardAssignUserPresenter extends WalletPresenter<WizardAssignUserP
    public void onAttachedToWindow() {
       super.onAttachedToWindow();
       observeComplete();
+      onWizardComplete();
+   }
+
+   public void onWizardComplete() {
       wizardInteractor.completePipe().send(new WizardCompleteCommand(smartCard));
+   }
+
+   public void onWizardCancel() {
+      navigator.goBack();
    }
 
    private void observeComplete() {
       wizardInteractor.completePipe()
             .observe()
             .compose(bindViewIoToMainComposer())
-            .subscribe(OperationActionStateSubscriberWrapper.<WizardCompleteCommand>forView(getView().provideOperationDelegate())
+            .subscribe(OperationActionSubscriber.forView(getView().provideOperationView())
                   .onSuccess(command -> navigateToNextScreen())
-                  .onFail(ErrorHandler.create(getContext(), wizardCompleteCommand -> goBack()))
-                  .wrap());
+                  .create());
    }
 
    private void navigateToNextScreen() {
       navigator.single(new CardListPath());
    }
 
-   private void goBack() {
-      navigator.goBack();
-   }
-
    interface Screen extends WalletScreen {
+
+      OperationView<WizardCompleteCommand> provideOperationView();
    }
 }

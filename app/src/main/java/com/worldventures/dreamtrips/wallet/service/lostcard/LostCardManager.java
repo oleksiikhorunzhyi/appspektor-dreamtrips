@@ -2,7 +2,7 @@ package com.worldventures.dreamtrips.wallet.service.lostcard;
 
 import com.worldventures.dreamtrips.wallet.domain.entity.lostcard.WalletLocationType;
 import com.worldventures.dreamtrips.wallet.service.SmartCardLocationInteractor;
-import com.worldventures.dreamtrips.wallet.service.lostcard.command.DetectGeoLocationCommand;
+import com.worldventures.dreamtrips.wallet.service.lostcard.command.WalletLocationCommand;
 
 import java.util.concurrent.TimeUnit;
 
@@ -39,7 +39,7 @@ public class LostCardManager {
    }
 
    private void triggerLocation(WalletLocationType locationType) {
-      locationInteractor.detectGeoLocationPipe().send(new DetectGeoLocationCommand(locationType));
+      locationInteractor.walletLocationCommandPipe().send(new WalletLocationCommand(locationType));
    }
 
    public void disconnect() {

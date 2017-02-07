@@ -4,7 +4,7 @@ import com.worldventures.dreamtrips.api.smart_card.location.GetSmartCardLocation
 import com.worldventures.dreamtrips.core.janet.dagger.InjectableAction;
 import com.worldventures.dreamtrips.wallet.domain.entity.lostcard.WalletLocation;
 import com.worldventures.dreamtrips.wallet.service.SystemPropertiesProvider;
-import com.worldventures.dreamtrips.wallet.service.lostcard.SCLocationRepository;
+import com.worldventures.dreamtrips.wallet.service.lostcard.LostCardRepository;
 
 import java.util.List;
 
@@ -23,7 +23,7 @@ import static com.worldventures.dreamtrips.core.janet.JanetModule.JANET_API_LIB;
 public class GetLocationCommand extends Command<List<WalletLocation>> implements InjectableAction {
 
    @Inject @Named(JANET_API_LIB) Janet janet;
-   @Inject SCLocationRepository locationRepository;
+   @Inject LostCardRepository locationRepository;
    @Inject SystemPropertiesProvider propertiesProvider;
    @Inject MapperyContext mapperyContext;
 

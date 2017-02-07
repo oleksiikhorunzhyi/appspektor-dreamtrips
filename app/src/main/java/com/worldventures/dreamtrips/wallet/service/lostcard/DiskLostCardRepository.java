@@ -6,11 +6,11 @@ import com.worldventures.dreamtrips.wallet.domain.entity.lostcard.WalletLocation
 
 import java.util.List;
 
-public class DiskLocationRepository implements SCLocationRepository {
+public class DiskLostCardRepository implements LostCardRepository {
 
    private final SnappyRepository snappyRepository;
 
-   public DiskLocationRepository(SnappyRepository snappyRepository) {
+   public DiskLostCardRepository(SnappyRepository snappyRepository) {
       this.snappyRepository = snappyRepository;
    }
 

@@ -14,6 +14,4 @@ public interface WalletLocation {
    Date createdAt();
 
    WalletLocationType type();
-
-   String name();
 }

@@ -27,7 +27,6 @@ public class WalletLocationToSmartCardLocationConverter implements Converter<Wal
             .coordinates(mapperyContext.convert(walletLocation.coordinates(), SmartCardCoordinates.class))
             .createdAt(walletLocation.createdAt())
             .type(mapperyContext.convert(walletLocation.type(), SmartCardLocationType.class))
-            .name(walletLocation.name())
             .build();
    }
 }

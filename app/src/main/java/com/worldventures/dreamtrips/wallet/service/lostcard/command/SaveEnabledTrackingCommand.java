@@ -1,7 +1,7 @@
 package com.worldventures.dreamtrips.wallet.service.lostcard.command;
 
 import com.worldventures.dreamtrips.core.janet.dagger.InjectableAction;
-import com.worldventures.dreamtrips.wallet.service.lostcard.SCLocationRepository;
+import com.worldventures.dreamtrips.wallet.service.lostcard.LostCardRepository;
 
 import javax.inject.Inject;
 
@@ -11,7 +11,7 @@ import io.techery.janet.command.annotations.CommandAction;
 @CommandAction
 public class SaveEnabledTrackingCommand extends Command<Void> implements InjectableAction {
 
-   @Inject SCLocationRepository lostCardRepository;
+   @Inject LostCardRepository lostCardRepository;
 
    private final boolean enable;
 

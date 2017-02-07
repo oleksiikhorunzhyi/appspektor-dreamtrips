@@ -1,7 +1,6 @@
 package com.worldventures.dreamtrips.wallet.ui.settings.lostcard;
 
 import android.content.Context;
-import android.location.Address;
 import android.os.Parcelable;
 import android.support.annotation.NonNull;
 
@@ -11,6 +10,7 @@ import com.worldventures.dreamtrips.core.location.LocationServiceDispatcher;
 import com.worldventures.dreamtrips.core.permission.PermissionConstants;
 import com.worldventures.dreamtrips.core.permission.PermissionDispatcher;
 import com.worldventures.dreamtrips.core.permission.PermissionSubscriber;
+import com.worldventures.dreamtrips.wallet.domain.entity.lostcard.WalletAddress;
 import com.worldventures.dreamtrips.wallet.domain.entity.lostcard.WalletLocation;
 import com.worldventures.dreamtrips.wallet.service.SmartCardInteractor;
 import com.worldventures.dreamtrips.wallet.service.SmartCardLocationInteractor;
@@ -18,13 +18,13 @@ import com.worldventures.dreamtrips.wallet.service.lostcard.command.FetchAddress
 import com.worldventures.dreamtrips.wallet.service.lostcard.command.GetEnabledTrackingCommand;
 import com.worldventures.dreamtrips.wallet.service.lostcard.command.GetLocationCommand;
 import com.worldventures.dreamtrips.wallet.service.lostcard.command.SaveEnabledTrackingCommand;
-import com.worldventures.dreamtrips.wallet.util.WalletLocationsUtil;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletPresenter;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.WalletScreen;
 import com.worldventures.dreamtrips.wallet.ui.common.helper.OperationActionStateSubscriberWrapper;
 import com.worldventures.dreamtrips.wallet.ui.common.navigation.Navigator;
 import com.worldventures.dreamtrips.wallet.ui.settings.lostcard.model.ImmutableLostCardPin;
 import com.worldventures.dreamtrips.wallet.ui.settings.lostcard.model.LostCardPin;
+import com.worldventures.dreamtrips.wallet.util.WalletLocationsUtil;
 
 import java.text.SimpleDateFormat;
 import java.util.List;
@@ -138,22 +138,17 @@ public class LostCardPresenter extends WalletPresenter<LostCardPresenter.Screen,
                .observe()
                .compose(bindViewIoToMainComposer())
                .subscribe(new ActionStateSubscriber<FetchAddressCommand>()
-                     .onSuccess(command -> setupLocationAndAddress(walletLocation, command.getResult()))
+                     .onSuccess(command -> setupLocationAndAddress(walletLocation, command.getResult(), "StubPlace"))
                      .onFail((fetchAddressCommand, throwable) -> Timber.e(throwable, ""))
                );
-         smartCardLocationInteractor.fetchAddressPipe().send(
-               new FetchAddressCommand(
-                     walletLocation.coordinates().lat(),
-                     walletLocation.coordinates().lng())
-         );
+         smartCardLocationInteractor.fetchAddressPipe().send(new FetchAddressCommand(walletLocation.coordinates()));
       }
    }
 
-   private void setupLocationAndAddress(@NonNull WalletLocation walletLocation, @NonNull Address address) {
+   private void setupLocationAndAddress(@NonNull WalletLocation walletLocation, WalletAddress address, String locationName) {
       LostCardPin lostCardPin = ImmutableLostCardPin.builder()
-            .address(String.format("%s\n%s, %s",
-                  address.getAddressLine(0), address.getCountryName(), address.getSubAdminArea() + address.getPostalCode()))
-            .place(address.getAdminArea())
+            .address(constructAddressLine(address))
+            .place(locationName)
             .position(new LatLng(
                   walletLocation.coordinates().lat(),
                   walletLocation.coordinates().lng()))
@@ -164,6 +159,13 @@ public class LostCardPresenter extends WalletPresenter<LostCardPresenter.Screen,
       getView().setLastConnectionLabel(lastConnectedDateFormat.format(walletLocation.createdAt()));
       getView().addPin(lostCardPin);
    }
+
+
+   private String constructAddressLine(WalletAddress address) {
+      return String.format("%s\n%s, %s",
+            address.addressLine(), address.countryName(), address.subAdminArea() + address.postalCode());
+   }
+
 
    public void goBack() {
       navigator.goBack();

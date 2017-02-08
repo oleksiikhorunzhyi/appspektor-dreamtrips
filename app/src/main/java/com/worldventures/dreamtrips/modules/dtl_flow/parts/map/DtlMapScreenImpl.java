@@ -229,6 +229,8 @@ public class DtlMapScreenImpl extends DtlLayout<DtlMapScreen, DtlMapPresenter, D
 
    @Override
    public void connectToggleUpdate() {
+      if(dtlToolbar == null) return;
+
       RxDtlToolbar.offersOnlyToggleChanges(dtlToolbar)
             .compose(RxLifecycle.bindView(this))
             .subscribe(getPresenter()::offersOnlySwitched);

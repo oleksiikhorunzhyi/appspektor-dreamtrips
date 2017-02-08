@@ -22,7 +22,7 @@ public class DetectGeoLocationCommand extends Command<WalletCoordinates> impleme
 
    @Override
    protected void run(CommandCallback<WalletCoordinates> callback) throws Throwable {
-      if (locationService.isPermissionGranted()) {
+      if (!locationService.isPermissionGranted()) {
          throw new LocationPermissionDeniedException();
       }
       locationService.detectLastKnownLocation()

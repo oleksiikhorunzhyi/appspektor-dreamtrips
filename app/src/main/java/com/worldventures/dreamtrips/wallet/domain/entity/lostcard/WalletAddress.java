@@ -1,6 +1,7 @@
 package com.worldventures.dreamtrips.wallet.domain.entity.lostcard;
 
 import org.immutables.value.Value;
+import org.jetbrains.annotations.Nullable;
 
 @Value.Immutable
 public interface WalletAddress {
@@ -9,8 +10,10 @@ public interface WalletAddress {
 
    String countryName();
 
+   @Nullable
    String subAdminArea();
 
+   @Nullable
    String postalCode();
 
 }

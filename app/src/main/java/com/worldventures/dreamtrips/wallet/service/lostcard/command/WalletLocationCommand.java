@@ -14,9 +14,10 @@ import java.util.List;
 import javax.inject.Inject;
 
 import io.techery.janet.Command;
+import io.techery.janet.command.annotations.CommandAction;
 import rx.Observable;
 
-
+@CommandAction
 public class WalletLocationCommand extends Command<Void> implements InjectableAction {
 
    @Inject SmartCardLocationInteractor locationInteractor;

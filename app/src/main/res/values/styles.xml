@@ -164,13 +164,6 @@
       <item name="requestFocusOnValidationFail">true</item>
    </style>
 
-   <style name="SpinnerToolbarTitle">
-      <item name="android:textColor">@android:color/white</item>
-      <item name="android:textSize">@dimen/toolbar_spinner_styled_title_text_size</item>
-      <item name="android:drawableRight">@drawable/ic_spinner_arrow_white</item>
-      <item name="android:drawablePadding">@dimen/toolbar_spinner_styled_icon_margin</item>
-   </style>
-
    <style name="DtlButtonGreenTheme" parent="Theme.DreamTripsTheme.TripButton">
       <item name="android:textSize">@dimen/font_small</item>
       <item name="android:textColorPrimary">@android:color/white</item>

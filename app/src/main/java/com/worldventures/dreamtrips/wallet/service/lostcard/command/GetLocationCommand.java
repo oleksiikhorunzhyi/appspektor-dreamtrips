@@ -3,7 +3,8 @@ package com.worldventures.dreamtrips.wallet.service.lostcard.command;
 import com.worldventures.dreamtrips.api.smart_card.location.GetSmartCardLocationsHttpAction;
 import com.worldventures.dreamtrips.core.janet.dagger.InjectableAction;
 import com.worldventures.dreamtrips.wallet.domain.entity.lostcard.WalletLocation;
-import com.worldventures.dreamtrips.wallet.service.SystemPropertiesProvider;
+import com.worldventures.dreamtrips.wallet.service.SmartCardInteractor;
+import com.worldventures.dreamtrips.wallet.service.command.ActiveSmartCardCommand;
 import com.worldventures.dreamtrips.wallet.service.lostcard.LostCardRepository;
 
 import java.util.List;
@@ -24,7 +25,7 @@ public class GetLocationCommand extends Command<List<WalletLocation>> implements
 
    @Inject @Named(JANET_API_LIB) Janet janet;
    @Inject LostCardRepository locationRepository;
-   @Inject SystemPropertiesProvider propertiesProvider;
+   @Inject SmartCardInteractor smartCardInteractor;
    @Inject MapperyContext mapperyContext;
 
    @Override
@@ -34,10 +35,20 @@ public class GetLocationCommand extends Command<List<WalletLocation>> implements
    }
 
    private Observable<List<WalletLocation>> getHistoricalLocation() {
-      return janet.createPipe(GetSmartCardLocationsHttpAction.class)
-            .createObservableResult(new GetSmartCardLocationsHttpAction(Long.parseLong(propertiesProvider.deviceId())))
+      return observeActiveSmartCard()
+            .flatMap(command -> observeGetSmartCardLocations(command.getResult().smartCardId()))
             .map(GetSmartCardLocationsHttpAction::response)
             .map(locations -> mapperyContext.convert(locations, WalletLocation.class));
+   }
+
+   private Observable<ActiveSmartCardCommand> observeActiveSmartCard() {
+      return smartCardInteractor.activeSmartCardPipe()
+            .createObservableResult(new ActiveSmartCardCommand());
+   }
+
+   private Observable<GetSmartCardLocationsHttpAction> observeGetSmartCardLocations(String smartCardId) {
+      return janet.createPipe(GetSmartCardLocationsHttpAction.class)
+            .createObservableResult(new GetSmartCardLocationsHttpAction(Long.parseLong(smartCardId)));
    }
 
    private Observable<List<WalletLocation>> getStoredLocation() {

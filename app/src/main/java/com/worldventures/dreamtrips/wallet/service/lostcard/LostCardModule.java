@@ -14,6 +14,7 @@ import com.worldventures.dreamtrips.wallet.service.lostcard.command.GetEnabledTr
 import com.worldventures.dreamtrips.wallet.service.lostcard.command.GetLocationCommand;
 import com.worldventures.dreamtrips.wallet.service.lostcard.command.PostLocationCommand;
 import com.worldventures.dreamtrips.wallet.service.lostcard.command.SaveEnabledTrackingCommand;
+import com.worldventures.dreamtrips.wallet.service.lostcard.command.WalletLocationCommand;
 
 import javax.inject.Singleton;
 
@@ -27,7 +28,8 @@ import dagger.Provides;
             DetectGeoLocationCommand.class,
             FetchAddressCommand.class,
             SaveEnabledTrackingCommand.class,
-            GetEnabledTrackingCommand.class
+            GetEnabledTrackingCommand.class,
+            WalletLocationCommand.class
       },
       library = true, complete = false)
 public class LostCardModule {

@@ -5,24 +5,23 @@ import com.worldventures.dreamtrips.wallet.service.SmartCardLocationInteractor;
 import com.worldventures.dreamtrips.wallet.service.WalletNetworkService;
 import com.worldventures.dreamtrips.wallet.service.lostcard.command.PostLocationCommand;
 
-import java.util.Timer;
-import java.util.TimerTask;
+import java.util.concurrent.ScheduledFuture;
+import java.util.concurrent.ScheduledThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 
 import rx.subscriptions.CompositeSubscription;
 
 public class LocationSyncManager {
-   private static final long SCHEDULE_TIME = 60000L;
+   private static final long SCHEDULE_TIME = 10;
    private final SmartCardLocationInteractor locationInteractor;
    private final WalletNetworkService networkService;
-   private final Timer syncTimer;
-   private final LocationJobTimerTask syncLocationTask;
+   private final ScheduledThreadPoolExecutor scheduledExecutor = new ScheduledThreadPoolExecutor(1);
    private final CompositeSubscription networkConnectivitySubscription;
+   private ScheduledFuture scheduledLocationFuture;
 
    public LocationSyncManager(SmartCardLocationInteractor locationInteractor, WalletNetworkService networkService) {
       this.locationInteractor = locationInteractor;
       this.networkService = networkService;
-      this.syncTimer = new Timer();
-      this.syncLocationTask = new LocationJobTimerTask();
       this.networkConnectivitySubscription = new CompositeSubscription();
    }
 
@@ -49,12 +48,13 @@ public class LocationSyncManager {
    }
 
    private void scheduleTimer() {
-      syncTimer.scheduleAtFixedRate(syncLocationTask, 0, SCHEDULE_TIME);
+      scheduledLocationFuture =
+            scheduledExecutor.scheduleAtFixedRate(new LocationTask(), 0, SCHEDULE_TIME, TimeUnit.MINUTES);
    }
 
    private void cancelTimer() {
-      syncLocationTask.cancel();
-      syncTimer.cancel();
+      scheduledLocationFuture.cancel(true);
+      locationInteractor.postLocationPipe().cancelLatest();
    }
 
    public void cancelSync() {
@@ -64,17 +64,11 @@ public class LocationSyncManager {
       cancelTimer();
    }
 
-   private class LocationJobTimerTask extends TimerTask {
+   private class LocationTask implements Runnable {
 
       @Override
       public void run() {
          locationInteractor.postLocationPipe().send(new PostLocationCommand());
-      }
-
-      @Override
-      public boolean cancel() {
-         locationInteractor.postLocationPipe().cancelLatest();
-         return super.cancel();
       }
    }
 }

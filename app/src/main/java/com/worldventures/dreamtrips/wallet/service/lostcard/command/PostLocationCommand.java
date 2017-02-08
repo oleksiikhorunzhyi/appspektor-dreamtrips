@@ -8,7 +8,8 @@ import com.worldventures.dreamtrips.api.smart_card.location.model.SmartCardLocat
 import com.worldventures.dreamtrips.core.janet.dagger.InjectableAction;
 import com.worldventures.dreamtrips.wallet.domain.entity.lostcard.ImmutableWalletLocation;
 import com.worldventures.dreamtrips.wallet.domain.entity.lostcard.WalletLocation;
-import com.worldventures.dreamtrips.wallet.service.SystemPropertiesProvider;
+import com.worldventures.dreamtrips.wallet.service.SmartCardInteractor;
+import com.worldventures.dreamtrips.wallet.service.command.ActiveSmartCardCommand;
 import com.worldventures.dreamtrips.wallet.service.lostcard.LostCardRepository;
 import com.worldventures.dreamtrips.wallet.util.WalletLocationsUtil;
 
@@ -35,7 +36,7 @@ public class PostLocationCommand extends Command<Void> implements InjectableActi
 
    @Inject @Named(JANET_API_LIB) Janet janet;
    @Inject LostCardRepository locationRepository;
-   @Inject SystemPropertiesProvider propertiesProvider;
+   @Inject SmartCardInteractor smartCardInteractor;
    @Inject MapperyContext mapperyContext;
    private final PublishSubject<Void> commandPublishSubject;
 
@@ -45,7 +46,7 @@ public class PostLocationCommand extends Command<Void> implements InjectableActi
 
    @Override
    protected void run(CommandCallback<Void> callback) throws Throwable {
-      if (locationRepository.getWalletLocations().size() < 1
+      if (!locationRepository.getWalletLocations().isEmpty()
             && WalletLocationsUtil.getLatestLocation(locationRepository.getWalletLocations()).postedAt() != null) {
          callback.onSuccess(null);
          return;
@@ -56,10 +57,21 @@ public class PostLocationCommand extends Command<Void> implements InjectableActi
    }
 
    private Observable<Void> postLocations() {
+      return observeActiveSmartCard()
+            .flatMap(activeSmartCardCommand -> observeLocationsPost(activeSmartCardCommand.getResult().smartCardId()))
+            .map(createSmartCardLocationHttpAction -> (Void) null);
+   }
+
+   private Observable<ActiveSmartCardCommand> observeActiveSmartCard() {
+      return smartCardInteractor.activeSmartCardPipe()
+            .createObservableResult(new ActiveSmartCardCommand());
+   }
+
+   private Observable<CreateSmartCardLocationHttpAction> observeLocationsPost(String smartCardId) {
       return janet.createPipe(CreateSmartCardLocationHttpAction.class, Schedulers.io())
-         .createObservableResult(new CreateSmartCardLocationHttpAction(Long.parseLong(propertiesProvider.deviceId()),
-               prepareRequestBody(locationRepository.getWalletLocations())))
-         .map(createSmartCardLocationHttpAction -> (Void) null);
+            .createObservableResult(new CreateSmartCardLocationHttpAction(Long.parseLong(smartCardId),
+                  prepareRequestBody(locationRepository.getWalletLocations())));
+
    }
 
    private Observable<Void> wipeRedundantLocations() {

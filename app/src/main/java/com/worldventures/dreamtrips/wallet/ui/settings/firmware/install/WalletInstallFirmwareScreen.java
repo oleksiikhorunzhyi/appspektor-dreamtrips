@@ -1,5 +1,6 @@
 package com.worldventures.dreamtrips.wallet.ui.settings.firmware.install;
 
+import android.app.Dialog;
 import android.content.Context;
 import android.graphics.Color;
 import android.graphics.Typeface;
@@ -34,6 +35,8 @@ public class WalletInstallFirmwareScreen extends WalletLinearLayout<WalletInstal
    @InjectView(R.id.install_step) TextView installStep;
    @InjectView(R.id.toolbar) Toolbar toolbar;
 
+   private Dialog errorDialog;
+
    public WalletInstallFirmwareScreen(Context context) {
       super(context);
    }
@@ -57,6 +60,13 @@ public class WalletInstallFirmwareScreen extends WalletLinearLayout<WalletInstal
    }
 
    @Override
+   protected void onDetachedFromWindow() {
+      if (errorDialog != null) errorDialog.dismiss();
+
+      super.onDetachedFromWindow();
+   }
+
+   @Override
    public OperationScreen provideOperationDelegate() { return new DialogOperationScreen(this); }
 
    @Override
@@ -77,7 +87,7 @@ public class WalletInstallFirmwareScreen extends WalletLinearLayout<WalletInstal
 
    @Override
    public void showError(String msg, @Nullable Action1 action) {
-      new MaterialDialog.Builder(getContext())
+      errorDialog = new MaterialDialog.Builder(getContext())
             .title(R.string.wallet_firmware_install_error_alert_title)
             .content(createDialogContentText())
             .positiveText(R.string.wallet_firmware_install_error_retry_action)
@@ -85,7 +95,8 @@ public class WalletInstallFirmwareScreen extends WalletLinearLayout<WalletInstal
             .negativeText(R.string.wallet_firmware_install_error_cancel_action)
             .onNegative((dialog, which) -> getPresenter().cancelReinstall())
             .cancelable(false)
-            .show();
+            .build();
+      errorDialog.show();
    }
 
    @Override

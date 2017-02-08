@@ -49,6 +49,8 @@ public class DtlReviewsScreenImpl extends DtlLayout<DtlReviewsScreen, DtlReviews
         getPresenter().addNewComments(DtlDetailsScreenImpl.RATING_MERCHANT,
               DtlDetailsScreenImpl.SIZE_COMMENTS,
               ReviewObject.getDummies(DtlDetailsScreenImpl.SIZE_COMMENTS));
+        //Load Reviews Merchants
+        getPresenter().loadAllReviews();
     }
 
     private void addDummiesContent() {

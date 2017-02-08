@@ -156,6 +156,7 @@ public class DtlDetailsScreenImpl extends DtlLayout<DtlDetailsScreen, DtlDetails
       getPresenter().showAllReviews();
    }
 
+   //TODO: Button Dummy
    @OnClick(R.id.button_see_list_reviews)
    public void showAllReviews() {
       getPresenter().addNewComments(RATING_MERCHANT, SIZE_COMMENTS, ReviewObject.getDummies(SIZE_COMMENTS));

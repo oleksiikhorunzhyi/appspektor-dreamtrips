@@ -8,6 +8,7 @@ import com.worldventures.dreamtrips.modules.dtl.service.action.LocationCommand;
 import com.worldventures.dreamtrips.modules.dtl.service.action.FilterDataAction;
 import com.worldventures.dreamtrips.modules.dtl.service.action.MerchantsAction;
 import com.worldventures.dreamtrips.modules.dtl.service.action.RequestSourceTypeAction;
+import com.worldventures.dreamtrips.modules.dtl.service.action.ReviewMerchantsAction;
 import com.worldventures.dreamtrips.modules.dtl.service.action.bundle.ImmutableMerchantsActionParams;
 import com.worldventures.dreamtrips.modules.dtl.service.action.bundle.MerchantsActionParams;
 
@@ -72,6 +73,11 @@ public class MerchantsFacadeInteractor {
 
    private void sendMerchantsAction(MerchantsAction action) {
       merchantsInteractor.thinMerchantsHttpPipe().send(action);
+      merchantsRequestSourceInteractor.requestSourceActionPipe().send(RequestSourceTypeAction.list());
+   }
+
+   private void sendReviewMerchantsAction(ReviewMerchantsAction action) {
+      merchantsInteractor.reviewsMerchantsHttpPipe().send(action);
       merchantsRequestSourceInteractor.requestSourceActionPipe().send(RequestSourceTypeAction.list());
    }
 

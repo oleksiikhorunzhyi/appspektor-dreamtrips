@@ -10,4 +10,5 @@ public interface DtlReviewsPresenter extends DtlPresenter<DtlReviewsScreen, View
 
    void onBackPressed();
    void addNewComments(float ratingMerchant, int countReview, ArrayList<ReviewObject> listReviews);
+   void loadAllReviews();
 }

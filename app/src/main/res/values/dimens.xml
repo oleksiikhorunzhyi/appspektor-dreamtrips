@@ -9,8 +9,6 @@
    <dimen name="navigation_drawer_static_width">56dp</dimen>
    <dimen name="navigation_drawer_user_height">164dp</dimen>
 
-   <dimen name="create_photo_left_hint_width">72dp</dimen>
-
    <!-- typical sizes for icons views -->
    <dimen name="size_huge">72dp</dimen>
    <dimen name="size_large">64dp</dimen>
@@ -42,10 +40,6 @@
 
    <!-- dimen for trip items -->
    <dimen name="tripImageHeight">180dp</dimen>
-   <dimen name="tripImagePanelMargin">10dp</dimen>
-   <dimen name="tripImagePanelPaddingHorizontal">10dp</dimen>
-   <dimen name="tripImagePanelPaddingVertical">5dp</dimen>
-   <dimen name="tripDetailPanelPadding">10dp</dimen>
    <dimen name="tripImageHeightDetailed">300dp</dimen>
 
    <!-- dimen for video items -->
@@ -58,8 +52,6 @@
    <dimen name="bucket_button_width">250dp</dimen>
    <dimen name="bucket_quick_input_edit_text_min_width">160dp</dimen>
 
-   <dimen name="bucket_detail_cover_size">250dp</dimen>
-
    <dimen name="bucket_cover_thumb_w">48dp</dimen>
    <dimen name="bucket_cover_thumb_h">48dp</dimen>
    <dimen name="bucket_popular_photo_width">256dp</dimen>
@@ -69,16 +61,10 @@
 
    <dimen name="profile_cover_height">250dp</dimen>
 
-   <dimen name="filter_popup_width">175dp</dimen>
-
    <dimen name="feed_item_height">250dp</dimen>
-   <dimen name="tablet_details_spacing">0dp</dimen>
 
    <dimen name="locale_flag_size_width">38dp</dimen>
    <dimen name="locale_flag_size_height">22dp</dimen>
-
-   <dimen name="feed_details_additional_info_container_width">306dp</dimen>
-   <dimen name="feed_details_space_width">150dp</dimen>
 
    <!-- dimen for video items -->
    <dimen name="podcast_play_icon_size">24dp</dimen>
@@ -86,10 +72,6 @@
 
    /////Map info sizes
    <dimen name="map_trip_info_size">275dp</dimen>
-   <dimen name="map_trip_image_size">150dp</dimen>
-   <dimen name="map_trip_info_text_small">10sp</dimen>
-   <dimen name="map_trip_info_text_medium">12sp</dimen>
-   <dimen name="map_trip_info_text_large">18sp</dimen>
    <dimen name="map_trip_detail_spacing">220dp</dimen>
    <dimen name="map_trip_detail_cell_height">100dp</dimen>
    <dimen name="map_trip_detail_cover_size">100dp</dimen>
@@ -177,14 +159,8 @@
    <dimen name="perks_margin">-12dp</dimen>
 
    <!-- dimen for photo tagging-->
-   <dimen name="tag_zone_default_size">150dp</dimen>
    <dimen name="tag_common_photo_size">30dp</dimen>
    <dimen name="tag_common_round_corner">5dp</dimen>
-   <dimen name="tag_common_width">200dp</dimen>
-   <dimen name="tag_common_height">30dp</dimen>
-   <dimen name="tag_new_height">35dp</dimen>
-   <dimen name="tag_common_height_with_arrow">40dp</dimen>
-   <dimen name="tag_exist_text_padding">13dp</dimen>
    <dimen name="photo_tag_frame_additional_size">5dp</dimen>
 
    <!-- Uploading cell -->
@@ -196,7 +172,6 @@
    <dimen name="uploading_cell_title_text_size">14sp</dimen>
    <dimen name="uploading_cell_status_label_text_size">14sp</dimen>
    <dimen name="uploading_cell_time_left_text_size">14sp</dimen>
-   <dimen name="uploading_cell_photo_queue_additional_size_text_size">11sp</dimen>
    <dimen name="uploading_cell_progress_bar_height">2dp</dimen>
    <dimen name="uploading_cell_progress_bar_margin_top">6dp</dimen>
 
@@ -221,10 +196,6 @@
    <dimen name="new_chat_conversation_list_last_message_textview_textsize">10sp</dimen>
    <dimen name="conversation_list_spinner_dropdown_item_action_bar_text_size">16sp</dimen>
    <dimen name="conversation_list_spinner_item_action_bar_text_size">20sp</dimen>
-   <dimen name="conversation_list_search_text_size">12sp</dimen>
-   <dimen name="conversation_list_search_edit_text_padding">5dp</dimen>
-   <dimen name="conversation_list_search_edit_text_vertical_margin">10dp</dimen>
-   <dimen name="conversation_list_search_edit_text_drawable_padding">5dp</dimen>
    <dimen name="conversation_list_item_conversation_name_text_size">18sp</dimen>
    <dimen name="conversation_list_item_conversation_name_textview_left_margin">13dp</dimen>
    <dimen name="conversation_list_item_conversation_name_textview_top_margin">8dp</dimen>
@@ -240,18 +211,13 @@
    <!-- New chat screen -->
    <dimen name="new_chat_progress_bar_margin_top">50dp</dimen>
    <dimen name="new_chat_content_header_size">44dp</dimen>
-   <dimen name="new_chat_name_conversation_icon_size">40dp</dimen>
    <dimen name="new_chat_name_conversation_name_text_size">12sp</dimen>
-   <dimen name="new_chat_name_conversation_name_left_margin">14dp</dimen>
    <dimen name="new_chat_name_chosen_contacts_text_size">12sp</dimen>
    <dimen name="new_chat_name_chosen_contacts_left_margin">3dp</dimen>
    <dimen name="new_chat_list_item_contact_text_size">16sp</dimen>
    <dimen name="new_chat_list_item_contact_name_left_margin">10dp</dimen>
-   <dimen name="new_chat_list_item_section_name_text_size">12sp</dimen>
    <dimen name="new_chat_list_item_vertical_padding">@dimen/list_item_vertical_padding</dimen>
    <dimen name="new_chat_list_item_horizontal_padding">@dimen/list_item_horizontal_padding</dimen>
-   <dimen name="new_chat_list_item_section_vertical_padding">12dp</dimen>
-   <dimen name="new_chat_list_item_section_horizontal_padding">@dimen/new_chat_list_item_horizontal_padding</dimen>
 
    <!-- Chat screen -->
    <dimen name="chat_action_bar_subtitle_text_size">12sp</dimen>
@@ -305,7 +271,6 @@
    <dimen name="chat_settings_chat_description_textview_text_size">12sp</dimen>
    <dimen name="chat_settings_row_text_size">16sp</dimen>
    <dimen name="chat_settings_row_vertical_margin">15dp</dimen>
-   <dimen name="chat_settings_row_horizontal_margin">15dp</dimen>
    <dimen name="chat_settings_row_icon_size">24dp</dimen>
    <dimen name="chat_settings_action_buttons_width">190dp</dimen>
    <dimen name="chat_settings_action_buttons_text_size">14sp</dimen>
@@ -339,7 +304,6 @@
    <dimen name="in_app_notification_horizontal_padding">11dp</dimen>
    <dimen name="in_app_notification_vertical_padding">11dp</dimen>
    <dimen name="in_app_notification_avatar_image_view_size">43dp</dimen>
-   <dimen name="in_app_notification_small_avatar_image_suze">20dp</dimen>
    <dimen name="in_app_notification_close_button_padding">10dp</dimen>
    <!-- calculated as in_app_notification_horizontal_padding + in_app_notification_close_button_padding -->
    <dimen name="in_app_notification_close_button_padding_right">19dp</dimen>

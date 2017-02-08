@@ -9,13 +9,11 @@
    <!---->
    <!--Conversation List -->
    <!---->
-   <string name="conversation_list_title">Konversationer</string>
 
    <string name="conversation_list_spinner_item_all_chats">Alla chatter</string>
    <string name="conversation_list_spinner_item_group_chats">Gruppchatter</string>
 
    <string name="conversation_list_search_hint">Sök konversationer…</string>
-   <string name="conversation_list_search_edittext_hint">Sök efter grupper och personer</string>
    <string name="conversation_list_item_last_message_text_format_you">Du: %1$s</string>
    <string name="conversation_list_item_last_message_image_format_you">Du skickade en bild</string>
    <string name="conversation_list_item_last_message_image">skickad bild</string>
@@ -39,12 +37,10 @@
    <!---->
    <string name="new_chat_title">Ny chatt</string>
    <string name="new_chat_toast_no_users_selected_error">Välj först några användare</string>
-   <string name="new_multi_user_chat_not_supported">Skapande av gruppchatt stöds ej </string>
    <string name="new_chat_error_loading_contacts">Kunde inte ladda kontakter</string>
    <string name="new_chat_new_conversation_title_hint">Ange konverteringsnamn</string>
    <string name="new_chat_chosen_contacts_header_empty">"Lägg till: "</string>
    <string name="new_chat_chosen_contacts_header_contacts_list_start_value">Lägg till</string>
-   <string name="new_chat_list_item_section_close_friends">Nära vänner</string>
    <string name="menu_done">Klar</string>
 
    <!---->
@@ -54,7 +50,6 @@
    <string name="chat_subtitle_format_single_chat_offline">offline</string>
    <string name="chat_subtitle_format_group_chat_format">%1$d medlemmar, %2$d online</string>
    <string name="chat_subtitle_format_group_chat_format_closed">%1$d medlemmar</string>
-   <string name="chat_subtitle_format_group_chat_offline">Inga användare online</string>
    <string name="chat_message_edittext_hint">Ditt meddelande</string>
    <string name="chat_message_send_button_text">Skicka</string>
    <string name="chat_message_sending_disabled">Du kan inte skicka meddelanden eftersom du inte längre är en deltagare</string>
@@ -94,7 +89,6 @@
    <!-- flagging related -->
    <string name="chat_flag_dialog_progress_loading_flags">Läser in …</string>
    <string name="chat_flag_dialog_reason_title">Flagga</string>
-   <string name="chat_flag_dialog_reason_hint">Ange ditt skäl</string>
    <string name="chat_flag_dialog_reason_positive_button">Acceptera</string>
    <string name="chat_flag_dialog_reason_negative_button">Avbryt</string>
    <string name="chat_flag_dialog_confirmation_title">Bekräfta</string>
@@ -113,12 +107,9 @@
    <string name="chat_settings_single_chat_online">online</string>
    <string name="chat_settings_single_chat_offline">offline</string>
    <string name="chat_settings_row_notifications">Aviseringar</string>
-   <string name="chat_settings_row_shared_content">Delat innehåll</string>
    <string name="chat_settings_row_members_format">Medlemmar (%1$d)</string>
-   <string name="chat_settings_row_assign_new_admin">Lägg till en ny admin</string>
    <string name="chat_settings_row_clear_chat">Rensa chatt</string>
    <string name="chat_settings_row_leave_chat">Lämna chatt</string>
-   <string name="chat_settings_row_delete_chat">Ta bort chatt</string>
    <string name="chat_settings_group_chat_info_text_format">Den här gruppen skapades av %1$s</string>
    <string name="chat_settings_menu_settings">Inställningar</string>
    <string name="chat_settings_menu_edit_chat_name">Redigera chattnamn</string>

@@ -11,6 +11,7 @@ import com.worldventures.dreamtrips.wallet.service.firmware.command.PrepareForUp
 
 import io.techery.janet.ActionPipe;
 import io.techery.janet.Janet;
+import io.techery.janet.smartcard.action.support.ConnectAction;
 import io.techery.janet.smartcard.event.UpgradeAppFirmwareProgressEvent;
 import rx.schedulers.Schedulers;
 
@@ -25,6 +26,7 @@ public class FirmwareInteractor {
    private final ActionPipe<FetchFirmwareUpdateData> fetchFirmwareUpdateDataPipe;
    private final ActionPipe<ConnectForFirmwareUpdate> connectForFirmwareUpdatePipe;
    private final ActionPipe<DownloadFirmwareCommand> downloadFirmwarePipe;
+   private final ActionPipe<ConnectAction> connectActionPipe;
 
    public FirmwareInteractor(Janet walletJanet) {
       firmwareInfo = walletJanet.createPipe(FetchFirmwareInfoCommand.class, Schedulers.io());
@@ -37,6 +39,8 @@ public class FirmwareInteractor {
       fetchFirmwareUpdateDataPipe = walletJanet.createPipe(FetchFirmwareUpdateData.class, Schedulers.io());
       connectForFirmwareUpdatePipe = walletJanet.createPipe(ConnectForFirmwareUpdate.class, Schedulers.io());
       downloadFirmwarePipe = walletJanet.createPipe(DownloadFirmwareCommand.class, Schedulers.io());
+
+      connectActionPipe = walletJanet.createPipe(ConnectAction.class);
    }
 
    public ActionPipe<FetchFirmwareInfoCommand> firmwareInfoPipe() {
@@ -73,5 +77,9 @@ public class FirmwareInteractor {
 
    public ActionPipe<DownloadFirmwareCommand> downloadFirmwarePipe() {
       return downloadFirmwarePipe;
+   }
+
+   public ActionPipe<ConnectAction> connectActionPipe() {
+      return connectActionPipe;
    }
 }

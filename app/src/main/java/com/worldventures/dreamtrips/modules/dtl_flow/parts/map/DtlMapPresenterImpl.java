@@ -104,6 +104,7 @@ public class DtlMapPresenterImpl extends DtlPresenterImpl<DtlMapScreen, ViewStat
             .compose(bindViewIoToMainComposer())
             .map(FilterDataAction::getResult)
             .map(FilterData::isOffersOnly)
+            .doOnCompleted(getView()::connectToggleUpdate)
             .subscribe(getView()::toggleOffersOnly);
       fullMerchantInteractor.fullMerchantPipe()
             .observeWithReplay()

@@ -124,9 +124,6 @@ public class DtlMerchantsScreenImpl extends DtlLayout<DtlMerchantsScreen, DtlMer
       RxDtlToolbar.filterButtonClicks(dtlToolbar)
             .compose(RxLifecycle.bindView(this))
             .subscribe(aVoid -> ((FlowActivity) getActivity()).openRightDrawer());
-      RxDtlToolbar.offersOnlyToggleChanges(dtlToolbar)
-            .compose(RxLifecycle.bindView(this))
-            .subscribe(aBoolean -> getPresenter().offersOnlySwitched(aBoolean));
    }
 
    @Override
@@ -227,6 +224,13 @@ public class DtlMerchantsScreenImpl extends DtlLayout<DtlMerchantsScreen, DtlMer
    public void setRefreshedItems(List<ThinMerchant> merchants) {
       delegate.setItems(merchants);
       scrollStatePersister.restoreInstanceStateIfNeeded(getLastRestoredInstanceState(), layoutManager);
+   }
+
+   @Override
+   public void connectToggleUpdate() {
+      RxDtlToolbar.offersOnlyToggleChanges(dtlToolbar)
+            .compose(RxLifecycle.bindView(this))
+            .subscribe(aBoolean -> getPresenter().offersOnlySwitched(aBoolean));
    }
 
    @Override

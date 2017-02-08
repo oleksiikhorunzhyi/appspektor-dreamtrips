@@ -60,10 +60,10 @@
                   android:layout_height="wrap_content"
                   android:layout_weight="0.75"
                   android:gravity="center_vertical|right"
-                  android:maxLines="2"
+                  android:maxLines="3"
                   android:paddingRight="@dimen/spacing_normal"
                   android:textAppearance="@style/AboutItemText.Value"
-                  tools:text="Test Middle Techery"
+                  tools:text="Testovich12345 1234567890qwertyuiopa Techery12345"
                   />
          </LinearLayout>
 

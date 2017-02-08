@@ -16,7 +16,8 @@ import butterknife.InjectView;
 import butterknife.OnClick;
 import me.dm7.barcodescanner.zxing.ZXingScannerView;
 
-public class WizardScanBarcodeScreen extends WalletLinearLayout<WizardScanBarcodePresenter.Screen, WizardScanBarcodePresenter, WizardScanBarcodePath> implements WizardScanBarcodePresenter.Screen, ZXingScannerView.ResultHandler {
+public class WizardScanBarcodeScreen extends WalletLinearLayout<WizardScanBarcodePresenter.Screen, WizardScanBarcodePresenter, WizardScanBarcodePath>
+      implements WizardScanBarcodePresenter.Screen, ZXingScannerView.ResultHandler {
 
    @InjectView(R.id.toolbar) Toolbar toolbar;
    @InjectView(R.id.scanner_view) ZXingScannerView scanner;
@@ -64,6 +65,12 @@ public class WizardScanBarcodeScreen extends WalletLinearLayout<WizardScanBarcod
 
    @Override
    public void startCamera() {
+      scanner.startCamera();
+   }
+
+   @Override
+   public void restartCamera() {
+      //// TODO: 2/3/17 update this lib to v1.8.4 and use `mScannerView.resumeCameraPreview`
       scanner.startCamera();
    }
 

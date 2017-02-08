@@ -1,5 +1,6 @@
 package com.worldventures.dreamtrips.wallet.ui;
 
+import android.bluetooth.BluetoothAdapter;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -27,7 +28,9 @@ import flow.History;
 import static com.worldventures.dreamtrips.wallet.di.WalletActivityModule.WALLET;
 
 @Layout(R.layout.activity_wallet)
-public class WalletActivity extends FlowActivity<WalletActivityPresenter> {
+public class WalletActivity extends FlowActivity<WalletActivityPresenter> implements WalletActivityPresenter.View {
+
+   private static final int REQUEST_CODE_BLUETOOTH_ON = 0xF045;
 
    private MediaPickerAdapter mediaPickerAdapter;
 
@@ -98,6 +101,11 @@ public class WalletActivity extends FlowActivity<WalletActivityPresenter> {
          return mediaPickerAdapter;
       }
       return super.getSystemService(name);
+   }
+
+   public void openBluetoothSettings() {
+      Intent requestBluetoothOn = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
+      this.startActivityForResult(requestBluetoothOn, REQUEST_CODE_BLUETOOTH_ON);
    }
 
    @Override

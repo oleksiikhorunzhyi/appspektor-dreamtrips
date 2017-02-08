@@ -32,12 +32,12 @@ public class CardDetailsScreen extends WalletLinearLayout<CardDetailsPresenter.S
       implements CardDetailsPresenter.Screen {
 
    @InjectView(R.id.toolbar) Toolbar toolbar;
-
-   @InjectView(R.id.default_payment_card_checkbox) SwitchCompat defaultPaymentCardCheckBox;
-   @InjectView(R.id.address_textview) TextView addressText;
-   @InjectView(R.id.card_name) EditText cardNickname;
    @InjectView(R.id.card) BankCardWidget bankCardWidget;
+
+   @InjectView(R.id.address_textview) TextView tvAddress;
+   @InjectView(R.id.card_name) EditText etCardNickname;
    @InjectView(R.id.card_nickname_label) TextView cardNicknameLabel;
+   @InjectView(R.id.default_payment_card_checkbox) SwitchCompat defaultPaymentCardCheckBox;
 
    private Observable<Boolean> setAsDefaultCardObservable;
    private Observable<String> cardNicknameObservable;
@@ -66,7 +66,7 @@ public class CardDetailsScreen extends WalletLinearLayout<CardDetailsPresenter.S
       if (isInEditMode()) return;
       toolbar.setNavigationOnClickListener(v -> presenter.goBack());
       setAsDefaultCardObservable = RxCompoundButton.checkedChanges(defaultPaymentCardCheckBox).skip(1);
-      cardNicknameObservable = RxTextView.afterTextChangeEvents(cardNickname).map(event -> event.editable().toString()).skip(1);
+      cardNicknameObservable = RxTextView.afterTextChangeEvents(etCardNickname).map(event -> event.editable().toString()).skip(1);
       bindSpannableStringToTarget(cardNicknameLabel, R.string.wallet_card_details_label_card_nickname,
             R.string.wallet_add_card_details_hint_card_name_length, true, false);
    }
@@ -93,15 +93,16 @@ public class CardDetailsScreen extends WalletLinearLayout<CardDetailsPresenter.S
 
    @Override
    public void showCardBank(BankCard bankCard) {
-      // // TODO: 12/6/16 remove bank name
       toolbar.setTitle(bankCardHelper.financialServiceWithCardNumber(bankCard));
       bankCardWidget.setBankCard(bankCard);
-      cardNickname.setText(bankCard.nickName());
+
+      final String nickName = bankCard.nickName();
+      etCardNickname.setText(nickName);
+      etCardNickname.setSelection(nickName.length());
    }
 
    @Override
    public void showDefaultCardDialog(BankCard defaultBankCard) {
-      // TODO: 12/6/16 remove bank name
       new ChangeDefaultPaymentCardDialog(getContext(), bankCardHelper.bankNameWithCardNumber(defaultBankCard))
             .setOnConfirmAction(() -> getPresenter().defaultCardDialogConfirmed(true))
             .setOnCancelAction(() -> getPresenter().defaultCardDialogConfirmed(false))
@@ -169,12 +170,12 @@ public class CardDetailsScreen extends WalletLinearLayout<CardDetailsPresenter.S
 
    @Override
    public void showDefaultAddress(AddressInfoWithLocale addressInfoWithLocale) {
-      addressText.setText(AddressUtil.obtainAddressLabel(addressInfoWithLocale));
+      tvAddress.setText(AddressUtil.obtainAddressLabel(addressInfoWithLocale));
    }
 
    @Override
    public String getUpdateNickname() {
-      return cardNickname.getText().toString();
+      return etCardNickname.getText().toString();
    }
 
    @Override

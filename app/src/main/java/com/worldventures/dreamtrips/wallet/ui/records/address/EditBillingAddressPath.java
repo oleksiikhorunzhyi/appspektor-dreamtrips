@@ -1,4 +1,4 @@
-package com.worldventures.dreamtrips.wallet.ui.wizard.edit_card;
+package com.worldventures.dreamtrips.wallet.ui.records.address;
 
 
 import com.worldventures.dreamtrips.R;
@@ -7,11 +7,12 @@ import com.worldventures.dreamtrips.core.flow.path.StyledPath;
 import com.worldventures.dreamtrips.core.flow.util.Layout;
 import com.worldventures.dreamtrips.wallet.domain.entity.card.BankCard;
 
+// TODO: 2/3/17 rename to EditBillingAddressPath and move to records package
 @Layout(R.layout.screen_wallet_wizard_edit_card_details)
-public class EditCardDetailsPath extends StyledPath {
+public class EditBillingAddressPath extends StyledPath {
    private final BankCard bankCard;
 
-   public EditCardDetailsPath(BankCard bankCard) {
+   public EditBillingAddressPath(BankCard bankCard) {
       this.bankCard = bankCard;
    }
 

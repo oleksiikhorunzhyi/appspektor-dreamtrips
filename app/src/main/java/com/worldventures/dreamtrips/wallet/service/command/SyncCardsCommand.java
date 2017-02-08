@@ -67,10 +67,15 @@ public class SyncCardsCommand extends Command<Void> implements InjectableAction 
       //sync card list
       Queryable.from(bundle.deviceCards)
             .forEachR(deviceCard -> {
-               if (Queryable.from(bundle.cacheCards)
-                     .count(element -> TextUtils.equals(element.id(), deviceCard.id())) == 0) {
+               final int count = Queryable.from(bundle.cacheCards)
+                     .count(element -> TextUtils.equals(element.id(), deviceCard.id()));
+               if (count == 0) {
                   operations.add(interactor.cardsListPipe()
                         .createObservableResult(CardListCommand.add(deviceCard))
+                        .map(value -> null));
+               } else if (count == 1) {
+                  operations.add(interactor.cardsListPipe()
+                        .createObservableResult(CardListCommand.replace(deviceCard))
                         .map(value -> null));
                }
             });

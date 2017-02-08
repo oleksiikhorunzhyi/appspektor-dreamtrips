@@ -175,7 +175,7 @@ public class CardDetailsScreen extends WalletLinearLayout<CardDetailsPresenter.S
 
    @Override
    public String getUpdateNickname() {
-      return etCardNickname.getText().toString();
+      return etCardNickname.getText().toString().trim();
    }
 
    @Override

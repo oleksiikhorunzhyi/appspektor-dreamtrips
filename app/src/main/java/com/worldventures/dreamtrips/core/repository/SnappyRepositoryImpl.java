@@ -42,6 +42,7 @@ import com.worldventures.dreamtrips.wallet.domain.entity.ImmutableTermsAndCondit
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCard;
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCardDetails;
 import com.worldventures.dreamtrips.wallet.domain.entity.TermsAndConditions;
+import com.worldventures.dreamtrips.wallet.domain.entity.lostcard.WalletLocation;
 import com.worldventures.dreamtrips.wallet.domain.storage.disk.DiskStorage;
 
 import java.util.ArrayList;
@@ -378,14 +379,14 @@ class SnappyRepositoryImpl implements SnappyRepository, DiskStorage {
    }
 
    @Override
-   public void saveSmartCardLocations(List<SmartCardLocation> smartCardLocations) {
-      if (smartCardLocations == null) smartCardLocations = new ArrayList<>();
-      putList(WALLET_SMART_CARD_LOCATION, smartCardLocations);
+   public void saveWalletLocations(List<WalletLocation> walletLocations) {
+      if (walletLocations == null) walletLocations = new ArrayList<>();
+      putList(WALLET_SMART_CARD_LOCATION, walletLocations);
    }
 
    @Override
-   public List<SmartCardLocation> getSmartCardLocations() {
-      return readList(WALLET_SMART_CARD_LOCATION, SmartCardLocation.class);
+   public List<WalletLocation> getWalletLocations() {
+      return readList(WALLET_SMART_CARD_LOCATION, WalletLocation.class);
    }
 
    @Override

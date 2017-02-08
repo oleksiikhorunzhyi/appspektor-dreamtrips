@@ -24,6 +24,7 @@ import com.worldventures.dreamtrips.wallet.domain.entity.FirmwareUpdateData;
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCard;
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCardDetails;
 import com.worldventures.dreamtrips.wallet.domain.entity.TermsAndConditions;
+import com.worldventures.dreamtrips.wallet.domain.entity.lostcard.WalletLocation;
 
 import java.util.Collection;
 import java.util.List;
@@ -260,9 +261,9 @@ public interface SnappyRepository {
 
    void deleteFirmwareUpdateData();
 
-   void saveSmartCardLocations(List<SmartCardLocation> smartCardLocations);
+   void saveWalletLocations(List<WalletLocation> walletLocations);
 
-   List<SmartCardLocation> getSmartCardLocations();
+   List<WalletLocation> getWalletLocations();
 
    void saveEnabledTracking(boolean enable);
 

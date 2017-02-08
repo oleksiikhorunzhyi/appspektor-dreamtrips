@@ -1,17 +1,13 @@
 package com.worldventures.dreamtrips.wallet.service.lostcard.command;
 
-import com.worldventures.dreamtrips.api.smart_card.location.model.ImmutableSmartCardCoordinates;
-import com.worldventures.dreamtrips.api.smart_card.location.model.ImmutableSmartCardLocation;
-import com.worldventures.dreamtrips.api.smart_card.location.model.SmartCardCoordinates;
-import com.worldventures.dreamtrips.api.smart_card.location.model.SmartCardLocation;
-import com.worldventures.dreamtrips.api.smart_card.location.model.SmartCardLocationType;
-import com.worldventures.dreamtrips.core.janet.dagger.InjectableAction;
-import com.worldventures.dreamtrips.wallet.service.WalletDetectLocationService;
-import com.worldventures.dreamtrips.wallet.service.lostcard.SCLocationRepository;
-import com.worldventures.dreamtrips.wallet.util.LocationPermissionDeniedException;
+import android.location.Location;
 
-import java.util.Calendar;
-import java.util.List;
+import com.worldventures.dreamtrips.core.janet.dagger.InjectableAction;
+import com.worldventures.dreamtrips.wallet.domain.entity.lostcard.ImmutableWalletCoordinates;
+import com.worldventures.dreamtrips.wallet.domain.entity.lostcard.WalletCoordinates;
+import com.worldventures.dreamtrips.wallet.service.WalletDetectLocationService;
+import com.worldventures.dreamtrips.wallet.service.lostcard.LostCardRepository;
+import com.worldventures.dreamtrips.wallet.util.LocationPermissionDeniedException;
 
 import javax.inject.Inject;
 
@@ -19,44 +15,26 @@ import io.techery.janet.Command;
 import io.techery.janet.command.annotations.CommandAction;
 
 @CommandAction
-public class DetectGeoLocationCommand extends Command<Void> implements InjectableAction {
+public class DetectGeoLocationCommand extends Command<WalletCoordinates> implements InjectableAction {
 
    @Inject WalletDetectLocationService locationService;
-   @Inject SCLocationRepository locationRepository;
-   private final SmartCardLocationType type;
-
-   public DetectGeoLocationCommand(SmartCardLocationType type) {
-      this.type = type;
-   }
+   @Inject LostCardRepository locationRepository;
 
    @Override
-   protected void run(CommandCallback<Void> callback) throws Throwable {
+   protected void run(CommandCallback<WalletCoordinates> callback) throws Throwable {
       if (locationService.isPermissionGranted()) {
          throw new LocationPermissionDeniedException();
       }
       locationService.detectLastKnownLocation()
-            .map(location -> constructSmartCardLocation(type, location.getLatitude(), location.getLongitude()))
-            .subscribe((result) -> {
-               saveLocation(result);
-               callback.onSuccess(null);
-            }, callback::onFail);
+            .map(this::constructCoordinates)
+            .subscribe(callback::onSuccess, callback::onFail);
    }
 
-   private void saveLocation(SmartCardLocation location) {
-      final List<SmartCardLocation> smartCardLocations = locationRepository.getSmartCardLocations();
-      smartCardLocations.add(location);
-      locationRepository.saveSmartCardLocations(smartCardLocations);
-   }
+   private WalletCoordinates constructCoordinates(Location location) {
+      return ImmutableWalletCoordinates.builder()
+            .lat(location.getLatitude())
+            .lng(location.getLongitude())
+            .build();
 
-   private SmartCardLocation constructSmartCardLocation(SmartCardLocationType type, double latitude, double longtitude) {
-      final SmartCardCoordinates coordinates = ImmutableSmartCardCoordinates.builder()
-            .lat(latitude)
-            .lng(longtitude)
-            .build();
-      return ImmutableSmartCardLocation.builder()
-            .coordinates(coordinates)
-            .createdAt(Calendar.getInstance().getTime())
-            .type(type)
-            .build();
    }
 }

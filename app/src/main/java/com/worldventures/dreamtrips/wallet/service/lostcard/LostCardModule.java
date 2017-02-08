@@ -34,8 +34,8 @@ public class LostCardModule {
 
    @Singleton
    @Provides
-   SCLocationRepository locationRepository(SnappyRepository snappyRepository) {
-      return new DiskLocationRepository(snappyRepository);
+   LostCardRepository locationRepository(SnappyRepository snappyRepository) {
+      return new DiskLostCardRepository(snappyRepository);
    }
 
    @Singleton

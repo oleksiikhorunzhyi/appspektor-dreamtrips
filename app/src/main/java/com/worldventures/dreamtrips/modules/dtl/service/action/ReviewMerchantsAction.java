@@ -1,7 +1,5 @@
 package com.worldventures.dreamtrips.modules.dtl.service.action;
 
-import android.util.Log;
-
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.api.action.CommandWithError;
 import com.worldventures.dreamtrips.core.janet.JanetModule;
@@ -15,12 +13,9 @@ import com.worldventures.dreamtrips.core.janet.dagger.InjectableAction;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.reviews.ReviewsMerchant;
 import com.worldventures.dreamtrips.modules.dtl.service.action.bundle.MerchantsActionParams;
 import com.worldventures.dreamtrips.modules.dtl.service.action.creator.ReviewsActionCreator;
-import java.util.ArrayList;
-import java.util.List;
 import javax.inject.Inject;
 import javax.inject.Named;
 import io.techery.janet.ActionHolder;
-import io.techery.janet.Command;
 import io.techery.janet.Janet;
 import io.techery.janet.command.annotations.CommandAction;
 import io.techery.mappery.MapperyContext;
@@ -36,14 +31,13 @@ public class ReviewMerchantsAction extends CommandWithError<ReviewsMerchant>
 
    private final long startTime = System.currentTimeMillis();
    private final boolean isRefresh;
-   private List<ReviewsMerchant> cache = new ArrayList<>();
 
    public static ReviewMerchantsAction create(MerchantsActionParams params) {
       return new ReviewMerchantsAction(params);
    }
 
    public ReviewMerchantsAction(MerchantsActionParams params) {
-      this.isRefresh = false;//ReviewsActionCreator.calculateOffsetPagination(params.filterData()) == 0;
+      this.isRefresh = false;
    }
 
    @Override
@@ -77,24 +71,12 @@ public class ReviewMerchantsAction extends CommandWithError<ReviewsMerchant>
    protected void run(CommandCallback<ReviewsMerchant> callback) throws Throwable {
       callback.onProgress(0);
       janet.createPipe(GetReviewsMerchantsHttpAction.class, Schedulers.io())
-            .createObservableResult(reviewsActionCreator.createAction(/*actionParams*/null))
+            .createObservableResult(reviewsActionCreator.createAction(null))
             .map(GetReviewsMerchantsHttpAction::reviews)
-            //.map(reviews -> mapperyContext.convert(reviews, ReviewsMerchant.class))
-            .doOnNext(sizeReviews -> logReview(sizeReviews))
             .subscribe(callback::onSuccess, callback::onFail);
    }
 
    public boolean isRefresh() {
       return isRefresh;
-   }
-
-   private void clearCacheIfNeeded() {
-      if (isRefresh()) cache = null;
-   }
-
-   private void logReview(ReviewsMerchant reviewsMerchant) {
-      if (reviewsMerchant != null) {
-         Log.i("---->", "Size of reviews --> " + reviewsMerchant.getReviews().size());
-      }
    }
 }

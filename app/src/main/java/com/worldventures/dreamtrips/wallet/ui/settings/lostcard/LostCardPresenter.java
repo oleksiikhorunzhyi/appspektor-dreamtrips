@@ -163,7 +163,7 @@ public class LostCardPresenter extends WalletPresenter<LostCardPresenter.Screen,
 
    private String constructAddressLine(WalletAddress address) {
       return String.format("%s\n%s, %s",
-            address.addressLine(), address.countryName(), address.subAdminArea() + address.postalCode());
+            address.addressLine(), address.countryName(), address.adminArea() + address.postalCode());
    }
 
 

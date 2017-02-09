@@ -78,4 +78,29 @@ public class SmartCardConverterModule {
       return new AndroidAddressToWalletAddressConverter();
    }
 
+   @Provides(type = Provides.Type.SET)
+   Converter provideWalletCoordinatesToSmartCardCoordinatesConverter() {
+      return new WalletCoordinatesToSmartCardCoordinatesConverter();
+   }
+
+   @Provides(type = Provides.Type.SET)
+   Converter provideWalletLocationTypeToSmartCardLocationTypeConverter() {
+      return new WalletLocationTypeToSmartCardLocationTypeConverter();
+   }
+
+   @Provides(type = Provides.Type.SET)
+   Converter provideSmartCardLocationToWalletLocationConverter() {
+      return new SmartCardLocationToWalletLocationConverter();
+   }
+
+   @Provides(type = Provides.Type.SET)
+   Converter provideSmartCardCoordinatesToWalletCoordinatesConverter() {
+      return new SmartCardCoordinatesToWalletCoordinatesConverter();
+   }
+
+   @Provides(type = Provides.Type.SET)
+   Converter provideSmartCardLocationTypeToWalletdLocationTypeConverter() {
+      return new SmartCardLocationTypeToWalletLocationTypeConverter();
+   }
+
 }

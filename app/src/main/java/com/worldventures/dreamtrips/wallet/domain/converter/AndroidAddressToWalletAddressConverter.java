@@ -25,7 +25,7 @@ public class AndroidAddressToWalletAddressConverter implements Converter<Address
       return ImmutableWalletAddress.builder()
             .addressLine(address.getAddressLine(0))
             .countryName(address.getCountryName())
-            .subAdminArea(address.getSubAdminArea())
+            .adminArea(address.getAdminArea())
             .postalCode(address.getPostalCode())
             .build();
    }

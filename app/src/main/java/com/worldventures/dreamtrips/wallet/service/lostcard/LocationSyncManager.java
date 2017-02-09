@@ -48,8 +48,12 @@ public class LocationSyncManager {
    }
 
    private void scheduleTimer() {
-      scheduledLocationFuture =
-            scheduledExecutor.scheduleAtFixedRate(new LocationTask(), 0, SCHEDULE_TIME, TimeUnit.MINUTES);
+      if(scheduledLocationFuture == null
+            || scheduledLocationFuture.isCancelled()
+            || scheduledLocationFuture.isDone()) {
+         scheduledLocationFuture =
+               scheduledExecutor.scheduleAtFixedRate(new LocationTask(), 0, SCHEDULE_TIME, TimeUnit.MINUTES);
+      }
    }
 
    private void cancelTimer() {

@@ -11,7 +11,7 @@ public interface WalletAddress {
    String countryName();
 
    @Nullable
-   String subAdminArea();
+   String adminArea();
 
    @Nullable
    String postalCode();

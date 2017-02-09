@@ -35,6 +35,7 @@ import com.worldventures.dreamtrips.wallet.service.command.UpdateCardDetailsData
 import com.worldventures.dreamtrips.wallet.service.command.http.AssociateCardUserCommand;
 import com.worldventures.dreamtrips.wallet.service.command.http.AvailabilitySmartCardCommand;
 import com.worldventures.dreamtrips.wallet.service.command.http.CreateBankCardCommand;
+import com.worldventures.dreamtrips.wallet.service.command.http.CreateNxtSessionCommand;
 import com.worldventures.dreamtrips.wallet.service.command.http.FetchAndStoreDefaultAddressInfoCommand;
 import com.worldventures.dreamtrips.wallet.service.command.http.FetchAssociatedSmartCardCommand;
 import com.worldventures.dreamtrips.wallet.service.command.http.FetchFirmwareInfoCommand;
@@ -96,7 +97,8 @@ import dagger.Module;
             RestartSmartCardCommand.class,
             AvailabilitySmartCardCommand.class,
             UpdateSmartCardUserCommand.class,
-            FactoryResetCommand.class
+            FactoryResetCommand.class,
+            CreateNxtSessionCommand.class,
       },
       complete = false, library = true)
 public class WalletCommandModule {}

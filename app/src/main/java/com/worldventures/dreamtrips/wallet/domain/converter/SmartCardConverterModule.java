@@ -67,4 +67,9 @@ public class SmartCardConverterModule {
    Converter provideRecordToFinancialServiceConverter() {
       return new RecordFinancialServiceToFinancialServiceConverter();
    }
+
+   @Provides(type = Provides.Type.SET)
+   Converter provideNxtSessionConverter() {
+      return new NxtSessionConverter();
+   }
 }

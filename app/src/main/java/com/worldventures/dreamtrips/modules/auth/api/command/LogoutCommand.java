@@ -9,6 +9,7 @@ import com.messenger.synchmechanism.MessengerConnector;
 import com.raizlabs.android.dbflow.config.FlowManager;
 import com.techery.spares.module.qualifier.ForApplication;
 import com.techery.spares.module.qualifier.Global;
+import com.techery.spares.session.NxtSessionHolder;
 import com.techery.spares.session.SessionHolder;
 import com.worldventures.dreamtrips.api.api_common.AuthorizedHttpAction;
 import com.worldventures.dreamtrips.api.session.LogoutHttpAction;
@@ -65,6 +66,7 @@ public class LogoutCommand extends Command<Void> implements InjectableAction {
    @Inject @Named(JanetModule.JANET_WALLET) SessionActionPipeCreator sessionWalletActionPipeCreator;
    @Inject HybridAndroidCrypter crypter;
    @Inject SmartCardSyncManager smartCardSyncManager;
+   @Inject NxtSessionHolder nxtSessionHolder;
 
    @Override
    protected void run(CommandCallback<Void> callback) throws Throwable {
@@ -82,6 +84,7 @@ public class LogoutCommand extends Command<Void> implements InjectableAction {
       return Observable.create(subscriber -> {
          sessionWalletActionPipeCreator.clearReplays();
          smartCardSyncManager.disconnect();
+         nxtSessionHolder.destroy();
          subscriber.onNext(null);
          subscriber.onCompleted();
       });

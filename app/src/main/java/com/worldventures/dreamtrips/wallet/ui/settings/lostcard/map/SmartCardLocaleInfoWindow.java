@@ -42,16 +42,13 @@ public class SmartCardLocaleInfoWindow implements GoogleMap.InfoWindowAdapter {
          ((TextView) viewMarker.findViewById(R.id.tv_info)).setText(lostCardPin.address());
       }
 
-      viewMarker.findViewById(R.id.btn_directions)
-            .setOnClickListener(view -> onOpenExternalMap());
-
       return viewMarker;
    }
 
-   private void onOpenExternalMap() {
+   public void openExternalMap() {
       Intent map = new Intent(Intent.ACTION_VIEW, Uri.parse("geo:"
-            + lostCardPin.position().latitude + "," + lostCardPin.position().longitude + "?z=17&q="
-            + lostCardPin.position().latitude + "," + lostCardPin.position().longitude));
+            + lostCardPin.position().lat() + "," + lostCardPin.position().lng() + "?z=17&q="
+            + lostCardPin.position().lat() + "," + lostCardPin.position().lng()));
       context.startActivity(map);
    }
 

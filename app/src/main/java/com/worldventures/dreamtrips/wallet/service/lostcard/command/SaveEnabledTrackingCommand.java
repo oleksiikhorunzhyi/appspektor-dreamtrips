@@ -9,7 +9,7 @@ import io.techery.janet.Command;
 import io.techery.janet.command.annotations.CommandAction;
 
 @CommandAction
-public class SaveEnabledTrackingCommand extends Command<Void> implements InjectableAction {
+public class SaveEnabledTrackingCommand extends Command<Boolean> implements InjectableAction {
 
    @Inject LostCardRepository lostCardRepository;
 
@@ -20,8 +20,8 @@ public class SaveEnabledTrackingCommand extends Command<Void> implements Injecta
    }
 
    @Override
-   protected void run(CommandCallback<Void> callback) throws Throwable {
+   protected void run(CommandCallback<Boolean> callback) throws Throwable {
       lostCardRepository.saveEnabledTracking(enable);
-      callback.onSuccess(null);
+      callback.onSuccess(enable);
    }
 }

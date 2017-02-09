@@ -369,5 +369,9 @@
    <string name="wallet_directions">Directions</string>
    <string name="wallet_location_permission_message">Grant of Location permission, for use this feature. Because is it required, for correct work of Google Map.</string>
    <string name="wallet_google_play_services_unsupported_text">DreamTrips relies on Google Play services, which is not supported by your device. Contact the manufacturer for assistance.</string>
+   <string name="wallet_location_service_settings_title">Open location settings?</string>
+   <string name="wallet_location_service_settings_message">For correct work of this feature, need to enable Location Services.</string>
+   <string name="wallet_disable_tracking_msg">Tracking your Smart Card helps you better protect your card from being lost or stolen. Are you sure you want to disable tracking?</string>
+   <string name="wallet_disable_tracking">Disable Tracking</string>
 
 </resources>

@@ -1,5 +1,6 @@
 package com.worldventures.dreamtrips.wallet.ui.settings.lostcard;
 
+import android.animation.ObjectAnimator;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
@@ -17,15 +18,16 @@ import com.afollestad.materialdialogs.MaterialDialog;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.maps.CameraUpdateFactory;
-import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapsInitializer;
 import com.google.android.gms.maps.UiSettings;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
+import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.jakewharton.rxbinding.widget.RxCompoundButton;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.modules.trips.view.custom.ToucheableMapView;
+import com.worldventures.dreamtrips.wallet.domain.entity.lostcard.WalletCoordinates;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletLinearLayout;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.OperationScreen;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.delegate.DialogOperationScreen;
@@ -51,6 +53,8 @@ public class LostCardScreen extends WalletLinearLayout<LostCardPresenter.Screen,
    @InjectView(R.id.map_view) ToucheableMapView mapView;
 
    private Observable<Boolean> enableTrackingObservable;
+
+   private MaterialDialog dialogErrorLocationService = null;
 
    public LostCardScreen(Context context) {
       super(context);
@@ -137,6 +141,11 @@ public class LostCardScreen extends WalletLinearLayout<LostCardPresenter.Screen,
 
    @Override
    public void setVisibilityMap(boolean visible) {
+      if (mapContainer.getVisibility() == GONE) {
+         ObjectAnimator.ofFloat(mapView, "alpha", 0f, 1f)
+               .setDuration(1500)
+               .start();
+      }
       mapContainer.setVisibility(visible ? VISIBLE : GONE);
    }
 
@@ -153,19 +162,35 @@ public class LostCardScreen extends WalletLinearLayout<LostCardPresenter.Screen,
    @Override
    public void addPin(@NonNull LostCardPin lostCardPin) {
       mapView.getMapAsync(googleMap -> {
-         googleMap.setInfoWindowAdapter(new SmartCardLocaleInfoWindow(getContext(), lostCardPin));
+         SmartCardLocaleInfoWindow popupPinWindow = new SmartCardLocaleInfoWindow(getContext(), lostCardPin);
+         googleMap.setInfoWindowAdapter(popupPinWindow);
+         googleMap.clear();
 
          Marker marker = googleMap.addMarker(
                new MarkerOptions()
                      .icon(BitmapDescriptorFactory.fromBitmap(getBitmapFromVectorDrawable()))
-                     .position(lostCardPin.position())
+                     .position(walletCoordinatesToLatLng(lostCardPin.position()))
                      .snippet(lostCardPin.place())
          );
 
-         googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(marker.getPosition(), 15));
-
+         googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(marker.getPosition(), 17));
          marker.showInfoWindow();
+
+         googleMap.setOnInfoWindowClickListener(m -> popupPinWindow.openExternalMap());
+
+         googleMap.setOnMarkerClickListener(m -> {
+            googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(marker.getPosition(), 17));
+            marker.showInfoWindow();
+            return false;
+         });
       });
+   }
+
+   private LatLng walletCoordinatesToLatLng(WalletCoordinates position) {
+      return new LatLng(
+            position.lat(),
+            position.lng()
+      );
    }
 
    private Bitmap getBitmapFromVectorDrawable() {
@@ -181,6 +206,17 @@ public class LostCardScreen extends WalletLinearLayout<LostCardPresenter.Screen,
    @Override
    public void onTrackingChecked(boolean checked) {
       checkGoogleServicesAndInitMap();
+   }
+
+   private void showDialogDisableTrackingConfirmation() {
+      new MaterialDialog.Builder(getContext())
+            .content(R.string.wallet_disable_tracking_msg)
+            .positiveText(R.string.wallet_disable_tracking)
+            .negativeText(R.string.cancel)
+            .onPositive((dialog, which) -> presenter.disableTracking())
+            .onNegative((dialog, which) -> toggleLostCardSwitcher(true))
+            .build()
+            .show();
    }
 
    @Override
@@ -201,28 +237,45 @@ public class LostCardScreen extends WalletLinearLayout<LostCardPresenter.Screen,
    }
 
    @Override
+   public void showOpenLocationServiceSettingsDialog() {
+      if (dialogErrorLocationService == null) {
+         dialogErrorLocationService = new MaterialDialog.Builder(getContext())
+               .title(R.string.wallet_location_service_settings_title)
+               .content(R.string.wallet_location_service_settings_message)
+               .positiveText(R.string.ok)
+               .negativeText(R.string.cancel)
+               .onPositive((dialog, which) -> presenter.requestLocationSettings())
+               .build();
+      }
+      if (!dialogErrorLocationService.isShowing()) {
+         dialogErrorLocationService.show();
+      }
+   }
+
+   @Override
+   public boolean showDisableConfirmationDialogIfNeed(boolean enableTracking) {
+      if (mapContainer.getVisibility() == VISIBLE && !enableTracking) {
+         showDialogDisableTrackingConfirmation();
+         return true;
+      }
+      return false;
+   }
+
+   @Override
    public OperationScreen provideOperationDelegate() {
       return new DialogOperationScreen(this);
    }
 
    private void initMap() {
-      mapContainer.setVisibility(VISIBLE);
       mapView.getMapAsync(googleMap -> {
          googleMap.setMyLocationEnabled(true);
          UiSettings uiSettings = googleMap.getUiSettings();
          uiSettings.setAllGesturesEnabled(true);
          uiSettings.setZoomControlsEnabled(true);
-         googleMap.setOnMarkerClickListener(onMarkerClickListener);
 
          onMapLoaded();
       });
    }
-
-   private GoogleMap.OnMarkerClickListener onMarkerClickListener = marker -> {
-      mapView.getMapAsync(googleMap -> googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(marker.getPosition(), 15)));
-      marker.showInfoWindow();
-      return false;
-   };
 
    protected void onMapLoaded() {
       if (trackingEnableSwitcher.isChecked()) presenter.loadLastSmartCardLocation();

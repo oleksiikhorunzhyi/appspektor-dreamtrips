@@ -1,4 +1,4 @@
-package com.worldventures.dreamtrips.wallet.domain.entity;
+package com.worldventures.dreamtrips.wallet.service.nxt.model;
 
 import com.google.gson.annotations.SerializedName;
 

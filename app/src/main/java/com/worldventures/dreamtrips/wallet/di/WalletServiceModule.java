@@ -17,6 +17,7 @@ import com.worldventures.dreamtrips.wallet.service.firmware.FirmwareModule;
 import com.worldventures.dreamtrips.wallet.service.impl.AndroidBleService;
 import com.worldventures.dreamtrips.wallet.service.impl.AndroidNetworkManager;
 import com.worldventures.dreamtrips.wallet.service.impl.AndroidPropertiesProvider;
+import com.worldventures.dreamtrips.wallet.service.nxt.NxtInteractor;
 
 import javax.inject.Named;
 import javax.inject.Singleton;
@@ -75,6 +76,12 @@ public class WalletServiceModule {
    @Provides
    FirmwareInteractor firmwareInteractor(@Named(JANET_WALLET) Janet janet) {
       return new FirmwareInteractor(janet);
+   }
+
+   @Singleton
+   @Provides
+   NxtInteractor nxtInteractor(@Named(JANET_WALLET) Janet janet) {
+      return new NxtInteractor(janet);
    }
 
    @Singleton

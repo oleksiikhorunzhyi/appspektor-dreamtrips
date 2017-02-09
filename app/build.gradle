@@ -71,7 +71,8 @@ android {
          'MESSENGER_API_URL'    : '"dtmsgapp-dev.worldventures.biz"',
          'NEWRELIC_API_KEY'     : '"AA02bc55e3bfb4886360f8be57d75b526bea2b1bcf"',
          'UPLOADERY_API_URL'    : '"http://techery-dt-staging-uploadery.techery.io"',
-         'SMART_CARD_SDK_CLIENT': '"nxtid"'
+         'SMART_CARD_SDK_CLIENT': '"nxtid"',
+         'NXT_API'              : '"https://api.nxt-security.com/api/services/evtservice"'
    ]
    def CONFIG_MAP_EXTERNAL = [
          'NEWRELIC_API_KEY': '"AAd06d4d4d218e74f8d48a7e0bf8d7de4623cb1662"',

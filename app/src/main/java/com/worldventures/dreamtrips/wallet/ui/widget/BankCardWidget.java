@@ -84,7 +84,7 @@ public class BankCardWidget extends FrameLayout {
    public void setBankCard(BankCard card) {
       setCardName(card.nickName());
       setOwnerName(card.cardNameHolder());
-      setCardNumber(card.number());
+      setCardNumber(card.numberLastFourDigits());
       setExpireDate(card.expDate());
       setCardType(card.issuerInfo().cardType());
       setCardCategory(card.category());
@@ -115,10 +115,10 @@ public class BankCardWidget extends FrameLayout {
       );
    }
 
-   public void setCardNumber(String cardNumber) {
-      tvCardNumber.setText(bankCardHelper.obtainFullCardNumber(cardNumber));
+   public void setCardNumber(String numberLastFourDigits) {
+      tvCardNumber.setText(bankCardHelper.obtainFullCardNumber(numberLastFourDigits));
       if (showShortNumber) {
-         tvShortCardNumber.setText(bankCardHelper.obtainShortCardNumber(cardNumber));
+         tvShortCardNumber.setText(bankCardHelper.obtainShortCardNumber(numberLastFourDigits));
       }
    }
 

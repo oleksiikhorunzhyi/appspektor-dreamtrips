@@ -48,7 +48,9 @@ public class CreateBankCardCommand extends Command<BankCard> implements Injectab
          recordIssuerInfo = ImmutableRecordIssuerInfo.copyOf(recordIssuerInfo)
                .withFinancialService(FinancialService.AMEX);
       }
+
       return ImmutableBankCard.copyOf(bankCard)
-            .withIssuerInfo(recordIssuerInfo);
+            .withIssuerInfo(recordIssuerInfo)
+            .withNumberLastFourDigits(BankCardHelper.obtainLastCardDigits(bankCard.number()));
    }
 }

@@ -1,8 +1,8 @@
 package com.worldventures.dreamtrips.wallet.domain.converter;
 
 import com.worldventures.dreamtrips.modules.mapping.converter.Converter;
-import com.worldventures.dreamtrips.wallet.domain.entity.ImmutableNxtSession;
-import com.worldventures.dreamtrips.wallet.domain.entity.NxtSession;
+import com.worldventures.dreamtrips.wallet.service.nxt.model.ImmutableNxtSession;
+import com.worldventures.dreamtrips.wallet.service.nxt.model.NxtSession;
 
 import io.techery.mappery.MapperyContext;
 

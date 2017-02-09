@@ -2,13 +2,10 @@ package com.worldventures.dreamtrips.modules.dtl_flow.parts.reviews.model;
 
 import android.os.Parcel;
 import android.os.Parcelable;
-
+import com.worldventures.dreamtrips.modules.dtl.model.merchant.reviews.Review;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
-
-/**
- * Created by andres.rubiano on 01/02/2017.
- */
+import java.util.List;
 
 public class ReviewObject implements Parcelable {
 
@@ -110,6 +107,22 @@ public class ReviewObject implements Parcelable {
                                 rating,
                                 "3 min ago",
                                 "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.");
+    }
+
+    private static ReviewObject getObject(Review review){
+        return new ReviewObject("http://rs656.pbsrc.com/albums/uu287/WouaipHOULA/DrHouse.jpg~c200",
+              review.getUserNickName(),
+              review.getRating(),
+              review.getLastModeratedTimeUtc(),
+              review.getReviewText());
+    }
+
+    public static ArrayList<ReviewObject> getReviewList(List<Review> reviewList){
+        ArrayList<ReviewObject> reviewObjectList = new ArrayList<>();
+        for (Review r : reviewList) {
+            reviewObjectList.add(getObject(r));
+        }
+        return reviewObjectList;
     }
 
 

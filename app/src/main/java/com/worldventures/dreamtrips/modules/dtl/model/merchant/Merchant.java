@@ -11,6 +11,8 @@ import com.worldventures.dreamtrips.modules.dtl.model.merchant.disclaimer.Discla
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.offer.Currency;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.offer.Offer;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.operational_hour.OperationDay;
+import com.worldventures.dreamtrips.modules.dtl.model.merchant.reviews.IReviewsMerchant;
+import com.worldventures.dreamtrips.modules.dtl.model.merchant.reviews.ReviewsMerchant;
 
 import org.immutables.value.Value;
 import org.jetbrains.annotations.Nullable;
@@ -39,6 +41,7 @@ public abstract class Merchant implements Serializable {
    @Nullable public abstract String phone();
    @Nullable public abstract String email();
    @Nullable public abstract String website();
+   @Nullable public abstract IReviewsMerchant reviews();
    @Nullable public abstract List<Currency> currencies();
    @Nullable public abstract List<Offer> offers();
    @Nullable public abstract String timeZone();

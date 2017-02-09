@@ -28,8 +28,13 @@ public class OtaFragment extends AuthorizedStaticInfoFragment<UrlBundle> {
    }
 
    @Override
+   public void onResume() {
+      super.onResume();
+      TrackingHelper.actionBookTravelScreen(TrackingHelper.ATTRIBUTE_VIEW);
+   }
+
+   @Override
    protected void sendAnalyticEvent(String actionAnalyticEvent) {
-      TrackingHelper.actionBookTravelScreen(actionAnalyticEvent);
    }
 
    @Override

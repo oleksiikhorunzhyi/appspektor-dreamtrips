@@ -123,7 +123,7 @@ public class LostCardPresenter extends WalletPresenter<LostCardPresenter.Screen,
 
    public void loadLastSmartCardLocation() {
       smartCardLocationInteractor.getLocationPipe()
-            .observe()
+            .createObservable(new GetLocationCommand())
             .compose(bindViewIoToMainComposer())
             .subscribe(OperationActionStateSubscriberWrapper.<GetLocationCommand>forView(getView().provideOperationDelegate())
                   .onSuccess(getLocationCommand -> takeLastLocationAndShow(getLocationCommand.getResult()))
@@ -132,7 +132,6 @@ public class LostCardPresenter extends WalletPresenter<LostCardPresenter.Screen,
                      return null;
                   })
                   .wrap());
-      smartCardLocationInteractor.getLocationPipe().send(new GetLocationCommand());
    }
 
    private void takeLastLocationAndShow(List<WalletLocation> walletLocations) {

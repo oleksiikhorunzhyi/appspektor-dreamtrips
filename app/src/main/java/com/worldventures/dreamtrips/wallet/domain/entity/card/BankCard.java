@@ -13,6 +13,9 @@ import org.jetbrains.annotations.Nullable;
 @Gson.TypeAdapters
 public abstract class BankCard extends Card {
 
+   @Nullable
+   public abstract String numberLastFourDigits();
+
    @Value.Default
    public String cardNameHolder() {
       return "";
@@ -55,10 +58,16 @@ public abstract class BankCard extends Card {
    }
 
    @Nullable
+   public abstract String cvvToken();
+
+   @Nullable
    public abstract String track1();
 
    @Nullable
    public abstract String track2();
+
+   @Nullable
+   public abstract String track3();
 
    @Value.Default
    @Override

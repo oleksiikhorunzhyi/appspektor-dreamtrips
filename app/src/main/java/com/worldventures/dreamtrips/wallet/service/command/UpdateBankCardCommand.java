@@ -5,6 +5,8 @@ import com.worldventures.dreamtrips.core.janet.dagger.InjectableAction;
 import com.worldventures.dreamtrips.wallet.domain.entity.AddressInfo;
 import com.worldventures.dreamtrips.wallet.domain.entity.card.BankCard;
 import com.worldventures.dreamtrips.wallet.domain.entity.card.ImmutableBankCard;
+import com.worldventures.dreamtrips.wallet.service.nxt.DetokenizeBankCardCommand;
+import com.worldventures.dreamtrips.wallet.service.nxt.NxtInteractor;
 import com.worldventures.dreamtrips.wallet.util.FormatException;
 
 import javax.inject.Inject;
@@ -16,6 +18,7 @@ import io.techery.janet.command.annotations.CommandAction;
 import io.techery.janet.smartcard.action.records.EditRecordAction;
 import io.techery.janet.smartcard.model.Record;
 import io.techery.mappery.MapperyContext;
+import rx.Observable;
 
 import static com.worldventures.dreamtrips.core.janet.JanetModule.JANET_WALLET;
 import static com.worldventures.dreamtrips.wallet.util.WalletValidateHelper.validateAddressInfoOrThrow;
@@ -26,6 +29,7 @@ public class UpdateBankCardCommand extends Command<BankCard> implements Injectab
 
    @Inject @Named(JANET_WALLET) Janet janet;
    @Inject MapperyContext mapperyContext;
+   @Inject NxtInteractor nxtInteractor;
 
    private BankCard bankCard;
 
@@ -49,16 +53,27 @@ public class UpdateBankCardCommand extends Command<BankCard> implements Injectab
    @Override
    protected void run(CommandCallback<BankCard> callback) throws Throwable {
       checkCardData();
-      final Record record = mapperyContext.convert(bankCard, Record.class);
-      janet.createPipe(EditRecordAction.class)
-            .createObservableResult(new EditRecordAction(record))
-            .map(editRecordAction -> editRecordAction.record)
-            .subscribe(result -> callback.onSuccess(mapperyContext.convert(result, BankCard.class)), callback::onFail);
+      detokenizeBankCard(bankCard)
+            .map(detokenizedBankCard -> mapperyContext.convert(detokenizedBankCard, Record.class))
+            .flatMap(this::pushBankCard)
+            .subscribe(result -> callback.onSuccess(bankCard), callback::onFail);
    }
 
    private void checkCardData() throws FormatException {
       validateCardNameOrThrow(bankCard.nickName());
       validateAddressInfoOrThrow(bankCard.addressInfo());
+   }
+
+   private Observable<BankCard> detokenizeBankCard(BankCard bankCard) {
+      return nxtInteractor.detokenizeBankCardPipe()
+            .createObservableResult(new DetokenizeBankCardCommand(bankCard))
+            .map(detokenizeResult -> detokenizeResult.getResult().getDetokenizedBankCard());
+   }
+
+   private Observable<BankCard> pushBankCard(Record record) {
+      return janet.createPipe(EditRecordAction.class)
+            .createObservableResult(new EditRecordAction(record))
+            .map(result -> mapperyContext.convert(result.record, BankCard.class));
    }
 
    public BankCard getBankCard() {

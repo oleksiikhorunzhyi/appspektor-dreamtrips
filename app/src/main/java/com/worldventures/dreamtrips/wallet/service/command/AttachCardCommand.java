@@ -2,7 +2,9 @@ package com.worldventures.dreamtrips.wallet.service.command;
 
 import com.worldventures.dreamtrips.core.janet.dagger.InjectableAction;
 import com.worldventures.dreamtrips.wallet.domain.entity.card.BankCard;
+import com.worldventures.dreamtrips.wallet.domain.entity.card.ImmutableBankCard;
 import com.worldventures.dreamtrips.wallet.service.SmartCardInteractor;
+import com.worldventures.dreamtrips.wallet.service.nxt.util.NxtBankCard;
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -24,23 +26,25 @@ public class AttachCardCommand extends Command<BankCard> implements InjectableAc
    @Inject MapperyContext mapperyContext;
    @Inject SmartCardInteractor interactor;
 
-   private final BankCard card;
+   private final NxtBankCard nxtBankCard;
    private final boolean setAsDefaultCard;
 
-   public AttachCardCommand(BankCard card, boolean setAsDefaultCard) {
-      this.card = card;
+   public AttachCardCommand(NxtBankCard card, boolean setAsDefaultCard) {
+      this.nxtBankCard = card;
       this.setAsDefaultCard = setAsDefaultCard;
    }
 
    @Override
    protected void run(CommandCallback<BankCard> callback) throws Throwable {
-      Record record = mapperyContext.convert(card, Record.class);
+      Record record = mapperyContext.convert(nxtBankCard.getDetokenizedBankCard(), Record.class);
       janet.createPipe(AddRecordAction.class)
             .createObservableResult(new AddRecordAction(record))
             .map(it -> it.record) // id should be added in AddRecordAction
             .flatMap(this::saveDefaultCard)
-            .subscribe(addedRecord -> callback.onSuccess(mapperyContext.convert(addedRecord, BankCard.class)),
-                  callback::onFail);
+            .map(addedRecord -> mapperyContext.convert(addedRecord, BankCard.class))
+            .map(bankCardWithId -> ImmutableBankCard.copyOf(nxtBankCard.getTokenizedBankCard())
+                  .withId(bankCardWithId.id()))
+            .subscribe(callback::onSuccess, callback::onFail);
    }
 
    private Observable<Record> saveDefaultCard(Record record) {

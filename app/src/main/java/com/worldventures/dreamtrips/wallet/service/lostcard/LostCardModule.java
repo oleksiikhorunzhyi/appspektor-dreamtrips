@@ -50,13 +50,20 @@ public class LostCardModule {
 
    @Singleton
    @Provides
-   LocationSyncManager jobScheduler(SmartCardLocationInteractor locationInteractor, WalletNetworkService networkService) {
-      return new LocationSyncManager(locationInteractor, networkService);
+   LocationSyncManager jobScheduler(SmartCardLocationInteractor locationInteractor) {
+      return new LocationSyncManager(locationInteractor);
    }
 
    @Singleton
    @Provides
-   LostCardManager locationManager(SmartCardLocationInteractor locationInteractor, LocationSyncManager jobScheduler) {
-      return new LostCardManager(locationInteractor, jobScheduler);
+   LostCardManager locationManager(SmartCardLocationInteractor locationInteractor, LocationSyncManager jobScheduler,
+         WalletNetworkService networkService) {
+      return new LostCardManager(locationInteractor, jobScheduler, networkService);
+   }
+
+   @Singleton
+   @Provides
+   LocationTrackingManager trackingManager(SmartCardLocationInteractor locationInteractor, LostCardManager lostCardManager) {
+      return new LocationTrackingManager(locationInteractor, lostCardManager);
    }
 }

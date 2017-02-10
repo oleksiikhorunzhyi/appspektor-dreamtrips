@@ -33,4 +33,10 @@ public class DiskLostCardRepository implements LostCardRepository {
    public boolean isEnableTracking() {
       return snappyRepository.isEnableTracking();
    }
+
+   @Override
+   public void clear() {
+      snappyRepository.saveEnabledTracking(false);
+      snappyRepository.deleteWalletLocations();
+   }
 }

@@ -4,6 +4,7 @@ import android.content.Context;
 
 import com.messenger.storage.MessengerDatabase;
 import com.messenger.synchmechanism.MessengerConnector;
+import com.messenger.util.CrashlyticsTracker;
 import com.raizlabs.android.dbflow.config.FlowManager;
 import com.techery.spares.module.qualifier.ForApplication;
 import com.techery.spares.module.qualifier.Global;
@@ -19,6 +20,7 @@ import com.worldventures.dreamtrips.core.session.UserSession;
 import com.worldventures.dreamtrips.core.utils.BadgeUpdater;
 import com.worldventures.dreamtrips.core.utils.DTCookieManager;
 import com.worldventures.dreamtrips.core.utils.LocaleSwitcher;
+import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.auth.service.AuthInteractor;
 import com.worldventures.dreamtrips.modules.common.api.janet.command.ClearStoragesCommand;
 import com.worldventures.dreamtrips.modules.common.delegate.ReplayEventDelegatesWiper;
@@ -67,6 +69,11 @@ public class LogoutCommand extends Command<Void> implements InjectableAction {
       Observable.zip(clearSessionDependants(), args -> null)
             .flatMap(o -> clearSession())
             .flatMap(o -> clearUserData())
+            .doOnNext(o -> TrackingHelper.logout())
+            .doOnError(throwable -> {
+               Timber.w((Throwable) throwable, "Could not log out");
+               CrashlyticsTracker.trackError((Throwable) throwable);
+            })
             .subscribe(o -> callback.onSuccess(null));
    }
 

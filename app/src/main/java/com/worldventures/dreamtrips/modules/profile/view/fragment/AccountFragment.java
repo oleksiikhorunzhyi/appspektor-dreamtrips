@@ -119,7 +119,6 @@ public class AccountFragment extends ProfileFragment<AccountPresenter> implement
             .callback(new MaterialDialog.ButtonCallback() {
                @Override
                public void onPositive(MaterialDialog dialog) {
-                  TrackingHelper.logout();
                   getPresenter().logout();
                }
             })

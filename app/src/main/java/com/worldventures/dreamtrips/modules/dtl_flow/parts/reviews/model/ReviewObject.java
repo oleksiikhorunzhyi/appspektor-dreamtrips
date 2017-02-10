@@ -15,6 +15,9 @@ public class ReviewObject implements Parcelable {
     private String timeWrote;
     private String comment;
 
+    public ReviewObject() {
+    }
+
     public ReviewObject(String urlImageUser, String nameUser, float ratingCommentUser, String timeWrote, String comment) {
         this.urlImageUser = urlImageUser;
         this.nameUser = nameUser;
@@ -96,21 +99,55 @@ public class ReviewObject implements Parcelable {
             } else {
                 value = (float) 4.4;
             }
-            list.add(getObject(value));
+            list.add(getObject(value, i));
         }
         return list;
     }
 
-    private static ReviewObject getObject(float rating){
-        return new ReviewObject("http://rs656.pbsrc.com/albums/uu287/WouaipHOULA/DrHouse.jpg~c200",
-                                "Kenneth Rivera",
-                                rating,
-                                "3 min ago",
-                                "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.");
+    private static ReviewObject getObject(float rating, int pos){
+        ReviewObject object = null;
+        if (pos == 0){
+            object = new ReviewObject("null",
+                  "Wade Wilson",
+                  4,
+                  "2016-02-08T20:20:11.13Z UTC",
+                  "Lorem Ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis...");
+        } else if (pos == 1){
+            object = new ReviewObject("null",
+                  "Diana Prince",
+                  4,
+                  "2017-01-08T20:00:11.123Z UTC",
+                  "Lorem Ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis...");
+        } else if(pos == 2){
+            object = new ReviewObject("http://rs656.pbsrc.com/albums/uu287/WouaipHOULA/DrHouse.jpg~c200",
+                  "Kenneth Rivera",
+                  rating,
+                  "2017-01-06T20:00:11.123Z UTC",
+                  "Lorem Ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis...");
+        } else if(pos == 3){
+            object = new ReviewObject("http://rs656.pbsrc.com/albums/uu287/WouaipHOULA/DrHouse.jpg~c200",
+                  "Kenneth Rivera",
+                  rating,
+                  "2017-01-06T20:02:11.123Z UTC",
+                  "Lorem Ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis...");
+        } else if(pos == 4){
+            object = new ReviewObject("http://rs656.pbsrc.com/albums/uu287/WouaipHOULA/DrHouse.jpg~c200",
+                  "Kenneth Rivera",
+                  rating,
+                  "2017-01-06T20:00:31.123Z UTC",
+                  "Lorem Ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis...");
+        } else {
+            object = new ReviewObject("http://rs656.pbsrc.com/albums/uu287/WouaipHOULA/DrHouse.jpg~c200",
+                  "Kenneth Rivera",
+                  rating,
+                  "2017-01-06T20:00:11.023Z UTC",
+                  "Lorem Ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis...");
+        }
+        return object;
     }
 
     private static ReviewObject getObject(Review review){
-        return new ReviewObject("http://rs656.pbsrc.com/albums/uu287/WouaipHOULA/DrHouse.jpg~c200",
+        return new ReviewObject("null",
               review.getUserNickName(),
               review.getRating(),
               review.getLastModeratedTimeUtc(),

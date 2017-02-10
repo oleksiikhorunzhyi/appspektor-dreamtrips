@@ -12,7 +12,7 @@ import java.util.List;
 @Value.Immutable
 public interface IReviewsMerchant extends Serializable {
 
-   String total();
-   String ratingAvarage();
+   Integer total();
+   Double ratingAvarage();
    List<Reviews> reviews();
 }

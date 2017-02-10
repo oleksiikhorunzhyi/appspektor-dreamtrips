@@ -41,7 +41,6 @@ public abstract class Merchant implements Serializable {
    @Nullable public abstract String phone();
    @Nullable public abstract String email();
    @Nullable public abstract String website();
-   @Nullable public abstract IReviewsMerchant reviews();
    @Nullable public abstract List<Currency> currencies();
    @Nullable public abstract List<Offer> offers();
    @Nullable public abstract String timeZone();
@@ -50,6 +49,7 @@ public abstract class Merchant implements Serializable {
    @Nullable public abstract List<MerchantMedia> images();
    @Nullable public abstract List<OperationDay> operationDays();
    @Nullable public abstract List<Disclaimer> disclaimers();
+   //@Nullable public abstract IReviewsMerchant reviews();
 
    @Value.Derived public MerchantAttributes asMerchantAttributes() {
       return MerchantAttributesFactory.create(this);

@@ -11,7 +11,9 @@ import com.worldventures.dreamtrips.core.janet.cache.ImmutableCacheOptions;
 import com.worldventures.dreamtrips.core.janet.cache.storage.PaginatedStorage;
 import com.worldventures.dreamtrips.core.janet.dagger.InjectableAction;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.reviews.ReviewsMerchant;
+import com.worldventures.dreamtrips.modules.dtl.service.action.bundle.ImmutableReviewsMerchantsActionParams;
 import com.worldventures.dreamtrips.modules.dtl.service.action.bundle.MerchantsActionParams;
+import com.worldventures.dreamtrips.modules.dtl.service.action.bundle.ReviewsMerchantsActionParams;
 import com.worldventures.dreamtrips.modules.dtl.service.action.creator.ReviewsActionCreator;
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -31,12 +33,14 @@ public class ReviewMerchantsAction extends CommandWithError<ReviewsMerchant>
 
    private final long startTime = System.currentTimeMillis();
    private final boolean isRefresh;
+   private final ReviewsMerchantsActionParams actionParams;
 
-   public static ReviewMerchantsAction create(MerchantsActionParams params) {
+   public static ReviewMerchantsAction create(ReviewsMerchantsActionParams params) {
       return new ReviewMerchantsAction(params);
    }
 
-   public ReviewMerchantsAction(MerchantsActionParams params) {
+   public ReviewMerchantsAction(ReviewsMerchantsActionParams params) {
+      this.actionParams = params;
       this.isRefresh = false;
    }
 
@@ -71,7 +75,7 @@ public class ReviewMerchantsAction extends CommandWithError<ReviewsMerchant>
    protected void run(CommandCallback<ReviewsMerchant> callback) throws Throwable {
       callback.onProgress(0);
       janet.createPipe(GetReviewsMerchantsHttpAction.class, Schedulers.io())
-            .createObservableResult(reviewsActionCreator.createAction(null))
+            .createObservableResult(reviewsActionCreator.createAction(actionParams))
             .map(GetReviewsMerchantsHttpAction::reviews)
             .subscribe(callback::onSuccess, callback::onFail);
    }

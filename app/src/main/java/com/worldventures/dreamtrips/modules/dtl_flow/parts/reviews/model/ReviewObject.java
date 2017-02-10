@@ -125,6 +125,14 @@ public class ReviewObject implements Parcelable {
         return reviewObjectList;
     }
 
+    public static ArrayList<ReviewObject> getReviewListLimit(List<Review> reviewList){
+        ArrayList<ReviewObject> reviewObjectList = new ArrayList<>();
+        for (int i = 0; i < 2; i++) {
+            reviewObjectList.add(getObject(reviewList.get(i)));
+        }
+        return reviewObjectList;
+    }
+
 
     @Override
     public int describeContents() { return 0; }
